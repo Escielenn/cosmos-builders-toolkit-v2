@@ -6,13 +6,17 @@ import {
   BookOpen,
   Cpu,
   Shield,
+  Loader2,
 } from "lucide-react";
 import Header from "@/components/layout/Header";
 import ToolCard from "@/components/dashboard/ToolCard";
+import WorldCard from "@/components/dashboard/WorldCard";
 import CreateWorldButton from "@/components/dashboard/CreateWorldButton";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
 import { useBackground } from "@/hooks/use-background";
+import { useAuth } from "@/contexts/AuthContext";
+import { useWorlds } from "@/hooks/use-worlds";
 
 const tools = [
   {
@@ -73,6 +77,13 @@ const tools = [
 const Index = () => {
   // Initialize background hook to apply stored preference
   useBackground();
+  
+  const { user } = useAuth();
+  const { worlds, isLoading, deleteWorld } = useWorlds();
+
+  const handleDeleteWorld = (worldId: string) => {
+    deleteWorld.mutate(worldId);
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -109,11 +120,39 @@ const Index = () => {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <CreateWorldButton />
-            <GlassPanel className="p-5 h-full min-h-[200px] flex flex-col items-center justify-center border-dashed border border-muted">
-              <p className="text-sm text-muted-foreground text-center">
-                Your worlds will appear here once you create them.
-              </p>
-            </GlassPanel>
+            
+            {isLoading && user && (
+              <GlassPanel className="p-5 h-full min-h-[200px] flex flex-col items-center justify-center">
+                <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+              </GlassPanel>
+            )}
+            
+            {!isLoading && user && worlds.length === 0 && (
+              <GlassPanel className="p-5 h-full min-h-[200px] flex flex-col items-center justify-center border-dashed border border-muted">
+                <p className="text-sm text-muted-foreground text-center">
+                  Your worlds will appear here once you create them.
+                </p>
+              </GlassPanel>
+            )}
+            
+            {!user && (
+              <GlassPanel className="p-5 h-full min-h-[200px] flex flex-col items-center justify-center border-dashed border border-muted">
+                <p className="text-sm text-muted-foreground text-center">
+                  Sign in to create and save your worlds.
+                </p>
+              </GlassPanel>
+            )}
+            
+            {worlds.map((world) => (
+              <WorldCard
+                key={world.id}
+                id={world.id}
+                name={world.name}
+                description={world.description}
+                updatedAt={world.updated_at}
+                onDelete={handleDeleteWorld}
+              />
+            ))}
           </div>
         </section>
 
