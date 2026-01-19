@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ArrowUp, List, X } from "lucide-react";
+import { ArrowUp, ArrowDown, List } from "lucide-react";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -62,6 +62,11 @@ const SectionNavigation = ({ sections }: SectionNavigationProps) => {
     setIsOpen(false);
   };
 
+  const scrollToBottom = () => {
+    window.scrollTo({ top: document.documentElement.scrollHeight, behavior: "smooth" });
+    setIsOpen(false);
+  };
+
   const NavigationContent = () => (
     <>
       <h4 className="font-semibold text-sm mb-3 text-foreground">Sections</h4>
@@ -82,15 +87,26 @@ const SectionNavigation = ({ sections }: SectionNavigationProps) => {
           </button>
         ))}
       </nav>
-      <Button
-        variant="ghost"
-        size="sm"
-        className="w-full mt-4"
-        onClick={scrollToTop}
-      >
-        <ArrowUp className="w-4 h-4 mr-2" />
-        Back to Top
-      </Button>
+      <div className="flex flex-col gap-2 mt-4">
+        <Button
+          variant="ghost"
+          size="sm"
+          className="w-full"
+          onClick={scrollToTop}
+        >
+          <ArrowUp className="w-4 h-4 mr-2" />
+          Back to Top
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="w-full"
+          onClick={scrollToBottom}
+        >
+          <ArrowDown className="w-4 h-4 mr-2" />
+          Go to Bottom
+        </Button>
+      </div>
     </>
   );
 

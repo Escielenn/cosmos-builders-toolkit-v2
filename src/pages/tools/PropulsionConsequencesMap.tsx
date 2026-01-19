@@ -373,15 +373,13 @@ const PropulsionConsequencesMap = () => {
     const saved = localStorage.getItem("pcm-worksheet");
     if (saved) {
       try {
-        setFormState(JSON.parse(saved));
-        toast({
-          title: "Draft Loaded",
-          description: "Your previous work has been restored.",
-        });
+        const parsed = JSON.parse(saved);
+        setFormState(parsed);
       } catch {
         // Ignore parse errors
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const updateSystem = (field: keyof PropulsionSystem, value: string) => {
