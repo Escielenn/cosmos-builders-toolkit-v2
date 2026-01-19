@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Download, Save, ChevronDown, ChevronUp, Info, ExternalLink } from "lucide-react";
+import { ArrowLeft, Download, Save, ChevronDown, ChevronUp, Info, ExternalLink, Printer } from "lucide-react";
 import Header from "@/components/layout/Header";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
@@ -429,6 +429,10 @@ const PropulsionConsequencesMap = () => {
     });
   };
 
+  const handlePrint = () => {
+    window.print();
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -455,10 +459,14 @@ const PropulsionConsequencesMap = () => {
               </p>
             </div>
 
-            <div className="flex gap-2">
+            <div className="flex gap-2 no-print">
               <Button variant="outline" size="sm" onClick={handleSave}>
                 <Save className="w-4 h-4 mr-2" />
                 Save Draft
+              </Button>
+              <Button variant="outline" size="sm" onClick={handlePrint}>
+                <Printer className="w-4 h-4 mr-2" />
+                Print
               </Button>
               <Button size="sm" onClick={handleExport}>
                 <Download className="w-4 h-4 mr-2" />

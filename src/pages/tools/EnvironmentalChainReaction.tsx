@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Download, Save, ChevronDown, ChevronUp, Info } from "lucide-react";
+import { ArrowLeft, Download, Save, ChevronDown, ChevronUp, Info, Printer, ExternalLink } from "lucide-react";
 import Header from "@/components/layout/Header";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
@@ -19,6 +19,48 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useToast } from "@/hooks/use-toast";
+import { useBackground } from "@/hooks/use-background";
+
+// SF Examples for cascade demonstration
+const SF_CASCADE_EXAMPLES = [
+  {
+    title: "ARRAKIS (Dune) — Desert World",
+    parameter: "Extreme water scarcity",
+    cascade: [
+      { level: "Physical", details: "Stillsuits to reclaim moisture, underground sietches, travel at night, sandworm transportation" },
+      { level: "Biological", details: "Blue-within-blue spice eyes, efficient water metabolism, desert-adapted physiology" },
+      { level: "Psychological", details: "Water as life itself, patience as survival, spice-induced prescience, fear of the worm" },
+      { level: "Cultural", details: "Water as currency, water-sharing as bond, tau (ritual water gift), water discipline, sietch democracy" },
+      { level: "Mythological", details: "Shai-Hulud as god/devil, spice as sacred substance, water-paradise afterlife, Lisan al-Gaib prophecy" },
+    ],
+    insight: "Frank Herbert traced every cultural element back to water scarcity—even their messiah myth.",
+  },
+  {
+    title: "GETHEN (The Left Hand of Darkness) — Frozen World + Kemmer Biology",
+    parameter: "Ice age climate + ambisexual biology",
+    cascade: [
+      { level: "Physical", details: "Heavy insulated clothing, hearth-centered architecture, limited growing season, sled transport" },
+      { level: "Biological", details: "Kemmer cycle (monthly sexuality), ambisexual nature, cold adaptation, no permanent sex" },
+      { level: "Psychological", details: "No permanent gender identity, shifgrethor (social positioning), patience with change, less aggression" },
+      { level: "Cultural", details: "No war (without permanent male aggression), no rape, complex kinship, performance of honor, communal hearths" },
+      { level: "Mythological", details: "Origin myths of duality, light/dark balance, no gendered deities, the Place Inside the Blizzard" },
+    ],
+    insight: "Le Guin used environment + biology to reimagine human society without permanent gender.",
+  },
+  {
+    title: "MESKLIN (Mission of Gravity) — Extreme Variable Gravity",
+    parameter: "3g at equator, 700g at poles",
+    cascade: [
+      { level: "Physical", details: "Flattened disc-shaped bodies, clinging locomotion, no throwing, no falling, crawling movement" },
+      { level: "Biological", details: "Caterpillar-like segmented body, extremely strong for size, cannot jump, low profile" },
+      { level: "Psychological", details: "Intense acrophobia, conceptual difficulty with 'up', fear of leverage, terror of heights" },
+      { level: "Cultural", details: "Ground-hugging architecture, trade-based society (equatorial Mesklinites), territorial poles, raft-sailing" },
+      { level: "Mythological", details: "The Fall as ultimate evil, vertical as supernatural realm, weight as virtue, sky as void/death" },
+    ],
+    insight: "Hal Clement built an entire psychology from the terror of falling in extreme gravity.",
+  },
+];
 
 // Types for form state
 interface PlanetaryParameter {
@@ -459,6 +501,24 @@ const CollapsibleSection = ({
 
 const EnvironmentalChainReaction = () => {
   const [formState, setFormState] = useState<FormState>(initialFormState);
+  const { toast } = useToast();
+  useBackground();
+
+  // Load saved state on mount
+  useEffect(() => {
+    const saved = localStorage.getItem("ecr-worksheet");
+    if (saved) {
+      try {
+        setFormState(JSON.parse(saved));
+        toast({
+          title: "Draft Loaded",
+          description: "Your previous work has been restored.",
+        });
+      } catch {
+        // Ignore parse errors
+      }
+    }
+  }, []);
 
   const updateParameter = (field: keyof PlanetaryParameter, value: string) => {
     setFormState((prev) => ({
@@ -488,9 +548,11 @@ const EnvironmentalChainReaction = () => {
   };
 
   const handleSave = () => {
-    // For now, save to localStorage
     localStorage.setItem("ecr-worksheet", JSON.stringify(formState));
-    console.log("Saved to localStorage");
+    toast({
+      title: "Draft Saved",
+      description: "Your work has been saved locally.",
+    });
   };
 
   const handleExport = () => {
@@ -502,6 +564,14 @@ const EnvironmentalChainReaction = () => {
     link.download = "environmental-chain-reaction.json";
     link.click();
     URL.revokeObjectURL(url);
+    toast({
+      title: "Exported",
+      description: "Your worksheet has been downloaded as JSON.",
+    });
+  };
+
+  const handlePrint = () => {
+    window.print();
   };
 
   return (
@@ -531,10 +601,14 @@ const EnvironmentalChainReaction = () => {
               </p>
             </div>
 
-            <div className="flex gap-2">
+            <div className="flex gap-2 no-print">
               <Button variant="outline" size="sm" onClick={handleSave}>
                 <Save className="w-4 h-4 mr-2" />
                 Save Draft
+              </Button>
+              <Button variant="outline" size="sm" onClick={handlePrint}>
+                <Printer className="w-4 h-4 mr-2" />
+                Print
               </Button>
               <Button size="sm" onClick={handleExport}>
                 <Download className="w-4 h-4 mr-2" />
@@ -561,6 +635,35 @@ const EnvironmentalChainReaction = () => {
             technologies, and concepts of value.
           </p>
         </GlassPanel>
+
+        {/* SF Examples Section */}
+        <CollapsibleSection
+          title="SF Examples: The Cascade in Action"
+          subtitle="See how master worldbuilders traced environmental parameters to their consequences"
+        >
+          <div className="space-y-6">
+            {SF_CASCADE_EXAMPLES.map((example) => (
+              <div key={example.title} className="border border-border rounded-lg p-4">
+                <h4 className="font-display font-semibold text-lg mb-2">{example.title}</h4>
+                <p className="text-sm text-primary mb-3">
+                  <strong>Core Parameter:</strong> {example.parameter}
+                </p>
+                <div className="space-y-2 mb-3">
+                  {example.cascade.map((level) => (
+                    <div key={level.level} className="flex gap-2 text-sm">
+                      <span className="font-medium text-primary min-w-[100px]">{level.level}:</span>
+                      <span className="text-muted-foreground">{level.details}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="bg-primary/10 rounded p-3 text-sm">
+                  <strong className="text-primary">Key Insight:</strong>{" "}
+                  <span className="text-muted-foreground">{example.insight}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </CollapsibleSection>
 
         {/* Form Sections */}
         <div className="space-y-4">
