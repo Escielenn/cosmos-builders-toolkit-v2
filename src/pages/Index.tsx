@@ -26,11 +26,11 @@ const tools = [
   },
   {
     id: "spacecraft-designer",
-    title: "Spacecraft Designer",
+    title: "Lived-In Spacecraft Designer",
     description:
-      "Design lived-in ships that feel like real places with cultural specificity and realistic systems.",
+      "Design ships that feel inhabited with cultural context, life support realities, and ship-as-character development.",
     icon: Rocket,
-    status: "coming-soon" as const,
+    status: "available" as const,
     week: 2,
   },
   {
