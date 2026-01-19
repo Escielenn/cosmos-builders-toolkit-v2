@@ -81,13 +81,14 @@ const Index = () => {
       <main className="container mx-auto px-4 pt-24 pb-16">
         {/* Hero Section */}
         <section className="text-center mb-16">
-          <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
-            Build <span className="gradient-text">Lived-In</span> Worlds
+          <p className="text-sm md:text-base text-muted-foreground italic mb-2">
+            Jason D. Batt, Ph.D.
+          </p>
+          <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-2">
+            <span className="gradient-text">Cosmos Builder's Toolkit</span>
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
-            Comprehensive worldbuilding tools for science fiction creators.
-            Design spacecraft, planets, cultures, and more with internal
-            consistency.
+            Science Fiction Worldbuilding Tools
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
             <Button size="lg" className="gap-2">
