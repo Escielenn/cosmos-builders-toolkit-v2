@@ -409,15 +409,13 @@ const SpacecraftDesigner = () => {
     const saved = localStorage.getItem("spacecraft-designer");
     if (saved) {
       try {
-        setFormState(JSON.parse(saved));
-        toast({
-          title: "Draft Loaded",
-          description: "Your previous work has been restored.",
-        });
+        const parsed = JSON.parse(saved);
+        setFormState(parsed);
       } catch {
         // Ignore parse errors
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const updateIdentity = (field: keyof ShipIdentity, value: string) => {

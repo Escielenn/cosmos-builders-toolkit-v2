@@ -164,12 +164,12 @@
 
   /* Starfield background effect */
   .starfield {
-    @apply relative overflow-hidden;
+    @apply relative;
   }
 
   .starfield::before {
     content: "";
-    @apply absolute inset-0 opacity-40;
+    @apply absolute inset-0 opacity-40 pointer-events-none overflow-hidden;
     background-image: 
       radial-gradient(2px 2px at 20px 30px, hsl(var(--foreground)), transparent),
       radial-gradient(2px 2px at 40px 70px, hsl(var(--muted-foreground)), transparent),
