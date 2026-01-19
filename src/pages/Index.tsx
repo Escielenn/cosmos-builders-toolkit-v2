@@ -35,6 +35,15 @@ const mockWorlds = [
 
 const tools = [
   {
+    id: "environmental-chain-reaction",
+    title: "Environmental Chain Reaction",
+    description:
+      "Map how planetary parameters cascade into biology, psychology, culture, and mythology.",
+    icon: Globe,
+    status: "available" as const,
+    week: 1,
+  },
+  {
     id: "spacecraft-designer",
     title: "Spacecraft Designer",
     description:
@@ -44,13 +53,13 @@ const tools = [
     week: 2,
   },
   {
-    id: "planet-builder",
-    title: "Planet Builder",
+    id: "propulsion-systems",
+    title: "Propulsion Systems",
     description:
-      "Create worlds with realistic geology, atmosphere, and ecosystems.",
-    icon: Globe,
+      "Calculate realistic drive systems with their consequences for your setting.",
+    icon: Atom,
     status: "coming-soon" as const,
-    week: 1,
+    week: 2,
   },
   {
     id: "species-creator",
@@ -60,15 +69,6 @@ const tools = [
     icon: Users,
     status: "coming-soon" as const,
     week: 3,
-  },
-  {
-    id: "propulsion-systems",
-    title: "Propulsion Systems",
-    description:
-      "Calculate realistic drive systems with their consequences for your setting.",
-    icon: Atom,
-    status: "coming-soon" as const,
-    week: 2,
   },
   {
     id: "culture-designer",
@@ -195,7 +195,17 @@ const Index = () => {
       {/* Footer */}
       <footer className="border-t border-border/50 py-8">
         <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
-          <p>SF Worldbuilding Toolkit • Built for science fiction creators</p>
+          <p>
+            © 2026 Jason D. Batt, Ph.D. •{" "}
+            <a
+              href="https://jbatt.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary hover:underline"
+            >
+              jbatt.com
+            </a>
+          </p>
         </div>
       </footer>
     </div>
