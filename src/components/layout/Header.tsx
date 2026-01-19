@@ -1,11 +1,29 @@
-import { Rocket, User, LogIn } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Rocket, User, LogIn, LogOut, ChevronDown } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import BackgroundSelector from "@/components/settings/BackgroundSelector";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Header = () => {
-  // TODO: Replace with actual auth state
-  const isAuthenticated = false;
+  const { user, profile, signOut, loading } = useAuth();
+  const navigate = useNavigate();
+
+  const initials = profile?.display_name
+    ? profile.display_name.split(" ").map(n => n[0]).join("").toUpperCase()
+    : user?.email?.charAt(0).toUpperCase() || "?";
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/");
+  };
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/50 backdrop-blur-xl bg-background/80">
@@ -24,19 +42,19 @@ const Header = () => {
 
         <nav className="hidden md:flex items-center gap-6">
           <Link
-            to="/worlds"
+            to="/"
             className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
           >
             My Worlds
           </Link>
           <Link
-            to="/tools"
+            to="/"
             className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
           >
             Tools
           </Link>
           <Link
-            to="/docs"
+            to="/"
             className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
           >
             Docs
@@ -45,12 +63,39 @@ const Header = () => {
 
         <div className="flex items-center gap-2">
           <BackgroundSelector />
-          {isAuthenticated ? (
-            <Button variant="ghost" size="icon" className="rounded-full">
-              <User className="w-5 h-5" />
-            </Button>
+          {!loading && user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="gap-2 px-2">
+                  <Avatar className="w-8 h-8">
+                    <AvatarImage src={profile?.avatar_url || undefined} />
+                    <AvatarFallback className="text-xs">{initials}</AvatarFallback>
+                  </Avatar>
+                  <span className="hidden sm:inline text-sm">
+                    {profile?.display_name || user.email?.split("@")[0]}
+                  </span>
+                  <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem onClick={() => navigate("/profile")}>
+                  <User className="w-4 h-4 mr-2" />
+                  Profile
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleSignOut}>
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Sign Out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           ) : (
-            <Button variant="outline" size="sm" className="gap-2">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="gap-2"
+              onClick={() => navigate("/auth")}
+            >
               <LogIn className="w-4 h-4" />
               <span className="hidden sm:inline">Sign In</span>
             </Button>
