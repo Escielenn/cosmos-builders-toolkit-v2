@@ -22,6 +22,21 @@ import {
 } from "@/components/ui/tooltip";
 import { useToast } from "@/hooks/use-toast";
 import { useBackground } from "@/hooks/use-background";
+import SectionNavigation, { Section } from "@/components/tools/SectionNavigation";
+import ToolActionBar from "@/components/tools/ToolActionBar";
+
+// Section definitions for navigation
+const SECTIONS: Section[] = [
+  { id: "section-propulsion", title: "1. Define Propulsion" },
+  { id: "section-economic", title: "2. Economic" },
+  { id: "section-political", title: "3. Political" },
+  { id: "section-military", title: "4. Military" },
+  { id: "section-social", title: "5. Social" },
+  { id: "section-psychological", title: "6. Psychological" },
+  { id: "section-integration", title: "7. Integration" },
+  { id: "section-examples", title: "SF Examples" },
+  { id: "section-synthesis", title: "Final Synthesis" },
+];
 
 // Types for form state
 interface PropulsionSystem {
@@ -242,6 +257,7 @@ const SF_EXAMPLES = [
 ];
 
 const CollapsibleSection = ({
+  id,
   title,
   subtitle,
   levelNumber,
@@ -249,6 +265,7 @@ const CollapsibleSection = ({
   children,
   defaultOpen = false,
 }: {
+  id?: string;
   title: string;
   subtitle?: string;
   levelNumber?: number;
@@ -260,7 +277,7 @@ const CollapsibleSection = ({
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-      <GlassPanel className="overflow-hidden">
+      <GlassPanel id={id} className="overflow-hidden scroll-mt-24">
         <CollapsibleTrigger asChild>
           <button className="w-full p-4 md:p-6 flex items-center justify-between text-left hover:bg-primary/5 transition-colors">
             <div className="flex items-center gap-3">
@@ -516,6 +533,7 @@ const PropulsionConsequencesMap = () => {
         <div className="space-y-4">
           {/* Section 1: Define Propulsion System */}
           <CollapsibleSection
+            id="section-propulsion"
             title="Define Your Propulsion System"
             subtitle="What technology moves your ships?"
             levelNumber={1}
@@ -741,6 +759,7 @@ const PropulsionConsequencesMap = () => {
 
           {/* Domain 1: Economic Implications */}
           <CollapsibleSection
+            id="section-economic"
             title="Domain 1: Economic Implications"
             subtitle="Who can afford this travel? What's worth shipping?"
             levelNumber={2}
@@ -850,6 +869,7 @@ const PropulsionConsequencesMap = () => {
 
           {/* Domain 2: Political & Governance */}
           <CollapsibleSection
+            id="section-political"
             title="Domain 2: Political & Governance"
             subtitle="How does travel time affect control?"
             levelNumber={3}
@@ -945,6 +965,7 @@ const PropulsionConsequencesMap = () => {
 
           {/* Domain 3: Military & Conflict */}
           <CollapsibleSection
+            id="section-military"
             title="Domain 3: Military & Conflict"
             subtitle="Combat implications of your propulsion"
             levelNumber={4}
@@ -1075,6 +1096,7 @@ const PropulsionConsequencesMap = () => {
 
           {/* Domain 4: Social & Family Structures */}
           <CollapsibleSection
+            id="section-social"
             title="Domain 4: Social & Family Structures"
             subtitle="How does travel time affect human relationships?"
             levelNumber={5}
@@ -1155,6 +1177,7 @@ const PropulsionConsequencesMap = () => {
 
           {/* Domain 5: Psychological Concepts */}
           <CollapsibleSection
+            id="section-psychological"
             title="Domain 5: Psychological Concepts"
             subtitle="How does your propulsion change fundamental concepts?"
             levelNumber={6}
@@ -1212,6 +1235,7 @@ const PropulsionConsequencesMap = () => {
 
           {/* Integration & Story Potential */}
           <CollapsibleSection
+            id="section-integration"
             title="Integration & Story Potential"
             subtitle="Bringing it all together"
             levelNumber={7}
@@ -1306,6 +1330,7 @@ const PropulsionConsequencesMap = () => {
 
           {/* SF Examples */}
           <CollapsibleSection
+            id="section-examples"
             title="Examples from Master Worldbuilders"
             subtitle="Learn from published SF settings"
           >
@@ -1350,6 +1375,7 @@ const PropulsionConsequencesMap = () => {
 
           {/* Final Synthesis */}
           <CollapsibleSection
+            id="section-synthesis"
             title="Final Synthesis: The Propulsion Thesis"
             subtitle="Distill your worldbuilding into key insights"
           >
@@ -1389,17 +1415,17 @@ const PropulsionConsequencesMap = () => {
           </CollapsibleSection>
         </div>
 
-        {/* Footer Actions */}
-        <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-          <Button variant="outline" size="lg" onClick={handleSave}>
-            <Save className="w-4 h-4 mr-2" />
-            Save Draft
-          </Button>
-          <Button size="lg" onClick={handleExport}>
-            <Download className="w-4 h-4 mr-2" />
-            Export Worksheet
-          </Button>
-        </div>
+        {/* Bottom Action Bar */}
+        <ToolActionBar
+          onSave={handleSave}
+          onPrint={handlePrint}
+          onExport={handleExport}
+          exportLabel="Export Worksheet"
+          className="mt-8"
+        />
+
+        {/* Section Navigation */}
+        <SectionNavigation sections={SECTIONS} />
       </main>
 
       {/* Footer */}
