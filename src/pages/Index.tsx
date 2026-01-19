@@ -8,30 +8,11 @@ import {
   Shield,
 } from "lucide-react";
 import Header from "@/components/layout/Header";
-import WorldCard from "@/components/dashboard/WorldCard";
 import ToolCard from "@/components/dashboard/ToolCard";
 import CreateWorldButton from "@/components/dashboard/CreateWorldButton";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
-
-// Mock data for demonstration
-const mockWorlds = [
-  {
-    id: "1",
-    name: "The Kepler Expanse",
-    description:
-      "A hard SF setting featuring generation ships and realistic physics.",
-    toolsCompleted: 3,
-    lastEdited: "2 hours ago",
-  },
-  {
-    id: "2",
-    name: "Neon Frontier",
-    description: "Cyberpunk space opera with corporate megastructures.",
-    toolsCompleted: 1,
-    lastEdited: "Yesterday",
-  },
-];
+import { useBackground } from "@/hooks/use-background";
 
 const tools = [
   {
@@ -49,17 +30,17 @@ const tools = [
     description:
       "Design lived-in ships that feel like real places with cultural specificity and realistic systems.",
     icon: Rocket,
-    status: "available" as const,
+    status: "coming-soon" as const,
     week: 2,
   },
   {
-    id: "propulsion-systems",
-    title: "Propulsion Systems",
+    id: "propulsion-consequences-map",
+    title: "Propulsion Consequences Map",
     description:
-      "Calculate realistic drive systems with their consequences for your setting.",
+      "Trace how your propulsion system shapes economics, politics, social structures, and psychology.",
     icon: Atom,
-    status: "coming-soon" as const,
-    week: 2,
+    status: "available" as const,
+    week: 3,
   },
   {
     id: "species-creator",
@@ -68,7 +49,7 @@ const tools = [
       "Design alien species with consistent biology and evolutionary history.",
     icon: Users,
     status: "coming-soon" as const,
-    week: 3,
+    week: 4,
   },
   {
     id: "culture-designer",
@@ -77,7 +58,7 @@ const tools = [
       "Build societies with coherent values, rituals, and social structures.",
     icon: BookOpen,
     status: "coming-soon" as const,
-    week: 4,
+    week: 5,
   },
   {
     id: "technology-mapper",
@@ -85,13 +66,16 @@ const tools = [
     description: "Map technological capabilities and their societal impacts.",
     icon: Cpu,
     status: "coming-soon" as const,
-    week: 5,
+    week: 6,
   },
 ];
 
 const Index = () => {
+  // Initialize background hook to apply stored preference
+  useBackground();
+
   return (
-    <div className="min-h-screen bg-background starfield">
+    <div className="min-h-screen bg-background">
       <Header />
 
       <main className="container mx-auto px-4 pt-24 pb-16">
@@ -121,15 +105,14 @@ const Index = () => {
         <section className="mb-16">
           <div className="flex items-center justify-between mb-6">
             <h2 className="font-display text-2xl font-semibold">My Worlds</h2>
-            <Button variant="ghost" size="sm">
-              View All
-            </Button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {mockWorlds.map((world) => (
-              <WorldCard key={world.id} {...world} />
-            ))}
-            <CreateWorldButton onClick={() => console.log("Create world")} />
+            <CreateWorldButton />
+            <GlassPanel className="p-5 h-full min-h-[200px] flex flex-col items-center justify-center border-dashed border border-muted">
+              <p className="text-sm text-muted-foreground text-center">
+                Your worlds will appear here once you create them.
+              </p>
+            </GlassPanel>
           </div>
         </section>
 

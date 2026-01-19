@@ -1,6 +1,7 @@
 import { Rocket, User, LogIn } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import BackgroundSelector from "@/components/settings/BackgroundSelector";
 
 const Header = () => {
   // TODO: Replace with actual auth state
@@ -42,7 +43,8 @@ const Header = () => {
           </Link>
         </nav>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
+          <BackgroundSelector />
           {isAuthenticated ? (
             <Button variant="ghost" size="icon" className="rounded-full">
               <User className="w-5 h-5" />
