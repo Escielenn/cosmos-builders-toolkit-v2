@@ -521,7 +521,7 @@ const EnvironmentalChainReaction = () => {
 
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
-              <Badge className="mb-2">Week 1 Tool</Badge>
+              <Badge className="mb-2">Tool 1</Badge>
               <h1 className="font-display text-3xl md:text-4xl font-bold">
                 Environmental Chain Reaction
               </h1>

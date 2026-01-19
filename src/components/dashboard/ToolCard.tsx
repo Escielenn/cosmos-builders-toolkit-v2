@@ -45,7 +45,7 @@ const ToolCard = ({
         </div>
         {week && (
           <Badge variant="secondary" className="text-xs">
-            Week {week}
+            Tool {week}
           </Badge>
         )}
       </div>
