@@ -15,9 +15,9 @@ const Header = () => {
           </div>
           <div className="flex flex-col">
             <span className="font-display font-semibold text-lg leading-tight">
-              SF Worldbuilding
+              Cosmos Builder's
             </span>
-            <span className="text-xs text-muted-foreground">Toolkit</span>
+            <span className="text-xs text-muted-foreground">Science Fiction Worldbuilding Tools</span>
           </div>
         </Link>
 
