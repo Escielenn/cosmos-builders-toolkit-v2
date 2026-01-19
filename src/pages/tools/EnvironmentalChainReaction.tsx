@@ -21,6 +21,21 @@ import {
 } from "@/components/ui/tooltip";
 import { useToast } from "@/hooks/use-toast";
 import { useBackground } from "@/hooks/use-background";
+import SectionNavigation, { Section } from "@/components/tools/SectionNavigation";
+import ToolActionBar from "@/components/tools/ToolActionBar";
+
+// Section definitions for navigation
+const SECTIONS: Section[] = [
+  { id: "section-examples", title: "SF Examples" },
+  { id: "section-parameter", title: "Planetary Parameter" },
+  { id: "section-level1", title: "1. Physical" },
+  { id: "section-level2", title: "2. Biological" },
+  { id: "section-level3", title: "3. Psychological" },
+  { id: "section-level4", title: "4. Cultural" },
+  { id: "section-level5", title: "5. Mythological" },
+  { id: "section-consistency", title: "Consistency Check" },
+  { id: "section-synthesis", title: "Synthesis" },
+];
 
 // SF Examples for cascade demonstration
 const SF_CASCADE_EXAMPLES = [
@@ -443,6 +458,7 @@ const QuestionSection = ({
 );
 
 const CollapsibleSection = ({
+  id,
   title,
   subtitle,
   levelNumber,
@@ -450,6 +466,7 @@ const CollapsibleSection = ({
   children,
   defaultOpen = false,
 }: {
+  id?: string;
   title: string;
   subtitle?: string;
   levelNumber?: number;
@@ -461,7 +478,7 @@ const CollapsibleSection = ({
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-      <GlassPanel className="overflow-hidden">
+      <GlassPanel id={id} className="overflow-hidden scroll-mt-24">
         <CollapsibleTrigger asChild>
           <button className="w-full p-4 md:p-6 flex items-center justify-between text-left hover:bg-primary/5 transition-colors">
             <div className="flex items-center gap-3">
@@ -638,6 +655,7 @@ const EnvironmentalChainReaction = () => {
 
         {/* SF Examples Section */}
         <CollapsibleSection
+          id="section-examples"
           title="SF Examples: The Cascade in Action"
           subtitle="See how master worldbuilders traced environmental parameters to their consequences"
         >
@@ -669,6 +687,7 @@ const EnvironmentalChainReaction = () => {
         <div className="space-y-4">
           {/* Step 1: Planetary Parameter */}
           <CollapsibleSection
+            id="section-parameter"
             title="Select Your Planetary Parameter"
             subtitle="What single environmental factor most defines your world?"
             defaultOpen={true}
@@ -750,6 +769,7 @@ const EnvironmentalChainReaction = () => {
 
           {/* Level 1: Physical Implications */}
           <CollapsibleSection
+            id="section-level1"
             title="Physical Implications"
             subtitle="What does this environmental factor directly affect?"
             levelNumber={1}
@@ -769,6 +789,7 @@ const EnvironmentalChainReaction = () => {
 
           {/* Level 2: Biological Adaptations */}
           <CollapsibleSection
+            id="section-level2"
             title="Biological Adaptations"
             subtitle="How would life evolve to survive/thrive here?"
             levelNumber={2}
@@ -789,6 +810,7 @@ const EnvironmentalChainReaction = () => {
 
           {/* Level 3: Psychological Consequences */}
           <CollapsibleSection
+            id="section-level3"
             title="Psychological Consequences"
             subtitle="How do physical/biological factors shape perception, emotion, and thought?"
             levelNumber={3}
@@ -809,6 +831,7 @@ const EnvironmentalChainReaction = () => {
 
           {/* Level 4: Cultural Expressions */}
           <CollapsibleSection
+            id="section-level4"
             title="Cultural Expressions"
             subtitle="How do psychology and biology create social systems?"
             levelNumber={4}
@@ -829,6 +852,7 @@ const EnvironmentalChainReaction = () => {
 
           {/* Level 5: Mythological Framework */}
           <CollapsibleSection
+            id="section-level5"
             title="Mythological Framework"
             subtitle="How do all previous levels generate sacred beliefs and stories?"
             levelNumber={5}
@@ -849,6 +873,7 @@ const EnvironmentalChainReaction = () => {
 
           {/* Cascade Consistency Check */}
           <CollapsibleSection
+            id="section-consistency"
             title="Cascade Consistency Check"
             subtitle="Review your five levels and validate internal consistency"
           >
@@ -912,6 +937,7 @@ const EnvironmentalChainReaction = () => {
 
           {/* Synthesis */}
           <CollapsibleSection
+            id="section-synthesis"
             title="Synthesis"
             subtitle="Capture your key discoveries"
           >
@@ -964,6 +990,14 @@ const EnvironmentalChainReaction = () => {
           </CollapsibleSection>
         </div>
 
+        {/* Bottom Action Bar */}
+        <ToolActionBar
+          onSave={handleSave}
+          onPrint={handlePrint}
+          onExport={handleExport}
+          className="mt-8"
+        />
+
         {/* Final Reminder */}
         <GlassPanel className="p-6 mt-8 text-center">
           <p className="text-muted-foreground italic">
@@ -972,6 +1006,9 @@ const EnvironmentalChainReaction = () => {
             your core environmental choice.
           </p>
         </GlassPanel>
+
+        {/* Section Navigation */}
+        <SectionNavigation sections={SECTIONS} />
       </main>
 
       {/* Footer */}

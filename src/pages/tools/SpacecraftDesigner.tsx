@@ -22,6 +22,20 @@ import {
 } from "@/components/ui/tooltip";
 import { useToast } from "@/hooks/use-toast";
 import { useBackground } from "@/hooks/use-background";
+import SectionNavigation, { Section } from "@/components/tools/SectionNavigation";
+import ToolActionBar from "@/components/tools/ToolActionBar";
+
+// Section definitions for navigation
+const SECTIONS: Section[] = [
+  { id: "section-identity", title: "1. Identity & History" },
+  { id: "section-propulsion", title: "2. Propulsion" },
+  { id: "section-lifesupport", title: "3. Life Support" },
+  { id: "section-living", title: "4. Living Spaces" },
+  { id: "section-cultural", title: "5. Cultural Elements" },
+  { id: "section-character", title: "6. Ship Character" },
+  { id: "section-examples", title: "SF Examples" },
+  { id: "section-synthesis", title: "Synthesis" },
+];
 
 // Types for form state
 interface ShipIdentity {
@@ -279,6 +293,7 @@ const EXTERNAL_RESOURCES = [
 ];
 
 const CollapsibleSection = ({
+  id,
   title,
   subtitle,
   levelNumber,
@@ -286,6 +301,7 @@ const CollapsibleSection = ({
   children,
   defaultOpen = false,
 }: {
+  id?: string;
   title: string;
   subtitle?: string;
   levelNumber?: number;
@@ -297,7 +313,7 @@ const CollapsibleSection = ({
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-      <GlassPanel className="overflow-hidden">
+      <GlassPanel id={id} className="overflow-hidden scroll-mt-24">
         <CollapsibleTrigger asChild>
           <button className="w-full p-4 md:p-6 flex items-center justify-between text-left hover:bg-primary/5 transition-colors">
             <div className="flex items-center gap-3">
@@ -563,6 +579,7 @@ const SpacecraftDesigner = () => {
         <div className="space-y-4">
           {/* Section 1: Ship Identity */}
           <CollapsibleSection
+            id="section-identity"
             title="Ship Identity & History"
             subtitle="Who is this ship? Where has it been?"
             levelNumber={1}
@@ -703,6 +720,7 @@ const SpacecraftDesigner = () => {
 
           {/* Section 2: Propulsion Integration */}
           <CollapsibleSection
+            id="section-propulsion"
             title="Propulsion & Architecture"
             subtitle="How does the drive system shape daily life?"
             levelNumber={2}
@@ -798,6 +816,7 @@ const SpacecraftDesigner = () => {
 
           {/* Section 3: Life Support */}
           <CollapsibleSection
+            id="section-lifesupport"
             title="Life Support Systems"
             subtitle="Keeping crew alive—and what happens when things fail"
             levelNumber={3}
@@ -938,7 +957,9 @@ const SpacecraftDesigner = () => {
           </CollapsibleSection>
 
           {/* Section 4: Living Spaces */}
+          {/* Section 4: Living Spaces */}
           <CollapsibleSection
+            id="section-living"
             title="Living Spaces & Sensory Experience"
             subtitle="What does it feel like to live aboard?"
             levelNumber={4}
@@ -1072,6 +1093,7 @@ const SpacecraftDesigner = () => {
 
           {/* Section 5: Cultural Elements */}
           <CollapsibleSection
+            id="section-cultural"
             title="Cultural Design Elements"
             subtitle="How does culture show up in the ship's details?"
             levelNumber={5}
@@ -1194,6 +1216,7 @@ const SpacecraftDesigner = () => {
 
           {/* Section 6: Ship as Character */}
           <CollapsibleSection
+            id="section-character"
             title="Ship as Character"
             subtitle="Developing the vessel's personality and role in story"
             levelNumber={6}
@@ -1291,6 +1314,7 @@ const SpacecraftDesigner = () => {
 
           {/* SF Examples */}
           <CollapsibleSection
+            id="section-examples"
             title="Examples from Master Worldbuilders"
             subtitle="Learn from iconic SF ships"
           >
@@ -1320,6 +1344,7 @@ const SpacecraftDesigner = () => {
 
           {/* Final Synthesis */}
           <CollapsibleSection
+            id="section-synthesis"
             title="Synthesis: Bringing It Together"
             subtitle="The essential details that make your ship live"
           >
@@ -1367,17 +1392,17 @@ const SpacecraftDesigner = () => {
           </CollapsibleSection>
         </div>
 
-        {/* Footer Actions */}
-        <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-          <Button variant="outline" size="lg" onClick={handleSave}>
-            <Save className="w-4 h-4 mr-2" />
-            Save Draft
-          </Button>
-          <Button size="lg" onClick={handleExport}>
-            <Download className="w-4 h-4 mr-2" />
-            Export Spacecraft
-          </Button>
-        </div>
+        {/* Bottom Action Bar */}
+        <ToolActionBar
+          onSave={handleSave}
+          onPrint={handlePrint}
+          onExport={handleExport}
+          exportLabel="Export Spacecraft"
+          className="mt-8"
+        />
+
+        {/* Section Navigation */}
+        <SectionNavigation sections={SECTIONS} />
       </main>
 
       {/* Footer */}
