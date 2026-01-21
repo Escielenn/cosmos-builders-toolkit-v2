@@ -5,6 +5,9 @@ import Header from "@/components/layout/Header";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,10 +24,18 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { useWorld } from "@/hooks/use-world";
 import { useWorksheets } from "@/hooks/use-worksheets";
 import { useWorlds } from "@/hooks/use-worlds";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const TOOLS = [
   {
@@ -65,9 +76,20 @@ const WorldDashboard = () => {
   const navigate = useNavigate();
   const { data: world, isLoading: worldLoading, error: worldError } = useWorld(worldId);
   const { worksheets, isLoading: worksheetsLoading, deleteWorksheet } = useWorksheets(worldId);
-  const { deleteWorld } = useWorlds();
+  const { deleteWorld, updateWorld } = useWorlds();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [worksheetToDelete, setWorksheetToDelete] = useState<string | null>(null);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [editName, setEditName] = useState("");
+  const [editDescription, setEditDescription] = useState("");
+
+  // Sync edit form with world data
+  useEffect(() => {
+    if (world) {
+      setEditName(world.name);
+      setEditDescription(world.description || "");
+    }
+  }, [world]);
 
   const handleDeleteWorld = async () => {
     if (!worldId) return;
@@ -79,6 +101,16 @@ const WorldDashboard = () => {
     if (!worksheetToDelete) return;
     await deleteWorksheet.mutateAsync(worksheetToDelete);
     setWorksheetToDelete(null);
+  };
+
+  const handleEditWorld = async () => {
+    if (!worldId || !editName.trim()) return;
+    await updateWorld.mutateAsync({
+      worldId,
+      name: editName.trim(),
+      description: editDescription.trim() || undefined,
+    });
+    setEditDialogOpen(false);
   };
 
   if (worldLoading) {
@@ -158,7 +190,7 @@ const WorldDashboard = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setEditDialogOpen(true)}>
                   <Edit className="w-4 h-4 mr-2" />
                   Edit World
                 </DropdownMenuItem>
@@ -300,6 +332,50 @@ const WorldDashboard = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Edit World Dialog */}
+      <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit World</DialogTitle>
+            <DialogDescription>
+              Update the details for your world.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="edit-name">World Name</Label>
+              <Input
+                id="edit-name"
+                value={editName}
+                onChange={(e) => setEditName(e.target.value)}
+                placeholder="Enter world name"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-description">Description (optional)</Label>
+              <Textarea
+                id="edit-description"
+                value={editDescription}
+                onChange={(e) => setEditDescription(e.target.value)}
+                placeholder="Describe your world..."
+                rows={3}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              onClick={handleEditWorld}
+              disabled={!editName.trim() || updateWorld.isPending}
+            >
+              {updateWorld.isPending ? "Saving..." : "Save Changes"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

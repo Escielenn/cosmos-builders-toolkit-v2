@@ -1,0 +1,12 @@
+{
+	"folders": [
+		{
+			"path": "../../social-media-dashboard"
+		},
+		{
+			"name": "cosmos-builders-toolkitv1",
+			"path": "."
+		}
+	],
+	"settings": {}
+}

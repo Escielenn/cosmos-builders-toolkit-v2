@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { ArrowLeft, Download, Save, ChevronDown, ChevronUp, Info, Printer, ExternalLink } from "lucide-react";
+import { Link, useSearchParams } from "react-router-dom";
+import { ArrowLeft, Download, Save, ChevronDown, ChevronUp, Info, Printer, ExternalLink, Cloud, CloudOff } from "lucide-react";
 import Header from "@/components/layout/Header";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
@@ -21,8 +21,11 @@ import {
 } from "@/components/ui/tooltip";
 import { useToast } from "@/hooks/use-toast";
 import { useBackground } from "@/hooks/use-background";
+import { useWorksheets, useWorksheet } from "@/hooks/use-worksheets";
+import { useAuth } from "@/contexts/AuthContext";
 import SectionNavigation, { Section } from "@/components/tools/SectionNavigation";
 import ToolActionBar from "@/components/tools/ToolActionBar";
+import { Json } from "@/integrations/supabase/types";
 
 // Section definitions for navigation
 const SECTIONS: Section[] = [
@@ -516,26 +519,58 @@ const CollapsibleSection = ({
   );
 };
 
+const TOOL_TYPE = "environmental-chain-reaction";
+
 const EnvironmentalChainReaction = () => {
   const [formState, setFormState] = useState<FormState>(initialFormState);
+  const [currentWorksheetId, setCurrentWorksheetId] = useState<string | null>(null);
   const { toast } = useToast();
+  const { user } = useAuth();
   useBackground();
 
-  // Load saved state on mount
+  // Get URL params for worldId and worksheetId
+  const [searchParams, setSearchParams] = useSearchParams();
+  const worldId = searchParams.get("worldId");
+  const worksheetId = searchParams.get("worksheetId");
+
+  // Supabase hooks
+  const { createWorksheet, updateWorksheet } = useWorksheets(worldId || undefined);
+  const { data: existingWorksheet, isLoading: worksheetLoading } = useWorksheet(worksheetId || undefined);
+
+  // Load existing worksheet from Supabase if worksheetId is provided
   useEffect(() => {
-    const saved = localStorage.getItem("ecr-worksheet");
-    if (saved) {
+    if (existingWorksheet && existingWorksheet.data) {
       try {
-        setFormState(JSON.parse(saved));
+        const data = existingWorksheet.data as unknown as FormState;
+        setFormState(data);
+        setCurrentWorksheetId(existingWorksheet.id);
         toast({
-          title: "Draft Loaded",
-          description: "Your previous work has been restored.",
+          title: "Worksheet Loaded",
+          description: "Your saved work has been restored from the cloud.",
         });
       } catch {
         // Ignore parse errors
       }
     }
-  }, []);
+  }, [existingWorksheet]);
+
+  // Fallback to localStorage if no worldId (standalone mode)
+  useEffect(() => {
+    if (!worldId && !worksheetId) {
+      const saved = localStorage.getItem("ecr-worksheet");
+      if (saved) {
+        try {
+          setFormState(JSON.parse(saved));
+          toast({
+            title: "Draft Loaded",
+            description: "Your previous work has been restored.",
+          });
+        } catch {
+          // Ignore parse errors
+        }
+      }
+    }
+  }, [worldId, worksheetId]);
 
   const updateParameter = (field: keyof PlanetaryParameter, value: string) => {
     setFormState((prev) => ({
@@ -564,12 +599,46 @@ const EnvironmentalChainReaction = () => {
     }));
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
+    // Always save to localStorage as backup
     localStorage.setItem("ecr-worksheet", JSON.stringify(formState));
-    toast({
-      title: "Draft Saved",
-      description: "Your work has been saved locally.",
-    });
+
+    // If we have a worldId and user is authenticated, save to Supabase
+    if (worldId && user) {
+      const worksheetData = formState as unknown as Json;
+      const title = formState.parameter.specificValue
+        ? `ECR: ${formState.parameter.specificValue}`
+        : "Environmental Chain Reaction";
+
+      try {
+        if (currentWorksheetId || worksheetId) {
+          // Update existing worksheet
+          await updateWorksheet.mutateAsync({
+            worksheetId: currentWorksheetId || worksheetId!,
+            title,
+            data: worksheetData,
+          });
+        } else {
+          // Create new worksheet
+          const result = await createWorksheet.mutateAsync({
+            worldId,
+            toolType: TOOL_TYPE,
+            title,
+            data: worksheetData,
+          });
+          setCurrentWorksheetId(result.id);
+          // Update URL with new worksheetId
+          setSearchParams({ worldId, worksheetId: result.id });
+        }
+      } catch {
+        // Error already handled by the mutation
+      }
+    } else {
+      toast({
+        title: "Draft Saved",
+        description: "Your work has been saved locally.",
+      });
+    }
   };
 
   const handleExport = () => {
@@ -599,11 +668,11 @@ const EnvironmentalChainReaction = () => {
         {/* Back Link & Title */}
         <div className="mb-8">
           <Link
-            to="/"
+            to={worldId ? `/world/${worldId}` : "/"}
             className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back to Dashboard
+            {worldId ? "Back to World" : "Back to Dashboard"}
           </Link>
 
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -618,8 +687,19 @@ const EnvironmentalChainReaction = () => {
               </p>
             </div>
 
-            <div className="flex gap-2 no-print">
-              <Button variant="outline" size="sm" onClick={handleSave}>
+            <div className="flex items-center gap-2 no-print">
+              {worldId && user ? (
+                <span className="text-xs text-muted-foreground flex items-center gap-1">
+                  <Cloud className="w-3 h-3 text-green-500" />
+                  Cloud sync enabled
+                </span>
+              ) : (
+                <span className="text-xs text-muted-foreground flex items-center gap-1">
+                  <CloudOff className="w-3 h-3" />
+                  Local only
+                </span>
+              )}
+              <Button variant="outline" size="sm" onClick={handleSave} disabled={worksheetLoading}>
                 <Save className="w-4 h-4 mr-2" />
                 Save Draft
               </Button>

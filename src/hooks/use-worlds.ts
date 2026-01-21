@@ -17,6 +17,12 @@ interface CreateWorldInput {
   description?: string;
 }
 
+interface UpdateWorldInput {
+  worldId: string;
+  name?: string;
+  description?: string;
+}
+
 export const useWorlds = () => {
   const { user } = useAuth();
   const { toast } = useToast();
@@ -71,6 +77,40 @@ export const useWorlds = () => {
     },
   });
 
+  const updateWorld = useMutation({
+    mutationFn: async (input: UpdateWorldInput) => {
+      if (!user) throw new Error("Not authenticated");
+
+      const updateData: { name?: string; description?: string } = {};
+      if (input.name !== undefined) updateData.name = input.name;
+      if (input.description !== undefined) updateData.description = input.description;
+
+      const { data, error } = await supabase
+        .from("worlds")
+        .update(updateData)
+        .eq("id", input.worldId)
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data as World;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["worlds", user?.id] });
+      toast({
+        title: "World updated",
+        description: "Your changes have been saved.",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Failed to update world",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
   const deleteWorld = useMutation({
     mutationFn: async (worldId: string) => {
       const { error } = await supabase
@@ -101,6 +141,7 @@ export const useWorlds = () => {
     isLoading: worldsQuery.isLoading,
     error: worldsQuery.error,
     createWorld,
+    updateWorld,
     deleteWorld,
   };
 };
