@@ -213,6 +213,16 @@
     pointer-events: none;
   }
 
+  /* When custom background is active, make page containers transparent */
+  .custom-background .bg-background {
+    background-color: transparent !important;
+  }
+
+  /* Hide starfield effect when custom background is active */
+  .custom-background .starfield::before {
+    display: none;
+  }
+
   /* Starfield preview for selector */
   .starfield-preview {
     background: hsl(var(--background));

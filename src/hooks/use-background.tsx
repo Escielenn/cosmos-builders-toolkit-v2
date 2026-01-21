@@ -45,8 +45,24 @@ const BACKGROUND_OPTIONS = [
 
 const STORAGE_KEY = "cosmos-builder-background";
 
+// Preload images for faster switching
+const preloadImages = () => {
+  BACKGROUND_OPTIONS.forEach((option) => {
+    if (option.url) {
+      const img = new Image();
+      img.src = option.url;
+    }
+  });
+};
+
 export const useBackground = () => {
   const [backgroundId, setBackgroundId] = useState<string>("default");
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Preload all background images on mount
+  useEffect(() => {
+    preloadImages();
+  }, []);
 
   useEffect(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
@@ -71,14 +87,35 @@ export const useBackground = () => {
   }, [backgroundId]);
 
   const setBackground = (id: string) => {
-    setBackgroundId(id);
-    localStorage.setItem(STORAGE_KEY, id);
+    const selected = BACKGROUND_OPTIONS.find((bg) => bg.id === id);
+
+    // If selecting an image, show loading state briefly
+    if (selected?.url) {
+      setIsLoading(true);
+      const img = new Image();
+      img.onload = () => {
+        setBackgroundId(id);
+        localStorage.setItem(STORAGE_KEY, id);
+        setIsLoading(false);
+      };
+      img.onerror = () => {
+        // Still set the background even if preload fails
+        setBackgroundId(id);
+        localStorage.setItem(STORAGE_KEY, id);
+        setIsLoading(false);
+      };
+      img.src = selected.url;
+    } else {
+      setBackgroundId(id);
+      localStorage.setItem(STORAGE_KEY, id);
+    }
   };
 
   return {
     backgroundId,
     setBackground,
     options: BACKGROUND_OPTIONS,
+    isLoading,
   };
 };
 
