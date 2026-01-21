@@ -8,6 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import {
   Collapsible,
@@ -22,9 +24,12 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { useBackground } from "@/hooks/use-background";
 import { useWorksheets, useWorksheet } from "@/hooks/use-worksheets";
+import { useWorlds } from "@/hooks/use-worlds";
 import { useAuth } from "@/contexts/AuthContext";
+import WorldSelectDialog, { SaveSelection } from "@/components/tools/WorldSelectDialog";
 import SectionNavigation, { Section } from "@/components/tools/SectionNavigation";
 import ToolActionBar from "@/components/tools/ToolActionBar";
+import SelectedParametersSidebar from "@/components/tools/SelectedParametersSidebar";
 import { Json } from "@/integrations/supabase/types";
 
 // Section definitions for navigation
@@ -84,6 +89,9 @@ const SF_CASCADE_EXAMPLES = [
 interface PlanetaryParameter {
   type: string;
   specificValue: string;
+  mode: "single" | "multiple";
+  types?: string[];
+  specificValues?: Record<string, string>;
 }
 
 interface CascadeLevel {
@@ -110,7 +118,7 @@ interface FormState {
 }
 
 const initialFormState: FormState = {
-  parameter: { type: "", specificValue: "" },
+  parameter: { type: "", specificValue: "", mode: "single", types: [], specificValues: {} },
   level1: { responses: {} },
   level2: { responses: {} },
   level3: { responses: {} },
@@ -524,8 +532,11 @@ const TOOL_TYPE = "environmental-chain-reaction";
 const EnvironmentalChainReaction = () => {
   const [formState, setFormState] = useState<FormState>(initialFormState);
   const [currentWorksheetId, setCurrentWorksheetId] = useState<string | null>(null);
+  const [showWorldSelectDialog, setShowWorldSelectDialog] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const { toast } = useToast();
   const { user } = useAuth();
+  const { createWorld } = useWorlds();
   useBackground();
 
   // Get URL params for worldId and worksheetId
@@ -599,45 +610,178 @@ const EnvironmentalChainReaction = () => {
     }));
   };
 
+  const toggleParameterMode = (isMultiple: boolean) => {
+    setFormState((prev) => ({
+      ...prev,
+      parameter: {
+        ...prev.parameter,
+        mode: isMultiple ? "multiple" : "single",
+      },
+    }));
+  };
+
+  const toggleMultipleParameter = (paramType: string, checked: boolean) => {
+    setFormState((prev) => {
+      const currentTypes = prev.parameter.types || [];
+      const newTypes = checked
+        ? [...currentTypes, paramType]
+        : currentTypes.filter((t) => t !== paramType);
+
+      // Also remove the specific value if unchecking
+      const newSpecificValues = { ...prev.parameter.specificValues };
+      if (!checked) {
+        delete newSpecificValues[paramType];
+      }
+
+      return {
+        ...prev,
+        parameter: {
+          ...prev.parameter,
+          types: newTypes,
+          specificValues: newSpecificValues,
+        },
+      };
+    });
+  };
+
+  const updateMultipleSpecificValue = (paramType: string, value: string) => {
+    setFormState((prev) => ({
+      ...prev,
+      parameter: {
+        ...prev.parameter,
+        specificValues: {
+          ...prev.parameter.specificValues,
+          [paramType]: value,
+        },
+      },
+    }));
+  };
+
+  // Helper to get selected parameters for sidebar
+  const getSelectedParametersForSidebar = () => {
+    const mode = formState.parameter.mode || "single";
+    const selectedParams: Array<{
+      typeId: string;
+      categoryLabel: string;
+      optionLabel: string;
+      optionDescription: string;
+      specificValue: string;
+    }> = [];
+
+    if (mode === "single" && formState.parameter.type) {
+      const [categoryId, optionValue] = formState.parameter.type.split("-");
+      const category = PLANETARY_PARAMETERS.find((p) => p.id === categoryId);
+      const option = category?.options.find((o) => o.value === optionValue);
+
+      if (category) {
+        selectedParams.push({
+          typeId: formState.parameter.type,
+          categoryLabel: category.label,
+          optionLabel: option?.label || category.label,
+          optionDescription: option?.description || "",
+          specificValue: formState.parameter.specificValue,
+        });
+      }
+    } else if (mode === "multiple" && formState.parameter.types) {
+      for (const typeId of formState.parameter.types) {
+        const [categoryId, optionValue] = typeId.split("-");
+        const category = PLANETARY_PARAMETERS.find((p) => p.id === categoryId);
+        const option = category?.options.find((o) => o.value === optionValue);
+
+        if (category) {
+          selectedParams.push({
+            typeId,
+            categoryLabel: category.label,
+            optionLabel: option?.label || category.label,
+            optionDescription: option?.description || "",
+            specificValue: formState.parameter.specificValues?.[typeId] || "",
+          });
+        }
+      }
+    }
+
+    return selectedParams;
+  };
+
+  const saveToSupabase = async (targetWorldId: string) => {
+    const worksheetData = formState as unknown as Json;
+    const title = formState.parameter.specificValue
+      ? `ECR: ${formState.parameter.specificValue}`
+      : "Environmental Chain Reaction";
+
+    if (currentWorksheetId || worksheetId) {
+      // Update existing worksheet
+      await updateWorksheet.mutateAsync({
+        worksheetId: currentWorksheetId || worksheetId!,
+        title,
+        data: worksheetData,
+      });
+    } else {
+      // Create new worksheet
+      const result = await createWorksheet.mutateAsync({
+        worldId: targetWorldId,
+        toolType: TOOL_TYPE,
+        title,
+        data: worksheetData,
+      });
+      setCurrentWorksheetId(result.id);
+      // Update URL with new worksheetId
+      setSearchParams({ worldId: targetWorldId, worksheetId: result.id });
+    }
+  };
+
   const handleSave = async () => {
     // Always save to localStorage as backup
     localStorage.setItem("ecr-worksheet", JSON.stringify(formState));
 
-    // If we have a worldId and user is authenticated, save to Supabase
+    // If we have a worldId and user is authenticated, save directly to Supabase
     if (worldId && user) {
-      const worksheetData = formState as unknown as Json;
-      const title = formState.parameter.specificValue
-        ? `ECR: ${formState.parameter.specificValue}`
-        : "Environmental Chain Reaction";
-
       try {
-        if (currentWorksheetId || worksheetId) {
-          // Update existing worksheet
-          await updateWorksheet.mutateAsync({
-            worksheetId: currentWorksheetId || worksheetId!,
-            title,
-            data: worksheetData,
-          });
-        } else {
-          // Create new worksheet
-          const result = await createWorksheet.mutateAsync({
-            worldId,
-            toolType: TOOL_TYPE,
-            title,
-            data: worksheetData,
-          });
-          setCurrentWorksheetId(result.id);
-          // Update URL with new worksheetId
-          setSearchParams({ worldId, worksheetId: result.id });
-        }
+        await saveToSupabase(worldId);
       } catch {
         // Error already handled by the mutation
       }
+    } else if (user) {
+      // User is logged in but no worldId - show selection dialog
+      setShowWorldSelectDialog(true);
     } else {
       toast({
         title: "Draft Saved",
         description: "Your work has been saved locally.",
       });
+    }
+  };
+
+  const handleWorldSelection = async (selection: SaveSelection) => {
+    setIsSaving(true);
+    try {
+      if (selection.type === "local") {
+        toast({
+          title: "Draft Saved",
+          description: "Your work has been saved locally.",
+        });
+      } else if (selection.type === "existing") {
+        await saveToSupabase(selection.worldId);
+        toast({
+          title: "Saved to Cloud",
+          description: `Worksheet saved to "${selection.worldName}".`,
+        });
+      } else if (selection.type === "new") {
+        const newWorld = await createWorld.mutateAsync({
+          name: selection.worldName,
+          description: selection.worldDescription,
+        });
+        await saveToSupabase(newWorld.id);
+        toast({
+          title: "World Created & Saved",
+          description: `Worksheet saved to "${newWorld.name}".`,
+        });
+      }
+      setShowWorldSelectDialog(false);
+    } catch {
+      // Errors handled by mutations
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -763,88 +907,225 @@ const EnvironmentalChainReaction = () => {
           </div>
         </CollapsibleSection>
 
-        {/* Form Sections */}
-        <div className="space-y-4">
+        {/* Form Sections with Sidebar */}
+        <div className="flex gap-6">
+          {/* Main Content */}
+          <div className="flex-1 space-y-4">
           {/* Step 1: Planetary Parameter */}
           <CollapsibleSection
             id="section-parameter"
             title="Select Your Planetary Parameter"
-            subtitle="What single environmental factor most defines your world?"
+            subtitle={
+              (formState.parameter.mode || "single") === "single"
+                ? "What single environmental factor most defines your world?"
+                : "Select multiple environmental factors that define your world"
+            }
             defaultOpen={true}
           >
-            <RadioGroup
-              value={formState.parameter.type}
-              onValueChange={(value) => updateParameter("type", value)}
-              className="space-y-4"
-            >
-              {PLANETARY_PARAMETERS.map((param) => (
-                <div key={param.id} className="space-y-3">
-                  <div className="font-medium text-sm text-primary">
-                    {param.label}
-                  </div>
-                  {param.options.length > 0 ? (
-                    <div className="grid gap-2 pl-4">
-                      {param.options.map((option) => (
-                        <div
-                          key={`${param.id}-${option.value}`}
-                          className="flex items-start gap-3"
-                        >
-                          <RadioGroupItem
-                            value={`${param.id}-${option.value}`}
-                            id={`${param.id}-${option.value}`}
-                            className="mt-1"
-                          />
-                          <Label
-                            htmlFor={`${param.id}-${option.value}`}
-                            className="cursor-pointer"
-                          >
-                            <span className="font-medium">{option.label}</span>
-                            <span className="text-muted-foreground ml-2">
-                              — {option.description}
-                            </span>
-                          </Label>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="pl-4">
-                      <div className="flex items-start gap-3">
-                        <RadioGroupItem
-                          value={param.id}
-                          id={param.id}
-                          className="mt-1"
-                        />
-                        <Label htmlFor={param.id} className="cursor-pointer">
-                          <span className="font-medium">
-                            Define your own unique factor
-                          </span>
-                        </Label>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </RadioGroup>
-
-            <div className="mt-6">
-              <Label htmlFor="specificValue" className="text-sm font-medium">
-                Specific Value
+            {/* Mode Toggle */}
+            <div className="flex items-center gap-4 mb-6 p-4 bg-primary/5 rounded-lg border border-primary/20">
+              <Label htmlFor="mode-toggle" className="text-sm font-medium">
+                Selection Mode:
               </Label>
-              <Input
-                id="specificValue"
-                value={formState.parameter.specificValue}
-                onChange={(e) =>
-                  updateParameter("specificValue", e.target.value)
-                }
-                placeholder={
-                  PLANETARY_PARAMETERS.find(
-                    (p) =>
-                      formState.parameter.type.startsWith(p.id)
-                  )?.placeholder || "Enter the specific value..."
-                }
-                className="mt-2 bg-background/50"
-              />
+              <div className="flex items-center gap-2">
+                <span
+                  className={`text-sm ${
+                    (formState.parameter.mode || "single") === "single"
+                      ? "text-foreground font-medium"
+                      : "text-muted-foreground"
+                  }`}
+                >
+                  Single Factor
+                </span>
+                <Switch
+                  id="mode-toggle"
+                  checked={(formState.parameter.mode || "single") === "multiple"}
+                  onCheckedChange={toggleParameterMode}
+                />
+                <span
+                  className={`text-sm ${
+                    formState.parameter.mode === "multiple"
+                      ? "text-foreground font-medium"
+                      : "text-muted-foreground"
+                  }`}
+                >
+                  Multiple Factors
+                </span>
+              </div>
             </div>
+
+            {/* Single Mode - RadioGroup */}
+            {(formState.parameter.mode || "single") === "single" ? (
+              <>
+                <RadioGroup
+                  value={formState.parameter.type}
+                  onValueChange={(value) => updateParameter("type", value)}
+                  className="space-y-4"
+                >
+                  {PLANETARY_PARAMETERS.map((param) => (
+                    <div key={param.id} className="space-y-3">
+                      <div className="font-medium text-sm text-primary">
+                        {param.label}
+                      </div>
+                      {param.options.length > 0 ? (
+                        <div className="grid gap-2 pl-4">
+                          {param.options.map((option) => (
+                            <div
+                              key={`${param.id}-${option.value}`}
+                              className="flex items-start gap-3"
+                            >
+                              <RadioGroupItem
+                                value={`${param.id}-${option.value}`}
+                                id={`single-${param.id}-${option.value}`}
+                                className="mt-1"
+                              />
+                              <Label
+                                htmlFor={`single-${param.id}-${option.value}`}
+                                className="cursor-pointer"
+                              >
+                                <span className="font-medium">{option.label}</span>
+                                <span className="text-muted-foreground ml-2">
+                                  — {option.description}
+                                </span>
+                              </Label>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="pl-4">
+                          <div className="flex items-start gap-3">
+                            <RadioGroupItem
+                              value={param.id}
+                              id={`single-${param.id}`}
+                              className="mt-1"
+                            />
+                            <Label htmlFor={`single-${param.id}`} className="cursor-pointer">
+                              <span className="font-medium">
+                                Define your own unique factor
+                              </span>
+                            </Label>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </RadioGroup>
+
+                <div className="mt-6">
+                  <Label htmlFor="specificValue" className="text-sm font-medium">
+                    Specific Value
+                  </Label>
+                  <Input
+                    id="specificValue"
+                    value={formState.parameter.specificValue}
+                    onChange={(e) =>
+                      updateParameter("specificValue", e.target.value)
+                    }
+                    placeholder={
+                      PLANETARY_PARAMETERS.find(
+                        (p) =>
+                          formState.parameter.type.startsWith(p.id)
+                      )?.placeholder || "Enter the specific value..."
+                    }
+                    className="mt-2 bg-background/50"
+                  />
+                </div>
+              </>
+            ) : (
+              /* Multiple Mode - Checkboxes */
+              <div className="space-y-6">
+                {PLANETARY_PARAMETERS.map((param) => (
+                  <div key={param.id} className="space-y-3">
+                    <div className="font-medium text-sm text-primary">
+                      {param.label}
+                    </div>
+                    {param.options.length > 0 ? (
+                      <div className="grid gap-3 pl-4">
+                        {param.options.map((option) => {
+                          const typeId = `${param.id}-${option.value}`;
+                          const isChecked = formState.parameter.types?.includes(typeId) || false;
+                          return (
+                            <div key={typeId} className="space-y-2">
+                              <div className="flex items-start gap-3">
+                                <Checkbox
+                                  id={`multi-${typeId}`}
+                                  checked={isChecked}
+                                  onCheckedChange={(checked) =>
+                                    toggleMultipleParameter(typeId, checked as boolean)
+                                  }
+                                  className="mt-1"
+                                />
+                                <Label
+                                  htmlFor={`multi-${typeId}`}
+                                  className="cursor-pointer"
+                                >
+                                  <span className="font-medium">{option.label}</span>
+                                  <span className="text-muted-foreground ml-2">
+                                    — {option.description}
+                                  </span>
+                                </Label>
+                              </div>
+                              {isChecked && (
+                                <Input
+                                  value={formState.parameter.specificValues?.[typeId] || ""}
+                                  onChange={(e) =>
+                                    updateMultipleSpecificValue(typeId, e.target.value)
+                                  }
+                                  placeholder={param.placeholder}
+                                  className="ml-7 max-w-md bg-background/50"
+                                />
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    ) : (
+                      <div className="pl-4">
+                        <div className="space-y-2">
+                          <div className="flex items-start gap-3">
+                            <Checkbox
+                              id={`multi-${param.id}`}
+                              checked={formState.parameter.types?.includes(param.id) || false}
+                              onCheckedChange={(checked) =>
+                                toggleMultipleParameter(param.id, checked as boolean)
+                              }
+                              className="mt-1"
+                            />
+                            <Label htmlFor={`multi-${param.id}`} className="cursor-pointer">
+                              <span className="font-medium">
+                                Define your own unique factor
+                              </span>
+                            </Label>
+                          </div>
+                          {formState.parameter.types?.includes(param.id) && (
+                            <Input
+                              value={formState.parameter.specificValues?.[param.id] || ""}
+                              onChange={(e) =>
+                                updateMultipleSpecificValue(param.id, e.target.value)
+                              }
+                              placeholder={param.placeholder}
+                              className="ml-7 max-w-md bg-background/50"
+                            />
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+
+                {(formState.parameter.types?.length || 0) > 0 && (
+                  <div className="mt-4 p-3 bg-primary/10 rounded-lg">
+                    <p className="text-sm text-muted-foreground">
+                      <strong className="text-primary">
+                        {formState.parameter.types?.length} factor
+                        {(formState.parameter.types?.length || 0) !== 1 ? "s" : ""} selected.
+                      </strong>{" "}
+                      These will appear in the sidebar as you work through the cascade.
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
           </CollapsibleSection>
 
           {/* Level 1: Physical Implications */}
@@ -1068,6 +1349,16 @@ const EnvironmentalChainReaction = () => {
               </div>
             </div>
           </CollapsibleSection>
+          </div>
+
+          {/* Sticky Sidebar - visible when parameters are selected */}
+          {getSelectedParametersForSidebar().length > 0 && (
+            <div className="hidden lg:block">
+              <SelectedParametersSidebar
+                parameters={getSelectedParametersForSidebar()}
+              />
+            </div>
+          )}
         </div>
 
         {/* Bottom Action Bar */}
@@ -1107,6 +1398,14 @@ const EnvironmentalChainReaction = () => {
           </p>
         </div>
       </footer>
+
+      {/* World Selection Dialog */}
+      <WorldSelectDialog
+        open={showWorldSelectDialog}
+        onOpenChange={setShowWorldSelectDialog}
+        onSave={handleWorldSelection}
+        isLoading={isSaving}
+      />
     </div>
   );
 };

@@ -122,6 +122,14 @@
   body {
     @apply bg-background text-foreground antialiased;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    position: relative;
+    min-height: 100vh;
+  }
+
+  #root {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
   }
 
   html {
@@ -181,26 +189,28 @@
 
   /* Custom background image support */
   .custom-background {
-    @apply relative overflow-hidden;
+    @apply relative;
+    min-height: 100vh;
   }
 
   .custom-background::before {
     content: "";
-    @apply absolute inset-0 z-0;
+    position: fixed;
+    inset: 0;
+    z-index: -2;
     background-image: var(--custom-background);
     background-size: cover;
     background-position: center;
-    background-attachment: fixed;
+    pointer-events: none;
   }
 
   .custom-background::after {
     content: "";
-    @apply absolute inset-0 z-0;
+    position: fixed;
+    inset: 0;
+    z-index: -1;
     background: linear-gradient(to bottom, hsl(var(--background) / 0.85), hsl(var(--background) / 0.95));
-  }
-
-  .custom-background > * {
-    @apply relative z-10;
+    pointer-events: none;
   }
 
   /* Starfield preview for selector */
