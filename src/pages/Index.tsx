@@ -114,7 +114,7 @@ const Index = () => {
         </section>
 
         {/* My Worlds Section */}
-        <section className="mb-16">
+        <section id="worlds" className="mb-16 scroll-mt-24">
           <div className="flex items-center justify-between mb-6">
             <h2 className="font-display text-2xl font-semibold">My Worlds</h2>
           </div>
@@ -157,7 +157,7 @@ const Index = () => {
         </section>
 
         {/* Worldbuilding Tools Section */}
-        <section className="mb-16">
+        <section id="tools" className="mb-16 scroll-mt-24">
           <div className="flex items-center justify-between mb-6">
             <h2 className="font-display text-2xl font-semibold">
               Worldbuilding Tools

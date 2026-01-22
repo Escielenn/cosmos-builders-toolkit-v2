@@ -41,24 +41,26 @@ const Header = () => {
         </Link>
 
         <nav className="hidden md:flex items-center gap-6">
-          <Link
-            to="/"
+          <a
+            href="/#worlds"
             className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
           >
             My Worlds
-          </Link>
-          <Link
-            to="/"
+          </a>
+          <a
+            href="/#tools"
             className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
           >
             Tools
-          </Link>
-          <Link
-            to="/"
+          </a>
+          <a
+            href="https://jbatt.com"
+            target="_blank"
+            rel="noopener noreferrer"
             className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
           >
             Docs
-          </Link>
+          </a>
         </nav>
 
         <div className="flex items-center gap-2">

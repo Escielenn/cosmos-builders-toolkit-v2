@@ -44,6 +44,7 @@ const BACKGROUND_OPTIONS = [
 ];
 
 const STORAGE_KEY = "cosmos-builder-background";
+const CUSTOM_BG_STORAGE_KEY = "cosmos-builder-custom-background";
 
 // Preload images for faster switching
 const preloadImages = () => {
@@ -58,6 +59,7 @@ const preloadImages = () => {
 export const useBackground = () => {
   const [backgroundId, setBackgroundId] = useState<string>("default");
   const [isLoading, setIsLoading] = useState(false);
+  const [customBackground, setCustomBackgroundState] = useState<string | null>(null);
 
   // Preload all background images on mount
   useEffect(() => {
@@ -66,6 +68,10 @@ export const useBackground = () => {
 
   useEffect(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
+    const customBg = localStorage.getItem(CUSTOM_BG_STORAGE_KEY);
+    if (customBg) {
+      setCustomBackgroundState(customBg);
+    }
     if (stored) {
       setBackgroundId(stored);
     }
@@ -75,7 +81,11 @@ export const useBackground = () => {
     const selected = BACKGROUND_OPTIONS.find((bg) => bg.id === backgroundId);
     const root = document.documentElement;
 
-    if (selected && selected.url) {
+    if (backgroundId === "custom" && customBackground) {
+      root.style.setProperty("--custom-background", `url(${customBackground})`);
+      document.body.classList.add("custom-background");
+      document.body.classList.remove("starfield");
+    } else if (selected && selected.url) {
       root.style.setProperty("--custom-background", `url(${selected.url})`);
       document.body.classList.add("custom-background");
       document.body.classList.remove("starfield");
@@ -84,7 +94,7 @@ export const useBackground = () => {
       document.body.classList.remove("custom-background");
       document.body.classList.add("starfield");
     }
-  }, [backgroundId]);
+  }, [backgroundId, customBackground]);
 
   const setBackground = (id: string) => {
     const selected = BACKGROUND_OPTIONS.find((bg) => bg.id === id);
@@ -111,11 +121,30 @@ export const useBackground = () => {
     }
   };
 
+  const setCustomBackground = (dataUrl: string) => {
+    setCustomBackgroundState(dataUrl);
+    localStorage.setItem(CUSTOM_BG_STORAGE_KEY, dataUrl);
+    setBackgroundId("custom");
+    localStorage.setItem(STORAGE_KEY, "custom");
+  };
+
+  const clearCustomBackground = () => {
+    setCustomBackgroundState(null);
+    localStorage.removeItem(CUSTOM_BG_STORAGE_KEY);
+    if (backgroundId === "custom") {
+      setBackgroundId("default");
+      localStorage.setItem(STORAGE_KEY, "default");
+    }
+  };
+
   return {
     backgroundId,
     setBackground,
     options: BACKGROUND_OPTIONS,
     isLoading,
+    customBackground,
+    setCustomBackground,
+    clearCustomBackground,
   };
 };
 
