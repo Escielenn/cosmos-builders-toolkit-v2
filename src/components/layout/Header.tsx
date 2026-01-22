@@ -53,6 +53,12 @@ const Header = () => {
           >
             Tools
           </a>
+          <Link
+            to="/learn"
+            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+          >
+            Learn
+          </Link>
           <a
             href="https://jbatt.com"
             target="_blank"

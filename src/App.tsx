@@ -13,6 +13,8 @@ import EnvironmentalChainReaction from "./pages/tools/EnvironmentalChainReaction
 import PropulsionConsequencesMap from "./pages/tools/PropulsionConsequencesMap";
 import SpacecraftDesigner from "./pages/tools/SpacecraftDesigner";
 import PlanetaryProfile from "./pages/tools/PlanetaryProfile";
+import LearnIndex from "./pages/learn/LearnIndex";
+import LearnArticle from "./pages/learn/LearnArticle";
 
 const queryClient = new QueryClient();
 
@@ -32,6 +34,8 @@ const App = () => (
             <Route path="/tools/propulsion-consequences-map" element={<PropulsionConsequencesMap />} />
             <Route path="/tools/spacecraft-designer" element={<SpacecraftDesigner />} />
             <Route path="/tools/planetary-profile" element={<PlanetaryProfile />} />
+            <Route path="/learn" element={<LearnIndex />} />
+            <Route path="/learn/:slug" element={<LearnArticle />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
