@@ -7,7 +7,9 @@ import {
   Cpu,
   Shield,
   Loader2,
+  Calculator,
 } from "lucide-react";
+import { Link } from "react-router-dom";
 import Header from "@/components/layout/Header";
 import ToolCard from "@/components/dashboard/ToolCard";
 import WorldCard from "@/components/dashboard/WorldCard";
@@ -56,13 +58,22 @@ const tools = [
     week: 4,
   },
   {
+    id: "drake-equation-calculator",
+    title: "Drake Equation Calculator",
+    description:
+      "Calculate the number of civilizations in your galaxy. Establish your cosmic context from lonely universe to teeming space opera.",
+    icon: Calculator,
+    status: "available" as const,
+    week: 5,
+  },
+  {
     id: "species-creator",
     title: "Species Creator",
     description:
       "Design alien species with consistent biology and evolutionary history.",
     icon: Users,
     status: "coming-soon" as const,
-    week: 5,
+    week: 6,
   },
   {
     id: "culture-designer",
@@ -71,7 +82,7 @@ const tools = [
       "Build societies with coherent values, rituals, and social structures.",
     icon: BookOpen,
     status: "coming-soon" as const,
-    week: 6,
+    week: 7,
   },
   {
     id: "technology-mapper",
@@ -79,7 +90,7 @@ const tools = [
     description: "Map technological capabilities and their societal impacts.",
     icon: Cpu,
     status: "coming-soon" as const,
-    week: 7,
+    week: 8,
   },
 ];
 
@@ -115,9 +126,11 @@ const Index = () => {
               <Rocket className="w-4 h-4" />
               Get Started
             </Button>
-            <Button variant="outline" size="lg" className="gap-2">
-              <BookOpen className="w-4 h-4" />
-              Learn More
+            <Button variant="outline" size="lg" className="gap-2" asChild>
+              <Link to="/learn">
+                <BookOpen className="w-4 h-4" />
+                Learn More
+              </Link>
             </Button>
           </div>
         </section>

@@ -1,5 +1,5 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Edit, Globe, FileText, Rocket, Zap, Trash2, MoreVertical, Loader2 } from "lucide-react";
+import { ArrowLeft, Edit, Globe, FileText, Rocket, Zap, Trash2, MoreVertical, Loader2, Calculator } from "lucide-react";
 import { format } from "date-fns";
 import Header from "@/components/layout/Header";
 import { GlassPanel } from "@/components/ui/glass-panel";
@@ -70,6 +70,13 @@ const TOOLS = [
     description: "Define your world's stellar environment, physical characteristics, and habitability",
     icon: Globe,
     path: "/tools/planetary-profile",
+  },
+  {
+    id: "drake-equation-calculator",
+    name: "Drake Equation Calculator",
+    description: "Calculate the number of civilizations in your galaxy",
+    icon: Calculator,
+    path: "/tools/drake-equation-calculator",
   },
 ];
 
