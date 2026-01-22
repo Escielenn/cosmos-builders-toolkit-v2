@@ -7,6 +7,8 @@ interface World {
   user_id: string;
   name: string;
   description: string | null;
+  header_image_url: string | null;
+  icon: string;
   created_at: string;
   updated_at: string;
 }

@@ -13,6 +13,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import AuthRequiredDialog from "@/components/auth/AuthRequiredDialog";
+import IconPicker from "@/components/world/IconPicker";
 import { useAuth } from "@/contexts/AuthContext";
 import { useWorlds } from "@/hooks/use-worlds";
 
@@ -23,6 +24,7 @@ const CreateWorldButton = () => {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [worldName, setWorldName] = useState("");
   const [worldDescription, setWorldDescription] = useState("");
+  const [worldIcon, setWorldIcon] = useState("globe");
 
   const handleClick = () => {
     if (user) {
@@ -38,10 +40,12 @@ const CreateWorldButton = () => {
     await createWorld.mutateAsync({
       name: worldName.trim(),
       description: worldDescription.trim() || undefined,
+      icon: worldIcon,
     });
 
     setWorldName("");
     setWorldDescription("");
+    setWorldIcon("globe");
     setShowCreateDialog(false);
   };
 
@@ -73,18 +77,25 @@ const CreateWorldButton = () => {
           <DialogHeader>
             <DialogTitle className="font-display text-xl">Create New World</DialogTitle>
             <DialogDescription>
-              Give your world a name and optional description to get started.
+              Give your world a name, icon, and optional description.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 mt-4">
-            <div className="space-y-2">
-              <Label htmlFor="world-name">World Name</Label>
-              <Input
-                id="world-name"
-                placeholder="e.g., Kepler-442b Colony"
-                value={worldName}
-                onChange={(e) => setWorldName(e.target.value)}
-              />
+            {/* Icon and Name Row */}
+            <div className="flex items-end gap-3">
+              <div className="space-y-2">
+                <Label>Icon</Label>
+                <IconPicker value={worldIcon} onChange={setWorldIcon} />
+              </div>
+              <div className="space-y-2 flex-1">
+                <Label htmlFor="world-name">World Name</Label>
+                <Input
+                  id="world-name"
+                  placeholder="e.g., Kepler-442b Colony"
+                  value={worldName}
+                  onChange={(e) => setWorldName(e.target.value)}
+                />
+              </div>
             </div>
             <div className="space-y-2">
               <Label htmlFor="world-description">Description (optional)</Label>
@@ -96,9 +107,9 @@ const CreateWorldButton = () => {
                 rows={3}
               />
             </div>
-            <Button 
-              className="w-full gap-2" 
-              size="lg" 
+            <Button
+              className="w-full gap-2"
+              size="lg"
               onClick={handleCreate}
               disabled={!worldName.trim() || createWorld.isPending}
             >

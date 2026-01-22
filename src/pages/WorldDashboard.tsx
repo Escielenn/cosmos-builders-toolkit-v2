@@ -1,5 +1,5 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Edit, Globe, FileText, Rocket, Zap, Trash2, MoreVertical } from "lucide-react";
+import { ArrowLeft, Edit, Globe, FileText, Rocket, Zap, Trash2, MoreVertical, Loader2 } from "lucide-react";
 import { format } from "date-fns";
 import Header from "@/components/layout/Header";
 import { GlassPanel } from "@/components/ui/glass-panel";
@@ -36,6 +36,11 @@ import { useWorld } from "@/hooks/use-world";
 import { useWorksheets } from "@/hooks/use-worksheets";
 import { useWorlds } from "@/hooks/use-worlds";
 import { useState, useEffect } from "react";
+import WorldHeader from "@/components/world/WorldHeader";
+import WorldNotes from "@/components/world/WorldNotes";
+import IconPicker from "@/components/world/IconPicker";
+import HeaderImageUpload from "@/components/world/HeaderImageUpload";
+import { useBackground } from "@/hooks/use-background";
 
 const TOOLS = [
   {
@@ -82,12 +87,19 @@ const WorldDashboard = () => {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editName, setEditName] = useState("");
   const [editDescription, setEditDescription] = useState("");
+  const [editIcon, setEditIcon] = useState("globe");
+  const [editHeaderImageUrl, setEditHeaderImageUrl] = useState<string | null>(null);
+
+  // Initialize background
+  useBackground();
 
   // Sync edit form with world data
   useEffect(() => {
     if (world) {
       setEditName(world.name);
       setEditDescription(world.description || "");
+      setEditIcon(world.icon || "globe");
+      setEditHeaderImageUrl(world.header_image_url);
     }
   }, [world]);
 
@@ -109,6 +121,8 @@ const WorldDashboard = () => {
       worldId,
       name: editName.trim(),
       description: editDescription.trim() || undefined,
+      icon: editIcon,
+      header_image_url: editHeaderImageUrl,
     });
     setEditDialogOpen(false);
   };
@@ -117,10 +131,10 @@ const WorldDashboard = () => {
     return (
       <div className="min-h-screen bg-background">
         <Header />
-        <main className="container mx-auto px-4 py-8">
+        <main className="container mx-auto px-4 pt-24 pb-16">
           <Skeleton className="h-8 w-32 mb-6" />
-          <Skeleton className="h-32 w-full mb-8" />
-          <Skeleton className="h-64 w-full" />
+          <Skeleton className="h-48 w-full mb-8 rounded-xl" />
+          <Skeleton className="h-64 w-full rounded-xl" />
         </main>
       </div>
     );
@@ -130,7 +144,7 @@ const WorldDashboard = () => {
     return (
       <div className="min-h-screen bg-background">
         <Header />
-        <main className="container mx-auto px-4 py-8">
+        <main className="container mx-auto px-4 pt-24 pb-16">
           <Link
             to="/"
             className="inline-flex items-center text-muted-foreground hover:text-foreground mb-6 transition-colors"
@@ -156,55 +170,59 @@ const WorldDashboard = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 pt-24 pb-16">
         {/* Back Navigation */}
-        <Link
-          to="/"
-          className="inline-flex items-center text-muted-foreground hover:text-foreground mb-6 transition-colors"
-        >
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Back to Dashboard
-        </Link>
+        <div className="flex items-center justify-between mb-6">
+          <Link
+            to="/"
+            className="inline-flex items-center text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back to Dashboard
+          </Link>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm">
+                <MoreVertical className="w-4 h-4 mr-2" />
+                Actions
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => setEditDialogOpen(true)}>
+                <Edit className="w-4 h-4 mr-2" />
+                Edit World
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                className="text-destructive"
+                onClick={() => setDeleteDialogOpen(true)}
+              >
+                <Trash2 className="w-4 h-4 mr-2" />
+                Delete World
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
 
         {/* World Header */}
-        <GlassPanel className="p-6 mb-8">
-          <div className="flex items-start justify-between">
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center">
-                <Globe className="w-6 h-6 text-primary" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold">{world.name}</h1>
-                {world.description && (
-                  <p className="text-muted-foreground mt-1">{world.description}</p>
-                )}
-                <p className="text-sm text-muted-foreground mt-2">
-                  Last updated {format(new Date(world.updated_at), "MMMM d, yyyy")}
-                </p>
-              </div>
-            </div>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon">
-                  <MoreVertical className="w-4 h-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => setEditDialogOpen(true)}>
-                  <Edit className="w-4 h-4 mr-2" />
-                  Edit World
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  className="text-destructive"
-                  onClick={() => setDeleteDialogOpen(true)}
-                >
-                  <Trash2 className="w-4 h-4 mr-2" />
-                  Delete World
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        </GlassPanel>
+        <div className="mb-8">
+          <WorldHeader
+            name={world.name}
+            description={world.description}
+            headerImageUrl={world.header_image_url}
+            icon={world.icon || "globe"}
+            onEditClick={() => setEditDialogOpen(true)}
+          />
+          <p className="text-sm text-muted-foreground mt-3 px-1">
+            Last updated {format(new Date(world.updated_at), "MMMM d, yyyy")}
+          </p>
+        </div>
+
+        {/* World Notes */}
+        {worldId && (
+          <section className="mb-8">
+            <WorldNotes worldId={worldId} />
+          </section>
+        )}
 
         {/* Tools Grid */}
         <section className="mb-8">
@@ -335,7 +353,7 @@ const WorldDashboard = () => {
 
       {/* Edit World Dialog */}
       <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
-        <DialogContent>
+        <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>Edit World</DialogTitle>
             <DialogDescription>
@@ -343,15 +361,32 @@ const WorldDashboard = () => {
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
+            {/* Header Image */}
             <div className="space-y-2">
-              <Label htmlFor="edit-name">World Name</Label>
-              <Input
-                id="edit-name"
-                value={editName}
-                onChange={(e) => setEditName(e.target.value)}
-                placeholder="Enter world name"
+              <Label>Header Image</Label>
+              <HeaderImageUpload
+                currentImageUrl={editHeaderImageUrl}
+                onImageChange={setEditHeaderImageUrl}
               />
             </div>
+
+            {/* Icon and Name Row */}
+            <div className="flex items-end gap-3">
+              <div className="space-y-2">
+                <Label>Icon</Label>
+                <IconPicker value={editIcon} onChange={setEditIcon} />
+              </div>
+              <div className="space-y-2 flex-1">
+                <Label htmlFor="edit-name">World Name</Label>
+                <Input
+                  id="edit-name"
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
+                  placeholder="Enter world name"
+                />
+              </div>
+            </div>
+
             <div className="space-y-2">
               <Label htmlFor="edit-description">Description (optional)</Label>
               <Textarea
@@ -371,7 +406,14 @@ const WorldDashboard = () => {
               onClick={handleEditWorld}
               disabled={!editName.trim() || updateWorld.isPending}
             >
-              {updateWorld.isPending ? "Saving..." : "Save Changes"}
+              {updateWorld.isPending ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                "Save Changes"
+              )}
             </Button>
           </DialogFooter>
         </DialogContent>

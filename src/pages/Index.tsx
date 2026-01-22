@@ -149,6 +149,8 @@ const Index = () => {
                 id={world.id}
                 name={world.name}
                 description={world.description}
+                headerImageUrl={world.header_image_url}
+                icon={world.icon}
                 updatedAt={world.updated_at}
                 onDelete={handleDeleteWorld}
               />

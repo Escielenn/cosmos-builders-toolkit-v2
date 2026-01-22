@@ -8,6 +8,8 @@ interface World {
   user_id: string;
   name: string;
   description: string | null;
+  header_image_url: string | null;
+  icon: string;
   created_at: string;
   updated_at: string;
 }
@@ -15,12 +17,16 @@ interface World {
 interface CreateWorldInput {
   name: string;
   description?: string;
+  icon?: string;
+  header_image_url?: string;
 }
 
 interface UpdateWorldInput {
   worldId: string;
   name?: string;
   description?: string;
+  icon?: string;
+  header_image_url?: string | null;
 }
 
 export const useWorlds = () => {
@@ -54,6 +60,8 @@ export const useWorlds = () => {
           user_id: user.id,
           name: input.name,
           description: input.description || null,
+          icon: input.icon || "globe",
+          header_image_url: input.header_image_url || null,
         })
         .select()
         .single();
@@ -81,9 +89,11 @@ export const useWorlds = () => {
     mutationFn: async (input: UpdateWorldInput) => {
       if (!user) throw new Error("Not authenticated");
 
-      const updateData: { name?: string; description?: string } = {};
+      const updateData: { name?: string; description?: string; icon?: string; header_image_url?: string | null } = {};
       if (input.name !== undefined) updateData.name = input.name;
       if (input.description !== undefined) updateData.description = input.description;
+      if (input.icon !== undefined) updateData.icon = input.icon;
+      if (input.header_image_url !== undefined) updateData.header_image_url = input.header_image_url;
 
       const { data, error } = await supabase
         .from("worlds")

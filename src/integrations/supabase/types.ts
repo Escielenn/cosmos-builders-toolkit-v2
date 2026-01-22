@@ -89,10 +89,54 @@ export type Database = {
           },
         ]
       }
+      world_notes: {
+        Row: {
+          id: string
+          world_id: string
+          user_id: string
+          content: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          world_id: string
+          user_id: string
+          content?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          world_id?: string
+          user_id?: string
+          content?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "world_notes_world_id_fkey"
+            columns: ["world_id"]
+            isOneToOne: false
+            referencedRelation: "worlds"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "world_notes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       worlds: {
         Row: {
           created_at: string
           description: string | null
+          header_image_url: string | null
+          icon: string
           id: string
           name: string
           updated_at: string
@@ -101,6 +145,8 @@ export type Database = {
         Insert: {
           created_at?: string
           description?: string | null
+          header_image_url?: string | null
+          icon?: string
           id?: string
           name: string
           updated_at?: string
@@ -109,6 +155,8 @@ export type Database = {
         Update: {
           created_at?: string
           description?: string | null
+          header_image_url?: string | null
+          icon?: string
           id?: string
           name?: string
           updated_at?: string
