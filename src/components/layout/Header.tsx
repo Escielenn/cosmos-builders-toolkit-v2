@@ -59,7 +59,7 @@ const Header = () => {
             rel="noopener noreferrer"
             className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
           >
-            Docs
+            Jbatt.com
           </a>
         </nav>
 
