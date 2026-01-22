@@ -12,6 +12,7 @@ import WorldDashboard from "./pages/WorldDashboard";
 import EnvironmentalChainReaction from "./pages/tools/EnvironmentalChainReaction";
 import PropulsionConsequencesMap from "./pages/tools/PropulsionConsequencesMap";
 import SpacecraftDesigner from "./pages/tools/SpacecraftDesigner";
+import PlanetaryProfile from "./pages/tools/PlanetaryProfile";
 
 const queryClient = new QueryClient();
 
@@ -30,6 +31,7 @@ const App = () => (
             <Route path="/tools/environmental-chain-reaction" element={<EnvironmentalChainReaction />} />
             <Route path="/tools/propulsion-consequences-map" element={<PropulsionConsequencesMap />} />
             <Route path="/tools/spacecraft-designer" element={<SpacecraftDesigner />} />
+            <Route path="/tools/planetary-profile" element={<PlanetaryProfile />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

@@ -64,6 +64,13 @@ const TOOLS = [
     icon: Zap,
     path: "/tools/propulsion-consequences-map",
   },
+  {
+    id: "planetary-profile",
+    name: "Planetary Profile Template",
+    description: "Define your world's stellar environment, physical characteristics, and habitability",
+    icon: Globe,
+    path: "/tools/planetary-profile",
+  },
 ];
 
 const getToolName = (toolType: string): string => {

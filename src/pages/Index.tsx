@@ -47,13 +47,22 @@ const tools = [
     week: 3,
   },
   {
+    id: "planetary-profile",
+    title: "Planetary Profile Template",
+    description:
+      "Define your world's stellar environment, physical characteristics, atmosphere, habitability, and the narrative pressures that shape life.",
+    icon: Globe,
+    status: "available" as const,
+    week: 4,
+  },
+  {
     id: "species-creator",
     title: "Species Creator",
     description:
       "Design alien species with consistent biology and evolutionary history.",
     icon: Users,
     status: "coming-soon" as const,
-    week: 4,
+    week: 5,
   },
   {
     id: "culture-designer",
@@ -62,7 +71,7 @@ const tools = [
       "Build societies with coherent values, rituals, and social structures.",
     icon: BookOpen,
     status: "coming-soon" as const,
-    week: 5,
+    week: 6,
   },
   {
     id: "technology-mapper",
@@ -70,7 +79,7 @@ const tools = [
     description: "Map technological capabilities and their societal impacts.",
     icon: Cpu,
     status: "coming-soon" as const,
-    week: 6,
+    week: 7,
   },
 ];
 
