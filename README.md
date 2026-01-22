@@ -1,73 +1,46 @@
-# Welcome to your Lovable project
+# Cosmos Builder's Toolkit
 
-## Project info
+Science Fiction Worldbuilding Tools by Jason D. Batt, Ph.D.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## About
 
-## How can I edit this code?
+The Cosmos Builder's Toolkit is a collection of interactive worldbuilding tools designed for science fiction writers. Create consistent, scientifically-grounded worlds with tools that help you explore the cascading consequences of your creative decisions.
 
-There are several ways of editing your application.
+**Live Site**: [cosmos-builders-toolkit-v2.vercel.app](https://cosmos-builders-toolkit-v2.vercel.app)
 
-**Use Lovable**
+## Features
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+- **Environmental Chain Reaction** - Map how planetary parameters cascade into biology, psychology, culture, and mythology
+- **Spacecraft Designer** - Design lived-in spacecraft with cultural context and ship-as-character development
+- **Propulsion Consequences Map** - Trace how propulsion systems shape economics, politics, and psychology
+- **World Management** - Create and organize multiple worlds with custom icons, header images, and notes
 
-Changes made via Lovable will be committed automatically to this repo.
+## Tech Stack
 
-**Use your preferred IDE**
+- React + TypeScript
+- Vite
+- Tailwind CSS + shadcn/ui
+- Supabase (Auth & Database)
+- Deployed on Vercel
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## Local Development
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+Requirements: Node.js & npm ([install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating))
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+# Clone the repository
+git clone https://github.com/Escielenn/cosmos-builders-toolkit-v2.git
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+# Navigate to project directory
+cd cosmos-builders-toolkit-v2
 
-# Step 3: Install the necessary dependencies.
-npm i
+# Install dependencies
+npm install
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Start development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+## Author
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Jason D. Batt, Ph.D. - [jbatt.com](https://jbatt.com)
