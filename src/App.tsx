@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
 import Profile from "./pages/Profile";
+import Pricing from "./pages/Pricing";
 import WorldDashboard from "./pages/WorldDashboard";
 import EnvironmentalChainReaction from "./pages/tools/EnvironmentalChainReaction";
 import PropulsionConsequencesMap from "./pages/tools/PropulsionConsequencesMap";
@@ -16,6 +17,7 @@ import PlanetaryProfile from "./pages/tools/PlanetaryProfile";
 import DrakeEquationCalculator from "./pages/tools/DrakeEquationCalculator";
 import LearnIndex from "./pages/learn/LearnIndex";
 import LearnArticle from "./pages/learn/LearnArticle";
+import ProToolGuard from "./components/subscription/ProToolGuard";
 
 const queryClient = new QueryClient();
 
@@ -30,12 +32,30 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/pricing" element={<Pricing />} />
             <Route path="/worlds/:worldId" element={<WorldDashboard />} />
+            {/* Free Tools */}
             <Route path="/tools/environmental-chain-reaction" element={<EnvironmentalChainReaction />} />
             <Route path="/tools/propulsion-consequences-map" element={<PropulsionConsequencesMap />} />
             <Route path="/tools/spacecraft-designer" element={<SpacecraftDesigner />} />
-            <Route path="/tools/planetary-profile" element={<PlanetaryProfile />} />
-            <Route path="/tools/drake-equation-calculator" element={<DrakeEquationCalculator />} />
+            {/* Pro Tools - wrapped with ProToolGuard */}
+            <Route
+              path="/tools/planetary-profile"
+              element={
+                <ProToolGuard toolId="planetary-profile">
+                  <PlanetaryProfile />
+                </ProToolGuard>
+              }
+            />
+            <Route
+              path="/tools/drake-equation-calculator"
+              element={
+                <ProToolGuard toolId="drake-equation-calculator">
+                  <DrakeEquationCalculator />
+                </ProToolGuard>
+              }
+            />
+            {/* Learn Section */}
             <Route path="/learn" element={<LearnIndex />} />
             <Route path="/learn/:slug" element={<LearnArticle />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

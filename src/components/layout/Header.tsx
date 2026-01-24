@@ -1,4 +1,4 @@
-import { Rocket, User, LogIn, LogOut, ChevronDown } from "lucide-react";
+import { Rocket, User, LogIn, LogOut, ChevronDown, Crown } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -11,9 +11,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import BackgroundSelector from "@/components/settings/BackgroundSelector";
 import { useAuth } from "@/contexts/AuthContext";
+import { useSubscription } from "@/hooks/use-subscription";
 
 const Header = () => {
   const { user, profile, signOut, loading } = useAuth();
+  const { isSubscribed } = useSubscription();
   const navigate = useNavigate();
 
   const initials = profile?.display_name
@@ -34,7 +36,7 @@ const Header = () => {
           </div>
           <div className="flex flex-col">
             <span className="font-display font-semibold text-lg leading-tight">
-              Cosmos Builder's
+              StellarForge
             </span>
             <span className="text-xs text-muted-foreground">Science Fiction Worldbuilding Tools</span>
           </div>
@@ -59,14 +61,12 @@ const Header = () => {
           >
             Learn
           </Link>
-          <a
-            href="https://jbatt.com"
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            to="/pricing"
             className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
           >
-            Jbatt.com
-          </a>
+            Pricing
+          </Link>
         </nav>
 
         <div className="flex items-center gap-2">
@@ -90,6 +90,17 @@ const Header = () => {
                   <User className="w-4 h-4 mr-2" />
                   Profile
                 </DropdownMenuItem>
+                {isSubscribed ? (
+                  <DropdownMenuItem onClick={() => navigate("/pricing")}>
+                    <Crown className="w-4 h-4 mr-2 text-amber-500" />
+                    Pro Subscription
+                  </DropdownMenuItem>
+                ) : (
+                  <DropdownMenuItem onClick={() => navigate("/pricing")}>
+                    <Crown className="w-4 h-4 mr-2" />
+                    Upgrade to Pro
+                  </DropdownMenuItem>
+                )}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleSignOut}>
                   <LogOut className="w-4 h-4 mr-2" />

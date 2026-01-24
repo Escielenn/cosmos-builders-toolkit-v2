@@ -112,11 +112,8 @@ const Index = () => {
       <main className="container mx-auto px-4 pt-24 pb-16">
         {/* Hero Section */}
         <section className="text-center mb-16">
-          <p className="text-sm md:text-base text-muted-foreground italic mb-2">
-            Jason D. Batt, Ph.D.
-          </p>
           <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-2">
-            <span className="gradient-text">Cosmos Builder's Toolkit</span>
+            <span className="gradient-text">StellarForge</span>
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
             Science Fiction Worldbuilding Tools
@@ -242,17 +239,7 @@ const Index = () => {
       {/* Footer */}
       <footer className="border-t border-border/50 py-8">
         <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
-          <p>
-            © 2026 Jason D. Batt, Ph.D. •{" "}
-            <a
-              href="https://jbatt.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-primary hover:underline"
-            >
-              jbatt.com
-            </a>
-          </p>
+          <p>© 2026 StellarForge. All rights reserved.</p>
         </div>
       </footer>
     </div>

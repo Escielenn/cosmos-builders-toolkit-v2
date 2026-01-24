@@ -800,17 +800,7 @@ const DrakeEquationCalculator = () => {
       {/* Footer */}
       <footer className="border-t border-border/50 py-8 print:hidden">
         <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
-          <p>
-            © 2026 Jason D. Batt, Ph.D. •{" "}
-            <a
-              href="https://jbatt.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-primary hover:underline"
-            >
-              jbatt.com
-            </a>
-          </p>
+          <p>© 2026 StellarForge. All rights reserved.</p>
         </div>
       </footer>
     </div>
