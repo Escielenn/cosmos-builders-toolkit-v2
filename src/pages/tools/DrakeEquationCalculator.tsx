@@ -26,6 +26,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import WorldSelectDialog, { SaveSelection } from "@/components/tools/WorldSelectDialog";
 import SectionNavigation, { Section } from "@/components/tools/SectionNavigation";
 import ToolActionBar from "@/components/tools/ToolActionBar";
+import ExportDialog from "@/components/tools/ExportDialog";
+import { DrakeSummaryTemplate, DrakeFullReportTemplate } from "@/lib/pdf/templates";
 import { Json } from "@/integrations/supabase/types";
 
 // Section definitions for navigation
@@ -287,6 +289,7 @@ const DrakeEquationCalculator = () => {
 
   const [formState, setFormState] = useState<FormState>(initialFormState);
   const [saveDialogOpen, setSaveDialogOpen] = useState(false);
+  const [exportDialogOpen, setExportDialogOpen] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [lastSavedToCloud, setLastSavedToCloud] = useState<Date | null>(null);
   const [isSavingToCloud, setIsSavingToCloud] = useState(false);
@@ -450,23 +453,19 @@ const DrakeEquationCalculator = () => {
     }
   };
 
-  // Export as JSON
+  // Open export dialog
   const handleExport = () => {
-    const dataStr = JSON.stringify(formState, null, 2);
-    const blob = new Blob([dataStr], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "drake-equation-calculator.json";
-    a.click();
-    URL.revokeObjectURL(url);
-    toast({ title: "Exported", description: "Downloaded as JSON file." });
+    setExportDialogOpen(true);
   };
 
-  // Print
+  // Print (keep for quick access)
   const handlePrint = () => {
     window.print();
   };
+
+  // Get world name for export
+  const currentWorld = worlds.find(w => w.id === worldId);
+  const worldNameForExport = currentWorld?.name;
 
   const interpretation = getInterpretation(N);
 
@@ -804,6 +803,28 @@ const DrakeEquationCalculator = () => {
           currentWorksheetId={worksheetId || undefined}
         />
       )}
+
+      {/* Export Dialog */}
+      <ExportDialog
+        open={exportDialogOpen}
+        onOpenChange={setExportDialogOpen}
+        toolName="Drake Equation Calculator"
+        worldName={worldNameForExport}
+        formState={formState}
+        summaryTemplate={
+          <DrakeSummaryTemplate
+            formState={formState}
+            worldName={worldNameForExport}
+          />
+        }
+        fullTemplate={
+          <DrakeFullReportTemplate
+            formState={formState}
+            worldName={worldNameForExport}
+          />
+        }
+        defaultFilename="drake-equation"
+      />
 
       {/* Footer */}
       <footer className="border-t border-border/50 py-8 print:hidden">

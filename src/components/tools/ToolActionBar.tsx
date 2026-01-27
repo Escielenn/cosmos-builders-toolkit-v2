@@ -21,7 +21,7 @@ const ToolActionBar = ({
   onSave,
   onPrint,
   onExport,
-  exportLabel = "Export JSON",
+  exportLabel = "Export",
   className = "",
   hasUnsavedChanges = false,
   isSaving = false,

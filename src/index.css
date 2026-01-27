@@ -80,7 +80,7 @@
     --secondary-foreground: 0 0% 98%;
 
     --muted: 0 0% 14%;
-    --muted-foreground: 0 0% 55%;
+    --muted-foreground: 0 0% 63%;
 
     /* Accent: Cyan (removing magenta to avoid purple) */
     --accent: 187 80% 50%;
@@ -137,6 +137,24 @@
 
   html {
     @apply scroll-smooth;
+  }
+
+  /* Enhanced focus styles for accessibility */
+  :focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+
+  /* Custom focus glow for interactive elements */
+  button:focus-visible,
+  a:focus-visible,
+  [role="button"]:focus-visible {
+    @apply ring-2 ring-primary/50 ring-offset-2 ring-offset-background;
+    box-shadow: 0 0 0 4px hsl(187 100% 45% / 0.15);
+  }
+
+  /* Skip to content link for keyboard users */
+  .skip-link {
+    @apply sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-lg;
   }
 }
 
