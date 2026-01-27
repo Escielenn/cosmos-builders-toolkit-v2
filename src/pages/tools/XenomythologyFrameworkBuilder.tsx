@@ -130,22 +130,28 @@ interface FormState {
   // Section 1: Species Biology & Psychology
   sensoryArchitecture: {
     primaryModalities: string[];
+    primaryModalitiesOther?: string;
     integrationStyle: string;
     sensoryRange: string;
     cognitionImpact: string;
   };
   physicalForm: {
     bodyPlan: string;
+    bodyPlanOther?: string;
     movementMode: string;
+    movementModeOther?: string;
     limbArrangement: string;
     lifespanCategory: string;
     developmentalStages: string;
     reproductionStrategy: string;
+    reproductionStrategyOther?: string;
     offspringInvestment: string;
   };
   cognitiveArchitecture: {
     consciousnessType: string;
+    consciousnessTypeOther?: string;
     memoryArchitecture: string[];
+    memoryArchitectureOther?: string;
     cognitiveStrengths: string[];
     emotionalRange: string;
     selfAwarenessLevel: string;
@@ -155,16 +161,19 @@ interface FormState {
   // Section 2: Environmental Context
   planetaryConditions: {
     planetType: string;
+    planetTypeOther?: string;
     atmosphericComposition: string;
     dayNightCycle: string;
     seasonalVariation: string;
     stellarEnvironment: string;
+    stellarEnvironmentOther?: string;
     skyAppearance: string;
     environmentalVolatility: string;
     geographicDiversity: string;
   };
   evolutionaryPressures: {
     survivalChallenges: string[];
+    survivalChallengesOther?: string;
     socialStructureEvolution: string;
     adaptiveBreakthrough: string;
   };
@@ -264,22 +273,28 @@ interface FormState {
 const initialFormState: FormState = {
   sensoryArchitecture: {
     primaryModalities: [],
+    primaryModalitiesOther: "",
     integrationStyle: "",
     sensoryRange: "",
     cognitionImpact: "",
   },
   physicalForm: {
     bodyPlan: "",
+    bodyPlanOther: "",
     movementMode: "",
+    movementModeOther: "",
     limbArrangement: "",
     lifespanCategory: "",
     developmentalStages: "",
     reproductionStrategy: "",
+    reproductionStrategyOther: "",
     offspringInvestment: "",
   },
   cognitiveArchitecture: {
     consciousnessType: "",
+    consciousnessTypeOther: "",
     memoryArchitecture: [],
+    memoryArchitectureOther: "",
     cognitiveStrengths: [],
     emotionalRange: "",
     selfAwarenessLevel: "",
@@ -287,16 +302,19 @@ const initialFormState: FormState = {
   },
   planetaryConditions: {
     planetType: "",
+    planetTypeOther: "",
     atmosphericComposition: "",
     dayNightCycle: "",
     seasonalVariation: "",
     stellarEnvironment: "",
+    stellarEnvironmentOther: "",
     skyAppearance: "",
     environmentalVolatility: "",
     geographicDiversity: "",
   },
   evolutionaryPressures: {
     survivalChallenges: [],
+    survivalChallengesOther: "",
     socialStructureEvolution: "",
     adaptiveBreakthrough: "",
   },
@@ -507,6 +525,9 @@ const CheckboxGroup = ({
   selected,
   onChange,
   columns = 2,
+  allowOther = false,
+  otherValue = "",
+  onOtherChange,
 }: {
   label: string;
   description?: string;
@@ -514,6 +535,9 @@ const CheckboxGroup = ({
   selected: string[];
   onChange: (selected: string[]) => void;
   columns?: number;
+  allowOther?: boolean;
+  otherValue?: string;
+  onOtherChange?: (value: string) => void;
 }) => {
   const toggleItem = (id: string) => {
     if (selected.includes(id)) {
@@ -548,6 +572,33 @@ const CheckboxGroup = ({
             </Label>
           </div>
         ))}
+        {allowOther && (
+          <div
+            className={`flex items-start gap-2 p-2 rounded border transition-colors ${
+              selected.includes("__other__") ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"
+            }`}
+          >
+            <Checkbox
+              id={`checkbox-other-${label.replace(/\s+/g, "-")}`}
+              checked={selected.includes("__other__")}
+              onCheckedChange={() => toggleItem("__other__")}
+            />
+            <div className="flex-1">
+              <Label htmlFor={`checkbox-other-${label.replace(/\s+/g, "-")}`} className="cursor-pointer text-sm">
+                <span className="font-medium">Other</span>
+                <span className="text-muted-foreground block text-xs">Custom option not listed above</span>
+              </Label>
+              {selected.includes("__other__") && (
+                <Input
+                  value={otherValue}
+                  onChange={(e) => onOtherChange?.(e.target.value)}
+                  placeholder="Describe your custom option..."
+                  className="mt-2 text-sm"
+                />
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -560,6 +611,9 @@ const RadioGroupField = ({
   value,
   onChange,
   columns = 2,
+  allowOther = false,
+  otherValue = "",
+  onOtherChange,
 }: {
   label: string;
   description?: string;
@@ -567,6 +621,9 @@ const RadioGroupField = ({
   value: string;
   onChange: (value: string) => void;
   columns?: number;
+  allowOther?: boolean;
+  otherValue?: string;
+  onOtherChange?: (value: string) => void;
 }) => (
   <div className="space-y-3">
     <div>
@@ -592,6 +649,29 @@ const RadioGroupField = ({
           </Label>
         </div>
       ))}
+      {allowOther && (
+        <div
+          className={`flex items-start gap-2 p-2 rounded border transition-colors ${
+            value === "__other__" ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"
+          }`}
+        >
+          <RadioGroupItem value="__other__" id={`radio-other-${label.replace(/\s+/g, "-")}`} className="mt-0.5" />
+          <div className="flex-1">
+            <Label htmlFor={`radio-other-${label.replace(/\s+/g, "-")}`} className="cursor-pointer text-sm">
+              <span className="font-medium">Other</span>
+              <span className="text-muted-foreground block text-xs">Custom option not listed above</span>
+            </Label>
+            {value === "__other__" && (
+              <Input
+                value={otherValue}
+                onChange={(e) => onOtherChange?.(e.target.value)}
+                placeholder="Describe your custom option..."
+                className="mt-2 text-sm"
+              />
+            )}
+          </div>
+        </div>
+      )}
     </RadioGroup>
   </div>
 );
@@ -972,6 +1052,135 @@ const XenomythologyFrameworkBuilder = () => {
       });
     }
 
+    // --- Additional parameters for expanded sidebar ---
+
+    // Sensory Integration Style
+    if (formState.sensoryArchitecture.integrationStyle) {
+      const opt = SENSORY_INTEGRATION_STYLES.find(s => s.id === formState.sensoryArchitecture.integrationStyle);
+      if (opt) {
+        params.push({
+          typeId: "integration",
+          categoryLabel: "Sensory Integration",
+          optionLabel: opt.name,
+          optionDescription: opt.description,
+          specificValue: "",
+        });
+      }
+    }
+
+    // Movement Mode
+    if (formState.physicalForm.movementMode) {
+      const opt = MOVEMENT_MODES.find(m => m.id === formState.physicalForm.movementMode);
+      if (opt) {
+        params.push({
+          typeId: "movement",
+          categoryLabel: "Movement",
+          optionLabel: opt.name,
+          optionDescription: opt.description,
+          specificValue: "",
+        });
+      }
+    }
+
+    // Reproduction Strategy
+    if (formState.physicalForm.reproductionStrategy) {
+      const opt = REPRODUCTION_STRATEGIES.find(r => r.id === formState.physicalForm.reproductionStrategy);
+      if (opt) {
+        params.push({
+          typeId: "reproduction",
+          categoryLabel: "Reproduction",
+          optionLabel: opt.name,
+          optionDescription: opt.description,
+          specificValue: "",
+        });
+      }
+    }
+
+    // Memory Architecture (show first 2)
+    if (formState.cognitiveArchitecture.memoryArchitecture.length > 0) {
+      const memories = formState.cognitiveArchitecture.memoryArchitecture.slice(0, 2);
+      const names = memories.map(id => MEMORY_ARCHITECTURES.find(m => m.id === id)?.name || id);
+      params.push({
+        typeId: "memory",
+        categoryLabel: "Memory",
+        optionLabel: names.join(", "),
+        optionDescription: "",
+        specificValue: formState.cognitiveArchitecture.memoryArchitecture.length > 2
+          ? `+${formState.cognitiveArchitecture.memoryArchitecture.length - 2} more`
+          : "",
+      });
+    }
+
+    // Atmospheric Composition
+    if (formState.planetaryConditions.atmosphericComposition) {
+      const opt = ATMOSPHERIC_COMPOSITIONS.find(a => a.id === formState.planetaryConditions.atmosphericComposition);
+      if (opt) {
+        params.push({
+          typeId: "atmosphere",
+          categoryLabel: "Atmosphere",
+          optionLabel: opt.name,
+          optionDescription: opt.description,
+          specificValue: "",
+        });
+      }
+    }
+
+    // Environmental Volatility
+    if (formState.planetaryConditions.environmentalVolatility) {
+      const opt = ENVIRONMENTAL_VOLATILITY.find(e => e.id === formState.planetaryConditions.environmentalVolatility);
+      if (opt) {
+        params.push({
+          typeId: "volatility",
+          categoryLabel: "Volatility",
+          optionLabel: opt.name,
+          optionDescription: opt.description,
+          specificValue: "",
+        });
+      }
+    }
+
+    // Seasonal Variation
+    if (formState.planetaryConditions.seasonalVariation) {
+      const opt = SEASONAL_VARIATIONS.find(s => s.id === formState.planetaryConditions.seasonalVariation);
+      if (opt) {
+        params.push({
+          typeId: "seasons",
+          categoryLabel: "Seasons",
+          optionLabel: opt.name,
+          optionDescription: opt.description,
+          specificValue: "",
+        });
+      }
+    }
+
+    // Mortality Salience
+    if (formState.existentialParameters.mortalitySalience) {
+      const opt = MORTALITY_SALIENCE.find(m => m.id === formState.existentialParameters.mortalitySalience);
+      if (opt) {
+        params.push({
+          typeId: "mortality",
+          categoryLabel: "Mortality",
+          optionLabel: opt.name,
+          optionDescription: opt.description,
+          specificValue: "",
+        });
+      }
+    }
+
+    // Temporal Horizon
+    if (formState.existentialParameters.temporalHorizon) {
+      const opt = TEMPORAL_HORIZONS.find(t => t.id === formState.existentialParameters.temporalHorizon);
+      if (opt) {
+        params.push({
+          typeId: "temporal",
+          categoryLabel: "Temporal Horizon",
+          optionLabel: opt.name,
+          optionDescription: opt.description,
+          specificValue: "",
+        });
+      }
+    }
+
     return params;
   };
 
@@ -1205,6 +1414,9 @@ const XenomythologyFrameworkBuilder = () => {
                   options={SENSORY_MODALITIES}
                   selected={formState.sensoryArchitecture.primaryModalities}
                   onChange={(selected) => updateField("sensoryArchitecture", "primaryModalities", selected)}
+                  allowOther
+                  otherValue={formState.sensoryArchitecture.primaryModalitiesOther || ""}
+                  onOtherChange={(value) => updateField("sensoryArchitecture", "primaryModalitiesOther", value)}
                 />
 
                 <RadioGroupField
@@ -1243,6 +1455,9 @@ const XenomythologyFrameworkBuilder = () => {
                     value={formState.physicalForm.bodyPlan}
                     onChange={(value) => updateField("physicalForm", "bodyPlan", value)}
                     columns={1}
+                    allowOther
+                    otherValue={formState.physicalForm.bodyPlanOther || ""}
+                    onOtherChange={(value) => updateField("physicalForm", "bodyPlanOther", value)}
                   />
 
                   <RadioGroupField
@@ -1251,6 +1466,9 @@ const XenomythologyFrameworkBuilder = () => {
                     value={formState.physicalForm.movementMode}
                     onChange={(value) => updateField("physicalForm", "movementMode", value)}
                     columns={1}
+                    allowOther
+                    otherValue={formState.physicalForm.movementModeOther || ""}
+                    onOtherChange={(value) => updateField("physicalForm", "movementModeOther", value)}
                   />
                 </div>
 
@@ -1287,6 +1505,9 @@ const XenomythologyFrameworkBuilder = () => {
                     value={formState.physicalForm.reproductionStrategy}
                     onChange={(value) => updateField("physicalForm", "reproductionStrategy", value)}
                     columns={1}
+                    allowOther
+                    otherValue={formState.physicalForm.reproductionStrategyOther || ""}
+                    onOtherChange={(value) => updateField("physicalForm", "reproductionStrategyOther", value)}
                   />
 
                   <RadioGroupField
@@ -1308,6 +1529,9 @@ const XenomythologyFrameworkBuilder = () => {
                   options={CONSCIOUSNESS_TYPES}
                   value={formState.cognitiveArchitecture.consciousnessType}
                   onChange={(value) => updateField("cognitiveArchitecture", "consciousnessType", value)}
+                  allowOther
+                  otherValue={formState.cognitiveArchitecture.consciousnessTypeOther || ""}
+                  onOtherChange={(value) => updateField("cognitiveArchitecture", "consciousnessTypeOther", value)}
                 />
 
                 <CheckboxGroup
@@ -1315,6 +1539,9 @@ const XenomythologyFrameworkBuilder = () => {
                   options={MEMORY_ARCHITECTURES}
                   selected={formState.cognitiveArchitecture.memoryArchitecture}
                   onChange={(selected) => updateField("cognitiveArchitecture", "memoryArchitecture", selected)}
+                  allowOther
+                  otherValue={formState.cognitiveArchitecture.memoryArchitectureOther || ""}
+                  onOtherChange={(value) => updateField("cognitiveArchitecture", "memoryArchitectureOther", value)}
                 />
 
                 <CheckboxGroup
@@ -1373,6 +1600,9 @@ const XenomythologyFrameworkBuilder = () => {
                     value={formState.planetaryConditions.planetType}
                     onChange={(value) => updateField("planetaryConditions", "planetType", value)}
                     columns={1}
+                    allowOther
+                    otherValue={formState.planetaryConditions.planetTypeOther || ""}
+                    onOtherChange={(value) => updateField("planetaryConditions", "planetTypeOther", value)}
                   />
 
                   <RadioGroupField
@@ -1407,6 +1637,9 @@ const XenomythologyFrameworkBuilder = () => {
                   options={STELLAR_ENVIRONMENTS}
                   value={formState.planetaryConditions.stellarEnvironment}
                   onChange={(value) => updateField("planetaryConditions", "stellarEnvironment", value)}
+                  allowOther
+                  otherValue={formState.planetaryConditions.stellarEnvironmentOther || ""}
+                  onOtherChange={(value) => updateField("planetaryConditions", "stellarEnvironmentOther", value)}
                 />
 
                 <QuestionSection
@@ -1447,6 +1680,9 @@ const XenomythologyFrameworkBuilder = () => {
                   options={SURVIVAL_CHALLENGES}
                   selected={formState.evolutionaryPressures.survivalChallenges}
                   onChange={(selected) => updateField("evolutionaryPressures", "survivalChallenges", selected)}
+                  allowOther
+                  otherValue={formState.evolutionaryPressures.survivalChallengesOther || ""}
+                  onOtherChange={(value) => updateField("evolutionaryPressures", "survivalChallengesOther", value)}
                 />
 
                 <RadioGroupField
