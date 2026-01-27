@@ -63,9 +63,20 @@ const Header = () => {
           </Link>
           <Link
             to="/pricing"
-            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            className={`text-sm font-medium transition-colors ${
+              isSubscribed
+                ? "text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 flex items-center gap-1"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
           >
-            Pricing
+            {isSubscribed ? (
+              <>
+                <Crown className="w-4 h-4" />
+                Pro Active
+              </>
+            ) : (
+              "Pricing"
+            )}
           </Link>
         </nav>
 
@@ -82,6 +93,12 @@ const Header = () => {
                   <span className="hidden sm:inline text-sm">
                     {profile?.display_name || user.email?.split("@")[0]}
                   </span>
+                  {isSubscribed && (
+                    <span className="hidden sm:inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-medium bg-amber-500/20 text-amber-600 dark:text-amber-400">
+                      <Crown className="w-3 h-3" />
+                      Pro
+                    </span>
+                  )}
                   <ChevronDown className="w-4 h-4 text-muted-foreground" />
                 </Button>
               </DropdownMenuTrigger>
@@ -91,9 +108,9 @@ const Header = () => {
                   Profile
                 </DropdownMenuItem>
                 {isSubscribed ? (
-                  <DropdownMenuItem onClick={() => navigate("/pricing")}>
+                  <DropdownMenuItem onClick={() => navigate("/pricing")} className="text-amber-600 dark:text-amber-400">
                     <Crown className="w-4 h-4 mr-2 text-amber-500" />
-                    Pro Subscription
+                    Manage Pro Subscription
                   </DropdownMenuItem>
                 ) : (
                   <DropdownMenuItem onClick={() => navigate("/pricing")}>

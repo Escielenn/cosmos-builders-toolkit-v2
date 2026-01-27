@@ -48,6 +48,11 @@ export const useSubscription = () => {
 
   const createCheckoutSession = useMutation({
     mutationFn: async (priceType: 'monthly' | 'yearly') => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        throw new Error('Not authenticated. Please sign in again.');
+      }
+
       const response = await supabase.functions.invoke('create-checkout-session', {
         body: {
           priceType,
@@ -57,6 +62,7 @@ export const useSubscription = () => {
       });
 
       if (response.error) throw response.error;
+      if (response.data?.error) throw new Error(response.data.error);
       return response.data as { sessionId: string; url: string };
     },
   });
@@ -81,6 +87,27 @@ export const useSubscription = () => {
     queryClient.invalidateQueries({ queryKey: ['subscription', user?.id] });
   };
 
+  // Poll for subscription after checkout (webhook may take a few seconds)
+  const waitForSubscription = async (maxAttempts = 10, intervalMs = 1500): Promise<boolean> => {
+    for (let i = 0; i < maxAttempts; i++) {
+      // Force refetch
+      queryClient.invalidateQueries({ queryKey: ['subscription', user?.id] });
+      await queryClient.refetchQueries({ queryKey: ['subscription', user?.id] });
+
+      // Check if subscription is now active
+      const data = queryClient.getQueryData<Subscription | null>(['subscription', user?.id]);
+      if (data && ['active', 'trialing'].includes(data.status)) {
+        return true;
+      }
+
+      // Wait before next attempt
+      if (i < maxAttempts - 1) {
+        await new Promise(resolve => setTimeout(resolve, intervalMs));
+      }
+    }
+    return false;
+  };
+
   return {
     subscription: subscriptionQuery.data,
     isSubscribed,
@@ -89,5 +116,6 @@ export const useSubscription = () => {
     createCheckoutSession,
     createPortalSession,
     refreshSubscription,
+    waitForSubscription,
   };
 };

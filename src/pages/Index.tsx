@@ -1,5 +1,4 @@
 import {
-  Rocket,
   Globe,
   Users,
   Atom,
@@ -8,17 +7,23 @@ import {
   Shield,
   Loader2,
   Calculator,
+  Rocket,
 } from "lucide-react";
-import { Link } from "react-router-dom";
 import Header from "@/components/layout/Header";
 import ToolCard from "@/components/dashboard/ToolCard";
 import WorldCard from "@/components/dashboard/WorldCard";
 import CreateWorldButton from "@/components/dashboard/CreateWorldButton";
 import { GlassPanel } from "@/components/ui/glass-panel";
-import { Button } from "@/components/ui/button";
 import { useBackground } from "@/hooks/use-background";
 import { useAuth } from "@/contexts/AuthContext";
 import { useWorlds } from "@/hooks/use-worlds";
+import { useSubscription } from "@/hooks/use-subscription";
+import WelcomeHero from "@/components/landing/WelcomeHero";
+import LoggedInHero from "@/components/landing/LoggedInHero";
+import ToolShowcase from "@/components/landing/ToolShowcase";
+import ValueProposition from "@/components/landing/ValueProposition";
+import ProStatusBanner from "@/components/subscription/ProStatusBanner";
+import QuickUpgradeCard from "@/components/subscription/QuickUpgradeCard";
 
 const tools = [
   {
@@ -97,9 +102,10 @@ const tools = [
 const Index = () => {
   // Initialize background hook to apply stored preference
   useBackground();
-  
+
   const { user } = useAuth();
   const { worlds, isLoading, deleteWorld } = useWorlds();
+  const { isSubscribed } = useSubscription();
 
   const handleDeleteWorld = (worldId: string) => {
     deleteWorld.mutate(worldId);
@@ -110,130 +116,122 @@ const Index = () => {
       <Header />
 
       <main className="container mx-auto px-4 pt-24 pb-16">
-        {/* Hero Section */}
-        <section className="text-center mb-16">
-          <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-2">
-            <span className="gradient-text">StellarForge</span>
-          </h1>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
-            Science Fiction Worldbuilding Tools
-          </p>
-          <div className="flex flex-wrap gap-4 justify-center">
-            <Button size="lg" className="gap-2">
-              <Rocket className="w-4 h-4" />
-              Get Started
-            </Button>
-            <Button variant="outline" size="lg" className="gap-2" asChild>
-              <Link to="/learn">
-                <BookOpen className="w-4 h-4" />
-                Learn More
-              </Link>
-            </Button>
-          </div>
-        </section>
+        {/* Conditional Hero Section */}
+        {!user ? (
+          <WelcomeHero />
+        ) : (
+          <LoggedInHero isSubscribed={isSubscribed} />
+        )}
 
-        {/* My Worlds Section */}
-        <section id="worlds" className="mb-16 scroll-mt-24">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="font-display text-2xl font-semibold">My Worlds</h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <CreateWorldButton />
-            
-            {isLoading && user && (
-              <GlassPanel className="p-5 h-full min-h-[200px] flex flex-col items-center justify-center">
-                <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
-              </GlassPanel>
-            )}
-            
-            {!isLoading && user && worlds.length === 0 && (
-              <GlassPanel className="p-5 h-full min-h-[200px] flex flex-col items-center justify-center border-dashed border border-muted">
-                <p className="text-sm text-muted-foreground text-center">
-                  Your worlds will appear here once you create them.
-                </p>
-              </GlassPanel>
-            )}
-            
-            {!user && (
-              <GlassPanel className="p-5 h-full min-h-[200px] flex flex-col items-center justify-center border-dashed border border-muted">
-                <p className="text-sm text-muted-foreground text-center">
-                  Sign in to create and save your worlds.
-                </p>
-              </GlassPanel>
-            )}
-            
-            {worlds.map((world) => (
-              <WorldCard
-                key={world.id}
-                id={world.id}
-                name={world.name}
-                description={world.description}
-                headerImageUrl={world.header_image_url}
-                icon={world.icon}
-                updatedAt={world.updated_at}
-                onDelete={handleDeleteWorld}
-              />
-            ))}
-          </div>
-        </section>
+        {/* Pro Status Banner - logged-in users only */}
+        {user && <ProStatusBanner isSubscribed={isSubscribed} />}
 
-        {/* Worldbuilding Tools Section */}
-        <section id="tools" className="mb-16 scroll-mt-24">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="font-display text-2xl font-semibold">
-              Worldbuilding Tools
-            </h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {tools.map((tool) => (
-              <ToolCard key={tool.id} {...tool} />
-            ))}
-          </div>
-        </section>
+        {/* Landing Page Sections - non-logged-in users only */}
+        {!user && <ToolShowcase />}
+        {!user && <ValueProposition />}
 
-        {/* Features Section */}
-        <section>
-          <GlassPanel glow className="p-8 md:p-12">
-            <div className="grid md:grid-cols-3 gap-8">
-              <div className="text-center md:text-left">
-                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 mx-auto md:mx-0">
-                  <Shield className="w-6 h-6 text-primary" />
-                </div>
-                <h3 className="font-display font-semibold text-lg mb-2">
-                  Cross-Tool Integration
-                </h3>
-                <p className="text-sm text-muted-foreground">
-                  Data flows between tools. Your spacecraft references your
-                  planet's atmosphere automatically.
-                </p>
-              </div>
-              <div className="text-center md:text-left">
-                <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center mb-4 mx-auto md:mx-0">
-                  <BookOpen className="w-6 h-6 text-accent" />
-                </div>
-                <h3 className="font-display font-semibold text-lg mb-2">
-                  Export & Print
-                </h3>
-                <p className="text-sm text-muted-foreground">
-                  Generate beautiful PDFs, print-friendly views, and markdown
-                  exports of your worldbuilding.
-                </p>
-              </div>
-              <div className="text-center md:text-left">
-                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 mx-auto md:mx-0">
-                  <Users className="w-6 h-6 text-primary" />
-                </div>
-                <h3 className="font-display font-semibold text-lg mb-2">
-                  Shareable Links
-                </h3>
-                <p className="text-sm text-muted-foreground">
-                  Share your worlds with collaborators or readers via read-only
-                  links.
-                </p>
-              </div>
+        {/* My Worlds Section - logged-in users only */}
+        {user && (
+          <section id="worlds" className="mb-16 scroll-mt-24">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="font-display text-2xl font-semibold">My Worlds</h2>
             </div>
-          </GlassPanel>
-        </section>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <CreateWorldButton />
+
+              {isLoading && (
+                <GlassPanel className="p-5 h-full min-h-[200px] flex flex-col items-center justify-center">
+                  <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+                </GlassPanel>
+              )}
+
+              {!isLoading && worlds.length === 0 && (
+                <GlassPanel className="p-5 h-full min-h-[200px] flex flex-col items-center justify-center border-dashed border border-muted">
+                  <p className="text-sm text-muted-foreground text-center">
+                    Your worlds will appear here once you create them.
+                  </p>
+                </GlassPanel>
+              )}
+
+              {worlds.map((world) => (
+                <WorldCard
+                  key={world.id}
+                  id={world.id}
+                  name={world.name}
+                  description={world.description}
+                  headerImageUrl={world.header_image_url}
+                  icon={world.icon}
+                  updatedAt={world.updated_at}
+                  onDelete={handleDeleteWorld}
+                />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Worldbuilding Tools Section - logged-in users only (non-logged-in see ToolShowcase) */}
+        {user && (
+          <section id="tools" className="mb-16 scroll-mt-24">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="font-display text-2xl font-semibold">
+                Worldbuilding Tools
+              </h2>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {tools.map((tool) => (
+                <ToolCard key={tool.id} {...tool} />
+              ))}
+              {/* Quick upgrade card for non-Pro users */}
+              {!isSubscribed && <QuickUpgradeCard />}
+            </div>
+          </section>
+        )}
+
+        {/* Features Section - logged-in users only (non-logged-in see ValueProposition) */}
+        {user && (
+          <section>
+            <GlassPanel glow className="p-8 md:p-12">
+              <div className="grid md:grid-cols-3 gap-8">
+                <div className="text-center md:text-left">
+                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 mx-auto md:mx-0">
+                    <Shield className="w-6 h-6 text-primary" />
+                  </div>
+                  <h3 className="font-display font-semibold text-lg mb-2">
+                    Cross-Tool Integration
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    Data flows between tools. Your spacecraft references your
+                    planet's atmosphere automatically.
+                  </p>
+                </div>
+                <div className="text-center md:text-left">
+                  <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center mb-4 mx-auto md:mx-0">
+                    <BookOpen className="w-6 h-6 text-accent" />
+                  </div>
+                  <h3 className="font-display font-semibold text-lg mb-2">
+                    Export & Print
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    Generate beautiful PDFs, print-friendly views, and markdown
+                    exports of your worldbuilding.
+                  </p>
+                </div>
+                <div className="text-center md:text-left">
+                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 mx-auto md:mx-0">
+                    <Users className="w-6 h-6 text-primary" />
+                  </div>
+                  <h3 className="font-display font-semibold text-lg mb-2">
+                    Shareable Links
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    Share your worlds with collaborators or readers via read-only
+                    links.
+                  </p>
+                </div>
+              </div>
+            </GlassPanel>
+          </section>
+        )}
       </main>
 
       {/* Footer */}

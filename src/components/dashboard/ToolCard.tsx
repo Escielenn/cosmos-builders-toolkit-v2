@@ -1,4 +1,4 @@
-import { LucideIcon, Lock, Crown } from "lucide-react";
+import { LucideIcon, Lock, Crown, Unlock } from "lucide-react";
 import { Link } from "react-router-dom";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Badge } from "@/components/ui/badge";
@@ -51,7 +51,13 @@ const ToolCard = ({
           />
         </div>
         <div className="flex items-center gap-2">
-          {isPro && (
+          {isPro && isSubscribed && (
+            <Badge variant="secondary" className="text-xs bg-green-500/20 text-green-600 dark:text-green-400">
+              <Unlock className="w-3 h-3 mr-1" />
+              Unlocked
+            </Badge>
+          )}
+          {isPro && !isSubscribed && (
             <Badge variant="secondary" className="text-xs bg-amber-500/20 text-amber-600 dark:text-amber-400">
               <Crown className="w-3 h-3 mr-1" />
               Pro

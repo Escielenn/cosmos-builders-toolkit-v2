@@ -15,20 +15,43 @@ const Pricing = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { isSubscribed, subscription, createCheckoutSession, createPortalSession, refreshSubscription } = useSubscription();
+  const { isSubscribed, subscription, createCheckoutSession, createPortalSession, refreshSubscription, waitForSubscription } = useSubscription();
   const { toast } = useToast();
   const [loading, setLoading] = useState<'monthly' | 'yearly' | 'portal' | null>(null);
+  const [activating, setActivating] = useState(false);
 
   // Handle success/cancel query params
   useEffect(() => {
-    if (searchParams.get('success') === 'true') {
+    const handleSuccess = async () => {
+      setActivating(true);
       toast({
-        title: "Welcome to Pro!",
-        description: "Your subscription is now active. Enjoy all the tools!",
+        title: "Activating your subscription...",
+        description: "Please wait while we confirm your payment.",
       });
-      refreshSubscription();
+
+      // Poll for subscription (webhook may take a few seconds)
+      const success = await waitForSubscription();
+
+      if (success) {
+        toast({
+          title: "Welcome to Pro!",
+          description: "Your subscription is now active. Enjoy all the tools!",
+        });
+      } else {
+        toast({
+          title: "Subscription pending",
+          description: "Your payment was received. It may take a moment to activate.",
+        });
+        refreshSubscription();
+      }
+
+      setActivating(false);
       // Clean up URL
       window.history.replaceState({}, '', '/pricing');
+    };
+
+    if (searchParams.get('success') === 'true') {
+      handleSuccess();
     } else if (searchParams.get('canceled') === 'true') {
       toast({
         title: "Checkout canceled",
@@ -37,7 +60,7 @@ const Pricing = () => {
       // Clean up URL
       window.history.replaceState({}, '', '/pricing');
     }
-  }, [searchParams, toast, refreshSubscription]);
+  }, [searchParams, toast, refreshSubscription, waitForSubscription]);
 
   const handleCheckout = async (priceType: 'monthly' | 'yearly') => {
     if (!user) {
@@ -54,7 +77,7 @@ const Pricing = () => {
     } catch (error) {
       toast({
         title: "Error",
-        description: "Failed to start checkout. Please try again.",
+        description: error instanceof Error ? error.message : "Failed to start checkout. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -174,7 +197,14 @@ const Pricing = () => {
               ))}
             </ul>
 
-            {isSubscribed ? (
+            {activating ? (
+              <div className="space-y-3">
+                <div className="p-4 rounded-lg bg-primary/10 text-center">
+                  <Loader2 className="w-6 h-6 mx-auto mb-2 animate-spin text-primary" />
+                  <p className="text-sm font-medium">Activating your Pro subscription...</p>
+                </div>
+              </div>
+            ) : isSubscribed ? (
               <div className="space-y-3">
                 <div className="p-3 rounded-lg bg-green-500/10 text-center">
                   <p className="text-sm font-medium text-green-600 dark:text-green-400">
