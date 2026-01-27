@@ -62,57 +62,57 @@
   }
 
   .dark {
-    /* StellarForge Brand - Near black background */
-    --background: 0 0% 4%;
+    /* StellarForge Brand - Charcoal/Concrete aesthetic */
+    --background: 0 0% 8%;               /* #141414 charcoal */
     --foreground: 0 0% 98%;
 
-    --card: 0 0% 6%;
+    --card: 0 0% 11%;                    /* #1c1c1c slightly lighter */
     --card-foreground: 0 0% 98%;
 
-    --popover: 0 0% 6%;
+    --popover: 0 0% 10%;
     --popover-foreground: 0 0% 98%;
 
     /* Primary: Cyan accent */
     --primary: 187 100% 45%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 0 0% 12%;
+    --secondary: 0 0% 14%;
     --secondary-foreground: 0 0% 98%;
 
-    --muted: 0 0% 12%;
-    --muted-foreground: 0 0% 60%;
+    --muted: 0 0% 14%;
+    --muted-foreground: 0 0% 55%;
 
-    /* Accent: Magenta */
-    --accent: 300 100% 50%;
+    /* Accent: Cyan (removing magenta to avoid purple) */
+    --accent: 187 80% 50%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 65% 45%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 15%;
-    --input: 0 0% 15%;
+    --border: 0 0% 18%;
+    --input: 0 0% 18%;
     --ring: 187 100% 45%;
 
     /* Glass morphism tokens - dark mode */
-    --glass: 0 0% 6% / 0.9;
+    --glass: 0 0% 10% / 0.9;
     --glass-border: 0 0% 100% / 0.08;
-    --glass-glow: 187 100% 45% / 0.2;
+    --glass-glow: 187 100% 45% / 0.15;
 
-    /* Accent gradients - dark mode (cyan to magenta) */
-    --gradient-primary: linear-gradient(135deg, hsl(187 100% 45%), hsl(300 100% 50%));
-    --gradient-subtle: linear-gradient(135deg, hsl(187 100% 45% / 0.15), hsl(300 100% 50% / 0.15));
+    /* Accent gradients - dark mode (cyan only, no purple) */
+    --gradient-primary: linear-gradient(135deg, hsl(187 100% 40%), hsl(187 80% 55%));
+    --gradient-subtle: linear-gradient(135deg, hsl(187 100% 45% / 0.1), hsl(187 80% 55% / 0.1));
 
     /* Shadows - dark mode */
-    --shadow-glass: 0 8px 32px hsl(0 0% 0% / 0.5);
-    --shadow-glow: 0 0 60px hsl(187 100% 45% / 0.3);
+    --shadow-glass: 0 8px 32px hsl(0 0% 0% / 0.4);
+    --shadow-glow: 0 0 40px hsl(187 100% 45% / 0.2);
 
-    --sidebar-background: 0 0% 5%;
+    --sidebar-background: 0 0% 6%;
     --sidebar-foreground: 0 0% 90%;
     --sidebar-primary: 187 100% 45%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 0 0% 10%;
+    --sidebar-accent: 0 0% 12%;
     --sidebar-accent-foreground: 0 0% 98%;
-    --sidebar-border: 0 0% 12%;
+    --sidebar-border: 0 0% 15%;
     --sidebar-ring: 187 100% 45%;
   }
 }

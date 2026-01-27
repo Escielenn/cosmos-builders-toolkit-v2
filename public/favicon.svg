@@ -1,57 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <defs>
-    <!-- Cyan glow filter -->
-    <filter id="cyanGlow" x="-100%" y="-100%" width="300%" height="300%">
-      <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur"/>
-      <feColorMatrix in="blur" type="matrix"
-        values="0 0 0 0 0
-                0 1 0 0 0.9
-                0 0 1 0 1
-                0 0 0 1 0"/>
-      <feMerge>
-        <feMergeNode/>
-        <feMergeNode in="SourceGraphic"/>
-      </feMerge>
-    </filter>
-    <!-- Gradient for the swoosh -->
-    <linearGradient id="cyanGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#00FFFF" stop-opacity="0.8"/>
-      <stop offset="50%" stop-color="#00E5FF"/>
-      <stop offset="100%" stop-color="#00CED1" stop-opacity="0.6"/>
-    </linearGradient>
-  </defs>
+  <!-- Black background -->
+  <rect width="64" height="64" fill="#141414"/>
 
-  <!-- Black background square -->
-  <rect x="0" y="0" width="64" height="64" fill="#000000"/>
-
-  <!-- Outer glow layer -->
+  <!-- Simple cyan swoosh arc -->
   <path
-    d="M 56 4 Q 32 8, 12 32 Q 8 40, 10 48"
-    stroke="#00E5FF"
-    stroke-width="6"
+    d="M 54 6 Q 30 10, 12 32 Q 8 42, 10 50"
+    stroke="#00E5E5"
+    stroke-width="4"
     stroke-linecap="round"
     fill="none"
-    opacity="0.3"
-    filter="url(#cyanGlow)"
-  />
-
-  <!-- Main cyan swoosh arc -->
-  <path
-    d="M 56 4 Q 32 8, 12 32 Q 8 40, 10 48"
-    stroke="url(#cyanGradient)"
-    stroke-width="3"
-    stroke-linecap="round"
-    fill="none"
-    filter="url(#cyanGlow)"
-  />
-
-  <!-- Bright highlight -->
-  <path
-    d="M 52 8 Q 36 12, 18 28"
-    stroke="#00FFFF"
-    stroke-width="1.5"
-    stroke-linecap="round"
-    fill="none"
-    opacity="0.8"
   />
 </svg>
