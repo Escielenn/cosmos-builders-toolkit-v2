@@ -416,21 +416,19 @@ const DrakeEquationCalculator = () => {
   const handleSave = async (selection: SaveSelection) => {
     setIsSavingToCloud(true);
     try {
-      const worksheetData = {
-        world_id: selection.worldId,
-        tool_type: "drake-equation-calculator",
-        name: selection.name,
-        data: formState as unknown as Json,
-      };
-
       if (selection.worksheetId) {
         await updateWorksheet.mutateAsync({
-          id: selection.worksheetId,
+          worksheetId: selection.worksheetId,
           data: formState as unknown as Json,
-          name: selection.name,
+          title: selection.name,
         });
       } else {
-        await createWorksheet.mutateAsync(worksheetData);
+        await createWorksheet.mutateAsync({
+          worldId: selection.worldId,
+          toolType: "drake-equation-calculator",
+          title: selection.name,
+          data: formState as unknown as Json,
+        });
       }
 
       setLastSavedToCloud(new Date());
@@ -781,6 +779,16 @@ const DrakeEquationCalculator = () => {
             Learn more about the Drake Equation for worldbuilding
           </Link>
         </div>
+
+        {/* Bottom Action Bar */}
+        <ToolActionBar
+          onSave={() => setSaveDialogOpen(true)}
+          onPrint={handlePrint}
+          onExport={handleExport}
+          hasUnsavedChanges={hasUnsavedChanges}
+          isSaving={isSavingToCloud}
+          className="mt-8"
+        />
       </main>
 
       {/* Save Dialog */}
