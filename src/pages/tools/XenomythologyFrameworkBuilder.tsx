@@ -15,6 +15,7 @@ import {
   Trash2,
   Sparkles,
   Link2,
+  FileText,
 } from "lucide-react";
 import Header from "@/components/layout/Header";
 import { GlassPanel } from "@/components/ui/glass-panel";
@@ -44,6 +45,9 @@ import ToolActionBar from "@/components/tools/ToolActionBar";
 import SelectedParametersSidebar from "@/components/tools/SelectedParametersSidebar";
 import SuggestedImplications from "@/components/tools/SuggestedImplications";
 import ImportFromECRModal from "@/components/tools/ImportFromECRModal";
+import ExportDialog from "@/components/tools/ExportDialog";
+import { XenomythologySummaryTemplate, XenomythologyFullReportTemplate } from "@/lib/pdf/templates";
+import { useWorlds } from "@/hooks/use-worlds";
 import { generateImplications, type Implication } from "@/lib/xenomythology-implications";
 import { Json } from "@/integrations/supabase/types";
 import {
@@ -681,14 +685,20 @@ const TOOL_TYPE = "xenomythology-framework-builder";
 const XenomythologyFrameworkBuilder = () => {
   const [formState, setFormState] = useState<FormState>(initialFormState);
   const [currentWorksheetId, setCurrentWorksheetId] = useState<string | null>(null);
+  const [exportDialogOpen, setExportDialogOpen] = useState(false);
   const { toast } = useToast();
   const { user } = useAuth();
+  const { worlds } = useWorlds();
   useBackground();
 
   // Get URL params for worldId and worksheetId
   const [searchParams, setSearchParams] = useSearchParams();
   const worldId = searchParams.get("worldId");
   const worksheetId = searchParams.get("worksheetId");
+
+  // Get world name from worldId
+  const currentWorld = worldId ? worlds.find((w) => w.id === worldId) : null;
+  const worldName = currentWorld?.name;
 
   // Supabase hooks
   const { worksheets, createWorksheet, updateWorksheet } = useWorksheets(worldId || undefined);
@@ -907,18 +917,7 @@ const XenomythologyFrameworkBuilder = () => {
   };
 
   const handleExport = () => {
-    const dataStr = JSON.stringify(formState, null, 2);
-    const dataBlob = new Blob([dataStr], { type: "application/json" });
-    const url = URL.createObjectURL(dataBlob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `xenomythology-framework-${Date.now()}.json`;
-    link.click();
-    URL.revokeObjectURL(url);
-    toast({
-      title: "Exported",
-      description: "Your xenomythology framework has been downloaded as JSON.",
-    });
+    setExportDialogOpen(true);
   };
 
   const handlePrint = () => {
@@ -2644,6 +2643,18 @@ const XenomythologyFrameworkBuilder = () => {
         onOpenChange={setShowECRImport}
         worksheets={ecrWorksheets}
         onImport={handleECRImport}
+      />
+
+      {/* Export Dialog */}
+      <ExportDialog
+        open={exportDialogOpen}
+        onOpenChange={setExportDialogOpen}
+        toolName="Xenomythology Framework"
+        worldName={worldName}
+        formState={formState}
+        summaryTemplate={<XenomythologySummaryTemplate formState={formState} worldName={worldName} />}
+        fullTemplate={<XenomythologyFullReportTemplate formState={formState} worldName={worldName} />}
+        defaultFilename="xenomythology-framework"
       />
     </div>
   );

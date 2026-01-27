@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { ArrowLeft, Download, Save, ChevronDown, ChevronUp, Info, ExternalLink, Printer, Cloud, CloudOff, Check, AlertCircle } from "lucide-react";
+import { ArrowLeft, Download, Save, ChevronDown, ChevronUp, Info, ExternalLink, Printer, Cloud, CloudOff, Check, AlertCircle, FileText } from "lucide-react";
 import Header from "@/components/layout/Header";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
@@ -26,6 +26,9 @@ import { useWorksheets, useWorksheet } from "@/hooks/use-worksheets";
 import { useAuth } from "@/contexts/AuthContext";
 import SectionNavigation, { Section } from "@/components/tools/SectionNavigation";
 import ToolActionBar from "@/components/tools/ToolActionBar";
+import ExportDialog from "@/components/tools/ExportDialog";
+import { PlanetarySummaryTemplate, PlanetaryFullReportTemplate } from "@/lib/pdf/templates";
+import { useWorlds } from "@/hooks/use-worlds";
 import { Json } from "@/integrations/supabase/types";
 import {
   STAR_TYPES,
@@ -343,14 +346,20 @@ const TOOL_TYPE = "planetary-profile";
 const PlanetaryProfile = () => {
   const [formState, setFormState] = useState<FormState>(initialFormState);
   const [currentWorksheetId, setCurrentWorksheetId] = useState<string | null>(null);
+  const [exportDialogOpen, setExportDialogOpen] = useState(false);
   const { toast } = useToast();
   const { user } = useAuth();
+  const { worlds } = useWorlds();
   useBackground();
 
   // Get URL params for worldId and worksheetId
   const [searchParams, setSearchParams] = useSearchParams();
   const worldId = searchParams.get("worldId");
   const worksheetId = searchParams.get("worksheetId");
+
+  // Get world name from worldId
+  const currentWorld = worldId ? worlds.find((w) => w.id === worldId) : null;
+  const worldName = currentWorld?.name;
 
   // Supabase hooks
   const { createWorksheet, updateWorksheet } = useWorksheets(worldId || undefined);
@@ -521,18 +530,7 @@ const PlanetaryProfile = () => {
   };
 
   const handleExport = () => {
-    const dataStr = JSON.stringify(formState, null, 2);
-    const dataBlob = new Blob([dataStr], { type: "application/json" });
-    const url = URL.createObjectURL(dataBlob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `planetary-profile-${Date.now()}.json`;
-    link.click();
-    URL.revokeObjectURL(url);
-    toast({
-      title: "Exported",
-      description: "Your planetary profile has been downloaded as JSON.",
-    });
+    setExportDialogOpen(true);
   };
 
   const handlePrint = () => {
@@ -1636,6 +1634,18 @@ const PlanetaryProfile = () => {
           <p>© 2026 StellarForge. All rights reserved.</p>
         </div>
       </footer>
+
+      {/* Export Dialog */}
+      <ExportDialog
+        open={exportDialogOpen}
+        onOpenChange={setExportDialogOpen}
+        toolName="Planetary Profile"
+        worldName={worldName}
+        formState={formState}
+        summaryTemplate={<PlanetarySummaryTemplate formState={formState} worldName={worldName} />}
+        fullTemplate={<PlanetaryFullReportTemplate formState={formState} worldName={worldName} />}
+        defaultFilename="planetary-profile"
+      />
     </div>
   );
 };

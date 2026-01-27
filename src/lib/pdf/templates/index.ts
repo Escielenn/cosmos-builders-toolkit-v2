@@ -1,2 +1,12 @@
 export { default as DrakeSummaryTemplate } from "./DrakeSummaryTemplate";
 export { default as DrakeFullReportTemplate } from "./DrakeFullReportTemplate";
+export { default as ECRSummaryTemplate } from "./ECRSummaryTemplate";
+export { default as ECRFullReportTemplate } from "./ECRFullReportTemplate";
+export { default as PlanetarySummaryTemplate } from "./PlanetarySummaryTemplate";
+export { default as PlanetaryFullReportTemplate } from "./PlanetaryFullReportTemplate";
+export { default as SpacecraftSummaryTemplate } from "./SpacecraftSummaryTemplate";
+export { default as SpacecraftFullReportTemplate } from "./SpacecraftFullReportTemplate";
+export { default as PropulsionSummaryTemplate } from "./PropulsionSummaryTemplate";
+export { default as PropulsionFullReportTemplate } from "./PropulsionFullReportTemplate";
+export { default as XenomythologySummaryTemplate } from "./XenomythologySummaryTemplate";
+export { default as XenomythologyFullReportTemplate } from "./XenomythologyFullReportTemplate";

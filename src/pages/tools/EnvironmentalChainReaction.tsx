@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { ArrowLeft, Download, Save, ChevronDown, ChevronUp, Info, Printer, ExternalLink, Cloud, CloudOff } from "lucide-react";
+import { ArrowLeft, Download, Save, ChevronDown, ChevronUp, Info, Printer, ExternalLink, Cloud, CloudOff, FileText } from "lucide-react";
 import Header from "@/components/layout/Header";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
@@ -30,6 +30,8 @@ import WorldSelectDialog, { SaveSelection } from "@/components/tools/WorldSelect
 import SectionNavigation, { Section } from "@/components/tools/SectionNavigation";
 import ToolActionBar from "@/components/tools/ToolActionBar";
 import SelectedParametersSidebar from "@/components/tools/SelectedParametersSidebar";
+import ExportDialog from "@/components/tools/ExportDialog";
+import { ECRSummaryTemplate, ECRFullReportTemplate } from "@/lib/pdf/templates";
 import { Json } from "@/integrations/supabase/types";
 
 // Section definitions for navigation
@@ -534,15 +536,20 @@ const EnvironmentalChainReaction = () => {
   const [currentWorksheetId, setCurrentWorksheetId] = useState<string | null>(null);
   const [showWorldSelectDialog, setShowWorldSelectDialog] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [exportDialogOpen, setExportDialogOpen] = useState(false);
   const { toast } = useToast();
   const { user } = useAuth();
-  const { createWorld } = useWorlds();
+  const { worlds, createWorld } = useWorlds();
   useBackground();
 
   // Get URL params for worldId and worksheetId
   const [searchParams, setSearchParams] = useSearchParams();
   const worldId = searchParams.get("worldId");
   const worksheetId = searchParams.get("worksheetId");
+
+  // Get world name from worldId
+  const currentWorld = worldId ? worlds.find((w) => w.id === worldId) : null;
+  const worldName = currentWorld?.name;
 
   // Supabase hooks
   const { createWorksheet, updateWorksheet } = useWorksheets(worldId || undefined);
@@ -786,18 +793,7 @@ const EnvironmentalChainReaction = () => {
   };
 
   const handleExport = () => {
-    const dataStr = JSON.stringify(formState, null, 2);
-    const dataBlob = new Blob([dataStr], { type: "application/json" });
-    const url = URL.createObjectURL(dataBlob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "environmental-chain-reaction.json";
-    link.click();
-    URL.revokeObjectURL(url);
-    toast({
-      title: "Exported",
-      description: "Your worksheet has been downloaded as JSON.",
-    });
+    setExportDialogOpen(true);
   };
 
   const handlePrint = () => {
@@ -1395,6 +1391,18 @@ const EnvironmentalChainReaction = () => {
         onOpenChange={setShowWorldSelectDialog}
         onSave={handleWorldSelection}
         isLoading={isSaving}
+      />
+
+      {/* Export Dialog */}
+      <ExportDialog
+        open={exportDialogOpen}
+        onOpenChange={setExportDialogOpen}
+        toolName="Environmental Chain Reaction"
+        worldName={worldName || undefined}
+        formState={formState}
+        summaryTemplate={<ECRSummaryTemplate formState={formState} worldName={worldName || undefined} />}
+        fullTemplate={<ECRFullReportTemplate formState={formState} worldName={worldName || undefined} />}
+        defaultFilename="environmental-chain-reaction"
       />
     </div>
   );
