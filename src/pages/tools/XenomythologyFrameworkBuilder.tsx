@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import {
   ArrowLeft,
@@ -14,6 +14,7 @@ import {
   Plus,
   Trash2,
   Sparkles,
+  Link2,
 } from "lucide-react";
 import Header from "@/components/layout/Header";
 import { GlassPanel } from "@/components/ui/glass-panel";
@@ -40,6 +41,10 @@ import { useWorksheets, useWorksheet } from "@/hooks/use-worksheets";
 import { useAuth } from "@/contexts/AuthContext";
 import SectionNavigation, { Section } from "@/components/tools/SectionNavigation";
 import ToolActionBar from "@/components/tools/ToolActionBar";
+import SelectedParametersSidebar from "@/components/tools/SelectedParametersSidebar";
+import SuggestedImplications from "@/components/tools/SuggestedImplications";
+import ImportFromECRModal from "@/components/tools/ImportFromECRModal";
+import { generateImplications, type Implication } from "@/lib/xenomythology-implications";
 import { Json } from "@/integrations/supabase/types";
 import {
   SENSORY_MODALITIES,
@@ -247,6 +252,12 @@ interface FormState {
     scienceHarmony: string;
     scienceTension: string;
     scienceResolution: string[];
+  };
+
+  // Linked worksheets for cross-tool integration
+  _linkedWorksheets?: {
+    ecrWorksheetId?: string;
+    lastSyncedAt?: string;
   };
 }
 
@@ -600,8 +611,12 @@ const XenomythologyFrameworkBuilder = () => {
   const worksheetId = searchParams.get("worksheetId");
 
   // Supabase hooks
-  const { createWorksheet, updateWorksheet } = useWorksheets(worldId || undefined);
+  const { worksheets, createWorksheet, updateWorksheet } = useWorksheets(worldId || undefined);
   const { data: existingWorksheet, isLoading: worksheetLoading } = useWorksheet(worksheetId || undefined);
+
+  // ECR integration state
+  const [showECRImport, setShowECRImport] = useState(false);
+  const ecrWorksheets = worksheets.filter(w => w.tool_type === "environmental-chain-reaction");
 
   // Load existing worksheet from Supabase if worksheetId is provided
   useEffect(() => {
@@ -835,6 +850,131 @@ const XenomythologyFrameworkBuilder = () => {
     return SURVIVAL_CHALLENGES.find((c) => c.id === id)?.name || id;
   };
 
+  // Helper for sidebar - extract key selections
+  const getSelectedParametersForSidebar = () => {
+    const params: Array<{
+      typeId: string;
+      categoryLabel: string;
+      optionLabel: string;
+      optionDescription: string;
+      specificValue: string;
+    }> = [];
+
+    // Sensory modalities (show first 3)
+    if (formState.sensoryArchitecture.primaryModalities.length > 0) {
+      const modalities = formState.sensoryArchitecture.primaryModalities.slice(0, 3);
+      const names = modalities.map(id => SENSORY_MODALITIES.find(m => m.id === id)?.name || id);
+      params.push({
+        typeId: "sensory",
+        categoryLabel: "Primary Senses",
+        optionLabel: names.join(", "),
+        optionDescription: "",
+        specificValue: modalities.length > 3 ? `+${formState.sensoryArchitecture.primaryModalities.length - 3} more` : "",
+      });
+    }
+
+    // Consciousness type
+    if (formState.cognitiveArchitecture.consciousnessType) {
+      const opt = CONSCIOUSNESS_TYPES.find(c => c.id === formState.cognitiveArchitecture.consciousnessType);
+      if (opt) {
+        params.push({
+          typeId: "consciousness",
+          categoryLabel: "Consciousness",
+          optionLabel: opt.name,
+          optionDescription: opt.description,
+          specificValue: "",
+        });
+      }
+    }
+
+    // Body plan
+    if (formState.physicalForm.bodyPlan) {
+      const opt = BODY_PLANS.find(b => b.id === formState.physicalForm.bodyPlan);
+      if (opt) {
+        params.push({
+          typeId: "body-plan",
+          categoryLabel: "Body Plan",
+          optionLabel: opt.name,
+          optionDescription: opt.description,
+          specificValue: "",
+        });
+      }
+    }
+
+    // Lifespan
+    if (formState.physicalForm.lifespanCategory) {
+      const opt = LIFESPAN_CATEGORIES.find(l => l.id === formState.physicalForm.lifespanCategory);
+      if (opt) {
+        params.push({
+          typeId: "lifespan",
+          categoryLabel: "Lifespan",
+          optionLabel: opt.name,
+          optionDescription: opt.description,
+          specificValue: "",
+        });
+      }
+    }
+
+    // Planet type
+    if (formState.planetaryConditions.planetType) {
+      const opt = PLANET_TYPES.find(p => p.id === formState.planetaryConditions.planetType);
+      if (opt) {
+        params.push({
+          typeId: "planet-type",
+          categoryLabel: "Planet Type",
+          optionLabel: opt.name,
+          optionDescription: opt.description,
+          specificValue: "",
+        });
+      }
+    }
+
+    // Stellar environment
+    if (formState.planetaryConditions.stellarEnvironment) {
+      const opt = STELLAR_ENVIRONMENTS.find(s => s.id === formState.planetaryConditions.stellarEnvironment);
+      if (opt) {
+        params.push({
+          typeId: "stellar",
+          categoryLabel: "Stellar Environment",
+          optionLabel: opt.name,
+          optionDescription: opt.description,
+          specificValue: "",
+        });
+      }
+    }
+
+    // Day/Night cycle
+    if (formState.planetaryConditions.dayNightCycle) {
+      const opt = DAY_NIGHT_CYCLES.find(d => d.id === formState.planetaryConditions.dayNightCycle);
+      if (opt) {
+        params.push({
+          typeId: "day-night",
+          categoryLabel: "Day/Night Cycle",
+          optionLabel: opt.name,
+          optionDescription: opt.description,
+          specificValue: "",
+        });
+      }
+    }
+
+    // Survival challenges (top 3)
+    if (formState.evolutionaryPressures.survivalChallenges.length > 0) {
+      const challenges = formState.evolutionaryPressures.survivalChallenges.slice(0, 3);
+      const names = challenges.map(id => SURVIVAL_CHALLENGES.find(c => c.id === id)?.name || id);
+      params.push({
+        typeId: "challenges",
+        categoryLabel: "Survival Challenges",
+        optionLabel: names.join(", "),
+        optionDescription: "",
+        specificValue: formState.evolutionaryPressures.survivalChallenges.length > 3
+          ? `+${formState.evolutionaryPressures.survivalChallenges.length - 3} more`
+          : "",
+      });
+    }
+
+    return params;
+  };
+
   // Check for conditional archetype fields
   const showMetamorphicArchetype = formState.physicalForm.developmentalStages === "metamorphosis" ||
     formState.physicalForm.developmentalStages === "multiple-metamorphosis";
@@ -850,6 +990,89 @@ const XenomythologyFrameworkBuilder = () => {
   const showOceanWorldArchetype = formState.planetaryConditions.planetType === "ocean-world";
   const showNoSkyArchetype = formState.planetaryConditions.atmosphericComposition === "toxic" ||
     formState.planetaryConditions.dayNightCycle === "no-distinction";
+
+  // Generate implications from biology + environment
+  const implications = useMemo(() => {
+    return generateImplications(formState);
+  }, [
+    formState.sensoryArchitecture.primaryModalities,
+    formState.sensoryArchitecture.integrationStyle,
+    formState.physicalForm.bodyPlan,
+    formState.physicalForm.lifespanCategory,
+    formState.physicalForm.developmentalStages,
+    formState.physicalForm.offspringInvestment,
+    formState.cognitiveArchitecture.consciousnessType,
+    formState.cognitiveArchitecture.memoryArchitecture,
+    formState.planetaryConditions.planetType,
+    formState.planetaryConditions.dayNightCycle,
+    formState.planetaryConditions.seasonalVariation,
+    formState.planetaryConditions.stellarEnvironment,
+    formState.planetaryConditions.environmentalVolatility,
+    formState.planetaryConditions.geographicDiversity,
+  ]);
+
+  // Handle applying an implication to archetype fields
+  const handleApplyImplication = (implication: Implication) => {
+    if (implication.suggestedArchetypeForm) {
+      // Add a new archetype entry based on the implication
+      setFormState((prev) => ({
+        ...prev,
+        archetypePantheon: [
+          ...prev.archetypePantheon,
+          {
+            name: implication.archetypeChannel.split("/")[0].trim(),
+            evolutionaryOrigin: implication.perceivedConstant,
+            cognitiveFunction: implication.explanation.split(".")[0] + ".",
+            symbolicForm: implication.suggestedArchetypeForm || "",
+            narrativeRole: "",
+          },
+        ],
+      }));
+      toast({
+        title: "Archetype Added",
+        description: `Added "${implication.archetypeChannel.split("/")[0].trim()}" to your Archetypal Pantheon.`,
+      });
+    }
+  };
+
+  // Handle importing data from ECR worksheet
+  const handleECRImport = (
+    importData: Partial<FormState>,
+    linkedWorksheetId?: string
+  ) => {
+    setFormState((prev) => {
+      const updated = { ...prev };
+
+      // Merge planetary conditions (only non-empty values)
+      if (importData.planetaryConditions) {
+        updated.planetaryConditions = {
+          ...prev.planetaryConditions,
+          ...Object.fromEntries(
+            Object.entries(importData.planetaryConditions).filter(
+              ([, v]) => v && v !== ""
+            )
+          ),
+        };
+      }
+
+      // Set linked worksheets info
+      if (linkedWorksheetId) {
+        updated._linkedWorksheets = {
+          ecrWorksheetId: linkedWorksheetId,
+          lastSyncedAt: new Date().toISOString(),
+        };
+      }
+
+      return updated;
+    });
+
+    toast({
+      title: "ECR Data Imported",
+      description: linkedWorksheetId
+        ? "Environmental parameters imported and linked. Changes will sync."
+        : "Environmental parameters imported.",
+    });
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -877,7 +1100,15 @@ const XenomythologyFrameworkBuilder = () => {
               </p>
             </div>
 
-            <div className="flex items-center gap-2 no-print">
+            <div className="flex items-center gap-2 no-print flex-wrap">
+              {/* Linked ECR indicator */}
+              {formState._linkedWorksheets?.ecrWorksheetId && (
+                <Badge variant="secondary" className="text-xs bg-blue-500/10 text-blue-600 dark:text-blue-400">
+                  <Link2 className="w-3 h-3 mr-1" />
+                  Linked to ECR
+                </Badge>
+              )}
+
               {worldId && user ? (
                 <span className="text-xs text-muted-foreground flex items-center gap-1">
                   <Cloud className="w-3 h-3 text-green-500" />
@@ -889,6 +1120,15 @@ const XenomythologyFrameworkBuilder = () => {
                   Local only
                 </span>
               )}
+
+              {/* ECR Import button - only show if there are ECR worksheets */}
+              {ecrWorksheets.length > 0 && (
+                <Button variant="outline" size="sm" onClick={() => setShowECRImport(true)}>
+                  <Link2 className="w-4 h-4 mr-2" />
+                  Import from ECR
+                </Button>
+              )}
+
               <Button variant="outline" size="sm" onClick={handleSave} disabled={worksheetLoading}>
                 <Save className="w-4 h-4 mr-2" />
                 Save Draft
@@ -941,8 +1181,10 @@ const XenomythologyFrameworkBuilder = () => {
           </div>
         </GlassPanel>
 
-        {/* Form Sections */}
-        <div className="space-y-4">
+        {/* Form Sections with Sidebar */}
+        <div className="flex gap-6">
+          {/* Main Content */}
+          <div className="flex-1 space-y-4">
           {/* Section 1: Species Biology & Psychology */}
           <CollapsibleSection
             id="section-species-biology"
@@ -1276,6 +1518,15 @@ const XenomythologyFrameworkBuilder = () => {
               </div>
             </div>
           </CollapsibleSection>
+
+          {/* Suggested Implications - appears after biology and environment sections */}
+          {implications.length > 0 && (
+            <SuggestedImplications
+              implications={implications}
+              onApply={handleApplyImplication}
+              className="my-6"
+            />
+          )}
 
           {/* Section 3: Archetypal Foundations */}
           <CollapsibleSection
@@ -2117,6 +2368,18 @@ const XenomythologyFrameworkBuilder = () => {
               )}
             </div>
           </CollapsibleSection>
+          </div>
+
+          {/* Sticky Sidebar - visible on large screens when parameters selected */}
+          {getSelectedParametersForSidebar().length > 0 && (
+            <div className="hidden lg:block">
+              <SelectedParametersSidebar
+                parameters={getSelectedParametersForSidebar()}
+                title="Species & Environment"
+                footerText="These foundations shape all archetypal expressions."
+              />
+            </div>
+          )}
         </div>
 
         {/* Bottom Action Bar */}
@@ -2138,6 +2401,14 @@ const XenomythologyFrameworkBuilder = () => {
           <p>© 2026 StellarForge. All rights reserved.</p>
         </div>
       </footer>
+
+      {/* ECR Import Modal */}
+      <ImportFromECRModal
+        open={showECRImport}
+        onOpenChange={setShowECRImport}
+        worksheets={ecrWorksheets}
+        onImport={handleECRImport}
+      />
     </div>
   );
 };

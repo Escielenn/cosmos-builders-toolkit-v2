@@ -15,11 +15,15 @@ interface SelectedParameter {
 interface SelectedParametersSidebarProps {
   parameters: SelectedParameter[];
   className?: string;
+  title?: string;
+  footerText?: string;
 }
 
 const SelectedParametersSidebar = ({
   parameters,
   className,
+  title = "Selected Environmental Factors",
+  footerText = "Reference these factors as you work through the cascade levels.",
 }: SelectedParametersSidebarProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
@@ -61,7 +65,7 @@ const SelectedParametersSidebar = ({
         ) : (
           <div className="p-4 pt-10">
             <h3 className="font-display font-semibold text-sm mb-3 text-primary">
-              Selected Environmental Factors
+              {title}
             </h3>
             <div className="space-y-3 max-h-[calc(100vh-12rem)] overflow-y-auto pr-1">
               {parameters.map((param) => (
@@ -82,7 +86,7 @@ const SelectedParametersSidebar = ({
               ))}
             </div>
             <p className="text-xs text-muted-foreground mt-4 pt-3 border-t border-border">
-              Reference these factors as you work through the cascade levels.
+              {footerText}
             </p>
           </div>
         )}
