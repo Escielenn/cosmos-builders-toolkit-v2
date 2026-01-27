@@ -11,7 +11,7 @@ const QuickUpgradeCard = () => {
       </div>
 
       <h3 className="font-display font-semibold text-lg mb-2 text-center">
-        Unlock 5 More Tools
+        Unlock 6 More Tools
       </h3>
 
       <p className="text-sm text-muted-foreground text-center mb-4">

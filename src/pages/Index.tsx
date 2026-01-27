@@ -8,6 +8,7 @@ import {
   Loader2,
   Calculator,
   Rocket,
+  Sparkles,
 } from "lucide-react";
 import Header from "@/components/layout/Header";
 import ToolCard from "@/components/dashboard/ToolCard";
@@ -72,13 +73,22 @@ const tools = [
     week: 5,
   },
   {
+    id: "xenomythology-framework-builder",
+    title: "Xenomythology Framework Builder",
+    description:
+      "Create comprehensive alien mythological systems derived from species biology, environment, and evolutionary pressures.",
+    icon: Sparkles,
+    status: "available" as const,
+    week: 6,
+  },
+  {
     id: "species-creator",
     title: "Species Creator",
     description:
       "Design alien species with consistent biology and evolutionary history.",
     icon: Users,
     status: "coming-soon" as const,
-    week: 6,
+    week: 7,
   },
   {
     id: "culture-designer",
@@ -87,7 +97,7 @@ const tools = [
       "Build societies with coherent values, rituals, and social structures.",
     icon: BookOpen,
     status: "coming-soon" as const,
-    week: 7,
+    week: 8,
   },
   {
     id: "technology-mapper",
@@ -95,7 +105,7 @@ const tools = [
     description: "Map technological capabilities and their societal impacts.",
     icon: Cpu,
     status: "coming-soon" as const,
-    week: 8,
+    week: 9,
   },
 ];
 

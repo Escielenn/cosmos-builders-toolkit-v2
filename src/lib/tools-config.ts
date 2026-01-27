@@ -9,6 +9,7 @@ export const FREE_TOOL_IDS = [
 export const PRO_TOOL_IDS = [
   'planetary-profile',
   'drake-equation-calculator',
+  'xenomythology-framework-builder',
   'species-creator',
   'culture-designer',
   'technology-mapper',

@@ -8,7 +8,8 @@ import {
   Cpu,
   Crown,
   Check,
-  Clock
+  Clock,
+  Sparkles
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { GlassPanel } from "@/components/ui/glass-panel";
@@ -52,6 +53,13 @@ const proTools = [
     title: "Drake Equation Calculator",
     description: "Calculate the number of civilizations in your galaxy for cosmic context.",
     icon: Calculator,
+    status: "available",
+  },
+  {
+    id: "xenomythology-framework-builder",
+    title: "Xenomythology Framework Builder",
+    description: "Create alien mythological systems derived from species biology and environment.",
+    icon: Sparkles,
     status: "available",
   },
   {
@@ -140,7 +148,7 @@ const ToolShowcase = () => {
           <h2 className="font-display text-2xl font-semibold">Pro Tools</h2>
           <Badge variant="secondary" className="bg-amber-500/20 text-amber-600 dark:text-amber-400">
             <Crown className="w-3 h-3 mr-1" />
-            5 Tools
+            6 Tools
           </Badge>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

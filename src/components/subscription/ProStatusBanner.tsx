@@ -45,7 +45,7 @@ const ProStatusBanner = ({ isSubscribed }: ProStatusBannerProps) => {
                   </Badge>
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  All 8 worldbuilding tools unlocked
+                  All 9 worldbuilding tools unlocked
                 </p>
               </div>
             </div>
@@ -81,11 +81,11 @@ const ProStatusBanner = ({ isSubscribed }: ProStatusBannerProps) => {
 
           <div className="flex-1">
             <p className="font-medium text-amber-600 dark:text-amber-400 mb-1">
-              Unlock All 8 Worldbuilding Tools
+              Unlock All 9 Worldbuilding Tools
             </p>
             <p className="text-sm text-muted-foreground">
-              Go Pro to access Planetary Profiles, Drake Equation Calculator, and upcoming
-              Species Creator, Culture Designer, and Technology Mapper.
+              Go Pro to access Planetary Profiles, Drake Equation Calculator, Xenomythology Framework Builder,
+              and upcoming Species Creator, Culture Designer, and Technology Mapper.
             </p>
           </div>
 
