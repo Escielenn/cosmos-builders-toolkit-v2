@@ -58,6 +58,15 @@ export default {
           ring: "hsl(var(--sidebar-ring))",
         },
         glass: "hsl(var(--glass))",
+        // StellarForge brand accent colors
+        brand: {
+          cyan: "#00E5E5",
+          magenta: "#FF00FF",
+          orange: "#FF6B35",
+          green: "#00FF88",
+          teal: "#00CED1",
+          purple: "#A855F7",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",

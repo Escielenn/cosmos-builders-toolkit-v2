@@ -1,4 +1,4 @@
-import { Rocket, User, LogIn, LogOut, ChevronDown, Crown } from "lucide-react";
+import { User, LogIn, LogOut, ChevronDown, Crown } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -31,14 +31,16 @@ const Header = () => {
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/50 backdrop-blur-xl bg-background/80">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-3 group">
-          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-            <Rocket className="w-5 h-5 text-primary-foreground" />
-          </div>
+          <img
+            src="/logo.svg"
+            alt="StellarForge"
+            className="w-10 h-10 rounded-lg"
+          />
           <div className="flex flex-col">
             <span className="font-display font-semibold text-lg leading-tight">
               StellarForge
             </span>
-            <span className="text-xs text-muted-foreground">Science Fiction Worldbuilding Tools</span>
+            <span className="text-xs text-muted-foreground">Forge the Future</span>
           </div>
         </Link>
 

@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <!-- Glow filter for the swoosh -->
+    <filter id="swooshGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Black background square -->
+  <rect x="0" y="0" width="64" height="64" fill="#000000"/>
+
+  <!-- White swoosh arc with subtle glow -->
+  <path
+    d="M 56 4 Q 32 8, 12 32 Q 8 40, 10 48"
+    stroke="#FFFFFF"
+    stroke-width="3"
+    stroke-linecap="round"
+    fill="none"
+    filter="url(#swooshGlow)"
+    opacity="0.95"
+  />
+
+  <!-- Subtle highlight on the arc -->
+  <path
+    d="M 54 6 Q 34 10, 16 30"
+    stroke="#FFFFFF"
+    stroke-width="1"
+    stroke-linecap="round"
+    fill="none"
+    opacity="0.3"
+  />
+</svg>

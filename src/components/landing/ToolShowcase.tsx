@@ -1,41 +1,32 @@
 import {
-  Globe,
-  Rocket,
-  Atom,
-  Calculator,
-  Users,
-  BookOpen,
-  Cpu,
   Crown,
   Check,
   Clock,
-  Sparkles
+  Rocket,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { getToolIcon } from "@/components/icons/tool-icons";
 
 const freeTools = [
   {
     id: "environmental-chain-reaction",
     title: "Environmental Chain Reaction",
     description: "Map how planetary parameters cascade into biology, psychology, culture, and mythology.",
-    icon: Globe,
     status: "available",
   },
   {
     id: "spacecraft-designer",
     title: "Lived-In Spacecraft Designer",
     description: "Design ships that feel inhabited with cultural context and life support realities.",
-    icon: Rocket,
     status: "available",
   },
   {
     id: "propulsion-consequences-map",
     title: "Propulsion Consequences Map",
     description: "Trace how your propulsion system shapes economics, politics, and society.",
-    icon: Atom,
     status: "available",
   },
 ];
@@ -45,63 +36,63 @@ const proTools = [
     id: "planetary-profile",
     title: "Planetary Profile Template",
     description: "Define your world's stellar environment, physical characteristics, and habitability.",
-    icon: Globe,
     status: "available",
   },
   {
     id: "drake-equation-calculator",
     title: "Drake Equation Calculator",
     description: "Calculate the number of civilizations in your galaxy for cosmic context.",
-    icon: Calculator,
     status: "available",
   },
   {
     id: "xenomythology-framework-builder",
     title: "Xenomythology Framework Builder",
     description: "Create alien mythological systems derived from species biology and environment.",
-    icon: Sparkles,
     status: "available",
   },
   {
     id: "species-creator",
     title: "Species Creator",
     description: "Design alien species with consistent biology and evolutionary history.",
-    icon: Users,
     status: "coming-soon",
   },
   {
     id: "culture-designer",
     title: "Culture Designer",
     description: "Build societies with coherent values, rituals, and social structures.",
-    icon: BookOpen,
     status: "coming-soon",
   },
   {
     id: "technology-mapper",
     title: "Technology Mapper",
     description: "Map technological capabilities and their societal impacts.",
-    icon: Cpu,
     status: "coming-soon",
   },
 ];
 
 interface ToolPreviewCardProps {
+  id: string;
   title: string;
   description: string;
-  icon: React.ElementType;
   status: string;
   isPro?: boolean;
 }
 
-const ToolPreviewCard = ({ title, description, icon: Icon, status, isPro }: ToolPreviewCardProps) => {
+const ToolPreviewCard = ({ id, title, description, status, isPro }: ToolPreviewCardProps) => {
+  const CustomIcon = getToolIcon(id);
+
   return (
     <GlassPanel className={`p-5 h-full ${isPro ? 'opacity-90' : ''}`}>
       <div className="flex items-start justify-between mb-3">
-        <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-          isPro ? 'bg-amber-500/10' : 'bg-primary/10'
-        }`}>
-          <Icon className={`w-5 h-5 ${isPro ? 'text-amber-500' : 'text-primary'}`} />
-        </div>
+        {CustomIcon ? (
+          <CustomIcon className="w-12 h-12 rounded-lg" />
+        ) : (
+          <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
+            isPro ? 'bg-amber-500/10' : 'bg-primary/10'
+          }`}>
+            <span className="text-xl">?</span>
+          </div>
+        )}
         <div className="flex gap-2">
           {isPro && (
             <Badge variant="secondary" className="text-xs bg-amber-500/20 text-amber-600 dark:text-amber-400">
@@ -137,7 +128,7 @@ const ToolShowcase = () => {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {freeTools.map((tool) => (
-            <ToolPreviewCard key={tool.id} {...tool} />
+            <ToolPreviewCard key={tool.id} id={tool.id} {...tool} />
           ))}
         </div>
       </div>
@@ -153,7 +144,7 @@ const ToolShowcase = () => {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {proTools.map((tool) => (
-            <ToolPreviewCard key={tool.id} {...tool} isPro />
+            <ToolPreviewCard key={tool.id} id={tool.id} {...tool} isPro />
           ))}
         </div>
       </div>

@@ -4,12 +4,13 @@ import { GlassPanel } from "@/components/ui/glass-panel";
 import { Badge } from "@/components/ui/badge";
 import { isProTool } from "@/lib/tools-config";
 import { useSubscription } from "@/hooks/use-subscription";
+import { getToolIcon } from "@/components/icons/tool-icons";
 
 interface ToolCardProps {
   id: string;
   title: string;
   description: string;
-  icon: LucideIcon;
+  icon?: LucideIcon; // Now optional, will use custom icon if available
   status: "available" | "coming-soon";
   week?: number;
 }
@@ -18,11 +19,12 @@ const ToolCard = ({
   id,
   title,
   description,
-  icon: Icon,
+  icon: FallbackIcon,
   status,
   week,
 }: ToolCardProps) => {
   const { isSubscribed } = useSubscription();
+  const CustomIcon = getToolIcon(id);
 
   const isAvailable = status === "available";
   const isPro = isProTool(id);
@@ -37,19 +39,27 @@ const ToolCard = ({
       }`}
     >
       <div className="flex items-start justify-between">
-        <div
-          className={`w-12 h-12 rounded-xl flex items-center justify-center ${
-            canAccess
-              ? "bg-gradient-to-br from-primary to-accent"
-              : "bg-muted"
-          }`}
-        >
-          <Icon
-            className={`w-6 h-6 ${
-              canAccess ? "text-primary-foreground" : "text-muted-foreground"
+        {CustomIcon ? (
+          <CustomIcon className={`w-12 h-12 rounded-xl ${!canAccess ? "opacity-50 grayscale" : ""}`} />
+        ) : FallbackIcon ? (
+          <div
+            className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+              canAccess
+                ? "bg-gradient-to-br from-primary to-accent"
+                : "bg-muted"
             }`}
-          />
-        </div>
+          >
+            <FallbackIcon
+              className={`w-6 h-6 ${
+                canAccess ? "text-primary-foreground" : "text-muted-foreground"
+              }`}
+            />
+          </div>
+        ) : (
+          <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center">
+            <span className="text-muted-foreground">?</span>
+          </div>
+        )}
         <div className="flex items-center gap-2">
           {isPro && isSubscribed && (
             <Badge variant="secondary" className="text-xs bg-green-500/20 text-green-600 dark:text-green-400">
