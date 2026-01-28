@@ -403,7 +403,7 @@ const initialFormState: FormState = {
 };
 
 const EXTERNAL_RESOURCES = [
-  { name: "Stellar Furnace Substack", url: "https://stellarfurnace.substack.com/", description: "Xenomythology research" },
+  { name: "Xenomythology Substack", url: "https://xenomythology.substack.com/", description: "Xenomythology research" },
   { name: "Atomic Rockets - Aliens", url: "http://www.projectrho.com/public_html/rocket/aliens.php", description: "Hard SF alien design" },
 ];
 
