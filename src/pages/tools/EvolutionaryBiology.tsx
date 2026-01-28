@@ -3,15 +3,12 @@ import { Link, useSearchParams } from "react-router-dom";
 import {
   ArrowLeft,
   Save,
-  ChevronDown,
-  ChevronUp,
   Info,
   Cloud,
   CloudOff,
   Plus,
   Trash2,
   Dna,
-  FileText,
   ExternalLink,
   Download,
   Printer,
@@ -32,15 +29,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import CollapsibleSection from "@/components/tools/CollapsibleSection";
+import KeyChoicesSidebar, { KeyChoicesSection } from "@/components/tools/KeyChoicesSidebar";
 import { useToast } from "@/hooks/use-toast";
 import { useBackground } from "@/hooks/use-background";
 import { useWorksheets, useWorksheet, useWorksheetsByType } from "@/hooks/use-worksheets";
@@ -545,54 +539,6 @@ const EvolutionaryBiology = () => {
     setHasUnsavedChanges(true);
   };
 
-  // Collapsible Section Component
-  const CollapsibleSection = ({
-    id,
-    title,
-    guidance,
-    children,
-  }: {
-    id: string;
-    title: string;
-    guidance?: string;
-    children: React.ReactNode;
-  }) => {
-    const sectionId = `section-${id}`;
-    const isExpanded = expandedSections.has(sectionId);
-
-    return (
-      <Collapsible open={isExpanded} onOpenChange={() => toggleSection(sectionId)}>
-        <div id={sectionId} className="scroll-mt-24">
-          <CollapsibleTrigger asChild>
-            <button type="button" className="flex items-center justify-between w-full p-4 text-left hover:bg-white/5 rounded-lg transition-colors group">
-              <div className="flex items-center gap-3">
-                <h3 className="text-lg font-display font-semibold">{title}</h3>
-                {guidance && (
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Info className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
-                    </TooltipTrigger>
-                    <TooltipContent side="right" className="max-w-xs">
-                      <p className="text-sm">{guidance}</p>
-                    </TooltipContent>
-                  </Tooltip>
-                )}
-              </div>
-              {isExpanded ? (
-                <ChevronUp className="w-5 h-5 text-muted-foreground" />
-              ) : (
-                <ChevronDown className="w-5 h-5 text-muted-foreground" />
-              )}
-            </button>
-          </CollapsibleTrigger>
-          <CollapsibleContent className="px-4 pb-6 space-y-6">
-            {children}
-          </CollapsibleContent>
-        </div>
-      </Collapsible>
-    );
-  };
-
   // Multi-select checkbox group
   const CheckboxGroup = ({
     options,
@@ -719,6 +665,119 @@ const EvolutionaryBiology = () => {
     { name: "Evolution 101", url: "https://evolution.berkeley.edu/evolution-101/", description: "Evolutionary principles" },
   ];
 
+  // Generate key choices for sidebar
+  const keyChoicesSections: KeyChoicesSection[] = useMemo(() => {
+    const getName = <T extends { id: string; name: string }>(arr: T[], id: string) =>
+      arr.find((item) => item.id === id)?.name || id;
+    const getNames = <T extends { id: string; name: string }>(arr: T[], ids: string[]) =>
+      ids.map((id) => getName(arr, id)).filter(Boolean);
+
+    return [
+      {
+        id: "linked",
+        title: "Linked Worksheets",
+        choices: [
+          {
+            label: "Planet",
+            value: formState._linkedWorksheets?.planet?.syncedData?.title as string | undefined,
+          },
+          {
+            label: "Environment",
+            value: formState._linkedWorksheets?.ecr?.syncedData?.title as string | undefined,
+          },
+        ],
+      },
+      {
+        id: "foundations",
+        title: "1. Foundations",
+        choices: [
+          {
+            label: "Survival Pressures",
+            value: getNames(SURVIVAL_PRESSURES, formState.foundations.primarySurvivalPressures),
+            asList: true,
+          },
+          {
+            label: "Extremophile",
+            value: getName(EXTREMOPHILE_INSPIRATIONS, formState.foundations.extremophileInspiration),
+          },
+        ],
+      },
+      {
+        id: "biochemistry",
+        title: "2. Biochemistry",
+        choices: [
+          { label: "Basis", value: getName(BIOCHEMICAL_BASES, formState.biochemistry.biochemicalBasis) },
+          { label: "Solvent", value: getName(SOLVENTS, formState.biochemistry.solvent) },
+          { label: "Energy", value: getName(ENERGY_SOURCES, formState.biochemistry.energySource) },
+          { label: "Metabolism", value: getName(METABOLIC_RATES, formState.biochemistry.metabolicRate) },
+        ],
+      },
+      {
+        id: "body-plan",
+        title: "4. Body Plan",
+        choices: [
+          { label: "Symmetry", value: getName(SYMMETRY_TYPES, formState.bodyPlan.symmetry) },
+          { label: "Integument", value: getName(INTEGUMENT_TYPES, formState.bodyPlan.integument) },
+          { label: "Size", value: formState.bodyPlan.sizeRange.min && formState.bodyPlan.sizeRange.max
+            ? `${formState.bodyPlan.sizeRange.min} - ${formState.bodyPlan.sizeRange.max}`
+            : undefined },
+        ],
+      },
+      {
+        id: "sensory",
+        title: "5. Sensory",
+        choices: [
+          { label: "Primary Senses", value: getNames(SENSORY_TYPES, formState.sensory.primarySenses), asList: true },
+        ],
+      },
+      {
+        id: "reproduction",
+        title: "6. Reproduction",
+        choices: [
+          { label: "Mode", value: getName(REPRODUCTION_MODES, formState.reproduction.reproductionMode) },
+          { label: "Mating System", value: getName(MATING_SYSTEMS, formState.reproduction.matingSystem) },
+          { label: "Parental Care", value: getName(PARENTAL_CARE_LEVELS, formState.reproduction.parentalCare) },
+          { label: "Lifespan", value: getName(LIFESPAN_CATEGORIES, formState.reproduction.lifespan) },
+        ],
+      },
+      {
+        id: "social",
+        title: "7. Social",
+        choices: [
+          { label: "Group Size", value: getName(GROUP_SIZES, formState.social.groupSize) },
+          { label: "Structure", value: getName(SOCIAL_STRUCTURES, formState.social.socialStructure) },
+          { label: "Territoriality", value: getName(TERRITORIALITY_TYPES, formState.social.territoriality) },
+        ],
+      },
+      {
+        id: "cognition",
+        title: "8. Cognition",
+        choices: [
+          { label: "Brain Analog", value: getName(BRAIN_ANALOGS, formState.cognition.brainAnalog) },
+          { label: "Type", value: getName(COGNITION_TYPES, formState.cognition.cognitionType) },
+          { label: "Tool Use", value: getName(TOOL_USE_LEVELS, formState.cognition.toolUse) },
+        ],
+      },
+      {
+        id: "communication",
+        title: "9. Communication",
+        choices: [
+          { label: "Primary Channel", value: getName(COMMUNICATION_CHANNELS, formState.communication.primaryChannel) },
+          { label: "Signal Range", value: getName(SIGNAL_RANGES, formState.communication.signalRange) },
+        ],
+      },
+      {
+        id: "psychology",
+        title: "10. Psychology",
+        choices: [
+          { label: "Emotions", value: getNames(EMOTION_ANALOGS, formState.psychology.emotionAnalogs), asList: true },
+          { label: "Stress Response", value: getName(STRESS_RESPONSES, formState.psychology.stressResponse) },
+          { label: "Curiosity", value: getName(CURIOSITY_LEVELS, formState.psychology.curiosityLevel) },
+        ],
+      },
+    ];
+  }, [formState]);
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -741,9 +800,9 @@ const EvolutionaryBiology = () => {
                 Evolutionary Biology Design Sheet
               </h1>
               {worksheetTitle && (
-                <div className="flex items-center gap-2 mt-1">
-                  <FileText className="w-4 h-4 text-primary" />
-                  <span className="text-lg font-medium text-primary">{worksheetTitle}</span>
+                <div className="flex items-center gap-2 mt-2 px-3 py-1.5 rounded-lg bg-primary/10 w-fit">
+                  <Dna className="w-5 h-5 text-primary" />
+                  <span className="text-lg font-semibold text-primary">{worksheetTitle}</span>
                 </div>
               )}
               <p className="text-muted-foreground mt-2 max-w-2xl">
@@ -822,9 +881,12 @@ const EvolutionaryBiology = () => {
 
               {/* Section 1: Foundations */}
               <CollapsibleSection
-                id="foundations"
+                id="section-foundations"
                 title="1. Foundations"
                 guidance={SECTION_GUIDANCE.foundations}
+                variant="minimal"
+                open={expandedSections.has("section-foundations")}
+                onOpenChange={() => toggleSection("section-foundations")}
               >
                 {/* Worksheet Links */}
                 {worldId && (
@@ -898,9 +960,12 @@ const EvolutionaryBiology = () => {
 
               {/* Section 2: Biochemistry */}
               <CollapsibleSection
-                id="biochemistry"
+                id="section-biochemistry"
                 title="2. Biochemistry & Metabolism"
                 guidance={SECTION_GUIDANCE.biochemistry}
+                variant="minimal"
+                open={expandedSections.has("section-biochemistry")}
+                onOpenChange={() => toggleSection("section-biochemistry")}
               >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
@@ -1077,9 +1142,12 @@ const EvolutionaryBiology = () => {
 
               {/* Section 3: Evolutionary Adaptations */}
               <CollapsibleSection
-                id="adaptations"
+                id="section-adaptations"
                 title="3. Evolutionary Adaptations"
                 guidance={SECTION_GUIDANCE.adaptations}
+                variant="minimal"
+                open={expandedSections.has("section-adaptations")}
+                onOpenChange={() => toggleSection("section-adaptations")}
               >
                 <div className="space-y-2">
                   <Label>Key Adaptations</Label>
@@ -1152,9 +1220,12 @@ const EvolutionaryBiology = () => {
 
               {/* Section 4: Body Plan */}
               <CollapsibleSection
-                id="body-plan"
+                id="section-body-plan"
                 title="4. Body Plan & Morphology"
                 guidance={SECTION_GUIDANCE["body-plan"]}
+                variant="minimal"
+                open={expandedSections.has("section-body-plan")}
+                onOpenChange={() => toggleSection("section-body-plan")}
               >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
@@ -1353,9 +1424,12 @@ const EvolutionaryBiology = () => {
 
               {/* Section 5: Sensory Systems */}
               <CollapsibleSection
-                id="sensory"
+                id="section-sensory"
                 title="5. Sensory Systems"
                 guidance={SECTION_GUIDANCE.sensory}
+                variant="minimal"
+                open={expandedSections.has("section-sensory")}
+                onOpenChange={() => toggleSection("section-sensory")}
               >
                 <div className="space-y-2">
                   <Label>Primary Senses</Label>
@@ -1457,9 +1531,12 @@ const EvolutionaryBiology = () => {
 
               {/* Section 6: Reproduction */}
               <CollapsibleSection
-                id="reproduction"
+                id="section-reproduction"
                 title="6. Reproduction & Life Cycle"
                 guidance={SECTION_GUIDANCE.reproduction}
+                variant="minimal"
+                open={expandedSections.has("section-reproduction")}
+                onOpenChange={() => toggleSection("section-reproduction")}
               >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
@@ -1667,9 +1744,12 @@ const EvolutionaryBiology = () => {
 
               {/* Section 7: Social */}
               <CollapsibleSection
-                id="social"
+                id="section-social"
                 title="7. Social Evolution & Structure"
                 guidance={SECTION_GUIDANCE.social}
+                variant="minimal"
+                open={expandedSections.has("section-social")}
+                onOpenChange={() => toggleSection("section-social")}
               >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
@@ -1805,9 +1885,12 @@ const EvolutionaryBiology = () => {
 
               {/* Section 8: Cognition */}
               <CollapsibleSection
-                id="cognition"
+                id="section-cognition"
                 title="8. Intelligence & Cognition"
                 guidance={SECTION_GUIDANCE.cognition}
+                variant="minimal"
+                open={expandedSections.has("section-cognition")}
+                onOpenChange={() => toggleSection("section-cognition")}
               >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
@@ -1945,9 +2028,12 @@ const EvolutionaryBiology = () => {
 
               {/* Section 9: Communication */}
               <CollapsibleSection
-                id="communication"
+                id="section-communication"
                 title="9. Communication Biology"
                 guidance={SECTION_GUIDANCE.communication}
+                variant="minimal"
+                open={expandedSections.has("section-communication")}
+                onOpenChange={() => toggleSection("section-communication")}
               >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
@@ -2064,9 +2150,12 @@ const EvolutionaryBiology = () => {
 
               {/* Section 10: Psychology */}
               <CollapsibleSection
-                id="psychology"
+                id="section-psychology"
                 title="10. Psychology from Biology"
                 guidance={SECTION_GUIDANCE.psychology}
+                variant="minimal"
+                open={expandedSections.has("section-psychology")}
+                onOpenChange={() => toggleSection("section-psychology")}
               >
                 <div className="space-y-2">
                   <Label>Emotion Analogs</Label>
@@ -2176,9 +2265,12 @@ const EvolutionaryBiology = () => {
 
               {/* Section 11: Vestigial */}
               <CollapsibleSection
-                id="vestigial"
+                id="section-vestigial"
                 title="11. Vestigial & Transitional Traits"
                 guidance={SECTION_GUIDANCE.vestigial}
+                variant="minimal"
+                open={expandedSections.has("section-vestigial")}
+                onOpenChange={() => toggleSection("section-vestigial")}
               >
                 <div className="space-y-2">
                   <Label>Vestigial Traits</Label>
@@ -2261,9 +2353,12 @@ const EvolutionaryBiology = () => {
 
               {/* Section 12: Viewpoint Test */}
               <CollapsibleSection
-                id="viewpoint-test"
+                id="section-viewpoint-test"
                 title="12. Non-Human Viewpoint Test"
                 guidance={SECTION_GUIDANCE["viewpoint-test"]}
+                variant="minimal"
+                open={expandedSections.has("section-viewpoint-test")}
+                onOpenChange={() => toggleSection("section-viewpoint-test")}
               >
                 <div className="space-y-2">
                   <Label>Human Assumptions Avoided</Label>
@@ -2318,9 +2413,12 @@ const EvolutionaryBiology = () => {
 
               {/* Section 13: Integration */}
               <CollapsibleSection
-                id="integration"
+                id="section-integration"
                 title="13. Integration & Consistency"
                 guidance={SECTION_GUIDANCE.integration}
+                variant="minimal"
+                open={expandedSections.has("section-integration")}
+                onOpenChange={() => toggleSection("section-integration")}
               >
                 <div className="space-y-2">
                   <Label>Trait Interactions</Label>
@@ -2424,6 +2522,12 @@ const EvolutionaryBiology = () => {
           summaryTemplate={<EvolutionarySummaryTemplate formState={formState} worldName={currentWorld?.name} />}
           fullTemplate={<EvolutionaryFullReportTemplate formState={formState} worldName={currentWorld?.name} />}
           defaultFilename="evolutionary-biology"
+        />
+
+        {/* Key Choices Sidebar */}
+        <KeyChoicesSidebar
+          sections={keyChoicesSections}
+          title="Species Summary"
         />
       </main>
     </div>
