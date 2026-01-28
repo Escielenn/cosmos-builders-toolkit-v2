@@ -118,14 +118,17 @@ const getParameterDisplay = (typeId: string): string => {
 const countFilledResponses = (formState: FormState): number => {
   let count = 0;
   for (const level of LEVEL_NAMES) {
-    const levelData = formState[level.id as keyof FormState] as CascadeLevel;
-    count += Object.values(levelData.responses).filter((v) => v && v.trim()).length;
+    const levelData = formState?.[level.id as keyof FormState] as CascadeLevel | undefined;
+    if (levelData?.responses) {
+      count += Object.values(levelData.responses).filter((v) => v && v.trim()).length;
+    }
   }
   return count;
 };
 
 // Get first non-empty response per level for summary
-const getLevelSummary = (responses: Record<string, string>, labels: Record<string, string>): string => {
+const getLevelSummary = (responses: Record<string, string> | undefined, labels: Record<string, string>): string => {
+  if (!responses) return "No responses yet";
   for (const [key, value] of Object.entries(responses)) {
     if (value && value.trim()) {
       const preview = value.trim().substring(0, 150);
@@ -144,12 +147,13 @@ const ECRSummaryTemplate = ({
   const totalQuestions = 24; // Total questions across all levels
   const completionPercent = Math.round((filledCount / totalQuestions) * 100);
 
-  // Get selected parameters
+  // Get selected parameters with null safety
   const selectedParams: string[] = [];
-  if (formState.parameter.mode === "single" && formState.parameter.type) {
-    selectedParams.push(formState.parameter.type);
-  } else if (formState.parameter.mode === "multiple" && formState.parameter.types) {
-    selectedParams.push(...formState.parameter.types);
+  const parameter = formState?.parameter;
+  if (parameter?.mode === "single" && parameter?.type) {
+    selectedParams.push(parameter.type);
+  } else if (parameter?.mode === "multiple" && parameter?.types) {
+    selectedParams.push(...parameter.types);
   }
 
   return (
@@ -166,7 +170,7 @@ const ECRSummaryTemplate = ({
           value={selectedParams.length > 0 ? getParameterDisplay(selectedParams[0]) : "No Parameter"}
           label="Core Environmental Factor"
           description={
-            formState.parameter.specificValue ||
+            parameter?.specificValue ||
             (selectedParams.length > 1 ? `+ ${selectedParams.length - 1} more factors` : "Define your world's core constraint")
           }
         />
@@ -183,9 +187,9 @@ const ECRSummaryTemplate = ({
           <PDFSection title="Selected Parameters">
             {selectedParams.map((param) => {
               const specificValue =
-                formState.parameter.mode === "single"
-                  ? formState.parameter.specificValue
-                  : formState.parameter.specificValues?.[param];
+                parameter?.mode === "single"
+                  ? parameter?.specificValue
+                  : parameter?.specificValues?.[param];
               return (
                 <PDFKeyValuePair
                   key={param}
@@ -200,9 +204,10 @@ const ECRSummaryTemplate = ({
         {/* Cascade Summary */}
         <PDFSection title="Cascade Summary">
           {LEVEL_NAMES.map((level) => {
-            const levelData = formState[level.id as keyof FormState] as CascadeLevel;
-            const summary = getLevelSummary(levelData.responses, QUESTION_LABELS[level.id] || {});
-            const filledInLevel = Object.values(levelData.responses).filter((v) => v && v.trim()).length;
+            const levelData = formState?.[level.id as keyof FormState] as CascadeLevel | undefined;
+            const responses = levelData?.responses || {};
+            const summary = getLevelSummary(responses, QUESTION_LABELS[level.id] || {});
+            const filledInLevel = Object.values(responses).filter((v) => v && v.trim()).length;
 
             return (
               <View key={level.id} style={{ marginBottom: spacing.md }} wrap={false}>
@@ -223,15 +228,15 @@ const ECRSummaryTemplate = ({
         </PDFSection>
 
         {/* Key Synthesis Notes */}
-        {(formState.synthesis.surprisingConsequence || formState.synthesis.storyPotential) && (
+        {(formState?.synthesis?.surprisingConsequence || formState?.synthesis?.storyPotential) && (
           <PDFSection title="Key Insights">
-            {formState.synthesis.surprisingConsequence && (
+            {formState?.synthesis?.surprisingConsequence && (
               <View style={styles.notesBox}>
                 <Text style={styles.notesLabel}>Surprising Consequence</Text>
                 <Text style={styles.notesText}>{formState.synthesis.surprisingConsequence}</Text>
               </View>
             )}
-            {formState.synthesis.storyPotential && (
+            {formState?.synthesis?.storyPotential && (
               <View style={[styles.notesBox, { marginTop: spacing.sm }]}>
                 <Text style={styles.notesLabel}>Story Potential</Text>
                 <Text style={styles.notesText}>{formState.synthesis.storyPotential}</Text>

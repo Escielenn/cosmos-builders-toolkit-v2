@@ -76,7 +76,7 @@ const Auth = () => {
       });
     } else {
       toast({
-        title: "Welcome to Cosmos Builder's Toolkit!",
+        title: "Welcome to StellarForge!",
         description: "Your account has been created successfully.",
       });
       navigate("/");
@@ -141,8 +141,8 @@ const Auth = () => {
               <Rocket className="w-5 h-5 text-primary-foreground" />
             </div>
             <div className="flex flex-col">
-              <span className="font-display font-semibold text-lg leading-tight">
-                Cosmos Builder's
+              <span className="font-display font-semibold text-lg leading-tight tracking-wider">
+                STELLARFORGE
               </span>
               <span className="text-xs text-muted-foreground">Science Fiction Worldbuilding Tools</span>
             </div>

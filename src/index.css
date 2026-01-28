@@ -288,6 +288,33 @@
       transform: translateY(-10px);
     }
   }
+
+  /* Cube spinner animations */
+  .animate-spin-slow {
+    animation: spin-slow 3s linear infinite;
+  }
+
+  @keyframes spin-slow {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .animate-pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% {
+      filter: drop-shadow(0 0 4px hsl(187 100% 45% / 0.4));
+    }
+    50% {
+      filter: drop-shadow(0 0 12px hsl(187 100% 45% / 0.8));
+    }
+  }
 }
 
 /* Print styles - comprehensive worksheet formatting */

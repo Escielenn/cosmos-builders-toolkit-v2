@@ -300,7 +300,8 @@ export const TOOL_ICONS: Record<string, React.FC<ToolIconProps>> = {
   'planetary-profile': PlanetaryIcon,
   'drake-equation-calculator': DrakeIcon,
   'xenomythology-framework-builder': XenomythologyIcon,
-  'species-creator': SpeciesIcon,
+  'evolutionary-biology': SpeciesIcon,
+  'species-creator': SpeciesIcon,  // Legacy mapping
   'culture-designer': CultureIcon,
   'technology-mapper': TechnologyIcon,
 };

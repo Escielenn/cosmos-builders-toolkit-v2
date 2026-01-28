@@ -20,6 +20,7 @@ import EvolutionaryBiology from "./pages/tools/EvolutionaryBiology";
 import LearnIndex from "./pages/learn/LearnIndex";
 import LearnArticle from "./pages/learn/LearnArticle";
 import ProToolGuard from "./components/subscription/ProToolGuard";
+import ScrollToTop from "./components/ScrollToTop";
 
 const queryClient = new QueryClient();
 
@@ -30,6 +31,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
+          <ScrollToTop />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />

@@ -145,17 +145,27 @@ const PlanetarySummaryTemplate = ({
   worldName,
   date,
 }: PlanetarySummaryTemplateProps) => {
-  const starTypeLabel = STAR_TYPE_LABELS[formState.stellarEnvironment.starType] || formState.stellarEnvironment.starType || "Not specified";
-  const tierInfo = TIER_LABELS[formState.habitability.habitabilityTier];
-  const tidalLabel = TIDAL_LABELS[formState.stellarEnvironment.tidalLocking] || "Not specified";
+  // Safe access to nested properties
+  const stellar = formState?.stellarEnvironment;
+  const physical = formState?.physicalCharacteristics;
+  const atmosphere = formState?.atmosphericComposition;
+  const hydro = formState?.hydrosphere;
+  const temp = formState?.temperatureProfile;
+  const habitability = formState?.habitability;
+  const pressures = formState?.threePressures;
+  const consistency = formState?.consistencyCheck;
+
+  const starTypeLabel = STAR_TYPE_LABELS[stellar?.starType || ""] || stellar?.starType || "Not specified";
+  const tierInfo = TIER_LABELS[habitability?.habitabilityTier || ""];
+  const tidalLabel = TIDAL_LABELS[stellar?.tidalLocking || ""] || "Not specified";
 
   // Count consistency checks
   const consistencyChecks = [
-    formState.consistencyCheck.starGravityConsistent,
-    formState.consistencyCheck.atmosphereTempConsistent,
-    formState.consistencyCheck.waterTempConsistent,
-    formState.consistencyCheck.gravityBiologyConsistent,
-    formState.consistencyCheck.pressuresEnvironmentConsistent,
+    consistency?.starGravityConsistent,
+    consistency?.atmosphereTempConsistent,
+    consistency?.waterTempConsistent,
+    consistency?.gravityBiologyConsistent,
+    consistency?.pressuresEnvironmentConsistent,
   ];
   const consistencyScore = consistencyChecks.filter(Boolean).length;
 
@@ -170,7 +180,7 @@ const PlanetarySummaryTemplate = ({
 
         {/* Main Result - Habitability */}
         <PDFResultBox
-          value={tierInfo ? `Tier ${formState.habitability.habitabilityTier}` : "Unclassified"}
+          value={tierInfo ? `Tier ${habitability?.habitabilityTier}` : "Unclassified"}
           label={tierInfo?.name || "Habitability"}
           description={tierInfo?.description || "Complete the habitability assessment to classify this world"}
         />
@@ -188,19 +198,19 @@ const PlanetarySummaryTemplate = ({
             <View style={{ flex: 1, minWidth: 120 }}>
               <Text style={{ fontSize: typography.sizes.xs, color: colors.text.muted }}>Surface Gravity</Text>
               <Text style={{ fontSize: typography.sizes.sm, fontWeight: 600, color: colors.text.primary }}>
-                {formState.physicalCharacteristics.surfaceGravity || "Not specified"}
+                {physical?.surfaceGravity || "Not specified"}
               </Text>
             </View>
             <View style={{ flex: 1, minWidth: 120 }}>
               <Text style={{ fontSize: typography.sizes.xs, color: colors.text.muted }}>Day Length</Text>
               <Text style={{ fontSize: typography.sizes.sm, fontWeight: 600, color: colors.text.primary }}>
-                {formState.physicalCharacteristics.dayLength || tidalLabel}
+                {physical?.dayLength || tidalLabel}
               </Text>
             </View>
             <View style={{ flex: 1, minWidth: 120 }}>
               <Text style={{ fontSize: typography.sizes.xs, color: colors.text.muted }}>Avg Temperature</Text>
               <Text style={{ fontSize: typography.sizes.sm, fontWeight: 600, color: colors.text.primary }}>
-                {formState.temperatureProfile.averageSurfaceTemp || "Not specified"}
+                {temp?.averageSurfaceTemp || "Not specified"}
               </Text>
             </View>
           </View>
@@ -209,13 +219,13 @@ const PlanetarySummaryTemplate = ({
         {/* Key Parameters */}
         <PDFSection title="Key Parameters">
           <PDFKeyValuePair label="Star Type" value={starTypeLabel} />
-          <PDFKeyValuePair label="Habitable Zone Position" value={formState.stellarEnvironment.habitableZonePosition || "Not specified"} />
-          <PDFKeyValuePair label="Orbital Period" value={formState.stellarEnvironment.orbitalPeriod || "Not specified"} />
+          <PDFKeyValuePair label="Habitable Zone Position" value={stellar?.habitableZonePosition || "Not specified"} />
+          <PDFKeyValuePair label="Orbital Period" value={stellar?.orbitalPeriod || "Not specified"} />
           <PDFKeyValuePair label="Tidal Status" value={tidalLabel} />
-          <PDFKeyValuePair label="Planetary Mass" value={formState.physicalCharacteristics.planetaryMass || "Not specified"} />
-          <PDFKeyValuePair label="Atmosphere" value={formState.atmosphericComposition.primaryGases.join(", ") || "Not specified"} />
-          <PDFKeyValuePair label="Water Coverage" value={formState.hydrosphere.oceanCoverage || "Not specified"} />
-          <PDFKeyValuePair label="Sky Color" value={formState.atmosphericComposition.skyColor || "Not specified"} />
+          <PDFKeyValuePair label="Planetary Mass" value={physical?.planetaryMass || "Not specified"} />
+          <PDFKeyValuePair label="Atmosphere" value={atmosphere?.primaryGases?.join(", ") || "Not specified"} />
+          <PDFKeyValuePair label="Water Coverage" value={hydro?.oceanCoverage || "Not specified"} />
+          <PDFKeyValuePair label="Sky Color" value={atmosphere?.skyColor || "Not specified"} />
         </PDFSection>
 
         {/* Three Pressures Summary */}
@@ -223,24 +233,24 @@ const PlanetarySummaryTemplate = ({
           <View style={{ marginBottom: spacing.sm }}>
             <Text style={{ fontSize: typography.sizes.sm, fontWeight: 600, color: colors.primary }}>Survival</Text>
             <Text style={{ fontSize: typography.sizes.xs, color: colors.text.secondary, lineHeight: 1.4 }}>
-              {formState.threePressures.survivalPressure ?
-                formState.threePressures.survivalPressure.substring(0, 150) + (formState.threePressures.survivalPressure.length > 150 ? "..." : "") :
+              {pressures?.survivalPressure ?
+                pressures.survivalPressure.substring(0, 150) + (pressures.survivalPressure.length > 150 ? "..." : "") :
                 "Not defined"}
             </Text>
           </View>
           <View style={{ marginBottom: spacing.sm }}>
             <Text style={{ fontSize: typography.sizes.sm, fontWeight: 600, color: colors.primary }}>Social</Text>
             <Text style={{ fontSize: typography.sizes.xs, color: colors.text.secondary, lineHeight: 1.4 }}>
-              {formState.threePressures.socialPressure ?
-                formState.threePressures.socialPressure.substring(0, 150) + (formState.threePressures.socialPressure.length > 150 ? "..." : "") :
+              {pressures?.socialPressure ?
+                pressures.socialPressure.substring(0, 150) + (pressures.socialPressure.length > 150 ? "..." : "") :
                 "Not defined"}
             </Text>
           </View>
           <View style={{ marginBottom: spacing.sm }}>
             <Text style={{ fontSize: typography.sizes.sm, fontWeight: 600, color: colors.primary }}>Psychological</Text>
             <Text style={{ fontSize: typography.sizes.xs, color: colors.text.secondary, lineHeight: 1.4 }}>
-              {formState.threePressures.psychologicalPressure ?
-                formState.threePressures.psychologicalPressure.substring(0, 150) + (formState.threePressures.psychologicalPressure.length > 150 ? "..." : "") :
+              {pressures?.psychologicalPressure ?
+                pressures.psychologicalPressure.substring(0, 150) + (pressures.psychologicalPressure.length > 150 ? "..." : "") :
                 "Not defined"}
             </Text>
           </View>

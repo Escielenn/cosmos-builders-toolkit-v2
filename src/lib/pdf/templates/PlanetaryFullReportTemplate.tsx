@@ -173,19 +173,31 @@ const PlanetaryFullReportTemplate = ({
   worldName,
   date,
 }: PlanetaryFullReportTemplateProps) => {
-  const starTypeLabel = STAR_TYPE_LABELS[formState.stellarEnvironment.starType] || formState.stellarEnvironment.starType || "Not specified";
-  const tierInfo = TIER_LABELS[formState.habitability.habitabilityTier];
-  const tidalLabel = TIDAL_LABELS[formState.stellarEnvironment.tidalLocking] || "Not specified";
-  const waterLabel = WATER_LABELS[formState.hydrosphere.waterPresence] || formState.hydrosphere.waterPresence || "Not specified";
-  const tectonicLabel = TECTONIC_LABELS[formState.geological.tectonicActivity] || formState.geological.tectonicActivity || "Not specified";
+  // Safe access to nested properties
+  const stellar = formState?.stellarEnvironment;
+  const physical = formState?.physicalCharacteristics;
+  const atmosphere = formState?.atmosphericComposition;
+  const hydro = formState?.hydrosphere;
+  const temp = formState?.temperatureProfile;
+  const habitability = formState?.habitability;
+  const geological = formState?.geological;
+  const pressures = formState?.threePressures;
+  const narrative = formState?.narrative;
+  const consistency = formState?.consistencyCheck;
+
+  const starTypeLabel = STAR_TYPE_LABELS[stellar?.starType || ""] || stellar?.starType || "Not specified";
+  const tierInfo = TIER_LABELS[habitability?.habitabilityTier || ""];
+  const tidalLabel = TIDAL_LABELS[stellar?.tidalLocking || ""] || "Not specified";
+  const waterLabel = WATER_LABELS[hydro?.waterPresence || ""] || hydro?.waterPresence || "Not specified";
+  const tectonicLabel = TECTONIC_LABELS[geological?.tectonicActivity || ""] || geological?.tectonicActivity || "Not specified";
 
   // Count consistency checks
   const consistencyChecks = [
-    formState.consistencyCheck.starGravityConsistent,
-    formState.consistencyCheck.atmosphereTempConsistent,
-    formState.consistencyCheck.waterTempConsistent,
-    formState.consistencyCheck.gravityBiologyConsistent,
-    formState.consistencyCheck.pressuresEnvironmentConsistent,
+    consistency?.starGravityConsistent,
+    consistency?.atmosphereTempConsistent,
+    consistency?.waterTempConsistent,
+    consistency?.gravityBiologyConsistent,
+    consistency?.pressuresEnvironmentConsistent,
   ];
   const consistencyScore = consistencyChecks.filter(Boolean).length;
 
@@ -208,7 +220,7 @@ const PlanetaryFullReportTemplate = ({
 
         {/* Habitability Result */}
         <PDFResultBox
-          value={tierInfo ? `Tier ${formState.habitability.habitabilityTier}` : "Unclassified"}
+          value={tierInfo ? `Tier ${habitability?.habitabilityTier}` : "Unclassified"}
           label={tierInfo?.name || "Habitability"}
           description={tierInfo?.description || "Complete the habitability assessment to classify this world"}
         />
@@ -220,30 +232,30 @@ const PlanetaryFullReportTemplate = ({
               <PDFKeyValuePair label="Star Type" value={starTypeLabel} />
             </View>
             <View style={{ flex: 1, minWidth: 150 }}>
-              <PDFKeyValuePair label="Luminosity" value={formState.stellarEnvironment.luminosity || "Not specified"} />
+              <PDFKeyValuePair label="Luminosity" value={stellar?.luminosity || "Not specified"} />
             </View>
           </View>
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: spacing.md, marginBottom: spacing.md }}>
             <View style={{ flex: 1, minWidth: 150 }}>
-              <PDFKeyValuePair label="Habitable Zone Position" value={formState.stellarEnvironment.habitableZonePosition || "Not specified"} />
+              <PDFKeyValuePair label="Habitable Zone Position" value={stellar?.habitableZonePosition || "Not specified"} />
             </View>
             <View style={{ flex: 1, minWidth: 150 }}>
-              <PDFKeyValuePair label="Orbital Period" value={formState.stellarEnvironment.orbitalPeriod || "Not specified"} />
+              <PDFKeyValuePair label="Orbital Period" value={stellar?.orbitalPeriod || "Not specified"} />
             </View>
           </View>
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: spacing.md, marginBottom: spacing.md }}>
             <View style={{ flex: 1, minWidth: 150 }}>
-              <PDFKeyValuePair label="Orbital Eccentricity" value={formState.stellarEnvironment.orbitalEccentricity || "Not specified"} />
+              <PDFKeyValuePair label="Orbital Eccentricity" value={stellar?.orbitalEccentricity || "Not specified"} />
             </View>
             <View style={{ flex: 1, minWidth: 150 }}>
               <PDFKeyValuePair label="Tidal Status" value={tidalLabel} />
             </View>
           </View>
-          {formState.stellarEnvironment.starTypeNotes && (
-            <NotesBox label="Star Type Notes" content={formState.stellarEnvironment.starTypeNotes} />
+          {stellar?.starTypeNotes && (
+            <NotesBox label="Star Type Notes" content={stellar.starTypeNotes} />
           )}
-          {formState.stellarEnvironment.tidalLockingNotes && (
-            <NotesBox label="Tidal Locking Notes" content={formState.stellarEnvironment.tidalLockingNotes} />
+          {stellar?.tidalLockingNotes && (
+            <NotesBox label="Tidal Locking Notes" content={stellar.tidalLockingNotes} />
           )}
         </PDFSection>
 
@@ -257,26 +269,26 @@ const PlanetaryFullReportTemplate = ({
         <PDFSection title="2. Physical Characteristics">
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: spacing.md, marginBottom: spacing.md }}>
             <View style={{ flex: 1, minWidth: 150 }}>
-              <PDFKeyValuePair label="Planetary Mass" value={formState.physicalCharacteristics.planetaryMass || "Not specified"} />
+              <PDFKeyValuePair label="Planetary Mass" value={physical?.planetaryMass || "Not specified"} />
             </View>
             <View style={{ flex: 1, minWidth: 150 }}>
-              <PDFKeyValuePair label="Surface Gravity" value={formState.physicalCharacteristics.surfaceGravity || "Not specified"} />
+              <PDFKeyValuePair label="Surface Gravity" value={physical?.surfaceGravity || "Not specified"} />
             </View>
           </View>
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: spacing.md, marginBottom: spacing.md }}>
             <View style={{ flex: 1, minWidth: 150 }}>
-              <PDFKeyValuePair label="Planetary Radius" value={formState.physicalCharacteristics.planetaryRadius || "Not specified"} />
+              <PDFKeyValuePair label="Planetary Radius" value={physical?.planetaryRadius || "Not specified"} />
             </View>
             <View style={{ flex: 1, minWidth: 150 }}>
-              <PDFKeyValuePair label="Day Length" value={formState.physicalCharacteristics.dayLength || "Not specified"} />
+              <PDFKeyValuePair label="Day Length" value={physical?.dayLength || "Not specified"} />
             </View>
           </View>
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: spacing.md }}>
             <View style={{ flex: 1, minWidth: 150 }}>
-              <PDFKeyValuePair label="Axial Tilt" value={formState.physicalCharacteristics.axialTilt || "Not specified"} />
+              <PDFKeyValuePair label="Axial Tilt" value={physical?.axialTilt || "Not specified"} />
             </View>
             <View style={{ flex: 1, minWidth: 150 }}>
-              <PDFKeyValuePair label="Seasonal Variation" value={formState.physicalCharacteristics.seasonalVariation || "Not specified"} />
+              <PDFKeyValuePair label="Seasonal Variation" value={physical?.seasonalVariation || "Not specified"} />
             </View>
           </View>
         </PDFSection>
@@ -284,23 +296,23 @@ const PlanetaryFullReportTemplate = ({
         <PDFSection title="3. Atmospheric Composition">
           <PDFKeyValuePair
             label="Primary Gases"
-            value={formState.atmosphericComposition.primaryGases.length > 0 ? formState.atmosphericComposition.primaryGases.join(", ") : "Not specified"}
+            value={atmosphere?.primaryGases?.length ? atmosphere.primaryGases.join(", ") : "Not specified"}
           />
           <PDFKeyValuePair
             label="Secondary Gases"
-            value={formState.atmosphericComposition.secondaryGases.length > 0 ? formState.atmosphericComposition.secondaryGases.join(", ") : "Not specified"}
+            value={atmosphere?.secondaryGases?.length ? atmosphere.secondaryGases.join(", ") : "Not specified"}
           />
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: spacing.md, marginTop: spacing.sm }}>
             <View style={{ flex: 1, minWidth: 150 }}>
-              <PDFKeyValuePair label="Atmospheric Pressure" value={formState.atmosphericComposition.atmosphericPressure || "Not specified"} />
+              <PDFKeyValuePair label="Atmospheric Pressure" value={atmosphere?.atmosphericPressure || "Not specified"} />
             </View>
             <View style={{ flex: 1, minWidth: 150 }}>
-              <PDFKeyValuePair label="Greenhouse Effect" value={formState.atmosphericComposition.greenhouseEffect || "Not specified"} />
+              <PDFKeyValuePair label="Greenhouse Effect" value={atmosphere?.greenhouseEffect || "Not specified"} />
             </View>
           </View>
-          <PDFKeyValuePair label="Sky Color" value={formState.atmosphericComposition.skyColor || "Not specified"} />
-          {formState.atmosphericComposition.weatherPatterns && (
-            <NotesBox label="Weather Patterns" content={formState.atmosphericComposition.weatherPatterns} />
+          <PDFKeyValuePair label="Sky Color" value={atmosphere?.skyColor || "Not specified"} />
+          {atmosphere?.weatherPatterns && (
+            <NotesBox label="Weather Patterns" content={atmosphere.weatherPatterns} />
           )}
         </PDFSection>
 
@@ -315,53 +327,53 @@ const PlanetaryFullReportTemplate = ({
           <PDFKeyValuePair label="Water Presence" value={waterLabel} />
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: spacing.md, marginTop: spacing.sm }}>
             <View style={{ flex: 1, minWidth: 150 }}>
-              <PDFKeyValuePair label="Ocean Coverage" value={formState.hydrosphere.oceanCoverage || "Not specified"} />
+              <PDFKeyValuePair label="Ocean Coverage" value={hydro?.oceanCoverage || "Not specified"} />
             </View>
             <View style={{ flex: 1, minWidth: 150 }}>
-              <PDFKeyValuePair label="Water Composition" value={formState.hydrosphere.waterComposition || "Not specified"} />
+              <PDFKeyValuePair label="Water Composition" value={hydro?.waterComposition || "Not specified"} />
             </View>
           </View>
-          <PDFKeyValuePair label="Ice Presence" value={formState.hydrosphere.icePresence || "Not specified"} />
-          {formState.hydrosphere.hydrosphereNotes && (
-            <NotesBox label="Hydrosphere Notes" content={formState.hydrosphere.hydrosphereNotes} />
+          <PDFKeyValuePair label="Ice Presence" value={hydro?.icePresence || "Not specified"} />
+          {hydro?.hydrosphereNotes && (
+            <NotesBox label="Hydrosphere Notes" content={hydro.hydrosphereNotes} />
           )}
         </PDFSection>
 
         <PDFSection title="5. Temperature Profile">
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: spacing.md, marginBottom: spacing.sm }}>
             <View style={{ flex: 1, minWidth: 150 }}>
-              <PDFKeyValuePair label="Average Temperature" value={formState.temperatureProfile.averageSurfaceTemp || "Not specified"} />
+              <PDFKeyValuePair label="Average Temperature" value={temp?.averageSurfaceTemp || "Not specified"} />
             </View>
             <View style={{ flex: 1, minWidth: 150 }}>
-              <PDFKeyValuePair label="Temperature Range" value={formState.temperatureProfile.temperatureRange || "Not specified"} />
+              <PDFKeyValuePair label="Temperature Range" value={temp?.temperatureRange || "Not specified"} />
             </View>
           </View>
-          {formState.temperatureProfile.climateZones && (
-            <NotesBox label="Climate Zones" content={formState.temperatureProfile.climateZones} />
+          {temp?.climateZones && (
+            <NotesBox label="Climate Zones" content={temp.climateZones} />
           )}
-          {formState.temperatureProfile.temperatureNotes && (
-            <NotesBox label="Temperature Notes" content={formState.temperatureProfile.temperatureNotes} />
+          {temp?.temperatureNotes && (
+            <NotesBox label="Temperature Notes" content={temp.temperatureNotes} />
           )}
         </PDFSection>
 
         <PDFSection title="6. Habitability Assessment">
           <View style={{ padding: spacing.sm, backgroundColor: "#f5f5f5", borderRadius: 4, marginBottom: spacing.md }}>
             <Text style={{ fontSize: typography.sizes.md, fontWeight: 600, color: colors.primary, textAlign: "center" }}>
-              Tier {formState.habitability.habitabilityTier || "?"}: {tierInfo?.name || "Unclassified"}
+              Tier {habitability?.habitabilityTier || "?"}: {tierInfo?.name || "Unclassified"}
             </Text>
             <Text style={{ fontSize: typography.sizes.xs, color: colors.text.muted, textAlign: "center", marginTop: 2 }}>
               {tierInfo?.description || "Complete the assessment"}
             </Text>
           </View>
-          {formState.habitability.tierJustification && (
-            <NotesBox label="Tier Justification" content={formState.habitability.tierJustification} />
+          {habitability?.tierJustification && (
+            <NotesBox label="Tier Justification" content={habitability.tierJustification} />
           )}
           <PDFKeyValuePair
             label="Required Adaptations"
-            value={formState.habitability.requiredAdaptations.length > 0 ? formState.habitability.requiredAdaptations.join(", ") : "None specified"}
+            value={habitability?.requiredAdaptations?.length ? habitability.requiredAdaptations.join(", ") : "None specified"}
           />
-          {formState.habitability.adaptationNotes && (
-            <NotesBox label="Adaptation Notes" content={formState.habitability.adaptationNotes} />
+          {habitability?.adaptationNotes && (
+            <NotesBox label="Adaptation Notes" content={habitability.adaptationNotes} />
           )}
         </PDFSection>
 
@@ -374,20 +386,20 @@ const PlanetaryFullReportTemplate = ({
 
         <PDFSection title="7. Geological & Environmental Features">
           <PDFKeyValuePair label="Tectonic Activity" value={tectonicLabel} />
-          {formState.geological.volcanism && (
-            <NotesBox label="Volcanism" content={formState.geological.volcanism} />
+          {geological?.volcanism && (
+            <NotesBox label="Volcanism" content={geological.volcanism} />
           )}
-          {formState.geological.mountainRanges && (
-            <NotesBox label="Mountain Ranges" content={formState.geological.mountainRanges} />
+          {geological?.mountainRanges && (
+            <NotesBox label="Mountain Ranges" content={geological.mountainRanges} />
           )}
-          {formState.geological.uniqueFormations && (
-            <NotesBox label="Unique Geological Formations" content={formState.geological.uniqueFormations} />
+          {geological?.uniqueFormations && (
+            <NotesBox label="Unique Geological Formations" content={geological.uniqueFormations} />
           )}
-          {formState.geological.naturalResources && (
-            <NotesBox label="Natural Resources" content={formState.geological.naturalResources} />
+          {geological?.naturalResources && (
+            <NotesBox label="Natural Resources" content={geological.naturalResources} />
           )}
-          {formState.geological.geologicalHazards && (
-            <NotesBox label="Geological Hazards" content={formState.geological.geologicalHazards} />
+          {geological?.geologicalHazards && (
+            <NotesBox label="Geological Hazards" content={geological.geologicalHazards} />
           )}
         </PDFSection>
 
@@ -407,19 +419,19 @@ const PlanetaryFullReportTemplate = ({
             <Text style={{ fontSize: typography.sizes.xs, color: colors.text.muted, marginBottom: spacing.sm }}>
               The physical challenges of staying alive
             </Text>
-            {formState.threePressures.survivalPressure && (
+            {pressures?.survivalPressure && (
               <View style={{ marginBottom: spacing.sm }}>
                 <Text style={{ fontSize: typography.sizes.xs, fontWeight: 600, color: colors.text.secondary }}>Primary Challenge:</Text>
                 <Text style={{ fontSize: typography.sizes.xs, color: colors.text.secondary, lineHeight: 1.4 }}>
-                  {formState.threePressures.survivalPressure}
+                  {pressures.survivalPressure}
                 </Text>
               </View>
             )}
-            {formState.threePressures.survivalManifestations && (
+            {pressures?.survivalManifestations && (
               <View>
                 <Text style={{ fontSize: typography.sizes.xs, fontWeight: 600, color: colors.text.secondary }}>Manifestations:</Text>
                 <Text style={{ fontSize: typography.sizes.xs, color: colors.text.secondary, lineHeight: 1.4 }}>
-                  {formState.threePressures.survivalManifestations}
+                  {pressures.survivalManifestations}
                 </Text>
               </View>
             )}
@@ -433,19 +445,19 @@ const PlanetaryFullReportTemplate = ({
             <Text style={{ fontSize: typography.sizes.xs, color: colors.text.muted, marginBottom: spacing.sm }}>
               How the environment shapes society and culture
             </Text>
-            {formState.threePressures.socialPressure && (
+            {pressures?.socialPressure && (
               <View style={{ marginBottom: spacing.sm }}>
                 <Text style={{ fontSize: typography.sizes.xs, fontWeight: 600, color: colors.text.secondary }}>Social Structure Driver:</Text>
                 <Text style={{ fontSize: typography.sizes.xs, color: colors.text.secondary, lineHeight: 1.4 }}>
-                  {formState.threePressures.socialPressure}
+                  {pressures.socialPressure}
                 </Text>
               </View>
             )}
-            {formState.threePressures.socialManifestations && (
+            {pressures?.socialManifestations && (
               <View>
                 <Text style={{ fontSize: typography.sizes.xs, fontWeight: 600, color: colors.text.secondary }}>Manifestations:</Text>
                 <Text style={{ fontSize: typography.sizes.xs, color: colors.text.secondary, lineHeight: 1.4 }}>
-                  {formState.threePressures.socialManifestations}
+                  {pressures.socialManifestations}
                 </Text>
               </View>
             )}
@@ -459,26 +471,26 @@ const PlanetaryFullReportTemplate = ({
             <Text style={{ fontSize: typography.sizes.xs, color: colors.text.muted, marginBottom: spacing.sm }}>
               Mental and emotional effects of the environment
             </Text>
-            {formState.threePressures.psychologicalPressure && (
+            {pressures?.psychologicalPressure && (
               <View style={{ marginBottom: spacing.sm }}>
                 <Text style={{ fontSize: typography.sizes.xs, fontWeight: 600, color: colors.text.secondary }}>Psychological Challenge:</Text>
                 <Text style={{ fontSize: typography.sizes.xs, color: colors.text.secondary, lineHeight: 1.4 }}>
-                  {formState.threePressures.psychologicalPressure}
+                  {pressures.psychologicalPressure}
                 </Text>
               </View>
             )}
-            {formState.threePressures.psychologicalManifestations && (
+            {pressures?.psychologicalManifestations && (
               <View>
                 <Text style={{ fontSize: typography.sizes.xs, fontWeight: 600, color: colors.text.secondary }}>Manifestations:</Text>
                 <Text style={{ fontSize: typography.sizes.xs, color: colors.text.secondary, lineHeight: 1.4 }}>
-                  {formState.threePressures.psychologicalManifestations}
+                  {pressures.psychologicalManifestations}
                 </Text>
               </View>
             )}
           </View>
 
-          {formState.threePressures.pressureInteractions && (
-            <NotesBox label="Pressure Interactions" content={formState.threePressures.pressureInteractions} />
+          {pressures?.pressureInteractions && (
+            <NotesBox label="Pressure Interactions" content={pressures.pressureInteractions} />
           )}
         </PDFSection>
 
@@ -490,20 +502,20 @@ const PlanetaryFullReportTemplate = ({
         <PDFHeader toolName="Planetary Profile" worldName={worldName} date={date} />
 
         <PDFSection title="9. Narrative Integration">
-          {formState.narrative.environmentAsCharacter && (
-            <NotesBox label="Environment as Character" content={formState.narrative.environmentAsCharacter} />
+          {narrative?.environmentAsCharacter && (
+            <NotesBox label="Environment as Character" content={narrative.environmentAsCharacter} />
           )}
-          {formState.narrative.conflictSources && (
-            <NotesBox label="Conflict Sources" content={formState.narrative.conflictSources} />
+          {narrative?.conflictSources && (
+            <NotesBox label="Conflict Sources" content={narrative.conflictSources} />
           )}
-          {formState.narrative.plotOpportunities && (
-            <NotesBox label="Plot Opportunities" content={formState.narrative.plotOpportunities} />
+          {narrative?.plotOpportunities && (
+            <NotesBox label="Plot Opportunities" content={narrative.plotOpportunities} />
           )}
-          {formState.narrative.sensoryDetails && (
-            <NotesBox label="Sensory Details" content={formState.narrative.sensoryDetails} />
+          {narrative?.sensoryDetails && (
+            <NotesBox label="Sensory Details" content={narrative.sensoryDetails} />
           )}
-          {formState.narrative.uniqueMoments && (
-            <NotesBox label="Unique Moments" content={formState.narrative.uniqueMoments} />
+          {narrative?.uniqueMoments && (
+            <NotesBox label="Unique Moments" content={narrative.uniqueMoments} />
           )}
         </PDFSection>
 
@@ -515,24 +527,24 @@ const PlanetaryFullReportTemplate = ({
             </Text>
           </View>
           <View style={{ marginBottom: spacing.sm }}>
-            <Text style={{ fontSize: typography.sizes.xs, color: formState.consistencyCheck.starGravityConsistent ? "#22c55e" : colors.text.muted }}>
-              {formState.consistencyCheck.starGravityConsistent ? "✓" : "○"} Star Type ↔ Gravity Consistent
+            <Text style={{ fontSize: typography.sizes.xs, color: consistency?.starGravityConsistent ? "#22c55e" : colors.text.muted }}>
+              {consistency?.starGravityConsistent ? "✓" : "○"} Star Type ↔ Gravity Consistent
             </Text>
-            <Text style={{ fontSize: typography.sizes.xs, color: formState.consistencyCheck.atmosphereTempConsistent ? "#22c55e" : colors.text.muted }}>
-              {formState.consistencyCheck.atmosphereTempConsistent ? "✓" : "○"} Atmosphere ↔ Temperature Consistent
+            <Text style={{ fontSize: typography.sizes.xs, color: consistency?.atmosphereTempConsistent ? "#22c55e" : colors.text.muted }}>
+              {consistency?.atmosphereTempConsistent ? "✓" : "○"} Atmosphere ↔ Temperature Consistent
             </Text>
-            <Text style={{ fontSize: typography.sizes.xs, color: formState.consistencyCheck.waterTempConsistent ? "#22c55e" : colors.text.muted }}>
-              {formState.consistencyCheck.waterTempConsistent ? "✓" : "○"} Water State ↔ Temperature Consistent
+            <Text style={{ fontSize: typography.sizes.xs, color: consistency?.waterTempConsistent ? "#22c55e" : colors.text.muted }}>
+              {consistency?.waterTempConsistent ? "✓" : "○"} Water State ↔ Temperature Consistent
             </Text>
-            <Text style={{ fontSize: typography.sizes.xs, color: formState.consistencyCheck.gravityBiologyConsistent ? "#22c55e" : colors.text.muted }}>
-              {formState.consistencyCheck.gravityBiologyConsistent ? "✓" : "○"} Gravity ↔ Biology Consistent
+            <Text style={{ fontSize: typography.sizes.xs, color: consistency?.gravityBiologyConsistent ? "#22c55e" : colors.text.muted }}>
+              {consistency?.gravityBiologyConsistent ? "✓" : "○"} Gravity ↔ Biology Consistent
             </Text>
-            <Text style={{ fontSize: typography.sizes.xs, color: formState.consistencyCheck.pressuresEnvironmentConsistent ? "#22c55e" : colors.text.muted }}>
-              {formState.consistencyCheck.pressuresEnvironmentConsistent ? "✓" : "○"} Three Pressures ↔ Environment Consistent
+            <Text style={{ fontSize: typography.sizes.xs, color: consistency?.pressuresEnvironmentConsistent ? "#22c55e" : colors.text.muted }}>
+              {consistency?.pressuresEnvironmentConsistent ? "✓" : "○"} Three Pressures ↔ Environment Consistent
             </Text>
           </View>
-          {formState.consistencyCheck.consistencyNotes && (
-            <NotesBox label="Consistency Notes" content={formState.consistencyCheck.consistencyNotes} />
+          {consistency?.consistencyNotes && (
+            <NotesBox label="Consistency Notes" content={consistency.consistencyNotes} />
           )}
         </PDFSection>
 

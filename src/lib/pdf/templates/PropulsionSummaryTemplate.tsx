@@ -88,8 +88,13 @@ const PropulsionSummaryTemplate = ({
   worldName,
   date,
 }: PropulsionSummaryTemplateProps) => {
-  const propulsionType = PROPULSION_LABELS[formState.system.type] || formState.system.customType || "Unspecified";
-  const costLevel = COST_LABELS[formState.system.costComparison] || "Not specified";
+  // Safe access to nested properties
+  const system = formState?.system;
+  const benchmarks = formState?.benchmarks;
+  const synthesis = formState?.synthesis;
+
+  const propulsionType = PROPULSION_LABELS[system?.type || ""] || system?.customType || "Unspecified";
+  const costLevel = COST_LABELS[system?.costComparison || ""] || "Not specified";
 
   return (
     <Document>
@@ -104,20 +109,20 @@ const PropulsionSummaryTemplate = ({
         <PDFResultBox
           value={propulsionType}
           label="Drive System"
-          description={`${costLevel} • ${formState.system.maxVelocity || "Velocity unspecified"}`}
+          description={`${costLevel} • ${system?.maxVelocity || "Velocity unspecified"}`}
         />
 
         {/* Quick Stats */}
         <PDFSection title="System Parameters">
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: spacing.sm }}>
             <View style={{ flex: 1, minWidth: 140 }}>
-              <PDFKeyValuePair label="Max Velocity" value={formState.system.maxVelocity || "N/A"} />
+              <PDFKeyValuePair label="Max Velocity" value={system?.maxVelocity || "N/A"} />
             </View>
             <View style={{ flex: 1, minWidth: 140 }}>
-              <PDFKeyValuePair label="Acceleration" value={formState.system.acceleration || "N/A"} />
+              <PDFKeyValuePair label="Acceleration" value={system?.acceleration || "N/A"} />
             </View>
             <View style={{ flex: 1, minWidth: 140 }}>
-              <PDFKeyValuePair label="Energy Source" value={formState.system.energySource || "N/A"} />
+              <PDFKeyValuePair label="Energy Source" value={system?.energySource || "N/A"} />
             </View>
             <View style={{ flex: 1, minWidth: 140 }}>
               <PDFKeyValuePair label="Cost Level" value={costLevel} />
@@ -129,55 +134,55 @@ const PropulsionSummaryTemplate = ({
         <PDFSection title="Travel Times">
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: spacing.sm }}>
             <View style={{ flex: 1, minWidth: 140 }}>
-              <PDFKeyValuePair label="Earth→Mars" value={formState.benchmarks.earthMars || "N/A"} />
+              <PDFKeyValuePair label="Earth→Mars" value={benchmarks?.earthMars || "N/A"} />
             </View>
             <View style={{ flex: 1, minWidth: 140 }}>
-              <PDFKeyValuePair label="Earth→Jupiter" value={formState.benchmarks.earthJupiter || "N/A"} />
+              <PDFKeyValuePair label="Earth→Jupiter" value={benchmarks?.earthJupiter || "N/A"} />
             </View>
             <View style={{ flex: 1, minWidth: 140 }}>
-              <PDFKeyValuePair label="Sol→α Centauri" value={formState.benchmarks.solAlphaCentauri || "N/A"} />
+              <PDFKeyValuePair label="Sol→α Centauri" value={benchmarks?.solAlphaCentauri || "N/A"} />
             </View>
             <View style={{ flex: 1, minWidth: 140 }}>
-              <PDFKeyValuePair label="Sol→Proxima b" value={formState.benchmarks.solProximaB || "N/A"} />
+              <PDFKeyValuePair label="Sol→Proxima b" value={benchmarks?.solProximaB || "N/A"} />
             </View>
           </View>
         </PDFSection>
 
         {/* Propulsion Thesis */}
-        {formState.synthesis.propulsionThesis && (
+        {synthesis?.propulsionThesis && (
           <PDFSection title="Propulsion Thesis">
             <View style={{ padding: spacing.sm, backgroundColor: "#f5f5f5", borderRadius: 4 }}>
               <Text style={{ fontSize: typography.sizes.sm, color: colors.text.secondary, lineHeight: 1.5, fontStyle: "italic" }}>
-                {formState.synthesis.propulsionThesis}
+                {synthesis?.propulsionThesis}
               </Text>
             </View>
           </PDFSection>
         )}
 
         {/* Key Insights */}
-        {(formState.synthesis.mostImportant || formState.synthesis.storyConflict) && (
+        {(synthesis?.mostImportant || synthesis?.storyConflict) && (
           <PDFSection title="Key Insights">
-            {formState.synthesis.mostImportant && (
+            {synthesis?.mostImportant && (
               <View style={{ marginBottom: spacing.md }}>
                 <Text style={{ fontSize: typography.sizes.xs, fontWeight: 600, color: colors.primary, marginBottom: 2 }}>
                   Most Important Consequence
                 </Text>
                 <Text style={{ fontSize: typography.sizes.xs, color: colors.text.secondary, lineHeight: 1.4 }}>
-                  {formState.synthesis.mostImportant.length > 200
-                    ? formState.synthesis.mostImportant.substring(0, 197) + "..."
-                    : formState.synthesis.mostImportant}
+                  {synthesis?.mostImportant.length > 200
+                    ? synthesis?.mostImportant.substring(0, 197) + "..."
+                    : synthesis?.mostImportant}
                 </Text>
               </View>
             )}
-            {formState.synthesis.storyConflict && (
+            {synthesis?.storyConflict && (
               <View>
                 <Text style={{ fontSize: typography.sizes.xs, fontWeight: 600, color: colors.primary, marginBottom: 2 }}>
                   Story Conflict
                 </Text>
                 <Text style={{ fontSize: typography.sizes.xs, color: colors.text.secondary, lineHeight: 1.4 }}>
-                  {formState.synthesis.storyConflict.length > 200
-                    ? formState.synthesis.storyConflict.substring(0, 197) + "..."
-                    : formState.synthesis.storyConflict}
+                  {synthesis?.storyConflict.length > 200
+                    ? synthesis?.storyConflict.substring(0, 197) + "..."
+                    : synthesis?.storyConflict}
                 </Text>
               </View>
             )}

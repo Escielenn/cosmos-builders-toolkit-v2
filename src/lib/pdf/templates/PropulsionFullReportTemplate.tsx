@@ -108,9 +108,20 @@ const PropulsionFullReportTemplate = ({
   worldName,
   date,
 }: PropulsionFullReportTemplateProps) => {
-  const propulsionType = PROPULSION_LABELS[formState.system.type] || formState.system.customType || "Unspecified";
-  const costLevel = COST_LABELS[formState.system.costComparison] || "Not specified";
-  const energySource = ENERGY_LABELS[formState.system.energySource] || formState.system.energySource || "Not specified";
+  // Safe access to nested properties
+  const system = formState?.system;
+  const benchmarks = formState?.benchmarks;
+  const costs = formState?.costs;
+  const economic = formState?.economic;
+  const political = formState?.political;
+  const military = formState?.military;
+  const social = formState?.social;
+  const psychological = formState?.psychological;
+  const synthesis = formState?.synthesis;
+
+  const propulsionType = PROPULSION_LABELS[system?.type || ""] || system?.customType || "Unspecified";
+  const costLevel = COST_LABELS[system?.costComparison || ""] || "Not specified";
+  const energySource = ENERGY_LABELS[system?.energySource || ""] || system?.energySource || "Not specified";
 
   return (
     <Document>
@@ -148,10 +159,10 @@ const PropulsionFullReportTemplate = ({
           </View>
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: spacing.md, marginBottom: spacing.md }}>
             <View style={{ flex: 1, minWidth: 150 }}>
-              <PDFKeyValuePair label="Max Velocity" value={formState.system.maxVelocity || "Not specified"} />
+              <PDFKeyValuePair label="Max Velocity" value={system?.maxVelocity || "Not specified"} />
             </View>
             <View style={{ flex: 1, minWidth: 150 }}>
-              <PDFKeyValuePair label="Acceleration" value={formState.system.acceleration || "Not specified"} />
+              <PDFKeyValuePair label="Acceleration" value={system?.acceleration || "Not specified"} />
             </View>
           </View>
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: spacing.md }}>
@@ -159,7 +170,7 @@ const PropulsionFullReportTemplate = ({
               <PDFKeyValuePair label="Cost Level" value={costLevel} />
             </View>
             <View style={{ flex: 1, minWidth: 150 }}>
-              <PDFKeyValuePair label="Communication Speed" value={formState.system.communicationSpeed || "Not specified"} />
+              <PDFKeyValuePair label="Communication Speed" value={system?.communicationSpeed || "Not specified"} />
             </View>
           </View>
         </PDFSection>
@@ -168,25 +179,25 @@ const PropulsionFullReportTemplate = ({
         <PDFSection title="Travel Time Benchmarks">
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: spacing.sm }}>
             <View style={{ flex: 1, minWidth: 140 }}>
-              <PDFKeyValuePair label="Earth → Mars" value={formState.benchmarks.earthMars || "N/A"} />
+              <PDFKeyValuePair label="Earth → Mars" value={benchmarks?.earthMars || "N/A"} />
             </View>
             <View style={{ flex: 1, minWidth: 140 }}>
-              <PDFKeyValuePair label="Earth → Jupiter" value={formState.benchmarks.earthJupiter || "N/A"} />
+              <PDFKeyValuePair label="Earth → Jupiter" value={benchmarks?.earthJupiter || "N/A"} />
             </View>
             <View style={{ flex: 1, minWidth: 140 }}>
-              <PDFKeyValuePair label="Earth → Neptune" value={formState.benchmarks.earthNeptune || "N/A"} />
+              <PDFKeyValuePair label="Earth → Neptune" value={benchmarks?.earthNeptune || "N/A"} />
             </View>
           </View>
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: spacing.sm, marginTop: spacing.sm }}>
             <View style={{ flex: 1, minWidth: 140 }}>
-              <PDFKeyValuePair label="Sol → Alpha Centauri" value={formState.benchmarks.solAlphaCentauri || "N/A"} />
+              <PDFKeyValuePair label="Sol → Alpha Centauri" value={benchmarks?.solAlphaCentauri || "N/A"} />
             </View>
             <View style={{ flex: 1, minWidth: 140 }}>
-              <PDFKeyValuePair label="Sol → Proxima b" value={formState.benchmarks.solProximaB || "N/A"} />
+              <PDFKeyValuePair label="Sol → Proxima b" value={benchmarks?.solProximaB || "N/A"} />
             </View>
-            {formState.benchmarks.customRoute && (
+            {benchmarks?.customRoute && (
               <View style={{ flex: 1, minWidth: 140 }}>
-                <PDFKeyValuePair label={formState.benchmarks.customRoute} value={formState.benchmarks.customRouteTime || "N/A"} />
+                <PDFKeyValuePair label={benchmarks?.customRoute} value={benchmarks?.customRouteTime || "N/A"} />
               </View>
             )}
           </View>
@@ -196,24 +207,24 @@ const PropulsionFullReportTemplate = ({
         <PDFSection title="Economic Costs">
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: spacing.sm }}>
             <View style={{ flex: 1, minWidth: 140 }}>
-              <PDFKeyValuePair label="Fuel/Energy" value={formState.costs.fuelEnergy || "N/A"} />
+              <PDFKeyValuePair label="Fuel/Energy" value={costs?.fuelEnergy || "N/A"} />
             </View>
             <View style={{ flex: 1, minWidth: 140 }}>
-              <PDFKeyValuePair label="Construction" value={formState.costs.construction || "N/A"} />
+              <PDFKeyValuePair label="Construction" value={costs?.construction || "N/A"} />
             </View>
             <View style={{ flex: 1, minWidth: 140 }}>
-              <PDFKeyValuePair label="Maintenance" value={formState.costs.maintenance || "N/A"} />
+              <PDFKeyValuePair label="Maintenance" value={costs?.maintenance || "N/A"} />
             </View>
           </View>
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: spacing.sm, marginTop: spacing.sm }}>
             <View style={{ flex: 1, minWidth: 140 }}>
-              <PDFKeyValuePair label="Crew Capacity" value={formState.costs.crewCapacity || "N/A"} />
+              <PDFKeyValuePair label="Crew Capacity" value={costs?.crewCapacity || "N/A"} />
             </View>
             <View style={{ flex: 1, minWidth: 140 }}>
-              <PDFKeyValuePair label="Cargo Capacity" value={formState.costs.cargoCapacity || "N/A"} />
+              <PDFKeyValuePair label="Cargo Capacity" value={costs?.cargoCapacity || "N/A"} />
             </View>
             <View style={{ flex: 1, minWidth: 140 }}>
-              <PDFKeyValuePair label="Service Life" value={formState.costs.serviceLife || "N/A"} />
+              <PDFKeyValuePair label="Service Life" value={costs?.serviceLife || "N/A"} />
             </View>
           </View>
         </PDFSection>
@@ -226,29 +237,29 @@ const PropulsionFullReportTemplate = ({
         <PDFHeader toolName="Propulsion Consequences Map" worldName={worldName} date={date} />
 
         <PDFSection title="2. Economic Implications">
-          {formState.economic.immediateConsequence && (
-            <NotesBox label="Immediate Consequence" content={formState.economic.immediateConsequence as string} />
+          {economic?.immediateConsequence && (
+            <NotesBox label="Immediate Consequence" content={economic?.immediateConsequence as string} />
           )}
-          {formState.economic.tradeGoods && (
-            <NotesBox label="Primary Interstellar Trade Goods" content={formState.economic.tradeGoods as string} />
+          {economic?.tradeGoods && (
+            <NotesBox label="Primary Interstellar Trade Goods" content={economic?.tradeGoods as string} />
           )}
-          {formState.economic.wealthDisparities && (
-            <NotesBox label="Wealth Disparities Created" content={formState.economic.wealthDisparities as string} />
+          {economic?.wealthDisparities && (
+            <NotesBox label="Wealth Disparities Created" content={economic?.wealthDisparities as string} />
           )}
-          {formState.economic.laborPatterns && (
-            <NotesBox label="Labor & Migration Patterns" content={formState.economic.laborPatterns as string} />
+          {economic?.laborPatterns && (
+            <NotesBox label="Labor & Migration Patterns" content={economic?.laborPatterns as string} />
           )}
         </PDFSection>
 
         <PDFSection title="3. Political & Governance">
-          {formState.political.transitTime && (
-            <NotesBox label="Message/Command Transit Time" content={formState.political.transitTime as string} />
+          {political?.transitTime && (
+            <NotesBox label="Message/Command Transit Time" content={political?.transitTime as string} />
           )}
-          {formState.political.implications && (
-            <NotesBox label="Governance Implications" content={formState.political.implications as string} />
+          {political?.implications && (
+            <NotesBox label="Governance Implications" content={political?.implications as string} />
           )}
-          {formState.political.rebellionResponse && (
-            <NotesBox label="Rebellion Response" content={formState.political.rebellionResponse as string} />
+          {political?.rebellionResponse && (
+            <NotesBox label="Rebellion Response" content={political?.rebellionResponse as string} />
           )}
         </PDFSection>
 
@@ -260,26 +271,26 @@ const PropulsionFullReportTemplate = ({
         <PDFHeader toolName="Propulsion Consequences Map" worldName={worldName} date={date} />
 
         <PDFSection title="4. Military Implications">
-          {formState.military.warfareNature && (
-            <NotesBox label="Nature of Warfare" content={formState.military.warfareNature as string} />
+          {military?.warfareNature && (
+            <NotesBox label="Nature of Warfare" content={military?.warfareNature as string} />
           )}
-          {formState.military.defensePossible && (
-            <NotesBox label="Defense Possibilities" content={formState.military.defensePossible as string} />
+          {military?.defensePossible && (
+            <NotesBox label="Defense Possibilities" content={military?.defensePossible as string} />
           )}
-          {formState.military.forceProjection && (
-            <NotesBox label="Force Projection" content={formState.military.forceProjection as string} />
+          {military?.forceProjection && (
+            <NotesBox label="Force Projection" content={military?.forceProjection as string} />
           )}
         </PDFSection>
 
         <PDFSection title="5. Social Implications">
-          {formState.social.familyRelations && (
-            <NotesBox label="Family Relationships" content={formState.social.familyRelations as string} />
+          {social?.familyRelations && (
+            <NotesBox label="Family Relationships" content={social?.familyRelations as string} />
           )}
-          {formState.social.culturalDrift && (
-            <NotesBox label="Cultural Drift" content={formState.social.culturalDrift as string} />
+          {social?.culturalDrift && (
+            <NotesBox label="Cultural Drift" content={social?.culturalDrift as string} />
           )}
-          {formState.social.spacerIdentity && (
-            <NotesBox label="Spacer Identity" content={formState.social.spacerIdentity as string} />
+          {social?.spacerIdentity && (
+            <NotesBox label="Spacer Identity" content={social?.spacerIdentity as string} />
           )}
         </PDFSection>
 
@@ -291,36 +302,36 @@ const PropulsionFullReportTemplate = ({
         <PDFHeader toolName="Propulsion Consequences Map" worldName={worldName} date={date} />
 
         <PDFSection title="6. Psychological Implications">
-          {formState.psychological.perceptionDistance && (
-            <NotesBox label="Perception of Distance" content={formState.psychological.perceptionDistance as string} />
+          {psychological?.perceptionDistance && (
+            <NotesBox label="Perception of Distance" content={psychological?.perceptionDistance as string} />
           )}
-          {formState.psychological.timePressures && (
-            <NotesBox label="Time Pressures" content={formState.psychological.timePressures as string} />
+          {psychological?.timePressures && (
+            <NotesBox label="Time Pressures" content={psychological?.timePressures as string} />
           )}
-          {formState.psychological.alienation && (
-            <NotesBox label="Alienation Effects" content={formState.psychological.alienation as string} />
+          {psychological?.alienation && (
+            <NotesBox label="Alienation Effects" content={psychological?.alienation as string} />
           )}
         </PDFSection>
 
         <PDFSection title="7. Final Synthesis">
-          {formState.synthesis.propulsionThesis && (
+          {synthesis?.propulsionThesis && (
             <View style={{ marginBottom: spacing.lg, padding: spacing.md, backgroundColor: "#f5f5f5", borderRadius: 4 }} wrap={false}>
               <Text style={{ fontSize: typography.sizes.md, fontWeight: 600, color: colors.primary, marginBottom: spacing.sm }}>
                 Propulsion Thesis
               </Text>
               <Text style={{ fontSize: typography.sizes.sm, color: colors.text.secondary, lineHeight: 1.6, fontStyle: "italic" }}>
-                {formState.synthesis.propulsionThesis}
+                {synthesis?.propulsionThesis}
               </Text>
             </View>
           )}
-          {formState.synthesis.mostImportant && (
-            <NotesBox label="Most Important Consequence" content={formState.synthesis.mostImportant} />
+          {synthesis?.mostImportant && (
+            <NotesBox label="Most Important Consequence" content={synthesis?.mostImportant} />
           )}
-          {formState.synthesis.storyConflict && (
-            <NotesBox label="Most Interesting Story Conflict" content={formState.synthesis.storyConflict} />
+          {synthesis?.storyConflict && (
+            <NotesBox label="Most Interesting Story Conflict" content={synthesis?.storyConflict} />
           )}
-          {formState.synthesis.unexpectedConsequences && (
-            <NotesBox label="Unexpected Consequences" content={formState.synthesis.unexpectedConsequences} />
+          {synthesis?.unexpectedConsequences && (
+            <NotesBox label="Unexpected Consequences" content={synthesis?.unexpectedConsequences} />
           )}
         </PDFSection>
 

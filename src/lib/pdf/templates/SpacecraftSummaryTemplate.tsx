@@ -127,10 +127,17 @@ const SpacecraftSummaryTemplate = ({
   worldName,
   date,
 }: SpacecraftSummaryTemplateProps) => {
-  const shipName = formState.identity.name || "Unnamed Vessel";
-  const shipClass = SHIP_CLASS_LABELS[formState.identity.class] || formState.identity.customClass || "Unclassified";
-  const shipSize = SIZE_LABELS[formState.identity.size] || "Unknown";
-  const gravityType = GRAVITY_LABELS[formState.lifeSupport.gravity] || "Not specified";
+  // Safe access to nested properties
+  const identity = formState?.identity;
+  const propulsion = formState?.propulsion;
+  const lifeSupport = formState?.lifeSupport;
+  const character = formState?.character;
+  const synthesis = formState?.synthesis;
+
+  const shipName = identity?.name || "Unnamed Vessel";
+  const shipClass = SHIP_CLASS_LABELS[identity?.class || ""] || identity?.customClass || "Unclassified";
+  const shipSize = SIZE_LABELS[identity?.size || ""] || "Unknown";
+  const gravityType = GRAVITY_LABELS[lifeSupport?.gravity || ""] || "Not specified";
 
   return (
     <Document>
@@ -145,7 +152,7 @@ const SpacecraftSummaryTemplate = ({
         <PDFResultBox
           value={shipName}
           label={shipClass}
-          description={`${shipSize} • ${formState.identity.age || "Age unknown"}`}
+          description={`${shipSize} • ${identity?.age || "Age unknown"}`}
         />
 
         {/* Quick Stats */}
@@ -158,10 +165,10 @@ const SpacecraftSummaryTemplate = ({
               <PDFKeyValuePair label="Size" value={shipSize} />
             </View>
             <View style={{ flex: 1, minWidth: 140 }}>
-              <PDFKeyValuePair label="Age" value={formState.identity.age || "N/A"} />
+              <PDFKeyValuePair label="Age" value={identity?.age || "N/A"} />
             </View>
             <View style={{ flex: 1, minWidth: 140 }}>
-              <PDFKeyValuePair label="Origin" value={formState.identity.origin || "N/A"} />
+              <PDFKeyValuePair label="Origin" value={identity?.origin || "N/A"} />
             </View>
           </View>
         </PDFSection>
@@ -170,42 +177,42 @@ const SpacecraftSummaryTemplate = ({
         <PDFSection title="Technical Systems">
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: spacing.sm }}>
             <View style={{ flex: 1, minWidth: 140 }}>
-              <PDFKeyValuePair label="Drive Type" value={formState.propulsion.driveType || "N/A"} />
+              <PDFKeyValuePair label="Drive Type" value={propulsion?.driveType || "N/A"} />
             </View>
             <View style={{ flex: 1, minWidth: 140 }}>
-              <PDFKeyValuePair label="Acceleration" value={formState.propulsion.accelerationProfile || "N/A"} />
+              <PDFKeyValuePair label="Acceleration" value={propulsion?.accelerationProfile || "N/A"} />
             </View>
             <View style={{ flex: 1, minWidth: 140 }}>
               <PDFKeyValuePair label="Gravity" value={gravityType} />
             </View>
             <View style={{ flex: 1, minWidth: 140 }}>
-              <PDFKeyValuePair label="Range" value={formState.propulsion.rangeLimit || "N/A"} />
+              <PDFKeyValuePair label="Range" value={propulsion?.rangeLimit || "N/A"} />
             </View>
           </View>
         </PDFSection>
 
         {/* Ship Character */}
-        {formState.character.personality && (
+        {character?.personality && (
           <PDFSection title="Ship Character">
             <View style={{ marginBottom: spacing.sm }}>
               <Text style={{ fontSize: typography.sizes.xs, fontWeight: 600, color: colors.primary, marginBottom: 2 }}>
                 Personality
               </Text>
               <Text style={{ fontSize: typography.sizes.xs, color: colors.text.secondary, lineHeight: 1.4 }}>
-                {formState.character.personality.length > 200
-                  ? formState.character.personality.substring(0, 197) + "..."
-                  : formState.character.personality}
+                {character.personality.length > 200
+                  ? character.personality.substring(0, 197) + "..."
+                  : character.personality}
               </Text>
             </View>
-            {formState.character.metaphor && (
+            {character?.metaphor && (
               <View>
                 <Text style={{ fontSize: typography.sizes.xs, fontWeight: 600, color: colors.primary, marginBottom: 2 }}>
                   Thematic Metaphor
                 </Text>
                 <Text style={{ fontSize: typography.sizes.xs, color: colors.text.secondary, lineHeight: 1.4 }}>
-                  {formState.character.metaphor.length > 150
-                    ? formState.character.metaphor.substring(0, 147) + "..."
-                    : formState.character.metaphor}
+                  {character.metaphor.length > 150
+                    ? character.metaphor.substring(0, 147) + "..."
+                    : character.metaphor}
                 </Text>
               </View>
             )}
@@ -213,23 +220,23 @@ const SpacecraftSummaryTemplate = ({
         )}
 
         {/* Sensory Signature */}
-        {formState.synthesis.sensorySignature && (
+        {synthesis?.sensorySignature && (
           <PDFSection title="Sensory Signature">
             <Text style={{ fontSize: typography.sizes.xs, color: colors.text.secondary, lineHeight: 1.5, fontStyle: "italic" }}>
-              {formState.synthesis.sensorySignature.length > 400
-                ? formState.synthesis.sensorySignature.substring(0, 397) + "..."
-                : formState.synthesis.sensorySignature}
+              {synthesis.sensorySignature.length > 400
+                ? synthesis.sensorySignature.substring(0, 397) + "..."
+                : synthesis.sensorySignature}
             </Text>
           </PDFSection>
         )}
 
         {/* Story Hooks */}
-        {formState.synthesis.storyHooks && (
+        {synthesis?.storyHooks && (
           <PDFSection title="Story Hooks">
             <Text style={{ fontSize: typography.sizes.xs, color: colors.text.secondary, lineHeight: 1.4 }}>
-              {formState.synthesis.storyHooks.length > 300
-                ? formState.synthesis.storyHooks.substring(0, 297) + "..."
-                : formState.synthesis.storyHooks}
+              {synthesis.storyHooks.length > 300
+                ? synthesis.storyHooks.substring(0, 297) + "..."
+                : synthesis.storyHooks}
             </Text>
           </PDFSection>
         )}

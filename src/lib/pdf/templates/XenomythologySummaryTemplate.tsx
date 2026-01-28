@@ -100,9 +100,21 @@ const XenomythologySummaryTemplate = ({
   worldName,
   date,
 }: XenomythologySummaryTemplateProps) => {
-  const archetypeCount = formState.archetypePantheon?.length || 0;
-  const deityCount = formState.divineConceptualization?.deities?.length || 0;
-  const primarySenses = formState.sensoryArchitecture.primaryModalities?.join(", ") || "Not specified";
+  // Safe access to nested properties
+  const sensory = formState?.sensoryArchitecture;
+  const physical = formState?.physicalForm;
+  const cognitive = formState?.cognitiveArchitecture;
+  const planetary = formState?.planetaryConditions;
+  const existential = formState?.existentialParameters;
+  const archetypes = formState?.archetypePantheon;
+  const creation = formState?.creationNarrative;
+  const cosmos = formState?.cosmologicalStructure;
+  const divine = formState?.divineConceptualization;
+  const synthesis = formState?.synthesis;
+
+  const archetypeCount = archetypes?.length || 0;
+  const deityCount = divine?.deities?.length || 0;
+  const primarySenses = sensory?.primaryModalities?.join(", ") || "Not specified";
 
   return (
     <Document>
@@ -117,7 +129,7 @@ const XenomythologySummaryTemplate = ({
         <PDFResultBox
           value={`${archetypeCount} Archetypes`}
           label="Mythic Framework"
-          description={`${deityCount} Divine Entities • ${formState.cosmologicalStructure.dimensionalStructure || "Undefined"} Cosmos`}
+          description={`${deityCount} Divine Entities • ${cosmos?.dimensionalStructure || "Undefined"} Cosmos`}
         />
 
         {/* Species Overview */}
@@ -127,13 +139,13 @@ const XenomythologySummaryTemplate = ({
               <PDFKeyValuePair label="Primary Senses" value={primarySenses} />
             </View>
             <View style={{ flex: 1, minWidth: 140 }}>
-              <PDFKeyValuePair label="Body Plan" value={formState.physicalForm.bodyPlan || "N/A"} />
+              <PDFKeyValuePair label="Body Plan" value={physical?.bodyPlan || "N/A"} />
             </View>
             <View style={{ flex: 1, minWidth: 140 }}>
-              <PDFKeyValuePair label="Lifespan" value={formState.physicalForm.lifespanCategory || "N/A"} />
+              <PDFKeyValuePair label="Lifespan" value={physical?.lifespanCategory || "N/A"} />
             </View>
             <View style={{ flex: 1, minWidth: 140 }}>
-              <PDFKeyValuePair label="Consciousness" value={formState.cognitiveArchitecture.consciousnessType || "N/A"} />
+              <PDFKeyValuePair label="Consciousness" value={cognitive?.consciousnessType || "N/A"} />
             </View>
           </View>
         </PDFSection>
@@ -142,24 +154,24 @@ const XenomythologySummaryTemplate = ({
         <PDFSection title="Environmental Context">
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: spacing.sm }}>
             <View style={{ flex: 1, minWidth: 140 }}>
-              <PDFKeyValuePair label="Planet Type" value={formState.planetaryConditions.planetType || "N/A"} />
+              <PDFKeyValuePair label="Planet Type" value={planetary?.planetType || "N/A"} />
             </View>
             <View style={{ flex: 1, minWidth: 140 }}>
-              <PDFKeyValuePair label="Day/Night" value={formState.planetaryConditions.dayNightCycle || "N/A"} />
+              <PDFKeyValuePair label="Day/Night" value={planetary?.dayNightCycle || "N/A"} />
             </View>
             <View style={{ flex: 1, minWidth: 140 }}>
-              <PDFKeyValuePair label="Stellar System" value={formState.planetaryConditions.stellarEnvironment || "N/A"} />
+              <PDFKeyValuePair label="Stellar System" value={planetary?.stellarEnvironment || "N/A"} />
             </View>
             <View style={{ flex: 1, minWidth: 140 }}>
-              <PDFKeyValuePair label="Mortality" value={formState.existentialParameters.mortalitySalience || "N/A"} />
+              <PDFKeyValuePair label="Mortality" value={existential?.mortalitySalience || "N/A"} />
             </View>
           </View>
         </PDFSection>
 
         {/* Archetype Pantheon */}
-        {formState.archetypePantheon && formState.archetypePantheon.length > 0 && (
+        {archetypes && archetypes.length > 0 && (
           <PDFSection title="Archetype Pantheon">
-            {formState.archetypePantheon.slice(0, 5).map((archetype, index) => (
+            {archetypes.slice(0, 5).map((archetype, index) => (
               <View key={index} style={{ marginBottom: spacing.sm }} wrap={false}>
                 <Text style={{ fontSize: typography.sizes.sm, fontWeight: 600, color: colors.primary }}>
                   {archetype.name || `Archetype ${index + 1}`}
@@ -169,46 +181,46 @@ const XenomythologySummaryTemplate = ({
                 </Text>
               </View>
             ))}
-            {formState.archetypePantheon.length > 5 && (
+            {archetypes.length > 5 && (
               <Text style={{ fontSize: typography.sizes.xs, color: colors.text.muted, fontStyle: "italic" }}>
-                + {formState.archetypePantheon.length - 5} more archetypes...
+                + {archetypes.length - 5} more archetypes...
               </Text>
             )}
           </PDFSection>
         )}
 
         {/* Creation Narrative Preview */}
-        {formState.creationNarrative.fullNarrative && (
+        {creation?.fullNarrative && (
           <PDFSection title="Creation Narrative">
             <Text style={{ fontSize: typography.sizes.xs, color: colors.text.secondary, lineHeight: 1.5, fontStyle: "italic" }}>
-              {formState.creationNarrative.fullNarrative.length > 400
-                ? formState.creationNarrative.fullNarrative.substring(0, 397) + "..."
-                : formState.creationNarrative.fullNarrative}
+              {creation?.fullNarrative.length > 400
+                ? creation?.fullNarrative.substring(0, 397) + "..."
+                : creation?.fullNarrative}
             </Text>
           </PDFSection>
         )}
 
         {/* Ethics Summary */}
-        {(formState.synthesis.ethicalVirtues || formState.synthesis.ethicalTaboos) && (
+        {(synthesis?.ethicalVirtues || synthesis?.ethicalTaboos) && (
           <PDFSection title="Ethical Framework">
             <View style={{ flexDirection: "row", gap: spacing.md }}>
-              {formState.synthesis.ethicalVirtues && (
+              {synthesis?.ethicalVirtues && (
                 <View style={{ flex: 1 }}>
                   <Text style={{ fontSize: typography.sizes.xs, fontWeight: 600, color: colors.primary, marginBottom: 2 }}>Virtues</Text>
                   <Text style={{ fontSize: typography.sizes.xs, color: colors.text.secondary, lineHeight: 1.4 }}>
-                    {formState.synthesis.ethicalVirtues.length > 150
-                      ? formState.synthesis.ethicalVirtues.substring(0, 147) + "..."
-                      : formState.synthesis.ethicalVirtues}
+                    {synthesis?.ethicalVirtues.length > 150
+                      ? synthesis?.ethicalVirtues.substring(0, 147) + "..."
+                      : synthesis?.ethicalVirtues}
                   </Text>
                 </View>
               )}
-              {formState.synthesis.ethicalTaboos && (
+              {synthesis?.ethicalTaboos && (
                 <View style={{ flex: 1 }}>
                   <Text style={{ fontSize: typography.sizes.xs, fontWeight: 600, color: colors.primary, marginBottom: 2 }}>Taboos</Text>
                   <Text style={{ fontSize: typography.sizes.xs, color: colors.text.secondary, lineHeight: 1.4 }}>
-                    {formState.synthesis.ethicalTaboos.length > 150
-                      ? formState.synthesis.ethicalTaboos.substring(0, 147) + "..."
-                      : formState.synthesis.ethicalTaboos}
+                    {synthesis?.ethicalTaboos.length > 150
+                      ? synthesis?.ethicalTaboos.substring(0, 147) + "..."
+                      : synthesis?.ethicalTaboos}
                   </Text>
                 </View>
               )}

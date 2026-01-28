@@ -154,11 +154,20 @@ const SpacecraftFullReportTemplate = ({
   worldName,
   date,
 }: SpacecraftFullReportTemplateProps) => {
-  const shipName = formState.identity.name || "Unnamed Vessel";
-  const shipClass = SHIP_CLASS_LABELS[formState.identity.class] || formState.identity.customClass || "Unclassified";
-  const shipSize = SIZE_LABELS[formState.identity.size] || "Unknown size";
-  const shipRole = ROLE_LABELS[formState.identity.role] || formState.identity.customRole || "Unknown role";
-  const gravityType = GRAVITY_LABELS[formState.lifeSupport.gravity] || "Not specified";
+  // Safe access to nested properties
+  const identity = formState?.identity;
+  const propulsion = formState?.propulsion;
+  const lifeSupport = formState?.lifeSupport;
+  const living = formState?.living;
+  const cultural = formState?.cultural;
+  const character = formState?.character;
+  const synthesis = formState?.synthesis;
+
+  const shipName = identity?.name || "Unnamed Vessel";
+  const shipClass = SHIP_CLASS_LABELS[identity?.class || ""] || identity?.customClass || "Unclassified";
+  const shipSize = SIZE_LABELS[identity?.size || ""] || "Unknown size";
+  const shipRole = ROLE_LABELS[identity?.role || ""] || identity?.customRole || "Unknown role";
+  const gravityType = GRAVITY_LABELS[lifeSupport?.gravity || ""] || "Not specified";
 
   return (
     <Document>
@@ -204,15 +213,15 @@ const SpacecraftFullReportTemplate = ({
           </View>
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: spacing.md, marginBottom: spacing.md }}>
             <View style={{ flex: 1, minWidth: 150 }}>
-              <PDFKeyValuePair label="Age" value={formState.identity.age || "Not specified"} />
+              <PDFKeyValuePair label="Age" value={identity?.age || "Not specified"} />
             </View>
             <View style={{ flex: 1, minWidth: 150 }}>
-              <PDFKeyValuePair label="Origin" value={formState.identity.origin || "Not specified"} />
+              <PDFKeyValuePair label="Origin" value={identity?.origin || "Not specified"} />
             </View>
           </View>
-          <PDFKeyValuePair label="Current Owner" value={formState.identity.currentOwner || "Not specified"} />
-          {formState.identity.history && (
-            <NotesBox label="Ship History" content={formState.identity.history} />
+          <PDFKeyValuePair label="Current Owner" value={identity?.currentOwner || "Not specified"} />
+          {identity?.history && (
+            <NotesBox label="Ship History" content={identity?.history} />
           )}
         </PDFSection>
 
@@ -226,28 +235,28 @@ const SpacecraftFullReportTemplate = ({
         <PDFSection title="2. Propulsion & Architecture">
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: spacing.md, marginBottom: spacing.md }}>
             <View style={{ flex: 1, minWidth: 150 }}>
-              <PDFKeyValuePair label="Drive Type" value={formState.propulsion.driveType || "Not specified"} />
+              <PDFKeyValuePair label="Drive Type" value={propulsion?.driveType || "Not specified"} />
             </View>
             <View style={{ flex: 1, minWidth: 150 }}>
-              <PDFKeyValuePair label="Acceleration Profile" value={formState.propulsion.accelerationProfile || "Not specified"} />
+              <PDFKeyValuePair label="Acceleration Profile" value={propulsion?.accelerationProfile || "Not specified"} />
             </View>
           </View>
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: spacing.md, marginBottom: spacing.md }}>
             <View style={{ flex: 1, minWidth: 150 }}>
-              <PDFKeyValuePair label="Fuel Source" value={formState.propulsion.fuelSource || "Not specified"} />
+              <PDFKeyValuePair label="Fuel Source" value={propulsion?.fuelSource || "Not specified"} />
             </View>
             <View style={{ flex: 1, minWidth: 150 }}>
-              <PDFKeyValuePair label="Range/Endurance" value={formState.propulsion.rangeLimit || "Not specified"} />
+              <PDFKeyValuePair label="Range/Endurance" value={propulsion?.rangeLimit || "Not specified"} />
             </View>
           </View>
-          {formState.propulsion.architecturalConsequences && (
-            <NotesBox label="Architectural Consequences" content={formState.propulsion.architecturalConsequences} />
+          {propulsion?.architecturalConsequences && (
+            <NotesBox label="Architectural Consequences" content={propulsion?.architecturalConsequences} />
           )}
-          {formState.propulsion.thrustOrientation && (
-            <NotesBox label="Thrust Orientation" content={formState.propulsion.thrustOrientation} />
+          {propulsion?.thrustOrientation && (
+            <NotesBox label="Thrust Orientation" content={propulsion?.thrustOrientation} />
           )}
-          {formState.propulsion.noiseVibration && (
-            <NotesBox label="Noise & Vibration" content={formState.propulsion.noiseVibration} />
+          {propulsion?.noiseVibration && (
+            <NotesBox label="Noise & Vibration" content={propulsion?.noiseVibration} />
           )}
         </PDFSection>
 
@@ -260,26 +269,26 @@ const SpacecraftFullReportTemplate = ({
 
         <PDFSection title="3. Life Support Systems">
           <PDFKeyValuePair label="Gravity" value={gravityType} />
-          {formState.lifeSupport.atmosphere && (
-            <NotesBox label="Atmosphere Management" content={formState.lifeSupport.atmosphere} />
+          {lifeSupport?.atmosphere && (
+            <NotesBox label="Atmosphere Management" content={lifeSupport?.atmosphere} />
           )}
-          {formState.lifeSupport.water && (
-            <NotesBox label="Water Systems" content={formState.lifeSupport.water} />
+          {lifeSupport?.water && (
+            <NotesBox label="Water Systems" content={lifeSupport?.water} />
           )}
-          {formState.lifeSupport.food && (
-            <NotesBox label="Food & Nutrition" content={formState.lifeSupport.food} />
+          {lifeSupport?.food && (
+            <NotesBox label="Food & Nutrition" content={lifeSupport?.food} />
           )}
-          {formState.lifeSupport.waste && (
-            <NotesBox label="Waste Management" content={formState.lifeSupport.waste} />
+          {lifeSupport?.waste && (
+            <NotesBox label="Waste Management" content={lifeSupport?.waste} />
           )}
-          {formState.lifeSupport.medical && (
-            <NotesBox label="Medical Facilities" content={formState.lifeSupport.medical} />
+          {lifeSupport?.medical && (
+            <NotesBox label="Medical Facilities" content={lifeSupport?.medical} />
           )}
-          {formState.lifeSupport.emergencyBackups && (
-            <NotesBox label="Emergency Backups" content={formState.lifeSupport.emergencyBackups} />
+          {lifeSupport?.emergencyBackups && (
+            <NotesBox label="Emergency Backups" content={lifeSupport?.emergencyBackups} />
           )}
-          {formState.lifeSupport.failureModes && (
-            <NotesBox label="Failure Modes" content={formState.lifeSupport.failureModes} />
+          {lifeSupport?.failureModes && (
+            <NotesBox label="Failure Modes" content={lifeSupport?.failureModes} />
           )}
         </PDFSection>
 
@@ -291,36 +300,36 @@ const SpacecraftFullReportTemplate = ({
         <PDFHeader toolName="Spacecraft Designer" worldName={worldName} date={date} />
 
         <PDFSection title="4. Living Spaces & Sensory Experience">
-          {formState.living.crewQuarters && (
-            <NotesBox label="Crew Quarters" content={formState.living.crewQuarters} />
+          {living?.crewQuarters && (
+            <NotesBox label="Crew Quarters" content={living?.crewQuarters} />
           )}
-          {formState.living.commonAreas && (
-            <NotesBox label="Common Areas" content={formState.living.commonAreas} />
+          {living?.commonAreas && (
+            <NotesBox label="Common Areas" content={living?.commonAreas} />
           )}
-          {formState.living.recreation && (
-            <NotesBox label="Recreation & Exercise" content={formState.living.recreation} />
+          {living?.recreation && (
+            <NotesBox label="Recreation & Exercise" content={living?.recreation} />
           )}
-          {formState.living.workspaces && (
-            <NotesBox label="Work Spaces" content={formState.living.workspaces} />
+          {living?.workspaces && (
+            <NotesBox label="Work Spaces" content={living?.workspaces} />
           )}
 
           <View style={{ flexDirection: "row", gap: spacing.md, marginTop: spacing.md }}>
             <View style={{ flex: 1 }}>
               <Text style={{ fontSize: typography.sizes.xs, fontWeight: 600, color: colors.primary, marginBottom: 2 }}>Soundscape</Text>
               <Text style={{ fontSize: typography.sizes.xs, color: colors.text.secondary, lineHeight: 1.4 }}>
-                {formState.living.soundscape || "Not specified"}
+                {living?.soundscape || "Not specified"}
               </Text>
             </View>
             <View style={{ flex: 1 }}>
               <Text style={{ fontSize: typography.sizes.xs, fontWeight: 600, color: colors.primary, marginBottom: 2 }}>Lighting</Text>
               <Text style={{ fontSize: typography.sizes.xs, color: colors.text.secondary, lineHeight: 1.4 }}>
-                {formState.living.lighting || "Not specified"}
+                {living?.lighting || "Not specified"}
               </Text>
             </View>
             <View style={{ flex: 1 }}>
               <Text style={{ fontSize: typography.sizes.xs, fontWeight: 600, color: colors.primary, marginBottom: 2 }}>Smells</Text>
               <Text style={{ fontSize: typography.sizes.xs, color: colors.text.secondary, lineHeight: 1.4 }}>
-                {formState.living.smells || "Not specified"}
+                {living?.smells || "Not specified"}
               </Text>
             </View>
           </View>
@@ -334,23 +343,23 @@ const SpacecraftFullReportTemplate = ({
         <PDFHeader toolName="Spacecraft Designer" worldName={worldName} date={date} />
 
         <PDFSection title="5. Cultural Design Elements">
-          {formState.cultural.originCulture && (
-            <NotesBox label="Origin Culture" content={formState.cultural.originCulture} />
+          {cultural?.originCulture && (
+            <NotesBox label="Origin Culture" content={cultural?.originCulture} />
           )}
-          {formState.cultural.decorations && (
-            <NotesBox label="Decorations & Art" content={formState.cultural.decorations} />
+          {cultural?.decorations && (
+            <NotesBox label="Decorations & Art" content={cultural?.decorations} />
           )}
-          {formState.cultural.modifications && (
-            <NotesBox label="Crew Modifications" content={formState.cultural.modifications} />
+          {cultural?.modifications && (
+            <NotesBox label="Crew Modifications" content={cultural?.modifications} />
           )}
-          {formState.cultural.rituals && (
-            <NotesBox label="Shipboard Rituals" content={formState.cultural.rituals} />
+          {cultural?.rituals && (
+            <NotesBox label="Shipboard Rituals" content={cultural?.rituals} />
           )}
-          {formState.cultural.taboos && (
-            <NotesBox label="Taboos & Rules" content={formState.cultural.taboos} />
+          {cultural?.taboos && (
+            <NotesBox label="Taboos & Rules" content={cultural?.taboos} />
           )}
-          {formState.cultural.superstitions && (
-            <NotesBox label="Superstitions & Traditions" content={formState.cultural.superstitions} />
+          {cultural?.superstitions && (
+            <NotesBox label="Superstitions & Traditions" content={cultural?.superstitions} />
           )}
         </PDFSection>
 
@@ -362,20 +371,20 @@ const SpacecraftFullReportTemplate = ({
         <PDFHeader toolName="Spacecraft Designer" worldName={worldName} date={date} />
 
         <PDFSection title="6. Ship as Character">
-          {formState.character.personality && (
-            <NotesBox label="Ship Personality" content={formState.character.personality} />
+          {character?.personality && (
+            <NotesBox label="Ship Personality" content={character?.personality} />
           )}
-          {formState.character.quirks && (
-            <NotesBox label="Quirks & Idiosyncrasies" content={formState.character.quirks} />
+          {character?.quirks && (
+            <NotesBox label="Quirks & Idiosyncrasies" content={character?.quirks} />
           )}
-          {formState.character.secrets && (
-            <NotesBox label="Ship's Secrets" content={formState.character.secrets} />
+          {character?.secrets && (
+            <NotesBox label="Ship's Secrets" content={character?.secrets} />
           )}
-          {formState.character.reputation && (
-            <NotesBox label="Reputation" content={formState.character.reputation} />
+          {character?.reputation && (
+            <NotesBox label="Reputation" content={character?.reputation} />
           )}
-          {formState.character.metaphor && (
-            <NotesBox label="Thematic Metaphor" content={formState.character.metaphor} />
+          {character?.metaphor && (
+            <NotesBox label="Thematic Metaphor" content={character?.metaphor} />
           )}
         </PDFSection>
 
@@ -387,20 +396,20 @@ const SpacecraftFullReportTemplate = ({
         <PDFHeader toolName="Spacecraft Designer" worldName={worldName} date={date} />
 
         <PDFSection title="Synthesis: Bringing It Together">
-          {formState.synthesis.livedInDetails && (
-            <NotesBox label="Key Lived-In Details" content={formState.synthesis.livedInDetails} />
+          {synthesis?.livedInDetails && (
+            <NotesBox label="Key Lived-In Details" content={synthesis?.livedInDetails} />
           )}
-          {formState.synthesis.storyHooks && (
-            <NotesBox label="Story Hooks" content={formState.synthesis.storyHooks} />
+          {synthesis?.storyHooks && (
+            <NotesBox label="Story Hooks" content={synthesis?.storyHooks} />
           )}
-          {formState.synthesis.sensorySignature && (
+          {synthesis?.sensorySignature && (
             <View style={{ marginBottom: spacing.lg }} wrap={false}>
               <Text style={{ fontSize: typography.sizes.md, fontWeight: 600, color: colors.primary, marginBottom: spacing.sm }}>
                 Sensory Signature
               </Text>
               <View style={{ padding: spacing.md, backgroundColor: "#f5f5f5", borderRadius: 4 }}>
                 <Text style={{ fontSize: typography.sizes.sm, color: colors.text.secondary, lineHeight: 1.6, fontStyle: "italic" }}>
-                  {formState.synthesis.sensorySignature}
+                  {synthesis?.sensorySignature}
                 </Text>
               </View>
             </View>

@@ -152,8 +152,25 @@ const XenomythologyFullReportTemplate = ({
   worldName,
   date,
 }: XenomythologyFullReportTemplateProps) => {
-  const archetypeCount = formState.archetypePantheon?.length || 0;
-  const deityCount = formState.divineConceptualization?.deities?.length || 0;
+  // Safe access to nested properties
+  const sensory = formState?.sensoryArchitecture;
+  const physical = formState?.physicalForm;
+  const cognitive = formState?.cognitiveArchitecture;
+  const planetary = formState?.planetaryConditions;
+  const evolutionary = formState?.evolutionaryPressures;
+  const existential = formState?.existentialParameters;
+  const archetypes = formState?.archetypePantheon;
+  const creation = formState?.creationNarrative;
+  const cosmos = formState?.cosmologicalStructure;
+  const divine = formState?.divineConceptualization;
+  const mythic = formState?.mythicCycles;
+  const ritual = formState?.ritualStructure;
+  const specialists = formState?.sacredSpecialists;
+  const death = formState?.deathPractices;
+  const synthesis = formState?.synthesis;
+
+  const archetypeCount = archetypes?.length || 0;
+  const deityCount = divine?.deities?.length || 0;
 
   return (
     <Document>
@@ -180,34 +197,34 @@ const XenomythologyFullReportTemplate = ({
         <PDFSection title="1. Sensory Architecture">
           <PDFKeyValuePair
             label="Primary Modalities"
-            value={formState.sensoryArchitecture.primaryModalities?.join(", ") || "Not specified"}
+            value={sensory?.primaryModalities?.join(", ") || "Not specified"}
           />
           <View style={{ flexDirection: "row", gap: spacing.md, marginTop: spacing.sm }}>
             <View style={{ flex: 1 }}>
-              <PDFKeyValuePair label="Integration Style" value={formState.sensoryArchitecture.integrationStyle || "N/A"} />
+              <PDFKeyValuePair label="Integration Style" value={sensory?.integrationStyle || "N/A"} />
             </View>
             <View style={{ flex: 1 }}>
-              <PDFKeyValuePair label="Sensory Range" value={formState.sensoryArchitecture.sensoryRange || "N/A"} />
+              <PDFKeyValuePair label="Sensory Range" value={sensory?.sensoryRange || "N/A"} />
             </View>
           </View>
-          {formState.sensoryArchitecture.cognitionImpact && (
-            <NotesBox label="Cognition Impact" content={formState.sensoryArchitecture.cognitionImpact} />
+          {sensory?.cognitionImpact && (
+            <NotesBox label="Cognition Impact" content={sensory?.cognitionImpact} />
           )}
         </PDFSection>
 
         <PDFSection title="Physical Form">
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: spacing.sm }}>
             <View style={{ flex: 1, minWidth: 140 }}>
-              <PDFKeyValuePair label="Body Plan" value={formState.physicalForm.bodyPlan || "N/A"} />
+              <PDFKeyValuePair label="Body Plan" value={physical?.bodyPlan || "N/A"} />
             </View>
             <View style={{ flex: 1, minWidth: 140 }}>
-              <PDFKeyValuePair label="Movement" value={formState.physicalForm.movementMode || "N/A"} />
+              <PDFKeyValuePair label="Movement" value={physical?.movementMode || "N/A"} />
             </View>
             <View style={{ flex: 1, minWidth: 140 }}>
-              <PDFKeyValuePair label="Lifespan" value={formState.physicalForm.lifespanCategory || "N/A"} />
+              <PDFKeyValuePair label="Lifespan" value={physical?.lifespanCategory || "N/A"} />
             </View>
             <View style={{ flex: 1, minWidth: 140 }}>
-              <PDFKeyValuePair label="Reproduction" value={formState.physicalForm.reproductionStrategy || "N/A"} />
+              <PDFKeyValuePair label="Reproduction" value={physical?.reproductionStrategy || "N/A"} />
             </View>
           </View>
         </PDFSection>
@@ -215,19 +232,19 @@ const XenomythologyFullReportTemplate = ({
         <PDFSection title="Cognitive Architecture">
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: spacing.sm }}>
             <View style={{ flex: 1, minWidth: 140 }}>
-              <PDFKeyValuePair label="Consciousness Type" value={formState.cognitiveArchitecture.consciousnessType || "N/A"} />
+              <PDFKeyValuePair label="Consciousness Type" value={cognitive?.consciousnessType || "N/A"} />
             </View>
             <View style={{ flex: 1, minWidth: 140 }}>
-              <PDFKeyValuePair label="Self-Awareness" value={formState.cognitiveArchitecture.selfAwarenessLevel || "N/A"} />
+              <PDFKeyValuePair label="Self-Awareness" value={cognitive?.selfAwarenessLevel || "N/A"} />
             </View>
           </View>
           <PDFKeyValuePair
             label="Memory Architecture"
-            value={formState.cognitiveArchitecture.memoryArchitecture?.join(", ") || "Not specified"}
+            value={cognitive?.memoryArchitecture?.join(", ") || "Not specified"}
           />
           <PDFKeyValuePair
             label="Cognitive Strengths"
-            value={formState.cognitiveArchitecture.cognitiveStrengths?.join(", ") || "Not specified"}
+            value={cognitive?.cognitiveStrengths?.join(", ") || "Not specified"}
           />
         </PDFSection>
 
@@ -241,53 +258,53 @@ const XenomythologyFullReportTemplate = ({
         <PDFSection title="2. Planetary Conditions">
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: spacing.sm }}>
             <View style={{ flex: 1, minWidth: 140 }}>
-              <PDFKeyValuePair label="Planet Type" value={formState.planetaryConditions.planetType || "N/A"} />
+              <PDFKeyValuePair label="Planet Type" value={planetary?.planetType || "N/A"} />
             </View>
             <View style={{ flex: 1, minWidth: 140 }}>
-              <PDFKeyValuePair label="Atmosphere" value={formState.planetaryConditions.atmosphericComposition || "N/A"} />
+              <PDFKeyValuePair label="Atmosphere" value={planetary?.atmosphericComposition || "N/A"} />
             </View>
             <View style={{ flex: 1, minWidth: 140 }}>
-              <PDFKeyValuePair label="Day/Night Cycle" value={formState.planetaryConditions.dayNightCycle || "N/A"} />
+              <PDFKeyValuePair label="Day/Night Cycle" value={planetary?.dayNightCycle || "N/A"} />
             </View>
             <View style={{ flex: 1, minWidth: 140 }}>
-              <PDFKeyValuePair label="Stellar Environment" value={formState.planetaryConditions.stellarEnvironment || "N/A"} />
+              <PDFKeyValuePair label="Stellar Environment" value={planetary?.stellarEnvironment || "N/A"} />
             </View>
           </View>
-          {formState.planetaryConditions.skyAppearance && (
-            <NotesBox label="Sky Appearance" content={formState.planetaryConditions.skyAppearance} />
+          {planetary?.skyAppearance && (
+            <NotesBox label="Sky Appearance" content={planetary?.skyAppearance} />
           )}
         </PDFSection>
 
         <PDFSection title="Evolutionary Pressures">
           <PDFKeyValuePair
             label="Survival Challenges"
-            value={formState.evolutionaryPressures.survivalChallenges?.join(", ") || "Not specified"}
+            value={evolutionary?.survivalChallenges?.join(", ") || "Not specified"}
           />
-          {formState.evolutionaryPressures.socialStructureEvolution && (
-            <NotesBox label="Social Structure Evolution" content={formState.evolutionaryPressures.socialStructureEvolution} />
+          {evolutionary?.socialStructureEvolution && (
+            <NotesBox label="Social Structure Evolution" content={evolutionary?.socialStructureEvolution} />
           )}
-          {formState.evolutionaryPressures.adaptiveBreakthrough && (
-            <NotesBox label="Adaptive Breakthrough" content={formState.evolutionaryPressures.adaptiveBreakthrough} />
+          {evolutionary?.adaptiveBreakthrough && (
+            <NotesBox label="Adaptive Breakthrough" content={evolutionary?.adaptiveBreakthrough} />
           )}
         </PDFSection>
 
         <PDFSection title="Existential Parameters">
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: spacing.sm }}>
             <View style={{ flex: 1, minWidth: 140 }}>
-              <PDFKeyValuePair label="Mortality Salience" value={formState.existentialParameters.mortalitySalience || "N/A"} />
+              <PDFKeyValuePair label="Mortality Salience" value={existential?.mortalitySalience || "N/A"} />
             </View>
             <View style={{ flex: 1, minWidth: 140 }}>
-              <PDFKeyValuePair label="Generational Continuity" value={formState.existentialParameters.generationalContinuity || "N/A"} />
+              <PDFKeyValuePair label="Generational Continuity" value={existential?.generationalContinuity || "N/A"} />
             </View>
             <View style={{ flex: 1, minWidth: 140 }}>
-              <PDFKeyValuePair label="Time Experience" value={formState.existentialParameters.timeExperience || "N/A"} />
+              <PDFKeyValuePair label="Time Experience" value={existential?.timeExperience || "N/A"} />
             </View>
             <View style={{ flex: 1, minWidth: 140 }}>
-              <PDFKeyValuePair label="Temporal Horizon" value={formState.existentialParameters.temporalHorizon || "N/A"} />
+              <PDFKeyValuePair label="Temporal Horizon" value={existential?.temporalHorizon || "N/A"} />
             </View>
           </View>
-          {formState.existentialParameters.deathPhenomenology && (
-            <NotesBox label="Death Phenomenology" content={formState.existentialParameters.deathPhenomenology} />
+          {existential?.deathPhenomenology && (
+            <NotesBox label="Death Phenomenology" content={existential?.deathPhenomenology} />
           )}
         </PDFSection>
 
@@ -299,8 +316,8 @@ const XenomythologyFullReportTemplate = ({
         <PDFHeader toolName="Xenomythology Framework" worldName={worldName} date={date} />
 
         <PDFSection title="3. Archetype Pantheon">
-          {formState.archetypePantheon && formState.archetypePantheon.length > 0 ? (
-            formState.archetypePantheon.map((archetype, index) => (
+          {archetypes && archetypes.length > 0 ? (
+            archetypes.map((archetype, index) => (
               <View key={index} style={{ marginBottom: spacing.md, padding: spacing.sm, backgroundColor: "#f5f5f5", borderRadius: 4 }} wrap={false}>
                 <Text style={{ fontSize: typography.sizes.md, fontWeight: 600, color: colors.primary, marginBottom: spacing.xs }}>
                   {archetype.name || `Archetype ${index + 1}`}
@@ -348,22 +365,22 @@ const XenomythologyFullReportTemplate = ({
         <PDFSection title="4. Creation Narrative">
           <PDFKeyValuePair
             label="Primordial Archetypes"
-            value={formState.creationNarrative.primordialArchetypes?.join(", ") || "Not specified"}
+            value={creation?.primordialArchetypes?.join(", ") || "Not specified"}
           />
-          {formState.creationNarrative.primordialState && (
-            <NotesBox label="Primordial State" content={formState.creationNarrative.primordialState} />
+          {creation?.primordialState && (
+            <NotesBox label="Primordial State" content={creation?.primordialState} />
           )}
-          {formState.creationNarrative.creativeAct && (
-            <NotesBox label="The Creative Act" content={formState.creationNarrative.creativeAct} />
+          {creation?.creativeAct && (
+            <NotesBox label="The Creative Act" content={creation?.creativeAct} />
           )}
-          {formState.creationNarrative.fullNarrative && (
+          {creation?.fullNarrative && (
             <View style={{ marginBottom: spacing.md }} wrap={false}>
               <Text style={{ fontSize: typography.sizes.sm, fontWeight: 600, color: colors.primary, marginBottom: spacing.xs }}>
                 Full Creation Narrative
               </Text>
               <View style={{ padding: spacing.md, backgroundColor: "#f5f5f5", borderRadius: 4 }}>
                 <Text style={{ fontSize: typography.sizes.xs, color: colors.text.secondary, lineHeight: 1.6, fontStyle: "italic" }}>
-                  {formState.creationNarrative.fullNarrative}
+                  {creation?.fullNarrative}
                 </Text>
               </View>
             </View>
@@ -371,12 +388,12 @@ const XenomythologyFullReportTemplate = ({
         </PDFSection>
 
         <PDFSection title="Cosmological Structure">
-          <PDFKeyValuePair label="Dimensional Structure" value={formState.cosmologicalStructure.dimensionalStructure || "N/A"} />
-          {formState.cosmologicalStructure.primaryDivision && (
-            <NotesBox label="Primary Division" content={formState.cosmologicalStructure.primaryDivision} />
+          <PDFKeyValuePair label="Dimensional Structure" value={cosmos?.dimensionalStructure || "N/A"} />
+          {cosmos?.primaryDivision && (
+            <NotesBox label="Primary Division" content={cosmos?.primaryDivision} />
           )}
-          {formState.cosmologicalStructure.sacredGeography && (
-            <NotesBox label="Sacred Geography" content={formState.cosmologicalStructure.sacredGeography} />
+          {cosmos?.sacredGeography && (
+            <NotesBox label="Sacred Geography" content={cosmos?.sacredGeography} />
           )}
         </PDFSection>
 
@@ -388,13 +405,13 @@ const XenomythologyFullReportTemplate = ({
         <PDFHeader toolName="Xenomythology Framework" worldName={worldName} date={date} />
 
         <PDFSection title="Divine Conceptualization">
-          <PDFKeyValuePair label="Divine Ontology" value={formState.divineConceptualization.divineOntology || "N/A"} />
-          {formState.divineConceptualization.deities && formState.divineConceptualization.deities.length > 0 && (
+          <PDFKeyValuePair label="Divine Ontology" value={divine?.divineOntology || "N/A"} />
+          {divine?.deities && divine?.deities.length > 0 && (
             <View style={{ marginTop: spacing.md }}>
               <Text style={{ fontSize: typography.sizes.xs, color: colors.text.muted, marginBottom: spacing.sm }}>
-                Divine Entities ({formState.divineConceptualization.deities.length})
+                Divine Entities ({divine?.deities.length})
               </Text>
-              {formState.divineConceptualization.deities.map((deity, index) => (
+              {divine?.deities.map((deity, index) => (
                 <View key={index} style={{ marginBottom: spacing.sm, paddingLeft: spacing.sm, borderLeft: `2px solid ${colors.primary}` }} wrap={false}>
                   <Text style={{ fontSize: typography.sizes.sm, fontWeight: 600, color: colors.text.primary }}>
                     {deity.archetypeName || `Deity ${index + 1}`}
@@ -409,13 +426,13 @@ const XenomythologyFullReportTemplate = ({
         </PDFSection>
 
         <PDFSection title="Mythic Cycles">
-          {formState.mythicCycles?.greatCrisis && (
+          {mythic?.greatCrisis && (
             <NotesBox label="The Great Crisis" content={formState.mythicCycles.greatCrisis} />
           )}
-          {formState.mythicCycles?.crisisResolution && (
+          {mythic?.crisisResolution && (
             <NotesBox label="Crisis Resolution" content={formState.mythicCycles.crisisResolution} />
           )}
-          {formState.mythicCycles?.unresolvedTension && (
+          {mythic?.unresolvedTension && (
             <NotesBox label="Unresolved Tension" content={formState.mythicCycles.unresolvedTension} />
           )}
         </PDFSection>
@@ -430,34 +447,34 @@ const XenomythologyFullReportTemplate = ({
         <PDFSection title="5. Ritual Structure">
           <PDFKeyValuePair
             label="Primary Functions"
-            value={formState.ritualStructure?.primaryFunctions?.join(", ") || "Not specified"}
+            value={ritual?.primaryFunctions?.join(", ") || "Not specified"}
           />
           <View style={{ flexDirection: "row", gap: spacing.md, marginTop: spacing.sm }}>
             <View style={{ flex: 1 }}>
-              <PDFKeyValuePair label="Sensory Modality" value={formState.ritualStructure?.sensoryModality || "N/A"} />
+              <PDFKeyValuePair label="Sensory Modality" value={ritual?.sensoryModality || "N/A"} />
             </View>
             <View style={{ flex: 1 }}>
-              <PDFKeyValuePair label="Ritual Timing" value={formState.ritualStructure?.ritualTiming || "N/A"} />
+              <PDFKeyValuePair label="Ritual Timing" value={ritual?.ritualTiming || "N/A"} />
             </View>
           </View>
         </PDFSection>
 
         <PDFSection title="Sacred Specialists">
-          <PDFKeyValuePair label="Leadership Model" value={formState.sacredSpecialists?.leadershipModel || "N/A"} />
-          {formState.sacredSpecialists?.specialistAbilities && (
+          <PDFKeyValuePair label="Leadership Model" value={specialists?.leadershipModel || "N/A"} />
+          {specialists?.specialistAbilities && (
             <NotesBox label="Specialist Abilities" content={formState.sacredSpecialists.specialistAbilities} />
           )}
         </PDFSection>
 
         <PDFSection title="Death Practices">
-          {formState.deathPractices?.consciousnessAtDeath && (
+          {death?.consciousnessAtDeath && (
             <NotesBox label="Consciousness at Death" content={formState.deathPractices.consciousnessAtDeath} />
           )}
-          {formState.deathPractices?.deathRituals && (
+          {death?.deathRituals && (
             <NotesBox label="Death Rituals" content={formState.deathPractices.deathRituals} />
           )}
-          <PDFKeyValuePair label="Ancestor Relations" value={formState.deathPractices?.ancestorRelations || "N/A"} />
-          <PDFKeyValuePair label="Cosmic Eschatology" value={formState.deathPractices?.cosmicEschatology || "N/A"} />
+          <PDFKeyValuePair label="Ancestor Relations" value={death?.ancestorRelations || "N/A"} />
+          <PDFKeyValuePair label="Cosmic Eschatology" value={death?.cosmicEschatology || "N/A"} />
         </PDFSection>
 
         <PDFFooter />
@@ -468,33 +485,33 @@ const XenomythologyFullReportTemplate = ({
         <PDFHeader toolName="Xenomythology Framework" worldName={worldName} date={date} />
 
         <PDFSection title="6. Ethical Framework">
-          {formState.synthesis.ethicalVirtues && (
-            <NotesBox label="Core Virtues" content={formState.synthesis.ethicalVirtues} />
+          {synthesis?.ethicalVirtues && (
+            <NotesBox label="Core Virtues" content={synthesis?.ethicalVirtues} />
           )}
-          {formState.synthesis.ethicalTaboos && (
-            <NotesBox label="Sacred Taboos" content={formState.synthesis.ethicalTaboos} />
+          {synthesis?.ethicalTaboos && (
+            <NotesBox label="Sacred Taboos" content={synthesis?.ethicalTaboos} />
           )}
-          {formState.synthesis.ethicalAmbiguous && (
-            <NotesBox label="Moral Ambiguities" content={formState.synthesis.ethicalAmbiguous} />
+          {synthesis?.ethicalAmbiguous && (
+            <NotesBox label="Moral Ambiguities" content={synthesis?.ethicalAmbiguous} />
           )}
         </PDFSection>
 
         <PDFSection title="Art & Expression">
-          {formState.synthesis.artExpressions && (
-            <NotesBox label="Artistic Expressions" content={formState.synthesis.artExpressions} />
+          {synthesis?.artExpressions && (
+            <NotesBox label="Artistic Expressions" content={synthesis?.artExpressions} />
           )}
         </PDFSection>
 
         <PDFSection title="Science & Myth">
-          {formState.synthesis.scienceHarmony && (
-            <NotesBox label="Areas of Harmony" content={formState.synthesis.scienceHarmony} />
+          {synthesis?.scienceHarmony && (
+            <NotesBox label="Areas of Harmony" content={synthesis?.scienceHarmony} />
           )}
-          {formState.synthesis.scienceTension && (
-            <NotesBox label="Areas of Tension" content={formState.synthesis.scienceTension} />
+          {synthesis?.scienceTension && (
+            <NotesBox label="Areas of Tension" content={synthesis?.scienceTension} />
           )}
           <PDFKeyValuePair
             label="Resolution Strategies"
-            value={formState.synthesis.scienceResolution?.join(", ") || "Not specified"}
+            value={synthesis?.scienceResolution?.join(", ") || "Not specified"}
           />
         </PDFSection>
 

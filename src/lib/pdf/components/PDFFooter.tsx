@@ -9,7 +9,7 @@ interface PDFFooterProps {
 const PDFFooter = ({ pageNumber, totalPages }: PDFFooterProps) => {
   return (
     <View style={styles.footer} fixed>
-      <Text style={styles.footerText}>stellarforge.tools</Text>
+      <Text style={styles.footerText}>© 2026 Jason D. Batt, Ph.D. • stellarforge.tools</Text>
       <Text
         style={styles.pageNumber}
         render={({ pageNumber, totalPages }) =>

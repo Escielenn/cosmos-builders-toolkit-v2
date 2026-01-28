@@ -164,12 +164,13 @@ const ECRFullReportTemplate = ({
   worldName,
   date,
 }: ECRFullReportTemplateProps) => {
-  // Get selected parameters
+  // Get selected parameters with null safety
   const selectedParams: string[] = [];
-  if (formState.parameter.mode === "single" && formState.parameter.type) {
-    selectedParams.push(formState.parameter.type);
-  } else if (formState.parameter.mode === "multiple" && formState.parameter.types) {
-    selectedParams.push(...formState.parameter.types);
+  const parameter = formState?.parameter;
+  if (parameter?.mode === "single" && parameter?.type) {
+    selectedParams.push(parameter.type);
+  } else if (parameter?.mode === "multiple" && parameter?.types) {
+    selectedParams.push(...parameter.types);
   }
 
   return (
@@ -200,9 +201,9 @@ const ECRFullReportTemplate = ({
             selectedParams.map((param) => {
               const info = getParameterInfo(param);
               const specificValue =
-                formState.parameter.mode === "single"
-                  ? formState.parameter.specificValue
-                  : formState.parameter.specificValues?.[param];
+                parameter?.mode === "single"
+                  ? parameter?.specificValue
+                  : parameter?.specificValues?.[param];
 
               return (
                 <View key={param} style={{ marginBottom: spacing.md, padding: spacing.sm, backgroundColor: "#f5f5f5", borderRadius: 4 }} wrap={false}>
@@ -230,7 +231,8 @@ const ECRFullReportTemplate = ({
 
       {/* Pages 2-6: One page per cascade level */}
       {LEVELS.map((level) => {
-        const levelData = formState[level.id as keyof FormState] as CascadeLevel;
+        const levelData = formState?.[level.id as keyof FormState] as CascadeLevel | undefined;
+        const responses = levelData?.responses || {};
 
         return (
           <Page key={level.id} size="LETTER" style={styles.page}>
@@ -267,7 +269,7 @@ const ECRFullReportTemplate = ({
 
             {/* Questions and Responses */}
             {level.questions.map((question, index) => {
-              const response = levelData.responses[question.id] || "";
+              const response = responses[question.id] || "";
 
               return (
                 <View key={question.id} style={{ marginBottom: spacing.lg }} wrap={false}>
@@ -305,7 +307,7 @@ const ECRFullReportTemplate = ({
             </Text>
             <View style={styles.notesBox}>
               <Text style={styles.notesText}>
-                {formState.synthesis.logicalFlow || "Not assessed"}
+                {formState?.synthesis?.logicalFlow || "Not assessed"}
               </Text>
             </View>
           </View>
@@ -316,7 +318,7 @@ const ECRFullReportTemplate = ({
             </Text>
             <View style={styles.notesBox}>
               <Text style={styles.notesText}>
-                {formState.synthesis.contradictions || "Not assessed"}
+                {formState?.synthesis?.contradictions || "Not assessed"}
               </Text>
             </View>
           </View>
@@ -327,7 +329,7 @@ const ECRFullReportTemplate = ({
             </Text>
             <View style={styles.notesBox}>
               <Text style={styles.notesText}>
-                {formState.synthesis.monoCultureCheck || "Not assessed"}
+                {formState?.synthesis?.monoCultureCheck || "Not assessed"}
               </Text>
             </View>
           </View>
@@ -338,7 +340,7 @@ const ECRFullReportTemplate = ({
             </Text>
             <View style={styles.notesBox}>
               <Text style={styles.notesText}>
-                {formState.synthesis.vestigialQuestion || "Not assessed"}
+                {formState?.synthesis?.vestigialQuestion || "Not assessed"}
               </Text>
             </View>
           </View>
@@ -349,7 +351,7 @@ const ECRFullReportTemplate = ({
             </Text>
             <View style={styles.notesBox}>
               <Text style={styles.notesText}>
-                {formState.synthesis.soWhatTest || "Not assessed"}
+                {formState?.synthesis?.soWhatTest || "Not assessed"}
               </Text>
             </View>
           </View>
@@ -376,7 +378,7 @@ const ECRFullReportTemplate = ({
             </Text>
             <View style={styles.notesBox}>
               <Text style={styles.notesText}>
-                {formState.synthesis.surprisingConsequence || "Not specified"}
+                {formState?.synthesis?.surprisingConsequence || "Not specified"}
               </Text>
             </View>
           </View>
@@ -390,7 +392,7 @@ const ECRFullReportTemplate = ({
             </Text>
             <View style={styles.notesBox}>
               <Text style={styles.notesText}>
-                {formState.synthesis.biggestGap || "Not specified"}
+                {formState?.synthesis?.biggestGap || "Not specified"}
               </Text>
             </View>
           </View>
@@ -404,7 +406,7 @@ const ECRFullReportTemplate = ({
             </Text>
             <View style={styles.notesBox}>
               <Text style={styles.notesText}>
-                {formState.synthesis.storyPotential || "Not specified"}
+                {formState?.synthesis?.storyPotential || "Not specified"}
               </Text>
             </View>
           </View>
