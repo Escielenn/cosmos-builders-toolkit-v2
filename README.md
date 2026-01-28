@@ -1,12 +1,12 @@
-# Cosmos Builder's Toolkit
+# STELLARFORGE
 
 Science Fiction Worldbuilding Tools by Jason D. Batt, Ph.D.
 
 ## About
 
-The Cosmos Builder's Toolkit is a collection of interactive worldbuilding tools designed for science fiction writers. Create consistent, scientifically-grounded worlds with tools that help you explore the cascading consequences of your creative decisions.
+STELLARFORGE is a collection of interactive worldbuilding tools designed for science fiction writers. Create consistent, scientifically-grounded worlds with tools that help you explore the cascading consequences of your creative decisions.
 
-**Live Site**: [cosmos-builders-toolkit-v2.vercel.app](https://cosmos-builders-toolkit-v2.vercel.app)
+**Live Site**: [stellarforge.tools](https://stellarforge.tools)
 
 ## Features
 
