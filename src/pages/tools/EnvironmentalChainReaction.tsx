@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { ArrowLeft, Download, Save, ChevronDown, ChevronUp, Info, Printer, ExternalLink, Cloud, CloudOff, FileText } from "lucide-react";
+import { ArrowLeft, Download, Save, Info, Printer, ExternalLink, Cloud, CloudOff, Globe } from "lucide-react";
 import Header from "@/components/layout/Header";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
@@ -12,11 +12,6 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
@@ -25,15 +20,19 @@ import { useToast } from "@/hooks/use-toast";
 import { useBackground } from "@/hooks/use-background";
 import { useWorksheets, useWorksheet, useWorksheetsByType } from "@/hooks/use-worksheets";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
+import WorksheetLinkSelector from "@/components/tools/WorksheetLinkSelector";
 import { useWorlds } from "@/hooks/use-worlds";
 import { useAuth } from "@/contexts/AuthContext";
 import WorldSelectDialog, { SaveSelection } from "@/components/tools/WorldSelectDialog";
 import SectionNavigation, { Section } from "@/components/tools/SectionNavigation";
+import CollapsibleSection from "@/components/tools/CollapsibleSection";
+import KeyChoicesSidebar, { KeyChoicesSection } from "@/components/tools/KeyChoicesSidebar";
 import ToolActionBar from "@/components/tools/ToolActionBar";
 import SelectedParametersSidebar from "@/components/tools/SelectedParametersSidebar";
 import ExportDialog from "@/components/tools/ExportDialog";
 import { ECRSummaryTemplate, ECRFullReportTemplate } from "@/lib/pdf/templates";
 import { Json } from "@/integrations/supabase/types";
+import { LinkedWorksheetRef, getLinkConfigsForTool } from "@/lib/worksheet-links-config";
 
 // Section definitions for navigation
 const SECTIONS: Section[] = [
@@ -117,6 +116,9 @@ interface FormState {
     surprisingConsequence: string;
     biggestGap: string;
     storyPotential: string;
+  };
+  _linkedWorksheets?: {
+    planet?: LinkedWorksheetRef;
   };
 }
 
@@ -471,65 +473,6 @@ const QuestionSection = ({
   </div>
 );
 
-const CollapsibleSection = ({
-  id,
-  title,
-  subtitle,
-  levelNumber,
-  thinkLike,
-  children,
-  defaultOpen = false,
-}: {
-  id?: string;
-  title: string;
-  subtitle?: string;
-  levelNumber?: number;
-  thinkLike?: string;
-  children: React.ReactNode;
-  defaultOpen?: boolean;
-}) => {
-  const [isOpen, setIsOpen] = useState(defaultOpen);
-
-  return (
-    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-      <GlassPanel id={id} className="overflow-hidden scroll-mt-24">
-        <CollapsibleTrigger asChild>
-          <button className="w-full p-4 md:p-6 flex items-center justify-between text-left hover:bg-primary/5 transition-colors">
-            <div className="flex items-center gap-3">
-              {levelNumber !== undefined && (
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center text-primary-foreground font-bold text-sm">
-                  {levelNumber}
-                </div>
-              )}
-              <div>
-                <h3 className="font-display font-semibold text-lg">{title}</h3>
-                {subtitle && (
-                  <p className="text-sm text-muted-foreground">{subtitle}</p>
-                )}
-              </div>
-            </div>
-            {isOpen ? (
-              <ChevronUp className="w-5 h-5 text-muted-foreground" />
-            ) : (
-              <ChevronDown className="w-5 h-5 text-muted-foreground" />
-            )}
-          </button>
-        </CollapsibleTrigger>
-        <CollapsibleContent>
-          <div className="px-4 md:px-6 pb-6 space-y-6">
-            {thinkLike && (
-              <p className="text-sm text-primary italic border-l-2 border-primary pl-3">
-                Think like {thinkLike}
-              </p>
-            )}
-            {children}
-          </div>
-        </CollapsibleContent>
-      </GlassPanel>
-    </Collapsible>
-  );
-};
-
 const TOOL_TYPE = "environmental-chain-reaction";
 
 const EnvironmentalChainReaction = () => {
@@ -601,6 +544,91 @@ const EnvironmentalChainReaction = () => {
       }
     }
   }, [worldId, worksheetId]);
+
+  // Link configurations for this tool
+  const linkConfigs = getLinkConfigsForTool(TOOL_TYPE);
+
+  // Handle linked worksheet changes
+  const handleLinkedWorksheetChange = (
+    key: "planet",
+    ref: LinkedWorksheetRef | undefined
+  ) => {
+    setFormState((prev) => ({
+      ...prev,
+      _linkedWorksheets: {
+        ...prev._linkedWorksheets,
+        [key]: ref,
+      },
+    }));
+  };
+
+  // Generate key choices for sidebar
+  const keyChoicesSections: KeyChoicesSection[] = useMemo(() => {
+    const getParameterLabel = (type: string) => {
+      const param = PLANETARY_PARAMETERS.find((p) => p.id === type);
+      return param?.label || type;
+    };
+
+    const selectedParams = formState.parameter.mode === "multiple"
+      ? (formState.parameter.types || []).map(getParameterLabel)
+      : formState.parameter.type ? [getParameterLabel(formState.parameter.type)] : [];
+
+    const countResponses = (level: CascadeLevel) =>
+      Object.values(level.responses).filter((v) => v && v.trim()).length;
+
+    return [
+      {
+        id: "parameter",
+        title: "Parameter",
+        choices: [
+          { label: "Selected", value: selectedParams, asList: selectedParams.length > 1 },
+          { label: "Specific Value", value: formState.parameter.specificValue },
+        ],
+      },
+      {
+        id: "level1",
+        title: "1. Physical",
+        choices: [
+          { label: "Responses", value: countResponses(formState.level1) > 0 ? `${countResponses(formState.level1)} filled` : undefined },
+        ],
+      },
+      {
+        id: "level2",
+        title: "2. Biological",
+        choices: [
+          { label: "Responses", value: countResponses(formState.level2) > 0 ? `${countResponses(formState.level2)} filled` : undefined },
+        ],
+      },
+      {
+        id: "level3",
+        title: "3. Psychological",
+        choices: [
+          { label: "Responses", value: countResponses(formState.level3) > 0 ? `${countResponses(formState.level3)} filled` : undefined },
+        ],
+      },
+      {
+        id: "level4",
+        title: "4. Cultural",
+        choices: [
+          { label: "Responses", value: countResponses(formState.level4) > 0 ? `${countResponses(formState.level4)} filled` : undefined },
+        ],
+      },
+      {
+        id: "level5",
+        title: "5. Mythological",
+        choices: [
+          { label: "Responses", value: countResponses(formState.level5) > 0 ? `${countResponses(formState.level5)} filled` : undefined },
+        ],
+      },
+      {
+        id: "synthesis",
+        title: "Synthesis",
+        choices: [
+          { label: "Story Potential", value: formState.synthesis.storyPotential ? "Defined" : undefined },
+        ],
+      },
+    ];
+  }, [formState]);
 
   const updateParameter = (field: keyof PlanetaryParameter, value: string) => {
     setFormState((prev) => ({
@@ -945,6 +973,33 @@ const EnvironmentalChainReaction = () => {
             }
             defaultOpen={true}
           >
+            {/* Link to Planet (if in a world context) */}
+            {worldId && linkConfigs.length > 0 && (
+              <div className="mb-6 p-4 rounded-lg border border-border/50 bg-muted/20">
+                <h4 className="font-medium text-sm mb-3 flex items-center gap-2">
+                  <Globe className="w-4 h-4 text-primary" />
+                  Link to Planet
+                </h4>
+                <p className="text-xs text-muted-foreground mb-3">
+                  Connect this analysis to a planet profile to auto-import environmental parameters.
+                </p>
+                <div className="space-y-3">
+                  {linkConfigs.map((config) => (
+                    <WorksheetLinkSelector
+                      key={config.key}
+                      worldId={worldId}
+                      targetToolType={config.targetTool}
+                      label={config.label}
+                      description={config.description}
+                      syncFields={config.syncFields}
+                      value={formState._linkedWorksheets?.[config.key as "planet"]}
+                      onChange={(ref) => handleLinkedWorksheetChange(config.key as "planet", ref)}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Mode Toggle */}
             <div className="flex items-center gap-4 mb-6 p-4 bg-primary/5 rounded-lg border border-primary/20">
               <Label htmlFor="mode-toggle" className="text-sm font-medium">
@@ -1403,6 +1458,12 @@ const EnvironmentalChainReaction = () => {
 
         {/* Section Navigation */}
         <SectionNavigation sections={SECTIONS} />
+
+        {/* Key Choices Sidebar */}
+        <KeyChoicesSidebar
+          sections={keyChoicesSections}
+          title="Cascade Summary"
+        />
       </main>
 
       {/* Footer */}

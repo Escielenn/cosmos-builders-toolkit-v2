@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { ArrowLeft, Download, Save, Info, ExternalLink, Printer, Cloud, CloudOff, Check, AlertCircle, FileText, ChevronDown } from "lucide-react";
+import { ArrowLeft, Download, Save, Info, ExternalLink, Printer, Cloud, CloudOff, Check, AlertCircle, Globe, ChevronDown } from "lucide-react";
 import Header from "@/components/layout/Header";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
@@ -21,6 +21,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import CollapsibleSection from "@/components/tools/CollapsibleSection";
+import KeyChoicesSidebar, { KeyChoicesSection } from "@/components/tools/KeyChoicesSidebar";
 import { useToast } from "@/hooks/use-toast";
 import { useBackground } from "@/hooks/use-background";
 import { useWorksheets, useWorksheet, useWorksheetsByType } from "@/hooks/use-worksheets";
@@ -506,6 +507,89 @@ const PlanetaryProfile = () => {
     .filter(([, value]) => value === true).length;
   const totalChecks = 5;
 
+  // Generate key choices for sidebar
+  const keyChoicesSections: KeyChoicesSection[] = useMemo(() => {
+    const getStarTypeName = (id: string) => STAR_TYPES.find((s) => s.id === id)?.name || id;
+    const getHabitabilityTierName = (tier: string) => {
+      const t = HABITABILITY_TIERS.find((h) => h.tier.toString() === tier);
+      return t ? `Tier ${t.tier}: ${t.name}` : tier;
+    };
+    const getWaterPresenceName = (id: string) => HYDROSPHERE_OPTIONS.find((h) => h.id === id)?.name || id;
+    const getGasNames = (ids: string[]) => {
+      const allGases = [...ATMOSPHERIC_GASES.primary, ...ATMOSPHERIC_GASES.secondary];
+      return ids.map((id) => allGases.find((g) => g.id === id)?.name || id);
+    };
+
+    return [
+      {
+        id: "stellar",
+        title: "1. Stellar Environment",
+        choices: [
+          { label: "Star Type", value: getStarTypeName(formState.stellarEnvironment.starType) },
+          { label: "Tidal Locking", value: formState.stellarEnvironment.tidalLocking },
+          { label: "Orbital Period", value: formState.stellarEnvironment.orbitalPeriod },
+        ],
+      },
+      {
+        id: "physical",
+        title: "2. Physical",
+        choices: [
+          { label: "Gravity", value: formState.physicalCharacteristics.surfaceGravity },
+          { label: "Day Length", value: formState.physicalCharacteristics.dayLength },
+          { label: "Axial Tilt", value: formState.physicalCharacteristics.axialTilt },
+        ],
+      },
+      {
+        id: "atmosphere",
+        title: "3. Atmosphere",
+        choices: [
+          { label: "Primary Gases", value: getGasNames(formState.atmosphericComposition.primaryGases), asList: true },
+          { label: "Pressure", value: formState.atmosphericComposition.atmosphericPressure },
+          { label: "Sky Color", value: formState.atmosphericComposition.skyColor },
+        ],
+      },
+      {
+        id: "hydrosphere",
+        title: "4. Hydrosphere",
+        choices: [
+          { label: "Water Presence", value: getWaterPresenceName(formState.hydrosphere.waterPresence) },
+          { label: "Ocean Coverage", value: formState.hydrosphere.oceanCoverage },
+        ],
+      },
+      {
+        id: "temperature",
+        title: "5. Temperature",
+        choices: [
+          { label: "Avg Surface Temp", value: formState.temperatureProfile.averageSurfaceTemp },
+          { label: "Range", value: formState.temperatureProfile.temperatureRange },
+        ],
+      },
+      {
+        id: "habitability",
+        title: "6. Habitability",
+        choices: [
+          { label: "Tier", value: getHabitabilityTierName(formState.habitability.habitabilityTier) },
+        ],
+      },
+      {
+        id: "pressures",
+        title: "8. Three Pressures",
+        choices: [
+          { label: "Survival", value: formState.threePressures.survivalPressure ? "Defined" : undefined },
+          { label: "Social", value: formState.threePressures.socialPressure ? "Defined" : undefined },
+          { label: "Psychological", value: formState.threePressures.psychologicalPressure ? "Defined" : undefined },
+        ],
+      },
+      {
+        id: "consistency",
+        title: "Consistency",
+        choices: [
+          { label: "Score", value: `${consistencyScore}/${totalChecks} checks` },
+        ],
+      },
+    ];
+  }, [formState, consistencyScore, totalChecks]);
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -528,9 +612,9 @@ const PlanetaryProfile = () => {
                 Planetary Profile Template
               </h1>
               {currentWorksheetTitle && (
-                <div className="flex items-center gap-2 mt-1">
-                  <FileText className="w-4 h-4 text-primary" />
-                  <span className="text-lg font-medium text-primary">{currentWorksheetTitle}</span>
+                <div className="flex items-center gap-2 mt-2 px-3 py-1.5 rounded-lg bg-primary/10 w-fit">
+                  <Globe className="w-5 h-5 text-primary" />
+                  <span className="text-lg font-semibold text-primary">{currentWorksheetTitle}</span>
                 </div>
               )}
               <p className="text-muted-foreground mt-2 max-w-2xl">
@@ -1595,6 +1679,12 @@ const PlanetaryProfile = () => {
 
         {/* Section Navigation */}
         <SectionNavigation sections={SECTIONS} />
+
+        {/* Key Choices Sidebar */}
+        <KeyChoicesSidebar
+          sections={keyChoicesSections}
+          title="Planet Summary"
+        />
       </main>
 
       {/* Footer */}

@@ -4,8 +4,6 @@ import {
   ArrowLeft,
   Download,
   Save,
-  ChevronDown,
-  ChevronUp,
   Info,
   ExternalLink,
   Printer,
@@ -15,7 +13,6 @@ import {
   Trash2,
   Sparkles,
   Link2,
-  FileText,
 } from "lucide-react";
 import Header from "@/components/layout/Header";
 import { GlassPanel } from "@/components/ui/glass-panel";
@@ -27,11 +24,6 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
@@ -42,6 +34,8 @@ import { useWorksheets, useWorksheet, useWorksheetsByType } from "@/hooks/use-wo
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
 import { useAuth } from "@/contexts/AuthContext";
 import SectionNavigation, { Section } from "@/components/tools/SectionNavigation";
+import CollapsibleSection from "@/components/tools/CollapsibleSection";
+import KeyChoicesSidebar, { KeyChoicesSection } from "@/components/tools/KeyChoicesSidebar";
 import ToolActionBar from "@/components/tools/ToolActionBar";
 import SelectedParametersSidebar from "@/components/tools/SelectedParametersSidebar";
 import SuggestedImplications from "@/components/tools/SuggestedImplications";
@@ -407,65 +401,6 @@ const EXTERNAL_RESOURCES = [
   { name: "Atomic Rockets - Aliens", url: "http://www.projectrho.com/public_html/rocket/aliens.php", description: "Hard SF alien design" },
 ];
 
-const CollapsibleSection = ({
-  id,
-  title,
-  subtitle,
-  levelNumber,
-  thinkLike,
-  children,
-  defaultOpen = false,
-}: {
-  id?: string;
-  title: string;
-  subtitle?: string;
-  levelNumber?: number;
-  thinkLike?: string;
-  children: React.ReactNode;
-  defaultOpen?: boolean;
-}) => {
-  const [isOpen, setIsOpen] = useState(defaultOpen);
-
-  return (
-    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-      <GlassPanel id={id} className="overflow-hidden scroll-mt-24">
-        <CollapsibleTrigger asChild>
-          <button className="w-full p-4 md:p-6 flex items-center justify-between text-left hover:bg-primary/5 transition-colors">
-            <div className="flex items-center gap-3">
-              {levelNumber !== undefined && (
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center text-primary-foreground font-bold text-sm">
-                  {levelNumber}
-                </div>
-              )}
-              <div>
-                <h3 className="font-display font-semibold text-lg">{title}</h3>
-                {subtitle && (
-                  <p className="text-sm text-muted-foreground">{subtitle}</p>
-                )}
-              </div>
-            </div>
-            {isOpen ? (
-              <ChevronUp className="w-5 h-5 text-muted-foreground" />
-            ) : (
-              <ChevronDown className="w-5 h-5 text-muted-foreground" />
-            )}
-          </button>
-        </CollapsibleTrigger>
-        <CollapsibleContent>
-          <div className="px-4 md:px-6 pb-6 space-y-6">
-            {thinkLike && (
-              <p className="text-sm text-primary italic border-l-2 border-primary pl-3">
-                Think like {thinkLike}
-              </p>
-            )}
-            {children}
-          </div>
-        </CollapsibleContent>
-      </GlassPanel>
-    </Collapsible>
-  );
-};
-
 const QuestionSection = ({
   id,
   label,
@@ -751,6 +686,61 @@ const XenomythologyFrameworkBuilder = () => {
       }
     }
   }, [worldId, worksheetId]);
+
+  // Generate key choices for sidebar
+  const keyChoicesSections: KeyChoicesSection[] = useMemo(() => {
+    const getOptionName = (id: string, options: { id: string; name: string }[]) =>
+      options.find((o) => o.id === id)?.name || id;
+
+    return [
+      {
+        id: "species",
+        title: "1. Species Bio",
+        choices: [
+          { label: "Senses", value: formState.speciesFoundation.primarySenses.length > 0 ? `${formState.speciesFoundation.primarySenses.length} selected` : undefined },
+          { label: "Body Plan", value: getOptionName(formState.speciesFoundation.bodyPlan, BODY_PLANS) || undefined },
+          { label: "Consciousness", value: getOptionName(formState.speciesFoundation.consciousnessType, CONSCIOUSNESS_TYPES) || undefined },
+        ],
+      },
+      {
+        id: "evolution",
+        title: "2. Evolution",
+        choices: [
+          { label: "Challenges", value: formState.evolutionaryPressures.survivalChallenges.length > 0 ? `${formState.evolutionaryPressures.survivalChallenges.length} selected` : undefined },
+        ],
+      },
+      {
+        id: "archetypes",
+        title: "3. Archetypes",
+        choices: [
+          { label: "Analyzed", value: formState.pressureAnalysis.filter(p => p.archetypeForm).length > 0 ? `${formState.pressureAnalysis.filter(p => p.archetypeForm).length} mapped` : undefined },
+        ],
+      },
+      {
+        id: "cosmos",
+        title: "4. Cosmological",
+        choices: [
+          { label: "Creation Myth", value: formState.cosmologicalFramework.creationMyth ? "Defined" : undefined },
+          { label: "Afterlife", value: formState.cosmologicalFramework.afterlifeModel ? "Defined" : undefined },
+        ],
+      },
+      {
+        id: "ritual",
+        title: "5. Ritual",
+        choices: [
+          { label: "Key Rituals", value: formState.ritualPractices.keyRituals.length > 0 ? `${formState.ritualPractices.keyRituals.length} defined` : undefined },
+        ],
+      },
+      {
+        id: "synthesis",
+        title: "6. Synthesis",
+        choices: [
+          { label: "Core Tension", value: formState.synthesis.coreTension ? "Defined" : undefined },
+          { label: "Story Seeds", value: formState.synthesis.storySeeds ? "Defined" : undefined },
+        ],
+      },
+    ];
+  }, [formState]);
 
   // Sync pressure analysis with selected survival challenges
   useEffect(() => {
@@ -2660,6 +2650,12 @@ const XenomythologyFrameworkBuilder = () => {
 
         {/* Section Navigation */}
         <SectionNavigation sections={SECTIONS} />
+
+        {/* Key Choices Sidebar */}
+        <KeyChoicesSidebar
+          sections={keyChoicesSections}
+          title="Mythology Summary"
+        />
       </main>
 
       {/* Footer */}

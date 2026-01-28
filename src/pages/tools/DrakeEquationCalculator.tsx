@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { ArrowLeft, Download, Save, ChevronDown, ChevronUp, Info, Printer, ExternalLink, Cloud, CloudOff, Calculator, HelpCircle, FileText } from "lucide-react";
+import { ArrowLeft, Download, Save, Info, Printer, ExternalLink, Cloud, CloudOff, Calculator, HelpCircle } from "lucide-react";
 import Header from "@/components/layout/Header";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
@@ -8,11 +8,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
 import {
   Tooltip,
   TooltipContent,
@@ -25,6 +20,8 @@ import { useWorlds } from "@/hooks/use-worlds";
 import { useAuth } from "@/contexts/AuthContext";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
 import SectionNavigation, { Section } from "@/components/tools/SectionNavigation";
+import CollapsibleSection from "@/components/tools/CollapsibleSection";
+import KeyChoicesSidebar, { KeyChoicesSection } from "@/components/tools/KeyChoicesSidebar";
 import ToolActionBar from "@/components/tools/ToolActionBar";
 import ExportDialog from "@/components/tools/ExportDialog";
 import { DrakeSummaryTemplate, DrakeFullReportTemplate } from "@/lib/pdf/templates";
@@ -241,40 +238,6 @@ const initialFormState: FormState = {
 // Local storage key
 const LOCAL_STORAGE_KEY = "drake-equation-calculator-v1";
 
-// Collapsible section component
-const CollapsibleSection = ({
-  id,
-  title,
-  icon,
-  children,
-  defaultOpen = true,
-}: {
-  id: string;
-  title: string;
-  icon: React.ReactNode;
-  children: React.ReactNode;
-  defaultOpen?: boolean;
-}) => {
-  const [isOpen, setIsOpen] = useState(defaultOpen);
-
-  return (
-    <GlassPanel id={id} className="mb-6">
-      <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-        <CollapsibleTrigger className="w-full p-4 flex items-center justify-between hover:bg-accent/20 transition-colors rounded-t-xl">
-          <div className="flex items-center gap-3">
-            {icon}
-            <h2 className="font-display text-lg font-semibold">{title}</h2>
-          </div>
-          {isOpen ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
-        </CollapsibleTrigger>
-        <CollapsibleContent className="px-4 pb-4">
-          {children}
-        </CollapsibleContent>
-      </Collapsible>
-    </GlassPanel>
-  );
-};
-
 const TOOL_TYPE = "drake-equation-calculator";
 
 const DrakeEquationCalculator = () => {
@@ -348,6 +311,44 @@ const DrakeEquationCalculator = () => {
       description: "A galaxy full of life. Civilizations bump into each other regularly. Think Star Trek or Star Wars. The Fermi Paradox becomes very pressing."
     };
   };
+
+  const interpretation = getInterpretation(N);
+
+  // Generate key choices for sidebar
+  const keyChoicesSections: KeyChoicesSection[] = useMemo(() => {
+    const { rStar, fp, ne, fl, fi, fc, L } = formState.values;
+    return [
+      {
+        id: "variables",
+        title: "Variables",
+        choices: [
+          { label: "R*", value: rStar.toFixed(1) },
+          { label: "fp", value: fp.toFixed(2) },
+          { label: "ne", value: ne.toFixed(2) },
+          { label: "fl", value: fl.toFixed(2) },
+          { label: "fi", value: fi.toFixed(2) },
+          { label: "fc", value: fc.toFixed(2) },
+          { label: "L", value: L.toLocaleString() },
+        ],
+      },
+      {
+        id: "result",
+        title: "Result",
+        choices: [
+          { label: "N", value: formatNumber(N) },
+          { label: "Interpretation", value: interpretation.label },
+        ],
+      },
+      {
+        id: "worldbuilding",
+        title: "Worldbuilding",
+        choices: [
+          { label: "Narrative Notes", value: formState.worldbuilding.narrativeImplications ? "Defined" : undefined },
+          { label: "Galactic Politics", value: formState.worldbuilding.galacticPolitics ? "Defined" : undefined },
+        ],
+      },
+    ];
+  }, [formState, N, interpretation.label]);
 
   // Show worksheet selector when worldId is present but no worksheetId
   useEffect(() => {
@@ -507,8 +508,6 @@ const DrakeEquationCalculator = () => {
   // Get world name for export
   const currentWorld = worlds.find(w => w.id === worldId);
   const worldNameForExport = currentWorld?.name;
-
-  const interpretation = getInterpretation(N);
 
   return (
     <div className="min-h-screen bg-background">
@@ -834,6 +833,12 @@ const DrakeEquationCalculator = () => {
           hasUnsavedChanges={hasUnsavedChanges}
           isSaving={isSavingToCloud}
           className="mt-8"
+        />
+
+        {/* Key Choices Sidebar */}
+        <KeyChoicesSidebar
+          sections={keyChoicesSections}
+          title="Drake Summary"
         />
       </main>
 

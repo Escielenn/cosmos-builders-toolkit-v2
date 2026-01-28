@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { ArrowLeft, Download, Save, ChevronDown, ChevronUp, Info, ExternalLink, Printer, Cloud, CloudOff, FileText } from "lucide-react";
+import { ArrowLeft, Download, Save, Info, ExternalLink, Printer, Cloud, CloudOff, Rocket } from "lucide-react";
 import Header from "@/components/layout/Header";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
@@ -11,11 +11,6 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
@@ -24,13 +19,17 @@ import { useToast } from "@/hooks/use-toast";
 import { useBackground } from "@/hooks/use-background";
 import { useWorksheets, useWorksheet, useWorksheetsByType } from "@/hooks/use-worksheets";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
+import WorksheetLinkSelector from "@/components/tools/WorksheetLinkSelector";
 import { useAuth } from "@/contexts/AuthContext";
 import SectionNavigation, { Section } from "@/components/tools/SectionNavigation";
+import CollapsibleSection from "@/components/tools/CollapsibleSection";
+import KeyChoicesSidebar, { KeyChoicesSection } from "@/components/tools/KeyChoicesSidebar";
 import ToolActionBar from "@/components/tools/ToolActionBar";
 import ExportDialog from "@/components/tools/ExportDialog";
 import { SpacecraftSummaryTemplate, SpacecraftFullReportTemplate } from "@/lib/pdf/templates";
 import { useWorlds } from "@/hooks/use-worlds";
 import { Json } from "@/integrations/supabase/types";
+import { LinkedWorksheetRef, getLinkConfigsForTool } from "@/lib/worksheet-links-config";
 
 // Section definitions for navigation
 const SECTIONS: Section[] = [
@@ -299,65 +298,6 @@ const EXTERNAL_RESOURCES = [
   { name: "Spaceship Handbook", url: "https://www.amazon.com/Spaceship-Handbook-Rocket-Science-Future/dp/0976836394", description: "Classic reference" },
 ];
 
-const CollapsibleSection = ({
-  id,
-  title,
-  subtitle,
-  levelNumber,
-  thinkLike,
-  children,
-  defaultOpen = false,
-}: {
-  id?: string;
-  title: string;
-  subtitle?: string;
-  levelNumber?: number;
-  thinkLike?: string;
-  children: React.ReactNode;
-  defaultOpen?: boolean;
-}) => {
-  const [isOpen, setIsOpen] = useState(defaultOpen);
-
-  return (
-    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-      <GlassPanel id={id} className="overflow-hidden scroll-mt-24">
-        <CollapsibleTrigger asChild>
-          <button className="w-full p-4 md:p-6 flex items-center justify-between text-left hover:bg-primary/5 transition-colors">
-            <div className="flex items-center gap-3">
-              {levelNumber !== undefined && (
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center text-primary-foreground font-bold text-sm">
-                  {levelNumber}
-                </div>
-              )}
-              <div>
-                <h3 className="font-display font-semibold text-lg">{title}</h3>
-                {subtitle && (
-                  <p className="text-sm text-muted-foreground">{subtitle}</p>
-                )}
-              </div>
-            </div>
-            {isOpen ? (
-              <ChevronUp className="w-5 h-5 text-muted-foreground" />
-            ) : (
-              <ChevronDown className="w-5 h-5 text-muted-foreground" />
-            )}
-          </button>
-        </CollapsibleTrigger>
-        <CollapsibleContent>
-          <div className="px-4 md:px-6 pb-6 space-y-6">
-            {thinkLike && (
-              <p className="text-sm text-primary italic border-l-2 border-primary pl-3">
-                Think like {thinkLike}
-              </p>
-            )}
-            {children}
-          </div>
-        </CollapsibleContent>
-      </GlassPanel>
-    </Collapsible>
-  );
-};
-
 const QuestionSection = ({
   id,
   label,
@@ -473,6 +413,67 @@ const SpacecraftDesigner = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [worldId, worksheetId]);
+
+  // Link configurations for this tool
+  const linkConfigs = getLinkConfigsForTool(TOOL_TYPE);
+
+  // Generate key choices for sidebar
+  const keyChoicesSections: KeyChoicesSection[] = useMemo(() => {
+    return [
+      {
+        id: "identity",
+        title: "1. Identity",
+        choices: [
+          { label: "Name", value: formState.identity.name },
+          { label: "Class", value: formState.identity.class || formState.identity.customClass },
+          { label: "Role", value: formState.identity.role || formState.identity.customRole },
+          { label: "Size", value: formState.identity.size },
+        ],
+      },
+      {
+        id: "propulsion",
+        title: "2. Propulsion",
+        choices: [
+          { label: "Drive", value: formState.propulsion.driveType },
+          { label: "Acceleration", value: formState.propulsion.accelerationProfile },
+          { label: "Fuel", value: formState.propulsion.fuelSource },
+        ],
+      },
+      {
+        id: "lifesupport",
+        title: "3. Life Support",
+        choices: [
+          { label: "Atmosphere", value: formState.lifeSupport.atmosphere ? "Defined" : undefined },
+          { label: "Gravity", value: formState.lifeSupport.gravity ? "Defined" : undefined },
+        ],
+      },
+      {
+        id: "living",
+        title: "4. Living",
+        choices: [
+          { label: "Layout", value: formState.living.layout ? "Defined" : undefined },
+          { label: "Shared Spaces", value: formState.living.sharedSpaces ? "Defined" : undefined },
+        ],
+      },
+      {
+        id: "cultural",
+        title: "5. Cultural",
+        choices: [
+          { label: "Traditions", value: formState.cultural.traditions ? "Defined" : undefined },
+          { label: "Rituals", value: formState.cultural.rituals ? "Defined" : undefined },
+        ],
+      },
+      {
+        id: "character",
+        title: "6. Character",
+        choices: [
+          { label: "Sounds", value: formState.character.sounds ? "Defined" : undefined },
+          { label: "Quirks", value: formState.character.quirks ? "Defined" : undefined },
+          { label: "Secret", value: formState.character.secret ? "Defined" : undefined },
+        ],
+      },
+    ];
+  }, [formState]);
 
   const updateIdentity = (field: keyof ShipIdentity, value: string) => {
     setFormState((prev) => ({
@@ -1508,6 +1509,12 @@ const SpacecraftDesigner = () => {
 
         {/* Section Navigation */}
         <SectionNavigation sections={SECTIONS} />
+
+        {/* Key Choices Sidebar */}
+        <KeyChoicesSidebar
+          sections={keyChoicesSections}
+          title="Ship Summary"
+        />
       </main>
 
       {/* Footer */}

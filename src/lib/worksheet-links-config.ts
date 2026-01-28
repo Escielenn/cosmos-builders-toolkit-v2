@@ -17,6 +17,24 @@ export interface LinkConfig {
 
 // Configuration for each tool's available links
 export const WORKSHEET_LINKS: Record<string, LinkConfig[]> = {
+  "environmental-chain-reaction": [
+    {
+      key: "planet",
+      targetTool: "planetary-profile",
+      label: "Planet",
+      syncFields: [
+        "stellarEnvironment.starType",
+        "stellarEnvironment.tidalLocking",
+        "physicalCharacteristics.surfaceGravity",
+        "physicalCharacteristics.dayLength",
+        "atmosphericComposition.primaryGases",
+        "atmosphericComposition.atmosphericPressure",
+        "temperatureProfile.averageSurfaceTemp",
+        "hydrosphere.waterPresence",
+      ],
+      description: "Link to a planet to import environmental parameters",
+    },
+  ],
   "evolutionary-biology": [
     {
       key: "planet",
