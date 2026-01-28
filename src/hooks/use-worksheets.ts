@@ -175,3 +175,77 @@ export const useWorksheet = (worksheetId: string | undefined) => {
     enabled: !!user && !!worksheetId,
   });
 };
+
+// Hook to fetch worksheets filtered by tool type
+export const useWorksheetsByType = (
+  worldId: string | undefined,
+  toolType: string
+) => {
+  const { user } = useAuth();
+
+  return useQuery({
+    queryKey: ["worksheets", worldId, toolType],
+    queryFn: async () => {
+      if (!worldId) return [];
+
+      const { data, error } = await supabase
+        .from("worksheets")
+        .select("*")
+        .eq("world_id", worldId)
+        .eq("tool_type", toolType)
+        .order("updated_at", { ascending: false });
+
+      if (error) throw error;
+      return data as Worksheet[];
+    },
+    enabled: !!user && !!worldId,
+  });
+};
+
+// Hook for renaming a worksheet (standalone mutation)
+export const useRenameWorksheet = () => {
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      worksheetId,
+      title,
+    }: {
+      worksheetId: string;
+      title: string;
+    }) => {
+      if (!user) throw new Error("Not authenticated");
+
+      const { data, error } = await supabase
+        .from("worksheets")
+        .update({ title })
+        .eq("id", worksheetId)
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data as Worksheet;
+    },
+    onSuccess: (data) => {
+      // Invalidate all worksheet queries that might contain this worksheet
+      queryClient.invalidateQueries({ queryKey: ["worksheets"] });
+      queryClient.invalidateQueries({ queryKey: ["worksheet", data.id] });
+      toast({
+        title: "Worksheet renamed",
+        description: `Renamed to "${data.title}"`,
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Failed to rename worksheet",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+};
+
+// Export Worksheet type for use in other components
+export type { Worksheet };
