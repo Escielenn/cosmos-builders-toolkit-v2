@@ -25,6 +25,7 @@ import ToolShowcase from "@/components/landing/ToolShowcase";
 import ValueProposition from "@/components/landing/ValueProposition";
 import ProStatusBanner from "@/components/subscription/ProStatusBanner";
 import QuickUpgradeCard from "@/components/subscription/QuickUpgradeCard";
+import CubeLogo from "@/components/icons/CubeLogo";
 
 const tools = [
   {
@@ -247,7 +248,10 @@ const Index = () => {
       {/* Footer */}
       <footer className="border-t border-border/50 py-8">
         <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
-          <p>© 2026 StellarForge. All rights reserved.</p>
+          <div className="flex items-center justify-center gap-2">
+            <CubeLogo size={16} />
+            <p>© 2026 <a href="https://jbatt.com" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Jason D. Batt, Ph.D.</a></p>
+          </div>
         </div>
       </footer>
     </div>

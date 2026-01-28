@@ -22,7 +22,8 @@ import {
 } from "@/components/ui/tooltip";
 import { useToast } from "@/hooks/use-toast";
 import { useBackground } from "@/hooks/use-background";
-import { useWorksheets, useWorksheet } from "@/hooks/use-worksheets";
+import { useWorksheets, useWorksheet, useWorksheetsByType } from "@/hooks/use-worksheets";
+import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
 import { useAuth } from "@/contexts/AuthContext";
 import SectionNavigation, { Section } from "@/components/tools/SectionNavigation";
 import ToolActionBar from "@/components/tools/ToolActionBar";
@@ -410,7 +411,9 @@ const TOOL_TYPE = "spacecraft-designer";
 const SpacecraftDesigner = () => {
   const [formState, setFormState] = useState<FormState>(initialFormState);
   const [currentWorksheetId, setCurrentWorksheetId] = useState<string | null>(null);
+  const [currentWorksheetTitle, setCurrentWorksheetTitle] = useState<string | null>(null);
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
+  const [worksheetSelectorOpen, setWorksheetSelectorOpen] = useState(false);
   const { toast } = useToast();
   const { user } = useAuth();
   const { worlds } = useWorlds();
@@ -428,6 +431,14 @@ const SpacecraftDesigner = () => {
   // Supabase hooks
   const { createWorksheet, updateWorksheet } = useWorksheets(worldId || undefined);
   const { data: existingWorksheet, isLoading: worksheetLoading } = useWorksheet(worksheetId || undefined);
+  const { data: existingWorksheets = [], isLoading: worksheetsLoading } = useWorksheetsByType(worldId || undefined, TOOL_TYPE);
+
+  // Show worksheet selector when worldId is present but no worksheetId
+  useEffect(() => {
+    if (worldId && !worksheetId && !worksheetsLoading && user) {
+      setWorksheetSelectorOpen(true);
+    }
+  }, [worldId, worksheetId, worksheetsLoading, user]);
 
   // Load existing worksheet from Supabase if worksheetId is provided
   useEffect(() => {
@@ -436,6 +447,7 @@ const SpacecraftDesigner = () => {
         const data = existingWorksheet.data as unknown as FormState;
         setFormState(data);
         setCurrentWorksheetId(existingWorksheet.id);
+        setCurrentWorksheetTitle(existingWorksheet.title);
         toast({
           title: "Worksheet Loaded",
           description: "Your saved work has been restored from the cloud.",
@@ -518,29 +530,21 @@ const SpacecraftDesigner = () => {
     // If we have a worldId and user is authenticated, save to Supabase
     if (worldId && user) {
       const worksheetData = formState as unknown as Json;
-      const title = formState.identity.name
-        ? `Ship: ${formState.identity.name}`
-        : "Spacecraft Design";
 
       try {
         if (currentWorksheetId || worksheetId) {
-          // Update existing worksheet
+          // Update existing worksheet - preserve user-provided title
           await updateWorksheet.mutateAsync({
             worksheetId: currentWorksheetId || worksheetId!,
-            title,
             data: worksheetData,
           });
         } else {
-          // Create new worksheet
-          const result = await createWorksheet.mutateAsync({
-            worldId,
-            toolType: TOOL_TYPE,
-            title,
-            data: worksheetData,
+          // Should not reach here - worksheet must be created via selector first
+          toast({
+            title: "Error",
+            description: "Please select or create a worksheet first.",
+            variant: "destructive",
           });
-          setCurrentWorksheetId(result.id);
-          // Update URL with new worksheetId
-          setSearchParams({ worldId, worksheetId: result.id });
         }
       } catch {
         // Error already handled by the mutation
@@ -551,6 +555,25 @@ const SpacecraftDesigner = () => {
         description: "Your work has been saved locally.",
       });
     }
+  };
+
+  const handleWorksheetSelect = (selectedWorksheetId: string) => {
+    setSearchParams({ worldId: worldId!, worksheetId: selectedWorksheetId });
+    setWorksheetSelectorOpen(false);
+  };
+
+  const handleWorksheetCreate = async (name: string): Promise<string> => {
+    const worksheetData = initialFormState as unknown as Json;
+    const result = await createWorksheet.mutateAsync({
+      worldId: worldId!,
+      toolType: TOOL_TYPE,
+      title: name,
+      data: worksheetData,
+    });
+    setCurrentWorksheetId(result.id);
+    setCurrentWorksheetTitle(result.title);
+    setSearchParams({ worldId: worldId!, worksheetId: result.id });
+    return result.id;
   };
 
   const handleExport = () => {
@@ -585,6 +608,12 @@ const SpacecraftDesigner = () => {
               <p className="text-muted-foreground mt-2 max-w-2xl">
                 Design ships that feel inhabited rather than sterile—with cultural context, life support realities, and ship-as-character development.
               </p>
+              {currentWorksheetTitle && (
+                <div className="flex items-center gap-2 mt-2 text-sm text-muted-foreground">
+                  <FileText className="w-4 h-4" />
+                  <span>{currentWorksheetTitle}</span>
+                </div>
+              )}
             </div>
 
             <div className="flex items-center gap-2 no-print">
@@ -1499,6 +1528,22 @@ const SpacecraftDesigner = () => {
         fullTemplate={<SpacecraftFullReportTemplate formState={formState} worldName={worldName} />}
         defaultFilename={`spacecraft-${formState.identity.name || "unnamed"}`}
       />
+
+      {/* Worksheet Selector Dialog */}
+      {worldId && (
+        <WorksheetSelectorDialog
+          open={worksheetSelectorOpen}
+          onOpenChange={setWorksheetSelectorOpen}
+          worldId={worldId}
+          worldName={worldName}
+          toolType={TOOL_TYPE}
+          toolDisplayName="Spacecraft Designer"
+          worksheets={existingWorksheets}
+          isLoading={worksheetsLoading}
+          onSelect={handleWorksheetSelect}
+          onCreate={handleWorksheetCreate}
+        />
+      )}
     </div>
   );
 };

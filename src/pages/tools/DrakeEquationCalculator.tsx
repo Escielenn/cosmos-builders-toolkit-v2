@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { ArrowLeft, Download, Save, ChevronDown, ChevronUp, Info, Printer, ExternalLink, Cloud, CloudOff, Calculator, HelpCircle } from "lucide-react";
+import { ArrowLeft, Download, Save, ChevronDown, ChevronUp, Info, Printer, ExternalLink, Cloud, CloudOff, Calculator, HelpCircle, FileText } from "lucide-react";
 import Header from "@/components/layout/Header";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
@@ -20,10 +20,10 @@ import {
 } from "@/components/ui/tooltip";
 import { useToast } from "@/hooks/use-toast";
 import { useBackground } from "@/hooks/use-background";
-import { useWorksheets, useWorksheet } from "@/hooks/use-worksheets";
+import { useWorksheets, useWorksheet, useWorksheetsByType } from "@/hooks/use-worksheets";
 import { useWorlds } from "@/hooks/use-worlds";
 import { useAuth } from "@/contexts/AuthContext";
-import WorldSelectDialog, { SaveSelection } from "@/components/tools/WorldSelectDialog";
+import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
 import SectionNavigation, { Section } from "@/components/tools/SectionNavigation";
 import ToolActionBar from "@/components/tools/ToolActionBar";
 import ExportDialog from "@/components/tools/ExportDialog";
@@ -275,20 +275,25 @@ const CollapsibleSection = ({
   );
 };
 
+const TOOL_TYPE = "drake-equation-calculator";
+
 const DrakeEquationCalculator = () => {
   useBackground();
   const { toast } = useToast();
   const { user } = useAuth();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const worldId = searchParams.get("worldId");
   const worksheetId = searchParams.get("worksheetId");
 
   const { worlds } = useWorlds();
-  const { worksheets, createWorksheet, updateWorksheet } = useWorksheets(worldId || undefined);
-  const { data: existingWorksheet } = useWorksheet(worksheetId || undefined);
+  const { createWorksheet, updateWorksheet } = useWorksheets(worldId || undefined);
+  const { data: existingWorksheet, isLoading: worksheetLoading } = useWorksheet(worksheetId || undefined);
+  const { data: existingWorksheets = [], isLoading: worksheetsLoading } = useWorksheetsByType(worldId || undefined, TOOL_TYPE);
 
   const [formState, setFormState] = useState<FormState>(initialFormState);
-  const [saveDialogOpen, setSaveDialogOpen] = useState(false);
+  const [currentWorksheetId, setCurrentWorksheetId] = useState<string | null>(null);
+  const [currentWorksheetTitle, setCurrentWorksheetTitle] = useState<string | null>(null);
+  const [worksheetSelectorOpen, setWorksheetSelectorOpen] = useState(false);
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [lastSavedToCloud, setLastSavedToCloud] = useState<Date | null>(null);
@@ -344,18 +349,27 @@ const DrakeEquationCalculator = () => {
     };
   };
 
-  // Load from localStorage on mount
+  // Show worksheet selector when worldId is present but no worksheetId
   useEffect(() => {
-    const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
-    if (saved && !worksheetId) {
-      try {
-        const parsed = JSON.parse(saved);
-        setFormState(parsed);
-      } catch (e) {
-        console.error("Failed to load saved data:", e);
+    if (worldId && !worksheetId && !worksheetsLoading && user) {
+      setWorksheetSelectorOpen(true);
+    }
+  }, [worldId, worksheetId, worksheetsLoading, user]);
+
+  // Load from localStorage on mount (standalone mode)
+  useEffect(() => {
+    if (!worldId && !worksheetId) {
+      const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          setFormState(parsed);
+        } catch (e) {
+          console.error("Failed to load saved data:", e);
+        }
       }
     }
-  }, [worksheetId]);
+  }, [worldId, worksheetId]);
 
   // Load from worksheet if editing
   useEffect(() => {
@@ -363,7 +377,13 @@ const DrakeEquationCalculator = () => {
       try {
         const data = existingWorksheet.data as unknown as FormState;
         setFormState(data);
+        setCurrentWorksheetId(existingWorksheet.id);
+        setCurrentWorksheetTitle(existingWorksheet.title);
         setLastSavedToCloud(new Date(existingWorksheet.updated_at));
+        toast({
+          title: "Worksheet Loaded",
+          description: "Your saved work has been restored from the cloud.",
+        });
       } catch (e) {
         console.error("Failed to load worksheet:", e);
       }
@@ -416,41 +436,62 @@ const DrakeEquationCalculator = () => {
   };
 
   // Save to cloud
-  const handleSave = async (selection: SaveSelection) => {
-    setIsSavingToCloud(true);
-    try {
-      if (selection.worksheetId) {
-        await updateWorksheet.mutateAsync({
-          worksheetId: selection.worksheetId,
-          data: formState as unknown as Json,
-          title: selection.name,
-        });
-      } else {
-        await createWorksheet.mutateAsync({
-          worldId: selection.worldId,
-          toolType: "drake-equation-calculator",
-          title: selection.name,
-          data: formState as unknown as Json,
-        });
+  const handleSave = async () => {
+    // Always save to localStorage as backup
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(formState));
+
+    // If we have a worldId and user is authenticated, save to Supabase
+    if (worldId && user) {
+      const worksheetData = formState as unknown as Json;
+      setIsSavingToCloud(true);
+
+      try {
+        if (currentWorksheetId || worksheetId) {
+          // Update existing worksheet - preserve user-provided title
+          await updateWorksheet.mutateAsync({
+            worksheetId: currentWorksheetId || worksheetId!,
+            data: worksheetData,
+          });
+          setLastSavedToCloud(new Date());
+          setHasUnsavedChanges(false);
+        } else {
+          // Should not reach here - worksheet must be created via selector first
+          toast({
+            title: "Error",
+            description: "Please select or create a worksheet first.",
+            variant: "destructive",
+          });
+        }
+      } catch {
+        // Error already handled by the mutation
+      } finally {
+        setIsSavingToCloud(false);
       }
-
-      setLastSavedToCloud(new Date());
-      setHasUnsavedChanges(false);
-      setSaveDialogOpen(false);
-
+    } else {
       toast({
-        title: "Saved to cloud",
-        description: `Your Drake Equation calculator has been saved.`,
+        title: "Draft Saved",
+        description: "Your work has been saved locally.",
       });
-    } catch (error) {
-      toast({
-        title: "Save failed",
-        description: "Could not save to cloud. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsSavingToCloud(false);
     }
+  };
+
+  const handleWorksheetSelect = (selectedWorksheetId: string) => {
+    setSearchParams({ worldId: worldId!, worksheetId: selectedWorksheetId });
+    setWorksheetSelectorOpen(false);
+  };
+
+  const handleWorksheetCreate = async (name: string): Promise<string> => {
+    const worksheetData = initialFormState as unknown as Json;
+    const result = await createWorksheet.mutateAsync({
+      worldId: worldId!,
+      toolType: TOOL_TYPE,
+      title: name,
+      data: worksheetData,
+    });
+    setCurrentWorksheetId(result.id);
+    setCurrentWorksheetTitle(result.title);
+    setSearchParams({ worldId: worldId!, worksheetId: result.id });
+    return result.id;
   };
 
   // Open export dialog
@@ -496,6 +537,12 @@ const DrakeEquationCalculator = () => {
               Calculate the number of detectable civilizations in your galaxy. Use this tool to establish
               the cosmic context for your science fiction world—from lonely universe to teeming galaxy.
             </p>
+            {currentWorksheetTitle && (
+              <div className="flex items-center gap-2 mt-2 text-sm text-muted-foreground">
+                <FileText className="w-4 h-4" />
+                <span>{currentWorksheetTitle}</span>
+              </div>
+            )}
           </div>
 
           {/* Cloud Status */}
@@ -516,7 +563,7 @@ const DrakeEquationCalculator = () => {
 
         {/* Action Bar */}
         <ToolActionBar
-          onSave={() => setSaveDialogOpen(true)}
+          onSave={handleSave}
           onPrint={handlePrint}
           onExport={handleExport}
           hasUnsavedChanges={hasUnsavedChanges}
@@ -781,7 +828,7 @@ const DrakeEquationCalculator = () => {
 
         {/* Bottom Action Bar */}
         <ToolActionBar
-          onSave={() => setSaveDialogOpen(true)}
+          onSave={handleSave}
           onPrint={handlePrint}
           onExport={handleExport}
           hasUnsavedChanges={hasUnsavedChanges}
@@ -790,17 +837,19 @@ const DrakeEquationCalculator = () => {
         />
       </main>
 
-      {/* Save Dialog */}
-      {user && (
-        <WorldSelectDialog
-          open={saveDialogOpen}
-          onOpenChange={setSaveDialogOpen}
-          onSave={handleSave}
-          worlds={worlds}
-          worksheets={worksheets}
-          toolType="drake-equation-calculator"
-          currentWorldId={worldId || undefined}
-          currentWorksheetId={worksheetId || undefined}
+      {/* Worksheet Selector Dialog */}
+      {worldId && (
+        <WorksheetSelectorDialog
+          open={worksheetSelectorOpen}
+          onOpenChange={setWorksheetSelectorOpen}
+          worldId={worldId}
+          worldName={currentWorld?.name}
+          toolType={TOOL_TYPE}
+          toolDisplayName="Drake Equation Calculator"
+          worksheets={existingWorksheets}
+          isLoading={worksheetsLoading}
+          onSelect={handleWorksheetSelect}
+          onCreate={handleWorksheetCreate}
         />
       )}
 

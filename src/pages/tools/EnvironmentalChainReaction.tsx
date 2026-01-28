@@ -23,7 +23,8 @@ import {
 } from "@/components/ui/tooltip";
 import { useToast } from "@/hooks/use-toast";
 import { useBackground } from "@/hooks/use-background";
-import { useWorksheets, useWorksheet } from "@/hooks/use-worksheets";
+import { useWorksheets, useWorksheet, useWorksheetsByType } from "@/hooks/use-worksheets";
+import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
 import { useWorlds } from "@/hooks/use-worlds";
 import { useAuth } from "@/contexts/AuthContext";
 import WorldSelectDialog, { SaveSelection } from "@/components/tools/WorldSelectDialog";
@@ -534,7 +535,9 @@ const TOOL_TYPE = "environmental-chain-reaction";
 const EnvironmentalChainReaction = () => {
   const [formState, setFormState] = useState<FormState>(initialFormState);
   const [currentWorksheetId, setCurrentWorksheetId] = useState<string | null>(null);
+  const [currentWorksheetTitle, setCurrentWorksheetTitle] = useState<string | null>(null);
   const [showWorldSelectDialog, setShowWorldSelectDialog] = useState(false);
+  const [worksheetSelectorOpen, setWorksheetSelectorOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
   const { toast } = useToast();
@@ -554,6 +557,14 @@ const EnvironmentalChainReaction = () => {
   // Supabase hooks
   const { createWorksheet, updateWorksheet } = useWorksheets(worldId || undefined);
   const { data: existingWorksheet, isLoading: worksheetLoading } = useWorksheet(worksheetId || undefined);
+  const { data: existingWorksheets = [], isLoading: worksheetsLoading } = useWorksheetsByType(worldId || undefined, TOOL_TYPE);
+
+  // Show worksheet selector when worldId is present but no worksheetId
+  useEffect(() => {
+    if (worldId && !worksheetId && !worksheetsLoading && user) {
+      setWorksheetSelectorOpen(true);
+    }
+  }, [worldId, worksheetId, worksheetsLoading, user]);
 
   // Load existing worksheet from Supabase if worksheetId is provided
   useEffect(() => {
@@ -562,6 +573,7 @@ const EnvironmentalChainReaction = () => {
         const data = existingWorksheet.data as unknown as FormState;
         setFormState(data);
         setCurrentWorksheetId(existingWorksheet.id);
+        setCurrentWorksheetTitle(existingWorksheet.title);
         toast({
           title: "Worksheet Loaded",
           description: "Your saved work has been restored from the cloud.",
@@ -712,29 +724,38 @@ const EnvironmentalChainReaction = () => {
 
   const saveToSupabase = async (targetWorldId: string) => {
     const worksheetData = formState as unknown as Json;
-    const title = formState.parameter.specificValue
-      ? `ECR: ${formState.parameter.specificValue}`
-      : "Environmental Chain Reaction";
 
     if (currentWorksheetId || worksheetId) {
-      // Update existing worksheet
+      // Update existing worksheet - preserve existing title
       await updateWorksheet.mutateAsync({
         worksheetId: currentWorksheetId || worksheetId!,
-        title,
         data: worksheetData,
       });
     } else {
-      // Create new worksheet
-      const result = await createWorksheet.mutateAsync({
-        worldId: targetWorldId,
-        toolType: TOOL_TYPE,
-        title,
-        data: worksheetData,
-      });
-      setCurrentWorksheetId(result.id);
-      // Update URL with new worksheetId
-      setSearchParams({ worldId: targetWorldId, worksheetId: result.id });
+      // Should not reach here - worksheet selector ensures title is set first
+      console.warn("Attempting to save without worksheet selection");
     }
+  };
+
+  // Handle worksheet selection from dialog
+  const handleWorksheetSelect = (selectedWorksheetId: string) => {
+    setSearchParams({ worldId: worldId!, worksheetId: selectedWorksheetId });
+    setWorksheetSelectorOpen(false);
+  };
+
+  // Handle new worksheet creation from dialog
+  const handleWorksheetCreate = async (name: string): Promise<string> => {
+    const worksheetData = formState as unknown as Json;
+    const result = await createWorksheet.mutateAsync({
+      worldId: worldId!,
+      toolType: TOOL_TYPE,
+      title: name,
+      data: worksheetData,
+    });
+    setCurrentWorksheetId(result.id);
+    setCurrentWorksheetTitle(result.title);
+    setSearchParams({ worldId: worldId!, worksheetId: result.id });
+    return result.id;
   };
 
   const handleSave = async () => {
@@ -821,6 +842,12 @@ const EnvironmentalChainReaction = () => {
               <h1 className="font-display text-3xl md:text-4xl font-bold">
                 Environmental Chain Reaction
               </h1>
+              {currentWorksheetTitle && (
+                <div className="flex items-center gap-2 mt-1">
+                  <FileText className="w-4 h-4 text-primary" />
+                  <span className="text-lg font-medium text-primary">{currentWorksheetTitle}</span>
+                </div>
+              )}
               <p className="text-muted-foreground mt-2 max-w-2xl">
                 Map how planetary parameters cascade into biology, psychology,
                 culture, and mythology.
@@ -1404,6 +1431,22 @@ const EnvironmentalChainReaction = () => {
         fullTemplate={<ECRFullReportTemplate formState={formState} worldName={worldName || undefined} />}
         defaultFilename="environmental-chain-reaction"
       />
+
+      {/* Worksheet Selector Dialog */}
+      {worldId && (
+        <WorksheetSelectorDialog
+          open={worksheetSelectorOpen}
+          onOpenChange={setWorksheetSelectorOpen}
+          worldId={worldId}
+          worldName={worldName}
+          toolType={TOOL_TYPE}
+          toolDisplayName="Environmental Chain Reaction"
+          worksheets={existingWorksheets}
+          isLoading={worksheetsLoading}
+          onSelect={handleWorksheetSelect}
+          onCreate={handleWorksheetCreate}
+        />
+      )}
     </div>
   );
 };
