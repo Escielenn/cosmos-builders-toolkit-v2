@@ -24,7 +24,6 @@ import WelcomeHero from "@/components/landing/WelcomeHero";
 import LoggedInHero from "@/components/landing/LoggedInHero";
 import ToolShowcase from "@/components/landing/ToolShowcase";
 import ValueProposition from "@/components/landing/ValueProposition";
-import ProStatusBanner from "@/components/subscription/ProStatusBanner";
 import QuickUpgradeCard from "@/components/subscription/QuickUpgradeCard";
 import CubeLogo from "@/components/icons/CubeLogo";
 import BetaBanner from "@/components/BetaBanner";
@@ -138,9 +137,6 @@ const Index = () => {
         ) : (
           <LoggedInHero isSubscribed={isSubscribed} />
         )}
-
-        {/* Pro Status Banner - logged-in users only */}
-        {user && <ProStatusBanner isSubscribed={isSubscribed} />}
 
         {/* Landing Page Sections - non-logged-in users only */}
         {!user && <ToolShowcase />}

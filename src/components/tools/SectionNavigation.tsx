@@ -73,6 +73,7 @@ const SectionNavigation = ({ sections }: SectionNavigationProps) => {
       <nav className="space-y-1">
         {sections.map((section) => (
           <button
+            type="button"
             key={section.id}
             onClick={() => scrollToSection(section.id)}
             className={cn(

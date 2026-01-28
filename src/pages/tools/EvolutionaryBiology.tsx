@@ -514,6 +514,8 @@ const EvolutionaryBiology = () => {
   };
 
   const toggleSection = (sectionId: string) => {
+    // Preserve scroll position to prevent jumping to top
+    const scrollY = window.scrollY;
     setExpandedSections((prev) => {
       const next = new Set(prev);
       if (next.has(sectionId)) {
@@ -522,6 +524,10 @@ const EvolutionaryBiology = () => {
         next.add(sectionId);
       }
       return next;
+    });
+    // Restore scroll position after state update
+    requestAnimationFrame(() => {
+      window.scrollTo(0, scrollY);
     });
   };
 
@@ -2381,16 +2387,7 @@ const EvolutionaryBiology = () => {
 
           {/* Sidebar */}
           <div className="lg:col-span-1 space-y-6">
-            <SectionNavigation
-              sections={SECTIONS}
-              activeSection={Array.from(expandedSections)[0] || "section-foundations"}
-              onNavigate={(sectionId) => {
-                if (!expandedSections.has(sectionId)) {
-                  toggleSection(sectionId);
-                }
-                document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth" });
-              }}
-            />
+            <SectionNavigation sections={SECTIONS} />
           </div>
         </div>
 
