@@ -1,0 +1,46 @@
+interface CubeLogoProps {
+  size?: number;
+  className?: string;
+}
+
+const CubeLogo = ({ size = 24, className = "" }: CubeLogoProps) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 64 64"
+      width={size}
+      height={size}
+      className={className}
+    >
+      <defs>
+        <filter id="cubeGlow" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="1.5" result="blur" />
+          <feMerge>
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+      </defs>
+
+      {/* 3D Cube - dark faces */}
+      {/* Top face */}
+      <path d="M 32 8 L 56 20 L 32 32 L 8 20 Z" fill="#1a1a1a" />
+      {/* Left face */}
+      <path d="M 8 20 L 32 32 L 32 56 L 8 44 Z" fill="#0d0d0d" />
+      {/* Right face */}
+      <path d="M 32 32 L 56 20 L 56 44 L 32 56 Z" fill="#141414" />
+
+      {/* Cyan swoosh arc across the front */}
+      <path
+        d="M 50 16 Q 32 22, 18 36 Q 14 44, 16 50"
+        stroke="#00E5E5"
+        strokeWidth="3"
+        strokeLinecap="round"
+        fill="none"
+        filter="url(#cubeGlow)"
+      />
+    </svg>
+  );
+};
+
+export default CubeLogo;
