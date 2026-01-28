@@ -16,6 +16,7 @@ import SpacecraftDesigner from "./pages/tools/SpacecraftDesigner";
 import PlanetaryProfile from "./pages/tools/PlanetaryProfile";
 import DrakeEquationCalculator from "./pages/tools/DrakeEquationCalculator";
 import XenomythologyFrameworkBuilder from "./pages/tools/XenomythologyFrameworkBuilder";
+import EvolutionaryBiology from "./pages/tools/EvolutionaryBiology";
 import LearnIndex from "./pages/learn/LearnIndex";
 import LearnArticle from "./pages/learn/LearnArticle";
 import ProToolGuard from "./components/subscription/ProToolGuard";
@@ -61,6 +62,14 @@ const App = () => (
               element={
                 <ProToolGuard toolId="xenomythology-framework-builder">
                   <XenomythologyFrameworkBuilder />
+                </ProToolGuard>
+              }
+            />
+            <Route
+              path="/tools/evolutionary-biology"
+              element={
+                <ProToolGuard toolId="evolutionary-biology">
+                  <EvolutionaryBiology />
                 </ProToolGuard>
               }
             />

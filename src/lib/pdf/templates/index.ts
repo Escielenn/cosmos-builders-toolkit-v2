@@ -10,3 +10,5 @@ export { default as PropulsionSummaryTemplate } from "./PropulsionSummaryTemplat
 export { default as PropulsionFullReportTemplate } from "./PropulsionFullReportTemplate";
 export { default as XenomythologySummaryTemplate } from "./XenomythologySummaryTemplate";
 export { default as XenomythologyFullReportTemplate } from "./XenomythologyFullReportTemplate";
+export { default as EvolutionarySummaryTemplate } from "./EvolutionarySummaryTemplate";
+export { default as EvolutionaryFullReportTemplate } from "./EvolutionaryFullReportTemplate";

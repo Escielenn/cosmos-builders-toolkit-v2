@@ -1,5 +1,5 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Edit, Globe, FileText, Rocket, Zap, Trash2, MoreVertical, Loader2, Calculator } from "lucide-react";
+import { ArrowLeft, Edit, Globe, FileText, Rocket, Zap, Trash2, MoreVertical, Loader2, Calculator, Plus, Sparkles, Pencil, ChevronRight, Dna } from "lucide-react";
 import { format } from "date-fns";
 import Header from "@/components/layout/Header";
 import { GlassPanel } from "@/components/ui/glass-panel";
@@ -33,7 +33,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useWorld } from "@/hooks/use-world";
-import { useWorksheets } from "@/hooks/use-worksheets";
+import { useWorksheets, useRenameWorksheet } from "@/hooks/use-worksheets";
+import { Badge } from "@/components/ui/badge";
 import { useWorlds } from "@/hooks/use-worlds";
 import { useState, useEffect } from "react";
 import WorldHeader from "@/components/world/WorldHeader";
@@ -78,6 +79,20 @@ const TOOLS = [
     icon: Calculator,
     path: "/tools/drake-equation-calculator",
   },
+  {
+    id: "xenomythology-framework-builder",
+    name: "Xenomythology Framework",
+    description: "Create alien mythological systems derived from species biology",
+    icon: Sparkles,
+    path: "/tools/xenomythology-framework-builder",
+  },
+  {
+    id: "evolutionary-biology",
+    name: "Evolutionary Biology",
+    description: "Design biologically plausible alien species from evolutionary pressures",
+    icon: Dna,
+    path: "/tools/evolutionary-biology",
+  },
 ];
 
 const getToolName = (toolType: string): string => {
@@ -96,13 +111,26 @@ const WorldDashboard = () => {
   const { data: world, isLoading: worldLoading, error: worldError } = useWorld(worldId);
   const { worksheets, isLoading: worksheetsLoading, deleteWorksheet } = useWorksheets(worldId);
   const { deleteWorld, updateWorld } = useWorlds();
+  const renameWorksheet = useRenameWorksheet();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [worksheetToDelete, setWorksheetToDelete] = useState<string | null>(null);
+  const [worksheetToRename, setWorksheetToRename] = useState<{ id: string; title: string } | null>(null);
+  const [renameValue, setRenameValue] = useState("");
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editName, setEditName] = useState("");
   const [editDescription, setEditDescription] = useState("");
   const [editIcon, setEditIcon] = useState("globe");
   const [editHeaderImageUrl, setEditHeaderImageUrl] = useState<string | null>(null);
+
+  // Group worksheets by tool type
+  const worksheetsByType = worksheets.reduce((acc, worksheet) => {
+    const type = worksheet.tool_type;
+    if (!acc[type]) {
+      acc[type] = [];
+    }
+    acc[type].push(worksheet);
+    return acc;
+  }, {} as Record<string, typeof worksheets>);
 
   // Initialize background
   useBackground();
@@ -127,6 +155,21 @@ const WorldDashboard = () => {
     if (!worksheetToDelete) return;
     await deleteWorksheet.mutateAsync(worksheetToDelete);
     setWorksheetToDelete(null);
+  };
+
+  const handleRenameWorksheet = async () => {
+    if (!worksheetToRename || !renameValue.trim()) return;
+    await renameWorksheet.mutateAsync({
+      worksheetId: worksheetToRename.id,
+      title: renameValue.trim(),
+    });
+    setWorksheetToRename(null);
+    setRenameValue("");
+  };
+
+  const openRenameDialog = (id: string, currentTitle: string) => {
+    setWorksheetToRename({ id, title: currentTitle });
+    setRenameValue(currentTitle);
   };
 
   const handleEditWorld = async () => {
@@ -262,7 +305,7 @@ const WorldDashboard = () => {
           </div>
         </section>
 
-        {/* Saved Worksheets */}
+        {/* Saved Worksheets - Grouped by Tool Type */}
         <section>
           <h2 className="text-xl font-semibold mb-4">Saved Worksheets</h2>
           {worksheetsLoading ? (
@@ -279,42 +322,84 @@ const WorldDashboard = () => {
               </p>
             </GlassPanel>
           ) : (
-            <div className="space-y-3">
-              {worksheets.map((worksheet) => {
-                const ToolIcon = getToolIcon(worksheet.tool_type);
+            <div className="space-y-6">
+              {TOOLS.map((tool) => {
+                const toolWorksheets = worksheetsByType[tool.id] || [];
+                if (toolWorksheets.length === 0) return null;
+
+                const ToolIcon = tool.icon;
+
                 return (
-                  <GlassPanel
-                    key={worksheet.id}
-                    className="p-4 flex items-center justify-between"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-lg bg-secondary/50 flex items-center justify-center">
-                        <ToolIcon className="w-5 h-5 text-muted-foreground" />
+                  <div key={tool.id} className="space-y-3">
+                    {/* Tool Type Header */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <ToolIcon className="w-5 h-5 text-primary" />
+                        <h3 className="font-semibold">{tool.name}</h3>
+                        <Badge variant="secondary" className="text-xs">
+                          {toolWorksheets.length}
+                        </Badge>
                       </div>
-                      <div>
-                        <h3 className="font-medium">
-                          {worksheet.title || getToolName(worksheet.tool_type)}
-                        </h3>
-                        <p className="text-sm text-muted-foreground">
-                          Updated {format(new Date(worksheet.updated_at), "MMM d, yyyy 'at' h:mm a")}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
                       <Button variant="outline" size="sm" asChild>
-                        <Link to={`/tools/${worksheet.tool_type}?worldId=${worldId}&worksheetId=${worksheet.id}`}>
-                          Open
+                        <Link to={`${tool.path}?worldId=${worldId}`}>
+                          <Plus className="w-4 h-4 mr-1" />
+                          New
                         </Link>
                       </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => setWorksheetToDelete(worksheet.id)}
-                      >
-                        <Trash2 className="w-4 h-4 text-muted-foreground" />
-                      </Button>
                     </div>
-                  </GlassPanel>
+
+                    {/* Worksheets for this tool type */}
+                    <div className="space-y-2 pl-7">
+                      {toolWorksheets.map((worksheet) => (
+                        <GlassPanel
+                          key={worksheet.id}
+                          className="p-3 flex items-center justify-between"
+                        >
+                          <div className="flex items-center gap-3 flex-1 min-w-0">
+                            <FileText className="w-4 h-4 text-muted-foreground shrink-0" />
+                            <div className="min-w-0">
+                              <h4 className="font-medium truncate">
+                                {worksheet.title || "Untitled"}
+                              </h4>
+                              <p className="text-xs text-muted-foreground">
+                                Updated {format(new Date(worksheet.updated_at), "MMM d, yyyy")}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-1 shrink-0">
+                            <Button variant="ghost" size="sm" asChild>
+                              <Link to={`${tool.path}?worldId=${worldId}&worksheetId=${worksheet.id}`}>
+                                Open
+                                <ChevronRight className="w-4 h-4 ml-1" />
+                              </Link>
+                            </Button>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" size="icon" className="h-8 w-8">
+                                  <MoreVertical className="w-4 h-4" />
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end">
+                                <DropdownMenuItem
+                                  onClick={() => openRenameDialog(worksheet.id, worksheet.title || "Untitled")}
+                                >
+                                  <Pencil className="w-4 h-4 mr-2" />
+                                  Rename
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  className="text-destructive"
+                                  onClick={() => setWorksheetToDelete(worksheet.id)}
+                                >
+                                  <Trash2 className="w-4 h-4 mr-2" />
+                                  Delete
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </div>
+                        </GlassPanel>
+                      ))}
+                    </div>
+                  </div>
                 );
               })}
             </div>
@@ -364,6 +449,48 @@ const WorldDashboard = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Rename Worksheet Dialog */}
+      <Dialog open={!!worksheetToRename} onOpenChange={() => setWorksheetToRename(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Rename Worksheet</DialogTitle>
+            <DialogDescription>
+              Enter a new name for this worksheet.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="rename-worksheet">Name</Label>
+              <Input
+                id="rename-worksheet"
+                value={renameValue}
+                onChange={(e) => setRenameValue(e.target.value)}
+                placeholder="Enter worksheet name"
+                autoFocus
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setWorksheetToRename(null)}>
+              Cancel
+            </Button>
+            <Button
+              onClick={handleRenameWorksheet}
+              disabled={!renameValue.trim() || renameWorksheet.isPending}
+            >
+              {renameWorksheet.isPending ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                "Save"
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Edit World Dialog */}
       <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
