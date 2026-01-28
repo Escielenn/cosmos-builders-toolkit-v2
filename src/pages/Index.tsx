@@ -27,6 +27,7 @@ import ValueProposition from "@/components/landing/ValueProposition";
 import ProStatusBanner from "@/components/subscription/ProStatusBanner";
 import QuickUpgradeCard from "@/components/subscription/QuickUpgradeCard";
 import CubeLogo from "@/components/icons/CubeLogo";
+import BetaBanner from "@/components/BetaBanner";
 
 const tools = [
   {
@@ -126,8 +127,11 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
+      <div className="pt-16">
+        <BetaBanner position="top" />
+      </div>
 
-      <main className="container mx-auto px-4 pt-24 pb-16">
+      <main className="container mx-auto px-4 pt-8 pb-16">
         {/* Conditional Hero Section */}
         {!user ? (
           <WelcomeHero />
@@ -245,6 +249,8 @@ const Index = () => {
           </section>
         )}
       </main>
+
+      <BetaBanner position="bottom" />
 
       {/* Footer */}
       <footer className="border-t border-border/50 py-8">
