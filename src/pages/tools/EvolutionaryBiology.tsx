@@ -558,7 +558,7 @@ const EvolutionaryBiology = () => {
       <Collapsible open={isExpanded} onOpenChange={() => toggleSection(sectionId)}>
         <div id={sectionId} className="scroll-mt-24">
           <CollapsibleTrigger asChild>
-            <button className="flex items-center justify-between w-full p-4 text-left hover:bg-white/5 rounded-lg transition-colors group">
+            <button type="button" className="flex items-center justify-between w-full p-4 text-left hover:bg-white/5 rounded-lg transition-colors group">
               <div className="flex items-center gap-3">
                 <h3 className="text-lg font-display font-semibold">{title}</h3>
                 {guidance && (
@@ -600,31 +600,56 @@ const EvolutionaryBiology = () => {
     columns?: number;
   }) => (
     <div className={`grid grid-cols-1 md:grid-cols-${columns} gap-3`}>
-      {options.map((option) => (
-        <label
-          key={option.id}
-          className="flex items-start gap-3 p-3 rounded-lg border border-border/50 hover:border-primary/50 cursor-pointer transition-colors"
-        >
-          <Checkbox
-            checked={selected.includes(option.id)}
-            onCheckedChange={(checked) => {
-              if (checked) {
-                onChange([...selected, option.id]);
-              } else {
+      {options.map((option) => {
+        const isChecked = selected.includes(option.id);
+        return (
+          <div
+            key={option.id}
+            role="checkbox"
+            aria-checked={isChecked}
+            tabIndex={0}
+            className="flex items-start gap-3 p-3 rounded-lg border border-border/50 hover:border-primary/50 cursor-pointer transition-colors"
+            onClick={(e) => {
+              e.preventDefault();
+              if (isChecked) {
                 onChange(selected.filter((id) => id !== option.id));
+              } else {
+                onChange([...selected, option.id]);
               }
             }}
-          />
-          <div>
-            <span className="font-medium text-sm">{option.name}</span>
-            {option.description && (
-              <p className="text-xs text-muted-foreground mt-0.5">
-                {option.description}
-              </p>
-            )}
+            onKeyDown={(e) => {
+              if (e.key === " " || e.key === "Enter") {
+                e.preventDefault();
+                if (isChecked) {
+                  onChange(selected.filter((id) => id !== option.id));
+                } else {
+                  onChange([...selected, option.id]);
+                }
+              }
+            }}
+          >
+            <Checkbox
+              checked={isChecked}
+              tabIndex={-1}
+              onCheckedChange={(checked) => {
+                if (checked) {
+                  onChange([...selected, option.id]);
+                } else {
+                  onChange(selected.filter((id) => id !== option.id));
+                }
+              }}
+            />
+            <div>
+              <span className="font-medium text-sm">{option.name}</span>
+              {option.description && (
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  {option.description}
+                </p>
+              )}
+            </div>
           </div>
-        </label>
-      ))}
+        );
+      })}
     </div>
   );
 
@@ -651,6 +676,7 @@ const EvolutionaryBiology = () => {
             onChange(newItems);
           })}</div>
           <Button
+            type="button"
             variant="ghost"
             size="icon"
             onClick={() => onChange(items.filter((_, i) => i !== index))}
@@ -661,6 +687,7 @@ const EvolutionaryBiology = () => {
         </div>
       ))}
       <Button
+        type="button"
         variant="outline"
         size="sm"
         onClick={() => onChange([...items, newItem])}
@@ -2394,11 +2421,12 @@ const EvolutionaryBiology = () => {
         <ExportDialog
           open={showExportDialog}
           onOpenChange={setShowExportDialog}
-          title={worksheetTitle || "Species Design"}
+          toolName="Evolutionary Biology"
           worldName={currentWorld?.name}
           formState={formState}
-          SummaryTemplate={EvolutionarySummaryTemplate}
-          FullReportTemplate={EvolutionaryFullReportTemplate}
+          summaryTemplate={<EvolutionarySummaryTemplate formState={formState} worldName={currentWorld?.name} />}
+          fullTemplate={<EvolutionaryFullReportTemplate formState={formState} worldName={currentWorld?.name} />}
+          defaultFilename="evolutionary-biology"
         />
       </main>
     </div>

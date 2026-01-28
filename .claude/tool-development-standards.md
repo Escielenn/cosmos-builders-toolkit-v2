@@ -472,35 +472,89 @@ Each tool should have 2-4 external resources for users to reference:
 
 ---
 
+## Complete File Reference for Tool Addition
+
+When adding a new tool, these files MUST be updated:
+
+| File | Purpose | Required |
+|------|---------|----------|
+| `src/lib/{tool-name}-data.ts` | Data constants, sections, dropdowns | Yes |
+| `src/pages/tools/{ToolName}.tsx` | Main tool page component | Yes |
+| `src/App.tsx` | Route definition | Yes |
+| `src/pages/Index.tsx` | Homepage tools array (logged-in view) | Yes |
+| `src/components/landing/ToolShowcase.tsx` | Landing page tools (logged-out view) | Yes |
+| `src/lib/tools-config.ts` | Pro/Free tool classification | Yes |
+| `src/pages/WorldDashboard.tsx` | World detail page TOOLS array | Yes |
+| `src/components/tools/WorksheetSelectorDialog.tsx` | New worksheet placeholders | Yes |
+| `src/lib/pdf/templates/{ToolName}SummaryTemplate.tsx` | PDF summary export | Yes |
+| `src/lib/pdf/templates/{ToolName}FullReportTemplate.tsx` | PDF full report export | Yes |
+| `src/lib/pdf/templates/index.ts` | Export PDF templates | Yes |
+| `src/lib/worksheet-links-config.ts` | Cross-tool linking | If linking |
+| `src/components/icons/tool-icons.tsx` | Custom tool icon | Optional |
+
+---
+
 ## Checklist for New Tools
 
-### Core Setup
+### 1. Core Setup
 - [ ] Create data file: `src/lib/{tool-name}-data.ts`
+  - Section definitions
+  - Dropdown options with id/name/description
+  - Section guidance text
 - [ ] Create tool page: `src/pages/tools/{ToolName}.tsx`
+  - Follow header structure pattern
+  - Include introduction GlassPanel
+  - CollapsibleSection components
+  - WorksheetSelectorDialog integration
 - [ ] Add route in `App.tsx` (with `ProToolGuard` if Pro tool)
 
-### Homepage & Navigation
-- [ ] Add to `Index.tsx` tools array
-- [ ] **Add to `src/lib/tools-config.ts`** (FREE_TOOL_IDS or PRO_TOOL_IDS) - REQUIRED for lock/unlock badges
-- [ ] Add to `WorldDashboard.tsx` TOOLS array
-- [ ] Add placeholder in `WorksheetSelectorDialog.tsx`
+### 2. Homepage & Navigation (ALL REQUIRED)
+- [ ] Add to `src/pages/Index.tsx` tools array (logged-in homepage)
+- [ ] Add to `src/components/landing/ToolShowcase.tsx` (logged-out landing page)
+- [ ] **Add to `src/lib/tools-config.ts`** - CRITICAL for lock/unlock badges
+- [ ] Add to `src/pages/WorldDashboard.tsx` TOOLS array
+- [ ] Add placeholder in `src/components/tools/WorksheetSelectorDialog.tsx`
 
-### PDF Export
-- [ ] Create `{ToolName}SummaryTemplate.tsx` PDF template
-- [ ] Create `{ToolName}FullReportTemplate.tsx` PDF template
-- [ ] Export templates from `src/lib/pdf/templates/index.ts`
+### 3. PDF Export
+- [ ] Create `src/lib/pdf/templates/{ToolName}SummaryTemplate.tsx`
+- [ ] Create `src/lib/pdf/templates/{ToolName}FullReportTemplate.tsx`
+- [ ] Export from `src/lib/pdf/templates/index.ts`
+- [ ] Pass templates correctly in ExportDialog:
+  ```tsx
+  <ExportDialog
+    summaryTemplate={<SummaryTemplate formState={formState} worldName={worldName} />}
+    fullTemplate={<FullReportTemplate formState={formState} worldName={worldName} />}
+  />
+  ```
 
-### Interoperability (if applicable)
+### 4. Interoperability (if applicable)
 - [ ] Add link configurations in `src/lib/worksheet-links-config.ts`
 - [ ] Add `_linkedWorksheets` field to FormState
 - [ ] Implement `WorksheetLinkSelector` in Foundations section
 - [ ] Add tool to `TOOL_DISPLAY_NAMES` in worksheet-links-config.ts
 
-### Testing
+### 5. UI Best Practices
+- [ ] Add `type="button"` to all button elements (prevents scroll jumping)
+- [ ] Use accessible checkbox/toggle patterns
+- [ ] Ensure consistent header structure with Badge, title, description
+- [ ] Include external resources in introduction panel
+
+### 6. Testing
 - [ ] Test cloud save/load with worksheet
 - [ ] Test local storage fallback
-- [ ] Test PDF export (both templates)
+- [ ] Test PDF export (both Summary and Full Report)
 - [ ] Verify mobile responsiveness
 - [ ] Verify print styling
-- [ ] Verify Pro/Free badge shows correctly on homepage
+- [ ] Verify Pro/Free badge shows correctly on homepage (logged-in)
+- [ ] Verify tool appears in ToolShowcase (logged-out)
 - [ ] Test worksheet linking (if applicable)
+
+---
+
+## Common Mistakes to Avoid
+
+1. **Missing ToolShowcase entry** - Tool won't appear on landing page for non-logged-in users
+2. **Missing tools-config.ts entry** - No lock/unlock badge on homepage
+3. **Wrong ExportDialog props** - Pass templates as JSX elements with props, not component references
+4. **Missing `type="button"`** - Can cause scroll-to-top issues on button clicks
+5. **Inconsistent header structure** - Doesn't match other tools visually

@@ -51,10 +51,10 @@ const proTools = [
     status: "available",
   },
   {
-    id: "species-creator",
-    title: "Species Creator",
-    description: "Design alien species with consistent biology and evolutionary history.",
-    status: "coming-soon",
+    id: "evolutionary-biology",
+    title: "Evolutionary Biology Design Sheet",
+    description: "Design biologically plausible alien species with 13 sections covering biochemistry to psychology.",
+    status: "available",
   },
   {
     id: "culture-designer",
