@@ -286,6 +286,39 @@ Add tool to homepage with this pattern:
 
 ---
 
+## Pro/Free Tool Configuration (REQUIRED)
+
+**CRITICAL:** Every tool must be registered in `src/lib/tools-config.ts` for proper lock/unlock badge display on the homepage.
+
+```tsx
+// src/lib/tools-config.ts
+
+export const FREE_TOOL_IDS = [
+  'environmental-chain-reaction',
+  'spacecraft-designer',
+  'propulsion-consequences-map',
+];
+
+export const PRO_TOOL_IDS = [
+  'planetary-profile',
+  'drake-equation-calculator',
+  'xenomythology-framework-builder',
+  'evolutionary-biology',
+  'culture-designer',
+  'technology-mapper',
+];
+```
+
+**What this controls:**
+- Homepage ToolCard displays "Unlocked" badge (green) for Pro users
+- Homepage ToolCard displays "Pro" badge (amber) for non-Pro users
+- Lock icon appears on tool title for non-Pro users
+- "Upgrade to Unlock" badge appears at bottom of card
+
+**If you forget this step:** The tool card will not show any lock/unlock status, making it unclear to users whether the tool requires a subscription.
+
+---
+
 ## App.tsx Route
 
 Add route with ProToolGuard for premium tools:
@@ -306,6 +339,10 @@ Or without guard for free tools:
 ```tsx
 <Route path="/tools/tool-name" element={<ToolComponent />} />
 ```
+
+**Note:** The `ProToolGuard` wrapper and the `tools-config.ts` entry work together:
+- `tools-config.ts` controls the homepage badge display
+- `ProToolGuard` controls access to the actual tool page
 
 ---
 
@@ -360,6 +397,71 @@ Show `WorksheetSelectorDialog` when `worldId` exists but no `worksheetId`.
 
 ---
 
+## Tool Interoperability & Worksheet Linking
+
+StellarForge tools are designed to work together. Tools can link to other tool worksheets within the same world to import relevant data automatically.
+
+### Architecture Overview
+
+```
+World
+├── Planetary Profile Worksheet (planet data)
+├── Environmental Chain Reaction Worksheet (ecosystem data)
+├── Evolutionary Biology Worksheet
+│   └── Links to: Planet, ECR
+├── Xenomythology Worksheet
+│   └── Links to: Planet, ECR, Species
+└── Spacecraft Designer Worksheet
+    └── Links to: Propulsion
+```
+
+### Configuration File
+
+**File:** `src/lib/worksheet-links-config.ts`
+
+This file defines which tools can link to which, and what fields are synced:
+
+```tsx
+export const WORKSHEET_LINKS: Record<string, LinkConfig[]> = {
+  "evolutionary-biology": [
+    {
+      key: "planet",
+      targetTool: "planetary-profile",
+      label: "Home Planet",
+      syncFields: ["starType", "atmosphereType", "gravity", "dayLength"],
+      description: "Link to a planetary profile for environmental context",
+    },
+  ],
+};
+```
+
+### Adding Links to a New Tool
+
+1. **Add link configuration** in `worksheet-links-config.ts`
+2. **Add FormState field** for `_linkedWorksheets`
+3. **Import WorksheetLinkSelector** component
+4. **Add handler** for `handleLinkedWorksheetChange`
+
+### LinkedWorksheetRef Structure
+
+```tsx
+interface LinkedWorksheetRef {
+  worksheetId: string;      // ID of linked worksheet
+  syncedAt: string;         // ISO timestamp of last sync
+  syncedData: Record<string, unknown>;  // Cached synced field values
+}
+```
+
+### Current Tool Connections
+
+| Tool | Can Link To |
+|------|-------------|
+| Evolutionary Biology | Planetary Profile, ECR |
+| Xenomythology | Planetary Profile, ECR, Evolutionary Biology |
+| Spacecraft Designer | Propulsion Consequences Map |
+
+---
+
 ## Required External Resources
 
 Each tool should have 2-4 external resources for users to reference:
@@ -372,17 +474,33 @@ Each tool should have 2-4 external resources for users to reference:
 
 ## Checklist for New Tools
 
+### Core Setup
 - [ ] Create data file: `src/lib/{tool-name}-data.ts`
 - [ ] Create tool page: `src/pages/tools/{ToolName}.tsx`
-- [ ] Add route in `App.tsx`
+- [ ] Add route in `App.tsx` (with `ProToolGuard` if Pro tool)
+
+### Homepage & Navigation
 - [ ] Add to `Index.tsx` tools array
+- [ ] **Add to `src/lib/tools-config.ts`** (FREE_TOOL_IDS or PRO_TOOL_IDS) - REQUIRED for lock/unlock badges
 - [ ] Add to `WorldDashboard.tsx` TOOLS array
 - [ ] Add placeholder in `WorksheetSelectorDialog.tsx`
+
+### PDF Export
 - [ ] Create `{ToolName}SummaryTemplate.tsx` PDF template
 - [ ] Create `{ToolName}FullReportTemplate.tsx` PDF template
 - [ ] Export templates from `src/lib/pdf/templates/index.ts`
+
+### Interoperability (if applicable)
+- [ ] Add link configurations in `src/lib/worksheet-links-config.ts`
+- [ ] Add `_linkedWorksheets` field to FormState
+- [ ] Implement `WorksheetLinkSelector` in Foundations section
+- [ ] Add tool to `TOOL_DISPLAY_NAMES` in worksheet-links-config.ts
+
+### Testing
 - [ ] Test cloud save/load with worksheet
 - [ ] Test local storage fallback
 - [ ] Test PDF export (both templates)
 - [ ] Verify mobile responsiveness
 - [ ] Verify print styling
+- [ ] Verify Pro/Free badge shows correctly on homepage
+- [ ] Test worksheet linking (if applicable)
