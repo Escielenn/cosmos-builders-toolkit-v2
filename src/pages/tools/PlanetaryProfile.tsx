@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { ArrowLeft, Download, Save, ChevronDown, ChevronUp, Info, ExternalLink, Printer, Cloud, CloudOff, Check, AlertCircle, FileText } from "lucide-react";
+import { ArrowLeft, Download, Save, Info, ExternalLink, Printer, Cloud, CloudOff, Check, AlertCircle, FileText, ChevronDown } from "lucide-react";
 import Header from "@/components/layout/Header";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
@@ -11,15 +11,16 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import CollapsibleSection from "@/components/tools/CollapsibleSection";
 import { useToast } from "@/hooks/use-toast";
 import { useBackground } from "@/hooks/use-background";
 import { useWorksheets, useWorksheet, useWorksheetsByType } from "@/hooks/use-worksheets";
@@ -234,65 +235,6 @@ const EXTERNAL_RESOURCES = [
   { name: "Habitable Zone Calculator", url: "https://www.planetarybiology.com/calculating_habitable_zone.html", description: "Calculate habitable zones" },
   { name: "Atomic Rockets - Planets", url: "http://www.projectrho.com/public_html/rocket/worldbuilding.php", description: "Hard SF worldbuilding" },
 ];
-
-const CollapsibleSection = ({
-  id,
-  title,
-  subtitle,
-  levelNumber,
-  thinkLike,
-  children,
-  defaultOpen = false,
-}: {
-  id?: string;
-  title: string;
-  subtitle?: string;
-  levelNumber?: number;
-  thinkLike?: string;
-  children: React.ReactNode;
-  defaultOpen?: boolean;
-}) => {
-  const [isOpen, setIsOpen] = useState(defaultOpen);
-
-  return (
-    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-      <GlassPanel id={id} className="overflow-hidden scroll-mt-24">
-        <CollapsibleTrigger asChild>
-          <button className="w-full p-4 md:p-6 flex items-center justify-between text-left hover:bg-primary/5 transition-colors">
-            <div className="flex items-center gap-3">
-              {levelNumber !== undefined && (
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center text-primary-foreground font-bold text-sm">
-                  {levelNumber}
-                </div>
-              )}
-              <div>
-                <h3 className="font-display font-semibold text-lg">{title}</h3>
-                {subtitle && (
-                  <p className="text-sm text-muted-foreground">{subtitle}</p>
-                )}
-              </div>
-            </div>
-            {isOpen ? (
-              <ChevronUp className="w-5 h-5 text-muted-foreground" />
-            ) : (
-              <ChevronDown className="w-5 h-5 text-muted-foreground" />
-            )}
-          </button>
-        </CollapsibleTrigger>
-        <CollapsibleContent>
-          <div className="px-4 md:px-6 pb-6 space-y-6">
-            {thinkLike && (
-              <p className="text-sm text-primary italic border-l-2 border-primary pl-3">
-                Think like {thinkLike}
-              </p>
-            )}
-            {children}
-          </div>
-        </CollapsibleContent>
-      </GlassPanel>
-    </Collapsible>
-  );
-};
 
 const QuestionSection = ({
   id,
