@@ -9,6 +9,7 @@ import {
   Calculator,
   Rocket,
   Sparkles,
+  Dna,
 } from "lucide-react";
 import Header from "@/components/layout/Header";
 import ToolCard from "@/components/dashboard/ToolCard";
@@ -83,12 +84,12 @@ const tools = [
     week: 6,
   },
   {
-    id: "species-creator",
-    title: "Species Creator",
+    id: "evolutionary-biology",
+    title: "Evolutionary Biology Design Sheet",
     description:
-      "Design alien species with consistent biology and evolutionary history.",
-    icon: Users,
-    status: "coming-soon" as const,
+      "Design biologically plausible alien species with 13 comprehensive sections covering biochemistry, body plan, cognition, and psychology.",
+    icon: Dna,
+    status: "available" as const,
     week: 7,
   },
   {

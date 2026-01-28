@@ -12,6 +12,9 @@ import {
   Trash2,
   Dna,
   FileText,
+  ExternalLink,
+  Download,
+  Printer,
 } from "lucide-react";
 import Header from "@/components/layout/Header";
 import { GlassPanel } from "@/components/ui/glass-panel";
@@ -669,55 +672,120 @@ const EvolutionaryBiology = () => {
     </div>
   );
 
+  const handlePrint = () => {
+    window.print();
+  };
+
+  const handleExport = () => {
+    setShowExportDialog(true);
+  };
+
+  const EXTERNAL_RESOURCES = [
+    { name: "Atomic Rockets - Aliens", url: "http://www.projectrho.com/public_html/rocket/aliens.php", description: "Hard SF alien design" },
+    { name: "Speculative Evolution Wiki", url: "https://speculativeevolution.fandom.com/", description: "Community speculative biology" },
+    { name: "Evolution 101", url: "https://evolution.berkeley.edu/evolution-101/", description: "Evolutionary principles" },
+  ];
+
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-background">
       <Header />
 
-      <main className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-          <div className="flex items-center gap-4">
-            <Link to={worldId ? `/worlds/${worldId}` : "/"}>
-              <Button variant="ghost" size="icon">
-                <ArrowLeft className="w-5 h-5" />
-              </Button>
-            </Link>
+      <main className="container mx-auto px-4 pt-24 pb-16">
+        {/* Back Link & Title */}
+        <div className="mb-8">
+          <Link
+            to={worldId ? `/worlds/${worldId}` : "/"}
+            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            {worldId ? "Back to World" : "Back to Dashboard"}
+          </Link>
+
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
-              <div className="flex items-center gap-3">
-                <Dna className="w-6 h-6 text-primary" />
-                <h1 className="text-2xl md:text-3xl font-display font-bold">
-                  {worksheetTitle || TOOL_DISPLAY_NAME}
-                </h1>
-                {worldId && worksheetId && (
-                  <Badge variant="outline" className="gap-1">
-                    <Cloud className="w-3 h-3" />
-                    Cloud
-                  </Badge>
-                )}
-                {!worldId && (
-                  <Badge variant="secondary" className="gap-1">
-                    <CloudOff className="w-3 h-3" />
-                    Local
-                  </Badge>
-                )}
-              </div>
-              {currentWorld && (
-                <p className="text-sm text-muted-foreground mt-1">
-                  {currentWorld.name}
-                </p>
+              <Badge className="mb-2">Tool 7</Badge>
+              <h1 className="font-display text-3xl md:text-4xl font-bold">
+                Evolutionary Biology Design Sheet
+              </h1>
+              {worksheetTitle && (
+                <div className="flex items-center gap-2 mt-1">
+                  <FileText className="w-4 h-4 text-primary" />
+                  <span className="text-lg font-medium text-primary">{worksheetTitle}</span>
+                </div>
               )}
+              <p className="text-muted-foreground mt-2 max-w-2xl">
+                Design biologically plausible alien species by tracing every trait back to evolutionary pressures.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2 no-print">
+              {worldId && user ? (
+                <span className="text-xs text-muted-foreground flex items-center gap-1">
+                  <Cloud className="w-3 h-3 text-green-500" />
+                  Cloud sync enabled
+                </span>
+              ) : (
+                <span className="text-xs text-muted-foreground flex items-center gap-1">
+                  <CloudOff className="w-3 h-3" />
+                  Local only
+                </span>
+              )}
+              <Button variant="outline" size="sm" onClick={handleSave} disabled={!worksheetId}>
+                <Save className="w-4 h-4 mr-2" />
+                Save Draft
+              </Button>
+              <Button variant="outline" size="sm" onClick={handlePrint}>
+                <Printer className="w-4 h-4 mr-2" />
+                Print
+              </Button>
+              <Button size="sm" onClick={handleExport}>
+                <Download className="w-4 h-4 mr-2" />
+                Export
+              </Button>
             </div>
           </div>
         </div>
+
+        {/* Introduction */}
+        <GlassPanel glow className="p-6 md:p-8 mb-8">
+          <h2 className="font-display text-xl font-semibold mb-4 gradient-text">
+            Building Believable Biology
+          </h2>
+          <blockquote className="border-l-2 border-primary pl-4 italic text-lg mb-4">
+            "Every trait is a solution to a problem. Every solution creates new problems."
+          </blockquote>
+          <p className="text-muted-foreground mb-4">
+            This tool helps you design alien species where biology emerges from environment, and psychology emerges from biology. Start with the survival pressures your world creates, then trace their consequences through biochemistry, body plan, sensory systems, reproduction, social structure, cognition, and psychology.
+          </p>
+          <div className="text-sm text-muted-foreground mb-4">
+            <strong className="text-foreground">The Evolutionary Cascade:</strong>
+            <p className="mt-1">Environment → Survival Pressures → Biochemistry → Body Plan → Sensory Systems → Reproduction → Social Structure → Cognition → Communication → Psychology</p>
+          </div>
+
+          {/* External Resources */}
+          <div className="mt-6 pt-4 border-t border-border">
+            <h4 className="text-sm font-medium mb-3">Reference Resources</h4>
+            <div className="flex flex-wrap gap-2">
+              {EXTERNAL_RESOURCES.map((resource) => (
+                <a
+                  key={resource.name}
+                  href={resource.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-xs px-3 py-1.5 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+                >
+                  {resource.name}
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+              ))}
+            </div>
+          </div>
+        </GlassPanel>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Main Content */}
           <div className="lg:col-span-3 space-y-6">
             <GlassPanel className="p-6">
-              <p className="text-muted-foreground mb-6">
-                Design biologically plausible alien species by tracing every trait back to
-                evolutionary pressures. Start with the environment and work outward.
-              </p>
 
               {/* Section 1: Foundations */}
               <CollapsibleSection
