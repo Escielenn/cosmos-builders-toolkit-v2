@@ -1,0 +1,1 @@
+export { generateDocx } from "./generator";

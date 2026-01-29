@@ -41,8 +41,6 @@ import WorldHeader from "@/components/world/WorldHeader";
 import WorldNotes from "@/components/world/WorldNotes";
 import IconPicker from "@/components/world/IconPicker";
 import HeaderImageUpload from "@/components/world/HeaderImageUpload";
-import { useBackground } from "@/hooks/use-background";
-
 const TOOLS = [
   {
     id: "environmental-chain-reaction",
@@ -131,9 +129,6 @@ const WorldDashboard = () => {
     acc[type].push(worksheet);
     return acc;
   }, {} as Record<string, typeof worksheets>);
-
-  // Initialize background
-  useBackground();
 
   // Sync edit form with world data
   useEffect(() => {

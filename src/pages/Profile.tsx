@@ -12,7 +12,6 @@ import { Loader2, Save, ArrowLeft, Upload, Crown, Calendar, CreditCard, AlertCir
 import { useToast } from "@/hooks/use-toast";
 import { useSubscription } from "@/hooks/use-subscription";
 import { Badge } from "@/components/ui/badge";
-import { useBackground } from "@/hooks/use-background";
 import { supabase } from "@/integrations/supabase/client";
 
 const Profile = () => {
@@ -27,8 +26,6 @@ const Profile = () => {
   const [avatarUrl, setAvatarUrl] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
-  
-  useBackground();
 
   useEffect(() => {
     if (!loading && !user) {

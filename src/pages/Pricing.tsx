@@ -5,13 +5,11 @@ import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Check, Crown, Loader2, Sparkles } from "lucide-react";
-import { useBackground } from "@/hooks/use-background";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSubscription } from "@/hooks/use-subscription";
 import { useToast } from "@/hooks/use-toast";
 
 const Pricing = () => {
-  useBackground();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { user } = useAuth();

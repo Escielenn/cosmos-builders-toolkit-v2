@@ -16,7 +16,6 @@ import ToolCard from "@/components/dashboard/ToolCard";
 import WorldCard from "@/components/dashboard/WorldCard";
 import CreateWorldButton from "@/components/dashboard/CreateWorldButton";
 import { GlassPanel } from "@/components/ui/glass-panel";
-import { useBackground } from "@/hooks/use-background";
 import { useAuth } from "@/contexts/AuthContext";
 import { useWorlds } from "@/hooks/use-worlds";
 import { useSubscription } from "@/hooks/use-subscription";
@@ -112,9 +111,6 @@ const tools = [
 ];
 
 const Index = () => {
-  // Initialize background hook to apply stored preference
-  useBackground();
-
   const { user } = useAuth();
   const { worlds, isLoading, deleteWorld } = useWorlds();
   const { isSubscribed } = useSubscription();

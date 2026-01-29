@@ -10,8 +10,6 @@ import { Rocket, LogIn, UserPlus, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
 import { Link } from "react-router-dom";
-import { useBackground } from "@/hooks/use-background";
-
 const emailSchema = z.string().email("Please enter a valid email address");
 const passwordSchema = z.string().min(6, "Password must be at least 6 characters");
 
@@ -29,9 +27,6 @@ const Auth = () => {
   const { signUp, signIn, signInWithGoogle, user, loading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
-  
-  // Initialize background
-  useBackground();
 
   // Redirect if already authenticated
   useEffect(() => {

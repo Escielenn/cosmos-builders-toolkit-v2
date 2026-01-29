@@ -3,8 +3,6 @@ import { BookOpen, ArrowRight, Calendar } from "lucide-react";
 import Header from "@/components/layout/Header";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Badge } from "@/components/ui/badge";
-import { useBackground } from "@/hooks/use-background";
-
 // This will be populated from Keystatic content
 // For now, we'll use static data that matches the Keystatic schema
 const articles = [
@@ -49,8 +47,6 @@ const categoryColors: Record<string, string> = {
 };
 
 const LearnIndex = () => {
-  useBackground();
-
   const featuredArticles = articles.filter((a) => a.featured);
   const recentArticles = articles.filter((a) => !a.featured);
 

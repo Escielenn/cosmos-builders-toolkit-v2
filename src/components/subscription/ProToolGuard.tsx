@@ -7,7 +7,6 @@ import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
 import { Lock, Crown, Loader2 } from "lucide-react";
 import Header from "@/components/layout/Header";
-import { useBackground } from "@/hooks/use-background";
 
 interface ProToolGuardProps {
   toolId: string;
@@ -15,7 +14,6 @@ interface ProToolGuardProps {
 }
 
 const ProToolGuard = ({ toolId, children }: ProToolGuardProps) => {
-  useBackground();
   const { user, loading: authLoading } = useAuth();
   const { isSubscribed, isLoading: subLoading } = useSubscription();
   const navigate = useNavigate();

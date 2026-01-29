@@ -11,8 +11,6 @@ import {
   ConnectionLegend,
   DrakeContextCard,
 } from "@/components/connections";
-import { useBackground } from "@/hooks/use-background";
-
 // Tool routes for navigation
 const TOOL_ROUTES: Record<string, string> = {
   "planetary-profile": "/tools/planetary-profile",
@@ -25,7 +23,6 @@ const TOOL_ROUTES: Record<string, string> = {
 };
 
 const WorldConnections = () => {
-  useBackground();
   const { worldId } = useParams<{ worldId: string }>();
   const navigate = useNavigate();
   const { worlds } = useWorlds();

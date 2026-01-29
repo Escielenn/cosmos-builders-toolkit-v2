@@ -3,8 +3,6 @@ import { ArrowLeft, Calendar, Tag } from "lucide-react";
 import Header from "@/components/layout/Header";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Badge } from "@/components/ui/badge";
-import { useBackground } from "@/hooks/use-background";
-
 // Temporary: Import MDX content directly
 // Once Keystatic is fully set up, this will read from the content directory
 import DrakeEquationContent from "@/content/learn/drake-equation/content.mdx";
@@ -41,7 +39,6 @@ const categoryColors: Record<string, string> = {
 };
 
 const LearnArticle = () => {
-  useBackground();
   const { slug } = useParams<{ slug: string }>();
 
   const article = slug ? articleMeta[slug] : null;
