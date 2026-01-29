@@ -1,5 +1,4 @@
 import { useState, ReactElement } from "react";
-import { pdf } from "@react-pdf/renderer";
 import { Download, FileText, FileJson, Loader2, Eye, FileType, FileSpreadsheet } from "lucide-react";
 import {
   Dialog,
@@ -15,8 +14,11 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { generateGenericText } from "@/lib/text";
-import { generateDocx } from "@/lib/docx";
+
+// Dynamic imports for heavy libraries - only loaded when actually exporting
+const loadPdfRenderer = () => import("@react-pdf/renderer");
+const loadTextGenerator = () => import("@/lib/text");
+const loadDocxGenerator = () => import("@/lib/docx");
 
 export type ExportFormat = "pdf-summary" | "pdf-full" | "text" | "word" | "json";
 
@@ -79,6 +81,7 @@ const ExportDialog = ({
         }
 
         case "text": {
+          const { generateGenericText } = await loadTextGenerator();
           const textContent = generateGenericText({
             toolName,
             worldName,
@@ -92,6 +95,7 @@ const ExportDialog = ({
         }
 
         case "word": {
+          const { generateDocx } = await loadDocxGenerator();
           await generateDocx({
             toolName,
             worldName,
@@ -113,6 +117,7 @@ const ExportDialog = ({
             });
             return;
           }
+          const { pdf } = await loadPdfRenderer();
           const blob = await pdf(template).toBlob();
           downloadBlob(blob, `${filename}.pdf`);
           toast({
@@ -149,6 +154,7 @@ const ExportDialog = ({
         }
 
         case "text": {
+          const { generateGenericText } = await loadTextGenerator();
           const textContent = generateGenericText({
             toolName,
             worldName,
@@ -179,6 +185,7 @@ const ExportDialog = ({
             });
             return;
           }
+          const { pdf } = await loadPdfRenderer();
           const blob = await pdf(template).toBlob();
           window.open(URL.createObjectURL(blob), "_blank");
           break;
