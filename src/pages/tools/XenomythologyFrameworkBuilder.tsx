@@ -14,6 +14,8 @@ import {
   Sparkles,
   Link2,
   FileText,
+  Dna,
+  X,
 } from "lucide-react";
 import Header from "@/components/layout/Header";
 import { GlassPanel } from "@/components/ui/glass-panel";
@@ -42,7 +44,9 @@ import ToolActionBar from "@/components/tools/ToolActionBar";
 import SelectedParametersSidebar from "@/components/tools/SelectedParametersSidebar";
 import SuggestedImplications from "@/components/tools/SuggestedImplications";
 import ImportFromECRModal from "@/components/tools/ImportFromECRModal";
+import SpeciesLinkModal from "@/components/tools/SpeciesLinkModal";
 import ExportDialog from "@/components/tools/ExportDialog";
+import { applyMappedFields, type MappedField } from "@/lib/field-mappings";
 import { XenomythologySummaryTemplate, XenomythologyFullReportTemplate } from "@/lib/pdf/templates";
 import { useWorlds } from "@/hooks/use-worlds";
 import { generateImplications, type Implication } from "@/lib/xenomythology-implications";
@@ -268,6 +272,11 @@ interface FormState {
   _linkedWorksheets?: {
     ecrWorksheetId?: string;
     lastSyncedAt?: string;
+    species?: {
+      worksheetId: string;
+      speciesName: string;
+      syncedAt: string;
+    };
   };
 }
 
@@ -656,6 +665,10 @@ const XenomythologyFrameworkBuilder = () => {
   const [showECRImport, setShowECRImport] = useState(false);
   const ecrWorksheets = worksheets.filter(w => w.tool_type === "environmental-chain-reaction");
 
+  // Species integration state
+  const [showSpeciesLink, setShowSpeciesLink] = useState(false);
+  const evoBioWorksheets = worksheets.filter(w => w.tool_type === "evolutionary-biology");
+
   // Load existing worksheet from Supabase if worksheetId is provided
   useEffect(() => {
     if (existingWorksheet && existingWorksheet.data) {
@@ -940,6 +953,51 @@ const XenomythologyFrameworkBuilder = () => {
 
   const handlePrint = () => {
     window.print();
+  };
+
+  // Handler for species import from EvoBio
+  const handleSpeciesImport = (
+    mappedFields: MappedField[],
+    worksheetId: string,
+    speciesName: string
+  ) => {
+    // Apply mapped fields to current form state
+    const updatedState = applyMappedFields(
+      formState as unknown as Record<string, unknown>,
+      mappedFields,
+      new Set(mappedFields.map(f => f.target))
+    ) as unknown as FormState;
+
+    // Store the species link reference
+    updatedState._linkedWorksheets = {
+      ...updatedState._linkedWorksheets,
+      species: {
+        worksheetId,
+        speciesName,
+        syncedAt: new Date().toISOString(),
+      },
+    };
+
+    setFormState(updatedState);
+    toast({
+      title: "Species Linked",
+      description: `Imported ${mappedFields.filter(f => f.value).length} fields from "${speciesName}"`,
+    });
+  };
+
+  // Handler for unlinking species
+  const handleUnlinkSpecies = () => {
+    setFormState(prev => ({
+      ...prev,
+      _linkedWorksheets: {
+        ...prev._linkedWorksheets,
+        species: undefined,
+      },
+    }));
+    toast({
+      title: "Species Unlinked",
+      description: "The species link has been removed.",
+    });
   };
 
   // Helper to get challenge name from ID
@@ -1333,6 +1391,14 @@ const XenomythologyFrameworkBuilder = () => {
             </div>
 
             <div className="flex items-center gap-2 no-print flex-wrap">
+              {/* Linked Species indicator */}
+              {formState._linkedWorksheets?.species && (
+                <Badge variant="secondary" className="text-xs bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                  <Dna className="w-3 h-3 mr-1" />
+                  {formState._linkedWorksheets.species.speciesName}
+                </Badge>
+              )}
+
               {/* Linked ECR indicator */}
               {formState._linkedWorksheets?.ecrWorksheetId && (
                 <Badge variant="secondary" className="text-xs bg-blue-500/10 text-blue-600 dark:text-blue-400">
@@ -1351,6 +1417,19 @@ const XenomythologyFrameworkBuilder = () => {
                   <CloudOff className="w-3 h-3" />
                   Local only
                 </span>
+              )}
+
+              {/* Species Link button - only show if in a world */}
+              {worldId && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowSpeciesLink(true)}
+                  className={formState._linkedWorksheets?.species ? "border-emerald-500/50" : ""}
+                >
+                  <Dna className="w-4 h-4 mr-2" />
+                  {formState._linkedWorksheets?.species ? "Change Species" : "Link Species"}
+                </Button>
               )}
 
               {/* ECR Import button - only show if there are ECR worksheets */}
@@ -2677,6 +2756,17 @@ const XenomythologyFrameworkBuilder = () => {
         worksheets={ecrWorksheets}
         onImport={handleECRImport}
       />
+
+      {/* Species Link Modal */}
+      {worldId && (
+        <SpeciesLinkModal
+          open={showSpeciesLink}
+          onOpenChange={setShowSpeciesLink}
+          worldId={worldId}
+          onImport={handleSpeciesImport}
+          currentLinkedWorksheetId={formState._linkedWorksheets?.species?.worksheetId}
+        />
+      )}
 
       {/* Export Dialog */}
       <ExportDialog

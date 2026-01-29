@@ -20,6 +20,7 @@ import EvolutionaryBiology from "./pages/tools/EvolutionaryBiology";
 import LearnIndex from "./pages/learn/LearnIndex";
 import LearnArticle from "./pages/learn/LearnArticle";
 import Features from "./pages/Features";
+import WorldConnections from "./pages/WorldConnections";
 import ProToolGuard from "./components/subscription/ProToolGuard";
 import ScrollToTop from "./components/ScrollToTop";
 
@@ -40,6 +41,7 @@ const App = () => (
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/features" element={<Features />} />
             <Route path="/worlds/:worldId" element={<WorldDashboard />} />
+            <Route path="/worlds/:worldId/connections" element={<WorldConnections />} />
             {/* Free Tools */}
             <Route path="/tools/environmental-chain-reaction" element={<EnvironmentalChainReaction />} />
             <Route path="/tools/propulsion-consequences-map" element={<PropulsionConsequencesMap />} />

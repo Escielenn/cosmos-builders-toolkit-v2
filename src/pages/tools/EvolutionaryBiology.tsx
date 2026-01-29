@@ -135,6 +135,9 @@ interface VestigialTraitEntry {
 }
 
 interface FormState {
+  // Species Identity
+  speciesName: string;
+
   // Section 1: Foundations
   foundations: {
     primarySurvivalPressures: string[];
@@ -277,6 +280,7 @@ interface FormState {
 }
 
 const DEFAULT_FORM_STATE: FormState = {
+  speciesName: "",
   foundations: {
     primarySurvivalPressures: [],
     extremophileInspiration: "",
@@ -675,11 +679,15 @@ const EvolutionaryBiology = () => {
 
     return [
       {
-        id: "linked",
-        title: "Linked Worksheets",
+        id: "identity",
+        title: "Species Identity",
         choices: [
           {
-            label: "Planet",
+            label: "Species Name",
+            value: formState.speciesName || undefined,
+          },
+          {
+            label: "Home Planet",
             value: formState._linkedWorksheets?.planet?.syncedData?.title as string | undefined,
           },
           {
@@ -878,21 +886,38 @@ const EvolutionaryBiology = () => {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Main Content */}
           <div className="lg:col-span-3 space-y-6">
+            {/* Species Identity Panel */}
             <GlassPanel className="p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-lg bg-emerald-500/20 flex items-center justify-center">
+                  <Dna className="w-5 h-5 text-emerald-500" />
+                </div>
+                <div>
+                  <h2 className="font-display text-lg uppercase tracking-wider">Species Identity</h2>
+                  <p className="text-xs text-muted-foreground">Name your species and link to environmental context</p>
+                </div>
+              </div>
 
-              {/* Section 1: Foundations */}
-              <CollapsibleSection
-                id="section-foundations"
-                title="1. Foundations"
-                guidance={SECTION_GUIDANCE.foundations}
-                variant="minimal"
-                open={expandedSections.has("section-foundations")}
-                onOpenChange={() => toggleSection("section-foundations")}
-              >
-                {/* Worksheet Links */}
+              <div className="space-y-4">
+                {/* Species Name */}
+                <div className="space-y-2">
+                  <Label htmlFor="species-name" className="text-sm font-medium">Species Name</Label>
+                  <Input
+                    id="species-name"
+                    placeholder="Enter species name (e.g., 'Therapsid Collective', 'Crystalline Singers')"
+                    value={formState.speciesName}
+                    onChange={(e) => setFormState(prev => ({ ...prev, speciesName: e.target.value }))}
+                    className="text-lg"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Give your species a distinctive name that reflects their nature or culture.
+                  </p>
+                </div>
+
+                {/* Planet Link - only show if in a world */}
                 {worldId && (
-                  <div className="space-y-4 p-4 rounded-lg border border-border/50 bg-muted/20">
-                    <h4 className="font-medium text-sm">Link to Existing Worksheets</h4>
+                  <div className="pt-4 border-t border-border/50">
+                    <h4 className="text-sm font-medium mb-3">Environmental Context</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {linkConfigs.map((config) => (
                         <WorksheetLinkSelector
@@ -907,9 +932,30 @@ const EvolutionaryBiology = () => {
                         />
                       ))}
                     </div>
+                    {(formState._linkedWorksheets?.planet || formState._linkedWorksheets?.ecr) && (
+                      <div className="mt-3 p-3 bg-muted/30 rounded-lg">
+                        <p className="text-xs text-muted-foreground">
+                          <span className="text-emerald-500 font-medium">Linked data</span> from your planet and environment worksheets
+                          will help inform evolutionary pressures and biological constraints.
+                        </p>
+                      </div>
+                    )}
                   </div>
                 )}
+              </div>
+            </GlassPanel>
 
+            <GlassPanel className="p-6">
+
+              {/* Section 1: Foundations */}
+              <CollapsibleSection
+                id="section-foundations"
+                title="1. Foundations"
+                guidance={SECTION_GUIDANCE.foundations}
+                variant="minimal"
+                open={expandedSections.has("section-foundations")}
+                onOpenChange={() => toggleSection("section-foundations")}
+              >
                 <div className="space-y-2">
                   <Label>Primary Survival Pressures</Label>
                   <p className="text-xs text-muted-foreground mb-3">
