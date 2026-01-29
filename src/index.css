@@ -498,6 +498,59 @@
       transform: scaleX(1);
     }
   }
+
+  /* Floating card animation for showcase mockups */
+  @keyframes float-card {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-8px);
+    }
+  }
+
+  /* Slider animation for Drake mockup */
+  @keyframes slide-value {
+    0%, 100% {
+      width: 30%;
+    }
+    50% {
+      width: 80%;
+    }
+  }
+
+  /* Counter animation for numeric values */
+  @keyframes pulse-value {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.05);
+    }
+  }
+
+  /* Cascade flow animation for ECR mockup */
+  @keyframes cascade-glow {
+    0% {
+      opacity: 0.3;
+    }
+    50% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0.3;
+    }
+  }
+
+  /* Orbit animation for planetary mockup */
+  @keyframes orbit {
+    from {
+      transform: rotate(0deg) translateX(60px) rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg) translateX(60px) rotate(-360deg);
+    }
+  }
 }
 
 /* Print styles - comprehensive worksheet formatting */

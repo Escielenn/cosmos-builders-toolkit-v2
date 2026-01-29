@@ -88,6 +88,14 @@ const Header = () => {
                 Tools
               </a>
               <Link
+                to="/features"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
+              >
+                <Sparkles className="w-5 h-5" />
+                Features
+              </Link>
+              <Link
                 to="/learn"
                 onClick={() => setMobileMenuOpen(false)}
                 className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
@@ -148,6 +156,12 @@ const Header = () => {
           >
             Tools
           </a>
+          <Link
+            to="/features"
+            className="text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground hover:text-primary transition-colors duration-300"
+          >
+            Features
+          </Link>
           <Link
             to="/learn"
             className="text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground hover:text-primary transition-colors duration-300"

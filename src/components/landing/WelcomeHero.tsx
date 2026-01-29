@@ -1,4 +1,4 @@
-import { Rocket, BookOpen, Sparkles } from "lucide-react";
+import { Rocket, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -35,9 +35,9 @@ const WelcomeHero = () => {
           </Link>
         </Button>
         <Button variant="outline" size="lg" className="gap-2 text-base px-8" asChild>
-          <Link to="/learn">
-            <BookOpen className="w-5 h-5" />
-            Learn More
+          <Link to="/features">
+            <Sparkles className="w-5 h-5" />
+            See Features
           </Link>
         </Button>
       </div>

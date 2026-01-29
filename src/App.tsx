@@ -19,6 +19,7 @@ import XenomythologyFrameworkBuilder from "./pages/tools/XenomythologyFrameworkB
 import EvolutionaryBiology from "./pages/tools/EvolutionaryBiology";
 import LearnIndex from "./pages/learn/LearnIndex";
 import LearnArticle from "./pages/learn/LearnArticle";
+import Features from "./pages/Features";
 import ProToolGuard from "./components/subscription/ProToolGuard";
 import ScrollToTop from "./components/ScrollToTop";
 
@@ -37,6 +38,7 @@ const App = () => (
             <Route path="/auth" element={<Auth />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/pricing" element={<Pricing />} />
+            <Route path="/features" element={<Features />} />
             <Route path="/worlds/:worldId" element={<WorldDashboard />} />
             {/* Free Tools */}
             <Route path="/tools/environmental-chain-reaction" element={<EnvironmentalChainReaction />} />
