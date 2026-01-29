@@ -699,9 +699,9 @@ const XenomythologyFrameworkBuilder = () => {
         id: "species",
         title: "1. Species Bio",
         choices: [
-          { label: "Senses", value: formState.speciesFoundation.primarySenses.length > 0 ? `${formState.speciesFoundation.primarySenses.length} selected` : undefined },
-          { label: "Body Plan", value: getOptionName(formState.speciesFoundation.bodyPlan, BODY_PLANS) || undefined },
-          { label: "Consciousness", value: getOptionName(formState.speciesFoundation.consciousnessType, CONSCIOUSNESS_TYPES) || undefined },
+          { label: "Senses", value: formState.sensoryArchitecture.primaryModalities.length > 0 ? `${formState.sensoryArchitecture.primaryModalities.length} selected` : undefined },
+          { label: "Body Plan", value: getOptionName(formState.physicalForm.bodyPlan, BODY_PLANS) || undefined },
+          { label: "Consciousness", value: getOptionName(formState.cognitiveArchitecture.consciousnessType, CONSCIOUSNESS_TYPES) || undefined },
         ],
       },
       {
@@ -722,23 +722,23 @@ const XenomythologyFrameworkBuilder = () => {
         id: "cosmos",
         title: "4. Cosmological",
         choices: [
-          { label: "Creation Myth", value: formState.cosmologicalFramework.creationMyth ? "Defined" : undefined },
-          { label: "Afterlife", value: formState.cosmologicalFramework.afterlifeModel ? "Defined" : undefined },
+          { label: "Creation Myth", value: formState.creationNarrative.fullNarrative ? "Defined" : undefined },
+          { label: "Eschatology", value: formState.deathPractices.cosmicEschatology ? "Defined" : undefined },
         ],
       },
       {
         id: "ritual",
         title: "5. Ritual",
         choices: [
-          { label: "Key Rituals", value: formState.ritualPractices.keyRituals.length > 0 ? `${formState.ritualPractices.keyRituals.length} defined` : undefined },
+          { label: "Functions", value: formState.ritualStructure.primaryFunctions.length > 0 ? `${formState.ritualStructure.primaryFunctions.length} defined` : undefined },
         ],
       },
       {
         id: "synthesis",
         title: "6. Synthesis",
         choices: [
-          { label: "Core Tension", value: formState.synthesis.coreTension ? "Defined" : undefined },
-          { label: "Story Seeds", value: formState.synthesis.storySeeds ? "Defined" : undefined },
+          { label: "Core Tension", value: formState.mythicCycles.unresolvedTension ? "Defined" : undefined },
+          { label: "Ethics", value: formState.synthesis.ethicalVirtues ? "Defined" : undefined },
         ],
       },
     ];
