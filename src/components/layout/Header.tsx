@@ -46,7 +46,7 @@ const Header = () => {
             className="w-10 h-10 rounded-lg"
           />
           <div className="flex flex-col">
-            <span className="font-sans font-semibold text-lg leading-tight tracking-widest text-white uppercase">
+            <span className="font-display font-light text-lg leading-tight tracking-sf-wide text-white uppercase">
               STELLARFORGE
             </span>
             <span className="text-xs text-muted-foreground tracking-wide">Forge the Future</span>
@@ -65,7 +65,7 @@ const Header = () => {
             <SheetHeader className="text-left">
               <SheetTitle className="flex items-center gap-3">
                 <img src="/logo.png" alt="STELLARFORGE" className="w-8 h-8 rounded-lg" />
-                <span className="font-sans font-semibold tracking-widest text-white uppercase">
+                <span className="font-display font-light tracking-sf-wide text-white uppercase">
                   STELLARFORGE
                 </span>
               </SheetTitle>
@@ -134,37 +134,38 @@ const Header = () => {
           </SheetContent>
         </Sheet>
 
-        <nav className="hidden md:flex items-center gap-6">
+        {/* Desktop Navigation - StellarForge typography: uppercase, letter-spaced, light weight */}
+        <nav className="hidden md:flex items-center gap-8">
           <a
             href="/#worlds"
-            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            className="text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground hover:text-primary transition-colors duration-300"
           >
-            My Worlds
+            Worlds
           </a>
           <a
             href="/#tools"
-            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            className="text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground hover:text-primary transition-colors duration-300"
           >
             Tools
           </a>
           <Link
             to="/learn"
-            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            className="text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground hover:text-primary transition-colors duration-300"
           >
             Learn
           </Link>
           <Link
             to="/pricing"
-            className={`text-sm font-medium transition-colors ${
+            className={`text-xs font-medium uppercase tracking-[0.15em] transition-colors duration-300 ${
               isSubscribed
-                ? "text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 flex items-center gap-1"
-                : "text-muted-foreground hover:text-foreground"
+                ? "text-amber-600 dark:text-amber-400 hover:text-amber-300 flex items-center gap-1.5"
+                : "text-muted-foreground hover:text-primary"
             }`}
           >
             {isSubscribed ? (
               <>
-                <Crown className="w-4 h-4" />
-                Pro Active
+                <Crown className="w-3.5 h-3.5" />
+                Pro
               </>
             ) : (
               "Pricing"

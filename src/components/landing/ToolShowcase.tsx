@@ -82,7 +82,7 @@ const ToolPreviewCard = ({ id, title, description, status, isPro }: ToolPreviewC
   const CustomIcon = getToolIcon(id);
 
   return (
-    <GlassPanel className={`p-5 h-full ${isPro ? 'opacity-90' : ''}`}>
+    <GlassPanel lightArc className={`p-5 h-full ${isPro ? 'opacity-90' : ''}`}>
       <div className="flex items-start justify-between mb-3">
         {CustomIcon ? (
           <CustomIcon className="w-12 h-12 rounded-lg" />
@@ -108,7 +108,7 @@ const ToolPreviewCard = ({ id, title, description, status, isPro }: ToolPreviewC
           )}
         </div>
       </div>
-      <h3 className="font-display font-semibold mb-2">{title}</h3>
+      <h3 className="font-display font-light text-base mb-2">{title}</h3>
       <p className="text-sm text-muted-foreground line-clamp-2">{description}</p>
     </GlassPanel>
   );
@@ -119,8 +119,8 @@ const ToolShowcase = () => {
     <section className="mb-16">
       {/* Free Tools Section */}
       <div className="mb-12">
-        <div className="flex items-center gap-3 mb-6">
-          <h2 className="font-display text-2xl font-semibold">Free Forever</h2>
+        <div className="flex items-center gap-3 mb-8">
+          <h2 className="font-display font-light text-2xl uppercase tracking-sf-wide">Free Forever</h2>
           <Badge variant="secondary" className="bg-green-500/20 text-green-600 dark:text-green-400">
             <Check className="w-3 h-3 mr-1" />
             3 Tools
@@ -135,8 +135,8 @@ const ToolShowcase = () => {
 
       {/* Pro Tools Section */}
       <div className="mb-8">
-        <div className="flex items-center gap-3 mb-6">
-          <h2 className="font-display text-2xl font-semibold">Pro Tools</h2>
+        <div className="flex items-center gap-3 mb-8">
+          <h2 className="font-display font-light text-2xl uppercase tracking-sf-wide">Pro Tools</h2>
           <Badge variant="secondary" className="bg-amber-500/20 text-amber-600 dark:text-amber-400">
             <Crown className="w-3 h-3 mr-1" />
             6 Tools

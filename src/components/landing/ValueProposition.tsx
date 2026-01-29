@@ -4,8 +4,8 @@ import { GlassPanel } from "@/components/ui/glass-panel";
 const ValueProposition = () => {
   return (
     <section className="mb-16">
-      <GlassPanel glow className="p-8 md:p-12">
-        <h2 className="font-display text-2xl font-semibold text-center mb-8">
+      <GlassPanel glow lightArc className="p-8 md:p-12">
+        <h2 className="font-display font-light text-2xl uppercase tracking-sf-wide text-center mb-10">
           Why StellarForge?
         </h2>
         <div className="grid md:grid-cols-3 gap-8">
@@ -13,7 +13,7 @@ const ValueProposition = () => {
             <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 mx-auto md:mx-0">
               <Layers className="w-6 h-6 text-primary" />
             </div>
-            <h3 className="font-display font-semibold text-lg mb-2">
+            <h3 className="font-display font-light text-lg mb-2 uppercase tracking-wider">
               Systematic Worldbuilding
             </h3>
             <p className="text-sm text-muted-foreground">
@@ -25,7 +25,7 @@ const ValueProposition = () => {
             <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center mb-4 mx-auto md:mx-0">
               <Share2 className="w-6 h-6 text-accent" />
             </div>
-            <h3 className="font-display font-semibold text-lg mb-2">
+            <h3 className="font-display font-light text-lg mb-2 uppercase tracking-wider">
               Cross-Tool Integration
             </h3>
             <p className="text-sm text-muted-foreground">
@@ -37,7 +37,7 @@ const ValueProposition = () => {
             <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 mx-auto md:mx-0">
               <FileDown className="w-6 h-6 text-primary" />
             </div>
-            <h3 className="font-display font-semibold text-lg mb-2">
+            <h3 className="font-display font-light text-lg mb-2 uppercase tracking-wider">
               Export Everything
             </h3>
             <p className="text-sm text-muted-foreground">

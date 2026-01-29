@@ -62,58 +62,90 @@
   }
 
   .dark {
-    /* StellarForge Brand - Charcoal/Concrete aesthetic */
-    --background: 0 0% 8%;               /* #141414 charcoal */
-    --foreground: 0 0% 98%;
+    /* ═══════════════════════════════════════════════════════════════════════
+       STELLARFORGE DESIGN SYSTEM — "Light emerging from void"
+       See src/lib/STELLARFORGE-DESIGN-SYSTEM.md for full guidelines
+       ═══════════════════════════════════════════════════════════════════════ */
 
-    --card: 0 0% 11%;                    /* #1c1c1c slightly lighter */
-    --card-foreground: 0 0% 98%;
+    /* Foundation Colors (raw values) */
+    --sf-void: 240 7% 4%;                /* #0D0D0F - deepest background */
+    --sf-surface: 240 5% 8%;             /* #151518 - card/panel bg */
+    --sf-surface-elevated: 240 4% 11%;   /* #1C1C21 - elevated panels */
+    --sf-text-primary: 0 0% 98%;         /* #FAFAFA */
+    --sf-text-muted: 0 0% 44%;           /* #6B6B70 */
+    --sf-text-ghost: 0 0% 24%;           /* #3A3A3F */
 
-    --popover: 0 0% 10%;
-    --popover-foreground: 0 0% 98%;
+    /* Accent Spectrum — use ONE per component as focal point */
+    --sf-cyan: 190 100% 50%;             /* #00D4FF */
+    --sf-magenta: 328 100% 50%;          /* #FF00AA */
+    --sf-violet: 263 74% 63%;            /* #9B5DE5 */
+    --sf-amber: 43 100% 50%;             /* #FFB800 */
+    --sf-emerald: 153 100% 50%;          /* #00FF88 */
+    --sf-crimson: 347 100% 60%;          /* #FF3366 */
+    --sf-azure: 215 100% 65%;            /* #4D9FFF */
+
+    /* Glow variants (for shadows and glows) */
+    --sf-glow-cyan: 190 100% 50% / 0.2;
+    --sf-glow-magenta: 328 100% 50% / 0.2;
+    --sf-glow-amber: 43 100% 50% / 0.2;
+    --sf-glow-emerald: 153 100% 50% / 0.2;
+
+    /* ─────────────────────────────────────────────────────────────────────
+       Semantic Token Mapping (maps SF values to existing tokens)
+       ───────────────────────────────────────────────────────────────────── */
+
+    --background: var(--sf-void);
+    --foreground: var(--sf-text-primary);
+
+    --card: var(--sf-surface);
+    --card-foreground: var(--sf-text-primary);
+
+    --popover: var(--sf-surface);
+    --popover-foreground: var(--sf-text-primary);
 
     /* Primary: Cyan accent */
-    --primary: 187 100% 45%;
+    --primary: var(--sf-cyan);
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 0 0% 14%;
-    --secondary-foreground: 0 0% 98%;
+    --secondary: var(--sf-surface-elevated);
+    --secondary-foreground: var(--sf-text-primary);
 
-    --muted: 0 0% 14%;
-    --muted-foreground: 0 0% 63%;
+    --muted: var(--sf-surface-elevated);
+    --muted-foreground: var(--sf-text-muted);
 
-    /* Accent: Cyan (removing magenta to avoid purple) */
-    --accent: 187 80% 50%;
+    /* Accent: Cyan */
+    --accent: var(--sf-cyan);
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 65% 45%;
+    --destructive: var(--sf-crimson);
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 18%;
-    --input: 0 0% 18%;
-    --ring: 187 100% 45%;
+    --border: var(--sf-text-ghost);
+    --input: var(--sf-text-ghost);
+    --ring: var(--sf-cyan);
 
-    /* Glass morphism tokens - dark mode */
-    --glass: 0 0% 10% / 0.9;
+    /* Glass morphism tokens */
+    --glass: var(--sf-surface) / 0.9;
     --glass-border: 0 0% 100% / 0.08;
-    --glass-glow: 187 100% 45% / 0.15;
+    --glass-glow: var(--sf-glow-cyan);
 
-    /* Accent gradients - dark mode (cyan only, no purple) */
-    --gradient-primary: linear-gradient(135deg, hsl(187 100% 40%), hsl(187 80% 55%));
-    --gradient-subtle: linear-gradient(135deg, hsl(187 100% 45% / 0.1), hsl(187 80% 55% / 0.1));
+    /* Gradients (cyan only - no purple) */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--sf-cyan)), hsl(var(--sf-cyan) / 0.7));
+    --gradient-subtle: linear-gradient(135deg, hsl(var(--sf-cyan) / 0.1), hsl(var(--sf-cyan) / 0.05));
 
-    /* Shadows - dark mode */
+    /* Shadows */
     --shadow-glass: 0 8px 32px hsl(0 0% 0% / 0.4);
-    --shadow-glow: 0 0 40px hsl(187 100% 45% / 0.2);
+    --shadow-glow: 0 0 40px hsl(var(--sf-glow-cyan));
 
-    --sidebar-background: 0 0% 6%;
-    --sidebar-foreground: 0 0% 90%;
-    --sidebar-primary: 187 100% 45%;
+    /* Sidebar */
+    --sidebar-background: var(--sf-void);
+    --sidebar-foreground: var(--sf-text-muted);
+    --sidebar-primary: var(--sf-cyan);
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 0 0% 12%;
-    --sidebar-accent-foreground: 0 0% 98%;
-    --sidebar-border: 0 0% 15%;
-    --sidebar-ring: 187 100% 45%;
+    --sidebar-accent: var(--sf-surface-elevated);
+    --sidebar-accent-foreground: var(--sf-text-primary);
+    --sidebar-border: var(--sf-text-ghost);
+    --sidebar-ring: var(--sf-cyan);
   }
 }
 
@@ -252,12 +284,96 @@
   .starfield-preview::before {
     content: "";
     @apply absolute inset-0 opacity-60;
-    background-image: 
+    background-image:
       radial-gradient(1px 1px at 10px 15px, white, transparent),
       radial-gradient(1px 1px at 20px 35px, white, transparent),
       radial-gradient(1px 1px at 45px 20px, white, transparent),
       radial-gradient(1px 1px at 65px 40px, white, transparent);
     background-size: 100px 50px;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     STELLARFORGE BACKGROUND EFFECTS
+     ═══════════════════════════════════════════════════════════════════════ */
+
+  /* Noise texture overlay - adds tactility to dark backgrounds */
+  .sf-noise {
+    @apply relative;
+  }
+
+  .sf-noise::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  }
+
+  /* Radial accent glow - positioned off-center for depth */
+  .sf-glow-ambient {
+    @apply relative;
+  }
+
+  .sf-glow-ambient::before {
+    content: "";
+    position: fixed;
+    width: 800px;
+    height: 800px;
+    top: -300px;
+    right: -200px;
+    background: radial-gradient(circle, hsl(var(--sf-glow-cyan)) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Light arc motif - StellarForge's signature element */
+  .sf-light-arc {
+    @apply relative;
+  }
+
+  .sf-light-arc::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, hsl(var(--sf-cyan)), transparent);
+  }
+
+  /* Combined atmosphere effect for main containers */
+  .sf-atmosphere {
+    @apply relative;
+  }
+
+  .sf-atmosphere::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse at 70% 20%, hsl(var(--sf-glow-cyan)) 0%, transparent 50%),
+      linear-gradient(180deg, hsl(var(--sf-void)) 0%, hsl(240 7% 3%) 100%);
+  }
+
+  /* StellarForge card with light arc accent */
+  .sf-card {
+    @apply rounded-xl border relative overflow-hidden;
+    background: hsl(var(--sf-surface));
+    border-color: hsl(var(--sf-text-ghost));
+  }
+
+  .sf-card::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, hsl(var(--sf-cyan) / 0.5), transparent);
   }
 }
 
@@ -313,6 +429,73 @@
     }
     50% {
       filter: drop-shadow(0 0 12px hsl(187 100% 45% / 0.8));
+    }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     STELLARFORGE ANIMATION SYSTEM
+     ═══════════════════════════════════════════════════════════════════════ */
+
+  /* Page load reveal sequence - staggered emergence */
+  .sf-reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: sf-emerge 0.8s ease-out forwards;
+  }
+
+  .sf-reveal-1 { animation-delay: 0.1s; }
+  .sf-reveal-2 { animation-delay: 0.2s; }
+  .sf-reveal-3 { animation-delay: 0.3s; }
+  .sf-reveal-4 { animation-delay: 0.4s; }
+  .sf-reveal-5 { animation-delay: 0.5s; }
+  .sf-reveal-6 { animation-delay: 0.6s; }
+  .sf-reveal-7 { animation-delay: 0.7s; }
+  .sf-reveal-8 { animation-delay: 0.8s; }
+
+  @keyframes sf-emerge {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Glow breathe animation for active/live elements */
+  .sf-breathe {
+    animation: sf-breathe 3s ease-in-out infinite;
+  }
+
+  @keyframes sf-breathe {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+  }
+
+  /* Glow pulse for interactive highlights */
+  .sf-glow-pulse {
+    animation: sf-glow-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes sf-glow-pulse {
+    0%, 100% {
+      box-shadow: 0 0 10px hsl(var(--sf-glow-cyan));
+    }
+    50% {
+      box-shadow: 0 0 25px hsl(var(--sf-cyan) / 0.4);
+    }
+  }
+
+  /* Light arc sweep animation (for hero elements) */
+  .sf-arc-sweep::after {
+    animation: sf-arc-sweep 1.2s ease-out forwards;
+  }
+
+  @keyframes sf-arc-sweep {
+    from {
+      opacity: 0;
+      transform: scaleX(0);
+    }
+    to {
+      opacity: 1;
+      transform: scaleX(1);
     }
   }
 }

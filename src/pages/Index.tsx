@@ -124,13 +124,13 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background sf-atmosphere">
       <Header />
       <div className="pt-16">
         <BetaBanner position="top" />
       </div>
 
-      <main className="container mx-auto px-4 pt-8 pb-16">
+      <main className="container mx-auto px-4 pt-8 pb-16 relative z-10">
         {/* Conditional Hero Section */}
         {!user ? (
           <WelcomeHero />
@@ -145,8 +145,8 @@ const Index = () => {
         {/* My Worlds Section - logged-in users only */}
         {user && (
           <section id="worlds" className="mb-16 scroll-mt-24">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="font-display text-2xl font-semibold">My Worlds</h2>
+            <div className="flex items-center justify-between mb-8">
+              <h2 className="font-display font-light text-2xl uppercase tracking-sf-wide">My Worlds</h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <CreateWorldButton />
@@ -184,8 +184,8 @@ const Index = () => {
         {/* Worldbuilding Tools Section - logged-in users only (non-logged-in see ToolShowcase) */}
         {user && (
           <section id="tools" className="mb-16 scroll-mt-24">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="font-display text-2xl font-semibold">
+            <div className="flex items-center justify-between mb-8">
+              <h2 className="font-display font-light text-2xl uppercase tracking-sf-wide">
                 Worldbuilding Tools
               </h2>
             </div>
@@ -202,13 +202,13 @@ const Index = () => {
         {/* Features Section - logged-in users only (non-logged-in see ValueProposition) */}
         {user && (
           <section>
-            <GlassPanel glow className="p-8 md:p-12">
+            <GlassPanel glow lightArc className="p-8 md:p-12">
               <div className="grid md:grid-cols-3 gap-8">
                 <div className="text-center md:text-left">
                   <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 mx-auto md:mx-0">
                     <Shield className="w-6 h-6 text-primary" />
                   </div>
-                  <h3 className="font-display font-semibold text-lg mb-2">
+                  <h3 className="font-display font-light text-lg mb-2 uppercase tracking-wider">
                     Cross-Tool Integration
                   </h3>
                   <p className="text-sm text-muted-foreground">
@@ -220,7 +220,7 @@ const Index = () => {
                   <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center mb-4 mx-auto md:mx-0">
                     <BookOpen className="w-6 h-6 text-accent" />
                   </div>
-                  <h3 className="font-display font-semibold text-lg mb-2">
+                  <h3 className="font-display font-light text-lg mb-2 uppercase tracking-wider">
                     Export & Print
                   </h3>
                   <p className="text-sm text-muted-foreground">
@@ -232,7 +232,7 @@ const Index = () => {
                   <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 mx-auto md:mx-0">
                     <Users className="w-6 h-6 text-primary" />
                   </div>
-                  <h3 className="font-display font-semibold text-lg mb-2">
+                  <h3 className="font-display font-light text-lg mb-2 uppercase tracking-wider">
                     Shareable Links
                   </h3>
                   <p className="text-sm text-muted-foreground">

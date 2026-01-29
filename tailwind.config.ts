@@ -58,14 +58,18 @@ export default {
           ring: "hsl(var(--sidebar-ring))",
         },
         glass: "hsl(var(--glass))",
-        // StellarForge brand accent colors
-        brand: {
-          cyan: "#00E5E5",
-          magenta: "#FF00FF",
-          orange: "#FF6B35",
-          green: "#00FF88",
-          teal: "#00CED1",
-          purple: "#A855F7",
+        // StellarForge accent spectrum (use ONE per component as focal point)
+        sf: {
+          void: "hsl(var(--sf-void))",
+          surface: "hsl(var(--sf-surface))",
+          "surface-elevated": "hsl(var(--sf-surface-elevated))",
+          cyan: "hsl(var(--sf-cyan))",
+          magenta: "hsl(var(--sf-magenta))",
+          violet: "hsl(var(--sf-violet))",
+          amber: "hsl(var(--sf-amber))",
+          emerald: "hsl(var(--sf-emerald))",
+          crimson: "hsl(var(--sf-crimson))",
+          azure: "hsl(var(--sf-azure))",
         },
       },
       borderRadius: {
@@ -74,9 +78,21 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       fontFamily: {
-        sans: ["Inter", "system-ui", "sans-serif"],
-        display: ["Space Grotesk", "Inter", "system-ui", "sans-serif"],
+        // StellarForge Design System fonts (Inter is forbidden)
+        sans: ["DM Sans", "system-ui", "sans-serif"],
+        display: ["Space Grotesk", "system-ui", "sans-serif"],
         mono: ["JetBrains Mono", "monospace"],
+      },
+      letterSpacing: {
+        // StellarForge typography spacing
+        "sf-wide": "0.2em",   // Standard uppercase headlines
+        "sf-ultra": "0.4em",  // Hero/display text
+      },
+      fontWeight: {
+        // StellarForge uses extremes: ultralight (300) vs medium (500)
+        "sf-light": "300",
+        "sf-normal": "400",
+        "sf-medium": "500",
       },
       keyframes: {
         "accordion-down": {
