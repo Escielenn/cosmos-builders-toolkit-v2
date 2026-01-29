@@ -1,5 +1,7 @@
 import { useState, ReactElement } from "react";
-import { Download, FileText, FileJson, Loader2, Eye, FileType, FileSpreadsheet } from "lucide-react";
+import { Download, FileText, FileJson, Loader2, Eye, FileType, FileSpreadsheet, ExternalLink, Unplug } from "lucide-react";
+import { useNotion } from "@/hooks/use-notion";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   Dialog,
   DialogContent,
@@ -20,7 +22,7 @@ const loadPdfRenderer = () => import("@react-pdf/renderer");
 const loadTextGenerator = () => import("@/lib/text");
 const loadDocxGenerator = () => import("@/lib/docx");
 
-export type ExportFormat = "pdf-summary" | "pdf-full" | "text" | "word" | "json";
+export type ExportFormat = "pdf-summary" | "pdf-full" | "text" | "word" | "json" | "notion";
 
 interface ExportDialogProps {
   open: boolean;
@@ -46,6 +48,8 @@ const ExportDialog = ({
   defaultFilename = "export",
 }: ExportDialogProps) => {
   const { toast } = useToast();
+  const { user } = useAuth();
+  const { connection, isConnected, isConnecting, isExporting, connect, disconnect, exportToNotion } = useNotion();
   const [format, setFormat] = useState<ExportFormat>("pdf-summary");
   const [filename, setFilename] = useState(defaultFilename);
   const [includeWorldName, setIncludeWorldName] = useState(true);
@@ -64,6 +68,8 @@ const ExportDialog = ({
         return "docx";
       case "json":
         return "json";
+      case "notion":
+        return "";
     }
   };
 
@@ -124,6 +130,40 @@ const ExportDialog = ({
             title: "PDF Generated",
             description: `${format === "pdf-summary" ? "Summary" : "Full report"} PDF downloaded.`,
           });
+          break;
+        }
+
+        case "notion": {
+          if (!isConnected) {
+            toast({
+              title: "Notion not connected",
+              description: "Please connect your Notion workspace first.",
+              variant: "destructive",
+            });
+            return;
+          }
+          const result = await exportToNotion({
+            toolName,
+            worldName,
+            worksheetTitle,
+            data: formState as Record<string, unknown>,
+          });
+          if (result.success) {
+            toast({
+              title: "Exported to Notion",
+              description: "Your worksheet has been created in Notion.",
+            });
+            if (result.pageUrl) {
+              window.open(result.pageUrl, "_blank");
+            }
+          } else {
+            toast({
+              title: "Export failed",
+              description: result.error || "Failed to export to Notion.",
+              variant: "destructive",
+            });
+            return;
+          }
           break;
         }
       }
@@ -238,11 +278,12 @@ const ExportDialog = ({
         </DialogHeader>
 
         <Tabs defaultValue="pdf" className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="pdf">PDF</TabsTrigger>
             <TabsTrigger value="text">Text</TabsTrigger>
             <TabsTrigger value="word">Word</TabsTrigger>
             <TabsTrigger value="json">JSON</TabsTrigger>
+            <TabsTrigger value="notion">Notion</TabsTrigger>
           </TabsList>
 
           <TabsContent value="pdf" className="space-y-4 pt-4">
@@ -322,82 +363,156 @@ const ExportDialog = ({
               </div>
             </div>
           </TabsContent>
+
+          <TabsContent value="notion" className="space-y-4 pt-4">
+            {!user ? (
+              <div className="text-center p-6 text-muted-foreground">
+                <p>Please sign in to export to Notion.</p>
+              </div>
+            ) : isConnected ? (
+              <div className="space-y-4">
+                <div
+                  className="flex items-center space-x-3 p-3 rounded-lg border border-border bg-accent/5 cursor-pointer"
+                  onClick={() => setFormat("notion")}
+                >
+                  <img
+                    src="https://www.notion.so/images/favicon.ico"
+                    alt="Notion"
+                    className="w-5 h-5"
+                  />
+                  <div className="flex-1">
+                    <span className="font-medium">Export to Notion</span>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Create a new page in your Notion workspace with all worksheet data.
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
+                  <div className="flex items-center gap-2">
+                    {connection?.workspace_icon && (
+                      <span className="text-lg">{connection.workspace_icon}</span>
+                    )}
+                    <span className="text-sm">
+                      Connected to <strong>{connection?.workspace_name || "Notion"}</strong>
+                    </span>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={disconnect}
+                    className="text-muted-foreground hover:text-destructive"
+                  >
+                    <Unplug className="w-4 h-4 mr-1" />
+                    Disconnect
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <div className="text-center p-6 space-y-4">
+                <img
+                  src="https://www.notion.so/images/favicon.ico"
+                  alt="Notion"
+                  className="w-12 h-12 mx-auto opacity-50"
+                />
+                <p className="text-muted-foreground">
+                  Connect your Notion workspace to export worksheets directly as pages.
+                </p>
+                <Button onClick={connect} disabled={isConnecting}>
+                  {isConnecting ? (
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  ) : (
+                    <ExternalLink className="w-4 h-4 mr-2" />
+                  )}
+                  Connect Notion
+                </Button>
+              </div>
+            )}
+          </TabsContent>
         </Tabs>
 
-        <div className="space-y-4 pt-4 border-t border-border">
-          {/* Options */}
-          <div className="space-y-3">
-            <Label className="text-sm font-medium">Options</Label>
-            <div className="space-y-2">
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="includeWorld"
-                  checked={includeWorldName}
-                  onCheckedChange={(checked) => {
-                    setIncludeWorldName(checked as boolean);
-                    setTimeout(updateFilename, 0);
-                  }}
-                />
-                <Label htmlFor="includeWorld" className="text-sm cursor-pointer">
-                  Include world name in filename
-                </Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="includeDate"
-                  checked={includeDate}
-                  onCheckedChange={(checked) => {
-                    setIncludeDate(checked as boolean);
-                    setTimeout(updateFilename, 0);
-                  }}
-                />
-                <Label htmlFor="includeDate" className="text-sm cursor-pointer">
-                  Include date in filename
-                </Label>
+        {format !== "notion" && (
+          <div className="space-y-4 pt-4 border-t border-border">
+            {/* Options */}
+            <div className="space-y-3">
+              <Label className="text-sm font-medium">Options</Label>
+              <div className="space-y-2">
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="includeWorld"
+                    checked={includeWorldName}
+                    onCheckedChange={(checked) => {
+                      setIncludeWorldName(checked as boolean);
+                      setTimeout(updateFilename, 0);
+                    }}
+                  />
+                  <Label htmlFor="includeWorld" className="text-sm cursor-pointer">
+                    Include world name in filename
+                  </Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="includeDate"
+                    checked={includeDate}
+                    onCheckedChange={(checked) => {
+                      setIncludeDate(checked as boolean);
+                      setTimeout(updateFilename, 0);
+                    }}
+                  />
+                  <Label htmlFor="includeDate" className="text-sm cursor-pointer">
+                    Include date in filename
+                  </Label>
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* Filename */}
-          <div className="space-y-2">
-            <Label htmlFor="filename" className="text-sm font-medium">
-              Filename
-            </Label>
-            <div className="flex gap-2">
-              <Input
-                id="filename"
-                value={filename}
-                onChange={(e) => setFilename(e.target.value)}
-                className="flex-1"
-              />
-              <span className="flex items-center text-sm text-muted-foreground">
-                .{getFileExtension(format)}
-              </span>
+            {/* Filename */}
+            <div className="space-y-2">
+              <Label htmlFor="filename" className="text-sm font-medium">
+                Filename
+              </Label>
+              <div className="flex gap-2">
+                <Input
+                  id="filename"
+                  value={filename}
+                  onChange={(e) => setFilename(e.target.value)}
+                  className="flex-1"
+                />
+                <span className="flex items-center text-sm text-muted-foreground">
+                  .{getFileExtension(format)}
+                </span>
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* Actions */}
         <div className="flex gap-3 justify-end pt-4">
+          {format !== "notion" && (
+            <Button
+              variant="outline"
+              onClick={handlePreview}
+              disabled={isGenerating || isPreviewing || format === "word"}
+            >
+              {isPreviewing ? (
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              ) : (
+                <Eye className="w-4 h-4 mr-2" />
+              )}
+              Preview
+            </Button>
+          )}
           <Button
-            variant="outline"
-            onClick={handlePreview}
-            disabled={isGenerating || isPreviewing || format === "word"}
+            onClick={handleExport}
+            disabled={isGenerating || isPreviewing || isExporting || (format === "notion" && !isConnected)}
           >
-            {isPreviewing ? (
+            {isGenerating || isExporting ? (
               <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-            ) : (
-              <Eye className="w-4 h-4 mr-2" />
-            )}
-            Preview
-          </Button>
-          <Button onClick={handleExport} disabled={isGenerating || isPreviewing}>
-            {isGenerating ? (
-              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+            ) : format === "notion" ? (
+              <ExternalLink className="w-4 h-4 mr-2" />
             ) : (
               <Download className="w-4 h-4 mr-2" />
             )}
-            Download
+            {format === "notion" ? "Export to Notion" : "Download"}
           </Button>
         </div>
       </DialogContent>

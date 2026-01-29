@@ -34,6 +34,9 @@ const EvolutionaryBiology = lazy(() => import("./pages/tools/EvolutionaryBiology
 const LearnIndex = lazy(() => import("./pages/learn/LearnIndex"));
 const LearnArticle = lazy(() => import("./pages/learn/LearnArticle"));
 
+// Lazy loaded utility pages
+const NotionCallback = lazy(() => import("./pages/NotionCallback"));
+
 // Lazy loaded guard (includes subscription logic)
 const ProToolGuard = lazy(() => import("./components/subscription/ProToolGuard"));
 
@@ -107,6 +110,8 @@ const App = () => (
                 {/* Learn Section */}
                 <Route path="/learn" element={<LearnIndex />} />
                 <Route path="/learn/:slug" element={<LearnArticle />} />
+                {/* OAuth Callbacks */}
+                <Route path="/api/notion/callback" element={<NotionCallback />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>

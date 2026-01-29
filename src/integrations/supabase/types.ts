@@ -14,6 +14,53 @@ export type Database = {
   }
   public: {
     Tables: {
+      notion_connections: {
+        Row: {
+          id: string
+          user_id: string
+          access_token: string
+          workspace_id: string
+          workspace_name: string | null
+          workspace_icon: string | null
+          bot_id: string
+          duplicated_template_id: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          access_token: string
+          workspace_id: string
+          workspace_name?: string | null
+          workspace_icon?: string | null
+          bot_id: string
+          duplicated_template_id?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          access_token?: string
+          workspace_id?: string
+          workspace_name?: string | null
+          workspace_icon?: string | null
+          bot_id?: string
+          duplicated_template_id?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notion_connections_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
