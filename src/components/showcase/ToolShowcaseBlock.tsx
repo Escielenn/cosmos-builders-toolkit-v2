@@ -7,12 +7,8 @@ import { getToolIcon } from "@/components/icons/tool-icons";
 
 // Import mockup components
 import DrakeMockup from "./mockups/DrakeMockup";
-import PlanetaryMockup from "./mockups/PlanetaryMockup";
-import XenomythMockup from "./mockups/XenomythMockup";
-import EvoBioMockup from "./mockups/EvoBioMockup";
 import ECRMockup from "./mockups/ECRMockup";
-import SpacecraftMockup from "./mockups/SpacecraftMockup";
-import PropulsionMockup from "./mockups/PropulsionMockup";
+import ScreenshotMockup, { ScreenshotPlaceholder } from "./mockups/ScreenshotMockup";
 
 interface ToolShowcaseBlockProps {
   toolId: string;
@@ -34,7 +30,7 @@ const ToolShowcaseBlock = ({
   const ToolIcon = getToolIcon(toolId);
 
   // Get the appropriate mockup component
-  const MockupComponent = getMockupComponent(toolId);
+  const MockupComponent = getMockupComponent(toolId, title);
 
   return (
     <div
@@ -110,29 +106,42 @@ const ToolShowcaseBlock = ({
 };
 
 /**
- * Get the appropriate mockup component for a tool
+ * Get the appropriate mockup component for a tool.
+ *
+ * Animated mockups are used for tools that have matching visualizations:
+ * - Drake: Has real animated sliders in the tool
+ * - ECR: Will have cascade preview visualization added to the tool
+ *
+ * Screenshot mockups are used for other tools (once user provides screenshots).
+ * Until screenshots are provided, a placeholder is shown.
  */
-function getMockupComponent(toolId: string): React.ComponentType {
-  const mockups: Record<string, React.ComponentType> = {
-    "drake-equation-calculator": DrakeMockup,
-    "planetary-profile": PlanetaryMockup,
-    "xenomythology-framework-builder": XenomythMockup,
-    "evolutionary-biology": EvoBioMockup,
-    "environmental-chain-reaction": ECRMockup,
-    "spacecraft-designer": SpacecraftMockup,
-    "propulsion-consequences-map": PropulsionMockup,
+function getMockupComponent(toolId: string, title: string): React.ComponentType {
+  // Tools with animated mockups that match actual tool features
+  if (toolId === "drake-equation-calculator") {
+    return DrakeMockup;
+  }
+  if (toolId === "environmental-chain-reaction") {
+    return ECRMockup;
+  }
+
+  // Tools awaiting screenshots - show placeholder for now
+  // Once user provides screenshots in public/screenshots/, update these paths
+  const screenshotPaths: Record<string, string> = {
+    "planetary-profile": "/screenshots/planetary.png",
+    "xenomythology-framework-builder": "/screenshots/xenomyth.png",
+    "evolutionary-biology": "/screenshots/evobio.png",
+    "spacecraft-designer": "/screenshots/spacecraft.png",
+    "propulsion-consequences-map": "/screenshots/propulsion.png",
   };
 
-  return mockups[toolId] || PlaceholderMockup;
-}
+  const screenshotPath = screenshotPaths[toolId];
+  if (screenshotPath) {
+    // Return a component that tries to load the screenshot
+    return () => <ScreenshotMockup src={screenshotPath} toolName={title} />;
+  }
 
-/**
- * Placeholder mockup for tools without a custom one
- */
-const PlaceholderMockup = () => (
-  <div className="w-full h-full flex items-center justify-center bg-sf-surface/50 rounded-lg">
-    <span className="text-muted-foreground text-sm">Preview</span>
-  </div>
-);
+  // Fallback placeholder
+  return () => <ScreenshotPlaceholder toolName={title} />;
+}
 
 export default ToolShowcaseBlock;

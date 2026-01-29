@@ -72,7 +72,7 @@
     --sf-surface: 240 5% 8%;             /* #151518 - card/panel bg */
     --sf-surface-elevated: 240 4% 11%;   /* #1C1C21 - elevated panels */
     --sf-text-primary: 0 0% 98%;         /* #FAFAFA */
-    --sf-text-muted: 0 0% 44%;           /* #6B6B70 */
+    --sf-text-muted: 0 0% 58%;           /* #949494 - WCAG AA compliant */
     --sf-text-ghost: 0 0% 24%;           /* #3A3A3F */
 
     /* Accent Spectrum — use ONE per component as focal point */
@@ -273,6 +273,29 @@
 
   /* Hide starfield effect when custom background is active */
   .custom-background .starfield::before {
+    display: none;
+  }
+
+  /* Gradient background support */
+  .gradient-background {
+    @apply relative;
+    min-height: 100vh;
+  }
+
+  .gradient-background::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    background: var(--gradient-background);
+    pointer-events: none;
+  }
+
+  .gradient-background .bg-background {
+    background-color: transparent !important;
+  }
+
+  .gradient-background .starfield::before {
     display: none;
   }
 

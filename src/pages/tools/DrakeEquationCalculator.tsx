@@ -671,7 +671,7 @@ const DrakeEquationCalculator = () => {
                   <span>{variable.useLogScale ? formatNumber(variable.max) : variable.max}</span>
                 </div>
 
-                <p className="text-xs text-muted-foreground/70 italic">{variable.worldbuildingNote}</p>
+                <p className="text-xs text-muted-foreground italic">{variable.worldbuildingNote}</p>
 
                 <Textarea
                   placeholder={`Your notes on ${variable.name.toLowerCase()} in your world...`}

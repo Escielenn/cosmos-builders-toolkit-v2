@@ -99,7 +99,7 @@ const KeyChoicesSidebar = ({
                     "flex items-center justify-between w-full text-left px-2 py-1.5 rounded text-xs font-medium transition-colors",
                     hasValues
                       ? "text-foreground hover:bg-muted/50"
-                      : "text-muted-foreground/50 hover:bg-muted/30"
+                      : "text-muted-foreground hover:bg-muted/30"
                   )}
                 >
                   <span className="truncate">{section.title}</span>
@@ -141,7 +141,7 @@ const KeyChoicesSidebar = ({
                     );
                   })}
                   {!hasValues && (
-                    <span className="text-xs text-muted-foreground/50 italic">
+                    <span className="text-xs text-muted-foreground italic">
                       Not yet filled
                     </span>
                   )}
@@ -281,7 +281,7 @@ export const MobileKeyChoices = ({
                         "flex items-center justify-between w-full text-left px-2 py-1.5 rounded text-xs font-medium transition-colors",
                         hasValues
                           ? "text-foreground hover:bg-muted/50"
-                          : "text-muted-foreground/50 hover:bg-muted/30"
+                          : "text-muted-foreground hover:bg-muted/30"
                       )}
                     >
                       <span className="truncate">{section.title}</span>
@@ -323,7 +323,7 @@ export const MobileKeyChoices = ({
                         );
                       })}
                       {!hasValues && (
-                        <span className="text-xs text-muted-foreground/50 italic">
+                        <span className="text-xs text-muted-foreground italic">
                           Not yet filled
                         </span>
                       )}

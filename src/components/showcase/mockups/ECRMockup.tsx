@@ -87,7 +87,7 @@ const ECRMockup = () => {
                         className={`text-[8px] px-1.5 py-0.5 rounded border transition-all duration-300 ${
                           isActive
                             ? "border-muted/30 text-muted-foreground"
-                            : "border-transparent text-muted-foreground/50"
+                            : "border-transparent text-muted-foreground opacity-60"
                         }`}
                       >
                         {example}

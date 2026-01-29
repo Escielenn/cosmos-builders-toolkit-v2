@@ -851,7 +851,7 @@ const EnvironmentalChainReaction = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background starfield">
+    <div className="min-h-screen bg-background sf-atmosphere">
       <Header />
 
       <main className="container mx-auto px-4 pt-24 pb-16">

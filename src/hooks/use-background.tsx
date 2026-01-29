@@ -1,45 +1,118 @@
 import { useState, useEffect } from "react";
 
-const BACKGROUND_OPTIONS = [
+interface BackgroundOption {
+  id: string;
+  name: string;
+  url?: string;
+  type?: "image" | "gradient" | "color";
+  value?: string;
+  category: "default" | "space" | "gradient";
+}
+
+const BACKGROUND_OPTIONS: BackgroundOption[] = [
+  // Default
   {
     id: "default",
     name: "Default Starfield",
-    url: "", // Uses CSS starfield
+    url: "",
+    category: "default",
   },
+  // Space Images
   {
     id: "nebula",
     name: "Nebula",
     url: "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=1920&q=80",
+    category: "space",
   },
   {
     id: "earth",
     name: "Earth from Space",
     url: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=80",
+    category: "space",
   },
   {
     id: "stars",
     name: "Star Field",
     url: "https://images.unsplash.com/photo-1506318137071-a8e063b4bec0?w=1920&q=80",
+    category: "space",
   },
   {
     id: "milkyway",
     name: "Milky Way",
     url: "https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=1920&q=80",
+    category: "space",
   },
   {
     id: "galaxy",
     name: "Galaxy",
     url: "https://images.unsplash.com/photo-1543722530-d2c3201371e7?w=1920&q=80",
+    category: "space",
   },
   {
     id: "aurora",
     name: "Aurora",
     url: "https://images.unsplash.com/photo-1531366936337-7c912a4589a7?w=1920&q=80",
+    category: "space",
   },
   {
     id: "cosmos",
     name: "Deep Space",
     url: "https://images.unsplash.com/photo-1444703686981-a3abbc4d4fe3?w=1920&q=80",
+    category: "space",
+  },
+  // New SF Images
+  {
+    id: "supernova",
+    name: "Supernova",
+    url: "https://images.unsplash.com/photo-1614732414444-096e5f1122d5?w=1920&q=80",
+    category: "space",
+  },
+  {
+    id: "cosmic-dust",
+    name: "Cosmic Dust",
+    url: "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?w=1920&q=80",
+    category: "space",
+  },
+  {
+    id: "saturn",
+    name: "Saturn",
+    url: "https://images.unsplash.com/photo-1614314107768-6018061e5456?w=1920&q=80",
+    category: "space",
+  },
+  {
+    id: "blue-nebula",
+    name: "Blue Nebula",
+    url: "https://images.unsplash.com/photo-1465101162946-4377e57745c3?w=1920&q=80",
+    category: "space",
+  },
+  // Gradients
+  {
+    id: "gradient-void",
+    name: "Void",
+    type: "color",
+    value: "hsl(240 7% 4%)",
+    category: "gradient",
+  },
+  {
+    id: "gradient-cosmic",
+    name: "Cosmic",
+    type: "gradient",
+    value: "linear-gradient(135deg, hsl(240 7% 4%) 0%, hsl(263 74% 15%) 50%, hsl(190 100% 15%) 100%)",
+    category: "gradient",
+  },
+  {
+    id: "gradient-aurora",
+    name: "Aurora",
+    type: "gradient",
+    value: "linear-gradient(180deg, hsl(240 7% 4%) 0%, hsl(153 100% 12%) 50%, hsl(190 100% 15%) 100%)",
+    category: "gradient",
+  },
+  {
+    id: "gradient-crimson",
+    name: "Crimson",
+    type: "gradient",
+    value: "linear-gradient(135deg, hsl(240 7% 4%) 0%, hsl(347 100% 12%) 100%)",
+    category: "gradient",
   },
 ];
 
@@ -81,17 +154,25 @@ export const useBackground = () => {
     const selected = BACKGROUND_OPTIONS.find((bg) => bg.id === backgroundId);
     const root = document.documentElement;
 
+    // Remove all background classes first
+    document.body.classList.remove("custom-background", "starfield", "gradient-background");
+    root.style.removeProperty("--custom-background");
+    root.style.removeProperty("--gradient-background");
+
     if (backgroundId === "custom" && customBackground) {
+      // Custom uploaded image
       root.style.setProperty("--custom-background", `url(${customBackground})`);
       document.body.classList.add("custom-background");
-      document.body.classList.remove("starfield");
-    } else if (selected && selected.url) {
+    } else if (selected?.type === "gradient" || selected?.type === "color") {
+      // Gradient or solid color
+      root.style.setProperty("--gradient-background", selected.value || "");
+      document.body.classList.add("gradient-background");
+    } else if (selected?.url) {
+      // Unsplash image
       root.style.setProperty("--custom-background", `url(${selected.url})`);
       document.body.classList.add("custom-background");
-      document.body.classList.remove("starfield");
     } else {
-      root.style.removeProperty("--custom-background");
-      document.body.classList.remove("custom-background");
+      // Default starfield
       document.body.classList.add("starfield");
     }
   }, [backgroundId, customBackground]);

@@ -391,7 +391,7 @@ const TOOL_TYPE = "evolutionary-biology";
 const TOOL_DISPLAY_NAME = "Evolutionary Biology";
 
 const EvolutionaryBiology = () => {
-  useBackground("dark-galaxy");
+  useBackground();
   const { toast } = useToast();
   const { user } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();

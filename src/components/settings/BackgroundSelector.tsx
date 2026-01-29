@@ -20,12 +20,10 @@ const BackgroundSelector = () => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Validate file type
     if (!file.type.startsWith("image/")) {
       return;
     }
 
-    // Validate file size (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
       return;
     }
@@ -37,10 +35,56 @@ const BackgroundSelector = () => {
     };
     reader.readAsDataURL(file);
 
-    // Reset input so same file can be selected again
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
+  };
+
+  // Group options by category
+  const defaultOptions = options.filter((o) => o.category === "default");
+  const spaceOptions = options.filter((o) => o.category === "space");
+  const gradientOptions = options.filter((o) => o.category === "gradient");
+
+  const renderOption = (option: typeof options[0]) => {
+    const isSelected = backgroundId === option.id && backgroundId !== "custom";
+    const isGradient = option.type === "gradient" || option.type === "color";
+
+    return (
+      <button
+        key={option.id}
+        onClick={() => setBackground(option.id)}
+        className={cn(
+          "relative aspect-video rounded-lg overflow-hidden border-2 transition-all hover:scale-105",
+          isSelected
+            ? "border-primary ring-2 ring-primary/50"
+            : "border-border hover:border-primary/50"
+        )}
+      >
+        {isGradient ? (
+          <div
+            className="w-full h-full"
+            style={{ background: option.value }}
+          />
+        ) : option.url ? (
+          <img
+            src={option.url}
+            alt={option.name}
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <div className="w-full h-full bg-background starfield-preview" />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
+        <span className="absolute bottom-2 left-2 text-xs font-medium text-white">
+          {option.name}
+        </span>
+        {isSelected && (
+          <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-primary flex items-center justify-center">
+            <Check className="w-3 h-3 text-primary-foreground" />
+          </div>
+        )}
+      </button>
+    );
   };
 
   return (
@@ -51,7 +95,7 @@ const BackgroundSelector = () => {
           <span className="hidden sm:inline text-sm">Background</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="sm:max-w-xl max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="font-display text-xl">
             Choose Background
@@ -60,82 +104,85 @@ const BackgroundSelector = () => {
             Select a space-themed background for your workspace.
           </DialogDescription>
         </DialogHeader>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mt-4">
-          {options.map((option) => (
-            <button
-              key={option.id}
-              onClick={() => setBackground(option.id)}
-              className={cn(
-                "relative aspect-video rounded-lg overflow-hidden border-2 transition-all hover:scale-105",
-                backgroundId === option.id && backgroundId !== "custom"
-                  ? "border-primary ring-2 ring-primary/50"
-                  : "border-border hover:border-primary/50"
-              )}
-            >
-              {option.url ? (
+
+        {/* Default Section */}
+        <div className="mt-4">
+          <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3">
+            Default
+          </h4>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            {defaultOptions.map(renderOption)}
+          </div>
+        </div>
+
+        {/* Space Images Section */}
+        <div className="mt-6">
+          <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3">
+            Space Images
+          </h4>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            {spaceOptions.map(renderOption)}
+          </div>
+        </div>
+
+        {/* Gradients Section */}
+        <div className="mt-6">
+          <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3">
+            Gradients
+          </h4>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            {gradientOptions.map(renderOption)}
+          </div>
+        </div>
+
+        {/* Custom Upload Section */}
+        <div className="mt-6">
+          <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3">
+            Custom
+          </h4>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleFileSelect}
+              accept="image/*"
+              className="hidden"
+            />
+            {customBackground ? (
+              <button
+                onClick={() => setBackground("custom")}
+                className={cn(
+                  "relative aspect-video rounded-lg overflow-hidden border-2 transition-all hover:scale-105",
+                  backgroundId === "custom"
+                    ? "border-primary ring-2 ring-primary/50"
+                    : "border-border hover:border-primary/50"
+                )}
+              >
                 <img
-                  src={option.url}
-                  alt={option.name}
+                  src={customBackground}
+                  alt="Custom background"
                   className="w-full h-full object-cover"
                 />
-              ) : (
-                <div className="w-full h-full bg-background starfield-preview" />
-              )}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
-              <span className="absolute bottom-2 left-2 text-xs font-medium text-white">
-                {option.name}
-              </span>
-              {backgroundId === option.id && backgroundId !== "custom" && (
-                <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-primary flex items-center justify-center">
-                  <Check className="w-3 h-3 text-primary-foreground" />
-                </div>
-              )}
-            </button>
-          ))}
-
-          {/* Custom Upload Option */}
-          <input
-            type="file"
-            ref={fileInputRef}
-            onChange={handleFileSelect}
-            accept="image/*"
-            className="hidden"
-          />
-          {customBackground ? (
-            <button
-              onClick={() => setBackground("custom")}
-              className={cn(
-                "relative aspect-video rounded-lg overflow-hidden border-2 transition-all hover:scale-105",
-                backgroundId === "custom"
-                  ? "border-primary ring-2 ring-primary/50"
-                  : "border-border hover:border-primary/50"
-              )}
-            >
-              <img
-                src={customBackground}
-                alt="Custom background"
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
-              <span className="absolute bottom-2 left-2 text-xs font-medium text-white">
-                Custom
-              </span>
-              {backgroundId === "custom" && (
-                <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-primary flex items-center justify-center">
-                  <Check className="w-3 h-3 text-primary-foreground" />
-                </div>
-              )}
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  clearCustomBackground();
-                }}
-                className="absolute top-2 left-2 w-5 h-5 rounded-full bg-destructive flex items-center justify-center hover:bg-destructive/80"
-              >
-                <X className="w-3 h-3 text-destructive-foreground" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
+                <span className="absolute bottom-2 left-2 text-xs font-medium text-white">
+                  Custom
+                </span>
+                {backgroundId === "custom" && (
+                  <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-primary flex items-center justify-center">
+                    <Check className="w-3 h-3 text-primary-foreground" />
+                  </div>
+                )}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    clearCustomBackground();
+                  }}
+                  className="absolute top-2 left-2 w-5 h-5 rounded-full bg-destructive flex items-center justify-center hover:bg-destructive/80"
+                >
+                  <X className="w-3 h-3 text-destructive-foreground" />
+                </button>
               </button>
-            </button>
-          ) : (
+            ) : null}
             <button
               onClick={() => fileInputRef.current?.click()}
               className="relative aspect-video rounded-lg overflow-hidden border-2 border-dashed border-border hover:border-primary/50 transition-all hover:scale-105 flex flex-col items-center justify-center gap-2 bg-muted/50"
@@ -145,8 +192,9 @@ const BackgroundSelector = () => {
                 Upload Image
               </span>
             </button>
-          )}
+          </div>
         </div>
+
         <p className="text-xs text-muted-foreground text-center mt-4">
           Photos from Unsplash • Max upload size: 5MB
         </p>
