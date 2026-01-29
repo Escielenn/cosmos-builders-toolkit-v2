@@ -1,6 +1,11 @@
 import { useState, useEffect, useMemo } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { ArrowLeft, Download, Save, Info, ExternalLink, Printer, Cloud, CloudOff, Atom } from "lucide-react";
+import { ArrowLeft, Download, Save, Info, ExternalLink, Printer, Cloud, CloudOff, Atom, FileText, ChevronDown } from "lucide-react";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import Header from "@/components/layout/Header";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
@@ -20,9 +25,10 @@ import { useBackground } from "@/hooks/use-background";
 import { useWorksheets, useWorksheet, useWorksheetsByType } from "@/hooks/use-worksheets";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
 import { useAuth } from "@/contexts/AuthContext";
-import SectionNavigation, { Section } from "@/components/tools/SectionNavigation";
+import SectionNavigation, { Section, MobileSectionNav } from "@/components/tools/SectionNavigation";
+import ToolSidebar from "@/components/tools/ToolSidebar";
 import CollapsibleSection from "@/components/tools/CollapsibleSection";
-import KeyChoicesSidebar, { KeyChoicesSection } from "@/components/tools/KeyChoicesSidebar";
+import KeyChoicesSidebar, { KeyChoicesSection, MobileKeyChoices } from "@/components/tools/KeyChoicesSidebar";
 import ToolActionBar from "@/components/tools/ToolActionBar";
 import ExportDialog from "@/components/tools/ExportDialog";
 import { PropulsionSummaryTemplate, PropulsionFullReportTemplate } from "@/lib/pdf/templates";
@@ -378,8 +384,8 @@ const PropulsionConsequencesMap = () => {
 
   // Generate key choices for sidebar
   const keyChoicesSections: KeyChoicesSection[] = useMemo(() => {
-    const countFilledDomain = (domain: Record<string, string>) =>
-      Object.values(domain).filter((v) => v && v.trim()).length;
+    const countFilledDomain = (domain: DomainResponses) =>
+      Object.values(domain).filter((v) => v && (typeof v === 'string' ? v.trim() : (v as string[]).length > 0)).length;
 
     return [
       {
@@ -387,8 +393,8 @@ const PropulsionConsequencesMap = () => {
         title: "1. Propulsion",
         choices: [
           { label: "Type", value: formState.system.type },
-          { label: "Range", value: formState.system.interstellarCapability ? "Interstellar" : formState.benchmarks.solarSystemTravel ? "System-wide" : undefined },
-          { label: "Speed", value: formState.system.topSpeed },
+          { label: "Speed", value: formState.system.maxVelocity },
+          { label: "Cost", value: formState.system.costComparison },
         ],
       },
       {
@@ -427,10 +433,10 @@ const PropulsionConsequencesMap = () => {
         ],
       },
       {
-        id: "integration",
-        title: "7. Integration",
+        id: "synthesis",
+        title: "7. Synthesis",
         choices: [
-          { label: "Defining Consequence", value: formState.integration.definingConsequence ? "Defined" : undefined },
+          { label: "Thesis", value: formState.synthesis.propulsionThesis ? "Defined" : undefined },
         ],
       },
     ];
@@ -1441,7 +1447,7 @@ const PropulsionConsequencesMap = () => {
               {SF_EXAMPLES.map((example, index) => (
                 <Collapsible key={index}>
                   <CollapsibleTrigger asChild>
-                    <button className="w-full p-4 rounded-lg border border-border hover:border-primary/50 transition-colors text-left flex items-center justify-between">
+                    <button type="button" className="w-full p-4 rounded-lg border border-border hover:border-primary/50 transition-colors text-left flex items-center justify-between">
                       <span className="font-medium text-sm">{example.title}</span>
                       <ChevronDown className="w-4 h-4 text-muted-foreground" />
                     </button>
@@ -1527,14 +1533,17 @@ const PropulsionConsequencesMap = () => {
           className="mt-8"
         />
 
-        {/* Section Navigation */}
-        <SectionNavigation sections={SECTIONS} />
+        {/* Desktop Sidebars - Right side */}
+        <ToolSidebar>
+          <SectionNavigation sections={SECTIONS} mode="inline" />
+          <KeyChoicesSidebar sections={keyChoicesSections} title="Propulsion Summary" mode="inline" />
+        </ToolSidebar>
 
-        {/* Key Choices Sidebar */}
-        <KeyChoicesSidebar
-          sections={keyChoicesSections}
-          title="Propulsion Summary"
-        />
+        {/* Mobile Sidebars - Right side floating buttons */}
+        <div className="fixed right-4 bottom-4 xl:hidden z-40 no-print flex flex-col gap-2">
+          <MobileSectionNav sections={SECTIONS} />
+          <MobileKeyChoices sections={keyChoicesSections} title="Propulsion Summary" />
+        </div>
       </main>
 
       {/* Footer */}

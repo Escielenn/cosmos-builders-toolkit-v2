@@ -56,7 +56,7 @@ const SuggestedImplications = ({
     >
       <Collapsible open={isOpen} onOpenChange={setIsOpen}>
         <CollapsibleTrigger asChild>
-          <button className="w-full p-4 flex items-center justify-between text-left hover:bg-amber-500/5 transition-colors rounded-t-lg">
+          <button type="button" className="w-full p-4 flex items-center justify-between text-left hover:bg-amber-500/5 transition-colors rounded-t-lg">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center">
                 <Lightbulb className="w-5 h-5 text-amber-500" />
@@ -95,6 +95,7 @@ const SuggestedImplications = ({
                 >
                   {/* Dismiss button */}
                   <button
+                    type="button"
                     onClick={() => handleDismiss(implication.id)}
                     className="absolute top-2 right-2 p-1 text-muted-foreground hover:text-foreground transition-colors"
                     aria-label="Dismiss"
@@ -105,6 +106,7 @@ const SuggestedImplications = ({
                   <div className="p-4 pr-10">
                     {/* Main content - click to expand */}
                     <button
+                      type="button"
                       onClick={() => toggleExpanded(implication.id)}
                       className="w-full text-left"
                     >
@@ -197,6 +199,7 @@ const SuggestedImplications = ({
             {/* Restore dismissed */}
             {dismissedIds.size > 0 && (
               <button
+                type="button"
                 onClick={() => setDismissedIds(new Set())}
                 className="text-xs text-muted-foreground hover:text-foreground transition-colors"
               >

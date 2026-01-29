@@ -13,9 +13,14 @@ export interface Section {
 
 interface SectionNavigationProps {
   sections: Section[];
+  /**
+   * 'floating' (default): Fixed position with mobile sheet
+   * 'inline': Returns just the panel for use inside ToolSidebar
+   */
+  mode?: 'floating' | 'inline';
 }
 
-const SectionNavigation = ({ sections }: SectionNavigationProps) => {
+const SectionNavigation = ({ sections, mode = 'floating' }: SectionNavigationProps) => {
   const [activeSection, setActiveSection] = useState<string>("");
   const [isOpen, setIsOpen] = useState(false);
 
@@ -111,6 +116,16 @@ const SectionNavigation = ({ sections }: SectionNavigationProps) => {
     </>
   );
 
+  // Inline mode: return just the panel for use inside ToolSidebar
+  if (mode === 'inline') {
+    return (
+      <GlassPanel className="p-4 max-h-[40vh] overflow-y-auto w-52">
+        <NavigationContent />
+      </GlassPanel>
+    );
+  }
+
+  // Floating mode: fixed position with mobile sheet
   return (
     <>
       {/* Desktop Navigation - Fixed sidebar */}
@@ -139,6 +154,100 @@ const SectionNavigation = ({ sections }: SectionNavigationProps) => {
         </Sheet>
       </div>
     </>
+  );
+};
+
+/**
+ * Mobile-only section navigation trigger button with sheet.
+ * Use this alongside SectionNavigation mode="inline" for mobile support.
+ */
+export const MobileSectionNav = ({ sections }: { sections: Section[] }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState<string>("");
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visibleEntry = entries.find((entry) => entry.isIntersecting);
+        if (visibleEntry) {
+          setActiveSection(visibleEntry.target.id);
+        }
+      },
+      { threshold: 0.2, rootMargin: "-100px 0px -50% 0px" }
+    );
+
+    sections.forEach((section) => {
+      const element = document.getElementById(section.id);
+      if (element) {
+        observer.observe(element);
+      }
+    });
+
+    return () => observer.disconnect();
+  }, [sections]);
+
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      const offset = 100;
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - offset;
+      window.scrollTo({ top: offsetPosition, behavior: "smooth" });
+      setIsOpen(false);
+    }
+  };
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    setIsOpen(false);
+  };
+
+  const scrollToBottom = () => {
+    window.scrollTo({ top: document.documentElement.scrollHeight, behavior: "smooth" });
+    setIsOpen(false);
+  };
+
+  return (
+    <Sheet open={isOpen} onOpenChange={setIsOpen}>
+      <SheetTrigger asChild>
+        <Button size="lg" className="rounded-full w-14 h-14 shadow-lg">
+          <List className="w-6 h-6" />
+        </Button>
+      </SheetTrigger>
+      <SheetContent side="right" className="w-72 bg-background/95 backdrop-blur-lg">
+        <div className="pt-6">
+          <h4 className="font-semibold text-sm mb-3 text-foreground">Sections</h4>
+          <nav className="space-y-1">
+            {sections.map((section) => (
+              <button
+                type="button"
+                key={section.id}
+                onClick={() => scrollToSection(section.id)}
+                className={cn(
+                  "block text-sm text-left w-full px-2 py-1.5 rounded transition-colors",
+                  section.level === 2 && "pl-4 text-xs",
+                  activeSection === section.id
+                    ? "bg-primary text-primary-foreground"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                )}
+              >
+                {section.title}
+              </button>
+            ))}
+          </nav>
+          <div className="flex flex-col gap-2 mt-4">
+            <Button variant="ghost" size="sm" className="w-full" onClick={scrollToTop}>
+              <ArrowUp className="w-4 h-4 mr-2" />
+              Back to Top
+            </Button>
+            <Button variant="ghost" size="sm" className="w-full" onClick={scrollToBottom}>
+              <ArrowDown className="w-4 h-4 mr-2" />
+              Go to Bottom
+            </Button>
+          </div>
+        </div>
+      </SheetContent>
+    </Sheet>
   );
 };
 

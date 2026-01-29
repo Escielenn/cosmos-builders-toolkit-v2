@@ -261,6 +261,7 @@ const ImportFromECRModal = ({
                 <div className="space-y-2 max-h-48 overflow-y-auto">
                   {worksheets.map((worksheet) => (
                     <button
+                      type="button"
                       key={worksheet.id}
                       onClick={() => setSelectedWorksheetId(worksheet.id)}
                       className={`w-full p-3 rounded-lg border text-left transition-colors ${
@@ -289,7 +290,7 @@ const ImportFromECRModal = ({
               {selectedWorksheetId && preview.length > 0 && (
                 <Collapsible open={previewExpanded} onOpenChange={setPreviewExpanded}>
                   <CollapsibleTrigger asChild>
-                    <button className="w-full flex items-center justify-between p-2 rounded hover:bg-muted/50 transition-colors">
+                    <button type="button" className="w-full flex items-center justify-between p-2 rounded hover:bg-muted/50 transition-colors">
                       <span className="text-sm font-medium">
                         Preview ({preview.length} field{preview.length !== 1 ? "s" : ""})
                       </span>

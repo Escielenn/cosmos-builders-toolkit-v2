@@ -34,14 +34,15 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import CollapsibleSection from "@/components/tools/CollapsibleSection";
-import KeyChoicesSidebar, { KeyChoicesSection } from "@/components/tools/KeyChoicesSidebar";
+import KeyChoicesSidebar, { KeyChoicesSection, MobileKeyChoices } from "@/components/tools/KeyChoicesSidebar";
 import { useToast } from "@/hooks/use-toast";
 import { useBackground } from "@/hooks/use-background";
 import { useWorksheets, useWorksheet, useWorksheetsByType } from "@/hooks/use-worksheets";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
 import WorksheetLinkSelector from "@/components/tools/WorksheetLinkSelector";
 import { useAuth } from "@/contexts/AuthContext";
-import SectionNavigation, { Section } from "@/components/tools/SectionNavigation";
+import SectionNavigation, { Section, MobileSectionNav } from "@/components/tools/SectionNavigation";
+import ToolSidebar from "@/components/tools/ToolSidebar";
 import ToolActionBar from "@/components/tools/ToolActionBar";
 import ExportDialog from "@/components/tools/ExportDialog";
 import { EvolutionarySummaryTemplate, EvolutionaryFullReportTemplate } from "@/lib/pdf/templates";
@@ -2483,10 +2484,18 @@ const EvolutionaryBiology = () => {
             </GlassPanel>
           </div>
 
-          {/* Sidebar */}
-          <div className="lg:col-span-1 space-y-6">
-            <SectionNavigation sections={SECTIONS} />
-          </div>
+        </div>
+
+        {/* Desktop Sidebars - Right side */}
+        <ToolSidebar>
+          <SectionNavigation sections={SECTIONS} mode="inline" />
+          <KeyChoicesSidebar sections={keyChoicesSections} title="Species Summary" mode="inline" />
+        </ToolSidebar>
+
+        {/* Mobile Sidebars - Right side floating buttons */}
+        <div className="fixed right-4 bottom-4 xl:hidden z-40 no-print flex flex-col gap-2">
+          <MobileSectionNav sections={SECTIONS} />
+          <MobileKeyChoices sections={keyChoicesSections} title="Species Summary" />
         </div>
 
         {/* Action Bar */}
@@ -2524,11 +2533,6 @@ const EvolutionaryBiology = () => {
           defaultFilename="evolutionary-biology"
         />
 
-        {/* Key Choices Sidebar */}
-        <KeyChoicesSidebar
-          sections={keyChoicesSections}
-          title="Species Summary"
-        />
       </main>
     </div>
   );

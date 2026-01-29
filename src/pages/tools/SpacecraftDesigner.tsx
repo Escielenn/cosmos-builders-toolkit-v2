@@ -1,6 +1,11 @@
 import { useState, useEffect, useMemo } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { ArrowLeft, Download, Save, Info, ExternalLink, Printer, Cloud, CloudOff, Rocket } from "lucide-react";
+import { ArrowLeft, Download, Save, Info, ExternalLink, Printer, Cloud, CloudOff, Rocket, FileText, ChevronDown } from "lucide-react";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import Header from "@/components/layout/Header";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
@@ -19,17 +24,16 @@ import { useToast } from "@/hooks/use-toast";
 import { useBackground } from "@/hooks/use-background";
 import { useWorksheets, useWorksheet, useWorksheetsByType } from "@/hooks/use-worksheets";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
-import WorksheetLinkSelector from "@/components/tools/WorksheetLinkSelector";
 import { useAuth } from "@/contexts/AuthContext";
-import SectionNavigation, { Section } from "@/components/tools/SectionNavigation";
+import SectionNavigation, { Section, MobileSectionNav } from "@/components/tools/SectionNavigation";
+import ToolSidebar from "@/components/tools/ToolSidebar";
 import CollapsibleSection from "@/components/tools/CollapsibleSection";
-import KeyChoicesSidebar, { KeyChoicesSection } from "@/components/tools/KeyChoicesSidebar";
+import KeyChoicesSidebar, { KeyChoicesSection, MobileKeyChoices } from "@/components/tools/KeyChoicesSidebar";
 import ToolActionBar from "@/components/tools/ToolActionBar";
 import ExportDialog from "@/components/tools/ExportDialog";
 import { SpacecraftSummaryTemplate, SpacecraftFullReportTemplate } from "@/lib/pdf/templates";
 import { useWorlds } from "@/hooks/use-worlds";
 import { Json } from "@/integrations/supabase/types";
-import { LinkedWorksheetRef, getLinkConfigsForTool } from "@/lib/worksheet-links-config";
 
 // Section definitions for navigation
 const SECTIONS: Section[] = [
@@ -414,9 +418,6 @@ const SpacecraftDesigner = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [worldId, worksheetId]);
 
-  // Link configurations for this tool
-  const linkConfigs = getLinkConfigsForTool(TOOL_TYPE);
-
   // Generate key choices for sidebar
   const keyChoicesSections: KeyChoicesSection[] = useMemo(() => {
     return [
@@ -451,15 +452,15 @@ const SpacecraftDesigner = () => {
         id: "living",
         title: "4. Living",
         choices: [
-          { label: "Layout", value: formState.living.layout ? "Defined" : undefined },
-          { label: "Shared Spaces", value: formState.living.sharedSpaces ? "Defined" : undefined },
+          { label: "Quarters", value: formState.living.crewQuarters ? "Defined" : undefined },
+          { label: "Common Areas", value: formState.living.commonAreas ? "Defined" : undefined },
         ],
       },
       {
         id: "cultural",
         title: "5. Cultural",
         choices: [
-          { label: "Traditions", value: formState.cultural.traditions ? "Defined" : undefined },
+          { label: "Origin", value: formState.cultural.originCulture ? "Defined" : undefined },
           { label: "Rituals", value: formState.cultural.rituals ? "Defined" : undefined },
         ],
       },
@@ -467,9 +468,9 @@ const SpacecraftDesigner = () => {
         id: "character",
         title: "6. Character",
         choices: [
-          { label: "Sounds", value: formState.character.sounds ? "Defined" : undefined },
+          { label: "Personality", value: formState.character.personality ? "Defined" : undefined },
           { label: "Quirks", value: formState.character.quirks ? "Defined" : undefined },
-          { label: "Secret", value: formState.character.secret ? "Defined" : undefined },
+          { label: "Secrets", value: formState.character.secrets ? "Defined" : undefined },
         ],
       },
     ];
@@ -1428,7 +1429,7 @@ const SpacecraftDesigner = () => {
               {SF_EXAMPLES.map((example, index) => (
                 <Collapsible key={index}>
                   <CollapsibleTrigger asChild>
-                    <button className="w-full p-4 rounded-lg border border-border hover:border-primary/50 transition-colors text-left flex items-center justify-between">
+                    <button type="button" className="w-full p-4 rounded-lg border border-border hover:border-primary/50 transition-colors text-left flex items-center justify-between">
                       <span className="font-medium text-sm">{example.title}</span>
                       <ChevronDown className="w-4 h-4 text-muted-foreground" />
                     </button>
@@ -1507,14 +1508,17 @@ const SpacecraftDesigner = () => {
           className="mt-8"
         />
 
-        {/* Section Navigation */}
-        <SectionNavigation sections={SECTIONS} />
+        {/* Desktop Sidebars - Right side */}
+        <ToolSidebar>
+          <SectionNavigation sections={SECTIONS} mode="inline" />
+          <KeyChoicesSidebar sections={keyChoicesSections} title="Ship Summary" mode="inline" />
+        </ToolSidebar>
 
-        {/* Key Choices Sidebar */}
-        <KeyChoicesSidebar
-          sections={keyChoicesSections}
-          title="Ship Summary"
-        />
+        {/* Mobile Sidebars - Right side floating buttons */}
+        <div className="fixed right-4 bottom-4 xl:hidden z-40 no-print flex flex-col gap-2">
+          <MobileSectionNav sections={SECTIONS} />
+          <MobileKeyChoices sections={keyChoicesSections} title="Ship Summary" />
+        </div>
       </main>
 
       {/* Footer */}

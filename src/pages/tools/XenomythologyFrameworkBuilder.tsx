@@ -13,6 +13,7 @@ import {
   Trash2,
   Sparkles,
   Link2,
+  FileText,
 } from "lucide-react";
 import Header from "@/components/layout/Header";
 import { GlassPanel } from "@/components/ui/glass-panel";
@@ -33,9 +34,10 @@ import { useBackground } from "@/hooks/use-background";
 import { useWorksheets, useWorksheet, useWorksheetsByType } from "@/hooks/use-worksheets";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
 import { useAuth } from "@/contexts/AuthContext";
-import SectionNavigation, { Section } from "@/components/tools/SectionNavigation";
+import SectionNavigation, { Section, MobileSectionNav } from "@/components/tools/SectionNavigation";
+import ToolSidebar from "@/components/tools/ToolSidebar";
 import CollapsibleSection from "@/components/tools/CollapsibleSection";
-import KeyChoicesSidebar, { KeyChoicesSection } from "@/components/tools/KeyChoicesSidebar";
+import KeyChoicesSidebar, { KeyChoicesSection, MobileKeyChoices } from "@/components/tools/KeyChoicesSidebar";
 import ToolActionBar from "@/components/tools/ToolActionBar";
 import SelectedParametersSidebar from "@/components/tools/SelectedParametersSidebar";
 import SuggestedImplications from "@/components/tools/SuggestedImplications";
@@ -2648,14 +2650,17 @@ const XenomythologyFrameworkBuilder = () => {
           className="mt-8"
         />
 
-        {/* Section Navigation */}
-        <SectionNavigation sections={SECTIONS} />
+        {/* Desktop Sidebars - Right side */}
+        <ToolSidebar>
+          <SectionNavigation sections={SECTIONS} mode="inline" />
+          <KeyChoicesSidebar sections={keyChoicesSections} title="Mythology Summary" mode="inline" />
+        </ToolSidebar>
 
-        {/* Key Choices Sidebar */}
-        <KeyChoicesSidebar
-          sections={keyChoicesSections}
-          title="Mythology Summary"
-        />
+        {/* Mobile Sidebars - Right side floating buttons */}
+        <div className="fixed right-4 bottom-4 xl:hidden z-40 no-print flex flex-col gap-2">
+          <MobileSectionNav sections={SECTIONS} />
+          <MobileKeyChoices sections={keyChoicesSections} title="Mythology Summary" />
+        </div>
       </main>
 
       {/* Footer */}

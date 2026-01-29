@@ -24,9 +24,10 @@ import WorksheetLinkSelector from "@/components/tools/WorksheetLinkSelector";
 import { useWorlds } from "@/hooks/use-worlds";
 import { useAuth } from "@/contexts/AuthContext";
 import WorldSelectDialog, { SaveSelection } from "@/components/tools/WorldSelectDialog";
-import SectionNavigation, { Section } from "@/components/tools/SectionNavigation";
+import SectionNavigation, { Section, MobileSectionNav } from "@/components/tools/SectionNavigation";
+import ToolSidebar from "@/components/tools/ToolSidebar";
 import CollapsibleSection from "@/components/tools/CollapsibleSection";
-import KeyChoicesSidebar, { KeyChoicesSection } from "@/components/tools/KeyChoicesSidebar";
+import KeyChoicesSidebar, { KeyChoicesSection, MobileKeyChoices } from "@/components/tools/KeyChoicesSidebar";
 import ToolActionBar from "@/components/tools/ToolActionBar";
 import SelectedParametersSidebar from "@/components/tools/SelectedParametersSidebar";
 import ExportDialog from "@/components/tools/ExportDialog";
@@ -1456,14 +1457,17 @@ const EnvironmentalChainReaction = () => {
           </p>
         </GlassPanel>
 
-        {/* Section Navigation */}
-        <SectionNavigation sections={SECTIONS} />
+        {/* Desktop Sidebars - Right side */}
+        <ToolSidebar>
+          <SectionNavigation sections={SECTIONS} mode="inline" />
+          <KeyChoicesSidebar sections={keyChoicesSections} title="Cascade Summary" mode="inline" />
+        </ToolSidebar>
 
-        {/* Key Choices Sidebar */}
-        <KeyChoicesSidebar
-          sections={keyChoicesSections}
-          title="Cascade Summary"
-        />
+        {/* Mobile Sidebars - Right side floating buttons */}
+        <div className="fixed right-4 bottom-4 xl:hidden z-40 no-print flex flex-col gap-2">
+          <MobileSectionNav sections={SECTIONS} />
+          <MobileKeyChoices sections={keyChoicesSections} title="Cascade Summary" />
+        </div>
       </main>
 
       {/* Footer */}
