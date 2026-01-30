@@ -70,9 +70,10 @@ Deno.serve(async (req) => {
     );
   } catch (error) {
     console.error('Notion auth callback error:', error);
+    // Return 200 with error for consistent handling
     return new Response(
-      JSON.stringify({ error: error.message }),
-      { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      JSON.stringify({ success: false, error: error.message }),
+      { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
 });

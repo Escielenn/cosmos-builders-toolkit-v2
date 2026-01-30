@@ -22,10 +22,21 @@ Deno.serve(async (req) => {
   }
 
   try {
-    // Verify user is authenticated
-    const authHeader = req.headers.get('Authorization');
-    if (!authHeader) {
-      throw new Error('Not authenticated');
+    // Get request body first (token may be in body)
+    const body = await req.json();
+    const { toolName, worldName, worksheetTitle, data, parentPageId, token: bodyToken } = body;
+
+    // Get token from body or header
+    let token = bodyToken;
+    if (!token) {
+      const authHeader = req.headers.get('Authorization');
+      if (authHeader) {
+        token = authHeader.replace('Bearer ', '');
+      }
+    }
+
+    if (!token) {
+      throw new Error('Not authenticated: No token provided');
     }
 
     const supabaseClient = createClient(
@@ -33,15 +44,11 @@ Deno.serve(async (req) => {
       Deno.env.get('SUPABASE_ANON_KEY') || ''
     );
 
-    const token = authHeader.replace('Bearer ', '');
     const { data: { user }, error: userError } = await supabaseClient.auth.getUser(token);
 
     if (userError || !user) {
       throw new Error('Not authenticated');
     }
-
-    // Get request body
-    const { toolName, worldName, worksheetTitle, data, parentPageId } = await req.json();
 
     if (!toolName || !data) {
       throw new Error('Missing required fields: toolName and data');
@@ -142,9 +149,10 @@ Deno.serve(async (req) => {
     );
   } catch (error) {
     console.error('Notion export error:', error);
+    // Return 200 with error for consistent handling
     return new Response(
-      JSON.stringify({ error: error.message }),
-      { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      JSON.stringify({ success: false, error: error.message }),
+      { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
 });

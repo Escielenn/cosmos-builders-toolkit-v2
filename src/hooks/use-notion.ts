@@ -178,10 +178,6 @@ export function useNotion() {
   // Handle OAuth callback (call this from the callback page)
   const handleCallback = useCallback(
     async (code: string, state: string) => {
-      if (!session?.access_token) {
-        return { success: false, error: "Not authenticated" };
-      }
-
       // Verify state matches
       const savedState = sessionStorage.getItem("notion_oauth_state");
       if (state !== savedState) {
@@ -189,16 +185,35 @@ export function useNotion() {
       }
 
       try {
-        const response = await supabase.functions.invoke("notion-auth-callback", {
-          body: { code, state },
-        });
+        const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+        const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 
-        if (response.error) {
-          throw new Error(response.error.message);
+        const fetchResponse = await fetch(
+          `${SUPABASE_URL}/functions/v1/notion-auth-callback`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "apikey": SUPABASE_ANON_KEY,
+            },
+            body: JSON.stringify({ code, state }),
+          }
+        );
+
+        if (!fetchResponse.ok) {
+          const errorText = await fetchResponse.text();
+          console.error("Callback fetch error:", errorText);
+          throw new Error(`Server error: ${fetchResponse.status}`);
+        }
+
+        const data = await fetchResponse.json();
+
+        if (data.error) {
+          throw new Error(data.error);
         }
 
         sessionStorage.removeItem("notion_oauth_state");
-        return { success: true, ...response.data };
+        return { success: true, ...data };
       } catch (error) {
         return {
           success: false,
@@ -206,7 +221,7 @@ export function useNotion() {
         };
       }
     },
-    [session]
+    []
   );
 
   // Export to Notion
@@ -222,25 +237,37 @@ export function useNotion() {
 
       setIsExporting(true);
       try {
-        const response = await supabase.functions.invoke("notion-export", {
-          body: params,
-          headers: {
-            Authorization: `Bearer ${session.access_token}`,
-          },
-        });
+        const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+        const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 
-        if (response.error) {
-          throw new Error(response.error.message);
+        const fetchResponse = await fetch(
+          `${SUPABASE_URL}/functions/v1/notion-export`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "apikey": SUPABASE_ANON_KEY,
+            },
+            body: JSON.stringify({ ...params, token: session.access_token }),
+          }
+        );
+
+        if (!fetchResponse.ok) {
+          const errorText = await fetchResponse.text();
+          console.error("Export fetch error:", errorText);
+          throw new Error(`Server error: ${fetchResponse.status}`);
         }
 
-        if (response.data.error) {
-          throw new Error(response.data.error);
+        const data = await fetchResponse.json();
+
+        if (data.error) {
+          throw new Error(data.error);
         }
 
         return {
           success: true,
-          pageId: response.data.pageId,
-          pageUrl: response.data.pageUrl,
+          pageId: data.pageId,
+          pageUrl: data.pageUrl,
         };
       } catch (error) {
         return {

@@ -1,1 +1,11 @@
-project_id = "zdfrcpliqkhrpvtaurcd"
+# Supabase project configuration
+project_id = "sgoefchwjumzgfupqdzt"
+
+[functions.notion-auth-start]
+verify_jwt = false
+
+[functions.notion-auth-callback]
+verify_jwt = false
+
+[functions.notion-export]
+verify_jwt = false
