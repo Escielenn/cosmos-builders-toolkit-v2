@@ -176,21 +176,21 @@ const WorksheetSelectorDialog = ({
               </div>
             </ScrollArea>
 
-            <div className="flex gap-2 mt-4">
+            <div className="flex gap-2 mt-4 pt-4 border-t border-border">
               <Button
                 variant="outline"
                 onClick={() => setShowCreateForm(true)}
                 className="flex-1"
               >
                 <Plus className="w-4 h-4 mr-2" />
-                Create New
+                New
               </Button>
               <Button
                 onClick={handleOpenSelected}
                 disabled={!selectedWorksheetId}
                 className="flex-1"
               >
-                Open {selectedWorksheet?.title ? `"${selectedWorksheet.title}"` : "Selected"}
+                Open Selected
               </Button>
             </div>
           </div>

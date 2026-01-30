@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { ArrowLeft, Download, Save, Info, Printer, ExternalLink, Cloud, CloudOff, Globe } from "lucide-react";
+import { ArrowLeft, Download, Save, Info, Printer, ExternalLink, Cloud, CloudOff, Globe, FileText } from "lucide-react";
 import Header from "@/components/layout/Header";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";

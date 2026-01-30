@@ -1,4 +1,4 @@
-import { Crown, Zap, Link2, FileDown, Infinity } from "lucide-react";
+import { Crown, Zap, Link2, FileDown, Infinity, ExternalLink } from "lucide-react";
 import { Link } from "react-router-dom";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
@@ -20,7 +20,13 @@ const benefits = [
     icon: FileDown,
     title: "Professional Exports",
     description:
-      "Generate beautiful PDFs, print-friendly summaries, and detailed full reports of your worldbuilding.",
+      "Generate PDFs, Word docs, plain text, and JSON. Export directly to your Notion workspace.",
+  },
+  {
+    icon: ExternalLink,
+    title: "Notion Integration",
+    description:
+      "Connect your Notion workspace and export worksheets as pages. Your worldbuilding, where you work.",
   },
   {
     icon: Infinity,
