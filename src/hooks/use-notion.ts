@@ -77,17 +77,53 @@ export function useNotion() {
 
     setIsConnecting(true);
     try {
-      const response = await supabase.functions.invoke("notion-auth-start", {
-        headers: {
-          Authorization: `Bearer ${session.access_token}`,
-        },
+      // Get current session to verify auth state
+      const { data: { session: currentSession } } = await supabase.auth.getSession();
+      console.log("Current session:", {
+        hasSession: !!currentSession,
+        hasAccessToken: !!currentSession?.access_token,
+        tokenPreview: currentSession?.access_token?.substring(0, 30) + "...",
+        expiresAt: currentSession?.expires_at,
       });
 
-      if (response.error) {
-        throw new Error(response.error.message);
+      if (!currentSession?.access_token) {
+        throw new Error("No valid session - please sign in again");
       }
 
-      const { authUrl, state } = response.data;
+      // Use fetch directly to bypass Supabase client auth issues
+      const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+      const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+
+      const fetchResponse = await fetch(
+        `${SUPABASE_URL}/functions/v1/notion-auth-start`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "apikey": SUPABASE_ANON_KEY,
+            "Authorization": `Bearer ${currentSession.access_token}`,
+          },
+          body: JSON.stringify({ token: currentSession.access_token }),
+        }
+      );
+
+      console.log("Fetch response status:", fetchResponse.status);
+
+      if (!fetchResponse.ok) {
+        const errorText = await fetchResponse.text();
+        console.error("Fetch error:", errorText);
+        throw new Error(`Server error: ${fetchResponse.status}`);
+      }
+
+      const data = await fetchResponse.json() as { success: boolean; error?: string; authUrl?: string; state?: string };
+      console.log("notion-auth-start response:", data);
+
+      if (!data.success) {
+        console.error("Notion auth start error:", data.error);
+        throw new Error(data.error || "Failed to start Notion connection");
+      }
+
+      const { authUrl, state } = data;
 
       // Store state in sessionStorage for callback verification
       sessionStorage.setItem("notion_oauth_state", state);

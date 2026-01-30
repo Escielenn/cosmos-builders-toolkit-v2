@@ -10,26 +10,55 @@ Deno.serve(async (req) => {
   }
 
   try {
-    // Verify user is authenticated
-    const authHeader = req.headers.get('Authorization');
-    if (!authHeader) {
-      throw new Error('Not authenticated');
+    // Get token from request body (bypasses gateway auth issues)
+    let token: string | undefined;
+
+    // Try to get token from body first
+    try {
+      const body = await req.json();
+      token = body?.token;
+    } catch {
+      // No body or invalid JSON - try header as fallback
     }
 
-    const supabaseClient = createClient(
-      Deno.env.get('SUPABASE_URL') || '',
-      Deno.env.get('SUPABASE_ANON_KEY') || ''
-    );
+    // Fallback to Authorization header
+    if (!token) {
+      const authHeader = req.headers.get('Authorization');
+      if (authHeader) {
+        token = authHeader.replace('Bearer ', '');
+      }
+    }
 
-    const token = authHeader.replace('Bearer ', '');
+    if (!token) {
+      throw new Error('Not authenticated: No token provided');
+    }
+
+    const supabaseUrl = Deno.env.get('SUPABASE_URL');
+    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY');
+
+    if (!supabaseUrl || !supabaseAnonKey) {
+      throw new Error('Server configuration error: Missing Supabase credentials');
+    }
+
+    const supabaseClient = createClient(supabaseUrl, supabaseAnonKey);
+
     const { data: { user }, error: userError } = await supabaseClient.auth.getUser(token);
 
-    if (userError || !user) {
-      throw new Error('Not authenticated');
+    if (userError) {
+      throw new Error(`Authentication failed: ${userError.message}`);
     }
 
-    if (!NOTION_CLIENT_ID || !NOTION_REDIRECT_URI) {
-      throw new Error('Notion OAuth not configured');
+    if (!user) {
+      throw new Error('Not authenticated: Invalid token');
+    }
+
+    // Check Notion OAuth configuration
+    if (!NOTION_CLIENT_ID) {
+      throw new Error('Notion OAuth not configured: Missing NOTION_CLIENT_ID. Please set this secret in Supabase Edge Functions settings.');
+    }
+
+    if (!NOTION_REDIRECT_URI) {
+      throw new Error('Notion OAuth not configured: Missing NOTION_REDIRECT_URI. Please set this secret in Supabase Edge Functions settings.');
     }
 
     // Generate state for CSRF protection (include user ID)
@@ -50,14 +79,15 @@ Deno.serve(async (req) => {
     const authUrl = `https://api.notion.com/v1/oauth/authorize?${params.toString()}`;
 
     return new Response(
-      JSON.stringify({ authUrl, state }),
+      JSON.stringify({ success: true, authUrl, state }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   } catch (error) {
     console.error('Notion auth start error:', error);
+    // Return 200 with error in body - Supabase client handles this better than non-2xx
     return new Response(
-      JSON.stringify({ error: error.message }),
-      { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      JSON.stringify({ success: false, error: error.message }),
+      { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
 });
