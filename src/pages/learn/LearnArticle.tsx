@@ -1,23 +1,28 @@
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, Calendar, Tag } from "lucide-react";
+import { ArrowLeft, Calendar, Loader2 } from "lucide-react";
 import Header from "@/components/layout/Header";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Badge } from "@/components/ui/badge";
-// Temporary: Import MDX content directly
-// Once Keystatic is fully set up, this will read from the content directory
-import DrakeEquationContent from "@/content/learn/drake-equation/content.mdx";
+import { useArticle } from "@/hooks/use-sanity-articles";
+import { PortableTextRenderer } from "@/components/sanity/PortableTextRenderer";
+// Fallback MDX content for when Sanity is empty
+import DrakeEquationContent from "@/content/learn/drake-equation/index.mdx";
 
-// Article metadata (will come from Keystatic)
-const articleMeta: Record<string, {
-  title: string;
-  description: string;
-  category: string;
-  publishedDate: string;
-  content: React.ComponentType;
-}> = {
+// Fallback article metadata (for MDX content)
+const fallbackMeta: Record<
+  string,
+  {
+    title: string;
+    description: string;
+    category: string;
+    publishedDate: string;
+    content: React.ComponentType;
+  }
+> = {
   "drake-equation": {
     title: "The Drake Equation: A Worldbuilder's Tool",
-    description: "How the famous equation for estimating extraterrestrial civilizations can help you design believable alien worlds and galactic settings.",
+    description:
+      "How the famous equation for estimating extraterrestrial civilizations can help you design believable alien worlds and galactic settings.",
     category: "science",
     publishedDate: "2026-01-22",
     content: DrakeEquationContent,
@@ -40,9 +45,35 @@ const categoryColors: Record<string, string> = {
 
 const LearnArticle = () => {
   const { slug } = useParams<{ slug: string }>();
+  const { data: sanityArticle, isLoading, error } = useArticle(slug);
 
-  const article = slug ? articleMeta[slug] : null;
+  // Check for fallback MDX content
+  const fallbackArticle = slug ? fallbackMeta[slug] : null;
 
+  // Use Sanity article if available, otherwise use fallback
+  const useSanityContent = sanityArticle && sanityArticle.content;
+  const article = useSanityContent
+    ? {
+        title: sanityArticle.title,
+        description: sanityArticle.description,
+        category: sanityArticle.category,
+        publishedDate: sanityArticle.publishedDate,
+      }
+    : fallbackArticle;
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <main className="container mx-auto px-4 pt-24 pb-16 flex justify-center">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </main>
+      </div>
+    );
+  }
+
+  // Not found state
   if (!article) {
     return (
       <div className="min-h-screen bg-background">
@@ -66,7 +97,8 @@ const LearnArticle = () => {
     );
   }
 
-  const Content = article.content;
+  // Render MDX fallback content
+  const FallbackContent = fallbackArticle?.content;
 
   return (
     <div className="min-h-screen bg-background">
@@ -108,7 +140,15 @@ const LearnArticle = () => {
         {/* Article Content */}
         <GlassPanel className="p-6 md:p-10">
           <article className="prose prose-invert prose-lg max-w-none prose-headings:font-display prose-headings:font-semibold prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-blockquote:border-primary prose-blockquote:not-italic prose-code:bg-muted prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:before:content-none prose-code:after:content-none">
-            <Content />
+            {useSanityContent ? (
+              <PortableTextRenderer content={sanityArticle.content} />
+            ) : FallbackContent ? (
+              <FallbackContent />
+            ) : (
+              <p className="text-muted-foreground">
+                Content not available.
+              </p>
+            )}
           </article>
         </GlassPanel>
 

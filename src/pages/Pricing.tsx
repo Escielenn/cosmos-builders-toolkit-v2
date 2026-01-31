@@ -180,10 +180,10 @@ const Pricing = () => {
                 Pro
               </h2>
               <div className="flex items-baseline gap-2">
-                <p className="text-4xl font-bold">$12.50</p>
+                <p className="text-4xl font-bold">$4.99</p>
                 <span className="text-lg text-muted-foreground">/month</span>
               </div>
-              <p className="text-sm text-muted-foreground">or $99/year (save 34%)</p>
+              <p className="text-sm text-muted-foreground">or $49/year (save 18%)</p>
             </div>
 
             <ul className="space-y-3 mb-8">
@@ -234,7 +234,7 @@ const Pricing = () => {
                   ) : (
                     <Crown className="w-4 h-4 mr-2" />
                   )}
-                  Get Pro Yearly - $99/year
+                  Get Pro Yearly - $49/year
                 </Button>
                 <Button
                   variant="outline"
@@ -245,7 +245,7 @@ const Pricing = () => {
                   {loading === 'monthly' ? (
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                   ) : null}
-                  Monthly - $12.50/month
+                  Monthly - $4.99/month
                 </Button>
               </div>
             )}

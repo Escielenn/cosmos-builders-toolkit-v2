@@ -1,34 +1,21 @@
 import { Link } from "react-router-dom";
-import { BookOpen, ArrowRight, Calendar } from "lucide-react";
+import { BookOpen, ArrowRight, Calendar, Loader2 } from "lucide-react";
 import Header from "@/components/layout/Header";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Badge } from "@/components/ui/badge";
-// This will be populated from Keystatic content
-// For now, we'll use static data that matches the Keystatic schema
-const articles = [
+import { useArticles } from "@/hooks/use-sanity-articles";
+
+// Fallback static articles (shown when Sanity has no content yet)
+const fallbackArticles = [
   {
+    _id: "fallback-drake",
     slug: "drake-equation",
     title: "The Drake Equation: A Worldbuilder's Tool",
-    description: "How the famous equation for estimating extraterrestrial civilizations can help you design believable alien worlds and galactic settings.",
+    description:
+      "How the famous equation for estimating extraterrestrial civilizations can help you design believable alien worlds and galactic settings.",
     category: "science",
     publishedDate: "2026-01-22",
     featured: true,
-  },
-  {
-    slug: "worldbuilding-basics",
-    title: "Worldbuilding From the Ground Up",
-    description: "Start with physics, end with mythology. A systematic approach to creating consistent fictional worlds.",
-    category: "basics",
-    publishedDate: "2026-01-20",
-    featured: true,
-  },
-  {
-    slug: "cascade-consequences",
-    title: "The Cascade of Consequences",
-    description: "Why one environmental choice leads to a thousand cultural outcomes—and how to trace those connections.",
-    category: "craft",
-    publishedDate: "2026-01-18",
-    featured: false,
   },
 ];
 
@@ -47,6 +34,14 @@ const categoryColors: Record<string, string> = {
 };
 
 const LearnIndex = () => {
+  const { data: sanityArticles, isLoading, error } = useArticles();
+
+  // Use Sanity articles if available, otherwise fall back to static
+  const articles =
+    sanityArticles && sanityArticles.length > 0
+      ? sanityArticles
+      : fallbackArticles;
+
   const featuredArticles = articles.filter((a) => a.featured);
   const recentArticles = articles.filter((a) => !a.featured);
 
@@ -64,17 +59,36 @@ const LearnIndex = () => {
             <span className="gradient-text">Learn</span>
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Deep dives into worldbuilding concepts, science for storytellers, and the craft of creating believable fictional universes.
+            Deep dives into worldbuilding concepts, science for storytellers,
+            and the craft of creating believable fictional universes.
           </p>
         </section>
 
+        {/* Loading State */}
+        {isLoading && (
+          <div className="flex justify-center py-12">
+            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+          </div>
+        )}
+
+        {/* Error State */}
+        {error && !isLoading && (
+          <GlassPanel className="p-4 mb-8 border-amber-500/50">
+            <p className="text-amber-400 text-sm">
+              Unable to load articles from CMS. Showing cached content.
+            </p>
+          </GlassPanel>
+        )}
+
         {/* Featured Articles */}
-        {featuredArticles.length > 0 && (
+        {!isLoading && featuredArticles.length > 0 && (
           <section className="mb-12">
-            <h2 className="font-display text-2xl font-semibold mb-6">Featured</h2>
+            <h2 className="font-display text-2xl font-semibold mb-6">
+              Featured
+            </h2>
             <div className="grid gap-6 md:grid-cols-2">
               {featuredArticles.map((article) => (
-                <Link key={article.slug} to={`/learn/${article.slug}`}>
+                <Link key={article._id} to={`/learn/${article.slug}`}>
                   <GlassPanel
                     glow
                     className="p-6 h-full hover:bg-accent/50 transition-colors cursor-pointer group"
@@ -91,11 +105,14 @@ const LearnIndex = () => {
                     <div className="flex items-center justify-between">
                       <span className="text-xs text-muted-foreground flex items-center gap-1">
                         <Calendar className="w-3 h-3" />
-                        {new Date(article.publishedDate).toLocaleDateString("en-US", {
-                          month: "short",
-                          day: "numeric",
-                          year: "numeric",
-                        })}
+                        {new Date(article.publishedDate).toLocaleDateString(
+                          "en-US",
+                          {
+                            month: "short",
+                            day: "numeric",
+                            year: "numeric",
+                          }
+                        )}
                       </span>
                       <span className="text-primary text-sm flex items-center gap-1 group-hover:gap-2 transition-all">
                         Read more <ArrowRight className="w-4 h-4" />
@@ -109,40 +126,50 @@ const LearnIndex = () => {
         )}
 
         {/* All Articles */}
-        <section>
-          <h2 className="font-display text-2xl font-semibold mb-6">All Articles</h2>
-          <div className="space-y-4">
-            {articles.map((article) => (
-              <Link key={article.slug} to={`/learn/${article.slug}`}>
-                <GlassPanel className="p-4 hover:bg-accent/50 transition-colors cursor-pointer group">
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Badge variant="outline" className={categoryColors[article.category]}>
-                          {categoryLabels[article.category]}
-                        </Badge>
-                        <span className="text-xs text-muted-foreground">
-                          {new Date(article.publishedDate).toLocaleDateString("en-US", {
-                            month: "short",
-                            day: "numeric",
-                            year: "numeric",
-                          })}
-                        </span>
+        {!isLoading && (
+          <section>
+            <h2 className="font-display text-2xl font-semibold mb-6">
+              All Articles
+            </h2>
+            <div className="space-y-4">
+              {articles.map((article) => (
+                <Link key={article._id} to={`/learn/${article.slug}`}>
+                  <GlassPanel className="p-4 hover:bg-accent/50 transition-colors cursor-pointer group">
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Badge
+                            variant="outline"
+                            className={categoryColors[article.category]}
+                          >
+                            {categoryLabels[article.category]}
+                          </Badge>
+                          <span className="text-xs text-muted-foreground">
+                            {new Date(article.publishedDate).toLocaleDateString(
+                              "en-US",
+                              {
+                                month: "short",
+                                day: "numeric",
+                                year: "numeric",
+                              }
+                            )}
+                          </span>
+                        </div>
+                        <h3 className="font-semibold group-hover:text-primary transition-colors">
+                          {article.title}
+                        </h3>
+                        <p className="text-sm text-muted-foreground mt-1">
+                          {article.description}
+                        </p>
                       </div>
-                      <h3 className="font-semibold group-hover:text-primary transition-colors">
-                        {article.title}
-                      </h3>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        {article.description}
-                      </p>
+                      <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors shrink-0 mt-1" />
                     </div>
-                    <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors shrink-0 mt-1" />
-                  </div>
-                </GlassPanel>
-              </Link>
-            ))}
-          </div>
-        </section>
+                  </GlassPanel>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
       </main>
 
       {/* Footer */}
