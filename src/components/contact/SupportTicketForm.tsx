@@ -16,6 +16,7 @@ import { Loader2, Send, CheckCircle, Copy } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useContact } from "@/hooks/use-contact";
 import { useAuth } from "@/contexts/AuthContext";
+import HoneypotField from "./HoneypotField";
 import {
   supportTicketSchema,
   type SupportTicketFormData,
@@ -33,6 +34,7 @@ const SupportTicketForm = ({ onSuccess }: SupportTicketFormProps) => {
   const { toast } = useToast();
   const [submitted, setSubmitted] = useState(false);
   const [ticketNumber, setTicketNumber] = useState<string | null>(null);
+  const [honeypot, setHoneypot] = useState("");
 
   const {
     register,
@@ -54,7 +56,7 @@ const SupportTicketForm = ({ onSuccess }: SupportTicketFormProps) => {
 
   const onSubmit = async (data: SupportTicketFormData) => {
     try {
-      const result = await submitSupportTicket.mutateAsync(data);
+      const result = await submitSupportTicket.mutateAsync({ ...data, honeypot });
       setTicketNumber(result.ticketNumber);
       setSubmitted(true);
       toast({
@@ -62,6 +64,7 @@ const SupportTicketForm = ({ onSuccess }: SupportTicketFormProps) => {
         description: `Your ticket number is ${result.ticketNumber}`,
       });
       reset();
+      setHoneypot("");
       onSuccess?.();
     } catch (error) {
       toast({
@@ -117,6 +120,11 @@ const SupportTicketForm = ({ onSuccess }: SupportTicketFormProps) => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <HoneypotField
+        value={honeypot}
+        onChange={(e) => setHoneypot(e.target.value)}
+      />
+
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="ticket-name">Name</Label>

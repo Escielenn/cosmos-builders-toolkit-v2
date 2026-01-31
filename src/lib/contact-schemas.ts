@@ -66,3 +66,6 @@ export type SimpleSubmissionFormData = z.infer<typeof simpleSubmissionSchema>;
 
 // Submission types for the simple form
 export type SimpleSubmissionType = "feature" | "bug" | "beta";
+
+// Honeypot field for spam protection (should always be empty)
+export const honeypotFieldName = "website_url" as const;

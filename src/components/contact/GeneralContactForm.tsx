@@ -9,6 +9,7 @@ import { Loader2, Send, CheckCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useContact } from "@/hooks/use-contact";
 import { useAuth } from "@/contexts/AuthContext";
+import HoneypotField from "./HoneypotField";
 import {
   generalContactSchema,
   type GeneralContactFormData,
@@ -23,6 +24,7 @@ const GeneralContactForm = ({ onSuccess }: GeneralContactFormProps) => {
   const { submitContactForm } = useContact();
   const { toast } = useToast();
   const [submitted, setSubmitted] = useState(false);
+  const [honeypot, setHoneypot] = useState("");
 
   const {
     register,
@@ -40,13 +42,14 @@ const GeneralContactForm = ({ onSuccess }: GeneralContactFormProps) => {
 
   const onSubmit = async (data: GeneralContactFormData) => {
     try {
-      await submitContactForm.mutateAsync(data);
+      await submitContactForm.mutateAsync({ ...data, honeypot });
       setSubmitted(true);
       toast({
         title: "Message sent!",
         description: "We'll get back to you as soon as possible.",
       });
       reset();
+      setHoneypot("");
       onSuccess?.();
     } catch (error) {
       toast({
@@ -79,6 +82,11 @@ const GeneralContactForm = ({ onSuccess }: GeneralContactFormProps) => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <HoneypotField
+        value={honeypot}
+        onChange={(e) => setHoneypot(e.target.value)}
+      />
+
       <div className="space-y-2">
         <Label htmlFor="contact-name">Name</Label>
         <Input

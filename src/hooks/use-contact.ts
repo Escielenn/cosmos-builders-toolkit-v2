@@ -8,11 +8,21 @@ import type {
   SimpleSubmissionType,
 } from "@/lib/contact-schemas";
 
+// Helper to check honeypot - returns true if it's a bot
+const isBot = (honeypot?: string): boolean => {
+  return !!honeypot && honeypot.length > 0;
+};
+
 export const useContact = () => {
   const { user } = useAuth();
 
   const submitContactForm = useMutation({
-    mutationFn: async (data: GeneralContactFormData) => {
+    mutationFn: async (data: GeneralContactFormData & { honeypot?: string }) => {
+      // Honeypot check - silently succeed if bot detected
+      if (isBot(data.honeypot)) {
+        return { success: true, blocked: true };
+      }
+
       // Insert to database
       const { error: dbError } = await supabase
         .from("contact_submissions")
@@ -36,7 +46,12 @@ export const useContact = () => {
   });
 
   const submitSupportTicket = useMutation({
-    mutationFn: async (data: SupportTicketFormData) => {
+    mutationFn: async (data: SupportTicketFormData & { honeypot?: string }) => {
+      // Honeypot check - silently succeed if bot detected
+      if (isBot(data.honeypot)) {
+        return { success: true, blocked: true, ticketNumber: "TKT-BLOCKED" };
+      }
+
       // Insert to database
       const { data: ticketData, error: dbError } = await supabase
         .from("support_tickets")
@@ -72,10 +87,17 @@ export const useContact = () => {
     mutationFn: async ({
       data,
       type,
+      honeypot,
     }: {
       data: SimpleSubmissionFormData;
       type: SimpleSubmissionType;
+      honeypot?: string;
     }) => {
+      // Honeypot check - silently succeed if bot detected
+      if (isBot(honeypot)) {
+        return { success: true, blocked: true, ticketNumber: "TKT-BLOCKED" };
+      }
+
       const subjectPrefixes: Record<SimpleSubmissionType, string> = {
         feature: "Feature Request",
         bug: "Bug Report",

@@ -53,7 +53,7 @@ const Contact = () => {
                 <MessageSquare className="w-8 h-8 text-primary mx-auto mb-2" />
                 <h4 className="font-medium mb-1">Email</h4>
                 <p className="text-sm text-muted-foreground">
-                  support@stellarforge.io
+                  support@stellarforge.tools
                 </p>
               </div>
               <div className="text-center p-4">
