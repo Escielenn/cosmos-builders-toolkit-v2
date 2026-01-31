@@ -1,4 +1,5 @@
 import { FlaskConical } from "lucide-react";
+import { Link } from "react-router-dom";
 
 interface BetaBannerProps {
   position?: "top" | "bottom";
@@ -14,7 +15,13 @@ const BetaBanner = ({ position = "top" }: BetaBannerProps) => {
       <div className="container mx-auto flex items-center justify-center gap-2">
         <FlaskConical className="w-4 h-4" />
         <span>
-          <strong>StellarForge</strong> is currently in beta. We'd love your feedback!
+          <strong>StellarForge</strong> is currently in beta.{" "}
+          <Link
+            to="/contact?tab=beta"
+            className="underline hover:text-primary/80 transition-colors"
+          >
+            We'd love your feedback!
+          </Link>
         </span>
       </div>
     </div>
