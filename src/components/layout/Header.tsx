@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { User, LogIn, LogOut, ChevronDown, Crown, Menu, Globe, Wrench, BookOpen, Sparkles, Mail } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -25,7 +25,25 @@ const Header = () => {
   const { user, profile, signOut, loading } = useAuth();
   const { isSubscribed } = useSubscription();
   const navigate = useNavigate();
+  const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const scrollToSection = (sectionId: string) => {
+    const scroll = () => {
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
+    };
+
+    if (location.pathname !== "/") {
+      navigate("/");
+      // Wait for navigation, then scroll
+      setTimeout(scroll, 100);
+    } else {
+      scroll();
+    }
+  };
 
   const initials = profile?.display_name
     ? profile.display_name.split(" ").map(n => n[0]).join("").toUpperCase()
@@ -71,22 +89,26 @@ const Header = () => {
               </SheetTitle>
             </SheetHeader>
             <nav className="flex flex-col gap-1 mt-8">
-              <a
-                href="/#worlds"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  scrollToSection("worlds");
+                }}
+                className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors text-left"
               >
                 <Globe className="w-5 h-5" />
                 My Worlds
-              </a>
-              <a
-                href="/#tools"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
+              </button>
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  scrollToSection("tools");
+                }}
+                className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors text-left"
               >
                 <Wrench className="w-5 h-5" />
                 Tools
-              </a>
+              </button>
               <Link
                 to="/features"
                 onClick={() => setMobileMenuOpen(false)}
@@ -152,18 +174,18 @@ const Header = () => {
 
         {/* Desktop Navigation - StellarForge typography: uppercase, letter-spaced, light weight */}
         <nav className="hidden md:flex items-center gap-8">
-          <a
-            href="/#worlds"
+          <button
+            onClick={() => scrollToSection("worlds")}
             className="text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground hover:text-primary transition-colors duration-300"
           >
             Worlds
-          </a>
-          <a
-            href="/#tools"
+          </button>
+          <button
+            onClick={() => scrollToSection("tools")}
             className="text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground hover:text-primary transition-colors duration-300"
           >
             Tools
-          </a>
+          </button>
           <Link
             to="/features"
             className="text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground hover:text-primary transition-colors duration-300"
