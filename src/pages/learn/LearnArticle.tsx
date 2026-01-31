@@ -5,6 +5,7 @@ import { GlassPanel } from "@/components/ui/glass-panel";
 import { Badge } from "@/components/ui/badge";
 import { useArticle } from "@/hooks/use-sanity-articles";
 import { PortableTextRenderer } from "@/components/sanity/PortableTextRenderer";
+import { urlFor } from "@/lib/sanity/client";
 // Fallback MDX content for when Sanity is empty
 import DrakeEquationContent from "@/content/learn/drake-equation/index.mdx";
 
@@ -136,6 +137,17 @@ const LearnArticle = () => {
             </span>
           </div>
         </header>
+
+        {/* Featured Image */}
+        {useSanityContent && sanityArticle.featuredImage?.asset && (
+          <div className="mb-8 rounded-xl overflow-hidden">
+            <img
+              src={urlFor(sanityArticle.featuredImage).width(1200).height(630).url()}
+              alt={article.title}
+              className="w-full h-auto"
+            />
+          </div>
+        )}
 
         {/* Article Content */}
         <GlassPanel className="p-6 md:p-10">

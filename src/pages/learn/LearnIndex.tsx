@@ -4,6 +4,7 @@ import Header from "@/components/layout/Header";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Badge } from "@/components/ui/badge";
 import { useArticles } from "@/hooks/use-sanity-articles";
+import { urlFor } from "@/lib/sanity/client";
 
 // Fallback static articles (shown when Sanity has no content yet)
 const fallbackArticles = [
@@ -91,32 +92,43 @@ const LearnIndex = () => {
                 <Link key={article._id} to={`/learn/${article.slug}`}>
                   <GlassPanel
                     glow
-                    className="p-6 h-full hover:bg-accent/50 transition-colors cursor-pointer group"
+                    className="overflow-hidden h-full hover:bg-accent/50 transition-colors cursor-pointer group"
                   >
-                    <Badge className={categoryColors[article.category]}>
-                      {categoryLabels[article.category]}
-                    </Badge>
-                    <h3 className="font-display text-xl font-semibold mt-3 mb-2 group-hover:text-primary transition-colors">
-                      {article.title}
-                    </h3>
-                    <p className="text-muted-foreground text-sm mb-4">
-                      {article.description}
-                    </p>
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs text-muted-foreground flex items-center gap-1">
-                        <Calendar className="w-3 h-3" />
-                        {new Date(article.publishedDate).toLocaleDateString(
-                          "en-US",
-                          {
-                            month: "short",
-                            day: "numeric",
-                            year: "numeric",
-                          }
-                        )}
-                      </span>
-                      <span className="text-primary text-sm flex items-center gap-1 group-hover:gap-2 transition-all">
-                        Read more <ArrowRight className="w-4 h-4" />
-                      </span>
+                    {article.featuredImage?.asset && (
+                      <div className="aspect-video w-full overflow-hidden">
+                        <img
+                          src={urlFor(article.featuredImage).width(600).height(340).url()}
+                          alt={article.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                      </div>
+                    )}
+                    <div className="p-6">
+                      <Badge className={categoryColors[article.category]}>
+                        {categoryLabels[article.category]}
+                      </Badge>
+                      <h3 className="font-display text-xl font-semibold mt-3 mb-2 group-hover:text-primary transition-colors">
+                        {article.title}
+                      </h3>
+                      <p className="text-muted-foreground text-sm mb-4">
+                        {article.description}
+                      </p>
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-muted-foreground flex items-center gap-1">
+                          <Calendar className="w-3 h-3" />
+                          {new Date(article.publishedDate).toLocaleDateString(
+                            "en-US",
+                            {
+                              month: "short",
+                              day: "numeric",
+                              year: "numeric",
+                            }
+                          )}
+                        </span>
+                        <span className="text-primary text-sm flex items-center gap-1 group-hover:gap-2 transition-all">
+                          Read more <ArrowRight className="w-4 h-4" />
+                        </span>
+                      </div>
                     </div>
                   </GlassPanel>
                 </Link>
