@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { User, LogIn, LogOut, ChevronDown, Crown, Menu, Globe, Wrench, BookOpen, Sparkles } from "lucide-react";
+import { User, LogIn, LogOut, ChevronDown, Crown, Menu, Globe, Wrench, BookOpen, Sparkles, Mail } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -124,6 +124,14 @@ const Header = () => {
                   </>
                 )}
               </Link>
+              <Link
+                to="/contact"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
+              >
+                <Mail className="w-5 h-5" />
+                Contact
+              </Link>
             </nav>
             {!loading && !user && (
               <div className="mt-8 pt-8 border-t border-border/30">
@@ -184,6 +192,12 @@ const Header = () => {
             ) : (
               "Pricing"
             )}
+          </Link>
+          <Link
+            to="/contact"
+            className="text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground hover:text-primary transition-colors duration-300"
+          >
+            Contact
           </Link>
         </nav>
 

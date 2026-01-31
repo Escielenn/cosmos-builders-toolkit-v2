@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import BackgroundProvider from "@/components/providers/BackgroundProvider";
 import ScrollToTop from "./components/ScrollToTop";
+import ContactFAB from "./components/contact/ContactFAB";
 import { Loader2 } from "lucide-react";
 
 // Eagerly loaded pages (small, frequently accessed)
@@ -18,6 +19,7 @@ import Auth from "./pages/Auth";
 const Profile = lazy(() => import("./pages/Profile"));
 const Pricing = lazy(() => import("./pages/Pricing"));
 const Features = lazy(() => import("./pages/Features"));
+const Contact = lazy(() => import("./pages/Contact"));
 const WorldDashboard = lazy(() => import("./pages/WorldDashboard"));
 const WorldConnections = lazy(() => import("./pages/WorldConnections"));
 
@@ -68,6 +70,7 @@ const App = () => (
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/pricing" element={<Pricing />} />
                 <Route path="/features" element={<Features />} />
+                <Route path="/contact" element={<Contact />} />
                 <Route path="/worlds/:worldId" element={<WorldDashboard />} />
                 <Route path="/worlds/:worldId/connections" element={<WorldConnections />} />
                 {/* Free Tools */}
@@ -116,6 +119,7 @@ const App = () => (
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>
+            <ContactFAB />
           </BrowserRouter>
         </TooltipProvider>
       </BackgroundProvider>

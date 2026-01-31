@@ -14,6 +14,84 @@ export type Database = {
   }
   public: {
     Tables: {
+      contact_submissions: {
+        Row: {
+          id: string
+          name: string
+          email: string
+          message: string
+          user_id: string | null
+          status: "new" | "read" | "responded" | "archived"
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          email: string
+          message: string
+          user_id?: string | null
+          status?: "new" | "read" | "responded" | "archived"
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          email?: string
+          message?: string
+          user_id?: string | null
+          status?: "new" | "read" | "responded" | "archived"
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      support_tickets: {
+        Row: {
+          id: string
+          ticket_number: string
+          name: string
+          email: string
+          category: "bug" | "feature" | "billing" | "account" | "other"
+          priority: "low" | "normal" | "high" | "urgent"
+          subject: string
+          message: string
+          user_id: string | null
+          status: "open" | "in_progress" | "waiting" | "resolved" | "closed"
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          ticket_number?: string
+          name: string
+          email: string
+          category: "bug" | "feature" | "billing" | "account" | "other"
+          priority?: "low" | "normal" | "high" | "urgent"
+          subject: string
+          message: string
+          user_id?: string | null
+          status?: "open" | "in_progress" | "waiting" | "resolved" | "closed"
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          ticket_number?: string
+          name?: string
+          email?: string
+          category?: "bug" | "feature" | "billing" | "account" | "other"
+          priority?: "low" | "normal" | "high" | "urgent"
+          subject?: string
+          message?: string
+          user_id?: string | null
+          status?: "open" | "in_progress" | "waiting" | "resolved" | "closed"
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       notion_connections: {
         Row: {
           id: string
