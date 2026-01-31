@@ -78,6 +78,79 @@ const BACKGROUND_OPTIONS: BackgroundOption[] = [
     url: "https://images.unsplash.com/photo-1465101162946-4377e57745c3?w=1920&q=80",
     category: "space",
   },
+  // ESA Hubble Space Telescope Images (Public Domain)
+  {
+    id: "orion-nebula",
+    name: "Orion Nebula",
+    url: "https://cdn.esahubble.org/archives/images/wallpaper4/heic0601a.jpg",
+    category: "space",
+  },
+  {
+    id: "crab-nebula",
+    name: "Crab Nebula",
+    url: "https://cdn.esahubble.org/archives/images/wallpaper4/heic0515a.jpg",
+    category: "space",
+  },
+  {
+    id: "pillars-of-creation",
+    name: "Pillars of Creation",
+    url: "https://cdn.esahubble.org/archives/images/wallpaper4/heic1501a.jpg",
+    category: "space",
+  },
+  {
+    id: "bubble-nebula",
+    name: "Bubble Nebula",
+    url: "https://cdn.esahubble.org/archives/images/wallpaper4/heic1608a.jpg",
+    category: "space",
+  },
+  {
+    id: "mystic-mountain",
+    name: "Mystic Mountain",
+    url: "https://cdn.esahubble.org/archives/images/wallpaper4/heic1007a.jpg",
+    category: "space",
+  },
+  {
+    id: "butterfly-nebula",
+    name: "Butterfly Nebula",
+    url: "https://cdn.esahubble.org/archives/images/wallpaper4/heic0910h.jpg",
+    category: "space",
+  },
+  {
+    id: "whirlpool-galaxy",
+    name: "Whirlpool Galaxy",
+    url: "https://cdn.esahubble.org/archives/images/wallpaper4/heic0506a.jpg",
+    category: "space",
+  },
+  {
+    id: "andromeda",
+    name: "Andromeda Galaxy",
+    url: "https://cdn.esahubble.org/archives/images/wallpaper4/heic1502a.jpg",
+    category: "space",
+  },
+  {
+    id: "starburst-m82",
+    name: "Starburst Galaxy M82",
+    url: "https://cdn.esahubble.org/archives/images/wallpaper4/heic0604a.jpg",
+    category: "space",
+  },
+  {
+    id: "ring-nebula",
+    name: "Ring Nebula",
+    url: "https://cdn.esahubble.org/archives/images/wallpaper4/heic1310a.jpg",
+    category: "space",
+  },
+  {
+    id: "lagoon-nebula",
+    name: "Lagoon Nebula",
+    url: "https://cdn.esahubble.org/archives/images/wallpaper4/heic1808a.jpg",
+    category: "space",
+  },
+  {
+    id: "tarantula-nebula",
+    name: "Tarantula Nebula",
+    url: "https://cdn.esahubble.org/archives/images/wallpaper4/heic1105a.jpg",
+    category: "space",
+  },
   // Gradients
   {
     id: "gradient-void",
