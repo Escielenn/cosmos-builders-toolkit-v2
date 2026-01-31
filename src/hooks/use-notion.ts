@@ -77,20 +77,14 @@ export function useNotion() {
 
     setIsConnecting(true);
     try {
-      // Get current session to verify auth state
+      // Get current session
       const { data: { session: currentSession } } = await supabase.auth.getSession();
-      console.log("Current session:", {
-        hasSession: !!currentSession,
-        hasAccessToken: !!currentSession?.access_token,
-        tokenPreview: currentSession?.access_token?.substring(0, 30) + "...",
-        expiresAt: currentSession?.expires_at,
-      });
 
       if (!currentSession?.access_token) {
         throw new Error("No valid session - please sign in again");
       }
 
-      // Use fetch directly to bypass Supabase client auth issues
+      // Use fetch directly to call edge function
       const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
       const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 
@@ -107,19 +101,13 @@ export function useNotion() {
         }
       );
 
-      console.log("Fetch response status:", fetchResponse.status);
-
       if (!fetchResponse.ok) {
-        const errorText = await fetchResponse.text();
-        console.error("Fetch error:", errorText);
         throw new Error(`Server error: ${fetchResponse.status}`);
       }
 
       const data = await fetchResponse.json() as { success: boolean; error?: string; authUrl?: string; state?: string };
-      console.log("notion-auth-start response:", data);
 
       if (!data.success) {
-        console.error("Notion auth start error:", data.error);
         throw new Error(data.error || "Failed to start Notion connection");
       }
 
@@ -201,8 +189,6 @@ export function useNotion() {
         );
 
         if (!fetchResponse.ok) {
-          const errorText = await fetchResponse.text();
-          console.error("Callback fetch error:", errorText);
           throw new Error(`Server error: ${fetchResponse.status}`);
         }
 
@@ -253,8 +239,6 @@ export function useNotion() {
         );
 
         if (!fetchResponse.ok) {
-          const errorText = await fetchResponse.text();
-          console.error("Export fetch error:", errorText);
           throw new Error(`Server error: ${fetchResponse.status}`);
         }
 
