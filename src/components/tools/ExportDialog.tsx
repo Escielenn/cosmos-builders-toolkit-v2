@@ -387,20 +387,32 @@ const ExportDialog = ({
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
-                  <div className="flex items-center gap-2">
-                    {connection?.workspace_icon && (
-                      <span className="text-lg">{connection.workspace_icon}</span>
+                <div className="flex items-center justify-between gap-3 p-3 rounded-lg bg-muted/50 overflow-hidden">
+                  <div className="flex items-center gap-2 min-w-0 flex-1">
+                    {connection?.workspace_icon ? (
+                      connection.workspace_icon.startsWith("http") ? (
+                        <img
+                          src={connection.workspace_icon}
+                          alt=""
+                          className="w-6 h-6 rounded flex-shrink-0"
+                        />
+                      ) : (
+                        <span className="text-lg flex-shrink-0">{connection.workspace_icon}</span>
+                      )
+                    ) : (
+                      <div className="w-6 h-6 rounded bg-primary/20 flex items-center justify-center flex-shrink-0">
+                        <ExternalLink className="w-3 h-3" />
+                      </div>
                     )}
-                    <span className="text-sm">
-                      Connected to <strong>{connection?.workspace_name || "Notion"}</strong>
+                    <span className="text-sm truncate">
+                      Connected to <strong className="truncate">{connection?.workspace_name || "Notion"}</strong>
                     </span>
                   </div>
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={disconnect}
-                    className="text-muted-foreground hover:text-destructive"
+                    className="text-muted-foreground hover:text-destructive flex-shrink-0"
                   >
                     <Unplug className="w-4 h-4 mr-1" />
                     Disconnect
