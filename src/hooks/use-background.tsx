@@ -6,7 +6,7 @@ interface BackgroundOption {
   url?: string;
   type?: "image" | "gradient" | "color";
   value?: string;
-  category: "default" | "space" | "gradient";
+  category: "default" | "space" | "gradient" | "color";
 }
 
 const BACKGROUND_OPTIONS: BackgroundOption[] = [
@@ -60,23 +60,16 @@ const BACKGROUND_OPTIONS: BackgroundOption[] = [
     url: "https://images.unsplash.com/photo-1444703686981-a3abbc4d4fe3?w=1920&q=80",
     category: "space",
   },
-  // New SF Images
   {
-    id: "supernova",
-    name: "Supernova",
-    url: "https://images.unsplash.com/photo-1614732414444-096e5f1122d5?w=1920&q=80",
+    id: "overview",
+    name: "Overview",
+    url: "https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?w=1920&q=80",
     category: "space",
   },
   {
     id: "cosmic-dust",
     name: "Cosmic Dust",
     url: "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?w=1920&q=80",
-    category: "space",
-  },
-  {
-    id: "saturn",
-    name: "Saturn",
-    url: "https://images.unsplash.com/photo-1614314107768-6018061e5456?w=1920&q=80",
     category: "space",
   },
   {
@@ -113,6 +106,49 @@ const BACKGROUND_OPTIONS: BackgroundOption[] = [
     type: "gradient",
     value: "linear-gradient(135deg, hsl(240 7% 4%) 0%, hsl(347 100% 12%) 100%)",
     category: "gradient",
+  },
+  // Solid Colors
+  {
+    id: "color-void",
+    name: "Void",
+    type: "color",
+    value: "hsl(240 7% 4%)",
+    category: "color",
+  },
+  {
+    id: "color-midnight",
+    name: "Midnight Blue",
+    type: "color",
+    value: "hsl(220 50% 8%)",
+    category: "color",
+  },
+  {
+    id: "color-cosmic",
+    name: "Cosmic Purple",
+    type: "color",
+    value: "hsl(270 40% 10%)",
+    category: "color",
+  },
+  {
+    id: "color-abyss",
+    name: "Abyss",
+    type: "color",
+    value: "hsl(200 30% 6%)",
+    category: "color",
+  },
+  {
+    id: "color-charcoal",
+    name: "Charcoal",
+    type: "color",
+    value: "hsl(0 0% 8%)",
+    category: "color",
+  },
+  {
+    id: "color-nebula",
+    name: "Nebula Red",
+    type: "color",
+    value: "hsl(350 40% 10%)",
+    category: "color",
   },
 ];
 

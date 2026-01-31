@@ -6,8 +6,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { Image, Check, Upload, X } from "lucide-react";
+import { Image, Check, Upload, X, Palette, Sparkles } from "lucide-react";
 import { useBackground } from "@/hooks/use-background";
 import { cn } from "@/lib/utils";
 import { useRef } from "react";
@@ -44,10 +45,11 @@ const BackgroundSelector = () => {
   const defaultOptions = options.filter((o) => o.category === "default");
   const spaceOptions = options.filter((o) => o.category === "space");
   const gradientOptions = options.filter((o) => o.category === "gradient");
+  const colorOptions = options.filter((o) => o.category === "color");
 
   const renderOption = (option: typeof options[0]) => {
     const isSelected = backgroundId === option.id && backgroundId !== "custom";
-    const isGradient = option.type === "gradient" || option.type === "color";
+    const isGradientOrColor = option.type === "gradient" || option.type === "color";
 
     return (
       <button
@@ -60,7 +62,7 @@ const BackgroundSelector = () => {
             : "border-border hover:border-primary/50"
         )}
       >
-        {isGradient ? (
+        {isGradientOrColor ? (
           <div
             className="w-full h-full"
             style={{ background: option.value }}
@@ -87,6 +89,17 @@ const BackgroundSelector = () => {
     );
   };
 
+  // Determine which tab should be active based on current selection
+  const getDefaultTab = () => {
+    if (backgroundId === "custom") return "custom";
+    const selected = options.find((o) => o.id === backgroundId);
+    if (!selected) return "images";
+    if (selected.category === "space" || selected.category === "default") return "images";
+    if (selected.category === "gradient") return "gradients";
+    if (selected.category === "color") return "colors";
+    return "images";
+  };
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -105,99 +118,129 @@ const BackgroundSelector = () => {
           </DialogDescription>
         </DialogHeader>
 
-        {/* Default Section */}
-        <div className="mt-4">
-          <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3">
-            Default
-          </h4>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-            {defaultOptions.map(renderOption)}
-          </div>
-        </div>
+        <Tabs defaultValue={getDefaultTab()} className="mt-4">
+          <TabsList className="w-full grid grid-cols-4">
+            <TabsTrigger value="images" className="gap-1.5">
+              <Image className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Images</span>
+            </TabsTrigger>
+            <TabsTrigger value="gradients" className="gap-1.5">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Gradients</span>
+            </TabsTrigger>
+            <TabsTrigger value="colors" className="gap-1.5">
+              <Palette className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Colors</span>
+            </TabsTrigger>
+            <TabsTrigger value="custom" className="gap-1.5">
+              <Upload className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Custom</span>
+            </TabsTrigger>
+          </TabsList>
 
-        {/* Space Images Section */}
-        <div className="mt-6">
-          <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3">
-            Space Images
-          </h4>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-            {spaceOptions.map(renderOption)}
-          </div>
-        </div>
+          {/* Images Tab */}
+          <TabsContent value="images" className="mt-4 space-y-4">
+            <div>
+              <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3">
+                Default
+              </h4>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                {defaultOptions.map(renderOption)}
+              </div>
+            </div>
+            <div>
+              <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3">
+                Space Images
+              </h4>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                {spaceOptions.map(renderOption)}
+              </div>
+            </div>
+            <p className="text-xs text-muted-foreground text-center">
+              Photos from Unsplash
+            </p>
+          </TabsContent>
 
-        {/* Gradients Section */}
-        <div className="mt-6">
-          <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3">
-            Gradients
-          </h4>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-            {gradientOptions.map(renderOption)}
-          </div>
-        </div>
+          {/* Gradients Tab */}
+          <TabsContent value="gradients" className="mt-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+              {gradientOptions.map(renderOption)}
+            </div>
+            <p className="text-xs text-muted-foreground text-center mt-4">
+              Smooth gradient backgrounds
+            </p>
+          </TabsContent>
 
-        {/* Custom Upload Section */}
-        <div className="mt-6">
-          <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3">
-            Custom
-          </h4>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-            <input
-              type="file"
-              ref={fileInputRef}
-              onChange={handleFileSelect}
-              accept="image/*"
-              className="hidden"
-            />
-            {customBackground ? (
-              <button
-                onClick={() => setBackground("custom")}
-                className={cn(
-                  "relative aspect-video rounded-lg overflow-hidden border-2 transition-all hover:scale-105",
-                  backgroundId === "custom"
-                    ? "border-primary ring-2 ring-primary/50"
-                    : "border-border hover:border-primary/50"
-                )}
-              >
-                <img
-                  src={customBackground}
-                  alt="Custom background"
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
-                <span className="absolute bottom-2 left-2 text-xs font-medium text-white">
-                  Custom
-                </span>
-                {backgroundId === "custom" && (
-                  <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-primary flex items-center justify-center">
-                    <Check className="w-3 h-3 text-primary-foreground" />
-                  </div>
-                )}
+          {/* Colors Tab */}
+          <TabsContent value="colors" className="mt-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+              {colorOptions.map(renderOption)}
+            </div>
+            <p className="text-xs text-muted-foreground text-center mt-4">
+              Solid color backgrounds for minimal distraction
+            </p>
+          </TabsContent>
+
+          {/* Custom Tab */}
+          <TabsContent value="custom" className="mt-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileSelect}
+                accept="image/*"
+                className="hidden"
+              />
+              {customBackground ? (
                 <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    clearCustomBackground();
-                  }}
-                  className="absolute top-2 left-2 w-5 h-5 rounded-full bg-destructive flex items-center justify-center hover:bg-destructive/80"
+                  onClick={() => setBackground("custom")}
+                  className={cn(
+                    "relative aspect-video rounded-lg overflow-hidden border-2 transition-all hover:scale-105",
+                    backgroundId === "custom"
+                      ? "border-primary ring-2 ring-primary/50"
+                      : "border-border hover:border-primary/50"
+                  )}
                 >
-                  <X className="w-3 h-3 text-destructive-foreground" />
+                  <img
+                    src={customBackground}
+                    alt="Custom background"
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
+                  <span className="absolute bottom-2 left-2 text-xs font-medium text-white">
+                    Custom
+                  </span>
+                  {backgroundId === "custom" && (
+                    <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-primary flex items-center justify-center">
+                      <Check className="w-3 h-3 text-primary-foreground" />
+                    </div>
+                  )}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      clearCustomBackground();
+                    }}
+                    className="absolute top-2 left-2 w-5 h-5 rounded-full bg-destructive flex items-center justify-center hover:bg-destructive/80"
+                  >
+                    <X className="w-3 h-3 text-destructive-foreground" />
+                  </button>
                 </button>
+              ) : null}
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                className="relative aspect-video rounded-lg overflow-hidden border-2 border-dashed border-border hover:border-primary/50 transition-all hover:scale-105 flex flex-col items-center justify-center gap-2 bg-muted/50"
+              >
+                <Upload className="w-6 h-6 text-muted-foreground" />
+                <span className="text-xs font-medium text-muted-foreground">
+                  Upload Image
+                </span>
               </button>
-            ) : null}
-            <button
-              onClick={() => fileInputRef.current?.click()}
-              className="relative aspect-video rounded-lg overflow-hidden border-2 border-dashed border-border hover:border-primary/50 transition-all hover:scale-105 flex flex-col items-center justify-center gap-2 bg-muted/50"
-            >
-              <Upload className="w-6 h-6 text-muted-foreground" />
-              <span className="text-xs font-medium text-muted-foreground">
-                Upload Image
-              </span>
-            </button>
-          </div>
-        </div>
-
-        <p className="text-xs text-muted-foreground text-center mt-4">
-          Photos from Unsplash • Max upload size: 5MB
-        </p>
+            </div>
+            <p className="text-xs text-muted-foreground text-center mt-4">
+              Max upload size: 5MB
+            </p>
+          </TabsContent>
+        </Tabs>
       </DialogContent>
     </Dialog>
   );

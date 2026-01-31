@@ -382,6 +382,12 @@
       linear-gradient(180deg, hsl(var(--sf-void)) 0%, hsl(240 7% 3%) 100%);
   }
 
+  /* Hide sf-atmosphere when custom backgrounds are active */
+  .custom-background .sf-atmosphere::before,
+  .gradient-background .sf-atmosphere::before {
+    display: none;
+  }
+
   /* StellarForge card with light arc accent */
   .sf-card {
     @apply rounded-xl border relative overflow-hidden;
