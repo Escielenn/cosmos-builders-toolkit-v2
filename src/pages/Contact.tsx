@@ -5,10 +5,16 @@ import { Mail, MessageSquare, Clock } from "lucide-react";
 import ContactFormTabs from "@/components/contact/ContactFormTabs";
 import { useSearchParams } from "react-router-dom";
 
+type TabValue = "contact" | "support" | "feature" | "bug" | "beta";
+
+const validTabs: TabValue[] = ["contact", "support", "feature", "bug", "beta"];
+
 const Contact = () => {
   const [searchParams] = useSearchParams();
-  const defaultTab =
-    searchParams.get("tab") === "support" ? "support" : "contact";
+  const tabParam = searchParams.get("tab");
+  const defaultTab: TabValue = validTabs.includes(tabParam as TabValue)
+    ? (tabParam as TabValue)
+    : "contact";
 
   return (
     <div className="min-h-screen bg-background sf-atmosphere">
@@ -30,8 +36,8 @@ const Contact = () => {
         </section>
 
         {/* Contact Form */}
-        <section className="max-w-xl mx-auto mb-16">
-          <GlassPanel className="p-8">
+        <section className="max-w-2xl mx-auto mb-16">
+          <GlassPanel className="p-6 sm:p-8">
             <ContactFormTabs defaultTab={defaultTab} />
           </GlassPanel>
         </section>

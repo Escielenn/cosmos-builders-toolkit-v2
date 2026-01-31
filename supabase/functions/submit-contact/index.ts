@@ -47,6 +47,16 @@ Deno.serve(async (req) => {
         <h3>Message:</h3>
         <p>${message.replace(/\n/g, "<br>")}</p>
       `;
+    } else if (type === "beta") {
+      emailSubject = subject || `Beta Feedback from ${name}`;
+      emailHtml = `
+        <h2>Beta Feedback</h2>
+        <p><strong>From:</strong> ${name} (${email})</p>
+        <p><strong>Subject:</strong> ${subject}</p>
+        <hr />
+        <h3>Feedback:</h3>
+        <p>${message.replace(/\n/g, "<br>")}</p>
+      `;
     } else {
       emailSubject = `New Contact Form Submission from ${name}`;
       emailHtml = `
@@ -81,14 +91,12 @@ Deno.serve(async (req) => {
     }
 
     // Send confirmation email to user
-    const confirmationSubject =
-      type === "support"
-        ? `We received your support ticket: ${ticketNumber}`
-        : "We received your message - StellarForge";
+    let confirmationSubject: string;
+    let confirmationHtml: string;
 
-    const confirmationHtml =
-      type === "support"
-        ? `
+    if (type === "support") {
+      confirmationSubject = `We received your support ticket: ${ticketNumber}`;
+      confirmationHtml = `
         <h2>Thank you for contacting StellarForge Support</h2>
         <p>Hi ${name},</p>
         <p>We've received your support ticket and will respond as soon as possible.</p>
@@ -97,13 +105,25 @@ Deno.serve(async (req) => {
         <p><strong>Subject:</strong> ${subject}</p>
         <p>Please save this ticket number for your reference.</p>
         <p>Best regards,<br/>The StellarForge Team</p>
-      `
-        : `
+      `;
+    } else if (type === "beta") {
+      confirmationSubject = "Thank you for your beta feedback - StellarForge";
+      confirmationHtml = `
+        <h2>Thank you for your beta feedback!</h2>
+        <p>Hi ${name},</p>
+        <p>We really appreciate you taking the time to share your thoughts on StellarForge beta.</p>
+        <p>Your feedback helps us improve and build a better experience for everyone.</p>
+        <p>Best regards,<br/>The StellarForge Team</p>
+      `;
+    } else {
+      confirmationSubject = "We received your message - StellarForge";
+      confirmationHtml = `
         <h2>Thank you for contacting StellarForge</h2>
         <p>Hi ${name},</p>
         <p>We've received your message and will get back to you soon.</p>
         <p>Best regards,<br/>The StellarForge Team</p>
       `;
+    }
 
     await fetch("https://api.resend.com/emails", {
       method: "POST",
