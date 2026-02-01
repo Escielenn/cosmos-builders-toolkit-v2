@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import {
   Dialog,
   DialogContent,
@@ -15,7 +15,6 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   User,
-  Palette,
   Link2,
   Crown,
   Loader2,
@@ -27,8 +26,6 @@ import {
   CreditCard,
   AlertCircle,
   Image,
-  Sparkles,
-  ExternalLink,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
@@ -56,6 +53,15 @@ const SettingsDialog = ({
   const { subscription, isSubscribed, createPortalSession } = useSubscription();
   const { backgroundId, setBackground, options, customBackground, setCustomBackground, clearCustomBackground } = useBackground();
   const { connection: notionConnection, isConnected: isNotionConnected, isConnecting, connect: connectNotion, disconnect: disconnectNotion } = useNotion();
+
+  // Tab state - sync with defaultTab when dialog opens
+  const [activeTab, setActiveTab] = useState(defaultTab);
+
+  useEffect(() => {
+    if (open) {
+      setActiveTab(defaultTab);
+    }
+  }, [open, defaultTab]);
 
   // Profile state
   const [displayName, setDisplayName] = useState("");
@@ -169,19 +175,19 @@ const SettingsDialog = ({
         <DialogHeader>
           <DialogTitle className="font-display text-xl">Settings</DialogTitle>
           <DialogDescription>
-            Manage your account, appearance, and integrations.
+            Manage your account, background, and integrations.
           </DialogDescription>
         </DialogHeader>
 
-        <Tabs defaultValue={defaultTab} className="mt-4">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-4">
           <TabsList className="w-full grid grid-cols-4">
             <TabsTrigger value="account" className="gap-1.5">
               <User className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Account</span>
             </TabsTrigger>
-            <TabsTrigger value="appearance" className="gap-1.5">
-              <Palette className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Appearance</span>
+            <TabsTrigger value="background" className="gap-1.5">
+              <Image className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Background</span>
             </TabsTrigger>
             <TabsTrigger value="integrations" className="gap-1.5">
               <Link2 className="w-3.5 h-3.5" />
@@ -277,8 +283,8 @@ const SettingsDialog = ({
             </Button>
           </TabsContent>
 
-          {/* Appearance Tab */}
-          <TabsContent value="appearance" className="mt-4 space-y-4">
+          {/* Background Tab */}
+          <TabsContent value="background" className="mt-4 space-y-4">
             <div>
               <h4 className="text-sm font-medium mb-3">Background</h4>
 

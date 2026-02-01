@@ -16,7 +16,7 @@ const ScreenshotMockup = ({ src, alt = "Tool preview", toolName }: ScreenshotMoc
       <img
         src={src}
         alt={alt}
-        className="w-full h-full object-cover object-top"
+        className="w-full h-full object-contain"
         onError={(e) => {
           // If image fails to load, show placeholder
           const target = e.target as HTMLImageElement;

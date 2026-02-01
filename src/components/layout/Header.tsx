@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { User, LogIn, LogOut, ChevronDown, Crown, Menu, Globe, Wrench, BookOpen, Sparkles, Mail, Settings, Search } from "lucide-react";
+import { User, LogIn, LogOut, ChevronDown, Crown, Menu, Globe, Wrench, BookOpen, Sparkles, Mail, Settings, Search, Image } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -30,6 +30,7 @@ const Header = () => {
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [settingsTab, setSettingsTab] = useState("account");
   const [searchOpen, setSearchOpen] = useState(false);
 
   // Keyboard shortcut for search (Cmd/Ctrl + K)
@@ -278,9 +279,19 @@ const Header = () => {
                   <User className="w-4 h-4 mr-2" />
                   Profile
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setSettingsOpen(true)}>
+                <DropdownMenuItem onClick={() => {
+                  setSettingsTab("account");
+                  setSettingsOpen(true);
+                }}>
                   <Settings className="w-4 h-4 mr-2" />
                   Settings
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => {
+                  setSettingsTab("background");
+                  setSettingsOpen(true);
+                }}>
+                  <Image className="w-4 h-4 mr-2" />
+                  Background
                 </DropdownMenuItem>
                 {isSubscribed ? (
                   <DropdownMenuItem onClick={() => navigate("/pricing")} className="text-amber-600 dark:text-amber-400">
@@ -315,7 +326,7 @@ const Header = () => {
       </div>
 
       {/* Settings Dialog */}
-      <SettingsDialog open={settingsOpen} onOpenChange={setSettingsOpen} />
+      <SettingsDialog open={settingsOpen} onOpenChange={setSettingsOpen} defaultTab={settingsTab} />
 
       {/* Global Search */}
       <GlobalSearch open={searchOpen} onOpenChange={setSearchOpen} />
