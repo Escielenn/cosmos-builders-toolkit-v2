@@ -10,6 +10,7 @@ interface Worksheet {
   user_id: string;
   tool_type: string;
   title: string | null;
+  tags: string[];
   data: Json;
   created_at: string;
   updated_at: string;
@@ -25,6 +26,7 @@ interface CreateWorksheetInput {
 interface UpdateWorksheetInput {
   worksheetId: string;
   title?: string;
+  tags?: string[];
   data?: Json;
 }
 
@@ -89,8 +91,9 @@ export const useWorksheets = (worldId: string | undefined) => {
     mutationFn: async (input: UpdateWorksheetInput) => {
       if (!user) throw new Error("Not authenticated");
 
-      const updateData: { title?: string; data?: Json } = {};
+      const updateData: { title?: string; tags?: string[]; data?: Json } = {};
       if (input.title !== undefined) updateData.title = input.title;
+      if (input.tags !== undefined) updateData.tags = input.tags;
       if (input.data !== undefined) updateData.data = input.data;
 
       const { data, error } = await supabase

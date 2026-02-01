@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Switch } from "@/components/ui/switch";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Badge } from "@/components/ui/badge";
 import {
   Tooltip,
@@ -119,6 +119,7 @@ interface FormState {
   };
   _linkedWorksheets?: {
     planet?: LinkedWorksheetRef;
+    evobio?: LinkedWorksheetRef;
   };
 }
 
@@ -549,7 +550,7 @@ const EnvironmentalChainReaction = () => {
 
   // Handle linked worksheet changes
   const handleLinkedWorksheetChange = (
-    key: "planet",
+    key: "planet" | "evobio",
     ref: LinkedWorksheetRef | undefined
   ) => {
     setFormState((prev) => ({
@@ -656,12 +657,13 @@ const EnvironmentalChainReaction = () => {
     }));
   };
 
-  const toggleParameterMode = (isMultiple: boolean) => {
+  const toggleParameterMode = (mode: "single" | "multiple") => {
+    if (!mode) return; // ToggleGroup can return empty string if deselecting
     setFormState((prev) => ({
       ...prev,
       parameter: {
         ...prev.parameter,
-        mode: isMultiple ? "multiple" : "single",
+        mode,
       },
     }));
   };
@@ -976,11 +978,11 @@ const EnvironmentalChainReaction = () => {
             {worldId && linkConfigs.length > 0 && (
               <div className="mb-6 p-4 rounded-lg border border-border/50 bg-muted/20">
                 <h4 className="font-medium text-sm mb-3 flex items-center gap-2">
-                  <Globe className="w-4 h-4 text-primary" />
-                  Link to Planet
+                  <ExternalLink className="w-4 h-4 text-primary" />
+                  Link to Other Worksheets
                 </h4>
                 <p className="text-xs text-muted-foreground mb-3">
-                  Connect this analysis to a planet profile to auto-import environmental parameters.
+                  Connect this analysis to other worksheets to import relevant data.
                 </p>
                 <div className="space-y-3">
                   {linkConfigs.map((config) => (
@@ -991,8 +993,8 @@ const EnvironmentalChainReaction = () => {
                       label={config.label}
                       description={config.description}
                       syncFields={config.syncFields}
-                      value={formState._linkedWorksheets?.[config.key as "planet"]}
-                      onChange={(ref) => handleLinkedWorksheetChange(config.key as "planet", ref)}
+                      value={formState._linkedWorksheets?.[config.key as "planet" | "evobio"]}
+                      onChange={(ref) => handleLinkedWorksheetChange(config.key as "planet" | "evobio", ref)}
                     />
                   ))}
                 </div>
@@ -1001,34 +1003,28 @@ const EnvironmentalChainReaction = () => {
 
             {/* Mode Toggle */}
             <div className="flex items-center gap-4 mb-6 p-4 bg-primary/5 rounded-lg border border-primary/20">
-              <Label htmlFor="mode-toggle" className="text-sm font-medium">
+              <Label className="text-sm font-medium">
                 Selection Mode:
               </Label>
-              <div className="flex items-center gap-2">
-                <span
-                  className={`text-sm ${
-                    (formState.parameter.mode || "single") === "single"
-                      ? "text-foreground font-medium"
-                      : "text-muted-foreground"
-                  }`}
+              <ToggleGroup
+                type="single"
+                value={formState.parameter.mode || "single"}
+                onValueChange={(value) => toggleParameterMode(value as "single" | "multiple")}
+                className="bg-background/50 rounded-lg p-1"
+              >
+                <ToggleGroupItem
+                  value="single"
+                  className="px-4 py-2 text-sm data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
                 >
                   Single Factor
-                </span>
-                <Switch
-                  id="mode-toggle"
-                  checked={(formState.parameter.mode || "single") === "multiple"}
-                  onCheckedChange={toggleParameterMode}
-                />
-                <span
-                  className={`text-sm ${
-                    formState.parameter.mode === "multiple"
-                      ? "text-foreground font-medium"
-                      : "text-muted-foreground"
-                  }`}
+                </ToggleGroupItem>
+                <ToggleGroupItem
+                  value="multiple"
+                  className="px-4 py-2 text-sm data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
                 >
                   Multiple Factors
-                </span>
-              </div>
+                </ToggleGroupItem>
+              </ToggleGroup>
             </div>
 
             {/* Single Mode - RadioGroup */}

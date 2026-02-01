@@ -54,30 +54,28 @@ const WorldCard = ({
 
   return (
     <>
-      <GlassPanel hover className="overflow-hidden flex flex-col min-h-[200px]">
+      <GlassPanel hover className="flex flex-col min-h-[200px]">
         {/* Header Image */}
-        {headerImageUrl ? (
-          <div className="relative w-full h-24 overflow-hidden">
-            <img
-              src={headerImageUrl}
-              alt=""
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
-            {/* Icon overlay on image */}
-            <div className="absolute -bottom-5 left-4 w-10 h-10 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 border-2 border-background flex items-center justify-center shadow-lg">
-              <IconComponent className="w-5 h-5 text-primary" />
+        <div className="relative">
+          {headerImageUrl ? (
+            <div className="w-full h-24 overflow-hidden">
+              <img
+                src={headerImageUrl}
+                alt=""
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
             </div>
-          </div>
-        ) : (
-          <div className="relative w-full h-16 bg-gradient-to-br from-primary/10 to-accent/10">
-            <div className="absolute inset-0 bg-gradient-to-t from-background/50 to-transparent" />
-            {/* Icon overlay */}
-            <div className="absolute -bottom-5 left-4 w-10 h-10 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 border-2 border-background flex items-center justify-center shadow-lg">
-              <IconComponent className="w-5 h-5 text-primary" />
+          ) : (
+            <div className="w-full h-16 bg-gradient-to-br from-primary/10 to-accent/10">
+              <div className="absolute inset-0 bg-gradient-to-t from-background/50 to-transparent" />
             </div>
+          )}
+          {/* Icon overlay - positioned outside overflow-hidden container */}
+          <div className="absolute -bottom-5 left-4 w-10 h-10 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 border-2 border-background flex items-center justify-center shadow-lg z-10">
+            <IconComponent className="w-5 h-5 text-primary" />
           </div>
-        )}
+        </div>
 
         {/* Content */}
         <div className="p-5 pt-8 flex flex-col flex-1">

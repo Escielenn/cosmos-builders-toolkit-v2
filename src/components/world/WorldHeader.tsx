@@ -21,28 +21,30 @@ const WorldHeader = ({
   const IconComponent = worldIcon.icon;
 
   return (
-    <GlassPanel className="overflow-hidden">
+    <GlassPanel>
       {/* Header Banner */}
       {headerImageUrl ? (
         <div
-          className="relative w-full h-32 md:h-48 overflow-hidden cursor-pointer group"
+          className="relative w-full h-32 md:h-48 cursor-pointer group"
           onClick={onEditClick}
         >
-          <img
-            src={headerImageUrl}
-            alt=""
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/30 to-transparent" />
+          <div className="absolute inset-0 overflow-hidden rounded-t-xl">
+            <img
+              src={headerImageUrl}
+              alt=""
+              className="w-full h-full object-cover"
+            />
+          </div>
+          <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/30 to-transparent rounded-t-xl" />
           {onEditClick && (
-            <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+            <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-t-xl">
               <span className="text-white text-sm font-medium">Click to change</span>
             </div>
           )}
         </div>
       ) : (
         <div
-          className="relative w-full h-24 md:h-32 bg-gradient-to-br from-primary/20 via-accent/10 to-primary/5 cursor-pointer group"
+          className="relative w-full h-24 md:h-32 bg-gradient-to-br from-primary/20 via-accent/10 to-primary/5 cursor-pointer group rounded-t-xl"
           onClick={onEditClick}
         >
           <div className="absolute inset-0 bg-gradient-to-t from-background/70 to-transparent" />

@@ -34,6 +34,26 @@ export const WORKSHEET_LINKS: Record<string, LinkConfig[]> = {
       ],
       description: "Link to a planet to import environmental parameters",
     },
+    {
+      key: "evobio",
+      targetTool: "evolutionary-biology",
+      label: "Species Biology",
+      syncFields: [
+        "speciesName",
+        "bodyPlan.symmetry",
+        "bodyPlan.limbs",
+        "bodyPlan.sizeRange",
+        "sensory.primarySenses",
+        "sensory.environmentalTuning",
+        "locomotion.primaryMode",
+        "metabolism.energySource",
+        "reproduction.reproductionMode",
+        "cognition.cognitionType",
+        "psychology.emotionalRange",
+        "social.socialStructure",
+      ],
+      description: "Link to evolutionary biology to import species adaptations",
+    },
   ],
   "evolutionary-biology": [
     {

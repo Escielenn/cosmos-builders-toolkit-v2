@@ -230,6 +230,7 @@ export type Database = {
           created_at: string
           data: Json
           id: string
+          tags: string[]
           title: string | null
           tool_type: string
           updated_at: string
@@ -240,6 +241,7 @@ export type Database = {
           created_at?: string
           data?: Json
           id?: string
+          tags?: string[]
           title?: string | null
           tool_type: string
           updated_at?: string
@@ -250,6 +252,7 @@ export type Database = {
           created_at?: string
           data?: Json
           id?: string
+          tags?: string[]
           title?: string | null
           tool_type?: string
           updated_at?: string
@@ -272,6 +275,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      worksheet_tags: {
+        Row: {
+          id: string
+          user_id: string
+          name: string
+          color: string
+          usage_count: number
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          name: string
+          color?: string
+          usage_count?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          name?: string
+          color?: string
+          usage_count?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       world_notes: {
         Row: {

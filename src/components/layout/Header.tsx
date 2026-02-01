@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { User, LogIn, LogOut, ChevronDown, Crown, Menu, Globe, Wrench, BookOpen, Sparkles, Mail } from "lucide-react";
+import { useState, useEffect } from "react";
+import { User, LogIn, LogOut, ChevronDown, Crown, Menu, Globe, Wrench, BookOpen, Sparkles, Mail, Settings, Search } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -18,6 +18,8 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import BackgroundSelector from "@/components/settings/BackgroundSelector";
+import SettingsDialog from "@/components/settings/SettingsDialog";
+import GlobalSearch from "@/components/search/GlobalSearch";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSubscription } from "@/hooks/use-subscription";
 
@@ -27,6 +29,21 @@ const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+
+  // Keyboard shortcut for search (Cmd/Ctrl + K)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        setSearchOpen(true);
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   const scrollToSection = (sectionId: string) => {
     const scroll = () => {
@@ -225,6 +242,17 @@ const Header = () => {
 
         <div className="flex items-center gap-2">
           <BackgroundSelector />
+          <Button
+            variant="ghost"
+            size="sm"
+            className="gap-2 text-muted-foreground hover:text-foreground"
+            onClick={() => setSearchOpen(true)}
+          >
+            <Search className="w-4 h-4" />
+            <kbd className="hidden sm:inline-flex h-5 items-center gap-1 rounded border border-border/50 bg-muted/50 px-1.5 font-mono text-[10px] font-medium text-muted-foreground">
+              <span className="text-xs">⌘</span>K
+            </kbd>
+          </Button>
           {!loading && user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -249,6 +277,10 @@ const Header = () => {
                 <DropdownMenuItem onClick={() => navigate("/profile")}>
                   <User className="w-4 h-4 mr-2" />
                   Profile
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setSettingsOpen(true)}>
+                  <Settings className="w-4 h-4 mr-2" />
+                  Settings
                 </DropdownMenuItem>
                 {isSubscribed ? (
                   <DropdownMenuItem onClick={() => navigate("/pricing")} className="text-amber-600 dark:text-amber-400">
@@ -281,6 +313,12 @@ const Header = () => {
           )}
         </div>
       </div>
+
+      {/* Settings Dialog */}
+      <SettingsDialog open={settingsOpen} onOpenChange={setSettingsOpen} />
+
+      {/* Global Search */}
+      <GlobalSearch open={searchOpen} onOpenChange={setSearchOpen} />
     </header>
   );
 };

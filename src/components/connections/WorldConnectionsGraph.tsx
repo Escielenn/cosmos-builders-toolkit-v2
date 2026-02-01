@@ -7,6 +7,7 @@ import {
   forceCollide,
   SimulationNodeDatum,
   SimulationLinkDatum,
+  Simulation,
 } from "d3-force";
 import ConnectionNode from "./ConnectionNode";
 import ConnectionEdge from "./ConnectionEdge";
@@ -20,7 +21,10 @@ interface WorldConnectionsGraphProps {
   height?: number;
 }
 
-interface SimNode extends SimulationNodeDatum, GraphNode {}
+interface SimNode extends SimulationNodeDatum, GraphNode {
+  fx?: number | null;
+  fy?: number | null;
+}
 
 interface SimLink extends SimulationLinkDatum<SimNode> {
   linkType: string;
@@ -38,6 +42,9 @@ const WorldConnectionsGraph = ({
     new Map()
   );
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
+  const [draggingNode, setDraggingNode] = useState<string | null>(null);
+  const simulationRef = useRef<Simulation<SimNode, SimLink> | null>(null);
+  const simNodesRef = useRef<SimNode[]>([]);
 
   // Run d3-force simulation
   useEffect(() => {
@@ -49,6 +56,7 @@ const WorldConnectionsGraph = ({
       x: width / 2 + (Math.random() - 0.5) * 200,
       y: height / 2 + (Math.random() - 0.5) * 200,
     }));
+    simNodesRef.current = simNodes;
 
     // Create simulation links
     const simLinks: SimLink[] = edges.map((edge) => ({
@@ -73,6 +81,8 @@ const WorldConnectionsGraph = ({
       .force("collision", forceCollide<SimNode>().radius(50))
       .alphaDecay(0.02);
 
+    simulationRef.current = simulation;
+
     // Update positions on each tick
     simulation.on("tick", () => {
       const newPositions = new Map<string, { x: number; y: number }>();
@@ -88,16 +98,72 @@ const WorldConnectionsGraph = ({
       setPositions(newPositions);
     });
 
-    // Stop simulation after it stabilizes
-    simulation.on("end", () => {
-      console.log("Simulation stabilized");
-    });
-
     // Cleanup
     return () => {
       simulation.stop();
+      simulationRef.current = null;
     };
   }, [nodes, edges, width, height]);
+
+  // Drag handlers
+  const handleDragStart = useCallback((nodeId: string, event: React.MouseEvent | React.TouchEvent) => {
+    event.preventDefault();
+    setDraggingNode(nodeId);
+
+    const node = simNodesRef.current.find((n) => n.id === nodeId);
+    if (node && simulationRef.current) {
+      node.fx = node.x;
+      node.fy = node.y;
+      simulationRef.current.alphaTarget(0.3).restart();
+    }
+  }, []);
+
+  const handleDrag = useCallback((event: React.MouseEvent | React.TouchEvent) => {
+    if (!draggingNode || !svgRef.current) return;
+
+    const svg = svgRef.current;
+    const rect = svg.getBoundingClientRect();
+
+    // Get position from mouse or touch
+    let clientX: number, clientY: number;
+    if ('touches' in event) {
+      clientX = event.touches[0].clientX;
+      clientY = event.touches[0].clientY;
+    } else {
+      clientX = event.clientX;
+      clientY = event.clientY;
+    }
+
+    // Convert to SVG coordinates
+    const scaleX = width / rect.width;
+    const scaleY = height / rect.height;
+    const x = (clientX - rect.left) * scaleX;
+    const y = (clientY - rect.top) * scaleY;
+
+    // Constrain to bounds
+    const padding = 60;
+    const clampedX = Math.max(padding, Math.min(width - padding, x));
+    const clampedY = Math.max(padding, Math.min(height - padding, y));
+
+    const node = simNodesRef.current.find((n) => n.id === draggingNode);
+    if (node) {
+      node.fx = clampedX;
+      node.fy = clampedY;
+    }
+  }, [draggingNode, width, height]);
+
+  const handleDragEnd = useCallback(() => {
+    if (!draggingNode) return;
+
+    const node = simNodesRef.current.find((n) => n.id === draggingNode);
+    if (node && simulationRef.current) {
+      // Keep node fixed at new position
+      node.fx = null;
+      node.fy = null;
+      simulationRef.current.alphaTarget(0);
+    }
+    setDraggingNode(null);
+  }, [draggingNode]);
 
   const handleNodeHover = useCallback((nodeId: string | null) => {
     setHoveredNode(nodeId);
@@ -139,6 +205,12 @@ const WorldConnectionsGraph = ({
       className="w-full h-full"
       viewBox={`0 0 ${width} ${height}`}
       preserveAspectRatio="xMidYMid meet"
+      onMouseMove={handleDrag}
+      onMouseUp={handleDragEnd}
+      onMouseLeave={handleDragEnd}
+      onTouchMove={handleDrag}
+      onTouchEnd={handleDragEnd}
+      style={{ cursor: draggingNode ? 'grabbing' : 'default' }}
     >
       {/* Background pattern */}
       <defs>
@@ -194,16 +266,25 @@ const WorldConnectionsGraph = ({
             hoveredNode === null || isConnected ? 1 : 0.3;
 
           return (
-            <g key={node.id} style={{ opacity }}>
+            <g
+              key={node.id}
+              style={{
+                opacity,
+                cursor: draggingNode === node.id ? 'grabbing' : 'grab',
+              }}
+              onMouseDown={(e) => handleDragStart(node.id, e)}
+              onTouchStart={(e) => handleDragStart(node.id, e)}
+            >
               <ConnectionNode
                 x={pos.x}
                 y={pos.y}
                 toolType={node.toolType}
                 title={node.speciesName || node.title}
                 isHovered={isHovered}
-                onHover={() => handleNodeHover(node.id)}
-                onLeave={() => handleNodeHover(null)}
-                onClick={() => onNodeClick(node.id, node.toolType)}
+                isDragging={draggingNode === node.id}
+                onHover={() => !draggingNode && handleNodeHover(node.id)}
+                onLeave={() => !draggingNode && handleNodeHover(null)}
+                onClick={() => !draggingNode && onNodeClick(node.id, node.toolType)}
               />
             </g>
           );

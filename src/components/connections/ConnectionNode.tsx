@@ -7,6 +7,7 @@ interface ConnectionNodeProps {
   toolType: string;
   title: string;
   isHovered: boolean;
+  isDragging?: boolean;
   onHover: () => void;
   onLeave: () => void;
   onClick: () => void;
@@ -30,6 +31,7 @@ const ConnectionNode = ({
   toolType,
   title,
   isHovered,
+  isDragging = false,
   onHover,
   onLeave,
   onClick,
@@ -56,11 +58,11 @@ const ConnectionNode = ({
         }
       }}
     >
-      {/* Glow effect when hovered */}
-      {isHovered && (
+      {/* Glow effect when hovered or dragging */}
+      {(isHovered || isDragging) && (
         <circle
-          r="35"
-          fill={`hsl(${color} / 0.2)`}
+          r={isDragging ? "40" : "35"}
+          fill={`hsl(${color} / ${isDragging ? 0.3 : 0.2})`}
           className="transition-all duration-200"
         />
       )}
@@ -70,7 +72,7 @@ const ConnectionNode = ({
         r="24"
         fill="hsl(var(--sf-surface))"
         stroke={`hsl(${color})`}
-        strokeWidth={isHovered ? "3" : "2"}
+        strokeWidth={isDragging ? "4" : isHovered ? "3" : "2"}
         className="transition-all duration-200"
       />
 
