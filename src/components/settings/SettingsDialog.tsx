@@ -168,6 +168,7 @@ const SettingsDialog = ({
   const defaultOptions = options.filter((o) => o.category === "default");
   const spaceOptions = options.filter((o) => o.category === "space");
   const gradientOptions = options.filter((o) => o.category === "gradient");
+  const colorOptions = options.filter((o) => o.category === "color");
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -325,7 +326,7 @@ const SettingsDialog = ({
                   Space Images
                 </p>
                 <div className="grid grid-cols-3 gap-2">
-                  {spaceOptions.slice(0, 6).map((option) => (
+                  {spaceOptions.map((option) => (
                     <button
                       key={option.id}
                       onClick={() => setBackground(option.id)}
@@ -362,6 +363,37 @@ const SettingsDialog = ({
                 </p>
                 <div className="grid grid-cols-4 gap-2">
                   {gradientOptions.map((option) => (
+                    <button
+                      key={option.id}
+                      onClick={() => setBackground(option.id)}
+                      className={cn(
+                        "relative aspect-video rounded-lg overflow-hidden border-2 transition-all hover:scale-105",
+                        backgroundId === option.id
+                          ? "border-primary ring-2 ring-primary/50"
+                          : "border-border hover:border-primary/50"
+                      )}
+                    >
+                      <div
+                        className="w-full h-full"
+                        style={{ background: option.value }}
+                      />
+                      {backgroundId === option.id && (
+                        <div className="absolute top-1 right-1 w-4 h-4 rounded-full bg-primary flex items-center justify-center">
+                          <Check className="w-2.5 h-2.5 text-primary-foreground" />
+                        </div>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Colors */}
+              <div className="mb-4">
+                <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2">
+                  Solid Colors
+                </p>
+                <div className="grid grid-cols-4 gap-2">
+                  {colorOptions.map((option) => (
                     <button
                       key={option.id}
                       onClick={() => setBackground(option.id)}
