@@ -128,7 +128,7 @@ const GlobalSearch = ({ open, onOpenChange }: GlobalSearchProps) => {
 
   return (
     <CommandDialog open={open} onOpenChange={onOpenChange}>
-      <CommandInput placeholder="Search worlds, worksheets, tools..." />
+      <CommandInput placeholder="Type to search worlds, worksheets, and tools..." autoFocus />
       <CommandList>
         <CommandEmpty>
           {isLoading ? "Loading..." : "No results found."}

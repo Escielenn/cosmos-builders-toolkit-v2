@@ -27,9 +27,9 @@ const CommandDialog = ({ children, ...props }: CommandDialogProps) => {
   return (
     <Dialog {...props}>
       <DialogContent
-        className="overflow-hidden p-0 shadow-2xl !top-[15%] !translate-y-0 max-w-2xl border-border/50 bg-background/95 backdrop-blur-xl [&>button]:hidden"
+        className="overflow-hidden p-0 shadow-2xl !top-[15%] !translate-y-0 max-w-2xl border-border/40 bg-background/98 backdrop-blur-xl [&>button]:hidden focus:outline-none focus:ring-0"
       >
-        <Command className="[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-group]:not([hidden])_~[cmdk-group]]:pt-0 [&_[cmdk-group]]:px-2 [&_[cmdk-input-wrapper]_svg]:h-5 [&_[cmdk-input-wrapper]_svg]:w-5 [&_[cmdk-input]]:h-12 [&_[cmdk-item]]:px-2 [&_[cmdk-item]]:py-3 [&_[cmdk-item]_svg]:h-5 [&_[cmdk-item]_svg]:w-5">
+        <Command className="[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-group]:not([hidden])_~[cmdk-group]]:pt-0 [&_[cmdk-group]]:px-2 [&_[cmdk-item]]:px-2 [&_[cmdk-item]]:py-3 [&_[cmdk-item]_svg]:h-5 [&_[cmdk-item]_svg]:w-5 focus:outline-none focus:ring-0 [&_*:focus]:outline-none [&_*:focus]:ring-0">
           {children}
         </Command>
       </DialogContent>
@@ -41,17 +41,19 @@ const CommandInput = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive.Input>,
   React.ComponentPropsWithoutRef<typeof CommandPrimitive.Input>
 >(({ className, ...props }, ref) => (
-  <div className="flex items-center border-b border-border/50 px-4" cmdk-input-wrapper="">
-    <Search className="mr-3 h-5 w-5 shrink-0 text-muted-foreground" />
+  <div className="flex items-center gap-3 p-4 border-b border-border/30" cmdk-input-wrapper="">
+    <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10">
+      <Search className="h-5 w-5 text-primary" />
+    </div>
     <CommandPrimitive.Input
       ref={ref}
       className={cn(
-        "flex h-12 w-full rounded-md bg-transparent py-3 text-base outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50",
+        "flex-1 h-10 bg-transparent text-base outline-none ring-0 border-0 focus:ring-0 focus:outline-none placeholder:text-muted-foreground/70 disabled:cursor-not-allowed disabled:opacity-50",
         className,
       )}
       {...props}
     />
-    <kbd className="hidden sm:inline-flex h-6 items-center gap-1 rounded border border-border/50 bg-muted/50 px-2 font-mono text-xs text-muted-foreground">
+    <kbd className="hidden sm:inline-flex h-7 items-center gap-1 rounded-md border border-border/40 bg-muted/30 px-2.5 font-mono text-xs text-muted-foreground">
       ESC
     </kbd>
   </div>

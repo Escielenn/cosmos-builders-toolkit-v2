@@ -188,6 +188,15 @@
   .skip-link {
     @apply sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-lg;
   }
+
+  /* Remove focus rings from command palette elements */
+  [cmdk-root] *:focus,
+  [cmdk-root] *:focus-visible,
+  [cmdk-input]:focus,
+  [cmdk-input]:focus-visible {
+    @apply outline-none ring-0 ring-offset-0;
+    box-shadow: none !important;
+  }
 }
 
 @layer components {
