@@ -18,7 +18,8 @@ import {
   Rocket,
   Zap,
   Calculator,
-  Search,
+  Plus,
+  Settings,
   Wrench,
 } from "lucide-react";
 import { useWorlds } from "@/hooks/use-worlds";
@@ -163,15 +164,13 @@ const GlobalSearch = ({ open, onOpenChange }: GlobalSearchProps) => {
                   onSelect={() =>
                     handleSelect("worksheet", worksheet.id, worksheet.tool_type)
                   }
+                  className="flex items-center"
                 >
-                  <Icon className="mr-2 h-4 w-4 text-primary" />
-                  <div className="flex flex-col">
-                    <span>{getWorksheetDisplayName(worksheet)}</span>
-                    <span className="text-xs text-muted-foreground">
-                      {getToolDisplayName(worksheet.tool_type)} •{" "}
-                      {getWorldName(worksheet.world_id)}
-                    </span>
-                  </div>
+                  <Icon className="mr-2 h-4 w-4 shrink-0 text-primary" />
+                  <span className="truncate">{getWorksheetDisplayName(worksheet)}</span>
+                  <span className="ml-2 shrink-0 text-xs text-muted-foreground">
+                    {getToolDisplayName(worksheet.tool_type)}
+                  </span>
                 </CommandItem>
               );
             })}
@@ -206,25 +205,23 @@ const GlobalSearch = ({ open, onOpenChange }: GlobalSearchProps) => {
             onSelect={() => {
               onOpenChange(false);
               navigate("/");
-              // Scroll to worlds section
               setTimeout(() => {
                 document.getElementById("worlds")?.scrollIntoView({ behavior: "smooth" });
               }, 100);
             }}
           >
-            <Globe className="mr-2 h-4 w-4" />
+            <Plus className="mr-2 h-4 w-4" />
             <span>Create New World</span>
           </CommandItem>
           <CommandItem
             value="action-settings"
             onSelect={() => {
               onOpenChange(false);
-              // Settings is handled by the Header
               navigate("/profile");
             }}
           >
-            <Search className="mr-2 h-4 w-4" />
-            <span>Open Settings</span>
+            <Settings className="mr-2 h-4 w-4" />
+            <span>Open Profile</span>
           </CommandItem>
         </CommandGroup>
       </CommandList>
