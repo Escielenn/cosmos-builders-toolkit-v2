@@ -112,7 +112,7 @@ const Pricing = () => {
     "All 8+ worldbuilding tools",
     "Unlimited worlds & worksheets",
     "Cloud sync across devices",
-    "Export to PDF & JSON",
+    "Export to PDF, JSON & Notion",
     "Priority support",
     "All future tools & features",
   ];

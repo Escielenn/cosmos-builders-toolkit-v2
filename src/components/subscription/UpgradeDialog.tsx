@@ -125,7 +125,7 @@ const UpgradeDialog = ({ open, onOpenChange, toolName }: UpgradeDialogProps) => 
               "All 8+ worldbuilding tools",
               "Unlimited worlds & worksheets",
               "Cloud sync across devices",
-              "Export to PDF & JSON",
+              "Export to PDF, JSON & Notion",
               "Priority support",
               "Future tools & features",
             ].map((feature) => (
