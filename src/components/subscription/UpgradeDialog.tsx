@@ -73,7 +73,7 @@ const UpgradeDialog = ({ open, onOpenChange, toolName }: UpgradeDialogProps) => 
             <div className="flex justify-between items-start mb-2">
               <div>
                 <h3 className="font-semibold">Monthly</h3>
-                <p className="text-2xl font-bold">$12.50<span className="text-sm font-normal text-muted-foreground">/month</span></p>
+                <p className="text-2xl font-bold">$4.99<span className="text-sm font-normal text-muted-foreground">/month</span></p>
               </div>
               <Button
                 size="sm"
@@ -94,13 +94,13 @@ const UpgradeDialog = ({ open, onOpenChange, toolName }: UpgradeDialogProps) => 
           <div className="p-4 rounded-lg border-2 border-primary bg-primary/5 relative">
             <div className="absolute -top-3 left-4">
               <span className="px-2 py-0.5 bg-primary text-primary-foreground text-xs font-medium rounded">
-                Save 34%
+                Save 18%
               </span>
             </div>
             <div className="flex justify-between items-start mb-2">
               <div>
                 <h3 className="font-semibold">Yearly</h3>
-                <p className="text-2xl font-bold">$99<span className="text-sm font-normal text-muted-foreground">/year</span></p>
+                <p className="text-2xl font-bold">$49<span className="text-sm font-normal text-muted-foreground">/year</span></p>
               </div>
               <Button
                 size="sm"
@@ -114,7 +114,7 @@ const UpgradeDialog = ({ open, onOpenChange, toolName }: UpgradeDialogProps) => 
                 )}
               </Button>
             </div>
-            <p className="text-xs text-muted-foreground">Billed annually (~$8.25/month)</p>
+            <p className="text-xs text-muted-foreground">Billed annually (~$4.08/month)</p>
           </div>
         </div>
 

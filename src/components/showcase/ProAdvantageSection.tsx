@@ -1,4 +1,5 @@
-import { Crown, Zap, Link2, FileDown, Infinity, ExternalLink } from "lucide-react";
+import { Crown, Zap, Link2, FileDown, Infinity, ExternalLink, GraduationCap } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
@@ -33,6 +34,13 @@ const benefits = [
     title: "Unlimited Worlds",
     description:
       "Create as many worlds and worksheets as you need. Build entire galaxies of interconnected settings.",
+  },
+  {
+    icon: GraduationCap,
+    title: "Worldbuilding Courses",
+    description:
+      "Free video courses on science fiction worldbuilding, included with your Pro membership.",
+    comingSoon: true,
   },
 ];
 
@@ -69,9 +77,16 @@ const ProAdvantageSection = () => {
                   <Icon className="w-6 h-6 text-amber-500" />
                 </div>
                 <div>
-                  <h3 className="font-display font-light text-lg mb-2">
-                    {benefit.title}
-                  </h3>
+                  <div className="flex items-center gap-2 mb-2">
+                    <h3 className="font-display font-light text-lg">
+                      {benefit.title}
+                    </h3>
+                    {benefit.comingSoon && (
+                      <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
+                        Coming Soon
+                      </Badge>
+                    )}
+                  </div>
                   <p className="text-sm text-muted-foreground">
                     {benefit.description}
                   </p>
@@ -94,7 +109,7 @@ const ProAdvantageSection = () => {
           </Link>
         </Button>
         <p className="text-sm text-muted-foreground mt-3">
-          Starting at $9/month • Cancel anytime
+          Starting at $4.99/month • Cancel anytime
         </p>
       </div>
     </section>
