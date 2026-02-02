@@ -10,6 +10,9 @@ import {
   Rocket,
   Sparkles,
   Dna,
+  Sun,
+  Crown,
+  Network,
 } from "lucide-react";
 import Header from "@/components/layout/Header";
 import ToolCard from "@/components/dashboard/ToolCard";
@@ -92,21 +95,40 @@ const tools = [
     week: 7,
   },
   {
-    id: "culture-designer",
-    title: "Culture Designer",
+    id: "star-system-builder",
+    title: "Star System Builder",
     description:
-      "Build societies with coherent values, rituals, and social structures.",
-    icon: BookOpen,
-    status: "coming-soon" as const,
+      "Design multi-planet systems with stellar relationships and orbital mechanics.",
+    icon: Sun,
+    status: "available" as const,
     week: 8,
   },
   {
-    id: "technology-mapper",
-    title: "Technology Mapper",
-    description: "Map technological capabilities and their societal impacts.",
-    icon: Cpu,
-    status: "coming-soon" as const,
+    id: "empire-designer",
+    title: "Empire/Government Designer",
+    description:
+      "Create political structures, governance systems, and internal factions.",
+    icon: Crown,
+    status: "available" as const,
     week: 9,
+  },
+  {
+    id: "technology-consequences",
+    title: "Technology Consequences Map",
+    description:
+      "Map how any technology cascades through society, economy, and culture.",
+    icon: Cpu,
+    status: "available" as const,
+    week: 10,
+  },
+  {
+    id: "species-interaction-matrix",
+    title: "Species Interaction Matrix",
+    description:
+      "Define complex relationships between multiple alien species.",
+    icon: Network,
+    status: "available" as const,
+    week: 11,
   },
 ];
 

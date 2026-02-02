@@ -73,13 +73,18 @@ const WorldNotes = ({ worldId }: WorldNotesProps) => {
                   value={content}
                   onChange={(e) => updateContent(e.target.value)}
                   placeholder="Add notes about your world here... This is a great place for backstory, world history, important details, or anything else you want to remember."
-                  className="min-h-[200px] resize-y"
+                  className="min-h-[200px] resize-y font-mono text-sm"
                 />
-                {formattedLastUpdated && (
+                <div className="flex items-center justify-between flex-wrap gap-2">
                   <p className="text-xs text-muted-foreground">
-                    Last updated: {formattedLastUpdated}
+                    <span className="text-primary/70">Markdown supported</span> — **bold**, *italic*, # headings, - lists
                   </p>
-                )}
+                  {formattedLastUpdated && (
+                    <p className="text-xs text-muted-foreground">
+                      Last updated: {formattedLastUpdated}
+                    </p>
+                  )}
+                </div>
               </>
             )}
           </div>
