@@ -227,6 +227,18 @@ const BACKGROUND_OPTIONS: BackgroundOption[] = [
 
 const STORAGE_KEY = "cosmos-builder-background";
 const CUSTOM_BG_STORAGE_KEY = "cosmos-builder-custom-background";
+const SESSION_RANDOM_BG_KEY = "cosmos-builder-session-background";
+
+// Get space images for random rotation
+const getSpaceImages = () => BACKGROUND_OPTIONS.filter(bg => bg.category === "space" && bg.url);
+
+// Get a random background ID from space images
+const getRandomSpaceBackground = (): string => {
+  const spaceImages = getSpaceImages();
+  if (spaceImages.length === 0) return "default";
+  const randomIndex = Math.floor(Math.random() * spaceImages.length);
+  return spaceImages[randomIndex].id;
+};
 
 // Preload images for faster switching
 const preloadImages = () => {
@@ -242,6 +254,7 @@ export const useBackground = () => {
   const [backgroundId, setBackgroundId] = useState<string>("default");
   const [isLoading, setIsLoading] = useState(false);
   const [customBackground, setCustomBackgroundState] = useState<string | null>(null);
+  const [hasUserPreference, setHasUserPreference] = useState<boolean>(false);
 
   // Preload all background images on mount
   useEffect(() => {
@@ -251,11 +264,25 @@ export const useBackground = () => {
   useEffect(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
     const customBg = localStorage.getItem(CUSTOM_BG_STORAGE_KEY);
+
     if (customBg) {
       setCustomBackgroundState(customBg);
     }
+
     if (stored) {
+      // User has explicitly chosen a background
       setBackgroundId(stored);
+      setHasUserPreference(true);
+    } else {
+      // No user preference - use random rotation per session
+      let sessionBg = sessionStorage.getItem(SESSION_RANDOM_BG_KEY);
+      if (!sessionBg) {
+        // New session - pick a random background
+        sessionBg = getRandomSpaceBackground();
+        sessionStorage.setItem(SESSION_RANDOM_BG_KEY, sessionBg);
+      }
+      setBackgroundId(sessionBg);
+      setHasUserPreference(false);
     }
   }, []);
 
@@ -289,6 +316,9 @@ export const useBackground = () => {
   const setBackground = (id: string) => {
     const selected = BACKGROUND_OPTIONS.find((bg) => bg.id === id);
 
+    // Mark that user has explicitly chosen a background
+    setHasUserPreference(true);
+
     // If selecting an image, show loading state briefly
     if (selected?.url) {
       setIsLoading(true);
@@ -316,6 +346,7 @@ export const useBackground = () => {
     localStorage.setItem(CUSTOM_BG_STORAGE_KEY, dataUrl);
     setBackgroundId("custom");
     localStorage.setItem(STORAGE_KEY, "custom");
+    setHasUserPreference(true);
   };
 
   const clearCustomBackground = () => {
@@ -327,6 +358,16 @@ export const useBackground = () => {
     }
   };
 
+  // Reset to random mode - clears user preference and picks a new random background
+  const resetToRandom = () => {
+    localStorage.removeItem(STORAGE_KEY);
+    sessionStorage.removeItem(SESSION_RANDOM_BG_KEY);
+    const newRandomBg = getRandomSpaceBackground();
+    sessionStorage.setItem(SESSION_RANDOM_BG_KEY, newRandomBg);
+    setBackgroundId(newRandomBg);
+    setHasUserPreference(false);
+  };
+
   return {
     backgroundId,
     setBackground,
@@ -335,6 +376,8 @@ export const useBackground = () => {
     customBackground,
     setCustomBackground,
     clearCustomBackground,
+    hasUserPreference,
+    resetToRandom,
   };
 };
 

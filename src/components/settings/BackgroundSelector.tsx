@@ -8,13 +8,13 @@ import {
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { Image, Check, Upload, X, Palette, Sparkles } from "lucide-react";
+import { Image, Check, Upload, X, Palette, Sparkles, Shuffle } from "lucide-react";
 import { useBackground } from "@/hooks/use-background";
 import { cn } from "@/lib/utils";
 import { useRef } from "react";
 
 const BackgroundSelector = () => {
-  const { backgroundId, setBackground, options, customBackground, setCustomBackground, clearCustomBackground } = useBackground();
+  const { backgroundId, setBackground, options, customBackground, setCustomBackground, clearCustomBackground, hasUserPreference, resetToRandom } = useBackground();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -140,6 +140,39 @@ const BackgroundSelector = () => {
 
           {/* Images Tab */}
           <TabsContent value="images" className="mt-4 space-y-4">
+            {/* Random Option */}
+            <div>
+              <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3">
+                Auto-Rotate
+              </h4>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                <button
+                  onClick={resetToRandom}
+                  className={cn(
+                    "relative aspect-video rounded-lg overflow-hidden border-2 transition-all hover:scale-105",
+                    !hasUserPreference
+                      ? "border-primary ring-2 ring-primary/50"
+                      : "border-border hover:border-primary/50"
+                  )}
+                >
+                  <div className="w-full h-full bg-gradient-to-br from-purple-900/50 via-blue-900/50 to-cyan-900/50 flex items-center justify-center">
+                    <Shuffle className="w-8 h-8 text-white/70" />
+                  </div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
+                  <span className="absolute bottom-2 left-2 text-xs font-medium text-white">
+                    Random
+                  </span>
+                  <span className="absolute bottom-2 right-2 text-[10px] text-white/60">
+                    Changes each visit
+                  </span>
+                  {!hasUserPreference && (
+                    <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-primary flex items-center justify-center">
+                      <Check className="w-3 h-3 text-primary-foreground" />
+                    </div>
+                  )}
+                </button>
+              </div>
+            </div>
             <div>
               <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3">
                 Default
