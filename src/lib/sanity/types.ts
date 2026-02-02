@@ -12,6 +12,7 @@ export interface SanityArticle {
   category: "basics" | "science" | "craft" | "case-studies";
   publishedDate: string;
   featured: boolean;
+  tags?: string[];
   featuredImage?: {
     _type: "image";
     asset: {
@@ -31,6 +32,7 @@ export interface ArticleListItem {
   category: string;
   publishedDate: string;
   featured: boolean;
+  tags?: string[];
   featuredImage?: {
     asset: {
       _ref: string;

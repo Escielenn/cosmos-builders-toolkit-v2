@@ -31,6 +31,10 @@ const PlanetaryProfile = lazy(() => import("./pages/tools/PlanetaryProfile"));
 const DrakeEquationCalculator = lazy(() => import("./pages/tools/DrakeEquationCalculator"));
 const XenomythologyFrameworkBuilder = lazy(() => import("./pages/tools/XenomythologyFrameworkBuilder"));
 const EvolutionaryBiology = lazy(() => import("./pages/tools/EvolutionaryBiology"));
+const StarSystemBuilder = lazy(() => import("./pages/tools/StarSystemBuilder"));
+const EmpireDesigner = lazy(() => import("./pages/tools/EmpireDesigner"));
+const TechnologyConsequences = lazy(() => import("./pages/tools/TechnologyConsequences"));
+const SpeciesInteractionMatrix = lazy(() => import("./pages/tools/SpeciesInteractionMatrix"));
 
 // Lazy loaded learn pages
 const LearnIndex = lazy(() => import("./pages/learn/LearnIndex"));
@@ -107,6 +111,38 @@ const App = () => (
                   element={
                     <ProToolGuard toolId="evolutionary-biology">
                       <EvolutionaryBiology />
+                    </ProToolGuard>
+                  }
+                />
+                <Route
+                  path="/tools/star-system-builder"
+                  element={
+                    <ProToolGuard toolId="star-system-builder">
+                      <StarSystemBuilder />
+                    </ProToolGuard>
+                  }
+                />
+                <Route
+                  path="/tools/empire-designer"
+                  element={
+                    <ProToolGuard toolId="empire-designer">
+                      <EmpireDesigner />
+                    </ProToolGuard>
+                  }
+                />
+                <Route
+                  path="/tools/technology-consequences"
+                  element={
+                    <ProToolGuard toolId="technology-consequences">
+                      <TechnologyConsequences />
+                    </ProToolGuard>
+                  }
+                />
+                <Route
+                  path="/tools/species-interaction-matrix"
+                  element={
+                    <ProToolGuard toolId="species-interaction-matrix">
+                      <SpeciesInteractionMatrix />
                     </ProToolGuard>
                   }
                 />

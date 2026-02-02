@@ -55,6 +55,27 @@ export default defineType({
       initialValue: false,
     }),
     defineField({
+      name: "tags",
+      title: "Tags",
+      type: "array",
+      of: [{ type: "string" }],
+      options: {
+        layout: "tags",
+        list: [
+          { title: "Astrobiology", value: "astrobiology" },
+          { title: "Evolution", value: "evolution" },
+          { title: "Worldbuilding", value: "worldbuilding" },
+          { title: "Alien Life", value: "alien-life" },
+          { title: "Exoplanets", value: "exoplanets" },
+          { title: "Space Science", value: "space-science" },
+          { title: "Mythology", value: "mythology" },
+          { title: "Culture", value: "culture" },
+          { title: "Technology", value: "technology" },
+          { title: "Writing Tips", value: "writing-tips" },
+        ],
+      },
+    }),
+    defineField({
       name: "featuredImage",
       title: "Featured Image",
       type: "image",

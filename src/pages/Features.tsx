@@ -86,6 +86,50 @@ const TOOLS = [
     ],
     isPro: true,
   },
+  {
+    id: "star-system-builder",
+    title: "Star System Builder",
+    description: "Design multi-planet systems with stellar relationships, orbital mechanics, and system-wide narrative elements.",
+    features: [
+      "Spectral classification and stellar configurations",
+      "Planetary bodies with orbital zones and resonances",
+      "System history and habitability analysis",
+    ],
+    isPro: true,
+  },
+  {
+    id: "empire-designer",
+    title: "Empire/Government Designer",
+    description: "Create political structures, governance systems, and the factions that challenge or support them.",
+    features: [
+      "Government types with legitimacy and succession",
+      "Internal factions and external relations",
+      "Stability assessment and trajectory analysis",
+    ],
+    isPro: true,
+  },
+  {
+    id: "technology-consequences",
+    title: "Technology Consequences Map",
+    description: "Map how any technology cascades through physical, economic, social, political, military, and psychological domains.",
+    features: [
+      "7 consequence domains with timeframe tracking",
+      "Contradiction analysis for story conflicts",
+      "SF examples and story potential synthesis",
+    ],
+    isPro: true,
+  },
+  {
+    id: "species-interaction-matrix",
+    title: "Species Interaction Matrix",
+    description: "Define complex relationships between 2-6 alien species across physical, cultural, economic, and political dimensions.",
+    features: [
+      "Pairwise relationship mapping",
+      "Historical context and tension points",
+      "Equilibrium and trajectory assessment",
+    ],
+    isPro: true,
+  },
 ];
 
 const Features = () => {

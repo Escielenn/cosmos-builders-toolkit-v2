@@ -21,6 +21,10 @@ import {
   Plus,
   Settings,
   Wrench,
+  Sun,
+  Crown,
+  Cpu,
+  Users,
 } from "lucide-react";
 import { useWorlds } from "@/hooks/use-worlds";
 import { useAuth } from "@/contexts/AuthContext";
@@ -36,6 +40,10 @@ const TOOL_ICONS: Record<string, React.ElementType> = {
   "spacecraft-designer": Rocket,
   "propulsion-consequences-map": Zap,
   "drake-equation-calculator": Calculator,
+  "star-system-builder": Sun,
+  "empire-designer": Crown,
+  "technology-consequences": Cpu,
+  "species-interaction-matrix": Users,
 };
 
 // Tool routes
@@ -47,6 +55,10 @@ const TOOL_ROUTES: Record<string, string> = {
   "spacecraft-designer": "/tools/spacecraft-designer",
   "propulsion-consequences-map": "/tools/propulsion-consequences-map",
   "drake-equation-calculator": "/tools/drake-equation-calculator",
+  "star-system-builder": "/tools/star-system-builder",
+  "empire-designer": "/tools/empire-designer",
+  "technology-consequences": "/tools/technology-consequences",
+  "species-interaction-matrix": "/tools/species-interaction-matrix",
 };
 
 interface Worksheet {

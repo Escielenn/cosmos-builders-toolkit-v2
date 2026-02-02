@@ -4,6 +4,9 @@ import {
   getArticleBySlug,
   getFeaturedArticles,
   getArticlesByCategory,
+  getArticlesByTag,
+  searchArticles,
+  getAllTags,
 } from "@/lib/sanity/queries";
 
 export function useArticles() {
@@ -36,5 +39,31 @@ export function useArticlesByCategory(category: string) {
     queryKey: ["articles", "category", category],
     queryFn: () => getArticlesByCategory(category),
     staleTime: 1000 * 60 * 5,
+  });
+}
+
+export function useArticlesByTag(tag: string) {
+  return useQuery({
+    queryKey: ["articles", "tag", tag],
+    queryFn: () => getArticlesByTag(tag),
+    enabled: !!tag,
+    staleTime: 1000 * 60 * 5,
+  });
+}
+
+export function useSearchArticles(searchTerm: string) {
+  return useQuery({
+    queryKey: ["articles", "search", searchTerm],
+    queryFn: () => searchArticles(searchTerm),
+    enabled: searchTerm.length >= 2, // Only search with 2+ characters
+    staleTime: 1000 * 60 * 2, // 2 minutes for search results
+  });
+}
+
+export function useAllTags() {
+  return useQuery({
+    queryKey: ["tags"],
+    queryFn: getAllTags,
+    staleTime: 1000 * 60 * 10, // 10 minutes for tags
   });
 }

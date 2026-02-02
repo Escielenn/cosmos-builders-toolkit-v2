@@ -11,8 +11,10 @@ export const PRO_TOOL_IDS = [
   'drake-equation-calculator',
   'xenomythology-framework-builder',
   'evolutionary-biology',
-  'culture-designer',
-  'technology-mapper',
+  'star-system-builder',
+  'empire-designer',
+  'technology-consequences',
+  'species-interaction-matrix',
 ];
 
 export const isProTool = (toolId: string): boolean => {
@@ -26,15 +28,15 @@ export const isFreeTool = (toolId: string): boolean => {
 // Pricing configuration
 export const PRICING = {
   monthly: {
-    price: 12.50,
+    price: 4.99,
     interval: 'month' as const,
     label: 'Monthly',
   },
   yearly: {
-    price: 99,
+    price: 49,
     interval: 'year' as const,
     label: 'Yearly',
-    savings: '34%',
-    monthlyEquivalent: 8.25,
+    savings: '18%',
+    monthlyEquivalent: 4.08,
   },
 };

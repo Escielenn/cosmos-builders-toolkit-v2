@@ -57,16 +57,28 @@ const proTools = [
     status: "available",
   },
   {
-    id: "culture-designer",
-    title: "Culture Designer",
-    description: "Build societies with coherent values, rituals, and social structures.",
-    status: "coming-soon",
+    id: "star-system-builder",
+    title: "Star System Builder",
+    description: "Design multi-planet systems with stellar relationships and orbital mechanics.",
+    status: "available",
   },
   {
-    id: "technology-mapper",
-    title: "Technology Mapper",
-    description: "Map technological capabilities and their societal impacts.",
-    status: "coming-soon",
+    id: "empire-designer",
+    title: "Empire/Government Designer",
+    description: "Create political structures, governance systems, and internal factions.",
+    status: "available",
+  },
+  {
+    id: "technology-consequences",
+    title: "Technology Consequences Map",
+    description: "Map how any technology cascades through society, economy, and culture.",
+    status: "available",
+  },
+  {
+    id: "species-interaction-matrix",
+    title: "Species Interaction Matrix",
+    description: "Define complex relationships between multiple alien species.",
+    status: "available",
   },
 ];
 
@@ -139,7 +151,7 @@ const ToolShowcase = () => {
           <h2 className="font-display font-light text-2xl uppercase tracking-sf-wide">Pro Tools</h2>
           <Badge variant="secondary" className="bg-amber-500/20 text-amber-600 dark:text-amber-400">
             <Crown className="w-3 h-3 mr-1" />
-            6 Tools
+            8 Tools
           </Badge>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

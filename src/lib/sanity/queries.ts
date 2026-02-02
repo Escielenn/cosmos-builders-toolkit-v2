@@ -1,35 +1,28 @@
 import { sanityClient } from "./client";
 import type { SanityArticle, ArticleListItem } from "./types";
 
+// Base projection for article list items
+const articleListProjection = `{
+  _id,
+  title,
+  "slug": slug.current,
+  description,
+  category,
+  publishedDate,
+  featured,
+  tags,
+  featuredImage
+}`;
+
 // Get all articles for listing
 export async function getArticles(): Promise<ArticleListItem[]> {
-  const query = `*[_type == "article"] | order(publishedDate desc) {
-    _id,
-    title,
-    "slug": slug.current,
-    description,
-    category,
-    publishedDate,
-    featured,
-    featuredImage
-  }`;
-
+  const query = `*[_type == "article"] | order(publishedDate desc) ${articleListProjection}`;
   return sanityClient.fetch(query);
 }
 
 // Get featured articles
 export async function getFeaturedArticles(): Promise<ArticleListItem[]> {
-  const query = `*[_type == "article" && featured == true] | order(publishedDate desc) {
-    _id,
-    title,
-    "slug": slug.current,
-    description,
-    category,
-    publishedDate,
-    featured,
-    featuredImage
-  }`;
-
+  const query = `*[_type == "article" && featured == true] | order(publishedDate desc) ${articleListProjection}`;
   return sanityClient.fetch(query);
 }
 
@@ -47,6 +40,7 @@ export async function getArticleBySlug(
     category,
     publishedDate,
     featured,
+    tags,
     featuredImage,
     content
   }`;
@@ -58,16 +52,33 @@ export async function getArticleBySlug(
 export async function getArticlesByCategory(
   category: string
 ): Promise<ArticleListItem[]> {
-  const query = `*[_type == "article" && category == $category] | order(publishedDate desc) {
-    _id,
-    title,
-    "slug": slug.current,
-    description,
-    category,
-    publishedDate,
-    featured,
-    featuredImage
-  }`;
-
+  const query = `*[_type == "article" && category == $category] | order(publishedDate desc) ${articleListProjection}`;
   return sanityClient.fetch(query, { category });
+}
+
+// Get articles by tag
+export async function getArticlesByTag(
+  tag: string
+): Promise<ArticleListItem[]> {
+  const query = `*[_type == "article" && $tag in tags] | order(publishedDate desc) ${articleListProjection}`;
+  return sanityClient.fetch(query, { tag });
+}
+
+// Search articles by text (searches title, description, and content)
+export async function searchArticles(
+  searchTerm: string
+): Promise<ArticleListItem[]> {
+  const query = `*[_type == "article" && (
+    title match $searchTerm + "*" ||
+    description match $searchTerm + "*" ||
+    pt::text(content) match $searchTerm + "*"
+  )] | order(publishedDate desc) ${articleListProjection}`;
+
+  return sanityClient.fetch(query, { searchTerm });
+}
+
+// Get all unique tags from articles
+export async function getAllTags(): Promise<string[]> {
+  const query = `array::unique(*[_type == "article" && defined(tags)].tags[])`;
+  return sanityClient.fetch(query);
 }

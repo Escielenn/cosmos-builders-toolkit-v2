@@ -1,5 +1,5 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Edit, Globe, FileText, Rocket, Zap, Trash2, MoreVertical, Loader2, Calculator, Plus, Sparkles, Pencil, ChevronRight, Dna, Network } from "lucide-react";
+import { ArrowLeft, Edit, Globe, FileText, Rocket, Zap, Trash2, MoreVertical, Loader2, Calculator, Plus, Sparkles, Pencil, ChevronRight, Dna, Network, Sun, Crown, Cpu, Users } from "lucide-react";
 import { format } from "date-fns";
 import Header from "@/components/layout/Header";
 import { GlassPanel } from "@/components/ui/glass-panel";
@@ -90,6 +90,34 @@ const TOOLS = [
     description: "Design biologically plausible alien species from evolutionary pressures",
     icon: Dna,
     path: "/tools/evolutionary-biology",
+  },
+  {
+    id: "star-system-builder",
+    name: "Star System Builder",
+    description: "Design multi-planet systems with stellar relationships and orbital mechanics",
+    icon: Sun,
+    path: "/tools/star-system-builder",
+  },
+  {
+    id: "empire-designer",
+    name: "Empire/Government Designer",
+    description: "Create political structures, governance systems, and internal factions",
+    icon: Crown,
+    path: "/tools/empire-designer",
+  },
+  {
+    id: "technology-consequences",
+    name: "Technology Consequences Map",
+    description: "Map how any technology cascades through society, economy, and culture",
+    icon: Cpu,
+    path: "/tools/technology-consequences",
+  },
+  {
+    id: "species-interaction-matrix",
+    name: "Species Interaction Matrix",
+    description: "Define complex relationships between multiple alien species",
+    icon: Users,
+    path: "/tools/species-interaction-matrix",
   },
 ];
 

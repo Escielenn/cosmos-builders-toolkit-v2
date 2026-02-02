@@ -292,6 +292,137 @@ export const TechnologyIcon = ({ className = "", ...props }: ToolIconProps) => (
   </svg>
 );
 
+// Star System Builder - Yellow/Gold star system
+export const StarSystemIcon = ({ className = "", ...props }: ToolIconProps) => (
+  <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} {...props}>
+    <defs>
+      <filter id="starGlow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur"/>
+        <feColorMatrix in="blur" type="matrix"
+          values="0 0 0 0 1  0 0 0 0 0.8  0 0 0 0 0  0 0 0 0.6 0"/>
+        <feMerge>
+          <feMergeNode/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
+    </defs>
+    <rect width="48" height="48" rx="8" fill="#0A0A0A"/>
+    <g filter="url(#starGlow)">
+      {/* Central star */}
+      <circle cx="24" cy="24" r="6" fill="#FFD700"/>
+      {/* Orbits */}
+      <circle cx="24" cy="24" r="12" stroke="#FFD700" strokeWidth="1" fill="none" opacity="0.5"/>
+      <circle cx="24" cy="24" r="18" stroke="#FFD700" strokeWidth="1" fill="none" opacity="0.3"/>
+      {/* Planets */}
+      <circle cx="36" cy="24" r="2" fill="#FFD700" opacity="0.8"/>
+      <circle cx="24" cy="6" r="1.5" fill="#FFD700" opacity="0.6"/>
+      <circle cx="8" cy="30" r="2.5" fill="#FFD700" opacity="0.7"/>
+    </g>
+  </svg>
+);
+
+// Empire Designer - Purple crown/throne
+export const EmpireIcon = ({ className = "", ...props }: ToolIconProps) => (
+  <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} {...props}>
+    <defs>
+      <filter id="empireGlow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur"/>
+        <feColorMatrix in="blur" type="matrix"
+          values="0 0 0 0 0.6  0 0 0 0 0.2  0 0 0 0 0.8  0 0 0 0.6 0"/>
+        <feMerge>
+          <feMergeNode/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
+    </defs>
+    <rect width="48" height="48" rx="8" fill="#0A0A0A"/>
+    <g filter="url(#empireGlow)">
+      {/* Crown base */}
+      <path d="M12 32 L12 24 L18 28 L24 20 L30 28 L36 24 L36 32 Z" stroke="#9333EA" strokeWidth="2" fill="none"/>
+      {/* Crown points */}
+      <circle cx="12" cy="24" r="2" fill="#9333EA"/>
+      <circle cx="24" cy="20" r="2" fill="#9333EA"/>
+      <circle cx="36" cy="24" r="2" fill="#9333EA"/>
+      {/* Base band */}
+      <rect x="12" y="32" width="24" height="4" stroke="#9333EA" strokeWidth="2" fill="none"/>
+      {/* Jewel */}
+      <circle cx="24" cy="34" r="1.5" fill="#9333EA"/>
+    </g>
+  </svg>
+);
+
+// Technology Consequences - Cyan circuit/network
+export const TechConsequencesIcon = ({ className = "", ...props }: ToolIconProps) => (
+  <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} {...props}>
+    <defs>
+      <filter id="techGlow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur"/>
+        <feColorMatrix in="blur" type="matrix"
+          values="0 0 0 0 0  0 0 0 0 0.9  0 0 0 0 0.9  0 0 0 0.6 0"/>
+        <feMerge>
+          <feMergeNode/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
+    </defs>
+    <rect width="48" height="48" rx="8" fill="#0A0A0A"/>
+    <g filter="url(#techGlow)">
+      {/* Central chip */}
+      <rect x="18" y="18" width="12" height="12" stroke="#06B6D4" strokeWidth="2" fill="none"/>
+      {/* Connection lines */}
+      <line x1="24" y1="18" x2="24" y2="8" stroke="#06B6D4" strokeWidth="1.5"/>
+      <line x1="24" y1="30" x2="24" y2="40" stroke="#06B6D4" strokeWidth="1.5"/>
+      <line x1="18" y1="24" x2="8" y2="24" stroke="#06B6D4" strokeWidth="1.5"/>
+      <line x1="30" y1="24" x2="40" y2="24" stroke="#06B6D4" strokeWidth="1.5"/>
+      {/* Diagonal connections */}
+      <line x1="18" y1="18" x2="12" y2="12" stroke="#06B6D4" strokeWidth="1" opacity="0.7"/>
+      <line x1="30" y1="18" x2="36" y2="12" stroke="#06B6D4" strokeWidth="1" opacity="0.7"/>
+      <line x1="18" y1="30" x2="12" y2="36" stroke="#06B6D4" strokeWidth="1" opacity="0.7"/>
+      <line x1="30" y1="30" x2="36" y2="36" stroke="#06B6D4" strokeWidth="1" opacity="0.7"/>
+      {/* Nodes */}
+      <circle cx="24" cy="8" r="2" fill="#06B6D4"/>
+      <circle cx="24" cy="40" r="2" fill="#06B6D4"/>
+      <circle cx="8" cy="24" r="2" fill="#06B6D4"/>
+      <circle cx="40" cy="24" r="2" fill="#06B6D4"/>
+    </g>
+  </svg>
+);
+
+// Species Interaction Matrix - Pink interconnected nodes
+export const SpeciesMatrixIcon = ({ className = "", ...props }: ToolIconProps) => (
+  <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} {...props}>
+    <defs>
+      <filter id="matrixGlow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur"/>
+        <feColorMatrix in="blur" type="matrix"
+          values="0 0 0 0 0.9  0 0 0 0 0.2  0 0 0 0 0.6  0 0 0 0.6 0"/>
+        <feMerge>
+          <feMergeNode/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
+    </defs>
+    <rect width="48" height="48" rx="8" fill="#0A0A0A"/>
+    <g filter="url(#matrixGlow)">
+      {/* Connection lines */}
+      <line x1="14" y1="14" x2="34" y2="14" stroke="#EC4899" strokeWidth="1.5" opacity="0.6"/>
+      <line x1="14" y1="14" x2="14" y2="34" stroke="#EC4899" strokeWidth="1.5" opacity="0.6"/>
+      <line x1="34" y1="14" x2="34" y2="34" stroke="#EC4899" strokeWidth="1.5" opacity="0.6"/>
+      <line x1="14" y1="34" x2="34" y2="34" stroke="#EC4899" strokeWidth="1.5" opacity="0.6"/>
+      <line x1="14" y1="14" x2="34" y2="34" stroke="#EC4899" strokeWidth="1" opacity="0.4"/>
+      <line x1="34" y1="14" x2="14" y2="34" stroke="#EC4899" strokeWidth="1" opacity="0.4"/>
+      <line x1="24" y1="14" x2="24" y2="34" stroke="#EC4899" strokeWidth="1" opacity="0.4"/>
+      <line x1="14" y1="24" x2="34" y2="24" stroke="#EC4899" strokeWidth="1" opacity="0.4"/>
+      {/* Species nodes */}
+      <circle cx="14" cy="14" r="4" fill="#EC4899"/>
+      <circle cx="34" cy="14" r="4" fill="#EC4899"/>
+      <circle cx="14" cy="34" r="4" fill="#EC4899"/>
+      <circle cx="34" cy="34" r="4" fill="#EC4899"/>
+      <circle cx="24" cy="24" r="3" fill="#EC4899" opacity="0.7"/>
+    </g>
+  </svg>
+);
+
 // Map tool IDs to their icon components
 export const TOOL_ICONS: Record<string, React.FC<ToolIconProps>> = {
   'environmental-chain-reaction': ChainReactionIcon,
@@ -304,6 +435,10 @@ export const TOOL_ICONS: Record<string, React.FC<ToolIconProps>> = {
   'species-creator': SpeciesIcon,  // Legacy mapping
   'culture-designer': CultureIcon,
   'technology-mapper': TechnologyIcon,
+  'star-system-builder': StarSystemIcon,
+  'empire-designer': EmpireIcon,
+  'technology-consequences': TechConsequencesIcon,
+  'species-interaction-matrix': SpeciesMatrixIcon,
 };
 
 export const getToolIcon = (toolId: string): React.FC<ToolIconProps> | null => {

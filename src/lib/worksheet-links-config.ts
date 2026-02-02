@@ -226,6 +226,10 @@ export const TOOL_DISPLAY_NAMES: Record<string, string> = {
   "spacecraft-designer": "Spacecraft Designer",
   "propulsion-consequences-map": "Propulsion Consequences Map",
   "drake-equation-calculator": "Drake Equation Calculator",
+  "star-system-builder": "Star System Builder",
+  "empire-designer": "Empire/Government Designer",
+  "technology-consequences": "Technology Consequences Map",
+  "species-interaction-matrix": "Species Interaction Matrix",
 };
 
 // Get display name for a tool type

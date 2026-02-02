@@ -1,0 +1,1429 @@
+import { useState, useEffect, useMemo } from "react";
+import { Link, useSearchParams } from "react-router-dom";
+import { ArrowLeft, Download, Save, Cloud, CloudOff, Users, Plus, Trash2, ArrowRight, RefreshCw } from "lucide-react";
+import Header from "@/components/layout/Header";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
+import { useWorksheets, useWorksheet, useWorksheetsByType } from "@/hooks/use-worksheets";
+import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
+import { useAuth } from "@/contexts/AuthContext";
+import { useSubscription } from "@/hooks/use-subscription";
+import SectionNavigation, { Section, MobileSectionNav } from "@/components/tools/SectionNavigation";
+import ToolSidebar from "@/components/tools/ToolSidebar";
+import CollapsibleSection from "@/components/tools/CollapsibleSection";
+import KeyChoicesSidebar, { KeyChoicesSection, MobileKeyChoices } from "@/components/tools/KeyChoicesSidebar";
+import ToolActionBar from "@/components/tools/ToolActionBar";
+import ExportDialog from "@/components/tools/ExportDialog";
+import UpgradeDialog from "@/components/subscription/UpgradeDialog";
+import { useWorlds } from "@/hooks/use-worlds";
+import { Json } from "@/integrations/supabase/types";
+import {
+  RELATIONSHIP_LEVELS,
+  PHYSICAL_COMPATIBILITY,
+  COMMUNICATION,
+  ECONOMIC_RELATIONS,
+  POLITICAL_RELATIONS,
+  CULTURAL_EXCHANGE,
+  HISTORICAL_CONTEXT,
+  TENSION_POINTS,
+  SYNTHESIS_OPTIONS,
+  SF_INTERACTION_EXAMPLES,
+  STORY_PROMPT_TEMPLATES,
+} from "@/lib/species-interaction-data";
+
+const SECTIONS: Section[] = [
+  { id: "section-registry", title: "1. Species Registry" },
+  { id: "section-pairs", title: "2. Pair Selection" },
+  { id: "section-physical", title: "3. Physical" },
+  { id: "section-communication", title: "4. Communication" },
+  { id: "section-economic", title: "5. Economic" },
+  { id: "section-political", title: "6. Political" },
+  { id: "section-cultural", title: "7. Cultural" },
+  { id: "section-historical", title: "8. Historical" },
+  { id: "section-tensions", title: "9. Tensions" },
+  { id: "section-examples", title: "SF Examples" },
+  { id: "section-synthesis", title: "Synthesis" },
+];
+
+interface Species {
+  id: string;
+  name: string;
+  shortDescription: string;
+  homeworld: string;
+  physicalTraits: string;
+  culturalTraits: string;
+}
+
+interface SpeciesPair {
+  speciesAId: string;
+  speciesBId: string;
+  overallRelationship: string;
+  environmentCompatibility: string;
+  biologyCompatibility: string;
+  reproductionCompatibility: string;
+  lifespanDifference: string;
+  physicalNotes: string;
+  languageStatus: string;
+  perceptionOverlap: string;
+  nonverbalUnderstanding: string;
+  culturalConceptGap: string;
+  communicationNotes: string;
+  tradeRelationship: string;
+  resourceRelationship: string;
+  laborRelationship: string;
+  economicDependency: string;
+  economicNotes: string;
+  sovereignty: string;
+  alliance: string;
+  representation: string;
+  treatyStatus: string;
+  politicalNotes: string;
+  culturalAdoption: string;
+  populationMixing: string;
+  attitudesEach: string;
+  hybridStatus: string;
+  culturalNotes: string;
+  firstContactTime: string;
+  firstContactType: string;
+  warHistory: string;
+  cooperationHistory: string;
+  historicalNotes: string;
+  currentTensions: string;
+  futureRisks: string;
+  tensionNotes: string;
+}
+
+interface FormState {
+  species: Species[];
+  pairs: SpeciesPair[];
+  overallEquilibrium: string;
+  overallTrajectory: string;
+  dominantSpecies: string;
+  mostVolatilePair: string;
+  synthesisNotes: string;
+  storyPrompt: string;
+  centralConflict: string;
+  peaceOpportunity: string;
+  wildcardFactor: string;
+  notes: string;
+}
+
+const createEmptySpecies = (): Species => ({
+  id: crypto.randomUUID(),
+  name: "",
+  shortDescription: "",
+  homeworld: "",
+  physicalTraits: "",
+  culturalTraits: "",
+});
+
+const createEmptyPair = (speciesAId: string, speciesBId: string): SpeciesPair => ({
+  speciesAId,
+  speciesBId,
+  overallRelationship: "",
+  environmentCompatibility: "",
+  biologyCompatibility: "",
+  reproductionCompatibility: "",
+  lifespanDifference: "",
+  physicalNotes: "",
+  languageStatus: "",
+  perceptionOverlap: "",
+  nonverbalUnderstanding: "",
+  culturalConceptGap: "",
+  communicationNotes: "",
+  tradeRelationship: "",
+  resourceRelationship: "",
+  laborRelationship: "",
+  economicDependency: "",
+  economicNotes: "",
+  sovereignty: "",
+  alliance: "",
+  representation: "",
+  treatyStatus: "",
+  politicalNotes: "",
+  culturalAdoption: "",
+  populationMixing: "",
+  attitudesEach: "",
+  hybridStatus: "",
+  culturalNotes: "",
+  firstContactTime: "",
+  firstContactType: "",
+  warHistory: "",
+  cooperationHistory: "",
+  historicalNotes: "",
+  currentTensions: "",
+  futureRisks: "",
+  tensionNotes: "",
+});
+
+const initialFormState: FormState = {
+  species: [createEmptySpecies(), createEmptySpecies()],
+  pairs: [],
+  overallEquilibrium: "",
+  overallTrajectory: "",
+  dominantSpecies: "",
+  mostVolatilePair: "",
+  synthesisNotes: "",
+  storyPrompt: "",
+  centralConflict: "",
+  peaceOpportunity: "",
+  wildcardFactor: "",
+  notes: "",
+};
+
+const TOOL_TYPE = "species-interaction-matrix";
+
+const SpeciesInteractionMatrix = () => {
+  const [formState, setFormState] = useState<FormState>(initialFormState);
+  const [currentWorksheetId, setCurrentWorksheetId] = useState<string | null>(null);
+  const [currentWorksheetTitle, setCurrentWorksheetTitle] = useState<string | null>(null);
+  const [exportDialogOpen, setExportDialogOpen] = useState(false);
+  const [worksheetSelectorOpen, setWorksheetSelectorOpen] = useState(false);
+  const [upgradeDialogOpen, setUpgradeDialogOpen] = useState(false);
+  const [selectedPairIndex, setSelectedPairIndex] = useState(0);
+  const { toast } = useToast();
+  const { user } = useAuth();
+  const { isSubscribed } = useSubscription();
+  const { worlds } = useWorlds();
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  const worldId = searchParams.get("worldId");
+  const worksheetId = searchParams.get("worksheetId");
+
+  const currentWorld = worldId ? worlds.find((w) => w.id === worldId) : null;
+  const worldName = currentWorld?.name;
+
+  const { createWorksheet, updateWorksheet } = useWorksheets(worldId || undefined);
+  const { data: existingWorksheet } = useWorksheet(worksheetId || undefined);
+  const { data: existingWorksheets = [], isLoading: worksheetsLoading } = useWorksheetsByType(worldId || undefined, TOOL_TYPE);
+
+  // Generate all pairs when species change
+  const allPairs = useMemo(() => {
+    const pairs: { a: Species; b: Species; pairKey: string }[] = [];
+    for (let i = 0; i < formState.species.length; i++) {
+      for (let j = i + 1; j < formState.species.length; j++) {
+        const a = formState.species[i];
+        const b = formState.species[j];
+        pairs.push({
+          a,
+          b,
+          pairKey: `${a.id}-${b.id}`,
+        });
+      }
+    }
+    return pairs;
+  }, [formState.species]);
+
+  // Sync pairs array with current species
+  useEffect(() => {
+    const neededPairs: SpeciesPair[] = [];
+    for (const { a, b } of allPairs) {
+      const existing = formState.pairs.find(
+        (p) =>
+          (p.speciesAId === a.id && p.speciesBId === b.id) ||
+          (p.speciesAId === b.id && p.speciesBId === a.id)
+      );
+      if (existing) {
+        neededPairs.push(existing);
+      } else {
+        neededPairs.push(createEmptyPair(a.id, b.id));
+      }
+    }
+    if (JSON.stringify(neededPairs) !== JSON.stringify(formState.pairs)) {
+      setFormState((prev) => ({ ...prev, pairs: neededPairs }));
+    }
+  }, [allPairs]);
+
+  useEffect(() => {
+    if (user && !isSubscribed) {
+      setUpgradeDialogOpen(true);
+    }
+  }, [user, isSubscribed]);
+
+  useEffect(() => {
+    if (worldId && !worksheetId && !worksheetsLoading && user) {
+      setWorksheetSelectorOpen(true);
+    }
+  }, [worldId, worksheetId, worksheetsLoading, user]);
+
+  useEffect(() => {
+    if (existingWorksheet && existingWorksheet.data) {
+      try {
+        const data = existingWorksheet.data as unknown as FormState;
+        setFormState(data);
+        setCurrentWorksheetId(existingWorksheet.id);
+        setCurrentWorksheetTitle(existingWorksheet.title);
+        toast({
+          title: "Worksheet Loaded",
+          description: "Your saved work has been restored from the cloud.",
+        });
+      } catch {
+        // Ignore parse errors
+      }
+    }
+  }, [existingWorksheet]);
+
+  useEffect(() => {
+    if (!worldId && !worksheetId) {
+      const saved = localStorage.getItem("sim-worksheet");
+      if (saved) {
+        try {
+          setFormState(JSON.parse(saved));
+        } catch {
+          // Ignore parse errors
+        }
+      }
+    }
+  }, [worldId, worksheetId]);
+
+  const keyChoicesSections: KeyChoicesSection[] = useMemo(() => {
+    const speciesCount = formState.species.filter(s => s.name).length;
+    const eq = SYNTHESIS_OPTIONS.equilibrium.find(e => e.value === formState.overallEquilibrium);
+    const tr = SYNTHESIS_OPTIONS.trajectory.find(t => t.value === formState.overallTrajectory);
+
+    let selectedPairRel: string | undefined;
+    if (selectedPairIndex < formState.pairs.length) {
+      const pair = formState.pairs[selectedPairIndex];
+      if (pair?.overallRelationship) {
+        selectedPairRel = RELATIONSHIP_LEVELS.find(r => r.value === pair.overallRelationship)?.label;
+      }
+    }
+
+    return [
+      {
+        id: "overview",
+        title: "Overview",
+        choices: [
+          { label: "Species", value: speciesCount > 0 ? `${speciesCount} defined` : undefined },
+          { label: "Pairs", value: allPairs.length > 0 ? `${allPairs.length} pairs` : undefined },
+        ],
+      },
+      {
+        id: "selected",
+        title: "Selected Pair",
+        choices: [
+          { label: "Relationship", value: selectedPairRel || undefined },
+        ],
+      },
+      {
+        id: "synthesis",
+        title: "Synthesis",
+        choices: [
+          { label: "Equilibrium", value: eq?.label || undefined },
+          { label: "Trajectory", value: tr?.label || undefined },
+        ],
+      },
+    ];
+  }, [formState, selectedPairIndex, allPairs]);
+
+  const updateField = <K extends keyof FormState>(field: K, value: FormState[K]) => {
+    setFormState((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const updateSpecies = (index: number, updates: Partial<Species>) => {
+    setFormState((prev) => ({
+      ...prev,
+      species: prev.species.map((s, i) =>
+        i === index ? { ...s, ...updates } : s
+      ),
+    }));
+  };
+
+  const addSpecies = () => {
+    if (formState.species.length >= 6) {
+      toast({
+        title: "Maximum species reached",
+        description: "You can compare up to 6 species.",
+        variant: "destructive",
+      });
+      return;
+    }
+    setFormState((prev) => ({
+      ...prev,
+      species: [...prev.species, createEmptySpecies()],
+    }));
+  };
+
+  const removeSpecies = (index: number) => {
+    if (formState.species.length <= 2) {
+      toast({
+        title: "Minimum species required",
+        description: "You need at least 2 species to compare.",
+        variant: "destructive",
+      });
+      return;
+    }
+    const speciesId = formState.species[index].id;
+    setFormState((prev) => ({
+      ...prev,
+      species: prev.species.filter((_, i) => i !== index),
+      pairs: prev.pairs.filter(
+        (p) => p.speciesAId !== speciesId && p.speciesBId !== speciesId
+      ),
+    }));
+  };
+
+  const updatePair = (pairIndex: number, updates: Partial<SpeciesPair>) => {
+    setFormState((prev) => ({
+      ...prev,
+      pairs: prev.pairs.map((p, i) =>
+        i === pairIndex ? { ...p, ...updates } : p
+      ),
+    }));
+  };
+
+  const handleSave = async () => {
+    localStorage.setItem("sim-worksheet", JSON.stringify(formState));
+
+    if (worldId && user) {
+      const worksheetData = formState as unknown as Json;
+      try {
+        if (currentWorksheetId || worksheetId) {
+          await updateWorksheet.mutateAsync({
+            worksheetId: currentWorksheetId || worksheetId!,
+            data: worksheetData,
+          });
+        } else {
+          toast({
+            title: "Error",
+            description: "Please select or create a worksheet first.",
+            variant: "destructive",
+          });
+        }
+      } catch {
+        // Error handled by mutation
+      }
+    } else {
+      toast({
+        title: "Draft Saved",
+        description: "Your work has been saved locally.",
+      });
+    }
+  };
+
+  const handleWorksheetSelect = (selectedWorksheetId: string) => {
+    setSearchParams({ worldId: worldId!, worksheetId: selectedWorksheetId });
+    setWorksheetSelectorOpen(false);
+  };
+
+  const handleWorksheetCreate = async (name: string): Promise<string> => {
+    const worksheetData = initialFormState as unknown as Json;
+    const result = await createWorksheet.mutateAsync({
+      worldId: worldId!,
+      toolType: TOOL_TYPE,
+      title: name,
+      data: worksheetData,
+    });
+    setCurrentWorksheetId(result.id);
+    setCurrentWorksheetTitle(result.title);
+    setSearchParams({ worldId: worldId!, worksheetId: result.id });
+    return result.id;
+  };
+
+  const getSpeciesById = (id: string) => formState.species.find((s) => s.id === id);
+
+  const generateRandomStoryPrompt = () => {
+    const random = STORY_PROMPT_TEMPLATES[Math.floor(Math.random() * STORY_PROMPT_TEMPLATES.length)];
+    updateField("storyPrompt", random);
+  };
+
+  const currentPair = formState.pairs[selectedPairIndex];
+  const speciesA = currentPair ? getSpeciesById(currentPair.speciesAId) : null;
+  const speciesB = currentPair ? getSpeciesById(currentPair.speciesBId) : null;
+
+  return (
+    <div className="min-h-screen bg-background">
+      <Header />
+
+      <main className="container mx-auto px-4 pt-20 pb-24">
+        <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
+          <div className="flex items-center gap-4">
+            <Link
+              to={worldId ? `/worlds/${worldId}` : "/"}
+              className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span className="text-sm">
+                {worldId ? `Back to ${worldName || "World"}` : "Back to Tools"}
+              </span>
+            </Link>
+          </div>
+
+          <div className="flex items-center gap-2">
+            {worldId && user ? (
+              <Badge variant="outline" className="gap-1.5">
+                <Cloud className="w-3 h-3" />
+                Cloud Sync
+              </Badge>
+            ) : (
+              <Badge variant="secondary" className="gap-1.5">
+                <CloudOff className="w-3 h-3" />
+                Local Only
+              </Badge>
+            )}
+            {currentWorksheetTitle && (
+              <Badge variant="outline">{currentWorksheetTitle}</Badge>
+            )}
+          </div>
+        </div>
+
+        <div className="mb-8">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-10 h-10 rounded-xl bg-pink-500/10 flex items-center justify-center">
+              <Users className="w-5 h-5 text-pink-500" />
+            </div>
+            <div>
+              <h1 className="font-display text-2xl md:text-3xl font-light">
+                Species Interaction Matrix
+              </h1>
+              <p className="text-sm text-muted-foreground">
+                Define relationships between multiple species
+              </p>
+            </div>
+          </div>
+          <Badge variant="secondary" className="mt-2">Pro Tool</Badge>
+        </div>
+
+        <div className="lg:hidden mb-6 space-y-4">
+          <MobileSectionNav sections={SECTIONS} />
+          <MobileKeyChoices sections={keyChoicesSections} />
+        </div>
+
+        <div className="flex gap-8">
+          <div className="flex-1 space-y-6 max-w-4xl">
+            {/* Section 1: Species Registry */}
+            <CollapsibleSection
+              id="section-registry"
+              title="1. Species Registry"
+              description="Define the species you want to compare (2-6 species)"
+            >
+              <div className="space-y-4">
+                {formState.species.map((species, index) => (
+                  <Card key={species.id} className="bg-muted/30">
+                    <CardHeader className="pb-2">
+                      <div className="flex items-center justify-between">
+                        <CardTitle className="text-base flex items-center gap-2">
+                          <Users className="w-4 h-4" />
+                          Species {index + 1}
+                        </CardTitle>
+                        {formState.species.length > 2 && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => removeSpecies(index)}
+                            className="text-destructive"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        )}
+                      </div>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div className="space-y-2">
+                          <Label>Species Name</Label>
+                          <Input
+                            value={species.name}
+                            onChange={(e) => updateSpecies(index, { name: e.target.value })}
+                            placeholder="e.g., Human, Vulcan, Klingon"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Homeworld</Label>
+                          <Input
+                            value={species.homeworld}
+                            onChange={(e) => updateSpecies(index, { homeworld: e.target.value })}
+                            placeholder="e.g., Earth, Vulcan, Qo'noS"
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Brief Description</Label>
+                        <Input
+                          value={species.shortDescription}
+                          onChange={(e) => updateSpecies(index, { shortDescription: e.target.value })}
+                          placeholder="One sentence description"
+                        />
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div className="space-y-2">
+                          <Label>Key Physical Traits</Label>
+                          <Textarea
+                            value={species.physicalTraits}
+                            onChange={(e) => updateSpecies(index, { physicalTraits: e.target.value })}
+                            placeholder="Appearance, biology, environment"
+                            rows={2}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Key Cultural Traits</Label>
+                          <Textarea
+                            value={species.culturalTraits}
+                            onChange={(e) => updateSpecies(index, { culturalTraits: e.target.value })}
+                            placeholder="Values, society, psychology"
+                            rows={2}
+                          />
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+
+                {formState.species.length < 6 && (
+                  <Button variant="outline" onClick={addSpecies} className="w-full gap-2">
+                    <Plus className="w-4 h-4" />
+                    Add Species ({formState.species.length}/6)
+                  </Button>
+                )}
+              </div>
+            </CollapsibleSection>
+
+            {/* Section 2: Pair Selection */}
+            {allPairs.length > 0 && (
+              <CollapsibleSection
+                id="section-pairs"
+                title="2. Species Pair Selection"
+                description="Select a pair to define their relationship"
+              >
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {allPairs.map((pair, index) => (
+                    <Card
+                      key={pair.pairKey}
+                      className={`cursor-pointer transition-colors ${
+                        selectedPairIndex === index
+                          ? "border-primary bg-primary/5"
+                          : "hover:border-primary/50"
+                      }`}
+                      onClick={() => setSelectedPairIndex(index)}
+                    >
+                      <CardContent className="p-4">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium">{pair.a.name || `Species ${formState.species.indexOf(pair.a) + 1}`}</span>
+                            <ArrowRight className="w-4 h-4 text-muted-foreground" />
+                            <span className="font-medium">{pair.b.name || `Species ${formState.species.indexOf(pair.b) + 1}`}</span>
+                          </div>
+                        </div>
+                        {formState.pairs[index]?.overallRelationship && (
+                          <p className="text-xs text-muted-foreground mt-2">
+                            {RELATIONSHIP_LEVELS.find(r => r.value === formState.pairs[index].overallRelationship)?.label}
+                          </p>
+                        )}
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </CollapsibleSection>
+            )}
+
+            {/* Pairwise Relationship Sections - Only show if pair is selected */}
+            {currentPair && speciesA && speciesB && (
+              <>
+                {/* Section 3: Physical Compatibility */}
+                <CollapsibleSection
+                  id="section-physical"
+                  title={`3. ${speciesA.name || "A"} ↔ ${speciesB.name || "B"}: Physical`}
+                  description="Overall relationship and physical compatibility"
+                >
+                  <div className="space-y-6">
+                    <div className="space-y-4">
+                      <Label className="text-base font-semibold">Overall Relationship</Label>
+                      <RadioGroup
+                        value={currentPair.overallRelationship}
+                        onValueChange={(value) => updatePair(selectedPairIndex, { overallRelationship: value })}
+                        className="grid grid-cols-2 md:grid-cols-3 gap-3"
+                      >
+                        {RELATIONSHIP_LEVELS.map((opt) => (
+                          <div key={opt.value} className="flex items-start space-x-2">
+                            <RadioGroupItem value={opt.value} id={`rel-${opt.value}`} />
+                            <Label htmlFor={`rel-${opt.value}`} className="font-normal cursor-pointer">
+                              <span className="font-medium">{opt.label}</span>
+                              <span className="text-xs text-muted-foreground block">{opt.description}</span>
+                            </Label>
+                          </div>
+                        ))}
+                      </RadioGroup>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label>Environment Compatibility</Label>
+                        <Select
+                          value={currentPair.environmentCompatibility}
+                          onValueChange={(value) => updatePair(selectedPairIndex, { environmentCompatibility: value })}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select..." />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {PHYSICAL_COMPATIBILITY.environment.map((opt) => (
+                              <SelectItem key={opt.value} value={opt.value}>
+                                {opt.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Biology Compatibility</Label>
+                        <Select
+                          value={currentPair.biologyCompatibility}
+                          onValueChange={(value) => updatePair(selectedPairIndex, { biologyCompatibility: value })}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select..." />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {PHYSICAL_COMPATIBILITY.biology.map((opt) => (
+                              <SelectItem key={opt.value} value={opt.value}>
+                                {opt.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Reproduction Compatibility</Label>
+                        <Select
+                          value={currentPair.reproductionCompatibility}
+                          onValueChange={(value) => updatePair(selectedPairIndex, { reproductionCompatibility: value })}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select..." />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {PHYSICAL_COMPATIBILITY.reproduction.map((opt) => (
+                              <SelectItem key={opt.value} value={opt.value}>
+                                {opt.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Lifespan Difference</Label>
+                        <Select
+                          value={currentPair.lifespanDifference}
+                          onValueChange={(value) => updatePair(selectedPairIndex, { lifespanDifference: value })}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select..." />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {PHYSICAL_COMPATIBILITY.lifespan.map((opt) => (
+                              <SelectItem key={opt.value} value={opt.value}>
+                                {opt.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+
+                    <Textarea
+                      value={currentPair.physicalNotes}
+                      onChange={(e) => updatePair(selectedPairIndex, { physicalNotes: e.target.value })}
+                      placeholder="Additional notes on physical compatibility..."
+                      rows={2}
+                    />
+                  </div>
+                </CollapsibleSection>
+
+                {/* Section 4: Communication */}
+                <CollapsibleSection
+                  id="section-communication"
+                  title="4. Communication"
+                  description="Language, perception, nonverbal, cultural concepts"
+                >
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label>Language Status</Label>
+                        <Select
+                          value={currentPair.languageStatus}
+                          onValueChange={(value) => updatePair(selectedPairIndex, { languageStatus: value })}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select..." />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {COMMUNICATION.language.map((opt) => (
+                              <SelectItem key={opt.value} value={opt.value}>
+                                {opt.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Perception Overlap</Label>
+                        <Select
+                          value={currentPair.perceptionOverlap}
+                          onValueChange={(value) => updatePair(selectedPairIndex, { perceptionOverlap: value })}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select..." />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {COMMUNICATION.perception.map((opt) => (
+                              <SelectItem key={opt.value} value={opt.value}>
+                                {opt.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Nonverbal Understanding</Label>
+                        <Select
+                          value={currentPair.nonverbalUnderstanding}
+                          onValueChange={(value) => updatePair(selectedPairIndex, { nonverbalUnderstanding: value })}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select..." />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {COMMUNICATION.nonverbal.map((opt) => (
+                              <SelectItem key={opt.value} value={opt.value}>
+                                {opt.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Cultural Concept Gap</Label>
+                        <Select
+                          value={currentPair.culturalConceptGap}
+                          onValueChange={(value) => updatePair(selectedPairIndex, { culturalConceptGap: value })}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select..." />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {COMMUNICATION.cultural.map((opt) => (
+                              <SelectItem key={opt.value} value={opt.value}>
+                                {opt.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                    <Textarea
+                      value={currentPair.communicationNotes}
+                      onChange={(e) => updatePair(selectedPairIndex, { communicationNotes: e.target.value })}
+                      placeholder="Additional notes on communication..."
+                      rows={2}
+                    />
+                  </div>
+                </CollapsibleSection>
+
+                {/* Section 5: Economic */}
+                <CollapsibleSection
+                  id="section-economic"
+                  title="5. Economic Relations"
+                  description="Trade, resources, labor, dependencies"
+                >
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label>Trade Relationship</Label>
+                        <Select
+                          value={currentPair.tradeRelationship}
+                          onValueChange={(value) => updatePair(selectedPairIndex, { tradeRelationship: value })}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select..." />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {ECONOMIC_RELATIONS.trade.map((opt) => (
+                              <SelectItem key={opt.value} value={opt.value}>
+                                {opt.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Resource Relationship</Label>
+                        <Select
+                          value={currentPair.resourceRelationship}
+                          onValueChange={(value) => updatePair(selectedPairIndex, { resourceRelationship: value })}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select..." />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {ECONOMIC_RELATIONS.resources.map((opt) => (
+                              <SelectItem key={opt.value} value={opt.value}>
+                                {opt.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Labor Relationship</Label>
+                        <Select
+                          value={currentPair.laborRelationship}
+                          onValueChange={(value) => updatePair(selectedPairIndex, { laborRelationship: value })}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select..." />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {ECONOMIC_RELATIONS.labor.map((opt) => (
+                              <SelectItem key={opt.value} value={opt.value}>
+                                {opt.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Economic Dependency</Label>
+                        <Select
+                          value={currentPair.economicDependency}
+                          onValueChange={(value) => updatePair(selectedPairIndex, { economicDependency: value })}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select..." />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {ECONOMIC_RELATIONS.dependencies.map((opt) => (
+                              <SelectItem key={opt.value} value={opt.value}>
+                                {opt.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                    <Textarea
+                      value={currentPair.economicNotes}
+                      onChange={(e) => updatePair(selectedPairIndex, { economicNotes: e.target.value })}
+                      placeholder="Additional notes on economic relations..."
+                      rows={2}
+                    />
+                  </div>
+                </CollapsibleSection>
+
+                {/* Section 6: Political */}
+                <CollapsibleSection
+                  id="section-political"
+                  title="6. Political Relations"
+                  description="Sovereignty, alliances, representation, treaties"
+                >
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label>Sovereignty</Label>
+                        <Select
+                          value={currentPair.sovereignty}
+                          onValueChange={(value) => updatePair(selectedPairIndex, { sovereignty: value })}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select..." />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {POLITICAL_RELATIONS.sovereignty.map((opt) => (
+                              <SelectItem key={opt.value} value={opt.value}>
+                                {opt.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Alliance Status</Label>
+                        <Select
+                          value={currentPair.alliance}
+                          onValueChange={(value) => updatePair(selectedPairIndex, { alliance: value })}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select..." />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {POLITICAL_RELATIONS.alliance.map((opt) => (
+                              <SelectItem key={opt.value} value={opt.value}>
+                                {opt.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Representation</Label>
+                        <Select
+                          value={currentPair.representation}
+                          onValueChange={(value) => updatePair(selectedPairIndex, { representation: value })}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select..." />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {POLITICAL_RELATIONS.representation.map((opt) => (
+                              <SelectItem key={opt.value} value={opt.value}>
+                                {opt.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Treaty Status</Label>
+                        <Select
+                          value={currentPair.treatyStatus}
+                          onValueChange={(value) => updatePair(selectedPairIndex, { treatyStatus: value })}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select..." />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {POLITICAL_RELATIONS.treaties.map((opt) => (
+                              <SelectItem key={opt.value} value={opt.value}>
+                                {opt.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                    <Textarea
+                      value={currentPair.politicalNotes}
+                      onChange={(e) => updatePair(selectedPairIndex, { politicalNotes: e.target.value })}
+                      placeholder="Additional notes on political relations..."
+                      rows={2}
+                    />
+                  </div>
+                </CollapsibleSection>
+
+                {/* Section 7: Cultural */}
+                <CollapsibleSection
+                  id="section-cultural"
+                  title="7. Cultural Exchange"
+                  description="Adoption, mixing, attitudes, hybrids"
+                >
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label>Cultural Adoption</Label>
+                        <Select
+                          value={currentPair.culturalAdoption}
+                          onValueChange={(value) => updatePair(selectedPairIndex, { culturalAdoption: value })}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select..." />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {CULTURAL_EXCHANGE.adoption.map((opt) => (
+                              <SelectItem key={opt.value} value={opt.value}>
+                                {opt.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Population Mixing</Label>
+                        <Select
+                          value={currentPair.populationMixing}
+                          onValueChange={(value) => updatePair(selectedPairIndex, { populationMixing: value })}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select..." />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {CULTURAL_EXCHANGE.mixing.map((opt) => (
+                              <SelectItem key={opt.value} value={opt.value}>
+                                {opt.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Attitudes Toward Each Other</Label>
+                        <Select
+                          value={currentPair.attitudesEach}
+                          onValueChange={(value) => updatePair(selectedPairIndex, { attitudesEach: value })}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select..." />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {CULTURAL_EXCHANGE.attitudes.map((opt) => (
+                              <SelectItem key={opt.value} value={opt.value}>
+                                {opt.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Hybrid Status</Label>
+                        <Select
+                          value={currentPair.hybridStatus}
+                          onValueChange={(value) => updatePair(selectedPairIndex, { hybridStatus: value })}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select..." />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {CULTURAL_EXCHANGE.hybrid.map((opt) => (
+                              <SelectItem key={opt.value} value={opt.value}>
+                                {opt.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                    <Textarea
+                      value={currentPair.culturalNotes}
+                      onChange={(e) => updatePair(selectedPairIndex, { culturalNotes: e.target.value })}
+                      placeholder="Additional notes on cultural exchange..."
+                      rows={2}
+                    />
+                  </div>
+                </CollapsibleSection>
+
+                {/* Section 8: Historical */}
+                <CollapsibleSection
+                  id="section-historical"
+                  title="8. Historical Context"
+                  description="First contact, conflicts, cooperation"
+                >
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label>First Contact Timing</Label>
+                        <Select
+                          value={currentPair.firstContactTime}
+                          onValueChange={(value) => updatePair(selectedPairIndex, { firstContactTime: value })}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select..." />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {HISTORICAL_CONTEXT.firstContact.map((opt) => (
+                              <SelectItem key={opt.value} value={opt.value}>
+                                {opt.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>First Contact Type</Label>
+                        <Select
+                          value={currentPair.firstContactType}
+                          onValueChange={(value) => updatePair(selectedPairIndex, { firstContactType: value })}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select..." />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {HISTORICAL_CONTEXT.contactType.map((opt) => (
+                              <SelectItem key={opt.value} value={opt.value}>
+                                {opt.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>War History</Label>
+                        <Select
+                          value={currentPair.warHistory}
+                          onValueChange={(value) => updatePair(selectedPairIndex, { warHistory: value })}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select..." />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {HISTORICAL_CONTEXT.conflicts.map((opt) => (
+                              <SelectItem key={opt.value} value={opt.value}>
+                                {opt.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Cooperation History</Label>
+                        <Select
+                          value={currentPair.cooperationHistory}
+                          onValueChange={(value) => updatePair(selectedPairIndex, { cooperationHistory: value })}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select..." />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {HISTORICAL_CONTEXT.cooperation.map((opt) => (
+                              <SelectItem key={opt.value} value={opt.value}>
+                                {opt.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                    <Textarea
+                      value={currentPair.historicalNotes}
+                      onChange={(e) => updatePair(selectedPairIndex, { historicalNotes: e.target.value })}
+                      placeholder="Key historical events between these species..."
+                      rows={2}
+                    />
+                  </div>
+                </CollapsibleSection>
+
+                {/* Section 9: Tensions */}
+                <CollapsibleSection
+                  id="section-tensions"
+                  title="9. Tension Points"
+                  description="Current conflicts and future risks"
+                >
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label>Current Tensions</Label>
+                        <Select
+                          value={currentPair.currentTensions}
+                          onValueChange={(value) => updatePair(selectedPairIndex, { currentTensions: value })}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select..." />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {TENSION_POINTS.current.map((opt) => (
+                              <SelectItem key={opt.value} value={opt.value}>
+                                {opt.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Future Risks</Label>
+                        <Select
+                          value={currentPair.futureRisks}
+                          onValueChange={(value) => updatePair(selectedPairIndex, { futureRisks: value })}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select..." />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {TENSION_POINTS.futureRisks.map((opt) => (
+                              <SelectItem key={opt.value} value={opt.value}>
+                                {opt.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                    <Textarea
+                      value={currentPair.tensionNotes}
+                      onChange={(e) => updatePair(selectedPairIndex, { tensionNotes: e.target.value })}
+                      placeholder="Describe the specific points of tension..."
+                      rows={3}
+                    />
+                  </div>
+                </CollapsibleSection>
+              </>
+            )}
+
+            {/* Section: SF Examples */}
+            <CollapsibleSection
+              id="section-examples"
+              title="SF Interaction Examples"
+              description="How species interactions have been explored in SF"
+            >
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {SF_INTERACTION_EXAMPLES.map((example, index) => (
+                  <Card key={index} className="bg-muted/30">
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-base">{example.name}</CardTitle>
+                      <CardDescription className="text-xs">{example.type}</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                      <p className="text-sm">{example.description}</p>
+                      <p className="text-xs text-muted-foreground italic">{example.dynamics}</p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </CollapsibleSection>
+
+            {/* Section: Overall Synthesis */}
+            <CollapsibleSection
+              id="section-synthesis"
+              title="Overall Synthesis"
+              description="Big picture assessment of multi-species dynamics"
+            >
+              <div className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>Overall Equilibrium</Label>
+                    <Select
+                      value={formState.overallEquilibrium}
+                      onValueChange={(value) => updateField("overallEquilibrium", value)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="How stable?" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {SYNTHESIS_OPTIONS.equilibrium.map((opt) => (
+                          <SelectItem key={opt.value} value={opt.value}>
+                            {opt.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Overall Trajectory</Label>
+                    <Select
+                      value={formState.overallTrajectory}
+                      onValueChange={(value) => updateField("overallTrajectory", value)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Where heading?" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {SYNTHESIS_OPTIONS.trajectory.map((opt) => (
+                          <SelectItem key={opt.value} value={opt.value}>
+                            {opt.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Synthesis Notes</Label>
+                  <Textarea
+                    value={formState.synthesisNotes}
+                    onChange={(e) => updateField("synthesisNotes", e.target.value)}
+                    placeholder="How do all these species dynamics interact?"
+                    rows={3}
+                  />
+                </div>
+
+                <Card className="bg-purple-500/10 border-purple-500/30">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-base">Story Prompt Generator</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm italic mb-3">{formState.storyPrompt || "Click generate for a story prompt"}</p>
+                    <Button variant="outline" size="sm" onClick={generateRandomStoryPrompt} className="gap-2">
+                      <RefreshCw className="w-3 h-3" />
+                      Generate New
+                    </Button>
+                  </CardContent>
+                </Card>
+
+                <div className="space-y-2">
+                  <Label>Central Conflict</Label>
+                  <Textarea
+                    value={formState.centralConflict}
+                    onChange={(e) => updateField("centralConflict", e.target.value)}
+                    placeholder="What's the main conflict from these interactions?"
+                    rows={3}
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>Opportunity for Peace</Label>
+                    <Textarea
+                      value={formState.peaceOpportunity}
+                      onChange={(e) => updateField("peaceOpportunity", e.target.value)}
+                      placeholder="What could bring these species together?"
+                      rows={3}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Wildcard Factor</Label>
+                    <Textarea
+                      value={formState.wildcardFactor}
+                      onChange={(e) => updateField("wildcardFactor", e.target.value)}
+                      placeholder="What unexpected element could change everything?"
+                      rows={3}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Additional Notes</Label>
+                  <Textarea
+                    value={formState.notes}
+                    onChange={(e) => updateField("notes", e.target.value)}
+                    placeholder="Additional notes, questions, or ideas..."
+                    rows={3}
+                  />
+                </div>
+              </div>
+            </CollapsibleSection>
+          </div>
+
+          {/* Sidebars */}
+          <ToolSidebar>
+            <SectionNavigation sections={SECTIONS} />
+          </ToolSidebar>
+
+          <KeyChoicesSidebar sections={keyChoicesSections} />
+        </div>
+      </main>
+
+      <ToolActionBar
+        onSave={handleSave}
+        onExport={() => setExportDialogOpen(true)}
+        isSaving={updateWorksheet.isPending}
+      />
+
+      <ExportDialog
+        open={exportDialogOpen}
+        onOpenChange={setExportDialogOpen}
+        toolType={TOOL_TYPE}
+        formData={formState}
+        title={
+          formState.species.filter(s => s.name).map(s => s.name).join(" & ") ||
+          "Species Interaction Matrix"
+        }
+      />
+
+      <WorksheetSelectorDialog
+        open={worksheetSelectorOpen}
+        onOpenChange={setWorksheetSelectorOpen}
+        existingWorksheets={existingWorksheets}
+        onSelect={handleWorksheetSelect}
+        onCreate={handleWorksheetCreate}
+        toolName="Species Interaction Matrix"
+      />
+
+      <UpgradeDialog
+        open={upgradeDialogOpen}
+        onOpenChange={setUpgradeDialogOpen}
+      />
+    </div>
+  );
+};
+
+export default SpeciesInteractionMatrix;
