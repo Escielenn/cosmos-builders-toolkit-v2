@@ -115,6 +115,19 @@ export const useWorldNotes = (worldId: string | undefined) => {
     [saveContent]
   );
 
+  // Immediate save (for manual save button)
+  const saveNow = useCallback(async () => {
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+    }
+    setIsSaving(true);
+    try {
+      await saveMutation.mutateAsync(localContent);
+    } finally {
+      setIsSaving(false);
+    }
+  }, [saveMutation, localContent]);
+
   // Cleanup timeout on unmount
   useEffect(() => {
     return () => {
@@ -127,6 +140,7 @@ export const useWorldNotes = (worldId: string | undefined) => {
   return {
     content: localContent,
     updateContent,
+    saveNow,
     isLoading: notesQuery.isLoading,
     isSaving,
     error: notesQuery.error,

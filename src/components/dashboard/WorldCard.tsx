@@ -1,4 +1,4 @@
-import { MoreHorizontal, Trash2 } from "lucide-react";
+import { MoreHorizontal, Trash2, Download, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
@@ -21,6 +21,18 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useState } from "react";
 import { getWorldIcon } from "@/lib/world-icons";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import WorldExportDialog from "@/components/world/WorldExportDialog";
+
+interface Worksheet {
+  id: string;
+  tool_type: string;
+  title: string | null;
+  data: Record<string, unknown>;
+  created_at: string;
+  updated_at: string;
+}
 
 interface WorldCardProps {
   id: string;
@@ -42,6 +54,35 @@ const WorldCard = ({
   onDelete,
 }: WorldCardProps) => {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showExportDialog, setShowExportDialog] = useState(false);
+  const [worksheets, setWorksheets] = useState<Worksheet[]>([]);
+  const [isLoadingWorksheets, setIsLoadingWorksheets] = useState(false);
+  const { toast } = useToast();
+
+  const handleExportClick = async () => {
+    setIsLoadingWorksheets(true);
+    try {
+      const { data, error } = await supabase
+        .from("worksheets")
+        .select("*")
+        .eq("world_id", id)
+        .order("updated_at", { ascending: false });
+
+      if (error) throw error;
+
+      setWorksheets(data as Worksheet[]);
+      setShowExportDialog(true);
+    } catch (error) {
+      console.error("Failed to fetch worksheets:", error);
+      toast({
+        title: "Export failed",
+        description: "Could not load worksheets for export. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoadingWorksheets(false);
+    }
+  };
 
   const formattedDate = new Date(updatedAt).toLocaleDateString("en-US", {
     month: "short",
@@ -96,7 +137,19 @@ const WorldCard = ({
                   <Link to={`/worlds/${id}`}>Edit World</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem>Share</DropdownMenuItem>
-                <DropdownMenuItem>Export</DropdownMenuItem>
+                <DropdownMenuItem onClick={handleExportClick} disabled={isLoadingWorksheets}>
+                  {isLoadingWorksheets ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Loading...
+                    </>
+                  ) : (
+                    <>
+                      <Download className="w-4 h-4 mr-2" />
+                      Export
+                    </>
+                  )}
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   onClick={() => setShowDeleteDialog(true)}
@@ -144,6 +197,13 @@ const WorldCard = ({
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <WorldExportDialog
+        open={showExportDialog}
+        onOpenChange={setShowExportDialog}
+        worldName={name}
+        worksheets={worksheets}
+      />
     </>
   );
 };

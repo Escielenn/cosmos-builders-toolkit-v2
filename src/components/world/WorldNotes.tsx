@@ -1,7 +1,10 @@
 import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { ChevronDown, ChevronUp, Loader2, FileText, Check, Eye, Pencil } from "lucide-react";
+import rehypeRaw from "rehype-raw";
+import rehypeHighlight from "rehype-highlight";
+import { ChevronDown, ChevronUp, Loader2, FileText, Check, Eye, Pencil, Save } from "lucide-react";
+import "highlight.js/styles/github-dark.css";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -19,7 +22,7 @@ interface WorldNotesProps {
 const WorldNotes = ({ worldId }: WorldNotesProps) => {
   const [isOpen, setIsOpen] = useState(true);
   const [isEditing, setIsEditing] = useState(true);
-  const { content, updateContent, isLoading, isSaving, lastUpdated } =
+  const { content, updateContent, saveNow, isLoading, isSaving, lastUpdated } =
     useWorldNotes(worldId);
 
   const formattedLastUpdated = lastUpdated
@@ -72,25 +75,43 @@ const WorldNotes = ({ worldId }: WorldNotesProps) => {
               </div>
             ) : (
               <>
-                <div className="flex gap-2">
-                  <Button
-                    size="sm"
-                    variant={isEditing ? "default" : "outline"}
-                    onClick={() => setIsEditing(true)}
-                    className="h-8"
-                  >
-                    <Pencil className="w-3.5 h-3.5 mr-1.5" />
-                    Edit
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant={!isEditing ? "default" : "outline"}
-                    onClick={() => setIsEditing(false)}
-                    className="h-8"
-                  >
-                    <Eye className="w-3.5 h-3.5 mr-1.5" />
-                    Preview
-                  </Button>
+                <div className="flex gap-2 justify-between">
+                  <div className="flex gap-2">
+                    <Button
+                      size="sm"
+                      variant={isEditing ? "default" : "outline"}
+                      onClick={() => setIsEditing(true)}
+                      className="h-8"
+                    >
+                      <Pencil className="w-3.5 h-3.5 mr-1.5" />
+                      Edit
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant={!isEditing ? "default" : "outline"}
+                      onClick={() => setIsEditing(false)}
+                      className="h-8"
+                    >
+                      <Eye className="w-3.5 h-3.5 mr-1.5" />
+                      Preview
+                    </Button>
+                  </div>
+                  {isEditing && (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={saveNow}
+                      disabled={isSaving}
+                      className="h-8"
+                    >
+                      {isSaving ? (
+                        <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />
+                      ) : (
+                        <Save className="w-3.5 h-3.5 mr-1.5" />
+                      )}
+                      {isSaving ? "Saving..." : "Save"}
+                    </Button>
+                  )}
                 </div>
 
                 {isEditing ? (
@@ -101,9 +122,12 @@ const WorldNotes = ({ worldId }: WorldNotesProps) => {
                     className="min-h-[200px] resize-y font-mono text-sm"
                   />
                 ) : (
-                  <div className="prose prose-invert prose-sm max-w-none min-h-[200px] p-3 rounded-md bg-muted/30 border border-border">
+                  <div className="prose prose-invert prose-sm max-w-none min-h-[200px] p-3 rounded-md bg-muted/30 border border-border [&_pre]:bg-[#0d1117] [&_pre]:p-3 [&_pre]:rounded-md [&_code]:text-xs">
                     {content ? (
-                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                      <ReactMarkdown
+                        remarkPlugins={[remarkGfm]}
+                        rehypePlugins={[rehypeRaw, rehypeHighlight]}
+                      >
                         {content}
                       </ReactMarkdown>
                     ) : (
@@ -116,7 +140,7 @@ const WorldNotes = ({ worldId }: WorldNotesProps) => {
 
                 <div className="flex items-center justify-between flex-wrap gap-2">
                   <p className="text-xs text-muted-foreground">
-                    <span className="text-primary/70">Markdown supported</span> — **bold**, *italic*, # headings, - lists
+                    <span className="text-primary/70">Markdown supported</span> — **bold**, *italic*, ~~strike~~, # headings, - lists, tables, ```code```
                   </p>
                   {formattedLastUpdated && (
                     <p className="text-xs text-muted-foreground">

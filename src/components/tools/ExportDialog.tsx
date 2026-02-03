@@ -50,7 +50,8 @@ const ExportDialog = ({
   const { toast } = useToast();
   const { user } = useAuth();
   const { connection, isConnected, isConnecting, isExporting, connect, disconnect, exportToNotion } = useNotion();
-  const [format, setFormat] = useState<ExportFormat>("pdf-summary");
+  const hasPdfTemplates = !!(summaryTemplate || fullTemplate);
+  const [format, setFormat] = useState<ExportFormat>(hasPdfTemplates ? "pdf-summary" : "text");
   const [filename, setFilename] = useState(defaultFilename);
   const [includeWorldName, setIncludeWorldName] = useState(true);
   const [includeDate, setIncludeDate] = useState(true);
@@ -301,36 +302,48 @@ const ExportDialog = ({
           </TabsList>
 
           <TabsContent value="pdf" className="space-y-4 pt-4">
-            <RadioGroup
-              value={format}
-              onValueChange={(value) => setFormat(value as ExportFormat)}
-              className="space-y-2"
-            >
-              <div className="flex items-center space-x-3 p-3 rounded-lg border border-border hover:bg-accent/10 transition-colors cursor-pointer">
-                <RadioGroupItem value="pdf-summary" id="pdf-summary" />
-                <Label htmlFor="pdf-summary" className="flex-1 cursor-pointer">
-                  <div className="flex items-center gap-2">
-                    <FileText className="w-4 h-4 text-muted-foreground" />
-                    <span className="font-medium">Summary (1-2 pages)</span>
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Key results and variable values only
-                  </p>
-                </Label>
+            {!hasPdfTemplates ? (
+              <div className="text-center p-6 text-muted-foreground">
+                <FileText className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                <p className="font-medium">PDF export coming soon</p>
+                <p className="text-sm mt-1">
+                  PDF templates for this tool are not yet available. Use Text, Word, or JSON export instead.
+                </p>
               </div>
-              <div className="flex items-center space-x-3 p-3 rounded-lg border border-border hover:bg-accent/10 transition-colors cursor-pointer">
-                <RadioGroupItem value="pdf-full" id="pdf-full" />
-                <Label htmlFor="pdf-full" className="flex-1 cursor-pointer">
-                  <div className="flex items-center gap-2">
-                    <FileText className="w-4 h-4 text-muted-foreground" />
-                    <span className="font-medium">Full Report</span>
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    All content including notes and worldbuilding
-                  </p>
-                </Label>
-              </div>
-            </RadioGroup>
+            ) : (
+              <RadioGroup
+                value={format}
+                onValueChange={(value) => setFormat(value as ExportFormat)}
+                className="space-y-2"
+              >
+                <div className={`flex items-center space-x-3 p-3 rounded-lg border border-border transition-colors ${summaryTemplate ? "hover:bg-accent/10 cursor-pointer" : "opacity-50 cursor-not-allowed"}`}>
+                  <RadioGroupItem value="pdf-summary" id="pdf-summary" disabled={!summaryTemplate} />
+                  <Label htmlFor="pdf-summary" className={`flex-1 ${summaryTemplate ? "cursor-pointer" : "cursor-not-allowed"}`}>
+                    <div className="flex items-center gap-2">
+                      <FileText className="w-4 h-4 text-muted-foreground" />
+                      <span className="font-medium">Summary (1-2 pages)</span>
+                      {!summaryTemplate && <span className="text-xs text-muted-foreground">(Coming soon)</span>}
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Key results and variable values only
+                    </p>
+                  </Label>
+                </div>
+                <div className={`flex items-center space-x-3 p-3 rounded-lg border border-border transition-colors ${fullTemplate ? "hover:bg-accent/10 cursor-pointer" : "opacity-50 cursor-not-allowed"}`}>
+                  <RadioGroupItem value="pdf-full" id="pdf-full" disabled={!fullTemplate} />
+                  <Label htmlFor="pdf-full" className={`flex-1 ${fullTemplate ? "cursor-pointer" : "cursor-not-allowed"}`}>
+                    <div className="flex items-center gap-2">
+                      <FileText className="w-4 h-4 text-muted-foreground" />
+                      <span className="font-medium">Full Report</span>
+                      {!fullTemplate && <span className="text-xs text-muted-foreground">(Coming soon)</span>}
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      All content including notes and worldbuilding
+                    </p>
+                  </Label>
+                </div>
+              </RadioGroup>
+            )}
           </TabsContent>
 
           <TabsContent value="text" className="space-y-4 pt-4">
