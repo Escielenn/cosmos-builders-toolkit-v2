@@ -1,5 +1,5 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Edit, Globe, FileText, Rocket, Zap, Trash2, MoreVertical, Loader2, Calculator, Plus, Sparkles, Pencil, ChevronRight, Dna, Network, Sun, Crown, Cpu, Users } from "lucide-react";
+import { ArrowLeft, Edit, Globe, FileText, Rocket, Zap, Trash2, MoreVertical, Loader2, Calculator, Plus, Sparkles, Pencil, ChevronRight, Dna, Network, Sun, Crown, Cpu, Users, Download } from "lucide-react";
 import { format } from "date-fns";
 import Header from "@/components/layout/Header";
 import { GlassPanel } from "@/components/ui/glass-panel";
@@ -41,6 +41,7 @@ import WorldHeader from "@/components/world/WorldHeader";
 import WorldNotes from "@/components/world/WorldNotes";
 import IconPicker from "@/components/world/IconPicker";
 import HeaderImageUpload from "@/components/world/HeaderImageUpload";
+import WorldExportDialog from "@/components/world/WorldExportDialog";
 const TOOLS = [
   {
     id: "environmental-chain-reaction",
@@ -143,6 +144,7 @@ const WorldDashboard = () => {
   const [worksheetToRename, setWorksheetToRename] = useState<{ id: string; title: string } | null>(null);
   const [renameValue, setRenameValue] = useState("");
   const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [exportDialogOpen, setExportDialogOpen] = useState(false);
   const [editName, setEditName] = useState("");
   const [editDescription, setEditDescription] = useState("");
   const [editIcon, setEditIcon] = useState("globe");
@@ -278,6 +280,10 @@ const WorldDashboard = () => {
                 <DropdownMenuItem onClick={() => setEditDialogOpen(true)}>
                   <Edit className="w-4 h-4 mr-2" />
                   Edit World
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setExportDialogOpen(true)}>
+                  <Download className="w-4 h-4 mr-2" />
+                  Export World
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   className="text-destructive"
@@ -590,6 +596,14 @@ const WorldDashboard = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Export World Dialog */}
+      <WorldExportDialog
+        open={exportDialogOpen}
+        onOpenChange={setExportDialogOpen}
+        worldName={world.name}
+        worksheets={worksheets}
+      />
     </div>
   );
 };

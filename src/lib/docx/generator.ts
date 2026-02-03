@@ -113,16 +113,25 @@ export const generateDocx = async ({
   });
 
   // Generate and save
-  const blob = await Packer.toBlob(doc);
-  const filename = [
-    toolName.toLowerCase().replace(/\s+/g, "-"),
-    worksheetTitle?.toLowerCase().replace(/\s+/g, "-"),
-    new Date().toISOString().split("T")[0],
-  ]
-    .filter(Boolean)
-    .join("-");
+  try {
+    const packerBlob = await Packer.toBlob(doc);
+    // Wrap with explicit MIME type to ensure browser recognizes as Word document
+    const docxBlob = new Blob([packerBlob], {
+      type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    });
+    const filename = [
+      toolName.toLowerCase().replace(/\s+/g, "-"),
+      worksheetTitle?.toLowerCase().replace(/\s+/g, "-"),
+      new Date().toISOString().split("T")[0],
+    ]
+      .filter(Boolean)
+      .join("-");
 
-  saveAs(blob, `${filename}.docx`);
+    saveAs(docxBlob, `${filename}.docx`);
+  } catch (error) {
+    console.error("DOCX generation failed:", error);
+    throw error;
+  }
 };
 
 function processDataToDocx(

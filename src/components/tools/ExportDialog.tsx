@@ -80,7 +80,7 @@ const ExportDialog = ({
       switch (format) {
         case "json": {
           const dataStr = JSON.stringify(formState, null, 2);
-          const blob = new Blob([dataStr], { type: "application/json" });
+          const blob = new Blob([dataStr], { type: "application/json;charset=utf-8" });
           downloadBlob(blob, `${filename}.json`);
           toast({ title: "Exported", description: "Downloaded as JSON file." });
           break;
@@ -116,6 +116,7 @@ const ExportDialog = ({
         case "pdf-full": {
           const template = format === "pdf-summary" ? summaryTemplate : fullTemplate;
           if (!template) {
+            console.error("PDF template is undefined", { format, summaryTemplate: !!summaryTemplate, fullTemplate: !!fullTemplate });
             toast({
               title: "Template not available",
               description: "This PDF format is not yet available for this tool.",
@@ -123,13 +124,26 @@ const ExportDialog = ({
             });
             return;
           }
-          const { pdf } = await loadPdfRenderer();
-          const blob = await pdf(template).toBlob();
-          downloadBlob(blob, `${filename}.pdf`);
-          toast({
-            title: "PDF Generated",
-            description: `${format === "pdf-summary" ? "Summary" : "Full report"} PDF downloaded.`,
-          });
+          try {
+            console.log("Loading PDF renderer...");
+            const { pdf } = await loadPdfRenderer();
+            console.log("Generating PDF blob...");
+            const blob = await pdf(template).toBlob();
+            console.log("PDF generated:", blob.size, "bytes");
+            downloadBlob(blob, `${filename}.pdf`);
+            toast({
+              title: "PDF Generated",
+              description: `${format === "pdf-summary" ? "Summary" : "Full report"} PDF downloaded.`,
+            });
+          } catch (pdfError) {
+            console.error("PDF generation error:", pdfError);
+            toast({
+              title: "PDF generation failed",
+              description: "There was an error creating the PDF. Please try again.",
+              variant: "destructive",
+            });
+            return;
+          }
           break;
         }
 

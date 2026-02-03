@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { ChevronDown, ChevronUp, Loader2, FileText, Check } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import { ChevronDown, ChevronUp, Loader2, FileText, Check, Eye, Pencil } from "lucide-react";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -16,6 +18,7 @@ interface WorldNotesProps {
 
 const WorldNotes = ({ worldId }: WorldNotesProps) => {
   const [isOpen, setIsOpen] = useState(true);
+  const [isEditing, setIsEditing] = useState(true);
   const { content, updateContent, isLoading, isSaving, lastUpdated } =
     useWorldNotes(worldId);
 
@@ -69,12 +72,48 @@ const WorldNotes = ({ worldId }: WorldNotesProps) => {
               </div>
             ) : (
               <>
-                <Textarea
-                  value={content}
-                  onChange={(e) => updateContent(e.target.value)}
-                  placeholder="Add notes about your world here... This is a great place for backstory, world history, important details, or anything else you want to remember."
-                  className="min-h-[200px] resize-y font-mono text-sm"
-                />
+                <div className="flex gap-2">
+                  <Button
+                    size="sm"
+                    variant={isEditing ? "default" : "outline"}
+                    onClick={() => setIsEditing(true)}
+                    className="h-8"
+                  >
+                    <Pencil className="w-3.5 h-3.5 mr-1.5" />
+                    Edit
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant={!isEditing ? "default" : "outline"}
+                    onClick={() => setIsEditing(false)}
+                    className="h-8"
+                  >
+                    <Eye className="w-3.5 h-3.5 mr-1.5" />
+                    Preview
+                  </Button>
+                </div>
+
+                {isEditing ? (
+                  <Textarea
+                    value={content}
+                    onChange={(e) => updateContent(e.target.value)}
+                    placeholder="Add notes about your world here... This is a great place for backstory, world history, important details, or anything else you want to remember."
+                    className="min-h-[200px] resize-y font-mono text-sm"
+                  />
+                ) : (
+                  <div className="prose prose-invert prose-sm max-w-none min-h-[200px] p-3 rounded-md bg-muted/30 border border-border">
+                    {content ? (
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                        {content}
+                      </ReactMarkdown>
+                    ) : (
+                      <p className="text-muted-foreground italic">
+                        No content yet. Switch to Edit mode to add notes.
+                      </p>
+                    )}
+                  </div>
+                )}
+
                 <div className="flex items-center justify-between flex-wrap gap-2">
                   <p className="text-xs text-muted-foreground">
                     <span className="text-primary/70">Markdown supported</span> — **bold**, *italic*, # headings, - lists
