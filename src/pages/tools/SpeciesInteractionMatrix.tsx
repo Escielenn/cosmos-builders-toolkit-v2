@@ -508,7 +508,7 @@ const SpeciesInteractionMatrix = () => {
             <CollapsibleSection
               id="section-registry"
               title="1. Species Registry"
-              description="Define the species you want to compare (2-6 species)"
+              guidance="Define the species you want to compare (2-6 species)"
             >
               <div className="space-y-4">
                 {formState.species.map((species, index) => (
@@ -596,7 +596,7 @@ const SpeciesInteractionMatrix = () => {
               <CollapsibleSection
                 id="section-pairs"
                 title="2. Species Pair Selection"
-                description="Select a pair to define their relationship"
+                guidance="Select a pair to define their relationship"
               >
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                   {allPairs.map((pair, index) => (
@@ -636,7 +636,7 @@ const SpeciesInteractionMatrix = () => {
                 <CollapsibleSection
                   id="section-physical"
                   title={`3. ${speciesA.name || "A"} ↔ ${speciesB.name || "B"}: Physical`}
-                  description="Overall relationship and physical compatibility"
+                  guidance="Overall relationship and physical compatibility"
                 >
                   <div className="space-y-6">
                     <div className="space-y-4">
@@ -746,7 +746,7 @@ const SpeciesInteractionMatrix = () => {
                 <CollapsibleSection
                   id="section-communication"
                   title="4. Communication"
-                  description="Language, perception, nonverbal, cultural concepts"
+                  guidance="Language, perception, nonverbal, cultural concepts"
                 >
                   <div className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -836,7 +836,7 @@ const SpeciesInteractionMatrix = () => {
                 <CollapsibleSection
                   id="section-economic"
                   title="5. Economic Relations"
-                  description="Trade, resources, labor, dependencies"
+                  guidance="Trade, resources, labor, dependencies"
                 >
                   <div className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -926,7 +926,7 @@ const SpeciesInteractionMatrix = () => {
                 <CollapsibleSection
                   id="section-political"
                   title="6. Political Relations"
-                  description="Sovereignty, alliances, representation, treaties"
+                  guidance="Sovereignty, alliances, representation, treaties"
                 >
                   <div className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1016,7 +1016,7 @@ const SpeciesInteractionMatrix = () => {
                 <CollapsibleSection
                   id="section-cultural"
                   title="7. Cultural Exchange"
-                  description="Adoption, mixing, attitudes, hybrids"
+                  guidance="Adoption, mixing, attitudes, hybrids"
                 >
                   <div className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1106,7 +1106,7 @@ const SpeciesInteractionMatrix = () => {
                 <CollapsibleSection
                   id="section-historical"
                   title="8. Historical Context"
-                  description="First contact, conflicts, cooperation"
+                  guidance="First contact, conflicts, cooperation"
                 >
                   <div className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1196,7 +1196,7 @@ const SpeciesInteractionMatrix = () => {
                 <CollapsibleSection
                   id="section-tensions"
                   title="9. Tension Points"
-                  description="Current conflicts and future risks"
+                  guidance="Current conflicts and future risks"
                 >
                   <div className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1252,7 +1252,7 @@ const SpeciesInteractionMatrix = () => {
             <CollapsibleSection
               id="section-examples"
               title="SF Interaction Examples"
-              description="How species interactions have been explored in SF"
+              guidance="How species interactions have been explored in SF"
             >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {SF_INTERACTION_EXAMPLES.map((example, index) => (
@@ -1274,7 +1274,7 @@ const SpeciesInteractionMatrix = () => {
             <CollapsibleSection
               id="section-synthesis"
               title="Overall Synthesis"
-              description="Big picture assessment of multi-species dynamics"
+              guidance="Big picture assessment of multi-species dynamics"
             >
               <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1401,9 +1401,9 @@ const SpeciesInteractionMatrix = () => {
       <ExportDialog
         open={exportDialogOpen}
         onOpenChange={setExportDialogOpen}
-        toolType={TOOL_TYPE}
-        formData={formState}
-        title={
+        toolName="Species Interaction Matrix"
+        formState={formState}
+        worksheetTitle={
           formState.species.filter(s => s.name).map(s => s.name).join(" & ") ||
           "Species Interaction Matrix"
         }
@@ -1412,10 +1412,14 @@ const SpeciesInteractionMatrix = () => {
       <WorksheetSelectorDialog
         open={worksheetSelectorOpen}
         onOpenChange={setWorksheetSelectorOpen}
-        existingWorksheets={existingWorksheets}
+        worldId={worldId!}
+        worldName={worldName}
+        toolType={TOOL_TYPE}
+        toolDisplayName="Species Interaction Matrix"
+        worksheets={existingWorksheets}
+        isLoading={worksheetsLoading}
         onSelect={handleWorksheetSelect}
         onCreate={handleWorksheetCreate}
-        toolName="Species Interaction Matrix"
       />
 
       <UpgradeDialog

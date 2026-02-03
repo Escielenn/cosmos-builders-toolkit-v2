@@ -617,7 +617,7 @@ const EmpireDesigner = () => {
             <CollapsibleSection
               id="section-foundation"
               title="1. Foundation"
-              level={1}
+              levelNumber={1}
               guidance="Every government has a foundation - the type of rule, source of legitimacy, and origin story that defines its identity."
               thinkLike="a political scientist categorizing a new regime"
             >
@@ -755,7 +755,7 @@ const EmpireDesigner = () => {
             <CollapsibleSection
               id="section-power"
               title="2. Power Structure"
-              level={2}
+              levelNumber={2}
               guidance="How is power organized and transferred? The structure determines stability, efficiency, and who really rules."
               thinkLike="a constitutional scholar analyzing checks and balances"
             >
@@ -861,7 +861,7 @@ const EmpireDesigner = () => {
             <CollapsibleSection
               id="section-territory"
               title="3. Territory & Scale"
-              level={3}
+              levelNumber={3}
               guidance="Size matters. A city-state governs differently than a galactic empire. Scale shapes everything."
               thinkLike="a geographer mapping spheres of influence"
             >
@@ -940,7 +940,7 @@ const EmpireDesigner = () => {
             <CollapsibleSection
               id="section-economy"
               title="4. Economy & Resources"
-              level={4}
+              levelNumber={4}
               guidance="Economics shapes politics. Who controls resources controls power. What does this state produce and trade?"
               thinkLike="an economist analyzing resource flows"
             >
@@ -1019,7 +1019,7 @@ const EmpireDesigner = () => {
             <CollapsibleSection
               id="section-military"
               title="5. Military & Security"
-              level={5}
+              levelNumber={5}
               guidance="The monopoly on violence. How does this state defend itself and project power?"
               thinkLike="a military strategist assessing capabilities"
             >
@@ -1098,7 +1098,7 @@ const EmpireDesigner = () => {
             <CollapsibleSection
               id="section-culture"
               title="6. Culture & Identity"
-              level={6}
+              levelNumber={6}
               guidance="What binds the people together? Shared values, symbols, and beliefs create national identity."
               thinkLike="an anthropologist studying national character"
             >
@@ -1186,7 +1186,7 @@ const EmpireDesigner = () => {
             <CollapsibleSection
               id="section-factions"
               title="7. Internal Factions"
-              level={7}
+              levelNumber={7}
               guidance="No state is monolithic. Internal groups compete for power and push different agendas."
               thinkLike="a political operative mapping the landscape"
             >
@@ -1281,7 +1281,7 @@ const EmpireDesigner = () => {
             <CollapsibleSection
               id="section-external"
               title="8. External Relations"
-              level={8}
+              levelNumber={8}
               guidance="No state exists in isolation. Allies, enemies, and neutral parties shape foreign policy."
               thinkLike="a diplomat mapping international relationships"
             >
@@ -1361,7 +1361,7 @@ const EmpireDesigner = () => {
             <CollapsibleSection
               id="section-stability"
               title="9. Stability Assessment"
-              level={9}
+              levelNumber={9}
               guidance="Every state has strengths and weaknesses. Understanding them reveals where stories emerge."
               thinkLike="a risk analyst predicting the future"
             >
@@ -1448,7 +1448,7 @@ const EmpireDesigner = () => {
             <CollapsibleSection
               id="section-examples"
               title="SF Examples"
-              level={10}
+              levelNumber={10}
               guidance="See how other creators have designed memorable governments and empires."
             >
               <div className="space-y-4">
@@ -1477,7 +1477,7 @@ const EmpireDesigner = () => {
             <CollapsibleSection
               id="section-synthesis"
               title="Final Synthesis"
-              level={11}
+              levelNumber={11}
               guidance="Bring it all together. What makes this government unique and story-worthy?"
               thinkLike="an author crafting a setting"
             >
@@ -1547,7 +1547,6 @@ const EmpireDesigner = () => {
         onExport={() => setExportDialogOpen(true)}
         onPrint={() => window.print()}
         isSaving={updateWorksheet.isPending}
-        hasCloudSync={!!worldId && !!user}
       />
 
       <ExportDialog
@@ -1555,18 +1554,21 @@ const EmpireDesigner = () => {
         onOpenChange={setExportDialogOpen}
         toolName="Empire/Government Designer"
         worksheetTitle={currentWorksheetTitle || formState.foundation.name || "Government"}
-        data={formState}
+        formState={formState}
         worldName={worldName}
       />
 
       <WorksheetSelectorDialog
         open={worksheetSelectorOpen}
         onOpenChange={setWorksheetSelectorOpen}
-        existingWorksheets={existingWorksheets}
+        worldId={worldId!}
+        worldName={worldName}
+        toolType={TOOL_TYPE}
+        toolDisplayName="Empire/Government Designer"
+        worksheets={existingWorksheets}
+        isLoading={worksheetsLoading}
         onSelect={handleWorksheetSelect}
         onCreate={handleWorksheetCreate}
-        isCreating={createWorksheet.isPending}
-        toolName="Empire/Government Designer"
       />
 
       <UpgradeDialog

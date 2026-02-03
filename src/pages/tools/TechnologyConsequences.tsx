@@ -455,7 +455,7 @@ const TechnologyConsequences = () => {
             <CollapsibleSection
               id="section-definition"
               title="1. Technology Definition"
-              description="Define the core technology and its basic parameters"
+              guidance="Define the core technology and its basic parameters"
             >
               <div className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -562,7 +562,7 @@ const TechnologyConsequences = () => {
             <CollapsibleSection
               id="section-physical"
               title="2. Physical Consequences"
-              description="Infrastructure, environment, and resource effects"
+              guidance="Infrastructure, environment, and resource effects"
             >
               <div className="space-y-6">
                 <div className="space-y-4">
@@ -665,7 +665,7 @@ const TechnologyConsequences = () => {
             <CollapsibleSection
               id="section-economic"
               title="3. Economic Consequences"
-              description="Industries, employment, and wealth distribution"
+              guidance="Industries, employment, and wealth distribution"
             >
               <div className="space-y-6">
                 <div className="space-y-4">
@@ -749,7 +749,7 @@ const TechnologyConsequences = () => {
             <CollapsibleSection
               id="section-social"
               title="4. Social Consequences"
-              description="Class, family, community, and identity"
+              guidance="Class, family, community, and identity"
             >
               <div className="space-y-6">
                 <div className="space-y-4">
@@ -858,7 +858,7 @@ const TechnologyConsequences = () => {
             <CollapsibleSection
               id="section-political"
               title="5. Political Consequences"
-              description="Power, surveillance, and governance"
+              guidance="Power, surveillance, and governance"
             >
               <div className="space-y-6">
                 <div className="space-y-4">
@@ -942,7 +942,7 @@ const TechnologyConsequences = () => {
             <CollapsibleSection
               id="section-military"
               title="6. Military Consequences"
-              description="Warfare, defense, and deterrence"
+              guidance="Warfare, defense, and deterrence"
             >
               <div className="space-y-6">
                 <div className="space-y-4">
@@ -1026,7 +1026,7 @@ const TechnologyConsequences = () => {
             <CollapsibleSection
               id="section-psychological"
               title="7. Psychological Consequences"
-              description="Perception, values, and fears"
+              guidance="Perception, values, and fears"
             >
               <div className="space-y-6">
                 <div className="space-y-4">
@@ -1110,7 +1110,7 @@ const TechnologyConsequences = () => {
             <CollapsibleSection
               id="section-examples"
               title="SF Technology Examples"
-              description="How similar technologies have been explored in SF"
+              guidance="How similar technologies have been explored in SF"
             >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {SF_TECHNOLOGY_EXAMPLES.map((example, index) => (
@@ -1134,7 +1134,7 @@ const TechnologyConsequences = () => {
             <CollapsibleSection
               id="section-synthesis"
               title="Synthesis & Story Potential"
-              description="Contradictions, conflicts, and narrative opportunities"
+              guidance="Contradictions, conflicts, and narrative opportunities"
             >
               <div className="space-y-6">
                 <Card className="bg-amber-500/10 border-amber-500/30">
@@ -1264,18 +1264,22 @@ const TechnologyConsequences = () => {
       <ExportDialog
         open={exportDialogOpen}
         onOpenChange={setExportDialogOpen}
-        toolType={TOOL_TYPE}
-        formData={formState}
-        title={formState.technologyName || "Technology Consequences Map"}
+        toolName="Technology Consequences Map"
+        formState={formState}
+        worksheetTitle={formState.technologyName || "Technology Consequences Map"}
       />
 
       <WorksheetSelectorDialog
         open={worksheetSelectorOpen}
         onOpenChange={setWorksheetSelectorOpen}
-        existingWorksheets={existingWorksheets}
+        worldId={worldId!}
+        worldName={worldName}
+        toolType={TOOL_TYPE}
+        toolDisplayName="Technology Consequences"
+        worksheets={existingWorksheets}
+        isLoading={worksheetsLoading}
         onSelect={handleWorksheetSelect}
         onCreate={handleWorksheetCreate}
-        toolName="Technology Consequences"
       />
 
       <UpgradeDialog

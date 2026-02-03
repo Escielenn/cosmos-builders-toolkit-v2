@@ -614,7 +614,7 @@ const StarSystemBuilder = () => {
             <CollapsibleSection
               id="section-primary"
               title="1. Primary Star"
-              level={1}
+              levelNumber={1}
               guidance="The heart of your system. The star's properties determine everything else - habitable zones, planetary formation, and the visual character of your worlds."
               thinkLike="an astronomer cataloging a new discovery"
             >
@@ -713,7 +713,7 @@ const StarSystemBuilder = () => {
             <CollapsibleSection
               id="section-configuration"
               title="2. Stellar Configuration"
-              level={2}
+              levelNumber={2}
               guidance="Most stars have companions. Binary and triple systems create complex orbital dynamics and spectacular sky phenomena."
               thinkLike="a navigator plotting courses through multiple suns"
             >
@@ -848,7 +848,7 @@ const StarSystemBuilder = () => {
             <CollapsibleSection
               id="section-bodies"
               title="3. Planetary Bodies"
-              level={3}
+              levelNumber={3}
               guidance="Define each major body in your system. Consider orbital zones, resonances, and how bodies influence each other."
               thinkLike="a planetary scientist surveying a newly discovered system"
             >
@@ -1018,7 +1018,7 @@ const StarSystemBuilder = () => {
             <CollapsibleSection
               id="section-orbits"
               title="4. Orbital Mechanics"
-              level={4}
+              levelNumber={4}
               guidance="How do orbits interact? Resonances create stability or chaos. Belts and clouds provide resources and hazards."
               thinkLike="a celestial mechanic plotting centuries of motion"
             >
@@ -1125,7 +1125,7 @@ const StarSystemBuilder = () => {
             <CollapsibleSection
               id="section-history"
               title="5. System History"
-              level={5}
+              levelNumber={5}
               guidance="Every system has a history written in its architecture. Formation events, collisions, and migrations shape what exists today."
               thinkLike="a cosmic archaeologist reading orbital fossils"
             >
@@ -1221,7 +1221,7 @@ const StarSystemBuilder = () => {
             <CollapsibleSection
               id="section-habitability"
               title="6. Habitability"
-              level={6}
+              levelNumber={6}
               guidance="Where could life exist? Consider the habitable zone, but also moons, subsurface oceans, and exotic possibilities."
               thinkLike="an astrobiologist searching for life"
             >
@@ -1308,7 +1308,7 @@ const StarSystemBuilder = () => {
             <CollapsibleSection
               id="section-narrative"
               title="7. Narrative Elements"
-              level={7}
+              levelNumber={7}
               guidance="Transform astronomical data into story. What makes this system memorable? What stories does it want to tell?"
               thinkLike="a writer using astronomy as worldbuilding"
             >
@@ -1395,7 +1395,7 @@ const StarSystemBuilder = () => {
             <CollapsibleSection
               id="section-examples"
               title="SF Examples"
-              level={8}
+              levelNumber={8}
               guidance="See how other creators have used star system design to enhance their worldbuilding."
             >
               <div className="space-y-4">
@@ -1424,7 +1424,7 @@ const StarSystemBuilder = () => {
             <CollapsibleSection
               id="section-synthesis"
               title="Final Synthesis"
-              level={9}
+              levelNumber={9}
               guidance="Bring it all together. Check consistency and articulate what makes this system unique."
               thinkLike="an editor reviewing for internal logic"
             >
@@ -1515,7 +1515,6 @@ const StarSystemBuilder = () => {
         onExport={handleExport}
         onPrint={handlePrint}
         isSaving={updateWorksheet.isPending}
-        hasCloudSync={!!worldId && !!user}
       />
 
       {/* Export Dialog */}
@@ -1524,7 +1523,7 @@ const StarSystemBuilder = () => {
         onOpenChange={setExportDialogOpen}
         toolName="Star System Builder"
         worksheetTitle={currentWorksheetTitle || formState.systemName || "Star System"}
-        data={formState}
+        formState={formState}
         worldName={worldName}
       />
 
@@ -1532,11 +1531,14 @@ const StarSystemBuilder = () => {
       <WorksheetSelectorDialog
         open={worksheetSelectorOpen}
         onOpenChange={setWorksheetSelectorOpen}
-        existingWorksheets={existingWorksheets}
+        worldId={worldId!}
+        worldName={worldName}
+        toolType={TOOL_TYPE}
+        toolDisplayName="Star System Builder"
+        worksheets={existingWorksheets}
+        isLoading={worksheetsLoading}
         onSelect={handleWorksheetSelect}
         onCreate={handleWorksheetCreate}
-        isCreating={createWorksheet.isPending}
-        toolName="Star System Builder"
       />
 
       {/* Upgrade Dialog */}
