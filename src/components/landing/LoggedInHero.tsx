@@ -11,7 +11,7 @@ const LoggedInHero = ({ isSubscribed }: LoggedInHeroProps) => {
   return (
     <section className="text-center mb-12">
       <div className="flex items-center justify-center gap-3 mb-4">
-        <h1 className="font-sans text-4xl md:text-5xl font-semibold tracking-widest text-white uppercase">
+        <h1 className="font-display font-light text-4xl md:text-5xl tracking-sf-wide text-white uppercase">
           STELLARFORGE
         </h1>
         {isSubscribed && (
