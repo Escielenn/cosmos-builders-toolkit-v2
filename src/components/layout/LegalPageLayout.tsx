@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, Calendar } from "lucide-react";
-import ReactMarkdown from "react-markdown";
+import ReactMarkdown, { Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -17,6 +17,65 @@ interface LegalPageLayoutProps {
   content?: string;
   children?: ReactNode;
 }
+
+// Custom markdown components for better styling
+const markdownComponents: Components = {
+  h2: ({ children }) => (
+    <h2 className="flex items-center gap-3 text-2xl font-display font-bold text-foreground mt-12 mb-6 pt-8 border-t border-border/30 first:mt-0 first:pt-0 first:border-t-0">
+      <span className="w-1 h-8 bg-primary rounded-full" />
+      {children}
+    </h2>
+  ),
+  h3: ({ children }) => (
+    <h3 className="text-lg font-display font-semibold text-foreground/90 mt-8 mb-4 pl-4 border-l-2 border-primary/30">
+      {children}
+    </h3>
+  ),
+  h4: ({ children }) => (
+    <h4 className="text-base font-semibold text-foreground/80 mt-6 mb-3">
+      {children}
+    </h4>
+  ),
+  p: ({ children }) => (
+    <p className="text-muted-foreground leading-relaxed my-4">
+      {children}
+    </p>
+  ),
+  ul: ({ children }) => (
+    <ul className="my-4 space-y-2 pl-0">
+      {children}
+    </ul>
+  ),
+  li: ({ children }) => (
+    <li className="flex items-start gap-3 text-muted-foreground">
+      <span className="mt-2 w-1.5 h-1.5 rounded-full bg-primary/60 flex-shrink-0" />
+      <span>{children}</span>
+    </li>
+  ),
+  strong: ({ children }) => (
+    <strong className="text-foreground font-semibold">
+      {children}
+    </strong>
+  ),
+  a: ({ href, children }) => (
+    <a
+      href={href}
+      className="text-primary hover:underline"
+      target={href?.startsWith("http") ? "_blank" : undefined}
+      rel={href?.startsWith("http") ? "noopener noreferrer" : undefined}
+    >
+      {children}
+    </a>
+  ),
+  hr: () => (
+    <hr className="my-10 border-0 h-px bg-gradient-to-r from-transparent via-border/50 to-transparent" />
+  ),
+  blockquote: ({ children }) => (
+    <blockquote className="my-6 pl-4 border-l-4 border-primary/40 bg-primary/5 py-4 pr-4 rounded-r-lg italic text-muted-foreground">
+      {children}
+    </blockquote>
+  ),
+};
 
 const LegalPageLayout = ({
   title,
@@ -61,20 +120,12 @@ const LegalPageLayout = ({
 
         {/* Content */}
         <GlassPanel className="p-6 md:p-10">
-          <article className="prose prose-invert prose-lg max-w-none
-            prose-headings:font-display prose-headings:font-semibold prose-headings:text-foreground
-            prose-h2:text-2xl prose-h2:mt-12 prose-h2:mb-6 prose-h2:pt-8 prose-h2:border-t prose-h2:border-border/30
-            prose-h3:text-lg prose-h3:mt-8 prose-h3:mb-4 prose-h3:text-foreground/90
-            prose-h4:text-base prose-h4:mt-6 prose-h4:mb-3 prose-h4:text-foreground/80
-            prose-p:text-muted-foreground prose-p:leading-relaxed prose-p:my-4
-            prose-li:text-muted-foreground prose-li:my-1
-            prose-ul:my-4 prose-ul:space-y-1 prose-ol:my-4
-            prose-strong:text-foreground prose-strong:font-semibold
-            prose-a:text-primary prose-a:no-underline hover:prose-a:underline
-            prose-hr:my-10 prose-hr:border-border/40
-            first:prose-h2:mt-0 first:prose-h2:pt-0 first:prose-h2:border-t-0">
+          <article className="max-w-none">
             {content ? (
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                components={markdownComponents}
+              >
                 {content}
               </ReactMarkdown>
             ) : (
