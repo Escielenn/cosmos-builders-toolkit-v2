@@ -4,8 +4,10 @@ interface CubeLogoProps {
 }
 
 const CubeLogo = ({ size = 24, className = "" }: CubeLogoProps) => {
-  // Generate unique filter ID to avoid conflicts when multiple logos render
-  const filterId = `glow-${Math.random().toString(36).substr(2, 9)}`;
+  // Generate unique IDs to avoid conflicts when multiple logos render
+  const id = Math.random().toString(36).substr(2, 9);
+  const gradientId = `swooshGradient-${id}`;
+  const filterId = `glow-${id}`;
 
   return (
     <svg
@@ -16,6 +18,11 @@ const CubeLogo = ({ size = 24, className = "" }: CubeLogoProps) => {
       className={className}
     >
       <defs>
+        <linearGradient id={gradientId} x1="100%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#00F0F9" />
+          <stop offset="50%" stopColor="#0AC5E1" />
+          <stop offset="100%" stopColor="#056673" />
+        </linearGradient>
         <filter id={filterId} x="-50%" y="-50%" width="200%" height="200%">
           <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur" />
           <feMerge>
@@ -28,25 +35,24 @@ const CubeLogo = ({ size = 24, className = "" }: CubeLogoProps) => {
       {/* Black background */}
       <rect x="0" y="0" width="64" height="64" fill="#000000" rx="8" />
 
-      {/* White swoosh arc with subtle glow */}
+      {/* Cyan swoosh arc with gradient and glow */}
       <path
-        d="M 56 4 Q 32 8, 12 32 Q 8 40, 10 48"
-        stroke="#FFFFFF"
-        strokeWidth="3"
+        d="M 56 8 Q 40 12, 24 28 Q 12 44, 16 56"
+        stroke={`url(#${gradientId})`}
+        strokeWidth="4"
         strokeLinecap="round"
         fill="none"
         filter={`url(#${filterId})`}
-        opacity="0.95"
       />
 
-      {/* Subtle highlight on the arc */}
+      {/* Bright highlight on the arc */}
       <path
-        d="M 54 6 Q 34 10, 16 30"
-        stroke="#FFFFFF"
-        strokeWidth="1"
+        d="M 54 10 Q 42 14, 30 26"
+        stroke="#00F0F9"
+        strokeWidth="1.5"
         strokeLinecap="round"
         fill="none"
-        opacity="0.3"
+        opacity="0.6"
       />
     </svg>
   );
