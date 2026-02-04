@@ -292,7 +292,30 @@ const ExportDialog = ({
           </DialogDescription>
         </DialogHeader>
 
-        <Tabs defaultValue="pdf" className="w-full">
+        <Tabs
+          defaultValue={hasPdfTemplates ? "pdf" : "text"}
+          className="w-full"
+          onValueChange={(tab) => {
+            switch (tab) {
+              case "pdf":
+                // Select the first available PDF format
+                setFormat(summaryTemplate ? "pdf-summary" : fullTemplate ? "pdf-full" : "pdf-summary");
+                break;
+              case "text":
+                setFormat("text");
+                break;
+              case "word":
+                setFormat("word");
+                break;
+              case "json":
+                setFormat("json");
+                break;
+              case "notion":
+                setFormat("notion");
+                break;
+            }
+          }}
+        >
           <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="pdf">PDF</TabsTrigger>
             <TabsTrigger value="text">Text</TabsTrigger>
