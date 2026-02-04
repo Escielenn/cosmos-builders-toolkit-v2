@@ -8,6 +8,8 @@ StellarForge.tools provides worldbuilding tools and resources for science fictio
 
 If you don't agree with these terms, please don't use StellarForge.
 
+---
+
 ## Your Account
 
 ### Your Responsibilities
@@ -31,6 +33,8 @@ If you don't agree with these terms, please don't use StellarForge.
 
 You're responsible for all activity under your account. If you believe your account has been compromised, contact us immediately at support@stellarforge.tools.
 
+---
+
 ## Age Requirements & Parental Consent
 
 ### Minimum Age: 13 Years
@@ -52,6 +56,8 @@ If you are a parent or legal guardian of a user under 18, by allowing them to us
 - Be responsible for any charges incurred
 - Ensure they comply with these Terms
 - Monitor their creative work and usage
+
+---
 
 ## Your Content & Intellectual Property
 
@@ -82,17 +88,17 @@ If you are a parent or legal guardian of a user under 18, by allowing them to us
 
 The course materials, scientific frameworks, and worldbuilding methodology remain our intellectual property. You can use what you learn, but you can't republish our course materials or sell access to them.
 
+---
+
 ## Prohibited Activities
 
-### Absolutely Don't
-
-#### Illegal Content
+### Illegal Content
 
 - Upload, create, or store illegal content in your worlds
 - Use the service for any illegal purpose
 - Violate any local, state, federal, or international law
 
-#### Intellectual Property Violations
+### Intellectual Property Violations
 
 - Upload or incorporate copyrighted material you don't have rights to use
 - Infringe on others' trademarks, patents, or intellectual property
@@ -100,14 +106,14 @@ The course materials, scientific frameworks, and worldbuilding methodology remai
 
 *Note: Creating original works inspired by genres or using common tropes is fine - direct copying is not*
 
-#### Account Misuse
+### Account Misuse
 
 - Share your account credentials with others
 - Create multiple accounts to abuse free trials
 - Attempt to access other users' data or accounts
 - Use bots or automated systems to create accounts
 
-#### System Abuse
+### System Abuse
 
 - Reverse engineer or copy the platform code
 - Attempt to breach security measures
@@ -115,7 +121,7 @@ The course materials, scientific frameworks, and worldbuilding methodology remai
 - Deliberately overload or attack our systems
 - Scrape data from the platform
 
-#### Harmful Content
+### Harmful Content
 
 While we don't access your creative content, you agree not to create content that:
 
@@ -134,6 +140,8 @@ Violation of these terms may result in:
 - Reporting to authorities for illegal content
 
 We rarely need to enforce these rules, but they protect everyone in the community.
+
+---
 
 ## Subscriptions, Payments & Refunds
 
@@ -193,6 +201,8 @@ Email support@stellarforge.tools with your account email and reason for refund. 
 - Free tier has limited features compared to paid subscription
 - No commitment or automatic conversion to paid
 
+---
+
 ## Service Availability & Performance
 
 ### Our Commitment
@@ -220,6 +230,8 @@ Email support@stellarforge.tools with your account email and reason for refund. 
 
 We depend on Stripe, Supabase, Vercel, Resend, and ImprovMX. If these services experience issues, StellarForge may be affected. We're not liable for third-party service failures, but we'll work to restore service quickly.
 
+---
+
 ## Educational Content & Scientific Information
 
 ### What We Provide
@@ -243,6 +255,8 @@ When we reference published works or scientific papers, we provide proper attrib
 ### Not Professional Advice
 
 StellarForge provides educational tools for creative writing. This is not scientific, professional, or publishing advice. Consult appropriate professionals for those needs.
+
+---
 
 ## Disclaimers & Limitation of Liability
 
@@ -270,7 +284,7 @@ To the maximum extent permitted by law:
 
 Our total liability for any claims related to StellarForge is limited to the amount you've paid us in the 12 months before the claim arose.
 
-We're not liable for:
+**We're not liable for:**
 
 - Indirect, incidental, special, or consequential damages
 - Loss of profits, data, or business opportunities
@@ -290,6 +304,8 @@ These limitations don't apply to:
 
 These limitations are enforceable under Colorado law to the extent permitted.
 
+---
+
 ## Privacy & Data Protection
 
 ### Zero Access to Your Creative Work
@@ -308,6 +324,8 @@ See our [Privacy Policy](/privacy) for complete information about data collectio
 ### Data Export
 
 You can export all your worlds in JSON format from your dashboard at any time. This is your right, and we make it easy.
+
+---
 
 ## Termination
 
@@ -340,6 +358,8 @@ We may suspend or terminate accounts for:
 - Billing records retained for tax compliance (7 years, anonymized)
 - You can always come back and start fresh
 
+---
+
 ## Changes to These Terms
 
 ### We May Update These Terms
@@ -364,6 +384,8 @@ We may suspend or terminate accounts for:
 
 We maintain a changelog of terms updates at [/changelog](/changelog)
 
+---
+
 ## Dispute Resolution
 
 ### We'd Rather Talk
@@ -377,19 +399,18 @@ If you have an issue with StellarForge:
 
 ### If That Doesn't Work
 
-#### Governing Law
-
+**Governing Law:**
 - These Terms are governed by Colorado law
 - Venue for disputes is in Colorado courts
 - You retain any rights under your local consumer protection laws
 
-#### Informal Resolution
-
+**Informal Resolution:**
 Before any formal action, we both agree to attempt informal resolution for at least 30 days.
 
-#### Small Claims Court
-
+**Small Claims Court:**
 You may bring claims in small claims court in your local jurisdiction if the claim qualifies.
+
+---
 
 ## Miscellaneous
 
@@ -401,37 +422,31 @@ You may bring claims in small claims court in your local jurisdiction if the cla
 - **Survival:** Provisions about ownership, liability, and dispute resolution survive account termination.
 - **Feedback:** If you provide suggestions or feedback about StellarForge, we may use them without obligation to you.
 
-### Contact for Legal Notices
+**Contact for Legal Notices:** support@stellarforge.tools
 
-support@stellarforge.tools
+---
 
 ## Accessibility
 
 We're committed to making StellarForge.tools accessible to all science fiction writers, including those with disabilities. We strive to meet WCAG 2.1 Level AA standards.
 
-For accessibility feedback or to request accommodations:
+For accessibility feedback or to request accommodations, email support@stellarforge.tools with subject "Accessibility"
 
-Email: support@stellarforge.tools with subject "Accessibility"
+---
 
 ## Contact Information
 
-**General Support:**
-support@stellarforge.tools
+**General Support:** support@stellarforge.tools
 
-**Privacy Questions:**
-support@stellarforge.tools (subject: "Privacy")
+**Privacy Questions:** support@stellarforge.tools (subject: "Privacy")
 
-**Legal Questions:**
-support@stellarforge.tools (subject: "Legal")
+**Legal Questions:** support@stellarforge.tools (subject: "Legal")
 
-**Billing Questions:**
-support@stellarforge.tools (subject: "Billing")
+**Billing Questions:** support@stellarforge.tools (subject: "Billing")
 
-**Colorado Privacy Rights:**
-support@stellarforge.tools (subject: "Colorado Privacy Request")
+**Colorado Privacy Rights:** support@stellarforge.tools (subject: "Colorado Privacy Request")
 
-**GDPR Requests:**
-support@stellarforge.tools (subject: "GDPR Request")
+**GDPR Requests:** support@stellarforge.tools (subject: "GDPR Request")
 
 We aim to respond within 2 business days.
 

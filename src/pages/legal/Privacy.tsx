@@ -6,6 +6,8 @@ const privacyContent = `
 
 Your worldbuilding work is yours. Period. We don't access it, we don't train AI on it, and we don't share it with anyone. This policy explains how we handle the minimal data we do collect to run the service.
 
+---
+
 ## What We Collect
 
 ### Account Information
@@ -27,6 +29,8 @@ Your worldbuilding work is yours. Period. We don't access it, we don't train AI 
 - No advertising, analytics, or tracking cookies
 - See "Cookies & Tracking" section below for details
 
+---
+
 ## What We DON'T Collect or Access
 
 ### Your Creative Work
@@ -40,9 +44,11 @@ Your worldbuilding work is yours. Period. We don't access it, we don't train AI 
 
 This isn't just policy - it's how we built the system. Your worldbuilding data is encrypted and we don't have the keys. We literally cannot read your work, even if we wanted to.
 
+---
+
 ## How We Use Information
 
-The only things we do:
+**The only things we do:**
 
 - Send you essential service emails (password resets, payment confirmations, subscription updates)
 - Fix technical problems when things break
@@ -60,27 +66,29 @@ The only things we do:
 - Send you marketing emails (unless you explicitly opt in)
 - Provide your creative materials to AI training systems
 
+---
+
 ## Third-Party Services
 
 We use minimal third-party services to operate StellarForge. None of these services can access your creative content.
 
 ### Payment Processing
 
-- Stripe (stripe.com) handles all payment information securely
+- **Stripe** (stripe.com) handles all payment information securely
 - We never see your full credit card numbers
 - Stripe is PCI-DSS compliant and GDPR-compliant
-- Stripe Privacy Policy: [https://stripe.com/privacy](https://stripe.com/privacy)
+- [View Stripe's Privacy Policy](https://stripe.com/privacy)
 
 ### Email Services
 
-- Resend (resend.com) delivers transactional emails (password resets, payment receipts)
-- ImprovMX (improvmx.com) manages our email infrastructure at support@stellarforge.tools
+- **Resend** (resend.com) delivers transactional emails (password resets, payment receipts)
+- **ImprovMX** (improvmx.com) manages our email infrastructure at support@stellarforge.tools
 - We only send essential service emails
 
 ### Hosting & Infrastructure
 
-- Vercel (vercel.com) hosts the application with encryption
-- Supabase (supabase.com) provides secure database and authentication
+- **Vercel** (vercel.com) hosts the application with encryption
+- **Supabase** (supabase.com) provides secure database and authentication
 - All data is encrypted at rest and in transit
 
 ### What These Services Can Access
@@ -98,6 +106,8 @@ We use minimal third-party services to operate StellarForge. None of these servi
 - Any materials you create in StellarForge tools
 
 All of these providers are GDPR-compliant and maintain high security standards. We chose them specifically for their commitment to privacy and security.
+
+---
 
 ## Cookies & Tracking
 
@@ -132,6 +142,8 @@ These cookies are necessary for the service to work. You can disable cookies in 
 
 We respect Do Not Track signals. Since we don't track you anyway, DNT is automatically honored.
 
+---
+
 ## Your Rights
 
 ### Everyone Gets These Rights
@@ -148,6 +160,8 @@ We respect Do Not Track signals. Since we don't track you anyway, DNT is automat
 - Most rights can be exercised directly from your account dashboard
 - For deletion or complex requests, email support@stellarforge.tools
 - We respond within 5 business days
+
+---
 
 ## Colorado Residents' Rights
 
@@ -184,6 +198,8 @@ If we deny your request, you can appeal by emailing support@stellarforge.tools w
 
 We do not sell your personal data. We do not share your personal data for cross-context behavioral advertising.
 
+---
+
 ## European Users (GDPR)
 
 If you're in the European Economic Area (EEA), UK, or Switzerland, you have additional rights under GDPR:
@@ -219,6 +235,8 @@ Your data may be processed in the United States. We ensure adequate protection t
 
 For GDPR inquiries, contact support@stellarforge.tools
 
+---
+
 ## Data Security
 
 ### How We Protect Your Data
@@ -233,6 +251,8 @@ For GDPR inquiries, contact support@stellarforge.tools
 ### In Case of a Breach
 
 We will notify you within 72 hours if there's a data breach that affects your personal information, as required by law.
+
+---
 
 ## Data Retention
 
@@ -252,6 +272,8 @@ We will notify you within 72 hours if there's a data breach that affects your pe
 
 We'll email you before deleting inactive accounts (no login for 24+ months). You'll have 60 days to respond before deletion.
 
+---
+
 ## Children's Privacy (COPPA Compliance)
 
 StellarForge.tools is intended for users 13 years of age or older. We do not knowingly collect personal information from children under 13.
@@ -260,6 +282,8 @@ StellarForge.tools is intended for users 13 years of age or older. We do not kno
 
 If we learn we've collected information from a child under 13, we'll delete it immediately. If you believe we have information from a child under 13, contact support@stellarforge.tools.
 
+---
+
 ## Changes to This Policy
 
 We'll notify you of any material changes via email at least 30 days in advance. The "Last Updated" date at the top will reflect the most recent changes.
@@ -267,6 +291,8 @@ We'll notify you of any material changes via email at least 30 days in advance. 
 Continued use after changes means acceptance. If you don't agree with changes, you can delete your account before they take effect.
 
 **Policy Change History:** We maintain a changelog of privacy policy updates at [/changelog](/changelog)
+
+---
 
 ## Contact & Questions
 
