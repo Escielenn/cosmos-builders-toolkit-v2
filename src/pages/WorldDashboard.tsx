@@ -602,7 +602,7 @@ const WorldDashboard = () => {
         open={exportDialogOpen}
         onOpenChange={setExportDialogOpen}
         worldName={world.name}
-        worksheets={worksheets}
+        worldId={worldId!}
       />
     </div>
   );
