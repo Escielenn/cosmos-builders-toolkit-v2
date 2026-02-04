@@ -1,6 +1,8 @@
 import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, Calendar } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { GlassPanel } from "@/components/ui/glass-panel";
@@ -12,7 +14,8 @@ interface LegalPageLayoutProps {
   lastUpdated: string;
   badgeIcon?: ReactNode;
   badgeText: string;
-  children: ReactNode;
+  content?: string;
+  children?: ReactNode;
 }
 
 const LegalPageLayout = ({
@@ -21,6 +24,7 @@ const LegalPageLayout = ({
   lastUpdated,
   badgeIcon,
   badgeText,
+  content,
   children,
 }: LegalPageLayoutProps) => {
   return (
@@ -57,8 +61,14 @@ const LegalPageLayout = ({
 
         {/* Content */}
         <GlassPanel className="p-6 md:p-10">
-          <article className="prose prose-invert prose-lg max-w-none prose-headings:font-display prose-headings:font-semibold prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-h2:text-2xl prose-h2:mt-8 prose-h2:mb-4 prose-h3:text-xl prose-h3:mt-6 prose-h3:mb-3 prose-p:text-muted-foreground prose-li:text-muted-foreground prose-strong:text-foreground">
-            {children}
+          <article className="prose prose-invert prose-lg max-w-none prose-headings:font-display prose-headings:font-semibold prose-headings:text-foreground prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-h2:text-2xl prose-h2:mt-8 prose-h2:mb-4 prose-h3:text-xl prose-h3:mt-6 prose-h3:mb-3 prose-h4:text-lg prose-h4:mt-4 prose-h4:mb-2 prose-p:text-muted-foreground prose-li:text-muted-foreground prose-strong:text-foreground prose-ul:my-4 prose-ol:my-4">
+            {content ? (
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                {content}
+              </ReactMarkdown>
+            ) : (
+              children
+            )}
           </article>
         </GlassPanel>
       </main>
