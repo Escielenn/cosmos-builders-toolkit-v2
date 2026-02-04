@@ -8,6 +8,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import BackgroundProvider from "@/components/providers/BackgroundProvider";
 import ScrollToTop from "./components/ScrollToTop";
 import ContactFAB from "./components/contact/ContactFAB";
+import CookieConsent from "./components/common/CookieConsent";
 import { Loader2 } from "lucide-react";
 
 // Eagerly loaded pages (small, frequently accessed)
@@ -42,6 +43,11 @@ const LearnArticle = lazy(() => import("./pages/learn/LearnArticle"));
 
 // Lazy loaded utility pages
 const NotionCallback = lazy(() => import("./pages/NotionCallback"));
+
+// Lazy loaded legal pages
+const Privacy = lazy(() => import("./pages/legal/Privacy"));
+const Terms = lazy(() => import("./pages/legal/Terms"));
+const Changelog = lazy(() => import("./pages/legal/Changelog"));
 
 // Lazy loaded guard (includes subscription logic)
 const ProToolGuard = lazy(() => import("./components/subscription/ProToolGuard"));
@@ -151,11 +157,16 @@ const App = () => (
                 <Route path="/learn/:slug" element={<LearnArticle />} />
                 {/* OAuth Callbacks */}
                 <Route path="/api/notion/callback" element={<NotionCallback />} />
+                {/* Legal Pages */}
+                <Route path="/privacy" element={<Privacy />} />
+                <Route path="/terms" element={<Terms />} />
+                <Route path="/changelog" element={<Changelog />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>
             <ContactFAB />
+            <CookieConsent />
           </BrowserRouter>
         </TooltipProvider>
       </BackgroundProvider>

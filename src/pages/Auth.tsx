@@ -308,9 +308,33 @@ const Auth = () => {
             </TabsContent>
           </Tabs>
 
-          <p className="text-xs text-muted-foreground text-center mt-6">
-            By signing up, you agree to our Terms of Service and Privacy Policy.
-          </p>
+          {/* Privacy Promise & Legal Links */}
+          <div className="mt-6 space-y-3">
+            {/* Privacy Statement */}
+            <div className="p-3 rounded-lg bg-primary/5 border border-primary/20">
+              <p className="text-xs font-medium text-foreground mb-1">
+                Your Worlds Are Yours Alone
+              </p>
+              <p className="text-[11px] text-muted-foreground leading-relaxed">
+                We can't access your creative work. Ever. No AI training. No data mining.
+                No third-party sharing. Your unpublished stories stay unpublished until
+                you decide otherwise.
+              </p>
+            </div>
+
+            {/* Legal Links */}
+            <p className="text-xs text-muted-foreground text-center">
+              By signing up, you agree to our{" "}
+              <Link to="/terms" className="text-primary hover:underline">
+                Terms of Service
+              </Link>{" "}
+              and{" "}
+              <Link to="/privacy" className="text-primary hover:underline">
+                Privacy Policy
+              </Link>
+              .
+            </p>
+          </div>
         </GlassPanel>
       </div>
     </div>

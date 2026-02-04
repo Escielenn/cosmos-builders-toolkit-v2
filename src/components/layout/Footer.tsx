@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
-import { Mail, Github, Twitter } from "lucide-react";
+import { Mail, Linkedin, Instagram } from "lucide-react";
 import CubeLogo from "@/components/icons/CubeLogo";
+import SubstackIcon from "@/components/icons/SubstackIcon";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -13,6 +14,7 @@ const Footer = () => {
     ],
     resources: [
       { name: "Learn", href: "/learn" },
+      { name: "Changelog", href: "/changelog" },
       { name: "Contact", href: "/contact" },
     ],
     legal: [
@@ -23,18 +25,23 @@ const Footer = () => {
 
   const social = [
     {
-      name: "Twitter",
-      href: "https://twitter.com/stellarforge",
-      icon: Twitter,
+      name: "Substack",
+      href: "https://xenomythology.substack.com/",
+      icon: SubstackIcon,
     },
     {
-      name: "GitHub",
-      href: "https://github.com/stellarforge",
-      icon: Github,
+      name: "LinkedIn",
+      href: "https://www.linkedin.com/in/jasonbatt/",
+      icon: Linkedin,
+    },
+    {
+      name: "Instagram",
+      href: "https://www.instagram.com/jasondbattphd/",
+      icon: Instagram,
     },
     {
       name: "Email",
-      href: "mailto:hello@stellarforge.io",
+      href: "mailto:support@stellarforge.tools",
       icon: Mail,
     },
   ];
@@ -74,6 +81,18 @@ const Footer = () => {
                   <item.icon className="w-5 h-5" />
                 </a>
               ))}
+            </div>
+
+            {/* Privacy Statement */}
+            <div className="mt-6 pt-4 border-t border-border/20">
+              <h4 className="text-sm font-semibold text-foreground mb-2">
+                Your Worlds Are Yours Alone
+              </h4>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                We can't access your creative work. Ever. No AI training. No data mining.
+                No third-party sharing. Your unpublished stories stay unpublished until you
+                decide otherwise.
+              </p>
             </div>
           </div>
 

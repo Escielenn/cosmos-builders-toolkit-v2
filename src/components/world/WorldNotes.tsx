@@ -122,7 +122,7 @@ const WorldNotes = ({ worldId }: WorldNotesProps) => {
                     className="min-h-[200px] resize-y font-mono text-sm"
                   />
                 ) : (
-                  <div className="prose prose-invert prose-sm max-w-none min-h-[200px] p-3 rounded-md bg-muted/30 border border-border [&_pre]:bg-[#0d1117] [&_pre]:p-3 [&_pre]:rounded-md [&_code]:text-xs">
+                  <div className="prose prose-invert prose-sm max-w-none min-h-[200px] p-3 rounded-md bg-muted/30 border border-border [&_pre]:bg-[#0d1117] [&_pre]:p-3 [&_pre]:rounded-md [&_code]:text-xs prose-headings:text-foreground prose-headings:font-semibold prose-h1:text-xl prose-h1:mt-4 prose-h1:mb-2 prose-h2:text-lg prose-h2:mt-3 prose-h2:mb-2 prose-h3:text-base prose-h3:mt-2 prose-h3:mb-1 prose-h4:text-sm prose-h4:mt-2 prose-h4:mb-1">
                     {content ? (
                       <ReactMarkdown
                         remarkPlugins={[remarkGfm]}
