@@ -16,10 +16,9 @@ const CubeLogo = ({ size = 24, className = "" }: CubeLogoProps) => {
       className={className}
     >
       <defs>
-        <filter id={filterId} x="-100%" y="-100%" width="300%" height="300%">
-          <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur" />
+        <filter id={filterId} x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur" />
           <feMerge>
-            <feMergeNode in="blur" />
             <feMergeNode in="blur" />
             <feMergeNode in="SourceGraphic" />
           </feMerge>
@@ -29,14 +28,25 @@ const CubeLogo = ({ size = 24, className = "" }: CubeLogoProps) => {
       {/* Black background */}
       <rect x="0" y="0" width="64" height="64" fill="#000000" rx="8" />
 
-      {/* White arc swoosh from upper right curving down */}
+      {/* White swoosh arc with subtle glow */}
       <path
-        d="M 58 6 Q 42 12, 28 28 Q 18 42, 22 54"
+        d="M 56 4 Q 32 8, 12 32 Q 8 40, 10 48"
         stroke="#FFFFFF"
-        strokeWidth="3.5"
+        strokeWidth="3"
         strokeLinecap="round"
         fill="none"
         filter={`url(#${filterId})`}
+        opacity="0.95"
+      />
+
+      {/* Subtle highlight on the arc */}
+      <path
+        d="M 54 6 Q 34 10, 16 30"
+        stroke="#FFFFFF"
+        strokeWidth="1"
+        strokeLinecap="round"
+        fill="none"
+        opacity="0.3"
       />
     </svg>
   );
