@@ -1,4 +1,4 @@
-import { MoreHorizontal, Trash2, Download, Loader2 } from "lucide-react";
+import { MoreHorizontal, Trash2, Download, Loader2, Share2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
@@ -84,6 +84,43 @@ const WorldCard = ({
     }
   };
 
+  const handleShare = async () => {
+    const worldUrl = `${window.location.origin}/worlds/${id}`;
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: name,
+          text: description || `Check out my world "${name}" on StellarForge`,
+          url: worldUrl,
+        });
+      } catch (error) {
+        // User cancelled or share failed - fall back to clipboard
+        if ((error as Error).name !== "AbortError") {
+          await copyToClipboard(worldUrl);
+        }
+      }
+    } else {
+      await copyToClipboard(worldUrl);
+    }
+  };
+
+  const copyToClipboard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      toast({
+        title: "Link copied",
+        description: "World link copied to clipboard.",
+      });
+    } catch {
+      toast({
+        title: "Failed to copy",
+        description: "Could not copy link to clipboard.",
+        variant: "destructive",
+      });
+    }
+  };
+
   const formattedDate = new Date(updatedAt).toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
@@ -136,7 +173,10 @@ const WorldCard = ({
                 <DropdownMenuItem asChild>
                   <Link to={`/worlds/${id}`}>Edit World</Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem>Share</DropdownMenuItem>
+                <DropdownMenuItem onClick={handleShare}>
+                  <Share2 className="w-4 h-4 mr-2" />
+                  Share
+                </DropdownMenuItem>
                 <DropdownMenuItem onClick={handleExportClick} disabled={isLoadingWorksheets}>
                   {isLoadingWorksheets ? (
                     <>

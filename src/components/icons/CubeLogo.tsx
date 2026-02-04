@@ -4,6 +4,9 @@ interface CubeLogoProps {
 }
 
 const CubeLogo = ({ size = 24, className = "" }: CubeLogoProps) => {
+  // Generate unique filter ID to avoid conflicts when multiple logos render
+  const filterId = `glow-${Math.random().toString(36).substr(2, 9)}`;
+
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -13,37 +16,27 @@ const CubeLogo = ({ size = 24, className = "" }: CubeLogoProps) => {
       className={className}
     >
       <defs>
-        <filter id="swooshGlow" x="-50%" y="-50%" width="200%" height="200%">
-          <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur" />
+        <filter id={filterId} x="-100%" y="-100%" width="300%" height="300%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur" />
           <feMerge>
+            <feMergeNode in="blur" />
             <feMergeNode in="blur" />
             <feMergeNode in="SourceGraphic" />
           </feMerge>
         </filter>
       </defs>
 
-      {/* Black background square */}
+      {/* Black background */}
       <rect x="0" y="0" width="64" height="64" fill="#000000" rx="8" />
 
-      {/* White swoosh arc with subtle glow */}
+      {/* White arc swoosh from upper right curving down */}
       <path
-        d="M 56 4 Q 32 8, 12 32 Q 8 40, 10 48"
+        d="M 58 6 Q 42 12, 28 28 Q 18 42, 22 54"
         stroke="#FFFFFF"
-        strokeWidth="3"
+        strokeWidth="3.5"
         strokeLinecap="round"
         fill="none"
-        filter="url(#swooshGlow)"
-        opacity="0.95"
-      />
-
-      {/* Subtle highlight on the arc */}
-      <path
-        d="M 54 6 Q 34 10, 16 30"
-        stroke="#FFFFFF"
-        strokeWidth="1"
-        strokeLinecap="round"
-        fill="none"
-        opacity="0.3"
+        filter={`url(#${filterId})`}
       />
     </svg>
   );
