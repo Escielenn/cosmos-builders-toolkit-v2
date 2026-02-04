@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { User, LogIn, LogOut, ChevronDown, Crown, Menu, Globe, Wrench, BookOpen, Sparkles, Mail, Settings, Search, Image } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import CubeLogo from "@/components/icons/CubeLogo";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -76,11 +77,7 @@ const Header = () => {
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/30 backdrop-blur-xl bg-[#0f0f0f]/95">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-3 group">
-          <img
-            src="/logo.png"
-            alt="STELLARFORGE"
-            className="w-10 h-10 rounded-lg"
-          />
+          <CubeLogo size={40} className="rounded-lg" />
           <div className="flex flex-col">
             <span className="font-display font-light text-lg leading-tight tracking-sf-wide text-white uppercase">
               STELLARFORGE
@@ -100,7 +97,7 @@ const Header = () => {
           <SheetContent side="left" className="w-72 bg-[#0f0f0f]/98 border-border/30">
             <SheetHeader className="text-left">
               <SheetTitle className="flex items-center gap-3">
-                <img src="/logo.png" alt="STELLARFORGE" className="w-8 h-8 rounded-lg" />
+                <CubeLogo size={32} className="rounded-lg" />
                 <span className="font-display font-light tracking-sf-wide text-white uppercase">
                   STELLARFORGE
                 </span>
