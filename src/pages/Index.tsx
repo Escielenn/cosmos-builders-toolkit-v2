@@ -26,6 +26,7 @@ import WelcomeHero from "@/components/landing/WelcomeHero";
 import LoggedInHero from "@/components/landing/LoggedInHero";
 import ToolShowcase from "@/components/landing/ToolShowcase";
 import ValueProposition from "@/components/landing/ValueProposition";
+import VideoShowcase from "@/components/landing/VideoShowcase";
 import QuickUpgradeCard from "@/components/subscription/QuickUpgradeCard";
 import BetaBanner from "@/components/BetaBanner";
 import Footer from "@/components/layout/Footer";
@@ -157,6 +158,7 @@ const Index = () => {
         )}
 
         {/* Landing Page Sections - non-logged-in users only */}
+        {!user && <VideoShowcase />}
         {!user && <ToolShowcase />}
         {!user && <ValueProposition />}
 
