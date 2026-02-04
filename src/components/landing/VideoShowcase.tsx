@@ -1,7 +1,6 @@
 import { GlassPanel } from "@/components/ui/glass-panel";
 
-// TODO: Replace with actual YouTube video ID once uploaded
-const YOUTUBE_VIDEO_ID = "PLACEHOLDER";
+const YOUTUBE_VIDEO_ID = "iGYxmAQa8DY";
 
 const VideoShowcase = () => {
   return (
