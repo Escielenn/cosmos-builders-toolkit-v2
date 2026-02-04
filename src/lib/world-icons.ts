@@ -30,7 +30,7 @@ import {
   BookOpen,
   Compass,
   Anchor,
-  Infinity,
+  Infinity as InfinityIcon,
   Atom,
   Zap,
   type LucideIcon,
@@ -86,7 +86,7 @@ export const WORLD_ICONS: WorldIcon[] = [
   // Abstract
   { id: "compass", icon: Compass, label: "Compass", category: "Abstract" },
   { id: "anchor", icon: Anchor, label: "Anchor", category: "Abstract" },
-  { id: "infinity", icon: Infinity, label: "Infinity", category: "Abstract" },
+  { id: "infinity", icon: InfinityIcon, label: "Infinity", category: "Abstract" },
   { id: "atom", icon: Atom, label: "Atom", category: "Abstract" },
   { id: "zap", icon: Zap, label: "Energy", category: "Abstract" },
 ];
