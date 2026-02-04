@@ -27,8 +27,8 @@ import LoggedInHero from "@/components/landing/LoggedInHero";
 import ToolShowcase from "@/components/landing/ToolShowcase";
 import ValueProposition from "@/components/landing/ValueProposition";
 import QuickUpgradeCard from "@/components/subscription/QuickUpgradeCard";
-import CubeLogo from "@/components/icons/CubeLogo";
 import BetaBanner from "@/components/BetaBanner";
+import Footer from "@/components/layout/Footer";
 
 const tools = [
   {
@@ -266,15 +266,7 @@ const Index = () => {
 
       <BetaBanner position="bottom" />
 
-      {/* Footer */}
-      <footer className="border-t border-border/50 py-8">
-        <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
-          <div className="flex items-center justify-center gap-2">
-            <CubeLogo size={16} />
-            <p>© 2026 <a href="https://jbatt.com" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Jason D. Batt, Ph.D.</a></p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };

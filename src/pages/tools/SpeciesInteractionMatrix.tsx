@@ -1,7 +1,8 @@
 import { useState, useEffect, useMemo } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { ArrowLeft, Download, Save, Cloud, CloudOff, Users, Plus, Trash2, ArrowRight, RefreshCw } from "lucide-react";
+import { ArrowLeft, Download, Save, Cloud, CloudOff, Users, Plus, Trash2, ArrowRight, RefreshCw, Dna } from "lucide-react";
 import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -28,7 +29,9 @@ import KeyChoicesSidebar, { KeyChoicesSection, MobileKeyChoices } from "@/compon
 import ToolActionBar from "@/components/tools/ToolActionBar";
 import ExportDialog from "@/components/tools/ExportDialog";
 import UpgradeDialog from "@/components/subscription/UpgradeDialog";
+import EvoBioImportModal from "@/components/tools/EvoBioImportModal";
 import { useWorlds } from "@/hooks/use-worlds";
+import type { SpeciesMatrixSpecies } from "@/lib/field-mappings";
 import { Json } from "@/integrations/supabase/types";
 import {
   RELATIONSHIP_LEVELS,
@@ -193,6 +196,8 @@ const SpeciesInteractionMatrix = () => {
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
   const [worksheetSelectorOpen, setWorksheetSelectorOpen] = useState(false);
   const [upgradeDialogOpen, setUpgradeDialogOpen] = useState(false);
+  const [importModalOpen, setImportModalOpen] = useState(false);
+  const [importTargetIndex, setImportTargetIndex] = useState<number | null>(null);
   const [selectedPairIndex, setSelectedPairIndex] = useState(0);
   const { toast } = useToast();
   const { user } = useAuth();
@@ -376,6 +381,49 @@ const SpeciesInteractionMatrix = () => {
     }));
   };
 
+  const handleImportFromEvoBio = (index: number) => {
+    setImportTargetIndex(index);
+    setImportModalOpen(true);
+  };
+
+  const handleEvoBioImport = (speciesData: Partial<SpeciesMatrixSpecies>) => {
+    if (importTargetIndex === null) return;
+
+    updateSpecies(importTargetIndex, {
+      name: speciesData.name || "",
+      shortDescription: speciesData.shortDescription || "",
+      homeworld: speciesData.homeworld || "",
+      physicalTraits: speciesData.physicalTraits || "",
+      culturalTraits: speciesData.culturalTraits || "",
+    });
+
+    toast({
+      title: "Species Imported",
+      description: `${speciesData.name || "Species"} has been imported from Evolutionary Biology.`,
+    });
+
+    setImportTargetIndex(null);
+  };
+
+  const handleAddFromEvoBio = () => {
+    if (formState.species.length >= 6) {
+      toast({
+        title: "Maximum species reached",
+        description: "You can compare up to 6 species.",
+        variant: "destructive",
+      });
+      return;
+    }
+    // Add a new empty species then open import modal for it
+    const newSpecies = createEmptySpecies();
+    setFormState((prev) => ({
+      ...prev,
+      species: [...prev.species, newSpecies],
+    }));
+    setImportTargetIndex(formState.species.length);
+    setImportModalOpen(true);
+  };
+
   const updatePair = (pairIndex: number, updates: Partial<SpeciesPair>) => {
     setFormState((prev) => ({
       ...prev,
@@ -519,16 +567,29 @@ const SpeciesInteractionMatrix = () => {
                           <Users className="w-4 h-4" />
                           Species {index + 1}
                         </CardTitle>
-                        {formState.species.length > 2 && (
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => removeSpecies(index)}
-                            className="text-destructive"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        )}
+                        <div className="flex items-center gap-1">
+                          {worldId && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleImportFromEvoBio(index)}
+                              className="text-emerald-500 hover:text-emerald-600"
+                              title="Import from Evolutionary Biology"
+                            >
+                              <Dna className="w-4 h-4" />
+                            </Button>
+                          )}
+                          {formState.species.length > 2 && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => removeSpecies(index)}
+                              className="text-destructive"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          )}
+                        </div>
                       </div>
                     </CardHeader>
                     <CardContent className="space-y-3">
@@ -583,10 +644,22 @@ const SpeciesInteractionMatrix = () => {
                 ))}
 
                 {formState.species.length < 6 && (
-                  <Button variant="outline" onClick={addSpecies} className="w-full gap-2">
-                    <Plus className="w-4 h-4" />
-                    Add Species ({formState.species.length}/6)
-                  </Button>
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <Button variant="outline" onClick={addSpecies} className="flex-1 gap-2">
+                      <Plus className="w-4 h-4" />
+                      Add Species ({formState.species.length}/6)
+                    </Button>
+                    {worldId && (
+                      <Button
+                        variant="outline"
+                        onClick={handleAddFromEvoBio}
+                        className="flex-1 gap-2 text-emerald-600 border-emerald-600/50 hover:bg-emerald-500/10"
+                      >
+                        <Dna className="w-4 h-4" />
+                        Import from Evolutionary Biology
+                      </Button>
+                    )}
+                  </div>
                 )}
               </div>
             </CollapsibleSection>
@@ -1392,6 +1465,8 @@ const SpeciesInteractionMatrix = () => {
         </div>
       </main>
 
+      <Footer />
+
       <ToolActionBar
         onSave={handleSave}
         onExport={() => setExportDialogOpen(true)}
@@ -1426,6 +1501,15 @@ const SpeciesInteractionMatrix = () => {
         open={upgradeDialogOpen}
         onOpenChange={setUpgradeDialogOpen}
       />
+
+      {worldId && (
+        <EvoBioImportModal
+          open={importModalOpen}
+          onOpenChange={setImportModalOpen}
+          worldId={worldId}
+          onImport={handleEvoBioImport}
+        />
+      )}
     </div>
   );
 };

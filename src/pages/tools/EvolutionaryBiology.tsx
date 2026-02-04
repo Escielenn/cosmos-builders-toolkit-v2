@@ -12,8 +12,10 @@ import {
   ExternalLink,
   Download,
   Printer,
+  Users,
 } from "lucide-react";
 import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -39,6 +41,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useWorksheets, useWorksheet, useWorksheetsByType } from "@/hooks/use-worksheets";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
 import WorksheetLinkSelector from "@/components/tools/WorksheetLinkSelector";
+import SpeciesMatrixImportModal from "@/components/tools/SpeciesMatrixImportModal";
 import { useAuth } from "@/contexts/AuthContext";
 import SectionNavigation, { Section, MobileSectionNav } from "@/components/tools/SectionNavigation";
 import ToolSidebar from "@/components/tools/ToolSidebar";
@@ -414,6 +417,7 @@ const EvolutionaryBiology = () => {
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showWorksheetSelector, setShowWorksheetSelector] = useState(false);
   const [showExportDialog, setShowExportDialog] = useState(false);
+  const [showSpeciesMatrixImport, setShowSpeciesMatrixImport] = useState(false);
   const [expandedSections, setExpandedSections] = useState<Set<string>>(
     new Set(["section-foundations"])
   );
@@ -540,6 +544,51 @@ const EvolutionaryBiology = () => {
       },
     }));
     setHasUnsavedChanges(true);
+  };
+
+  const handleSpeciesMatrixImport = (data: {
+    speciesName?: string;
+    bodyPlanNotes?: string;
+    socialNotes?: string;
+    survivalPressuresNotes?: string;
+  }) => {
+    setFormState((prev) => {
+      const updates: Partial<FormState> = {};
+
+      if (data.speciesName) {
+        updates.speciesName = data.speciesName;
+      }
+
+      if (data.bodyPlanNotes) {
+        updates.bodyPlan = {
+          ...prev.bodyPlan,
+          bodyPlanNotes: data.bodyPlanNotes,
+        };
+      }
+
+      if (data.socialNotes) {
+        updates.social = {
+          ...prev.social,
+          socialNotes: data.socialNotes,
+        };
+      }
+
+      if (data.survivalPressuresNotes) {
+        updates.foundations = {
+          ...prev.foundations,
+          survivalPressuresNotes: data.survivalPressuresNotes,
+        };
+      }
+
+      return { ...prev, ...updates };
+    });
+
+    setHasUnsavedChanges(true);
+
+    toast({
+      title: "Species Imported",
+      description: `${data.speciesName || "Species"} has been imported from Species Interaction Matrix.`,
+    });
   };
 
   // Multi-select checkbox group
@@ -899,7 +948,20 @@ const EvolutionaryBiology = () => {
               <div className="space-y-4">
                 {/* Species Name */}
                 <div className="space-y-2">
-                  <Label htmlFor="species-name" className="text-sm font-medium">Species Name</Label>
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="species-name" className="text-sm font-medium">Species Name</Label>
+                    {worldId && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setShowSpeciesMatrixImport(true)}
+                        className="text-pink-500 hover:text-pink-600 gap-1.5"
+                      >
+                        <Users className="w-4 h-4" />
+                        Import from Species Matrix
+                      </Button>
+                    )}
+                  </div>
                   <Input
                     id="species-name"
                     placeholder="Enter species name (e.g., 'Therapsid Collective', 'Crystalline Singers')"
@@ -2577,7 +2639,19 @@ const EvolutionaryBiology = () => {
           defaultFilename="evolutionary-biology"
         />
 
+        {/* Species Matrix Import Modal */}
+        {worldId && (
+          <SpeciesMatrixImportModal
+            open={showSpeciesMatrixImport}
+            onOpenChange={setShowSpeciesMatrixImport}
+            worldId={worldId}
+            onImport={handleSpeciesMatrixImport}
+          />
+        )}
+
       </main>
+
+      <Footer />
     </div>
   );
 };

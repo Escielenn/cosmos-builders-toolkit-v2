@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { ArrowLeft, Download, Save, Info, Printer, Cloud, CloudOff, Crown, Plus, Trash2 } from "lucide-react";
 import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -1541,6 +1542,8 @@ const EmpireDesigner = () => {
           </ToolSidebar>
         </div>
       </main>
+
+      <Footer />
 
       <ToolActionBar
         onSave={handleSave}

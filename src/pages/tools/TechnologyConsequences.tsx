@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { ArrowLeft, Download, Save, Cloud, CloudOff, Cpu, RefreshCw } from "lucide-react";
 import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -1254,6 +1255,8 @@ const TechnologyConsequences = () => {
           <KeyChoicesSidebar sections={keyChoicesSections} />
         </div>
       </main>
+
+      <Footer />
 
       <ToolActionBar
         onSave={handleSave}

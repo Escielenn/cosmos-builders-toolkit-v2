@@ -3,7 +3,7 @@ import ShowcaseHero from "@/components/showcase/ShowcaseHero";
 import ToolShowcaseBlock from "@/components/showcase/ToolShowcaseBlock";
 import ProAdvantageSection from "@/components/showcase/ProAdvantageSection";
 import FinalCTASection from "@/components/showcase/FinalCTASection";
-import CubeLogo from "@/components/icons/CubeLogo";
+import Footer from "@/components/layout/Footer";
 
 // Tool data for showcase blocks
 const TOOLS = [
@@ -165,25 +165,7 @@ const Features = () => {
         <FinalCTASection />
       </main>
 
-      {/* Footer */}
-      <footer className="border-t border-border/50 py-8 relative z-10">
-        <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
-          <div className="flex items-center justify-center gap-2">
-            <CubeLogo size={16} />
-            <p>
-              © 2026{" "}
-              <a
-                href="https://jbatt.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-primary transition-colors"
-              >
-                Jason D. Batt, Ph.D.
-              </a>
-            </p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };

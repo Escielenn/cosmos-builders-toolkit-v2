@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { ArrowLeft, Download, Save, Info, ExternalLink, Printer, Cloud, CloudOff, Check, AlertCircle, Globe, ChevronDown } from "lucide-react";
 import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -1689,12 +1690,7 @@ const PlanetaryProfile = () => {
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="border-t border-border/50 py-8">
-        <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
-          <p>© 2026 StellarForge. All rights reserved.</p>
-        </div>
-      </footer>
+      <Footer />
 
       {/* Export Dialog */}
       <ExportDialog

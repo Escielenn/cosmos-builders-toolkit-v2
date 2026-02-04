@@ -1,6 +1,7 @@
 import { useParams, Link } from "react-router-dom";
 import { ArrowLeft, Calendar, Loader2 } from "lucide-react";
 import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Badge } from "@/components/ui/badge";
 import { useArticle } from "@/hooks/use-sanity-articles";
@@ -176,12 +177,7 @@ const LearnArticle = () => {
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="border-t border-border/50 py-8">
-        <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
-          <p>© 2026 StellarForge. All rights reserved.</p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };
