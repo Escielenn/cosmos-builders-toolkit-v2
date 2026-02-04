@@ -1,4 +1,4 @@
-import { Crown, Zap, Link2, FileDown, Infinity, ExternalLink, GraduationCap } from "lucide-react";
+import { Crown, Zap, Link2, FileDown, Infinity as InfinityIcon, ExternalLink, GraduationCap } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import { GlassPanel } from "@/components/ui/glass-panel";
@@ -30,7 +30,7 @@ const benefits = [
       "Connect your Notion workspace and export worksheets as pages. Your worldbuilding, where you work.",
   },
   {
-    icon: Infinity,
+    icon: InfinityIcon,
     title: "Unlimited Worlds",
     description:
       "Create as many worlds and worksheets as you need. Build entire galaxies of interconnected settings.",
