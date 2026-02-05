@@ -4,7 +4,7 @@ const YOUTUBE_VIDEO_ID = "iGYxmAQa8DY";
 
 const VideoShowcase = () => {
   return (
-    <section className="py-12 md:py-16 sf-reveal">
+    <section className="pb-12 md:pb-16 sf-reveal">
       <GlassPanel className="max-w-4xl mx-auto overflow-hidden p-2" lightArc glow>
         <div className="relative w-full" style={{ paddingBottom: "56.25%" }}>
           <iframe

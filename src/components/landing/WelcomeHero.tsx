@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 
 const WelcomeHero = () => {
   return (
-    <section className="text-center mb-16 py-12 md:py-16">
+    <section className="text-center mb-8 py-12 md:py-16">
       {/* Badge with reveal animation */}
       <Badge className="mb-8 sf-reveal sf-reveal-1" variant="secondary">
         <Sparkles className="w-3 h-3 mr-1" />
