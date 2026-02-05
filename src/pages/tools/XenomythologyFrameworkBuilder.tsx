@@ -16,6 +16,7 @@ import {
   FileText,
   Dna,
   X,
+  Image as ImageIcon,
 } from "lucide-react";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -46,6 +47,8 @@ import SuggestedImplications from "@/components/tools/SuggestedImplications";
 import ImportFromECRModal from "@/components/tools/ImportFromECRModal";
 import SpeciesLinkModal from "@/components/tools/SpeciesLinkModal";
 import ExportDialog from "@/components/tools/ExportDialog";
+import { MoodboardSection } from "@/components/moodboard";
+import type { MoodboardImage } from "@/hooks/use-moodboard";
 import { applyMappedFields, type MappedField } from "@/lib/field-mappings";
 import { XenomythologySummaryTemplate, XenomythologyFullReportTemplate } from "@/lib/pdf/templates";
 import { useWorlds } from "@/hooks/use-worlds";
@@ -94,10 +97,14 @@ import {
 } from "@/lib/xenomythology-data";
 
 // Section definitions for navigation
-const SECTIONS: Section[] = XENOMYTHOLOGY_SECTIONS.map((s) => ({
-  id: `section-${s.id}`,
-  title: s.title,
-}));
+const SECTIONS: Section[] = [
+  ...XENOMYTHOLOGY_SECTIONS.map((s) => ({
+    id: `section-${s.id}`,
+    title: s.title,
+  })),
+  { id: "section-notes", title: "Notes & Ideas" },
+  { id: "section-moodboard", title: "Moodboard" },
+];
 
 // Types for form state
 interface PressureAnalysisEntry {
@@ -278,6 +285,8 @@ interface FormState {
       syncedAt: string;
     };
   };
+  generalNotes: string;
+  moodboard: MoodboardImage[];
 }
 
 const initialFormState: FormState = {
@@ -405,6 +414,8 @@ const initialFormState: FormState = {
     scienceTension: "",
     scienceResolution: [],
   },
+  generalNotes: "",
+  moodboard: [],
 };
 
 const EXTERNAL_RESOURCES = [
@@ -2703,6 +2714,46 @@ const XenomythologyFrameworkBuilder = () => {
                   </div>
                 </div>
               )}
+            </div>
+          </CollapsibleSection>
+
+          {/* Notes & Ideas Section */}
+          <CollapsibleSection
+            id="section-notes"
+            title="Notes & Ideas"
+            icon={<FileText className="w-5 h-5 text-primary" />}
+            defaultOpen={false}
+          >
+            <div className="space-y-2">
+              <p className="text-sm text-muted-foreground">
+                Jot down ideas, story hooks, or reminders for this worksheet.
+              </p>
+              <Textarea
+                placeholder="Your notes and ideas..."
+                value={formState.generalNotes}
+                onChange={(e) => setFormState(prev => ({ ...prev, generalNotes: e.target.value }))}
+                className="min-h-[150px] resize-y"
+              />
+            </div>
+          </CollapsibleSection>
+
+          {/* Moodboard Section */}
+          <CollapsibleSection
+            id="section-moodboard"
+            title="Moodboard"
+            icon={<ImageIcon className="w-5 h-5 text-primary" />}
+            defaultOpen={false}
+            badge={formState.moodboard?.length || undefined}
+          >
+            <div className="space-y-2">
+              <p className="text-sm text-muted-foreground">
+                Add reference images to inspire your design.
+              </p>
+              <MoodboardSection
+                worksheetId={currentWorksheetId || "local"}
+                images={formState.moodboard || []}
+                onImagesChange={(images) => setFormState(prev => ({ ...prev, moodboard: images }))}
+              />
             </div>
           </CollapsibleSection>
           </div>

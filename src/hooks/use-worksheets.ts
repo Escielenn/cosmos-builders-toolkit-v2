@@ -11,6 +11,7 @@ interface Worksheet {
   tool_type: string;
   title: string | null;
   tags: string[];
+  archived_at: string | null;
   data: Json;
   created_at: string;
   updated_at: string;
@@ -30,21 +31,27 @@ interface UpdateWorksheetInput {
   data?: Json;
 }
 
-export const useWorksheets = (worldId: string | undefined) => {
+export const useWorksheets = (worldId: string | undefined, includeArchived: boolean = false) => {
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
   const worksheetsQuery = useQuery({
-    queryKey: ["worksheets", worldId],
+    queryKey: ["worksheets", worldId, includeArchived],
     queryFn: async () => {
       if (!worldId) return [];
 
-      const { data, error } = await supabase
+      let query = supabase
         .from("worksheets")
         .select("*")
         .eq("world_id", worldId)
         .order("updated_at", { ascending: false });
+
+      if (!includeArchived) {
+        query = query.is("archived_at", null);
+      }
+
+      const { data, error } = await query;
 
       if (error) throw error;
       return data as Worksheet[];
@@ -132,7 +139,7 @@ export const useWorksheets = (worldId: string | undefined) => {
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["worksheets", worldId] });
+      queryClient.invalidateQueries({ queryKey: ["worksheets"] });
       toast({
         title: "Worksheet deleted",
         description: "The worksheet has been removed.",
@@ -147,6 +154,60 @@ export const useWorksheets = (worldId: string | undefined) => {
     },
   });
 
+  const archiveWorksheet = useMutation({
+    mutationFn: async (worksheetId: string) => {
+      if (!user) throw new Error("Not authenticated");
+
+      const { error } = await supabase
+        .from("worksheets")
+        .update({ archived_at: new Date().toISOString() })
+        .eq("id", worksheetId);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["worksheets"] });
+      toast({
+        title: "Worksheet archived",
+        description: "The worksheet has been moved to your archive.",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Failed to archive worksheet",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  const unarchiveWorksheet = useMutation({
+    mutationFn: async (worksheetId: string) => {
+      if (!user) throw new Error("Not authenticated");
+
+      const { error } = await supabase
+        .from("worksheets")
+        .update({ archived_at: null })
+        .eq("id", worksheetId);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["worksheets"] });
+      toast({
+        title: "Worksheet restored",
+        description: "The worksheet has been restored from your archive.",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Failed to restore worksheet",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
   return {
     worksheets: worksheetsQuery.data || [],
     isLoading: worksheetsQuery.isLoading,
@@ -154,6 +215,8 @@ export const useWorksheets = (worldId: string | undefined) => {
     createWorksheet,
     updateWorksheet,
     deleteWorksheet,
+    archiveWorksheet,
+    unarchiveWorksheet,
   };
 };
 

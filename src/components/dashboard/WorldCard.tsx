@@ -1,7 +1,8 @@
-import { MoreHorizontal, Trash2, Download, Share2 } from "lucide-react";
+import { MoreHorizontal, Trash2, Download, Share2, Archive, ArchiveRestore } from "lucide-react";
 import { Link } from "react-router-dom";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,20 +10,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 import { useState } from "react";
 import { getWorldIcon } from "@/lib/world-icons";
 import { useToast } from "@/hooks/use-toast";
 import WorldExportDialog from "@/components/world/WorldExportDialog";
+import { DeleteConfirmDialog } from "@/components/dialogs/DeleteConfirmDialog";
+import { cn } from "@/lib/utils";
 
 interface WorldCardProps {
   id: string;
@@ -30,8 +23,12 @@ interface WorldCardProps {
   description: string | null;
   headerImageUrl: string | null;
   icon: string;
+  tags?: string[];
+  archivedAt?: string | null;
   updatedAt: string;
   onDelete: (id: string) => void;
+  onArchive?: (id: string) => void;
+  onUnarchive?: (id: string) => void;
 }
 
 const WorldCard = ({
@@ -40,12 +37,19 @@ const WorldCard = ({
   description,
   headerImageUrl,
   icon,
+  tags = [],
+  archivedAt,
   updatedAt,
   onDelete,
+  onArchive,
+  onUnarchive,
 }: WorldCardProps) => {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showExportDialog, setShowExportDialog] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const { toast } = useToast();
+
+  const isArchived = !!archivedAt;
 
   const handleShare = async () => {
     const worldUrl = `${window.location.origin}/worlds/${id}`;
@@ -95,7 +99,7 @@ const WorldCard = ({
 
   return (
     <>
-      <GlassPanel hover className="flex flex-col min-h-[200px]">
+      <GlassPanel hover className={cn("flex flex-col min-h-[200px]", isArchived && "opacity-60")}>
         {/* Header Image */}
         <div className="relative">
           {headerImageUrl ? (
@@ -116,6 +120,13 @@ const WorldCard = ({
           <div className="absolute -bottom-5 left-4 w-10 h-10 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 border-2 border-background flex items-center justify-center shadow-lg z-10">
             <IconComponent className="w-5 h-5 text-primary" />
           </div>
+          {/* Archived badge */}
+          {isArchived && (
+            <Badge variant="secondary" className="absolute top-2 right-2 gap-1">
+              <Archive className="w-3 h-3" />
+              Archived
+            </Badge>
+          )}
         </div>
 
         {/* Content */}
@@ -145,12 +156,23 @@ const WorldCard = ({
                   Export
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
+                {isArchived ? (
+                  <DropdownMenuItem onClick={() => onUnarchive?.(id)}>
+                    <ArchiveRestore className="w-4 h-4 mr-2" />
+                    Restore from Archive
+                  </DropdownMenuItem>
+                ) : (
+                  <DropdownMenuItem onClick={() => onArchive?.(id)}>
+                    <Archive className="w-4 h-4 mr-2" />
+                    Archive
+                  </DropdownMenuItem>
+                )}
                 <DropdownMenuItem
                   onClick={() => setShowDeleteDialog(true)}
                   className="text-destructive focus:text-destructive"
                 >
                   <Trash2 className="w-4 h-4 mr-2" />
-                  Delete
+                  Delete permanently
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -162,6 +184,18 @@ const WorldCard = ({
                 {description}
               </p>
             )}
+            {tags.length > 0 && (
+              <div className="flex flex-wrap gap-1 mt-2">
+                {tags.slice(0, 3).map((tag) => (
+                  <Badge key={tag} variant="outline" className="text-xs px-1.5 py-0">
+                    {tag}
+                  </Badge>
+                ))}
+                {tags.length > 3 && (
+                  <span className="text-xs text-muted-foreground">+{tags.length - 3}</span>
+                )}
+              </div>
+            )}
           </div>
 
           <div className="pt-2 border-t border-border/50 mt-auto">
@@ -172,25 +206,17 @@ const WorldCard = ({
         </div>
       </GlassPanel>
 
-      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete World</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to delete "{name}"? This action cannot be undone and all associated worksheets will be deleted.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => onDelete(id)}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-            >
-              Delete
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <DeleteConfirmDialog
+        open={showDeleteDialog}
+        onOpenChange={setShowDeleteDialog}
+        itemName={name}
+        itemType="world"
+        onConfirm={() => {
+          setIsDeleting(true);
+          onDelete(id);
+        }}
+        isDeleting={isDeleting}
+      />
 
       <WorldExportDialog
         open={showExportDialog}

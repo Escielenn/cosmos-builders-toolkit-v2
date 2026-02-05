@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { ArrowLeft, Download, Save, Info, Printer, ExternalLink, Cloud, CloudOff, Calculator, HelpCircle } from "lucide-react";
+import { ArrowLeft, Download, Save, Info, Printer, ExternalLink, Cloud, CloudOff, Calculator, HelpCircle, FileText, Image as ImageIcon } from "lucide-react";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { GlassPanel } from "@/components/ui/glass-panel";
@@ -25,6 +25,8 @@ import CollapsibleSection from "@/components/tools/CollapsibleSection";
 import KeyChoicesSidebar, { KeyChoicesSection, MobileKeyChoices } from "@/components/tools/KeyChoicesSidebar";
 import ToolActionBar from "@/components/tools/ToolActionBar";
 import ExportDialog from "@/components/tools/ExportDialog";
+import { MoodboardSection } from "@/components/moodboard";
+import type { MoodboardImage } from "@/hooks/use-moodboard";
 import { DrakeSummaryTemplate, DrakeFullReportTemplate } from "@/lib/pdf/templates";
 import { Json } from "@/integrations/supabase/types";
 
@@ -35,6 +37,8 @@ const SECTIONS: Section[] = [
   { id: "section-result", title: "Result" },
   { id: "section-worldbuilding", title: "Worldbuilding" },
   { id: "section-presets", title: "Presets" },
+  { id: "section-notes", title: "Notes & Ideas" },
+  { id: "section-moodboard", title: "Moodboard" },
 ];
 
 // Drake Equation variable definitions
@@ -206,6 +210,8 @@ interface FormState {
     storyImplications: string;
     civilizationTypes: string;
   };
+  generalNotes: string;
+  moodboard: MoodboardImage[];
 }
 
 const initialFormState: FormState = {
@@ -234,6 +240,8 @@ const initialFormState: FormState = {
     storyImplications: "",
     civilizationTypes: "",
   },
+  generalNotes: "",
+  moodboard: [],
 };
 
 // Local storage key
@@ -820,6 +828,46 @@ const DrakeEquationCalculator = () => {
                 </div>
               </GlassPanel>
             ))}
+          </div>
+        </CollapsibleSection>
+
+        {/* Notes & Ideas Section */}
+        <CollapsibleSection
+          id="section-notes"
+          title="Notes & Ideas"
+          icon={<FileText className="w-5 h-5 text-primary" />}
+          defaultOpen={false}
+        >
+          <div className="space-y-2">
+            <p className="text-sm text-muted-foreground">
+              Jot down ideas, story hooks, or reminders for this worksheet.
+            </p>
+            <Textarea
+              placeholder="Your notes and ideas..."
+              value={formState.generalNotes}
+              onChange={(e) => setFormState(prev => ({ ...prev, generalNotes: e.target.value }))}
+              className="min-h-[150px] resize-y"
+            />
+          </div>
+        </CollapsibleSection>
+
+        {/* Moodboard Section */}
+        <CollapsibleSection
+          id="section-moodboard"
+          title="Moodboard"
+          icon={<ImageIcon className="w-5 h-5 text-primary" />}
+          defaultOpen={false}
+          badge={formState.moodboard?.length || undefined}
+        >
+          <div className="space-y-2">
+            <p className="text-sm text-muted-foreground">
+              Add reference images to inspire your design.
+            </p>
+            <MoodboardSection
+              worksheetId={currentWorksheetId || "local"}
+              images={formState.moodboard || []}
+              onImagesChange={(images) => setFormState(prev => ({ ...prev, moodboard: images }))}
+            />
           </div>
         </CollapsibleSection>
 

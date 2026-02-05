@@ -1,3 +1,4 @@
+import { useState, useMemo } from "react";
 import {
   Globe,
   Users,
@@ -30,6 +31,8 @@ import VideoShowcase from "@/components/landing/VideoShowcase";
 import QuickUpgradeCard from "@/components/subscription/QuickUpgradeCard";
 import BetaBanner from "@/components/BetaBanner";
 import Footer from "@/components/layout/Footer";
+import { TagFilter } from "@/components/dashboard/TagFilter";
+import { ArchiveToggle } from "@/components/dashboard/ArchiveToggle";
 
 const tools = [
   {
@@ -135,11 +138,56 @@ const tools = [
 
 const Index = () => {
   const { user } = useAuth();
-  const { worlds, isLoading, deleteWorld } = useWorlds();
+  const [showArchived, setShowArchived] = useState(false);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+
+  const { worlds, isLoading, deleteWorld, archiveWorld, unarchiveWorld, allWorldTags } = useWorlds(showArchived);
   const { isSubscribed } = useSubscription();
+
+  // Count archived worlds
+  const archivedCount = useMemo(() => {
+    return worlds.filter((w) => w.archived_at !== null).length;
+  }, [worlds]);
+
+  // Get all unique tags from worlds
+  const availableTags = useMemo(() => {
+    const tagSet = new Set<string>();
+    worlds.forEach((w) => {
+      (w.tags || []).forEach((t) => tagSet.add(t));
+    });
+    return Array.from(tagSet).sort();
+  }, [worlds]);
+
+  // Filter worlds by selected tags
+  const filteredWorlds = useMemo(() => {
+    if (selectedTags.length === 0) return worlds;
+    return worlds.filter((w) =>
+      selectedTags.some((tag) => (w.tags || []).includes(tag))
+    );
+  }, [worlds, selectedTags]);
 
   const handleDeleteWorld = (worldId: string) => {
     deleteWorld.mutate(worldId);
+  };
+
+  const handleArchiveWorld = (worldId: string) => {
+    archiveWorld.mutate(worldId);
+  };
+
+  const handleUnarchiveWorld = (worldId: string) => {
+    unarchiveWorld.mutate(worldId);
+  };
+
+  const handleTagSelect = (tag: string) => {
+    setSelectedTags((prev) => [...prev, tag]);
+  };
+
+  const handleTagRemove = (tag: string) => {
+    setSelectedTags((prev) => prev.filter((t) => t !== tag));
+  };
+
+  const handleClearTags = () => {
+    setSelectedTags([]);
   };
 
   return (
@@ -165,8 +213,24 @@ const Index = () => {
         {/* My Worlds Section - logged-in users only */}
         {user && (
           <section id="worlds" className="mb-16 scroll-mt-24">
-            <div className="flex items-center justify-between mb-8">
-              <h2 className="font-display font-light text-2xl uppercase tracking-sf-wide">My Worlds</h2>
+            <div className="flex flex-col gap-4 mb-8">
+              <div className="flex items-center justify-between">
+                <h2 className="font-display font-light text-2xl uppercase tracking-sf-wide">My Worlds</h2>
+                <ArchiveToggle
+                  showArchived={showArchived}
+                  onToggle={setShowArchived}
+                  archivedCount={showArchived ? archivedCount : worlds.filter((w) => w.archived_at).length || (allWorldTags.length > 0 ? 0 : 0)}
+                />
+              </div>
+              {availableTags.length > 0 && (
+                <TagFilter
+                  availableTags={availableTags}
+                  selectedTags={selectedTags}
+                  onTagSelect={handleTagSelect}
+                  onTagRemove={handleTagRemove}
+                  onClear={handleClearTags}
+                />
+              )}
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <CreateWorldButton />
@@ -177,15 +241,17 @@ const Index = () => {
                 </GlassPanel>
               )}
 
-              {!isLoading && worlds.length === 0 && (
+              {!isLoading && filteredWorlds.length === 0 && (
                 <GlassPanel className="p-5 h-full min-h-[200px] flex flex-col items-center justify-center border-dashed border border-muted">
                   <p className="text-sm text-muted-foreground text-center">
-                    Your worlds will appear here once you create them.
+                    {selectedTags.length > 0
+                      ? "No worlds match the selected tags."
+                      : "Your worlds will appear here once you create them."}
                   </p>
                 </GlassPanel>
               )}
 
-              {worlds.map((world) => (
+              {filteredWorlds.map((world) => (
                 <WorldCard
                   key={world.id}
                   id={world.id}
@@ -193,8 +259,12 @@ const Index = () => {
                   description={world.description}
                   headerImageUrl={world.header_image_url}
                   icon={world.icon}
+                  tags={world.tags}
+                  archivedAt={world.archived_at}
                   updatedAt={world.updated_at}
                   onDelete={handleDeleteWorld}
+                  onArchive={handleArchiveWorld}
+                  onUnarchive={handleUnarchiveWorld}
                 />
               ))}
             </div>

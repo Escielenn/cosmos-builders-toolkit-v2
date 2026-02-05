@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { ArrowLeft, Download, Save, Info, ExternalLink, Printer, Cloud, CloudOff, Rocket, FileText, ChevronDown } from "lucide-react";
+import { ArrowLeft, Download, Save, Info, ExternalLink, Printer, Cloud, CloudOff, Rocket, FileText, ChevronDown, Image as ImageIcon } from "lucide-react";
 import {
   Collapsible,
   CollapsibleContent,
@@ -31,6 +31,8 @@ import CollapsibleSection from "@/components/tools/CollapsibleSection";
 import KeyChoicesSidebar, { KeyChoicesSection, MobileKeyChoices } from "@/components/tools/KeyChoicesSidebar";
 import ToolActionBar from "@/components/tools/ToolActionBar";
 import ExportDialog from "@/components/tools/ExportDialog";
+import { MoodboardSection } from "@/components/moodboard";
+import type { MoodboardImage } from "@/hooks/use-moodboard";
 import { SpacecraftSummaryTemplate, SpacecraftFullReportTemplate } from "@/lib/pdf/templates";
 import { useWorlds } from "@/hooks/use-worlds";
 import { Json } from "@/integrations/supabase/types";
@@ -45,6 +47,8 @@ const SECTIONS: Section[] = [
   { id: "section-character", title: "6. Ship Character" },
   { id: "section-examples", title: "SF Examples" },
   { id: "section-synthesis", title: "Synthesis" },
+  { id: "section-notes", title: "Notes & Ideas" },
+  { id: "section-moodboard", title: "Moodboard" },
 ];
 
 // Types for form state
@@ -131,6 +135,8 @@ interface FormState {
     storyHooks: string;
     sensorySignature: string;
   };
+  generalNotes: string;
+  moodboard: MoodboardImage[];
 }
 
 const initialFormState: FormState = {
@@ -204,6 +210,8 @@ const initialFormState: FormState = {
     storyHooks: "",
     sensorySignature: "",
   },
+  generalNotes: "",
+  moodboard: [],
 };
 
 const SHIP_CLASSES = [
@@ -1494,6 +1502,46 @@ const SpacecraftDesigner = () => {
                   className="min-h-[150px] bg-background/50"
                 />
               </div>
+            </div>
+          </CollapsibleSection>
+
+          {/* Notes & Ideas Section */}
+          <CollapsibleSection
+            id="section-notes"
+            title="Notes & Ideas"
+            icon={<FileText className="w-5 h-5 text-primary" />}
+            defaultOpen={false}
+          >
+            <div className="space-y-2">
+              <p className="text-sm text-muted-foreground">
+                Jot down ideas, story hooks, or reminders for this worksheet.
+              </p>
+              <Textarea
+                placeholder="Your notes and ideas..."
+                value={formState.generalNotes}
+                onChange={(e) => setFormState(prev => ({ ...prev, generalNotes: e.target.value }))}
+                className="min-h-[150px] resize-y"
+              />
+            </div>
+          </CollapsibleSection>
+
+          {/* Moodboard Section */}
+          <CollapsibleSection
+            id="section-moodboard"
+            title="Moodboard"
+            icon={<ImageIcon className="w-5 h-5 text-primary" />}
+            defaultOpen={false}
+            badge={formState.moodboard?.length || undefined}
+          >
+            <div className="space-y-2">
+              <p className="text-sm text-muted-foreground">
+                Add reference images to inspire your design.
+              </p>
+              <MoodboardSection
+                worksheetId={currentWorksheetId || "local"}
+                images={formState.moodboard || []}
+                onImagesChange={(images) => setFormState(prev => ({ ...prev, moodboard: images }))}
+              />
             </div>
           </CollapsibleSection>
         </div>

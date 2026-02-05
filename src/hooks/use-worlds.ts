@@ -10,6 +10,8 @@ interface World {
   description: string | null;
   header_image_url: string | null;
   icon: string;
+  tags: string[];
+  archived_at: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -19,6 +21,7 @@ interface CreateWorldInput {
   description?: string;
   icon?: string;
   header_image_url?: string;
+  tags?: string[];
 }
 
 interface UpdateWorldInput {
@@ -27,25 +30,48 @@ interface UpdateWorldInput {
   description?: string;
   icon?: string;
   header_image_url?: string | null;
+  tags?: string[];
 }
 
-export const useWorlds = () => {
+export const useWorlds = (includeArchived: boolean = false) => {
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
   const worldsQuery = useQuery({
-    queryKey: ["worlds", user?.id],
+    queryKey: ["worlds", user?.id, includeArchived],
     queryFn: async () => {
       if (!user) return [];
-      
-      const { data, error } = await supabase
+
+      let query = supabase
         .from("worlds")
         .select("*")
         .order("updated_at", { ascending: false });
 
+      if (!includeArchived) {
+        query = query.is("archived_at", null);
+      }
+
+      const { data, error } = await query;
+
       if (error) throw error;
       return data as World[];
+    },
+    enabled: !!user,
+  });
+
+  const allWorldTagsQuery = useQuery({
+    queryKey: ["worldTags", user?.id],
+    queryFn: async () => {
+      if (!user) return [];
+
+      const { data, error } = await supabase
+        .from("world_tags")
+        .select("name")
+        .order("usage_count", { ascending: false });
+
+      if (error) throw error;
+      return data.map((t) => t.name);
     },
     enabled: !!user,
   });
@@ -62,6 +88,7 @@ export const useWorlds = () => {
           description: input.description || null,
           icon: input.icon || "globe",
           header_image_url: input.header_image_url || null,
+          tags: input.tags || [],
         })
         .select()
         .single();
@@ -70,7 +97,8 @@ export const useWorlds = () => {
       return data as World;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["worlds", user?.id] });
+      queryClient.invalidateQueries({ queryKey: ["worlds"] });
+      queryClient.invalidateQueries({ queryKey: ["worldTags", user?.id] });
       toast({
         title: "World created!",
         description: "Your new world is ready for building.",
@@ -89,11 +117,12 @@ export const useWorlds = () => {
     mutationFn: async (input: UpdateWorldInput) => {
       if (!user) throw new Error("Not authenticated");
 
-      const updateData: { name?: string; description?: string; icon?: string; header_image_url?: string | null } = {};
+      const updateData: { name?: string; description?: string; icon?: string; header_image_url?: string | null; tags?: string[] } = {};
       if (input.name !== undefined) updateData.name = input.name;
       if (input.description !== undefined) updateData.description = input.description;
       if (input.icon !== undefined) updateData.icon = input.icon;
       if (input.header_image_url !== undefined) updateData.header_image_url = input.header_image_url;
+      if (input.tags !== undefined) updateData.tags = input.tags;
 
       const { data, error } = await supabase
         .from("worlds")
@@ -106,7 +135,8 @@ export const useWorlds = () => {
       return data as World;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["worlds", user?.id] });
+      queryClient.invalidateQueries({ queryKey: ["worlds"] });
+      queryClient.invalidateQueries({ queryKey: ["worldTags", user?.id] });
       toast({
         title: "World updated",
         description: "Your changes have been saved.",
@@ -115,6 +145,60 @@ export const useWorlds = () => {
     onError: (error) => {
       toast({
         title: "Failed to update world",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  const archiveWorld = useMutation({
+    mutationFn: async (worldId: string) => {
+      if (!user) throw new Error("Not authenticated");
+
+      const { error } = await supabase
+        .from("worlds")
+        .update({ archived_at: new Date().toISOString() })
+        .eq("id", worldId);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["worlds"] });
+      toast({
+        title: "World archived",
+        description: "The world has been moved to your archive.",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Failed to archive world",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  const unarchiveWorld = useMutation({
+    mutationFn: async (worldId: string) => {
+      if (!user) throw new Error("Not authenticated");
+
+      const { error } = await supabase
+        .from("worlds")
+        .update({ archived_at: null })
+        .eq("id", worldId);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["worlds"] });
+      toast({
+        title: "World restored",
+        description: "The world has been restored from your archive.",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Failed to restore world",
         description: error.message,
         variant: "destructive",
       });
@@ -131,7 +215,8 @@ export const useWorlds = () => {
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["worlds", user?.id] });
+      queryClient.invalidateQueries({ queryKey: ["worlds"] });
+      queryClient.invalidateQueries({ queryKey: ["worldTags", user?.id] });
       toast({
         title: "World deleted",
         description: "The world has been removed.",
@@ -150,8 +235,11 @@ export const useWorlds = () => {
     worlds: worldsQuery.data || [],
     isLoading: worldsQuery.isLoading,
     error: worldsQuery.error,
+    allWorldTags: allWorldTagsQuery.data || [],
     createWorld,
     updateWorld,
     deleteWorld,
+    archiveWorld,
+    unarchiveWorld,
   };
 };

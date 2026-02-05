@@ -227,6 +227,7 @@ export type Database = {
       }
       worksheets: {
         Row: {
+          archived_at: string | null
           created_at: string
           data: Json
           id: string
@@ -238,6 +239,7 @@ export type Database = {
           world_id: string
         }
         Insert: {
+          archived_at?: string | null
           created_at?: string
           data?: Json
           id?: string
@@ -249,6 +251,7 @@ export type Database = {
           world_id: string
         }
         Update: {
+          archived_at?: string | null
           created_at?: string
           data?: Json
           id?: string
@@ -277,6 +280,36 @@ export type Database = {
         ]
       }
       worksheet_tags: {
+        Row: {
+          id: string
+          user_id: string
+          name: string
+          color: string
+          usage_count: number
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          name: string
+          color?: string
+          usage_count?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          name?: string
+          color?: string
+          usage_count?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      world_tags: {
         Row: {
           id: string
           user_id: string
@@ -350,32 +383,38 @@ export type Database = {
       }
       worlds: {
         Row: {
+          archived_at: string | null
           created_at: string
           description: string | null
           header_image_url: string | null
           icon: string
           id: string
           name: string
+          tags: string[]
           updated_at: string
           user_id: string
         }
         Insert: {
+          archived_at?: string | null
           created_at?: string
           description?: string | null
           header_image_url?: string | null
           icon?: string
           id?: string
           name: string
+          tags?: string[]
           updated_at?: string
           user_id: string
         }
         Update: {
+          archived_at?: string | null
           created_at?: string
           description?: string | null
           header_image_url?: string | null
           icon?: string
           id?: string
           name?: string
+          tags?: string[]
           updated_at?: string
           user_id?: string
         }
