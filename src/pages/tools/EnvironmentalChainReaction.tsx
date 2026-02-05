@@ -963,7 +963,7 @@ const EnvironmentalChainReaction = () => {
         {/* Form Sections with Sidebar */}
         <div className="flex gap-6">
           {/* Main Content */}
-          <div className="flex-1 space-y-4">
+          <div className="flex-1 space-y-6">
           {/* Step 1: Planetary Parameter */}
           <CollapsibleSection
             id="section-parameter"
@@ -1427,7 +1427,7 @@ const EnvironmentalChainReaction = () => {
 
           {/* Sticky Sidebar - visible when parameters are selected */}
           {getSelectedParametersForSidebar().length > 0 && (
-            <div className="hidden lg:block">
+            <div className="hidden xl:block">
               <SelectedParametersSidebar
                 parameters={getSelectedParametersForSidebar()}
               />

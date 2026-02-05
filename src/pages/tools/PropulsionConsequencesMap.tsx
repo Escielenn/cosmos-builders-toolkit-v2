@@ -638,7 +638,7 @@ const PropulsionConsequencesMap = () => {
         </GlassPanel>
 
         {/* Form Sections */}
-        <div className="space-y-4">
+        <div className="space-y-6">
           {/* Section 1: Define Propulsion System */}
           <CollapsibleSection
             id="section-propulsion"

@@ -687,7 +687,7 @@ const PlanetaryProfile = () => {
         </GlassPanel>
 
         {/* Form Sections */}
-        <div className="space-y-4">
+        <div className="space-y-6">
           {/* Section 1: Stellar Environment */}
           <CollapsibleSection
             id="section-stellar-environment"

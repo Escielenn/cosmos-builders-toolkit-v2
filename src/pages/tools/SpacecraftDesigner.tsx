@@ -682,7 +682,7 @@ const SpacecraftDesigner = () => {
         </GlassPanel>
 
         {/* Form Sections */}
-        <div className="space-y-4">
+        <div className="space-y-6">
           {/* Section 1: Ship Identity */}
           <CollapsibleSection
             id="section-identity"

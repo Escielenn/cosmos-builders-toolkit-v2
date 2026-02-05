@@ -103,9 +103,9 @@ const BackgroundSelector = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="sm" className="gap-2 px-3">
+        <Button variant="ghost" size="icon" className="h-9 w-9">
           <Image className="w-4 h-4" />
-          <span className="hidden sm:inline text-sm">Background</span>
+          <span className="sr-only">Background</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-xl max-h-[85vh] overflow-y-auto">

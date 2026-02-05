@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, Network, ExternalLink, LayoutGrid, List, ChevronDown, ChevronRight, Globe, Dna, Sparkles, GitBranch, Rocket, Zap, Calculator, FileText } from "lucide-react";
+import { ArrowLeft, Network, ExternalLink, LayoutGrid, List, ChevronDown, ChevronRight, Globe, Dna, Sparkles, GitBranch, Rocket, Zap, Calculator, FileText, Filter, Crown, Users } from "lucide-react";
 import Header from "@/components/layout/Header";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
@@ -32,10 +32,29 @@ const TOOL_ICONS: Record<string, React.ElementType> = {
   "spacecraft-designer": Rocket,
   "propulsion-consequences-map": Zap,
   "drake-equation-calculator": Calculator,
+  "star-system-builder": Sparkles,
+  "empire-designer": Crown,
+  "technology-consequences": Zap,
+  "species-interaction-matrix": Users,
 };
+
+// Filter options for filtering by entity type
+const FILTER_OPTIONS = [
+  { value: "all", label: "All Types", icon: null },
+  { value: "planetary-profile", label: "Planets", icon: Globe },
+  { value: "evolutionary-biology", label: "Species", icon: Dna },
+  { value: "star-system-builder", label: "Stars", icon: Sparkles },
+  { value: "xenomythology-framework-builder", label: "Mythologies", icon: Sparkles },
+  { value: "environmental-chain-reaction", label: "Environments", icon: GitBranch },
+  { value: "spacecraft-designer", label: "Spacecraft", icon: Rocket },
+  { value: "empire-designer", label: "Empires", icon: Crown },
+  { value: "species-interaction-matrix", label: "Species Matrix", icon: Users },
+];
 
 type ViewMode = "mindmap" | "outline";
 type SortBy = "toolType" | "title" | "connections";
+type FilterBy = "all" | string;
+
 // Tool routes for navigation
 const TOOL_ROUTES: Record<string, string> = {
   "planetary-profile": "/tools/planetary-profile",
@@ -45,6 +64,10 @@ const TOOL_ROUTES: Record<string, string> = {
   "spacecraft-designer": "/tools/spacecraft-designer",
   "propulsion-consequences-map": "/tools/propulsion-consequences-map",
   "drake-equation-calculator": "/tools/drake-equation-calculator",
+  "star-system-builder": "/tools/star-system-builder",
+  "empire-designer": "/tools/empire-designer",
+  "technology-consequences": "/tools/technology-consequences",
+  "species-interaction-matrix": "/tools/species-interaction-matrix",
 };
 
 const WorldConnections = () => {
@@ -54,9 +77,27 @@ const WorldConnections = () => {
   const { nodes, edges, isLoading } = useWorldGraph(worldId);
   const [viewMode, setViewMode] = useState<ViewMode>("mindmap");
   const [sortBy, setSortBy] = useState<SortBy>("toolType");
+  const [filterBy, setFilterBy] = useState<FilterBy>("all");
   const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set(["all"]));
 
   const world = worlds.find((w) => w.id === worldId);
+
+  // Filter nodes and edges based on selected filter
+  const { filteredNodes, filteredEdges } = useMemo(() => {
+    if (filterBy === "all") {
+      return { filteredNodes: nodes, filteredEdges: edges };
+    }
+
+    const filtered = nodes.filter((n) => n.toolType === filterBy);
+    const filteredIds = new Set(filtered.map((n) => n.id));
+
+    // Only show edges where both nodes are in the filtered set
+    const filteredE = edges.filter(
+      (e) => filteredIds.has(e.source) && filteredIds.has(e.target)
+    );
+
+    return { filteredNodes: filtered, filteredEdges: filteredE };
+  }, [nodes, edges, filterBy]);
 
   const handleNodeClick = (nodeId: string, toolType: string) => {
     const route = TOOL_ROUTES[toolType];
@@ -65,31 +106,31 @@ const WorldConnections = () => {
     }
   };
 
-  // Get connection count for each node
+  // Get connection count for each node (using filtered data)
   const connectionCounts = useMemo(() => {
     const counts = new Map<string, number>();
-    nodes.forEach((n) => counts.set(n.id, 0));
-    edges.forEach((e) => {
+    filteredNodes.forEach((n) => counts.set(n.id, 0));
+    filteredEdges.forEach((e) => {
       counts.set(e.source, (counts.get(e.source) || 0) + 1);
       counts.set(e.target, (counts.get(e.target) || 0) + 1);
     });
     return counts;
-  }, [nodes, edges]);
+  }, [filteredNodes, filteredEdges]);
 
-  // Get connected worksheets for a node
+  // Get connected worksheets for a node (using filtered data)
   const getConnectedWorksheets = (nodeId: string) => {
-    return edges
+    return filteredEdges
       .filter((e) => e.source === nodeId || e.target === nodeId)
       .map((e) => {
         const connectedId = e.source === nodeId ? e.target : e.source;
-        return nodes.find((n) => n.id === connectedId);
+        return filteredNodes.find((n) => n.id === connectedId);
       })
       .filter(Boolean);
   };
 
-  // Group and sort nodes for outline view
+  // Group and sort nodes for outline view (using filtered data)
   const groupedNodes = useMemo(() => {
-    const sorted = [...nodes].sort((a, b) => {
+    const sorted = [...filteredNodes].sort((a, b) => {
       switch (sortBy) {
         case "title":
           return (a.speciesName || a.title).localeCompare(b.speciesName || b.title);
@@ -112,7 +153,7 @@ const WorldConnections = () => {
     });
 
     return groups;
-  }, [nodes, sortBy, connectionCounts]);
+  }, [filteredNodes, sortBy, connectionCounts]);
 
   const toggleGroup = (groupKey: string) => {
     setExpandedGroups((prev) => {
@@ -158,10 +199,10 @@ const WorldConnections = () => {
 
             <div className="flex items-center gap-2">
               <Badge variant="secondary" className="text-xs">
-                {nodes.length} worksheets
+                {filteredNodes.length}{filterBy !== "all" ? ` of ${nodes.length}` : ""} worksheets
               </Badge>
               <Badge variant="secondary" className="text-xs">
-                {edges.length} connections
+                {filteredEdges.length}{filterBy !== "all" ? ` of ${edges.length}` : ""} connections
               </Badge>
             </div>
           </div>
@@ -194,6 +235,23 @@ const WorldConnections = () => {
             </ToggleGroup>
           </div>
 
+          <div className="flex items-center gap-2">
+            <Filter className="w-4 h-4 text-muted-foreground" />
+            <span className="text-sm text-muted-foreground">Filter:</span>
+            <Select value={filterBy} onValueChange={(v) => setFilterBy(v as FilterBy)}>
+              <SelectTrigger className="w-[160px] h-9">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {FILTER_OPTIONS.map((opt) => (
+                  <SelectItem key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
           {viewMode === "outline" && (
             <div className="flex items-center gap-2">
               <span className="text-sm text-muted-foreground">Sort by:</span>
@@ -224,8 +282,8 @@ const WorldConnections = () => {
               </div>
             ) : viewMode === "mindmap" ? (
               <WorldConnectionsGraph
-                nodes={nodes}
-                edges={edges}
+                nodes={filteredNodes}
+                edges={filteredEdges}
                 onNodeClick={handleNodeClick}
                 width={900}
                 height={600}
@@ -233,10 +291,19 @@ const WorldConnections = () => {
             ) : (
               /* Outline View */
               <div className="space-y-4 max-h-[560px] overflow-y-auto">
-                {nodes.length === 0 ? (
+                {filteredNodes.length === 0 ? (
                   <div className="text-center py-12 text-muted-foreground">
-                    <p className="text-lg mb-2">No worksheets in this world yet</p>
-                    <p className="text-sm">Create some worksheets to see connections</p>
+                    {filterBy !== "all" ? (
+                      <>
+                        <p className="text-lg mb-2">No worksheets match this filter</p>
+                        <p className="text-sm">Try selecting a different type or "All Types"</p>
+                      </>
+                    ) : (
+                      <>
+                        <p className="text-lg mb-2">No worksheets in this world yet</p>
+                        <p className="text-sm">Create some worksheets to see connections</p>
+                      </>
+                    )}
                   </div>
                 ) : (
                   Array.from(groupedNodes.entries()).map(([toolType, groupNodes]) => {
