@@ -103,7 +103,7 @@ const BackgroundSelector = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="icon" className="h-9 w-9">
+        <Button variant="ghost" size="icon" className="h-9 w-9 text-muted-foreground hover:text-foreground">
           <Image className="w-4 h-4" />
           <span className="sr-only">Background</span>
         </Button>
