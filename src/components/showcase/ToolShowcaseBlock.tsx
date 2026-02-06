@@ -132,6 +132,10 @@ function getMockupComponent(toolId: string, title: string): React.ComponentType 
     "evolutionary-biology": "/screenshots/evobio.png",
     "spacecraft-designer": "/screenshots/spacecraft.png",
     "propulsion-consequences-map": "/screenshots/propulsion.png",
+    "star-system-builder": "/screenshots/starsystem.png",
+    "empire-designer": "/screenshots/empire.png",
+    "technology-consequences": "/screenshots/techcons.png",
+    "species-interaction-matrix": "/screenshots/species.png",
   };
 
   const screenshotPath = screenshotPaths[toolId];
