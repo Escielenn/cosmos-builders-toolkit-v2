@@ -16,6 +16,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
+import { safeOpenWindow } from "@/lib/url-validation";
 
 // Dynamic imports for heavy libraries - only loaded when actually exporting
 const loadPdfRenderer = () => import("@react-pdf/renderer");
@@ -169,7 +170,7 @@ const ExportDialog = ({
               description: "Your worksheet has been created in Notion.",
             });
             if (result.pageUrl) {
-              window.open(result.pageUrl, "_blank");
+              safeOpenWindow(result.pageUrl, "notion");
             }
           } else {
             toast({

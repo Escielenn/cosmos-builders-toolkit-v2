@@ -12,6 +12,7 @@ import { Crown, Check, Loader2 } from "lucide-react";
 import { useSubscription } from "@/hooks/use-subscription";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { safeRedirect } from "@/lib/url-validation";
 
 interface UpgradeDialogProps {
   open: boolean;
@@ -37,7 +38,7 @@ const UpgradeDialog = ({ open, onOpenChange, toolName }: UpgradeDialogProps) => 
     try {
       const result = await createCheckoutSession.mutateAsync(priceType);
       if (result.url) {
-        window.location.href = result.url;
+        safeRedirect(result.url, "stripe");
       }
     } catch (error) {
       console.error("Checkout error:", error);

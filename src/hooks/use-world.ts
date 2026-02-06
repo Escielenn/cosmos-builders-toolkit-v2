@@ -28,6 +28,12 @@ export const useWorld = (worldId: string | undefined) => {
         .maybeSingle();
 
       if (error) throw error;
+
+      // Defensive check: verify returned data belongs to current user
+      if (data && data.user_id !== user?.id) {
+        throw new Error("Unauthorized: world does not belong to current user");
+      }
+
       return data as World | null;
     },
     enabled: !!user && !!worldId,

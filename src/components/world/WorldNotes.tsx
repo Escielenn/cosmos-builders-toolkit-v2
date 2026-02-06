@@ -3,6 +3,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import rehypeHighlight from "rehype-highlight";
+import rehypeSanitize from "rehype-sanitize";
 import { ChevronDown, ChevronUp, Loader2, FileText, Check, Eye, Pencil, Save } from "lucide-react";
 import "highlight.js/styles/github-dark.css";
 import { GlassPanel } from "@/components/ui/glass-panel";
@@ -126,7 +127,7 @@ const WorldNotes = ({ worldId }: WorldNotesProps) => {
                     {content ? (
                       <ReactMarkdown
                         remarkPlugins={[remarkGfm]}
-                        rehypePlugins={[rehypeRaw, rehypeHighlight]}
+                        rehypePlugins={[rehypeRaw, rehypeSanitize, rehypeHighlight]}
                       >
                         {content}
                       </ReactMarkdown>

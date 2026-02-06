@@ -4,6 +4,35 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { v4 as uuidv4 } from "uuid";
 
+/**
+ * Validates that a URL uses a safe protocol (http or https only).
+ * Blocks javascript:, file:, data:, and other dangerous protocols.
+ */
+function isValidImageUrl(url: string): boolean {
+  try {
+    const parsed = new URL(url);
+    // Only allow http and https protocols
+    if (!["http:", "https:"].includes(parsed.protocol)) {
+      return false;
+    }
+    // Block URLs pointing to internal/private IP ranges
+    const hostname = parsed.hostname.toLowerCase();
+    if (
+      hostname === "localhost" ||
+      hostname === "127.0.0.1" ||
+      hostname.startsWith("192.168.") ||
+      hostname.startsWith("10.") ||
+      hostname.startsWith("172.16.") ||
+      hostname.endsWith(".local")
+    ) {
+      return false;
+    }
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export interface MoodboardImage {
   id: string;
   url: string;
@@ -84,11 +113,9 @@ export function useMoodboard({ worksheetId, currentImages, onUpdate }: UseMoodbo
     mutationFn: async (url: string): Promise<MoodboardImage> => {
       if (!user) throw new Error("Not authenticated");
 
-      // Basic URL validation
-      try {
-        new URL(url);
-      } catch {
-        throw new Error("Invalid URL");
+      // Validate URL with protocol and domain checks
+      if (!isValidImageUrl(url)) {
+        throw new Error("Invalid URL. Please use a valid http:// or https:// image URL.");
       }
 
       const newImage: MoodboardImage = {

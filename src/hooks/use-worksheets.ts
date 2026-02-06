@@ -54,7 +54,14 @@ export const useWorksheets = (worldId: string | undefined, includeArchived: bool
       const { data, error } = await query;
 
       if (error) throw error;
-      return data as Worksheet[];
+
+      // Defensive check: verify all returned worksheets belong to current user
+      const worksheets = data as Worksheet[];
+      if (worksheets.some(ws => ws.user_id !== user?.id)) {
+        throw new Error("Unauthorized: worksheet does not belong to current user");
+      }
+
+      return worksheets;
     },
     enabled: !!user && !!worldId,
   });
@@ -236,7 +243,14 @@ export const useWorksheet = (worksheetId: string | undefined) => {
         .single();
 
       if (error) throw error;
-      return data as Worksheet;
+
+      // Defensive check: verify returned worksheet belongs to current user
+      const worksheet = data as Worksheet;
+      if (worksheet && worksheet.user_id !== user?.id) {
+        throw new Error("Unauthorized: worksheet does not belong to current user");
+      }
+
+      return worksheet;
     },
     enabled: !!user && !!worksheetId,
   });
@@ -262,7 +276,14 @@ export const useWorksheetsByType = (
         .order("updated_at", { ascending: false });
 
       if (error) throw error;
-      return data as Worksheet[];
+
+      // Defensive check: verify all returned worksheets belong to current user
+      const worksheets = data as Worksheet[];
+      if (worksheets.some(ws => ws.user_id !== user?.id)) {
+        throw new Error("Unauthorized: worksheet does not belong to current user");
+      }
+
+      return worksheets;
     },
     enabled: !!user && !!worldId,
   });

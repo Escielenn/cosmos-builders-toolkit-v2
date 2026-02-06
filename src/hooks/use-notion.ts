@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "./use-toast";
+import { safeOpenWindow } from "@/lib/url-validation";
 
 interface NotionConnection {
   id: string;
@@ -122,8 +123,9 @@ export function useNotion() {
       const left = window.screenX + (window.outerWidth - width) / 2;
       const top = window.screenY + (window.outerHeight - height) / 2;
 
-      const popup = window.open(
+      const popup = safeOpenWindow(
         authUrl,
+        "notion",
         "notion-oauth",
         `width=${width},height=${height},left=${left},top=${top},toolbar=no,menubar=no`
       );
