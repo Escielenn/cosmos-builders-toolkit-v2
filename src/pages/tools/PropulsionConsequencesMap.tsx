@@ -22,7 +22,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useToast } from "@/hooks/use-toast";
-import { useWorksheets, useWorksheet, useWorksheetsByType } from "@/hooks/use-worksheets";
+import { useWorksheets, useWorksheet, useWorksheetsByType, useRenameWorksheet } from "@/hooks/use-worksheets";
+import { WorksheetTitle } from "@/components/tools/WorksheetTitle";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
 import { useAuth } from "@/contexts/AuthContext";
 import SectionNavigation, { Section, MobileSectionNav } from "@/components/tools/SectionNavigation";
@@ -347,6 +348,7 @@ const PropulsionConsequencesMap = () => {
   const { createWorksheet, updateWorksheet } = useWorksheets(worldId || undefined);
   const { data: existingWorksheet, isLoading: worksheetLoading } = useWorksheet(worksheetId || undefined);
   const { data: existingWorksheets = [], isLoading: worksheetsLoading } = useWorksheetsByType(worldId || undefined, TOOL_TYPE);
+  const renameWorksheet = useRenameWorksheet();
 
   // Show worksheet selector when worldId is present but no worksheetId
   useEffect(() => {
@@ -541,6 +543,15 @@ const PropulsionConsequencesMap = () => {
     return result.id;
   };
 
+  // Handle worksheet rename
+  const handleRename = async (newTitle: string) => {
+    const wsId = currentWorksheetId || worksheetId;
+    if (!wsId) return;
+
+    await renameWorksheet.mutateAsync({ worksheetId: wsId, title: newTitle });
+    setCurrentWorksheetTitle(newTitle);
+  };
+
   const handleExport = () => {
     setExportDialogOpen(true);
   };
@@ -573,11 +584,13 @@ const PropulsionConsequencesMap = () => {
               <p className="text-muted-foreground mt-2 max-w-2xl">
                 Trace how your propulsion system shapes economics, politics, social structures, and psychology.
               </p>
-              {currentWorksheetTitle && (
-                <div className="flex items-center gap-2 mt-2 text-sm text-muted-foreground">
-                  <FileText className="w-4 h-4" />
-                  <span>{currentWorksheetTitle}</span>
-                </div>
+              {(currentWorksheetId || worksheetId) && (
+                <WorksheetTitle
+                  title={currentWorksheetTitle}
+                  onRename={handleRename}
+                  icon={<FileText className="w-4 h-4 text-primary" />}
+                  disabled={!user || worksheetLoading}
+                />
               )}
             </div>
 

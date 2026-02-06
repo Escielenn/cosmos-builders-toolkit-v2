@@ -18,7 +18,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { useWorksheets, useWorksheet, useWorksheetsByType } from "@/hooks/use-worksheets";
+import { useWorksheets, useWorksheet, useWorksheetsByType, useRenameWorksheet } from "@/hooks/use-worksheets";
+import { WorksheetTitle } from "@/components/tools/WorksheetTitle";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSubscription } from "@/hooks/use-subscription";
@@ -238,8 +239,9 @@ const TechnologyConsequences = () => {
   const worldName = currentWorld?.name;
 
   const { createWorksheet, updateWorksheet } = useWorksheets(worldId || undefined);
-  const { data: existingWorksheet } = useWorksheet(worksheetId || undefined);
+  const { data: existingWorksheet, isLoading: worksheetLoading } = useWorksheet(worksheetId || undefined);
   const { data: existingWorksheets = [], isLoading: worksheetsLoading } = useWorksheetsByType(worldId || undefined, TOOL_TYPE);
+  const renameWorksheet = useRenameWorksheet();
 
   useEffect(() => {
     if (user && !isSubscribed) {
@@ -392,6 +394,15 @@ const TechnologyConsequences = () => {
     return result.id;
   };
 
+  // Handle worksheet rename
+  const handleRename = async (newTitle: string) => {
+    const wsId = currentWorksheetId || worksheetId;
+    if (!wsId) return;
+
+    await renameWorksheet.mutateAsync({ worksheetId: wsId, title: newTitle });
+    setCurrentWorksheetTitle(newTitle);
+  };
+
   const generateRandomContradiction = () => {
     setRandomContradiction(CONTRADICTION_PROMPTS[Math.floor(Math.random() * CONTRADICTION_PROMPTS.length)]);
   };
@@ -430,8 +441,13 @@ const TechnologyConsequences = () => {
                 Local Only
               </Badge>
             )}
-            {currentWorksheetTitle && (
-              <Badge variant="outline">{currentWorksheetTitle}</Badge>
+            {(currentWorksheetId || worksheetId) && (
+              <WorksheetTitle
+                title={currentWorksheetTitle}
+                onRename={handleRename}
+                icon={<FileText className="w-4 h-4 text-primary" />}
+                disabled={!user || worksheetLoading}
+              />
             )}
           </div>
         </div>

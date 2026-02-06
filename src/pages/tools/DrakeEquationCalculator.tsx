@@ -15,7 +15,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useToast } from "@/hooks/use-toast";
-import { useWorksheets, useWorksheet, useWorksheetsByType } from "@/hooks/use-worksheets";
+import { useWorksheets, useWorksheet, useWorksheetsByType, useRenameWorksheet } from "@/hooks/use-worksheets";
+import { WorksheetTitle } from "@/components/tools/WorksheetTitle";
 import { useWorlds } from "@/hooks/use-worlds";
 import { useAuth } from "@/contexts/AuthContext";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
@@ -260,6 +261,7 @@ const DrakeEquationCalculator = () => {
   const { createWorksheet, updateWorksheet } = useWorksheets(worldId || undefined);
   const { data: existingWorksheet, isLoading: worksheetLoading } = useWorksheet(worksheetId || undefined);
   const { data: existingWorksheets = [], isLoading: worksheetsLoading } = useWorksheetsByType(worldId || undefined, TOOL_TYPE);
+  const renameWorksheet = useRenameWorksheet();
 
   const [formState, setFormState] = useState<FormState>(initialFormState);
   const [currentWorksheetId, setCurrentWorksheetId] = useState<string | null>(null);
@@ -503,6 +505,15 @@ const DrakeEquationCalculator = () => {
     return result.id;
   };
 
+  // Handle worksheet rename
+  const handleRename = async (newTitle: string) => {
+    const wsId = currentWorksheetId || worksheetId;
+    if (!wsId) return;
+
+    await renameWorksheet.mutateAsync({ worksheetId: wsId, title: newTitle });
+    setCurrentWorksheetTitle(newTitle);
+  };
+
   // Open export dialog
   const handleExport = () => {
     setExportDialogOpen(true);
@@ -544,11 +555,13 @@ const DrakeEquationCalculator = () => {
               Calculate the number of detectable civilizations in your galaxy. Use this tool to establish
               the cosmic context for your science fiction world—from lonely universe to teeming galaxy.
             </p>
-            {currentWorksheetTitle && (
-              <div className="flex items-center gap-2 mt-2 text-sm text-muted-foreground">
-                <FileText className="w-4 h-4" />
-                <span>{currentWorksheetTitle}</span>
-              </div>
+            {(currentWorksheetId || worksheetId) && (
+              <WorksheetTitle
+                title={currentWorksheetTitle}
+                onRename={handleRename}
+                icon={<FileText className="w-4 h-4 text-primary" />}
+                disabled={!user || worksheetLoading}
+              />
             )}
           </div>
 

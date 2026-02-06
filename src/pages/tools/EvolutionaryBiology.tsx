@@ -40,7 +40,8 @@ import {
 import CollapsibleSection from "@/components/tools/CollapsibleSection";
 import KeyChoicesSidebar, { KeyChoicesSection, MobileKeyChoices } from "@/components/tools/KeyChoicesSidebar";
 import { useToast } from "@/hooks/use-toast";
-import { useWorksheets, useWorksheet, useWorksheetsByType } from "@/hooks/use-worksheets";
+import { useWorksheets, useWorksheet, useWorksheetsByType, useRenameWorksheet } from "@/hooks/use-worksheets";
+import { WorksheetTitle } from "@/components/tools/WorksheetTitle";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
 import WorksheetLinkSelector from "@/components/tools/WorksheetLinkSelector";
 import SpeciesMatrixImportModal from "@/components/tools/SpeciesMatrixImportModal";
@@ -422,6 +423,7 @@ const EvolutionaryBiology = () => {
   const { createWorksheet, updateWorksheet } = useWorksheets(worldId);
   const { data: worksheets = [], isLoading: loadingWorksheets } = useWorksheetsByType(worldId, TOOL_TYPE);
   const { data: currentWorksheet, isLoading: loadingWorksheet } = useWorksheet(worksheetId);
+  const renameWorksheet = useRenameWorksheet();
 
   // UI state
   const [formState, setFormState] = useState<FormState>(DEFAULT_FORM_STATE);
@@ -524,6 +526,14 @@ const EvolutionaryBiology = () => {
   const handleSelectWorksheet = (id: string) => {
     setSearchParams({ worldId: worldId!, worksheetId: id });
     setShowWorksheetSelector(false);
+  };
+
+  // Handle worksheet rename
+  const handleRename = async (newTitle: string) => {
+    if (!worksheetId) return;
+
+    await renameWorksheet.mutateAsync({ worksheetId, title: newTitle });
+    setWorksheetTitle(newTitle);
   };
 
   const toggleSection = (sectionId: string) => {
@@ -867,11 +877,13 @@ const EvolutionaryBiology = () => {
               <h1 className="font-display text-3xl md:text-4xl font-bold">
                 Evolutionary Biology Design Sheet
               </h1>
-              {worksheetTitle && (
-                <div className="flex items-center gap-2 mt-2 px-3 py-1.5 rounded-lg bg-primary/10 w-fit">
-                  <Dna className="w-5 h-5 text-primary" />
-                  <span className="text-lg font-semibold text-primary">{worksheetTitle}</span>
-                </div>
+              {worksheetId && (
+                <WorksheetTitle
+                  title={worksheetTitle || null}
+                  onRename={handleRename}
+                  icon={<Dna className="w-5 h-5 text-primary" />}
+                  disabled={!user || loadingWorksheet}
+                />
               )}
               <p className="text-muted-foreground mt-2 max-w-2xl">
                 Design biologically plausible alien species by tracing every trait back to evolutionary pressures.
