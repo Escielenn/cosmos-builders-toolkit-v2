@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Crown, Unlock } from "lucide-react";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
+import { PRO_TOOL_IDS, PRICING } from "@/lib/tools-config";
 
 const QuickUpgradeCard = () => {
   return (
@@ -11,11 +12,11 @@ const QuickUpgradeCard = () => {
       </div>
 
       <h3 className="font-display font-semibold text-lg mb-2 text-center">
-        Unlock 6 More Tools
+        Unlock {PRO_TOOL_IDS.length} More Tools
       </h3>
 
       <p className="text-sm text-muted-foreground text-center mb-4">
-        Starting at <span className="text-amber-600 dark:text-amber-400 font-medium">$8.25/mo</span> with yearly
+        Starting at <span className="text-amber-600 dark:text-amber-400 font-medium">${PRICING.monthly.price}/mo</span>
       </p>
 
       <Button className="gap-2 w-full" asChild>

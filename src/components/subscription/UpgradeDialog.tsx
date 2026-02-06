@@ -13,6 +13,7 @@ import { useSubscription } from "@/hooks/use-subscription";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { safeRedirect } from "@/lib/url-validation";
+import { FREE_TOOL_IDS, PRO_TOOL_IDS, PRICING } from "@/lib/tools-config";
 
 interface UpgradeDialogProps {
   open: boolean;
@@ -74,7 +75,7 @@ const UpgradeDialog = ({ open, onOpenChange, toolName }: UpgradeDialogProps) => 
             <div className="flex justify-between items-start mb-2">
               <div>
                 <h3 className="font-semibold">Monthly</h3>
-                <p className="text-2xl font-bold">$4.99<span className="text-sm font-normal text-muted-foreground">/month</span></p>
+                <p className="text-2xl font-bold">${PRICING.monthly.price}<span className="text-sm font-normal text-muted-foreground">/month</span></p>
               </div>
               <Button
                 size="sm"
@@ -101,7 +102,7 @@ const UpgradeDialog = ({ open, onOpenChange, toolName }: UpgradeDialogProps) => 
             <div className="flex justify-between items-start mb-2">
               <div>
                 <h3 className="font-semibold">Yearly</h3>
-                <p className="text-2xl font-bold">$49<span className="text-sm font-normal text-muted-foreground">/year</span></p>
+                <p className="text-2xl font-bold">${PRICING.yearly.price}<span className="text-sm font-normal text-muted-foreground">/year</span></p>
               </div>
               <Button
                 size="sm"
@@ -115,7 +116,7 @@ const UpgradeDialog = ({ open, onOpenChange, toolName }: UpgradeDialogProps) => 
                 )}
               </Button>
             </div>
-            <p className="text-xs text-muted-foreground">Billed annually (~$4.08/month)</p>
+            <p className="text-xs text-muted-foreground">Billed annually (~${PRICING.yearly.monthlyEquivalent}/month)</p>
           </div>
         </div>
 
@@ -123,7 +124,7 @@ const UpgradeDialog = ({ open, onOpenChange, toolName }: UpgradeDialogProps) => 
           <p className="font-medium">All Pro features include:</p>
           <ul className="space-y-1">
             {[
-              "All 8+ worldbuilding tools",
+              `All ${FREE_TOOL_IDS.length + PRO_TOOL_IDS.length} worldbuilding tools`,
               "Unlimited worlds & worksheets",
               "Cloud sync across devices",
               "Export to PDF, JSON & Notion",

@@ -4,6 +4,9 @@ import { Crown, X, Sparkles, Check } from "lucide-react";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { FREE_TOOL_IDS, PRO_TOOL_IDS } from "@/lib/tools-config";
+
+const TOTAL_TOOLS = FREE_TOOL_IDS.length + PRO_TOOL_IDS.length;
 
 interface ProStatusBannerProps {
   isSubscribed: boolean;
@@ -45,7 +48,7 @@ const ProStatusBanner = ({ isSubscribed }: ProStatusBannerProps) => {
                   </Badge>
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  All 9 worldbuilding tools unlocked
+                  All {TOTAL_TOOLS} worldbuilding tools unlocked
                 </p>
               </div>
             </div>
@@ -81,11 +84,11 @@ const ProStatusBanner = ({ isSubscribed }: ProStatusBannerProps) => {
 
           <div className="flex-1">
             <p className="font-medium text-amber-600 dark:text-amber-400 mb-1">
-              Unlock All 9 Worldbuilding Tools
+              Unlock All {TOTAL_TOOLS} Worldbuilding Tools
             </p>
             <p className="text-sm text-muted-foreground">
-              Go Pro to access Planetary Profiles, Drake Equation Calculator, Xenomythology Framework Builder,
-              and upcoming Species Creator, Culture Designer, and Technology Mapper.
+              Go Pro to access all {PRO_TOOL_IDS.length} premium tools including Planetary Profiles, Star System Builder,
+              Empire Designer, Evolutionary Biology, and more.
             </p>
           </div>
 

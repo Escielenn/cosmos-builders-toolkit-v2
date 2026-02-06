@@ -9,6 +9,7 @@ import { Check, Crown, Loader2, Sparkles } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSubscription } from "@/hooks/use-subscription";
 import { useToast } from "@/hooks/use-toast";
+import { FREE_TOOL_IDS, PRO_TOOL_IDS, PRICING } from "@/lib/tools-config";
 
 const Pricing = () => {
   const [searchParams] = useSearchParams();
@@ -102,15 +103,17 @@ const Pricing = () => {
     }
   };
 
+  const totalTools = FREE_TOOL_IDS.length + PRO_TOOL_IDS.length;
+
   const freeFeatures = [
-    "3 worldbuilding tools",
+    `${FREE_TOOL_IDS.length} worldbuilding tools`,
     "Unlimited local drafts",
     "Cloud sync (with account)",
     "Export to JSON",
   ];
 
   const proFeatures = [
-    "All 8+ worldbuilding tools",
+    `All ${totalTools} worldbuilding tools`,
     "Unlimited worlds & worksheets",
     "Cloud sync across devices",
     "Export to PDF, JSON & Notion",
@@ -181,10 +184,10 @@ const Pricing = () => {
                 Pro
               </h2>
               <div className="flex items-baseline gap-2">
-                <p className="text-4xl font-bold">$4.99</p>
+                <p className="text-4xl font-bold">${PRICING.monthly.price}</p>
                 <span className="text-lg text-muted-foreground">/month</span>
               </div>
-              <p className="text-sm text-muted-foreground">or $49/year (save 18%)</p>
+              <p className="text-sm text-muted-foreground">or ${PRICING.yearly.price}/year (save {PRICING.yearly.savings})</p>
             </div>
 
             <ul className="space-y-3 mb-8">
@@ -235,7 +238,7 @@ const Pricing = () => {
                   ) : (
                     <Crown className="w-4 h-4 mr-2" />
                   )}
-                  Get Pro Yearly - $49/year
+                  Get Pro Yearly - ${PRICING.yearly.price}/year
                 </Button>
                 <Button
                   variant="outline"
@@ -246,7 +249,7 @@ const Pricing = () => {
                   {loading === 'monthly' ? (
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                   ) : null}
-                  Monthly - $4.99/month
+                  Monthly - ${PRICING.monthly.price}/month
                 </Button>
               </div>
             )}

@@ -3,13 +3,14 @@ import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
+import { PRO_TOOL_IDS, PRICING } from "@/lib/tools-config";
 
 const benefits = [
   {
     icon: Zap,
-    title: "4 Additional Pro Tools",
+    title: `${PRO_TOOL_IDS.length} Additional Pro Tools`,
     description:
-      "Access Planetary Profile, Drake Equation Calculator, Xenomythology Framework, and Evolutionary Biology Design Sheet.",
+      "Access Planetary Profile, Star System Builder, Empire Designer, Drake Equation, Xenomythology Framework, Evolutionary Biology, Technology Consequences, and Species Interaction Matrix.",
   },
   {
     icon: Link2,
@@ -109,7 +110,7 @@ const ProAdvantageSection = () => {
           </Link>
         </Button>
         <p className="text-sm text-muted-foreground mt-3">
-          Starting at $4.99/month • Cancel anytime
+          Starting at ${PRICING.monthly.price}/month • Cancel anytime
         </p>
       </div>
     </section>

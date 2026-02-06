@@ -157,18 +157,32 @@ const Footer = () => {
         {/* Bottom Bar */}
         <div className="mt-12 pt-8 border-t border-border/30">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-xs text-muted-foreground">
-              © {currentYear}{" "}
-              <a
-                href="https://jbatt.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-primary transition-colors"
-              >
-                Jason D. Batt, Ph.D.
-              </a>{" "}
-              All rights reserved.
-            </p>
+            <div className="text-xs text-muted-foreground text-center sm:text-left">
+              <p>
+                A{" "}
+                <a
+                  href="https://dreamsidestudios.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-primary transition-colors"
+                >
+                  Dreamside Studios
+                </a>{" "}
+                production
+              </p>
+              <p className="mt-1">
+                © {currentYear}{" "}
+                <a
+                  href="https://jbatt.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-primary transition-colors"
+                >
+                  Jason D. Batt, Ph.D.
+                </a>{" "}
+                All rights reserved.
+              </p>
+            </div>
             <p className="text-xs text-muted-foreground">
               Made with science and imagination
             </p>
