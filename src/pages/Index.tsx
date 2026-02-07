@@ -31,6 +31,7 @@ import VideoShowcase from "@/components/landing/VideoShowcase";
 import QuickUpgradeCard from "@/components/subscription/QuickUpgradeCard";
 import BetaBanner from "@/components/BetaBanner";
 import Footer from "@/components/layout/Footer";
+import RecentArticles from "@/components/landing/RecentArticles";
 import { TagFilter } from "@/components/dashboard/TagFilter";
 import { ArchiveToggle } from "@/components/dashboard/ArchiveToggle";
 
@@ -334,6 +335,9 @@ const Index = () => {
             </GlassPanel>
           </section>
         )}
+
+        {/* Latest from Learn - shown to all users */}
+        <RecentArticles />
       </main>
 
       <BetaBanner position="bottom" />
