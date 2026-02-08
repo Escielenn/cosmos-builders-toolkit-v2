@@ -32,6 +32,8 @@ import KeyChoicesSidebar, { KeyChoicesSection, MobileKeyChoices } from "@/compon
 import ToolActionBar from "@/components/tools/ToolActionBar";
 import SelectedParametersSidebar from "@/components/tools/SelectedParametersSidebar";
 import ExportDialog from "@/components/tools/ExportDialog";
+import ShareDialog from "@/components/sharing/ShareDialog";
+import { useWorksheetShare } from "@/hooks/use-sharing";
 import { MoodboardSection } from "@/components/moodboard";
 import type { MoodboardImage } from "@/hooks/use-moodboard";
 import { ECRSummaryTemplate, ECRFullReportTemplate } from "@/lib/pdf/templates";
@@ -512,6 +514,8 @@ const EnvironmentalChainReaction = () => {
   const { data: existingWorksheet, isLoading: worksheetLoading } = useWorksheet(worksheetId || undefined);
   const { data: existingWorksheets = [], isLoading: worksheetsLoading } = useWorksheetsByType(worldId || undefined, TOOL_TYPE);
   const renameWorksheet = useRenameWorksheet();
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
+  const { data: shareConfig } = useWorksheetShare(currentWorksheetId || worksheetId || undefined);
 
   // Show worksheet selector when worldId is present but no worksheetId
   useEffect(() => {
@@ -1501,6 +1505,8 @@ const EnvironmentalChainReaction = () => {
           onSave={handleSave}
           onPrint={handlePrint}
           onExport={handleExport}
+          onShare={(currentWorksheetId || worksheetId) ? () => setShareDialogOpen(true) : undefined}
+          isShared={!!shareConfig?.enabled}
           className="mt-8"
         />
 
@@ -1546,6 +1552,14 @@ const EnvironmentalChainReaction = () => {
         summaryTemplate={<ECRSummaryTemplate formState={formState} worldName={worldName || undefined} />}
         fullTemplate={<ECRFullReportTemplate formState={formState} worldName={worldName || undefined} />}
         defaultFilename="environmental-chain-reaction"
+      />
+
+      <ShareDialog
+        open={shareDialogOpen}
+        onOpenChange={setShareDialogOpen}
+        entityType="worksheet"
+        entityId={currentWorksheetId || worksheetId || ""}
+        entityTitle={currentWorksheetTitle || "Untitled Worksheet"}
       />
 
       {/* Worksheet Selector Dialog */}

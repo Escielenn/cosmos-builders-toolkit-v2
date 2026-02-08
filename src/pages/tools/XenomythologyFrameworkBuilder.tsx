@@ -48,6 +48,8 @@ import SuggestedImplications from "@/components/tools/SuggestedImplications";
 import ImportFromECRModal from "@/components/tools/ImportFromECRModal";
 import SpeciesLinkModal from "@/components/tools/SpeciesLinkModal";
 import ExportDialog from "@/components/tools/ExportDialog";
+import ShareDialog from "@/components/sharing/ShareDialog";
+import { useWorksheetShare } from "@/hooks/use-sharing";
 import { MoodboardSection } from "@/components/moodboard";
 import type { MoodboardImage } from "@/hooks/use-moodboard";
 import { applyMappedFields, type MappedField } from "@/lib/field-mappings";
@@ -665,6 +667,8 @@ const XenomythologyFrameworkBuilder = () => {
   const { data: existingWorksheet, isLoading: worksheetLoading } = useWorksheet(worksheetId || undefined);
   const { data: existingWorksheets = [], isLoading: worksheetsLoading } = useWorksheetsByType(worldId || undefined, TOOL_TYPE);
   const renameWorksheet = useRenameWorksheet();
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
+  const { data: shareConfig } = useWorksheetShare(currentWorksheetId || worksheetId || undefined);
 
   // Show worksheet selector when worldId is present but no worksheetId
   useEffect(() => {
@@ -2788,6 +2792,8 @@ const XenomythologyFrameworkBuilder = () => {
           onSave={handleSave}
           onPrint={handlePrint}
           onExport={handleExport}
+          onShare={(currentWorksheetId || worksheetId) ? () => setShareDialogOpen(true) : undefined}
+          isShared={!!shareConfig?.enabled}
           exportLabel="Export Framework"
           className="mt-8"
         />
@@ -2836,6 +2842,14 @@ const XenomythologyFrameworkBuilder = () => {
         summaryTemplate={<XenomythologySummaryTemplate formState={formState} worldName={worldName} />}
         fullTemplate={<XenomythologyFullReportTemplate formState={formState} worldName={worldName} />}
         defaultFilename="xenomythology-framework"
+      />
+
+      <ShareDialog
+        open={shareDialogOpen}
+        onOpenChange={setShareDialogOpen}
+        entityType="worksheet"
+        entityId={currentWorksheetId || worksheetId || ""}
+        entityTitle={currentWorksheetTitle || "Untitled Worksheet"}
       />
 
       {/* Worksheet Selector Dialog */}

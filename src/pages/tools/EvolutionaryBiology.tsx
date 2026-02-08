@@ -50,6 +50,8 @@ import SectionNavigation, { Section, MobileSectionNav } from "@/components/tools
 import ToolSidebar from "@/components/tools/ToolSidebar";
 import ToolActionBar from "@/components/tools/ToolActionBar";
 import ExportDialog from "@/components/tools/ExportDialog";
+import ShareDialog from "@/components/sharing/ShareDialog";
+import { useWorksheetShare } from "@/hooks/use-sharing";
 import { MoodboardSection } from "@/components/moodboard";
 import type { MoodboardImage } from "@/hooks/use-moodboard";
 import { EvolutionarySummaryTemplate, EvolutionaryFullReportTemplate } from "@/lib/pdf/templates";
@@ -424,6 +426,8 @@ const EvolutionaryBiology = () => {
   const { data: worksheets = [], isLoading: loadingWorksheets } = useWorksheetsByType(worldId, TOOL_TYPE);
   const { data: currentWorksheet, isLoading: loadingWorksheet } = useWorksheet(worksheetId);
   const renameWorksheet = useRenameWorksheet();
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
+  const { data: shareConfig } = useWorksheetShare(worksheetId || undefined);
 
   // UI state
   const [formState, setFormState] = useState<FormState>(DEFAULT_FORM_STATE);
@@ -2675,6 +2679,8 @@ const EvolutionaryBiology = () => {
           isSaving={updateWorksheet.isPending}
           isCloudMode={!!worldId && !!worksheetId}
           onExport={() => setShowExportDialog(true)}
+          onShare={worksheetId ? () => setShareDialogOpen(true) : undefined}
+          isShared={!!shareConfig?.enabled}
         />
 
         {/* Worksheet Selector Dialog */}
@@ -2701,6 +2707,14 @@ const EvolutionaryBiology = () => {
           summaryTemplate={<EvolutionarySummaryTemplate formState={formState} worldName={currentWorld?.name} />}
           fullTemplate={<EvolutionaryFullReportTemplate formState={formState} worldName={currentWorld?.name} />}
           defaultFilename="evolutionary-biology"
+        />
+
+        <ShareDialog
+          open={shareDialogOpen}
+          onOpenChange={setShareDialogOpen}
+          entityType="worksheet"
+          entityId={worksheetId || ""}
+          entityTitle={worksheetTitle || "Untitled Worksheet"}
         />
 
         {/* Species Matrix Import Modal */}

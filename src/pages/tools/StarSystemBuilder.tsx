@@ -35,6 +35,8 @@ import CollapsibleSection from "@/components/tools/CollapsibleSection";
 import KeyChoicesSidebar, { KeyChoicesSection, MobileKeyChoices } from "@/components/tools/KeyChoicesSidebar";
 import ToolActionBar from "@/components/tools/ToolActionBar";
 import ExportDialog from "@/components/tools/ExportDialog";
+import ShareDialog from "@/components/sharing/ShareDialog";
+import { useWorksheetShare } from "@/hooks/use-sharing";
 import { MoodboardSection } from "@/components/moodboard";
 import type { MoodboardImage } from "@/hooks/use-moodboard";
 import UpgradeDialog from "@/components/subscription/UpgradeDialog";
@@ -269,6 +271,8 @@ const StarSystemBuilder = () => {
   const { data: existingWorksheet, isLoading: worksheetLoading } = useWorksheet(worksheetId || undefined);
   const { data: existingWorksheets = [], isLoading: worksheetsLoading } = useWorksheetsByType(worldId || undefined, TOOL_TYPE);
   const renameWorksheet = useRenameWorksheet();
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
+  const { data: shareConfig } = useWorksheetShare(currentWorksheetId || worksheetId || undefined);
 
   // Check Pro access
   useEffect(() => {
@@ -1581,6 +1585,8 @@ const StarSystemBuilder = () => {
         onSave={handleSave}
         onExport={handleExport}
         onPrint={handlePrint}
+        onShare={(currentWorksheetId || worksheetId) ? () => setShareDialogOpen(true) : undefined}
+        isShared={!!shareConfig?.enabled}
         isSaving={updateWorksheet.isPending}
       />
 
@@ -1592,6 +1598,14 @@ const StarSystemBuilder = () => {
         worksheetTitle={currentWorksheetTitle || formState.systemName || "Star System"}
         formState={formState}
         worldName={worldName}
+      />
+
+      <ShareDialog
+        open={shareDialogOpen}
+        onOpenChange={setShareDialogOpen}
+        entityType="worksheet"
+        entityId={currentWorksheetId || worksheetId || ""}
+        entityTitle={currentWorksheetTitle || "Untitled Worksheet"}
       />
 
       {/* Worksheet Selector Dialog */}

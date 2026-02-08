@@ -44,6 +44,10 @@ const LearnArticle = lazy(() => import("./pages/learn/LearnArticle"));
 // Lazy loaded utility pages
 const NotionCallback = lazy(() => import("./pages/NotionCallback"));
 
+// Lazy loaded share pages (public, no auth required)
+const SharedWorksheetView = lazy(() => import("./pages/SharedWorksheetView"));
+const SharedWorldView = lazy(() => import("./pages/SharedWorldView"));
+
 // Lazy loaded legal pages
 const Privacy = lazy(() => import("./pages/legal/Privacy"));
 const Terms = lazy(() => import("./pages/legal/Terms"));
@@ -157,6 +161,9 @@ const App = () => (
                 <Route path="/learn/:slug" element={<LearnArticle />} />
                 {/* OAuth Callbacks */}
                 <Route path="/api/notion/callback" element={<NotionCallback />} />
+                {/* Shared/Public Views */}
+                <Route path="/share/worksheet/:token" element={<SharedWorksheetView />} />
+                <Route path="/share/world/:token" element={<SharedWorldView />} />
                 {/* Legal Pages */}
                 <Route path="/privacy" element={<Privacy />} />
                 <Route path="/terms" element={<Terms />} />

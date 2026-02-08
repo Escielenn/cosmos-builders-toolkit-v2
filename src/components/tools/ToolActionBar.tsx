@@ -1,4 +1,4 @@
-import { Save, Printer, Download, FileText, Loader2 } from "lucide-react";
+import { Save, Printer, Download, Share2, Loader2 } from "lucide-react";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,20 +11,24 @@ interface ToolActionBarProps {
   onSave: () => void;
   onPrint: () => void;
   onExport: () => void;
+  onShare?: () => void;
   exportLabel?: string;
   className?: string;
   hasUnsavedChanges?: boolean;
   isSaving?: boolean;
+  isShared?: boolean;
 }
 
 const ToolActionBar = ({
   onSave,
   onPrint,
   onExport,
+  onShare,
   exportLabel = "Export",
   className = "",
   hasUnsavedChanges = false,
   isSaving = false,
+  isShared = false,
 }: ToolActionBarProps) => {
   return (
     <GlassPanel className={`p-6 no-print ${className}`}>
@@ -58,6 +62,15 @@ const ToolActionBar = ({
           <Download className="w-4 h-4 mr-2" />
           {exportLabel}
         </Button>
+        {onShare && (
+          <Button variant="outline" onClick={onShare}>
+            <Share2 className="w-4 h-4 mr-2" />
+            Share
+            {isShared && (
+              <span className="ml-1.5 w-1.5 h-1.5 rounded-full bg-primary" />
+            )}
+          </Button>
+        )}
       </div>
     </GlassPanel>
   );

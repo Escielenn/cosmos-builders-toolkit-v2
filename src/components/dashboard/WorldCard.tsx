@@ -15,6 +15,7 @@ import { getWorldIcon } from "@/lib/world-icons";
 import { useToast } from "@/hooks/use-toast";
 import WorldExportDialog from "@/components/world/WorldExportDialog";
 import { DeleteConfirmDialog } from "@/components/dialogs/DeleteConfirmDialog";
+import ShareDialog from "@/components/sharing/ShareDialog";
 import { cn } from "@/lib/utils";
 
 interface WorldCardProps {
@@ -46,6 +47,7 @@ const WorldCard = ({
 }: WorldCardProps) => {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showExportDialog, setShowExportDialog] = useState(false);
+  const [showShareDialog, setShowShareDialog] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const { toast } = useToast();
 
@@ -147,7 +149,7 @@ const WorldCard = ({
                 <DropdownMenuItem asChild>
                   <Link to={`/worlds/${id}`}>Edit World</Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleShare}>
+                <DropdownMenuItem onClick={() => setShowShareDialog(true)}>
                   <Share2 className="w-4 h-4 mr-2" />
                   Share
                 </DropdownMenuItem>
@@ -223,6 +225,14 @@ const WorldCard = ({
         onOpenChange={setShowExportDialog}
         worldName={name}
         worldId={id}
+      />
+
+      <ShareDialog
+        open={showShareDialog}
+        onOpenChange={setShowShareDialog}
+        entityType="world"
+        entityId={id}
+        entityTitle={name}
       />
     </>
   );

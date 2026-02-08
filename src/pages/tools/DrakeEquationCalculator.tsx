@@ -26,6 +26,8 @@ import CollapsibleSection from "@/components/tools/CollapsibleSection";
 import KeyChoicesSidebar, { KeyChoicesSection, MobileKeyChoices } from "@/components/tools/KeyChoicesSidebar";
 import ToolActionBar from "@/components/tools/ToolActionBar";
 import ExportDialog from "@/components/tools/ExportDialog";
+import ShareDialog from "@/components/sharing/ShareDialog";
+import { useWorksheetShare } from "@/hooks/use-sharing";
 import { MoodboardSection } from "@/components/moodboard";
 import type { MoodboardImage } from "@/hooks/use-moodboard";
 import { DrakeSummaryTemplate, DrakeFullReportTemplate } from "@/lib/pdf/templates";
@@ -262,6 +264,8 @@ const DrakeEquationCalculator = () => {
   const { data: existingWorksheet, isLoading: worksheetLoading } = useWorksheet(worksheetId || undefined);
   const { data: existingWorksheets = [], isLoading: worksheetsLoading } = useWorksheetsByType(worldId || undefined, TOOL_TYPE);
   const renameWorksheet = useRenameWorksheet();
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
+  const { data: shareConfig } = useWorksheetShare(currentWorksheetId || worksheetId || undefined);
 
   const [formState, setFormState] = useState<FormState>(initialFormState);
   const [currentWorksheetId, setCurrentWorksheetId] = useState<string | null>(null);
@@ -586,6 +590,8 @@ const DrakeEquationCalculator = () => {
           onSave={handleSave}
           onPrint={handlePrint}
           onExport={handleExport}
+          onShare={(currentWorksheetId || worksheetId) ? () => setShareDialogOpen(true) : undefined}
+          isShared={!!shareConfig?.enabled}
           hasUnsavedChanges={hasUnsavedChanges}
           isSaving={isSavingToCloud}
         />
@@ -900,6 +906,8 @@ const DrakeEquationCalculator = () => {
           onSave={handleSave}
           onPrint={handlePrint}
           onExport={handleExport}
+          onShare={(currentWorksheetId || worksheetId) ? () => setShareDialogOpen(true) : undefined}
+          isShared={!!shareConfig?.enabled}
           hasUnsavedChanges={hasUnsavedChanges}
           isSaving={isSavingToCloud}
           className="mt-8"
@@ -943,6 +951,14 @@ const DrakeEquationCalculator = () => {
           />
         }
         defaultFilename="drake-equation"
+      />
+
+      <ShareDialog
+        open={shareDialogOpen}
+        onOpenChange={setShareDialogOpen}
+        entityType="worksheet"
+        entityId={currentWorksheetId || worksheetId || ""}
+        entityTitle={currentWorksheetTitle || "Untitled Worksheet"}
       />
 
       <Footer />

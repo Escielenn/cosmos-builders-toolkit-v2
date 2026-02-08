@@ -32,6 +32,8 @@ import SectionNavigation, { Section, MobileSectionNav } from "@/components/tools
 import ToolSidebar from "@/components/tools/ToolSidebar";
 import ToolActionBar from "@/components/tools/ToolActionBar";
 import ExportDialog from "@/components/tools/ExportDialog";
+import ShareDialog from "@/components/sharing/ShareDialog";
+import { useWorksheetShare } from "@/hooks/use-sharing";
 import { MoodboardSection } from "@/components/moodboard";
 import type { MoodboardImage } from "@/hooks/use-moodboard";
 import { PlanetarySummaryTemplate, PlanetaryFullReportTemplate } from "@/lib/pdf/templates";
@@ -323,6 +325,8 @@ const PlanetaryProfile = () => {
   const { data: existingWorksheet, isLoading: worksheetLoading } = useWorksheet(worksheetId || undefined);
   const { data: existingWorksheets = [], isLoading: worksheetsLoading } = useWorksheetsByType(worldId || undefined, TOOL_TYPE);
   const renameWorksheet = useRenameWorksheet();
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
+  const { data: shareConfig } = useWorksheetShare(currentWorksheetId || worksheetId || undefined);
 
   // Handle worksheet rename
   const handleRename = async (newTitle: string) => {
@@ -1736,6 +1740,8 @@ const PlanetaryProfile = () => {
           onSave={handleSave}
           onPrint={handlePrint}
           onExport={handleExport}
+          onShare={(currentWorksheetId || worksheetId) ? () => setShareDialogOpen(true) : undefined}
+          isShared={!!shareConfig?.enabled}
           exportLabel="Export Profile"
           className="mt-8"
         />
@@ -1765,6 +1771,14 @@ const PlanetaryProfile = () => {
         summaryTemplate={<PlanetarySummaryTemplate formState={formState} worldName={worldName} />}
         fullTemplate={<PlanetaryFullReportTemplate formState={formState} worldName={worldName} />}
         defaultFilename="planetary-profile"
+      />
+
+      <ShareDialog
+        open={shareDialogOpen}
+        onOpenChange={setShareDialogOpen}
+        entityType="worksheet"
+        entityId={currentWorksheetId || worksheetId || ""}
+        entityTitle={currentWorksheetTitle || "Untitled Worksheet"}
       />
 
       {/* Worksheet Selector Dialog */}

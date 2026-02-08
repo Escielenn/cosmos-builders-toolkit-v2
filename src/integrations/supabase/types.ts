@@ -381,6 +381,102 @@ export type Database = {
           },
         ]
       }
+      worksheet_link_shares: {
+        Row: {
+          id: string
+          worksheet_id: string
+          owner_id: string
+          share_token: string
+          enabled: boolean
+          view_count: number
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          worksheet_id: string
+          owner_id: string
+          share_token?: string
+          enabled?: boolean
+          view_count?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          worksheet_id?: string
+          owner_id?: string
+          share_token?: string
+          enabled?: boolean
+          view_count?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "worksheet_link_shares_worksheet_id_fkey"
+            columns: ["worksheet_id"]
+            isOneToOne: true
+            referencedRelation: "worksheets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "worksheet_link_shares_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      world_link_shares: {
+        Row: {
+          id: string
+          world_id: string
+          owner_id: string
+          share_token: string
+          enabled: boolean
+          view_count: number
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          world_id: string
+          owner_id: string
+          share_token?: string
+          enabled?: boolean
+          view_count?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          world_id?: string
+          owner_id?: string
+          share_token?: string
+          enabled?: boolean
+          view_count?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "world_link_shares_world_id_fkey"
+            columns: ["world_id"]
+            isOneToOne: true
+            referencedRelation: "worlds"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "world_link_shares_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       worlds: {
         Row: {
           archived_at: string | null
@@ -433,7 +529,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_shared_worksheet: {
+        Args: { p_token: string }
+        Returns: Json
+      }
+      get_shared_world: {
+        Args: { p_token: string }
+        Returns: Json
+      }
     }
     Enums: {
       [_ in never]: never
