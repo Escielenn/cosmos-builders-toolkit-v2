@@ -36,6 +36,7 @@ import { useWorld } from "@/hooks/use-world";
 import { useWorksheets, useRenameWorksheet } from "@/hooks/use-worksheets";
 import { Badge } from "@/components/ui/badge";
 import { useWorlds } from "@/hooks/use-worlds";
+import { useMyWorldRole } from "@/hooks/use-collaborators";
 import { useState, useEffect } from "react";
 import WorldHeader from "@/components/world/WorldHeader";
 import WorldNotes from "@/components/world/WorldNotes";
@@ -139,6 +140,9 @@ const WorldDashboard = () => {
   const { worksheets, isLoading: worksheetsLoading, deleteWorksheet } = useWorksheets(worldId);
   const { deleteWorld, updateWorld } = useWorlds();
   const renameWorksheet = useRenameWorksheet();
+  const { data: role } = useMyWorldRole(worldId);
+  const isOwner = role === "owner";
+  const canEdit = role === "owner" || role === "editor";
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [worksheetToDelete, setWorksheetToDelete] = useState<string | null>(null);
   const [worksheetToRename, setWorksheetToRename] = useState<{ id: string; title: string } | null>(null);
@@ -277,14 +281,17 @@ const WorldDashboard = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
+                {isOwner && (
                 <DropdownMenuItem onClick={() => setEditDialogOpen(true)}>
                   <Edit className="w-4 h-4 mr-2" />
                   Edit World
                 </DropdownMenuItem>
+                )}
                 <DropdownMenuItem onClick={() => setExportDialogOpen(true)}>
                   <Download className="w-4 h-4 mr-2" />
                   Export World
                 </DropdownMenuItem>
+                {isOwner && (
                 <DropdownMenuItem
                   className="text-destructive"
                   onClick={() => setDeleteDialogOpen(true)}
@@ -292,10 +299,21 @@ const WorldDashboard = () => {
                   <Trash2 className="w-4 h-4 mr-2" />
                   Delete World
                 </DropdownMenuItem>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
         </div>
+
+        {/* Collaborator Banner */}
+        {!isOwner && role && (
+          <div className="mb-4 p-3 rounded-lg bg-primary/5 border border-primary/10 flex items-center gap-2 text-sm">
+            <Users className="w-4 h-4 text-primary shrink-0" />
+            <span>
+              You have <Badge variant="secondary" className="mx-1">{role === "editor" ? "Editor" : "Viewer"}</Badge> access to this world
+            </span>
+          </div>
+        )}
 
         {/* World Header */}
         <div className="mb-8">
@@ -304,7 +322,7 @@ const WorldDashboard = () => {
             description={world.description}
             headerImageUrl={world.header_image_url}
             icon={world.icon || "globe"}
-            onEditClick={() => setEditDialogOpen(true)}
+            onEditClick={isOwner ? () => setEditDialogOpen(true) : undefined}
           />
           <p className="text-sm text-muted-foreground mt-3 px-1">
             Last updated {format(new Date(world.updated_at), "MMMM d, yyyy")}
@@ -314,11 +332,12 @@ const WorldDashboard = () => {
         {/* World Notes */}
         {worldId && (
           <section className="mb-8">
-            <WorldNotes worldId={worldId} />
+            <WorldNotes worldId={worldId} readOnly={!canEdit} />
           </section>
         )}
 
-        {/* Tools Grid */}
+        {/* Tools Grid - hidden for viewers */}
+        {canEdit && (
         <section className="mb-8">
           <h2 className="text-xl font-semibold mb-4">Worldbuilding Tools</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -341,6 +360,7 @@ const WorldDashboard = () => {
             ))}
           </div>
         </section>
+        )}
 
         {/* Saved Worksheets - Grouped by Tool Type */}
         <section>
@@ -377,12 +397,14 @@ const WorldDashboard = () => {
                           {toolWorksheets.length}
                         </Badge>
                       </div>
+                      {canEdit && (
                       <Button variant="outline" size="sm" asChild>
                         <Link to={`${tool.path}?worldId=${worldId}`}>
                           <Plus className="w-4 h-4 mr-1" />
                           New
                         </Link>
                       </Button>
+                      )}
                     </div>
 
                     {/* Worksheets for this tool type */}
@@ -410,6 +432,7 @@ const WorldDashboard = () => {
                                 <ChevronRight className="w-4 h-4 ml-1" />
                               </Link>
                             </Button>
+                            {canEdit && (
                             <DropdownMenu>
                               <DropdownMenuTrigger asChild>
                                 <Button variant="ghost" size="icon" className="h-8 w-8">
@@ -423,6 +446,7 @@ const WorldDashboard = () => {
                                   <Pencil className="w-4 h-4 mr-2" />
                                   Rename
                                 </DropdownMenuItem>
+                                {isOwner && (
                                 <DropdownMenuItem
                                   className="text-destructive"
                                   onClick={() => setWorksheetToDelete(worksheet.id)}
@@ -430,8 +454,10 @@ const WorldDashboard = () => {
                                   <Trash2 className="w-4 h-4 mr-2" />
                                   Delete
                                 </DropdownMenuItem>
+                                )}
                               </DropdownMenuContent>
                             </DropdownMenu>
+                            )}
                           </div>
                         </GlassPanel>
                       ))}

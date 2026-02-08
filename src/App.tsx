@@ -47,6 +47,7 @@ const NotionCallback = lazy(() => import("./pages/NotionCallback"));
 // Lazy loaded share pages (public, no auth required)
 const SharedWorksheetView = lazy(() => import("./pages/SharedWorksheetView"));
 const SharedWorldView = lazy(() => import("./pages/SharedWorldView"));
+const InviteAccept = lazy(() => import("./pages/InviteAccept"));
 
 // Lazy loaded legal pages
 const Privacy = lazy(() => import("./pages/legal/Privacy"));
@@ -164,6 +165,7 @@ const App = () => (
                 {/* Shared/Public Views */}
                 <Route path="/share/worksheet/:token" element={<SharedWorksheetView />} />
                 <Route path="/share/world/:token" element={<SharedWorldView />} />
+                <Route path="/invite/:token" element={<InviteAccept />} />
                 {/* Legal Pages */}
                 <Route path="/privacy" element={<Privacy />} />
                 <Route path="/terms" element={<Terms />} />

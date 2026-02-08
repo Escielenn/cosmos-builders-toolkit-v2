@@ -34,6 +34,7 @@ import Footer from "@/components/layout/Footer";
 import RecentArticles from "@/components/landing/RecentArticles";
 import { TagFilter } from "@/components/dashboard/TagFilter";
 import { ArchiveToggle } from "@/components/dashboard/ArchiveToggle";
+import SharedWorldsSection from "@/components/dashboard/SharedWorldsSection";
 
 const tools = [
   {
@@ -271,6 +272,9 @@ const Index = () => {
             </div>
           </section>
         )}
+
+        {/* Shared with Me Section */}
+        {user && <SharedWorldsSection />}
 
         {/* Worldbuilding Tools Section - logged-in users only (non-logged-in see ToolShowcase) */}
         {user && (

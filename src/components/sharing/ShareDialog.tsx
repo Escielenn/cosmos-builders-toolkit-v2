@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link2, Copy, Check, RefreshCw, Eye, Loader2, Users } from "lucide-react";
+import { Link2, Copy, Check, RefreshCw, Eye, Loader2 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -20,10 +20,10 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import CollaboratorSection from "@/components/sharing/CollaboratorSection";
 import {
   useWorksheetShare,
   useWorldShare,
@@ -222,16 +222,10 @@ const ShareDialog = ({
             )}
           </div>
 
-          {/* Collaborator Teaser */}
-          <div className="border-t border-border pt-4">
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <Users className="w-4 h-4" />
-              <span className="text-sm">Invite collaborators</span>
-              <Badge variant="outline" className="text-xs">
-                Coming soon
-              </Badge>
-            </div>
-          </div>
+          {/* Collaborator Section - only for worlds */}
+          {entityType === "world" && (
+            <CollaboratorSection worldId={entityId} worldName={entityTitle} />
+          )}
         </div>
       </DialogContent>
     </Dialog>

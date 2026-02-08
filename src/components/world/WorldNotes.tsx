@@ -18,9 +18,10 @@ import {
 
 interface WorldNotesProps {
   worldId: string;
+  readOnly?: boolean;
 }
 
-const WorldNotes = ({ worldId }: WorldNotesProps) => {
+const WorldNotes = ({ worldId, readOnly }: WorldNotesProps) => {
   const [isOpen, setIsOpen] = useState(true);
   const [isEditing, setIsEditing] = useState(true);
   const { content, updateContent, saveNow, isLoading, isSaving, lastUpdated } =
@@ -48,13 +49,13 @@ const WorldNotes = ({ worldId }: WorldNotesProps) => {
               <span className="font-display font-semibold">World Notes</span>
             </div>
             <div className="flex items-center gap-2">
-              {isSaving && (
+              {!readOnly && isSaving && (
                 <span className="text-xs text-muted-foreground flex items-center gap-1">
                   <Loader2 className="w-3 h-3 animate-spin" />
                   Saving...
                 </span>
               )}
-              {!isSaving && lastUpdated && (
+              {!readOnly && !isSaving && lastUpdated && (
                 <span className="text-xs text-muted-foreground flex items-center gap-1">
                   <Check className="w-3 h-3 text-green-500" />
                   Saved
@@ -76,6 +77,7 @@ const WorldNotes = ({ worldId }: WorldNotesProps) => {
               </div>
             ) : (
               <>
+                {!readOnly && (
                 <div className="flex gap-2 justify-between">
                   <div className="flex gap-2">
                     <Button
@@ -114,8 +116,9 @@ const WorldNotes = ({ worldId }: WorldNotesProps) => {
                     </Button>
                   )}
                 </div>
+                )}
 
-                {isEditing ? (
+                {isEditing && !readOnly ? (
                   <Textarea
                     value={content}
                     onChange={(e) => updateContent(e.target.value)}
@@ -140,9 +143,11 @@ const WorldNotes = ({ worldId }: WorldNotesProps) => {
                 )}
 
                 <div className="flex items-center justify-between flex-wrap gap-2">
+                  {!readOnly && (
                   <p className="text-xs text-muted-foreground">
                     <span className="text-primary/70">Markdown supported</span> — **bold**, *italic*, ~~strike~~, # headings, - lists, tables, ```code```
                   </p>
+                  )}
                   {formattedLastUpdated && (
                     <p className="text-xs text-muted-foreground">
                       Last updated: {formattedLastUpdated}

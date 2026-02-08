@@ -55,13 +55,8 @@ export const useWorksheets = (worldId: string | undefined, includeArchived: bool
 
       if (error) throw error;
 
-      // Defensive check: verify all returned worksheets belong to current user
-      const worksheets = data as Worksheet[];
-      if (worksheets.some(ws => ws.user_id !== user?.id)) {
-        throw new Error("Unauthorized: worksheet does not belong to current user");
-      }
-
-      return worksheets;
+      // RLS handles access control — owners and collaborators both allowed
+      return (data as Worksheet[]) || [];
     },
     enabled: !!user && !!worldId,
   });
@@ -277,13 +272,8 @@ export const useWorksheetsByType = (
 
       if (error) throw error;
 
-      // Defensive check: verify all returned worksheets belong to current user
-      const worksheets = data as Worksheet[];
-      if (worksheets.some(ws => ws.user_id !== user?.id)) {
-        throw new Error("Unauthorized: worksheet does not belong to current user");
-      }
-
-      return worksheets;
+      // RLS handles access control — owners and collaborators both allowed
+      return (data as Worksheet[]) || [];
     },
     enabled: !!user && !!worldId,
   });

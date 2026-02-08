@@ -429,6 +429,112 @@ export type Database = {
           }
         ]
       }
+      world_collaborators: {
+        Row: {
+          id: string
+          world_id: string
+          user_id: string
+          role: "viewer" | "editor"
+          invited_by: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          world_id: string
+          user_id: string
+          role?: "viewer" | "editor"
+          invited_by: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          world_id?: string
+          user_id?: string
+          role?: "viewer" | "editor"
+          invited_by?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "world_collaborators_world_id_fkey"
+            columns: ["world_id"]
+            isOneToOne: false
+            referencedRelation: "worlds"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "world_collaborators_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "world_collaborators_invited_by_fkey"
+            columns: ["invited_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      world_invites: {
+        Row: {
+          id: string
+          world_id: string
+          invited_email: string
+          role: "viewer" | "editor"
+          invited_by: string
+          invite_token: string
+          status: "pending" | "accepted" | "declined" | "expired"
+          created_at: string
+          updated_at: string
+          expires_at: string
+        }
+        Insert: {
+          id?: string
+          world_id: string
+          invited_email: string
+          role?: "viewer" | "editor"
+          invited_by: string
+          invite_token?: string
+          status?: "pending" | "accepted" | "declined" | "expired"
+          created_at?: string
+          updated_at?: string
+          expires_at?: string
+        }
+        Update: {
+          id?: string
+          world_id?: string
+          invited_email?: string
+          role?: "viewer" | "editor"
+          invited_by?: string
+          invite_token?: string
+          status?: "pending" | "accepted" | "declined" | "expired"
+          created_at?: string
+          updated_at?: string
+          expires_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "world_invites_world_id_fkey"
+            columns: ["world_id"]
+            isOneToOne: false
+            referencedRelation: "worlds"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "world_invites_invited_by_fkey"
+            columns: ["invited_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       world_link_shares: {
         Row: {
           id: string
@@ -535,6 +641,18 @@ export type Database = {
       }
       get_shared_world: {
         Args: { p_token: string }
+        Returns: Json
+      }
+      lookup_user_by_email: {
+        Args: { p_email: string }
+        Returns: Json
+      }
+      accept_world_invite: {
+        Args: { p_token: string }
+        Returns: Json
+      }
+      get_collaborators_for_world: {
+        Args: { p_world_id: string }
         Returns: Json
       }
     }
