@@ -34,7 +34,7 @@ const RenderSpacecraft = ({ ws }: { ws: WorksheetData }) => {
   const name = get(d, "identity.name") || ws.title || "Untitled Vessel";
 
   return (
-    <View style={styles.section} wrap={false}>
+    <View style={styles.section}>
       <Text style={styles.sectionTitle}>Vessel: {name}</Text>
       <View style={styles.sectionContent}>
         <PDFKeyValuePair label="Class" value={get(d, "identity.class") || get(d, "identity.customClass")} />
@@ -64,7 +64,7 @@ const RenderPropulsion = ({ ws }: { ws: WorksheetData }) => {
   const propType = get(d, "propulsionType") || ws.title || "Untitled";
 
   return (
-    <View style={styles.section} wrap={false}>
+    <View style={styles.section}>
       <Text style={styles.sectionTitle}>Propulsion: {propType}</Text>
       <View style={styles.sectionContent}>
         <PDFKeyValuePair label="Propulsion Type" value={get(d, "propulsionType")} />

@@ -50,7 +50,7 @@ const TIER_LABELS: Record<string, string> = {
 const RenderStarSystem = ({ ws }: { ws: WorksheetData }) => {
   const d = ws.data;
   return (
-    <View style={styles.section} wrap={false}>
+    <View style={styles.section}>
       <Text style={styles.sectionTitle}>
         Star System: {ws.title || "Untitled"}
       </Text>
@@ -76,7 +76,7 @@ const RenderPlanetaryProfile = ({ ws }: { ws: WorksheetData }) => {
   const tier = get(d, "habitability.habitabilityTier");
 
   return (
-    <View style={styles.section} wrap={false}>
+    <View style={styles.section}>
       <Text style={styles.sectionTitle}>
         Planet: {ws.title || "Untitled"}
       </Text>
@@ -99,7 +99,7 @@ const RenderECR = ({ ws }: { ws: WorksheetData }) => {
   const param = get(d, "parameter.selectedParameter");
 
   return (
-    <View style={styles.section} wrap={false}>
+    <View style={styles.section}>
       <Text style={styles.sectionTitle}>
         Environmental Cascade: {ws.title || param || "Untitled"}
       </Text>

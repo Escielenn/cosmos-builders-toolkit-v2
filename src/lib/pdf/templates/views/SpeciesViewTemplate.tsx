@@ -34,7 +34,7 @@ const RenderEvoBio = ({ ws }: { ws: WorksheetData }) => {
   const speciesName = get(d, "speciesName") || ws.title || "Untitled Species";
 
   return (
-    <View style={styles.section} wrap={false}>
+    <View style={styles.section}>
       <Text style={styles.sectionTitle}>Species: {speciesName}</Text>
       <View style={styles.sectionContent}>
         <PDFKeyValuePair label="Biochemical Basis" value={get(d, "biochemistry.biochemicalBasis")} />

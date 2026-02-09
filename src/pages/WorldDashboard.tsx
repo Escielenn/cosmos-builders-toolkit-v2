@@ -277,11 +277,26 @@ const WorldDashboard = () => {
                 View Connections
               </Link>
             </Button>
+            <Button variant="outline" size="sm" onClick={() => setExportDialogOpen(true)}>
+              <Download className="w-4 h-4 mr-2" />
+              Export
+            </Button>
+            {isOwner && (
+            <Button variant="outline" size="sm" onClick={() => setViewExportDialogOpen(true)}>
+              <Layers className="w-4 h-4 mr-2" />
+              Export View
+            </Button>
+            )}
+            {isOwner && (
+            <Button variant="outline" size="sm" onClick={() => setWorldBibleDialogOpen(true)}>
+              <BookOpen className="w-4 h-4 mr-2" />
+              World Bible
+            </Button>
+            )}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm">
-                  <MoreVertical className="w-4 h-4 mr-2" />
-                  Actions
+                <Button variant="outline" size="icon" className="h-8 w-8">
+                  <MoreVertical className="w-4 h-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
@@ -289,22 +304,6 @@ const WorldDashboard = () => {
                 <DropdownMenuItem onClick={() => setEditDialogOpen(true)}>
                   <Edit className="w-4 h-4 mr-2" />
                   Edit World
-                </DropdownMenuItem>
-                )}
-                <DropdownMenuItem onClick={() => setExportDialogOpen(true)}>
-                  <Download className="w-4 h-4 mr-2" />
-                  Export World
-                </DropdownMenuItem>
-                {isOwner && (
-                <DropdownMenuItem onClick={() => setViewExportDialogOpen(true)}>
-                  <Layers className="w-4 h-4 mr-2" />
-                  Export View
-                </DropdownMenuItem>
-                )}
-                {isOwner && (
-                <DropdownMenuItem onClick={() => setWorldBibleDialogOpen(true)}>
-                  <BookOpen className="w-4 h-4 mr-2" />
-                  Export World Bible
                 </DropdownMenuItem>
                 )}
                 {isOwner && (

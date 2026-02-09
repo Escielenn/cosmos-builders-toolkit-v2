@@ -49,7 +49,7 @@ const RenderEmpire = ({ ws }: { ws: WorksheetData }) => {
   const govType = get(d, "foundation.governmentType");
 
   return (
-    <View style={styles.section} wrap={false}>
+    <View style={styles.section}>
       <Text style={styles.sectionTitle}>Empire: {name}</Text>
       <View style={styles.sectionContent}>
         <PDFKeyValuePair label="Government Type" value={GOV_LABELS[govType] || govType || "—"} />
@@ -83,7 +83,7 @@ const RenderTechConsequences = ({ ws }: { ws: WorksheetData }) => {
   const techName = get(d, "technology.name") || ws.title || "Untitled Technology";
 
   return (
-    <View style={styles.section} wrap={false}>
+    <View style={styles.section}>
       <Text style={styles.sectionTitle}>Technology: {techName}</Text>
       <View style={styles.sectionContent}>
         <PDFKeyValuePair label="Category" value={get(d, "technology.category")} />
@@ -131,7 +131,7 @@ const RenderDrake = ({ ws }: { ws: WorksheetData }) => {
   };
 
   return (
-    <View style={styles.section} wrap={false}>
+    <View style={styles.section}>
       <Text style={styles.sectionTitle}>
         Drake Equation: {ws.title || "Calculation"}
       </Text>

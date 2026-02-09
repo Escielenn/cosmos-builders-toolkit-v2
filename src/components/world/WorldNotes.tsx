@@ -1,20 +1,15 @@
-import { useState } from "react";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import rehypeRaw from "rehype-raw";
-import rehypeHighlight from "rehype-highlight";
-import rehypeSanitize from "rehype-sanitize";
-import { ChevronDown, ChevronUp, Loader2, FileText, Check, Eye, Pencil, Save } from "lucide-react";
-import "highlight.js/styles/github-dark.css";
+import { useState, lazy, Suspense } from "react";
+import { ChevronDown, ChevronUp, Loader2, FileText, Check, Save } from "lucide-react";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { useWorldNotes } from "@/hooks/use-world-notes";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+
+const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
 
 interface WorldNotesProps {
   worldId: string;
@@ -23,7 +18,6 @@ interface WorldNotesProps {
 
 const WorldNotes = ({ worldId, readOnly }: WorldNotesProps) => {
   const [isOpen, setIsOpen] = useState(true);
-  const [isEditing, setIsEditing] = useState(true);
   const { content, updateContent, saveNow, isLoading, isSaving, lastUpdated } =
     useWorldNotes(worldId);
 
@@ -78,28 +72,7 @@ const WorldNotes = ({ worldId, readOnly }: WorldNotesProps) => {
             ) : (
               <>
                 {!readOnly && (
-                <div className="flex gap-2 justify-between">
-                  <div className="flex gap-2">
-                    <Button
-                      size="sm"
-                      variant={isEditing ? "default" : "outline"}
-                      onClick={() => setIsEditing(true)}
-                      className="h-8"
-                    >
-                      <Pencil className="w-3.5 h-3.5 mr-1.5" />
-                      Edit
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant={!isEditing ? "default" : "outline"}
-                      onClick={() => setIsEditing(false)}
-                      className="h-8"
-                    >
-                      <Eye className="w-3.5 h-3.5 mr-1.5" />
-                      Preview
-                    </Button>
-                  </div>
-                  {isEditing && (
+                  <div className="flex justify-end">
                     <Button
                       size="sm"
                       variant="outline"
@@ -114,40 +87,26 @@ const WorldNotes = ({ worldId, readOnly }: WorldNotesProps) => {
                       )}
                       {isSaving ? "Saving..." : "Save"}
                     </Button>
-                  )}
-                </div>
-                )}
-
-                {isEditing && !readOnly ? (
-                  <Textarea
-                    value={content}
-                    onChange={(e) => updateContent(e.target.value)}
-                    placeholder="Add notes about your world here... This is a great place for backstory, world history, important details, or anything else you want to remember."
-                    className="min-h-[200px] resize-y font-mono text-sm"
-                  />
-                ) : (
-                  <div className="prose prose-invert prose-sm max-w-none min-h-[200px] p-3 rounded-md bg-muted/30 border border-border [&_pre]:bg-[#0d1117] [&_pre]:p-3 [&_pre]:rounded-md [&_code]:text-xs prose-headings:text-foreground prose-headings:font-semibold prose-h1:text-xl prose-h1:mt-4 prose-h1:mb-2 prose-h2:text-lg prose-h2:mt-3 prose-h2:mb-2 prose-h3:text-base prose-h3:mt-2 prose-h3:mb-1 prose-h4:text-sm prose-h4:mt-2 prose-h4:mb-1">
-                    {content ? (
-                      <ReactMarkdown
-                        remarkPlugins={[remarkGfm]}
-                        rehypePlugins={[rehypeRaw, rehypeSanitize, rehypeHighlight]}
-                      >
-                        {content}
-                      </ReactMarkdown>
-                    ) : (
-                      <p className="text-muted-foreground italic">
-                        No content yet. Switch to Edit mode to add notes.
-                      </p>
-                    )}
                   </div>
                 )}
 
+                <Suspense
+                  fallback={
+                    <div className="flex items-center justify-center py-8">
+                      <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+                    </div>
+                  }
+                >
+                  <RichTextEditor
+                    content={content}
+                    onChange={updateContent}
+                    readOnly={!!readOnly}
+                    placeholder="Add notes about your world here... This is a great place for backstory, world history, important details, or anything else you want to remember."
+                    minHeight="200px"
+                  />
+                </Suspense>
+
                 <div className="flex items-center justify-between flex-wrap gap-2">
-                  {!readOnly && (
-                  <p className="text-xs text-muted-foreground">
-                    <span className="text-primary/70">Markdown supported</span> — **bold**, *italic*, ~~strike~~, # headings, - lists, tables, ```code```
-                  </p>
-                  )}
                   {formattedLastUpdated && (
                     <p className="text-xs text-muted-foreground">
                       Last updated: {formattedLastUpdated}

@@ -33,7 +33,7 @@ const RenderXenomythology = ({ ws }: { ws: WorksheetData }) => {
   const d = ws.data;
 
   return (
-    <View style={styles.section} wrap={false}>
+    <View style={styles.section}>
       <Text style={styles.sectionTitle}>
         {ws.title || "Xenomythology Framework"}
       </Text>
