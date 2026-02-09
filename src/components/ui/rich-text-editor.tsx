@@ -231,8 +231,11 @@ const RichTextEditor = ({
       {/* Editor */}
       <EditorContent
         editor={editor}
-        className={cn("px-3 py-2", readOnly && "bg-muted/30")}
-        style={{ minHeight }}
+        className={cn(
+          "px-3 py-2 [&_.tiptap]:outline-none [&_.tiptap]:min-h-[var(--editor-min-h)]",
+          readOnly && "bg-muted/30"
+        )}
+        style={{ "--editor-min-h": minHeight } as React.CSSProperties}
       />
     </div>
   );
