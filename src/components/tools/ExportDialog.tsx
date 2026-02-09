@@ -161,9 +161,10 @@ const ExportDialog = ({
             });
           } catch (pdfError) {
             console.error("PDF generation error:", pdfError);
+            const errMsg = pdfError instanceof Error ? pdfError.message : String(pdfError);
             toast({
               title: "PDF generation failed",
-              description: "There was an error creating the PDF. Please try again.",
+              description: errMsg.length > 120 ? errMsg.slice(0, 120) + "..." : errMsg,
               variant: "destructive",
             });
             return;

@@ -1,7 +1,9 @@
 import { StyleSheet, Font } from "@react-pdf/renderer";
 
+// Disable word hyphenation to prevent rendering issues
+Font.registerHyphenationCallback((word) => [word]);
+
 // Register fonts (using system fonts as fallback)
-// Note: For production, you may want to host these fonts
 Font.register({
   family: "Inter",
   fonts: [
