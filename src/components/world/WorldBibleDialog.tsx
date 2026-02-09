@@ -1,0 +1,359 @@
+import { useState, useEffect } from "react";
+import { Download, Loader2, BookOpen } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+import { Progress } from "@/components/ui/progress";
+import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import {
+  CHAPTERS,
+  groupWorksheetsByChapter,
+  type WorksheetRecord,
+  type ChapterWithWorksheets,
+} from "@/lib/pdf/templates/world-bible/helpers";
+
+interface WorldBibleDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  worldName: string;
+  worldDescription?: string;
+  worldId: string;
+}
+
+const WorldBibleDialog = ({
+  open,
+  onOpenChange,
+  worldName,
+  worldDescription,
+  worldId,
+}: WorldBibleDialogProps) => {
+  const { toast } = useToast();
+  const { user } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [allWorksheets, setAllWorksheets] = useState<WorksheetRecord[]>([]);
+  const [chaptersWithWs, setChaptersWithWs] = useState<ChapterWithWorksheets[]>([]);
+  const [selectedChapters, setSelectedChapters] = useState<Set<string>>(new Set());
+  const [selectedWorksheets, setSelectedWorksheets] = useState<Set<string>>(new Set());
+  const [includeWorldNotes, setIncludeWorldNotes] = useState(true);
+  const [worldNotes, setWorldNotes] = useState<string>("");
+
+  // Fetch worksheets and notes when dialog opens
+  useEffect(() => {
+    if (!open || !worldId) return;
+    setIsLoading(true);
+
+    Promise.all([
+      supabase
+        .from("worksheets")
+        .select("*")
+        .eq("world_id", worldId)
+        .is("archived_at", null)
+        .order("updated_at", { ascending: false }),
+      supabase
+        .from("world_notes")
+        .select("content")
+        .eq("world_id", worldId)
+        .maybeSingle(),
+    ]).then(([wsResult, notesResult]) => {
+      const worksheets = (wsResult.data as WorksheetRecord[]) || [];
+      setAllWorksheets(worksheets);
+
+      const grouped = groupWorksheetsByChapter(worksheets);
+      setChaptersWithWs(grouped);
+
+      // Select all by default
+      setSelectedChapters(new Set(grouped.map((cw) => cw.chapter.id)));
+      setSelectedWorksheets(new Set(worksheets.map((ws) => ws.id)));
+
+      if (notesResult.data?.content) {
+        setWorldNotes(notesResult.data.content);
+      }
+
+      setIsLoading(false);
+    });
+  }, [open, worldId]);
+
+  const toggleChapter = (chapterId: string) => {
+    const newChapters = new Set(selectedChapters);
+    const chapter = chaptersWithWs.find((cw) => cw.chapter.id === chapterId);
+    if (!chapter) return;
+
+    const newWs = new Set(selectedWorksheets);
+    if (newChapters.has(chapterId)) {
+      newChapters.delete(chapterId);
+      chapter.worksheets.forEach((ws) => newWs.delete(ws.id));
+    } else {
+      newChapters.add(chapterId);
+      chapter.worksheets.forEach((ws) => newWs.add(ws.id));
+    }
+    setSelectedChapters(newChapters);
+    setSelectedWorksheets(newWs);
+  };
+
+  const toggleWorksheet = (wsId: string, chapterId: string) => {
+    const newWs = new Set(selectedWorksheets);
+    if (newWs.has(wsId)) {
+      newWs.delete(wsId);
+    } else {
+      newWs.add(wsId);
+    }
+    setSelectedWorksheets(newWs);
+
+    // Update chapter state based on whether all its worksheets are selected
+    const chapter = chaptersWithWs.find((cw) => cw.chapter.id === chapterId);
+    if (chapter) {
+      const allSelected = chapter.worksheets.every((ws) => newWs.has(ws.id));
+      const newChapters = new Set(selectedChapters);
+      if (allSelected) {
+        newChapters.add(chapterId);
+      } else {
+        newChapters.delete(chapterId);
+      }
+      setSelectedChapters(newChapters);
+    }
+  };
+
+  const selectAll = () => {
+    setSelectedChapters(new Set(chaptersWithWs.map((cw) => cw.chapter.id)));
+    setSelectedWorksheets(new Set(allWorksheets.map((ws) => ws.id)));
+  };
+
+  const deselectAll = () => {
+    setSelectedChapters(new Set());
+    setSelectedWorksheets(new Set());
+  };
+
+  const selectedCount = selectedWorksheets.size;
+
+  const handleGenerate = async () => {
+    if (selectedCount === 0 && !includeWorldNotes) return;
+
+    setIsGenerating(true);
+    setProgress(10);
+
+    try {
+      // Dynamic import
+      setProgress(20);
+      const [{ pdf }, { WorldBibleTemplate, groupWorksheetsByChapter: group }] =
+        await Promise.all([
+          import("@react-pdf/renderer"),
+          import("@/lib/pdf/templates/world-bible"),
+        ]);
+
+      setProgress(40);
+
+      // Filter to selected worksheets only
+      const selectedWsList = allWorksheets.filter((ws) =>
+        selectedWorksheets.has(ws.id)
+      );
+      const chapters = group(selectedWsList);
+
+      setProgress(60);
+
+      const blob = await pdf(
+        <WorldBibleTemplate
+          worldName={worldName}
+          worldDescription={worldDescription}
+          worldNotes={includeWorldNotes && worldNotes ? worldNotes : undefined}
+          chapters={chapters}
+        />
+      ).toBlob();
+
+      setProgress(90);
+
+      // Download
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${worldName.toLowerCase().replace(/\s+/g, "-")}-world-bible.pdf`;
+      a.click();
+      URL.revokeObjectURL(url);
+
+      setProgress(100);
+
+      toast({
+        title: "World Bible exported",
+        description: `Generated ${chapters.length} chapter${chapters.length !== 1 ? "s" : ""} with ${selectedCount} worksheet${selectedCount !== 1 ? "s" : ""}.`,
+      });
+      onOpenChange(false);
+    } catch (error) {
+      console.error("World Bible export error:", error);
+      const errMsg = error instanceof Error ? error.message : String(error);
+      toast({
+        title: "Export failed",
+        description: errMsg.length > 120 ? errMsg.slice(0, 120) + "..." : errMsg,
+        variant: "destructive",
+      });
+    } finally {
+      setIsGenerating(false);
+      setProgress(0);
+    }
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-lg max-h-[80vh] flex flex-col">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <BookOpen className="w-5 h-5" />
+            Export World Bible
+          </DialogTitle>
+          <DialogDescription>
+            Generate a comprehensive PDF book for "{worldName}". Select which chapters and worksheets to include.
+          </DialogDescription>
+        </DialogHeader>
+
+        {isLoading ? (
+          <div className="flex items-center justify-center py-12">
+            <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+          </div>
+        ) : (
+          <div className="flex-1 overflow-y-auto space-y-4 py-2 pr-1">
+            {/* Select All / Deselect All */}
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-muted-foreground">
+                {selectedCount} of {allWorksheets.length} worksheet{allWorksheets.length !== 1 ? "s" : ""} selected
+              </span>
+              <div className="flex gap-2">
+                <Button variant="ghost" size="sm" onClick={selectAll}>
+                  Select All
+                </Button>
+                <Button variant="ghost" size="sm" onClick={deselectAll}>
+                  Deselect All
+                </Button>
+              </div>
+            </div>
+
+            {/* World Notes toggle */}
+            {worldNotes && (
+              <div className="flex items-center space-x-2 p-3 rounded-lg border border-border bg-accent/5">
+                <Checkbox
+                  id="include-notes"
+                  checked={includeWorldNotes}
+                  onCheckedChange={(checked) => setIncludeWorldNotes(!!checked)}
+                />
+                <Label htmlFor="include-notes" className="flex-1 cursor-pointer">
+                  <span className="font-medium">Include World Notes</span>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Add your world notes as the opening chapter
+                  </p>
+                </Label>
+              </div>
+            )}
+
+            {/* Chapter tree */}
+            {chaptersWithWs.length === 0 ? (
+              <div className="text-center py-8 text-muted-foreground">
+                <p>No worksheets found in this world.</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {chaptersWithWs.map((cw) => {
+                  const chapterSelected = selectedChapters.has(cw.chapter.id);
+                  const someSelected = cw.worksheets.some((ws) =>
+                    selectedWorksheets.has(ws.id)
+                  );
+
+                  return (
+                    <div
+                      key={cw.chapter.id}
+                      className="rounded-lg border border-border overflow-hidden"
+                    >
+                      {/* Chapter header */}
+                      <div className="flex items-center space-x-2 p-3 bg-muted/30">
+                        <Checkbox
+                          checked={chapterSelected}
+                          // indeterminate doesn't exist in shadcn, use visual cue
+                          className={!chapterSelected && someSelected ? "opacity-60" : ""}
+                          onCheckedChange={() => toggleChapter(cw.chapter.id)}
+                        />
+                        <div className="flex-1">
+                          <span className="font-semibold text-sm">
+                            Ch. {cw.chapter.number}: {cw.chapter.title}
+                          </span>
+                          <span className="text-xs text-muted-foreground ml-2">
+                            ({cw.worksheets.length})
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Worksheets */}
+                      <div className="divide-y divide-border">
+                        {cw.worksheets.map((ws) => (
+                          <div
+                            key={ws.id}
+                            className="flex items-center space-x-2 px-3 py-2 pl-8"
+                          >
+                            <Checkbox
+                              checked={selectedWorksheets.has(ws.id)}
+                              onCheckedChange={() =>
+                                toggleWorksheet(ws.id, cw.chapter.id)
+                              }
+                            />
+                            <span className="text-sm truncate">
+                              {ws.title || "Untitled"}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Progress bar during generation */}
+        {isGenerating && (
+          <div className="space-y-2">
+            <Progress value={progress} className="h-2" />
+            <p className="text-xs text-muted-foreground text-center">
+              Generating World Bible...
+            </p>
+          </div>
+        )}
+
+        <DialogFooter>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
+            Cancel
+          </Button>
+          <Button
+            onClick={handleGenerate}
+            disabled={
+              isGenerating ||
+              isLoading ||
+              (selectedCount === 0 && !includeWorldNotes)
+            }
+          >
+            {isGenerating ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Generating...
+              </>
+            ) : (
+              <>
+                <Download className="w-4 h-4 mr-2" />
+                Generate World Bible
+              </>
+            )}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+export default WorldBibleDialog;

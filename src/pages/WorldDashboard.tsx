@@ -1,5 +1,5 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Edit, Globe, FileText, Rocket, Zap, Trash2, MoreVertical, Loader2, Calculator, Plus, Sparkles, Pencil, ChevronRight, Dna, Network, Sun, Crown, Cpu, Users, Download } from "lucide-react";
+import { ArrowLeft, Edit, Globe, FileText, Rocket, Zap, Trash2, MoreVertical, Loader2, Calculator, Plus, Sparkles, Pencil, ChevronRight, Dna, Network, Sun, Crown, Cpu, Users, Download, Layers, BookOpen } from "lucide-react";
 import { format } from "date-fns";
 import Header from "@/components/layout/Header";
 import { GlassPanel } from "@/components/ui/glass-panel";
@@ -43,6 +43,8 @@ import WorldNotes from "@/components/world/WorldNotes";
 import IconPicker from "@/components/world/IconPicker";
 import HeaderImageUpload from "@/components/world/HeaderImageUpload";
 import WorldExportDialog from "@/components/world/WorldExportDialog";
+import HierarchicalExportDialog from "@/components/world/HierarchicalExportDialog";
+import WorldBibleDialog from "@/components/world/WorldBibleDialog";
 const TOOLS = [
   {
     id: "environmental-chain-reaction",
@@ -149,6 +151,8 @@ const WorldDashboard = () => {
   const [renameValue, setRenameValue] = useState("");
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
+  const [viewExportDialogOpen, setViewExportDialogOpen] = useState(false);
+  const [worldBibleDialogOpen, setWorldBibleDialogOpen] = useState(false);
   const [editName, setEditName] = useState("");
   const [editDescription, setEditDescription] = useState("");
   const [editIcon, setEditIcon] = useState("globe");
@@ -291,6 +295,18 @@ const WorldDashboard = () => {
                   <Download className="w-4 h-4 mr-2" />
                   Export World
                 </DropdownMenuItem>
+                {isOwner && (
+                <DropdownMenuItem onClick={() => setViewExportDialogOpen(true)}>
+                  <Layers className="w-4 h-4 mr-2" />
+                  Export View
+                </DropdownMenuItem>
+                )}
+                {isOwner && (
+                <DropdownMenuItem onClick={() => setWorldBibleDialogOpen(true)}>
+                  <BookOpen className="w-4 h-4 mr-2" />
+                  Export World Bible
+                </DropdownMenuItem>
+                )}
                 {isOwner && (
                 <DropdownMenuItem
                   className="text-destructive"
@@ -628,6 +644,23 @@ const WorldDashboard = () => {
         open={exportDialogOpen}
         onOpenChange={setExportDialogOpen}
         worldName={world.name}
+        worldId={worldId!}
+      />
+
+      {/* Hierarchical View Export Dialog */}
+      <HierarchicalExportDialog
+        open={viewExportDialogOpen}
+        onOpenChange={setViewExportDialogOpen}
+        worldName={world.name}
+        worldId={worldId!}
+      />
+
+      {/* World Bible Export Dialog */}
+      <WorldBibleDialog
+        open={worldBibleDialogOpen}
+        onOpenChange={setWorldBibleDialogOpen}
+        worldName={world.name}
+        worldDescription={world.description || undefined}
         worldId={worldId!}
       />
     </div>
