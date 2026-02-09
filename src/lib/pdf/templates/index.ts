@@ -12,3 +12,11 @@ export { default as XenomythologySummaryTemplate } from "./XenomythologySummaryT
 export { default as XenomythologyFullReportTemplate } from "./XenomythologyFullReportTemplate";
 export { default as EvolutionarySummaryTemplate } from "./EvolutionarySummaryTemplate";
 export { default as EvolutionaryFullReportTemplate } from "./EvolutionaryFullReportTemplate";
+export { default as EmpireSummaryTemplate } from "./EmpireSummaryTemplate";
+export { default as EmpireFullReportTemplate } from "./EmpireFullReportTemplate";
+export { default as StarSystemSummaryTemplate } from "./StarSystemSummaryTemplate";
+export { default as StarSystemFullReportTemplate } from "./StarSystemFullReportTemplate";
+export { default as TechConsequencesSummaryTemplate } from "./TechConsequencesSummaryTemplate";
+export { default as TechConsequencesFullReportTemplate } from "./TechConsequencesFullReportTemplate";
+export { default as SpeciesMatrixSummaryTemplate } from "./SpeciesMatrixSummaryTemplate";
+export { default as SpeciesMatrixFullReportTemplate } from "./SpeciesMatrixFullReportTemplate";

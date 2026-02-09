@@ -1,7 +1,8 @@
-import { useState, ReactElement } from "react";
+import { useState, useEffect, ReactElement } from "react";
 import { Download, FileText, FileJson, Loader2, Eye, FileType, FileSpreadsheet, ExternalLink, Unplug } from "lucide-react";
 import { useNotion } from "@/hooks/use-notion";
 import { useAuth } from "@/contexts/AuthContext";
+import { getExportPreferences, saveExportPreferences } from "@/lib/export-preferences";
 import {
   Dialog,
   DialogContent,
@@ -52,12 +53,33 @@ const ExportDialog = ({
   const { user } = useAuth();
   const { connection, isConnected, isConnecting, isExporting, connect, disconnect, exportToNotion } = useNotion();
   const hasPdfTemplates = !!(summaryTemplate || fullTemplate);
-  const [format, setFormat] = useState<ExportFormat>(hasPdfTemplates ? "pdf-summary" : "text");
+
+  // Load stored preferences for initial state
+  const prefs = getExportPreferences();
+  const resolveInitialFormat = (): ExportFormat => {
+    const saved = prefs.lastUsedFormat;
+    // Validate saved format is usable with current templates
+    if (saved === "pdf-summary" && summaryTemplate) return saved;
+    if (saved === "pdf-full" && fullTemplate) return saved;
+    if (saved === "text" || saved === "word" || saved === "json" || saved === "notion") return saved;
+    // Fallback
+    return hasPdfTemplates ? "pdf-summary" : "text";
+  };
+
+  const [format, setFormat] = useState<ExportFormat>(resolveInitialFormat);
   const [filename, setFilename] = useState(defaultFilename);
-  const [includeWorldName, setIncludeWorldName] = useState(true);
-  const [includeDate, setIncludeDate] = useState(true);
+  const [includeWorldName, setIncludeWorldName] = useState(prefs.includeWorldName);
+  const [includeDate, setIncludeDate] = useState(prefs.includeDate);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isPreviewing, setIsPreviewing] = useState(false);
+
+  // Sync tab selection when dialog opens with a stored format
+  const initialTab = format.startsWith("pdf") ? "pdf" : format === "notion" ? "notion" : format;
+  useEffect(() => {
+    if (open) {
+      setFilename(defaultFilename);
+    }
+  }, [open, defaultFilename]);
 
   const getFileExtension = (fmt: ExportFormat): string => {
     switch (fmt) {
@@ -184,6 +206,13 @@ const ExportDialog = ({
         }
       }
 
+      // Persist preferences after successful export
+      saveExportPreferences({
+        lastUsedFormat: format,
+        includeWorldName,
+        includeDate,
+      });
+
       onOpenChange(false);
     } catch (error) {
       console.error("Export error:", error);
@@ -294,7 +323,7 @@ const ExportDialog = ({
         </DialogHeader>
 
         <Tabs
-          defaultValue={hasPdfTemplates ? "pdf" : "text"}
+          defaultValue={initialTab}
           className="w-full"
           onValueChange={(tab) => {
             switch (tab) {

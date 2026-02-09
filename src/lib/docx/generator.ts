@@ -14,14 +14,22 @@ import {
   BorderStyle,
   AlignmentType,
   Packer,
+  Header,
+  Footer,
+  PageNumber,
+  TabStopType,
+  TabStopPosition,
 } from "docx";
 import { saveAs } from "file-saver";
 
 // StellarForge brand colors
 const COLORS = {
-  primary: "00D4FF", // Cyan
+  primary: "007A7A", // Darker cyan for print (matches PDF)
+  accent: "00D4FF", // Bright cyan
   text: "1A1A1A",
   muted: "666666",
+  border: "CCCCCC",
+  headerBg: "F0F8F8",
 };
 
 interface DocxGeneratorOptions {
@@ -29,6 +37,98 @@ interface DocxGeneratorOptions {
   worldName?: string;
   worksheetTitle?: string;
   data: Record<string, unknown>;
+}
+
+function createBrandedHeader(toolName: string): Header {
+  return new Header({
+    children: [
+      new Paragraph({
+        children: [
+          new TextRun({
+            text: "STELLARFORGE",
+            color: COLORS.primary,
+            bold: true,
+            size: 16, // 8pt
+            font: "Calibri",
+          }),
+          new TextRun({
+            text: `  |  ${toolName}`,
+            color: COLORS.muted,
+            size: 16,
+            font: "Calibri",
+          }),
+        ],
+        border: {
+          bottom: {
+            color: COLORS.border,
+            space: 4,
+            style: BorderStyle.SINGLE,
+            size: 6,
+          },
+        },
+        spacing: { after: 200 },
+      }),
+    ],
+  });
+}
+
+function createBrandedFooter(): Footer {
+  return new Footer({
+    children: [
+      new Paragraph({
+        border: {
+          top: {
+            color: COLORS.border,
+            space: 4,
+            style: BorderStyle.SINGLE,
+            size: 6,
+          },
+        },
+        tabStops: [
+          {
+            type: TabStopType.RIGHT,
+            position: TabStopPosition.MAX,
+          },
+        ],
+        children: [
+          new TextRun({
+            text: "\u00A9 2026 Jason D. Batt, Ph.D. \u2022 stellarforge.tools",
+            color: COLORS.muted,
+            size: 14, // 7pt
+            font: "Calibri",
+          }),
+          new TextRun({
+            text: "\t",
+          }),
+          new TextRun({
+            text: "Page ",
+            color: COLORS.muted,
+            size: 14,
+            font: "Calibri",
+          }),
+          new TextRun({
+            children: [PageNumber.CURRENT],
+            color: COLORS.muted,
+            size: 14,
+            font: "Calibri",
+          }),
+          new TextRun({
+            text: " of ",
+            color: COLORS.muted,
+            size: 14,
+            font: "Calibri",
+          }),
+          new TextRun({
+            children: [PageNumber.TOTAL_PAGES],
+            color: COLORS.muted,
+            size: 14,
+            font: "Calibri",
+          }),
+        ],
+        spacing: { before: 100 },
+      }),
+    ],
+  });
 }
 
 export const generateDocx = async ({
@@ -42,8 +142,15 @@ export const generateDocx = async ({
   // Title
   children.push(
     new Paragraph({
-      text: toolName.toUpperCase(),
-      heading: HeadingLevel.HEADING_1,
+      children: [
+        new TextRun({
+          text: toolName.toUpperCase(),
+          bold: true,
+          size: 36, // 18pt
+          color: COLORS.primary,
+          font: "Calibri",
+        }),
+      ],
       alignment: AlignmentType.CENTER,
       spacing: { after: 200 },
     })
@@ -59,26 +166,18 @@ export const generateDocx = async ({
       new Paragraph({
         children: [
           new TextRun({
-            text: subtitleParts.join(" • "),
+            text: subtitleParts.join(" \u2022 "),
             color: COLORS.muted,
             size: 24, // 12pt
           }),
         ],
         alignment: AlignmentType.CENTER,
-        spacing: { after: 400 },
+        spacing: { after: 100 },
       })
     );
   }
 
-  // Process data
-  processDataToDocx(data, children, 0);
-
-  // Footer
-  children.push(
-    new Paragraph({
-      spacing: { before: 600 },
-    })
-  );
+  // Date line
   children.push(
     new Paragraph({
       children: [
@@ -86,27 +185,52 @@ export const generateDocx = async ({
           text: `Generated: ${new Date().toISOString().split("T")[0]}`,
           color: COLORS.muted,
           size: 20,
+          italics: true,
         }),
       ],
-    })
-  );
-  children.push(
-    new Paragraph({
-      children: [
-        new TextRun({
-          text: "© 2026 Jason D. Batt, Ph.D. • stellarforge.tools",
-          color: COLORS.muted,
-          size: 20,
-        }),
-      ],
+      alignment: AlignmentType.CENTER,
+      spacing: { after: 200 },
     })
   );
 
-  // Create document
+  // Separator line
+  children.push(
+    new Paragraph({
+      border: {
+        bottom: {
+          color: COLORS.primary,
+          space: 1,
+          style: BorderStyle.SINGLE,
+          size: 12,
+        },
+      },
+      spacing: { after: 400 },
+    })
+  );
+
+  // Process data
+  processDataToDocx(data, children, 0);
+
+  // Create document with branded header/footer
   const doc = new Document({
     sections: [
       {
-        properties: {},
+        properties: {
+          page: {
+            margin: {
+              top: 1440,    // 1 inch
+              right: 1440,
+              bottom: 1440,
+              left: 1440,
+            },
+          },
+        },
+        headers: {
+          default: createBrandedHeader(toolName),
+        },
+        footers: {
+          default: createBrandedFooter(),
+        },
         children: children,
       },
     ],
@@ -152,7 +276,13 @@ function processDataToDocx(
         // Long text - heading + paragraph
         children.push(
           new Paragraph({
-            text: label,
+            children: [
+              new TextRun({
+                text: label,
+                color: COLORS.primary,
+                bold: true,
+              }),
+            ],
             heading: depth === 0 ? HeadingLevel.HEADING_3 : HeadingLevel.HEADING_4,
             spacing: { before: 200, after: 100 },
           })
@@ -190,7 +320,13 @@ function processDataToDocx(
 
       children.push(
         new Paragraph({
-          text: label,
+          children: [
+            new TextRun({
+              text: label,
+              color: COLORS.primary,
+              bold: true,
+            }),
+          ],
           heading: HeadingLevel.HEADING_3,
           spacing: { before: 200, after: 100 },
         })
@@ -201,7 +337,7 @@ function processDataToDocx(
         value.forEach((item) => {
           children.push(
             new Paragraph({
-              text: `• ${item}`,
+              text: `\u2022 ${item}`,
               spacing: { after: 50 },
             })
           );
@@ -220,7 +356,13 @@ function processDataToDocx(
       // Section heading
       children.push(
         new Paragraph({
-          text: label,
+          children: [
+            new TextRun({
+              text: label,
+              color: COLORS.primary,
+              bold: true,
+            }),
+          ],
           heading: depth === 0 ? HeadingLevel.HEADING_2 : HeadingLevel.HEADING_3,
           spacing: { before: 300, after: 100 },
         })
@@ -235,8 +377,12 @@ function createTable(headers: string[], rows: string[][]): Table {
     children: headers.map(
       (h) =>
         new TableCell({
-          children: [new Paragraph({ children: [new TextRun({ text: h, bold: true })] })],
-          shading: { fill: "F0F0F0" },
+          children: [
+            new Paragraph({
+              children: [new TextRun({ text: h, bold: true, color: COLORS.primary })],
+            }),
+          ],
+          shading: { fill: COLORS.headerBg },
         })
     ),
   });

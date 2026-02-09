@@ -29,6 +29,7 @@ import CollapsibleSection from "@/components/tools/CollapsibleSection";
 import KeyChoicesSidebar, { KeyChoicesSection, MobileKeyChoices } from "@/components/tools/KeyChoicesSidebar";
 import ToolActionBar from "@/components/tools/ToolActionBar";
 import ExportDialog from "@/components/tools/ExportDialog";
+import { TechConsequencesSummaryTemplate, TechConsequencesFullReportTemplate } from "@/lib/pdf/templates";
 import ShareDialog from "@/components/sharing/ShareDialog";
 import { useWorksheetShare } from "@/hooks/use-sharing";
 import { MoodboardSection } from "@/components/moodboard";
@@ -1340,6 +1341,10 @@ const TechnologyConsequences = () => {
         toolName="Technology Consequences Map"
         formState={formState}
         worksheetTitle={formState.technologyName || "Technology Consequences Map"}
+        worldName={worldName}
+        summaryTemplate={<TechConsequencesSummaryTemplate formState={formState} worldName={worldName} />}
+        fullTemplate={<TechConsequencesFullReportTemplate formState={formState} worldName={worldName} />}
+        defaultFilename="technology-consequences"
       />
 
       <ShareDialog

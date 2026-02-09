@@ -35,6 +35,7 @@ import CollapsibleSection from "@/components/tools/CollapsibleSection";
 import KeyChoicesSidebar, { KeyChoicesSection, MobileKeyChoices } from "@/components/tools/KeyChoicesSidebar";
 import ToolActionBar from "@/components/tools/ToolActionBar";
 import ExportDialog from "@/components/tools/ExportDialog";
+import { EmpireSummaryTemplate, EmpireFullReportTemplate } from "@/lib/pdf/templates";
 import ShareDialog from "@/components/sharing/ShareDialog";
 import { useWorksheetShare } from "@/hooks/use-sharing";
 import { MoodboardSection } from "@/components/moodboard";
@@ -1629,6 +1630,9 @@ const EmpireDesigner = () => {
         worksheetTitle={currentWorksheetTitle || formState.foundation.name || "Government"}
         formState={formState}
         worldName={worldName}
+        summaryTemplate={<EmpireSummaryTemplate formState={formState} worldName={worldName} />}
+        fullTemplate={<EmpireFullReportTemplate formState={formState} worldName={worldName} />}
+        defaultFilename="empire-designer"
       />
 
       <ShareDialog

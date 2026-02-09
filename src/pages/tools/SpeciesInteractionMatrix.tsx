@@ -29,6 +29,7 @@ import CollapsibleSection from "@/components/tools/CollapsibleSection";
 import KeyChoicesSidebar, { KeyChoicesSection, MobileKeyChoices } from "@/components/tools/KeyChoicesSidebar";
 import ToolActionBar from "@/components/tools/ToolActionBar";
 import ExportDialog from "@/components/tools/ExportDialog";
+import { SpeciesMatrixSummaryTemplate, SpeciesMatrixFullReportTemplate } from "@/lib/pdf/templates";
 import ShareDialog from "@/components/sharing/ShareDialog";
 import { useWorksheetShare } from "@/hooks/use-sharing";
 import { MoodboardSection } from "@/components/moodboard";
@@ -1552,6 +1553,10 @@ const SpeciesInteractionMatrix = () => {
           formState.species.filter(s => s.name).map(s => s.name).join(" & ") ||
           "Species Interaction Matrix"
         }
+        worldName={worldName}
+        summaryTemplate={<SpeciesMatrixSummaryTemplate formState={formState} worldName={worldName} />}
+        fullTemplate={<SpeciesMatrixFullReportTemplate formState={formState} worldName={worldName} />}
+        defaultFilename="species-interaction-matrix"
       />
 
       <ShareDialog
