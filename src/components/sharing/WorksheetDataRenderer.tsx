@@ -121,7 +121,7 @@ const WorksheetDataRenderer = ({ data }: WorksheetDataRendererProps) => {
 
         return (
           <GlassPanel key={key} className="p-6">
-            <h3 className="font-display font-semibold text-lg mb-4 text-foreground">
+            <h3 className="font-heading font-semibold text-lg mb-4 text-foreground">
               {formatLabel(key)}
             </h3>
             {rendered}

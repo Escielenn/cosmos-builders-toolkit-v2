@@ -25,17 +25,17 @@ interface CodeValue {
 const components: PortableTextComponents = {
   block: {
     h2: ({ children }) => (
-      <h2 className="text-2xl font-display font-semibold mt-8 mb-4">
+      <h2 className="text-2xl font-heading font-semibold mt-8 mb-4">
         {children}
       </h2>
     ),
     h3: ({ children }) => (
-      <h3 className="text-xl font-display font-semibold mt-6 mb-3">
+      <h3 className="text-xl font-heading font-semibold mt-6 mb-3">
         {children}
       </h3>
     ),
     h4: ({ children }) => (
-      <h4 className="text-lg font-display font-semibold mt-4 mb-2">
+      <h4 className="text-lg font-heading font-semibold mt-4 mb-2">
         {children}
       </h4>
     ),

@@ -57,7 +57,7 @@ const UpgradeDialog = ({ open, onOpenChange, toolName }: UpgradeDialogProps) => 
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 font-display text-xl">
+          <DialogTitle className="flex items-center gap-2 font-heading text-xl">
             <Crown className="w-5 h-5 text-amber-500" />
             Upgrade to Pro
           </DialogTitle>

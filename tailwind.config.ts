@@ -79,10 +79,13 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       fontFamily: {
-        // StellarForge Design System fonts (Inter is forbidden)
+        // StellarForge Design System v2.1 fonts (Inter is forbidden)
         sans: ["DM Sans", "system-ui", "sans-serif"],
-        display: ["Space Grotesk", "system-ui", "sans-serif"],
+        display: ["MD Nichrome", "Jura", "system-ui", "sans-serif"],
+        heading: ["Jura", "system-ui", "sans-serif"],
         mono: ["JetBrains Mono", "monospace"],
+        accent: ["Michroma", "Jura", "system-ui", "sans-serif"],
+        "sim-heading": ["Space Grotesk", "system-ui", "sans-serif"],
       },
       letterSpacing: {
         // StellarForge typography spacing

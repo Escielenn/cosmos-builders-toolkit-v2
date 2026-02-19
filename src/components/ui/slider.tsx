@@ -21,7 +21,7 @@ const Slider = React.forwardRef<
       <SliderPrimitive.Range className="absolute h-full bg-primary" />
     </SliderPrimitive.Track>
     <SliderPrimitive.Thumb
-      className="block h-6 w-6 md:h-5 md:w-5 rounded-full border-2 border-primary bg-background ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:scale-110 hover:scale-110 hover:border-primary/80 disabled:pointer-events-none disabled:opacity-50 cursor-grab active:cursor-grabbing touch-manipulation"
+      className="block h-6 w-6 md:h-5 md:w-5 rounded-full border-2 border-primary bg-background ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:scale-[1.2] hover:scale-[1.2] hover:border-primary/80 hover:shadow-[0_0_8px_hsl(var(--sf-glow-teal))] disabled:pointer-events-none disabled:opacity-50 cursor-grab active:cursor-grabbing touch-manipulation"
       style={{ touchAction: "none" }}
     />
   </SliderPrimitive.Root>

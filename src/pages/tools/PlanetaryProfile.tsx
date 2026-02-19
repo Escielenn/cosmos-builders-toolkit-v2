@@ -1,12 +1,13 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, lazy, Suspense } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { ArrowLeft, Download, Save, Info, ExternalLink, Printer, Cloud, CloudOff, Check, AlertCircle, Globe, ChevronDown, FileText, Image as ImageIcon } from "lucide-react";
+import { ArrowLeft, Download, Save, Info, ExternalLink, Printer, Check, AlertCircle, Globe, ChevronDown, FileText, Image as ImageIcon } from "lucide-react";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import ToolIntroSection from "@/components/tools/ToolIntroSection";
+import { TOOL_INTROS } from "@/lib/tool-intros";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -22,20 +23,26 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import CollapsibleSection from "@/components/tools/CollapsibleSection";
+import QuestionSection from "@/components/tools/QuestionSection";
 import KeyChoicesSidebar, { KeyChoicesSection, MobileKeyChoices } from "@/components/tools/KeyChoicesSidebar";
 import { useToast } from "@/hooks/use-toast";
 import { useWorksheets, useWorksheet, useWorksheetsByType, useRenameWorksheet } from "@/hooks/use-worksheets";
 import { WorksheetTitle } from "@/components/tools/WorksheetTitle";
+import { getToolIcon } from "@/components/icons/tool-icons";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
 import { useAuth } from "@/contexts/AuthContext";
 import SectionNavigation, { Section, MobileSectionNav } from "@/components/tools/SectionNavigation";
 import ToolSidebar from "@/components/tools/ToolSidebar";
 import ToolActionBar from "@/components/tools/ToolActionBar";
+import QuickExportButton from "@/components/tools/QuickExportButton";
 import ExportDialog from "@/components/tools/ExportDialog";
 import ShareDialog from "@/components/sharing/ShareDialog";
 import { useWorksheetShare } from "@/hooks/use-sharing";
-import { MoodboardSection } from "@/components/moodboard";
 import type { MoodboardImage } from "@/hooks/use-moodboard";
+import { WorksheetTagsBar } from "@/components/tools/WorksheetTagsBar";
+import { useTags } from "@/hooks/use-tags";
+import { WorksheetNotesSheet } from "@/components/tools/WorksheetNotesSheet";
+import { WorksheetMoodboardSheet } from "@/components/tools/WorksheetMoodboardSheet";
 import { PlanetarySummaryTemplate, PlanetaryFullReportTemplate } from "@/lib/pdf/templates";
 import { useWorlds } from "@/hooks/use-worlds";
 import { Json } from "@/integrations/supabase/types";
@@ -50,14 +57,14 @@ import {
   PLANETARY_PROFILE_SECTIONS,
 } from "@/lib/planetary-profile-data";
 
+const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
+
 // Section definitions for navigation
 const SECTIONS: Section[] = [
   ...PLANETARY_PROFILE_SECTIONS.map((s) => ({
     id: `section-${s.id}`,
     title: s.title,
   })),
-  { id: "section-notes", title: "Notes & Ideas" },
-  { id: "section-moodboard", title: "Moodboard" },
 ];
 
 // Types for form state
@@ -251,55 +258,8 @@ const EXTERNAL_RESOURCES = [
   { name: "Atomic Rockets - Planets", url: "http://www.projectrho.com/public_html/rocket/worldbuilding.php", description: "Hard SF worldbuilding" },
 ];
 
-const QuestionSection = ({
-  id,
-  label,
-  prompts,
-  example,
-  value,
-  onChange,
-}: {
-  id: string;
-  label: string;
-  prompts: string[];
-  example?: string;
-  value: string;
-  onChange: (value: string) => void;
-}) => (
-  <div className="space-y-2">
-    <div className="flex items-center gap-2">
-      <Label htmlFor={id} className="text-sm font-medium">
-        {label}
-      </Label>
-      {example && (
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Info className="w-4 h-4 text-muted-foreground cursor-help" />
-          </TooltipTrigger>
-          <TooltipContent className="max-w-sm">
-            <p className="text-xs">{example}</p>
-          </TooltipContent>
-        </Tooltip>
-      )}
-    </div>
-    {prompts.length > 0 && (
-      <ul className="text-xs text-muted-foreground mb-2 list-disc list-inside">
-        {prompts.map((prompt, i) => (
-          <li key={i}>{prompt}</li>
-        ))}
-      </ul>
-    )}
-    <Textarea
-      id={id}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      placeholder="Your response..."
-      className="min-h-[100px] bg-background/50"
-    />
-  </div>
-);
-
 const TOOL_TYPE = "planetary-profile";
+const ToolIcon = getToolIcon(TOOL_TYPE);
 
 const PlanetaryProfile = () => {
   const [formState, setFormState] = useState<FormState>(initialFormState);
@@ -310,6 +270,7 @@ const PlanetaryProfile = () => {
   const { toast } = useToast();
   const { user } = useAuth();
   const { worlds } = useWorlds();
+  const { updateWorksheetTags } = useTags();
 
   // Get URL params for worldId and worksheetId
   const [searchParams, setSearchParams] = useSearchParams();
@@ -326,6 +287,9 @@ const PlanetaryProfile = () => {
   const { data: existingWorksheets = [], isLoading: worksheetsLoading } = useWorksheetsByType(worldId || undefined, TOOL_TYPE);
   const renameWorksheet = useRenameWorksheet();
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
+  const [notesSheetOpen, setNotesSheetOpen] = useState(false);
+  const [moodboardSheetOpen, setMoodboardSheetOpen] = useState(false);
+  const [worksheetTags, setWorksheetTags] = useState<string[]>([]);
   const { data: shareConfig } = useWorksheetShare(currentWorksheetId || worksheetId || undefined);
 
   // Handle worksheet rename
@@ -335,6 +299,14 @@ const PlanetaryProfile = () => {
 
     await renameWorksheet.mutateAsync({ worksheetId: wsId, title: newTitle });
     setCurrentWorksheetTitle(newTitle);
+  };
+
+  const handleTagsChange = (newTags: string[]) => {
+    setWorksheetTags(newTags);
+    const wsId = currentWorksheetId || worksheetId;
+    if (wsId) {
+      updateWorksheetTags.mutate({ worksheetId: wsId, tags: newTags });
+    }
   };
 
   // Show worksheet selector when worldId is present but no worksheetId
@@ -353,6 +325,9 @@ const PlanetaryProfile = () => {
         setFormState(data);
         setCurrentWorksheetId(existingWorksheet.id);
         setCurrentWorksheetTitle(existingWorksheet.title);
+        if (existingWorksheet?.tags) {
+          setWorksheetTags(existingWorksheet.tags);
+        }
         toast({
           title: "Worksheet Loaded",
           description: "Your saved work has been restored from the cloud.",
@@ -620,66 +595,75 @@ const PlanetaryProfile = () => {
       <Header />
 
       <main className="container mx-auto px-4 pt-24 pb-16">
-        {/* Back Link & Title */}
+        {/* Back Link */}
+        <Link
+          to={worldId ? `/worlds/${worldId}` : "/"}
+          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          {worldId ? "Back to World" : "Back to Dashboard"}
+        </Link>
+
+        {/* Action Bar */}
+        <ToolActionBar
+          onSave={handleSave}
+          onOpen={worldId ? () => setWorksheetSelectorOpen(true) : undefined}
+          onPrint={handlePrint}
+          onExport={handleExport}
+          onShare={(currentWorksheetId || worksheetId) ? () => setShareDialogOpen(true) : undefined}
+          isShared={!!shareConfig?.enabled}
+          isCloudEnabled={!!(worldId && user)}
+          onNotesClick={() => setNotesSheetOpen(true)}
+          onMoodboardClick={() => setMoodboardSheetOpen(true)}
+          moodboardCount={formState.moodboard?.length || 0}
+          exportLabel="Export Profile"
+          className="mb-6"
+          extraActions={
+            <QuickExportButton
+              toolName="Genesis"
+              worldName={worldName}
+              formState={formState}
+              summaryTemplate={<PlanetarySummaryTemplate formState={formState} worldName={worldName} />}
+              fullTemplate={<PlanetaryFullReportTemplate formState={formState} worldName={worldName} />}
+              defaultFilename="planetary-profile"
+            />
+          }
+        />
+
+        {/* Title */}
         <div className="mb-8">
-          <Link
-            to={worldId ? `/worlds/${worldId}` : "/"}
-            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            {worldId ? "Back to World" : "Back to Dashboard"}
-          </Link>
-
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div>
-              <Badge className="mb-2">Tool 4</Badge>
-              <h1 className="font-display text-3xl md:text-4xl font-bold">
-                Planetary Profile Template
-              </h1>
-              {(currentWorksheetId || worksheetId) && (
-                <WorksheetTitle
-                  title={currentWorksheetTitle}
-                  onRename={handleRename}
-                  icon={<Globe className="w-5 h-5 text-primary" />}
-                  disabled={!user || worksheetLoading}
-                />
-              )}
-              <p className="text-muted-foreground mt-2 max-w-2xl">
-                Define your world's stellar environment, physical characteristics, atmosphere, habitability, and the narrative pressures that shape life.
-              </p>
-            </div>
-
-            <div className="flex items-center gap-2 no-print">
-              {worldId && user ? (
-                <span className="text-xs text-muted-foreground flex items-center gap-1">
-                  <Cloud className="w-3 h-3 text-green-500" />
-                  Cloud sync enabled
-                </span>
-              ) : (
-                <span className="text-xs text-muted-foreground flex items-center gap-1">
-                  <CloudOff className="w-3 h-3" />
-                  Local only
-                </span>
-              )}
-              <Button variant="outline" size="sm" onClick={handleSave} disabled={worksheetLoading}>
-                <Save className="w-4 h-4 mr-2" />
-                Save Draft
-              </Button>
-              <Button variant="outline" size="sm" onClick={handlePrint}>
-                <Printer className="w-4 h-4 mr-2" />
-                Print
-              </Button>
-              <Button size="sm" onClick={handleExport}>
-                <Download className="w-4 h-4 mr-2" />
-                Export
-              </Button>
-            </div>
+          <Badge className="mb-2">Tool 4</Badge>
+          <div className="flex items-center gap-3">
+            {ToolIcon && <ToolIcon className="w-12 h-12 rounded-full shrink-0" />}
+            <h1 className="font-display text-3xl md:text-4xl font-bold">
+              Genesis: Planetary Profile
+            </h1>
           </div>
+          <p className="text-muted-foreground mt-2 max-w-2xl">
+            Define your world's stellar environment, physical characteristics, atmosphere, habitability, and the narrative pressures that shape life.
+          </p>
+          {(currentWorksheetId || worksheetId) && (
+            <WorksheetTitle
+              title={currentWorksheetTitle}
+              onRename={handleRename}
+              icon={<Globe className="w-5 h-5 text-primary" />}
+              disabled={!user || worksheetLoading}
+            />
+          )}
+          {(currentWorksheetId || worksheetId) && (
+            <WorksheetTagsBar
+              worksheetId={(currentWorksheetId || worksheetId)!}
+              tags={worksheetTags}
+              onChange={handleTagsChange}
+            />
+          )}
         </div>
+
+        <ToolIntroSection data={TOOL_INTROS["planetary-profile"]} />
 
         {/* Introduction */}
         <GlassPanel glow className="p-6 md:p-8 mb-8">
-          <h2 className="font-display text-xl font-semibold mb-4 gradient-text">
+          <h2 className="font-heading text-xl font-semibold mb-4 gradient-text">
             Building Believable Worlds
           </h2>
           <blockquote className="border-l-2 border-primary pl-4 italic text-lg mb-4">
@@ -761,17 +745,22 @@ const PlanetaryProfile = () => {
                 </RadioGroup>
               </div>
 
-              <QuestionSection
-                id="star-type-notes"
-                label="Star Type Notes"
-                prompts={[
-                  "How does your star's type affect daily life on your planet?",
-                  "What does the sky look like? What color is sunlight?",
-                  "How does the star's lifetime affect your civilization's perspective?",
-                ]}
-                value={formState.stellarEnvironment.starTypeNotes}
-                onChange={(value) => updateStellarEnvironment("starTypeNotes", value)}
-              />
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Star Type Notes</Label>
+                <ul className="text-xs text-muted-foreground mb-2 list-disc list-inside">
+                  <li>How does your star's type affect daily life on your planet?</li>
+                  <li>What does the sky look like? What color is sunlight?</li>
+                  <li>How does the star's lifetime affect your civilization's perspective?</li>
+                </ul>
+                <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                  <RichTextEditor
+                    content={formState.stellarEnvironment.starTypeNotes}
+                    onChange={(value) => updateStellarEnvironment("starTypeNotes", value)}
+                    placeholder="Your response..."
+                    minHeight="100px"
+                  />
+                </Suspense>
+              </div>
 
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="space-y-2">
@@ -847,18 +836,32 @@ const PlanetaryProfile = () => {
                 </RadioGroup>
               </div>
 
-              <QuestionSection
-                id="tidal-locking-notes"
-                label="Tidal Locking Consequences"
-                prompts={[
-                  "If locked: How do inhabitants deal with eternal day/night?",
-                  "Where do settlements cluster? (Terminator zone?)",
-                  "How does this affect weather, culture, psychology?",
-                ]}
-                example="On a tidally locked world, civilization might cluster in the twilight terminator zone, with 'Dawnward' and 'Nightward' having distinct cultural meanings."
-                value={formState.stellarEnvironment.tidalLockingNotes}
-                onChange={(value) => updateStellarEnvironment("tidalLockingNotes", value)}
-              />
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <Label className="text-sm font-medium">Tidal Locking Consequences</Label>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Info className="w-4 h-4 text-muted-foreground cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-sm">
+                      <p className="text-xs">On a tidally locked world, civilization might cluster in the twilight terminator zone, with 'Dawnward' and 'Nightward' having distinct cultural meanings.</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
+                <ul className="text-xs text-muted-foreground mb-2 list-disc list-inside">
+                  <li>If locked: How do inhabitants deal with eternal day/night?</li>
+                  <li>Where do settlements cluster? (Terminator zone?)</li>
+                  <li>How does this affect weather, culture, psychology?</li>
+                </ul>
+                <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                  <RichTextEditor
+                    content={formState.stellarEnvironment.tidalLockingNotes}
+                    onChange={(value) => updateStellarEnvironment("tidalLockingNotes", value)}
+                    placeholder="Your response..."
+                    minHeight="100px"
+                  />
+                </Suspense>
+              </div>
             </div>
           </CollapsibleSection>
 
@@ -1095,17 +1098,22 @@ const PlanetaryProfile = () => {
                 />
               </div>
 
-              <QuestionSection
-                id="hydrosphere-notes"
-                label="Hydrosphere Notes"
-                prompts={[
-                  "How does water distribution affect settlement patterns?",
-                  "Are there unique water features (tides, currents, underground rivers)?",
-                  "What role does water play in culture and conflict?",
-                ]}
-                value={formState.hydrosphere.hydrosphereNotes}
-                onChange={(value) => updateHydrosphere("hydrosphereNotes", value)}
-              />
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Hydrosphere Notes</Label>
+                <ul className="text-xs text-muted-foreground mb-2 list-disc list-inside">
+                  <li>How does water distribution affect settlement patterns?</li>
+                  <li>Are there unique water features (tides, currents, underground rivers)?</li>
+                  <li>What role does water play in culture and conflict?</li>
+                </ul>
+                <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                  <RichTextEditor
+                    content={formState.hydrosphere.hydrosphereNotes}
+                    onChange={(value) => updateHydrosphere("hydrosphereNotes", value)}
+                    placeholder="Your response..."
+                    minHeight="100px"
+                  />
+                </Suspense>
+              </div>
             </div>
           </CollapsibleSection>
 
@@ -1152,17 +1160,22 @@ const PlanetaryProfile = () => {
                 onChange={(value) => updateTemperatureProfile("climateZones", value)}
               />
 
-              <QuestionSection
-                id="temperature-notes"
-                label="Temperature Narrative Impact"
-                prompts={[
-                  "How do inhabitants adapt to temperature?",
-                  "What technologies are required?",
-                  "How does temperature affect daily rhythms?",
-                ]}
-                value={formState.temperatureProfile.temperatureNotes}
-                onChange={(value) => updateTemperatureProfile("temperatureNotes", value)}
-              />
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Temperature Narrative Impact</Label>
+                <ul className="text-xs text-muted-foreground mb-2 list-disc list-inside">
+                  <li>How do inhabitants adapt to temperature?</li>
+                  <li>What technologies are required?</li>
+                  <li>How does temperature affect daily rhythms?</li>
+                </ul>
+                <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                  <RichTextEditor
+                    content={formState.temperatureProfile.temperatureNotes}
+                    onChange={(value) => updateTemperatureProfile("temperatureNotes", value)}
+                    placeholder="Your response..."
+                    minHeight="100px"
+                  />
+                </Suspense>
+              </div>
             </div>
           </CollapsibleSection>
 
@@ -1235,17 +1248,22 @@ const PlanetaryProfile = () => {
                 </div>
               </div>
 
-              <QuestionSection
-                id="adaptation-notes"
-                label="Adaptation Notes"
-                prompts={[
-                  "How have inhabitants adapted over time?",
-                  "What technologies are essential?",
-                  "What cultural practices emerged from adaptation?",
-                ]}
-                value={formState.habitability.adaptationNotes}
-                onChange={(value) => updateHabitability("adaptationNotes", value)}
-              />
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Adaptation Notes</Label>
+                <ul className="text-xs text-muted-foreground mb-2 list-disc list-inside">
+                  <li>How have inhabitants adapted over time?</li>
+                  <li>What technologies are essential?</li>
+                  <li>What cultural practices emerged from adaptation?</li>
+                </ul>
+                <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                  <RichTextEditor
+                    content={formState.habitability.adaptationNotes}
+                    onChange={(value) => updateHabitability("adaptationNotes", value)}
+                    placeholder="Your response..."
+                    minHeight="100px"
+                  />
+                </Suspense>
+              </div>
             </div>
           </CollapsibleSection>
 
@@ -1680,71 +1698,26 @@ const PlanetaryProfile = () => {
                 </div>
               </div>
 
-              <QuestionSection
-                id="consistency-notes"
-                label="Consistency Notes"
-                prompts={[
-                  "Any intentional inconsistencies that need explanation?",
-                  "Are there handwaves or soft-SF elements?",
-                  "What aspects need more research or development?",
-                ]}
-                value={formState.consistencyCheck.consistencyNotes}
-                onChange={(value) => updateConsistencyCheck("consistencyNotes", value)}
-              />
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Consistency Notes</Label>
+                <ul className="text-xs text-muted-foreground mb-2 list-disc list-inside">
+                  <li>Any intentional inconsistencies that need explanation?</li>
+                  <li>Are there handwaves or soft-SF elements?</li>
+                  <li>What aspects need more research or development?</li>
+                </ul>
+                <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                  <RichTextEditor
+                    content={formState.consistencyCheck.consistencyNotes}
+                    onChange={(value) => updateConsistencyCheck("consistencyNotes", value)}
+                    placeholder="Your response..."
+                    minHeight="100px"
+                  />
+                </Suspense>
+              </div>
             </div>
           </CollapsibleSection>
 
-          {/* Notes & Ideas Section */}
-          <CollapsibleSection
-            id="section-notes"
-            title="Notes & Ideas"
-            icon={<FileText className="w-5 h-5 text-primary" />}
-            defaultOpen={false}
-          >
-            <div className="space-y-2">
-              <p className="text-sm text-muted-foreground">
-                Jot down ideas, story hooks, or reminders for this worksheet.
-              </p>
-              <Textarea
-                placeholder="Your notes and ideas..."
-                value={formState.generalNotes}
-                onChange={(e) => setFormState(prev => ({ ...prev, generalNotes: e.target.value }))}
-                className="min-h-[150px] resize-y"
-              />
-            </div>
-          </CollapsibleSection>
-
-          {/* Moodboard Section */}
-          <CollapsibleSection
-            id="section-moodboard"
-            title="Moodboard"
-            icon={<ImageIcon className="w-5 h-5 text-primary" />}
-            defaultOpen={false}
-            badge={formState.moodboard?.length || undefined}
-          >
-            <div className="space-y-2">
-              <p className="text-sm text-muted-foreground">
-                Add reference images to inspire your design.
-              </p>
-              <MoodboardSection
-                worksheetId={currentWorksheetId || "local"}
-                images={formState.moodboard || []}
-                onImagesChange={(images) => setFormState(prev => ({ ...prev, moodboard: images }))}
-              />
-            </div>
-          </CollapsibleSection>
         </div>
-
-        {/* Bottom Action Bar */}
-        <ToolActionBar
-          onSave={handleSave}
-          onPrint={handlePrint}
-          onExport={handleExport}
-          onShare={(currentWorksheetId || worksheetId) ? () => setShareDialogOpen(true) : undefined}
-          isShared={!!shareConfig?.enabled}
-          exportLabel="Export Profile"
-          className="mt-8"
-        />
 
         {/* Desktop Sidebars - Right side */}
         <ToolSidebar>
@@ -1759,13 +1732,28 @@ const PlanetaryProfile = () => {
         </div>
       </main>
 
+      <WorksheetNotesSheet
+        open={notesSheetOpen}
+        onOpenChange={setNotesSheetOpen}
+        content={formState.generalNotes}
+        onChange={(html) => setFormState(prev => ({ ...prev, generalNotes: html }))}
+      />
+
+      <WorksheetMoodboardSheet
+        open={moodboardSheetOpen}
+        onOpenChange={setMoodboardSheetOpen}
+        worksheetId={currentWorksheetId || "local"}
+        images={formState.moodboard || []}
+        onImagesChange={(images) => setFormState(prev => ({ ...prev, moodboard: images }))}
+      />
+
       <Footer />
 
       {/* Export Dialog */}
       <ExportDialog
         open={exportDialogOpen}
         onOpenChange={setExportDialogOpen}
-        toolName="Planetary Profile"
+        toolName="Genesis"
         worldName={worldName}
         formState={formState}
         summaryTemplate={<PlanetarySummaryTemplate formState={formState} worldName={worldName} />}
@@ -1789,7 +1777,7 @@ const PlanetaryProfile = () => {
           worldId={worldId}
           worldName={worldName}
           toolType={TOOL_TYPE}
-          toolDisplayName="Planetary Profile"
+          toolDisplayName="Genesis"
           worksheets={existingWorksheets}
           isLoading={worksheetsLoading}
           onSelect={handleWorksheetSelect}

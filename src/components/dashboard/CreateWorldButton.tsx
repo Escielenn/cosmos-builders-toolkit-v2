@@ -60,7 +60,7 @@ const CreateWorldButton = () => {
             <Plus className="w-7 h-7 text-primary" />
           </div>
           <div className="text-center">
-            <h3 className="font-display font-semibold text-lg">Create New World</h3>
+            <h3 className="font-heading font-semibold text-lg">Create New World</h3>
             <p className="text-sm text-muted-foreground mt-1">
               Start building your universe
             </p>
@@ -75,26 +75,28 @@ const CreateWorldButton = () => {
       <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle className="font-display text-xl">Create New World</DialogTitle>
+            <DialogTitle className="font-heading text-xl">Create New World</DialogTitle>
             <DialogDescription>
               Give your world a name, icon, and optional description.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 mt-4">
             {/* Icon and Name Row */}
-            <div className="flex items-end gap-3">
-              <div className="space-y-2">
-                <Label>Icon</Label>
-                <IconPicker value={worldIcon} onChange={setWorldIcon} />
-              </div>
-              <div className="space-y-2 flex-1">
+            <div className="space-y-2">
+              <div className="flex gap-4">
+                <Label className="w-12 shrink-0 text-center">Icon</Label>
                 <Label htmlFor="world-name">World Name</Label>
-                <Input
-                  id="world-name"
-                  placeholder="e.g., Kepler-442b Colony"
-                  value={worldName}
-                  onChange={(e) => setWorldName(e.target.value)}
-                />
+              </div>
+              <div className="flex items-end gap-4">
+                <IconPicker value={worldIcon} onChange={setWorldIcon} />
+                <div className="flex-1">
+                  <Input
+                    id="world-name"
+                    placeholder="e.g., Kepler-442b Colony"
+                    value={worldName}
+                    onChange={(e) => setWorldName(e.target.value)}
+                  />
+                </div>
               </div>
             </div>
             <div className="space-y-2">

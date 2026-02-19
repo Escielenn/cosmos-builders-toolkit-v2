@@ -1,8 +1,14 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, lazy, Suspense } from "react";
+import { WorksheetTagsBar } from "@/components/tools/WorksheetTagsBar";
+import { useTags } from "@/hooks/use-tags";
+const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
 import { Link, useSearchParams } from "react-router-dom";
-import { ArrowLeft, Download, Save, Cloud, CloudOff, Cpu, RefreshCw, FileText, Image as ImageIcon } from "lucide-react";
+import { ArrowLeft, RefreshCw, FileText, Image as ImageIcon } from "lucide-react";
+import { getToolIcon } from "@/components/icons/tool-icons";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import ToolIntroSection from "@/components/tools/ToolIntroSection";
+import { TOOL_INTROS } from "@/lib/tool-intros";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -28,12 +34,14 @@ import ToolSidebar from "@/components/tools/ToolSidebar";
 import CollapsibleSection from "@/components/tools/CollapsibleSection";
 import KeyChoicesSidebar, { KeyChoicesSection, MobileKeyChoices } from "@/components/tools/KeyChoicesSidebar";
 import ToolActionBar from "@/components/tools/ToolActionBar";
+import QuickExportButton from "@/components/tools/QuickExportButton";
 import ExportDialog from "@/components/tools/ExportDialog";
 import { TechConsequencesSummaryTemplate, TechConsequencesFullReportTemplate } from "@/lib/pdf/templates";
 import ShareDialog from "@/components/sharing/ShareDialog";
 import { useWorksheetShare } from "@/hooks/use-sharing";
-import { MoodboardSection } from "@/components/moodboard";
 import type { MoodboardImage } from "@/hooks/use-moodboard";
+import { WorksheetNotesSheet } from "@/components/tools/WorksheetNotesSheet";
+import { WorksheetMoodboardSheet } from "@/components/tools/WorksheetMoodboardSheet";
 import UpgradeDialog from "@/components/subscription/UpgradeDialog";
 import { useWorlds } from "@/hooks/use-worlds";
 import { Json } from "@/integrations/supabase/types";
@@ -63,8 +71,6 @@ const SECTIONS: Section[] = [
   { id: "section-psychological", title: "7. Psychological Consequences" },
   { id: "section-examples", title: "SF Examples" },
   { id: "section-synthesis", title: "Synthesis" },
-  { id: "section-notes", title: "Notes & Ideas" },
-  { id: "section-moodboard", title: "Moodboard" },
 ];
 
 interface FormState {
@@ -219,6 +225,7 @@ const initialFormState: FormState = {
 };
 
 const TOOL_TYPE = "technology-consequences";
+const ToolIcon = getToolIcon(TOOL_TYPE);
 
 const TechnologyConsequences = () => {
   const [formState, setFormState] = useState<FormState>(initialFormState);
@@ -246,7 +253,11 @@ const TechnologyConsequences = () => {
   const { data: existingWorksheets = [], isLoading: worksheetsLoading } = useWorksheetsByType(worldId || undefined, TOOL_TYPE);
   const renameWorksheet = useRenameWorksheet();
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
+  const [notesSheetOpen, setNotesSheetOpen] = useState(false);
+  const [moodboardSheetOpen, setMoodboardSheetOpen] = useState(false);
   const { data: shareConfig } = useWorksheetShare(currentWorksheetId || worksheetId || undefined);
+  const { updateWorksheetTags } = useTags();
+  const [worksheetTags, setWorksheetTags] = useState<string[]>([]);
 
   useEffect(() => {
     if (user && !isSubscribed) {
@@ -267,6 +278,9 @@ const TechnologyConsequences = () => {
         setFormState(data);
         setCurrentWorksheetId(existingWorksheet.id);
         setCurrentWorksheetTitle(existingWorksheet.title);
+        if (existingWorksheet.tags) {
+          setWorksheetTags(existingWorksheet.tags);
+        }
         toast({
           title: "Worksheet Loaded",
           description: "Your saved work has been restored from the cloud.",
@@ -408,6 +422,14 @@ const TechnologyConsequences = () => {
     setCurrentWorksheetTitle(newTitle);
   };
 
+  const handleTagsChange = (newTags: string[]) => {
+    setWorksheetTags(newTags);
+    const wsId = currentWorksheetId || worksheetId;
+    if (wsId) {
+      updateWorksheetTags.mutate({ worksheetId: wsId, tags: newTags });
+    }
+  };
+
   const generateRandomContradiction = () => {
     setRandomContradiction(CONTRADICTION_PROMPTS[Math.floor(Math.random() * CONTRADICTION_PROMPTS.length)]);
   };
@@ -421,50 +443,47 @@ const TechnologyConsequences = () => {
       <Header />
 
       <main className="container mx-auto px-4 pt-20 pb-24">
-        <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
-          <div className="flex items-center gap-4">
-            <Link
-              to={worldId ? `/worlds/${worldId}` : "/"}
-              className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              <span className="text-sm">
-                {worldId ? `Back to ${worldName || "World"}` : "Back to Tools"}
-              </span>
-            </Link>
-          </div>
+        {/* Back Link */}
+        <Link
+          to={worldId ? `/worlds/${worldId}` : "/"}
+          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          {worldId ? `Back to ${worldName || "World"}` : "Back to Tools"}
+        </Link>
 
-          <div className="flex items-center gap-2">
-            {worldId && user ? (
-              <Badge variant="outline" className="gap-1.5">
-                <Cloud className="w-3 h-3" />
-                Cloud Sync
-              </Badge>
-            ) : (
-              <Badge variant="secondary" className="gap-1.5">
-                <CloudOff className="w-3 h-3" />
-                Local Only
-              </Badge>
-            )}
-            {(currentWorksheetId || worksheetId) && (
-              <WorksheetTitle
-                title={currentWorksheetTitle}
-                onRename={handleRename}
-                icon={<FileText className="w-4 h-4 text-primary" />}
-                disabled={!user || worksheetLoading}
-              />
-            )}
-          </div>
-        </div>
+        {/* Action Bar */}
+        <ToolActionBar
+          onSave={handleSave}
+          onOpen={worldId ? () => setWorksheetSelectorOpen(true) : undefined}
+          onExport={() => setExportDialogOpen(true)}
+          onShare={(currentWorksheetId || worksheetId) ? () => setShareDialogOpen(true) : undefined}
+          isShared={!!shareConfig?.enabled}
+          isSaving={updateWorksheet.isPending}
+          isCloudEnabled={!!(worldId && user)}
+          onNotesClick={() => setNotesSheetOpen(true)}
+          onMoodboardClick={() => setMoodboardSheetOpen(true)}
+          moodboardCount={formState.moodboard?.length || 0}
+          className="mb-6"
+          extraActions={
+            <QuickExportButton
+              toolName="Paradigm"
+              worldName={worldName}
+              formState={formState}
+              summaryTemplate={<TechConsequencesSummaryTemplate formState={formState} worldName={worldName} />}
+              fullTemplate={<TechConsequencesFullReportTemplate formState={formState} worldName={worldName} />}
+              defaultFilename="technology-consequences"
+            />
+          }
+        />
 
+        {/* Title */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 rounded-xl bg-cyan-500/10 flex items-center justify-center">
-              <Cpu className="w-5 h-5 text-cyan-500" />
-            </div>
+            {ToolIcon && <ToolIcon className="w-12 h-12 rounded-full shrink-0" />}
             <div>
-              <h1 className="font-display text-2xl md:text-3xl font-light">
-                Technology Consequences Map
+              <h1 className="font-display text-2xl md:text-3xl font-bold">
+                Paradigm: Technology Consequences
               </h1>
               <p className="text-sm text-muted-foreground">
                 Map how any technology cascades through society
@@ -472,6 +491,21 @@ const TechnologyConsequences = () => {
             </div>
           </div>
           <Badge variant="secondary" className="mt-2">Pro Tool</Badge>
+          {(currentWorksheetId || worksheetId) && (
+            <WorksheetTitle
+              title={currentWorksheetTitle}
+              onRename={handleRename}
+              icon={<FileText className="w-4 h-4 text-primary" />}
+              disabled={!user || worksheetLoading}
+            />
+          )}
+          {(currentWorksheetId || worksheetId) && (
+            <WorksheetTagsBar
+              worksheetId={(currentWorksheetId || worksheetId)!}
+              tags={worksheetTags}
+              onChange={handleTagsChange}
+            />
+          )}
         </div>
 
         <div className="lg:hidden mb-6 space-y-4">
@@ -481,6 +515,8 @@ const TechnologyConsequences = () => {
 
         <div className="flex gap-8">
           <div className="flex-1 space-y-6 max-w-4xl">
+            <ToolIntroSection data={TOOL_INTROS["technology-consequences"]} />
+
             {/* Section 1: Technology Definition */}
             <CollapsibleSection
               id="section-definition"
@@ -612,12 +648,14 @@ const TechnologyConsequences = () => {
                       </div>
                     ))}
                   </RadioGroup>
-                  <Textarea
-                    value={formState.infrastructureNotes}
-                    onChange={(e) => updateField("infrastructureNotes", e.target.value)}
-                    placeholder="Describe specific infrastructure changes..."
-                    rows={2}
-                  />
+                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                    <RichTextEditor
+                      content={formState.infrastructureNotes}
+                      onChange={(value) => updateField("infrastructureNotes", value)}
+                      placeholder="Describe specific infrastructure changes..."
+                      minHeight="100px"
+                    />
+                  </Suspense>
                 </div>
 
                 <div className="space-y-4">
@@ -637,12 +675,14 @@ const TechnologyConsequences = () => {
                       </div>
                     ))}
                   </RadioGroup>
-                  <Textarea
-                    value={formState.environmentNotes}
-                    onChange={(e) => updateField("environmentNotes", e.target.value)}
-                    placeholder="Describe specific environmental impacts..."
-                    rows={2}
-                  />
+                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                    <RichTextEditor
+                      content={formState.environmentNotes}
+                      onChange={(value) => updateField("environmentNotes", value)}
+                      placeholder="Describe specific environmental impacts..."
+                      minHeight="100px"
+                    />
+                  </Suspense>
                 </div>
 
                 <div className="space-y-4">
@@ -662,12 +702,14 @@ const TechnologyConsequences = () => {
                       </div>
                     ))}
                   </RadioGroup>
-                  <Textarea
-                    value={formState.resourceNotes}
-                    onChange={(e) => updateField("resourceNotes", e.target.value)}
-                    placeholder="Describe specific resource implications..."
-                    rows={2}
-                  />
+                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                    <RichTextEditor
+                      content={formState.resourceNotes}
+                      onChange={(value) => updateField("resourceNotes", value)}
+                      placeholder="Describe specific resource implications..."
+                      minHeight="100px"
+                    />
+                  </Suspense>
                 </div>
 
                 <div className="space-y-2">
@@ -715,12 +757,14 @@ const TechnologyConsequences = () => {
                       </div>
                     ))}
                   </RadioGroup>
-                  <Textarea
-                    value={formState.industryNotes}
-                    onChange={(e) => updateField("industryNotes", e.target.value)}
-                    placeholder="Which industries are affected?"
-                    rows={2}
-                  />
+                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                    <RichTextEditor
+                      content={formState.industryNotes}
+                      onChange={(value) => updateField("industryNotes", value)}
+                      placeholder="Which industries are affected?"
+                      minHeight="100px"
+                    />
+                  </Suspense>
                 </div>
 
                 <div className="space-y-4">
@@ -740,12 +784,14 @@ const TechnologyConsequences = () => {
                       </div>
                     ))}
                   </RadioGroup>
-                  <Textarea
-                    value={formState.employmentNotes}
-                    onChange={(e) => updateField("employmentNotes", e.target.value)}
-                    placeholder="What jobs appear or disappear?"
-                    rows={2}
-                  />
+                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                    <RichTextEditor
+                      content={formState.employmentNotes}
+                      onChange={(value) => updateField("employmentNotes", value)}
+                      placeholder="What jobs appear or disappear?"
+                      minHeight="100px"
+                    />
+                  </Suspense>
                 </div>
 
                 <div className="space-y-4">
@@ -765,12 +811,14 @@ const TechnologyConsequences = () => {
                       </div>
                     ))}
                   </RadioGroup>
-                  <Textarea
-                    value={formState.wealthNotes}
-                    onChange={(e) => updateField("wealthNotes", e.target.value)}
-                    placeholder="Who gets richer? Who gets poorer?"
-                    rows={2}
-                  />
+                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                    <RichTextEditor
+                      content={formState.wealthNotes}
+                      onChange={(value) => updateField("wealthNotes", value)}
+                      placeholder="Who gets richer? Who gets poorer?"
+                      minHeight="100px"
+                    />
+                  </Suspense>
                 </div>
               </div>
             </CollapsibleSection>
@@ -799,12 +847,14 @@ const TechnologyConsequences = () => {
                       </div>
                     ))}
                   </RadioGroup>
-                  <Textarea
-                    value={formState.classNotes}
-                    onChange={(e) => updateField("classNotes", e.target.value)}
-                    placeholder="How does this affect social stratification?"
-                    rows={2}
-                  />
+                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                    <RichTextEditor
+                      content={formState.classNotes}
+                      onChange={(value) => updateField("classNotes", value)}
+                      placeholder="How does this affect social stratification?"
+                      minHeight="100px"
+                    />
+                  </Suspense>
                 </div>
 
                 <div className="space-y-4">
@@ -824,12 +874,14 @@ const TechnologyConsequences = () => {
                       </div>
                     ))}
                   </RadioGroup>
-                  <Textarea
-                    value={formState.familyNotes}
-                    onChange={(e) => updateField("familyNotes", e.target.value)}
-                    placeholder="How does this affect family structures?"
-                    rows={2}
-                  />
+                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                    <RichTextEditor
+                      content={formState.familyNotes}
+                      onChange={(value) => updateField("familyNotes", value)}
+                      placeholder="How does this affect family structures?"
+                      minHeight="100px"
+                    />
+                  </Suspense>
                 </div>
 
                 <div className="space-y-4">
@@ -849,12 +901,14 @@ const TechnologyConsequences = () => {
                       </div>
                     ))}
                   </RadioGroup>
-                  <Textarea
-                    value={formState.communityNotes}
-                    onChange={(e) => updateField("communityNotes", e.target.value)}
-                    placeholder="How does this affect communities?"
-                    rows={2}
-                  />
+                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                    <RichTextEditor
+                      content={formState.communityNotes}
+                      onChange={(value) => updateField("communityNotes", value)}
+                      placeholder="How does this affect communities?"
+                      minHeight="100px"
+                    />
+                  </Suspense>
                 </div>
 
                 <div className="space-y-4">
@@ -874,12 +928,14 @@ const TechnologyConsequences = () => {
                       </div>
                     ))}
                   </RadioGroup>
-                  <Textarea
-                    value={formState.identityNotes}
-                    onChange={(e) => updateField("identityNotes", e.target.value)}
-                    placeholder="How does this affect identity?"
-                    rows={2}
-                  />
+                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                    <RichTextEditor
+                      content={formState.identityNotes}
+                      onChange={(value) => updateField("identityNotes", value)}
+                      placeholder="How does this affect identity?"
+                      minHeight="100px"
+                    />
+                  </Suspense>
                 </div>
               </div>
             </CollapsibleSection>
@@ -908,12 +964,14 @@ const TechnologyConsequences = () => {
                       </div>
                     ))}
                   </RadioGroup>
-                  <Textarea
-                    value={formState.powerNotes}
-                    onChange={(e) => updateField("powerNotes", e.target.value)}
-                    placeholder="Who gains power? Who loses it?"
-                    rows={2}
-                  />
+                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                    <RichTextEditor
+                      content={formState.powerNotes}
+                      onChange={(value) => updateField("powerNotes", value)}
+                      placeholder="Who gains power? Who loses it?"
+                      minHeight="100px"
+                    />
+                  </Suspense>
                 </div>
 
                 <div className="space-y-4">
@@ -933,12 +991,14 @@ const TechnologyConsequences = () => {
                       </div>
                     ))}
                   </RadioGroup>
-                  <Textarea
-                    value={formState.surveillanceNotes}
-                    onChange={(e) => updateField("surveillanceNotes", e.target.value)}
-                    placeholder="How does this affect surveillance?"
-                    rows={2}
-                  />
+                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                    <RichTextEditor
+                      content={formState.surveillanceNotes}
+                      onChange={(value) => updateField("surveillanceNotes", value)}
+                      placeholder="How does this affect surveillance?"
+                      minHeight="100px"
+                    />
+                  </Suspense>
                 </div>
 
                 <div className="space-y-4">
@@ -958,12 +1018,14 @@ const TechnologyConsequences = () => {
                       </div>
                     ))}
                   </RadioGroup>
-                  <Textarea
-                    value={formState.governanceNotes}
-                    onChange={(e) => updateField("governanceNotes", e.target.value)}
-                    placeholder="How does this affect governance?"
-                    rows={2}
-                  />
+                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                    <RichTextEditor
+                      content={formState.governanceNotes}
+                      onChange={(value) => updateField("governanceNotes", value)}
+                      placeholder="How does this affect governance?"
+                      minHeight="100px"
+                    />
+                  </Suspense>
                 </div>
               </div>
             </CollapsibleSection>
@@ -992,12 +1054,14 @@ const TechnologyConsequences = () => {
                       </div>
                     ))}
                   </RadioGroup>
-                  <Textarea
-                    value={formState.warfareNotes}
-                    onChange={(e) => updateField("warfareNotes", e.target.value)}
-                    placeholder="How does this change warfare?"
-                    rows={2}
-                  />
+                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                    <RichTextEditor
+                      content={formState.warfareNotes}
+                      onChange={(value) => updateField("warfareNotes", value)}
+                      placeholder="How does this change warfare?"
+                      minHeight="100px"
+                    />
+                  </Suspense>
                 </div>
 
                 <div className="space-y-4">
@@ -1017,12 +1081,14 @@ const TechnologyConsequences = () => {
                       </div>
                     ))}
                   </RadioGroup>
-                  <Textarea
-                    value={formState.defenseNotes}
-                    onChange={(e) => updateField("defenseNotes", e.target.value)}
-                    placeholder="Attack vs defense balance?"
-                    rows={2}
-                  />
+                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                    <RichTextEditor
+                      content={formState.defenseNotes}
+                      onChange={(value) => updateField("defenseNotes", value)}
+                      placeholder="Attack vs defense balance?"
+                      minHeight="100px"
+                    />
+                  </Suspense>
                 </div>
 
                 <div className="space-y-4">
@@ -1042,12 +1108,14 @@ const TechnologyConsequences = () => {
                       </div>
                     ))}
                   </RadioGroup>
-                  <Textarea
-                    value={formState.deterrenceNotes}
-                    onChange={(e) => updateField("deterrenceNotes", e.target.value)}
-                    placeholder="How does this affect deterrence?"
-                    rows={2}
-                  />
+                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                    <RichTextEditor
+                      content={formState.deterrenceNotes}
+                      onChange={(value) => updateField("deterrenceNotes", value)}
+                      placeholder="How does this affect deterrence?"
+                      minHeight="100px"
+                    />
+                  </Suspense>
                 </div>
               </div>
             </CollapsibleSection>
@@ -1076,12 +1144,14 @@ const TechnologyConsequences = () => {
                       </div>
                     ))}
                   </RadioGroup>
-                  <Textarea
-                    value={formState.perceptionNotes}
-                    onChange={(e) => updateField("perceptionNotes", e.target.value)}
-                    placeholder="How does this change perception?"
-                    rows={2}
-                  />
+                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                    <RichTextEditor
+                      content={formState.perceptionNotes}
+                      onChange={(value) => updateField("perceptionNotes", value)}
+                      placeholder="How does this change perception?"
+                      minHeight="100px"
+                    />
+                  </Suspense>
                 </div>
 
                 <div className="space-y-4">
@@ -1101,12 +1171,14 @@ const TechnologyConsequences = () => {
                       </div>
                     ))}
                   </RadioGroup>
-                  <Textarea
-                    value={formState.valuesNotes}
-                    onChange={(e) => updateField("valuesNotes", e.target.value)}
-                    placeholder="How does this affect values?"
-                    rows={2}
-                  />
+                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                    <RichTextEditor
+                      content={formState.valuesNotes}
+                      onChange={(value) => updateField("valuesNotes", value)}
+                      placeholder="How does this affect values?"
+                      minHeight="100px"
+                    />
+                  </Suspense>
                 </div>
 
                 <div className="space-y-4">
@@ -1126,12 +1198,14 @@ const TechnologyConsequences = () => {
                       </div>
                     ))}
                   </RadioGroup>
-                  <Textarea
-                    value={formState.fearsNotes}
-                    onChange={(e) => updateField("fearsNotes", e.target.value)}
-                    placeholder="What new fears emerge?"
-                    rows={2}
-                  />
+                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                    <RichTextEditor
+                      content={formState.fearsNotes}
+                      onChange={(value) => updateField("fearsNotes", value)}
+                      placeholder="What new fears emerge?"
+                      minHeight="100px"
+                    />
+                  </Suspense>
                 </div>
               </div>
             </CollapsibleSection>
@@ -1275,45 +1349,6 @@ const TechnologyConsequences = () => {
               </div>
             </CollapsibleSection>
 
-            {/* Notes & Ideas Section */}
-            <CollapsibleSection
-              id="section-notes"
-              title="Notes & Ideas"
-              icon={<FileText className="w-5 h-5 text-primary" />}
-              defaultOpen={false}
-            >
-              <div className="space-y-2">
-                <p className="text-sm text-muted-foreground">
-                  Jot down ideas, story hooks, or reminders for this worksheet.
-                </p>
-                <Textarea
-                  placeholder="Your notes and ideas..."
-                  value={formState.generalNotes}
-                  onChange={(e) => setFormState(prev => ({ ...prev, generalNotes: e.target.value }))}
-                  className="min-h-[150px] resize-y"
-                />
-              </div>
-            </CollapsibleSection>
-
-            {/* Moodboard Section */}
-            <CollapsibleSection
-              id="section-moodboard"
-              title="Moodboard"
-              icon={<ImageIcon className="w-5 h-5 text-primary" />}
-              defaultOpen={false}
-              badge={formState.moodboard?.length || undefined}
-            >
-              <div className="space-y-2">
-                <p className="text-sm text-muted-foreground">
-                  Add reference images to inspire your design.
-                </p>
-                <MoodboardSection
-                  worksheetId={currentWorksheetId || "local"}
-                  images={formState.moodboard || []}
-                  onImagesChange={(images) => setFormState(prev => ({ ...prev, moodboard: images }))}
-                />
-              </div>
-            </CollapsibleSection>
           </div>
 
           {/* Sidebars */}
@@ -1325,20 +1360,27 @@ const TechnologyConsequences = () => {
         </div>
       </main>
 
-      <Footer />
-
-      <ToolActionBar
-        onSave={handleSave}
-        onExport={() => setExportDialogOpen(true)}
-        onShare={(currentWorksheetId || worksheetId) ? () => setShareDialogOpen(true) : undefined}
-        isShared={!!shareConfig?.enabled}
-        isSaving={updateWorksheet.isPending}
+      <WorksheetNotesSheet
+        open={notesSheetOpen}
+        onOpenChange={setNotesSheetOpen}
+        content={formState.generalNotes}
+        onChange={(html) => setFormState(prev => ({ ...prev, generalNotes: html }))}
       />
+
+      <WorksheetMoodboardSheet
+        open={moodboardSheetOpen}
+        onOpenChange={setMoodboardSheetOpen}
+        worksheetId={currentWorksheetId || "local"}
+        images={formState.moodboard || []}
+        onImagesChange={(images) => setFormState(prev => ({ ...prev, moodboard: images }))}
+      />
+
+      <Footer />
 
       <ExportDialog
         open={exportDialogOpen}
         onOpenChange={setExportDialogOpen}
-        toolName="Technology Consequences Map"
+        toolName="Paradigm"
         formState={formState}
         worksheetTitle={formState.technologyName || "Technology Consequences Map"}
         worldName={worldName}
@@ -1361,7 +1403,7 @@ const TechnologyConsequences = () => {
         worldId={worldId!}
         worldName={worldName}
         toolType={TOOL_TYPE}
-        toolDisplayName="Technology Consequences"
+        toolDisplayName="Paradigm"
         worksheets={existingWorksheets}
         isLoading={worksheetsLoading}
         onSelect={handleWorksheetSelect}

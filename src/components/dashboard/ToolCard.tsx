@@ -40,10 +40,10 @@ const ToolCard = ({
     >
       <div className="flex items-start justify-between">
         {CustomIcon ? (
-          <CustomIcon className={`w-12 h-12 rounded-xl ${!canAccess ? "opacity-50 grayscale" : ""}`} />
+          <CustomIcon className={`w-12 h-12 rounded-full sf-card-icon ${!canAccess ? "opacity-50 grayscale" : ""}`} />
         ) : FallbackIcon ? (
           <div
-            className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+            className={`w-12 h-12 rounded-full flex items-center justify-center ${
               canAccess
                 ? "bg-gradient-to-br from-primary to-accent"
                 : "bg-muted"
@@ -56,19 +56,21 @@ const ToolCard = ({
             />
           </div>
         ) : (
-          <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center">
+          <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
             <span className="text-muted-foreground">?</span>
           </div>
         )}
         <div className="flex items-center gap-2">
           {isPro && isSubscribed && (
-            <Badge variant="secondary" className="text-xs bg-green-500/20 text-green-600 dark:text-green-400">
-              <Unlock className="w-3 h-3 mr-1" />
-              Unlocked
+            <Badge variant="secondary" className="group/badge text-xs bg-green-500/20 text-green-600 dark:text-green-400 cursor-default">
+              <Unlock className="w-3 h-3" />
+              <span className="inline-block max-w-0 overflow-hidden opacity-0 group-hover/badge:max-w-[5rem] group-hover/badge:opacity-100 group-hover/badge:ml-1 transition-all duration-300 ease-out whitespace-nowrap">
+                Unlocked
+              </span>
             </Badge>
           )}
           {isPro && !isSubscribed && (
-            <Badge variant="secondary" className="text-xs bg-amber-500/20 text-amber-600 dark:text-amber-400">
+            <Badge variant="secondary" className="text-xs bg-amber-500/20 text-amber-600 dark:text-amber-400 sf-shimmer">
               <Crown className="w-3 h-3 mr-1" />
               Pro
             </Badge>
@@ -84,19 +86,19 @@ const ToolCard = ({
       <div className="flex-1">
         {canAccess ? (
           <Link to={`/tools/${id}`}>
-            <h3 className="font-display font-semibold text-lg hover:text-primary transition-colors">
+            <h3 className="font-heading font-semibold text-lg hover:text-primary transition-colors">
               {title}
             </h3>
           </Link>
         ) : isLocked ? (
           <Link to="/pricing">
-            <h3 className="font-display font-semibold text-lg text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2">
+            <h3 className="font-heading font-semibold text-lg text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2">
               <Lock className="w-4 h-4" />
               {title}
             </h3>
           </Link>
         ) : (
-          <h3 className="font-display font-semibold text-lg text-muted-foreground">
+          <h3 className="font-heading font-semibold text-lg text-muted-foreground">
             {title}
           </h3>
         )}

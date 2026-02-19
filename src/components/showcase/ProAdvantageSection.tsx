@@ -79,7 +79,7 @@ const ProAdvantageSection = () => {
                 </div>
                 <div>
                   <div className="flex items-center gap-2 mb-2">
-                    <h3 className="font-display font-light text-lg">
+                    <h3 className="font-heading font-light text-lg">
                       {benefit.title}
                     </h3>
                     {benefit.comingSoon && (

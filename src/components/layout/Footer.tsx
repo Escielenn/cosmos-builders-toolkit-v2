@@ -14,6 +14,7 @@ const Footer = () => {
     ],
     resources: [
       { name: "Learn", href: "/learn" },
+      { name: "Bookshelf", href: "/bookshelf" },
       { name: "Changelog", href: "/changelog" },
       { name: "Contact", href: "/contact" },
     ],
@@ -98,7 +99,7 @@ const Footer = () => {
 
           {/* Product */}
           <div>
-            <h3 className="font-display text-xs font-medium uppercase tracking-wider text-foreground mb-4">
+            <h3 className="font-heading text-xs font-medium uppercase tracking-wider text-foreground mb-4">
               Product
             </h3>
             <ul className="space-y-3">
@@ -117,7 +118,7 @@ const Footer = () => {
 
           {/* Resources */}
           <div>
-            <h3 className="font-display text-xs font-medium uppercase tracking-wider text-foreground mb-4">
+            <h3 className="font-heading text-xs font-medium uppercase tracking-wider text-foreground mb-4">
               Resources
             </h3>
             <ul className="space-y-3">
@@ -136,7 +137,7 @@ const Footer = () => {
 
           {/* Legal */}
           <div>
-            <h3 className="font-display text-xs font-medium uppercase tracking-wider text-foreground mb-4">
+            <h3 className="font-heading text-xs font-medium uppercase tracking-wider text-foreground mb-4">
               Legal
             </h3>
             <ul className="space-y-3">
@@ -171,7 +172,7 @@ const Footer = () => {
                 production
               </p>
               <p className="mt-1">
-                © {currentYear}{" "}
+                © 2025–{currentYear}{" "}
                 <a
                   href="https://jbatt.com"
                   target="_blank"
@@ -181,6 +182,9 @@ const Footer = () => {
                   Jason D. Batt, Ph.D.
                 </a>{" "}
                 All rights reserved.
+              </p>
+              <p className="mt-1">
+                Unauthorized copying, modification, or distribution prohibited.
               </p>
             </div>
             <p className="text-xs text-muted-foreground">

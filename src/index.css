@@ -51,6 +51,20 @@
     --shadow-glass: 0 8px 32px hsl(220 20% 10% / 0.1);
     --shadow-glow: 0 0 40px hsl(220 70% 50% / 0.2);
 
+    /* Animation tokens */
+    --duration-instant: 100ms;
+    --duration-fast: 150ms;
+    --duration-normal: 200ms;
+    --duration-smooth: 300ms;
+    --duration-dramatic: 500ms;
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --ease-spring: cubic-bezier(0.5, 1.5, 0.5, 1);
+    --glow-cyan: 0 0 20px rgba(0, 212, 255, 0.3);
+    --glow-cyan-subtle: 0 0 12px rgba(0, 212, 255, 0.15);
+    --glow-primary: 0 0 20px rgba(61, 255, 205, 0.3);
+    --glow-primary-subtle: 0 0 12px rgba(61, 255, 205, 0.15);
+
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 220 10% 30%;
     --sidebar-primary: 220 70% 50%;
@@ -84,8 +98,24 @@
     --sf-crimson: 347 100% 60%;          /* #FF3366 */
     --sf-azure: 215 100% 65%;            /* #4D9FFF */
 
+    /* v2.1 Primary Teal (replaces cyan on website shell) */
+    --sf-teal: 157 100% 62%;              /* #3DFFCD */
+    --sf-glow-teal: 157 100% 62% / 0.2;
+
+    /* v2.1 Amber accent (data highlights, velocity ticker, warnings) */
+    --sf-accent-amber: 30 100% 64%;       /* #FFB347 */
+    --sf-glow-amber-accent: 30 100% 64% / 0.2;
+
+    /* Font Stack Variables */
+    --sf-font-display: 'MD Nichrome', 'Jura', system-ui, sans-serif;
+    --sf-font-heading: 'Jura', system-ui, sans-serif;
+    --sf-font-body: 'DM Sans', system-ui, sans-serif;
+    --sf-font-mono: 'JetBrains Mono', monospace;
+    --sf-font-accent: 'Michroma', 'Jura', system-ui, sans-serif;
+    --sf-font-sim-heading: 'Space Grotesk', system-ui, sans-serif;
+
     /* Glow variants (for shadows and glows) */
-    --sf-glow-cyan: 190 100% 50% / 0.2;
+    --sf-glow-cyan: 190 100% 50% / 0.2;  /* Legacy — simulators only */
     --sf-glow-magenta: 328 100% 50% / 0.2;
     --sf-glow-amber: 43 100% 50% / 0.2;
     --sf-glow-emerald: 153 100% 50% / 0.2;
@@ -103,8 +133,8 @@
     --popover: var(--sf-surface);
     --popover-foreground: var(--sf-text-primary);
 
-    /* Primary: Cyan accent */
-    --primary: var(--sf-cyan);
+    /* Primary: Teal-Green accent (v2.1) */
+    --primary: var(--sf-teal);
     --primary-foreground: 0 0% 100%;
 
     --secondary: var(--sf-surface-elevated);
@@ -113,8 +143,8 @@
     --muted: var(--sf-surface-elevated);
     --muted-foreground: var(--sf-text-muted);
 
-    /* Accent: Cyan */
-    --accent: var(--sf-cyan);
+    /* Accent: Teal-Green (v2.1) */
+    --accent: var(--sf-teal);
     --accent-foreground: 0 0% 100%;
 
     --destructive: var(--sf-crimson);
@@ -122,30 +152,30 @@
 
     --border: var(--sf-text-ghost);
     --input: var(--sf-text-ghost);
-    --ring: var(--sf-cyan);
+    --ring: var(--sf-teal);
 
     /* Glass morphism tokens */
     --glass: var(--sf-surface) / 0.9;
     --glass-border: 0 0% 100% / 0.08;
-    --glass-glow: var(--sf-glow-cyan);
+    --glass-glow: var(--sf-glow-teal);
 
-    /* Gradients (cyan only - no purple) */
-    --gradient-primary: linear-gradient(135deg, hsl(var(--sf-cyan)), hsl(var(--sf-cyan) / 0.7));
-    --gradient-subtle: linear-gradient(135deg, hsl(var(--sf-cyan) / 0.1), hsl(var(--sf-cyan) / 0.05));
+    /* Gradients (teal-green — v2.1) */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--sf-teal)), hsl(var(--sf-teal) / 0.7));
+    --gradient-subtle: linear-gradient(135deg, hsl(var(--sf-teal) / 0.1), hsl(var(--sf-teal) / 0.05));
 
     /* Shadows */
     --shadow-glass: 0 8px 32px hsl(0 0% 0% / 0.4);
-    --shadow-glow: 0 0 40px hsl(var(--sf-glow-cyan));
+    --shadow-glow: 0 0 40px hsl(var(--sf-glow-teal));
 
     /* Sidebar */
     --sidebar-background: var(--sf-void);
     --sidebar-foreground: var(--sf-text-muted);
-    --sidebar-primary: var(--sf-cyan);
+    --sidebar-primary: var(--sf-teal);
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: var(--sf-surface-elevated);
     --sidebar-accent-foreground: var(--sf-text-primary);
     --sidebar-border: var(--sf-text-ghost);
-    --sidebar-ring: var(--sf-cyan);
+    --sidebar-ring: var(--sf-teal);
   }
 }
 
@@ -181,7 +211,7 @@
   a:focus-visible,
   [role="button"]:focus-visible {
     @apply ring-2 ring-primary/50 ring-offset-2 ring-offset-background;
-    box-shadow: 0 0 0 4px hsl(187 100% 45% / 0.15);
+    box-shadow: 0 0 0 4px hsl(157 100% 62% / 0.15);
   }
 
   /* Skip to content link for keyboard users */
@@ -355,7 +385,7 @@
     height: 800px;
     top: -300px;
     right: -200px;
-    background: radial-gradient(circle, hsl(var(--sf-glow-cyan)) 0%, transparent 60%);
+    background: radial-gradient(circle, hsl(var(--sf-glow-teal)) 0%, transparent 60%);
     pointer-events: none;
     z-index: 0;
   }
@@ -372,7 +402,7 @@
     left: 10%;
     right: 10%;
     height: 1px;
-    background: linear-gradient(90deg, transparent, hsl(var(--sf-cyan)), transparent);
+    background: linear-gradient(90deg, transparent, hsl(var(--sf-teal)), transparent);
   }
 
   /* Combined atmosphere effect for main containers */
@@ -387,7 +417,7 @@
     z-index: 0;
     pointer-events: none;
     background:
-      radial-gradient(ellipse at 70% 20%, hsl(var(--sf-glow-cyan)) 0%, transparent 50%),
+      radial-gradient(ellipse at 70% 20%, hsl(var(--sf-glow-teal)) 0%, transparent 50%),
       linear-gradient(180deg, hsl(var(--sf-void)) 0%, hsl(240 7% 3%) 100%);
   }
 
@@ -411,7 +441,7 @@
     left: 10%;
     right: 10%;
     height: 1px;
-    background: linear-gradient(90deg, transparent, hsl(var(--sf-cyan) / 0.5), transparent);
+    background: linear-gradient(90deg, transparent, hsl(var(--sf-teal) / 0.5), transparent);
   }
 }
 
@@ -463,10 +493,10 @@
 
   @keyframes pulse-glow {
     0%, 100% {
-      filter: drop-shadow(0 0 4px hsl(187 100% 45% / 0.4));
+      filter: drop-shadow(0 0 4px hsl(157 100% 62% / 0.4));
     }
     50% {
-      filter: drop-shadow(0 0 12px hsl(187 100% 45% / 0.8));
+      filter: drop-shadow(0 0 12px hsl(157 100% 62% / 0.8));
     }
   }
 
@@ -514,10 +544,10 @@
 
   @keyframes sf-glow-pulse {
     0%, 100% {
-      box-shadow: 0 0 10px hsl(var(--sf-glow-cyan));
+      box-shadow: 0 0 10px hsl(var(--sf-glow-teal));
     }
     50% {
-      box-shadow: 0 0 25px hsl(var(--sf-cyan) / 0.4);
+      box-shadow: 0 0 25px hsl(var(--sf-teal) / 0.4);
     }
   }
 
@@ -588,6 +618,185 @@
     to {
       transform: rotate(360deg) translateX(60px) rotate(-360deg);
     }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     MICRO-ANIMATION SYSTEM
+     ═══════════════════════════════════════════════════════════════════════ */
+
+  /* Icon float on card hover */
+  @keyframes sf-icon-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+  }
+
+  /* Pro badge shimmer sweep */
+  .sf-shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .sf-shimmer::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+      45deg,
+      transparent 40%,
+      rgba(255, 255, 255, 0.12) 50%,
+      transparent 60%
+    );
+    animation: sf-shimmer-sweep 4s ease-in-out infinite;
+  }
+
+  @keyframes sf-shimmer-sweep {
+    0%, 100% { transform: translateX(-100%) translateY(-100%); }
+    50% { transform: translateX(100%) translateY(100%); }
+  }
+
+  /* Nav link underline */
+  .sf-nav-link {
+    position: relative;
+  }
+
+  .sf-nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    width: 0;
+    height: 1px;
+    background: hsl(var(--sf-teal));
+    transition: all var(--duration-normal) var(--ease-out-expo);
+    transform: translateX(-50%);
+  }
+
+  .sf-nav-link:hover::after {
+    width: 100%;
+  }
+
+  /* Logo hover glow */
+  .sf-logo-glow:hover {
+    animation: sf-logo-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes sf-logo-pulse {
+    0%, 100% { filter: drop-shadow(0 0 8px rgba(61, 255, 205, 0.3)); }
+    50% { filter: drop-shadow(0 0 16px rgba(61, 255, 205, 0.5)); }
+  }
+
+  /* Input focus glow */
+  .sf-input-focus {
+    transition: border-color var(--duration-fast) ease,
+                box-shadow var(--duration-normal) ease;
+  }
+
+  .sf-input-focus:focus {
+    border-color: hsl(var(--sf-teal) / 0.35);
+    box-shadow: 0 0 0 3px hsl(var(--sf-teal) / 0.08);
+  }
+
+  /* Error shake */
+  .sf-error-shake {
+    animation: sf-shake 0.4s ease-in-out;
+  }
+
+  @keyframes sf-shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-4px); }
+    40%, 80% { transform: translateX(4px); }
+  }
+
+  /* Status badge entrance */
+  .sf-badge-enter {
+    animation: sf-badge-pop var(--duration-smooth) var(--ease-out-back);
+  }
+
+  @keyframes sf-badge-pop {
+    from {
+      opacity: 0;
+      transform: scale(0.8) translateY(-4px);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+
+  /* Section divider draw-in */
+  .sf-divider-draw {
+    width: 0%;
+    animation: sf-draw-in 0.4s var(--ease-out-expo) forwards;
+  }
+
+  @keyframes sf-draw-in {
+    to { width: 100%; }
+  }
+
+  /* Skeleton shimmer (improved) */
+  .sf-skeleton {
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.04) 0%,
+      rgba(255, 255, 255, 0.08) 50%,
+      rgba(255, 255, 255, 0.04) 100%
+    );
+    background-size: 200% 100%;
+    animation: sf-skeleton-shimmer 1.5s ease-in-out infinite;
+  }
+
+  @keyframes sf-skeleton-shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  /* Card hover lift */
+  .sf-card-hover {
+    transition: transform var(--duration-normal) var(--ease-out-expo),
+                box-shadow var(--duration-smooth) ease,
+                border-color var(--duration-fast) ease;
+  }
+
+  .sf-card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4), var(--glow-primary-subtle);
+    border-color: rgba(61, 255, 205, 0.15);
+  }
+
+  .sf-card-hover:hover .sf-card-icon {
+    animation: sf-icon-float 2s ease-in-out infinite;
+  }
+
+  /* Button hover lift for primary buttons */
+  .sf-btn-lift {
+    transition: all var(--duration-normal) var(--ease-out-expo);
+  }
+
+  .sf-btn-lift:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: var(--glow-primary);
+  }
+
+  .sf-btn-lift:active {
+    transform: translateY(0) scale(0.98);
+    transition-duration: var(--duration-instant);
+  }
+
+  /* Icon button rotation on hover */
+  .sf-icon-rotate {
+    transition: transform var(--duration-normal) var(--ease-out-back);
+  }
+
+  .sf-icon-rotate:hover {
+    transform: rotate(8deg);
+  }
+
+  /* Switch toggle snap easing */
+  .sf-switch-snap {
+    transition: transform 200ms var(--ease-out-back);
   }
 }
 
@@ -726,5 +935,16 @@
   /* Ensure content flows properly */
   .overflow-hidden {
     overflow: visible !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   REDUCED MOTION — respect user preferences
+   ═══════════════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

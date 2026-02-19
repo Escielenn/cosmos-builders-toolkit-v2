@@ -31,7 +31,7 @@ const InviteAccept = () => {
         <main className="container mx-auto px-4 py-16 max-w-md">
           <GlassPanel className="p-8 text-center">
             <Globe className="w-12 h-12 text-primary mx-auto mb-4" />
-            <h1 className="font-display text-2xl font-semibold mb-2">
+            <h1 className="font-heading text-2xl font-semibold mb-2">
               World Invitation
             </h1>
             <p className="text-muted-foreground mb-6">
@@ -72,7 +72,7 @@ const InviteAccept = () => {
         <main className="container mx-auto px-4 py-16 max-w-md">
           <GlassPanel className="p-8 text-center">
             <CheckCircle2 className="w-12 h-12 text-green-500 mx-auto mb-4" />
-            <h1 className="font-display text-2xl font-semibold mb-2">
+            <h1 className="font-heading text-2xl font-semibold mb-2">
               {result.already_member
                 ? "Already a collaborator"
                 : result.is_owner
@@ -83,7 +83,7 @@ const InviteAccept = () => {
               {result.already_member
                 ? "You already have access to this world."
                 : result.is_owner
-                  ? "You own this world — no invite needed."
+                  ? "You own this world—no invite needed."
                   : `You now have ${result.role} access to this world.`}
             </p>
             <Button onClick={() => navigate(`/worlds/${result.world_id}`)}>
@@ -102,7 +102,7 @@ const InviteAccept = () => {
       <main className="container mx-auto px-4 py-16 max-w-md">
         <GlassPanel className="p-8 text-center">
           <AlertCircle className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-          <h1 className="font-display text-2xl font-semibold mb-2">
+          <h1 className="font-heading text-2xl font-semibold mb-2">
             Invitation unavailable
           </h1>
           <p className="text-muted-foreground mb-6">

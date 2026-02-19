@@ -40,7 +40,7 @@ const WorldNotes = ({ worldId, readOnly }: WorldNotesProps) => {
           >
             <div className="flex items-center gap-3">
               <FileText className="w-5 h-5 text-primary" />
-              <span className="font-display font-semibold">World Notes</span>
+              <span className="font-heading font-semibold">World Notes</span>
             </div>
             <div className="flex items-center gap-2">
               {!readOnly && isSaving && (

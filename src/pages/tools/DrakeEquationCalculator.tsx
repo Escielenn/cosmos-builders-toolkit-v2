@@ -1,8 +1,11 @@
 import { useState, useEffect, useMemo } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { ArrowLeft, Download, Save, Info, Printer, ExternalLink, Cloud, CloudOff, Calculator, HelpCircle, FileText, Image as ImageIcon } from "lucide-react";
+import { ArrowLeft, Download, Save, Info, Printer, ExternalLink, HelpCircle, FileText, Image as ImageIcon, Calculator } from "lucide-react";
+import { getToolIcon } from "@/components/icons/tool-icons";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import ToolIntroSection from "@/components/tools/ToolIntroSection";
+import { TOOL_INTROS } from "@/lib/tool-intros";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -25,11 +28,15 @@ import ToolSidebar from "@/components/tools/ToolSidebar";
 import CollapsibleSection from "@/components/tools/CollapsibleSection";
 import KeyChoicesSidebar, { KeyChoicesSection, MobileKeyChoices } from "@/components/tools/KeyChoicesSidebar";
 import ToolActionBar from "@/components/tools/ToolActionBar";
+import QuickExportButton from "@/components/tools/QuickExportButton";
 import ExportDialog from "@/components/tools/ExportDialog";
 import ShareDialog from "@/components/sharing/ShareDialog";
 import { useWorksheetShare } from "@/hooks/use-sharing";
-import { MoodboardSection } from "@/components/moodboard";
 import type { MoodboardImage } from "@/hooks/use-moodboard";
+import { WorksheetTagsBar } from "@/components/tools/WorksheetTagsBar";
+import { useTags } from "@/hooks/use-tags";
+import { WorksheetNotesSheet } from "@/components/tools/WorksheetNotesSheet";
+import { WorksheetMoodboardSheet } from "@/components/tools/WorksheetMoodboardSheet";
 import { DrakeSummaryTemplate, DrakeFullReportTemplate } from "@/lib/pdf/templates";
 import { Json } from "@/integrations/supabase/types";
 
@@ -40,8 +47,6 @@ const SECTIONS: Section[] = [
   { id: "section-result", title: "Result" },
   { id: "section-worldbuilding", title: "Worldbuilding" },
   { id: "section-presets", title: "Presets" },
-  { id: "section-notes", title: "Notes & Ideas" },
-  { id: "section-moodboard", title: "Moodboard" },
 ];
 
 // Drake Equation variable definitions
@@ -251,6 +256,7 @@ const initialFormState: FormState = {
 const LOCAL_STORAGE_KEY = "drake-equation-calculator-v1";
 
 const TOOL_TYPE = "drake-equation-calculator";
+const ToolIcon = getToolIcon(TOOL_TYPE);
 
 const DrakeEquationCalculator = () => {
   const { toast } = useToast();
@@ -264,14 +270,18 @@ const DrakeEquationCalculator = () => {
   const { data: existingWorksheet, isLoading: worksheetLoading } = useWorksheet(worksheetId || undefined);
   const { data: existingWorksheets = [], isLoading: worksheetsLoading } = useWorksheetsByType(worldId || undefined, TOOL_TYPE);
   const renameWorksheet = useRenameWorksheet();
+  const { updateWorksheetTags } = useTags();
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
-  const { data: shareConfig } = useWorksheetShare(currentWorksheetId || worksheetId || undefined);
 
   const [formState, setFormState] = useState<FormState>(initialFormState);
   const [currentWorksheetId, setCurrentWorksheetId] = useState<string | null>(null);
+  const { data: shareConfig } = useWorksheetShare(currentWorksheetId || worksheetId || undefined);
   const [currentWorksheetTitle, setCurrentWorksheetTitle] = useState<string | null>(null);
   const [worksheetSelectorOpen, setWorksheetSelectorOpen] = useState(false);
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
+  const [notesSheetOpen, setNotesSheetOpen] = useState(false);
+  const [moodboardSheetOpen, setMoodboardSheetOpen] = useState(false);
+  const [worksheetTags, setWorksheetTags] = useState<string[]>([]);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [lastSavedToCloud, setLastSavedToCloud] = useState<Date | null>(null);
   const [isSavingToCloud, setIsSavingToCloud] = useState(false);
@@ -357,8 +367,8 @@ const DrakeEquationCalculator = () => {
         id: "worldbuilding",
         title: "Worldbuilding",
         choices: [
-          { label: "Narrative Notes", value: formState.worldbuilding.narrativeImplications ? "Defined" : undefined },
-          { label: "Galactic Politics", value: formState.worldbuilding.galacticPolitics ? "Defined" : undefined },
+          { label: "Fermi Answer", value: formState.worldbuilding.fermiAnswer ? "Defined" : undefined },
+          { label: "Galaxy Character", value: formState.worldbuilding.galaxyCharacter ? "Defined" : undefined },
         ],
       },
     ];
@@ -394,6 +404,9 @@ const DrakeEquationCalculator = () => {
         setFormState(data);
         setCurrentWorksheetId(existingWorksheet.id);
         setCurrentWorksheetTitle(existingWorksheet.title);
+        if (existingWorksheet?.tags) {
+          setWorksheetTags(existingWorksheet.tags);
+        }
         setLastSavedToCloud(new Date(existingWorksheet.updated_at));
         toast({
           title: "Worksheet Loaded",
@@ -518,6 +531,14 @@ const DrakeEquationCalculator = () => {
     setCurrentWorksheetTitle(newTitle);
   };
 
+  const handleTagsChange = (newTags: string[]) => {
+    setWorksheetTags(newTags);
+    const wsId = currentWorksheetId || worksheetId;
+    if (wsId) {
+      updateWorksheetTags.mutate({ worksheetId: wsId, tags: newTags });
+    }
+  };
+
   // Open export dialog
   const handleExport = () => {
     setExportDialogOpen(true);
@@ -546,55 +567,59 @@ const DrakeEquationCalculator = () => {
           {worldId ? "Back to World" : "Back to Dashboard"}
         </Link>
 
-        {/* Title */}
-        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-8">
-          <div>
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                <Calculator className="w-6 h-6 text-primary" />
-              </div>
-              <h1 className="font-display text-3xl font-bold">Drake Equation Calculator</h1>
-            </div>
-            <p className="text-muted-foreground max-w-2xl">
-              Calculate the number of detectable civilizations in your galaxy. Use this tool to establish
-              the cosmic context for your science fiction world—from lonely universe to teeming galaxy.
-            </p>
-            {(currentWorksheetId || worksheetId) && (
-              <WorksheetTitle
-                title={currentWorksheetTitle}
-                onRename={handleRename}
-                icon={<FileText className="w-4 h-4 text-primary" />}
-                disabled={!user || worksheetLoading}
-              />
-            )}
-          </div>
-
-          {/* Cloud Status */}
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            {lastSavedToCloud ? (
-              <>
-                <Cloud className="w-4 h-4 text-green-500" />
-                <span>Saved {lastSavedToCloud.toLocaleTimeString()}</span>
-              </>
-            ) : (
-              <>
-                <CloudOff className="w-4 h-4" />
-                <span>Local only</span>
-              </>
-            )}
-          </div>
-        </div>
-
         {/* Action Bar */}
         <ToolActionBar
           onSave={handleSave}
+          onOpen={worldId ? () => setWorksheetSelectorOpen(true) : undefined}
           onPrint={handlePrint}
           onExport={handleExport}
           onShare={(currentWorksheetId || worksheetId) ? () => setShareDialogOpen(true) : undefined}
           isShared={!!shareConfig?.enabled}
           hasUnsavedChanges={hasUnsavedChanges}
           isSaving={isSavingToCloud}
+          isCloudEnabled={!!(worldId && user)}
+          onNotesClick={() => setNotesSheetOpen(true)}
+          onMoodboardClick={() => setMoodboardSheetOpen(true)}
+          moodboardCount={formState.moodboard?.length || 0}
+          className="mb-6"
+          extraActions={
+            <QuickExportButton
+              toolName="Signal"
+              worldName={worldNameForExport}
+              formState={formState}
+              summaryTemplate={<DrakeSummaryTemplate formState={formState} worldName={worldNameForExport} />}
+              fullTemplate={<DrakeFullReportTemplate formState={formState} worldName={worldNameForExport} />}
+              defaultFilename="drake-equation"
+            />
+          }
         />
+
+        {/* Title */}
+        <div className="mb-8">
+          <div className="flex items-center gap-3 mb-2">
+            {ToolIcon && <ToolIcon className="w-12 h-12 rounded-full shrink-0" />}
+            <h1 className="font-display text-3xl font-bold">Signal: Drake Equation Calculator</h1>
+          </div>
+          <p className="text-muted-foreground max-w-2xl">
+            Calculate the number of detectable civilizations in your galaxy. Use this tool to establish
+            the cosmic context for your science fiction world—from lonely universe to teeming galaxy.
+          </p>
+          {(currentWorksheetId || worksheetId) && (
+            <WorksheetTitle
+              title={currentWorksheetTitle}
+              onRename={handleRename}
+              icon={<FileText className="w-4 h-4 text-primary" />}
+              disabled={!user || worksheetLoading}
+            />
+          )}
+          {(currentWorksheetId || worksheetId) && (
+            <WorksheetTagsBar
+              worksheetId={(currentWorksheetId || worksheetId)!}
+              tags={worksheetTags}
+              onChange={handleTagsChange}
+            />
+          )}
+        </div>
 
         {/* Desktop Sidebars - Right side */}
         <ToolSidebar>
@@ -607,6 +632,8 @@ const DrakeEquationCalculator = () => {
           <MobileSectionNav sections={SECTIONS} />
           <MobileKeyChoices sections={keyChoicesSections} title="Drake Summary" />
         </div>
+
+        <ToolIntroSection data={TOOL_INTROS["drake-equation-calculator"]} />
 
         {/* Introduction Section */}
         <CollapsibleSection
@@ -647,7 +674,7 @@ const DrakeEquationCalculator = () => {
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
                       <Label className="text-base font-semibold">
-                        {variable.symbol} — {variable.name}
+                        {variable.symbol}—{variable.name}
                       </Label>
                       <Tooltip>
                         <TooltipTrigger>
@@ -850,46 +877,6 @@ const DrakeEquationCalculator = () => {
           </div>
         </CollapsibleSection>
 
-        {/* Notes & Ideas Section */}
-        <CollapsibleSection
-          id="section-notes"
-          title="Notes & Ideas"
-          icon={<FileText className="w-5 h-5 text-primary" />}
-          defaultOpen={false}
-        >
-          <div className="space-y-2">
-            <p className="text-sm text-muted-foreground">
-              Jot down ideas, story hooks, or reminders for this worksheet.
-            </p>
-            <Textarea
-              placeholder="Your notes and ideas..."
-              value={formState.generalNotes}
-              onChange={(e) => setFormState(prev => ({ ...prev, generalNotes: e.target.value }))}
-              className="min-h-[150px] resize-y"
-            />
-          </div>
-        </CollapsibleSection>
-
-        {/* Moodboard Section */}
-        <CollapsibleSection
-          id="section-moodboard"
-          title="Moodboard"
-          icon={<ImageIcon className="w-5 h-5 text-primary" />}
-          defaultOpen={false}
-          badge={formState.moodboard?.length || undefined}
-        >
-          <div className="space-y-2">
-            <p className="text-sm text-muted-foreground">
-              Add reference images to inspire your design.
-            </p>
-            <MoodboardSection
-              worksheetId={currentWorksheetId || "local"}
-              images={formState.moodboard || []}
-              onImagesChange={(images) => setFormState(prev => ({ ...prev, moodboard: images }))}
-            />
-          </div>
-        </CollapsibleSection>
-
         {/* Learn More Link */}
         <div className="mt-8 text-center">
           <Link
@@ -901,18 +888,6 @@ const DrakeEquationCalculator = () => {
           </Link>
         </div>
 
-        {/* Bottom Action Bar */}
-        <ToolActionBar
-          onSave={handleSave}
-          onPrint={handlePrint}
-          onExport={handleExport}
-          onShare={(currentWorksheetId || worksheetId) ? () => setShareDialogOpen(true) : undefined}
-          isShared={!!shareConfig?.enabled}
-          hasUnsavedChanges={hasUnsavedChanges}
-          isSaving={isSavingToCloud}
-          className="mt-8"
-        />
-
       </main>
 
       {/* Worksheet Selector Dialog */}
@@ -923,7 +898,7 @@ const DrakeEquationCalculator = () => {
           worldId={worldId}
           worldName={currentWorld?.name}
           toolType={TOOL_TYPE}
-          toolDisplayName="Drake Equation Calculator"
+          toolDisplayName="Signal"
           worksheets={existingWorksheets}
           isLoading={worksheetsLoading}
           onSelect={handleWorksheetSelect}
@@ -935,7 +910,7 @@ const DrakeEquationCalculator = () => {
       <ExportDialog
         open={exportDialogOpen}
         onOpenChange={setExportDialogOpen}
-        toolName="Drake Equation Calculator"
+        toolName="Signal"
         worldName={worldNameForExport}
         formState={formState}
         summaryTemplate={
@@ -959,6 +934,21 @@ const DrakeEquationCalculator = () => {
         entityType="worksheet"
         entityId={currentWorksheetId || worksheetId || ""}
         entityTitle={currentWorksheetTitle || "Untitled Worksheet"}
+      />
+
+      <WorksheetNotesSheet
+        open={notesSheetOpen}
+        onOpenChange={setNotesSheetOpen}
+        content={formState.generalNotes}
+        onChange={(html) => setFormState(prev => ({ ...prev, generalNotes: html }))}
+      />
+
+      <WorksheetMoodboardSheet
+        open={moodboardSheetOpen}
+        onOpenChange={setMoodboardSheetOpen}
+        worksheetId={currentWorksheetId || "local"}
+        images={formState.moodboard || []}
+        onImagesChange={(images) => setFormState(prev => ({ ...prev, moodboard: images }))}
       />
 
       <Footer />

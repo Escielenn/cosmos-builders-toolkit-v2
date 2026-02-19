@@ -164,7 +164,7 @@ const MockToolCard = ({ title, value, delay, color }: MockToolCardProps) => {
       <div className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
         {title}
       </div>
-      <div className={`text-sm md:text-base font-display font-light ${textColorMap[color]}`}>
+      <div className={`text-sm md:text-base font-heading font-light ${textColorMap[color]}`}>
         {value}
       </div>
     </div>

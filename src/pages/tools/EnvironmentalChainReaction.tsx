@@ -1,12 +1,16 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, lazy, Suspense } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { ArrowLeft, Download, Save, Info, Printer, ExternalLink, Cloud, CloudOff, Globe, FileText, Image as ImageIcon } from "lucide-react";
+import { ArrowLeft, Download, Save, Info, Printer, ExternalLink, Globe, FileText, Image as ImageIcon, ChevronDown } from "lucide-react";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -20,6 +24,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { useWorksheets, useWorksheet, useWorksheetsByType, useRenameWorksheet } from "@/hooks/use-worksheets";
 import { WorksheetTitle } from "@/components/tools/WorksheetTitle";
+import { getToolIcon } from "@/components/icons/tool-icons";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
 import WorksheetLinkSelector from "@/components/tools/WorksheetLinkSelector";
 import { useWorlds } from "@/hooks/use-worlds";
@@ -30,15 +35,22 @@ import ToolSidebar from "@/components/tools/ToolSidebar";
 import CollapsibleSection from "@/components/tools/CollapsibleSection";
 import KeyChoicesSidebar, { KeyChoicesSection, MobileKeyChoices } from "@/components/tools/KeyChoicesSidebar";
 import ToolActionBar from "@/components/tools/ToolActionBar";
+import QuickExportButton from "@/components/tools/QuickExportButton";
 import SelectedParametersSidebar from "@/components/tools/SelectedParametersSidebar";
 import ExportDialog from "@/components/tools/ExportDialog";
 import ShareDialog from "@/components/sharing/ShareDialog";
 import { useWorksheetShare } from "@/hooks/use-sharing";
-import { MoodboardSection } from "@/components/moodboard";
 import type { MoodboardImage } from "@/hooks/use-moodboard";
+import { WorksheetTagsBar } from "@/components/tools/WorksheetTagsBar";
+import { useTags } from "@/hooks/use-tags";
+import { WorksheetNotesSheet } from "@/components/tools/WorksheetNotesSheet";
+import { WorksheetMoodboardSheet } from "@/components/tools/WorksheetMoodboardSheet";
 import { ECRSummaryTemplate, ECRFullReportTemplate } from "@/lib/pdf/templates";
 import { Json } from "@/integrations/supabase/types";
+import QuestionSection from "@/components/tools/QuestionSection";
 import { LinkedWorksheetRef, getLinkConfigsForTool } from "@/lib/worksheet-links-config";
+
+const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
 
 // Section definitions for navigation
 const SECTIONS: Section[] = [
@@ -51,14 +63,14 @@ const SECTIONS: Section[] = [
   { id: "section-level5", title: "5. Mythological" },
   { id: "section-consistency", title: "Consistency Check" },
   { id: "section-synthesis", title: "Synthesis" },
-  { id: "section-notes", title: "Notes & Ideas" },
-  { id: "section-moodboard", title: "Moodboard" },
 ];
 
 // SF Examples for cascade demonstration
 const SF_CASCADE_EXAMPLES = [
   {
-    title: "ARRAKIS (Dune) — Desert World",
+    title: "ARRAKIS—Desert World",
+    bookTitle: "Dune",
+    isbn: "9780441172719",
     parameter: "Extreme water scarcity",
     cascade: [
       { level: "Physical", details: "Stillsuits to reclaim moisture, underground sietches, travel at night, sandworm transportation" },
@@ -70,7 +82,9 @@ const SF_CASCADE_EXAMPLES = [
     insight: "Frank Herbert traced every cultural element back to water scarcity—even their messiah myth.",
   },
   {
-    title: "GETHEN (The Left Hand of Darkness) — Frozen World + Kemmer Biology",
+    title: "GETHEN—Frozen World + Kemmer Biology",
+    bookTitle: "The Left Hand of Darkness",
+    isbn: "9780441478125",
     parameter: "Ice age climate + ambisexual biology",
     cascade: [
       { level: "Physical", details: "Heavy insulated clothing, hearth-centered architecture, limited growing season, sled transport" },
@@ -82,7 +96,9 @@ const SF_CASCADE_EXAMPLES = [
     insight: "Le Guin used environment + biology to reimagine human society without permanent gender.",
   },
   {
-    title: "MESKLIN (Mission of Gravity) — Extreme Variable Gravity",
+    title: "MESKLIN—Extreme Variable Gravity",
+    bookTitle: "Mission of Gravity",
+    isbn: "9780575077096",
     parameter: "3g at equator, 700g at poles",
     cascade: [
       { level: "Physical", details: "Flattened disc-shaped bodies, clinging locomotion, no throwing, no falling, crawling movement" },
@@ -440,53 +456,8 @@ const LEVEL5_QUESTIONS = [
   },
 ];
 
-const QuestionSection = ({
-  id,
-  label,
-  prompts,
-  example,
-  value,
-  onChange,
-}: {
-  id: string;
-  label: string;
-  prompts: string[];
-  example?: string;
-  value: string;
-  onChange: (value: string) => void;
-}) => (
-  <div className="space-y-2">
-    <div className="flex items-center gap-2">
-      <Label htmlFor={id} className="text-sm font-medium">
-        {label}
-      </Label>
-      {example && (
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Info className="w-4 h-4 text-muted-foreground cursor-help" />
-          </TooltipTrigger>
-          <TooltipContent className="max-w-sm">
-            <p className="text-xs">{example}</p>
-          </TooltipContent>
-        </Tooltip>
-      )}
-    </div>
-    <ul className="text-xs text-muted-foreground mb-2 list-disc list-inside">
-      {prompts.map((prompt, i) => (
-        <li key={i}>{prompt}</li>
-      ))}
-    </ul>
-    <Textarea
-      id={id}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      placeholder="Your response..."
-      className="min-h-[100px] bg-background/50"
-    />
-  </div>
-);
-
 const TOOL_TYPE = "environmental-chain-reaction";
+const ToolIcon = getToolIcon(TOOL_TYPE);
 
 const EnvironmentalChainReaction = () => {
   const [formState, setFormState] = useState<FormState>(initialFormState);
@@ -499,6 +470,7 @@ const EnvironmentalChainReaction = () => {
   const { toast } = useToast();
   const { user } = useAuth();
   const { worlds, createWorld } = useWorlds();
+  const { updateWorksheetTags } = useTags();
 
   // Get URL params for worldId and worksheetId
   const [searchParams, setSearchParams] = useSearchParams();
@@ -515,6 +487,9 @@ const EnvironmentalChainReaction = () => {
   const { data: existingWorksheets = [], isLoading: worksheetsLoading } = useWorksheetsByType(worldId || undefined, TOOL_TYPE);
   const renameWorksheet = useRenameWorksheet();
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
+  const [notesSheetOpen, setNotesSheetOpen] = useState(false);
+  const [moodboardSheetOpen, setMoodboardSheetOpen] = useState(false);
+  const [worksheetTags, setWorksheetTags] = useState<string[]>([]);
   const { data: shareConfig } = useWorksheetShare(currentWorksheetId || worksheetId || undefined);
 
   // Show worksheet selector when worldId is present but no worksheetId
@@ -532,6 +507,9 @@ const EnvironmentalChainReaction = () => {
         setFormState(data);
         setCurrentWorksheetId(existingWorksheet.id);
         setCurrentWorksheetTitle(existingWorksheet.title);
+        if (existingWorksheet?.tags) {
+          setWorksheetTags(existingWorksheet.tags);
+        }
         toast({
           title: "Worksheet Loaded",
           description: "Your saved work has been restored from the cloud.",
@@ -811,6 +789,14 @@ const EnvironmentalChainReaction = () => {
     setCurrentWorksheetTitle(newTitle);
   };
 
+  const handleTagsChange = (newTags: string[]) => {
+    setWorksheetTags(newTags);
+    const wsId = currentWorksheetId || worksheetId;
+    if (wsId) {
+      updateWorksheetTags.mutate({ worksheetId: wsId, tags: newTags });
+    }
+  };
+
   const handleSave = async () => {
     // Always save to localStorage as backup
     localStorage.setItem("ecr-worksheet", JSON.stringify(formState));
@@ -879,67 +865,73 @@ const EnvironmentalChainReaction = () => {
       <Header />
 
       <main className="container mx-auto px-4 pt-24 pb-16">
-        {/* Back Link & Title */}
+        {/* Back Link */}
+        <Link
+          to={worldId ? `/worlds/${worldId}` : "/"}
+          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          {worldId ? "Back to World" : "Back to Dashboard"}
+        </Link>
+
+        {/* Action Bar */}
+        <ToolActionBar
+          onSave={handleSave}
+          onOpen={worldId ? () => setWorksheetSelectorOpen(true) : undefined}
+          onPrint={handlePrint}
+          onExport={handleExport}
+          onShare={(currentWorksheetId || worksheetId) ? () => setShareDialogOpen(true) : undefined}
+          isShared={!!shareConfig?.enabled}
+          isCloudEnabled={!!(worldId && user)}
+          onNotesClick={() => setNotesSheetOpen(true)}
+          onMoodboardClick={() => setMoodboardSheetOpen(true)}
+          moodboardCount={formState.moodboard?.length || 0}
+          className="mb-6"
+          extraActions={
+            <QuickExportButton
+              toolName="Cascade"
+              worldName={worldName || undefined}
+              formState={formState}
+              summaryTemplate={<ECRSummaryTemplate formState={formState} worldName={worldName || undefined} />}
+              fullTemplate={<ECRFullReportTemplate formState={formState} worldName={worldName || undefined} />}
+              defaultFilename="environmental-chain-reaction"
+            />
+          }
+        />
+
+        {/* Title */}
         <div className="mb-8">
-          <Link
-            to={worldId ? `/world/${worldId}` : "/"}
-            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            {worldId ? "Back to World" : "Back to Dashboard"}
-          </Link>
-
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div>
-              <Badge className="mb-2">Tool 1</Badge>
-              <h1 className="font-display text-3xl md:text-4xl font-bold">
-                Environmental Chain Reaction
-              </h1>
-              {(currentWorksheetId || worksheetId) && (
-                <WorksheetTitle
-                  title={currentWorksheetTitle}
-                  onRename={handleRename}
-                  icon={<FileText className="w-4 h-4 text-primary" />}
-                  disabled={!user || worksheetLoading}
-                />
-              )}
-              <p className="text-muted-foreground mt-2 max-w-2xl">
-                Map how planetary parameters cascade into biology, psychology,
-                culture, and mythology.
-              </p>
-            </div>
-
-            <div className="flex items-center gap-2 no-print">
-              {worldId && user ? (
-                <span className="text-xs text-muted-foreground flex items-center gap-1">
-                  <Cloud className="w-3 h-3 text-green-500" />
-                  Cloud sync enabled
-                </span>
-              ) : (
-                <span className="text-xs text-muted-foreground flex items-center gap-1">
-                  <CloudOff className="w-3 h-3" />
-                  Local only
-                </span>
-              )}
-              <Button variant="outline" size="sm" onClick={handleSave} disabled={worksheetLoading}>
-                <Save className="w-4 h-4 mr-2" />
-                Save Draft
-              </Button>
-              <Button variant="outline" size="sm" onClick={handlePrint}>
-                <Printer className="w-4 h-4 mr-2" />
-                Print
-              </Button>
-              <Button size="sm" onClick={handleExport}>
-                <Download className="w-4 h-4 mr-2" />
-                Export
-              </Button>
-            </div>
+          <Badge className="mb-2">Tool 1</Badge>
+          <div className="flex items-center gap-3">
+            {ToolIcon && <ToolIcon className="w-12 h-12 rounded-full shrink-0" />}
+            <h1 className="font-display text-3xl md:text-4xl font-bold">
+              Cascade: Environmental Chain Reaction
+            </h1>
           </div>
+          <p className="text-muted-foreground mt-2 max-w-2xl">
+            Map how planetary parameters cascade into biology, psychology,
+            culture, and mythology.
+          </p>
+          {(currentWorksheetId || worksheetId) && (
+            <WorksheetTitle
+              title={currentWorksheetTitle}
+              onRename={handleRename}
+              icon={<FileText className="w-4 h-4 text-primary" />}
+              disabled={!user || worksheetLoading}
+            />
+          )}
+          {(currentWorksheetId || worksheetId) && (
+            <WorksheetTagsBar
+              worksheetId={(currentWorksheetId || worksheetId)!}
+              tags={worksheetTags}
+              onChange={handleTagsChange}
+            />
+          )}
         </div>
 
         {/* Introduction */}
         <GlassPanel glow className="p-6 md:p-8 mb-8">
-          <h2 className="font-display text-xl font-semibold mb-4 gradient-text">
+          <h2 className="font-heading text-xl font-semibold mb-4 gradient-text">
             The Cascade Principle
           </h2>
           <blockquote className="border-l-2 border-primary pl-4 italic text-lg mb-4">
@@ -960,33 +952,58 @@ const EnvironmentalChainReaction = () => {
           id="section-examples"
           title="SF Examples: The Cascade in Action"
           subtitle="See how master worldbuilders traced environmental parameters to their consequences"
+          defaultOpen
         >
-          <div className="space-y-6">
+          <div className="space-y-2">
             {SF_CASCADE_EXAMPLES.map((example) => (
-              <div key={example.title} className="border border-border rounded-lg p-4">
-                <h4 className="font-display font-semibold text-lg mb-2">{example.title}</h4>
-                <p className="text-sm text-primary mb-3">
-                  <strong>Core Parameter:</strong> {example.parameter}
-                </p>
-                <div className="space-y-2 mb-3">
-                  {example.cascade.map((level) => (
-                    <div key={level.level} className="flex gap-2 text-sm">
-                      <span className="font-medium text-primary min-w-[100px]">{level.level}:</span>
-                      <span className="text-muted-foreground">{level.details}</span>
+              <Collapsible key={example.title}>
+                <CollapsibleTrigger asChild>
+                  <button type="button" className="w-full p-4 rounded-lg border border-border hover:border-primary/50 transition-colors text-left flex items-center justify-between">
+                    <span className="font-medium text-sm">
+                      {example.title}{" "}
+                      <span className="text-muted-foreground font-normal">
+                        (<Link to={`/bookshelf#${example.isbn}`} className="text-primary hover:underline" onClick={(e) => e.stopPropagation()}><em>{example.bookTitle}</em></Link>)
+                      </span>
+                    </span>
+                    <ChevronDown className="w-4 h-4 text-muted-foreground shrink-0 ml-2" />
+                  </button>
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                  <div className="mt-2 p-4 rounded-lg bg-muted/30 space-y-4">
+                    <p className="text-sm">
+                      <strong className="text-primary">Core Parameter:</strong>{" "}
+                      <span className="text-muted-foreground">{example.parameter}</span>
+                    </p>
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-sm">
+                        <thead>
+                          <tr className="border-b border-border">
+                            <th className="text-left p-2 font-medium">Level</th>
+                            <th className="text-left p-2 font-medium">Consequence</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {example.cascade.map((level) => (
+                            <tr key={level.level} className="border-b border-border/50">
+                              <td className="p-2 text-primary font-medium">{level.level}</td>
+                              <td className="p-2 text-muted-foreground">{level.details}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
                     </div>
-                  ))}
-                </div>
-                <div className="bg-primary/10 rounded p-3 text-sm">
-                  <strong className="text-primary">Key Insight:</strong>{" "}
-                  <span className="text-muted-foreground">{example.insight}</span>
-                </div>
-              </div>
+                    <p className="text-sm italic border-l-2 border-accent pl-3">
+                      <strong>Key insight:</strong> {example.insight}
+                    </p>
+                  </div>
+                </CollapsibleContent>
+              </Collapsible>
             ))}
           </div>
         </CollapsibleSection>
 
         {/* Form Sections with Sidebar */}
-        <div className="flex gap-6">
+        <div className="flex gap-6 mt-6">
           {/* Main Content */}
           <div className="flex-1 space-y-6">
           {/* Step 1: Planetary Parameter */}
@@ -1084,7 +1101,7 @@ const EnvironmentalChainReaction = () => {
                               >
                                 <span className="font-medium">{option.label}</span>
                                 <span className="text-muted-foreground ml-2">
-                                  — {option.description}
+                                 —{option.description}
                                 </span>
                               </Label>
                             </div>
@@ -1132,14 +1149,14 @@ const EnvironmentalChainReaction = () => {
               </>
             ) : (
               /* Multiple Mode - Checkboxes */
-              <div className="space-y-6">
+              <div className="space-y-4">
                 {PLANETARY_PARAMETERS.map((param) => (
                   <div key={param.id} className="space-y-3">
                     <div className="font-medium text-sm text-primary">
                       {param.label}
                     </div>
                     {param.options.length > 0 ? (
-                      <div className="grid gap-3 pl-4">
+                      <div className="grid gap-2 pl-4">
                         {param.options.map((option) => {
                           const typeId = `${param.id}-${option.value}`;
                           const isChecked = formState.parameter.types?.includes(typeId) || false;
@@ -1160,7 +1177,7 @@ const EnvironmentalChainReaction = () => {
                                 >
                                   <span className="font-medium">{option.label}</span>
                                   <span className="text-muted-foreground ml-2">
-                                    — {option.description}
+                                   —{option.description}
                                   </span>
                                 </Label>
                               </div>
@@ -1406,88 +1423,49 @@ const EnvironmentalChainReaction = () => {
                 <Label htmlFor="surprising" className="text-sm font-medium">
                   Most surprising consequence you discovered:
                 </Label>
-                <Textarea
-                  id="surprising"
-                  value={formState.synthesis.surprisingConsequence}
-                  onChange={(e) =>
-                    updateSynthesis("surprisingConsequence", e.target.value)
-                  }
-                  placeholder="What unexpected connection emerged from working through the cascade?"
-                  className="mt-2 min-h-[80px] bg-background/50"
-                />
+                <Suspense fallback={<div className="min-h-[80px] rounded-md border border-border bg-background/50 animate-pulse mt-2" />}>
+                  <RichTextEditor
+                    content={formState.synthesis.surprisingConsequence}
+                    onChange={(value) => updateSynthesis("surprisingConsequence", value)}
+                    placeholder="What unexpected connection emerged from working through the cascade?"
+                    minHeight="80px"
+                    className="mt-2 bg-background/50"
+                  />
+                </Suspense>
               </div>
 
               <div>
                 <Label htmlFor="gap" className="text-sm font-medium">
                   Biggest gap or unresolved tension:
                 </Label>
-                <Textarea
-                  id="gap"
-                  value={formState.synthesis.biggestGap}
-                  onChange={(e) =>
-                    updateSynthesis("biggestGap", e.target.value)
-                  }
-                  placeholder="What needs more development or contains productive contradictions?"
-                  className="mt-2 min-h-[80px] bg-background/50"
-                />
+                <Suspense fallback={<div className="min-h-[80px] rounded-md border border-border bg-background/50 animate-pulse mt-2" />}>
+                  <RichTextEditor
+                    content={formState.synthesis.biggestGap}
+                    onChange={(value) => updateSynthesis("biggestGap", value)}
+                    placeholder="What needs more development or contains productive contradictions?"
+                    minHeight="80px"
+                    className="mt-2 bg-background/50"
+                  />
+                </Suspense>
               </div>
 
               <div>
                 <Label htmlFor="story" className="text-sm font-medium">
                   Story potential this creates:
                 </Label>
-                <Textarea
-                  id="story"
-                  value={formState.synthesis.storyPotential}
-                  onChange={(e) =>
-                    updateSynthesis("storyPotential", e.target.value)
-                  }
-                  placeholder="What conflicts, characters, or narratives does this world naturally generate?"
-                  className="mt-2 min-h-[80px] bg-background/50"
-                />
+                <Suspense fallback={<div className="min-h-[80px] rounded-md border border-border bg-background/50 animate-pulse mt-2" />}>
+                  <RichTextEditor
+                    content={formState.synthesis.storyPotential}
+                    onChange={(value) => updateSynthesis("storyPotential", value)}
+                    placeholder="What conflicts, characters, or narratives does this world naturally generate?"
+                    minHeight="80px"
+                    className="mt-2 bg-background/50"
+                  />
+                </Suspense>
               </div>
             </div>
           </CollapsibleSection>
 
-          {/* Notes & Ideas Section */}
-          <CollapsibleSection
-            id="section-notes"
-            title="Notes & Ideas"
-            icon={<FileText className="w-5 h-5 text-primary" />}
-            defaultOpen={false}
-          >
-            <div className="space-y-2">
-              <p className="text-sm text-muted-foreground">
-                Jot down ideas, story hooks, or reminders for this worksheet.
-              </p>
-              <Textarea
-                placeholder="Your notes and ideas..."
-                value={formState.generalNotes}
-                onChange={(e) => setFormState(prev => ({ ...prev, generalNotes: e.target.value }))}
-                className="min-h-[150px] resize-y"
-              />
-            </div>
-          </CollapsibleSection>
-
-          {/* Moodboard Section */}
-          <CollapsibleSection
-            id="section-moodboard"
-            title="Moodboard"
-            icon={<ImageIcon className="w-5 h-5 text-primary" />}
-            defaultOpen={false}
-            badge={formState.moodboard?.length || undefined}
-          >
-            <div className="space-y-2">
-              <p className="text-sm text-muted-foreground">
-                Add reference images to inspire your design.
-              </p>
-              <MoodboardSection
-                worksheetId={currentWorksheetId || "local"}
-                images={formState.moodboard || []}
-                onImagesChange={(images) => setFormState(prev => ({ ...prev, moodboard: images }))}
-              />
-            </div>
-          </CollapsibleSection>
           </div>
 
           {/* Sticky Sidebar - visible when parameters are selected */}
@@ -1499,16 +1477,6 @@ const EnvironmentalChainReaction = () => {
             </div>
           )}
         </div>
-
-        {/* Bottom Action Bar */}
-        <ToolActionBar
-          onSave={handleSave}
-          onPrint={handlePrint}
-          onExport={handleExport}
-          onShare={(currentWorksheetId || worksheetId) ? () => setShareDialogOpen(true) : undefined}
-          isShared={!!shareConfig?.enabled}
-          className="mt-8"
-        />
 
         {/* Final Reminder */}
         <GlassPanel className="p-6 mt-8 text-center">
@@ -1532,6 +1500,21 @@ const EnvironmentalChainReaction = () => {
         </div>
       </main>
 
+      <WorksheetNotesSheet
+        open={notesSheetOpen}
+        onOpenChange={setNotesSheetOpen}
+        content={formState.generalNotes}
+        onChange={(html) => setFormState(prev => ({ ...prev, generalNotes: html }))}
+      />
+
+      <WorksheetMoodboardSheet
+        open={moodboardSheetOpen}
+        onOpenChange={setMoodboardSheetOpen}
+        worksheetId={currentWorksheetId || "local"}
+        images={formState.moodboard || []}
+        onImagesChange={(images) => setFormState(prev => ({ ...prev, moodboard: images }))}
+      />
+
       <Footer />
 
       {/* World Selection Dialog */}
@@ -1546,7 +1529,7 @@ const EnvironmentalChainReaction = () => {
       <ExportDialog
         open={exportDialogOpen}
         onOpenChange={setExportDialogOpen}
-        toolName="Environmental Chain Reaction"
+        toolName="Cascade"
         worldName={worldName || undefined}
         formState={formState}
         summaryTemplate={<ECRSummaryTemplate formState={formState} worldName={worldName || undefined} />}
@@ -1570,7 +1553,7 @@ const EnvironmentalChainReaction = () => {
           worldId={worldId}
           worldName={worldName}
           toolType={TOOL_TYPE}
-          toolDisplayName="Environmental Chain Reaction"
+          toolDisplayName="Cascade"
           worksheets={existingWorksheets}
           isLoading={worksheetsLoading}
           onSelect={handleWorksheetSelect}

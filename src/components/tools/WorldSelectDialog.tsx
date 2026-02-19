@@ -81,7 +81,7 @@ const WorldSelectDialog = ({
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="font-display">Save Your Work</DialogTitle>
+          <DialogTitle className="font-heading">Save Your Work</DialogTitle>
           <DialogDescription>
             Choose where to save this worksheet.
           </DialogDescription>

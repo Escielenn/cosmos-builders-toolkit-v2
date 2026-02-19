@@ -49,7 +49,7 @@ const ProToolGuard = ({ toolId, children }: ProToolGuardProps) => {
             <Lock className="w-8 h-8 text-amber-500" />
           </div>
 
-          <h1 className="font-display text-2xl font-bold mb-2">
+          <h1 className="font-heading text-2xl font-bold mb-2">
             Pro Tool
           </h1>
 

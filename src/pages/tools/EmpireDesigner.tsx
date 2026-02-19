@@ -1,8 +1,11 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, lazy, Suspense } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { ArrowLeft, Download, Save, Info, Printer, Cloud, CloudOff, Crown, Plus, Trash2, FileText, Image as ImageIcon } from "lucide-react";
+import { ArrowLeft, Download, Save, Info, Printer, Plus, Trash2, FileText, Image as ImageIcon } from "lucide-react";
+import { getToolIcon } from "@/components/icons/tool-icons";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import ToolIntroSection from "@/components/tools/ToolIntroSection";
+import { TOOL_INTROS } from "@/lib/tool-intros";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -34,12 +37,16 @@ import ToolSidebar from "@/components/tools/ToolSidebar";
 import CollapsibleSection from "@/components/tools/CollapsibleSection";
 import KeyChoicesSidebar, { KeyChoicesSection, MobileKeyChoices } from "@/components/tools/KeyChoicesSidebar";
 import ToolActionBar from "@/components/tools/ToolActionBar";
+import QuickExportButton from "@/components/tools/QuickExportButton";
 import ExportDialog from "@/components/tools/ExportDialog";
 import { EmpireSummaryTemplate, EmpireFullReportTemplate } from "@/lib/pdf/templates";
 import ShareDialog from "@/components/sharing/ShareDialog";
 import { useWorksheetShare } from "@/hooks/use-sharing";
-import { MoodboardSection } from "@/components/moodboard";
 import type { MoodboardImage } from "@/hooks/use-moodboard";
+import { WorksheetTagsBar } from "@/components/tools/WorksheetTagsBar";
+import { useTags } from "@/hooks/use-tags";
+import { WorksheetNotesSheet } from "@/components/tools/WorksheetNotesSheet";
+import { WorksheetMoodboardSheet } from "@/components/tools/WorksheetMoodboardSheet";
 import UpgradeDialog from "@/components/subscription/UpgradeDialog";
 import { useWorlds } from "@/hooks/use-worlds";
 import { Json } from "@/integrations/supabase/types";
@@ -58,6 +65,8 @@ import {
   SF_EMPIRE_EXAMPLES,
 } from "@/lib/empire-data";
 
+const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
+
 const SECTIONS: Section[] = [
   { id: "section-foundation", title: "1. Foundation" },
   { id: "section-power", title: "2. Power Structure" },
@@ -70,8 +79,6 @@ const SECTIONS: Section[] = [
   { id: "section-stability", title: "9. Stability" },
   { id: "section-examples", title: "SF Examples" },
   { id: "section-synthesis", title: "Final Synthesis" },
-  { id: "section-notes", title: "Notes & Ideas" },
-  { id: "section-moodboard", title: "Moodboard" },
 ];
 
 interface Foundation {
@@ -269,6 +276,7 @@ const initialFormState: FormState = {
 };
 
 const TOOL_TYPE = "empire-designer";
+const ToolIcon = getToolIcon(TOOL_TYPE);
 
 const EmpireDesigner = () => {
   const [formState, setFormState] = useState<FormState>(initialFormState);
@@ -281,6 +289,7 @@ const EmpireDesigner = () => {
   const { user } = useAuth();
   const { isSubscribed } = useSubscription();
   const { worlds } = useWorlds();
+  const { updateWorksheetTags } = useTags();
 
   const [searchParams, setSearchParams] = useSearchParams();
   const worldId = searchParams.get("worldId");
@@ -294,6 +303,9 @@ const EmpireDesigner = () => {
   const { data: existingWorksheets = [], isLoading: worksheetsLoading } = useWorksheetsByType(worldId || undefined, TOOL_TYPE);
   const renameWorksheet = useRenameWorksheet();
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
+  const [notesSheetOpen, setNotesSheetOpen] = useState(false);
+  const [moodboardSheetOpen, setMoodboardSheetOpen] = useState(false);
+  const [worksheetTags, setWorksheetTags] = useState<string[]>([]);
   const { data: shareConfig } = useWorksheetShare(currentWorksheetId || worksheetId || undefined);
 
   useEffect(() => {
@@ -315,6 +327,9 @@ const EmpireDesigner = () => {
         setFormState(data);
         setCurrentWorksheetId(existingWorksheet.id);
         setCurrentWorksheetTitle(existingWorksheet.title);
+        if (existingWorksheet?.tags) {
+          setWorksheetTags(existingWorksheet.tags);
+        }
         toast({
           title: "Worksheet Loaded",
           description: "Your saved work has been restored from the cloud.",
@@ -574,6 +589,14 @@ const EmpireDesigner = () => {
     setCurrentWorksheetTitle(newTitle);
   };
 
+  const handleTagsChange = (newTags: string[]) => {
+    setWorksheetTags(newTags);
+    const wsId = currentWorksheetId || worksheetId;
+    if (wsId) {
+      updateWorksheetTags.mutate({ worksheetId: wsId, tags: newTags });
+    }
+  };
+
   const selectedGovType = GOVERNMENT_TYPES.find(
     (g) => g.id === formState.foundation.governmentType
   );
@@ -583,50 +606,48 @@ const EmpireDesigner = () => {
       <Header />
 
       <main className="container mx-auto px-4 pt-20 pb-24">
-        <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
-          <div className="flex items-center gap-4">
-            <Link
-              to={worldId ? `/worlds/${worldId}` : "/"}
-              className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              <span className="text-sm">
-                {worldId ? `Back to ${worldName || "World"}` : "Back to Tools"}
-              </span>
-            </Link>
-          </div>
+        {/* Back Link */}
+        <Link
+          to={worldId ? `/worlds/${worldId}` : "/"}
+          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          {worldId ? "Back to World" : "Back to Dashboard"}
+        </Link>
 
-          <div className="flex items-center gap-2">
-            {worldId && user ? (
-              <Badge variant="outline" className="gap-1.5">
-                <Cloud className="w-3 h-3" />
-                Cloud Sync
-              </Badge>
-            ) : (
-              <Badge variant="secondary" className="gap-1.5">
-                <CloudOff className="w-3 h-3" />
-                Local Only
-              </Badge>
-            )}
-            {(currentWorksheetId || worksheetId) && (
-              <WorksheetTitle
-                title={currentWorksheetTitle}
-                onRename={handleRename}
-                icon={<FileText className="w-4 h-4 text-primary" />}
-                disabled={!user || worksheetLoading}
-              />
-            )}
-          </div>
-        </div>
+        {/* Action Bar */}
+        <ToolActionBar
+          onSave={handleSave}
+          onOpen={worldId ? () => setWorksheetSelectorOpen(true) : undefined}
+          onExport={() => setExportDialogOpen(true)}
+          onPrint={() => window.print()}
+          onShare={(currentWorksheetId || worksheetId) ? () => setShareDialogOpen(true) : undefined}
+          isShared={!!shareConfig?.enabled}
+          isSaving={updateWorksheet.isPending}
+          isCloudEnabled={!!(worldId && user)}
+          onNotesClick={() => setNotesSheetOpen(true)}
+          onMoodboardClick={() => setMoodboardSheetOpen(true)}
+          moodboardCount={formState.moodboard?.length || 0}
+          className="mb-6"
+          extraActions={
+            <QuickExportButton
+              toolName="Dominion"
+              worldName={worldName}
+              formState={formState}
+              summaryTemplate={<EmpireSummaryTemplate formState={formState} worldName={worldName} />}
+              fullTemplate={<EmpireFullReportTemplate formState={formState} worldName={worldName} />}
+              defaultFilename="empire-designer"
+            />
+          }
+        />
 
+        {/* Title */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center">
-              <Crown className="w-5 h-5 text-purple-500" />
-            </div>
+            {ToolIcon && <ToolIcon className="w-12 h-12 rounded-full shrink-0" />}
             <div>
-              <h1 className="font-display text-2xl md:text-3xl font-light">
-                Empire/Government Designer
+              <h1 className="font-display text-2xl md:text-3xl font-bold">
+                Dominion: Empire Designer
               </h1>
               <p className="text-sm text-muted-foreground">
                 Design political structures, governance systems, and factions
@@ -634,6 +655,21 @@ const EmpireDesigner = () => {
             </div>
           </div>
           <Badge variant="secondary" className="mt-2">Pro Tool</Badge>
+          {(currentWorksheetId || worksheetId) && (
+            <WorksheetTitle
+              title={currentWorksheetTitle}
+              onRename={handleRename}
+              icon={<FileText className="w-4 h-4 text-primary" />}
+              disabled={!user || worksheetLoading}
+            />
+          )}
+          {(currentWorksheetId || worksheetId) && (
+            <WorksheetTagsBar
+              worksheetId={(currentWorksheetId || worksheetId)!}
+              tags={worksheetTags}
+              onChange={handleTagsChange}
+            />
+          )}
         </div>
 
         <div className="lg:hidden mb-6 space-y-4">
@@ -643,6 +679,8 @@ const EmpireDesigner = () => {
 
         <div className="flex gap-8">
           <div className="flex-1 space-y-6 max-w-4xl">
+            <ToolIntroSection data={TOOL_INTROS["empire-designer"]} />
+
             {/* Section 1: Foundation */}
             <CollapsibleSection
               id="section-foundation"
@@ -1544,12 +1582,14 @@ const EmpireDesigner = () => {
 
                 <div className="space-y-2">
                   <Label>Consistency Notes</Label>
-                  <Textarea
-                    value={formState.synthesis.consistencyNotes}
-                    onChange={(e) => updateSynthesis("consistencyNotes", e.target.value)}
-                    placeholder="Any contradictions to resolve? Elements to develop further?"
-                    className="min-h-[80px]"
-                  />
+                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                    <RichTextEditor
+                      content={formState.synthesis.consistencyNotes}
+                      onChange={(value) => updateSynthesis("consistencyNotes", value)}
+                      placeholder="Any contradictions to resolve? Elements to develop further?"
+                      minHeight="100px"
+                    />
+                  </Suspense>
                 </div>
 
                 <div className="space-y-2">
@@ -1564,45 +1604,6 @@ const EmpireDesigner = () => {
               </div>
             </CollapsibleSection>
 
-            {/* Notes & Ideas Section */}
-            <CollapsibleSection
-              id="section-notes"
-              title="Notes & Ideas"
-              icon={<FileText className="w-5 h-5 text-primary" />}
-              defaultOpen={false}
-            >
-              <div className="space-y-2">
-                <p className="text-sm text-muted-foreground">
-                  Jot down ideas, story hooks, or reminders for this worksheet.
-                </p>
-                <Textarea
-                  placeholder="Your notes and ideas..."
-                  value={formState.generalNotes}
-                  onChange={(e) => setFormState(prev => ({ ...prev, generalNotes: e.target.value }))}
-                  className="min-h-[150px] resize-y"
-                />
-              </div>
-            </CollapsibleSection>
-
-            {/* Moodboard Section */}
-            <CollapsibleSection
-              id="section-moodboard"
-              title="Moodboard"
-              icon={<ImageIcon className="w-5 h-5 text-primary" />}
-              defaultOpen={false}
-              badge={formState.moodboard?.length || undefined}
-            >
-              <div className="space-y-2">
-                <p className="text-sm text-muted-foreground">
-                  Add reference images to inspire your design.
-                </p>
-                <MoodboardSection
-                  worksheetId={currentWorksheetId || "local"}
-                  images={formState.moodboard || []}
-                  onImagesChange={(images) => setFormState(prev => ({ ...prev, moodboard: images }))}
-                />
-              </div>
-            </CollapsibleSection>
           </div>
 
           <ToolSidebar>
@@ -1612,21 +1613,27 @@ const EmpireDesigner = () => {
         </div>
       </main>
 
-      <Footer />
-
-      <ToolActionBar
-        onSave={handleSave}
-        onExport={() => setExportDialogOpen(true)}
-        onPrint={() => window.print()}
-        onShare={(currentWorksheetId || worksheetId) ? () => setShareDialogOpen(true) : undefined}
-        isShared={!!shareConfig?.enabled}
-        isSaving={updateWorksheet.isPending}
+      <WorksheetNotesSheet
+        open={notesSheetOpen}
+        onOpenChange={setNotesSheetOpen}
+        content={formState.generalNotes}
+        onChange={(html) => setFormState(prev => ({ ...prev, generalNotes: html }))}
       />
+
+      <WorksheetMoodboardSheet
+        open={moodboardSheetOpen}
+        onOpenChange={setMoodboardSheetOpen}
+        worksheetId={currentWorksheetId || "local"}
+        images={formState.moodboard || []}
+        onImagesChange={(images) => setFormState(prev => ({ ...prev, moodboard: images }))}
+      />
+
+      <Footer />
 
       <ExportDialog
         open={exportDialogOpen}
         onOpenChange={setExportDialogOpen}
-        toolName="Empire/Government Designer"
+        toolName="Dominion"
         worksheetTitle={currentWorksheetTitle || formState.foundation.name || "Government"}
         formState={formState}
         worldName={worldName}
@@ -1649,7 +1656,7 @@ const EmpireDesigner = () => {
         worldId={worldId!}
         worldName={worldName}
         toolType={TOOL_TYPE}
-        toolDisplayName="Empire/Government Designer"
+        toolDisplayName="Dominion"
         worksheets={existingWorksheets}
         isLoading={worksheetsLoading}
         onSelect={handleWorksheetSelect}
@@ -1659,7 +1666,7 @@ const EmpireDesigner = () => {
       <UpgradeDialog
         open={upgradeDialogOpen}
         onOpenChange={setUpgradeDialogOpen}
-        toolName="Empire/Government Designer"
+        toolName="Dominion"
       />
     </div>
   );

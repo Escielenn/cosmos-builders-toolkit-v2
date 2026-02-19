@@ -9,12 +9,12 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        // Primary: solid cyan with glow on hover
-        default: "bg-primary text-primary-foreground hover:bg-primary/90 hover:scale-[1.02] hover:shadow-[0_0_20px_hsl(var(--sf-glow-cyan))]",
+        // Primary: solid cyan with lift + glow on hover
+        default: "bg-primary text-primary-foreground sf-btn-lift",
         // Destructive: crimson with subtle glow
-        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90 hover:scale-[1.02] hover:shadow-[0_0_15px_hsl(var(--sf-glow-magenta))]",
+        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90 hover:translate-y-[-2px] hover:scale-[1.02] hover:shadow-[0_0_15px_hsl(var(--sf-glow-magenta))]",
         // Outline: transparent with border, cyan glow on hover (SF signature)
-        outline: "border border-muted-foreground bg-transparent hover:border-primary hover:text-primary hover:shadow-[0_0_20px_hsl(var(--sf-glow-cyan))]",
+        outline: "border border-muted-foreground bg-transparent hover:border-primary hover:text-primary hover:shadow-[0_0_20px_hsl(var(--sf-glow-teal))] hover:bg-primary/[0.04]",
         // Secondary: elevated surface
         secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80 hover:scale-[1.01]",
         // Ghost: minimal, just hover color shift
@@ -22,7 +22,7 @@ const buttonVariants = cva(
         // Link: underline on hover
         link: "text-primary underline-offset-4 hover:underline",
         // StellarForge signature button: uppercase, letter-spaced, transparent with glow
-        sf: "bg-transparent border border-muted-foreground text-foreground uppercase tracking-[0.15em] text-xs font-medium hover:border-primary hover:text-primary hover:shadow-[0_0_20px_hsl(var(--sf-glow-cyan))]",
+        sf: "bg-transparent border border-muted-foreground text-foreground uppercase tracking-[0.15em] text-xs font-medium hover:border-primary hover:text-primary hover:shadow-[0_0_20px_hsl(var(--sf-glow-teal))] hover:bg-primary/[0.04]",
       },
       size: {
         default: "h-10 px-4 py-2",

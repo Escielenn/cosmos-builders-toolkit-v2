@@ -6,14 +6,11 @@ import { Button } from "@/components/ui/button";
 import SharedPageHeader from "@/components/sharing/SharedPageHeader";
 import { useSharedWorld } from "@/hooks/use-sharing";
 import { getToolDisplayName } from "@/lib/tools-config";
-import { getWorldIcon } from "@/lib/world-icons";
+import WorldIconRenderer from "@/components/world/WorldIconRenderer";
 
 const SharedWorldView = () => {
   const { token } = useParams<{ token: string }>();
   const { data, isLoading, error } = useSharedWorld(token);
-
-  const worldIcon = data ? getWorldIcon(data.icon) : null;
-  const IconComponent = worldIcon?.icon;
 
   return (
     <div className="min-h-screen bg-background">
@@ -30,7 +27,7 @@ const SharedWorldView = () => {
         {error && !isLoading && (
           <div className="flex flex-col items-center justify-center py-24 text-center">
             <AlertCircle className="w-12 h-12 text-muted-foreground mb-4" />
-            <h1 className="font-display text-2xl font-semibold mb-2">Link not available</h1>
+            <h1 className="font-heading text-2xl font-semibold mb-2">Link not available</h1>
             <p className="text-muted-foreground mb-6 max-w-md">
               This share link may have been disabled, expired, or the world may have been deleted.
             </p>
@@ -49,6 +46,7 @@ const SharedWorldView = () => {
                   src={data.header_image_url}
                   alt=""
                   className="w-full h-full object-cover"
+                  style={{ objectPosition: `center ${data.header_image_focus_y ?? 50}%` }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
               </div>
@@ -57,9 +55,9 @@ const SharedWorldView = () => {
             {/* World Info */}
             <div className="space-y-3">
               <div className="flex items-center gap-3">
-                {IconComponent && (
+                {data.icon && (
                   <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <IconComponent className="w-5 h-5 text-primary" />
+                    <WorldIconRenderer iconId={data.icon} className="w-7 h-7 text-primary" />
                   </div>
                 )}
                 <h1 className="font-display text-3xl md:text-4xl font-bold">
@@ -117,7 +115,7 @@ const SharedWorldView = () => {
             {/* Worksheets */}
             {data.worksheets && data.worksheets.length > 0 && (
               <div>
-                <h2 className="font-display font-light text-xl uppercase tracking-sf-wide mb-4">
+                <h2 className="font-heading font-light text-xl uppercase tracking-sf-wide mb-4">
                   Worksheets ({data.worksheets.length})
                 </h2>
                 <div className="space-y-3">
@@ -165,7 +163,7 @@ const SharedWorldView = () => {
             {/* Footer */}
             <GlassPanel className="p-6 text-center">
               <p className="text-sm text-muted-foreground mb-3">
-                Built with StellarForge — the science fiction worldbuilding toolkit
+                Built with StellarForge—the science fiction worldbuilding toolkit
               </p>
               <Button size="sm" asChild>
                 <Link to="/">Start building your world</Link>

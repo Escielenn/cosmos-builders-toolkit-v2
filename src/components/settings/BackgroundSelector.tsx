@@ -110,7 +110,7 @@ const BackgroundSelector = () => {
       </DialogTrigger>
       <DialogContent className="sm:max-w-xl max-h-[85vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="font-display text-xl">
+          <DialogTitle className="font-heading text-xl">
             Choose Background
           </DialogTitle>
           <DialogDescription>

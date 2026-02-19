@@ -21,7 +21,7 @@ export function NotesSheet({ worldId, worldName, open, onOpenChange }: NotesShee
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="right" className="w-full sm:max-w-lg p-0 flex flex-col">
         <SheetHeader className="p-6 pb-4 border-b border-border">
-          <SheetTitle className="flex items-center gap-2 font-display">
+          <SheetTitle className="flex items-center gap-2 font-heading">
             <StickyNote className="w-5 h-5 text-primary" />
             World Notes
           </SheetTitle>

@@ -1,23 +1,23 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, lazy, Suspense } from "react";
+import { WorksheetTagsBar } from "@/components/tools/WorksheetTagsBar";
+import { useTags } from "@/hooks/use-tags";
+const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
 import { Link, useSearchParams } from "react-router-dom";
 import {
   ArrowLeft,
-  Save,
   Info,
-  Cloud,
-  CloudOff,
   Plus,
   Trash2,
   Dna,
   ExternalLink,
-  Download,
-  Printer,
   Users,
   FileText,
   Image as ImageIcon,
 } from "lucide-react";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import ToolIntroSection from "@/components/tools/ToolIntroSection";
+import { TOOL_INTROS } from "@/lib/tool-intros";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -42,6 +42,7 @@ import KeyChoicesSidebar, { KeyChoicesSection, MobileKeyChoices } from "@/compon
 import { useToast } from "@/hooks/use-toast";
 import { useWorksheets, useWorksheet, useWorksheetsByType, useRenameWorksheet } from "@/hooks/use-worksheets";
 import { WorksheetTitle } from "@/components/tools/WorksheetTitle";
+import { getToolIcon } from "@/components/icons/tool-icons";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
 import WorksheetLinkSelector from "@/components/tools/WorksheetLinkSelector";
 import SpeciesMatrixImportModal from "@/components/tools/SpeciesMatrixImportModal";
@@ -49,11 +50,13 @@ import { useAuth } from "@/contexts/AuthContext";
 import SectionNavigation, { Section, MobileSectionNav } from "@/components/tools/SectionNavigation";
 import ToolSidebar from "@/components/tools/ToolSidebar";
 import ToolActionBar from "@/components/tools/ToolActionBar";
+import QuickExportButton from "@/components/tools/QuickExportButton";
 import ExportDialog from "@/components/tools/ExportDialog";
 import ShareDialog from "@/components/sharing/ShareDialog";
 import { useWorksheetShare } from "@/hooks/use-sharing";
-import { MoodboardSection } from "@/components/moodboard";
 import type { MoodboardImage } from "@/hooks/use-moodboard";
+import { WorksheetNotesSheet } from "@/components/tools/WorksheetNotesSheet";
+import { WorksheetMoodboardSheet } from "@/components/tools/WorksheetMoodboardSheet";
 import { EvolutionarySummaryTemplate, EvolutionaryFullReportTemplate } from "@/lib/pdf/templates";
 import { useWorlds } from "@/hooks/use-worlds";
 import { Json } from "@/integrations/supabase/types";
@@ -112,8 +115,6 @@ const SECTIONS: Section[] = [
     id: `section-${s.id}`,
     title: s.title,
   })),
-  { id: "section-notes", title: "Notes & Ideas" },
-  { id: "section-moodboard", title: "Moodboard" },
 ];
 
 // Types for form state
@@ -409,7 +410,8 @@ const DEFAULT_FORM_STATE: FormState = {
 };
 
 const TOOL_TYPE = "evolutionary-biology";
-const TOOL_DISPLAY_NAME = "Evolutionary Biology";
+const ToolIcon = getToolIcon(TOOL_TYPE);
+const TOOL_DISPLAY_NAME = "Phylo";
 
 const EvolutionaryBiology = () => {
   const { toast } = useToast();
@@ -428,6 +430,8 @@ const EvolutionaryBiology = () => {
   const renameWorksheet = useRenameWorksheet();
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const { data: shareConfig } = useWorksheetShare(worksheetId || undefined);
+  const { updateWorksheetTags } = useTags();
+  const [worksheetTags, setWorksheetTags] = useState<string[]>([]);
 
   // UI state
   const [formState, setFormState] = useState<FormState>(DEFAULT_FORM_STATE);
@@ -436,6 +440,8 @@ const EvolutionaryBiology = () => {
   const [showWorksheetSelector, setShowWorksheetSelector] = useState(false);
   const [showExportDialog, setShowExportDialog] = useState(false);
   const [showSpeciesMatrixImport, setShowSpeciesMatrixImport] = useState(false);
+  const [notesSheetOpen, setNotesSheetOpen] = useState(false);
+  const [moodboardSheetOpen, setMoodboardSheetOpen] = useState(false);
   const [expandedSections, setExpandedSections] = useState<Set<string>>(
     new Set(["section-foundations"])
   );
@@ -457,6 +463,9 @@ const EvolutionaryBiology = () => {
       setFormState({ ...DEFAULT_FORM_STATE, ...data });
       setWorksheetTitle(currentWorksheet.title || "");
       setHasUnsavedChanges(false);
+      if (currentWorksheet.tags) {
+        setWorksheetTags(currentWorksheet.tags);
+      }
     }
   }, [currentWorksheet]);
 
@@ -538,6 +547,13 @@ const EvolutionaryBiology = () => {
 
     await renameWorksheet.mutateAsync({ worksheetId, title: newTitle });
     setWorksheetTitle(newTitle);
+  };
+
+  const handleTagsChange = (newTags: string[]) => {
+    setWorksheetTags(newTags);
+    if (worksheetId) {
+      updateWorksheetTags.mutate({ worksheetId, tags: newTags });
+    }
   };
 
   const toggleSection = (sectionId: string) => {
@@ -875,56 +891,64 @@ const EvolutionaryBiology = () => {
             {worldId ? "Back to World" : "Back to Dashboard"}
           </Link>
 
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div>
-              <Badge className="mb-2">Tool 7</Badge>
-              <h1 className="font-display text-3xl md:text-4xl font-bold">
-                Evolutionary Biology Design Sheet
-              </h1>
-              {worksheetId && (
-                <WorksheetTitle
-                  title={worksheetTitle || null}
-                  onRename={handleRename}
-                  icon={<Dna className="w-5 h-5 text-primary" />}
-                  disabled={!user || loadingWorksheet}
-                />
-              )}
-              <p className="text-muted-foreground mt-2 max-w-2xl">
-                Design biologically plausible alien species by tracing every trait back to evolutionary pressures.
-              </p>
-            </div>
+          <ToolActionBar
+            onSave={handleSave}
+            onOpen={worldId ? () => setShowWorksheetSelector(true) : undefined}
+            onExport={() => setShowExportDialog(true)}
+            onShare={worksheetId ? () => setShareDialogOpen(true) : undefined}
+            isShared={!!shareConfig?.enabled}
+            hasUnsavedChanges={hasUnsavedChanges}
+            isSaving={updateWorksheet.isPending}
+            isCloudEnabled={!!(worldId && user)}
+            onNotesClick={() => setNotesSheetOpen(true)}
+            onMoodboardClick={() => setMoodboardSheetOpen(true)}
+            moodboardCount={formState.moodboard?.length || 0}
+            className="mb-6"
+            extraActions={
+              <QuickExportButton
+                toolName="Phylo"
+                worldName={currentWorld?.name}
+                formState={formState}
+                summaryTemplate={<EvolutionarySummaryTemplate formState={formState} worldName={currentWorld?.name} />}
+                fullTemplate={<EvolutionaryFullReportTemplate formState={formState} worldName={currentWorld?.name} />}
+                defaultFilename="evolutionary-biology"
+              />
+            }
+          />
 
-            <div className="flex items-center gap-2 no-print">
-              {worldId && user ? (
-                <span className="text-xs text-muted-foreground flex items-center gap-1">
-                  <Cloud className="w-3 h-3 text-green-500" />
-                  Cloud sync enabled
-                </span>
-              ) : (
-                <span className="text-xs text-muted-foreground flex items-center gap-1">
-                  <CloudOff className="w-3 h-3" />
-                  Local only
-                </span>
-              )}
-              <Button variant="outline" size="sm" onClick={handleSave} disabled={!worksheetId}>
-                <Save className="w-4 h-4 mr-2" />
-                Save Draft
-              </Button>
-              <Button variant="outline" size="sm" onClick={handlePrint}>
-                <Printer className="w-4 h-4 mr-2" />
-                Print
-              </Button>
-              <Button size="sm" onClick={handleExport}>
-                <Download className="w-4 h-4 mr-2" />
-                Export
-              </Button>
-            </div>
+          <Badge className="mb-2">Tool 7</Badge>
+          <div className="flex items-center gap-3">
+            {ToolIcon && <ToolIcon className="w-12 h-12 rounded-full shrink-0" />}
+            <h1 className="font-display text-3xl md:text-4xl font-bold">
+              Phylo: Evolutionary Biology
+            </h1>
           </div>
+          <p className="text-muted-foreground mt-2 max-w-2xl">
+            Design biologically plausible alien species by tracing every trait back to evolutionary pressures.
+          </p>
+          {worksheetId && (
+            <WorksheetTitle
+              title={worksheetTitle || null}
+              onRename={handleRename}
+              icon={<Dna className="w-5 h-5 text-primary" />}
+              disabled={!user || loadingWorksheet}
+            />
+          )}
+          {worksheetId && (
+            <WorksheetTagsBar
+              worksheetId={worksheetId}
+              tags={worksheetTags}
+              onChange={handleTagsChange}
+            />
+          )}
         </div>
+
+
+        <ToolIntroSection data={TOOL_INTROS["evolutionary-biology"]} />
 
         {/* Introduction */}
         <GlassPanel glow className="p-6 md:p-8 mb-8">
-          <h2 className="font-display text-xl font-semibold mb-4 gradient-text">
+          <h2 className="font-heading text-xl font-semibold mb-4 gradient-text">
             Building Believable Biology
           </h2>
           <blockquote className="border-l-2 border-primary pl-4 italic text-lg mb-4">
@@ -968,7 +992,7 @@ const EvolutionaryBiology = () => {
                   <Dna className="w-5 h-5 text-emerald-500" />
                 </div>
                 <div>
-                  <h2 className="font-display text-lg uppercase tracking-wider">Species Identity</h2>
+                  <h2 className="font-heading text-lg uppercase tracking-wider">Species Identity</h2>
                   <p className="text-xs text-muted-foreground">Name your species and link to environmental context</p>
                 </div>
               </div>
@@ -1082,14 +1106,16 @@ const EvolutionaryBiology = () => {
 
                 <div className="space-y-2">
                   <Label>Notes</Label>
-                  <Textarea
-                    value={formState.foundations.survivalPressuresNotes}
-                    onChange={(e) =>
-                      updateFormState("foundations", { survivalPressuresNotes: e.target.value })
-                    }
-                    placeholder="How do these pressures connect to your world's environment?"
-                    className="min-h-[100px]"
-                  />
+                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                    <RichTextEditor
+                      content={formState.foundations.survivalPressuresNotes}
+                      onChange={(value) =>
+                        updateFormState("foundations", { survivalPressuresNotes: value })
+                      }
+                      placeholder="How do these pressures connect to your world's environment?"
+                      minHeight="100px"
+                    />
+                  </Suspense>
                 </div>
               </CollapsibleSection>
 
@@ -1264,14 +1290,16 @@ const EvolutionaryBiology = () => {
 
                 <div className="space-y-2">
                   <Label>Notes</Label>
-                  <Textarea
-                    value={formState.biochemistry.biochemistryNotes}
-                    onChange={(e) =>
-                      updateFormState("biochemistry", { biochemistryNotes: e.target.value })
-                    }
-                    placeholder="How does the biochemistry connect to the environment?"
-                    className="min-h-[100px]"
-                  />
+                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                    <RichTextEditor
+                      content={formState.biochemistry.biochemistryNotes}
+                      onChange={(value) =>
+                        updateFormState("biochemistry", { biochemistryNotes: value })
+                      }
+                      placeholder="How does the biochemistry connect to the environment?"
+                      minHeight="100px"
+                    />
+                  </Suspense>
                 </div>
               </CollapsibleSection>
 
@@ -1342,14 +1370,16 @@ const EvolutionaryBiology = () => {
 
                 <div className="space-y-2">
                   <Label>Notes</Label>
-                  <Textarea
-                    value={formState.adaptations.adaptationsNotes}
-                    onChange={(e) =>
-                      updateFormState("adaptations", { adaptationsNotes: e.target.value })
-                    }
-                    placeholder="Additional notes on adaptations..."
-                    className="min-h-[80px]"
-                  />
+                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                    <RichTextEditor
+                      content={formState.adaptations.adaptationsNotes}
+                      onChange={(value) =>
+                        updateFormState("adaptations", { adaptationsNotes: value })
+                      }
+                      placeholder="Additional notes on adaptations..."
+                      minHeight="100px"
+                    />
+                  </Suspense>
                 </div>
               </CollapsibleSection>
 
@@ -1546,14 +1576,16 @@ const EvolutionaryBiology = () => {
 
                 <div className="space-y-2">
                   <Label>Notes</Label>
-                  <Textarea
-                    value={formState.bodyPlan.bodyPlanNotes}
-                    onChange={(e) =>
-                      updateFormState("bodyPlan", { bodyPlanNotes: e.target.value })
-                    }
-                    placeholder="How does the body plan serve survival needs?"
-                    className="min-h-[80px]"
-                  />
+                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                    <RichTextEditor
+                      content={formState.bodyPlan.bodyPlanNotes}
+                      onChange={(value) =>
+                        updateFormState("bodyPlan", { bodyPlanNotes: value })
+                      }
+                      placeholder="How does the body plan serve survival needs?"
+                      minHeight="100px"
+                    />
+                  </Suspense>
                 </div>
               </CollapsibleSection>
 
@@ -1653,14 +1685,16 @@ const EvolutionaryBiology = () => {
 
                 <div className="space-y-2">
                   <Label>Notes</Label>
-                  <Textarea
-                    value={formState.sensory.sensoryNotes}
-                    onChange={(e) =>
-                      updateFormState("sensory", { sensoryNotes: e.target.value })
-                    }
-                    placeholder="Additional notes on sensory systems..."
-                    className="min-h-[80px]"
-                  />
+                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                    <RichTextEditor
+                      content={formState.sensory.sensoryNotes}
+                      onChange={(value) =>
+                        updateFormState("sensory", { sensoryNotes: value })
+                      }
+                      placeholder="Additional notes on sensory systems..."
+                      minHeight="100px"
+                    />
+                  </Suspense>
                 </div>
               </CollapsibleSection>
 
@@ -1866,14 +1900,16 @@ const EvolutionaryBiology = () => {
 
                 <div className="space-y-2">
                   <Label>Notes</Label>
-                  <Textarea
-                    value={formState.reproduction.reproductionNotes}
-                    onChange={(e) =>
-                      updateFormState("reproduction", { reproductionNotes: e.target.value })
-                    }
-                    placeholder="How does reproduction strategy fit the environment?"
-                    className="min-h-[80px]"
-                  />
+                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                    <RichTextEditor
+                      content={formState.reproduction.reproductionNotes}
+                      onChange={(value) =>
+                        updateFormState("reproduction", { reproductionNotes: value })
+                      }
+                      placeholder="How does reproduction strategy fit the environment?"
+                      minHeight="100px"
+                    />
+                  </Suspense>
                 </div>
               </CollapsibleSection>
 
@@ -2007,14 +2043,16 @@ const EvolutionaryBiology = () => {
 
                 <div className="space-y-2">
                   <Label>Notes</Label>
-                  <Textarea
-                    value={formState.social.socialNotes}
-                    onChange={(e) =>
-                      updateFormState("social", { socialNotes: e.target.value })
-                    }
-                    placeholder="How did social structure evolve from survival needs?"
-                    className="min-h-[80px]"
-                  />
+                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                    <RichTextEditor
+                      content={formState.social.socialNotes}
+                      onChange={(value) =>
+                        updateFormState("social", { socialNotes: value })
+                      }
+                      placeholder="How did social structure evolve from survival needs?"
+                      minHeight="100px"
+                    />
+                  </Suspense>
                 </div>
               </CollapsibleSection>
 
@@ -2150,14 +2188,16 @@ const EvolutionaryBiology = () => {
 
                 <div className="space-y-2">
                   <Label>Notes</Label>
-                  <Textarea
-                    value={formState.cognition.cognitionNotes}
-                    onChange={(e) =>
-                      updateFormState("cognition", { cognitionNotes: e.target.value })
-                    }
-                    placeholder="What survival challenge demanded this level of intelligence?"
-                    className="min-h-[80px]"
-                  />
+                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                    <RichTextEditor
+                      content={formState.cognition.cognitionNotes}
+                      onChange={(value) =>
+                        updateFormState("cognition", { cognitionNotes: value })
+                      }
+                      placeholder="What survival challenge demanded this level of intelligence?"
+                      minHeight="100px"
+                    />
+                  </Suspense>
                 </div>
               </CollapsibleSection>
 
@@ -2272,14 +2312,16 @@ const EvolutionaryBiology = () => {
 
                 <div className="space-y-2">
                   <Label>Notes</Label>
-                  <Textarea
-                    value={formState.communication.communicationNotes}
-                    onChange={(e) =>
-                      updateFormState("communication", { communicationNotes: e.target.value })
-                    }
-                    placeholder="How does the environment shape communication?"
-                    className="min-h-[80px]"
-                  />
+                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                    <RichTextEditor
+                      content={formState.communication.communicationNotes}
+                      onChange={(value) =>
+                        updateFormState("communication", { communicationNotes: value })
+                      }
+                      placeholder="How does the environment shape communication?"
+                      minHeight="100px"
+                    />
+                  </Suspense>
                 </div>
               </CollapsibleSection>
 
@@ -2387,14 +2429,16 @@ const EvolutionaryBiology = () => {
 
                 <div className="space-y-2">
                   <Label>Notes</Label>
-                  <Textarea
-                    value={formState.psychology.psychologyNotes}
-                    onChange={(e) =>
-                      updateFormState("psychology", { psychologyNotes: e.target.value })
-                    }
-                    placeholder="What human emotions might be absent or alien?"
-                    className="min-h-[80px]"
-                  />
+                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                    <RichTextEditor
+                      content={formState.psychology.psychologyNotes}
+                      onChange={(value) =>
+                        updateFormState("psychology", { psychologyNotes: value })
+                      }
+                      placeholder="What human emotions might be absent or alien?"
+                      minHeight="100px"
+                    />
+                  </Suspense>
                 </div>
               </CollapsibleSection>
 
@@ -2475,14 +2519,16 @@ const EvolutionaryBiology = () => {
 
                 <div className="space-y-2">
                   <Label>Notes</Label>
-                  <Textarea
-                    value={formState.vestigial.vestigialNotes}
-                    onChange={(e) =>
-                      updateFormState("vestigial", { vestigialNotes: e.target.value })
-                    }
-                    placeholder="Additional notes on evolutionary history..."
-                    className="min-h-[80px]"
-                  />
+                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                    <RichTextEditor
+                      content={formState.vestigial.vestigialNotes}
+                      onChange={(value) =>
+                        updateFormState("vestigial", { vestigialNotes: value })
+                      }
+                      placeholder="Additional notes on evolutionary history..."
+                      minHeight="100px"
+                    />
+                  </Suspense>
                 </div>
               </CollapsibleSection>
 
@@ -2535,14 +2581,16 @@ const EvolutionaryBiology = () => {
 
                 <div className="space-y-2">
                   <Label>Notes</Label>
-                  <Textarea
-                    value={formState.viewpointTest.viewpointNotes}
-                    onChange={(e) =>
-                      updateFormState("viewpointTest", { viewpointNotes: e.target.value })
-                    }
-                    placeholder="Additional notes on alien perspective..."
-                    className="min-h-[80px]"
-                  />
+                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                    <RichTextEditor
+                      content={formState.viewpointTest.viewpointNotes}
+                      onChange={(value) =>
+                        updateFormState("viewpointTest", { viewpointNotes: value })
+                      }
+                      placeholder="Additional notes on alien perspective..."
+                      minHeight="100px"
+                    />
+                  </Suspense>
                 </div>
               </CollapsibleSection>
 
@@ -2605,56 +2653,19 @@ const EvolutionaryBiology = () => {
 
                 <div className="space-y-2">
                   <Label>Notes</Label>
-                  <Textarea
-                    value={formState.integration.integrationNotes}
-                    onChange={(e) =>
-                      updateFormState("integration", { integrationNotes: e.target.value })
-                    }
-                    placeholder="Final integration notes..."
-                    className="min-h-[80px]"
-                  />
+                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                    <RichTextEditor
+                      content={formState.integration.integrationNotes}
+                      onChange={(value) =>
+                        updateFormState("integration", { integrationNotes: value })
+                      }
+                      placeholder="Final integration notes..."
+                      minHeight="100px"
+                    />
+                  </Suspense>
                 </div>
               </CollapsibleSection>
 
-              {/* Notes & Ideas Section */}
-              <CollapsibleSection
-                id="section-notes"
-                title="Notes & Ideas"
-                icon={<FileText className="w-5 h-5 text-primary" />}
-                defaultOpen={false}
-              >
-                <div className="space-y-2">
-                  <p className="text-sm text-muted-foreground">
-                    Jot down ideas, story hooks, or reminders for this worksheet.
-                  </p>
-                  <Textarea
-                    placeholder="Your notes and ideas..."
-                    value={formState.generalNotes}
-                    onChange={(e) => setFormState(prev => ({ ...prev, generalNotes: e.target.value }))}
-                    className="min-h-[150px] resize-y"
-                  />
-                </div>
-              </CollapsibleSection>
-
-              {/* Moodboard Section */}
-              <CollapsibleSection
-                id="section-moodboard"
-                title="Moodboard"
-                icon={<ImageIcon className="w-5 h-5 text-primary" />}
-                defaultOpen={false}
-                badge={formState.moodboard?.length || undefined}
-              >
-                <div className="space-y-2">
-                  <p className="text-sm text-muted-foreground">
-                    Add reference images to inspire your design.
-                  </p>
-                  <MoodboardSection
-                    worksheetId={worksheetId || "local"}
-                    images={formState.moodboard || []}
-                    onImagesChange={(images) => setFormState(prev => ({ ...prev, moodboard: images }))}
-                  />
-                </div>
-              </CollapsibleSection>
             </GlassPanel>
           </div>
 
@@ -2672,16 +2683,6 @@ const EvolutionaryBiology = () => {
           <MobileKeyChoices sections={keyChoicesSections} title="Species Summary" />
         </div>
 
-        {/* Action Bar */}
-        <ToolActionBar
-          hasUnsavedChanges={hasUnsavedChanges}
-          onSave={handleSave}
-          isSaving={updateWorksheet.isPending}
-          isCloudMode={!!worldId && !!worksheetId}
-          onExport={() => setShowExportDialog(true)}
-          onShare={worksheetId ? () => setShareDialogOpen(true) : undefined}
-          isShared={!!shareConfig?.enabled}
-        />
 
         {/* Worksheet Selector Dialog */}
         <WorksheetSelectorDialog
@@ -2701,7 +2702,7 @@ const EvolutionaryBiology = () => {
         <ExportDialog
           open={showExportDialog}
           onOpenChange={setShowExportDialog}
-          toolName="Evolutionary Biology"
+          toolName="Phylo"
           worldName={currentWorld?.name}
           formState={formState}
           summaryTemplate={<EvolutionarySummaryTemplate formState={formState} worldName={currentWorld?.name} />}
@@ -2728,6 +2729,21 @@ const EvolutionaryBiology = () => {
         )}
 
       </main>
+
+      <WorksheetNotesSheet
+        open={notesSheetOpen}
+        onOpenChange={setNotesSheetOpen}
+        content={formState.generalNotes}
+        onChange={(html) => setFormState(prev => ({ ...prev, generalNotes: html }))}
+      />
+
+      <WorksheetMoodboardSheet
+        open={moodboardSheetOpen}
+        onOpenChange={setMoodboardSheetOpen}
+        worksheetId={worksheetId || "local"}
+        images={formState.moodboard || []}
+        onImagesChange={(images) => setFormState(prev => ({ ...prev, moodboard: images }))}
+      />
 
       <Footer />
     </div>

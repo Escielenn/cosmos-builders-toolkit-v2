@@ -1,5 +1,8 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Edit, Globe, FileText, Rocket, Zap, Trash2, MoreVertical, Loader2, Calculator, Plus, Sparkles, Pencil, ChevronRight, Dna, Network, Sun, Crown, Cpu, Users, Download, Layers, BookOpen } from "lucide-react";
+import { ArrowLeft, Edit, Globe, FileText, Rocket, Zap, Trash2, MoreVertical, Loader2, Calculator, Plus, Sparkles, Pencil, ChevronRight, Dna, Network, Sun, Crown, Cpu, Users, Download, Layers, BookOpen, Atom, Clock, Archive, Tag, Orbit, Languages, Weight, Eye } from "lucide-react";
+import TagBadge from "@/components/tags/TagBadge";
+import TagInput from "@/components/tags/TagInput";
+import { getTagColor } from "@/hooks/use-tags";
 import { format } from "date-fns";
 import Header from "@/components/layout/Header";
 import { GlassPanel } from "@/components/ui/glass-panel";
@@ -8,6 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Slider } from "@/components/ui/slider";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -36,6 +40,7 @@ import { useWorld } from "@/hooks/use-world";
 import { useWorksheets, useRenameWorksheet } from "@/hooks/use-worksheets";
 import { Badge } from "@/components/ui/badge";
 import { useWorlds } from "@/hooks/use-worlds";
+import { getToolIcon as getToolSvgIcon } from "@/components/icons/tool-icons";
 import { useMyWorldRole } from "@/hooks/use-collaborators";
 import { useState, useEffect } from "react";
 import WorldHeader from "@/components/world/WorldHeader";
@@ -48,80 +53,143 @@ import WorldBibleDialog from "@/components/world/WorldBibleDialog";
 const TOOLS = [
   {
     id: "environmental-chain-reaction",
-    name: "Environmental Chain Reaction",
+    name: "Cascade: Environmental Chain Reaction",
     description: "Explore how a single planetary parameter cascades through multiple levels",
     icon: Globe,
     path: "/tools/environmental-chain-reaction",
   },
   {
     id: "spacecraft-designer",
-    name: "Spacecraft Designer",
+    name: "Vessel: Lived-In Spacecraft Designer",
     description: "Design lived-in spacecraft with rich history and culture",
     icon: Rocket,
     path: "/tools/spacecraft-designer",
   },
   {
     id: "propulsion-consequences-map",
-    name: "Propulsion Consequences Map",
+    name: "Impulse: Propulsion Consequences",
     description: "Map out the societal consequences of your propulsion technology",
     icon: Zap,
     path: "/tools/propulsion-consequences-map",
   },
   {
     id: "planetary-profile",
-    name: "Planetary Profile Template",
+    name: "Genesis: Planetary Profile",
     description: "Define your world's stellar environment, physical characteristics, and habitability",
     icon: Globe,
     path: "/tools/planetary-profile",
   },
   {
+    id: "space-expansion-modeler",
+    name: "Exodus: Space Expansion Modeler",
+    description: "Model how competing forces shape expansion beyond Earth",
+    icon: Orbit,
+    path: "/tools/space-expansion-modeler",
+  },
+  {
     id: "drake-equation-calculator",
-    name: "Drake Equation Calculator",
+    name: "Signal: Drake Equation Calculator",
     description: "Calculate the number of civilizations in your galaxy",
     icon: Calculator,
     path: "/tools/drake-equation-calculator",
   },
   {
     id: "xenomythology-framework-builder",
-    name: "Xenomythology Framework",
+    name: "Mythos: Xenomythology Framework",
     description: "Create alien mythological systems derived from species biology",
     icon: Sparkles,
     path: "/tools/xenomythology-framework-builder",
   },
   {
     id: "evolutionary-biology",
-    name: "Evolutionary Biology",
+    name: "Phylo: Evolutionary Biology",
     description: "Design biologically plausible alien species from evolutionary pressures",
     icon: Dna,
     path: "/tools/evolutionary-biology",
   },
   {
     id: "star-system-builder",
-    name: "Star System Builder",
+    name: "Orrery: Star System Builder",
     description: "Design multi-planet systems with stellar relationships and orbital mechanics",
     icon: Sun,
     path: "/tools/star-system-builder",
   },
   {
     id: "empire-designer",
-    name: "Empire/Government Designer",
+    name: "Dominion: Empire Designer",
     description: "Create political structures, governance systems, and internal factions",
     icon: Crown,
     path: "/tools/empire-designer",
   },
   {
     id: "technology-consequences",
-    name: "Technology Consequences Map",
+    name: "Paradigm: Technology Consequences",
     description: "Map how any technology cascades through society, economy, and culture",
     icon: Cpu,
     path: "/tools/technology-consequences",
   },
   {
     id: "species-interaction-matrix",
-    name: "Species Interaction Matrix",
+    name: "Symbiosis: Species Interaction Matrix",
     description: "Define complex relationships between multiple alien species",
     icon: Users,
     path: "/tools/species-interaction-matrix",
+  },
+  {
+    id: "one-big-lie",
+    name: "Axiom: The One Big Lie",
+    description: "Declare your single physics violation and trace its consequences",
+    icon: Atom,
+    path: "/tools/one-big-lie",
+  },
+  {
+    id: "time-dilation",
+    name: "Paradox: Time Dilation Calculator",
+    description: "Calculate relativistic time dilation for interstellar journeys",
+    icon: Clock,
+    path: "/tools/time-dilation",
+  },
+  {
+    id: "habitable-zone-calculator",
+    name: "Goldilocks: Habitable Zone Calculator",
+    description: "Calculate habitable zone boundaries for any star",
+    icon: Sun,
+    path: "/tools/habitable-zone-calculator",
+  },
+  {
+    id: "lexdrift",
+    name: "Lexdrift: Language Evolution",
+    description: "Model how languages evolve during interstellar travel",
+    icon: Languages,
+    path: "/tools/lexdrift",
+  },
+  {
+    id: "surface-gravity-calculator",
+    name: "Atlas: Surface Gravity Calculator",
+    description: "Calculate surface gravity and trace how weight shapes your world",
+    icon: Weight,
+    path: "/tools/surface-gravity-calculator",
+  },
+  {
+    id: "timeline",
+    name: "Timeline",
+    description: "Plot events across deep time with multi-track timelines",
+    icon: Clock,
+    path: "/tools/timeline",
+  },
+  {
+    id: "sensorium",
+    name: "Sensorium: Alien Sensory Systems",
+    description: "Design evolutionarily plausible sensory systems for alien species",
+    icon: Eye,
+    path: "/tools/sensorium",
+  },
+  {
+    id: "gravitas",
+    name: "Gravitas: Gravity Simulator",
+    description: "Calculate gravity conditions on spacecraft, habitats, and planetary surfaces",
+    icon: Weight,
+    path: "/tools/gravitas",
   },
 ];
 
@@ -140,7 +208,7 @@ const WorldDashboard = () => {
   const navigate = useNavigate();
   const { data: world, isLoading: worldLoading, error: worldError } = useWorld(worldId);
   const { worksheets, isLoading: worksheetsLoading, deleteWorksheet } = useWorksheets(worldId);
-  const { deleteWorld, updateWorld } = useWorlds();
+  const { deleteWorld, updateWorld, archiveWorld } = useWorlds();
   const renameWorksheet = useRenameWorksheet();
   const { data: role } = useMyWorldRole(worldId);
   const isOwner = role === "owner";
@@ -150,6 +218,7 @@ const WorldDashboard = () => {
   const [worksheetToRename, setWorksheetToRename] = useState<{ id: string; title: string } | null>(null);
   const [renameValue, setRenameValue] = useState("");
   const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [tagsDialogOpen, setTagsDialogOpen] = useState(false);
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
   const [viewExportDialogOpen, setViewExportDialogOpen] = useState(false);
   const [worldBibleDialogOpen, setWorldBibleDialogOpen] = useState(false);
@@ -157,6 +226,7 @@ const WorldDashboard = () => {
   const [editDescription, setEditDescription] = useState("");
   const [editIcon, setEditIcon] = useState("globe");
   const [editHeaderImageUrl, setEditHeaderImageUrl] = useState<string | null>(null);
+  const [editHeaderImageFocusY, setEditHeaderImageFocusY] = useState<number>(50);
 
   // Group worksheets by tool type
   const worksheetsByType = worksheets.reduce((acc, worksheet) => {
@@ -175,12 +245,19 @@ const WorldDashboard = () => {
       setEditDescription(world.description || "");
       setEditIcon(world.icon || "globe");
       setEditHeaderImageUrl(world.header_image_url);
+      setEditHeaderImageFocusY(world.header_image_focus_y ?? 50);
     }
   }, [world]);
 
   const handleDeleteWorld = async () => {
     if (!worldId) return;
     await deleteWorld.mutateAsync(worldId);
+    navigate("/");
+  };
+
+  const handleArchiveWorld = async () => {
+    if (!worldId) return;
+    await archiveWorld.mutateAsync(worldId);
     navigate("/");
   };
 
@@ -213,6 +290,7 @@ const WorldDashboard = () => {
       description: editDescription.trim() || undefined,
       icon: editIcon,
       header_image_url: editHeaderImageUrl,
+      header_image_focus_y: editHeaderImageFocusY,
     });
     setEditDialogOpen(false);
   };
@@ -306,6 +384,18 @@ const WorldDashboard = () => {
                   Edit World
                 </DropdownMenuItem>
                 )}
+                {canEdit && (
+                <DropdownMenuItem onClick={() => setTagsDialogOpen(true)}>
+                  <Tag className="w-4 h-4 mr-2" />
+                  Edit Tags
+                </DropdownMenuItem>
+                )}
+                {isOwner && (
+                <DropdownMenuItem onClick={handleArchiveWorld}>
+                  <Archive className="w-4 h-4 mr-2" />
+                  Archive World
+                </DropdownMenuItem>
+                )}
                 {isOwner && (
                 <DropdownMenuItem
                   className="text-destructive"
@@ -336,8 +426,12 @@ const WorldDashboard = () => {
             name={world.name}
             description={world.description}
             headerImageUrl={world.header_image_url}
+            headerImageFocusY={world.header_image_focus_y}
             icon={world.icon || "globe"}
+            tags={world.tags || []}
             onEditClick={isOwner ? () => setEditDialogOpen(true) : undefined}
+            onAddTag={() => setTagsDialogOpen(true)}
+            canEdit={canEdit}
           />
           <p className="text-sm text-muted-foreground mt-3 px-1">
             Last updated {format(new Date(world.updated_at), "MMMM d, yyyy")}
@@ -360,9 +454,16 @@ const WorldDashboard = () => {
               <Link key={tool.id} to={`${tool.path}?worldId=${worldId}`}>
                 <GlassPanel className="p-5 h-full hover:bg-accent/50 transition-colors cursor-pointer">
                   <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center shrink-0">
-                      <tool.icon className="w-5 h-5 text-primary" />
-                    </div>
+                    {(() => {
+                      const SvgIcon = getToolSvgIcon(tool.id);
+                      return SvgIcon ? (
+                        <SvgIcon className="w-10 h-10 rounded-full shrink-0" />
+                      ) : (
+                        <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
+                          <tool.icon className="w-5 h-5 text-primary" />
+                        </div>
+                      );
+                    })()}
                     <div>
                       <h3 className="font-semibold">{tool.name}</h3>
                       <p className="text-sm text-muted-foreground mt-1">
@@ -399,14 +500,18 @@ const WorldDashboard = () => {
                 const toolWorksheets = worksheetsByType[tool.id] || [];
                 if (toolWorksheets.length === 0) return null;
 
-                const ToolIcon = tool.icon;
+                const SvgIcon = getToolSvgIcon(tool.id);
 
                 return (
                   <div key={tool.id} className="space-y-3">
                     {/* Tool Type Header */}
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <ToolIcon className="w-5 h-5 text-primary" />
+                        {SvgIcon ? (
+                          <SvgIcon className="w-6 h-6 rounded-full" />
+                        ) : (
+                          <tool.icon className="w-5 h-5 text-primary" />
+                        )}
                         <h3 className="font-semibold">{tool.name}</h3>
                         <Badge variant="secondary" className="text-xs">
                           {toolWorksheets.length}
@@ -438,6 +543,19 @@ const WorldDashboard = () => {
                               <p className="text-xs text-muted-foreground">
                                 Updated {format(new Date(worksheet.updated_at), "MMM d, yyyy")}
                               </p>
+                              {worksheet.tags && worksheet.tags.length > 0 && (
+                                <div className="flex flex-wrap gap-1 mt-1">
+                                  {worksheet.tags.slice(0, 4).map((tag: string) => {
+                                    const hash = tag.split("").reduce((acc: number, char: string) => acc + char.charCodeAt(0), 0);
+                                    return (
+                                      <TagBadge key={tag} name={tag} color={getTagColor(hash)} size="sm" />
+                                    );
+                                  })}
+                                  {worksheet.tags.length > 4 && (
+                                    <span className="text-xs text-muted-foreground">+{worksheet.tags.length - 4}</span>
+                                  )}
+                                </div>
+                              )}
                             </div>
                           </div>
                           <div className="flex items-center gap-1 shrink-0">
@@ -585,24 +703,51 @@ const WorldDashboard = () => {
               <Label>Header Image</Label>
               <HeaderImageUpload
                 currentImageUrl={editHeaderImageUrl}
-                onImageChange={setEditHeaderImageUrl}
+                onImageChange={(url) => {
+                  setEditHeaderImageUrl(url);
+                  if (url === null) setEditHeaderImageFocusY(50);
+                }}
+                focusY={editHeaderImageFocusY}
               />
+              {editHeaderImageUrl && (
+                <div className="space-y-1 pt-1">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-xs text-muted-foreground">Vertical Position</Label>
+                    <span className="text-xs text-muted-foreground tabular-nums">{editHeaderImageFocusY}%</span>
+                  </div>
+                  <Slider
+                    value={[editHeaderImageFocusY]}
+                    onValueChange={([v]) => setEditHeaderImageFocusY(v)}
+                    min={0}
+                    max={100}
+                    step={1}
+                    aria-label="Vertical image position"
+                  />
+                  <div className="flex justify-between text-[10px] text-muted-foreground">
+                    <span>Top</span>
+                    <span>Center</span>
+                    <span>Bottom</span>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Icon and Name Row */}
-            <div className="flex items-end gap-3">
-              <div className="space-y-2">
-                <Label>Icon</Label>
-                <IconPicker value={editIcon} onChange={setEditIcon} />
-              </div>
-              <div className="space-y-2 flex-1">
+            <div className="space-y-2">
+              <div className="flex gap-4">
+                <Label className="w-12 shrink-0 text-center">Icon</Label>
                 <Label htmlFor="edit-name">World Name</Label>
-                <Input
-                  id="edit-name"
-                  value={editName}
-                  onChange={(e) => setEditName(e.target.value)}
-                  placeholder="Enter world name"
-                />
+              </div>
+              <div className="flex items-end gap-4">
+                <IconPicker value={editIcon} onChange={setEditIcon} />
+                <div className="flex-1">
+                  <Input
+                    id="edit-name"
+                    value={editName}
+                    onChange={(e) => setEditName(e.target.value)}
+                    placeholder="Enter world name"
+                  />
+                </div>
               </div>
             </div>
 
@@ -662,6 +807,30 @@ const WorldDashboard = () => {
         worldDescription={world.description || undefined}
         worldId={worldId!}
       />
+
+      {/* Edit Tags Dialog */}
+      <Dialog open={tagsDialogOpen} onOpenChange={setTagsDialogOpen}>
+        <DialogContent className="sm:max-w-md overflow-visible">
+          <DialogHeader>
+            <DialogTitle className="font-heading text-xl">Edit World Tags</DialogTitle>
+            <DialogDescription>
+              Add tags to organize and categorize your world.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="mt-4 pb-4">
+            <TagInput
+              tags={world.tags || []}
+              onChange={(newTags) => {
+                if (worldId) {
+                  updateWorld.mutate({ worldId, tags: newTags });
+                }
+              }}
+              placeholder="Add world tag..."
+              maxTags={10}
+            />
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

@@ -62,7 +62,7 @@ const SuggestedImplications = ({
                 <Lightbulb className="w-5 h-5 text-amber-500" />
               </div>
               <div>
-                <h3 className="font-display font-semibold text-amber-600 dark:text-amber-400">
+                <h3 className="font-heading font-semibold text-amber-600 dark:text-amber-400">
                   Suggested Implications
                 </h3>
                 <p className="text-sm text-muted-foreground">

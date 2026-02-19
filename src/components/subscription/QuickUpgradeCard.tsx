@@ -11,7 +11,7 @@ const QuickUpgradeCard = () => {
         <Crown className="w-7 h-7 text-amber-500" />
       </div>
 
-      <h3 className="font-display font-semibold text-lg mb-2 text-center">
+      <h3 className="font-heading font-semibold text-lg mb-2 text-center">
         Unlock {PRO_TOOL_IDS.length} More Tools
       </h3>
 

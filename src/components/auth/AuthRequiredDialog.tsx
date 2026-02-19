@@ -31,7 +31,7 @@ const AuthRequiredDialog = ({ open, onOpenChange }: AuthRequiredDialogProps) => 
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="font-display text-xl">
+          <DialogTitle className="font-heading text-xl">
             Sign in to Create Worlds
           </DialogTitle>
           <DialogDescription>

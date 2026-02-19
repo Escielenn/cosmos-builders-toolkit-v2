@@ -26,6 +26,8 @@ import {
   CreditCard,
   AlertCircle,
   Image,
+  Download,
+  Globe,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
@@ -35,6 +37,10 @@ import { useNotion } from "@/hooks/use-notion";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
+import ExportSettings from "@/components/settings/ExportSettings";
+import AvatarPickerDialog from "@/components/settings/AvatarPickerDialog";
+import { useTranslation } from "react-i18next";
+import { SUPPORTED_LANGUAGES } from "@/lib/i18n";
 
 interface SettingsDialogProps {
   open: boolean;
@@ -48,6 +54,7 @@ const SettingsDialog = ({
   defaultTab = "account",
 }: SettingsDialogProps) => {
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
   const { user, profile, updateProfile } = useAuth();
   const { toast } = useToast();
   const { subscription, isSubscribed, createPortalSession } = useSubscription();
@@ -70,6 +77,7 @@ const SettingsDialog = ({
   const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [portalLoading, setPortalLoading] = useState(false);
+  const [avatarPickerOpen, setAvatarPickerOpen] = useState(false);
 
   const avatarInputRef = useRef<HTMLInputElement>(null);
   const bgInputRef = useRef<HTMLInputElement>(null);
@@ -174,14 +182,14 @@ const SettingsDialog = ({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-2xl max-h-[85vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="font-display text-xl">Settings</DialogTitle>
+          <DialogTitle className="font-heading text-xl">Settings</DialogTitle>
           <DialogDescription>
             Manage your account, background, and integrations.
           </DialogDescription>
         </DialogHeader>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-4">
-          <TabsList className="w-full grid grid-cols-4">
+          <TabsList className="w-full grid grid-cols-6">
             <TabsTrigger value="account" className="gap-1.5">
               <User className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Account</span>
@@ -198,6 +206,14 @@ const SettingsDialog = ({
               <Crown className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Subscription</span>
             </TabsTrigger>
+            <TabsTrigger value="export" className="gap-1.5">
+              <Download className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Export</span>
+            </TabsTrigger>
+            <TabsTrigger value="language" className="gap-1.5">
+              <Globe className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Language</span>
+            </TabsTrigger>
           </TabsList>
 
           {/* Account Tab */}
@@ -208,31 +224,41 @@ const SettingsDialog = ({
                 <AvatarImage src={avatarUrl} />
                 <AvatarFallback className="text-lg">{initials}</AvatarFallback>
               </Avatar>
-              <div>
-                <input
-                  ref={avatarInputRef}
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={handleAvatarUpload}
-                  disabled={isUploading}
-                />
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="gap-2"
-                  disabled={isUploading}
-                  onClick={() => avatarInputRef.current?.click()}
-                >
-                  {isUploading ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <Upload className="w-4 h-4" />
-                  )}
-                  Upload Avatar
-                </Button>
-                <p className="text-xs text-muted-foreground mt-1">
-                  JPG, PNG or GIF. Max 2MB.
+              <div className="space-y-2">
+                <div className="flex gap-2">
+                  <input
+                    ref={avatarInputRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    aria-label="Upload avatar"
+                    onChange={handleAvatarUpload}
+                    disabled={isUploading}
+                  />
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="gap-2"
+                    disabled={isUploading}
+                    onClick={() => avatarInputRef.current?.click()}
+                  >
+                    {isUploading ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <Upload className="w-4 h-4" />
+                    )}
+                    Upload
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setAvatarPickerOpen(true)}
+                  >
+                    Browse Avatars
+                  </Button>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Upload your own or choose a preset avatar.
                 </p>
               </div>
             </div>
@@ -636,8 +662,60 @@ const SettingsDialog = ({
               </div>
             )}
           </TabsContent>
+
+          {/* Export Tab */}
+          <TabsContent value="export" className="mt-4">
+            <ExportSettings />
+          </TabsContent>
+
+          {/* Language Tab */}
+          <TabsContent value="language" className="mt-4 space-y-4">
+            <div>
+              <h4 className="text-sm font-medium mb-1">Language</h4>
+              <p className="text-sm text-muted-foreground mb-4">
+                Choose your preferred language. More languages coming soon.
+              </p>
+            </div>
+            <div className="grid grid-cols-1 gap-2">
+              {SUPPORTED_LANGUAGES.map((lang) => (
+                <button
+                  key={lang.code}
+                  onClick={() => i18n.changeLanguage(lang.code)}
+                  className={cn(
+                    "flex items-center justify-between p-3 rounded-lg border transition-colors text-left",
+                    i18n.language === lang.code
+                      ? "border-primary bg-primary/10"
+                      : "border-border hover:border-primary/30 hover:bg-accent/5"
+                  )}
+                >
+                  <span className="font-medium">{lang.label}</span>
+                  {i18n.language === lang.code && (
+                    <Check className="w-4 h-4 text-primary" />
+                  )}
+                </button>
+              ))}
+            </div>
+            <p className="text-xs text-muted-foreground text-center pt-2">
+              Want StellarForge in your language?{" "}
+              <a
+                href="https://github.com/anthropics/claude-code/issues"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary hover:underline"
+              >
+                Let us know
+              </a>
+            </p>
+          </TabsContent>
         </Tabs>
       </DialogContent>
+
+      <AvatarPickerDialog
+        open={avatarPickerOpen}
+        onOpenChange={setAvatarPickerOpen}
+        onSelect={setAvatarUrl}
+        currentUrl={avatarUrl}
+      />
     </Dialog>
   );
 };

@@ -86,11 +86,19 @@ const CollapsibleSection = ({
             {/* Title and subtitle */}
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="font-display font-semibold text-lg">{title}</h3>
+                <h3 className="font-heading font-semibold text-lg">{title}</h3>
                 {guidance && (
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Info className="w-4 h-4 text-muted-foreground opacity-60 hover:opacity-100 transition-opacity" />
+                      <span
+                        role="button"
+                        tabIndex={0}
+                        aria-label="Section guidance"
+                        onClick={(e) => e.stopPropagation()}
+                        onKeyDown={(e) => e.stopPropagation()}
+                      >
+                        <Info className="w-4 h-4 text-muted-foreground opacity-60 hover:opacity-100 transition-opacity" />
+                      </span>
                     </TooltipTrigger>
                     <TooltipContent side="right" className="max-w-xs">
                       <p className="text-sm">{guidance}</p>
@@ -111,7 +119,7 @@ const CollapsibleSection = ({
         </button>
       </CollapsibleTrigger>
       <CollapsibleContent>
-        <div className="px-4 md:px-6 pb-6 space-y-6">
+        <div className="px-4 md:px-6 pb-6 space-y-6 [content-visibility:auto] [contain-intrinsic-size:0_500px]">
           {thinkLike && (
             <p className="text-sm text-primary italic border-l-2 border-primary pl-3">
               Think like {thinkLike}

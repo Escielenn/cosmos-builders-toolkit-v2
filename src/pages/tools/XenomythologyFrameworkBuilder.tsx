@@ -1,14 +1,11 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, lazy, Suspense } from "react";
+import { WorksheetTagsBar } from "@/components/tools/WorksheetTagsBar";
+import { useTags } from "@/hooks/use-tags";
 import { Link, useSearchParams } from "react-router-dom";
 import {
   ArrowLeft,
-  Download,
-  Save,
   Info,
   ExternalLink,
-  Printer,
-  Cloud,
-  CloudOff,
   Plus,
   Trash2,
   Sparkles,
@@ -20,10 +17,11 @@ import {
 } from "lucide-react";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import ToolIntroSection from "@/components/tools/ToolIntroSection";
+import { TOOL_INTROS } from "@/lib/tool-intros";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -36,13 +34,16 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { useWorksheets, useWorksheet, useWorksheetsByType, useRenameWorksheet } from "@/hooks/use-worksheets";
 import { WorksheetTitle } from "@/components/tools/WorksheetTitle";
+import { getToolIcon } from "@/components/icons/tool-icons";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
 import { useAuth } from "@/contexts/AuthContext";
 import SectionNavigation, { Section, MobileSectionNav } from "@/components/tools/SectionNavigation";
 import ToolSidebar from "@/components/tools/ToolSidebar";
 import CollapsibleSection from "@/components/tools/CollapsibleSection";
 import KeyChoicesSidebar, { KeyChoicesSection, MobileKeyChoices } from "@/components/tools/KeyChoicesSidebar";
+import QuestionSection from "@/components/tools/QuestionSection";
 import ToolActionBar from "@/components/tools/ToolActionBar";
+import QuickExportButton from "@/components/tools/QuickExportButton";
 import SelectedParametersSidebar from "@/components/tools/SelectedParametersSidebar";
 import SuggestedImplications from "@/components/tools/SuggestedImplications";
 import ImportFromECRModal from "@/components/tools/ImportFromECRModal";
@@ -50,8 +51,9 @@ import SpeciesLinkModal from "@/components/tools/SpeciesLinkModal";
 import ExportDialog from "@/components/tools/ExportDialog";
 import ShareDialog from "@/components/sharing/ShareDialog";
 import { useWorksheetShare } from "@/hooks/use-sharing";
-import { MoodboardSection } from "@/components/moodboard";
 import type { MoodboardImage } from "@/hooks/use-moodboard";
+import { WorksheetNotesSheet } from "@/components/tools/WorksheetNotesSheet";
+import { WorksheetMoodboardSheet } from "@/components/tools/WorksheetMoodboardSheet";
 import { applyMappedFields, type MappedField } from "@/lib/field-mappings";
 import { XenomythologySummaryTemplate, XenomythologyFullReportTemplate } from "@/lib/pdf/templates";
 import { useWorlds } from "@/hooks/use-worlds";
@@ -99,14 +101,14 @@ import {
   SECTION_GUIDANCE,
 } from "@/lib/xenomythology-data";
 
+const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
+
 // Section definitions for navigation
 const SECTIONS: Section[] = [
   ...XENOMYTHOLOGY_SECTIONS.map((s) => ({
     id: `section-${s.id}`,
     title: s.title,
   })),
-  { id: "section-notes", title: "Notes & Ideas" },
-  { id: "section-moodboard", title: "Moodboard" },
 ];
 
 // Types for form state
@@ -426,62 +428,6 @@ const EXTERNAL_RESOURCES = [
   { name: "Atomic Rockets - Aliens", url: "http://www.projectrho.com/public_html/rocket/aliens.php", description: "Hard SF alien design" },
 ];
 
-const QuestionSection = ({
-  id,
-  label,
-  prompts,
-  example,
-  examples,
-  value,
-  onChange,
-}: {
-  id: string;
-  label: string;
-  prompts?: string[];
-  example?: string;
-  examples?: string[];
-  value: string;
-  onChange: (value: string) => void;
-}) => (
-  <div className="space-y-2">
-    <div className="flex items-center gap-2">
-      <Label htmlFor={id} className="text-sm font-medium">
-        {label}
-      </Label>
-      {(example || examples) && (
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Info className="w-4 h-4 text-muted-foreground cursor-help" />
-          </TooltipTrigger>
-          <TooltipContent className="max-w-sm">
-            {example && <p className="text-xs">{example}</p>}
-            {examples && (
-              <ul className="text-xs list-disc list-inside">
-                {examples.map((ex, i) => (
-                  <li key={i}>{ex}</li>
-                ))}
-              </ul>
-            )}
-          </TooltipContent>
-        </Tooltip>
-      )}
-    </div>
-    {prompts && prompts.length > 0 && (
-      <ul className="text-xs text-muted-foreground mb-2 list-disc list-inside">
-        {prompts.map((prompt, i) => (
-          <li key={i}>{prompt}</li>
-        ))}
-      </ul>
-    )}
-    <Textarea
-      id={id}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      placeholder="Your response..."
-      className="min-h-[100px] bg-background/50"
-    />
-  </div>
-);
 
 const CheckboxGroup = ({
   label,
@@ -642,6 +588,7 @@ const RadioGroupField = ({
 );
 
 const TOOL_TYPE = "xenomythology-framework-builder";
+const ToolIcon = getToolIcon(TOOL_TYPE);
 
 const XenomythologyFrameworkBuilder = () => {
   const [formState, setFormState] = useState<FormState>(initialFormState);
@@ -669,6 +616,8 @@ const XenomythologyFrameworkBuilder = () => {
   const renameWorksheet = useRenameWorksheet();
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const { data: shareConfig } = useWorksheetShare(currentWorksheetId || worksheetId || undefined);
+  const { updateWorksheetTags } = useTags();
+  const [worksheetTags, setWorksheetTags] = useState<string[]>([]);
 
   // Show worksheet selector when worldId is present but no worksheetId
   useEffect(() => {
@@ -683,6 +632,8 @@ const XenomythologyFrameworkBuilder = () => {
 
   // Species integration state
   const [showSpeciesLink, setShowSpeciesLink] = useState(false);
+  const [notesSheetOpen, setNotesSheetOpen] = useState(false);
+  const [moodboardSheetOpen, setMoodboardSheetOpen] = useState(false);
   const evoBioWorksheets = worksheets.filter(w => w.tool_type === "evolutionary-biology");
 
   // Load existing worksheet from Supabase if worksheetId is provided
@@ -693,6 +644,9 @@ const XenomythologyFrameworkBuilder = () => {
         setFormState(data);
         setCurrentWorksheetId(existingWorksheet.id);
         setCurrentWorksheetTitle(existingWorksheet.title);
+        if (existingWorksheet.tags) {
+          setWorksheetTags(existingWorksheet.tags);
+        }
         toast({
           title: "Worksheet Loaded",
           description: "Your saved work has been restored from the cloud.",
@@ -970,6 +924,14 @@ const XenomythologyFrameworkBuilder = () => {
 
     await renameWorksheet.mutateAsync({ worksheetId: wsId, title: newTitle });
     setCurrentWorksheetTitle(newTitle);
+  };
+
+  const handleTagsChange = (newTags: string[]) => {
+    setWorksheetTags(newTags);
+    const wsId = currentWorksheetId || worksheetId;
+    if (wsId) {
+      updateWorksheetTags.mutate({ worksheetId: wsId, tags: newTags });
+    }
   };
 
   const handleExport = () => {
@@ -1388,104 +1350,113 @@ const XenomythologyFrameworkBuilder = () => {
       <Header />
 
       <main className="container mx-auto px-4 pt-24 pb-16">
-        {/* Back Link & Title */}
+        {/* Back Link */}
+        <Link
+          to={worldId ? `/worlds/${worldId}` : "/"}
+          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          {worldId ? "Back to World" : "Back to Dashboard"}
+        </Link>
+
+        {/* Action Bar */}
+        <ToolActionBar
+          onSave={handleSave}
+          onOpen={worldId ? () => setWorksheetSelectorOpen(true) : undefined}
+          onPrint={handlePrint}
+          onExport={handleExport}
+          onShare={(currentWorksheetId || worksheetId) ? () => setShareDialogOpen(true) : undefined}
+          isShared={!!shareConfig?.enabled}
+          isCloudEnabled={!!(worldId && user)}
+          onNotesClick={() => setNotesSheetOpen(true)}
+          onMoodboardClick={() => setMoodboardSheetOpen(true)}
+          moodboardCount={formState.moodboard?.length || 0}
+          exportLabel="Export Framework"
+          className="mb-6"
+          extraActions={
+            <QuickExportButton
+              toolName="Mythos"
+              worldName={worldName}
+              formState={formState}
+              summaryTemplate={<XenomythologySummaryTemplate formState={formState} worldName={worldName} />}
+              fullTemplate={<XenomythologyFullReportTemplate formState={formState} worldName={worldName} />}
+              defaultFilename="xenomythology-framework"
+            />
+          }
+        />
+
+        {/* Title */}
         <div className="mb-8">
-          <Link
-            to={worldId ? `/worlds/${worldId}` : "/"}
-            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            {worldId ? "Back to World" : "Back to Dashboard"}
-          </Link>
+          <Badge className="mb-2">Tool 6</Badge>
+          <div className="flex items-center gap-3">
+            {ToolIcon && <ToolIcon className="w-12 h-12 rounded-full shrink-0" />}
+            <h1 className="font-display text-3xl md:text-4xl font-bold">
+              Mythos: Xenomythology Framework
+            </h1>
+          </div>
+          <p className="text-muted-foreground mt-2 max-w-2xl">
+            Create comprehensive alien mythological systems derived from species biology, environment, and evolutionary pressures.
+          </p>
+          {(currentWorksheetId || worksheetId) && (
+            <WorksheetTitle
+              title={currentWorksheetTitle}
+              onRename={handleRename}
+              icon={<FileText className="w-4 h-4 text-primary" />}
+              disabled={!user || worksheetLoading}
+            />
+          )}
+          {(currentWorksheetId || worksheetId) && (
+            <WorksheetTagsBar
+              worksheetId={(currentWorksheetId || worksheetId)!}
+              tags={worksheetTags}
+              onChange={handleTagsChange}
+            />
+          )}
+          <div className="flex items-center gap-2 mt-3 flex-wrap">
+            {/* Linked Species indicator */}
+            {formState._linkedWorksheets?.species && (
+              <Badge variant="secondary" className="text-xs bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                <Dna className="w-3 h-3 mr-1" />
+                {formState._linkedWorksheets.species.speciesName}
+              </Badge>
+            )}
 
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div>
-              <Badge className="mb-2">Tool 6</Badge>
-              <h1 className="font-display text-3xl md:text-4xl font-bold">
-                Xenomythology Framework Builder
-              </h1>
-              <p className="text-muted-foreground mt-2 max-w-2xl">
-                Create comprehensive alien mythological systems derived from species biology, environment, and evolutionary pressures.
-              </p>
-              {(currentWorksheetId || worksheetId) && (
-                <WorksheetTitle
-                  title={currentWorksheetTitle}
-                  onRename={handleRename}
-                  icon={<FileText className="w-4 h-4 text-primary" />}
-                  disabled={!user || worksheetLoading}
-                />
-              )}
-            </div>
+            {/* Linked ECR indicator */}
+            {formState._linkedWorksheets?.ecrWorksheetId && (
+              <Badge variant="secondary" className="text-xs bg-blue-500/10 text-blue-600 dark:text-blue-400">
+                <Link2 className="w-3 h-3 mr-1" />
+                Linked to ECR
+              </Badge>
+            )}
 
-            <div className="flex items-center gap-2 no-print flex-wrap">
-              {/* Linked Species indicator */}
-              {formState._linkedWorksheets?.species && (
-                <Badge variant="secondary" className="text-xs bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
-                  <Dna className="w-3 h-3 mr-1" />
-                  {formState._linkedWorksheets.species.speciesName}
-                </Badge>
-              )}
-
-              {/* Linked ECR indicator */}
-              {formState._linkedWorksheets?.ecrWorksheetId && (
-                <Badge variant="secondary" className="text-xs bg-blue-500/10 text-blue-600 dark:text-blue-400">
-                  <Link2 className="w-3 h-3 mr-1" />
-                  Linked to ECR
-                </Badge>
-              )}
-
-              {worldId && user ? (
-                <span className="text-xs text-muted-foreground flex items-center gap-1">
-                  <Cloud className="w-3 h-3 text-green-500" />
-                  Cloud sync enabled
-                </span>
-              ) : (
-                <span className="text-xs text-muted-foreground flex items-center gap-1">
-                  <CloudOff className="w-3 h-3" />
-                  Local only
-                </span>
-              )}
-
-              {/* Species Link button - only show if in a world */}
-              {worldId && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setShowSpeciesLink(true)}
-                  className={formState._linkedWorksheets?.species ? "border-emerald-500/50" : ""}
-                >
-                  <Dna className="w-4 h-4 mr-2" />
-                  {formState._linkedWorksheets?.species ? "Change Species" : "Link Species"}
-                </Button>
-              )}
-
-              {/* ECR Import button - only show if there are ECR worksheets */}
-              {ecrWorksheets.length > 0 && (
-                <Button variant="outline" size="sm" onClick={() => setShowECRImport(true)}>
-                  <Link2 className="w-4 h-4 mr-2" />
-                  Import from ECR
-                </Button>
-              )}
-
-              <Button variant="outline" size="sm" onClick={handleSave} disabled={worksheetLoading}>
-                <Save className="w-4 h-4 mr-2" />
-                Save Draft
+            {/* Species Link button - only show if in a world */}
+            {worldId && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowSpeciesLink(true)}
+                className={formState._linkedWorksheets?.species ? "border-emerald-500/50" : ""}
+              >
+                <Dna className="w-4 h-4 mr-2" />
+                {formState._linkedWorksheets?.species ? "Change Species" : "Link Species"}
               </Button>
-              <Button variant="outline" size="sm" onClick={handlePrint}>
-                <Printer className="w-4 h-4 mr-2" />
-                Print
+            )}
+
+            {/* ECR Import button - only show if there are ECR worksheets */}
+            {ecrWorksheets.length > 0 && (
+              <Button variant="outline" size="sm" onClick={() => setShowECRImport(true)}>
+                <Link2 className="w-4 h-4 mr-2" />
+                Import from ECR
               </Button>
-              <Button size="sm" onClick={handleExport}>
-                <Download className="w-4 h-4 mr-2" />
-                Export
-              </Button>
-            </div>
+            )}
           </div>
         </div>
 
+        <ToolIntroSection data={TOOL_INTROS["xenomythology-framework-builder"]} />
+
         {/* Introduction */}
         <GlassPanel glow className="p-6 md:p-8 mb-8">
-          <h2 className="font-display text-xl font-semibold mb-4 gradient-text">
+          <h2 className="font-heading text-xl font-semibold mb-4 gradient-text">
             What is Xenomythology?
           </h2>
           <blockquote className="border-l-2 border-primary pl-4 italic text-lg mb-4">
@@ -2111,22 +2082,28 @@ const XenomythologyFrameworkBuilder = () => {
 
                     <div className="space-y-2">
                       <Label>Cognitive Function</Label>
-                      <Textarea
-                        placeholder="What existential tension it resolves"
-                        value={archetype.cognitiveFunction}
-                        onChange={(e) => updateArchetype(index, "cognitiveFunction", e.target.value)}
-                        className="min-h-[80px]"
-                      />
+                      <Suspense fallback={<div className="min-h-[80px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                        <RichTextEditor
+                          content={archetype.cognitiveFunction}
+                          onChange={(value) => updateArchetype(index, "cognitiveFunction", value)}
+                          placeholder="What existential tension it resolves"
+                          minHeight="80px"
+                          className="bg-background/50"
+                        />
+                      </Suspense>
                     </div>
 
                     <div className="space-y-2">
                       <Label>Symbolic Form</Label>
-                      <Textarea
-                        placeholder="How it manifests in this species' mythology"
-                        value={archetype.symbolicForm}
-                        onChange={(e) => updateArchetype(index, "symbolicForm", e.target.value)}
-                        className="min-h-[80px]"
-                      />
+                      <Suspense fallback={<div className="min-h-[80px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                        <RichTextEditor
+                          content={archetype.symbolicForm}
+                          onChange={(value) => updateArchetype(index, "symbolicForm", value)}
+                          placeholder="How it manifests in this species' mythology"
+                          minHeight="80px"
+                          className="bg-background/50"
+                        />
+                      </Suspense>
                     </div>
 
                     <div className="space-y-2">
@@ -2318,12 +2295,15 @@ const XenomythologyFrameworkBuilder = () => {
 
                       <div className="space-y-2">
                         <Label>How Species Interacts with This Divine Form</Label>
-                        <Textarea
-                          placeholder="Worship, propitiation, communication methods..."
-                          value={deity.interaction}
-                          onChange={(e) => updateDeity(index, "interaction", e.target.value)}
-                          className="min-h-[60px]"
-                        />
+                        <Suspense fallback={<div className="min-h-[60px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                          <RichTextEditor
+                            content={deity.interaction}
+                            onChange={(value) => updateDeity(index, "interaction", value)}
+                            placeholder="Worship, propitiation, communication methods..."
+                            minHeight="60px"
+                            className="bg-background/50"
+                          />
+                        </Suspense>
                       </div>
                     </div>
                   ))}
@@ -2426,11 +2406,14 @@ const XenomythologyFrameworkBuilder = () => {
 
                     <div className="space-y-2">
                       <Label>Why Symbolically Important</Label>
-                      <Textarea
-                        value={entity.symbolicImportance}
-                        onChange={(e) => updateSymbolicEntity(index, "symbolicImportance", e.target.value)}
-                        className="min-h-[60px]"
-                      />
+                      <Suspense fallback={<div className="min-h-[60px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                        <RichTextEditor
+                          content={entity.symbolicImportance}
+                          onChange={(value) => updateSymbolicEntity(index, "symbolicImportance", value)}
+                          minHeight="60px"
+                          className="bg-background/50"
+                        />
+                      </Suspense>
                     </div>
 
                     <div className="space-y-2">
@@ -2734,45 +2717,6 @@ const XenomythologyFrameworkBuilder = () => {
             </div>
           </CollapsibleSection>
 
-          {/* Notes & Ideas Section */}
-          <CollapsibleSection
-            id="section-notes"
-            title="Notes & Ideas"
-            icon={<FileText className="w-5 h-5 text-primary" />}
-            defaultOpen={false}
-          >
-            <div className="space-y-2">
-              <p className="text-sm text-muted-foreground">
-                Jot down ideas, story hooks, or reminders for this worksheet.
-              </p>
-              <Textarea
-                placeholder="Your notes and ideas..."
-                value={formState.generalNotes}
-                onChange={(e) => setFormState(prev => ({ ...prev, generalNotes: e.target.value }))}
-                className="min-h-[150px] resize-y"
-              />
-            </div>
-          </CollapsibleSection>
-
-          {/* Moodboard Section */}
-          <CollapsibleSection
-            id="section-moodboard"
-            title="Moodboard"
-            icon={<ImageIcon className="w-5 h-5 text-primary" />}
-            defaultOpen={false}
-            badge={formState.moodboard?.length || undefined}
-          >
-            <div className="space-y-2">
-              <p className="text-sm text-muted-foreground">
-                Add reference images to inspire your design.
-              </p>
-              <MoodboardSection
-                worksheetId={currentWorksheetId || "local"}
-                images={formState.moodboard || []}
-                onImagesChange={(images) => setFormState(prev => ({ ...prev, moodboard: images }))}
-              />
-            </div>
-          </CollapsibleSection>
           </div>
 
           {/* Sticky Sidebar - visible on large screens when parameters selected */}
@@ -2787,17 +2731,6 @@ const XenomythologyFrameworkBuilder = () => {
           )}
         </div>
 
-        {/* Bottom Action Bar */}
-        <ToolActionBar
-          onSave={handleSave}
-          onPrint={handlePrint}
-          onExport={handleExport}
-          onShare={(currentWorksheetId || worksheetId) ? () => setShareDialogOpen(true) : undefined}
-          isShared={!!shareConfig?.enabled}
-          exportLabel="Export Framework"
-          className="mt-8"
-        />
-
         {/* Desktop Sidebars - Right side */}
         <ToolSidebar>
           <SectionNavigation sections={SECTIONS} mode="inline" />
@@ -2810,6 +2743,21 @@ const XenomythologyFrameworkBuilder = () => {
           <MobileKeyChoices sections={keyChoicesSections} title="Mythology Summary" />
         </div>
       </main>
+
+      <WorksheetNotesSheet
+        open={notesSheetOpen}
+        onOpenChange={setNotesSheetOpen}
+        content={formState.generalNotes}
+        onChange={(html) => setFormState(prev => ({ ...prev, generalNotes: html }))}
+      />
+
+      <WorksheetMoodboardSheet
+        open={moodboardSheetOpen}
+        onOpenChange={setMoodboardSheetOpen}
+        worksheetId={currentWorksheetId || "local"}
+        images={formState.moodboard || []}
+        onImagesChange={(images) => setFormState(prev => ({ ...prev, moodboard: images }))}
+      />
 
       <Footer />
 
@@ -2836,7 +2784,7 @@ const XenomythologyFrameworkBuilder = () => {
       <ExportDialog
         open={exportDialogOpen}
         onOpenChange={setExportDialogOpen}
-        toolName="Xenomythology Framework"
+        toolName="Mythos"
         worldName={worldName}
         formState={formState}
         summaryTemplate={<XenomythologySummaryTemplate formState={formState} worldName={worldName} />}
@@ -2860,7 +2808,7 @@ const XenomythologyFrameworkBuilder = () => {
           worldId={worldId}
           worldName={worldName}
           toolType={TOOL_TYPE}
-          toolDisplayName="Xenomythology Framework Builder"
+          toolDisplayName="Mythos"
           worksheets={existingWorksheets}
           isLoading={worksheetsLoading}
           onSelect={handleWorksheetSelect}

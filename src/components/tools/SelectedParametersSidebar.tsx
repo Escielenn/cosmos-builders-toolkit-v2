@@ -64,7 +64,7 @@ const SelectedParametersSidebar = ({
           </div>
         ) : (
           <div className="p-4 pt-10">
-            <h3 className="font-display font-semibold text-sm mb-3 text-primary">
+            <h3 className="font-heading font-semibold text-sm mb-3 text-primary">
               {title}
             </h3>
             <div className="space-y-3 max-h-[calc(100vh-12rem)] overflow-y-auto pr-1">

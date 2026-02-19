@@ -14,6 +14,8 @@ import { useToast } from "@/hooks/use-toast";
 import { useSubscription } from "@/hooks/use-subscription";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
+import ExportSettings from "@/components/settings/ExportSettings";
+import AvatarPickerDialog from "@/components/settings/AvatarPickerDialog";
 
 const Profile = () => {
   const { user, profile, loading, updateProfile } = useAuth();
@@ -27,6 +29,7 @@ const Profile = () => {
   const [avatarUrl, setAvatarUrl] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [avatarPickerOpen, setAvatarPickerOpen] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -127,7 +130,7 @@ const Profile = () => {
         </Button>
 
         <GlassPanel className="p-8">
-          <h1 className="font-display text-2xl font-bold mb-6">Your Profile</h1>
+          <h1 className="font-heading text-2xl font-bold mb-6">Your Profile</h1>
 
           <div className="space-y-6">
             {/* Avatar */}
@@ -136,34 +139,43 @@ const Profile = () => {
                 <AvatarImage src={avatarUrl} />
                 <AvatarFallback className="text-xl">{initials}</AvatarFallback>
               </Avatar>
-              <div>
-                <Label htmlFor="avatar" className="cursor-pointer">
-                  <Button 
-                    variant="outline" 
-                    className="gap-2" 
+              <div className="space-y-2">
+                <div className="flex gap-2">
+                  <Label htmlFor="avatar" className="cursor-pointer">
+                    <Button
+                      variant="outline"
+                      className="gap-2"
+                      disabled={isUploading}
+                      asChild
+                    >
+                      <span>
+                        {isUploading ? (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <Upload className="w-4 h-4" />
+                        )}
+                        Upload
+                      </span>
+                    </Button>
+                  </Label>
+                  <input
+                    id="avatar"
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    aria-label="Upload avatar"
+                    onChange={handleAvatarUpload}
                     disabled={isUploading}
-                    asChild
+                  />
+                  <Button
+                    variant="outline"
+                    onClick={() => setAvatarPickerOpen(true)}
                   >
-                    <span>
-                      {isUploading ? (
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                      ) : (
-                        <Upload className="w-4 h-4" />
-                      )}
-                      Upload Avatar
-                    </span>
+                    Browse Avatars
                   </Button>
-                </Label>
-                <input
-                  id="avatar"
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={handleAvatarUpload}
-                  disabled={isUploading}
-                />
-                <p className="text-xs text-muted-foreground mt-1">
-                  JPG, PNG or GIF. Max 2MB.
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Upload your own or choose a preset avatar.
                 </p>
               </div>
             </div>
@@ -217,9 +229,14 @@ const Profile = () => {
           </div>
         </GlassPanel>
 
+        {/* Export Settings */}
+        <GlassPanel className="p-8 mt-6">
+          <ExportSettings />
+        </GlassPanel>
+
         {/* Subscription Section */}
         <GlassPanel className="p-8 mt-6">
-          <h2 className="font-display text-xl font-bold mb-4 flex items-center gap-2">
+          <h2 className="font-heading text-xl font-bold mb-4 flex items-center gap-2">
             <Crown className="w-5 h-5 text-amber-500" />
             Subscription
           </h2>
@@ -317,6 +334,13 @@ const Profile = () => {
       </main>
 
       <Footer />
+
+      <AvatarPickerDialog
+        open={avatarPickerOpen}
+        onOpenChange={setAvatarPickerOpen}
+        onSelect={setAvatarUrl}
+        currentUrl={avatarUrl}
+      />
     </div>
   );
 };

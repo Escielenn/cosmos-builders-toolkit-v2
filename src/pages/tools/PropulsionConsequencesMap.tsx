@@ -1,6 +1,10 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, lazy, Suspense } from "react";
+import { WorksheetTagsBar } from "@/components/tools/WorksheetTagsBar";
+
+const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
+import { useTags } from "@/hooks/use-tags";
 import { Link, useSearchParams } from "react-router-dom";
-import { ArrowLeft, Download, Save, Info, ExternalLink, Printer, Cloud, CloudOff, Atom, FileText, ChevronDown, Image as ImageIcon } from "lucide-react";
+import { ArrowLeft, Info, ExternalLink, Atom, FileText, ChevronDown, Image as ImageIcon } from "lucide-react";
 import {
   Collapsible,
   CollapsibleContent,
@@ -8,10 +12,11 @@ import {
 } from "@/components/ui/collapsible";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import ToolIntroSection from "@/components/tools/ToolIntroSection";
+import { TOOL_INTROS } from "@/lib/tool-intros";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -24,6 +29,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { useWorksheets, useWorksheet, useWorksheetsByType, useRenameWorksheet } from "@/hooks/use-worksheets";
 import { WorksheetTitle } from "@/components/tools/WorksheetTitle";
+import { getToolIcon } from "@/components/icons/tool-icons";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
 import { useAuth } from "@/contexts/AuthContext";
 import SectionNavigation, { Section, MobileSectionNav } from "@/components/tools/SectionNavigation";
@@ -31,11 +37,14 @@ import ToolSidebar from "@/components/tools/ToolSidebar";
 import CollapsibleSection from "@/components/tools/CollapsibleSection";
 import KeyChoicesSidebar, { KeyChoicesSection, MobileKeyChoices } from "@/components/tools/KeyChoicesSidebar";
 import ToolActionBar from "@/components/tools/ToolActionBar";
+import QuickExportButton from "@/components/tools/QuickExportButton";
 import ExportDialog from "@/components/tools/ExportDialog";
+import QuestionSection from "@/components/tools/QuestionSection";
 import ShareDialog from "@/components/sharing/ShareDialog";
 import { useWorksheetShare } from "@/hooks/use-sharing";
-import { MoodboardSection } from "@/components/moodboard";
 import type { MoodboardImage } from "@/hooks/use-moodboard";
+import { WorksheetNotesSheet } from "@/components/tools/WorksheetNotesSheet";
+import { WorksheetMoodboardSheet } from "@/components/tools/WorksheetMoodboardSheet";
 import { PropulsionSummaryTemplate, PropulsionFullReportTemplate } from "@/lib/pdf/templates";
 import { useWorlds } from "@/hooks/use-worlds";
 import { Json } from "@/integrations/supabase/types";
@@ -51,8 +60,6 @@ const SECTIONS: Section[] = [
   { id: "section-integration", title: "7. Integration" },
   { id: "section-examples", title: "SF Examples" },
   { id: "section-synthesis", title: "Final Synthesis" },
-  { id: "section-notes", title: "Notes & Ideas" },
-  { id: "section-moodboard", title: "Moodboard" },
 ];
 
 // Types for form state
@@ -230,6 +237,145 @@ const EXTERNAL_RESOURCES = [
   { name: "NASA Technology Roadmaps", url: "https://www.nasa.gov/general/nasa-technology-taxonomy/", description: "Current and near-future propulsion" },
 ];
 
+// --- Travel time calculation engine ---
+
+const FTL_TYPES = ["alcubierre", "hyperspace", "wormhole"];
+
+const BENCHMARK_ROUTES: {
+  key: keyof TravelBenchmark;
+  label: string;
+  minAU: number;
+  maxAU: number;
+  distanceLabel: string;
+}[] = [
+  { key: "earthMars", label: "Earth → Mars", minAU: 0.52, maxAU: 2.52, distanceLabel: "0.5–2.5 AU" },
+  { key: "earthJupiter", label: "Earth → Jupiter", minAU: 3.93, maxAU: 6.47, distanceLabel: "4–6.5 AU" },
+  { key: "earthNeptune", label: "Earth → Neptune", minAU: 28.7, maxAU: 31.3, distanceLabel: "~30 AU" },
+  { key: "solAlphaCentauri", label: "Sol → Alpha Centauri", minAU: 276364, maxAU: 276364, distanceLabel: "4.37 ly" },
+  { key: "solProximaB", label: "Sol → Proxima b", minAU: 268132, maxAU: 268132, distanceLabel: "4.24 ly" },
+];
+
+const AU_TO_KM = 149_597_870.7;
+const C_KM_S = 299_792.458;
+const G_TO_KM_S2 = 9.81e-3;
+
+function parseNumericValue(text: string): number | null {
+  if (!text) return null;
+  const match = text.match(/[\d.]+/);
+  if (!match) return null;
+  const num = parseFloat(match[0]);
+  return isNaN(num) || num <= 0 ? null : num;
+}
+
+function calcTravelTimeSeconds(
+  distanceAU: number,
+  velocityPercentC: number,
+  accelerationG: number | null
+): number {
+  const d = distanceAU * AU_TO_KM;
+  const vMax = (velocityPercentC / 100) * C_KM_S;
+
+  if (accelerationG && accelerationG > 0) {
+    const a = accelerationG * G_TO_KM_S2;
+    const tAccel = vMax / a;
+    const dAccel = 0.5 * a * tAccel * tAccel;
+    if (2 * dAccel >= d) {
+      // Pure brachistochrone—never reaches max velocity
+      return 2 * Math.sqrt(d / a);
+    }
+    // Accelerate, cruise, decelerate
+    return 2 * tAccel + (d - 2 * dAccel) / vMax;
+  }
+
+  // Constant cruise velocity
+  return d / vMax;
+}
+
+function formatDuration(seconds: number): string {
+  if (!isFinite(seconds) || seconds <= 0) return "—";
+  const days = seconds / 86400;
+  const months = days / 30.44;
+  const years = days / 365.25;
+
+  if (years >= 1_000_000) return `~${(years / 1_000_000).toFixed(1)}M years`;
+  if (years >= 1000) return `~${Math.round(years).toLocaleString()} years`;
+  if (years >= 10) return `~${Math.round(years)} years`;
+  if (years >= 1) return `~${years.toFixed(1)} years`;
+  if (months >= 2) return `~${months.toFixed(1)} months`;
+  if (days >= 14) return `~${(days / 7).toFixed(1)} weeks`;
+  if (days >= 2) return `~${days.toFixed(1)} days`;
+  if (seconds >= 3600) return `~${(seconds / 3600).toFixed(1)} hours`;
+  if (seconds >= 60) return `~${Math.round(seconds / 60)} min`;
+  return "< 1 min";
+}
+
+function computeBenchmarkRange(
+  minAU: number,
+  maxAU: number,
+  velocityPercentC: number,
+  accelerationG: number | null
+): string {
+  const tMin = calcTravelTimeSeconds(minAU, velocityPercentC, accelerationG);
+  const tMax = calcTravelTimeSeconds(maxAU, velocityPercentC, accelerationG);
+  const fMin = formatDuration(tMin);
+  const fMax = formatDuration(tMax);
+  if (minAU === maxAU || fMin === fMax) return fMin;
+  return `${fMin} – ${fMax}`;
+}
+
+// --- Propulsion-specific economic cost guidance ---
+
+const PROPULSION_COST_GUIDANCE: Record<string, { fuel: string; construction: string }> = {
+  chemical: {
+    fuel: "Affordable per unit but enormous fuel mass required (90%+ of ship is fuel). Millions per mission.",
+    construction: "Proven technology, moderate cost. $100M–$2B per vehicle (comparable to modern rockets).",
+  },
+  ion: {
+    fuel: "Very efficient—minimal fuel mass. Xenon propellant is moderately priced, quantities are small.",
+    construction: "Moderate cost. Solar arrays or compact reactor + ion engines. $200M–$1B.",
+  },
+  "nuclear-thermal": {
+    fuel: "Enriched uranium + hydrogen propellant—regulated and expensive. 2–3× more efficient than chemical.",
+    construction: "Requires nuclear-rated facilities. $1B–$10B per vehicle.",
+  },
+  "nuclear-pulse": {
+    fuel: "Nuclear devices as propellant—politically and economically extreme. Thousands of bombs per mission.",
+    construction: "Manhattan Project scale engineering. $10B–$100B+ per vehicle.",
+  },
+  fusion: {
+    fuel: "Deuterium/He-3—abundant in gas giants but expensive to harvest and transport.",
+    construction: "Requires mature fusion technology. $10B–$100B per vessel, decreasing with infrastructure.",
+  },
+  antimatter: {
+    fuel: "Most expensive substance possible. Current cost: ~$62.5 trillion/gram. Civilization-scale energy investment.",
+    construction: "Exotic containment systems, magnetic bottles. $100B+ per vessel minimum.",
+  },
+  "solar-sail": {
+    fuel: "Free (photon pressure). Laser-pushed variants need massive ground infrastructure ($100B+).",
+    construction: "Sail material is relatively cheap. Total cost depends on laser array vs. pure solar.",
+  },
+  bussard: {
+    fuel: "Free (scoops interstellar hydrogen)—but collection efficiency is debated. Drag may exceed thrust.",
+    construction: "Enormous magnetic scoop (potentially thousands of km). Megastructure-scale investment.",
+  },
+  alcubierre: {
+    fuel: "Requires exotic matter with negative energy density. Cost undefined by current physics.",
+    construction: "Beyond current tech—spacetime manipulation. Define based on your setting's physics.",
+  },
+  hyperspace: {
+    fuel: "Setting-dependent. Consider: rare exotic fuel (elite travel) or abundant fuel (mass transit)?",
+    construction: "Setting-dependent. Is the drive component rare and expensive, or mass-produced?",
+  },
+  wormhole: {
+    fuel: "Portal maintenance may require exotic matter or enormous energy. Transit itself could be cheap.",
+    construction: "Infrastructure-heavy—wormhole creation is the major cost. Ships themselves can be simple.",
+  },
+  generation: {
+    fuel: "Conventional propulsion fuel for centuries plus ecosystem maintenance. Massive reserves required.",
+    construction: "Self-contained biosphere for centuries. Most expensive single vehicle conceivable ($1T+).",
+  },
+};
+
 const SF_EXAMPLES = [
   {
     title: "THE EXPANSE - Epstein Drive (Efficient Fusion)",
@@ -277,55 +423,8 @@ const SF_EXAMPLES = [
   },
 ];
 
-const QuestionSection = ({
-  id,
-  label,
-  prompts,
-  example,
-  value,
-  onChange,
-}: {
-  id: string;
-  label: string;
-  prompts: string[];
-  example?: string;
-  value: string;
-  onChange: (value: string) => void;
-}) => (
-  <div className="space-y-2">
-    <div className="flex items-center gap-2">
-      <Label htmlFor={id} className="text-sm font-medium">
-        {label}
-      </Label>
-      {example && (
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Info className="w-4 h-4 text-muted-foreground cursor-help" />
-          </TooltipTrigger>
-          <TooltipContent className="max-w-sm">
-            <p className="text-xs">{example}</p>
-          </TooltipContent>
-        </Tooltip>
-      )}
-    </div>
-    {prompts.length > 0 && (
-      <ul className="text-xs text-muted-foreground mb-2 list-disc list-inside">
-        {prompts.map((prompt, i) => (
-          <li key={i}>{prompt}</li>
-        ))}
-      </ul>
-    )}
-    <Textarea
-      id={id}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      placeholder="Your response..."
-      className="min-h-[100px] bg-background/50"
-    />
-  </div>
-);
-
 const TOOL_TYPE = "propulsion-consequences-map";
+const ToolIcon = getToolIcon(TOOL_TYPE);
 
 const PropulsionConsequencesMap = () => {
   const [formState, setFormState] = useState<FormState>(initialFormState);
@@ -352,7 +451,11 @@ const PropulsionConsequencesMap = () => {
   const { data: existingWorksheets = [], isLoading: worksheetsLoading } = useWorksheetsByType(worldId || undefined, TOOL_TYPE);
   const renameWorksheet = useRenameWorksheet();
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
+  const [notesSheetOpen, setNotesSheetOpen] = useState(false);
+  const [moodboardSheetOpen, setMoodboardSheetOpen] = useState(false);
   const { data: shareConfig } = useWorksheetShare(currentWorksheetId || worksheetId || undefined);
+  const { updateWorksheetTags } = useTags();
+  const [worksheetTags, setWorksheetTags] = useState<string[]>([]);
 
   // Show worksheet selector when worldId is present but no worksheetId
   useEffect(() => {
@@ -369,6 +472,9 @@ const PropulsionConsequencesMap = () => {
         setFormState(data);
         setCurrentWorksheetId(existingWorksheet.id);
         setCurrentWorksheetTitle(existingWorksheet.title);
+        if (existingWorksheet.tags) {
+          setWorksheetTags(existingWorksheet.tags);
+        }
         toast({
           title: "Worksheet Loaded",
           description: "Your saved work has been restored from the cloud.",
@@ -454,6 +560,38 @@ const PropulsionConsequencesMap = () => {
       },
     ];
   }, [formState]);
+
+  // Travel time auto-calculation
+  const isFTL = FTL_TYPES.includes(formState.system.type);
+  const velocityPercent = parseNumericValue(formState.system.maxVelocity);
+  const accelerationG = parseNumericValue(formState.system.acceleration);
+  const costGuidance = PROPULSION_COST_GUIDANCE[formState.system.type];
+
+  const computedBenchmarks = useMemo(() => {
+    if (!velocityPercent || isFTL) return null;
+    return Object.fromEntries(
+      BENCHMARK_ROUTES.map((route) => [
+        route.key,
+        computeBenchmarkRange(route.minAU, route.maxAU, velocityPercent, accelerationG),
+      ])
+    ) as Record<string, string>;
+  }, [velocityPercent, accelerationG, isFTL]);
+
+  // Auto-fill benchmark fields when computed values change
+  useEffect(() => {
+    if (!computedBenchmarks) return;
+    setFormState((prev) => ({
+      ...prev,
+      benchmarks: {
+        ...prev.benchmarks,
+        earthMars: computedBenchmarks.earthMars,
+        earthJupiter: computedBenchmarks.earthJupiter,
+        earthNeptune: computedBenchmarks.earthNeptune,
+        solAlphaCentauri: computedBenchmarks.solAlphaCentauri,
+        solProximaB: computedBenchmarks.solProximaB,
+      },
+    }));
+  }, [computedBenchmarks]);
 
   const updateSystem = (field: keyof PropulsionSystem, value: string) => {
     setFormState((prev) => ({
@@ -556,6 +694,14 @@ const PropulsionConsequencesMap = () => {
     setCurrentWorksheetTitle(newTitle);
   };
 
+  const handleTagsChange = (newTags: string[]) => {
+    setWorksheetTags(newTags);
+    const wsId = currentWorksheetId || worksheetId;
+    if (wsId) {
+      updateWorksheetTags.mutate({ worksheetId: wsId, tags: newTags });
+    }
+  };
+
   const handleExport = () => {
     setExportDialogOpen(true);
   };
@@ -569,66 +715,75 @@ const PropulsionConsequencesMap = () => {
       <Header />
 
       <main className="container mx-auto px-4 pt-24 pb-16">
-        {/* Back Link & Title */}
+        {/* Back Link */}
+        <Link
+          to={worldId ? `/worlds/${worldId}` : "/"}
+          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          {worldId ? "Back to World" : "Back to Dashboard"}
+        </Link>
+
+        {/* Action Bar */}
+        <ToolActionBar
+          onSave={handleSave}
+          onOpen={worldId ? () => setWorksheetSelectorOpen(true) : undefined}
+          onPrint={handlePrint}
+          onExport={handleExport}
+          onShare={(currentWorksheetId || worksheetId) ? () => setShareDialogOpen(true) : undefined}
+          isShared={!!shareConfig?.enabled}
+          isCloudEnabled={!!(worldId && user)}
+          onNotesClick={() => setNotesSheetOpen(true)}
+          onMoodboardClick={() => setMoodboardSheetOpen(true)}
+          moodboardCount={formState.moodboard?.length || 0}
+          exportLabel="Export Worksheet"
+          className="mb-6"
+          extraActions={
+            <QuickExportButton
+              toolName="Impulse"
+              worldName={worldName}
+              formState={formState}
+              summaryTemplate={<PropulsionSummaryTemplate formState={formState} worldName={worldName} />}
+              fullTemplate={<PropulsionFullReportTemplate formState={formState} worldName={worldName} />}
+              defaultFilename="propulsion-consequences-map"
+            />
+          }
+        />
+
+        {/* Title */}
         <div className="mb-8">
-          <Link
-            to={worldId ? `/world/${worldId}` : "/"}
-            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            {worldId ? "Back to World" : "Back to Dashboard"}
-          </Link>
-
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div>
-              <Badge className="mb-2">Tool 3</Badge>
-              <h1 className="font-display text-3xl md:text-4xl font-bold">
-                Propulsion Consequences Map
-              </h1>
-              <p className="text-muted-foreground mt-2 max-w-2xl">
-                Trace how your propulsion system shapes economics, politics, social structures, and psychology.
-              </p>
-              {(currentWorksheetId || worksheetId) && (
-                <WorksheetTitle
-                  title={currentWorksheetTitle}
-                  onRename={handleRename}
-                  icon={<FileText className="w-4 h-4 text-primary" />}
-                  disabled={!user || worksheetLoading}
-                />
-              )}
-            </div>
-
-            <div className="flex items-center gap-2 no-print">
-              {worldId && user ? (
-                <span className="text-xs text-muted-foreground flex items-center gap-1">
-                  <Cloud className="w-3 h-3 text-green-500" />
-                  Cloud sync enabled
-                </span>
-              ) : (
-                <span className="text-xs text-muted-foreground flex items-center gap-1">
-                  <CloudOff className="w-3 h-3" />
-                  Local only
-                </span>
-              )}
-              <Button variant="outline" size="sm" onClick={handleSave} disabled={worksheetLoading}>
-                <Save className="w-4 h-4 mr-2" />
-                Save Draft
-              </Button>
-              <Button variant="outline" size="sm" onClick={handlePrint}>
-                <Printer className="w-4 h-4 mr-2" />
-                Print
-              </Button>
-              <Button size="sm" onClick={handleExport}>
-                <Download className="w-4 h-4 mr-2" />
-                Export
-              </Button>
-            </div>
+          <Badge className="mb-2">Tool 3</Badge>
+          <div className="flex items-center gap-3">
+            {ToolIcon && <ToolIcon className="w-12 h-12 rounded-full shrink-0" />}
+            <h1 className="font-display text-3xl md:text-4xl font-bold">
+              Impulse: Propulsion Consequences
+            </h1>
           </div>
+          <p className="text-muted-foreground mt-2 max-w-2xl">
+            Trace how your propulsion system shapes economics, politics, social structures, and psychology.
+          </p>
+          {(currentWorksheetId || worksheetId) && (
+            <WorksheetTitle
+              title={currentWorksheetTitle}
+              onRename={handleRename}
+              icon={<FileText className="w-4 h-4 text-primary" />}
+              disabled={!user || worksheetLoading}
+            />
+          )}
+          {(currentWorksheetId || worksheetId) && (
+            <WorksheetTagsBar
+              worksheetId={(currentWorksheetId || worksheetId)!}
+              tags={worksheetTags}
+              onChange={handleTagsChange}
+            />
+          )}
         </div>
+
+        <ToolIntroSection data={TOOL_INTROS["propulsion-consequences-map"]} />
 
         {/* Introduction */}
         <GlassPanel glow className="p-6 md:p-8 mb-8">
-          <h2 className="font-display text-xl font-semibold mb-4 gradient-text">
+          <h2 className="font-heading text-xl font-semibold mb-4 gradient-text">
             Propulsion as Worldbuilding
           </h2>
           <blockquote className="border-l-2 border-primary pl-4 italic text-lg mb-4">
@@ -686,7 +841,7 @@ const PropulsionConsequencesMap = () => {
                       <RadioGroupItem value={type.value} id={type.value} className="mt-0.5" />
                       <Label htmlFor={type.value} className="cursor-pointer flex-1">
                         <span className="font-medium">{type.label}</span>
-                        <span className="text-muted-foreground ml-2 text-sm">— {type.description}</span>
+                        <span className="text-muted-foreground ml-2 text-sm">—{type.description}</span>
                       </Label>
                     </div>
                   ))}
@@ -744,61 +899,88 @@ const PropulsionConsequencesMap = () => {
 
               {/* Travel Time Benchmarks */}
               <div className="space-y-3">
-                <Label className="text-sm font-medium">Travel Time Benchmarks</Label>
-                <p className="text-xs text-muted-foreground">Calculate journey times for your system</p>
-                <div className="grid gap-3">
-                  <div className="grid grid-cols-2 gap-2 items-center">
-                    <span className="text-sm">Earth to Mars (0.5-2.5 AU)</span>
-                    <Input
-                      placeholder="e.g., 2 weeks, 6 months"
-                      value={formState.benchmarks.earthMars}
-                      onChange={(e) => updateBenchmarks("earthMars", e.target.value)}
-                    />
+                <div className="flex items-center gap-2">
+                  <Label className="text-sm font-medium">Travel Time Benchmarks</Label>
+                  {computedBenchmarks && (
+                    <Badge variant="outline" className="text-xs gap-1">
+                      <Atom className="w-3 h-3" />
+                      Auto-calculated
+                    </Badge>
+                  )}
+                </div>
+
+                {computedBenchmarks ? (
+                  <>
+                    <p className="text-xs text-muted-foreground">
+                      Based on {formState.system.maxVelocity || "?"} max velocity
+                      {accelerationG
+                        ? ` with ${formState.system.acceleration} acceleration (brachistochrone trajectory)`
+                        : " (cruise velocity)"}
+                    </p>
+                    <div className="rounded-lg border border-border divide-y divide-border/50">
+                      {BENCHMARK_ROUTES.map((route) => (
+                        <div key={route.key} className="flex items-center justify-between px-4 py-2.5">
+                          <div className="flex items-baseline gap-2">
+                            <span className="text-sm font-medium">{route.label}</span>
+                            <span className="text-xs text-muted-foreground">({route.distanceLabel})</span>
+                          </div>
+                          <span className="text-sm text-primary font-mono">
+                            {computedBenchmarks[route.key]}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                ) : isFTL ? (
+                  <div className="p-4 rounded-lg bg-accent/10 border border-accent/20">
+                    <p className="text-sm text-muted-foreground mb-3">
+                      FTL travel times depend on your setting's specific mechanics. Define travel times for key routes:
+                    </p>
+                    <div className="grid gap-3">
+                      {BENCHMARK_ROUTES.map((route) => (
+                        <div key={route.key} className="grid grid-cols-2 gap-2 items-center">
+                          <span className="text-sm">{route.label} ({route.distanceLabel})</span>
+                          <Input
+                            placeholder={route.key.startsWith("sol") ? "e.g., instant, 3 days" : "e.g., hours, minutes"}
+                            value={formState.benchmarks[route.key]}
+                            onChange={(e) => updateBenchmarks(route.key, e.target.value)}
+                          />
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                  <div className="grid grid-cols-2 gap-2 items-center">
-                    <span className="text-sm">Earth to Jupiter (4-6 AU)</span>
-                    <Input
-                      placeholder="e.g., 3 months"
-                      value={formState.benchmarks.earthJupiter}
-                      onChange={(e) => updateBenchmarks("earthJupiter", e.target.value)}
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-2 items-center">
-                    <span className="text-sm">Earth to Neptune (~30 AU)</span>
-                    <Input
-                      placeholder="e.g., 1 year"
-                      value={formState.benchmarks.earthNeptune}
-                      onChange={(e) => updateBenchmarks("earthNeptune", e.target.value)}
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-2 items-center">
-                    <span className="text-sm">Sol to Alpha Centauri (4.37 ly)</span>
-                    <Input
-                      placeholder="e.g., 43 years at 10% c"
-                      value={formState.benchmarks.solAlphaCentauri}
-                      onChange={(e) => updateBenchmarks("solAlphaCentauri", e.target.value)}
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-2 items-center">
-                    <span className="text-sm">Sol to Proxima b (4.24 ly)</span>
-                    <Input
-                      placeholder="e.g., instant via jump drive"
-                      value={formState.benchmarks.solProximaB}
-                      onChange={(e) => updateBenchmarks("solProximaB", e.target.value)}
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-2 items-center">
-                    <Input
-                      placeholder="Custom route (e.g., Between your worlds)"
-                      value={formState.benchmarks.customRoute}
-                      onChange={(e) => updateBenchmarks("customRoute", e.target.value)}
-                    />
-                    <Input
-                      placeholder="Travel time"
-                      value={formState.benchmarks.customRouteTime}
-                      onChange={(e) => updateBenchmarks("customRouteTime", e.target.value)}
-                    />
-                  </div>
+                ) : (
+                  <>
+                    <p className="text-xs text-muted-foreground">
+                      Enter a max velocity above to auto-calculate, or enter times manually.
+                    </p>
+                    <div className="grid gap-3">
+                      {BENCHMARK_ROUTES.map((route) => (
+                        <div key={route.key} className="grid grid-cols-2 gap-2 items-center">
+                          <span className="text-sm">{route.label} ({route.distanceLabel})</span>
+                          <Input
+                            placeholder={route.key.startsWith("sol") ? "e.g., 43 years at 10% c" : "e.g., 2 weeks, 6 months"}
+                            value={formState.benchmarks[route.key]}
+                            onChange={(e) => updateBenchmarks(route.key, e.target.value)}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                )}
+
+                {/* Custom route — always editable */}
+                <div className="grid grid-cols-2 gap-2 items-center">
+                  <Input
+                    placeholder="Custom route (e.g., Between your worlds)"
+                    value={formState.benchmarks.customRoute}
+                    onChange={(e) => updateBenchmarks("customRoute", e.target.value)}
+                  />
+                  <Input
+                    placeholder="Travel time"
+                    value={formState.benchmarks.customRouteTime}
+                    onChange={(e) => updateBenchmarks("customRouteTime", e.target.value)}
+                  />
                 </div>
               </div>
 
@@ -866,6 +1048,19 @@ const PropulsionConsequencesMap = () => {
                     />
                   </div>
                 </div>
+                {costGuidance && (
+                  <div className="p-3 rounded-lg bg-muted/50 border border-border/50 space-y-2 md:col-span-2">
+                    <p className="text-xs font-medium text-muted-foreground flex items-center gap-1.5">
+                      <Info className="w-3.5 h-3.5" />
+                      Cost guidance for{" "}
+                      {PROPULSION_TYPES.find((t) => t.value === formState.system.type)?.label || formState.system.type}
+                    </p>
+                    <div className="grid gap-1.5 text-xs text-muted-foreground">
+                      <p><span className="font-medium text-foreground/80">Fuel:</span> {costGuidance.fuel}</p>
+                      <p><span className="font-medium text-foreground/80">Construction:</span> {costGuidance.construction}</p>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Cost Comparison */}
@@ -921,7 +1116,7 @@ const PropulsionConsequencesMap = () => {
                       />
                       <Label htmlFor={`access-${option.id}`} className="cursor-pointer">
                         <span className="font-medium">{option.label}</span>
-                        <span className="text-muted-foreground ml-2 text-sm">— {option.description}</span>
+                        <span className="text-muted-foreground ml-2 text-sm">—{option.description}</span>
                       </Label>
                     </div>
                   ))}
@@ -959,7 +1154,7 @@ const PropulsionConsequencesMap = () => {
                       />
                       <Label htmlFor={`trade-${option.id}`} className="cursor-pointer">
                         <span className="font-medium">{option.label}</span>
-                        <span className="text-muted-foreground ml-2 text-sm">— {option.description}</span>
+                        <span className="text-muted-foreground ml-2 text-sm">—{option.description}</span>
                       </Label>
                     </div>
                   ))}
@@ -1066,7 +1261,7 @@ const PropulsionConsequencesMap = () => {
                       />
                       <Label htmlFor={`gov-${structure.id}`} className="cursor-pointer flex-1">
                         <span className="font-medium">{structure.label}</span>
-                        <span className="text-muted-foreground ml-2 text-sm">— {structure.description}</span>
+                        <span className="text-muted-foreground ml-2 text-sm">—{structure.description}</span>
                         <p className="text-xs text-primary mt-1">Example: {structure.example}</p>
                       </Label>
                     </div>
@@ -1210,7 +1405,7 @@ const PropulsionConsequencesMap = () => {
                       />
                       <Label htmlFor={`mil-${structure.id}`} className="cursor-pointer">
                         <span className="font-medium">{structure.label}</span>
-                        <span className="text-muted-foreground ml-2 text-sm">— {structure.description}</span>
+                        <span className="text-muted-foreground ml-2 text-sm">—{structure.description}</span>
                       </Label>
                     </div>
                   ))}
@@ -1429,33 +1624,39 @@ const PropulsionConsequencesMap = () => {
                 
                 <div className="space-y-2">
                   <Label htmlFor="conflict-economic" className="text-xs">Economic Conflicts</Label>
-                  <Textarea
-                    id="conflict-economic"
-                    placeholder="What economic tensions drive conflict in your world?"
-                    value={formState.synthesis.economicConflicts}
-                    onChange={(e) => updateSynthesis("economicConflicts", e.target.value)}
-                    className="min-h-[80px] bg-background/50"
-                  />
+                  <Suspense fallback={<div className="min-h-[80px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                    <RichTextEditor
+                      content={formState.synthesis.economicConflicts}
+                      onChange={(value) => updateSynthesis("economicConflicts", value)}
+                      placeholder="What economic tensions drive conflict in your world?"
+                      minHeight="80px"
+                      className="bg-background/50"
+                    />
+                  </Suspense>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="conflict-political" className="text-xs">Political Conflicts</Label>
-                  <Textarea
-                    id="conflict-political"
-                    placeholder="What political tensions emerge from your travel system?"
-                    value={formState.synthesis.politicalConflicts}
-                    onChange={(e) => updateSynthesis("politicalConflicts", e.target.value)}
-                    className="min-h-[80px] bg-background/50"
-                  />
+                  <Suspense fallback={<div className="min-h-[80px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                    <RichTextEditor
+                      content={formState.synthesis.politicalConflicts}
+                      onChange={(value) => updateSynthesis("politicalConflicts", value)}
+                      placeholder="What political tensions emerge from your travel system?"
+                      minHeight="80px"
+                      className="bg-background/50"
+                    />
+                  </Suspense>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="conflict-social" className="text-xs">Social Conflicts</Label>
-                  <Textarea
-                    id="conflict-social"
-                    placeholder="What social tensions arise from propulsion constraints?"
-                    value={formState.synthesis.socialConflicts}
-                    onChange={(e) => updateSynthesis("socialConflicts", e.target.value)}
-                    className="min-h-[80px] bg-background/50"
-                  />
+                  <Suspense fallback={<div className="min-h-[80px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                    <RichTextEditor
+                      content={formState.synthesis.socialConflicts}
+                      onChange={(value) => updateSynthesis("socialConflicts", value)}
+                      placeholder="What social tensions arise from propulsion constraints?"
+                      minHeight="80px"
+                      className="bg-background/50"
+                    />
+                  </Suspense>
                 </div>
               </div>
             </div>
@@ -1520,13 +1721,15 @@ const PropulsionConsequencesMap = () => {
                 <p className="text-xs text-muted-foreground">
                   Summarize how your travel system shapes your world.
                 </p>
-                <Textarea
-                  id="thesis"
-                  placeholder="In my world, [propulsion type] means that [key consequence], which leads to [cultural/political result]. The most important tension is between [X] and [Y]."
-                  value={formState.synthesis.propulsionThesis}
-                  onChange={(e) => updateSynthesis("propulsionThesis", e.target.value)}
-                  className="min-h-[120px] bg-background/50"
-                />
+                <Suspense fallback={<div className="min-h-[120px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                  <RichTextEditor
+                    content={formState.synthesis.propulsionThesis}
+                    onChange={(value) => updateSynthesis("propulsionThesis", value)}
+                    placeholder="In my world, [propulsion type] means that [key consequence], which leads to [cultural/political result]. The most important tension is between [X] and [Y]."
+                    minHeight="120px"
+                    className="bg-background/50"
+                  />
+                </Suspense>
               </div>
 
               <QuestionSection
@@ -1547,57 +1750,7 @@ const PropulsionConsequencesMap = () => {
             </div>
           </CollapsibleSection>
 
-          {/* Notes & Ideas Section */}
-          <CollapsibleSection
-            id="section-notes"
-            title="Notes & Ideas"
-            icon={<FileText className="w-5 h-5 text-primary" />}
-            defaultOpen={false}
-          >
-            <div className="space-y-2">
-              <p className="text-sm text-muted-foreground">
-                Jot down ideas, story hooks, or reminders for this worksheet.
-              </p>
-              <Textarea
-                placeholder="Your notes and ideas..."
-                value={formState.generalNotes}
-                onChange={(e) => setFormState(prev => ({ ...prev, generalNotes: e.target.value }))}
-                className="min-h-[150px] resize-y"
-              />
-            </div>
-          </CollapsibleSection>
-
-          {/* Moodboard Section */}
-          <CollapsibleSection
-            id="section-moodboard"
-            title="Moodboard"
-            icon={<ImageIcon className="w-5 h-5 text-primary" />}
-            defaultOpen={false}
-            badge={formState.moodboard?.length || undefined}
-          >
-            <div className="space-y-2">
-              <p className="text-sm text-muted-foreground">
-                Add reference images to inspire your design.
-              </p>
-              <MoodboardSection
-                worksheetId={currentWorksheetId || "local"}
-                images={formState.moodboard || []}
-                onImagesChange={(images) => setFormState(prev => ({ ...prev, moodboard: images }))}
-              />
-            </div>
-          </CollapsibleSection>
         </div>
-
-        {/* Bottom Action Bar */}
-        <ToolActionBar
-          onSave={handleSave}
-          onPrint={handlePrint}
-          onExport={handleExport}
-          onShare={(currentWorksheetId || worksheetId) ? () => setShareDialogOpen(true) : undefined}
-          isShared={!!shareConfig?.enabled}
-          exportLabel="Export Worksheet"
-          className="mt-8"
-        />
 
         {/* Desktop Sidebars - Right side */}
         <ToolSidebar>
@@ -1612,13 +1765,28 @@ const PropulsionConsequencesMap = () => {
         </div>
       </main>
 
+      <WorksheetNotesSheet
+        open={notesSheetOpen}
+        onOpenChange={setNotesSheetOpen}
+        content={formState.generalNotes}
+        onChange={(html) => setFormState(prev => ({ ...prev, generalNotes: html }))}
+      />
+
+      <WorksheetMoodboardSheet
+        open={moodboardSheetOpen}
+        onOpenChange={setMoodboardSheetOpen}
+        worksheetId={currentWorksheetId || "local"}
+        images={formState.moodboard || []}
+        onImagesChange={(images) => setFormState(prev => ({ ...prev, moodboard: images }))}
+      />
+
       <Footer />
 
       {/* Export Dialog */}
       <ExportDialog
         open={exportDialogOpen}
         onOpenChange={setExportDialogOpen}
-        toolName="Propulsion Consequences Map"
+        toolName="Impulse"
         worldName={worldName}
         formState={formState}
         summaryTemplate={<PropulsionSummaryTemplate formState={formState} worldName={worldName} />}
@@ -1642,7 +1810,7 @@ const PropulsionConsequencesMap = () => {
           worldId={worldId}
           worldName={worldName}
           toolType={TOOL_TYPE}
-          toolDisplayName="Propulsion Consequences Map"
+          toolDisplayName="Impulse"
           worksheets={existingWorksheets}
           isLoading={worksheetsLoading}
           onSelect={handleWorksheetSelect}

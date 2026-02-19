@@ -1,6 +1,8 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, lazy, Suspense } from "react";
+import { WorksheetTagsBar } from "@/components/tools/WorksheetTagsBar";
+import { useTags } from "@/hooks/use-tags";
 import { Link, useSearchParams } from "react-router-dom";
-import { ArrowLeft, Download, Save, Info, ExternalLink, Printer, Cloud, CloudOff, Rocket, FileText, ChevronDown, Image as ImageIcon } from "lucide-react";
+import { ArrowLeft, Download, Save, Info, ExternalLink, Printer, Rocket, FileText, ChevronDown, Image as ImageIcon } from "lucide-react";
 import {
   Collapsible,
   CollapsibleContent,
@@ -8,10 +10,11 @@ import {
 } from "@/components/ui/collapsible";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import ToolIntroSection from "@/components/tools/ToolIntroSection";
+import { TOOL_INTROS } from "@/lib/tool-intros";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -24,6 +27,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { useWorksheets, useWorksheet, useWorksheetsByType, useRenameWorksheet } from "@/hooks/use-worksheets";
 import { WorksheetTitle } from "@/components/tools/WorksheetTitle";
+import { getToolIcon } from "@/components/icons/tool-icons";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
 import { useAuth } from "@/contexts/AuthContext";
 import SectionNavigation, { Section, MobileSectionNav } from "@/components/tools/SectionNavigation";
@@ -31,11 +35,16 @@ import ToolSidebar from "@/components/tools/ToolSidebar";
 import CollapsibleSection from "@/components/tools/CollapsibleSection";
 import KeyChoicesSidebar, { KeyChoicesSection, MobileKeyChoices } from "@/components/tools/KeyChoicesSidebar";
 import ToolActionBar from "@/components/tools/ToolActionBar";
+import QuickExportButton from "@/components/tools/QuickExportButton";
 import ExportDialog from "@/components/tools/ExportDialog";
 import ShareDialog from "@/components/sharing/ShareDialog";
+import QuestionSection from "@/components/tools/QuestionSection";
+
+const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
 import { useWorksheetShare } from "@/hooks/use-sharing";
-import { MoodboardSection } from "@/components/moodboard";
 import type { MoodboardImage } from "@/hooks/use-moodboard";
+import { WorksheetNotesSheet } from "@/components/tools/WorksheetNotesSheet";
+import { WorksheetMoodboardSheet } from "@/components/tools/WorksheetMoodboardSheet";
 import { SpacecraftSummaryTemplate, SpacecraftFullReportTemplate } from "@/lib/pdf/templates";
 import { useWorlds } from "@/hooks/use-worlds";
 import { Json } from "@/integrations/supabase/types";
@@ -50,8 +59,6 @@ const SECTIONS: Section[] = [
   { id: "section-character", title: "6. Ship Character" },
   { id: "section-examples", title: "SF Examples" },
   { id: "section-synthesis", title: "Synthesis" },
-  { id: "section-notes", title: "Notes & Ideas" },
-  { id: "section-moodboard", title: "Moodboard" },
 ];
 
 // Types for form state
@@ -313,55 +320,8 @@ const EXTERNAL_RESOURCES = [
   { name: "Spaceship Handbook", url: "https://www.amazon.com/Spaceship-Handbook-Rocket-Science-Future/dp/0976836394", description: "Classic reference" },
 ];
 
-const QuestionSection = ({
-  id,
-  label,
-  prompts,
-  example,
-  value,
-  onChange,
-}: {
-  id: string;
-  label: string;
-  prompts: string[];
-  example?: string;
-  value: string;
-  onChange: (value: string) => void;
-}) => (
-  <div className="space-y-2">
-    <div className="flex items-center gap-2">
-      <Label htmlFor={id} className="text-sm font-medium">
-        {label}
-      </Label>
-      {example && (
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Info className="w-4 h-4 text-muted-foreground cursor-help" />
-          </TooltipTrigger>
-          <TooltipContent className="max-w-sm">
-            <p className="text-xs">{example}</p>
-          </TooltipContent>
-        </Tooltip>
-      )}
-    </div>
-    {prompts.length > 0 && (
-      <ul className="text-xs text-muted-foreground mb-2 list-disc list-inside">
-        {prompts.map((prompt, i) => (
-          <li key={i}>{prompt}</li>
-        ))}
-      </ul>
-    )}
-    <Textarea
-      id={id}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      placeholder="Your response..."
-      className="min-h-[100px] bg-background/50"
-    />
-  </div>
-);
-
 const TOOL_TYPE = "spacecraft-designer";
+const ToolIcon = getToolIcon(TOOL_TYPE);
 
 const SpacecraftDesigner = () => {
   const [formState, setFormState] = useState<FormState>(initialFormState);
@@ -388,7 +348,11 @@ const SpacecraftDesigner = () => {
   const { data: existingWorksheets = [], isLoading: worksheetsLoading } = useWorksheetsByType(worldId || undefined, TOOL_TYPE);
   const renameWorksheet = useRenameWorksheet();
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
+  const [notesSheetOpen, setNotesSheetOpen] = useState(false);
+  const [moodboardSheetOpen, setMoodboardSheetOpen] = useState(false);
   const { data: shareConfig } = useWorksheetShare(currentWorksheetId || worksheetId || undefined);
+  const { updateWorksheetTags } = useTags();
+  const [worksheetTags, setWorksheetTags] = useState<string[]>([]);
 
   // Show worksheet selector when worldId is present but no worksheetId
   useEffect(() => {
@@ -405,6 +369,9 @@ const SpacecraftDesigner = () => {
         setFormState(data);
         setCurrentWorksheetId(existingWorksheet.id);
         setCurrentWorksheetTitle(existingWorksheet.title);
+        if (existingWorksheet.tags) {
+          setWorksheetTags(existingWorksheet.tags);
+        }
         toast({
           title: "Worksheet Loaded",
           description: "Your saved work has been restored from the cloud.",
@@ -600,6 +567,14 @@ const SpacecraftDesigner = () => {
     setCurrentWorksheetTitle(newTitle);
   };
 
+  const handleTagsChange = (newTags: string[]) => {
+    setWorksheetTags(newTags);
+    const wsId = currentWorksheetId || worksheetId;
+    if (wsId) {
+      updateWorksheetTags.mutate({ worksheetId: wsId, tags: newTags });
+    }
+  };
+
   const handleExport = () => {
     setExportDialogOpen(true);
   };
@@ -613,66 +588,75 @@ const SpacecraftDesigner = () => {
       <Header />
 
       <main className="container mx-auto px-4 pt-24 pb-16">
-        {/* Back Link & Title */}
+        {/* Back Link */}
+        <Link
+          to={worldId ? `/worlds/${worldId}` : "/"}
+          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          {worldId ? "Back to World" : "Back to Dashboard"}
+        </Link>
+
+        {/* Action Bar */}
+        <ToolActionBar
+          onSave={handleSave}
+          onOpen={worldId ? () => setWorksheetSelectorOpen(true) : undefined}
+          onPrint={handlePrint}
+          onExport={handleExport}
+          onShare={(currentWorksheetId || worksheetId) ? () => setShareDialogOpen(true) : undefined}
+          isShared={!!shareConfig?.enabled}
+          isCloudEnabled={!!(worldId && user)}
+          onNotesClick={() => setNotesSheetOpen(true)}
+          onMoodboardClick={() => setMoodboardSheetOpen(true)}
+          moodboardCount={formState.moodboard?.length || 0}
+          exportLabel="Export Spacecraft"
+          className="mb-6"
+          extraActions={
+            <QuickExportButton
+              toolName="Vessel"
+              worldName={worldName}
+              formState={formState}
+              summaryTemplate={<SpacecraftSummaryTemplate formState={formState} worldName={worldName} />}
+              fullTemplate={<SpacecraftFullReportTemplate formState={formState} worldName={worldName} />}
+              defaultFilename={`spacecraft-${formState.identity.name || "unnamed"}`}
+            />
+          }
+        />
+
+        {/* Title */}
         <div className="mb-8">
-          <Link
-            to={worldId ? `/world/${worldId}` : "/"}
-            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            {worldId ? "Back to World" : "Back to Dashboard"}
-          </Link>
-
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div>
-              <Badge className="mb-2">Tool 2</Badge>
-              <h1 className="font-display text-3xl md:text-4xl font-bold">
-                Lived-In Spacecraft Designer
-              </h1>
-              <p className="text-muted-foreground mt-2 max-w-2xl">
-                Design ships that feel inhabited rather than sterile—with cultural context, life support realities, and ship-as-character development.
-              </p>
-              {(currentWorksheetId || worksheetId) && (
-                <WorksheetTitle
-                  title={currentWorksheetTitle}
-                  onRename={handleRename}
-                  icon={<FileText className="w-4 h-4 text-primary" />}
-                  disabled={!user || worksheetLoading}
-                />
-              )}
-            </div>
-
-            <div className="flex items-center gap-2 no-print">
-              {worldId && user ? (
-                <span className="text-xs text-muted-foreground flex items-center gap-1">
-                  <Cloud className="w-3 h-3 text-green-500" />
-                  Cloud sync enabled
-                </span>
-              ) : (
-                <span className="text-xs text-muted-foreground flex items-center gap-1">
-                  <CloudOff className="w-3 h-3" />
-                  Local only
-                </span>
-              )}
-              <Button variant="outline" size="sm" onClick={handleSave} disabled={worksheetLoading}>
-                <Save className="w-4 h-4 mr-2" />
-                Save Draft
-              </Button>
-              <Button variant="outline" size="sm" onClick={handlePrint}>
-                <Printer className="w-4 h-4 mr-2" />
-                Print
-              </Button>
-              <Button size="sm" onClick={handleExport}>
-                <Download className="w-4 h-4 mr-2" />
-                Export
-              </Button>
-            </div>
+          <Badge className="mb-2">Tool 2</Badge>
+          <div className="flex items-center gap-3">
+            {ToolIcon && <ToolIcon className="w-12 h-12 rounded-full shrink-0" />}
+            <h1 className="font-display text-3xl md:text-4xl font-bold">
+              Vessel: Lived-In Spacecraft Designer
+            </h1>
           </div>
+          <p className="text-muted-foreground mt-2 max-w-2xl">
+            Design ships that feel inhabited rather than sterile—with cultural context, life support realities, and ship-as-character development.
+          </p>
+          {(currentWorksheetId || worksheetId) && (
+            <WorksheetTitle
+              title={currentWorksheetTitle}
+              onRename={handleRename}
+              icon={<FileText className="w-4 h-4 text-primary" />}
+              disabled={!user || worksheetLoading}
+            />
+          )}
+          {(currentWorksheetId || worksheetId) && (
+            <WorksheetTagsBar
+              worksheetId={(currentWorksheetId || worksheetId)!}
+              tags={worksheetTags}
+              onChange={handleTagsChange}
+            />
+          )}
         </div>
+
+        <ToolIntroSection data={TOOL_INTROS["spacecraft-designer"]} />
 
         {/* Introduction */}
         <GlassPanel glow className="p-6 md:p-8 mb-8">
-          <h2 className="font-display text-xl font-semibold mb-4 gradient-text">
+          <h2 className="font-heading text-xl font-semibold mb-4 gradient-text">
             Ships as Characters
           </h2>
           <blockquote className="border-l-2 border-primary pl-4 italic text-lg mb-4">
@@ -1511,68 +1495,20 @@ const SpacecraftDesigner = () => {
                 <p className="text-xs text-muted-foreground">
                   Write a paragraph describing what it's like to step aboard this ship for the first time—sight, sound, smell, feel.
                 </p>
-                <Textarea
-                  id="sensory-signature"
-                  placeholder="The airlock hisses open and you step into..."
-                  value={formState.synthesis.sensorySignature}
-                  onChange={(e) => updateSynthesis("sensorySignature", e.target.value)}
-                  className="min-h-[150px] bg-background/50"
-                />
+                <Suspense fallback={<div className="min-h-[150px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                  <RichTextEditor
+                    content={formState.synthesis.sensorySignature}
+                    onChange={(value) => updateSynthesis("sensorySignature", value)}
+                    placeholder="The airlock hisses open and you step into..."
+                    minHeight="150px"
+                    className="bg-background/50"
+                  />
+                </Suspense>
               </div>
             </div>
           </CollapsibleSection>
 
-          {/* Notes & Ideas Section */}
-          <CollapsibleSection
-            id="section-notes"
-            title="Notes & Ideas"
-            icon={<FileText className="w-5 h-5 text-primary" />}
-            defaultOpen={false}
-          >
-            <div className="space-y-2">
-              <p className="text-sm text-muted-foreground">
-                Jot down ideas, story hooks, or reminders for this worksheet.
-              </p>
-              <Textarea
-                placeholder="Your notes and ideas..."
-                value={formState.generalNotes}
-                onChange={(e) => setFormState(prev => ({ ...prev, generalNotes: e.target.value }))}
-                className="min-h-[150px] resize-y"
-              />
-            </div>
-          </CollapsibleSection>
-
-          {/* Moodboard Section */}
-          <CollapsibleSection
-            id="section-moodboard"
-            title="Moodboard"
-            icon={<ImageIcon className="w-5 h-5 text-primary" />}
-            defaultOpen={false}
-            badge={formState.moodboard?.length || undefined}
-          >
-            <div className="space-y-2">
-              <p className="text-sm text-muted-foreground">
-                Add reference images to inspire your design.
-              </p>
-              <MoodboardSection
-                worksheetId={currentWorksheetId || "local"}
-                images={formState.moodboard || []}
-                onImagesChange={(images) => setFormState(prev => ({ ...prev, moodboard: images }))}
-              />
-            </div>
-          </CollapsibleSection>
         </div>
-
-        {/* Bottom Action Bar */}
-        <ToolActionBar
-          onSave={handleSave}
-          onPrint={handlePrint}
-          onExport={handleExport}
-          onShare={(currentWorksheetId || worksheetId) ? () => setShareDialogOpen(true) : undefined}
-          isShared={!!shareConfig?.enabled}
-          exportLabel="Export Spacecraft"
-          className="mt-8"
-        />
 
         {/* Desktop Sidebars - Right side */}
         <ToolSidebar>
@@ -1587,13 +1523,28 @@ const SpacecraftDesigner = () => {
         </div>
       </main>
 
+      <WorksheetNotesSheet
+        open={notesSheetOpen}
+        onOpenChange={setNotesSheetOpen}
+        content={formState.generalNotes}
+        onChange={(html) => setFormState(prev => ({ ...prev, generalNotes: html }))}
+      />
+
+      <WorksheetMoodboardSheet
+        open={moodboardSheetOpen}
+        onOpenChange={setMoodboardSheetOpen}
+        worksheetId={currentWorksheetId || "local"}
+        images={formState.moodboard || []}
+        onImagesChange={(images) => setFormState(prev => ({ ...prev, moodboard: images }))}
+      />
+
       <Footer />
 
       {/* Export Dialog */}
       <ExportDialog
         open={exportDialogOpen}
         onOpenChange={setExportDialogOpen}
-        toolName="Spacecraft Designer"
+        toolName="Vessel"
         worldName={worldName}
         formState={formState}
         summaryTemplate={<SpacecraftSummaryTemplate formState={formState} worldName={worldName} />}
@@ -1617,7 +1568,7 @@ const SpacecraftDesigner = () => {
           worldId={worldId}
           worldName={worldName}
           toolType={TOOL_TYPE}
-          toolDisplayName="Spacecraft Designer"
+          toolDisplayName="Vessel"
           worksheets={existingWorksheets}
           isLoading={worksheetsLoading}
           onSelect={handleWorksheetSelect}

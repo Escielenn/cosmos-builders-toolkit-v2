@@ -21,13 +21,13 @@ interface LegalPageLayoutProps {
 // Custom markdown components for better styling
 const markdownComponents: Components = {
   h2: ({ children }) => (
-    <h2 className="flex items-center gap-3 text-2xl font-display font-bold text-foreground mt-12 mb-6 pt-8 border-t border-border/30 first:mt-0 first:pt-0 first:border-t-0">
+    <h2 className="flex items-center gap-3 text-2xl font-heading font-bold text-foreground mt-12 mb-6 pt-8 border-t border-border/30 first:mt-0 first:pt-0 first:border-t-0">
       <span className="w-1 h-8 bg-primary rounded-full" />
       {children}
     </h2>
   ),
   h3: ({ children }) => (
-    <h3 className="text-lg font-display font-semibold text-foreground/90 mt-8 mb-4 pl-4 border-l-2 border-primary/30">
+    <h3 className="text-lg font-heading font-semibold text-foreground/90 mt-8 mb-4 pl-4 border-l-2 border-primary/30">
       {children}
     </h3>
   ),

@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useState } from "react";
-import { getWorldIcon } from "@/lib/world-icons";
+import WorldIconRenderer from "@/components/world/WorldIconRenderer";
 import { useToast } from "@/hooks/use-toast";
 import WorldExportDialog from "@/components/world/WorldExportDialog";
 import { DeleteConfirmDialog } from "@/components/dialogs/DeleteConfirmDialog";
@@ -23,6 +23,7 @@ interface WorldCardProps {
   name: string;
   description: string | null;
   headerImageUrl: string | null;
+  headerImageFocusY?: number;
   icon: string;
   tags?: string[];
   archivedAt?: string | null;
@@ -37,6 +38,7 @@ const WorldCard = ({
   name,
   description,
   headerImageUrl,
+  headerImageFocusY,
   icon,
   tags = [],
   archivedAt,
@@ -96,20 +98,18 @@ const WorldCard = ({
     year: "numeric",
   });
 
-  const worldIcon = getWorldIcon(icon);
-  const IconComponent = worldIcon.icon;
-
   return (
     <>
       <GlassPanel hover className={cn("flex flex-col min-h-[200px]", isArchived && "opacity-60")}>
         {/* Header Image */}
         <div className="relative">
           {headerImageUrl ? (
-            <div className="w-full h-24 overflow-hidden">
+            <div className="w-full h-24 overflow-hidden rounded-t-xl">
               <img
                 src={headerImageUrl}
                 alt=""
                 className="w-full h-full object-cover"
+                style={{ objectPosition: `center ${headerImageFocusY ?? 50}%` }}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
             </div>
@@ -119,8 +119,8 @@ const WorldCard = ({
             </div>
           )}
           {/* Icon overlay - positioned outside overflow-hidden container */}
-          <div className="absolute -bottom-5 left-4 w-10 h-10 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 border-2 border-background flex items-center justify-center shadow-lg z-10">
-            <IconComponent className="w-5 h-5 text-primary" />
+          <div className="absolute -bottom-5 left-4 w-10 h-10 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 border-2 border-background flex items-center justify-center shadow-lg z-10 overflow-hidden">
+            <WorldIconRenderer iconId={icon} className="w-7 h-7 text-primary" />
           </div>
           {/* Archived badge */}
           {isArchived && (
@@ -135,7 +135,7 @@ const WorldCard = ({
         <div className="p-5 pt-8 flex flex-col flex-1">
           <div className="flex items-start justify-between mb-2">
             <Link to={`/worlds/${id}`} className="flex-1">
-              <h3 className="font-display font-semibold text-lg hover:text-primary transition-colors">
+              <h3 className="font-heading font-semibold text-lg hover:text-primary transition-colors">
                 {name}
               </h3>
             </Link>

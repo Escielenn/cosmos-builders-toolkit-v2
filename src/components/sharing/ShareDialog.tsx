@@ -124,7 +124,7 @@ const ShareDialog = ({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="font-display">Share</DialogTitle>
+          <DialogTitle className="font-heading">Share</DialogTitle>
           <DialogDescription className="truncate">
             {entityTitle || (entityType === "worksheet" ? "Untitled Worksheet" : "Untitled World")}
           </DialogDescription>

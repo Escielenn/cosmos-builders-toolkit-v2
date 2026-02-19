@@ -124,7 +124,7 @@ const SimpleSubmissionForm = ({ type, onSuccess }: SimpleSubmissionFormProps) =>
     return (
       <div className="text-center py-8">
         <CheckCircle className="w-12 h-12 text-emerald-500 mx-auto mb-4" />
-        <h3 className="font-display text-xl font-semibold mb-2">
+        <h3 className="font-heading text-xl font-semibold mb-2">
           {config.successTitle}
         </h3>
         <p className="text-muted-foreground mb-4">{config.successMessage}</p>

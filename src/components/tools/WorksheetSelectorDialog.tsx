@@ -13,11 +13,15 @@ import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
+import { getToolIcon } from "@/components/icons/tool-icons";
+import TagBadge from "@/components/tags/TagBadge";
+import { getTagColor } from "@/hooks/use-tags";
 
 interface Worksheet {
   id: string;
   title: string | null;
   updated_at: string;
+  tags?: string[];
 }
 
 interface WorksheetSelectorDialogProps {
@@ -37,12 +41,14 @@ const WorksheetSelectorDialog = ({
   open,
   onOpenChange,
   worldName,
+  toolType,
   toolDisplayName,
   worksheets,
   isLoading,
   onSelect,
   onCreate,
 }: WorksheetSelectorDialogProps) => {
+  const ToolIcon = getToolIcon(toolType);
   const [selectedWorksheetId, setSelectedWorksheetId] = useState<string | null>(null);
   const [newWorksheetName, setNewWorksheetName] = useState("");
   const [isCreating, setIsCreating] = useState(false);
@@ -84,14 +90,15 @@ const WorksheetSelectorDialog = ({
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="font-display">
+          <DialogTitle className="font-heading flex items-center gap-2">
+            {ToolIcon && <ToolIcon className="w-7 h-7 rounded-full shrink-0" />}
             {shouldShowCreateForm ? `New ${toolDisplayName}` : `Select ${toolDisplayName}`}
           </DialogTitle>
           <DialogDescription>
             {worldName && (
               <span className="text-primary font-medium">{worldName}</span>
             )}
-            {worldName && " — "}
+            {worldName && "—"}
             {shouldShowCreateForm
               ? `Enter a name for your new ${toolDisplayName.toLowerCase()}.`
               : `You have ${worksheets.length} ${toolDisplayName.toLowerCase()}${worksheets.length !== 1 ? "s" : ""} in this world.`}
@@ -169,6 +176,19 @@ const WorksheetSelectorDialog = ({
                           <Calendar className="w-3 h-3" />
                           {formatDistanceToNow(new Date(worksheet.updated_at), { addSuffix: true })}
                         </div>
+                        {worksheet.tags && worksheet.tags.length > 0 && (
+                          <div className="flex flex-wrap gap-1 mt-1.5">
+                            {worksheet.tags.slice(0, 3).map((tag) => {
+                              const hash = tag.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0);
+                              return (
+                                <TagBadge key={tag} name={tag} color={getTagColor(hash)} size="sm" />
+                              );
+                            })}
+                            {worksheet.tags.length > 3 && (
+                              <span className="text-xs text-muted-foreground">+{worksheet.tags.length - 3}</span>
+                            )}
+                          </div>
+                        )}
                       </div>
                     </div>
                   </button>
@@ -210,6 +230,8 @@ function getPlaceholderName(toolDisplayName: string): string {
     "Drake Equation Calculator": "Optimistic Galaxy Scenario",
     "Xenomythology Framework": "The Crystalline Singers",
     "Evolutionary Biology": "The Silicate Swimmers",
+    "Physics Declaration: The One Big Lie": "The Epstein Drive",
+    "Time Dilation Calculator": "Earth to Alpha Centauri at 0.9c",
   };
   return placeholders[toolDisplayName] || "My " + toolDisplayName;
 }

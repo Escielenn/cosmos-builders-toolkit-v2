@@ -152,7 +152,7 @@ const LearnArticle = () => {
 
         {/* Article Content */}
         <GlassPanel className="p-6 md:p-10">
-          <article className="prose prose-invert prose-lg max-w-none prose-headings:font-display prose-headings:font-semibold prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-blockquote:border-primary prose-blockquote:not-italic prose-code:bg-muted prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:before:content-none prose-code:after:content-none">
+          <article className="prose prose-invert prose-lg max-w-none prose-headings:font-heading prose-headings:font-semibold prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-blockquote:border-primary prose-blockquote:not-italic prose-code:bg-muted prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:before:content-none prose-code:after:content-none">
             {useSanityContent ? (
               <PortableTextRenderer content={sanityArticle.content} />
             ) : FallbackContent ? (

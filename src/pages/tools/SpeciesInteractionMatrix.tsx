@@ -1,8 +1,14 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, lazy, Suspense } from "react";
+import { WorksheetTagsBar } from "@/components/tools/WorksheetTagsBar";
+import { useTags } from "@/hooks/use-tags";
+const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
 import { Link, useSearchParams } from "react-router-dom";
-import { ArrowLeft, Download, Save, Cloud, CloudOff, Users, Plus, Trash2, ArrowRight, RefreshCw, Dna, FileText, Image as ImageIcon } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, ArrowRight, RefreshCw, Dna, FileText, Image as ImageIcon, Users } from "lucide-react";
+import { getToolIcon } from "@/components/icons/tool-icons";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import ToolIntroSection from "@/components/tools/ToolIntroSection";
+import { TOOL_INTROS } from "@/lib/tool-intros";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -28,12 +34,14 @@ import ToolSidebar from "@/components/tools/ToolSidebar";
 import CollapsibleSection from "@/components/tools/CollapsibleSection";
 import KeyChoicesSidebar, { KeyChoicesSection, MobileKeyChoices } from "@/components/tools/KeyChoicesSidebar";
 import ToolActionBar from "@/components/tools/ToolActionBar";
+import QuickExportButton from "@/components/tools/QuickExportButton";
 import ExportDialog from "@/components/tools/ExportDialog";
 import { SpeciesMatrixSummaryTemplate, SpeciesMatrixFullReportTemplate } from "@/lib/pdf/templates";
 import ShareDialog from "@/components/sharing/ShareDialog";
 import { useWorksheetShare } from "@/hooks/use-sharing";
-import { MoodboardSection } from "@/components/moodboard";
 import type { MoodboardImage } from "@/hooks/use-moodboard";
+import { WorksheetNotesSheet } from "@/components/tools/WorksheetNotesSheet";
+import { WorksheetMoodboardSheet } from "@/components/tools/WorksheetMoodboardSheet";
 import UpgradeDialog from "@/components/subscription/UpgradeDialog";
 import EvoBioImportModal from "@/components/tools/EvoBioImportModal";
 import { useWorlds } from "@/hooks/use-worlds";
@@ -65,8 +73,6 @@ const SECTIONS: Section[] = [
   { id: "section-tensions", title: "9. Tensions" },
   { id: "section-examples", title: "SF Examples" },
   { id: "section-synthesis", title: "Synthesis" },
-  { id: "section-notes", title: "Notes & Ideas" },
-  { id: "section-moodboard", title: "Moodboard" },
 ];
 
 interface Species {
@@ -200,6 +206,7 @@ const initialFormState: FormState = {
 };
 
 const TOOL_TYPE = "species-interaction-matrix";
+const ToolIcon = getToolIcon(TOOL_TYPE);
 
 const SpeciesInteractionMatrix = () => {
   const [formState, setFormState] = useState<FormState>(initialFormState);
@@ -228,7 +235,11 @@ const SpeciesInteractionMatrix = () => {
   const { data: existingWorksheets = [], isLoading: worksheetsLoading } = useWorksheetsByType(worldId || undefined, TOOL_TYPE);
   const renameWorksheet = useRenameWorksheet();
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
+  const [notesSheetOpen, setNotesSheetOpen] = useState(false);
+  const [moodboardSheetOpen, setMoodboardSheetOpen] = useState(false);
   const { data: shareConfig } = useWorksheetShare(currentWorksheetId || worksheetId || undefined);
+  const { updateWorksheetTags } = useTags();
+  const [worksheetTags, setWorksheetTags] = useState<string[]>([]);
 
   // Generate all pairs when species change
   const allPairs = useMemo(() => {
@@ -286,6 +297,9 @@ const SpeciesInteractionMatrix = () => {
         setFormState(data);
         setCurrentWorksheetId(existingWorksheet.id);
         setCurrentWorksheetTitle(existingWorksheet.title);
+        if (existingWorksheet.tags) {
+          setWorksheetTags(existingWorksheet.tags);
+        }
         toast({
           title: "Worksheet Loaded",
           description: "Your saved work has been restored from the cloud.",
@@ -505,6 +519,14 @@ const SpeciesInteractionMatrix = () => {
     setCurrentWorksheetTitle(newTitle);
   };
 
+  const handleTagsChange = (newTags: string[]) => {
+    setWorksheetTags(newTags);
+    const wsId = currentWorksheetId || worksheetId;
+    if (wsId) {
+      updateWorksheetTags.mutate({ worksheetId: wsId, tags: newTags });
+    }
+  };
+
   const getSpeciesById = (id: string) => formState.species.find((s) => s.id === id);
 
   const generateRandomStoryPrompt = () => {
@@ -521,50 +543,47 @@ const SpeciesInteractionMatrix = () => {
       <Header />
 
       <main className="container mx-auto px-4 pt-20 pb-24">
-        <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
-          <div className="flex items-center gap-4">
-            <Link
-              to={worldId ? `/worlds/${worldId}` : "/"}
-              className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              <span className="text-sm">
-                {worldId ? `Back to ${worldName || "World"}` : "Back to Tools"}
-              </span>
-            </Link>
-          </div>
+        {/* Back Link */}
+        <Link
+          to={worldId ? `/worlds/${worldId}` : "/"}
+          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          {worldId ? `Back to ${worldName || "World"}` : "Back to Tools"}
+        </Link>
 
-          <div className="flex items-center gap-2">
-            {worldId && user ? (
-              <Badge variant="outline" className="gap-1.5">
-                <Cloud className="w-3 h-3" />
-                Cloud Sync
-              </Badge>
-            ) : (
-              <Badge variant="secondary" className="gap-1.5">
-                <CloudOff className="w-3 h-3" />
-                Local Only
-              </Badge>
-            )}
-            {(currentWorksheetId || worksheetId) && (
-              <WorksheetTitle
-                title={currentWorksheetTitle}
-                onRename={handleRename}
-                icon={<FileText className="w-4 h-4 text-primary" />}
-                disabled={!user || worksheetLoading}
-              />
-            )}
-          </div>
-        </div>
+        {/* Action Bar */}
+        <ToolActionBar
+          onSave={handleSave}
+          onOpen={worldId ? () => setWorksheetSelectorOpen(true) : undefined}
+          onExport={() => setExportDialogOpen(true)}
+          onShare={(currentWorksheetId || worksheetId) ? () => setShareDialogOpen(true) : undefined}
+          isShared={!!shareConfig?.enabled}
+          isSaving={updateWorksheet.isPending}
+          isCloudEnabled={!!(worldId && user)}
+          onNotesClick={() => setNotesSheetOpen(true)}
+          onMoodboardClick={() => setMoodboardSheetOpen(true)}
+          moodboardCount={formState.moodboard?.length || 0}
+          className="mb-6"
+          extraActions={
+            <QuickExportButton
+              toolName="Symbiosis"
+              worldName={worldName}
+              formState={formState}
+              summaryTemplate={<SpeciesMatrixSummaryTemplate formState={formState} worldName={worldName} />}
+              fullTemplate={<SpeciesMatrixFullReportTemplate formState={formState} worldName={worldName} />}
+              defaultFilename="species-interaction-matrix"
+            />
+          }
+        />
 
+        {/* Title */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 rounded-xl bg-pink-500/10 flex items-center justify-center">
-              <Users className="w-5 h-5 text-pink-500" />
-            </div>
+            {ToolIcon && <ToolIcon className="w-12 h-12 rounded-full shrink-0" />}
             <div>
-              <h1 className="font-display text-2xl md:text-3xl font-light">
-                Species Interaction Matrix
+              <h1 className="font-display text-2xl md:text-3xl font-bold">
+                Symbiosis: Species Interaction Matrix
               </h1>
               <p className="text-sm text-muted-foreground">
                 Define relationships between multiple species
@@ -572,6 +591,21 @@ const SpeciesInteractionMatrix = () => {
             </div>
           </div>
           <Badge variant="secondary" className="mt-2">Pro Tool</Badge>
+          {(currentWorksheetId || worksheetId) && (
+            <WorksheetTitle
+              title={currentWorksheetTitle}
+              onRename={handleRename}
+              icon={<FileText className="w-4 h-4 text-primary" />}
+              disabled={!user || worksheetLoading}
+            />
+          )}
+          {(currentWorksheetId || worksheetId) && (
+            <WorksheetTagsBar
+              worksheetId={(currentWorksheetId || worksheetId)!}
+              tags={worksheetTags}
+              onChange={handleTagsChange}
+            />
+          )}
         </div>
 
         <div className="lg:hidden mb-6 space-y-4">
@@ -581,6 +615,8 @@ const SpeciesInteractionMatrix = () => {
 
         <div className="flex gap-8">
           <div className="flex-1 space-y-6 max-w-4xl">
+            <ToolIntroSection data={TOOL_INTROS["species-interaction-matrix"]} />
+
             {/* Section 1: Species Registry */}
             <CollapsibleSection
               id="section-registry"
@@ -835,12 +871,14 @@ const SpeciesInteractionMatrix = () => {
                       </div>
                     </div>
 
-                    <Textarea
-                      value={currentPair.physicalNotes}
-                      onChange={(e) => updatePair(selectedPairIndex, { physicalNotes: e.target.value })}
-                      placeholder="Additional notes on physical compatibility..."
-                      rows={2}
-                    />
+                    <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                      <RichTextEditor
+                        content={currentPair.physicalNotes}
+                        onChange={(value) => updatePair(selectedPairIndex, { physicalNotes: value })}
+                        placeholder="Additional notes on physical compatibility..."
+                        minHeight="100px"
+                      />
+                    </Suspense>
                   </div>
                 </CollapsibleSection>
 
@@ -925,12 +963,14 @@ const SpeciesInteractionMatrix = () => {
                         </Select>
                       </div>
                     </div>
-                    <Textarea
-                      value={currentPair.communicationNotes}
-                      onChange={(e) => updatePair(selectedPairIndex, { communicationNotes: e.target.value })}
-                      placeholder="Additional notes on communication..."
-                      rows={2}
-                    />
+                    <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                      <RichTextEditor
+                        content={currentPair.communicationNotes}
+                        onChange={(value) => updatePair(selectedPairIndex, { communicationNotes: value })}
+                        placeholder="Additional notes on communication..."
+                        minHeight="100px"
+                      />
+                    </Suspense>
                   </div>
                 </CollapsibleSection>
 
@@ -1015,12 +1055,14 @@ const SpeciesInteractionMatrix = () => {
                         </Select>
                       </div>
                     </div>
-                    <Textarea
-                      value={currentPair.economicNotes}
-                      onChange={(e) => updatePair(selectedPairIndex, { economicNotes: e.target.value })}
-                      placeholder="Additional notes on economic relations..."
-                      rows={2}
-                    />
+                    <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                      <RichTextEditor
+                        content={currentPair.economicNotes}
+                        onChange={(value) => updatePair(selectedPairIndex, { economicNotes: value })}
+                        placeholder="Additional notes on economic relations..."
+                        minHeight="100px"
+                      />
+                    </Suspense>
                   </div>
                 </CollapsibleSection>
 
@@ -1105,12 +1147,14 @@ const SpeciesInteractionMatrix = () => {
                         </Select>
                       </div>
                     </div>
-                    <Textarea
-                      value={currentPair.politicalNotes}
-                      onChange={(e) => updatePair(selectedPairIndex, { politicalNotes: e.target.value })}
-                      placeholder="Additional notes on political relations..."
-                      rows={2}
-                    />
+                    <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                      <RichTextEditor
+                        content={currentPair.politicalNotes}
+                        onChange={(value) => updatePair(selectedPairIndex, { politicalNotes: value })}
+                        placeholder="Additional notes on political relations..."
+                        minHeight="100px"
+                      />
+                    </Suspense>
                   </div>
                 </CollapsibleSection>
 
@@ -1195,12 +1239,14 @@ const SpeciesInteractionMatrix = () => {
                         </Select>
                       </div>
                     </div>
-                    <Textarea
-                      value={currentPair.culturalNotes}
-                      onChange={(e) => updatePair(selectedPairIndex, { culturalNotes: e.target.value })}
-                      placeholder="Additional notes on cultural exchange..."
-                      rows={2}
-                    />
+                    <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                      <RichTextEditor
+                        content={currentPair.culturalNotes}
+                        onChange={(value) => updatePair(selectedPairIndex, { culturalNotes: value })}
+                        placeholder="Additional notes on cultural exchange..."
+                        minHeight="100px"
+                      />
+                    </Suspense>
                   </div>
                 </CollapsibleSection>
 
@@ -1285,12 +1331,14 @@ const SpeciesInteractionMatrix = () => {
                         </Select>
                       </div>
                     </div>
-                    <Textarea
-                      value={currentPair.historicalNotes}
-                      onChange={(e) => updatePair(selectedPairIndex, { historicalNotes: e.target.value })}
-                      placeholder="Key historical events between these species..."
-                      rows={2}
-                    />
+                    <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                      <RichTextEditor
+                        content={currentPair.historicalNotes}
+                        onChange={(value) => updatePair(selectedPairIndex, { historicalNotes: value })}
+                        placeholder="Key historical events between these species..."
+                        minHeight="100px"
+                      />
+                    </Suspense>
                   </div>
                 </CollapsibleSection>
 
@@ -1339,12 +1387,14 @@ const SpeciesInteractionMatrix = () => {
                         </Select>
                       </div>
                     </div>
-                    <Textarea
-                      value={currentPair.tensionNotes}
-                      onChange={(e) => updatePair(selectedPairIndex, { tensionNotes: e.target.value })}
-                      placeholder="Describe the specific points of tension..."
-                      rows={3}
-                    />
+                    <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                      <RichTextEditor
+                        content={currentPair.tensionNotes}
+                        onChange={(value) => updatePair(selectedPairIndex, { tensionNotes: value })}
+                        placeholder="Describe the specific points of tension..."
+                        minHeight="100px"
+                      />
+                    </Suspense>
                   </div>
                 </CollapsibleSection>
               </>
@@ -1420,12 +1470,14 @@ const SpeciesInteractionMatrix = () => {
 
                 <div className="space-y-2">
                   <Label>Synthesis Notes</Label>
-                  <Textarea
-                    value={formState.synthesisNotes}
-                    onChange={(e) => updateField("synthesisNotes", e.target.value)}
-                    placeholder="How do all these species dynamics interact?"
-                    rows={3}
-                  />
+                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                    <RichTextEditor
+                      content={formState.synthesisNotes}
+                      onChange={(value) => updateField("synthesisNotes", value)}
+                      placeholder="How do all these species dynamics interact?"
+                      minHeight="100px"
+                    />
+                  </Suspense>
                 </div>
 
                 <Card className="bg-purple-500/10 border-purple-500/30">
@@ -1484,45 +1536,6 @@ const SpeciesInteractionMatrix = () => {
               </div>
             </CollapsibleSection>
 
-            {/* Notes & Ideas Section */}
-            <CollapsibleSection
-              id="section-notes"
-              title="Notes & Ideas"
-              icon={<FileText className="w-5 h-5 text-primary" />}
-              defaultOpen={false}
-            >
-              <div className="space-y-2">
-                <p className="text-sm text-muted-foreground">
-                  Jot down ideas, story hooks, or reminders for this worksheet.
-                </p>
-                <Textarea
-                  placeholder="Your notes and ideas..."
-                  value={formState.generalNotes}
-                  onChange={(e) => setFormState(prev => ({ ...prev, generalNotes: e.target.value }))}
-                  className="min-h-[150px] resize-y"
-                />
-              </div>
-            </CollapsibleSection>
-
-            {/* Moodboard Section */}
-            <CollapsibleSection
-              id="section-moodboard"
-              title="Moodboard"
-              icon={<ImageIcon className="w-5 h-5 text-primary" />}
-              defaultOpen={false}
-              badge={formState.moodboard?.length || undefined}
-            >
-              <div className="space-y-2">
-                <p className="text-sm text-muted-foreground">
-                  Add reference images to inspire your design.
-                </p>
-                <MoodboardSection
-                  worksheetId={currentWorksheetId || "local"}
-                  images={formState.moodboard || []}
-                  onImagesChange={(images) => setFormState(prev => ({ ...prev, moodboard: images }))}
-                />
-              </div>
-            </CollapsibleSection>
           </div>
 
           {/* Sidebars */}
@@ -1534,20 +1547,27 @@ const SpeciesInteractionMatrix = () => {
         </div>
       </main>
 
-      <Footer />
-
-      <ToolActionBar
-        onSave={handleSave}
-        onExport={() => setExportDialogOpen(true)}
-        onShare={(currentWorksheetId || worksheetId) ? () => setShareDialogOpen(true) : undefined}
-        isShared={!!shareConfig?.enabled}
-        isSaving={updateWorksheet.isPending}
+      <WorksheetNotesSheet
+        open={notesSheetOpen}
+        onOpenChange={setNotesSheetOpen}
+        content={formState.generalNotes}
+        onChange={(html) => setFormState(prev => ({ ...prev, generalNotes: html }))}
       />
+
+      <WorksheetMoodboardSheet
+        open={moodboardSheetOpen}
+        onOpenChange={setMoodboardSheetOpen}
+        worksheetId={currentWorksheetId || "local"}
+        images={formState.moodboard || []}
+        onImagesChange={(images) => setFormState(prev => ({ ...prev, moodboard: images }))}
+      />
+
+      <Footer />
 
       <ExportDialog
         open={exportDialogOpen}
         onOpenChange={setExportDialogOpen}
-        toolName="Species Interaction Matrix"
+        toolName="Symbiosis"
         formState={formState}
         worksheetTitle={
           formState.species.filter(s => s.name).map(s => s.name).join(" & ") ||
@@ -1573,7 +1593,7 @@ const SpeciesInteractionMatrix = () => {
         worldId={worldId!}
         worldName={worldName}
         toolType={TOOL_TYPE}
-        toolDisplayName="Species Interaction Matrix"
+        toolDisplayName="Symbiosis"
         worksheets={existingWorksheets}
         isLoading={worksheetsLoading}
         onSelect={handleWorksheetSelect}

@@ -1,8 +1,11 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, lazy, Suspense } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { ArrowLeft, Download, Save, Info, Printer, Cloud, CloudOff, Sun, Plus, Trash2, FileText, Image as ImageIcon } from "lucide-react";
+import { ArrowLeft, Download, Save, Info, Printer, Plus, Trash2, FileText, Image as ImageIcon } from "lucide-react";
+import { getToolIcon } from "@/components/icons/tool-icons";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import ToolIntroSection from "@/components/tools/ToolIntroSection";
+import { TOOL_INTROS } from "@/lib/tool-intros";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -34,12 +37,16 @@ import ToolSidebar from "@/components/tools/ToolSidebar";
 import CollapsibleSection from "@/components/tools/CollapsibleSection";
 import KeyChoicesSidebar, { KeyChoicesSection, MobileKeyChoices } from "@/components/tools/KeyChoicesSidebar";
 import ToolActionBar from "@/components/tools/ToolActionBar";
+import QuickExportButton from "@/components/tools/QuickExportButton";
 import ExportDialog from "@/components/tools/ExportDialog";
 import { StarSystemSummaryTemplate, StarSystemFullReportTemplate } from "@/lib/pdf/templates";
 import ShareDialog from "@/components/sharing/ShareDialog";
 import { useWorksheetShare } from "@/hooks/use-sharing";
-import { MoodboardSection } from "@/components/moodboard";
 import type { MoodboardImage } from "@/hooks/use-moodboard";
+import { WorksheetTagsBar } from "@/components/tools/WorksheetTagsBar";
+import { useTags } from "@/hooks/use-tags";
+import { WorksheetNotesSheet } from "@/components/tools/WorksheetNotesSheet";
+import { WorksheetMoodboardSheet } from "@/components/tools/WorksheetMoodboardSheet";
 import UpgradeDialog from "@/components/subscription/UpgradeDialog";
 import { useWorlds } from "@/hooks/use-worlds";
 import { Json } from "@/integrations/supabase/types";
@@ -54,21 +61,25 @@ import {
   FORMATION_SCENARIOS,
   MOON_TYPES,
   HZ_MODIFIERS,
+  SPECTRAL_CLASS_NUMERIC_DEFAULTS,
 } from "@/lib/star-system-data";
+import { calcHZBoundaries, luminosityFromMass } from "@/lib/habitable-zone/calculations";
+import StarSystemDiagram from "@/components/tools/StarSystemDiagram";
+
+const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
 
 // Section definitions for navigation
 const SECTIONS: Section[] = [
   { id: "section-primary", title: "1. Primary Star" },
   { id: "section-configuration", title: "2. Stellar Configuration" },
   { id: "section-bodies", title: "3. Planetary Bodies" },
+  { id: "section-diagram", title: "System Diagram" },
   { id: "section-orbits", title: "4. Orbital Mechanics" },
   { id: "section-history", title: "5. System History" },
   { id: "section-habitability", title: "6. Habitability" },
   { id: "section-narrative", title: "7. Narrative Elements" },
   { id: "section-examples", title: "SF Examples" },
   { id: "section-synthesis", title: "Final Synthesis" },
-  { id: "section-notes", title: "Notes & Ideas" },
-  { id: "section-moodboard", title: "Moodboard" },
 ];
 
 // Types for form state
@@ -245,6 +256,7 @@ const initialFormState: FormState = {
 };
 
 const TOOL_TYPE = "star-system-builder";
+const ToolIcon = getToolIcon(TOOL_TYPE);
 
 const StarSystemBuilder = () => {
   const [formState, setFormState] = useState<FormState>(initialFormState);
@@ -257,6 +269,7 @@ const StarSystemBuilder = () => {
   const { user } = useAuth();
   const { isSubscribed } = useSubscription();
   const { worlds } = useWorlds();
+  const { updateWorksheetTags } = useTags();
 
   // Get URL params for worldId and worksheetId
   const [searchParams, setSearchParams] = useSearchParams();
@@ -273,6 +286,9 @@ const StarSystemBuilder = () => {
   const { data: existingWorksheets = [], isLoading: worksheetsLoading } = useWorksheetsByType(worldId || undefined, TOOL_TYPE);
   const renameWorksheet = useRenameWorksheet();
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
+  const [notesSheetOpen, setNotesSheetOpen] = useState(false);
+  const [moodboardSheetOpen, setMoodboardSheetOpen] = useState(false);
+  const [worksheetTags, setWorksheetTags] = useState<string[]>([]);
   const { data: shareConfig } = useWorksheetShare(currentWorksheetId || worksheetId || undefined);
 
   // Check Pro access
@@ -297,6 +313,9 @@ const StarSystemBuilder = () => {
         setFormState(data);
         setCurrentWorksheetId(existingWorksheet.id);
         setCurrentWorksheetTitle(existingWorksheet.title);
+        if (existingWorksheet?.tags) {
+          setWorksheetTags(existingWorksheet.tags);
+        }
         toast({
           title: "Worksheet Loaded",
           description: "Your saved work has been restored from the cloud.",
@@ -444,6 +463,24 @@ const StarSystemBuilder = () => {
     }));
   };
 
+  // Auto-calculated HZ boundaries from star properties
+  const computedHZ = useMemo(() => {
+    const defaults = SPECTRAL_CLASS_NUMERIC_DEFAULTS[formState.primaryStar.spectralClass];
+    if (!defaults) return null;
+    const parsedL = parseFloat(formState.primaryStar.luminosity);
+    const parsedM = parseFloat(formState.primaryStar.mass);
+    let luminosity: number;
+    if (!isNaN(parsedL) && parsedL > 0) {
+      luminosity = parsedL;
+    } else if (!isNaN(parsedM) && parsedM > 0) {
+      luminosity = luminosityFromMass(parsedM);
+    } else {
+      luminosity = defaults.luminosity;
+    }
+    if (luminosity <= 0) return null;
+    return calcHZBoundaries(luminosity);
+  }, [formState.primaryStar.spectralClass, formState.primaryStar.luminosity, formState.primaryStar.mass]);
+
   const updateNarrative = (field: keyof NarrativeElements, value: string) => {
     setFormState((prev) => ({
       ...prev,
@@ -533,6 +570,14 @@ const StarSystemBuilder = () => {
     setCurrentWorksheetTitle(newTitle);
   };
 
+  const handleTagsChange = (newTags: string[]) => {
+    setWorksheetTags(newTags);
+    const wsId = currentWorksheetId || worksheetId;
+    if (wsId) {
+      updateWorksheetTags.mutate({ worksheetId: wsId, tags: newTags });
+    }
+  };
+
   const handleExport = () => {
     setExportDialogOpen(true);
   };
@@ -556,53 +601,48 @@ const StarSystemBuilder = () => {
       <Header />
 
       <main className="container mx-auto px-4 pt-20 pb-24">
-        {/* Navigation Bar */}
-        <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
-          <div className="flex items-center gap-4">
-            <Link
-              to={worldId ? `/worlds/${worldId}` : "/"}
-              className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              <span className="text-sm">
-                {worldId ? `Back to ${worldName || "World"}` : "Back to Tools"}
-              </span>
-            </Link>
-          </div>
+        {/* Back Link */}
+        <Link
+          to={worldId ? `/worlds/${worldId}` : "/"}
+          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          {worldId ? "Back to World" : "Back to Dashboard"}
+        </Link>
 
-          {/* Sync Status */}
-          <div className="flex items-center gap-2">
-            {worldId && user ? (
-              <Badge variant="outline" className="gap-1.5">
-                <Cloud className="w-3 h-3" />
-                Cloud Sync
-              </Badge>
-            ) : (
-              <Badge variant="secondary" className="gap-1.5">
-                <CloudOff className="w-3 h-3" />
-                Local Only
-              </Badge>
-            )}
-            {(currentWorksheetId || worksheetId) && (
-              <WorksheetTitle
-                title={currentWorksheetTitle}
-                onRename={handleRename}
-                icon={<FileText className="w-4 h-4 text-primary" />}
-                disabled={!user || worksheetLoading}
-              />
-            )}
-          </div>
-        </div>
+        {/* Action Bar */}
+        <ToolActionBar
+          onSave={handleSave}
+          onOpen={worldId ? () => setWorksheetSelectorOpen(true) : undefined}
+          onExport={handleExport}
+          onPrint={handlePrint}
+          onShare={(currentWorksheetId || worksheetId) ? () => setShareDialogOpen(true) : undefined}
+          isShared={!!shareConfig?.enabled}
+          isSaving={updateWorksheet.isPending}
+          isCloudEnabled={!!(worldId && user)}
+          onNotesClick={() => setNotesSheetOpen(true)}
+          onMoodboardClick={() => setMoodboardSheetOpen(true)}
+          moodboardCount={formState.moodboard?.length || 0}
+          className="mb-6"
+          extraActions={
+            <QuickExportButton
+              toolName="Orrery"
+              worldName={worldName}
+              formState={formState}
+              summaryTemplate={<StarSystemSummaryTemplate formState={formState} worldName={worldName} />}
+              fullTemplate={<StarSystemFullReportTemplate formState={formState} worldName={worldName} />}
+              defaultFilename="star-system"
+            />
+          }
+        />
 
         {/* Title */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center">
-              <Sun className="w-5 h-5 text-amber-500" />
-            </div>
+            {ToolIcon && <ToolIcon className="w-12 h-12 rounded-full shrink-0" />}
             <div>
-              <h1 className="font-display text-2xl md:text-3xl font-light">
-                Star System Builder
+              <h1 className="font-display text-2xl md:text-3xl font-bold">
+                Orrery: Star System Builder
               </h1>
               <p className="text-sm text-muted-foreground">
                 Design multi-planet systems with stellar relationships
@@ -610,6 +650,21 @@ const StarSystemBuilder = () => {
             </div>
           </div>
           <Badge variant="secondary" className="mt-2">Pro Tool</Badge>
+          {(currentWorksheetId || worksheetId) && (
+            <WorksheetTitle
+              title={currentWorksheetTitle}
+              onRename={handleRename}
+              icon={<FileText className="w-4 h-4 text-primary" />}
+              disabled={!user || worksheetLoading}
+            />
+          )}
+          {(currentWorksheetId || worksheetId) && (
+            <WorksheetTagsBar
+              worksheetId={(currentWorksheetId || worksheetId)!}
+              tags={worksheetTags}
+              onChange={handleTagsChange}
+            />
+          )}
         </div>
 
         {/* Mobile Navigation */}
@@ -639,6 +694,8 @@ const StarSystemBuilder = () => {
                 />
               </div>
             </GlassPanel>
+
+            <ToolIntroSection data={TOOL_INTROS["star-system-builder"]} />
 
             {/* Section 1: Primary Star */}
             <CollapsibleSection
@@ -864,12 +921,14 @@ const StarSystemBuilder = () => {
 
                 <div className="space-y-2">
                   <Label>Configuration Notes</Label>
-                  <Textarea
-                    value={formState.configuration.configurationNotes}
-                    onChange={(e) => updateConfiguration("configurationNotes", e.target.value)}
-                    placeholder="How do the stars interact? What does the sky look like from planets?"
-                    className="min-h-[80px]"
-                  />
+                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                    <RichTextEditor
+                      content={formState.configuration.configurationNotes}
+                      onChange={(value) => updateConfiguration("configurationNotes", value)}
+                      placeholder="How do the stars interact? What does the sky look like from planets?"
+                      minHeight="100px"
+                    />
+                  </Suspense>
                 </div>
               </div>
             </CollapsibleSection>
@@ -1044,6 +1103,17 @@ const StarSystemBuilder = () => {
               </div>
             </CollapsibleSection>
 
+            {/* System Diagram — always visible, updates live */}
+            <div id="section-diagram" className="scroll-mt-24">
+              <StarSystemDiagram
+                spectralClass={formState.primaryStar.spectralClass}
+                luminosityText={formState.primaryStar.luminosity}
+                massText={formState.primaryStar.mass}
+                configurationType={formState.configuration.type}
+                bodies={formState.bodies}
+              />
+            </div>
+
             {/* Section 4: Orbital Mechanics */}
             <CollapsibleSection
               id="section-orbits"
@@ -1086,12 +1156,14 @@ const StarSystemBuilder = () => {
 
                 <div className="space-y-2">
                   <Label>Resonance Notes</Label>
-                  <Textarea
-                    value={formState.orbits.resonanceNotes}
-                    onChange={(e) => updateOrbits("resonanceNotes", e.target.value)}
-                    placeholder="How do the orbital resonances affect the system? Any special conjunctions or eclipses?"
-                    className="min-h-[80px]"
-                  />
+                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                    <RichTextEditor
+                      content={formState.orbits.resonanceNotes}
+                      onChange={(value) => updateOrbits("resonanceNotes", value)}
+                      placeholder="How do the orbital resonances affect the system? Any special conjunctions or eclipses?"
+                      minHeight="100px"
+                    />
+                  </Suspense>
                 </div>
 
                 <div className="space-y-2">
@@ -1262,16 +1334,34 @@ const StarSystemBuilder = () => {
                     <Input
                       value={formState.habitability.habitableZoneInner}
                       onChange={(e) => updateHabitability("habitableZoneInner", e.target.value)}
-                      placeholder="e.g., 0.95"
+                      placeholder={computedHZ ? `e.g., ${computedHZ.runawayGreenhouse.toFixed(3)}` : "e.g., 0.95"}
                     />
+                    {computedHZ && (
+                      <button
+                        type="button"
+                        className="text-xs text-primary hover:underline"
+                        onClick={() => updateHabitability("habitableZoneInner", computedHZ.runawayGreenhouse.toFixed(3))}
+                      >
+                        Use calculated: {computedHZ.runawayGreenhouse.toFixed(3)} AU
+                      </button>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <Label>Habitable Zone Outer Edge (AU)</Label>
                     <Input
                       value={formState.habitability.habitableZoneOuter}
                       onChange={(e) => updateHabitability("habitableZoneOuter", e.target.value)}
-                      placeholder="e.g., 1.37"
+                      placeholder={computedHZ ? `e.g., ${computedHZ.maxGreenhouse.toFixed(3)}` : "e.g., 1.37"}
                     />
+                    {computedHZ && (
+                      <button
+                        type="button"
+                        className="text-xs text-primary hover:underline"
+                        onClick={() => updateHabitability("habitableZoneOuter", computedHZ.maxGreenhouse.toFixed(3))}
+                      >
+                        Use calculated: {computedHZ.maxGreenhouse.toFixed(3)} AU
+                      </button>
+                    )}
                   </div>
                 </div>
 
@@ -1530,45 +1620,6 @@ const StarSystemBuilder = () => {
               </div>
             </CollapsibleSection>
 
-            {/* Notes & Ideas Section */}
-            <CollapsibleSection
-              id="section-notes"
-              title="Notes & Ideas"
-              icon={<FileText className="w-5 h-5 text-primary" />}
-              defaultOpen={false}
-            >
-              <div className="space-y-2">
-                <p className="text-sm text-muted-foreground">
-                  Jot down ideas, story hooks, or reminders for this worksheet.
-                </p>
-                <Textarea
-                  placeholder="Your notes and ideas..."
-                  value={formState.generalNotes}
-                  onChange={(e) => setFormState(prev => ({ ...prev, generalNotes: e.target.value }))}
-                  className="min-h-[150px] resize-y"
-                />
-              </div>
-            </CollapsibleSection>
-
-            {/* Moodboard Section */}
-            <CollapsibleSection
-              id="section-moodboard"
-              title="Moodboard"
-              icon={<ImageIcon className="w-5 h-5 text-primary" />}
-              defaultOpen={false}
-              badge={formState.moodboard?.length || undefined}
-            >
-              <div className="space-y-2">
-                <p className="text-sm text-muted-foreground">
-                  Add reference images to inspire your design.
-                </p>
-                <MoodboardSection
-                  worksheetId={currentWorksheetId || "local"}
-                  images={formState.moodboard || []}
-                  onImagesChange={(images) => setFormState(prev => ({ ...prev, moodboard: images }))}
-                />
-              </div>
-            </CollapsibleSection>
           </div>
 
           {/* Sidebar */}
@@ -1579,23 +1630,28 @@ const StarSystemBuilder = () => {
         </div>
       </main>
 
-      <Footer />
-
-      {/* Action Bar */}
-      <ToolActionBar
-        onSave={handleSave}
-        onExport={handleExport}
-        onPrint={handlePrint}
-        onShare={(currentWorksheetId || worksheetId) ? () => setShareDialogOpen(true) : undefined}
-        isShared={!!shareConfig?.enabled}
-        isSaving={updateWorksheet.isPending}
+      <WorksheetNotesSheet
+        open={notesSheetOpen}
+        onOpenChange={setNotesSheetOpen}
+        content={formState.generalNotes}
+        onChange={(html) => setFormState(prev => ({ ...prev, generalNotes: html }))}
       />
+
+      <WorksheetMoodboardSheet
+        open={moodboardSheetOpen}
+        onOpenChange={setMoodboardSheetOpen}
+        worksheetId={currentWorksheetId || "local"}
+        images={formState.moodboard || []}
+        onImagesChange={(images) => setFormState(prev => ({ ...prev, moodboard: images }))}
+      />
+
+      <Footer />
 
       {/* Export Dialog */}
       <ExportDialog
         open={exportDialogOpen}
         onOpenChange={setExportDialogOpen}
-        toolName="Star System Builder"
+        toolName="Orrery"
         worksheetTitle={currentWorksheetTitle || formState.systemName || "Star System"}
         formState={formState}
         worldName={worldName}
@@ -1619,7 +1675,7 @@ const StarSystemBuilder = () => {
         worldId={worldId!}
         worldName={worldName}
         toolType={TOOL_TYPE}
-        toolDisplayName="Star System Builder"
+        toolDisplayName="Orrery"
         worksheets={existingWorksheets}
         isLoading={worksheetsLoading}
         onSelect={handleWorksheetSelect}
@@ -1630,7 +1686,7 @@ const StarSystemBuilder = () => {
       <UpgradeDialog
         open={upgradeDialogOpen}
         onOpenChange={setUpgradeDialogOpen}
-        toolName="Star System Builder"
+        toolName="Orrery"
       />
     </div>
   );

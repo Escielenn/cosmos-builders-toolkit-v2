@@ -1,9 +1,11 @@
 import { Crown, Check, Lock } from "lucide-react";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { getToolIcon } from "@/components/icons/tool-icons";
+import { scrollReveal, viewportOnce } from "@/lib/animations";
 
 // Import mockup components
 import DrakeMockup from "./mockups/DrakeMockup";
@@ -33,11 +35,15 @@ const ToolShowcaseBlock = ({
   const MockupComponent = getMockupComponent(toolId, title);
 
   return (
-    <div
+    <motion.div
       className={`
         flex flex-col gap-8 items-center
         ${imageSide === "left" ? "lg:flex-row" : "lg:flex-row-reverse"}
       `}
+      initial="hidden"
+      whileInView="visible"
+      viewport={viewportOnce}
+      variants={scrollReveal}
     >
       {/* Mockup */}
       <div className="w-full lg:w-3/5">
@@ -54,16 +60,16 @@ const ToolShowcaseBlock = ({
         <div className="flex items-start gap-4">
           {ToolIcon && (
             <div className="flex-shrink-0">
-              <ToolIcon className="w-14 h-14" />
+              <ToolIcon className="w-14 h-14 rounded-full" />
             </div>
           )}
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap mb-2">
-              <h3 className="font-display font-light text-xl md:text-2xl uppercase tracking-wider">
+              <h3 className="font-heading font-light text-xl md:text-2xl uppercase tracking-wider">
                 {title}
               </h3>
               {isPro && (
-                <Badge className="bg-amber-500/20 text-amber-500 border-amber-500/30">
+                <Badge className="bg-amber-500/20 text-amber-500 border-amber-500/30 sf-shimmer">
                   <Crown className="w-3 h-3 mr-1" />
                   Pro
                 </Badge>
@@ -101,7 +107,7 @@ const ToolShowcaseBlock = ({
           )}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

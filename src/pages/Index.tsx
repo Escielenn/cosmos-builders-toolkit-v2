@@ -1,8 +1,10 @@
 import { useState, useMemo } from "react";
+import { Link } from "react-router-dom";
 import {
   Globe,
   Users,
   Atom,
+  Clock,
   BookOpen,
   Cpu,
   Shield,
@@ -13,13 +15,19 @@ import {
   Dna,
   Sun,
   Crown,
+  Unlock,
   Network,
+  Orbit,
+  Languages,
+  Weight,
+  Eye,
 } from "lucide-react";
 import Header from "@/components/layout/Header";
 import ToolCard from "@/components/dashboard/ToolCard";
 import WorldCard from "@/components/dashboard/WorldCard";
 import CreateWorldButton from "@/components/dashboard/CreateWorldButton";
 import { GlassPanel } from "@/components/ui/glass-panel";
+import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
 import { useWorlds } from "@/hooks/use-worlds";
 import { useSubscription } from "@/hooks/use-subscription";
@@ -39,7 +47,7 @@ import SharedWorldsSection from "@/components/dashboard/SharedWorldsSection";
 const tools = [
   {
     id: "environmental-chain-reaction",
-    title: "Environmental Chain Reaction",
+    title: "Cascade: Environmental Chain Reaction",
     description:
       "Map how planetary parameters cascade into biology, psychology, culture, and mythology.",
     icon: Globe,
@@ -48,7 +56,7 @@ const tools = [
   },
   {
     id: "spacecraft-designer",
-    title: "Lived-In Spacecraft Designer",
+    title: "Vessel: Lived-In Spacecraft Designer",
     description:
       "Design ships that feel inhabited with cultural context, life support realities, and ship-as-character development.",
     icon: Rocket,
@@ -57,7 +65,7 @@ const tools = [
   },
   {
     id: "propulsion-consequences-map",
-    title: "Propulsion Consequences Map",
+    title: "Impulse: Propulsion Consequences",
     description:
       "Trace how your propulsion system shapes economics, politics, social structures, and psychology.",
     icon: Atom,
@@ -66,7 +74,7 @@ const tools = [
   },
   {
     id: "planetary-profile",
-    title: "Planetary Profile Template",
+    title: "Genesis: Planetary Profile",
     description:
       "Define your world's stellar environment, physical characteristics, atmosphere, habitability, and the narrative pressures that shape life.",
     icon: Globe,
@@ -74,17 +82,17 @@ const tools = [
     week: 4,
   },
   {
-    id: "drake-equation-calculator",
-    title: "Drake Equation Calculator",
+    id: "space-expansion-modeler",
+    title: "Exodus: Space Expansion Modeler",
     description:
-      "Calculate the number of civilizations in your galaxy. Establish your cosmic context from lonely universe to teeming space opera.",
-    icon: Calculator,
+      "Model how competing forces shape humanity's expansion beyond Earth across phases of development.",
+    icon: Orbit,
     status: "available" as const,
     week: 5,
   },
   {
     id: "xenomythology-framework-builder",
-    title: "Xenomythology Framework Builder",
+    title: "Mythos: Xenomythology Framework",
     description:
       "Create comprehensive alien mythological systems derived from species biology, environment, and evolutionary pressures.",
     icon: Sparkles,
@@ -93,7 +101,7 @@ const tools = [
   },
   {
     id: "evolutionary-biology",
-    title: "Evolutionary Biology Design Sheet",
+    title: "Phylo: Evolutionary Biology",
     description:
       "Design biologically plausible alien species with 13 comprehensive sections covering biochemistry, body plan, cognition, and psychology.",
     icon: Dna,
@@ -102,7 +110,7 @@ const tools = [
   },
   {
     id: "star-system-builder",
-    title: "Star System Builder",
+    title: "Orrery: Star System Builder",
     description:
       "Design multi-planet systems with stellar relationships and orbital mechanics.",
     icon: Sun,
@@ -111,7 +119,7 @@ const tools = [
   },
   {
     id: "empire-designer",
-    title: "Empire/Government Designer",
+    title: "Dominion: Empire Designer",
     description:
       "Create political structures, governance systems, and internal factions.",
     icon: Crown,
@@ -120,7 +128,7 @@ const tools = [
   },
   {
     id: "technology-consequences",
-    title: "Technology Consequences Map",
+    title: "Paradigm: Technology Consequences",
     description:
       "Map how any technology cascades through society, economy, and culture.",
     icon: Cpu,
@@ -129,14 +137,131 @@ const tools = [
   },
   {
     id: "species-interaction-matrix",
-    title: "Species Interaction Matrix",
+    title: "Symbiosis: Species Interaction Matrix",
     description:
       "Define complex relationships between multiple alien species.",
     icon: Network,
     status: "available" as const,
     week: 11,
   },
+  {
+    id: "one-big-lie",
+    title: "Axiom: The One Big Lie",
+    description:
+      "Declare your single violation of known physics and trace its consequences across your entire world.",
+    icon: Atom,
+    status: "available" as const,
+    week: 12,
+  },
+  {
+    id: "timeline",
+    title: "Timeline",
+    description:
+      "Plot events across deep time. Build multi-track timelines that reveal how characters, civilizations, and technologies intersect.",
+    icon: Clock,
+    status: "available" as const,
+    week: 18,
+  },
+  {
+    id: "sensorium",
+    title: "Sensorium: Alien Sensory Systems",
+    description:
+      "Design evolutionarily plausible sensory systems for alien species. Derive senses from environmental constraints or validate custom selections.",
+    icon: Eye,
+    status: "available" as const,
+    week: 19,
+  },
 ];
+
+const calculatorTools = [
+  {
+    id: "drake-equation-calculator",
+    title: "Signal: Drake Equation Calculator",
+    description:
+      "Calculate the number of civilizations in your galaxy. Establish your cosmic context from lonely universe to teeming space opera.",
+    icon: Calculator,
+    status: "available" as const,
+    week: 21,
+  },
+  {
+    id: "time-dilation",
+    title: "Paradox: Time Dilation Calculator",
+    description:
+      "Calculate relativistic time dilation for interstellar journeys. See how fast travel warps time for your characters.",
+    icon: Clock,
+    status: "available" as const,
+    week: 22,
+  },
+  {
+    id: "habitable-zone-calculator",
+    title: "Goldilocks: Habitable Zone Calculator",
+    description:
+      "Calculate habitable zone boundaries for any star. Place your planet and see how orbital position shapes climate, biology, and civilization.",
+    icon: Sun,
+    status: "available" as const,
+    week: 23,
+  },
+  {
+    id: "lexdrift",
+    title: "Lexdrift: Language Evolution",
+    description:
+      "Model how languages evolve during interstellar travel. Calculate divergence rates, predict change types, and generate sample texts.",
+    icon: Languages,
+    status: "available" as const,
+    week: 24,
+  },
+  {
+    id: "surface-gravity-calculator",
+    title: "Atlas: Surface Gravity Calculator",
+    description:
+      "Calculate surface gravity for any planet and trace how weight shapes biology, psychology, culture, and mythology.",
+    icon: Weight,
+    status: "available" as const,
+    week: 25,
+  },
+  {
+    id: "gravitas",
+    title: "Gravitas: Gravity Simulator",
+    description:
+      "Calculate gravity conditions on spacecraft, habitats, and planetary surfaces. Spin, thrust, orbital, and artificial gravity with experiential output.",
+    icon: Weight,
+    status: "available" as const,
+    week: 26,
+  },
+];
+
+const comingSoonTools = [
+  { title: "Character Development", subtitle: "Individual characters connected to your world" },
+
+  { title: "AI Development", subtitle: "Explore artificial intelligence in your universe" },
+  { title: "Generation Ship Designer", subtitle: "Design self-sustaining interstellar arks" },
+  { title: "Quantum and Beyond", subtitle: "Technology beyond our understanding" },
+  { title: "BDO: Big Dumb Object", subtitle: "Create megastructures and cosmic artifacts" },
+  { title: "Warp Travel Calculator", subtitle: "Calculate warp-based journey parameters" },
+  { title: "K-Scale (Kardashev Scale)", subtitle: "Classify civilizations by energy consumption" },
+];
+
+const comingSoonCalculators = [
+  { title: "Orbital Mechanics / Year Calculator", subtitle: "Compute orbital periods and mechanics" },
+  { title: "Atmosphere Composition Calculator", subtitle: "Model atmospheric compositions" },
+];
+
+const comingSoonCartographers = [
+  { title: "Solar System Cartographer", subtitle: "Map solar systems" },
+  { title: "Planet / Moon Cartographer", subtitle: "Map planetary and lunar surfaces" },
+];
+
+const comingSoonSimulators: { title: string; subtitle: string }[] = [];
+
+const ComingSoonCard = ({ title, subtitle }: { title: string; subtitle: string }) => (
+  <GlassPanel className="p-4 border-dashed border border-muted opacity-70">
+    <div className="flex items-center justify-between mb-1">
+      <h3 className="font-heading font-semibold text-sm">{title}</h3>
+      <Badge variant="outline" className="text-[10px] shrink-0">Coming Soon</Badge>
+    </div>
+    <p className="text-xs text-muted-foreground">{subtitle}</p>
+  </GlassPanel>
+);
 
 const Index = () => {
   const { user } = useAuth();
@@ -217,7 +342,7 @@ const Index = () => {
           <section id="worlds" className="mb-16 scroll-mt-24">
             <div className="flex flex-col gap-4 mb-8">
               <div className="flex items-center justify-between">
-                <h2 className="font-display font-light text-2xl uppercase tracking-sf-wide">My Worlds</h2>
+                <h2 className="font-heading font-light text-2xl uppercase tracking-sf-wide">My Worlds</h2>
                 <ArchiveToggle
                   showArchived={showArchived}
                   onToggle={setShowArchived}
@@ -260,6 +385,7 @@ const Index = () => {
                   name={world.name}
                   description={world.description}
                   headerImageUrl={world.header_image_url}
+                  headerImageFocusY={world.header_image_focus_y}
                   icon={world.icon}
                   tags={world.tags}
                   archivedAt={world.archived_at}
@@ -280,7 +406,7 @@ const Index = () => {
         {user && (
           <section id="tools" className="mb-16 scroll-mt-24">
             <div className="flex items-center justify-between mb-8">
-              <h2 className="font-display font-light text-2xl uppercase tracking-sf-wide">
+              <h2 className="font-heading font-light text-2xl uppercase tracking-sf-wide">
                 Worldbuilding Tools
               </h2>
             </div>
@@ -288,9 +414,196 @@ const Index = () => {
               {tools.map((tool) => (
                 <ToolCard key={tool.id} {...tool} />
               ))}
-              {/* Quick upgrade card for non-Pro users */}
-              {!isSubscribed && <QuickUpgradeCard />}
+              {comingSoonTools.map((tool) => (
+                <ComingSoonCard key={tool.title} {...tool} />
+              ))}
             </div>
+
+            {/* Calculators Subsection */}
+            <div className="mt-12">
+              <h3 className="font-heading font-light text-lg uppercase tracking-sf-wide text-muted-foreground mb-6">
+                Calculators
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {calculatorTools.map((tool) => (
+                  <ToolCard key={tool.id} {...tool} />
+                ))}
+                {comingSoonCalculators.map((tool) => (
+                  <ComingSoonCard key={tool.title} {...tool} />
+                ))}
+              </div>
+            </div>
+
+            {/* Simulators Subsection */}
+            <div className="mt-12">
+              <h3 className="font-heading font-light text-lg uppercase tracking-sf-wide text-muted-foreground mb-6">
+                Simulators
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <Link to="/rogue" className="block">
+                  <GlassPanel hover className="p-5 h-full flex flex-col gap-4">
+                    <div className="flex items-start justify-between">
+                      <div className="w-12 h-12 rounded-full flex items-center justify-center bg-gradient-to-br from-red-500/20 to-orange-500/20 overflow-hidden">
+                        <img src="/icons/035-black hole.svg" alt="" className="w-8 h-8" draggable={false} />
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {isSubscribed ? (
+                          <Badge variant="secondary" className="group/badge text-xs bg-green-500/20 text-green-600 dark:text-green-400 cursor-default">
+                            <Unlock className="w-3 h-3" />
+                            <span className="inline-block max-w-0 overflow-hidden opacity-0 group-hover/badge:max-w-[5rem] group-hover/badge:opacity-100 group-hover/badge:ml-1 transition-all duration-300 ease-out whitespace-nowrap">
+                              Unlocked
+                            </span>
+                          </Badge>
+                        ) : (
+                          <Badge variant="secondary" className="text-xs bg-amber-500/20 text-amber-600 dark:text-amber-400">
+                            <Crown className="w-3 h-3 mr-1" />
+                            Pro
+                          </Badge>
+                        )}
+                        <Badge variant="secondary" className="text-xs">
+                          Tool 27
+                        </Badge>
+                      </div>
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-heading font-semibold text-lg hover:text-primary transition-colors">
+                        Rogue: Wandering Object Encounters
+                      </h3>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        N-body gravitational encounter simulator. Launch black holes, brown dwarfs, and rogue planets at real star systems.
+                      </p>
+                    </div>
+                  </GlassPanel>
+                </Link>
+                <Link to="/tools/tidelock" className="block">
+                  <GlassPanel hover className="p-5 h-full flex flex-col gap-4">
+                    <div className="flex items-start justify-between">
+                      <div className="w-12 h-12 rounded-full flex items-center justify-center bg-gradient-to-br from-cyan-500/20 to-blue-500/20 overflow-hidden">
+                        <img src="/icons/044-day and night.svg" alt="" className="w-8 h-8" draggable={false} />
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {isSubscribed ? (
+                          <Badge variant="secondary" className="group/badge text-xs bg-green-500/20 text-green-600 dark:text-green-400 cursor-default">
+                            <Unlock className="w-3 h-3" />
+                            <span className="inline-block max-w-0 overflow-hidden opacity-0 group-hover/badge:max-w-[5rem] group-hover/badge:opacity-100 group-hover/badge:ml-1 transition-all duration-300 ease-out whitespace-nowrap">
+                              Unlocked
+                            </span>
+                          </Badge>
+                        ) : (
+                          <Badge variant="secondary" className="text-xs bg-amber-500/20 text-amber-600 dark:text-amber-400">
+                            <Crown className="w-3 h-3 mr-1" />
+                            Pro
+                          </Badge>
+                        )}
+                        <Badge variant="secondary" className="text-xs">
+                          Tool 28
+                        </Badge>
+                      </div>
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-heading font-semibold text-lg hover:text-primary transition-colors">
+                        Tidelock: Locked World Simulator
+                      </h3>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        Tidally locked world simulator. Explore habitable zones, atmospheric dynamics, and surface conditions on exoplanets around M-dwarf and K-dwarf stars.
+                      </p>
+                    </div>
+                  </GlassPanel>
+                </Link>
+                <Link to="/tools/exosky" className="block">
+                  <GlassPanel hover className="p-5 h-full flex flex-col gap-4">
+                    <div className="flex items-start justify-between">
+                      <div className="w-12 h-12 rounded-full flex items-center justify-center bg-gradient-to-br from-indigo-500/20 to-purple-500/20 overflow-hidden">
+                        <img src="/icons/016-constellation.svg" alt="" className="w-8 h-8" draggable={false} />
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {isSubscribed ? (
+                          <Badge variant="secondary" className="group/badge text-xs bg-green-500/20 text-green-600 dark:text-green-400 cursor-default">
+                            <Unlock className="w-3 h-3" />
+                            <span className="inline-block max-w-0 overflow-hidden opacity-0 group-hover/badge:max-w-[5rem] group-hover/badge:opacity-100 group-hover/badge:ml-1 transition-all duration-300 ease-out whitespace-nowrap">
+                              Unlocked
+                            </span>
+                          </Badge>
+                        ) : (
+                          <Badge variant="secondary" className="text-xs bg-amber-500/20 text-amber-600 dark:text-amber-400">
+                            <Crown className="w-3 h-3 mr-1" />
+                            Pro
+                          </Badge>
+                        )}
+                        <Badge variant="secondary" className="text-xs">
+                          Tool 29
+                        </Badge>
+                      </div>
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-heading font-semibold text-lg hover:text-primary transition-colors">
+                        Exosky: Alien Night Sky
+                      </h3>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        Alien night sky simulator. View the stars from any exoplanet using real astronomical data and create your own constellations.
+                      </p>
+                    </div>
+                  </GlassPanel>
+                </Link>
+                {comingSoonSimulators.map((tool) => (
+                  <ComingSoonCard key={tool.title} {...tool} />
+                ))}
+              </div>
+            </div>
+
+            {/* Cartographers Subsection */}
+            <div className="mt-12">
+              <h3 className="font-heading font-light text-lg uppercase tracking-sf-wide text-muted-foreground mb-6">
+                Cartographers
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <Link to="/tools/stellar-cartographer" className="block">
+                  <GlassPanel hover className="p-5 h-full flex flex-col gap-4">
+                    <div className="flex items-start justify-between">
+                      <div className="w-12 h-12 rounded-full flex items-center justify-center bg-gradient-to-br from-purple-500/20 to-indigo-500/20 overflow-hidden">
+                        <img src="/icons/003-map.svg" alt="" className="w-8 h-8" draggable={false} />
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {isSubscribed ? (
+                          <Badge variant="secondary" className="group/badge text-xs bg-green-500/20 text-green-600 dark:text-green-400 cursor-default">
+                            <Unlock className="w-3 h-3" />
+                            <span className="inline-block max-w-0 overflow-hidden opacity-0 group-hover/badge:max-w-[5rem] group-hover/badge:opacity-100 group-hover/badge:ml-1 transition-all duration-300 ease-out whitespace-nowrap">
+                              Unlocked
+                            </span>
+                          </Badge>
+                        ) : (
+                          <Badge variant="secondary" className="text-xs bg-amber-500/20 text-amber-600 dark:text-amber-400">
+                            <Crown className="w-3 h-3 mr-1" />
+                            Pro
+                          </Badge>
+                        )}
+                        <Badge variant="secondary" className="text-xs">
+                          Tool 30
+                        </Badge>
+                      </div>
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-heading font-semibold text-lg hover:text-primary transition-colors">
+                        Stellar Cartographer: Galaxy Mapper
+                      </h3>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        Interactive galaxy mapping tool. Generate procedural galaxies with 3D projection, empire territories, trade routes, and wormholes.
+                      </p>
+                    </div>
+                  </GlassPanel>
+                </Link>
+                {comingSoonCartographers.map((tool) => (
+                  <ComingSoonCard key={tool.title} {...tool} />
+                ))}
+              </div>
+            </div>
+
+            {/* Quick upgrade card for non-Pro users */}
+            {!isSubscribed && (
+              <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <QuickUpgradeCard />
+              </div>
+            )}
           </section>
         )}
 
@@ -303,7 +616,7 @@ const Index = () => {
                   <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 mx-auto md:mx-0">
                     <Shield className="w-6 h-6 text-primary" />
                   </div>
-                  <h3 className="font-display font-light text-lg mb-2 uppercase tracking-wider">
+                  <h3 className="font-heading font-light text-lg mb-2 uppercase tracking-wider">
                     Cross-Tool Integration
                   </h3>
                   <p className="text-sm text-muted-foreground">
@@ -315,7 +628,7 @@ const Index = () => {
                   <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center mb-4 mx-auto md:mx-0">
                     <BookOpen className="w-6 h-6 text-accent" />
                   </div>
-                  <h3 className="font-display font-light text-lg mb-2 uppercase tracking-wider">
+                  <h3 className="font-heading font-light text-lg mb-2 uppercase tracking-wider">
                     Export & Print
                   </h3>
                   <p className="text-sm text-muted-foreground">
@@ -327,7 +640,7 @@ const Index = () => {
                   <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 mx-auto md:mx-0">
                     <Users className="w-6 h-6 text-primary" />
                   </div>
-                  <h3 className="font-display font-light text-lg mb-2 uppercase tracking-wider">
+                  <h3 className="font-heading font-light text-lg mb-2 uppercase tracking-wider">
                     Shareable Links
                   </h3>
                   <p className="text-sm text-muted-foreground">

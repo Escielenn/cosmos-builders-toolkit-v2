@@ -145,7 +145,7 @@ const Pricing = () => {
           {/* Free Plan */}
           <GlassPanel className="p-8">
             <div className="mb-6">
-              <h2 className="font-display text-2xl font-bold mb-2">Free</h2>
+              <h2 className="font-heading text-2xl font-bold mb-2">Free</h2>
               <p className="text-4xl font-bold">$0<span className="text-lg font-normal text-muted-foreground">/forever</span></p>
             </div>
 
@@ -179,7 +179,7 @@ const Pricing = () => {
             </div>
 
             <div className="mb-6">
-              <h2 className="font-display text-2xl font-bold mb-2 flex items-center gap-2">
+              <h2 className="font-heading text-2xl font-bold mb-2 flex items-center gap-2">
                 <Crown className="w-6 h-6 text-amber-500" />
                 Pro
               </h2>
@@ -259,7 +259,7 @@ const Pricing = () => {
         {/* FAQ */}
         <section className="max-w-2xl mx-auto">
           <GlassPanel className="p-8">
-            <h3 className="font-display text-xl font-semibold mb-4">Frequently Asked Questions</h3>
+            <h3 className="font-heading text-xl font-semibold mb-4">Frequently Asked Questions</h3>
             <div className="space-y-4 text-sm">
               <div>
                 <p className="font-medium">Can I cancel anytime?</p>

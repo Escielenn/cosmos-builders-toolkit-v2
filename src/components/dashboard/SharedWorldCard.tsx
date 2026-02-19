@@ -14,13 +14,14 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { getWorldIcon } from "@/lib/world-icons";
+import WorldIconRenderer from "@/components/world/WorldIconRenderer";
 
 interface SharedWorldCardProps {
   id: string;
   name: string;
   description: string | null;
   headerImageUrl: string | null;
+  headerImageFocusY?: number;
   icon: string;
   tags?: string[];
   updatedAt: string;
@@ -34,6 +35,7 @@ const SharedWorldCard = ({
   name,
   description,
   headerImageUrl,
+  headerImageFocusY,
   icon,
   tags = [],
   updatedAt,
@@ -47,8 +49,6 @@ const SharedWorldCard = ({
     year: "numeric",
   });
 
-  const worldIcon = getWorldIcon(icon);
-  const IconComponent = worldIcon.icon;
   const RoleIcon = myRole === "editor" ? Pencil : Eye;
 
   return (
@@ -61,6 +61,7 @@ const SharedWorldCard = ({
               src={headerImageUrl}
               alt=""
               className="w-full h-full object-cover"
+              style={{ objectPosition: `center ${headerImageFocusY ?? 50}%` }}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
           </div>
@@ -70,8 +71,8 @@ const SharedWorldCard = ({
           </div>
         )}
         {/* Icon overlay */}
-        <div className="absolute -bottom-5 left-4 w-10 h-10 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 border-2 border-background flex items-center justify-center shadow-lg z-10">
-          <IconComponent className="w-5 h-5 text-primary" />
+        <div className="absolute -bottom-5 left-4 w-10 h-10 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 border-2 border-background flex items-center justify-center shadow-lg z-10 overflow-hidden">
+          <WorldIconRenderer iconId={icon} className="w-7 h-7 text-primary" />
         </div>
         {/* Role badge */}
         <Badge
@@ -87,7 +88,7 @@ const SharedWorldCard = ({
       <div className="p-5 pt-8 flex flex-col flex-1">
         <div className="flex items-start justify-between mb-2">
           <Link to={`/worlds/${id}`} className="flex-1">
-            <h3 className="font-display font-semibold text-lg hover:text-primary transition-colors">
+            <h3 className="font-heading font-semibold text-lg hover:text-primary transition-colors">
               {name}
             </h3>
           </Link>
