@@ -995,6 +995,126 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
+   LAYER 3: TOOL / WORKSHEET UI
+   Opt-in classes for worksheets, calculators, designers (non-simulator tools)
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.sf-tool-title {
+  font-family: var(--sf-font-display);
+  font-weight: 300;
+  font-size: 22px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: hsl(var(--sf-text-primary));
+}
+
+.sf-tool-section {
+  font-family: var(--sf-font-heading);
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.sf-tool-section::before {
+  content: '// ';
+  color: rgba(61, 255, 205, 0.25);
+}
+
+.sf-tool-label {
+  font-family: var(--sf-font-body);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.sf-tool-helper {
+  font-family: var(--sf-font-body);
+  font-size: 12px;
+  font-weight: 300;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.28);
+}
+
+.sf-tool-value {
+  font-family: var(--sf-font-mono);
+  font-size: 13px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.sf-tool-status {
+  font-family: var(--sf-font-mono);
+  font-size: 10px;
+  font-weight: 300;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.25);
+}
+
+.sf-btn-worksheet {
+  font-family: var(--sf-font-heading);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  padding: 9px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+  color: rgba(255, 255, 255, 0.55);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sf-btn-worksheet:hover {
+  background: rgba(61, 255, 205, 0.08);
+  border-color: rgba(61, 255, 205, 0.2);
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.sf-btn-worksheet.active {
+  background: rgba(61, 255, 205, 0.1);
+  border-color: rgba(61, 255, 205, 0.3);
+  color: #3DFFCD;
+}
+
+.sf-tool-panel {
+  background: rgba(15, 15, 16, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 20px 24px;
+}
+
+.sf-tool-epigraph {
+  font-family: var(--sf-font-accent);
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.25);
+  line-height: 1.8;
+  max-width: 600px;
+  text-align: center;
+  margin: 0 auto 32px;
+}
+
+.sf-tool-epigraph-attribution {
+  font-family: var(--sf-font-body);
+  font-style: italic;
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.15);
+  margin-top: 8px;
+}
+
+.sf-tool-section-gap { margin-bottom: 28px; }
+.sf-tool-field-gap { margin-bottom: 16px; }
+
+/* ═══════════════════════════════════════════════════════════════════════
    REDUCED MOTION — respect user preferences
    ═══════════════════════════════════════════════════════════════════════ */
 @media (prefers-reduced-motion: reduce) {
