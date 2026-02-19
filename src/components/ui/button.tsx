@@ -12,7 +12,7 @@ const buttonVariants = cva(
         // Primary: solid cyan with lift + glow on hover
         default: "bg-primary text-primary-foreground sf-btn-lift",
         // Destructive: crimson with subtle glow
-        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90 hover:translate-y-[-2px] hover:scale-[1.02] hover:shadow-[0_0_15px_hsl(var(--sf-glow-magenta))]",
+        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90 hover:shadow-[0_0_15px_hsl(var(--sf-glow-magenta))]",
         // Outline: transparent with border, cyan glow on hover (SF signature)
         outline: "border border-muted-foreground bg-transparent hover:border-primary hover:text-primary hover:shadow-[0_0_20px_hsl(var(--sf-glow-teal))] hover:bg-primary/[0.04]",
         // Secondary: elevated surface

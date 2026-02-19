@@ -761,9 +761,10 @@
   }
 
   .sf-card-hover:hover {
-    transform: translateY(-4px);
+    transform: translateY(-2px);
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4), var(--glow-primary-subtle);
     border-color: rgba(61, 255, 205, 0.15);
+    border-left-color: rgba(61, 255, 205, 0.25);
   }
 
   .sf-card-hover:hover .sf-card-icon {
@@ -776,13 +777,32 @@
   }
 
   .sf-btn-lift:hover {
-    transform: translateY(-2px) scale(1.02);
+    background: rgba(61, 255, 205, 0.08);
+    border-color: rgba(61, 255, 205, 0.2);
     box-shadow: var(--glow-primary);
   }
 
   .sf-btn-lift:active {
     transform: translateY(0) scale(0.98);
     transition-duration: var(--duration-instant);
+  }
+
+  /* Icon hover: brightness lift */
+  .sf-icon-hover {
+    transition: filter var(--duration-normal) ease;
+  }
+
+  .sf-icon-hover:hover {
+    filter: brightness(1.15);
+  }
+
+  /* Data value hover: amber highlight */
+  .sf-data-hover {
+    transition: color var(--duration-normal) ease;
+  }
+
+  .sf-data-hover:hover {
+    color: rgba(255, 179, 71, 0.8);
   }
 
   /* Icon button rotation on hover */
