@@ -236,6 +236,7 @@
     background: hsl(var(--glass));
     border-color: hsl(var(--glass-border));
     box-shadow: var(--shadow-glass);
+    border-left: 2px solid rgba(61, 255, 205, 0.08);
   }
 
   .glass-panel-glow {
@@ -1113,6 +1114,9 @@
 
 .sf-tool-section-gap { margin-bottom: 28px; }
 .sf-tool-field-gap { margin-bottom: 16px; }
+
+/* Retro status badge — squared corners for opt-in */
+.sf-status-badge { border-radius: 2px; }
 
 /* ═══════════════════════════════════════════════════════════════════════
    REDUCED MOTION — respect user preferences
