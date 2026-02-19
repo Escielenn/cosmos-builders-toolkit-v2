@@ -1,5 +1,7 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, Edit, Globe, FileText, Rocket, Zap, Trash2, MoreVertical, Loader2, Calculator, Plus, Sparkles, Pencil, ChevronRight, Dna, Network, Sun, Crown, Cpu, Users, Download, Layers, BookOpen, Atom, Clock, Archive, Tag, Orbit, Languages, Weight, Eye } from "lucide-react";
+import { CosmicTelemetry } from "@/components/layout/CosmicVelocityTicker";
+import { EPOCH_DATA } from "@/lib/cosmic-telemetry";
 import TagBadge from "@/components/tags/TagBadge";
 import TagInput from "@/components/tags/TagInput";
 import { getTagColor } from "@/hooks/use-tags";
@@ -490,9 +492,14 @@ const WorldDashboard = () => {
             <GlassPanel className="p-8 text-center">
               <FileText className="w-12 h-12 mx-auto mb-3 text-muted-foreground" />
               <h3 className="font-semibold mb-1">No worksheets yet</h3>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-muted-foreground mb-4">
                 Use the tools above to start building your world. Your progress will be saved here.
               </p>
+              <CosmicTelemetry
+                data={EPOCH_DATA}
+                variant="horizontal"
+                align="center"
+              />
             </GlassPanel>
           ) : (
             <div className="space-y-6">

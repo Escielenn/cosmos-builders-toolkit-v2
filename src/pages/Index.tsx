@@ -36,6 +36,8 @@ import LoggedInHero from "@/components/landing/LoggedInHero";
 import ToolShowcase from "@/components/landing/ToolShowcase";
 import ValueProposition from "@/components/landing/ValueProposition";
 import VideoShowcase from "@/components/landing/VideoShowcase";
+import { CosmicTelemetry } from "@/components/layout/CosmicVelocityTicker";
+import { COORDINATE_DATA } from "@/lib/cosmic-telemetry";
 import QuickUpgradeCard from "@/components/subscription/QuickUpgradeCard";
 import BetaBanner from "@/components/BetaBanner";
 import Footer from "@/components/layout/Footer";
@@ -334,6 +336,14 @@ const Index = () => {
 
         {/* Landing Page Sections - non-logged-in users only */}
         {!user && <VideoShowcase />}
+        {!user && (
+          <CosmicTelemetry
+            data={COORDINATE_DATA}
+            variant="horizontal"
+            align="center"
+            className="my-8"
+          />
+        )}
         {!user && <ToolShowcase />}
         {!user && <ValueProposition />}
 

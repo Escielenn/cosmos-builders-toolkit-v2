@@ -7,6 +7,8 @@ import SharedPageHeader from "@/components/sharing/SharedPageHeader";
 import { useSharedWorld } from "@/hooks/use-sharing";
 import { getToolDisplayName } from "@/lib/tools-config";
 import WorldIconRenderer from "@/components/world/WorldIconRenderer";
+import { CosmicTelemetry } from "@/components/layout/CosmicVelocityTicker";
+import { DISTANCE_DATA } from "@/lib/cosmic-telemetry";
 
 const SharedWorldView = () => {
   const { token } = useParams<{ token: string }>();
@@ -154,9 +156,14 @@ const SharedWorldView = () => {
 
             {data.worksheets && data.worksheets.length === 0 && (
               <GlassPanel className="p-6 text-center">
-                <p className="text-muted-foreground">
+                <p className="text-muted-foreground mb-4">
                   This world has no worksheets yet.
                 </p>
+                <CosmicTelemetry
+                  data={DISTANCE_DATA}
+                  variant="horizontal"
+                  align="center"
+                />
               </GlassPanel>
             )}
 
