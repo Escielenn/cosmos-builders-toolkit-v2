@@ -99,7 +99,8 @@
     --sf-azure: 215 100% 65%;            /* #4D9FFF */
 
     /* v2.1 Primary Teal (replaces cyan on website shell) */
-    --sf-teal: 157 100% 62%;              /* #3DFFCD */
+    --sf-teal: 157 80% 42%;               /* #15C17B — deep teal for solid fills */
+    --sf-teal-bright: 157 100% 62%;       /* #3DFFCD — vibrant teal for glows only */
     --sf-glow-teal: 157 100% 62% / 0.2;
 
     /* v2.1 Amber accent (data highlights, velocity ticker, warnings) */
@@ -161,7 +162,7 @@
 
     /* Gradients (teal-green — v2.1) */
     --gradient-primary: linear-gradient(135deg, hsl(var(--sf-teal)), hsl(var(--sf-teal) / 0.7));
-    --gradient-subtle: linear-gradient(135deg, hsl(var(--sf-teal) / 0.1), hsl(var(--sf-teal) / 0.05));
+    --gradient-subtle: linear-gradient(135deg, hsl(var(--sf-teal-bright) / 0.1), hsl(var(--sf-teal-bright) / 0.05));
 
     /* Shadows */
     --shadow-glass: 0 8px 32px hsl(0 0% 0% / 0.4);
@@ -439,7 +440,7 @@
     left: 10%;
     right: 10%;
     height: 1px;
-    background: linear-gradient(90deg, transparent, hsl(var(--sf-teal)), transparent);
+    background: linear-gradient(90deg, transparent, hsl(var(--sf-teal-bright)), transparent);
   }
 
   /* Combined atmosphere effect for main containers */
@@ -478,7 +479,7 @@
     left: 10%;
     right: 10%;
     height: 1px;
-    background: linear-gradient(90deg, transparent, hsl(var(--sf-teal) / 0.5), transparent);
+    background: linear-gradient(90deg, transparent, hsl(var(--sf-teal-bright) / 0.5), transparent);
   }
 }
 
@@ -584,7 +585,7 @@
       box-shadow: 0 0 10px hsl(var(--sf-glow-teal));
     }
     50% {
-      box-shadow: 0 0 25px hsl(var(--sf-teal) / 0.4);
+      box-shadow: 0 0 25px hsl(var(--sf-teal-bright) / 0.4);
     }
   }
 
@@ -706,7 +707,7 @@
     left: 50%;
     width: 0;
     height: 1px;
-    background: hsl(var(--sf-teal));
+    background: hsl(var(--sf-teal-bright));
     transition: all var(--duration-normal) var(--ease-out-expo);
     transform: translateX(-50%);
   }
@@ -732,8 +733,8 @@
   }
 
   .sf-input-focus:focus {
-    border-color: hsl(var(--sf-teal) / 0.35);
-    box-shadow: 0 0 0 3px hsl(var(--sf-teal) / 0.08);
+    border-color: hsl(var(--sf-teal-bright) / 0.35);
+    box-shadow: 0 0 0 3px hsl(var(--sf-teal-bright) / 0.08);
   }
 
   /* Error shake */
