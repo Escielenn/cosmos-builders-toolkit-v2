@@ -360,56 +360,7 @@
      STELLARFORGE BACKGROUND EFFECTS
      ═══════════════════════════════════════════════════════════════════════ */
 
-  /* Film grain overlay — animated SVG noise */
-  .sf-noise {
-    @apply relative;
-  }
-
-  .sf-noise::after {
-    content: "";
-    position: fixed;
-    inset: -50%;
-    width: 200%;
-    height: 200%;
-    z-index: 3;
-    pointer-events: none;
-    opacity: 0.025;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-    background-size: 256px 256px;
-    animation: grain-shift 0.5s steps(4) infinite;
-  }
-
-  @keyframes grain-shift {
-    0%   { transform: translate(0, 0); }
-    25%  { transform: translate(-2px, 1px); }
-    50%  { transform: translate(1px, -1px); }
-    75%  { transform: translate(-1px, 2px); }
-    100% { transform: translate(0, 0); }
-  }
-
-  /* Scanline overlay — subtle CRT effect */
-  .sf-scanlines::before {
-    content: "";
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 2;
-    opacity: 0.015;
-    background: repeating-linear-gradient(
-      0deg,
-      transparent 0 2px,
-      rgba(255, 255, 255, 0.03) 2px 4px
-    );
-  }
-
-  /* Disable texture overlays (for canvas/simulator contexts) */
-  .sf-no-texture::after,
-  .sf-no-texture::before {
-    display: none !important;
-  }
+  /* Analog texture overlay is now in TextureOverlay component + texture-overlay.css */
 
   /* Radial accent glow - positioned off-center for depth */
   .sf-glow-ambient {
