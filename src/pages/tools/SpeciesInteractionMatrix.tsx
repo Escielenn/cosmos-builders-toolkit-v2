@@ -582,8 +582,9 @@ const SpeciesInteractionMatrix = () => {
           <div className="flex items-center gap-3 mb-2">
             {ToolIcon && <ToolIcon className="w-12 h-12 rounded-full shrink-0" />}
             <div>
-              <h1 className="font-display text-2xl md:text-3xl font-bold">
-                Symbiosis: Species Interaction Matrix
+              <h1 className="font-display text-2xl md:text-3xl">
+                <span className="font-normal">Symbiosis:</span>{" "}
+                <span className="font-light">Species Interaction Matrix</span>
               </h1>
               <p className="text-sm text-muted-foreground">
                 Define relationships between multiple species

@@ -628,8 +628,9 @@ const SpacecraftDesigner = () => {
           <Badge className="mb-2">Tool 2</Badge>
           <div className="flex items-center gap-3">
             {ToolIcon && <ToolIcon className="w-12 h-12 rounded-full shrink-0" />}
-            <h1 className="font-display text-3xl md:text-4xl font-bold">
-              Vessel: Lived-In Spacecraft Designer
+            <h1 className="font-display text-3xl md:text-4xl">
+              <span className="font-normal">Vessel:</span>{" "}
+              <span className="font-light">Lived-In Spacecraft Designer</span>
             </h1>
           </div>
           <p className="text-muted-foreground mt-2 max-w-2xl">

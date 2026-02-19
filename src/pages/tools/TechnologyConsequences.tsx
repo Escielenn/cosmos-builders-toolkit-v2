@@ -482,8 +482,9 @@ const TechnologyConsequences = () => {
           <div className="flex items-center gap-3 mb-2">
             {ToolIcon && <ToolIcon className="w-12 h-12 rounded-full shrink-0" />}
             <div>
-              <h1 className="font-display text-2xl md:text-3xl font-bold">
-                Paradigm: Technology Consequences
+              <h1 className="font-display text-2xl md:text-3xl">
+                <span className="font-normal">Paradigm:</span>{" "}
+                <span className="font-light">Technology Consequences</span>
               </h1>
               <p className="text-sm text-muted-foreground">
                 Map how any technology cascades through society

@@ -635,8 +635,9 @@ const PlanetaryProfile = () => {
           <Badge className="mb-2">Tool 4</Badge>
           <div className="flex items-center gap-3">
             {ToolIcon && <ToolIcon className="w-12 h-12 rounded-full shrink-0" />}
-            <h1 className="font-display text-3xl md:text-4xl font-bold">
-              Genesis: Planetary Profile
+            <h1 className="font-display text-3xl md:text-4xl">
+              <span className="font-normal">Genesis:</span>{" "}
+              <span className="font-light">Planetary Profile</span>
             </h1>
           </div>
           <p className="text-muted-foreground mt-2 max-w-2xl">

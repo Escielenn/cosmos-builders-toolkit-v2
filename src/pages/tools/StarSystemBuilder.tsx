@@ -641,8 +641,9 @@ const StarSystemBuilder = () => {
           <div className="flex items-center gap-3 mb-2">
             {ToolIcon && <ToolIcon className="w-12 h-12 rounded-full shrink-0" />}
             <div>
-              <h1 className="font-display text-2xl md:text-3xl font-bold">
-                Orrery: Star System Builder
+              <h1 className="font-display text-2xl md:text-3xl">
+                <span className="font-normal">Orrery:</span>{" "}
+                <span className="font-light">Star System Builder</span>
               </h1>
               <p className="text-sm text-muted-foreground">
                 Design multi-planet systems with stellar relationships

@@ -646,8 +646,9 @@ const EmpireDesigner = () => {
           <div className="flex items-center gap-3 mb-2">
             {ToolIcon && <ToolIcon className="w-12 h-12 rounded-full shrink-0" />}
             <div>
-              <h1 className="font-display text-2xl md:text-3xl font-bold">
-                Dominion: Empire Designer
+              <h1 className="font-display text-2xl md:text-3xl">
+                <span className="font-normal">Dominion:</span>{" "}
+                <span className="font-light">Empire Designer</span>
               </h1>
               <p className="text-sm text-muted-foreground">
                 Design political structures, governance systems, and factions

@@ -598,7 +598,10 @@ const DrakeEquationCalculator = () => {
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
             {ToolIcon && <ToolIcon className="w-12 h-12 rounded-full shrink-0" />}
-            <h1 className="font-display text-3xl font-bold">Signal: Drake Equation Calculator</h1>
+            <h1 className="font-display text-3xl">
+              <span className="font-normal">Signal:</span>{" "}
+              <span className="font-light">Drake Equation Calculator</span>
+            </h1>
           </div>
           <p className="text-muted-foreground max-w-2xl">
             Calculate the number of detectable civilizations in your galaxy. Use this tool to establish

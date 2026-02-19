@@ -1390,8 +1390,9 @@ const XenomythologyFrameworkBuilder = () => {
           <Badge className="mb-2">Tool 6</Badge>
           <div className="flex items-center gap-3">
             {ToolIcon && <ToolIcon className="w-12 h-12 rounded-full shrink-0" />}
-            <h1 className="font-display text-3xl md:text-4xl font-bold">
-              Mythos: Xenomythology Framework
+            <h1 className="font-display text-3xl md:text-4xl">
+              <span className="font-normal">Mythos:</span>{" "}
+              <span className="font-light">Xenomythology Framework</span>
             </h1>
           </div>
           <p className="text-muted-foreground mt-2 max-w-2xl">
