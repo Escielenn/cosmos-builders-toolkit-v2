@@ -4,16 +4,18 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { heroReveal, staggerContainer, fadeUpItem, easing } from "@/lib/animations";
+import { BracketPanel } from "@/components/ui/bracket-panel";
 
 const WelcomeHero = () => {
   return (
-    <motion.section
-      className="text-center mb-8 py-12 md:py-16"
-      initial="hidden"
-      animate="visible"
-      variants={staggerContainer}
-    >
-      {/* Badge with reveal animation */}
+    <BracketPanel className="mb-8 py-12 md:py-16">
+      <motion.section
+        className="text-center"
+        initial="hidden"
+        animate="visible"
+        variants={staggerContainer}
+      >
+        {/* Badge with reveal animation */}
       <motion.div variants={fadeUpItem}>
         <Badge className="mb-8" variant="secondary">
           <Sparkles className="w-3 h-3 mr-1" />
@@ -70,7 +72,8 @@ const WelcomeHero = () => {
       >
         These worlds exist in you. Waiting to be found.
       </motion.p>
-    </motion.section>
+      </motion.section>
+    </BracketPanel>
   );
 };
 

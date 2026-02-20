@@ -468,6 +468,36 @@
     padding: 0 12px;
     white-space: nowrap;
   }
+
+  /* Corner bracket panel — technical readout feel on featured panels */
+  .sf-bracket-panel {
+    position: relative;
+  }
+
+  .sf-bracket-corner {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    pointer-events: none;
+    border-style: solid;
+    border-color: rgba(224, 228, 232, 0.25);
+  }
+
+  .sf-bracket-tl { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
+  .sf-bracket-tr { top: -1px; right: -1px; border-width: 2px 2px 0 0; }
+  .sf-bracket-bl { bottom: -1px; left: -1px; border-width: 0 0 2px 2px; }
+  .sf-bracket-br { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
+
+  /* Color variants */
+  .sf-bracket-panel[data-bracket-color="teal"] .sf-bracket-corner {
+    border-color: rgba(61, 255, 205, 0.3);
+  }
+  .sf-bracket-panel[data-bracket-color="stellar"] .sf-bracket-corner {
+    border-color: rgba(91, 141, 239, 0.3);
+  }
+  .sf-bracket-panel[data-bracket-color="amber"] .sf-bracket-corner {
+    border-color: rgba(255, 179, 71, 0.3);
+  }
 }
 
 @layer utilities {

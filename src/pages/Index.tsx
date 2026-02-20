@@ -46,6 +46,7 @@ import { TagFilter } from "@/components/dashboard/TagFilter";
 import { ArchiveToggle } from "@/components/dashboard/ArchiveToggle";
 import SharedWorldsSection from "@/components/dashboard/SharedWorldsSection";
 import SFDivider from "@/components/ui/sf-divider";
+import { BracketPanel } from "@/components/ui/bracket-panel";
 
 const tools = [
   {
@@ -629,6 +630,7 @@ const Index = () => {
         {/* Features Section - logged-in users only (non-logged-in see ValueProposition) */}
         {user && (
           <section>
+            <BracketPanel color="teal">
             <GlassPanel glow lightArc className="p-8 md:p-12">
               <div className="grid md:grid-cols-3 gap-8">
                 <div className="text-center md:text-left">
@@ -669,6 +671,7 @@ const Index = () => {
                 </div>
               </div>
             </GlassPanel>
+            </BracketPanel>
           </section>
         )}
 
