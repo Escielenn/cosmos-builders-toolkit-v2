@@ -1531,6 +1531,32 @@ html {
   color: #3DFFCD;
 }
 
+/* ── Instrument Nav (SectionNavigation) ── */
+.sf-instrument-nav-item {
+  font-family: var(--sf-font-heading);
+  font-size: 11px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  padding: 6px 8px;
+  border-left: 2px solid transparent;
+  transition: all 0.15s ease;
+  color: rgba(224, 228, 232, 0.4);
+}
+.sf-instrument-nav-item:hover {
+  color: rgba(224, 228, 232, 0.7);
+  background: rgba(255, 255, 255, 0.03);
+}
+.sf-instrument-nav-item[data-active="true"] {
+  border-left-color: #3DFFCD;
+  color: #3DFFCD;
+}
+.sf-instrument-nav-number {
+  font-family: var(--sf-font-mono);
+  font-size: 9px;
+  color: rgba(255, 179, 71, 0.4);
+  margin-right: 6px;
+}
+
 .sf-tool-panel {
   background: rgba(15, 15, 16, 0.95);
   border: 1px solid rgba(255, 255, 255, 0.08);

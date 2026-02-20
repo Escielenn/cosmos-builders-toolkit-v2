@@ -74,24 +74,28 @@ const SectionNavigation = ({ sections, mode = 'floating' }: SectionNavigationPro
 
   const NavigationContent = () => (
     <>
-      <h4 className="font-semibold text-sm mb-3 text-foreground">Sections</h4>
-      <nav className="space-y-1">
-        {sections.map((section) => (
-          <button
-            type="button"
-            key={section.id}
-            onClick={() => scrollToSection(section.id)}
-            className={cn(
-              "block text-sm text-left w-full px-2 py-1.5 rounded transition-colors",
-              section.level === 2 && "pl-4 text-xs",
-              activeSection === section.id
-                ? "bg-primary text-primary-foreground"
-                : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
-            )}
-          >
-            {section.title}
-          </button>
-        ))}
+      <h4 className="font-mono text-[9px] tracking-[2px] uppercase text-muted-foreground/60 mb-3">
+        // NAVIGATION
+      </h4>
+      <nav className="space-y-0.5">
+        {sections.map((section, idx) => {
+          const num = String(idx + 1).padStart(2, "0");
+          return (
+            <button
+              type="button"
+              key={section.id}
+              onClick={() => scrollToSection(section.id)}
+              data-active={activeSection === section.id}
+              className={cn(
+                "sf-instrument-nav-item block text-left w-full",
+                section.level === 2 && "pl-6 text-[10px]",
+              )}
+            >
+              <span className="sf-instrument-nav-number">{num}</span>
+              {section.title}
+            </button>
+          );
+        })}
       </nav>
       <div className="flex flex-col gap-2 mt-4">
         <Button
@@ -141,9 +145,10 @@ const SectionNavigation = ({ sections, mode = 'floating' }: SectionNavigationPro
           <SheetTrigger asChild>
             <Button
               size="lg"
-              className="rounded-full w-14 h-14 shadow-lg"
+              className="rounded-none w-auto h-auto px-3 py-2.5 shadow-lg"
             >
-              <List className="w-6 h-6" />
+              <List className="w-4 h-4 mr-2" />
+              <span className="text-[10px] tracking-[1.5px] uppercase font-heading">NAV</span>
             </Button>
           </SheetTrigger>
           <SheetContent side="right" className="w-72 bg-background/95 backdrop-blur-lg">
@@ -210,30 +215,35 @@ export const MobileSectionNav = ({ sections }: { sections: Section[] }) => {
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
-        <Button size="lg" className="rounded-full w-14 h-14 shadow-lg">
-          <List className="w-6 h-6" />
+        <Button size="lg" className="rounded-none w-auto h-auto px-3 py-2.5 shadow-lg">
+          <List className="w-4 h-4 mr-2" />
+          <span className="text-[10px] tracking-[1.5px] uppercase font-heading">NAV</span>
         </Button>
       </SheetTrigger>
       <SheetContent side="right" className="w-72 bg-background/95 backdrop-blur-lg">
         <div className="pt-6">
-          <h4 className="font-semibold text-sm mb-3 text-foreground">Sections</h4>
-          <nav className="space-y-1">
-            {sections.map((section) => (
-              <button
-                type="button"
-                key={section.id}
-                onClick={() => scrollToSection(section.id)}
-                className={cn(
-                  "block text-sm text-left w-full px-2 py-1.5 rounded transition-colors",
-                  section.level === 2 && "pl-4 text-xs",
-                  activeSection === section.id
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
-                )}
-              >
-                {section.title}
-              </button>
-            ))}
+          <h4 className="font-mono text-[9px] tracking-[2px] uppercase text-muted-foreground/60 mb-3">
+            // NAVIGATION
+          </h4>
+          <nav className="space-y-0.5">
+            {sections.map((section, idx) => {
+              const num = String(idx + 1).padStart(2, "0");
+              return (
+                <button
+                  type="button"
+                  key={section.id}
+                  onClick={() => scrollToSection(section.id)}
+                  data-active={activeSection === section.id}
+                  className={cn(
+                    "sf-instrument-nav-item block text-left w-full",
+                    section.level === 2 && "pl-6 text-[10px]",
+                  )}
+                >
+                  <span className="sf-instrument-nav-number">{num}</span>
+                  {section.title}
+                </button>
+              );
+            })}
           </nav>
           <div className="flex flex-col gap-2 mt-4">
             <Button variant="ghost" size="sm" className="w-full" onClick={scrollToTop}>
