@@ -637,7 +637,7 @@ const Index = () => {
               <DataScatter count={3} />
               <div className="grid md:grid-cols-3 gap-8">
                 <div className="text-center md:text-left">
-                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 mx-auto md:mx-0">
+                  <div className="w-12 h-12 rounded-none bg-primary/10 flex items-center justify-center mb-4 mx-auto md:mx-0">
                     <Shield className="w-6 h-6 text-primary" />
                   </div>
                   <h3 className="font-heading font-light text-lg mb-2 uppercase tracking-wider">
@@ -649,7 +649,7 @@ const Index = () => {
                   </p>
                 </div>
                 <div className="text-center md:text-left">
-                  <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center mb-4 mx-auto md:mx-0">
+                  <div className="w-12 h-12 rounded-none bg-accent/10 flex items-center justify-center mb-4 mx-auto md:mx-0">
                     <BookOpen className="w-6 h-6 text-accent" />
                   </div>
                   <h3 className="font-heading font-light text-lg mb-2 uppercase tracking-wider">
@@ -661,7 +661,7 @@ const Index = () => {
                   </p>
                 </div>
                 <div className="text-center md:text-left">
-                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 mx-auto md:mx-0">
+                  <div className="w-12 h-12 rounded-none bg-primary/10 flex items-center justify-center mb-4 mx-auto md:mx-0">
                     <Users className="w-6 h-6 text-primary" />
                   </div>
                   <h3 className="font-heading font-light text-lg mb-2 uppercase tracking-wider">

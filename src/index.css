@@ -36,7 +36,7 @@
     --input: 220 15% 85%;
     --ring: 220 70% 50%;
 
-    --radius: 0.75rem;
+    --radius: 0px;
 
     /* Glass morphism tokens */
     --glass: 0 0% 100% / 0.7;
@@ -242,7 +242,7 @@
 @layer components {
   /* Glass panel component */
   .glass-panel {
-    @apply rounded-xl border backdrop-blur-xl;
+    @apply rounded-none border backdrop-blur-xl;
     background: hsl(var(--glass));
     border-color: hsl(var(--glass-border));
     box-shadow: var(--shadow-glass);
@@ -254,7 +254,7 @@
 
   .glass-panel-glow::before {
     content: "";
-    @apply absolute inset-0 -z-10 rounded-xl opacity-50 blur-xl;
+    @apply absolute inset-0 -z-10 rounded-none opacity-50 blur-xl;
     background: var(--gradient-subtle);
   }
 
@@ -426,7 +426,7 @@
 
   /* StellarForge card with light arc accent */
   .sf-card {
-    @apply rounded-xl border relative overflow-hidden;
+    @apply rounded-none border relative overflow-hidden;
     background: hsl(var(--sf-surface));
     border-color: hsl(var(--sf-text-ghost));
   }
@@ -1178,7 +1178,7 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(255, 255, 255, 0.03);
   color: rgba(255, 255, 255, 0.55);
-  border-radius: 6px;
+  border-radius: 2px;
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -1198,7 +1198,7 @@
 .sf-tool-panel {
   background: rgba(15, 15, 16, 0.95);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 8px;
+  border-radius: 0px;
   padding: 20px 24px;
 }
 

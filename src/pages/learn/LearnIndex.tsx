@@ -59,7 +59,7 @@ const LearnIndex = () => {
       <main className="container mx-auto px-4 pt-24 pb-16">
         {/* Hero Section */}
         <section className="text-center mb-12">
-          <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-6">
+          <div className="w-16 h-16 rounded-none bg-primary/10 flex items-center justify-center mx-auto mb-6">
             <BookOpen className="w-8 h-8 text-primary" />
           </div>
           <p className="text-sm font-medium uppercase tracking-sf-wide text-muted-foreground mb-2">Learn</p>

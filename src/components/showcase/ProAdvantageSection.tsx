@@ -74,7 +74,7 @@ const ProAdvantageSection = () => {
               style={{ animationDelay: `${index * 0.1}s` }}
             >
               <div className="flex gap-4">
-                <div className="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center shrink-0">
+                <div className="w-12 h-12 rounded-none bg-amber-500/10 flex items-center justify-center shrink-0">
                   <Icon className="w-6 h-6 text-amber-500" />
                 </div>
                 <div>

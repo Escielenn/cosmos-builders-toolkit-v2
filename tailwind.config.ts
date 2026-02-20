@@ -75,8 +75,8 @@ export default {
       },
       borderRadius: {
         lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+        md: "2px",
+        sm: "2px",
       },
       fontFamily: {
         // StellarForge Design System v2.1 fonts (Inter is forbidden)

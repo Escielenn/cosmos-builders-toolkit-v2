@@ -303,8 +303,8 @@ const WorldDashboard = () => {
         <Header />
         <main className="container mx-auto px-4 pt-24 pb-16">
           <Skeleton className="h-8 w-32 mb-6" />
-          <Skeleton className="h-48 w-full mb-8 rounded-xl" />
-          <Skeleton className="h-64 w-full rounded-xl" />
+          <Skeleton className="h-48 w-full mb-8 rounded-none" />
+          <Skeleton className="h-64 w-full rounded-none" />
         </main>
       </div>
     );

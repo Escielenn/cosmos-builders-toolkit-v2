@@ -24,7 +24,7 @@ const ValueProposition = () => {
           variants={scrollRevealStagger}
         >
           <motion.div className="text-center md:text-left" variants={fadeUpItem}>
-            <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 mx-auto md:mx-0">
+            <div className="w-12 h-12 rounded-none bg-primary/10 flex items-center justify-center mb-4 mx-auto md:mx-0">
               <Layers className="w-6 h-6 text-primary" />
             </div>
             <h3 className="font-heading font-light text-lg mb-2 uppercase tracking-wider">
@@ -36,7 +36,7 @@ const ValueProposition = () => {
             </p>
           </motion.div>
           <motion.div className="text-center md:text-left" variants={fadeUpItem}>
-            <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center mb-4 mx-auto md:mx-0">
+            <div className="w-12 h-12 rounded-none bg-accent/10 flex items-center justify-center mb-4 mx-auto md:mx-0">
               <Share2 className="w-6 h-6 text-accent" />
             </div>
             <h3 className="font-heading font-light text-lg mb-2 uppercase tracking-wider">
@@ -48,7 +48,7 @@ const ValueProposition = () => {
             </p>
           </motion.div>
           <motion.div className="text-center md:text-left" variants={fadeUpItem}>
-            <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 mx-auto md:mx-0">
+            <div className="w-12 h-12 rounded-none bg-primary/10 flex items-center justify-center mb-4 mx-auto md:mx-0">
               <FileDown className="w-6 h-6 text-primary" />
             </div>
             <h3 className="font-heading font-light text-lg mb-2 uppercase tracking-wider">

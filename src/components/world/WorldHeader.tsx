@@ -36,7 +36,7 @@ const WorldHeader = ({
           className="relative w-full h-32 md:h-48 cursor-pointer group"
           onClick={onEditClick}
         >
-          <div className="absolute inset-0 overflow-hidden rounded-t-xl">
+          <div className="absolute inset-0 overflow-hidden rounded-t-none">
             <img
               src={headerImageUrl}
               alt=""
@@ -44,16 +44,16 @@ const WorldHeader = ({
               style={{ objectPosition: `center ${headerImageFocusY ?? 50}%` }}
             />
           </div>
-          <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/30 to-transparent rounded-t-xl" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/30 to-transparent rounded-t-none" />
           {onEditClick && (
-            <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-t-xl">
+            <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-t-none">
               <span className="text-white text-sm font-medium">Click to change</span>
             </div>
           )}
         </div>
       ) : (
         <div
-          className="relative w-full h-24 md:h-32 bg-gradient-to-br from-primary/20 via-accent/10 to-primary/5 cursor-pointer group rounded-t-xl"
+          className="relative w-full h-24 md:h-32 bg-gradient-to-br from-primary/20 via-accent/10 to-primary/5 cursor-pointer group rounded-t-none"
           onClick={onEditClick}
         >
           <div className="absolute inset-0 bg-gradient-to-t from-background/70 to-transparent" />
@@ -71,7 +71,7 @@ const WorldHeader = ({
         {/* Icon - positioned to overlap the banner */}
         <div className="absolute -top-8 left-6">
           <div
-            className="w-16 h-16 rounded-xl bg-gradient-to-br from-primary/20 to-accent/20 border-4 border-background flex items-center justify-center shadow-lg cursor-pointer hover:scale-105 transition-transform overflow-hidden"
+            className="w-16 h-16 rounded-none bg-gradient-to-br from-primary/20 to-accent/20 border-4 border-background flex items-center justify-center shadow-lg cursor-pointer hover:scale-105 transition-transform overflow-hidden"
             onClick={onEditClick}
           >
             <WorldIconRenderer iconId={icon} className="w-10 h-10 text-primary" />

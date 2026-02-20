@@ -104,7 +104,7 @@ const WorldCard = ({
         {/* Header Image */}
         <div className="relative">
           {headerImageUrl ? (
-            <div className="w-full h-24 overflow-hidden rounded-t-xl">
+            <div className="w-full h-24 overflow-hidden rounded-t-none">
               <img
                 src={headerImageUrl}
                 alt=""

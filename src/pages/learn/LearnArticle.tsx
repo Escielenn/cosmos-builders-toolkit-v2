@@ -141,7 +141,7 @@ const LearnArticle = () => {
 
         {/* Featured Image */}
         {useSanityContent && sanityArticle.featuredImage?.asset && (
-          <div className="mb-8 rounded-xl overflow-hidden">
+          <div className="mb-8 rounded-none overflow-hidden">
             <img
               src={urlFor(sanityArticle.featuredImage).width(1200).height(630).url()}
               alt={article.title}

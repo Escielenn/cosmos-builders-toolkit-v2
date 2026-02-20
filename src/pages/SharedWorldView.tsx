@@ -43,7 +43,7 @@ const SharedWorldView = () => {
           <div className="space-y-6">
             {/* Header Image */}
             {data.header_image_url && (
-              <div className="relative w-full h-48 md:h-64 rounded-xl overflow-hidden">
+              <div className="relative w-full h-48 md:h-64 rounded-none overflow-hidden">
                 <img
                   src={data.header_image_url}
                   alt=""
