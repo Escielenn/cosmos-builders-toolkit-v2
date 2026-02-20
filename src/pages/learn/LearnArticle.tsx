@@ -1,5 +1,6 @@
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, Calendar, Loader2 } from "lucide-react";
+import { ArrowLeft, Calendar } from "lucide-react";
+import { Loader } from "@/components/ui/loader";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { GlassPanel } from "@/components/ui/glass-panel";
@@ -7,6 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { useArticle } from "@/hooks/use-sanity-articles";
 import { PortableTextRenderer } from "@/components/sanity/PortableTextRenderer";
 import { urlFor } from "@/lib/sanity/client";
+import { PageBursts } from "@/components/ui/data-burst";
+import { LEARN_ARTICLE_BURSTS } from "@/lib/data-bursts";
 // Fallback MDX content for when Sanity is empty
 import DrakeEquationContent from "@/content/learn/drake-equation/index.mdx";
 
@@ -69,7 +72,7 @@ const LearnArticle = () => {
       <div className="min-h-screen bg-background">
         <Header />
         <main className="container mx-auto px-4 pt-24 pb-16 flex justify-center">
-          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+          <Loader />
         </main>
       </div>
     );
@@ -106,7 +109,8 @@ const LearnArticle = () => {
     <div className="min-h-screen bg-background">
       <Header />
 
-      <main className="container mx-auto px-4 pt-24 pb-16 max-w-4xl">
+      <main className="relative container mx-auto px-4 pt-24 pb-16 max-w-4xl">
+        <PageBursts bursts={LEARN_ARTICLE_BURSTS} />
         {/* Back Link */}
         <Link
           to="/learn"

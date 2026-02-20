@@ -9,13 +9,17 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Loader2, Save, ArrowLeft, Upload, Crown, Calendar, CreditCard, AlertCircle } from "lucide-react";
+import { Save, ArrowLeft, Upload, Crown, Calendar, CreditCard, AlertCircle } from "lucide-react";
+import { Loader } from "@/components/ui/loader";
 import { useToast } from "@/hooks/use-toast";
 import { useSubscription } from "@/hooks/use-subscription";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import ExportSettings from "@/components/settings/ExportSettings";
+import WritingSettings from "@/components/settings/WritingSettings";
 import AvatarPickerDialog from "@/components/settings/AvatarPickerDialog";
+import { PageBursts } from "@/components/ui/data-burst";
+import { SETTINGS_BURSTS } from "@/lib/data-bursts";
 
 const Profile = () => {
   const { user, profile, loading, updateProfile } = useAuth();
@@ -60,7 +64,7 @@ const Profile = () => {
 
     if (uploadError) {
       toast({
-        title: "Upload failed",
+        title: "UPLOAD FAILED.",
         description: uploadError.message,
         variant: "destructive",
       });
@@ -73,8 +77,8 @@ const Profile = () => {
     setIsUploading(false);
     
     toast({
-      title: "Avatar uploaded",
-      description: "Don't forget to save your profile.",
+      title: "AVATAR UPLOADED.",
+      description: "Save to commit changes.",
     });
   };
 
@@ -91,14 +95,14 @@ const Profile = () => {
 
     if (error) {
       toast({
-        title: "Failed to save profile",
+        title: "SAVE FAILED.",
         description: error.message,
         variant: "destructive",
       });
     } else {
       toast({
-        title: "Profile saved",
-        description: "Your profile has been updated successfully.",
+        title: "CONFIGURATION SAVED.",
+        description: "Personnel file updated.",
       });
     }
   };
@@ -106,7 +110,7 @@ const Profile = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        <Loader />
       </div>
     );
   }
@@ -119,8 +123,9 @@ const Profile = () => {
     <div className="min-h-screen bg-background">
       <Header />
       
-      <main className="container mx-auto px-4 pt-24 pb-16 max-w-2xl">
-        <Button 
+      <main className="relative container mx-auto px-4 pt-24 pb-16 max-w-2xl">
+        <PageBursts bursts={SETTINGS_BURSTS} />
+        <Button
           variant="ghost" 
           className="mb-6 gap-2" 
           onClick={() => navigate("/")}
@@ -130,7 +135,7 @@ const Profile = () => {
         </Button>
 
         <GlassPanel className="p-8">
-          <h1 className="font-heading text-2xl font-bold mb-6">Your Profile</h1>
+          <h1 className="font-heading text-2xl font-bold mb-6">PERSONNEL FILE</h1>
 
           <div className="space-y-6">
             {/* Avatar */}
@@ -150,7 +155,7 @@ const Profile = () => {
                     >
                       <span>
                         {isUploading ? (
-                          <Loader2 className="w-4 h-4 animate-spin" />
+                          <Loader variant="inline" size="sm" />
                         ) : (
                           <Upload className="w-4 h-4" />
                         )}
@@ -175,7 +180,7 @@ const Profile = () => {
                   </Button>
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Upload your own or choose a preset avatar.
+                  Upload custom or select from presets.
                 </p>
               </div>
             </div>
@@ -185,7 +190,7 @@ const Profile = () => {
               <Label>Email</Label>
               <Input value={user?.email || ""} disabled />
               <p className="text-xs text-muted-foreground">
-                Email cannot be changed.
+                Locked. Cannot be modified.
               </p>
             </div>
 
@@ -196,7 +201,7 @@ const Profile = () => {
                 id="displayName"
                 value={displayName}
                 onChange={(e) => setDisplayName(e.target.value)}
-                placeholder="Your name"
+                placeholder="Callsign"
               />
             </div>
 
@@ -207,7 +212,7 @@ const Profile = () => {
                 id="bio"
                 value={bio}
                 onChange={(e) => setBio(e.target.value)}
-                placeholder="Tell us about yourself..."
+                placeholder="Personnel notes..."
                 rows={4}
               />
             </div>
@@ -220,13 +225,18 @@ const Profile = () => {
               disabled={isSaving}
             >
               {isSaving ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
+                <Loader variant="inline" size="sm" />
               ) : (
                 <Save className="w-4 h-4" />
               )}
-              Save Profile
+              Save
             </Button>
           </div>
+        </GlassPanel>
+
+        {/* Writing Surface */}
+        <GlassPanel className="p-8 mt-6">
+          <WritingSettings />
         </GlassPanel>
 
         {/* Export Settings */}
@@ -256,7 +266,7 @@ const Profile = () => {
                 <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 flex items-center gap-2">
                   <AlertCircle className="w-5 h-5 text-red-500" />
                   <p className="text-sm text-red-600 dark:text-red-400">
-                    Payment failed. Please update your payment method.
+                    Payment failed. Update payment method to restore access.
                   </p>
                 </div>
               )}
@@ -300,7 +310,7 @@ const Profile = () => {
                   } catch (error) {
                     toast({
                       title: "Error",
-                      description: "Failed to open billing portal.",
+                      description: "Failed to open billing portal. Retry when ready.",
                       variant: "destructive",
                     });
                   }
@@ -309,7 +319,7 @@ const Profile = () => {
                 disabled={portalLoading}
               >
                 {portalLoading ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <Loader variant="inline" size="sm" />
                 ) : (
                   <CreditCard className="w-4 h-4" />
                 )}
@@ -319,7 +329,7 @@ const Profile = () => {
           ) : (
             <div className="space-y-4">
               <p className="text-muted-foreground">
-                You're on the free plan. Upgrade to Pro to unlock all tools.
+                Standard clearance. Upgrade for full instrument access.
               </p>
               <Button
                 className="w-full gap-2"

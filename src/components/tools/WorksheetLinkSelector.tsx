@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link2, RefreshCw, Unlink, ChevronDown, Loader2, ExternalLink } from "lucide-react";
+import { Link2, RefreshCw, Unlink, ChevronDown, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import {
@@ -187,7 +187,7 @@ const WorksheetLinkSelector = ({
                   className="h-10 w-10"
                 >
                   <RefreshCw
-                    className={`w-4 h-4 ${isRefreshing ? "animate-spin" : ""}`}
+                    className={`w-4 h-4 ${isRefreshing ? "animate-pulse opacity-50" : ""}`}
                   />
                 </Button>
               </TooltipTrigger>

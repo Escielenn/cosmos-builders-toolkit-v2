@@ -1,7 +1,9 @@
 import { useState, useEffect, ReactElement } from "react";
-import { Download, FileText, FileJson, Loader2, Eye, FileType, FileSpreadsheet, ExternalLink, Unplug } from "lucide-react";
+import { Download, FileText, FileJson, Eye, FileType, FileSpreadsheet, ExternalLink, Unplug, Check } from "lucide-react";
+import { Loader } from "@/components/ui/loader";
 import { useNotion } from "@/hooks/use-notion";
 import { useAuth } from "@/contexts/AuthContext";
+import { useExportPreferences } from "@/hooks/use-export-preferences";
 import { getExportPreferences, saveExportPreferences } from "@/lib/export-preferences";
 import {
   Dialog,
@@ -18,6 +20,10 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { safeOpenWindow } from "@/lib/url-validation";
+import { EXPORT_THEMES } from "@/lib/export/themes";
+import { cn } from "@/lib/utils";
+
+import { setActiveTheme, resetActiveTheme } from "@/lib/pdf/styles";
 
 // Dynamic imports for heavy libraries - only loaded when actually exporting
 const loadPdfRenderer = () => import("@react-pdf/renderer");
@@ -52,12 +58,12 @@ const ExportDialog = ({
   const { toast } = useToast();
   const { user } = useAuth();
   const { connection, isConnected, isConnecting, isExporting, connect, disconnect, exportToNotion } = useNotion();
+  const { preferences: persistedPrefs, updatePreferences } = useExportPreferences();
   const hasPdfTemplates = !!(summaryTemplate || fullTemplate);
 
   // Load stored preferences for initial state
-  const prefs = getExportPreferences();
   const resolveInitialFormat = (): ExportFormat => {
-    const saved = prefs.lastUsedFormat;
+    const saved = persistedPrefs.defaultFormat;
     // Validate saved format is usable with current templates
     if (saved === "pdf-summary" && summaryTemplate) return saved;
     if (saved === "pdf-full" && fullTemplate) return saved;
@@ -68,8 +74,8 @@ const ExportDialog = ({
 
   const [format, setFormat] = useState<ExportFormat>(resolveInitialFormat);
   const [filename, setFilename] = useState(defaultFilename);
-  const [includeWorldName, setIncludeWorldName] = useState(prefs.includeWorldName);
-  const [includeDate, setIncludeDate] = useState(prefs.includeDate);
+  const [includeWorldName, setIncludeWorldName] = useState(persistedPrefs.includeWorldName);
+  const [includeDate, setIncludeDate] = useState(persistedPrefs.includeDate);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isPreviewing, setIsPreviewing] = useState(false);
 
@@ -87,7 +93,7 @@ const ExportDialog = ({
       case "pdf-full":
         return "pdf";
       case "text":
-        return "txt";
+        return isTimelineData(formState) ? "md" : "txt";
       case "word":
         return "docx";
       case "json":
@@ -106,21 +112,34 @@ const ExportDialog = ({
           const dataStr = JSON.stringify(formState, null, 2);
           const blob = new Blob([dataStr], { type: "application/json;charset=utf-8" });
           downloadBlob(blob, `${filename}.json`);
-          toast({ title: "Exported", description: "Downloaded as JSON file." });
+          toast({ title: "EXPORT COMPLETE.", description: "Downloaded as JSON file." });
           break;
         }
 
         case "text": {
-          const { generateGenericText } = await loadTextGenerator();
-          const textContent = generateGenericText({
-            toolName,
-            worldName,
-            worksheetTitle,
-            data: formState as Record<string, unknown>,
-          });
-          const blob = new Blob([textContent], { type: "text/plain;charset=utf-8" });
-          downloadBlob(blob, `${filename}.txt`);
-          toast({ title: "Exported", description: "Downloaded as text file." });
+          const isTimeline = isTimelineData(formState);
+          if (isTimeline) {
+            const { generateTimelineMarkdown } = await loadTextGenerator();
+            const mdContent = generateTimelineMarkdown({
+              worksheetTitle,
+              worldName,
+              state: formState as import("@/lib/timeline/types").TimelineState,
+            });
+            const blob = new Blob([mdContent], { type: "text/markdown;charset=utf-8" });
+            downloadBlob(blob, `${filename}.md`);
+            toast({ title: "EXPORT COMPLETE.", description: "Downloaded as Markdown file." });
+          } else {
+            const { generateGenericText } = await loadTextGenerator();
+            const textContent = generateGenericText({
+              toolName,
+              worldName,
+              worksheetTitle,
+              data: formState as Record<string, unknown>,
+            });
+            const blob = new Blob([textContent], { type: "text/plain;charset=utf-8" });
+            downloadBlob(blob, `${filename}.txt`);
+            toast({ title: "EXPORT COMPLETE.", description: "Downloaded as text file." });
+          }
           break;
         }
 
@@ -132,7 +151,7 @@ const ExportDialog = ({
             worksheetTitle,
             data: formState as Record<string, unknown>,
           });
-          toast({ title: "Exported", description: "Downloaded as Word document." });
+          toast({ title: "EXPORT COMPLETE.", description: "Downloaded as Word document." });
           break;
         }
 
@@ -142,7 +161,7 @@ const ExportDialog = ({
           if (!template) {
             console.error("PDF template is undefined", { format, summaryTemplate: !!summaryTemplate, fullTemplate: !!fullTemplate });
             toast({
-              title: "Template not available",
+              title: "TEMPLATE NOT AVAILABLE.",
               description: "This PDF format is not yet available for this tool.",
               variant: "destructive",
             });
@@ -152,7 +171,13 @@ const ExportDialog = ({
             console.log("Loading PDF renderer...");
             const { pdf } = await loadPdfRenderer();
             console.log("Generating PDF blob...");
-            const blob = await pdf(template).toBlob();
+            setActiveTheme(persistedPrefs.themeId);
+            let blob: Blob;
+            try {
+              blob = await pdf(template).toBlob();
+            } finally {
+              resetActiveTheme();
+            }
             console.log("PDF generated:", blob.size, "bytes");
             downloadBlob(blob, `${filename}.pdf`);
             toast({
@@ -176,7 +201,7 @@ const ExportDialog = ({
           if (!isConnected) {
             toast({
               title: "Notion not connected",
-              description: "Please connect your Notion workspace first.",
+              description: "Connect Notion workspace to proceed.",
               variant: "destructive",
             });
             return;
@@ -189,7 +214,7 @@ const ExportDialog = ({
           });
           if (result.success) {
             toast({
-              title: "Exported to Notion",
+              title: "EXPORT COMPLETE.",
               description: "Your worksheet has been created in Notion.",
             });
             if (result.pageUrl) {
@@ -197,7 +222,7 @@ const ExportDialog = ({
             }
           } else {
             toast({
-              title: "Export failed",
+              title: "EXPORT FAILED.",
               description: result.error || "Failed to export to Notion.",
               variant: "destructive",
             });
@@ -208,6 +233,12 @@ const ExportDialog = ({
       }
 
       // Persist preferences after successful export
+      updatePreferences({
+        defaultFormat: format,
+        includeWorldName,
+        includeDate,
+      });
+      // Also sync to legacy localStorage for backwards compat
       saveExportPreferences({
         lastUsedFormat: format,
         includeWorldName,
@@ -218,8 +249,8 @@ const ExportDialog = ({
     } catch (error) {
       console.error("Export error:", error);
       toast({
-        title: "Export failed",
-        description: "There was an error generating your export. Please try again.",
+        title: "EXPORT FAILED.",
+        description: "Export generation failed. Retry when ready.",
         variant: "destructive",
       });
     } finally {
@@ -240,15 +271,26 @@ const ExportDialog = ({
         }
 
         case "text": {
-          const { generateGenericText } = await loadTextGenerator();
-          const textContent = generateGenericText({
-            toolName,
-            worldName,
-            worksheetTitle,
-            data: formState as Record<string, unknown>,
-          });
-          const blob = new Blob([textContent], { type: "text/plain;charset=utf-8" });
-          window.open(URL.createObjectURL(blob), "_blank");
+          if (isTimelineData(formState)) {
+            const { generateTimelineMarkdown } = await loadTextGenerator();
+            const mdContent = generateTimelineMarkdown({
+              worksheetTitle,
+              worldName,
+              state: formState as import("@/lib/timeline/types").TimelineState,
+            });
+            const blob = new Blob([mdContent], { type: "text/markdown;charset=utf-8" });
+            window.open(URL.createObjectURL(blob), "_blank");
+          } else {
+            const { generateGenericText } = await loadTextGenerator();
+            const textContent = generateGenericText({
+              toolName,
+              worldName,
+              worksheetTitle,
+              data: formState as Record<string, unknown>,
+            });
+            const blob = new Blob([textContent], { type: "text/plain;charset=utf-8" });
+            window.open(URL.createObjectURL(blob), "_blank");
+          }
           break;
         }
 
@@ -265,14 +307,20 @@ const ExportDialog = ({
           const template = format === "pdf-summary" ? summaryTemplate : fullTemplate;
           if (!template) {
             toast({
-              title: "Template not available",
+              title: "TEMPLATE NOT AVAILABLE.",
               description: "This PDF format is not yet available for this tool.",
               variant: "destructive",
             });
             return;
           }
           const { pdf } = await loadPdfRenderer();
-          const blob = await pdf(template).toBlob();
+          setActiveTheme(persistedPrefs.themeId);
+          let blob: Blob;
+          try {
+            blob = await pdf(template).toBlob();
+          } finally {
+            resetActiveTheme();
+          }
           window.open(URL.createObjectURL(blob), "_blank");
           break;
         }
@@ -280,7 +328,7 @@ const ExportDialog = ({
     } catch (error) {
       console.error("Preview error:", error);
       toast({
-        title: "Preview failed",
+        title: "PREVIEW FAILED.",
         description: "There was an error generating the preview.",
         variant: "destructive",
       });
@@ -398,6 +446,41 @@ const ExportDialog = ({
                 </div>
               </RadioGroup>
             )}
+
+            {/* Inline theme picker */}
+            <div className="pt-3 border-t border-border">
+              <Label className="text-xs text-muted-foreground mb-2 block">PDF Theme</Label>
+              <div className="flex gap-2 flex-wrap">
+                {EXPORT_THEMES.map((theme) => {
+                  const isSelected = persistedPrefs.themeId === theme.id;
+                  return (
+                    <button
+                      key={theme.id}
+                      type="button"
+                      onClick={() => updatePreferences({ themeId: theme.id })}
+                      title={theme.name}
+                      className={cn(
+                        "flex gap-0.5 p-1.5 rounded-md border transition-all",
+                        isSelected
+                          ? "border-primary ring-1 ring-primary/50"
+                          : "border-border hover:border-primary/50"
+                      )}
+                    >
+                      {theme.swatch.map((color, i) => (
+                        <div
+                          key={i}
+                          className="w-4 h-4 rounded-sm border border-border/30"
+                          style={{ backgroundColor: color }}
+                        />
+                      ))}
+                      {isSelected && (
+                        <Check className="w-3 h-3 text-primary ml-0.5" />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
           </TabsContent>
 
           <TabsContent value="text" className="space-y-4 pt-4">
@@ -407,9 +490,13 @@ const ExportDialog = ({
             >
               <FileType className="w-5 h-5 text-muted-foreground" />
               <div className="flex-1">
-                <span className="font-medium">Plain Text (.txt)</span>
+                <span className="font-medium">
+                  {isTimelineData(formState) ? "Markdown (.md)" : "Plain Text (.txt)"}
+                </span>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Universal format, works everywhere. ASCII formatted with sections and tables.
+                  {isTimelineData(formState)
+                    ? "Structured Markdown with tracks, events, and links. Great for documentation and wikis."
+                    : "Universal format, works everywhere. ASCII formatted with sections and tables."}
                 </p>
               </div>
             </div>
@@ -439,7 +526,7 @@ const ExportDialog = ({
               <div className="flex-1">
                 <span className="font-medium">JSON Export (.json)</span>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Machine-readable data file. Perfect for backups or importing into other tools.
+                  Machine-readable data file. For backups or importing into other tools.
                 </p>
               </div>
             </div>
@@ -512,7 +599,7 @@ const ExportDialog = ({
                 </p>
                 <Button onClick={connect} disabled={isConnecting}>
                   {isConnecting ? (
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    <Loader variant="inline" size="sm" className="mr-2" />
                   ) : (
                     <ExternalLink className="w-4 h-4 mr-2" />
                   )}
@@ -587,7 +674,7 @@ const ExportDialog = ({
               disabled={isGenerating || isPreviewing || format === "word"}
             >
               {isPreviewing ? (
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                <Loader variant="inline" size="sm" className="mr-2" />
               ) : (
                 <Eye className="w-4 h-4 mr-2" />
               )}
@@ -599,7 +686,7 @@ const ExportDialog = ({
             disabled={isGenerating || isPreviewing || isExporting || (format === "notion" && !isConnected)}
           >
             {isGenerating || isExporting ? (
-              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              <Loader variant="inline" size="sm" className="mr-2" />
             ) : format === "notion" ? (
               <ExternalLink className="w-4 h-4 mr-2" />
             ) : (
@@ -612,5 +699,12 @@ const ExportDialog = ({
     </Dialog>
   );
 };
+
+/** Detect if formState is timeline data (has tracks + events arrays). */
+function isTimelineData(formState: unknown): boolean {
+  if (!formState || typeof formState !== "object") return false;
+  const obj = formState as Record<string, unknown>;
+  return Array.isArray(obj.tracks) && Array.isArray(obj.events);
+}
 
 export default ExportDialog;

@@ -1,5 +1,6 @@
 import { useState, useRef, useCallback } from "react";
-import { Upload, Link as LinkIcon, Loader2 } from "lucide-react";
+import { Upload, Link as LinkIcon } from "lucide-react";
+import { Loader } from "@/components/ui/loader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -103,7 +104,7 @@ export function MoodboardUpload({
       >
         {isLoading ? (
           <div className="flex flex-col items-center gap-2">
-            <Loader2 className="w-8 h-8 text-muted-foreground animate-spin" />
+            <Loader />
             <p className="text-sm text-muted-foreground">
               {isUploading ? "Uploading..." : "Adding..."}
             </p>

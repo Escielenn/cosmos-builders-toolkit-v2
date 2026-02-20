@@ -8,7 +8,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Crown, Check, Loader2 } from "lucide-react";
+import { Crown, Check } from "lucide-react";
+import { Loader } from "@/components/ui/loader";
 import { useSubscription } from "@/hooks/use-subscription";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
@@ -45,7 +46,7 @@ const UpgradeDialog = ({ open, onOpenChange, toolName }: UpgradeDialogProps) => 
       console.error("Checkout error:", error);
       toast({
         title: "Error",
-        description: "Failed to start checkout. Please try again.",
+        description: "Failed to start checkout. Retry when ready.",
         variant: "destructive",
       });
     } finally {
@@ -59,12 +60,12 @@ const UpgradeDialog = ({ open, onOpenChange, toolName }: UpgradeDialogProps) => 
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 font-heading text-xl">
             <Crown className="w-5 h-5 text-amber-500" />
-            Upgrade to Pro
+            UPGRADE CLEARANCE
           </DialogTitle>
           <DialogDescription>
             {toolName
-              ? `"${toolName}" is a Pro tool. Upgrade to access all worldbuilding tools.`
-              : "Unlock all worldbuilding tools with a Pro subscription."
+              ? `"${toolName}" requires Pro clearance. Upgrade to access the full instrument manifest.`
+              : "Upgrade to Pro clearance for full instrument access."
             }
           </DialogDescription>
         </DialogHeader>
@@ -83,7 +84,7 @@ const UpgradeDialog = ({ open, onOpenChange, toolName }: UpgradeDialogProps) => 
                 disabled={loading !== null}
               >
                 {loading === 'monthly' ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <Loader variant="inline" size="sm" />
                 ) : (
                   'Subscribe'
                 )}
@@ -110,7 +111,7 @@ const UpgradeDialog = ({ open, onOpenChange, toolName }: UpgradeDialogProps) => 
                 disabled={loading !== null}
               >
                 {loading === 'yearly' ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <Loader variant="inline" size="sm" />
                 ) : (
                   'Subscribe'
                 )}
@@ -121,15 +122,15 @@ const UpgradeDialog = ({ open, onOpenChange, toolName }: UpgradeDialogProps) => 
         </div>
 
         <div className="space-y-2 text-sm">
-          <p className="font-medium">All Pro features include:</p>
+          <p className="font-medium">Pro clearance includes:</p>
           <ul className="space-y-1">
             {[
-              `All ${FREE_TOOL_IDS.length + PRO_TOOL_IDS.length} worldbuilding tools`,
-              "Unlimited worlds & worksheets",
+              `All ${FREE_TOOL_IDS.length + PRO_TOOL_IDS.length} instruments`,
+              "Unlimited worlds and worksheets",
               "Cloud sync across devices",
-              "Export to PDF, JSON & Notion",
+              "Export to PDF, DOCX, and JSON",
               "Priority support",
-              "Future tools & features",
+              "All future instruments and features",
             ].map((feature) => (
               <li key={feature} className="flex items-center gap-2 text-muted-foreground">
                 <Check className="w-4 h-4 text-green-500" />

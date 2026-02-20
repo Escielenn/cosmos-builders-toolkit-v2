@@ -1,16 +1,20 @@
 import { useRef, useState } from "react";
-import { Upload, X, Loader2, ImageIcon } from "lucide-react";
+import { Upload, X, ImageIcon, Images } from "lucide-react";
+import { Loader } from "@/components/ui/loader";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
+import { MoodboardPickerDialog } from "@/components/moodboard/MoodboardPickerDialog";
 
 interface HeaderImageUploadProps {
   currentImageUrl: string | null;
   onImageChange: (url: string | null) => void;
   disabled?: boolean;
   className?: string;
+  showMoodboardPicker?: boolean;
+  focusY?: number;
 }
 
 const HeaderImageUpload = ({
@@ -18,11 +22,14 @@ const HeaderImageUpload = ({
   onImageChange,
   disabled,
   className,
+  showMoodboardPicker = true,
+  focusY,
 }: HeaderImageUploadProps) => {
   const { user } = useAuth();
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [moodboardPickerOpen, setMoodboardPickerOpen] = useState(false);
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -32,7 +39,7 @@ const HeaderImageUpload = ({
     if (!file.type.startsWith("image/")) {
       toast({
         title: "Invalid file type",
-        description: "Please select an image file.",
+        description: "Select image file.",
         variant: "destructive",
       });
       return;
@@ -42,7 +49,7 @@ const HeaderImageUpload = ({
     if (file.size > 5 * 1024 * 1024) {
       toast({
         title: "File too large",
-        description: "Please select an image under 5MB.",
+        description: "Image must be under 5MB.",
         variant: "destructive",
       });
       return;
@@ -105,23 +112,39 @@ const HeaderImageUpload = ({
           <img
             src={currentImageUrl}
             alt="World header"
+            loading="lazy"
             className="w-full h-full object-cover"
+            style={{ objectPosition: `center ${focusY ?? 50}%` }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end justify-between p-3">
-            <Button
-              type="button"
-              variant="secondary"
-              size="sm"
-              onClick={() => fileInputRef.current?.click()}
-              disabled={disabled || isUploading}
-            >
-              {isUploading ? (
-                <Loader2 className="w-4 h-4 animate-spin mr-2" />
-              ) : (
-                <Upload className="w-4 h-4 mr-2" />
+            <div className="flex gap-2">
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={disabled || isUploading}
+              >
+                {isUploading ? (
+                  <Loader variant="inline" size="sm" className="mr-2" />
+                ) : (
+                  <Upload className="w-4 h-4 mr-2" />
+                )}
+                Change
+              </Button>
+              {showMoodboardPicker && (
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => setMoodboardPickerOpen(true)}
+                  disabled={disabled}
+                >
+                  <Images className="w-4 h-4 mr-2" />
+                  From Moodboard
+                </Button>
               )}
-              Change
-            </Button>
+            </div>
             <Button
               type="button"
               variant="destructive"
@@ -135,26 +158,54 @@ const HeaderImageUpload = ({
           </div>
         </div>
       ) : (
-        <button
-          type="button"
-          onClick={() => fileInputRef.current?.click()}
-          disabled={disabled || isUploading}
-          className="w-full aspect-[3/1] rounded-lg border-2 border-dashed border-border hover:border-primary/50 transition-colors flex flex-col items-center justify-center gap-2 bg-muted/30"
-        >
+        <div className="w-full aspect-[3/1] rounded-lg border-2 border-dashed border-border hover:border-primary/50 transition-colors flex flex-col items-center justify-center gap-3 bg-muted/30">
           {isUploading ? (
-            <Loader2 className="w-8 h-8 text-muted-foreground animate-spin" />
+            <Loader />
           ) : (
             <>
               <ImageIcon className="w-8 h-8 text-muted-foreground" />
               <span className="text-sm text-muted-foreground">
-                Click to upload header image
+                Add a header image for your world
               </span>
+              <div className="flex gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={disabled}
+                >
+                  <Upload className="w-4 h-4 mr-2" />
+                  Upload
+                </Button>
+                {showMoodboardPicker && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setMoodboardPickerOpen(true)}
+                    disabled={disabled}
+                  >
+                    <Images className="w-4 h-4 mr-2" />
+                    From Moodboard
+                  </Button>
+                )}
+              </div>
               <span className="text-xs text-muted-foreground">
                 Recommended: 1200x400 or similar 3:1 ratio
               </span>
             </>
           )}
-        </button>
+        </div>
+      )}
+
+      {showMoodboardPicker && (
+        <MoodboardPickerDialog
+          open={moodboardPickerOpen}
+          onOpenChange={setMoodboardPickerOpen}
+          onSelect={(url) => onImageChange(url)}
+          currentImageUrl={currentImageUrl}
+        />
       )}
     </div>
   );

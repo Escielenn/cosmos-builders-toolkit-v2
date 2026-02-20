@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Plus, Loader2 } from "lucide-react";
+import { Plus } from "lucide-react";
+import { Loader } from "@/components/ui/loader";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -116,7 +117,7 @@ const CreateWorldButton = () => {
               disabled={!worldName.trim() || createWorld.isPending}
             >
               {createWorld.isPending ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
+                <Loader variant="inline" size="sm" />
               ) : (
                 <Plus className="w-4 h-4" />
               )}

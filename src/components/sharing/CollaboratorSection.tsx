@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Crown, Mail, X, Send, Loader2, Users } from "lucide-react";
+import { Crown, Mail, X, Send, Users } from "lucide-react";
+import { Loader } from "@/components/ui/loader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -121,7 +122,7 @@ const CollaboratorSection = ({ worldId, worldName }: CollaboratorSectionProps) =
           className="w-full"
         >
           {inviteCollaborator.isPending ? (
-            <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />
+            <Loader variant="inline" size="sm" className="mr-1.5" />
           ) : (
             <Mail className="w-3.5 h-3.5 mr-1.5" />
           )}
@@ -131,7 +132,7 @@ const CollaboratorSection = ({ worldId, worldName }: CollaboratorSectionProps) =
 
       {isLoading && (
         <div className="flex justify-center py-3">
-          <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
+          <Loader variant="inline" size="sm" />
         </div>
       )}
 

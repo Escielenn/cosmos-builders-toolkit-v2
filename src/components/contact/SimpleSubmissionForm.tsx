@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Loader2, Send, CheckCircle, Copy } from "lucide-react";
+import { Send, CheckCircle, Copy } from "lucide-react";
+import { Loader } from "@/components/ui/loader";
 import { useToast } from "@/hooks/use-toast";
 import { useContact } from "@/hooks/use-contact";
 import { useAuth } from "@/contexts/AuthContext";
@@ -36,27 +37,27 @@ const typeConfig: Record<
     title: "Feature Request",
     subjectPlaceholder: "Brief description of the feature",
     messagePlaceholder:
-      "Describe the feature you'd like to see. What problem would it solve? How would it work?",
-    successTitle: "Feature Request Submitted!",
-    successMessage: "Thank you for your suggestion. We review all feature requests.",
+      "Describe the feature, the problem it solves, and how it would work",
+    successTitle: "FEATURE REQUEST LOGGED.",
+    successMessage: "Request logged. All submissions reviewed.",
     showTicket: true,
   },
   bug: {
     title: "Bug Report",
     subjectPlaceholder: "Brief description of the bug",
     messagePlaceholder:
-      "Please describe what happened, what you expected to happen, and steps to reproduce the issue.",
-    successTitle: "Bug Report Submitted!",
-    successMessage: "Thank you for reporting this issue. We'll investigate it.",
+      "What happened, what you expected, and steps to reproduce",
+    successTitle: "BUG REPORT LOGGED.",
+    successMessage: "Report logged. Under investigation.",
     showTicket: true,
   },
   beta: {
     title: "Beta Feedback",
-    subjectPlaceholder: "What's your feedback about?",
+    subjectPlaceholder: "Topic of your feedback",
     messagePlaceholder:
-      "Share your thoughts on the beta experience. What do you like? What could be improved?",
-    successTitle: "Feedback Submitted!",
-    successMessage: "Thank you for your beta feedback!",
+      "Your thoughts on the beta experience",
+    successTitle: "FEEDBACK LOGGED.",
+    successMessage: "Feedback logged.",
     showTicket: false,
   },
 };
@@ -102,9 +103,9 @@ const SimpleSubmissionForm = ({ type, onSuccess }: SimpleSubmissionFormProps) =>
       onSuccess?.();
     } catch (error) {
       toast({
-        title: "Failed to submit",
+        title: "SUBMISSION FAILED.",
         description:
-          error instanceof Error ? error.message : "Please try again.",
+          error instanceof Error ? error.message : "Retry when ready.",
         variant: "destructive",
       });
     }
@@ -114,7 +115,7 @@ const SimpleSubmissionForm = ({ type, onSuccess }: SimpleSubmissionFormProps) =>
     if (ticketNumber) {
       navigator.clipboard.writeText(ticketNumber);
       toast({
-        title: "Copied!",
+        title: "COPIED.",
         description: "Ticket number copied to clipboard.",
       });
     }
@@ -163,7 +164,7 @@ const SimpleSubmissionForm = ({ type, onSuccess }: SimpleSubmissionFormProps) =>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor={`${type}-name`}>Name</Label>
+          <Label htmlFor={`${type}-name`}>CALLSIGN</Label>
           <Input
             id={`${type}-name`}
             placeholder="Your name"
@@ -176,11 +177,11 @@ const SimpleSubmissionForm = ({ type, onSuccess }: SimpleSubmissionFormProps) =>
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor={`${type}-email`}>Email</Label>
+          <Label htmlFor={`${type}-email`}>FREQUENCY</Label>
           <Input
             id={`${type}-email`}
             type="email"
-            placeholder="you@example.com"
+            placeholder="Your email"
             {...register("email")}
             disabled={isSubmitting}
           />
@@ -191,7 +192,7 @@ const SimpleSubmissionForm = ({ type, onSuccess }: SimpleSubmissionFormProps) =>
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor={`${type}-subject`}>Subject</Label>
+        <Label htmlFor={`${type}-subject`}>SIGNAL HEADER</Label>
         <Input
           id={`${type}-subject`}
           placeholder={config.subjectPlaceholder}
@@ -204,7 +205,7 @@ const SimpleSubmissionForm = ({ type, onSuccess }: SimpleSubmissionFormProps) =>
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor={`${type}-message`}>Message</Label>
+        <Label htmlFor={`${type}-message`}>TRANSMISSION</Label>
         <Textarea
           id={`${type}-message`}
           placeholder={config.messagePlaceholder}
@@ -224,7 +225,7 @@ const SimpleSubmissionForm = ({ type, onSuccess }: SimpleSubmissionFormProps) =>
         disabled={isSubmitting}
       >
         {isSubmitting ? (
-          <Loader2 className="w-4 h-4 animate-spin" />
+          <Loader variant="inline" size="sm" />
         ) : (
           <Send className="w-4 h-4" />
         )}

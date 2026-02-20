@@ -9,7 +9,7 @@ import {
   ScanEye,
   Zap,
   AlertTriangle,
-  Loader2,
+
   Sun,
   Waves,
   FlaskConical,
@@ -17,6 +17,7 @@ import {
   Sparkles,
   Check,
 } from "lucide-react";
+import { Loader } from "@/components/ui/loader";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import ToolIntroSection from "@/components/tools/ToolIntroSection";
@@ -467,7 +468,7 @@ const Sensorium = () => {
   if (worksheetLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        <Loader />
       </div>
     );
   }

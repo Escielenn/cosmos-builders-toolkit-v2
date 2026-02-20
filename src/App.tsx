@@ -10,8 +10,9 @@ import ScrollToTop from "./components/ScrollToTop";
 import ContactFAB from "./components/contact/ContactFAB";
 import CookieConsent from "./components/common/CookieConsent";
 import TextureOverlay from "./components/layout/TextureOverlay";
+import DataBurstOverlay from "./components/layout/DataBurstOverlay";
 import StatusBar from "./components/layout/StatusBar";
-import { Loader2 } from "lucide-react";
+import { Loader } from "@/components/ui/loader";
 import ErrorBoundary from "./components/ErrorBoundary";
 
 // Eagerly loaded pages (small, frequently accessed)
@@ -101,8 +102,8 @@ const queryClient = new QueryClient({
 const PageLoader = () => (
   <div className="min-h-screen bg-background flex items-center justify-center">
     <div className="text-center">
-      <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto mb-4" />
-      <p className="text-sm text-muted-foreground">Loading...</p>
+      <Loader className="mb-4" />
+      <p className="text-xs text-muted-foreground font-mono tracking-wider uppercase">INITIALIZING...</p>
     </div>
   </div>
 );
@@ -330,6 +331,7 @@ const App = () => (
             <ContactFAB />
             <CookieConsent />
             <TextureOverlay />
+            <DataBurstOverlay />
             <StatusBar />
           </BrowserRouter>
         </TooltipProvider>

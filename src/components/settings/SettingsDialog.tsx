@@ -17,7 +17,6 @@ import {
   User,
   Link2,
   Crown,
-  Loader2,
   Upload,
   Save,
   Check,
@@ -29,6 +28,7 @@ import {
   Download,
   Globe,
 } from "lucide-react";
+import { Loader } from "@/components/ui/loader";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { useSubscription } from "@/hooks/use-subscription";
@@ -243,7 +243,7 @@ const SettingsDialog = ({
                     onClick={() => avatarInputRef.current?.click()}
                   >
                     {isUploading ? (
-                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <Loader variant="inline" size="sm" />
                     ) : (
                       <Upload className="w-4 h-4" />
                     )}
@@ -302,7 +302,7 @@ const SettingsDialog = ({
               disabled={isSaving}
             >
               {isSaving ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
+                <Loader variant="inline" size="sm" />
               ) : (
                 <Save className="w-4 h-4" />
               )}
@@ -544,7 +544,7 @@ const SettingsDialog = ({
                     disabled={isConnecting}
                   >
                     {isConnecting ? (
-                      <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                      <Loader variant="inline" size="sm" className="mr-2" />
                     ) : (
                       <Link2 className="w-4 h-4 mr-2" />
                     )}
@@ -633,7 +633,7 @@ const SettingsDialog = ({
                   disabled={portalLoading}
                 >
                   {portalLoading ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <Loader variant="inline" size="sm" />
                   ) : (
                     <CreditCard className="w-4 h-4" />
                   )}

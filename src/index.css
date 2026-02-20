@@ -1166,22 +1166,44 @@ html {
     to { width: 100%; }
   }
 
-  /* Skeleton shimmer (improved) */
+  /* Skeleton shimmer — rectangular sweep, left to right */
   .sf-skeleton {
+    background: rgba(224, 228, 232, 0.04);
+    border-radius: 0px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .sf-skeleton::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background: linear-gradient(
       90deg,
-      rgba(255, 255, 255, 0.04) 0%,
-      rgba(255, 255, 255, 0.08) 50%,
-      rgba(255, 255, 255, 0.04) 100%
+      transparent 0%,
+      rgba(224, 228, 232, 0.04) 40%,
+      rgba(224, 228, 232, 0.08) 50%,
+      rgba(224, 228, 232, 0.04) 60%,
+      transparent 100%
     );
-    background-size: 200% 100%;
-    animation: sf-skeleton-shimmer 1.5s ease-in-out infinite;
+    animation: sf-skeleton-shimmer 2s ease-in-out infinite;
   }
 
   @keyframes sf-skeleton-shimmer {
-    0% { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
+    0%   { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
   }
+
+  /* Skeleton preset shapes */
+  .sf-skeleton--text { height: 12px; width: 80%; margin-bottom: 8px; }
+  .sf-skeleton--text-short { height: 12px; width: 40%; margin-bottom: 8px; }
+  .sf-skeleton--heading { height: 18px; width: 60%; margin-bottom: 12px; }
+  .sf-skeleton--card { height: 180px; width: 100%; }
+  .sf-skeleton--value { height: 14px; width: 60px; display: inline-block; }
+  .sf-skeleton--avatar { width: 32px; height: 32px; /* rectangular, not circular */ }
 
   /* Card hover — bilateral lines (v2.2) */
   .sf-card-hover {
@@ -1631,6 +1653,264 @@ html {
 .sf-status-badge { border-radius: 2px; }
 
 /* ═══════════════════════════════════════════════════════════════════════
+   LOADING SYSTEM — SEGMENTED BAR
+   Five squares. Left to right. The ship is loading.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.sf-loader {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.sf-loader-segment {
+  width: 8px;
+  height: 8px;
+  background: rgba(61, 255, 205, 0.1);
+  border: 1px solid rgba(61, 255, 205, 0.15);
+  border-radius: 0px;
+  animation: sf-loader-fill 1.5s ease-in-out infinite;
+}
+
+/* Stagger each segment */
+.sf-loader-segment:nth-child(1) { animation-delay: 0.0s; }
+.sf-loader-segment:nth-child(2) { animation-delay: 0.15s; }
+.sf-loader-segment:nth-child(3) { animation-delay: 0.30s; }
+.sf-loader-segment:nth-child(4) { animation-delay: 0.45s; }
+.sf-loader-segment:nth-child(5) { animation-delay: 0.60s; }
+
+@keyframes sf-loader-fill {
+  0%, 100% {
+    background: rgba(61, 255, 205, 0.1);
+    border-color: rgba(61, 255, 205, 0.15);
+  }
+  30%, 50% {
+    background: rgba(61, 255, 205, 0.8);
+    border-color: rgba(61, 255, 205, 0.6);
+    box-shadow: 0 0 6px rgba(61, 255, 205, 0.2);
+  }
+}
+
+/* Size variants */
+.sf-loader--sm .sf-loader-segment { width: 5px; height: 5px; }
+.sf-loader--sm { gap: 3px; }
+.sf-loader--lg .sf-loader-segment { width: 12px; height: 12px; }
+.sf-loader--lg { gap: 5px; }
+
+/* Color variants */
+.sf-loader--amber .sf-loader-segment {
+  background: rgba(255, 179, 71, 0.1);
+  border-color: rgba(255, 179, 71, 0.15);
+  animation-name: sf-loader-fill-amber;
+}
+.sf-loader--stellar .sf-loader-segment {
+  background: rgba(91, 141, 239, 0.1);
+  border-color: rgba(91, 141, 239, 0.15);
+  animation-name: sf-loader-fill-stellar;
+}
+
+@keyframes sf-loader-fill-amber {
+  0%, 100% { background: rgba(255, 179, 71, 0.1); border-color: rgba(255, 179, 71, 0.15); }
+  30%, 50% { background: rgba(255, 179, 71, 0.8); border-color: rgba(255, 179, 71, 0.6); box-shadow: 0 0 6px rgba(255, 179, 71, 0.2); }
+}
+@keyframes sf-loader-fill-stellar {
+  0%, 100% { background: rgba(91, 141, 239, 0.1); border-color: rgba(91, 141, 239, 0.15); }
+  30%, 50% { background: rgba(91, 141, 239, 0.8); border-color: rgba(91, 141, 239, 0.6); box-shadow: 0 0 6px rgba(91, 141, 239, 0.2); }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   PROGRESS BAR — SWEEP FILL
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.sf-progress {
+  position: relative;
+  width: 100%;
+  height: 4px;
+  background: rgba(224, 228, 232, 0.06);
+  border-radius: 0px;
+  overflow: hidden;
+}
+
+.sf-progress-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: #3DFFCD;
+  border-radius: 0px;
+  transition: width 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+/* Indeterminate — fill sweeps back and forth */
+.sf-progress--indeterminate .sf-progress-fill {
+  width: 30%;
+  animation: sf-progress-sweep 1.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes sf-progress-sweep {
+  0%   { left: -30%; }
+  100% { left: 100%; }
+}
+
+/* Color variants */
+.sf-progress--amber .sf-progress-fill { background: #FFB347; }
+.sf-progress--stellar .sf-progress-fill { background: #5B8DEF; }
+
+/* Larger variant */
+.sf-progress--lg { height: 6px; }
+
+/* Progress label */
+.sf-progress-label {
+  font-family: var(--sf-font-mono);
+  font-size: 8px;
+  letter-spacing: 1px;
+  color: rgba(224, 228, 232, 0.35);
+  margin-top: 6px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   FULL-PAGE LOADING OVERLAY
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.sf-loading-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  background: hsl(var(--sf-void, 222 30% 5%));
+}
+
+.sf-loading-message {
+  font-family: var(--sf-font-heading);
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(224, 228, 232, 0.4);
+}
+
+.sf-loading-bar {
+  width: 180px;
+  height: 2px;
+  background: rgba(224, 228, 232, 0.06);
+  border-radius: 0px;
+  position: relative;
+  overflow: hidden;
+}
+
+.sf-loading-bar-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(61, 255, 205, 0.6) 50%,
+    transparent 100%
+  );
+  animation: sf-loading-sweep 1.4s ease-in-out infinite;
+}
+
+@keyframes sf-loading-sweep {
+  0%   { left: -40%; }
+  100% { left: 100%; }
+}
+
+/* Optional bracket corners on the loading frame */
+.sf-loading-frame {
+  position: relative;
+  padding: 40px 60px;
+}
+
+.sf-loading-frame::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 16px;
+  height: 16px;
+  border-top: 1px solid rgba(224, 228, 232, 0.12);
+  border-left: 1px solid rgba(224, 228, 232, 0.12);
+}
+
+.sf-loading-frame::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 16px;
+  height: 16px;
+  border-top: 1px solid rgba(224, 228, 232, 0.12);
+  border-right: 1px solid rgba(224, 228, 232, 0.12);
+}
+
+/* Fade out when loading completes */
+.sf-loading-screen.loaded {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   INLINE BUTTON LOADING STATE
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* Smaller segments for inline use */
+.sf-loader--inline .sf-loader-segment {
+  width: 6px;
+  height: 6px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   TOP PROGRESS BAR — ROUTE TRANSITIONS
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.sf-top-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  z-index: 99999;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.sf-top-progress.active {
+  opacity: 1;
+}
+
+.sf-top-progress-bar {
+  height: 100%;
+  background: #3DFFCD;
+  width: 0%;
+  transition: width 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+/* Reaches ~85% quickly, then waits for completion */
+.sf-top-progress.active .sf-top-progress-bar {
+  width: 85%;
+  transition: width 8s cubic-bezier(0.1, 0.05, 0, 1);
+}
+
+/* When loaded, snaps to 100% then fades */
+.sf-top-progress.complete .sf-top-progress-bar {
+  width: 100%;
+  transition: width 0.2s ease;
+}
+
+.sf-top-progress.complete {
+  opacity: 0;
+  transition: opacity 0.3s ease 0.2s;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
    REDUCED MOTION — respect user preferences
    ═══════════════════════════════════════════════════════════════════════ */
 @media (prefers-reduced-motion: reduce) {
@@ -1638,5 +1918,27 @@ html {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+
+  /* Loading system: show static filled state */
+  .sf-loader-segment {
+    animation: none !important;
+    background: rgba(61, 255, 205, 0.3) !important;
+  }
+
+  .sf-skeleton::after {
+    animation: none !important;
+  }
+
+  .sf-loading-bar-fill {
+    animation: none !important;
+    width: 100% !important;
+    opacity: 0.3;
+  }
+
+  .sf-progress--indeterminate .sf-progress-fill {
+    animation: none !important;
+    width: 100% !important;
+    opacity: 0.3;
   }
 }

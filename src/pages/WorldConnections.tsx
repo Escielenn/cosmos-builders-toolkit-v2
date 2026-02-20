@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, Network, ExternalLink, LayoutGrid, List, ChevronDown, ChevronRight, Globe, Dna, Sparkles, GitBranch, Rocket, Zap, Calculator, FileText, Filter, Crown, Users } from "lucide-react";
+import { Loader } from "@/components/ui/loader";
 import Header from "@/components/layout/Header";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
@@ -276,7 +277,7 @@ const WorldConnections = () => {
             {isLoading ? (
               <div className="w-full h-full flex items-center justify-center text-muted-foreground">
                 <div className="text-center">
-                  <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+                  <Loader className="mb-4" />
                   <p>Loading connections...</p>
                 </div>
               </div>

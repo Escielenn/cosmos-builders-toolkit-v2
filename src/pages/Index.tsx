@@ -8,7 +8,7 @@ import {
   BookOpen,
   Cpu,
   Shield,
-  Loader2,
+
   Calculator,
   Rocket,
   Sparkles,
@@ -36,6 +36,7 @@ import LoggedInHero from "@/components/landing/LoggedInHero";
 import ToolShowcase from "@/components/landing/ToolShowcase";
 import ValueProposition from "@/components/landing/ValueProposition";
 import VideoShowcase from "@/components/landing/VideoShowcase";
+import { Loader } from "@/components/ui/loader";
 import { CosmicTelemetry } from "@/components/layout/CosmicVelocityTicker";
 import { COORDINATE_DATA } from "@/lib/cosmic-telemetry";
 import QuickUpgradeCard from "@/components/subscription/QuickUpgradeCard";
@@ -381,7 +382,7 @@ const Index = () => {
 
               {isLoading && (
                 <GlassPanel className="p-5 h-full min-h-[200px] flex flex-col items-center justify-center">
-                  <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+                  <Loader size="sm" />
                 </GlassPanel>
               )}
 

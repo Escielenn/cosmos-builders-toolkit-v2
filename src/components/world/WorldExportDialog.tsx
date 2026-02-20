@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { Download, Loader2, FileJson, FileType, FileSpreadsheet, ExternalLink, Unplug } from "lucide-react";
+import { Download, FileJson, FileType, FileSpreadsheet, ExternalLink, Unplug } from "lucide-react";
+import { Loader } from "@/components/ui/loader";
 import {
   Dialog,
   DialogContent,
@@ -123,7 +124,7 @@ const WorldExportDialog = ({
           const blob = new Blob([dataStr], { type: "application/json;charset=utf-8" });
           downloadBlob(blob, generateFilename("json"));
           toast({
-            title: "World Exported",
+            title: "EXPORT COMPLETE.",
             description: `Exported ${worksheets.length} worksheet${worksheets.length === 1 ? "" : "s"} as JSON.`,
           });
           break;
@@ -150,7 +151,7 @@ const WorldExportDialog = ({
           const blob = new Blob([textContent], { type: "text/plain;charset=utf-8" });
           downloadBlob(blob, generateFilename("txt"));
           toast({
-            title: "World Exported",
+            title: "EXPORT COMPLETE.",
             description: `Exported ${worksheets.length} worksheet${worksheets.length === 1 ? "" : "s"} as text file.`,
           });
           break;
@@ -165,7 +166,7 @@ const WorldExportDialog = ({
             data: exportData as Record<string, unknown>,
           });
           toast({
-            title: "World Exported",
+            title: "EXPORT COMPLETE.",
             description: `Exported ${worksheets.length} worksheet${worksheets.length === 1 ? "" : "s"} as Word document.`,
           });
           break;
@@ -175,7 +176,7 @@ const WorldExportDialog = ({
           if (!isConnected) {
             toast({
               title: "Notion not connected",
-              description: "Please connect your Notion workspace first.",
+              description: "Connect Notion workspace to proceed.",
               variant: "destructive",
             });
             return;
@@ -188,7 +189,7 @@ const WorldExportDialog = ({
           });
           if (result.success) {
             toast({
-              title: "Exported to Notion",
+              title: "EXPORT COMPLETE.",
               description: "Your world has been exported to Notion.",
             });
             if (result.pageUrl) {
@@ -196,7 +197,7 @@ const WorldExportDialog = ({
             }
           } else {
             toast({
-              title: "Export failed",
+              title: "EXPORT FAILED.",
               description: result.error || "Failed to export to Notion.",
               variant: "destructive",
             });
@@ -210,8 +211,8 @@ const WorldExportDialog = ({
     } catch (error) {
       console.error("Export error:", error);
       toast({
-        title: "Export failed",
-        description: "There was an error exporting your world. Please try again.",
+        title: "EXPORT FAILED.",
+        description: "Export generation failed. Retry when ready.",
         variant: "destructive",
       });
     } finally {
@@ -235,7 +236,7 @@ const WorldExportDialog = ({
 
         {isLoadingWorksheets ? (
           <div className="flex items-center justify-center py-12">
-            <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+            <Loader />
           </div>
         ) : (
           <>
@@ -255,7 +256,7 @@ const WorldExportDialog = ({
                   <div className="flex-1">
                     <span className="font-medium">JSON Export (.json)</span>
                     <p className="text-xs text-muted-foreground mt-1">
-                      Machine-readable format. Perfect for backups or importing into other tools.
+                      Machine-readable format. For backups or importing into other tools.
                     </p>
                   </div>
                 </div>
@@ -353,7 +354,7 @@ const WorldExportDialog = ({
                     </p>
                     <Button onClick={connect} disabled={isConnecting}>
                       {isConnecting ? (
-                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        <Loader variant="inline" size="sm" className="mr-2" />
                       ) : (
                         <ExternalLink className="w-4 h-4 mr-2" />
                       )}
@@ -382,7 +383,7 @@ const WorldExportDialog = ({
           >
             {isExporting || isNotionExporting ? (
               <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                <Loader variant="inline" size="sm" className="mr-2" />
                 Exporting...
               </>
             ) : format === "notion" ? (

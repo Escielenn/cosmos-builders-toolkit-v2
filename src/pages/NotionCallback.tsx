@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { Loader2, CheckCircle2, XCircle } from "lucide-react";
+import { CheckCircle2, XCircle } from "lucide-react";
+import { Loader } from "@/components/ui/loader";
 import { useNotion } from "@/hooks/use-notion";
 
 const NotionCallback = () => {
   const [searchParams] = useSearchParams();
   const { handleCallback } = useNotion();
   const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
-  const [message, setMessage] = useState("Connecting to Notion...");
+  const [message, setMessage] = useState("ESTABLISHING NOTION LINK...");
 
   useEffect(() => {
     const code = searchParams.get("code");
@@ -29,7 +30,7 @@ const NotionCallback = () => {
     handleCallback(code, state).then((result) => {
       if (result.success) {
         setStatus("success");
-        setMessage("Connected! You can close this window.");
+        setMessage("CONNECTION ESTABLISHED. Close window.");
         // Auto-close after a moment
         setTimeout(() => {
           window.close();
@@ -46,7 +47,7 @@ const NotionCallback = () => {
       <div className="text-center space-y-4 p-8">
         {status === "loading" && (
           <>
-            <Loader2 className="w-12 h-12 animate-spin text-primary mx-auto" />
+            <Loader />
             <p className="text-lg text-muted-foreground">{message}</p>
           </>
         )}

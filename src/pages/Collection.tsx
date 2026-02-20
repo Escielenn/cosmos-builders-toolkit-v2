@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, FileText, Loader2, Search, ChevronRight } from "lucide-react";
+import { ArrowLeft, FileText, Search, ChevronRight } from "lucide-react";
+import { Loader } from "@/components/ui/loader";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { GlassPanel } from "@/components/ui/glass-panel";
@@ -93,7 +94,7 @@ const Collection = () => {
       <div className="min-h-screen bg-background sf-atmosphere">
         <Header />
         <main className="container mx-auto px-4 pt-24 pb-16 flex items-center justify-center">
-          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+          <Loader />
         </main>
       </div>
     );
@@ -128,7 +129,7 @@ const Collection = () => {
           </Link>
           {worldsLoading ? (
             <div className="flex justify-center py-8">
-              <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+              <Loader size="sm" />
             </div>
           ) : worlds.length === 0 ? (
             <GlassPanel className="p-8 text-center">
@@ -233,7 +234,7 @@ const Collection = () => {
         {/* Worksheets Grid */}
         {isLoading ? (
           <div className="flex justify-center py-16">
-            <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+            <Loader />
           </div>
         ) : filteredWorksheets.length === 0 ? (
           <GlassPanel className="p-12 text-center">

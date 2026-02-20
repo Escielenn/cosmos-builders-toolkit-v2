@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Link2, Copy, Check, RefreshCw, Eye, Loader2 } from "lucide-react";
+import { Link2, Copy, Check, RefreshCw, Eye } from "lucide-react";
+import { Loader } from "@/components/ui/loader";
 import {
   Dialog,
   DialogContent,
@@ -141,7 +142,7 @@ const ShareDialog = ({
                 </Label>
               </div>
               {isLoading ? (
-                <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
+                <Loader variant="inline" size="sm" />
               ) : (
                 <Switch
                   id="link-sharing"
@@ -190,7 +191,7 @@ const ShareDialog = ({
                         className="text-muted-foreground"
                       >
                         {regenerateToken.isPending ? (
-                          <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />
+                          <Loader variant="inline" size="sm" className="mr-1.5" />
                         ) : (
                           <RefreshCw className="w-3.5 h-3.5 mr-1.5" />
                         )}

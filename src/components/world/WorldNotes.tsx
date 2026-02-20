@@ -1,5 +1,6 @@
 import { useState, lazy, Suspense } from "react";
-import { ChevronDown, ChevronUp, Loader2, FileText, Check, Save } from "lucide-react";
+import { ChevronDown, ChevronUp, FileText, Check, Save } from "lucide-react";
+import { Loader } from "@/components/ui/loader";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
 import { useWorldNotes } from "@/hooks/use-world-notes";
@@ -45,7 +46,7 @@ const WorldNotes = ({ worldId, readOnly }: WorldNotesProps) => {
             <div className="flex items-center gap-2">
               {!readOnly && isSaving && (
                 <span className="text-xs text-muted-foreground flex items-center gap-1">
-                  <Loader2 className="w-3 h-3 animate-spin" />
+                  <Loader variant="inline" size="sm" />
                   Saving...
                 </span>
               )}
@@ -67,7 +68,7 @@ const WorldNotes = ({ worldId, readOnly }: WorldNotesProps) => {
           <div className="p-4 pt-0 space-y-3">
             {isLoading ? (
               <div className="flex items-center justify-center py-8">
-                <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+                <Loader size="sm" />
               </div>
             ) : (
               <>
@@ -81,7 +82,7 @@ const WorldNotes = ({ worldId, readOnly }: WorldNotesProps) => {
                       className="h-8"
                     >
                       {isSaving ? (
-                        <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />
+                        <Loader variant="inline" size="sm" className="mr-1.5" />
                       ) : (
                         <Save className="w-3.5 h-3.5 mr-1.5" />
                       )}
@@ -93,7 +94,7 @@ const WorldNotes = ({ worldId, readOnly }: WorldNotesProps) => {
                 <Suspense
                   fallback={
                     <div className="flex items-center justify-center py-8">
-                      <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+                      <Loader size="sm" />
                     </div>
                   }
                 >

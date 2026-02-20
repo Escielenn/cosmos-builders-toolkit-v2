@@ -1,4 +1,4 @@
-import { Loader2 } from "lucide-react";
+import { Loader } from "@/components/ui/loader";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import SharedWorldCard from "@/components/dashboard/SharedWorldCard";
 import { useSharedWorlds } from "@/hooks/use-shared-worlds";
@@ -21,7 +21,7 @@ const SharedWorldsSection = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {isLoading && (
           <GlassPanel className="p-5 h-full min-h-[200px] flex flex-col items-center justify-center">
-            <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+            <Loader size="sm" />
           </GlassPanel>
         )}
 

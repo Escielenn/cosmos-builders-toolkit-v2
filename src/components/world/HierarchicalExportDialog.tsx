@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Download, Loader2, Globe, Dna, Crown, Rocket, Sparkles } from "lucide-react";
+import { Download, Globe, Dna, Crown, Rocket, Sparkles, Check } from "lucide-react";
+import { Loader } from "@/components/ui/loader";
 import {
   Dialog,
   DialogContent,
@@ -11,7 +12,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { useExportPreferences } from "@/hooks/use-export-preferences";
+import { setActiveTheme, resetActiveTheme } from "@/lib/pdf/styles";
+import { EXPORT_THEMES } from "@/lib/export/themes";
+import { cn } from "@/lib/utils";
+import { deepStripHtml } from "@/lib/html-utils";
 import { useCategoryWorksheets, type CategoryWorksheets } from "@/hooks/use-category-worksheets";
 
 // Map category icon names to Lucide components
@@ -46,6 +53,7 @@ const HierarchicalExportDialog = ({
   worldId,
 }: HierarchicalExportDialogProps) => {
   const { toast } = useToast();
+  const { preferences, updatePreferences } = useExportPreferences();
   const { data: categoryWorksheets, isLoading } = useCategoryWorksheets(worldId);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -71,12 +79,18 @@ const HierarchicalExportDialog = ({
         id: ws.id,
         tool_type: ws.tool_type,
         title: ws.title,
-        data: ws.data,
+        data: deepStripHtml(ws.data),
       }));
 
-      const blob = await pdf(
-        <Template worldName={worldName} worksheets={worksheetData} />
-      ).toBlob();
+      setActiveTheme(preferences.themeId);
+      let blob: Blob;
+      try {
+        blob = await pdf(
+          <Template worldName={worldName} worksheets={worksheetData} />
+        ).toBlob();
+      } finally {
+        resetActiveTheme();
+      }
 
       // Download
       const url = URL.createObjectURL(blob);
@@ -116,7 +130,7 @@ const HierarchicalExportDialog = ({
 
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
-            <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+            <Loader />
           </div>
         ) : !categoryWorksheets || categoryWorksheets.length === 0 ? (
           <div className="text-center py-8 text-muted-foreground">
@@ -168,6 +182,41 @@ const HierarchicalExportDialog = ({
           </div>
         )}
 
+        {/* Inline theme picker */}
+        <div className="pt-3 border-t border-border">
+          <Label className="text-xs text-muted-foreground mb-2 block">PDF Theme</Label>
+          <div className="flex gap-2 flex-wrap">
+            {EXPORT_THEMES.map((theme) => {
+              const isSelected = preferences.themeId === theme.id;
+              return (
+                <button
+                  key={theme.id}
+                  type="button"
+                  onClick={() => updatePreferences({ themeId: theme.id })}
+                  title={theme.name}
+                  className={cn(
+                    "flex gap-0.5 p-1.5 rounded-md border transition-all",
+                    isSelected
+                      ? "border-primary ring-1 ring-primary/50"
+                      : "border-border hover:border-primary/50"
+                  )}
+                >
+                  {theme.swatch.map((color, i) => (
+                    <div
+                      key={i}
+                      className="w-4 h-4 rounded-sm border border-border/30"
+                      style={{ backgroundColor: color }}
+                    />
+                  ))}
+                  {isSelected && (
+                    <Check className="w-3 h-3 text-primary ml-0.5" />
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
@@ -178,7 +227,7 @@ const HierarchicalExportDialog = ({
           >
             {isGenerating ? (
               <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                <Loader variant="inline" size="sm" className="mr-2" />
                 Generating...
               </>
             ) : (

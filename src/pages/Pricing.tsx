@@ -5,11 +5,14 @@ import Footer from "@/components/layout/Footer";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Check, Crown, Loader2, Sparkles } from "lucide-react";
+import { Check, Crown, Sparkles } from "lucide-react";
+import { Loader } from "@/components/ui/loader";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSubscription } from "@/hooks/use-subscription";
 import { useToast } from "@/hooks/use-toast";
 import { FREE_TOOL_IDS, PRO_TOOL_IDS, PRICING } from "@/lib/tools-config";
+import { PageBursts } from "@/components/ui/data-burst";
+import { PRICING_BURSTS } from "@/lib/data-bursts";
 
 const Pricing = () => {
   const [searchParams] = useSearchParams();
@@ -25,8 +28,8 @@ const Pricing = () => {
     const handleSuccess = async () => {
       setActivating(true);
       toast({
-        title: "Activating your subscription...",
-        description: "Please wait while we confirm your payment.",
+        title: "ACTIVATING ACCESS...",
+        description: "Confirming payment. Stand by.",
       });
 
       // Poll for subscription (webhook may take a few seconds)
@@ -34,8 +37,8 @@ const Pricing = () => {
 
       if (success) {
         toast({
-          title: "Welcome to Pro!",
-          description: "Your subscription is now active. Enjoy all the tools!",
+          title: "PRO ACCESS ACTIVATED.",
+          description: "All instruments unlocked.",
         });
       } else {
         toast({
@@ -55,7 +58,7 @@ const Pricing = () => {
     } else if (searchParams.get('canceled') === 'true') {
       toast({
         title: "Checkout canceled",
-        description: "No worries, you can upgrade anytime.",
+        description: "Upgrade available at any time.",
       });
       // Clean up URL
       window.history.replaceState({}, '', '/pricing');
@@ -77,7 +80,7 @@ const Pricing = () => {
     } catch (error) {
       toast({
         title: "Error",
-        description: error instanceof Error ? error.message : "Failed to start checkout. Please try again.",
+        description: error instanceof Error ? error.message : "Failed to start checkout. Retry when ready.",
         variant: "destructive",
       });
     } finally {
@@ -95,7 +98,7 @@ const Pricing = () => {
     } catch (error) {
       toast({
         title: "Error",
-        description: "Failed to open billing portal. Please try again.",
+        description: "Failed to open billing portal. Retry when ready.",
         variant: "destructive",
       });
     } finally {
@@ -125,18 +128,19 @@ const Pricing = () => {
     <div className="min-h-screen bg-background">
       <Header />
 
-      <main className="container mx-auto px-4 pt-24 pb-16">
+      <main className="relative container mx-auto px-4 pt-24 pb-16">
+        <PageBursts bursts={PRICING_BURSTS} />
         {/* Hero */}
         <section className="text-center mb-12">
           <Badge className="mb-4" variant="secondary">
             <Sparkles className="w-3 h-3 mr-1" />
-            Simple Pricing
+            ACCESS TIERS
           </Badge>
-          <h1 className="font-display text-4xl md:text-5xl font-bold mb-4">
-            Build Better Worlds
+          <h1 className="font-display text-4xl md:text-5xl font-light mb-4 tracking-sf-wide">
+            UPGRADE YOUR ACCESS
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Start free with essential tools, upgrade to Pro for the complete worldbuilding toolkit.
+            Free accounts access 3 instruments. Pro unlocks all 30.
           </p>
         </section>
 
@@ -145,7 +149,7 @@ const Pricing = () => {
           {/* Free Plan */}
           <GlassPanel className="p-8">
             <div className="mb-6">
-              <h2 className="font-heading text-2xl font-bold mb-2">Free</h2>
+              <h2 className="font-heading text-2xl font-bold mb-2">STANDARD ACCESS</h2>
               <p className="text-4xl font-bold">$0<span className="text-lg font-normal text-muted-foreground">/forever</span></p>
             </div>
 
@@ -166,7 +170,7 @@ const Pricing = () => {
             </ul>
 
             <Button variant="outline" className="w-full" onClick={() => navigate("/")}>
-              Get Started Free
+              BEGIN
             </Button>
           </GlassPanel>
 
@@ -181,7 +185,7 @@ const Pricing = () => {
             <div className="mb-6">
               <h2 className="font-heading text-2xl font-bold mb-2 flex items-center gap-2">
                 <Crown className="w-6 h-6 text-amber-500" />
-                Pro
+                PRO ACCESS
               </h2>
               <div className="flex items-baseline gap-2">
                 <p className="text-4xl font-bold">${PRICING.monthly.price}</p>
@@ -202,15 +206,15 @@ const Pricing = () => {
             {activating ? (
               <div className="space-y-3">
                 <div className="p-4 rounded-lg bg-primary/10 text-center">
-                  <Loader2 className="w-6 h-6 mx-auto mb-2 animate-spin text-primary" />
-                  <p className="text-sm font-medium">Activating your Pro subscription...</p>
+                  <Loader size="sm" className="mb-2" />
+                  <p className="text-sm font-medium">PRO ACCESS ACTIVATION IN PROGRESS.</p>
                 </div>
               </div>
             ) : isSubscribed ? (
               <div className="space-y-3">
                 <div className="p-3 rounded-lg bg-green-500/10 text-center">
                   <p className="text-sm font-medium text-green-600 dark:text-green-400">
-                    You're subscribed! ({subscription?.plan_type})
+                    Subscription active. ({subscription?.plan_type})
                   </p>
                 </div>
                 <Button
@@ -220,9 +224,9 @@ const Pricing = () => {
                   disabled={loading === 'portal'}
                 >
                   {loading === 'portal' ? (
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    <Loader variant="inline" size="sm" className="mr-2" />
                   ) : null}
-                  Manage Subscription
+                  MANAGE ACCESS
                 </Button>
               </div>
             ) : (
@@ -234,11 +238,11 @@ const Pricing = () => {
                   disabled={loading !== null}
                 >
                   {loading === 'yearly' ? (
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    <Loader variant="inline" size="sm" className="mr-2" />
                   ) : (
                     <Crown className="w-4 h-4 mr-2" />
                   )}
-                  Get Pro Yearly - ${PRICING.yearly.price}/year
+                  UPGRADE (YEARLY) — ${PRICING.yearly.price}/year
                 </Button>
                 <Button
                   variant="outline"
@@ -247,7 +251,7 @@ const Pricing = () => {
                   disabled={loading !== null}
                 >
                   {loading === 'monthly' ? (
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    <Loader variant="inline" size="sm" className="mr-2" />
                   ) : null}
                   Monthly - ${PRICING.monthly.price}/month
                 </Button>

@@ -1,0 +1,168 @@
+import { useState, useMemo, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
+import { Loader } from "@/components/ui/loader";
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
+import { GlassPanel } from "@/components/ui/glass-panel";
+import WorldCard from "@/components/dashboard/WorldCard";
+import CreateWorldButton from "@/components/dashboard/CreateWorldButton";
+import { TagFilter } from "@/components/dashboard/TagFilter";
+import { ArchiveToggle } from "@/components/dashboard/ArchiveToggle";
+import SharedWorldsSection from "@/components/dashboard/SharedWorldsSection";
+import { useWorlds } from "@/hooks/use-worlds";
+import { useAuth } from "@/contexts/AuthContext";
+import { PageBursts } from "@/components/ui/data-burst";
+import { WORLDS_BURSTS } from "@/lib/data-bursts";
+
+const Worlds = () => {
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
+  const [showArchived, setShowArchived] = useState(false);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+
+  const { worlds, isLoading, deleteWorld, archiveWorld, unarchiveWorld } =
+    useWorlds(showArchived);
+
+  useEffect(() => {
+    if (!loading && !user) {
+      navigate("/auth");
+    }
+  }, [user, loading, navigate]);
+
+  const archivedCount = useMemo(() => {
+    return worlds.filter((w) => w.archived_at !== null).length;
+  }, [worlds]);
+
+  const availableTags = useMemo(() => {
+    const tagSet = new Set<string>();
+    worlds.forEach((w) => {
+      (w.tags || []).forEach((t) => tagSet.add(t));
+    });
+    return Array.from(tagSet).sort();
+  }, [worlds]);
+
+  const filteredWorlds = useMemo(() => {
+    if (selectedTags.length === 0) return worlds;
+    return worlds.filter((w) =>
+      selectedTags.some((tag) => (w.tags || []).includes(tag))
+    );
+  }, [worlds, selectedTags]);
+
+  const handleDeleteWorld = (worldId: string) => {
+    deleteWorld.mutate(worldId);
+  };
+
+  const handleArchiveWorld = (worldId: string) => {
+    archiveWorld.mutate(worldId);
+  };
+
+  const handleUnarchiveWorld = (worldId: string) => {
+    unarchiveWorld.mutate(worldId);
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background sf-atmosphere">
+        <Header />
+        <main className="container mx-auto px-4 pt-24 pb-16 flex items-center justify-center">
+          <Loader />
+        </main>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-background sf-atmosphere">
+      <Header />
+      <main className="container mx-auto px-4 pt-24 pb-16 relative z-10">
+        <PageBursts bursts={WORLDS_BURSTS} />
+        {/* Back Navigation */}
+        <Link
+          to="/"
+          className="inline-flex items-center text-muted-foreground hover:text-foreground transition-colors mb-6"
+        >
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Back to Home
+        </Link>
+
+        {/* Header */}
+        <div className="flex flex-col gap-4 mb-8">
+          <div className="flex items-center justify-between">
+            <h1 className="font-heading font-light text-2xl uppercase tracking-sf-wide">
+              My Worlds
+            </h1>
+            <ArchiveToggle
+              showArchived={showArchived}
+              onToggle={setShowArchived}
+              archivedCount={
+                showArchived
+                  ? archivedCount
+                  : worlds.filter((w) => w.archived_at).length
+              }
+            />
+          </div>
+          {availableTags.length > 0 && (
+            <TagFilter
+              availableTags={availableTags}
+              selectedTags={selectedTags}
+              onTagSelect={(tag) =>
+                setSelectedTags((prev) => [...prev, tag])
+              }
+              onTagRemove={(tag) =>
+                setSelectedTags((prev) => prev.filter((t) => t !== tag))
+              }
+              onClear={() => setSelectedTags([])}
+            />
+          )}
+        </div>
+
+        {/* Worlds Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+          <CreateWorldButton />
+
+          {isLoading && (
+            <GlassPanel className="p-5 h-full min-h-[200px] flex flex-col items-center justify-center">
+              <Loader size="sm" />
+            </GlassPanel>
+          )}
+
+          {!isLoading && filteredWorlds.length === 0 && (
+            <GlassPanel className="p-5 h-full min-h-[200px] flex flex-col items-center justify-center border-dashed border border-muted">
+              <p className="text-sm text-muted-foreground text-center">
+                {selectedTags.length > 0
+                  ? "No worlds match the selected tags."
+                  : "Your worlds will appear here once you create them."}
+              </p>
+            </GlassPanel>
+          )}
+
+          {filteredWorlds.map((world) => (
+            <WorldCard
+              key={world.id}
+              id={world.id}
+              name={world.name}
+              description={world.description}
+              headerImageUrl={world.header_image_url}
+              headerImageFocusY={world.header_image_focus_y}
+              icon={world.icon}
+              tags={world.tags}
+              archivedAt={world.archived_at}
+              updatedAt={world.updated_at}
+              onDelete={handleDeleteWorld}
+              onArchive={handleArchiveWorld}
+              onUnarchive={handleUnarchiveWorld}
+            />
+          ))}
+        </div>
+
+        {/* Shared with Me */}
+        <SharedWorldsSection />
+      </main>
+
+      <Footer />
+    </div>
+  );
+};
+
+export default Worlds;

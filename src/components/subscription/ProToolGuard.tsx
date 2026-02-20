@@ -5,7 +5,8 @@ import { useSubscription } from "@/hooks/use-subscription";
 import { isProTool } from "@/lib/tools-config";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
-import { Lock, Crown, Loader2 } from "lucide-react";
+import { Lock, Crown } from "lucide-react";
+import { Loader } from "@/components/ui/loader";
 import Header from "@/components/layout/Header";
 
 interface ProToolGuardProps {
@@ -29,7 +30,7 @@ const ProToolGuard = ({ toolId, children }: ProToolGuardProps) => {
   if (authLoading || subLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+        <Loader />
       </div>
     );
   }

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { BookOpen, ArrowRight, Calendar, Loader2, Search, Beaker } from "lucide-react";
+import { BookOpen, ArrowRight, Calendar, Search, Beaker } from "lucide-react";
+import { Loader } from "@/components/ui/loader";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { GlassPanel } from "@/components/ui/glass-panel";
@@ -89,7 +90,7 @@ const LearnIndex = () => {
         {/* Loading State */}
         {isLoading && (
           <div className="flex justify-center py-12">
-            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+            <Loader />
           </div>
         )}
 
@@ -107,7 +108,7 @@ const LearnIndex = () => {
           <section>
             {isSearching && (
               <div className="flex justify-center py-8">
-                <Loader2 className="w-6 h-6 animate-spin text-primary" />
+                <Loader size="sm" />
               </div>
             )}
             {!isSearching && searchResults && searchResults.length > 0 && (

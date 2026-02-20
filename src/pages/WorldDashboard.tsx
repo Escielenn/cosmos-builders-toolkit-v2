@@ -1,5 +1,6 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Edit, Globe, FileText, Rocket, Zap, Trash2, MoreVertical, Loader2, Calculator, Plus, Sparkles, Pencil, ChevronRight, Dna, Network, Sun, Crown, Cpu, Users, Download, Layers, BookOpen, Atom, Clock, Archive, Tag, Orbit, Languages, Weight, Eye } from "lucide-react";
+import { ArrowLeft, Edit, Globe, FileText, Rocket, Zap, Trash2, MoreVertical, Calculator, Plus, Sparkles, Pencil, ChevronRight, Dna, Network, Sun, Crown, Cpu, Users, Download, Layers, BookOpen, Atom, Clock, Archive, Tag, Orbit, Languages, Weight, Eye } from "lucide-react";
+import { Loader } from "@/components/ui/loader";
 import { CosmicTelemetry } from "@/components/layout/CosmicVelocityTicker";
 import { EPOCH_DATA } from "@/lib/cosmic-telemetry";
 import TagBadge from "@/components/tags/TagBadge";
@@ -687,7 +688,7 @@ const WorldDashboard = () => {
             >
               {renameWorksheet.isPending ? (
                 <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  <Loader variant="inline" size="sm" className="mr-2" />
                   Saving...
                 </>
               ) : (
@@ -782,7 +783,7 @@ const WorldDashboard = () => {
             >
               {updateWorld.isPending ? (
                 <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  <Loader variant="inline" size="sm" className="mr-2" />
                   Saving...
                 </>
               ) : (

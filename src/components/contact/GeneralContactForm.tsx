@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Loader2, Send, CheckCircle } from "lucide-react";
+import { Send, CheckCircle } from "lucide-react";
+import { Loader } from "@/components/ui/loader";
 import { useToast } from "@/hooks/use-toast";
 import { useContact } from "@/hooks/use-contact";
 import { useAuth } from "@/contexts/AuthContext";
@@ -45,17 +46,17 @@ const GeneralContactForm = ({ onSuccess }: GeneralContactFormProps) => {
       await submitContactForm.mutateAsync({ ...data, honeypot });
       setSubmitted(true);
       toast({
-        title: "Message sent!",
-        description: "We'll get back to you as soon as possible.",
+        title: "TRANSMISSION RECEIVED.",
+        description: "Response within 24-48 hours.",
       });
       reset();
       setHoneypot("");
       onSuccess?.();
     } catch (error) {
       toast({
-        title: "Failed to send message",
+        title: "TRANSMISSION FAILED.",
         description:
-          error instanceof Error ? error.message : "Please try again.",
+          error instanceof Error ? error.message : "Retry when ready.",
         variant: "destructive",
       });
     }
@@ -66,15 +67,15 @@ const GeneralContactForm = ({ onSuccess }: GeneralContactFormProps) => {
       <div className="text-center py-8">
         <CheckCircle className="w-12 h-12 text-emerald-500 mx-auto mb-4" />
         <h3 className="font-heading text-xl font-semibold mb-2">
-          Message Sent!
+          TRANSMISSION RECEIVED.
         </h3>
-        <p className="text-muted-foreground">We'll get back to you soon.</p>
+        <p className="text-muted-foreground">Response within 24-48 hours.</p>
         <Button
           variant="outline"
           className="mt-4"
           onClick={() => setSubmitted(false)}
         >
-          Send Another Message
+          NEW TRANSMISSION
         </Button>
       </div>
     );
@@ -88,7 +89,7 @@ const GeneralContactForm = ({ onSuccess }: GeneralContactFormProps) => {
       />
 
       <div className="space-y-2">
-        <Label htmlFor="contact-name">Name</Label>
+        <Label htmlFor="contact-name">CALLSIGN</Label>
         <Input
           id="contact-name"
           placeholder="Your name"
@@ -101,11 +102,11 @@ const GeneralContactForm = ({ onSuccess }: GeneralContactFormProps) => {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="contact-email">Email</Label>
+        <Label htmlFor="contact-email">FREQUENCY</Label>
         <Input
           id="contact-email"
           type="email"
-          placeholder="you@example.com"
+          placeholder="Your email"
           {...register("email")}
           disabled={isSubmitting}
         />
@@ -115,10 +116,10 @@ const GeneralContactForm = ({ onSuccess }: GeneralContactFormProps) => {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="contact-message">Message</Label>
+        <Label htmlFor="contact-message">TRANSMISSION</Label>
         <Textarea
           id="contact-message"
-          placeholder="How can we help?"
+          placeholder="Your message"
           rows={5}
           {...register("message")}
           disabled={isSubmitting}
@@ -135,11 +136,11 @@ const GeneralContactForm = ({ onSuccess }: GeneralContactFormProps) => {
         disabled={isSubmitting}
       >
         {isSubmitting ? (
-          <Loader2 className="w-4 h-4 animate-spin" />
+          <Loader variant="inline" size="sm" />
         ) : (
           <Send className="w-4 h-4" />
         )}
-        Send Message
+        TRANSMIT
       </Button>
     </form>
   );

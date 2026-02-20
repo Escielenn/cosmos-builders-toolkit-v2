@@ -13,14 +13,15 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Rocket, LogIn, UserPlus, Loader2 } from "lucide-react";
+import { Rocket, LogIn, UserPlus } from "lucide-react";
+import { Loader } from "@/components/ui/loader";
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
 import { Link } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import { TERMS_CONTENT } from "@/lib/legal/terms-content";
-const emailSchema = z.string().email("Please enter a valid email address");
-const passwordSchema = z.string().min(6, "Password must be at least 6 characters");
+const emailSchema = z.string().email("Valid email required.");
+const passwordSchema = z.string().min(6, "Minimum 6 characters.");
 
 const Auth = () => {
   const [searchParams] = useSearchParams();
@@ -76,14 +77,14 @@ const Auth = () => {
       toast({
         title: "Sign up failed",
         description: error.message === "User already registered" 
-          ? "An account with this email already exists. Please log in instead."
+          ? "Account already exists. Authenticate instead."
           : error.message,
         variant: "destructive",
       });
     } else {
       toast({
-        title: "Welcome to StellarForge!",
-        description: "Your account has been created successfully.",
+        title: "PERSONNEL FILE CREATED.",
+        description: "All instruments on standby.",
       });
       navigate("/");
     }
@@ -102,14 +103,14 @@ const Auth = () => {
       toast({
         title: "Sign in failed",
         description: error.message === "Invalid login credentials"
-          ? "Invalid email or password. Please try again."
+          ? "CREDENTIALS NOT RECOGNIZED. VERIFY AND RETRY."
           : error.message,
         variant: "destructive",
       });
     } else {
       toast({
-        title: "Welcome back!",
-        description: "You have successfully signed in.",
+        title: "SESSION ESTABLISHED.",
+        description: "Proceed.",
       });
       navigate("/");
     }
@@ -133,7 +134,7 @@ const Auth = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        <Loader />
       </div>
     );
   }
@@ -162,12 +163,12 @@ const Auth = () => {
         <GlassPanel className="w-full max-w-md p-8">
           <div className="text-center mb-6">
             <h1 className="font-display text-2xl font-bold mb-2">
-              {activeTab === "signup" ? "Create Your Account" : "Welcome Back"}
+              {activeTab === "signup" ? "ESTABLISH CREDENTIALS" : "RE-ESTABLISH CONTACT"}
             </h1>
             <p className="text-sm text-muted-foreground">
-              {activeTab === "signup" 
-                ? "Start building your science fiction worlds today"
-                : "Sign in to continue your worldbuilding journey"}
+              {activeTab === "signup"
+                ? "All instruments on standby."
+                : "Session required. Authenticate to proceed."}
             </p>
           </div>
 
@@ -186,7 +187,7 @@ const Auth = () => {
               <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
               <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
             </svg>
-            Continue with Google
+            AUTHENTICATE VIA GOOGLE
           </Button>
 
           {/* Other OAuth Providers — Coming Soon */}
@@ -212,7 +213,7 @@ const Auth = () => {
               <div className="w-full border-t border-border"></div>
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-card px-2 text-muted-foreground">Or continue with email</span>
+              <span className="bg-card px-2 text-muted-foreground">OR AUTHENTICATE VIA EMAIL</span>
             </div>
           </div>
 
@@ -220,11 +221,11 @@ const Auth = () => {
             <TabsList className="grid w-full grid-cols-2 mb-6">
               <TabsTrigger value="login" className="gap-2">
                 <LogIn className="w-4 h-4" />
-                Log In
+                AUTHENTICATE
               </TabsTrigger>
               <TabsTrigger value="signup" className="gap-2">
                 <UserPlus className="w-4 h-4" />
-                Sign Up
+                CREATE ACCOUNT
               </TabsTrigger>
             </TabsList>
 
@@ -260,11 +261,11 @@ const Auth = () => {
                 </div>
                 <Button type="submit" className="w-full gap-2" size="lg" disabled={isLoading}>
                   {isLoading ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <Loader variant="inline" size="sm" />
                   ) : (
                     <LogIn className="w-4 h-4" />
                   )}
-                  Sign In
+                  AUTHENTICATE
                 </Button>
               </form>
             </TabsContent>
@@ -337,11 +338,11 @@ const Auth = () => {
 
                 <Button type="submit" className="w-full gap-2" size="lg" disabled={isLoading || !tosAccepted}>
                   {isLoading ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <Loader variant="inline" size="sm" />
                   ) : (
                     <UserPlus className="w-4 h-4" />
                   )}
-                  Create Account
+                  CREATE ACCOUNT
                 </Button>
               </form>
             </TabsContent>
@@ -354,9 +355,8 @@ const Auth = () => {
                 Your Worlds Are Yours Alone
               </p>
               <p className="text-[11px] text-muted-foreground leading-relaxed">
-                We can't access your creative work. Ever. No AI training. No data mining.
-                No third-party sharing. Your unpublished stories stay unpublished until
-                you decide otherwise.
+                All creative content is encrypted, user-isolated, and never accessed by StellarForge systems. No AI training. No data mining.
+                No third-party sharing.
               </p>
             </div>
           </div>

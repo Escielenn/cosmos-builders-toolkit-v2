@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
-import { Search, Check, ImageIcon, Loader2 } from "lucide-react";
+import { Search, Check, ImageIcon } from "lucide-react";
+import { Loader } from "@/components/ui/loader";
 import {
   Dialog,
   DialogContent,
@@ -78,7 +79,7 @@ export function MoodboardPickerDialog({
         <ScrollArea className="h-80">
           {isLoading ? (
             <div className="flex items-center justify-center py-12">
-              <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+              <Loader size="sm" />
             </div>
           ) : filtered.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">

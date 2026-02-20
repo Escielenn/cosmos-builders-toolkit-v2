@@ -14,7 +14,6 @@ import {
   Building2,
   Scroll,
   AlertTriangle,
-  Loader2,
 } from "lucide-react";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";

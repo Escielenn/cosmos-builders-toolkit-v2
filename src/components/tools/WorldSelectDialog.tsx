@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Loader2, Globe, Plus, HardDrive } from "lucide-react";
+import { Globe, Plus, HardDrive } from "lucide-react";
+import { Loader } from "@/components/ui/loader";
 import {
   Dialog,
   DialogContent,
@@ -111,7 +112,7 @@ const WorldSelectDialog = ({
           <TabsContent value="existing" className="mt-4">
             {worldsLoading ? (
               <div className="flex items-center justify-center py-8">
-                <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+                <Loader size="sm" />
               </div>
             ) : worlds.length === 0 ? (
               <div className="text-center py-8 text-muted-foreground">
@@ -155,7 +156,7 @@ const WorldSelectDialog = ({
                   className="w-full mt-4"
                 >
                   {isLoading ? (
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    <Loader variant="inline" size="sm" className="mr-2" />
                   ) : null}
                   Save to {selectedWorld?.name || "Selected World"}
                 </Button>
@@ -189,7 +190,7 @@ const WorldSelectDialog = ({
               className="w-full"
             >
               {isLoading ? (
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                <Loader variant="inline" size="sm" className="mr-2" />
               ) : null}
               Create World & Save
             </Button>
@@ -208,7 +209,7 @@ const WorldSelectDialog = ({
                 className="w-full"
               >
                 {isLoading ? (
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  <Loader variant="inline" size="sm" className="mr-2" />
                 ) : null}
                 Save Locally
               </Button>

@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Loader2, Plus, FileText, Calendar } from "lucide-react";
+import { Plus, FileText, Calendar } from "lucide-react";
+import { Loader } from "@/components/ui/loader";
 import {
   Dialog,
   DialogContent,
@@ -107,7 +108,7 @@ const WorksheetSelectorDialog = ({
 
         {isLoading ? (
           <div className="flex items-center justify-center py-8">
-            <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+            <Loader size="sm" />
           </div>
         ) : shouldShowCreateForm ? (
           <div className="mt-4 space-y-4">
@@ -143,7 +144,7 @@ const WorksheetSelectorDialog = ({
                 className="flex-1"
               >
                 {isCreating ? (
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  <Loader variant="inline" size="sm" className="mr-2" />
                 ) : (
                   <Plus className="w-4 h-4 mr-2" />
                 )}

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { Download, Loader2, BookOpen } from "lucide-react";
+import { Download, BookOpen, Check } from "lucide-react";
+import { Loader } from "@/components/ui/loader";
 import {
   Dialog,
   DialogContent,
@@ -13,6 +14,11 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
+import { useExportPreferences } from "@/hooks/use-export-preferences";
+import { setActiveTheme, resetActiveTheme } from "@/lib/pdf/styles";
+import { EXPORT_THEMES } from "@/lib/export/themes";
+import { cn } from "@/lib/utils";
+import { htmlToPlainText, deepStripHtml } from "@/lib/html-utils";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -39,6 +45,7 @@ const WorldBibleDialog = ({
 }: WorldBibleDialogProps) => {
   const { toast } = useToast();
   const { user } = useAuth();
+  const { preferences, updatePreferences } = useExportPreferences();
   const [isLoading, setIsLoading] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -154,22 +161,30 @@ const WorldBibleDialog = ({
 
       setProgress(40);
 
-      // Filter to selected worksheets only
-      const selectedWsList = allWorksheets.filter((ws) =>
-        selectedWorksheets.has(ws.id)
-      );
+      // Filter to selected worksheets and strip HTML from data for PDF rendering
+      const selectedWsList = allWorksheets
+        .filter((ws) => selectedWorksheets.has(ws.id))
+        .map((ws) => ({ ...ws, data: deepStripHtml(ws.data) }));
       const chapters = group(selectedWsList);
 
       setProgress(60);
 
-      const blob = await pdf(
-        <WorldBibleTemplate
-          worldName={worldName}
-          worldDescription={worldDescription}
-          worldNotes={includeWorldNotes && worldNotes ? worldNotes : undefined}
-          chapters={chapters}
-        />
-      ).toBlob();
+      const cleanWorldNotes = includeWorldNotes && worldNotes ? htmlToPlainText(worldNotes) : undefined;
+
+      setActiveTheme(preferences.themeId);
+      let blob: Blob;
+      try {
+        blob = await pdf(
+          <WorldBibleTemplate
+            worldName={worldName}
+            worldDescription={worldDescription}
+            worldNotes={cleanWorldNotes}
+            chapters={chapters}
+          />
+        ).toBlob();
+      } finally {
+        resetActiveTheme();
+      }
 
       setProgress(90);
 
@@ -217,7 +232,7 @@ const WorldBibleDialog = ({
 
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
-            <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+            <Loader />
           </div>
         ) : (
           <div className="flex-1 overflow-y-auto space-y-4 py-2 pr-1">
@@ -326,6 +341,41 @@ const WorldBibleDialog = ({
           </div>
         )}
 
+        {/* Inline theme picker */}
+        <div className="pt-3 border-t border-border">
+          <Label className="text-xs text-muted-foreground mb-2 block">PDF Theme</Label>
+          <div className="flex gap-2 flex-wrap">
+            {EXPORT_THEMES.map((theme) => {
+              const isSelected = preferences.themeId === theme.id;
+              return (
+                <button
+                  key={theme.id}
+                  type="button"
+                  onClick={() => updatePreferences({ themeId: theme.id })}
+                  title={theme.name}
+                  className={cn(
+                    "flex gap-0.5 p-1.5 rounded-md border transition-all",
+                    isSelected
+                      ? "border-primary ring-1 ring-primary/50"
+                      : "border-border hover:border-primary/50"
+                  )}
+                >
+                  {theme.swatch.map((color, i) => (
+                    <div
+                      key={i}
+                      className="w-4 h-4 rounded-sm border border-border/30"
+                      style={{ backgroundColor: color }}
+                    />
+                  ))}
+                  {isSelected && (
+                    <Check className="w-3 h-3 text-primary ml-0.5" />
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
@@ -340,7 +390,7 @@ const WorldBibleDialog = ({
           >
             {isGenerating ? (
               <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                <Loader variant="inline" size="sm" className="mr-2" />
                 Generating...
               </>
             ) : (

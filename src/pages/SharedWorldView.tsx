@@ -1,5 +1,6 @@
 import { useParams, Link } from "react-router-dom";
-import { Loader2, Calendar, AlertCircle } from "lucide-react";
+import { Calendar, AlertCircle } from "lucide-react";
+import { Loader } from "@/components/ui/loader";
 import { Badge } from "@/components/ui/badge";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
@@ -21,7 +22,7 @@ const SharedWorldView = () => {
       <main className="container mx-auto px-4 py-8 max-w-4xl">
         {isLoading && (
           <div className="flex flex-col items-center justify-center py-24">
-            <Loader2 className="w-8 h-8 animate-spin text-primary mb-4" />
+            <Loader className="mb-4" />
             <p className="text-sm text-muted-foreground">Loading shared world...</p>
           </div>
         )}

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { Loader2, CheckCircle2, AlertCircle, Globe } from "lucide-react";
+import { CheckCircle2, AlertCircle, Globe } from "lucide-react";
+import { Loader } from "@/components/ui/loader";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
 import SharedPageHeader from "@/components/sharing/SharedPageHeader";
@@ -55,7 +56,7 @@ const InviteAccept = () => {
         <SharedPageHeader />
         <main className="container mx-auto px-4 py-16 max-w-md">
           <div className="flex flex-col items-center justify-center py-16">
-            <Loader2 className="w-8 h-8 animate-spin text-primary mb-4" />
+            <Loader className="mb-4" />
             <p className="text-sm text-muted-foreground">Accepting invitation...</p>
           </div>
         </main>
@@ -77,7 +78,7 @@ const InviteAccept = () => {
                 ? "Already a collaborator"
                 : result.is_owner
                   ? "This is your world"
-                  : "Invitation accepted!"}
+                  : "INVITATION ACCEPTED."}
             </h1>
             <p className="text-muted-foreground mb-6">
               {result.already_member

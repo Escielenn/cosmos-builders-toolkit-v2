@@ -12,7 +12,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Loader2, Send, CheckCircle, Copy } from "lucide-react";
+import { Send, CheckCircle, Copy } from "lucide-react";
+import { Loader } from "@/components/ui/loader";
 import { useToast } from "@/hooks/use-toast";
 import { useContact } from "@/hooks/use-contact";
 import { useAuth } from "@/contexts/AuthContext";
@@ -60,7 +61,7 @@ const SupportTicketForm = ({ onSuccess }: SupportTicketFormProps) => {
       setTicketNumber(result.ticketNumber);
       setSubmitted(true);
       toast({
-        title: "Ticket submitted!",
+        title: "TICKET LOGGED.",
         description: `Your ticket number is ${result.ticketNumber}`,
       });
       reset();
@@ -68,9 +69,9 @@ const SupportTicketForm = ({ onSuccess }: SupportTicketFormProps) => {
       onSuccess?.();
     } catch (error) {
       toast({
-        title: "Failed to submit ticket",
+        title: "SUBMISSION FAILED.",
         description:
-          error instanceof Error ? error.message : "Please try again.",
+          error instanceof Error ? error.message : "Retry when ready.",
         variant: "destructive",
       });
     }
@@ -80,7 +81,7 @@ const SupportTicketForm = ({ onSuccess }: SupportTicketFormProps) => {
     if (ticketNumber) {
       navigator.clipboard.writeText(ticketNumber);
       toast({
-        title: "Copied!",
+        title: "COPIED.",
         description: "Ticket number copied to clipboard.",
       });
     }
@@ -91,10 +92,10 @@ const SupportTicketForm = ({ onSuccess }: SupportTicketFormProps) => {
       <div className="text-center py-8">
         <CheckCircle className="w-12 h-12 text-emerald-500 mx-auto mb-4" />
         <h3 className="font-heading text-xl font-semibold mb-2">
-          Ticket Submitted!
+          TICKET LOGGED.
         </h3>
         <p className="text-muted-foreground mb-4">
-          We'll respond as soon as possible.
+          Response within 24-48 hours.
         </p>
         <div className="inline-flex items-center gap-2 bg-muted px-4 py-2 rounded-md mb-4">
           <span className="font-mono text-sm">{ticketNumber}</span>
@@ -112,7 +113,7 @@ const SupportTicketForm = ({ onSuccess }: SupportTicketFormProps) => {
             setTicketNumber(null);
           }}
         >
-          Submit Another Ticket
+          NEW SUBMISSION
         </Button>
       </div>
     );
@@ -127,7 +128,7 @@ const SupportTicketForm = ({ onSuccess }: SupportTicketFormProps) => {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="ticket-name">Name</Label>
+          <Label htmlFor="ticket-name">CALLSIGN</Label>
           <Input
             id="ticket-name"
             placeholder="Your name"
@@ -140,11 +141,11 @@ const SupportTicketForm = ({ onSuccess }: SupportTicketFormProps) => {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="ticket-email">Email</Label>
+          <Label htmlFor="ticket-email">FREQUENCY</Label>
           <Input
             id="ticket-email"
             type="email"
-            placeholder="you@example.com"
+            placeholder="Your email"
             {...register("email")}
             disabled={isSubmitting}
           />
@@ -156,7 +157,7 @@ const SupportTicketForm = ({ onSuccess }: SupportTicketFormProps) => {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="ticket-category">Category</Label>
+          <Label htmlFor="ticket-category">SYSTEM</Label>
           <Controller
             name="category"
             control={control}
@@ -167,7 +168,7 @@ const SupportTicketForm = ({ onSuccess }: SupportTicketFormProps) => {
                 disabled={isSubmitting}
               >
                 <SelectTrigger id="ticket-category">
-                  <SelectValue placeholder="Select category" />
+                  <SelectValue placeholder="Category" />
                 </SelectTrigger>
                 <SelectContent>
                   {TICKET_CATEGORIES.map((cat) => (
@@ -187,7 +188,7 @@ const SupportTicketForm = ({ onSuccess }: SupportTicketFormProps) => {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="ticket-priority">Priority</Label>
+          <Label htmlFor="ticket-priority">ALERT LEVEL</Label>
           <Controller
             name="priority"
             control={control}
@@ -198,7 +199,7 @@ const SupportTicketForm = ({ onSuccess }: SupportTicketFormProps) => {
                 disabled={isSubmitting}
               >
                 <SelectTrigger id="ticket-priority">
-                  <SelectValue placeholder="Select priority" />
+                  <SelectValue placeholder="Priority" />
                 </SelectTrigger>
                 <SelectContent>
                   {TICKET_PRIORITIES.map((pri) => (
@@ -219,10 +220,10 @@ const SupportTicketForm = ({ onSuccess }: SupportTicketFormProps) => {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="ticket-subject">Subject</Label>
+        <Label htmlFor="ticket-subject">SIGNAL HEADER</Label>
         <Input
           id="ticket-subject"
-          placeholder="Brief description of your issue"
+          placeholder="Subject"
           {...register("subject")}
           disabled={isSubmitting}
         />
@@ -232,10 +233,10 @@ const SupportTicketForm = ({ onSuccess }: SupportTicketFormProps) => {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="ticket-message">Message</Label>
+        <Label htmlFor="ticket-message">TRANSMISSION</Label>
         <Textarea
           id="ticket-message"
-          placeholder="Please describe your issue in detail..."
+          placeholder="Describe the issue"
           rows={5}
           {...register("message")}
           disabled={isSubmitting}
@@ -252,11 +253,11 @@ const SupportTicketForm = ({ onSuccess }: SupportTicketFormProps) => {
         disabled={isSubmitting}
       >
         {isSubmitting ? (
-          <Loader2 className="w-4 h-4 animate-spin" />
+          <Loader variant="inline" size="sm" />
         ) : (
           <Send className="w-4 h-4" />
         )}
-        Submit Ticket
+        SUBMIT
       </Button>
     </form>
   );
