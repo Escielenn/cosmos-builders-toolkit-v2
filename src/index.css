@@ -111,6 +111,10 @@
     --sf-accent-amber: 30 100% 64%;       /* #FFB347 */
     --sf-glow-amber-accent: 30 100% 64% / 0.2;
 
+    /* v2.2 Stellar Blue — wonder/creativity/explore */
+    --sf-stellar: 220 82% 65%;            /* #5B8DEF */
+    --sf-glow-stellar: 220 82% 65% / 0.2;
+
     /* Font Stack Variables */
     --sf-font-display: 'MD Nichrome', 'Jura', system-ui, sans-serif;
     --sf-font-heading: 'Jura', system-ui, sans-serif;

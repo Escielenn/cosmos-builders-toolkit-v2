@@ -54,10 +54,10 @@ const CreateWorldButton = () => {
       <button onClick={handleClick} className="w-full text-left">
         <GlassPanel
           hover
-          className="p-5 h-full min-h-[200px] flex flex-col items-center justify-center gap-3 border-dashed border-2 hover:border-primary/50 group"
+          className="p-5 h-full min-h-[200px] flex flex-col items-center justify-center gap-3 border-dashed border-2 border-[#5B8DEF]/15 hover:border-[#5B8DEF]/40 group"
         >
-          <div className="w-14 h-14 rounded-full bg-gradient-to-br from-primary/10 to-accent/10 border border-primary/20 flex items-center justify-center group-hover:scale-110 transition-transform">
-            <Plus className="w-7 h-7 text-primary" />
+          <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[#5B8DEF]/10 to-[#5B8DEF]/5 border border-[#5B8DEF]/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+            <Plus className="w-7 h-7 text-[#5B8DEF]" />
           </div>
           <div className="text-center">
             <h3 className="font-heading font-semibold text-lg">Create New World</h3>
