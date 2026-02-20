@@ -1,7 +1,7 @@
 /* ==========================================================================
-   ANALOG TEXTURE OVERLAY
-   Film grain + scanlines + CRT vignette + subtle animation
-   Goal: subliminal mission-control texture, not a retro filter
+   ANALOG TEXTURE OVERLAY — v2.2 (subliminal only)
+   Film grain + scanlines. Structural analog elements carry the retro feel;
+   these layers are barely perceptible background noise.
    ========================================================================== */
 
 .sf-texture-overlay {
@@ -26,7 +26,7 @@
   left: -50%;
   width: 200%;
   height: 200%;
-  opacity: 0.05;
+  opacity: 0.015;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
   background-size: 256px 256px;
   animation: sf-grain-drift 0.6s steps(6) infinite;
@@ -43,7 +43,7 @@
 }
 
 /* --- SCANLINES ---
-   Horizontal lines every 4px. Subtle but perceptible on flat areas.
+   Horizontal lines every 4px. Barely perceptible.
 */
 .sf-scanlines {
   position: absolute;
@@ -51,7 +51,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  opacity: 0.035;
+  opacity: 0.008;
   background: repeating-linear-gradient(
     0deg,
     transparent,
@@ -61,29 +61,9 @@
   );
 }
 
-/* --- CRT VIGNETTE ---
-   Radial darkening at screen edges, like an analog monitor.
-*/
-.sf-texture-overlay::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(
-    ellipse at center,
-    transparent 60%,
-    rgba(0, 0, 0, 0.15) 100%
-  );
-  opacity: 0.4;
-  pointer-events: none;
-}
-
 /* --- SUBTLE LUMINANCE FLICKER ---
    Very slow brightness variation on the grain layer.
-   Simulates analog monitor luminance instability.
-   4-second cycle — the user should not consciously notice it.
+   4-second cycle — subliminal only.
 */
 @media (prefers-reduced-motion: no-preference) {
   .sf-grain {
@@ -94,23 +74,26 @@
 }
 
 @keyframes sf-grain-breathe {
-  0%, 100% { opacity: 0.04; }
-  50%      { opacity: 0.06; }
+  0%, 100% { opacity: 0.012; }
+  50%      { opacity: 0.018; }
 }
 
-/* --- MOBILE: Reduce grain for performance ---
+/* --- MOBILE: Minimal grain, no scanlines ---
    Grain animation is GPU-intensive on mobile.
 */
 @media (max-width: 768px) {
   .sf-grain {
-    opacity: 0.025;
+    opacity: 0.008;
     animation: sf-grain-breathe 4s ease-in-out infinite;
-    /* Remove the drift animation on mobile — just breathe */
   }
 
   @keyframes sf-grain-breathe {
-    0%, 100% { opacity: 0.02; }
-    50%      { opacity: 0.03; }
+    0%, 100% { opacity: 0.006; }
+    50%      { opacity: 0.010; }
+  }
+
+  .sf-scanlines {
+    display: none;
   }
 }
 
@@ -120,7 +103,7 @@
 @media (prefers-reduced-motion: reduce) {
   .sf-grain {
     animation: none;
-    opacity: 0.04;
+    opacity: 0.012;
   }
 }
 
