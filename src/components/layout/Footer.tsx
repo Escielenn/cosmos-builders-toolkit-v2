@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Mail, Linkedin, Instagram } from "lucide-react";
 import CubeLogo from "@/components/icons/CubeLogo";
 import SubstackIcon from "@/components/icons/SubstackIcon";
-import CosmicVelocityTicker from "./CosmicVelocityTicker";
+/* CosmicVelocityTicker removed — velocity data now in StatusBar */
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -159,8 +159,7 @@ const Footer = () => {
         {/* Bottom Bar */}
         <div className="mt-12 pt-8 border-t border-dashed border-border/20">
           <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
-            <div className="flex items-end gap-6">
-              <div className="text-xs text-muted-foreground text-center sm:text-left">
+            <div className="text-xs text-muted-foreground text-center sm:text-left">
               <p>
                 A{" "}
                 <a
@@ -188,8 +187,6 @@ const Footer = () => {
               <p className="mt-1">
                 Unauthorized copying, modification, or distribution prohibited.
               </p>
-              </div>
-              <CosmicVelocityTicker />
             </div>
             <p className="text-xs text-muted-foreground">
               Made with science and imagination

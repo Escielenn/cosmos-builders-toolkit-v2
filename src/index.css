@@ -198,6 +198,7 @@
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     position: relative;
     min-height: 100vh;
+    padding-bottom: 24px; /* v2.2 status bar clearance */
   }
 
   #root {
@@ -496,6 +497,26 @@
   }
   .sf-bracket-panel[data-bracket-color="amber"] .sf-bracket-corner {
     border-color: rgba(255, 179, 71, 0.3);
+  }
+
+  /* Persistent status bar — fixed bottom HUD */
+  .sf-status-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 24px;
+    background: hsl(var(--sf-void) / 0.95);
+    border-top: 1px dashed rgba(224, 228, 232, 0.06);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    z-index: 9000;
+    font-family: var(--sf-font-mono);
+    font-size: 8px;
+    letter-spacing: 0.5px;
+    color: rgba(224, 228, 232, 0.25);
   }
 }
 

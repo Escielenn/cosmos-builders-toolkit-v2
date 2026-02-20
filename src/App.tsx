@@ -10,6 +10,7 @@ import ScrollToTop from "./components/ScrollToTop";
 import ContactFAB from "./components/contact/ContactFAB";
 import CookieConsent from "./components/common/CookieConsent";
 import TextureOverlay from "./components/layout/TextureOverlay";
+import StatusBar from "./components/layout/StatusBar";
 import { Loader2 } from "lucide-react";
 import ErrorBoundary from "./components/ErrorBoundary";
 
@@ -329,6 +330,7 @@ const App = () => (
             <ContactFAB />
             <CookieConsent />
             <TextureOverlay />
+            <StatusBar />
           </BrowserRouter>
         </TooltipProvider>
       </BackgroundProvider>
