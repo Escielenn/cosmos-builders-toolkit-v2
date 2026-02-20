@@ -250,9 +250,9 @@
     @apply glass-panel relative;
   }
 
-  .glass-panel-glow::after {
+  .glass-panel-glow::before {
     content: "";
-    @apply absolute bottom-0 left-[5%] right-[5%] h-px pointer-events-none;
+    @apply absolute bottom-0 left-[5%] right-[5%] h-px pointer-events-none z-[1];
     background: linear-gradient(to right, transparent, rgba(61, 255, 205, 0.25), transparent);
   }
 
@@ -1114,52 +1114,42 @@ html {
   .sf-skeleton--value { height: 14px; width: 60px; display: inline-block; }
   .sf-skeleton--avatar { width: 32px; height: 32px; /* rectangular, not circular */ }
 
-  /* Card hover — bilateral lines (v2.2) */
+  /* Card hover — bottom-edge fill bar */
   .sf-card-hover {
     position: relative;
-    transition: transform var(--duration-normal) var(--ease-out-expo),
-                box-shadow var(--duration-smooth) ease;
+    transition: transform var(--duration-normal) var(--ease-out-expo);
   }
 
-  .sf-card-hover::before,
   .sf-card-hover::after {
     content: '';
     position: absolute;
-    top: 8px;
-    bottom: 8px;
-    width: 2px;
-    background: transparent;
-    transition: background var(--duration-normal) ease-out;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: rgba(61, 255, 205, 0.6);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.35s cubic-bezier(0.19, 1, 0.22, 1);
     z-index: 1;
     pointer-events: none;
   }
 
-  .sf-card-hover::before { left: -1px; }
-  .sf-card-hover::after { right: -1px; }
-
   .sf-card-hover:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
   }
 
-  .sf-card-hover:hover::before,
   .sf-card-hover:hover::after {
-    background: rgba(91, 141, 239, 0.4);   /* stellar blue default */
+    transform: scaleX(1);
   }
 
-  .sf-card-hover:hover .sf-card-icon {
-    animation: sf-icon-float 2s ease-in-out infinite;
+  /* Card hover color variants */
+  .sf-card-hover[data-hover-color="stellar"]::after {
+    background: rgba(91, 141, 239, 0.6);
   }
 
-  /* Bilateral hover color variants */
-  .sf-card-hover[data-hover-color="teal"]:hover::before,
-  .sf-card-hover[data-hover-color="teal"]:hover::after {
-    background: rgba(61, 255, 205, 0.4);
-  }
-
-  .sf-card-hover[data-hover-color="amber"]:hover::before,
-  .sf-card-hover[data-hover-color="amber"]:hover::after {
-    background: rgba(255, 179, 71, 0.4);
+  .sf-card-hover[data-hover-color="amber"]::after {
+    background: rgba(255, 179, 71, 0.6);
   }
 
   /* Button hover: fill-sweep (replaces glow-lift) */
@@ -1285,7 +1275,7 @@ html {
     margin-bottom: 0.5rem !important;
   }
 
-  .glass-panel-glow::after {
+  .glass-panel-glow::before {
     display: none !important;
   }
 
