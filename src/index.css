@@ -87,9 +87,11 @@
     --sf-surface-elevated: 222 20% 12%;  /* #161C2B — elevated panels */
     --sf-panel-alpha: 222 25% 9% / 0.92;      /* floating panels */
     --sf-tool-panel-alpha: 222 25% 9% / 0.95; /* Layer 3 tool panels */
-    --sf-text-primary: 0 0% 98%;         /* #FAFAFA */
-    --sf-text-muted: 0 0% 58%;           /* #949494 - WCAG AA compliant */
-    --sf-text-ghost: 0 0% 24%;           /* #3A3A3F */
+    --sf-text-primary: 214 12% 89%;       /* #E0E4E8 — cool off-white */
+    --sf-text-muted: 212 10% 73%;        /* #B0B8C4 — cool gray */
+    --sf-text-ghost: 220 12% 20%;        /* #2D3340 — navy ghost */
+    --sf-text-label: 214 12% 89% / 0.35; /* labels */
+    --sf-text-hint: 214 12% 89% / 0.18;  /* hints, credits */
 
     /* Accent Spectrum — use ONE per component as focal point */
     --sf-cyan: 190 100% 50%;             /* #00D4FF */
