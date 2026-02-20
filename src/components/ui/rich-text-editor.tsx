@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useEffect, useCallback } from "react";
+import { BracketPanel } from "@/components/ui/bracket-panel";
 
 interface RichTextEditorProps {
   content: string;
@@ -78,8 +79,8 @@ const RichTextEditor = ({
     editorProps: {
       attributes: {
         class: cn(
-          "prose prose-invert prose-sm max-w-none focus:outline-none",
-          "prose-headings:text-foreground prose-headings:font-semibold",
+          "prose prose-sm max-w-none focus:outline-none",
+          "prose-headings:font-semibold",
           "prose-h1:text-xl prose-h1:mt-4 prose-h1:mb-2",
           "prose-h2:text-lg prose-h2:mt-3 prose-h2:mb-2",
           "prose-h3:text-base prose-h3:mt-2 prose-h3:mb-1",
@@ -112,15 +113,16 @@ const RichTextEditor = ({
   if (!editor) return null;
 
   return (
+    <BracketPanel color="stellar">
     <div
       className={cn(
-        "rounded-md border border-border bg-background overflow-hidden",
+        "rounded-md border border-[#5B8DEF]/15 bg-background overflow-hidden",
         className
       )}
     >
       {/* Toolbar */}
       {!readOnly && (
-        <div className="flex items-center gap-0.5 p-1.5 border-b border-border bg-muted/30 flex-wrap">
+        <div className="sf-writing-toolbar flex items-center gap-0.5 p-1.5 border-b border-border bg-muted/30 flex-wrap">
           <ToolbarButton
             onClick={() => editor.chain().focus().toggleBold().run()}
             isActive={editor.isActive("bold")}
@@ -233,11 +235,13 @@ const RichTextEditor = ({
         editor={editor}
         className={cn(
           "px-3 py-2 [&_.tiptap]:outline-none [&_.tiptap]:min-h-[var(--editor-min-h)]",
+          !readOnly && "sf-writing-surface",
           readOnly && "bg-muted/30"
         )}
         style={{ "--editor-min-h": minHeight } as React.CSSProperties}
       />
     </div>
+    </BracketPanel>
   );
 };
 

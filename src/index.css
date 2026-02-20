@@ -518,6 +518,48 @@
     letter-spacing: 0.5px;
     color: rgba(224, 228, 232, 0.25);
   }
+
+  /* Writing surface — warm cream for RTF editor (the captain's log) */
+  .sf-writing-surface {
+    background: #F5F3EF;
+    color: #1A1A2E;
+    caret-color: #5B8DEF;
+    line-height: 1.7;
+  }
+
+  .sf-writing-surface ::selection {
+    background: rgba(91, 141, 239, 0.2);
+    color: #1A1A2E;
+  }
+
+  .sf-writing-surface .ProseMirror {
+    color: #1A1A2E;
+  }
+
+  .sf-writing-surface .ProseMirror h1,
+  .sf-writing-surface .ProseMirror h2,
+  .sf-writing-surface .ProseMirror h3 {
+    color: #1A1A2E;
+  }
+
+  .sf-writing-surface .ProseMirror blockquote {
+    border-left-color: rgba(91, 141, 239, 0.3);
+    color: #3A3A5C;
+  }
+
+  .sf-writing-surface .ProseMirror code {
+    background: rgba(91, 141, 239, 0.08);
+    color: #1A1A2E;
+  }
+
+  /* Writing toolbar — dark frame, stellar blue accents */
+  .sf-writing-toolbar {
+    border-bottom: 1px dashed rgba(91, 141, 239, 0.12) !important;
+  }
+
+  .sf-writing-toolbar button:hover {
+    color: #5B8DEF !important;
+  }
 }
 
 @layer utilities {
