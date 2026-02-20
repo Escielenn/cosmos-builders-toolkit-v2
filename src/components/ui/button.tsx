@@ -11,8 +11,8 @@ const buttonVariants = cva(
       variant: {
         // Primary: solid cyan with fill-sweep
         default: "bg-primary text-primary-foreground sf-btn-lift",
-        // Destructive: crimson with danger fill-sweep
-        destructive: "bg-destructive text-destructive-foreground sf-fill-sweep sf-fill-sweep--danger",
+        // Destructive: crimson with white fill-sweep (same pattern as primary)
+        destructive: "bg-destructive text-destructive-foreground sf-btn-lift",
         // Outline: transparent with border, primary fill-sweep
         outline: "border border-muted-foreground bg-transparent sf-fill-sweep sf-fill-sweep--primary hover:border-primary hover:text-primary",
         // Secondary: elevated surface with neutral fill-sweep

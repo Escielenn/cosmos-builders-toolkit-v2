@@ -1195,19 +1195,18 @@ html {
     background: rgba(255, 179, 71, 0.6);
   }
 
-  /* Button hover: fill-sweep (replaces glow-lift) */
+  /* Button hover: white fill-sweep for already-green primary buttons */
   .sf-btn-lift {
     position: relative;
     overflow: hidden;
-    transition: border-color 0.35s cubic-bezier(0.19, 1, 0.22, 1),
-                color 0.35s cubic-bezier(0.19, 1, 0.22, 1);
+    transition: color 0.35s cubic-bezier(0.19, 1, 0.22, 1);
   }
 
   .sf-btn-lift::before {
     content: "";
     position: absolute;
     inset: 0;
-    background: rgba(61, 255, 205, 0.12);
+    background: rgba(255, 255, 255, 0.92);
     transform: scaleX(0);
     transform-origin: left center;
     transition: transform 0.35s cubic-bezier(0.19, 1, 0.22, 1);
@@ -1219,7 +1218,7 @@ html {
   }
 
   .sf-btn-lift:hover {
-    border-color: rgba(61, 255, 205, 0.3);
+    color: #0A0E17;
   }
 
   .sf-btn-lift:active {
@@ -1227,7 +1226,7 @@ html {
     transition-duration: var(--duration-instant);
   }
 
-  /* Ensure button text sits above the fill-sweep */
+  /* Ensure button text/icons sit above the fill-sweep */
   .sf-btn-lift > * {
     position: relative;
     z-index: 1;
