@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { User, LogIn, LogOut, ChevronDown, Crown, Menu, Globe, Wrench, BookOpen, Sparkles, Mail, Settings, Search, Image } from "lucide-react";
+import { User, LogIn, LogOut, ChevronDown, Crown, Menu, Globe, Wrench, BookOpen, Sparkles, Mail, Settings, Search, Image, Download, Library, Archive } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import CubeLogo from "@/components/icons/CubeLogo";
@@ -104,16 +104,30 @@ const Header = () => {
               </SheetTitle>
             </SheetHeader>
             <nav className="flex flex-col gap-1 mt-8">
-              <button
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  scrollToSection("worlds");
-                }}
-                className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors text-left"
+              <Link
+                to="/worlds"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
               >
                 <Globe className="w-5 h-5" />
                 My Worlds
-              </button>
+              </Link>
+              <Link
+                to="/collection"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
+              >
+                <Library className="w-5 h-5" />
+                My Collection
+              </Link>
+              <Link
+                to="/archive"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
+              >
+                <Archive className="w-5 h-5" />
+                Archive
+              </Link>
               <button
                 onClick={() => {
                   setMobileMenuOpen(false);
@@ -180,7 +194,7 @@ const Header = () => {
                   }}
                 >
                   <LogIn className="w-4 h-4" />
-                  Sign In
+                  AUTHENTICATE
                 </Button>
               </div>
             )}
@@ -191,31 +205,31 @@ const Header = () => {
         <nav className="hidden md:flex items-center gap-8">
           <button
             onClick={() => scrollToSection("worlds")}
-            className="text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground hover:text-primary transition-colors duration-300"
+            className="sf-nav-link text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground hover:text-primary transition-colors duration-300"
           >
             Worlds
           </button>
           <button
             onClick={() => scrollToSection("tools")}
-            className="text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground hover:text-primary transition-colors duration-300"
+            className="sf-nav-link text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground hover:text-primary transition-colors duration-300"
           >
             Tools
           </button>
           <Link
             to="/features"
-            className="text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground hover:text-primary transition-colors duration-300"
+            className="sf-nav-link text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground hover:text-primary transition-colors duration-300"
           >
             Features
           </Link>
           <Link
             to="/learn"
-            className="text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground hover:text-primary transition-colors duration-300"
+            className="sf-nav-link text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground hover:text-primary transition-colors duration-300"
           >
             Learn
           </Link>
           <Link
             to="/pricing"
-            className={`text-xs font-medium uppercase tracking-[0.15em] transition-colors duration-300 ${
+            className={`sf-nav-link text-xs font-medium uppercase tracking-[0.15em] transition-colors duration-300 ${
               isSubscribed
                 ? "text-amber-600 dark:text-amber-400 hover:text-amber-300 flex items-center gap-1.5"
                 : "text-muted-foreground hover:text-primary"
@@ -232,7 +246,7 @@ const Header = () => {
           </Link>
           <Link
             to="/contact"
-            className="text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground hover:text-primary transition-colors duration-300"
+            className="sf-nav-link text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground hover:text-primary transition-colors duration-300"
           >
             Contact
           </Link>
@@ -251,6 +265,17 @@ const Header = () => {
               <span className="text-xs">⌘</span>K
             </kbd>
           </Button>
+          {!loading && user && !isSubscribed && (
+            <Button
+              variant="outline"
+              size="sm"
+              className="hidden sm:inline-flex gap-1.5 border-amber-500/50 text-amber-600 dark:text-amber-400 hover:bg-amber-500/10"
+              onClick={() => navigate("/pricing")}
+            >
+              <Crown className="w-3.5 h-3.5" />
+              Upgrade to Pro
+            </Button>
+          )}
           {!loading && user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -276,6 +301,20 @@ const Header = () => {
                   <User className="w-4 h-4 mr-2" />
                   Profile
                 </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => navigate("/worlds")}>
+                  <Globe className="w-4 h-4 mr-2" />
+                  My Worlds
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate("/collection")}>
+                  <Library className="w-4 h-4 mr-2" />
+                  My Collection
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate("/archive")}>
+                  <Archive className="w-4 h-4 mr-2" />
+                  Archive
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => {
                   setSettingsTab("account");
                   setSettingsOpen(true);
@@ -289,6 +328,13 @@ const Header = () => {
                 }}>
                   <Image className="w-4 h-4 mr-2" />
                   Background
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => {
+                  setSettingsTab("export");
+                  setSettingsOpen(true);
+                }}>
+                  <Download className="w-4 h-4 mr-2" />
+                  Export Settings
                 </DropdownMenuItem>
                 {isSubscribed ? (
                   <DropdownMenuItem onClick={() => navigate("/pricing")} className="text-amber-600 dark:text-amber-400">
@@ -316,7 +362,7 @@ const Header = () => {
               onClick={() => navigate("/auth")}
             >
               <LogIn className="w-4 h-4" />
-              <span className="hidden sm:inline">Sign In</span>
+              <span className="hidden sm:inline">AUTHENTICATE</span>
             </Button>
           )}
         </div>

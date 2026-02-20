@@ -12,14 +12,14 @@ const ShowcaseHero = () => {
           {/* Badge */}
           <Badge className="mb-8 sf-reveal sf-reveal-1" variant="secondary">
             <Sparkles className="w-3 h-3 mr-1" />
-            See StellarForge in Action
+            SYSTEMS OVERVIEW
           </Badge>
 
           {/* Headline */}
           <h1 className="font-display font-light text-4xl md:text-5xl lg:text-7xl mb-6 leading-tight sf-reveal sf-reveal-2">
-            <span className="uppercase tracking-sf-wide">Tools That Think</span>
+            <span className="uppercase tracking-sf-wide">INSTRUMENT</span>
             <br />
-            <span className="gradient-text uppercase tracking-sf-wide">Like Scientists</span>
+            <span className="gradient-text uppercase tracking-sf-wide">MANIFEST</span>
           </h1>
 
           {/* Subhead */}
@@ -109,14 +109,9 @@ const DashboardMockup = () => {
         </div>
       </div>
 
-      {/* Animated glow effect */}
+      {/* Subtle scan line accent */}
       <div className="absolute inset-0 pointer-events-none">
-        <div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full sf-breathe"
-          style={{
-            background: "radial-gradient(circle, hsl(var(--sf-glow-cyan)) 0%, transparent 70%)",
-          }}
-        />
+        <div className="absolute top-1/2 left-[10%] right-[10%] h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
       </div>
     </div>
   );
@@ -131,12 +126,12 @@ interface MockToolCardProps {
 
 const MockToolCard = ({ title, value, delay, color }: MockToolCardProps) => {
   const colorMap = {
-    cyan: "border-sf-cyan/30 shadow-[0_0_15px_hsl(var(--sf-glow-cyan))]",
-    amber: "border-amber-500/30 shadow-[0_0_15px_hsl(43_100%_50%/0.2)]",
-    violet: "border-sf-violet/30 shadow-[0_0_15px_hsl(263_74%_63%/0.2)]",
-    emerald: "border-sf-emerald/30 shadow-[0_0_15px_hsl(var(--sf-glow-emerald))]",
-    azure: "border-sf-azure/30 shadow-[0_0_15px_hsl(215_100%_65%/0.2)]",
-    magenta: "border-sf-magenta/30 shadow-[0_0_15px_hsl(var(--sf-glow-magenta))]",
+    cyan: "border-sf-cyan/30",
+    amber: "border-amber-500/30",
+    violet: "border-sf-violet/30",
+    emerald: "border-sf-emerald/30",
+    azure: "border-sf-azure/30",
+    magenta: "border-sf-magenta/30",
   };
 
   const textColorMap = {

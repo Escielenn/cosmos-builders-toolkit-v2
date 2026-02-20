@@ -250,10 +250,10 @@
     @apply glass-panel relative;
   }
 
-  .glass-panel-glow::before {
+  .glass-panel-glow::after {
     content: "";
-    @apply absolute inset-0 -z-10 rounded-none opacity-50 blur-xl;
-    background: var(--gradient-subtle);
+    @apply absolute bottom-0 left-[5%] right-[5%] h-px pointer-events-none;
+    background: linear-gradient(to right, transparent, rgba(61, 255, 205, 0.25), transparent);
   }
 
   /* Gradient text */
@@ -369,23 +369,6 @@
      ═══════════════════════════════════════════════════════════════════════ */
 
   /* Analog texture overlay is now in TextureOverlay component + texture-overlay.css */
-
-  /* Radial accent glow - positioned off-center for depth */
-  .sf-glow-ambient {
-    @apply relative;
-  }
-
-  .sf-glow-ambient::before {
-    content: "";
-    position: fixed;
-    width: 800px;
-    height: 800px;
-    top: -300px;
-    right: -200px;
-    background: radial-gradient(circle, hsl(var(--sf-glow-teal)) 0%, transparent 60%);
-    pointer-events: none;
-    z-index: 0;
-  }
 
   /* Light arc motif - StellarForge's signature element */
   .sf-light-arc {
@@ -877,19 +860,6 @@ html {
 
 @layer utilities {
   /* Animation utilities */
-  .animate-glow {
-    animation: glow 3s ease-in-out infinite alternate;
-  }
-
-  @keyframes glow {
-    from {
-      box-shadow: 0 0 20px hsl(var(--primary) / 0.2);
-    }
-    to {
-      box-shadow: 0 0 40px hsl(var(--primary) / 0.4);
-    }
-  }
-
   .animate-float {
     animation: float 6s ease-in-out infinite;
   }
@@ -900,15 +870,6 @@ html {
     }
     50% {
       transform: translateY(-10px);
-    }
-  }
-
-  @keyframes pulse-glow {
-    0%, 100% {
-      filter: drop-shadow(0 0 4px hsl(157 100% 62% / 0.4));
-    }
-    50% {
-      filter: drop-shadow(0 0 12px hsl(157 100% 62% / 0.8));
     }
   }
 
@@ -947,20 +908,6 @@ html {
   @keyframes sf-breathe {
     0%, 100% { opacity: 0.6; }
     50% { opacity: 1; }
-  }
-
-  /* Glow pulse for interactive highlights */
-  .sf-glow-pulse {
-    animation: sf-glow-pulse 2s ease-in-out infinite;
-  }
-
-  @keyframes sf-glow-pulse {
-    0%, 100% {
-      box-shadow: 0 0 10px hsl(var(--sf-glow-teal));
-    }
-    50% {
-      box-shadow: 0 0 25px hsl(var(--sf-teal-bright) / 0.4);
-    }
   }
 
   /* Light arc sweep animation (for hero elements) */
@@ -1088,16 +1035,6 @@ html {
 
   .sf-nav-link:hover::after {
     width: 100%;
-  }
-
-  /* Logo hover glow */
-  .sf-logo-glow:hover {
-    animation: sf-logo-pulse 2s ease-in-out infinite;
-  }
-
-  @keyframes sf-logo-pulse {
-    0%, 100% { filter: drop-shadow(0 0 8px rgba(61, 255, 205, 0.3)); }
-    50% { filter: drop-shadow(0 0 16px rgba(61, 255, 205, 0.5)); }
   }
 
   /* Input focus glow */
@@ -1358,7 +1295,7 @@ html {
     margin-bottom: 0.5rem !important;
   }
 
-  .glass-panel-glow::before {
+  .glass-panel-glow::after {
     display: none !important;
   }
 
