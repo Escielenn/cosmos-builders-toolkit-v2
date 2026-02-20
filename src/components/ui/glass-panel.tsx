@@ -16,17 +16,18 @@ const GlassPanel = React.forwardRef<HTMLDivElement, GlassPanelProps>(
         className={cn(
           "glass-panel relative",
           glow && "glass-panel-glow",
-          hover && "transition-all duration-300 hover:scale-[1.02] hover:border-primary/30",
-          // StellarForge light arc: gradient line at bottom edge
-          lightArc && [
-            "after:absolute after:bottom-0 after:left-[10%] after:right-[10%] after:h-px",
-            "after:bg-gradient-to-r after:from-transparent after:via-primary/50 after:to-transparent",
-          ],
+          hover && "sf-card-hover",
           className
         )}
         {...props}
       >
         {children}
+        {lightArc && (
+          <div
+            className="absolute bottom-0 left-[10%] right-[10%] h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent pointer-events-none"
+            aria-hidden="true"
+          />
+        )}
       </div>
     );
   }

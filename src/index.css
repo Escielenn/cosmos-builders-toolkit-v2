@@ -245,7 +245,6 @@
     background: hsl(var(--glass));
     border-color: hsl(var(--glass-border));
     box-shadow: var(--shadow-glass);
-    border-left: 2px solid rgba(61, 255, 205, 0.08);
   }
 
   .glass-panel-glow {
@@ -808,22 +807,52 @@
     100% { background-position: -200% 0; }
   }
 
-  /* Card hover lift */
+  /* Card hover — bilateral lines (v2.2) */
   .sf-card-hover {
+    position: relative;
     transition: transform var(--duration-normal) var(--ease-out-expo),
-                box-shadow var(--duration-smooth) ease,
-                border-color var(--duration-fast) ease;
+                box-shadow var(--duration-smooth) ease;
   }
+
+  .sf-card-hover::before,
+  .sf-card-hover::after {
+    content: '';
+    position: absolute;
+    top: 8px;
+    bottom: 8px;
+    width: 2px;
+    background: transparent;
+    transition: background var(--duration-normal) ease-out;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .sf-card-hover::before { left: -1px; }
+  .sf-card-hover::after { right: -1px; }
 
   .sf-card-hover:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4), var(--glow-primary-subtle);
-    border-color: rgba(61, 255, 205, 0.15);
-    border-left-color: rgba(61, 255, 205, 0.25);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+  }
+
+  .sf-card-hover:hover::before,
+  .sf-card-hover:hover::after {
+    background: rgba(91, 141, 239, 0.4);   /* stellar blue default */
   }
 
   .sf-card-hover:hover .sf-card-icon {
     animation: sf-icon-float 2s ease-in-out infinite;
+  }
+
+  /* Bilateral hover color variants */
+  .sf-card-hover[data-hover-color="teal"]:hover::before,
+  .sf-card-hover[data-hover-color="teal"]:hover::after {
+    background: rgba(61, 255, 205, 0.4);
+  }
+
+  .sf-card-hover[data-hover-color="amber"]:hover::before,
+  .sf-card-hover[data-hover-color="amber"]:hover::after {
+    background: rgba(255, 179, 71, 0.4);
   }
 
   /* Button hover lift for primary buttons */
