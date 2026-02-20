@@ -101,7 +101,7 @@ export function TagInput({
                   e.stopPropagation();
                   removeTag(index);
                 }}
-                className="ml-0.5 rounded-full p-0.5 hover:bg-muted-foreground/20 transition-colors"
+                className="ml-0.5 rounded-sm p-0.5 hover:bg-muted-foreground/20 transition-colors"
               >
                 <X className="w-3 h-3" />
               </button>

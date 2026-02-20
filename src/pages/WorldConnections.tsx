@@ -355,7 +355,7 @@ const WorldConnections = () => {
                                               <button
                                                 key={conn.id}
                                                 onClick={() => handleNodeClick(conn.id, conn.toolType)}
-                                                className="inline-flex items-center gap-1 px-2 py-0.5 text-xs bg-primary/10 hover:bg-primary/20 rounded-full transition-colors"
+                                                className="inline-flex items-center gap-1 px-2 py-0.5 text-xs bg-primary/10 hover:bg-primary/20 rounded-sm transition-colors"
                                               >
                                                 <ConnIcon className="w-3 h-3" />
                                                 {conn.speciesName || conn.title}

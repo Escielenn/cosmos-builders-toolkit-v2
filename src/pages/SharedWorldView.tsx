@@ -78,10 +78,10 @@ const SharedWorldView = () => {
                       <img
                         src={data.owner_avatar_url}
                         alt=""
-                        className="w-5 h-5 rounded-full"
+                        className="w-5 h-5 rounded-sm"
                       />
                     ) : (
-                      <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center">
+                      <div className="w-5 h-5 rounded-sm bg-primary/20 flex items-center justify-center">
                         <span className="text-[10px] font-medium text-primary">
                           {data.owner_display_name.charAt(0).toUpperCase()}
                         </span>

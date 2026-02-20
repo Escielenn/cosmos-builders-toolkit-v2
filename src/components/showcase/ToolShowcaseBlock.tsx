@@ -60,7 +60,7 @@ const ToolShowcaseBlock = ({
         <div className="flex items-start gap-4">
           {ToolIcon && (
             <div className="flex-shrink-0">
-              <ToolIcon className="w-14 h-14 rounded-full" />
+              <ToolIcon className="w-14 h-14 rounded-sm" />
             </div>
           )}
           <div className="flex-1 min-w-0">

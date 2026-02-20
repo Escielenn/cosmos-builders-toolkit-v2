@@ -1,4 +1,6 @@
 import { useState, useEffect, useMemo, lazy, Suspense } from "react";
+import { PageBursts } from "@/components/ui/data-burst";
+import { TOOL_PAGE_BURSTS } from "@/lib/data-bursts";
 import { Link, useSearchParams } from "react-router-dom";
 import {
   ArrowLeft,
@@ -473,7 +475,8 @@ const Sensorium = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <main className="container mx-auto px-4 py-8 max-w-7xl">
+      <main className="relative container mx-auto px-4 py-8 max-w-7xl">
+        <PageBursts bursts={TOOL_PAGE_BURSTS["sensorium"]} />
         {/* Back navigation */}
         <Link
           to={worldId ? `/world/${worldId}` : "/"}

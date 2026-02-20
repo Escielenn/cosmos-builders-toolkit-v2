@@ -337,7 +337,7 @@ const SettingsDialog = ({
                         {option.name}
                       </span>
                       {backgroundId === option.id && (
-                        <div className="absolute top-1 right-1 w-4 h-4 rounded-full bg-primary flex items-center justify-center">
+                        <div className="absolute top-1 right-1 w-4 h-4 rounded-sm bg-primary flex items-center justify-center">
                           <Check className="w-2.5 h-2.5 text-primary-foreground" />
                         </div>
                       )}
@@ -373,7 +373,7 @@ const SettingsDialog = ({
                         {option.name}
                       </span>
                       {backgroundId === option.id && (
-                        <div className="absolute top-1 right-1 w-4 h-4 rounded-full bg-primary flex items-center justify-center">
+                        <div className="absolute top-1 right-1 w-4 h-4 rounded-sm bg-primary flex items-center justify-center">
                           <Check className="w-2.5 h-2.5 text-primary-foreground" />
                         </div>
                       )}
@@ -404,7 +404,7 @@ const SettingsDialog = ({
                         style={{ background: option.value }}
                       />
                       {backgroundId === option.id && (
-                        <div className="absolute top-1 right-1 w-4 h-4 rounded-full bg-primary flex items-center justify-center">
+                        <div className="absolute top-1 right-1 w-4 h-4 rounded-sm bg-primary flex items-center justify-center">
                           <Check className="w-2.5 h-2.5 text-primary-foreground" />
                         </div>
                       )}
@@ -435,7 +435,7 @@ const SettingsDialog = ({
                         style={{ background: option.value }}
                       />
                       {backgroundId === option.id && (
-                        <div className="absolute top-1 right-1 w-4 h-4 rounded-full bg-primary flex items-center justify-center">
+                        <div className="absolute top-1 right-1 w-4 h-4 rounded-sm bg-primary flex items-center justify-center">
                           <Check className="w-2.5 h-2.5 text-primary-foreground" />
                         </div>
                       )}
@@ -477,12 +477,12 @@ const SettingsDialog = ({
                           e.stopPropagation();
                           clearCustomBackground();
                         }}
-                        className="absolute top-1 left-1 w-4 h-4 rounded-full bg-destructive flex items-center justify-center"
+                        className="absolute top-1 left-1 w-4 h-4 rounded-sm bg-destructive flex items-center justify-center"
                       >
                         <X className="w-2.5 h-2.5 text-destructive-foreground" />
                       </button>
                       {backgroundId === "custom" && (
-                        <div className="absolute top-1 right-1 w-4 h-4 rounded-full bg-primary flex items-center justify-center">
+                        <div className="absolute top-1 right-1 w-4 h-4 rounded-sm bg-primary flex items-center justify-center">
                           <Check className="w-2.5 h-2.5 text-primary-foreground" />
                         </div>
                       )}

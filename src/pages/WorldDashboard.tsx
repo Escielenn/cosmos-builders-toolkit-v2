@@ -52,6 +52,8 @@ import HeaderImageUpload from "@/components/world/HeaderImageUpload";
 import WorldExportDialog from "@/components/world/WorldExportDialog";
 import HierarchicalExportDialog from "@/components/world/HierarchicalExportDialog";
 import WorldBibleDialog from "@/components/world/WorldBibleDialog";
+import { PageBursts } from "@/components/ui/data-burst";
+import { WORLD_DASHBOARD_BURSTS } from "@/lib/data-bursts";
 const TOOLS = [
   {
     id: "environmental-chain-reaction",
@@ -340,7 +342,8 @@ const WorldDashboard = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <main className="container mx-auto px-4 pt-24 pb-16">
+      <main className="relative container mx-auto px-4 pt-24 pb-16">
+        <PageBursts bursts={WORLD_DASHBOARD_BURSTS} />
         {/* Back Navigation */}
         <div className="flex items-center justify-between mb-6">
           <Link
@@ -459,9 +462,9 @@ const WorldDashboard = () => {
                     {(() => {
                       const SvgIcon = getToolSvgIcon(tool.id);
                       return SvgIcon ? (
-                        <SvgIcon className="w-10 h-10 rounded-full shrink-0" />
+                        <SvgIcon className="w-10 h-10 rounded-sm shrink-0" />
                       ) : (
-                        <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
+                        <div className="w-10 h-10 rounded-sm bg-primary/20 flex items-center justify-center shrink-0">
                           <tool.icon className="w-5 h-5 text-primary" />
                         </div>
                       );
@@ -515,7 +518,7 @@ const WorldDashboard = () => {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         {SvgIcon ? (
-                          <SvgIcon className="w-6 h-6 rounded-full" />
+                          <SvgIcon className="w-6 h-6 rounded-sm" />
                         ) : (
                           <tool.icon className="w-5 h-5 text-primary" />
                         )}

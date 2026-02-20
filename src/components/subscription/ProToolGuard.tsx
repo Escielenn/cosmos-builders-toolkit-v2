@@ -45,16 +45,16 @@ const ProToolGuard = ({ toolId, children }: ProToolGuardProps) => {
       <Header />
       <main className="container mx-auto px-4 pt-24 pb-16 flex items-center justify-center">
         <GlassPanel className="max-w-md p-8 text-center">
-          <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-amber-500/20 flex items-center justify-center">
+          <div className="w-16 h-16 mx-auto mb-6 rounded-sm bg-amber-500/20 flex items-center justify-center">
             <Lock className="w-8 h-8 text-amber-500" />
           </div>
 
           <h1 className="font-heading text-2xl font-bold mb-2">
-            Pro Tool
+            RESTRICTED INSTRUMENT
           </h1>
 
           <p className="text-muted-foreground mb-6">
-            This tool is part of the Pro subscription. Upgrade to access all worldbuilding tools and unlock your creative potential.
+            This instrument requires Pro clearance. Upgrade to access the full manifest.
           </p>
 
           <div className="space-y-3">
@@ -64,7 +64,7 @@ const ProToolGuard = ({ toolId, children }: ProToolGuardProps) => {
               onClick={() => navigate("/pricing")}
             >
               <Crown className="w-4 h-4" />
-              View Pricing
+              VIEW CLEARANCE TIERS
             </Button>
 
             {!user && (

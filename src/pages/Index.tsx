@@ -47,7 +47,8 @@ import { ArchiveToggle } from "@/components/dashboard/ArchiveToggle";
 import SharedWorldsSection from "@/components/dashboard/SharedWorldsSection";
 import SFDivider from "@/components/ui/sf-divider";
 import { BracketPanel } from "@/components/ui/bracket-panel";
-import DataScatter from "@/components/ui/data-scatter";
+import { PageBursts } from "@/components/ui/data-burst";
+import { ALL_DASHBOARD_BURSTS } from "@/lib/data-bursts";
 
 const tools = [
   {
@@ -330,7 +331,7 @@ const Index = () => {
       </div>
 
       <main className="container mx-auto px-4 pt-8 pb-16 relative z-10">
-        <DataScatter count={5} />
+        <PageBursts bursts={ALL_DASHBOARD_BURSTS} />
         {/* Conditional Hero Section */}
         {!user ? (
           <WelcomeHero />
@@ -463,7 +464,7 @@ const Index = () => {
                 <Link to="/rogue" className="block">
                   <GlassPanel hover className="p-5 h-full flex flex-col gap-4">
                     <div className="flex items-start justify-between">
-                      <div className="w-12 h-12 rounded-full flex items-center justify-center bg-gradient-to-br from-red-500/20 to-orange-500/20 overflow-hidden">
+                      <div className="w-12 h-12 rounded-sm flex items-center justify-center bg-gradient-to-br from-red-500/20 to-orange-500/20 overflow-hidden">
                         <img src="/icons/035-black hole.svg" alt="" className="w-8 h-8" draggable={false} />
                       </div>
                       <div className="flex items-center gap-2">
@@ -498,7 +499,7 @@ const Index = () => {
                 <Link to="/tools/tidelock" className="block">
                   <GlassPanel hover className="p-5 h-full flex flex-col gap-4">
                     <div className="flex items-start justify-between">
-                      <div className="w-12 h-12 rounded-full flex items-center justify-center bg-gradient-to-br from-cyan-500/20 to-blue-500/20 overflow-hidden">
+                      <div className="w-12 h-12 rounded-sm flex items-center justify-center bg-gradient-to-br from-cyan-500/20 to-blue-500/20 overflow-hidden">
                         <img src="/icons/044-day and night.svg" alt="" className="w-8 h-8" draggable={false} />
                       </div>
                       <div className="flex items-center gap-2">
@@ -533,7 +534,7 @@ const Index = () => {
                 <Link to="/tools/exosky" className="block">
                   <GlassPanel hover className="p-5 h-full flex flex-col gap-4">
                     <div className="flex items-start justify-between">
-                      <div className="w-12 h-12 rounded-full flex items-center justify-center bg-gradient-to-br from-indigo-500/20 to-purple-500/20 overflow-hidden">
+                      <div className="w-12 h-12 rounded-sm flex items-center justify-center bg-gradient-to-br from-indigo-500/20 to-purple-500/20 overflow-hidden">
                         <img src="/icons/016-constellation.svg" alt="" className="w-8 h-8" draggable={false} />
                       </div>
                       <div className="flex items-center gap-2">
@@ -582,7 +583,7 @@ const Index = () => {
                 <Link to="/tools/stellar-cartographer" className="block">
                   <GlassPanel hover className="p-5 h-full flex flex-col gap-4">
                     <div className="flex items-start justify-between">
-                      <div className="w-12 h-12 rounded-full flex items-center justify-center bg-gradient-to-br from-purple-500/20 to-indigo-500/20 overflow-hidden">
+                      <div className="w-12 h-12 rounded-sm flex items-center justify-center bg-gradient-to-br from-purple-500/20 to-indigo-500/20 overflow-hidden">
                         <img src="/icons/003-map.svg" alt="" className="w-8 h-8" draggable={false} />
                       </div>
                       <div className="flex items-center gap-2">
@@ -634,7 +635,10 @@ const Index = () => {
           <section>
             <BracketPanel color="teal">
             <GlassPanel glow lightArc className="p-8 md:p-12 relative">
-              <DataScatter count={3} />
+              <PageBursts bursts={[
+                { content: "AUTH: VERIFIED", position: { top: "8%", right: "4%" }, variant: "status" },
+                { content: "SYSTEMS: NOMINAL", position: { top: "18%", left: "3%" }, variant: "coordinates" },
+              ]} />
               <div className="grid md:grid-cols-3 gap-8">
                 <div className="text-center md:text-left">
                   <div className="w-12 h-12 rounded-none bg-primary/10 flex items-center justify-center mb-4 mx-auto md:mx-0">

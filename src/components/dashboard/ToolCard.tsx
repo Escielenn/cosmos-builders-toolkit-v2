@@ -40,10 +40,10 @@ const ToolCard = ({
     >
       <div className="flex items-start justify-between">
         {CustomIcon ? (
-          <CustomIcon className={`w-12 h-12 rounded-full sf-card-icon ${!canAccess ? "opacity-50 grayscale" : ""}`} />
+          <CustomIcon className={`w-12 h-12 rounded-sm sf-card-icon ${!canAccess ? "opacity-50 grayscale" : ""}`} />
         ) : FallbackIcon ? (
           <div
-            className={`w-12 h-12 rounded-full flex items-center justify-center ${
+            className={`w-12 h-12 rounded-sm flex items-center justify-center ${
               canAccess
                 ? "bg-gradient-to-br from-primary to-accent"
                 : "bg-muted"
@@ -56,7 +56,7 @@ const ToolCard = ({
             />
           </div>
         ) : (
-          <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
+          <div className="w-12 h-12 rounded-sm bg-muted flex items-center justify-center">
             <span className="text-muted-foreground">?</span>
           </div>
         )}

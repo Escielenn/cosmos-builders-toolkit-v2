@@ -56,13 +56,13 @@ const CreateWorldButton = () => {
           hover
           className="p-5 h-full min-h-[200px] flex flex-col items-center justify-center gap-3 border-dashed border-2 border-[#5B8DEF]/15 hover:border-[#5B8DEF]/40 group"
         >
-          <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[#5B8DEF]/10 to-[#5B8DEF]/5 border border-[#5B8DEF]/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+          <div className="w-14 h-14 rounded-sm bg-gradient-to-br from-[#5B8DEF]/10 to-[#5B8DEF]/5 border border-[#5B8DEF]/20 flex items-center justify-center group-hover:scale-110 transition-transform">
             <Plus className="w-7 h-7 text-[#5B8DEF]" />
           </div>
           <div className="text-center">
-            <h3 className="font-heading font-semibold text-lg">Create New World</h3>
+            <h3 className="font-heading font-semibold text-lg">INITIALIZE NEW WORLD</h3>
             <p className="text-sm text-muted-foreground mt-1">
-              Start building your universe
+              Begin survey.
             </p>
           </div>
         </GlassPanel>
@@ -75,9 +75,9 @@ const CreateWorldButton = () => {
       <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle className="font-heading text-xl">Create New World</DialogTitle>
+            <DialogTitle className="font-heading text-xl">INITIALIZE NEW WORLD</DialogTitle>
             <DialogDescription>
-              Give your world a name, icon, and optional description.
+              Assign a designation, icon, and optional description.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 mt-4">
@@ -103,7 +103,7 @@ const CreateWorldButton = () => {
               <Label htmlFor="world-description">Description (optional)</Label>
               <Textarea
                 id="world-description"
-                placeholder="A brief description of your world..."
+                placeholder="World survey notes..."
                 value={worldDescription}
                 onChange={(e) => setWorldDescription(e.target.value)}
                 rows={3}
@@ -120,7 +120,7 @@ const CreateWorldButton = () => {
               ) : (
                 <Plus className="w-4 h-4" />
               )}
-              Create World
+              Initialize
             </Button>
           </div>
         </DialogContent>

@@ -91,7 +91,7 @@ const WorksheetSelectorDialog = ({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="font-heading flex items-center gap-2">
-            {ToolIcon && <ToolIcon className="w-7 h-7 rounded-full shrink-0" />}
+            {ToolIcon && <ToolIcon className="w-7 h-7 rounded-sm shrink-0" />}
             {shouldShowCreateForm ? `New ${toolDisplayName}` : `Select ${toolDisplayName}`}
           </DialogTitle>
           <DialogDescription>

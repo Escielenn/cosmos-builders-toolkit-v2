@@ -19,7 +19,7 @@ const TagBadge = ({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 rounded-full font-medium transition-colors",
+        "inline-flex items-center gap-1 rounded-sm font-medium transition-colors",
         size === "sm" ? "px-2 py-0.5 text-xs" : "px-2.5 py-1 text-sm",
         className
       )}

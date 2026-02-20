@@ -81,7 +81,7 @@ const BackgroundSelector = () => {
           {option.name}
         </span>
         {isSelected && (
-          <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-primary flex items-center justify-center">
+          <div className="absolute top-2 right-2 w-5 h-5 rounded-sm bg-primary flex items-center justify-center">
             <Check className="w-3 h-3 text-primary-foreground" />
           </div>
         )}
@@ -166,7 +166,7 @@ const BackgroundSelector = () => {
                     Changes each visit
                   </span>
                   {!hasUserPreference && (
-                    <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-primary flex items-center justify-center">
+                    <div className="absolute top-2 right-2 w-5 h-5 rounded-sm bg-primary flex items-center justify-center">
                       <Check className="w-3 h-3 text-primary-foreground" />
                     </div>
                   )}
@@ -244,7 +244,7 @@ const BackgroundSelector = () => {
                     Custom
                   </span>
                   {backgroundId === "custom" && (
-                    <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-primary flex items-center justify-center">
+                    <div className="absolute top-2 right-2 w-5 h-5 rounded-sm bg-primary flex items-center justify-center">
                       <Check className="w-3 h-3 text-primary-foreground" />
                     </div>
                   )}
@@ -253,7 +253,7 @@ const BackgroundSelector = () => {
                       e.stopPropagation();
                       clearCustomBackground();
                     }}
-                    className="absolute top-2 left-2 w-5 h-5 rounded-full bg-destructive flex items-center justify-center hover:bg-destructive/80"
+                    className="absolute top-2 left-2 w-5 h-5 rounded-sm bg-destructive flex items-center justify-center hover:bg-destructive/80"
                   >
                     <X className="w-3 h-3 text-destructive-foreground" />
                   </button>

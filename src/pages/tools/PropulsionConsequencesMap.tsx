@@ -1,4 +1,6 @@
 import { useState, useEffect, useMemo, lazy, Suspense } from "react";
+import { PageBursts } from "@/components/ui/data-burst";
+import { TOOL_PAGE_BURSTS } from "@/lib/data-bursts";
 import { WorksheetTagsBar } from "@/components/tools/WorksheetTagsBar";
 
 const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
@@ -714,7 +716,8 @@ const PropulsionConsequencesMap = () => {
     <div className="min-h-screen bg-background">
       <Header />
 
-      <main className="container mx-auto px-4 pt-24 pb-16">
+      <main className="container relative mx-auto px-4 pt-24 pb-16">
+        <PageBursts bursts={TOOL_PAGE_BURSTS["propulsion-consequences-map"]} />
         {/* Back Link */}
         <Link
           to={worldId ? `/worlds/${worldId}` : "/"}
@@ -754,7 +757,7 @@ const PropulsionConsequencesMap = () => {
         <div className="mb-8">
           <Badge className="mb-2">Tool 3</Badge>
           <div className="flex items-center gap-3">
-            {ToolIcon && <ToolIcon className="w-12 h-12 rounded-full shrink-0" />}
+            {ToolIcon && <ToolIcon className="w-12 h-12 rounded-sm shrink-0" />}
             <h1 className="font-display text-3xl md:text-4xl">
               <span className="font-normal">Impulse:</span>{" "}
               <span className="font-light">Propulsion Consequences</span>
@@ -808,7 +811,7 @@ const PropulsionConsequencesMap = () => {
                   href={resource.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-xs px-3 py-1.5 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+                  className="inline-flex items-center gap-1 text-xs px-3 py-1.5 rounded-sm bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
                 >
                   {resource.name}
                   <ExternalLink className="w-3 h-3" />

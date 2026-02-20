@@ -18,14 +18,22 @@ const ScreenshotMockup = ({ src, alt = "Tool preview", toolName }: ScreenshotMoc
     return <ScreenshotPlaceholder toolName={toolName || "Tool"} />;
   }
 
+  const webpSrc = src.replace(/\.png$/, ".webp");
+
   return (
     <div className="w-full h-full rounded-lg overflow-hidden bg-sf-surface/50">
-      <img
-        src={src}
-        alt={alt}
-        className="w-full h-full object-contain"
-        onError={() => setImageError(true)}
-      />
+      <picture>
+        <source srcSet={webpSrc} type="image/webp" />
+        <img
+          src={src}
+          alt={alt}
+          loading="lazy"
+          width={800}
+          height={600}
+          className="w-full h-full object-contain"
+          onError={() => setImageError(true)}
+        />
+      </picture>
     </div>
   );
 };
@@ -36,7 +44,7 @@ const ScreenshotMockup = ({ src, alt = "Tool preview", toolName }: ScreenshotMoc
 export const ScreenshotPlaceholder = ({ toolName }: { toolName: string }) => {
   return (
     <div className="w-full h-full flex flex-col items-center justify-center gap-3 p-6 text-center bg-sf-surface/50 rounded-lg border border-dashed border-muted/30">
-      <div className="w-12 h-12 rounded-full bg-muted/50 flex items-center justify-center">
+      <div className="w-12 h-12 rounded-sm bg-muted/50 flex items-center justify-center">
         <ImageOff className="w-6 h-6 text-muted-foreground" />
       </div>
       <div>

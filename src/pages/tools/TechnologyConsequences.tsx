@@ -1,4 +1,6 @@
 import { useState, useEffect, useMemo, lazy, Suspense } from "react";
+import { PageBursts } from "@/components/ui/data-burst";
+import { TOOL_PAGE_BURSTS } from "@/lib/data-bursts";
 import { WorksheetTagsBar } from "@/components/tools/WorksheetTagsBar";
 import { useTags } from "@/hooks/use-tags";
 const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
@@ -442,7 +444,8 @@ const TechnologyConsequences = () => {
     <div className="min-h-screen bg-background">
       <Header />
 
-      <main className="container mx-auto px-4 pt-20 pb-24">
+      <main className="relative container mx-auto px-4 pt-20 pb-24">
+        <PageBursts bursts={TOOL_PAGE_BURSTS["technology-consequences"]} />
         {/* Back Link */}
         <Link
           to={worldId ? `/worlds/${worldId}` : "/"}
@@ -480,7 +483,7 @@ const TechnologyConsequences = () => {
         {/* Title */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
-            {ToolIcon && <ToolIcon className="w-12 h-12 rounded-full shrink-0" />}
+            {ToolIcon && <ToolIcon className="w-12 h-12 rounded-sm shrink-0" />}
             <div>
               <h1 className="font-display text-2xl md:text-3xl">
                 <span className="font-normal">Paradigm:</span>{" "}

@@ -190,9 +190,9 @@ const ToolPreviewCard = ({ id, title, description, status, isPro }: ToolPreviewC
     <GlassPanel lightArc hover className={`p-5 h-full ${isPro ? 'opacity-90' : ''}`}>
       <div className="flex items-start justify-between mb-3">
         {CustomIcon ? (
-          <CustomIcon className="w-12 h-12 rounded-full sf-card-icon" />
+          <CustomIcon className="w-12 h-12 rounded-sm sf-card-icon" />
         ) : (
-          <div className={`w-12 h-12 rounded-full flex items-center justify-center sf-card-icon ${
+          <div className={`w-12 h-12 rounded-sm flex items-center justify-center sf-card-icon ${
             isPro ? 'bg-amber-500/10' : 'bg-primary/10'
           }`}>
             <span className="text-xl">?</span>
@@ -264,7 +264,7 @@ const ToolShowcase = () => {
           <h2 className="font-heading font-light text-2xl uppercase tracking-sf-wide">Pro Tools</h2>
           <Badge variant="secondary" className="bg-amber-500/20 text-amber-600 dark:text-amber-400 sf-badge-enter">
             <Crown className="w-3 h-3 mr-1" />
-            18 Tools
+            27 Tools
           </Badge>
         </motion.div>
         <motion.div
@@ -308,7 +308,7 @@ const ToolShowcase = () => {
             <Link to="/rogue" className="block h-full">
               <GlassPanel lightArc hover className="p-5 h-full">
                 <div className="flex items-start justify-between mb-3">
-                  <div className="w-12 h-12 rounded-full flex items-center justify-center bg-gradient-to-br from-red-500/20 to-orange-500/20 sf-card-icon overflow-hidden">
+                  <div className="w-12 h-12 rounded-sm flex items-center justify-center bg-gradient-to-br from-red-500/20 to-orange-500/20 sf-card-icon overflow-hidden">
                     <img src="/icons/035-black hole.svg" alt="" className="w-8 h-8" draggable={false} />
                   </div>
                   <Badge variant="secondary" className="text-xs bg-amber-500/20 text-amber-600 dark:text-amber-400">
@@ -325,7 +325,7 @@ const ToolShowcase = () => {
             <Link to="/tools/tidelock" className="block h-full">
               <GlassPanel lightArc hover className="p-5 h-full">
                 <div className="flex items-start justify-between mb-3">
-                  <div className="w-12 h-12 rounded-full flex items-center justify-center bg-gradient-to-br from-cyan-500/20 to-blue-500/20 sf-card-icon overflow-hidden">
+                  <div className="w-12 h-12 rounded-sm flex items-center justify-center bg-gradient-to-br from-cyan-500/20 to-blue-500/20 sf-card-icon overflow-hidden">
                     <img src="/icons/044-day and night.svg" alt="" className="w-8 h-8" draggable={false} />
                   </div>
                   <Badge variant="secondary" className="text-xs bg-amber-500/20 text-amber-600 dark:text-amber-400">
@@ -342,7 +342,7 @@ const ToolShowcase = () => {
             <Link to="/tools/exosky" className="block h-full">
               <GlassPanel lightArc hover className="p-5 h-full">
                 <div className="flex items-start justify-between mb-3">
-                  <div className="w-12 h-12 rounded-full flex items-center justify-center bg-gradient-to-br from-indigo-500/20 to-purple-500/20 sf-card-icon overflow-hidden">
+                  <div className="w-12 h-12 rounded-sm flex items-center justify-center bg-gradient-to-br from-indigo-500/20 to-purple-500/20 sf-card-icon overflow-hidden">
                     <img src="/icons/016-constellation.svg" alt="" className="w-8 h-8" draggable={false} />
                   </div>
                   <Badge variant="secondary" className="text-xs bg-amber-500/20 text-amber-600 dark:text-amber-400">
@@ -412,11 +412,11 @@ const ToolShowcase = () => {
         <Button size="lg" className="gap-2" asChild>
           <Link to="/auth?tab=signup">
             <Rocket className="w-4 h-4" />
-            Get Started Free
+            BEGIN
           </Link>
         </Button>
         <p className="text-sm text-muted-foreground mt-3">
-          No credit card required
+          No credit card required.
         </p>
       </motion.div>
     </section>

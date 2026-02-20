@@ -1,4 +1,6 @@
 import { useState, useEffect, useMemo, lazy, Suspense } from "react";
+import { PageBursts } from "@/components/ui/data-burst";
+import { TOOL_PAGE_BURSTS } from "@/lib/data-bursts";
 import { WorksheetTagsBar } from "@/components/tools/WorksheetTagsBar";
 
 const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
@@ -420,7 +422,8 @@ const SurfaceGravityCalculator = () => {
     <div className="min-h-screen bg-background">
       <Header />
 
-      <main className="container mx-auto px-4 pt-24 pb-16">
+      <main className="container relative mx-auto px-4 pt-24 pb-16">
+        <PageBursts bursts={TOOL_PAGE_BURSTS["surface-gravity-calculator"]} />
         {/* Back link */}
         <Link
           to={worldId ? `/worlds/${worldId}` : "/"}
@@ -460,7 +463,7 @@ const SurfaceGravityCalculator = () => {
         <div className="mb-8">
           <Badge className="mb-2">Pro Tool</Badge>
           <div className="flex items-center gap-3">
-            {ToolIcon && <ToolIcon className="w-12 h-12 rounded-full shrink-0" />}
+            {ToolIcon && <ToolIcon className="w-12 h-12 rounded-sm shrink-0" />}
             <h1 className="font-display text-3xl md:text-4xl">
               <span className="font-normal">Atlas:</span>{" "}
               <span className="font-light">Surface Gravity Calculator</span>

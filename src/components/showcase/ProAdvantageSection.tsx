@@ -49,7 +49,7 @@ const ProAdvantageSection = () => {
   return (
     <section className="py-16 md:py-24">
       <div className="text-center mb-12">
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/30 mb-6">
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-sm bg-amber-500/10 border border-amber-500/30 mb-6">
           <Crown className="w-4 h-4 text-amber-500" />
           <span className="text-sm text-amber-500 uppercase tracking-wider">
             Pro Subscription

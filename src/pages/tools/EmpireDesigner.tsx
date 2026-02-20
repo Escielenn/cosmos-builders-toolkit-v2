@@ -1,4 +1,6 @@
 import { useState, useEffect, useMemo, lazy, Suspense } from "react";
+import { PageBursts } from "@/components/ui/data-burst";
+import { TOOL_PAGE_BURSTS } from "@/lib/data-bursts";
 import { Link, useSearchParams } from "react-router-dom";
 import { ArrowLeft, Download, Save, Info, Printer, Plus, Trash2, FileText, Image as ImageIcon } from "lucide-react";
 import { getToolIcon } from "@/components/icons/tool-icons";
@@ -605,7 +607,8 @@ const EmpireDesigner = () => {
     <div className="min-h-screen bg-background">
       <Header />
 
-      <main className="container mx-auto px-4 pt-20 pb-24">
+      <main className="relative container mx-auto px-4 pt-20 pb-24">
+        <PageBursts bursts={TOOL_PAGE_BURSTS["empire-designer"]} />
         {/* Back Link */}
         <Link
           to={worldId ? `/worlds/${worldId}` : "/"}
@@ -644,7 +647,7 @@ const EmpireDesigner = () => {
         {/* Title */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
-            {ToolIcon && <ToolIcon className="w-12 h-12 rounded-full shrink-0" />}
+            {ToolIcon && <ToolIcon className="w-12 h-12 rounded-sm shrink-0" />}
             <div>
               <h1 className="font-display text-2xl md:text-3xl">
                 <span className="font-normal">Dominion:</span>{" "}

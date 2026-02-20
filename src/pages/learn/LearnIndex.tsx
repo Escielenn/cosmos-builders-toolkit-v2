@@ -8,6 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { useArticles, useSearchArticles } from "@/hooks/use-sanity-articles";
 import { urlFor } from "@/lib/sanity/client";
+import { PageBursts } from "@/components/ui/data-burst";
+import { LEARN_INDEX_BURSTS } from "@/lib/data-bursts";
 
 // Fallback static articles (shown when Sanity has no content yet)
 const fallbackArticles = [
@@ -56,14 +58,15 @@ const LearnIndex = () => {
     <div className="min-h-screen bg-background">
       <Header />
 
-      <main className="container mx-auto px-4 pt-24 pb-16">
+      <main className="relative container mx-auto px-4 pt-24 pb-16">
+        <PageBursts bursts={LEARN_INDEX_BURSTS} />
         {/* Hero Section */}
         <section className="text-center mb-12">
           <div className="w-16 h-16 rounded-none bg-primary/10 flex items-center justify-center mx-auto mb-6">
             <BookOpen className="w-8 h-8 text-primary" />
           </div>
           <p className="text-sm font-medium uppercase tracking-sf-wide text-muted-foreground mb-2">Learn</p>
-          <h1 className="font-display text-4xl md:text-5xl font-bold mb-4">
+          <h1 className="font-display text-4xl md:text-5xl font-light mb-4 tracking-sf-wide">
             <span className="gradient-text">SF University</span>
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -225,7 +228,7 @@ const LearnIndex = () => {
               <Link to="/rogue/science">
                 <GlassPanel className="p-5 h-full hover:bg-accent/50 transition-colors cursor-pointer group">
                   <div className="flex items-start justify-between mb-3">
-                    <div className="w-10 h-10 rounded-full flex items-center justify-center bg-gradient-to-br from-red-500/20 to-orange-500/20 overflow-hidden">
+                    <div className="w-10 h-10 rounded-sm flex items-center justify-center bg-gradient-to-br from-red-500/20 to-orange-500/20 overflow-hidden">
                       <img src="/icons/035-black hole.svg" alt="" className="w-6 h-6" draggable={false} />
                     </div>
                     <Badge variant="outline" className={categoryColors.science}>
@@ -243,7 +246,7 @@ const LearnIndex = () => {
               <Link to="/tools/tidelock/science">
                 <GlassPanel className="p-5 h-full hover:bg-accent/50 transition-colors cursor-pointer group">
                   <div className="flex items-start justify-between mb-3">
-                    <div className="w-10 h-10 rounded-full flex items-center justify-center bg-gradient-to-br from-cyan-500/20 to-blue-500/20 overflow-hidden">
+                    <div className="w-10 h-10 rounded-sm flex items-center justify-center bg-gradient-to-br from-cyan-500/20 to-blue-500/20 overflow-hidden">
                       <img src="/icons/044-day and night.svg" alt="" className="w-6 h-6" draggable={false} />
                     </div>
                     <Badge variant="outline" className={categoryColors.science}>
@@ -261,7 +264,7 @@ const LearnIndex = () => {
               <Link to="/tools/exosky/science">
                 <GlassPanel className="p-5 h-full hover:bg-accent/50 transition-colors cursor-pointer group">
                   <div className="flex items-start justify-between mb-3">
-                    <div className="w-10 h-10 rounded-full flex items-center justify-center bg-gradient-to-br from-indigo-500/20 to-purple-500/20 overflow-hidden">
+                    <div className="w-10 h-10 rounded-sm flex items-center justify-center bg-gradient-to-br from-indigo-500/20 to-purple-500/20 overflow-hidden">
                       <img src="/icons/016-constellation.svg" alt="" className="w-6 h-6" draggable={false} />
                     </div>
                     <Badge variant="outline" className={categoryColors.science}>

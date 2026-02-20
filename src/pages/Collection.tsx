@@ -1,0 +1,330 @@
+import { useState, useMemo, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { ArrowLeft, FileText, Loader2, Search, ChevronRight } from "lucide-react";
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
+import { GlassPanel } from "@/components/ui/glass-panel";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { useAuth } from "@/contexts/AuthContext";
+import { useAllWorksheets } from "@/hooks/use-all-worksheets";
+import { useWorlds } from "@/hooks/use-worlds";
+import { TOOL_DISPLAY_NAMES, getToolDisplayName } from "@/lib/tools-config";
+import { getToolIcon } from "@/components/icons/tool-icons";
+import WorldIconRenderer from "@/components/world/WorldIconRenderer";
+import { format } from "date-fns";
+import TagBadge from "@/components/tags/TagBadge";
+import { getTagColor } from "@/hooks/use-tags";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+type SortBy = "recent" | "alphabetical" | "tool-type";
+
+const Collection = () => {
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
+  const { worksheets, isLoading } = useAllWorksheets();
+  const { worlds, isLoading: worldsLoading } = useWorlds();
+
+  const [selectedToolType, setSelectedToolType] = useState<string | null>(null);
+  const [sortBy, setSortBy] = useState<SortBy>("recent");
+  const [searchQuery, setSearchQuery] = useState("");
+
+  useEffect(() => {
+    if (!loading && !user) {
+      navigate("/auth");
+    }
+  }, [user, loading, navigate]);
+
+  // Get unique tool types that have worksheets
+  const availableToolTypes = useMemo(() => {
+    const types = new Set(worksheets.map((w) => w.tool_type));
+    return Array.from(types).sort();
+  }, [worksheets]);
+
+  // Filter and sort worksheets
+  const filteredWorksheets = useMemo(() => {
+    let result = worksheets;
+
+    // Filter by tool type
+    if (selectedToolType) {
+      result = result.filter((w) => w.tool_type === selectedToolType);
+    }
+
+    // Filter by search query
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      result = result.filter(
+        (w) =>
+          (w.title || "").toLowerCase().includes(q) ||
+          w.worlds.name.toLowerCase().includes(q) ||
+          getToolDisplayName(w.tool_type).toLowerCase().includes(q)
+      );
+    }
+
+    // Sort
+    switch (sortBy) {
+      case "alphabetical":
+        result = [...result].sort((a, b) =>
+          (a.title || "Untitled").localeCompare(b.title || "Untitled")
+        );
+        break;
+      case "tool-type":
+        result = [...result].sort((a, b) =>
+          a.tool_type.localeCompare(b.tool_type)
+        );
+        break;
+      case "recent":
+      default:
+        // Already sorted by updated_at desc from the query
+        break;
+    }
+
+    return result;
+  }, [worksheets, selectedToolType, sortBy, searchQuery]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background sf-atmosphere">
+        <Header />
+        <main className="container mx-auto px-4 pt-24 pb-16 flex items-center justify-center">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </main>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-background sf-atmosphere">
+      <Header />
+      <main className="container mx-auto px-4 pt-24 pb-16 relative z-10">
+        {/* Back Navigation */}
+        <Link
+          to="/"
+          className="inline-flex items-center text-muted-foreground hover:text-foreground transition-colors mb-6"
+        >
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Back to Home
+        </Link>
+
+        {/* My Worlds Quick Access */}
+        <section className="mb-12">
+          <Link
+            to="/worlds"
+            className="flex items-center justify-between group mb-4"
+          >
+            <h2 className="font-heading font-light text-xl uppercase tracking-sf-wide">
+              My Worlds
+            </h2>
+            <span className="text-xs text-muted-foreground group-hover:text-foreground transition-colors flex items-center gap-1">
+              View all
+              <ChevronRight className="w-3.5 h-3.5" />
+            </span>
+          </Link>
+          {worldsLoading ? (
+            <div className="flex justify-center py-8">
+              <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+            </div>
+          ) : worlds.length === 0 ? (
+            <GlassPanel className="p-8 text-center">
+              <p className="text-sm text-muted-foreground">
+                WORLD INDEX: EMPTY. Initialize a world to populate this archive.
+              </p>
+            </GlassPanel>
+          ) : (
+            <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-thin">
+              {worlds.slice(0, 6).map((world) => {
+                return (
+                  <Link
+                    key={world.id}
+                    to={`/worlds/${world.id}`}
+                    className="shrink-0"
+                  >
+                    <GlassPanel hover className="p-4 w-44">
+                      <div className="flex items-center gap-2.5 mb-1.5">
+                        <WorldIconRenderer iconId={world.icon} className="w-6 h-6 text-primary shrink-0" />
+                        <h3 className="font-semibold text-sm truncate">
+                          {world.name}
+                        </h3>
+                      </div>
+                      <p className="text-xs text-muted-foreground truncate">
+                        {world.description || "No description"}
+                      </p>
+                    </GlassPanel>
+                  </Link>
+                );
+              })}
+              {worlds.length > 6 && (
+                <Link to="/worlds" className="shrink-0">
+                  <GlassPanel hover className="p-4 w-44 h-full flex items-center justify-center">
+                    <span className="text-sm text-muted-foreground">
+                      +{worlds.length - 6} more
+                    </span>
+                  </GlassPanel>
+                </Link>
+              )}
+            </div>
+          )}
+        </section>
+
+        {/* Worksheets Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+          <div className="flex items-center gap-3">
+            <h2 className="font-heading font-light text-xl uppercase tracking-sf-wide">
+              Worksheets
+            </h2>
+            <Badge variant="secondary" className="text-xs">
+              {filteredWorksheets.length}
+            </Badge>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                placeholder="Search worksheets..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-9 w-48"
+              />
+            </div>
+            <Select value={sortBy} onValueChange={(v) => setSortBy(v as SortBy)}>
+              <SelectTrigger className="w-36">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="recent">Recent</SelectItem>
+                <SelectItem value="alphabetical">A-Z</SelectItem>
+                <SelectItem value="tool-type">Tool Type</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        {/* Tool Type Filter */}
+        {availableToolTypes.length > 1 && (
+          <div className="flex flex-wrap gap-2 mb-8">
+            <Badge
+              variant={selectedToolType === null ? "default" : "secondary"}
+              className="cursor-pointer"
+              onClick={() => setSelectedToolType(null)}
+            >
+              All
+            </Badge>
+            {availableToolTypes.map((type) => (
+              <Badge
+                key={type}
+                variant={selectedToolType === type ? "default" : "secondary"}
+                className="cursor-pointer"
+                onClick={() =>
+                  setSelectedToolType(selectedToolType === type ? null : type)
+                }
+              >
+                {getToolDisplayName(type)}
+              </Badge>
+            ))}
+          </div>
+        )}
+
+        {/* Worksheets Grid */}
+        {isLoading ? (
+          <div className="flex justify-center py-16">
+            <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+          </div>
+        ) : filteredWorksheets.length === 0 ? (
+          <GlassPanel className="p-12 text-center">
+            <FileText className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+            <h3 className="font-semibold mb-2">
+              {searchQuery || selectedToolType
+                ? "No matching records"
+                : "WORKSHEET INDEX: EMPTY"}
+            </h3>
+            <p className="text-sm text-muted-foreground">
+              {searchQuery || selectedToolType
+                ? "Adjust filters or search parameters."
+                : "Begin a survey in any world to populate this index."}
+            </p>
+          </GlassPanel>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredWorksheets.map((worksheet) => {
+              const CustomIcon = getToolIcon(worksheet.tool_type);
+
+              return (
+                <Link
+                  key={worksheet.id}
+                  to={`/tools/${worksheet.tool_type}?worldId=${worksheet.world_id}&worksheetId=${worksheet.id}`}
+                >
+                  <GlassPanel hover className="p-5 h-full">
+                    <div className="flex items-start gap-3">
+                      {CustomIcon ? (
+                        <CustomIcon className="w-10 h-10 rounded-sm shrink-0" />
+                      ) : (
+                        <div className="w-10 h-10 rounded-sm bg-primary/20 flex items-center justify-center shrink-0">
+                          <FileText className="w-5 h-5 text-primary" />
+                        </div>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-semibold truncate">
+                          {worksheet.title || "Untitled"}
+                        </h3>
+                        <p className="text-xs text-muted-foreground mt-0.5">
+                          {getToolDisplayName(worksheet.tool_type)}
+                        </p>
+                        <div className="flex items-center gap-1.5 mt-2 text-xs text-muted-foreground">
+                          <WorldIconRenderer iconId={worksheet.worlds.icon} className="w-3.5 h-3.5" />
+                          <span className="truncate">{worksheet.worlds.name}</span>
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Updated{" "}
+                          {format(
+                            new Date(worksheet.updated_at),
+                            "MMM d, yyyy"
+                          )}
+                        </p>
+                        {worksheet.tags && worksheet.tags.length > 0 && (
+                          <div className="flex flex-wrap gap-1 mt-2">
+                            {worksheet.tags.slice(0, 3).map((tag) => {
+                              const hash = tag
+                                .split("")
+                                .reduce(
+                                  (acc: number, char: string) =>
+                                    acc + char.charCodeAt(0),
+                                  0
+                                );
+                              return (
+                                <TagBadge
+                                  key={tag}
+                                  name={tag}
+                                  color={getTagColor(hash)}
+                                  size="sm"
+                                />
+                              );
+                            })}
+                            {worksheet.tags.length > 3 && (
+                              <span className="text-xs text-muted-foreground">
+                                +{worksheet.tags.length - 3}
+                              </span>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </GlassPanel>
+                </Link>
+              );
+            })}
+          </div>
+        )}
+      </main>
+
+      <Footer />
+    </div>
+  );
+};
+
+export default Collection;
