@@ -77,9 +77,9 @@ const KeyChoicesSidebar = ({
 
   const SidebarContent = () => (
     <>
-      <h4 className="font-semibold text-sm mb-3 text-foreground flex items-center gap-2">
-        <ClipboardList className="w-4 h-4 text-primary" />
-        {title}
+      <h4 className="font-mono text-[9px] tracking-[2px] uppercase text-muted-foreground/60 mb-3 flex items-center gap-2">
+        <ClipboardList className="w-3.5 h-3.5" />
+        // READOUT
       </h4>
       <div className="space-y-2">
         {sections.map((section) => {
@@ -96,7 +96,7 @@ const KeyChoicesSidebar = ({
                 <button
                   type="button"
                   className={cn(
-                    "flex items-center justify-between w-full text-left px-2 py-1.5 rounded text-xs font-medium transition-colors",
+                    "flex items-center justify-between w-full text-left px-2 py-1.5 text-xs transition-colors font-heading tracking-wider uppercase",
                     hasValues
                       ? "text-foreground hover:bg-muted/50"
                       : "text-muted-foreground hover:bg-muted/30"
@@ -118,7 +118,7 @@ const KeyChoicesSidebar = ({
 
                     return (
                       <div key={idx} className="text-xs">
-                        <span className="text-muted-foreground">
+                        <span className="sf-readout-label">
                           {choice.label}:
                         </span>
                         {choice.asList && Array.isArray(choice.value) ? (
@@ -126,14 +126,14 @@ const KeyChoicesSidebar = ({
                             {choice.value.map((v, i) => (
                               <li
                                 key={i}
-                                className="text-foreground before:content-['•'] before:mr-1 before:text-primary"
+                                className="sf-readout-value before:content-['•'] before:mr-1 before:text-[rgba(255,179,71,0.4)]"
                               >
                                 {v}
                               </li>
                             ))}
                           </ul>
                         ) : (
-                          <span className="ml-1 text-foreground font-medium">
+                          <span className="ml-1 sf-readout-value font-medium">
                             {value}
                           </span>
                         )}
@@ -141,8 +141,8 @@ const KeyChoicesSidebar = ({
                     );
                   })}
                   {!hasValues && (
-                    <span className="text-xs text-muted-foreground italic">
-                      Not yet filled
+                    <span className="text-xs text-muted-foreground italic font-mono">
+                      — NO DATA —
                     </span>
                   )}
                 </div>
@@ -157,7 +157,7 @@ const KeyChoicesSidebar = ({
   // Inline mode: return just the panel for use inside ToolSidebar
   if (mode === 'inline') {
     return (
-      <GlassPanel className="p-3 max-h-[40vh] overflow-y-auto w-56">
+      <GlassPanel className="p-3 max-h-[40vh] overflow-y-auto w-56 sf-bracketed--amber">
         <SidebarContent />
       </GlassPanel>
     );
@@ -168,7 +168,7 @@ const KeyChoicesSidebar = ({
     <>
       {/* Desktop - Fixed sidebar (positioned below SectionNavigation) */}
       <div className="fixed left-4 top-1/2 -translate-y-1/2 hidden xl:block z-40 no-print">
-        <GlassPanel className="p-3 max-h-[70vh] overflow-y-auto w-56">
+        <GlassPanel className="p-3 max-h-[70vh] overflow-y-auto w-56 sf-bracketed--amber">
           <SidebarContent />
         </GlassPanel>
       </div>
@@ -180,9 +180,10 @@ const KeyChoicesSidebar = ({
             <Button
               size="lg"
               variant="outline"
-              className="rounded-full w-14 h-14 shadow-lg bg-background/80 backdrop-blur-sm"
+              className="rounded-none w-auto h-auto px-3 py-2.5 shadow-lg bg-background/80 backdrop-blur-sm"
             >
-              <ClipboardList className="w-6 h-6" />
+              <ClipboardList className="w-4 h-4 mr-2" />
+              <span className="text-[10px] tracking-[1.5px] uppercase font-heading">READOUT</span>
             </Button>
           </SheetTrigger>
           <SheetContent
@@ -252,16 +253,17 @@ export const MobileKeyChoices = ({
         <Button
           size="lg"
           variant="outline"
-          className="rounded-full w-14 h-14 shadow-lg bg-background/80 backdrop-blur-sm"
+          className="rounded-none w-auto h-auto px-3 py-2.5 shadow-lg bg-background/80 backdrop-blur-sm"
         >
-          <ClipboardList className="w-6 h-6" />
+          <ClipboardList className="w-4 h-4 mr-2" />
+          <span className="text-[10px] tracking-[1.5px] uppercase font-heading">READOUT</span>
         </Button>
       </SheetTrigger>
       <SheetContent side="right" className="w-72 bg-background/95 backdrop-blur-lg">
         <div className="pt-6">
-          <h4 className="font-semibold text-sm mb-3 text-foreground flex items-center gap-2">
-            <ClipboardList className="w-4 h-4 text-primary" />
-            {title}
+          <h4 className="font-mono text-[9px] tracking-[2px] uppercase text-muted-foreground/60 mb-3 flex items-center gap-2">
+            <ClipboardList className="w-3.5 h-3.5" />
+            // READOUT
           </h4>
           <div className="space-y-2">
             {sections.map((section) => {
@@ -278,7 +280,7 @@ export const MobileKeyChoices = ({
                     <button
                       type="button"
                       className={cn(
-                        "flex items-center justify-between w-full text-left px-2 py-1.5 rounded text-xs font-medium transition-colors",
+                        "flex items-center justify-between w-full text-left px-2 py-1.5 text-xs transition-colors font-heading tracking-wider uppercase",
                         hasValues
                           ? "text-foreground hover:bg-muted/50"
                           : "text-muted-foreground hover:bg-muted/30"
@@ -300,7 +302,7 @@ export const MobileKeyChoices = ({
 
                         return (
                           <div key={idx} className="text-xs">
-                            <span className="text-muted-foreground">
+                            <span className="sf-readout-label">
                               {choice.label}:
                             </span>
                             {choice.asList && Array.isArray(choice.value) ? (
@@ -308,14 +310,14 @@ export const MobileKeyChoices = ({
                                 {choice.value.map((v, i) => (
                                   <li
                                     key={i}
-                                    className="text-foreground before:content-['•'] before:mr-1 before:text-primary"
+                                    className="sf-readout-value before:content-['•'] before:mr-1 before:text-[rgba(255,179,71,0.4)]"
                                   >
                                     {v}
                                   </li>
                                 ))}
                               </ul>
                             ) : (
-                              <span className="ml-1 text-foreground font-medium">
+                              <span className="ml-1 sf-readout-value font-medium">
                                 {value}
                               </span>
                             )}
@@ -323,8 +325,8 @@ export const MobileKeyChoices = ({
                         );
                       })}
                       {!hasValues && (
-                        <span className="text-xs text-muted-foreground italic">
-                          Not yet filled
+                        <span className="text-xs text-muted-foreground italic font-mono">
+                          — NO DATA —
                         </span>
                       )}
                     </div>
