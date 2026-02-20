@@ -47,6 +47,7 @@ import { ArchiveToggle } from "@/components/dashboard/ArchiveToggle";
 import SharedWorldsSection from "@/components/dashboard/SharedWorldsSection";
 import SFDivider from "@/components/ui/sf-divider";
 import { BracketPanel } from "@/components/ui/bracket-panel";
+import DataScatter from "@/components/ui/data-scatter";
 
 const tools = [
   {
@@ -329,6 +330,7 @@ const Index = () => {
       </div>
 
       <main className="container mx-auto px-4 pt-8 pb-16 relative z-10">
+        <DataScatter count={5} />
         {/* Conditional Hero Section */}
         {!user ? (
           <WelcomeHero />
@@ -631,7 +633,8 @@ const Index = () => {
         {user && (
           <section>
             <BracketPanel color="teal">
-            <GlassPanel glow lightArc className="p-8 md:p-12">
+            <GlassPanel glow lightArc className="p-8 md:p-12 relative">
+              <DataScatter count={3} />
               <div className="grid md:grid-cols-3 gap-8">
                 <div className="text-center md:text-left">
                   <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 mx-auto md:mx-0">
