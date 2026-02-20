@@ -2073,14 +2073,26 @@ html {
     opacity: 0.3;
   }
 
-  /* Fill-sweep: show static filled state */
+  /* Fill-sweep: show instant filled state */
   .sf-fill-sweep::before,
-  .sf-btn-lift::before {
+  .sf-btn-lift::before,
+  .sf-nav-link::before,
+  .sf-nav-link::after,
+  .sf-text-link::after,
+  .sf-card-hover::after,
+  .sf-btn-worksheet::before,
+  .sf-comm-button::before {
     transition: none !important;
   }
 
   .sf-fill-sweep:hover::before,
-  .sf-btn-lift:hover::before {
+  .sf-btn-lift:hover::before,
+  .sf-nav-link:hover::before,
+  .sf-nav-link:hover::after,
+  .sf-text-link:hover::after,
+  .sf-card-hover:hover::after,
+  .sf-btn-worksheet:hover::before,
+  .sf-comm-button:hover::before {
     transform: scaleX(1);
   }
 }
