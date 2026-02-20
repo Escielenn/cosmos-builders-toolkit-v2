@@ -1037,16 +1037,6 @@ html {
     width: 100%;
   }
 
-  /* Input focus glow */
-  .sf-input-focus {
-    transition: border-color var(--duration-fast) ease,
-                box-shadow var(--duration-normal) ease;
-  }
-
-  .sf-input-focus:focus {
-    border-color: hsl(var(--sf-teal-bright) / 0.35);
-    box-shadow: 0 0 0 3px hsl(var(--sf-teal-bright) / 0.08);
-  }
 
   /* Error shake */
   .sf-error-shake {
