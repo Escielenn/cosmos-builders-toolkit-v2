@@ -45,6 +45,7 @@ import RecentArticles from "@/components/landing/RecentArticles";
 import { TagFilter } from "@/components/dashboard/TagFilter";
 import { ArchiveToggle } from "@/components/dashboard/ArchiveToggle";
 import SharedWorldsSection from "@/components/dashboard/SharedWorldsSection";
+import SFDivider from "@/components/ui/sf-divider";
 
 const tools = [
   {
@@ -335,6 +336,7 @@ const Index = () => {
         )}
 
         {/* Landing Page Sections - non-logged-in users only */}
+        {!user && <SFDivider label="— ·· — SECTOR: WORLDBUILDING — ·· —" className="hidden md:block" />}
         {!user && <VideoShowcase />}
         {!user && (
           <CosmicTelemetry
@@ -345,6 +347,7 @@ const Index = () => {
           />
         )}
         {!user && <ToolShowcase />}
+        {!user && <SFDivider />}
         {!user && <ValueProposition />}
 
         {/* My Worlds Section - logged-in users only */}
@@ -429,6 +432,8 @@ const Index = () => {
               ))}
             </div>
 
+            <SFDivider className="hidden md:block" />
+
             {/* Calculators Subsection */}
             <div className="mt-12">
               <h3 className="font-heading font-light text-lg uppercase tracking-sf-wide text-muted-foreground mb-6">
@@ -443,6 +448,8 @@ const Index = () => {
                 ))}
               </div>
             </div>
+
+            <SFDivider className="hidden md:block" />
 
             {/* Simulators Subsection */}
             <div className="mt-12">
@@ -561,6 +568,8 @@ const Index = () => {
               </div>
             </div>
 
+            <SFDivider className="hidden md:block" />
+
             {/* Cartographers Subsection */}
             <div className="mt-12">
               <h3 className="font-heading font-light text-lg uppercase tracking-sf-wide text-muted-foreground mb-6">
@@ -662,6 +671,8 @@ const Index = () => {
             </GlassPanel>
           </section>
         )}
+
+        <SFDivider label="— ·· — COMMS: LEARN — ·· —" className="hidden md:block" />
 
         {/* Latest from Learn - shown to all users */}
         <RecentArticles />

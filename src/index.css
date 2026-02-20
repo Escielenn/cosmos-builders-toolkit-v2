@@ -440,6 +440,34 @@
     height: 1px;
     background: linear-gradient(90deg, transparent, hsl(var(--sf-teal-bright) / 0.5), transparent);
   }
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     v2.2 STRUCTURAL ANALOG ELEMENTS
+     ═══════════════════════════════════════════════════════════════════════ */
+
+  /* Dashed divider line with optional data burst label */
+  .sf-divider {
+    position: relative;
+    width: 100%;
+    height: 1px;
+    border: none;
+    border-top: 1px dashed rgba(224, 228, 232, 0.08);
+    margin: 48px 0;
+  }
+
+  .sf-divider-data {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: var(--sf-font-mono);
+    font-size: 7px;
+    letter-spacing: 1px;
+    color: rgba(255, 179, 71, 0.25);
+    background: hsl(var(--sf-void));
+    padding: 0 12px;
+    white-space: nowrap;
+  }
 }
 
 @layer utilities {
