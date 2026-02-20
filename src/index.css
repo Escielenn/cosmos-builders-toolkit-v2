@@ -1058,6 +1058,28 @@ html {
     transform: scaleX(1);
   }
 
+  /* Text link — underline sweep from left */
+  .sf-text-link {
+    position: relative;
+    text-decoration: none;
+  }
+
+  .sf-text-link::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.35s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+
+  .sf-text-link:hover::after {
+    transform: scaleX(1);
+  }
 
   /* Error shake */
   .sf-error-shake {

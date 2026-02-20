@@ -7,6 +7,8 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Badge } from "@/components/ui/badge";
+import { PageBursts } from "@/components/ui/data-burst";
+import type { DataBurstConfig } from "@/lib/data-bursts";
 
 interface LegalPageLayoutProps {
   title: string;
@@ -16,12 +18,13 @@ interface LegalPageLayoutProps {
   badgeText: string;
   content?: string;
   children?: ReactNode;
+  bursts?: DataBurstConfig[];
 }
 
 // Custom markdown components for better styling
 const markdownComponents: Components = {
   h2: ({ children }) => (
-    <h2 className="flex items-center gap-3 text-2xl font-heading font-bold text-foreground mt-12 mb-6 pt-8 border-t border-border/30 first:mt-0 first:pt-0 first:border-t-0">
+    <h2 className="flex items-center gap-3 text-2xl font-heading font-light tracking-[0.08em] text-foreground mt-12 mb-6 pt-8 border-t border-border/30 first:mt-0 first:pt-0 first:border-t-0">
       <span className="w-1 h-8 bg-primary rounded-full" />
       {children}
     </h2>
@@ -60,7 +63,7 @@ const markdownComponents: Components = {
   a: ({ href, children }) => (
     <a
       href={href}
-      className="text-primary hover:underline"
+      className="text-primary sf-text-link"
       target={href?.startsWith("http") ? "_blank" : undefined}
       rel={href?.startsWith("http") ? "noopener noreferrer" : undefined}
     >
@@ -85,12 +88,14 @@ const LegalPageLayout = ({
   badgeText,
   content,
   children,
+  bursts,
 }: LegalPageLayoutProps) => {
   return (
     <div className="min-h-screen bg-background sf-atmosphere">
       <Header />
 
-      <main className="container mx-auto px-4 pt-24 pb-16 max-w-4xl">
+      <main className="relative container mx-auto px-4 pt-24 pb-16 max-w-4xl">
+        {bursts && <PageBursts bursts={bursts} />}
         {/* Back Link */}
         <Link
           to="/"

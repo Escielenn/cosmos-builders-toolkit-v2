@@ -60,8 +60,8 @@ const Footer = () => {
                 <span className="font-display font-light text-lg leading-tight tracking-sf-wide text-white uppercase">
                   STELLARFORGE
                 </span>
-                <span className="text-xs text-muted-foreground tracking-wide">
-                  Forge the Future
+                <span className="text-xs text-muted-foreground tracking-wide font-mono">
+                  39.87°N 104.97°W
                 </span>
               </div>
             </Link>
@@ -88,12 +88,11 @@ const Footer = () => {
             {/* Privacy Statement */}
             <div className="mt-6 pt-4 border-t border-dashed border-border/15">
               <h4 className="text-sm font-semibold text-foreground mb-2">
-                Your Worlds Are Yours Alone
+                YOUR WORLDS ARE YOURS ALONE
               </h4>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                We can't access your creative work. Ever. No AI training. No data mining.
-                No third-party sharing. Your unpublished stories stay unpublished until you
-                decide otherwise.
+                All creative content is encrypted, user-isolated, and never accessed by StellarForge systems.
+                No AI training. No data mining. No third-party sharing.
               </p>
             </div>
           </div>
@@ -108,7 +107,7 @@ const Footer = () => {
                 <li key={item.name}>
                   <Link
                     to={item.href}
-                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                    className="text-sm text-muted-foreground hover:text-primary transition-colors sf-text-link"
                   >
                     {item.name}
                   </Link>
@@ -127,7 +126,7 @@ const Footer = () => {
                 <li key={item.name}>
                   <Link
                     to={item.href}
-                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                    className="text-sm text-muted-foreground hover:text-primary transition-colors sf-text-link"
                   >
                     {item.name}
                   </Link>
@@ -146,7 +145,7 @@ const Footer = () => {
                 <li key={item.name}>
                   <Link
                     to={item.href}
-                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                    className="text-sm text-muted-foreground hover:text-primary transition-colors sf-text-link"
                   >
                     {item.name}
                   </Link>
@@ -166,7 +165,7 @@ const Footer = () => {
                   href="https://dreamsidestudios.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-primary transition-colors"
+                  className="hover:text-primary transition-colors sf-text-link"
                 >
                   Dreamside Studios
                 </a>{" "}
@@ -178,7 +177,7 @@ const Footer = () => {
                   href="https://jbatt.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-primary transition-colors"
+                  className="hover:text-primary transition-colors sf-text-link"
                 >
                   Jason D. Batt, Ph.D.
                 </a>{" "}
@@ -188,8 +187,8 @@ const Footer = () => {
                 Unauthorized copying, modification, or distribution prohibited.
               </p>
             </div>
-            <p className="text-xs text-muted-foreground">
-              Made with science and imagination
+            <p className="text-xs text-muted-foreground font-mono uppercase tracking-wider">
+              BUILT IN THORNTON, CO
             </p>
           </div>
         </div>

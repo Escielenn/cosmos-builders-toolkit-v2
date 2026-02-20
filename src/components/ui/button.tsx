@@ -19,8 +19,8 @@ const buttonVariants = cva(
         secondary: "bg-secondary text-secondary-foreground sf-fill-sweep sf-fill-sweep--secondary",
         // Ghost: minimal with subtle fill-sweep
         ghost: "sf-fill-sweep sf-fill-sweep--secondary hover:text-primary",
-        // Link: underline on hover
-        link: "text-primary underline-offset-4 hover:underline",
+        // Link: sweep underline on hover
+        link: "text-primary sf-text-link",
         // StellarForge signature: uppercase, letter-spaced, primary fill-sweep
         sf: "bg-transparent border border-muted-foreground text-foreground uppercase tracking-[0.15em] text-xs font-medium sf-fill-sweep sf-fill-sweep--primary hover:border-primary hover:text-primary",
       },
