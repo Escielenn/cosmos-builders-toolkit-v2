@@ -81,10 +81,12 @@
        See src/lib/STELLARFORGE-DESIGN-SYSTEM.md for full guidelines
        ═══════════════════════════════════════════════════════════════════════ */
 
-    /* Foundation Colors (raw values) */
-    --sf-void: 240 7% 4%;                /* #0D0D0F - deepest background */
-    --sf-surface: 240 5% 8%;             /* #151518 - card/panel bg */
-    --sf-surface-elevated: 240 4% 11%;   /* #1C1C21 - elevated panels */
+    /* Foundation Colors — v2.2 Space Navy */
+    --sf-void: 222 30% 5%;               /* #0A0E17 — space navy deep bg */
+    --sf-surface: 222 25% 9%;            /* #0E1320 — panel surface */
+    --sf-surface-elevated: 222 20% 12%;  /* #161C2B — elevated panels */
+    --sf-panel-alpha: 222 25% 9% / 0.92;      /* floating panels */
+    --sf-tool-panel-alpha: 222 25% 9% / 0.95; /* Layer 3 tool panels */
     --sf-text-primary: 0 0% 98%;         /* #FAFAFA */
     --sf-text-muted: 0 0% 58%;           /* #949494 - WCAG AA compliant */
     --sf-text-ghost: 0 0% 24%;           /* #3A3A3F */
@@ -407,7 +409,7 @@
     pointer-events: none;
     background:
       radial-gradient(ellipse at 70% 20%, hsl(var(--sf-glow-teal)) 0%, transparent 50%),
-      linear-gradient(180deg, hsl(var(--sf-void)) 0%, hsl(240 7% 3%) 100%);
+      linear-gradient(180deg, hsl(var(--sf-void)) 0%, hsl(222 35% 3%) 100%);
   }
 
   /* Hide sf-atmosphere when custom backgrounds are active */
