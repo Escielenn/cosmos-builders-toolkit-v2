@@ -9,20 +9,20 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        // Primary: solid cyan with lift + glow on hover
+        // Primary: solid cyan with fill-sweep
         default: "bg-primary text-primary-foreground sf-btn-lift",
-        // Destructive: crimson with subtle glow
-        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90 hover:shadow-[0_0_15px_hsl(var(--sf-glow-magenta))]",
-        // Outline: transparent with border, cyan glow on hover (SF signature)
-        outline: "border border-muted-foreground bg-transparent hover:border-primary hover:text-primary hover:shadow-[0_0_20px_hsl(var(--sf-glow-teal))] hover:bg-primary/[0.04]",
-        // Secondary: elevated surface
-        secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80 hover:scale-[1.01]",
-        // Ghost: minimal, just hover color shift
-        ghost: "hover:bg-accent/10 hover:text-primary",
+        // Destructive: crimson with danger fill-sweep
+        destructive: "bg-destructive text-destructive-foreground sf-fill-sweep sf-fill-sweep--danger",
+        // Outline: transparent with border, primary fill-sweep
+        outline: "border border-muted-foreground bg-transparent sf-fill-sweep sf-fill-sweep--primary hover:border-primary hover:text-primary",
+        // Secondary: elevated surface with neutral fill-sweep
+        secondary: "bg-secondary text-secondary-foreground sf-fill-sweep sf-fill-sweep--secondary",
+        // Ghost: minimal with subtle fill-sweep
+        ghost: "sf-fill-sweep sf-fill-sweep--secondary hover:text-primary",
         // Link: underline on hover
         link: "text-primary underline-offset-4 hover:underline",
-        // StellarForge signature button: uppercase, letter-spaced, transparent with glow
-        sf: "bg-transparent border border-muted-foreground text-foreground uppercase tracking-[0.15em] text-xs font-medium hover:border-primary hover:text-primary hover:shadow-[0_0_20px_hsl(var(--sf-glow-teal))] hover:bg-primary/[0.04]",
+        // StellarForge signature: uppercase, letter-spaced, primary fill-sweep
+        sf: "bg-transparent border border-muted-foreground text-foreground uppercase tracking-[0.15em] text-xs font-medium sf-fill-sweep sf-fill-sweep--primary hover:border-primary hover:text-primary",
       },
       size: {
         default: "h-10 px-4 py-2",

@@ -903,24 +903,6 @@ html {
     }
   }
 
-  /* Cube spinner animations */
-  .animate-spin-slow {
-    animation: spin-slow 3s linear infinite;
-  }
-
-  @keyframes spin-slow {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
-  }
-
-  .animate-pulse-glow {
-    animation: pulse-glow 2s ease-in-out infinite;
-  }
-
   @keyframes pulse-glow {
     0%, 100% {
       filter: drop-shadow(0 0 4px hsl(157 100% 62% / 0.4));
@@ -1253,20 +1235,42 @@ html {
     background: rgba(255, 179, 71, 0.4);
   }
 
-  /* Button hover lift for primary buttons */
+  /* Button hover: fill-sweep (replaces glow-lift) */
   .sf-btn-lift {
-    transition: all var(--duration-normal) var(--ease-out-expo);
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.35s cubic-bezier(0.19, 1, 0.22, 1),
+                color 0.35s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+
+  .sf-btn-lift::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(61, 255, 205, 0.12);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.35s cubic-bezier(0.19, 1, 0.22, 1);
+    z-index: 0;
+  }
+
+  .sf-btn-lift:hover::before {
+    transform: scaleX(1);
   }
 
   .sf-btn-lift:hover {
-    background: rgba(61, 255, 205, 0.08);
-    border-color: rgba(61, 255, 205, 0.2);
-    box-shadow: var(--glow-primary);
+    border-color: rgba(61, 255, 205, 0.3);
   }
 
   .sf-btn-lift:active {
-    transform: translateY(0) scale(0.98);
+    transform: scale(0.98);
     transition-duration: var(--duration-instant);
+  }
+
+  /* Ensure button text sits above the fill-sweep */
+  .sf-btn-lift > * {
+    position: relative;
+    z-index: 1;
   }
 
   /* Icon hover: brightness lift */
@@ -1504,6 +1508,8 @@ html {
 }
 
 .sf-btn-worksheet {
+  position: relative;
+  overflow: hidden;
   font-family: var(--sf-font-heading);
   font-size: 11px;
   font-weight: 500;
@@ -1515,11 +1521,25 @@ html {
   color: rgba(255, 255, 255, 0.55);
   border-radius: 2px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: border-color 0.35s cubic-bezier(0.19, 1, 0.22, 1),
+              color 0.35s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.sf-btn-worksheet::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(61, 255, 205, 0.1);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.35s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.sf-btn-worksheet:hover::before {
+  transform: scaleX(1);
 }
 
 .sf-btn-worksheet:hover {
-  background: rgba(61, 255, 205, 0.08);
   border-color: rgba(61, 255, 205, 0.2);
   color: rgba(255, 255, 255, 0.85);
 }
@@ -1532,6 +1552,8 @@ html {
 
 /* ── Comm Button (ContactFAB) ── */
 .sf-comm-button {
+  position: relative;
+  overflow: hidden;
   font-family: var(--sf-font-heading);
   font-size: 10px;
   font-weight: 500;
@@ -1545,10 +1567,25 @@ html {
   align-items: center;
   gap: 8px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: border-color 0.35s cubic-bezier(0.19, 1, 0.22, 1),
+              color 0.35s cubic-bezier(0.19, 1, 0.22, 1);
 }
+
+.sf-comm-button::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(61, 255, 205, 0.1);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.35s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.sf-comm-button:hover::before {
+  transform: scaleX(1);
+}
+
 .sf-comm-button:hover {
-  background: rgba(61, 255, 205, 0.08);
   border-color: rgba(61, 255, 205, 0.4);
   color: #3DFFCD;
 }
@@ -1911,6 +1948,98 @@ html {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
+   FILL-SWEEP INTERACTION SYSTEM
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── Base fill-sweep ── */
+.sf-fill-sweep {
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.35s cubic-bezier(0.19, 1, 0.22, 1),
+              color 0.35s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.sf-fill-sweep::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.35s cubic-bezier(0.19, 1, 0.22, 1);
+  z-index: 0;
+}
+
+.sf-fill-sweep:hover::before {
+  transform: scaleX(1);
+}
+
+.sf-fill-sweep > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Primary (teal) ── */
+.sf-fill-sweep--primary::before {
+  background: rgba(61, 255, 205, 0.12);
+}
+
+.sf-fill-sweep--primary:hover {
+  border-color: rgba(61, 255, 205, 0.3);
+}
+
+/* ── Secondary (white/neutral) ── */
+.sf-fill-sweep--secondary::before {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.sf-fill-sweep--secondary:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+/* ── Amber (warnings, CTA accent) ── */
+.sf-fill-sweep--amber::before {
+  background: rgba(255, 179, 71, 0.12);
+}
+
+.sf-fill-sweep--amber:hover {
+  border-color: rgba(255, 179, 71, 0.3);
+  color: #FFB347;
+}
+
+/* ── Stellar Blue (worlds, collaboration) ── */
+.sf-fill-sweep--stellar::before {
+  background: rgba(91, 141, 239, 0.12);
+}
+
+.sf-fill-sweep--stellar:hover {
+  border-color: rgba(91, 141, 239, 0.3);
+  color: #5B8DEF;
+}
+
+/* ── Danger (destructive actions) ── */
+.sf-fill-sweep--danger::before {
+  background: rgba(239, 68, 68, 0.12);
+}
+
+.sf-fill-sweep--danger:hover {
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #EF4444;
+}
+
+/* ── Modifiers ── */
+.sf-fill-sweep--full::before {
+  background: rgba(61, 255, 205, 0.95);
+}
+
+.sf-fill-sweep--full:hover {
+  color: #0A0E17;
+}
+
+.sf-fill-sweep--right::before {
+  transform-origin: right center;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
    REDUCED MOTION — respect user preferences
    ═══════════════════════════════════════════════════════════════════════ */
 @media (prefers-reduced-motion: reduce) {
@@ -1940,5 +2069,16 @@ html {
     animation: none !important;
     width: 100% !important;
     opacity: 0.3;
+  }
+
+  /* Fill-sweep: show static filled state */
+  .sf-fill-sweep::before,
+  .sf-btn-lift::before {
+    transition: none !important;
+  }
+
+  .sf-fill-sweep:hover::before,
+  .sf-btn-lift:hover::before {
+    transform: scaleX(1);
   }
 }
