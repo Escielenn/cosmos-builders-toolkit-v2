@@ -90,12 +90,14 @@ const GeneralContactForm = ({ onSuccess }: GeneralContactFormProps) => {
 
       <div className="space-y-2">
         <Label htmlFor="contact-name">CALLSIGN</Label>
-        <Input
-          id="contact-name"
-          placeholder="Your name"
-          {...register("name")}
-          disabled={isSubmitting}
-        />
+        <div className="sf-input-bracketed">
+          <Input
+            id="contact-name"
+            placeholder="Your name"
+            {...register("name")}
+            disabled={isSubmitting}
+          />
+        </div>
         {errors.name && (
           <p className="text-sm text-destructive">{errors.name.message}</p>
         )}
@@ -103,13 +105,15 @@ const GeneralContactForm = ({ onSuccess }: GeneralContactFormProps) => {
 
       <div className="space-y-2">
         <Label htmlFor="contact-email">FREQUENCY</Label>
-        <Input
-          id="contact-email"
-          type="email"
-          placeholder="Your email"
-          {...register("email")}
-          disabled={isSubmitting}
-        />
+        <div className="sf-input-bracketed">
+          <Input
+            id="contact-email"
+            type="email"
+            placeholder="Your email"
+            {...register("email")}
+            disabled={isSubmitting}
+          />
+        </div>
         {errors.email && (
           <p className="text-sm text-destructive">{errors.email.message}</p>
         )}
@@ -117,13 +121,15 @@ const GeneralContactForm = ({ onSuccess }: GeneralContactFormProps) => {
 
       <div className="space-y-2">
         <Label htmlFor="contact-message">TRANSMISSION</Label>
-        <Textarea
-          id="contact-message"
-          placeholder="Your message"
-          rows={5}
-          {...register("message")}
-          disabled={isSubmitting}
-        />
+        <div className="sf-input-bracketed">
+          <Textarea
+            id="contact-message"
+            placeholder="Your message"
+            rows={5}
+            {...register("message")}
+            disabled={isSubmitting}
+          />
+        </div>
         {errors.message && (
           <p className="text-sm text-destructive">{errors.message.message}</p>
         )}

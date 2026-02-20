@@ -1875,6 +1875,48 @@ html {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
+   BRACKETED INPUT FIELDS — featured forms (Auth, Contact, World creation)
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.sf-input-bracketed {
+  position: relative;
+  padding: 2px;
+}
+
+.sf-input-bracketed::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background:
+    /* top-left corner */
+    linear-gradient(rgba(61, 255, 205, 0.35), rgba(61, 255, 205, 0.35)) 0 0 / 8px 1px no-repeat,
+    linear-gradient(rgba(61, 255, 205, 0.35), rgba(61, 255, 205, 0.35)) 0 0 / 1px 8px no-repeat,
+    /* top-right corner */
+    linear-gradient(rgba(61, 255, 205, 0.35), rgba(61, 255, 205, 0.35)) 100% 0 / 8px 1px no-repeat,
+    linear-gradient(rgba(61, 255, 205, 0.35), rgba(61, 255, 205, 0.35)) 100% 0 / 1px 8px no-repeat,
+    /* bottom-left corner */
+    linear-gradient(rgba(61, 255, 205, 0.35), rgba(61, 255, 205, 0.35)) 0 100% / 8px 1px no-repeat,
+    linear-gradient(rgba(61, 255, 205, 0.35), rgba(61, 255, 205, 0.35)) 0 100% / 1px 8px no-repeat,
+    /* bottom-right corner */
+    linear-gradient(rgba(61, 255, 205, 0.35), rgba(61, 255, 205, 0.35)) 100% 100% / 8px 1px no-repeat,
+    linear-gradient(rgba(61, 255, 205, 0.35), rgba(61, 255, 205, 0.35)) 100% 100% / 1px 8px no-repeat;
+}
+
+.sf-input-bracketed:focus-within::before {
+  background:
+    linear-gradient(rgba(61, 255, 205, 0.6), rgba(61, 255, 205, 0.6)) 0 0 / 10px 1px no-repeat,
+    linear-gradient(rgba(61, 255, 205, 0.6), rgba(61, 255, 205, 0.6)) 0 0 / 1px 10px no-repeat,
+    linear-gradient(rgba(61, 255, 205, 0.6), rgba(61, 255, 205, 0.6)) 100% 0 / 10px 1px no-repeat,
+    linear-gradient(rgba(61, 255, 205, 0.6), rgba(61, 255, 205, 0.6)) 100% 0 / 1px 10px no-repeat,
+    linear-gradient(rgba(61, 255, 205, 0.6), rgba(61, 255, 205, 0.6)) 0 100% / 10px 1px no-repeat,
+    linear-gradient(rgba(61, 255, 205, 0.6), rgba(61, 255, 205, 0.6)) 0 100% / 1px 10px no-repeat,
+    linear-gradient(rgba(61, 255, 205, 0.6), rgba(61, 255, 205, 0.6)) 100% 100% / 10px 1px no-repeat,
+    linear-gradient(rgba(61, 255, 205, 0.6), rgba(61, 255, 205, 0.6)) 100% 100% / 1px 10px no-repeat;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
    FILL-SWEEP INTERACTION SYSTEM
    ═══════════════════════════════════════════════════════════════════════ */
 

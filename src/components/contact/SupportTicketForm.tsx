@@ -129,12 +129,14 @@ const SupportTicketForm = ({ onSuccess }: SupportTicketFormProps) => {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="ticket-name">CALLSIGN</Label>
-          <Input
-            id="ticket-name"
-            placeholder="Your name"
-            {...register("name")}
-            disabled={isSubmitting}
-          />
+          <div className="sf-input-bracketed">
+            <Input
+              id="ticket-name"
+              placeholder="Your name"
+              {...register("name")}
+              disabled={isSubmitting}
+            />
+          </div>
           {errors.name && (
             <p className="text-sm text-destructive">{errors.name.message}</p>
           )}
@@ -142,13 +144,15 @@ const SupportTicketForm = ({ onSuccess }: SupportTicketFormProps) => {
 
         <div className="space-y-2">
           <Label htmlFor="ticket-email">FREQUENCY</Label>
-          <Input
-            id="ticket-email"
-            type="email"
-            placeholder="Your email"
-            {...register("email")}
-            disabled={isSubmitting}
-          />
+          <div className="sf-input-bracketed">
+            <Input
+              id="ticket-email"
+              type="email"
+              placeholder="Your email"
+              {...register("email")}
+              disabled={isSubmitting}
+            />
+          </div>
           {errors.email && (
             <p className="text-sm text-destructive">{errors.email.message}</p>
           )}
@@ -221,12 +225,14 @@ const SupportTicketForm = ({ onSuccess }: SupportTicketFormProps) => {
 
       <div className="space-y-2">
         <Label htmlFor="ticket-subject">SIGNAL HEADER</Label>
-        <Input
-          id="ticket-subject"
-          placeholder="Subject"
-          {...register("subject")}
-          disabled={isSubmitting}
-        />
+        <div className="sf-input-bracketed">
+          <Input
+            id="ticket-subject"
+            placeholder="Subject"
+            {...register("subject")}
+            disabled={isSubmitting}
+          />
+        </div>
         {errors.subject && (
           <p className="text-sm text-destructive">{errors.subject.message}</p>
         )}
@@ -234,13 +240,15 @@ const SupportTicketForm = ({ onSuccess }: SupportTicketFormProps) => {
 
       <div className="space-y-2">
         <Label htmlFor="ticket-message">TRANSMISSION</Label>
-        <Textarea
-          id="ticket-message"
-          placeholder="Describe the issue"
-          rows={5}
-          {...register("message")}
-          disabled={isSubmitting}
-        />
+        <div className="sf-input-bracketed">
+          <Textarea
+            id="ticket-message"
+            placeholder="Describe the issue"
+            rows={5}
+            {...register("message")}
+            disabled={isSubmitting}
+          />
+        </div>
         {errors.message && (
           <p className="text-sm text-destructive">{errors.message.message}</p>
         )}

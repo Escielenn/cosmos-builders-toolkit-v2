@@ -90,7 +90,7 @@ const CreateWorldButton = () => {
               </div>
               <div className="flex items-end gap-4">
                 <IconPicker value={worldIcon} onChange={setWorldIcon} />
-                <div className="flex-1">
+                <div className="flex-1 sf-input-bracketed">
                   <Input
                     id="world-name"
                     placeholder="e.g., Kepler-442b Colony"
@@ -102,13 +102,15 @@ const CreateWorldButton = () => {
             </div>
             <div className="space-y-2">
               <Label htmlFor="world-description">Description (optional)</Label>
-              <Textarea
-                id="world-description"
-                placeholder="World survey notes..."
-                value={worldDescription}
-                onChange={(e) => setWorldDescription(e.target.value)}
-                rows={3}
-              />
+              <div className="sf-input-bracketed">
+                <Textarea
+                  id="world-description"
+                  placeholder="World survey notes..."
+                  value={worldDescription}
+                  onChange={(e) => setWorldDescription(e.target.value)}
+                  rows={3}
+                />
+              </div>
             </div>
             <Button
               className="w-full gap-2"

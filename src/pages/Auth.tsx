@@ -162,7 +162,7 @@ const Auth = () => {
       <div className="flex-1 flex items-center justify-center p-4">
         <GlassPanel className="w-full max-w-md p-8">
           <div className="text-center mb-6">
-            <h1 className="font-display text-2xl font-bold mb-2">
+            <h1 className="font-display text-2xl font-light tracking-[0.12em] mb-2">
               {activeTab === "signup" ? "ESTABLISH CREDENTIALS" : "RE-ESTABLISH CONTACT"}
             </h1>
             <p className="text-sm text-muted-foreground">
@@ -233,28 +233,32 @@ const Auth = () => {
               <form onSubmit={handleSignIn} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="login-email">Email</Label>
-                  <Input
-                    id="login-email"
-                    type="email"
-                    placeholder="you@example.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    disabled={isLoading}
-                  />
+                  <div className="sf-input-bracketed">
+                    <Input
+                      id="login-email"
+                      type="email"
+                      placeholder="you@example.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      disabled={isLoading}
+                    />
+                  </div>
                   {errors.email && (
                     <p className="text-sm text-destructive">{errors.email}</p>
                   )}
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="login-password">Password</Label>
-                  <Input
-                    id="login-password"
-                    type="password"
-                    placeholder="••••••••"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    disabled={isLoading}
-                  />
+                  <div className="sf-input-bracketed">
+                    <Input
+                      id="login-password"
+                      type="password"
+                      placeholder="••••••••"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      disabled={isLoading}
+                    />
+                  </div>
                   {errors.password && (
                     <p className="text-sm text-destructive">{errors.password}</p>
                   )}
@@ -274,39 +278,45 @@ const Auth = () => {
               <form onSubmit={handleSignUp} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="signup-name">Display Name (optional)</Label>
-                  <Input
-                    id="signup-name"
-                    type="text"
-                    placeholder="Your name"
-                    value={displayName}
-                    onChange={(e) => setDisplayName(e.target.value)}
-                    disabled={isLoading}
-                  />
+                  <div className="sf-input-bracketed">
+                    <Input
+                      id="signup-name"
+                      type="text"
+                      placeholder="Your name"
+                      value={displayName}
+                      onChange={(e) => setDisplayName(e.target.value)}
+                      disabled={isLoading}
+                    />
+                  </div>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="signup-email">Email</Label>
-                  <Input
-                    id="signup-email"
-                    type="email"
-                    placeholder="you@example.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    disabled={isLoading}
-                  />
+                  <div className="sf-input-bracketed">
+                    <Input
+                      id="signup-email"
+                      type="email"
+                      placeholder="you@example.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      disabled={isLoading}
+                    />
+                  </div>
                   {errors.email && (
                     <p className="text-sm text-destructive">{errors.email}</p>
                   )}
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="signup-password">Password</Label>
-                  <Input
-                    id="signup-password"
-                    type="password"
-                    placeholder="••••••••"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    disabled={isLoading}
-                  />
+                  <div className="sf-input-bracketed">
+                    <Input
+                      id="signup-password"
+                      type="password"
+                      placeholder="••••••••"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      disabled={isLoading}
+                    />
+                  </div>
                   {errors.password && (
                     <p className="text-sm text-destructive">{errors.password}</p>
                   )}
@@ -369,7 +379,7 @@ const Auth = () => {
           <DialogHeader>
             <DialogTitle className="font-heading text-xl">Terms of Service</DialogTitle>
           </DialogHeader>
-          <div className="prose prose-invert prose-sm max-w-none [&_h2]:text-lg [&_h2]:font-heading [&_h2]:font-bold [&_h2]:mt-6 [&_h2]:mb-3 [&_h3]:text-base [&_h3]:font-semibold [&_h3]:mt-4 [&_h3]:mb-2 [&_h4]:text-sm [&_h4]:font-semibold [&_h4]:mt-3 [&_h4]:mb-1 [&_p]:text-sm [&_p]:text-muted-foreground [&_p]:leading-relaxed [&_p]:mb-3 [&_li]:text-sm [&_li]:text-muted-foreground [&_hr]:border-border/30 [&_hr]:my-4 [&_strong]:text-foreground">
+          <div className="prose prose-invert prose-sm max-w-none [&_h2]:text-lg [&_h2]:font-heading [&_h2]:font-light [&_h2]:tracking-[0.08em] [&_h2]:mt-6 [&_h2]:mb-3 [&_h3]:text-base [&_h3]:font-semibold [&_h3]:mt-4 [&_h3]:mb-2 [&_h4]:text-sm [&_h4]:font-semibold [&_h4]:mt-3 [&_h4]:mb-1 [&_p]:text-sm [&_p]:text-muted-foreground [&_p]:leading-relaxed [&_p]:mb-3 [&_li]:text-sm [&_li]:text-muted-foreground [&_hr]:border-border/30 [&_hr]:my-4 [&_strong]:text-foreground">
             <ReactMarkdown>{TERMS_CONTENT}</ReactMarkdown>
           </div>
         </DialogContent>
