@@ -1016,25 +1016,46 @@ html {
     50% { transform: translateX(100%) translateY(100%); }
   }
 
-  /* Nav link underline */
+  /* Nav link — fill sweep + bottom line */
   .sf-nav-link {
     position: relative;
+    overflow: hidden;
+    padding: 4px 8px;
   }
 
+  /* Background fill sweep */
+  .sf-nav-link::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(61, 255, 205, 0.06);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.35s cubic-bezier(0.19, 1, 0.22, 1);
+    z-index: 0;
+  }
+
+  .sf-nav-link:hover::before {
+    transform: scaleX(1);
+  }
+
+  /* Bottom accent line */
   .sf-nav-link::after {
     content: '';
     position: absolute;
-    bottom: -2px;
-    left: 50%;
-    width: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
     height: 1px;
     background: hsl(var(--sf-teal-bright));
-    transition: all var(--duration-normal) var(--ease-out-expo);
-    transform: translateX(-50%);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.35s cubic-bezier(0.19, 1, 0.22, 1);
+    z-index: 1;
   }
 
   .sf-nav-link:hover::after {
-    width: 100%;
+    transform: scaleX(1);
   }
 
 
