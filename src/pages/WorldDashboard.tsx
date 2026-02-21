@@ -1,5 +1,5 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Edit, Globe, FileText, Rocket, Zap, Trash2, MoreVertical, Calculator, Plus, Sparkles, Pencil, ChevronRight, Dna, Network, Sun, Crown, Cpu, Users, Download, Layers, BookOpen, Atom, Clock, Archive, Tag, Orbit, Languages, Weight, Eye } from "lucide-react";
+import { ArrowLeft, Edit, Globe, FileText, Rocket, Zap, Trash2, MoreVertical, Calculator, Plus, Sparkles, Pencil, ChevronRight, Dna, Network, Sun, Crown, Cpu, Users, Download, Layers, BookOpen, Atom, Clock, Archive, Tag, Orbit, Languages, Weight, Eye, Camera } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
 import { CosmicTelemetry } from "@/components/layout/CosmicVelocityTicker";
 import { EPOCH_DATA } from "@/lib/cosmic-telemetry";
@@ -53,6 +53,9 @@ import HeaderImageUpload from "@/components/world/HeaderImageUpload";
 import WorldExportDialog from "@/components/world/WorldExportDialog";
 import HierarchicalExportDialog from "@/components/world/HierarchicalExportDialog";
 import WorldBibleDialog from "@/components/world/WorldBibleDialog";
+import WorldSnapshotDialog from "@/components/world/WorldSnapshotDialog";
+import VersionHistory from "@/components/world/VersionHistory";
+import WorldOutline from "@/components/outline/WorldOutline";
 import { PageBursts } from "@/components/ui/data-burst";
 import { WORLD_DASHBOARD_BURSTS } from "@/lib/data-bursts";
 const TOOLS = [
@@ -227,6 +230,7 @@ const WorldDashboard = () => {
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
   const [viewExportDialogOpen, setViewExportDialogOpen] = useState(false);
   const [worldBibleDialogOpen, setWorldBibleDialogOpen] = useState(false);
+  const [snapshotDialogOpen, setSnapshotDialogOpen] = useState(false);
   const [editName, setEditName] = useState("");
   const [editDescription, setEditDescription] = useState("");
   const [editIcon, setEditIcon] = useState("globe");
@@ -366,6 +370,12 @@ const WorldDashboard = () => {
               Export
             </Button>
             {isOwner && (
+            <Button variant="outline" size="sm" onClick={() => setSnapshotDialogOpen(true)}>
+              <Camera className="w-4 h-4 mr-2" />
+              Snapshot
+            </Button>
+            )}
+            {isOwner && (
             <Button variant="outline" size="sm" onClick={() => setViewExportDialogOpen(true)}>
               <Layers className="w-4 h-4 mr-2" />
               Export View
@@ -448,6 +458,20 @@ const WorldDashboard = () => {
         {worldId && (
           <section className="mb-8">
             <WorldNotes worldId={worldId} readOnly={!canEdit} />
+          </section>
+        )}
+
+        {/* Version History — owner only */}
+        {isOwner && worldId && (
+          <section className="mb-8">
+            <VersionHistory worldId={worldId} worldName={world.name} />
+          </section>
+        )}
+
+        {/* World Outline */}
+        {worldId && (
+          <section className="mb-8">
+            <WorldOutline worldId={worldId} worldName={world.name} />
           </section>
         )}
 
@@ -816,6 +840,14 @@ const WorldDashboard = () => {
         onOpenChange={setWorldBibleDialogOpen}
         worldName={world.name}
         worldDescription={world.description || undefined}
+        worldId={worldId!}
+      />
+
+      {/* World Snapshot Dialog */}
+      <WorldSnapshotDialog
+        open={snapshotDialogOpen}
+        onOpenChange={setSnapshotDialogOpen}
+        worldName={world.name}
         worldId={worldId!}
       />
 
