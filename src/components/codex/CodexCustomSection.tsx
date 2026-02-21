@@ -1,13 +1,16 @@
 import { useState, useCallback } from "react";
 import { ChevronRight, ChevronDown, Plus } from "lucide-react";
 import CodexElementRow from "./CodexElementRow";
+import CodexContextMenu from "./CodexContextMenu";
 import type { CodexElement } from "@/services/world-data";
 
 interface CodexCustomSectionProps {
   elements: CodexElement[];
   activeElementId?: string | null;
   onElementClick: (element: CodexElement) => void;
-  onElementContextMenu: (e: React.MouseEvent, element: CodexElement) => void;
+  onOpenWiki?: (element: CodexElement) => void;
+  onOpenTool?: (element: CodexElement) => void;
+  onDelete?: (element: CodexElement) => void;
   onCreateFolder: () => void;
   onCreateEntry: () => void;
 }
@@ -16,7 +19,9 @@ const CodexCustomSection = ({
   elements,
   activeElementId,
   onElementClick,
-  onElementContextMenu,
+  onOpenWiki,
+  onOpenTool,
+  onDelete,
   onCreateFolder,
   onCreateEntry,
 }: CodexCustomSectionProps) => {
@@ -54,15 +59,21 @@ const CodexCustomSection = ({
             </p>
           ) : (
             elements.map((el, idx) => (
-              <CodexElementRow
+              <CodexContextMenu
                 key={el.id}
                 element={el}
-                depth={1}
-                isLast={idx === elements.length - 1}
-                isActive={activeElementId === el.id}
-                onClick={onElementClick}
-                onContextMenu={onElementContextMenu}
-              />
+                onOpenWiki={onOpenWiki}
+                onOpenTool={onOpenTool}
+                onDelete={onDelete}
+              >
+                <CodexElementRow
+                  element={el}
+                  depth={1}
+                  isLast={idx === elements.length - 1}
+                  isActive={activeElementId === el.id}
+                  onClick={onElementClick}
+                />
+              </CodexContextMenu>
             ))
           )}
 

@@ -9,7 +9,6 @@ interface CodexElementRowProps {
   isLast?: boolean;
   isActive?: boolean;
   onClick: (element: CodexElement) => void;
-  onContextMenu: (e: React.MouseEvent, element: CodexElement) => void;
 }
 
 const CodexElementRow = memo(({
@@ -18,12 +17,10 @@ const CodexElementRow = memo(({
   isLast = false,
   isActive = false,
   onClick,
-  onContextMenu,
 }: CodexElementRowProps) => {
   return (
     <button
       onClick={() => onClick(element)}
-      onContextMenu={(e) => onContextMenu(e, element)}
       className={cn(
         "sf-fill-sweep sf-fill-sweep--secondary",
         "w-full flex items-center gap-1.5 py-[3px] pr-2 text-left group relative",

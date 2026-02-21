@@ -1,20 +1,25 @@
 import { useState, useCallback } from "react";
 import { ChevronRight, ChevronDown } from "lucide-react";
 import CodexElementRow from "./CodexElementRow";
+import CodexContextMenu from "./CodexContextMenu";
 import type { CodexSection as CodexSectionType, CodexElement } from "@/services/world-data";
 
 interface CodexSectionProps {
   section: CodexSectionType;
   activeElementId?: string | null;
   onElementClick: (element: CodexElement) => void;
-  onElementContextMenu: (e: React.MouseEvent, element: CodexElement) => void;
+  onOpenWiki?: (element: CodexElement) => void;
+  onOpenTool?: (element: CodexElement) => void;
+  onDelete?: (element: CodexElement) => void;
 }
 
 const CodexSection = ({
   section,
   activeElementId,
   onElementClick,
-  onElementContextMenu,
+  onOpenWiki,
+  onOpenTool,
+  onDelete,
 }: CodexSectionProps) => {
   const [expanded, setExpanded] = useState(section.isExpanded);
 
@@ -51,15 +56,21 @@ const CodexSection = ({
             </p>
           ) : (
             section.elements.map((el, idx) => (
-              <CodexElementRow
+              <CodexContextMenu
                 key={el.id}
                 element={el}
-                depth={1}
-                isLast={idx === section.elements.length - 1}
-                isActive={activeElementId === el.id}
-                onClick={onElementClick}
-                onContextMenu={onElementContextMenu}
-              />
+                onOpenWiki={onOpenWiki}
+                onOpenTool={onOpenTool}
+                onDelete={onDelete}
+              >
+                <CodexElementRow
+                  element={el}
+                  depth={1}
+                  isLast={idx === section.elements.length - 1}
+                  isActive={activeElementId === el.id}
+                  onClick={onElementClick}
+                />
+              </CodexContextMenu>
             ))
           )}
         </div>

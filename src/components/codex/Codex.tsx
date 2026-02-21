@@ -10,7 +10,6 @@ import CodexRecentEdits from "./CodexRecentEdits";
 import CodexQuickAccess from "./CodexQuickAccess";
 import CodexCompletionBar from "./CodexCompletionBar";
 import CodexCollapsed from "./CodexCollapsed";
-import CodexContextMenu from "./CodexContextMenu";
 import { DeleteConfirmDialog } from "@/components/dialogs/DeleteConfirmDialog";
 import {
   Select,
@@ -72,7 +71,6 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [deleteTarget, setDeleteTarget] = useState<CodexElement | null>(null);
-  const [contextElement, setContextElement] = useState<CodexElement | null>(null);
 
   // Default view preference
   const [defaultView, setDefaultView] = useState<"wiki" | "tool">(() => {
@@ -103,21 +101,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
     return null;
   }, [location]);
 
-  // Navigation handlers
-  const navigateToElement = useCallback(
-    (element: CodexElement) => {
-      if (element.toolSource) {
-        const toolRoute = TOOL_ROUTES[element.toolSource];
-        if (toolRoute) {
-          const params = element.toolDataId ? `?worksheetId=${element.toolDataId}` : "";
-          navigate(`/worlds/${worldId}/tools/${toolRoute}${params}`);
-        }
-      }
-      // Custom entries — no wiki page yet (Phase 4), so no-op for now
-    },
-    [navigate, worldId]
-  );
-
+  // Navigate to tool page for an element
   const navigateToTool = useCallback(
     (element: CodexElement) => {
       if (element.toolSource) {
@@ -129,6 +113,27 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
       }
     },
     [navigate, worldId]
+  );
+
+  // Navigate to wiki page for an element (Phase 4 — for now routes to tool)
+  const navigateToWiki = useCallback(
+    (element: CodexElement) => {
+      // Phase 4 will add actual wiki page routes; for now fall back to tool
+      navigateToTool(element);
+    },
+    [navigateToTool]
+  );
+
+  // Default click handler — respects defaultView preference
+  const navigateToElement = useCallback(
+    (element: CodexElement) => {
+      if (defaultView === "wiki") {
+        navigateToWiki(element);
+      } else {
+        navigateToTool(element);
+      }
+    },
+    [defaultView, navigateToWiki, navigateToTool]
   );
 
   // Search filter
@@ -144,15 +149,6 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
       );
     },
     [searchQuery]
-  );
-
-  // Context menu handler
-  const handleContextMenu = useCallback(
-    (e: React.MouseEvent, element: CodexElement) => {
-      // ContextMenu is handled by the wrapper; store element for actions
-      setContextElement(element);
-    },
-    []
   );
 
   // CRUD handlers
@@ -245,7 +241,9 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
               section={{ ...section, elements: filtered }}
               activeElementId={activeElementId}
               onElementClick={navigateToElement}
-              onElementContextMenu={handleContextMenu}
+              onOpenWiki={navigateToWiki}
+              onOpenTool={navigateToTool}
+              onDelete={handleDelete}
             />
           );
         })}
@@ -255,7 +253,9 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
           elements={filterElements(codexData.customEntries)}
           activeElementId={activeElementId}
           onElementClick={navigateToElement}
-          onElementContextMenu={handleContextMenu}
+          onOpenWiki={navigateToWiki}
+          onOpenTool={navigateToTool}
+          onDelete={handleDelete}
           onCreateFolder={handleCreateFolder}
           onCreateEntry={handleCreateEntry}
         />
