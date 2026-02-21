@@ -2,7 +2,7 @@ import { useState, useCallback, useMemo } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Loader } from "@/components/ui/loader";
 import { useCodexData } from "@/hooks/use-codex-data";
-import { useCreateEntry, useDeleteEntry } from "@/hooks/use-world-entries";
+import { useCreateEntry, useDeleteEntry, useUpdateEntry, useMoveEntry } from "@/hooks/use-world-entries";
 import CodexSearch from "./CodexSearch";
 import CodexSection from "./CodexSection";
 import CodexCustomSection from "./CodexCustomSection";
@@ -68,6 +68,8 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
 
   const createEntry = useCreateEntry(worldId);
   const deleteEntry = useDeleteEntry(worldId);
+  const updateEntry = useUpdateEntry(worldId);
+  const moveEntry = useMoveEntry(worldId);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [deleteTarget, setDeleteTarget] = useState<CodexElement | null>(null);
@@ -173,6 +175,34 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
     setDeleteTarget(null);
   }, [deleteTarget, deleteEntry]);
 
+  const handleRename = useCallback(
+    (element: CodexElement, newTitle: string) => {
+      if (element.entryId) {
+        updateEntry.mutate({ entryId: element.entryId, title: newTitle });
+      }
+    },
+    [updateEntry]
+  );
+
+  const handleReorder = useCallback(
+    (activeId: string, overId: string) => {
+      const entries = codexData?.customEntries ?? [];
+      const oldIndex = entries.findIndex((e) => e.id === activeId);
+      const newIndex = entries.findIndex((e) => e.id === overId);
+      if (oldIndex === -1 || newIndex === -1) return;
+
+      const entry = entries[oldIndex];
+      if (entry.entryId) {
+        moveEntry.mutate({
+          entryId: entry.entryId,
+          newParentId: null,
+          newSortOrder: newIndex,
+        });
+      }
+    },
+    [codexData?.customEntries, moveEntry]
+  );
+
   // Collapsed state
   if (collapsed) {
     return (
@@ -256,6 +286,8 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
           onOpenWiki={navigateToWiki}
           onOpenTool={navigateToTool}
           onDelete={handleDelete}
+          onRename={handleRename}
+          onReorder={handleReorder}
           onCreateFolder={handleCreateFolder}
           onCreateEntry={handleCreateEntry}
         />

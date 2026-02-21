@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useState, useRef, useCallback, useEffect } from "react";
 import { FileText, Folder } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { CodexElement } from "@/services/world-data";
@@ -9,6 +9,7 @@ interface CodexElementRowProps {
   isLast?: boolean;
   isActive?: boolean;
   onClick: (element: CodexElement) => void;
+  onRename?: (element: CodexElement, newTitle: string) => void;
 }
 
 const CodexElementRow = memo(({
@@ -17,16 +18,92 @@ const CodexElementRow = memo(({
   isLast = false,
   isActive = false,
   onClick,
+  onRename,
 }: CodexElementRowProps) => {
+  const [editing, setEditing] = useState(false);
+  const [editValue, setEditValue] = useState(element.title);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (editing) {
+      inputRef.current?.focus();
+      inputRef.current?.select();
+    }
+  }, [editing]);
+
+  const handleDoubleClick = useCallback((e: React.MouseEvent) => {
+    if (onRename && element.kind === "entry") {
+      e.preventDefault();
+      e.stopPropagation();
+      setEditValue(element.title);
+      setEditing(true);
+    }
+  }, [onRename, element]);
+
+  const commitRename = useCallback(() => {
+    const trimmed = editValue.trim();
+    if (trimmed && trimmed !== element.title && onRename) {
+      onRename(element, trimmed);
+    }
+    setEditing(false);
+  }, [editValue, element, onRename]);
+
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      commitRename();
+    } else if (e.key === "Escape") {
+      setEditing(false);
+    }
+  }, [commitRename]);
+
+  const sharedStyle = { paddingLeft: depth * 16 + 12 };
+
+  // Inline rename mode — render as a div with input (no nested interactives)
+  if (editing) {
+    return (
+      <div
+        className={cn(
+          "w-full flex items-center gap-1.5 py-[3px] pr-2 relative",
+          isActive && "bg-primary/[0.04]"
+        )}
+        style={sharedStyle}
+      >
+        {isActive && (
+          <span className="absolute left-0 top-1 bottom-1 w-[2px] bg-primary/60" />
+        )}
+        {depth > 0 && (
+          <span className="font-mono text-[10px] text-white/[0.12] select-none shrink-0 w-3">
+            {isLast ? "└" : "├"}
+          </span>
+        )}
+        {element.kind === "entry" && element.type === "lore" ? (
+          <Folder className="w-3 h-3 text-amber-400/60 shrink-0" />
+        ) : (
+          <FileText className="w-3 h-3 text-muted-foreground/50 shrink-0" />
+        )}
+        <input
+          ref={inputRef}
+          value={editValue}
+          onChange={(e) => setEditValue(e.target.value)}
+          onBlur={commitRename}
+          onKeyDown={handleKeyDown}
+          title="Rename entry"
+          className="text-[12px] flex-1 leading-tight bg-transparent border-b border-primary/40 outline-none text-foreground/90 px-0 py-0"
+        />
+      </div>
+    );
+  }
+
   return (
     <button
       onClick={() => onClick(element)}
+      onDoubleClick={handleDoubleClick}
       className={cn(
         "sf-fill-sweep sf-fill-sweep--secondary",
         "w-full flex items-center gap-1.5 py-[3px] pr-2 text-left group relative",
         isActive && "bg-primary/[0.04]"
       )}
-      style={{ paddingLeft: depth * 16 + 12 }}
+      style={sharedStyle}
     >
       {/* Active indicator */}
       {isActive && (
@@ -70,7 +147,7 @@ const CodexElementRow = memo(({
       {/* Completion dot */}
       <span
         className={cn(
-          "w-1.5 h-1.5 rounded-full shrink-0",
+          "w-1.5 h-1.5 shrink-0",
           element.status === "complete" && "bg-primary/70",
           element.status === "partial" && "bg-amber-400/70",
           element.status === "empty" && "border border-muted-foreground/25"
