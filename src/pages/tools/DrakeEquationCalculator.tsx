@@ -1,11 +1,11 @@
 import { useState, useEffect, useMemo } from "react";
+import PageShell from "@/components/layout/PageShell";
+import { useWorldId } from "@/hooks/use-world-id";
 import { PageBursts } from "@/components/ui/data-burst";
 import { TOOL_PAGE_BURSTS } from "@/lib/data-bursts";
 import { Link, useSearchParams } from "react-router-dom";
 import { ArrowLeft, Download, Save, Info, Printer, ExternalLink, HelpCircle, FileText, Image as ImageIcon, Calculator } from "lucide-react";
 import { getToolIcon } from "@/components/icons/tool-icons";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
 import ToolIntroSection from "@/components/tools/ToolIntroSection";
 import { TOOL_INTROS } from "@/lib/tool-intros";
 import { GlassPanel } from "@/components/ui/glass-panel";
@@ -264,7 +264,7 @@ const DrakeEquationCalculator = () => {
   const { toast } = useToast();
   const { user } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
-  const worldId = searchParams.get("worldId");
+  const worldId = useWorldId();
   const worksheetId = searchParams.get("worksheetId");
 
   const { worlds } = useWorlds();
@@ -556,9 +556,7 @@ const DrakeEquationCalculator = () => {
   const worldNameForExport = currentWorld?.name;
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-
+    <PageShell>
       <main className="container relative mx-auto px-4 pt-24 pb-16 max-w-6xl">
         <PageBursts bursts={TOOL_PAGE_BURSTS["drake-equation-calculator"]} />
         {/* Back Link */}
@@ -601,7 +599,7 @@ const DrakeEquationCalculator = () => {
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
             {ToolIcon && <ToolIcon className="w-12 h-12 rounded-sm shrink-0" />}
-            <h1 className="font-display text-3xl">
+            <h1 className="font-display text-3xl tracking-sf-title">
               <span className="font-normal">Signal:</span>{" "}
               <span className="font-light">Drake Equation Calculator</span>
             </h1>
@@ -956,9 +954,7 @@ const DrakeEquationCalculator = () => {
         images={formState.moodboard || []}
         onImagesChange={(images) => setFormState(prev => ({ ...prev, moodboard: images }))}
       />
-
-      <Footer />
-    </div>
+    </PageShell>
   );
 };
 

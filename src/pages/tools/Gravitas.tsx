@@ -1,4 +1,6 @@
 import { useState, useEffect, useMemo, lazy, Suspense } from "react";
+import PageShell from "@/components/layout/PageShell";
+import { useWorldId } from "@/hooks/use-world-id";
 import { PageBursts } from "@/components/ui/data-burst";
 import { TOOL_PAGE_BURSTS } from "@/lib/data-bursts";
 import { WorksheetTagsBar } from "@/components/tools/WorksheetTagsBar";
@@ -20,8 +22,6 @@ import {
   Globe,
   Wand2,
 } from "lucide-react";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
 import ToolIntroSection from "@/components/tools/ToolIntroSection";
 import { TOOL_INTROS } from "@/lib/tool-intros";
 import { GlassPanel } from "@/components/ui/glass-panel";
@@ -161,7 +161,7 @@ const Gravitas = () => {
   const { worlds } = useWorlds();
 
   const [searchParams, setSearchParams] = useSearchParams();
-  const worldId = searchParams.get("worldId");
+  const worldId = useWorldId();
   const worksheetId = searchParams.get("worksheetId");
 
   const currentWorld = worldId ? worlds.find((w) => w.id === worldId) : null;
@@ -383,9 +383,7 @@ const Gravitas = () => {
   // ─── Render ─────────────────────────────────────────────────────────
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-
+    <PageShell>
       <main className="container relative mx-auto px-4 pt-24 pb-16">
         <PageBursts bursts={TOOL_PAGE_BURSTS["gravitas"]} />
         {/* Back link */}
@@ -428,13 +426,13 @@ const Gravitas = () => {
           <Badge className="mb-2">Pro Tool</Badge>
           <div className="flex items-center gap-3">
             {ToolIcon && <ToolIcon className="w-12 h-12 rounded-sm shrink-0" />}
-            <h1 className="font-display text-3xl md:text-4xl">
+            <h1 className="font-display text-3xl md:text-4xl tracking-sf-title">
               <span className="font-normal">Gravitas:</span>{" "}
               <span className="font-light">Spacecraft & Habitat Gravity Simulator</span>
             </h1>
           </div>
           <p className="text-muted-foreground mt-2 max-w-2xl">
-            Spacecraft & Habitat Gravity Simulator. Calculate effective gravity conditions and trace how weight shapes biology, architecture, mythology, and culture.
+            Spacecraft & Habitat Gravity Simulator. Calculate effective gravity conditions and trace how weight shapes biology, psychology, mythology, and culture.
           </p>
           {(currentWorksheetId || worksheetId) && (
             <WorksheetTitle
@@ -1075,9 +1073,6 @@ const Gravitas = () => {
           </CollapsibleSection>
         </div>
       </main>
-
-      <Footer />
-
       {/* Dialogs */}
       <WorksheetSelectorDialog
         open={worksheetSelectorOpen}
@@ -1125,7 +1120,7 @@ const Gravitas = () => {
         images={formState.moodboard || []}
         onImagesChange={(images) => setFormState((prev) => ({ ...prev, moodboard: images }))}
       />
-    </div>
+    </PageShell>
   );
 };
 

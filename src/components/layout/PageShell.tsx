@@ -27,9 +27,7 @@ const PageShell = ({ children, className = "" }: PageShellProps) => {
   return (
     <div className={`min-h-screen bg-background ${className}`}>
       <Header />
-      <main className="relative container mx-auto px-4 pt-24 pb-16">
-        {children}
-      </main>
+      {children}
       <Footer />
     </div>
   );

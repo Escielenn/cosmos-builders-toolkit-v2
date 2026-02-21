@@ -1,4 +1,6 @@
 import { useState, useEffect, useMemo, lazy, Suspense } from "react";
+import PageShell from "@/components/layout/PageShell";
+import { useWorldId } from "@/hooks/use-world-id";
 import { PageBursts } from "@/components/ui/data-burst";
 import { TOOL_PAGE_BURSTS } from "@/lib/data-bursts";
 import { Link, useSearchParams } from "react-router-dom";
@@ -18,8 +20,6 @@ import {
   Check,
 } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
 import ToolIntroSection from "@/components/tools/ToolIntroSection";
 import { TOOL_INTROS } from "@/lib/tool-intros";
 import CollapsibleSection from "@/components/tools/CollapsibleSection";
@@ -148,7 +148,7 @@ const Sensorium = () => {
   const { toast } = useToast();
   const { user } = useAuth();
   const [searchParams] = useSearchParams();
-  const worldId = searchParams.get("worldId");
+  const worldId = useWorldId();
   const worksheetId = searchParams.get("worksheetId");
   const { data: worlds = [] } = useWorlds();
   const currentWorld = worlds.find((w) => w.id === worldId);
@@ -474,8 +474,7 @@ const Sensorium = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
+    <PageShell>
       <main className="relative container mx-auto px-4 py-8 max-w-7xl">
         <PageBursts bursts={TOOL_PAGE_BURSTS["sensorium"]} />
         {/* Back navigation */}
@@ -532,7 +531,7 @@ const Sensorium = () => {
         {/* Title */}
         <div className="flex items-center gap-4 mb-2">
           {ToolIcon && <ToolIcon className="h-10 w-10" />}
-          <h1 className="font-display text-3xl md:text-4xl tracking-sf-wide">
+          <h1 className="font-display text-3xl md:text-4xl tracking-sf-title">
             <span className="font-normal">Sensorium:</span>{" "}
             <span className="font-light">Alien Sensory Systems</span>
           </h1>
@@ -874,9 +873,9 @@ const Sensorium = () => {
                         Based on your environment, each sense is scored for plausibility. <strong className="text-foreground">Click any card to add it to your species' final sensory suite.</strong> You can select implausible senses too—sometimes the best stories break the rules.
                       </p>
                       <div className="flex flex-wrap gap-3 text-[11px]">
-                        <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-cyan-500/60" /> Recommended</span>
-                        <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-amber-500/60" /> Possible</span>
-                        <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-muted-foreground/40" /> Implausible</span>
+                        <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 bg-cyan-500/60" /> Recommended</span>
+                        <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 bg-amber-500/60" /> Possible</span>
+                        <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 bg-muted-foreground/40" /> Implausible</span>
                         <span className="flex items-center gap-1.5 ml-2 pl-2 border-l border-border"><Check className="h-3 w-3 text-emerald-400" /> Selected by you</span>
                       </div>
                     </div>
@@ -946,7 +945,7 @@ const Sensorium = () => {
 
                               <div className="flex items-start gap-2">
                                 <div
-                                  className="w-2 h-2 rounded-full mt-1.5 flex-shrink-0"
+                                  className="w-2 h-2 mt-1.5 flex-shrink-0"
                                   style={{ backgroundColor: cat.color }}
                                 />
                                 <div className="min-w-0">
@@ -1042,9 +1041,9 @@ const Sensorium = () => {
                     </span>
                     <span className="text-muted-foreground">Max sustainable: 100%</span>
                   </div>
-                  <div className="h-4 bg-muted rounded-full overflow-hidden">
+                  <div className="h-4 bg-muted overflow-hidden">
                     <div
-                      className={`h-full rounded-full transition-all ${getBudgetColor()}`}
+                      className={`h-full transition-all ${getBudgetColor()}`}
                       style={{ width: `${Math.min(metabolicBudget.totalCost * 100, 100)}%` }}
                     />
                   </div>
@@ -1068,9 +1067,9 @@ const Sensorium = () => {
                     {metabolicBudget.perSense.map((s) => (
                       <div key={s.modalityId} className="flex items-center gap-2 text-xs">
                         <div className="flex-1 truncate">{s.name}</div>
-                        <div className="w-20 h-2 bg-muted rounded-full overflow-hidden">
+                        <div className="w-20 h-2 bg-muted overflow-hidden">
                           <div
-                            className="h-full bg-cyan-500 rounded-full"
+                            className="h-full bg-cyan-500"
                             style={{ width: `${s.cost * 100}%` }}
                           />
                         </div>
@@ -1524,9 +1523,7 @@ const Sensorium = () => {
         worksheetId={currentWorksheetId || worksheetId || undefined}
         worldId={worldId || undefined}
       />
-
-      <Footer />
-    </div>
+    </PageShell>
   );
 };
 

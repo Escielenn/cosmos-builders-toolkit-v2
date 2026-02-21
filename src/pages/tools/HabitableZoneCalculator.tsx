@@ -1,4 +1,6 @@
 import { useState, useEffect, useMemo, lazy, Suspense } from "react";
+import PageShell from "@/components/layout/PageShell";
+import { useWorldId } from "@/hooks/use-world-id";
 import { PageBursts } from "@/components/ui/data-burst";
 import { TOOL_PAGE_BURSTS } from "@/lib/data-bursts";
 import { WorksheetTagsBar } from "@/components/tools/WorksheetTagsBar";
@@ -16,8 +18,6 @@ import {
   Orbit,
   BookOpen,
 } from "lucide-react";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
 import ToolIntroSection from "@/components/tools/ToolIntroSection";
 import { TOOL_INTROS } from "@/lib/tool-intros";
 import { GlassPanel } from "@/components/ui/glass-panel";
@@ -152,7 +152,7 @@ const HabitableZoneCalculator = () => {
   const { worlds } = useWorlds();
 
   const [searchParams, setSearchParams] = useSearchParams();
-  const worldId = searchParams.get("worldId");
+  const worldId = useWorldId();
   const worksheetId = searchParams.get("worksheetId");
 
   const currentWorld = worldId ? worlds.find((w) => w.id === worldId) : null;
@@ -402,9 +402,7 @@ const HabitableZoneCalculator = () => {
   // ─── Render ────────────────────────────────────────────────────────
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-
+    <PageShell>
       <main className="container relative mx-auto px-4 pt-24 pb-16">
         <PageBursts bursts={TOOL_PAGE_BURSTS["habitable-zone-calculator"]} />
         {/* Back Link */}
@@ -447,7 +445,7 @@ const HabitableZoneCalculator = () => {
           <Badge className="mb-2">Pro Tool</Badge>
           <div className="flex items-center gap-3">
             {ToolIcon && <ToolIcon className="w-12 h-12 rounded-sm shrink-0" />}
-            <h1 className="font-display text-3xl md:text-4xl">
+            <h1 className="font-display text-3xl md:text-4xl tracking-sf-title">
               <span className="font-normal">Goldilocks:</span>{" "}
               <span className="font-light">Habitable Zone Calculator</span>
             </h1>
@@ -485,7 +483,7 @@ const HabitableZoneCalculator = () => {
           </blockquote>
           <p className="text-muted-foreground">
             Define your host star and place your planet. See instantly where it falls relative to the
-            habitable zone — and what that means for climate, biology, culture, and mythology.
+            habitable zone — and what that means for climate, biology, psychology, mythology, and culture.
             All calculations use Kopparapu et al. (2013) habitable zone boundaries.
           </p>
         </GlassPanel>
@@ -724,9 +722,9 @@ const HabitableZoneCalculator = () => {
                           <span>{Math.round(result.percentThroughHZ)}% through HZ</span>
                           <span>Outer Edge</span>
                         </div>
-                        <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
+                        <div className="w-full h-2 bg-muted overflow-hidden">
                           <div
-                            className="h-full rounded-full transition-all"
+                            className="h-full transition-all"
                             style={{
                               width: `${Math.max(2, Math.min(100, result.percentThroughHZ))}%`,
                               backgroundColor: zoneColor,
@@ -955,9 +953,6 @@ const HabitableZoneCalculator = () => {
           </div>
         </div>
       </main>
-
-      <Footer />
-
       {/* Dialogs */}
       <WorksheetSelectorDialog
         open={worksheetSelectorOpen}
@@ -1012,7 +1007,7 @@ const HabitableZoneCalculator = () => {
         onImagesChange={(imgs) => setFormState((prev) => ({ ...prev, moodboard: imgs }))}
         worksheetId={currentWorksheetId || worksheetId || undefined}
       />
-    </div>
+    </PageShell>
   );
 };
 

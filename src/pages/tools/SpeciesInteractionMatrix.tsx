@@ -1,4 +1,6 @@
 import { useState, useEffect, useMemo, lazy, Suspense } from "react";
+import PageShell from "@/components/layout/PageShell";
+import { useWorldId } from "@/hooks/use-world-id";
 import { PageBursts } from "@/components/ui/data-burst";
 import { TOOL_PAGE_BURSTS } from "@/lib/data-bursts";
 import { WorksheetTagsBar } from "@/components/tools/WorksheetTagsBar";
@@ -7,8 +9,6 @@ const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
 import { Link, useSearchParams } from "react-router-dom";
 import { ArrowLeft, Plus, Trash2, ArrowRight, RefreshCw, Dna, FileText, Image as ImageIcon, Users } from "lucide-react";
 import { getToolIcon } from "@/components/icons/tool-icons";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
 import ToolIntroSection from "@/components/tools/ToolIntroSection";
 import { TOOL_INTROS } from "@/lib/tool-intros";
 import { Button } from "@/components/ui/button";
@@ -226,7 +226,7 @@ const SpeciesInteractionMatrix = () => {
   const { worlds } = useWorlds();
 
   const [searchParams, setSearchParams] = useSearchParams();
-  const worldId = searchParams.get("worldId");
+  const worldId = useWorldId();
   const worksheetId = searchParams.get("worksheetId");
 
   const currentWorld = worldId ? worlds.find((w) => w.id === worldId) : null;
@@ -541,9 +541,7 @@ const SpeciesInteractionMatrix = () => {
   const speciesB = currentPair ? getSpeciesById(currentPair.speciesBId) : null;
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-
+    <PageShell>
       <main className="relative container mx-auto px-4 pt-20 pb-24">
         <PageBursts bursts={TOOL_PAGE_BURSTS["species-interaction-matrix"]} />
         {/* Back Link */}
@@ -585,7 +583,7 @@ const SpeciesInteractionMatrix = () => {
           <div className="flex items-center gap-3 mb-2">
             {ToolIcon && <ToolIcon className="w-12 h-12 rounded-sm shrink-0" />}
             <div>
-              <h1 className="font-display text-2xl md:text-3xl">
+              <h1 className="font-display text-2xl md:text-3xl tracking-sf-title">
                 <span className="font-normal">Symbiosis:</span>{" "}
                 <span className="font-light">Species Interaction Matrix</span>
               </h1>
@@ -1565,9 +1563,6 @@ const SpeciesInteractionMatrix = () => {
         images={formState.moodboard || []}
         onImagesChange={(images) => setFormState(prev => ({ ...prev, moodboard: images }))}
       />
-
-      <Footer />
-
       <ExportDialog
         open={exportDialogOpen}
         onOpenChange={setExportDialogOpen}
@@ -1617,7 +1612,7 @@ const SpeciesInteractionMatrix = () => {
           onImport={handleEvoBioImport}
         />
       )}
-    </div>
+    </PageShell>
   );
 };
 

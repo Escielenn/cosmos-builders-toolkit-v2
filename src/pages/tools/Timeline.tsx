@@ -1,4 +1,6 @@
 import { Component, useState, useEffect, useCallback, useRef } from "react";
+import PageShell from "@/components/layout/PageShell";
+import { useWorldId } from "@/hooks/use-world-id";
 import { PageBursts } from "@/components/ui/data-burst";
 import { TOOL_PAGE_BURSTS } from "@/lib/data-bursts";
 import type { ReactNode, ErrorInfo } from "react";
@@ -19,8 +21,6 @@ import {
   Undo2,
   Redo2,
 } from "lucide-react";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
 import ToolIntroSection from "@/components/tools/ToolIntroSection";
 import { TOOL_INTROS } from "@/lib/tool-intros";
 import { GlassPanel } from "@/components/ui/glass-panel";
@@ -110,7 +110,7 @@ const Timeline = () => {
   const { isSubscribed } = useSubscription();
 
   const [searchParams, setSearchParams] = useSearchParams();
-  const worldId = searchParams.get("worldId");
+  const worldId = useWorldId();
   const worksheetId = searchParams.get("worksheetId");
 
   const currentWorld = worldId ? worlds.find((w) => w.id === worldId) : null;
@@ -349,9 +349,7 @@ const Timeline = () => {
   // ─── Render ────────────────────────────────────────────────────────
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-
+    <PageShell>
       <main className="relative container mx-auto px-4 pt-24 pb-16">
         <PageBursts bursts={TOOL_PAGE_BURSTS["timeline"]} />
         {/* Back Link */}
@@ -384,7 +382,7 @@ const Timeline = () => {
           <Badge className="mb-2">Pro Tool</Badge>
           <div className="flex items-center gap-3">
             {ToolIcon && <ToolIcon className="w-12 h-12 rounded-sm shrink-0" />}
-            <h1 className="font-display text-3xl md:text-4xl font-normal">
+            <h1 className="font-display text-3xl md:text-4xl font-normal tracking-sf-title">
               Timeline
             </h1>
           </div>
@@ -548,9 +546,6 @@ const Timeline = () => {
           onQuickAddEvent={handleQuickAddEvent}
         />
       </main>
-
-      <Footer />
-
       {/* ─── Dialogs & Panels ─────────────────────────────────────────── */}
 
       <TrackFormDialog
@@ -698,7 +693,7 @@ const Timeline = () => {
         onApply={(templateState) => dispatch({ type: "SET_STATE", payload: templateState })}
         hasExistingData={state.tracks.length > 0 || state.events.length > 0}
       />
-    </div>
+    </PageShell>
   );
 };
 
@@ -720,8 +715,7 @@ class TimelineErrorBoundary extends Component<
   render() {
     if (this.state.error) {
       return (
-        <div className="min-h-screen bg-background">
-          <Header />
+        <PageShell>
           <main className="container mx-auto px-4 pt-24 pb-16">
             <GlassPanel className="p-8 text-center">
               <h2 className="text-xl font-bold text-destructive mb-4">
@@ -737,7 +731,7 @@ class TimelineErrorBoundary extends Component<
               </Button>
             </GlassPanel>
           </main>
-        </div>
+        </PageShell>
       );
     }
     return this.props.children;

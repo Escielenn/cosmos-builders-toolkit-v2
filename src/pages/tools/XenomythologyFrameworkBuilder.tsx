@@ -1,4 +1,6 @@
 import { useState, useEffect, useMemo, lazy, Suspense } from "react";
+import PageShell from "@/components/layout/PageShell";
+import { useWorldId } from "@/hooks/use-world-id";
 import { PageBursts } from "@/components/ui/data-burst";
 import { TOOL_PAGE_BURSTS } from "@/lib/data-bursts";
 import { WorksheetTagsBar } from "@/components/tools/WorksheetTagsBar";
@@ -17,8 +19,6 @@ import {
   X,
   Image as ImageIcon,
 } from "lucide-react";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
 import ToolIntroSection from "@/components/tools/ToolIntroSection";
 import { TOOL_INTROS } from "@/lib/tool-intros";
 import { GlassPanel } from "@/components/ui/glass-panel";
@@ -604,7 +604,7 @@ const XenomythologyFrameworkBuilder = () => {
 
   // Get URL params for worldId and worksheetId
   const [searchParams, setSearchParams] = useSearchParams();
-  const worldId = searchParams.get("worldId");
+  const worldId = useWorldId();
   const worksheetId = searchParams.get("worksheetId");
 
   // Get world name from worldId
@@ -1348,9 +1348,7 @@ const XenomythologyFrameworkBuilder = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-
+    <PageShell>
       <main className="relative container mx-auto px-4 pt-24 pb-16">
         <PageBursts bursts={TOOL_PAGE_BURSTS["xenomythology-framework-builder"]} />
         {/* Back Link */}
@@ -1393,7 +1391,7 @@ const XenomythologyFrameworkBuilder = () => {
           <Badge className="mb-2">Tool 6</Badge>
           <div className="flex items-center gap-3">
             {ToolIcon && <ToolIcon className="w-12 h-12 rounded-sm shrink-0" />}
-            <h1 className="font-display text-3xl md:text-4xl">
+            <h1 className="font-display text-3xl md:text-4xl tracking-sf-title">
               <span className="font-normal">Mythos:</span>{" "}
               <span className="font-light">Xenomythology Framework</span>
             </h1>
@@ -2762,9 +2760,6 @@ const XenomythologyFrameworkBuilder = () => {
         images={formState.moodboard || []}
         onImagesChange={(images) => setFormState(prev => ({ ...prev, moodboard: images }))}
       />
-
-      <Footer />
-
       {/* ECR Import Modal */}
       <ImportFromECRModal
         open={showECRImport}
@@ -2819,7 +2814,7 @@ const XenomythologyFrameworkBuilder = () => {
           onCreate={handleWorksheetCreate}
         />
       )}
-    </div>
+    </PageShell>
   );
 };
 

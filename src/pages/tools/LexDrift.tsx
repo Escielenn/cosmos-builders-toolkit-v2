@@ -1,4 +1,6 @@
 import { useState, useEffect, useMemo, lazy, Suspense } from "react";
+import PageShell from "@/components/layout/PageShell";
+import { useWorldId } from "@/hooks/use-world-id";
 import { PageBursts } from "@/components/ui/data-burst";
 import { TOOL_PAGE_BURSTS } from "@/lib/data-bursts";
 import { WorksheetTagsBar } from "@/components/tools/WorksheetTagsBar";
@@ -20,8 +22,6 @@ import {
   Trash2,
   Info,
 } from "lucide-react";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
 import ToolIntroSection from "@/components/tools/ToolIntroSection";
 import { TOOL_INTROS } from "@/lib/tool-intros";
 import { GlassPanel } from "@/components/ui/glass-panel";
@@ -168,7 +168,7 @@ const LexDrift = () => {
   const { worlds } = useWorlds();
 
   const [searchParams, setSearchParams] = useSearchParams();
-  const worldId = searchParams.get("worldId");
+  const worldId = useWorldId();
   const worksheetId = searchParams.get("worksheetId");
 
   const currentWorld = worldId ? worlds.find((w) => w.id === worldId) : null;
@@ -499,9 +499,7 @@ const LexDrift = () => {
   // ─── Render ────────────────────────────────────────────────────────
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-
+    <PageShell>
       <main className="container relative mx-auto px-4 pt-24 pb-16">
         <PageBursts bursts={TOOL_PAGE_BURSTS["lexdrift"]} />
         {/* Back Link */}
@@ -544,7 +542,7 @@ const LexDrift = () => {
           <Badge className="mb-2">Pro Tool</Badge>
           <div className="flex items-center gap-3">
             {ToolIcon && <ToolIcon className="w-12 h-12 rounded-sm shrink-0" />}
-            <h1 className="font-display text-3xl md:text-4xl">
+            <h1 className="font-display text-3xl md:text-4xl tracking-sf-title">
               <span className="font-normal">Lexdrift:</span>{" "}
               <span className="font-light">Language Evolution</span>
             </h1>
@@ -1425,9 +1423,7 @@ const LexDrift = () => {
         onSelect={handleWorksheetSelect}
         onCreate={handleWorksheetCreate}
       />
-
-      <Footer />
-    </div>
+    </PageShell>
   );
 };
 

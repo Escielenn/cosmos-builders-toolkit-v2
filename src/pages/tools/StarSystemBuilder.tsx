@@ -1,11 +1,11 @@
 import { useState, useEffect, useMemo, lazy, Suspense } from "react";
+import PageShell from "@/components/layout/PageShell";
+import { useWorldId } from "@/hooks/use-world-id";
 import { PageBursts } from "@/components/ui/data-burst";
 import { TOOL_PAGE_BURSTS } from "@/lib/data-bursts";
 import { Link, useSearchParams } from "react-router-dom";
 import { ArrowLeft, Download, Save, Info, Printer, Plus, Trash2, FileText, Image as ImageIcon } from "lucide-react";
 import { getToolIcon } from "@/components/icons/tool-icons";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
 import ToolIntroSection from "@/components/tools/ToolIntroSection";
 import { TOOL_INTROS } from "@/lib/tool-intros";
 import { GlassPanel } from "@/components/ui/glass-panel";
@@ -275,7 +275,7 @@ const StarSystemBuilder = () => {
 
   // Get URL params for worldId and worksheetId
   const [searchParams, setSearchParams] = useSearchParams();
-  const worldId = searchParams.get("worldId");
+  const worldId = useWorldId();
   const worksheetId = searchParams.get("worksheetId");
 
   // Get world name from worldId
@@ -599,9 +599,7 @@ const StarSystemBuilder = () => {
   );
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-
+    <PageShell>
       <main className="relative container mx-auto px-4 pt-20 pb-24">
         <PageBursts bursts={TOOL_PAGE_BURSTS["star-system-builder"]} />
         {/* Back Link */}
@@ -644,7 +642,7 @@ const StarSystemBuilder = () => {
           <div className="flex items-center gap-3 mb-2">
             {ToolIcon && <ToolIcon className="w-12 h-12 rounded-sm shrink-0" />}
             <div>
-              <h1 className="font-display text-2xl md:text-3xl">
+              <h1 className="font-display text-2xl md:text-3xl tracking-sf-title">
                 <span className="font-normal">Orrery:</span>{" "}
                 <span className="font-light">Star System Builder</span>
               </h1>
@@ -1648,9 +1646,6 @@ const StarSystemBuilder = () => {
         images={formState.moodboard || []}
         onImagesChange={(images) => setFormState(prev => ({ ...prev, moodboard: images }))}
       />
-
-      <Footer />
-
       {/* Export Dialog */}
       <ExportDialog
         open={exportDialogOpen}
@@ -1692,7 +1687,7 @@ const StarSystemBuilder = () => {
         onOpenChange={setUpgradeDialogOpen}
         toolName="Orrery"
       />
-    </div>
+    </PageShell>
   );
 };
 

@@ -1,4 +1,6 @@
 import { useState, useEffect, useMemo, lazy, Suspense } from "react";
+import PageShell from "@/components/layout/PageShell";
+import { useWorldId } from "@/hooks/use-world-id";
 import { PageBursts } from "@/components/ui/data-burst";
 import { TOOL_PAGE_BURSTS } from "@/lib/data-bursts";
 import { WorksheetTagsBar } from "@/components/tools/WorksheetTagsBar";
@@ -12,8 +14,6 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
 import ToolIntroSection from "@/components/tools/ToolIntroSection";
 import { TOOL_INTROS } from "@/lib/tool-intros";
 import { GlassPanel } from "@/components/ui/glass-panel";
@@ -174,7 +174,7 @@ const OneBigLie = () => {
   const { updateWorksheetTags } = useTags();
 
   const [searchParams, setSearchParams] = useSearchParams();
-  const worldId = searchParams.get("worldId");
+  const worldId = useWorldId();
   const worksheetId = searchParams.get("worksheetId");
 
   const currentWorld = worldId ? worlds.find((w) => w.id === worldId) : null;
@@ -434,9 +434,7 @@ const OneBigLie = () => {
   const handlePrint = () => window.print();
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-
+    <PageShell>
       <main className="relative container mx-auto px-4 pt-24 pb-16">
         <PageBursts bursts={TOOL_PAGE_BURSTS["one-big-lie"]} />
         {/* Back Link */}
@@ -487,7 +485,7 @@ const OneBigLie = () => {
           <Badge className="mb-2">Tool #3</Badge>
           <div className="flex items-center gap-3">
             {ToolIcon && <ToolIcon className="w-12 h-12 rounded-sm shrink-0" />}
-            <h1 className="font-display text-3xl md:text-4xl">
+            <h1 className="font-display text-3xl md:text-4xl tracking-sf-title">
               <span className="font-normal">Axiom:</span>{" "}
               <span className="font-light">The One Big Lie</span>
             </h1>
@@ -529,13 +527,12 @@ const OneBigLie = () => {
             you're allowed one major departure from known physics, but everything
             else must follow real science rigorously. This tool guides you through
             declaring that departure and tracing its consequences across your
-            entire world—from physics to biology to culture to mythology.
+            entire world—from physics to biology to mythology to culture.
           </p>
           <div className="text-sm text-muted-foreground mb-4">
             <strong className="text-foreground">The Cascade Principle:</strong>
             <p className="mt-1">
-              Environment shapes biology. Biology shapes psychology. Psychology
-              shapes culture. Culture shapes mythology. Change one element at the
+              Physics shapes environment. Environment shapes biology. Biology shapes psychology. Psychology shapes mythology. Mythology shapes culture. Change one element at the
               foundation and everything above it shifts.
             </p>
           </div>
@@ -1307,9 +1304,7 @@ const OneBigLie = () => {
           onCreate={handleWorksheetCreate}
         />
       )}
-
-      <Footer />
-    </div>
+    </PageShell>
   );
 };
 

@@ -1,4 +1,6 @@
 import { useState, useEffect, useMemo, lazy, Suspense } from "react";
+import PageShell from "@/components/layout/PageShell";
+import { useWorldId } from "@/hooks/use-world-id";
 import { PageBursts } from "@/components/ui/data-burst";
 import { TOOL_PAGE_BURSTS } from "@/lib/data-bursts";
 import { Link, useSearchParams } from "react-router-dom";
@@ -8,8 +10,6 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -476,7 +476,7 @@ const EnvironmentalChainReaction = () => {
 
   // Get URL params for worldId and worksheetId
   const [searchParams, setSearchParams] = useSearchParams();
-  const worldId = searchParams.get("worldId");
+  const worldId = useWorldId();
   const worksheetId = searchParams.get("worksheetId");
 
   // Get world name from worldId
@@ -863,9 +863,7 @@ const EnvironmentalChainReaction = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background sf-atmosphere">
-      <Header />
-
+    <PageShell className="sf-atmosphere">
       <main className="container relative mx-auto px-4 pt-24 pb-16">
         <PageBursts bursts={TOOL_PAGE_BURSTS["environmental-chain-reaction"]} />
         {/* Back Link */}
@@ -907,14 +905,14 @@ const EnvironmentalChainReaction = () => {
           <Badge className="mb-2">Tool 1</Badge>
           <div className="flex items-center gap-3">
             {ToolIcon && <ToolIcon className="w-12 h-12 rounded-sm shrink-0" />}
-            <h1 className="font-display text-3xl md:text-4xl">
+            <h1 className="font-display text-3xl md:text-4xl tracking-sf-title">
               <span className="font-normal">Cascade:</span>{" "}
               <span className="font-light">Environmental Chain Reaction</span>
             </h1>
           </div>
           <p className="text-muted-foreground mt-2 max-w-2xl">
             Map how planetary parameters cascade into biology, psychology,
-            culture, and mythology.
+            mythology, and culture.
           </p>
           {(currentWorksheetId || worksheetId) && (
             <WorksheetTitle
@@ -939,8 +937,7 @@ const EnvironmentalChainReaction = () => {
             The Cascade Principle
           </h2>
           <blockquote className="border-l-2 border-primary pl-4 italic text-lg mb-4">
-            "Environment shapes biology, biology shapes psychology, psychology
-            shapes culture, culture shapes mythology."
+            "Physics shapes environment, environment shapes biology, biology shapes psychology, psychology shapes mythology, and mythology shapes culture."
           </blockquote>
           <p className="text-muted-foreground">
             This tool applies the xenomythological principle that planetary
@@ -1518,9 +1515,6 @@ const EnvironmentalChainReaction = () => {
         images={formState.moodboard || []}
         onImagesChange={(images) => setFormState(prev => ({ ...prev, moodboard: images }))}
       />
-
-      <Footer />
-
       {/* World Selection Dialog */}
       <WorldSelectDialog
         open={showWorldSelectDialog}
@@ -1564,7 +1558,7 @@ const EnvironmentalChainReaction = () => {
           onCreate={handleWorksheetCreate}
         />
       )}
-    </div>
+    </PageShell>
   );
 };
 
