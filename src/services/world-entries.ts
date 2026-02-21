@@ -99,6 +99,70 @@ export async function deleteEntry(entryId: string): Promise<void> {
   if (error) throw error;
 }
 
+// ---------------------------------------------------------------------------
+// Draft wiki page (auto-created when tool data saved)
+// ---------------------------------------------------------------------------
+
+export interface CreateDraftPageInput {
+  worldId: string;
+  toolSource: string;
+  toolDataId: string;
+  title: string;
+  layer: string;
+}
+
+/**
+ * Creates a draft wiki entry linked to a worksheet via tool_source / tool_data_id.
+ * Uses upsert semantics — if an entry already exists for this tool+worksheet, it
+ * updates the title instead of creating a duplicate.
+ */
+export async function createDraftWikiPage(
+  input: CreateDraftPageInput,
+  userId: string
+): Promise<WorldEntry> {
+  // Check if draft already exists for this worksheet
+  const { data: existing } = await supabase
+    .from("world_entries")
+    .select("id")
+    .eq("world_id", input.worldId)
+    .eq("tool_source", input.toolSource)
+    .eq("tool_data_id", input.toolDataId)
+    .maybeSingle();
+
+  if (existing) {
+    // Update title in case worksheet was renamed
+    const { data, error } = await supabase
+      .from("world_entries")
+      .update({ title: input.title })
+      .eq("id", existing.id)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data as WorldEntry;
+  }
+
+  // Create new draft entry
+  const { data, error } = await supabase
+    .from("world_entries")
+    .insert({
+      world_id: input.worldId,
+      title: input.title,
+      entry_type: "note",
+      content: null,
+      tool_source: input.toolSource,
+      tool_data_id: input.toolDataId,
+      layer: input.layer,
+      sort_order: 0,
+      created_by: userId,
+    })
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data as WorldEntry;
+}
+
 export async function moveEntry(input: MoveEntryInput): Promise<WorldEntry> {
   const { data, error } = await supabase
     .from("world_entries")

@@ -3,6 +3,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { Json } from "@/integrations/supabase/types";
+import { maybeSnapshotWorld } from "@/lib/export/world-snapshot";
+import { createDraftWikiPage } from "@/services/world-entries";
+import { getLayerForTool } from "@/services/world-data";
 
 interface Worksheet {
   id: string;
@@ -80,12 +83,29 @@ export const useWorksheets = (worldId: string | undefined, includeArchived: bool
       if (error) throw error;
       return data as Worksheet;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["worksheets", worldId] });
       toast({
         title: "Worksheet saved",
         description: "Your work has been saved to the cloud.",
       });
+      // Non-blocking auto-snapshot (rate-limited to every 15 min)
+      if (worldId) maybeSnapshotWorld(worldId);
+      // Auto-create draft wiki page linked to this worksheet
+      if (worldId && user && data.tool_type) {
+        createDraftWikiPage(
+          {
+            worldId,
+            toolSource: data.tool_type,
+            toolDataId: data.id,
+            title: data.title || "Untitled",
+            layer: getLayerForTool(data.tool_type),
+          },
+          user.id
+        )
+          .then(() => queryClient.invalidateQueries({ queryKey: ["codex-data", worldId] }))
+          .catch(() => {}); // best-effort
+      }
     },
     onError: (error) => {
       toast({
@@ -115,12 +135,29 @@ export const useWorksheets = (worldId: string | undefined, includeArchived: bool
       if (error) throw error;
       return data as Worksheet;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["worksheets", worldId] });
       toast({
         title: "Worksheet updated",
         description: "Your changes have been saved.",
       });
+      // Non-blocking auto-snapshot (rate-limited to every 15 min)
+      if (worldId) maybeSnapshotWorld(worldId);
+      // Keep draft wiki page in sync (title, existence)
+      if (worldId && user && data.tool_type) {
+        createDraftWikiPage(
+          {
+            worldId,
+            toolSource: data.tool_type,
+            toolDataId: data.id,
+            title: data.title || "Untitled",
+            layer: getLayerForTool(data.tool_type),
+          },
+          user.id
+        )
+          .then(() => queryClient.invalidateQueries({ queryKey: ["codex-data", worldId] }))
+          .catch(() => {}); // best-effort
+      }
     },
     onError: (error) => {
       toast({
@@ -313,6 +350,21 @@ export const useRenameWorksheet = () => {
         title: "Worksheet renamed",
         description: `Renamed to "${data.title}"`,
       });
+      // Sync draft wiki page title
+      if (user && data.world_id && data.tool_type) {
+        createDraftWikiPage(
+          {
+            worldId: data.world_id,
+            toolSource: data.tool_type,
+            toolDataId: data.id,
+            title: data.title || "Untitled",
+            layer: getLayerForTool(data.tool_type),
+          },
+          user.id
+        )
+          .then(() => queryClient.invalidateQueries({ queryKey: ["codex-data", data.world_id] }))
+          .catch(() => {});
+      }
     },
     onError: (error) => {
       toast({

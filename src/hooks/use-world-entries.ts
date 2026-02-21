@@ -21,6 +21,7 @@ export function useCreateEntry(worldId: string | undefined) {
       createEntry({ ...input, worldId: worldId! }, user!.id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["world-outline", worldId] });
+      queryClient.invalidateQueries({ queryKey: ["codex-data", worldId] });
     },
     onError: (error) => {
       toast({
@@ -40,6 +41,7 @@ export function useUpdateEntry(worldId: string | undefined) {
     mutationFn: (input: UpdateEntryInput) => updateEntry(input),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["world-outline", worldId] });
+      queryClient.invalidateQueries({ queryKey: ["codex-data", worldId] });
     },
     onError: (error) => {
       toast({
@@ -59,6 +61,7 @@ export function useDeleteEntry(worldId: string | undefined) {
     mutationFn: (entryId: string) => deleteEntry(entryId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["world-outline", worldId] });
+      queryClient.invalidateQueries({ queryKey: ["codex-data", worldId] });
       toast({ title: "ENTRY DELETED." });
     },
     onError: (error) => {
@@ -79,6 +82,7 @@ export function useMoveEntry(worldId: string | undefined) {
     mutationFn: (input: MoveEntryInput) => moveEntry(input),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["world-outline", worldId] });
+      queryClient.invalidateQueries({ queryKey: ["codex-data", worldId] });
     },
     onError: (error) => {
       toast({
