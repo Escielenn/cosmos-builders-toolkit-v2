@@ -294,3 +294,240 @@ export async function getWorldData(worldId: string): Promise<WorldDataSummary> {
 
   return { layers, entries, connections, totalCompletion };
 }
+
+// ---------------------------------------------------------------------------
+// Codex data types
+// ---------------------------------------------------------------------------
+
+export interface CodexElement {
+  id: string;
+  title: string;
+  kind: "worksheet" | "entry";
+  type: string;
+  layer: CascadeLayer;
+  toolSource: string | null;
+  toolDataId: string | null;
+  entryId: string | null;
+  status: CompletionStatus;
+  isDraft: boolean;
+  children: CodexElement[];
+  tags: string[];
+  updatedAt: string;
+  sortOrder: number;
+}
+
+export interface CodexSection {
+  key: CascadeLayer;
+  label: string;
+  order: number;
+  elements: CodexElement[];
+  isExpanded: boolean;
+}
+
+export interface CodexData {
+  worldId: string;
+  worldName: string;
+  cascadeSections: CodexSection[];
+  customEntries: CodexElement[];
+  recentEdits: CodexElement[];
+  totalElements: number;
+  completionPercent: number;
+}
+
+// ---------------------------------------------------------------------------
+// Tool → element type mapping
+// ---------------------------------------------------------------------------
+
+const TOOL_TYPE_MAP: Record<string, string> = {
+  "planetary-profile": "planet",
+  "star-system-builder": "star_system",
+  "environmental-chain-reaction": "chain_reaction",
+  "habitable-zone-calculator": "habitable_zone",
+  "one-big-lie": "axiom",
+  "surface-gravity-calculator": "gravity_profile",
+  "evolutionary-biology": "species",
+  "sensorium": "sensory_system",
+  "species-interaction-matrix": "interaction_matrix",
+  "empire-designer": "government",
+  "lexdrift": "language",
+  "space-expansion-modeler": "expansion_model",
+  "xenomythology-framework-builder": "mythology",
+  "technology-consequences": "technology",
+  "propulsion-consequences-map": "propulsion",
+  "spacecraft-designer": "vessel",
+  "time-dilation": "time_dilation",
+  "gravitas": "gravity_sim",
+  "timeline": "timeline",
+  "drake-equation-calculator": "signal_profile",
+};
+
+export function getTypeForTool(toolType: string): string {
+  return TOOL_TYPE_MAP[toolType] ?? "note";
+}
+
+// ---------------------------------------------------------------------------
+// Codex aggregator
+// ---------------------------------------------------------------------------
+
+export async function getCodexData(worldId: string): Promise<CodexData> {
+  // Fetch world + worksheets + entries in parallel
+  const [worldRes, worksheetsRes, entriesRes] = await Promise.all([
+    supabase
+      .from("worlds")
+      .select("id, name")
+      .eq("id", worldId)
+      .single(),
+    supabase
+      .from("worksheets")
+      .select("*")
+      .eq("world_id", worldId)
+      .is("archived_at", null)
+      .order("updated_at", { ascending: false }),
+    supabase
+      .from("world_entries")
+      .select("*")
+      .eq("world_id", worldId)
+      .order("sort_order", { ascending: true }),
+  ]);
+
+  if (worldRes.error) throw worldRes.error;
+  if (worksheetsRes.error) throw worksheetsRes.error;
+  if (entriesRes.error) throw entriesRes.error;
+
+  const world = worldRes.data;
+  const worksheets = worksheetsRes.data ?? [];
+  const entries = (entriesRes.data ?? []) as WorldEntry[];
+
+  // Build lookup: tool_data_id → entry (for linked entries)
+  const linkedEntryMap = new Map<string, WorldEntry>();
+  for (const entry of entries) {
+    if (entry.tool_data_id) {
+      linkedEntryMap.set(entry.tool_data_id, entry);
+    }
+  }
+
+  // Build cascade sections
+  const sectionElements: Record<CascadeLayer, CodexElement[]> = {
+    environment: [],
+    biology: [],
+    psychology: [],
+    culture: [],
+    mythology: [],
+    technology: [],
+    narrative: [],
+  };
+
+  const allCodexElements: CodexElement[] = [];
+
+  for (const ws of worksheets) {
+    const layer = getLayerForTool(ws.tool_type);
+    const data = (ws.data as Record<string, unknown>) ?? {};
+    const linkedEntry = linkedEntryMap.get(ws.id);
+    const tags = ws.tags as string[] ?? [];
+
+    const el: CodexElement = {
+      id: ws.id,
+      title: ws.title || TOOL_DISPLAY_NAMES[ws.tool_type] || ws.tool_type,
+      kind: "worksheet",
+      type: getTypeForTool(ws.tool_type),
+      layer,
+      toolSource: ws.tool_type,
+      toolDataId: ws.id,
+      entryId: linkedEntry?.id ?? null,
+      status: determineCompletionStatus(data),
+      isDraft: linkedEntry ? !linkedEntry.content : true,
+      children: [],
+      tags,
+      updatedAt: ws.updated_at,
+      sortOrder: 0,
+    };
+
+    sectionElements[layer].push(el);
+    allCodexElements.push(el);
+  }
+
+  // Add entries that are linked to a tool but not yet covered (orphan entries with layer)
+  for (const entry of entries) {
+    if (entry.tool_data_id && entry.layer) {
+      const layer = entry.layer as CascadeLayer;
+      // Only add if the worksheet wasn't already in that section
+      const alreadyHas = sectionElements[layer]?.some(
+        (e) => e.toolDataId === entry.tool_data_id
+      );
+      if (!alreadyHas && sectionElements[layer]) {
+        const el: CodexElement = {
+          id: entry.id,
+          title: entry.title,
+          kind: "entry",
+          type: entry.entry_type,
+          layer,
+          toolSource: entry.tool_source,
+          toolDataId: entry.tool_data_id,
+          entryId: entry.id,
+          status: entry.content ? "partial" : "empty",
+          isDraft: !entry.content,
+          children: [],
+          tags: [],
+          updatedAt: entry.updated_at,
+          sortOrder: entry.sort_order,
+        };
+        sectionElements[layer].push(el);
+        allCodexElements.push(el);
+      }
+    }
+  }
+
+  const cascadeSections: CodexSection[] = LAYER_ORDER.map((key, idx) => ({
+    key,
+    label: LAYER_LABELS[key],
+    order: idx + 1,
+    elements: sectionElements[key],
+    isExpanded: sectionElements[key].length > 0,
+  }));
+
+  // Custom entries: entries with NO tool_source
+  const customEntries: CodexElement[] = entries
+    .filter((e) => !e.tool_source)
+    .map((e) => ({
+      id: e.id,
+      title: e.title,
+      kind: "entry" as const,
+      type: e.entry_type,
+      layer: "narrative" as CascadeLayer,
+      toolSource: null,
+      toolDataId: null,
+      entryId: e.id,
+      status: (e.content ? "partial" : "empty") as CompletionStatus,
+      isDraft: !e.content,
+      children: [],
+      tags: [],
+      updatedAt: e.updated_at,
+      sortOrder: e.sort_order,
+    }));
+
+  // Recent edits: last 5 modified across worksheets + entries
+  const recentEdits = [...allCodexElements, ...customEntries]
+    .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
+    .slice(0, 5);
+
+  // Completion: % of non-empty layers that are complete
+  const totalElements = allCodexElements.length + customEntries.length;
+  const nonEmptySections = cascadeSections.filter((s) => s.elements.length > 0);
+  const completeSections = nonEmptySections.filter((s) =>
+    s.elements.every((e) => e.status === "complete")
+  );
+  const completionPercent =
+    cascadeSections.length === 0
+      ? 0
+      : Math.round((completeSections.length / cascadeSections.length) * 100);
+
+  return {
+    worldId,
+    worldName: world.name,
+    cascadeSections,
+    customEntries,
+    recentEdits,
+    totalElements,
+    completionPercent,
+  };
+}
