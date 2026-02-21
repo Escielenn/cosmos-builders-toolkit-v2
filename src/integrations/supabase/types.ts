@@ -711,6 +711,9 @@ export type Database = {
           parent_id: string | null
           icon: string | null
           color: string | null
+          tool_source: string | null
+          tool_data_id: string | null
+          layer: string | null
           created_by: string
           created_at: string
           updated_at: string
@@ -726,6 +729,9 @@ export type Database = {
           parent_id?: string | null
           icon?: string | null
           color?: string | null
+          tool_source?: string | null
+          tool_data_id?: string | null
+          layer?: string | null
           created_by: string
           created_at?: string
           updated_at?: string
@@ -741,6 +747,9 @@ export type Database = {
           parent_id?: string | null
           icon?: string | null
           color?: string | null
+          tool_source?: string | null
+          tool_data_id?: string | null
+          layer?: string | null
           created_by?: string
           created_at?: string
           updated_at?: string
@@ -758,6 +767,13 @@ export type Database = {
             columns: ["parent_id"]
             isOneToOne: false
             referencedRelation: "world_entries"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "world_entries_tool_data_id_fkey"
+            columns: ["tool_data_id"]
+            isOneToOne: false
+            referencedRelation: "worksheets"
             referencedColumns: ["id"]
           }
         ]
