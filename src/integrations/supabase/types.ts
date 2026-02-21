@@ -583,15 +583,196 @@ export type Database = {
           }
         ]
       }
+      world_versions: {
+        Row: {
+          id: string
+          world_id: string
+          version_number: number
+          label: string | null
+          snapshot_data: Json
+          created_by: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          world_id: string
+          version_number: number
+          label?: string | null
+          snapshot_data: Json
+          created_by: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          world_id?: string
+          version_number?: number
+          label?: string | null
+          snapshot_data?: Json
+          created_by?: string
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "world_versions_world_id_fkey"
+            columns: ["world_id"]
+            isOneToOne: false
+            referencedRelation: "worlds"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      world_connections: {
+        Row: {
+          id: string
+          world_id: string
+          source_worksheet_id: string | null
+          target_worksheet_id: string | null
+          source_entry_id: string | null
+          target_entry_id: string | null
+          connection_type: string
+          description: string | null
+          created_by: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          world_id: string
+          source_worksheet_id?: string | null
+          target_worksheet_id?: string | null
+          source_entry_id?: string | null
+          target_entry_id?: string | null
+          connection_type?: string
+          description?: string | null
+          created_by: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          world_id?: string
+          source_worksheet_id?: string | null
+          target_worksheet_id?: string | null
+          source_entry_id?: string | null
+          target_entry_id?: string | null
+          connection_type?: string
+          description?: string | null
+          created_by?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "world_connections_world_id_fkey"
+            columns: ["world_id"]
+            isOneToOne: false
+            referencedRelation: "worlds"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "world_connections_source_worksheet_id_fkey"
+            columns: ["source_worksheet_id"]
+            isOneToOne: false
+            referencedRelation: "worksheets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "world_connections_target_worksheet_id_fkey"
+            columns: ["target_worksheet_id"]
+            isOneToOne: false
+            referencedRelation: "worksheets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "world_connections_source_entry_id_fkey"
+            columns: ["source_entry_id"]
+            isOneToOne: false
+            referencedRelation: "world_entries"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "world_connections_target_entry_id_fkey"
+            columns: ["target_entry_id"]
+            isOneToOne: false
+            referencedRelation: "world_entries"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      world_entries: {
+        Row: {
+          id: string
+          world_id: string
+          entry_type: "note" | "milestone" | "decision" | "reference" | "lore"
+          title: string
+          content: string | null
+          metadata: Json
+          sort_order: number
+          parent_id: string | null
+          icon: string | null
+          color: string | null
+          created_by: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          world_id: string
+          entry_type: "note" | "milestone" | "decision" | "reference" | "lore"
+          title: string
+          content?: string | null
+          metadata?: Json
+          sort_order?: number
+          parent_id?: string | null
+          icon?: string | null
+          color?: string | null
+          created_by: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          world_id?: string
+          entry_type?: "note" | "milestone" | "decision" | "reference" | "lore"
+          title?: string
+          content?: string | null
+          metadata?: Json
+          sort_order?: number
+          parent_id?: string | null
+          icon?: string | null
+          color?: string | null
+          created_by?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "world_entries_world_id_fkey"
+            columns: ["world_id"]
+            isOneToOne: false
+            referencedRelation: "worlds"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "world_entries_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "world_entries"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       worlds: {
         Row: {
           archived_at: string | null
           created_at: string
           description: string | null
+          header_image_focus_y: number
           header_image_url: string | null
           icon: string
           id: string
           name: string
+          snapshot_at: string | null
           tags: string[]
           updated_at: string
           user_id: string
@@ -600,10 +781,12 @@ export type Database = {
           archived_at?: string | null
           created_at?: string
           description?: string | null
+          header_image_focus_y?: number
           header_image_url?: string | null
           icon?: string
           id?: string
           name: string
+          snapshot_at?: string | null
           tags?: string[]
           updated_at?: string
           user_id: string
@@ -612,10 +795,12 @@ export type Database = {
           archived_at?: string | null
           created_at?: string
           description?: string | null
+          header_image_focus_y?: number
           header_image_url?: string | null
           icon?: string
           id?: string
           name?: string
+          snapshot_at?: string | null
           tags?: string[]
           updated_at?: string
           user_id?: string
@@ -653,6 +838,18 @@ export type Database = {
       }
       get_collaborators_for_world: {
         Args: { p_world_id: string }
+        Returns: Json
+      }
+      compile_world_snapshot: {
+        Args: { p_world_id: string }
+        Returns: Json
+      }
+      maybe_snapshot_world: {
+        Args: { p_world_id: string }
+        Returns: boolean
+      }
+      save_world_snapshot: {
+        Args: { p_world_id: string; p_label?: string }
         Returns: Json
       }
     }
