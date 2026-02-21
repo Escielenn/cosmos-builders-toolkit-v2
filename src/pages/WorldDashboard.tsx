@@ -56,6 +56,7 @@ import WorldBibleDialog from "@/components/world/WorldBibleDialog";
 import WorldSnapshotDialog from "@/components/world/WorldSnapshotDialog";
 import VersionHistory from "@/components/world/VersionHistory";
 import WorldOutline from "@/components/outline/WorldOutline";
+import { useIsWorldLayout } from "@/contexts/WorldLayoutContext";
 import { PageBursts } from "@/components/ui/data-burst";
 import { WORLD_DASHBOARD_BURSTS } from "@/lib/data-bursts";
 const TOOLS = [
@@ -214,6 +215,7 @@ const getToolIcon = (toolType: string) => {
 const WorldDashboard = () => {
   const { worldId } = useParams<{ worldId: string }>();
   const navigate = useNavigate();
+  const isInWorldLayout = useIsWorldLayout();
   const { data: world, isLoading: worldLoading, error: worldError } = useWorld(worldId);
   const { worksheets, isLoading: worksheetsLoading, deleteWorksheet } = useWorksheets(worldId);
   const { deleteWorld, updateWorld, archiveWorld } = useWorlds();
@@ -305,49 +307,62 @@ const WorldDashboard = () => {
   };
 
   if (worldLoading) {
+    const loadingSkeleton = (
+      <>
+        <Skeleton className="h-8 w-32 mb-6" />
+        <Skeleton className="h-48 w-full mb-8 rounded-none" />
+        <Skeleton className="h-64 w-full rounded-none" />
+      </>
+    );
+
+    if (isInWorldLayout) {
+      return <div className="sf-tool-content">{loadingSkeleton}</div>;
+    }
     return (
       <div className="min-h-screen bg-background">
         <Header />
-        <main className="container mx-auto px-4 pt-24 pb-16">
-          <Skeleton className="h-8 w-32 mb-6" />
-          <Skeleton className="h-48 w-full mb-8 rounded-none" />
-          <Skeleton className="h-64 w-full rounded-none" />
-        </main>
+        <main className="container mx-auto px-4 pt-24 pb-16">{loadingSkeleton}</main>
       </div>
     );
   }
 
   if (worldError || !world) {
+    const errorContent = (
+      <>
+        <Link
+          to="/"
+          className="inline-flex items-center text-muted-foreground hover:text-foreground mb-6 transition-colors"
+        >
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Back to Dashboard
+        </Link>
+        <GlassPanel className="p-8 text-center">
+          <Globe className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
+          <h1 className="text-2xl font-bold mb-2">World Not Found</h1>
+          <p className="text-muted-foreground mb-6">
+            This world doesn't exist or you don't have access to it.
+          </p>
+          <Button asChild>
+            <Link to="/">Return to Dashboard</Link>
+          </Button>
+        </GlassPanel>
+      </>
+    );
+
+    if (isInWorldLayout) {
+      return <div className="sf-tool-content">{errorContent}</div>;
+    }
     return (
       <div className="min-h-screen bg-background">
         <Header />
-        <main className="container mx-auto px-4 pt-24 pb-16">
-          <Link
-            to="/"
-            className="inline-flex items-center text-muted-foreground hover:text-foreground mb-6 transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Dashboard
-          </Link>
-          <GlassPanel className="p-8 text-center">
-            <Globe className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
-            <h1 className="text-2xl font-bold mb-2">World Not Found</h1>
-            <p className="text-muted-foreground mb-6">
-              This world doesn't exist or you don't have access to it.
-            </p>
-            <Button asChild>
-              <Link to="/">Return to Dashboard</Link>
-            </Button>
-          </GlassPanel>
-        </main>
+        <main className="container mx-auto px-4 pt-24 pb-16">{errorContent}</main>
       </div>
     );
   }
 
-  return (
-    <div className="min-h-screen bg-background">
-      <Header />
-      <main className="relative container mx-auto px-4 pt-24 pb-16">
+  const dashboardContent = (
+    <>
+      <PageBursts bursts={WORLD_DASHBOARD_BURSTS} />
         <PageBursts bursts={WORLD_DASHBOARD_BURSTS} />
         {/* Back Navigation */}
         <div className="flex items-center justify-between mb-6">
@@ -636,7 +651,21 @@ const WorldDashboard = () => {
             </div>
           )}
         </section>
-      </main>
+    </>
+  );
+
+  return (
+    <>
+      {isInWorldLayout ? (
+        <div className="sf-tool-content">{dashboardContent}</div>
+      ) : (
+        <div className="min-h-screen bg-background">
+          <Header />
+          <main className="relative container mx-auto px-4 pt-24 pb-16">
+            {dashboardContent}
+          </main>
+        </div>
+      )}
 
       {/* Delete World Dialog */}
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
@@ -874,7 +903,7 @@ const WorldDashboard = () => {
           </div>
         </DialogContent>
       </Dialog>
-    </div>
+    </>
   );
 };
 

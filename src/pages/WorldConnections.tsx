@@ -23,6 +23,9 @@ import {
   DrakeContextCard,
 } from "@/components/connections";
 import { cn } from "@/lib/utils";
+import { useIsWorldLayout } from "@/contexts/WorldLayoutContext";
+import { PageBursts } from "@/components/ui/data-burst";
+import { WORLD_CONNECTIONS_BURSTS } from "@/lib/data-bursts";
 
 // Tool icon mapping
 const TOOL_ICONS: Record<string, React.ElementType> = {
@@ -74,6 +77,7 @@ const TOOL_ROUTES: Record<string, string> = {
 const WorldConnections = () => {
   const { worldId } = useParams<{ worldId: string }>();
   const navigate = useNavigate();
+  const isInWorldLayout = useIsWorldLayout();
   const { worlds } = useWorlds();
   const { nodes, edges, isLoading } = useWorldGraph(worldId);
   const [viewMode, setViewMode] = useState<ViewMode>("mindmap");
@@ -168,11 +172,9 @@ const WorldConnections = () => {
     });
   };
 
-  return (
-    <div className="min-h-screen bg-background sf-atmosphere">
-      <Header />
-
-      <main className="container mx-auto px-4 pt-24 pb-16">
+  const connectionsContent = (
+    <>
+      <PageBursts bursts={WORLD_CONNECTIONS_BURSTS} />
         {/* Back Link & Title */}
         <div className="mb-8">
           <Link
@@ -439,6 +441,18 @@ const WorldConnections = () => {
             </GlassPanel>
           </div>
         </div>
+    </>
+  );
+
+  if (isInWorldLayout) {
+    return <div className="sf-tool-content">{connectionsContent}</div>;
+  }
+
+  return (
+    <div className="relative min-h-screen bg-background sf-atmosphere">
+      <Header />
+      <main className="container mx-auto px-4 pt-24 pb-16 relative z-10">
+        {connectionsContent}
       </main>
     </div>
   );

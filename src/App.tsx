@@ -13,6 +13,7 @@ import TextureOverlay from "./components/layout/TextureOverlay";
 import DataBurstOverlay from "./components/layout/DataBurstOverlay";
 import StatusBar from "./components/layout/StatusBar";
 import { Loader } from "@/components/ui/loader";
+import { getLoadingMessage } from "@/lib/loading-messages";
 import ErrorBoundary from "./components/ErrorBoundary";
 
 // Eagerly loaded pages (small, frequently accessed)
@@ -28,6 +29,8 @@ const Contact = lazy(() => import("./pages/Contact"));
 const WorldDashboard = lazy(() => import("./pages/WorldDashboard"));
 const WorldConnections = lazy(() => import("./pages/WorldConnections"));
 const Worlds = lazy(() => import("./pages/Worlds"));
+const WorldLayout = lazy(() => import("./layouts/WorldLayout"));
+const WorldToolPage = lazy(() => import("./pages/WorldToolPage"));
 const Collection = lazy(() => import("./pages/Collection"));
 const Archive = lazy(() => import("./pages/Archive"));
 
@@ -98,12 +101,17 @@ const queryClient = new QueryClient({
   },
 });
 
-// Loading fallback component
+// Loading fallback — sf-loading-screen with bracket corners + Ship's Voice message
 const PageLoader = () => (
-  <div className="min-h-screen bg-background flex items-center justify-center">
-    <div className="text-center">
-      <Loader className="mb-4" />
-      <p className="text-xs text-muted-foreground font-mono tracking-wider uppercase">INITIALIZING...</p>
+  <div className="sf-loading-screen" role="alert" aria-live="polite">
+    <div className="sf-loading-frame">
+      <span className="sf-loading-message">{getLoadingMessage(window.location.pathname)}</span>
+      <div className="h-5" />
+      <Loader />
+      <div className="h-4" />
+      <div className="sf-loading-bar">
+        <div className="sf-loading-bar-fill" />
+      </div>
     </div>
   </div>
 );
@@ -129,8 +137,12 @@ const App = () => (
                 <Route path="/collection" element={<Collection />} />
                 <Route path="/archive" element={<Archive />} />
                 <Route path="/worlds" element={<Worlds />} />
-                <Route path="/worlds/:worldId" element={<WorldDashboard />} />
-                <Route path="/worlds/:worldId/connections" element={<WorldConnections />} />
+                {/* World routes — nested under WorldLayout (Codex sidebar) */}
+                <Route path="/worlds/:worldId" element={<WorldLayout />}>
+                  <Route index element={<WorldDashboard />} />
+                  <Route path="tools/:toolName" element={<WorldToolPage />} />
+                  <Route path="connections" element={<WorldConnections />} />
+                </Route>
                 <Route path="/bookshelf" element={<Bookshelf />} />
                 {/* Free Tools */}
                 <Route path="/tools/environmental-chain-reaction" element={<EnvironmentalChainReaction />} />

@@ -564,6 +564,63 @@ html {
   .sf-bracket-panel--sm .sf-bracket-corner { width: 12px; height: 12px; }
   .sf-bracket-panel--lg .sf-bracket-corner { width: 20px; height: 20px; }
 
+  /* ── World Layout / Codex sidebar ──────────────────────────────────── */
+
+  .sf-world-layout {
+    display: flex;
+    overflow: hidden;
+  }
+
+  .sf-codex {
+    flex-shrink: 0;
+    background: #0C1019;
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
+    overflow-y: auto;
+    overflow-x: hidden;
+    transition: width 0.25s cubic-bezier(0.19, 1, 0.22, 1);
+    position: relative;
+    z-index: 10;
+  }
+
+  .sf-codex::-webkit-scrollbar { width: 3px; }
+  .sf-codex::-webkit-scrollbar-track { background: transparent; }
+  .sf-codex::-webkit-scrollbar-thumb { background: rgba(61, 255, 205, 0.12); }
+
+  .sf-codex--collapsed { width: 48px !important; }
+
+  .sf-codex-resize-handle {
+    width: 4px;
+    cursor: col-resize;
+    flex-shrink: 0;
+    background: transparent;
+    transition: background 0.15s;
+  }
+
+  .sf-codex-resize-handle:hover {
+    background: rgba(61, 255, 205, 0.1);
+  }
+
+  .sf-world-main {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: hsl(var(--sf-void));
+  }
+
+  /* Tool content when rendered inside WorldLayout */
+  .sf-tool-content {
+    position: relative;
+    padding: 24px 24px 32px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  @media (max-width: 768px) {
+    .sf-tool-content {
+      padding: 16px 16px 24px;
+    }
+  }
+
   /* Persistent status bar — fixed bottom HUD */
   .sf-status-bar {
     position: fixed;
@@ -1195,10 +1252,11 @@ html {
     background: rgba(255, 179, 71, 0.6);
   }
 
-  /* Button hover: white fill-sweep for already-green primary buttons */
+  /* Button hover: white fill-sweep for solid-background buttons (primary, destructive) */
   .sf-btn-lift {
     position: relative;
     overflow: hidden;
+    z-index: 0; /* creates stacking context so ::before z-index:-1 stays above bg but below content */
     transition: color 0.35s cubic-bezier(0.19, 1, 0.22, 1);
   }
 
@@ -1210,26 +1268,21 @@ html {
     transform: scaleX(0);
     transform-origin: left center;
     transition: transform 0.35s cubic-bezier(0.19, 1, 0.22, 1);
-    z-index: 0;
+    z-index: -1; /* below all content (text nodes + child elements) but above parent bg */
   }
 
   .sf-btn-lift:hover::before {
     transform: scaleX(1);
   }
 
-  .sf-btn-lift:hover {
-    color: #0A0E17;
+  .sf-btn-lift:hover,
+  .sf-btn-lift:hover * {
+    color: #0A0E17 !important;
   }
 
   .sf-btn-lift:active {
     transform: scale(0.98);
     transition-duration: var(--duration-instant);
-  }
-
-  /* Ensure button text/icons sit above the fill-sweep */
-  .sf-btn-lift > * {
-    position: relative;
-    z-index: 1;
   }
 
   /* Icon hover: brightness lift */
@@ -1469,6 +1522,7 @@ html {
 .sf-btn-worksheet {
   position: relative;
   overflow: hidden;
+  z-index: 0;
   font-family: var(--sf-font-heading);
   font-size: 11px;
   font-weight: 500;
@@ -1492,6 +1546,7 @@ html {
   transform: scaleX(0);
   transform-origin: left center;
   transition: transform 0.35s cubic-bezier(0.19, 1, 0.22, 1);
+  z-index: -1;
 }
 
 .sf-btn-worksheet:hover::before {
@@ -1513,6 +1568,7 @@ html {
 .sf-comm-button {
   position: relative;
   overflow: hidden;
+  z-index: 0;
   font-family: var(--sf-font-heading);
   font-size: 10px;
   font-weight: 500;
@@ -1538,6 +1594,7 @@ html {
   transform: scaleX(0);
   transform-origin: left center;
   transition: transform 0.35s cubic-bezier(0.19, 1, 0.22, 1);
+  z-index: -1;
 }
 
 .sf-comm-button:hover::before {
@@ -1956,6 +2013,7 @@ html {
 .sf-fill-sweep {
   position: relative;
   overflow: hidden;
+  z-index: 0; /* stacking context: ::before -1 stays above bg but below all content */
   transition: border-color 0.35s cubic-bezier(0.19, 1, 0.22, 1),
               color 0.35s cubic-bezier(0.19, 1, 0.22, 1);
 }
@@ -1967,16 +2025,11 @@ html {
   transform: scaleX(0);
   transform-origin: left center;
   transition: transform 0.35s cubic-bezier(0.19, 1, 0.22, 1);
-  z-index: 0;
+  z-index: -1;
 }
 
 .sf-fill-sweep:hover::before {
   transform: scaleX(1);
-}
-
-.sf-fill-sweep > * {
-  position: relative;
-  z-index: 1;
 }
 
 /* ── Primary (teal) ── */
