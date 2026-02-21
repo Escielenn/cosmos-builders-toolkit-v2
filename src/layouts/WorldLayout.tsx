@@ -3,6 +3,7 @@ import { Outlet, useParams } from "react-router-dom";
 import Header from "@/components/layout/Header";
 import { Loader } from "@/components/ui/loader";
 import { useWorld } from "@/hooks/use-world";
+import Codex from "@/components/codex/Codex";
 import { WorldLayoutProvider } from "@/contexts/WorldLayoutContext";
 
 // ---------------------------------------------------------------------------
@@ -136,24 +137,11 @@ const WorldLayout = () => {
             className={`sf-codex ${collapsed ? "sf-codex--collapsed" : ""}`}
             style={{ width: collapsed ? COLLAPSED_WIDTH : width }}
           >
-            {/* Codex component will be rendered here in Step 3.
-                For now, show a placeholder with collapse toggle. */}
-            <div className="p-3">
-              <button
-                onClick={toggleCollapse}
-                className="sf-fill-sweep sf-fill-sweep--secondary w-full flex items-center justify-center h-7 border border-border/20 text-muted-foreground hover:text-foreground transition-colors"
-                aria-label={collapsed ? "Expand Codex" : "Collapse Codex"}
-              >
-                <span className="font-heading text-[9px] uppercase tracking-[2px]">
-                  {collapsed ? "▶" : "◀"}
-                </span>
-              </button>
-              {!collapsed && (
-                <p className="font-heading text-[10px] uppercase tracking-[3px] text-muted-foreground mt-3 truncate">
-                  {world.name}
-                </p>
-              )}
-            </div>
+            <Codex
+              worldId={worldId}
+              collapsed={collapsed}
+              onCollapse={toggleCollapse}
+            />
           </aside>
 
           {/* Resize handle */}
