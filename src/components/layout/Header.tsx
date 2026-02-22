@@ -74,7 +74,7 @@ const Header = () => {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/30 backdrop-blur-xl bg-[#0f0f0f]/95">
+    <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/30 backdrop-blur-xl bg-gradient-to-r from-[#000000]/95 to-[#0A0E17]/95">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-3 group">
           <CubeLogo size={40} className="rounded-lg" />
@@ -277,7 +277,7 @@ const Header = () => {
             </Button>
           )}
           {!loading && user ? (
-            <DropdownMenu>
+            <DropdownMenu modal={false}>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="gap-2 px-2">
                   <Avatar className="w-8 h-8">
