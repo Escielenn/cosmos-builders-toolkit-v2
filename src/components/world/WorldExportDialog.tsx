@@ -15,6 +15,8 @@ import { useToast } from "@/hooks/use-toast";
 import { useNotion } from "@/hooks/use-notion";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import { compileWorldSnapshot } from "@/lib/export/world-snapshot";
+import { formatWorldForExport } from "@/services/worldExportFormatter";
 
 // Dynamic imports for heavy libraries
 const loadDocxGenerator = () => import("@/lib/docx");
@@ -158,16 +160,17 @@ const WorldExportDialog = ({
         }
 
         case "word": {
-          const { generateDocx } = await loadDocxGenerator();
-          await generateDocx({
-            toolName: `${worldName} - Complete World Export`,
+          const { generateWorldDocx } = await loadDocxGenerator();
+          const snapshot = await compileWorldSnapshot(worldId);
+          const exportSections = formatWorldForExport(snapshot);
+          await generateWorldDocx({
             worldName,
-            worksheetTitle: "All Worksheets",
-            data: exportData as Record<string, unknown>,
+            worldDescription: snapshot.world.description || undefined,
+            sections: exportSections,
           });
           toast({
             title: "EXPORT COMPLETE.",
-            description: `Exported ${worksheets.length} worksheet${worksheets.length === 1 ? "" : "s"} as Word document.`,
+            description: `Exported world as Word document with wiki prose, connections, and timeline.`,
           });
           break;
         }

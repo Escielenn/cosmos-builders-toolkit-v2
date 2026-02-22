@@ -1,1 +1,1 @@
-export { generateDocx } from "./generator";
+export { generateDocx, generateWorldDocx } from "./generator";
