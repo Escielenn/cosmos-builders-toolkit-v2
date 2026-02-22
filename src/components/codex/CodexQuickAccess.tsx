@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Network, BookOpen, FolderOpen } from "lucide-react";
+import { Network, BookOpen, ScrollText } from "lucide-react";
 
 interface CodexQuickAccessProps {
   worldId: string;
@@ -7,6 +7,7 @@ interface CodexQuickAccessProps {
 
 const CodexQuickAccess = ({ worldId }: CodexQuickAccessProps) => {
   const links = [
+    { label: "Chronicle", icon: ScrollText, to: `/worlds/${worldId}/chronicle` },
     { label: "World Graph", icon: Network, to: `/worlds/${worldId}/graph` },
     { label: "Connections", icon: BookOpen, to: `/worlds/${worldId}/connections` },
   ];
