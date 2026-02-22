@@ -381,19 +381,24 @@ export async function createWorldFromSnapshot(
     }
   }
 
-  // 5. Import connections (remap worksheet IDs)
+  // 5. Import connections (remap worksheet IDs; entry-based connections skipped)
   for (const conn of snapshot.connections) {
-    const newSource = worksheetIdMap.get(conn.source_worksheet_id);
-    const newTarget = worksheetIdMap.get(conn.target_worksheet_id);
+    const newSourceWs = conn.source_worksheet_id ? worksheetIdMap.get(conn.source_worksheet_id) : null;
+    const newTargetWs = conn.target_worksheet_id ? worksheetIdMap.get(conn.target_worksheet_id) : null;
 
-    if (!newSource || !newTarget) continue; // Skip if referenced worksheets weren't imported
+    // Skip worksheet-based connections where the referenced worksheet wasn't imported
+    if (conn.source_worksheet_id && !newSourceWs) continue;
+    if (conn.target_worksheet_id && !newTargetWs) continue;
+
+    // Entry-based connections are not remapped during import (entry IDs change)
+    if (!newSourceWs && !newTargetWs) continue;
 
     const { error: connError } = await supabase
       .from("world_connections")
       .insert({
         world_id: newWorldId,
-        source_worksheet_id: newSource,
-        target_worksheet_id: newTarget,
+        source_worksheet_id: newSourceWs || null,
+        target_worksheet_id: newTargetWs || null,
         connection_type: conn.connection_type,
         description: conn.description,
         created_by: userId,
@@ -592,16 +597,18 @@ export async function restoreWorldVersion(
 
   // 7. Re-import connections (remap IDs)
   for (const conn of snapshot.connections) {
-    const newSource = worksheetIdMap.get(conn.source_worksheet_id);
-    const newTarget = worksheetIdMap.get(conn.target_worksheet_id);
-    if (!newSource || !newTarget) continue;
+    const newSourceWs = conn.source_worksheet_id ? worksheetIdMap.get(conn.source_worksheet_id) : null;
+    const newTargetWs = conn.target_worksheet_id ? worksheetIdMap.get(conn.target_worksheet_id) : null;
+    if (conn.source_worksheet_id && !newSourceWs) continue;
+    if (conn.target_worksheet_id && !newTargetWs) continue;
+    if (!newSourceWs && !newTargetWs) continue;
 
     const { error: connInsertErr } = await supabase
       .from("world_connections")
       .insert({
         world_id: worldId,
-        source_worksheet_id: newSource,
-        target_worksheet_id: newTarget,
+        source_worksheet_id: newSourceWs || null,
+        target_worksheet_id: newTargetWs || null,
         connection_type: conn.connection_type,
         description: conn.description,
         created_by: userId,
