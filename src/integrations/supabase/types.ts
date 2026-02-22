@@ -47,6 +47,88 @@ export type Database = {
         }
         Relationships: []
       }
+      chronicle_events: {
+        Row: {
+          id: string
+          world_id: string
+          title: string
+          description: string | null
+          event_date: string
+          sort_value: number
+          end_date: string | null
+          end_sort_value: number | null
+          event_type: string
+          layer: string | null
+          parent_id: string | null
+          linked_entry_id: string | null
+          icon: string | null
+          color: string | null
+          tags: string[]
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          world_id: string
+          title: string
+          description?: string | null
+          event_date: string
+          sort_value: number
+          end_date?: string | null
+          end_sort_value?: number | null
+          event_type?: string
+          layer?: string | null
+          parent_id?: string | null
+          linked_entry_id?: string | null
+          icon?: string | null
+          color?: string | null
+          tags?: string[]
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          world_id?: string
+          title?: string
+          description?: string | null
+          event_date?: string
+          sort_value?: number
+          end_date?: string | null
+          end_sort_value?: number | null
+          event_type?: string
+          layer?: string | null
+          parent_id?: string | null
+          linked_entry_id?: string | null
+          icon?: string | null
+          color?: string | null
+          tags?: string[]
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chronicle_events_world_id_fkey"
+            columns: ["world_id"]
+            isOneToOne: false
+            referencedRelation: "worlds"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chronicle_events_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "chronicle_events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chronicle_events_linked_entry_id_fkey"
+            columns: ["linked_entry_id"]
+            isOneToOne: false
+            referencedRelation: "world_entries"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       support_tickets: {
         Row: {
           id: string
@@ -784,6 +866,7 @@ export type Database = {
       worlds: {
         Row: {
           archived_at: string | null
+          calendar_config: Json
           created_at: string
           description: string | null
           header_image_focus_y: number
@@ -798,6 +881,7 @@ export type Database = {
         }
         Insert: {
           archived_at?: string | null
+          calendar_config?: Json
           created_at?: string
           description?: string | null
           header_image_focus_y?: number
@@ -812,6 +896,7 @@ export type Database = {
         }
         Update: {
           archived_at?: string | null
+          calendar_config?: Json
           created_at?: string
           description?: string | null
           header_image_focus_y?: number
