@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Download, FileJson, FileType, FileSpreadsheet, FileText, ExternalLink, Unplug } from "lucide-react";
+import { Download, FileJson, FileType, FileSpreadsheet, FileText, BookOpen, ExternalLink, Unplug } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
 import {
   Dialog,
@@ -21,6 +21,7 @@ import { formatWorldForExport } from "@/services/worldExportFormatter";
 // Dynamic imports for heavy libraries
 const loadDocxGenerator = () => import("@/lib/docx");
 const loadMarkdownExport = () => import("@/lib/export/markdown-export");
+const loadScrivenerExport = () => import("@/lib/export/scrivener-export");
 
 interface Worksheet {
   id: string;
@@ -31,7 +32,7 @@ interface Worksheet {
   updated_at: string;
 }
 
-type ExportFormat = "json" | "text" | "word" | "markdown" | "notion";
+type ExportFormat = "json" | "text" | "word" | "markdown" | "scrivener" | "notion";
 
 interface WorldExportDialogProps {
   open: boolean;
@@ -192,6 +193,22 @@ const WorldExportDialog = ({
           break;
         }
 
+        case "scrivener": {
+          const { downloadScrivenerProject } = await loadScrivenerExport();
+          const snapshot = await compileWorldSnapshot(worldId);
+          const exportSections = formatWorldForExport(snapshot);
+          await downloadScrivenerProject(
+            worldName,
+            snapshot.world.description || undefined,
+            exportSections,
+          );
+          toast({
+            title: "EXPORT COMPLETE.",
+            description: `Exported world as Scrivener project. Unzip and open .scriv folder.`,
+          });
+          break;
+        }
+
         case "notion": {
           if (!isConnected) {
             toast({
@@ -261,11 +278,12 @@ const WorldExportDialog = ({
         ) : (
           <>
             <Tabs defaultValue="json" className="w-full" onValueChange={(v) => setFormat(v as ExportFormat)}>
-              <TabsList className="grid w-full grid-cols-5">
+              <TabsList className="grid w-full grid-cols-6">
                 <TabsTrigger value="json">JSON</TabsTrigger>
                 <TabsTrigger value="text">Text</TabsTrigger>
                 <TabsTrigger value="word">Word</TabsTrigger>
                 <TabsTrigger value="markdown">MD</TabsTrigger>
+                <TabsTrigger value="scrivener">Scriv</TabsTrigger>
                 <TabsTrigger value="notion">Notion</TabsTrigger>
               </TabsList>
 
@@ -320,6 +338,20 @@ const WorldExportDialog = ({
                     <span className="font-medium">Markdown (.zip)</span>
                     <p className="text-xs text-muted-foreground mt-1">
                       Organized .md files with [[wiki-links]] and a chronicle folder. Opens in Obsidian, Notion, or any text editor.
+                    </p>
+                  </div>
+                </div>
+              </TabsContent>
+
+              <TabsContent value="scrivener" className="space-y-4 pt-4">
+                <div
+                  className="flex items-center space-x-3 p-3 rounded-lg border border-border bg-accent/5"
+                >
+                  <BookOpen className="w-5 h-5 text-muted-foreground" />
+                  <div className="flex-1">
+                    <span className="font-medium">Scrivener Project (.zip)</span>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Full .scriv project with RTF documents. Unzip and open in Scrivener 3.
                     </p>
                   </div>
                 </div>
