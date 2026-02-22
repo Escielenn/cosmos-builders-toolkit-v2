@@ -1,18 +1,21 @@
 import { Document, Page, View, Text } from "@react-pdf/renderer";
 import { styles, colors, spacing, typography } from "../../styles";
 import { PDFHeader, PDFFooter, PDFSection, PDFKeyValuePair } from "../../components";
+import { deepStripHtml } from "@/lib/html-utils";
 import {
   type ChapterWithWorksheets,
   type WorksheetRecord,
   get,
   TOOL_NAMES,
 } from "./helpers";
+import type { ExportSection, ExportSubsection } from "@/services/worldExportFormatter";
 
 interface WorldBibleTemplateProps {
   worldName: string;
   worldDescription?: string;
   worldNotes?: string;
   chapters: ChapterWithWorksheets[];
+  exportSections?: ExportSection[];
   date?: string;
 }
 
@@ -31,7 +34,7 @@ const CoverPage = ({
   totalWorksheets: number;
   chapterCount: number;
 }) => (
-  <Page size="LETTER" style={[styles.page, { justifyContent: "center", alignItems: "center" }]}>
+  <Page size="LETTER" style={{ ...styles.page, justifyContent: "center", alignItems: "center" }}>
     <View style={{ alignItems: "center", marginBottom: spacing["3xl"] }}>
       <Text
         style={{
@@ -161,7 +164,7 @@ const TOCPage = ({
 
 const WorldNotesPage = ({ worldName, worldNotes }: { worldName: string; worldNotes: string }) => (
   <Page size="LETTER" style={styles.page}>
-    <PDFHeader toolName="World Overview" worldName={worldName} />
+    <PDFHeader toolName="World Overview" worldName={worldName} hideLogo />
     <PDFSection title="World Notes">
       <Text style={{ fontSize: typography.sizes.sm, color: colors.text.primary, lineHeight: 1.6 }}>
         {worldNotes}
@@ -177,7 +180,7 @@ const RenderPlanetaryProfile = ({ ws }: { ws: WorksheetRecord }) => {
   const d = ws.data;
   return (
     <View style={styles.section}>
-      <Text style={[styles.sectionTitle, { color: colors.text.primary }]}>
+      <Text style={{ ...styles.sectionTitle, color: colors.text.primary }}>
         {ws.title || "Untitled Planet"}
       </Text>
       <View style={styles.sectionContent}>
@@ -204,7 +207,7 @@ const RenderStarSystem = ({ ws }: { ws: WorksheetRecord }) => {
   const d = ws.data;
   return (
     <View style={styles.section}>
-      <Text style={[styles.sectionTitle, { color: colors.text.primary }]}>
+      <Text style={{ ...styles.sectionTitle, color: colors.text.primary }}>
         {ws.title || "Untitled Star System"}
       </Text>
       <View style={styles.sectionContent}>
@@ -226,7 +229,7 @@ const RenderECR = ({ ws }: { ws: WorksheetRecord }) => {
   const d = ws.data;
   return (
     <View style={styles.section}>
-      <Text style={[styles.sectionTitle, { color: colors.text.primary }]}>
+      <Text style={{ ...styles.sectionTitle, color: colors.text.primary }}>
         {ws.title || get(d, "parameter.selectedParameter") || "Untitled Cascade"}
       </Text>
       <View style={styles.sectionContent}>
@@ -246,7 +249,7 @@ const RenderEvoBio = ({ ws }: { ws: WorksheetRecord }) => {
   const d = ws.data;
   return (
     <View style={styles.section}>
-      <Text style={[styles.sectionTitle, { color: colors.text.primary }]}>
+      <Text style={{ ...styles.sectionTitle, color: colors.text.primary }}>
         {get(d, "speciesName") || ws.title || "Untitled Species"}
       </Text>
       <View style={styles.sectionContent}>
@@ -267,20 +270,20 @@ const RenderSpeciesMatrix = ({ ws }: { ws: WorksheetRecord }) => {
   const species = (d.species as Array<{ id: string; name: string; type: string }>) || [];
   return (
     <View style={styles.section}>
-      <Text style={[styles.sectionTitle, { color: colors.text.primary }]}>
+      <Text style={{ ...styles.sectionTitle, color: colors.text.primary }}>
         {ws.title || "Species Interaction Matrix"}
       </Text>
       <View style={styles.sectionContent}>
         {species.length > 0 && (
           <View style={styles.table}>
             <View style={styles.tableHeader}>
-              <Text style={[styles.tableHeaderCell, { flex: 1 }]}>Species</Text>
-              <Text style={[styles.tableHeaderCell, { flex: 1 }]}>Type</Text>
+              <Text style={{ ...styles.tableHeaderCell, flex: 1 }}>Species</Text>
+              <Text style={{ ...styles.tableHeaderCell, flex: 1 }}>Type</Text>
             </View>
             {species.map((sp) => (
               <View key={sp.id} style={styles.tableRow}>
-                <Text style={[styles.tableCell, { flex: 1 }]}>{sp.name || "—"}</Text>
-                <Text style={[styles.tableCell, { flex: 1 }]}>{sp.type || "—"}</Text>
+                <Text style={{ ...styles.tableCell, flex: 1 }}>{sp.name || "—"}</Text>
+                <Text style={{ ...styles.tableCell, flex: 1 }}>{sp.type || "—"}</Text>
               </View>
             ))}
           </View>
@@ -300,7 +303,7 @@ const RenderEmpire = ({ ws }: { ws: WorksheetRecord }) => {
   const d = ws.data;
   return (
     <View style={styles.section}>
-      <Text style={[styles.sectionTitle, { color: colors.text.primary }]}>
+      <Text style={{ ...styles.sectionTitle, color: colors.text.primary }}>
         {get(d, "foundation.name") || ws.title || "Untitled Empire"}
       </Text>
       <View style={styles.sectionContent}>
@@ -325,7 +328,7 @@ const RenderTechConsequences = ({ ws }: { ws: WorksheetRecord }) => {
   const d = ws.data;
   return (
     <View style={styles.section}>
-      <Text style={[styles.sectionTitle, { color: colors.text.primary }]}>
+      <Text style={{ ...styles.sectionTitle, color: colors.text.primary }}>
         {get(d, "technology.name") || ws.title || "Untitled Technology"}
       </Text>
       <View style={styles.sectionContent}>
@@ -355,7 +358,7 @@ const RenderDrake = ({ ws }: { ws: WorksheetRecord }) => {
   };
   return (
     <View style={styles.section}>
-      <Text style={[styles.sectionTitle, { color: colors.text.primary }]}>
+      <Text style={{ ...styles.sectionTitle, color: colors.text.primary }}>
         {ws.title || "Drake Equation"}
       </Text>
       <View style={styles.sectionContent}>
@@ -376,7 +379,7 @@ const RenderXenomythology = ({ ws }: { ws: WorksheetRecord }) => {
   const d = ws.data;
   return (
     <View style={styles.section}>
-      <Text style={[styles.sectionTitle, { color: colors.text.primary }]}>
+      <Text style={{ ...styles.sectionTitle, color: colors.text.primary }}>
         {ws.title || "Xenomythology Framework"}
       </Text>
       <View style={styles.sectionContent}>
@@ -398,7 +401,7 @@ const RenderSpacecraft = ({ ws }: { ws: WorksheetRecord }) => {
   const d = ws.data;
   return (
     <View style={styles.section}>
-      <Text style={[styles.sectionTitle, { color: colors.text.primary }]}>
+      <Text style={{ ...styles.sectionTitle, color: colors.text.primary }}>
         {get(d, "identity.name") || ws.title || "Untitled Vessel"}
       </Text>
       <View style={styles.sectionContent}>
@@ -421,7 +424,7 @@ const RenderPropulsion = ({ ws }: { ws: WorksheetRecord }) => {
   const d = ws.data;
   return (
     <View style={styles.section}>
-      <Text style={[styles.sectionTitle, { color: colors.text.primary }]}>
+      <Text style={{ ...styles.sectionTitle, color: colors.text.primary }}>
         {get(d, "propulsionType") || ws.title || "Untitled Propulsion"}
       </Text>
       <View style={styles.sectionContent}>
@@ -466,6 +469,7 @@ const ChapterPage = ({
     <PDFHeader
       toolName={`Chapter ${chapter.chapter.number}: ${chapter.chapter.title}`}
       worldName={worldName}
+      hideLogo
     />
 
     <View
@@ -498,6 +502,261 @@ const ChapterPage = ({
   </Page>
 );
 
+// ── ExportSection-based Rendering ────────────────────────────────────
+
+const SectionSubsection = ({ sub }: { sub: ExportSubsection }) => (
+  <View style={{ ...styles.section, marginBottom: spacing.lg }}>
+    <Text style={{ ...styles.sectionTitle, color: colors.text.primary }}>
+      {sub.title}
+    </Text>
+
+    {/* Infobox data table */}
+    {sub.infobox.length > 0 && (
+      <View style={{ ...styles.sectionContent, marginBottom: spacing.md }}>
+        {sub.infobox.map((row, i) => (
+          <PDFKeyValuePair key={i} label={row.label} value={row.value} />
+        ))}
+      </View>
+    )}
+
+    {/* Prose content from wiki page */}
+    {sub.prose && sub.prose.trim() !== "" && (
+      <View style={{ marginTop: spacing.sm, marginBottom: spacing.md }}>
+        {sub.prose.split("\n\n").map((paragraph, i) => {
+          if (paragraph.startsWith("## ")) {
+            return (
+              <Text
+                key={i}
+                style={{
+                  fontSize: typography.sizes.md,
+                  fontWeight: 700,
+                  color: colors.text.primary,
+                  marginTop: spacing.md,
+                  marginBottom: spacing.xs,
+                }}
+              >
+                {paragraph.replace("## ", "")}
+              </Text>
+            );
+          }
+          if (paragraph.startsWith("### ")) {
+            return (
+              <Text
+                key={i}
+                style={{
+                  fontSize: typography.sizes.base,
+                  fontWeight: 600,
+                  color: colors.text.secondary,
+                  marginTop: spacing.sm,
+                  marginBottom: spacing.xs,
+                }}
+              >
+                {paragraph.replace("### ", "")}
+              </Text>
+            );
+          }
+          if (paragraph.trim()) {
+            return (
+              <Text
+                key={i}
+                style={{
+                  fontSize: typography.sizes.base,
+                  color: colors.text.primary,
+                  lineHeight: 1.6,
+                  marginBottom: spacing.sm,
+                }}
+              >
+                {paragraph.trim()}
+              </Text>
+            );
+          }
+          return null;
+        })}
+      </View>
+    )}
+
+    {/* Connections */}
+    {sub.connections.length > 0 && (
+      <View style={{ marginTop: spacing.sm, marginBottom: spacing.md }}>
+        <Text
+          style={{
+            fontSize: typography.sizes.xs,
+            fontWeight: 700,
+            color: colors.primary,
+            textTransform: "uppercase",
+            letterSpacing: 1,
+            marginBottom: spacing.xs,
+          }}
+        >
+          CONNECTIONS
+        </Text>
+        {sub.connections.map((conn, i) => (
+          <Text
+            key={i}
+            style={{
+              fontSize: typography.sizes.sm,
+              color: colors.text.secondary,
+              marginBottom: 2,
+              paddingLeft: spacing.xs,
+            }}
+          >
+            {conn.relationship} {"\u2192"} {conn.targetTitle}
+          </Text>
+        ))}
+      </View>
+    )}
+
+    {/* Timeline events */}
+    {sub.timelineEvents.length > 0 && (
+      <View style={{ marginTop: spacing.sm, marginBottom: spacing.md }}>
+        <Text
+          style={{
+            fontSize: typography.sizes.xs,
+            fontWeight: 700,
+            color: colors.primary,
+            textTransform: "uppercase",
+            letterSpacing: 1,
+            marginBottom: spacing.xs,
+          }}
+        >
+          TIMELINE
+        </Text>
+        {sub.timelineEvents.map((ev, i) => (
+          <View key={i} style={{ marginBottom: spacing.xs, paddingLeft: spacing.xs }}>
+            <Text style={{ fontSize: typography.sizes.sm, color: colors.text.primary }}>
+              <Text style={{ fontWeight: 600 }}>{ev.date}:</Text> {ev.title}
+            </Text>
+            {ev.description && (
+              <Text
+                style={{
+                  fontSize: typography.sizes.xs,
+                  color: colors.text.muted,
+                  paddingLeft: spacing.sm,
+                  marginTop: 1,
+                }}
+              >
+                {ev.description.slice(0, 200)}
+                {ev.description.length > 200 ? "..." : ""}
+              </Text>
+            )}
+          </View>
+        ))}
+      </View>
+    )}
+  </View>
+);
+
+const ExportSectionPage = ({
+  section,
+  worldName,
+  sectionIndex,
+}: {
+  section: ExportSection;
+  worldName: string;
+  sectionIndex: number;
+}) => (
+  <Page size="LETTER" style={styles.page} break>
+    <PDFHeader
+      toolName={section.title}
+      worldName={worldName}
+      hideLogo
+    />
+
+    <View
+      style={{
+        backgroundColor: colors.primaryLight,
+        borderLeftWidth: 4,
+        borderLeftColor: colors.primary,
+        padding: spacing.md,
+        marginBottom: spacing.xl,
+      }}
+    >
+      <Text style={{ fontSize: typography.sizes.lg, fontWeight: 700, color: colors.primary }}>
+        Section {sectionIndex}
+      </Text>
+      <Text style={{ fontSize: typography.sizes.xl, fontWeight: 700, color: colors.text.primary }}>
+        {section.title}
+      </Text>
+      <Text style={{ fontSize: typography.sizes.sm, color: colors.text.secondary, marginTop: spacing.xs }}>
+        {section.subsections.length} element{section.subsections.length !== 1 ? "s" : ""}
+      </Text>
+    </View>
+
+    {section.subsections.map((sub, i) => (
+      <SectionSubsection key={i} sub={sub} />
+    ))}
+
+    <PDFFooter />
+  </Page>
+);
+
+const SectionTOCPage = ({
+  sections,
+  hasWorldNotes,
+}: {
+  sections: ExportSection[];
+  hasWorldNotes: boolean;
+}) => (
+  <Page size="LETTER" style={styles.page}>
+    <Text
+      style={{
+        fontSize: typography.sizes.xl,
+        fontWeight: 700,
+        color: colors.primary,
+        marginBottom: spacing.xl,
+        textTransform: "uppercase",
+        letterSpacing: 2,
+      }}
+    >
+      Table of Contents
+    </Text>
+    <View style={{ borderBottomWidth: 2, borderBottomColor: colors.primary, marginBottom: spacing.lg }} />
+
+    {hasWorldNotes && (
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          paddingVertical: spacing.sm,
+          borderBottomWidth: 1,
+          borderBottomColor: colors.borderLight,
+        }}
+      >
+        <Text style={{ fontSize: typography.sizes.base, fontWeight: 600, color: colors.text.primary }}>
+          World Overview & Notes
+        </Text>
+      </View>
+    )}
+
+    {sections
+      .filter((s) => s.layer !== "overview" && s.layer !== "notes")
+      .map((section, i) => (
+        <View
+          key={section.layer}
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            paddingVertical: spacing.sm,
+            borderBottomWidth: 1,
+            borderBottomColor: colors.borderLight,
+          }}
+        >
+          <View style={{ flex: 1 }}>
+            <Text style={{ fontSize: typography.sizes.base, fontWeight: 600, color: colors.text.primary }}>
+              {i + 1}. {section.title}
+            </Text>
+            <Text style={{ fontSize: typography.sizes.xs, color: colors.text.muted, marginTop: 2 }}>
+              {section.subsections.length} element{section.subsections.length !== 1 ? "s" : ""}
+            </Text>
+          </View>
+        </View>
+      ))}
+
+    <PDFFooter />
+  </Page>
+);
+
 // ── Main Template ───────────────────────────────────────────────────────
 
 const WorldBibleTemplate = ({
@@ -505,9 +764,64 @@ const WorldBibleTemplate = ({
   worldDescription,
   worldNotes,
   chapters,
+  exportSections,
   date,
 }: WorldBibleTemplateProps) => {
-  const totalWorksheets = chapters.reduce(
+  // Strip any residual HTML from worksheet data and text fields (defensive)
+  const sanitizedNotes = worldNotes ? deepStripHtml(worldNotes) : undefined;
+  const sanitizedDescription = worldDescription ? deepStripHtml(worldDescription) : undefined;
+
+  // If ExportSections are provided, use the new rendering path
+  if (exportSections && exportSections.length > 0) {
+    const contentSections = exportSections.filter(
+      (s) => s.layer !== "overview" && s.layer !== "notes"
+    );
+    const totalElements = contentSections.reduce(
+      (sum, s) => sum + s.subsections.length,
+      0
+    );
+
+    return (
+      <Document>
+        <CoverPage
+          worldName={worldName}
+          worldDescription={sanitizedDescription}
+          date={date}
+          totalWorksheets={totalElements}
+          chapterCount={contentSections.length}
+        />
+
+        <SectionTOCPage
+          sections={exportSections}
+          hasWorldNotes={!!sanitizedNotes}
+        />
+
+        {sanitizedNotes && (
+          <WorldNotesPage worldName={worldName} worldNotes={sanitizedNotes} />
+        )}
+
+        {contentSections.map((section, i) => (
+          <ExportSectionPage
+            key={section.layer}
+            section={section}
+            worldName={worldName}
+            sectionIndex={i + 1}
+          />
+        ))}
+      </Document>
+    );
+  }
+
+  // Legacy: chapter-based rendering
+  const sanitizedChapters = chapters.map((cw) => ({
+    ...cw,
+    worksheets: cw.worksheets.map((ws) => ({
+      ...ws,
+      data: deepStripHtml(ws.data),
+    })),
+  }));
+
+  const totalWorksheets = sanitizedChapters.reduce(
     (sum, cw) => sum + cw.worksheets.length,
     0
   );
@@ -517,22 +831,22 @@ const WorldBibleTemplate = ({
       {/* Cover */}
       <CoverPage
         worldName={worldName}
-        worldDescription={worldDescription}
+        worldDescription={sanitizedDescription}
         date={date}
         totalWorksheets={totalWorksheets}
-        chapterCount={chapters.length}
+        chapterCount={sanitizedChapters.length}
       />
 
       {/* Table of Contents */}
-      <TOCPage chapters={chapters} hasWorldNotes={!!worldNotes} />
+      <TOCPage chapters={sanitizedChapters} hasWorldNotes={!!sanitizedNotes} />
 
       {/* World Notes (optional) */}
-      {worldNotes && (
-        <WorldNotesPage worldName={worldName} worldNotes={worldNotes} />
+      {sanitizedNotes && (
+        <WorldNotesPage worldName={worldName} worldNotes={sanitizedNotes} />
       )}
 
       {/* Chapters */}
-      {chapters.map((cw) => (
+      {sanitizedChapters.map((cw) => (
         <ChapterPage key={cw.chapter.id} chapter={cw} worldName={worldName} />
       ))}
     </Document>

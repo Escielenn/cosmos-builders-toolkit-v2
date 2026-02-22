@@ -27,6 +27,8 @@ import {
   type WorksheetRecord,
   type ChapterWithWorksheets,
 } from "@/lib/pdf/templates/world-bible/helpers";
+import { compileWorldSnapshot } from "@/lib/export/world-snapshot";
+import { formatWorldForExport } from "@/services/worldExportFormatter";
 
 interface WorldBibleDialogProps {
   open: boolean;
@@ -152,22 +154,32 @@ const WorldBibleDialog = ({
 
     try {
       // Dynamic import
-      setProgress(20);
-      const [{ pdf }, { WorldBibleTemplate, groupWorksheetsByChapter: group }] =
+      setProgress(15);
+      const [{ pdf }, { WorldBibleTemplate }] =
         await Promise.all([
           import("@react-pdf/renderer"),
           import("@/lib/pdf/templates/world-bible"),
         ]);
 
-      setProgress(40);
+      setProgress(30);
 
-      // Filter to selected worksheets and strip HTML from data for PDF rendering
-      const selectedWsList = allWorksheets
-        .filter((ws) => selectedWorksheets.has(ws.id))
-        .map((ws) => ({ ...ws, data: deepStripHtml(ws.data) }));
-      const chapters = group(selectedWsList);
+      // Compile full world snapshot (entries, connections, chronicle)
+      const snapshot = await compileWorldSnapshot(worldId);
 
-      setProgress(60);
+      setProgress(50);
+
+      // Filter snapshot worksheets to only selected ones
+      const filteredSnapshot = {
+        ...snapshot,
+        worksheets: snapshot.worksheets.filter((ws) =>
+          selectedWorksheets.has(ws.id)
+        ),
+      };
+
+      // Format into ExportSections (prose, connections, timeline)
+      const exportSections = formatWorldForExport(filteredSnapshot);
+
+      setProgress(65);
 
       const cleanWorldNotes = includeWorldNotes && worldNotes ? htmlToPlainText(worldNotes) : undefined;
 
@@ -179,7 +191,8 @@ const WorldBibleDialog = ({
             worldName={worldName}
             worldDescription={worldDescription}
             worldNotes={cleanWorldNotes}
-            chapters={chapters}
+            chapters={[]}
+            exportSections={exportSections}
           />
         ).toBlob();
       } finally {
@@ -198,9 +211,13 @@ const WorldBibleDialog = ({
 
       setProgress(100);
 
+      const sectionCount = exportSections.filter(
+        (s) => s.layer !== "overview" && s.layer !== "notes"
+      ).length;
+
       toast({
         title: "World Bible exported",
-        description: `Generated ${chapters.length} chapter${chapters.length !== 1 ? "s" : ""} with ${selectedCount} worksheet${selectedCount !== 1 ? "s" : ""}.`,
+        description: `Generated ${sectionCount} section${sectionCount !== 1 ? "s" : ""} with wiki prose, connections, and timeline.`,
       });
       onOpenChange(false);
     } catch (error) {
