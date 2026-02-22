@@ -569,6 +569,8 @@ html {
   .sf-world-layout {
     display: flex;
     overflow: hidden;
+    --sf-world-accent-rgb: 61, 255, 205;
+    --sf-world-accent: #3DFFCD;
   }
 
   .sf-codex {
@@ -584,7 +586,7 @@ html {
 
   .sf-codex::-webkit-scrollbar { width: 3px; }
   .sf-codex::-webkit-scrollbar-track { background: transparent; }
-  .sf-codex::-webkit-scrollbar-thumb { background: rgba(61, 255, 205, 0.12); }
+  .sf-codex::-webkit-scrollbar-thumb { background: rgba(var(--sf-world-accent-rgb), 0.12); }
 
   .sf-codex--collapsed { width: 48px !important; }
 
@@ -597,7 +599,7 @@ html {
   }
 
   .sf-codex-resize-handle:hover {
-    background: rgba(61, 255, 205, 0.1);
+    background: rgba(var(--sf-world-accent-rgb), 0.1);
   }
 
   .sf-world-main {
@@ -2215,7 +2217,7 @@ html {
 
 .sf-wiki-autocomplete-item:hover,
 .sf-wiki-autocomplete-item.selected {
-  background: rgba(61, 255, 205, 0.06);
+  background: rgba(var(--sf-world-accent-rgb, 61, 255, 205), 0.06);
 }
 
 .sf-wiki-autocomplete-type {
@@ -2247,7 +2249,7 @@ html {
 .sf-infobox {
   background: #0C1019;
   border: 1px solid rgba(255, 255, 255, 0.06);
-  border-top: 2px solid rgba(61, 255, 205, 0.5);
+  border-top: 2px solid rgba(var(--sf-world-accent-rgb, 61, 255, 205), 0.5);
   padding: 16px 20px;
   margin: 24px 0;
 }
@@ -2256,7 +2258,7 @@ html {
   font-family: var(--sf-font-accent, 'Michroma', sans-serif);
   font-size: 8px;
   letter-spacing: 3px;
-  color: rgba(61, 255, 205, 0.5);
+  color: rgba(var(--sf-world-accent-rgb, 61, 255, 205), 0.5);
   margin-bottom: 12px;
 }
 
@@ -2328,7 +2330,7 @@ html {
 }
 
 .sf-wiki-content blockquote {
-  border-left: 2px solid rgba(61, 255, 205, 0.3);
+  border-left: 2px solid rgba(var(--sf-world-accent-rgb, 61, 255, 205), 0.3);
   padding-left: 16px;
   color: rgba(255, 255, 255, 0.6);
   font-style: italic;
@@ -2379,14 +2381,14 @@ html {
 }
 
 .sf-wiki-toolbar button:hover {
-  background: rgba(61, 255, 205, 0.06);
+  background: rgba(var(--sf-world-accent-rgb, 61, 255, 205), 0.06);
   border-color: rgba(255, 255, 255, 0.08);
   color: rgba(255, 255, 255, 0.8);
 }
 
 .sf-wiki-toolbar button.active {
-  background: rgba(61, 255, 205, 0.1);
-  color: #3DFFCD;
+  background: rgba(var(--sf-world-accent-rgb, 61, 255, 205), 0.1);
+  color: var(--sf-world-accent, #3DFFCD);
 }
 
 .sf-wiki-toolbar .separator {
@@ -2439,7 +2441,7 @@ html {
   font-weight: 500;
   letter-spacing: 3px;
   text-transform: uppercase;
-  color: rgba(61, 255, 205, 0.5);
+  color: rgba(var(--sf-world-accent-rgb, 61, 255, 205), 0.5);
   margin-top: 32px;
   margin-bottom: 12px;
   padding-bottom: 6px;
@@ -2448,7 +2450,7 @@ html {
 
 .sf-wiki-section-header::before {
   content: '// ';
-  color: rgba(61, 255, 205, 0.25);
+  color: rgba(var(--sf-world-accent-rgb, 61, 255, 205), 0.25);
 }
 
 /* Wiki connections list */
@@ -2496,7 +2498,7 @@ html {
   font-size: 8px;
   letter-spacing: 1px;
   text-transform: uppercase;
-  color: rgba(61, 255, 205, 0.5);
+  color: rgba(var(--sf-world-accent-rgb, 61, 255, 205), 0.5);
   transition: opacity 0.3s ease;
 }
 
@@ -2565,7 +2567,7 @@ html {
   top: 0;
   bottom: 0;
   width: 1px;
-  background: rgba(61, 255, 205, 0.12);
+  background: rgba(var(--sf-world-accent-rgb, 61, 255, 205), 0.12);
   transform: translateX(-0.5px);
 }
 
@@ -2597,7 +2599,7 @@ html {
   border-color: rgba(255, 255, 255, 0.15);
 }
 
-.sf-chronicle-era-badge[data-layer="environment"] { border-left: 2px solid rgba(61, 255, 205, 0.4); }
+.sf-chronicle-era-badge[data-layer="environment"] { border-left: 2px solid rgba(var(--sf-world-accent-rgb, 61, 255, 205), 0.4); }
 .sf-chronicle-era-badge[data-layer="biology"]     { border-left: 2px solid rgba(74, 222, 128, 0.4); }
 .sf-chronicle-era-badge[data-layer="culture"]     { border-left: 2px solid rgba(255, 179, 71, 0.4); }
 .sf-chronicle-era-badge[data-layer="mythology"]   { border-left: 2px solid rgba(91, 141, 239, 0.4); }
@@ -2638,7 +2640,7 @@ html {
 }
 
 /* Layer-colored edge accents — left cards get left edge */
-.sf-chronicle-card[data-layer="environment"] { border-left: 3px solid rgba(61, 255, 205, 0.4); }
+.sf-chronicle-card[data-layer="environment"] { border-left: 3px solid rgba(var(--sf-world-accent-rgb, 61, 255, 205), 0.4); }
 .sf-chronicle-card[data-layer="biology"]     { border-left: 3px solid rgba(74, 222, 128, 0.4); }
 .sf-chronicle-card[data-layer="culture"]     { border-left: 3px solid rgba(255, 179, 71, 0.4); }
 .sf-chronicle-card[data-layer="mythology"]   { border-left: 3px solid rgba(91, 141, 239, 0.4); }
@@ -2646,7 +2648,7 @@ html {
 .sf-chronicle-card[data-layer="narrative"]   { border-left: 3px solid rgba(91, 141, 239, 0.3); }
 
 /* Right-side cards get right edge instead */
-.sf-chronicle-card--right[data-layer="environment"] { border-left: 1px solid rgba(255, 255, 255, 0.06); border-right: 3px solid rgba(61, 255, 205, 0.4); }
+.sf-chronicle-card--right[data-layer="environment"] { border-left: 1px solid rgba(255, 255, 255, 0.06); border-right: 3px solid rgba(var(--sf-world-accent-rgb, 61, 255, 205), 0.4); }
 .sf-chronicle-card--right[data-layer="biology"]     { border-left: 1px solid rgba(255, 255, 255, 0.06); border-right: 3px solid rgba(74, 222, 128, 0.4); }
 .sf-chronicle-card--right[data-layer="culture"]     { border-left: 1px solid rgba(255, 255, 255, 0.06); border-right: 3px solid rgba(255, 179, 71, 0.4); }
 .sf-chronicle-card--right[data-layer="mythology"]   { border-left: 1px solid rgba(255, 255, 255, 0.06); border-right: 3px solid rgba(91, 141, 239, 0.4); }
@@ -2681,7 +2683,7 @@ html {
   font-family: var(--sf-font-mono, 'JetBrains Mono', monospace);
   font-size: 11px;
   letter-spacing: 1px;
-  color: rgba(61, 255, 205, 0.5);
+  color: rgba(var(--sf-world-accent-rgb, 61, 255, 205), 0.5);
 }
 
 /* Title */
@@ -2772,7 +2774,7 @@ html {
   width: 8px;
   height: 8px;
   background: #0C1019;
-  border: 1px solid rgba(61, 255, 205, 0.3);
+  border: 1px solid rgba(var(--sf-world-accent-rgb, 61, 255, 205), 0.3);
   transform: translate(-50%, -50%);
   z-index: 2;
 }
@@ -2801,8 +2803,8 @@ html {
   width: 1px;
   background: repeating-linear-gradient(
     to bottom,
-    rgba(61, 255, 205, 0.08) 0px,
-    rgba(61, 255, 205, 0.08) 4px,
+    rgba(var(--sf-world-accent-rgb, 61, 255, 205), 0.08) 0px,
+    rgba(var(--sf-world-accent-rgb, 61, 255, 205), 0.08) 4px,
     transparent 4px,
     transparent 8px
   );
@@ -2831,8 +2833,8 @@ html {
 .sf-chronicle-end-marker {
   width: 6px;
   height: 6px;
-  border: 1px solid rgba(61, 255, 205, 0.2);
-  background: rgba(61, 255, 205, 0.05);
+  border: 1px solid rgba(var(--sf-world-accent-rgb, 61, 255, 205), 0.2);
+  background: rgba(var(--sf-world-accent-rgb, 61, 255, 205), 0.05);
 }
 
 /* Form labels in dialog */
@@ -2882,7 +2884,7 @@ html {
     border-right: 1px solid rgba(255, 255, 255, 0.06);
   }
 
-  .sf-chronicle-card--right[data-layer="environment"] { border-left: 3px solid rgba(61, 255, 205, 0.4); }
+  .sf-chronicle-card--right[data-layer="environment"] { border-left: 3px solid rgba(var(--sf-world-accent-rgb, 61, 255, 205), 0.4); }
   .sf-chronicle-card--right[data-layer="biology"]     { border-left: 3px solid rgba(74, 222, 128, 0.4); }
   .sf-chronicle-card--right[data-layer="culture"]     { border-left: 3px solid rgba(255, 179, 71, 0.4); }
   .sf-chronicle-card--right[data-layer="mythology"]   { border-left: 3px solid rgba(91, 141, 239, 0.4); }

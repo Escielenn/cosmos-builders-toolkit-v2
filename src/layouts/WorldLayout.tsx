@@ -3,8 +3,10 @@ import { Outlet, useParams, useNavigate } from "react-router-dom";
 import Header from "@/components/layout/Header";
 import { Loader } from "@/components/ui/loader";
 import { useWorld } from "@/hooks/use-world";
+import { useSubscription } from "@/hooks/use-subscription";
 import Codex from "@/components/codex/Codex";
 import { WorldLayoutProvider } from "@/contexts/WorldLayoutContext";
+import { WorldThemeProvider } from "@/contexts/WorldThemeContext";
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -24,6 +26,7 @@ const WorldLayout = () => {
   const { worldId } = useParams<{ worldId: string }>();
   const navigate = useNavigate();
   const { data: world, isLoading, error } = useWorld(worldId);
+  const { isSubscribed } = useSubscription();
 
   // Sidebar state — persisted in localStorage
   const [collapsed, setCollapsed] = useState(() => {
@@ -139,39 +142,41 @@ const WorldLayout = () => {
 
   return (
     <WorldLayoutProvider value={{ worldId, worldName: world.name, isWorldLayout: true }}>
-      <div className="min-h-screen bg-background">
-        <Header />
+      <WorldThemeProvider theme={world.theme} isPro={isSubscribed}>
+        <div className="min-h-screen bg-background">
+          <Header />
 
-        <div
-          className="sf-world-layout"
-          style={{ height: `calc(100vh - ${HEADER_HEIGHT}px)`, marginTop: HEADER_HEIGHT }}
-        >
-          {/* Codex Sidebar */}
-          <aside
-            className={`sf-codex ${collapsed ? "sf-codex--collapsed" : ""}`}
-            style={{ width: collapsed ? COLLAPSED_WIDTH : width }}
+          <div
+            className="sf-world-layout"
+            style={{ height: `calc(100vh - ${HEADER_HEIGHT}px)`, marginTop: HEADER_HEIGHT }}
           >
-            <Codex
-              worldId={worldId}
-              collapsed={collapsed}
-              onCollapse={toggleCollapse}
-            />
-          </aside>
+            {/* Codex Sidebar */}
+            <aside
+              className={`sf-codex ${collapsed ? "sf-codex--collapsed" : ""}`}
+              style={{ width: collapsed ? COLLAPSED_WIDTH : width }}
+            >
+              <Codex
+                worldId={worldId}
+                collapsed={collapsed}
+                onCollapse={toggleCollapse}
+              />
+            </aside>
 
-          {/* Resize handle */}
-          {!collapsed && (
-            <div
-              className="sf-codex-resize-handle"
-              onMouseDown={startResize}
-            />
-          )}
+            {/* Resize handle */}
+            {!collapsed && (
+              <div
+                className="sf-codex-resize-handle"
+                onMouseDown={startResize}
+              />
+            )}
 
-          {/* Main content */}
-          <main className="sf-world-main">
-            <Outlet />
-          </main>
+            {/* Main content */}
+            <main className="sf-world-main">
+              <Outlet />
+            </main>
+          </div>
         </div>
-      </div>
+      </WorldThemeProvider>
     </WorldLayoutProvider>
   );
 };
