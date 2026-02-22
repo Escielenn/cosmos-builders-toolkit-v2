@@ -15,12 +15,14 @@ import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { useExportPreferences } from "@/hooks/use-export-preferences";
+import { useSubscription } from "@/hooks/use-subscription";
 import { setActiveTheme, resetActiveTheme } from "@/lib/pdf/styles";
 import { EXPORT_THEMES } from "@/lib/export/themes";
 import { cn } from "@/lib/utils";
 import { htmlToPlainText, deepStripHtml } from "@/lib/html-utils";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import UpgradeDialog from "@/components/subscription/UpgradeDialog";
 import {
   CHAPTERS,
   groupWorksheetsByChapter,
@@ -47,10 +49,12 @@ const WorldBibleDialog = ({
 }: WorldBibleDialogProps) => {
   const { toast } = useToast();
   const { user } = useAuth();
+  const { isSubscribed } = useSubscription();
   const { preferences, updatePreferences } = useExportPreferences();
   const [isLoading, setIsLoading] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [showUpgrade, setShowUpgrade] = useState(false);
   const [allWorksheets, setAllWorksheets] = useState<WorksheetRecord[]>([]);
   const [chaptersWithWs, setChaptersWithWs] = useState<ChapterWithWorksheets[]>([]);
   const [selectedChapters, setSelectedChapters] = useState<Set<string>>(new Set());
@@ -148,6 +152,11 @@ const WorldBibleDialog = ({
 
   const handleGenerate = async () => {
     if (selectedCount === 0 && !includeWorldNotes) return;
+
+    if (!isSubscribed) {
+      setShowUpgrade(true);
+      return;
+    }
 
     setIsGenerating(true);
     setProgress(10);
@@ -419,6 +428,12 @@ const WorldBibleDialog = ({
           </Button>
         </DialogFooter>
       </DialogContent>
+
+      <UpgradeDialog
+        open={showUpgrade}
+        onOpenChange={setShowUpgrade}
+        toolName="World Bible PDF Export"
+      />
     </Dialog>
   );
 };

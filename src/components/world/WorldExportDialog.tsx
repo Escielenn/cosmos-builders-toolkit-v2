@@ -13,10 +13,12 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { useNotion } from "@/hooks/use-notion";
+import { useSubscription } from "@/hooks/use-subscription";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { compileWorldSnapshot } from "@/lib/export/world-snapshot";
 import { formatWorldForExport } from "@/services/worldExportFormatter";
+import UpgradeDialog from "@/components/subscription/UpgradeDialog";
 
 // Dynamic imports for heavy libraries
 const loadDocxGenerator = () => import("@/lib/docx");
@@ -49,10 +51,12 @@ const WorldExportDialog = ({
 }: WorldExportDialogProps) => {
   const { toast } = useToast();
   const { user } = useAuth();
+  const { isSubscribed } = useSubscription();
   const { connection, isConnected, isConnecting, isExporting: isNotionExporting, connect, disconnect, exportToNotion } = useNotion();
   const [isExporting, setIsExporting] = useState(false);
   const [isLoadingWorksheets, setIsLoadingWorksheets] = useState(false);
   const [worksheets, setWorksheets] = useState<Worksheet[]>([]);
+  const [showUpgrade, setShowUpgrade] = useState(false);
   const [format, setFormat] = useState<ExportFormat>("json");
 
   // Fetch worksheets when dialog opens
@@ -110,7 +114,15 @@ const WorldExportDialog = ({
     URL.revokeObjectURL(url);
   };
 
+  const PRO_FORMATS: ExportFormat[] = ["word", "markdown", "scrivener"];
+
   const handleExport = async () => {
+    // Pro-tier gate for formatted exports
+    if (PRO_FORMATS.includes(format) && !isSubscribed) {
+      setShowUpgrade(true);
+      return;
+    }
+
     setIsExporting(true);
 
     try {
@@ -467,6 +479,12 @@ const WorldExportDialog = ({
           </Button>
         </DialogFooter>
       </DialogContent>
+
+      <UpgradeDialog
+        open={showUpgrade}
+        onOpenChange={setShowUpgrade}
+        toolName="Formatted World Export"
+      />
     </Dialog>
   );
 };
