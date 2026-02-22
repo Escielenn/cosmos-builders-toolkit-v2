@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Upload } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -10,6 +10,9 @@ import CreateWorldButton from "@/components/dashboard/CreateWorldButton";
 import { TagFilter } from "@/components/dashboard/TagFilter";
 import { ArchiveToggle } from "@/components/dashboard/ArchiveToggle";
 import SharedWorldsSection from "@/components/dashboard/SharedWorldsSection";
+import BackupStatusWidget from "@/components/dashboard/BackupStatusWidget";
+import WorldImportDialog from "@/components/world/WorldImportDialog";
+import { Button } from "@/components/ui/button";
 import { useWorlds } from "@/hooks/use-worlds";
 import { useAuth } from "@/contexts/AuthContext";
 import { PageBursts } from "@/components/ui/data-burst";
@@ -20,6 +23,7 @@ const Worlds = () => {
   const navigate = useNavigate();
   const [showArchived, setShowArchived] = useState(false);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [importDialogOpen, setImportDialogOpen] = useState(false);
 
   const { worlds, isLoading, deleteWorld, archiveWorld, unarchiveWorld } =
     useWorlds(showArchived);
@@ -92,6 +96,11 @@ const Worlds = () => {
             <h1 className="font-heading font-light text-2xl uppercase tracking-sf-wide">
               My Worlds
             </h1>
+            <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" onClick={() => setImportDialogOpen(true)}>
+              <Upload className="w-4 h-4 mr-2" />
+              Import
+            </Button>
             <ArchiveToggle
               showArchived={showArchived}
               onToggle={setShowArchived}
@@ -101,6 +110,7 @@ const Worlds = () => {
                   : worlds.filter((w) => w.archived_at).length
               }
             />
+            </div>
           </div>
           {availableTags.length > 0 && (
             <TagFilter
@@ -148,6 +158,7 @@ const Worlds = () => {
               icon={world.icon}
               tags={world.tags}
               archivedAt={world.archived_at}
+              snapshotAt={world.snapshot_at}
               updatedAt={world.updated_at}
               onDelete={handleDeleteWorld}
               onArchive={handleArchiveWorld}
@@ -156,11 +167,23 @@ const Worlds = () => {
           ))}
         </div>
 
+        {/* Backup Status */}
+        {!isLoading && worlds.filter((w) => !w.archived_at).length > 0 && (
+          <div className="mb-16 max-w-sm">
+            <BackupStatusWidget worlds={worlds.filter((w) => !w.archived_at)} />
+          </div>
+        )}
+
         {/* Shared with Me */}
         <SharedWorldsSection />
       </main>
 
       <Footer />
+
+      <WorldImportDialog
+        open={importDialogOpen}
+        onOpenChange={setImportDialogOpen}
+      />
     </div>
   );
 };
