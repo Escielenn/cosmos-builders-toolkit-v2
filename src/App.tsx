@@ -31,6 +31,7 @@ const WorldConnections = lazy(() => import("./pages/WorldConnections"));
 const Worlds = lazy(() => import("./pages/Worlds"));
 const WorldLayout = lazy(() => import("./layouts/WorldLayout"));
 const WorldToolPage = lazy(() => import("./pages/WorldToolPage"));
+const WorldGraph = lazy(() => import("./pages/WorldGraph"));
 const Collection = lazy(() => import("./pages/Collection"));
 const Archive = lazy(() => import("./pages/Archive"));
 
@@ -141,6 +142,7 @@ const App = () => (
                 <Route path="/worlds/:worldId" element={<WorldLayout />}>
                   <Route index element={<WorldDashboard />} />
                   <Route path="tools/:toolName" element={<WorldToolPage />} />
+                  <Route path="graph" element={<WorldGraph />} />
                   <Route path="connections" element={<WorldConnections />} />
                 </Route>
                 <Route path="/bookshelf" element={<Bookshelf />} />

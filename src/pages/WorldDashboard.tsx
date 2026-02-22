@@ -55,7 +55,6 @@ import HierarchicalExportDialog from "@/components/world/HierarchicalExportDialo
 import WorldBibleDialog from "@/components/world/WorldBibleDialog";
 import WorldSnapshotDialog from "@/components/world/WorldSnapshotDialog";
 import VersionHistory from "@/components/world/VersionHistory";
-import WorldOutline from "@/components/outline/WorldOutline";
 import { useIsWorldLayout } from "@/contexts/WorldLayoutContext";
 import { PageBursts } from "@/components/ui/data-burst";
 import { WORLD_DASHBOARD_BURSTS } from "@/lib/data-bursts";
@@ -480,13 +479,6 @@ const WorldDashboard = () => {
         {isOwner && worldId && (
           <section className="mb-8">
             <VersionHistory worldId={worldId} worldName={world.name} />
-          </section>
-        )}
-
-        {/* World Outline */}
-        {worldId && (
-          <section className="mb-8">
-            <WorldOutline worldId={worldId} worldName={world.name} />
           </section>
         )}
 
