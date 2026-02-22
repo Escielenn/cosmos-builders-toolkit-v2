@@ -57,6 +57,7 @@ export interface WorldEntry {
   tool_source: string | null;
   tool_data_id: string | null;
   layer: string | null;
+  cover_image_url: string | null;
   created_by: string;
   created_at: string;
   updated_at: string;

@@ -2148,3 +2148,380 @@ html {
     transform: scaleX(1);
   }
 }
+
+/* ── Wiki System ── */
+
+/* Wiki-link inline node */
+.sf-wiki-link {
+  color: #5B8DEF;
+  cursor: pointer;
+  text-decoration: none;
+  position: relative;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.sf-wiki-link::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: #5B8DEF;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.sf-wiki-link:hover::after {
+  transform: scaleX(1);
+}
+
+.sf-wiki-link:hover {
+  color: #7BA4F7;
+}
+
+/* Dead link (element was deleted) */
+.sf-wiki-link[data-dead="true"] {
+  color: #FFB347;
+  text-decoration: line-through;
+  cursor: default;
+}
+
+.sf-wiki-link[data-dead="true"]::after {
+  display: none;
+}
+
+/* Wiki-link autocomplete popover */
+.sf-wiki-autocomplete {
+  position: fixed;
+  z-index: 1000;
+  background: #0C1019;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  min-width: 280px;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.sf-wiki-autocomplete-item {
+  padding: 8px 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.15s ease;
+}
+
+.sf-wiki-autocomplete-item:hover,
+.sf-wiki-autocomplete-item.selected {
+  background: rgba(61, 255, 205, 0.06);
+}
+
+.sf-wiki-autocomplete-type {
+  font-family: var(--sf-font-mono, 'JetBrains Mono', monospace);
+  font-size: 8px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: rgba(255, 255, 255, 0.3);
+  min-width: 60px;
+}
+
+.sf-wiki-autocomplete-title {
+  font-family: var(--sf-font-body, 'DM Sans', sans-serif);
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.sf-wiki-autocomplete-empty {
+  padding: 12px;
+  font-family: var(--sf-font-mono, 'JetBrains Mono', monospace);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: rgba(255, 255, 255, 0.25);
+  text-align: center;
+}
+
+/* Wiki infobox */
+.sf-infobox {
+  background: #0C1019;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: 2px solid rgba(61, 255, 205, 0.5);
+  padding: 16px 20px;
+  margin: 24px 0;
+}
+
+.sf-infobox-header {
+  font-family: var(--sf-font-accent, 'Michroma', sans-serif);
+  font-size: 8px;
+  letter-spacing: 3px;
+  color: rgba(61, 255, 205, 0.5);
+  margin-bottom: 12px;
+}
+
+.sf-infobox-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.sf-infobox-label {
+  font-family: var(--sf-font-body, 'DM Sans', sans-serif);
+  font-size: 10px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.35);
+  letter-spacing: 0.5px;
+}
+
+.sf-infobox-value {
+  font-family: var(--sf-font-mono, 'JetBrains Mono', monospace);
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.sf-infobox-source {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  font-family: var(--sf-font-mono, 'JetBrains Mono', monospace);
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.25);
+}
+
+/* Wiki content rendering */
+.sf-wiki-content {
+  font-family: var(--sf-font-body, 'DM Sans', sans-serif);
+  font-size: 15px;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.78);
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.sf-wiki-content h2 {
+  font-family: var(--sf-font-heading, 'Jura', sans-serif);
+  font-size: 20px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.92);
+  margin-top: 32px;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+
+.sf-wiki-content h3 {
+  font-family: var(--sf-font-heading, 'Jura', sans-serif);
+  font-size: 16px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+  margin-top: 24px;
+  margin-bottom: 8px;
+}
+
+.sf-wiki-content p {
+  margin-bottom: 16px;
+}
+
+.sf-wiki-content blockquote {
+  border-left: 2px solid rgba(61, 255, 205, 0.3);
+  padding-left: 16px;
+  color: rgba(255, 255, 255, 0.6);
+  font-style: italic;
+  margin: 16px 0;
+}
+
+.sf-wiki-content a:not(.sf-wiki-link) {
+  color: #5B8DEF;
+  text-decoration: underline;
+}
+
+.sf-wiki-content img {
+  max-width: 100%;
+  margin: 16px 0;
+}
+
+.sf-wiki-content ul, .sf-wiki-content ol {
+  padding-left: 24px;
+  margin-bottom: 16px;
+}
+
+.sf-wiki-content hr {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  margin: 32px 0;
+}
+
+/* Wiki editor toolbar */
+.sf-wiki-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 8px;
+  background: #0C1019;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: none;
+}
+
+.sf-wiki-toolbar button {
+  font-family: var(--sf-font-mono, 'JetBrains Mono', monospace);
+  font-size: 11px;
+  padding: 4px 8px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.sf-wiki-toolbar button:hover {
+  background: rgba(61, 255, 205, 0.06);
+  border-color: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.sf-wiki-toolbar button.active {
+  background: rgba(61, 255, 205, 0.1);
+  color: #3DFFCD;
+}
+
+.sf-wiki-toolbar .separator {
+  width: 1px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.08);
+  margin: 0 4px;
+}
+
+.sf-wiki-toolbar .wiki-link-btn {
+  color: #5B8DEF;
+  font-weight: 600;
+}
+
+/* Wiki page layout */
+.sf-wiki-page {
+  max-width: 840px;
+  margin: 0 auto;
+  padding: 24px 32px 48px;
+}
+
+.sf-wiki-cover {
+  width: 100%;
+  max-height: 240px;
+  object-fit: cover;
+  margin-bottom: 24px;
+}
+
+.sf-wiki-title {
+  font-family: var(--sf-font-heading, 'Jura', sans-serif);
+  font-size: 28px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.92);
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+
+.sf-wiki-meta {
+  font-family: var(--sf-font-mono, 'JetBrains Mono', monospace);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: rgba(255, 255, 255, 0.3);
+  margin-bottom: 24px;
+}
+
+.sf-wiki-section-header {
+  font-family: var(--sf-font-heading, 'Jura', sans-serif);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(61, 255, 205, 0.5);
+  margin-top: 32px;
+  margin-bottom: 12px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.sf-wiki-section-header::before {
+  content: '// ';
+  color: rgba(61, 255, 205, 0.25);
+}
+
+/* Wiki connections list */
+.sf-wiki-connection {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+  font-size: 13px;
+}
+
+.sf-wiki-connection-type {
+  font-family: var(--sf-font-mono, 'JetBrains Mono', monospace);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: rgba(255, 255, 255, 0.3);
+  min-width: 100px;
+}
+
+/* Wiki backlinks */
+.sf-wiki-backlink {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Draft prompt */
+.sf-wiki-draft-prompt {
+  text-align: center;
+  padding: 32px 24px;
+  font-family: var(--sf-font-mono, 'JetBrains Mono', monospace);
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  color: rgba(255, 255, 255, 0.3);
+  line-height: 1.8;
+}
+
+/* Save indicator */
+.sf-wiki-save-indicator {
+  font-family: var(--sf-font-mono, 'JetBrains Mono', monospace);
+  font-size: 8px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: rgba(61, 255, 205, 0.5);
+  transition: opacity 0.3s ease;
+}
+
+/* Cover image upload area */
+.sf-wiki-cover-upload {
+  width: 100%;
+  height: 160px;
+  border: 1px dashed rgba(255, 255, 255, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
+  margin-bottom: 24px;
+}
+
+.sf-wiki-cover-upload:hover {
+  border-color: rgba(91, 141, 239, 0.3);
+  background: rgba(91, 141, 239, 0.04);
+}
+
+.sf-wiki-cover-upload span {
+  font-family: var(--sf-font-mono, 'JetBrains Mono', monospace);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: rgba(255, 255, 255, 0.25);
+}
