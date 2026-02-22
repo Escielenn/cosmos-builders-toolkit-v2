@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus } from "lucide-react";
+import { Plus, ChevronRight } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
@@ -17,12 +17,18 @@ import AuthRequiredDialog from "@/components/auth/AuthRequiredDialog";
 import IconPicker from "@/components/world/IconPicker";
 import { useAuth } from "@/contexts/AuthContext";
 import { useWorlds } from "@/hooks/use-worlds";
+import { useNavigate } from "react-router-dom";
+
+const SOVEREIGNTY_SHOWN_KEY = "sf-sovereignty-shown";
 
 const CreateWorldButton = () => {
   const { user } = useAuth();
   const { createWorld } = useWorlds();
+  const navigate = useNavigate();
   const [showAuthDialog, setShowAuthDialog] = useState(false);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(false);
+  const [createdWorldId, setCreatedWorldId] = useState<string | null>(null);
   const [worldName, setWorldName] = useState("");
   const [worldDescription, setWorldDescription] = useState("");
   const [worldIcon, setWorldIcon] = useState("globe");
@@ -38,7 +44,7 @@ const CreateWorldButton = () => {
   const handleCreate = async () => {
     if (!worldName.trim()) return;
 
-    await createWorld.mutateAsync({
+    const world = await createWorld.mutateAsync({
       name: worldName.trim(),
       description: worldDescription.trim() || undefined,
       icon: worldIcon,
@@ -48,6 +54,26 @@ const CreateWorldButton = () => {
     setWorldDescription("");
     setWorldIcon("globe");
     setShowCreateDialog(false);
+
+    // Show sovereignty welcome on first world creation
+    try {
+      if (!localStorage.getItem(SOVEREIGNTY_SHOWN_KEY)) {
+        localStorage.setItem(SOVEREIGNTY_SHOWN_KEY, "true");
+        setCreatedWorldId(world.id);
+        setShowWelcome(true);
+        return;
+      }
+    } catch {
+      // localStorage unavailable
+    }
+  };
+
+  const handleWelcomeDismiss = () => {
+    setShowWelcome(false);
+    if (createdWorldId) {
+      navigate(`/worlds/${createdWorldId}`);
+    }
+    setCreatedWorldId(null);
   };
 
   return (
@@ -124,6 +150,29 @@ const CreateWorldButton = () => {
                 <Plus className="w-4 h-4" />
               )}
               Initialize
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* First world sovereignty welcome */}
+      <Dialog open={showWelcome} onOpenChange={(open) => { if (!open) handleWelcomeDismiss(); }}>
+        <DialogContent className="sm:max-w-sm">
+          <div className="py-6 text-center space-y-4">
+            <h2 className="font-heading text-lg tracking-sf-wide uppercase">
+              World Initialized.
+            </h2>
+            <div className="space-y-2">
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Everything you create here is yours.
+              </p>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Encrypted, versioned, exportable. Always.
+              </p>
+            </div>
+            <Button className="gap-2 mt-2" onClick={handleWelcomeDismiss}>
+              Begin Survey
+              <ChevronRight className="w-4 h-4" />
             </Button>
           </div>
         </DialogContent>
