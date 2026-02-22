@@ -13,6 +13,7 @@ import { Crown } from "lucide-react";
 import { useWorlds } from "@/hooks/use-worlds";
 import { useSubscription } from "@/hooks/use-subscription";
 import UpgradeDialog from "@/components/subscription/UpgradeDialog";
+import HeaderImageUpload from "@/components/world/HeaderImageUpload";
 import { useToast } from "@/hooks/use-toast";
 import type { WorldTheme } from "@/hooks/use-world";
 
@@ -46,6 +47,7 @@ export default function WorldAppearanceDialog({
   const [upgradeOpen, setUpgradeOpen] = useState(false);
   const [accentColor, setAccentColor] = useState("#3DFFCD");
   const [hexInput, setHexInput] = useState("#3DFFCD");
+  const [coverImageUrl, setCoverImageUrl] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -53,6 +55,7 @@ export default function WorldAppearanceDialog({
       const color = currentTheme.accent_color || "#3DFFCD";
       setAccentColor(color);
       setHexInput(color);
+      setCoverImageUrl(currentTheme.cover_image_url || null);
     }
   }, [open, currentTheme]);
 
@@ -79,6 +82,7 @@ export default function WorldAppearanceDialog({
       const theme: WorldTheme = {
         ...currentTheme,
         accent_color: accentColor === "#3DFFCD" ? undefined : accentColor,
+        cover_image_url: coverImageUrl || undefined,
       };
       await updateWorld.mutateAsync({ worldId, theme });
       toast({ title: "APPEARANCE UPDATED." });
@@ -170,6 +174,18 @@ export default function WorldAppearanceDialog({
                   />
                 ))}
               </div>
+            </div>
+
+            {/* Cover Image */}
+            <div className="space-y-3">
+              <label className="font-mono text-[9px] uppercase tracking-[2px] text-muted-foreground">
+                // COVER IMAGE
+              </label>
+              <HeaderImageUpload
+                currentImageUrl={coverImageUrl}
+                onImageChange={setCoverImageUrl}
+                showMoodboardPicker={false}
+              />
             </div>
 
             {/* Preview */}

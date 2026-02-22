@@ -458,6 +458,18 @@ const WorldDashboard = () => {
           </div>
         )}
 
+        {/* Theme Cover Image */}
+        {world.theme?.cover_image_url && (
+          <div className="relative w-full h-[200px] mb-6 overflow-hidden">
+            <img
+              src={world.theme.cover_image_url}
+              alt={world.name}
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute bottom-0 left-0 right-0 h-[60%] bg-gradient-to-t from-background to-transparent" />
+          </div>
+        )}
+
         {/* World Header */}
         <div className="mb-8">
           <WorldHeader
