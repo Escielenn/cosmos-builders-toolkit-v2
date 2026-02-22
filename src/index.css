@@ -2525,3 +2525,380 @@ html {
   letter-spacing: 2px;
   color: rgba(255, 255, 255, 0.25);
 }
+
+/* ==========================================================================
+   CHRONICLE — Vertical Timeline Visualization
+   ========================================================================== */
+
+.sf-chronicle {
+  padding: 32px 24px 64px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.sf-chronicle-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 40px;
+}
+
+.sf-chronicle-heading {
+  font-family: var(--sf-font-display, 'Jura', sans-serif);
+  font-weight: 300;
+  font-size: 22px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--sf-text-primary, #E0E4E8);
+}
+
+/* Timeline container */
+.sf-chronicle-timeline {
+  position: relative;
+  padding: 40px 0 80px;
+}
+
+/* Spine */
+.sf-chronicle-spine {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: rgba(61, 255, 205, 0.12);
+  transform: translateX(-0.5px);
+}
+
+/* Eras section */
+.sf-chronicle-eras {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+  margin-bottom: 32px;
+  position: relative;
+  z-index: 1;
+}
+
+.sf-chronicle-era-badge {
+  font-family: var(--sf-font-mono, 'JetBrains Mono', monospace);
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.35);
+  background: rgba(14, 19, 32, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: border-color 0.25s ease;
+}
+
+.sf-chronicle-era-badge:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.sf-chronicle-era-badge[data-layer="environment"] { border-left: 2px solid rgba(61, 255, 205, 0.4); }
+.sf-chronicle-era-badge[data-layer="biology"]     { border-left: 2px solid rgba(74, 222, 128, 0.4); }
+.sf-chronicle-era-badge[data-layer="culture"]     { border-left: 2px solid rgba(255, 179, 71, 0.4); }
+.sf-chronicle-era-badge[data-layer="mythology"]   { border-left: 2px solid rgba(91, 141, 239, 0.4); }
+.sf-chronicle-era-badge[data-layer="technology"]  { border-left: 2px solid rgba(224, 228, 232, 0.4); }
+.sf-chronicle-era-badge[data-layer="narrative"]   { border-left: 2px solid rgba(91, 141, 239, 0.3); }
+
+/* Event rows */
+.sf-chronicle-events {
+  position: relative;
+}
+
+.sf-chronicle-row {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 32px;
+}
+
+.sf-chronicle-row--left {
+  justify-content: flex-start;
+  padding-right: calc(50% + 32px);
+}
+
+.sf-chronicle-row--right {
+  justify-content: flex-end;
+  padding-left: calc(50% + 32px);
+}
+
+/* Event Card */
+.sf-chronicle-card {
+  background: #0C1019;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 16px 20px;
+  width: 100%;
+  position: relative;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+/* Layer-colored edge accents — left cards get left edge */
+.sf-chronicle-card[data-layer="environment"] { border-left: 3px solid rgba(61, 255, 205, 0.4); }
+.sf-chronicle-card[data-layer="biology"]     { border-left: 3px solid rgba(74, 222, 128, 0.4); }
+.sf-chronicle-card[data-layer="culture"]     { border-left: 3px solid rgba(255, 179, 71, 0.4); }
+.sf-chronicle-card[data-layer="mythology"]   { border-left: 3px solid rgba(91, 141, 239, 0.4); }
+.sf-chronicle-card[data-layer="technology"]  { border-left: 3px solid rgba(224, 228, 232, 0.4); }
+.sf-chronicle-card[data-layer="narrative"]   { border-left: 3px solid rgba(91, 141, 239, 0.3); }
+
+/* Right-side cards get right edge instead */
+.sf-chronicle-card--right[data-layer="environment"] { border-left: 1px solid rgba(255, 255, 255, 0.06); border-right: 3px solid rgba(61, 255, 205, 0.4); }
+.sf-chronicle-card--right[data-layer="biology"]     { border-left: 1px solid rgba(255, 255, 255, 0.06); border-right: 3px solid rgba(74, 222, 128, 0.4); }
+.sf-chronicle-card--right[data-layer="culture"]     { border-left: 1px solid rgba(255, 255, 255, 0.06); border-right: 3px solid rgba(255, 179, 71, 0.4); }
+.sf-chronicle-card--right[data-layer="mythology"]   { border-left: 1px solid rgba(255, 255, 255, 0.06); border-right: 3px solid rgba(91, 141, 239, 0.4); }
+.sf-chronicle-card--right[data-layer="technology"]  { border-left: 1px solid rgba(255, 255, 255, 0.06); border-right: 3px solid rgba(224, 228, 232, 0.4); }
+.sf-chronicle-card--right[data-layer="narrative"]   { border-left: 1px solid rgba(255, 255, 255, 0.06); border-right: 3px solid rgba(91, 141, 239, 0.3); }
+
+/* Bottom-edge fill sweep on hover */
+.sf-chronicle-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+  opacity: 0.3;
+}
+
+.sf-chronicle-card:hover::after {
+  transform: scaleX(1);
+}
+
+.sf-chronicle-card:hover {
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+/* Date label */
+.sf-chronicle-date {
+  font-family: var(--sf-font-mono, 'JetBrains Mono', monospace);
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: rgba(61, 255, 205, 0.5);
+}
+
+/* Title */
+.sf-chronicle-title {
+  font-family: var(--sf-font-heading, 'Jura', sans-serif);
+  font-size: 15px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.92);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 8px 0 4px;
+}
+
+/* Type label */
+.sf-chronicle-type {
+  font-family: var(--sf-font-body, 'DM Sans', sans-serif);
+  font-size: 10px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.3);
+  letter-spacing: 1px;
+}
+
+/* Description */
+.sf-chronicle-description {
+  font-family: var(--sf-font-body, 'DM Sans', sans-serif);
+  font-size: 13px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.6);
+  margin-top: 8px;
+}
+
+/* Children (sub-events) */
+.sf-chronicle-children {
+  margin-top: 12px;
+  padding-left: 12px;
+  border-left: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.sf-chronicle-child {
+  font-family: var(--sf-font-body, 'DM Sans', sans-serif);
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.45);
+  padding: 3px 0;
+}
+
+/* Wiki page link */
+.sf-chronicle-link {
+  margin-top: 10px;
+}
+
+.sf-chronicle-link button {
+  font-family: var(--sf-font-mono, 'JetBrains Mono', monospace);
+  font-size: 10px;
+  color: #5B8DEF;
+  text-decoration: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.sf-chronicle-link button:hover {
+  text-decoration: underline;
+}
+
+/* Connector — horizontal line from card to spine */
+.sf-chronicle-connector {
+  position: absolute;
+  top: 20px;
+  width: 32px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.sf-chronicle-connector--left {
+  right: -33px;
+}
+
+.sf-chronicle-connector--right {
+  left: -33px;
+}
+
+/* Marker on spine — small square */
+.sf-chronicle-marker {
+  position: absolute;
+  left: 50%;
+  top: 20px;
+  width: 8px;
+  height: 8px;
+  background: #0C1019;
+  border: 1px solid rgba(61, 255, 205, 0.3);
+  transform: translate(-50%, -50%);
+  z-index: 2;
+}
+
+.sf-chronicle-marker--duration {
+  width: 10px;
+  height: 10px;
+  border-width: 2px;
+  border-color: rgba(255, 179, 71, 0.5);
+}
+
+/* Gap between distant events */
+.sf-chronicle-gap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 0;
+  position: relative;
+}
+
+.sf-chronicle-gap-line {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(61, 255, 205, 0.08) 0px,
+    rgba(61, 255, 205, 0.08) 4px,
+    transparent 4px,
+    transparent 8px
+  );
+  transform: translateX(-0.5px);
+}
+
+.sf-chronicle-gap-label {
+  font-family: var(--sf-font-mono, 'JetBrains Mono', monospace);
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: rgba(255, 255, 255, 0.15);
+  background: #0A0E17;
+  padding: 4px 12px;
+  position: relative;
+  z-index: 1;
+}
+
+/* End marker */
+.sf-chronicle-end {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.sf-chronicle-end-marker {
+  width: 6px;
+  height: 6px;
+  border: 1px solid rgba(61, 255, 205, 0.2);
+  background: rgba(61, 255, 205, 0.05);
+}
+
+/* Form labels in dialog */
+.sf-chronicle-form-label {
+  display: block;
+  font-family: var(--sf-font-mono, 'JetBrains Mono', monospace);
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.3);
+  margin-bottom: 6px;
+}
+
+/* Mobile: single column */
+@media (max-width: 768px) {
+  .sf-chronicle {
+    padding: 24px 16px 48px;
+  }
+
+  .sf-chronicle-spine {
+    left: 16px;
+  }
+
+  .sf-chronicle-row {
+    padding-right: 0 !important;
+    padding-left: 40px !important;
+    justify-content: flex-start !important;
+  }
+
+  .sf-chronicle-marker {
+    left: 16px;
+  }
+
+  .sf-chronicle-connector {
+    left: -17px !important;
+    right: auto !important;
+    width: 16px;
+  }
+
+  /* All cards behave as left cards on mobile */
+  .sf-chronicle-card--right[data-layer="environment"],
+  .sf-chronicle-card--right[data-layer="biology"],
+  .sf-chronicle-card--right[data-layer="culture"],
+  .sf-chronicle-card--right[data-layer="mythology"],
+  .sf-chronicle-card--right[data-layer="technology"],
+  .sf-chronicle-card--right[data-layer="narrative"] {
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .sf-chronicle-card--right[data-layer="environment"] { border-left: 3px solid rgba(61, 255, 205, 0.4); }
+  .sf-chronicle-card--right[data-layer="biology"]     { border-left: 3px solid rgba(74, 222, 128, 0.4); }
+  .sf-chronicle-card--right[data-layer="culture"]     { border-left: 3px solid rgba(255, 179, 71, 0.4); }
+  .sf-chronicle-card--right[data-layer="mythology"]   { border-left: 3px solid rgba(91, 141, 239, 0.4); }
+  .sf-chronicle-card--right[data-layer="technology"]  { border-left: 3px solid rgba(224, 228, 232, 0.4); }
+  .sf-chronicle-card--right[data-layer="narrative"]   { border-left: 3px solid rgba(91, 141, 239, 0.3); }
+
+  .sf-chronicle-gap-line {
+    left: 16px;
+  }
+
+  .sf-chronicle-gap-label {
+    margin-left: 24px;
+  }
+
+  .sf-chronicle-end {
+    align-items: flex-start;
+    padding-left: 13px;
+  }
+}

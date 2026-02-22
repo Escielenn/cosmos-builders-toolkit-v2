@@ -33,6 +33,7 @@ const WorldLayout = lazy(() => import("./layouts/WorldLayout"));
 const WorldToolPage = lazy(() => import("./pages/WorldToolPage"));
 const WorldGraph = lazy(() => import("./pages/WorldGraph"));
 const WikiPageRoute = lazy(() => import("./pages/WikiPageRoute"));
+const WorldChronicle = lazy(() => import("./pages/WorldChronicle"));
 const Collection = lazy(() => import("./pages/Collection"));
 const Archive = lazy(() => import("./pages/Archive"));
 
@@ -144,6 +145,7 @@ const App = () => (
                   <Route index element={<WorldDashboard />} />
                   <Route path="tools/:toolName" element={<WorldToolPage />} />
                   <Route path="pages/:entryId" element={<WikiPageRoute />} />
+                  <Route path="chronicle" element={<WorldChronicle />} />
                   <Route path="graph" element={<WorldGraph />} />
                   <Route path="connections" element={<WorldConnections />} />
                 </Route>
