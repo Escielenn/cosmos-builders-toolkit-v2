@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from "react";
-import { Outlet, useParams } from "react-router-dom";
+import { Outlet, useParams, useNavigate } from "react-router-dom";
 import Header from "@/components/layout/Header";
 import { Loader } from "@/components/ui/loader";
 import { useWorld } from "@/hooks/use-world";
@@ -22,6 +22,7 @@ const COLLAPSED_WIDTH = 48;
 
 const WorldLayout = () => {
   const { worldId } = useParams<{ worldId: string }>();
+  const navigate = useNavigate();
   const { data: world, isLoading, error } = useWorld(worldId);
 
   // Sidebar state — persisted in localStorage
@@ -61,6 +62,19 @@ const WorldLayout = () => {
     mql.addEventListener("change", handler);
     return () => mql.removeEventListener("change", handler);
   }, []);
+
+  // Wiki-link click navigation: dispatched by WikiLinkExtension
+  useEffect(() => {
+    if (!worldId) return;
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      if (detail?.elementId) {
+        navigate(`/worlds/${worldId}/pages/${detail.elementId}`);
+      }
+    };
+    window.addEventListener("sf-navigate-element", handler);
+    return () => window.removeEventListener("sf-navigate-element", handler);
+  }, [worldId, navigate]);
 
   // Resize drag
   const resizing = useRef(false);

@@ -117,18 +117,31 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
     [navigate, worldId]
   );
 
-  // Navigate to wiki page for an element (Phase 4 — for now routes to tool)
+  // Navigate to wiki page for an element
   const navigateToWiki = useCallback(
     (element: CodexElement) => {
-      // Phase 4 will add actual wiki page routes; for now fall back to tool
-      navigateToTool(element);
+      if (element.kind === "entry" && element.entryId) {
+        navigate(`/worlds/${worldId}/pages/${element.entryId}`);
+      } else if (element.kind === "worksheet") {
+        // Worksheet elements: navigate to entry if linked, otherwise tool
+        if (element.entryId) {
+          navigate(`/worlds/${worldId}/pages/${element.entryId}`);
+        } else {
+          navigateToTool(element);
+        }
+      }
     },
-    [navigateToTool]
+    [navigate, worldId, navigateToTool]
   );
 
   // Default click handler — respects defaultView preference
   const navigateToElement = useCallback(
     (element: CodexElement) => {
+      // Custom entries (no tool source) always go to wiki page
+      if (element.kind === "entry" && !element.toolSource) {
+        navigateToWiki(element);
+        return;
+      }
       if (defaultView === "wiki") {
         navigateToWiki(element);
       } else {
