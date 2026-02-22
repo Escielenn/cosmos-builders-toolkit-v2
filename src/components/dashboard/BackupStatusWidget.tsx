@@ -77,7 +77,7 @@ const BackupStatusWidget = ({ worlds }: BackupStatusWidgetProps) => {
     <div className="sf-backup-widget">
       <div className="sf-backup-widget-header">// ARCHIVE STATUS</div>
 
-      <hr className="sf-sovereignty-divider" style={{ margin: "8px 0 12px" }} />
+      <hr className="sf-sovereignty-divider mt-2 mb-3" />
 
       {isLoading ? (
         <div className="flex justify-center py-4">
@@ -104,7 +104,7 @@ const BackupStatusWidget = ({ worlds }: BackupStatusWidgetProps) => {
             </div>
           </div>
 
-          <hr className="sf-sovereignty-divider" style={{ margin: "8px 0" }} />
+          <hr className="sf-sovereignty-divider my-2" />
 
           <div className="space-y-0.5 mb-3">
             {worldBackups.slice(0, 5).map((wb) => {

@@ -478,6 +478,12 @@ const WorldExportDialog = ({
             )}
           </Button>
         </DialogFooter>
+
+        <div className="sf-export-sovereignty-footer">
+          <hr className="sf-sovereignty-divider mt-0 mb-3" />
+          <p>YOUR WORLDS ARE YOURS ALONE.</p>
+          <p>Encrypted at rest. Never accessed. Never used for training. Ever.</p>
+        </div>
       </DialogContent>
 
       <UpgradeDialog
