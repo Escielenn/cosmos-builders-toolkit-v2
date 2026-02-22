@@ -2,8 +2,11 @@ import Header from "@/components/layout/Header";
 import ShowcaseHero from "@/components/showcase/ShowcaseHero";
 import ToolShowcaseBlock from "@/components/showcase/ToolShowcaseBlock";
 import ProAdvantageSection from "@/components/showcase/ProAdvantageSection";
+import DataSovereigntySection from "@/components/showcase/DataSovereigntySection";
 import FinalCTASection from "@/components/showcase/FinalCTASection";
 import Footer from "@/components/layout/Footer";
+import { PageBursts } from "@/components/ui/data-burst";
+import { FEATURES_BURSTS } from "@/lib/data-bursts";
 
 // Tool data for showcase blocks
 const TOOLS = [
@@ -11,7 +14,7 @@ const TOOLS = [
   {
     id: "environmental-chain-reaction",
     title: "Environmental Chain Reaction",
-    description: "Map how planetary parameters cascade into biology, psychology, culture, and mythology. Start with gravity, end with gods.",
+    description: "Map how planetary parameters cascade into biology, psychology, mythology, and culture. Start with gravity, end with gods.",
     features: [
       "5-level consequence cascade from physics to myth",
       "Automatic implication suggestions",
@@ -138,6 +141,7 @@ const Features = () => {
       <Header />
 
       <main className="relative z-10">
+        <PageBursts bursts={FEATURES_BURSTS} />
         {/* Hero Section */}
         <ShowcaseHero />
 
@@ -160,6 +164,9 @@ const Features = () => {
 
         {/* Pro Advantage Section */}
         <ProAdvantageSection />
+
+        {/* Data Sovereignty */}
+        <DataSovereigntySection />
 
         {/* Final CTA */}
         <FinalCTASection />

@@ -315,8 +315,10 @@
   }
 
   /* When custom background is active, make page containers transparent */
-  .custom-background .bg-background {
+  .custom-background .bg-background,
+  .custom-background .sf-world-main {
     background-color: transparent !important;
+    background: transparent !important;
   }
 
   /* Hide starfield effect when custom background is active */
@@ -340,8 +342,10 @@
     pointer-events: none;
   }
 
-  .gradient-background .bg-background {
+  .gradient-background .bg-background,
+  .gradient-background .sf-world-main {
     background-color: transparent !important;
+    background: transparent !important;
   }
 
   .gradient-background .starfield::before {
@@ -405,6 +409,172 @@
   .custom-background .sf-atmosphere::before,
   .gradient-background .sf-atmosphere::before {
     display: none;
+  }
+
+  /* ── Data Sovereignty Section ───────────────────────────────────── */
+
+  .sf-sovereignty-section {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 80px 24px;
+    text-align: center;
+  }
+
+  .sf-sovereignty-headline {
+    font-family: 'Michroma', sans-serif;
+    font-size: 14px;
+    letter-spacing: 6px;
+    color: rgba(255, 255, 255, 0.92);
+    margin-bottom: 32px;
+  }
+
+  .sf-sovereignty-subtext {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.8;
+    color: rgba(255, 255, 255, 0.55);
+    margin-bottom: 16px;
+  }
+
+  .sf-sovereignty-emphasis {
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 500;
+  }
+
+  .sf-sovereignty-features {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    text-align: left;
+    margin: 48px 0;
+  }
+
+  @media (max-width: 480px) {
+    .sf-sovereignty-features {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+  }
+
+  .sf-sovereignty-feature-title {
+    font-family: 'Michroma', sans-serif;
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: rgba(61, 255, 205, 0.6);
+    margin-bottom: 8px;
+  }
+
+  .sf-sovereignty-feature-text {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  .sf-sovereignty-closing {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    line-height: 1.8;
+    color: rgba(255, 255, 255, 0.35);
+    font-style: italic;
+    margin-top: 48px;
+  }
+
+  .sf-sovereignty-closing strong {
+    color: rgba(255, 255, 255, 0.6);
+    font-style: normal;
+  }
+
+  .sf-sovereignty-tagline {
+    font-family: 'Jura', sans-serif;
+    font-size: 14px;
+    color: rgba(61, 255, 205, 0.4);
+    margin-top: 24px;
+    letter-spacing: 1px;
+  }
+
+  .sf-sovereignty-divider {
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    margin: 40px 0;
+  }
+
+  /* ── Backup Status Widget ──────────────────────────────────────── */
+
+  .sf-backup-widget {
+    background: #0C1019;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 16px 20px;
+  }
+
+  .sf-backup-widget-header {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: rgba(255, 255, 255, 0.3);
+    margin-bottom: 12px;
+  }
+
+  .sf-backup-widget-stat {
+    display: flex;
+    justify-content: space-between;
+    padding: 3px 0;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+  }
+
+  .sf-backup-widget-stat-label {
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  .sf-backup-widget-stat-value {
+    font-family: 'JetBrains Mono', monospace;
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .sf-backup-widget-world {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0;
+    font-size: 12px;
+  }
+
+  .sf-backup-widget-dot {
+    width: 6px;
+    height: 6px;
+    flex-shrink: 0;
+  }
+
+  .sf-backup-widget-footer {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.2);
+    margin-top: 12px;
+    text-align: center;
+    font-style: italic;
+  }
+
+  /* ── Export Sovereignty Footer ──────────────────────────────────── */
+
+  .sf-export-sovereignty-footer {
+    margin-top: 24px;
+    padding-top: 16px;
+    text-align: center;
+  }
+
+  .sf-export-sovereignty-footer p:first-of-type {
+    font-family: 'Michroma', sans-serif;
+    font-size: 8px;
+    letter-spacing: 3px;
+    color: rgba(255, 255, 255, 0.25);
+    margin-bottom: 4px;
+  }
+
+  .sf-export-sovereignty-footer p:last-of-type {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.15);
   }
 
   /* StellarForge card with light arc accent */
