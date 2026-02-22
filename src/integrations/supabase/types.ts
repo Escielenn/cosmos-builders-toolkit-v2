@@ -876,6 +876,7 @@ export type Database = {
           name: string
           snapshot_at: string | null
           tags: string[]
+          theme: Json
           updated_at: string
           user_id: string
         }
@@ -891,6 +892,7 @@ export type Database = {
           name: string
           snapshot_at?: string | null
           tags?: string[]
+          theme?: Json
           updated_at?: string
           user_id: string
         }
@@ -906,6 +908,7 @@ export type Database = {
           name?: string
           snapshot_at?: string | null
           tags?: string[]
+          theme?: Json
           updated_at?: string
           user_id?: string
         }
