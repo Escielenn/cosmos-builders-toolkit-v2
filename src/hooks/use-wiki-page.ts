@@ -8,6 +8,8 @@ interface UseWikiPageResult {
   toolData: Record<string, unknown> | null;
   connections: WikiConnection[];
   backlinks: Backlink[];
+  /** Set of entry IDs that no longer exist (for dead link detection) */
+  deadLinkIds: Set<string>;
   isLoading: boolean;
   error: Error | null;
   updateContent: (content: string) => void;
@@ -151,6 +153,34 @@ export function useWikiPage(
     enabled: !!entryId && !!worldId,
   });
 
+  // Dead link detection — find wiki-link targets that no longer exist
+  const deadLinksQuery = useQuery({
+    queryKey: ["wiki-page-dead-links", entryId, entryQuery.data?.content],
+    queryFn: async () => {
+      const content = entryQuery.data?.content;
+      if (!content) return new Set<string>();
+
+      // Extract all wiki-link element IDs from content
+      const regex = /data-element-id="([^"]+)"/g;
+      const ids: string[] = [];
+      let match;
+      while ((match = regex.exec(content)) !== null) {
+        ids.push(match[1]);
+      }
+      if (ids.length === 0) return new Set<string>();
+
+      // Check which IDs exist
+      const { data: existing } = await supabase
+        .from("world_entries")
+        .select("id")
+        .in("id", ids);
+
+      const existingSet = new Set((existing || []).map((e) => e.id));
+      return new Set(ids.filter((id) => !existingSet.has(id)));
+    },
+    enabled: !!entryQuery.data?.content,
+  });
+
   // Update content mutation
   const contentMutation = useMutation({
     mutationFn: async (content: string) => {
@@ -208,6 +238,7 @@ export function useWikiPage(
     toolData: toolDataQuery.data ?? null,
     connections: connectionsQuery.data ?? [],
     backlinks: backlinksQuery.data ?? [],
+    deadLinkIds: deadLinksQuery.data ?? new Set<string>(),
     isLoading: entryQuery.isLoading,
     error: entryQuery.error as Error | null,
     updateContent: (content: string) => contentMutation.mutate(content),

@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, lazy, Suspense } from "react";
+import { useState, useCallback, useRef, useMemo, lazy, Suspense } from "react";
 import { useNavigate } from "react-router-dom";
 import { Loader } from "@/components/ui/loader";
 import { useWikiPage } from "@/hooks/use-wiki-page";
@@ -30,6 +30,7 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
     toolData,
     connections,
     backlinks,
+    deadLinkIds,
     isLoading,
     error,
     updateContent,
@@ -59,6 +60,21 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
       : null;
   const typeLabel =
     toolSource ? getToolDisplayName(toolSource) : entry?.entry_type || "Note";
+
+  // Process content HTML to mark dead wiki-links
+  const processedContent = useMemo(() => {
+    if (!entry?.content || deadLinkIds.size === 0) return entry?.content || "";
+    // Add data-dead="true" to wiki-link elements whose IDs are in deadLinkIds
+    return entry.content.replace(
+      /data-element-id="([^"]+)"/g,
+      (match, id) => {
+        if (deadLinkIds.has(id)) {
+          return `${match} data-dead="true"`;
+        }
+        return match;
+      }
+    );
+  }, [entry?.content, deadLinkIds]);
 
   const handleContentChange = useCallback(
     (html: string) => {
@@ -248,7 +264,7 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
       ) : entry.content ? (
         <div
           className="sf-wiki-content"
-          dangerouslySetInnerHTML={{ __html: entry.content }}
+          dangerouslySetInnerHTML={{ __html: processedContent }}
         />
       ) : (
         <div className="sf-wiki-draft-prompt">No content yet. Click Edit to begin.</div>
