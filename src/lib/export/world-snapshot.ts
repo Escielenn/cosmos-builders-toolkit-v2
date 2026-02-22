@@ -39,8 +39,10 @@ export interface WorldSnapshotNote {
 
 export interface WorldSnapshotConnection {
   id: string;
-  source_worksheet_id: string;
-  target_worksheet_id: string;
+  source_worksheet_id: string | null;
+  target_worksheet_id: string | null;
+  source_entry_id: string | null;
+  target_entry_id: string | null;
   connection_type: string;
   description: string | null;
   created_at: string;
@@ -54,6 +56,13 @@ export interface WorldSnapshotEntry {
   content: string | null;
   metadata: Json;
   sort_order: number;
+  parent_id: string | null;
+  tool_source: string | null;
+  tool_data_id: string | null;
+  layer: string | null;
+  cover_image_url: string | null;
+  icon: string | null;
+  color: string | null;
   created_at: string;
   updated_at: string;
 }
