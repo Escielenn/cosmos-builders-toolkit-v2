@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import type { WorldTheme } from "@/hooks/use-world";
 
 interface World {
   id: string;
@@ -9,8 +10,11 @@ interface World {
   name: string;
   description: string | null;
   header_image_url: string | null;
+  header_image_focus_y: number;
   icon: string;
   tags: string[];
+  theme: WorldTheme;
+  snapshot_at: string | null;
   archived_at: string | null;
   created_at: string;
   updated_at: string;
@@ -30,7 +34,9 @@ interface UpdateWorldInput {
   description?: string;
   icon?: string;
   header_image_url?: string | null;
+  header_image_focus_y?: number;
   tags?: string[];
+  theme?: WorldTheme;
 }
 
 export const useWorlds = (includeArchived: boolean = false) => {
@@ -68,6 +74,7 @@ export const useWorlds = (includeArchived: boolean = false) => {
       const { data, error } = await supabase
         .from("world_tags")
         .select("name")
+        .eq("user_id", user.id)
         .order("usage_count", { ascending: false });
 
       if (error) throw error;
@@ -100,7 +107,7 @@ export const useWorlds = (includeArchived: boolean = false) => {
       queryClient.invalidateQueries({ queryKey: ["worlds"] });
       queryClient.invalidateQueries({ queryKey: ["worldTags", user?.id] });
       toast({
-        title: "World created!",
+        title: "NEW WORLD INITIALIZED.",
         description: "Your new world is ready for building.",
       });
     },
@@ -117,12 +124,14 @@ export const useWorlds = (includeArchived: boolean = false) => {
     mutationFn: async (input: UpdateWorldInput) => {
       if (!user) throw new Error("Not authenticated");
 
-      const updateData: { name?: string; description?: string; icon?: string; header_image_url?: string | null; tags?: string[] } = {};
+      const updateData: { name?: string; description?: string; icon?: string; header_image_url?: string | null; header_image_focus_y?: number; tags?: string[]; theme?: WorldTheme } = {};
       if (input.name !== undefined) updateData.name = input.name;
       if (input.description !== undefined) updateData.description = input.description;
       if (input.icon !== undefined) updateData.icon = input.icon;
       if (input.header_image_url !== undefined) updateData.header_image_url = input.header_image_url;
+      if (input.header_image_focus_y !== undefined) updateData.header_image_focus_y = input.header_image_focus_y;
       if (input.tags !== undefined) updateData.tags = input.tags;
+      if (input.theme !== undefined) updateData.theme = input.theme;
 
       const { data, error } = await supabase
         .from("worlds")
@@ -134,8 +143,9 @@ export const useWorlds = (includeArchived: boolean = false) => {
       if (error) throw error;
       return data as World;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["worlds"] });
+      queryClient.invalidateQueries({ queryKey: ["world", data.id] });
       queryClient.invalidateQueries({ queryKey: ["worldTags", user?.id] });
       toast({
         title: "World updated",

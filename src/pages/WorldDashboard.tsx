@@ -1,5 +1,5 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Edit, Globe, FileText, Rocket, Zap, Trash2, MoreVertical, Calculator, Plus, Sparkles, Pencil, ChevronRight, Dna, Network, Sun, Crown, Cpu, Users, Download, Layers, BookOpen, Atom, Clock, Archive, Tag, Orbit, Languages, Weight, Eye, Camera } from "lucide-react";
+import { ArrowLeft, Edit, Globe, FileText, Rocket, Zap, Trash2, MoreVertical, Calculator, Plus, Sparkles, Pencil, ChevronRight, Dna, Network, Sun, Crown, Cpu, Users, Download, Layers, BookOpen, Atom, Clock, Archive, Tag, Orbit, Languages, Weight, Eye, Camera, Palette } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
 import { CosmicTelemetry } from "@/components/layout/CosmicVelocityTicker";
 import { EPOCH_DATA } from "@/lib/cosmic-telemetry";
@@ -54,6 +54,7 @@ import WorldExportDialog from "@/components/world/WorldExportDialog";
 import HierarchicalExportDialog from "@/components/world/HierarchicalExportDialog";
 import WorldBibleDialog from "@/components/world/WorldBibleDialog";
 import WorldSnapshotDialog from "@/components/world/WorldSnapshotDialog";
+import WorldAppearanceDialog from "@/components/world/WorldAppearanceDialog";
 import VersionHistory from "@/components/world/VersionHistory";
 import { useIsWorldLayout } from "@/contexts/WorldLayoutContext";
 import { PageBursts } from "@/components/ui/data-burst";
@@ -232,6 +233,7 @@ const WorldDashboard = () => {
   const [viewExportDialogOpen, setViewExportDialogOpen] = useState(false);
   const [worldBibleDialogOpen, setWorldBibleDialogOpen] = useState(false);
   const [snapshotDialogOpen, setSnapshotDialogOpen] = useState(false);
+  const [appearanceDialogOpen, setAppearanceDialogOpen] = useState(false);
   const [editName, setEditName] = useState("");
   const [editDescription, setEditDescription] = useState("");
   const [editIcon, setEditIcon] = useState("globe");
@@ -412,6 +414,12 @@ const WorldDashboard = () => {
                 <DropdownMenuItem onClick={() => setEditDialogOpen(true)}>
                   <Edit className="w-4 h-4 mr-2" />
                   Edit World
+                </DropdownMenuItem>
+                )}
+                {isOwner && (
+                <DropdownMenuItem onClick={() => setAppearanceDialogOpen(true)}>
+                  <Palette className="w-4 h-4 mr-2" />
+                  Appearance
                 </DropdownMenuItem>
                 )}
                 {canEdit && (
@@ -870,6 +878,13 @@ const WorldDashboard = () => {
         onOpenChange={setSnapshotDialogOpen}
         worldName={world.name}
         worldId={worldId!}
+      />
+
+      <WorldAppearanceDialog
+        open={appearanceDialogOpen}
+        onOpenChange={setAppearanceDialogOpen}
+        worldId={worldId!}
+        currentTheme={world.theme}
       />
 
       {/* Edit Tags Dialog */}
