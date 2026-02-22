@@ -141,7 +141,7 @@ const WorldLayout = () => {
   }
 
   return (
-    <WorldLayoutProvider value={{ worldId, worldName: world.name, isWorldLayout: true }}>
+    <WorldLayoutProvider value={{ worldId, worldName: world.name, worldIcon: world.icon || "globe", isWorldLayout: true }}>
       <WorldThemeProvider theme={world.theme} isPro={isSubscribed}>
         <div className="min-h-screen bg-background">
           <Header />

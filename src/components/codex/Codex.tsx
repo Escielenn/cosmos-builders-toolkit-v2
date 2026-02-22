@@ -19,6 +19,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { CodexElement } from "@/services/world-data";
+import { useWorldLayoutContext } from "@/contexts/WorldLayoutContext";
+import WorldIconRenderer from "@/components/world/WorldIconRenderer";
 
 // ---------------------------------------------------------------------------
 // Tool route mapping
@@ -64,6 +66,7 @@ interface CodexProps {
 const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const layoutContext = useWorldLayoutContext();
   const { data: codexData, isLoading, error } = useCodexData(worldId);
 
   const createEntry = useCreateEntry(worldId);
@@ -262,8 +265,11 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
       {/* World name */}
       <button
         onClick={() => navigate(`/worlds/${worldId}`)}
-        className="px-3 py-1.5 text-left"
+        className="px-3 py-1.5 text-left flex items-center gap-2"
       >
+        {layoutContext?.worldIcon && (
+          <WorldIconRenderer iconId={layoutContext.worldIcon} className="w-4 h-4 text-primary/60 shrink-0" />
+        )}
         <span className="font-heading text-[13px] uppercase tracking-[2px] text-foreground/80 block truncate">
           {codexData.worldName}
         </span>

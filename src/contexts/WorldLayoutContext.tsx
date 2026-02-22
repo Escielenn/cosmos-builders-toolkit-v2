@@ -3,6 +3,7 @@ import { createContext, useContext } from "react";
 export interface WorldLayoutContextValue {
   worldId: string;
   worldName: string;
+  worldIcon: string;
   isWorldLayout: true;
 }
 
