@@ -21,6 +21,7 @@ export interface UpdateEntryInput {
   entryType?: "note" | "milestone" | "decision" | "reference" | "lore";
   icon?: string | null;
   color?: string | null;
+  coverImageUrl?: string | null;
   sortOrder?: number;
 }
 
@@ -77,6 +78,7 @@ export async function updateEntry(input: UpdateEntryInput): Promise<WorldEntry> 
   if (input.entryType !== undefined) updates.entry_type = input.entryType;
   if (input.icon !== undefined) updates.icon = input.icon;
   if (input.color !== undefined) updates.color = input.color;
+  if (input.coverImageUrl !== undefined) updates.cover_image_url = input.coverImageUrl;
   if (input.sortOrder !== undefined) updates.sort_order = input.sortOrder;
 
   const { data, error } = await supabase

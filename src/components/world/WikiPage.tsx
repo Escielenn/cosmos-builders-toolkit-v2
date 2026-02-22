@@ -9,6 +9,7 @@ import { getToolDisplayName } from "@/lib/worksheet-links-config";
 import { Pencil, Eye, ExternalLink } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useConnectionSuggestions } from "@/hooks/use-connection-suggestions";
 
 const WikiEditor = lazy(() =>
   import("@/components/editor/WikiEditor").then((m) => ({
@@ -43,6 +44,13 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
   );
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  const {
+    suggestions,
+    checkForSuggestions,
+    acceptSuggestion,
+    dismissSuggestion,
+  } = useConnectionSuggestions(worldId, entryId);
+
   const isDraft = entry && !entry.content;
   const toolSource = entry?.tool_source;
   const layerLabel =
@@ -56,11 +64,13 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
     (html: string) => {
       setSaveStatus("saving");
       updateContent(html);
+      // Check for new wiki-links that might need connections
+      checkForSuggestions(html);
       if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
       saveTimeoutRef.current = setTimeout(() => setSaveStatus("saved"), 1500);
       setTimeout(() => setSaveStatus("idle"), 4000);
     },
-    [updateContent]
+    [updateContent, checkForSuggestions]
   );
 
   const handleViewInTool = useCallback(() => {
@@ -244,6 +254,20 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
         <div className="sf-wiki-draft-prompt">No content yet. Click Edit to begin.</div>
       )}
 
+      {/* Connection suggestions */}
+      {suggestions.length > 0 && (
+        <div className="mt-4 space-y-2">
+          {suggestions.map((s) => (
+            <ConnectionSuggestionBar
+              key={s.targetId}
+              suggestion={s}
+              onAccept={acceptSuggestion}
+              onDismiss={dismissSuggestion}
+            />
+          ))}
+        </div>
+      )}
+
       {/* Connections */}
       {connections.length > 0 && (
         <>
@@ -304,6 +328,79 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
           </div>
         </>
       )}
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Connection Suggestion Bar
+// ---------------------------------------------------------------------------
+
+const CONNECTION_TYPES = [
+  "related_to",
+  "lives_on",
+  "evolved_from",
+  "governs",
+  "worships",
+  "speaks",
+  "travels_via",
+  "fights",
+  "created",
+  "parent_of",
+];
+
+function ConnectionSuggestionBar({
+  suggestion,
+  onAccept,
+  onDismiss,
+}: {
+  suggestion: { sourceId: string; targetId: string; targetTitle: string };
+  onAccept: (
+    s: { sourceId: string; targetId: string; targetTitle: string },
+    type: string
+  ) => void;
+  onDismiss: (s: {
+    sourceId: string;
+    targetId: string;
+    targetTitle: string;
+  }) => void;
+}) {
+  const [connType, setConnType] = useState("related_to");
+
+  return (
+    <div className="flex items-center gap-2 px-3 py-2 bg-[#0C1019] border border-border/10 text-[10px]">
+      <span className="font-mono uppercase tracking-wider text-muted-foreground/40">
+        Link detected:
+      </span>
+      <span className="text-[#5B8DEF] font-medium">
+        {suggestion.targetTitle}
+      </span>
+      <select
+        value={connType}
+        onChange={(e) => setConnType(e.target.value)}
+        title="Connection type"
+        className="bg-transparent border border-border/15 px-1.5 py-0.5 text-[9px] uppercase tracking-wider text-foreground/70"
+      >
+        {CONNECTION_TYPES.map((t) => (
+          <option key={t} value={t}>
+            {t.replace(/_/g, " ")}
+          </option>
+        ))}
+      </select>
+      <button
+        type="button"
+        onClick={() => onAccept(suggestion, connType)}
+        className="sf-fill-sweep sf-fill-sweep--secondary px-2 py-0.5 border border-[#3DFFCD]/20 text-[#3DFFCD]/70 text-[9px] uppercase tracking-wider"
+      >
+        Add
+      </button>
+      <button
+        type="button"
+        onClick={() => onDismiss(suggestion)}
+        className="text-muted-foreground/30 hover:text-muted-foreground/60 text-[9px] uppercase tracking-wider"
+      >
+        Dismiss
+      </button>
     </div>
   );
 }
