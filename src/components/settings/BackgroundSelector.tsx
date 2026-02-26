@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { Image, Check, Upload, X, Palette, Sparkles, Shuffle } from "lucide-react";
+import { Image, Check, Upload, X, Palette, Sparkles, Shuffle, Film } from "lucide-react";
 import { useBackground } from "@/hooks/use-background";
 import { cn } from "@/lib/utils";
 import { useRef } from "react";
@@ -44,6 +44,7 @@ const BackgroundSelector = () => {
   // Group options by category
   const defaultOptions = options.filter((o) => o.category === "default");
   const spaceOptions = options.filter((o) => o.category === "space");
+  const videoOptions = options.filter((o) => o.category === "video");
   const gradientOptions = options.filter((o) => o.category === "gradient");
   const colorOptions = options.filter((o) => o.category === "color");
 
@@ -95,6 +96,7 @@ const BackgroundSelector = () => {
     const selected = options.find((o) => o.id === backgroundId);
     if (!selected) return "images";
     if (selected.category === "space" || selected.category === "default") return "images";
+    if (selected.category === "video") return "videos";
     if (selected.category === "gradient") return "gradients";
     if (selected.category === "color") return "colors";
     return "images";
@@ -119,10 +121,14 @@ const BackgroundSelector = () => {
         </DialogHeader>
 
         <Tabs defaultValue={getDefaultTab()} className="mt-4">
-          <TabsList className="w-full grid grid-cols-4">
+          <TabsList className="w-full grid grid-cols-5">
             <TabsTrigger value="images" className="gap-1.5">
               <Image className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Images</span>
+            </TabsTrigger>
+            <TabsTrigger value="videos" className="gap-1.5">
+              <Film className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Videos</span>
             </TabsTrigger>
             <TabsTrigger value="gradients" className="gap-1.5">
               <Sparkles className="w-3.5 h-3.5" />
@@ -191,6 +197,48 @@ const BackgroundSelector = () => {
             </div>
             <p className="text-xs text-muted-foreground text-center">
               Photos from Unsplash
+            </p>
+          </TabsContent>
+
+          {/* Videos Tab */}
+          <TabsContent value="videos" className="mt-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+              {videoOptions.map((option) => {
+                const isSelected = backgroundId === option.id;
+                return (
+                  <button
+                    key={option.id}
+                    onClick={() => setBackground(option.id)}
+                    className={cn(
+                      "relative aspect-video rounded-lg overflow-hidden border-2 transition-all hover:scale-105",
+                      isSelected
+                        ? "border-primary ring-2 ring-primary/50"
+                        : "border-border hover:border-primary/50"
+                    )}
+                  >
+                    <video
+                      src={option.url}
+                      muted
+                      loop
+                      playsInline
+                      autoPlay
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
+                    <span className="absolute bottom-2 left-2 text-xs font-medium text-white">
+                      {option.name}
+                    </span>
+                    {isSelected && (
+                      <div className="absolute top-2 right-2 w-5 h-5 rounded-sm bg-primary flex items-center justify-center">
+                        <Check className="w-3 h-3 text-primary-foreground" />
+                      </div>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+            <p className="text-xs text-muted-foreground text-center mt-4">
+              Animated space backdrops
             </p>
           </TabsContent>
 

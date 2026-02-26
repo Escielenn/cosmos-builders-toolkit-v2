@@ -93,6 +93,15 @@
     --sf-text-label: 214 12% 89% / 0.35; /* labels */
     --sf-text-hint: 214 12% 89% / 0.18;  /* hints, credits */
 
+    /* Aesthetic Bridge — 5-tier text hierarchy */
+    --sf-tier-1: 0 0% 98%;                  /* #FAFAFA — titles, results */
+    --sf-tier-2: 0 0% 78%;                  /* #C8C8C8 — body, descriptions */
+    --sf-tier-3: 0 0% 100% / 0.45;          /* muted — labels, column headers */
+    --sf-tier-4: 0 0% 100% / 0.28;          /* quiet — units, helper text */
+    --sf-tier-5: 0 0% 100% / 0.15;          /* ghost — citations, metadata */
+    --sf-section-green: 153 80% 60% / 1;
+    --sf-section-border: 153 100% 45% / 0.06;
+
     /* Accent Spectrum — use ONE per component as focal point */
     --sf-cyan: 190 100% 50%;             /* #00D4FF */
     --sf-magenta: 328 100% 50%;          /* #FF00AA */
@@ -238,6 +247,13 @@
 }
 
 @layer components {
+  /* Aesthetic Bridge — text tier utilities */
+  .text-tier-1 { color: hsl(var(--sf-tier-1)); }
+  .text-tier-2 { color: hsl(var(--sf-tier-2)); }
+  .text-tier-3 { color: hsl(var(--sf-tier-3)); }
+  .text-tier-4 { color: hsl(var(--sf-tier-4)); }
+  .text-tier-5 { color: hsl(var(--sf-tier-5)); }
+
   /* Glass panel component */
   .glass-panel {
     @apply rounded-none border backdrop-blur-xl;
@@ -352,6 +368,23 @@
     display: none;
   }
 
+  /* Video background — solid black behind the <video> element */
+  .video-background {
+    @apply relative;
+    min-height: 100vh;
+    isolation: isolate;
+  }
+
+  .video-background .bg-background,
+  .video-background .sf-world-main {
+    background-color: transparent !important;
+    background: transparent !important;
+  }
+
+  .video-background .starfield::before {
+    display: none;
+  }
+
   /* Starfield preview for selector */
   .starfield-preview {
     background: hsl(var(--background));
@@ -407,7 +440,8 @@
 
   /* Hide sf-atmosphere when custom backgrounds are active */
   .custom-background .sf-atmosphere::before,
-  .gradient-background .sf-atmosphere::before {
+  .gradient-background .sf-atmosphere::before,
+  .video-background .sf-atmosphere::before {
     display: none;
   }
 

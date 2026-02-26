@@ -5,16 +5,18 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
-import BackgroundProvider from "@/components/providers/BackgroundProvider";
+import { BackgroundProvider } from "@/hooks/use-background";
 import ScrollToTop from "./components/ScrollToTop";
-import ContactFAB from "./components/contact/ContactFAB";
+import FABStack from "./components/layout/FABStack";
 import CookieConsent from "./components/common/CookieConsent";
 import TextureOverlay from "./components/layout/TextureOverlay";
 import DataBurstOverlay from "./components/layout/DataBurstOverlay";
+import VideoBackground from "./components/layout/VideoBackground";
 import StatusBar from "./components/layout/StatusBar";
 import { Loader } from "@/components/ui/loader";
 import { getLoadingMessage } from "@/lib/loading-messages";
 import ErrorBoundary from "./components/ErrorBoundary";
+import SiteGate from "./components/auth/SiteGate";
 
 // Eagerly loaded pages (small, frequently accessed)
 import Index from "./pages/Index";
@@ -25,6 +27,9 @@ import Auth from "./pages/Auth";
 const Profile = lazy(() => import("./pages/Profile"));
 const Pricing = lazy(() => import("./pages/Pricing"));
 const Features = lazy(() => import("./pages/Features"));
+const Guide = lazy(() => import("./pages/Guide"));
+const ToolsWiki = lazy(() => import("./pages/ToolsWiki"));
+const GettingStarted = lazy(() => import("./pages/GettingStarted"));
 const Contact = lazy(() => import("./pages/Contact"));
 const WorldDashboard = lazy(() => import("./pages/WorldDashboard"));
 const WorldConnections = lazy(() => import("./pages/WorldConnections"));
@@ -73,6 +78,7 @@ const NotionCallback = lazy(() => import("./pages/NotionCallback"));
 const SharedWorksheetView = lazy(() => import("./pages/SharedWorksheetView"));
 const SharedWorldView = lazy(() => import("./pages/SharedWorldView"));
 const InviteAccept = lazy(() => import("./pages/InviteAccept"));
+const Join = lazy(() => import("./pages/Join"));
 
 // Lazy loaded simulator wrapper pages
 const RogueSimulator = lazy(() => import("./pages/simulators/RogueSimulator"));
@@ -81,6 +87,8 @@ const TidelockSimulator = lazy(() => import("./pages/simulators/TidelockSimulato
 const TidelockScience = lazy(() => import("./pages/simulators/TidelockScience"));
 const ExoskySimulator = lazy(() => import("./pages/simulators/ExoskySimulator"));
 const ExoskyScience = lazy(() => import("./pages/simulators/ExoskyScience"));
+const ExoforgeSimulator = lazy(() => import("./pages/simulators/ExoforgeSimulator"));
+const ExoforgeScience = lazy(() => import("./pages/simulators/ExoforgeScience"));
 
 // Lazy loaded cartographer wrapper pages
 const StellarCartographer = lazy(() => import("./pages/cartographers/StellarCartographer"));
@@ -128,7 +136,9 @@ const App = () => (
           <Sonner />
           <BrowserRouter>
             <ScrollToTop />
+            <VideoBackground />
             <ErrorBoundary>
+            <SiteGate>
             <Suspense fallback={<PageLoader />}>
               <Routes>
                 <Route path="/" element={<Index />} />
@@ -136,6 +146,9 @@ const App = () => (
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/pricing" element={<Pricing />} />
                 <Route path="/features" element={<Features />} />
+                <Route path="/guide" element={<Guide />} />
+                <Route path="/guide/tools" element={<ToolsWiki />} />
+                <Route path="/getting-started" element={<GettingStarted />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/collection" element={<Collection />} />
                 <Route path="/archive" element={<Archive />} />
@@ -300,6 +313,7 @@ const App = () => (
                 <Route path="/share/worksheet/:token" element={<SharedWorksheetView />} />
                 <Route path="/share/world/:token" element={<SharedWorldView />} />
                 <Route path="/invite/:token" element={<InviteAccept />} />
+                <Route path="/join/:code" element={<Join />} />
                 {/* Simulator Wrapper Pages - Pro gated */}
                 <Route
                   path="/rogue"
@@ -328,6 +342,15 @@ const App = () => (
                   }
                 />
                 <Route path="/tools/exosky/science" element={<ExoskyScience />} />
+                <Route
+                  path="/tools/exoforge"
+                  element={
+                    <ProToolGuard toolId="exoforge">
+                      <ExoforgeSimulator />
+                    </ProToolGuard>
+                  }
+                />
+                <Route path="/tools/exoforge/science" element={<ExoforgeScience />} />
                 {/* Cartographer Wrapper Pages - Pro gated */}
                 <Route
                   path="/tools/stellar-cartographer"
@@ -345,8 +368,9 @@ const App = () => (
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>
+            </SiteGate>
             </ErrorBoundary>
-            <ContactFAB />
+            <FABStack />
             <CookieConsent />
             <TextureOverlay />
             <DataBurstOverlay />

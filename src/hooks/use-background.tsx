@@ -1,12 +1,12 @@
-import { useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
 
 interface BackgroundOption {
   id: string;
   name: string;
   url?: string;
-  type?: "image" | "gradient" | "color";
+  type?: "image" | "gradient" | "color" | "video";
   value?: string;
-  category: "default" | "space" | "gradient" | "color";
+  category: "default" | "space" | "gradient" | "color" | "video";
 }
 
 const BACKGROUND_OPTIONS: BackgroundOption[] = [
@@ -150,6 +150,70 @@ const BACKGROUND_OPTIONS: BackgroundOption[] = [
     name: "Tarantula Nebula",
     url: "https://cdn.esahubble.org/archives/images/wallpaper4/heic1105a.jpg",
     category: "space",
+  },
+  // Videos
+  {
+    id: "video-1",
+    name: "Cosmos I",
+    type: "video",
+    url: "/video/bkgvideos/1.mp4",
+    category: "video",
+  },
+  {
+    id: "video-2",
+    name: "Cosmos II",
+    type: "video",
+    url: "/video/bkgvideos/2.mp4",
+    category: "video",
+  },
+  {
+    id: "video-3",
+    name: "Cosmos III",
+    type: "video",
+    url: "/video/bkgvideos/3.mp4",
+    category: "video",
+  },
+  {
+    id: "video-4",
+    name: "Cosmos IV",
+    type: "video",
+    url: "/video/bkgvideos/4.mp4",
+    category: "video",
+  },
+  {
+    id: "video-5",
+    name: "Cosmos V",
+    type: "video",
+    url: "/video/bkgvideos/5.mp4",
+    category: "video",
+  },
+  {
+    id: "video-6",
+    name: "Cosmos VI",
+    type: "video",
+    url: "/video/bkgvideos/6.mp4",
+    category: "video",
+  },
+  {
+    id: "video-7",
+    name: "Cosmos VII",
+    type: "video",
+    url: "/video/bkgvideos/7.mp4",
+    category: "video",
+  },
+  {
+    id: "video-8",
+    name: "Cosmos VIII",
+    type: "video",
+    url: "/video/bkgvideos/8.mp4",
+    category: "video",
+  },
+  {
+    id: "video-9",
+    name: "Cosmos IX",
+    type: "video",
+    url: "/video/bkgvideos/9.mp4",
+    category: "video",
   },
   // Gradients
   {
@@ -296,17 +360,35 @@ const getRandomSpaceBackground = (): string => {
   return spaceImages[randomIndex].id;
 };
 
-// Preload images for faster switching
+// Preload images for faster switching (skip videos)
 const preloadImages = () => {
   BACKGROUND_OPTIONS.forEach((option) => {
-    if (option.url) {
-      const img = new Image();
+    if (option.url && option.type !== "video") {
+      const img = new window.Image();
       img.src = option.url;
     }
   });
 };
 
-export const useBackground = () => {
+// ── Context ────────────────────────────────────────────────────────
+
+interface BackgroundContextValue {
+  backgroundId: string;
+  setBackground: (id: string) => void;
+  options: BackgroundOption[];
+  isLoading: boolean;
+  customBackground: string | null;
+  setCustomBackground: (dataUrl: string) => void;
+  clearCustomBackground: () => void;
+  hasUserPreference: boolean;
+  resetToRandom: () => void;
+  isVideoBackground: boolean;
+  videoUrl: string | null;
+}
+
+const BackgroundContext = createContext<BackgroundContextValue | null>(null);
+
+export const BackgroundProvider = ({ children }: { children: ReactNode }) => {
   const [backgroundId, setBackgroundId] = useState<string>("default");
   const [isLoading, setIsLoading] = useState(false);
   const [customBackground, setCustomBackgroundState] = useState<string | null>(null);
@@ -317,6 +399,7 @@ export const useBackground = () => {
     preloadImages();
   }, []);
 
+  // Read from localStorage on mount
   useEffect(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
     const customBg = localStorage.getItem(CUSTOM_BG_STORAGE_KEY);
@@ -326,14 +409,11 @@ export const useBackground = () => {
     }
 
     if (stored) {
-      // User has explicitly chosen a background
       setBackgroundId(stored);
       setHasUserPreference(true);
     } else {
-      // No user preference - use random rotation per session
       let sessionBg = sessionStorage.getItem(SESSION_RANDOM_BG_KEY);
       if (!sessionBg) {
-        // New session - pick a random background
         sessionBg = getRandomSpaceBackground();
         sessionStorage.setItem(SESSION_RANDOM_BG_KEY, sessionBg);
       }
@@ -342,29 +422,34 @@ export const useBackground = () => {
     }
   }, []);
 
+  // Derive video state
+  const selectedOption = BACKGROUND_OPTIONS.find((bg) => bg.id === backgroundId);
+  const isVideoBackground = selectedOption?.type === "video";
+  const videoUrl = isVideoBackground ? selectedOption?.url || null : null;
+
+  // Apply body classes based on background selection
   useEffect(() => {
     const selected = BACKGROUND_OPTIONS.find((bg) => bg.id === backgroundId);
     const root = document.documentElement;
 
-    // Remove all background classes first
-    document.body.classList.remove("custom-background", "starfield", "gradient-background");
+    // Remove ALL background classes and CSS variables first
+    document.body.classList.remove("custom-background", "starfield", "gradient-background", "video-background");
     root.style.removeProperty("--custom-background");
     root.style.removeProperty("--gradient-background");
 
-    if (backgroundId === "custom" && customBackground) {
-      // Custom uploaded image
+    if (selected?.type === "video") {
+      // Video mode: solid black body, VideoBackground component handles the visual
+      document.body.classList.add("video-background");
+    } else if (backgroundId === "custom" && customBackground) {
       root.style.setProperty("--custom-background", `url(${customBackground})`);
       document.body.classList.add("custom-background");
     } else if (selected?.type === "gradient" || selected?.type === "color") {
-      // Gradient or solid color
       root.style.setProperty("--gradient-background", selected.value || "");
       document.body.classList.add("gradient-background");
     } else if (selected?.url) {
-      // Unsplash image
       root.style.setProperty("--custom-background", `url(${selected.url})`);
       document.body.classList.add("custom-background");
     } else {
-      // Default starfield
       document.body.classList.add("starfield");
     }
   }, [backgroundId, customBackground]);
@@ -372,26 +457,32 @@ export const useBackground = () => {
   const setBackground = (id: string) => {
     const selected = BACKGROUND_OPTIONS.find((bg) => bg.id === id);
 
-    // Mark that user has explicitly chosen a background
     setHasUserPreference(true);
 
-    // If selecting an image, show loading state briefly
+    // Videos: set immediately (no image preload needed)
+    if (selected?.type === "video") {
+      setBackgroundId(id);
+      localStorage.setItem(STORAGE_KEY, id);
+      return;
+    }
+
+    // Images: preload before switching for smooth transition
     if (selected?.url) {
       setIsLoading(true);
-      const img = new Image();
+      const img = new window.Image();
       img.onload = () => {
         setBackgroundId(id);
         localStorage.setItem(STORAGE_KEY, id);
         setIsLoading(false);
       };
       img.onerror = () => {
-        // Still set the background even if preload fails
         setBackgroundId(id);
         localStorage.setItem(STORAGE_KEY, id);
         setIsLoading(false);
       };
       img.src = selected.url;
     } else {
+      // Gradients, colors, default
       setBackgroundId(id);
       localStorage.setItem(STORAGE_KEY, id);
     }
@@ -414,7 +505,6 @@ export const useBackground = () => {
     }
   };
 
-  // Reset to random mode - clears user preference and picks a new random background
   const resetToRandom = () => {
     localStorage.removeItem(STORAGE_KEY);
     sessionStorage.removeItem(SESSION_RANDOM_BG_KEY);
@@ -424,7 +514,7 @@ export const useBackground = () => {
     setHasUserPreference(false);
   };
 
-  return {
+  const value: BackgroundContextValue = {
     backgroundId,
     setBackground,
     options: BACKGROUND_OPTIONS,
@@ -434,7 +524,23 @@ export const useBackground = () => {
     clearCustomBackground,
     hasUserPreference,
     resetToRandom,
+    isVideoBackground,
+    videoUrl,
   };
+
+  return (
+    <BackgroundContext.Provider value={value}>
+      {children}
+    </BackgroundContext.Provider>
+  );
+};
+
+export const useBackground = (): BackgroundContextValue => {
+  const ctx = useContext(BackgroundContext);
+  if (!ctx) {
+    throw new Error("useBackground must be used within a BackgroundProvider");
+  }
+  return ctx;
 };
 
 export { BACKGROUND_OPTIONS };
