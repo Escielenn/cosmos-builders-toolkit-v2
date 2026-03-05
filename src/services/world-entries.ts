@@ -1,5 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
-import type { WorldEntry } from "./world-data";
+import type { WorldEntry, EntryType } from "./world-data";
+import { getTypeForTool } from "./world-data";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -8,9 +9,10 @@ import type { WorldEntry } from "./world-data";
 export interface CreateEntryInput {
   worldId: string;
   title: string;
-  entryType: "note" | "milestone" | "decision" | "reference" | "lore";
+  entryType: EntryType;
   parentId?: string | null;
   content?: string | null;
+  metadata?: Record<string, unknown> | null;
 }
 
 export interface UpdateEntryInput {
@@ -18,11 +20,12 @@ export interface UpdateEntryInput {
   title?: string;
   content?: string | null;
   parentId?: string | null;
-  entryType?: "note" | "milestone" | "decision" | "reference" | "lore";
+  entryType?: EntryType;
   icon?: string | null;
   color?: string | null;
   coverImageUrl?: string | null;
   sortOrder?: number;
+  metadata?: Record<string, unknown> | null;
 }
 
 export interface MoveEntryInput {
@@ -60,6 +63,7 @@ export async function createEntry(
       entry_type: input.entryType,
       parent_id: input.parentId ?? null,
       content: input.content ?? null,
+      metadata: input.metadata ?? {},
       sort_order: nextSortOrder,
       created_by: userId,
     })
@@ -80,6 +84,7 @@ export async function updateEntry(input: UpdateEntryInput): Promise<WorldEntry> 
   if (input.color !== undefined) updates.color = input.color;
   if (input.coverImageUrl !== undefined) updates.cover_image_url = input.coverImageUrl;
   if (input.sortOrder !== undefined) updates.sort_order = input.sortOrder;
+  if (input.metadata !== undefined) updates.metadata = input.metadata;
 
   const { data, error } = await supabase
     .from("world_entries")
@@ -150,7 +155,7 @@ export async function createDraftWikiPage(
     .insert({
       world_id: input.worldId,
       title: input.title,
-      entry_type: "note",
+      entry_type: getTypeForTool(input.toolSource),
       content: null,
       tool_source: input.toolSource,
       tool_data_id: input.toolDataId,

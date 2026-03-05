@@ -1,5 +1,5 @@
-import { useParams, Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Edit, Globe, FileText, Rocket, Zap, Trash2, MoreVertical, Calculator, Plus, Sparkles, Pencil, ChevronRight, Dna, Network, Sun, Crown, Cpu, Users, Download, Layers, BookOpen, Atom, Clock, Archive, Tag, Orbit, Languages, Weight, Eye, Camera, Palette } from "lucide-react";
+import { useParams, Link, useNavigate, useLocation } from "react-router-dom";
+import { ArrowLeft, Edit, Globe, FileText, Rocket, Zap, Trash2, MoreVertical, Calculator, Plus, Sparkles, Pencil, ChevronRight, Dna, Network, Sun, Crown, Cpu, Users, Download, Layers, BookOpen, Atom, Clock, Archive, Tag, Orbit, Languages, Weight, Eye, Camera, Palette, Library } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
 import { CosmicTelemetry } from "@/components/layout/CosmicVelocityTicker";
 import { EPOCH_DATA } from "@/lib/cosmic-telemetry";
@@ -39,13 +39,15 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { useWorld } from "@/hooks/use-world";
 import { useWorksheets, useRenameWorksheet } from "@/hooks/use-worksheets";
 import { Badge } from "@/components/ui/badge";
 import { useWorlds } from "@/hooks/use-worlds";
 import { getToolIcon as getToolSvgIcon } from "@/components/icons/tool-icons";
 import { useMyWorldRole } from "@/hooks/use-collaborators";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import WorldHeader from "@/components/world/WorldHeader";
 import WorldNotes from "@/components/world/WorldNotes";
 import IconPicker from "@/components/world/IconPicker";
@@ -56,6 +58,9 @@ import WorldBibleDialog from "@/components/world/WorldBibleDialog";
 import WorldSnapshotDialog from "@/components/world/WorldSnapshotDialog";
 import WorldAppearanceDialog from "@/components/world/WorldAppearanceDialog";
 import VersionHistory from "@/components/world/VersionHistory";
+import EntityPickerDialog from "@/components/world/EntityPickerDialog";
+import { useWorldEntities } from "@/hooks/use-world-entities";
+import { ENTITY_TYPE_LABELS } from "@/lib/entity-config";
 import { useIsWorldLayout } from "@/contexts/WorldLayoutContext";
 import { PageBursts } from "@/components/ui/data-burst";
 import { WORLD_DASHBOARD_BURSTS } from "@/lib/data-bursts";
@@ -215,6 +220,8 @@ const getToolIcon = (toolType: string) => {
 const WorldDashboard = () => {
   const { worldId } = useParams<{ worldId: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
+  const notesRef = useRef<HTMLElement>(null);
   const isInWorldLayout = useIsWorldLayout();
   const { data: world, isLoading: worldLoading, error: worldError } = useWorld(worldId);
   const { worksheets, isLoading: worksheetsLoading, deleteWorksheet } = useWorksheets(worldId);
@@ -223,6 +230,26 @@ const WorldDashboard = () => {
   const { data: role } = useMyWorldRole(worldId);
   const isOwner = role === "owner";
   const canEdit = role === "owner" || role === "editor";
+
+  // Build worksheetId → entryId map for wiki links
+  const entryMapQuery = useQuery({
+    queryKey: ["worksheet-entry-map", worldId],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("world_entries")
+        .select("id, tool_data_id")
+        .eq("world_id", worldId!)
+        .not("tool_data_id", "is", null);
+      const map = new Map<string, string>();
+      for (const e of data || []) {
+        if (e.tool_data_id) map.set(e.tool_data_id, e.id);
+      }
+      return map;
+    },
+    enabled: !!worldId,
+  });
+  const worksheetEntryMap = entryMapQuery.data ?? new Map<string, string>();
+
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [worksheetToDelete, setWorksheetToDelete] = useState<string | null>(null);
   const [worksheetToRename, setWorksheetToRename] = useState<{ id: string; title: string } | null>(null);
@@ -234,6 +261,8 @@ const WorldDashboard = () => {
   const [worldBibleDialogOpen, setWorldBibleDialogOpen] = useState(false);
   const [snapshotDialogOpen, setSnapshotDialogOpen] = useState(false);
   const [appearanceDialogOpen, setAppearanceDialogOpen] = useState(false);
+  const [entityPickerOpen, setEntityPickerOpen] = useState(false);
+  const { entities: worldEntities, grouped: entitiesByType } = useWorldEntities(worldId);
   const [editName, setEditName] = useState("");
   const [editDescription, setEditDescription] = useState("");
   const [editIcon, setEditIcon] = useState("globe");
@@ -260,6 +289,13 @@ const WorldDashboard = () => {
       setEditHeaderImageFocusY(world.header_image_focus_y ?? 50);
     }
   }, [world]);
+
+  // Scroll to notes section when navigating with #notes hash
+  useEffect(() => {
+    if (location.hash === "#notes" && notesRef.current) {
+      notesRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [location.hash]);
 
   const handleDeleteWorld = async () => {
     if (!worldId) return;
@@ -376,6 +412,12 @@ const WorldDashboard = () => {
           </Link>
           <div className="flex items-center gap-2">
             <Button variant="outline" size="sm" asChild>
+              <Link to={`/worlds/${worldId}/wiki`}>
+                <Library className="w-4 h-4 mr-2" />
+                Wiki
+              </Link>
+            </Button>
+            <Button variant="outline" size="sm" asChild>
               <Link to={`/worlds/${worldId}/connections`}>
                 <Network className="w-4 h-4 mr-2" />
                 View Connections
@@ -490,7 +532,7 @@ const WorldDashboard = () => {
 
         {/* World Notes */}
         {worldId && (
-          <section className="mb-8">
+          <section id="notes" ref={notesRef} className="mb-8">
             <WorldNotes worldId={worldId} readOnly={!canEdit} />
           </section>
         )}
@@ -502,8 +544,77 @@ const WorldDashboard = () => {
           </section>
         )}
 
-        {/* Tools Grid - hidden for viewers */}
-        {canEdit && (
+        {/* World Elements — entity-first entries */}
+        {worldId && (
+          <section className="mb-8">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-semibold">World Elements</h2>
+              {canEdit && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setEntityPickerOpen(true)}
+                  className="gap-1.5"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  New Element
+                </Button>
+              )}
+            </div>
+
+            {worldEntities.length === 0 ? (
+              <GlassPanel className="p-6 text-center">
+                <p className="text-sm text-muted-foreground/40 italic">
+                  No elements yet. Create planets, species, factions, and more—then attach worksheets to them.
+                </p>
+                {canEdit && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="mt-3 gap-1.5"
+                    onClick={() => setEntityPickerOpen(true)}
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    Create First Element
+                  </Button>
+                )}
+              </GlassPanel>
+            ) : (
+              <div className="space-y-3">
+                {Object.entries(entitiesByType).map(([type, entries]) => (
+                  <div key={type}>
+                    <h3 className="font-heading text-xs font-light uppercase tracking-[2px] text-tier-3 mb-2">
+                      {ENTITY_TYPE_LABELS[type] ?? type}
+                    </h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                      {entries.map((entry) => (
+                        <Link
+                          key={entry.id}
+                          to={`/worlds/${worldId}/pages/${entry.id}`}
+                        >
+                          <GlassPanel className="p-3 hover:bg-accent/50 transition-colors cursor-pointer group">
+                            <div className="flex items-center gap-2">
+                              <span className="font-heading text-sm text-tier-2 group-hover:text-tier-1 transition-colors truncate">
+                                {entry.title}
+                              </span>
+                            </div>
+                            {(entry.metadata as Record<string, unknown>)?.description && (
+                              <p className="text-[11px] text-tier-4 mt-1 line-clamp-1">
+                                {String((entry.metadata as Record<string, unknown>).description)}
+                              </p>
+                            )}
+                          </GlassPanel>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
+        )}
+
+        {/* Tools Grid */}
         <section className="mb-8">
           <h2 className="text-xl font-semibold mb-4">Worldbuilding Tools</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -533,7 +644,6 @@ const WorldDashboard = () => {
             ))}
           </div>
         </section>
-        )}
 
         {/* Saved Worksheets - Grouped by Tool Type */}
         <section>
@@ -621,6 +731,13 @@ const WorldDashboard = () => {
                             </div>
                           </div>
                           <div className="flex items-center gap-1 shrink-0">
+                            {worksheetEntryMap.get(worksheet.id) && (
+                              <Button variant="ghost" size="icon" className="h-8 w-8" asChild title="Wiki page">
+                                <Link to={`/worlds/${worldId}/pages/${worksheetEntryMap.get(worksheet.id)}`}>
+                                  <BookOpen className="w-3.5 h-3.5" />
+                                </Link>
+                              </Button>
+                            )}
                             <Button variant="ghost" size="sm" asChild>
                               <Link to={`${tool.path}?worldId=${worldId}&worksheetId=${worksheet.id}`}>
                                 Open
@@ -898,6 +1015,14 @@ const WorldDashboard = () => {
         worldId={worldId!}
         currentTheme={world.theme}
       />
+
+      {worldId && (
+        <EntityPickerDialog
+          open={entityPickerOpen}
+          onOpenChange={setEntityPickerOpen}
+          worldId={worldId}
+        />
+      )}
 
       {/* Edit Tags Dialog */}
       <Dialog open={tagsDialogOpen} onOpenChange={setTagsDialogOpen}>

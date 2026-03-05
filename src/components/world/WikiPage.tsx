@@ -3,6 +3,9 @@ import { useNavigate, Link } from "react-router-dom";
 import { Loader } from "@/components/ui/loader";
 import { useWikiPage } from "@/hooks/use-wiki-page";
 import { DataProfileInfobox } from "./DataProfileInfobox";
+import EntityMasterInfobox from "./EntityMasterInfobox";
+import EntitySyncNotice from "./EntitySyncNotice";
+import WorksheetLauncherGrid from "./WorksheetLauncherGrid";
 import { LAYER_LABELS } from "@/services/world-data";
 import type { CascadeLayer } from "@/services/world-data";
 import { getToolDisplayName } from "@/lib/worksheet-links-config";
@@ -319,6 +322,40 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
             onViewInTool={handleViewInTool}
           />
         </>
+      )}
+
+      {/* Entity Sync Notice (pending worksheet → entity changes) */}
+      {!toolSource && entry && (() => {
+        const meta = (entry.metadata as Record<string, unknown>) ?? {};
+        const pending = meta._pending_changes as Array<unknown> | undefined;
+        return pending && pending.length > 0 ? (
+          <div className="mt-4">
+            <EntitySyncNotice
+              entryId={entry.id}
+              worldId={worldId}
+              pendingChanges={pending as any}
+            />
+          </div>
+        ) : null;
+      })()}
+
+      {/* Entity Master Infobox + Worksheet Launchers (entity-first entries) */}
+      {!toolSource && entry && (
+        <div className="mt-4 space-y-6">
+          <EntityMasterInfobox
+            entryId={entry.id}
+            entryType={entry.entry_type}
+            worldId={worldId}
+            metadata={(entry.metadata as Record<string, unknown>) ?? {}}
+            canEdit={canEdit}
+          />
+          <WorksheetLauncherGrid
+            entityId={entry.id}
+            entityType={entry.entry_type}
+            worldId={worldId}
+            canEdit={canEdit}
+          />
+        </div>
       )}
 
       {/* Dead links hint */}

@@ -6,6 +6,7 @@ import { Json } from "@/integrations/supabase/types";
 import { maybeSnapshotWorld } from "@/lib/export/world-snapshot";
 import { createDraftWikiPage } from "@/services/world-entries";
 import { getLayerForTool } from "@/services/world-data";
+import { syncWorksheetToEntity } from "@/services/entity-sync";
 
 interface Worksheet {
   id: string;
@@ -157,6 +158,14 @@ export const useWorksheets = (worldId: string | undefined, includeArchived: bool
         )
           .then(() => queryClient.invalidateQueries({ queryKey: ["codex-data", worldId] }))
           .catch(() => {}); // best-effort
+      }
+      // Sync worksheet data back to linked entity (best-effort)
+      if (data.tool_type && data.data) {
+        syncWorksheetToEntity(
+          data.id,
+          data.data as Record<string, unknown>,
+          data.tool_type
+        ).catch(() => {}); // best-effort
       }
     },
     onError: (error) => {

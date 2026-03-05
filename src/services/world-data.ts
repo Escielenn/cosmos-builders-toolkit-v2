@@ -444,7 +444,7 @@ export const ENTITY_TYPE_ICONS: Record<string, string> = {
 // Tool → element type mapping
 // ---------------------------------------------------------------------------
 
-const TOOL_TYPE_MAP: Record<string, string> = {
+export const TOOL_TYPE_MAP: Record<string, string> = {
   "planetary-profile": "planet",
   "star-system-builder": "star_system",
   "environmental-chain-reaction": "chain_reaction",
