@@ -18,9 +18,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { CodexElement } from "@/services/world-data";
+import type { CodexElement, CodexSection_Entity } from "@/services/world-data";
+import { ENTITY_TYPE_LABELS, ENTITY_TYPE_ICONS } from "@/services/world-data";
 import { useWorldLayoutContext } from "@/contexts/WorldLayoutContext";
 import WorldIconRenderer from "@/components/world/WorldIconRenderer";
+import FirstTimeHint from "@/components/onboarding/FirstTimeHint";
+import { useHintDismissed } from "@/hooks/use-hint-dismissed";
+import { BookOpen, Eye, FileText, Layers, LayoutGrid, Tag, X } from "lucide-react";
 
 // ---------------------------------------------------------------------------
 // Tool route mapping
@@ -76,6 +80,48 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [deleteTarget, setDeleteTarget] = useState<CodexElement | null>(null);
+  const [codexHintDismissed] = useHintDismissed("codex");
+  const [activeTags, setActiveTags] = useState<string[]>([]);
+
+  // Pinned items — persisted per world
+  const [pinnedIds, setPinnedIds] = useState<Set<string>>(() => {
+    try {
+      const stored = localStorage.getItem(`sf-codex-pinned-${worldId}`);
+      return stored ? new Set(JSON.parse(stored)) : new Set();
+    } catch {
+      return new Set();
+    }
+  });
+
+  const handleToggleSticky = useCallback((element: CodexElement) => {
+    setPinnedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(element.id)) {
+        next.delete(element.id);
+      } else {
+        next.add(element.id);
+      }
+      localStorage.setItem(`sf-codex-pinned-${worldId}`, JSON.stringify([...next]));
+      return next;
+    });
+  }, [worldId]);
+
+  // Group by: cascade (default) or entity type
+  const [groupBy, setGroupBy] = useState<"cascade" | "entity">(() => {
+    try {
+      return (localStorage.getItem(`sf-codex-groupby-${worldId}`) as "cascade" | "entity") || "cascade";
+    } catch {
+      return "cascade";
+    }
+  });
+
+  const handleGroupByChange = useCallback(
+    (mode: "cascade" | "entity") => {
+      setGroupBy(mode);
+      localStorage.setItem(`sf-codex-groupby-${worldId}`, mode);
+    },
+    [worldId]
+  );
 
   // Default view preference
   const [defaultView, setDefaultView] = useState<"wiki" | "tool">(() => {
@@ -140,6 +186,16 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
   // Default click handler — respects defaultView preference
   const navigateToElement = useCallback(
     (element: CodexElement) => {
+      // Writing entries → navigate to Writing Workshop
+      if (element.kind === "writing") {
+        navigate(`/writing-workshop?entryId=${element.id}`);
+        return;
+      }
+      // World notes → navigate to dashboard notes section
+      if (element.kind === "note") {
+        navigate(`/worlds/${worldId}#notes`);
+        return;
+      }
       // Custom entries (no tool source) always go to wiki page
       if (element.kind === "entry" && !element.toolSource) {
         navigateToWiki(element);
@@ -151,22 +207,30 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
         navigateToTool(element);
       }
     },
-    [defaultView, navigateToWiki, navigateToTool]
+    [defaultView, navigateToWiki, navigateToTool, navigate, worldId]
   );
 
-  // Search filter
+  // Search + tag filter
   const filterElements = useCallback(
     (elements: CodexElement[]) => {
-      if (!searchQuery.trim()) return elements;
-      const q = searchQuery.toLowerCase();
-      return elements.filter(
-        (el) =>
-          el.title.toLowerCase().includes(q) ||
-          el.type.toLowerCase().includes(q) ||
-          el.tags.some((t) => t.toLowerCase().includes(q))
-      );
+      let result = elements;
+      if (searchQuery.trim()) {
+        const q = searchQuery.toLowerCase();
+        result = result.filter(
+          (el) =>
+            el.title.toLowerCase().includes(q) ||
+            el.type.toLowerCase().includes(q) ||
+            el.tags.some((t) => t.toLowerCase().includes(q))
+        );
+      }
+      if (activeTags.length > 0) {
+        result = result.filter((el) =>
+          activeTags.some((tag) => el.tags.includes(tag))
+        );
+      }
+      return result;
     },
-    [searchQuery]
+    [searchQuery, activeTags]
   );
 
   // CRUD handlers
@@ -242,7 +306,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
   if (error || !codexData) {
     return (
       <div className="p-3">
-        <p className="font-mono text-[9px] uppercase tracking-wider text-destructive/60">
+        <p className="font-mono text-[10px] uppercase tracking-wider text-destructive/60">
           Codex unavailable.
         </p>
       </div>
@@ -258,7 +322,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
           className="sf-fill-sweep sf-fill-sweep--secondary w-full flex items-center justify-center h-6 border border-border/15 text-muted-foreground/40 hover:text-foreground/70 transition-colors"
           aria-label="Collapse Codex"
         >
-          <span className="text-[9px]">◀</span>
+          <span className="text-[10px]">◀</span>
         </button>
       </div>
 
@@ -270,18 +334,90 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
         {layoutContext?.worldIcon && (
           <WorldIconRenderer iconId={layoutContext.worldIcon} className="w-4 h-4 text-primary/60 shrink-0" />
         )}
-        <span className="font-heading text-[13px] uppercase tracking-[2px] text-foreground/80 block truncate">
+        <span className="font-heading text-[14px] uppercase tracking-[2px] text-foreground/80 block truncate">
           {codexData.worldName}
         </span>
       </button>
 
+      {/* World Notes shortcut */}
+      <button
+        type="button"
+        onClick={() => navigate(`/worlds/${worldId}#notes`)}
+        className="px-3 py-1 w-full text-left flex items-center gap-2 text-muted-foreground/40 hover:text-foreground/70 transition-colors"
+      >
+        <FileText className="w-3.5 h-3.5" />
+        <span className="font-mono text-[10px] uppercase tracking-wider">World Notes</span>
+      </button>
+
+      {/* Codex hint */}
+      <div className="px-3">
+        <FirstTimeHint hintId="codex" variant="compact" icon={BookOpen} />
+      </div>
+
       {/* Search */}
       <CodexSearch value={searchQuery} onChange={setSearchQuery} />
 
+      {/* Group-by toggle */}
+      <div className="px-3 pb-1 flex items-center gap-1">
+        <button
+          onClick={() => handleGroupByChange("cascade")}
+          className={`flex items-center gap-1 px-2 py-1 text-[10px] uppercase tracking-[1.5px] transition-colors ${
+            groupBy === "cascade"
+              ? "text-teal bg-teal/8 border border-teal/20"
+              : "text-tier-4 hover:text-tier-3"
+          }`}
+          title="Group by cascade layer"
+        >
+          <Layers className="w-3 h-3" />
+          Cascade
+        </button>
+        <button
+          onClick={() => handleGroupByChange("entity")}
+          className={`flex items-center gap-1 px-2 py-1 text-[10px] uppercase tracking-[1.5px] transition-colors ${
+            groupBy === "entity"
+              ? "text-teal bg-teal/8 border border-teal/20"
+              : "text-tier-4 hover:text-tier-3"
+          }`}
+          title="Group by entity type"
+        >
+          <LayoutGrid className="w-3 h-3" />
+          Entity
+        </button>
+      </div>
+
+      {/* Tag filter chips */}
+      {codexData.worldTags.length > 0 && (
+        <div className="px-3 pb-1.5">
+          <div className="flex flex-wrap gap-1">
+            {codexData.worldTags.slice(0, 12).map((tag) => (
+              <button
+                key={tag}
+                onClick={() =>
+                  setActiveTags((prev) =>
+                    prev.includes(tag)
+                      ? prev.filter((t) => t !== tag)
+                      : [...prev, tag]
+                  )
+                }
+                className={`flex items-center gap-1 px-1.5 py-0.5 text-[10px] tracking-wider border transition-colors ${
+                  activeTags.includes(tag)
+                    ? "bg-teal/10 border-teal/25 text-teal"
+                    : "border-border/10 text-tier-4 hover:text-tier-3"
+                }`}
+              >
+                <Tag className="w-2.5 h-2.5" />
+                {tag}
+                {activeTags.includes(tag) && <X className="w-2.5 h-2.5" />}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Scrollable sections */}
       <div className="flex-1 overflow-y-auto overflow-x-hidden min-h-0">
-        {/* Cascade sections */}
-        {codexData.cascadeSections.map((section) => {
+        {/* Cascade sections (default view) */}
+        {groupBy === "cascade" && codexData.cascadeSections.map((section) => {
           const filtered = filterElements(section.elements);
           if (searchQuery && filtered.length === 0) return null;
           return (
@@ -293,20 +429,59 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
               onOpenWiki={navigateToWiki}
               onOpenTool={navigateToTool}
               onDelete={handleDelete}
+              onRename={handleRename}
+              onSticky={handleToggleSticky}
+              pinnedIds={pinnedIds}
             />
           );
         })}
+
+        {/* Entity type sections (alt view) */}
+        {groupBy === "entity" && codexData.entitySections.map((section) => {
+          const filtered = filterElements(section.elements);
+          if ((searchQuery || activeTags.length > 0) && filtered.length === 0) return null;
+          return (
+            <CodexSection
+              key={section.key}
+              section={{ ...section, elements: filtered } as any}
+              activeElementId={activeElementId}
+              onElementClick={navigateToElement}
+              onOpenWiki={navigateToWiki}
+              onOpenTool={navigateToTool}
+              onDelete={handleDelete}
+              onRename={handleRename}
+              onSticky={handleToggleSticky}
+              pinnedIds={pinnedIds}
+            />
+          );
+        })}
+
+        {/* No results feedback */}
+        {(searchQuery || activeTags.length > 0) && (() => {
+          const sections = groupBy === "cascade" ? codexData.cascadeSections : codexData.entitySections;
+          const allEmpty = sections.every((s) => filterElements(s.elements).length === 0) &&
+            filterElements(codexData.customEntries).length === 0;
+          return allEmpty ? (
+            <div className="px-3 py-6 text-center">
+              <p className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground/30">
+                No matches found
+              </p>
+            </div>
+          ) : null;
+        })()}
 
         {/* Custom section */}
         <CodexCustomSection
           elements={filterElements(codexData.customEntries)}
           activeElementId={activeElementId}
+          pinnedIds={pinnedIds}
           onElementClick={navigateToElement}
           onOpenWiki={navigateToWiki}
           onOpenTool={navigateToTool}
           onDelete={handleDelete}
           onRename={handleRename}
           onReorder={handleReorder}
+          onSticky={handleToggleSticky}
           onCreateFolder={handleCreateFolder}
           onCreateEntry={handleCreateEntry}
         />
@@ -326,14 +501,21 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
       {/* Completion bar */}
       <CodexCompletionBar percent={codexData.completionPercent} />
 
+      {/* Default view hint (only after codex hint dismissed) */}
+      {codexHintDismissed && (
+        <div className="px-3">
+          <FirstTimeHint hintId="default-view" variant="compact" icon={Eye} />
+        </div>
+      )}
+
       {/* Default view setting */}
       <div className="px-3 pb-2">
         <div className="flex items-center gap-2">
-          <span className="font-mono text-[8px] uppercase tracking-wider text-muted-foreground/30 whitespace-nowrap">
+          <span className="font-mono text-[9px] uppercase tracking-wider text-muted-foreground/30 whitespace-nowrap">
             Default view:
           </span>
           <Select value={defaultView} onValueChange={handleDefaultViewChange}>
-            <SelectTrigger className="h-5 text-[9px] flex-1 border-border/15 bg-transparent">
+            <SelectTrigger className="h-5 text-[10px] flex-1 border-border/15 bg-transparent">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>

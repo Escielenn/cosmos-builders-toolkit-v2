@@ -1,15 +1,18 @@
-import { useState, useCallback, useRef, useMemo, lazy, Suspense } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useCallback, useRef, useMemo, useEffect, lazy, Suspense } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { Loader } from "@/components/ui/loader";
 import { useWikiPage } from "@/hooks/use-wiki-page";
 import { DataProfileInfobox } from "./DataProfileInfobox";
 import { LAYER_LABELS } from "@/services/world-data";
 import type { CascadeLayer } from "@/services/world-data";
 import { getToolDisplayName } from "@/lib/worksheet-links-config";
-import { Pencil, Eye, ExternalLink } from "lucide-react";
+import { Pencil, Eye, ExternalLink, Link2, GitBranch, Database, AlertTriangle, ImagePlus, ChevronRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useConnectionSuggestions } from "@/hooks/use-connection-suggestions";
+import { useMyWorldRole } from "@/hooks/use-collaborators";
+import FirstTimeHint from "@/components/onboarding/FirstTimeHint";
+import { EntryTagsBar } from "@/components/tags/EntryTagsBar";
 
 const WikiEditor = lazy(() =>
   import("@/components/editor/WikiEditor").then((m) => ({
@@ -25,6 +28,8 @@ interface WikiPageProps {
 export function WikiPage({ worldId, entryId }: WikiPageProps) {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { data: role } = useMyWorldRole(worldId);
+  const canEdit = role === "owner" || role === "editor";
   const {
     entry,
     toolData,
@@ -40,10 +45,12 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
   } = useWikiPage(worldId, entryId);
 
   const [isEditing, setIsEditing] = useState(false);
+  const [editingTitle, setEditingTitle] = useState("");
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">(
     "idle"
   );
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const titleRef = useRef<HTMLInputElement>(null);
 
   const {
     suggestions,
@@ -61,10 +68,31 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
   const typeLabel =
     toolSource ? getToolDisplayName(toolSource) : entry?.entry_type || "Note";
 
+  // Auto-open editor for new/draft entries so the page isn't empty
+  useEffect(() => {
+    if (canEdit && isDraft && !isEditing) {
+      setIsEditing(true);
+    }
+  }, [isDraft, canEdit]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Sync editing title when entry loads or editing starts
+  useEffect(() => {
+    if (entry) {
+      setEditingTitle(entry.title);
+    }
+  }, [entry?.title]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Focus title input when entering edit mode with default title
+  useEffect(() => {
+    if (isEditing && editingTitle === "Untitled Entry" && titleRef.current) {
+      titleRef.current.focus();
+      titleRef.current.select();
+    }
+  }, [isEditing]); // eslint-disable-line react-hooks/exhaustive-deps
+
   // Process content HTML to mark dead wiki-links
   const processedContent = useMemo(() => {
     if (!entry?.content || deadLinkIds.size === 0) return entry?.content || "";
-    // Add data-dead="true" to wiki-link elements whose IDs are in deadLinkIds
     return entry.content.replace(
       /data-element-id="([^"]+)"/g,
       (match, id) => {
@@ -80,13 +108,31 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
     (html: string) => {
       setSaveStatus("saving");
       updateContent(html);
-      // Check for new wiki-links that might need connections
       checkForSuggestions(html);
       if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
       saveTimeoutRef.current = setTimeout(() => setSaveStatus("saved"), 1500);
       setTimeout(() => setSaveStatus("idle"), 4000);
     },
     [updateContent, checkForSuggestions]
+  );
+
+  const handleTitleBlur = useCallback(() => {
+    const trimmed = editingTitle.trim();
+    if (trimmed && trimmed !== entry?.title) {
+      updateTitle(trimmed);
+    } else if (!trimmed) {
+      setEditingTitle(entry?.title || "Untitled Entry");
+    }
+  }, [editingTitle, entry?.title, updateTitle]);
+
+  const handleTitleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        (e.target as HTMLInputElement).blur();
+      }
+    },
+    []
   );
 
   const handleViewInTool = useCallback(() => {
@@ -147,28 +193,41 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
   return (
     <div className="sf-wiki-page">
       {/* Header bar */}
-      <div className="flex items-center justify-between mb-6">
-        <button
-          onClick={() => navigate(`/worlds/${worldId}`)}
-          className="sf-fill-sweep sf-fill-sweep--secondary px-3 py-1.5 font-mono text-[9px] uppercase tracking-wider text-muted-foreground/50"
-        >
-          &larr; World Dashboard
-        </button>
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-wider text-muted-foreground/40">
+          <Link to={`/worlds/${worldId}`} className="hover:text-foreground/70 transition-colors">
+            Dashboard
+          </Link>
+          <ChevronRight className="w-3 h-3" />
+          <Link to={`/worlds/${worldId}/wiki`} className="hover:text-foreground/70 transition-colors">
+            Wiki
+          </Link>
+          <ChevronRight className="w-3 h-3" />
+          <span className="text-foreground/60 truncate max-w-[200px]">{entry?.title}</span>
+        </div>
         <div className="flex items-center gap-2">
-          <button
-            onClick={() => setIsEditing(!isEditing)}
-            className="sf-fill-sweep sf-fill-sweep--secondary flex items-center gap-1.5 px-3 py-1.5 border border-border/15 text-[10px] uppercase tracking-wider"
-          >
-            {isEditing ? (
-              <>
-                <Eye className="w-3 h-3" /> View
-              </>
-            ) : (
-              <>
-                <Pencil className="w-3 h-3" /> Edit
-              </>
-            )}
-          </button>
+          {saveStatus !== "idle" && (
+            <span className="sf-wiki-save-indicator">
+              {saveStatus === "saving" ? "SAVING..." : "SAVED"}
+            </span>
+          )}
+          {canEdit && (
+            <button
+              type="button"
+              onClick={() => setIsEditing(!isEditing)}
+              className="sf-fill-sweep sf-fill-sweep--secondary flex items-center gap-1.5 px-3 py-1.5 border border-border/15 text-[10px] uppercase tracking-wider"
+            >
+              {isEditing ? (
+                <>
+                  <Eye className="w-3 h-3" /> Preview
+                </>
+              ) : (
+                <>
+                  <Pencil className="w-3 h-3" /> Edit
+                </>
+              )}
+            </button>
+          )}
           {toolSource && (
             <button
               onClick={handleViewInTool}
@@ -181,7 +240,7 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
       </div>
 
       {/* Cover image */}
-      {entry.cover_image_url && !isEditing && (
+      {entry.cover_image_url && (
         <img
           src={entry.cover_image_url}
           alt=""
@@ -189,29 +248,23 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
         />
       )}
 
-      {/* Cover upload in edit mode */}
-      {isEditing && (
-        <label className="sf-wiki-cover-upload block">
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleCoverUpload}
-            className="sr-only"
-          />
-          {entry.cover_image_url ? (
-            <img
-              src={entry.cover_image_url}
-              alt=""
-              className="sf-wiki-cover w-full"
-            />
-          ) : (
-            <span>Drop cover image or click to select</span>
-          )}
-        </label>
+      {/* Title — always editable for editors, static for viewers */}
+      {canEdit ? (
+        <input
+          ref={titleRef}
+          type="text"
+          value={editingTitle}
+          onChange={(e) => setEditingTitle(e.target.value)}
+          onBlur={handleTitleBlur}
+          onKeyDown={handleTitleKeyDown}
+          className="sf-wiki-title sf-wiki-title--editable"
+          placeholder="Entry title..."
+        />
+      ) : (
+        <h1 className="sf-wiki-title">{entry.title}</h1>
       )}
 
-      {/* Title */}
-      <h1 className="sf-wiki-title">{entry.title}</h1>
+      {/* Meta bar */}
       <div className="sf-wiki-meta flex items-center gap-2">
         <span>{typeLabel.toUpperCase()}</span>
         {layerLabel && (
@@ -225,41 +278,74 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
             Draft
           </span>
         )}
+        {/* Cover upload — compact inline button in edit mode */}
+        {canEdit && isEditing && (
+          <label className="ml-auto flex items-center gap-1 px-2 py-0.5 border border-border/15 text-[9px] uppercase tracking-wider text-muted-foreground/40 hover:text-muted-foreground/70 cursor-pointer transition-colors">
+            <ImagePlus className="w-3 h-3" />
+            {entry.cover_image_url ? "Change cover" : "Add cover"}
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleCoverUpload}
+              className="sr-only"
+            />
+          </label>
+        )}
       </div>
 
-      {/* Data Profile Infobox */}
-      {toolSource && toolData && (
-        <DataProfileInfobox
-          toolSource={toolSource}
-          toolData={toolData}
-          onViewInTool={handleViewInTool}
-        />
+      {/* Tags */}
+      {((canEdit && isEditing) || ((entry as any).tags ?? []).length > 0) && (
+        <div className="mt-2">
+          <EntryTagsBar
+            entryId={entryId}
+            tags={(entry as any).tags ?? []}
+            readOnly={!canEdit || !isEditing}
+          />
+        </div>
       )}
 
-      {/* Content */}
+      {/* Wiki links hint — only show once, in edit mode */}
+      {isEditing && (
+        <FirstTimeHint hintId="wiki-links" icon={Link2} className="mt-4" />
+      )}
+
+      {/* Data Profile Infobox (tool-sourced entries) */}
+      {toolSource && toolData && (
+        <>
+          <FirstTimeHint hintId="data-profile" icon={Database} className="mt-4 mb-2" />
+          <DataProfileInfobox
+            toolSource={toolSource}
+            toolData={toolData}
+            onViewInTool={handleViewInTool}
+          />
+        </>
+      )}
+
+      {/* Dead links hint */}
+      {deadLinkIds.size > 0 && (
+        <FirstTimeHint hintId="dead-links" icon={AlertTriangle} variant="warning" className="mt-4 mb-2" />
+      )}
+
+      {/* ── Editor / Content ── */}
       <div className="sf-wiki-section-header">Content</div>
       {isEditing ? (
-        <Suspense
-          fallback={
-            <div className="flex items-center justify-center h-32">
-              <Loader size="sm" />
-            </div>
-          }
-        >
-          <WikiEditor
-            worldId={worldId}
-            content={entry.content || ""}
-            onChange={handleContentChange}
-            readOnly={false}
-            placeholder="Write about this element..."
-            saveStatus={saveStatus}
-          />
-        </Suspense>
-      ) : isDraft ? (
-        <div className="sf-wiki-draft-prompt">
-          This page was auto-generated from your {typeLabel} data.
-          <br />
-          Click Edit to add prose, context, and links.
+        <div>
+          <Suspense
+            fallback={
+              <div className="flex items-center justify-center h-32">
+                <Loader size="sm" />
+              </div>
+            }
+          >
+            <WikiEditor
+              worldId={worldId}
+              content={entry.content || ""}
+              onChange={handleContentChange}
+              readOnly={!canEdit}
+              placeholder="Write about this element... Type [[ to link entries"
+              saveStatus={saveStatus}
+            />
+          </Suspense>
         </div>
       ) : entry.content ? (
         <div
@@ -267,12 +353,19 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
           dangerouslySetInnerHTML={{ __html: processedContent }}
         />
       ) : (
-        <div className="sf-wiki-draft-prompt">No content yet. Click Edit to begin.</div>
+        <div className="sf-wiki-draft-prompt">
+          {toolSource
+            ? `This page was auto-generated from your ${typeLabel} data.`
+            : "No content yet."}
+          <br />
+          Click Edit to start writing.
+        </div>
       )}
 
       {/* Connection suggestions */}
-      {suggestions.length > 0 && (
+      {canEdit && suggestions.length > 0 && (
         <div className="mt-4 space-y-2">
+          <FirstTimeHint hintId="connection-suggestions" icon={GitBranch} />
           {suggestions.map((s) => (
             <ConnectionSuggestionBar
               key={s.targetId}

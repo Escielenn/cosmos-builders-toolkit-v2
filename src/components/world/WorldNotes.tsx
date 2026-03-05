@@ -1,14 +1,24 @@
-import { useState, lazy, Suspense } from "react";
-import { ChevronDown, ChevronUp, FileText, Check, Save } from "lucide-react";
+import { useState, useEffect, lazy, Suspense } from "react";
+import { ChevronDown, ChevronUp, FileText, Plus, Trash2 } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
-import { useWorldNotes } from "@/hooks/use-world-notes";
+import {
+  useWorldNotes,
+  useCreateWorldNote,
+  useDeleteWorldNote,
+  useUpdateNoteTitle,
+  useUpdateNoteTags,
+  useNoteContent,
+  type WorldNote,
+} from "@/hooks/use-world-notes";
+import TagInput from "@/components/tags/TagInput";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { DeleteConfirmDialog } from "@/components/dialogs/DeleteConfirmDialog";
 
 const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
 
@@ -17,19 +27,176 @@ interface WorldNotesProps {
   readOnly?: boolean;
 }
 
+// ---------------------------------------------------------------------------
+// Single note card
+// ---------------------------------------------------------------------------
+
+function NoteCard({
+  note,
+  worldId,
+  readOnly,
+  defaultOpen,
+}: {
+  note: WorldNote;
+  worldId: string;
+  readOnly?: boolean;
+  defaultOpen?: boolean;
+}) {
+  const [isOpen, setIsOpen] = useState(defaultOpen ?? false);
+  const [editingTitle, setEditingTitle] = useState(note.title);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+
+  const updateTitle = useUpdateNoteTitle(worldId);
+  const updateTags = useUpdateNoteTags(worldId);
+  const deleteNote = useDeleteWorldNote(worldId);
+  const { localContent, setLocalContent, updateContent, isSaving } =
+    useNoteContent(note.id, worldId);
+
+  // Sync content when note loads
+  useEffect(() => {
+    setLocalContent(note.content ?? "");
+  }, [note.id]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Sync title when note changes externally
+  useEffect(() => {
+    setEditingTitle(note.title);
+  }, [note.title]);
+
+  const handleTitleBlur = () => {
+    const trimmed = editingTitle.trim();
+    if (trimmed && trimmed !== note.title) {
+      updateTitle.mutate({ noteId: note.id, title: trimmed });
+    } else if (!trimmed) {
+      setEditingTitle(note.title);
+    }
+  };
+
+  const handleTitleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      (e.target as HTMLInputElement).blur();
+    }
+  };
+
+  const handleTagsChange = (tags: string[]) => {
+    updateTags.mutate({ noteId: note.id, tags });
+  };
+
+  return (
+    <>
+      <div className="border border-border/10 bg-white/[0.01]">
+        {/* Note header */}
+        <div className="flex items-center gap-2 px-4 py-2">
+          <button
+            type="button"
+            onClick={() => setIsOpen(!isOpen)}
+            className="shrink-0 text-muted-foreground/40 hover:text-muted-foreground/70 transition-colors"
+          >
+            {isOpen ? (
+              <ChevronUp className="w-3.5 h-3.5" />
+            ) : (
+              <ChevronDown className="w-3.5 h-3.5" />
+            )}
+          </button>
+
+          {readOnly ? (
+            <span className="font-heading text-sm text-tier-2 flex-1 truncate">
+              {note.title}
+            </span>
+          ) : (
+            <input
+              type="text"
+              value={editingTitle}
+              onChange={(e) => setEditingTitle(e.target.value)}
+              onBlur={handleTitleBlur}
+              onKeyDown={handleTitleKeyDown}
+              className="font-heading text-sm text-tier-2 flex-1 bg-transparent border-none outline-none focus:border-b focus:border-primary/30 px-0 py-0 truncate"
+              placeholder="Note title..."
+            />
+          )}
+
+          {isSaving && (
+            <span className="font-mono text-[8px] uppercase tracking-wider text-muted-foreground/30 shrink-0">
+              Saving...
+            </span>
+          )}
+
+          {!readOnly && (
+            <button
+              type="button"
+              onClick={() => setDeleteOpen(true)}
+              className="shrink-0 text-muted-foreground/20 hover:text-destructive/60 transition-colors"
+              title="Delete note"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+            </button>
+          )}
+        </div>
+
+        {/* Tags */}
+        {isOpen && !readOnly && (
+          <div className="px-4 pb-2">
+            <TagInput
+              tags={note.tags ?? []}
+              onChange={handleTagsChange}
+              placeholder="Add tags..."
+            />
+          </div>
+        )}
+        {isOpen && readOnly && (note.tags ?? []).length > 0 && (
+          <div className="px-4 pb-2 flex flex-wrap gap-1">
+            {note.tags.map((tag) => (
+              <span
+                key={tag}
+                className="px-1.5 py-0.5 text-[10px] bg-teal/8 border border-teal/15 text-teal tracking-wider"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
+
+        {/* Content */}
+        {isOpen && (
+          <div className="px-4 pb-4">
+            <Suspense
+              fallback={
+                <div className="flex items-center justify-center py-8">
+                  <Loader size="sm" />
+                </div>
+              }
+            >
+              <RichTextEditor
+                content={localContent}
+                onChange={updateContent}
+                readOnly={!!readOnly}
+                placeholder="Write your note here..."
+                minHeight="120px"
+              />
+            </Suspense>
+          </div>
+        )}
+      </div>
+
+      <DeleteConfirmDialog
+        open={deleteOpen}
+        onOpenChange={setDeleteOpen}
+        onConfirm={() => deleteNote.mutate(note.id)}
+        itemName={note.title}
+        itemType="note"
+      />
+    </>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Main WorldNotes component
+// ---------------------------------------------------------------------------
+
 const WorldNotes = ({ worldId, readOnly }: WorldNotesProps) => {
   const [isOpen, setIsOpen] = useState(true);
-  const { content, updateContent, saveNow, isLoading, isSaving, lastUpdated } =
-    useWorldNotes(worldId);
-
-  const formattedLastUpdated = lastUpdated
-    ? new Date(lastUpdated).toLocaleString("en-US", {
-        month: "short",
-        day: "numeric",
-        hour: "numeric",
-        minute: "2-digit",
-      })
-    : null;
+  const { notes, isLoading } = useWorldNotes(worldId);
+  const createNote = useCreateWorldNote(worldId);
 
   return (
     <GlassPanel className="overflow-hidden">
@@ -41,79 +208,56 @@ const WorldNotes = ({ worldId, readOnly }: WorldNotesProps) => {
           >
             <div className="flex items-center gap-3">
               <FileText className="w-5 h-5 text-primary" />
-              <span className="font-heading font-semibold">World Notes</span>
-            </div>
-            <div className="flex items-center gap-2">
-              {!readOnly && isSaving && (
-                <span className="text-xs text-muted-foreground flex items-center gap-1">
-                  <Loader variant="inline" size="sm" />
-                  Saving...
+              <span className="font-heading font-medium">World Notes</span>
+              {notes.length > 0 && (
+                <span className="font-mono text-[10px] text-muted-foreground/40">
+                  {notes.length}
                 </span>
               )}
-              {!readOnly && !isSaving && lastUpdated && (
-                <span className="text-xs text-muted-foreground flex items-center gap-1">
-                  <Check className="w-3 h-3 text-green-500" />
-                  Saved
-                </span>
-              )}
-              {isOpen ? (
-                <ChevronUp className="w-4 h-4" />
-              ) : (
-                <ChevronDown className="w-4 h-4" />
-              )}
             </div>
+            {isOpen ? (
+              <ChevronUp className="w-4 h-4" />
+            ) : (
+              <ChevronDown className="w-4 h-4" />
+            )}
           </Button>
         </CollapsibleTrigger>
         <CollapsibleContent>
-          <div className="p-4 pt-0 space-y-3">
+          <div className="p-4 pt-0 space-y-2">
             {isLoading ? (
               <div className="flex items-center justify-center py-8">
                 <Loader size="sm" />
               </div>
             ) : (
               <>
-                {!readOnly && (
-                  <div className="flex justify-end">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={saveNow}
-                      disabled={isSaving}
-                      className="h-8"
-                    >
-                      {isSaving ? (
-                        <Loader variant="inline" size="sm" className="mr-1.5" />
-                      ) : (
-                        <Save className="w-3.5 h-3.5 mr-1.5" />
-                      )}
-                      {isSaving ? "Saving..." : "Save"}
-                    </Button>
-                  </div>
+                {notes.length === 0 && (
+                  <p className="text-[11px] text-muted-foreground/30 italic py-2">
+                    No notes yet. Add one to start capturing ideas about your world.
+                  </p>
                 )}
 
-                <Suspense
-                  fallback={
-                    <div className="flex items-center justify-center py-8">
-                      <Loader size="sm" />
-                    </div>
-                  }
-                >
-                  <RichTextEditor
-                    content={content}
-                    onChange={updateContent}
-                    readOnly={!!readOnly}
-                    placeholder="Add notes about your world here... This is a great place for backstory, world history, important details, or anything else you want to remember."
-                    minHeight="200px"
+                {notes.map((note, idx) => (
+                  <NoteCard
+                    key={note.id}
+                    note={note}
+                    worldId={worldId}
+                    readOnly={readOnly}
+                    defaultOpen={idx === 0 && notes.length === 1}
                   />
-                </Suspense>
+                ))}
 
-                <div className="flex items-center justify-between flex-wrap gap-2">
-                  {formattedLastUpdated && (
-                    <p className="text-xs text-muted-foreground">
-                      Last updated: {formattedLastUpdated}
-                    </p>
-                  )}
-                </div>
+                {/* Add note button */}
+                {!readOnly && (
+                  <button
+                    type="button"
+                    onClick={() => createNote.mutate()}
+                    disabled={createNote.isPending}
+                    className="sf-fill-sweep sf-fill-sweep--secondary w-full flex items-center justify-center gap-2 px-3 py-2 border border-border/15 text-[10px] font-heading uppercase tracking-wider text-muted-foreground/40 hover:text-primary/60 hover:border-primary/20 transition-colors"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    Add Note
+                  </button>
+                )}
               </>
             )}
           </div>

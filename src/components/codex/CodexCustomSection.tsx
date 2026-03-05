@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { ChevronRight, ChevronDown, Plus } from "lucide-react";
 import {
   DndContext,
@@ -23,12 +23,14 @@ import type { CodexElement } from "@/services/world-data";
 interface CodexCustomSectionProps {
   elements: CodexElement[];
   activeElementId?: string | null;
+  pinnedIds?: Set<string>;
   onElementClick: (element: CodexElement) => void;
   onOpenWiki?: (element: CodexElement) => void;
   onOpenTool?: (element: CodexElement) => void;
   onDelete?: (element: CodexElement) => void;
   onRename?: (element: CodexElement, newTitle: string) => void;
   onReorder?: (activeId: string, overId: string) => void;
+  onSticky?: (element: CodexElement) => void;
   onCreateFolder: () => void;
   onCreateEntry: () => void;
 }
@@ -38,20 +40,30 @@ const SortableRow = ({
   element,
   isLast,
   isActive,
+  isPinned,
+  isRenaming,
   onElementClick,
   onOpenWiki,
   onOpenTool,
   onDelete,
   onRename,
+  onRenameComplete,
+  onSticky,
+  onTriggerRename,
 }: {
   element: CodexElement;
   isLast: boolean;
   isActive: boolean;
+  isPinned?: boolean;
+  isRenaming?: boolean;
   onElementClick: (element: CodexElement) => void;
   onOpenWiki?: (element: CodexElement) => void;
   onOpenTool?: (element: CodexElement) => void;
   onDelete?: (element: CodexElement) => void;
   onRename?: (element: CodexElement, newTitle: string) => void;
+  onRenameComplete?: () => void;
+  onSticky?: (element: CodexElement) => void;
+  onTriggerRename?: (id: string) => void;
 }) => {
   const {
     attributes,
@@ -75,14 +87,20 @@ const SortableRow = ({
         onOpenWiki={onOpenWiki}
         onOpenTool={onOpenTool}
         onDelete={onDelete}
+        onRename={onRename && element.kind === "entry" ? () => onTriggerRename?.(element.id) : undefined}
+        onSticky={onSticky}
+        isPinned={isPinned}
       >
         <CodexElementRow
           element={element}
-          depth={1}
+          depth={(element.depth ?? 0) + 1}
           isLast={isLast}
           isActive={isActive}
+          isPinned={isPinned}
           onClick={onElementClick}
           onRename={onRename}
+          isRenaming={isRenaming}
+          onRenameComplete={onRenameComplete}
         />
       </CodexContextMenu>
     </div>
@@ -92,16 +110,31 @@ const SortableRow = ({
 const CodexCustomSection = ({
   elements,
   activeElementId,
+  pinnedIds,
   onElementClick,
   onOpenWiki,
   onOpenTool,
   onDelete,
   onRename,
   onReorder,
+  onSticky,
   onCreateFolder,
   onCreateEntry,
 }: CodexCustomSectionProps) => {
   const [expanded, setExpanded] = useState(true);
+  const [renamingId, setRenamingId] = useState<string | null>(null);
+
+  // Sort pinned items first
+  const sortedElements = useMemo(() => {
+    if (!pinnedIds || pinnedIds.size === 0) return elements;
+    return [...elements].sort((a, b) => {
+      const aPinned = pinnedIds.has(a.id);
+      const bPinned = pinnedIds.has(b.id);
+      if (aPinned && !bPinned) return -1;
+      if (!aPinned && bPinned) return 1;
+      return 0;
+    });
+  }, [elements, pinnedIds]);
 
   const toggle = useCallback(() => setExpanded((prev) => !prev), []);
 
@@ -144,7 +177,7 @@ const CodexCustomSection = ({
 
       {expanded && (
         <div>
-          {elements.length === 0 ? (
+          {sortedElements.length === 0 ? (
             <p className="px-3 py-1.5 text-[10px] text-muted-foreground/25 italic">
               No entries on file.
             </p>
@@ -155,20 +188,25 @@ const CodexCustomSection = ({
               onDragEnd={handleDragEnd}
             >
               <SortableContext
-                items={elements.map((el) => el.id)}
+                items={sortedElements.map((el) => el.id)}
                 strategy={verticalListSortingStrategy}
               >
-                {elements.map((el, idx) => (
+                {sortedElements.map((el, idx) => (
                   <SortableRow
                     key={el.id}
                     element={el}
-                    isLast={idx === elements.length - 1}
+                    isLast={idx === sortedElements.length - 1}
                     isActive={activeElementId === el.id}
+                    isPinned={pinnedIds?.has(el.id)}
+                    isRenaming={renamingId === el.id}
                     onElementClick={onElementClick}
                     onOpenWiki={onOpenWiki}
                     onOpenTool={onOpenTool}
                     onDelete={onDelete}
                     onRename={onRename}
+                    onRenameComplete={() => setRenamingId(null)}
+                    onTriggerRename={setRenamingId}
+                    onSticky={onSticky}
                   />
                 ))}
               </SortableContext>
@@ -176,19 +214,19 @@ const CodexCustomSection = ({
           )}
 
           {/* Create buttons */}
-          <div className="flex gap-1 px-3 py-1.5">
+          <div className="flex gap-2 px-3 py-2">
             <button
               onClick={onCreateFolder}
-              className="sf-fill-sweep sf-fill-sweep--secondary flex items-center gap-1 px-2 py-1 border border-border/15 text-[9px] font-heading uppercase tracking-wider text-muted-foreground/40 hover:text-muted-foreground/70 transition-colors"
+              className="sf-fill-sweep sf-fill-sweep--secondary flex items-center gap-1.5 px-3 py-1.5 border border-border/15 text-[10px] font-heading uppercase tracking-wider text-muted-foreground/40 hover:text-primary/60 hover:border-primary/20 transition-colors"
             >
-              <Plus className="w-2.5 h-2.5" />
+              <Plus className="w-3 h-3" />
               New Folder
             </button>
             <button
               onClick={onCreateEntry}
-              className="sf-fill-sweep sf-fill-sweep--secondary flex items-center gap-1 px-2 py-1 border border-border/15 text-[9px] font-heading uppercase tracking-wider text-muted-foreground/40 hover:text-muted-foreground/70 transition-colors"
+              className="sf-fill-sweep sf-fill-sweep--secondary flex items-center gap-1.5 px-3 py-1.5 border border-border/15 text-[10px] font-heading uppercase tracking-wider text-muted-foreground/40 hover:text-primary/60 hover:border-primary/20 transition-colors"
             >
-              <Plus className="w-2.5 h-2.5" />
+              <Plus className="w-3 h-3" />
               New Entry
             </button>
           </div>

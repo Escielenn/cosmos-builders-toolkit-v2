@@ -1,5 +1,5 @@
 import { memo, useState, useRef, useCallback, useEffect } from "react";
-import { FileText, Folder } from "lucide-react";
+import { FileText, Folder, PenLine, Pin, StickyNote } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { CodexElement } from "@/services/world-data";
 
@@ -8,8 +8,12 @@ interface CodexElementRowProps {
   depth?: number;
   isLast?: boolean;
   isActive?: boolean;
+  isPinned?: boolean;
   onClick: (element: CodexElement) => void;
   onRename?: (element: CodexElement, newTitle: string) => void;
+  /** Externally trigger rename mode (e.g. from context menu) */
+  isRenaming?: boolean;
+  onRenameComplete?: () => void;
 }
 
 const CodexElementRow = memo(({
@@ -17,12 +21,23 @@ const CodexElementRow = memo(({
   depth = 0,
   isLast = false,
   isActive = false,
+  isPinned = false,
   onClick,
   onRename,
+  isRenaming = false,
+  onRenameComplete,
 }: CodexElementRowProps) => {
   const [editing, setEditing] = useState(false);
   const [editValue, setEditValue] = useState(element.title);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // Enter editing when externally triggered via isRenaming
+  useEffect(() => {
+    if (isRenaming && !editing && onRename && element.kind === "entry") {
+      setEditValue(element.title);
+      setEditing(true);
+    }
+  }, [isRenaming, editing, onRename, element]);
 
   useEffect(() => {
     if (editing) {
@@ -46,15 +61,17 @@ const CodexElementRow = memo(({
       onRename(element, trimmed);
     }
     setEditing(false);
-  }, [editValue, element, onRename]);
+    onRenameComplete?.();
+  }, [editValue, element, onRename, onRenameComplete]);
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
       commitRename();
     } else if (e.key === "Escape") {
       setEditing(false);
+      onRenameComplete?.();
     }
-  }, [commitRename]);
+  }, [commitRename, onRenameComplete]);
 
   const sharedStyle = { paddingLeft: depth * 16 + 12 };
 
@@ -118,7 +135,11 @@ const CodexElementRow = memo(({
       )}
 
       {/* Icon */}
-      {element.kind === "entry" && element.type === "lore" ? (
+      {element.kind === "writing" ? (
+        <PenLine className="w-3 h-3 text-[#5B8DEF]/60 shrink-0" />
+      ) : element.kind === "note" ? (
+        <StickyNote className="w-3 h-3 text-primary/50 shrink-0" />
+      ) : element.kind === "entry" && element.type === "lore" ? (
         <Folder className="w-3 h-3 text-amber-400/60 shrink-0" />
       ) : element.kind === "entry" ? (
         <FileText className="w-3 h-3 text-muted-foreground/50 shrink-0" />
@@ -136,6 +157,11 @@ const CodexElementRow = memo(({
       >
         {element.title}
       </span>
+
+      {/* Pin indicator */}
+      {isPinned && (
+        <Pin className="w-2.5 h-2.5 text-tier-5 shrink-0" />
+      )}
 
       {/* Draft badge */}
       {element.isDraft && element.kind === "worksheet" && (

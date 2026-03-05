@@ -5,7 +5,7 @@ import {
   ContextMenuSeparator,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
-import { FileText, Wrench, Pencil, Copy, FolderInput, Trash2, Tag, Image } from "lucide-react";
+import { FileText, Wrench, Pencil, Copy, FolderInput, Trash2, Tag, Image, Pin, PinOff } from "lucide-react";
 import type { CodexElement } from "@/services/world-data";
 
 interface CodexContextMenuProps {
@@ -18,6 +18,8 @@ interface CodexContextMenuProps {
   onMoveTo?: (element: CodexElement) => void;
   onAddTag?: (element: CodexElement) => void;
   onChangeIcon?: (element: CodexElement) => void;
+  onSticky?: (element: CodexElement) => void;
+  isPinned?: boolean;
   onDelete?: (element: CodexElement) => void;
 }
 
@@ -31,6 +33,8 @@ const CodexContextMenu = ({
   onMoveTo,
   onAddTag,
   onChangeIcon,
+  onSticky,
+  isPinned,
   onDelete,
 }: CodexContextMenuProps) => {
   return (
@@ -84,7 +88,25 @@ const CodexContextMenu = ({
             Move to...
           </ContextMenuItem>
         )}
-        {(onRename || onDuplicate || onMoveTo) && <ContextMenuSeparator />}
+        {onSticky && (
+          <ContextMenuItem
+            onClick={() => onSticky(element)}
+            className="text-xs gap-2"
+          >
+            {isPinned ? (
+              <>
+                <PinOff className="w-3.5 h-3.5" />
+                Unpin
+              </>
+            ) : (
+              <>
+                <Pin className="w-3.5 h-3.5" />
+                Pin to Top
+              </>
+            )}
+          </ContextMenuItem>
+        )}
+        {(onRename || onDuplicate || onMoveTo || onSticky) && <ContextMenuSeparator />}
 
         {onAddTag && (
           <ContextMenuItem
