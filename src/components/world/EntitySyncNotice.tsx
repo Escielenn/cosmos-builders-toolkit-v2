@@ -50,6 +50,8 @@ export default function EntitySyncNotice({
     onSuccess: invalidate,
   });
 
+  const isAnyPending = acceptMutation.isPending || dismissMutation.isPending;
+
   if (!pendingChanges || pendingChanges.length === 0) return null;
 
   // Group by source tool
@@ -90,7 +92,7 @@ export default function EntitySyncNotice({
           size="sm"
           variant="outline"
           onClick={() => acceptMutation.mutate()}
-          disabled={acceptMutation.isPending}
+          disabled={isAnyPending}
           className="gap-1 h-6 text-[10px] border-amber/20 text-amber hover:bg-amber/10"
         >
           <Check className="w-3 h-3" />
@@ -100,7 +102,7 @@ export default function EntitySyncNotice({
           size="sm"
           variant="ghost"
           onClick={() => dismissMutation.mutate()}
-          disabled={dismissMutation.isPending}
+          disabled={isAnyPending}
           className="gap-1 h-6 text-[10px]"
         >
           <X className="w-3 h-3" />

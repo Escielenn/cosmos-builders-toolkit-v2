@@ -100,14 +100,18 @@ export default function EntityPickerDialog({
   const handleCreate = async () => {
     if (!selectedType || !name.trim()) return;
 
-    const entry = await createEntity.mutateAsync({
-      title: name.trim(),
-      entryType: selectedType,
-      description: description.trim(),
-    });
+    try {
+      const entry = await createEntity.mutateAsync({
+        title: name.trim(),
+        entryType: selectedType,
+        description: description.trim(),
+      });
 
-    handleOpenChange(false);
-    navigate(`/worlds/${worldId}/pages/${entry.id}`);
+      handleOpenChange(false);
+      navigate(`/worlds/${worldId}/pages/${entry.id}`);
+    } catch {
+      // Error toast is handled by the mutation's onError callback
+    }
   };
 
   return (

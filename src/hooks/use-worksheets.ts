@@ -160,7 +160,7 @@ export const useWorksheets = (worldId: string | undefined, includeArchived: bool
           .catch(() => {}); // best-effort
       }
       // Sync worksheet data back to linked entity (best-effort)
-      if (data.tool_type && data.data) {
+      if (data.tool_type && data.data && typeof data.data === "object" && !Array.isArray(data.data)) {
         syncWorksheetToEntity(
           data.id,
           data.data as Record<string, unknown>,

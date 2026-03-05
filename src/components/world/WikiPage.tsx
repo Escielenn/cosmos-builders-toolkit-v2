@@ -5,6 +5,7 @@ import { useWikiPage } from "@/hooks/use-wiki-page";
 import { DataProfileInfobox } from "./DataProfileInfobox";
 import EntityMasterInfobox from "./EntityMasterInfobox";
 import EntitySyncNotice from "./EntitySyncNotice";
+import type { PendingChange } from "@/services/entity-sync";
 import WorksheetLauncherGrid from "./WorksheetLauncherGrid";
 import { LAYER_LABELS } from "@/services/world-data";
 import type { CascadeLayer } from "@/services/world-data";
@@ -327,13 +328,13 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
       {/* Entity Sync Notice (pending worksheet → entity changes) */}
       {!toolSource && entry && (() => {
         const meta = (entry.metadata as Record<string, unknown>) ?? {};
-        const pending = meta._pending_changes as Array<unknown> | undefined;
+        const pending = meta._pending_changes as PendingChange[] | undefined;
         return pending && pending.length > 0 ? (
           <div className="mt-4">
             <EntitySyncNotice
               entryId={entry.id}
               worldId={worldId}
-              pendingChanges={pending as any}
+              pendingChanges={pending}
             />
           </div>
         ) : null;

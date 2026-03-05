@@ -72,10 +72,18 @@ export function useCreateEntityEntry(worldId: string | undefined) {
     mutationFn: async (input: CreateEntityInput) => {
       if (!worldId || !user) throw new Error("Missing world or user");
 
+      // Strip internal _-prefixed keys to prevent injection of _pending_changes etc.
+      const sanitized: Record<string, unknown> = {};
+      if (input.metadata) {
+        for (const [k, v] of Object.entries(input.metadata)) {
+          if (!k.startsWith("_")) sanitized[k] = v;
+        }
+      }
+
       const metadata: Record<string, unknown> = {
         name: input.title,
         description: input.description ?? "",
-        ...input.metadata,
+        ...sanitized,
       };
 
       return createEntry(

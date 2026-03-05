@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -30,12 +30,18 @@ export default function EntityMasterInfobox({
   metadata,
   canEdit,
 }: EntityMasterInfoboxProps) {
-  const fields = ENTITY_MASTER_FIELDS[entryType];
-  if (!fields || fields.length === 0) return null;
-
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState<Record<string, unknown>>({});
   const updateMetadata = useUpdateEntityMetadata(worldId);
+
+  // Reset editing state when navigating to a different entity
+  useEffect(() => {
+    setEditing(false);
+    setDraft({});
+  }, [entryId]);
+
+  const fields = ENTITY_MASTER_FIELDS[entryType];
+  if (!fields || fields.length === 0) return null;
 
   const startEditing = () => {
     setDraft({ ...metadata });

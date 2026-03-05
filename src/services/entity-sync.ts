@@ -3,7 +3,7 @@ import { ENTITY_MASTER_FIELDS } from "@/lib/entity-config";
 import { getNestedValue } from "@/lib/entity-prepopulate";
 import { TOOL_TYPE_MAP } from "@/services/world-data";
 
-interface PendingChange {
+export interface PendingChange {
   field: string;
   label: string;
   oldValue: unknown;
