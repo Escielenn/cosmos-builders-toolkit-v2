@@ -59,11 +59,11 @@ export function DeleteConfirmDialog({
         <AlertDialogHeader>
           <AlertDialogTitle className="flex items-center gap-2 text-destructive">
             <AlertTriangle className="w-5 h-5" />
-            Delete {itemType}?
+            CONFIRM: Delete {itemType}
           </AlertDialogTitle>
           <AlertDialogDescription className="space-y-3">
             <p>{cascadeWarning}</p>
-            <p className="font-medium text-foreground">This action cannot be undone.</p>
+            <p className="font-medium text-foreground">THIS CANNOT BE UNDONE.</p>
           </AlertDialogDescription>
         </AlertDialogHeader>
 
@@ -84,11 +84,14 @@ export function DeleteConfirmDialog({
         <AlertDialogFooter>
           <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
           <AlertDialogAction
-            onClick={handleConfirm}
+            onClick={(e) => {
+              e.preventDefault();
+              handleConfirm();
+            }}
             disabled={!isConfirmValid || isDeleting}
             className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
           >
-            {isDeleting ? "Deleting..." : "Delete permanently"}
+            {isDeleting ? "Deleting..." : "CONFIRM DELETION"}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

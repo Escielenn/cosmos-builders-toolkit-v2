@@ -87,7 +87,7 @@ function MinimizedBar({
   const pct = duration > 0 ? (progress / duration) * 100 : 0;
 
   return (
-    <div className="fixed bottom-0 inset-x-0 z-40 bg-sf-surface/95 backdrop-blur-xl border-t border-white/8">
+    <div className="fixed bottom-6 inset-x-0 z-[8999] bg-sf-surface/95 backdrop-blur-xl border-t border-white/8">
       {/* Thin progress line at very top */}
       <div className="h-[2px] bg-white/5">
         <div
@@ -160,7 +160,7 @@ function ExpandedBar({ state, controls, progressBarRef }: ExpandedBarProps) {
   const pct = state.duration > 0 ? (state.progress / state.duration) * 100 : 0;
 
   return (
-    <div className="fixed bottom-0 inset-x-0 z-40 bg-sf-surface/95 backdrop-blur-xl border-t border-white/8">
+    <div className="fixed bottom-6 inset-x-0 z-[8999] bg-sf-surface/95 backdrop-blur-xl border-t border-white/8">
       {/* Progress bar — clickable */}
       <div
         ref={progressBarRef}
