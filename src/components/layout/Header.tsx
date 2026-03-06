@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { User, LogIn, LogOut, ChevronDown, Crown, Menu, Globe, Wrench, BookOpen, Sparkles, Mail, Settings, Search, Image, Download, Library, Archive } from "lucide-react";
+import { User, LogIn, LogOut, ChevronDown, Zap, Menu, Globe, Wrench, BookOpen, Sparkles, Mail, Settings, Search, Image, Download, Library, Archive, Map, Compass, PenTool, Award } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import CubeLogo from "@/components/icons/CubeLogo";
@@ -19,6 +19,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import BackgroundSelector from "@/components/settings/BackgroundSelector";
+import AudioSelectorDialog from "@/components/audio/AudioSelectorDialog";
 import SettingsDialog from "@/components/settings/SettingsDialog";
 import GlobalSearch from "@/components/search/GlobalSearch";
 import { useAuth } from "@/contexts/AuthContext";
@@ -26,7 +27,7 @@ import { useSubscription } from "@/hooks/use-subscription";
 
 const Header = () => {
   const { user, profile, signOut, loading } = useAuth();
-  const { isSubscribed } = useSubscription();
+  const { isSubscribed, isVanguard } = useSubscription();
   const navigate = useNavigate();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -76,14 +77,22 @@ const Header = () => {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/30 backdrop-blur-xl bg-gradient-to-r from-[#000000]/95 to-[#0A0E17]/95">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-3 group">
-          <CubeLogo size={40} className="rounded-lg" />
-          <div className="flex flex-col">
-            <span className="font-display font-light text-lg leading-tight tracking-sf-wide text-white uppercase">
-              STELLARFORGE
+        <Link to="/" className="flex items-center gap-2 group shrink-0">
+          <CubeLogo size={32} className="rounded-lg" />
+          {isSubscribed ? (
+            <>
+              <span className="hidden md:inline font-display text-sm font-light tracking-sf-wide text-foreground/90 uppercase">
+                STELLARFORGE
+              </span>
+              <span className="md:hidden font-display text-sm font-light tracking-sf-wide text-foreground/90 uppercase">
+                SF
+              </span>
+            </>
+          ) : (
+            <span className="font-display text-sm font-light tracking-sf-wide text-foreground/90 uppercase">
+              SF
             </span>
-            <span className="text-xs text-muted-foreground tracking-wide">Forge the Future</span>
-          </div>
+          )}
         </Link>
 
         {/* Mobile Menu */}
@@ -98,8 +107,8 @@ const Header = () => {
             <SheetHeader className="text-left">
               <SheetTitle className="flex items-center gap-3">
                 <CubeLogo size={32} className="rounded-lg" />
-                <span className="font-display font-light tracking-sf-wide text-white uppercase">
-                  STELLARFORGE
+                <span className="font-display text-sm font-light tracking-sf-wide text-foreground/90 uppercase">
+                  SF
                 </span>
               </SheetTitle>
             </SheetHeader>
@@ -138,13 +147,23 @@ const Header = () => {
                 <Wrench className="w-5 h-5" />
                 Tools
               </button>
+              {!isSubscribed && (
+                <Link
+                  to="/features"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
+                >
+                  <Sparkles className="w-5 h-5" />
+                  Features
+                </Link>
+              )}
               <Link
-                to="/features"
+                to="/guide"
                 onClick={() => setMobileMenuOpen(false)}
                 className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
               >
-                <Sparkles className="w-5 h-5" />
-                Features
+                <Compass className="w-5 h-5" />
+                Guide
               </Link>
               <Link
                 to="/learn"
@@ -155,26 +174,31 @@ const Header = () => {
                 Learn
               </Link>
               <Link
-                to="/pricing"
+                to="/workshop"
                 onClick={() => setMobileMenuOpen(false)}
-                className={`flex items-center gap-3 px-3 py-3 text-sm font-medium rounded-lg transition-colors ${
-                  isSubscribed
-                    ? "text-amber-600 dark:text-amber-400 hover:bg-amber-500/10"
-                    : "text-muted-foreground hover:text-foreground hover:bg-accent/10"
-                }`}
+                className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
               >
-                {isSubscribed ? (
-                  <>
-                    <Crown className="w-5 h-5" />
-                    Pro Active
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="w-5 h-5" />
-                    Pricing
-                  </>
-                )}
+                <PenTool className="w-5 h-5" />
+                Workshop
               </Link>
+              <Link
+                to="/roadmap"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
+              >
+                <Map className="w-5 h-5" />
+                Roadmap
+              </Link>
+              {!isSubscribed && (
+                <Link
+                  to="/pricing"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
+                >
+                  <Sparkles className="w-5 h-5" />
+                  Pricing
+                </Link>
+              )}
               <Link
                 to="/contact"
                 onClick={() => setMobileMenuOpen(false)}
@@ -202,7 +226,7 @@ const Header = () => {
         </Sheet>
 
         {/* Desktop Navigation - StellarForge typography: uppercase, letter-spaced, light weight */}
-        <nav className="hidden md:flex items-center gap-8">
+        <nav className="hidden md:flex items-center gap-5">
           <button
             onClick={() => scrollToSection("worlds")}
             className="sf-nav-link text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground hover:text-primary transition-colors duration-300"
@@ -215,11 +239,19 @@ const Header = () => {
           >
             Tools
           </button>
+          {!isSubscribed && (
+            <Link
+              to="/features"
+              className="sf-nav-link text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground hover:text-primary transition-colors duration-300"
+            >
+              Features
+            </Link>
+          )}
           <Link
-            to="/features"
+            to="/guide"
             className="sf-nav-link text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground hover:text-primary transition-colors duration-300"
           >
-            Features
+            Guide
           </Link>
           <Link
             to="/learn"
@@ -228,22 +260,25 @@ const Header = () => {
             Learn
           </Link>
           <Link
-            to="/pricing"
-            className={`sf-nav-link text-xs font-medium uppercase tracking-[0.15em] transition-colors duration-300 ${
-              isSubscribed
-                ? "text-amber-600 dark:text-amber-400 hover:text-amber-300 flex items-center gap-1.5"
-                : "text-muted-foreground hover:text-primary"
-            }`}
+            to="/workshop"
+            className="sf-nav-link text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground hover:text-primary transition-colors duration-300"
           >
-            {isSubscribed ? (
-              <>
-                <Crown className="w-3.5 h-3.5" />
-                Pro
-              </>
-            ) : (
-              "Pricing"
-            )}
+            Workshop
           </Link>
+          <Link
+            to="/roadmap"
+            className="sf-nav-link text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground hover:text-primary transition-colors duration-300"
+          >
+            Roadmap
+          </Link>
+          {!isSubscribed && (
+            <Link
+              to="/pricing"
+              className="sf-nav-link text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground hover:text-primary transition-colors duration-300"
+            >
+              Pricing
+            </Link>
+          )}
           <Link
             to="/contact"
             className="sf-nav-link text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground hover:text-primary transition-colors duration-300"
@@ -253,6 +288,7 @@ const Header = () => {
         </nav>
 
         <div className="flex items-center gap-2">
+          <AudioSelectorDialog />
           <BackgroundSelector />
           <Button
             variant="ghost"
@@ -272,8 +308,19 @@ const Header = () => {
               className="hidden sm:inline-flex gap-1.5 border-amber-500/50 text-amber-600 dark:text-amber-400 hover:bg-amber-500/10"
               onClick={() => navigate("/pricing")}
             >
-              <Crown className="w-3.5 h-3.5" />
+              <Zap className="w-3.5 h-3.5" />
               Upgrade to Pro
+            </Button>
+          )}
+          {!loading && user && isSubscribed && !isVanguard && (
+            <Button
+              variant="outline"
+              size="sm"
+              className="hidden lg:inline-flex gap-1.5 border-violet-500/50 text-violet-400 hover:bg-violet-500/10"
+              onClick={() => navigate("/pricing")}
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              Upgrade to Vanguard
             </Button>
           )}
           {!loading && user ? (
@@ -287,12 +334,17 @@ const Header = () => {
                   <span className="hidden sm:inline text-sm">
                     {profile?.display_name || user.email?.split("@")[0]}
                   </span>
-                  {isSubscribed && (
-                    <span className="hidden sm:inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-medium bg-amber-500/20 text-amber-600 dark:text-amber-400">
-                      <Crown className="w-3 h-3" />
+                  {isVanguard ? (
+                    <span className="hidden sm:inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-medium bg-violet-500/20 text-violet-400 sf-shimmer-violet">
+                      <Sparkles className="w-3 h-3" />
+                      Vanguard
+                    </span>
+                  ) : isSubscribed ? (
+                    <span className="hidden sm:inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-medium bg-amber-500/20 text-amber-600 dark:text-amber-400 sf-shimmer">
+                      <Zap className="w-3 h-3" />
                       Pro
                     </span>
-                  )}
+                  ) : null}
                   <ChevronDown className="w-4 h-4 text-muted-foreground" />
                 </Button>
               </DropdownMenuTrigger>
@@ -313,6 +365,14 @@ const Header = () => {
                 <DropdownMenuItem onClick={() => navigate("/archive")}>
                   <Archive className="w-4 h-4 mr-2" />
                   Archive
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate("/workshop")}>
+                  <PenTool className="w-4 h-4 mr-2" />
+                  Workshop
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate("/commendations")}>
+                  <Award className="w-4 h-4 mr-2" />
+                  Commendations
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => {
@@ -336,14 +396,19 @@ const Header = () => {
                   <Download className="w-4 h-4 mr-2" />
                   Export Settings
                 </DropdownMenuItem>
-                {isSubscribed ? (
+                {isVanguard ? (
+                  <DropdownMenuItem onClick={() => navigate("/pricing")} className="text-violet-400">
+                    <Sparkles className="w-4 h-4 mr-2 text-violet-400" />
+                    Manage Vanguard
+                  </DropdownMenuItem>
+                ) : isSubscribed ? (
                   <DropdownMenuItem onClick={() => navigate("/pricing")} className="text-amber-600 dark:text-amber-400">
-                    <Crown className="w-4 h-4 mr-2 text-amber-500" />
-                    Manage Pro Subscription
+                    <Zap className="w-4 h-4 mr-2 text-amber-500" />
+                    Manage Subscription
                   </DropdownMenuItem>
                 ) : (
                   <DropdownMenuItem onClick={() => navigate("/pricing")}>
-                    <Crown className="w-4 h-4 mr-2" />
+                    <Zap className="w-4 h-4 mr-2" />
                     Upgrade to Pro
                   </DropdownMenuItem>
                 )}

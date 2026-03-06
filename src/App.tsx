@@ -6,6 +6,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { BackgroundProvider } from "@/hooks/use-background";
+import { AudioProvider } from "@/hooks/use-audio-player";
+import AudioPlayer from "@/components/audio/AudioPlayer";
 import ScrollToTop from "./components/ScrollToTop";
 import FABStack from "./components/layout/FABStack";
 import CookieConsent from "./components/common/CookieConsent";
@@ -17,6 +19,10 @@ import { Loader } from "@/components/ui/loader";
 import { getLoadingMessage } from "@/lib/loading-messages";
 import ErrorBoundary from "./components/ErrorBoundary";
 import SiteGate from "./components/auth/SiteGate";
+import { BadgeProvider } from "./contexts/BadgeContext";
+import { BadgeEarnedDialog } from "./components/badges/BadgeEarnedDialog";
+import { useBadgeEvaluator } from "./hooks/use-badge-evaluator";
+import { useAuth } from "./contexts/AuthContext";
 
 // Eagerly loaded pages (small, frequently accessed)
 import Index from "./pages/Index";
@@ -26,8 +32,10 @@ import Auth from "./pages/Auth";
 // Lazy loaded pages (larger, less frequently accessed)
 const Profile = lazy(() => import("./pages/Profile"));
 const Pricing = lazy(() => import("./pages/Pricing"));
+const Roadmap = lazy(() => import("./pages/Roadmap"));
 const Features = lazy(() => import("./pages/Features"));
 const Guide = lazy(() => import("./pages/Guide"));
+const FieldManual = lazy(() => import("./pages/FieldManual"));
 const ToolsWiki = lazy(() => import("./pages/ToolsWiki"));
 const GettingStarted = lazy(() => import("./pages/GettingStarted"));
 const Contact = lazy(() => import("./pages/Contact"));
@@ -39,8 +47,10 @@ const WorldToolPage = lazy(() => import("./pages/WorldToolPage"));
 const WorldGraph = lazy(() => import("./pages/WorldGraph"));
 const WikiPageRoute = lazy(() => import("./pages/WikiPageRoute"));
 const WorldChronicle = lazy(() => import("./pages/WorldChronicle"));
+const WikiBrowse = lazy(() => import("./pages/WikiBrowse"));
 const Collection = lazy(() => import("./pages/Collection"));
 const Archive = lazy(() => import("./pages/Archive"));
+const Commendations = lazy(() => import("./pages/Commendations"));
 
 // Lazy loaded tool pages (heavy, only loaded when accessed)
 const EnvironmentalChainReaction = lazy(() => import("./pages/tools/EnvironmentalChainReaction"));
@@ -70,6 +80,7 @@ const LearnArticle = lazy(() => import("./pages/learn/LearnArticle"));
 
 // Lazy loaded content pages
 const Bookshelf = lazy(() => import("./pages/Bookshelf"));
+const WritingWorkshop = lazy(() => import("./pages/WritingWorkshop"));
 
 // Lazy loaded utility pages
 const NotionCallback = lazy(() => import("./pages/NotionCallback"));
@@ -93,9 +104,13 @@ const ExoforgeScience = lazy(() => import("./pages/simulators/ExoforgeScience"))
 // Lazy loaded cartographer wrapper pages
 const StellarCartographer = lazy(() => import("./pages/cartographers/StellarCartographer"));
 
+// Lazy loaded admin page
+const Admin = lazy(() => import("./pages/Admin"));
+
 // Lazy loaded legal pages
 const Privacy = lazy(() => import("./pages/legal/Privacy"));
 const Terms = lazy(() => import("./pages/legal/Terms"));
+const Credits = lazy(() => import("./pages/legal/Credits"));
 const Changelog = lazy(() => import("./pages/legal/Changelog"));
 
 // Lazy loaded guard (includes subscription logic)
@@ -127,16 +142,28 @@ const PageLoader = () => (
   </div>
 );
 
+/** Mounts the badge evaluator hook — only renders when user is logged in */
+function BadgeEvaluatorMount() {
+  const { user } = useAuth();
+  useBadgeEvaluator();
+  if (!user) return null;
+  return null;
+}
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
+      <BadgeProvider>
       <BackgroundProvider>
+      <AudioProvider>
         <TooltipProvider>
           <Toaster />
           <Sonner />
           <BrowserRouter>
             <ScrollToTop />
             <VideoBackground />
+            <BadgeEvaluatorMount />
+            <BadgeEarnedDialog />
             <ErrorBoundary>
             <SiteGate>
             <Suspense fallback={<PageLoader />}>
@@ -145,24 +172,38 @@ const App = () => (
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/pricing" element={<Pricing />} />
+                <Route path="/roadmap" element={<Roadmap />} />
                 <Route path="/features" element={<Features />} />
                 <Route path="/guide" element={<Guide />} />
+                <Route path="/guide/field-manual" element={<FieldManual />} />
                 <Route path="/guide/tools" element={<ToolsWiki />} />
                 <Route path="/getting-started" element={<GettingStarted />} />
                 <Route path="/contact" element={<Contact />} />
+                <Route path="/admin" element={<Admin />} />
                 <Route path="/collection" element={<Collection />} />
                 <Route path="/archive" element={<Archive />} />
+                <Route path="/commendations" element={<Commendations />} />
                 <Route path="/worlds" element={<Worlds />} />
                 {/* World routes — nested under WorldLayout (Codex sidebar) */}
                 <Route path="/worlds/:worldId" element={<WorldLayout />}>
                   <Route index element={<WorldDashboard />} />
                   <Route path="tools/:toolName" element={<WorldToolPage />} />
                   <Route path="pages/:entryId" element={<WikiPageRoute />} />
+                  <Route path="wiki" element={<WikiBrowse />} />
                   <Route path="chronicle" element={<WorldChronicle />} />
                   <Route path="graph" element={<WorldGraph />} />
                   <Route path="connections" element={<WorldConnections />} />
                 </Route>
                 <Route path="/bookshelf" element={<Bookshelf />} />
+                {/* Writing Workshop - Pro gated */}
+                <Route
+                  path="/workshop"
+                  element={
+                    <ProToolGuard toolId="writing-workshop">
+                      <WritingWorkshop />
+                    </ProToolGuard>
+                  }
+                />
                 {/* Free Tools */}
                 <Route path="/tools/environmental-chain-reaction" element={<EnvironmentalChainReaction />} />
                 <Route path="/tools/propulsion-consequences-map" element={<PropulsionConsequencesMap />} />
@@ -363,6 +404,7 @@ const App = () => (
                 {/* Legal Pages */}
                 <Route path="/privacy" element={<Privacy />} />
                 <Route path="/terms" element={<Terms />} />
+                <Route path="/credits" element={<Credits />} />
                 <Route path="/changelog" element={<Changelog />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
@@ -375,9 +417,12 @@ const App = () => (
             <TextureOverlay />
             <DataBurstOverlay />
             <StatusBar />
+            <AudioPlayer />
           </BrowserRouter>
         </TooltipProvider>
+      </AudioProvider>
       </BackgroundProvider>
+      </BadgeProvider>
     </AuthProvider>
   </QueryClientProvider>
 );

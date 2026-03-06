@@ -9,11 +9,12 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Crown } from "lucide-react";
+import { Zap } from "lucide-react";
 import { useWorlds } from "@/hooks/use-worlds";
 import { useSubscription } from "@/hooks/use-subscription";
 import UpgradeDialog from "@/components/subscription/UpgradeDialog";
 import HeaderImageUpload from "@/components/world/HeaderImageUpload";
+import SoundtrackPicker from "@/components/audio/SoundtrackPicker";
 import { useToast } from "@/hooks/use-toast";
 import type { WorldTheme } from "@/hooks/use-world";
 
@@ -48,6 +49,7 @@ export default function WorldAppearanceDialog({
   const [accentColor, setAccentColor] = useState("#3DFFCD");
   const [hexInput, setHexInput] = useState("#3DFFCD");
   const [coverImageUrl, setCoverImageUrl] = useState<string | null>(null);
+  const [soundtrackId, setSoundtrackId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -56,6 +58,7 @@ export default function WorldAppearanceDialog({
       setAccentColor(color);
       setHexInput(color);
       setCoverImageUrl(currentTheme.cover_image_url || null);
+      setSoundtrackId(currentTheme.soundtrack_playlist_id || null);
     }
   }, [open, currentTheme]);
 
@@ -83,6 +86,7 @@ export default function WorldAppearanceDialog({
         ...currentTheme,
         accent_color: accentColor === "#3DFFCD" ? undefined : accentColor,
         cover_image_url: coverImageUrl || undefined,
+        soundtrack_playlist_id: soundtrackId || undefined,
       };
       await updateWorld.mutateAsync({ worldId, theme });
       toast({ title: "APPEARANCE UPDATED." });
@@ -101,7 +105,7 @@ export default function WorldAppearanceDialog({
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
               <DialogTitle className="font-heading text-xl tracking-wider flex items-center gap-2">
-                <Crown className="w-5 h-5 text-amber-400" />
+                <Zap className="w-5 h-5 text-amber-400" />
                 WORLD APPEARANCE
               </DialogTitle>
               <DialogDescription>
@@ -113,7 +117,7 @@ export default function WorldAppearanceDialog({
                 Pro includes custom theming, all export formats, 365-day version history, and unlimited worlds.
               </p>
               <Button onClick={() => setUpgradeOpen(true)}>
-                <Crown className="w-4 h-4 mr-2" />
+                <Zap className="w-4 h-4 mr-2" />
                 UPGRADE TO PRO
               </Button>
             </div>
@@ -130,7 +134,7 @@ export default function WorldAppearanceDialog({
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle className="font-heading text-xl tracking-wider flex items-center gap-2">
-              <Crown className="w-4 h-4 text-amber-400" />
+              <Zap className="w-4 h-4 text-amber-400" />
               WORLD APPEARANCE
             </DialogTitle>
             <DialogDescription>
@@ -186,6 +190,14 @@ export default function WorldAppearanceDialog({
                 onImageChange={setCoverImageUrl}
                 showMoodboardPicker={false}
               />
+            </div>
+
+            {/* Soundtrack */}
+            <div className="space-y-3">
+              <label className="font-mono text-[9px] uppercase tracking-[2px] text-muted-foreground">
+                // SOUNDTRACK
+              </label>
+              <SoundtrackPicker value={soundtrackId} onChange={setSoundtrackId} />
             </div>
 
             {/* Preview */}

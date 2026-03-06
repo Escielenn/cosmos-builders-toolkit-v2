@@ -7,6 +7,7 @@ export interface WorldTheme {
   cover_image_url?: string;
   icon?: string;
   font_mood?: "bridge" | "archive" | "terminal";
+  soundtrack_playlist_id?: string;
 }
 
 interface World {
