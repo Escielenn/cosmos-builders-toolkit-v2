@@ -12,9 +12,15 @@ import {
   ChevronUp,
   ChevronDown,
   Music,
+  ListMusic,
 } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { useAudioPlayer, useAudioControls } from "@/hooks/use-audio-player";
+import { OPEN_AUDIO_SELECTOR_EVENT } from "./AudioSelectorDialog";
+
+function openAudioSelector() {
+  window.dispatchEvent(new Event(OPEN_AUDIO_SELECTOR_EVENT));
+}
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -115,6 +121,15 @@ function MinimizedBar({
 
         <button
           type="button"
+          onClick={openAudioSelector}
+          className="p-1.5 text-tier-4 hover:text-tier-2 transition-colors"
+          aria-label="Browse tracks"
+        >
+          <ListMusic className="w-4 h-4" />
+        </button>
+
+        <button
+          type="button"
           onClick={onExpand}
           className="p-1.5 text-tier-4 hover:text-tier-2 transition-colors"
           aria-label="Expand player"
@@ -188,7 +203,14 @@ function ExpandedBar({ state, controls, progressBarRef }: ExpandedBarProps) {
       <div className="flex items-center gap-4 px-4 py-2">
         {/* Track info (left) */}
         <div className="flex items-center gap-3 min-w-0 flex-1">
-          <Music className="w-4 h-4 text-primary/50 shrink-0" />
+          <button
+            type="button"
+            onClick={openAudioSelector}
+            className="p-1 text-primary/50 hover:text-primary transition-colors shrink-0"
+            aria-label="Browse tracks"
+          >
+            <ListMusic className="w-4 h-4" />
+          </button>
           <div className="min-w-0">
             <p className="text-sm text-tier-2 truncate leading-tight">
               {state.currentTrack?.title ?? "No Track"}

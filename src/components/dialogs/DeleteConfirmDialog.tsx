@@ -32,7 +32,7 @@ export function DeleteConfirmDialog({
 }: DeleteConfirmDialogProps) {
   const [confirmText, setConfirmText] = useState("");
 
-  const isConfirmValid = confirmText === itemName;
+  const isConfirmValid = confirmText.toLowerCase() === itemName.toLowerCase();
 
   const handleConfirm = () => {
     if (isConfirmValid) {

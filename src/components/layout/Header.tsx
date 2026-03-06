@@ -81,15 +81,15 @@ const Header = () => {
           <CubeLogo size={32} className="rounded-lg" />
           {isSubscribed ? (
             <>
-              <span className="hidden md:inline font-display text-sm font-light tracking-sf-wide text-foreground/90 uppercase">
+              <span className="hidden md:inline font-display text-lg font-light tracking-sf-wide text-foreground/90 uppercase">
                 STELLARFORGE
               </span>
-              <span className="md:hidden font-display text-sm font-light tracking-sf-wide text-foreground/90 uppercase">
+              <span className="md:hidden font-display text-lg font-light tracking-sf-wide text-foreground/90 uppercase">
                 SF
               </span>
             </>
           ) : (
-            <span className="font-display text-sm font-light tracking-sf-wide text-foreground/90 uppercase">
+            <span className="font-display text-lg font-light tracking-sf-wide text-foreground/90 uppercase">
               SF
             </span>
           )}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Music } from "lucide-react";
 import {
   Dialog,
@@ -32,10 +32,20 @@ const TABS: { id: Tab; label: string; pro?: boolean }[] = [
 // AudioSelectorDialog
 // ---------------------------------------------------------------------------
 
+/** Open the audio selector from anywhere (e.g. the player bar). */
+export const OPEN_AUDIO_SELECTOR_EVENT = "sf:open-audio-selector";
+
 export default function AudioSelectorDialog() {
   const [open, setOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<Tab>("curated");
   const [expandedPlaylist, setExpandedPlaylist] = useState<AudioPlaylist | null>(null);
+
+  // Listen for external open requests (from AudioPlayer, etc.)
+  useEffect(() => {
+    const handler = () => setOpen(true);
+    window.addEventListener(OPEN_AUDIO_SELECTOR_EVENT, handler);
+    return () => window.removeEventListener(OPEN_AUDIO_SELECTOR_EVENT, handler);
+  }, []);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
