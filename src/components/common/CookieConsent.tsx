@@ -43,11 +43,10 @@ export const CookieConsent = () => {
           <Cookie className="w-8 h-8 text-primary flex-shrink-0 hidden sm:block" />
 
           <div className="flex-1">
-            <h3 className="font-semibold text-sm text-foreground mb-1">Cookie Preferences</h3>
+            <h3 className="font-semibold text-sm text-foreground mb-1">Cookie Notice</h3>
             <p className="text-xs text-muted-foreground leading-relaxed">
-              We use essential cookies for authentication and saving your preferences
-              (like sidebar state and background choice). We don't use tracking cookies
-              or share data with third parties.{" "}
+              Essential cookies required for authentication and session management.
+              No tracking cookies deployed. No third-party data sharing.{" "}
               <Link to="/privacy" className="text-primary hover:underline">
                 Learn more
               </Link>

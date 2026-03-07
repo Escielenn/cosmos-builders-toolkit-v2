@@ -30,7 +30,7 @@ export const CHAPTERS: ChapterDefinition[] = [
     id: "civilizations",
     number: 4,
     title: "Civilizations",
-    toolTypes: ["empire-designer", "technology-consequences", "drake-equation-calculator"],
+    toolTypes: ["empire-designer", "technology-consequences", "drake-equation-calculator", "space-expansion-modeler"],
   },
   {
     id: "culture",

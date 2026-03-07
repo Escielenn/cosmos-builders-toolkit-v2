@@ -4,6 +4,7 @@ import { useWorldId } from "@/hooks/use-world-id";
 import { PageBursts } from "@/components/ui/data-burst";
 import { TOOL_PAGE_BURSTS } from "@/lib/data-bursts";
 import { WorksheetTagsBar } from "@/components/tools/WorksheetTagsBar";
+import { logToSlider, sliderToLog } from "@/lib/sliders";
 
 const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
 import { useTags } from "@/hooks/use-tags";
@@ -31,7 +32,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
-import { Textarea } from "@/components/ui/textarea";
+
 import {
   Select,
   SelectContent,
@@ -52,6 +53,8 @@ import { getToolIcon } from "@/components/icons/tool-icons";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
 import { useAuth } from "@/contexts/AuthContext";
 import CollapsibleSection from "@/components/tools/CollapsibleSection";
+import SectionNavigation, { Section, MobileSectionNav } from "@/components/tools/SectionNavigation";
+import ToolSidebar from "@/components/tools/ToolSidebar";
 import ToolActionBar from "@/components/tools/ToolActionBar";
 import QuickExportButton from "@/components/tools/QuickExportButton";
 import ExportDialog from "@/components/tools/ExportDialog";
@@ -60,6 +63,7 @@ import { useWorksheetShare } from "@/hooks/use-sharing";
 import type { MoodboardImage } from "@/hooks/use-moodboard";
 import { WorksheetNotesSheet } from "@/components/tools/WorksheetNotesSheet";
 import { WorksheetMoodboardSheet } from "@/components/tools/WorksheetMoodboardSheet";
+import { ToolPageQuote } from "@/components/quotes/ToolPageQuote";
 import {
   GravitasSummaryTemplate,
   GravitasFullReportTemplate,
@@ -118,6 +122,15 @@ const TOOL_TYPE = "gravitas";
 const ToolIcon = getToolIcon(TOOL_TYPE);
 const LOCAL_STORAGE_KEY = "gravitas-v1";
 
+const SECTIONS: Section[] = [
+  { id: "realism", title: "Realism Mode" },
+  { id: "mode", title: "Calculation Mode" },
+  { id: "results", title: "Results" },
+  { id: "experiential", title: "Experiential Output" },
+  { id: "cascade", title: "Cascade Notes" },
+  { id: "story", title: "Story Notes" },
+];
+
 const CASCADE_ICONS = {
   biology: Dna,
   psychology: Brain,
@@ -132,15 +145,6 @@ const MODE_ICONS: Record<CalculationMode, typeof RotateCcw> = {
   orbital: Globe,
   artificial: Wand2,
 };
-
-// ─── Slider helpers ───────────────────────────────────────────────────
-
-function logSlider(value: number, min: number, max: number, steps = 1000): number {
-  return Math.round((Math.log10(value / min) / Math.log10(max / min)) * steps);
-}
-function sliderLog(slider: number, min: number, max: number, steps = 1000): number {
-  return min * Math.pow(max / min, slider / steps);
-}
 
 // ─── Component ────────────────────────────────────────────────────────
 
@@ -376,11 +380,11 @@ const Gravitas = () => {
       case "microgravity":
       case "milligravity":
       case "extreme_gravity": return "text-red-400";
-      default: return "text-muted-foreground";
+      default: return "text-tier-2";
     }
   })();
 
-  // ─── Render ─────────────────────────────────────────────────────────
+  // ─── Render ────────���─────────��──────────────────────────────────────
 
   return (
     <PageShell>
@@ -389,11 +393,13 @@ const Gravitas = () => {
         {/* Back link */}
         <Link
           to={worldId ? `/worlds/${worldId}` : "/"}
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
+          className="inline-flex items-center gap-2 text-sm text-tier-3 hover:text-foreground transition-colors mb-6"
         >
           <ArrowLeft className="w-4 h-4" />
           {worldId ? "Back to World" : "Back to Dashboard"}
         </Link>
+
+        <ToolPageQuote toolId="gravitas" />
 
         {/* Action bar */}
         <ToolActionBar
@@ -419,6 +425,8 @@ const Gravitas = () => {
               fullTemplate={<GravitasFullReportTemplate formState={formState} worldName={worldNameForExport} />}
             />
           }
+          worldId={worldId}
+          worksheetId={currentWorksheetId || worksheetId}
         />
 
         {/* Title */}
@@ -431,7 +439,7 @@ const Gravitas = () => {
               <span className="font-light">Spacecraft & Habitat Gravity Simulator</span>
             </h1>
           </div>
-          <p className="text-muted-foreground mt-2 max-w-2xl">
+          <p className="text-tier-2 mt-2 max-w-2xl">
             Spacecraft & Habitat Gravity Simulator. Calculate effective gravity conditions and trace how weight shapes biology, psychology, mythology, and culture.
           </p>
           {(currentWorksheetId || worksheetId) && (
@@ -452,6 +460,11 @@ const Gravitas = () => {
 
         <ToolIntroSection data={TOOL_INTROS["gravitas"]} />
 
+        {/* Mobile Navigation */}
+        <div className="fixed right-4 bottom-4 xl:hidden z-40 no-print flex flex-col gap-2">
+          <MobileSectionNav sections={SECTIONS} />
+        </div>
+
         {/* Main Content */}
         <div className="space-y-6">
 
@@ -469,7 +482,7 @@ const Gravitas = () => {
                   }`}
                 >
                   <span className="font-medium text-sm">{REALISM_LABELS[mode]}</span>
-                  <p className="text-[11px] text-muted-foreground mt-1">{REALISM_DESCRIPTIONS[mode]}</p>
+                  <p className="text-[11px] text-tier-2 mt-1">{REALISM_DESCRIPTIONS[mode]}</p>
                 </button>
               ))}
             </div>
@@ -495,7 +508,7 @@ const Gravitas = () => {
                   );
                 })}
               </TabsList>
-              <p className="text-xs text-muted-foreground mt-2">{MODE_DESCRIPTIONS[formState.activeMode]}</p>
+              <p className="text-xs text-tier-4 mt-2">{MODE_DESCRIPTIONS[formState.activeMode]}</p>
 
               {/* ── Spin Parameters ─── */}
               <TabsContent value="spin" className="mt-4 space-y-6">
@@ -513,7 +526,7 @@ const Gravitas = () => {
                         className={`p-2 rounded-lg border text-left transition-colors ${activeSpinPreset === preset.id ? "border-primary bg-primary/10" : "border-border/50 hover:border-primary/30 hover:bg-accent/5"}`}
                       >
                         <span className="font-medium text-xs">{preset.name}</span>
-                        <p className="text-[10px] text-muted-foreground">{preset.description}</p>
+                        <p className="text-[10px] text-tier-2">{preset.description}</p>
                       </button>
                     ))}
                   </div>
@@ -526,11 +539,11 @@ const Gravitas = () => {
                     <span className="font-mono text-primary text-lg">{formState.spin.radius_m.toFixed(0)} m</span>
                   </div>
                   <Slider
-                    value={[logSlider(formState.spin.radius_m, 10, 10000)]}
-                    onValueChange={([v]) => updateSpin("radius_m", Math.round(sliderLog(v, 10, 10000)))}
+                    value={[logToSlider(formState.spin.radius_m, 10, 10000)]}
+                    onValueChange={([v]) => updateSpin("radius_m", Math.round(sliderToLog(v, 10, 10000)))}
                     min={0} max={1000} step={1}
                   />
-                  <div className="flex justify-between text-xs text-muted-foreground"><span>10 m</span><span>10,000 m</span></div>
+                  <div className="flex justify-between text-xs text-tier-4"><span>10 m</span><span>10,000 m</span></div>
                 </div>
 
                 {/* RPM */}
@@ -544,7 +557,7 @@ const Gravitas = () => {
                     onValueChange={([v]) => updateSpin("rotation_rpm", v / 100)}
                     min={1} max={1000} step={1}
                   />
-                  <div className="flex justify-between text-xs text-muted-foreground"><span>0.01 RPM</span><span>10 RPM</span></div>
+                  <div className="flex justify-between text-xs text-tier-4"><span>0.01 RPM</span><span>10 RPM</span></div>
                 </div>
 
                 {/* Human Height */}
@@ -558,7 +571,7 @@ const Gravitas = () => {
                     onValueChange={([v]) => updateSpin("human_height_m", v / 10)}
                     min={5} max={25} step={1}
                   />
-                  <div className="flex justify-between text-xs text-muted-foreground"><span>0.5 m</span><span>2.5 m</span></div>
+                  <div className="flex justify-between text-xs text-tier-4"><span>0.5 m</span><span>2.5 m</span></div>
                 </div>
               </TabsContent>
 
@@ -578,7 +591,7 @@ const Gravitas = () => {
                         className={`p-2 rounded-lg border text-left transition-colors ${activeThrustPreset === preset.id ? "border-primary bg-primary/10" : "border-border/50 hover:border-primary/30 hover:bg-accent/5"}`}
                       >
                         <span className="font-medium text-xs">{preset.name}</span>
-                        <p className="text-[10px] text-muted-foreground">{preset.description}</p>
+                        <p className="text-[10px] text-tier-2">{preset.description}</p>
                       </button>
                     ))}
                   </div>
@@ -591,11 +604,11 @@ const Gravitas = () => {
                     <span className="font-mono text-primary text-lg">{formState.thrust.acceleration_g.toFixed(2)} g</span>
                   </div>
                   <Slider
-                    value={[logSlider(formState.thrust.acceleration_g, 0.001, 10)]}
-                    onValueChange={([v]) => updateThrust("acceleration_g", parseFloat(sliderLog(v, 0.001, 10).toFixed(3)))}
+                    value={[logToSlider(formState.thrust.acceleration_g, 0.001, 10)]}
+                    onValueChange={([v]) => updateThrust("acceleration_g", parseFloat(sliderToLog(v, 0.001, 10).toFixed(3)))}
                     min={0} max={1000} step={1}
                   />
-                  <div className="flex justify-between text-xs text-muted-foreground"><span>0.001 g</span><span>10 g</span></div>
+                  <div className="flex justify-between text-xs text-tier-4"><span>0.001 g</span><span>10 g</span></div>
                 </div>
 
                 {/* Distance */}
@@ -605,11 +618,11 @@ const Gravitas = () => {
                     <span className="font-mono text-primary text-lg">{formState.thrust.mission_distance_au.toFixed(2)} AU</span>
                   </div>
                   <Slider
-                    value={[logSlider(formState.thrust.mission_distance_au, 0.01, 1000)]}
-                    onValueChange={([v]) => updateThrust("mission_distance_au", parseFloat(sliderLog(v, 0.01, 1000).toFixed(2)))}
+                    value={[logToSlider(formState.thrust.mission_distance_au, 0.01, 1000)]}
+                    onValueChange={([v]) => updateThrust("mission_distance_au", parseFloat(sliderToLog(v, 0.01, 1000).toFixed(2)))}
                     min={0} max={1000} step={1}
                   />
-                  <div className="flex justify-between text-xs text-muted-foreground"><span>0.01 AU</span><span>1,000 AU</span></div>
+                  <div className="flex justify-between text-xs text-tier-4"><span>0.01 AU</span><span>1,000 AU</span></div>
                 </div>
 
                 {/* Propulsion Mode */}
@@ -637,7 +650,7 @@ const Gravitas = () => {
 
               {/* ── Combined Parameters ─── */}
               <TabsContent value="combined" className="mt-4 space-y-6">
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-tier-3">
                   Enter the spin and thrust gravity components to calculate the resultant vector.
                   You can use values from the Spin and Thrust modes.
                 </p>
@@ -712,7 +725,7 @@ const Gravitas = () => {
                         className={`p-2 rounded-lg border text-left transition-colors ${activeOrbitalPreset === preset.id ? "border-primary bg-primary/10" : "border-border/50 hover:border-primary/30 hover:bg-accent/5"}`}
                       >
                         <span className="font-medium text-xs">{preset.name}</span>
-                        <p className="text-[10px] text-muted-foreground">{preset.description}</p>
+                        <p className="text-[10px] text-tier-2">{preset.description}</p>
                       </button>
                     ))}
                   </div>
@@ -725,11 +738,11 @@ const Gravitas = () => {
                     <span className="font-mono text-primary text-sm">{formState.orbital.parent_mass_kg.toExponential(3)} kg</span>
                   </div>
                   <Slider
-                    value={[logSlider(formState.orbital.parent_mass_kg, 1e15, 1e31)]}
-                    onValueChange={([v]) => updateOrbital("parent_mass_kg", sliderLog(v, 1e15, 1e31))}
+                    value={[logToSlider(formState.orbital.parent_mass_kg, 1e15, 1e31)]}
+                    onValueChange={([v]) => updateOrbital("parent_mass_kg", sliderToLog(v, 1e15, 1e31))}
                     min={0} max={1000} step={1}
                   />
-                  <div className="flex justify-between text-xs text-muted-foreground"><span>10¹⁵ kg</span><span>10³¹ kg</span></div>
+                  <div className="flex justify-between text-xs text-tier-4"><span>10¹⁵ kg</span><span>10³¹ kg</span></div>
                 </div>
 
                 {/* Parent body radius */}
@@ -739,11 +752,11 @@ const Gravitas = () => {
                     <span className="font-mono text-primary">{formState.orbital.parent_radius_km.toFixed(0)} km</span>
                   </div>
                   <Slider
-                    value={[logSlider(formState.orbital.parent_radius_km, 1, 100000)]}
-                    onValueChange={([v]) => updateOrbital("parent_radius_km", Math.round(sliderLog(v, 1, 100000)))}
+                    value={[logToSlider(formState.orbital.parent_radius_km, 1, 100000)]}
+                    onValueChange={([v]) => updateOrbital("parent_radius_km", Math.round(sliderToLog(v, 1, 100000)))}
                     min={0} max={1000} step={1}
                   />
-                  <div className="flex justify-between text-xs text-muted-foreground"><span>1 km</span><span>100,000 km</span></div>
+                  <div className="flex justify-between text-xs text-tier-4"><span>1 km</span><span>100,000 km</span></div>
                 </div>
 
                 {/* Altitude */}
@@ -753,11 +766,11 @@ const Gravitas = () => {
                     <span className="font-mono text-primary">{formState.orbital.altitude_km.toFixed(0)} km</span>
                   </div>
                   <Slider
-                    value={[formState.orbital.altitude_km > 0 ? logSlider(Math.max(1, formState.orbital.altitude_km), 1, 1000000) : 0]}
-                    onValueChange={([v]) => updateOrbital("altitude_km", v === 0 ? 0 : Math.round(sliderLog(v, 1, 1000000)))}
+                    value={[formState.orbital.altitude_km > 0 ? logToSlider(Math.max(1, formState.orbital.altitude_km), 1, 1000000) : 0]}
+                    onValueChange={([v]) => updateOrbital("altitude_km", v === 0 ? 0 : Math.round(sliderToLog(v, 1, 1000000)))}
                     min={0} max={1000} step={1}
                   />
-                  <div className="flex justify-between text-xs text-muted-foreground"><span>Surface</span><span>1,000,000 km</span></div>
+                  <div className="flex justify-between text-xs text-tier-4"><span>Surface</span><span>1,000,000 km</span></div>
                 </div>
 
                 {/* Habitat size (for tidal gradient) */}
@@ -767,11 +780,11 @@ const Gravitas = () => {
                     <span className="font-mono text-primary">{formState.orbital.habitat_size_km.toFixed(3)} km</span>
                   </div>
                   <Slider
-                    value={[logSlider(Math.max(0.001, formState.orbital.habitat_size_km), 0.001, 100)]}
-                    onValueChange={([v]) => updateOrbital("habitat_size_km", parseFloat(sliderLog(v, 0.001, 100).toFixed(3)))}
+                    value={[logToSlider(Math.max(0.001, formState.orbital.habitat_size_km), 0.001, 100)]}
+                    onValueChange={([v]) => updateOrbital("habitat_size_km", parseFloat(sliderToLog(v, 0.001, 100).toFixed(3)))}
                     min={0} max={1000} step={1}
                   />
-                  <div className="flex justify-between text-xs text-muted-foreground"><span>1 m</span><span>100 km</span></div>
+                  <div className="flex justify-between text-xs text-tier-4"><span>1 m</span><span>100 km</span></div>
                 </div>
               </TabsContent>
 
@@ -797,7 +810,7 @@ const Gravitas = () => {
                     onValueChange={([v]) => updateArtificial("desired_g", v / 100)}
                     min={1} max={500} step={1}
                   />
-                  <div className="flex justify-between text-xs text-muted-foreground"><span>0.01 g</span><span>5 g</span></div>
+                  <div className="flex justify-between text-xs text-tier-4"><span>0.01 g</span><span>5 g</span></div>
                 </div>
 
                 {/* Direction */}
@@ -862,7 +875,7 @@ const Gravitas = () => {
             <GlassPanel className="p-6">
               {/* Primary readout */}
               <div className="text-center mb-6">
-                <p className="text-xs uppercase tracking-wider text-muted-foreground mb-1">Effective Gravity</p>
+                <p className="text-xs uppercase tracking-wider text-tier-2 mb-1">Effective Gravity</p>
                 <p className={`font-mono text-4xl font-light ${statusColor}`}>{formatG(effectiveG)}</p>
                 <p className={`text-sm mt-1 ${statusColor}`}>{gravityLabel}</p>
               </div>
@@ -877,6 +890,98 @@ const Gravitas = () => {
                     <ResultItem label="Period" value={`${spinResult.period_s.toFixed(1)} s`} />
                     <ResultItem label="Coriolis" value={spinResult.coriolis_intensity} warn={!spinResult.is_comfortable} />
                     <ResultItem label="Comfortable" value={spinResult.is_comfortable ? "Yes" : "No"} warn={!spinResult.is_comfortable} />
+                    {/* Spinning Habitat Cross-Section */}
+                    <div className="col-span-2 md:col-span-3 mt-2">
+                      {(() => {
+                        const R = formState.spin.radius_m;
+                        const rpm = formState.spin.rotation_rpm;
+                        const floorG = spinResult.floor_g;
+                        const headG = spinResult.head_g;
+                        const period = spinResult.period_s;
+                        const W = 300, H = 220;
+                        const cx = W / 2, cy = H / 2 + 10;
+                        const maxR = 90; // max pixel radius
+                        const outerR = maxR;
+                        const innerR = Math.max(10, outerR * 0.3);
+                        const humanH = Math.min(outerR - innerR - 4, (formState.spin.human_height_m / R) * outerR);
+
+                        // Rotation angle based on RPM (slow visual spin)
+                        const rotSpeed = Math.min(rpm * 0.5, 2); // cap visual speed
+
+                        // Gravity gradient arrows (show 4 arrows at cardinal points)
+                        const arrows = [0, 90, 180, 270].map(deg => {
+                          const rad = (deg * Math.PI) / 180;
+                          const x1 = cx + Math.cos(rad) * (outerR + 3);
+                          const y1 = cy + Math.sin(rad) * (outerR + 3);
+                          const aLen = 8 + floorG * 6;
+                          const x2 = cx + Math.cos(rad) * (outerR + 3 + aLen);
+                          const y2 = cy + Math.sin(rad) * (outerR + 3 + aLen);
+                          return { x1, y1, x2, y2, rad };
+                        });
+
+                        return (
+                          <svg viewBox={`0 0 ${W} ${H}`} className="w-full max-w-[320px] mx-auto">
+                            {/* Rotation direction arc */}
+                            <path
+                              d={`M ${cx + outerR + 18} ${cy - 8} A ${outerR + 18} ${outerR + 18} 0 0 1 ${cx + outerR + 14} ${cy + 14}`}
+                              fill="none" stroke="rgba(0,212,255,0.2)" strokeWidth={1}
+                              markerEnd="url(#spinArrow)"
+                            />
+                            <defs>
+                              <marker id="spinArrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                                <path d="M0,0 L6,3 L0,6" fill="rgba(0,212,255,0.3)" />
+                              </marker>
+                              <style>{`@keyframeshabSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
+                            </defs>
+
+                            {/* Spinning group */}
+                            <g style={{ transformOrigin: `${cx}px ${cy}px`, animation: rpm > 0 ? `habSpin ${Math.max(2, 60 / rpm)}s linear infinite` : 'none' }}>
+                              {/* Outer ring (hull) */}
+                              <circle cx={cx} cy={cy} r={outerR} fill="none" stroke="rgba(255,255,255,0.15)" strokeWidth={2} />
+                              {/* Inner ring (hub) */}
+                              <circle cx={cx} cy={cy} r={innerR} fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.1)" strokeWidth={1} />
+                              {/* Spokes */}
+                              {[0, 60, 120, 180, 240, 300].map(deg => {
+                                const rad = (deg * Math.PI) / 180;
+                                return (
+                                  <line key={deg}
+                                    x1={cx + Math.cos(rad) * innerR}
+                                    y1={cy + Math.sin(rad) * innerR}
+                                    x2={cx + Math.cos(rad) * outerR}
+                                    y2={cy + Math.sin(rad) * outerR}
+                                    stroke="rgba(255,255,255,0.06)" strokeWidth={0.5}
+                                  />
+                                );
+                              })}
+                              {/* Floor surface (inner edge of outer ring) */}
+                              <circle cx={cx} cy={cy} r={outerR - 2} fill="none" stroke="rgba(0,229,160,0.15)" strokeWidth={1} strokeDasharray="3 5" />
+                              {/* Human figure at bottom */}
+                              <line x1={cx} y1={cy + outerR - humanH} x2={cx} y2={cy + outerR - 2} stroke="rgba(0,229,160,0.5)" strokeWidth={1.5} strokeLinecap="round" />
+                              <circle cx={cx} cy={cy + outerR - humanH - 2} r={2} fill="none" stroke="rgba(0,229,160,0.5)" strokeWidth={1} />
+                            </g>
+
+                            {/* Gravity arrows (don't spin) */}
+                            {arrows.map((a, i) => (
+                              <g key={i}>
+                                <line x1={a.x1} y1={a.y1} x2={a.x2} y2={a.y2} stroke="rgba(255,165,0,0.4)" strokeWidth={1.5} />
+                                <polygon
+                                  points={`${a.x2},${a.y2} ${a.x2 - 3 * Math.cos(a.rad - 0.4)},${a.y2 - 3 * Math.sin(a.rad - 0.4)} ${a.x2 - 3 * Math.cos(a.rad + 0.4)},${a.y2 - 3 * Math.sin(a.rad + 0.4)}`}
+                                  fill="rgba(255,165,0,0.5)"
+                                />
+                              </g>
+                            ))}
+
+                            {/* Labels */}
+                            <text x={cx} y={16} textAnchor="middle" fill="rgba(255,255,255,0.3)" fontSize={7} fontFamily="monospace">
+                              {rpm.toFixed(2)} RPM · {period.toFixed(1)}s period
+                            </text>
+                            <text x={cx} y={H - 4} textAnchor="middle" fill="rgba(255,165,0,0.5)" fontSize={7} fontFamily="monospace">
+                              Floor: {floorG.toFixed(2)}g → Head: {headG.toFixed(2)}g ({spinResult.gradient_percent.toFixed(0)}% gradient)
+                            </text>
+                          </svg>
+                        );
+                      })()}
+                    </div>
                   </>
                 )}
                 {formState.activeMode === "thrust" && (
@@ -898,6 +1003,72 @@ const Gravitas = () => {
                     <ResultItem label="Tilt Angle" value={`${combinedResult.tilt_angle_deg.toFixed(1)}°`} warn={combinedResult.tilt_angle_deg > 15} />
                     <ResultItem label="Walking Difficulty" value={`${combinedResult.walking_difficulty}/10`} warn={combinedResult.walking_difficulty > 5} />
                     <ResultItem label="Architectural Impact" value={combinedResult.architectural_impact} span />
+                    {/* Vector Diagram */}
+                    <div className="col-span-2 md:col-span-3 mt-2">
+                      {(() => {
+                        const spinG = formState.combined.spin_g;
+                        const thrustG = formState.combined.thrust_g;
+                        const resultG = combinedResult.resultant_g;
+                        const tiltDeg = combinedResult.tilt_angle_deg;
+                        const maxG = Math.max(spinG, thrustG, resultG, 0.1);
+
+                        const W = 280, H = 200;
+                        const cx = W / 2, cy = H / 2;
+                        const scale = 70 / maxG;
+
+                        // Spin vector always points "down" (positive Y)
+                        const spinLen = spinG * scale;
+                        // Thrust vector at the configured angle from spin
+                        const angleDeg = formState.combined.axis_orientation === "parallel" ? 0
+                          : formState.combined.axis_orientation === "perpendicular" ? 90
+                          : formState.combined.custom_angle_deg;
+                        const angleRad = (angleDeg * Math.PI) / 180;
+                        const thrustLen = thrustG * scale;
+                        const thrustDx = Math.sin(angleRad) * thrustLen;
+                        const thrustDy = Math.cos(angleRad) * thrustLen;
+
+                        // Resultant
+                        const resDx = thrustDx;
+                        const resDy = spinLen + thrustDy;
+                        const resLen = Math.sqrt(resDx * resDx + resDy * resDy);
+
+                        const arrow = (x1: number, y1: number, x2: number, y2: number, color: string, label: string, gVal: string) => {
+                          const dx = x2 - x1, dy = y2 - y1;
+                          const len = Math.sqrt(dx * dx + dy * dy);
+                          if (len < 2) return null;
+                          const nx = dx / len, ny = dy / len;
+                          const headLen = Math.min(8, len * 0.3);
+                          const px = -ny, py = nx;
+                          return (
+                            <g key={label}>
+                              <line x1={x1} y1={y1} x2={x2} y2={y2} stroke={color} strokeWidth="2" opacity="0.8" />
+                              <polygon
+                                points={`${x2},${y2} ${x2 - nx * headLen + px * headLen * 0.4},${y2 - ny * headLen + py * headLen * 0.4} ${x2 - nx * headLen - px * headLen * 0.4},${y2 - ny * headLen - py * headLen * 0.4}`}
+                                fill={color}
+                                opacity="0.8"
+                              />
+                              <text x={x2 + px * 10} y={y2 + py * 10 + 3} fill={color} fontSize="8" fontFamily="'JetBrains Mono',monospace" textAnchor="middle" opacity="0.7">
+                                {label} {gVal}
+                              </text>
+                            </g>
+                          );
+                        };
+
+                        return (
+                          <svg viewBox={`0 0 ${W} ${H}`} className="w-full mx-auto" style={{ maxWidth: 300 }} preserveAspectRatio="xMidYMid meet">
+                            <circle cx={cx} cy={cy} r="3" fill="rgba(255,255,255,0.3)" />
+                            {arrow(cx, cy, cx, cy + spinLen, "rgba(0,229,160,0.8)", "Spin", formatG(spinG))}
+                            {arrow(cx, cy, cx + thrustDx, cy + thrustDy, "rgba(255,165,0,0.8)", "Thrust", formatG(thrustG))}
+                            {resLen > 2 && arrow(cx, cy, cx + resDx, cy + resDy, "rgba(0,212,255,0.9)", "Result", formatG(resultG))}
+                            {tiltDeg > 1 && (
+                              <text x={cx + resDx / 2 + 12} y={cy + resDy / 2} fill="rgba(0,212,255,0.5)" fontSize="7" fontFamily="'JetBrains Mono',monospace">
+                                {tiltDeg.toFixed(1)}°
+                              </text>
+                            )}
+                          </svg>
+                        );
+                      })()}
+                    </div>
                   </>
                 )}
                 {formState.activeMode === "orbital" && (
@@ -953,7 +1124,7 @@ const Gravitas = () => {
                 <div>
                   <h4 className="text-sm font-medium mb-2">Movement & Locomotion</h4>
                   <GlassPanel className="p-4">
-                    <p className="text-sm text-muted-foreground leading-relaxed">{movementText}</p>
+                    <p className="text-sm text-tier-3 leading-relaxed">{movementText}</p>
                   </GlassPanel>
                 </div>
               )}
@@ -962,7 +1133,7 @@ const Gravitas = () => {
                 <div>
                   <h4 className="text-sm font-medium mb-2">Fluid Behavior</h4>
                   <GlassPanel className="p-4">
-                    <p className="text-sm text-muted-foreground leading-relaxed">{fluidText}</p>
+                    <p className="text-sm text-tier-3 leading-relaxed">{fluidText}</p>
                   </GlassPanel>
                 </div>
               )}
@@ -979,10 +1150,10 @@ const Gravitas = () => {
                       }))}
                       min={1} max={120} step={1}
                     />
-                    <div className="flex justify-between text-xs text-muted-foreground"><span>1 month</span><span>10 years</span></div>
+                    <div className="flex justify-between text-xs text-tier-4"><span>1 month</span><span>10 years</span></div>
                   </div>
                   <GlassPanel className="p-4 mt-2">
-                    <p className="text-sm text-muted-foreground leading-relaxed">{healthText}</p>
+                    <p className="text-sm text-tier-3 leading-relaxed">{healthText}</p>
                   </GlassPanel>
                 </div>
               )}
@@ -991,7 +1162,7 @@ const Gravitas = () => {
                 <div>
                   <h4 className="text-sm font-medium mb-2">Architectural Requirements</h4>
                   <GlassPanel className="p-4">
-                    <p className="text-sm text-muted-foreground leading-relaxed">{architectureText}</p>
+                    <p className="text-sm text-tier-3 leading-relaxed">{architectureText}</p>
                   </GlassPanel>
                 </div>
               )}
@@ -1000,7 +1171,7 @@ const Gravitas = () => {
                 <div>
                   <h4 className="text-sm font-medium mb-2">Mythological Implications</h4>
                   <GlassPanel className="p-4">
-                    <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">{mythologyText}</p>
+                    <p className="text-sm text-tier-3 leading-relaxed whitespace-pre-line">{mythologyText}</p>
                   </GlassPanel>
                 </div>
               )}
@@ -1009,7 +1180,7 @@ const Gravitas = () => {
                 <div>
                   <h4 className="text-sm font-medium mb-2">Narrative Snippet</h4>
                   <GlassPanel className="p-4 border-primary/20">
-                    <p className="text-sm italic text-muted-foreground leading-relaxed">{narrativeText}</p>
+                    <p className="text-sm italic text-tier-2 leading-relaxed">{narrativeText}</p>
                   </GlassPanel>
                 </div>
               )}
@@ -1031,16 +1202,16 @@ const Gravitas = () => {
               </TabsList>
               {(Object.keys(CASCADE_ICONS) as Array<keyof typeof CASCADE_ICONS>).map((key) => (
                 <TabsContent key={key} value={key} className="mt-4">
-                  <Textarea
-                    placeholder={`How does this gravity environment shape ${key}?`}
-                    value={formState.cascade[key]}
-                    onChange={(e) => setFormState((prev) => ({
-                      ...prev,
-                      cascade: { ...prev.cascade, [key]: e.target.value },
-                    }))}
-                    rows={4}
-                    className="resize-none"
-                  />
+                  <Suspense fallback={<div className="h-24 rounded-md bg-accent/10 animate-pulse" />}>
+                    <RichTextEditor
+                      content={formState.cascade[key]}
+                      onChange={(html) => setFormState((prev) => ({
+                        ...prev,
+                        cascade: { ...prev.cascade, [key]: html },
+                      }))}
+                      placeholder={`How does this gravity environment shape ${key}?`}
+                    />
+                  </Suspense>
                 </TabsContent>
               ))}
             </Tabs>
@@ -1057,21 +1228,80 @@ const Gravitas = () => {
               ].map(({ key, label, placeholder }) => (
                 <div key={key} className="space-y-2">
                   <Label>{label}</Label>
-                  <Textarea
-                    placeholder={placeholder}
-                    value={formState.storyNotes[key]}
-                    onChange={(e) => setFormState((prev) => ({
-                      ...prev,
-                      storyNotes: { ...prev.storyNotes, [key]: e.target.value },
-                    }))}
-                    rows={3}
-                    className="resize-none"
-                  />
+                  <Suspense fallback={<div className="h-24 rounded-md bg-accent/10 animate-pulse" />}>
+                    <RichTextEditor
+                      content={formState.storyNotes[key]}
+                      onChange={(html) => setFormState((prev) => ({
+                        ...prev,
+                        storyNotes: { ...prev.storyNotes, [key]: html },
+                      }))}
+                      placeholder={placeholder}
+                    />
+                  </Suspense>
                 </div>
               ))}
             </div>
           </CollapsibleSection>
         </div>
+
+        {/* Desktop Sidebar — Navigation + Live Readout */}
+        <ToolSidebar>
+          <SectionNavigation sections={SECTIONS} mode="inline" />
+          <GlassPanel className="p-4 w-56">
+            <h4 className="font-mono text-[9px] tracking-[2px] uppercase text-muted-foreground/60 mb-3">
+              // READOUT
+            </h4>
+            <div className="text-center mb-3">
+              <p className="text-[10px] uppercase tracking-wider text-tier-3 mb-1">Effective Gravity</p>
+              <p className={`font-mono text-2xl font-light ${statusColor}`}>{formatG(effectiveG)}</p>
+              <p className={`text-[10px] mt-0.5 ${statusColor}`}>{gravityLabel}</p>
+            </div>
+            <div className="space-y-1.5 text-[10px]">
+              <div className="flex justify-between">
+                <span className="text-tier-4">Mode</span>
+                <span className="text-tier-2 font-mono">{MODE_LABELS[formState.activeMode]}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-tier-4">Realism</span>
+                <span className="text-tier-2 font-mono">{REALISM_LABELS[formState.realismMode]}</span>
+              </div>
+              {formState.activeMode === "spin" && (
+                <>
+                  <div className="flex justify-between">
+                    <span className="text-tier-4">Radius</span>
+                    <span className="text-tier-2 font-mono">{formState.spin.radius_m.toFixed(0)} m</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-tier-4">RPM</span>
+                    <span className="text-tier-2 font-mono">{formState.spin.rotation_rpm.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-tier-4">Coriolis</span>
+                    <span className="text-tier-2 font-mono">{spinResult.coriolis_intensity}</span>
+                  </div>
+                </>
+              )}
+              {formState.activeMode === "thrust" && (
+                <>
+                  <div className="flex justify-between">
+                    <span className="text-tier-4">Accel</span>
+                    <span className="text-tier-2 font-mono">{formState.thrust.acceleration_g.toFixed(2)} g</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-tier-4">Trip</span>
+                    <span className="text-tier-2 font-mono">{thrustResult.trip_duration_days.toFixed(0)} d</span>
+                  </div>
+                </>
+              )}
+              {formState.activeMode === "orbital" && (
+                <div className="flex justify-between">
+                  <span className="text-tier-4">Surface g</span>
+                  <span className="text-tier-2 font-mono">{formatG(orbitalResult.surface_g)}</span>
+                </div>
+              )}
+            </div>
+          </GlassPanel>
+        </ToolSidebar>
       </main>
       {/* Dialogs */}
       <WorksheetSelectorDialog
@@ -1129,7 +1359,7 @@ const Gravitas = () => {
 function ResultItem({ label, value, warn, span }: { label: string; value: string; warn?: boolean; span?: boolean }) {
   return (
     <div className={span ? "col-span-full" : ""}>
-      <p className="text-xs text-muted-foreground uppercase tracking-wider">{label}</p>
+      <p className="text-xs text-tier-4 uppercase tracking-wider">{label}</p>
       <p className={`font-mono text-sm ${warn ? "text-amber-400" : "text-foreground"}`}>{value}</p>
     </div>
   );

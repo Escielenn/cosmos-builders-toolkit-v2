@@ -39,3 +39,43 @@ export interface ArticleListItem {
     };
   };
 }
+
+// ── Writing Prompts ─────────────────────────────────────
+
+export interface SanityWritingPrompt {
+  _id: string;
+  title: string;
+  prompt: string;
+  category: string;
+  difficulty: string;
+  wordGoal?: number;
+  scheduledDate?: string;
+  featured: boolean;
+}
+
+// ── Courses ─────────────────────────────────────────────
+
+export interface CourseListItem {
+  _id: string;
+  title: string;
+  slug: string;
+  description: string;
+  artwork?: {
+    asset: {
+      _ref: string;
+    };
+    alt?: string;
+  };
+  instructor: string;
+  registrationUrl: string;
+  startDate: string;
+  duration: string;
+  price: string;
+  featured: boolean;
+  status: "upcoming" | "enrolling" | "in_progress" | "completed";
+  proMonthlyDiscount?: string;
+  proYearlyDiscount?: string;
+  vanguardMonthlyDiscount?: string;
+  vanguardYearlyDiscount?: string;
+  tags?: string[];
+}

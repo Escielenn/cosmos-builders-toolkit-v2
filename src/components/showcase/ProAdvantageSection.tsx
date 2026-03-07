@@ -1,4 +1,4 @@
-import { Crown, Zap, Link2, FileDown, Infinity as InfinityIcon, ExternalLink, GraduationCap } from "lucide-react";
+import { Zap, Link2, FileDown, Infinity as InfinityIcon, ExternalLink, GraduationCap } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import { GlassPanel } from "@/components/ui/glass-panel";
@@ -50,7 +50,7 @@ const ProAdvantageSection = () => {
     <section className="py-16 md:py-24">
       <div className="text-center mb-12">
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-sm bg-amber-500/10 border border-amber-500/30 mb-6">
-          <Crown className="w-4 h-4 text-amber-500" />
+          <Zap className="w-4 h-4 text-amber-500" />
           <span className="text-sm text-amber-500 uppercase tracking-wider">
             Pro Subscription
           </span>
@@ -105,12 +105,12 @@ const ProAdvantageSection = () => {
           asChild
         >
           <Link to="/pricing">
-            <Crown className="w-4 h-4" />
+            <Zap className="w-4 h-4" />
             See Pricing
           </Link>
         </Button>
         <p className="text-sm text-muted-foreground mt-3">
-          Starting at ${PRICING.monthly.price}/month • Cancel anytime
+          Starting at ${PRICING.pro.monthly.price}/month • Cancel anytime
         </p>
       </div>
     </section>

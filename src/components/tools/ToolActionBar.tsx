@@ -1,5 +1,6 @@
-import { type ReactNode } from "react";
-import { Save, Printer, Download, Share2, StickyNote, ImageIcon, FolderOpen, Cloud, CloudOff } from "lucide-react";
+import { type ReactNode, useRef, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { Save, Printer, Download, Share2, StickyNote, ImageIcon, FolderOpen, Cloud, CloudOff, ChevronUp, BookOpen } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -8,6 +9,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useLinkedEntryId } from "@/hooks/use-linked-entry";
 
 interface ToolActionBarProps {
   onSave: () => void;
@@ -26,6 +28,10 @@ interface ToolActionBarProps {
   onNotesClick?: () => void;
   onMoodboardClick?: () => void;
   moodboardCount?: number;
+  onWikiClick?: () => void;
+  /** Pass worldId + worksheetId to auto-show a "Wiki" button when a linked entry exists */
+  worldId?: string;
+  worksheetId?: string;
 }
 
 const ToolActionBar = ({
@@ -44,9 +50,36 @@ const ToolActionBar = ({
   onNotesClick,
   onMoodboardClick,
   moodboardCount,
+  onWikiClick,
+  worldId,
+  worksheetId,
 }: ToolActionBarProps) => {
+  const navigate = useNavigate();
+  const barRef = useRef<HTMLDivElement>(null);
+
+  // Auto-resolve linked wiki entry for the "Wiki" button
+  const { data: linkedEntryId } = useLinkedEntryId(worldId, worksheetId);
+  const handleWikiClick = onWikiClick ?? (
+    linkedEntryId && worldId
+      ? () => navigate(`/worlds/${worldId}/pages/${linkedEntryId}`)
+      : undefined
+  );
+  const [showBottomBar, setShowBottomBar] = useState(false);
+
+  useEffect(() => {
+    const el = barRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setShowBottomBar(!entry.isIntersecting),
+      { threshold: 0 },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <div className={`no-print ${className}`}>
+    <>
+    <div ref={barRef} className={`no-print ${className}`}>
       <div className="flex flex-wrap gap-2 items-center">
         <Tooltip>
           <TooltipTrigger asChild>
@@ -114,6 +147,12 @@ const ToolActionBar = ({
             )}
           </Button>
         )}
+        {handleWikiClick && (
+          <Button variant="outline" size="sm" onClick={handleWikiClick}>
+            <BookOpen className="w-4 h-4 mr-2" />
+            Wiki
+          </Button>
+        )}
         {onShare && (
           <Button variant="outline" size="sm" onClick={onShare}>
             <Share2 className="w-4 h-4 mr-2" />
@@ -125,6 +164,57 @@ const ToolActionBar = ({
         )}
       </div>
     </div>
+
+    {/* Sticky bottom bar — appears when top bar scrolls out of view */}
+    <div
+      className={`no-print fixed bottom-6 left-0 right-0 z-50 transition-transform duration-300 ease-out ${
+        showBottomBar ? "translate-y-0" : "translate-y-[calc(100%+24px)]"
+      }`}
+    >
+      {/* Light arc glow on top edge */}
+      <div className="absolute top-0 left-[10%] right-[10%] h-px bg-gradient-to-r from-transparent via-[hsl(157_100%_62%/0.25)] to-transparent" />
+
+      <div className="bg-[hsl(222_25%_9%/0.95)] backdrop-blur-xl border-t border-white/[0.08]">
+        <div className="container mx-auto px-4 py-3 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <Button
+              variant={hasUnsavedChanges ? "default" : "outline"}
+              size="sm"
+              onClick={onSave}
+              disabled={isSaving}
+            >
+              {isSaving ? (
+                <Loader variant="inline" size="sm" className="mr-2" />
+              ) : (
+                <Save className="w-4 h-4 mr-2" />
+              )}
+              {isSaving ? "Saving..." : isCloudEnabled ? "Save" : "Save Draft"}
+              {isCloudEnabled ? (
+                <Cloud className="w-3 h-3 ml-1.5 text-green-500" />
+              ) : (
+                <CloudOff className="w-3 h-3 ml-1.5 opacity-50" />
+              )}
+            </Button>
+
+            <Button variant="outline" size="sm" onClick={onExport}>
+              <Download className="w-4 h-4 mr-2" />
+              {exportLabel}
+            </Button>
+          </div>
+
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-tier-4 hover:text-tier-2"
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          >
+            <ChevronUp className="w-4 h-4 mr-1" />
+            Top
+          </Button>
+        </div>
+      </div>
+    </div>
+    </>
   );
 };
 

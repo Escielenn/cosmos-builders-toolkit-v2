@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link2, Copy, Check, RefreshCw, Eye } from "lucide-react";
+import { Link2, Copy, Check, RefreshCw, Eye, Share2 } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
 import {
   Dialog,
@@ -25,6 +25,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import CollaboratorSection from "@/components/sharing/CollaboratorSection";
+import FirstTimeHint from "@/components/onboarding/FirstTimeHint";
 import {
   useWorksheetShare,
   useWorldShare,
@@ -130,6 +131,8 @@ const ShareDialog = ({
             {entityTitle || (entityType === "worksheet" ? "Untitled Worksheet" : "Untitled World")}
           </DialogDescription>
         </DialogHeader>
+
+        <FirstTimeHint hintId="collaboration" icon={Share2} className="mb-2" />
 
         <div className="space-y-6">
           {/* Link Sharing Section */}

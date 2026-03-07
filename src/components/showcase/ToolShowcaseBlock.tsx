@@ -1,4 +1,4 @@
-import { Crown, Check, Lock } from "lucide-react";
+import { Zap, Check, Lock } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -70,7 +70,7 @@ const ToolShowcaseBlock = ({
               </h3>
               {isPro && (
                 <Badge className="bg-amber-500/20 text-amber-500 border-amber-500/30 sf-shimmer">
-                  <Crown className="w-3 h-3 mr-1" />
+                  <Zap className="w-3 h-3 mr-1" />
                   Pro
                 </Badge>
               )}
@@ -100,7 +100,7 @@ const ToolShowcaseBlock = ({
             </Button>
           ) : (
             <Button className="gap-2" asChild>
-              <Link to="/auth?tab=signup">
+              <Link to="/auth">
                 Try This Tool
               </Link>
             </Button>

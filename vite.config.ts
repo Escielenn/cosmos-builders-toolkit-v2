@@ -63,6 +63,10 @@ export default defineConfig({
           "vendor-supabase": ["@supabase/supabase-js"],
           // React Query
           "vendor-query": ["@tanstack/react-query"],
+          // Framer Motion (landing page animations)
+          "vendor-motion": ["framer-motion"],
+          // Sanity CMS (Learn pages only)
+          "vendor-sanity": ["@sanity/client", "@sanity/image-url"],
         },
       },
     },

@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import SharedPageHeader from "@/components/sharing/SharedPageHeader";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAcceptInvite } from "@/hooks/use-collaborators";
+import { PageBursts } from "@/components/ui/data-burst";
+import { INVITE_ACCEPT_BURSTS } from "@/lib/data-bursts";
 
 const InviteAccept = () => {
   const { token } = useParams<{ token: string }>();
@@ -27,9 +29,10 @@ const InviteAccept = () => {
   // Not logged in
   if (!authLoading && !user) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="relative min-h-screen bg-background">
         <SharedPageHeader />
-        <main className="container mx-auto px-4 py-16 max-w-md">
+        <PageBursts bursts={INVITE_ACCEPT_BURSTS} />
+        <main className="container mx-auto px-4 py-16 max-w-md relative z-10">
           <GlassPanel className="p-8 text-center">
             <Globe className="w-12 h-12 text-primary mx-auto mb-4" />
             <h1 className="font-heading text-2xl font-semibold mb-2">
@@ -52,9 +55,10 @@ const InviteAccept = () => {
   // Loading / accepting
   if (authLoading || acceptInvite.isPending) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="relative min-h-screen bg-background">
         <SharedPageHeader />
-        <main className="container mx-auto px-4 py-16 max-w-md">
+        <PageBursts bursts={INVITE_ACCEPT_BURSTS} />
+        <main className="container mx-auto px-4 py-16 max-w-md relative z-10">
           <div className="flex flex-col items-center justify-center py-16">
             <Loader className="mb-4" />
             <p className="text-sm text-muted-foreground">Accepting invitation...</p>
@@ -68,9 +72,10 @@ const InviteAccept = () => {
   if (acceptInvite.isSuccess) {
     const result = acceptInvite.data;
     return (
-      <div className="min-h-screen bg-background">
+      <div className="relative min-h-screen bg-background">
         <SharedPageHeader />
-        <main className="container mx-auto px-4 py-16 max-w-md">
+        <PageBursts bursts={INVITE_ACCEPT_BURSTS} />
+        <main className="container mx-auto px-4 py-16 max-w-md relative z-10">
           <GlassPanel className="p-8 text-center">
             <CheckCircle2 className="w-12 h-12 text-green-500 mx-auto mb-4" />
             <h1 className="font-heading text-2xl font-semibold mb-2">
@@ -98,9 +103,10 @@ const InviteAccept = () => {
 
   // Error
   return (
-    <div className="min-h-screen bg-background">
+    <div className="relative min-h-screen bg-background">
       <SharedPageHeader />
-      <main className="container mx-auto px-4 py-16 max-w-md">
+      <PageBursts bursts={INVITE_ACCEPT_BURSTS} />
+      <main className="container mx-auto px-4 py-16 max-w-md relative z-10">
         <GlassPanel className="p-8 text-center">
           <AlertCircle className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
           <h1 className="font-heading text-2xl font-semibold mb-2">

@@ -7,6 +7,7 @@ import {
   PDFKeyValuePair,
   PDFResultBox,
 } from "../components";
+import { deepStripHtml } from "@/lib/html-utils";
 
 // Level names for display
 const LEVEL_NAMES = [
@@ -143,13 +144,15 @@ const ECRSummaryTemplate = ({
   worldName,
   date,
 }: ECRSummaryTemplateProps) => {
-  const filledCount = countFilledResponses(formState);
+  const cleanState = deepStripHtml(formState);
+
+  const filledCount = countFilledResponses(cleanState);
   const totalQuestions = 24; // Total questions across all levels
   const completionPercent = Math.round((filledCount / totalQuestions) * 100);
 
   // Get selected parameters with null safety
   const selectedParams: string[] = [];
-  const parameter = formState?.parameter;
+  const parameter = cleanState?.parameter;
   if (parameter?.mode === "single" && parameter?.type) {
     selectedParams.push(parameter.type);
   } else if (parameter?.mode === "multiple" && parameter?.types) {
@@ -160,7 +163,7 @@ const ECRSummaryTemplate = ({
     <Document>
       <Page size="LETTER" style={styles.page}>
         <PDFHeader
-          toolName="Environmental Chain Reaction"
+          toolName="Cascade"
           worldName={worldName}
           date={date}
         />
@@ -204,7 +207,7 @@ const ECRSummaryTemplate = ({
         {/* Cascade Summary */}
         <PDFSection title="Cascade Summary">
           {LEVEL_NAMES.map((level) => {
-            const levelData = formState?.[level.id as keyof FormState] as CascadeLevel | undefined;
+            const levelData = cleanState?.[level.id as keyof FormState] as CascadeLevel | undefined;
             const responses = levelData?.responses || {};
             const summary = getLevelSummary(responses, QUESTION_LABELS[level.id] || {});
             const filledInLevel = Object.values(responses).filter((v) => v && v.trim()).length;
@@ -228,18 +231,18 @@ const ECRSummaryTemplate = ({
         </PDFSection>
 
         {/* Key Synthesis Notes */}
-        {(formState?.synthesis?.surprisingConsequence || formState?.synthesis?.storyPotential) && (
+        {(cleanState?.synthesis?.surprisingConsequence || cleanState?.synthesis?.storyPotential) && (
           <PDFSection title="Key Insights">
-            {formState?.synthesis?.surprisingConsequence && (
+            {cleanState?.synthesis?.surprisingConsequence && (
               <View style={styles.notesBox}>
                 <Text style={styles.notesLabel}>Surprising Consequence</Text>
-                <Text style={styles.notesText}>{formState.synthesis.surprisingConsequence}</Text>
+                <Text style={styles.notesText}>{cleanState.synthesis.surprisingConsequence}</Text>
               </View>
             )}
-            {formState?.synthesis?.storyPotential && (
+            {cleanState?.synthesis?.storyPotential && (
               <View style={[styles.notesBox, { marginTop: spacing.sm }]}>
                 <Text style={styles.notesLabel}>Story Potential</Text>
-                <Text style={styles.notesText}>{formState.synthesis.storyPotential}</Text>
+                <Text style={styles.notesText}>{cleanState.synthesis.storyPotential}</Text>
               </View>
             )}
           </PDFSection>

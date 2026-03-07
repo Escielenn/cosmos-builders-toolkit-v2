@@ -16,6 +16,8 @@ import { EventCard } from "./EventCard";
 import { ChronicleEventDialog } from "./ChronicleEventDialog";
 import { DeleteEventDialog } from "./DeleteEventDialog";
 import { useToast } from "@/hooks/use-toast";
+import FirstTimeHint from "@/components/onboarding/FirstTimeHint";
+import { ScrollText } from "lucide-react";
 
 interface ChronicleProps {
   worldId: string;
@@ -162,6 +164,9 @@ export function Chronicle({ worldId }: ChronicleProps) {
           Add Event
         </button>
       </div>
+
+      {/* Chronicle hint */}
+      <FirstTimeHint hintId="chronicle" icon={ScrollText} className="mb-4" />
 
       {/* Empty state */}
       {isEmpty && (

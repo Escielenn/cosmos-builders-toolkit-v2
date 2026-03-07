@@ -36,6 +36,7 @@ import ToolSidebar from "@/components/tools/ToolSidebar";
 import CollapsibleSection from "@/components/tools/CollapsibleSection";
 import KeyChoicesSidebar, { KeyChoicesSection, MobileKeyChoices } from "@/components/tools/KeyChoicesSidebar";
 import ToolActionBar from "@/components/tools/ToolActionBar";
+import { ToolPageQuote } from "@/components/quotes/ToolPageQuote";
 import QuickExportButton from "@/components/tools/QuickExportButton";
 import ExportDialog from "@/components/tools/ExportDialog";
 import { SpeciesMatrixSummaryTemplate, SpeciesMatrixFullReportTemplate } from "@/lib/pdf/templates";
@@ -547,11 +548,13 @@ const SpeciesInteractionMatrix = () => {
         {/* Back Link */}
         <Link
           to={worldId ? `/worlds/${worldId}` : "/"}
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
+          className="inline-flex items-center gap-2 text-sm text-tier-3 hover:text-foreground transition-colors mb-6"
         >
           <ArrowLeft className="w-4 h-4" />
           {worldId ? `Back to ${worldName || "World"}` : "Back to Tools"}
         </Link>
+
+        <ToolPageQuote toolId="species-interaction-matrix" />
 
         {/* Action Bar */}
         <ToolActionBar
@@ -576,6 +579,8 @@ const SpeciesInteractionMatrix = () => {
               defaultFilename="species-interaction-matrix"
             />
           }
+          worldId={worldId}
+          worksheetId={currentWorksheetId || worksheetId}
         />
 
         {/* Title */}
@@ -587,7 +592,7 @@ const SpeciesInteractionMatrix = () => {
                 <span className="font-normal">Symbiosis:</span>{" "}
                 <span className="font-light">Species Interaction Matrix</span>
               </h1>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-tier-3">
                 Define relationships between multiple species
               </p>
             </div>
@@ -610,19 +615,20 @@ const SpeciesInteractionMatrix = () => {
           )}
         </div>
 
-        <div className="lg:hidden mb-6 space-y-4">
+        {/* Mobile Sidebars - Right side floating buttons */}
+        <div className="fixed right-4 bottom-4 xl:hidden z-40 no-print flex flex-col gap-2">
           <MobileSectionNav sections={SECTIONS} />
           <MobileKeyChoices sections={keyChoicesSections} />
         </div>
 
-        <div className="flex gap-8">
-          <div className="flex-1 space-y-6 max-w-4xl">
+        <div className="space-y-6">
             <ToolIntroSection data={TOOL_INTROS["species-interaction-matrix"]} />
 
             {/* Section 1: Species Registry */}
             <CollapsibleSection
               id="section-registry"
-              title="1. Species Registry"
+              levelNumber={1}
+              title="Species Registry"
               guidance="Define the species you want to compare (2-6 species)"
             >
               <div className="space-y-4">
@@ -735,7 +741,8 @@ const SpeciesInteractionMatrix = () => {
             {allPairs.length > 0 && (
               <CollapsibleSection
                 id="section-pairs"
-                title="2. Species Pair Selection"
+                levelNumber={2}
+                title="Species Pair Selection"
                 guidance="Select a pair to define their relationship"
               >
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -753,12 +760,12 @@ const SpeciesInteractionMatrix = () => {
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
                             <span className="font-medium">{pair.a.name || `Species ${formState.species.indexOf(pair.a) + 1}`}</span>
-                            <ArrowRight className="w-4 h-4 text-muted-foreground" />
+                            <ArrowRight className="w-4 h-4 text-tier-2" />
                             <span className="font-medium">{pair.b.name || `Species ${formState.species.indexOf(pair.b) + 1}`}</span>
                           </div>
                         </div>
                         {formState.pairs[index]?.overallRelationship && (
-                          <p className="text-xs text-muted-foreground mt-2">
+                          <p className="text-xs text-tier-4 mt-2">
                             {RELATIONSHIP_LEVELS.find(r => r.value === formState.pairs[index].overallRelationship)?.label}
                           </p>
                         )}
@@ -775,7 +782,8 @@ const SpeciesInteractionMatrix = () => {
                 {/* Section 3: Physical Compatibility */}
                 <CollapsibleSection
                   id="section-physical"
-                  title={`3. ${speciesA.name || "A"} ↔ ${speciesB.name || "B"}: Physical`}
+                  levelNumber={3}
+                  title={`${speciesA.name || "A"} ↔ ${speciesB.name || "B"}: Physical`}
                   guidance="Overall relationship and physical compatibility"
                 >
                   <div className="space-y-6">
@@ -791,7 +799,7 @@ const SpeciesInteractionMatrix = () => {
                             <RadioGroupItem value={opt.value} id={`rel-${opt.value}`} />
                             <Label htmlFor={`rel-${opt.value}`} className="font-normal cursor-pointer">
                               <span className="font-medium">{opt.label}</span>
-                              <span className="text-xs text-muted-foreground block">{opt.description}</span>
+                              <span className="text-xs text-tier-4 block">{opt.description}</span>
                             </Label>
                           </div>
                         ))}
@@ -887,7 +895,8 @@ const SpeciesInteractionMatrix = () => {
                 {/* Section 4: Communication */}
                 <CollapsibleSection
                   id="section-communication"
-                  title="4. Communication"
+                  levelNumber={4}
+                  title="Communication"
                   guidance="Language, perception, nonverbal, cultural concepts"
                 >
                   <div className="space-y-4">
@@ -979,7 +988,8 @@ const SpeciesInteractionMatrix = () => {
                 {/* Section 5: Economic */}
                 <CollapsibleSection
                   id="section-economic"
-                  title="5. Economic Relations"
+                  levelNumber={5}
+                  title="Economic Relations"
                   guidance="Trade, resources, labor, dependencies"
                 >
                   <div className="space-y-4">
@@ -1071,7 +1081,8 @@ const SpeciesInteractionMatrix = () => {
                 {/* Section 6: Political */}
                 <CollapsibleSection
                   id="section-political"
-                  title="6. Political Relations"
+                  levelNumber={6}
+                  title="Political Relations"
                   guidance="Sovereignty, alliances, representation, treaties"
                 >
                   <div className="space-y-4">
@@ -1163,7 +1174,8 @@ const SpeciesInteractionMatrix = () => {
                 {/* Section 7: Cultural */}
                 <CollapsibleSection
                   id="section-cultural"
-                  title="7. Cultural Exchange"
+                  levelNumber={7}
+                  title="Cultural Exchange"
                   guidance="Adoption, mixing, attitudes, hybrids"
                 >
                   <div className="space-y-4">
@@ -1255,7 +1267,8 @@ const SpeciesInteractionMatrix = () => {
                 {/* Section 8: Historical */}
                 <CollapsibleSection
                   id="section-historical"
-                  title="8. Historical Context"
+                  levelNumber={8}
+                  title="Historical Context"
                   guidance="First contact, conflicts, cooperation"
                 >
                   <div className="space-y-4">
@@ -1347,7 +1360,8 @@ const SpeciesInteractionMatrix = () => {
                 {/* Section 9: Tensions */}
                 <CollapsibleSection
                   id="section-tensions"
-                  title="9. Tension Points"
+                  levelNumber={9}
+                  title="Tension Points"
                   guidance="Current conflicts and future risks"
                 >
                   <div className="space-y-4">
@@ -1417,7 +1431,7 @@ const SpeciesInteractionMatrix = () => {
                     </CardHeader>
                     <CardContent className="space-y-2">
                       <p className="text-sm">{example.description}</p>
-                      <p className="text-xs text-muted-foreground italic">{example.dynamics}</p>
+                      <p className="text-xs text-tier-4 italic">{example.dynamics}</p>
                     </CardContent>
                   </Card>
                 ))}
@@ -1538,15 +1552,13 @@ const SpeciesInteractionMatrix = () => {
               </div>
             </CollapsibleSection>
 
-          </div>
-
-          {/* Sidebars */}
-          <ToolSidebar>
-            <SectionNavigation sections={SECTIONS} />
-          </ToolSidebar>
-
-          <KeyChoicesSidebar sections={keyChoicesSections} />
         </div>
+
+        {/* Sidebars */}
+        <ToolSidebar>
+          <SectionNavigation sections={SECTIONS} mode="inline" />
+          <KeyChoicesSidebar sections={keyChoicesSections} mode="inline" />
+        </ToolSidebar>
       </main>
 
       <WorksheetNotesSheet

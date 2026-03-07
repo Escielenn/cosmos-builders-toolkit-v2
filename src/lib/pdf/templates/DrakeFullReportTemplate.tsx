@@ -7,6 +7,7 @@ import {
   PDFKeyValuePair,
   PDFResultBox,
 } from "../components";
+import { deepStripHtml } from "@/lib/html-utils";
 
 // Drake variable definitions with full info
 const DRAKE_VARIABLES = [
@@ -138,10 +139,11 @@ const getInterpretation = (n: number): { label: string; description: string } =>
 };
 
 const DrakeFullReportTemplate = ({
-  formState,
+  formState: rawFormState,
   worldName,
   date,
 }: DrakeFullReportTemplateProps) => {
+  const formState = deepStripHtml(rawFormState);
   const N = calculateN(formState.values);
   const interpretation = getInterpretation(N);
 
@@ -150,7 +152,7 @@ const DrakeFullReportTemplate = ({
       {/* Page 1: Title, Result, Introduction */}
       <Page size="LETTER" style={styles.page}>
         <PDFHeader
-          toolName="Drake Equation Calculator"
+          toolName="Signal"
           worldName={worldName}
           date={date}
         />
@@ -217,7 +219,7 @@ const DrakeFullReportTemplate = ({
       {/* Page 2+: Variables with Notes */}
       <Page size="LETTER" style={styles.page}>
         <PDFHeader
-          toolName="Drake Equation Calculator"
+          toolName="Signal"
           worldName={worldName}
           date={date}
         />
@@ -232,7 +234,7 @@ const DrakeFullReportTemplate = ({
                 <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start", marginBottom: spacing.xs }}>
                   <View style={{ flex: 1 }}>
                     <Text style={{ fontSize: typography.sizes.md, fontWeight: 600, color: colors.primary }}>
-                      {variable.symbol} — {variable.name}
+                      {variable.symbol}—{variable.name}
                     </Text>
                     <Text style={{ fontSize: typography.sizes.xs, color: colors.text.muted, marginTop: 2 }}>
                       {variable.description}
@@ -276,7 +278,7 @@ const DrakeFullReportTemplate = ({
       {/* Page 3+: Worldbuilding Implications */}
       <Page size="LETTER" style={styles.page}>
         <PDFHeader
-          toolName="Drake Equation Calculator"
+          toolName="Signal"
           worldName={worldName}
           date={date}
         />

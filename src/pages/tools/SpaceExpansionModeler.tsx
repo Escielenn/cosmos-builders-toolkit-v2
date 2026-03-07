@@ -71,6 +71,7 @@ import ShareDialog from "@/components/sharing/ShareDialog";
 import { useWorksheetShare } from "@/hooks/use-sharing";
 import { WorksheetNotesSheet } from "@/components/tools/WorksheetNotesSheet";
 import { WorksheetMoodboardSheet } from "@/components/tools/WorksheetMoodboardSheet";
+import { ToolPageQuote } from "@/components/quotes/ToolPageQuote";
 import { useWorlds } from "@/hooks/use-worlds";
 import { Json } from "@/integrations/supabase/types";
 import {
@@ -466,11 +467,13 @@ const SpaceExpansionModeler = () => {
         <PageBursts bursts={TOOL_PAGE_BURSTS["space-expansion-modeler"]} />
         <Link
           to={worldId ? `/worlds/${worldId}` : "/"}
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
+          className="inline-flex items-center gap-2 text-sm text-tier-3 hover:text-foreground transition-colors mb-6"
         >
           <ArrowLeft className="w-4 h-4" />
           {worldId ? "Back to World" : "Back to Dashboard"}
         </Link>
+
+        <ToolPageQuote toolId="space-expansion-modeler" />
 
         <ToolActionBar
           onSave={handleSave}
@@ -496,6 +499,8 @@ const SpaceExpansionModeler = () => {
               defaultFilename="space-expansion"
             />
           }
+          worldId={worldId}
+          worksheetId={currentWorksheetId || worksheetId}
         />
 
         {/* Title */}
@@ -508,7 +513,7 @@ const SpaceExpansionModeler = () => {
               <span className="font-light">Space Expansion Modeler</span>
             </h1>
           </div>
-          <p className="text-muted-foreground mt-2 max-w-2xl">
+          <p className="text-tier-2 mt-2 max-w-2xl">
             Model how competing forces—industrial, governmental, religious, economic, social, and scientific—shape humanity's expansion beyond Earth.
           </p>
           {(currentWorksheetId || worksheetId) && (
@@ -523,17 +528,17 @@ const SpaceExpansionModeler = () => {
 
         {/* Intro Panel */}
         <GlassPanel glow className="p-6 md:p-8 mb-8">
-          <h2 className="font-heading text-xl font-semibold mb-4 gradient-text">
+          <h2 className="font-heading text-xl font-light uppercase tracking-[2px] mb-4 gradient-text">
             The Expansion Dynamics Framework
           </h2>
           <blockquote className="border-l-2 border-primary pl-4 italic text-lg mb-4">
             "One 'what if?' Follow the ripples. Over time, you get to a full world that fits well together."
-            <span className="block text-sm text-muted-foreground mt-1">—Adrian Tchaikovsky</span>
+            <span className="block text-sm text-tier-3 mt-1">—Adrian Tchaikovsky</span>
           </blockquote>
-          <p className="text-muted-foreground mb-4">
+          <p className="text-tier-2 mb-4">
             Space expansion is not a linear march outward. It pulses, stalls, redirects, and sometimes retreats based on the interaction of multiple forces. This tool helps you model those dynamics systematically, revealing consequences and story hooks you hadn't considered.
           </p>
-          <div className="text-sm text-muted-foreground">
+          <div className="text-sm text-tier-3">
             <strong className="text-foreground">The Cascade:</strong>
             <p className="mt-1">
               Resources shape industry. Industry shapes economy. Economy shapes politics. Politics shapes expansion. Each phase emerges from the interplay of six force categories, modified by walls, catalysts, gaps, and barriers.
@@ -551,7 +556,7 @@ const SpaceExpansionModeler = () => {
               title="SF Examples"
               thinkLike="a reader: what stories model these dynamics?"
             >
-              <p className="text-sm text-muted-foreground italic mb-4">
+              <p className="text-sm text-tier-3 italic mb-4">
                 {SECTION_HELPERS.examples}
               </p>
               <div className="space-y-2">
@@ -564,13 +569,13 @@ const SpaceExpansionModeler = () => {
                       >
                         <span>
                           <strong className="text-foreground">{ex.name}</strong>
-                          <span className="text-muted-foreground ml-2">—{ex.source}</span>
+                          <span className="text-tier-2 ml-2">—{ex.source}</span>
                         </span>
-                        <ChevronDown className="w-4 h-4 text-muted-foreground shrink-0" />
+                        <ChevronDown className="w-4 h-4 text-tier-2 shrink-0" />
                       </button>
                     </CollapsibleTrigger>
                     <CollapsibleContent>
-                      <div className="px-3 py-2 text-sm text-muted-foreground space-y-2">
+                      <div className="px-3 py-2 text-sm text-tier-3 space-y-2">
                         <p><strong className="text-foreground">Model:</strong> {ex.model}</p>
                         <p><strong className="text-foreground">Dominant Forces:</strong> {ex.dominantForces}</p>
                         <p><strong className="text-foreground">Consequence:</strong> {ex.consequence}</p>
@@ -587,7 +592,7 @@ const SpaceExpansionModeler = () => {
               title="Quick-Start Templates"
               thinkLike="an architect: choose a blueprint to customize"
             >
-              <p className="text-sm text-muted-foreground italic mb-4">
+              <p className="text-sm text-tier-3 italic mb-4">
                 {SECTION_HELPERS.templates}
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -595,9 +600,9 @@ const SpaceExpansionModeler = () => {
                   <GlassPanel key={tmpl.id} className="p-4 hover:border-primary/30 transition-colors">
                     <h4 className="font-heading font-medium text-sm mb-1">{tmpl.name}</h4>
                     <p className="text-xs text-primary mb-2">{tmpl.tagline}</p>
-                    <p className="text-xs text-muted-foreground mb-3">{tmpl.description}</p>
+                    <p className="text-xs text-tier-4 mb-3">{tmpl.description}</p>
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] text-muted-foreground italic">{tmpl.reference}</span>
+                      <span className="text-[10px] text-tier-2 italic">{tmpl.reference}</span>
                       <Button
                         variant="outline"
                         size="sm"
@@ -615,12 +620,12 @@ const SpaceExpansionModeler = () => {
             {/* ── Section 1: Foundation ── */}
             <CollapsibleSection
               id="section-foundation"
-              title="1. Foundation"
+              title="Foundation"
               levelNumber={1}
               thinkLike="a mission planner: what's the starting point?"
               defaultOpen
             >
-              <p className="text-sm text-muted-foreground italic mb-4">
+              <p className="text-sm text-tier-3 italic mb-4">
                 {SECTION_HELPERS.foundation}
               </p>
               <div className="space-y-4">
@@ -652,7 +657,7 @@ const SpaceExpansionModeler = () => {
                 </div>
                 <div className="space-y-2">
                   <Label>The One Big Lie (Physics Departure)</Label>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-xs text-tier-4">
                     What single physics departure makes this expansion possible?
                   </p>
                   <Suspense fallback={<EditorSkeleton />}>
@@ -667,7 +672,7 @@ const SpaceExpansionModeler = () => {
                 </div>
                 <div className="space-y-2">
                   <Label>Starting Conditions</Label>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-xs text-tier-4">
                     What's the state of civilization when expansion begins?
                   </p>
                   <Suspense fallback={<EditorSkeleton />}>
@@ -686,11 +691,11 @@ const SpaceExpansionModeler = () => {
             {/* ── Section 2: Expansion Phases ── */}
             <CollapsibleSection
               id="section-phases"
-              title="2. Expansion Phases"
+              title="Expansion Phases"
               levelNumber={2}
               thinkLike="a historian: what milestones mark each era?"
             >
-              <p className="text-sm text-muted-foreground italic mb-4">
+              <p className="text-sm text-tier-3 italic mb-4">
                 {SECTION_HELPERS.phases}
               </p>
               <div className="space-y-4">
@@ -703,7 +708,7 @@ const SpaceExpansionModeler = () => {
                       )}
                       <GlassPanel className={`p-4 ${phase.reached ? "border-primary/30" : "opacity-60"}`}>
                         <div className="flex items-center gap-3 mb-3">
-                          <div className={`w-8 h-8 rounded-sm flex items-center justify-center text-xs font-mono ${phase.reached ? "bg-primary/20 text-primary" : "bg-muted text-muted-foreground"}`}>
+                          <div className={`w-8 h-8 rounded-sm flex items-center justify-center text-xs font-mono ${phase.reached ? "bg-primary/20 text-primary" : "bg-muted text-tier-2"}`}>
                             {idx + 1}
                           </div>
                           <div className="flex-1">
@@ -714,7 +719,7 @@ const SpaceExpansionModeler = () => {
                             />
                           </div>
                           <div className="flex items-center gap-2">
-                            <Label htmlFor={`reached-${phase.id}`} className="text-xs text-muted-foreground">
+                            <Label htmlFor={`reached-${phase.id}`} className="text-xs text-tier-4">
                               Reached
                             </Label>
                             <Switch
@@ -725,7 +730,7 @@ const SpaceExpansionModeler = () => {
                           </div>
                         </div>
                         {phaseDef && (
-                          <p className="text-xs text-muted-foreground mb-3 ml-11">
+                          <p className="text-xs text-tier-4 mb-3 ml-11">
                             {phaseDef.description}
                           </p>
                         )}
@@ -812,11 +817,11 @@ const SpaceExpansionModeler = () => {
             {/* ── Section 3: Force Configuration ── */}
             <CollapsibleSection
               id="section-forces"
-              title="3. Force Configuration"
+              title="Force Configuration"
               levelNumber={3}
               thinkLike="a strategic analyst: what's pushing and pulling?"
             >
-              <p className="text-sm text-muted-foreground italic mb-4">
+              <p className="text-sm text-tier-3 italic mb-4">
                 {SECTION_HELPERS.forces}
               </p>
 
@@ -849,11 +854,11 @@ const SpaceExpansionModeler = () => {
                         <h4 className={`font-heading font-medium text-sm ${forceDef.tailwindColor}`}>
                           {forceDef.name}
                         </h4>
-                        <span className="text-xs text-muted-foreground ml-auto font-mono">
+                        <span className="text-xs text-tier-4 ml-auto font-mono">
                           {force.intensity}%
                         </span>
                       </div>
-                      <p className="text-xs text-muted-foreground mb-3 italic">
+                      <p className="text-xs text-tier-4 mb-3 italic">
                         {forceDef.thinkLike}
                       </p>
                       <div className="space-y-3">
@@ -922,11 +927,11 @@ const SpaceExpansionModeler = () => {
             {/* ── Section 4: Expansion Modifiers ── */}
             <CollapsibleSection
               id="section-modifiers"
-              title="4. Expansion Modifiers"
+              title="Expansion Modifiers"
               levelNumber={4}
               thinkLike="a crisis analyst: what accelerates, blocks, or redirects?"
             >
-              <p className="text-sm text-muted-foreground italic mb-4">
+              <p className="text-sm text-tier-3 italic mb-4">
                 {SECTION_HELPERS.modifiers}
               </p>
 
@@ -943,7 +948,7 @@ const SpaceExpansionModeler = () => {
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="h-7 w-7 p-0 text-muted-foreground hover:text-destructive"
+                          className="h-7 w-7 p-0 text-tier-2 hover:text-destructive"
                           onClick={() => removeModifier(mod.id)}
                         >
                           <Trash2 className="w-3.5 h-3.5" />
@@ -1081,11 +1086,11 @@ const SpaceExpansionModeler = () => {
             {/* ── Section 5: Consequence Matrix ── */}
             <CollapsibleSection
               id="section-matrix"
-              title="5. Consequence Matrix"
+              title="Consequence Matrix"
               levelNumber={5}
               thinkLike="a systems analyst: how do forces interact?"
             >
-              <p className="text-sm text-muted-foreground italic mb-4">
+              <p className="text-sm text-tier-3 italic mb-4">
                 {SECTION_HELPERS.matrix}
               </p>
 
@@ -1121,7 +1126,7 @@ const SpaceExpansionModeler = () => {
                       <GlassPanel key={`${forceA}-${forceB}`} className="p-3">
                         <div className="flex items-center gap-2 mb-2">
                           <span className={`text-xs font-medium ${defA.tailwindColor}`}>{defA.name}</span>
-                          <span className="text-xs text-muted-foreground">×</span>
+                          <span className="text-xs text-tier-4">×</span>
                           <span className={`text-xs font-medium ${defB.tailwindColor}`}>{defB.name}</span>
                           {interDef && (
                             <Badge
@@ -1193,7 +1198,7 @@ const SpaceExpansionModeler = () => {
               levelNumber={6}
               thinkLike="a storyteller: what narrative emerges?"
             >
-              <p className="text-sm text-muted-foreground italic mb-4">
+              <p className="text-sm text-tier-3 italic mb-4">
                 {SECTION_HELPERS.synthesis}
               </p>
               <div className="space-y-4">
@@ -1248,7 +1253,7 @@ const SpaceExpansionModeler = () => {
                 </div>
                 <div className="space-y-2">
                   <Label>Narrative Theme</Label>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-xs text-tier-4">
                     What story does this expansion model tell? What's the human drama?
                   </p>
                   <Suspense fallback={<EditorSkeleton />}>
@@ -1263,7 +1268,7 @@ const SpaceExpansionModeler = () => {
                 </div>
                 <div className="space-y-2">
                   <Label>Story Hooks</Label>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-xs text-tier-4">
                     What specific stories, conflicts, or character situations emerge from this model?
                   </p>
                   <Suspense fallback={<EditorSkeleton />}>

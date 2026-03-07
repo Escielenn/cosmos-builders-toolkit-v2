@@ -1,6 +1,7 @@
 import { Document, Page, View, Text } from "@react-pdf/renderer";
 import { styles, colors, spacing, typography } from "../../styles";
 import { PDFHeader, PDFFooter, PDFSection, PDFKeyValuePair } from "../../components";
+import { deepStripHtml } from "@/lib/html-utils";
 
 interface WorksheetData {
   id: string;
@@ -65,10 +66,16 @@ const CultureViewTemplate = ({
   worksheets,
   date,
 }: CultureViewTemplateProps) => {
+  // Strip any residual HTML from worksheet data (defensive)
+  const sanitized = worksheets.map((ws) => ({
+    ...ws,
+    data: deepStripHtml(ws.data),
+  }));
+
   return (
     <Document>
       <Page size="LETTER" style={styles.page}>
-        <PDFHeader toolName="Culture View" worldName={worldName} date={date} />
+        <PDFHeader toolName="Culture View" worldName={worldName} date={date} hideLogo />
 
         <View
           style={{
@@ -89,7 +96,7 @@ const CultureViewTemplate = ({
           </Text>
         </View>
 
-        {worksheets.map((ws) => (
+        {sanitized.map((ws) => (
           <RenderXenomythology key={ws.id} ws={ws} />
         ))}
 

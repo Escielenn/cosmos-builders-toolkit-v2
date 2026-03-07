@@ -43,6 +43,7 @@ import { useWorksheetShare } from "@/hooks/use-sharing";
 import type { MoodboardImage } from "@/hooks/use-moodboard";
 import { WorksheetNotesSheet } from "@/components/tools/WorksheetNotesSheet";
 import { WorksheetMoodboardSheet } from "@/components/tools/WorksheetMoodboardSheet";
+import { ToolPageQuote } from "@/components/quotes/ToolPageQuote";
 import { OneBigLieSummaryTemplate, OneBigLieFullReportTemplate } from "@/lib/pdf/templates";
 import { useWorlds } from "@/hooks/use-worlds";
 import { Json } from "@/integrations/supabase/types";
@@ -440,11 +441,13 @@ const OneBigLie = () => {
         {/* Back Link */}
         <Link
           to={worldId ? `/worlds/${worldId}` : "/"}
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
+          className="inline-flex items-center gap-2 text-sm text-tier-3 hover:text-foreground transition-colors mb-6"
         >
           <ArrowLeft className="w-4 h-4" />
           {worldId ? "Back to World" : "Back to Dashboard"}
         </Link>
+
+        <ToolPageQuote toolId="one-big-lie" />
 
         {/* Action Bar */}
         <ToolActionBar
@@ -478,6 +481,8 @@ const OneBigLie = () => {
               defaultFilename="one-big-lie"
             />
           }
+          worldId={worldId}
+          worksheetId={currentWorksheetId || worksheetId}
         />
 
         {/* Title */}
@@ -490,7 +495,7 @@ const OneBigLie = () => {
               <span className="font-light">The One Big Lie</span>
             </h1>
           </div>
-          <p className="text-muted-foreground mt-2 max-w-2xl">
+          <p className="text-tier-2 mt-2 max-w-2xl">
             Declare your single violation of known physics, then systematically
             trace its consequences across every domain of your world.
           </p>
@@ -515,21 +520,21 @@ const OneBigLie = () => {
 
         {/* Introduction Panel */}
         <GlassPanel glow className="p-6 md:p-8 mb-8">
-          <h2 className="font-heading text-xl font-semibold mb-4 gradient-text">
+          <h2 className="font-heading text-xl font-light uppercase tracking-[2px] mb-4 gradient-text">
             The One Big Lie Framework
           </h2>
           <blockquote className="border-l-2 border-primary pl-4 italic text-lg mb-4">
             "Pick ONE counterfactual element. Make it plausible-ish. Then follow
             ALL other science rigorously."
           </blockquote>
-          <p className="text-muted-foreground mb-4">
+          <p className="text-tier-2 mb-4">
             The One Big Lie is a foundational principle of hard science fiction:
             you're allowed one major departure from known physics, but everything
             else must follow real science rigorously. This tool guides you through
             declaring that departure and tracing its consequences across your
             entire world—from physics to biology to mythology to culture.
           </p>
-          <div className="text-sm text-muted-foreground mb-4">
+          <div className="text-sm text-tier-3 mb-4">
             <strong className="text-foreground">The Cascade Principle:</strong>
             <p className="mt-1">
               Physics shapes environment. Environment shapes biology. Biology shapes psychology. Psychology shapes mythology. Mythology shapes culture. Change one element at the
@@ -554,15 +559,15 @@ const OneBigLie = () => {
                         <strong className="text-foreground">
                           {example.name}
                         </strong>
-                        <span className="text-muted-foreground ml-2">
+                        <span className="text-tier-2 ml-2">
                          —{example.source}
                         </span>
                       </span>
-                      <ChevronDown className="w-4 h-4 text-muted-foreground shrink-0" />
+                      <ChevronDown className="w-4 h-4 text-tier-2 shrink-0" />
                     </button>
                   </CollapsibleTrigger>
                   <CollapsibleContent>
-                    <div className="px-3 py-2 text-sm text-muted-foreground space-y-2">
+                    <div className="px-3 py-2 text-sm text-tier-3 space-y-2">
                       <p>
                         <strong className="text-foreground">The Lie:</strong>{" "}
                         {example.lie}
@@ -608,7 +613,7 @@ const OneBigLie = () => {
             thinkLike="a physicist setting the ground rules"
             defaultOpen={true}
           >
-            <p className="text-sm text-muted-foreground italic mb-4">
+            <p className="text-sm text-tier-3 italic mb-4">
               {SECTION_HELPERS.approach}
             </p>
             <RadioGroup
@@ -630,7 +635,7 @@ const OneBigLie = () => {
                     className="cursor-pointer"
                   >
                     <span className="font-medium">{option.label}</span>
-                    <span className="text-muted-foreground ml-2">
+                    <span className="text-tier-2 ml-2">
                      —{option.description}
                     </span>
                   </Label>
@@ -646,7 +651,7 @@ const OneBigLie = () => {
             levelNumber={2}
             thinkLike="a patent attorney: be precise and specific"
           >
-            <p className="text-sm text-muted-foreground italic mb-4">
+            <p className="text-sm text-tier-3 italic mb-4">
               {SECTION_HELPERS.coreStatement}
             </p>
 
@@ -698,7 +703,7 @@ const OneBigLie = () => {
             levelNumber={3}
             thinkLike="a story architect: why does this change matter?"
           >
-            <p className="text-sm text-muted-foreground italic mb-4">
+            <p className="text-sm text-tier-3 italic mb-4">
               {SECTION_HELPERS.justification}
             </p>
 
@@ -781,7 +786,7 @@ const OneBigLie = () => {
             levelNumber={4}
             thinkLike="an experimental scientist: how would you prove it?"
           >
-            <p className="text-sm text-muted-foreground italic mb-4">
+            <p className="text-sm text-tier-3 italic mb-4">
               {SECTION_HELPERS.testability}
             </p>
 
@@ -853,10 +858,10 @@ const OneBigLie = () => {
             levelNumber={5}
             thinkLike="a biologist: what evolves?"
           >
-            <p className="text-sm text-muted-foreground italic mb-2">
+            <p className="text-sm text-tier-3 italic mb-2">
               {SECTION_HELPERS.physicalConsequences}
             </p>
-            <p className="text-sm text-muted-foreground italic mb-4">
+            <p className="text-sm text-tier-3 italic mb-4">
               {SECTION_HELPERS.physicalSub}
             </p>
 
@@ -918,7 +923,7 @@ const OneBigLie = () => {
             levelNumber={6}
             thinkLike="an economist: who profits?"
           >
-            <p className="text-sm text-muted-foreground italic mb-4">
+            <p className="text-sm text-tier-3 italic mb-4">
               {SECTION_HELPERS.techConsequences}
             </p>
 
@@ -979,7 +984,7 @@ const OneBigLie = () => {
             levelNumber={7}
             thinkLike="a sociologist: how do people change?"
           >
-            <p className="text-sm text-muted-foreground italic mb-4">
+            <p className="text-sm text-tier-3 italic mb-4">
               {SECTION_HELPERS.socialConsequences}
             </p>
 
@@ -1043,7 +1048,7 @@ const OneBigLie = () => {
             levelNumber={8}
             thinkLike="a hard SF editor: where do you hold the line?"
           >
-            <p className="text-sm text-muted-foreground italic mb-4">
+            <p className="text-sm text-tier-3 italic mb-4">
               {SECTION_HELPERS.rigorCommitment}
             </p>
 
@@ -1053,7 +1058,7 @@ const OneBigLie = () => {
                   Rigor Area 1—Name one specific scientific domain where you
                   will maintain strict accuracy despite your Big Lie.
                 </Label>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-tier-4">
                   e.g., "Orbital mechanics will be realistic—no banking turns
                   in space."
                 </p>
@@ -1074,7 +1079,7 @@ const OneBigLie = () => {
                 <Label>
                   Rigor Area 2—Name a second domain of maintained rigor.
                 </Label>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-tier-4">
                   e.g., "Biology will follow evolutionary logic—no humanoid
                   aliens without convergent evolution justification."
                 </p>
@@ -1095,7 +1100,7 @@ const OneBigLie = () => {
                 <Label>
                   Rigor Area 3—Name a third domain of maintained rigor.
                 </Label>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-tier-4">
                   e.g., "Economics will follow scarcity principles—no
                   post-scarcity handwaving without technological basis."
                 </p>
@@ -1121,7 +1126,7 @@ const OneBigLie = () => {
             levelNumber={9}
             thinkLike="your harshest critic: try to break your own idea"
           >
-            <p className="text-sm text-muted-foreground italic mb-4">
+            <p className="text-sm text-tier-3 italic mb-4">
               {SECTION_HELPERS.consistencyTest}
             </p>
 
@@ -1196,7 +1201,7 @@ const OneBigLie = () => {
             levelNumber={10}
             thinkLike="a world's founding legislator"
           >
-            <p className="text-sm text-muted-foreground italic mb-4">
+            <p className="text-sm text-tier-3 italic mb-4">
               {SECTION_HELPERS.declaration}
             </p>
 

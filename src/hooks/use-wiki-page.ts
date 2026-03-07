@@ -181,7 +181,7 @@ export function useWikiPage(
     enabled: !!entryQuery.data?.content,
   });
 
-  // Update content mutation
+  // Update content mutation (optimistic — preview shows new content immediately)
   const contentMutation = useMutation({
     mutationFn: async (content: string) => {
       if (!entryId) return;
@@ -191,7 +191,20 @@ export function useWikiPage(
         .eq("id", entryId);
       if (error) throw error;
     },
-    onSuccess: () => {
+    onMutate: async (content: string) => {
+      await queryClient.cancelQueries({ queryKey: ["wiki-page", entryId] });
+      const prev = queryClient.getQueryData(["wiki-page", entryId]);
+      queryClient.setQueryData(["wiki-page", entryId], (old: WorldEntry | null | undefined) =>
+        old ? { ...old, content } : old
+      );
+      return { prev };
+    },
+    onError: (_err, _content, context) => {
+      if (context?.prev) {
+        queryClient.setQueryData(["wiki-page", entryId], context.prev);
+      }
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["wiki-page", entryId] });
       queryClient.invalidateQueries({
         queryKey: ["wiki-page-backlinks", worldId],

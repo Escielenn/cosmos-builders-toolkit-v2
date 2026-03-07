@@ -7,6 +7,7 @@ import {
   PDFKeyValuePair,
   PDFResultBox,
 } from "../components";
+import { deepStripHtml } from "@/lib/html-utils";
 
 interface FormState {
   identity: {
@@ -127,12 +128,14 @@ const SpacecraftSummaryTemplate = ({
   worldName,
   date,
 }: SpacecraftSummaryTemplateProps) => {
+  const cleanState = deepStripHtml(formState);
+
   // Safe access to nested properties
-  const identity = formState?.identity;
-  const propulsion = formState?.propulsion;
-  const lifeSupport = formState?.lifeSupport;
-  const character = formState?.character;
-  const synthesis = formState?.synthesis;
+  const identity = cleanState?.identity;
+  const propulsion = cleanState?.propulsion;
+  const lifeSupport = cleanState?.lifeSupport;
+  const character = cleanState?.character;
+  const synthesis = cleanState?.synthesis;
 
   const shipName = identity?.name || "Unnamed Vessel";
   const shipClass = SHIP_CLASS_LABELS[identity?.class || ""] || identity?.customClass || "Unclassified";
@@ -143,7 +146,7 @@ const SpacecraftSummaryTemplate = ({
     <Document>
       <Page size="LETTER" style={styles.page}>
         <PDFHeader
-          toolName="Spacecraft Designer"
+          toolName="Vessel"
           worldName={worldName}
           date={date}
         />

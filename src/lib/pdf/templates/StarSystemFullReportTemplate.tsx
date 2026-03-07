@@ -7,6 +7,7 @@ import {
   PDFKeyValuePair,
   PDFResultBox,
 } from "../components";
+import { deepStripHtml } from "@/lib/html-utils";
 
 interface PlanetaryBody {
   id: string;
@@ -115,10 +116,11 @@ const TextBlock = ({ label, value }: { label: string; value?: string }) => {
 };
 
 const StarSystemFullReportTemplate = ({
-  formState,
+  formState: rawFormState,
   worldName,
   date,
 }: StarSystemFullReportTemplateProps) => {
+  const formState = deepStripHtml(rawFormState);
   const primaryStar = formState?.primaryStar;
   const configuration = formState?.configuration;
   const bodies = formState?.bodies || [];
@@ -136,7 +138,7 @@ const StarSystemFullReportTemplate = ({
       {/* Page 1: Star & Configuration */}
       <Page size="LETTER" style={styles.page}>
         <PDFHeader
-          toolName="Star System Builder"
+          toolName="Orrery"
           worldName={worldName}
           date={date}
         />
@@ -193,7 +195,7 @@ const StarSystemFullReportTemplate = ({
       {/* Page 2: Planetary Bodies */}
       <Page size="LETTER" style={styles.page}>
         <PDFHeader
-          toolName="Star System Builder"
+          toolName="Orrery"
           worldName={worldName}
           date={date}
         />
@@ -255,7 +257,7 @@ const StarSystemFullReportTemplate = ({
       {/* Page 3: Orbital Mechanics & History */}
       <Page size="LETTER" style={styles.page}>
         <PDFHeader
-          toolName="Star System Builder"
+          toolName="Orrery"
           worldName={worldName}
           date={date}
         />
@@ -298,7 +300,7 @@ const StarSystemFullReportTemplate = ({
       {/* Page 4: Habitability, Narrative & Synthesis */}
       <Page size="LETTER" style={styles.page}>
         <PDFHeader
-          toolName="Star System Builder"
+          toolName="Orrery"
           worldName={worldName}
           date={date}
         />

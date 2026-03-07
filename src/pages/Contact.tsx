@@ -5,6 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { Mail, MessageSquare, Clock } from "lucide-react";
 import ContactFormTabs from "@/components/contact/ContactFormTabs";
 import { useSearchParams } from "react-router-dom";
+import { PageBursts } from "@/components/ui/data-burst";
+import { CONTACT_BURSTS } from "@/lib/data-bursts";
 
 type TabValue = "contact" | "support" | "feature" | "bug" | "beta";
 
@@ -21,18 +23,19 @@ const Contact = () => {
     <div className="min-h-screen bg-background sf-atmosphere">
       <Header />
 
-      <main className="container mx-auto px-4 pt-24 pb-16">
+      <main className="relative container mx-auto px-4 pt-24 pb-16">
+        <PageBursts bursts={CONTACT_BURSTS} />
         {/* Hero */}
         <section className="text-center mb-12">
           <Badge className="mb-4" variant="secondary">
             <Mail className="w-3 h-3 mr-1" />
-            Contact Us
+            COMMUNICATIONS
           </Badge>
-          <h1 className="font-display text-4xl md:text-5xl font-bold mb-4">
-            Get in Touch
+          <h1 className="font-display text-4xl md:text-5xl font-light mb-4 tracking-sf-wide">
+            COMMUNICATIONS CHANNEL
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Have a question, feedback, or need support? We're here to help.
+            Report anomalies, request features, or make contact.
           </p>
         </section>
 

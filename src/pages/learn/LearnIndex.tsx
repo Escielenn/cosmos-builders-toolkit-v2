@@ -1,16 +1,22 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { BookOpen, ArrowRight, Calendar, Search, Beaker } from "lucide-react";
+import { BookOpen, ArrowRight, Calendar, Search, Beaker, GraduationCap, ExternalLink, Zap, Sparkles } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useArticles, useSearchArticles } from "@/hooks/use-sanity-articles";
+import { useFeaturedCourses } from "@/hooks/use-courses";
+import { useSubscription } from "@/hooks/use-subscription";
+import { useAuth } from "@/contexts/AuthContext";
 import { urlFor } from "@/lib/sanity/client";
 import { PageBursts } from "@/components/ui/data-burst";
 import { LEARN_INDEX_BURSTS } from "@/lib/data-bursts";
+import { GuideNav } from "@/components/layout/GuideNav";
+import type { CourseListItem } from "@/lib/sanity/types";
 
 // Fallback static articles (shown when Sanity has no content yet)
 const fallbackArticles = [
@@ -40,10 +46,36 @@ const categoryColors: Record<string, string> = {
   "case-studies": "bg-amber-500/20 text-amber-400",
 };
 
+const STATUS_LABELS: Record<string, { label: string; className: string }> = {
+  upcoming: { label: "UPCOMING", className: "bg-white/5 border-white/10 text-tier-3" },
+  enrolling: { label: "ENROLLING NOW", className: "bg-emerald-500/6 border-emerald-500/15 text-emerald-400" },
+  in_progress: { label: "IN SESSION", className: "bg-amber-500/6 border-amber-500/15 text-amber-400" },
+};
+
+function CourseDiscountBadge({ course, courseDiscount, tier }: { course: CourseListItem; courseDiscount: string; tier: string }) {
+  // Determine which discount string to show based on user's tier/plan
+  if (tier === "free" || courseDiscount === "0%") {
+    // Show generic "Members save" message
+    const maxDiscount = course.vanguardYearlyDiscount || "25%";
+    return (
+      <span className="text-xs text-violet-400">Members save up to {maxDiscount}</span>
+    );
+  }
+
+  return (
+    <Badge className="bg-violet-500/6 border border-violet-500/15 text-violet-400 text-xs">
+      {courseDiscount} off
+    </Badge>
+  );
+}
+
 const LearnIndex = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const { data: sanityArticles, isLoading, error } = useArticles();
   const { data: searchResults, isLoading: isSearching } = useSearchArticles(searchTerm);
+  const { data: featuredCourses = [] } = useFeaturedCourses();
+  const { user } = useAuth();
+  const { tier, courseDiscount } = useSubscription();
   const isSearchActive = searchTerm.length >= 2;
 
   // Use Sanity articles if available, otherwise fall back to static
@@ -75,6 +107,25 @@ const LearnIndex = () => {
             and the craft of creating believable fictional universes.
           </p>
         </section>
+
+        {/* Cross-section navigation */}
+        <GuideNav />
+
+        {/* Page-specific shortcuts */}
+        <div className="flex justify-center gap-2 -mt-4 mb-8">
+          <a
+            href="#courses"
+            className="px-4 py-2 text-xs uppercase tracking-wider text-muted-foreground hover:text-primary border border-border/30 rounded-md hover:border-primary/30 transition-all"
+          >
+            Courses
+          </a>
+          <Link
+            to="/roadmap"
+            className="px-4 py-2 text-xs uppercase tracking-wider text-muted-foreground hover:text-primary border border-border/30 rounded-md hover:border-primary/30 transition-all"
+          >
+            Roadmap
+          </Link>
+        </div>
 
         {/* Search */}
         <div className="relative max-w-md mx-auto mb-10">
@@ -280,7 +331,138 @@ const LearnIndex = () => {
                   </p>
                 </GlassPanel>
               </Link>
+              <Link to="/tools/exoforge/science">
+                <GlassPanel className="p-5 h-full hover:bg-accent/50 transition-colors cursor-pointer group">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="w-10 h-10 rounded-sm flex items-center justify-center bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 overflow-hidden">
+                      <img src="/icons/025-planet-earth.svg" alt="" className="w-6 h-6" draggable={false} />
+                    </div>
+                    <Badge variant="outline" className={categoryColors.science}>
+                      {categoryLabels.science}
+                    </Badge>
+                  </div>
+                  <h3 className="font-semibold group-hover:text-primary transition-colors">
+                    EXOFORGE: The Science
+                  </h3>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Terrain generation, composition spectra, biome models, and the physics behind procedural exoplanet forging.
+                  </p>
+                </GlassPanel>
+              </Link>
             </div>
+          </section>
+        )}
+
+        {/* Courses */}
+        {!isLoading && !isSearchActive && featuredCourses.length > 0 && (
+          <section id="courses" className="mb-12 scroll-mt-24">
+            <div className="flex items-center gap-3 mb-6">
+              <GraduationCap className="w-5 h-5 text-violet-400" />
+              <h2 className="font-heading text-2xl font-light uppercase tracking-[2px]">
+                Courses
+              </h2>
+            </div>
+            <div className="grid gap-6 md:grid-cols-2">
+              {featuredCourses.map((course) => {
+                const statusCfg = STATUS_LABELS[course.status] || STATUS_LABELS.upcoming;
+                return (
+                  <GlassPanel key={course._id} className="overflow-hidden group">
+                    {course.artwork?.asset && (
+                      <div className="aspect-video w-full overflow-hidden">
+                        <img
+                          src={urlFor(course.artwork).width(600).height(340).url()}
+                          alt={course.artwork.alt || course.title}
+                          loading="lazy"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                      </div>
+                    )}
+                    <div className="p-6">
+                      {/* Status + category */}
+                      <div className="flex items-center gap-2 mb-3 flex-wrap">
+                        <Badge className={`${statusCfg.className} border`}>
+                          {statusCfg.label}
+                        </Badge>
+                        {course.tags?.map((tag) => (
+                          <Badge key={tag} variant="outline" className="text-tier-3 border-white/10">
+                            {tag}
+                          </Badge>
+                        ))}
+                      </div>
+
+                      {/* Title */}
+                      <h3 className="font-heading text-lg font-light uppercase tracking-[2px] text-tier-1 mb-2">
+                        {course.title}
+                      </h3>
+
+                      {/* Instructor + dates */}
+                      <div className="flex items-center gap-3 text-xs text-tier-3 mb-3">
+                        <span>Instructor: <span className="text-tier-2">{course.instructor}</span></span>
+                        {course.startDate && (
+                          <span className="flex items-center gap-1">
+                            <Calendar className="w-3 h-3" />
+                            {new Date(course.startDate).toLocaleDateString("en-US", {
+                              month: "short",
+                              day: "numeric",
+                              year: "numeric",
+                            })}
+                          </span>
+                        )}
+                        {course.duration && (
+                          <span>{course.duration}</span>
+                        )}
+                      </div>
+
+                      {/* Description */}
+                      <p className="text-sm text-tier-2 mb-4 leading-relaxed line-clamp-3">
+                        {course.description}
+                      </p>
+
+                      {/* Price + discount + register */}
+                      <div className="flex items-center justify-between flex-wrap gap-3">
+                        <div className="flex items-center gap-3">
+                          <span className="font-mono text-tier-1">{course.price}</span>
+                          <CourseDiscountBadge
+                            course={course}
+                            courseDiscount={courseDiscount}
+                            tier={tier}
+                          />
+                        </div>
+                        <Button
+                          asChild
+                          size="sm"
+                          className="gap-1.5"
+                        >
+                          <a
+                            href={course.registrationUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            REGISTER
+                            <ExternalLink className="w-3 h-3" />
+                          </a>
+                        </Button>
+                      </div>
+                    </div>
+                  </GlassPanel>
+                );
+              })}
+            </div>
+
+            {/* Discount upsell for non-subscribed users */}
+            {!user && (
+              <GlassPanel className="p-4 mt-4 border-violet-500/10 text-center">
+                <p className="text-sm text-tier-3">
+                  <Zap className="w-3.5 h-3.5 inline-block mr-1 text-amber-500 -mt-0.5" />
+                  Pro members save 5–10% on all courses.{" "}
+                  <Sparkles className="w-3.5 h-3.5 inline-block mr-1 text-violet-400 -mt-0.5" />
+                  Vanguard members save up to 25%.{" "}
+                  <Link to="/pricing" className="text-primary hover:underline">
+                    View plans
+                  </Link>
+                </p>
+              </GlassPanel>
+            )}
           </section>
         )}
 

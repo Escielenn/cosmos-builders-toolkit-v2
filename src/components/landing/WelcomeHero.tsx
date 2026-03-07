@@ -38,23 +38,23 @@ const WelcomeHero = () => {
         className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mb-10 leading-relaxed"
         variants={fadeUpItem}
       >
-        Define your planet's gravity, and watch how it shapes architecture, biology,
-        psychology, and mythology. Every tool builds on the last—creating worlds
+        Define your planet's gravity, and watch how it shapes biology, psychology,
+        mythology, and culture. Every tool builds on the last—creating worlds
         with internal consistency and depth.
       </motion.p>
 
       {/* CTA buttons */}
       <motion.div className="flex flex-wrap gap-4 justify-center mb-12" variants={fadeUpItem}>
         <Button size="lg" className="gap-2 text-base px-8" asChild>
-          <Link to="/auth?tab=signup">
+          <Link to="/auth">
             <Rocket className="w-5 h-5" />
-            Start Free
+            BEGIN
           </Link>
         </Button>
         <Button variant="outline" size="lg" className="gap-2 text-base px-8" asChild>
           <Link to="/features">
             <Sparkles className="w-5 h-5" />
-            See Features
+            VIEW MANIFEST
           </Link>
         </Button>
       </motion.div>
@@ -63,7 +63,7 @@ const WelcomeHero = () => {
         className="text-sm text-muted-foreground"
         variants={fadeUpItem}
       >
-        3 tools free forever • 11 more with Pro
+        3 tools free forever • 27 (and counting) more with Pro Access
       </motion.p>
 
       <motion.p

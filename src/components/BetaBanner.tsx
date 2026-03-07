@@ -14,13 +14,13 @@ const BetaBanner = ({ position = "top" }: BetaBannerProps) => {
     >
       <div className="container mx-auto flex items-center justify-center gap-2">
         <FlaskConical className="w-4 h-4" />
-        <span>
-          <strong>StellarForge</strong> is currently in beta.{" "}
+        <span className="font-mono text-xs tracking-wider uppercase">
+          SYSTEM STATUS: BETA · OPERATIONAL ·{" "}
           <Link
             to="/contact?tab=beta"
             className="underline hover:text-primary/80 transition-colors"
           >
-            We'd love your feedback!
+            SUBMIT FIELD REPORT
           </Link>
         </span>
       </div>

@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, KeyboardEvent } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { Plus } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import TagBadge from "./TagBadge";
@@ -11,14 +11,16 @@ interface TagInputProps {
   placeholder?: string;
   maxTags?: number;
   className?: string;
+  hideTags?: boolean;
 }
 
 const TagInput = ({
   tags,
   onChange,
-  placeholder = "Add tag...",
+  placeholder = "Add tag... (shared across worlds)",
   maxTags = 10,
   className,
+  hideTags = false,
 }: TagInputProps) => {
   const [inputValue, setInputValue] = useState("");
   const [isFocused, setIsFocused] = useState(false);
@@ -36,7 +38,7 @@ const TagInput = ({
     setSelectedSuggestion(0);
   }, [inputValue]);
 
-  const addTag = (tagName: string) => {
+  const addTag = useCallback((tagName: string) => {
     const normalized = tagName.toLowerCase().trim();
     if (!normalized || tags.includes(normalized) || tags.length >= maxTags) {
       return;
@@ -44,35 +46,52 @@ const TagInput = ({
     onChange([...tags, normalized]);
     setInputValue("");
     inputRef.current?.focus();
-  };
+  }, [tags, maxTags, onChange]);
 
   const removeTag = (tagToRemove: string) => {
     onChange(tags.filter((t) => t !== tagToRemove));
   };
 
-  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      if (suggestions.length > 0 && selectedSuggestion < suggestions.length) {
-        addTag(suggestions[selectedSuggestion].name);
-      } else if (inputValue.trim()) {
-        addTag(inputValue);
+  // Native keydown listener on the input element (capture phase)
+  // This ensures Enter is handled even if React synthetic events are intercepted
+  useEffect(() => {
+    const input = inputRef.current;
+    if (!input) return;
+
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+
+        const currentInput = input.value.trim();
+        // Use the DOM value directly to avoid stale closure issues
+        if (currentInput) {
+          // Check for matching suggestions from the autocomplete list
+          const lowerInput = currentInput.toLowerCase();
+          const matchingSuggestions = allTags
+            .filter((t) => t.name.includes(lowerInput) && !tags.includes(t.name))
+            .slice(0, 10);
+
+          if (matchingSuggestions.length > 0) {
+            addTag(matchingSuggestions[0].name);
+          } else {
+            addTag(currentInput);
+          }
+        }
+      } else if (e.key === "Backspace" && !input.value && tags.length > 0) {
+        removeTag(tags[tags.length - 1]);
+      } else if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+        e.preventDefault();
+      } else if (e.key === "Escape") {
+        setInputValue("");
+        input.blur();
       }
-    } else if (e.key === "Backspace" && !inputValue && tags.length > 0) {
-      removeTag(tags[tags.length - 1]);
-    } else if (e.key === "ArrowDown" && suggestions.length > 0) {
-      e.preventDefault();
-      setSelectedSuggestion((prev) =>
-        prev < suggestions.length - 1 ? prev + 1 : prev
-      );
-    } else if (e.key === "ArrowUp" && suggestions.length > 0) {
-      e.preventDefault();
-      setSelectedSuggestion((prev) => (prev > 0 ? prev - 1 : 0));
-    } else if (e.key === "Escape") {
-      setInputValue("");
-      inputRef.current?.blur();
-    }
-  };
+    };
+
+    input.addEventListener("keydown", handler, true);
+    return () => input.removeEventListener("keydown", handler, true);
+  }, [tags, allTags, addTag, maxTags]);
 
   const getColorForTag = (tagName: string): string => {
     const existingTag = allTags.find((t) => t.name === tagName);
@@ -85,7 +104,7 @@ const TagInput = ({
   return (
     <div className={cn("space-y-2", className)}>
       {/* Current tags */}
-      {tags.length > 0 && (
+      {!hideTags && tags.length > 0 && (
         <div className="flex flex-wrap gap-1.5">
           {tags.map((tag) => (
             <TagBadge
@@ -107,12 +126,12 @@ const TagInput = ({
             ref={inputRef}
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
-            onKeyDown={handleKeyDown}
             onFocus={() => setIsFocused(true)}
-            onBlur={() => setTimeout(() => setIsFocused(false), 150)}
+            onBlur={() => setTimeout(() => setIsFocused(false), 200)}
             placeholder={tags.length >= maxTags ? "Max tags reached" : placeholder}
             disabled={tags.length >= maxTags}
             className="pl-8 h-8 text-sm"
+            autoFocus
           />
         </div>
 
@@ -122,6 +141,8 @@ const TagInput = ({
             {suggestions.map((suggestion, index) => (
               <button
                 key={suggestion.id}
+                type="button"
+                onMouseDown={(e) => e.preventDefault()}
                 onClick={() => addTag(suggestion.name)}
                 className={cn(
                   "w-full px-3 py-2 text-left text-sm flex items-center gap-2 hover:bg-accent/50 transition-colors",
@@ -141,12 +162,17 @@ const TagInput = ({
           </div>
         )}
 
-        {/* Create new tag hint */}
+        {/* Create new tag hint - also clickable */}
         {isFocused && inputValue && suggestions.length === 0 && (
           <div className="absolute z-10 w-full mt-1 bg-popover border border-border rounded-md shadow-lg">
-            <div className="px-3 py-2 text-sm text-muted-foreground">
-              Press Enter to create "{inputValue}"
-            </div>
+            <button
+              type="button"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => addTag(inputValue)}
+              className="w-full px-3 py-2 text-sm text-left text-muted-foreground hover:bg-accent/50 transition-colors"
+            >
+              Press Enter to create "<span className="text-foreground">{inputValue}</span>"
+            </button>
           </div>
         )}
       </div>

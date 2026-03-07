@@ -52,6 +52,7 @@ import { useWorksheetShare } from "@/hooks/use-sharing";
 import type { MoodboardImage } from "@/hooks/use-moodboard";
 import { WorksheetNotesSheet } from "@/components/tools/WorksheetNotesSheet";
 import { WorksheetMoodboardSheet } from "@/components/tools/WorksheetMoodboardSheet";
+import { ToolPageQuote } from "@/components/quotes/ToolPageQuote";
 import { WorksheetTagsBar } from "@/components/tools/WorksheetTagsBar";
 import QuestionSection from "@/components/tools/QuestionSection";
 import {
@@ -452,7 +453,7 @@ const Sensorium = () => {
     switch (status) {
       case "recommended": return "text-cyan-400 border-cyan-500/50 bg-cyan-500/10";
       case "possible": return "text-amber-400 border-amber-500/50 bg-amber-500/10";
-      case "implausible": return "text-muted-foreground border-border bg-muted/20 opacity-60";
+      case "implausible": return "text-tier-2 border-border bg-muted/20 opacity-60";
       default: return "";
     }
   };
@@ -475,16 +476,18 @@ const Sensorium = () => {
 
   return (
     <PageShell>
-      <main className="relative container mx-auto px-4 py-8 max-w-7xl">
+      <main className="relative container mx-auto px-4 pt-24 pb-8 max-w-7xl">
         <PageBursts bursts={TOOL_PAGE_BURSTS["sensorium"]} />
         {/* Back navigation */}
         <Link
           to={worldId ? `/world/${worldId}` : "/"}
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
+          className="inline-flex items-center gap-2 text-sm text-tier-3 hover:text-foreground transition-colors mb-6"
         >
           <ArrowLeft className="h-4 w-4" />
           {worldId ? "Back to World" : "Back to Dashboard"}
         </Link>
+
+        <ToolPageQuote toolId="sensorium" />
 
         {/* Action bar */}
         <ToolActionBar
@@ -526,6 +529,8 @@ const Sensorium = () => {
               defaultFilename="sensorium"
             />
           }
+          worldId={worldId}
+          worksheetId={currentWorksheetId || worksheetId}
         />
 
         {/* Title */}
@@ -536,7 +541,7 @@ const Sensorium = () => {
             <span className="font-light">Alien Sensory Systems</span>
           </h1>
         </div>
-        <p className="text-muted-foreground mb-6 max-w-2xl">
+        <p className="text-tier-2 mb-6 max-w-2xl">
           Design evolutionarily plausible sensory systems for alien species.
           Derive senses from environmental constraints or validate custom selections.
         </p>
@@ -564,13 +569,15 @@ const Sensorium = () => {
         <div className="flex gap-6">
           {/* Desktop sidebar */}
           <ToolSidebar>
-            <SectionNavigation sections={sections} variant="inline" />
-            <KeyChoicesSidebar sections={keyChoices} />
+            <SectionNavigation sections={sections} mode="inline" />
+            <KeyChoicesSidebar sections={keyChoices} mode="inline" />
           </ToolSidebar>
 
-          {/* Mobile navigation */}
-          <MobileSectionNav sections={sections} />
-          <MobileKeyChoices sections={keyChoices} />
+          {/* Mobile Sidebars - Right side floating buttons */}
+          <div className="fixed right-4 bottom-4 xl:hidden z-40 no-print flex flex-col gap-2">
+            <MobileSectionNav sections={sections} />
+            <MobileKeyChoices sections={keyChoices} />
+          </div>
 
           {/* Main content */}
           <div className="flex-1 min-w-0 space-y-6">
@@ -611,7 +618,7 @@ const Sensorium = () => {
                         ))}
                       </SelectContent>
                     </Select>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-xs text-tier-4">
                       Peak λ: {formState.environment.star.peakWavelength} nm · UV: {formState.environment.star.uvOutput} · {formState.environment.star.temperature} K
                     </p>
                   </div>
@@ -633,7 +640,7 @@ const Sensorium = () => {
                         ))}
                       </SelectContent>
                     </Select>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-xs text-tier-4">
                       {formState.environment.atmosphere.hasAtmosphere
                         ? `${formState.environment.atmosphere.pressure} atm · ${formState.environment.atmosphere.opacity}`
                         : "No atmosphere (vacuum)"}
@@ -869,7 +876,7 @@ const Sensorium = () => {
 
                   <TabsContent value="derive" className="mt-4">
                     <div className="space-y-3 mb-4">
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-sm text-tier-3">
                         Based on your environment, each sense is scored for plausibility. <strong className="text-foreground">Click any card to add it to your species' final sensory suite.</strong> You can select implausible senses too—sometimes the best stories break the rules.
                       </p>
                       <div className="flex flex-wrap gap-3 text-[11px]">
@@ -882,7 +889,7 @@ const Sensorium = () => {
                   </TabsContent>
                   <TabsContent value="validate" className="mt-4">
                     <div className="space-y-3 mb-4">
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-sm text-tier-3">
                         Pick senses freely without environmental guidance, then validate them. <strong className="text-foreground">Click cards to select, then review plausibility scores below.</strong>
                       </p>
                       <div className="flex flex-wrap gap-3 text-[11px]">
@@ -952,7 +959,7 @@ const Sensorium = () => {
                                   <h4 className="text-sm font-medium truncate pr-6">
                                     {mod.name}
                                   </h4>
-                                  <p className="text-xs text-muted-foreground line-clamp-2 mt-0.5">
+                                  <p className="text-xs text-tier-4 line-clamp-2 mt-0.5">
                                     {mod.description}
                                   </p>
                                   <div className="flex items-center gap-2 mt-2">
@@ -962,7 +969,7 @@ const Sensorium = () => {
                                     >
                                       {status} ({score})
                                     </Badge>
-                                    <span className="text-[10px] text-muted-foreground">
+                                    <span className="text-[10px] text-tier-2">
                                       {mod.evolution.metabolicCost} cost
                                     </span>
                                   </div>
@@ -989,7 +996,7 @@ const Sensorium = () => {
                     ))}
                     {validationResult.conflictingSenses.length > 0 && (
                       <div className="mt-2">
-                        <p className="text-xs text-muted-foreground font-medium">Conflicts:</p>
+                        <p className="text-xs text-tier-4 font-medium">Conflicts:</p>
                         {validationResult.conflictingSenses.map((c, i) => (
                           <p key={i} className="text-xs text-red-400">
                             {getModalityById(c.a)?.name} ↔ {getModalityById(c.b)?.name}: {c.reason}
@@ -1039,7 +1046,7 @@ const Sensorium = () => {
                     <span>
                       Total: <span className="font-bold">{(metabolicBudget.totalCost * 100).toFixed(0)}%</span>
                     </span>
-                    <span className="text-muted-foreground">Max sustainable: 100%</span>
+                    <span className="text-tier-2">Max sustainable: 100%</span>
                   </div>
                   <div className="h-4 bg-muted overflow-hidden">
                     <div
@@ -1073,7 +1080,7 @@ const Sensorium = () => {
                             style={{ width: `${s.cost * 100}%` }}
                           />
                         </div>
-                        <div className="w-10 text-right text-muted-foreground">
+                        <div className="w-10 text-right text-tier-2">
                           {(s.cost * 100).toFixed(0)}%
                         </div>
                       </div>
@@ -1188,7 +1195,7 @@ const Sensorium = () => {
             >
               <div className="space-y-6">
                 {formState.finalSelection.length === 0 ? (
-                  <p className="text-sm text-muted-foreground italic">
+                  <p className="text-sm text-tier-3 italic">
                     Select senses in the Sensory Palette to see worldbuilding implications.
                   </p>
                 ) : (
@@ -1206,7 +1213,7 @@ const Sensorium = () => {
                                 <p className="text-xs font-medium text-foreground">
                                   {entry.modalityName}
                                 </p>
-                                <p className="text-xs text-muted-foreground mt-1">
+                                <p className="text-xs text-tier-4 mt-1">
                                   {entry.text}
                                 </p>
                               </GlassPanel>
@@ -1271,7 +1278,7 @@ const Sensorium = () => {
             >
               <div className="space-y-4">
                 {formState.finalSelection.length === 0 ? (
-                  <p className="text-sm text-muted-foreground italic">
+                  <p className="text-sm text-tier-3 italic">
                     Select senses to see perception gaps vs. human baseline.
                   </p>
                 ) : (
@@ -1288,7 +1295,7 @@ const Sensorium = () => {
                             </p>
                           ))
                         ) : (
-                          <p className="text-sm text-muted-foreground italic">
+                          <p className="text-sm text-tier-3 italic">
                             No alien senses beyond human range
                           </p>
                         )}
@@ -1305,7 +1312,7 @@ const Sensorium = () => {
                             </p>
                           ))
                         ) : (
-                          <p className="text-sm text-muted-foreground italic">
+                          <p className="text-sm text-tier-3 italic">
                             No human senses missing
                           </p>
                         )}
@@ -1318,7 +1325,7 @@ const Sensorium = () => {
                           Conflict Potential
                         </h4>
                         {perceptionGaps.conflictPotential.map((hook, i) => (
-                          <p key={i} className="text-sm text-muted-foreground">
+                          <p key={i} className="text-sm text-tier-3">
                             • {hook}
                           </p>
                         ))}

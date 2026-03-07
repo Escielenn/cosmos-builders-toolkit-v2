@@ -123,7 +123,7 @@ const SectionNavigation = ({ sections, mode = 'floating' }: SectionNavigationPro
   // Inline mode: return just the panel for use inside ToolSidebar
   if (mode === 'inline') {
     return (
-      <GlassPanel className="p-4 max-h-[40vh] overflow-y-auto w-52">
+      <GlassPanel className="p-4 max-h-[40vh] overflow-y-auto w-56">
         <NavigationContent />
       </GlassPanel>
     );

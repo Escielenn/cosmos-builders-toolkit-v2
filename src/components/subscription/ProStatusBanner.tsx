@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Crown, X, Sparkles, Check } from "lucide-react";
+import { Zap, X, Sparkles, Check } from "lucide-react";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -37,7 +37,7 @@ const ProStatusBanner = ({ isSubscribed }: ProStatusBannerProps) => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-sm bg-green-500/20 flex items-center justify-center">
-                <Crown className="w-5 h-5 text-green-500" />
+                <Zap className="w-5 h-5 text-green-500" />
               </div>
               <div>
                 <p className="font-medium text-green-600 dark:text-green-400 flex items-center gap-2">
@@ -94,7 +94,7 @@ const ProStatusBanner = ({ isSubscribed }: ProStatusBannerProps) => {
 
           <Button className="gap-2 shrink-0" asChild>
             <Link to="/pricing">
-              <Crown className="w-4 h-4" />
+              <Zap className="w-4 h-4" />
               View Pro Plans
             </Link>
           </Button>

@@ -1,12 +1,14 @@
-import { corsHeaders } from '../_shared/cors.ts';
+import { getCorsHeaders } from '../_shared/cors.ts';
 import { NOTION_CLIENT_ID, NOTION_REDIRECT_URI } from '../_shared/notion.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.7.0';
 
 // Initiates Notion OAuth flow
 Deno.serve(async (req) => {
+  const cors = getCorsHeaders(req);
+
   // Handle CORS preflight
   if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders });
+    return new Response('ok', { headers: cors });
   }
 
   try {
@@ -80,14 +82,14 @@ Deno.serve(async (req) => {
 
     return new Response(
       JSON.stringify({ success: true, authUrl, state }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      { headers: { ...cors, 'Content-Type': 'application/json' } }
     );
   } catch (error) {
     console.error('Notion auth start error:', error);
     // Return 200 with error in body - Supabase client handles this better than non-2xx
     return new Response(
       JSON.stringify({ success: false, error: error.message }),
-      { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      { status: 200, headers: { ...cors, 'Content-Type': 'application/json' } }
     );
   }
 });

@@ -1,4 +1,4 @@
-import { LucideIcon, Lock, Crown, Unlock } from "lucide-react";
+import { LucideIcon, Lock, Zap, Unlock } from "lucide-react";
 import { Link } from "react-router-dom";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Badge } from "@/components/ui/badge";
@@ -13,6 +13,8 @@ interface ToolCardProps {
   icon?: LucideIcon; // Now optional, will use custom icon if available
   status: "available" | "coming-soon";
   week?: number;
+  path?: string; // Optional path override (e.g., "/rogue" instead of "/tools/rogue")
+  category?: { label: string; color: string }; // Optional category badge
 }
 
 const ToolCard = ({
@@ -22,6 +24,8 @@ const ToolCard = ({
   icon: FallbackIcon,
   status,
   week,
+  path,
+  category,
 }: ToolCardProps) => {
   const { isSubscribed } = useSubscription();
   const CustomIcon = getToolIcon(id);
@@ -71,7 +75,7 @@ const ToolCard = ({
           )}
           {isPro && !isSubscribed && (
             <Badge variant="secondary" className="text-xs bg-amber-500/20 text-amber-600 dark:text-amber-400 sf-shimmer">
-              <Crown className="w-3 h-3 mr-1" />
+              <Zap className="w-3 h-3 mr-1" />
               Pro
             </Badge>
           )}
@@ -85,7 +89,7 @@ const ToolCard = ({
 
       <div className="flex-1">
         {canAccess ? (
-          <Link to={`/tools/${id}`}>
+          <Link to={path ?? `/tools/${id}`}>
             <h3 className="font-heading font-semibold text-lg hover:text-primary transition-colors">
               {title}
             </h3>
@@ -103,6 +107,15 @@ const ToolCard = ({
           </h3>
         )}
         <p className="text-sm text-muted-foreground mt-1">{description}</p>
+        {category && (
+          <Badge
+            variant="outline"
+            className="mt-2 text-[10px] px-2 py-0 border-transparent"
+            style={{ color: category.color, borderColor: `${category.color}30` }}
+          >
+            {category.label}
+          </Badge>
+        )}
       </div>
 
       {!isAvailable && (

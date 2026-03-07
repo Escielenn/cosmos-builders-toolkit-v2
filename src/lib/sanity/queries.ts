@@ -1,5 +1,5 @@
 import { sanityClient } from "./client";
-import type { SanityArticle, ArticleListItem } from "./types";
+import type { SanityArticle, ArticleListItem, CourseListItem } from "./types";
 
 // Base projection for article list items
 const articleListProjection = `{
@@ -80,5 +80,39 @@ export async function searchArticles(
 // Get all unique tags from articles
 export async function getAllTags(): Promise<string[]> {
   const query = `array::unique(*[_type == "article" && defined(tags)].tags[])`;
+  return sanityClient.fetch(query);
+}
+
+// ── Courses ─────────────────────────────────────────────────
+
+const courseListProjection = `{
+  _id,
+  title,
+  "slug": slug.current,
+  description,
+  artwork,
+  instructor,
+  registrationUrl,
+  startDate,
+  duration,
+  price,
+  featured,
+  status,
+  proMonthlyDiscount,
+  proYearlyDiscount,
+  vanguardMonthlyDiscount,
+  vanguardYearlyDiscount,
+  tags
+}`;
+
+// Get all active courses (not completed)
+export async function getCourses(): Promise<CourseListItem[]> {
+  const query = `*[_type == "course" && status != "completed"] | order(startDate asc) ${courseListProjection}`;
+  return sanityClient.fetch(query);
+}
+
+// Get featured courses
+export async function getFeaturedCourses(): Promise<CourseListItem[]> {
+  const query = `*[_type == "course" && featured == true && status != "completed"] | order(startDate asc) ${courseListProjection}`;
   return sanityClient.fetch(query);
 }

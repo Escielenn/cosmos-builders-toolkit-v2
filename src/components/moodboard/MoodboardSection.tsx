@@ -77,7 +77,7 @@ export function MoodboardSection({
         </div>
       ) : (
         <p className="text-sm text-muted-foreground text-center py-4">
-          No images yet. Add reference images to your moodboard above.
+          NO IMAGES ON FILE.
         </p>
       )}
 

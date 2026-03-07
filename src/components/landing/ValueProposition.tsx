@@ -32,7 +32,7 @@ const ValueProposition = () => {
             </h3>
             <p className="text-sm text-muted-foreground">
               Every choice cascades logically. Define gravity, and watch how it
-              shapes biology, architecture, psychology, and mythology.
+              shapes biology, psychology, mythology, and culture.
             </p>
           </motion.div>
           <motion.div className="text-center md:text-left" variants={fadeUpItem}>

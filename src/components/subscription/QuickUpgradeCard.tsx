@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Crown, Unlock } from "lucide-react";
+import { Zap, Unlock } from "lucide-react";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
 import { PRO_TOOL_IDS, PRICING } from "@/lib/tools-config";
@@ -8,7 +8,7 @@ const QuickUpgradeCard = () => {
   return (
     <GlassPanel className="p-5 h-full min-h-[200px] flex flex-col items-center justify-center border-amber-500/30 bg-gradient-to-br from-amber-500/5 to-amber-500/10">
       <div className="w-14 h-14 rounded-sm bg-amber-500/20 flex items-center justify-center mb-4">
-        <Crown className="w-7 h-7 text-amber-500" />
+        <Zap className="w-7 h-7 text-amber-500" />
       </div>
 
       <h3 className="font-heading font-semibold text-lg mb-2 text-center">
@@ -16,7 +16,7 @@ const QuickUpgradeCard = () => {
       </h3>
 
       <p className="text-sm text-muted-foreground text-center mb-4">
-        Starting at <span className="text-amber-600 dark:text-amber-400 font-medium">${PRICING.monthly.price}/mo</span>
+        Starting at <span className="text-amber-600 dark:text-amber-400 font-medium">${PRICING.pro.monthly.price}/mo</span>
       </p>
 
       <Button className="gap-2 w-full" asChild>

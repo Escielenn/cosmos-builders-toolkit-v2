@@ -1,4 +1,4 @@
-import { stripe } from '../_shared/stripe.ts';
+import { stripe, getTierFromPriceId } from '../_shared/stripe.ts';
 import { supabaseAdmin } from '../_shared/supabase.ts';
 
 Deno.serve(async (req) => {
@@ -92,6 +92,9 @@ async function handleSubscriptionChange(subscription: any) {
   const priceId = subscription.items?.data[0]?.price?.id;
   const planType = subscription.items?.data[0]?.price?.recurring?.interval === 'year' ? 'yearly' : 'monthly';
 
+  // Determine tier: prefer metadata (set during checkout), fallback to price ID mapping
+  const tier = subscription.metadata?.tier || (priceId ? getTierFromPriceId(priceId) : 'pro');
+
   const subscriptionData = {
     user_id: userId,
     stripe_subscription_id: subscription.id,
@@ -99,6 +102,7 @@ async function handleSubscriptionChange(subscription: any) {
     status: subscription.status,
     price_id: priceId,
     plan_type: planType,
+    tier,
     current_period_start: new Date(subscription.current_period_start * 1000).toISOString(),
     current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
     cancel_at_period_end: subscription.cancel_at_period_end,

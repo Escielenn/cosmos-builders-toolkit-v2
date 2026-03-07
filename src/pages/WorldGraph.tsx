@@ -1,6 +1,7 @@
-import { useCallback, useMemo, lazy, Suspense } from "react";
+import { useCallback, useMemo, useState, lazy, Suspense } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Loader } from "@/components/ui/loader";
+import { Layers, LayoutGrid } from "lucide-react";
 import { useWorldLayoutContext } from "@/contexts/WorldLayoutContext";
 import { useWorldOutline } from "@/hooks/use-world-outline";
 import { useCreateEntry } from "@/hooks/use-world-entries";
@@ -24,9 +25,32 @@ const WorldGraph = () => {
   const createConnection = useCreateConnection(resolvedWorldId || undefined);
   const deleteConnection = useDeleteConnection(resolvedWorldId || undefined);
 
+  const [entriesOnly, setEntriesOnly] = useState(false);
+
   const allElements = useMemo(() => {
     return layers.flatMap((l) => l.elements);
   }, [layers]);
+
+  // When entriesOnly, show only entries (filter out worksheets without linked entries)
+  const filteredElements = useMemo(() => {
+    if (!entriesOnly) return allElements;
+    return [];
+  }, [allElements, entriesOnly]);
+
+  const filteredEntries = useMemo(() => {
+    return entries;
+  }, [entries]);
+
+  // Filter connections to only those between visible nodes
+  const filteredConnections = useMemo(() => {
+    if (!entriesOnly) return connections;
+    const entryIds = new Set(entries.map((e) => e.id));
+    return connections.filter(
+      (c) =>
+        (c.source_entry_id && entryIds.has(c.source_entry_id)) ||
+        (c.target_entry_id && entryIds.has(c.target_entry_id))
+    );
+  }, [connections, entries, entriesOnly]);
 
   const handleElementClick = useCallback(
     (element: WorldElement) => {
@@ -98,7 +122,35 @@ const WorldGraph = () => {
   }
 
   return (
-    <div className="h-full w-full">
+    <div className="h-full w-full relative">
+      {/* Entries-only toggle */}
+      <div className="absolute top-3 right-3 z-10 flex items-center gap-1">
+        <button
+          onClick={() => setEntriesOnly(false)}
+          className={`flex items-center gap-1 px-2.5 py-1 text-[9px] uppercase tracking-[1.5px] transition-colors ${
+            !entriesOnly
+              ? "bg-teal/10 border border-teal/25 text-teal"
+              : "bg-[#0D1117]/90 border border-border/20 text-tier-4 hover:text-tier-3"
+          }`}
+          title="Show all elements"
+        >
+          <Layers className="w-3 h-3" />
+          All
+        </button>
+        <button
+          onClick={() => setEntriesOnly(true)}
+          className={`flex items-center gap-1 px-2.5 py-1 text-[9px] uppercase tracking-[1.5px] transition-colors ${
+            entriesOnly
+              ? "bg-teal/10 border border-teal/25 text-teal"
+              : "bg-[#0D1117]/90 border border-border/20 text-tier-4 hover:text-tier-3"
+          }`}
+          title="Show entries only"
+        >
+          <LayoutGrid className="w-3 h-3" />
+          Entries
+        </button>
+      </div>
+
       <Suspense
         fallback={
           <div className="flex items-center justify-center h-full">
@@ -107,9 +159,9 @@ const WorldGraph = () => {
         }
       >
         <KnowledgeGraphView
-          elements={allElements}
-          entries={entries}
-          connections={connections}
+          elements={filteredElements}
+          entries={filteredEntries}
+          connections={filteredConnections}
           worldId={resolvedWorldId}
           onElementClick={handleElementClick}
           onCreateConnection={handleCreateConnection}

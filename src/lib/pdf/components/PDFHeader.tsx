@@ -5,9 +5,12 @@ interface PDFHeaderProps {
   toolName: string;
   worldName?: string;
   date?: string;
+  hideLogo?: boolean;
 }
 
 // Inline SVG cube logo for PDF (react-pdf Svg component)
+// NOTE: The Q (quadratic Bézier) curve can cause WASM DataView errors
+// during auto page-breaking. Use hideLogo={true} for multi-page auto-break templates.
 const CubeLogoSvg = ({ size = 24 }: { size?: number }) => (
   <Svg viewBox="0 0 64 64" style={{ width: size, height: size }}>
     {/* 3D Cube - dark faces */}
@@ -28,7 +31,14 @@ const CubeLogoSvg = ({ size = 24 }: { size?: number }) => (
   </Svg>
 );
 
-const PDFHeader = ({ toolName, worldName, date }: PDFHeaderProps) => {
+// Text-only fallback logo for templates that auto-break across pages
+const TextLogo = () => (
+  <View style={{ width: 24, height: 24, backgroundColor: "#007a7a", borderRadius: 4, justifyContent: "center", alignItems: "center" }}>
+    <Text style={{ fontSize: 12, fontWeight: 700, color: "#ffffff" }}>SF</Text>
+  </View>
+);
+
+const PDFHeader = ({ toolName, worldName, date, hideLogo }: PDFHeaderProps) => {
   const formattedDate = date || new Date().toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
@@ -38,7 +48,7 @@ const PDFHeader = ({ toolName, worldName, date }: PDFHeaderProps) => {
   return (
     <View style={styles.header}>
       <View style={styles.headerLogo}>
-        <CubeLogoSvg size={24} />
+        {hideLogo ? <TextLogo /> : <CubeLogoSvg size={24} />}
         <View>
           <Text style={styles.headerTitle}>STELLARFORGE</Text>
           <Text style={styles.headerSubtitle}>{toolName}</Text>

@@ -7,6 +7,7 @@ import {
   PDFKeyValuePair,
   PDFResultBox,
 } from "../components";
+import { deepStripHtml } from "@/lib/html-utils";
 
 interface FormState {
   system: {
@@ -88,10 +89,12 @@ const PropulsionSummaryTemplate = ({
   worldName,
   date,
 }: PropulsionSummaryTemplateProps) => {
+  const cleanState = deepStripHtml(formState);
+
   // Safe access to nested properties
-  const system = formState?.system;
-  const benchmarks = formState?.benchmarks;
-  const synthesis = formState?.synthesis;
+  const system = cleanState?.system;
+  const benchmarks = cleanState?.benchmarks;
+  const synthesis = cleanState?.synthesis;
 
   const propulsionType = PROPULSION_LABELS[system?.type || ""] || system?.customType || "Unspecified";
   const costLevel = COST_LABELS[system?.costComparison || ""] || "Not specified";
@@ -100,7 +103,7 @@ const PropulsionSummaryTemplate = ({
     <Document>
       <Page size="LETTER" style={styles.page}>
         <PDFHeader
-          toolName="Propulsion Consequences Map"
+          toolName="Impulse"
           worldName={worldName}
           date={date}
         />

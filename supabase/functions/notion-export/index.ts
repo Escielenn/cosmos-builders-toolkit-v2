@@ -1,4 +1,4 @@
-import { corsHeaders } from '../_shared/cors.ts';
+import { getCorsHeaders } from '../_shared/cors.ts';
 import { supabaseAdmin } from '../_shared/supabase.ts';
 import {
   searchNotionPages,
@@ -16,9 +16,11 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.7.0';
 
 // Creates a worksheet as a Notion page
 Deno.serve(async (req) => {
+  const cors = getCorsHeaders(req);
+
   // Handle CORS preflight
   if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders });
+    return new Response('ok', { headers: cors });
   }
 
   try {
@@ -145,14 +147,14 @@ Deno.serve(async (req) => {
         pageId: page.id,
         pageUrl: page.url,
       }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      { headers: { ...cors, 'Content-Type': 'application/json' } }
     );
   } catch (error) {
     console.error('Notion export error:', error);
     // Return 200 with error for consistent handling
     return new Response(
       JSON.stringify({ success: false, error: error.message }),
-      { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      { status: 200, headers: { ...cors, 'Content-Type': 'application/json' } }
     );
   }
 });

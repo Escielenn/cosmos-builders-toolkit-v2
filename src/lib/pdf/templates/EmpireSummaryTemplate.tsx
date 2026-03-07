@@ -7,6 +7,7 @@ import {
   PDFKeyValuePair,
   PDFResultBox,
 } from "../components";
+import { deepStripHtml } from "@/lib/html-utils";
 
 interface Faction {
   id: string;
@@ -114,12 +115,14 @@ const EmpireSummaryTemplate = ({
   worldName,
   date,
 }: EmpireSummaryTemplateProps) => {
-  const foundation = formState?.foundation;
-  const territory = formState?.territory;
-  const economy = formState?.economy;
-  const military = formState?.military;
-  const factions = formState?.factions || [];
-  const synthesis = formState?.synthesis;
+  const cleanState = deepStripHtml(formState);
+
+  const foundation = cleanState?.foundation;
+  const territory = cleanState?.territory;
+  const economy = cleanState?.economy;
+  const military = cleanState?.military;
+  const factions = cleanState?.factions || [];
+  const synthesis = cleanState?.synthesis;
 
   const factionCount = factions.filter((f) => f.name).length;
   const empireName = foundation?.name || "Unnamed Empire";
@@ -129,7 +132,7 @@ const EmpireSummaryTemplate = ({
     <Document>
       <Page size="LETTER" style={styles.page}>
         <PDFHeader
-          toolName="Empire/Government Designer"
+          toolName="Dominion"
           worldName={worldName}
           date={date}
         />
@@ -190,10 +193,10 @@ const EmpireSummaryTemplate = ({
               <PDFKeyValuePair label="Military Doctrine" value={formatId(military?.doctrine)} />
             </View>
             <View style={{ flex: 1, minWidth: 140 }}>
-              <PDFKeyValuePair label="Succession Method" value={formatId(formState?.power?.successionMethod)} />
+              <PDFKeyValuePair label="Succession Method" value={formatId(cleanState?.power?.successionMethod)} />
             </View>
           </View>
-          <PDFKeyValuePair label="Corruption Level" value={formState?.power?.corruptionLevel || "N/A"} />
+          <PDFKeyValuePair label="Corruption Level" value={cleanState?.power?.corruptionLevel || "N/A"} />
         </PDFSection>
 
         {/* Key Factions */}

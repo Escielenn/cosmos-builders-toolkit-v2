@@ -39,6 +39,7 @@ import ToolSidebar from "@/components/tools/ToolSidebar";
 import CollapsibleSection from "@/components/tools/CollapsibleSection";
 import KeyChoicesSidebar, { KeyChoicesSection, MobileKeyChoices } from "@/components/tools/KeyChoicesSidebar";
 import ToolActionBar from "@/components/tools/ToolActionBar";
+import { ToolPageQuote } from "@/components/quotes/ToolPageQuote";
 import QuickExportButton from "@/components/tools/QuickExportButton";
 import ExportDialog from "@/components/tools/ExportDialog";
 import QuestionSection from "@/components/tools/QuestionSection";
@@ -719,11 +720,13 @@ const PropulsionConsequencesMap = () => {
         {/* Back Link */}
         <Link
           to={worldId ? `/worlds/${worldId}` : "/"}
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
+          className="inline-flex items-center gap-2 text-sm text-tier-3 hover:text-foreground transition-colors mb-6"
         >
           <ArrowLeft className="w-4 h-4" />
           {worldId ? "Back to World" : "Back to Dashboard"}
         </Link>
+
+        <ToolPageQuote toolId="propulsion-consequences-map" />
 
         {/* Action Bar */}
         <ToolActionBar
@@ -749,6 +752,8 @@ const PropulsionConsequencesMap = () => {
               defaultFilename="propulsion-consequences-map"
             />
           }
+          worldId={worldId}
+          worksheetId={currentWorksheetId || worksheetId}
         />
 
         {/* Title */}
@@ -761,7 +766,7 @@ const PropulsionConsequencesMap = () => {
               <span className="font-light">Propulsion Consequences</span>
             </h1>
           </div>
-          <p className="text-muted-foreground mt-2 max-w-2xl">
+          <p className="text-tier-2 mt-2 max-w-2xl">
             Trace how your propulsion system shapes economics, politics, social structures, and psychology.
           </p>
           {(currentWorksheetId || worksheetId) && (
@@ -785,16 +790,16 @@ const PropulsionConsequencesMap = () => {
 
         {/* Introduction */}
         <GlassPanel glow className="p-6 md:p-8 mb-8">
-          <h2 className="font-heading text-xl font-semibold mb-4 gradient-text">
+          <h2 className="font-heading text-xl font-light uppercase tracking-[2px] mb-4 gradient-text">
             Propulsion as Worldbuilding
           </h2>
           <blockquote className="border-l-2 border-primary pl-4 italic text-lg mb-4">
             "Your propulsion system isn't just a way to move the plot between locations—it fundamentally shapes economics, politics, relationships, and psychology."
           </blockquote>
-          <p className="text-muted-foreground mb-4">
+          <p className="text-tier-2 mb-4">
             Fast travel creates empires; slow travel creates autonomous colonies. Cheap travel democratizes; expensive travel stratifies.
           </p>
-          <div className="text-sm text-muted-foreground mb-4">
+          <div className="text-sm text-tier-3 mb-4">
             <strong className="text-foreground">The Cascading Principle for Propulsion:</strong>
             <p className="mt-1">Travel speed → Economics → Politics → Social structures → Psychology → Culture</p>
           </div>
@@ -843,7 +848,7 @@ const PropulsionConsequencesMap = () => {
                       <RadioGroupItem value={type.value} id={type.value} className="mt-0.5" />
                       <Label htmlFor={type.value} className="cursor-pointer flex-1">
                         <span className="font-medium">{type.label}</span>
-                        <span className="text-muted-foreground ml-2 text-sm">—{type.description}</span>
+                        <span className="text-tier-2 ml-2 text-sm">—{type.description}</span>
                       </Label>
                     </div>
                   ))}
@@ -868,7 +873,7 @@ const PropulsionConsequencesMap = () => {
                     value={formState.system.maxVelocity}
                     onChange={(e) => updateSystem("maxVelocity", e.target.value)}
                   />
-                  <p className="text-xs text-muted-foreground">Chemical: &lt;0.001% c; Fusion: ~10% c; Theoretical limit: 99.99% c</p>
+                  <p className="text-xs text-tier-4">Chemical: &lt;0.001% c; Fusion: ~10% c; Theoretical limit: 99.99% c</p>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="acceleration">Acceleration (g)</Label>
@@ -878,7 +883,7 @@ const PropulsionConsequencesMap = () => {
                     value={formState.system.acceleration}
                     onChange={(e) => updateSystem("acceleration", e.target.value)}
                   />
-                  <p className="text-xs text-muted-foreground">Chemical: ~3g; Ion: 0.001g; Epstein (Expanse): ~5g sustained</p>
+                  <p className="text-xs text-tier-4">Chemical: ~3g; Ion: 0.001g; Epstein (Expanse): ~5g sustained</p>
                 </div>
               </div>
 
@@ -913,7 +918,7 @@ const PropulsionConsequencesMap = () => {
 
                 {computedBenchmarks ? (
                   <>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-xs text-tier-4">
                       Based on {formState.system.maxVelocity || "?"} max velocity
                       {accelerationG
                         ? ` with ${formState.system.acceleration} acceleration (brachistochrone trajectory)`
@@ -924,7 +929,7 @@ const PropulsionConsequencesMap = () => {
                         <div key={route.key} className="flex items-center justify-between px-4 py-2.5">
                           <div className="flex items-baseline gap-2">
                             <span className="text-sm font-medium">{route.label}</span>
-                            <span className="text-xs text-muted-foreground">({route.distanceLabel})</span>
+                            <span className="text-xs text-tier-4">({route.distanceLabel})</span>
                           </div>
                           <span className="text-sm text-primary font-mono">
                             {computedBenchmarks[route.key]}
@@ -935,7 +940,7 @@ const PropulsionConsequencesMap = () => {
                   </>
                 ) : isFTL ? (
                   <div className="p-4 rounded-lg bg-accent/10 border border-accent/20">
-                    <p className="text-sm text-muted-foreground mb-3">
+                    <p className="text-sm text-tier-3 mb-3">
                       FTL travel times depend on your setting's specific mechanics. Define travel times for key routes:
                     </p>
                     <div className="grid gap-3">
@@ -953,7 +958,7 @@ const PropulsionConsequencesMap = () => {
                   </div>
                 ) : (
                   <>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-xs text-tier-4">
                       Enter a max velocity above to auto-calculate, or enter times manually.
                     </p>
                     <div className="grid gap-3">
@@ -1052,12 +1057,12 @@ const PropulsionConsequencesMap = () => {
                 </div>
                 {costGuidance && (
                   <div className="p-3 rounded-lg bg-muted/50 border border-border/50 space-y-2 md:col-span-2">
-                    <p className="text-xs font-medium text-muted-foreground flex items-center gap-1.5">
+                    <p className="text-xs font-medium text-tier-2 flex items-center gap-1.5">
                       <Info className="w-3.5 h-3.5" />
                       Cost guidance for{" "}
                       {PROPULSION_TYPES.find((t) => t.value === formState.system.type)?.label || formState.system.type}
                     </p>
-                    <div className="grid gap-1.5 text-xs text-muted-foreground">
+                    <div className="grid gap-1.5 text-xs text-tier-4">
                       <p><span className="font-medium text-foreground/80">Fuel:</span> {costGuidance.fuel}</p>
                       <p><span className="font-medium text-foreground/80">Construction:</span> {costGuidance.construction}</p>
                     </div>
@@ -1078,7 +1083,7 @@ const PropulsionConsequencesMap = () => {
                       <RadioGroupItem value={comp.value} id={`cost-${comp.value}`} className="mt-0.5" />
                       <Label htmlFor={`cost-${comp.value}`} className="cursor-pointer">
                         <span className="font-medium">{comp.label}</span>
-                        <span className="text-muted-foreground ml-1 text-xs">({comp.description})</span>
+                        <span className="text-tier-2 ml-1 text-xs">({comp.description})</span>
                       </Label>
                     </div>
                   ))}
@@ -1118,7 +1123,7 @@ const PropulsionConsequencesMap = () => {
                       />
                       <Label htmlFor={`access-${option.id}`} className="cursor-pointer">
                         <span className="font-medium">{option.label}</span>
-                        <span className="text-muted-foreground ml-2 text-sm">—{option.description}</span>
+                        <span className="text-tier-2 ml-2 text-sm">—{option.description}</span>
                       </Label>
                     </div>
                   ))}
@@ -1136,7 +1141,7 @@ const PropulsionConsequencesMap = () => {
               {/* Trade Viability */}
               <div className="space-y-3">
                 <Label className="text-sm font-medium">Trade Viability</Label>
-                <p className="text-xs text-muted-foreground">What's worth shipping given travel costs and time?</p>
+                <p className="text-xs text-tier-4">What's worth shipping given travel costs and time?</p>
                 <div className="grid gap-2">
                   {TRADE_VIABILITY.map((option) => (
                     <div key={option.id} className="flex items-start gap-3 p-3 rounded-lg border border-border">
@@ -1156,7 +1161,7 @@ const PropulsionConsequencesMap = () => {
                       />
                       <Label htmlFor={`trade-${option.id}`} className="cursor-pointer">
                         <span className="font-medium">{option.label}</span>
-                        <span className="text-muted-foreground ml-2 text-sm">—{option.description}</span>
+                        <span className="text-tier-2 ml-2 text-sm">—{option.description}</span>
                       </Label>
                     </div>
                   ))}
@@ -1219,15 +1224,15 @@ const PropulsionConsequencesMap = () => {
                 <div className="grid gap-3 text-sm">
                   <div>
                     <span className="font-medium text-primary">If transit time &lt;1 week:</span>
-                    <p className="text-muted-foreground">Centralized empire possible, real-time oversight, unified legal systems, fast military response</p>
+                    <p className="text-tier-2">Centralized empire possible, real-time oversight, unified legal systems, fast military response</p>
                   </div>
                   <div>
                     <span className="font-medium text-primary">If transit time 1 month - 1 year:</span>
-                    <p className="text-muted-foreground">Regional autonomy necessary, colonial governors with broad authority, rebellions can establish before response</p>
+                    <p className="text-tier-2">Regional autonomy necessary, colonial governors with broad authority, rebellions can establish before response</p>
                   </div>
                   <div>
                     <span className="font-medium text-primary">If transit time &gt;1 year:</span>
-                    <p className="text-muted-foreground">Effective independence, governance like letters to medieval lords, cultural drift accelerates</p>
+                    <p className="text-tier-2">Effective independence, governance like letters to medieval lords, cultural drift accelerates</p>
                   </div>
                 </div>
               </div>
@@ -1243,7 +1248,7 @@ const PropulsionConsequencesMap = () => {
               {/* Governance Structures */}
               <div className="space-y-3">
                 <Label className="text-sm font-medium">Governance Structures</Label>
-                <p className="text-xs text-muted-foreground">Select the model(s) that fit your propulsion parameters</p>
+                <p className="text-xs text-tier-4">Select the model(s) that fit your propulsion parameters</p>
                 <div className="grid gap-2">
                   {GOVERNANCE_STRUCTURES.map((structure) => (
                     <div key={structure.id} className="flex items-start gap-3 p-3 rounded-lg border border-border">
@@ -1263,7 +1268,7 @@ const PropulsionConsequencesMap = () => {
                       />
                       <Label htmlFor={`gov-${structure.id}`} className="cursor-pointer flex-1">
                         <span className="font-medium">{structure.label}</span>
-                        <span className="text-muted-foreground ml-2 text-sm">—{structure.description}</span>
+                        <span className="text-tier-2 ml-2 text-sm">—{structure.description}</span>
                         <p className="text-xs text-primary mt-1">Example: {structure.example}</p>
                       </Label>
                     </div>
@@ -1387,7 +1392,7 @@ const PropulsionConsequencesMap = () => {
               {/* Military Organization */}
               <div className="space-y-3">
                 <Label className="text-sm font-medium">Military Organization</Label>
-                <p className="text-xs text-muted-foreground">What military structures fit your propulsion?</p>
+                <p className="text-xs text-tier-4">What military structures fit your propulsion?</p>
                 <div className="grid gap-2 md:grid-cols-2">
                   {MILITARY_STRUCTURES.map((structure) => (
                     <div key={structure.id} className="flex items-start gap-3 p-3 rounded-lg border border-border">
@@ -1407,7 +1412,7 @@ const PropulsionConsequencesMap = () => {
                       />
                       <Label htmlFor={`mil-${structure.id}`} className="cursor-pointer">
                         <span className="font-medium">{structure.label}</span>
-                        <span className="text-muted-foreground ml-2 text-sm">—{structure.description}</span>
+                        <span className="text-tier-2 ml-2 text-sm">—{structure.description}</span>
                       </Label>
                     </div>
                   ))}
@@ -1474,13 +1479,13 @@ const PropulsionConsequencesMap = () => {
                   <Info className="w-4 h-4 text-accent" />
                   Time Dilation Effects (If Applicable)
                 </h4>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-tier-4">
                   If traveling at relativistic speeds, travelers experience less time than stationary observers.
                 </p>
                 <div className="text-sm space-y-2">
                   <p><span className="font-medium text-accent">For travelers:</span> Outlive friends/family, return to changed societies, professional obsolescence</p>
                   <p><span className="font-medium text-accent">For stay-at-homes:</span> Loved ones age slowly, "temporal immigrants" from past returning</p>
-                  <p className="text-xs text-muted-foreground italic">Example: Joe Haldeman's The Forever War—soldiers fight centuries-long war, experience only years</p>
+                  <p className="text-xs text-tier-4 italic">Example: Joe Haldeman's The Forever War—soldiers fight centuries-long war, experience only years</p>
                 </div>
               </div>
 
@@ -1574,7 +1579,7 @@ const PropulsionConsequencesMap = () => {
               {/* Consistency Check */}
               <div className="space-y-3">
                 <Label className="text-sm font-medium">Consistency Check</Label>
-                <p className="text-xs text-muted-foreground">Review all five domains. Do they fit together logically?</p>
+                <p className="text-xs text-tier-4">Review all five domains. Do they fit together logically?</p>
                 <div className="grid gap-2">
                   {[
                     { id: "economics", label: "Economics → Does your political structure match travel costs?" },
@@ -1622,7 +1627,7 @@ const PropulsionConsequencesMap = () => {
 
               <div className="space-y-4">
                 <Label className="text-sm font-medium">Story Conflicts Generated</Label>
-                <p className="text-xs text-muted-foreground">These become your narrative engines.</p>
+                <p className="text-xs text-tier-4">These become your narrative engines.</p>
                 
                 <div className="space-y-2">
                   <Label htmlFor="conflict-economic" className="text-xs">Economic Conflicts</Label>
@@ -1676,7 +1681,7 @@ const PropulsionConsequencesMap = () => {
                   <CollapsibleTrigger asChild>
                     <button type="button" className="w-full p-4 rounded-lg border border-border hover:border-primary/50 transition-colors text-left flex items-center justify-between">
                       <span className="font-medium text-sm">{example.title}</span>
-                      <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                      <ChevronDown className="w-4 h-4 text-tier-2" />
                     </button>
                   </CollapsibleTrigger>
                   <CollapsibleContent>
@@ -1693,7 +1698,7 @@ const PropulsionConsequencesMap = () => {
                             {example.data.map((row, i) => (
                               <tr key={i} className="border-b border-border/50">
                                 <td className="p-2 text-primary font-medium">{row.domain}</td>
-                                <td className="p-2 text-muted-foreground">{row.consequence}</td>
+                                <td className="p-2 text-tier-2">{row.consequence}</td>
                               </tr>
                             ))}
                           </tbody>
@@ -1720,7 +1725,7 @@ const PropulsionConsequencesMap = () => {
                 <Label htmlFor="thesis" className="text-sm font-medium">
                   Propulsion Thesis (2-3 sentences)
                 </Label>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-tier-4">
                   Summarize how your travel system shapes your world.
                 </p>
                 <Suspense fallback={<div className="min-h-[120px] rounded-md border border-border bg-background/50 animate-pulse" />}>

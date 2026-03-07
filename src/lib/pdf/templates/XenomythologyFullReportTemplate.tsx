@@ -7,6 +7,7 @@ import {
   PDFKeyValuePair,
   PDFResultBox,
 } from "../components";
+import { deepStripHtml } from "@/lib/html-utils";
 
 interface ArchetypeEntry {
   name: string;
@@ -148,10 +149,11 @@ const NotesBox = ({ label, content }: { label: string; content: string }) => (
 );
 
 const XenomythologyFullReportTemplate = ({
-  formState,
+  formState: rawFormState,
   worldName,
   date,
 }: XenomythologyFullReportTemplateProps) => {
+  const formState = deepStripHtml(rawFormState);
   // Safe access to nested properties
   const sensory = formState?.sensoryArchitecture;
   const physical = formState?.physicalForm;
@@ -177,7 +179,7 @@ const XenomythologyFullReportTemplate = ({
       {/* Page 1: Species Biology & Psychology */}
       <Page size="LETTER" style={styles.page}>
         <PDFHeader
-          toolName="Xenomythology Framework"
+          toolName="Mythos"
           worldName={worldName}
           date={date}
         />
@@ -253,7 +255,7 @@ const XenomythologyFullReportTemplate = ({
 
       {/* Page 2: Environmental Context */}
       <Page size="LETTER" style={styles.page}>
-        <PDFHeader toolName="Xenomythology Framework" worldName={worldName} date={date} />
+        <PDFHeader toolName="Mythos" worldName={worldName} date={date} />
 
         <PDFSection title="2. Planetary Conditions">
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: spacing.sm }}>
@@ -313,7 +315,7 @@ const XenomythologyFullReportTemplate = ({
 
       {/* Page 3: Archetype Pantheon */}
       <Page size="LETTER" style={styles.page}>
-        <PDFHeader toolName="Xenomythology Framework" worldName={worldName} date={date} />
+        <PDFHeader toolName="Mythos" worldName={worldName} date={date} />
 
         <PDFSection title="3. Archetype Pantheon">
           {archetypes && archetypes.length > 0 ? (
@@ -360,7 +362,7 @@ const XenomythologyFullReportTemplate = ({
 
       {/* Page 4: Mythic Expression */}
       <Page size="LETTER" style={styles.page}>
-        <PDFHeader toolName="Xenomythology Framework" worldName={worldName} date={date} />
+        <PDFHeader toolName="Mythos" worldName={worldName} date={date} />
 
         <PDFSection title="4. Creation Narrative">
           <PDFKeyValuePair
@@ -402,7 +404,7 @@ const XenomythologyFullReportTemplate = ({
 
       {/* Page 5: Divine Beings & Mythic Cycles */}
       <Page size="LETTER" style={styles.page}>
-        <PDFHeader toolName="Xenomythology Framework" worldName={worldName} date={date} />
+        <PDFHeader toolName="Mythos" worldName={worldName} date={date} />
 
         <PDFSection title="Divine Conceptualization">
           <PDFKeyValuePair label="Divine Ontology" value={divine?.divineOntology || "N/A"} />
@@ -442,7 +444,7 @@ const XenomythologyFullReportTemplate = ({
 
       {/* Page 6: Ritual & Practices */}
       <Page size="LETTER" style={styles.page}>
-        <PDFHeader toolName="Xenomythology Framework" worldName={worldName} date={date} />
+        <PDFHeader toolName="Mythos" worldName={worldName} date={date} />
 
         <PDFSection title="5. Ritual Structure">
           <PDFKeyValuePair
@@ -482,7 +484,7 @@ const XenomythologyFullReportTemplate = ({
 
       {/* Page 7: Synthesis */}
       <Page size="LETTER" style={styles.page}>
-        <PDFHeader toolName="Xenomythology Framework" worldName={worldName} date={date} />
+        <PDFHeader toolName="Mythos" worldName={worldName} date={date} />
 
         <PDFSection title="6. Ethical Framework">
           {synthesis?.ethicalVirtues && (

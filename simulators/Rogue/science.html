@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ROGUE — The Science | StellarForge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:#09090B;
+  color:rgba(255,255,255,.6);
+  font-family:'DM Sans',sans-serif;
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+/* ── SITE HEADER ──────────────────────────────────── */
+.site-header{
+  position:sticky;top:0;z-index:50;
+  border-bottom:1px solid rgba(255,255,255,.06);
+  backdrop-filter:blur(20px);
+  background:rgba(15,15,15,.95);
+  height:64px;
+}
+.site-header .container{
+  max-width:1200px;
+  margin:0 auto;
+  padding:0 16px;
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.site-header .brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  text-decoration:none;
+}
+.site-header .brand-text{
+  display:flex;
+  flex-direction:column;
+}
+.site-header .brand-name{
+  font-family:'Space Grotesk',sans-serif;
+  font-weight:300;
+  font-size:18px;
+  line-height:1.1;
+  letter-spacing:3px;
+  color:#fff;
+  text-transform:uppercase;
+}
+.site-header .brand-tagline{
+  font-size:12px;
+  color:rgba(255,255,255,.4);
+  letter-spacing:.5px;
+}
+.site-header nav{
+  display:flex;
+  align-items:center;
+  gap:28px;
+}
+.site-header nav a{
+  font-size:11px;
+  font-weight:500;
+  text-transform:uppercase;
+  letter-spacing:2px;
+  color:rgba(255,255,255,.4);
+  text-decoration:none;
+  transition:color .2s;
+}
+.site-header nav a:hover{color:#00D4FF}
+.site-header nav a.active{color:#00D4FF}
+.site-header .rogue-btn{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:10px;
+  font-weight:500;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+  padding:7px 14px;
+  border:1px solid rgba(0,212,255,.25);
+  background:rgba(0,212,255,.06);
+  color:rgba(0,212,255,.7);
+  border-radius:6px;
+  text-decoration:none;
+  transition:all .2s;
+}
+.site-header .rogue-btn:hover{
+  background:rgba(0,212,255,.12);
+  border-color:rgba(0,212,255,.4);
+  color:#00D4FF;
+}
+
+/* ── MAIN CONTENT ───────────────────────────────── */
+.science-page{
+  max-width:780px;
+  margin:0 auto;
+  padding:48px 28px 80px;
+}
+
+/* Title Block */
+.science-page h1{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:32px;font-weight:300;
+  color:#FAFAFA;
+  letter-spacing:5px;text-transform:uppercase;
+  margin-bottom:6px;
+}
+.science-page .subtitle{
+  font-size:8.5px;font-family:'DM Sans',sans-serif;
+  letter-spacing:2.5px;text-transform:uppercase;
+  color:rgba(0,212,255,.3);
+  margin-bottom:36px;
+}
+
+/* Section Headers */
+.sci-section{
+  font-size:9px;
+  font-family:'Space Grotesk',sans-serif;
+  font-weight:600;
+  letter-spacing:2.5px;
+  text-transform:uppercase;
+  color:rgba(0,212,255,.35);
+  margin-top:40px;
+  margin-bottom:12px;
+  padding-bottom:5px;
+  border-bottom:1px solid rgba(0,212,255,.06);
+}
+.sci-section:first-of-type{margin-top:0}
+
+/* Body Text */
+.science-page p{
+  font-family:'DM Sans',sans-serif;
+  font-size:13.5px;
+  line-height:1.8;
+  color:rgba(255,255,255,.6);
+  margin:0 0 14px;
+}
+.science-page p strong{
+  color:rgba(255,255,255,.85);
+  font-weight:600;
+}
+
+/* Inline Code */
+.science-page code{
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;
+  color:#00D4FF;
+  background:rgba(0,212,255,.06);
+  padding:1px 5px;
+  border-radius:3px;
+}
+
+/* Equation Blocks */
+.eq{
+  font-family:'JetBrains Mono',monospace;
+  font-size:12.5px;
+  color:rgba(0,212,255,.7);
+  background:rgba(0,212,255,.04);
+  border:1px solid rgba(0,212,255,.06);
+  border-radius:6px;
+  padding:14px 18px;
+  margin:16px 0;
+  display:block;
+  text-align:center;
+  line-height:1.9;
+  letter-spacing:.5px;
+}
+
+/* Citation Sources */
+.src{
+  font-family:'DM Sans',sans-serif;
+  font-size:11px;
+  color:rgba(255,255,255,.35);
+  margin:5px 0;
+  line-height:1.7;
+  padding-left:12px;
+  border-left:2px solid rgba(0,212,255,.05);
+}
+.src a{color:rgba(0,212,255,.4);text-decoration:none}
+.src a:hover{color:#00D4FF;text-decoration:underline}
+
+/* Note Callouts */
+.note{
+  font-family:'DM Sans',sans-serif;
+  font-size:11.5px;
+  font-style:italic;
+  color:rgba(255,255,255,.35);
+  border-left:2px solid rgba(0,212,255,.12);
+  padding:10px 16px;
+  margin:16px 0;
+  background:rgba(0,212,255,.015);
+  border-radius:0 4px 4px 0;
+  line-height:1.7;
+}
+
+/* Data Tables */
+.sys-table{
+  width:100%;
+  border-collapse:collapse;
+  margin:14px 0 18px;
+  font-family:'DM Sans',sans-serif;
+  font-size:11.5px;
+}
+.sys-table th{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:8px;font-weight:600;
+  letter-spacing:1.5px;text-transform:uppercase;
+  color:rgba(0,212,255,.3);
+  text-align:left;
+  padding:7px 10px;
+  border-bottom:1px solid rgba(0,212,255,.08);
+}
+.sys-table td{
+  color:rgba(255,255,255,.5);
+  padding:6px 10px;
+  border-bottom:1px solid rgba(255,255,255,.03);
+  line-height:1.6;
+}
+.sys-table td:first-child{
+  color:rgba(255,255,255,.7);
+  font-weight:500;
+}
+.sys-table td code{font-size:10px}
+
+/* ── SITE FOOTER ──────────────────────────────────── */
+.site-footer{
+  border-top:1px solid rgba(255,255,255,.06);
+  background:rgba(10,10,10,.8);
+}
+.site-footer .container{
+  max-width:1200px;
+  margin:0 auto;
+  padding:48px 16px;
+}
+.site-footer .grid{
+  display:grid;
+  grid-template-columns:2fr 1fr 1fr 1fr;
+  gap:48px;
+}
+.site-footer .brand-col .brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  text-decoration:none;
+  margin-bottom:16px;
+}
+.site-footer .brand-col .brand-name{
+  font-family:'Space Grotesk',sans-serif;
+  font-weight:300;
+  font-size:18px;
+  letter-spacing:3px;
+  color:#fff;
+  text-transform:uppercase;
+}
+.site-footer .brand-col .brand-tagline{
+  font-size:12px;
+  color:rgba(255,255,255,.4);
+  letter-spacing:.5px;
+}
+.site-footer .brand-col .desc{
+  font-size:14px;
+  color:rgba(255,255,255,.4);
+  line-height:1.6;
+  max-width:320px;
+  margin-bottom:24px;
+}
+.site-footer .social{
+  display:flex;
+  align-items:center;
+  gap:16px;
+}
+.site-footer .social a{
+  color:rgba(255,255,255,.4);
+  transition:color .2s;
+}
+.site-footer .social a:hover{color:#00D4FF}
+.site-footer .social svg{width:20px;height:20px}
+.site-footer .privacy-block{
+  margin-top:24px;
+  padding-top:16px;
+  border-top:1px solid rgba(255,255,255,.04);
+}
+.site-footer .privacy-block h4{
+  font-size:14px;
+  font-weight:600;
+  color:rgba(255,255,255,.85);
+  margin-bottom:8px;
+}
+.site-footer .privacy-block p{
+  font-size:12px;
+  color:rgba(255,255,255,.4);
+  line-height:1.6;
+}
+.site-footer .link-col h3{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:11px;
+  font-weight:500;
+  text-transform:uppercase;
+  letter-spacing:2px;
+  color:rgba(255,255,255,.85);
+  margin-bottom:16px;
+}
+.site-footer .link-col ul{
+  list-style:none;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+.site-footer .link-col a{
+  font-size:14px;
+  color:rgba(255,255,255,.4);
+  text-decoration:none;
+  transition:color .2s;
+}
+.site-footer .link-col a:hover{color:#00D4FF}
+.site-footer .bottom-bar{
+  margin-top:48px;
+  padding-top:32px;
+  border-top:1px solid rgba(255,255,255,.06);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.site-footer .bottom-bar p{
+  font-size:12px;
+  color:rgba(255,255,255,.4);
+}
+.site-footer .bottom-bar a{
+  color:rgba(255,255,255,.4);
+  text-decoration:none;
+  transition:color .2s;
+}
+.site-footer .bottom-bar a:hover{color:#00D4FF}
+.site-footer .bottom-bar .tagline{
+  font-size:12px;
+  color:rgba(255,255,255,.4);
+}
+
+/* ── RESPONSIVE ─────────────────────────────────── */
+@media(max-width:768px){
+  .site-header nav{display:none}
+  .site-footer .grid{grid-template-columns:1fr;gap:32px}
+  .site-footer .bottom-bar{flex-direction:column;gap:12px;text-align:center}
+}
+@media(max-width:600px){
+  .science-page{padding:32px 18px 60px}
+  .science-page h1{font-size:22px;letter-spacing:3px}
+  .science-page p{font-size:12.5px}
+  .eq{font-size:10.5px;padding:10px 12px}
+  .sys-table{font-size:10px}
+  .sys-table th{font-size:7px}
+  .site-header .brand-text{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ SITE HEADER ═══════════════════════════════════ -->
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="brand">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="40" height="40" style="border-radius:8px">
+        <defs>
+          <linearGradient id="sg" x1="100%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#00F0F9"/>
+            <stop offset="50%" stop-color="#0AC5E1"/>
+            <stop offset="100%" stop-color="#056673"/>
+          </linearGradient>
+          <filter id="gl" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        <rect x="0" y="0" width="64" height="64" fill="#000" rx="8"/>
+        <path d="M 56 8 Q 40 12, 24 28 Q 12 44, 16 56" stroke="url(#sg)" stroke-width="4" stroke-linecap="round" fill="none" filter="url(#gl)"/>
+        <path d="M 54 10 Q 42 14, 30 26" stroke="#00F0F9" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.6"/>
+      </svg>
+      <div class="brand-text">
+        <span class="brand-name">STELLARFORGE</span>
+        <span class="brand-tagline">Forge the Future</span>
+      </div>
+    </a>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/worlds">Worlds</a>
+      <a href="/#tools">Tools</a>
+      <a href="/learn">Learn</a>
+      <a href="/pricing">Pricing</a>
+      <a href="index.html" class="rogue-btn">← Back to ROGUE</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ═══ SCIENCE CONTENT ══════════════════════════════ -->
+<main class="science-page">
+  <h1>Showing Our Work</h1>
+  <div class="subtitle">The Physics &amp; Data Behind ROGUE</div>
+
+  <!-- ── GRAVITATIONAL PHYSICS ───────────────────── -->
+  <div class="sci-section">Gravitational Physics</div>
+  <p>ROGUE is a full <strong>N-body gravitational simulator</strong>—every object in the simulation exerts gravitational force on every other object simultaneously. There are no shortcuts, rails, or predetermined paths. Planetary orbits emerge naturally from Newton's law of universal gravitation:</p>
+  <span class="eq">F = G · m₁ · m₂ / r²</span>
+  <p>We work in <strong>solar-normalized units</strong>: distances in Astronomical Units (AU), masses in solar masses (M☉), and time in years. In these units, the gravitational constant simplifies elegantly:</p>
+  <span class="eq">G = 4π² AU³ · yr⁻² · M☉⁻¹</span>
+  <p>This is not an approximation—it's an exact consequence of Kepler's third law. A 1 M☉ star at 1 AU produces an orbital period of exactly 1 year.</p>
+
+  <!-- ── NUMERICAL INTEGRATOR ────────────────────── -->
+  <div class="sci-section">Numerical Integrator</div>
+  <p>Orbital mechanics is solved using a <strong>kick-drift-kick leapfrog integrator</strong>, a second-order symplectic method that conserves energy far better than naive Euler integration. Each timestep proceeds in three phases:</p>
+  <span class="eq">1. Half-kick: v += a · dt/2<br>2. Drift: x += v · dt<br>3. Recompute forces at new positions<br>4. Half-kick: v += a_new · dt/2</span>
+  <p>Symplectic integrators are preferred for orbital mechanics because they don't artificially inject or drain energy from the system over long timescales—orbits stay stable for thousands of revolutions rather than spiraling inward or outward.</p>
+  <div class="src">Leapfrog integration: Hut, P., Makino, J., &amp; McMillan, S. (1995). "Building a better leapfrog." <em>The Astrophysical Journal</em>, 443, L93–L96. <a href="https://ui.adsabs.harvard.edu/abs/1995ApJ...443L..93H" target="_blank">ADS</a></div>
+  <p>A <strong>gravitational softening</strong> parameter <code>ε² = 5×10⁻⁵ AU²</code> prevents numerical singularities during very close encounters, replacing <code>1/r²</code> with <code>1/(r² + ε²)</code>. This is standard practice in N-body simulation and represents the fact that real bodies have finite size.</p>
+  <div class="src">Softening in N-body simulations: Dehnen, W. (2001). "Towards optimal softening in three-dimensional N-body codes." <em>Monthly Notices of the Royal Astronomical Society</em>, 324(2), 273–291. <a href="https://doi.org/10.1046/j.1365-8711.2001.04237.x" target="_blank">DOI</a></div>
+
+  <!-- ── CONDITIONAL N-BODY ──────────────────────── -->
+  <div class="sci-section">Conditional N-Body Forces</div>
+  <p>Before the intruder is launched, planet-to-planet gravitational forces are <strong>intentionally disabled</strong>. Only star↔planet forces are computed. This keeps planets in perfect Keplerian orbits during the "before" state.</p>
+  <p>Why? Tightly-packed systems like TRAPPIST-1 are stabilized in reality by precise <strong>mean-motion resonance chains</strong>—delicate integer orbital period ratios maintained over billions of years. A simple N-body integrator cannot maintain these resonances; within seconds of simulation time, accumulated numerical errors break the resonance locks and the system flies apart. This is not a failure of our physics—it's a known limitation of direct integration without resonance-aware corrections.</p>
+  <p>Once the intruder launches, full N-body forces activate. The gravitational disruption from the intruder overwhelms any resonance effects anyway, so the full force computation produces physically meaningful results.</p>
+  <div class="src">TRAPPIST-1 resonance chain: Luger, R. et al. (2017). "A seven-planet resonant chain in TRAPPIST-1." <em>Nature Astronomy</em>, 1, 0129. <a href="https://doi.org/10.1038/s41550-017-0129" target="_blank">DOI</a></div>
+
+  <!-- ── ADAPTIVE TIMESTEP ───────────────────────── -->
+  <div class="sci-section">Adaptive Timestep</div>
+  <p>Different systems require vastly different temporal resolution. TRAPPIST-1's innermost planet orbits in 1.5 Earth days; Neptune takes 165 years. A single timestep size cannot serve both.</p>
+  <p>The timestep scales with the <strong>innermost orbital radius</strong> of the active system:</p>
+  <span class="eq">dt = dt_base × min(1, r_min / 0.5 AU)<br>steps/frame = 60 × timeScale × min(80, 1/dtScale)</span>
+  <p>This ensures compact systems get finer temporal resolution while wall-clock simulation speed remains visually consistent. The step count per frame is capped at 8,000 to prevent browser freezes.</p>
+
+  <!-- ── STELLAR & PLANETARY DATA ────────────────── -->
+  <div class="sci-section">Stellar &amp; Planetary Data</div>
+  <p>All preset star systems use <strong>real observational data</strong>. Orbital semi-major axes, planetary masses, stellar masses, and habitable zone boundaries are sourced from peer-reviewed catalogs:</p>
+
+  <table class="sys-table">
+    <tr><th>System</th><th>Star Mass</th><th>Planets</th><th>Primary Source</th></tr>
+    <tr>
+      <td>Our Solar System</td>
+      <td><code>1.0 M☉</code></td>
+      <td>8 (Mercury–Neptune)</td>
+      <td>NASA Planetary Fact Sheet</td>
+    </tr>
+    <tr>
+      <td>TRAPPIST-1</td>
+      <td><code>0.0898 M☉</code></td>
+      <td>7 (b–h)</td>
+      <td>Agol et al. 2021, <em>PSJ</em></td>
+    </tr>
+    <tr>
+      <td>Kepler-90</td>
+      <td><code>1.2 M☉</code></td>
+      <td>8 (b–h)</td>
+      <td>NASA Exoplanet Archive</td>
+    </tr>
+    <tr>
+      <td>Proxima Centauri</td>
+      <td><code>0.122 M☉</code></td>
+      <td>3 (b, c, d)</td>
+      <td>Faria et al. 2022, <em>A&amp;A</em></td>
+    </tr>
+    <tr>
+      <td>Alpha Centauri AB</td>
+      <td><code>1.1 + 0.907 M☉</code></td>
+      <td>2 (hypothetical*)</td>
+      <td>Kervella et al. 2017, <em>A&amp;A</em></td>
+    </tr>
+  </table>
+
+  <div class="note">Alpha Centauri AB planets are marked with asterisks (*) in the simulator because no confirmed planets have been detected in the system as of early 2025. Their parameters represent plausible habitable-zone candidates based on orbital stability analyses.</div>
+
+  <div class="src"><strong>Solar System:</strong> Williams, D.R. (2024). "NASA Planetary Fact Sheet." NASA Goddard Space Flight Center. <a href="https://nssdc.gsfc.nasa.gov/planetary/factsheet/" target="_blank">GSFC</a></div>
+  <div class="src"><strong>TRAPPIST-1:</strong> Agol, E. et al. (2021). "Refining the transit-timing and photometric analysis of TRAPPIST-1." <em>Planetary Science Journal</em>, 2(1), 1. <a href="https://doi.org/10.3847/PSJ/abd022" target="_blank">DOI</a></div>
+  <div class="src"><strong>Kepler-90:</strong> Shallue, C.J. &amp; Vanderburg, A. (2018). "Identifying Exoplanets with Deep Learning." <em>The Astronomical Journal</em>, 155(2), 94. <a href="https://doi.org/10.3847/1538-3881/aa9e09" target="_blank">DOI</a> · NASA Exoplanet Archive: <a href="https://exoplanetarchive.ipac.caltech.edu/" target="_blank">IPAC</a></div>
+  <div class="src"><strong>Proxima Centauri:</strong> Faria, J.P. et al. (2022). "A candidate short-period sub-Earth orbiting Proxima Centauri." <em>Astronomy &amp; Astrophysics</em>, 658, A115. <a href="https://doi.org/10.1051/0004-6361/202142337" target="_blank">DOI</a></div>
+  <div class="src"><strong>Alpha Centauri:</strong> Kervella, P. et al. (2017). "Close stellar conjunctions of α Centauri A and B." <em>Astronomy &amp; Astrophysics</em>, 598, L7. <a href="https://doi.org/10.1051/0004-6361/201629930" target="_blank">DOI</a></div>
+
+  <!-- ── HABITABLE ZONES ─────────────────────────── -->
+  <div class="sci-section">Habitable Zones</div>
+  <p>The green habitable zone overlay shows the <strong>conservative habitable zone</strong>—the range of distances where liquid water could exist on a rocky planet's surface, assuming an Earth-like atmosphere. These boundaries are computed from stellar luminosity using the models of Kopparapu et al. (2013):</p>
+  <span class="eq">HZ_inner = √(L / S_eff,inner)&emsp;&emsp;HZ_outer = √(L / S_eff,outer)</span>
+  <p>Where <code>L</code> is stellar luminosity and <code>S_eff</code> is the effective stellar flux at each boundary. For main-sequence stars, luminosity scales approximately as <code>L ∝ M^3.5</code>.</p>
+  <div class="src">Kopparapu, R.K. et al. (2013). "Habitable zones around main-sequence stars: New estimates." <em>The Astrophysical Journal</em>, 765(2), 131. <a href="https://doi.org/10.1088/0004-637X/765/2/131" target="_blank">DOI</a></div>
+
+  <!-- ── INTRUDER OBJECTS ────────────────────────── -->
+  <div class="sci-section">Intruder Objects</div>
+  <table class="sys-table">
+    <tr><th>Type</th><th>Mass Range</th><th>Physical Basis</th></tr>
+    <tr>
+      <td>Black Hole</td>
+      <td><code>3–100 M☉</code></td>
+      <td>Stellar-mass black holes. Minimum ~3 M☉ from Tolman–Oppenheimer–Volkoff limit. Upper range represents massive stellar remnants.</td>
+    </tr>
+    <tr>
+      <td>Brown Dwarf</td>
+      <td><code>13–80 Mⱼ</code></td>
+      <td>Substellar objects. Below ~13 Mⱼ: no deuterium fusion. Above ~80 Mⱼ: hydrogen fusion begins (becomes a star).</td>
+    </tr>
+    <tr>
+      <td>Rogue Planet</td>
+      <td><code>0.5–13 Mⱼ</code></td>
+      <td>Planetary-mass objects not bound to any star. Upper limit is the deuterium-burning boundary.</td>
+    </tr>
+  </table>
+  <div class="src">Stellar-mass black holes: Özel, F. et al. (2010). "The Black Hole Mass Distribution in the Galaxy." <em>The Astrophysical Journal</em>, 725(2), 1918. <a href="https://doi.org/10.1088/0004-637X/725/2/1918" target="_blank">DOI</a></div>
+  <div class="src">Brown dwarf mass limits: Spiegel, D.S., Burrows, A., &amp; Milsom, J.A. (2011). "The Deuterium-Burning Mass Limit." <em>The Astrophysical Journal</em>, 727(1), 57. <a href="https://doi.org/10.1088/0004-637X/727/1/57" target="_blank">DOI</a></div>
+  <div class="src">Free-floating planets: Mróz, P. et al. (2017). "No large population of unbound or wide-orbit Jupiter-mass planets." <em>Nature</em>, 548, 183–186. <a href="https://doi.org/10.1038/nature23276" target="_blank">DOI</a></div>
+
+  <!-- ── VELOCITY & UNITS ────────────────────────── -->
+  <div class="sci-section">Velocity &amp; Unit Conversions</div>
+  <p>Velocities displayed in the data panel are converted from simulation units (AU/yr) to km/s using:</p>
+  <span class="eq">1 AU/yr ≈ 4.7405 km/s</span>
+  <p>Orbital velocities for circular orbits are initialized using the vis-viva equation at zero eccentricity:</p>
+  <span class="eq">v = √(G · M_central / a)</span>
+  <p>Where <code>a</code> is the semi-major axis and <code>M_central</code> is the total mass interior to the orbit (star + binary companion if applicable).</p>
+
+  <!-- ── VISUAL SIZING ───────────────────────────── -->
+  <div class="sci-section">Visual Sizing</div>
+  <p>Bodies are <strong>not drawn to physical scale</strong>—at true scale, every planet would be invisible at every zoom level. Instead, we use a proportional sizing system tied to stellar radius:</p>
+  <span class="eq">Star: max(6, min(28, zoom × 0.04 × M^0.8 + 4)) px<br>Planet: max(1.8, min(star × 0.45, zoom × 0.012 × size + 1.2)) px</span>
+  <p>The <code>M^0.8</code> exponent approximates the main-sequence mass-radius relation for stars. The 45% cap ensures planets never visually rival their host star.</p>
+  <div class="src">Main-sequence mass-radius relation: Demircan, O. &amp; Kahraman, G. (1991). "Stellar mass-luminosity and mass-radius relations." <em>Astrophysics and Space Science</em>, 181, 313–322. <a href="https://doi.org/10.1007/BF00639100" target="_blank">DOI</a></div>
+
+  <!-- ── LIMITATIONS ─────────────────────────────── -->
+  <div class="sci-section">What This Tool Cannot Do</div>
+  <p>ROGUE is designed for gravitational dynamics visualization, not astrophysical precision. Important limitations:</p>
+  <p><strong>No general relativity.</strong> All physics is Newtonian. This means no perihelion precession, no frame-dragging near black holes, and no gravitational waves. For the stellar-distance encounters ROGUE simulates, Newtonian gravity is an excellent approximation.</p>
+  <p><strong>No tidal effects.</strong> Bodies are point masses. There is no Roche limit disruption, no tidal heating, no tidal locking evolution.</p>
+  <p><strong>No collisions.</strong> Bodies pass through each other at close approach. The softening parameter prevents numerical instability but does not represent real physics at very close range.</p>
+  <p><strong>No resonance maintenance.</strong> As noted above, the integrator cannot sustain the delicate mean-motion resonances that stabilize real multi-planet systems over geological timescales.</p>
+  <p><strong>No atmospheric or magnetic effects.</strong> The simulation is purely gravitational—no radiation pressure, stellar wind, or electromagnetic interactions.</p>
+  <div class="note">Despite these limitations, the gravitational dynamics shown are physically meaningful. The trajectories, ejections, orbit swaps, and captures you see are genuine solutions to the N-body problem under Newtonian gravity, computed in real-time from first principles.</div>
+
+  <!-- ── FOR WRITERS ─────────────────────────────── -->
+  <div class="sci-section">For Writers</div>
+  <p>ROGUE exists to help science fiction writers explore a specific question: <strong>what happens to a planetary system when something massive passes through it?</strong></p>
+  <p>The scenarios you discover here—planets ejected into interstellar space, orbits destabilized into ellipses, moons captured by intruders, habitable worlds flung into the dark—are not arbitrary. They emerge from the same mathematics that governs real stellar encounters. When you write these events into your fiction, you're writing physics.</p>
+  <p>ROGUE is part of the <a href="https://stellarforge.tools" style="color:rgba(0,212,255,.5)">StellarForge</a> worldbuilding toolkit. The <strong>Star System</strong> and <strong>Planetary Design</strong> worksheets can help you develop the worlds you discover here into full settings with geology, atmospheres, biospheres, and cultures—all following the cascading principle that <em>environment shapes biology, biology shapes psychology, psychology shapes culture, and culture shapes mythology.</em></p>
+</main>
+
+<!-- ═══ SITE FOOTER ═══════════════════════════════════ -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="grid">
+      <!-- Brand Column -->
+      <div class="brand-col">
+        <a href="/" class="brand">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="36" height="36" style="border-radius:8px">
+            <defs>
+              <linearGradient id="sg2" x1="100%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#00F0F9"/>
+                <stop offset="50%" stop-color="#0AC5E1"/>
+                <stop offset="100%" stop-color="#056673"/>
+              </linearGradient>
+              <filter id="gl2" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur"/>
+                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+            </defs>
+            <rect x="0" y="0" width="64" height="64" fill="#000" rx="8"/>
+            <path d="M 56 8 Q 40 12, 24 28 Q 12 44, 16 56" stroke="url(#sg2)" stroke-width="4" stroke-linecap="round" fill="none" filter="url(#gl2)"/>
+            <path d="M 54 10 Q 42 14, 30 26" stroke="#00F0F9" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.6"/>
+          </svg>
+          <div>
+            <span class="brand-name">STELLARFORGE</span>
+            <span class="brand-tagline" style="display:block">Forge the Future</span>
+          </div>
+        </a>
+        <p class="desc">Science-first worldbuilding tools for writers, game designers, and creators who demand internal consistency.</p>
+        <!-- Social Links -->
+        <div class="social">
+          <a href="https://xenomythology.substack.com/" target="_blank" rel="noopener noreferrer" aria-label="Substack">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22.539 8.242H1.46V5.406h21.08v2.836zM1.46 10.812V24L12 18.11 22.54 24V10.812H1.46zM22.54 0H1.46v2.836h21.08V0z"/></svg>
+          </a>
+          <a href="https://www.linkedin.com/in/jasonbatt/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+          </a>
+          <a href="https://www.instagram.com/jasondbattphd/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+          </a>
+          <a href="mailto:support@stellarforge.tools" aria-label="Email">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+          </a>
+        </div>
+        <!-- Privacy Statement -->
+        <div class="privacy-block">
+          <h4>Your Worlds Are Yours Alone</h4>
+          <p>We can't access your creative work. Ever. No AI training. No data mining. No third-party sharing. Your unpublished stories stay unpublished until you decide otherwise.</p>
+        </div>
+      </div>
+
+      <!-- Product -->
+      <div class="link-col">
+        <h3>Product</h3>
+        <ul>
+          <li><a href="/features">Features</a></li>
+          <li><a href="/pricing">Pricing</a></li>
+          <li><a href="/#tools">Tools</a></li>
+          <li><a href="/rogue/">ROGUE Simulator</a></li>
+        </ul>
+      </div>
+
+      <!-- Resources -->
+      <div class="link-col">
+        <h3>Resources</h3>
+        <ul>
+          <li><a href="/learn">Learn</a></li>
+          <li><a href="/bookshelf">Bookshelf</a></li>
+          <li><a href="/changelog">Changelog</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+      </div>
+
+      <!-- Legal -->
+      <div class="link-col">
+        <h3>Legal</h3>
+        <ul>
+          <li><a href="/privacy">Privacy Policy</a></li>
+          <li><a href="/terms">Terms of Service</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Bottom Bar -->
+    <div class="bottom-bar">
+      <div>
+        <p>A <a href="https://dreamsidestudios.com" target="_blank" rel="noopener noreferrer">Dreamside Studios</a> production</p>
+        <p style="margin-top:4px">© 2025–2026 <a href="https://jbatt.com" target="_blank" rel="noopener noreferrer">Jason D. Batt, Ph.D.</a> All rights reserved.</p>
+      </div>
+      <span class="tagline">Made with science and imagination</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

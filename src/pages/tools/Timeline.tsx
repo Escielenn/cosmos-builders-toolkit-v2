@@ -45,6 +45,7 @@ import { WorksheetTagsBar } from "@/components/tools/WorksheetTagsBar";
 import { useTags } from "@/hooks/use-tags";
 import { WorksheetNotesSheet } from "@/components/tools/WorksheetNotesSheet";
 import { WorksheetMoodboardSheet } from "@/components/tools/WorksheetMoodboardSheet";
+import { ToolPageQuote } from "@/components/quotes/ToolPageQuote";
 import { useWorlds } from "@/hooks/use-worlds";
 import { Json } from "@/integrations/supabase/types";
 
@@ -355,11 +356,13 @@ const Timeline = () => {
         {/* Back Link */}
         <Link
           to={worldId ? `/worlds/${worldId}` : "/"}
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
+          className="inline-flex items-center gap-2 text-sm text-tier-3 hover:text-foreground transition-colors mb-6"
         >
           <ArrowLeft className="w-4 h-4" />
           {worldId ? "Back to World" : "Back to Dashboard"}
         </Link>
+
+        <ToolPageQuote toolId="timeline" />
 
         {/* Action Bar */}
         <ToolActionBar
@@ -375,6 +378,8 @@ const Timeline = () => {
           moodboardCount={state.moodboard?.length || 0}
           exportLabel="Export Timeline"
           className="mb-6"
+          worldId={worldId}
+          worksheetId={currentWorksheetId || worksheetId}
         />
 
         {/* Title */}
@@ -386,7 +391,7 @@ const Timeline = () => {
               Timeline
             </h1>
           </div>
-          <p className="text-muted-foreground mt-2 max-w-2xl">
+          <p className="text-tier-2 mt-2 max-w-2xl">
             Plot events across deep time. Build multi-track timelines that reveal how characters, civilizations, and technologies intersect.
           </p>
           {(currentWorksheetId || worksheetId) && (

@@ -1,6 +1,18 @@
 # Supabase project configuration
 project_id = "sgoefchwjumzgfupqdzt"
 
+[functions.create-checkout-session]
+verify_jwt = false
+
+[functions.create-portal-session]
+verify_jwt = false
+
+[functions.stripe-webhook]
+verify_jwt = false
+
+[functions.send-invite-email]
+verify_jwt = false
+
 [functions.notion-auth-start]
 verify_jwt = false
 

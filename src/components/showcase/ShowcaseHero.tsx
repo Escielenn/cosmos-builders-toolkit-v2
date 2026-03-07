@@ -25,14 +25,14 @@ const ShowcaseHero = () => {
           {/* Subhead */}
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mb-10 leading-relaxed sf-reveal sf-reveal-3">
             Every parameter cascades. Every choice has consequences. Build worlds
-            where the physics shapes the biology, the biology shapes the culture,
-            and the culture shapes the myths.
+            where the physics shapes the environment, the environment shapes the biology,
+            and the biology shapes the culture.
           </p>
 
           {/* CTAs */}
           <div className="flex flex-wrap gap-4 justify-center sf-reveal sf-reveal-4">
             <Button size="lg" className="gap-2 text-base px-8" asChild>
-              <Link to="/auth?tab=signup">
+              <Link to="/auth">
                 <Rocket className="w-5 h-5" />
                 Start Free
               </Link>

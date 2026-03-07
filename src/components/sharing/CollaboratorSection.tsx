@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Crown, Mail, X, Send, Users } from "lucide-react";
+import { Zap, Mail, X, Send, Users } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -69,7 +69,7 @@ const CollaboratorSection = ({ worldId, worldName }: CollaboratorSectionProps) =
         </p>
         <Button variant="outline" size="sm" asChild>
           <Link to="/pricing">
-            <Crown className="w-3.5 h-3.5 mr-1.5" />
+            <Zap className="w-3.5 h-3.5 mr-1.5" />
             Upgrade to Pro
           </Link>
         </Button>

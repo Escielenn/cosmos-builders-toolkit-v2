@@ -72,12 +72,12 @@ const CollapsibleSection = ({
       <CollapsibleTrigger asChild>
         <button
           type="button"
-          className={`w-full p-4 md:p-6 flex items-center justify-between text-left ${hoverClass} transition-colors ${variant === "default" ? "" : "rounded-lg"}`}
+          className={`w-full p-4 md:p-6 flex items-center justify-between text-left ${hoverClass} transition-colors border-b border-[hsl(var(--sf-section-border))] ${variant === "default" ? "" : "rounded-lg"}`}
         >
           <div className="flex items-center gap-3">
             {/* Numbered badge */}
             {levelNumber !== undefined && (
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center text-primary-foreground font-bold text-sm">
+              <div className="w-8 h-8 rounded-sm bg-primary/[0.06] border border-primary/[0.15] flex items-center justify-center text-primary font-mono text-sm">
                 {levelNumber}
               </div>
             )}
@@ -86,7 +86,7 @@ const CollapsibleSection = ({
             {/* Title and subtitle */}
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="font-heading font-semibold text-lg">{title}</h3>
+                <h3 className="font-heading text-sm font-light uppercase tracking-[3px] text-[hsl(var(--sf-section-green))]">{title}</h3>
                 {guidance && (
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -107,14 +107,14 @@ const CollapsibleSection = ({
                 )}
               </div>
               {subtitle && (
-                <p className="text-sm text-muted-foreground">{subtitle}</p>
+                <p className="text-xs text-tier-4">{subtitle}</p>
               )}
             </div>
           </div>
           {isOpen ? (
-            <ChevronUp className="w-5 h-5 text-muted-foreground" />
+            <ChevronUp className="w-5 h-5 text-tier-4" />
           ) : (
-            <ChevronDown className="w-5 h-5 text-muted-foreground" />
+            <ChevronDown className="w-5 h-5 text-tier-4" />
           )}
         </button>
       </CollapsibleTrigger>

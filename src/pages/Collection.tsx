@@ -23,6 +23,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { PageBursts } from "@/components/ui/data-burst";
+import { COLLECTION_BURSTS } from "@/lib/data-bursts";
 
 type SortBy = "recent" | "alphabetical" | "tool-type";
 
@@ -91,7 +93,7 @@ const Collection = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background sf-atmosphere">
+      <div className="relative min-h-screen bg-background sf-atmosphere">
         <Header />
         <main className="container mx-auto px-4 pt-24 pb-16 flex items-center justify-center">
           <Loader />
@@ -101,8 +103,9 @@ const Collection = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background sf-atmosphere">
+    <div className="relative min-h-screen bg-background sf-atmosphere">
       <Header />
+      <PageBursts bursts={COLLECTION_BURSTS} />
       <main className="container mx-auto px-4 pt-24 pb-16 relative z-10">
         {/* Back Navigation */}
         <Link

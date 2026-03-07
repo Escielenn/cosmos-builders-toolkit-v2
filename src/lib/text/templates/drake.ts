@@ -10,6 +10,7 @@ import {
   wrapText,
   createFooter,
 } from "../formatters";
+import { htmlToPlainText } from "@/lib/html-utils";
 
 interface DrakeTextOptions {
   toolName: string;
@@ -58,7 +59,7 @@ export const generateDrakeText = ({
   const rows = Object.entries(values).map(([key, value]) => [
     variableNames[key] || key,
     value.toString(),
-    notes[key] || "",
+    htmlToPlainText(notes[key] || ""),
   ]);
 
   lines.push(createTable(["Variable", "Value", "Notes"], rows));
@@ -71,7 +72,7 @@ export const generateDrakeText = ({
       if (value) {
         const label = formatFieldLabel(key);
         lines.push(`\n${label}:`);
-        lines.push(wrapText(value, 60, 2));
+        lines.push(wrapText(htmlToPlainText(value), 60, 2));
       }
     }
   }

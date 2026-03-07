@@ -1,11 +1,15 @@
-import { corsHeaders } from '../_shared/cors.ts';
+import { getCorsHeaders } from '../_shared/cors.ts';
 import { stripe } from '../_shared/stripe.ts';
 import { supabaseAdmin } from '../_shared/supabase.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.7.0';
 
+const ALLOWED_REDIRECT_BASE = 'https://stellarforge.tools';
+
 Deno.serve(async (req) => {
+  const cors = getCorsHeaders(req);
+
   if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders });
+    return new Response('ok', { headers: cors });
   }
 
   try {
@@ -37,22 +41,20 @@ Deno.serve(async (req) => {
       throw new Error('No Stripe customer found');
     }
 
-    const { returnUrl } = await req.json();
-
     const session = await stripe.billingPortal.sessions.create({
       customer: profile.stripe_customer_id,
-      return_url: returnUrl || `${req.headers.get('origin')}/profile`,
+      return_url: `${ALLOWED_REDIRECT_BASE}/profile`,
     });
 
     return new Response(
       JSON.stringify({ url: session.url }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      { headers: { ...cors, 'Content-Type': 'application/json' } }
     );
   } catch (error) {
     console.error('Portal session error:', error);
     return new Response(
       JSON.stringify({ error: error.message }),
-      { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      { status: 400, headers: { ...cors, 'Content-Type': 'application/json' } }
     );
   }
 });

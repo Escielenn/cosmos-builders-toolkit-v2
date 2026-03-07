@@ -7,6 +7,7 @@ import {
   PDFKeyValuePair,
   PDFResultBox,
 } from "../components";
+import { deepStripHtml } from "@/lib/html-utils";
 
 interface PlanetaryBody {
   id: string;
@@ -105,20 +106,22 @@ const StarSystemSummaryTemplate = ({
   worldName,
   date,
 }: StarSystemSummaryTemplateProps) => {
-  const primaryStar = formState?.primaryStar;
-  const configuration = formState?.configuration;
-  const bodies = formState?.bodies || [];
-  const habitability = formState?.habitability;
-  const synthesis = formState?.synthesis;
+  const cleanState = deepStripHtml(formState);
+
+  const primaryStar = cleanState?.primaryStar;
+  const configuration = cleanState?.configuration;
+  const bodies = cleanState?.bodies || [];
+  const habitability = cleanState?.habitability;
+  const synthesis = cleanState?.synthesis;
 
   const bodyCount = bodies.filter((b) => b.name || b.type).length;
-  const systemName = formState?.systemName || "Unnamed System";
+  const systemName = cleanState?.systemName || "Unnamed System";
 
   return (
     <Document>
       <Page size="LETTER" style={styles.page}>
         <PDFHeader
-          toolName="Star System Builder"
+          toolName="Orrery"
           worldName={worldName}
           date={date}
         />

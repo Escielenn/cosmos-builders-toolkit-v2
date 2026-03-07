@@ -1,22 +1,204 @@
-import { useLocation } from "react-router-dom";
-import { useEffect } from "react";
+import { useLocation, Link } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Compass, Radio } from "lucide-react";
+import { heroReveal, staggerContainer, fadeUpItem } from "@/lib/animations";
+
+// Lightweight starfield canvas
+function StarfieldCanvas() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let animId: number;
+    let w = 0;
+    let h = 0;
+
+    // Generate stars
+    const stars: { x: number; y: number; size: number; brightness: number; speed: number }[] = [];
+    const resize = () => {
+      w = canvas.width = window.innerWidth;
+      h = canvas.height = window.innerHeight;
+      if (stars.length === 0) {
+        for (let i = 0; i < 400; i++) {
+          stars.push({
+            x: Math.random() * w,
+            y: Math.random() * h,
+            size: Math.random() * 1.8 + 0.3,
+            brightness: Math.random() * 0.5 + 0.1,
+            speed: Math.random() * 0.15 + 0.02,
+          });
+        }
+      }
+    };
+    resize();
+    window.addEventListener("resize", resize);
+
+    const draw = () => {
+      ctx.fillStyle = "#050508";
+      ctx.fillRect(0, 0, w, h);
+
+      for (const star of stars) {
+        star.x -= star.speed;
+        if (star.x < -2) star.x = w + 2;
+
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 255, 255, ${star.brightness})`;
+        ctx.fill();
+      }
+
+      // Subtle nebula glow
+      const grd = ctx.createRadialGradient(w * 0.3, h * 0.4, 0, w * 0.3, h * 0.4, w * 0.5);
+      grd.addColorStop(0, "rgba(21, 193, 123, 0.03)");
+      grd.addColorStop(1, "transparent");
+      ctx.fillStyle = grd;
+      ctx.fillRect(0, 0, w, h);
+
+      animId = requestAnimationFrame(draw);
+    };
+    draw();
+
+    return () => {
+      cancelAnimationFrame(animId);
+      window.removeEventListener("resize", resize);
+    };
+  }, []);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className="absolute inset-0 w-full h-full z-0"
+    />
+  );
+}
+
+// Floating signal pulse animation
+function SignalPulse() {
+  return (
+    <div className="relative w-24 h-24 mx-auto mb-8">
+      {/* Outer rings */}
+      {[0, 1, 2].map((i) => (
+        <motion.div
+          key={i}
+          className="absolute inset-0 rounded-full border border-primary/20"
+          initial={{ scale: 0.5, opacity: 0.6 }}
+          animate={{ scale: 2 + i * 0.5, opacity: 0 }}
+          transition={{
+            duration: 3,
+            repeat: Infinity,
+            delay: i * 0.8,
+            ease: "easeOut",
+          }}
+        />
+      ))}
+      {/* Center dot */}
+      <div className="absolute inset-0 flex items-center justify-center">
+        <motion.div
+          className="w-3 h-3 bg-primary/60 rounded-full"
+          animate={{ opacity: [0.4, 1, 0.4] }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+        />
+      </div>
+    </div>
+  );
+}
 
 const NotFound = () => {
   const location = useLocation();
+  const [showCoords, setShowCoords] = useState(false);
 
   useEffect(() => {
     console.error("404 Error: User attempted to access non-existent route:", location.pathname);
+    const timer = setTimeout(() => setShowCoords(true), 800);
+    return () => clearTimeout(timer);
   }, [location.pathname]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-muted">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">404</h1>
-        <p className="mb-4 text-xl text-muted-foreground">Oops! Page not found</p>
-        <a href="/" className="text-primary underline hover:text-primary/90">
-          Return to Home
-        </a>
-      </div>
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden">
+      <StarfieldCanvas />
+
+      <motion.div
+        className="relative z-10 text-center max-w-lg px-6"
+        initial="hidden"
+        animate="visible"
+        variants={staggerContainer}
+      >
+        <motion.div variants={fadeUpItem}>
+          <SignalPulse />
+        </motion.div>
+
+        {/* Error code */}
+        <motion.p
+          className="font-mono text-[10px] tracking-[6px] text-primary/40 uppercase mb-4"
+          variants={fadeUpItem}
+        >
+          Signal Lost — Error 404
+        </motion.p>
+
+        {/* Title */}
+        <motion.h1
+          className="font-display text-4xl md:text-5xl font-light uppercase tracking-sf-wide text-tier-1 mb-4"
+          variants={heroReveal}
+        >
+          Lost in Space
+        </motion.h1>
+
+        {/* Description */}
+        <motion.p
+          className="text-sm text-tier-3 leading-relaxed mb-2"
+          variants={fadeUpItem}
+        >
+          The coordinates you've entered don't correspond to any charted system.
+          You may have drifted beyond the edge of known space.
+        </motion.p>
+
+        {/* Failed coordinates readout */}
+        {showCoords && (
+          <motion.div
+            className="font-mono text-[11px] text-tier-4 mb-8 py-2 px-4 inline-block border border-white/5 bg-white/[0.02]"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <span className="text-crimson/60">UNREACHABLE</span>
+            {"  "}
+            <span className="text-tier-5">{location.pathname}</span>
+          </motion.div>
+        )}
+
+        {/* Actions */}
+        <motion.div
+          className="flex flex-col sm:flex-row gap-3 justify-center mt-8"
+          variants={fadeUpItem}
+        >
+          <Button size="lg" className="gap-2" asChild>
+            <Link to="/">
+              <Compass className="w-4 h-4" />
+              Return to Known Space
+            </Link>
+          </Button>
+          <Button variant="outline" size="lg" className="gap-2" asChild>
+            <Link to="/contact">
+              <Radio className="w-4 h-4" />
+              Send Distress Signal
+            </Link>
+          </Button>
+        </motion.div>
+
+        {/* Tagline */}
+        <motion.p
+          className="mt-10 text-xs italic text-[#5B8DEF]/40 tracking-wide"
+          variants={fadeUpItem}
+        >
+          These worlds exist in you. Waiting to be found.
+        </motion.p>
+      </motion.div>
     </div>
   );
 };

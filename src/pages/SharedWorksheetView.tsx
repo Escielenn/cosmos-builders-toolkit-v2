@@ -8,16 +8,19 @@ import SharedPageHeader from "@/components/sharing/SharedPageHeader";
 import WorksheetDataRenderer from "@/components/sharing/WorksheetDataRenderer";
 import { useSharedWorksheet } from "@/hooks/use-sharing";
 import { getToolDisplayName } from "@/lib/tools-config";
+import { PageBursts } from "@/components/ui/data-burst";
+import { SHARED_WORKSHEET_BURSTS } from "@/lib/data-bursts";
 
 const SharedWorksheetView = () => {
   const { token } = useParams<{ token: string }>();
   const { data, isLoading, error } = useSharedWorksheet(token);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="relative min-h-screen bg-background">
       <SharedPageHeader />
+      <PageBursts bursts={SHARED_WORKSHEET_BURSTS} />
 
-      <main className="container mx-auto px-4 py-8 max-w-4xl">
+      <main className="container mx-auto px-4 py-8 max-w-4xl relative z-10">
         {isLoading && (
           <div className="flex flex-col items-center justify-center py-24">
             <Loader className="mb-4" />

@@ -75,8 +75,9 @@ export default {
       },
       borderRadius: {
         lg: "var(--radius)",
-        md: "2px",
-        sm: "2px",
+        md: "4px",
+        sm: "3px",
+        xs: "2px",
       },
       fontFamily: {
         // StellarForge Design System v2.1 fonts (Inter is forbidden)
@@ -84,11 +85,10 @@ export default {
         display: ["MD Nichrome", "Jura", "system-ui", "sans-serif"],
         heading: ["Jura", "system-ui", "sans-serif"],
         mono: ["JetBrains Mono", "monospace"],
-        accent: ["Michroma", "Jura", "system-ui", "sans-serif"],
-        "sim-heading": ["Space Grotesk", "system-ui", "sans-serif"],
       },
       letterSpacing: {
         // StellarForge typography spacing
+        "sf-title": "0.08em", // Tool page titles (Nichrome)
         "sf-wide": "0.2em",   // Standard uppercase headlines
         "sf-ultra": "0.4em",  // Hero/display text
       },

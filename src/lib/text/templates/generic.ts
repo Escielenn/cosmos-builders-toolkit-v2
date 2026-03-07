@@ -12,6 +12,7 @@ import {
   wrapText,
   createFooter,
 } from "../formatters";
+import { htmlToPlainText } from "@/lib/html-utils";
 
 interface GenericTextOptions {
   toolName: string;
@@ -61,12 +62,13 @@ function processData(data: Record<string, unknown>, depth: number = 0): string {
       // Skip empty values
       continue;
     } else if (typeof value === "string") {
-      if (value.length > 80) {
+      const text = htmlToPlainText(value);
+      if (text.length > 80) {
         // Long text - wrap it
         lines.push(`\n${" ".repeat(indent)}${label}:`);
-        lines.push(wrapText(value, 60, indent + 2));
+        lines.push(wrapText(text, 60, indent + 2));
       } else {
-        lines.push(createKeyValue(label, value, indent));
+        lines.push(createKeyValue(label, text, indent));
       }
     } else if (typeof value === "number" || typeof value === "boolean") {
       lines.push(createKeyValue(label, String(value), indent));

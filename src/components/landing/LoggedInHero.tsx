@@ -1,34 +1,47 @@
-import { Rocket, Crown, Sparkles } from "lucide-react";
+import { Rocket, Zap, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useSubscription } from "@/hooks/use-subscription";
+import { heroReveal, staggerContainer, fadeUpItem } from "@/lib/animations";
 
-interface LoggedInHeroProps {
-  isSubscribed: boolean;
-}
+const LoggedInHero = () => {
+  const { isSubscribed, isVanguard } = useSubscription();
 
-const LoggedInHero = ({ isSubscribed }: LoggedInHeroProps) => {
   return (
-    <section className="text-center mb-12">
-      <div className="flex items-center justify-center gap-3 mb-4">
+    <motion.section
+      className="text-center mb-12"
+      initial="hidden"
+      animate="visible"
+      variants={staggerContainer}
+    >
+      <motion.div className="flex items-center justify-center gap-3 mb-4" variants={heroReveal}>
         <h1 className="font-display font-light text-4xl md:text-5xl tracking-sf-wide text-white uppercase">
           STELLARFORGE
         </h1>
-        {isSubscribed && (
-          <Badge className="bg-amber-500/20 text-amber-600 dark:text-amber-400 gap-1">
-            <Crown className="w-3 h-3" />
+        {isVanguard ? (
+          <Badge className="bg-violet-500/20 text-violet-400 gap-1 sf-shimmer-violet">
+            <Sparkles className="w-3 h-3" />
+            Vanguard
+          </Badge>
+        ) : isSubscribed ? (
+          <Badge className="bg-amber-500/20 text-amber-600 dark:text-amber-400 gap-1 sf-shimmer">
+            <Zap className="w-3 h-3" />
             Pro
           </Badge>
-        )}
-      </div>
+        ) : null}
+      </motion.div>
 
-      <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-6">
-        {isSubscribed
-          ? "Welcome back! All tools are unlocked and ready."
+      <motion.p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-6" variants={fadeUpItem}>
+        {isVanguard
+          ? "All instruments operational. Vanguard clearance active."
+          : isSubscribed
+          ? "All instruments operational."
           : "Science Fiction Worldbuilding Tools"}
-      </p>
+      </motion.p>
 
-      <div className="flex flex-wrap gap-4 justify-center">
+      <motion.div className="flex flex-wrap gap-4 justify-center" variants={fadeUpItem}>
         <Button size="lg" className="gap-2" asChild>
           <a href="#worlds">
             <Rocket className="w-4 h-4" />
@@ -38,7 +51,7 @@ const LoggedInHero = ({ isSubscribed }: LoggedInHeroProps) => {
         {!isSubscribed && (
           <Button variant="outline" size="lg" className="gap-2" asChild>
             <Link to="/pricing">
-              <Sparkles className="w-4 h-4" />
+              <Rocket className="w-4 h-4" />
               Explore Pro Tools
             </Link>
           </Button>
@@ -50,14 +63,14 @@ const LoggedInHero = ({ isSubscribed }: LoggedInHeroProps) => {
             </a>
           </Button>
         )}
-      </div>
+      </motion.div>
 
       {!isSubscribed && (
-        <p className="text-sm text-muted-foreground mt-4">
-          3 free tools available • 5 more with Pro
-        </p>
+        <motion.p className="text-sm text-muted-foreground mt-4" variants={fadeUpItem}>
+          3 instruments available · 27 require Pro Access
+        </motion.p>
       )}
-    </section>
+    </motion.section>
   );
 };
 

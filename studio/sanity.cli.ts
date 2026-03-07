@@ -5,4 +5,5 @@ export default defineCliConfig({
     projectId: "74gy5txg",
     dataset: "production",
   },
+  studioHost: "stellarforge",
 });

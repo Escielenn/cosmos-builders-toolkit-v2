@@ -1,0 +1,2378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stellar Cartographer v4 — StellarForge.tools</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            background: #050508;
+            color: #C8C8C8;
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        #canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            cursor: grab;
+        }
+
+        #canvas:active { cursor: grabbing; }
+        #canvas.route-mode, #canvas.wormhole-mode { cursor: crosshair; }
+
+        .panel {
+            position: absolute;
+            background: rgba(12, 12, 14, 0.88);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 8px;
+            padding: 14px 18px;
+            z-index: 100;
+        }
+
+        .panel::-webkit-scrollbar { width: 3px; }
+        .panel::-webkit-scrollbar-track { background: transparent; }
+        .panel::-webkit-scrollbar-thumb { background: rgba(0, 212, 255, 0.12); }
+
+        #title-panel { top: 20px; left: 20px; }
+
+        .tool-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 300;
+            font-size: 24px;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            color: #FAFAFA;
+            margin-bottom: 4px;
+        }
+
+        .tool-subtitle {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 8px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.25);
+            margin-bottom: 10px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            font-size: 8px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border-radius: 5px;
+            background: rgba(0, 212, 255, 0.06);
+            border: 1px solid rgba(0, 212, 255, 0.15);
+            color: rgba(0, 212, 255, 0.6);
+        }
+        
+        .galaxy-name-display {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 400;
+            font-size: 14px;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        #control-panel {
+            top: 130px;
+            left: 20px;
+            width: 250px;
+            max-height: calc(100% - 170px);
+            overflow-y: auto;
+        }
+
+        .section-header {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            font-size: 7px;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            color: rgba(0, 212, 255, 0.3);
+            border-bottom: 1px solid rgba(0, 212, 255, 0.05);
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+            margin-top: 14px;
+        }
+
+        .section-header:first-child { margin-top: 0; }
+
+        .control-row { margin-bottom: 12px; }
+
+        .control-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .control-label span {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 8px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .value-display {
+            font-size: 9px;
+            font-family: 'JetBrains Mono', monospace;
+            color: rgba(255, 255, 255, 0.45);
+            font-weight: 300;
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 1px;
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #00D4FF;
+            cursor: pointer;
+            border: 2px solid rgba(0, 0, 0, 0.4);
+        }
+
+        select {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 9px;
+            background: rgba(255, 255, 255, 0.03);
+            color: rgba(255, 255, 255, 0.65);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 5px 7px;
+            border-radius: 5px;
+            outline: none;
+            width: 100%;
+            cursor: pointer;
+        }
+
+        select option { background: #0F0F10; color: #C8C8C8; }
+
+        .text-input {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 10px;
+            background: rgba(255, 255, 255, 0.03);
+            color: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 6px 9px;
+            border-radius: 5px;
+            outline: none;
+            width: 100%;
+        }
+        
+        .text-input:focus {
+            border-color: rgba(0, 212, 255, 0.3);
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .text-input::placeholder {
+            color: rgba(255, 255, 255, 0.25);
+        }
+
+        .star-edit-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 8px;
+        }
+        
+        .star-edit-row .text-input {
+            flex: 1;
+        }
+        
+        .star-edit-row .btn {
+            flex-shrink: 0;
+        }
+
+        .btn {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 7px;
+            font-weight: 500;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            padding: 6px 10px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.02);
+            color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: rgba(0, 212, 255, 0.06);
+            border-color: rgba(0, 212, 255, 0.15);
+            color: #fff;
+        }
+
+        .btn.active, .btn.primary {
+            background: rgba(0, 212, 255, 0.08);
+            border-color: rgba(0, 212, 255, 0.25);
+            color: #00D4FF;
+        }
+
+        .btn.danger {
+            background: rgba(231, 76, 60, 0.08);
+            border-color: rgba(231, 76, 60, 0.25);
+            color: #E74C3C;
+        }
+
+        .btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+        .btn-row { display: flex; gap: 4px; }
+        .btn-row .btn { flex: 1; }
+
+        .empire-item {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            padding: 5px 7px;
+            margin-bottom: 3px;
+            background: rgba(255, 255, 255, 0.015);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .empire-item:hover {
+            background: rgba(0, 212, 255, 0.04);
+            border-color: rgba(0, 212, 255, 0.08);
+        }
+
+        .empire-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+        .empire-name { flex: 1; font-size: 8px; color: rgba(255, 255, 255, 0.6); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .empire-count { font-family: 'JetBrains Mono', monospace; font-size: 7px; color: rgba(255, 255, 255, 0.25); }
+
+        .route-item, .wormhole-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 8px;
+            margin-bottom: 3px;
+            background: rgba(255, 255, 255, 0.015);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 5px;
+            font-size: 8px;
+        }
+
+        .route-color { width: 3px; height: 20px; border-radius: 2px; }
+        .route-info, .wormhole-info { flex: 1; }
+        .route-stars, .wormhole-stars { font-family: 'JetBrains Mono', monospace; font-size: 7px; color: rgba(255, 255, 255, 0.3); }
+
+        .wormhole-icon {
+            width: 14px; height: 14px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(155, 89, 182, 0.7) 0%, rgba(155, 89, 182, 0) 70%);
+            border: 1px solid rgba(155, 89, 182, 0.4);
+        }
+
+        .delete-btn { padding: 2px 5px; font-size: 6px; }
+
+        #data-panel {
+            top: 20px;
+            right: 20px;
+            width: 260px;
+            max-height: calc(100% - 100px);
+            overflow-y: auto;
+        }
+
+        .data-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            padding: 3px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+        }
+
+        .data-label { font-size: 7px; letter-spacing: 1px; text-transform: uppercase; color: rgba(255, 255, 255, 0.3); }
+        .data-value { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: rgba(255, 255, 255, 0.6); }
+        .data-value.cyan { color: #00D4FF; }
+        .data-value.gold { color: #FFD43B; }
+        .data-value.green { color: #2ECC71; }
+        .data-value.red { color: #E74C3C; }
+        .data-value.orange { color: #FFA500; }
+        .data-value.magenta { color: #E056FD; }
+
+        .star-name { font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 400; letter-spacing: 1px; color: #FAFAFA; margin-bottom: 6px; }
+        .star-class { display: inline-block; padding: 2px 7px; font-family: 'JetBrains Mono', monospace; font-size: 8px; border-radius: 4px; margin-top: 10px; margin-bottom: 10px; }
+
+        #zoom-panel { bottom: 20px; right: 20px; text-align: right; padding: 8px 12px; }
+        .zoom-value { font-size: 14px; font-family: 'Space Grotesk', sans-serif; font-weight: 300; color: rgba(0, 212, 255, 0.45); }
+        .zoom-label { font-size: 6px; letter-spacing: 1px; text-transform: uppercase; color: rgba(255, 255, 255, 0.15); }
+
+        #tooltip {
+            position: fixed;
+            pointer-events: none;
+            background: rgba(12, 12, 14, 0.92);
+            border: 1px solid rgba(0, 212, 255, 0.15);
+            backdrop-filter: blur(12px);
+            padding: 7px 10px;
+            border-radius: 5px;
+            font-size: 8px;
+            color: #FAFAFA;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.12s;
+            max-width: 180px;
+        }
+
+        #tooltip.visible { opacity: 1; }
+        .tooltip-name { font-family: 'Space Grotesk', sans-serif; font-weight: 400; font-size: 10px; letter-spacing: 0.5px; margin-bottom: 3px; }
+        .tooltip-class { font-family: 'JetBrains Mono', monospace; font-size: 7px; color: rgba(255, 255, 255, 0.45); }
+        .tooltip-empire { font-size: 7px; margin-top: 3px; padding-top: 3px; border-top: 1px solid rgba(255, 255, 255, 0.08); }
+
+        .mode-indicator {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 10px 20px;
+            background: rgba(255, 165, 0, 0.12);
+            border: 1px solid rgba(255, 165, 0, 0.25);
+            border-radius: 6px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #FFA500;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 200;
+            text-align: center;
+        }
+
+        .mode-indicator.visible { opacity: 1; }
+        .mode-indicator.wormhole { background: rgba(155, 89, 182, 0.12); border-color: rgba(155, 89, 182, 0.25); color: #9B59B6; }
+
+        .empty-state { color: rgba(255, 255, 255, 0.25); font-size: 7px; font-style: italic; }
+
+        #credits {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 6px;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.1);
+            z-index: 50;
+        }
+
+        #credits a { color: rgba(0, 212, 255, 0.2); text-decoration: none; }
+
+        /* Spectral class legend */
+        .spectral-legend {
+            display: flex;
+            gap: 3px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+        .spectral-item {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            font-size: 7px;
+            color: rgba(255, 255, 255, 0.4);
+        }
+        .spectral-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+
+    <div class="panel" id="title-panel">
+        <div class="tool-title">Stellar Cartographer</div>
+        <div class="tool-subtitle">StellarForge.tools</div>
+        <div class="galaxy-name-display" id="galaxy-display-name">Unnamed Galaxy</div>
+        <div class="badge" id="status-badge">Mapping</div>
+    </div>
+
+    <div class="panel" id="control-panel">
+        <div class="section-header">Galaxy Identity</div>
+
+        <div class="control-row">
+            <div class="control-label"><span>Galaxy Name</span></div>
+            <input type="text" id="galaxy-name" class="text-input" placeholder="Enter galaxy name..." value="Unnamed Galaxy">
+        </div>
+
+        <div class="section-header">Galaxy Structure</div>
+
+        <div class="control-row">
+            <div class="control-label"><span>Type</span></div>
+            <select id="galaxy-type">
+                <option value="spiral">Spiral Galaxy</option>
+                <option value="barred">Barred Spiral</option>
+                <option value="elliptical">Elliptical Galaxy</option>
+                <option value="irregular">Irregular Galaxy</option>
+            </select>
+        </div>
+
+        <div class="control-row">
+            <div class="control-label">
+                <span>Stars</span>
+                <span class="value-display" id="star-count-value">8,000</span>
+            </div>
+            <input type="range" id="star-count" min="2000" max="25000" step="500" value="8000">
+        </div>
+
+        <div class="control-row">
+            <div class="control-label">
+                <span>Arms</span>
+                <span class="value-display" id="arm-count-value">4</span>
+            </div>
+            <input type="range" id="arm-count" min="2" max="6" step="1" value="4">
+        </div>
+
+        <div class="control-row">
+            <div class="control-label">
+                <span>Arm Spread</span>
+                <span class="value-display" id="arm-spread-value">0.35</span>
+            </div>
+            <input type="range" id="arm-spread" min="0.1" max="0.8" step="0.05" value="0.35">
+        </div>
+
+        <div class="control-row">
+            <div class="control-label">
+                <span>Seed</span>
+                <span class="value-display" id="seed-value">42</span>
+            </div>
+            <input type="range" id="seed" min="1" max="9999" step="1" value="42">
+        </div>
+
+        <div class="btn-row" style="margin-top: 6px;">
+            <button class="btn primary" id="generate-btn">Generate</button>
+            <button class="btn" id="random-btn">Random</button>
+        </div>
+
+        <div class="section-header">View Controls</div>
+
+        <div class="control-row">
+            <div class="control-label">
+                <span>Rotation</span>
+                <span class="value-display" id="rotation-value">0°</span>
+            </div>
+            <input type="range" id="rotation" min="-360" max="360" step="1" value="0">
+        </div>
+
+        <div class="control-row">
+            <div class="control-label">
+                <span>Tilt (3D)</span>
+                <span class="value-display" id="tilt-value">0°</span>
+            </div>
+            <input type="range" id="tilt" min="-360" max="360" step="1" value="0">
+        </div>
+
+        <div class="btn-row">
+            <button class="btn" id="auto-rotate-btn">Auto Rotate</button>
+            <button class="btn" id="reset-view-btn">Reset View</button>
+        </div>
+
+        <div class="section-header">Empires</div>
+        <div id="empire-list"></div>
+        <div class="btn-row" style="margin-top: 8px;">
+            <button class="btn" id="add-empire-btn">+ Add Empire</button>
+        </div>
+
+        <div class="section-header">Trade Routes</div>
+        <div id="route-list"></div>
+        <div class="btn-row" style="margin-top: 8px;">
+            <button class="btn" id="draw-route-btn">+ Draw</button>
+            <button class="btn" id="auto-route-btn">Auto</button>
+            <button class="btn" id="clear-routes-btn">Clear</button>
+        </div>
+
+        <div class="section-header">Wormholes</div>
+        <div id="wormhole-list"></div>
+        <div class="btn-row" style="margin-top: 8px;">
+            <button class="btn" id="draw-wormhole-btn">+ Draw</button>
+            <button class="btn" id="auto-wormhole-btn">Auto</button>
+            <button class="btn" id="clear-wormholes-btn">Clear</button>
+        </div>
+
+        <div class="section-header">Display</div>
+        
+        <div class="control-row">
+            <div class="control-label">
+                <span>Territory Opacity</span>
+                <span class="value-display" id="territory-opacity-value">70%</span>
+            </div>
+            <input type="range" id="territory-opacity" min="0" max="100" step="5" value="70">
+        </div>
+        
+        <div class="control-row">
+            <div class="control-label"><span>Territory Borders</span></div>
+            <select id="territory-border-style">
+                <option value="soft">Soft / Fuzzy</option>
+                <option value="sharp">Sharp / Defined</option>
+                <option value="none">No Borders</option>
+            </select>
+        </div>
+        
+        <div class="btn-row">
+            <button class="btn active" id="toggle-territories">Territories</button>
+            <button class="btn active" id="toggle-routes">Routes</button>
+        </div>
+        <div class="btn-row" style="margin-top: 4px;">
+            <button class="btn active" id="toggle-habitable">Habitable Rings</button>
+        </div>
+
+        <div class="section-header">Export</div>
+        <div class="btn-row">
+            <button class="btn" id="export-png-btn">PNG</button>
+            <button class="btn" id="export-svg-btn">SVG</button>
+        </div>
+        <div class="btn-row" style="margin-top: 4px;">
+            <button class="btn" id="export-json-btn">JSON</button>
+            <button class="btn" id="export-md-btn">Markdown</button>
+        </div>
+    </div>
+
+    <div class="panel" id="data-panel">
+        <div class="section-header">Selected Star</div>
+        <div id="selected-star-info">
+            <div class="empty-state">Click a star to view details</div>
+        </div>
+
+        <div class="section-header" style="margin-top: 16px;">Statistics</div>
+        <div class="data-row"><span class="data-label">Total Stars</span><span class="data-value cyan" id="stat-total">0</span></div>
+        <div class="data-row"><span class="data-label">Named Systems</span><span class="data-value" id="stat-named">0</span></div>
+        <div class="data-row"><span class="data-label">Habitable</span><span class="data-value green" id="stat-habitable">0</span></div>
+        <div class="data-row"><span class="data-label">Trade Routes</span><span class="data-value orange" id="stat-routes">0</span></div>
+        <div class="data-row"><span class="data-label">Wormholes</span><span class="data-value magenta" id="stat-wormholes">0</span></div>
+
+        <div class="section-header" style="margin-top: 16px;">Spectral Classes</div>
+        <div class="spectral-legend">
+            <div class="spectral-item"><span class="spectral-dot" style="background: #9BB0FF"></span>O</div>
+            <div class="spectral-item"><span class="spectral-dot" style="background: #AABFFF"></span>B</div>
+            <div class="spectral-item"><span class="spectral-dot" style="background: #CAD7FF"></span>A</div>
+            <div class="spectral-item"><span class="spectral-dot" style="background: #F8F7FF"></span>F</div>
+            <div class="spectral-item"><span class="spectral-dot" style="background: #FFF4EA"></span>G</div>
+            <div class="spectral-item"><span class="spectral-dot" style="background: #FFD2A1"></span>K</div>
+            <div class="spectral-item"><span class="spectral-dot" style="background: #FFAA6F"></span>M</div>
+        </div>
+        
+        <div class="section-header" style="margin-top: 16px;">Indicators</div>
+        <div class="spectral-legend">
+            <div class="spectral-item"><span class="spectral-dot" style="background: transparent; border: 1.5px solid #2ECC71"></span>Habitable</div>
+            <div class="spectral-item"><span class="spectral-dot" style="background: transparent; border: 1.5px solid #00D4FF"></span>Selected</div>
+        </div>
+    </div>
+
+    <div class="panel" id="zoom-panel">
+        <div class="zoom-value" id="zoom-value">1.00×</div>
+        <div class="zoom-label">Zoom</div>
+    </div>
+
+    <div id="tooltip">
+        <div class="tooltip-name" id="tooltip-name"></div>
+        <div class="tooltip-class" id="tooltip-class"></div>
+        <div class="tooltip-empire" id="tooltip-empire"></div>
+    </div>
+
+    <div class="mode-indicator" id="route-mode-indicator">Click stars · Z to undo · ESC to finish</div>
+    <div class="mode-indicator wormhole" id="wormhole-mode-indicator">Click two stars to connect</div>
+
+    <div id="credits">© 2025–2026 Jason D. Batt, Ph.D. · <a href="https://stellarforge.tools">stellarforge.tools</a></div>
+
+    <script>
+        // ═══════════════════════════════════════════════════════════════════════════
+        // SEEDED RANDOM
+        // ═══════════════════════════════════════════════════════════════════════════
+        class SeededRandom {
+            constructor(seed) {
+                this.seed = seed % 2147483647;
+                if (this.seed <= 0) this.seed += 2147483646;
+            }
+            next() {
+                this.seed = (this.seed * 16807) % 2147483647;
+                return (this.seed - 1) / 2147483646;
+            }
+            range(min, max) { return min + this.next() * (max - min); }
+            int(min, max) { return Math.floor(this.range(min, max + 1)); }
+            pick(arr) { return arr[this.int(0, arr.length - 1)]; }
+            gaussian() {
+                let u, v, s;
+                do { u = this.next() * 2 - 1; v = this.next() * 2 - 1; s = u * u + v * v; } while (s >= 1 || s === 0);
+                return u * Math.sqrt(-2 * Math.log(s) / s);
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════════════════════
+        // STAR DATA - Proper spectral colors
+        // ═══════════════════════════════════════════════════════════════════════════
+        const STAR_TYPES = {
+            O: { color: '#9BB0FF', temp: '30,000K+', mass: '16-150 M☉', rarity: 0.00003, habitable: 0.02, size: 5, luminosity: [0.9, 1.0] },
+            B: { color: '#AABFFF', temp: '10,000-30,000K', mass: '2.1-16 M☉', rarity: 0.0013, habitable: 0.05, size: 4, luminosity: [0.85, 1.0] },
+            A: { color: '#CAD7FF', temp: '7,500-10,000K', mass: '1.4-2.1 M☉', rarity: 0.006, habitable: 0.12, size: 3.2, luminosity: [0.75, 0.95] },
+            F: { color: '#F8F7FF', temp: '6,000-7,500K', mass: '1.04-1.4 M☉', rarity: 0.03, habitable: 0.25, size: 2.6, luminosity: [0.65, 0.9] },
+            G: { color: '#FFF4EA', temp: '5,200-6,000K', mass: '0.8-1.04 M☉', rarity: 0.076, habitable: 0.45, size: 2.2, luminosity: [0.5, 0.85] },
+            K: { color: '#FFD2A1', temp: '3,700-5,200K', mass: '0.45-0.8 M☉', rarity: 0.121, habitable: 0.35, size: 1.9, luminosity: [0.35, 0.7] },
+            M: { color: '#FFAA6F', temp: '2,400-3,700K', mass: '0.08-0.45 M☉', rarity: 0.765, habitable: 0.15, size: 1.5, luminosity: [0.2, 0.55] }
+        };
+
+        function assignStarType(rng) {
+            const r = rng.next();
+            let cumulative = 0;
+            for (const [type, data] of Object.entries(STAR_TYPES)) {
+                cumulative += data.rarity;
+                if (r < cumulative) return type;
+            }
+            return 'M';
+        }
+
+        // Color manipulation helpers
+        function hexToHSL(hex) {
+            let r = parseInt(hex.slice(1, 3), 16) / 255;
+            let g = parseInt(hex.slice(3, 5), 16) / 255;
+            let b = parseInt(hex.slice(5, 7), 16) / 255;
+            
+            const max = Math.max(r, g, b), min = Math.min(r, g, b);
+            let h, s, l = (max + min) / 2;
+
+            if (max === min) {
+                h = s = 0;
+            } else {
+                const d = max - min;
+                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                switch (max) {
+                    case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
+                    case g: h = ((b - r) / d + 2) / 6; break;
+                    case b: h = ((r - g) / d + 4) / 6; break;
+                }
+            }
+            return { h: h * 360, s: s * 100, l: l * 100 };
+        }
+
+        function hslToHex(h, s, l) {
+            s /= 100; l /= 100;
+            const a = s * Math.min(l, 1 - l);
+            const f = n => {
+                const k = (n + h / 30) % 12;
+                const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+                return Math.round(255 * color).toString(16).padStart(2, '0');
+            };
+            return `#${f(0)}${f(8)}${f(4)}`;
+        }
+
+        function shiftHue(hex, degrees) {
+            const hsl = hexToHSL(hex);
+            hsl.h = (hsl.h + degrees + 360) % 360;
+            return hslToHex(hsl.h, hsl.s, hsl.l);
+        }
+
+        // ═══════════════════════════════════════════════════════════════════════════
+        // NAMING ENGINE
+        // ═══════════════════════════════════════════════════════════════════════════
+        const NAMING_STYLES = {
+            terran: {
+                prefixes: ['Nova', 'Proxima', 'Alpha', 'Beta', 'Tau', 'Sigma', 'Delta', 'Omega', 'Stella', 'Sol', 'Kepler', 'Gliese'],
+                roots: ['Centauri', 'Eridani', 'Cygni', 'Lyrae', 'Draconis', 'Aquilae', 'Pavonis', 'Carinae', 'Velorum', 'Orionis'],
+                suffixes: [' Prime', ' Major', ' Minor', '', '-IV', '-VII', ' Secundus', ''],
+                patterns: ['prefix roots', 'roots suffix', 'prefix suffix']
+            },
+            harsh: {
+                prefixes: ["Kz'", "Vr'", "Xh'", "Gr'", "Th'", "Zk'", "Kr'", "Dr'", "Gh'", "Sk'"],
+                roots: ['thral', 'gnoth', 'krath', 'vorn', 'zekt', 'morg', 'drek', 'skarn', 'grath', 'vrex'],
+                suffixes: ['-ak', '-ix', '-or', '-ux', '-eth', '-al', '-om', '-ur'],
+                patterns: ['prefix roots suffix', 'roots suffix', 'prefix roots']
+            },
+            flowing: {
+                prefixes: ['Ae', 'Io', 'Eu', 'Ai', 'Oa', 'Ei', 'Au', 'Ia', 'Eo', 'Ua'],
+                roots: ['laria', 'selia', 'moria', 'velia', 'naia', 'theia', 'reia', 'leia', 'saia', 'vaia'],
+                suffixes: ['-an', '-is', '-us', '-ae', '-os', '-ia', '-ea', '-o'],
+                patterns: ['prefix roots', 'roots suffix', 'prefix roots suffix']
+            },
+            poetic: {
+                prefixes: ['Whisper', 'Shadow', 'Crystal', 'Storm', 'Mist', 'Dream', 'Star', 'Moon', 'Dawn', 'Dusk'],
+                roots: [' Harbor', ' Haven', ' Gate', ' Reach', ' Deep', ' Crown', ' Light', ' Song', ' Vale', ' Peak'],
+                suffixes: ["'s End", "'s Edge", "'s Rest", '', ' Eternal', ' Ascendant', ''],
+                patterns: ['prefix roots', 'prefix roots suffix']
+            }
+        };
+
+        function generateName(style, rng) {
+            const data = NAMING_STYLES[style] || NAMING_STYLES.terran;
+            const pattern = rng.pick(data.patterns);
+            let name = '';
+            if (pattern.includes('prefix')) name += rng.pick(data.prefixes);
+            if (pattern.includes('roots')) name += rng.pick(data.roots);
+            if (pattern.includes('suffix')) name += rng.pick(data.suffixes);
+            return name.trim();
+        }
+
+        // ═══════════════════════════════════════════════════════════════════════════
+        // STATE
+        // ═══════════════════════════════════════════════════════════════════════════
+        const state = {
+            galaxyName: 'Unnamed Galaxy',
+            config: {
+                type: 'spiral',
+                starCount: 8000,
+                armCount: 4,
+                armSpread: 0.35,
+                seed: 42
+            },
+            view: {
+                rotation: 0,
+                tilt: 0,
+                autoRotate: false
+            },
+            empires: [
+                { id: 1, name: 'Terran Federation', color: '#00D4FF', namingStyle: 'terran', centerX: -180, centerY: 0, radius: 320 },
+                { id: 2, name: 'Krath Dominion', color: '#E74C3C', namingStyle: 'harsh', centerX: 220, centerY: -120, radius: 260 },
+                { id: 3, name: 'Aelarian Collective', color: '#E056FD', namingStyle: 'flowing', centerX: 80, centerY: 220, radius: 280 },
+                { id: 4, name: 'Storm Reach Alliance', color: '#2ECC71', namingStyle: 'poetic', centerX: -280, centerY: -220, radius: 230 }
+            ],
+            stars: [],
+            backgroundStars: [],
+            tradeRoutes: [],
+            wormholes: [],
+            selectedStar: null,
+            camera: { x: 0, y: 0, zoom: 1 },
+            targetCamera: { x: 0, y: 0, zoom: 1 },
+            display: { showTerritories: true, showRoutes: true, territoryOpacity: 0.7, territoryBorderStyle: 'soft', showHabitableIndicators: true },
+            nextEmpireId: 5,
+            nextRouteId: 1,
+            nextWormholeId: 1,
+            routeDrawing: { active: false, stars: [] },
+            wormholeDrawing: { active: false, firstStar: null }
+        };
+
+        // ═══════════════════════════════════════════════════════════════════════════
+        // IMPROVED GALAXY GENERATION - True logarithmic spirals
+        // ═══════════════════════════════════════════════════════════════════════════
+        const GALAXY_RADIUS = 450;
+
+        function generateGalaxy() {
+            const rng = new SeededRandom(state.config.seed);
+            state.stars = [];
+
+            for (let i = 0; i < state.config.starCount; i++) {
+                const pos = generateStarPosition(rng);
+                const type = assignStarType(rng);
+                const typeData = STAR_TYPES[type];
+                const empire = findOwningEmpire(pos.x, pos.y);
+
+                let name;
+                if (empire) {
+                    const nameRng = new SeededRandom(state.config.seed * 1000 + i);
+                    name = generateName(empire.namingStyle, nameRng);
+                } else {
+                    name = `UNK-${state.config.seed}-${i.toString().padStart(4, '0')}`;
+                }
+
+                const hasHabitable = rng.next() < typeData.habitable;
+
+                // Individual star variation
+                const luminosity = rng.range(typeData.luminosity[0], typeData.luminosity[1]);
+                const brightness = rng.range(0.6, 1.0); // Overall brightness variation
+                const sizeVariation = rng.range(0.8, 1.2); // Size within class
+                
+                // Subtle color temperature shift (warmer or cooler within class)
+                const colorShift = rng.range(-15, 15); // Hue shift in degrees
+
+                // Priority: habitable > hot stars > random
+                let priority = 0;
+                if (hasHabitable) priority += 100;
+                if (type === 'O') priority += 60;
+                else if (type === 'B') priority += 45;
+                else if (type === 'A') priority += 30;
+                priority += rng.range(0, 15);
+
+                state.stars.push({
+                    id: i,
+                    x: pos.x,
+                    y: pos.y,
+                    z: pos.z || 0, // For 3D
+                    type,
+                    baseColor: typeData.color,
+                    color: shiftHue(typeData.color, colorShift),
+                    size: typeData.size * sizeVariation,
+                    brightness,
+                    luminosity,
+                    name,
+                    empire,
+                    hasHabitable,
+                    labelPriority: priority
+                });
+            }
+
+            state.stars.sort((a, b) => b.labelPriority - a.labelPriority);
+            generateBackgroundStars(rng);
+            updateStats();
+            updateUI();
+        }
+
+        function generateStarPosition(rng) {
+            switch (state.config.type) {
+                case 'elliptical': return generateElliptical(rng);
+                case 'irregular': return generateIrregular(rng);
+                case 'barred': return generateBarredSpiral(rng);
+                default: return generateSpiral(rng);
+            }
+        }
+
+        // TRUE LOGARITHMIC SPIRAL with organic scatter
+        function generateSpiral(rng) {
+            // Core stars (dense center)
+            if (rng.next() < 0.15) {
+                const r = Math.abs(rng.gaussian()) * GALAXY_RADIUS * 0.12;
+                const angle = rng.next() * Math.PI * 2;
+                const z = rng.gaussian() * 8;
+                return {
+                    x: Math.cos(angle) * r + rng.gaussian() * 5,
+                    y: Math.sin(angle) * r + rng.gaussian() * 5,
+                    z
+                };
+            }
+
+            // Arm stars - logarithmic spiral
+            const armCount = state.config.armCount;
+            const armIndex = rng.int(0, armCount - 1);
+            const armOffset = (armIndex / armCount) * Math.PI * 2;
+
+            // Distance from center (weighted toward outer regions for visual balance)
+            const t = rng.next();
+            const distFromCenter = GALAXY_RADIUS * 0.08 + Math.pow(t, 0.7) * GALAXY_RADIUS * 0.92;
+
+            // Logarithmic spiral: angle increases with log of distance
+            const spiralTightness = 0.4; // How tightly wound
+            const spiralAngle = armOffset + Math.log(distFromCenter / 20 + 1) * spiralTightness * Math.PI * 2;
+
+            // Organic scatter - more at outer edges
+            const spreadFactor = state.config.armSpread;
+            const scatter = rng.gaussian() * (15 + distFromCenter * spreadFactor);
+            const angleScatter = rng.gaussian() * spreadFactor * 0.5;
+
+            const finalAngle = spiralAngle + angleScatter;
+            const z = rng.gaussian() * (5 + distFromCenter * 0.02);
+
+            return {
+                x: Math.cos(finalAngle) * distFromCenter + scatter * 0.5,
+                y: Math.sin(finalAngle) * distFromCenter + scatter * 0.5,
+                z
+            };
+        }
+
+        function generateBarredSpiral(rng) {
+            // Bar region
+            if (rng.next() < 0.2) {
+                const barLength = GALAXY_RADIUS * 0.3;
+                const barWidth = 25;
+                const side = rng.next() < 0.5 ? 1 : -1;
+                const alongBar = rng.range(-barLength, barLength);
+                const acrossBar = rng.gaussian() * barWidth;
+                const barAngle = 0.2; // Slight tilt
+                const z = rng.gaussian() * 6;
+                return {
+                    x: alongBar * Math.cos(barAngle) * side - acrossBar * Math.sin(barAngle),
+                    y: alongBar * Math.sin(barAngle) * side + acrossBar * Math.cos(barAngle),
+                    z
+                };
+            }
+
+            // Arms start from bar ends
+            const armCount = state.config.armCount;
+            const armIndex = rng.int(0, armCount - 1);
+            const armOffset = (armIndex / armCount) * Math.PI * 2;
+
+            const t = rng.next();
+            const distFromCenter = GALAXY_RADIUS * 0.25 + Math.pow(t, 0.7) * GALAXY_RADIUS * 0.75;
+
+            const spiralTightness = 0.35;
+            const spiralAngle = armOffset + Math.log(distFromCenter / 30 + 1) * spiralTightness * Math.PI * 2;
+
+            const spreadFactor = state.config.armSpread;
+            const scatter = rng.gaussian() * (12 + distFromCenter * spreadFactor);
+            const angleScatter = rng.gaussian() * spreadFactor * 0.4;
+
+            const finalAngle = spiralAngle + angleScatter;
+            const z = rng.gaussian() * (5 + distFromCenter * 0.02);
+
+            return {
+                x: Math.cos(finalAngle) * distFromCenter + scatter * 0.5,
+                y: Math.sin(finalAngle) * distFromCenter + scatter * 0.5,
+                z
+            };
+        }
+
+        function generateElliptical(rng) {
+            const r = Math.abs(rng.gaussian()) * GALAXY_RADIUS * 0.6;
+            const angle = rng.next() * Math.PI * 2;
+            const flatness = 0.65;
+            const z = rng.gaussian() * GALAXY_RADIUS * 0.3;
+            return {
+                x: Math.cos(angle) * r,
+                y: Math.sin(angle) * r * flatness,
+                z
+            };
+        }
+
+        function generateIrregular(rng) {
+            // Multiple random clusters
+            const clusterCount = 5;
+            const cluster = rng.int(0, clusterCount - 1);
+            const clusterRng = new SeededRandom(state.config.seed + cluster * 100);
+            const clusterX = clusterRng.range(-GALAXY_RADIUS * 0.5, GALAXY_RADIUS * 0.5);
+            const clusterY = clusterRng.range(-GALAXY_RADIUS * 0.5, GALAXY_RADIUS * 0.5);
+            const clusterZ = clusterRng.range(-50, 50);
+            const spread = clusterRng.range(60, 150);
+
+            return {
+                x: clusterX + rng.gaussian() * spread,
+                y: clusterY + rng.gaussian() * spread,
+                z: clusterZ + rng.gaussian() * 20
+            };
+        }
+
+        function generateBackgroundStars(rng) {
+            state.backgroundStars = [];
+            for (let i = 0; i < 600; i++) {
+                state.backgroundStars.push({
+                    x: rng.range(-2500, 2500),
+                    y: rng.range(-2500, 2500),
+                    size: rng.range(0.4, 1.2),
+                    brightness: rng.range(0.03, 0.2)
+                });
+            }
+        }
+
+        function findOwningEmpire(x, y) {
+            let closest = null, minDist = Infinity;
+            for (const empire of state.empires) {
+                const dist = Math.sqrt((x - empire.centerX) ** 2 + (y - empire.centerY) ** 2);
+                if (dist < empire.radius && dist < minDist) {
+                    minDist = dist;
+                    closest = empire;
+                }
+            }
+            return closest;
+        }
+
+        // ═══════════════════════════════════════════════════════════════════════════
+        // CANVAS
+        // ═══════════════════════════════════════════════════════════════════════════
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // ═══════════════════════════════════════════════════════════════════════════
+        // 3D PROJECTION - Full rotation support
+        // ═══════════════════════════════════════════════════════════════════════════
+        function project3D(x, y, z) {
+            const rotRad = state.view.rotation * Math.PI / 180;
+            const tiltRad = state.view.tilt * Math.PI / 180;
+
+            // Rotate around Z axis (in-plane rotation / yaw)
+            let rx = x * Math.cos(rotRad) - y * Math.sin(rotRad);
+            let ry = x * Math.sin(rotRad) + y * Math.cos(rotRad);
+            let rz = z;
+
+            // Tilt around X axis (pitch) - full 360 support
+            const ty = ry * Math.cos(tiltRad) - rz * Math.sin(tiltRad);
+            const tz = ry * Math.sin(tiltRad) + rz * Math.cos(tiltRad);
+
+            // Perspective projection
+            const perspective = 1000;
+            const zOffset = tz + 200; // Push back so we don't clip through
+            const scale = perspective / (perspective + zOffset * 0.4);
+
+            return {
+                x: rx * scale,
+                y: ty * scale,
+                z: tz,
+                scale: Math.max(0.1, scale) // Prevent negative/zero scale
+            };
+        }
+
+        function worldToScreen(wx, wy, wz = 0) {
+            const projected = project3D(wx, wy, wz);
+            return {
+                x: (projected.x - state.camera.x) * state.camera.zoom + canvas.width / 2,
+                y: (projected.y - state.camera.y) * state.camera.zoom + canvas.height / 2,
+                scale: projected.scale,
+                z: projected.z
+            };
+        }
+
+        function screenToWorld(sx, sy) {
+            // Inverse (approximate, ignoring 3D for interaction)
+            const rotRad = -state.view.rotation * Math.PI / 180;
+            const px = (sx - canvas.width / 2) / state.camera.zoom + state.camera.x;
+            const py = (sy - canvas.height / 2) / state.camera.zoom + state.camera.y;
+            return {
+                x: px * Math.cos(rotRad) - py * Math.sin(rotRad),
+                y: px * Math.sin(rotRad) + py * Math.cos(rotRad)
+            };
+        }
+
+        // ═══════════════════════════════════════════════════════════════════════════
+        // RENDERING
+        // ═══════════════════════════════════════════════════════════════════════════
+        function hexToRgba(hex, alpha) {
+            const r = parseInt(hex.slice(1, 3), 16);
+            const g = parseInt(hex.slice(3, 5), 16);
+            const b = parseInt(hex.slice(5, 7), 16);
+            return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+        }
+
+        function render() {
+            const w = canvas.width, h = canvas.height;
+            const zoom = state.camera.zoom;
+
+            // Deep space background
+            ctx.fillStyle = '#050508';
+            ctx.fillRect(0, 0, w, h);
+
+            // Background stars (no 3D, parallax only)
+            const parallax = 0.03;
+            for (const star of state.backgroundStars) {
+                const sx = (star.x - state.camera.x * parallax) * 0.4 + w / 2;
+                const sy = (star.y - state.camera.y * parallax) * 0.4 + h / 2;
+                ctx.fillStyle = `rgba(255, 255, 255, ${star.brightness})`;
+                ctx.beginPath();
+                ctx.arc(sx, sy, star.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // Empire territories - enhanced visibility with configurable style
+            if (state.display.showTerritories) {
+                const opacity = state.display.territoryOpacity / 100;
+                const borderStyle = state.display.territoryBorderStyle;
+                
+                for (const empire of state.empires) {
+                    const center = worldToScreen(empire.centerX, empire.centerY, 0);
+                    const radius = empire.radius * zoom * center.scale;
+                    
+                    if (borderStyle === 'soft') {
+                        // Soft/fuzzy borders (original style)
+                        
+                        // Outer soft glow
+                        const outerGlow = ctx.createRadialGradient(center.x, center.y, radius * 0.3, center.x, center.y, radius * 1.4);
+                        outerGlow.addColorStop(0, hexToRgba(empire.color, 0.0));
+                        outerGlow.addColorStop(0.5, hexToRgba(empire.color, 0.06 * opacity));
+                        outerGlow.addColorStop(0.8, hexToRgba(empire.color, 0.03 * opacity));
+                        outerGlow.addColorStop(1, hexToRgba(empire.color, 0));
+                        ctx.fillStyle = outerGlow;
+                        ctx.beginPath();
+                        ctx.arc(center.x, center.y, radius * 1.4, 0, Math.PI * 2);
+                        ctx.fill();
+                        
+                        // Main territory gradient
+                        const gradient = ctx.createRadialGradient(center.x, center.y, 0, center.x, center.y, radius);
+                        gradient.addColorStop(0, hexToRgba(empire.color, 0.18 * opacity));
+                        gradient.addColorStop(0.4, hexToRgba(empire.color, 0.12 * opacity));
+                        gradient.addColorStop(0.7, hexToRgba(empire.color, 0.06 * opacity));
+                        gradient.addColorStop(1, hexToRgba(empire.color, 0));
+                        ctx.fillStyle = gradient;
+                        ctx.beginPath();
+                        ctx.arc(center.x, center.y, radius, 0, Math.PI * 2);
+                        ctx.fill();
+                        
+                        // Subtle dashed border
+                        ctx.strokeStyle = hexToRgba(empire.color, 0.12 * opacity);
+                        ctx.lineWidth = 1;
+                        ctx.setLineDash([8, 8]);
+                        ctx.beginPath();
+                        ctx.arc(center.x, center.y, radius * 0.95, 0, Math.PI * 2);
+                        ctx.stroke();
+                        ctx.setLineDash([]);
+                        
+                    } else if (borderStyle === 'sharp') {
+                        // Sharp/defined borders
+                        
+                        // Solid fill
+                        ctx.fillStyle = hexToRgba(empire.color, 0.12 * opacity);
+                        ctx.beginPath();
+                        ctx.arc(center.x, center.y, radius, 0, Math.PI * 2);
+                        ctx.fill();
+                        
+                        // Strong solid border
+                        ctx.strokeStyle = hexToRgba(empire.color, 0.6 * opacity);
+                        ctx.lineWidth = 2;
+                        ctx.beginPath();
+                        ctx.arc(center.x, center.y, radius, 0, Math.PI * 2);
+                        ctx.stroke();
+                        
+                        // Inner glow near border
+                        const innerGlow = ctx.createRadialGradient(center.x, center.y, radius * 0.7, center.x, center.y, radius);
+                        innerGlow.addColorStop(0, hexToRgba(empire.color, 0));
+                        innerGlow.addColorStop(1, hexToRgba(empire.color, 0.15 * opacity));
+                        ctx.fillStyle = innerGlow;
+                        ctx.beginPath();
+                        ctx.arc(center.x, center.y, radius, 0, Math.PI * 2);
+                        ctx.fill();
+                        
+                    } else {
+                        // No borders - just subtle fill
+                        const gradient = ctx.createRadialGradient(center.x, center.y, 0, center.x, center.y, radius);
+                        gradient.addColorStop(0, hexToRgba(empire.color, 0.15 * opacity));
+                        gradient.addColorStop(0.6, hexToRgba(empire.color, 0.08 * opacity));
+                        gradient.addColorStop(1, hexToRgba(empire.color, 0.02 * opacity));
+                        ctx.fillStyle = gradient;
+                        ctx.beginPath();
+                        ctx.arc(center.x, center.y, radius, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                }
+            }
+
+            // Trade routes
+            if (state.display.showRoutes) {
+                for (const route of state.tradeRoutes) {
+                    if (route.stars.length < 2) continue;
+                    
+                    // Glow effect for routes
+                    ctx.strokeStyle = hexToRgba(route.color, 0.25);
+                    ctx.lineWidth = zoom < 1 ? 3 : 5;
+                    ctx.lineCap = 'round';
+                    ctx.lineJoin = 'round';
+                    ctx.setLineDash([]);
+                    ctx.beginPath();
+                    route.stars.forEach((star, i) => {
+                        const s = worldToScreen(star.x, star.y, star.z || 0);
+                        i === 0 ? ctx.moveTo(s.x, s.y) : ctx.lineTo(s.x, s.y);
+                    });
+                    ctx.stroke();
+                    
+                    // Main route line
+                    ctx.strokeStyle = hexToRgba(route.color, 0.7);
+                    ctx.lineWidth = zoom < 1 ? 1.5 : 2.5;
+                    ctx.setLineDash(zoom < 1 ? [] : [10, 6]);
+                    ctx.beginPath();
+                    route.stars.forEach((star, i) => {
+                        const s = worldToScreen(star.x, star.y, star.z || 0);
+                        i === 0 ? ctx.moveTo(s.x, s.y) : ctx.lineTo(s.x, s.y);
+                    });
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+                    
+                    // Waypoint markers (visible at higher zoom)
+                    if (zoom > 0.8) {
+                        route.stars.forEach((star, i) => {
+                            const s = worldToScreen(star.x, star.y, star.z || 0);
+                            const markerSize = zoom < 1.5 ? 3 : 4;
+                            
+                            // Outer ring
+                            ctx.strokeStyle = route.color;
+                            ctx.lineWidth = 1.5;
+                            ctx.beginPath();
+                            ctx.arc(s.x, s.y, markerSize + 2, 0, Math.PI * 2);
+                            ctx.stroke();
+                            
+                            // Inner dot
+                            ctx.fillStyle = route.color;
+                            ctx.beginPath();
+                            ctx.arc(s.x, s.y, markerSize, 0, Math.PI * 2);
+                            ctx.fill();
+                        });
+                    }
+                }
+
+                // Current route
+                if (state.routeDrawing.active && state.routeDrawing.stars.length > 0) {
+                    ctx.strokeStyle = '#FFA500';
+                    ctx.lineWidth = 2;
+                    ctx.setLineDash([4, 4]);
+                    ctx.beginPath();
+                    state.routeDrawing.stars.forEach((star, i) => {
+                        const s = worldToScreen(star.x, star.y, star.z || 0);
+                        i === 0 ? ctx.moveTo(s.x, s.y) : ctx.lineTo(s.x, s.y);
+                    });
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+                }
+
+                // Wormholes - distinctive portal graphics
+                for (const wh of state.wormholes) {
+                    const sA = worldToScreen(wh.starA.x, wh.starA.y, wh.starA.z || 0);
+                    const sB = worldToScreen(wh.starB.x, wh.starB.y, wh.starB.z || 0);
+
+                    const midX = (sA.x + sB.x) / 2, midY = (sA.y + sB.y) / 2;
+                    const dist = Math.sqrt((sB.x - sA.x) ** 2 + (sB.y - sA.y) ** 2);
+                    const dx = sB.x - sA.x, dy = sB.y - sA.y;
+                    const perpX = -dy / dist * (dist * 0.15), perpY = dx / dist * (dist * 0.15);
+                    const ctrlX = midX + perpX, ctrlY = midY + perpY;
+                    
+                    // Connection line - wavy/distorted effect
+                    const time = Date.now() / 1000;
+                    ctx.strokeStyle = hexToRgba(wh.color, wh.stable ? 0.4 : 0.3);
+                    ctx.lineWidth = zoom < 1 ? 2 : 3;
+                    ctx.setLineDash(wh.stable ? [2, 8] : [1, 4]);
+                    ctx.beginPath();
+                    ctx.moveTo(sA.x, sA.y);
+                    ctx.quadraticCurveTo(ctrlX, ctrlY, sB.x, sB.y);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+                    
+                    // Glow along the path
+                    ctx.strokeStyle = hexToRgba(wh.color, 0.15);
+                    ctx.lineWidth = zoom < 1 ? 6 : 10;
+                    ctx.beginPath();
+                    ctx.moveTo(sA.x, sA.y);
+                    ctx.quadraticCurveTo(ctrlX, ctrlY, sB.x, sB.y);
+                    ctx.stroke();
+
+                    // Draw portal icons at each endpoint
+                    [sA, sB].forEach((s, idx) => {
+                        const portalSize = zoom < 1 ? 8 : 12;
+                        const pulsePhase = time * (wh.stable ? 1.5 : 4) + idx * Math.PI;
+                        const pulse = wh.stable ? 1 + Math.sin(pulsePhase) * 0.15 : 1 + Math.sin(pulsePhase) * 0.3;
+                        
+                        // Outer glow ring
+                        const outerGlow = ctx.createRadialGradient(s.x, s.y, portalSize * 0.5, s.x, s.y, portalSize * 2.5 * pulse);
+                        outerGlow.addColorStop(0, hexToRgba(wh.color, 0.3));
+                        outerGlow.addColorStop(0.5, hexToRgba(wh.color, 0.1));
+                        outerGlow.addColorStop(1, hexToRgba(wh.color, 0));
+                        ctx.fillStyle = outerGlow;
+                        ctx.beginPath();
+                        ctx.arc(s.x, s.y, portalSize * 2.5 * pulse, 0, Math.PI * 2);
+                        ctx.fill();
+                        
+                        // Concentric rings (portal effect)
+                        for (let ring = 3; ring >= 1; ring--) {
+                            const ringRadius = portalSize * (ring / 3) * pulse;
+                            const ringAlpha = 0.15 + (3 - ring) * 0.15;
+                            
+                            ctx.strokeStyle = hexToRgba(wh.color, ringAlpha);
+                            ctx.lineWidth = 1;
+                            ctx.beginPath();
+                            ctx.arc(s.x, s.y, ringRadius, 0, Math.PI * 2);
+                            ctx.stroke();
+                        }
+                        
+                        // Spinning spiral arms (for unstable) or steady glow (for stable)
+                        if (!wh.stable) {
+                            // Unstable: spinning spiral
+                            const spiralArms = 3;
+                            for (let arm = 0; arm < spiralArms; arm++) {
+                                const armAngle = (arm / spiralArms) * Math.PI * 2 + time * 2;
+                                ctx.strokeStyle = hexToRgba(wh.color, 0.5);
+                                ctx.lineWidth = 1.5;
+                                ctx.beginPath();
+                                for (let t = 0; t <= 1; t += 0.1) {
+                                    const r = portalSize * t * pulse;
+                                    const a = armAngle + t * Math.PI * 0.8;
+                                    const px = s.x + Math.cos(a) * r;
+                                    const py = s.y + Math.sin(a) * r;
+                                    t === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+                                }
+                                ctx.stroke();
+                            }
+                        } else {
+                            // Stable: crosshair/target
+                            ctx.strokeStyle = hexToRgba(wh.color, 0.6);
+                            ctx.lineWidth = 1.5;
+                            const crossSize = portalSize * 0.6;
+                            
+                            // Horizontal line
+                            ctx.beginPath();
+                            ctx.moveTo(s.x - crossSize, s.y);
+                            ctx.lineTo(s.x + crossSize, s.y);
+                            ctx.stroke();
+                            
+                            // Vertical line
+                            ctx.beginPath();
+                            ctx.moveTo(s.x, s.y - crossSize);
+                            ctx.lineTo(s.x, s.y + crossSize);
+                            ctx.stroke();
+                        }
+                        
+                        // Center point - bright core
+                        const coreGrad = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, portalSize * 0.4);
+                        coreGrad.addColorStop(0, hexToRgba('#FFFFFF', 0.9));
+                        coreGrad.addColorStop(0.3, hexToRgba(wh.color, 0.7));
+                        coreGrad.addColorStop(1, hexToRgba(wh.color, 0));
+                        ctx.fillStyle = coreGrad;
+                        ctx.beginPath();
+                        ctx.arc(s.x, s.y, portalSize * 0.4, 0, Math.PI * 2);
+                        ctx.fill();
+                    });
+                }
+
+                // Wormhole drawing - show portal preview
+                if (state.wormholeDrawing.active && state.wormholeDrawing.firstStar) {
+                    const s = worldToScreen(state.wormholeDrawing.firstStar.x, state.wormholeDrawing.firstStar.y, state.wormholeDrawing.firstStar.z || 0);
+                    const time = Date.now() / 1000;
+                    const portalSize = 12;
+                    const pulse = 1 + Math.sin(time * 3) * 0.2;
+                    
+                    // Pulsing outer glow
+                    const outerGlow = ctx.createRadialGradient(s.x, s.y, portalSize * 0.5, s.x, s.y, portalSize * 3 * pulse);
+                    outerGlow.addColorStop(0, hexToRgba('#9B59B6', 0.4));
+                    outerGlow.addColorStop(0.5, hexToRgba('#9B59B6', 0.15));
+                    outerGlow.addColorStop(1, hexToRgba('#9B59B6', 0));
+                    ctx.fillStyle = outerGlow;
+                    ctx.beginPath();
+                    ctx.arc(s.x, s.y, portalSize * 3 * pulse, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    // Spinning rings
+                    for (let ring = 3; ring >= 1; ring--) {
+                        const ringRadius = portalSize * (ring / 3) * pulse;
+                        ctx.strokeStyle = hexToRgba('#9B59B6', 0.3 + (3 - ring) * 0.2);
+                        ctx.lineWidth = 1.5;
+                        ctx.beginPath();
+                        ctx.arc(s.x, s.y, ringRadius, time * 2, time * 2 + Math.PI * 1.5);
+                        ctx.stroke();
+                    }
+                    
+                    // Center
+                    ctx.fillStyle = '#9B59B6';
+                    ctx.beginPath();
+                    ctx.arc(s.x, s.y, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+
+            // Sort stars by Z for proper depth rendering
+            const sortedStars = [...state.stars].map(star => {
+                const projected = worldToScreen(star.x, star.y, star.z || 0);
+                return { ...star, screenX: projected.x, screenY: projected.y, screenZ: projected.z, scale: projected.scale };
+            }).sort((a, b) => a.screenZ - b.screenZ);
+
+            // STARS - with proper colors and variation!
+            for (const star of sortedStars) {
+                if (star.screenX < -30 || star.screenX > w + 30 || star.screenY < -30 || star.screenY > h + 30) continue;
+
+                const baseSize = star.size * star.scale;
+                // SMALLER at low zoom - exponential falloff
+                const zoomFactor = Math.pow(zoom, 0.7); // Less than linear
+                const size = Math.max(0.3, baseSize * zoomFactor * 0.5);
+
+                // Depth fade
+                const depthFade = Math.max(0.25, Math.min(1, 1 - star.screenZ / 350));
+                
+                // Combined brightness from star properties
+                const totalBrightness = star.brightness * star.luminosity * depthFade;
+
+                // Glow for hot/luminous stars
+                if (['O', 'B', 'A'].includes(star.type) && zoom > 0.4 && star.luminosity > 0.7) {
+                    const glowSize = size * (3 + star.luminosity * 3);
+                    const glowIntensity = 0.15 * star.luminosity * depthFade;
+                    const glow = ctx.createRadialGradient(star.screenX, star.screenY, size * 0.3, star.screenX, star.screenY, glowSize);
+                    glow.addColorStop(0, hexToRgba(star.color, glowIntensity));
+                    glow.addColorStop(0.5, hexToRgba(star.color, glowIntensity * 0.3));
+                    glow.addColorStop(1, hexToRgba(star.color, 0));
+                    ctx.fillStyle = glow;
+                    ctx.beginPath();
+                    ctx.arc(star.screenX, star.screenY, glowSize, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                
+                // Secondary glow for very luminous stars of any type
+                if (star.luminosity > 0.8 && zoom > 0.6) {
+                    const softGlow = ctx.createRadialGradient(star.screenX, star.screenY, 0, star.screenX, star.screenY, size * 2.5);
+                    softGlow.addColorStop(0, hexToRgba(star.color, 0.2 * star.luminosity * depthFade));
+                    softGlow.addColorStop(1, hexToRgba(star.color, 0));
+                    ctx.fillStyle = softGlow;
+                    ctx.beginPath();
+                    ctx.arc(star.screenX, star.screenY, size * 2.5, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                // Star body - USE THE STAR'S COLOR with brightness
+                ctx.fillStyle = hexToRgba(star.color, totalBrightness);
+                ctx.beginPath();
+                ctx.arc(star.screenX, star.screenY, size, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Bright core for luminous stars
+                if (star.luminosity > 0.6 && size > 1) {
+                    ctx.fillStyle = hexToRgba('#FFFFFF', totalBrightness * 0.4 * star.luminosity);
+                    ctx.beginPath();
+                    ctx.arc(star.screenX, star.screenY, size * 0.4, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                // Habitable indicator (green ring)
+                if (star.hasHabitable && zoom > 1.2 && state.display.showHabitableIndicators) {
+                    ctx.strokeStyle = hexToRgba('#2ECC71', 0.5 * depthFade);
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.arc(star.screenX, star.screenY, size + 3, 0, Math.PI * 2);
+                    ctx.stroke();
+                }
+
+                // Selection
+                if (star.id === state.selectedStar?.id) {
+                    ctx.strokeStyle = '#00D4FF';
+                    ctx.lineWidth = 1.5;
+                    ctx.beginPath();
+                    ctx.arc(star.screenX, star.screenY, size + 5, 0, Math.PI * 2);
+                    ctx.stroke();
+                }
+
+                // Route node
+                if (state.routeDrawing.stars.find(s => s.id === star.id)) {
+                    ctx.strokeStyle = '#FFA500';
+                    ctx.lineWidth = 1.5;
+                    ctx.beginPath();
+                    ctx.arc(star.screenX, star.screenY, size + 6, 0, Math.PI * 2);
+                    ctx.stroke();
+                }
+            }
+
+            // LABELS - Only at high zoom, only for notable/selected stars
+            if (zoom >= 2.5) {
+                const labeledStars = [];
+                const maxLabels = Math.min(30, Math.floor(zoom * 8));
+
+                // Always label selected star first
+                if (state.selectedStar) {
+                    const star = sortedStars.find(s => s.id === state.selectedStar.id);
+                    if (star) {
+                        drawLabel(star, true);
+                        labeledStars.push(star);
+                    }
+                }
+
+                // Then habitable/notable stars
+                for (const star of sortedStars) {
+                    if (labeledStars.length >= maxLabels) break;
+                    if (labeledStars.find(s => s.id === star.id)) continue;
+                    if (!star.hasHabitable && !['O', 'B'].includes(star.type)) continue;
+
+                    if (star.screenX < 50 || star.screenX > w - 50 || star.screenY < 50 || star.screenY > h - 50) continue;
+
+                    // Check collision with existing labels
+                    let collides = false;
+                    for (const labeled of labeledStars) {
+                        const dx = star.screenX - labeled.screenX;
+                        const dy = star.screenY - labeled.screenY;
+                        if (Math.sqrt(dx * dx + dy * dy) < 60) {
+                            collides = true;
+                            break;
+                        }
+                    }
+
+                    if (!collides) {
+                        drawLabel(star, false);
+                        labeledStars.push(star);
+                    }
+                }
+            }
+        }
+
+        function drawLabel(star, isSelected) {
+            const fontSize = isSelected ? 10 : 8;
+            ctx.font = `500 ${fontSize}px "Space Grotesk", sans-serif`;
+            ctx.textAlign = 'center';
+
+            // Shadow
+            ctx.fillStyle = 'rgba(5, 5, 8, 0.85)';
+            ctx.fillText(star.name, star.screenX + 1, star.screenY + star.size + 12 + 1);
+
+            // Text
+            ctx.fillStyle = isSelected ? '#FFFFFF' : (star.empire ? star.empire.color : 'rgba(255,255,255,0.5)');
+            ctx.fillText(star.name, star.screenX, star.screenY + star.size + 12);
+        }
+
+        // ═══════════════════════════════════════════════════════════════════════════
+        // CAMERA
+        // ═══════════════════════════════════════════════════════════════════════════
+        function updateCamera() {
+            const smoothing = 0.1;
+            state.camera.x += (state.targetCamera.x - state.camera.x) * smoothing;
+            state.camera.y += (state.targetCamera.y - state.camera.y) * smoothing;
+            state.camera.zoom += (state.targetCamera.zoom - state.camera.zoom) * smoothing;
+            document.getElementById('zoom-value').textContent = state.camera.zoom.toFixed(2) + '×';
+
+            // Auto rotation
+            if (state.view.autoRotate) {
+                state.view.rotation += 0.08;
+                if (state.view.rotation > 360) state.view.rotation -= 720; // Wrap back into range
+                document.getElementById('rotation').value = state.view.rotation;
+                document.getElementById('rotation-value').textContent = Math.round(state.view.rotation) + '°';
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════════════════════
+        // INPUT
+        // ═══════════════════════════════════════════════════════════════════════════
+        let isDragging = false, dragStart = { x: 0, y: 0 }, camStart = { x: 0, y: 0 };
+        let hoveredStar = null;
+
+        canvas.addEventListener('mousedown', e => {
+            isDragging = true;
+            dragStart = { x: e.clientX, y: e.clientY };
+            camStart = { x: state.targetCamera.x, y: state.targetCamera.y };
+        });
+
+        canvas.addEventListener('mousemove', e => {
+            if (isDragging) {
+                const dx = (e.clientX - dragStart.x) / state.camera.zoom;
+                const dy = (e.clientY - dragStart.y) / state.camera.zoom;
+                state.targetCamera.x = camStart.x - dx;
+                state.targetCamera.y = camStart.y - dy;
+            }
+
+            // Find hovered star by SCREEN position (accounts for 3D projection)
+            hoveredStar = null;
+            let minDist = 25; // Screen pixels
+            
+            for (const star of state.stars) {
+                const screen = worldToScreen(star.x, star.y, star.z || 0);
+                const dx = e.clientX - screen.x;
+                const dy = e.clientY - screen.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                
+                if (dist < minDist) {
+                    minDist = dist;
+                    hoveredStar = star;
+                }
+            }
+
+            const tooltip = document.getElementById('tooltip');
+            if (hoveredStar) {
+                tooltip.classList.add('visible');
+                tooltip.style.left = (e.clientX + 12) + 'px';
+                tooltip.style.top = (e.clientY + 12) + 'px';
+                document.getElementById('tooltip-name').textContent = hoveredStar.name;
+                document.getElementById('tooltip-name').style.color = hoveredStar.color;
+                document.getElementById('tooltip-class').textContent = `Class ${hoveredStar.type} · ${STAR_TYPES[hoveredStar.type].temp}`;
+                document.getElementById('tooltip-empire').textContent = hoveredStar.empire ? hoveredStar.empire.name : 'Unclaimed';
+                document.getElementById('tooltip-empire').style.color = hoveredStar.empire ? hoveredStar.empire.color : 'rgba(255,255,255,0.4)';
+            } else {
+                tooltip.classList.remove('visible');
+            }
+        });
+
+        canvas.addEventListener('mouseup', () => isDragging = false);
+        canvas.addEventListener('mouseleave', () => isDragging = false);
+
+        canvas.addEventListener('click', e => {
+            // Find clicked star by SCREEN position (accounts for 3D projection properly)
+            let clicked = null;
+            let minDist = 25; // Screen pixels
+            
+            for (const star of state.stars) {
+                const screen = worldToScreen(star.x, star.y, star.z || 0);
+                const dx = e.clientX - screen.x;
+                const dy = e.clientY - screen.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                
+                if (dist < minDist) {
+                    minDist = dist;
+                    clicked = star;
+                }
+            }
+
+            if (state.routeDrawing.active && clicked) {
+                if (!state.routeDrawing.stars.find(s => s.id === clicked.id)) {
+                    state.routeDrawing.stars.push(clicked);
+                }
+                return;
+            }
+
+            if (state.wormholeDrawing.active && clicked) {
+                if (!state.wormholeDrawing.firstStar) {
+                    state.wormholeDrawing.firstStar = clicked;
+                } else if (clicked.id !== state.wormholeDrawing.firstStar.id) {
+                    state.wormholes.push({
+                        id: state.nextWormholeId++,
+                        name: `Wormhole ${state.wormholes.length + 1}`,
+                        starA: state.wormholeDrawing.firstStar,
+                        starB: clicked,
+                        color: ['#9B59B6', '#8E44AD', '#E056FD'][state.wormholes.length % 3],
+                        stable: Math.random() > 0.3
+                    });
+                    stopWormholeDrawing();
+                    updateUI();
+                }
+                return;
+            }
+
+            state.selectedStar = clicked;
+            updateSelectedStarInfo();
+        });
+
+        canvas.addEventListener('wheel', e => {
+            e.preventDefault();
+            const factor = e.deltaY > 0 ? 0.88 : 1.14;
+            state.targetCamera.zoom = Math.max(0.25, Math.min(12, state.targetCamera.zoom * factor));
+        });
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') {
+                if (state.routeDrawing.active) finishRouteDrawing();
+                if (state.wormholeDrawing.active) stopWormholeDrawing();
+            }
+            if ((e.key === 'z' || e.key === 'Z' || e.key === 'Backspace') && state.routeDrawing.active) {
+                e.preventDefault();
+                state.routeDrawing.stars.pop();
+            }
+        });
+
+        // ═══════════════════════════════════════════════════════════════════════════
+        // ROUTE / WORMHOLE DRAWING
+        // ═══════════════════════════════════════════════════════════════════════════
+        function startRouteDrawing() {
+            state.routeDrawing.active = true;
+            state.routeDrawing.stars = [];
+            document.getElementById('draw-route-btn').classList.add('active');
+            document.getElementById('route-mode-indicator').classList.add('visible');
+        }
+
+        function finishRouteDrawing() {
+            if (state.routeDrawing.stars.length >= 2) {
+                const colors = ['#FFA500', '#FFD43B', '#00D4FF', '#2ECC71', '#E056FD'];
+                state.tradeRoutes.push({
+                    id: state.nextRouteId++,
+                    name: `Route ${state.tradeRoutes.length + 1}`,
+                    color: colors[state.tradeRoutes.length % colors.length],
+                    stars: [...state.routeDrawing.stars]
+                });
+            }
+            state.routeDrawing.active = false;
+            state.routeDrawing.stars = [];
+            document.getElementById('draw-route-btn').classList.remove('active');
+            document.getElementById('route-mode-indicator').classList.remove('visible');
+            updateUI();
+        }
+
+        function startWormholeDrawing() {
+            state.wormholeDrawing.active = true;
+            state.wormholeDrawing.firstStar = null;
+            document.getElementById('draw-wormhole-btn').classList.add('active');
+            document.getElementById('wormhole-mode-indicator').classList.add('visible');
+        }
+
+        function stopWormholeDrawing() {
+            state.wormholeDrawing.active = false;
+            state.wormholeDrawing.firstStar = null;
+            document.getElementById('draw-wormhole-btn').classList.remove('active');
+            document.getElementById('wormhole-mode-indicator').classList.remove('visible');
+        }
+
+        // ═══════════════════════════════════════════════════════════════════════════
+        // AUTO-GENERATION
+        // ═══════════════════════════════════════════════════════════════════════════
+        function autoGenerateRoutes() {
+            const rng = new SeededRandom(Date.now());
+            const habitableStars = state.stars.filter(s => s.hasHabitable);
+            const notableStars = state.stars.filter(s => s.hasHabitable || ['O', 'B', 'A'].includes(s.type));
+            if (notableStars.length < 2) return;
+
+            const colors = ['#FFA500', '#FFD43B', '#00D4FF', '#2ECC71', '#E056FD', '#FF6B6B'];
+            
+            // Generate 4-5 routes of varying lengths
+            for (let i = 0; i < 5; i++) {
+                // Pick a starting star, preferring edges of galaxy for longer routes
+                const sortedByDist = [...notableStars].sort((a, b) => {
+                    const distA = Math.sqrt(a.x * a.x + a.y * a.y);
+                    const distB = Math.sqrt(b.x * b.x + b.y * b.y);
+                    return distB - distA; // Outer stars first
+                });
+                
+                // Pick from outer third for longer routes
+                const startPool = sortedByDist.slice(0, Math.floor(sortedByDist.length / 3));
+                const start = rng.pick(startPool);
+                const routeStars = [start];
+                let current = start;
+                
+                // Longer routes: 4-8 hops
+                const maxHops = rng.int(4, 8);
+                // Much wider reach: 500 units instead of 280
+                const maxReach = 500;
+                
+                for (let hop = 0; hop < maxHops; hop++) {
+                    // Find candidates within reach, sorted by distance
+                    const candidates = notableStars
+                        .filter(s => !routeStars.includes(s))
+                        .map(s => ({
+                            star: s,
+                            dist: Math.sqrt((s.x - current.x) ** 2 + (s.y - current.y) ** 2)
+                        }))
+                        .filter(c => c.dist < maxReach && c.dist > 50) // Min distance too
+                        .sort((a, b) => a.dist - b.dist);
+                    
+                    if (candidates.length === 0) break;
+                    
+                    // Pick from nearest third with some randomness for organic routes
+                    const pickPool = candidates.slice(0, Math.max(3, Math.floor(candidates.length / 3)));
+                    const pick = rng.pick(pickPool);
+                    
+                    routeStars.push(pick.star);
+                    current = pick.star;
+                }
+                
+                if (routeStars.length >= 3) { // Require at least 3 stops
+                    state.tradeRoutes.push({
+                        id: state.nextRouteId++,
+                        name: `Trade Lane ${state.tradeRoutes.length + 1}`,
+                        color: colors[state.tradeRoutes.length % colors.length],
+                        stars: routeStars
+                    });
+                }
+            }
+            updateUI();
+        }
+
+        function autoGenerateWormholes() {
+            const rng = new SeededRandom(Date.now() + 500);
+            const notable = state.stars.filter(s => s.hasHabitable || ['O', 'B'].includes(s.type));
+            if (notable.length < 2) return;
+
+            const colors = ['#9B59B6', '#8E44AD', '#E056FD'];
+            for (let i = 0; i < 2; i++) {
+                let attempts = 0, starA = null, starB = null;
+                while (attempts < 30) {
+                    const a = rng.pick(notable), b = rng.pick(notable);
+                    if (a.id === b.id) { attempts++; continue; }
+                    const dist = Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2);
+                    if (dist > 280) {
+                        const exists = state.wormholes.some(w =>
+                            (w.starA.id === a.id && w.starB.id === b.id) || (w.starA.id === b.id && w.starB.id === a.id)
+                        );
+                        if (!exists) { starA = a; starB = b; break; }
+                    }
+                    attempts++;
+                }
+                if (starA && starB) {
+                    state.wormholes.push({
+                        id: state.nextWormholeId++,
+                        name: `Wormhole ${state.wormholes.length + 1}`,
+                        starA, starB,
+                        color: colors[state.wormholes.length % colors.length],
+                        stable: rng.next() > 0.3
+                    });
+                }
+            }
+            updateUI();
+        }
+
+        // ═══════════════════════════════════════════════════════════════════════════
+        // UI UPDATES
+        // ═══════════════════════════════════════════════════════════════════════════
+        function updateStats() {
+            document.getElementById('stat-total').textContent = state.stars.length.toLocaleString();
+            document.getElementById('stat-named').textContent = state.stars.filter(s => s.empire).length.toLocaleString();
+            document.getElementById('stat-habitable').textContent = state.stars.filter(s => s.hasHabitable).length.toLocaleString();
+            document.getElementById('stat-routes').textContent = state.tradeRoutes.length;
+            document.getElementById('stat-wormholes').textContent = state.wormholes.length;
+        }
+
+        function updateUI() {
+            updateStats();
+
+            // Empires
+            document.getElementById('empire-list').innerHTML = state.empires.map(e => {
+                const count = state.stars.filter(s => s.empire?.id === e.id).length;
+                return `<div class="empire-item" onclick="panToEmpire(${e.id})">
+                    <span class="empire-dot" style="background:${e.color}"></span>
+                    <span class="empire-name">${e.name}</span>
+                    <span class="empire-count">${count}</span>
+                </div>`;
+            }).join('');
+
+            // Routes
+            const routeList = document.getElementById('route-list');
+            routeList.innerHTML = state.tradeRoutes.length === 0 ? '<div class="empty-state">No routes</div>' :
+                state.tradeRoutes.map(r => `<div class="route-item">
+                    <div class="route-color" style="background:${r.color}"></div>
+                    <div class="route-info"><div>${r.name}</div><div class="route-stars">${r.stars.length} stops</div></div>
+                    <button class="btn delete-btn danger" onclick="deleteRoute(${r.id})">×</button>
+                </div>`).join('');
+
+            // Wormholes
+            const whList = document.getElementById('wormhole-list');
+            whList.innerHTML = state.wormholes.length === 0 ? '<div class="empty-state">No wormholes</div>' :
+                state.wormholes.map(w => `<div class="wormhole-item">
+                    <div class="wormhole-icon"></div>
+                    <div class="wormhole-info"><div>${w.name}</div><div class="wormhole-stars">${w.starA.name} ↔ ${w.starB.name}</div></div>
+                    <button class="btn delete-btn danger" onclick="deleteWormhole(${w.id})">×</button>
+                </div>`).join('');
+        }
+
+        function updateSelectedStarInfo() {
+            const container = document.getElementById('selected-star-info');
+            if (!state.selectedStar) {
+                container.innerHTML = '<div class="empty-state">Click a star to view details</div>';
+                return;
+            }
+            const star = state.selectedStar;
+            const type = STAR_TYPES[star.type];
+            container.innerHTML = `
+                <div class="star-name" style="color:${star.color}">${star.name}</div>
+                <div class="star-edit-row">
+                    <input type="text" class="text-input" id="star-rename-input" value="${star.name}" placeholder="Rename star...">
+                    <button class="btn" onclick="renameStar()">Rename</button>
+                </div>
+                <span class="star-class" style="background:${hexToRgba(star.color, 0.15)};color:${star.color}">Class ${star.type}</span>
+                <div class="data-row"><span class="data-label">Temperature</span><span class="data-value gold">${type.temp}</span></div>
+                <div class="data-row"><span class="data-label">Mass</span><span class="data-value">${type.mass}</span></div>
+                <div class="data-row"><span class="data-label">Habitable</span><span class="data-value ${star.hasHabitable ? 'green' : ''}">${star.hasHabitable ? 'Yes' : 'No'}</span></div>
+                <div class="data-row"><span class="data-label">Sovereignty</span><span class="data-value" style="color:${star.empire ? star.empire.color : 'rgba(255,255,255,0.4)'}">${star.empire ? star.empire.name : 'Unclaimed'}</span></div>
+            `;
+            
+            // Allow Enter key to rename
+            document.getElementById('star-rename-input').addEventListener('keydown', e => {
+                if (e.key === 'Enter') renameStar();
+            });
+        }
+        
+        function renameStar() {
+            if (!state.selectedStar) return;
+            const input = document.getElementById('star-rename-input');
+            const newName = input.value.trim();
+            if (newName && newName !== state.selectedStar.name) {
+                state.selectedStar.name = newName;
+                updateSelectedStarInfo();
+            }
+        }
+
+        function panToEmpire(id) {
+            const e = state.empires.find(emp => emp.id === id);
+            if (e) {
+                state.targetCamera.x = e.centerX;
+                state.targetCamera.y = e.centerY;
+                state.targetCamera.zoom = 1.8;
+            }
+        }
+
+        function deleteRoute(id) { state.tradeRoutes = state.tradeRoutes.filter(r => r.id !== id); updateUI(); }
+        function deleteWormhole(id) { state.wormholes = state.wormholes.filter(w => w.id !== id); updateUI(); }
+
+        // ═══════════════════════════════════════════════════════════════════════════
+        // PNG EXPORT
+        // ═══════════════════════════════════════════════════════════════════════════
+        function exportPNG() {
+            // Create a high-res canvas for export
+            const scale = 2; // 2x resolution
+            const exportCanvas = document.createElement('canvas');
+            exportCanvas.width = canvas.width * scale;
+            exportCanvas.height = canvas.height * scale;
+            const exportCtx = exportCanvas.getContext('2d');
+            
+            // Scale up for higher resolution
+            exportCtx.scale(scale, scale);
+            
+            // Render to export canvas
+            renderToContext(exportCtx, canvas.width, canvas.height);
+            
+            // Add watermark/title
+            exportCtx.font = '600 14px "Space Grotesk", sans-serif';
+            exportCtx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+            exportCtx.textAlign = 'left';
+            exportCtx.fillText(state.galaxyName, 20, 30);
+            exportCtx.font = '400 9px "DM Sans", sans-serif';
+            exportCtx.fillStyle = 'rgba(255, 255, 255, 0.25)';
+            exportCtx.fillText('Generated by StellarForge.tools', 20, 45);
+            
+            // Download
+            const link = document.createElement('a');
+            const filename = state.galaxyName.replace(/[^a-z0-9]/gi, '_').toLowerCase() || 'galaxy';
+            link.download = `${filename}_map.png`;
+            link.href = exportCanvas.toDataURL('image/png');
+            link.click();
+        }
+
+        // ═══════════════════════════════════════════════════════════════════════════
+        // SVG EXPORT
+        // ═══════════════════════════════════════════════════════════════════════════
+        function exportSVG() {
+            const w = canvas.width;
+            const h = canvas.height;
+            const zoom = state.camera.zoom;
+            
+            let svg = `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+  <defs>
+    <style>
+      .star-label { font-family: 'Space Grotesk', Arial, sans-serif; font-size: 10px; font-weight: 500; }
+      .title { font-family: 'Space Grotesk', Arial, sans-serif; font-size: 14px; font-weight: 600; fill: rgba(255,255,255,0.4); }
+      .subtitle { font-family: 'DM Sans', Arial, sans-serif; font-size: 9px; fill: rgba(255,255,255,0.25); }
+    </style>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="100%" height="100%" fill="#050508"/>
+  
+`;
+            
+            // Background stars
+            svg += '  <!-- Background Stars -->\n  <g opacity="0.3">\n';
+            for (const star of state.backgroundStars) {
+                const parallax = 0.03;
+                const sx = (star.x - state.camera.x * parallax) * 0.4 + w / 2;
+                const sy = (star.y - state.camera.y * parallax) * 0.4 + h / 2;
+                svg += `    <circle cx="${sx.toFixed(1)}" cy="${sy.toFixed(1)}" r="${star.size.toFixed(1)}" fill="white" opacity="${star.brightness.toFixed(2)}"/>\n`;
+            }
+            svg += '  </g>\n\n';
+            
+            // Empire territories
+            if (state.display.showTerritories) {
+                svg += '  <!-- Empire Territories -->\n';
+                const opacity = state.display.territoryOpacity / 100;
+                
+                for (const empire of state.empires) {
+                    const center = worldToScreen(empire.centerX, empire.centerY, 0);
+                    const radius = empire.radius * zoom * center.scale;
+                    const color = empire.color;
+                    
+                    svg += `  <defs>
+    <radialGradient id="empire-${empire.id}">
+      <stop offset="0%" stop-color="${color}" stop-opacity="${(0.18 * opacity).toFixed(2)}"/>
+      <stop offset="40%" stop-color="${color}" stop-opacity="${(0.12 * opacity).toFixed(2)}"/>
+      <stop offset="70%" stop-color="${color}" stop-opacity="${(0.06 * opacity).toFixed(2)}"/>
+      <stop offset="100%" stop-color="${color}" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <circle cx="${center.x.toFixed(1)}" cy="${center.y.toFixed(1)}" r="${radius.toFixed(1)}" fill="url(#empire-${empire.id})"/>\n`;
+                }
+                svg += '\n';
+            }
+            
+            // Trade routes
+            if (state.display.showRoutes && state.tradeRoutes.length > 0) {
+                svg += '  <!-- Trade Routes -->\n  <g>\n';
+                for (const route of state.tradeRoutes) {
+                    if (route.stars.length < 2) continue;
+                    
+                    let pathD = '';
+                    route.stars.forEach((star, i) => {
+                        const s = worldToScreen(star.x, star.y, star.z || 0);
+                        pathD += (i === 0 ? 'M' : 'L') + `${s.x.toFixed(1)},${s.y.toFixed(1)} `;
+                    });
+                    
+                    // Glow
+                    svg += `    <path d="${pathD}" fill="none" stroke="${route.color}" stroke-width="5" stroke-opacity="0.25" stroke-linecap="round" stroke-linejoin="round"/>\n`;
+                    // Main line
+                    svg += `    <path d="${pathD}" fill="none" stroke="${route.color}" stroke-width="2.5" stroke-opacity="0.7" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="10,6"/>\n`;
+                }
+                svg += '  </g>\n\n';
+            }
+            
+            // Wormholes
+            if (state.display.showRoutes && state.wormholes.length > 0) {
+                svg += '  <!-- Wormholes -->\n  <g>\n';
+                for (const wh of state.wormholes) {
+                    const sA = worldToScreen(wh.starA.x, wh.starA.y, wh.starA.z || 0);
+                    const sB = worldToScreen(wh.starB.x, wh.starB.y, wh.starB.z || 0);
+                    
+                    const midX = (sA.x + sB.x) / 2, midY = (sA.y + sB.y) / 2;
+                    const dist = Math.sqrt((sB.x - sA.x) ** 2 + (sB.y - sA.y) ** 2);
+                    const dx = sB.x - sA.x, dy = sB.y - sA.y;
+                    const perpX = -dy / dist * (dist * 0.15), perpY = dx / dist * (dist * 0.15);
+                    const ctrlX = midX + perpX, ctrlY = midY + perpY;
+                    
+                    const pathD = `M${sA.x.toFixed(1)},${sA.y.toFixed(1)} Q${ctrlX.toFixed(1)},${ctrlY.toFixed(1)} ${sB.x.toFixed(1)},${sB.y.toFixed(1)}`;
+                    
+                    // Connection line
+                    svg += `    <path d="${pathD}" fill="none" stroke="${wh.color}" stroke-width="3" stroke-opacity="0.4" stroke-dasharray="${wh.stable ? '2,8' : '1,4'}"/>\n`;
+                    
+                    // Portal endpoints
+                    [sA, sB].forEach(s => {
+                        svg += `    <circle cx="${s.x.toFixed(1)}" cy="${s.y.toFixed(1)}" r="12" fill="url(#wormhole-glow-${wh.id})" opacity="0.6"/>\n`;
+                        svg += `    <circle cx="${s.x.toFixed(1)}" cy="${s.y.toFixed(1)}" r="4" fill="${wh.color}"/>\n`;
+                        svg += `    <circle cx="${s.x.toFixed(1)}" cy="${s.y.toFixed(1)}" r="2" fill="white"/>\n`;
+                    });
+                }
+                svg += '  </g>\n\n';
+            }
+            
+            // Stars - sorted by z-depth
+            const sortedStars = [...state.stars].map(star => {
+                const projected = worldToScreen(star.x, star.y, star.z || 0);
+                return { ...star, screenX: projected.x, screenY: projected.y, screenZ: projected.z, scale: projected.scale };
+            }).sort((a, b) => a.screenZ - b.screenZ);
+            
+            svg += '  <!-- Stars -->\n  <g>\n';
+            for (const star of sortedStars) {
+                if (star.screenX < -30 || star.screenX > w + 30 || star.screenY < -30 || star.screenY > h + 30) continue;
+                
+                const baseSize = star.size * star.scale;
+                const zoomFactor = Math.pow(zoom, 0.7);
+                const size = Math.max(0.3, baseSize * zoomFactor * 0.5);
+                const depthFade = Math.max(0.25, Math.min(1, 1 - star.screenZ / 350));
+                const totalBrightness = star.brightness * star.luminosity * depthFade;
+                
+                // Glow for hot stars
+                if (['O', 'B', 'A'].includes(star.type) && star.luminosity > 0.7) {
+                    const glowSize = size * (3 + star.luminosity * 3);
+                    svg += `    <circle cx="${star.screenX.toFixed(1)}" cy="${star.screenY.toFixed(1)}" r="${glowSize.toFixed(1)}" fill="${star.color}" opacity="${(0.15 * star.luminosity * depthFade).toFixed(2)}"/>\n`;
+                }
+                
+                // Star body
+                svg += `    <circle cx="${star.screenX.toFixed(1)}" cy="${star.screenY.toFixed(1)}" r="${size.toFixed(2)}" fill="${star.color}" opacity="${totalBrightness.toFixed(2)}"/>\n`;
+                
+                // Habitable indicator
+                if (star.hasHabitable && zoom > 1.2 && state.display.showHabitableIndicators) {
+                    svg += `    <circle cx="${star.screenX.toFixed(1)}" cy="${star.screenY.toFixed(1)}" r="${(size + 3).toFixed(1)}" fill="none" stroke="#2ECC71" stroke-width="1" opacity="${(0.5 * depthFade).toFixed(2)}"/>\n`;
+                }
+            }
+            svg += '  </g>\n\n';
+            
+            // Labels at high zoom
+            if (zoom >= 2.5) {
+                svg += '  <!-- Labels -->\n  <g>\n';
+                const labeledStars = [];
+                const maxLabels = Math.min(30, Math.floor(zoom * 8));
+                
+                for (const star of sortedStars) {
+                    if (labeledStars.length >= maxLabels) break;
+                    if (!star.hasHabitable && !['O', 'B'].includes(star.type)) continue;
+                    if (star.screenX < 50 || star.screenX > w - 50 || star.screenY < 50 || star.screenY > h - 50) continue;
+                    
+                    let collides = false;
+                    for (const labeled of labeledStars) {
+                        const dx = star.screenX - labeled.screenX;
+                        const dy = star.screenY - labeled.screenY;
+                        if (Math.sqrt(dx * dx + dy * dy) < 60) { collides = true; break; }
+                    }
+                    
+                    if (!collides) {
+                        const labelColor = star.empire ? star.empire.color : 'rgba(255,255,255,0.5)';
+                        svg += `    <text x="${star.screenX.toFixed(1)}" y="${(star.screenY + star.size + 12).toFixed(1)}" text-anchor="middle" class="star-label" fill="${labelColor}">${escapeXml(star.name)}</text>\n`;
+                        labeledStars.push(star);
+                    }
+                }
+                svg += '  </g>\n\n';
+            }
+            
+            // Title watermark
+            svg += `  <!-- Title -->
+  <text x="20" y="30" class="title">${escapeXml(state.galaxyName)}</text>
+  <text x="20" y="45" class="subtitle">Generated by StellarForge.tools</text>
+`;
+            
+            svg += '</svg>';
+            
+            // Download
+            const blob = new Blob([svg], { type: 'image/svg+xml' });
+            const link = document.createElement('a');
+            const filename = state.galaxyName.replace(/[^a-z0-9]/gi, '_').toLowerCase() || 'galaxy';
+            link.download = `${filename}_map.svg`;
+            link.href = URL.createObjectURL(blob);
+            link.click();
+            URL.revokeObjectURL(link.href);
+        }
+        
+        function escapeXml(str) {
+            return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+        }
+        
+        // Render to any context (used for PNG export)
+        function renderToContext(ctx, w, h) {
+            const zoom = state.camera.zoom;
+
+            // Deep space background
+            ctx.fillStyle = '#050508';
+            ctx.fillRect(0, 0, w, h);
+
+            // Background stars (no 3D, parallax only)
+            const parallax = 0.03;
+            for (const star of state.backgroundStars) {
+                const sx = (star.x - state.camera.x * parallax) * 0.4 + w / 2;
+                const sy = (star.y - state.camera.y * parallax) * 0.4 + h / 2;
+                ctx.fillStyle = `rgba(255, 255, 255, ${star.brightness})`;
+                ctx.beginPath();
+                ctx.arc(sx, sy, star.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // Empire territories
+            if (state.display.showTerritories) {
+                const opacity = state.display.territoryOpacity / 100;
+                const borderStyle = state.display.territoryBorderStyle;
+                
+                for (const empire of state.empires) {
+                    const center = worldToScreen(empire.centerX, empire.centerY, 0);
+                    const radius = empire.radius * zoom * center.scale;
+                    
+                    if (borderStyle === 'soft' || borderStyle === 'none') {
+                        const gradient = ctx.createRadialGradient(center.x, center.y, 0, center.x, center.y, radius);
+                        gradient.addColorStop(0, hexToRgba(empire.color, 0.18 * opacity));
+                        gradient.addColorStop(0.4, hexToRgba(empire.color, 0.12 * opacity));
+                        gradient.addColorStop(0.7, hexToRgba(empire.color, 0.06 * opacity));
+                        gradient.addColorStop(1, hexToRgba(empire.color, 0));
+                        ctx.fillStyle = gradient;
+                        ctx.beginPath();
+                        ctx.arc(center.x, center.y, radius, 0, Math.PI * 2);
+                        ctx.fill();
+                    } else {
+                        ctx.fillStyle = hexToRgba(empire.color, 0.12 * opacity);
+                        ctx.beginPath();
+                        ctx.arc(center.x, center.y, radius, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.strokeStyle = hexToRgba(empire.color, 0.6 * opacity);
+                        ctx.lineWidth = 2;
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            // Trade routes
+            if (state.display.showRoutes) {
+                for (const route of state.tradeRoutes) {
+                    if (route.stars.length < 2) continue;
+                    ctx.strokeStyle = hexToRgba(route.color, 0.25);
+                    ctx.lineWidth = zoom < 1 ? 3 : 5;
+                    ctx.lineCap = 'round';
+                    ctx.lineJoin = 'round';
+                    ctx.beginPath();
+                    route.stars.forEach((star, i) => {
+                        const s = worldToScreen(star.x, star.y, star.z || 0);
+                        i === 0 ? ctx.moveTo(s.x, s.y) : ctx.lineTo(s.x, s.y);
+                    });
+                    ctx.stroke();
+                    
+                    ctx.strokeStyle = hexToRgba(route.color, 0.7);
+                    ctx.lineWidth = zoom < 1 ? 1.5 : 2.5;
+                    ctx.setLineDash([10, 6]);
+                    ctx.beginPath();
+                    route.stars.forEach((star, i) => {
+                        const s = worldToScreen(star.x, star.y, star.z || 0);
+                        i === 0 ? ctx.moveTo(s.x, s.y) : ctx.lineTo(s.x, s.y);
+                    });
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+                }
+
+                // Wormholes (simplified for export)
+                for (const wh of state.wormholes) {
+                    const sA = worldToScreen(wh.starA.x, wh.starA.y, wh.starA.z || 0);
+                    const sB = worldToScreen(wh.starB.x, wh.starB.y, wh.starB.z || 0);
+                    const midX = (sA.x + sB.x) / 2, midY = (sA.y + sB.y) / 2;
+                    const dist = Math.sqrt((sB.x - sA.x) ** 2 + (sB.y - sA.y) ** 2);
+                    const dx = sB.x - sA.x, dy = sB.y - sA.y;
+                    const perpX = -dy / dist * (dist * 0.15), perpY = dx / dist * (dist * 0.15);
+                    const ctrlX = midX + perpX, ctrlY = midY + perpY;
+                    
+                    ctx.strokeStyle = hexToRgba(wh.color, 0.4);
+                    ctx.lineWidth = 3;
+                    ctx.setLineDash(wh.stable ? [2, 8] : [1, 4]);
+                    ctx.beginPath();
+                    ctx.moveTo(sA.x, sA.y);
+                    ctx.quadraticCurveTo(ctrlX, ctrlY, sB.x, sB.y);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+                    
+                    [sA, sB].forEach(s => {
+                        const grad = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, 12);
+                        grad.addColorStop(0, hexToRgba('#FFFFFF', 0.8));
+                        grad.addColorStop(0.3, hexToRgba(wh.color, 0.6));
+                        grad.addColorStop(1, hexToRgba(wh.color, 0));
+                        ctx.fillStyle = grad;
+                        ctx.beginPath();
+                        ctx.arc(s.x, s.y, 12, 0, Math.PI * 2);
+                        ctx.fill();
+                    });
+                }
+            }
+
+            // Stars
+            const sortedStars = [...state.stars].map(star => {
+                const projected = worldToScreen(star.x, star.y, star.z || 0);
+                return { ...star, screenX: projected.x, screenY: projected.y, screenZ: projected.z, scale: projected.scale };
+            }).sort((a, b) => a.screenZ - b.screenZ);
+
+            for (const star of sortedStars) {
+                if (star.screenX < -30 || star.screenX > w + 30 || star.screenY < -30 || star.screenY > h + 30) continue;
+
+                const baseSize = star.size * star.scale;
+                const zoomFactor = Math.pow(zoom, 0.7);
+                const size = Math.max(0.3, baseSize * zoomFactor * 0.5);
+                const depthFade = Math.max(0.25, Math.min(1, 1 - star.screenZ / 350));
+                const totalBrightness = star.brightness * star.luminosity * depthFade;
+
+                if (['O', 'B', 'A'].includes(star.type) && zoom > 0.4 && star.luminosity > 0.7) {
+                    const glowSize = size * (3 + star.luminosity * 3);
+                    const glow = ctx.createRadialGradient(star.screenX, star.screenY, size * 0.3, star.screenX, star.screenY, glowSize);
+                    glow.addColorStop(0, hexToRgba(star.color, 0.15 * star.luminosity * depthFade));
+                    glow.addColorStop(1, hexToRgba(star.color, 0));
+                    ctx.fillStyle = glow;
+                    ctx.beginPath();
+                    ctx.arc(star.screenX, star.screenY, glowSize, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                ctx.fillStyle = hexToRgba(star.color, totalBrightness);
+                ctx.beginPath();
+                ctx.arc(star.screenX, star.screenY, size, 0, Math.PI * 2);
+                ctx.fill();
+
+                if (star.hasHabitable && zoom > 1.2 && state.display.showHabitableIndicators) {
+                    ctx.strokeStyle = hexToRgba('#2ECC71', 0.5 * depthFade);
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.arc(star.screenX, star.screenY, size + 3, 0, Math.PI * 2);
+                    ctx.stroke();
+                }
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════════════════════
+        // EVENT BINDINGS
+        // ═══════════════════════════════════════════════════════════════════════════
+        document.getElementById('galaxy-type').addEventListener('change', e => { state.config.type = e.target.value; generateGalaxy(); });
+        
+        document.getElementById('galaxy-name').addEventListener('input', e => {
+            state.galaxyName = e.target.value || 'Unnamed Galaxy';
+            document.getElementById('galaxy-display-name').textContent = state.galaxyName;
+        });
+        document.getElementById('star-count').addEventListener('input', e => {
+            state.config.starCount = parseInt(e.target.value);
+            document.getElementById('star-count-value').textContent = state.config.starCount.toLocaleString();
+        });
+        document.getElementById('star-count').addEventListener('change', generateGalaxy);
+        document.getElementById('arm-count').addEventListener('input', e => {
+            state.config.armCount = parseInt(e.target.value);
+            document.getElementById('arm-count-value').textContent = state.config.armCount;
+        });
+        document.getElementById('arm-count').addEventListener('change', generateGalaxy);
+        document.getElementById('arm-spread').addEventListener('input', e => {
+            state.config.armSpread = parseFloat(e.target.value);
+            document.getElementById('arm-spread-value').textContent = state.config.armSpread.toFixed(2);
+        });
+        document.getElementById('arm-spread').addEventListener('change', generateGalaxy);
+        document.getElementById('seed').addEventListener('input', e => {
+            state.config.seed = parseInt(e.target.value);
+            document.getElementById('seed-value').textContent = state.config.seed;
+        });
+        document.getElementById('seed').addEventListener('change', generateGalaxy);
+        document.getElementById('generate-btn').addEventListener('click', generateGalaxy);
+        document.getElementById('random-btn').addEventListener('click', () => {
+            state.config.seed = Math.floor(Math.random() * 9999) + 1;
+            document.getElementById('seed').value = state.config.seed;
+            document.getElementById('seed-value').textContent = state.config.seed;
+            generateGalaxy();
+        });
+
+        document.getElementById('rotation').addEventListener('input', e => {
+            state.view.rotation = parseFloat(e.target.value);
+            document.getElementById('rotation-value').textContent = Math.round(state.view.rotation) + '°';
+        });
+        document.getElementById('tilt').addEventListener('input', e => {
+            state.view.tilt = parseFloat(e.target.value);
+            document.getElementById('tilt-value').textContent = Math.round(state.view.tilt) + '°';
+        });
+        document.getElementById('auto-rotate-btn').addEventListener('click', e => {
+            state.view.autoRotate = !state.view.autoRotate;
+            e.target.classList.toggle('active', state.view.autoRotate);
+        });
+        document.getElementById('reset-view-btn').addEventListener('click', () => {
+            state.view.rotation = 0;
+            state.view.tilt = 0;
+            state.view.autoRotate = false;
+            state.targetCamera = { x: 0, y: 0, zoom: 1 };
+            document.getElementById('rotation').value = 0;
+            document.getElementById('tilt').value = 0;
+            document.getElementById('rotation-value').textContent = '0°';
+            document.getElementById('tilt-value').textContent = '0°';
+            document.getElementById('auto-rotate-btn').classList.remove('active');
+        });
+
+        document.getElementById('add-empire-btn').addEventListener('click', () => alert('Empire editor coming soon!'));
+        document.getElementById('draw-route-btn').addEventListener('click', () => state.routeDrawing.active ? finishRouteDrawing() : startRouteDrawing());
+        document.getElementById('auto-route-btn').addEventListener('click', autoGenerateRoutes);
+        document.getElementById('clear-routes-btn').addEventListener('click', () => { state.tradeRoutes = []; updateUI(); });
+        document.getElementById('draw-wormhole-btn').addEventListener('click', () => state.wormholeDrawing.active ? stopWormholeDrawing() : startWormholeDrawing());
+        document.getElementById('auto-wormhole-btn').addEventListener('click', autoGenerateWormholes);
+        document.getElementById('clear-wormholes-btn').addEventListener('click', () => { state.wormholes = []; updateUI(); });
+
+        document.getElementById('toggle-territories').addEventListener('click', e => {
+            state.display.showTerritories = !state.display.showTerritories;
+            e.target.classList.toggle('active', state.display.showTerritories);
+        });
+        document.getElementById('toggle-routes').addEventListener('click', e => {
+            state.display.showRoutes = !state.display.showRoutes;
+            e.target.classList.toggle('active', state.display.showRoutes);
+        });
+        document.getElementById('toggle-habitable').addEventListener('click', e => {
+            state.display.showHabitableIndicators = !state.display.showHabitableIndicators;
+            e.target.classList.toggle('active', state.display.showHabitableIndicators);
+        });
+        document.getElementById('territory-opacity').addEventListener('input', e => {
+            state.display.territoryOpacity = parseInt(e.target.value);
+            document.getElementById('territory-opacity-value').textContent = state.display.territoryOpacity + '%';
+        });
+        document.getElementById('territory-border-style').addEventListener('change', e => {
+            state.display.territoryBorderStyle = e.target.value;
+        });
+
+        document.getElementById('export-png-btn').addEventListener('click', exportPNG);
+        document.getElementById('export-svg-btn').addEventListener('click', exportSVG);
+        
+        document.getElementById('export-json-btn').addEventListener('click', () => {
+            const data = {
+                meta: { generator: 'StellarForge Stellar Cartographer v4', seed: state.config.seed },
+                galaxyName: state.galaxyName,
+                galaxy: state.config,
+                empires: state.empires,
+                tradeRoutes: state.tradeRoutes.map(r => ({ ...r, stars: r.stars.map(s => ({ id: s.id, name: s.name })) })),
+                wormholes: state.wormholes.map(w => ({ id: w.id, name: w.name, starA: w.starA.name, starB: w.starB.name, stable: w.stable })),
+                notableSystems: state.stars.filter(s => s.hasHabitable).slice(0, 100).map(s => ({ name: s.name, type: s.type, empire: s.empire?.name }))
+            };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const filename = state.galaxyName.replace(/[^a-z0-9]/gi, '_').toLowerCase() || 'galaxy';
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `${filename}.json`; a.click();
+        });
+        document.getElementById('export-md-btn').addEventListener('click', () => {
+            let md = `# ${state.galaxyName}\n\n**Seed:** ${state.config.seed}\n**Type:** ${state.config.type}\n**Stars:** ${state.stars.length.toLocaleString()}\n\n`;
+            md += `## Empires\n\n`;
+            state.empires.forEach(e => {
+                md += `### ${e.name}\n- Systems: ${state.stars.filter(s => s.empire?.id === e.id).length}\n\n`;
+            });
+            if (state.tradeRoutes.length > 0) {
+                md += `## Trade Routes\n\n`;
+                state.tradeRoutes.forEach(r => {
+                    md += `### ${r.name}\n- Waypoints: ${r.stars.map(s => s.name).join(' → ')}\n\n`;
+                });
+            }
+            if (state.wormholes.length > 0) {
+                md += `## Wormholes\n\n`;
+                state.wormholes.forEach(w => {
+                    md += `### ${w.name}\n- Connection: ${w.starA.name} ↔ ${w.starB.name}\n- Stability: ${w.stable ? 'Stable' : 'Unstable'}\n\n`;
+                });
+            }
+            const blob = new Blob([md], { type: 'text/markdown' });
+            const filename = state.galaxyName.replace(/[^a-z0-9]/gi, '_').toLowerCase() || 'galaxy';
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `${filename}.md`; a.click();
+        });
+
+        // ═══════════════════════════════════════════════════════════════════════════
+        // ANIMATION LOOP
+        // ═══════════════════════════════════════════════════════════════════════════
+        function animate() {
+            updateCamera();
+            render();
+            requestAnimationFrame(animate);
+        }
+
+        generateGalaxy();
+        animate();
+    </script>
+</body>
+</html>

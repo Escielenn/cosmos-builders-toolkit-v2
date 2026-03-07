@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Save, ArrowLeft, Upload, Crown, Calendar, CreditCard, AlertCircle } from "lucide-react";
+import { Save, ArrowLeft, Upload, Zap, Calendar, CreditCard, AlertCircle, Award, ChevronRight } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
 import { useToast } from "@/hooks/use-toast";
 import { useSubscription } from "@/hooks/use-subscription";
@@ -17,6 +17,8 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import ExportSettings from "@/components/settings/ExportSettings";
 import WritingSettings from "@/components/settings/WritingSettings";
+import { useEarnedBadges } from "@/hooks/use-badges";
+import { BADGE_DEFINITIONS } from "@/lib/badges/definitions";
 import AvatarPickerDialog from "@/components/settings/AvatarPickerDialog";
 import { PageBursts } from "@/components/ui/data-burst";
 import { SETTINGS_BURSTS } from "@/lib/data-bursts";
@@ -234,6 +236,9 @@ const Profile = () => {
           </div>
         </GlassPanel>
 
+        {/* Commendations link */}
+        <CommendationsSummary navigate={navigate} />
+
         {/* Writing Surface */}
         <GlassPanel className="p-8 mt-6">
           <WritingSettings />
@@ -247,7 +252,7 @@ const Profile = () => {
         {/* Subscription Section */}
         <GlassPanel className="p-8 mt-6">
           <h2 className="font-heading text-xl font-bold mb-4 flex items-center gap-2">
-            <Crown className="w-5 h-5 text-amber-500" />
+            <Zap className="w-5 h-5 text-amber-500" />
             Subscription
           </h2>
 
@@ -335,7 +340,7 @@ const Profile = () => {
                 className="w-full gap-2"
                 onClick={() => navigate('/pricing')}
               >
-                <Crown className="w-4 h-4" />
+                <Zap className="w-4 h-4" />
                 Upgrade to Pro
               </Button>
             </div>
@@ -354,5 +359,34 @@ const Profile = () => {
     </div>
   );
 };
+
+function CommendationsSummary({ navigate }: { navigate: (path: string) => void }) {
+  const { earnedSet, isLoading } = useEarnedBadges();
+  const earnedCount = earnedSet.size;
+  const totalCount = BADGE_DEFINITIONS.length;
+
+  return (
+    <GlassPanel className="p-6 md:p-8 mt-6">
+      <button
+        type="button"
+        className="w-full flex items-center justify-between group"
+        onClick={() => navigate("/commendations")}
+      >
+        <div className="flex items-center gap-3">
+          <Award className="w-5 h-5 text-emerald" />
+          <div className="text-left">
+            <h3 className="font-heading text-sm uppercase tracking-[3px] text-emerald">
+              Commendations
+            </h3>
+            <p className="font-sans text-[11px] text-tier-4 mt-0.5">
+              {isLoading ? "Loading..." : `${earnedCount} of ${totalCount} earned`}
+            </p>
+          </div>
+        </div>
+        <ChevronRight className="w-4 h-4 text-tier-4 group-hover:text-tier-2 transition-colors" />
+      </button>
+    </GlassPanel>
+  );
+}
 
 export default Profile;

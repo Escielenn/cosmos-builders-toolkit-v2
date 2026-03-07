@@ -7,6 +7,7 @@ import {
   PDFKeyValuePair,
   PDFResultBox,
 } from "../components";
+import { deepStripHtml } from "@/lib/html-utils";
 
 interface StellarEnvironment {
   starType: string;
@@ -145,15 +146,17 @@ const PlanetarySummaryTemplate = ({
   worldName,
   date,
 }: PlanetarySummaryTemplateProps) => {
+  const cleanState = deepStripHtml(formState);
+
   // Safe access to nested properties
-  const stellar = formState?.stellarEnvironment;
-  const physical = formState?.physicalCharacteristics;
-  const atmosphere = formState?.atmosphericComposition;
-  const hydro = formState?.hydrosphere;
-  const temp = formState?.temperatureProfile;
-  const habitability = formState?.habitability;
-  const pressures = formState?.threePressures;
-  const consistency = formState?.consistencyCheck;
+  const stellar = cleanState?.stellarEnvironment;
+  const physical = cleanState?.physicalCharacteristics;
+  const atmosphere = cleanState?.atmosphericComposition;
+  const hydro = cleanState?.hydrosphere;
+  const temp = cleanState?.temperatureProfile;
+  const habitability = cleanState?.habitability;
+  const pressures = cleanState?.threePressures;
+  const consistency = cleanState?.consistencyCheck;
 
   const starTypeLabel = STAR_TYPE_LABELS[stellar?.starType || ""] || stellar?.starType || "Not specified";
   const tierInfo = TIER_LABELS[habitability?.habitabilityTier || ""];
@@ -173,7 +176,7 @@ const PlanetarySummaryTemplate = ({
     <Document>
       <Page size="LETTER" style={styles.page}>
         <PDFHeader
-          toolName="Planetary Profile"
+          toolName="Genesis"
           worldName={worldName}
           date={date}
         />

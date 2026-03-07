@@ -7,6 +7,7 @@ import {
   PDFKeyValuePair,
   PDFResultBox,
 } from "../components";
+import { deepStripHtml } from "@/lib/html-utils";
 
 interface FormState {
   sensoryArchitecture: {
@@ -100,17 +101,19 @@ const XenomythologySummaryTemplate = ({
   worldName,
   date,
 }: XenomythologySummaryTemplateProps) => {
+  const cleanState = deepStripHtml(formState);
+
   // Safe access to nested properties
-  const sensory = formState?.sensoryArchitecture;
-  const physical = formState?.physicalForm;
-  const cognitive = formState?.cognitiveArchitecture;
-  const planetary = formState?.planetaryConditions;
-  const existential = formState?.existentialParameters;
-  const archetypes = formState?.archetypePantheon;
-  const creation = formState?.creationNarrative;
-  const cosmos = formState?.cosmologicalStructure;
-  const divine = formState?.divineConceptualization;
-  const synthesis = formState?.synthesis;
+  const sensory = cleanState?.sensoryArchitecture;
+  const physical = cleanState?.physicalForm;
+  const cognitive = cleanState?.cognitiveArchitecture;
+  const planetary = cleanState?.planetaryConditions;
+  const existential = cleanState?.existentialParameters;
+  const archetypes = cleanState?.archetypePantheon;
+  const creation = cleanState?.creationNarrative;
+  const cosmos = cleanState?.cosmologicalStructure;
+  const divine = cleanState?.divineConceptualization;
+  const synthesis = cleanState?.synthesis;
 
   const archetypeCount = archetypes?.length || 0;
   const deityCount = divine?.deities?.length || 0;
@@ -120,7 +123,7 @@ const XenomythologySummaryTemplate = ({
     <Document>
       <Page size="LETTER" style={styles.page}>
         <PDFHeader
-          toolName="Xenomythology Framework"
+          toolName="Mythos"
           worldName={worldName}
           date={date}
         />

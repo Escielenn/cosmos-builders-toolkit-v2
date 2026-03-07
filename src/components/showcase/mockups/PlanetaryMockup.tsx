@@ -112,8 +112,8 @@ const PlanetaryMockup = () => {
 
         {/* Habitability badge */}
         <div className="flex justify-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sf-emerald/10 border border-sf-emerald/30">
-            <div className="w-2 h-2 rounded-full bg-sf-emerald animate-pulse" />
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-sf-emerald/10 border border-sf-emerald/30">
+            <div className="w-2 h-2 bg-sf-emerald animate-pulse" />
             <span className="text-[10px] text-sf-emerald uppercase tracking-wider">
               Habitable
             </span>

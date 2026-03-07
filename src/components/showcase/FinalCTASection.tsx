@@ -24,9 +24,9 @@ const FinalCTASection = () => {
         </div>
 
         <h2 className="font-display font-light text-3xl md:text-4xl lg:text-5xl uppercase tracking-sf-wide mb-6 relative">
-          Ready to Build Your
+          ALL INSTRUMENTS
           <br />
-          <span className="gradient-text">Universe?</span>
+          <span className="gradient-text">ON STANDBY.</span>
         </h2>
 
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-10 relative">
@@ -36,7 +36,7 @@ const FinalCTASection = () => {
 
         <div className="flex flex-wrap gap-4 justify-center relative">
           <Button size="lg" className="gap-2 text-base px-8" asChild>
-            <Link to="/auth?tab=signup">
+            <Link to="/auth">
               <Rocket className="w-5 h-5" />
               Start Building Free
             </Link>

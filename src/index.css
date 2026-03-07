@@ -168,7 +168,7 @@
 
     --border: var(--sf-text-ghost);
     --input: var(--sf-text-ghost);
-    --ring: var(--sf-teal);
+    --ring: 220 70% 50%;
 
     /* Glass morphism tokens */
     --glass: var(--sf-surface) / 0.9;
@@ -218,17 +218,16 @@
     @apply scroll-smooth;
   }
 
-  /* Enhanced focus styles for accessibility */
+  /* Enhanced focus styles for accessibility — subtle, wide, transparent */
   :focus-visible {
-    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+    @apply outline-none ring-1 ring-ring/20 ring-offset-4 ring-offset-background;
   }
 
-  /* Custom focus glow for interactive elements */
+  /* Interactive elements — same subtle treatment */
   button:focus-visible,
   a:focus-visible,
   [role="button"]:focus-visible {
-    @apply ring-2 ring-primary/50 ring-offset-2 ring-offset-background;
-    box-shadow: 0 0 0 4px hsl(157 100% 62% / 0.15);
+    @apply ring-1 ring-ring/20 ring-offset-4 ring-offset-background;
   }
 
   /* Skip to content link for keyboard users */
@@ -759,9 +758,26 @@ html {
     border-color: rgba(224, 228, 232, 0.8);
   }
 
-  /* Hover animation */
-  .sf-bracket-panel:hover .sf-bracket-corner {
+  /* Hover animation — only when not focused inside */
+  .sf-bracket-panel:hover:not(:focus-within) .sf-bracket-corner {
     border-color: rgba(61, 255, 205, 0.5);
+  }
+
+  /* Focus-within — subtle brightening of the panel's own color */
+  .sf-bracket-panel:focus-within .sf-bracket-corner {
+    border-color: rgba(224, 228, 232, 0.35);
+  }
+  .sf-bracket-panel[data-bracket-color="stellar"]:focus-within .sf-bracket-corner {
+    border-color: rgba(91, 141, 239, 0.4);
+  }
+  .sf-bracket-panel[data-bracket-color="teal"]:focus-within .sf-bracket-corner {
+    border-color: rgba(61, 255, 205, 0.35);
+  }
+  .sf-bracket-panel[data-bracket-color="amber"]:focus-within .sf-bracket-corner {
+    border-color: rgba(255, 179, 71, 0.4);
+  }
+  .sf-bracket-panel[data-bracket-color="bright"]:focus-within .sf-bracket-corner {
+    border-color: rgba(224, 228, 232, 0.45);
   }
 
   /* Size variants */
@@ -1277,6 +1293,28 @@ html {
   @keyframes sf-shimmer-sweep {
     0%, 100% { transform: translateX(-100%) translateY(-100%); }
     50% { transform: translateX(100%) translateY(100%); }
+  }
+
+  /* Vanguard badge shimmer sweep (violet tint) */
+  .sf-shimmer-violet {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .sf-shimmer-violet::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+      45deg,
+      transparent 40%,
+      rgba(139, 92, 246, 0.18) 50%,
+      transparent 60%
+    );
+    animation: sf-shimmer-sweep 3.5s ease-in-out infinite;
   }
 
   /* Nav link — fill sweep + bottom line */
@@ -2201,14 +2239,14 @@ html {
 
 .sf-input-bracketed:focus-within::before {
   background:
-    linear-gradient(rgba(61, 255, 205, 0.6), rgba(61, 255, 205, 0.6)) 0 0 / 10px 1px no-repeat,
-    linear-gradient(rgba(61, 255, 205, 0.6), rgba(61, 255, 205, 0.6)) 0 0 / 1px 10px no-repeat,
-    linear-gradient(rgba(61, 255, 205, 0.6), rgba(61, 255, 205, 0.6)) 100% 0 / 10px 1px no-repeat,
-    linear-gradient(rgba(61, 255, 205, 0.6), rgba(61, 255, 205, 0.6)) 100% 0 / 1px 10px no-repeat,
-    linear-gradient(rgba(61, 255, 205, 0.6), rgba(61, 255, 205, 0.6)) 0 100% / 10px 1px no-repeat,
-    linear-gradient(rgba(61, 255, 205, 0.6), rgba(61, 255, 205, 0.6)) 0 100% / 1px 10px no-repeat,
-    linear-gradient(rgba(61, 255, 205, 0.6), rgba(61, 255, 205, 0.6)) 100% 100% / 10px 1px no-repeat,
-    linear-gradient(rgba(61, 255, 205, 0.6), rgba(61, 255, 205, 0.6)) 100% 100% / 1px 10px no-repeat;
+    linear-gradient(rgba(91, 141, 239, 0.3), rgba(91, 141, 239, 0.3)) 0 0 / 10px 1px no-repeat,
+    linear-gradient(rgba(91, 141, 239, 0.3), rgba(91, 141, 239, 0.3)) 0 0 / 1px 10px no-repeat,
+    linear-gradient(rgba(91, 141, 239, 0.3), rgba(91, 141, 239, 0.3)) 100% 0 / 10px 1px no-repeat,
+    linear-gradient(rgba(91, 141, 239, 0.3), rgba(91, 141, 239, 0.3)) 100% 0 / 1px 10px no-repeat,
+    linear-gradient(rgba(91, 141, 239, 0.3), rgba(91, 141, 239, 0.3)) 0 100% / 10px 1px no-repeat,
+    linear-gradient(rgba(91, 141, 239, 0.3), rgba(91, 141, 239, 0.3)) 0 100% / 1px 10px no-repeat,
+    linear-gradient(rgba(91, 141, 239, 0.3), rgba(91, 141, 239, 0.3)) 100% 100% / 10px 1px no-repeat,
+    linear-gradient(rgba(91, 141, 239, 0.3), rgba(91, 141, 239, 0.3)) 100% 100% / 1px 10px no-repeat;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
@@ -2562,50 +2600,7 @@ html {
   margin: 32px 0;
 }
 
-/* Wiki editor toolbar */
-.sf-wiki-toolbar {
-  display: flex;
-  align-items: center;
-  gap: 2px;
-  padding: 6px 8px;
-  background: #0C1019;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-bottom: none;
-}
-
-.sf-wiki-toolbar button {
-  font-family: var(--sf-font-mono, 'JetBrains Mono', monospace);
-  font-size: 11px;
-  padding: 4px 8px;
-  background: transparent;
-  border: 1px solid transparent;
-  color: rgba(255, 255, 255, 0.5);
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.sf-wiki-toolbar button:hover {
-  background: rgba(var(--sf-world-accent-rgb, 61, 255, 205), 0.06);
-  border-color: rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.8);
-}
-
-.sf-wiki-toolbar button.active {
-  background: rgba(var(--sf-world-accent-rgb, 61, 255, 205), 0.1);
-  color: var(--sf-world-accent, #3DFFCD);
-}
-
-.sf-wiki-toolbar .separator {
-  width: 1px;
-  height: 20px;
-  background: rgba(255, 255, 255, 0.08);
-  margin: 0 4px;
-}
-
-.sf-wiki-toolbar .wiki-link-btn {
-  color: #5B8DEF;
-  font-weight: 600;
-}
+/* Wiki editor — uses shared sf-writing-toolbar / sf-writing-surface via BracketPanel */
 
 /* Wiki page layout */
 .sf-wiki-page {
@@ -2618,37 +2613,59 @@ html {
   width: 100%;
   max-height: 240px;
   object-fit: cover;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 }
 
 .sf-wiki-title {
-  font-family: var(--sf-font-heading, 'Jura', sans-serif);
-  font-size: 28px;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.92);
-  letter-spacing: 1px;
-  margin-bottom: 4px;
+  font-family: var(--sf-font-display, 'MD Nichrome', sans-serif);
+  font-size: clamp(24px, 4vw, 36px);
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.95);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Editable title input */
+.sf-wiki-title--editable {
+  display: block;
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  outline: none;
+  padding: 0 0 12px;
+  caret-color: rgba(var(--sf-world-accent-rgb, 61, 255, 205), 0.7);
+  transition: border-color 200ms ease;
+}
+.sf-wiki-title--editable::placeholder {
+  color: rgba(255, 255, 255, 0.15);
+}
+.sf-wiki-title--editable:focus {
+  border-bottom-color: rgba(var(--sf-world-accent-rgb, 61, 255, 205), 0.3);
 }
 
 .sf-wiki-meta {
   font-family: var(--sf-font-mono, 'JetBrains Mono', monospace);
-  font-size: 9px;
+  font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 2px;
   color: rgba(255, 255, 255, 0.3);
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 
 .sf-wiki-section-header {
   font-family: var(--sf-font-heading, 'Jura', sans-serif);
-  font-size: 9px;
-  font-weight: 500;
+  font-size: 11px;
+  font-weight: 300;
   letter-spacing: 3px;
   text-transform: uppercase;
   color: rgba(var(--sf-world-accent-rgb, 61, 255, 205), 0.5);
-  margin-top: 32px;
-  margin-bottom: 12px;
-  padding-bottom: 6px;
+  margin-top: 36px;
+  margin-bottom: 14px;
+  padding-bottom: 8px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
@@ -2706,31 +2723,7 @@ html {
   transition: opacity 0.3s ease;
 }
 
-/* Cover image upload area */
-.sf-wiki-cover-upload {
-  width: 100%;
-  height: 160px;
-  border: 1px dashed rgba(255, 255, 255, 0.12);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: border-color 0.2s ease, background 0.2s ease;
-  margin-bottom: 24px;
-}
-
-.sf-wiki-cover-upload:hover {
-  border-color: rgba(91, 141, 239, 0.3);
-  background: rgba(91, 141, 239, 0.04);
-}
-
-.sf-wiki-cover-upload span {
-  font-family: var(--sf-font-mono, 'JetBrains Mono', monospace);
-  font-size: 9px;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  color: rgba(255, 255, 255, 0.25);
-}
+/* Cover image upload (legacy — kept for potential future use) */
 
 /* ==========================================================================
    CHRONICLE — Vertical Timeline Visualization

@@ -7,6 +7,7 @@ import {
   PDFKeyValuePair,
   PDFResultBox,
 } from "../components";
+import { deepStripHtml } from "@/lib/html-utils";
 
 interface FormState {
   foundations: {
@@ -143,16 +144,18 @@ const EvolutionarySummaryTemplate = ({
   worldName,
   date,
 }: EvolutionarySummaryTemplateProps) => {
-  const foundations = formState?.foundations;
-  const biochemistry = formState?.biochemistry;
-  const adaptations = formState?.adaptations;
-  const bodyPlan = formState?.bodyPlan;
-  const sensory = formState?.sensory;
-  const reproduction = formState?.reproduction;
-  const social = formState?.social;
-  const cognition = formState?.cognition;
-  const communication = formState?.communication;
-  const integration = formState?.integration;
+  const cleanState = deepStripHtml(formState);
+
+  const foundations = cleanState?.foundations;
+  const biochemistry = cleanState?.biochemistry;
+  const adaptations = cleanState?.adaptations;
+  const bodyPlan = cleanState?.bodyPlan;
+  const sensory = cleanState?.sensory;
+  const reproduction = cleanState?.reproduction;
+  const social = cleanState?.social;
+  const cognition = cleanState?.cognition;
+  const communication = cleanState?.communication;
+  const integration = cleanState?.integration;
 
   const pressureCount = foundations?.primarySurvivalPressures?.length || 0;
   const adaptationCount = adaptations?.keyAdaptations?.length || 0;
@@ -162,7 +165,7 @@ const EvolutionarySummaryTemplate = ({
     <Document>
       <Page size="LETTER" style={styles.page}>
         <PDFHeader
-          toolName="Evolutionary Biology"
+          toolName="Phylo"
           worldName={worldName}
           date={date}
         />

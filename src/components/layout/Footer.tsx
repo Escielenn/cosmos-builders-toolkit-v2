@@ -12,16 +12,22 @@ const Footer = () => {
       { name: "Features", href: "/features" },
       { name: "Pricing", href: "/pricing" },
       { name: "Tools", href: "/#tools" },
+      { name: "Roadmap", href: "/roadmap" },
+      { name: "Writing Workshop", href: "/workshop" },
     ],
     resources: [
+      { name: "Guide", href: "/guide" },
       { name: "Learn", href: "/learn" },
+      { name: "Getting Started", href: "/getting-started" },
+      { name: "Field Manual", href: "/guide/field-manual" },
       { name: "Bookshelf", href: "/bookshelf" },
-      { name: "Changelog", href: "/changelog" },
       { name: "Contact", href: "/contact" },
     ],
     legal: [
       { name: "Privacy Policy", href: "/privacy" },
       { name: "Terms of Service", href: "/terms" },
+      { name: "Credits", href: "/credits" },
+      { name: "Changelog", href: "/changelog" },
     ],
   };
 
@@ -187,9 +193,6 @@ const Footer = () => {
                 Unauthorized copying, modification, or distribution prohibited.
               </p>
             </div>
-            <p className="text-xs text-muted-foreground font-mono uppercase tracking-wider">
-              BUILT IN THORNTON, CO
-            </p>
           </div>
         </div>
       </div>

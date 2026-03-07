@@ -1,0 +1,132 @@
+{
+  "nav": {
+    "tools": "Tools",
+    "worlds": "Worlds",
+    "learn": "Learn",
+    "pricing": "Pricing",
+    "features": "Features",
+    "contact": "Contact",
+    "signIn": "Sign In",
+    "signOut": "Sign Out",
+    "settings": "Settings",
+    "profile": "Profile"
+  },
+  "actions": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "export": "Export",
+    "share": "Share",
+    "close": "Close",
+    "create": "Create",
+    "edit": "Edit",
+    "rename": "Rename",
+    "duplicate": "Duplicate",
+    "upload": "Upload",
+    "download": "Download",
+    "loading": "Loading...",
+    "confirm": "Confirm",
+    "back": "Back",
+    "next": "Next",
+    "search": "Search",
+    "clear": "Clear",
+    "reset": "Reset",
+    "apply": "Apply",
+    "connect": "Connect",
+    "disconnect": "Disconnect"
+  },
+  "settings": {
+    "title": "Settings",
+    "description": "Manage your account, background, and integrations.",
+    "tabs": {
+      "account": "Account",
+      "background": "Background",
+      "integrations": "Integrations",
+      "subscription": "Subscription",
+      "export": "Export",
+      "language": "Language"
+    },
+    "account": {
+      "email": "Email",
+      "emailHint": "Email cannot be changed.",
+      "displayName": "Display Name",
+      "displayNamePlaceholder": "Your name",
+      "bio": "Bio",
+      "bioPlaceholder": "Tell us about yourself...",
+      "saveProfile": "Save Profile",
+      "avatarHint": "Upload your own or choose a preset avatar.",
+      "browseAvatars": "Browse Avatars",
+      "avatarUploaded": "Avatar uploaded",
+      "avatarUploadedDesc": "Don't forget to save your profile.",
+      "profileSaved": "Profile saved",
+      "profileSavedDesc": "Your profile has been updated successfully.",
+      "profileSaveFailed": "Failed to save profile"
+    },
+    "background": {
+      "title": "Background",
+      "default": "Default",
+      "spaceImages": "Space Images",
+      "gradients": "Gradients",
+      "solidColors": "Solid Colors",
+      "custom": "Custom"
+    },
+    "subscription": {
+      "proActive": "Pro Active",
+      "yearlyPlan": "Yearly Plan",
+      "monthlyPlan": "Monthly Plan",
+      "paymentFailed": "Payment failed. Please update your payment method.",
+      "periodEnds": "Current period ends",
+      "cancelsOn": "Cancels on",
+      "manageBilling": "Manage Billing",
+      "upgradeToPro": "Upgrade to Pro",
+      "upgradeDesc": "Unlock all worldbuilding tools and advanced features.",
+      "viewPlans": "View Plans"
+    },
+    "language": {
+      "title": "Language",
+      "description": "Choose your preferred language. More languages coming soon.",
+      "current": "Current language"
+    }
+  },
+  "worksheets": {
+    "newWorksheet": "New Worksheet",
+    "selectWorksheet": "Select Worksheet",
+    "untitled": "Untitled",
+    "deleteConfirm": "Are you sure you want to delete this worksheet?",
+    "deleteWarning": "This action cannot be undone.",
+    "noWorksheets": "No worksheets yet"
+  },
+  "export": {
+    "title": "Export",
+    "summary": "Summary",
+    "fullReport": "Full Report",
+    "pdf": "PDF",
+    "docx": "DOCX",
+    "markdown": "Markdown",
+    "png": "PNG",
+    "generating": "Generating..."
+  },
+  "sharing": {
+    "shareLink": "Share Link",
+    "copyLink": "Copy Link",
+    "linkCopied": "Link copied!",
+    "collaborators": "Collaborators",
+    "invite": "Invite",
+    "owner": "Owner",
+    "editor": "Editor",
+    "viewer": "Viewer"
+  },
+  "worlds": {
+    "createWorld": "Create World",
+    "worldName": "World Name",
+    "noWorlds": "No worlds yet",
+    "sharedWithMe": "Shared with Me"
+  },
+  "auth": {
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "forgotPassword": "Forgot Password?",
+    "continueWithGoogle": "Continue with Google",
+    "orContinueWith": "Or continue with"
+  }
+}

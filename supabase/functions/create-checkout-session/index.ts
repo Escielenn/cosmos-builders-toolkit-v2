@@ -1,12 +1,16 @@
-import { corsHeaders } from '../_shared/cors.ts';
-import { stripe, PRICE_IDS } from '../_shared/stripe.ts';
+import { getCorsHeaders } from '../_shared/cors.ts';
+import { stripe, getPriceId } from '../_shared/stripe.ts';
 import { supabaseAdmin } from '../_shared/supabase.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.7.0';
 
+const ALLOWED_REDIRECT_BASE = 'https://stellarforge.tools';
+
 Deno.serve(async (req) => {
+  const cors = getCorsHeaders(req);
+
   // Handle CORS preflight
   if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders });
+    return new Response('ok', { headers: cors });
   }
 
   try {
@@ -28,10 +32,19 @@ Deno.serve(async (req) => {
       throw new Error('Not authenticated');
     }
 
-    const { priceType, successUrl, cancelUrl } = await req.json();
+    const { priceType, tier = 'pro' } = await req.json();
 
     if (!priceType || !['monthly', 'yearly'].includes(priceType)) {
       throw new Error('Invalid price type');
+    }
+
+    if (!['pro', 'vanguard'].includes(tier)) {
+      throw new Error('Invalid tier');
+    }
+
+    const priceId = getPriceId(tier, priceType);
+    if (!priceId) {
+      throw new Error(`Price ID not configured for ${tier} ${priceType}. Check Stripe secret env vars.`);
     }
 
     // Get or create Stripe customer
@@ -58,33 +71,33 @@ Deno.serve(async (req) => {
         .eq('id', user.id);
     }
 
-    // Create checkout session
+    // Create checkout session with hardcoded trusted redirect URLs
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       line_items: [
         {
-          price: PRICE_IDS[priceType as keyof typeof PRICE_IDS],
+          price: priceId,
           quantity: 1,
         },
       ],
       mode: 'subscription',
-      success_url: successUrl || `${req.headers.get('origin')}/pricing?success=true`,
-      cancel_url: cancelUrl || `${req.headers.get('origin')}/pricing?canceled=true`,
+      success_url: `${ALLOWED_REDIRECT_BASE}/pricing?success=true`,
+      cancel_url: `${ALLOWED_REDIRECT_BASE}/pricing?canceled=true`,
       subscription_data: {
-        metadata: { supabase_user_id: user.id },
+        metadata: { supabase_user_id: user.id, tier },
       },
       allow_promotion_codes: true,
     });
 
     return new Response(
       JSON.stringify({ sessionId: session.id, url: session.url }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      { headers: { ...cors, 'Content-Type': 'application/json' } }
     );
   } catch (error) {
     console.error('Checkout error:', error);
     return new Response(
       JSON.stringify({ error: error.message }),
-      { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      { status: 400, headers: { ...cors, 'Content-Type': 'application/json' } }
     );
   }
 });

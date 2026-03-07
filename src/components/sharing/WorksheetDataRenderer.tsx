@@ -108,7 +108,7 @@ const WorksheetDataRenderer = ({ data }: WorksheetDataRendererProps) => {
   if (entries.length === 0) {
     return (
       <GlassPanel className="p-6">
-        <p className="text-muted-foreground text-center">No data to display.</p>
+        <p className="text-muted-foreground text-center">NO DATA ON FILE.</p>
       </GlassPanel>
     );
   }

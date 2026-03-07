@@ -1,0 +1,772 @@
+/* Stellar Cartographer Styles
+ * Following SIMULATOR_AESTHETIC.md exactly
+ * StellarForge.tools
+ */
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   CONTAINER & CANVAS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.container {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: #09090B;
+  font-family: 'DM Sans', sans-serif;
+  color: #C8C8C8;
+  user-select: none;
+}
+
+.canvas {
+  position: absolute;
+  inset: 0;
+  cursor: grab;
+}
+
+.canvas:active {
+  cursor: grabbing;
+}
+
+.canvas.crosshair {
+  cursor: crosshair;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   FLOATING PANELS - Glass Morphism
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.panel {
+  position: fixed;
+  background: rgba(15, 15, 16, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 8px;
+  padding: 14px 18px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   TITLE PANEL - Top Left
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.titlePanel {
+  composes: panel;
+  top: 20px;
+  left: 20px;
+  min-width: 200px;
+}
+
+.toolTitle {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 26px;
+  font-weight: 300;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  color: #FAFAFA;
+  margin-bottom: 4px;
+}
+
+.toolSubtitle {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 8px;
+  font-weight: 400;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.28);
+  margin-bottom: 12px;
+}
+
+.galaxyNameDisplay {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px;
+  color: rgba(0, 212, 255, 0.6);
+  margin-bottom: 10px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   STATUS BADGE
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.badge {
+  display: inline-block;
+  padding: 6px 14px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  border-radius: 6px;
+  transition: all 0.5s;
+  
+  /* Default: waiting/mapped state */
+  background: rgba(0, 212, 255, 0.03);
+  border: 1px solid rgba(0, 212, 255, 0.08);
+  color: rgba(0, 212, 255, 0.4);
+}
+
+.badge.active {
+  background: rgba(0, 212, 255, 0.08);
+  border-color: rgba(0, 212, 255, 0.2);
+  color: #00D4FF;
+}
+
+.badge.warning {
+  background: rgba(255, 165, 0, 0.08);
+  border-color: rgba(255, 165, 0, 0.2);
+  color: #FFA500;
+}
+
+.badge.success {
+  background: rgba(46, 204, 113, 0.08);
+  border-color: rgba(46, 204, 113, 0.2);
+  color: #2ECC71;
+  animation: pulse 2s infinite;
+}
+
+.badge.danger {
+  background: rgba(231, 76, 60, 0.08);
+  border-color: rgba(231, 76, 60, 0.2);
+  color: #E74C3C;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.65; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   CONTROL PANEL - Left Side
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.controlPanel {
+  composes: panel;
+  top: 20px;
+  left: 20px;
+  margin-top: 140px; /* Below title panel */
+  width: 240px;
+  max-height: calc(100vh - 180px);
+  overflow-y: auto;
+}
+
+/* Custom scrollbar */
+.controlPanel::-webkit-scrollbar {
+  width: 3px;
+}
+
+.controlPanel::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.controlPanel::-webkit-scrollbar-thumb {
+  background: rgba(0, 212, 255, 0.12);
+  border-radius: 2px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   DATA PANEL - Right Side
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.dataPanel {
+  composes: panel;
+  top: 20px;
+  right: 20px;
+  width: 260px;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+}
+
+.dataPanel::-webkit-scrollbar {
+  width: 3px;
+}
+
+.dataPanel::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.dataPanel::-webkit-scrollbar-thumb {
+  background: rgba(0, 212, 255, 0.12);
+  border-radius: 2px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SECTION HEADERS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.sectionHeader {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 7.5px;
+  font-weight: 600;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: rgba(0, 212, 255, 0.35);
+  border-bottom: 1px solid rgba(0, 212, 255, 0.06);
+  padding-bottom: 6px;
+  margin-top: 14px;
+  margin-bottom: 10px;
+}
+
+.sectionHeader:first-child {
+  margin-top: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   CONTROL ROW
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.controlRow {
+  margin-bottom: 10px;
+}
+
+.controlLabel {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.controlLabel span:first-child {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 8.5px;
+  font-weight: 400;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.valueDisplay {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SLIDERS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 1px;
+  outline: none;
+  cursor: pointer;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: #00D4FF;
+  cursor: pointer;
+  border: 2px solid rgba(0, 0, 0, 0.5);
+  transition: transform 0.15s;
+}
+
+.slider::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
+
+.slider::-moz-range-thumb {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: #00D4FF;
+  cursor: pointer;
+  border: 2px solid rgba(0, 0, 0, 0.5);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   BUTTONS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.btn {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 8px;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 7px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.btn:hover {
+  background: rgba(0, 212, 255, 0.08);
+  border-color: rgba(0, 212, 255, 0.2);
+  color: #fff;
+}
+
+.btn.active {
+  background: rgba(0, 212, 255, 0.1);
+  border-color: rgba(0, 212, 255, 0.3);
+  color: #00D4FF;
+}
+
+.btn.primary {
+  background: rgba(0, 212, 255, 0.1);
+  border-color: rgba(0, 212, 255, 0.3);
+  color: #00D4FF;
+}
+
+.btn.primary:hover {
+  background: rgba(0, 212, 255, 0.15);
+  border-color: rgba(0, 212, 255, 0.4);
+}
+
+.btn.danger {
+  color: rgba(231, 76, 60, 0.7);
+}
+
+.btn.danger:hover {
+  background: rgba(231, 76, 60, 0.08);
+  border-color: rgba(231, 76, 60, 0.2);
+  color: #E74C3C;
+}
+
+.btnRow {
+  display: flex;
+  gap: 4px;
+}
+
+.btnRow .btn {
+  flex: 1;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SELECT DROPDOWNS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.select {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 9px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 6px 8px;
+  border-radius: 6px;
+  outline: none;
+  cursor: pointer;
+}
+
+.select:focus {
+  border-color: rgba(0, 212, 255, 0.35);
+}
+
+.select option {
+  background: #0F0F10;
+  color: #C8C8C8;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   TEXT INPUTS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.input {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 7px 10px;
+  border-radius: 6px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.input:focus {
+  border-color: rgba(0, 212, 255, 0.35);
+}
+
+.input::placeholder {
+  color: rgba(255, 255, 255, 0.25);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   DATA READOUTS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.dataRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.dataRow:last-child {
+  border-bottom: none;
+}
+
+.dataLabel {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.dataValue {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.dataValue.cyan {
+  color: #00D4FF;
+}
+
+.dataValue.gold {
+  color: #FFD43B;
+}
+
+.dataValue.green {
+  color: #2ECC71;
+}
+
+.dataValue.orange {
+  color: #FFA500;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SPECTRAL LEGEND
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.spectralLegend {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
+.spectralItem {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.spectralDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   EMPIRE LIST
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.empireList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.empireItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.empireItem:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.empireDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.empireName {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.6);
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.empireCount {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ROUTE / WORMHOLE LIST
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.listItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 8px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 4px;
+  margin-bottom: 4px;
+}
+
+.listItemInfo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.listItemDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.listItemName {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.listItemMeta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.listItemDelete {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  padding: 2px 4px;
+  transition: color 0.2s;
+}
+
+.listItemDelete:hover {
+  color: #E74C3C;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SELECTED STAR PANEL
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.selectedStar {
+  padding: 10px;
+  background: rgba(0, 212, 255, 0.03);
+  border: 1px solid rgba(0, 212, 255, 0.08);
+  border-radius: 6px;
+  margin-bottom: 12px;
+}
+
+.selectedStarName {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: #FAFAFA;
+  margin-bottom: 8px;
+}
+
+.starClass {
+  display: inline-block;
+  padding: 3px 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 500;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.renameRow {
+  display: flex;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.renameRow .input {
+  flex: 1;
+}
+
+.renameRow .btn {
+  flex-shrink: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   TOOLTIP
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.tooltip {
+  position: fixed;
+  pointer-events: none;
+  background: rgba(15, 15, 16, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  padding: 8px 12px;
+  min-width: 120px;
+  z-index: 1000;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.15s, transform 0.15s;
+}
+
+.tooltip.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.tooltipName {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.tooltipClass {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 2px;
+}
+
+.tooltipEmpire {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 8px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ZOOM PANEL - Bottom Right
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.zoomPanel {
+  composes: panel;
+  bottom: 20px;
+  right: 20px;
+  text-align: center;
+  min-width: 60px;
+}
+
+.zoomValue {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 16px;
+  font-weight: 300;
+  color: rgba(0, 212, 255, 0.5);
+}
+
+.zoomLabel {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 7px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.18);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   CREDITS - Bottom Center
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.credits {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 7px;
+  letter-spacing: 1px;
+  color: rgba(255, 255, 255, 0.12);
+}
+
+.credits a {
+  color: rgba(0, 212, 255, 0.25);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.credits a:hover {
+  color: rgba(0, 212, 255, 0.5);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MODE INDICATOR
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.modeIndicator {
+  position: fixed;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 8px 16px;
+  background: rgba(255, 165, 0, 0.08);
+  border: 1px solid rgba(255, 165, 0, 0.2);
+  border-radius: 6px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #FFA500;
+}
+
+.modeIndicator.wormhole {
+  background: rgba(155, 89, 182, 0.08);
+  border-color: rgba(155, 89, 182, 0.2);
+  color: #9B59B6;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MOBILE RESPONSIVE
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+  .toolTitle {
+    font-size: 20px;
+    letter-spacing: 4px;
+  }
+  
+  .controlPanel {
+    width: 200px;
+    padding: 12px 14px;
+  }
+  
+  .dataPanel {
+    display: none;
+  }
+  
+  .btn {
+    padding: 9px 12px; /* Larger touch targets */
+  }
+}
+
+@media (max-width: 480px) {
+  .titlePanel {
+    left: 10px;
+    top: 10px;
+    padding: 10px 14px;
+  }
+  
+  .controlPanel {
+    display: none;
+  }
+  
+  .zoomPanel {
+    bottom: 10px;
+    right: 10px;
+  }
+}

@@ -7,6 +7,7 @@ import {
   PDFKeyValuePair,
   PDFResultBox,
 } from "../components";
+import { deepStripHtml } from "@/lib/html-utils";
 
 interface StellarEnvironment {
   starType: string;
@@ -169,10 +170,11 @@ const NotesBox = ({ label, content }: { label: string; content: string }) => (
 );
 
 const PlanetaryFullReportTemplate = ({
-  formState,
+  formState: rawFormState,
   worldName,
   date,
 }: PlanetaryFullReportTemplateProps) => {
+  const formState = deepStripHtml(rawFormState);
   // Safe access to nested properties
   const stellar = formState?.stellarEnvironment;
   const physical = formState?.physicalCharacteristics;
@@ -206,7 +208,7 @@ const PlanetaryFullReportTemplate = ({
       {/* Page 1: Overview and Stellar Environment */}
       <Page size="LETTER" style={styles.page}>
         <PDFHeader
-          toolName="Planetary Profile"
+          toolName="Genesis"
           worldName={worldName}
           date={date}
         />
@@ -264,7 +266,7 @@ const PlanetaryFullReportTemplate = ({
 
       {/* Page 2: Physical Characteristics and Atmosphere */}
       <Page size="LETTER" style={styles.page}>
-        <PDFHeader toolName="Planetary Profile" worldName={worldName} date={date} />
+        <PDFHeader toolName="Genesis" worldName={worldName} date={date} />
 
         <PDFSection title="2. Physical Characteristics">
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: spacing.md, marginBottom: spacing.md }}>
@@ -321,7 +323,7 @@ const PlanetaryFullReportTemplate = ({
 
       {/* Page 3: Hydrosphere and Temperature */}
       <Page size="LETTER" style={styles.page}>
-        <PDFHeader toolName="Planetary Profile" worldName={worldName} date={date} />
+        <PDFHeader toolName="Genesis" worldName={worldName} date={date} />
 
         <PDFSection title="4. Hydrosphere">
           <PDFKeyValuePair label="Water Presence" value={waterLabel} />
@@ -382,7 +384,7 @@ const PlanetaryFullReportTemplate = ({
 
       {/* Page 4: Geological Features */}
       <Page size="LETTER" style={styles.page}>
-        <PDFHeader toolName="Planetary Profile" worldName={worldName} date={date} />
+        <PDFHeader toolName="Genesis" worldName={worldName} date={date} />
 
         <PDFSection title="7. Geological & Environmental Features">
           <PDFKeyValuePair label="Tectonic Activity" value={tectonicLabel} />
@@ -408,7 +410,7 @@ const PlanetaryFullReportTemplate = ({
 
       {/* Page 5: Three Pressures */}
       <Page size="LETTER" style={styles.page}>
-        <PDFHeader toolName="Planetary Profile" worldName={worldName} date={date} />
+        <PDFHeader toolName="Genesis" worldName={worldName} date={date} />
 
         <PDFSection title="8. The Three Pressures">
           {/* Survival Pressure */}
@@ -499,7 +501,7 @@ const PlanetaryFullReportTemplate = ({
 
       {/* Page 6: Narrative Integration */}
       <Page size="LETTER" style={styles.page}>
-        <PDFHeader toolName="Planetary Profile" worldName={worldName} date={date} />
+        <PDFHeader toolName="Genesis" worldName={worldName} date={date} />
 
         <PDFSection title="9. Narrative Integration">
           {narrative?.environmentAsCharacter && (

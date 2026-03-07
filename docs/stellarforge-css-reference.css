@@ -1,0 +1,554 @@
+/* ==========================================================================
+   STELLARFORGE.TOOLS - DEFINITIVE CSS REFERENCE
+   Use this file as the source of truth for all styling values
+   ========================================================================== */
+
+/* ==========================================================================
+   1. CSS CUSTOM PROPERTIES (Root Variables)
+   ========================================================================== */
+
+:root {
+  /* -------- CORE COLORS -------- */
+  --sf-bg-deep: #09090B;
+  --sf-bg-surface: #0F0F10;
+  --sf-bg-surface-alpha: rgba(15, 15, 16, 0.92);
+  --sf-bg-surface-solid: rgba(15, 15, 16, 0.98);
+  
+  --sf-accent-cyan: #00D4FF;
+  --sf-accent-gold: #FFD43B;
+  --sf-accent-magenta: #E879F9;
+  
+  --sf-text-primary: #FAFAFA;
+  --sf-text-secondary: #C8C8C8;
+  --sf-text-muted: rgba(255, 255, 255, 0.35);
+  --sf-text-ghost: rgba(255, 255, 255, 0.18);
+  
+  /* -------- STATUS COLORS -------- */
+  --sf-status-cyan: #00D4FF;
+  --sf-status-green: #2ECC71;
+  --sf-status-orange: #FFA500;
+  --sf-status-red: #E74C3C;
+  --sf-status-gold: #FFD43B;
+  
+  /* -------- OPACITY PATTERN (0.08 / 0.2 / 1.0) -------- */
+  /* Cyan */
+  --sf-cyan-bg: rgba(0, 212, 255, 0.08);
+  --sf-cyan-bg-active: rgba(0, 212, 255, 0.1);
+  --sf-cyan-border: rgba(0, 212, 255, 0.2);
+  --sf-cyan-border-active: rgba(0, 212, 255, 0.3);
+  --sf-cyan-muted: rgba(0, 212, 255, 0.35);
+  --sf-cyan-subtle: rgba(0, 212, 255, 0.06);
+  
+  /* Green */
+  --sf-green-bg: rgba(46, 204, 113, 0.08);
+  --sf-green-border: rgba(46, 204, 113, 0.2);
+  
+  /* Orange */
+  --sf-orange-bg: rgba(255, 165, 0, 0.08);
+  --sf-orange-border: rgba(255, 165, 0, 0.2);
+  
+  /* Red */
+  --sf-red-bg: rgba(231, 76, 60, 0.08);
+  --sf-red-border: rgba(231, 76, 60, 0.2);
+  
+  /* Gold */
+  --sf-gold-bg: rgba(255, 212, 59, 0.15);
+  --sf-gold-border: rgba(255, 212, 59, 0.25);
+  
+  /* -------- BORDERS -------- */
+  --sf-border-subtle: rgba(255, 255, 255, 0.06);
+  --sf-border-default: rgba(255, 255, 255, 0.08);
+  --sf-border-visible: rgba(255, 255, 255, 0.1);
+  
+  /* -------- BACKGROUNDS - INTERACTIVE -------- */
+  --sf-bg-button: rgba(255, 255, 255, 0.03);
+  --sf-bg-input: rgba(255, 255, 255, 0.04);
+  
+  /* -------- BORDER RADIUS -------- */
+  --sf-radius-sm: 4px;
+  --sf-radius-button: 6px;
+  --sf-radius-input: 6px;
+  --sf-radius-panel: 8px;
+  --sf-radius-card: 12px;
+  --sf-radius-modal: 12px;
+  
+  /* -------- TRANSITIONS -------- */
+  --sf-transition-fast: 0.2s ease;
+  --sf-transition-medium: 0.3s ease;
+  --sf-transition-slow: 0.5s ease;
+  
+  /* -------- BLUR -------- */
+  --sf-blur-panel: blur(16px);
+  --sf-blur-modal: blur(20px);
+  --sf-blur-nav: blur(12px);
+  
+  /* -------- FONTS -------- */
+  --sf-font-heading: 'Jura', system-ui, sans-serif;
+  --sf-font-body: 'DM Sans', system-ui, sans-serif;
+  --sf-font-mono: 'JetBrains Mono', monospace;
+  
+  /* -------- SPACING -------- */
+  --sf-section-padding: 80px;
+  --sf-card-padding: 32px;
+  --sf-panel-padding-x: 18px;
+  --sf-panel-padding-y: 14px;
+  --sf-button-padding-x: 24px;
+  --sf-button-padding-y: 12px;
+  --sf-input-padding-x: 14px;
+  --sf-input-padding-y: 10px;
+}
+
+/* ==========================================================================
+   2. BASE STYLES
+   ========================================================================== */
+
+html, body {
+  background: var(--sf-bg-deep);
+  color: var(--sf-text-primary);
+  font-family: var(--sf-font-body);
+  line-height: 1.6;
+}
+
+/* ==========================================================================
+   3. TYPOGRAPHY
+   ========================================================================== */
+
+/* Hero H1 */
+.sf-hero-title,
+h1.hero {
+  font-family: var(--sf-font-heading);
+  font-weight: 300;
+  font-size: clamp(36px, 8vw, 72px);
+  letter-spacing: 0.05em;
+  line-height: 1.1;
+}
+
+/* Page H1 */
+h1,
+.sf-page-title {
+  font-family: var(--sf-font-heading);
+  font-weight: 300;
+  font-size: 32px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+/* Section H2 */
+h2,
+.sf-section-title {
+  font-family: var(--sf-font-heading);
+  font-weight: 600;
+  font-size: 24px;
+}
+
+/* Card/Tool H3 */
+h3,
+.sf-card-title {
+  font-family: var(--sf-font-heading);
+  font-weight: 500;
+  font-size: 18px;
+}
+
+/* Body text */
+p,
+.sf-body {
+  font-family: var(--sf-font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--sf-text-secondary);
+}
+
+/* Labels */
+label,
+.sf-label {
+  font-family: var(--sf-font-body);
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--sf-text-muted);
+}
+
+/* Data values (numbers, calculations) */
+.sf-data,
+.sf-value,
+.sf-price,
+.sf-stat {
+  font-family: var(--sf-font-mono);
+  font-weight: 500;
+}
+
+/* Simulator-specific typography */
+.sf-sim-title {
+  font-family: var(--sf-font-heading);
+  font-weight: 300;
+  font-size: 26px;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+}
+
+.sf-sim-section-header {
+  font-family: var(--sf-font-heading);
+  font-weight: 600;
+  font-size: 7.5px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--sf-cyan-muted);
+  border-bottom: 1px solid var(--sf-cyan-subtle);
+}
+
+.sf-sim-label {
+  font-family: var(--sf-font-body);
+  font-size: 8.5px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--sf-text-muted);
+}
+
+.sf-sim-value {
+  font-family: var(--sf-font-mono);
+  font-size: 9px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* ==========================================================================
+   4. BUTTONS
+   ========================================================================== */
+
+/* Primary Button (Site-wide) */
+.sf-btn-primary,
+.btn-primary {
+  font-family: var(--sf-font-heading);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: var(--sf-accent-cyan);
+  color: #FFFFFF;
+  padding: var(--sf-button-padding-y) var(--sf-button-padding-x);
+  border: none;
+  border-radius: var(--sf-radius-button);
+  cursor: pointer;
+  transition: all var(--sf-transition-fast);
+}
+
+.sf-btn-primary:hover,
+.btn-primary:hover {
+  transform: scale(1.05);
+}
+
+/* Secondary Button (Site-wide) */
+.sf-btn-secondary,
+.btn-secondary {
+  font-family: var(--sf-font-heading);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: transparent;
+  color: #FFFFFF;
+  padding: var(--sf-button-padding-y) var(--sf-button-padding-x);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: var(--sf-radius-button);
+  cursor: pointer;
+  transition: all var(--sf-transition-fast);
+}
+
+.sf-btn-secondary:hover,
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Tool/Simulator Button (Compact) */
+.sf-btn-tool {
+  font-family: var(--sf-font-heading);
+  font-size: 8px;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 7px 12px;
+  border: 1px solid var(--sf-border-visible);
+  background: var(--sf-bg-button);
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  border-radius: var(--sf-radius-button);
+  transition: all var(--sf-transition-fast);
+}
+
+.sf-btn-tool:hover {
+  background: var(--sf-cyan-bg);
+  border-color: var(--sf-cyan-border);
+  color: #FFFFFF;
+}
+
+.sf-btn-tool.active,
+.sf-btn-tool:active {
+  background: var(--sf-cyan-bg-active);
+  border-color: var(--sf-cyan-border-active);
+  color: var(--sf-accent-cyan);
+}
+
+/* ==========================================================================
+   5. FORM ELEMENTS
+   ========================================================================== */
+
+/* Text Inputs */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="search"],
+textarea,
+.sf-input {
+  font-family: var(--sf-font-body);
+  font-size: 14px;
+  background: var(--sf-bg-input);
+  color: rgba(255, 255, 255, 0.8);
+  border: 1px solid var(--sf-border-visible);
+  padding: var(--sf-input-padding-y) var(--sf-input-padding-x);
+  border-radius: var(--sf-radius-input);
+  outline: none;
+  transition: border-color var(--sf-transition-fast);
+}
+
+input:focus,
+textarea:focus,
+.sf-input:focus {
+  border-color: var(--sf-cyan-muted);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--sf-text-muted);
+}
+
+/* Select Dropdowns */
+select,
+.sf-select {
+  font-family: var(--sf-font-body);
+  font-size: 14px;
+  background: var(--sf-bg-input);
+  color: rgba(255, 255, 255, 0.7);
+  border: 1px solid var(--sf-border-visible);
+  padding: var(--sf-input-padding-y) var(--sf-input-padding-x);
+  border-radius: var(--sf-radius-input);
+  outline: none;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+select option {
+  background: var(--sf-bg-surface);
+  color: var(--sf-text-secondary);
+}
+
+/* Range Sliders */
+input[type="range"],
+.sf-slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 2px;
+  background: var(--sf-border-default);
+  border-radius: 1px;
+  outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--sf-accent-cyan);
+  cursor: pointer;
+  border: 2px solid rgba(0, 0, 0, 0.5);
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--sf-accent-cyan);
+  cursor: pointer;
+  border: 2px solid rgba(0, 0, 0, 0.5);
+}
+
+/* Checkboxes */
+input[type="checkbox"] {
+  accent-color: var(--sf-accent-cyan);
+  width: 14px;
+  height: 14px;
+  cursor: pointer;
+}
+
+/* Slider Value Display */
+.sf-slider-value {
+  font-family: var(--sf-font-mono);
+  font-size: 10px;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* ==========================================================================
+   6. CARDS
+   ========================================================================== */
+
+.sf-card,
+.tool-card {
+  background: var(--sf-bg-surface);
+  border: 1px solid var(--sf-border-default);
+  border-radius: var(--sf-radius-card);
+  padding: var(--sf-card-padding);
+  transition: all var(--sf-transition-fast);
+}
+
+.sf-card:hover,
+.tool-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(0, 212, 255, 0.15);
+}
+
+/* ==========================================================================
+   7. PANELS (Floating/Glass)
+   ========================================================================== */
+
+.sf-panel {
+  background: var(--sf-bg-surface-alpha);
+  border: 1px solid var(--sf-border-default);
+  backdrop-filter: var(--sf-blur-panel);
+  -webkit-backdrop-filter: var(--sf-blur-panel);
+  border-radius: var(--sf-radius-panel);
+  padding: var(--sf-panel-padding-y) var(--sf-panel-padding-x);
+}
+
+/* ==========================================================================
+   8. MODALS
+   ========================================================================== */
+
+.sf-modal-overlay {
+  background: rgba(9, 9, 11, 0.94);
+  backdrop-filter: var(--sf-blur-modal);
+  -webkit-backdrop-filter: var(--sf-blur-modal);
+}
+
+.sf-modal-content {
+  max-width: 680px;
+  padding: 30px 36px;
+  background: var(--sf-bg-surface-solid);
+  border: 1px solid var(--sf-cyan-bg);
+  border-radius: var(--sf-radius-modal);
+}
+
+.sf-modal-title {
+  font-family: var(--sf-font-heading);
+  font-weight: 300;
+  font-size: 28px;
+  letter-spacing: 4px;
+}
+
+/* ==========================================================================
+   9. STATUS BADGES
+   ========================================================================== */
+
+.sf-badge {
+  font-family: var(--sf-font-heading);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  border-radius: var(--sf-radius-button);
+  transition: all var(--sf-transition-slow);
+}
+
+.sf-badge-waiting {
+  background: rgba(0, 212, 255, 0.03);
+  border: 1px solid rgba(0, 212, 255, 0.08);
+  color: rgba(0, 212, 255, 0.4);
+}
+
+.sf-badge-active {
+  background: var(--sf-cyan-bg);
+  border: 1px solid var(--sf-cyan-border);
+  color: var(--sf-accent-cyan);
+}
+
+.sf-badge-success {
+  background: var(--sf-green-bg);
+  border: 1px solid var(--sf-green-border);
+  color: var(--sf-status-green);
+  animation: sf-pulse 2s infinite;
+}
+
+.sf-badge-warning {
+  background: var(--sf-orange-bg);
+  border: 1px solid var(--sf-orange-border);
+  color: var(--sf-status-orange);
+}
+
+.sf-badge-danger {
+  background: var(--sf-red-bg);
+  border: 1px solid var(--sf-red-border);
+  color: var(--sf-status-red);
+  animation: sf-pulse 1.5s infinite;
+}
+
+.sf-badge-pro {
+  background: var(--sf-gold-bg);
+  border: 1px solid var(--sf-gold-border);
+  color: var(--sf-accent-gold);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  padding: 4px 8px;
+  border-radius: var(--sf-radius-sm);
+}
+
+@keyframes sf-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.65; }
+}
+
+/* ==========================================================================
+   10. SCROLLBARS
+   ========================================================================== */
+
+.sf-scrollable::-webkit-scrollbar,
+.sf-panel::-webkit-scrollbar {
+  width: 3px;
+}
+
+.sf-scrollable::-webkit-scrollbar-track,
+.sf-panel::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sf-scrollable::-webkit-scrollbar-thumb,
+.sf-panel::-webkit-scrollbar-thumb {
+  background: rgba(0, 212, 255, 0.12);
+  border-radius: 2px;
+}
+
+/* ==========================================================================
+   11. UTILITIES
+   ========================================================================== */
+
+/* Text Colors */
+.sf-text-primary { color: var(--sf-text-primary); }
+.sf-text-secondary { color: var(--sf-text-secondary); }
+.sf-text-muted { color: var(--sf-text-muted); }
+.sf-text-ghost { color: var(--sf-text-ghost); }
+.sf-text-cyan { color: var(--sf-accent-cyan); }
+.sf-text-success { color: var(--sf-status-green); }
+.sf-text-warning { color: var(--sf-status-orange); }
+.sf-text-danger { color: var(--sf-status-red); }
+
+/* Background Colors */
+.sf-bg-deep { background: var(--sf-bg-deep); }
+.sf-bg-surface { background: var(--sf-bg-surface); }
+
+/* Font Families */
+.sf-font-heading { font-family: var(--sf-font-heading); }
+.sf-font-body { font-family: var(--sf-font-body); }
+.sf-font-mono { font-family: var(--sf-font-mono); }

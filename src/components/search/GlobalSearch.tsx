@@ -143,7 +143,7 @@ const GlobalSearch = ({ open, onOpenChange }: GlobalSearchProps) => {
       <CommandInput placeholder="Type to search worlds, worksheets, and tools..." autoFocus />
       <CommandList>
         <CommandEmpty>
-          {isLoading ? "Loading..." : "No results found."}
+          {isLoading ? "SCANNING ARCHIVE..." : "NO MATCHING RECORDS."}
         </CommandEmpty>
 
         {/* Worlds */}

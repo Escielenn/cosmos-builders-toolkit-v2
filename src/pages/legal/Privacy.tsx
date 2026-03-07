@@ -1,5 +1,6 @@
 import LegalPageLayout from "@/components/layout/LegalPageLayout";
 import { Shield } from "lucide-react";
+import { PRIVACY_BURSTS } from "@/lib/data-bursts";
 
 const privacyContent = `
 ## Your Worlds Are Yours Alone
@@ -320,6 +321,7 @@ const Privacy = () => {
       badgeIcon={<Shield className="w-3 h-3 mr-1" />}
       badgeText="Privacy"
       content={privacyContent}
+      bursts={PRIVACY_BURSTS}
     />
   );
 };

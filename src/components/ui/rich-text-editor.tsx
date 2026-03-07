@@ -19,8 +19,18 @@ import {
   Minus,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useEffect, useCallback } from "react";
+import { useEffect } from "react";
 import { BracketPanel } from "@/components/ui/bracket-panel";
+import { useWritingPreferences } from "@/hooks/use-writing-preferences";
+import { WRITING_THEMES } from "@/lib/writing/themes";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { WikiLink } from "@/components/editor/WikiLinkExtension";
+import { WikiLinkAutocomplete } from "@/components/editor/WikiLinkAutocomplete";
+import { useWikiLinkTrigger } from "@/components/editor/useWikiLinkTrigger";
 
 interface RichTextEditorProps {
   content: string;
@@ -29,6 +39,8 @@ interface RichTextEditorProps {
   readOnly?: boolean;
   className?: string;
   minHeight?: string;
+  /** When provided, enables [[ wiki-link autocomplete for this world */
+  worldId?: string;
 }
 
 const ToolbarButton = ({
@@ -62,7 +74,10 @@ const RichTextEditor = ({
   readOnly = false,
   className,
   minHeight = "200px",
+  worldId,
 }: RichTextEditorProps) => {
+  const { preferences, updatePreferences } = useWritingPreferences();
+
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
@@ -70,6 +85,7 @@ const RichTextEditor = ({
       }),
       Underline,
       Placeholder.configure({ placeholder }),
+      WikiLink,
     ],
     content,
     editable: !readOnly,
@@ -110,13 +126,16 @@ const RichTextEditor = ({
     }
   }, [readOnly, editor]);
 
+  // Wiki-link trigger (only active when worldId is provided)
+  const wikiLink = useWikiLinkTrigger(worldId ? editor : null);
+
   if (!editor) return null;
 
   return (
     <BracketPanel color="stellar">
     <div
       className={cn(
-        "rounded-md border border-[#5B8DEF]/15 bg-background overflow-hidden",
+        "rounded-none border border-[#5B8DEF]/15 bg-background overflow-hidden relative",
         className
       )}
     >
@@ -227,6 +246,32 @@ const RichTextEditor = ({
           >
             <Redo className="w-4 h-4" />
           </ToolbarButton>
+
+          {/* Theme Picker */}
+          <div className="w-px h-5 bg-border mx-1" />
+          <div className="flex items-center gap-1 ml-0.5">
+            {WRITING_THEMES.map((theme) => (
+              <Tooltip key={theme.id}>
+                <TooltipTrigger asChild>
+                  <button
+                    type="button"
+                    onClick={() => updatePreferences({ themeId: theme.id })}
+                    className={cn(
+                      "w-3.5 h-3.5 rounded-full border transition-all",
+                      preferences.themeId === theme.id
+                        ? "ring-2 ring-[#5B8DEF] ring-offset-1 ring-offset-background border-[#5B8DEF]"
+                        : "border-border/50 hover:border-foreground/50"
+                    )}
+                    style={{ backgroundColor: theme.swatch[0] }}
+                    aria-label={theme.name}
+                  />
+                </TooltipTrigger>
+                <TooltipContent side="bottom" className="text-xs">
+                  {theme.name}
+                </TooltipContent>
+              </Tooltip>
+            ))}
+          </div>
         </div>
       )}
 
@@ -239,7 +284,19 @@ const RichTextEditor = ({
           readOnly && "bg-muted/30"
         )}
         style={{ "--editor-min-h": minHeight } as React.CSSProperties}
+        data-writing-theme={!readOnly ? preferences.themeId : undefined}
       />
+
+      {/* Wiki-link autocomplete popover */}
+      {worldId && wikiLink.isActive && (
+        <WikiLinkAutocomplete
+          worldId={worldId}
+          query={wikiLink.query}
+          position={wikiLink.position}
+          onSelect={wikiLink.insertWikiLink}
+          onClose={wikiLink.closeAutocomplete}
+        />
+      )}
     </div>
     </BracketPanel>
   );

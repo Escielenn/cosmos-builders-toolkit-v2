@@ -1,8 +1,9 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, lazy, Suspense } from "react";
 import PageShell from "@/components/layout/PageShell";
 import { useWorldId } from "@/hooks/use-world-id";
 import { PageBursts } from "@/components/ui/data-burst";
 import { TOOL_PAGE_BURSTS } from "@/lib/data-bursts";
+const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
 import { Link, useSearchParams } from "react-router-dom";
 import { ArrowLeft, Download, Save, Info, Printer, ExternalLink, HelpCircle, FileText, Image as ImageIcon, Calculator } from "lucide-react";
 import { getToolIcon } from "@/components/icons/tool-icons";
@@ -30,6 +31,7 @@ import ToolSidebar from "@/components/tools/ToolSidebar";
 import CollapsibleSection from "@/components/tools/CollapsibleSection";
 import KeyChoicesSidebar, { KeyChoicesSection, MobileKeyChoices } from "@/components/tools/KeyChoicesSidebar";
 import ToolActionBar from "@/components/tools/ToolActionBar";
+import { ToolPageQuote } from "@/components/quotes/ToolPageQuote";
 import QuickExportButton from "@/components/tools/QuickExportButton";
 import ExportDialog from "@/components/tools/ExportDialog";
 import ShareDialog from "@/components/sharing/ShareDialog";
@@ -557,16 +559,18 @@ const DrakeEquationCalculator = () => {
 
   return (
     <PageShell>
-      <main className="container relative mx-auto px-4 pt-24 pb-16 max-w-6xl">
+      <main className="container relative mx-auto px-4 pt-24 pb-16">
         <PageBursts bursts={TOOL_PAGE_BURSTS["drake-equation-calculator"]} />
         {/* Back Link */}
         <Link
           to={worldId ? `/worlds/${worldId}` : "/"}
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
+          className="inline-flex items-center gap-2 text-sm text-tier-3 hover:text-foreground transition-colors mb-6"
         >
           <ArrowLeft className="w-4 h-4" />
           {worldId ? "Back to World" : "Back to Dashboard"}
         </Link>
+
+        <ToolPageQuote toolId="drake-equation-calculator" />
 
         {/* Action Bar */}
         <ToolActionBar
@@ -582,6 +586,8 @@ const DrakeEquationCalculator = () => {
           onNotesClick={() => setNotesSheetOpen(true)}
           onMoodboardClick={() => setMoodboardSheetOpen(true)}
           moodboardCount={formState.moodboard?.length || 0}
+          worldId={worldId}
+          worksheetId={currentWorksheetId || worksheetId}
           className="mb-6"
           extraActions={
             <QuickExportButton
@@ -604,7 +610,7 @@ const DrakeEquationCalculator = () => {
               <span className="font-light">Drake Equation Calculator</span>
             </h1>
           </div>
-          <p className="text-muted-foreground max-w-2xl">
+          <p className="text-tier-2 max-w-2xl">
             Calculate the number of detectable civilizations in your galaxy. Use this tool to establish
             the cosmic context for your science fiction world—from lonely universe to teeming galaxy.
           </p>
@@ -647,7 +653,7 @@ const DrakeEquationCalculator = () => {
           defaultOpen={true}
         >
           <div className="prose prose-invert max-w-none">
-            <p className="text-muted-foreground">
+            <p className="text-tier-2">
               In 1961, astronomer Frank Drake created an equation to estimate the number of
               active, communicative extraterrestrial civilizations in the Milky Way. For worldbuilders,
               it's a framework for deciding how populated your galaxy should be.
@@ -657,7 +663,7 @@ const DrakeEquationCalculator = () => {
               N = R* × f<sub>p</sub> × n<sub>e</sub> × f<sub>l</sub> × f<sub>i</sub> × f<sub>c</sub> × L
             </div>
 
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-tier-3">
               Each variable represents a step from star formation to detectable civilization.
               Adjust the sliders below to explore different scenarios for your world.
             </p>
@@ -682,15 +688,15 @@ const DrakeEquationCalculator = () => {
                       </Label>
                       <Tooltip>
                         <TooltipTrigger>
-                          <HelpCircle className="w-4 h-4 text-muted-foreground" />
+                          <HelpCircle className="w-4 h-4 text-tier-2" />
                         </TooltipTrigger>
                         <TooltipContent className="max-w-xs">
                           <p className="font-medium mb-1">{variable.description}</p>
-                          <p className="text-xs text-muted-foreground">{variable.scientificRange.note}</p>
+                          <p className="text-xs text-tier-4">{variable.scientificRange.note}</p>
                         </TooltipContent>
                       </Tooltip>
                     </div>
-                    <p className="text-sm text-muted-foreground mb-2">{variable.description}</p>
+                    <p className="text-sm text-tier-3 mb-2">{variable.description}</p>
                   </div>
                   <div className="text-right min-w-[100px]">
                     <span className="text-2xl font-mono font-bold text-primary">
@@ -700,7 +706,7 @@ const DrakeEquationCalculator = () => {
                       }
                     </span>
                     {variable.unit && (
-                      <span className="text-xs text-muted-foreground block">{variable.unit}</span>
+                      <span className="text-xs text-tier-4 block">{variable.unit}</span>
                     )}
                   </div>
                 </div>
@@ -720,7 +726,7 @@ const DrakeEquationCalculator = () => {
                   className="w-full"
                 />
 
-                <div className="flex justify-between text-xs text-muted-foreground">
+                <div className="flex justify-between text-xs text-tier-4">
                   <span>{variable.useLogScale ? formatNumber(variable.min) : variable.min}</span>
                   <span className="text-primary/70">
                     Scientific range: {variable.scientificRange.low}–{variable.useLogScale ? formatNumber(variable.scientificRange.high) : variable.scientificRange.high}
@@ -728,7 +734,7 @@ const DrakeEquationCalculator = () => {
                   <span>{variable.useLogScale ? formatNumber(variable.max) : variable.max}</span>
                 </div>
 
-                <p className="text-xs text-muted-foreground italic">{variable.worldbuildingNote}</p>
+                <p className="text-xs text-tier-4 italic">{variable.worldbuildingNote}</p>
 
                 <Textarea
                   placeholder={`Your notes on ${variable.name.toLowerCase()} in your world...`}
@@ -750,7 +756,7 @@ const DrakeEquationCalculator = () => {
           defaultOpen={true}
         >
           <div className="text-center py-8">
-            <div className="text-sm text-muted-foreground mb-2">
+            <div className="text-sm text-tier-3 mb-2">
               Estimated number of detectable civilizations:
             </div>
             <div className={`text-6xl font-mono font-bold mb-4 ${interpretation.color}`}>
@@ -759,7 +765,7 @@ const DrakeEquationCalculator = () => {
             <Badge variant="outline" className={`text-lg px-4 py-1 ${interpretation.color}`}>
               {interpretation.label}
             </Badge>
-            <p className="text-muted-foreground mt-4 max-w-xl mx-auto">
+            <p className="text-tier-2 mt-4 max-w-xl mx-auto">
               {interpretation.description}
             </p>
 
@@ -770,6 +776,76 @@ const DrakeEquationCalculator = () => {
               </div>
               <div className="font-mono text-sm mt-1 text-primary">
                 N = {formatNumber(N)}
+              </div>
+            </div>
+
+            {/* Multiplicative Chain Visualization */}
+            <div className="mt-8 space-y-2">
+              <h4 className="font-mono text-xs uppercase tracking-sf-wide text-tier-2 text-center mb-4">
+                Factor Contribution
+              </h4>
+              {(() => {
+                const factors = [
+                  { symbol: "R*", value: formState.values.rStar, label: "Star Formation" },
+                  { symbol: "fp", value: formState.values.fp, label: "Have Planets" },
+                  { symbol: "ne", value: formState.values.ne, label: "Habitable" },
+                  { symbol: "fl", value: formState.values.fl, label: "Life Develops" },
+                  { symbol: "fi", value: formState.values.fi, label: "Intelligence" },
+                  { symbol: "fc", value: formState.values.fc, label: "Technology" },
+                  { symbol: "L", value: formState.values.L, label: "Longevity" },
+                ];
+                let running = 1;
+                const steps = factors.map((f) => {
+                  running *= f.value;
+                  return { ...f, cumulative: running };
+                });
+                const maxLog = Math.log10(Math.max(...steps.map((s) => Math.max(s.cumulative, 0.0001))));
+                const minLog = Math.log10(Math.max(Math.min(...steps.map((s) => Math.max(s.cumulative, 0.0001))), 0.0001));
+                const range = Math.max(maxLog - minLog, 1);
+                return steps.map((step, i) => {
+                  const logVal = Math.log10(Math.max(step.cumulative, 0.0001));
+                  const barWidth = Math.max(6, ((logVal - minLog) / range) * 80 + 10);
+                  return (
+                    <div key={step.symbol} className="flex items-center gap-3">
+                      <span className="font-mono text-xs text-tier-3 w-8 text-right shrink-0">
+                        {step.symbol}
+                      </span>
+                      <div className="flex-1 relative h-5">
+                        <div
+                          className="absolute left-1/2 top-0 h-full rounded-sm transition-all duration-500"
+                          style={{
+                            width: `${barWidth}%`,
+                            transform: 'translateX(-50%)',
+                            background: `linear-gradient(90deg, rgba(0,212,255,0.1), rgba(0,212,255,${0.12 + (1 - i / 7) * 0.3}), rgba(0,212,255,0.1))`,
+                            border: '1px solid rgba(0,212,255,0.12)',
+                          }}
+                        />
+                      </div>
+                      <span className="font-mono text-xs text-tier-4 w-20 text-right shrink-0">
+                        {step.cumulative < 0.01
+                          ? step.cumulative.toExponential(1)
+                          : step.cumulative < 1000
+                          ? step.cumulative.toFixed(2)
+                          : step.cumulative < 1000000
+                          ? `${(step.cumulative / 1000).toFixed(1)}k`
+                          : `${(step.cumulative / 1000000).toFixed(1)}M`}
+                      </span>
+                    </div>
+                  );
+                });
+              })()}
+              <div className="flex items-center gap-3 mt-2 pt-2 border-t border-border">
+                <span className="font-mono text-xs text-primary w-8 text-right shrink-0 font-semibold">
+                  N
+                </span>
+                <div className="flex-1 text-center">
+                  <span className={`font-mono text-lg font-bold ${interpretation.color}`}>
+                    {formatNumber(N)}
+                  </span>
+                </div>
+                <Badge variant="outline" className={`text-xs ${interpretation.color} shrink-0`}>
+                  {interpretation.label}
+                </Badge>
               </div>
             </div>
           </div>
@@ -785,67 +861,72 @@ const DrakeEquationCalculator = () => {
           <div className="space-y-6">
             <div>
               <Label className="text-base font-semibold">Your Answer to the Fermi Paradox</Label>
-              <p className="text-sm text-muted-foreground mb-2">
+              <p className="text-sm text-tier-3 mb-2">
                 If your N is high but your galaxy seems empty, why? If N is low, what does that mean for your characters?
               </p>
-              <Textarea
-                placeholder="Why haven't we found them? Or why are they everywhere? What's your galaxy's answer to 'Where is everyone?'"
-                value={formState.worldbuilding.fermiAnswer}
-                onChange={(e) => updateWorldbuilding("fermiAnswer", e.target.value)}
-                rows={3}
-              />
+              <Suspense fallback={<div className="h-24 rounded-md bg-accent/10 animate-pulse" />}>
+                <RichTextEditor
+                  content={formState.worldbuilding.fermiAnswer}
+                  onChange={(html) => updateWorldbuilding("fermiAnswer", html)}
+                  placeholder="Why haven't we found them? Or why are they everywhere? What's your galaxy's answer to 'Where is everyone?'"
+                />
+              </Suspense>
             </div>
 
             <div>
               <Label className="text-base font-semibold">Where Is the Great Filter?</Label>
-              <p className="text-sm text-muted-foreground mb-2">
+              <p className="text-sm text-tier-3 mb-2">
                 Which step is hardest to pass? This shapes whether your ruins are biological or technological.
               </p>
-              <Textarea
-                placeholder="Is life hard to start? Intelligence rare? Technology self-destructive? Civilizations short-lived?"
-                value={formState.worldbuilding.greatFilterLocation}
-                onChange={(e) => updateWorldbuilding("greatFilterLocation", e.target.value)}
-                rows={3}
-              />
+              <Suspense fallback={<div className="h-24 rounded-md bg-accent/10 animate-pulse" />}>
+                <RichTextEditor
+                  content={formState.worldbuilding.greatFilterLocation}
+                  onChange={(html) => updateWorldbuilding("greatFilterLocation", html)}
+                  placeholder="Is life hard to start? Intelligence rare? Technology self-destructive? Civilizations short-lived?"
+                />
+              </Suspense>
             </div>
 
             <div>
               <Label className="text-base font-semibold">Character of Your Galaxy</Label>
-              <p className="text-sm text-muted-foreground mb-2">
+              <p className="text-sm text-tier-3 mb-2">
                 Based on your N, what's the general feel of space travel in your world?
               </p>
-              <Textarea
-                placeholder="Crowded and political? Empty and haunting? Scattered with ancient ruins? Teeming with diversity?"
-                value={formState.worldbuilding.galaxyCharacter}
-                onChange={(e) => updateWorldbuilding("galaxyCharacter", e.target.value)}
-                rows={3}
-              />
+              <Suspense fallback={<div className="h-24 rounded-md bg-accent/10 animate-pulse" />}>
+                <RichTextEditor
+                  content={formState.worldbuilding.galaxyCharacter}
+                  onChange={(html) => updateWorldbuilding("galaxyCharacter", html)}
+                  placeholder="Crowded and political? Empty and haunting? Scattered with ancient ruins? Teeming with diversity?"
+                />
+              </Suspense>
             </div>
 
             <div>
               <Label className="text-base font-semibold">Story Implications</Label>
-              <p className="text-sm text-muted-foreground mb-2">
+              <p className="text-sm text-tier-3 mb-2">
                 What kinds of stories does your galactic population enable or prevent?
               </p>
-              <Textarea
-                placeholder="First contact stories? Galactic wars? Lonely exploration? Ancient mysteries?"
-                value={formState.worldbuilding.storyImplications}
-                onChange={(e) => updateWorldbuilding("storyImplications", e.target.value)}
-                rows={3}
-              />
+              <Suspense fallback={<div className="h-24 rounded-md bg-accent/10 animate-pulse" />}>
+                <RichTextEditor
+                  content={formState.worldbuilding.storyImplications}
+                  onChange={(html) => updateWorldbuilding("storyImplications", html)}
+                  placeholder="First contact stories? Galactic wars? Lonely exploration? Ancient mysteries?"
+                />
+              </Suspense>
             </div>
 
             <div>
               <Label className="text-base font-semibold">Types of Civilizations</Label>
-              <p className="text-sm text-muted-foreground mb-2">
+              <p className="text-sm text-tier-3 mb-2">
                 What kinds of civilizations exist in your galaxy? What are their relationships?
               </p>
-              <Textarea
-                placeholder="Elder races? Young upstarts? Hive minds? Artificial intelligences? Machine civilizations?"
-                value={formState.worldbuilding.civilizationTypes}
-                onChange={(e) => updateWorldbuilding("civilizationTypes", e.target.value)}
-                rows={3}
-              />
+              <Suspense fallback={<div className="h-24 rounded-md bg-accent/10 animate-pulse" />}>
+                <RichTextEditor
+                  content={formState.worldbuilding.civilizationTypes}
+                  onChange={(html) => updateWorldbuilding("civilizationTypes", html)}
+                  placeholder="Elder races? Young upstarts? Hive minds? Artificial intelligences? Machine civilizations?"
+                />
+              </Suspense>
             </div>
           </div>
         </CollapsibleSection>
@@ -857,7 +938,7 @@ const DrakeEquationCalculator = () => {
           icon={<Info className="w-5 h-5 text-primary" />}
           defaultOpen={true}
         >
-          <p className="text-sm text-muted-foreground mb-4">
+          <p className="text-sm text-tier-3 mb-4">
             Click a preset to load its values. These represent common science fiction scenarios.
           </p>
           <div className="grid gap-4 md:grid-cols-2">
@@ -868,7 +949,7 @@ const DrakeEquationCalculator = () => {
                 onClick={() => applyPreset(preset)}
               >
                 <h4 className="font-semibold mb-1">{preset.name}</h4>
-                <p className="text-sm text-muted-foreground mb-2">{preset.description}</p>
+                <p className="text-sm text-tier-3 mb-2">{preset.description}</p>
                 <div className="flex flex-wrap gap-1">
                   {preset.storyTypes.map((type) => (
                     <Badge key={type} variant="outline" className="text-xs">

@@ -1,6 +1,7 @@
 import { Document, Page, View, Text } from "@react-pdf/renderer";
 import { styles, colors, spacing, typography } from "../../styles";
 import { PDFHeader, PDFFooter, PDFSection, PDFKeyValuePair } from "../../components";
+import { deepStripHtml } from "@/lib/html-utils";
 
 interface WorksheetData {
   id: string;
@@ -164,19 +165,25 @@ const EmpireViewTemplate = ({
   worksheets,
   date,
 }: EmpireViewTemplateProps) => {
+  // Strip any residual HTML from worksheet data (defensive)
+  const sanitized = worksheets.map((ws) => ({
+    ...ws,
+    data: deepStripHtml(ws.data),
+  }));
+
   const order = [
     "empire-designer",
     "technology-consequences",
     "drake-equation-calculator",
   ];
-  const sorted = [...worksheets].sort(
+  const sorted = [...sanitized].sort(
     (a, b) => order.indexOf(a.tool_type) - order.indexOf(b.tool_type)
   );
 
   return (
     <Document>
       <Page size="LETTER" style={styles.page}>
-        <PDFHeader toolName="Empire View" worldName={worldName} date={date} />
+        <PDFHeader toolName="Empire View" worldName={worldName} date={date} hideLogo />
 
         <View
           style={{

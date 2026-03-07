@@ -1,8 +1,10 @@
 import { memo } from "react";
 import { Handle, Position, type NodeProps } from "@xyflow/react";
 import { FileText, Folder } from "lucide-react";
+import * as LucideIcons from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { CompletionStatus, CascadeLayer } from "@/services/world-data";
+import { ENTITY_TYPE_ICONS } from "@/services/world-data";
 
 // Layer-specific border colors (HSL at low opacity)
 const LAYER_COLORS: Record<CascadeLayer, string> = {
@@ -35,11 +37,49 @@ export interface GraphNodeData {
   [key: string]: unknown;
 }
 
+// Entity-type accent colors for entry nodes
+const ENTITY_TYPE_COLORS: Record<string, string> = {
+  planet: "rgba(77, 159, 255, 0.15)",
+  star_system: "rgba(255, 184, 0, 0.15)",
+  species: "rgba(0, 255, 136, 0.15)",
+  faction: "rgba(155, 93, 229, 0.15)",
+  character: "rgba(255, 179, 71, 0.15)",
+  technology: "rgba(255, 69, 58, 0.15)",
+  location: "rgba(77, 159, 255, 0.15)",
+  vessel: "rgba(61, 255, 205, 0.15)",
+  mythology: "rgba(91, 141, 239, 0.15)",
+};
+
+const ENTITY_TYPE_HOVER_COLORS: Record<string, string> = {
+  planet: "rgba(77, 159, 255, 0.4)",
+  star_system: "rgba(255, 184, 0, 0.4)",
+  species: "rgba(0, 255, 136, 0.4)",
+  faction: "rgba(155, 93, 229, 0.4)",
+  character: "rgba(255, 179, 71, 0.4)",
+  technology: "rgba(255, 69, 58, 0.4)",
+  location: "rgba(77, 159, 255, 0.4)",
+  vessel: "rgba(61, 255, 205, 0.4)",
+  mythology: "rgba(91, 141, 239, 0.4)",
+};
+
+function getEntryIcon(entryType?: string) {
+  if (!entryType) return Folder;
+  const iconName = ENTITY_TYPE_ICONS[entryType];
+  if (iconName) {
+    const Icon = (LucideIcons as any)[iconName];
+    if (Icon) return Icon;
+  }
+  return Folder;
+}
+
 const GraphNodeComponent = memo(({ data, selected }: NodeProps) => {
   const nodeData = data as unknown as GraphNodeData;
+
+  // Use entity-type colors for entries when available
+  const useEntityColor = nodeData.kind === "entry" && nodeData.entryType;
   const borderColor = selected
-    ? LAYER_HOVER_COLORS[nodeData.layerId]
-    : LAYER_COLORS[nodeData.layerId];
+    ? (useEntityColor ? (ENTITY_TYPE_HOVER_COLORS[nodeData.entryType!] ?? LAYER_HOVER_COLORS[nodeData.layerId]) : LAYER_HOVER_COLORS[nodeData.layerId])
+    : (useEntityColor ? (ENTITY_TYPE_COLORS[nodeData.entryType!] ?? LAYER_COLORS[nodeData.layerId]) : LAYER_COLORS[nodeData.layerId]);
 
   return (
     <div
@@ -70,7 +110,7 @@ const GraphNodeComponent = memo(({ data, selected }: NodeProps) => {
 
         {/* Icon */}
         {nodeData.kind === "entry" ? (
-          <Folder className="w-3 h-3 text-muted-foreground shrink-0" />
+          (() => { const EntryIcon = getEntryIcon(nodeData.entryType); return <EntryIcon className="w-3 h-3 text-muted-foreground shrink-0" />; })()
         ) : (
           <FileText className="w-3 h-3 text-muted-foreground shrink-0" />
         )}

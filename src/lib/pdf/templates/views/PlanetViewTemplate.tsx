@@ -1,6 +1,7 @@
 import { Document, Page, View, Text } from "@react-pdf/renderer";
 import { styles, colors, spacing, typography } from "../../styles";
 import { PDFHeader, PDFFooter, PDFSection, PDFKeyValuePair } from "../../components";
+import { deepStripHtml } from "@/lib/html-utils";
 
 interface WorksheetData {
   id: string;
@@ -40,11 +41,11 @@ const STAR_TYPE_LABELS: Record<string, string> = {
 };
 
 const TIER_LABELS: Record<string, string> = {
-  "1": "Tier 1 — Shirtsleeve",
-  "2": "Tier 2 — Habitable",
-  "3": "Tier 3 — Challenging",
-  "4": "Tier 4 — Hostile",
-  "5": "Tier 5 — Extreme",
+  "1": "Tier 1—Shirtsleeve",
+  "2": "Tier 2—Habitable",
+  "3": "Tier 3—Challenging",
+  "4": "Tier 4—Hostile",
+  "5": "Tier 5—Extreme",
 };
 
 const RenderStarSystem = ({ ws }: { ws: WorksheetData }) => {
@@ -130,20 +131,26 @@ const PlanetViewTemplate = ({
   worksheets,
   date,
 }: PlanetViewTemplateProps) => {
+  // Strip any residual HTML from worksheet data (defensive)
+  const sanitized = worksheets.map((ws) => ({
+    ...ws,
+    data: deepStripHtml(ws.data),
+  }));
+
   // Order worksheets: star system → planetary → ECR
   const order = [
     "star-system-builder",
     "planetary-profile",
     "environmental-chain-reaction",
   ];
-  const sorted = [...worksheets].sort(
+  const sorted = [...sanitized].sort(
     (a, b) => order.indexOf(a.tool_type) - order.indexOf(b.tool_type)
   );
 
   return (
     <Document>
       <Page size="LETTER" style={styles.page}>
-        <PDFHeader toolName="Planet View" worldName={worldName} date={date} />
+        <PDFHeader toolName="Planet View" worldName={worldName} date={date} hideLogo />
 
         {/* Summary */}
         <View

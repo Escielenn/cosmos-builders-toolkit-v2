@@ -7,6 +7,7 @@ import {
   PDFKeyValuePair,
   PDFResultBox,
 } from "../components";
+import { deepStripHtml } from "@/lib/html-utils";
 
 interface Species {
   id: string;
@@ -66,8 +67,10 @@ const SpeciesMatrixSummaryTemplate = ({
   worldName,
   date,
 }: SpeciesMatrixSummaryTemplateProps) => {
-  const species = formState?.species || [];
-  const pairs = formState?.pairs || [];
+  const cleanState = deepStripHtml(formState);
+
+  const species = cleanState?.species || [];
+  const pairs = cleanState?.pairs || [];
 
   const namedSpecies = species.filter((s) => s.name);
   const speciesCount = namedSpecies.length;
@@ -82,7 +85,7 @@ const SpeciesMatrixSummaryTemplate = ({
     <Document>
       <Page size="LETTER" style={styles.page}>
         <PDFHeader
-          toolName="Species Interaction Matrix"
+          toolName="Symbiosis"
           worldName={worldName}
           date={date}
         />
@@ -91,8 +94,8 @@ const SpeciesMatrixSummaryTemplate = ({
           value={`${speciesCount} Species`}
           label={`${pairCount} Interaction Pair${pairCount !== 1 ? "s" : ""}`}
           description={
-            formState?.overallEquilibrium
-              ? `Equilibrium: ${formatId(formState.overallEquilibrium)}`
+            cleanState?.overallEquilibrium
+              ? `Equilibrium: ${formatId(cleanState.overallEquilibrium)}`
               : undefined
           }
         />
@@ -152,20 +155,20 @@ const SpeciesMatrixSummaryTemplate = ({
         <PDFSection title="Synthesis">
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: spacing.sm }}>
             <View style={{ flex: 1, minWidth: 140 }}>
-              <PDFKeyValuePair label="Overall Equilibrium" value={formatId(formState?.overallEquilibrium)} />
+              <PDFKeyValuePair label="Overall Equilibrium" value={formatId(cleanState?.overallEquilibrium)} />
             </View>
             <View style={{ flex: 1, minWidth: 140 }}>
-              <PDFKeyValuePair label="Overall Trajectory" value={formatId(formState?.overallTrajectory)} />
+              <PDFKeyValuePair label="Overall Trajectory" value={formatId(cleanState?.overallTrajectory)} />
             </View>
           </View>
-          {formState?.dominantSpecies && (
-            <PDFKeyValuePair label="Dominant Species" value={formState.dominantSpecies} />
+          {cleanState?.dominantSpecies && (
+            <PDFKeyValuePair label="Dominant Species" value={cleanState.dominantSpecies} />
           )}
-          {formState?.mostVolatilePair && (
-            <PDFKeyValuePair label="Most Volatile Pair" value={formState.mostVolatilePair} />
+          {cleanState?.mostVolatilePair && (
+            <PDFKeyValuePair label="Most Volatile Pair" value={cleanState.mostVolatilePair} />
           )}
-          {formState?.centralConflict && (
-            <PDFKeyValuePair label="Central Conflict" value={formState.centralConflict} />
+          {cleanState?.centralConflict && (
+            <PDFKeyValuePair label="Central Conflict" value={cleanState.centralConflict} />
           )}
         </PDFSection>
 

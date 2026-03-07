@@ -39,6 +39,7 @@ import ToolSidebar from "@/components/tools/ToolSidebar";
 import CollapsibleSection from "@/components/tools/CollapsibleSection";
 import KeyChoicesSidebar, { KeyChoicesSection, MobileKeyChoices } from "@/components/tools/KeyChoicesSidebar";
 import ToolActionBar from "@/components/tools/ToolActionBar";
+import { ToolPageQuote } from "@/components/quotes/ToolPageQuote";
 import QuickExportButton from "@/components/tools/QuickExportButton";
 import ExportDialog from "@/components/tools/ExportDialog";
 import { StarSystemSummaryTemplate, StarSystemFullReportTemplate } from "@/lib/pdf/templates";
@@ -605,11 +606,13 @@ const StarSystemBuilder = () => {
         {/* Back Link */}
         <Link
           to={worldId ? `/worlds/${worldId}` : "/"}
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
+          className="inline-flex items-center gap-2 text-sm text-tier-3 hover:text-foreground transition-colors mb-6"
         >
           <ArrowLeft className="w-4 h-4" />
           {worldId ? "Back to World" : "Back to Dashboard"}
         </Link>
+
+        <ToolPageQuote toolId="star-system-builder" />
 
         {/* Action Bar */}
         <ToolActionBar
@@ -635,6 +638,8 @@ const StarSystemBuilder = () => {
               defaultFilename="star-system"
             />
           }
+          worldId={worldId}
+          worksheetId={currentWorksheetId || worksheetId}
         />
 
         {/* Title */}
@@ -646,7 +651,7 @@ const StarSystemBuilder = () => {
                 <span className="font-normal">Orrery:</span>{" "}
                 <span className="font-light">Star System Builder</span>
               </h1>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-tier-3">
                 Design multi-planet systems with stellar relationships
               </p>
             </div>
@@ -669,16 +674,14 @@ const StarSystemBuilder = () => {
           )}
         </div>
 
-        {/* Mobile Navigation */}
-        <div className="lg:hidden mb-6 space-y-4">
+        {/* Mobile Sidebars - Right side floating buttons */}
+        <div className="fixed right-4 bottom-4 xl:hidden z-40 no-print flex flex-col gap-2">
           <MobileSectionNav sections={SECTIONS} />
           <MobileKeyChoices sections={keyChoicesSections} />
         </div>
 
         {/* Main Content */}
-        <div className="flex gap-8">
-          {/* Form Sections */}
-          <div className="flex-1 space-y-6 max-w-4xl">
+        <div className="space-y-6">
             {/* System Name */}
             <GlassPanel className="p-6">
               <div className="space-y-2">
@@ -702,7 +705,7 @@ const StarSystemBuilder = () => {
             {/* Section 1: Primary Star */}
             <CollapsibleSection
               id="section-primary"
-              title="1. Primary Star"
+              title="Primary Star"
               levelNumber={1}
               guidance="The heart of your system. The star's properties determine everything else - habitable zones, planetary formation, and the visual character of your worlds."
               thinkLike="an astronomer cataloging a new discovery"
@@ -719,7 +722,7 @@ const StarSystemBuilder = () => {
 
                 <div className="space-y-3">
                   <Label>Spectral Class</Label>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-tier-3">
                     The star's temperature and color determine habitability, planetary formation, and visual atmosphere.
                   </p>
                   <RadioGroup
@@ -737,10 +740,10 @@ const StarSystemBuilder = () => {
                           <Label htmlFor={star.id} className="font-medium cursor-pointer">
                             {star.name}
                           </Label>
-                          <p className="text-xs text-muted-foreground mt-1">
+                          <p className="text-xs text-tier-4 mt-1">
                             {star.description}
                           </p>
-                          <p className="text-xs text-muted-foreground">
+                          <p className="text-xs text-tier-4">
                             Temp: {star.temperature} | Lifetime: {star.lifetime}
                           </p>
                         </div>
@@ -753,7 +756,7 @@ const StarSystemBuilder = () => {
                 {selectedStarClass && (
                   <GlassPanel className="p-4 bg-primary/5 border-primary/20">
                     <p className="text-sm font-medium mb-2">Worldbuilding Implications:</p>
-                    <ul className="text-sm text-muted-foreground space-y-1">
+                    <ul className="text-sm text-tier-3 space-y-1">
                       {selectedStarClass.consequences.map((c, i) => (
                         <li key={i} className="flex items-start gap-2">
                           <span className="text-primary">•</span>
@@ -761,7 +764,7 @@ const StarSystemBuilder = () => {
                         </li>
                       ))}
                     </ul>
-                    <p className="text-sm text-muted-foreground mt-3 italic">
+                    <p className="text-sm text-tier-3 mt-3 italic">
                       {selectedStarClass.worldbuilding}
                     </p>
                   </GlassPanel>
@@ -801,7 +804,7 @@ const StarSystemBuilder = () => {
             {/* Section 2: Stellar Configuration */}
             <CollapsibleSection
               id="section-configuration"
-              title="2. Stellar Configuration"
+              title="Stellar Configuration"
               levelNumber={2}
               guidance="Most stars have companions. Binary and triple systems create complex orbital dynamics and spectacular sky phenomena."
               thinkLike="a navigator plotting courses through multiple suns"
@@ -829,7 +832,7 @@ const StarSystemBuilder = () => {
                               {config.stability}
                             </Badge>
                           </div>
-                          <p className="text-xs text-muted-foreground mt-1">
+                          <p className="text-xs text-tier-4 mt-1">
                             {config.description}
                           </p>
                         </div>
@@ -842,7 +845,7 @@ const StarSystemBuilder = () => {
                 {selectedConfig && (
                   <GlassPanel className="p-4 bg-primary/5 border-primary/20">
                     <p className="text-sm font-medium mb-2">Consequences:</p>
-                    <ul className="text-sm text-muted-foreground space-y-1">
+                    <ul className="text-sm text-tier-3 space-y-1">
                       {selectedConfig.consequences.map((c, i) => (
                         <li key={i} className="flex items-start gap-2">
                           <span className="text-primary">•</span>
@@ -938,7 +941,7 @@ const StarSystemBuilder = () => {
             {/* Section 3: Planetary Bodies */}
             <CollapsibleSection
               id="section-bodies"
-              title="3. Planetary Bodies"
+              title="Planetary Bodies"
               levelNumber={3}
               guidance="Define each major body in your system. Consider orbital zones, resonances, and how bodies influence each other."
               thinkLike="a planetary scientist surveying a newly discovered system"
@@ -1119,7 +1122,7 @@ const StarSystemBuilder = () => {
             {/* Section 4: Orbital Mechanics */}
             <CollapsibleSection
               id="section-orbits"
-              title="4. Orbital Mechanics"
+              title="Orbital Mechanics"
               levelNumber={4}
               guidance="How do orbits interact? Resonances create stability or chaos. Belts and clouds provide resources and hazards."
               thinkLike="a celestial mechanic plotting centuries of motion"
@@ -1142,11 +1145,11 @@ const StarSystemBuilder = () => {
                           <Label htmlFor={`res-${res.id}`} className="font-medium cursor-pointer">
                             {res.name}
                           </Label>
-                          <p className="text-xs text-muted-foreground mt-1">
+                          <p className="text-xs text-tier-4 mt-1">
                             {res.description}
                           </p>
                           {res.examples && (
-                            <p className="text-xs text-muted-foreground italic">
+                            <p className="text-xs text-tier-4 italic">
                               Examples: {res.examples.join(", ")}
                             </p>
                           )}
@@ -1228,7 +1231,7 @@ const StarSystemBuilder = () => {
             {/* Section 5: System History */}
             <CollapsibleSection
               id="section-history"
-              title="5. System History"
+              title="System History"
               levelNumber={5}
               guidance="Every system has a history written in its architecture. Formation events, collisions, and migrations shape what exists today."
               thinkLike="a cosmic archaeologist reading orbital fossils"
@@ -1251,7 +1254,7 @@ const StarSystemBuilder = () => {
                           <Label htmlFor={`age-${age.id}`} className="font-medium cursor-pointer">
                             {age.name}
                           </Label>
-                          <p className="text-xs text-muted-foreground mt-1">
+                          <p className="text-xs text-tier-4 mt-1">
                             {age.description}
                           </p>
                         </div>
@@ -1324,7 +1327,7 @@ const StarSystemBuilder = () => {
             {/* Section 6: Habitability */}
             <CollapsibleSection
               id="section-habitability"
-              title="6. Habitability"
+              title="Habitability"
               levelNumber={6}
               guidance="Where could life exist? Consider the habitable zone, but also moons, subsurface oceans, and exotic possibilities."
               thinkLike="an astrobiologist searching for life"
@@ -1369,7 +1372,7 @@ const StarSystemBuilder = () => {
 
                 <div className="space-y-3">
                   <Label>Habitability Modifiers</Label>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-tier-3">
                     Factors that extend or contract the habitable zone
                   </p>
                   <div className="grid md:grid-cols-2 gap-3">
@@ -1387,7 +1390,7 @@ const StarSystemBuilder = () => {
                           <Label htmlFor={`mod-${mod.id}`} className="text-sm cursor-pointer">
                             {mod.name}
                           </Label>
-                          <p className="text-xs text-muted-foreground">{mod.description}</p>
+                          <p className="text-xs text-tier-4">{mod.description}</p>
                         </div>
                       </div>
                     ))}
@@ -1429,7 +1432,7 @@ const StarSystemBuilder = () => {
             {/* Section 7: Narrative Elements */}
             <CollapsibleSection
               id="section-narrative"
-              title="7. Narrative Elements"
+              title="Narrative Elements"
               levelNumber={7}
               guidance="Transform astronomical data into story. What makes this system memorable? What stories does it want to tell?"
               thinkLike="a writer using astronomy as worldbuilding"
@@ -1437,7 +1440,7 @@ const StarSystemBuilder = () => {
               <div className="space-y-6">
                 <div className="space-y-2">
                   <Label>System Character</Label>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-tier-3">
                     If this system were a character, what would its personality be?
                   </p>
                   <Textarea
@@ -1450,7 +1453,7 @@ const StarSystemBuilder = () => {
 
                 <div className="space-y-2">
                   <Label>Visual Signature</Label>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-tier-3">
                     What would you see from a ship entering this system?
                   </p>
                   <Textarea
@@ -1529,7 +1532,7 @@ const StarSystemBuilder = () => {
                         <Badge variant="outline" className="text-xs mt-1">
                           {example.configuration}
                         </Badge>
-                        <p className="text-sm text-muted-foreground mt-2">
+                        <p className="text-sm text-tier-3 mt-2">
                           {example.description}
                         </p>
                         <p className="text-sm text-primary mt-2 italic">
@@ -1553,7 +1556,7 @@ const StarSystemBuilder = () => {
               <div className="space-y-6">
                 <div className="space-y-3">
                   <Label>Consistency Checks</Label>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-tier-3">
                     Verify your system makes physical sense
                   </p>
                   <div className="space-y-2">
@@ -1622,14 +1625,13 @@ const StarSystemBuilder = () => {
               </div>
             </CollapsibleSection>
 
-          </div>
-
-          {/* Sidebar */}
-          <ToolSidebar>
-            <SectionNavigation sections={SECTIONS} />
-            <KeyChoicesSidebar sections={keyChoicesSections} />
-          </ToolSidebar>
         </div>
+
+        {/* Sidebar */}
+        <ToolSidebar>
+          <SectionNavigation sections={SECTIONS} mode="inline" />
+          <KeyChoicesSidebar sections={keyChoicesSections} mode="inline" />
+        </ToolSidebar>
       </main>
 
       <WorksheetNotesSheet

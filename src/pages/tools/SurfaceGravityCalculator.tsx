@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, lazy, Suspense } from "react";
+import { useState, useEffect, useMemo, useRef, useCallback, lazy, Suspense } from "react";
 import PageShell from "@/components/layout/PageShell";
 import { useWorldId } from "@/hooks/use-world-id";
 import { PageBursts } from "@/components/ui/data-burst";
@@ -60,6 +60,7 @@ import { useWorksheetShare } from "@/hooks/use-sharing";
 import type { MoodboardImage } from "@/hooks/use-moodboard";
 import { WorksheetNotesSheet } from "@/components/tools/WorksheetNotesSheet";
 import { WorksheetMoodboardSheet } from "@/components/tools/WorksheetMoodboardSheet";
+import { ToolPageQuote } from "@/components/quotes/ToolPageQuote";
 import {
   SurfaceGravitySummaryTemplate,
   SurfaceGravityFullReportTemplate,
@@ -157,6 +158,104 @@ function massToSlider(mass: number): number {
 function sliderToMass(slider: number): number {
   const t = slider / 1000;
   return 0.01 * Math.pow(20 / 0.01, t);
+}
+
+// ─── Ball Drop Animation ─────────────────────────────────────────────
+
+function BallDropAnimation({ earthG, planetG, planetLabel }: { earthG: number; planetG: number; planetLabel: string }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const animRef = useRef<number>(0);
+
+  const draw = useCallback(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const H_DROP = 2; // meters
+    const earthT = Math.sqrt((2 * H_DROP) / earthG);
+    const planetT = Math.sqrt((2 * H_DROP) / Math.max(planetG, 0.01));
+    const maxT = Math.max(earthT, planetT);
+    const cycle = maxT + 0.6;
+
+    let start: number | null = null;
+    const loop = (ts: number) => {
+      if (!start) start = ts;
+      const elapsed = ((ts - start) / 1000) % cycle;
+
+      const W = canvas.width;
+      const CH = canvas.height;
+      const dpr = window.devicePixelRatio || 1;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const cw = W / dpr, ch = CH / dpr;
+      ctx.clearRect(0, 0, cw, ch);
+
+      const colW = cw / 2;
+      const trackTop = 20;
+      const trackH = ch - 40;
+      const ballR = 5;
+
+      // Ground lines
+      ctx.strokeStyle = "rgba(255,255,255,0.1)";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(10, trackTop + trackH);
+      ctx.lineTo(colW - 10, trackTop + trackH);
+      ctx.moveTo(colW + 10, trackTop + trackH);
+      ctx.lineTo(cw - 10, trackTop + trackH);
+      ctx.stroke();
+
+      // Height ticks
+      ctx.fillStyle = "rgba(255,255,255,0.12)";
+      ctx.font = "7px 'JetBrains Mono', monospace";
+      ctx.textAlign = "left";
+      ctx.fillText("2m", 10, trackTop + 4);
+      ctx.fillText("0m", 10, trackTop + trackH - 3);
+
+      // Earth ball
+      const eFrac = Math.min(elapsed / earthT, 1);
+      const eY = trackTop + eFrac * eFrac * (trackH - ballR * 2) + ballR;
+      ctx.beginPath();
+      ctx.arc(colW / 2, eY, ballR, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(0,229,160,0.75)";
+      ctx.fill();
+
+      // Planet ball
+      const pFrac = Math.min(elapsed / planetT, 1);
+      const pY = trackTop + pFrac * pFrac * (trackH - ballR * 2) + ballR;
+      ctx.beginPath();
+      ctx.arc(colW + colW / 2, pY, ballR, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(0,212,255,0.75)";
+      ctx.fill();
+
+      // Labels
+      ctx.fillStyle = "rgba(255,255,255,0.3)";
+      ctx.font = "8px 'JetBrains Mono', monospace";
+      ctx.textAlign = "center";
+      ctx.fillText(`Earth (${earthT.toFixed(2)}s)`, colW / 2, ch - 4);
+      ctx.fillText(`Planet ${planetLabel} (${planetT.toFixed(2)}s)`, colW + colW / 2, ch - 4);
+
+      animRef.current = requestAnimationFrame(loop);
+    };
+    animRef.current = requestAnimationFrame(loop);
+  }, [earthG, planetG, planetLabel]);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = 300 * dpr;
+    canvas.height = 160 * dpr;
+    draw();
+    return () => { cancelAnimationFrame(animRef.current); };
+  }, [draw]);
+
+  return (
+    <div className="flex flex-col items-center">
+      <p className="font-mono text-[10px] uppercase tracking-[1px] text-tier-4 mb-2">2m Ball Drop Comparison</p>
+      <canvas ref={canvasRef} style={{ width: 300, height: 160 }} />
+    </div>
+  );
 }
 
 // ─── Component ───────────────────────────────────────────────────────
@@ -424,11 +523,13 @@ const SurfaceGravityCalculator = () => {
         {/* Back link */}
         <Link
           to={worldId ? `/worlds/${worldId}` : "/"}
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
+          className="inline-flex items-center gap-2 text-sm text-tier-3 hover:text-foreground transition-colors mb-6"
         >
           <ArrowLeft className="w-4 h-4" />
           {worldId ? "Back to World" : "Back to Dashboard"}
         </Link>
+
+        <ToolPageQuote toolId="surface-gravity-calculator" />
 
         {/* Action bar */}
         <ToolActionBar
@@ -454,6 +555,8 @@ const SurfaceGravityCalculator = () => {
               fullTemplate={<SurfaceGravityFullReportTemplate formState={formState} worldName={worldNameForExport} />}
             />
           }
+          worldId={worldId}
+          worksheetId={currentWorksheetId || worksheetId}
         />
 
         {/* Title */}
@@ -466,7 +569,7 @@ const SurfaceGravityCalculator = () => {
               <span className="font-light">Surface Gravity Calculator</span>
             </h1>
           </div>
-          <p className="text-muted-foreground mt-2 max-w-2xl">
+          <p className="text-tier-2 mt-2 max-w-2xl">
             Calculate surface gravity for any planet and trace how weight shapes biology, psychology, mythology, and culture.
           </p>
           {(currentWorksheetId || worksheetId) && (
@@ -514,7 +617,7 @@ const SurfaceGravityCalculator = () => {
                       <span>{preset.emoji}</span>
                       <span className="font-medium text-sm">{preset.label}</span>
                     </div>
-                    <p className="text-[11px] text-muted-foreground line-clamp-2">{preset.description}</p>
+                    <p className="text-[11px] text-tier-2 line-clamp-2">{preset.description}</p>
                     {preset.source === "fictional" && (
                       <Badge variant="outline" className="mt-1 text-[10px] px-1 py-0">Fiction</Badge>
                     )}
@@ -551,7 +654,7 @@ const SurfaceGravityCalculator = () => {
                     </SelectContent>
                   </Select>
                   {compositionPreset && compositionPreset.id !== "custom" && (
-                    <p className="text-xs text-muted-foreground">{compositionPreset.description}</p>
+                    <p className="text-xs text-tier-4">{compositionPreset.description}</p>
                   )}
                 </div>
 
@@ -570,7 +673,7 @@ const SurfaceGravityCalculator = () => {
                     max={1000}
                     step={1}
                   />
-                  <div className="flex justify-between text-xs text-muted-foreground">
+                  <div className="flex justify-between text-xs text-tier-4">
                     <span>0.01 M⊕</span>
                     <span>20 M⊕</span>
                   </div>
@@ -591,14 +694,14 @@ const SurfaceGravityCalculator = () => {
                     max={1000}
                     step={1}
                   />
-                  <div className="flex justify-between text-xs text-muted-foreground">
+                  <div className="flex justify-between text-xs text-tier-4">
                     <span>0.3 R⊕</span>
                     <span>4.0 R⊕</span>
                   </div>
                 </div>
 
                 {formState.primary.linked && formState.primary.compositionPreset !== "custom" && (
-                  <p className="text-xs text-muted-foreground flex items-center gap-1">
+                  <p className="text-xs text-tier-4 flex items-center gap-1">
                     🔗 Mass and radius linked via {compositionPreset?.label} composition
                     <button
                       onClick={() => {
@@ -644,7 +747,7 @@ const SurfaceGravityCalculator = () => {
                     max={1000}
                     step={1}
                   />
-                  <div className="flex justify-between text-xs text-muted-foreground">
+                  <div className="flex justify-between text-xs text-tier-4">
                     <span>50 K</span>
                     <span>288 K (Earth)</span>
                     <span>1000 K</span>
@@ -697,7 +800,7 @@ const SurfaceGravityCalculator = () => {
                     <div className="font-mono text-5xl font-bold text-primary">
                       {formatGravity(result.gravity)}
                     </div>
-                    <div className="text-sm text-muted-foreground mt-1">
+                    <div className="text-sm text-tier-3 mt-1">
                       {result.gravityMs2.toFixed(2)} m/s²
                     </div>
                     <Badge className={`mt-2 ${result.regimeColor}`}>
@@ -713,24 +816,24 @@ const SurfaceGravityCalculator = () => {
                   {/* Data grid */}
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                     <GlassPanel className="p-3 text-center">
-                      <div className="text-xs text-muted-foreground mb-1">Escape Velocity</div>
+                      <div className="text-xs text-tier-4 mb-1">Escape Velocity</div>
                       <div className="font-mono text-lg text-foreground">{result.escapeVelocity.toFixed(2)}</div>
-                      <div className="text-xs text-muted-foreground">km/s</div>
+                      <div className="text-xs text-tier-4">km/s</div>
                     </GlassPanel>
                     <GlassPanel className="p-3 text-center">
-                      <div className="text-xs text-muted-foreground mb-1">Orbital Velocity</div>
+                      <div className="text-xs text-tier-4 mb-1">Orbital Velocity</div>
                       <div className="font-mono text-lg text-foreground">{result.orbitalVelocity.toFixed(2)}</div>
-                      <div className="text-xs text-muted-foreground">km/s</div>
+                      <div className="text-xs text-tier-4">km/s</div>
                     </GlassPanel>
                     <GlassPanel className="p-3 text-center">
-                      <div className="text-xs text-muted-foreground mb-1">Mean Density</div>
+                      <div className="text-xs text-tier-4 mb-1">Mean Density</div>
                       <div className="font-mono text-lg text-foreground">{result.meanDensity.toFixed(2)}</div>
-                      <div className="text-xs text-muted-foreground">g/cm³ ({result.densityRatio.toFixed(2)}× Earth)</div>
+                      <div className="text-xs text-tier-4">g/cm³ ({result.densityRatio.toFixed(2)}× Earth)</div>
                     </GlassPanel>
                     <GlassPanel className="p-3 text-center">
-                      <div className="text-xs text-muted-foreground mb-1">Δv to Orbit</div>
+                      <div className="text-xs text-tier-4 mb-1">Δv to Orbit</div>
                       <div className="font-mono text-lg text-foreground">{result.deltaV.deltaVToOrbit.toFixed(1)}</div>
-                      <div className="text-xs text-muted-foreground">km/s ({result.deltaV.earthComparison.toFixed(2)}× Earth)</div>
+                      <div className="text-xs text-tier-4">km/s ({result.deltaV.earthComparison.toFixed(2)}× Earth)</div>
                     </GlassPanel>
                   </div>
 
@@ -752,24 +855,29 @@ const SurfaceGravityCalculator = () => {
               guidance={SECTION_HELPERS["weight-comparisons"]}
             >
               {result.valid && (
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  <GlassPanel className="p-3">
-                    <div className="text-xs text-muted-foreground mb-1">70 kg Human Weighs</div>
-                    <div className="font-mono text-xl text-primary">{result.humanWeight.planetWeightKg.toFixed(1)} kg</div>
-                  </GlassPanel>
-                  <GlassPanel className="p-3">
-                    <div className="text-xs text-muted-foreground mb-1">2m Drop Time</div>
-                    <div className="font-mono text-xl text-primary">{result.dropTime.toFixed(2)}s</div>
-                    <div className="text-xs text-muted-foreground">Impact: {result.dropSpeed.toFixed(1)} km/h</div>
-                  </GlassPanel>
-                  <GlassPanel className="p-3">
-                    <div className="text-xs text-muted-foreground mb-1">High Jump (2m on Earth)</div>
-                    <div className="font-mono text-xl text-primary">{result.jumpHeight.toFixed(2)}m</div>
-                  </GlassPanel>
-                  <GlassPanel className="p-3">
-                    <div className="text-xs text-muted-foreground mb-1">Terminal Velocity</div>
-                    <div className="font-mono text-xl text-primary">~{result.terminalVelocity.toFixed(0)} km/h</div>
-                  </GlassPanel>
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    <GlassPanel className="p-3">
+                      <div className="text-xs text-tier-4 mb-1">70 kg Human Weighs</div>
+                      <div className="font-mono text-xl text-primary">{result.humanWeight.planetWeightKg.toFixed(1)} kg</div>
+                    </GlassPanel>
+                    <GlassPanel className="p-3">
+                      <div className="text-xs text-tier-4 mb-1">2m Drop Time</div>
+                      <div className="font-mono text-xl text-primary">{result.dropTime.toFixed(2)}s</div>
+                      <div className="text-xs text-tier-4">Impact: {result.dropSpeed.toFixed(1)} km/h</div>
+                    </GlassPanel>
+                    <GlassPanel className="p-3">
+                      <div className="text-xs text-tier-4 mb-1">High Jump (2m on Earth)</div>
+                      <div className="font-mono text-xl text-primary">{result.jumpHeight.toFixed(2)}m</div>
+                    </GlassPanel>
+                    <GlassPanel className="p-3">
+                      <div className="text-xs text-tier-4 mb-1">Terminal Velocity</div>
+                      <div className="font-mono text-xl text-primary">~{result.terminalVelocity.toFixed(0)} km/h</div>
+                    </GlassPanel>
+                  </div>
+
+                  {/* Ball Drop Animation */}
+                  <BallDropAnimation earthG={9.80665} planetG={result.gravityMs2} planetLabel={`${result.gravity.toFixed(2)}g`} />
                 </div>
               )}
             </CollapsibleSection>
@@ -803,15 +911,15 @@ const SurfaceGravityCalculator = () => {
                       {result.deltaV.verdict.label}
                     </Badge>
                   </div>
-                  <p className="text-sm text-muted-foreground">{result.deltaV.verdict.description}</p>
+                  <p className="text-sm text-tier-3">{result.deltaV.verdict.description}</p>
 
                   <div className="grid grid-cols-2 gap-3">
                     <GlassPanel className="p-3">
-                      <div className="text-xs text-muted-foreground mb-1">vs Earth (9.4 km/s)</div>
+                      <div className="text-xs text-tier-4 mb-1">vs Earth (9.4 km/s)</div>
                       <div className="font-mono text-lg">{result.deltaV.earthComparison.toFixed(2)}×</div>
                     </GlassPanel>
                     <GlassPanel className="p-3">
-                      <div className="text-xs text-muted-foreground mb-1">Chemical Rocket Mass Ratio</div>
+                      <div className="text-xs text-tier-4 mb-1">Chemical Rocket Mass Ratio</div>
                       <div className="font-mono text-lg">
                         {result.deltaV.massRatio > 10000 ? "∞" : result.deltaV.massRatio.toFixed(1)}:1
                       </div>
@@ -868,15 +976,15 @@ const SurfaceGravityCalculator = () => {
 
                   return (
                     <TabsContent key={cat.id} value={cat.id} className="space-y-4 mt-4">
-                      <h3 className="font-heading text-lg font-semibold">{block.heading}</h3>
+                      <h3 className="font-heading text-[11px] font-light uppercase tracking-[3px] text-[hsl(var(--sf-section-green))]">{block.heading}</h3>
 
                       {block.paragraphs.map((p, i) => (
-                        <p key={i} className="text-sm text-muted-foreground leading-relaxed">{p}</p>
+                        <p key={i} className="text-sm text-tier-3 leading-relaxed">{p}</p>
                       ))}
 
                       {block.prompts.length > 0 && (
                         <div className="space-y-2 pt-2">
-                          <Label className="text-xs uppercase tracking-wider text-muted-foreground">Writing Prompts</Label>
+                          <Label className="text-xs uppercase tracking-wider text-tier-2">Writing Prompts</Label>
                           {block.prompts.map((prompt, i) => (
                             <p key={i} className="text-sm text-primary/80 italic">• {prompt}</p>
                           ))}

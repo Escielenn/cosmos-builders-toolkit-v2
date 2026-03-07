@@ -6,7 +6,25 @@ const getStripeKey = () => Deno.env.get('STRIPE_SECRET_KEY') || '';
 export const PRICE_IDS = {
   monthly: Deno.env.get('STRIPE_MONTHLY_PRICE_ID') || '',
   yearly: Deno.env.get('STRIPE_YEARLY_PRICE_ID') || '',
+  vanguard_monthly: Deno.env.get('STRIPE_VANGUARD_MONTHLY_PRICE_ID') || '',
+  vanguard_yearly: Deno.env.get('STRIPE_VANGUARD_YEARLY_PRICE_ID') || '',
 };
+
+// Determine subscription tier from a Stripe price ID
+export function getTierFromPriceId(priceId: string): 'pro' | 'vanguard' {
+  if (priceId === PRICE_IDS.vanguard_monthly || priceId === PRICE_IDS.vanguard_yearly) {
+    return 'vanguard';
+  }
+  return 'pro';
+}
+
+// Get the correct Stripe price ID for a given tier and billing interval
+export function getPriceId(tier: string, priceType: string): string {
+  if (tier === 'vanguard') {
+    return priceType === 'yearly' ? PRICE_IDS.vanguard_yearly : PRICE_IDS.vanguard_monthly;
+  }
+  return priceType === 'yearly' ? PRICE_IDS.yearly : PRICE_IDS.monthly;
+}
 
 async function stripeRequest(endpoint: string, method: string = 'GET', body?: Record<string, any>) {
   const headers: Record<string, string> = {

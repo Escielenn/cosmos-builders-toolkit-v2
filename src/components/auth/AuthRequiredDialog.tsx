@@ -19,7 +19,7 @@ const AuthRequiredDialog = ({ open, onOpenChange }: AuthRequiredDialogProps) => 
 
   const handleSignUp = () => {
     onOpenChange(false);
-    navigate("/auth?tab=signup");
+    navigate("/auth");
   };
 
   const handleLogIn = () => {
@@ -32,20 +32,20 @@ const AuthRequiredDialog = ({ open, onOpenChange }: AuthRequiredDialogProps) => 
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="font-heading text-xl">
-            Sign in to Create Worlds
+            AUTHENTICATION REQUIRED
           </DialogTitle>
           <DialogDescription>
-            Create an account to save and manage your worlds across devices.
+            Establish credentials to access the archive.
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-3 mt-4">
           <Button className="w-full gap-2" size="lg" onClick={handleSignUp}>
             <UserPlus className="w-4 h-4" />
-            Sign Up
+            CREATE ACCOUNT
           </Button>
           <Button variant="outline" className="w-full gap-2" size="lg" onClick={handleLogIn}>
             <LogIn className="w-4 h-4" />
-            Log In
+            AUTHENTICATE
           </Button>
         </div>
         <p className="text-xs text-muted-foreground text-center mt-4">

@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TIDELOCK — The Science | StellarForge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:#09090B;
+  color:rgba(255,255,255,.6);
+  font-family:'DM Sans',sans-serif;
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+/* ── SITE HEADER ──────────────────────────────────── */
+.site-header{
+  position:sticky;top:0;z-index:50;
+  border-bottom:1px solid rgba(255,255,255,.06);
+  backdrop-filter:blur(20px);
+  background:rgba(15,15,15,.95);
+  height:64px;
+}
+.site-header .container{
+  max-width:1200px;
+  margin:0 auto;
+  padding:0 16px;
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.site-header .brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  text-decoration:none;
+}
+.site-header .brand-text{
+  display:flex;
+  flex-direction:column;
+}
+.site-header .brand-name{
+  font-family:'Space Grotesk',sans-serif;
+  font-weight:300;
+  font-size:18px;
+  line-height:1.1;
+  letter-spacing:3px;
+  color:#fff;
+  text-transform:uppercase;
+}
+.site-header .brand-tagline{
+  font-size:12px;
+  color:rgba(255,255,255,.4);
+  letter-spacing:.5px;
+}
+.site-header nav{
+  display:flex;
+  align-items:center;
+  gap:28px;
+}
+.site-header nav a{
+  font-size:11px;
+  font-weight:500;
+  text-transform:uppercase;
+  letter-spacing:2px;
+  color:rgba(255,255,255,.4);
+  text-decoration:none;
+  transition:color .2s;
+}
+.site-header nav a:hover{color:#00D4FF}
+.site-header .tidelock-btn{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:10px;
+  font-weight:500;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+  padding:7px 14px;
+  border:1px solid rgba(0,212,255,.25);
+  background:rgba(0,212,255,.06);
+  color:rgba(0,212,255,.7);
+  border-radius:6px;
+  text-decoration:none;
+  transition:all .2s;
+}
+.site-header .tidelock-btn:hover{
+  background:rgba(0,212,255,.12);
+  border-color:rgba(0,212,255,.4);
+  color:#00D4FF;
+}
+
+/* ── MAIN CONTENT ───────────────────────────────── */
+.science-page{
+  max-width:780px;
+  margin:0 auto;
+  padding:48px 28px 80px;
+}
+.science-page h1{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:32px;font-weight:300;
+  color:#FAFAFA;
+  letter-spacing:5px;text-transform:uppercase;
+  margin-bottom:6px;
+}
+.science-page .subtitle{
+  font-size:8.5px;font-family:'DM Sans',sans-serif;
+  letter-spacing:2.5px;text-transform:uppercase;
+  color:rgba(0,212,255,.3);
+  margin-bottom:36px;
+}
+.sci-section{
+  font-size:9px;
+  font-family:'Space Grotesk',sans-serif;
+  font-weight:600;
+  letter-spacing:2.5px;
+  text-transform:uppercase;
+  color:rgba(0,212,255,.35);
+  margin-top:40px;
+  margin-bottom:12px;
+  padding-bottom:5px;
+  border-bottom:1px solid rgba(0,212,255,.06);
+}
+.sci-section:first-of-type{margin-top:0}
+.science-page p{
+  font-family:'DM Sans',sans-serif;
+  font-size:13.5px;
+  line-height:1.8;
+  color:rgba(255,255,255,.6);
+  margin:0 0 14px;
+}
+.science-page p strong{
+  color:rgba(255,255,255,.85);
+  font-weight:600;
+}
+.science-page code{
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;
+  color:#00D4FF;
+  background:rgba(0,212,255,.06);
+  padding:1px 5px;
+  border-radius:3px;
+}
+.eq{
+  font-family:'JetBrains Mono',monospace;
+  font-size:12.5px;
+  color:rgba(0,212,255,.7);
+  background:rgba(0,212,255,.04);
+  border:1px solid rgba(0,212,255,.06);
+  border-radius:6px;
+  padding:14px 18px;
+  margin:16px 0;
+  display:block;
+  text-align:center;
+  line-height:1.9;
+  letter-spacing:.5px;
+}
+.src{
+  font-family:'DM Sans',sans-serif;
+  font-size:11px;
+  color:rgba(255,255,255,.35);
+  margin:5px 0;
+  line-height:1.7;
+  padding-left:12px;
+  border-left:2px solid rgba(0,212,255,.05);
+}
+.src a{color:rgba(0,212,255,.4);text-decoration:none}
+.src a:hover{color:#00D4FF;text-decoration:underline}
+.note{
+  font-family:'DM Sans',sans-serif;
+  font-size:11.5px;
+  font-style:italic;
+  color:rgba(255,255,255,.35);
+  border-left:2px solid rgba(0,212,255,.12);
+  padding:10px 16px;
+  margin:16px 0;
+  background:rgba(0,212,255,.015);
+  border-radius:0 4px 4px 0;
+  line-height:1.7;
+}
+.sys-table{
+  width:100%;
+  border-collapse:collapse;
+  margin:14px 0 18px;
+  font-family:'DM Sans',sans-serif;
+  font-size:11.5px;
+}
+.sys-table th{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:8px;font-weight:600;
+  letter-spacing:1.5px;text-transform:uppercase;
+  color:rgba(0,212,255,.3);
+  text-align:left;
+  padding:7px 10px;
+  border-bottom:1px solid rgba(0,212,255,.08);
+}
+.sys-table td{
+  color:rgba(255,255,255,.5);
+  padding:6px 10px;
+  border-bottom:1px solid rgba(255,255,255,.03);
+  line-height:1.6;
+}
+.sys-table td:first-child{
+  color:rgba(255,255,255,.7);
+  font-weight:500;
+}
+.sys-table td code{font-size:10px}
+
+/* ── SITE FOOTER ──────────────────────────────────── */
+.site-footer{
+  border-top:1px solid rgba(255,255,255,.06);
+  background:rgba(10,10,10,.8);
+}
+.site-footer .container{
+  max-width:1200px;
+  margin:0 auto;
+  padding:48px 16px;
+}
+.site-footer .grid{
+  display:grid;
+  grid-template-columns:2fr 1fr 1fr 1fr;
+  gap:48px;
+}
+.site-footer .brand-col .brand{
+  display:flex;align-items:center;gap:12px;text-decoration:none;margin-bottom:16px;
+}
+.site-footer .brand-col .brand-name{
+  font-family:'Space Grotesk',sans-serif;font-weight:300;font-size:18px;letter-spacing:3px;color:#fff;text-transform:uppercase;
+}
+.site-footer .brand-col .brand-tagline{font-size:12px;color:rgba(255,255,255,.4);letter-spacing:.5px}
+.site-footer .brand-col .desc{font-size:14px;color:rgba(255,255,255,.4);line-height:1.6;max-width:320px;margin-bottom:24px}
+.site-footer .social{display:flex;align-items:center;gap:16px}
+.site-footer .social a{color:rgba(255,255,255,.4);transition:color .2s}
+.site-footer .social a:hover{color:#00D4FF}
+.site-footer .social svg{width:20px;height:20px}
+.site-footer .privacy-block{margin-top:24px;padding-top:16px;border-top:1px solid rgba(255,255,255,.04)}
+.site-footer .privacy-block h4{font-size:14px;font-weight:600;color:rgba(255,255,255,.85);margin-bottom:8px}
+.site-footer .privacy-block p{font-size:12px;color:rgba(255,255,255,.4);line-height:1.6}
+.site-footer .link-col h3{font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:2px;color:rgba(255,255,255,.85);margin-bottom:16px}
+.site-footer .link-col ul{list-style:none;display:flex;flex-direction:column;gap:12px}
+.site-footer .link-col a{font-size:14px;color:rgba(255,255,255,.4);text-decoration:none;transition:color .2s}
+.site-footer .link-col a:hover{color:#00D4FF}
+.site-footer .bottom-bar{margin-top:48px;padding-top:32px;border-top:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:space-between}
+.site-footer .bottom-bar p{font-size:12px;color:rgba(255,255,255,.4)}
+.site-footer .bottom-bar a{color:rgba(255,255,255,.4);text-decoration:none;transition:color .2s}
+.site-footer .bottom-bar a:hover{color:#00D4FF}
+.site-footer .bottom-bar .tagline{font-size:12px;color:rgba(255,255,255,.4)}
+
+/* ── RESPONSIVE ─────────────────────────────────── */
+@media(max-width:768px){
+  .site-header nav{display:none}
+  .site-footer .grid{grid-template-columns:1fr;gap:32px}
+  .site-footer .bottom-bar{flex-direction:column;gap:12px;text-align:center}
+}
+@media(max-width:600px){
+  .science-page{padding:32px 18px 60px}
+  .science-page h1{font-size:22px;letter-spacing:3px}
+  .science-page p{font-size:12.5px}
+  .eq{font-size:10.5px;padding:10px 12px}
+  .sys-table{font-size:10px}
+  .sys-table th{font-size:7px}
+  .site-header .brand-text{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ SITE HEADER ═══════════════════════════════════ -->
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="brand">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="40" height="40" style="border-radius:8px">
+        <defs>
+          <linearGradient id="sg" x1="100%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#00F0F9"/><stop offset="50%" stop-color="#0AC5E1"/><stop offset="100%" stop-color="#056673"/></linearGradient>
+          <filter id="gl" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        </defs>
+        <rect x="0" y="0" width="64" height="64" fill="#000" rx="8"/>
+        <path d="M 56 8 Q 40 12, 24 28 Q 12 44, 16 56" stroke="url(#sg)" stroke-width="4" stroke-linecap="round" fill="none" filter="url(#gl)"/>
+        <path d="M 54 10 Q 42 14, 30 26" stroke="#00F0F9" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.6"/>
+      </svg>
+      <div class="brand-text">
+        <span class="brand-name">STELLARFORGE</span>
+        <span class="brand-tagline">Forge the Future</span>
+      </div>
+    </a>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/worlds">Worlds</a>
+      <a href="/#tools">Tools</a>
+      <a href="/learn">Learn</a>
+      <a href="/pricing">Pricing</a>
+      <a href="index.html" class="tidelock-btn">← Back to TIDELOCK</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ═══ SCIENCE CONTENT ══════════════════════════════ -->
+<main class="science-page">
+  <h1>Showing Our Work</h1>
+  <div class="subtitle">The Physics &amp; Data Behind TIDELOCK</div>
+
+  <!-- ── WHAT IS TIDAL LOCKING ───────────────────── -->
+  <div class="sci-section">What Is Tidal Locking?</div>
+  <p>A <strong>tidally locked planet</strong> keeps one face permanently aimed at its star—the same way the Moon always shows the same face to Earth. One hemisphere bakes in eternal day. The other freezes in eternal night. Between them runs a permanent twilight band called the <strong>terminator</strong>.</p>
+  <p>This isn't exotic. It's the expected state for rocky planets orbiting M-dwarf and late K-dwarf stars within their habitable zones. Tidal locking timescales are inversely proportional to the sixth power of orbital distance—close planets lock fast. Since M-dwarf habitable zones are extremely close to the star, most potentially habitable worlds around these stars are tidally locked.</p>
+  <div class="src">Pierrehumbert, R.T. (2011). "A Palette of Climates for Gliese 581g." <em>The Astrophysical Journal Letters</em>, 726(1), L8. <a href="https://doi.org/10.1088/2041-8205/726/1/L8" target="_blank">DOI</a></div>
+
+  <!-- ── STAR CATALOG ────────────────────────────── -->
+  <div class="sci-section">Star Catalog</div>
+  <p>TIDELOCK includes <strong>20 main-sequence star types</strong> from M9V through F0V. Each star's mass, luminosity, effective temperature, and habitable zone distance are sourced from stellar models and observational data:</p>
+
+  <table class="sys-table">
+    <tr><th>Type</th><th>Mass (M☉)</th><th>Luminosity (L☉)</th><th>Temp (K)</th><th>HZ (AU)</th></tr>
+    <tr><td>M9V</td><td><code>0.08</code></td><td><code>0.0001</code></td><td>2400</td><td><code>0.010</code></td></tr>
+    <tr><td>M8V</td><td><code>0.09</code></td><td><code>0.0004</code></td><td>2500</td><td><code>0.020</code></td></tr>
+    <tr><td>M5V</td><td><code>0.16</code></td><td><code>0.003</code></td><td>3000</td><td><code>0.055</code></td></tr>
+    <tr><td>M4V</td><td><code>0.25</code></td><td><code>0.006</code></td><td>3100</td><td><code>0.074</code></td></tr>
+    <tr><td>M1V</td><td><code>0.47</code></td><td><code>0.04</code></td><td>3600</td><td><code>0.200</code></td></tr>
+    <tr><td>K5V</td><td><code>0.68</code></td><td><code>0.16</code></td><td>4400</td><td><code>0.400</code></td></tr>
+    <tr><td>K0V</td><td><code>0.82</code></td><td><code>0.40</code></td><td>5100</td><td><code>0.630</code></td></tr>
+    <tr><td>G2V (Sun)</td><td><code>1.00</code></td><td><code>1.00</code></td><td>5800</td><td><code>1.000</code></td></tr>
+    <tr><td>F0V</td><td><code>1.60</code></td><td><code>6.50</code></td><td>7200</td><td><code>2.550</code></td></tr>
+  </table>
+
+  <div class="note">Habitable zone distances represent the center of the conservative HZ where liquid water is most likely stable. The full catalog includes 20 spectral types from M9V to F0V. Tidal locking is confirmed for M-dwarf stars and likely for late K-dwarfs (K5V and later).</div>
+  <div class="src">Pecaut, M.J. &amp; Mamajek, E.E. (2013). "Intrinsic Colors, Temperatures, and Bolometric Corrections of Pre-Main-Sequence Stars." <em>The Astrophysical Journal Supplement</em>, 208(1), 9. <a href="https://doi.org/10.1088/0067-0049/208/1/9" target="_blank">DOI</a></div>
+
+  <!-- ── TEMPERATURE MODEL ───────────────────────── -->
+  <div class="sci-section">Temperature Model</div>
+  <p>The surface temperature at any point on a tidally locked planet depends on its <strong>angular distance from the substellar point</strong> (the spot directly facing the star). TIDELOCK computes this using a modified Stefan-Boltzmann model with atmospheric redistribution:</p>
+  <span class="eq">T_SSP = (F_absorbed / σ)^0.25 × (1 + f_greenhouse × 0.55)</span>
+  <p>Where the absorbed flux is:</p>
+  <span class="eq">F = L★ × L☉ × (1 − albedo) / (16π × σ × d²)</span>
+  <p>The temperature gradient from substellar point (θ=0) to antistellar point (θ=π) follows:</p>
+  <span class="eq">Dayside: T(θ) = T_ASP + (T_SSP − T_ASP) × cos(θ)^n<br><br>where n = 1.0 − 0.7 × min(ρ_atm / 3, 1)</span>
+  <p>The exponent <code>n</code> controls how sharply temperature drops from the substellar point. A thicker atmosphere (higher <code>ρ_atm</code>) reduces <code>n</code>, spreading heat more evenly—modeling atmospheric heat transport from dayside to nightside.</p>
+  <p>The antistellar temperature is:</p>
+  <span class="eq">T_ASP = T_SSP × (0.1 + 0.4 × atm_normalized)</span>
+  <p>With no atmosphere, the nightside reaches near-absolute zero. With a dense atmosphere, heat redistribution raises the nightside temperature significantly—this is the key factor determining whether a tidally locked world can support a habitable terminator band.</p>
+  <div class="src">Yang, J. et al. (2013). "Stabilizing Cloud Feedback Dramatically Expands the Habitable Zone of Tidally Locked Planets." <em>The Astrophysical Journal Letters</em>, 771(2), L45. <a href="https://doi.org/10.1088/2041-8205/771/2/L45" target="_blank">DOI</a></div>
+
+  <!-- ── HABITABLE ZONE CALCULATION ──────────────── -->
+  <div class="sci-section">Habitable Zone Calculation</div>
+  <p>Unlike conventional habitable zones (which are annular regions around a star), the habitable zone on a tidally locked planet is a <strong>band on the planet's surface</strong>—a ring around the terminator where temperatures fall between 273 K and 373 K (0°C to 100°C).</p>
+  <p>TIDELOCK scans the temperature profile from substellar to antistellar point at 3,600 angular steps, identifying the inner and outer edges of the habitable band:</p>
+  <span class="eq">Inner edge: T(θ_in) = 373 K (too hot inward)<br>Outer edge: T(θ_out) = 273 K (too cold outward)<br><br>Habitable band = θ_out − θ_in (in degrees)<br>Surface fraction ≈ |cos(θ_in) − cos(θ_out)| × 100%</span>
+  <p>Ocean coverage modulates the effective habitable area by up to 15%, accounting for oceanic thermal buffering. Worlds with >30° of habitable band are classified as <strong>"Habitable"</strong>; 5–30° as <strong>"Marginal"</strong>; below 5° as <strong>"Uninhabitable"</strong>.</p>
+  <div class="src">Kopparapu, R.K. et al. (2016). "The Inner Edge of the Habitable Zone for Synchronously Rotating Planets around Low-mass Stars Using General Circulation Models." <em>The Astrophysical Journal</em>, 819(1), 84. <a href="https://doi.org/10.3847/0004-637X/819/1/84" target="_blank">DOI</a></div>
+
+  <!-- ── ATMOSPHERE & ESCAPE ─────────────────────── -->
+  <div class="sci-section">Atmosphere &amp; Jeans Escape</div>
+  <p>A tidally locked planet's ability to retain its atmosphere is critical—without atmospheric heat transport, the terminator band collapses. TIDELOCK computes atmospheric retention using the <strong>Jeans escape parameter</strong>:</p>
+  <span class="eq">λ = (v_esc / v_thermal)²<br><br>v_esc = 11.186 × √(M_planet / R_planet) km/s<br>v_thermal = √(3 k_B T_SSP / m_molecule) / 1000 km/s</span>
+  <p>The Jeans parameter measures how strongly gravity binds atmospheric molecules. Higher λ means stronger retention:</p>
+  <table class="sys-table">
+    <tr><th>Jeans Parameter</th><th>Retention</th><th>Implication</th></tr>
+    <tr><td><code>λ > 25</code></td><td>Strong</td><td>Atmosphere stable over billions of years</td></tr>
+    <tr><td><code>10 < λ ≤ 25</code></td><td>Moderate</td><td>Slow loss; atmosphere persists for gigayears</td></tr>
+    <tr><td><code>6 < λ ≤ 10</code></td><td>Marginal</td><td>Significant loss over geological time</td></tr>
+    <tr><td><code>λ ≤ 6</code></td><td>Losing</td><td>Rapid escape; atmosphere stripped in megayears</td></tr>
+  </table>
+  <p>The simulator calculates retention for N₂/O₂ (MW 29), CO₂ (44), H₂/He (4), CH₄ (16), and SO₂ (64). Different atmospheric compositions have very different retention properties—heavy molecules like CO₂ and SO₂ are retained far more easily than light hydrogen.</p>
+
+  <!-- ── WIND & TRANSPORT ────────────────────────── -->
+  <div class="sci-section">Wind &amp; Atmospheric Transport</div>
+  <p>The extreme temperature difference between the dayside and nightside drives powerful atmospheric circulation. TIDELOCK estimates maximum wind velocities using:</p>
+  <span class="eq">v_max = min(√ΔT × 15 × √(ρ_atm + 0.1), 500) m/s</span>
+  <p>Where <code>ΔT = T_SSP − T_ASP</code>. Atmospheric scale height—how rapidly pressure decreases with altitude—is computed from thermodynamic first principles:</p>
+  <span class="eq">H = k_B × T_term / (m_molecule × g) km</span>
+  <p>These values determine whether the atmosphere can effectively transport heat, maintain cloud systems, and sustain weather patterns at the terminator.</p>
+  <div class="src">Turbet, M. et al. (2018). "Modeling climate diversity, tidal dynamics and the fate of volatiles on TRAPPIST-1 planets." <em>Astronomy &amp; Astrophysics</em>, 612, A86. <a href="https://doi.org/10.1051/0004-6361/201731620" target="_blank">DOI</a></div>
+
+  <!-- ── ORBITAL MECHANICS ───────────────────────── -->
+  <div class="sci-section">Orbital Mechanics</div>
+  <p>Orbital periods follow <strong>Kepler's third law</strong> directly:</p>
+  <span class="eq">P = √(a³ / M★) years = √(a³ / M★) × 365.25 days</span>
+  <p>Where <code>a</code> is the semi-major axis in AU and <code>M★</code> is the stellar mass in solar masses. For a planet at M4V's habitable zone (0.074 AU), the orbital period is approximately 8.7 days—the planet's "year" is just over a week.</p>
+  <p>Tidal locking is enforced by maintaining the planet's local +X axis pointed toward the star at all times, using quaternion rotation. The terminator band remains perpendicular to the star direction as the planet orbits.</p>
+
+  <!-- ── TERRAIN & BIOMES ────────────────────────── -->
+  <div class="sci-section">Terrain &amp; Biome Rendering</div>
+  <p>Surface terrain is generated using <strong>fractal Brownian motion</strong> (fBM)—five octaves of 3D Simplex noise layered at decreasing amplitudes. The terrain responds to the tidal environment:</p>
+  <p><strong>Substellar region:</strong> Volcanic caldera features from intense stellar heating. Mountain amplitude is reduced—thermal expansion fractures prevent large mountain building.</p>
+  <p><strong>Terminator band:</strong> Enhanced mountain ridges from thermal stress at the day-night boundary. These ridges trap moisture from dayside evaporation, creating rivers and lakes in sheltered valleys.</p>
+  <p><strong>Nightside:</strong> Smooth, ancient ice plains. Reduced geological activity produces gently rolling terrain under permanent ice sheets.</p>
+  <p>Biomes are determined procedurally from local temperature, elevation, and moisture:</p>
+  <table class="sys-table">
+    <tr><th>Temperature</th><th>Biome</th><th>Description</th></tr>
+    <tr><td><code>> 700 K</code></td><td>Ultrahot Rock</td><td>Dark, cracked surface with molten fissures</td></tr>
+    <tr><td><code>500–700 K</code></td><td>Lava Desert</td><td>Dark rust rock, glowing cracks</td></tr>
+    <tr><td><code>373–500 K</code></td><td>Hot Desert</td><td>Tan to rust colored arid terrain</td></tr>
+    <tr><td><code>273–373 K</code></td><td>Habitable Band</td><td>Ocean, wetlands, forest, grassland (see below)</td></tr>
+    <tr><td><code>180–273 K</code></td><td>Tundra/Ice</td><td>Frozen ground transitioning to ice sheets</td></tr>
+    <tr><td><code>< 180 K</code></td><td>Deep Frozen</td><td>Permanent ice, near-zero atmospheric interaction</td></tr>
+  </table>
+  <p>Within the habitable band, sub-biomes are determined by moisture (derived from ocean coverage and terminator proximity) and elevation: <strong>deep ocean</strong>, <strong>coastal wetlands</strong>, <strong>forests</strong>, <strong>grasslands</strong>, and <strong>rocky highlands</strong> with snow-capped peaks above the snow line.</p>
+
+  <!-- ── PRESETS ──────────────────────────────────── -->
+  <div class="sci-section">Preset Configurations</div>
+  <table class="sys-table">
+    <tr><th>Preset</th><th>Star</th><th>Mass</th><th>Distance</th><th>Atmosphere</th><th>Concept</th></tr>
+    <tr><td>TRAPPIST-1e</td><td>M8V</td><td><code>0.92 M⊕</code></td><td><code>0.029 AU</code></td><td>1.0 atm, N₂/O₂</td><td>Real exoplanet candidate</td></tr>
+    <tr><td>Proxima b</td><td>M5V</td><td><code>1.27 M⊕</code></td><td><code>0.049 AU</code></td><td>1.2 atm, N₂/O₂</td><td>Nearest exoplanet</td></tr>
+    <tr><td>Eyeball Earth</td><td>M4V</td><td><code>1.0 M⊕</code></td><td>HZ locked</td><td>0.3 atm, thin</td><td>Ice world with liquid eye</td></tr>
+    <tr><td>Super Venus</td><td>M3V</td><td><code>2.0 M⊕</code></td><td>80% of HZ</td><td>4.5 atm, CO₂</td><td>Runaway greenhouse</td></tr>
+    <tr><td>Snowball</td><td>M6V</td><td><code>0.8 M⊕</code></td><td>130% of HZ</td><td>0.2 atm</td><td>Frozen world</td></tr>
+    <tr><td>Ribbon World</td><td>M4V</td><td><code>1.5 M⊕</code></td><td>HZ locked</td><td>0.8 atm</td><td>Narrow habitable terminator strip</td></tr>
+  </table>
+
+  <!-- ── CLOUD & MOON SYSTEMS ────────────────────── -->
+  <div class="sci-section">Cloud Layer &amp; Moon System</div>
+  <p><strong>Clouds</strong> are rendered as a procedural shell at 1.012× planet radius using animated fractal noise. Cloud density concentrates at the terminator—where warm dayside air meets cold nightside air, driving convection and precipitation. Cloud opacity scales with atmospheric density, capped at 35%.</p>
+  <p><strong>Moons</strong> (up to 3) orbit the planet with independent orbital distances and speeds. Moon eclipse shadows are computed in the fragment shader by projecting each moon's position along the star direction vector and applying a smooth falloff from full shadow at the moon center to no shadow at 1.3× moon radius.</p>
+
+  <!-- ── PLANET PHYSICS ──────────────────────────── -->
+  <div class="sci-section">Computed Planet Physics</div>
+  <p>The data readout panel calculates over 20 physical quantities in real-time from the input parameters:</p>
+  <span class="eq">Surface gravity: g = (M / R²) × 9.81 m/s²<br>Escape velocity: v_esc = 11.186 × √(M / R) km/s<br>Bulk density: ρ = 5.51 × (M / R³) g/cm³<br>Orbital period: P = √(a³ / M★) × 365.25 days</span>
+  <p>All values use Earth-normalized units: mass in <code>M⊕</code>, radius in <code>R⊕</code>, distance in AU. Reference constants: <code>g_Earth = 9.81 m/s²</code>, <code>v_esc_Earth = 11.186 km/s</code>, <code>ρ_Earth = 5.51 g/cm³</code>.</p>
+
+  <!-- ── LIMITATIONS ─────────────────────────────── -->
+  <div class="sci-section">What This Tool Cannot Do</div>
+  <p><strong>No atmospheric GCM.</strong> The temperature model uses an analytic gradient, not a full general circulation model. Real atmospheric dynamics involve Rossby waves, Hadley cells, and complex cloud feedback that require supercomputer simulations to resolve.</p>
+  <p><strong>No stellar activity.</strong> M-dwarf flares, coronal mass ejections, and XUV radiation—which can strip atmospheres and sterilize surfaces—are not modeled. These are critical habitability factors for real exoplanets.</p>
+  <p><strong>No ocean dynamics.</strong> Ocean heat transport, ice-albedo feedback, and subsurface ocean circulation are not simulated. Real tidally locked oceans would redistribute heat significantly.</p>
+  <p><strong>No plate tectonics.</strong> The terrain model is procedural, not geophysically driven. Real tidal heating and mantle convection patterns on tidally locked worlds would produce different geological features.</p>
+  <p><strong>No atmospheric chemistry.</strong> Photochemical reactions, ozone layers, and biosignature gases are not modeled.</p>
+  <div class="note">Despite these limitations, TIDELOCK produces physically grounded visualizations. The temperature profiles, habitable zone geometry, biome distributions, and atmospheric retention calculations follow established exoplanet science. When you build a world here, you're building on real physics.</div>
+
+  <!-- ── FOR WRITERS ─────────────────────────────── -->
+  <div class="sci-section">For Writers</div>
+  <p>TIDELOCK exists to help science fiction writers explore a specific question: <strong>what does the surface of a tidally locked world actually look like?</strong></p>
+  <p>The "eyeball Earth" concept—a frozen world with a single liquid ocean facing the star—is just one possibility. Adjust the atmosphere and you get a world with a wide habitable belt, permanent twilight civilizations along the terminator, and weather systems driven by eternal day-night temperature gradients. The scenarios TIDELOCK reveals—terminator forests, substellar deserts, nightside ice caps, ribbon cities along the habitable band—emerge from the physics, not from artistic license.</p>
+  <p>TIDELOCK is part of the <a href="https://stellarforge.tools" style="color:rgba(0,212,255,.5)">StellarForge</a> worldbuilding toolkit. The <strong>Star System Builder</strong> and <strong>Planetary Profile</strong> worksheets can help you develop the worlds you discover here into full settings—following the cascading principle that <em>environment shapes biology, biology shapes psychology, psychology shapes culture, and culture shapes mythology.</em></p>
+</main>
+
+<!-- ═══ SITE FOOTER ═══════════════════════════════════ -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="grid">
+      <div class="brand-col">
+        <a href="/" class="brand">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="36" height="36" style="border-radius:8px">
+            <defs>
+              <linearGradient id="sg2" x1="100%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#00F0F9"/><stop offset="50%" stop-color="#0AC5E1"/><stop offset="100%" stop-color="#056673"/></linearGradient>
+              <filter id="gl2" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            </defs>
+            <rect x="0" y="0" width="64" height="64" fill="#000" rx="8"/>
+            <path d="M 56 8 Q 40 12, 24 28 Q 12 44, 16 56" stroke="url(#sg2)" stroke-width="4" stroke-linecap="round" fill="none" filter="url(#gl2)"/>
+            <path d="M 54 10 Q 42 14, 30 26" stroke="#00F0F9" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.6"/>
+          </svg>
+          <div>
+            <span class="brand-name">STELLARFORGE</span>
+            <span class="brand-tagline" style="display:block">Forge the Future</span>
+          </div>
+        </a>
+        <p class="desc">Science-first worldbuilding tools for writers, game designers, and creators who demand internal consistency.</p>
+        <div class="social">
+          <a href="https://xenomythology.substack.com/" target="_blank" rel="noopener noreferrer" aria-label="Substack">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22.539 8.242H1.46V5.406h21.08v2.836zM1.46 10.812V24L12 18.11 22.54 24V10.812H1.46zM22.54 0H1.46v2.836h21.08V0z"/></svg>
+          </a>
+          <a href="https://www.linkedin.com/in/jasonbatt/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+          </a>
+          <a href="https://www.instagram.com/jasondbattphd/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+          </a>
+          <a href="mailto:support@stellarforge.tools" aria-label="Email">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+          </a>
+        </div>
+        <div class="privacy-block">
+          <h4>Your Worlds Are Yours Alone</h4>
+          <p>We can't access your creative work. Ever. No AI training. No data mining. No third-party sharing. Your unpublished stories stay unpublished until you decide otherwise.</p>
+        </div>
+      </div>
+      <div class="link-col">
+        <h3>Product</h3>
+        <ul>
+          <li><a href="/features">Features</a></li>
+          <li><a href="/pricing">Pricing</a></li>
+          <li><a href="/#tools">Tools</a></li>
+          <li><a href="/rogue/">ROGUE Simulator</a></li>
+          <li><a href="/tools/tidelock/">TIDELOCK Simulator</a></li>
+        </ul>
+      </div>
+      <div class="link-col">
+        <h3>Resources</h3>
+        <ul>
+          <li><a href="/learn">Learn</a></li>
+          <li><a href="/bookshelf">Bookshelf</a></li>
+          <li><a href="/changelog">Changelog</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+      </div>
+      <div class="link-col">
+        <h3>Legal</h3>
+        <ul>
+          <li><a href="/privacy">Privacy Policy</a></li>
+          <li><a href="/terms">Terms of Service</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="bottom-bar">
+      <div>
+        <p>A <a href="https://dreamsidestudios.com" target="_blank" rel="noopener noreferrer">Dreamside Studios</a> production</p>
+        <p style="margin-top:4px">© 2025–2026 <a href="https://jbatt.com" target="_blank" rel="noopener noreferrer">Jason D. Batt, Ph.D.</a> All rights reserved.</p>
+      </div>
+      <span class="tagline">Made with science and imagination</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,1366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>TIDELOCK — Tidally Locked World Simulator · StellarForge.tools</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+body{background:#09090B;color:#C8C8C8;font-family:'DM Sans',sans-serif;overflow:hidden;width:100vw;height:100vh;cursor:default;-webkit-user-select:none;user-select:none}
+#renderer-container{position:fixed;top:0;left:0;width:100vw;height:100vh}
+#renderer-container canvas{display:block}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(0,212,255,0.12);border-radius:2px}
+.panel{position:fixed;background:rgba(15,15,16,0.92);border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:8px;padding:14px 18px;z-index:10;overflow-y:auto;max-height:calc(100vh - 80px)}
+#title-block{position:fixed;top:18px;left:18px;z-index:20;pointer-events:none}
+#title-block h1{font-family:'Space Grotesk',sans-serif;font-weight:300;font-size:26px;letter-spacing:6px;text-transform:uppercase;color:#FAFAFA;line-height:1.1}
+#title-block .subtitle{font-family:'DM Sans',sans-serif;font-weight:400;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.28);margin-top:2px}
+#title-block .context-label{font-family:'DM Sans',sans-serif;font-weight:400;font-size:10px;color:rgba(0,212,255,0.6);margin-top:4px}
+#title-block .credit{font-family:'DM Sans',sans-serif;font-weight:400;font-size:7px;letter-spacing:1px;color:rgba(255,255,255,0.12);margin-top:3px}
+#title-block .credit a{color:rgba(0,212,255,0.25);text-decoration:none}
+#badge{display:inline-block;padding:6px 14px;font-size:9px;font-family:'Space Grotesk',sans-serif;font-weight:500;letter-spacing:2px;text-transform:uppercase;border-radius:6px;margin-top:10px;transition:all 0.5s;pointer-events:auto}
+.badge-waiting{background:rgba(0,212,255,.03);border:1px solid rgba(0,212,255,.08);color:rgba(0,212,255,.4)}
+.badge-success{background:rgba(46,204,113,.08);border:1px solid rgba(46,204,113,.2);color:#2ECC71;animation:pulse 2s infinite}
+.badge-warning{background:rgba(255,165,0,.08);border:1px solid rgba(255,165,0,.2);color:#FFA500}
+.badge-danger{background:rgba(231,76,60,.08);border:1px solid rgba(231,76,60,.2);color:#E74C3C;animation:pulse 1.5s infinite}
+.badge-frozen{background:rgba(0,212,255,.05);border:1px solid rgba(0,212,255,.12);color:rgba(0,212,255,.55)}
+.badge-gold{background:rgba(255,212,59,.08);border:1px solid rgba(255,212,59,.2);color:#FFD43B}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.65}}
+#info-btn{pointer-events:auto;display:inline-block;width:22px;height:22px;line-height:22px;text-align:center;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;color:rgba(255,255,255,0.3);border:1px solid rgba(255,255,255,0.08);border-radius:50%;background:rgba(255,255,255,0.03);cursor:pointer;transition:all 0.2s;margin-left:8px;vertical-align:middle}
+#info-btn:hover{background:rgba(0,212,255,0.08);border-color:rgba(0,212,255,0.2);color:#fff}
+#controls{top:120px;left:18px;width:240px}
+.section-header{font-size:7.5px;font-family:'Space Grotesk',sans-serif;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:rgba(0,212,255,0.35);margin-top:14px;margin-bottom:4px;padding-bottom:3px;border-bottom:1px solid rgba(0,212,255,0.06)}
+.section-header:first-child{margin-top:0}
+.control-row{margin-bottom:8px}
+.control-label{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px}
+.control-label span{font-family:'DM Sans',sans-serif;font-size:8.5px;font-weight:400;letter-spacing:1.2px;text-transform:uppercase;color:rgba(255,255,255,0.35)}
+.value-display{font-size:10px;font-family:'JetBrains Mono',monospace;color:rgba(255,255,255,0.5);font-weight:300}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:2px;background:rgba(255,255,255,0.08);border-radius:1px;outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;height:11px;border-radius:50%;background:#00D4FF;cursor:pointer;border:2px solid rgba(0,0,0,0.5)}
+input[type=range]::-moz-range-thumb{width:11px;height:11px;border-radius:50%;background:#00D4FF;cursor:pointer;border:2px solid rgba(0,0,0,0.5)}
+select{font-family:'DM Sans',sans-serif;font-size:9px;background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.7);border:1px solid rgba(255,255,255,0.1);padding:6px 8px;border-radius:6px;outline:none;width:100%;cursor:pointer}
+select option{background:#0F0F10;color:#C8C8C8}
+.checkbox-row{display:flex;align-items:center;gap:6px;margin-bottom:5px}
+.checkbox-row input[type=checkbox]{accent-color:#00D4FF;width:11px;height:11px;cursor:pointer}
+.checkbox-row label{font-family:'DM Sans',sans-serif;font-size:8.5px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.35);cursor:pointer}
+button{font-family:'Space Grotesk',sans-serif;font-size:8px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;padding:7px 12px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.03);color:rgba(255,255,255,0.6);cursor:pointer;border-radius:6px;transition:all 0.2s}
+button:hover{background:rgba(0,212,255,0.08);border-color:rgba(0,212,255,0.2);color:#fff}
+button.active{background:rgba(0,212,255,0.1);border-color:rgba(0,212,255,0.3);color:#00D4FF}
+.preset-grid{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.preset-grid button{flex:1 1 calc(50% - 2px);min-width:0;font-size:7px;padding:6px 4px;letter-spacing:1px;text-align:center}
+.btn-group{display:flex;gap:3px;margin-top:4px}
+.btn-group button{flex:1;text-align:center;font-size:7px;padding:6px 4px}
+.display-row{display:flex;justify-content:space-between;line-height:1.8;font-size:9px}
+.display-row .dl{color:rgba(255,255,255,0.3);font-family:'DM Sans',sans-serif;font-weight:300}
+.display-row .dv{font-family:'JetBrains Mono',monospace;font-weight:300;font-size:9px;color:rgba(255,255,255,0.5)}
+#readout{top:18px;right:18px;width:250px}
+.data-section{font-size:7.5px;font-family:'Space Grotesk',sans-serif;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:rgba(0,212,255,0.3);margin-top:10px;margin-bottom:2px;padding-bottom:2px;border-bottom:1px solid rgba(0,212,255,0.06)}
+.data-section:first-child{margin-top:0}
+.data-row{display:flex;justify-content:space-between;line-height:1.9}
+.data-label{color:rgba(255,255,255,0.3);font-weight:300;font-family:'DM Sans',sans-serif;font-size:9.5px}
+.data-value{color:rgba(255,255,255,0.7);font-weight:500;font-family:'JetBrains Mono',monospace;font-size:9px}
+#zoom-info{position:fixed;bottom:18px;right:18px;z-index:10;text-align:right}
+#zoom-info .zoom-val{font-size:16px;font-family:'Space Grotesk',sans-serif;font-weight:300;color:rgba(0,212,255,0.5)}
+#zoom-info .zoom-label{font-size:7px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.18)}
+#drag-hint{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:10;font-family:'DM Sans',sans-serif;font-size:9px;color:rgba(255,255,255,0.15);letter-spacing:0.5px;pointer-events:none;transition:opacity 2s}
+#scale-note{position:fixed;bottom:4px;left:50%;transform:translateX(-50%);z-index:10;font-family:'DM Sans',sans-serif;font-size:8px;color:rgba(255,255,255,0.12);letter-spacing:0.3px;pointer-events:none;white-space:nowrap}
+#tooltip{position:fixed;background:rgba(15,15,16,0.95);border:1px solid rgba(0,212,255,0.15);border-radius:6px;padding:8px 12px;font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(255,255,255,0.7);pointer-events:none;z-index:30;display:none;backdrop-filter:blur(10px);line-height:1.6;max-width:220px}
+#modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(9,9,11,0.94);backdrop-filter:blur(20px);z-index:100;display:none;justify-content:center;align-items:center;padding:20px}
+#modal-overlay.visible{display:flex}
+#modal{max-width:680px;width:100%;max-height:80vh;overflow-y:auto;padding:30px 36px;background:rgba(15,15,16,0.98);border:1px solid rgba(0,212,255,0.08);border-radius:12px;position:relative}
+#modal h2{font-family:'Space Grotesk',sans-serif;font-weight:300;font-size:22px;letter-spacing:4px;text-transform:uppercase;color:#FAFAFA;margin-bottom:16px}
+#modal h3{font-family:'Space Grotesk',sans-serif;font-weight:500;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(0,212,255,0.5);margin-top:18px;margin-bottom:6px}
+#modal p,#modal li{font-family:'DM Sans',sans-serif;font-size:12px;line-height:1.7;color:rgba(255,255,255,0.6);margin-bottom:8px}
+#modal ul{padding-left:18px;margin-bottom:8px}
+#modal li{margin-bottom:4px}
+#modal em{color:rgba(255,255,255,0.45);font-style:italic}
+#modal .close-btn{position:absolute;top:16px;right:20px;font-size:20px;color:rgba(255,255,255,0.3);cursor:pointer;background:none;border:none;padding:4px}
+#modal .close-btn:hover{color:#fff;background:none}
+#mobile-toggle-controls,#mobile-toggle-data{display:none;position:fixed;z-index:15;width:36px;height:36px;border-radius:8px;font-size:16px;line-height:36px;text-align:center;padding:0;background:rgba(15,15,16,0.92);border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.5);cursor:pointer;backdrop-filter:blur(16px)}
+#mobile-toggle-controls{bottom:18px;left:18px}
+#mobile-toggle-data{bottom:18px;left:62px}
+@media(max-width:1024px){
+  #controls,#readout{display:none}
+  #controls.mobile-visible,#readout.mobile-visible{display:block}
+  #mobile-toggle-controls,#mobile-toggle-data{display:block}
+  #controls{top:auto;bottom:64px;left:18px;right:18px;width:auto;max-height:50vh}
+  #readout{top:auto;bottom:64px;left:18px;right:18px;width:auto;max-height:50vh}
+}
+@media(max-width:768px){#title-block h1{font-size:20px;letter-spacing:4px}}
+</style>
+</head>
+<body>
+<div id="renderer-container"></div>
+
+<div id="title-block">
+  <h1>TIDELOCK</h1>
+  <div class="subtitle">STELLARFORGE.TOOLS</div>
+  <div class="context-label">Tidally Locked World Simulator</div>
+  <div class="credit">© 2025–2026 Jason D. Batt, Ph.D. · <a href="https://stellarforge.tools" target="_blank">stellarforge.tools</a></div>
+  <div style="margin-top:10px;display:flex;align-items:center;">
+    <div id="badge" class="badge-waiting">CONFIGURING</div>
+    <span id="info-btn" title="About TIDELOCK">ℹ</span>
+  </div>
+</div>
+
+<div id="controls" class="panel">
+  <div class="section-header">Star</div>
+  <div class="control-row"><div class="control-label"><span>Star Type</span></div><select id="starType"></select></div>
+  <div class="display-row"><span class="dl">Mass</span><span class="dv" id="starMassDisp">—</span></div>
+  <div class="display-row"><span class="dl">Luminosity</span><span class="dv" id="starLumDisp">—</span></div>
+  <div class="display-row"><span class="dl">Temperature</span><span class="dv" id="starTempDisp">—</span></div>
+
+  <div class="section-header">Planet</div>
+  <div class="control-row"><div class="control-label"><span>Planet Mass</span><span class="value-display" id="planetMassVal">1.00 M⊕</span></div><input type="range" id="planetMass" min="0.5" max="5" step="0.05" value="1"></div>
+  <div class="control-row"><div class="control-label"><span>Planet Radius</span><span class="value-display" id="planetRadiusVal">1.00 R⊕</span></div><input type="range" id="planetRadius" min="0.8" max="2" step="0.05" value="1"></div>
+  <div class="control-row"><div class="control-label"><span>Orbital Distance</span><span class="value-display" id="orbDistVal">0.074 AU</span></div><input type="range" id="orbDist" min="0.01" max="0.5" step="0.001" value="0.074"></div>
+  <div class="checkbox-row"><input type="checkbox" id="lockHZ" checked><label for="lockHZ">Lock to Habitable Zone</label></div>
+
+  <div class="section-header">Atmosphere</div>
+  <div class="control-row"><div class="control-label"><span>Atm. Density</span><span class="value-display" id="atmDensVal">1.00 atm</span></div><input type="range" id="atmDens" min="0" max="5" step="0.05" value="1"></div>
+  <div class="control-row"><div class="control-label"><span>Greenhouse Factor</span><span class="value-display" id="ghFactorVal">0.30</span></div><input type="range" id="ghFactor" min="0" max="3" step="0.05" value="0.3"></div>
+  <div class="control-row"><div class="control-label"><span>Composition</span></div><select id="composition"><option value="N2O2">N₂/O₂</option><option value="CO2">CO₂-rich</option><option value="H2He">H₂/He</option><option value="CH4">CH₄-rich</option><option value="SO2">SO₂-rich</option></select></div>
+
+  <div class="section-header">Surface</div>
+  <div class="control-row"><div class="control-label"><span>Ocean Coverage</span><span class="value-display" id="oceanVal">60%</span></div><input type="range" id="ocean" min="0" max="100" step="1" value="60"></div>
+  <div class="control-row"><div class="control-label"><span>Albedo</span><span class="value-display" id="albedoVal">0.30</span></div><input type="range" id="albedo" min="0.05" max="0.8" step="0.01" value="0.3"></div>
+
+  <div class="section-header">Moons</div>
+  <div class="control-row"><div class="control-label"><span>Moon Count</span><span class="value-display" id="moonCountVal">0</span></div><input type="range" id="moonCount" min="0" max="3" step="1" value="0"></div>
+
+  <div class="section-header">Display</div>
+  <div class="checkbox-row"><input type="checkbox" id="showClouds" checked><label for="showClouds">Cloud Layer</label></div>
+  <div class="checkbox-row"><input type="checkbox" id="showHab" checked><label for="showHab">Habitable Band Marker</label></div>
+  <div class="checkbox-row"><input type="checkbox" id="showGrid"><label for="showGrid">Grid Overlay</label></div>
+  <div class="control-label" style="margin-top:6px"><span>Color Scale</span></div>
+  <div class="btn-group">
+    <button id="csTherm" class="active" onclick="setColorScale(0)">Thermal</button>
+    <button id="csBiome" onclick="setColorScale(1)">Biome</button>
+    <button id="csRaw" onclick="setColorScale(2)">Raw</button>
+  </div>
+  <div style="margin-top:10px"><button onclick="regenerateTerrain()" style="width:100%">⟳ NEW TERRAIN SEED</button></div>
+
+  <div class="section-header">Animation</div>
+  <div class="checkbox-row"><input type="checkbox" id="orbPause"><label for="orbPause">Pause Orbit</label></div>
+  <div class="control-row"><div class="control-label"><span>Orbit Speed</span><span class="value-display" id="orbSpeedVal">1.0×</span></div><input type="range" id="orbSpeed" min="0" max="5" step="0.1" value="1"></div>
+
+  <div class="section-header">Presets</div>
+  <div class="preset-grid">
+    <button onclick="applyPreset('trappist1e')">TRAPPIST-1e</button>
+    <button onclick="applyPreset('proximab')">Proxima b</button>
+    <button onclick="applyPreset('eyeball')">Eyeball Earth</button>
+    <button onclick="applyPreset('supervenus')">Super Venus</button>
+    <button onclick="applyPreset('snowball')">Snowball</button>
+    <button onclick="applyPreset('ribbon')">Ribbon World</button>
+    <button onclick="applyPreset('custom')">Custom</button>
+  </div>
+</div>
+
+<div id="readout" class="panel">
+  <div class="data-section">Temperatures</div>
+  <div class="data-row"><span class="data-label">Substellar Point</span><span class="data-value" id="dTssp" style="color:#FFD43B">—</span></div>
+  <div class="data-row"><span class="data-label">Antistellar Point</span><span class="data-value" id="dTasp" style="color:#00D4FF">—</span></div>
+  <div class="data-row"><span class="data-label">Terminator Avg</span><span class="data-value" id="dTterm" style="color:#2ECC71">—</span></div>
+  <div class="data-row"><span class="data-label">Day Hemisphere</span><span class="data-value" id="dTday" style="color:#FFA500">—</span></div>
+  <div class="data-row"><span class="data-label">Night Hemisphere</span><span class="data-value" id="dTnight" style="color:rgba(100,160,255,0.8)">—</span></div>
+  <div class="data-section">Habitability</div>
+  <div class="data-row"><span class="data-label">SSP Surface</span><span class="data-value" id="dSSPstatus" style="color:#FFA500">—</span></div>
+  <div class="data-row"><span class="data-label">Habitable Band</span><span class="data-value" id="dHabWidth" style="color:#2ECC71">—</span></div>
+  <div class="data-row"><span class="data-label">Habitable Surface</span><span class="data-value" id="dHabPct" style="color:#2ECC71">—</span></div>
+  <div class="data-row"><span class="data-label">Status</span><span class="data-value" id="dHabStatus">—</span></div>
+  <div class="data-row"><span class="data-label">Liquid Water</span><span class="data-value" id="dLiquid">—</span></div>
+  <div class="data-section">Atmosphere</div>
+  <div class="data-row"><span class="data-label">Surface Pressure</span><span class="data-value" id="dPressure">—</span></div>
+  <div class="data-row"><span class="data-label">Scale Height</span><span class="data-value" id="dScaleH">—</span></div>
+  <div class="data-row"><span class="data-label">Max Wind Speed</span><span class="data-value" id="dWind">—</span></div>
+  <div class="data-row"><span class="data-label">Heat Transport</span><span class="data-value" id="dTransport">—</span></div>
+  <div class="data-row"><span class="data-label">Day-Night ΔT</span><span class="data-value" id="dDeltaT">—</span></div>
+  <div class="data-section">Orbital &amp; Physical</div>
+  <div class="data-row"><span class="data-label">Orbital Period</span><span class="data-value" id="dPeriod">—</span></div>
+  <div class="data-row"><span class="data-label">Orbital Distance</span><span class="data-value" id="dOrbDist">—</span></div>
+  <div class="data-row"><span class="data-label">Surface Gravity</span><span class="data-value" id="dGrav">—</span></div>
+  <div class="data-row"><span class="data-label">Escape Velocity</span><span class="data-value" id="dEscVel">—</span></div>
+  <div class="data-row"><span class="data-label">Bulk Density</span><span class="data-value" id="dDensity">—</span></div>
+  <div class="data-row"><span class="data-label">Atm. Retention</span><span class="data-value" id="dAtmRetain">—</span></div>
+  <div class="data-row"><span class="data-label">Tidal Lock</span><span class="data-value" id="dTidalLock">—</span></div>
+  <div class="data-row"><span class="data-label">Moons</span><span class="data-value" id="dMoons">—</span></div>
+</div>
+
+<div id="zoom-info">
+  <div class="zoom-val" id="zoomVal">1.0×</div>
+  <div class="zoom-label">ZOOM · SCROLL TO ADJUST</div>
+</div>
+<div id="drag-hint">DRAG TO ORBIT IN 3D · SCROLL TO ZOOM · ZOOM OUT FOR ORBITAL VIEW</div>
+<div id="scale-note">⚠ Orbital distances and star size are shown at approximate scale for visualization. All physics calculations use true values.</div>
+<div id="tooltip"></div>
+<button id="mobile-toggle-controls" onclick="toggleMobilePanel('controls')">☰</button>
+<button id="mobile-toggle-data" onclick="toggleMobilePanel('readout')">📊</button>
+
+<div id="modal-overlay" onclick="if(event.target===this)this.classList.remove('visible')">
+  <div id="modal">
+    <button class="close-btn" onclick="document.getElementById('modal-overlay').classList.remove('visible')">✕</button>
+    <h2>TIDELOCK</h2>
+    <p>Most potentially habitable exoplanets orbit red dwarf stars — and most of those are tidally locked, with one face permanently baking in starlight and the other in eternal darkness.</p>
+    <p>The substellar point — directly beneath the star — is scorched rock, a barren Mercury-like wasteland. The antistellar point is frozen white ice, colder than any place on Earth. Between these extremes lies the <em>terminator band</em>: a ring of permanent twilight where liquid water, breathable air, and life itself might exist.</p>
+    <p>Drag to orbit the planet in 3D. Scroll to zoom — zoom far out to see the full orbital system with habitable zone. Add moons to see eclipse shadows sweep across the surface.</p>
+    <h3>What the Colors Mean</h3>
+    <ul>
+      <li><strong style="color:#B89870">Beige/rust:</strong> Dayside — scorched rocky surface, too hot for life</li>
+      <li><strong style="color:#2ECC71">Green:</strong> Habitable zone — where life could exist, liquid water is stable</li>
+      <li><strong style="color:#5577AA">Blue:</strong> Oceans — liquid water in low-elevation habitable areas</li>
+      <li><strong style="color:#D0D5E0">White:</strong> Nightside ice — permanently frozen</li>
+    </ul>
+    <h3>Tectonics</h3>
+    <p>Tidal locking creates predictable geology: a volcanic caldera at the substellar point, massive mountain ranges along the terminator where thermal expansion meets cold contraction, and smooth ancient ice plains on the nightside. Mountains trap moisture, creating rivers and lakes in the habitable band.</p>
+    <h3>Key Insight for Writers</h3>
+    <p>The habitable band isn't a thin line — with a decent atmosphere, it can be <em>thousands of kilometers wide</em>. Civilizations here live in permanent twilight, in ribbon-shaped nations stretched along the terminator. The star is forever on one horizon, the stars forever on the other.</p>
+    <h3>Scientific References</h3>
+    <ul>
+      <li>Pierrehumbert (2011) — "A Palette of Climates for Tidally Locked Terrestrial Exoplanets"</li>
+      <li>Yang et al. (2013) — Stabilizing cloud feedback on tidally locked planets</li>
+      <li>Kopparapu et al. (2016) — Inner edge of HZ for tidally locked planets</li>
+      <li>Turbet et al. (2018) — TRAPPIST-1 climate modeling</li>
+    </ul>
+    <h3>SF References</h3>
+    <ul>
+      <li>Charlie Jane Anders, <em>City in the Middle of the Night</em> (2019)</li>
+      <li>Becky Chambers, <em>The Long Way to a Small, Angry Planet</em> (2014)</li>
+      <li>Isaac Asimov, "Nightfall" (1941)</li>
+    </ul>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// ============================================================
+// TIDELOCK v2 — WebGL Tidally Locked World Simulator
+// StellarForge.tools · Three.js Procedural Terrain
+// © 2025–2026 Jason D. Batt, Ph.D.
+// ============================================================
+
+// ── Star Catalog ──
+const STARS=[
+  {type:'M9V',mass:0.08,lum:0.0001,temp:2400,color:[1,.27,.0],hex:'#FF4500',hz:0.010},
+  {type:'M8V',mass:0.09,lum:0.0004,temp:2500,color:[1,.34,.13],hex:'#FF5722',hz:0.020},
+  {type:'M7V',mass:0.10,lum:0.0009,temp:2600,color:[1,.42,.21],hex:'#FF6B35',hz:0.030},
+  {type:'M6V',mass:0.12,lum:0.0016,temp:2800,color:[1,.44,.26],hex:'#FF7043',hz:0.040},
+  {type:'M5.5V',mass:0.14,lum:0.0023,temp:2900,color:[1,.48,.31],hex:'#FF7A50',hz:0.048},
+  {type:'M5V',mass:0.16,lum:0.003,temp:3000,color:[1,.54,.40],hex:'#FF8A65',hz:0.055},
+  {type:'M4V',mass:0.25,lum:0.0055,temp:3100,color:[1,.62,.50],hex:'#FF9E80',hz:0.074},
+  {type:'M3V',mass:0.33,lum:0.013,temp:3250,color:[1,.70,.60],hex:'#FFB399',hz:0.114},
+  {type:'M2V',mass:0.40,lum:0.023,temp:3400,color:[1,.67,.57],hex:'#FFAB91',hz:0.152},
+  {type:'M1V',mass:0.47,lum:0.04,temp:3600,color:[1,.80,.74],hex:'#FFCCBC',hz:0.200},
+  {type:'M0V',mass:0.51,lum:0.063,temp:3800,color:[1,.88,.70],hex:'#FFE0B2',hz:0.250},
+  {type:'K7V',mass:0.60,lum:0.10,temp:4000,color:[1,.91,.80],hex:'#FFE8CC',hz:0.320},
+  {type:'K5V',mass:0.68,lum:0.16,temp:4400,color:[1,.94,.86],hex:'#FFF0DB',hz:0.400},
+  {type:'K3V',mass:0.75,lum:0.28,temp:4700,color:[1,.95,.88],hex:'#FFF3E0',hz:0.530},
+  {type:'K0V',mass:0.82,lum:0.40,temp:5100,color:[1,.97,.91],hex:'#FFF8E7',hz:0.630},
+  {type:'G5V',mass:0.92,lum:0.70,temp:5500,color:[1,.98,.94],hex:'#FFFBF0',hz:0.840},
+  {type:'G2V',mass:1.00,lum:1.00,temp:5800,color:[1,.97,.94],hex:'#FFF8F0',hz:1.000},
+  {type:'G0V',mass:1.06,lum:1.20,temp:5900,color:[1,1,.94],hex:'#FFFFF0',hz:1.100},
+  {type:'F5V',mass:1.30,lum:2.50,temp:6500,color:[.94,.94,1],hex:'#F0F0FF',hz:1.580},
+  {type:'F0V',mass:1.60,lum:6.50,temp:7200,color:[.82,.82,1],hex:'#D0D0FF',hz:2.550}
+];
+const starSel=document.getElementById('starType');
+STARS.forEach((s,i)=>{const o=document.createElement('option');o.value=i;o.textContent=s.type;if(s.type==='M4V')o.selected=true;starSel.appendChild(o);});
+
+// ── Simulation State ──
+const S={starIdx:6,planetMass:1.0,planetRadius:1.0,orbDist:0.074,lockHZ:true,
+  atmDens:1.0,ghFactor:0.3,composition:'N2O2',ocean:60,albedo:0.3,
+  moonCount:0,showClouds:true,showHab:true,showGrid:false,colorScale:0,noiseSeed:42.0};
+const D={tSSP:0,tASP:0,tTerm:0,tDayAvg:0,tNightAvg:0,habIn:0,habOut:0,habDeg:0,habPct:0,
+  deltaT:0,pressure:0,surfGrav:0,escVel:0,bulkDensity:0,atmRetention:'',scaleH:0,maxWind:0,transport:'',orbPeriod:0,
+  tidalLock:'',habStatus:'',liquidWater:'',redistN:0.7,atmN:0.33};
+
+// ── Three.js Setup ──
+const container=document.getElementById('renderer-container');
+const renderer=new THREE.WebGLRenderer({antialias:true,alpha:false});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+renderer.setSize(window.innerWidth,window.innerHeight);
+renderer.setClearColor(0x09090B,1);
+container.appendChild(renderer.domElement);
+
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(45,window.innerWidth/window.innerHeight,0.01,500);
+camera.position.set(0,0.4,3.8);
+camera.lookAt(0,0,0);
+
+window.addEventListener('resize',()=>{
+  camera.aspect=window.innerWidth/window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth,window.innerHeight);
+});
+
+// ── Camera Controls ──
+let camTheta=0, camPhi=0.2, camDist=3.8, targetDist=3.8;
+// Camera target — follows planet in surface view, shifts to system center when zoomed out
+function getCameraTarget(){
+  if(typeof planetGroup==='undefined') return new THREE.Vector3(curVisDist,0,0);
+  const pp=planetGroup.position;
+  if(camDist>20){
+    // Blend toward origin (star) for orbital view
+    const blend=Math.min((camDist-20)/15,1);
+    return pp.clone().lerp(new THREE.Vector3(0,0,0),blend);
+  }
+  return pp.clone();
+}
+function updateCamera(){
+  const target=getCameraTarget();
+  camera.position.set(
+    target.x+camDist*Math.sin(camTheta)*Math.cos(camPhi),
+    target.y+camDist*Math.sin(camPhi),
+    target.z+camDist*Math.cos(camTheta)*Math.cos(camPhi)
+  );
+  camera.lookAt(target);
+}
+
+// ── GLSL: Simplex Noise (Ashima/webgl-noise) ──
+const NOISE_GLSL=`
+vec3 mod289v3(vec3 x){return x-floor(x*(1.0/289.0))*289.0;}
+vec4 mod289v4(vec4 x){return x-floor(x*(1.0/289.0))*289.0;}
+vec4 permute(vec4 x){return mod289v4(((x*34.0)+1.0)*x);}
+vec4 taylorInvSqrt(vec4 r){return 1.79284291400159-0.85373472095314*r;}
+float snoise(vec3 v){
+  const vec2 C=vec2(1.0/6.0,1.0/3.0);
+  const vec4 D2=vec4(0.0,0.5,1.0,2.0);
+  vec3 i=floor(v+dot(v,C.yyy));
+  vec3 x0=v-i+dot(i,C.xxx);
+  vec3 g=step(x0.yzx,x0.xyz);
+  vec3 l=1.0-g;
+  vec3 i1=min(g.xyz,l.zxy);
+  vec3 i2=max(g.xyz,l.zxy);
+  vec3 x1=x0-i1+C.xxx;
+  vec3 x2=x0-i2+C.yyy;
+  vec3 x3=x0-D2.yyy;
+  i=mod289v3(i);
+  vec4 p=permute(permute(permute(
+    i.z+vec4(0.0,i1.z,i2.z,1.0))
+    +i.y+vec4(0.0,i1.y,i2.y,1.0))
+    +i.x+vec4(0.0,i1.x,i2.x,1.0));
+  float n_=0.142857142857;
+  vec3 ns=n_*D2.wyz-D2.xzx;
+  vec4 j=p-49.0*floor(p*ns.z*ns.z);
+  vec4 x_=floor(j*ns.z);
+  vec4 y_=floor(j-7.0*x_);
+  vec4 x=x_*ns.x+ns.yyyy;
+  vec4 y=y_*ns.x+ns.yyyy;
+  vec4 h=1.0-abs(x)-abs(y);
+  vec4 b0=vec4(x.xy,y.xy);
+  vec4 b1=vec4(x.zw,y.zw);
+  vec4 s0=floor(b0)*2.0+1.0;
+  vec4 s1=floor(b1)*2.0+1.0;
+  vec4 sh=-step(h,vec4(0.0));
+  vec4 a0=b0.xzyw+s0.xzyw*sh.xxyy;
+  vec4 a1=b1.xzyw+s1.xzyw*sh.zzww;
+  vec3 p0=vec3(a0.xy,h.x);
+  vec3 p1=vec3(a0.zw,h.y);
+  vec3 p2=vec3(a1.xy,h.z);
+  vec3 p3=vec3(a1.zw,h.w);
+  vec4 norm=taylorInvSqrt(vec4(dot(p0,p0),dot(p1,p1),dot(p2,p2),dot(p3,p3)));
+  p0*=norm.x;p1*=norm.y;p2*=norm.z;p3*=norm.w;
+  vec4 m=max(0.6-vec4(dot(x0,x0),dot(x1,x1),dot(x2,x2),dot(x3,x3)),0.0);
+  m=m*m;
+  return 42.0*dot(m*m,vec4(dot(p0,x0),dot(p1,x1),dot(p2,x2),dot(p3,x3)));
+}
+float fbm(vec3 p,int oct){
+  float v=0.0,a=0.5;
+  for(int i=0;i<6;i++){if(i>=oct)break;v+=a*snoise(p);p*=2.1;a*=0.48;}
+  return v;
+}
+`;
+
+// ── GLSL: Planet Vertex Shader ──
+const PLANET_VERT=`
+varying vec3 vWorldPos;
+varying vec3 vWorldNormal;
+varying vec3 vViewPos;
+varying vec3 vLocalPos;
+void main(){
+  vec4 worldPos=modelMatrix*vec4(position,1.0);
+  vWorldPos=worldPos.xyz;
+  vWorldNormal=normalize((modelMatrix*vec4(normal,0.0)).xyz);
+  vViewPos=(modelViewMatrix*vec4(position,1.0)).xyz;
+  vLocalPos=position;
+  gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);
+}`;
+
+// ── GLSL: Planet Fragment Shader ──
+const PLANET_FRAG=`
+precision highp float;
+${NOISE_GLSL}
+varying vec3 vWorldPos;
+varying vec3 vWorldNormal;
+varying vec3 vViewPos;
+varying vec3 vLocalPos;
+
+uniform vec3 starDir;      // local-space (always 1,0,0 for tidal lock) — used for temp/terrain
+uniform vec3 starDirWorld; // world-space direction to star — used for lighting
+uniform vec3 starColor;
+uniform float tSSP,tASP,redistN,atmN,atmDens;
+uniform float oceanCoverage,noiseSeed;
+uniform float habIn,habOut;
+uniform int showHab,colorScale;
+uniform vec3 moonPos[3];
+uniform float moonRad[3];
+uniform int moonCount;
+uniform float time;
+
+float getTemp(float theta){
+  float c=cos(theta);
+  if(c<=0.0){
+    float nf=min(-c,1.0);
+    float tEdge=tASP+(tSSP-tASP)*0.001;
+    return tASP+(tEdge-tASP)*pow(1.0-nf,0.5+atmN*1.5);
+  }
+  return tASP+(tSSP-tASP)*pow(c,redistN);
+}
+
+float getElev(vec3 p,float theta){
+  vec3 np=p*4.0+vec3(noiseSeed);
+  // Zone-modulated: flat at SSP (volcanic), peaks at terminator, smooth nightside
+  float zoneMod=sin(theta);  // 0 at poles of temp, peak at terminator
+  zoneMod=0.25+0.75*zoneMod;
+  // Reduce nightside mountains (ice smoothing)
+  if(theta>2.2) zoneMod*=0.4;
+  float e=fbm(np,5)*zoneMod;
+  // Add volcanic caldera features near SSP
+  if(theta<0.6){
+    float caldera=snoise(p*8.0+vec3(noiseSeed*2.0));
+    e=e*0.4+caldera*0.15;
+  }
+  // Terminator ridge enhancement
+  if(theta>1.2&&theta<2.0){
+    float ridge=abs(snoise(p*12.0+vec3(noiseSeed*3.0)));
+    e+=ridge*0.2;
+  }
+  return e;
+}
+
+float getMoisture(float temp,float elev,float theta){
+  if(temp<273.0||temp>373.0) return 0.0;
+  // Low elevation + habitable temp = water
+  float wetness=(1.0-smoothstep(-0.15,0.25,elev))*oceanCoverage;
+  // More moisture at terminator (condensation zone)
+  float termBoost=1.0-abs(theta-1.5708)*0.5;
+  return clamp(wetness*termBoost,0.0,1.0);
+}
+
+vec3 getTerrainColor(float temp,float elev,float moist,float theta){
+  if(colorScale==2){
+    float v=clamp(temp/max(tSSP,1.0),0.0,1.0);
+    return vec3(v);
+  }
+  bool isBiome=colorScale==1;
+  // Hot dayside: rocky Mars/Mercury tones
+  if(temp>700.0){
+    vec3 c=vec3(0.12,0.06,0.04);
+    float cracks=snoise(vLocalPos*20.0+vec3(noiseSeed*5.0))*0.5+0.5;
+    if(cracks>0.88) c+=vec3(0.4,0.06,0.0);
+    return c;
+  }
+  if(temp>500.0){
+    float f=(temp-500.0)/200.0;
+    vec3 rust=vec3(0.55,0.30,0.18);
+    vec3 dark=vec3(0.20,0.10,0.06);
+    vec3 c=mix(rust,dark,f);
+    float rockN=snoise(vLocalPos*10.0+vec3(noiseSeed*4.0))*0.08;
+    c+=vec3(rockN,rockN*0.7,rockN*0.4);
+    return c;
+  }
+  if(temp>373.0){
+    float f=(temp-373.0)/127.0;
+    vec3 tan1=isBiome?vec3(0.72,0.58,0.38):vec3(0.76,0.63,0.45);
+    vec3 rust=isBiome?vec3(0.60,0.35,0.20):vec3(0.58,0.38,0.22);
+    vec3 c=mix(tan1,rust,f);
+    // Rocky texture
+    float rn=snoise(vLocalPos*8.0+vec3(noiseSeed*2.5))*0.06;
+    c+=vec3(rn,rn*0.8,rn*0.5);
+    // Elevation: higher = more grey
+    c=mix(c,vec3(0.5,0.45,0.40),smoothstep(0.3,0.7,elev)*0.4);
+    return c;
+  }
+  // HABITABLE ZONE (273-373K)
+  if(temp>=273.0){
+    // Radiation aridity based on position within habitable zone
+    // habIn = theta where temp first drops below 373K (inner/hot edge)
+    // habOut = theta where temp drops below 273K (outer/cold edge)
+    // Aridity is highest at hot edge, drops to 0 by mid-zone
+    float habMid=(habIn+habOut)*0.5;
+    float habWidth=max(habOut-habIn,0.01);
+    // How far into the hab zone from the hot edge (0=hot edge, 1=cold edge)
+    float habFrac=clamp((theta-habIn)/habWidth,0.0,1.0);
+    // Aridity: 1.0 at hot edge, fades to 0 by 35% into the zone
+    float aridity=1.0-smoothstep(0.0,0.35,habFrac);
+    // Very hot end of habitable range is drier
+    float heatDry=smoothstep(345.0,370.0,temp)*0.5;
+    aridity=max(aridity,heatDry);
+
+    // Desert color for arid regions
+    vec3 hotDesert=isBiome?vec3(0.72,0.55,0.32):vec3(0.76,0.60,0.40);
+    vec3 warmDesert=isBiome?vec3(0.65,0.50,0.30):vec3(0.68,0.55,0.35);
+    vec3 desertColor=mix(warmDesert,hotDesert,smoothstep(300.0,360.0,temp));
+    float desertNoise=snoise(vLocalPos*10.0+vec3(noiseSeed*4.5))*0.05;
+    desertColor+=vec3(desertNoise,desertNoise*0.7,desertNoise*0.3);
+    desertColor=mix(desertColor,vec3(0.50,0.45,0.38),smoothstep(0.3,0.6,elev)*0.35);
+
+    // Reduce moisture in arid zones
+    float effectiveMoist=moist*(1.0-aridity*0.8);
+
+    if(effectiveMoist>0.55){
+      // Ocean — vibrant blues
+      float depth=effectiveMoist-0.55;
+      vec3 shallow=isBiome?vec3(0.06,0.35,0.45):vec3(0.08,0.30,0.38);
+      vec3 deep=isBiome?vec3(0.02,0.12,0.25):vec3(0.03,0.14,0.22);
+      vec3 ocean=mix(shallow,deep,clamp(depth*3.0,0.0,1.0));
+      return mix(ocean,desertColor,aridity*0.6);
+    }
+    if(effectiveMoist>0.3){
+      // Wetlands/coastal green — saturated
+      vec3 wet=isBiome?vec3(0.08,0.50,0.22):vec3(0.10,0.48,0.18);
+      vec3 coast=isBiome?vec3(0.06,0.38,0.32):vec3(0.08,0.36,0.28);
+      vec3 wetland=mix(coast,wet,(effectiveMoist-0.3)/0.25);
+      return mix(wetland,desertColor,aridity);
+    }
+    if(elev>0.35){
+      // Mountains
+      float snowLine=smoothstep(0.55,0.75,elev);
+      vec3 rock=vec3(0.40,0.38,0.35);
+      vec3 snow=vec3(0.88,0.90,0.93);
+      vec3 greenMtn=isBiome?vec3(0.12,0.45,0.10):vec3(0.15,0.42,0.12);
+      vec3 mtnColor=mix(mix(greenMtn,rock,smoothstep(0.35,0.55,elev)),snow,snowLine);
+      vec3 aridMtn=mix(rock,vec3(0.55,0.48,0.38),smoothstep(0.35,0.55,elev));
+      aridMtn=mix(aridMtn,snow,snowLine*0.3);
+      return mix(mtnColor,aridMtn,aridity);
+    }
+    // Lowland vegetation — VIVID GREEN
+    float warmth=(temp-273.0)/100.0;
+    vec3 lush=isBiome?vec3(0.08,0.55,0.04):vec3(0.10,0.52,0.06);
+    vec3 dryGrass=isBiome?vec3(0.45,0.55,0.15):vec3(0.42,0.52,0.18);
+    vec3 vegColor=mix(lush,dryGrass,warmth*0.7);
+    float veg=snoise(vLocalPos*15.0+vec3(noiseSeed*6.0))*0.06;
+    vegColor+=vec3(veg*0.3,veg,veg*0.2);
+    return mix(vegColor,desertColor,aridity);
+  }
+  // FROZEN
+  if(temp>=180.0){
+    float f=(temp-180.0)/93.0;
+    vec3 ice=vec3(0.82,0.85,0.92);
+    vec3 tundra=isBiome?vec3(0.42,0.45,0.40):vec3(0.50,0.53,0.50);
+    return mix(ice,tundra,f);
+  }
+  // Deep frozen white
+  float f=clamp(temp/180.0,0.0,1.0);
+  vec3 c=mix(vec3(0.92,0.94,0.98),vec3(0.80,0.83,0.90),f);
+  float iceN=snoise(vLocalPos*6.0+vec3(noiseSeed*3.0))*0.03;
+  c+=vec3(iceN);
+  return c;
+}
+
+void main(){
+  vec3 N=normalize(vWorldNormal);
+  vec3 P=normalize(vLocalPos); // Local-space surface direction (unit sphere)
+  float theta=acos(clamp(dot(P,starDir),-1.0,1.0));
+  float temp=getTemp(theta);
+  float elev=getElev(P,theta);
+  float moist=getMoisture(temp,elev,theta);
+  vec3 color=getTerrainColor(temp,elev,moist,theta);
+
+  // Bump normal from elevation gradient (use local positions)
+  float eps=0.005;
+  vec3 t1=normalize(cross(N,vec3(0.0,1.0,0.0)));
+  if(length(cross(N,vec3(0.0,1.0,0.0)))<0.01) t1=normalize(cross(N,vec3(1.0,0.0,0.0)));
+  vec3 t2=normalize(cross(N,t1));
+  float h0=getElev(P,theta);
+  vec3 P1=normalize(P+t1*eps);
+  vec3 P2=normalize(P+t2*eps);
+  float h1=getElev(P1,acos(clamp(dot(P1,starDir),-1.0,1.0)));
+  float h2=getElev(P2,acos(clamp(dot(P2,starDir),-1.0,1.0)));
+  vec3 bumpN=normalize(N+(h0-h1)*t1*8.0+(h0-h2)*t2*8.0);
+
+  // Lighting (world space)
+  float NdotL=max(dot(bumpN,starDirWorld),0.0);
+  float ambient=0.03+atmDens*0.04; // Brighter ambient for hab zone visibility
+  float termSoft=smoothstep(-0.12*max(atmDens,0.3),0.06,dot(N,starDirWorld)); // Softer terminator
+  float diffuse=NdotL*termSoft;
+  float lighting=ambient+diffuse;
+
+  // Specular for water
+  float spec=0.0;
+  if(moist>0.4&&temp>=273.0&&temp<=373.0){
+    vec3 V=normalize(cameraPosition-vWorldPos);
+    vec3 H=normalize(starDirWorld+V);
+    spec=pow(max(dot(bumpN,H),0.0),64.0)*0.45*moist;
+  }
+
+  // Moon eclipse shadows (all in local space)
+  float shadow=1.0;
+  for(int i=0;i<3;i++){
+    if(i>=moonCount) break;
+    vec3 toMoon=moonPos[i]-vLocalPos;
+    float t2=dot(toMoon,starDir);
+    if(t2>0.0){
+      vec3 closest=vLocalPos+starDir*t2;
+      float dist=length(closest-moonPos[i]);
+      shadow*=smoothstep(moonRad[i]*0.7,moonRad[i]*1.3,dist);
+    }
+  }
+
+  vec3 finalColor=color*lighting*shadow+vec3(spec)*shadow;
+
+  // Habitable band subtle glow
+  if(showHab==1&&theta>=habIn&&theta<=habOut){
+    float bandStrength=0.04*(1.0-abs(theta-(habIn+habOut)*0.5)/max(habOut-habIn,0.01));
+    finalColor+=vec3(0.0,bandStrength,0.0);
+  }
+
+  // Rim darkening
+  float rim=1.0-max(dot(normalize(-vViewPos),N),0.0);
+  finalColor*=1.0-rim*rim*0.3;
+
+  gl_FragColor=vec4(finalColor,1.0);
+}`;
+
+// ── GLSL: Atmosphere Shader ──
+const ATMO_VERT=`
+varying vec3 vNormal;
+varying vec3 vViewPos;
+void main(){
+  vNormal=normalize(normalMatrix*normal);
+  vViewPos=(modelViewMatrix*vec4(position,1.0)).xyz;
+  gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);
+}`;
+const ATMO_FRAG=`
+precision highp float;
+varying vec3 vNormal;
+varying vec3 vViewPos;
+uniform vec3 starColor;
+uniform float atmDens;
+void main(){
+  vec3 V=normalize(-vViewPos);
+  float rim=1.0-max(dot(V,vNormal),0.0);
+  rim=pow(rim,2.5);
+  float intensity=rim*min(atmDens*0.6,0.7);
+  vec3 c=mix(vec3(0.3,0.55,0.9),starColor,0.3);
+  gl_FragColor=vec4(c,intensity);
+}`;
+
+// ── GLSL: Cloud Shader ──
+const CLOUD_VERT=`
+varying vec3 vWorldPos;
+varying vec3 vWorldNormal;
+varying vec3 vViewPos;
+varying vec3 vLocalPos;
+void main(){
+  vec4 wp=modelMatrix*vec4(position,1.0);
+  vWorldPos=wp.xyz;
+  vWorldNormal=normalize((modelMatrix*vec4(normal,0.0)).xyz);
+  vViewPos=(modelViewMatrix*vec4(position,1.0)).xyz;
+  vLocalPos=position;
+  gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);
+}`;
+const CLOUD_FRAG=`
+precision highp float;
+${NOISE_GLSL}
+varying vec3 vWorldPos;
+varying vec3 vWorldNormal;
+varying vec3 vViewPos;
+varying vec3 vLocalPos;
+uniform vec3 starDir;
+uniform vec3 starDirWorld;
+uniform float atmDens,time,noiseSeed;
+void main(){
+  vec3 P=normalize(vLocalPos);
+  float theta=acos(clamp(dot(P,starDir),-1.0,1.0));
+  // Clouds thickest at terminator, thin at extremes
+  float termProx=1.0-abs(theta-1.5708)*0.8;
+  termProx=clamp(termProx,0.0,1.0);
+  // Animated noise
+  vec3 np=P*3.5+vec3(time*0.02,time*0.015,-time*0.01)+vec3(noiseSeed*0.5);
+  float cloud=fbm(np,4)*0.5+0.5;
+  cloud*=termProx;
+  cloud*=min(atmDens*0.8,1.0);
+  float alpha=smoothstep(0.35,0.65,cloud)*0.35;
+  // Lit by star (world space)
+  float NdotL=max(dot(normalize(vWorldNormal),starDirWorld),0.0);
+  float lit=0.3+0.7*NdotL;
+  vec3 V=normalize(-vViewPos);
+  float rim=1.0-max(dot(V,normalize(vWorldNormal)),0.0);
+  alpha*=(1.0-rim*rim*0.5);
+  gl_FragColor=vec4(vec3(lit),alpha);
+}`;
+
+// ── Create Scene Objects ──
+// Visual distance mapping: log-compressed so orbital distance slider has visible effect
+// Maps ~0.005-5 AU to ~8-26 visual units
+function getVisDist(au){
+  return 8+6*Math.log10(Math.max(au,0.005)/0.005);
+}
+function getHZVisDist(){
+  return getVisDist(STARS[S.starIdx].hz);
+}
+let curVisDist=getVisDist(0.074); // smoothly interpolated
+const starDirVec=new THREE.Vector3(1,0,0);
+
+// Star
+const starGroup=new THREE.Group();
+// Star core
+const starGeo=new THREE.SphereGeometry(0.5,32,16);
+const starMat=new THREE.MeshBasicMaterial({color:0xFFFFFF});
+const starMesh=new THREE.Mesh(starGeo,starMat);
+starGroup.add(starMesh);
+// Star glow (sprite)
+const glowCanvas=document.createElement('canvas');
+glowCanvas.width=256;glowCanvas.height=256;
+const gCtx=glowCanvas.getContext('2d');
+const grad=gCtx.createRadialGradient(128,128,10,128,128,128);
+grad.addColorStop(0,'rgba(255,255,255,1)');
+grad.addColorStop(0.15,'rgba(255,200,150,0.6)');
+grad.addColorStop(0.4,'rgba(255,150,80,0.15)');
+grad.addColorStop(1,'rgba(255,100,50,0)');
+gCtx.fillStyle=grad;gCtx.fillRect(0,0,256,256);
+const glowTex=new THREE.CanvasTexture(glowCanvas);
+const glowMat=new THREE.SpriteMaterial({map:glowTex,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false});
+const glowSprite=new THREE.Sprite(glowMat);
+glowSprite.scale.set(8,8,1);
+starGroup.add(glowSprite);
+starGroup.position.set(0,0,0);
+scene.add(starGroup);
+
+// ── Planet Group (orbits the star) ──
+const planetGroup=new THREE.Group();
+planetGroup.position.set(curVisDist,0,0); // Start at visual orbital distance
+scene.add(planetGroup);
+let orbAngle=0.1; // Current orbital angle (slight offset avoids quaternion ambiguity)
+let orbPaused=false, orbSpeedMult=1.0;
+
+// Planet
+const planetGeo=new THREE.SphereGeometry(1,128,64);
+const planetUniforms={
+  starDir:{value:starDirVec},
+  starDirWorld:{value:new THREE.Vector3(1,0,0)},
+  starColor:{value:new THREE.Vector3(1,0.62,0.5)},
+  tSSP:{value:350},tASP:{value:80},redistN:{value:0.7},atmN:{value:0.33},atmDens:{value:1.0},
+  oceanCoverage:{value:0.6},noiseSeed:{value:42.0},
+  habIn:{value:0.5},habOut:{value:2.0},showHab:{value:1},colorScale:{value:0},
+  moonPos:{value:[new THREE.Vector3(),new THREE.Vector3(),new THREE.Vector3()]},
+  moonRad:{value:[0,0,0]},moonCount:{value:0},time:{value:0}
+};
+const planetMat=new THREE.ShaderMaterial({
+  vertexShader:PLANET_VERT,fragmentShader:PLANET_FRAG,uniforms:planetUniforms
+});
+const planetMesh=new THREE.Mesh(planetGeo,planetMat);
+planetGroup.add(planetMesh);
+
+// Atmosphere shell
+const atmoGeo=new THREE.SphereGeometry(1.025,64,32);
+const atmoMat=new THREE.ShaderMaterial({
+  vertexShader:ATMO_VERT,fragmentShader:ATMO_FRAG,
+  uniforms:{starColor:{value:new THREE.Vector3(1,0.62,0.5)},atmDens:{value:1.0}},
+  transparent:true,side:THREE.BackSide,depthWrite:false,blending:THREE.AdditiveBlending
+});
+const atmoMesh=new THREE.Mesh(atmoGeo,atmoMat);
+planetGroup.add(atmoMesh);
+
+// Cloud layer
+const cloudGeo=new THREE.SphereGeometry(1.012,96,48);
+const cloudMat=new THREE.ShaderMaterial({
+  vertexShader:CLOUD_VERT,fragmentShader:CLOUD_FRAG,
+  uniforms:{starDir:{value:starDirVec},starDirWorld:{value:new THREE.Vector3(1,0,0)},atmDens:{value:1.0},time:{value:0},noiseSeed:{value:42.0}},
+  transparent:true,depthWrite:false
+});
+const cloudMesh=new THREE.Mesh(cloudGeo,cloudMat);
+planetGroup.add(cloudMesh);
+
+// Moons (orbit the planet, so they go in planetGroup)
+const moonMeshes=[];
+const moonOrbits=[];
+const MOON_PARAMS=[
+  {dist:2.2,size:0.08,speed:0.4,color:0x999999},
+  {dist:3.2,size:0.06,speed:0.22,color:0xAAAAAA},
+  {dist:4.5,size:0.10,speed:0.12,color:0x888888}
+];
+for(let i=0;i<3;i++){
+  const mp=MOON_PARAMS[i];
+  const mg=new THREE.SphereGeometry(mp.size,16,8);
+  const mm=new THREE.MeshBasicMaterial({color:mp.color});
+  const mesh=new THREE.Mesh(mg,mm);
+  mesh.visible=false;
+  planetGroup.add(mesh);
+  moonMeshes.push(mesh);
+  const orbitPts=[];
+  for(let j=0;j<=128;j++){
+    const a=j/128*Math.PI*2;
+    orbitPts.push(new THREE.Vector3(Math.cos(a)*mp.dist,0,Math.sin(a)*mp.dist));
+  }
+  const orbitGeo=new THREE.BufferGeometry().setFromPoints(orbitPts);
+  const orbitLine=new THREE.Line(orbitGeo,new THREE.LineBasicMaterial({color:0xFFFFFF,transparent:true,opacity:0.06}));
+  orbitLine.visible=false;
+  planetGroup.add(orbitLine);
+  moonOrbits.push(orbitLine);
+}
+
+// Light for moons
+const dirLight=new THREE.DirectionalLight(0xffffff,1.2);
+dirLight.position.set(10,0,0); // star is at +X in local space
+planetGroup.add(dirLight);
+scene.add(new THREE.AmbientLight(0x111122,0.3));
+
+// Orbital view elements
+// HZ ring — built at unit radius, scaled dynamically
+const hzRingGeo=new THREE.RingGeometry(0.9,1.1,128);
+const hzRingMat=new THREE.MeshBasicMaterial({color:0x2ECC71,transparent:true,opacity:0.06,side:THREE.DoubleSide,depthWrite:false});
+const hzRing=new THREE.Mesh(hzRingGeo,hzRingMat);
+hzRing.rotation.x=-Math.PI/2;
+hzRing.visible=false;
+scene.add(hzRing);
+
+// Orbital path — built at unit radius, scaled dynamically
+const orbitPathPts=[];
+for(let i=0;i<=256;i++){
+  const a=i/256*Math.PI*2;
+  orbitPathPts.push(new THREE.Vector3(Math.cos(a),0,Math.sin(a)));
+}
+const orbitPathGeo=new THREE.BufferGeometry().setFromPoints(orbitPathPts);
+const orbitPath=new THREE.Line(orbitPathGeo,new THREE.LineBasicMaterial({color:0x00D4FF,transparent:true,opacity:0.12}));
+orbitPath.visible=false;
+scene.add(orbitPath);
+
+// Background starfield
+const sfCount=2000;
+const sfPositions=new Float32Array(sfCount*3);
+const sfSizes=new Float32Array(sfCount);
+for(let i=0;i<sfCount;i++){
+  const theta2=Math.random()*Math.PI*2;
+  const phi2=Math.acos(2*Math.random()-1);
+  const r2=80+Math.random()*120;
+  sfPositions[i*3]=r2*Math.sin(phi2)*Math.cos(theta2);
+  sfPositions[i*3+1]=r2*Math.sin(phi2)*Math.sin(theta2);
+  sfPositions[i*3+2]=r2*Math.cos(phi2);
+  sfSizes[i]=0.3+Math.random()*0.7;
+}
+const sfGeo=new THREE.BufferGeometry();
+sfGeo.setAttribute('position',new THREE.Float32BufferAttribute(sfPositions,3));
+sfGeo.setAttribute('size',new THREE.Float32BufferAttribute(sfSizes,1));
+const sfMat=new THREE.PointsMaterial({color:0xFFFFFF,size:0.15,sizeAttenuation:true,transparent:true,opacity:0.4});
+scene.add(new THREE.Points(sfGeo,sfMat));
+
+// Habitable band markers (rings on planet — in planetGroup)
+const habInnerRing=createHabRing();
+const habOuterRing=createHabRing();
+planetGroup.add(habInnerRing);planetGroup.add(habOuterRing);
+function createHabRing(){
+  const g=new THREE.BufferGeometry();
+  const pts=[];
+  for(let i=0;i<=128;i++){
+    const a=i/128*Math.PI*2;
+    pts.push(new THREE.Vector3(Math.cos(a),0,Math.sin(a)));
+  }
+  g.setFromPoints(pts);
+  return new THREE.Line(g,new THREE.LineBasicMaterial({color:0x2ECC71,transparent:true,opacity:0.35,linewidth:1}));
+}
+function updateHabRings(){
+  const pR=S.planetRadius;
+  [habInnerRing,habOuterRing].forEach((ring,idx)=>{
+    const theta2=idx===0?D.habIn:D.habOut;
+    const r=Math.sin(theta2)*pR*1.005;
+    const offset=Math.cos(theta2)*pR*1.005;
+    ring.scale.set(r,r,r);
+    ring.position.set(offset,0,0);
+    ring.rotation.set(0,0,Math.PI/2);
+    ring.visible=S.showHab&&D.habDeg>0.5;
+  });
+}
+
+// Grid overlay
+const gridLines=new THREE.Group();
+gridLines.visible=false;
+// Latitude circles (angle from star, not geographic)
+for(let lat=1;lat<9;lat++){
+  const th=lat/9*Math.PI;
+  const r=Math.sin(th)*1.003;
+  const x=Math.cos(th)*1.003;
+  const pts=[];
+  for(let j=0;j<=64;j++){
+    const a=j/64*Math.PI*2;
+    pts.push(new THREE.Vector3(x,r*Math.sin(a),r*Math.cos(a)));
+  }
+  const g=new THREE.BufferGeometry().setFromPoints(pts);
+  gridLines.add(new THREE.Line(g,new THREE.LineBasicMaterial({color:0xFFFFFF,transparent:true,opacity:0.04})));
+}
+// Longitude lines
+for(let lon=0;lon<12;lon++){
+  const phi=lon/12*Math.PI*2;
+  const pts=[];
+  for(let j=0;j<=64;j++){
+    const th=j/64*Math.PI;
+    pts.push(new THREE.Vector3(Math.cos(th)*1.003,Math.sin(th)*Math.cos(phi)*1.003,Math.sin(th)*Math.sin(phi)*1.003));
+  }
+  const g=new THREE.BufferGeometry().setFromPoints(pts);
+  gridLines.add(new THREE.Line(g,new THREE.LineBasicMaterial({color:0xFFFFFF,transparent:true,opacity:0.04})));
+}
+planetGroup.add(gridLines);
+
+// ── Physics ──
+function recalcPhysics(){
+  const star=STARS[S.starIdx];
+  if(S.lockHZ){
+    S.orbDist=star.hz;
+    document.getElementById('orbDist').value=S.orbDist;
+    document.getElementById('orbDistVal').textContent=S.orbDist.toFixed(3)+' AU';
+  }
+  const Lsun=3.828e26,AU=1.496e11,sigma=5.67e-8;
+  const d=S.orbDist*AU;
+  const flux=(star.lum*Lsun*(1-S.albedo))/(16*Math.PI*sigma*d*d);
+  let tSSP=Math.pow(flux,0.25)*(1+S.ghFactor*0.55);
+  tSSP=Math.min(tSSP,2500);
+  const atmN=Math.min(S.atmDens/3.0,1.0);
+  const redistN=1.0-0.7*atmN;
+  let tASP=tSSP*(0.1+0.4*atmN);
+  if(S.atmDens<=0.01)tASP=Math.max(tASP,2.7);
+  tASP=Math.max(tASP,2.7);
+
+  function tempAt(theta){
+    const c=Math.cos(theta);
+    if(c<=0){const nf=Math.min(-c,1);const tEdge=tASP+(tSSP-tASP)*0.001;return tASP+(tEdge-tASP)*Math.pow(1-nf,0.5+atmN*1.5);}
+    return tASP+(tSSP-tASP)*Math.pow(c,redistN);
+  }
+  const tTerm=tempAt(Math.PI/2);
+  let dayS=0,dayW=0,nightS=0,nightW=0;
+  for(let i=0;i<=180;i++){
+    const th=i/180*Math.PI,t=tempAt(th),w=Math.sin(th);
+    if(th<=Math.PI/2){dayS+=t*w;dayW+=w;}else{nightS+=t*w;nightW+=w;}
+  }
+  let habIn=-1,habOut=-1;
+  for(let i=0;i<=3600;i++){
+    const th=i/3600*Math.PI,t=tempAt(th);
+    if(t<=373&&habIn<0)habIn=th;
+    if(t<=273&&habOut<0)habOut=th;
+  }
+  if(habIn<0)habIn=0;
+  if(habOut<0)habOut=Math.PI;
+  const oceanMod=1+0.15*S.ocean/100;
+  const habDeg=(habOut-habIn)*180/Math.PI*oceanMod;
+  const habPct=Math.min(Math.abs(Math.cos(habIn)-Math.cos(habOut))*100*oceanMod,100);
+  const g=(S.planetMass/(S.planetRadius*S.planetRadius))*9.81;
+  const mm=S.composition==='H2He'?4e-3:S.composition==='CO2'?44e-3:29e-3;
+  // Escape velocity: v_esc = sqrt(2GM/R), scaled to Earth
+  const escVel=11.186*Math.sqrt(S.planetMass/S.planetRadius); // km/s (Earth = 11.186)
+  // Bulk density relative to Earth (Earth = 5.51 g/cm³)
+  const bulkDensity=5.51*S.planetMass/(S.planetRadius*S.planetRadius*S.planetRadius);
+  // Atmosphere retention: compare thermal velocity of lightest molecule to escape velocity
+  // Jeans escape parameter: lambda = (v_esc / v_thermal)^2, need lambda > 6 for retention
+  const vThermal=Math.sqrt(3*1.38e-23*tSSP/(mm/6.022e23))/1000; // km/s at hottest point
+  const jeansParam=(escVel/Math.max(vThermal,0.01))**2;
+  const atmRetention=jeansParam>25?'Strong':jeansParam>10?'Moderate':jeansParam>6?'Marginal':'Losing';
+
+  D.tSSP=tSSP;D.tASP=tASP;D.tTerm=tTerm;
+  D.tDayAvg=dayW>0?dayS/dayW:tSSP;
+  D.tNightAvg=nightW>0?nightS/nightW:tASP;
+  D.habIn=habIn;D.habOut=Math.min(habOut*oceanMod,Math.PI);
+  D.habDeg=habDeg;D.habPct=habPct;D.deltaT=tSSP-tASP;
+  D.pressure=S.atmDens;D.surfGrav=g/9.81;
+  D.escVel=escVel;D.bulkDensity=bulkDensity;D.atmRetention=atmRetention;
+  D.scaleH=(1.38e-23*tTerm)/((mm/6.022e23)*g)/1000;
+  D.maxWind=Math.min(Math.sqrt(D.deltaT)*15*Math.sqrt(S.atmDens+0.1),500);
+  D.transport=S.atmDens<0.2?'Minimal':S.atmDens<1?'Moderate':S.atmDens<3?'Strong':'Extreme';
+  D.orbPeriod=Math.sqrt(Math.pow(S.orbDist,3)/star.mass)*365.25;
+  D.redistN=redistN;D.atmN=atmN;
+  const st=star.type;
+  D.tidalLock=st[0]==='M'?'Confirmed':(st[0]==='K'&&parseFloat(st.slice(1))>=5)?'Likely':'Unlikely';
+  if(habDeg>30){D.habStatus='Habitable';D.liquidWater='Stable';}
+  else if(habDeg>5){D.habStatus='Marginal';D.liquidWater=tSSP>373&&tASP<273?'Unstable':'Stable';}
+  else if(tSSP<273){D.habStatus='Frozen';D.liquidWater='None';}
+  else{D.habStatus='Uninhabitable';D.liquidWater=tSSP>600?'None':'Unstable';}
+}
+
+// ── Sync Uniforms ──
+function syncUniforms(){
+  const star=STARS[S.starIdx];
+  planetUniforms.tSSP.value=D.tSSP;
+  planetUniforms.tASP.value=D.tASP;
+  planetUniforms.redistN.value=D.redistN;
+  planetUniforms.atmN.value=D.atmN;
+  planetUniforms.atmDens.value=S.atmDens;
+  planetUniforms.oceanCoverage.value=S.ocean/100;
+  planetUniforms.noiseSeed.value=S.noiseSeed;
+  planetUniforms.habIn.value=D.habIn;
+  planetUniforms.habOut.value=D.habOut;
+  planetUniforms.showHab.value=S.showHab?1:0;
+  planetUniforms.colorScale.value=S.colorScale;
+  planetUniforms.moonCount.value=S.moonCount;
+  planetUniforms.starColor.value.set(star.color[0],star.color[1],star.color[2]);
+  atmoMat.uniforms.starColor.value.set(star.color[0],star.color[1],star.color[2]);
+  atmoMat.uniforms.atmDens.value=S.atmDens;
+  atmoMesh.visible=S.atmDens>0.05;
+  cloudMat.uniforms.atmDens.value=S.atmDens;
+  cloudMat.uniforms.noiseSeed.value=S.noiseSeed;
+  cloudMesh.visible=S.showClouds&&S.atmDens>0.1;
+  // Scale planet visually by radius
+  const pScale=S.planetRadius;
+  planetMesh.scale.set(pScale,pScale,pScale);
+  atmoMesh.scale.set(pScale*1.025,pScale*1.025,pScale*1.025);
+  cloudMesh.scale.set(pScale*1.012,pScale*1.012,pScale*1.012);
+  gridLines.visible=S.showGrid;
+  // Star visual
+  starMat.color.setRGB(star.color[0],star.color[1],star.color[2]);
+  // Directional light tinted by star color
+  dirLight.color.setRGB(
+    0.5+star.color[0]*0.5,
+    0.5+star.color[1]*0.5,
+    0.5+star.color[2]*0.5
+  );
+  // Scale star by relative size (roughly radius ~ lum^0.5 for main sequence)
+  const starScale=0.5+Math.pow(star.lum,0.3)*0.8;
+  starMesh.scale.set(starScale,starScale,starScale);
+  // Star glow size by luminosity
+  const glowSize=5+Math.log10(Math.max(star.lum,0.0001)+1)*4;
+  glowSprite.scale.set(glowSize,glowSize,1);
+  // Moon visibility
+  for(let i=0;i<3;i++){
+    moonMeshes[i].visible=i<S.moonCount;
+    moonOrbits[i].visible=i<S.moonCount&&camDist>6;
+  }
+  updateHabRings();
+}
+
+// ── Update Readout ──
+function updateReadout(){
+  const star=STARS[S.starIdx];
+  document.getElementById('starMassDisp').textContent=star.mass.toFixed(2)+' M☉';
+  document.getElementById('starLumDisp').textContent=star.lum<0.01?star.lum.toFixed(4)+' L☉':star.lum.toFixed(3)+' L☉';
+  document.getElementById('starTempDisp').textContent=star.temp+' K';
+  const fmt=t=>Math.round(t)+' K ('+Math.round(t-273)+'°C)';
+  document.getElementById('dTssp').textContent=fmt(D.tSSP);
+  document.getElementById('dTasp').textContent=fmt(D.tASP);
+  document.getElementById('dTterm').textContent=fmt(D.tTerm);
+  document.getElementById('dTday').textContent=fmt(D.tDayAvg);
+  document.getElementById('dTnight').textContent=fmt(D.tNightAvg);
+  // SSP status
+  const sspEl=document.getElementById('dSSPstatus');
+  if(D.tSSP>600){sspEl.textContent='Lethal ('+Math.round(D.tSSP-273)+'°C)';sspEl.style.color='#E74C3C';}
+  else if(D.tSSP>373){sspEl.textContent='Scorching ('+Math.round(D.tSSP-273)+'°C)';sspEl.style.color='#FFA500';}
+  else if(D.tSSP>=273){sspEl.textContent='Hot but Survivable';sspEl.style.color='#FFD43B';}
+  else{sspEl.textContent='Frozen';sspEl.style.color='#00D4FF';}
+  document.getElementById('dHabWidth').textContent=D.habDeg.toFixed(1)+'°';
+  document.getElementById('dHabPct').textContent=D.habPct.toFixed(1)+'%';
+  const hEl=document.getElementById('dHabStatus');
+  hEl.textContent=D.habStatus;
+  hEl.style.color=D.habStatus==='Habitable'?'#2ECC71':D.habStatus==='Marginal'?'#FFA500':'#E74C3C';
+  const lEl=document.getElementById('dLiquid');
+  lEl.textContent=D.liquidWater;
+  lEl.style.color=D.liquidWater==='Stable'?'#2ECC71':D.liquidWater==='Unstable'?'#FFA500':'#E74C3C';
+  document.getElementById('dPressure').textContent=D.pressure.toFixed(2)+' atm';
+  document.getElementById('dScaleH').textContent=isFinite(D.scaleH)?D.scaleH.toFixed(1)+' km':'—';
+  document.getElementById('dWind').textContent=Math.round(D.maxWind)+' km/h';
+  const tEl=document.getElementById('dTransport');
+  tEl.textContent=D.transport;
+  tEl.style.color=D.transport==='Minimal'?'rgba(255,255,255,0.5)':D.transport==='Moderate'?'#FFA500':D.transport==='Strong'?'#2ECC71':'#00D4FF';
+  document.getElementById('dDeltaT').textContent=Math.round(D.deltaT)+' K';
+  document.getElementById('dPeriod').textContent=D.orbPeriod.toFixed(2)+' days';
+  document.getElementById('dOrbDist').textContent=S.orbDist.toFixed(3)+' AU';
+  document.getElementById('dGrav').textContent=D.surfGrav.toFixed(2)+' g';
+  document.getElementById('dEscVel').textContent=D.escVel.toFixed(1)+' km/s';
+  document.getElementById('dDensity').textContent=D.bulkDensity.toFixed(2)+' g/cm³';
+  const arEl=document.getElementById('dAtmRetain');
+  arEl.textContent=D.atmRetention;
+  arEl.style.color=D.atmRetention==='Strong'?'#2ECC71':D.atmRetention==='Moderate'?'#FFA500':D.atmRetention==='Marginal'?'#FFD43B':'#E74C3C';
+  const tlEl=document.getElementById('dTidalLock');
+  tlEl.textContent=D.tidalLock;
+  tlEl.style.color=D.tidalLock==='Confirmed'?'#2ECC71':D.tidalLock==='Likely'?'#FFA500':'#E74C3C';
+  document.getElementById('dMoons').textContent=S.moonCount===0?'None':S.moonCount+'';
+  document.getElementById('zoomVal').textContent=(3.8/camDist).toFixed(1)+'×';
+  // Badge
+  const badge=document.getElementById('badge');
+  badge.className='';
+  if(D.habStatus==='Habitable'){
+    if(S.atmDens<0.5&&S.ocean>60){badge.textContent='EYEBALL WORLD';badge.classList.add('badge-gold');}
+    else{badge.textContent='HABITABLE WORLD';badge.classList.add('badge-success');}
+  }else if(D.habStatus==='Marginal'){badge.textContent='MARGINALLY HABITABLE';badge.classList.add('badge-warning');}
+  else if(D.habStatus==='Frozen'){badge.textContent='FROZEN WORLD';badge.classList.add('badge-frozen');}
+  else if(D.tSSP>600&&S.ghFactor>1.5){badge.textContent='RUNAWAY GREENHOUSE';badge.classList.add('badge-danger');}
+  else{badge.textContent='UNINHABITABLE';badge.classList.add('badge-danger');}
+}
+
+// ── Control Bindings ──
+function bindSlider(id,key,dispId,fmt){
+  document.getElementById(id).addEventListener('input',function(){
+    S[key]=parseFloat(this.value);
+    document.getElementById(dispId).textContent=fmt(S[key]);
+    recalcPhysics();syncUniforms();updateReadout();
+  });
+}
+starSel.addEventListener('change',e=>{S.starIdx=+e.target.value;recalcPhysics();syncUniforms();updateReadout();});
+bindSlider('planetMass','planetMass','planetMassVal',v=>v.toFixed(2)+' M⊕');
+bindSlider('planetRadius','planetRadius','planetRadiusVal',v=>v.toFixed(2)+' R⊕');
+bindSlider('atmDens','atmDens','atmDensVal',v=>v.toFixed(2)+' atm');
+bindSlider('ghFactor','ghFactor','ghFactorVal',v=>v.toFixed(2));
+bindSlider('ocean','ocean','oceanVal',v=>Math.round(v)+'%');
+bindSlider('albedo','albedo','albedoVal',v=>v.toFixed(2));
+document.getElementById('orbDist').addEventListener('input',function(){
+  S.orbDist=parseFloat(this.value);
+  document.getElementById('orbDistVal').textContent=S.orbDist.toFixed(3)+' AU';
+  if(S.lockHZ){S.lockHZ=false;document.getElementById('lockHZ').checked=false;}
+  recalcPhysics();syncUniforms();updateReadout();
+});
+document.getElementById('lockHZ').addEventListener('change',function(){S.lockHZ=this.checked;recalcPhysics();syncUniforms();updateReadout();});
+document.getElementById('composition').addEventListener('change',function(){S.composition=this.value;recalcPhysics();syncUniforms();updateReadout();});
+document.getElementById('moonCount').addEventListener('input',function(){
+  S.moonCount=parseInt(this.value);
+  document.getElementById('moonCountVal').textContent=S.moonCount;
+  syncUniforms();updateReadout();
+});
+document.getElementById('showClouds').addEventListener('change',function(){S.showClouds=this.checked;syncUniforms();});
+document.getElementById('showHab').addEventListener('change',function(){S.showHab=this.checked;syncUniforms();});
+document.getElementById('showGrid').addEventListener('change',function(){S.showGrid=this.checked;syncUniforms();});
+document.getElementById('orbPause').addEventListener('change',function(){orbPaused=this.checked;});
+document.getElementById('orbSpeed').addEventListener('input',function(){
+  orbSpeedMult=parseFloat(this.value);
+  document.getElementById('orbSpeedVal').textContent=orbSpeedMult.toFixed(1)+'×';
+});
+// Spacebar toggles orbit pause
+window.addEventListener('keydown',function(e){
+  if(e.code==='Space'&&e.target===document.body){
+    e.preventDefault();
+    orbPaused=!orbPaused;
+    document.getElementById('orbPause').checked=orbPaused;
+  }
+});
+document.getElementById('info-btn').addEventListener('click',()=>document.getElementById('modal-overlay').classList.add('visible'));
+
+function setColorScale(v){
+  S.colorScale=v;
+  document.getElementById('csTherm').classList.toggle('active',v===0);
+  document.getElementById('csBiome').classList.toggle('active',v===1);
+  document.getElementById('csRaw').classList.toggle('active',v===2);
+  syncUniforms();
+}
+function regenerateTerrain(){
+  S.noiseSeed=Math.random()*1000;
+  syncUniforms();
+}
+function toggleMobilePanel(id){
+  const el=document.getElementById(id);
+  const other=id==='controls'?'readout':'controls';
+  document.getElementById(other).classList.remove('mobile-visible');
+  el.classList.toggle('mobile-visible');
+}
+
+// ── Presets with Lerp ──
+const PRESETS={
+  trappist1e:{starIdx:1,planetMass:0.92,planetRadius:0.92,orbDist:0.029,lockHZ:false,atmDens:1.0,ghFactor:0.3,composition:'N2O2',ocean:60,albedo:0.3},
+  proximab:{starIdx:4,planetMass:1.27,planetRadius:1.1,orbDist:0.0485,lockHZ:false,atmDens:1.2,ghFactor:0.35,composition:'N2O2',ocean:50,albedo:0.25},
+  eyeball:{starIdx:6,planetMass:1.0,planetRadius:1.0,orbDist:-1,lockHZ:true,atmDens:0.3,ghFactor:0.1,composition:'N2O2',ocean:80,albedo:0.35},
+  supervenus:{starIdx:7,planetMass:2.0,planetRadius:1.3,orbDist:STARS[7].hz*0.8,lockHZ:false,atmDens:4.5,ghFactor:2.8,composition:'CO2',ocean:0,albedo:0.7},
+  snowball:{starIdx:3,planetMass:0.8,planetRadius:0.9,orbDist:STARS[3].hz*1.3,lockHZ:false,atmDens:0.2,ghFactor:0.05,composition:'N2O2',ocean:30,albedo:0.7},
+  ribbon:{starIdx:6,planetMass:1.5,planetRadius:1.1,orbDist:-1,lockHZ:true,atmDens:0.8,ghFactor:0.2,composition:'N2O2',ocean:15,albedo:0.25},
+  custom:null
+};
+let lerpTarget=null,lerpStart=null,lerpT=0;
+function applyPreset(name){
+  if(name==='custom'){lerpTarget=null;return;}
+  const p=PRESETS[name];if(!p)return;
+  lerpStart={planetMass:S.planetMass,planetRadius:S.planetRadius,orbDist:S.orbDist,atmDens:S.atmDens,ghFactor:S.ghFactor,ocean:S.ocean,albedo:S.albedo};
+  lerpTarget={...p};
+  if(lerpTarget.orbDist<0)lerpTarget.orbDist=STARS[p.starIdx].hz;
+  lerpT=0;
+  S.starIdx=p.starIdx;starSel.value=p.starIdx;
+  S.lockHZ=p.lockHZ;document.getElementById('lockHZ').checked=p.lockHZ;
+  S.composition=p.composition;document.getElementById('composition').value=p.composition;
+}
+function updateLerp(dt){
+  if(!lerpTarget)return;
+  lerpT+=dt;
+  const t=Math.min(lerpT/1000,1);
+  const e=t<0.5?2*t*t:-1+(4-2*t)*t;
+  const l=(a,b)=>a+(b-a)*e;
+  S.planetMass=l(lerpStart.planetMass,lerpTarget.planetMass);
+  S.planetRadius=l(lerpStart.planetRadius,lerpTarget.planetRadius);
+  S.orbDist=l(lerpStart.orbDist,lerpTarget.orbDist);
+  S.atmDens=l(lerpStart.atmDens,lerpTarget.atmDens);
+  S.ghFactor=l(lerpStart.ghFactor,lerpTarget.ghFactor);
+  S.ocean=l(lerpStart.ocean,lerpTarget.ocean);
+  S.albedo=l(lerpStart.albedo,lerpTarget.albedo);
+  ['planetMass','planetRadius','orbDist','atmDens','ghFactor','ocean','albedo'].forEach(k=>{
+    const el=document.getElementById(k);if(el)el.value=S[k];
+  });
+  document.getElementById('planetMassVal').textContent=S.planetMass.toFixed(2)+' M⊕';
+  document.getElementById('planetRadiusVal').textContent=S.planetRadius.toFixed(2)+' R⊕';
+  document.getElementById('orbDistVal').textContent=S.orbDist.toFixed(3)+' AU';
+  document.getElementById('atmDensVal').textContent=S.atmDens.toFixed(2)+' atm';
+  document.getElementById('ghFactorVal').textContent=S.ghFactor.toFixed(2);
+  document.getElementById('oceanVal').textContent=Math.round(S.ocean)+'%';
+  document.getElementById('albedoVal').textContent=S.albedo.toFixed(2);
+  recalcPhysics();syncUniforms();updateReadout();
+  if(t>=1)lerpTarget=null;
+}
+
+// ── Mouse / Touch ──
+let dragging=false,dragX=0,dragY=0,hasInteracted=false;
+const canvas3d=renderer.domElement;
+canvas3d.style.cursor='grab';
+
+canvas3d.addEventListener('mousedown',e=>{
+  dragging=true;dragX=e.clientX;dragY=e.clientY;
+  canvas3d.style.cursor='grabbing';
+  if(!hasInteracted){hasInteracted=true;document.getElementById('drag-hint').style.opacity='0';}
+});
+window.addEventListener('mousemove',e=>{
+  if(dragging){
+    const dx=e.clientX-dragX,dy=e.clientY-dragY;
+    camTheta-=dx*0.005;
+    camPhi+=dy*0.005;
+    camPhi=Math.max(-1.4,Math.min(1.4,camPhi));
+    dragX=e.clientX;dragY=e.clientY;
+    updateCamera();
+  }
+  // Tooltip via raycasting
+  updateTooltip(e.clientX,e.clientY);
+});
+window.addEventListener('mouseup',()=>{dragging=false;canvas3d.style.cursor='grab';});
+canvas3d.addEventListener('wheel',e=>{
+  e.preventDefault();
+  targetDist*=e.deltaY>0?1.12:0.88;
+  targetDist=Math.max(1.5,Math.min(45,targetDist));
+  updateReadout();
+},{passive:false});
+
+// Touch
+let lastTouchDist=0;
+canvas3d.addEventListener('touchstart',e=>{
+  if(e.touches.length===1){dragging=true;dragX=e.touches[0].clientX;dragY=e.touches[0].clientY;if(!hasInteracted){hasInteracted=true;document.getElementById('drag-hint').style.opacity='0';}}
+  else if(e.touches.length===2){dragging=false;lastTouchDist=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);}
+},{passive:true});
+canvas3d.addEventListener('touchmove',e=>{
+  e.preventDefault();
+  if(e.touches.length===1&&dragging){
+    const dx=e.touches[0].clientX-dragX,dy=e.touches[0].clientY-dragY;
+    camTheta-=dx*0.005;camPhi+=dy*0.005;
+    camPhi=Math.max(-1.4,Math.min(1.4,camPhi));
+    dragX=e.touches[0].clientX;dragY=e.touches[0].clientY;
+    updateCamera();
+  }else if(e.touches.length===2){
+    const d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);
+    targetDist*=lastTouchDist/d;
+    targetDist=Math.max(1.5,Math.min(45,targetDist));
+    lastTouchDist=d;updateReadout();
+  }
+},{passive:false});
+canvas3d.addEventListener('touchend',()=>{dragging=false;});
+
+// Tooltip
+const raycaster=new THREE.Raycaster();
+const mouse2=new THREE.Vector2();
+function updateTooltip(mx,my){
+  const tip=document.getElementById('tooltip');
+  if(camDist>8){tip.style.display='none';return;}
+  mouse2.x=(mx/window.innerWidth)*2-1;
+  mouse2.y=-(my/window.innerHeight)*2+1;
+  raycaster.setFromCamera(mouse2,camera);
+  const hits=raycaster.intersectObject(planetMesh);
+  if(hits.length>0){
+    const pt=hits[0].point;
+    // Convert world hit point to planet local space for theta calculation
+    const localPt=planetMesh.worldToLocal(pt.clone());
+    const P=localPt.normalize();
+    const theta=Math.acos(Math.max(-1,Math.min(1,P.dot(starDirVec))));
+    // Compute temp
+    const c=Math.cos(theta);
+    let temp;
+    if(c<=0){const nf=Math.min(-c,1);const tEdge=D.tASP+(D.tSSP-D.tASP)*0.001;temp=D.tASP+(tEdge-D.tASP)*Math.pow(1-nf,0.5+D.atmN*1.5);}
+    else{temp=D.tASP+(D.tSSP-D.tASP)*Math.pow(c,D.redistN);}
+    const status=temp>=273&&temp<=373?'Habitable':temp<273?'Frozen':'Too Hot';
+    const col=status==='Habitable'?'#2ECC71':status==='Frozen'?'#00D4FF':'#FFA500';
+    tip.style.display='block';
+    tip.style.left=(mx+14)+'px';tip.style.top=(my-10)+'px';
+    tip.innerHTML=`<span style="color:${col}">${Math.round(temp)} K</span> (${Math.round(temp-273)}°C)<br>θ: ${(theta*180/Math.PI).toFixed(0)}° from SSP<br><span style="color:${col}">${status}</span>`;
+  }else{tip.style.display='none';}
+}
+canvas3d.addEventListener('mouseleave',()=>document.getElementById('tooltip').style.display='none');
+
+// ── Animation Loop ──
+let lastTime=0;
+const ORB_SPEED=0.06; // visual orbital speed multiplier
+function animate(ts){
+  const dt=Math.min(ts-lastTime,50);
+  lastTime=ts;
+
+  // Smooth zoom
+  camDist+=(targetDist-camDist)*0.1;
+
+  // Lerp presets
+  updateLerp(dt);
+
+  // Time
+  const t=ts*0.001;
+  planetUniforms.time.value=t;
+  cloudMat.uniforms.time.value=t;
+
+  // ── Orbital Motion ──
+  // Smoothly interpolate visual distance toward target
+  const targetVisDist=getVisDist(S.orbDist);
+  curVisDist+=(targetVisDist-curVisDist)*Math.min(dt*0.005,0.15);
+  // Scale orbit path and HZ ring
+  orbitPath.scale.set(curVisDist,1,curVisDist);
+  const hzVis=getHZVisDist();
+  hzRing.scale.set(hzVis,hzVis,1);
+
+  orbAngle+=(orbPaused?0:dt*0.001*ORB_SPEED*orbSpeedMult)/Math.max(Math.pow(S.orbDist,0.75),0.05);
+  planetGroup.position.set(
+    Math.cos(orbAngle)*curVisDist,
+    0,
+    Math.sin(orbAngle)*curVisDist
+  );
+
+  // ── Tidal Locking: rotate planetGroup so local +X always faces star ──
+  const toStar=new THREE.Vector3().subVectors(starGroup.position,planetGroup.position).normalize();
+  planetGroup.quaternion.setFromUnitVectors(new THREE.Vector3(1,0,0),toStar);
+  // starDir stays (1,0,0) in local space for terrain/temperature
+  // starDirWorld = world-space direction for lighting
+  planetUniforms.starDirWorld.value.copy(toStar);
+  cloudMat.uniforms.starDirWorld.value.copy(toStar);
+
+  // ── Camera tracks planet ──
+  updateCamera();
+
+  // ── Moon Positions (local to planetGroup) ──
+  for(let i=0;i<3;i++){
+    if(i>=S.moonCount)continue;
+    const mp=MOON_PARAMS[i];
+    const angle=t*mp.speed+i*2.1;
+    const mx=Math.cos(angle)*mp.dist;
+    const mz=Math.sin(angle)*mp.dist;
+    moonMeshes[i].position.set(mx,0,mz);
+    // Moon positions for eclipse shader (in local space)
+    planetUniforms.moonPos.value[i].set(mx,0,mz);
+    planetUniforms.moonRad.value[i]=mp.size;
+  }
+
+  // ── Visibility by Zoom Level ──
+  const isOrbitalView=camDist>12;
+  hzRing.visible=isOrbitalView;
+  orbitPath.visible=isOrbitalView;
+  starGroup.visible=camDist>2.5; // Star visible even at moderate zoom
+  atmoMesh.visible=S.atmDens>0.05&&camDist<20;
+  for(let i=0;i<3;i++){
+    moonOrbits[i].visible=i<S.moonCount&&camDist>4;
+  }
+
+  // ── Directional Light follows star direction ──
+  dirLight.position.set(10,0,0); // In planetGroup local space, star is at +X
+
+  // ── Hab rings ──
+  updateHabRings();
+
+  renderer.render(scene,camera);
+  requestAnimationFrame(animate);
+}
+
+// ── Initialize ──
+recalcPhysics();
+syncUniforms();
+updateReadout();
+updateCamera();
+requestAnimationFrame(animate);
+</script>
+</body>
+</html>

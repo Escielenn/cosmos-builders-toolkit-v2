@@ -1,15 +1,17 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Check, Crown, Sparkles } from "lucide-react";
+import { Check, Zap, Sparkles, Map } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
+import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/AuthContext";
-import { useSubscription } from "@/hooks/use-subscription";
+import { useSubscription, type Subscription } from "@/hooks/use-subscription";
 import { useToast } from "@/hooks/use-toast";
+import WelcomeDialog from "@/components/onboarding/WelcomeDialog";
 import { FREE_TOOL_IDS, PRO_TOOL_IDS, PRICING } from "@/lib/tools-config";
 import { PageBursts } from "@/components/ui/data-burst";
 import { PRICING_BURSTS } from "@/lib/data-bursts";
@@ -18,62 +20,88 @@ const Pricing = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { isSubscribed, subscription, createCheckoutSession, createPortalSession, refreshSubscription, waitForSubscription } = useSubscription();
+  const { isSubscribed, subscription, tier, isVanguard, createCheckoutSession, createPortalSession, refreshSubscription, waitForSubscription } = useSubscription();
   const { toast } = useToast();
-  const [loading, setLoading] = useState<'monthly' | 'yearly' | 'portal' | null>(null);
+  const queryClient = useQueryClient();
+  const [loading, setLoading] = useState<'monthly' | 'yearly' | 'vanguard-monthly' | 'vanguard-yearly' | 'portal' | null>(null);
   const [activating, setActivating] = useState(false);
+  const [showProWelcome, setShowProWelcome] = useState(false);
+  const [showVanguardWelcome, setShowVanguardWelcome] = useState(false);
+  const handledRef = useRef(false);
 
-  // Handle success/cancel query params
+  // Handle success/cancel query params — run once only
   useEffect(() => {
-    const handleSuccess = async () => {
-      setActivating(true);
-      toast({
-        title: "ACTIVATING ACCESS...",
-        description: "Confirming payment. Stand by.",
-      });
-
-      // Poll for subscription (webhook may take a few seconds)
-      const success = await waitForSubscription();
-
-      if (success) {
-        toast({
-          title: "PRO ACCESS ACTIVATED.",
-          description: "All instruments unlocked.",
-        });
-      } else {
-        toast({
-          title: "Subscription pending",
-          description: "Your payment was received. It may take a moment to activate.",
-        });
-        refreshSubscription();
-      }
-
-      setActivating(false);
-      // Clean up URL
-      window.history.replaceState({}, '', '/pricing');
-    };
+    if (handledRef.current) return;
 
     if (searchParams.get('success') === 'true') {
-      handleSuccess();
+      handledRef.current = true;
+
+      (async () => {
+        setActivating(true);
+        toast({
+          title: "ACTIVATING ACCESS...",
+          description: "Confirming payment. Stand by.",
+        });
+
+        const success = await waitForSubscription();
+
+        if (success) {
+          toast({
+            title: "ACCESS ACTIVATED.",
+            description: "All instruments unlocked.",
+          });
+
+          // Show tier-specific welcome dialog
+          const freshSub = queryClient.getQueryData<Subscription | null>(['subscription', user?.id]);
+          const activatedTier = freshSub?.tier || 'pro';
+
+          if (activatedTier === 'vanguard') {
+            try {
+              if (!localStorage.getItem('sf-welcome-vanguard-shown')) {
+                localStorage.setItem('sf-welcome-vanguard-shown', 'true');
+                setShowVanguardWelcome(true);
+              }
+            } catch { /* localStorage unavailable */ }
+          } else {
+            try {
+              if (!localStorage.getItem('sf-welcome-pro-shown')) {
+                localStorage.setItem('sf-welcome-pro-shown', 'true');
+                setShowProWelcome(true);
+              }
+            } catch { /* localStorage unavailable */ }
+          }
+        } else {
+          toast({
+            title: "Subscription pending",
+            description: "Your payment was received. It may take a moment to activate.",
+          });
+          refreshSubscription();
+        }
+
+        setActivating(false);
+        window.history.replaceState({}, '', '/pricing');
+      })();
     } else if (searchParams.get('canceled') === 'true') {
+      handledRef.current = true;
       toast({
         title: "Checkout canceled",
         description: "Upgrade available at any time.",
       });
-      // Clean up URL
       window.history.replaceState({}, '', '/pricing');
     }
-  }, [searchParams, toast, refreshSubscription, waitForSubscription]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
-  const handleCheckout = async (priceType: 'monthly' | 'yearly') => {
+  const handleCheckout = async (priceType: 'monthly' | 'yearly', selectedTier: 'pro' | 'vanguard' = 'pro') => {
     if (!user) {
       navigate("/auth?redirect=/pricing");
       return;
     }
 
-    setLoading(priceType);
+    const loadingKey = selectedTier === 'vanguard' ? `vanguard-${priceType}` as const : priceType;
+    setLoading(loadingKey);
     try {
-      const result = await createCheckoutSession.mutateAsync(priceType);
+      const result = await createCheckoutSession.mutateAsync({ priceType, tier: selectedTier });
       if (result.url) {
         window.location.href = result.url;
       }
@@ -120,9 +148,22 @@ const Pricing = () => {
     "Unlimited worlds & worksheets",
     "Cloud sync across devices",
     "Export to PDF, JSON & Notion",
-    "Priority support",
+    "5–10% off SF courses",
     "All future tools & features",
   ];
+
+  const vanguardFeatures = [
+    "Everything in Pro",
+    "10 roadmap votes per month",
+    "Early access to new tools",
+    "Bi-weekly Office Hours",
+    "Private Discord channel",
+    "Custom export themes",
+    "10–25% off SF courses",
+  ];
+
+  // Determine if user is on Pro (not Vanguard) — show upgrade CTA
+  const isProOnly = isSubscribed && tier === 'pro';
 
   return (
     <div className="min-h-screen bg-background">
@@ -140,30 +181,30 @@ const Pricing = () => {
             UPGRADE YOUR ACCESS
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Free accounts access 3 instruments. Pro unlocks all 30.
+            Free accounts access {FREE_TOOL_IDS.length} instruments. Pro unlocks all {totalTools}. Vanguard shapes what comes next.
           </p>
         </section>
 
         {/* Pricing Cards */}
-        <section className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-16">
+        <section className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto mb-16">
           {/* Free Plan */}
           <GlassPanel className="p-8">
             <div className="mb-6">
-              <h2 className="font-heading text-2xl font-bold mb-2">STANDARD ACCESS</h2>
-              <p className="text-4xl font-bold">$0<span className="text-lg font-normal text-muted-foreground">/forever</span></p>
+              <h2 className="font-heading text-xl font-light uppercase tracking-[2px] mb-2">STANDARD ACCESS</h2>
+              <p className="text-4xl font-light text-tier-1">$0<span className="text-lg text-tier-3">/forever</span></p>
             </div>
 
             <ul className="space-y-3 mb-8">
               {freeFeatures.map((feature) => (
-                <li key={feature} className="flex items-center gap-2">
-                  <Check className="w-5 h-5 text-green-500 shrink-0" />
-                  <span>{feature}</span>
+                <li key={feature} className="flex items-center gap-2 text-sm">
+                  <Check className="w-4 h-4 text-emerald-500 shrink-0" />
+                  <span className="text-tier-2">{feature}</span>
                 </li>
               ))}
             </ul>
 
-            <p className="text-sm text-muted-foreground mb-4">Free tools:</p>
-            <ul className="text-sm text-muted-foreground space-y-1 mb-6">
+            <p className="text-xs text-tier-3 uppercase tracking-[1.5px] mb-3">Free instruments:</p>
+            <ul className="text-sm text-tier-3 space-y-1 mb-6">
               <li>Environmental Chain Reaction</li>
               <li>Spacecraft Designer</li>
               <li>Propulsion Consequences Map</li>
@@ -183,38 +224,38 @@ const Pricing = () => {
             </div>
 
             <div className="mb-6">
-              <h2 className="font-heading text-2xl font-bold mb-2 flex items-center gap-2">
-                <Crown className="w-6 h-6 text-amber-500" />
+              <h2 className="font-heading text-xl font-light uppercase tracking-[2px] mb-2 flex items-center gap-2">
+                <Zap className="w-5 h-5 text-amber-500" />
                 PRO ACCESS
               </h2>
               <div className="flex items-baseline gap-2">
-                <p className="text-4xl font-bold">${PRICING.monthly.price}</p>
-                <span className="text-lg text-muted-foreground">/month</span>
+                <p className="text-4xl font-light text-tier-1">${PRICING.pro.monthly.price}</p>
+                <span className="text-lg text-tier-3">/month</span>
               </div>
-              <p className="text-sm text-muted-foreground">or ${PRICING.yearly.price}/year (save {PRICING.yearly.savings})</p>
+              <p className="text-sm text-tier-3">or ${PRICING.pro.yearly.price}/year (save {PRICING.pro.yearly.savings})</p>
             </div>
 
             <ul className="space-y-3 mb-8">
               {proFeatures.map((feature) => (
-                <li key={feature} className="flex items-center gap-2">
-                  <Check className="w-5 h-5 text-green-500 shrink-0" />
-                  <span>{feature}</span>
+                <li key={feature} className="flex items-center gap-2 text-sm">
+                  <Check className="w-4 h-4 text-emerald-500 shrink-0" />
+                  <span className="text-tier-2">{feature}</span>
                 </li>
               ))}
             </ul>
 
             {activating ? (
               <div className="space-y-3">
-                <div className="p-4 rounded-lg bg-primary/10 text-center">
+                <div className="p-4 rounded-sm bg-primary/10 text-center">
                   <Loader size="sm" className="mb-2" />
-                  <p className="text-sm font-medium">PRO ACCESS ACTIVATION IN PROGRESS.</p>
+                  <p className="text-sm font-medium">ACTIVATION IN PROGRESS.</p>
                 </div>
               </div>
-            ) : isSubscribed ? (
+            ) : isSubscribed && tier === 'pro' ? (
               <div className="space-y-3">
-                <div className="p-3 rounded-lg bg-green-500/10 text-center">
-                  <p className="text-sm font-medium text-green-600 dark:text-green-400">
-                    Subscription active. ({subscription?.plan_type})
+                <div className="p-3 rounded-sm bg-emerald-500/10 text-center">
+                  <p className="text-sm font-medium text-emerald-400">
+                    Pro active ({subscription?.plan_type})
                   </p>
                 </div>
                 <Button
@@ -229,57 +270,211 @@ const Pricing = () => {
                   MANAGE ACCESS
                 </Button>
               </div>
+            ) : isVanguard ? (
+              <div className="p-3 rounded-sm bg-emerald-500/10 text-center">
+                <p className="text-sm text-tier-3">Included in your Vanguard access</p>
+              </div>
             ) : (
               <div className="space-y-3">
                 <Button
                   className="w-full"
                   size="lg"
-                  onClick={() => handleCheckout('yearly')}
+                  onClick={() => handleCheckout('yearly', 'pro')}
                   disabled={loading !== null}
                 >
                   {loading === 'yearly' ? (
                     <Loader variant="inline" size="sm" className="mr-2" />
                   ) : (
-                    <Crown className="w-4 h-4 mr-2" />
+                    <Zap className="w-4 h-4 mr-2" />
                   )}
-                  UPGRADE (YEARLY) — ${PRICING.yearly.price}/year
+                  UPGRADE (YEARLY) — ${PRICING.pro.yearly.price}/year
                 </Button>
                 <Button
                   variant="outline"
                   className="w-full"
-                  onClick={() => handleCheckout('monthly')}
+                  onClick={() => handleCheckout('monthly', 'pro')}
                   disabled={loading !== null}
                 >
                   {loading === 'monthly' ? (
                     <Loader variant="inline" size="sm" className="mr-2" />
                   ) : null}
-                  Monthly - ${PRICING.monthly.price}/month
+                  Monthly — ${PRICING.pro.monthly.price}/month
+                </Button>
+              </div>
+            )}
+          </GlassPanel>
+
+          {/* Vanguard Plan */}
+          <GlassPanel className="p-8 border-2 border-violet-500/40 relative">
+            <div className="absolute -top-3 right-4">
+              <Badge className="bg-violet-600 text-white border-violet-500">
+                Shape the Future
+              </Badge>
+            </div>
+
+            <div className="mb-6">
+              <h2 className="font-heading text-xl font-light uppercase tracking-[2px] mb-2 flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-violet-400" />
+                VANGUARD ACCESS
+              </h2>
+              <div className="flex items-baseline gap-2">
+                <p className="text-4xl font-light text-tier-1">${PRICING.vanguard.monthly.price}</p>
+                <span className="text-lg text-tier-3">/month</span>
+              </div>
+              <p className="text-sm text-tier-3">or ${PRICING.vanguard.yearly.price}/year (save {PRICING.vanguard.yearly.savings})</p>
+            </div>
+
+            <ul className="space-y-3 mb-8">
+              {vanguardFeatures.map((feature) => (
+                <li key={feature} className="flex items-center gap-2 text-sm">
+                  <Check className="w-4 h-4 text-violet-400 shrink-0" />
+                  <span className="text-tier-2">{feature}</span>
+                </li>
+              ))}
+            </ul>
+
+            {activating ? (
+              <div className="space-y-3">
+                <div className="p-4 rounded-sm bg-violet-500/10 text-center">
+                  <Loader size="sm" className="mb-2" />
+                  <p className="text-sm font-medium">ACTIVATION IN PROGRESS.</p>
+                </div>
+              </div>
+            ) : isVanguard ? (
+              <div className="space-y-3">
+                <div className="p-3 rounded-sm bg-violet-500/10 text-center">
+                  <p className="text-sm font-medium text-violet-400">
+                    Vanguard active ({subscription?.plan_type})
+                  </p>
+                </div>
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={handleManageSubscription}
+                  disabled={loading === 'portal'}
+                >
+                  {loading === 'portal' ? (
+                    <Loader variant="inline" size="sm" className="mr-2" />
+                  ) : null}
+                  MANAGE ACCESS
+                </Button>
+              </div>
+            ) : isProOnly ? (
+              <div className="space-y-3">
+                <Button
+                  className="w-full bg-violet-600 hover:bg-violet-500"
+                  size="lg"
+                  onClick={() => handleCheckout('yearly', 'vanguard')}
+                  disabled={loading !== null}
+                >
+                  {loading === 'vanguard-yearly' ? (
+                    <Loader variant="inline" size="sm" className="mr-2" />
+                  ) : (
+                    <Sparkles className="w-4 h-4 mr-2" />
+                  )}
+                  UPGRADE TO VANGUARD — ${PRICING.vanguard.yearly.price}/yr
+                </Button>
+                <Button
+                  variant="outline"
+                  className="w-full border-violet-500/30 hover:border-violet-500/50"
+                  onClick={() => handleCheckout('monthly', 'vanguard')}
+                  disabled={loading !== null}
+                >
+                  {loading === 'vanguard-monthly' ? (
+                    <Loader variant="inline" size="sm" className="mr-2" />
+                  ) : null}
+                  Monthly — ${PRICING.vanguard.monthly.price}/month
+                </Button>
+                <p className="text-xs text-tier-4 text-center">
+                  Your Pro plan will be upgraded. Stripe handles the prorated billing.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                <Button
+                  className="w-full bg-violet-600 hover:bg-violet-500"
+                  size="lg"
+                  onClick={() => handleCheckout('yearly', 'vanguard')}
+                  disabled={loading !== null}
+                >
+                  {loading === 'vanguard-yearly' ? (
+                    <Loader variant="inline" size="sm" className="mr-2" />
+                  ) : (
+                    <Sparkles className="w-4 h-4 mr-2" />
+                  )}
+                  VANGUARD (YEARLY) — ${PRICING.vanguard.yearly.price}/year
+                </Button>
+                <Button
+                  variant="outline"
+                  className="w-full border-violet-500/30 hover:border-violet-500/50"
+                  onClick={() => handleCheckout('monthly', 'vanguard')}
+                  disabled={loading !== null}
+                >
+                  {loading === 'vanguard-monthly' ? (
+                    <Loader variant="inline" size="sm" className="mr-2" />
+                  ) : null}
+                  Monthly — ${PRICING.vanguard.monthly.price}/month
                 </Button>
               </div>
             )}
           </GlassPanel>
         </section>
 
+        {/* Vanguard Details Banner */}
+        <section className="max-w-4xl mx-auto mb-16">
+          <GlassPanel className="p-8 border-violet-500/15">
+            <div className="flex items-start gap-4 mb-6">
+              <div className="w-12 h-12 rounded-sm bg-violet-500/10 flex items-center justify-center shrink-0">
+                <Map className="w-6 h-6 text-violet-400" />
+              </div>
+              <div>
+                <h3 className="font-heading text-lg font-light uppercase tracking-[2px] mb-1">Vanguard: Shape What Comes Next</h3>
+                <p className="text-sm text-tier-2">
+                  Vanguard members don't just use StellarForge—they help build it. Vote on the roadmap, get early access to new instruments before anyone else, and join bi-weekly Office Hours to discuss science fiction worldbuilding directly with the creator.
+                </p>
+              </div>
+            </div>
+            <div className="grid sm:grid-cols-2 gap-4 text-sm text-tier-3">
+              <div>
+                <p className="text-tier-2 font-medium mb-1">Office Hours (Starting Late April)</p>
+                <p>Bi-weekly Zoom/Discord sessions focused on SF worldbuilding and science fiction craft.</p>
+              </div>
+              <div>
+                <p className="text-tier-2 font-medium mb-1">Course Discounts</p>
+                <p>Vanguard Annual saves 25% on all SF worldbuilding courses. Monthly saves 10%. Pro Annual saves 10%, Monthly saves 5%.</p>
+              </div>
+            </div>
+          </GlassPanel>
+        </section>
+
         {/* FAQ */}
         <section className="max-w-2xl mx-auto">
           <GlassPanel className="p-8">
-            <h3 className="font-heading text-xl font-semibold mb-4">Frequently Asked Questions</h3>
+            <h3 className="font-heading text-xl font-light uppercase tracking-[2px] mb-4">Frequently Asked Questions</h3>
             <div className="space-y-4 text-sm">
               <div>
-                <p className="font-medium">Can I cancel anytime?</p>
-                <p className="text-muted-foreground">Yes! Cancel anytime from your billing portal. You'll keep access until the end of your billing period.</p>
+                <p className="font-medium text-tier-2">Can I cancel anytime?</p>
+                <p className="text-tier-3">Yes! Cancel anytime from your billing portal. You'll keep access until the end of your billing period.</p>
               </div>
               <div>
-                <p className="font-medium">What payment methods do you accept?</p>
-                <p className="text-muted-foreground">We accept all major credit cards, debit cards, and many local payment methods through Stripe.</p>
+                <p className="font-medium text-tier-2">What payment methods do you accept?</p>
+                <p className="text-tier-3">We accept all major credit cards, debit cards, and many local payment methods through Stripe.</p>
               </div>
               <div>
-                <p className="font-medium">Will I lose my data if I cancel?</p>
-                <p className="text-muted-foreground">No. Your worlds and worksheets remain saved. You just won't be able to access Pro tools.</p>
+                <p className="font-medium text-tier-2">Will I lose my data if I cancel?</p>
+                <p className="text-tier-3">No. Your worlds and worksheets remain saved. You just won't be able to access Pro/Vanguard tools.</p>
               </div>
               <div>
-                <p className="font-medium">Can I switch between monthly and yearly?</p>
-                <p className="text-muted-foreground">Yes! You can change your plan anytime through the billing portal.</p>
+                <p className="font-medium text-tier-2">Can I upgrade from Pro to Vanguard?</p>
+                <p className="text-tier-3">Yes! Upgrade anytime. Stripe prorates the billing so you only pay the difference for the remainder of your current period.</p>
+              </div>
+              <div>
+                <p className="font-medium text-tier-2">Can I switch between monthly and yearly?</p>
+                <p className="text-tier-3">Yes! You can change your plan anytime through the billing portal.</p>
+              </div>
+              <div>
+                <p className="font-medium text-tier-2">What are roadmap votes?</p>
+                <p className="text-tier-3">Vanguard members get 10 votes per billing period to cast on upcoming tools and features. The highest-voted items get priority in development.</p>
               </div>
             </div>
           </GlassPanel>
@@ -287,6 +482,10 @@ const Pricing = () => {
       </main>
 
       <Footer />
+
+      {/* Post-checkout welcome dialogs */}
+      <WelcomeDialog open={showProWelcome} onOpenChange={setShowProWelcome} variant="pro" />
+      <WelcomeDialog open={showVanguardWelcome} onOpenChange={setShowVanguardWelcome} variant="vanguard" />
     </div>
   );
 };

@@ -7,6 +7,7 @@ import {
   PDFKeyValuePair,
   PDFResultBox,
 } from "../components";
+import { deepStripHtml } from "@/lib/html-utils";
 
 interface Faction {
   id: string;
@@ -124,10 +125,11 @@ const TextBlock = ({ label, value }: { label: string; value?: string }) => {
 };
 
 const EmpireFullReportTemplate = ({
-  formState,
+  formState: rawFormState,
   worldName,
   date,
 }: EmpireFullReportTemplateProps) => {
+  const formState = deepStripHtml(rawFormState);
   const foundation = formState?.foundation;
   const power = formState?.power;
   const territory = formState?.territory;
@@ -147,7 +149,7 @@ const EmpireFullReportTemplate = ({
       {/* Page 1: Foundation & Power Structure */}
       <Page size="LETTER" style={styles.page}>
         <PDFHeader
-          toolName="Empire/Government Designer"
+          toolName="Dominion"
           worldName={worldName}
           date={date}
         />
@@ -210,7 +212,7 @@ const EmpireFullReportTemplate = ({
       {/* Page 2: Territory & Economy */}
       <Page size="LETTER" style={styles.page}>
         <PDFHeader
-          toolName="Empire/Government Designer"
+          toolName="Dominion"
           worldName={worldName}
           date={date}
         />
@@ -268,7 +270,7 @@ const EmpireFullReportTemplate = ({
       {/* Page 3: Culture & Factions */}
       <Page size="LETTER" style={styles.page}>
         <PDFHeader
-          toolName="Empire/Government Designer"
+          toolName="Dominion"
           worldName={worldName}
           date={date}
         />
@@ -319,7 +321,7 @@ const EmpireFullReportTemplate = ({
       {/* Page 4: External, Stability & Synthesis */}
       <Page size="LETTER" style={styles.page}>
         <PDFHeader
-          toolName="Empire/Government Designer"
+          toolName="Dominion"
           worldName={worldName}
           date={date}
         />

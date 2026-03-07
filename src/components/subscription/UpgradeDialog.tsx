@@ -8,7 +8,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Crown, Check } from "lucide-react";
+import { Zap, Check } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
 import { useSubscription } from "@/hooks/use-subscription";
 import { useAuth } from "@/contexts/AuthContext";
@@ -38,7 +38,7 @@ const UpgradeDialog = ({ open, onOpenChange, toolName }: UpgradeDialogProps) => 
 
     setLoading(priceType);
     try {
-      const result = await createCheckoutSession.mutateAsync(priceType);
+      const result = await createCheckoutSession.mutateAsync({ priceType, tier: 'pro' });
       if (result.url) {
         safeRedirect(result.url, "stripe");
       }
@@ -59,7 +59,7 @@ const UpgradeDialog = ({ open, onOpenChange, toolName }: UpgradeDialogProps) => 
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 font-heading text-xl">
-            <Crown className="w-5 h-5 text-amber-500" />
+            <Zap className="w-5 h-5 text-amber-500" />
             UPGRADE CLEARANCE
           </DialogTitle>
           <DialogDescription>
@@ -76,7 +76,7 @@ const UpgradeDialog = ({ open, onOpenChange, toolName }: UpgradeDialogProps) => 
             <div className="flex justify-between items-start mb-2">
               <div>
                 <h3 className="font-semibold">Monthly</h3>
-                <p className="text-2xl font-bold">${PRICING.monthly.price}<span className="text-sm font-normal text-muted-foreground">/month</span></p>
+                <p className="text-2xl font-bold">${PRICING.pro.monthly.price}<span className="text-sm font-normal text-muted-foreground">/month</span></p>
               </div>
               <Button
                 size="sm"
@@ -103,7 +103,7 @@ const UpgradeDialog = ({ open, onOpenChange, toolName }: UpgradeDialogProps) => 
             <div className="flex justify-between items-start mb-2">
               <div>
                 <h3 className="font-semibold">Yearly</h3>
-                <p className="text-2xl font-bold">${PRICING.yearly.price}<span className="text-sm font-normal text-muted-foreground">/year</span></p>
+                <p className="text-2xl font-bold">${PRICING.pro.yearly.price}<span className="text-sm font-normal text-muted-foreground">/year</span></p>
               </div>
               <Button
                 size="sm"
@@ -117,7 +117,7 @@ const UpgradeDialog = ({ open, onOpenChange, toolName }: UpgradeDialogProps) => 
                 )}
               </Button>
             </div>
-            <p className="text-xs text-muted-foreground">Billed annually (~${PRICING.yearly.monthlyEquivalent}/month)</p>
+            <p className="text-xs text-muted-foreground">Billed annually (~${PRICING.pro.yearly.monthlyEquivalent}/month)</p>
           </div>
         </div>
 

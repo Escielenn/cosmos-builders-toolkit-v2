@@ -149,9 +149,9 @@ const SpacecraftMockup = () => {
               {item.value}
               {item.unit || "%"}
             </div>
-            <div className="h-1 bg-sf-surface rounded-full mt-1 overflow-hidden">
+            <div className="h-1 bg-sf-surface mt-1 overflow-hidden">
               <div
-                className="h-full rounded-full transition-all duration-500"
+                className="h-full transition-all duration-500"
                 style={{
                   width: item.unit ? "100%" : `${item.value}%`,
                   backgroundColor: `hsl(var(--${item.color}))`,
@@ -164,8 +164,8 @@ const SpacecraftMockup = () => {
 
       {/* Ship class badge */}
       <div className="mt-3 flex justify-center">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sf-cyan/10 border border-sf-cyan/30">
-          <div className="w-2 h-2 rounded-full bg-sf-cyan animate-pulse" />
+        <div className="inline-flex items-center gap-2 px-3 py-1 bg-sf-cyan/10 border border-sf-cyan/30">
+          <div className="w-2 h-2 bg-sf-cyan animate-pulse" />
           <span className="text-[10px] text-sf-cyan uppercase tracking-wider">
             Long-Range Explorer
           </span>

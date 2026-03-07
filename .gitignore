@@ -30,5 +30,16 @@ dist-ssr
 .vercel
 .env*.local
 
-# Large video files (host externally)
+# Large media files (deployed via Vercel CLI, too large for GitHub)
 public/video/
+public/music/
+
+# Reference/temp files
+images_of_ref/
+favicon_io/
+nul
+*.tmp
+src/lib/pdf/templates/test123.txt
+
+# Claude local settings
+.claude/settings.local.json

@@ -92,6 +92,9 @@ export const WORLD_ICONS: WorldIcon[] = [
 ];
 
 export const getWorldIcon = (iconId: string): WorldIcon => {
+  // World-pic paths (e.g. "/world-pics/007-astronaut.svg") won't match any Lucide icon;
+  // return default globe. Callers should use WorldIconRenderer for rendering.
+  if (iconId.startsWith("/world-pics/")) return WORLD_ICONS[0];
   return WORLD_ICONS.find((i) => i.id === iconId) || WORLD_ICONS[0];
 };
 

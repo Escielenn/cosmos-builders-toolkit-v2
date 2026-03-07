@@ -7,6 +7,7 @@ import {
   PDFKeyValuePair,
   PDFResultBox,
 } from "../components";
+import { deepStripHtml } from "@/lib/html-utils";
 
 // Level definitions with full question data
 const LEVELS = [
@@ -160,10 +161,11 @@ const getParameterInfo = (typeId: string): { category: string; option: string } 
 };
 
 const ECRFullReportTemplate = ({
-  formState,
+  formState: rawFormState,
   worldName,
   date,
 }: ECRFullReportTemplateProps) => {
+  const formState = deepStripHtml(rawFormState);
   // Get selected parameters with null safety
   const selectedParams: string[] = [];
   const parameter = formState?.parameter;
@@ -178,7 +180,7 @@ const ECRFullReportTemplate = ({
       {/* Page 1: Title, Parameters, Introduction */}
       <Page size="LETTER" style={styles.page}>
         <PDFHeader
-          toolName="Environmental Chain Reaction"
+          toolName="Cascade"
           worldName={worldName}
           date={date}
         />
@@ -186,7 +188,7 @@ const ECRFullReportTemplate = ({
         {/* Introduction */}
         <View style={{ marginBottom: spacing.xl }}>
           <Text style={{ fontSize: typography.sizes.sm, color: colors.text.secondary, lineHeight: 1.5, fontStyle: "italic" }}>
-            "Environment shapes biology, biology shapes psychology, psychology shapes culture, culture shapes mythology."
+            "Physics shapes environment, environment shapes biology, biology shapes psychology, psychology shapes mythology, and mythology shapes culture."
           </Text>
           <Text style={{ fontSize: typography.sizes.xs, color: colors.text.muted, marginTop: spacing.sm, lineHeight: 1.4 }}>
             This worksheet traces how planetary conditions cascade through five levels to create unique cultures,
@@ -237,7 +239,7 @@ const ECRFullReportTemplate = ({
         return (
           <Page key={level.id} size="LETTER" style={styles.page}>
             <PDFHeader
-              toolName="Environmental Chain Reaction"
+              toolName="Cascade"
               worldName={worldName}
               date={date}
             />
@@ -294,7 +296,7 @@ const ECRFullReportTemplate = ({
       {/* Final Page: Consistency Check & Synthesis */}
       <Page size="LETTER" style={styles.page}>
         <PDFHeader
-          toolName="Environmental Chain Reaction"
+          toolName="Cascade"
           worldName={worldName}
           date={date}
         />
@@ -363,7 +365,7 @@ const ECRFullReportTemplate = ({
       {/* Synthesis Page */}
       <Page size="LETTER" style={styles.page}>
         <PDFHeader
-          toolName="Environmental Chain Reaction"
+          toolName="Cascade"
           worldName={worldName}
           date={date}
         />

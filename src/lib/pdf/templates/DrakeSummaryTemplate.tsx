@@ -7,6 +7,7 @@ import {
   PDFKeyValuePair,
   PDFResultBox,
 } from "../components";
+import { deepStripHtml } from "@/lib/html-utils";
 
 // Drake variable definitions for display
 const DRAKE_VARIABLES = [
@@ -93,20 +94,22 @@ const DrakeSummaryTemplate = ({
   worldName,
   date,
 }: DrakeSummaryTemplateProps) => {
-  const N = calculateN(formState.values);
+  const cleanState = deepStripHtml(formState);
+
+  const N = calculateN(cleanState.values);
   const interpretation = getInterpretation(N);
 
   // Get first non-empty worldbuilding note for summary
   const summaryNote =
-    formState.worldbuilding.fermiAnswer ||
-    formState.worldbuilding.galaxyCharacter ||
+    cleanState.worldbuilding.fermiAnswer ||
+    cleanState.worldbuilding.galaxyCharacter ||
     "";
 
   return (
     <Document>
       <Page size="LETTER" style={styles.page}>
         <PDFHeader
-          toolName="Drake Equation Calculator"
+          toolName="Signal"
           worldName={worldName}
           date={date}
         />
@@ -139,10 +142,10 @@ const DrakeSummaryTemplate = ({
               textAlign: "center",
             }}
           >
-            N = {formState.values.rStar} × {formState.values.fp} ×{" "}
-            {formState.values.ne} × {formState.values.fl} ×{" "}
-            {formState.values.fi} × {formState.values.fc} ×{" "}
-            {formatNumber(formState.values.L)} = {formatNumber(N)}
+            N = {cleanState.values.rStar} × {cleanState.values.fp} ×{" "}
+            {cleanState.values.ne} × {cleanState.values.fl} ×{" "}
+            {cleanState.values.fi} × {cleanState.values.fc} ×{" "}
+            {formatNumber(cleanState.values.L)} = {formatNumber(N)}
           </Text>
         </View>
 
@@ -151,13 +154,13 @@ const DrakeSummaryTemplate = ({
           {DRAKE_VARIABLES.map((variable) => (
             <PDFKeyValuePair
               key={variable.id}
-              label={`${variable.symbol} — ${variable.name}`}
+              label={`${variable.symbol}—${variable.name}`}
               value={
                 variable.id === "L"
                   ? formatNumber(
-                      formState.values[variable.id as keyof typeof formState.values]
+                      cleanState.values[variable.id as keyof typeof cleanState.values]
                     )
-                  : formState.values[variable.id as keyof typeof formState.values]
+                  : cleanState.values[variable.id as keyof typeof cleanState.values]
               }
               unit={variable.unit}
             />

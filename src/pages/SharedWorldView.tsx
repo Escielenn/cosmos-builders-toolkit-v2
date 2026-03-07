@@ -10,16 +10,19 @@ import { getToolDisplayName } from "@/lib/tools-config";
 import WorldIconRenderer from "@/components/world/WorldIconRenderer";
 import { CosmicTelemetry } from "@/components/layout/CosmicVelocityTicker";
 import { DISTANCE_DATA } from "@/lib/cosmic-telemetry";
+import { PageBursts } from "@/components/ui/data-burst";
+import { SHARED_WORLD_BURSTS } from "@/lib/data-bursts";
 
 const SharedWorldView = () => {
   const { token } = useParams<{ token: string }>();
   const { data, isLoading, error } = useSharedWorld(token);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="relative min-h-screen bg-background">
       <SharedPageHeader />
+      <PageBursts bursts={SHARED_WORLD_BURSTS} />
 
-      <main className="container mx-auto px-4 py-8 max-w-4xl">
+      <main className="container mx-auto px-4 py-8 max-w-4xl relative z-10">
         {isLoading && (
           <div className="flex flex-col items-center justify-center py-24">
             <Loader className="mb-4" />

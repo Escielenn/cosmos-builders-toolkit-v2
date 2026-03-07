@@ -47,7 +47,7 @@ export function useDrakeContext(worldId: string | undefined): DrakeContext {
         interpretation: null,
         speciesCount: 0,
         planetCount: 0,
-        suggestion: "Loading world data...",
+        suggestion: "Loading world data.",
       };
     }
 
@@ -92,13 +92,13 @@ export function useDrakeContext(worldId: string | undefined): DrakeContext {
 
     let suggestion = "";
     if (speciesWorksheets.length === 0) {
-      suggestion = "Start creating species to populate your world!";
+      suggestion = "No species on file. Begin survey when ready.";
     } else if (N > 100 && speciesWorksheets.length < 3) {
-      suggestion = `Drake suggests a ${interpretation.toLowerCase()} galaxy (N=${Math.round(
+      suggestion = `Drake indicates a ${interpretation.toLowerCase()} galaxy (N=${Math.round(
         N
-      )}). Consider creating more species diversity!`;
+      )}). Species diversity low. Consider additional surveys.`;
     } else if (N > 10 && speciesWorksheets.length < 2) {
-      suggestion = `Drake suggests ${interpretation.toLowerCase()} civilization density. You have room for more unique species.`;
+      suggestion = `Drake indicates ${interpretation.toLowerCase()} civilization density. Capacity exists for additional species.`;
     } else if (speciesWorksheets.length > 0) {
       suggestion = `${speciesWorksheets.length} species designed for a ${interpretation.toLowerCase()} galaxy.`;
     }

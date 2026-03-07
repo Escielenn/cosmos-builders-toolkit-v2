@@ -47,6 +47,7 @@ export interface SharedWorldData {
   name: string;
   description: string | null;
   header_image_url: string | null;
+  header_image_focus_y: number;
   icon: string;
   tags: string[];
   created_at: string;

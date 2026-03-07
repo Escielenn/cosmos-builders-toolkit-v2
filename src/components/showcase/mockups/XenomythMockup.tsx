@@ -93,14 +93,14 @@ const XenomythMockup = () => {
       {/* Myth pattern preview */}
       <div className="mt-4 space-y-2">
         <div className="flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full bg-sf-violet animate-pulse" />
+          <div className="w-2 h-2 bg-sf-violet animate-pulse" />
           <span className="text-[10px] text-muted-foreground">
             Creation Myth: The First Light emerged from...
           </span>
         </div>
         <div className="flex items-center gap-2">
           <div
-            className="w-2 h-2 rounded-full bg-sf-cyan"
+            className="w-2 h-2 bg-sf-cyan"
             style={{ animation: "cascade-glow 3s ease-in-out infinite 0.5s" }}
           />
           <span className="text-[10px] text-muted-foreground">
@@ -111,7 +111,7 @@ const XenomythMockup = () => {
 
       {/* Environmental influence badge */}
       <div className="mt-3 flex justify-center">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sf-violet/10 border border-sf-violet/30">
+        <div className="inline-flex items-center gap-2 px-3 py-1 bg-sf-violet/10 border border-sf-violet/30">
           <span className="text-[10px] text-sf-violet uppercase tracking-wider">
             Derived from High-Gravity World
           </span>

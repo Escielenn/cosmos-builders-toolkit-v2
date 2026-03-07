@@ -8,9 +8,12 @@ interface Profile {
   display_name: string | null;
   avatar_url: string | null;
   bio: string | null;
+  is_admin: boolean;
   created_at: string;
   updated_at: string;
 }
+
+type OAuthProvider = 'google' | 'github' | 'discord' | 'apple' | 'notion';
 
 interface AuthContextType {
   user: User | null;
@@ -19,7 +22,7 @@ interface AuthContextType {
   loading: boolean;
   signUp: (email: string, password: string, displayName?: string) => Promise<{ error: Error | null }>;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
-  signInWithGoogle: () => Promise<{ error: Error | null }>;
+  signInWithOAuth: (provider: OAuthProvider) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
   updateProfile: (updates: Partial<Profile>) => Promise<{ error: Error | null }>;
 }
@@ -120,9 +123,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return { error: null };
   };
 
-  const signInWithGoogle = async () => {
+  const signInWithOAuth = async (provider: OAuthProvider) => {
     const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
+      provider,
       options: {
         redirectTo: `${window.location.origin}/`,
       },
@@ -139,7 +142,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const { error } = await supabase.auth.signOut();
     if (error) {
       toast({
-        title: "Error signing out",
+        title: "LOGOUT FAILED.",
         description: error.message,
         variant: "destructive",
       });
@@ -176,7 +179,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         loading,
         signUp,
         signIn,
-        signInWithGoogle,
+        signInWithOAuth,
         signOut,
         updateProfile,
       }}

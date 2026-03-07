@@ -7,6 +7,7 @@ import {
   PDFKeyValuePair,
   PDFResultBox,
 } from "../components";
+import { deepStripHtml } from "@/lib/html-utils";
 
 interface FormState {
   identity: {
@@ -150,10 +151,11 @@ const NotesBox = ({ label, content }: { label: string; content: string }) => (
 );
 
 const SpacecraftFullReportTemplate = ({
-  formState,
+  formState: rawFormState,
   worldName,
   date,
 }: SpacecraftFullReportTemplateProps) => {
+  const formState = deepStripHtml(rawFormState);
   // Safe access to nested properties
   const identity = formState?.identity;
   const propulsion = formState?.propulsion;
@@ -174,7 +176,7 @@ const SpacecraftFullReportTemplate = ({
       {/* Page 1: Identity & Overview */}
       <Page size="LETTER" style={styles.page}>
         <PDFHeader
-          toolName="Spacecraft Designer"
+          toolName="Vessel"
           worldName={worldName}
           date={date}
         />
@@ -230,7 +232,7 @@ const SpacecraftFullReportTemplate = ({
 
       {/* Page 2: Propulsion */}
       <Page size="LETTER" style={styles.page}>
-        <PDFHeader toolName="Spacecraft Designer" worldName={worldName} date={date} />
+        <PDFHeader toolName="Vessel" worldName={worldName} date={date} />
 
         <PDFSection title="2. Propulsion & Architecture">
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: spacing.md, marginBottom: spacing.md }}>
@@ -265,7 +267,7 @@ const SpacecraftFullReportTemplate = ({
 
       {/* Page 3: Life Support */}
       <Page size="LETTER" style={styles.page}>
-        <PDFHeader toolName="Spacecraft Designer" worldName={worldName} date={date} />
+        <PDFHeader toolName="Vessel" worldName={worldName} date={date} />
 
         <PDFSection title="3. Life Support Systems">
           <PDFKeyValuePair label="Gravity" value={gravityType} />
@@ -297,7 +299,7 @@ const SpacecraftFullReportTemplate = ({
 
       {/* Page 4: Living Spaces */}
       <Page size="LETTER" style={styles.page}>
-        <PDFHeader toolName="Spacecraft Designer" worldName={worldName} date={date} />
+        <PDFHeader toolName="Vessel" worldName={worldName} date={date} />
 
         <PDFSection title="4. Living Spaces & Sensory Experience">
           {living?.crewQuarters && (
@@ -340,7 +342,7 @@ const SpacecraftFullReportTemplate = ({
 
       {/* Page 5: Cultural Elements */}
       <Page size="LETTER" style={styles.page}>
-        <PDFHeader toolName="Spacecraft Designer" worldName={worldName} date={date} />
+        <PDFHeader toolName="Vessel" worldName={worldName} date={date} />
 
         <PDFSection title="5. Cultural Design Elements">
           {cultural?.originCulture && (
@@ -368,7 +370,7 @@ const SpacecraftFullReportTemplate = ({
 
       {/* Page 6: Ship Character & Synthesis */}
       <Page size="LETTER" style={styles.page}>
-        <PDFHeader toolName="Spacecraft Designer" worldName={worldName} date={date} />
+        <PDFHeader toolName="Vessel" worldName={worldName} date={date} />
 
         <PDFSection title="6. Ship as Character">
           {character?.personality && (
@@ -393,7 +395,7 @@ const SpacecraftFullReportTemplate = ({
 
       {/* Page 7: Synthesis */}
       <Page size="LETTER" style={styles.page}>
-        <PDFHeader toolName="Spacecraft Designer" worldName={worldName} date={date} />
+        <PDFHeader toolName="Vessel" worldName={worldName} date={date} />
 
         <PDFSection title="Synthesis: Bringing It Together">
           {synthesis?.livedInDetails && (

@@ -70,7 +70,7 @@ export function useNotion() {
     if (!session?.access_token) {
       toast({
         title: "Not authenticated",
-        description: "Please sign in to connect Notion.",
+        description: "Authentication required to connect Notion.",
         variant: "destructive",
       });
       return;

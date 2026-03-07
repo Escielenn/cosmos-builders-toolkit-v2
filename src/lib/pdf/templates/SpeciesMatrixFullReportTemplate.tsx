@@ -7,6 +7,7 @@ import {
   PDFKeyValuePair,
   PDFResultBox,
 } from "../components";
+import { deepStripHtml } from "@/lib/html-utils";
 
 interface Species {
   id: string;
@@ -101,10 +102,11 @@ const TextBlock = ({ label, value }: { label: string; value?: string }) => {
 };
 
 const SpeciesMatrixFullReportTemplate = ({
-  formState,
+  formState: rawFormState,
   worldName,
   date,
 }: SpeciesMatrixFullReportTemplateProps) => {
+  const formState = deepStripHtml(rawFormState);
   const species = formState?.species || [];
   const pairs = formState?.pairs || [];
 
@@ -122,7 +124,7 @@ const SpeciesMatrixFullReportTemplate = ({
       {/* Page 1: Overview & Species Registry */}
       <Page size="LETTER" style={styles.page}>
         <PDFHeader
-          toolName="Species Interaction Matrix"
+          toolName="Symbiosis"
           worldName={worldName}
           date={date}
         />
@@ -176,7 +178,7 @@ const SpeciesMatrixFullReportTemplate = ({
       {pairs.length > 0 && (
         <Page size="LETTER" style={styles.page} wrap>
           <PDFHeader
-            toolName="Species Interaction Matrix"
+            toolName="Symbiosis"
             worldName={worldName}
             date={date}
           />
@@ -323,7 +325,7 @@ const SpeciesMatrixFullReportTemplate = ({
       {/* Final Page: Synthesis */}
       <Page size="LETTER" style={styles.page}>
         <PDFHeader
-          toolName="Species Interaction Matrix"
+          toolName="Symbiosis"
           worldName={worldName}
           date={date}
         />

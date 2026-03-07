@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EXOFORGE — The Science | StellarForge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.cdnfonts.com/css/md-nichrome-test" rel="stylesheet">
+<style>
+:root{
+  --accent-cyan:#00D4FF;
+  --accent-green:#00E5A0;
+  --font-display:'MD Nichrome Test','MD Nichrome','Space Grotesk',sans-serif;
+  --font-body:'DM Sans',sans-serif;
+  --font-mono:'JetBrains Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:#09090B;
+  color:rgba(255,255,255,.6);
+  font-family:var(--font-body);
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+.science-page{max-width:780px;margin:0 auto;padding:48px 28px 80px}
+.science-page h1{font-family:var(--font-display);font-size:32px;font-weight:300;color:#FAFAFA;letter-spacing:5px;text-transform:uppercase;margin-bottom:6px}
+.science-page .subtitle{font-size:8.5px;font-family:var(--font-body);letter-spacing:2.5px;text-transform:uppercase;color:rgba(0,229,160,.35);margin-bottom:36px}
+.sci-section{font-size:9px;font-family:var(--font-display);font-weight:300;letter-spacing:2.5px;text-transform:uppercase;color:rgba(0,229,160,.4);margin-top:40px;margin-bottom:12px;padding-bottom:5px;border-bottom:1px solid rgba(0,229,160,.06)}
+.sci-section:first-of-type{margin-top:0}
+.science-page p{font-family:var(--font-body);font-size:13.5px;line-height:1.8;color:rgba(255,255,255,.6);margin:0 0 14px}
+.science-page p strong{color:rgba(255,255,255,.85);font-weight:600}
+.science-page code{font-family:var(--font-mono);font-size:11px;color:var(--accent-cyan);background:rgba(0,212,255,.06);padding:1px 5px;border-radius:0}
+.eq{font-family:var(--font-mono);font-size:12.5px;color:rgba(0,212,255,.7);background:rgba(0,212,255,.04);border:1px solid rgba(0,212,255,.06);border-radius:0;padding:14px 18px;margin:16px 0;display:block;text-align:center;line-height:1.9;letter-spacing:.5px}
+.src{font-family:var(--font-body);font-size:11px;color:rgba(255,255,255,.35);margin:5px 0;line-height:1.7;padding-left:12px;border-left:2px solid rgba(0,229,160,.08)}
+.src a{color:rgba(0,229,160,.35);text-decoration:none}
+.src a:hover{color:var(--accent-green);text-decoration:underline}
+.note{font-family:var(--font-body);font-size:11.5px;font-style:italic;color:rgba(255,255,255,.35);border-left:2px solid rgba(0,212,255,.12);padding:10px 16px;margin:16px 0;background:rgba(0,212,255,.015);border-radius:0;line-height:1.7}
+.sys-table{width:100%;border-collapse:collapse;margin:14px 0 18px;font-family:var(--font-body);font-size:11.5px}
+.sys-table th{font-family:var(--font-display);font-size:8px;font-weight:300;letter-spacing:1.5px;text-transform:uppercase;color:rgba(0,229,160,.35);text-align:left;padding:7px 10px;border-bottom:1px solid rgba(0,229,160,.08)}
+.sys-table td{color:rgba(255,255,255,.5);padding:6px 10px;border-bottom:1px solid rgba(255,255,255,.03);line-height:1.6}
+.sys-table td:first-child{color:rgba(255,255,255,.7);font-weight:500}
+.sys-table td code{font-size:10px}
+@media(max-width:600px){
+  .science-page{padding:32px 18px 60px}
+  .science-page h1{font-size:22px;letter-spacing:3px}
+  .science-page p{font-size:12.5px}
+  .eq{font-size:10.5px;padding:10px 12px}
+  .sys-table{font-size:10px}
+  .sys-table th{font-size:7px}
+}
+</style>
+</head>
+<body>
+
+<main class="science-page">
+  <h1>Showing Our Work</h1>
+  <div class="subtitle">The Physics &amp; Data Behind EXOFORGE</div>
+
+  <!-- ── THE COMPOSITION SPECTRUM ─────────────────── -->
+  <div class="sci-section">The Composition Spectrum</div>
+  <p>ExoForge models planets along a continuous <strong>rock-to-gas composition spectrum</strong>. Rather than treating terrestrial and gaseous worlds as separate categories, the simulator lets you slide between them, mirroring the real exoplanet population where sharp boundaries are rare.</p>
+  <p>The spectrum maps to four broad categories based on composition percentage:</p>
+  <table class="sys-table">
+    <tr><th>Composition %</th><th>Classification</th><th>Typical Radius</th></tr>
+    <tr><td><code>0–25%</code> gas</td><td>Terrestrial</td><td><code>0.3–1.5 R⊕</code></td></tr>
+    <tr><td><code>25–50%</code> gas</td><td>Super-Earth</td><td><code>1.5–2.5 R⊕</code></td></tr>
+    <tr><td><code>50–75%</code> gas</td><td>Neptune-class</td><td><code>2.5–6.0 R⊕</code></td></tr>
+    <tr><td><code>75–100%</code> gas</td><td>Gas Giant</td><td><code>6.0–15 R⊕</code></td></tr>
+  </table>
+  <p>This continuum reflects the <strong>radius valley</strong> (or "Fulton gap")—a real dearth of planets between 1.5 and 2.0 R⊕ discovered by the Kepler mission. Planets appear to cluster on either side: dense rocky worlds below, and volatile-rich sub-Neptunes above.</p>
+  <div class="src">Fulton, B.J. et al. (2017). "The California-Kepler Survey. III. A Gap in the Radius Distribution of Small Planets." <em>The Astronomical Journal</em>, 154(3), 109. <a href="https://doi.org/10.3847/1538-3881/aa80eb" target="_blank">DOI</a></div>
+  <div class="src">Owen, J.E. &amp; Wu, Y. (2017). "The Evaporation Valley in the Kepler Planets." <em>The Astrophysical Journal</em>, 847(1), 29. <a href="https://doi.org/10.3847/1538-4357/aa890a" target="_blank">DOI</a></div>
+
+  <!-- ── COMPUTED PHYSICAL PROPERTIES ────────────── -->
+  <div class="sci-section">Computed Physical Properties</div>
+  <p>Given a planet's radius <code>R</code> (in Earth radii) and mass <code>M</code> (in Earth masses), ExoForge derives three key physical properties:</p>
+  <span class="eq">Surface gravity: g = M / R²&emsp;(in Earth g's)<br>Bulk density: ρ = M / R³ × 5.51 g/cm³<br>Escape velocity: v_esc = √(g · R) × 11.19 km/s</span>
+  <p>These are exact for the Earth-normalized unit system. <code>5.51 g/cm³</code> is Earth's mean density; <code>11.19 km/s</code> is Earth's escape velocity. The formulas derive from:</p>
+  <span class="eq">g = G·M / R²&emsp;&emsp;v_esc = √(2·G·M / R)</span>
+  <p>Normalizing to Earth values cancels the gravitational constant, making the computation fast and intuitive.</p>
+
+  <!-- ── TERRAIN GENERATION ──────────────────────── -->
+  <div class="sci-section">Terrain Generation</div>
+  <p>Terrestrial planet surfaces are generated procedurally using <strong>fractal Brownian motion (fBm)</strong> built on Simplex noise—a gradient noise algorithm that produces continuous, natural-looking randomness. The terrain shader evaluates 6 octaves of noise at each surface point:</p>
+  <span class="eq">height(p) = Σ[i=0..5] amplitude_i × noise(p × frequency_i)<br>lacunarity = 2.0&emsp;&emsp;gain = 0.55</span>
+  <p>Each successive octave doubles the spatial frequency (lacunarity) while reducing amplitude to 55% of the previous octave (gain). This produces terrain with large-scale continental shapes overlaid with progressively finer detail—a self-similar pattern characteristic of real planetary topography.</p>
+  <div class="src">Perlin, K. (1985). "An image synthesizer." <em>ACM SIGGRAPH Computer Graphics</em>, 19(3), 287–296. <a href="https://doi.org/10.1145/325165.325247" target="_blank">DOI</a></div>
+  <div class="src">Musgrave, F.K., Kolb, C.E., &amp; Mace, R.S. (1989). "The synthesis and rendering of eroded fractal terrains." <em>ACM SIGGRAPH Computer Graphics</em>, 23(3), 41–50. <a href="https://doi.org/10.1145/74334.74337" target="_blank">DOI</a></div>
+
+  <!-- ── TEMPERATURE & BIOME MODEL ───────────────── -->
+  <div class="sci-section">Temperature &amp; Biome Model</div>
+  <p>The equilibrium temperature parameter drives a <strong>biome color model</strong> that maps temperature ranges to surface and ocean palettes. ExoForge defines eight temperature regimes:</p>
+  <table class="sys-table">
+    <tr><th>Temperature</th><th>Regime</th><th>Surface Character</th></tr>
+    <tr><td><code>&lt; 150 K</code></td><td>Deep Ice</td><td>Nitrogen/CO₂ ices, pale blue-white surfaces</td></tr>
+    <tr><td><code>150–220 K</code></td><td>Frozen</td><td>Water ice dominant, cold blue-grey oceans</td></tr>
+    <tr><td><code>220–280 K</code></td><td>Cool Temperate</td><td>Green vegetation analog, deep blue oceans</td></tr>
+    <tr><td><code>280–350 K</code></td><td>Warm Temperate</td><td>Lush green-yellow, deep blue-green oceans</td></tr>
+    <tr><td><code>350–500 K</code></td><td>Hot Arid</td><td>Desert browns and tans, warm shallow seas</td></tr>
+    <tr><td><code>500–700 K</code></td><td>Venusian</td><td>Volcanic orange-red, sulfur deposits</td></tr>
+    <tr><td><code>700–900 K</code></td><td>Lava World</td><td>Active volcanism, magma flows</td></tr>
+    <tr><td><code>&gt; 900 K</code></td><td>Magma Ocean</td><td>Fully molten surface, extreme incandescence</td></tr>
+  </table>
+  <p>The <strong>habitable zone</strong> is defined as <code>180–330 K</code>, the range where liquid water can persist on a rocky surface under moderate atmospheric pressure. This aligns with the conservative HZ estimates of Kopparapu et al. (2013).</p>
+  <div class="src">Kopparapu, R.K. et al. (2013). "Habitable zones around main-sequence stars: New estimates." <em>The Astrophysical Journal</em>, 765(2), 131. <a href="https://doi.org/10.1088/0004-637X/765/2/131" target="_blank">DOI</a></div>
+
+  <!-- ── OCEANS & SEA LEVEL ──────────────────────── -->
+  <div class="sci-section">Oceans &amp; Hydrosphere</div>
+  <p>The ocean level slider sets a <strong>sea-level threshold</strong> on the terrain heightmap. Any surface point below this threshold is rendered as ocean, with depth-dependent coloring—shallow coastal regions blend toward lighter tones, while deep basins take on the full ocean color for the temperature regime.</p>
+  <p>This is a simplification of real planetary hydrology—real oceans are shaped by tectonics, atmospheric composition, and stellar irradiance—but it produces visually plausible oceanscapes and lets writers explore how different water levels reshape their world's geography.</p>
+
+  <!-- ── GAS GIANT ATMOSPHERES ───────────────────── -->
+  <div class="sci-section">Gas Giant Atmospheric Bands</div>
+  <p>When composition crosses into gas giant territory, the surface shader switches to an <strong>atmospheric banding model</strong>. Latitude-dependent bands are generated using sinusoidal base patterns modulated by turbulent Simplex noise, creating the characteristic alternating light zones and dark belts seen on Jupiter and Saturn.</p>
+  <p>The color palette shifts based on equilibrium temperature—cool gas giants show muted ammonium and water-ice bands, while hot Jupiters display deeper reds and browns from silicate cloud chemistry.</p>
+  <div class="src">Sudarsky, D., Burrows, A., &amp; Pinto, P. (2000). "Albedo and Reflection Spectra of Extrasolar Giant Planets." <em>The Astrophysical Journal</em>, 538(2), 885. <a href="https://doi.org/10.1086/309160" target="_blank">DOI</a></div>
+  <div class="src">Ingersoll, A.P. (1990). "Atmospheric Dynamics of the Outer Planets." <em>Science</em>, 248(4953), 308–315. <a href="https://doi.org/10.1126/science.248.4953.308" target="_blank">DOI</a></div>
+
+  <!-- ── ATMOSPHERE RENDERING ────────────────────── -->
+  <div class="sci-section">Atmosphere Rendering</div>
+  <p>The atmospheric glow uses a <strong>Fresnel rim-glow shader</strong>—a technique that approximates how atmospheric scattering intensifies at the limb (edge) of a planet. The brightness increases with the viewing angle relative to the surface normal, following:</p>
+  <span class="eq">I_atmo ∝ (1 − cos θ)^n</span>
+  <p>Where <code>θ</code> is the angle between the view direction and the surface normal, and <code>n</code> controls the sharpness of the limb brightening. This is the same principle that makes Earth's atmosphere glow blue at the horizon in photographs from orbit.</p>
+
+  <!-- ── CLOUD LAYER ─────────────────────────────── -->
+  <div class="sci-section">Cloud Layer</div>
+  <p>Clouds are rendered as a <strong>separate translucent shell</strong> at 1.04× the planet's radius. The cloud texture is generated independently using Simplex noise at different frequency settings than the terrain, producing amorphous cloud patterns that don't correlate with surface features below. Cloud opacity and coverage are user-adjustable.</p>
+
+  <!-- ── HOST STAR & ILLUMINATION ────────────────── -->
+  <div class="sci-section">Host Star &amp; Illumination</div>
+  <p>ExoForge computes illumination from a host star whose <strong>color temperature</strong> follows the blackbody radiation spectrum. The star's spectral color is derived from its effective temperature using a Planck-based approximation that maps temperature to RGB values:</p>
+  <span class="eq">Hot stars (>10000 K) → blue-white<br>Sun-like (~5800 K) → yellow-white<br>K-type (~4500 K) → orange<br>M-type (~3000 K) → deep red-orange</span>
+  <p>This affects how the planet's surface appears under different stellar illumination—a world orbiting a red dwarf looks visually different from the same world under a blue-white star, even at identical equilibrium temperatures.</p>
+
+  <!-- ── RING SYSTEM ─────────────────────────────── -->
+  <div class="sci-section">Ring System</div>
+  <p>Planetary rings are rendered as a flat disk with three concentric bands of varying opacity and color. While simplified compared to Saturn's intricate ring structure, this captures the basic visual appearance of ring systems.</p>
+  <p>Real planetary rings exist within the <strong>Roche limit</strong>—the distance inside which tidal forces from the planet exceed the self-gravity of ring particles, preventing them from accreting into moons. For a fluid body this is approximately:</p>
+  <span class="eq">d_Roche ≈ 2.44 · R_planet · (ρ_planet / ρ_satellite)^(1/3)</span>
+  <div class="src">Tiscareno, M.S. (2013). "Planetary Rings." <em>Planets, Stars and Stellar Systems</em>, 3, 309–375. <a href="https://doi.org/10.1007/978-94-007-5606-9_7" target="_blank">DOI</a></div>
+
+  <!-- ── NASA EXOPLANET DATA ─────────────────────── -->
+  <div class="sci-section">NASA Exoplanet Archive Integration</div>
+  <p>ExoForge includes <strong>58 real exoplanets</strong> from the NASA Exoplanet Archive that can be imported directly into the simulator. Each entry includes radius (Earth radii), mass (Earth masses), equilibrium temperature (K), orbital period (days), and host star temperature (K).</p>
+  <p>The catalog spans the full diversity of known worlds—from TRAPPIST-1 e (a temperate Earth-sized world) to HAT-P-32 b (an inflated hot Jupiter with 1.79 R_J). Entries are annotated with confidence levels reflecting measurement precision.</p>
+  <div class="src">NASA Exoplanet Archive. Caltech/IPAC. <a href="https://exoplanetarchive.ipac.caltech.edu/" target="_blank">exoplanetarchive.ipac.caltech.edu</a></div>
+
+  <!-- ── 3D RENDERING PIPELINE ───────────────────── -->
+  <div class="sci-section">3D Rendering Pipeline</div>
+  <p>ExoForge renders planets using <strong>Three.js</strong> (r128) with an icosahedral sphere geometry subdivided to produce a smooth globe. The terrain is generated as a 2D texture map applied to this geometry via custom fragment shaders.</p>
+  <p>The scene uses ACES filmic tone mapping for natural-looking high dynamic range, with a single directional light simulating stellar illumination. Camera orbits use spherical coordinates (theta, phi, distance) with smooth interpolation to prevent jarring transitions.</p>
+
+  <!-- ── LIMITATIONS ─────────────────────────────── -->
+  <div class="sci-section">What This Tool Cannot Do</div>
+  <p>ExoForge is a <strong>visual worldbuilding tool</strong>, not a geophysical simulator. Important limitations:</p>
+  <p><strong>No climate simulation.</strong> The temperature is a single equilibrium value—there is no atmospheric circulation, no greenhouse effect calculation, no day-night temperature gradient, and no seasonal variation.</p>
+  <p><strong>No plate tectonics.</strong> Terrain is generated procedurally from noise functions, not from geophysical processes. Mountain ranges, rift valleys, and subduction zones do not reflect realistic tectonic placement.</p>
+  <p><strong>No erosion.</strong> There is no fluvial carving, glacial sculpting, or aeolian weathering. Terrain features are fractal but not geomorphologically realistic.</p>
+  <p><strong>No atmospheric chemistry.</strong> The atmosphere is a visual effect, not a physical model. There is no radiative transfer, no spectral absorption, and no photochemical modeling.</p>
+  <p><strong>No interior structure.</strong> Mass and radius are independent parameters. The simulator does not enforce mass-radius relationships from interior models, so physically implausible combinations (e.g., extremely massive but tiny worlds) are possible.</p>
+  <p><strong>No temporal evolution.</strong> The planet is shown in a single static state. There is no modeling of atmospheric escape, tidal evolution, magnetic dynamo processes, or geological aging.</p>
+  <div class="note">Despite these limitations, the physical properties displayed (gravity, density, escape velocity, habitable zone status) are computed correctly from the input parameters. The visual appearance—while artistic rather than photorealistic—reflects the real relationships between temperature, composition, and stellar illumination that shape how exoplanets would appear.</div>
+
+  <!-- ── FOR WRITERS ─────────────────────────────── -->
+  <div class="sci-section">For Writers</div>
+  <p>ExoForge exists to help science fiction writers <strong>see their worlds</strong> before they write them. The goal is not photorealism but <em>informed imagination</em>—giving you a physical foundation to build on.</p>
+  <p>When you adjust the temperature slider and watch green continents bake into red deserts, or push the composition toward gas and watch terrain dissolve into atmospheric bands, you're observing real relationships between planetary parameters. The gravity your characters feel, the escape velocity their rockets must overcome, the color of their sky under an alien sun—these emerge from the same physics that governs real exoplanets.</p>
+  <p>ExoForge is part of the <a href="https://stellarforge.tools" style="color:rgba(0,212,255,.5)">StellarForge</a> worldbuilding toolkit. Pair it with the <strong>Planetary Profile</strong> worksheet to develop your world's geology, atmosphere, and biosphere, and the <strong>Star System Builder</strong> to place it in orbital context—all following the cascading principle that <em>environment shapes biology, biology shapes psychology, psychology shapes culture, and culture shapes mythology.</em></p>
+</main>
+
+</body>
+</html>

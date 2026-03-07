@@ -27,6 +27,7 @@ interface WorldCardProps {
   icon: string;
   tags?: string[];
   archivedAt?: string | null;
+  snapshotAt?: string | null;
   updatedAt: string;
   onDelete: (id: string) => void;
   onArchive?: (id: string) => void;
@@ -42,6 +43,7 @@ const WorldCard = ({
   icon,
   tags = [],
   archivedAt,
+  snapshotAt,
   updatedAt,
   onDelete,
   onArchive,
@@ -200,10 +202,23 @@ const WorldCard = ({
             )}
           </div>
 
-          <div className="pt-2 border-t border-border/50 mt-auto">
+          <div className="pt-2 border-t border-border/50 mt-auto flex items-center justify-between">
             <p className="text-xs text-muted-foreground">
               Last updated: {formattedDate}
             </p>
+            {snapshotAt && (
+              <span
+                className={cn(
+                  "w-2 h-2 rounded-full shrink-0",
+                  Date.now() - new Date(snapshotAt).getTime() < 3_600_000
+                    ? "bg-primary"
+                    : Date.now() - new Date(snapshotAt).getTime() < 86_400_000
+                      ? "bg-amber-400"
+                      : "bg-muted-foreground/40"
+                )}
+                title={`Last backup: ${new Date(snapshotAt).toLocaleString()}`}
+              />
+            )}
           </div>
         </div>
       </GlassPanel>

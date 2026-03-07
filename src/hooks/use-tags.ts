@@ -110,10 +110,41 @@ export function useTags() {
     return tags.filter((t) => t.name.includes(lowerQuery)).slice(0, 10);
   };
 
+  // Update world entry tags
+  const updateEntryTags = useMutation({
+    mutationFn: async ({
+      entryId,
+      tags,
+    }: {
+      entryId: string;
+      tags: string[];
+    }) => {
+      const { error } = await supabase
+        .from("world_entries")
+        .update({ tags } as any)
+        .eq("id", entryId);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["codex-data"] });
+      queryClient.invalidateQueries({ queryKey: ["wiki-page"] });
+      queryClient.invalidateQueries({ queryKey: ["worksheet-tags"] });
+    },
+    onError: (error) => {
+      toast({
+        title: "Failed to update tags",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
   return {
     tags,
     isLoading,
     updateWorksheetTags,
+    updateEntryTags,
     createTag,
     deleteTag,
     searchTags,

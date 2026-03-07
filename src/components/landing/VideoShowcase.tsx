@@ -1,10 +1,18 @@
+import { motion } from "framer-motion";
 import { GlassPanel } from "@/components/ui/glass-panel";
+import { scrollReveal, viewportOnce } from "@/lib/animations";
 
 const YOUTUBE_VIDEO_ID = "iGYxmAQa8DY";
 
 const VideoShowcase = () => {
   return (
-    <section className="pb-12 md:pb-16 sf-reveal">
+    <motion.section
+      className="pb-12 md:pb-16"
+      initial="hidden"
+      whileInView="visible"
+      viewport={viewportOnce}
+      variants={scrollReveal}
+    >
       <GlassPanel className="max-w-4xl mx-auto overflow-hidden p-2" lightArc glow>
         <div className="relative w-full" style={{ paddingBottom: "56.25%" }}>
           <iframe
@@ -16,7 +24,7 @@ const VideoShowcase = () => {
           />
         </div>
       </GlassPanel>
-    </section>
+    </motion.section>
   );
 };
 

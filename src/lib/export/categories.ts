@@ -18,6 +18,9 @@ export const EXPORT_CATEGORIES: ExportCategory[] = [
       "star-system-builder",
       "planetary-profile",
       "environmental-chain-reaction",
+      "one-big-lie",
+      "habitable-zone-calculator",
+      "surface-gravity-calculator",
     ],
   },
   {
@@ -25,7 +28,7 @@ export const EXPORT_CATEGORIES: ExportCategory[] = [
     label: "Species View",
     description: "Evolutionary biology and species interactions",
     icon: "Dna",
-    toolTypes: ["evolutionary-biology", "species-interaction-matrix"],
+    toolTypes: ["evolutionary-biology", "sensorium", "species-interaction-matrix"],
   },
   {
     id: "empire",
@@ -36,6 +39,8 @@ export const EXPORT_CATEGORIES: ExportCategory[] = [
       "empire-designer",
       "technology-consequences",
       "drake-equation-calculator",
+      "space-expansion-modeler",
+      "timeline",
     ],
   },
   {
@@ -43,14 +48,14 @@ export const EXPORT_CATEGORIES: ExportCategory[] = [
     label: "Spacecraft View",
     description: "Spacecraft design and propulsion consequences",
     icon: "Rocket",
-    toolTypes: ["spacecraft-designer", "propulsion-consequences-map"],
+    toolTypes: ["spacecraft-designer", "propulsion-consequences-map", "time-dilation", "gravitas"],
   },
   {
     id: "culture",
     label: "Culture View",
     description: "Mythological and cultural frameworks",
     icon: "Sparkles",
-    toolTypes: ["xenomythology-framework-builder"],
+    toolTypes: ["xenomythology-framework-builder", "lexdrift"],
   },
 ];
 

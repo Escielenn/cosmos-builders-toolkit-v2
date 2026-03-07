@@ -39,6 +39,7 @@ import ToolSidebar from "@/components/tools/ToolSidebar";
 import CollapsibleSection from "@/components/tools/CollapsibleSection";
 import KeyChoicesSidebar, { KeyChoicesSection, MobileKeyChoices } from "@/components/tools/KeyChoicesSidebar";
 import ToolActionBar from "@/components/tools/ToolActionBar";
+import { ToolPageQuote } from "@/components/quotes/ToolPageQuote";
 import QuickExportButton from "@/components/tools/QuickExportButton";
 import ExportDialog from "@/components/tools/ExportDialog";
 import { EmpireSummaryTemplate, EmpireFullReportTemplate } from "@/lib/pdf/templates";
@@ -610,11 +611,13 @@ const EmpireDesigner = () => {
         {/* Back Link */}
         <Link
           to={worldId ? `/worlds/${worldId}` : "/"}
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
+          className="inline-flex items-center gap-2 text-sm text-tier-3 hover:text-foreground transition-colors mb-6"
         >
           <ArrowLeft className="w-4 h-4" />
           {worldId ? "Back to World" : "Back to Dashboard"}
         </Link>
+
+        <ToolPageQuote toolId="empire-designer" />
 
         {/* Action Bar */}
         <ToolActionBar
@@ -629,6 +632,8 @@ const EmpireDesigner = () => {
           onNotesClick={() => setNotesSheetOpen(true)}
           onMoodboardClick={() => setMoodboardSheetOpen(true)}
           moodboardCount={formState.moodboard?.length || 0}
+          worldId={worldId}
+          worksheetId={currentWorksheetId || worksheetId}
           className="mb-6"
           extraActions={
             <QuickExportButton
@@ -651,7 +656,7 @@ const EmpireDesigner = () => {
                 <span className="font-normal">Dominion:</span>{" "}
                 <span className="font-light">Empire Designer</span>
               </h1>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-tier-3">
                 Design political structures, governance systems, and factions
               </p>
             </div>
@@ -674,19 +679,19 @@ const EmpireDesigner = () => {
           )}
         </div>
 
-        <div className="lg:hidden mb-6 space-y-4">
+        {/* Mobile Sidebars - Right side floating buttons */}
+        <div className="fixed right-4 bottom-4 xl:hidden z-40 no-print flex flex-col gap-2">
           <MobileSectionNav sections={SECTIONS} />
           <MobileKeyChoices sections={keyChoicesSections} />
         </div>
 
-        <div className="flex gap-8">
-          <div className="flex-1 space-y-6 max-w-4xl">
+        <div className="space-y-6">
             <ToolIntroSection data={TOOL_INTROS["empire-designer"]} />
 
             {/* Section 1: Foundation */}
             <CollapsibleSection
               id="section-foundation"
-              title="1. Foundation"
+              title="Foundation"
               levelNumber={1}
               guidance="Every government has a foundation - the type of rule, source of legitimacy, and origin story that defines its identity."
               thinkLike="a political scientist categorizing a new regime"
@@ -718,7 +723,7 @@ const EmpireDesigner = () => {
                           <Label htmlFor={gov.id} className="font-medium cursor-pointer">
                             {gov.name}
                           </Label>
-                          <p className="text-xs text-muted-foreground mt-1">
+                          <p className="text-xs text-tier-4 mt-1">
                             {gov.description}
                           </p>
                         </div>
@@ -751,7 +756,7 @@ const EmpireDesigner = () => {
                 {selectedGovType && (
                   <GlassPanel className="p-4 bg-primary/5 border-primary/20">
                     <p className="text-sm font-medium mb-2">Consequences of {selectedGovType.name}:</p>
-                    <ul className="text-sm text-muted-foreground space-y-1">
+                    <ul className="text-sm text-tier-3 space-y-1">
                       {selectedGovType.consequences.map((c, i) => (
                         <li key={i} className="flex items-start gap-2">
                           <span className="text-primary">•</span>
@@ -824,7 +829,7 @@ const EmpireDesigner = () => {
             {/* Section 2: Power Structure */}
             <CollapsibleSection
               id="section-power"
-              title="2. Power Structure"
+              title="Power Structure"
               levelNumber={2}
               guidance="How is power organized and transferred? The structure determines stability, efficiency, and who really rules."
               thinkLike="a constitutional scholar analyzing checks and balances"
@@ -832,7 +837,7 @@ const EmpireDesigner = () => {
               <div className="space-y-6">
                 <div className="space-y-3">
                   <Label>Active Branches/Power Centers</Label>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-tier-3">
                     Select all that have significant independent power
                   </p>
                   <div className="grid md:grid-cols-2 gap-3">
@@ -850,7 +855,7 @@ const EmpireDesigner = () => {
                           <Label htmlFor={`branch-${branch.id}`} className="text-sm cursor-pointer">
                             {branch.name}
                           </Label>
-                          <p className="text-xs text-muted-foreground">{branch.description}</p>
+                          <p className="text-xs text-tier-4">{branch.description}</p>
                         </div>
                       </div>
                     ))}
@@ -930,7 +935,7 @@ const EmpireDesigner = () => {
             {/* Section 3: Territory */}
             <CollapsibleSection
               id="section-territory"
-              title="3. Territory & Scale"
+              title="Territory & Scale"
               levelNumber={3}
               guidance="Size matters. A city-state governs differently than a galactic empire. Scale shapes everything."
               thinkLike="a geographer mapping spheres of influence"
@@ -1009,7 +1014,7 @@ const EmpireDesigner = () => {
             {/* Section 4: Economy */}
             <CollapsibleSection
               id="section-economy"
-              title="4. Economy & Resources"
+              title="Economy & Resources"
               levelNumber={4}
               guidance="Economics shapes politics. Who controls resources controls power. What does this state produce and trade?"
               thinkLike="an economist analyzing resource flows"
@@ -1088,7 +1093,7 @@ const EmpireDesigner = () => {
             {/* Section 5: Military */}
             <CollapsibleSection
               id="section-military"
-              title="5. Military & Security"
+              title="Military & Security"
               levelNumber={5}
               guidance="The monopoly on violence. How does this state defend itself and project power?"
               thinkLike="a military strategist assessing capabilities"
@@ -1167,7 +1172,7 @@ const EmpireDesigner = () => {
             {/* Section 6: Culture */}
             <CollapsibleSection
               id="section-culture"
-              title="6. Culture & Identity"
+              title="Culture & Identity"
               levelNumber={6}
               guidance="What binds the people together? Shared values, symbols, and beliefs create national identity."
               thinkLike="an anthropologist studying national character"
@@ -1255,7 +1260,7 @@ const EmpireDesigner = () => {
             {/* Section 7: Factions */}
             <CollapsibleSection
               id="section-factions"
-              title="7. Internal Factions"
+              title="Internal Factions"
               levelNumber={7}
               guidance="No state is monolithic. Internal groups compete for power and push different agendas."
               thinkLike="a political operative mapping the landscape"
@@ -1350,7 +1355,7 @@ const EmpireDesigner = () => {
             {/* Section 8: External Relations */}
             <CollapsibleSection
               id="section-external"
-              title="8. External Relations"
+              title="External Relations"
               levelNumber={8}
               guidance="No state exists in isolation. Allies, enemies, and neutral parties shape foreign policy."
               thinkLike="a diplomat mapping international relationships"
@@ -1430,7 +1435,7 @@ const EmpireDesigner = () => {
             {/* Section 9: Stability */}
             <CollapsibleSection
               id="section-stability"
-              title="9. Stability Assessment"
+              title="Stability Assessment"
               levelNumber={9}
               guidance="Every state has strengths and weaknesses. Understanding them reveals where stories emerge."
               thinkLike="a risk analyst predicting the future"
@@ -1530,7 +1535,7 @@ const EmpireDesigner = () => {
                         <Badge variant="outline" className="text-xs mt-1">
                           {example.type}
                         </Badge>
-                        <p className="text-sm text-muted-foreground mt-2">
+                        <p className="text-sm text-tier-3 mt-2">
                           {example.description}
                         </p>
                         <p className="text-sm text-primary mt-2 italic">
@@ -1606,13 +1611,12 @@ const EmpireDesigner = () => {
               </div>
             </CollapsibleSection>
 
-          </div>
-
-          <ToolSidebar>
-            <SectionNavigation sections={SECTIONS} />
-            <KeyChoicesSidebar sections={keyChoicesSections} />
-          </ToolSidebar>
         </div>
+
+        <ToolSidebar>
+          <SectionNavigation sections={SECTIONS} mode="inline" />
+          <KeyChoicesSidebar sections={keyChoicesSections} mode="inline" />
+        </ToolSidebar>
       </main>
 
       <WorksheetNotesSheet

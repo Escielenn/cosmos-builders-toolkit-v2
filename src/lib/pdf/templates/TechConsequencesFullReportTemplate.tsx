@@ -7,6 +7,7 @@ import {
   PDFKeyValuePair,
   PDFResultBox,
 } from "../components";
+import { deepStripHtml } from "@/lib/html-utils";
 
 interface FormState {
   technologyName: string;
@@ -120,10 +121,11 @@ const EffectRow = ({ label, effect, notes }: { label: string; effect?: string; n
 };
 
 const TechConsequencesFullReportTemplate = ({
-  formState,
+  formState: rawFormState,
   worldName,
   date,
 }: TechConsequencesFullReportTemplateProps) => {
+  const formState = deepStripHtml(rawFormState);
   const techName = formState?.technologyName || "Unnamed Technology";
 
   return (
@@ -131,7 +133,7 @@ const TechConsequencesFullReportTemplate = ({
       {/* Page 1: Technology Definition */}
       <Page size="LETTER" style={styles.page}>
         <PDFHeader
-          toolName="Technology Consequences Map"
+          toolName="Paradigm"
           worldName={worldName}
           date={date}
         />
@@ -177,7 +179,7 @@ const TechConsequencesFullReportTemplate = ({
       {/* Page 2: Economic & Social */}
       <Page size="LETTER" style={styles.page}>
         <PDFHeader
-          toolName="Technology Consequences Map"
+          toolName="Paradigm"
           worldName={worldName}
           date={date}
         />
@@ -203,7 +205,7 @@ const TechConsequencesFullReportTemplate = ({
       {/* Page 3: Political & Military */}
       <Page size="LETTER" style={styles.page}>
         <PDFHeader
-          toolName="Technology Consequences Map"
+          toolName="Paradigm"
           worldName={worldName}
           date={date}
         />
@@ -228,7 +230,7 @@ const TechConsequencesFullReportTemplate = ({
       {/* Page 4: Psychological & Synthesis */}
       <Page size="LETTER" style={styles.page}>
         <PDFHeader
-          toolName="Technology Consequences Map"
+          toolName="Paradigm"
           worldName={worldName}
           date={date}
         />

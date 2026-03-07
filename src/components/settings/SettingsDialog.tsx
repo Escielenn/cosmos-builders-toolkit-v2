@@ -16,7 +16,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   User,
   Link2,
-  Crown,
+  Zap,
   Upload,
   Save,
   Check,
@@ -174,6 +174,7 @@ const SettingsDialog = ({
 
   // Background options grouped
   const defaultOptions = options.filter((o) => o.category === "default");
+  const videoOptions = options.filter((o) => o.category === "video");
   const spaceOptions = options.filter((o) => o.category === "space");
   const gradientOptions = options.filter((o) => o.category === "gradient");
   const colorOptions = options.filter((o) => o.category === "color");
@@ -203,7 +204,7 @@ const SettingsDialog = ({
               <span className="hidden sm:inline">Integrations</span>
             </TabsTrigger>
             <TabsTrigger value="subscription" className="gap-1.5">
-              <Crown className="w-3.5 h-3.5" />
+              <Zap className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Subscription</span>
             </TabsTrigger>
             <TabsTrigger value="export" className="gap-1.5">
@@ -333,6 +334,45 @@ const SettingsDialog = ({
                       )}
                     >
                       <div className="w-full h-full bg-background starfield-preview" />
+                      <span className="absolute bottom-1 left-1 text-[10px] font-medium text-white">
+                        {option.name}
+                      </span>
+                      {backgroundId === option.id && (
+                        <div className="absolute top-1 right-1 w-4 h-4 rounded-sm bg-primary flex items-center justify-center">
+                          <Check className="w-2.5 h-2.5 text-primary-foreground" />
+                        </div>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Videos */}
+              <div className="mb-4">
+                <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2">
+                  Animated Backdrops
+                </p>
+                <div className="grid grid-cols-3 gap-2">
+                  {videoOptions.map((option) => (
+                    <button
+                      key={option.id}
+                      onClick={() => setBackground(option.id)}
+                      className={cn(
+                        "relative aspect-video rounded-lg overflow-hidden border-2 transition-all hover:scale-105",
+                        backgroundId === option.id
+                          ? "border-primary ring-2 ring-primary/50"
+                          : "border-border hover:border-primary/50"
+                      )}
+                    >
+                      <video
+                        src={option.url}
+                        muted
+                        loop
+                        playsInline
+                        autoPlay
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                       <span className="absolute bottom-1 left-1 text-[10px] font-medium text-white">
                         {option.name}
                       </span>
@@ -566,7 +606,7 @@ const SettingsDialog = ({
               <>
                 <div className="flex items-center gap-2">
                   <Badge className="bg-amber-500/20 text-amber-600 dark:text-amber-400">
-                    <Crown className="w-3 h-3 mr-1" />
+                    <Zap className="w-3 h-3 mr-1" />
                     Pro Active
                   </Badge>
                   <Badge variant="secondary">
@@ -642,7 +682,7 @@ const SettingsDialog = ({
               </>
             ) : (
               <div className="space-y-4 text-center py-4">
-                <Crown className="w-12 h-12 text-amber-500 mx-auto" />
+                <Zap className="w-12 h-12 text-amber-500 mx-auto" />
                 <div>
                   <h4 className="font-medium mb-1">Upgrade to Pro</h4>
                   <p className="text-sm text-muted-foreground">
@@ -656,7 +696,7 @@ const SettingsDialog = ({
                     navigate("/pricing");
                   }}
                 >
-                  <Crown className="w-4 h-4" />
+                  <Zap className="w-4 h-4" />
                   View Plans
                 </Button>
               </div>

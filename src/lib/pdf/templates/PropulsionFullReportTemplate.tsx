@@ -7,6 +7,7 @@ import {
   PDFKeyValuePair,
   PDFResultBox,
 } from "../components";
+import { deepStripHtml } from "@/lib/html-utils";
 
 interface FormState {
   system: {
@@ -104,10 +105,11 @@ const NotesBox = ({ label, content }: { label: string; content: string }) => (
 );
 
 const PropulsionFullReportTemplate = ({
-  formState,
+  formState: rawFormState,
   worldName,
   date,
 }: PropulsionFullReportTemplateProps) => {
+  const formState = deepStripHtml(rawFormState);
   // Safe access to nested properties
   const system = formState?.system;
   const benchmarks = formState?.benchmarks;
@@ -128,7 +130,7 @@ const PropulsionFullReportTemplate = ({
       {/* Page 1: Propulsion System Definition */}
       <Page size="LETTER" style={styles.page}>
         <PDFHeader
-          toolName="Propulsion Consequences Map"
+          toolName="Impulse"
           worldName={worldName}
           date={date}
         />
@@ -234,7 +236,7 @@ const PropulsionFullReportTemplate = ({
 
       {/* Page 2: Economic & Political Domains */}
       <Page size="LETTER" style={styles.page}>
-        <PDFHeader toolName="Propulsion Consequences Map" worldName={worldName} date={date} />
+        <PDFHeader toolName="Impulse" worldName={worldName} date={date} />
 
         <PDFSection title="2. Economic Implications">
           {economic?.immediateConsequence && (
@@ -268,7 +270,7 @@ const PropulsionFullReportTemplate = ({
 
       {/* Page 3: Military & Social Domains */}
       <Page size="LETTER" style={styles.page}>
-        <PDFHeader toolName="Propulsion Consequences Map" worldName={worldName} date={date} />
+        <PDFHeader toolName="Impulse" worldName={worldName} date={date} />
 
         <PDFSection title="4. Military Implications">
           {military?.warfareNature && (
@@ -299,7 +301,7 @@ const PropulsionFullReportTemplate = ({
 
       {/* Page 4: Psychological & Synthesis */}
       <Page size="LETTER" style={styles.page}>
-        <PDFHeader toolName="Propulsion Consequences Map" worldName={worldName} date={date} />
+        <PDFHeader toolName="Impulse" worldName={worldName} date={date} />
 
         <PDFSection title="6. Psychological Implications">
           {psychological?.perceptionDistance && (

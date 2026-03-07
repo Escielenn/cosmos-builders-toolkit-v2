@@ -7,6 +7,7 @@ import {
   PDFKeyValuePair,
   PDFResultBox,
 } from "../components";
+import { deepStripHtml } from "@/lib/html-utils";
 
 interface FormState {
   technologyName: string;
@@ -95,39 +96,41 @@ const TechConsequencesSummaryTemplate = ({
   worldName,
   date,
 }: TechConsequencesSummaryTemplateProps) => {
-  const techName = formState?.technologyName || "Unnamed Technology";
-  const category = formatId(formState?.technologyCategory);
+  const cleanState = deepStripHtml(formState);
+
+  const techName = cleanState?.technologyName || "Unnamed Technology";
+  const category = formatId(cleanState?.technologyCategory);
 
   const domains: DomainRow[] = [
     {
       domain: "Physical",
-      effects: [formState?.infrastructureEffect, formState?.environmentEffect, formState?.resourceEffect].filter(Boolean),
-      timeframe: formState?.physicalTimeframe,
+      effects: [cleanState?.infrastructureEffect, cleanState?.environmentEffect, cleanState?.resourceEffect].filter(Boolean),
+      timeframe: cleanState?.physicalTimeframe,
     },
     {
       domain: "Economic",
-      effects: [formState?.industryEffect, formState?.employmentEffect, formState?.wealthEffect].filter(Boolean),
-      timeframe: formState?.economicTimeframe,
+      effects: [cleanState?.industryEffect, cleanState?.employmentEffect, cleanState?.wealthEffect].filter(Boolean),
+      timeframe: cleanState?.economicTimeframe,
     },
     {
       domain: "Social",
-      effects: [formState?.classEffect, formState?.familyEffect, formState?.communityEffect, formState?.identityEffect].filter(Boolean),
-      timeframe: formState?.socialTimeframe,
+      effects: [cleanState?.classEffect, cleanState?.familyEffect, cleanState?.communityEffect, cleanState?.identityEffect].filter(Boolean),
+      timeframe: cleanState?.socialTimeframe,
     },
     {
       domain: "Political",
-      effects: [formState?.powerEffect, formState?.surveillanceEffect, formState?.governanceEffect].filter(Boolean),
-      timeframe: formState?.politicalTimeframe,
+      effects: [cleanState?.powerEffect, cleanState?.surveillanceEffect, cleanState?.governanceEffect].filter(Boolean),
+      timeframe: cleanState?.politicalTimeframe,
     },
     {
       domain: "Military",
-      effects: [formState?.warfareEffect, formState?.defenseEffect, formState?.deterrenceEffect].filter(Boolean),
-      timeframe: formState?.militaryTimeframe,
+      effects: [cleanState?.warfareEffect, cleanState?.defenseEffect, cleanState?.deterrenceEffect].filter(Boolean),
+      timeframe: cleanState?.militaryTimeframe,
     },
     {
       domain: "Psychological",
-      effects: [formState?.perceptionEffect, formState?.valuesEffect, formState?.fearsEffect].filter(Boolean),
-      timeframe: formState?.psychologicalTimeframe,
+      effects: [cleanState?.perceptionEffect, cleanState?.valuesEffect, cleanState?.fearsEffect].filter(Boolean),
+      timeframe: cleanState?.psychologicalTimeframe,
     },
   ];
 
@@ -135,7 +138,7 @@ const TechConsequencesSummaryTemplate = ({
     <Document>
       <Page size="LETTER" style={styles.page}>
         <PDFHeader
-          toolName="Technology Consequences Map"
+          toolName="Paradigm"
           worldName={worldName}
           date={date}
         />
@@ -144,8 +147,8 @@ const TechConsequencesSummaryTemplate = ({
           value={techName}
           label={category}
           description={
-            formState?.maturityLevel
-              ? `Maturity: ${formatId(formState.maturityLevel)} | Access: ${formatId(formState.accessLevel)}`
+            cleanState?.maturityLevel
+              ? `Maturity: ${formatId(cleanState.maturityLevel)} | Access: ${formatId(cleanState.accessLevel)}`
               : undefined
           }
         />
@@ -154,19 +157,19 @@ const TechConsequencesSummaryTemplate = ({
         <PDFSection title="Technology Overview">
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: spacing.sm }}>
             <View style={{ flex: 1, minWidth: 140 }}>
-              <PDFKeyValuePair label="Maturity Level" value={formatId(formState?.maturityLevel)} />
+              <PDFKeyValuePair label="Maturity Level" value={formatId(cleanState?.maturityLevel)} />
             </View>
             <View style={{ flex: 1, minWidth: 140 }}>
-              <PDFKeyValuePair label="Access Level" value={formatId(formState?.accessLevel)} />
+              <PDFKeyValuePair label="Access Level" value={formatId(cleanState?.accessLevel)} />
             </View>
           </View>
-          {formState?.keyCapabilities && (
+          {cleanState?.keyCapabilities && (
             <View style={{ marginTop: spacing.xs }}>
               <Text style={{ fontSize: typography.sizes.xs, fontWeight: 600, color: colors.primary, marginBottom: 2 }}>
                 Key Capabilities
               </Text>
               <Text style={{ fontSize: typography.sizes.xs, color: colors.text.secondary, lineHeight: 1.5 }}>
-                {formState.keyCapabilities}
+                {cleanState.keyCapabilities}
               </Text>
             </View>
           )}
@@ -196,10 +199,10 @@ const TechConsequencesSummaryTemplate = ({
         </PDFSection>
 
         {/* Primary Contradiction */}
-        {formState?.primaryContradiction && (
+        {cleanState?.primaryContradiction && (
           <View style={styles.notesBox}>
             <Text style={styles.notesLabel}>Primary Contradiction</Text>
-            <Text style={styles.notesText}>{formState.primaryContradiction}</Text>
+            <Text style={styles.notesText}>{cleanState.primaryContradiction}</Text>
           </View>
         )}
 

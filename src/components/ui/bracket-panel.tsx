@@ -3,15 +3,23 @@ import { cn } from "@/lib/utils";
 
 interface BracketPanelProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Corner bracket color accent */
-  color?: "default" | "teal" | "stellar" | "amber";
+  color?: "default" | "teal" | "stellar" | "amber" | "bright";
+  /** Corner bracket size */
+  size?: "sm" | "md" | "lg";
 }
 
+const sizeClasses = {
+  sm: "sf-bracket-panel--sm",
+  md: "",
+  lg: "sf-bracket-panel--lg",
+};
+
 const BracketPanel = React.forwardRef<HTMLDivElement, BracketPanelProps>(
-  ({ className, color = "default", children, ...props }, ref) => {
+  ({ className, color = "default", size = "md", children, ...props }, ref) => {
     return (
       <div
         ref={ref}
-        className={cn("sf-bracket-panel", className)}
+        className={cn("sf-bracket-panel", sizeClasses[size], className)}
         data-bracket-color={color}
         {...props}
       >

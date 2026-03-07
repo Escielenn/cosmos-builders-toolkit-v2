@@ -9,6 +9,8 @@ import { Badge } from "@/components/ui/badge";
 import WorldCard from "@/components/dashboard/WorldCard";
 import { useWorlds } from "@/hooks/use-worlds";
 import { useAuth } from "@/contexts/AuthContext";
+import { PageBursts } from "@/components/ui/data-burst";
+import { ARCHIVE_BURSTS } from "@/lib/data-bursts";
 
 const Archive = () => {
   const { user, loading } = useAuth();
@@ -35,7 +37,7 @@ const Archive = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background sf-atmosphere">
+      <div className="relative min-h-screen bg-background sf-atmosphere">
         <Header />
         <main className="container mx-auto px-4 pt-24 pb-16 flex items-center justify-center">
           <Loader />
@@ -45,8 +47,9 @@ const Archive = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background sf-atmosphere">
+    <div className="relative min-h-screen bg-background sf-atmosphere">
       <Header />
+      <PageBursts bursts={ARCHIVE_BURSTS} />
       <main className="container mx-auto px-4 pt-24 pb-16 relative z-10">
         {/* Back Navigation */}
         <Link

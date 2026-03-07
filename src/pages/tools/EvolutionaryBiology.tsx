@@ -52,6 +52,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import SectionNavigation, { Section, MobileSectionNav } from "@/components/tools/SectionNavigation";
 import ToolSidebar from "@/components/tools/ToolSidebar";
 import ToolActionBar from "@/components/tools/ToolActionBar";
+import { ToolPageQuote } from "@/components/quotes/ToolPageQuote";
 import QuickExportButton from "@/components/tools/QuickExportButton";
 import ExportDialog from "@/components/tools/ExportDialog";
 import ShareDialog from "@/components/sharing/ShareDialog";
@@ -690,7 +691,7 @@ const EvolutionaryBiology = () => {
             <div>
               <span className="font-medium text-sm">{option.name}</span>
               {option.description && (
-                <p className="text-xs text-muted-foreground mt-0.5">
+                <p className="text-xs text-tier-4 mt-0.5">
                   {option.description}
                 </p>
               )}
@@ -728,7 +729,7 @@ const EvolutionaryBiology = () => {
             variant="ghost"
             size="icon"
             onClick={() => onChange(items.filter((_, i) => i !== index))}
-            className="h-10 w-10 text-muted-foreground hover:text-destructive"
+            className="h-10 w-10 text-tier-2 hover:text-destructive"
           >
             <Trash2 className="w-4 h-4" />
           </Button>
@@ -886,11 +887,13 @@ const EvolutionaryBiology = () => {
         <div className="mb-8">
           <Link
             to={worldId ? `/worlds/${worldId}` : "/"}
-            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4"
+            className="inline-flex items-center gap-2 text-sm text-tier-3 hover:text-foreground transition-colors mb-4"
           >
             <ArrowLeft className="w-4 h-4" />
             {worldId ? "Back to World" : "Back to Dashboard"}
           </Link>
+
+          <ToolPageQuote toolId="evolutionary-biology" />
 
           <ToolActionBar
             onSave={handleSave}
@@ -904,6 +907,8 @@ const EvolutionaryBiology = () => {
             onNotesClick={() => setNotesSheetOpen(true)}
             onMoodboardClick={() => setMoodboardSheetOpen(true)}
             moodboardCount={formState.moodboard?.length || 0}
+            worldId={worldId}
+            worksheetId={worksheetId}
             className="mb-6"
             extraActions={
               <QuickExportButton
@@ -925,7 +930,7 @@ const EvolutionaryBiology = () => {
               <span className="font-light">Evolutionary Biology</span>
             </h1>
           </div>
-          <p className="text-muted-foreground mt-2 max-w-2xl">
+          <p className="text-tier-2 mt-2 max-w-2xl">
             Design biologically plausible alien species by tracing every trait back to evolutionary pressures.
           </p>
           {worksheetId && (
@@ -950,16 +955,16 @@ const EvolutionaryBiology = () => {
 
         {/* Introduction */}
         <GlassPanel glow className="p-6 md:p-8 mb-8">
-          <h2 className="font-heading text-xl font-semibold mb-4 gradient-text">
+          <h2 className="font-heading text-xl font-light uppercase tracking-[2px] mb-4 gradient-text">
             Building Believable Biology
           </h2>
           <blockquote className="border-l-2 border-primary pl-4 italic text-lg mb-4">
             "Every trait is a solution to a problem. Every solution creates new problems."
           </blockquote>
-          <p className="text-muted-foreground mb-4">
+          <p className="text-tier-2 mb-4">
             This tool helps you design alien species where biology emerges from environment, and psychology emerges from biology. Start with the survival pressures your world creates, then trace their consequences through biochemistry, body plan, sensory systems, reproduction, social structure, cognition, and psychology.
           </p>
-          <div className="text-sm text-muted-foreground mb-4">
+          <div className="text-sm text-tier-3 mb-4">
             <strong className="text-foreground">The Evolutionary Cascade:</strong>
             <p className="mt-1">Environment → Survival Pressures → Biochemistry → Body Plan → Sensory Systems → Reproduction → Social Structure → Cognition → Communication → Psychology</p>
           </div>
@@ -994,8 +999,8 @@ const EvolutionaryBiology = () => {
                   <Dna className="w-5 h-5 text-emerald-500" />
                 </div>
                 <div>
-                  <h2 className="font-heading text-lg uppercase tracking-wider">Species Identity</h2>
-                  <p className="text-xs text-muted-foreground">Name your species and link to environmental context</p>
+                  <h2 className="font-heading text-[11px] font-light uppercase tracking-[3px] text-[hsl(var(--sf-section-green))]">Species Identity</h2>
+                  <p className="text-xs text-tier-4">Name your species and link to environmental context</p>
                 </div>
               </div>
 
@@ -1023,7 +1028,7 @@ const EvolutionaryBiology = () => {
                     onChange={(e) => setFormState(prev => ({ ...prev, speciesName: e.target.value }))}
                     className="text-lg"
                   />
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-xs text-tier-4">
                     Give your species a distinctive name that reflects their nature or culture.
                   </p>
                 </div>
@@ -1048,7 +1053,7 @@ const EvolutionaryBiology = () => {
                     </div>
                     {(formState._linkedWorksheets?.planet || formState._linkedWorksheets?.ecr) && (
                       <div className="mt-3 p-3 bg-muted/30 rounded-lg">
-                        <p className="text-xs text-muted-foreground">
+                        <p className="text-xs text-tier-4">
                           <span className="text-emerald-500 font-medium">Linked data</span> from your planet and environment worksheets
                           will help inform evolutionary pressures and biological constraints.
                         </p>
@@ -1064,7 +1069,8 @@ const EvolutionaryBiology = () => {
               {/* Section 1: Foundations */}
               <CollapsibleSection
                 id="section-foundations"
-                title="1. Foundations"
+                levelNumber={1}
+                title="Foundations"
                 guidance={SECTION_GUIDANCE.foundations}
                 variant="minimal"
                 open={expandedSections.has("section-foundations")}
@@ -1072,7 +1078,7 @@ const EvolutionaryBiology = () => {
               >
                 <div className="space-y-2">
                   <Label>Primary Survival Pressures</Label>
-                  <p className="text-xs text-muted-foreground mb-3">
+                  <p className="text-xs text-tier-4 mb-3">
                     What environmental challenges shaped this species?
                   </p>
                   <CheckboxGroup
@@ -1124,7 +1130,8 @@ const EvolutionaryBiology = () => {
               {/* Section 2: Biochemistry */}
               <CollapsibleSection
                 id="section-biochemistry"
-                title="2. Biochemistry & Metabolism"
+                levelNumber={2}
+                title="Biochemistry & Metabolism"
                 guidance={SECTION_GUIDANCE.biochemistry}
                 variant="minimal"
                 open={expandedSections.has("section-biochemistry")}
@@ -1252,7 +1259,7 @@ const EvolutionaryBiology = () => {
                   <Label>Temperature Range (°C)</Label>
                   <div className="grid grid-cols-3 gap-4">
                     <div>
-                      <Label className="text-xs text-muted-foreground">Min</Label>
+                      <Label className="text-xs text-tier-4">Min</Label>
                       <Input
                         value={formState.biochemistry.temperatureRange.min}
                         onChange={(e) =>
@@ -1264,7 +1271,7 @@ const EvolutionaryBiology = () => {
                       />
                     </div>
                     <div>
-                      <Label className="text-xs text-muted-foreground">Optimal</Label>
+                      <Label className="text-xs text-tier-4">Optimal</Label>
                       <Input
                         value={formState.biochemistry.temperatureRange.optimal}
                         onChange={(e) =>
@@ -1276,7 +1283,7 @@ const EvolutionaryBiology = () => {
                       />
                     </div>
                     <div>
-                      <Label className="text-xs text-muted-foreground">Max</Label>
+                      <Label className="text-xs text-tier-4">Max</Label>
                       <Input
                         value={formState.biochemistry.temperatureRange.max}
                         onChange={(e) =>
@@ -1308,7 +1315,8 @@ const EvolutionaryBiology = () => {
               {/* Section 3: Evolutionary Adaptations */}
               <CollapsibleSection
                 id="section-adaptations"
-                title="3. Evolutionary Adaptations"
+                levelNumber={3}
+                title="Evolutionary Adaptations"
                 guidance={SECTION_GUIDANCE.adaptations}
                 variant="minimal"
                 open={expandedSections.has("section-adaptations")}
@@ -1316,7 +1324,7 @@ const EvolutionaryBiology = () => {
               >
                 <div className="space-y-2">
                   <Label>Key Adaptations</Label>
-                  <p className="text-xs text-muted-foreground mb-3">
+                  <p className="text-xs text-tier-4 mb-3">
                     For each trait, identify what pressure selected for it and what tradeoff it required.
                   </p>
                   <DynamicList
@@ -1388,7 +1396,8 @@ const EvolutionaryBiology = () => {
               {/* Section 4: Body Plan */}
               <CollapsibleSection
                 id="section-body-plan"
-                title="4. Body Plan & Morphology"
+                levelNumber={4}
+                title="Body Plan & Morphology"
                 guidance={SECTION_GUIDANCE["body-plan"]}
                 variant="minimal"
                 open={expandedSections.has("section-body-plan")}
@@ -1594,7 +1603,8 @@ const EvolutionaryBiology = () => {
               {/* Section 5: Sensory Systems */}
               <CollapsibleSection
                 id="section-sensory"
-                title="5. Sensory Systems"
+                levelNumber={5}
+                title="Sensory Systems"
                 guidance={SECTION_GUIDANCE.sensory}
                 variant="minimal"
                 open={expandedSections.has("section-sensory")}
@@ -1703,7 +1713,8 @@ const EvolutionaryBiology = () => {
               {/* Section 6: Reproduction */}
               <CollapsibleSection
                 id="section-reproduction"
-                title="6. Reproduction & Life Cycle"
+                levelNumber={6}
+                title="Reproduction & Life Cycle"
                 guidance={SECTION_GUIDANCE.reproduction}
                 variant="minimal"
                 open={expandedSections.has("section-reproduction")}
@@ -1918,7 +1929,8 @@ const EvolutionaryBiology = () => {
               {/* Section 7: Social */}
               <CollapsibleSection
                 id="section-social"
-                title="7. Social Evolution & Structure"
+                levelNumber={7}
+                title="Social Evolution & Structure"
                 guidance={SECTION_GUIDANCE.social}
                 variant="minimal"
                 open={expandedSections.has("section-social")}
@@ -2061,7 +2073,8 @@ const EvolutionaryBiology = () => {
               {/* Section 8: Cognition */}
               <CollapsibleSection
                 id="section-cognition"
-                title="8. Intelligence & Cognition"
+                levelNumber={8}
+                title="Intelligence & Cognition"
                 guidance={SECTION_GUIDANCE.cognition}
                 variant="minimal"
                 open={expandedSections.has("section-cognition")}
@@ -2206,7 +2219,8 @@ const EvolutionaryBiology = () => {
               {/* Section 9: Communication */}
               <CollapsibleSection
                 id="section-communication"
-                title="9. Communication Biology"
+                levelNumber={9}
+                title="Communication Biology"
                 guidance={SECTION_GUIDANCE.communication}
                 variant="minimal"
                 open={expandedSections.has("section-communication")}
@@ -2330,7 +2344,8 @@ const EvolutionaryBiology = () => {
               {/* Section 10: Psychology */}
               <CollapsibleSection
                 id="section-psychology"
-                title="10. Psychology from Biology"
+                levelNumber={10}
+                title="Psychology from Biology"
                 guidance={SECTION_GUIDANCE.psychology}
                 variant="minimal"
                 open={expandedSections.has("section-psychology")}
@@ -2338,7 +2353,7 @@ const EvolutionaryBiology = () => {
               >
                 <div className="space-y-2">
                   <Label>Emotion Analogs</Label>
-                  <p className="text-xs text-muted-foreground mb-3">
+                  <p className="text-xs text-tier-4 mb-3">
                     What emotional states would evolution have selected for?
                   </p>
                   <CheckboxGroup
@@ -2447,7 +2462,8 @@ const EvolutionaryBiology = () => {
               {/* Section 11: Vestigial */}
               <CollapsibleSection
                 id="section-vestigial"
-                title="11. Vestigial & Transitional Traits"
+                levelNumber={11}
+                title="Vestigial & Transitional Traits"
                 guidance={SECTION_GUIDANCE.vestigial}
                 variant="minimal"
                 open={expandedSections.has("section-vestigial")}
@@ -2455,7 +2471,7 @@ const EvolutionaryBiology = () => {
               >
                 <div className="space-y-2">
                   <Label>Vestigial Traits</Label>
-                  <p className="text-xs text-muted-foreground mb-3">
+                  <p className="text-xs text-tier-4 mb-3">
                     What evolutionary leftovers hint at their history?
                   </p>
                   <DynamicList
@@ -2537,7 +2553,8 @@ const EvolutionaryBiology = () => {
               {/* Section 12: Viewpoint Test */}
               <CollapsibleSection
                 id="section-viewpoint-test"
-                title="12. Non-Human Viewpoint Test"
+                levelNumber={12}
+                title="Non-Human Viewpoint Test"
                 guidance={SECTION_GUIDANCE["viewpoint-test"]}
                 variant="minimal"
                 open={expandedSections.has("section-viewpoint-test")}
@@ -2545,7 +2562,7 @@ const EvolutionaryBiology = () => {
               >
                 <div className="space-y-2">
                   <Label>Human Assumptions Avoided</Label>
-                  <p className="text-xs text-muted-foreground mb-3">
+                  <p className="text-xs text-tier-4 mb-3">
                     Check the human assumptions this species genuinely differs from.
                   </p>
                   <CheckboxGroup
@@ -2599,7 +2616,8 @@ const EvolutionaryBiology = () => {
               {/* Section 13: Integration */}
               <CollapsibleSection
                 id="section-integration"
-                title="13. Integration & Consistency"
+                levelNumber={13}
+                title="Integration & Consistency"
                 guidance={SECTION_GUIDANCE.integration}
                 variant="minimal"
                 open={expandedSections.has("section-integration")}

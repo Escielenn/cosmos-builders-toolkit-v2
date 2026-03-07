@@ -6,6 +6,7 @@ import type {
   SupportTicketFormData,
   SimpleSubmissionFormData,
   SimpleSubmissionType,
+  EarlyAccessFormData,
 } from "@/lib/contact-schemas";
 
 // Helper to check honeypot - returns true if it's a bot
@@ -165,9 +166,27 @@ export const useContact = () => {
     },
   });
 
+  const submitEarlyAccess = useMutation({
+    mutationFn: async (data: EarlyAccessFormData & { honeypot?: string }) => {
+      if (isBot(data.honeypot)) {
+        return { success: true, blocked: true };
+      }
+
+      // Skip DB insert — anonymous users can't write to contact_submissions (RLS).
+      // The edge function email serves as the record.
+      const response = await supabase.functions.invoke("submit-contact", {
+        body: { ...data, type: "early-access" },
+      });
+
+      if (response.error) throw response.error;
+      return response.data;
+    },
+  });
+
   return {
     submitContactForm,
     submitSupportTicket,
     submitSimpleForm,
+    submitEarlyAccess,
   };
 };

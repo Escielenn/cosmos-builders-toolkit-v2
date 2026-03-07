@@ -22,6 +22,15 @@ import {
   ListOrdered,
   Save,
 } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { BracketPanel } from "@/components/ui/bracket-panel";
+import { useWritingPreferences } from "@/hooks/use-writing-preferences";
+import { WRITING_THEMES } from "@/lib/writing/themes";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface WikiEditorProps {
   worldId: string;
@@ -43,6 +52,9 @@ export function WikiEditor({
   saveStatus = "idle",
 }: WikiEditorProps) {
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const onChangeRef = useRef(onChange);
+  onChangeRef.current = onChange;
+  const { preferences, updatePreferences } = useWritingPreferences();
 
   const editor = useEditor({
     extensions: [
@@ -73,7 +85,19 @@ export function WikiEditor({
     },
     editorProps: {
       attributes: {
-        class: "sf-wiki-content focus:outline-none min-h-[200px]",
+        class: cn(
+          "prose prose-sm max-w-none focus:outline-none min-h-[500px]",
+          "prose-headings:font-semibold",
+          "prose-h2:text-lg prose-h2:mt-3 prose-h2:mb-2",
+          "prose-h3:text-base prose-h3:mt-2 prose-h3:mb-1",
+          "prose-p:my-1.5 prose-p:leading-relaxed",
+          "prose-ul:my-1.5 prose-ol:my-1.5",
+          "prose-li:my-0.5",
+          "prose-blockquote:border-l-primary prose-blockquote:text-muted-foreground",
+          "prose-code:text-xs prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded",
+          "prose-pre:bg-[#0d1117] prose-pre:p-3 prose-pre:rounded-none",
+          "[&_.is-editor-empty:first-child::before]:text-muted-foreground/50 [&_.is-editor-empty:first-child::before]:content-[attr(data-placeholder)] [&_.is-editor-empty:first-child::before]:float-left [&_.is-editor-empty:first-child::before]:pointer-events-none [&_.is-editor-empty:first-child::before]:h-0"
+        ),
       },
     },
   });
@@ -90,10 +114,20 @@ export function WikiEditor({
     if (editor) editor.setEditable(!readOnly);
   }, [readOnly, editor]);
 
-  // Cleanup debounce
+  // Keep a ref to the editor so we can flush content on unmount
+  const editorRef = useRef(editor);
+  editorRef.current = editor;
+
+  // Flush pending content on unmount (prevents content loss when toggling to preview)
   useEffect(() => {
     return () => {
-      if (debounceRef.current) clearTimeout(debounceRef.current);
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+        const html = editorRef.current?.getHTML();
+        if (html !== undefined) {
+          onChangeRef.current(html);
+        }
+      }
     };
   }, []);
 
@@ -117,13 +151,11 @@ export function WikiEditor({
 
   const handleInsertWikiLink = useCallback(() => {
     if (!editor) return;
-    // Insert [[ to trigger autocomplete
     editor.chain().focus().insertContent("[[").run();
   }, [editor]);
 
   const handleManualSave = useCallback(() => {
     if (!editor) return;
-    // Flush any pending debounce
     if (debounceRef.current) clearTimeout(debounceRef.current);
     onChange(editor.getHTML());
     onSave?.();
@@ -132,115 +164,142 @@ export function WikiEditor({
   if (!editor) return null;
 
   return (
-    <div>
-      {/* Toolbar */}
-      {!readOnly && (
-        <div className="sf-wiki-toolbar">
-          <ToolbarBtn
-            onClick={() => editor.chain().focus().toggleBold().run()}
-            active={editor.isActive("bold")}
-            title="Bold"
-          >
-            <Bold className="w-3.5 h-3.5" />
-          </ToolbarBtn>
-          <ToolbarBtn
-            onClick={() => editor.chain().focus().toggleItalic().run()}
-            active={editor.isActive("italic")}
-            title="Italic"
-          >
-            <Italic className="w-3.5 h-3.5" />
-          </ToolbarBtn>
-          <ToolbarBtn
-            onClick={() => editor.chain().focus().toggleUnderline().run()}
-            active={editor.isActive("underline")}
-            title="Underline"
-          >
-            <UnderlineIcon className="w-3.5 h-3.5" />
-          </ToolbarBtn>
+    <BracketPanel color="stellar">
+      <div className="rounded-none border border-[#5B8DEF]/15 bg-background overflow-hidden">
+        {/* Toolbar — matches sf-writing-toolbar pattern */}
+        {!readOnly && (
+          <div className="sf-writing-toolbar flex items-center gap-0.5 p-1.5 border-b border-border bg-muted/30 flex-wrap">
+            <ToolbarBtn
+              onClick={() => editor.chain().focus().toggleBold().run()}
+              active={editor.isActive("bold")}
+              title="Bold"
+            >
+              <Bold className="w-4 h-4" />
+            </ToolbarBtn>
+            <ToolbarBtn
+              onClick={() => editor.chain().focus().toggleItalic().run()}
+              active={editor.isActive("italic")}
+              title="Italic"
+            >
+              <Italic className="w-4 h-4" />
+            </ToolbarBtn>
+            <ToolbarBtn
+              onClick={() => editor.chain().focus().toggleUnderline().run()}
+              active={editor.isActive("underline")}
+              title="Underline"
+            >
+              <UnderlineIcon className="w-4 h-4" />
+            </ToolbarBtn>
 
-          <div className="separator" />
+            <div className="w-px h-5 bg-border mx-1" />
 
-          <ToolbarBtn
-            onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-            active={editor.isActive("heading", { level: 2 })}
-            title="Heading 2"
-          >
-            H2
-          </ToolbarBtn>
-          <ToolbarBtn
-            onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-            active={editor.isActive("heading", { level: 3 })}
-            title="Heading 3"
-          >
-            H3
-          </ToolbarBtn>
+            <ToolbarBtn
+              onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+              active={editor.isActive("heading", { level: 2 })}
+              title="Heading 2"
+            >
+              <Heading2 className="w-4 h-4" />
+            </ToolbarBtn>
+            <ToolbarBtn
+              onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+              active={editor.isActive("heading", { level: 3 })}
+              title="Heading 3"
+            >
+              <Heading3 className="w-4 h-4" />
+            </ToolbarBtn>
 
-          <div className="separator" />
+            <div className="w-px h-5 bg-border mx-1" />
 
-          <ToolbarBtn
-            onClick={() => editor.chain().focus().toggleBlockquote().run()}
-            active={editor.isActive("blockquote")}
-            title="Blockquote"
-          >
-            <Quote className="w-3.5 h-3.5" />
-          </ToolbarBtn>
-          <ToolbarBtn onClick={handleInsertLink} title="Insert Link">
-            <LinkIcon className="w-3.5 h-3.5" />
-          </ToolbarBtn>
-          <ToolbarBtn onClick={handleInsertImage} title="Insert Image">
-            <ImageIcon className="w-3.5 h-3.5" />
-          </ToolbarBtn>
-          <ToolbarBtn
-            onClick={() => editor.chain().focus().setHorizontalRule().run()}
-            title="Horizontal Rule"
-          >
-            <Minus className="w-3.5 h-3.5" />
-          </ToolbarBtn>
+            <ToolbarBtn
+              onClick={() => editor.chain().focus().toggleBulletList().run()}
+              active={editor.isActive("bulletList")}
+              title="Bullet List"
+            >
+              <List className="w-4 h-4" />
+            </ToolbarBtn>
+            <ToolbarBtn
+              onClick={() => editor.chain().focus().toggleOrderedList().run()}
+              active={editor.isActive("orderedList")}
+              title="Ordered List"
+            >
+              <ListOrdered className="w-4 h-4" />
+            </ToolbarBtn>
+            <ToolbarBtn
+              onClick={() => editor.chain().focus().toggleBlockquote().run()}
+              active={editor.isActive("blockquote")}
+              title="Blockquote"
+            >
+              <Quote className="w-4 h-4" />
+            </ToolbarBtn>
 
-          <div className="separator" />
+            <div className="w-px h-5 bg-border mx-1" />
 
-          <ToolbarBtn
-            onClick={() => editor.chain().focus().toggleBulletList().run()}
-            active={editor.isActive("bulletList")}
-            title="Bullet List"
-          >
-            <List className="w-3.5 h-3.5" />
-          </ToolbarBtn>
-          <ToolbarBtn
-            onClick={() => editor.chain().focus().toggleOrderedList().run()}
-            active={editor.isActive("orderedList")}
-            title="Ordered List"
-          >
-            <ListOrdered className="w-3.5 h-3.5" />
-          </ToolbarBtn>
+            <ToolbarBtn onClick={handleInsertLink} title="Insert Link">
+              <LinkIcon className="w-4 h-4" />
+            </ToolbarBtn>
+            <ToolbarBtn onClick={handleInsertImage} title="Insert Image">
+              <ImageIcon className="w-4 h-4" />
+            </ToolbarBtn>
+            <ToolbarBtn
+              onClick={() => editor.chain().focus().setHorizontalRule().run()}
+              title="Horizontal Rule"
+            >
+              <Minus className="w-4 h-4" />
+            </ToolbarBtn>
 
-          <div className="separator" />
+            <div className="w-px h-5 bg-border mx-1" />
 
-          <ToolbarBtn
-            onClick={handleInsertWikiLink}
-            title="Insert Wiki Link [["
-            className="wiki-link-btn"
-          >
-            [[
-          </ToolbarBtn>
+            <ToolbarBtn
+              onClick={handleInsertWikiLink}
+              title="Insert Wiki Link [["
+              className="wiki-link-btn"
+            >
+              <span className="text-[#5B8DEF] font-mono text-xs font-semibold">[[</span>
+            </ToolbarBtn>
 
-          <div className="separator" />
+            <div className="w-px h-5 bg-border mx-1" />
 
-          <ToolbarBtn onClick={handleManualSave} title="Save">
-            <Save className="w-3.5 h-3.5" />
-          </ToolbarBtn>
+            <ToolbarBtn onClick={handleManualSave} title="Save">
+              <Save className="w-4 h-4" />
+            </ToolbarBtn>
 
-          {saveStatus !== "idle" && (
-            <span className="sf-wiki-save-indicator ml-2">
-              {saveStatus === "saving" ? "SAVING..." : "SAVED"}
-            </span>
+            {/* Theme Picker — same as RichTextEditor */}
+            <div className="w-px h-5 bg-border mx-1" />
+            <div className="flex items-center gap-1 ml-0.5">
+              {WRITING_THEMES.map((theme) => (
+                <Tooltip key={theme.id}>
+                  <TooltipTrigger asChild>
+                    <button
+                      type="button"
+                      onClick={() => updatePreferences({ themeId: theme.id })}
+                      className={cn(
+                        "w-3.5 h-3.5 rounded-full border transition-all",
+                        preferences.themeId === theme.id
+                          ? "ring-2 ring-[#5B8DEF] ring-offset-1 ring-offset-background border-[#5B8DEF]"
+                          : "border-border/50 hover:border-foreground/50"
+                      )}
+                      style={{ backgroundColor: theme.swatch[0] }}
+                      aria-label={theme.name}
+                    />
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom" className="text-xs">
+                    {theme.name}
+                  </TooltipContent>
+                </Tooltip>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Editor — writing surface with theme support */}
+        <EditorContent
+          editor={editor}
+          className={cn(
+            "px-4 py-3 [&_.tiptap]:outline-none [&_.tiptap]:min-h-[500px]",
+            !readOnly && "sf-writing-surface"
           )}
-        </div>
-      )}
-
-      {/* Editor content */}
-      <div className="border border-border/10 p-4">
-        <EditorContent editor={editor} />
+          data-writing-theme={!readOnly ? preferences.themeId : undefined}
+        />
       </div>
 
       {/* Autocomplete popover */}
@@ -253,7 +312,7 @@ export function WikiEditor({
           onClose={wikiTrigger.closeAutocomplete}
         />
       )}
-    </div>
+    </BracketPanel>
   );
 }
 
@@ -275,7 +334,11 @@ function ToolbarBtn({
       type="button"
       onClick={onClick}
       title={title}
-      className={`${active ? "active" : ""} ${className}`}
+      className={cn(
+        "p-1.5 rounded hover:bg-accent/80 transition-colors",
+        active && "bg-accent text-accent-foreground",
+        className
+      )}
     >
       {children}
     </button>

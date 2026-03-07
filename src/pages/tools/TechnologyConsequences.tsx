@@ -36,6 +36,7 @@ import ToolSidebar from "@/components/tools/ToolSidebar";
 import CollapsibleSection from "@/components/tools/CollapsibleSection";
 import KeyChoicesSidebar, { KeyChoicesSection, MobileKeyChoices } from "@/components/tools/KeyChoicesSidebar";
 import ToolActionBar from "@/components/tools/ToolActionBar";
+import { ToolPageQuote } from "@/components/quotes/ToolPageQuote";
 import QuickExportButton from "@/components/tools/QuickExportButton";
 import ExportDialog from "@/components/tools/ExportDialog";
 import { TechConsequencesSummaryTemplate, TechConsequencesFullReportTemplate } from "@/lib/pdf/templates";
@@ -447,11 +448,13 @@ const TechnologyConsequences = () => {
         {/* Back Link */}
         <Link
           to={worldId ? `/worlds/${worldId}` : "/"}
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
+          className="inline-flex items-center gap-2 text-sm text-tier-3 hover:text-foreground transition-colors mb-6"
         >
           <ArrowLeft className="w-4 h-4" />
           {worldId ? `Back to ${worldName || "World"}` : "Back to Tools"}
         </Link>
+
+        <ToolPageQuote toolId="technology-consequences" />
 
         {/* Action Bar */}
         <ToolActionBar
@@ -476,6 +479,8 @@ const TechnologyConsequences = () => {
               defaultFilename="technology-consequences"
             />
           }
+          worldId={worldId}
+          worksheetId={currentWorksheetId || worksheetId}
         />
 
         {/* Title */}
@@ -487,7 +492,7 @@ const TechnologyConsequences = () => {
                 <span className="font-normal">Paradigm:</span>{" "}
                 <span className="font-light">Technology Consequences</span>
               </h1>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-tier-3">
                 Map how any technology cascades through society
               </p>
             </div>
@@ -510,19 +515,20 @@ const TechnologyConsequences = () => {
           )}
         </div>
 
-        <div className="lg:hidden mb-6 space-y-4">
+        {/* Mobile Sidebars - Right side floating buttons */}
+        <div className="fixed right-4 bottom-4 xl:hidden z-40 no-print flex flex-col gap-2">
           <MobileSectionNav sections={SECTIONS} />
           <MobileKeyChoices sections={keyChoicesSections} />
         </div>
 
-        <div className="flex gap-8">
-          <div className="flex-1 space-y-6 max-w-4xl">
+        <div className="space-y-6">
             <ToolIntroSection data={TOOL_INTROS["technology-consequences"]} />
 
             {/* Section 1: Technology Definition */}
             <CollapsibleSection
               id="section-definition"
-              title="1. Technology Definition"
+              levelNumber={1}
+              title="Technology Definition"
               guidance="Define the core technology and its basic parameters"
             >
               <div className="space-y-4">
@@ -629,7 +635,8 @@ const TechnologyConsequences = () => {
             {/* Section 2: Physical Consequences */}
             <CollapsibleSection
               id="section-physical"
-              title="2. Physical Consequences"
+              levelNumber={2}
+              title="Physical Consequences"
               guidance="Infrastructure, environment, and resource effects"
             >
               <div className="space-y-6">
@@ -645,7 +652,7 @@ const TechnologyConsequences = () => {
                         <RadioGroupItem value={opt.value} id={`infra-${opt.value}`} />
                         <Label htmlFor={`infra-${opt.value}`} className="font-normal cursor-pointer">
                           <span className="font-medium">{opt.label}</span>
-                          <span className="text-xs text-muted-foreground block">{opt.description}</span>
+                          <span className="text-xs text-tier-4 block">{opt.description}</span>
                         </Label>
                       </div>
                     ))}
@@ -672,7 +679,7 @@ const TechnologyConsequences = () => {
                         <RadioGroupItem value={opt.value} id={`env-${opt.value}`} />
                         <Label htmlFor={`env-${opt.value}`} className="font-normal cursor-pointer">
                           <span className="font-medium">{opt.label}</span>
-                          <span className="text-xs text-muted-foreground block">{opt.description}</span>
+                          <span className="text-xs text-tier-4 block">{opt.description}</span>
                         </Label>
                       </div>
                     ))}
@@ -699,7 +706,7 @@ const TechnologyConsequences = () => {
                         <RadioGroupItem value={opt.value} id={`res-${opt.value}`} />
                         <Label htmlFor={`res-${opt.value}`} className="font-normal cursor-pointer">
                           <span className="font-medium">{opt.label}</span>
-                          <span className="text-xs text-muted-foreground block">{opt.description}</span>
+                          <span className="text-xs text-tier-4 block">{opt.description}</span>
                         </Label>
                       </div>
                     ))}
@@ -738,7 +745,8 @@ const TechnologyConsequences = () => {
             {/* Section 3: Economic Consequences */}
             <CollapsibleSection
               id="section-economic"
-              title="3. Economic Consequences"
+              levelNumber={3}
+              title="Economic Consequences"
               guidance="Industries, employment, and wealth distribution"
             >
               <div className="space-y-6">
@@ -754,7 +762,7 @@ const TechnologyConsequences = () => {
                         <RadioGroupItem value={opt.value} id={`ind-${opt.value}`} />
                         <Label htmlFor={`ind-${opt.value}`} className="font-normal cursor-pointer">
                           <span className="font-medium">{opt.label}</span>
-                          <span className="text-xs text-muted-foreground block">{opt.description}</span>
+                          <span className="text-xs text-tier-4 block">{opt.description}</span>
                         </Label>
                       </div>
                     ))}
@@ -781,7 +789,7 @@ const TechnologyConsequences = () => {
                         <RadioGroupItem value={opt.value} id={`emp-${opt.value}`} />
                         <Label htmlFor={`emp-${opt.value}`} className="font-normal cursor-pointer">
                           <span className="font-medium">{opt.label}</span>
-                          <span className="text-xs text-muted-foreground block">{opt.description}</span>
+                          <span className="text-xs text-tier-4 block">{opt.description}</span>
                         </Label>
                       </div>
                     ))}
@@ -808,7 +816,7 @@ const TechnologyConsequences = () => {
                         <RadioGroupItem value={opt.value} id={`wea-${opt.value}`} />
                         <Label htmlFor={`wea-${opt.value}`} className="font-normal cursor-pointer">
                           <span className="font-medium">{opt.label}</span>
-                          <span className="text-xs text-muted-foreground block">{opt.description}</span>
+                          <span className="text-xs text-tier-4 block">{opt.description}</span>
                         </Label>
                       </div>
                     ))}
@@ -828,7 +836,8 @@ const TechnologyConsequences = () => {
             {/* Section 4: Social Consequences */}
             <CollapsibleSection
               id="section-social"
-              title="4. Social Consequences"
+              levelNumber={4}
+              title="Social Consequences"
               guidance="Class, family, community, and identity"
             >
               <div className="space-y-6">
@@ -844,7 +853,7 @@ const TechnologyConsequences = () => {
                         <RadioGroupItem value={opt.value} id={`cls-${opt.value}`} />
                         <Label htmlFor={`cls-${opt.value}`} className="font-normal cursor-pointer">
                           <span className="font-medium">{opt.label}</span>
-                          <span className="text-xs text-muted-foreground block">{opt.description}</span>
+                          <span className="text-xs text-tier-4 block">{opt.description}</span>
                         </Label>
                       </div>
                     ))}
@@ -871,7 +880,7 @@ const TechnologyConsequences = () => {
                         <RadioGroupItem value={opt.value} id={`fam-${opt.value}`} />
                         <Label htmlFor={`fam-${opt.value}`} className="font-normal cursor-pointer">
                           <span className="font-medium">{opt.label}</span>
-                          <span className="text-xs text-muted-foreground block">{opt.description}</span>
+                          <span className="text-xs text-tier-4 block">{opt.description}</span>
                         </Label>
                       </div>
                     ))}
@@ -898,7 +907,7 @@ const TechnologyConsequences = () => {
                         <RadioGroupItem value={opt.value} id={`com-${opt.value}`} />
                         <Label htmlFor={`com-${opt.value}`} className="font-normal cursor-pointer">
                           <span className="font-medium">{opt.label}</span>
-                          <span className="text-xs text-muted-foreground block">{opt.description}</span>
+                          <span className="text-xs text-tier-4 block">{opt.description}</span>
                         </Label>
                       </div>
                     ))}
@@ -925,7 +934,7 @@ const TechnologyConsequences = () => {
                         <RadioGroupItem value={opt.value} id={`idt-${opt.value}`} />
                         <Label htmlFor={`idt-${opt.value}`} className="font-normal cursor-pointer">
                           <span className="font-medium">{opt.label}</span>
-                          <span className="text-xs text-muted-foreground block">{opt.description}</span>
+                          <span className="text-xs text-tier-4 block">{opt.description}</span>
                         </Label>
                       </div>
                     ))}
@@ -945,7 +954,8 @@ const TechnologyConsequences = () => {
             {/* Section 5: Political Consequences */}
             <CollapsibleSection
               id="section-political"
-              title="5. Political Consequences"
+              levelNumber={5}
+              title="Political Consequences"
               guidance="Power, surveillance, and governance"
             >
               <div className="space-y-6">
@@ -961,7 +971,7 @@ const TechnologyConsequences = () => {
                         <RadioGroupItem value={opt.value} id={`pow-${opt.value}`} />
                         <Label htmlFor={`pow-${opt.value}`} className="font-normal cursor-pointer">
                           <span className="font-medium">{opt.label}</span>
-                          <span className="text-xs text-muted-foreground block">{opt.description}</span>
+                          <span className="text-xs text-tier-4 block">{opt.description}</span>
                         </Label>
                       </div>
                     ))}
@@ -988,7 +998,7 @@ const TechnologyConsequences = () => {
                         <RadioGroupItem value={opt.value} id={`sur-${opt.value}`} />
                         <Label htmlFor={`sur-${opt.value}`} className="font-normal cursor-pointer">
                           <span className="font-medium">{opt.label}</span>
-                          <span className="text-xs text-muted-foreground block">{opt.description}</span>
+                          <span className="text-xs text-tier-4 block">{opt.description}</span>
                         </Label>
                       </div>
                     ))}
@@ -1015,7 +1025,7 @@ const TechnologyConsequences = () => {
                         <RadioGroupItem value={opt.value} id={`gov-${opt.value}`} />
                         <Label htmlFor={`gov-${opt.value}`} className="font-normal cursor-pointer">
                           <span className="font-medium">{opt.label}</span>
-                          <span className="text-xs text-muted-foreground block">{opt.description}</span>
+                          <span className="text-xs text-tier-4 block">{opt.description}</span>
                         </Label>
                       </div>
                     ))}
@@ -1035,7 +1045,8 @@ const TechnologyConsequences = () => {
             {/* Section 6: Military Consequences */}
             <CollapsibleSection
               id="section-military"
-              title="6. Military Consequences"
+              levelNumber={6}
+              title="Military Consequences"
               guidance="Warfare, defense, and deterrence"
             >
               <div className="space-y-6">
@@ -1051,7 +1062,7 @@ const TechnologyConsequences = () => {
                         <RadioGroupItem value={opt.value} id={`war-${opt.value}`} />
                         <Label htmlFor={`war-${opt.value}`} className="font-normal cursor-pointer">
                           <span className="font-medium">{opt.label}</span>
-                          <span className="text-xs text-muted-foreground block">{opt.description}</span>
+                          <span className="text-xs text-tier-4 block">{opt.description}</span>
                         </Label>
                       </div>
                     ))}
@@ -1078,7 +1089,7 @@ const TechnologyConsequences = () => {
                         <RadioGroupItem value={opt.value} id={`def-${opt.value}`} />
                         <Label htmlFor={`def-${opt.value}`} className="font-normal cursor-pointer">
                           <span className="font-medium">{opt.label}</span>
-                          <span className="text-xs text-muted-foreground block">{opt.description}</span>
+                          <span className="text-xs text-tier-4 block">{opt.description}</span>
                         </Label>
                       </div>
                     ))}
@@ -1105,7 +1116,7 @@ const TechnologyConsequences = () => {
                         <RadioGroupItem value={opt.value} id={`det-${opt.value}`} />
                         <Label htmlFor={`det-${opt.value}`} className="font-normal cursor-pointer">
                           <span className="font-medium">{opt.label}</span>
-                          <span className="text-xs text-muted-foreground block">{opt.description}</span>
+                          <span className="text-xs text-tier-4 block">{opt.description}</span>
                         </Label>
                       </div>
                     ))}
@@ -1125,7 +1136,8 @@ const TechnologyConsequences = () => {
             {/* Section 7: Psychological Consequences */}
             <CollapsibleSection
               id="section-psychological"
-              title="7. Psychological Consequences"
+              levelNumber={7}
+              title="Psychological Consequences"
               guidance="Perception, values, and fears"
             >
               <div className="space-y-6">
@@ -1141,7 +1153,7 @@ const TechnologyConsequences = () => {
                         <RadioGroupItem value={opt.value} id={`per-${opt.value}`} />
                         <Label htmlFor={`per-${opt.value}`} className="font-normal cursor-pointer">
                           <span className="font-medium">{opt.label}</span>
-                          <span className="text-xs text-muted-foreground block">{opt.description}</span>
+                          <span className="text-xs text-tier-4 block">{opt.description}</span>
                         </Label>
                       </div>
                     ))}
@@ -1168,7 +1180,7 @@ const TechnologyConsequences = () => {
                         <RadioGroupItem value={opt.value} id={`val-${opt.value}`} />
                         <Label htmlFor={`val-${opt.value}`} className="font-normal cursor-pointer">
                           <span className="font-medium">{opt.label}</span>
-                          <span className="text-xs text-muted-foreground block">{opt.description}</span>
+                          <span className="text-xs text-tier-4 block">{opt.description}</span>
                         </Label>
                       </div>
                     ))}
@@ -1195,7 +1207,7 @@ const TechnologyConsequences = () => {
                         <RadioGroupItem value={opt.value} id={`fea-${opt.value}`} />
                         <Label htmlFor={`fea-${opt.value}`} className="font-normal cursor-pointer">
                           <span className="font-medium">{opt.label}</span>
-                          <span className="text-xs text-muted-foreground block">{opt.description}</span>
+                          <span className="text-xs text-tier-4 block">{opt.description}</span>
                         </Label>
                       </div>
                     ))}
@@ -1229,7 +1241,7 @@ const TechnologyConsequences = () => {
                     </CardHeader>
                     <CardContent className="space-y-2">
                       <p className="text-sm">{example.description}</p>
-                      <p className="text-xs text-muted-foreground italic">{example.consequences}</p>
+                      <p className="text-xs text-tier-4 italic">{example.consequences}</p>
                     </CardContent>
                   </Card>
                 ))}
@@ -1351,15 +1363,13 @@ const TechnologyConsequences = () => {
               </div>
             </CollapsibleSection>
 
-          </div>
-
-          {/* Sidebars */}
-          <ToolSidebar>
-            <SectionNavigation sections={SECTIONS} />
-          </ToolSidebar>
-
-          <KeyChoicesSidebar sections={keyChoicesSections} />
         </div>
+
+        {/* Sidebars */}
+        <ToolSidebar>
+          <SectionNavigation sections={SECTIONS} mode="inline" />
+          <KeyChoicesSidebar sections={keyChoicesSections} mode="inline" />
+        </ToolSidebar>
       </main>
 
       <WorksheetNotesSheet

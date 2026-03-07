@@ -100,7 +100,7 @@ const PropulsionMockup = () => {
       <div className="flex-1 flex items-center justify-center relative">
         {/* Central propulsion node */}
         <div
-          className="w-16 h-16 rounded-full border-2 flex items-center justify-center z-10 transition-all duration-500"
+          className="w-16 h-16 border-2 flex items-center justify-center z-10 transition-all duration-500"
           style={{
             borderColor: `hsl(var(--${propulsionTypes[activeType].color}))`,
             backgroundColor: `hsl(var(--${propulsionTypes[activeType].color}) / 0.1)`,

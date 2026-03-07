@@ -670,3 +670,18 @@ export const HZ_MODIFIERS = [
     description: "Shields atmosphere from stellar wind stripping",
   },
 ];
+
+// Numeric defaults for each spectral class, used for HZ calculations and diagrams.
+// Values are representative midpoints (geometric mean) of the ranges in SPECTRAL_CLASSES.
+// spectralLetter maps to SPECTRAL_COLORS keys used by OrbitalDiagram.
+export const SPECTRAL_CLASS_NUMERIC_DEFAULTS: Record<string, { luminosity: number; mass: number; spectralLetter: string }> = {
+  "o-type":       { luminosity: 170000,  mass: 40,   spectralLetter: "O" },
+  "b-type":       { luminosity: 870,     mass: 10,   spectralLetter: "B" },
+  "a-type":       { luminosity: 11,      mass: 2.5,  spectralLetter: "A" },
+  "f-type":       { luminosity: 2.7,     mass: 1.4,  spectralLetter: "F" },
+  "g-type":       { luminosity: 1.0,     mass: 1.0,  spectralLetter: "G" },
+  "k-type":       { luminosity: 0.22,    mass: 0.7,  spectralLetter: "K" },
+  "m-type":       { luminosity: 0.003,   mass: 0.3,  spectralLetter: "M" },
+  "white-dwarf":  { luminosity: 0.003,   mass: 0.6,  spectralLetter: "G" },
+  "neutron-star": { luminosity: 0,       mass: 1.4,  spectralLetter: "G" },
+};

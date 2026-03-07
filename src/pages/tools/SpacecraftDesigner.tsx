@@ -37,6 +37,7 @@ import ToolSidebar from "@/components/tools/ToolSidebar";
 import CollapsibleSection from "@/components/tools/CollapsibleSection";
 import KeyChoicesSidebar, { KeyChoicesSection, MobileKeyChoices } from "@/components/tools/KeyChoicesSidebar";
 import ToolActionBar from "@/components/tools/ToolActionBar";
+import { ToolPageQuote } from "@/components/quotes/ToolPageQuote";
 import QuickExportButton from "@/components/tools/QuickExportButton";
 import ExportDialog from "@/components/tools/ExportDialog";
 import ShareDialog from "@/components/sharing/ShareDialog";
@@ -592,11 +593,13 @@ const SpacecraftDesigner = () => {
         {/* Back Link */}
         <Link
           to={worldId ? `/worlds/${worldId}` : "/"}
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
+          className="inline-flex items-center gap-2 text-sm text-tier-3 hover:text-foreground transition-colors mb-6"
         >
           <ArrowLeft className="w-4 h-4" />
           {worldId ? "Back to World" : "Back to Dashboard"}
         </Link>
+
+        <ToolPageQuote toolId="spacecraft-designer" />
 
         {/* Action Bar */}
         <ToolActionBar
@@ -622,6 +625,8 @@ const SpacecraftDesigner = () => {
               defaultFilename={`spacecraft-${formState.identity.name || "unnamed"}`}
             />
           }
+          worldId={worldId}
+          worksheetId={currentWorksheetId || worksheetId}
         />
 
         {/* Title */}
@@ -634,7 +639,7 @@ const SpacecraftDesigner = () => {
               <span className="font-light">Lived-In Spacecraft Designer</span>
             </h1>
           </div>
-          <p className="text-muted-foreground mt-2 max-w-2xl">
+          <p className="text-tier-2 mt-2 max-w-2xl">
             Design ships that feel inhabited rather than sterile—with cultural context, life support realities, and ship-as-character development.
           </p>
           {(currentWorksheetId || worksheetId) && (
@@ -658,16 +663,16 @@ const SpacecraftDesigner = () => {
 
         {/* Introduction */}
         <GlassPanel glow className="p-6 md:p-8 mb-8">
-          <h2 className="font-heading text-xl font-semibold mb-4 gradient-text">
+          <h2 className="font-heading text-xl font-light uppercase tracking-[2px] mb-4 gradient-text">
             Ships as Characters
           </h2>
           <blockquote className="border-l-2 border-primary pl-4 italic text-lg mb-4">
             "The best SF ships aren't just vehicles—they're places people live, with all the mess, personality, and history that implies."
           </blockquote>
-          <p className="text-muted-foreground mb-4">
+          <p className="text-tier-2 mb-4">
             A lived-in ship tells stories through its details: the worn patch on the pilot's seat, the coffee stains near the nav console, the shrine in the cargo bay. This tool helps you design vessels that feel real.
           </p>
-          <div className="text-sm text-muted-foreground mb-4">
+          <div className="text-sm text-tier-3 mb-4">
             <strong className="text-foreground">The Lived-In Principle:</strong>
             <p className="mt-1">Function → Culture → Personalization → History → Character</p>
           </div>
@@ -712,7 +717,7 @@ const SpacecraftDesigner = () => {
                     value={formState.identity.name}
                     onChange={(e) => updateIdentity("name", e.target.value)}
                   />
-                  <p className="text-xs text-muted-foreground">Names carry meaning—what does this one suggest?</p>
+                  <p className="text-xs text-tier-4">Names carry meaning—what does this one suggest?</p>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="age">Ship Age</Label>
@@ -738,7 +743,7 @@ const SpacecraftDesigner = () => {
                       <RadioGroupItem value={cls.value} id={`class-${cls.value}`} className="mt-0.5" />
                       <Label htmlFor={`class-${cls.value}`} className="cursor-pointer text-sm">
                         <span className="font-medium">{cls.label}</span>
-                        <span className="text-muted-foreground block text-xs">{cls.description}</span>
+                        <span className="text-tier-2 block text-xs">{cls.description}</span>
                       </Label>
                     </div>
                   ))}
@@ -791,7 +796,7 @@ const SpacecraftDesigner = () => {
                       <RadioGroupItem value={size.value} id={`size-${size.value}`} className="mt-0.5" />
                       <Label htmlFor={`size-${size.value}`} className="cursor-pointer text-sm">
                         <span className="font-medium">{size.label}</span>
-                        <span className="text-muted-foreground block text-xs">{size.description}</span>
+                        <span className="text-tier-2 block text-xs">{size.description}</span>
                       </Label>
                     </div>
                   ))}
@@ -845,7 +850,7 @@ const SpacecraftDesigner = () => {
           >
             <div className="space-y-6">
               <div className="p-4 rounded-lg bg-accent/10 border border-accent/20">
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-tier-3">
                   <strong className="text-accent">Link to Tool 3:</strong> If you've completed the Propulsion Consequences Map, use your propulsion system here. The drive type fundamentally shapes ship architecture and crew life.
                 </p>
               </div>
@@ -1027,7 +1032,7 @@ const SpacecraftDesigner = () => {
                       <RadioGroupItem value={option.value} id={`gravity-${option.value}`} className="mt-0.5" />
                       <Label htmlFor={`gravity-${option.value}`} className="cursor-pointer text-sm">
                         <span className="font-medium">{option.label}</span>
-                        <span className="text-muted-foreground block text-xs">{option.description}</span>
+                        <span className="text-tier-2 block text-xs">{option.description}</span>
                       </Label>
                     </div>
                   ))}
@@ -1441,7 +1446,7 @@ const SpacecraftDesigner = () => {
                   <CollapsibleTrigger asChild>
                     <button type="button" className="w-full p-4 rounded-lg border border-border hover:border-primary/50 transition-colors text-left flex items-center justify-between">
                       <span className="font-medium text-sm">{example.title}</span>
-                      <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                      <ChevronDown className="w-4 h-4 text-tier-2" />
                     </button>
                   </CollapsibleTrigger>
                   <CollapsibleContent>
@@ -1449,7 +1454,7 @@ const SpacecraftDesigner = () => {
                       {example.aspects.map((aspect, i) => (
                         <div key={i}>
                           <span className="text-sm font-medium text-primary">{aspect.label}:</span>
-                          <p className="text-sm text-muted-foreground">{aspect.value}</p>
+                          <p className="text-sm text-tier-3">{aspect.value}</p>
                         </div>
                       ))}
                     </div>
@@ -1494,7 +1499,7 @@ const SpacecraftDesigner = () => {
                 <Label htmlFor="sensory-signature" className="text-sm font-medium">
                   Sensory Signature (One Paragraph)
                 </Label>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-tier-4">
                   Write a paragraph describing what it's like to step aboard this ship for the first time—sight, sound, smell, feel.
                 </p>
                 <Suspense fallback={<div className="min-h-[150px] rounded-md border border-border bg-background/50 animate-pulse" />}>

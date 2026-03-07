@@ -7,6 +7,7 @@ import {
   PDFKeyValuePair,
   PDFResultBox,
 } from "../components";
+import { deepStripHtml } from "@/lib/html-utils";
 
 interface FormState {
   foundations: {
@@ -153,10 +154,11 @@ const TextBlock = ({ label, value }: { label: string; value?: string }) => {
 };
 
 const EvolutionaryFullReportTemplate = ({
-  formState,
+  formState: rawFormState,
   worldName,
   date,
 }: EvolutionaryFullReportTemplateProps) => {
+  const formState = deepStripHtml(rawFormState);
   const foundations = formState?.foundations;
   const biochemistry = formState?.biochemistry;
   const adaptations = formState?.adaptations;
@@ -179,7 +181,7 @@ const EvolutionaryFullReportTemplate = ({
       {/* Page 1: Overview & Foundations */}
       <Page size="LETTER" style={styles.page}>
         <PDFHeader
-          toolName="Evolutionary Biology"
+          toolName="Phylo"
           worldName={worldName}
           date={date}
         />
@@ -243,7 +245,7 @@ const EvolutionaryFullReportTemplate = ({
       {/* Page 2: Adaptations & Body Plan */}
       <Page size="LETTER" style={styles.page}>
         <PDFHeader
-          toolName="Evolutionary Biology"
+          toolName="Phylo"
           worldName={worldName}
           date={date}
         />
@@ -318,7 +320,7 @@ const EvolutionaryFullReportTemplate = ({
       {/* Page 3: Sensory & Reproduction */}
       <Page size="LETTER" style={styles.page}>
         <PDFHeader
-          toolName="Evolutionary Biology"
+          toolName="Phylo"
           worldName={worldName}
           date={date}
         />
@@ -399,7 +401,7 @@ const EvolutionaryFullReportTemplate = ({
       {/* Page 4: Social & Cognition */}
       <Page size="LETTER" style={styles.page}>
         <PDFHeader
-          toolName="Evolutionary Biology"
+          toolName="Phylo"
           worldName={worldName}
           date={date}
         />
@@ -464,7 +466,7 @@ const EvolutionaryFullReportTemplate = ({
       {/* Page 5: Communication & Psychology */}
       <Page size="LETTER" style={styles.page}>
         <PDFHeader
-          toolName="Evolutionary Biology"
+          toolName="Phylo"
           worldName={worldName}
           date={date}
         />
@@ -524,7 +526,7 @@ const EvolutionaryFullReportTemplate = ({
       {/* Page 6: Vestigial, Viewpoint, Integration */}
       <Page size="LETTER" style={styles.page}>
         <PDFHeader
-          toolName="Evolutionary Biology"
+          toolName="Phylo"
           worldName={worldName}
           date={date}
         />

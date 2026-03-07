@@ -1,5 +1,5 @@
 import {
-  Crown,
+  Zap,
   Check,
   Clock,
   Rocket,
@@ -17,7 +17,7 @@ const freeTools = [
   {
     id: "environmental-chain-reaction",
     title: "Cascade: Environmental Chain Reaction",
-    description: "Map how planetary parameters cascade into biology, psychology, culture, and mythology.",
+    description: "Map how planetary parameters cascade into biology, psychology, mythology, and culture.",
     status: "available",
   },
   {
@@ -116,7 +116,7 @@ const proTools = [
   {
     id: "surface-gravity-calculator",
     title: "Atlas: Surface Gravity Calculator",
-    description: "Calculate surface gravity for any planet and trace how weight shapes biology, psychology, culture, and mythology.",
+    description: "Calculate surface gravity for any planet and trace how weight shapes biology, psychology, mythology, and culture.",
     status: "available",
   },
   {
@@ -201,7 +201,7 @@ const ToolPreviewCard = ({ id, title, description, status, isPro }: ToolPreviewC
         <div className="flex gap-2">
           {isPro && (
             <Badge variant="secondary" className="text-xs bg-amber-500/20 text-amber-600 dark:text-amber-400 sf-shimmer">
-              <Crown className="w-3 h-3 mr-1" />
+              <Zap className="w-3 h-3 mr-1" />
               Pro
             </Badge>
           )}
@@ -263,7 +263,7 @@ const ToolShowcase = () => {
         >
           <h2 className="font-heading font-light text-2xl uppercase tracking-sf-wide">Pro Tools</h2>
           <Badge variant="secondary" className="bg-amber-500/20 text-amber-600 dark:text-amber-400 sf-badge-enter">
-            <Crown className="w-3 h-3 mr-1" />
+            <Zap className="w-3 h-3 mr-1" />
             27 Tools
           </Badge>
         </motion.div>
@@ -293,7 +293,7 @@ const ToolShowcase = () => {
         >
           <h2 className="font-heading font-light text-2xl uppercase tracking-sf-wide">Simulators</h2>
           <Badge variant="secondary" className="bg-amber-500/20 text-amber-600 dark:text-amber-400 sf-badge-enter">
-            <Crown className="w-3 h-3 mr-1" />
+            <Zap className="w-3 h-3 mr-1" />
             Pro
           </Badge>
         </motion.div>
@@ -312,7 +312,7 @@ const ToolShowcase = () => {
                     <img src="/icons/035-black hole.svg" alt="" className="w-8 h-8" draggable={false} />
                   </div>
                   <Badge variant="secondary" className="text-xs bg-amber-500/20 text-amber-600 dark:text-amber-400">
-                    <Crown className="w-3 h-3 mr-1" />
+                    <Zap className="w-3 h-3 mr-1" />
                     Pro
                   </Badge>
                 </div>
@@ -329,7 +329,7 @@ const ToolShowcase = () => {
                     <img src="/icons/044-day and night.svg" alt="" className="w-8 h-8" draggable={false} />
                   </div>
                   <Badge variant="secondary" className="text-xs bg-amber-500/20 text-amber-600 dark:text-amber-400">
-                    <Crown className="w-3 h-3 mr-1" />
+                    <Zap className="w-3 h-3 mr-1" />
                     Pro
                   </Badge>
                 </div>
@@ -346,7 +346,7 @@ const ToolShowcase = () => {
                     <img src="/icons/016-constellation.svg" alt="" className="w-8 h-8" draggable={false} />
                   </div>
                   <Badge variant="secondary" className="text-xs bg-amber-500/20 text-amber-600 dark:text-amber-400">
-                    <Crown className="w-3 h-3 mr-1" />
+                    <Zap className="w-3 h-3 mr-1" />
                     Pro
                   </Badge>
                 </div>
@@ -410,7 +410,7 @@ const ToolShowcase = () => {
         variants={scrollReveal}
       >
         <Button size="lg" className="gap-2" asChild>
-          <Link to="/auth?tab=signup">
+          <Link to="/auth">
             <Rocket className="w-4 h-4" />
             BEGIN
           </Link>
