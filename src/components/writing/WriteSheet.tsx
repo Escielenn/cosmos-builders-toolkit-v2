@@ -297,10 +297,18 @@ export function WriteSheet({
                 className={cn(
                   "w-full bg-transparent border-0 border-b border-white/[0.06] focus:border-primary/30 outline-none font-display uppercase tracking-sf-title text-tier-1 placeholder:text-tier-5 transition-all duration-500 ease-out pb-3",
                   isWriting
-                    ? "text-lg md:text-xl mb-4"
-                    : "text-3xl md:text-5xl mb-8"
+                    ? "text-lg md:text-xl mb-2"
+                    : "text-3xl md:text-5xl mb-3"
                 )}
               />
+              {prompt && (
+                <p className={cn(
+                  "text-tier-3 italic leading-relaxed transition-all duration-500 ease-out",
+                  isWriting ? "text-xs mb-4" : "text-sm mb-8"
+                )}>
+                  {prompt.prompt}
+                </p>
+              )}
             </div>
 
             {/* Metadata row — world selector, prompt badge */}
@@ -354,20 +362,6 @@ export function WriteSheet({
                 />
               </div>
             </div>
-
-            {/* Prompt context */}
-            {prompt && (
-              <div
-                className={cn(
-                  "bg-white/[0.03] border border-white/[0.06] p-3 rounded-xs transition-all duration-300",
-                  isWriting ? "mb-4" : "mb-6"
-                )}
-              >
-                <p className="text-xs text-tier-3 italic leading-relaxed line-clamp-2">
-                  {prompt.prompt}
-                </p>
-              </div>
-            )}
 
             {/* Editor */}
             <Suspense
