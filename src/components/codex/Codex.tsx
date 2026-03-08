@@ -51,6 +51,7 @@ const TOOL_ROUTES: Record<string, string> = {
   "timeline": "timeline",
   "sensorium": "sensorium",
   "gravitas": "gravitas",
+  "kardashev-scale": "kardashev-scale",
 };
 
 // ---------------------------------------------------------------------------
@@ -265,20 +266,35 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
   );
 
   const handleReorder = useCallback(
-    (activeId: string, overId: string) => {
+    (activeId: string, overId: string, dropIntoFolder?: string | null) => {
       const entries = codexData?.customEntries ?? [];
-      const oldIndex = entries.findIndex((e) => e.id === activeId);
-      const newIndex = entries.findIndex((e) => e.id === overId);
+      const entry = entries.find((e) => e.id === activeId);
+      if (!entry?.entryId) return;
+
+      // Dropping into a folder — move entry under that parent
+      if (dropIntoFolder) {
+        const folderEl = entries.find((e) => e.id === dropIntoFolder);
+        if (folderEl?.entryId) {
+          moveEntry.mutate({
+            entryId: entry.entryId,
+            newParentId: folderEl.entryId,
+            newSortOrder: 0,
+          });
+        }
+        return;
+      }
+
+      // Normal sibling reorder
+      const topLevel = entries.filter((e) => (e.depth ?? 0) === 0);
+      const oldIndex = topLevel.findIndex((e) => e.id === activeId);
+      const newIndex = topLevel.findIndex((e) => e.id === overId);
       if (oldIndex === -1 || newIndex === -1) return;
 
-      const entry = entries[oldIndex];
-      if (entry.entryId) {
-        moveEntry.mutate({
-          entryId: entry.entryId,
-          newParentId: null,
-          newSortOrder: newIndex,
-        });
-      }
+      moveEntry.mutate({
+        entryId: entry.entryId,
+        newParentId: null,
+        newSortOrder: newIndex,
+      });
     },
     [codexData?.customEntries, moveEntry]
   );

@@ -34,6 +34,7 @@ const ICON_FILES: Record<string, string> = {
   "sensorium": "006-eye-scan.svg",
   "gravitas": "045-planet.svg",
   "stellar-cartographer": "003-map.svg",
+  "kardashev-scale": "011-sun.svg",
 };
 
 function createImgIcon(filename: string): React.FC<ToolIconProps> {

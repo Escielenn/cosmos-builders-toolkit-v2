@@ -41,7 +41,7 @@ const RecentArticles = () => {
       >
         <h2 className="font-heading font-light text-2xl uppercase tracking-sf-wide flex items-center gap-3">
           <BookOpen className="w-5 h-5 text-primary" />
-          Latest from Learn
+          Latest from SF University
         </h2>
         <Link
           to="/learn"

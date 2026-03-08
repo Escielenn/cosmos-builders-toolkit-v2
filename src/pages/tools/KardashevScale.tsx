@@ -39,7 +39,6 @@ import {
   useWorksheets,
   useWorksheet,
   useWorksheetsByType,
-  useRenameWorksheet,
 } from "@/hooks/use-worksheets";
 import { WorksheetTitle } from "@/components/tools/WorksheetTitle";
 import { getToolIcon } from "@/components/icons/tool-icons";
@@ -185,9 +184,7 @@ const KardashevScale = () => {
     TOOL_TYPE,
     worldId
   );
-  const worksheetsByType = useWorksheetsByType(TOOL_TYPE, worldId);
-  const renameWorksheet = useRenameWorksheet();
-
+  const worksheetsByType = useWorksheetsByType(worldId, TOOL_TYPE);
   // Load worksheet
   const requestedWorksheetId = searchParams.get("worksheetId");
   const { data: loadedWorksheet } = useWorksheet(requestedWorksheetId);
