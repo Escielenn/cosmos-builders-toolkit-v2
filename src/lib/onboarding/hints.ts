@@ -19,7 +19,7 @@ export const HINTS: Record<string, HintDef> = {
   },
   codex: {
     id: "codex",
-    copy: "CODEX ACTIVE: This panel indexes all world elements across cascade layers. Click entries to navigate. Use the view toggle below to set Wiki or Tool mode.",
+    copy: "REGISTRY ACTIVE: This panel indexes all world elements across cascade layers. Click entries to navigate. Use the view toggle below to set Wiki or Tool mode.",
     variant: "compact",
   },
   chronicle: {

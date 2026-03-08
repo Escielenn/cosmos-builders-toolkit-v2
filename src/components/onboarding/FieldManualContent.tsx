@@ -60,7 +60,7 @@ export function FieldManualContent() {
     <>
       <ManualDivider label="Navigation Systems" />
 
-      <ManualSection title="Codex">
+      <ManualSection title="Registry">
         <p>
           Primary world index. Tracks all elements across seven cascade
           layers—environment, biology, psychology, culture, mythology,
@@ -74,7 +74,7 @@ export function FieldManualContent() {
 
       <ManualSection title="Default View">
         <p>
-          Codex footer toggle. TOOL mode opens the worksheet editor.
+          Registry footer toggle. TOOL mode opens the worksheet editor.
           WIKI mode opens the encyclopedia page. Setting persists per world.
           Custom entries without a tool source default to wiki.
         </p>

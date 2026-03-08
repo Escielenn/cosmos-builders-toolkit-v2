@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo } from "react";
-import { ChevronRight, ChevronDown, Plus } from "lucide-react";
+import { ChevronRight, ChevronDown, Plus, GripVertical } from "lucide-react";
 import {
   DndContext,
   closestCenter,
@@ -7,7 +7,9 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
+  DragOverlay,
   type DragEndEvent,
+  type DragStartEvent,
 } from "@dnd-kit/core";
 import {
   SortableContext,
@@ -15,6 +17,10 @@ import {
   verticalListSortingStrategy,
   useSortable,
 } from "@dnd-kit/sortable";
+import {
+  restrictToVerticalAxis,
+  restrictToParentElement,
+} from "@dnd-kit/modifiers";
 import { CSS } from "@dnd-kit/utilities";
 import CodexElementRow from "./CodexElementRow";
 import CodexContextMenu from "./CodexContextMenu";
@@ -35,7 +41,7 @@ interface CodexCustomSectionProps {
   onCreateEntry: () => void;
 }
 
-// Sortable wrapper for each element row
+// Sortable wrapper for each element row — drag handle only
 const SortableRow = ({
   element,
   isLast,
@@ -77,35 +83,60 @@ const SortableRow = ({
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    opacity: isDragging ? 0.5 : 1,
+    opacity: isDragging ? 0.3 : 1,
+    zIndex: isDragging ? 50 : undefined,
   };
 
   return (
-    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
-      <CodexContextMenu
-        element={element}
-        onOpenWiki={onOpenWiki}
-        onOpenTool={onOpenTool}
-        onDelete={onDelete}
-        onRename={onRename && element.kind === "entry" ? () => onTriggerRename?.(element.id) : undefined}
-        onSticky={onSticky}
-        isPinned={isPinned}
+    <div ref={setNodeRef} style={style} className="group/sortable flex items-center">
+      {/* Drag handle — only this triggers drag */}
+      <button
+        type="button"
+        className="shrink-0 p-0.5 cursor-grab active:cursor-grabbing text-tier-5 opacity-0 group-hover/sortable:opacity-100 transition-opacity touch-none"
+        {...attributes}
+        {...listeners}
+        tabIndex={-1}
+        aria-label="Drag to reorder"
       >
-        <CodexElementRow
+        <GripVertical className="w-3 h-3" />
+      </button>
+
+      <div className="flex-1 min-w-0">
+        <CodexContextMenu
           element={element}
-          depth={(element.depth ?? 0) + 1}
-          isLast={isLast}
-          isActive={isActive}
+          onOpenWiki={onOpenWiki}
+          onOpenTool={onOpenTool}
+          onDelete={onDelete}
+          onRename={onRename && element.kind === "entry" ? () => onTriggerRename?.(element.id) : undefined}
+          onSticky={onSticky}
           isPinned={isPinned}
-          onClick={onElementClick}
-          onRename={onRename}
-          isRenaming={isRenaming}
-          onRenameComplete={onRenameComplete}
-        />
-      </CodexContextMenu>
+        >
+          <CodexElementRow
+            element={element}
+            depth={(element.depth ?? 0) + 1}
+            isLast={isLast}
+            isActive={isActive}
+            isPinned={isPinned}
+            onClick={onElementClick}
+            onRename={onRename}
+            isRenaming={isRenaming}
+            onRenameComplete={onRenameComplete}
+          />
+        </CodexContextMenu>
+      </div>
     </div>
   );
 };
+
+// Static preview row shown in DragOverlay (no interactivity needed)
+const DragPreviewRow = ({ element }: { element: CodexElement }) => (
+  <div className="flex items-center gap-1.5 px-3 py-[3px] bg-sf-surface-elevated border border-primary/20 shadow-lg shadow-primary/5">
+    <GripVertical className="w-3 h-3 text-primary/60 shrink-0" />
+    <span className="text-[12px] text-foreground/90 truncate">
+      {element.title}
+    </span>
+  </div>
+);
 
 const CodexCustomSection = ({
   elements,
@@ -123,6 +154,7 @@ const CodexCustomSection = ({
 }: CodexCustomSectionProps) => {
   const [expanded, setExpanded] = useState(true);
   const [renamingId, setRenamingId] = useState<string | null>(null);
+  const [draggingId, setDraggingId] = useState<string | null>(null);
 
   // Sort pinned items first
   const sortedElements = useMemo(() => {
@@ -139,12 +171,17 @@ const CodexCustomSection = ({
   const toggle = useCallback(() => setExpanded((prev) => !prev), []);
 
   const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   );
 
+  const handleDragStart = useCallback((event: DragStartEvent) => {
+    setDraggingId(event.active.id as string);
+  }, []);
+
   const handleDragEnd = useCallback(
     (event: DragEndEvent) => {
+      setDraggingId(null);
       const { active, over } = event;
       if (over && active.id !== over.id && onReorder) {
         onReorder(active.id as string, over.id as string);
@@ -152,6 +189,14 @@ const CodexCustomSection = ({
     },
     [onReorder]
   );
+
+  const handleDragCancel = useCallback(() => {
+    setDraggingId(null);
+  }, []);
+
+  const draggingElement = draggingId
+    ? sortedElements.find((el) => el.id === draggingId)
+    : null;
 
   return (
     <div className="mb-0.5">
@@ -185,7 +230,10 @@ const CodexCustomSection = ({
             <DndContext
               sensors={sensors}
               collisionDetection={closestCenter}
+              modifiers={[restrictToVerticalAxis, restrictToParentElement]}
+              onDragStart={handleDragStart}
               onDragEnd={handleDragEnd}
+              onDragCancel={handleDragCancel}
             >
               <SortableContext
                 items={sortedElements.map((el) => el.id)}
@@ -210,6 +258,12 @@ const CodexCustomSection = ({
                   />
                 ))}
               </SortableContext>
+
+              <DragOverlay dropAnimation={{ duration: 200, easing: "ease" }}>
+                {draggingElement ? (
+                  <DragPreviewRow element={draggingElement} />
+                ) : null}
+              </DragOverlay>
             </DndContext>
           )}
 

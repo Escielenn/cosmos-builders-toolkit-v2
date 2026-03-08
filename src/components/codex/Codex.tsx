@@ -307,7 +307,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
     return (
       <div className="p-3">
         <p className="font-mono text-[10px] uppercase tracking-wider text-destructive/60">
-          Codex unavailable.
+          Registry unavailable.
         </p>
       </div>
     );
@@ -320,7 +320,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
         <button
           onClick={onCollapse}
           className="sf-fill-sweep sf-fill-sweep--secondary w-full flex items-center justify-center h-6 border border-border/15 text-muted-foreground/40 hover:text-foreground/70 transition-colors"
-          aria-label="Collapse Codex"
+          aria-label="Collapse Registry"
         >
           <span className="text-[10px]">◀</span>
         </button>

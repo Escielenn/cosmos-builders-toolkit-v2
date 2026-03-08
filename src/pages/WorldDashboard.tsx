@@ -1,5 +1,5 @@
 import { useParams, Link, useNavigate, useLocation } from "react-router-dom";
-import { ArrowLeft, Edit, Globe, FileText, Rocket, Zap, Trash2, MoreVertical, Calculator, Plus, Sparkles, Pencil, ChevronRight, Dna, Network, Sun, Crown, Cpu, Users, Download, Layers, BookOpen, Atom, Clock, Archive, Tag, Orbit, Languages, Weight, Eye, Camera, Palette, Library } from "lucide-react";
+import { ArrowLeft, Edit, Globe, FileText, Rocket, Zap, Trash2, MoreVertical, Calculator, Plus, Sparkles, Pencil, ChevronRight, Dna, Network, Sun, Crown, Cpu, Users, Download, Layers, BookOpen, Atom, Clock, Archive, Tag, Orbit, Languages, Weight, Eye, Camera, Palette, Library, GripVertical } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
 import { CosmicTelemetry } from "@/components/layout/CosmicVelocityTicker";
 import { EPOCH_DATA } from "@/lib/cosmic-telemetry";
@@ -47,7 +47,28 @@ import { Badge } from "@/components/ui/badge";
 import { useWorlds } from "@/hooks/use-worlds";
 import { getToolIcon as getToolSvgIcon } from "@/components/icons/tool-icons";
 import { useMyWorldRole } from "@/hooks/use-collaborators";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  KeyboardSensor,
+  useSensor,
+  useSensors,
+  DragOverlay,
+  type DragEndEvent,
+  type DragStartEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  rectSortingStrategy,
+  verticalListSortingStrategy,
+  useSortable,
+} from "@dnd-kit/sortable";
+import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
+import { CSS } from "@dnd-kit/utilities";
+import { useToolOrder } from "@/hooks/use-tool-order";
 import WorldHeader from "@/components/world/WorldHeader";
 import WorldNotes from "@/components/world/WorldNotes";
 import IconPicker from "@/components/world/IconPicker";
@@ -207,14 +228,209 @@ const TOOLS = [
   },
 ];
 
-const getToolName = (toolType: string): string => {
-  const tool = TOOLS.find((t) => t.id === toolType);
-  return tool?.name || toolType;
+const DEFAULT_TOOL_ORDER = TOOLS.map((t) => t.id);
+const TOOLS_BY_ID = Object.fromEntries(TOOLS.map((t) => [t.id, t]));
+
+// Sortable tool card for the grid
+const SortableToolCard = ({ tool, worldId }: { tool: typeof TOOLS[number]; worldId: string }) => {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: tool.id });
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.3 : 1,
+    zIndex: isDragging ? 50 : undefined,
+  };
+  const SvgIcon = getToolSvgIcon(tool.id);
+
+  return (
+    <div ref={setNodeRef} style={style} className="group/card relative">
+      <button
+        type="button"
+        className="absolute top-2 right-2 z-10 p-1 cursor-grab active:cursor-grabbing text-tier-5 opacity-0 group-hover/card:opacity-100 transition-opacity touch-none"
+        {...attributes}
+        {...listeners}
+        tabIndex={-1}
+        aria-label="Drag to reorder"
+      >
+        <GripVertical className="w-4 h-4" />
+      </button>
+      <Link to={`${tool.path}?worldId=${worldId}`}>
+        <GlassPanel className="p-5 h-full hover:bg-accent/50 transition-colors cursor-pointer">
+          <div className="flex items-start gap-3">
+            {SvgIcon ? (
+              <SvgIcon className="w-10 h-10 rounded-sm shrink-0" />
+            ) : (
+              <div className="w-10 h-10 rounded-sm bg-primary/20 flex items-center justify-center shrink-0">
+                <tool.icon className="w-5 h-5 text-primary" />
+              </div>
+            )}
+            <div>
+              <h3 className="font-semibold">{tool.name}</h3>
+              <p className="text-sm text-muted-foreground mt-1">{tool.description}</p>
+            </div>
+          </div>
+        </GlassPanel>
+      </Link>
+    </div>
+  );
 };
 
-const getToolIcon = (toolType: string) => {
-  const tool = TOOLS.find((t) => t.id === toolType);
-  return tool?.icon || FileText;
+// Sortable worksheet group
+const SortableWorksheetGroup = ({
+  tool,
+  worksheets: toolWorksheets,
+  worldId,
+  canEdit,
+  isOwner,
+  worksheetEntryMap,
+  onRename,
+  onDelete,
+}: {
+  tool: typeof TOOLS[number];
+  worksheets: any[];
+  worldId: string;
+  canEdit: boolean;
+  isOwner: boolean;
+  worksheetEntryMap: Map<string, string>;
+  onRename: (id: string, title: string) => void;
+  onDelete: (id: string) => void;
+}) => {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: tool.id });
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.3 : 1,
+    zIndex: isDragging ? 50 : undefined,
+  };
+  const SvgIcon = getToolSvgIcon(tool.id);
+
+  return (
+    <div ref={setNodeRef} style={style} className="space-y-3 group/wsgroup">
+      {/* Tool Type Header */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            className="p-0.5 cursor-grab active:cursor-grabbing text-tier-5 opacity-0 group-hover/wsgroup:opacity-100 transition-opacity touch-none"
+            {...attributes}
+            {...listeners}
+            tabIndex={-1}
+            aria-label="Drag to reorder"
+          >
+            <GripVertical className="w-4 h-4" />
+          </button>
+          {SvgIcon ? (
+            <SvgIcon className="w-6 h-6 rounded-sm" />
+          ) : (
+            <tool.icon className="w-5 h-5 text-primary" />
+          )}
+          <h3 className="font-semibold">{tool.name}</h3>
+          <Badge variant="secondary" className="text-xs">
+            {toolWorksheets.length}
+          </Badge>
+        </div>
+        {canEdit && (
+          <Button variant="outline" size="sm" asChild>
+            <Link to={`${tool.path}?worldId=${worldId}`}>
+              <Plus className="w-4 h-4 mr-1" />
+              New
+            </Link>
+          </Button>
+        )}
+      </div>
+
+      {/* Worksheets for this tool type */}
+      <div className="space-y-2 pl-7">
+        {toolWorksheets.map((worksheet: any) => (
+          <GlassPanel
+            key={worksheet.id}
+            className="p-3 flex items-center justify-between"
+          >
+            <div className="flex items-center gap-3 flex-1 min-w-0">
+              <FileText className="w-4 h-4 text-muted-foreground shrink-0" />
+              <div className="min-w-0">
+                <h4 className="font-medium truncate">
+                  {worksheet.title || "Untitled"}
+                </h4>
+                <p className="text-xs text-muted-foreground">
+                  Updated {format(new Date(worksheet.updated_at), "MMM d, yyyy")}
+                </p>
+                {worksheet.tags && worksheet.tags.length > 0 && (
+                  <div className="flex flex-wrap gap-1 mt-1">
+                    {worksheet.tags.slice(0, 4).map((tag: string) => {
+                      const hash = tag.split("").reduce((acc: number, char: string) => acc + char.charCodeAt(0), 0);
+                      return (
+                        <TagBadge key={tag} name={tag} color={getTagColor(hash)} size="sm" />
+                      );
+                    })}
+                    {worksheet.tags.length > 4 && (
+                      <span className="text-xs text-muted-foreground">+{worksheet.tags.length - 4}</span>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className="flex items-center gap-1 shrink-0">
+              {worksheetEntryMap.get(worksheet.id) && (
+                <Button variant="ghost" size="icon" className="h-8 w-8" asChild title="Wiki page">
+                  <Link to={`/worlds/${worldId}/pages/${worksheetEntryMap.get(worksheet.id)}`}>
+                    <BookOpen className="w-3.5 h-3.5" />
+                  </Link>
+                </Button>
+              )}
+              <Button variant="ghost" size="sm" asChild>
+                <Link to={`${tool.path}?worldId=${worldId}&worksheetId=${worksheet.id}`}>
+                  Open
+                  <ChevronRight className="w-4 h-4 ml-1" />
+                </Link>
+              </Button>
+              {canEdit && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon" className="h-8 w-8">
+                      <MoreVertical className="w-4 h-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={() => onRename(worksheet.id, worksheet.title || "Untitled")}>
+                      <Pencil className="w-4 h-4 mr-2" />
+                      Rename
+                    </DropdownMenuItem>
+                    {isOwner && (
+                      <DropdownMenuItem
+                        className="text-destructive"
+                        onClick={() => onDelete(worksheet.id)}
+                      >
+                        <Trash2 className="w-4 h-4 mr-2" />
+                        Delete
+                      </DropdownMenuItem>
+                    )}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
+            </div>
+          </GlassPanel>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// Drag overlay preview for tool cards
+const ToolDragPreview = ({ tool }: { tool: typeof TOOLS[number] }) => {
+  const SvgIcon = getToolSvgIcon(tool.id);
+  return (
+    <div className="bg-sf-surface-elevated border border-primary/20 shadow-lg shadow-primary/10 p-4 flex items-center gap-3 max-w-xs">
+      {SvgIcon ? (
+        <SvgIcon className="w-8 h-8 rounded-sm shrink-0" />
+      ) : (
+        <div className="w-8 h-8 rounded-sm bg-primary/20 flex items-center justify-center shrink-0">
+          <tool.icon className="w-4 h-4 text-primary" />
+        </div>
+      )}
+      <span className="font-semibold text-sm truncate">{tool.name}</span>
+    </div>
+  );
 };
 
 const WorldDashboard = () => {
@@ -230,6 +446,42 @@ const WorldDashboard = () => {
   const { data: role } = useMyWorldRole(worldId);
   const isOwner = role === "owner";
   const canEdit = role === "owner" || role === "editor";
+
+  // Drag-and-drop tool ordering
+  const { order: toolOrder, reorder: reorderTools } = useToolOrder(worldId, DEFAULT_TOOL_ORDER);
+  const orderedTools = useMemo(
+    () => toolOrder.map((id) => TOOLS_BY_ID[id]).filter(Boolean),
+    [toolOrder]
+  );
+  const [draggingToolId, setDraggingToolId] = useState<string | null>(null);
+
+  const dndSensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
+
+  const handleToolDragStart = useCallback((event: DragStartEvent) => {
+    setDraggingToolId(event.active.id as string);
+  }, []);
+
+  const handleToolDragEnd = useCallback(
+    (event: DragEndEvent) => {
+      setDraggingToolId(null);
+      const { active, over } = event;
+      if (over && active.id !== over.id) {
+        const fromIndex = toolOrder.indexOf(active.id as string);
+        const toIndex = toolOrder.indexOf(over.id as string);
+        if (fromIndex !== -1 && toIndex !== -1) {
+          reorderTools(fromIndex, toIndex);
+        }
+      }
+    },
+    [toolOrder, reorderTools]
+  );
+
+  const handleToolDragCancel = useCallback(() => {
+    setDraggingToolId(null);
+  }, []);
 
   // Build worksheetId → entryId map for wiki links
   const entryMapQuery = useQuery({
@@ -617,32 +869,26 @@ const WorldDashboard = () => {
         {/* Tools Grid */}
         <section className="mb-8">
           <h2 className="text-xl font-semibold mb-4">Worldbuilding Tools</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {TOOLS.map((tool) => (
-              <Link key={tool.id} to={`${tool.path}?worldId=${worldId}`}>
-                <GlassPanel className="p-5 h-full hover:bg-accent/50 transition-colors cursor-pointer">
-                  <div className="flex items-start gap-3">
-                    {(() => {
-                      const SvgIcon = getToolSvgIcon(tool.id);
-                      return SvgIcon ? (
-                        <SvgIcon className="w-10 h-10 rounded-sm shrink-0" />
-                      ) : (
-                        <div className="w-10 h-10 rounded-sm bg-primary/20 flex items-center justify-center shrink-0">
-                          <tool.icon className="w-5 h-5 text-primary" />
-                        </div>
-                      );
-                    })()}
-                    <div>
-                      <h3 className="font-semibold">{tool.name}</h3>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        {tool.description}
-                      </p>
-                    </div>
-                  </div>
-                </GlassPanel>
-              </Link>
-            ))}
-          </div>
+          <DndContext
+            sensors={dndSensors}
+            collisionDetection={closestCenter}
+            onDragStart={handleToolDragStart}
+            onDragEnd={handleToolDragEnd}
+            onDragCancel={handleToolDragCancel}
+          >
+            <SortableContext items={toolOrder} strategy={rectSortingStrategy}>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {orderedTools.map((tool) => (
+                  <SortableToolCard key={tool.id} tool={tool} worldId={worldId!} />
+                ))}
+              </div>
+            </SortableContext>
+            <DragOverlay dropAnimation={{ duration: 200, easing: "ease" }}>
+              {draggingToolId && TOOLS_BY_ID[draggingToolId] ? (
+                <ToolDragPreview tool={TOOLS_BY_ID[draggingToolId]} />
+              ) : null}
+            </DragOverlay>
+          </DndContext>
         </section>
 
         {/* Saved Worksheets - Grouped by Tool Type */}
@@ -667,117 +913,44 @@ const WorldDashboard = () => {
               />
             </GlassPanel>
           ) : (
-            <div className="space-y-6">
-              {TOOLS.map((tool) => {
-                const toolWorksheets = worksheetsByType[tool.id] || [];
-                if (toolWorksheets.length === 0) return null;
-
-                const SvgIcon = getToolSvgIcon(tool.id);
-
-                return (
-                  <div key={tool.id} className="space-y-3">
-                    {/* Tool Type Header */}
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        {SvgIcon ? (
-                          <SvgIcon className="w-6 h-6 rounded-sm" />
-                        ) : (
-                          <tool.icon className="w-5 h-5 text-primary" />
-                        )}
-                        <h3 className="font-semibold">{tool.name}</h3>
-                        <Badge variant="secondary" className="text-xs">
-                          {toolWorksheets.length}
-                        </Badge>
-                      </div>
-                      {canEdit && (
-                      <Button variant="outline" size="sm" asChild>
-                        <Link to={`${tool.path}?worldId=${worldId}`}>
-                          <Plus className="w-4 h-4 mr-1" />
-                          New
-                        </Link>
-                      </Button>
-                      )}
-                    </div>
-
-                    {/* Worksheets for this tool type */}
-                    <div className="space-y-2 pl-7">
-                      {toolWorksheets.map((worksheet) => (
-                        <GlassPanel
-                          key={worksheet.id}
-                          className="p-3 flex items-center justify-between"
-                        >
-                          <div className="flex items-center gap-3 flex-1 min-w-0">
-                            <FileText className="w-4 h-4 text-muted-foreground shrink-0" />
-                            <div className="min-w-0">
-                              <h4 className="font-medium truncate">
-                                {worksheet.title || "Untitled"}
-                              </h4>
-                              <p className="text-xs text-muted-foreground">
-                                Updated {format(new Date(worksheet.updated_at), "MMM d, yyyy")}
-                              </p>
-                              {worksheet.tags && worksheet.tags.length > 0 && (
-                                <div className="flex flex-wrap gap-1 mt-1">
-                                  {worksheet.tags.slice(0, 4).map((tag: string) => {
-                                    const hash = tag.split("").reduce((acc: number, char: string) => acc + char.charCodeAt(0), 0);
-                                    return (
-                                      <TagBadge key={tag} name={tag} color={getTagColor(hash)} size="sm" />
-                                    );
-                                  })}
-                                  {worksheet.tags.length > 4 && (
-                                    <span className="text-xs text-muted-foreground">+{worksheet.tags.length - 4}</span>
-                                  )}
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-1 shrink-0">
-                            {worksheetEntryMap.get(worksheet.id) && (
-                              <Button variant="ghost" size="icon" className="h-8 w-8" asChild title="Wiki page">
-                                <Link to={`/worlds/${worldId}/pages/${worksheetEntryMap.get(worksheet.id)}`}>
-                                  <BookOpen className="w-3.5 h-3.5" />
-                                </Link>
-                              </Button>
-                            )}
-                            <Button variant="ghost" size="sm" asChild>
-                              <Link to={`${tool.path}?worldId=${worldId}&worksheetId=${worksheet.id}`}>
-                                Open
-                                <ChevronRight className="w-4 h-4 ml-1" />
-                              </Link>
-                            </Button>
-                            {canEdit && (
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="icon" className="h-8 w-8">
-                                  <MoreVertical className="w-4 h-4" />
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end">
-                                <DropdownMenuItem
-                                  onClick={() => openRenameDialog(worksheet.id, worksheet.title || "Untitled")}
-                                >
-                                  <Pencil className="w-4 h-4 mr-2" />
-                                  Rename
-                                </DropdownMenuItem>
-                                {isOwner && (
-                                <DropdownMenuItem
-                                  className="text-destructive"
-                                  onClick={() => setWorksheetToDelete(worksheet.id)}
-                                >
-                                  <Trash2 className="w-4 h-4 mr-2" />
-                                  Delete
-                                </DropdownMenuItem>
-                                )}
-                              </DropdownMenuContent>
-                            </DropdownMenu>
-                            )}
-                          </div>
-                        </GlassPanel>
-                      ))}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+            <DndContext
+              sensors={dndSensors}
+              collisionDetection={closestCenter}
+              modifiers={[restrictToVerticalAxis]}
+              onDragStart={handleToolDragStart}
+              onDragEnd={handleToolDragEnd}
+              onDragCancel={handleToolDragCancel}
+            >
+              <SortableContext
+                items={toolOrder.filter((id) => (worksheetsByType[id] || []).length > 0)}
+                strategy={verticalListSortingStrategy}
+              >
+                <div className="space-y-6">
+                  {orderedTools.map((tool) => {
+                    const toolWorksheets = worksheetsByType[tool.id] || [];
+                    if (toolWorksheets.length === 0) return null;
+                    return (
+                      <SortableWorksheetGroup
+                        key={tool.id}
+                        tool={tool}
+                        worksheets={toolWorksheets}
+                        worldId={worldId!}
+                        canEdit={canEdit}
+                        isOwner={isOwner}
+                        worksheetEntryMap={worksheetEntryMap}
+                        onRename={openRenameDialog}
+                        onDelete={setWorksheetToDelete}
+                      />
+                    );
+                  })}
+                </div>
+              </SortableContext>
+              <DragOverlay dropAnimation={{ duration: 200, easing: "ease" }}>
+                {draggingToolId && TOOLS_BY_ID[draggingToolId] ? (
+                  <ToolDragPreview tool={TOOLS_BY_ID[draggingToolId]} />
+                ) : null}
+              </DragOverlay>
+            </DndContext>
           )}
         </section>
     </>
