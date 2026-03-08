@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useRef } from "react";
 import { ChevronRight, ChevronDown, Plus, GripVertical, Folder } from "lucide-react";
 import {
   DndContext,
@@ -259,6 +259,7 @@ const CodexCustomSection = ({
   const [renamingId, setRenamingId] = useState<string | null>(null);
   const [draggingId, setDraggingId] = useState<string | null>(null);
   const [folderDropTargetId, setFolderDropTargetId] = useState<string | null>(null);
+  const folderDropRef = useRef<string | null>(null);
 
   // Track which folders are expanded — persist per session
   const [expandedFolders, setExpandedFolders] = useState<Set<string>>(() => new Set());
@@ -336,14 +337,16 @@ const CodexCustomSection = ({
 
   const handleDragStart = useCallback((event: DragStartEvent) => {
     setDraggingId(event.active.id as string);
+    folderDropRef.current = null;
     setFolderDropTargetId(null);
   }, []);
 
-  // Detect when dragging over a folder
+  // Detect when dragging over a folder — use ref to survive re-renders
   const handleDragOver = useCallback(
     (event: DragOverEvent) => {
       const { over, active } = event;
       if (!over || !active) {
+        folderDropRef.current = null;
         setFolderDropTargetId(null);
         return;
       }
@@ -353,11 +356,14 @@ const CodexCustomSection = ({
 
       // Find the element being hovered over
       const overEl = sortedTopLevel.find((el) => el.id === overId);
+      const activeEl = sortedTopLevel.find((el) => el.id === activeId);
 
-      // If hovering over a folder that isn't the dragged item itself, highlight it
-      if (overEl && isFolder(overEl) && overId !== activeId) {
+      // Only allow drop-into if dragging a non-folder onto a folder
+      if (overEl && isFolder(overEl) && overId !== activeId && (!activeEl || !isFolder(activeEl))) {
+        folderDropRef.current = overId;
         setFolderDropTargetId(overId);
       } else {
+        folderDropRef.current = null;
         setFolderDropTargetId(null);
       }
     },
@@ -367,8 +373,10 @@ const CodexCustomSection = ({
   const handleDragEnd = useCallback(
     (event: DragEndEvent) => {
       const { active, over } = event;
-      const dropTarget = folderDropTargetId;
+      // Read from ref — stable across re-renders during drag
+      const dropTarget = folderDropRef.current;
       setDraggingId(null);
+      folderDropRef.current = null;
       setFolderDropTargetId(null);
 
       if (!over || !onReorder) return;
@@ -376,7 +384,7 @@ const CodexCustomSection = ({
       const activeId = active.id as string;
       const overId = over.id as string;
 
-      // If dropping onto a folder (highlighted), move into folder
+      // If dropping onto a folder (highlighted via ref), move into folder
       if (dropTarget && dropTarget !== activeId) {
         onReorder(activeId, overId, dropTarget);
         // Auto-expand the folder so user can see the result
@@ -389,11 +397,12 @@ const CodexCustomSection = ({
         onReorder(activeId, overId, null);
       }
     },
-    [onReorder, folderDropTargetId]
+    [onReorder]
   );
 
   const handleDragCancel = useCallback(() => {
     setDraggingId(null);
+    folderDropRef.current = null;
     setFolderDropTargetId(null);
   }, []);
 

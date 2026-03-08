@@ -184,7 +184,7 @@ const KardashevScale = () => {
     TOOL_TYPE,
     worldId
   );
-  const worksheetsByType = useWorksheetsByType(worldId, TOOL_TYPE);
+  const { data: worksheetsByType = [] } = useWorksheetsByType(worldId || undefined, TOOL_TYPE);
   // Load worksheet
   const requestedWorksheetId = searchParams.get("worksheetId");
   const { data: loadedWorksheet } = useWorksheet(requestedWorksheetId);
