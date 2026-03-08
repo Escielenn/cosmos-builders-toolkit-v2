@@ -564,6 +564,28 @@ export const TOOL_WIKI: Record<string, ToolWikiEntry> = {
     ],
   },
 
+  // ── PRO CALCULATOR (Civilizations) ─────────────────────────
+  'kardashev-scale': {
+    id: 'kardashev-scale',
+    tagline: 'Classify civilizations by energy consumption—Kardashev numbers, cascade implications, and growth projections.',
+    category: 'civilizations',
+    complexity: 'intermediate',
+    type: 'calculator',
+    cascade: 'culture',
+    workshopWeek: 4,
+    timeEstimate: '10-20 min',
+    buildsOn: [
+      { toolId: 'empire-designer', strength: 'recommended', note: 'Political structure informs energy governance' },
+      { toolId: 'technology-consequences', strength: 'recommended', note: 'Technology level shapes energy capacity' },
+      { toolId: 'one-big-lie', strength: 'optional', note: 'Exotic physics may unlock higher energy tiers' },
+    ],
+    feedsInto: [
+      { toolId: 'space-expansion-modeler', strength: 'recommended', note: 'Energy level constrains expansion capability' },
+      { toolId: 'spacecraft-designer', strength: 'optional', note: 'Energy budget affects ship capabilities' },
+      { toolId: 'drake-equation-calculator', strength: 'optional', note: 'Energy level affects detectability' },
+    ],
+  },
+
   // ── PRO CARTOGRAPHER ────────────────────────────────────────
   'stellar-cartographer': {
     id: 'stellar-cartographer',

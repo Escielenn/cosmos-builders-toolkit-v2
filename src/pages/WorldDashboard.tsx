@@ -226,6 +226,13 @@ const TOOLS = [
     icon: Weight,
     path: "/tools/gravitas",
   },
+  {
+    id: "kardashev-scale",
+    name: "K-Scale: Kardashev Scale Calculator",
+    description: "Classify civilizations by energy consumption with cascade implications",
+    icon: Zap,
+    path: "/tools/kardashev-scale",
+  },
 ];
 
 const DEFAULT_TOOL_ORDER = TOOLS.map((t) => t.id);

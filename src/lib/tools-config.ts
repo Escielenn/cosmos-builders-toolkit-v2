@@ -34,6 +34,7 @@ export const PRO_TOOL_IDS = [
   'timeline',
   'sensorium',
   'gravitas',
+  'kardashev-scale',
   // Simulators
   'rogue',
   'tidelock',
@@ -79,6 +80,7 @@ export const TOOL_DISPLAY_NAMES: Record<string, string> = {
   'tidelock': 'Tidelock: Locked World Simulator',
   'exosky': 'Exosky: Alien Night Sky',
   'exoforge': 'ExoForge: Procedural Exoplanet Forge',
+  'kardashev-scale': 'K-Scale: Kardashev Scale Calculator',
   // Cartographers
   'stellar-cartographer': 'Stellar Cartographer: Galaxy Mapper',
   // Workshop

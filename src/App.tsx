@@ -73,6 +73,7 @@ const SurfaceGravityCalculator = lazy(() => import("./pages/tools/SurfaceGravity
 const TimelineTool = lazy(() => import("./pages/tools/Timeline"));
 const Sensorium = lazy(() => import("./pages/tools/Sensorium"));
 const Gravitas = lazy(() => import("./pages/tools/Gravitas"));
+const KardashevScale = lazy(() => import("./pages/tools/KardashevScale"));
 
 // Lazy loaded learn pages
 const LearnIndex = lazy(() => import("./pages/learn/LearnIndex"));
@@ -342,6 +343,14 @@ const App = () => (
                   element={
                     <ProToolGuard toolId="gravitas">
                       <Gravitas />
+                    </ProToolGuard>
+                  }
+                />
+                <Route
+                  path="/tools/kardashev-scale"
+                  element={
+                    <ProToolGuard toolId="kardashev-scale">
+                      <KardashevScale />
                     </ProToolGuard>
                   }
                 />

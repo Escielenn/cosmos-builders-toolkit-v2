@@ -643,6 +643,42 @@ export const TOOL_INTROS: Record<string, ToolIntroData> = {
       },
     ],
   },
+  "kardashev-scale": {
+    title: "The Energy Ladder",
+    purpose:
+      "Classify your civilization by energy consumption and trace how energy level cascades through governance, warfare, economics, and culture.",
+    examples: [
+      {
+        bookTitle: "Revelation Space",
+        author: "Alastair Reynolds",
+        year: "2000",
+        isbn: "9780441009428",
+        quotes: [],
+        explanation:
+          "Reynolds's Inhibitors are a Type III response to a Type II problem: civilizations that grow too powerful attract automated extinction machines. The Kardashev scale becomes not a ladder of progress but a threshold of danger.",
+      },
+      {
+        bookTitle: "The Three-Body Problem",
+        author: "Liu Cixin",
+        year: "2008",
+        isbn: "9780765382030",
+        quotes: [
+          "The universe is a dark forest. Every civilization is an armed hunter stalking through the trees.",
+        ],
+        explanation:
+          "Liu's Dark Forest theory implies that climbing the Kardashev scale is inherently dangerous\u2014higher energy use means greater detectability, and detection means destruction. Energy level determines both capability and vulnerability.",
+      },
+      {
+        bookTitle: "Diaspora",
+        author: "Greg Egan",
+        year: "1997",
+        isbn: "9780575082090",
+        quotes: [],
+        explanation:
+          "Egan's polises (digital civilizations) transcend traditional energy constraints by existing as software. They challenge the Kardashev framework itself\u2014does a civilization that needs almost no energy but possesses vast computational power rank low or high?",
+      },
+    ],
+  },
   "sensorium": {
     title: "The Alien Sensorium",
     purpose:

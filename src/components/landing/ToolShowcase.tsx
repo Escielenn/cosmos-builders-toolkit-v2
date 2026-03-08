@@ -138,6 +138,12 @@ const proTools = [
     status: "available",
   },
   {
+    id: "kardashev-scale",
+    title: "K-Scale: Kardashev Scale Calculator",
+    description: "Classify civilizations by energy consumption. Calculate Kardashev numbers, trace cascade implications, and project growth timelines.",
+    status: "available",
+  },
+  {
     id: "stellar-cartographer",
     title: "Stellar Cartographer: Galaxy Mapper",
     description: "Interactive galaxy mapping tool. Generate procedural galaxies with 3D projection, empire territories, trade routes, and wormholes.",
@@ -156,7 +162,7 @@ const comingSoonByCategory = [
       { title: "Quantum and Beyond", subtitle: "Technology beyond our understanding" },
       { title: "BDO: Big Dumb Object", subtitle: "Create megastructures and cosmic artifacts" },
       { title: "Warp Travel Calculator", subtitle: "Calculate warp-based journey parameters" },
-      { title: "K-Scale (Kardashev Scale)", subtitle: "Classify civilizations by energy consumption" },
+
     ],
   },
   {

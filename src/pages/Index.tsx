@@ -22,6 +22,7 @@ import {
   Eye,
   ChevronDown,
   Map,
+  Zap,
 } from "lucide-react";
 import {
   TOOL_WIKI,
@@ -273,6 +274,14 @@ const toolsByCategory: {
         icon: Weight,
         status: "available",
       },
+      {
+        id: "kardashev-scale",
+        title: "K-Scale: Kardashev Scale Calculator",
+        description:
+          "Classify civilizations by energy consumption. Calculate Kardashev numbers, trace cascade implications, and project growth timelines.",
+        icon: Zap,
+        status: "available",
+      },
     ],
   },
   {
@@ -343,7 +352,7 @@ function getToolBadge(toolId: string, mode: SortMode): { label: string; color: s
 const comingSoonItems = [
   { title: "BDO: Big Dumb Object", subtitle: "Create megastructures and cosmic artifacts" },
   { title: "Solar System Cartographer", subtitle: "Map entire solar systems in an interactive orrery" },
-  { title: "K-Scale (Kardashev Scale)", subtitle: "Classify civilizations by energy consumption" },
+
   { title: "Quantum and Beyond", subtitle: "Technology beyond our understanding" },
   { title: "Generation Ship Designer", subtitle: "Design self-sustaining interstellar arks" },
   { title: "Character Development", subtitle: "Individual characters connected to your world" },
