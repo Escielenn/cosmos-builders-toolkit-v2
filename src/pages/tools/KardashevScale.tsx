@@ -39,6 +39,7 @@ import {
   useWorksheets,
   useWorksheet,
   useWorksheetsByType,
+  useRenameWorksheet,
 } from "@/hooks/use-worksheets";
 import { WorksheetTitle } from "@/components/tools/WorksheetTitle";
 import { getToolIcon } from "@/components/icons/tool-icons";
@@ -180,6 +181,7 @@ const KardashevScale = () => {
   const { createWorksheet, updateWorksheet, worksheets } = useWorksheets(
     worldId || undefined
   );
+  const renameWorksheet = useRenameWorksheet();
   const { data: worksheetsByType = [] } = useWorksheetsByType(worldId || undefined, TOOL_TYPE);
   // Load worksheet
   const requestedWorksheetId = searchParams.get("worksheetId");
@@ -350,25 +352,12 @@ const KardashevScale = () => {
           </Link>
         )}
 
-        {/* Tool Title */}
-        <div className="flex items-center gap-3 mb-1">
-          {ToolIcon && <ToolIcon className="w-10 h-10 shrink-0" />}
-          <WorksheetTitle
-            toolType={TOOL_TYPE}
-            worksheetId={currentWorksheetId}
-            worksheetTitle={currentWorksheetTitle}
-            onTitleChange={setCurrentWorksheetTitle}
-          />
-        </div>
-
-        <ToolIntroSection data={TOOL_INTROS[TOOL_TYPE]} />
-
         {/* Action Bar */}
         <ToolActionBar
           onSave={handleSave}
           onPrint={() => window.print()}
           onExport={() => setExportDialogOpen(true)}
-          onOpen={() => setWorksheetSelectorOpen(true)}
+          onOpen={worldId ? () => setWorksheetSelectorOpen(true) : undefined}
           onShare={currentWorksheetId ? () => setShareDialogOpen(true) : undefined}
           isSaving={updateWorksheet.isPending || createWorksheet.isPending}
           isCloudEnabled={!!(worldId && user)}
@@ -385,10 +374,34 @@ const KardashevScale = () => {
           }
         />
 
-        {/* Tags */}
+        {/* Tool Title */}
+        <div className="flex items-center gap-3">
+          {ToolIcon && <ToolIcon className="w-12 h-12 rounded-sm shrink-0" />}
+          <h1 className="font-display text-3xl md:text-4xl tracking-sf-title">
+            <span className="font-normal">K-Scale:</span>{" "}
+            <span className="font-light">Kardashev Scale</span>
+          </h1>
+        </div>
+        <p className="text-tier-2 mt-2 max-w-2xl">
+          Classify your civilization's energy consumption and explore the cascade implications of each Kardashev level.
+        </p>
+        {currentWorksheetId && (
+          <WorksheetTitle
+            title={currentWorksheetTitle || null}
+            onRename={async (newTitle) => {
+              if (!currentWorksheetId) return;
+              await renameWorksheet.mutateAsync({ worksheetId: currentWorksheetId, title: newTitle });
+              setCurrentWorksheetTitle(newTitle);
+            }}
+            icon={<Zap className="w-5 h-5 text-primary" />}
+            disabled={!user}
+          />
+        )}
         {currentWorksheetId && (
           <WorksheetTagsBar worksheetId={currentWorksheetId} />
         )}
+
+        <ToolIntroSection data={TOOL_INTROS[TOOL_TYPE]} />
 
         {/* Section Navigation */}
         <div className="mt-6 mb-8">
