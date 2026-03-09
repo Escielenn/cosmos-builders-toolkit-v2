@@ -72,10 +72,10 @@ function shortName(toolId: string): string {
 // ─── Nav link style ───────────────────────────────────────────────────
 
 const navLinkClass =
-  "sf-nav-link text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground hover:text-primary transition-colors duration-300";
+  "sf-nav-link text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground hover:text-primary transition-colors duration-300 leading-none";
 
 const triggerClass =
-  "sf-nav-link text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground hover:text-primary transition-colors duration-300 bg-transparent hover:bg-transparent focus:bg-transparent data-[state=open]:bg-transparent data-[active]:bg-transparent h-auto p-0 gap-1";
+  "sf-nav-link text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground hover:text-primary transition-colors duration-300 bg-transparent hover:bg-transparent focus:bg-transparent data-[state=open]:bg-transparent data-[active]:bg-transparent h-auto p-0 gap-1 rounded-none leading-none";
 
 // ─── Component ────────────────────────────────────────────────────────
 
@@ -89,8 +89,8 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
   const { worlds } = useWorlds();
 
   return (
-    <NavigationMenu className="hidden md:flex">
-      <NavigationMenuList className="gap-5">
+    <NavigationMenu className="hidden md:flex items-center">
+      <NavigationMenuList className="gap-5 items-center space-x-0">
         {/* ── Worlds dropdown ─────────────────────────────── */}
         <NavigationMenuItem>
           <NavigationMenuTrigger className={triggerClass}>
