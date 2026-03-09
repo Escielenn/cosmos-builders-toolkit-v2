@@ -96,7 +96,7 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
           <NavigationMenuTrigger className={triggerClass}>
             Worlds
           </NavigationMenuTrigger>
-          <NavigationMenuContent className="bg-[#0E1320]/98 backdrop-blur-xl border border-white/8">
+          <NavigationMenuContent className="">
             <div className="w-[280px] p-3">
               {user && worlds.length > 0 ? (
                 <>
@@ -182,7 +182,7 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
           <NavigationMenuTrigger className={triggerClass}>
             Tools
           </NavigationMenuTrigger>
-          <NavigationMenuContent className="bg-[#0E1320]/98 backdrop-blur-xl border border-white/8">
+          <NavigationMenuContent className="">
             <div className="w-[420px] p-3">
               <div className="grid grid-cols-2 gap-x-4 gap-y-3">
                 {TOOL_CATEGORIES.map((cat) => {
@@ -235,7 +235,7 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
           <NavigationMenuTrigger className={triggerClass}>
             Guide
           </NavigationMenuTrigger>
-          <NavigationMenuContent className="bg-[#0E1320]/98 backdrop-blur-xl border border-white/8">
+          <NavigationMenuContent className="">
             <div className="w-[220px] p-3 space-y-0.5">
               <NavigationMenuLink asChild>
                 <Link
