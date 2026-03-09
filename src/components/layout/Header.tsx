@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { User, LogIn, LogOut, ChevronDown, Zap, Menu, Globe, Wrench, BookOpen, Sparkles, Mail, Settings, Search, Image, Download, Library, Archive, Map, Compass, PenTool, Award } from "lucide-react";
+import HeaderNavigation from "./HeaderNavigation";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import CubeLogo from "@/components/icons/CubeLogo";
@@ -225,67 +226,8 @@ const Header = () => {
           </SheetContent>
         </Sheet>
 
-        {/* Desktop Navigation - StellarForge typography: uppercase, letter-spaced, light weight */}
-        <nav className="hidden md:flex items-center gap-5">
-          <button
-            onClick={() => scrollToSection("worlds")}
-            className="sf-nav-link text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground hover:text-primary transition-colors duration-300"
-          >
-            Worlds
-          </button>
-          <button
-            onClick={() => scrollToSection("tools")}
-            className="sf-nav-link text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground hover:text-primary transition-colors duration-300"
-          >
-            Tools
-          </button>
-          {!isSubscribed && (
-            <Link
-              to="/features"
-              className="sf-nav-link text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground hover:text-primary transition-colors duration-300"
-            >
-              Features
-            </Link>
-          )}
-          <Link
-            to="/guide"
-            className="sf-nav-link text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground hover:text-primary transition-colors duration-300"
-          >
-            Guide
-          </Link>
-          <Link
-            to="/learn"
-            className="sf-nav-link text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground hover:text-primary transition-colors duration-300"
-          >
-            Learn
-          </Link>
-          <Link
-            to="/workshop"
-            className="sf-nav-link text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground hover:text-primary transition-colors duration-300"
-          >
-            Workshop
-          </Link>
-          <Link
-            to="/roadmap"
-            className="sf-nav-link text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground hover:text-primary transition-colors duration-300"
-          >
-            Roadmap
-          </Link>
-          {!isSubscribed && (
-            <Link
-              to="/pricing"
-              className="sf-nav-link text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground hover:text-primary transition-colors duration-300"
-            >
-              Pricing
-            </Link>
-          )}
-          <Link
-            to="/contact"
-            className="sf-nav-link text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground hover:text-primary transition-colors duration-300"
-          >
-            Contact
-          </Link>
-        </nav>
+        {/* Desktop Navigation */}
+        <HeaderNavigation isSubscribed={isSubscribed} />
 
         <div className="flex items-center gap-2">
           <AudioSelectorDialog />

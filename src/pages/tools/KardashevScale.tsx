@@ -305,27 +305,33 @@ const KardashevScale = () => {
 
   // ─── Key Choices ──────────────────────────────────────────────────
 
-  const keyChoices = useMemo(() => {
+  const keyChoicesSections: KeyChoicesSection[] = useMemo(() => {
     if (!results.valid) return [];
     return [
       {
-        label: "Classification",
-        value: results.band.label,
-        detail: `K = ${formatKardashev(results.kardashevNumber)}`,
+        id: "classification",
+        title: "Classification",
+        choices: [
+          { label: "Level", value: results.band.label },
+          { label: "K Number", value: formatKardashev(results.kardashevNumber) },
+        ],
       },
       {
-        label: "Total Power",
-        value: formatPower(results.totalPowerWatts),
-        detail: `10^${results.log10Power.toFixed(1)} W`,
+        id: "power",
+        title: "Power Output",
+        choices: [
+          { label: "Total", value: formatPower(results.totalPowerWatts) },
+          { label: "Log₁₀", value: `10^${results.log10Power.toFixed(1)} W` },
+          { label: "Earth ×", value: formatMultiple(results.earthMultiple) },
+        ],
       },
       {
-        label: "Earth Multiple",
-        value: formatMultiple(results.earthMultiple),
-      },
-      {
-        label: "Growth Rate",
-        value: GROWTH_RATES[formState.growthRate].label,
-        detail: GROWTH_RATES[formState.growthRate].description,
+        id: "growth",
+        title: "Growth",
+        choices: [
+          { label: "Rate", value: GROWTH_RATES[formState.growthRate].label },
+          { label: "Detail", value: GROWTH_RATES[formState.growthRate].description },
+        ],
       },
     ];
   }, [results, formState.growthRate]);
@@ -911,25 +917,12 @@ const KardashevScale = () => {
       {/* Sidebar */}
       <ToolSidebar>
         <SectionNavigation sections={KARDASHEV_SECTIONS} />
-        <KeyChoicesSidebar>
-          {keyChoices.map((kc) => (
-            <KeyChoicesSection key={kc.label} label={kc.label}>
-              <span className="font-mono text-xs text-tier-1">{kc.value}</span>
-              {kc.detail && (
-                <span className="text-[9px] text-tier-4 block">{kc.detail}</span>
-              )}
-            </KeyChoicesSection>
-          ))}
-        </KeyChoicesSidebar>
+        <KeyChoicesSidebar sections={keyChoicesSections} title="K-Scale Summary" mode="inline" />
       </ToolSidebar>
 
-      <MobileKeyChoices>
-        {keyChoices.map((kc) => (
-          <KeyChoicesSection key={kc.label} label={kc.label}>
-            <span className="font-mono text-xs text-tier-1">{kc.value}</span>
-          </KeyChoicesSection>
-        ))}
-      </MobileKeyChoices>
+      <div className="fixed right-4 bottom-4 xl:hidden z-40 no-print flex flex-col gap-2">
+        <MobileKeyChoices sections={keyChoicesSections} title="K-Scale Summary" />
+      </div>
 
       {/* Dialogs */}
       <WorksheetSelectorDialog
