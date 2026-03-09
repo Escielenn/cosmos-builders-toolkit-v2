@@ -20,7 +20,6 @@ import {
   AlertTriangle,
 } from "lucide-react";
 import ToolIntroSection from "@/components/tools/ToolIntroSection";
-import { TOOL_INTROS } from "@/lib/tool-intros";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -56,10 +55,7 @@ import ToolActionBar from "@/components/tools/ToolActionBar";
 import QuickExportButton from "@/components/tools/QuickExportButton";
 import ExportDialog from "@/components/tools/ExportDialog";
 import ShareDialog from "@/components/sharing/ShareDialog";
-import { useWorksheetShare } from "@/hooks/use-sharing";
 import type { MoodboardImage } from "@/hooks/use-moodboard";
-import { WorksheetNotesSheet } from "@/components/tools/WorksheetNotesSheet";
-import { WorksheetMoodboardSheet } from "@/components/tools/WorksheetMoodboardSheet";
 import { ToolPageQuote } from "@/components/quotes/ToolPageQuote";
 import { useWorlds } from "@/hooks/use-worlds";
 import { Json } from "@/integrations/supabase/types";
@@ -187,9 +183,6 @@ const KardashevScale = () => {
   // Load worksheet
   const requestedWorksheetId = searchParams.get("worksheetId");
   const { data: loadedWorksheet } = useWorksheet(requestedWorksheetId);
-
-  // Share
-  const { shareToken } = useWorksheetShare(currentWorksheetId);
 
   // ─── Calculation ──────────────────────────────────────────────────
 
@@ -371,17 +364,24 @@ const KardashevScale = () => {
 
         {/* Action Bar */}
         <ToolActionBar
-          toolType={TOOL_TYPE}
-          worksheetId={currentWorksheetId}
           onSave={handleSave}
-          onNew={handleNewWorksheet}
-          onOpenSelector={() => setWorksheetSelectorOpen(true)}
+          onPrint={() => window.print()}
           onExport={() => setExportDialogOpen(true)}
-          onShare={() => setShareDialogOpen(true)}
-          onNotes={undefined}
-          onMoodboard={undefined}
-          worksheetCount={worksheets.length}
+          onOpen={() => setWorksheetSelectorOpen(true)}
+          onShare={currentWorksheetId ? () => setShareDialogOpen(true) : undefined}
           isSaving={updateWorksheet.isPending || createWorksheet.isPending}
+          isCloudEnabled={!!(worldId && user)}
+          worldId={worldId || undefined}
+          worksheetId={currentWorksheetId || undefined}
+          className="mb-2"
+          extraActions={
+            <QuickExportButton
+              toolType={TOOL_TYPE}
+              worksheetId={currentWorksheetId}
+              formData={formState}
+              results={results}
+            />
+          }
         />
 
         {/* Tags */}
@@ -925,32 +925,54 @@ const KardashevScale = () => {
       </div>
 
       {/* Dialogs */}
-      <WorksheetSelectorDialog
-        open={worksheetSelectorOpen}
-        onOpenChange={setWorksheetSelectorOpen}
-        worksheets={worksheetsByType || []}
-        currentWorksheetId={currentWorksheetId}
-        onSelect={handleLoadWorksheet}
-        onNew={handleNewWorksheet}
-        toolType={TOOL_TYPE}
-      />
+      {worldId && (
+        <WorksheetSelectorDialog
+          open={worksheetSelectorOpen}
+          onOpenChange={setWorksheetSelectorOpen}
+          worldId={worldId}
+          worldName={currentWorld?.name}
+          toolType={TOOL_TYPE}
+          toolDisplayName="K-Scale"
+          worksheets={worksheetsByType || []}
+          isLoading={false}
+          onSelect={(selectedId) => {
+            setSearchParams({ worldId: worldId, worksheetId: selectedId });
+            setWorksheetSelectorOpen(false);
+          }}
+          onCreate={async (name) => {
+            const data = formState as unknown as Record<string, Json>;
+            const result = await createWorksheet.mutateAsync({
+              worldId,
+              toolType: TOOL_TYPE,
+              title: name,
+              data,
+            });
+            setCurrentWorksheetId(result.id);
+            setCurrentWorksheetTitle(result.title);
+            setSearchParams({ worldId, worksheetId: result.id });
+            return result.id;
+          }}
+        />
+      )}
 
       <ExportDialog
         open={exportDialogOpen}
         onOpenChange={setExportDialogOpen}
-        toolType={TOOL_TYPE}
-        worksheetId={currentWorksheetId}
-        formData={formState}
-        results={results}
+        toolName="K-Scale"
+        worldName={currentWorld?.name}
+        formState={formState}
+        defaultFilename="kardashev-scale"
       />
 
-      <ShareDialog
-        open={shareDialogOpen}
-        onOpenChange={setShareDialogOpen}
-        worksheetId={currentWorksheetId}
-        shareToken={shareToken}
-        toolType={TOOL_TYPE}
-      />
+      {currentWorksheetId && (
+        <ShareDialog
+          open={shareDialogOpen}
+          onOpenChange={setShareDialogOpen}
+          entityType="worksheet"
+          entityId={currentWorksheetId}
+          entityTitle={currentWorksheetTitle || "K-Scale Analysis"}
+        />
+      )}
     </PageShell>
   );
 };
