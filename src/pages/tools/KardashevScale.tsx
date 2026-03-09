@@ -20,6 +20,7 @@ import {
   AlertTriangle,
 } from "lucide-react";
 import ToolIntroSection from "@/components/tools/ToolIntroSection";
+import { TOOL_INTROS } from "@/lib/tool-intros";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -360,7 +361,7 @@ const KardashevScale = () => {
           />
         </div>
 
-        <ToolIntroSection toolId={TOOL_TYPE} />
+        <ToolIntroSection data={TOOL_INTROS[TOOL_TYPE]} />
 
         {/* Action Bar */}
         <ToolActionBar
