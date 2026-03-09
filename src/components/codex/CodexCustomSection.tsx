@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo, useRef } from "react";
-import { ChevronRight, ChevronDown, Plus, GripVertical, Folder } from "lucide-react";
+import { ChevronRight, ChevronDown, Plus, GripVertical } from "lucide-react";
 import {
   DndContext,
   closestCenter,
@@ -20,7 +20,6 @@ import {
 } from "@dnd-kit/sortable";
 import {
   restrictToVerticalAxis,
-  restrictToParentElement,
 } from "@dnd-kit/modifiers";
 import { CSS } from "@dnd-kit/utilities";
 import CodexElementRow from "./CodexElementRow";
@@ -442,7 +441,7 @@ const CodexCustomSection = ({
             <DndContext
               sensors={sensors}
               collisionDetection={closestCenter}
-              modifiers={[restrictToVerticalAxis, restrictToParentElement]}
+              modifiers={[restrictToVerticalAxis]}
               onDragStart={handleDragStart}
               onDragOver={handleDragOver}
               onDragEnd={handleDragEnd}
