@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useBackground } from "@/hooks/use-background";
 
 const VideoBackground = () => {
-  const { isVideoBackground, videoUrl } = useBackground();
+  const { isVideoBackground, videoUrl, backgroundVisible } = useBackground();
   const videoRef = useRef<HTMLVideoElement>(null);
   const [loaded, setLoaded] = useState(false);
 
@@ -26,7 +26,7 @@ const VideoBackground = () => {
     }
   }, [videoUrl, isVideoBackground, reducedMotion]);
 
-  if (!isVideoBackground || !videoUrl || reducedMotion) return null;
+  if (!isVideoBackground || !videoUrl || reducedMotion || !backgroundVisible) return null;
 
   return (
     <div

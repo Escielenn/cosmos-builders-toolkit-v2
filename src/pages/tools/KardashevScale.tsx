@@ -363,7 +363,7 @@ const KardashevScale = () => {
           isCloudEnabled={!!(worldId && user)}
           worldId={worldId || undefined}
           worksheetId={currentWorksheetId || undefined}
-          className="mb-2"
+          className="mt-4 mb-4"
           extraActions={
             <QuickExportButton
               toolType={TOOL_TYPE}
@@ -402,11 +402,6 @@ const KardashevScale = () => {
         )}
 
         <ToolIntroSection data={TOOL_INTROS[TOOL_TYPE]} />
-
-        {/* Section Navigation */}
-        <div className="mt-6 mb-8">
-          <MobileSectionNav sections={KARDASHEV_SECTIONS} />
-        </div>
 
         {/* ─── Preset Section ────────────────────────────────────── */}
         <CollapsibleSection
@@ -935,6 +930,7 @@ const KardashevScale = () => {
       </ToolSidebar>
 
       <div className="fixed right-4 bottom-4 xl:hidden z-40 no-print flex flex-col gap-2">
+        <MobileSectionNav sections={KARDASHEV_SECTIONS} />
         <MobileKeyChoices sections={keyChoicesSections} title="K-Scale Summary" />
       </div>
 

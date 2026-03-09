@@ -8,13 +8,19 @@ import {
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { Image, Check, Upload, X, Palette, Sparkles, Shuffle, Film } from "lucide-react";
+import { Image, Check, Upload, X, Palette, Sparkles, Shuffle, Film, Eye, EyeOff } from "lucide-react";
 import { useBackground } from "@/hooks/use-background";
 import { cn } from "@/lib/utils";
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const BackgroundSelector = () => {
-  const { backgroundId, setBackground, options, customBackground, setCustomBackground, clearCustomBackground, hasUserPreference, resetToRandom } = useBackground();
+  const { backgroundId, setBackground, options, customBackground, setCustomBackground, clearCustomBackground, hasUserPreference, resetToRandom, backgroundVisible, toggleBackgroundVisible } = useBackground();
+  const [dialogOpen, setDialogOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -103,13 +109,29 @@ const BackgroundSelector = () => {
   };
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="ghost" size="icon" className="h-9 w-9 text-muted-foreground hover:text-foreground">
-          <Image className="w-4 h-4" />
-          <span className="sr-only">Background</span>
-        </Button>
-      </DialogTrigger>
+    <>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            variant="ghost"
+            size="icon"
+            className={cn(
+              "h-9 w-9",
+              backgroundVisible
+                ? "text-muted-foreground hover:text-foreground"
+                : "text-muted-foreground/40 hover:text-muted-foreground"
+            )}
+            onClick={toggleBackgroundVisible}
+          >
+            {backgroundVisible ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+            <span className="sr-only">Toggle Background</span>
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent side="bottom">
+          <p className="text-xs">{backgroundVisible ? "Hide background" : "Show background"}</p>
+        </TooltipContent>
+      </Tooltip>
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogContent className="sm:max-w-xl max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="font-heading text-xl">
@@ -324,6 +346,7 @@ const BackgroundSelector = () => {
         </Tabs>
       </DialogContent>
     </Dialog>
+    </>
   );
 };
 

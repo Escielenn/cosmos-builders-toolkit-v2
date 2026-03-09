@@ -426,6 +426,8 @@ interface BackgroundContextValue {
   resetToRandom: () => void;
   isVideoBackground: boolean;
   videoUrl: string | null;
+  backgroundVisible: boolean;
+  toggleBackgroundVisible: () => void;
 }
 
 const BackgroundContext = createContext<BackgroundContextValue | null>(null);
@@ -435,6 +437,10 @@ export const BackgroundProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [customBackground, setCustomBackgroundState] = useState<string | null>(null);
   const [hasUserPreference, setHasUserPreference] = useState<boolean>(false);
+  const [backgroundVisible, setBackgroundVisible] = useState<boolean>(() => {
+    const stored = localStorage.getItem("sf-background-visible");
+    return stored !== "false"; // default true
+  });
 
   // Preload all background images on mount
   useEffect(() => {
@@ -479,6 +485,9 @@ export const BackgroundProvider = ({ children }: { children: ReactNode }) => {
     root.style.removeProperty("--custom-background");
     root.style.removeProperty("--gradient-background");
 
+    // If background is hidden, leave body with no background class (plain dark)
+    if (!backgroundVisible) return;
+
     if (selected?.type === "video") {
       // Video mode: solid black body, VideoBackground component handles the visual
       document.body.classList.add("video-background");
@@ -494,7 +503,7 @@ export const BackgroundProvider = ({ children }: { children: ReactNode }) => {
     } else {
       document.body.classList.add("starfield");
     }
-  }, [backgroundId, customBackground]);
+  }, [backgroundId, customBackground, backgroundVisible]);
 
   const setBackground = (id: string) => {
     const selected = BACKGROUND_OPTIONS.find((bg) => bg.id === id);
@@ -556,6 +565,14 @@ export const BackgroundProvider = ({ children }: { children: ReactNode }) => {
     setHasUserPreference(false);
   };
 
+  const toggleBackgroundVisible = () => {
+    setBackgroundVisible((prev) => {
+      const next = !prev;
+      localStorage.setItem("sf-background-visible", String(next));
+      return next;
+    });
+  };
+
   const value: BackgroundContextValue = {
     backgroundId,
     setBackground,
@@ -568,6 +585,8 @@ export const BackgroundProvider = ({ children }: { children: ReactNode }) => {
     resetToRandom,
     isVideoBackground,
     videoUrl,
+    backgroundVisible,
+    toggleBackgroundVisible,
   };
 
   return (
