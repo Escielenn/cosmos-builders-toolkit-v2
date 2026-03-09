@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { Plus, Globe, Wrench, BookOpen, Compass, Map, Star, Leaf, Users, Sparkles, ScrollText, Layers, ChevronDown } from "lucide-react";
+import { Plus, Globe, Wrench, BookOpen, Compass, Map, Star, Leaf, Users, Sparkles, ScrollText, Layers, Rocket } from "lucide-react";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -14,21 +14,49 @@ import { getToolsByCategory, type ToolCategory } from "@/lib/tool-wiki-data";
 import { getToolDisplayName } from "@/lib/tools-config";
 import { cn } from "@/lib/utils";
 
-// ─── Category config ──────────────────────────────────────────────────
+// ─── Travel & Spacecraft tools (split from civilizations) ─────────────
 
-const TOOL_CATEGORIES: {
-  id: ToolCategory;
+const TRAVEL_TOOL_IDS = new Set([
+  "spacecraft-designer",
+  "propulsion-consequences-map",
+  "space-expansion-modeler",
+  "time-dilation",
+  "gravitas",
+]);
+
+// ─── Nav category config (differs from wiki categories for UX) ────────
+
+interface NavCategory {
+  id: string;
   label: string;
   icon: typeof Star;
   color: string;
-}[] = [
+}
+
+const NAV_CATEGORIES: NavCategory[] = [
   { id: "stars-systems", label: "Stars & Systems", icon: Star, color: "text-amber-400" },
   { id: "worlds", label: "Worlds", icon: Globe, color: "text-blue-400" },
   { id: "life", label: "Life", icon: Leaf, color: "text-emerald-400" },
+  { id: "travel", label: "Travel & Spacecraft", icon: Rocket, color: "text-orange-400" },
   { id: "civilizations", label: "Civilizations", icon: Users, color: "text-violet-400" },
   { id: "mythology", label: "Mythology", icon: ScrollText, color: "text-blue-300" },
   { id: "integration", label: "Integration", icon: Layers, color: "text-teal-400" },
 ];
+
+/** Get tools for a nav category (splits civilizations into travel + civ) */
+function getNavCategoryTools(navCatId: string) {
+  if (navCatId === "travel") {
+    return getToolsByCategory("civilizations" as ToolCategory).filter(
+      (t) => TRAVEL_TOOL_IDS.has(t.id)
+    );
+  }
+  if (navCatId === "civilizations") {
+    return getToolsByCategory("civilizations" as ToolCategory).filter(
+      (t) => !TRAVEL_TOOL_IDS.has(t.id)
+    );
+  }
+  return getToolsByCategory(navCatId as ToolCategory);
+}
 
 // ─── Tool route mapping ───────────────────────────────────────────────
 
@@ -185,8 +213,8 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
           <NavigationMenuContent className="">
             <div className="w-[420px] p-3">
               <div className="grid grid-cols-2 gap-x-4 gap-y-3">
-                {TOOL_CATEGORIES.map((cat) => {
-                  const tools = getToolsByCategory(cat.id);
+                {NAV_CATEGORIES.map((cat) => {
+                  const tools = getNavCategoryTools(cat.id);
                   if (tools.length === 0) return null;
                   const Icon = cat.icon;
                   return (

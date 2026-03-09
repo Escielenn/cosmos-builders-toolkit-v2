@@ -96,140 +96,139 @@ const Header = () => {
           )}
         </Link>
 
-        {/* Mobile Menu */}
-        <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-          <SheetTrigger asChild className="md:hidden">
-            <Button variant="ghost" size="icon" className="mr-2">
-              <Menu className="w-5 h-5" />
-              <span className="sr-only">Open menu</span>
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="left" className="w-72 bg-[#0f0f0f]/98 border-border/30">
-            <SheetHeader className="text-left">
-              <SheetTitle className="flex items-center gap-3">
-                <CubeLogo size={32} className="rounded-lg" />
-                <span className="font-display text-sm font-light tracking-sf-wide text-foreground/90 uppercase">
-                  SF
-                </span>
-              </SheetTitle>
-            </SheetHeader>
-            <nav className="flex flex-col gap-1 mt-8">
-              <Link
-                to="/worlds"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
-              >
-                <Globe className="w-5 h-5" />
-                My Worlds
-              </Link>
-              <Link
-                to="/collection"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
-              >
-                <Library className="w-5 h-5" />
-                My Collection
-              </Link>
-              <Link
-                to="/archive"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
-              >
-                <Archive className="w-5 h-5" />
-                Archive
-              </Link>
-              <button
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  scrollToSection("tools");
-                }}
-                className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors text-left"
-              >
-                <Wrench className="w-5 h-5" />
-                Tools
-              </button>
-              {!isSubscribed && (
-                <Link
-                  to="/features"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
-                >
-                  <Sparkles className="w-5 h-5" />
-                  Features
-                </Link>
-              )}
-              <Link
-                to="/guide"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
-              >
-                <Compass className="w-5 h-5" />
-                Guide
-              </Link>
-              <Link
-                to="/learn"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
-              >
-                <BookOpen className="w-5 h-5" />
-                Learn
-              </Link>
-              <Link
-                to="/workshop"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
-              >
-                <PenTool className="w-5 h-5" />
-                Workshop
-              </Link>
-              <Link
-                to="/roadmap"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
-              >
-                <Map className="w-5 h-5" />
-                Roadmap
-              </Link>
-              {!isSubscribed && (
-                <Link
-                  to="/pricing"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
-                >
-                  <Sparkles className="w-5 h-5" />
-                  Pricing
-                </Link>
-              )}
-              <Link
-                to="/contact"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
-              >
-                <Mail className="w-5 h-5" />
-                Contact
-              </Link>
-            </nav>
-            {!loading && !user && (
-              <div className="mt-8 pt-8 border-t border-border/30">
-                <Button
-                  className="w-full gap-2"
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    navigate("/auth");
-                  }}
-                >
-                  <LogIn className="w-4 h-4" />
-                  AUTHENTICATE
-                </Button>
-              </div>
-            )}
-          </SheetContent>
-        </Sheet>
-
         {/* Desktop Navigation */}
         <HeaderNavigation isSubscribed={isSubscribed} />
 
         <div className="flex items-center gap-2">
+          {/* Mobile Menu */}
+          <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+            <SheetTrigger asChild className="md:hidden">
+              <Button variant="ghost" size="icon">
+                <Menu className="w-5 h-5" />
+                <span className="sr-only">Open menu</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-72 bg-[#0f0f0f]/98 border-border/30">
+              <SheetHeader className="text-left">
+                <SheetTitle className="flex items-center gap-3">
+                  <CubeLogo size={32} className="rounded-lg" />
+                  <span className="font-display text-sm font-light tracking-sf-wide text-foreground/90 uppercase">
+                    SF
+                  </span>
+                </SheetTitle>
+              </SheetHeader>
+              <nav className="flex flex-col gap-1 mt-8">
+                <Link
+                  to="/worlds"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
+                >
+                  <Globe className="w-5 h-5" />
+                  My Worlds
+                </Link>
+                <Link
+                  to="/collection"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
+                >
+                  <Library className="w-5 h-5" />
+                  My Collection
+                </Link>
+                <Link
+                  to="/archive"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
+                >
+                  <Archive className="w-5 h-5" />
+                  Archive
+                </Link>
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    scrollToSection("tools");
+                  }}
+                  className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors text-left"
+                >
+                  <Wrench className="w-5 h-5" />
+                  Tools
+                </button>
+                {!isSubscribed && (
+                  <Link
+                    to="/features"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
+                  >
+                    <Sparkles className="w-5 h-5" />
+                    Features
+                  </Link>
+                )}
+                <Link
+                  to="/guide"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
+                >
+                  <Compass className="w-5 h-5" />
+                  Guide
+                </Link>
+                <Link
+                  to="/learn"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
+                >
+                  <BookOpen className="w-5 h-5" />
+                  Learn
+                </Link>
+                <Link
+                  to="/workshop"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
+                >
+                  <PenTool className="w-5 h-5" />
+                  Workshop
+                </Link>
+                <Link
+                  to="/roadmap"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
+                >
+                  <Map className="w-5 h-5" />
+                  Roadmap
+                </Link>
+                {!isSubscribed && (
+                  <Link
+                    to="/pricing"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
+                  >
+                    <Sparkles className="w-5 h-5" />
+                    Pricing
+                  </Link>
+                )}
+                <Link
+                  to="/contact"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
+                >
+                  <Mail className="w-5 h-5" />
+                  Contact
+                </Link>
+              </nav>
+              {!loading && !user && (
+                <div className="mt-8 pt-8 border-t border-border/30">
+                  <Button
+                    className="w-full gap-2"
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      navigate("/auth");
+                    }}
+                  >
+                    <LogIn className="w-4 h-4" />
+                    AUTHENTICATE
+                  </Button>
+                </div>
+              )}
+            </SheetContent>
+          </Sheet>
           <AudioSelectorDialog />
           <BackgroundSelector />
           <Button
