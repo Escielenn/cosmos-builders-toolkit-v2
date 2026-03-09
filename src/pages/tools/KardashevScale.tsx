@@ -336,7 +336,7 @@ const KardashevScale = () => {
 
   return (
     <PageShell>
-      <PageBursts bursts={TOOL_PAGE_BURSTS} />
+      <PageBursts bursts={TOOL_PAGE_BURSTS["kardashev-scale"] || []} />
 
       {/* Header */}
       <div className="sf-tool-content">

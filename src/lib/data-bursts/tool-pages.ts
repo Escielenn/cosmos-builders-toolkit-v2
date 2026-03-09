@@ -142,4 +142,11 @@ export const TOOL_PAGE_BURSTS: Record<string, DataBurstConfig[]> = {
     { content: "REF: Newton, Principia, 1687", position: { top: "52%", right: "2%" }, variant: "coordinates", parallax: -0.06 },
     { content: "FIELD STRENGTH: VARIABLE", position: { top: "68%", left: "1%" }, variant: "margin", animation: "live", parallax: -0.1 },
   ],
+  "kardashev-scale": [
+    { content: "K-SCALE // CLASSIFICATION", position: { top: "8%", right: "3%" }, variant: "status", parallax: -0.05 },
+    { content: "P⊕ = 1.8 × 10¹³ W (2025)", position: { top: "18%", left: "1%" }, variant: "margin", animation: "live", parallax: -0.08 },
+    { content: "K = (log₁₀P − 6) / 10 [Sagan]", position: { top: "34%", left: "1%" }, variant: "margin", animation: "breathe", parallax: -0.12 },
+    { content: "REF: Kardashev, Soviet Astronomy, 1964", position: { top: "52%", right: "2%" }, variant: "coordinates", parallax: -0.06 },
+    { content: "L☉ = 3.828 × 10²⁶ W", position: { top: "68%", left: "1%" }, variant: "margin", animation: "live", parallax: -0.1 },
+  ],
 };
