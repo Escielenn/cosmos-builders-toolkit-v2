@@ -167,7 +167,7 @@ const KardashevScale = () => {
   const [worksheetSelectorOpen, setWorksheetSelectorOpen] = useState(false);
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
 
-  const { worldId } = useWorldId();
+  const worldId = useWorldId();
   const { user } = useAuth();
   const { toast } = useToast();
   const { worlds } = useWorlds();
@@ -181,8 +181,7 @@ const KardashevScale = () => {
 
   // Worksheets
   const { createWorksheet, updateWorksheet, worksheets } = useWorksheets(
-    TOOL_TYPE,
-    worldId
+    worldId || undefined
   );
   const { data: worksheetsByType = [] } = useWorksheetsByType(worldId || undefined, TOOL_TYPE);
   // Load worksheet
@@ -216,7 +215,7 @@ const KardashevScale = () => {
       );
     } else if (user) {
       createWorksheet.mutate(
-        { data, worldId: worldId || undefined, title: currentWorksheetTitle || "K-Scale Analysis" },
+        { data, worldId: worldId || undefined, toolType: TOOL_TYPE, title: currentWorksheetTitle || "K-Scale Analysis" },
         {
           onSuccess: (ws) => {
             setCurrentWorksheetId(ws.id);
