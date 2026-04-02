@@ -178,8 +178,10 @@ const ExportDialog = ({
             } finally {
               resetActiveTheme();
             }
-            console.log("PDF generated:", blob.size, "bytes");
-            downloadBlob(blob, `${filename}.pdf`);
+            // Ensure explicit PDF MIME type for reliable browser handling
+            const pdfBlob = new Blob([blob], { type: "application/pdf" });
+            console.log("PDF generated:", pdfBlob.size, "bytes");
+            downloadBlob(pdfBlob, `${filename}.pdf`);
             toast({
               title: "PDF Generated",
               description: `${format === "pdf-summary" ? "Summary" : "Full report"} PDF downloaded.`,
@@ -321,7 +323,9 @@ const ExportDialog = ({
           } finally {
             resetActiveTheme();
           }
-          window.open(URL.createObjectURL(blob), "_blank");
+          // Wrap with explicit MIME type so browsers open the PDF viewer
+          const pdfBlob = new Blob([blob], { type: "application/pdf" });
+          window.open(URL.createObjectURL(pdfBlob), "_blank");
           break;
         }
       }

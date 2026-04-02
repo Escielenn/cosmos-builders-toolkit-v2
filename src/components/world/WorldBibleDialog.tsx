@@ -210,8 +210,9 @@ const WorldBibleDialog = ({
 
       setProgress(90);
 
-      // Download
-      const url = URL.createObjectURL(blob);
+      // Download with explicit PDF MIME type
+      const pdfBlob = new Blob([blob], { type: "application/pdf" });
+      const url = URL.createObjectURL(pdfBlob);
       const a = document.createElement("a");
       a.href = url;
       a.download = `${worldName.toLowerCase().replace(/\s+/g, "-")}-world-bible.pdf`;

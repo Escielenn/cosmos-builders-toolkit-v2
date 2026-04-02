@@ -137,7 +137,8 @@ const QuickExportButton = ({
           } finally {
             resetActiveTheme();
           }
-          downloadBlob(blob, `${filename}.pdf`);
+          const pdfBlob = new Blob([blob], { type: "application/pdf" });
+          downloadBlob(pdfBlob, `${filename}.pdf`);
           toast({
             title: "Exported",
             description: `Downloaded as ${format === "pdf-summary" ? "summary" : "full report"} PDF.`,
