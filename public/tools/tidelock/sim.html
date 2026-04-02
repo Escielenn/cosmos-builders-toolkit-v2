@@ -1629,6 +1629,93 @@ syncUniforms();
 updateReadout();
 updateCamera();
 requestAnimationFrame(animate);
+
+// ─── PostMessage bridge for StellarForge save/load ───
+window.addEventListener('message', function(event) {
+  if (!event.data || !event.data.type) return;
+
+  if (event.data.type === 'STELLARFORGE_LOAD') {
+    var payload = event.data.payload;
+    if (!payload || !payload.parameters) return;
+    var p = payload.parameters;
+
+    // Restore star type
+    if (p.starIdx != null) {
+      S.starIdx = parseInt(p.starIdx);
+      document.getElementById('starType').value = S.starIdx;
+    }
+
+    // Restore planet parameters
+    if (p.planetMass != null) { S.planetMass = p.planetMass; document.getElementById('planetMass').value = S.planetMass; document.getElementById('planetMassVal').textContent = S.planetMass.toFixed(2) + ' M\u2295'; }
+    if (p.planetRadius != null) { S.planetRadius = p.planetRadius; document.getElementById('planetRadius').value = S.planetRadius; document.getElementById('planetRadiusVal').textContent = S.planetRadius.toFixed(2) + ' R\u2295'; }
+    if (p.orbDist != null) { S.orbDist = p.orbDist; document.getElementById('orbDist').value = S.orbDist; document.getElementById('orbDistVal').textContent = S.orbDist.toFixed(3) + ' AU'; }
+    if (p.lockHZ != null) { S.lockHZ = !!p.lockHZ; document.getElementById('lockHZ').checked = S.lockHZ; }
+
+    // Restore atmosphere
+    if (p.atmDens != null) { S.atmDens = p.atmDens; document.getElementById('atmDens').value = S.atmDens; document.getElementById('atmDensVal').textContent = S.atmDens.toFixed(2) + ' atm'; }
+    if (p.ghFactor != null) { S.ghFactor = p.ghFactor; document.getElementById('ghFactor').value = S.ghFactor; document.getElementById('ghFactorVal').textContent = S.ghFactor.toFixed(2); }
+    if (p.composition && typeof p.composition === 'string') { S.composition = p.composition; document.getElementById('composition').value = S.composition; }
+
+    // Restore surface
+    if (p.ocean != null) { S.ocean = p.ocean; document.getElementById('ocean').value = S.ocean; document.getElementById('oceanVal').textContent = Math.round(S.ocean) + '%'; }
+    if (p.albedo != null) { S.albedo = p.albedo; document.getElementById('albedo').value = S.albedo; document.getElementById('albedoVal').textContent = S.albedo.toFixed(2); }
+
+    // Restore moons
+    if (p.moonCount != null) { S.moonCount = parseInt(p.moonCount); document.getElementById('moonCount').value = S.moonCount; document.getElementById('moonCountVal').textContent = S.moonCount; }
+
+    // Restore display settings
+    if (p.showClouds != null) { S.showClouds = !!p.showClouds; document.getElementById('showClouds').checked = S.showClouds; }
+    if (p.showHab != null) { S.showHab = !!p.showHab; document.getElementById('showHab').checked = S.showHab; }
+    if (p.showGrid != null) { S.showGrid = !!p.showGrid; document.getElementById('showGrid').checked = S.showGrid; }
+    if (p.colorScale != null) { S.colorScale = parseInt(p.colorScale); }
+
+    recalcPhysics();
+    syncUniforms();
+    updateReadout();
+    markDirty();
+  }
+
+  if (event.data.type === 'STELLARFORGE_REQUEST_STATE') {
+    var star = STARS[S.starIdx] || {};
+    var state = {
+      parameters: {
+        starIdx: S.starIdx,
+        planetMass: S.planetMass,
+        planetRadius: S.planetRadius,
+        orbDist: S.orbDist,
+        lockHZ: S.lockHZ,
+        atmDens: S.atmDens,
+        ghFactor: S.ghFactor,
+        composition: S.composition,
+        ocean: S.ocean,
+        albedo: S.albedo,
+        moonCount: S.moonCount,
+        showClouds: S.showClouds,
+        showHab: S.showHab,
+        showGrid: S.showGrid,
+        colorScale: S.colorScale
+      },
+      results: {
+        starType: star.type || '',
+        tSSP: D.tSSP,
+        tASP: D.tASP,
+        tTerm: D.tTerm,
+        habStatus: D.habStatus || '',
+        habPct: D.habPct,
+        surfGrav: D.surfGrav,
+        escVel: D.escVel,
+        atmRetention: D.atmRetention || '',
+        liquidWater: D.liquidWater || '',
+        tidalLock: D.tidalLock || '',
+        orbPeriod: D.orbPeriod
+      }
+    };
+    window.parent.postMessage({
+      type: 'STELLARFORGE_SAVE',
+      payload: state
+    }, '*');
+  }
+});
 </script>
 </body>
 </html>

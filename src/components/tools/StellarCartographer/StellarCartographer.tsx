@@ -5,7 +5,10 @@
 'use client';
 
 import React, { useRef, useEffect, useState, useCallback, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
+import PublishToWorldDialog from '@/components/simulators/PublishToWorldDialog';
+import { useWorldLayoutContext } from '@/contexts/WorldLayoutContext';
+import type { SimulatorPayload } from '@/hooks/use-simulation-save';
 import {
   Star,
   ScreenStar,
@@ -119,6 +122,59 @@ const StellarCartographer: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchOpen, setSearchOpen] = useState(false);
   const [blackHole, setBlackHole] = useState<BlackHole | null>(null);
+
+  // ── Publish to World ──────────────────────────────────────────────
+  const layoutContext = useWorldLayoutContext();
+  const [searchParams] = useSearchParams();
+  const worldId = layoutContext?.worldId ?? searchParams.get("worldId") ?? undefined;
+  const [publishDialogOpen, setPublishDialogOpen] = useState(false);
+
+  /** Build a SimulatorPayload from current Cartographer state. */
+  const buildPublishPayload = useCallback((): SimulatorPayload => {
+    // When a star is selected, publish it as a star_system
+    if (selectedStar) {
+      return {
+        outputType: 'star_system',
+        name: selectedStar.name,
+        parameters: {
+          spectralClass: selectedStar.type,
+          hasHabitable: selectedStar.hasHabitable,
+          position: { x: selectedStar.x, y: selectedStar.y, z: selectedStar.z },
+          sovereignty: selectedStar.empire?.name ?? null,
+          galaxyName,
+          galaxySeed: config.seed,
+        },
+        results: {
+          temperature: STAR_TYPES[selectedStar.type].temp,
+          mass: STAR_TYPES[selectedStar.type].mass,
+          luminosity: selectedStar.luminosity,
+          brightness: selectedStar.brightness,
+        },
+      };
+    }
+
+    // Otherwise publish the entire galaxy
+    return {
+      outputType: 'galaxy',
+      name: galaxyName,
+      parameters: {
+        galaxyType: config.type,
+        starCount: config.starCount,
+        armCount: config.armCount,
+        armSpread: config.armSpread,
+        seed: config.seed,
+        empireCount: empires.length,
+      },
+      results: {
+        totalStars: stars.length,
+        habitableStars: stars.filter(s => s.hasHabitable).length,
+        empires: empires.map(e => ({ name: e.name, color: e.color, namingStyle: e.namingStyle })),
+        tradeRoutes: tradeRoutes.map(r => ({ name: r.name, hopCount: r.stars.length })),
+        wormholes: wormholes.map(w => ({ name: w.name, stable: w.stable, starA: w.starA.name, starB: w.starB.name })),
+        blackHole: blackHole ? { name: blackHole.name, mass: blackHole.mass, activity: blackHole.activity } : null,
+      },
+    };
+  }, [selectedStar, galaxyName, config, empires, stars, tradeRoutes, wormholes, blackHole]);
 
   // Sync rename input when selected star changes
   useEffect(() => {
@@ -2023,6 +2079,24 @@ const StellarCartographer: React.FC = () => {
           <button className={styles.btn} onClick={() => exportJSON(galaxyName, config, empires, tradeRoutes, wormholes, stars, blackHole)}>JSON</button>
           <button className={styles.btn} onClick={() => exportMarkdown(galaxyName, config, empires, tradeRoutes, wormholes, stars, blackHole)}>Markdown</button>
         </div>
+
+        {/* Publish to World */}
+        {worldId && (
+          <>
+            <div className={styles.sectionHeader}>Publish to World</div>
+            <button
+              className={`${styles.btn} ${styles.publish}`}
+              onClick={() => setPublishDialogOpen(true)}
+            >
+              &#9671; {selectedStar ? `Publish "${selectedStar.name}"` : 'Publish Galaxy'}
+            </button>
+            {selectedStar && (
+              <div style={{ fontSize: 8, color: 'rgba(255,255,255,0.35)', marginTop: 4, letterSpacing: '0.5px' }}>
+                Deselect star to publish entire galaxy
+              </div>
+            )}
+          </>
+        )}
       </div>
 
       {/* ═══════════════════ DATA PANEL ═══════════════════ */}
@@ -2224,6 +2298,15 @@ const StellarCartographer: React.FC = () => {
       <div className={styles.credits}>
         © 2025–2026 Jason D. Batt, Ph.D. · <a href="https://stellarforge.tools" target="_blank" rel="noopener noreferrer">stellarforge.tools</a>
       </div>
+
+      {/* ═══════════════════ PUBLISH TO WORLD DIALOG ═══════════════════ */}
+      <PublishToWorldDialog
+        open={publishDialogOpen}
+        onOpenChange={setPublishDialogOpen}
+        payload={publishDialogOpen ? buildPublishPayload() : null}
+        worldId={worldId}
+        simulatorType="stellar-cartographer"
+      />
     </div>
   );
 };

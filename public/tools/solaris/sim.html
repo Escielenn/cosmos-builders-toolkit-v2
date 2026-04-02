@@ -2157,6 +2157,131 @@ function updateMathBtn(){
   }
 }
 
+// ─── PostMessage bridge for StellarForge save/load ───
+window.addEventListener('message', function(event) {
+  if (!event.data || !event.data.type) return;
+
+  if (event.data.type === 'STELLARFORGE_LOAD') {
+    var payload = event.data.payload;
+    if (!payload || !payload.parameters) return;
+    var p = payload.parameters;
+
+    // Restore star mode
+    if (p.starMode && typeof p.starMode === 'string') {
+      starModeVal = p.starMode;
+      var modeBtn = document.getElementById('smode-' + p.starMode);
+      if (modeBtn) setStarMode(p.starMode, modeBtn);
+    }
+
+    // Restore architecture
+    if (p.arch && typeof p.arch === 'string') {
+      archVal = p.arch;
+    }
+
+    // Restore star choices
+    if (p.starChoices && typeof p.starChoices === 'object') {
+      var keys = ['a', 'b', 'c', 'd'];
+      for (var i = 0; i < keys.length; i++) {
+        var k = keys[i];
+        if (p.starChoices[k] && typeof p.starChoices[k] === 'string') {
+          starChoices[k] = p.starChoices[k];
+        }
+      }
+    }
+
+    // Restore system name
+    if (p.systemName && typeof p.systemName === 'string') {
+      document.getElementById('star-name').value = p.systemName;
+    }
+
+    // Restore planet count
+    if (p.planetCount != null) {
+      document.getElementById('pc-slider').value = parseInt(p.planetCount);
+      document.getElementById('pc-val').textContent = parseInt(p.planetCount);
+    }
+
+    // Restore conditions
+    if (p.conditions && typeof p.conditions === 'object') {
+      var condKeys = ['hab', 'gas', 'tidal', 'rogue'];
+      for (var ci = 0; ci < condKeys.length; ci++) {
+        var ck = condKeys[ci];
+        if (p.conditions[ck] != null) {
+          conds[ck] = !!p.conditions[ck];
+          var condBtn = document.getElementById('btn-' + ck);
+          if (condBtn) {
+            if (conds[ck]) condBtn.classList.add('active');
+            else condBtn.classList.remove('active');
+          }
+        }
+      }
+    }
+
+    // Restore asteroid belt checkbox
+    if (p.asteroidBelt != null) {
+      document.getElementById('chk-ast').checked = !!p.asteroidBelt;
+    }
+
+    // Restore separation sliders
+    if (p.bsep != null) document.getElementById('bsep-slider').value = p.bsep;
+    if (p.csep != null) document.getElementById('csep-slider').value = p.csep;
+    if (p.dsep != null) document.getElementById('dsep-slider').value = p.dsep;
+
+    // Restore playback speed
+    if (p.spdIdx != null) {
+      spdIdx = parseInt(p.spdIdx);
+      var spdDisp = document.getElementById('spd-disp');
+      if (spdDisp && SPEEDS[spdIdx] != null) spdDisp.textContent = SPEEDS[spdIdx] + '\u00D7';
+    }
+
+    // Re-generate system with restored settings
+    if (typeof generateSystem === 'function') {
+      generateSystem();
+    }
+  }
+
+  if (event.data.type === 'STELLARFORGE_REQUEST_STATE') {
+    var sysName = '';
+    var starCount = 0;
+    var planetCount = 0;
+    var planetNames = [];
+    if (system) {
+      sysName = system.name || '';
+      starCount = system.stars ? system.stars.length : 0;
+      planetCount = system.planets ? system.planets.length : 0;
+      for (var pi = 0; pi < (system.planets || []).length; pi++) {
+        planetNames.push(system.planets[pi].name || '');
+      }
+    }
+
+    var state = {
+      parameters: {
+        starMode: starModeVal,
+        arch: archVal,
+        starChoices: {a: starChoices.a, b: starChoices.b, c: starChoices.c, d: starChoices.d},
+        systemName: document.getElementById('star-name').value || '',
+        planetCount: parseInt(document.getElementById('pc-slider').value),
+        conditions: {hab: conds.hab, gas: conds.gas, tidal: conds.tidal, rogue: conds.rogue},
+        asteroidBelt: document.getElementById('chk-ast').checked,
+        bsep: parseInt(document.getElementById('bsep-slider').value),
+        csep: parseInt(document.getElementById('csep-slider').value),
+        dsep: parseInt(document.getElementById('dsep-slider').value),
+        spdIdx: spdIdx
+      },
+      results: {
+        systemName: sysName,
+        starCount: starCount,
+        planetCount: planetCount,
+        planetNames: planetNames,
+        hasSystem: !!system
+      }
+    };
+    window.parent.postMessage({
+      type: 'STELLARFORGE_SAVE',
+      payload: state
+    }, '*');
+  }
+});
+
 </script>
 
 <!-- ═══════════════════════════════════════════════════════════════════ -->

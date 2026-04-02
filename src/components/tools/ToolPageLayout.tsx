@@ -11,6 +11,7 @@ import { type ReactNode, useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, FileText } from "lucide-react";
 import CascadeSuggestionToast from "@/components/tools/CascadeSuggestionToast";
+import UpstreamCallout from "@/components/tools/UpstreamCallout";
 import PageShell from "@/components/layout/PageShell";
 import { PageBursts } from "@/components/ui/data-burst";
 import { TOOL_PAGE_BURSTS } from "@/lib/data-bursts";
@@ -184,6 +185,9 @@ export default function ToolPageLayout({
 
         {/* ── Intro Section (standard for all tools) ────────────── */}
         {introData && <ToolIntroSection data={introData} />}
+
+        {/* ── Upstream Context Callouts (only when inside a world) */}
+        {worldId && <UpstreamCallout toolType={toolType} worldId={worldId} />}
 
         {/* ── Tool-specific content ─────────────────────────────── */}
         {children}

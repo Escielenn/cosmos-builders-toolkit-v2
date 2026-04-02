@@ -1743,6 +1743,82 @@ window.addEventListener('keydown', function(e) {
     case 'Slash': e.preventDefault(); document.getElementById('kb-help').classList.toggle('visible'); break;
   }
 });
+
+// ─── PostMessage bridge for StellarForge save/load ───
+window.addEventListener('message', function(event) {
+  if (!event.data || !event.data.type) return;
+
+  if (event.data.type === 'STELLARFORGE_LOAD') {
+    var payload = event.data.payload;
+    if (!payload || !payload.parameters) return;
+    var p = payload.parameters;
+
+    // Restore all physical parameters
+    if (p.radius != null) { P.radius = p.radius; document.getElementById('radius').value = P.radius; document.getElementById('radius-val').textContent = P.radius.toFixed(2) + ' R\u2295'; }
+    if (p.mass != null) { P.mass = p.mass; document.getElementById('mass').value = P.mass; document.getElementById('mass-val').textContent = P.mass.toFixed(P.mass < 10 ? 2 : 0) + ' M\u2295'; }
+    if (p.temp != null) { P.temp = p.temp; document.getElementById('temp').value = tempToSlider(P.temp); document.getElementById('temp-val').textContent = Math.round(P.temp) + ' K'; }
+    if (p.period != null) { P.period = p.period; document.getElementById('period').value = P.period; document.getElementById('period-val').textContent = P.period.toFixed(P.period < 10 ? 2 : 1) + ' d'; }
+    if (p.ocean != null) { P.ocean = p.ocean; document.getElementById('ocean').value = P.ocean; document.getElementById('ocean-val').textContent = Math.round(P.ocean) + '%'; }
+    if (p.atmo != null) { P.atmo = p.atmo; document.getElementById('atmo').value = P.atmo; document.getElementById('atmo-val').textContent = P.atmo.toFixed(2); }
+    if (p.cloud != null) { P.cloud = p.cloud; document.getElementById('cloud').value = P.cloud; document.getElementById('cloud-val').textContent = Math.round(P.cloud) + '%'; }
+    if (p.roughness != null) { P.roughness = p.roughness; document.getElementById('roughness').value = P.roughness; document.getElementById('roughness-val').textContent = P.roughness.toFixed(2); }
+    if (p.composition != null) { P.composition = p.composition; document.getElementById('composition').value = P.composition; updateComposition(); }
+
+    // Ring system
+    if (p.ringOpacity != null) { P.ringOpacity = p.ringOpacity; document.getElementById('ring-opacity').value = P.ringOpacity; document.getElementById('ring-opacity-val').textContent = Math.round(P.ringOpacity) + '%'; }
+    if (p.ringWidth != null) { P.ringWidth = p.ringWidth; document.getElementById('ring-width').value = P.ringWidth; document.getElementById('ring-width-val').textContent = P.ringWidth.toFixed(2); }
+    if (p.ringTilt != null) { P.ringTilt = p.ringTilt; document.getElementById('ring-tilt').value = P.ringTilt; document.getElementById('ring-tilt-val').textContent = Math.round(P.ringTilt) + '\u00B0'; }
+    if (p.ringColor && typeof p.ringColor === 'string') { P.ringColor = p.ringColor; document.getElementById('ring-color').value = P.ringColor; document.getElementById('ring-color-val').textContent = P.ringColor.charAt(0).toUpperCase() + P.ringColor.slice(1); }
+
+    // Host star
+    if (p.starTemp != null) { P.starTemp = p.starTemp; document.getElementById('star-temp').value = P.starTemp; document.getElementById('star-temp-val').textContent = Math.round(P.starTemp) + ' K'; }
+    if (p.starRadius != null) { P.starRadius = p.starRadius; document.getElementById('star-radius').value = P.starRadius; document.getElementById('star-radius-val').textContent = P.starRadius.toFixed(2) + ' R\u2609'; }
+
+    // Display
+    if (p.rotation != null) { P.rotation = p.rotation; document.getElementById('rotation').value = P.rotation; document.getElementById('rotation-val').textContent = P.rotation.toFixed(2) + '\u00D7'; }
+
+    // Metadata
+    if (p.name && typeof p.name === 'string') P.name = p.name;
+    if (p.source && typeof p.source === 'string') P.source = p.source;
+
+    updateVisuals();
+  }
+
+  if (event.data.type === 'STELLARFORGE_REQUEST_STATE') {
+    var state = {
+      parameters: {
+        radius: P.radius,
+        mass: P.mass,
+        temp: P.temp,
+        period: P.period,
+        ocean: P.ocean,
+        atmo: P.atmo,
+        cloud: P.cloud,
+        roughness: P.roughness,
+        composition: P.composition,
+        ringOpacity: P.ringOpacity,
+        ringWidth: P.ringWidth,
+        ringTilt: P.ringTilt,
+        ringColor: P.ringColor,
+        starTemp: P.starTemp,
+        starRadius: P.starRadius,
+        rotation: P.rotation,
+        name: P.name,
+        source: P.source
+      },
+      results: {
+        classification: typeof getClassification === 'function' ? getClassification() : '',
+        gravity: P.mass / (P.radius * P.radius),
+        density: 5.51 * P.mass / (P.radius * P.radius * P.radius),
+        escapeVelocity: 11.186 * Math.sqrt(P.mass / P.radius)
+      }
+    };
+    window.parent.postMessage({
+      type: 'STELLARFORGE_SAVE',
+      payload: state
+    }, '*');
+  }
+});
 </script>
 
 <div id="kb-help">

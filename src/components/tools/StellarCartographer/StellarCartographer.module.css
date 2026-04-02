@@ -178,11 +178,10 @@
 
 .controlPanel {
   composes: panel;
-  top: 20px;
+  top: 210px;
   left: 20px;
-  margin-top: 140px; /* Below title panel */
   width: 240px;
-  max-height: calc(100vh - 180px);
+  max-height: calc(100vh - 230px);
   overflow-y: auto;
 }
 
@@ -368,6 +367,22 @@
   background: rgba(231, 76, 60, 0.08);
   border-color: rgba(231, 76, 60, 0.2);
   color: #E74C3C;
+}
+
+.btn.publish {
+  background: rgba(0, 212, 255, 0.08);
+  border-color: rgba(0, 212, 255, 0.25);
+  color: #00D4FF;
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 9px;
+  letter-spacing: 2px;
+}
+
+.btn.publish:hover {
+  background: rgba(0, 212, 255, 0.14);
+  border-color: rgba(0, 212, 255, 0.4);
+  box-shadow: 0 0 12px rgba(0, 212, 255, 0.15);
 }
 
 .btnRow {

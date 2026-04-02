@@ -979,6 +979,73 @@ addEventListener('keydown',e=>{
 // === INIT ===
 if(!loadFromURL()){initBodies();}else{initBodies();}
 updateSliders();updateTypeBtns();updateCamBtns();requestAnimationFrame(animate);
+
+// ─── PostMessage bridge for StellarForge save/load ───
+window.addEventListener('message', function(event) {
+  if (!event.data || !event.data.type) return;
+
+  if (event.data.type === 'STELLARFORGE_LOAD') {
+    var payload = event.data.payload;
+    if (!payload || !payload.parameters) return;
+    var p = payload.parameters;
+
+    // Restore system selection
+    if (p.currentSystem && typeof p.currentSystem === 'string') {
+      if (p.currentSystem !== 'custom') {
+        currentSystem = p.currentSystem;
+        document.getElementById('sys-select').value = p.currentSystem;
+      }
+    }
+
+    // Restore intruder type
+    if (p.intruderType && typeof p.intruderType === 'string') {
+      intruderType = p.intruderType;
+      updateTypeBtns();
+    }
+
+    // Restore slider values
+    if (p.mass != null) document.getElementById('sl-mass').value = p.mass;
+    if (p.dist != null) document.getElementById('sl-dist').value = p.dist;
+    if (p.speed != null) document.getElementById('sl-speed').value = p.speed;
+    if (p.angle != null) document.getElementById('sl-angle').value = p.angle;
+    if (p.timeScale != null) document.getElementById('sl-time').value = p.timeScale;
+
+    updateSliders();
+    initBodies();
+    if (!launched) setupIntruder();
+
+    // Restore camera mode
+    if (p.camMode && typeof p.camMode === 'string') {
+      camMode = p.camMode;
+      updateCamBtns();
+    }
+  }
+
+  if (event.data.type === 'STELLARFORGE_REQUEST_STATE') {
+    var state = {
+      parameters: {
+        currentSystem: currentSystem,
+        intruderType: intruderType,
+        mass: parseFloat(document.getElementById('sl-mass').value),
+        dist: parseFloat(document.getElementById('sl-dist').value),
+        speed: parseFloat(document.getElementById('sl-speed').value),
+        angle: parseFloat(document.getElementById('sl-angle').value),
+        timeScale: parseFloat(document.getElementById('sl-time').value),
+        camMode: camMode
+      },
+      results: {
+        systemName: (getSystemDef() || {}).name || '',
+        launched: launched,
+        running: running,
+        simTime: simTime
+      }
+    };
+    window.parent.postMessage({
+      type: 'STELLARFORGE_SAVE',
+      payload: state
+    }, '*');
+  }
+});
 </script>
 </body>
 </html>
