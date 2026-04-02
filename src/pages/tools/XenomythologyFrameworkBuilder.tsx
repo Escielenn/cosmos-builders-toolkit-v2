@@ -1,13 +1,8 @@
 import { useState, useEffect, useMemo, lazy, Suspense } from "react";
-import PageShell from "@/components/layout/PageShell";
 import { useWorldId } from "@/hooks/use-world-id";
-import { PageBursts } from "@/components/ui/data-burst";
-import { TOOL_PAGE_BURSTS } from "@/lib/data-bursts";
-import { WorksheetTagsBar } from "@/components/tools/WorksheetTagsBar";
 import { useTags } from "@/hooks/use-tags";
-import { Link, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import {
-  ArrowLeft,
   Info,
   ExternalLink,
   Plus,
@@ -19,8 +14,6 @@ import {
   X,
   Image as ImageIcon,
 } from "lucide-react";
-import ToolIntroSection from "@/components/tools/ToolIntroSection";
-import { TOOL_INTROS } from "@/lib/tool-intros";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -35,8 +28,6 @@ import {
 } from "@/components/ui/tooltip";
 import { useToast } from "@/hooks/use-toast";
 import { useWorksheets, useWorksheet, useWorksheetsByType, useRenameWorksheet } from "@/hooks/use-worksheets";
-import { WorksheetTitle } from "@/components/tools/WorksheetTitle";
-import { getToolIcon } from "@/components/icons/tool-icons";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
 import { useAuth } from "@/contexts/AuthContext";
 import SectionNavigation, { Section, MobileSectionNav } from "@/components/tools/SectionNavigation";
@@ -44,8 +35,7 @@ import ToolSidebar from "@/components/tools/ToolSidebar";
 import CollapsibleSection from "@/components/tools/CollapsibleSection";
 import KeyChoicesSidebar, { KeyChoicesSection, MobileKeyChoices } from "@/components/tools/KeyChoicesSidebar";
 import QuestionSection from "@/components/tools/QuestionSection";
-import ToolActionBar from "@/components/tools/ToolActionBar";
-import { ToolPageQuote } from "@/components/quotes/ToolPageQuote";
+import ToolPageLayout from "@/components/tools/ToolPageLayout";
 import QuickExportButton from "@/components/tools/QuickExportButton";
 import SelectedParametersSidebar from "@/components/tools/SelectedParametersSidebar";
 import SuggestedImplications from "@/components/tools/SuggestedImplications";
@@ -591,7 +581,6 @@ const RadioGroupField = ({
 );
 
 const TOOL_TYPE = "xenomythology-framework-builder";
-const ToolIcon = getToolIcon(TOOL_TYPE);
 
 const XenomythologyFrameworkBuilder = () => {
   const [formState, setFormState] = useState<FormState>(initialFormState);
@@ -1349,117 +1338,76 @@ const XenomythologyFrameworkBuilder = () => {
   };
 
   return (
-    <PageShell>
-      <main className="relative container mx-auto px-4 pt-24 pb-16">
-        <PageBursts bursts={TOOL_PAGE_BURSTS["xenomythology-framework-builder"]} />
-        {/* Back Link */}
-        <Link
-          to={worldId ? `/worlds/${worldId}` : "/"}
-          className="inline-flex items-center gap-2 text-sm text-tier-3 hover:text-foreground transition-colors mb-6"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          {worldId ? "Back to World" : "Back to Dashboard"}
-        </Link>
-
-        <ToolPageQuote toolId="xenomythology-framework-builder" />
-
-        {/* Action Bar */}
-        <ToolActionBar
-          onSave={handleSave}
-          onOpen={worldId ? () => setWorksheetSelectorOpen(true) : undefined}
-          onPrint={handlePrint}
-          onExport={handleExport}
-          onShare={(currentWorksheetId || worksheetId) ? () => setShareDialogOpen(true) : undefined}
-          isShared={!!shareConfig?.enabled}
-          isCloudEnabled={!!(worldId && user)}
-          onNotesClick={() => setNotesSheetOpen(true)}
-          onMoodboardClick={() => setMoodboardSheetOpen(true)}
-          moodboardCount={formState.moodboard?.length || 0}
-          exportLabel="Export Framework"
-          className="mb-6"
-          extraActions={
-            <QuickExportButton
-              toolName="Mythos"
-              worldName={worldName}
-              formState={formState}
-              summaryTemplate={<XenomythologySummaryTemplate formState={formState} worldName={worldName} />}
-              fullTemplate={<XenomythologyFullReportTemplate formState={formState} worldName={worldName} />}
-              defaultFilename="xenomythology-framework"
-            />
-          }
-          worldId={worldId}
-          worksheetId={currentWorksheetId || worksheetId}
+    <ToolPageLayout
+      toolType={TOOL_TYPE}
+      onSave={handleSave}
+      onOpen={worldId ? () => setWorksheetSelectorOpen(true) : undefined}
+      onPrint={handlePrint}
+      onExport={handleExport}
+      onShare={(currentWorksheetId || worksheetId) ? () => setShareDialogOpen(true) : undefined}
+      isShared={!!shareConfig?.enabled}
+      isCloudEnabled={!!(worldId && user)}
+      onNotesClick={() => setNotesSheetOpen(true)}
+      onMoodboardClick={() => setMoodboardSheetOpen(true)}
+      moodboardCount={formState.moodboard?.length || 0}
+      extraActions={
+        <QuickExportButton
+          toolName="Mythos"
+          worldName={worldName}
+          formState={formState}
+          summaryTemplate={<XenomythologySummaryTemplate formState={formState} worldName={worldName} />}
+          fullTemplate={<XenomythologyFullReportTemplate formState={formState} worldName={worldName} />}
+          defaultFilename="xenomythology-framework"
         />
-
-        {/* Title */}
-        <div className="mb-8">
-          <Badge className="mb-2">Tool 6</Badge>
-          <div className="flex items-center gap-3">
-            {ToolIcon && <ToolIcon className="w-12 h-12 rounded-sm shrink-0" />}
-            <h1 className="font-display text-3xl md:text-4xl tracking-sf-title">
-              <span className="font-normal">Mythos:</span>{" "}
-              <span className="font-light">Xenomythology Framework</span>
-            </h1>
-          </div>
-          <p className="text-tier-2 mt-2 max-w-2xl">
-            Create comprehensive alien mythological systems derived from species biology, environment, and evolutionary pressures.
-          </p>
-          {(currentWorksheetId || worksheetId) && (
-            <WorksheetTitle
-              title={currentWorksheetTitle}
-              onRename={handleRename}
-              icon={<FileText className="w-4 h-4 text-primary" />}
-              disabled={!user || worksheetLoading}
-            />
+      }
+      worksheetId={currentWorksheetId || worksheetId}
+      worksheetTitle={currentWorksheetTitle}
+      onRenameWorksheet={handleRename}
+      worksheetLoading={worksheetLoading}
+      worksheetTags={worksheetTags}
+      onTagsChange={handleTagsChange}
+      worksheetIcon={<FileText className="w-4 h-4 text-primary" />}
+      isLoggedIn={!!user}
+    >
+        {/* Linked species / ECR indicators */}
+        <div className="flex items-center gap-2 mb-6 flex-wrap">
+          {/* Linked Species indicator */}
+          {formState._linkedWorksheets?.species && (
+            <Badge variant="secondary" className="text-xs bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+              <Dna className="w-3 h-3 mr-1" />
+              {formState._linkedWorksheets.species.speciesName}
+            </Badge>
           )}
-          {(currentWorksheetId || worksheetId) && (
-            <WorksheetTagsBar
-              worksheetId={(currentWorksheetId || worksheetId)!}
-              tags={worksheetTags}
-              onChange={handleTagsChange}
-            />
+
+          {/* Linked ECR indicator */}
+          {formState._linkedWorksheets?.ecrWorksheetId && (
+            <Badge variant="secondary" className="text-xs bg-blue-500/10 text-blue-600 dark:text-blue-400">
+              <Link2 className="w-3 h-3 mr-1" />
+              Linked to ECR
+            </Badge>
           )}
-          <div className="flex items-center gap-2 mt-3 flex-wrap">
-            {/* Linked Species indicator */}
-            {formState._linkedWorksheets?.species && (
-              <Badge variant="secondary" className="text-xs bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
-                <Dna className="w-3 h-3 mr-1" />
-                {formState._linkedWorksheets.species.speciesName}
-              </Badge>
-            )}
 
-            {/* Linked ECR indicator */}
-            {formState._linkedWorksheets?.ecrWorksheetId && (
-              <Badge variant="secondary" className="text-xs bg-blue-500/10 text-blue-600 dark:text-blue-400">
-                <Link2 className="w-3 h-3 mr-1" />
-                Linked to ECR
-              </Badge>
-            )}
+          {/* Species Link button - only show if in a world */}
+          {worldId && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowSpeciesLink(true)}
+              className={formState._linkedWorksheets?.species ? "border-emerald-500/50" : ""}
+            >
+              <Dna className="w-4 h-4 mr-2" />
+              {formState._linkedWorksheets?.species ? "Change Species" : "Link Species"}
+            </Button>
+          )}
 
-            {/* Species Link button - only show if in a world */}
-            {worldId && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setShowSpeciesLink(true)}
-                className={formState._linkedWorksheets?.species ? "border-emerald-500/50" : ""}
-              >
-                <Dna className="w-4 h-4 mr-2" />
-                {formState._linkedWorksheets?.species ? "Change Species" : "Link Species"}
-              </Button>
-            )}
-
-            {/* ECR Import button - only show if there are ECR worksheets */}
-            {ecrWorksheets.length > 0 && (
-              <Button variant="outline" size="sm" onClick={() => setShowECRImport(true)}>
-                <Link2 className="w-4 h-4 mr-2" />
-                Import from ECR
-              </Button>
-            )}
-          </div>
+          {/* ECR Import button - only show if there are ECR worksheets */}
+          {ecrWorksheets.length > 0 && (
+            <Button variant="outline" size="sm" onClick={() => setShowECRImport(true)}>
+              <Link2 className="w-4 h-4 mr-2" />
+              Import from ECR
+            </Button>
+          )}
         </div>
-
-        <ToolIntroSection data={TOOL_INTROS["xenomythology-framework-builder"]} />
 
         {/* Introduction */}
         <GlassPanel glow className="p-6 md:p-8 mb-8">
@@ -2749,8 +2697,6 @@ const XenomythologyFrameworkBuilder = () => {
           <MobileSectionNav sections={SECTIONS} />
           <MobileKeyChoices sections={keyChoicesSections} title="Mythology Summary" />
         </div>
-      </main>
-
       <WorksheetNotesSheet
         open={notesSheetOpen}
         onOpenChange={setNotesSheetOpen}
@@ -2819,7 +2765,7 @@ const XenomythologyFrameworkBuilder = () => {
           onCreate={handleWorksheetCreate}
         />
       )}
-    </PageShell>
+    </ToolPageLayout>
   );
 };
 

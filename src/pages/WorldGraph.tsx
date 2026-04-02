@@ -123,6 +123,16 @@ const WorldGraph = () => {
 
   return (
     <div className="h-full w-full relative">
+      {/* Title + description */}
+      <div className="absolute top-3 left-3 z-10 max-w-xs pointer-events-none">
+        <p className="font-heading text-[10px] uppercase tracking-[2px] text-tier-3">
+          Knowledge Graph
+        </p>
+        <p className="text-[9px] text-tier-4 font-sans normal-case tracking-normal mt-0.5">
+          Visualize entities and their relationships across your world
+        </p>
+      </div>
+
       {/* Entries-only toggle */}
       <div className="absolute top-3 right-3 z-10 flex items-center gap-1">
         <button

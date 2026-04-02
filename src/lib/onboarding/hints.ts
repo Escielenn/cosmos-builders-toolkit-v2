@@ -52,6 +52,11 @@ export const HINTS: Record<string, HintDef> = {
     copy: "LINK SHARING: Toggle to generate a public read-only link. Pro users can invite collaborators with editor or viewer roles.",
     variant: "default",
   },
+  "wiki-edit-tip": {
+    id: "wiki-edit-tip",
+    copy: "EDITOR PROTOCOL: Click Edit to start writing. Type [[ to link to any element in your world. Links become navigable connections in the knowledge graph.",
+    variant: "default",
+  },
 };
 
 export function isHintDismissed(id: string): boolean {

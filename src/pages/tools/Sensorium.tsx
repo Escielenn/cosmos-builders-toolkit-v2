@@ -1,11 +1,7 @@
 import { useState, useEffect, useMemo, lazy, Suspense } from "react";
-import PageShell from "@/components/layout/PageShell";
 import { useWorldId } from "@/hooks/use-world-id";
-import { PageBursts } from "@/components/ui/data-burst";
-import { TOOL_PAGE_BURSTS } from "@/lib/data-bursts";
-import { Link, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import {
-  ArrowLeft,
   Copy,
   Eye,
   ScanEye,
@@ -20,8 +16,7 @@ import {
   Check,
 } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
-import ToolIntroSection from "@/components/tools/ToolIntroSection";
-import { TOOL_INTROS } from "@/lib/tool-intros";
+import ToolPageLayout from "@/components/tools/ToolPageLayout";
 import CollapsibleSection from "@/components/tools/CollapsibleSection";
 import KeyChoicesSidebar, {
   KeyChoicesSection,
@@ -34,8 +29,6 @@ import {
   useWorksheetsByType,
   useRenameWorksheet,
 } from "@/hooks/use-worksheets";
-import { WorksheetTitle } from "@/components/tools/WorksheetTitle";
-import { getToolIcon } from "@/components/icons/tool-icons";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
 import WorksheetLinkSelector from "@/components/tools/WorksheetLinkSelector";
 import { useAuth } from "@/contexts/AuthContext";
@@ -44,7 +37,6 @@ import SectionNavigation, {
   MobileSectionNav,
 } from "@/components/tools/SectionNavigation";
 import ToolSidebar from "@/components/tools/ToolSidebar";
-import ToolActionBar from "@/components/tools/ToolActionBar";
 import QuickExportButton from "@/components/tools/QuickExportButton";
 import ExportDialog from "@/components/tools/ExportDialog";
 import ShareDialog from "@/components/sharing/ShareDialog";
@@ -52,8 +44,6 @@ import { useWorksheetShare } from "@/hooks/use-sharing";
 import type { MoodboardImage } from "@/hooks/use-moodboard";
 import { WorksheetNotesSheet } from "@/components/tools/WorksheetNotesSheet";
 import { WorksheetMoodboardSheet } from "@/components/tools/WorksheetMoodboardSheet";
-import { ToolPageQuote } from "@/components/quotes/ToolPageQuote";
-import { WorksheetTagsBar } from "@/components/tools/WorksheetTagsBar";
 import QuestionSection from "@/components/tools/QuestionSection";
 import {
   SensoriumSummaryTemplate,
@@ -127,7 +117,6 @@ const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
 // ─── Constants ────────────────────────────────────────────────────
 
 const TOOL_TYPE = "sensorium";
-const ToolIcon = getToolIcon(TOOL_TYPE);
 const LOCAL_STORAGE_KEY = "sensorium-v1";
 
 const CATEGORY_ICONS: Record<string, React.ReactNode> = {
@@ -475,96 +464,52 @@ const Sensorium = () => {
   }
 
   return (
-    <PageShell>
-      <main className="relative container mx-auto px-4 pt-24 pb-8 max-w-7xl">
-        <PageBursts bursts={TOOL_PAGE_BURSTS["sensorium"]} />
-        {/* Back navigation */}
-        <Link
-          to={worldId ? `/world/${worldId}` : "/"}
-          className="inline-flex items-center gap-2 text-sm text-tier-3 hover:text-foreground transition-colors mb-6"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          {worldId ? "Back to World" : "Back to Dashboard"}
-        </Link>
-
-        <ToolPageQuote toolId="sensorium" />
-
-        {/* Action bar */}
-        <ToolActionBar
-          onSave={handleSave}
-          isSaving={updateWorksheet.isPending || createWorksheet.isPending}
-          onOpen={worldId ? () => setWorksheetSelectorOpen(true) : undefined}
-          onPrint={() => window.print()}
-          onExport={() => setExportDialogOpen(true)}
-          onShare={
-            currentWorksheetId || worksheetId
-              ? () => setShareDialogOpen(true)
-              : undefined
-          }
-          isShared={!!shareConfig?.enabled}
-          isCloudEnabled={!!(worldId && user)}
-          onNotesClick={() => setNotesSheetOpen(true)}
-          onMoodboardClick={() => setMoodboardSheetOpen(true)}
-          moodboardCount={formState.moodboard?.length || 0}
-          exportLabel="Export Worksheet"
-          className="mb-6"
-          extraActions={
-            <QuickExportButton
-              toolName="Sensorium"
-              worldName={worldNameForExport}
-              worksheetTitle={currentWorksheetTitle || undefined}
+    <ToolPageLayout
+      toolType={TOOL_TYPE}
+      onSave={handleSave}
+      isSaving={updateWorksheet.isPending || createWorksheet.isPending}
+      onOpen={worldId ? () => setWorksheetSelectorOpen(true) : undefined}
+      onPrint={() => window.print()}
+      onExport={() => setExportDialogOpen(true)}
+      onShare={
+        currentWorksheetId || worksheetId
+          ? () => setShareDialogOpen(true)
+          : undefined
+      }
+      isShared={!!shareConfig?.enabled}
+      isCloudEnabled={!!(worldId && user)}
+      onNotesClick={() => setNotesSheetOpen(true)}
+      onMoodboardClick={() => setMoodboardSheetOpen(true)}
+      moodboardCount={formState.moodboard?.length || 0}
+      extraActions={
+        <QuickExportButton
+          toolName="Sensorium"
+          worldName={worldNameForExport}
+          worksheetTitle={currentWorksheetTitle || undefined}
+          formState={formState}
+          summaryTemplate={
+            <SensoriumSummaryTemplate
               formState={formState}
-              summaryTemplate={
-                <SensoriumSummaryTemplate
-                  formState={formState}
-                  worldName={worldNameForExport}
-                />
-              }
-              fullTemplate={
-                <SensoriumFullReportTemplate
-                  formState={formState}
-                  worldName={worldNameForExport}
-                />
-              }
-              defaultFilename="sensorium"
+              worldName={worldNameForExport}
             />
           }
-          worldId={worldId}
-          worksheetId={currentWorksheetId || worksheetId}
+          fullTemplate={
+            <SensoriumFullReportTemplate
+              formState={formState}
+              worldName={worldNameForExport}
+            />
+          }
+          defaultFilename="sensorium"
         />
-
-        {/* Title */}
-        <div className="flex items-center gap-4 mb-2">
-          {ToolIcon && <ToolIcon className="h-10 w-10" />}
-          <h1 className="font-display text-3xl md:text-4xl tracking-sf-title">
-            <span className="font-normal">Sensorium:</span>{" "}
-            <span className="font-light">Alien Sensory Systems</span>
-          </h1>
-        </div>
-        <p className="text-tier-2 mb-6 max-w-2xl">
-          Design evolutionarily plausible sensory systems for alien species.
-          Derive senses from environmental constraints or validate custom selections.
-        </p>
-
-        {/* Intro section */}
-        <ToolIntroSection data={TOOL_INTROS["sensorium"]} />
-
-        {/* Worksheet chrome */}
-        {(currentWorksheetId || worksheetId) && (
-          <div className="mb-4 space-y-2">
-            <WorksheetTitle
-              title={currentWorksheetTitle || "Untitled Sensorium"}
-              onRename={handleRename}
-              isRenaming={renameWorksheet.isPending}
-            />
-            <WorksheetTagsBar
-              tags={worksheetTags}
-              onChange={handleTagsChange}
-              worksheetId={currentWorksheetId || worksheetId || ""}
-            />
-          </div>
-        )}
-
+      }
+      worksheetId={currentWorksheetId || worksheetId}
+      worksheetTitle={currentWorksheetTitle}
+      onRenameWorksheet={handleRename}
+      worksheetLoading={worksheetLoading}
+      worksheetTags={worksheetTags}
+      onTagsChange={handleTagsChange}
+      isLoggedIn={!!user}
+    >
         {/* Main layout: sidebar + content */}
         <div className="flex gap-6">
           {/* Desktop sidebar */}
@@ -1466,8 +1411,6 @@ const Sensorium = () => {
             </CollapsibleSection>
           </div>
         </div>
-      </main>
-
       {/* ─── Dialogs & Sheets ──────────────────────────────────── */}
 
       <ExportDialog
@@ -1530,7 +1473,7 @@ const Sensorium = () => {
         worksheetId={currentWorksheetId || worksheetId || undefined}
         worldId={worldId || undefined}
       />
-    </PageShell>
+    </ToolPageLayout>
   );
 };
 

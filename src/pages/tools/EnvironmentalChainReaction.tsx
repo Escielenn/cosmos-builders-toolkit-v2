@@ -1,10 +1,6 @@
 import { useState, useEffect, useMemo, lazy, Suspense } from "react";
-import PageShell from "@/components/layout/PageShell";
-import { useWorldId } from "@/hooks/use-world-id";
-import { PageBursts } from "@/components/ui/data-burst";
-import { TOOL_PAGE_BURSTS } from "@/lib/data-bursts";
 import { Link, useSearchParams } from "react-router-dom";
-import { ArrowLeft, Download, Save, Info, Printer, ExternalLink, Globe, FileText, Image as ImageIcon, ChevronDown } from "lucide-react";
+import { Download, Save, Info, Printer, ExternalLink, Globe, Image as ImageIcon, ChevronDown } from "lucide-react";
 import {
   Collapsible,
   CollapsibleContent,
@@ -17,16 +13,14 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { Badge } from "@/components/ui/badge";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useToast } from "@/hooks/use-toast";
+import { useWorldId } from "@/hooks/use-world-id";
 import { useWorksheets, useWorksheet, useWorksheetsByType, useRenameWorksheet } from "@/hooks/use-worksheets";
-import { WorksheetTitle } from "@/components/tools/WorksheetTitle";
-import { getToolIcon } from "@/components/icons/tool-icons";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
 import WorksheetLinkSelector from "@/components/tools/WorksheetLinkSelector";
 import { useWorlds } from "@/hooks/use-worlds";
@@ -36,18 +30,16 @@ import SectionNavigation, { Section, MobileSectionNav } from "@/components/tools
 import ToolSidebar from "@/components/tools/ToolSidebar";
 import CollapsibleSection from "@/components/tools/CollapsibleSection";
 import KeyChoicesSidebar, { KeyChoicesSection, MobileKeyChoices } from "@/components/tools/KeyChoicesSidebar";
-import ToolActionBar from "@/components/tools/ToolActionBar";
+import ToolPageLayout from "@/components/tools/ToolPageLayout";
 import QuickExportButton from "@/components/tools/QuickExportButton";
 import SelectedParametersSidebar from "@/components/tools/SelectedParametersSidebar";
 import ExportDialog from "@/components/tools/ExportDialog";
 import ShareDialog from "@/components/sharing/ShareDialog";
 import { useWorksheetShare } from "@/hooks/use-sharing";
 import type { MoodboardImage } from "@/hooks/use-moodboard";
-import { WorksheetTagsBar } from "@/components/tools/WorksheetTagsBar";
 import { useTags } from "@/hooks/use-tags";
 import { WorksheetNotesSheet } from "@/components/tools/WorksheetNotesSheet";
 import { WorksheetMoodboardSheet } from "@/components/tools/WorksheetMoodboardSheet";
-import { ToolPageQuote } from "@/components/quotes/ToolPageQuote";
 import { ECRSummaryTemplate, ECRFullReportTemplate } from "@/lib/pdf/templates";
 import { Json } from "@/integrations/supabase/types";
 import QuestionSection from "@/components/tools/QuestionSection";
@@ -460,7 +452,6 @@ const LEVEL5_QUESTIONS = [
 ];
 
 const TOOL_TYPE = "environmental-chain-reaction";
-const ToolIcon = getToolIcon(TOOL_TYPE);
 
 const EnvironmentalChainReaction = () => {
   const [formState, setFormState] = useState<FormState>(initialFormState);
@@ -864,78 +855,37 @@ const EnvironmentalChainReaction = () => {
   };
 
   return (
-    <PageShell className="sf-atmosphere">
-      <main className="container relative mx-auto px-4 pt-24 pb-16">
-        <PageBursts bursts={TOOL_PAGE_BURSTS["environmental-chain-reaction"]} />
-        {/* Back Link */}
-        <Link
-          to={worldId ? `/worlds/${worldId}` : "/"}
-          className="inline-flex items-center gap-2 text-sm text-tier-3 hover:text-foreground transition-colors mb-6"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          {worldId ? "Back to World" : "Back to Dashboard"}
-        </Link>
-
-        <ToolPageQuote toolId="environmental-chain-reaction" />
-
-        {/* Action Bar */}
-        <ToolActionBar
-          onSave={handleSave}
-          onOpen={worldId ? () => setWorksheetSelectorOpen(true) : undefined}
-          onPrint={handlePrint}
-          onExport={handleExport}
-          onShare={(currentWorksheetId || worksheetId) ? () => setShareDialogOpen(true) : undefined}
-          isShared={!!shareConfig?.enabled}
-          isCloudEnabled={!!(worldId && user)}
-          onNotesClick={() => setNotesSheetOpen(true)}
-          onMoodboardClick={() => setMoodboardSheetOpen(true)}
-          moodboardCount={formState.moodboard?.length || 0}
-          worldId={worldId}
-          worksheetId={currentWorksheetId || worksheetId}
-          className="mb-6"
-          extraActions={
-            <QuickExportButton
-              toolName="Cascade"
-              worldName={worldName || undefined}
-              formState={formState}
-              summaryTemplate={<ECRSummaryTemplate formState={formState} worldName={worldName || undefined} />}
-              fullTemplate={<ECRFullReportTemplate formState={formState} worldName={worldName || undefined} />}
-              defaultFilename="environmental-chain-reaction"
-            />
-          }
+    <ToolPageLayout
+      toolType={TOOL_TYPE}
+      onSave={handleSave}
+      onOpen={worldId ? () => setWorksheetSelectorOpen(true) : undefined}
+      onPrint={handlePrint}
+      onExport={handleExport}
+      onShare={(currentWorksheetId || worksheetId) ? () => setShareDialogOpen(true) : undefined}
+      isShared={!!shareConfig?.enabled}
+      isCloudEnabled={!!(worldId && user)}
+      onNotesClick={() => setNotesSheetOpen(true)}
+      onMoodboardClick={() => setMoodboardSheetOpen(true)}
+      moodboardCount={formState.moodboard?.length || 0}
+      extraActions={
+        <QuickExportButton
+          toolName="Cascade"
+          worldName={worldName || undefined}
+          formState={formState}
+          summaryTemplate={<ECRSummaryTemplate formState={formState} worldName={worldName || undefined} />}
+          fullTemplate={<ECRFullReportTemplate formState={formState} worldName={worldName || undefined} />}
+          defaultFilename="environmental-chain-reaction"
         />
-
-        {/* Title */}
-        <div className="mb-8">
-          <Badge className="mb-2">Tool 1</Badge>
-          <div className="flex items-center gap-3">
-            {ToolIcon && <ToolIcon className="w-12 h-12 rounded-sm shrink-0" />}
-            <h1 className="font-display text-3xl md:text-4xl tracking-sf-title">
-              <span className="font-normal">Cascade:</span>{" "}
-              <span className="font-light">Environmental Chain Reaction</span>
-            </h1>
-          </div>
-          <p className="text-tier-2 mt-2 max-w-2xl">
-            Map how planetary parameters cascade into biology, psychology,
-            mythology, and culture.
-          </p>
-          {(currentWorksheetId || worksheetId) && (
-            <WorksheetTitle
-              title={currentWorksheetTitle}
-              onRename={handleRename}
-              icon={<FileText className="w-4 h-4 text-primary" />}
-              disabled={!user || worksheetLoading}
-            />
-          )}
-          {(currentWorksheetId || worksheetId) && (
-            <WorksheetTagsBar
-              worksheetId={(currentWorksheetId || worksheetId)!}
-              tags={worksheetTags}
-              onChange={handleTagsChange}
-            />
-          )}
-        </div>
-
+      }
+      worksheetId={currentWorksheetId || worksheetId}
+      worksheetTitle={currentWorksheetTitle}
+      onRenameWorksheet={handleRename}
+      worksheetLoading={worksheetLoading}
+      worksheetTags={worksheetTags}
+      onTagsChange={handleTagsChange}
+      isLoggedIn={!!user}
+      pageShellClassName="sf-atmosphere"
+    >
         {/* Introduction */}
         <GlassPanel glow className="p-6 md:p-8 mb-8">
           <h2 className="font-heading text-xl font-light uppercase tracking-[2px] mb-4 gradient-text">
@@ -1504,7 +1454,6 @@ const EnvironmentalChainReaction = () => {
           <MobileSectionNav sections={SECTIONS} />
           <MobileKeyChoices sections={keyChoicesSections} title="Cascade Summary" />
         </div>
-      </main>
 
       <WorksheetNotesSheet
         open={notesSheetOpen}
@@ -1563,7 +1512,7 @@ const EnvironmentalChainReaction = () => {
           onCreate={handleWorksheetCreate}
         />
       )}
-    </PageShell>
+    </ToolPageLayout>
   );
 };
 

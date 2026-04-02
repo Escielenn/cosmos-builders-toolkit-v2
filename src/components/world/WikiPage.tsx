@@ -400,6 +400,11 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
         </div>
       )}
 
+      {/* Persistent tip for view mode */}
+      {!isEditing && canEdit && (
+        <FirstTimeHint hintId="wiki-edit-tip" icon={Pencil} className="mt-3" />
+      )}
+
       {/* Connection suggestions */}
       {canEdit && suggestions.length > 0 && (
         <div className="mt-4 space-y-2">

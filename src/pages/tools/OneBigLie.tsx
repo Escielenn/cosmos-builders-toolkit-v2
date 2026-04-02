@@ -1,25 +1,18 @@
 import { useState, useEffect, useMemo, lazy, Suspense } from "react";
-import PageShell from "@/components/layout/PageShell";
 import { useWorldId } from "@/hooks/use-world-id";
-import { PageBursts } from "@/components/ui/data-burst";
-import { TOOL_PAGE_BURSTS } from "@/lib/data-bursts";
-import { WorksheetTagsBar } from "@/components/tools/WorksheetTagsBar";
 
 const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
 import { useTags } from "@/hooks/use-tags";
-import { Link, useSearchParams } from "react-router-dom";
-import { ArrowLeft, ExternalLink, ChevronDown } from "lucide-react";
+import { useSearchParams } from "react-router-dom";
+import { ExternalLink, ChevronDown } from "lucide-react";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import ToolIntroSection from "@/components/tools/ToolIntroSection";
-import { TOOL_INTROS } from "@/lib/tool-intros";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import {
   useWorksheets,
@@ -27,15 +20,13 @@ import {
   useWorksheetsByType,
   useRenameWorksheet,
 } from "@/hooks/use-worksheets";
-import { WorksheetTitle } from "@/components/tools/WorksheetTitle";
-import { getToolIcon } from "@/components/icons/tool-icons";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
 import { useAuth } from "@/contexts/AuthContext";
 import SectionNavigation, { MobileSectionNav } from "@/components/tools/SectionNavigation";
 import ToolSidebar from "@/components/tools/ToolSidebar";
 import CollapsibleSection from "@/components/tools/CollapsibleSection";
 import KeyChoicesSidebar, { KeyChoicesSection, MobileKeyChoices } from "@/components/tools/KeyChoicesSidebar";
-import ToolActionBar from "@/components/tools/ToolActionBar";
+import ToolPageLayout from "@/components/tools/ToolPageLayout";
 import QuickExportButton from "@/components/tools/QuickExportButton";
 import ExportDialog from "@/components/tools/ExportDialog";
 import ShareDialog from "@/components/sharing/ShareDialog";
@@ -43,7 +34,6 @@ import { useWorksheetShare } from "@/hooks/use-sharing";
 import type { MoodboardImage } from "@/hooks/use-moodboard";
 import { WorksheetNotesSheet } from "@/components/tools/WorksheetNotesSheet";
 import { WorksheetMoodboardSheet } from "@/components/tools/WorksheetMoodboardSheet";
-import { ToolPageQuote } from "@/components/quotes/ToolPageQuote";
 import { OneBigLieSummaryTemplate, OneBigLieFullReportTemplate } from "@/lib/pdf/templates";
 import { useWorlds } from "@/hooks/use-worlds";
 import { Json } from "@/integrations/supabase/types";
@@ -129,7 +119,6 @@ const initialFormState: FormState = {
 };
 
 const TOOL_TYPE = "one-big-lie";
-const ToolIcon = getToolIcon(TOOL_TYPE);
 
 const EXTERNAL_RESOURCES = [
   {
@@ -435,88 +424,44 @@ const OneBigLie = () => {
   const handlePrint = () => window.print();
 
   return (
-    <PageShell>
-      <main className="relative container mx-auto px-4 pt-24 pb-16">
-        <PageBursts bursts={TOOL_PAGE_BURSTS["one-big-lie"]} />
-        {/* Back Link */}
-        <Link
-          to={worldId ? `/worlds/${worldId}` : "/"}
-          className="inline-flex items-center gap-2 text-sm text-tier-3 hover:text-foreground transition-colors mb-6"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          {worldId ? "Back to World" : "Back to Dashboard"}
-        </Link>
-
-        <ToolPageQuote toolId="one-big-lie" />
-
-        {/* Action Bar */}
-        <ToolActionBar
-          onSave={handleSave}
-          onOpen={worldId ? () => setWorksheetSelectorOpen(true) : undefined}
-          onPrint={handlePrint}
-          onExport={handleExport}
-          onShare={
-            currentWorksheetId || worksheetId
-              ? () => setShareDialogOpen(true)
-              : undefined
+    <ToolPageLayout
+      toolType={TOOL_TYPE}
+      onSave={handleSave}
+      onOpen={worldId ? () => setWorksheetSelectorOpen(true) : undefined}
+      onPrint={handlePrint}
+      onExport={handleExport}
+      onShare={
+        currentWorksheetId || worksheetId
+          ? () => setShareDialogOpen(true)
+          : undefined
+      }
+      isShared={!!shareConfig?.enabled}
+      isCloudEnabled={!!(worldId && user)}
+      onNotesClick={() => setNotesSheetOpen(true)}
+      onMoodboardClick={() => setMoodboardSheetOpen(true)}
+      moodboardCount={formState.moodboard?.length || 0}
+      extraActions={
+        <QuickExportButton
+          toolName="Axiom"
+          worldName={worldName}
+          formState={formState}
+          summaryTemplate={
+            <OneBigLieSummaryTemplate formState={formState} worldName={worldName} />
           }
-          isShared={!!shareConfig?.enabled}
-          isCloudEnabled={!!(worldId && user)}
-          onNotesClick={() => setNotesSheetOpen(true)}
-          onMoodboardClick={() => setMoodboardSheetOpen(true)}
-          moodboardCount={formState.moodboard?.length || 0}
-          exportLabel="Export Declaration"
-          className="mb-6"
-          extraActions={
-            <QuickExportButton
-              toolName="Axiom"
-              worldName={worldName}
-              formState={formState}
-              summaryTemplate={
-                <OneBigLieSummaryTemplate formState={formState} worldName={worldName} />
-              }
-              fullTemplate={
-                <OneBigLieFullReportTemplate formState={formState} worldName={worldName} />
-              }
-              defaultFilename="one-big-lie"
-            />
+          fullTemplate={
+            <OneBigLieFullReportTemplate formState={formState} worldName={worldName} />
           }
-          worldId={worldId}
-          worksheetId={currentWorksheetId || worksheetId}
+          defaultFilename="one-big-lie"
         />
-
-        {/* Title */}
-        <div className="mb-8">
-          <Badge className="mb-2">Tool #3</Badge>
-          <div className="flex items-center gap-3">
-            {ToolIcon && <ToolIcon className="w-12 h-12 rounded-sm shrink-0" />}
-            <h1 className="font-display text-3xl md:text-4xl tracking-sf-title">
-              <span className="font-normal">Axiom:</span>{" "}
-              <span className="font-light">The One Big Lie</span>
-            </h1>
-          </div>
-          <p className="text-tier-2 mt-2 max-w-2xl">
-            Declare your single violation of known physics, then systematically
-            trace its consequences across every domain of your world.
-          </p>
-
-          {(currentWorksheetId || worksheetId) && (
-            <WorksheetTitle
-              title={currentWorksheetTitle}
-              onRename={handleRename}
-              disabled={!user || worksheetLoading}
-            />
-          )}
-          {(currentWorksheetId || worksheetId) && (
-            <WorksheetTagsBar
-              worksheetId={(currentWorksheetId || worksheetId)!}
-              tags={worksheetTags}
-              onChange={handleTagsChange}
-            />
-          )}
-        </div>
-
-        <ToolIntroSection data={TOOL_INTROS["one-big-lie"]} />
+      }
+      worksheetId={currentWorksheetId || worksheetId}
+      worksheetTitle={currentWorksheetTitle}
+      onRenameWorksheet={handleRename}
+      worksheetLoading={worksheetLoading}
+      worksheetTags={worksheetTags}
+      onTagsChange={handleTagsChange}
+      isLoggedIn={!!user}
+    >
 
         {/* Introduction Panel */}
         <GlassPanel glow className="p-6 md:p-8 mb-8">
@@ -1242,8 +1187,6 @@ const OneBigLie = () => {
           <MobileSectionNav sections={ONE_BIG_LIE_SECTIONS} />
           <MobileKeyChoices sections={keyChoicesSections} title="Summary" />
         </div>
-      </main>
-
       {/* Notes & Moodboard Sheets */}
       <WorksheetNotesSheet
         open={notesSheetOpen}
@@ -1309,7 +1252,7 @@ const OneBigLie = () => {
           onCreate={handleWorksheetCreate}
         />
       )}
-    </PageShell>
+    </ToolPageLayout>
   );
 };
 

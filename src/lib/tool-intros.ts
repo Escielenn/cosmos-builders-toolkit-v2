@@ -14,6 +14,47 @@ export interface ToolIntroData {
 }
 
 export const TOOL_INTROS: Record<string, ToolIntroData> = {
+  "environmental-chain-reaction": {
+    title: "The Cascade Principle",
+    purpose:
+      "Physics shapes environment, environment shapes biology, biology shapes psychology, psychology shapes mythology, and mythology shapes culture. Change one upstream variable and trace its consequences all the way down.",
+    examples: [
+      {
+        bookTitle: "Dune",
+        author: "Frank Herbert",
+        year: "1965",
+        isbn: "9780441013593",
+        quotes: [
+          "The mystery of life isn\u2019t a problem to solve, but a reality to experience.",
+        ],
+        explanation:
+          "Arrakis demonstrates a complete cascade: extreme aridity → sandworm biology → spice economy → Fremen warrior culture → messianic mythology → galactic political upheaval. Every cultural trait traces back to water scarcity.",
+      },
+      {
+        bookTitle: "The Left Hand of Darkness",
+        author: "Ursula K. Le Guin",
+        year: "1969",
+        isbn: "9780441478125",
+        quotes: [
+          "The king was pregnant.",
+        ],
+        explanation:
+          "Gethen\u2019s perpetual winter cascades through biology (ambisexual physiology), psychology (no gender-based dominance), politics (no war of conquest in recorded history), and mythology (light and dark as complementary rather than opposed).",
+      },
+      {
+        bookTitle: "Blindsight",
+        author: "Peter Watts",
+        year: "2006",
+        isbn: "9780765312839",
+        quotes: [
+          "Evolution has no foresight.",
+        ],
+        explanation:
+          "Watts traces how deep-space environmental pressures produce the Scramblers: organisms with extraordinary intelligence but zero consciousness. The cascade runs from environment (no light, extreme radiation) through biology (distributed processing) to the philosophical implication that sentience may be an evolutionary dead end.",
+      },
+    ],
+  },
+
   "spacecraft-designer": {
     title: "The Living Ship",
     purpose:

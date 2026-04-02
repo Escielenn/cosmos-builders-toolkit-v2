@@ -1,16 +1,10 @@
 import { useState, useEffect, useMemo, lazy, Suspense } from "react";
-import PageShell from "@/components/layout/PageShell";
 import { useWorldId } from "@/hooks/use-world-id";
-import { PageBursts } from "@/components/ui/data-burst";
-import { TOOL_PAGE_BURSTS } from "@/lib/data-bursts";
-import { WorksheetTagsBar } from "@/components/tools/WorksheetTagsBar";
 
 const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
 import { useTags } from "@/hooks/use-tags";
-import { Link, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import {
-  ArrowLeft,
-  FileText,
   Copy,
   Clock,
   Rocket,
@@ -19,14 +13,11 @@ import {
   BookOpen,
   AlertTriangle,
 } from "lucide-react";
-import ToolIntroSection from "@/components/tools/ToolIntroSection";
-import { TOOL_INTROS } from "@/lib/tool-intros";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 import {
@@ -45,8 +36,6 @@ import {
   useWorksheetsByType,
   useRenameWorksheet,
 } from "@/hooks/use-worksheets";
-import { WorksheetTitle } from "@/components/tools/WorksheetTitle";
-import { getToolIcon } from "@/components/icons/tool-icons";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
 import { useAuth } from "@/contexts/AuthContext";
 import { MobileSectionNav } from "@/components/tools/SectionNavigation";
@@ -57,7 +46,7 @@ import KeyChoicesSidebar, {
   KeyChoicesSection,
   MobileKeyChoices,
 } from "@/components/tools/KeyChoicesSidebar";
-import ToolActionBar from "@/components/tools/ToolActionBar";
+import ToolPageLayout from "@/components/tools/ToolPageLayout";
 import QuickExportButton from "@/components/tools/QuickExportButton";
 import ExportDialog from "@/components/tools/ExportDialog";
 import ShareDialog from "@/components/sharing/ShareDialog";
@@ -65,7 +54,6 @@ import { useWorksheetShare } from "@/hooks/use-sharing";
 import type { MoodboardImage } from "@/hooks/use-moodboard";
 import { WorksheetNotesSheet } from "@/components/tools/WorksheetNotesSheet";
 import { WorksheetMoodboardSheet } from "@/components/tools/WorksheetMoodboardSheet";
-import { ToolPageQuote } from "@/components/quotes/ToolPageQuote";
 import {
   TimeDilationSummaryTemplate,
   TimeDilationFullReportTemplate,
@@ -135,7 +123,6 @@ const initialFormState: FormState = {
 };
 
 const TOOL_TYPE = "time-dilation";
-const ToolIcon = getToolIcon(TOOL_TYPE);
 const LOCAL_STORAGE_KEY = "time-dilation-calculator-v1";
 
 // ─── Severity color helpers ──────────────────────────────────────────
@@ -496,80 +483,36 @@ const TimeDilationCalculator = () => {
   // ─── Render ────────────────────────────────────────────────────────
 
   return (
-    <PageShell>
-      <main className="container relative mx-auto px-4 pt-24 pb-16">
-        <PageBursts bursts={TOOL_PAGE_BURSTS["time-dilation"]} />
-        {/* Back Link */}
-        <Link
-          to={worldId ? `/worlds/${worldId}` : "/"}
-          className="inline-flex items-center gap-2 text-sm text-tier-3 hover:text-foreground transition-colors mb-6"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          {worldId ? "Back to World" : "Back to Dashboard"}
-        </Link>
-
-        <ToolPageQuote toolId="time-dilation" />
-
-        {/* Action Bar */}
-        <ToolActionBar
-          onSave={handleSave}
-          onOpen={worldId ? () => setWorksheetSelectorOpen(true) : undefined}
-          onPrint={() => window.print()}
-          onExport={() => setExportDialogOpen(true)}
-          onShare={(currentWorksheetId || worksheetId) ? () => setShareDialogOpen(true) : undefined}
-          isShared={!!shareConfig?.enabled}
-          isCloudEnabled={!!(worldId && user)}
-          onNotesClick={() => setNotesSheetOpen(true)}
-          onMoodboardClick={() => setMoodboardSheetOpen(true)}
-          moodboardCount={formState.moodboard?.length || 0}
-          exportLabel="Export Worksheet"
-          className="mb-6"
-          extraActions={
-            <QuickExportButton
-              toolName="Paradox"
-              worldName={worldNameForExport}
-              formState={formState}
-              summaryTemplate={<TimeDilationSummaryTemplate formState={formState} worldName={worldNameForExport} />}
-              fullTemplate={<TimeDilationFullReportTemplate formState={formState} worldName={worldNameForExport} />}
-              defaultFilename="time-dilation"
-            />
-          }
-          worldId={worldId}
-          worksheetId={currentWorksheetId || worksheetId}
+    <ToolPageLayout
+      toolType={TOOL_TYPE}
+      onSave={handleSave}
+      onOpen={worldId ? () => setWorksheetSelectorOpen(true) : undefined}
+      onPrint={() => window.print()}
+      onExport={() => setExportDialogOpen(true)}
+      onShare={(currentWorksheetId || worksheetId) ? () => setShareDialogOpen(true) : undefined}
+      isShared={!!shareConfig?.enabled}
+      isCloudEnabled={!!(worldId && user)}
+      onNotesClick={() => setNotesSheetOpen(true)}
+      onMoodboardClick={() => setMoodboardSheetOpen(true)}
+      moodboardCount={formState.moodboard?.length || 0}
+      extraActions={
+        <QuickExportButton
+          toolName="Paradox"
+          worldName={worldNameForExport}
+          formState={formState}
+          summaryTemplate={<TimeDilationSummaryTemplate formState={formState} worldName={worldNameForExport} />}
+          fullTemplate={<TimeDilationFullReportTemplate formState={formState} worldName={worldNameForExport} />}
+          defaultFilename="time-dilation"
         />
-
-        {/* Title */}
-        <div className="mb-8">
-          <Badge className="mb-2">Pro Tool</Badge>
-          <div className="flex items-center gap-3">
-            {ToolIcon && <ToolIcon className="w-12 h-12 rounded-sm shrink-0" />}
-            <h1 className="font-display text-3xl md:text-4xl tracking-sf-title">
-              <span className="font-normal">Paradox:</span>{" "}
-              <span className="font-light">Time Dilation Calculator</span>
-            </h1>
-          </div>
-          <p className="text-tier-2 mt-2 max-w-2xl">
-            Every journey costs time. Know what yours will cost.
-          </p>
-          {(currentWorksheetId || worksheetId) && (
-            <WorksheetTitle
-              title={currentWorksheetTitle}
-              onRename={handleRename}
-              icon={<FileText className="w-4 h-4 text-primary" />}
-              disabled={!user || worksheetLoading}
-            />
-          )}
-          {(currentWorksheetId || worksheetId) && (
-            <WorksheetTagsBar
-              worksheetId={(currentWorksheetId || worksheetId)!}
-              tags={worksheetTags}
-              onChange={handleTagsChange}
-            />
-          )}
-        </div>
-
-        <ToolIntroSection data={TOOL_INTROS["time-dilation-calculator"]} />
-
+      }
+      worksheetId={currentWorksheetId || worksheetId}
+      worksheetTitle={currentWorksheetTitle}
+      onRenameWorksheet={handleRename}
+      worksheetLoading={worksheetLoading}
+      worksheetTags={worksheetTags}
+      onTagsChange={handleTagsChange}
+      isLoggedIn={!!user}
+    >
         {/* Introduction */}
         <GlassPanel glow className="p-6 md:p-8 mb-8">
           <h2 className="font-heading text-xl font-light uppercase tracking-[2px] mb-4 gradient-text">
@@ -1315,7 +1258,6 @@ const TimeDilationCalculator = () => {
           <MobileSectionNav sections={TIME_DILATION_SECTIONS} />
           <MobileKeyChoices sections={keyChoicesSections} title="Dilation Summary" />
         </div>
-      </main>
 
       {/* ═══ Dialogs & Sheets ═══ */}
       <WorksheetNotesSheet
@@ -1367,7 +1309,7 @@ const TimeDilationCalculator = () => {
         onSelect={handleWorksheetSelect}
         onCreate={handleWorksheetCreate}
       />
-    </PageShell>
+    </ToolPageLayout>
   );
 };
 

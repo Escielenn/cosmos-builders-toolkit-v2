@@ -1,15 +1,10 @@
 import { useState, useMemo, useCallback, lazy, Suspense } from "react";
-import PageShell from "@/components/layout/PageShell";
 import { useWorldId } from "@/hooks/use-world-id";
-import { PageBursts } from "@/components/ui/data-burst";
-import { TOOL_PAGE_BURSTS } from "@/lib/data-bursts";
-import { WorksheetTagsBar } from "@/components/tools/WorksheetTagsBar";
 
 const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
 import { useTags } from "@/hooks/use-tags";
-import { Link, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import {
-  ArrowLeft,
   Copy,
   Crown,
   Swords,
@@ -19,8 +14,7 @@ import {
   Zap,
   AlertTriangle,
 } from "lucide-react";
-import ToolIntroSection from "@/components/tools/ToolIntroSection";
-import { TOOL_INTROS } from "@/lib/tool-intros";
+import ToolPageLayout from "@/components/tools/ToolPageLayout";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -41,8 +35,6 @@ import {
   useWorksheetsByType,
   useRenameWorksheet,
 } from "@/hooks/use-worksheets";
-import { WorksheetTitle } from "@/components/tools/WorksheetTitle";
-import { getToolIcon } from "@/components/icons/tool-icons";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
 import { useAuth } from "@/contexts/AuthContext";
 import { MobileSectionNav } from "@/components/tools/SectionNavigation";
@@ -53,12 +45,10 @@ import KeyChoicesSidebar, {
   type KeyChoicesSection,
   MobileKeyChoices,
 } from "@/components/tools/KeyChoicesSidebar";
-import ToolActionBar from "@/components/tools/ToolActionBar";
 import QuickExportButton from "@/components/tools/QuickExportButton";
 import ExportDialog from "@/components/tools/ExportDialog";
 import ShareDialog from "@/components/sharing/ShareDialog";
 import type { MoodboardImage } from "@/hooks/use-moodboard";
-import { ToolPageQuote } from "@/components/quotes/ToolPageQuote";
 import { useWorlds } from "@/hooks/use-worlds";
 import { Json } from "@/integrations/supabase/types";
 import { cn } from "@/lib/utils";
@@ -135,7 +125,6 @@ const initialFormState: FormState = {
 };
 
 const TOOL_TYPE = "kardashev-scale";
-const ToolIcon = getToolIcon(TOOL_TYPE);
 const LOCAL_STORAGE_KEY = "kardashev-scale-v1";
 
 const CASCADE_ICONS: Record<string, typeof Crown> = {
@@ -337,71 +326,33 @@ const KardashevScale = () => {
   const currentWorld = worlds.find((w) => w.id === worldId);
 
   return (
-    <PageShell>
-      <PageBursts bursts={TOOL_PAGE_BURSTS["kardashev-scale"] || []} />
-
-      {/* Header */}
-      <div className="sf-tool-content">
-        {!worldId && (
-          <Link
-            to="/"
-            className="inline-flex items-center text-muted-foreground hover:text-foreground mb-4 transition-colors text-sm"
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Dashboard
-          </Link>
-        )}
-
-        {/* Action Bar */}
-        <ToolActionBar
-          onSave={handleSave}
-          onPrint={() => window.print()}
-          onExport={() => setExportDialogOpen(true)}
-          onOpen={worldId ? () => setWorksheetSelectorOpen(true) : undefined}
-          onShare={currentWorksheetId ? () => setShareDialogOpen(true) : undefined}
-          isSaving={updateWorksheet.isPending || createWorksheet.isPending}
-          isCloudEnabled={!!(worldId && user)}
-          worldId={worldId || undefined}
-          worksheetId={currentWorksheetId || undefined}
-          className="mt-4 mb-4"
-          extraActions={
-            <QuickExportButton
-              toolType={TOOL_TYPE}
-              worksheetId={currentWorksheetId}
-              formData={formState}
-              results={results}
-            />
-          }
+    <ToolPageLayout
+      toolType={TOOL_TYPE}
+      onSave={handleSave}
+      onPrint={() => window.print()}
+      onExport={() => setExportDialogOpen(true)}
+      onOpen={worldId ? () => setWorksheetSelectorOpen(true) : undefined}
+      onShare={currentWorksheetId ? () => setShareDialogOpen(true) : undefined}
+      isSaving={updateWorksheet.isPending || createWorksheet.isPending}
+      isCloudEnabled={!!(worldId && user)}
+      extraActions={
+        <QuickExportButton
+          toolType={TOOL_TYPE}
+          worksheetId={currentWorksheetId}
+          formData={formState}
+          results={results}
         />
-
-        {/* Tool Title */}
-        <div className="flex items-center gap-3">
-          {ToolIcon && <ToolIcon className="w-12 h-12 rounded-sm shrink-0" />}
-          <h1 className="font-display text-3xl md:text-4xl tracking-sf-title">
-            <span className="font-normal">K-Scale:</span>{" "}
-            <span className="font-light">Kardashev Scale</span>
-          </h1>
-        </div>
-        <p className="text-tier-2 mt-2 max-w-2xl">
-          Classify your civilization's energy consumption and explore the cascade implications of each Kardashev level.
-        </p>
-        {currentWorksheetId && (
-          <WorksheetTitle
-            title={currentWorksheetTitle || null}
-            onRename={async (newTitle) => {
-              if (!currentWorksheetId) return;
-              await renameWorksheet.mutateAsync({ worksheetId: currentWorksheetId, title: newTitle });
-              setCurrentWorksheetTitle(newTitle);
-            }}
-            icon={<Zap className="w-5 h-5 text-primary" />}
-            disabled={!user}
-          />
-        )}
-        {currentWorksheetId && (
-          <WorksheetTagsBar worksheetId={currentWorksheetId} />
-        )}
-
-        <ToolIntroSection data={TOOL_INTROS[TOOL_TYPE]} />
+      }
+      worksheetId={currentWorksheetId}
+      worksheetTitle={currentWorksheetTitle}
+      onRenameWorksheet={async (newTitle) => {
+        if (!currentWorksheetId) return;
+        await renameWorksheet.mutateAsync({ worksheetId: currentWorksheetId, title: newTitle });
+        setCurrentWorksheetTitle(newTitle);
+      }}
+      worksheetIcon={<Zap className="w-5 h-5 text-primary" />}
+      isLoggedIn={!!user}
+    >
 
         {/* ─── Preset Section ────────────────────────────────────── */}
         <CollapsibleSection
@@ -919,10 +870,6 @@ const KardashevScale = () => {
           </div>
         </CollapsibleSection>
 
-        {/* Quote */}
-        <ToolPageQuote toolId={TOOL_TYPE} />
-      </div>
-
       {/* Sidebar */}
       <ToolSidebar>
         <SectionNavigation sections={KARDASHEV_SECTIONS} />
@@ -983,7 +930,7 @@ const KardashevScale = () => {
           entityTitle={currentWorksheetTitle || "K-Scale Analysis"}
         />
       )}
-    </PageShell>
+    </ToolPageLayout>
   );
 };
 

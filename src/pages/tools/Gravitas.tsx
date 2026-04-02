@@ -1,16 +1,11 @@
 import { useState, useEffect, useMemo, lazy, Suspense } from "react";
-import PageShell from "@/components/layout/PageShell";
 import { useWorldId } from "@/hooks/use-world-id";
-import { PageBursts } from "@/components/ui/data-burst";
-import { TOOL_PAGE_BURSTS } from "@/lib/data-bursts";
-import { WorksheetTagsBar } from "@/components/tools/WorksheetTagsBar";
 import { logToSlider, sliderToLog } from "@/lib/sliders";
 
 const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
 import { useTags } from "@/hooks/use-tags";
-import { Link, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import {
-  ArrowLeft,
   Copy,
   Dna,
   Brain,
@@ -23,8 +18,7 @@ import {
   Globe,
   Wand2,
 } from "lucide-react";
-import ToolIntroSection from "@/components/tools/ToolIntroSection";
-import { TOOL_INTROS } from "@/lib/tool-intros";
+import ToolPageLayout from "@/components/tools/ToolPageLayout";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -48,14 +42,11 @@ import {
   useWorksheetsByType,
   useRenameWorksheet,
 } from "@/hooks/use-worksheets";
-import { WorksheetTitle } from "@/components/tools/WorksheetTitle";
-import { getToolIcon } from "@/components/icons/tool-icons";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
 import { useAuth } from "@/contexts/AuthContext";
 import CollapsibleSection from "@/components/tools/CollapsibleSection";
 import SectionNavigation, { Section, MobileSectionNav } from "@/components/tools/SectionNavigation";
 import ToolSidebar from "@/components/tools/ToolSidebar";
-import ToolActionBar from "@/components/tools/ToolActionBar";
 import QuickExportButton from "@/components/tools/QuickExportButton";
 import ExportDialog from "@/components/tools/ExportDialog";
 import ShareDialog from "@/components/sharing/ShareDialog";
@@ -63,7 +54,6 @@ import { useWorksheetShare } from "@/hooks/use-sharing";
 import type { MoodboardImage } from "@/hooks/use-moodboard";
 import { WorksheetNotesSheet } from "@/components/tools/WorksheetNotesSheet";
 import { WorksheetMoodboardSheet } from "@/components/tools/WorksheetMoodboardSheet";
-import { ToolPageQuote } from "@/components/quotes/ToolPageQuote";
 import {
   GravitasSummaryTemplate,
   GravitasFullReportTemplate,
@@ -119,7 +109,6 @@ import {
 // ─── Constants ────────────────────────────────────────────────────────
 
 const TOOL_TYPE = "gravitas";
-const ToolIcon = getToolIcon(TOOL_TYPE);
 const LOCAL_STORAGE_KEY = "gravitas-v1";
 
 const SECTIONS: Section[] = [
@@ -387,78 +376,36 @@ const Gravitas = () => {
   // ─── Render ────────���─────────��──────────────────────────────────────
 
   return (
-    <PageShell>
-      <main className="container relative mx-auto px-4 pt-24 pb-16">
-        <PageBursts bursts={TOOL_PAGE_BURSTS["gravitas"]} />
-        {/* Back link */}
-        <Link
-          to={worldId ? `/worlds/${worldId}` : "/"}
-          className="inline-flex items-center gap-2 text-sm text-tier-3 hover:text-foreground transition-colors mb-6"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          {worldId ? "Back to World" : "Back to Dashboard"}
-        </Link>
-
-        <ToolPageQuote toolId="gravitas" />
-
-        {/* Action bar */}
-        <ToolActionBar
-          onSave={handleSave}
-          isSaving={updateWorksheet.isPending || createWorksheet.isPending}
-          onOpen={worldId ? () => setWorksheetSelectorOpen(true) : undefined}
-          onPrint={() => window.print()}
-          onExport={() => setExportDialogOpen(true)}
-          onShare={(currentWorksheetId || worksheetId) ? () => setShareDialogOpen(true) : undefined}
-          isShared={!!shareConfig?.enabled}
-          isCloudEnabled={!!(worldId && user)}
-          onNotesClick={() => setNotesSheetOpen(true)}
-          onMoodboardClick={() => setMoodboardSheetOpen(true)}
-          moodboardCount={formState.moodboard?.length || 0}
-          exportLabel="Export Worksheet"
-          className="mb-6"
-          extraActions={
-            <QuickExportButton
-              toolName="Gravitas"
-              worldName={worldNameForExport}
-              formState={formState}
-              summaryTemplate={<GravitasSummaryTemplate formState={formState} worldName={worldNameForExport} />}
-              fullTemplate={<GravitasFullReportTemplate formState={formState} worldName={worldNameForExport} />}
-            />
-          }
-          worldId={worldId}
-          worksheetId={currentWorksheetId || worksheetId}
+    <ToolPageLayout
+      toolType={TOOL_TYPE}
+      onSave={handleSave}
+      isSaving={updateWorksheet.isPending || createWorksheet.isPending}
+      onOpen={worldId ? () => setWorksheetSelectorOpen(true) : undefined}
+      onPrint={() => window.print()}
+      onExport={() => setExportDialogOpen(true)}
+      onShare={(currentWorksheetId || worksheetId) ? () => setShareDialogOpen(true) : undefined}
+      isShared={!!shareConfig?.enabled}
+      isCloudEnabled={!!(worldId && user)}
+      onNotesClick={() => setNotesSheetOpen(true)}
+      onMoodboardClick={() => setMoodboardSheetOpen(true)}
+      moodboardCount={formState.moodboard?.length || 0}
+      extraActions={
+        <QuickExportButton
+          toolName="Gravitas"
+          worldName={worldNameForExport}
+          formState={formState}
+          summaryTemplate={<GravitasSummaryTemplate formState={formState} worldName={worldNameForExport} />}
+          fullTemplate={<GravitasFullReportTemplate formState={formState} worldName={worldNameForExport} />}
         />
-
-        {/* Title */}
-        <div className="mb-8">
-          <Badge className="mb-2">Pro Tool</Badge>
-          <div className="flex items-center gap-3">
-            {ToolIcon && <ToolIcon className="w-12 h-12 rounded-sm shrink-0" />}
-            <h1 className="font-display text-3xl md:text-4xl tracking-sf-title">
-              <span className="font-normal">Gravitas:</span>{" "}
-              <span className="font-light">Spacecraft & Habitat Gravity Simulator</span>
-            </h1>
-          </div>
-          <p className="text-tier-2 mt-2 max-w-2xl">
-            Spacecraft & Habitat Gravity Simulator. Calculate effective gravity conditions and trace how weight shapes biology, psychology, mythology, and culture.
-          </p>
-          {(currentWorksheetId || worksheetId) && (
-            <WorksheetTitle
-              title={currentWorksheetTitle}
-              onRename={handleRename}
-              disabled={!user || worksheetLoading}
-            />
-          )}
-          {(currentWorksheetId || worksheetId) && (
-            <WorksheetTagsBar
-              worksheetId={(currentWorksheetId || worksheetId)!}
-              tags={worksheetTags}
-              onChange={handleTagsChange}
-            />
-          )}
-        </div>
-
-        <ToolIntroSection data={TOOL_INTROS["gravitas"]} />
+      }
+      worksheetId={currentWorksheetId || worksheetId}
+      worksheetTitle={currentWorksheetTitle}
+      onRenameWorksheet={handleRename}
+      worksheetLoading={worksheetLoading}
+      worksheetTags={worksheetTags}
+      onTagsChange={handleTagsChange}
+      isLoggedIn={!!user}
+    >
 
         {/* Mobile Navigation */}
         <div className="fixed right-4 bottom-4 xl:hidden z-40 no-print flex flex-col gap-2">
@@ -1302,7 +1249,6 @@ const Gravitas = () => {
             </div>
           </GlassPanel>
         </ToolSidebar>
-      </main>
       {/* Dialogs */}
       <WorksheetSelectorDialog
         open={worksheetSelectorOpen}
@@ -1350,7 +1296,7 @@ const Gravitas = () => {
         images={formState.moodboard || []}
         onImagesChange={(images) => setFormState((prev) => ({ ...prev, moodboard: images }))}
       />
-    </PageShell>
+    </ToolPageLayout>
   );
 };
 

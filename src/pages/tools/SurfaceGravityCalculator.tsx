@@ -1,15 +1,10 @@
 import { useState, useEffect, useMemo, useRef, useCallback, lazy, Suspense } from "react";
-import PageShell from "@/components/layout/PageShell";
 import { useWorldId } from "@/hooks/use-world-id";
-import { PageBursts } from "@/components/ui/data-burst";
-import { TOOL_PAGE_BURSTS } from "@/lib/data-bursts";
-import { WorksheetTagsBar } from "@/components/tools/WorksheetTagsBar";
 
 const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
 import { useTags } from "@/hooks/use-tags";
-import { Link, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import {
-  ArrowLeft,
   Copy,
   Dna,
   Brain,
@@ -17,8 +12,7 @@ import {
   Scroll,
   AlertTriangle,
 } from "lucide-react";
-import ToolIntroSection from "@/components/tools/ToolIntroSection";
-import { TOOL_INTROS } from "@/lib/tool-intros";
+import ToolPageLayout from "@/components/tools/ToolPageLayout";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -40,8 +34,6 @@ import {
   useWorksheetsByType,
   useRenameWorksheet,
 } from "@/hooks/use-worksheets";
-import { WorksheetTitle } from "@/components/tools/WorksheetTitle";
-import { getToolIcon } from "@/components/icons/tool-icons";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
 import { useAuth } from "@/contexts/AuthContext";
 import { MobileSectionNav } from "@/components/tools/SectionNavigation";
@@ -52,7 +44,6 @@ import KeyChoicesSidebar, {
   KeyChoicesSection,
   MobileKeyChoices,
 } from "@/components/tools/KeyChoicesSidebar";
-import ToolActionBar from "@/components/tools/ToolActionBar";
 import QuickExportButton from "@/components/tools/QuickExportButton";
 import ExportDialog from "@/components/tools/ExportDialog";
 import ShareDialog from "@/components/sharing/ShareDialog";
@@ -60,7 +51,6 @@ import { useWorksheetShare } from "@/hooks/use-sharing";
 import type { MoodboardImage } from "@/hooks/use-moodboard";
 import { WorksheetNotesSheet } from "@/components/tools/WorksheetNotesSheet";
 import { WorksheetMoodboardSheet } from "@/components/tools/WorksheetMoodboardSheet";
-import { ToolPageQuote } from "@/components/quotes/ToolPageQuote";
 import {
   SurfaceGravitySummaryTemplate,
   SurfaceGravityFullReportTemplate,
@@ -138,7 +128,6 @@ const initialFormState: FormState = {
 };
 
 const TOOL_TYPE = "surface-gravity-calculator";
-const ToolIcon = getToolIcon(TOOL_TYPE);
 const LOCAL_STORAGE_KEY = "surface-gravity-calculator-v1";
 
 // Cascade tab icons
@@ -517,78 +506,36 @@ const SurfaceGravityCalculator = () => {
   // ─── Render ────────────────────────────────────────────────────────
 
   return (
-    <PageShell>
-      <main className="container relative mx-auto px-4 pt-24 pb-16">
-        <PageBursts bursts={TOOL_PAGE_BURSTS["surface-gravity-calculator"]} />
-        {/* Back link */}
-        <Link
-          to={worldId ? `/worlds/${worldId}` : "/"}
-          className="inline-flex items-center gap-2 text-sm text-tier-3 hover:text-foreground transition-colors mb-6"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          {worldId ? "Back to World" : "Back to Dashboard"}
-        </Link>
-
-        <ToolPageQuote toolId="surface-gravity-calculator" />
-
-        {/* Action bar */}
-        <ToolActionBar
-          onSave={handleSave}
-          isSaving={updateWorksheet.isPending || createWorksheet.isPending}
-          onOpen={worldId ? () => setWorksheetSelectorOpen(true) : undefined}
-          onPrint={() => window.print()}
-          onExport={() => setExportDialogOpen(true)}
-          onShare={(currentWorksheetId || worksheetId) ? () => setShareDialogOpen(true) : undefined}
-          isShared={!!shareConfig?.enabled}
-          isCloudEnabled={!!(worldId && user)}
-          onNotesClick={() => setNotesSheetOpen(true)}
-          onMoodboardClick={() => setMoodboardSheetOpen(true)}
-          moodboardCount={formState.moodboard?.length || 0}
-          exportLabel="Export Worksheet"
-          className="mb-6"
-          extraActions={
-            <QuickExportButton
-              toolName="Atlas"
-              worldName={worldNameForExport}
-              formState={formState}
-              summaryTemplate={<SurfaceGravitySummaryTemplate formState={formState} worldName={worldNameForExport} />}
-              fullTemplate={<SurfaceGravityFullReportTemplate formState={formState} worldName={worldNameForExport} />}
-            />
-          }
-          worldId={worldId}
-          worksheetId={currentWorksheetId || worksheetId}
+    <ToolPageLayout
+      toolType={TOOL_TYPE}
+      onSave={handleSave}
+      isSaving={updateWorksheet.isPending || createWorksheet.isPending}
+      onOpen={worldId ? () => setWorksheetSelectorOpen(true) : undefined}
+      onPrint={() => window.print()}
+      onExport={() => setExportDialogOpen(true)}
+      onShare={(currentWorksheetId || worksheetId) ? () => setShareDialogOpen(true) : undefined}
+      isShared={!!shareConfig?.enabled}
+      isCloudEnabled={!!(worldId && user)}
+      onNotesClick={() => setNotesSheetOpen(true)}
+      onMoodboardClick={() => setMoodboardSheetOpen(true)}
+      moodboardCount={formState.moodboard?.length || 0}
+      extraActions={
+        <QuickExportButton
+          toolName="Atlas"
+          worldName={worldNameForExport}
+          formState={formState}
+          summaryTemplate={<SurfaceGravitySummaryTemplate formState={formState} worldName={worldNameForExport} />}
+          fullTemplate={<SurfaceGravityFullReportTemplate formState={formState} worldName={worldNameForExport} />}
         />
-
-        {/* Title */}
-        <div className="mb-8">
-          <Badge className="mb-2">Pro Tool</Badge>
-          <div className="flex items-center gap-3">
-            {ToolIcon && <ToolIcon className="w-12 h-12 rounded-sm shrink-0" />}
-            <h1 className="font-display text-3xl md:text-4xl tracking-sf-title">
-              <span className="font-normal">Atlas:</span>{" "}
-              <span className="font-light">Surface Gravity Calculator</span>
-            </h1>
-          </div>
-          <p className="text-tier-2 mt-2 max-w-2xl">
-            Calculate surface gravity for any planet and trace how weight shapes biology, psychology, mythology, and culture.
-          </p>
-          {(currentWorksheetId || worksheetId) && (
-            <WorksheetTitle
-              title={currentWorksheetTitle}
-              onRename={handleRename}
-              disabled={!user || worksheetLoading}
-            />
-          )}
-          {(currentWorksheetId || worksheetId) && (
-            <WorksheetTagsBar
-              worksheetId={(currentWorksheetId || worksheetId)!}
-              tags={worksheetTags}
-              onChange={handleTagsChange}
-            />
-          )}
-        </div>
-
-        <ToolIntroSection data={TOOL_INTROS["surface-gravity-calculator"]} />
+      }
+      worksheetId={currentWorksheetId || worksheetId}
+      worksheetTitle={currentWorksheetTitle}
+      onRenameWorksheet={handleRename}
+      worksheetLoading={worksheetLoading}
+      worksheetTags={worksheetTags}
+      onTagsChange={handleTagsChange}
+      isLoggedIn={!!user}
+    >
 
         {/* Main Content Grid */}
         <div className="flex gap-8">
@@ -1058,7 +1005,6 @@ const SurfaceGravityCalculator = () => {
         {/* Mobile navigation */}
         <MobileSectionNav sections={SURFACE_GRAVITY_SECTIONS} />
         <MobileKeyChoices sections={keyChoicesSections} />
-      </main>
       {/* Dialogs */}
       <ExportDialog
         open={exportDialogOpen}
@@ -1113,7 +1059,7 @@ const SurfaceGravityCalculator = () => {
         onImagesChange={(images) => setFormState((prev) => ({ ...prev, moodboard: images }))}
         worksheetId={currentWorksheetId || worksheetId || undefined}
       />
-    </PageShell>
+    </ToolPageLayout>
   );
 };
 

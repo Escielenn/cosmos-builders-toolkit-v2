@@ -1,13 +1,9 @@
 import { Component, useState, useEffect, useCallback, useRef } from "react";
 import PageShell from "@/components/layout/PageShell";
 import { useWorldId } from "@/hooks/use-world-id";
-import { PageBursts } from "@/components/ui/data-burst";
-import { TOOL_PAGE_BURSTS } from "@/lib/data-bursts";
 import type { ReactNode, ErrorInfo } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import {
-  ArrowLeft,
-  FileText,
   Layers,
   CalendarPlus,
   CalendarDays,
@@ -21,11 +17,8 @@ import {
   Undo2,
   Redo2,
 } from "lucide-react";
-import ToolIntroSection from "@/components/tools/ToolIntroSection";
-import { TOOL_INTROS } from "@/lib/tool-intros";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import {
   useWorksheets,
@@ -33,19 +26,16 @@ import {
   useWorksheetsByType,
   useRenameWorksheet,
 } from "@/hooks/use-worksheets";
-import { WorksheetTitle } from "@/components/tools/WorksheetTitle";
-import { getToolIcon } from "@/components/icons/tool-icons";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
 import { useAuth } from "@/contexts/AuthContext";
-import ToolActionBar from "@/components/tools/ToolActionBar";
+import ToolPageLayout from "@/components/tools/ToolPageLayout";
+import QuickExportButton from "@/components/tools/QuickExportButton";
 import ExportDialog from "@/components/tools/ExportDialog";
 import ShareDialog from "@/components/sharing/ShareDialog";
 import { useWorksheetShare } from "@/hooks/use-sharing";
-import { WorksheetTagsBar } from "@/components/tools/WorksheetTagsBar";
 import { useTags } from "@/hooks/use-tags";
 import { WorksheetNotesSheet } from "@/components/tools/WorksheetNotesSheet";
 import { WorksheetMoodboardSheet } from "@/components/tools/WorksheetMoodboardSheet";
-import { ToolPageQuote } from "@/components/quotes/ToolPageQuote";
 import { useWorlds } from "@/hooks/use-worlds";
 import { Json } from "@/integrations/supabase/types";
 
@@ -75,7 +65,6 @@ import { useTimelineKeyboard } from "@/components/timeline/useTimelineKeyboard";
 import { fitAllEvents } from "@/lib/timeline/utils";
 
 const TOOL_TYPE = "timeline";
-const ToolIcon = getToolIcon(TOOL_TYPE);
 const LOCAL_STORAGE_KEY = "tl-worksheet";
 
 const Timeline = () => {
@@ -350,69 +339,40 @@ const Timeline = () => {
   // ─── Render ────────────────────────────────────────────────────────
 
   return (
-    <PageShell>
-      <main className="relative container mx-auto px-4 pt-24 pb-16">
-        <PageBursts bursts={TOOL_PAGE_BURSTS["timeline"]} />
-        {/* Back Link */}
-        <Link
-          to={worldId ? `/worlds/${worldId}` : "/"}
-          className="inline-flex items-center gap-2 text-sm text-tier-3 hover:text-foreground transition-colors mb-6"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          {worldId ? "Back to World" : "Back to Dashboard"}
-        </Link>
-
-        <ToolPageQuote toolId="timeline" />
-
-        {/* Action Bar */}
-        <ToolActionBar
-          onSave={handleSave}
-          onOpen={worldId ? () => setWorksheetSelectorOpen(true) : undefined}
-          onPrint={() => window.print()}
-          onExport={() => setExportDialogOpen(true)}
-          onShare={(currentWorksheetId || worksheetId) ? () => setShareDialogOpen(true) : undefined}
-          isShared={!!shareConfig?.enabled}
-          isCloudEnabled={!!(worldId && user)}
-          onNotesClick={() => setNotesSheetOpen(true)}
-          onMoodboardClick={() => setMoodboardSheetOpen(true)}
-          moodboardCount={state.moodboard?.length || 0}
-          exportLabel="Export Timeline"
-          className="mb-6"
-          worldId={worldId}
-          worksheetId={currentWorksheetId || worksheetId}
+    <ToolPageLayout
+      toolType={TOOL_TYPE}
+      onSave={handleSave}
+      onOpen={worldId ? () => setWorksheetSelectorOpen(true) : undefined}
+      onPrint={() => window.print()}
+      onExport={() => setExportDialogOpen(true)}
+      onShare={(currentWorksheetId || worksheetId) ? () => setShareDialogOpen(true) : undefined}
+      isShared={!!shareConfig?.enabled}
+      isCloudEnabled={!!(worldId && user)}
+      onNotesClick={() => setNotesSheetOpen(true)}
+      onMoodboardClick={() => setMoodboardSheetOpen(true)}
+      moodboardCount={state.moodboard?.length || 0}
+      extraActions={
+        <QuickExportButton
+          toolName="Chronolog"
+          worldName={worldId ? worldName : undefined}
+          formState={state}
+          summaryTemplate={
+            <TimelineSummaryTemplate formState={state} worldName={worldId ? worldName : undefined} />
+          }
+          fullTemplate={
+            <TimelineFullReportTemplate formState={state} worldName={worldId ? worldName : undefined} />
+          }
+          defaultFilename="timeline"
         />
-
-        {/* Title */}
-        <div className="mb-6">
-          <Badge className="mb-2">Pro Tool</Badge>
-          <div className="flex items-center gap-3">
-            {ToolIcon && <ToolIcon className="w-12 h-12 rounded-sm shrink-0" />}
-            <h1 className="font-display text-3xl md:text-4xl font-normal tracking-sf-title">
-              Timeline
-            </h1>
-          </div>
-          <p className="text-tier-2 mt-2 max-w-2xl">
-            Plot events across deep time. Build multi-track timelines that reveal how characters, civilizations, and technologies intersect.
-          </p>
-          {(currentWorksheetId || worksheetId) && (
-            <WorksheetTitle
-              title={currentWorksheetTitle}
-              onRename={handleRename}
-              icon={<FileText className="w-4 h-4 text-primary" />}
-              disabled={!user || worksheetLoading}
-            />
-          )}
-          {(currentWorksheetId || worksheetId) && (
-            <WorksheetTagsBar
-              worksheetId={(currentWorksheetId || worksheetId)!}
-              tags={worksheetTags}
-              onChange={handleTagsChange}
-            />
-          )}
-        </div>
-
-        <ToolIntroSection data={TOOL_INTROS["timeline"]} />
-
+      }
+      worksheetId={currentWorksheetId || worksheetId}
+      worksheetTitle={currentWorksheetTitle}
+      onRenameWorksheet={handleRename}
+      worksheetLoading={worksheetLoading}
+      worksheetTags={worksheetTags}
+      onTagsChange={handleTagsChange}
+      isLoggedIn={!!user}
+    >
         {/* Early Development Banner */}
         <div className="flex items-center gap-3 px-4 py-3 rounded-lg border border-amber-500/30 bg-amber-500/10 mb-6">
           <Construction className="w-5 h-5 text-amber-500 shrink-0" />
@@ -550,7 +510,7 @@ const Timeline = () => {
           onToggleCollapse={handleToggleCollapse}
           onQuickAddEvent={handleQuickAddEvent}
         />
-      </main>
+
       {/* ─── Dialogs & Panels ─────────────────────────────────────────── */}
 
       <TrackFormDialog
@@ -698,7 +658,7 @@ const Timeline = () => {
         onApply={(templateState) => dispatch({ type: "SET_STATE", payload: templateState })}
         hasExistingData={state.tracks.length > 0 || state.events.length > 0}
       />
-    </PageShell>
+    </ToolPageLayout>
   );
 };
 

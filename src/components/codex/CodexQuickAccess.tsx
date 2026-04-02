@@ -7,10 +7,10 @@ interface CodexQuickAccessProps {
 
 const CodexQuickAccess = ({ worldId }: CodexQuickAccessProps) => {
   const links = [
-    { label: "Wiki", icon: Library, to: `/worlds/${worldId}/wiki` },
-    { label: "Chronicle", icon: ScrollText, to: `/worlds/${worldId}/chronicle` },
-    { label: "World Graph", icon: Network, to: `/worlds/${worldId}/graph` },
-    { label: "Connections", icon: BookOpen, to: `/worlds/${worldId}/connections` },
+    { label: "Wiki", icon: Library, to: `/worlds/${worldId}/wiki`, desc: "Browse and edit all knowledge entries" },
+    { label: "Chronicle", icon: ScrollText, to: `/worlds/${worldId}/chronicle`, desc: "Timeline of world events" },
+    { label: "World Graph", icon: Network, to: `/worlds/${worldId}/graph`, desc: "Visualize entities and their relationships" },
+    { label: "Connections", icon: BookOpen, to: `/worlds/${worldId}/connections`, desc: "Explore worksheet-to-worksheet data flow" },
   ];
 
   return (
@@ -23,12 +23,17 @@ const CodexQuickAccess = ({ worldId }: CodexQuickAccessProps) => {
         <Link
           key={link.to}
           to={link.to}
-          className="sf-fill-sweep sf-fill-sweep--secondary flex items-center gap-2 py-1 px-1 text-[11px] text-foreground/60 hover:text-foreground/90 transition-colors"
+          className="sf-fill-sweep sf-fill-sweep--secondary flex items-start gap-2 py-1.5 px-1 text-[11px] text-foreground/60 hover:text-foreground/90 transition-colors"
         >
-          <link.icon className="w-3 h-3 shrink-0" />
-          <span className="uppercase tracking-wider font-heading text-[10px]">
-            {link.label}
-          </span>
+          <link.icon className="w-3 h-3 shrink-0 mt-0.5" />
+          <div className="min-w-0">
+            <span className="uppercase tracking-wider font-heading text-[10px] block">
+              {link.label}
+            </span>
+            <span className="text-[9px] text-tier-4 font-sans normal-case tracking-normal leading-tight block">
+              {link.desc}
+            </span>
+          </div>
         </Link>
       ))}
     </div>

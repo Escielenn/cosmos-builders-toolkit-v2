@@ -1,13 +1,8 @@
 import { useState, useEffect, useMemo, lazy, Suspense } from "react";
-import PageShell from "@/components/layout/PageShell";
 import { useWorldId } from "@/hooks/use-world-id";
-import { PageBursts } from "@/components/ui/data-burst";
-import { TOOL_PAGE_BURSTS } from "@/lib/data-bursts";
-import { Link, useSearchParams } from "react-router-dom";
-import { ArrowLeft, Download, Save, Info, Printer, Plus, Trash2, FileText, Image as ImageIcon } from "lucide-react";
-import { getToolIcon } from "@/components/icons/tool-icons";
-import ToolIntroSection from "@/components/tools/ToolIntroSection";
-import { TOOL_INTROS } from "@/lib/tool-intros";
+import { useSearchParams } from "react-router-dom";
+import { Download, Save, Info, Printer, Plus, Trash2, FileText, Image as ImageIcon } from "lucide-react";
+import ToolPageLayout from "@/components/tools/ToolPageLayout";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,7 +10,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Badge } from "@/components/ui/badge";
 import {
   Tooltip,
   TooltipContent,
@@ -30,7 +24,6 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { useWorksheets, useWorksheet, useWorksheetsByType, useRenameWorksheet } from "@/hooks/use-worksheets";
-import { WorksheetTitle } from "@/components/tools/WorksheetTitle";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSubscription } from "@/hooks/use-subscription";
@@ -38,15 +31,12 @@ import SectionNavigation, { Section, MobileSectionNav } from "@/components/tools
 import ToolSidebar from "@/components/tools/ToolSidebar";
 import CollapsibleSection from "@/components/tools/CollapsibleSection";
 import KeyChoicesSidebar, { KeyChoicesSection, MobileKeyChoices } from "@/components/tools/KeyChoicesSidebar";
-import ToolActionBar from "@/components/tools/ToolActionBar";
-import { ToolPageQuote } from "@/components/quotes/ToolPageQuote";
 import QuickExportButton from "@/components/tools/QuickExportButton";
 import ExportDialog from "@/components/tools/ExportDialog";
 import { StarSystemSummaryTemplate, StarSystemFullReportTemplate } from "@/lib/pdf/templates";
 import ShareDialog from "@/components/sharing/ShareDialog";
 import { useWorksheetShare } from "@/hooks/use-sharing";
 import type { MoodboardImage } from "@/hooks/use-moodboard";
-import { WorksheetTagsBar } from "@/components/tools/WorksheetTagsBar";
 import { useTags } from "@/hooks/use-tags";
 import { WorksheetNotesSheet } from "@/components/tools/WorksheetNotesSheet";
 import { WorksheetMoodboardSheet } from "@/components/tools/WorksheetMoodboardSheet";
@@ -259,7 +249,6 @@ const initialFormState: FormState = {
 };
 
 const TOOL_TYPE = "star-system-builder";
-const ToolIcon = getToolIcon(TOOL_TYPE);
 
 const StarSystemBuilder = () => {
   const [formState, setFormState] = useState<FormState>(initialFormState);
@@ -600,80 +589,37 @@ const StarSystemBuilder = () => {
   );
 
   return (
-    <PageShell>
-      <main className="relative container mx-auto px-4 pt-20 pb-24">
-        <PageBursts bursts={TOOL_PAGE_BURSTS["star-system-builder"]} />
-        {/* Back Link */}
-        <Link
-          to={worldId ? `/worlds/${worldId}` : "/"}
-          className="inline-flex items-center gap-2 text-sm text-tier-3 hover:text-foreground transition-colors mb-6"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          {worldId ? "Back to World" : "Back to Dashboard"}
-        </Link>
-
-        <ToolPageQuote toolId="star-system-builder" />
-
-        {/* Action Bar */}
-        <ToolActionBar
-          onSave={handleSave}
-          onOpen={worldId ? () => setWorksheetSelectorOpen(true) : undefined}
-          onExport={handleExport}
-          onPrint={handlePrint}
-          onShare={(currentWorksheetId || worksheetId) ? () => setShareDialogOpen(true) : undefined}
-          isShared={!!shareConfig?.enabled}
-          isSaving={updateWorksheet.isPending}
-          isCloudEnabled={!!(worldId && user)}
-          onNotesClick={() => setNotesSheetOpen(true)}
-          onMoodboardClick={() => setMoodboardSheetOpen(true)}
-          moodboardCount={formState.moodboard?.length || 0}
-          className="mb-6"
-          extraActions={
-            <QuickExportButton
-              toolName="Orrery"
-              worldName={worldName}
-              formState={formState}
-              summaryTemplate={<StarSystemSummaryTemplate formState={formState} worldName={worldName} />}
-              fullTemplate={<StarSystemFullReportTemplate formState={formState} worldName={worldName} />}
-              defaultFilename="star-system"
-            />
-          }
-          worldId={worldId}
-          worksheetId={currentWorksheetId || worksheetId}
+    <ToolPageLayout
+      toolType={TOOL_TYPE}
+      onSave={handleSave}
+      onOpen={worldId ? () => setWorksheetSelectorOpen(true) : undefined}
+      onExport={handleExport}
+      onPrint={handlePrint}
+      onShare={(currentWorksheetId || worksheetId) ? () => setShareDialogOpen(true) : undefined}
+      isShared={!!shareConfig?.enabled}
+      isSaving={updateWorksheet.isPending}
+      isCloudEnabled={!!(worldId && user)}
+      onNotesClick={() => setNotesSheetOpen(true)}
+      onMoodboardClick={() => setMoodboardSheetOpen(true)}
+      moodboardCount={formState.moodboard?.length || 0}
+      extraActions={
+        <QuickExportButton
+          toolName="Orrery"
+          worldName={worldName}
+          formState={formState}
+          summaryTemplate={<StarSystemSummaryTemplate formState={formState} worldName={worldName} />}
+          fullTemplate={<StarSystemFullReportTemplate formState={formState} worldName={worldName} />}
+          defaultFilename="star-system"
         />
-
-        {/* Title */}
-        <div className="mb-8">
-          <div className="flex items-center gap-3 mb-2">
-            {ToolIcon && <ToolIcon className="w-12 h-12 rounded-sm shrink-0" />}
-            <div>
-              <h1 className="font-display text-2xl md:text-3xl tracking-sf-title">
-                <span className="font-normal">Orrery:</span>{" "}
-                <span className="font-light">Star System Builder</span>
-              </h1>
-              <p className="text-sm text-tier-3">
-                Design multi-planet systems with stellar relationships
-              </p>
-            </div>
-          </div>
-          <Badge variant="secondary" className="mt-2">Pro Tool</Badge>
-          {(currentWorksheetId || worksheetId) && (
-            <WorksheetTitle
-              title={currentWorksheetTitle}
-              onRename={handleRename}
-              icon={<FileText className="w-4 h-4 text-primary" />}
-              disabled={!user || worksheetLoading}
-            />
-          )}
-          {(currentWorksheetId || worksheetId) && (
-            <WorksheetTagsBar
-              worksheetId={(currentWorksheetId || worksheetId)!}
-              tags={worksheetTags}
-              onChange={handleTagsChange}
-            />
-          )}
-        </div>
-
+      }
+      worksheetId={currentWorksheetId || worksheetId}
+      worksheetTitle={currentWorksheetTitle}
+      onRenameWorksheet={handleRename}
+      worksheetLoading={worksheetLoading}
+      worksheetTags={worksheetTags}
+      onTagsChange={handleTagsChange}
+      isLoggedIn={!!user}
+    >
         {/* Mobile Sidebars - Right side floating buttons */}
         <div className="fixed right-4 bottom-4 xl:hidden z-40 no-print flex flex-col gap-2">
           <MobileSectionNav sections={SECTIONS} />
@@ -699,8 +645,6 @@ const StarSystemBuilder = () => {
                 />
               </div>
             </GlassPanel>
-
-            <ToolIntroSection data={TOOL_INTROS["star-system-builder"]} />
 
             {/* Section 1: Primary Star */}
             <CollapsibleSection
@@ -1632,8 +1576,6 @@ const StarSystemBuilder = () => {
           <SectionNavigation sections={SECTIONS} mode="inline" />
           <KeyChoicesSidebar sections={keyChoicesSections} mode="inline" />
         </ToolSidebar>
-      </main>
-
       <WorksheetNotesSheet
         open={notesSheetOpen}
         onOpenChange={setNotesSheetOpen}
@@ -1689,7 +1631,7 @@ const StarSystemBuilder = () => {
         onOpenChange={setUpgradeDialogOpen}
         toolName="Orrery"
       />
-    </PageShell>
+    </ToolPageLayout>
   );
 };
 

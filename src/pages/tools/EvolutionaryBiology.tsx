@@ -1,14 +1,9 @@
 import { useState, useEffect, useMemo, lazy, Suspense } from "react";
-import PageShell from "@/components/layout/PageShell";
 import { useWorldId } from "@/hooks/use-world-id";
-import { PageBursts } from "@/components/ui/data-burst";
-import { TOOL_PAGE_BURSTS } from "@/lib/data-bursts";
-import { WorksheetTagsBar } from "@/components/tools/WorksheetTagsBar";
 import { useTags } from "@/hooks/use-tags";
 const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
-import { Link, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import {
-  ArrowLeft,
   Info,
   Plus,
   Trash2,
@@ -18,15 +13,12 @@ import {
   FileText,
   Image as ImageIcon,
 } from "lucide-react";
-import ToolIntroSection from "@/components/tools/ToolIntroSection";
-import { TOOL_INTROS } from "@/lib/tool-intros";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Badge } from "@/components/ui/badge";
 import {
   Select,
   SelectContent,
@@ -43,16 +35,13 @@ import CollapsibleSection from "@/components/tools/CollapsibleSection";
 import KeyChoicesSidebar, { KeyChoicesSection, MobileKeyChoices } from "@/components/tools/KeyChoicesSidebar";
 import { useToast } from "@/hooks/use-toast";
 import { useWorksheets, useWorksheet, useWorksheetsByType, useRenameWorksheet } from "@/hooks/use-worksheets";
-import { WorksheetTitle } from "@/components/tools/WorksheetTitle";
-import { getToolIcon } from "@/components/icons/tool-icons";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
 import WorksheetLinkSelector from "@/components/tools/WorksheetLinkSelector";
 import SpeciesMatrixImportModal from "@/components/tools/SpeciesMatrixImportModal";
 import { useAuth } from "@/contexts/AuthContext";
 import SectionNavigation, { Section, MobileSectionNav } from "@/components/tools/SectionNavigation";
 import ToolSidebar from "@/components/tools/ToolSidebar";
-import ToolActionBar from "@/components/tools/ToolActionBar";
-import { ToolPageQuote } from "@/components/quotes/ToolPageQuote";
+import ToolPageLayout from "@/components/tools/ToolPageLayout";
 import QuickExportButton from "@/components/tools/QuickExportButton";
 import ExportDialog from "@/components/tools/ExportDialog";
 import ShareDialog from "@/components/sharing/ShareDialog";
@@ -413,7 +402,6 @@ const DEFAULT_FORM_STATE: FormState = {
 };
 
 const TOOL_TYPE = "evolutionary-biology";
-const ToolIcon = getToolIcon(TOOL_TYPE);
 const TOOL_DISPLAY_NAME = "Phylo";
 
 const EvolutionaryBiology = () => {
@@ -880,78 +868,39 @@ const EvolutionaryBiology = () => {
   }, [formState]);
 
   return (
-    <PageShell>
-      <main className="relative container mx-auto px-4 pt-24 pb-16">
-        <PageBursts bursts={TOOL_PAGE_BURSTS["evolutionary-biology"]} />
-        {/* Back Link & Title */}
-        <div className="mb-8">
-          <Link
-            to={worldId ? `/worlds/${worldId}` : "/"}
-            className="inline-flex items-center gap-2 text-sm text-tier-3 hover:text-foreground transition-colors mb-4"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            {worldId ? "Back to World" : "Back to Dashboard"}
-          </Link>
-
-          <ToolPageQuote toolId="evolutionary-biology" />
-
-          <ToolActionBar
-            onSave={handleSave}
-            onOpen={worldId ? () => setShowWorksheetSelector(true) : undefined}
-            onExport={() => setShowExportDialog(true)}
-            onShare={worksheetId ? () => setShareDialogOpen(true) : undefined}
-            isShared={!!shareConfig?.enabled}
-            hasUnsavedChanges={hasUnsavedChanges}
-            isSaving={updateWorksheet.isPending}
-            isCloudEnabled={!!(worldId && user)}
-            onNotesClick={() => setNotesSheetOpen(true)}
-            onMoodboardClick={() => setMoodboardSheetOpen(true)}
-            moodboardCount={formState.moodboard?.length || 0}
-            worldId={worldId}
-            worksheetId={worksheetId}
-            className="mb-6"
-            extraActions={
-              <QuickExportButton
-                toolName="Phylo"
-                worldName={currentWorld?.name}
-                formState={formState}
-                summaryTemplate={<EvolutionarySummaryTemplate formState={formState} worldName={currentWorld?.name} />}
-                fullTemplate={<EvolutionaryFullReportTemplate formState={formState} worldName={currentWorld?.name} />}
-                defaultFilename="evolutionary-biology"
-              />
-            }
-          />
-
-          <Badge className="mb-2">Tool 7</Badge>
-          <div className="flex items-center gap-3">
-            {ToolIcon && <ToolIcon className="w-12 h-12 rounded-sm shrink-0" />}
-            <h1 className="font-display text-3xl md:text-4xl tracking-sf-title">
-              <span className="font-normal">Phylo:</span>{" "}
-              <span className="font-light">Evolutionary Biology</span>
-            </h1>
-          </div>
-          <p className="text-tier-2 mt-2 max-w-2xl">
-            Design biologically plausible alien species by tracing every trait back to evolutionary pressures.
-          </p>
-          {worksheetId && (
-            <WorksheetTitle
-              title={worksheetTitle || null}
-              onRename={handleRename}
-              icon={<Dna className="w-5 h-5 text-primary" />}
-              disabled={!user || loadingWorksheet}
-            />
-          )}
-          {worksheetId && (
-            <WorksheetTagsBar
-              worksheetId={worksheetId}
-              tags={worksheetTags}
-              onChange={handleTagsChange}
-            />
-          )}
-        </div>
-
-
-        <ToolIntroSection data={TOOL_INTROS["evolutionary-biology"]} />
+    <ToolPageLayout
+      toolType={TOOL_TYPE}
+      onSave={handleSave}
+      onOpen={worldId ? () => setShowWorksheetSelector(true) : undefined}
+      onPrint={handlePrint}
+      onExport={() => setShowExportDialog(true)}
+      onShare={worksheetId ? () => setShareDialogOpen(true) : undefined}
+      isShared={!!shareConfig?.enabled}
+      hasUnsavedChanges={hasUnsavedChanges}
+      isSaving={updateWorksheet.isPending}
+      isCloudEnabled={!!(worldId && user)}
+      onNotesClick={() => setNotesSheetOpen(true)}
+      onMoodboardClick={() => setMoodboardSheetOpen(true)}
+      moodboardCount={formState.moodboard?.length || 0}
+      extraActions={
+        <QuickExportButton
+          toolName="Phylo"
+          worldName={currentWorld?.name}
+          formState={formState}
+          summaryTemplate={<EvolutionarySummaryTemplate formState={formState} worldName={currentWorld?.name} />}
+          fullTemplate={<EvolutionaryFullReportTemplate formState={formState} worldName={currentWorld?.name} />}
+          defaultFilename="evolutionary-biology"
+        />
+      }
+      worksheetId={worksheetId}
+      worksheetTitle={worksheetTitle || null}
+      onRenameWorksheet={handleRename}
+      worksheetLoading={loadingWorksheet}
+      worksheetTags={worksheetTags}
+      onTagsChange={handleTagsChange}
+      worksheetIcon={<Dna className="w-5 h-5 text-primary" />}
+      isLoggedIn={!!user}
+    >
 
         {/* Introduction */}
         <GlassPanel glow className="p-6 md:p-8 mb-8">
@@ -2748,8 +2697,6 @@ const EvolutionaryBiology = () => {
           />
         )}
 
-      </main>
-
       <WorksheetNotesSheet
         open={notesSheetOpen}
         onOpenChange={setNotesSheetOpen}
@@ -2764,7 +2711,7 @@ const EvolutionaryBiology = () => {
         images={formState.moodboard || []}
         onImagesChange={(images) => setFormState(prev => ({ ...prev, moodboard: images }))}
       />
-    </PageShell>
+    </ToolPageLayout>
   );
 };
 

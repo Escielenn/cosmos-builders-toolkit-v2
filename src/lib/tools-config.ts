@@ -40,6 +40,7 @@ export const PRO_TOOL_IDS = [
   'tidelock',
   'exosky',
   'exoforge',
+  'solaris',
   // Cartographers
   'stellar-cartographer',
   // Workshop
@@ -73,13 +74,14 @@ export const TOOL_DISPLAY_NAMES: Record<string, string> = {
   'habitable-zone-calculator': 'Goldilocks: Habitable Zone Calculator',
   'lexdrift': 'Lexdrift: Language Evolution',
   'surface-gravity-calculator': 'Atlas: Surface Gravity Calculator',
-  'timeline': 'Timeline',
+  'timeline': 'Chronolog: Timeline',
   'sensorium': 'Sensorium: Alien Sensory Systems',
   'gravitas': 'Gravitas: Spacecraft & Habitat Gravity Simulator',
   'rogue': 'Rogue: Wandering Object Encounters',
   'tidelock': 'Tidelock: Locked World Simulator',
   'exosky': 'Exosky: Alien Night Sky',
   'exoforge': 'ExoForge: Procedural Exoplanet Forge',
+  'solaris': 'Solaris: Procedural Star System Simulator',
   'kardashev-scale': 'K-Scale: Kardashev Scale Calculator',
   // Cartographers
   'stellar-cartographer': 'Stellar Cartographer: Galaxy Mapper',
