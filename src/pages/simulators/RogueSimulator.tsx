@@ -6,11 +6,14 @@ import { useSimulationSave } from "@/hooks/use-simulation-save";
 import SaveSimulationDialog from "@/components/simulators/SaveSimulationDialog";
 import LoadSimulationSheet from "@/components/simulators/LoadSimulationSheet";
 import Header from "@/components/layout/Header";
+import NarrativeBridgePanel, { useNarrativeBridge } from "@/components/simulators/NarrativeBridgePanel";
+import { SIMULATOR_NARRATIVE_CONFIGS } from "@/lib/simulator-narrative-questions";
 
 const RogueSimulator = () => {
   const [loaded, setLoaded] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const worldId = useWorldId();
+  const narrativeBridge = useNarrativeBridge();
   const [loadSheetOpen, setLoadSheetOpen] = useState(false);
   const {
     saves,
@@ -72,6 +75,10 @@ const RogueSimulator = () => {
               </Button>
             </div>
           )}
+          <NarrativeBridgePanel
+            config={SIMULATOR_NARRATIVE_CONFIGS["rogue"]}
+            {...narrativeBridge.panelProps}
+          />
         </div>
       </div>
       <SaveSimulationDialog

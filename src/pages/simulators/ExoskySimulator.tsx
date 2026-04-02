@@ -7,6 +7,8 @@ import { useSimulationSave } from "@/hooks/use-simulation-save";
 import SaveSimulationDialog from "@/components/simulators/SaveSimulationDialog";
 import LoadSimulationSheet from "@/components/simulators/LoadSimulationSheet";
 import Header from "@/components/layout/Header";
+import NarrativeBridgePanel, { useNarrativeBridge } from "@/components/simulators/NarrativeBridgePanel";
+import { SIMULATOR_NARRATIVE_CONFIGS } from "@/lib/simulator-narrative-questions";
 
 const ExoSkyV2 = lazy(() => import("@/components/simulators/ExoSkySimulator"));
 
@@ -21,6 +23,7 @@ const SimLoader = () => (
 
 const ExoskySimulator = () => {
   const worldId = useWorldId();
+  const narrativeBridge = useNarrativeBridge();
   const [loadSheetOpen, setLoadSheetOpen] = useState(false);
   const {
     saves,
@@ -67,6 +70,10 @@ const ExoskySimulator = () => {
               </Button>
             </div>
           )}
+          <NarrativeBridgePanel
+            config={SIMULATOR_NARRATIVE_CONFIGS["exosky"]}
+            {...narrativeBridge.panelProps}
+          />
         </div>
       </div>
       <SaveSimulationDialog
