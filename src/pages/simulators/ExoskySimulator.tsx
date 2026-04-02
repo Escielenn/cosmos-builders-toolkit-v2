@@ -1,11 +1,12 @@
-import { lazy, Suspense, useState } from "react";
-import { Save, FolderOpen } from "lucide-react";
+import { lazy, Suspense, useState, useEffect } from "react";
+import { Save, FolderOpen, Rocket } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Loader } from "@/components/ui/loader";
 import { useWorldId } from "@/hooks/use-world-id";
 import { useSimulationSave } from "@/hooks/use-simulation-save";
 import SaveSimulationDialog from "@/components/simulators/SaveSimulationDialog";
 import LoadSimulationSheet from "@/components/simulators/LoadSimulationSheet";
+import PublishToWorldDialog from "@/components/simulators/PublishToWorldDialog";
 import Header from "@/components/layout/Header";
 import NarrativeBridgePanel, { useNarrativeBridge } from "@/components/simulators/NarrativeBridgePanel";
 import { SIMULATOR_NARRATIVE_CONFIGS } from "@/lib/simulator-narrative-questions";
@@ -25,6 +26,7 @@ const ExoskySimulator = () => {
   const worldId = useWorldId();
   const narrativeBridge = useNarrativeBridge();
   const [loadSheetOpen, setLoadSheetOpen] = useState(false);
+  const [publishDialogOpen, setPublishDialogOpen] = useState(false);
   const {
     saves,
     isLoadingSaves,
@@ -39,6 +41,16 @@ const ExoskySimulator = () => {
     worldId,
   });
 
+  useEffect(() => {
+    const handler = (event: MessageEvent) => {
+      if (event.data?.type === "STELLARFORGE_PUBLISH") {
+        setPublishDialogOpen(true);
+      }
+    };
+    window.addEventListener("message", handler);
+    return () => window.removeEventListener("message", handler);
+  }, []);
+
   return (
     <>
       <div className="min-h-screen bg-background">
@@ -50,6 +62,15 @@ const ExoskySimulator = () => {
           {/* Save/Load controls */}
           {worldId && (
             <div className="absolute top-3 right-3 z-20 flex items-center gap-1.5">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setPublishDialogOpen(true)}
+                className="bg-[#09090B]/80 border-white/10 text-[#00D4FF] hover:bg-[#09090B] text-[10px] uppercase tracking-wider h-7 px-2.5"
+              >
+                <Rocket className="w-3 h-3 mr-1" />
+                Publish
+              </Button>
               <Button
                 variant="outline"
                 size="sm"
@@ -93,6 +114,14 @@ const ExoskySimulator = () => {
         saves={saves}
         isLoading={isLoadingSaves}
         onLoad={loadSave}
+      />
+      <PublishToWorldDialog
+        open={publishDialogOpen}
+        onOpenChange={setPublishDialogOpen}
+        payload={pendingPayload}
+        worldId={worldId}
+        simulatorType="exosky"
+        narrativeNotes={narrativeBridge.notes}
       />
     </>
   );
