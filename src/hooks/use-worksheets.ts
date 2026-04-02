@@ -35,7 +35,12 @@ interface UpdateWorksheetInput {
   data?: Json;
 }
 
-export const useWorksheets = (worldId: string | undefined, includeArchived: boolean = false) => {
+interface UseWorksheetsOptions {
+  /** Called after a draft wiki page is created/updated — used for entity match checks */
+  onDraftCreated?: (worksheetId: string, title: string) => void;
+}
+
+export const useWorksheets = (worldId: string | undefined, includeArchived: boolean = false, options?: UseWorksheetsOptions) => {
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -104,7 +109,11 @@ export const useWorksheets = (worldId: string | undefined, includeArchived: bool
           },
           user.id
         )
-          .then(() => queryClient.invalidateQueries({ queryKey: ["codex-data", worldId] }))
+          .then(() => {
+            queryClient.invalidateQueries({ queryKey: ["codex-data", worldId] });
+            // Trigger entity match check for newly created worksheets
+            options?.onDraftCreated?.(data.id, data.title || "Untitled");
+          })
           .catch(() => {}); // best-effort
       }
     },
@@ -156,7 +165,10 @@ export const useWorksheets = (worldId: string | undefined, includeArchived: bool
           },
           user.id
         )
-          .then(() => queryClient.invalidateQueries({ queryKey: ["codex-data", worldId] }))
+          .then(() => {
+            queryClient.invalidateQueries({ queryKey: ["codex-data", worldId] });
+            options?.onDraftCreated?.(data.id, data.title || "Untitled");
+          })
           .catch(() => {}); // best-effort
       }
       // Sync worksheet data back to linked entity (best-effort)

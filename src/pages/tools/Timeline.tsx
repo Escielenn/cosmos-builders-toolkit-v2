@@ -60,6 +60,8 @@ import TimelineFullReportTemplate from "@/lib/pdf/templates/TimelineFullReportTe
 import { captureTimelineAsPNG, downloadBlob } from "@/lib/timeline/visual-export";
 import { useTimelinePresence } from "@/hooks/use-timeline-presence";
 import { useSubscription } from "@/hooks/use-subscription";
+import { useEntityMatch } from "@/hooks/use-entity-match";
+import EntityMatchDialog from "@/components/tools/EntityMatchDialog";
 import PresenceAvatars from "@/components/timeline/PresenceAvatars";
 import { useTimelineKeyboard } from "@/components/timeline/useTimelineKeyboard";
 import { fitAllEvents } from "@/lib/timeline/utils";
@@ -106,7 +108,10 @@ const Timeline = () => {
   const currentWorld = worldId ? worlds.find((w) => w.id === worldId) : null;
   const worldName = currentWorld?.name;
 
-  const { createWorksheet, updateWorksheet } = useWorksheets(worldId || undefined);
+  const entityMatch = useEntityMatch(worldId);
+  const { createWorksheet, updateWorksheet } = useWorksheets(worldId || undefined, false, {
+    onDraftCreated: entityMatch.check,
+  });
   const { data: existingWorksheet, isLoading: worksheetLoading } = useWorksheet(worksheetId || undefined);
   const { data: existingWorksheets = [], isLoading: worksheetsLoading } = useWorksheetsByType(worldId || undefined, TOOL_TYPE);
   const renameWorksheet = useRenameWorksheet();
@@ -658,6 +663,8 @@ const Timeline = () => {
         onApply={(templateState) => dispatch({ type: "SET_STATE", payload: templateState })}
         hasExistingData={state.tracks.length > 0 || state.events.length > 0}
       />
+
+      <EntityMatchDialog {...entityMatch.dialogProps} />
     </ToolPageLayout>
   );
 };

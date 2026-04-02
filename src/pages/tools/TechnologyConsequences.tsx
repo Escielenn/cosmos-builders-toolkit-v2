@@ -38,6 +38,8 @@ import { WorksheetMoodboardSheet } from "@/components/tools/WorksheetMoodboardSh
 import UpgradeDialog from "@/components/subscription/UpgradeDialog";
 import { useWorlds } from "@/hooks/use-worlds";
 import { Json } from "@/integrations/supabase/types";
+import { useEntityMatch } from "@/hooks/use-entity-match";
+import EntityMatchDialog from "@/components/tools/EntityMatchDialog";
 import {
   TECHNOLOGY_CATEGORIES,
   TECHNOLOGY_MATURITY,
@@ -240,7 +242,10 @@ const TechnologyConsequences = () => {
   const currentWorld = worldId ? worlds.find((w) => w.id === worldId) : null;
   const worldName = currentWorld?.name;
 
-  const { createWorksheet, updateWorksheet } = useWorksheets(worldId || undefined);
+  const entityMatch = useEntityMatch(worldId);
+  const { createWorksheet, updateWorksheet } = useWorksheets(worldId || undefined, false, {
+    onDraftCreated: entityMatch.check,
+  });
   const { data: existingWorksheet, isLoading: worksheetLoading } = useWorksheet(worksheetId || undefined);
   const { data: existingWorksheets = [], isLoading: worksheetsLoading } = useWorksheetsByType(worldId || undefined, TOOL_TYPE);
   const renameWorksheet = useRenameWorksheet();
@@ -1367,6 +1372,8 @@ const TechnologyConsequences = () => {
         open={upgradeDialogOpen}
         onOpenChange={setUpgradeDialogOpen}
       />
+
+      <EntityMatchDialog {...entityMatch.dialogProps} />
     </ToolPageLayout>
   );
 };

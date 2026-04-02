@@ -34,6 +34,8 @@ import { WorksheetNotesSheet } from "@/components/tools/WorksheetNotesSheet";
 import { WorksheetMoodboardSheet } from "@/components/tools/WorksheetMoodboardSheet";
 import { DrakeSummaryTemplate, DrakeFullReportTemplate } from "@/lib/pdf/templates";
 import { Json } from "@/integrations/supabase/types";
+import { useEntityMatch } from "@/hooks/use-entity-match";
+import EntityMatchDialog from "@/components/tools/EntityMatchDialog";
 
 // Section definitions for navigation
 const SECTIONS: Section[] = [
@@ -260,7 +262,10 @@ const DrakeEquationCalculator = () => {
   const worksheetId = searchParams.get("worksheetId");
 
   const { worlds } = useWorlds();
-  const { createWorksheet, updateWorksheet } = useWorksheets(worldId || undefined);
+  const entityMatch = useEntityMatch(worldId);
+  const { createWorksheet, updateWorksheet } = useWorksheets(worldId || undefined, false, {
+    onDraftCreated: entityMatch.check,
+  });
   const { data: existingWorksheet, isLoading: worksheetLoading } = useWorksheet(worksheetId || undefined);
   const { data: existingWorksheets = [], isLoading: worksheetsLoading } = useWorksheetsByType(worldId || undefined, TOOL_TYPE);
   const renameWorksheet = useRenameWorksheet();
@@ -981,6 +986,8 @@ const DrakeEquationCalculator = () => {
         images={formState.moodboard || []}
         onImagesChange={(images) => setFormState(prev => ({ ...prev, moodboard: images }))}
       />
+
+      <EntityMatchDialog {...entityMatch.dialogProps} />
     </ToolPageLayout>
   );
 };

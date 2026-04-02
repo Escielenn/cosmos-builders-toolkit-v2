@@ -41,6 +41,8 @@ import { WorksheetNotesSheet } from "@/components/tools/WorksheetNotesSheet";
 import { WorksheetMoodboardSheet } from "@/components/tools/WorksheetMoodboardSheet";
 import { PropulsionSummaryTemplate, PropulsionFullReportTemplate } from "@/lib/pdf/templates";
 import { useWorlds } from "@/hooks/use-worlds";
+import { useEntityMatch } from "@/hooks/use-entity-match";
+import EntityMatchDialog from "@/components/tools/EntityMatchDialog";
 import { Json } from "@/integrations/supabase/types";
 
 // Section definitions for navigation
@@ -439,7 +441,10 @@ const PropulsionConsequencesMap = () => {
   const worldName = currentWorld?.name;
 
   // Supabase hooks
-  const { createWorksheet, updateWorksheet } = useWorksheets(worldId || undefined);
+  const entityMatch = useEntityMatch(worldId);
+  const { createWorksheet, updateWorksheet } = useWorksheets(worldId || undefined, false, {
+    onDraftCreated: entityMatch.check,
+  });
   const { data: existingWorksheet, isLoading: worksheetLoading } = useWorksheet(worksheetId || undefined);
   const { data: existingWorksheets = [], isLoading: worksheetsLoading } = useWorksheetsByType(worldId || undefined, TOOL_TYPE);
   const renameWorksheet = useRenameWorksheet();
@@ -1767,6 +1772,8 @@ const PropulsionConsequencesMap = () => {
           onCreate={handleWorksheetCreate}
         />
       )}
+
+      <EntityMatchDialog {...entityMatch.dialogProps} />
     </ToolPageLayout>
   );
 };

@@ -51,6 +51,8 @@ import { WorksheetNotesSheet } from "@/components/tools/WorksheetNotesSheet";
 import { WorksheetMoodboardSheet } from "@/components/tools/WorksheetMoodboardSheet";
 import { EvolutionarySummaryTemplate, EvolutionaryFullReportTemplate } from "@/lib/pdf/templates";
 import { useWorlds } from "@/hooks/use-worlds";
+import { useEntityMatch } from "@/hooks/use-entity-match";
+import EntityMatchDialog from "@/components/tools/EntityMatchDialog";
 import { Json } from "@/integrations/supabase/types";
 import { LinkedWorksheetRef, getLinkConfigsForTool } from "@/lib/worksheet-links-config";
 import {
@@ -415,7 +417,10 @@ const EvolutionaryBiology = () => {
   // Worksheet management
   const { worlds } = useWorlds();
   const currentWorld = worlds.find((w) => w.id === worldId);
-  const { createWorksheet, updateWorksheet } = useWorksheets(worldId);
+  const entityMatch = useEntityMatch(worldId);
+  const { createWorksheet, updateWorksheet } = useWorksheets(worldId, false, {
+    onDraftCreated: entityMatch.check,
+  });
   const { data: worksheets = [], isLoading: loadingWorksheets } = useWorksheetsByType(worldId, TOOL_TYPE);
   const { data: currentWorksheet, isLoading: loadingWorksheet } = useWorksheet(worksheetId);
   const renameWorksheet = useRenameWorksheet();
@@ -2711,6 +2716,8 @@ const EvolutionaryBiology = () => {
         images={formState.moodboard || []}
         onImagesChange={(images) => setFormState(prev => ({ ...prev, moodboard: images }))}
       />
+
+      <EntityMatchDialog {...entityMatch.dialogProps} />
     </ToolPageLayout>
   );
 };

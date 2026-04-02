@@ -50,6 +50,8 @@ import { WorksheetMoodboardSheet } from "@/components/tools/WorksheetMoodboardSh
 import { applyMappedFields, type MappedField } from "@/lib/field-mappings";
 import { XenomythologySummaryTemplate, XenomythologyFullReportTemplate } from "@/lib/pdf/templates";
 import { useWorlds } from "@/hooks/use-worlds";
+import { useEntityMatch } from "@/hooks/use-entity-match";
+import EntityMatchDialog from "@/components/tools/EntityMatchDialog";
 import { generateImplications, type Implication } from "@/lib/xenomythology-implications";
 import { Json } from "@/integrations/supabase/types";
 import {
@@ -602,7 +604,10 @@ const XenomythologyFrameworkBuilder = () => {
   const worldName = currentWorld?.name;
 
   // Supabase hooks
-  const { worksheets, createWorksheet, updateWorksheet } = useWorksheets(worldId || undefined);
+  const entityMatch = useEntityMatch(worldId);
+  const { worksheets, createWorksheet, updateWorksheet } = useWorksheets(worldId || undefined, false, {
+    onDraftCreated: entityMatch.check,
+  });
   const { data: existingWorksheet, isLoading: worksheetLoading } = useWorksheet(worksheetId || undefined);
   const { data: existingWorksheets = [], isLoading: worksheetsLoading } = useWorksheetsByType(worldId || undefined, TOOL_TYPE);
   const renameWorksheet = useRenameWorksheet();
@@ -2765,6 +2770,8 @@ const XenomythologyFrameworkBuilder = () => {
           onCreate={handleWorksheetCreate}
         />
       )}
+
+      <EntityMatchDialog {...entityMatch.dialogProps} />
     </ToolPageLayout>
   );
 };

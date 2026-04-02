@@ -43,6 +43,8 @@ import { WorksheetMoodboardSheet } from "@/components/tools/WorksheetMoodboardSh
 import UpgradeDialog from "@/components/subscription/UpgradeDialog";
 import { useWorlds } from "@/hooks/use-worlds";
 import { Json } from "@/integrations/supabase/types";
+import { useEntityMatch } from "@/hooks/use-entity-match";
+import EntityMatchDialog from "@/components/tools/EntityMatchDialog";
 import {
   SPECTRAL_CLASSES,
   STELLAR_CONFIGURATIONS,
@@ -273,7 +275,10 @@ const StarSystemBuilder = () => {
   const worldName = currentWorld?.name;
 
   // Supabase hooks
-  const { createWorksheet, updateWorksheet } = useWorksheets(worldId || undefined);
+  const entityMatch = useEntityMatch(worldId);
+  const { createWorksheet, updateWorksheet } = useWorksheets(worldId || undefined, false, {
+    onDraftCreated: entityMatch.check,
+  });
   const { data: existingWorksheet, isLoading: worksheetLoading } = useWorksheet(worksheetId || undefined);
   const { data: existingWorksheets = [], isLoading: worksheetsLoading } = useWorksheetsByType(worldId || undefined, TOOL_TYPE);
   const renameWorksheet = useRenameWorksheet();
@@ -1631,6 +1636,8 @@ const StarSystemBuilder = () => {
         onOpenChange={setUpgradeDialogOpen}
         toolName="Orrery"
       />
+
+      <EntityMatchDialog {...entityMatch.dialogProps} />
     </ToolPageLayout>
   );
 };

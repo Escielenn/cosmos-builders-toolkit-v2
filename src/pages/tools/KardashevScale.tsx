@@ -48,6 +48,8 @@ import KeyChoicesSidebar, {
 import QuickExportButton from "@/components/tools/QuickExportButton";
 import ExportDialog from "@/components/tools/ExportDialog";
 import ShareDialog from "@/components/sharing/ShareDialog";
+import { useEntityMatch } from "@/hooks/use-entity-match";
+import EntityMatchDialog from "@/components/tools/EntityMatchDialog";
 import type { MoodboardImage } from "@/hooks/use-moodboard";
 import { useWorlds } from "@/hooks/use-worlds";
 import { Json } from "@/integrations/supabase/types";
@@ -167,8 +169,11 @@ const KardashevScale = () => {
     : [];
 
   // Worksheets
+  const entityMatch = useEntityMatch(worldId);
   const { createWorksheet, updateWorksheet, worksheets } = useWorksheets(
-    worldId || undefined
+    worldId || undefined, false, {
+      onDraftCreated: entityMatch.check,
+    }
   );
   const renameWorksheet = useRenameWorksheet();
   const { data: worksheetsByType = [] } = useWorksheetsByType(worldId || undefined, TOOL_TYPE);
@@ -930,6 +935,8 @@ const KardashevScale = () => {
           entityTitle={currentWorksheetTitle || "K-Scale Analysis"}
         />
       )}
+
+      <EntityMatchDialog {...entityMatch.dialogProps} />
     </ToolPageLayout>
   );
 };
