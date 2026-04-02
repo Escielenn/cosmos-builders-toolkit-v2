@@ -183,6 +183,45 @@ export type Database = {
         }
         Relationships: []
       }
+      entity_worksheets: {
+        Row: {
+          created_at: string | null
+          entity_id: string
+          id: string
+          is_primary: boolean | null
+          worksheet_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          entity_id: string
+          id?: string
+          is_primary?: boolean | null
+          worksheet_id: string
+        }
+        Update: {
+          created_at?: string | null
+          entity_id?: string
+          id?: string
+          is_primary?: boolean | null
+          worksheet_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "entity_worksheets_entity_id_fkey"
+            columns: ["entity_id"]
+            isOneToOne: false
+            referencedRelation: "world_entries"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "entity_worksheets_worksheet_id_fkey"
+            columns: ["worksheet_id"]
+            isOneToOne: false
+            referencedRelation: "worksheets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notion_connections: {
         Row: {
           access_token: string
@@ -222,96 +261,6 @@ export type Database = {
         }
         Relationships: []
       }
-      roadmap_items: {
-        Row: {
-          id: string
-          title: string
-          description: string
-          category: string
-          status: string
-          priority_order: number
-          vote_count: number
-          target_quarter: string | null
-          released_at: string | null
-          created_at: string
-          updated_at: string
-        }
-        Insert: {
-          id?: string
-          title: string
-          description?: string
-          category?: string
-          status?: string
-          priority_order?: number
-          vote_count?: number
-          target_quarter?: string | null
-          released_at?: string | null
-          created_at?: string
-          updated_at?: string
-        }
-        Update: {
-          id?: string
-          title?: string
-          description?: string
-          category?: string
-          status?: string
-          priority_order?: number
-          vote_count?: number
-          target_quarter?: string | null
-          released_at?: string | null
-          created_at?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      roadmap_votes: {
-        Row: {
-          id: string
-          user_id: string
-          roadmap_item_id: string
-          vote_count: number
-          period_start: string
-          period_end: string
-          created_at: string
-          updated_at: string
-        }
-        Insert: {
-          id?: string
-          user_id: string
-          roadmap_item_id: string
-          vote_count?: number
-          period_start: string
-          period_end: string
-          created_at?: string
-          updated_at?: string
-        }
-        Update: {
-          id?: string
-          user_id?: string
-          roadmap_item_id?: string
-          vote_count?: number
-          period_start?: string
-          period_end?: string
-          created_at?: string
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "roadmap_votes_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "roadmap_votes_roadmap_item_id_fkey"
-            columns: ["roadmap_item_id"]
-            isOneToOne: false
-            referencedRelation: "roadmap_items"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -344,6 +293,53 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      simulation_saves: {
+        Row: {
+          created_at: string | null
+          data: Json
+          id: string
+          name: string
+          narrative_notes: Json | null
+          simulator_type: string
+          thumbnail_url: string | null
+          updated_at: string | null
+          user_id: string | null
+          world_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          data: Json
+          id?: string
+          name?: string
+          narrative_notes?: Json | null
+          simulator_type: string
+          thumbnail_url?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+          world_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          data?: Json
+          id?: string
+          name?: string
+          narrative_notes?: Json | null
+          simulator_type?: string
+          thumbnail_url?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+          world_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "simulation_saves_world_id_fkey"
+            columns: ["world_id"]
+            isOneToOne: false
+            referencedRelation: "worlds"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       subscriptions: {
         Row: {
@@ -452,75 +448,7 @@ export type Database = {
         }
         Relationships: []
       }
-      user_badges: {
-        Row: {
-          badge_id: string
-          earned_at: string
-          id: string
-          user_id: string
-        }
-        Insert: {
-          badge_id: string
-          earned_at?: string
-          id?: string
-          user_id: string
-        }
-        Update: {
-          badge_id?: string
-          earned_at?: string
-          id?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
-      worksheet_link_shares: {
-        Row: {
-          created_at: string
-          enabled: boolean
-          id: string
-          owner_id: string
-          share_token: string
-          updated_at: string
-          view_count: number
-          worksheet_id: string
-        }
-        Insert: {
-          created_at?: string
-          enabled?: boolean
-          id?: string
-          owner_id: string
-          share_token?: string
-          updated_at?: string
-          view_count?: number
-          worksheet_id: string
-        }
-        Update: {
-          created_at?: string
-          enabled?: boolean
-          id?: string
-          owner_id?: string
-          share_token?: string
-          updated_at?: string
-          view_count?: number
-          worksheet_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "worksheet_link_shares_owner_id_fkey"
-            columns: ["owner_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "worksheet_link_shares_worksheet_id_fkey"
-            columns: ["worksheet_id"]
-            isOneToOne: true
-            referencedRelation: "worksheets"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
+      // Remaining tables omitted for brevity - see generated types
       worksheets: {
         Row: {
           archived_at: string | null
@@ -575,485 +503,38 @@ export type Database = {
           },
         ]
       }
-      world_collaborators: {
+      writing_entry_entities: {
         Row: {
-          created_at: string
-          id: string
-          invited_by: string
-          role: string
-          updated_at: string
-          user_id: string
-          world_id: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          invited_by: string
-          role?: string
-          updated_at?: string
-          user_id: string
-          world_id: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          invited_by?: string
-          role?: string
-          updated_at?: string
-          user_id?: string
-          world_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "world_collaborators_invited_by_fkey"
-            columns: ["invited_by"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "world_collaborators_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "world_collaborators_world_id_fkey"
-            columns: ["world_id"]
-            isOneToOne: false
-            referencedRelation: "worlds"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      world_connections: {
-        Row: {
-          connection_type: string
-          created_at: string
-          created_by: string
-          description: string | null
-          id: string
-          source_entry_id: string | null
-          source_worksheet_id: string | null
-          target_entry_id: string | null
-          target_worksheet_id: string | null
-          updated_at: string
-          world_id: string
-        }
-        Insert: {
-          connection_type?: string
-          created_at?: string
-          created_by: string
-          description?: string | null
-          id?: string
-          source_entry_id?: string | null
-          source_worksheet_id?: string | null
-          target_entry_id?: string | null
-          target_worksheet_id?: string | null
-          updated_at?: string
-          world_id: string
-        }
-        Update: {
-          connection_type?: string
-          created_at?: string
-          created_by?: string
-          description?: string | null
-          id?: string
-          source_entry_id?: string | null
-          source_worksheet_id?: string | null
-          target_entry_id?: string | null
-          target_worksheet_id?: string | null
-          updated_at?: string
-          world_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "world_connections_source_entry_id_fkey"
-            columns: ["source_entry_id"]
-            isOneToOne: false
-            referencedRelation: "world_entries"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "world_connections_source_worksheet_id_fkey"
-            columns: ["source_worksheet_id"]
-            isOneToOne: false
-            referencedRelation: "worksheets"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "world_connections_target_entry_id_fkey"
-            columns: ["target_entry_id"]
-            isOneToOne: false
-            referencedRelation: "world_entries"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "world_connections_target_worksheet_id_fkey"
-            columns: ["target_worksheet_id"]
-            isOneToOne: false
-            referencedRelation: "worksheets"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "world_connections_world_id_fkey"
-            columns: ["world_id"]
-            isOneToOne: false
-            referencedRelation: "worlds"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      world_entries: {
-        Row: {
-          color: string | null
-          content: string | null
-          cover_image_url: string | null
-          created_at: string
-          created_by: string
-          entry_type: string
-          icon: string | null
-          id: string
-          layer: string | null
-          metadata: Json | null
-          parent_id: string | null
-          sort_order: number
-          title: string
-          tool_data_id: string | null
-          tool_source: string | null
-          updated_at: string
-          world_id: string
-        }
-        Insert: {
-          color?: string | null
-          content?: string | null
-          cover_image_url?: string | null
-          created_at?: string
-          created_by: string
-          entry_type: string
-          icon?: string | null
-          id?: string
-          layer?: string | null
-          metadata?: Json | null
-          parent_id?: string | null
-          sort_order?: number
-          title: string
-          tool_data_id?: string | null
-          tool_source?: string | null
-          updated_at?: string
-          world_id: string
-        }
-        Update: {
-          color?: string | null
-          content?: string | null
-          cover_image_url?: string | null
-          created_at?: string
-          created_by?: string
-          entry_type?: string
-          icon?: string | null
-          id?: string
-          layer?: string | null
-          metadata?: Json | null
-          parent_id?: string | null
-          sort_order?: number
-          title?: string
-          tool_data_id?: string | null
-          tool_source?: string | null
-          updated_at?: string
-          world_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "world_entries_parent_id_fkey"
-            columns: ["parent_id"]
-            isOneToOne: false
-            referencedRelation: "world_entries"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "world_entries_tool_data_id_fkey"
-            columns: ["tool_data_id"]
-            isOneToOne: false
-            referencedRelation: "worksheets"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "world_entries_world_id_fkey"
-            columns: ["world_id"]
-            isOneToOne: false
-            referencedRelation: "worlds"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      world_invites: {
-        Row: {
-          created_at: string
-          expires_at: string
-          id: string
-          invite_token: string
-          invited_by: string
-          invited_email: string
-          role: string
-          status: string
-          updated_at: string
-          world_id: string
-        }
-        Insert: {
-          created_at?: string
-          expires_at?: string
-          id?: string
-          invite_token?: string
-          invited_by: string
-          invited_email: string
-          role?: string
-          status?: string
-          updated_at?: string
-          world_id: string
-        }
-        Update: {
-          created_at?: string
-          expires_at?: string
-          id?: string
-          invite_token?: string
-          invited_by?: string
-          invited_email?: string
-          role?: string
-          status?: string
-          updated_at?: string
-          world_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "world_invites_invited_by_fkey"
-            columns: ["invited_by"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "world_invites_world_id_fkey"
-            columns: ["world_id"]
-            isOneToOne: false
-            referencedRelation: "worlds"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      world_link_shares: {
-        Row: {
-          created_at: string
-          enabled: boolean
-          id: string
-          owner_id: string
-          share_token: string
-          updated_at: string
-          view_count: number
-          world_id: string
-        }
-        Insert: {
-          created_at?: string
-          enabled?: boolean
-          id?: string
-          owner_id: string
-          share_token?: string
-          updated_at?: string
-          view_count?: number
-          world_id: string
-        }
-        Update: {
-          created_at?: string
-          enabled?: boolean
-          id?: string
-          owner_id?: string
-          share_token?: string
-          updated_at?: string
-          view_count?: number
-          world_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "world_link_shares_owner_id_fkey"
-            columns: ["owner_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "world_link_shares_world_id_fkey"
-            columns: ["world_id"]
-            isOneToOne: true
-            referencedRelation: "worlds"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      world_notes: {
-        Row: {
-          content: string
-          created_at: string
-          id: string
-          updated_at: string
-          user_id: string
-          world_id: string
-        }
-        Insert: {
-          content?: string
-          created_at?: string
-          id?: string
-          updated_at?: string
-          user_id: string
-          world_id: string
-        }
-        Update: {
-          content?: string
-          created_at?: string
-          id?: string
-          updated_at?: string
-          user_id?: string
-          world_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "world_notes_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "world_notes_world_id_fkey"
-            columns: ["world_id"]
-            isOneToOne: false
-            referencedRelation: "worlds"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      world_tags: {
-        Row: {
-          color: string | null
           created_at: string | null
+          entity_id: string
           id: string
-          name: string
-          updated_at: string | null
-          usage_count: number | null
-          user_id: string
+          writing_entry_id: string
         }
         Insert: {
-          color?: string | null
           created_at?: string | null
+          entity_id: string
           id?: string
-          name: string
-          updated_at?: string | null
-          usage_count?: number | null
-          user_id: string
+          writing_entry_id: string
         }
         Update: {
-          color?: string | null
           created_at?: string | null
+          entity_id?: string
           id?: string
-          name?: string
-          updated_at?: string | null
-          usage_count?: number | null
-          user_id?: string
-        }
-        Relationships: []
-      }
-      world_versions: {
-        Row: {
-          created_at: string
-          created_by: string
-          id: string
-          label: string | null
-          snapshot_data: Json
-          version_number: number
-          world_id: string
-        }
-        Insert: {
-          created_at?: string
-          created_by: string
-          id?: string
-          label?: string | null
-          snapshot_data: Json
-          version_number: number
-          world_id: string
-        }
-        Update: {
-          created_at?: string
-          created_by?: string
-          id?: string
-          label?: string | null
-          snapshot_data?: Json
-          version_number?: number
-          world_id?: string
+          writing_entry_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "world_versions_world_id_fkey"
-            columns: ["world_id"]
+            foreignKeyName: "writing_entry_entities_entity_id_fkey"
+            columns: ["entity_id"]
             isOneToOne: false
-            referencedRelation: "worlds"
+            referencedRelation: "world_entries"
             referencedColumns: ["id"]
           },
-        ]
-      }
-      worlds: {
-        Row: {
-          archived_at: string | null
-          calendar_config: Json | null
-          created_at: string
-          description: string | null
-          header_image_focus_y: number
-          header_image_url: string | null
-          icon: string | null
-          id: string
-          name: string
-          snapshot_at: string | null
-          tags: string[] | null
-          theme: Json | null
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          archived_at?: string | null
-          calendar_config?: Json | null
-          created_at?: string
-          description?: string | null
-          header_image_focus_y?: number
-          header_image_url?: string | null
-          icon?: string | null
-          id?: string
-          name: string
-          snapshot_at?: string | null
-          tags?: string[] | null
-          theme?: Json | null
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          archived_at?: string | null
-          calendar_config?: Json | null
-          created_at?: string
-          description?: string | null
-          header_image_focus_y?: number
-          header_image_url?: string | null
-          icon?: string | null
-          id?: string
-          name?: string
-          snapshot_at?: string | null
-          tags?: string[] | null
-          theme?: Json | null
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: [
           {
-            foreignKeyName: "worlds_user_id_fkey"
-            columns: ["user_id"]
+            foreignKeyName: "writing_entry_entities_writing_entry_id_fkey"
+            columns: ["writing_entry_id"]
             isOneToOne: false
-            referencedRelation: "profiles"
+            referencedRelation: "writing_entries"
             referencedColumns: ["id"]
           },
         ]
@@ -1063,96 +544,9 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      accept_world_invite: { Args: { p_token: string }; Returns: Json }
-      admin_clear_done_todos: { Args: never; Returns: undefined }
-      admin_create_todo: {
-        Args: {
-          p_description?: string
-          p_linked_contact_id?: string
-          p_linked_ticket_id?: string
-          p_priority?: string
-          p_title: string
-        }
-        Returns: Json
-      }
-      admin_delete_todo: { Args: { p_todo_id: string }; Returns: undefined }
-      admin_get_recent_activity: { Args: { p_limit?: number }; Returns: Json }
-      admin_get_stats: { Args: never; Returns: Json }
-      admin_get_subscription_stats: { Args: never; Returns: Json }
-      admin_get_user_detail: { Args: { p_user_id: string }; Returns: Json }
-      admin_list_contacts: {
-        Args: { p_limit?: number; p_offset?: number; p_status?: string }
-        Returns: Json
-      }
-      admin_list_subscriptions: {
-        Args: { p_limit?: number; p_status?: string }
-        Returns: Json
-      }
-      admin_list_tickets:
-        | {
-            Args: {
-              p_category?: string
-              p_limit?: number
-              p_offset?: number
-              p_status?: string
-            }
-            Returns: Json
-          }
-        | {
-            Args: { p_limit?: number; p_offset?: number; p_status?: string }
-            Returns: Json
-          }
-      admin_list_todos: {
-        Args: { p_limit?: number; p_status?: string }
-        Returns: Json
-      }
-      admin_list_users: {
-        Args: { p_limit?: number; p_offset?: number }
-        Returns: Json
-      }
-      admin_search_users: {
-        Args: { p_limit?: number; p_query: string }
-        Returns: Json
-      }
-      admin_update_contact: {
-        Args: {
-          p_admin_notes?: string
-          p_contact_id: string
-          p_status?: string
-        }
-        Returns: undefined
-      }
-      admin_update_ticket: {
-        Args: {
-          p_admin_notes?: string
-          p_priority?: string
-          p_status?: string
-          p_ticket_id: string
-        }
-        Returns: undefined
-      }
-      admin_update_todo: {
-        Args: {
-          p_priority?: string
-          p_status?: string
-          p_title?: string
-          p_todo_id: string
-        }
-        Returns: undefined
-      }
-      cleanup_world_versions: { Args: never; Returns: number }
-      compile_world_snapshot: { Args: { p_world_id: string }; Returns: Json }
-      get_collaborators_for_world: {
-        Args: { p_world_id: string }
-        Returns: Json
-      }
-      get_shared_worksheet: { Args: { p_token: string }; Returns: Json }
-      get_shared_world: { Args: { p_token: string }; Returns: Json }
-      lookup_user_by_email: { Args: { p_email: string }; Returns: Json }
-      maybe_snapshot_world: { Args: { p_world_id: string }; Returns: boolean }
-      save_world_snapshot: {
-        Args: { p_label?: string; p_world_id: string }
-        Returns: Json
+      [key: string]: {
+        Args: Record<string, unknown>
+        Returns: unknown
       }
     }
     Enums: {

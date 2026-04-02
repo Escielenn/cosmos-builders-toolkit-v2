@@ -2,6 +2,8 @@ import { useParams, Link, useNavigate, useLocation } from "react-router-dom";
 import { ArrowLeft, Edit, Globe, FileText, Rocket, Zap, Trash2, MoreVertical, Calculator, Plus, Sparkles, Pencil, ChevronRight, Dna, Network, Sun, Crown, Cpu, Users, Download, Layers, BookOpen, Atom, Clock, Archive, Tag, Orbit, Languages, Weight, Eye, Camera, Palette, Library, GripVertical } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
 import { CosmicTelemetry } from "@/components/layout/CosmicVelocityTicker";
+import CascadeProgressBar from "@/components/dashboard/CascadeProgressBar";
+import GuidedFirstWorld from "@/components/dashboard/GuidedFirstWorld";
 import { EPOCH_DATA } from "@/lib/cosmic-telemetry";
 import TagBadge from "@/components/tags/TagBadge";
 import TagInput from "@/components/tags/TagInput";
@@ -784,9 +786,16 @@ const WorldDashboard = () => {
             onAddTag={() => setTagsDialogOpen(true)}
             canEdit={canEdit}
           />
-          <p className="text-sm text-muted-foreground mt-3 px-1">
-            Last updated {format(new Date(world.updated_at), "MMMM d, yyyy")}
-          </p>
+          <div className="flex items-center gap-3 mt-3 px-1">
+            <p className="text-sm text-muted-foreground">
+              Last updated {format(new Date(world.updated_at), "MMMM d, yyyy")}
+            </p>
+            {worksheets.length > 0 && (
+              <CascadeProgressBar
+                worksheetToolTypes={worksheets.map((w) => w.tool_type)}
+              />
+            )}
+          </div>
         </div>
 
         {/* World Notes */}
@@ -907,18 +916,7 @@ const WorldDashboard = () => {
               <Skeleton className="h-20 w-full" />
             </div>
           ) : worksheets.length === 0 ? (
-            <GlassPanel className="p-8 text-center">
-              <FileText className="w-12 h-12 mx-auto mb-3 text-muted-foreground" />
-              <h3 className="font-semibold mb-1">No worksheets yet</h3>
-              <p className="text-sm text-muted-foreground mb-4">
-                Use the tools above to start building your world. Your progress will be saved here.
-              </p>
-              <CosmicTelemetry
-                data={EPOCH_DATA}
-                variant="horizontal"
-                align="center"
-              />
-            </GlassPanel>
+            <GuidedFirstWorld worldId={worldId!} />
           ) : (
             <DndContext
               sensors={dndSensors}
