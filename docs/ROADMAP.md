@@ -20,9 +20,9 @@ Active task list and development priorities. Review this at the start of each se
   - [x] Remove all "Tool N" / "Pro Tool" badges from headers
   - [x] Standardize export labels to "Export [BrandName]"
   - [x] Standardize back link (context-aware: "Back to World" / "Back to Tools")
-- [ ] **Phase 2: UX Discoverability** — descriptions on Quick Access, wiki editing hints
-- [ ] **Phase 3: Cross-Tool Entity Recognition** — fuzzy match + EntityMatchDialog
-- [ ] **Phase 4: Export Format Bugs** — MIME types, file extensions
+- [x] **Phase 2: UX Discoverability** (2026-04-01) — Codex Quick Access descriptions, wiki edit hint, WorldGraph label, Timeline QuickExport
+- [x] **Phase 3: Cross-Tool Entity Recognition** (2026-04-01) — fuzzy name matching, EntityMatchDialog, useEntityMatch hook, all 21 tools integrated
+- [x] **Phase 4: Export Format Bugs** (2026-04-02) — explicit PDF MIME types in ExportDialog, QuickExportButton, WorldBibleDialog
 - [ ] **Phase 5: Simulator Normalization** — fonts, nav, branding (see Simulator Addendum)
 - [ ] **Phase 6: Simulation Save/Replay** — PostMessage bridge + DB table
 - [ ] **Phase 7: Narrative Bridge panel** — simulator writing connection

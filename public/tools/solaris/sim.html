@@ -1,0 +1,2255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SOLARIS — StellarForge Star System Simulator</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.cdnfonts.com/css/md-nichrome-test" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:#09090B;color:#FAFAFA;font-family:'DM Sans',sans-serif;overflow:hidden;height:100vh;width:100vw;user-select:none}
+body.math-open{overflow:hidden}
+#math-overlay{pointer-events:all!important}
+canvas{display:block;position:fixed;top:0;left:0;width:100vw;height:100vh}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(0,212,255,0.14);border-radius:2px}
+.panel{position:fixed;background:rgba(13,13,15,0.94);border:1px solid rgba(255,255,255,0.09);backdrop-filter:blur(20px);border-radius:8px;padding:14px 18px;z-index:20;max-height:calc(100vh - 80px);overflow-y:auto;overflow-x:hidden}
+#title-block{top:16px;left:16px;padding:12px 16px;width:240px}
+.tool-name{font-family:'MD Nichrome Test','Space Grotesk',sans-serif;font-weight:300;font-size:22px;letter-spacing:5px;text-transform:uppercase;color:#FAFAFA;line-height:1}
+.tool-sub{font-family:'MD Nichrome Test','DM Sans',sans-serif;font-size:10px;font-weight:300;letter-spacing:3px;text-transform:uppercase;color:rgba(0,229,160,0.35);margin-top:5px}
+.tool-ctx{font-family:'DM Sans',sans-serif;font-size:11px;color:rgba(0,212,255,0.65);margin-top:6px;min-height:14px}
+.credit{font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:1px;color:rgba(255,255,255,0.12);margin-top:8px;text-transform:uppercase;pointer-events:none}
+#badge{position:fixed;top:178px;left:16px;padding:5px 14px;font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;letter-spacing:2px;text-transform:uppercase;border-radius:6px;transition:all 0.5s;z-index:20;background:rgba(0,212,255,0.03);border:1px solid rgba(0,212,255,0.08);color:rgba(0,212,255,0.4)}
+#badge.active{background:rgba(0,212,255,0.08);border-color:rgba(0,212,255,0.2);color:#00D4FF}
+#badge.gen{background:rgba(255,165,0,0.08);border-color:rgba(255,165,0,0.2);color:#FFA500;animation:pulse 1.2s infinite}
+#badge.ok{background:rgba(46,204,113,0.08);border-color:rgba(46,204,113,0.2);color:#2ECC71;animation:pulse 2s infinite}
+#badge.edit{background:rgba(255,215,0,0.08);border-color:rgba(255,215,0,0.2);color:#FFD43B}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.55}}
+#main-panel{top:160px;left:16px;width:240px;padding:0}
+.tab-bar{display:flex;border-bottom:1px solid rgba(255,255,255,0.07);padding:0 10px;overflow-x:auto}
+.tab{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;letter-spacing:1.2px;text-transform:uppercase;padding:10px 7px 8px;color:rgba(255,255,255,0.3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.2s;white-space:nowrap;flex-shrink:0}
+.tab:hover{color:rgba(255,255,255,0.6)}
+.tab.active{color:#00D4FF;border-bottom-color:#00D4FF}
+.tab-content{display:none;padding:14px 16px 18px}
+.tab-content.active{display:block}
+.sec{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;letter-spacing:2.5px;text-transform:uppercase;color:rgba(0,212,255,0.35);border-bottom:1px solid rgba(0,212,255,0.06);padding-bottom:6px;margin-bottom:10px;margin-top:14px}
+.sec:first-child{margin-top:0}
+label{font-family:'DM Sans',sans-serif;font-size:13px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.38);display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}
+.val{font-family:'JetBrains Mono',monospace;font-size:13px;color:rgba(255,255,255,0.65)}
+input[type=range]{-webkit-appearance:none;width:100%;height:3px;background:rgba(255,255,255,0.1);border-radius:2px;outline:none;margin-bottom:12px;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;background:#00D4FF;border:2px solid rgba(0,0,0,0.6);cursor:pointer}
+.panel,.panel *{cursor:default!important}
+.panel button,.panel button *{cursor:pointer!important}
+button{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;padding:7px 12px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.03);color:rgba(255,255,255,0.6);cursor:pointer;border-radius:6px;transition:all 0.2s}
+button:hover{background:rgba(0,212,255,0.08);border-color:rgba(0,212,255,0.2);color:#fff}
+button.active{background:rgba(0,212,255,0.10);border-color:rgba(0,212,255,0.30);color:#00D4FF}
+.btn-row{display:flex;gap:4px;margin-bottom:8px;flex-wrap:wrap}
+.btn-row button{flex:1;font-size:12px;padding:6px 4px}
+.star-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:10px}
+.star-btn{display:flex;align-items:center;gap:6px;padding:7px 9px;font-size:12px;letter-spacing:1px}
+.sdot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.smode-row{display:grid;gap:4px;margin-bottom:10px}
+.smode-row.g2{grid-template-columns:1fr 1fr}
+.smode-row.g4{grid-template-columns:1fr 1fr 1fr 1fr}
+.smode-btn{padding:6px 4px;font-size:12px;letter-spacing:0.8px;text-align:center}
+.chk-row{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.chk-row input[type=checkbox]{accent-color:#00D4FF;width:11px;height:11px;cursor:pointer}
+.chk-row span{font-family:'DM Sans',sans-serif;font-size:13px;letter-spacing:0.8px;text-transform:uppercase;color:rgba(255,255,255,0.45)}
+input[type=text]{font-family:'Space Grotesk',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.82);border:1px solid rgba(255,255,255,0.1);padding:7px 10px;border-radius:6px;outline:none;width:100%;margin-bottom:10px;font-weight:300}
+input[type=text]:focus{border-color:rgba(0,212,255,0.38)}
+#gen-btn{width:100%;padding:10px;margin-top:6px;font-size:12px;letter-spacing:2px;background:rgba(0,212,255,0.10);border-color:rgba(0,212,255,0.30);color:#00D4FF}
+#gen-btn:hover{background:rgba(0,212,255,0.18);border-color:rgba(0,212,255,0.5)}
+.pal-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:6px}
+.pal-pages{display:flex;gap:3px;margin-bottom:10px;flex-wrap:wrap}
+.pal-pg{font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:1px;text-transform:uppercase;padding:4px 9px;border-radius:5px;cursor:pointer;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.02);color:rgba(255,255,255,0.4);transition:all 0.18s}
+.pal-pg:hover{color:rgba(255,255,255,0.7);border-color:rgba(255,255,255,0.15)}
+.pal-pg.active{background:rgba(0,212,255,0.08);border-color:rgba(0,212,255,0.25);color:#00D4FF}
+.pal-item{display:flex;align-items:center;gap:7px;padding:7px 9px;cursor:grab;border-radius:6px;border:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.02);transition:all 0.2s}
+.pal-item:hover{background:rgba(0,212,255,0.06);border-color:rgba(0,212,255,0.18)}
+.pal-item.dragging{opacity:0.35}
+.pal-dot{width:20px;height:20px;border-radius:50%;flex-shrink:0}
+.pal-name{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;letter-spacing:0.8px;text-transform:uppercase;color:rgba(255,255,255,0.78);line-height:1.3}
+.pal-tag{font-family:'DM Sans',sans-serif;font-size:9px;color:rgba(255,255,255,0.28);margin-top:1px}
+.drag-hint{font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.2);margin-bottom:8px;text-align:center;padding:4px;border:1px dashed rgba(0,212,255,0.12);border-radius:5px}
+#drag-ghost{position:fixed;pointer-events:none;z-index:999;width:36px;height:36px;border-radius:50%;border:2px solid rgba(0,212,255,0.7);box-shadow:0 0 16px rgba(0,212,255,0.5);display:none;transform:translate(-50%,-50%)}
+/* INFO PANEL */
+#info-panel{top:16px;right:16px;width:272px;display:none}
+#info-panel.visible{display:block}
+.planet-hdr{display:flex;align-items:center;gap:10px;margin-bottom:10px;position:relative}
+#icon-canvas{width:44px;height:44px;border-radius:50%;flex-shrink:0}
+.p-name-input{font-family:'Space Grotesk',sans-serif;font-weight:300;font-size:16px;letter-spacing:2px;text-transform:uppercase;color:#FAFAFA;background:transparent;border:none;border-bottom:1px solid transparent;outline:none;width:185px;transition:border-color 0.2s;cursor:pointer;padding:0}
+.p-name-input:focus{border-bottom-color:rgba(0,212,255,0.4);cursor:text}
+.p-type-lbl{font-family:'DM Sans',sans-serif;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-top:2px}
+.close-x{position:absolute;top:0;right:0;padding:3px 7px;font-size:12px;letter-spacing:1px}
+.dbl-slider{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.dbl-slider span{font-family:'DM Sans',sans-serif;font-size:12px;text-transform:uppercase;color:rgba(255,255,255,0.28);flex-shrink:0}
+.dbl-slider input{flex:1;margin-bottom:0}
+.dgrid{display:grid;grid-template-columns:1fr 1fr;gap:5px 12px;margin-top:8px}
+.di .dl{font-family:'DM Sans',sans-serif;font-size:12px;letter-spacing:1.2px;text-transform:uppercase;color:rgba(255,255,255,0.22);margin-bottom:1px}
+.di .dv{font-family:'JetBrains Mono',monospace;font-size:14px;color:rgba(255,255,255,0.72)}
+.dv.cyan{color:#00D4FF}.dv.green{color:#2ECC71}.dv.orange{color:#FFA500}.dv.gold{color:#FFD43B}.dv.red{color:#E74C3C}
+.remove-btn{width:100%;margin-top:8px;font-size:12px}
+.remove-btn:hover{background:rgba(231,76,60,0.1);border-color:rgba(231,76,60,0.3);color:#E74C3C}
+/* MOON PANEL */
+#moon-panel{top:16px;right:302px;width:200px;display:none;z-index:25}
+#moon-panel.visible{display:block}
+.moon-hdr{font-family:'Space Grotesk',sans-serif;font-weight:300;font-size:14px;letter-spacing:2px;text-transform:uppercase;color:#FAFAFA;margin-bottom:4px}
+.moon-sub{font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.28);margin-bottom:10px}
+.moon-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px 10px;margin-top:6px}
+.world-note{font-family:'DM Sans',sans-serif;font-size:11px;line-height:1.5;color:rgba(255,255,255,0.38);padding:7px 10px;border-left:2px solid rgba(0,212,255,0.15);margin-top:10px;background:rgba(0,212,255,0.02);border-radius:0 4px 4px 0}
+/* SAVE PANEL */
+#save-list{margin-top:8px}
+.save-entry{display:flex;align-items:center;gap:6px;padding:8px 10px;border:1px solid rgba(255,255,255,0.06);border-radius:6px;margin-bottom:5px;background:rgba(255,255,255,0.02)}
+.save-name{font-family:'DM Sans',sans-serif;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.72);flex:1}
+.save-meta{font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,0.3);flex-shrink:0}
+.save-btns{display:flex;gap:3px;flex-shrink:0}
+.save-btns button{padding:3px 7px;font-size:12px;letter-spacing:1px}
+.save-btns .del-btn:hover{background:rgba(231,76,60,0.1);border-color:rgba(231,76,60,0.3);color:#E74C3C}
+/* TRANSPORT */
+#transport{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);display:flex;gap:3px;align-items:center;z-index:20;background:rgba(13,13,15,0.94);border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(16px);border-radius:8px;padding:8px 14px}
+.tbtn{padding:6px 10px;font-size:12px;letter-spacing:0;min-width:32px;text-align:center}
+.tbtn.playing{background:rgba(0,212,255,0.08);border-color:rgba(0,212,255,0.2);color:#00D4FF}
+#spd-disp{font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(255,255,255,0.4);padding:0 8px;min-width:38px;text-align:center}
+.t-div{width:1px;height:16px;background:rgba(255,255,255,0.1);margin:0 4px}
+#zoom-ind{position:fixed;bottom:16px;right:16px;text-align:right;z-index:20;pointer-events:none}
+#z-val{font-family:'Space Grotesk',sans-serif;font-weight:300;font-size:15px;color:rgba(0,212,255,0.5);line-height:1}
+#z-lbl{font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.18)}
+#hz-leg{position:fixed;top:16px;left:50%;transform:translateX(-50%);display:flex;gap:14px;align-items:center;z-index:20;background:rgba(13,13,15,0.9);border:1px solid rgba(255,255,255,0.06);backdrop-filter:blur(12px);border-radius:6px;padding:6px 16px;opacity:0;transition:opacity 0.5s;pointer-events:none}
+#hz-leg.vis{opacity:1}
+.leg-i{display:flex;align-items:center;gap:5px;font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.35)}
+.leg-d{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+#phys-note{position:fixed;bottom:60px;left:50%;transform:translateX(-50%);font-family:'DM Sans',sans-serif;font-size:11px;color:rgba(255,215,0,0.6);background:rgba(255,215,0,0.04);border:1px solid rgba(255,215,0,0.12);padding:6px 18px;border-radius:6px;z-index:20;pointer-events:none;opacity:0;transition:opacity 0.5s;white-space:nowrap;max-width:90vw;text-align:center}
+#phys-note.vis{opacity:1}
+#empty-hint{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;z-index:5}
+#empty-hint p{font-family:'Space Grotesk',sans-serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.07);margin-bottom:6px}
+/* ARCHITECTURE BADGE */
+.arch-badge{font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:1px;color:rgba(255,215,0,0.5);background:rgba(255,215,0,0.04);border:1px solid rgba(255,215,0,0.1);border-radius:4px;padding:4px 10px;margin-bottom:10px;text-align:center}
+/* NAV LINKS */
+#title-block .nav-links{display:flex;gap:10px;margin-top:7px}
+#title-block .nav-links a{font-size:11px;font-family:'DM Sans',sans-serif;font-weight:300;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.4);text-decoration:none;padding:3px 8px;border:1px solid rgba(255,255,255,0.08);border-radius:0;transition:all 0.2s}
+#title-block .nav-links a:hover{color:#00D4FF;border-color:rgba(0,212,255,0.25);background:rgba(0,212,255,0.06)}
+</style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+
+<div class="panel" id="title-block">
+  <div class="tool-name">Solaris</div>
+  <div class="tool-sub">STELLARFORGE.TOOLS</div>
+  <div class="tool-ctx" id="sys-label">No system generated</div>
+  <div class="credit">© 2025–2026 Jason D. Batt, Ph.D.</div>
+  <div class="nav-links">
+    <a href="/" target="_parent">Home</a>
+    <a href="/worlds" target="_parent">Worlds</a>
+    <a href="/#tools" target="_parent">Tools</a>
+  </div>
+  <div style="margin-top:8px">
+    <button onclick="openMathPage()" style="width:100%;font-size:11px;letter-spacing:1.5px;padding:5px 8px;background:rgba(0,212,255,0.03);border-color:rgba(0,212,255,0.12);color:rgba(0,212,255,0.45)" id="math-link-btn">Show Your Work ↗</button>
+  </div>
+</div>
+<div id="badge">Standby</div>
+<div id="drag-ghost"></div>
+
+<!-- MOON PANEL -->
+<div class="panel" id="moon-panel">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
+    <div>
+      <div class="moon-hdr" id="moon-name">Moon</div>
+      <div class="moon-sub" id="moon-parent">of —</div>
+    </div>
+    <button class="close-x" onclick="closeMoonInfo()">✕</button>
+  </div>
+  <canvas id="moon-icon" width="36" height="36" style="border-radius:50%;display:block;margin-bottom:10px"></canvas>
+  <div class="moon-grid" id="moon-data-grid"></div>
+</div>
+
+<!-- MAIN PANEL -->
+<div class="panel" id="main-panel">
+  <div class="tab-bar">
+    <div class="tab active" data-tab="system">System</div>
+    <div class="tab" data-tab="palette">Palette</div>
+    <div class="tab" data-tab="oort">Oort</div>
+    <div class="tab" data-tab="view">View</div>
+    <div class="tab" data-tab="save">Save</div>
+  </div>
+
+  <!-- SYSTEM TAB -->
+  <div class="tab-content active" id="tab-system">
+    <div class="sec">Star Configuration</div>
+    <div class="smode-row g2">
+      <button class="smode-btn active" id="smode-single" onclick="setStarMode('single',this)">Single</button>
+      <button class="smode-btn" id="smode-binary" onclick="setStarMode('binary',this)">Binary</button>
+    </div>
+    <div class="smode-row g2">
+      <button class="smode-btn" id="smode-trinary" onclick="setStarMode('trinary',this)">Trinary</button>
+      <button class="smode-btn" id="smode-quaternary" onclick="setStarMode('quaternary',this)">Quaternary ✦</button>
+    </div>
+
+    <!-- Architecture selector — shown for trinary/quaternary -->
+    <div id="arch-select" style="display:none">
+      <div class="sec">Architecture</div>
+      <div id="arch-options"></div>
+      <div class="arch-badge" id="arch-note">—</div>
+    </div>
+
+    <!-- Separation sliders -->
+    <div id="sep-sliders" style="display:none">
+      <div class="sec">Separations</div>
+      <label>Inner A–B <span class="val" id="bsep-val">1.0 AU</span></label>
+      <input type="range" id="bsep-slider" min="2" max="24" value="8" oninput="onBsepChange(this.value)">
+      <div id="csep-wrap" style="display:none">
+        <label>C Distance <span class="val" id="csep-val">2.4 AU</span></label>
+        <input type="range" id="csep-slider" min="5" max="30" value="12" oninput="onCsepChange(this.value)">
+      </div>
+      <div id="dsep-wrap" style="display:none">
+        <label>D Distance <span class="val" id="dsep-val">—</span></label>
+        <input type="range" id="dsep-slider" min="20" max="120" value="55" oninput="onDsepChange(this.value)">
+      </div>
+    </div>
+
+    <div class="sec">Primary Star A</div>
+    <div class="star-grid" id="star-grid-a">
+      <button class="star-btn" onclick="pickStar('a','blue',this)"><span class="sdot" style="background:#9BB8FF"></span>Blue</button>
+      <button class="star-btn" onclick="pickStar('a','white',this)"><span class="sdot" style="background:#FFFDE7"></span>White</button>
+      <button class="star-btn" onclick="pickStar('a','yellow',this)"><span class="sdot" style="background:#FFD700"></span>Yellow</button>
+      <button class="star-btn" onclick="pickStar('a','orange',this)"><span class="sdot" style="background:#FF8C42"></span>Orange</button>
+      <button class="star-btn" onclick="pickStar('a','red',this)"><span class="sdot" style="background:#FF5555"></span>Red</button>
+      <button class="star-btn active" onclick="pickStar('a','random',this)"><span class="sdot" style="background:rgba(0,212,255,0.7)"></span>Random</button>
+    </div>
+
+    <div id="companion-stars"></div>
+
+    <div class="sec">System Name</div>
+    <input id="star-name" type="text" value="PRIMARIS" onblur="updateSysName()">
+
+    <div class="sec">Planet Count</div>
+    <label>Bodies <span class="val" id="pc-val">5</span></label>
+    <input type="range" id="pc-slider" min="1" max="12" value="5" oninput="document.getElementById('pc-val').textContent=this.value">
+
+    <div class="sec">Conditions</div>
+    <div class="btn-row">
+      <button id="btn-hab" onclick="toggleCond('hab')">Habitable</button>
+      <button id="btn-gas" onclick="toggleCond('gas')">Gas Giant</button>
+    </div>
+    <div class="btn-row">
+      <button id="btn-tidal" onclick="toggleCond('tidal')">Tidal Lock</button>
+      <button id="btn-rogue" onclick="toggleCond('rogue')">Rogue World</button>
+    </div>
+    <div class="chk-row"><input type="checkbox" id="chk-ast" checked><span>Asteroid Belt</span></div>
+
+    <button id="gen-btn" onclick="generateSystem()">⊕ Generate System</button>
+
+    <div class="sec" style="margin-top:14px">Camera</div>
+    <div class="btn-row">
+      <button id="cam-free" class="active" onclick="setCam('free',this)">Free</button>
+      <button id="cam-star" onclick="setCam('star',this)">Star</button>
+      <button onclick="fitSys()">Fit All</button>
+    </div>
+  </div>
+
+  <!-- PALETTE TAB -->
+  <div class="tab-content" id="tab-palette">
+    <div class="drag-hint">Drag type onto canvas to place</div>
+    <div class="pal-pages" id="pal-pages"></div>
+    <div class="pal-grid" id="pal-grid"></div>
+  </div>
+
+  <!-- OORT TAB -->
+  <div class="tab-content" id="tab-oort">
+    <div class="sec">Oort Cloud Generator</div>
+    <div class="chk-row"><input type="checkbox" id="chk-oort-inner" checked><span>Hills Cloud (inner)</span></div>
+    <div class="chk-row"><input type="checkbox" id="chk-oort-outer" checked><span>Outer Oort Shell</span></div>
+    <label>Object Count <span class="val" id="oort-count-val">200</span></label>
+    <input type="range" id="oort-count" min="50" max="600" value="200" oninput="document.getElementById('oort-count-val').textContent=this.value">
+    <label>Density <span class="val" id="oort-density-val">0.5</span></label>
+    <input type="range" id="oort-density" min="1" max="10" value="5" oninput="document.getElementById('oort-density-val').textContent=(this.value/10).toFixed(1)">
+    <label>Object Size <span class="val" id="oort-size-val">2.0</span></label>
+    <input type="range" id="oort-sz" min="5" max="25" value="10" oninput="document.getElementById('oort-size-val').textContent=(this.value/5).toFixed(1)">
+    <label>Scale Factor <span class="val" id="oort-scale-val">4×</span></label>
+    <input type="range" id="oort-scale" min="2" max="12" value="4" oninput="document.getElementById('oort-scale-val').textContent=this.value+'×'">
+    <div class="chk-row"><input type="checkbox" id="chk-oort-comets" checked><span>Active Comets</span></div>
+    <label>Comet Count <span class="val" id="oort-comets-val">3</span></label>
+    <input type="range" id="oort-comets" min="0" max="8" value="3" oninput="document.getElementById('oort-comets-val').textContent=this.value">
+    <button style="width:100%;margin-top:4px;background:rgba(46,204,113,0.08);border-color:rgba(46,204,113,0.25);color:#2ECC71;font-size:12px;padding:9px;letter-spacing:2px" onclick="generateOort()">⊕ Apply Oort Cloud</button>
+    <button style="width:100%;margin-top:6px;font-size:12px" onclick="clearOort()">Clear Oort Cloud</button>
+    <div class="world-note" style="margin-top:12px">The inner Hills Cloud (~2k–20k AU) is toroidal. The outer shell (~20k–100k AU) is spherical. Gravitational perturbations from passing stars send Oort bodies inward as long-period comets.</div>
+  </div>
+
+  <!-- VIEW TAB -->
+  <div class="tab-content" id="tab-view">
+    <div class="sec">Overlays</div>
+    <div class="chk-row"><input type="checkbox" id="chk-hz"><span>Habitable Zone</span></div>
+    <div class="chk-row"><input type="checkbox" id="chk-orb" checked><span>Orbital Paths</span></div>
+    <div class="chk-row"><input type="checkbox" id="chk-lbl" checked><span>Planet Labels</span></div>
+    <div class="chk-row"><input type="checkbox" id="chk-grav"><span>Gravity Rings</span></div>
+    <div class="chk-row"><input type="checkbox" id="chk-starname" checked><span>Star Names</span></div>
+    <div class="chk-row"><input type="checkbox" id="chk-trails"><span>Orbital Trails</span></div>
+    <div class="chk-row"><input type="checkbox" id="chk-rot" checked><span>Planet Rotation</span></div>
+    <div class="sec">Star</div>
+    <label>Brightness <span class="val" id="starbrightness-val">1.0</span></label>
+    <input type="range" id="starbrightness" min="1" max="20" value="10" oninput="document.getElementById('starbrightness-val').textContent=(this.value/10).toFixed(1)">
+  </div>
+
+  <!-- SAVE TAB -->
+  <div class="tab-content" id="tab-save">
+    <div class="sec">Save System</div>
+    <input id="save-name-input" type="text" placeholder="SYSTEM NAME" style="text-transform:uppercase">
+    <button style="width:100%;background:rgba(0,229,160,0.08);border-color:rgba(0,229,160,0.25);color:#00E5A0;font-size:12px;padding:9px;letter-spacing:2px" onclick="saveSystem()">⊕ Save Current System</button>
+    <div class="sec" style="margin-top:14px">Saved Systems</div>
+    <div id="save-list"><div style="font-family:'DM Sans',sans-serif;font-size:11px;color:rgba(255,255,255,0.22);text-align:center;padding:12px 0">No saved systems</div></div>
+    <div class="sec" style="margin-top:14px">Export</div>
+    <button style="width:100%;margin-bottom:6px;font-size:12px" onclick="exportJSON()">Export JSON</button>
+    <button style="width:100%;font-size:12px" onclick="exportTXT()">Export World Notes</button>
+    <div class="world-note" style="margin-top:10px">Saved systems persist in your browser. Export JSON to share between devices or bring planet data into other StellarForge worksheets.</div>
+  </div>
+
+</div>
+
+<!-- PLANET INFO PANEL -->
+<div class="panel" id="info-panel">
+  <button class="close-x" onclick="closeInfo()">✕</button>
+  <div class="planet-hdr">
+    <canvas id="icon-canvas" width="44" height="44"></canvas>
+    <div>
+      <input class="p-name-input" id="p-name-input" type="text" value="—" onchange="renamePlanet(this.value)" onfocus="this.select()">
+      <div class="p-type-lbl" id="p-type-lbl">—</div>
+    </div>
+  </div>
+  <div class="sec" style="margin-top:4px">Size</div>
+  <div class="dbl-slider"><span>Tiny</span><input type="range" id="sz-slider" min="3" max="32" value="10" oninput="resizePlanet(this.value)"><span>Giant</span></div>
+  <div class="sec">Orbital Distance</div>
+  <div class="dbl-slider"><span>Near</span><input type="range" id="orb-slider" min="55" max="900" value="150" oninput="reorbitPlanet(this.value)"><span>Far</span></div>
+  <div class="sec">Moons</div>
+  <label>Moon Count <span class="val" id="moon-count-val">0</span></label>
+  <input type="range" id="moon-slider" min="0" max="8" value="0" oninput="setMoonCount(this.value)">
+  <div class="sec">Rotation</div>
+  <div class="btn-row">
+    <button id="rot-normal" class="active" onclick="setRotation('normal',this)">Normal</button>
+    <button id="rot-tidal" onclick="setRotation('tidal',this)">Tidal Lock</button>
+    <button id="rot-retro" onclick="setRotation('retro',this)">Retrograde</button>
+  </div>
+  <label>Rotation Speed <span class="val" id="rot-speed-val">1.0×</span></label>
+  <input type="range" id="rot-speed" min="1" max="30" value="10" oninput="onRotSpeedChange(this.value)">
+  <div class="sec">Properties</div>
+  <div class="dgrid" id="data-grid"></div>
+  <div class="world-note" id="world-note-text"></div>
+  <button class="remove-btn" onclick="removePlanet()">✕ Remove Planet</button>
+</div>
+
+<div id="hz-leg">
+  <div class="leg-i"><div class="leg-d" style="background:#E74C3C"></div>Inner</div>
+  <div class="leg-i"><div class="leg-d" style="background:#2ECC71"></div>Habitable</div>
+  <div class="leg-i"><div class="leg-d" style="background:#9BB8FF"></div>Outer</div>
+  <div class="leg-i"><div class="leg-d" style="background:#6A7A8A"></div>Remote</div>
+</div>
+
+<div id="transport">
+  <button class="tbtn" onclick="changeSpd(-1)">◀</button>
+  <button class="tbtn playing" id="play-btn" onclick="togglePlay()">⏸</button>
+  <button class="tbtn" onclick="changeSpd(1)">▶</button>
+  <div id="spd-disp">1×</div>
+  <div class="t-div"></div>
+  <button class="tbtn" onclick="resetPositions()" title="Reset positions">↺</button>
+  <div class="t-div"></div>
+  <button class="tbtn" style="font-size:12px;padding:6px 8px;letter-spacing:1px" onclick="showPhysNote()" title="Architecture info">?</button>
+</div>
+
+<div id="zoom-ind"><div id="z-val">1.0×</div><div id="z-lbl">Zoom</div></div>
+<div id="phys-note"></div>
+<div id="empty-hint"><p>Generate a system to begin</p><p>or drag planets from Palette</p></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════════
+// SOLARIS v4 — StellarForge Star System Simulator
+// © 2025–2026 Jason D. Batt, Ph.D.
+// ═══════════════════════════════════════════════════════════════════════
+const canvas=document.getElementById('canvas');
+const ctx=canvas.getContext('2d');
+let W,H;
+
+// ── STATE ──
+let cam={x:0,y:0,zoom:1},tcam={x:0,y:0,zoom:1},camMode='free';
+let drag=false,dragSt={x:0,y:0},camSt={x:0,y:0};
+let playing=true,spdIdx=3,lastT=0;
+const SPEEDS=[0.1,0.25,0.5,1,2,5,10];
+let system=null,selPlanet=null,selMoon=null,selMoonParent=null;
+let starModeVal='single',archVal=''; // architecture variant
+let starChoices={a:'random',b:'random',c:'random',d:'random'};
+let conds={hab:false,gas:false,tidal:false,rogue:false};
+let bgStars=[];
+let palPage=0;
+let palDrag=null;
+let starDragActive=false,starDragTarget=null;
+let planetDragActive=false,planetDragTarget=null;
+let trailData=new Map();
+const ghostEl=document.getElementById('drag-ghost');
+let savedSystems=[];
+
+// ── STAR DEFS ──
+const STARS={
+  blue:  {color:'#9BB8FF',glow:'rgba(155,184,255,',r:24,name:'Blue Star',  hz:[3.5,7.0],lum:4.5,temp:'Very Hot'},
+  white: {color:'#FFFDE7',glow:'rgba(255,253,231,',r:20,name:'White Star', hz:[2.4,4.5],lum:2.2,temp:'Hot'},
+  yellow:{color:'#FFD700',glow:'rgba(255,215,0,',  r:19,name:'Yellow Star',hz:[1.6,3.0],lum:1.0,temp:'Moderate'},
+  orange:{color:'#FF8C42',glow:'rgba(255,140,66,', r:16,name:'Orange Star',hz:[0.8,1.7],lum:0.42,temp:'Cool'},
+  red:   {color:'#FF5555',glow:'rgba(255,85,85,',  r:13,name:'Red Dwarf',  hz:[0.2,0.7],lum:0.08,temp:'Very Cool'}
+};
+const SKEYS=['blue','white','yellow','orange','red'];
+
+// ── MULTI-STAR ARCHITECTURES ──
+// binary: A–B pair, planets circumbinary (P-type)
+// trinary_31: (A+B)+C  — inner binary + distant companion (Alpha Cen–style)
+// trinary_inner: A+B+C inner triple, full triple (unstable for sim, so we use 2+1)
+// quaternary_22: (A+B)+(C+D) — two binary pairs (most common real quadruple)
+// quaternary_31: (A+B+C)+D — inner triple + outer star (TIC 120362137)
+const ARCH_OPTIONS={
+  single:    [{val:'single',  label:'Single Star',          note:'One star, clean system.'}],
+  binary:    [{val:'binary',  label:'Circumbinary (P-type)',note:'Planets orbit both stars together — real Tatooine architecture. Stable beyond ~3× binary separation.'}],
+  trinary:   [
+    {val:'tri_31',  label:'3+1 Hierarchical',   note:'Inner binary (A+B) + distant companion (C). Modeled on Alpha Centauri + Proxima Centauri. Most stable trinary.'},
+    {val:'tri_22_1',label:'2+1 (S-type + wide)',note:'Planet orbits one of two stars in a wide binary, with a third distant companion.'}
+  ],
+  quaternary:[
+    {val:'quad_22', label:'2+2 Double Binary',  note:'Two close binary pairs orbiting each other (most common quadruple). Like 30 Ari or ε Lyr. Each pair ~0.5–2 AU; pairs separated ~100–2000 AU.'},
+    {val:'quad_31', label:'3+1 Inner Triple',   note:'TIC 120362137 architecture (March 2026). Inner triple (A+B+C) packed within Mercury\'s orbit, fourth star (D) at ~Jupiter\'s distance. Rarest and most compact.'}
+  ]
+};
+
+// ── PLANET TYPES ──
+const PTYPES={
+  magma:      {name:'Magma',        tag:'Inner',       color:'#CC3300',alt:'#881100',band:'inner',   temp:'Extreme Hot',life:'None',   atmo:'Dense Sulfuric',water:'None',      hazard:'Volcanic',  res:'Rich',       note:'Molten surface, glowing fissures, constant eruptions.',sz:[5,11]},
+  arid:       {name:'Arid',         tag:'Inner',       color:'#C08040',alt:'#7A5228',band:'inner',   temp:'Hot',        life:'None',   atmo:'Thin',          water:'Trace',     hazard:'Sandstorm', res:'Average',    note:'Hot desert winds, vast dune seas.',sz:[4,11]},
+  desert:     {name:'Desert',       tag:'Inner',       color:'#C4914A',alt:'#8B6030',band:'inner',   temp:'Hot',        life:'None',   atmo:'Thin',          water:'None',      hazard:'Heat',      res:'Poor',       note:'Parched cracked earth, scorched plains.',sz:[4,10]},
+  scarred:    {name:'Scarred',      tag:'Inner',       color:'#888070',alt:'#585048',band:'inner',   temp:'Hot',        life:'None',   atmo:'None',          water:'None',      hazard:'Radiation', res:'Scarce',     note:'Impact-cratered, radiation-blasted, exposed rock.',sz:[3,9]},
+  lavaocean:  {name:'Lava Ocean',   tag:'Inner·Exotic',color:'#FF6600',alt:'#AA2200',band:'inner',   temp:'Infernal',   life:'None',   atmo:'Thick Toxic',   water:'None',      hazard:'Volcanic',  res:'Rich Ore',   note:'Global magma ocean — mineral-rich but lethal.',sz:[8,16]},
+  ironfist:   {name:'Iron World',   tag:'Inner·Dense', color:'#9A6060',alt:'#6A3030',band:'inner',   temp:'Hot',        life:'None',   atmo:'Thin Metal',    water:'None',      hazard:'Magnetic',  res:'Rich Iron',  note:'Extreme-density iron-core world; hyper-gravity.',sz:[5,12]},
+  volcanic:   {name:'Volcanic',     tag:'Inner·Active',color:'#FF4500',alt:'#8B2200',band:'inner',   temp:'Hot',        life:'None',   atmo:'Sulfuric',      water:'None',      hazard:'Extreme',   res:'Rich Mineral',note:'Extreme geologic activity, constant eruptions.',sz:[4,11]},
+  terrestrial:{name:'Terrestrial',  tag:'Habitable',   color:'#4A90D9',alt:'#2ECC71',band:'habitable',temp:'Moderate',  life:'Complex',atmo:'Standard',      water:'Abundant',  hazard:'Low',       res:'Rich',       note:'Earth-analog — diverse biomes, plate tectonics, civilization-possible.',sz:[7,13]},
+  ocean:      {name:'Ocean World',  tag:'Habitable',   color:'#1A6FA8',alt:'#0D4F7A',band:'habitable',temp:'Mild',      life:'Marine', atmo:'Humid',         water:'Global',    hazard:'Storms',    res:'Average',    note:'100% water coverage. No land civilization; radically different concept of territory.',sz:[7,14]},
+  superearth: {name:'Super-Earth',  tag:'Habitable',   color:'#5A8A60',alt:'#3A5A40',band:'habitable',temp:'Variable',  life:'Present',atmo:'Thick',         water:'High',      hazard:'Seismic',   res:'Rich',       note:'1.5–10× Earth mass; high gravity reshapes biology, architecture, and technology.',sz:[10,16]},
+  jungle:     {name:'Jungle',       tag:'Habitable',   color:'#228B22',alt:'#145214',band:'habitable',temp:'Warm',      life:'Dense',  atmo:'Thick',         water:'High',      hazard:'Fauna',     res:'Rich',       note:'Hypervegetated, aggressive life, dense canopy.',sz:[6,12]},
+  tidallocked:{name:'Tidal Lock',   tag:'Habitable',   color:'#C0784A',alt:'#2A4A8A',band:'habitable',temp:'Split',     life:'Twilight',atmo:'Thin',         water:'Moderate',  hazard:'Wind Shear',res:'Variable',   note:'Eternal day/night hemispheres. Civilizations cluster in the perpetual twilight band.',sz:[6,13]},
+  greenhouse: {name:'Greenhouse',   tag:'Habitable',   color:'#8BC34A',alt:'#C0392B',band:'habitable',temp:'Very Warm', life:'Microbial',atmo:'Thick CO2',   water:'Moderate',  hazard:'Storms',    res:'Average',    note:'Runaway greenhouse in progress — Venus-analog developing.',sz:[6,12]},
+  twilight:   {name:'Twilight',     tag:'Habitable',   color:'#7A6A9A',alt:'#4A3A6A',band:'habitable',temp:'Mild Grad.',life:'Sparse', atmo:'Moderate',      water:'Ice Caps',  hazard:'Low',       res:'Average',    note:'Barely habitable zone edge; permanent dusk at terminator.',sz:[5,11]},
+  crystalline:{name:'Crystalline',  tag:'Habitable',   color:'#C8D8F8',alt:'#8898C8',band:'habitable',temp:'Moderate',  life:'Possible',atmo:'Thin Silicate',water:'Trace',     hazard:'Crystals',  res:'Rare Crystal',note:'High silicate world; surface covered in towering crystal formations.',sz:[5,11]},
+  waterworld: {name:'Water World',  tag:'Habitable',   color:'#00B4D8',alt:'#0077A8',band:'habitable',temp:'Mild',      life:'Rich',   atmo:'Vapor Thick',   water:'Global Deep',hazard:'Pressure',  res:'Biological', note:'Deep global ocean 100s of km deep. Continental shelves only.',sz:[8,15]},
+  hycean:     {name:'Hycean',       tag:'Habitable',   color:'#38B2AC',alt:'#1A8080',band:'habitable',temp:'Warm',      life:'Microbial',atmo:'H₂ Rich',     water:'Global Hot', hazard:'Pressure',  res:'Average',    note:'Hydrogen-atmosphere ocean world — potentially habitable per 2020s research.',sz:[8,15]},
+  gasgiant:   {name:'Gas Giant',    tag:'Outer',       color:'#D4875A',alt:'#9B5A2E',band:'outer',    temp:'Cold',      life:'None',   atmo:'Massive H/He',  water:'High',      hazard:'Storms',    res:'Poor',       note:'Jupiter-class; complex moon system; magnetic field; Great Storm analogs.',sz:[14,26]},
+  icegiant:   {name:'Ice Giant',    tag:'Outer',       color:'#7EC8E3',alt:'#4A98B5',band:'outer',    temp:'Frigid',    life:'None',   atmo:'Dense Methane', water:'Ice',       hazard:'None',      res:'Average',    note:'Uranus/Neptune analog; possible subsurface ocean; ring system.',sz:[12,20]},
+  rocky:      {name:'Rocky',        tag:'Outer',       color:'#8B7355',alt:'#5C4A35',band:'outer',    temp:'Cold',      life:'None',   atmo:'Thin',          water:'Trace',     hazard:'Seismic',   res:'Average',    note:'Rugged stone, mineral-rich surface, possible subsurface brines.',sz:[4,10]},
+  barren:     {name:'Barren',       tag:'Outer',       color:'#7A7A7A',alt:'#4A4A4A',band:'outer',    temp:'Cold',      life:'None',   atmo:'None',          water:'None',      hazard:'None',      res:'Poor',       note:'Desolate, airless, no geological activity.',sz:[3,9]},
+  stormworld: {name:'Storm World',  tag:'Outer',       color:'#6A5A8A',alt:'#3A3050',band:'outer',    temp:'Cold',      life:'None',   atmo:'Violent',       water:'Trace',     hazard:'Extreme',   res:'Scarce',     note:'Perpetual hyperstorm systems; 500+ mph winds, lightning constant.',sz:[8,16]},
+  diamond:    {name:'Carbon World', tag:'Outer',       color:'#808898',alt:'#505860',band:'outer',    temp:'Cold',      life:'None',   atmo:'CO₂',           water:'None',      hazard:'None',      res:'Diamond',    note:'High carbon ratio; possible diamond mantle layers.',sz:[5,12]},
+  binarycomp: {name:'Companion',    tag:'Outer',       color:'#B8A040',alt:'#785E20',band:'outer',    temp:'Variable',  life:'None',   atmo:'Disrupted',     water:'None',      hazard:'Tidal',     res:'Poor',       note:'Captured body in binary arrangement; extreme tidal forces.',sz:[6,14]},
+  glacial:    {name:'Glacial',      tag:'Remote',      color:'#A8D8EA',alt:'#6AADC8',band:'remote',   temp:'Frozen',    life:'None',   atmo:'None',          water:'Ice',       hazard:'Seismic',   res:'Scarce',     note:'Deep frozen fractured ice surface, possible subsurface ocean.',sz:[3,9]},
+  airless:    {name:'Airless',      tag:'Remote',      color:'#6B6B7A',alt:'#3A3A48',band:'remote',   temp:'Extreme Cold',life:'None', atmo:'None',          water:'None',      hazard:'None',      res:'Scarce',     note:'Vacuum-exposed, no geological activity.',sz:[2,8]},
+  rogue:      {name:'Rogue World',  tag:'Remote·Dark', color:'#302840',alt:'#181020',band:'remote',   temp:'Abyssal',   life:'Possible',atmo:'Thin Volcanic', water:'Subsurface',hazard:'None',      res:'Unknown',    note:'No star. Life sustained by internal geothermal heat; eternal darkness shapes all culture.',sz:[5,14]},
+  comet:      {name:'Comet Body',   tag:'Remote',      color:'#A0C0D8',alt:'#607890',band:'remote',   temp:'Extreme Cold',life:'None', atmo:'Coma Trace',    water:'Ice Dust',  hazard:'None',      res:'Trace',      note:'Active outgassing ice and dust nucleus; possible amino acid carrier.',sz:[2,6]},
+  oortbody:   {name:'Oort Body',    tag:'Remote·Far',  color:'#8090A0',alt:'#506070',band:'remote',   temp:'Near 0K',   life:'None',   atmo:'None',          water:'Ice',       hazard:'None',      res:'Scarce',     note:'Primordial body at extreme outer system; unperturbed since formation.',sz:[2,7]},
+  protoplanet:{name:'Protoplanet',  tag:'Forming',     color:'#A09070',alt:'#706050',band:'any',      temp:'Warm',      life:'None',   atmo:'Dust Cloud',    water:'Trace',     hazard:'Impacts',   res:'Average',    note:'Still accreting; not fully formed; surrounded by debris disk.',sz:[5,12]},
+  moonsized:  {name:'Moon-Sized',   tag:'Any',         color:'#B0B0B0',alt:'#787878',band:'any',      temp:'Variable',  life:'None',   atmo:'Trace',         water:'Trace',     hazard:'Low',       res:'Scarce',     note:'Small rocky body; potential moon candidate or dwarf planet.',sz:[2,6]},
+};
+const PKEYS=Object.keys(PTYPES);
+const PAL_PAGES={
+  Inner:['magma','arid','desert','scarred','lavaocean','ironfist','volcanic'],
+  Habitable:['terrestrial','ocean','superearth','jungle','tidallocked','greenhouse','twilight','crystalline','waterworld','hycean'],
+  Outer:['gasgiant','icegiant','rocky','barren','stormworld','diamond','binarycomp'],
+  Remote:['glacial','airless','rogue','comet','oortbody'],
+  Special:['protoplanet','moonsized']
+};
+const BAND_POOL={
+  inner:['magma','arid','desert','scarred','lavaocean','ironfist','volcanic'],
+  habitable:['terrestrial','ocean','superearth','jungle','tidallocked','greenhouse','twilight','crystalline','waterworld','hycean'],
+  outer:['gasgiant','icegiant','rocky','barren','stormworld','diamond','binarycomp'],
+  remote:['glacial','airless','rogue','comet','oortbody'],
+  any:['moonsized','protoplanet']
+};
+const SYS_NAMES=['Xaelopec','Vortimael','Solnaris','Caelundra','Primaris','Vaelthor','Nocturus','Drifaris','Aethoria','Keldruun','Solvena','Mytharan','Peldrix','Zentarion','Orimuul','Vykoraan','Draethis','Lumenvex','Astravar','Nytheron','Celindra','Korvaxis','Veldruun','Saethis'];
+
+function rnd(a,b){return Math.random()*(b-a)+a}
+function pick(a){return a[Math.floor(Math.random()*a.length)]}
+function rndInt(a,b){return Math.floor(rnd(a,b+1))}
+function toRoman(n){const v=[1000,900,500,400,100,90,50,40,10,9,5,4,1],s=['M','CM','D','CD','C','XC','L','XL','X','IX','V','IV','I'];let r='';for(let i=0;i<v.length;i++)while(n>=v[i]){r+=s[i];n-=v[i]}return r}
+function h2a(hex,a){if(!hex||hex[0]!=='#')return`rgba(128,128,128,${a})`;return`rgba(${parseInt(hex.slice(1,3),16)},${parseInt(hex.slice(3,5),16)},${parseInt(hex.slice(5,7),16)},${a})`}
+function lighten(hex,amt){if(!hex||hex[0]!=='#')return'#808080';return`rgb(${Math.min(255,parseInt(hex.slice(1,3),16)+amt)},${Math.min(255,parseInt(hex.slice(3,5),16)+amt)},${Math.min(255,parseInt(hex.slice(5,7),16)+amt)})`}
+
+// ── TABS ──
+document.querySelectorAll('.tab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    const t=tab.dataset.tab;
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(x=>x.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('tab-'+t).classList.add('active');
+    if(t==='save')renderSaveList();
+  });
+});
+
+// ── STAR MODE ──
+function setStarMode(mode,btn){
+  starModeVal=mode;
+  document.querySelectorAll('.smode-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+
+  // Companion star pickers
+  const comp=document.getElementById('companion-stars');
+  comp.innerHTML='';
+  const letters=mode==='binary'?['b']:mode==='trinary'?['b','c']:mode==='quaternary'?['b','c','d']:[];
+  letters.forEach(l=>{
+    const label=l==='b'?'Companion B':l==='c'?'Companion C':'Companion D';
+    comp.innerHTML+=`<div class="sec">${label}</div>
+    <div class="star-grid" id="star-grid-${l}">
+      <button class="star-btn" onclick="pickStar('${l}','blue',this)"><span class="sdot" style="background:#9BB8FF"></span>Blue</button>
+      <button class="star-btn" onclick="pickStar('${l}','white',this)"><span class="sdot" style="background:#FFFDE7"></span>White</button>
+      <button class="star-btn" onclick="pickStar('${l}','yellow',this)"><span class="sdot" style="background:#FFD700"></span>Yellow</button>
+      <button class="star-btn" onclick="pickStar('${l}','orange',this)"><span class="sdot" style="background:#FF8C42"></span>Orange</button>
+      <button class="star-btn" onclick="pickStar('${l}','red',this)"><span class="sdot" style="background:#FF5555"></span>Red</button>
+      <button class="star-btn active" onclick="pickStar('${l}','random',this)"><span class="sdot" style="background:rgba(0,212,255,0.7)"></span>Random</button>
+    </div>`;
+  });
+
+  // Architecture selector
+  const archSel=document.getElementById('arch-select');
+  const archOpts=document.getElementById('arch-options');
+  const archNote=document.getElementById('arch-note');
+  if(mode==='single'||mode==='binary'){
+    archSel.style.display='none';
+    archVal=mode;
+    archNote.textContent='';
+  } else {
+    archSel.style.display='block';
+    archOpts.innerHTML='';
+    const opts=ARCH_OPTIONS[mode];
+    opts.forEach((o,i)=>{
+      const btn=document.createElement('button');
+      btn.className='smode-btn'+(i===0?' active':'');
+      btn.style.cssText='width:100%;margin-bottom:4px;text-align:left;padding:8px 10px;font-size:12px;letter-spacing:0.8px';
+      btn.textContent=o.label;
+      btn.onclick=()=>{
+        archOpts.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        archVal=o.val;
+        archNote.textContent=o.note;
+      };
+      archOpts.appendChild(btn);
+    });
+    archVal=opts[0].val;
+    archNote.textContent=opts[0].note;
+  }
+
+  // Sep sliders
+  const sepBlock=document.getElementById('sep-sliders');
+  const csepWrap=document.getElementById('csep-wrap');
+  const dsepWrap=document.getElementById('dsep-wrap');
+  if(mode==='single'){
+    sepBlock.style.display='none';
+  } else {
+    sepBlock.style.display='block';
+    csepWrap.style.display=(mode==='trinary'||mode==='quaternary')?'block':'none';
+    dsepWrap.style.display=(mode==='quaternary')?'block':'none';
+  }
+}
+
+function pickStar(which,type,btn){
+  starChoices[which]=type;
+  document.querySelectorAll(`#star-grid-${which} .star-btn`).forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+}
+
+function onBsepChange(v){
+  const au=(v/8).toFixed(2);
+  document.getElementById('bsep-val').textContent=au+' AU';
+}
+function onCsepChange(v){
+  const au=(v/5).toFixed(1);
+  document.getElementById('csep-val').textContent=au+' AU';
+}
+function onDsepChange(v){
+  const au=(v/4).toFixed(1);
+  document.getElementById('dsep-val').textContent=au+' AU';
+}
+
+function resolveStarKey(which){
+  return starChoices[which]==='random'?pick(SKEYS):starChoices[which];
+}
+
+function toggleCond(c){
+  conds[c]=!conds[c];
+  document.getElementById('btn-'+c).classList.toggle('active',conds[c]);
+}
+function setBadge(cls,txt){const b=document.getElementById('badge');b.className=cls;b.textContent=txt}
+function setCam(mode,btn){camMode=mode;document.querySelectorAll('[id^="cam-"]').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active')}
+function updateSysName(){if(system)system.name=document.getElementById('star-name').value||system.name}
+function togglePlay(){playing=!playing;const b=document.getElementById('play-btn');b.textContent=playing?'⏸':'▶';b.classList.toggle('playing',playing)}
+function changeSpd(d){spdIdx=Math.max(0,Math.min(SPEEDS.length-1,spdIdx+d));document.getElementById('spd-disp').textContent=SPEEDS[spdIdx]+'×'}
+function resetPositions(){if(system)system.planets.forEach(p=>p.angle=rnd(0,Math.PI*2))}
+function showPhysNote(){
+  const n=document.getElementById('phys-note');
+  const arch=ARCH_OPTIONS[starModeVal]||ARCH_OPTIONS['single'];
+  const cur=arch.find(a=>a.val===archVal)||arch[0];
+  n.textContent=cur?cur.note:'Single star system.';
+  n.classList.add('vis');
+  setTimeout(()=>n.classList.remove('vis'),6000);
+}
+document.getElementById('chk-hz').addEventListener('change',function(){document.getElementById('hz-leg').classList.toggle('vis',this.checked)});
+
+// ═══════════════════════════════════════════════════════════════════════
+// GENERATION
+// ═══════════════════════════════════════════════════════════════════════
+function generateSystem(){setBadge('gen','Generating…');setTimeout(doGen,60)}
+
+function doGen(){
+  const mode=starModeVal;
+  const arch=archVal||mode;
+  const skA=resolveStarKey('a');
+  const starA=STARS[skA];
+  const sName=document.getElementById('star-name').value||pick(SYS_NAMES);
+  const num=parseInt(document.getElementById('pc-slider').value);
+  const hasAst=document.getElementById('chk-ast').checked;
+  const AU=Math.min(W,H)*0.08;
+  const lum=starA.lum;
+  const bsepAU=parseInt(document.getElementById('bsep-slider').value)/8;
+  const csepAU=parseInt(document.getElementById('csep-slider').value)/5;
+  const dsepAU=parseInt(document.getElementById('dsep-slider').value)/4;
+  const bSep=bsepAU*AU, cSep=csepAU*AU, dSep=dsepAU*AU;
+
+  // ── BUILD STARS ARRAY ──
+  // Each star: {key, def, x, y, nameStr, isBcomp, isCcomp, isDcomp, bAngle, cAngle, dAngle, angSpd, bSep, cSep, dSep}
+  const stars=[];
+  stars.push({key:skA,def:starA,x:0,y:0,nameStr:sName+' A'});
+
+  if(mode!=='single'){
+    const skB=resolveStarKey('b');
+    // Keplerian angular speed of B orbiting A/B barycenter:
+    //   Total mass ≈ lum_A + lum_B (mass proxy). Period scales as a^1.5 / sqrt(M_total).
+    //   Simplified: T_AB = 14 × bsepAU^1.5 / sqrt((lum_A+lum_B)/2)
+    const lum_AB = ((STARS[skA]?.lum||1) + (STARS[skB]?.lum||1)) / 2;
+    const angSpdB = (2*Math.PI) / (14 * Math.pow(Math.max(bsepAU,0.05), 1.5) / Math.sqrt(lum_AB));
+    stars.push({key:skB,def:STARS[skB],x:-bSep*0.5,y:0,nameStr:sName+' B',
+      isBcomp:true,bAngle:Math.PI,angSpd:angSpdB,bSep});
+    stars[0].x=bSep*0.5;
+    stars[0].bPair=true;
+  }
+  if(mode==='trinary'||mode==='quaternary'){
+    const skC=resolveStarKey('c');
+    // Keplerian angular speed of C orbiting AB barycenter:
+    //   T_C = 14 × csepAU^1.5  sim-seconds  (same formula as planet periods)
+    //   angSpd_C = 2π / T_C
+    const angSpdC=(2*Math.PI)/(14*Math.pow(Math.max(csepAU,0.1),1.5));
+    stars.push({key:skC,def:STARS[skC],x:cSep,y:0,nameStr:sName+' C',
+      isCcomp:true,cAngle:0,angSpd:angSpdC,cSep});
+  }
+  if(mode==='quaternary'){
+    const skD=resolveStarKey('d');
+    // quad_22: D pairs with C as a second binary. quad_31: D is the distant outer star.
+    if(arch==='quad_22'){
+      // C+D form a second binary pair, that pair orbits the AB barycenter
+      stars[2].cdPair=true;                    // C is inner of the CD pair
+      // CD binary separation ≈ bSep (same scale as AB). Keplerian period for CD.
+      const lum_CD = ((STARS[skC]?.lum||1) + (STARS[skD]?.lum||1)) / 2;
+      const angSpdD_cd = (2*Math.PI) / (14 * Math.pow(Math.max(bsepAU,0.05), 1.5) / Math.sqrt(lum_CD));
+      stars.push({key:skD,def:STARS[skD],x:cSep+bSep*0.5,y:0,nameStr:sName+' D',
+        isDcomp:true,isDcd:true,dAngle:Math.PI,angSpd:angSpdD_cd,bSep,cSep});
+    } else { // quad_31 — inner triple + distant D
+      // D orbits AB+C barycenter at dSep — Kepler speed
+      const angSpdD = (2*Math.PI) / (14 * Math.pow(Math.max(dsepAU,0.1), 1.5));
+      stars.push({key:skD,def:STARS[skD],x:dSep,y:0,nameStr:sName+' D',
+        isDcomp:true,isDfar:true,dAngle:0,angSpd:angSpdD,dSep});
+    }
+  }
+
+  // ── BAND RANGES (AU-based, scaled from luminosity + binary clearance) ──
+  // For multi-star: circumbinary planets need clearance beyond ~3.5× binary separation
+  let innerClearAU=0;
+  if(mode!=='single'){
+    // The inner pair occupies ~bsepAU; stable zone starts ~3.5× beyond
+    innerClearAU=bsepAU*3.5;
+  }
+  if(arch==='quad_31'){innerClearAU=Math.max(innerClearAU,csepAU*3.5)}
+
+  // Holman & Wiegert (1999) outer stability limit for P-type (circumbinary) orbits:
+  //   a_max ≈ 0.38 × a_C  (for mass ratio q≈0.5, eccentricity e≈0.2)
+  // We use 0.30× as a conservative margin for the worldbuilding tool.
+  // This ensures generated planets sit in genuinely stable zones.
+  let outerStableLimitAU = Infinity;
+  if(mode==='trinary'||mode==='quaternary'){
+    outerStableLimitAU = csepAU * 0.30;
+  }
+  // For binary alone the outer limit is very large — no constraint needed.
+
+  const hardMax = (au) => Math.min(au, outerStableLimitAU);
+  const bandRanges={
+    inner:{   min:Math.max(innerClearAU,0.5*lum),    max:hardMax(Math.max(innerClearAU+0.8,1.2*lum))},
+    habitable:{min:Math.max(innerClearAU+0.8,1.2*lum),max:hardMax(Math.max(innerClearAU+2.5,2.5*lum))},
+    outer:{   min:Math.max(innerClearAU+2.5,2.5*lum),max:hardMax(Math.max(innerClearAU+5,5.5*lum))},
+    remote:{  min:Math.max(innerClearAU+5,5.5*lum),  max:hardMax(Math.max(innerClearAU+9,9.0*lum))}
+  };
+  // Clamp mins to be <= maxes (stability limit may compress bands)
+  Object.values(bandRanges).forEach(b=>{if(b.min>=b.max)b.min=b.max*0.85});
+
+  // For quad_22, the C+D pair orbits far out — same outer-limit logic applies
+  if(arch==='quad_22'){
+    const limit=csepAU*0.30;
+    Object.values(bandRanges).forEach(b=>{b.max=Math.min(b.max,limit);if(b.min>=b.max)b.min=b.max*0.85});
+  }
+
+  let bands=[];
+  for(let i=0;i<num;i++){
+    const t=i/num;
+    if(t<0.18)bands.push('inner');
+    else if(t<0.45)bands.push('habitable');
+    else if(t<0.72)bands.push('outer');
+    else bands.push('remote');
+  }
+  if(conds.hab&&!bands.includes('habitable'))bands[Math.floor(num*0.4)]='habitable';
+  if(conds.gas&&!bands.filter(b=>b==='outer').length)bands[Math.floor(num*0.65)]='outer';
+  if(conds.rogue)bands[bands.length-1]='remote';
+  bands.sort((a,b)=>['inner','habitable','outer','remote'].indexOf(a)-['inner','habitable','outer','remote'].indexOf(b));
+
+  const planets=[];
+  const usedAU=[];
+  bands.forEach((band,i)=>{
+    const br=bandRanges[band];
+    let au,tries=0;
+    do{au=rnd(br.min,br.max);tries++}while(usedAU.some(u=>Math.abs(u-au)<0.2*Math.max(lum,0.3))&&tries<30);
+    usedAU.push(au);
+    let pool=[...BAND_POOL[band]];
+    if(conds.tidal&&band==='habitable')pool=['tidallocked'];
+    if(conds.rogue&&i===bands.length-1)pool=['rogue'];
+    if(conds.hab&&band==='habitable')pool=['terrestrial','ocean','superearth','waterworld','hycean','jungle'];
+    if(conds.gas&&band==='outer')pool=['gasgiant','icegiant','stormworld'];
+    const typeKey=pick(pool);
+    const pt=PTYPES[typeKey];
+    const sz=rnd(pt.sz[0],pt.sz[1]);
+    planets.push(makePlanet(typeKey,au*AU,rnd(0,Math.PI*2),sz,i));
+  });
+
+  // Asteroid belt
+  let ast=null;
+  if(hasAst){
+    const hP=planets.filter(p=>p.band==='habitable');
+    const oP=planets.filter(p=>p.band==='outer');
+    let bAU;
+    if(hP.length&&oP.length)bAU=(hP[hP.length-1].orbitPx/AU+oP[0].orbitPx/AU)/2;
+    else bAU=rnd(2,4)*lum;
+    const bR=bAU*AU,spread=AU*rnd(0.3,0.5),pts=[];
+    for(let a=0;a<80;a++){
+      const r=bR+rnd(-spread/2,spread/2),ang=rnd(0,Math.PI*2);
+      pts.push({r,ang,spd:rnd(0.006,0.02),sz:rnd(1.5,4.5),col:`rgba(${rndInt(120,170)},${rndInt(100,140)},${rndInt(70,100)},${rnd(0.35,0.75).toFixed(2)})`});
+    }
+    ast={r:bR,pts};
+  }
+
+  planets.sort((a,b)=>a.orbitPx-b.orbitPx);
+  planets.forEach((p,i)=>{p.index=i;p.name=sName+'-'+toRoman(i+1)});
+
+  // Combined habitable zone: HZ scales as sqrt(total luminosity)
+  // Each star contributes flux ∝ L/r² — sum them at the AB barycenter.
+  // For a circumbinary system, effective HZ ≈ single-star HZ scaled by sqrt(sumLum).
+  const sumLum = stars.reduce((s,st)=>s+(st.def.lum||1),0);
+  const lumScale = Math.sqrt(sumLum);
+  system={
+    name:sName,starMode:mode,arch,stars,AU,planets,asteroidBelt:ast,oort:null,
+    hz:{inner:starA.hz[0]*AU*lumScale,outer:starA.hz[1]*AU*lumScale}
+  };
+
+  document.getElementById('sys-label').textContent=sName+' System';
+  document.getElementById('star-name').value=sName;
+  document.getElementById('empty-hint').style.display='none';
+  selPlanet=null;closeInfo();trailData.clear();
+  setBadge('ok',sName+' · '+num+' Bodies');
+  setTimeout(()=>setBadge('active','Orbits Active'),2500);
+  updateMathBtn();
+  if(document.getElementById('chk-hz').checked)document.getElementById('hz-leg').classList.add('vis');
+  fitSys();
+}
+
+function makePlanet(typeKey,orbitPx,angle,sz,idx){
+  const pt=PTYPES[typeKey];
+  const au=orbitPx/Math.max((system?system.AU:Math.min(W,H)*0.08),1);
+  const period=Math.pow(Math.max(au,0.1),1.5)*14;
+  const angSpd=(Math.PI*2)/period;
+  const moons=[];
+  const mc=(['gasgiant','icegiant','stormworld','superearth','waterworld'].includes(typeKey))
+    ?rndInt(1,4):(Math.random()>0.6?1:0);
+  for(let m=0;m<mc;m++)
+    moons.push({r:sz+rnd(10,22+m*10),angle:rnd(0,Math.PI*2),spd:rnd(0.7,2.5),sz:rnd(1.5,3.5)});
+  return {
+    name:'',typeKey,band:pt.band==='any'?'habitable':pt.band,typeDef:pt,
+    orbitPx,angle,angSpd,sz,color:pt.color,altColor:pt.alt,moons,index:idx,
+    glowPh:rnd(0,Math.PI*2),rotAngle:0,rotSpeed:1.0,
+    tidalLock:typeKey==='tidallocked',retrograde:false,
+  };
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// OORT CLOUD
+// ═══════════════════════════════════════════════════════════════════════
+function generateOort(){
+  if(!system){setBadge('edit','Generate a system first');setTimeout(()=>setBadge('active','Ready'),1500);return}
+  const count=parseInt(document.getElementById('oort-count').value);
+  const density=parseInt(document.getElementById('oort-density').value)/10;
+  const szMult=parseInt(document.getElementById('oort-sz').value)/5;
+  const scale=parseInt(document.getElementById('oort-scale').value);
+  const doInner=document.getElementById('chk-oort-inner').checked;
+  const doOuter=document.getElementById('chk-oort-outer').checked;
+  const cometCount=document.getElementById('chk-oort-comets').checked?parseInt(document.getElementById('oort-comets').value):0;
+
+  const maxPlanetR=system.planets.length?Math.max(...system.planets.map(p=>p.orbitPx)):system.AU*3;
+  // Hills: 2×–(2.5×scale)× max planet radius; Outer: beyond that
+  const hillsMin=maxPlanetR*2;
+  const hillsMax=maxPlanetR*scale;
+  const outerMin=hillsMax*1.4;
+  const outerMax=outerMin*2.5;
+
+  const pts=[];
+  if(doInner){
+    for(let i=0;i<Math.floor(count*0.45);i++){
+      const r=rnd(hillsMin,hillsMax),ang=rnd(0,Math.PI*2),elev=rnd(-0.12,0.12);
+      pts.push({r,ang,spd:rnd(0.0003,0.0018)*density,sz:rnd(0.9,2.6)*szMult,
+        col:`rgba(${rndInt(155,205)},${rndInt(175,215)},${rndInt(205,245)},${rnd(0.25,0.6).toFixed(2)})`,
+        elev,zone:'hills'});
+    }
+  }
+  if(doOuter){
+    for(let i=0;i<Math.floor(count*0.55);i++){
+      const r=rnd(outerMin,outerMax),ang=rnd(0,Math.PI*2),elev=rnd(-0.55,0.55);
+      pts.push({r,ang,spd:rnd(0.00004,0.0004)*density,sz:rnd(0.6,2.0)*szMult,
+        col:`rgba(${rndInt(140,190)},${rndInt(155,200)},${rndInt(190,230)},${rnd(0.15,0.38).toFixed(2)})`,
+        elev,zone:'outer'});
+    }
+  }
+  const comets=[];
+  for(let c=0;c<cometCount;c++){
+    const startR=hillsMax*rnd(0.6,2.2);
+    comets.push({
+      r:startR,ang:rnd(0,Math.PI*2),
+      perihelion:maxPlanetR*rnd(0.08,0.45),
+      spd:rnd(0.005,0.016),sz:rnd(1.8,3.5),tailLen:rnd(55,160),
+      startR
+    });
+  }
+  system.oort={pts,comets,hillsMax,outerMax};
+  setBadge('ok','Oort Cloud Applied — zoom out to see');
+  setTimeout(()=>setBadge('active','Orbits Active'),3000);
+  // Auto-zoom to show inner hills band
+  const fz=Math.min(W,H)/(hillsMax*2.4);
+  tcam.zoom=Math.max(0.004,Math.min(fz,tcam.zoom)); // only zoom out, never in
+}
+function clearOort(){if(system)system.oort=null;setBadge('edit','Oort Cleared');setTimeout(()=>setBadge('active','Orbits Active'),1200)}
+
+function fitSys(){
+  if(!system)return;
+  const maxR=system.planets.length?Math.max(...system.planets.map(p=>p.orbitPx)):system.AU*3;
+  // Also account for outer companion stars
+  let starMaxR=0;
+  system.stars.forEach(s=>starMaxR=Math.max(starMaxR,Math.hypot(s.x||0,s.y||0)));
+  const fz=Math.min(W,H)/(Math.max(maxR,starMaxR)*2.6);
+  tcam.x=0;tcam.y=0;tcam.zoom=Math.max(0.04,Math.min(fz,6));
+  setCam('free',document.getElementById('cam-free'));
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// INFO PANEL
+// ═══════════════════════════════════════════════════════════════════════
+function openInfo(p){
+  selPlanet=p;
+  document.getElementById('info-panel').classList.add('visible');
+  document.getElementById('p-name-input').value=p.name;
+  document.getElementById('p-type-lbl').textContent=`${p.typeDef.name} · ${p.band.charAt(0).toUpperCase()+p.band.slice(1)} Band`;
+  document.getElementById('sz-slider').value=Math.round(p.sz);
+  const orbEl=document.getElementById('orb-slider');
+  const ov=Math.round(p.orbitPx);
+  orbEl.max=Math.max(900,ov+100);orbEl.value=ov;
+  document.getElementById('moon-slider').value=p.moons.length;
+  document.getElementById('moon-count-val').textContent=p.moons.length;
+  document.getElementById('rot-speed').value=Math.round((p.rotSpeed||1)*10);
+  document.getElementById('rot-speed-val').textContent=((p.rotSpeed||1)).toFixed(1)+'×';
+  document.getElementById('rot-normal').classList.toggle('active',!p.tidalLock&&!p.retrograde);
+  document.getElementById('rot-tidal').classList.toggle('active',!!p.tidalLock);
+  document.getElementById('rot-retro').classList.toggle('active',!!p.retrograde);
+  drawIcon(p);
+  const pt=p.typeDef;
+  const grav=(p.sz/10).toFixed(1)+'g';
+  const fields=[
+    ['Life',     pt.life,    pt.life!=='None'?'green':''],
+    ['Water',    pt.water,   (pt.water.includes('Abundant')||pt.water.includes('Global'))?'cyan':''],
+    ['Atmo',     pt.atmo,    ''],
+    ['Temp',     pt.temp,    ''],
+    ['Hazard',   pt.hazard,  (pt.hazard!=='None'&&pt.hazard!=='Low')?'orange':''],
+    ['Resources',pt.res,     pt.res.includes('Rich')?'gold':''],
+    ['Gravity',  grav,       'cyan'],
+    ['Moons',    p.moons.length+'',''],
+    ['Rotation', p.tidalLock?'Tidal Lock':p.retrograde?'Retrograde':'Prograde',''],
+    ['Orbit AU', (p.orbitPx/Math.max(system.AU,1)).toFixed(2)+' AU',''],
+  ];
+  document.getElementById('data-grid').innerHTML=fields.map(([l,v,c])=>
+    `<div class="di"><div class="dl">${l}</div><div class="dv ${c}">${v}</div></div>`).join('');
+  document.getElementById('world-note-text').textContent=pt.note;
+}
+function drawIcon(p){
+  const ic=document.getElementById('icon-canvas').getContext('2d');
+  ic.clearRect(0,0,44,44);
+  const g=ic.createRadialGradient(15,15,4,22,22,20);
+  g.addColorStop(0,lighten(p.color,50));g.addColorStop(0.6,p.color);g.addColorStop(1,p.altColor);
+  ic.beginPath();ic.arc(22,22,20,0,Math.PI*2);ic.fillStyle=g;ic.fill();
+}
+function closeInfo(){selPlanet=null;document.getElementById('info-panel').classList.remove('visible');closeMoonInfo()}
+function closeMoonInfo(){selMoon=null;selMoonParent=null;document.getElementById('moon-panel').classList.remove('visible')}
+function openMoonInfo(moon, parentPlanet, moonIdx){
+  selMoon=moon; selMoonParent=parentPlanet;
+  const panel=document.getElementById('moon-panel');
+  panel.classList.add('visible');
+  document.getElementById('moon-name').textContent='Moon '+(moonIdx+1);
+  document.getElementById('moon-parent').textContent='of '+parentPlanet.name;
+
+  // Draw moon icon — grey rocky sphere with subtle gradient
+  const ic=document.getElementById('moon-icon').getContext('2d');
+  ic.clearRect(0,0,36,36);
+  const g=ic.createRadialGradient(12,12,3,18,18,16);
+  const brightness=Math.floor(130+moonIdx*15);
+  g.addColorStop(0,`rgb(${brightness+40},${brightness+40},${brightness+45})`);
+  g.addColorStop(0.6,`rgb(${brightness},${brightness},${brightness+5})`);
+  g.addColorStop(1,`rgb(${Math.max(40,brightness-50)},${Math.max(40,brightness-50)},${Math.max(45,brightness-45)})`);
+  ic.beginPath();ic.arc(18,18,16,0,Math.PI*2);ic.fillStyle=g;ic.fill();
+
+  // Orbital data
+  const au = moon.r / Math.max(system.AU,1);
+  const parentAU = parentPlanet.orbitPx / Math.max(system.AU,1);
+  // Moon orbital period: T_moon = T_planet * (r_moon/r_planet)^1.5 * (1/sqrt(planet_mass_proxy))
+  // Simplified: period relative to planet = (r_moon/sz_planet)^1.5 * some_scale
+  const relR = moon.r / parentPlanet.sz;
+  const moonPeriod = (relR * relR * 0.5).toFixed(2); // relative to planet rotation
+  const speedLabel = moon.spd > 1.8 ? 'Fast' : moon.spd > 1.0 ? 'Moderate' : 'Slow';
+  const distKm = (au * 149597871).toExponential(2); // AU to km
+
+  const fields = [
+    ['Orbit radius', moon.r.toFixed(0)+' px'],
+    ['AU equiv.', au.toFixed(5)+' AU'],
+    ['Dist. from planet', (moon.r - parentPlanet.sz).toFixed(0)+' px clear'],
+    ['Relative orbit', relR.toFixed(1)+'× planet radius'],
+    ['Orbital speed', speedLabel+' ('+moon.spd.toFixed(2)+'×)'],
+    ['Size', moon.sz.toFixed(1)+' px radius'],
+    ['Parent orbit', parentAU.toFixed(3)+' AU'],
+    ['Moon index', 'Moon '+(moonIdx+1)+' of '+parentPlanet.moons.length],
+  ];
+  document.getElementById('moon-data-grid').innerHTML=fields.map(([l,v])=>
+    `<div class="di"><div class="dl">${l}</div><div class="dv">${v}</div></div>`
+  ).join('');
+}
+function renamePlanet(v){if(selPlanet)selPlanet.name=v.toUpperCase()}
+function resizePlanet(v){if(selPlanet){selPlanet.sz=parseInt(v);drawIcon(selPlanet)}}
+function reorbitPlanet(v){
+  if(!selPlanet||!system)return;
+  selPlanet.orbitPx=parseInt(v);
+  const au=selPlanet.orbitPx/Math.max(system.AU,1);
+  selPlanet.angSpd=(Math.PI*2)/Math.max(Math.pow(Math.max(au,0.1),1.5)*14,0.1);
+  // Clear N-body state so it reinitializes from new orbit
+  delete selPlanet.vx;delete selPlanet.vy;delete selPlanet.px;delete selPlanet.py;
+}
+function setMoonCount(v){
+  if(!selPlanet)return;
+  const n=parseInt(v);
+  document.getElementById('moon-count-val').textContent=n;
+  while(selPlanet.moons.length<n)
+    selPlanet.moons.push({r:selPlanet.sz+rnd(10,22+selPlanet.moons.length*10),angle:rnd(0,Math.PI*2),spd:rnd(0.7,2.5),sz:rnd(1.5,3.5)});
+  selPlanet.moons.length=n;
+  if(document.getElementById('info-panel').classList.contains('visible'))openInfo(selPlanet);
+}
+function onRotSpeedChange(v){
+  if(!selPlanet)return;
+  selPlanet.rotSpeed=v/10;
+  document.getElementById('rot-speed-val').textContent=(v/10).toFixed(1)+'×';
+}
+function setRotation(mode,btn){
+  if(!selPlanet)return;
+  selPlanet.tidalLock=(mode==='tidal');
+  selPlanet.retrograde=(mode==='retro');
+  document.getElementById('rot-normal').classList.toggle('active',mode==='normal');
+  document.getElementById('rot-tidal').classList.toggle('active',mode==='tidal');
+  document.getElementById('rot-retro').classList.toggle('active',mode==='retro');
+  // Update data grid rotation row
+  const items=document.querySelectorAll('#data-grid .di');
+  if(items[8])items[8].querySelector('.dv').textContent=mode==='tidal'?'Tidal Lock':mode==='retro'?'Retrograde':'Prograde';
+}
+function removePlanet(){
+  if(!selPlanet||!system)return;
+  system.planets=system.planets.filter(p=>p!==selPlanet);
+  system.planets.sort((a,b)=>a.orbitPx-b.orbitPx);
+  system.planets.forEach((p,i)=>{p.index=i;p.name=system.name+'-'+toRoman(i+1)});
+  closeInfo();setBadge('edit','Planet Removed');setTimeout(()=>setBadge('active','Orbits Active'),1500);
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// PALETTE
+// ═══════════════════════════════════════════════════════════════════════
+function buildPalette(){
+  const pagesEl=document.getElementById('pal-pages');
+  pagesEl.innerHTML='';
+  Object.keys(PAL_PAGES).forEach((pg,i)=>{
+    const btn=document.createElement('div');
+    btn.className='pal-pg'+(i===0?' active':'');
+    btn.textContent=pg;
+    btn.onclick=()=>{palPage=i;document.querySelectorAll('.pal-pg').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderPalPage()};
+    pagesEl.appendChild(btn);
+  });
+  renderPalPage();
+}
+function renderPalPage(){
+  const grid=document.getElementById('pal-grid');
+  grid.innerHTML='';
+  const keys=Object.values(PAL_PAGES)[palPage];
+  keys.forEach(key=>{
+    const pt=PTYPES[key];
+    const div=document.createElement('div');
+    div.className='pal-item';
+    div.innerHTML=`<div class="pal-dot" style="background:${pt.color};box-shadow:0 0 6px ${pt.color}55"></div><div><div class="pal-name">${pt.name}</div><div class="pal-tag">${pt.tag}</div></div>`;
+    div.addEventListener('mousedown',e=>{e.preventDefault();startPalDrag(key,pt,div,e)});
+    grid.appendChild(div);
+  });
+}
+function startPalDrag(key,pt,el,e){
+  palDrag={key,pt,el,active:true};
+  ghostEl.style.background=pt.color;ghostEl.style.boxShadow=`0 0 18px ${pt.color}99`;
+  ghostEl.style.display='block';ghostEl.style.left=e.clientX+'px';ghostEl.style.top=e.clientY+'px';
+  el.classList.add('dragging');
+}
+function dropPlanet(cx,cy,typeKey){
+  if(!system)initEmptySystem();
+  const wx=(cx-W/2)/cam.zoom-cam.x,wy=(cy-H/2)/cam.zoom-cam.y;
+  const dist=Math.max(60,Math.hypot(wx,wy));
+  const pt=PTYPES[typeKey];
+  const planet=makePlanet(typeKey,dist,Math.atan2(wy,wx),rnd(pt.sz[0],pt.sz[1]),system.planets.length);
+  system.planets.push(planet);
+  system.planets.sort((a,b)=>a.orbitPx-b.orbitPx);
+  system.planets.forEach((p,i)=>{p.index=i;p.name=system.name+'-'+toRoman(i+1)});
+  openInfo(planet);setBadge('edit','Planet Added');setTimeout(()=>setBadge('active','Orbits Active'),1500);
+}
+function initEmptySystem(){
+  const skA=resolveStarKey('a');
+  const starA=STARS[skA];
+  const sName=document.getElementById('star-name').value||pick(SYS_NAMES);
+  const AU=Math.min(W,H)*0.08;
+  system={name:sName,starMode:'single',arch:'single',stars:[{key:skA,def:starA,x:0,y:0,nameStr:sName+' A'}],
+    AU,planets:[],asteroidBelt:null,oort:null,hz:{inner:starA.hz[0]*AU,outer:starA.hz[1]*AU}};
+  document.getElementById('sys-label').textContent=sName+' System';
+  document.getElementById('empty-hint').style.display='none';
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// SAVE / LOAD / EXPORT
+// ═══════════════════════════════════════════════════════════════════════
+function loadSavedSystems(){
+  try{savedSystems=JSON.parse(localStorage.getItem('solaris_systems')||'[]')}catch{savedSystems=[]}
+}
+function persistSavedSystems(){
+  try{localStorage.setItem('solaris_systems',JSON.stringify(savedSystems))}catch(e){console.warn('Storage full',e)}
+}
+function saveSystem(){
+  if(!system){setBadge('edit','No system to save');setTimeout(()=>setBadge('active','Ready'),1500);return}
+  const rawName=document.getElementById('save-name-input').value.trim();
+  const saveName=(rawName||system.name).toUpperCase();
+  // Serialize: strip canvas-only fields, keep data
+  const snap={
+    id:Date.now(),
+    saveName,
+    date:new Date().toLocaleDateString(),
+    systemName:system.name,
+    starMode:system.starMode,
+    arch:system.arch,
+    stars:system.stars.map(s=>({key:s.key,nameStr:s.nameStr})),
+    planets:system.planets.map(p=>({
+      name:p.name,typeKey:p.typeKey,band:p.band,
+      orbitPx:p.orbitPx,angle:p.angle,sz:p.sz,
+      tidalLock:p.tidalLock,retrograde:p.retrograde,rotSpeed:p.rotSpeed,
+      moons:p.moons.map(m=>({r:m.r,angle:m.angle,spd:m.spd,sz:m.sz}))
+    })),
+    hz:{inner:system.hz.inner,outer:system.hz.outer},
+    AU:system.AU
+  };
+  // Overwrite if same name
+  const idx=savedSystems.findIndex(s=>s.saveName===saveName);
+  if(idx>=0)savedSystems[idx]=snap;else savedSystems.unshift(snap);
+  persistSavedSystems();
+  renderSaveList();
+  setBadge('ok',saveName+' Saved');
+  setTimeout(()=>setBadge('active','Orbits Active'),2000);
+}
+function loadSystem(id){
+  const snap=savedSystems.find(s=>s.id===id);
+  if(!snap)return;
+  const AU=snap.AU||Math.min(W,H)*0.08;
+  const starObjs=snap.stars.map(s=>({key:s.key,def:STARS[s.key]||STARS.yellow,x:0,y:0,nameStr:s.nameStr}));
+  system={
+    name:snap.systemName,starMode:snap.starMode,arch:snap.arch,
+    stars:starObjs,AU,
+    planets:snap.planets.map((p,i)=>{
+      const pt=PTYPES[p.typeKey]||PTYPES.barren;
+      const au=p.orbitPx/Math.max(AU,1);
+      const angSpd=(Math.PI*2)/Math.max(Math.pow(Math.max(au,0.1),1.5)*14,0.1);
+      return {
+        name:p.name,typeKey:p.typeKey,band:p.band,typeDef:pt,
+        orbitPx:p.orbitPx,angle:p.angle,angSpd,sz:p.sz,
+        color:pt.color,altColor:pt.alt,
+        tidalLock:p.tidalLock,retrograde:p.retrograde,rotSpeed:p.rotSpeed||1,
+        rotAngle:0,glowPh:rnd(0,Math.PI*2),index:i,
+        moons:p.moons.map(m=>({...m}))
+      };
+    }),
+    asteroidBelt:null,oort:null,
+    hz:snap.hz
+  };
+  document.getElementById('sys-label').textContent=snap.systemName+' System';
+  selPlanet=null;closeInfo();trailData.clear();
+  setBadge('ok',snap.saveName+' Loaded');
+  setTimeout(()=>setBadge('active','Orbits Active'),2000);
+  fitSys();
+}
+function deleteSystem(id){
+  savedSystems=savedSystems.filter(s=>s.id!==id);
+  persistSavedSystems();renderSaveList();
+}
+function renderSaveList(){
+  const el=document.getElementById('save-list');
+  if(!savedSystems.length){el.innerHTML='<div style="font-family:\'DM Sans\',sans-serif;font-size:11px;color:rgba(255,255,255,0.22);text-align:center;padding:12px 0">No saved systems</div>';return}
+  el.innerHTML=savedSystems.map(s=>`
+    <div class="save-entry">
+      <div>
+        <div class="save-name">${s.saveName}</div>
+        <div class="save-meta">${s.date} · ${s.planets.length} planets</div>
+      </div>
+      <div class="save-btns">
+        <button onclick="loadSystem(${s.id})">Load</button>
+        <button class="del-btn" onclick="deleteSystem(${s.id})">✕</button>
+      </div>
+    </div>`).join('');
+}
+function exportJSON(){
+  if(!system){alert('No system loaded');return}
+  const AU=system.AU;
+  const snap={
+    tool:'SOLARIS',version:'5',exported:new Date().toISOString(),
+    system:{
+      name:system.name,
+      starMode:system.starMode,
+      arch:system.arch,
+      habitableZone:{
+        innerAU:(system.hz.inner/AU).toFixed(3),
+        outerAU:(system.hz.outer/AU).toFixed(3),
+        note:'Combined luminosity HZ (sqrt sum of all stellar luminosities)'
+      },
+      stars:system.stars.map(s=>{
+        const obj={key:s.key,name:s.nameStr,type:s.def.name,luminosity:s.def.lum};
+        if(s.isBcomp) obj.separation_AU=(s.bSep/AU).toFixed(3);
+        if(s.isCcomp) obj.separation_AU=(s.cSep/AU).toFixed(3);
+        if(s.isDcomp&&s.dSep) obj.separation_AU=(s.dSep/AU).toFixed(3);
+        return obj;
+      }),
+      planets:system.planets.map(p=>{
+        const au=p.orbitPx/Math.max(AU,1);
+        const period=(14*Math.pow(Math.max(au,0.01),1.5)).toFixed(2);
+        return {
+          name:p.name,type:p.typeDef.name,band:p.band,
+          orbitAU:au.toFixed(3),
+          orbitalPeriod_simS:period,
+          size_px:p.sz.toFixed(1),
+          moons:p.moons.length,
+          tidalLock:!!p.tidalLock,
+          retrograde:!!p.retrograde,
+          life:p.typeDef.life,water:p.typeDef.water,
+          atmosphere:p.typeDef.atmo,
+          temperature:p.typeDef.temp,
+          hazard:p.typeDef.hazard,
+          resources:p.typeDef.res,
+          worldNote:p.typeDef.note
+        };
+      })
+    }
+  };
+  const blob=new Blob([JSON.stringify(snap,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download=system.name.replace(/\s+/g,'_')+'_solaris.json';a.click();
+}
+function exportTXT(){
+  if(!system){alert('No system loaded');return}
+  const AU=system.AU;
+  const hr='─'.repeat(50);
+  let txt='SOLARIS WORLD NOTES — STELLARFORGE.TOOLS\n';
+  txt+='© 2025–2026 Jason D. Batt, Ph.D.\n'+hr+'\n\n';
+  txt+='SYSTEM: '+system.name+'\n';
+  txt+='Configuration: '+system.starMode.toUpperCase()+' ('+system.arch+')\n\n';
+
+  // Stars
+  txt+='STELLAR BODIES\n';
+  system.stars.forEach((s,i)=>{
+    const lbl=['A','B','C','D'][i]||String(i);
+    txt+='  Star '+lbl+': '+s.nameStr+' ['+s.def.name+']  Lum: '+s.def.lum.toFixed(2)+'  L☉\n';
+    if(s.isBcomp) txt+='    Separation (A–B): '+(s.bSep/AU).toFixed(2)+' AU\n';
+    if(s.isCcomp) txt+='    Separation (C from AB): '+(s.cSep/AU).toFixed(2)+' AU\n';
+    if(s.isDcomp&&s.dSep) txt+='    Separation (D): '+(s.dSep/AU).toFixed(2)+' AU\n';
+  });
+  const sumLum=system.stars.reduce((s,st)=>s+(st.def.lum||1),0);
+  txt+='  Combined luminosity: '+sumLum.toFixed(2)+' L☉\n';
+  txt+='  Habitable Zone (combined): '+(system.hz.inner/AU).toFixed(2)+'–'+(system.hz.outer/AU).toFixed(2)+' AU\n';
+  txt+='  (HZ scaled by √total_luminosity — Kopparapu et al. 2013)\n\n';
+  txt+=hr+'\n';
+
+  // Planets
+  txt+='\nPLANETARY BODIES ('+system.planets.length+' worlds)\n';
+  system.planets.forEach((p,i)=>{
+    const au=(p.orbitPx/Math.max(AU,1));
+    const period=(14*Math.pow(Math.max(au,0.01),1.5)).toFixed(1);
+    txt+='\n'+p.name+' — '+p.typeDef.name+' ('+p.band+' band)\n';
+    txt+='  Orbit: '+au.toFixed(3)+' AU  |  Period: '+period+' sim-s  |  Moons: '+p.moons.length+'\n';
+    txt+='  Size: '+p.sz.toFixed(1)+'  |  Rotation: '+(p.tidalLock?'Tidally Locked':p.retrograde?'Retrograde':'Prograde')+'\n';
+    txt+='  Life: '+p.typeDef.life+'  |  Water: '+p.typeDef.water+'\n';
+    txt+='  Atmosphere: '+p.typeDef.atmo+'\n';
+    txt+='  Temperature: '+p.typeDef.temp+'  |  Hazard: '+p.typeDef.hazard+'\n';
+    txt+='  Resources: '+p.typeDef.res+'\n';
+    if(p.moons.length>0) txt+='  Moon orbits: '+p.moons.map((m,mi)=>'Moon '+(mi+1)+' @ '+(m.r/p.sz).toFixed(1)+'× planet radius').join(', ')+'\n';
+    txt+='  World Note: '+p.typeDef.note+'\n';
+  });
+  txt+='\n'+hr+'\n';
+  txt+='Generated by SOLARIS — StellarForge.tools\n';
+  const blob=new Blob([txt],{type:'text/plain'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download=system.name.replace(/\s+/g,'_')+'_world_notes.txt';a.click();
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// RENDER LOOP
+// ═══════════════════════════════════════════════════════════════════════
+function loop(ts){
+  requestAnimationFrame(loop);
+  const dt=Math.min(ts-lastT,100);lastT=ts;
+  const sm=1-Math.pow(0.0001,dt/1000);
+  if(camMode==='star'){tcam.x=0;tcam.y=0}
+  cam.x+=(tcam.x-cam.x)*sm;cam.y+=(tcam.y-cam.y)*sm;cam.zoom+=(tcam.zoom-cam.zoom)*sm;
+
+  ctx.clearRect(0,0,W,H);ctx.fillStyle='#09090B';ctx.fillRect(0,0,W,H);
+  drawBg(ts);
+  if(!system)return;
+
+  const spd=SPEEDS[spdIdx];
+
+  // ── ANIMATE STARS ──
+  if(system.starMode!=='single'&&playing){
+    system.stars.forEach(s=>{
+      if(s.isBcomp){
+        s.bAngle=(s.bAngle||Math.PI)+s.angSpd*(dt/1000)*spd;
+        s.x=Math.cos(s.bAngle)*s.bSep*0.5;
+        s.y=Math.sin(s.bAngle)*s.bSep*0.5;
+        system.stars[0].x=-Math.cos(s.bAngle)*s.bSep*0.5;
+        system.stars[0].y=-Math.sin(s.bAngle)*s.bSep*0.5;
+      }
+      if(s.isCcomp){
+        s.cAngle=(s.cAngle||0)+s.angSpd*(dt/1000)*spd;
+        s.x=Math.cos(s.cAngle)*s.cSep;
+        s.y=Math.sin(s.cAngle)*s.cSep;
+      }
+      if(s.isDcomp){
+        if(s.isDcd){
+          // D is companion to C — orbits the C position
+          const cStar=system.stars[2];
+          s.dAngle=(s.dAngle||Math.PI)+s.angSpd*(dt/1000)*spd;
+          s.x=cStar.x+Math.cos(s.dAngle)*s.bSep*0.5;
+          s.y=cStar.y+Math.sin(s.dAngle)*s.bSep*0.5;
+          // C also orbits within the CD pair
+          cStar.x=cStar.x-Math.cos(s.dAngle)*s.bSep*0.35;
+          cStar.y=cStar.y-Math.sin(s.dAngle)*s.bSep*0.35;
+        }
+        if(s.isDfar){
+          s.dAngle=(s.dAngle||0)+s.angSpd*(dt/1000)*spd;
+          s.x=Math.cos(s.dAngle)*s.dSep;
+          s.y=Math.sin(s.dAngle)*s.dSep;
+        }
+      }
+    });
+  }
+
+  ctx.save();
+  ctx.translate(W/2+cam.x*cam.zoom,H/2+cam.y*cam.zoom);
+  ctx.scale(cam.zoom,cam.zoom);
+
+  const showHz=document.getElementById('chk-hz').checked;
+  const showOrb=document.getElementById('chk-orb').checked;
+  const showLbl=document.getElementById('chk-lbl').checked;
+  const showGrav=document.getElementById('chk-grav').checked;
+  const showTrails=document.getElementById('chk-trails').checked;
+  const showRot=document.getElementById('chk-rot').checked;
+  const showStarName=document.getElementById('chk-starname').checked;
+  const brightness=parseInt(document.getElementById('starbrightness').value)/10;
+
+  if(showHz)drawHz();
+  if(showOrb){system.planets.forEach(p=>drawOrbit(p));if(system.asteroidBelt)drawAstOrbit()}
+  if(system.asteroidBelt)animAst(dt,spd);
+  if(system.oort)drawOort(dt,spd);
+
+  // ── UPDATE PLANET POSITIONS ──
+  if(playing){
+    if(system.starMode==='single'){
+      // Pure Keplerian — fast, stable, no perturbation needed
+      system.planets.forEach(p=>{
+        p.angle+=p.angSpd*(dt/1000)*spd;
+        p.moons.forEach(m=>m.angle+=m.spd*(dt/1000)*spd*0.4);
+        if(showRot){
+          const rs=p.tidalLock?0:p.retrograde?-(p.rotSpeed||1)*0.9:(p.rotSpeed||1);
+          p.rotAngle=(p.rotAngle||0)+rs*(dt/1000)*spd*0.6;
+        }
+      });
+    } else {
+      // ── N-BODY: Velocity Verlet with adaptive substeps ──
+      // GM calibration: circular orbit at r=AU around lum=1 star has
+      //   period T = 14 sim-seconds  (matches Keplerian angSpd = 2π/14)
+      //   v_circ = 2π·AU/T  →  GM = v²·r  →  GM_base = (2π/14)²·AU³
+      const AU  = system.AU;
+      const k   = (2 * Math.PI / 14);
+      const GM_base = k * k * AU * AU * AU;
+      // Outer stability radius for ejection guard (Holman-Wiegert limit or generous fallback)
+      const cStar = system.stars.find(s=>s.isCcomp);
+      const outerStableR = cStar ? (cStar.cSep * 0.30) : AU * 15;
+      const rng = () => 0.5 + Math.random() * 0.5;
+
+      // Snapshot star positions once per frame
+      const starSnap = system.stars.map(s => ({
+        x: s.x, y: s.y,
+        GM: GM_base * (s.def.lum || 1)
+      }));
+
+      // Acceleration helper — closed over starSnap
+      const accel = (px, py) => {
+        let ax = 0, ay = 0;
+        for (let i = 0; i < starSnap.length; i++) {
+          const dx = starSnap[i].x - px;
+          const dy = starSnap[i].y - py;
+          const d2 = dx*dx + dy*dy;
+          if (d2 < 9) continue;
+          const inv = starSnap[i].GM / (d2 * Math.sqrt(d2));
+          ax += inv * dx;
+          ay += inv * dy;
+        }
+        return {ax, ay};
+      };
+
+      // Substep size capped so no planet moves more than ~2% of its orbit per substep.
+      // This keeps the integrator stable even at speed×10.
+      const totalSdt = (dt / 1000) * spd;
+      const MAX_SUBSTEP = 0.025;
+      const nSteps = Math.max(1, Math.ceil(totalSdt / MAX_SUBSTEP));
+      const subDt  = totalSdt / nSteps;
+
+      system.planets.forEach(p => {
+        // ── Seed Cartesian state from polar on first touch ──
+        if (p.vx === undefined) {
+          const r  = p.orbitPx;
+          // Circular velocity is set by the INTERIOR mass only (shell theorem).
+          // For a circumbinary P-type orbit, both A and B are interior.
+          // Exterior companions (C, D) perturb the orbit but don't set v_circ.
+          // We approximate interior mass as the sum of GM of all stars whose
+          // distance from the system barycenter is less than the planet's orbit radius.
+          let GM_interior = 0;
+          starSnap.forEach(s => {
+            const starDist = Math.hypot(s.x, s.y); // distance of star from barycenter
+            if (starDist < r) GM_interior += s.GM;
+          });
+          // Fallback: if no star is interior (shouldn't happen), use primary
+          if (GM_interior < GM_base * 0.001) GM_interior = starSnap[0].GM;
+          const vcirc = Math.sqrt(GM_interior / r);
+          const sign  = p.retrograde ? -1 : 1;
+          p.px =  Math.cos(p.angle) * r;
+          p.py =  Math.sin(p.angle) * r;
+          p.vx = -Math.sin(p.angle) * vcirc * sign;
+          p.vy =  Math.cos(p.angle) * vcirc * sign;
+        }
+
+        // ── Velocity Verlet substep loop ──
+        let px = p.px, py = p.py, vx = p.vx, vy = p.vy;
+        let {ax: ax0, ay: ay0} = accel(px, py);
+
+        for (let s = 0; s < nSteps; s++) {
+          // Full position step
+          px += vx * subDt + 0.5 * ax0 * subDt * subDt;
+          py += vy * subDt + 0.5 * ay0 * subDt * subDt;
+          // Acceleration at new position
+          const {ax: ax1, ay: ay1} = accel(px, py);
+          // Velocity step using average acceleration
+          vx += 0.5 * (ax0 + ax1) * subDt;
+          vy += 0.5 * (ay0 + ay1) * subDt;
+          ax0 = ax1; ay0 = ay1;
+        }
+
+        p.px = px; p.py = py; p.vx = vx; p.vy = vy;
+
+        // ── Ejection guard ──
+        // If a planet's KE >= its PE relative to ALL stars, it's unbound.
+        // v_esc² = 2 × Σ(GM_i / r_i). We check v² > 2.5 × v_esc² (generous margin).
+        const v2 = vx*vx + vy*vy;
+        let v_esc2 = 0;
+        starSnap.forEach(s => {
+          const d = Math.hypot(px - s.x, py - s.y);
+          if(d > 1) v_esc2 += 2 * s.GM / d;
+        });
+        if(v2 > v_esc2 * 2.5 || Math.hypot(px,py) > AU * 60){
+          // Planet escaped — re-seed at its original orbital radius with fresh velocity
+          p.ejectionCount = (p.ejectionCount||0) + 1;
+          p.lastEjected = Date.now();
+          delete p.vx; delete p.vy; delete p.px; delete p.py;
+          // Keep angle, snap orbitPx back within stability zone
+          const maxSafeR = outerStableR || AU * 8;
+          if(p.orbitPx > maxSafeR) p.orbitPx = maxSafeR * rng();
+        }
+
+        // Back-project to polar so all draw/info/trail code is unchanged
+        p.angle   = Math.atan2(py, px);
+        p.orbitPx = Math.hypot(px, py);
+
+        p.moons.forEach(m => m.angle += m.spd * (dt/1000) * spd * 0.4);
+        if (showRot) {
+          const rs = p.tidalLock ? 0 : p.retrograde ? -(p.rotSpeed||1)*0.9 : (p.rotSpeed||1);
+          p.rotAngle = (p.rotAngle||0) + rs * (dt/1000) * spd * 0.6;
+        }
+      });
+    }
+  }
+
+  // Trails
+  if(showTrails){
+    system.planets.forEach(p=>{
+      if(!trailData.has(p))trailData.set(p,[]);
+      const trail=trailData.get(p);
+      trail.push({x:Math.cos(p.angle)*p.orbitPx,y:Math.sin(p.angle)*p.orbitPx});
+      if(trail.length>120)trail.shift();
+      for(let t=1;t<trail.length;t++){
+        ctx.beginPath();ctx.moveTo(trail[t-1].x,trail[t-1].y);ctx.lineTo(trail[t].x,trail[t].y);
+        ctx.strokeStyle=h2a(p.color,t/trail.length*0.25);ctx.lineWidth=1.2;ctx.stroke();
+      }
+    });
+  }else trailData.clear();
+
+  system.planets.forEach(p=>drawPlanet(p,showLbl,showGrav,showRot,ts));
+  system.stars.forEach(s=>drawStar(s,brightness,showStarName,ts));
+  ctx.restore();
+  document.getElementById('z-val').textContent=cam.zoom.toFixed(2)+'×';
+}
+
+// ── BG STARS ──
+function drawBg(ts){
+  bgStars.forEach(s=>{
+    const px=((s.x+cam.x*0.04+W)%W+W)%W;
+    const py=((s.y+cam.y*0.04+H)%H+H)%H;
+    ctx.beginPath();ctx.arc(px,py,s.r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(255,255,255,${s.a+Math.sin(ts*0.0005+s.tw)*0.05})`;ctx.fill();
+  });
+}
+
+// ── HZ ──
+function drawHz(){
+  const{inner,outer}=system.hz;
+  const g=ctx.createRadialGradient(0,0,inner,0,0,outer);
+  g.addColorStop(0,'rgba(46,204,113,0)');g.addColorStop(0.4,'rgba(46,204,113,0.04)');
+  g.addColorStop(0.6,'rgba(46,204,113,0.04)');g.addColorStop(1,'rgba(46,204,113,0)');
+  ctx.beginPath();ctx.arc(0,0,outer,0,Math.PI*2);ctx.arc(0,0,inner,0,Math.PI*2,true);
+  ctx.fillStyle=g;ctx.fill();
+  [inner,outer].forEach(r=>{
+    ctx.beginPath();ctx.arc(0,0,r,0,Math.PI*2);
+    ctx.strokeStyle='rgba(46,204,113,0.07)';ctx.setLineDash([3,5]);ctx.lineWidth=1;ctx.stroke();ctx.setLineDash([]);
+  });
+}
+
+// ── ORBITS ──
+function drawOrbit(p){
+  ctx.beginPath();ctx.arc(0,0,p.orbitPx,0,Math.PI*2);
+  ctx.strokeStyle=h2a(p.color,0.08);ctx.setLineDash([2,4]);ctx.lineWidth=1;ctx.stroke();ctx.setLineDash([]);
+}
+function drawAstOrbit(){
+  ctx.beginPath();ctx.arc(0,0,system.asteroidBelt.r,0,Math.PI*2);
+  ctx.strokeStyle='rgba(160,130,80,0.06)';ctx.lineWidth=2;ctx.stroke();
+}
+function animAst(dt,spd){
+  system.asteroidBelt.pts.forEach(a=>{
+    if(playing)a.ang+=a.spd*(dt/1000)*spd*0.25;
+    const x=Math.cos(a.ang)*a.r,y=Math.sin(a.ang)*a.r;
+    ctx.save();ctx.translate(x,y);ctx.rotate(a.ang*2.5);
+    ctx.fillStyle=a.col;ctx.fillRect(-a.sz/2,-a.sz/2,a.sz,a.sz*0.65);ctx.restore();
+  });
+}
+
+// ── OORT ──
+function drawOort(dt,spd){
+  const oort=system.oort;
+  oort.pts.forEach(p=>{
+    if(playing)p.ang+=p.spd*(dt/1000)*spd;
+    // Hills: nearly flat (disk-shaped); Outer: spherical projection
+    const scaleY=p.zone==='hills'?Math.max(0.7,1-Math.abs(p.elev)*0.35):Math.max(0.45,1-Math.abs(p.elev)*0.55);
+    const x=Math.cos(p.ang)*p.r, y=Math.sin(p.ang)*p.r*scaleY;
+    ctx.beginPath();ctx.arc(x,y,Math.max(p.sz,0.5),0,Math.PI*2);
+    ctx.fillStyle=p.col;ctx.fill();
+  });
+  oort.comets.forEach(c=>{
+    if(playing){
+      c.ang+=c.spd*(dt/1000)*spd;
+      c.r=Math.max(c.perihelion,c.r-c.spd*dt*spd*0.22);
+      if(c.r<=c.perihelion+3){c.r=c.startR*rnd(0.8,2.2);c.ang=rnd(0,Math.PI*2)}
+    }
+    const x=Math.cos(c.ang)*c.r, y=Math.sin(c.ang)*c.r;
+    ctx.save();ctx.translate(x,y);
+    // Tail always points AWAY from origin (away from star)
+    const awayAngle=Math.atan2(y,x); // direction from origin to comet
+    ctx.rotate(awayAngle);           // +X now points away from star
+    // Tail drawn in +X direction
+    const progress=Math.max(0,1-(c.r-c.perihelion)/Math.max(c.startR-c.perihelion,1));
+    const tLen=c.tailLen*(0.2+0.8*progress);
+    const tail=ctx.createLinearGradient(0,0,tLen,0);
+    tail.addColorStop(0,'rgba(200,230,255,0.6)');tail.addColorStop(1,'rgba(180,220,255,0)');
+    ctx.beginPath();ctx.moveTo(0,-c.sz*0.4);ctx.lineTo(tLen,0);ctx.lineTo(0,c.sz*0.4);ctx.closePath();
+    ctx.fillStyle=tail;ctx.fill();
+    ctx.beginPath();ctx.arc(0,0,c.sz,0,Math.PI*2);ctx.fillStyle='rgba(215,240,255,0.95)';ctx.fill();
+    ctx.restore();
+  });
+}
+
+// ── STAR ──
+function drawStar(s,brightness,showName,ts){
+  const star=s.def,sx=s.x,sy=s.y,r=star.r;
+  const pulse=Math.sin(ts*0.0007+sx*0.1)*1.8;
+  for(let i=4;i>=1;i--){
+    const g=ctx.createRadialGradient(sx,sy,r,sx,sy,r*(2.5+i*1.5)*Math.min(brightness,2));
+    g.addColorStop(0,star.glow+`${0.11*brightness})`);g.addColorStop(1,star.glow+'0)');
+    ctx.beginPath();ctx.arc(sx,sy,r*(2.5+i*1.5)*Math.min(brightness,2),0,Math.PI*2);
+    ctx.fillStyle=g;ctx.fill();
+  }
+  ctx.save();ctx.globalAlpha=0.1;
+  for(let i=0;i<4;i++){
+    ctx.save();ctx.translate(sx,sy);ctx.rotate(i*Math.PI/4+ts*0.00008);
+    const sg=ctx.createLinearGradient(0,-r*4,0,r*4);
+    sg.addColorStop(0,'transparent');sg.addColorStop(0.5,star.color);sg.addColorStop(1,'transparent');
+    ctx.strokeStyle=sg;ctx.lineWidth=2.5;ctx.beginPath();ctx.moveTo(0,-r*4);ctx.lineTo(0,r*4);ctx.stroke();
+    ctx.restore();
+  }
+  ctx.restore();
+  const bg=ctx.createRadialGradient(sx,sy,0,sx,sy,r+pulse);
+  bg.addColorStop(0,'#FFFFFF');bg.addColorStop(0.3,star.color);bg.addColorStop(1,star.glow+'0.7)');
+  ctx.beginPath();ctx.arc(sx,sy,r+pulse,0,Math.PI*2);ctx.fillStyle=bg;ctx.fill();
+  if(showName){
+    ctx.font='400 9px "DM Sans"';ctx.fillStyle='rgba(255,255,255,0.32)';ctx.textAlign='center';
+    ctx.fillText(s.nameStr||system.name,sx,sy+r+18);
+  }
+}
+
+// ── PLANET ──
+function drawPlanet(p,showLbl,showGrav,showRot,ts){
+  const px=Math.cos(p.angle)*p.orbitPx;
+  const py=Math.sin(p.angle)*p.orbitPx;
+  const r=p.sz,isSel=selPlanet===p;
+
+  ctx.save();ctx.translate(px,py);
+
+  // Moons (drawn first, behind planet)
+  p.moons.forEach(m=>{
+    ctx.beginPath();ctx.arc(0,0,m.r,0,Math.PI*2);
+    ctx.strokeStyle='rgba(255,255,255,0.035)';ctx.lineWidth=0.5;ctx.stroke();
+    const mx=Math.cos(m.angle)*m.r,my=Math.sin(m.angle)*m.r;
+    ctx.beginPath();ctx.arc(mx,my,m.sz,0,Math.PI*2);
+    ctx.fillStyle='rgba(160,165,175,0.75)';ctx.fill();
+  });
+
+  // ── GRAVITY RINGS ──
+  if(showGrav){
+    for(let gi=1;gi<=3;gi++){
+      ctx.beginPath();ctx.arc(0,0,r*(2.2+gi*1.4),0,Math.PI*2);
+      ctx.strokeStyle=h2a(p.color,0.12+0.04*gi);
+      ctx.setLineDash([2,gi*3]);ctx.lineWidth=1;ctx.stroke();ctx.setLineDash([]);
+    }
+  }
+
+  // Selection ring
+  if(isSel){
+    ctx.beginPath();ctx.arc(0,0,r+7,0,Math.PI*2);
+    ctx.strokeStyle='rgba(0,212,255,0.55)';ctx.lineWidth=1.5;ctx.stroke();
+    for(let t=0;t<4;t++){
+      const a=t*Math.PI/2+ts*0.0012;
+      ctx.beginPath();ctx.moveTo(Math.cos(a)*(r+5),Math.sin(a)*(r+5));ctx.lineTo(Math.cos(a)*(r+9),Math.sin(a)*(r+9));
+      ctx.strokeStyle='rgba(0,212,255,0.85)';ctx.lineWidth=1.8;ctx.stroke();
+    }
+  }
+
+  // Habitable glow
+  if(p.band==='habitable'&&p.typeDef.life!=='None'&&!isSel){
+    const ga=Math.sin(ts*0.002+p.glowPh)*0.03+0.055;
+    const gg=ctx.createRadialGradient(0,0,r,0,0,r*3.2);
+    gg.addColorStop(0,`rgba(46,204,113,${ga})`);gg.addColorStop(1,'rgba(46,204,113,0)');
+    ctx.beginPath();ctx.arc(0,0,r*3.2,0,Math.PI*2);ctx.fillStyle=gg;ctx.fill();
+  }
+  // Rogue glow
+  if(p.typeKey==='rogue'){
+    const rg=ctx.createRadialGradient(0,0,r*0.5,0,0,r*2.2);
+    rg.addColorStop(0,'rgba(180,80,30,0.14)');rg.addColorStop(1,'rgba(180,80,30,0)');
+    ctx.beginPath();ctx.arc(0,0,r*2.2,0,Math.PI*2);ctx.fillStyle=rg;ctx.fill();
+  }
+
+  // ── PLANET BODY ──
+  ctx.save();
+  if(showRot&&!p.tidalLock)ctx.rotate(p.rotAngle||0);
+
+  const bg=ctx.createRadialGradient(-r*0.3,-r*0.3,r*0.1,0,0,r);
+  bg.addColorStop(0,lighten(p.color,45));bg.addColorStop(0.55,p.color);bg.addColorStop(1,p.altColor);
+  ctx.beginPath();ctx.arc(0,0,r,0,Math.PI*2);ctx.fillStyle=bg;ctx.fill();
+
+  // Surface details
+  if(['terrestrial','ocean','jungle','waterworld','hycean'].includes(p.typeKey)){
+    const ah=ctx.createRadialGradient(0,0,r*0.85,0,0,r*1.15);
+    ah.addColorStop(0,'rgba(100,180,255,0)');ah.addColorStop(0.6,'rgba(100,180,255,0.07)');ah.addColorStop(1,'rgba(100,180,255,0)');
+    ctx.beginPath();ctx.arc(0,0,r*1.15,0,Math.PI*2);ctx.fillStyle=ah;ctx.fill();
+  }
+  if(['rogue','lavaocean','magma','volcanic'].includes(p.typeKey)){
+    ctx.save();ctx.beginPath();ctx.arc(0,0,r,0,Math.PI*2);ctx.clip();
+    for(let f=0;f<5+Math.floor(r/3);f++){
+      const fa=rnd(0,Math.PI*2),fl=rnd(r*0.2,r*0.85);
+      ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(Math.cos(fa)*fl,Math.sin(fa)*fl);
+      ctx.strokeStyle='rgba(255,120,0,0.2)';ctx.lineWidth=1;ctx.stroke();
+    }
+    ctx.restore();
+  }
+  if(p.typeKey==='gasgiant'){
+    ctx.save();ctx.beginPath();ctx.arc(0,0,r,0,Math.PI*2);ctx.clip();
+    for(let b=0;b<7;b++){ctx.fillStyle='rgba(255,255,255,0.05)';ctx.fillRect(-r,(b/6.5-0.5)*r*1.8-r*0.08,r*2,r*0.1)}
+    ctx.restore();
+    ctx.save();ctx.scale(1,0.22);
+    for(let ri=0;ri<3;ri++){ctx.beginPath();ctx.arc(0,0,r+6+ri*6,0,Math.PI*2);ctx.strokeStyle=h2a(p.color,0.28-ri*0.07);ctx.lineWidth=3-ri*0.5;ctx.stroke()}
+    ctx.restore();
+  }
+  if(p.typeKey==='icegiant'){
+    ctx.save();ctx.beginPath();ctx.arc(0,0,r,0,Math.PI*2);ctx.clip();
+    const cg=ctx.createLinearGradient(-r,-r,r,r);
+    cg.addColorStop(0,'rgba(255,255,255,0.12)');cg.addColorStop(0.5,'rgba(255,255,255,0)');cg.addColorStop(1,'rgba(255,255,255,0.06)');
+    ctx.fillStyle=cg;ctx.fillRect(-r,-r,r*2,r*2);ctx.restore();
+    ctx.save();ctx.scale(1,0.18);ctx.beginPath();ctx.arc(0,0,r+5,0,Math.PI*2);ctx.strokeStyle=h2a(p.color,0.2);ctx.lineWidth=2;ctx.stroke();ctx.restore();
+  }
+  if(p.typeKey==='crystalline'){
+    ctx.save();ctx.globalAlpha=0.42;
+    for(let c=0;c<5;c++){
+      const ca=c*Math.PI*2/5+Math.PI/10;
+      ctx.save();ctx.translate(Math.cos(ca)*r*0.5,Math.sin(ca)*r*0.5);ctx.rotate(ca);
+      ctx.fillStyle='rgba(200,220,255,0.65)';ctx.beginPath();ctx.moveTo(0,-r*0.22);ctx.lineTo(r*0.05,0);ctx.lineTo(0,r*0.22);ctx.lineTo(-r*0.05,0);ctx.closePath();ctx.fill();
+      ctx.restore();
+    }
+    ctx.restore();
+  }
+  if(p.typeKey==='comet'){
+    ctx.save();ctx.rotate(p.angle+Math.PI);
+    const tail=ctx.createLinearGradient(0,0,0,-r*5);
+    tail.addColorStop(0,'rgba(180,220,255,0.3)');tail.addColorStop(1,'rgba(180,220,255,0)');
+    ctx.beginPath();ctx.moveTo(-r*0.35,0);ctx.lineTo(0,-r*5);ctx.lineTo(r*0.35,0);ctx.closePath();ctx.fillStyle=tail;ctx.fill();
+    ctx.restore();
+  }
+  if(p.typeKey==='stormworld'){
+    ctx.save();ctx.beginPath();ctx.arc(0,0,r,0,Math.PI*2);ctx.clip();
+    for(let s=0;s<3;s++){
+      ctx.beginPath();ctx.ellipse(rnd(-r*0.4,r*0.4),rnd(-r*0.5,r*0.5),r*rnd(0.8,1.5),r*rnd(0.1,0.25),0,0,Math.PI*2);
+      ctx.strokeStyle='rgba(255,255,255,0.12)';ctx.lineWidth=1;ctx.stroke();
+    }
+    ctx.restore();
+  }
+  ctx.restore(); // end body rotation
+
+  // ── TIDAL LOCK: one face permanently toward star ──
+  // The planet is translated to (px,py) = (cos(angle)*orbit, sin(angle)*orbit).
+  // From the planet's local frame, the star sits at angle = p.angle + π  (pointing back toward origin).
+  // We rotate so that +X in draw-space points AWAY from the star (= night side direction).
+  // Rotation needed: p.angle  (so +X aligns with the planet→away-from-star direction)
+  // Then gradient darkens the +X hemisphere (night) and is transparent on –X (day, star-facing).
+  if(p.tidalLock){
+    ctx.save();
+    ctx.rotate(p.angle); // +X now points away from star; -X faces the star
+    ctx.beginPath();ctx.arc(0,0,r,0,Math.PI*2);ctx.clip();
+    // Gradient: left (-r) = day side (toward star) = bright/transparent
+    //           right (+r) = night side (away from star) = dark
+    const nightG=ctx.createLinearGradient(-r,0,r,0);
+    nightG.addColorStop(0,'rgba(0,0,0,0)');       // day side (-x, toward star)
+    nightG.addColorStop(0.44,'rgba(0,0,0,0)');
+    nightG.addColorStop(0.5,'rgba(0,0,0,0.5)');   // terminator
+    nightG.addColorStop(1,'rgba(0,0,0,0.92)');    // night side (+x, away from star)
+    ctx.fillStyle=nightG;ctx.fillRect(-r,-r,r*2,r*2);
+    // Warm terminator glow at the day/night boundary
+    const tg=ctx.createLinearGradient(-r*0.15,0,r*0.15,0);
+    tg.addColorStop(0,'rgba(255,150,50,0)');
+    tg.addColorStop(0.35,'rgba(255,150,50,0.18)');
+    tg.addColorStop(0.65,'rgba(255,150,50,0.18)');
+    tg.addColorStop(1,'rgba(255,150,50,0)');
+    ctx.fillStyle=tg;ctx.fillRect(-r,-r,r*2,r*2);
+    ctx.restore();
+  }
+
+  // ── RETROGRADE indicator ──
+  if(p.retrograde){
+    ctx.save();ctx.rotate(p.rotAngle*0.5);
+    ctx.strokeStyle='rgba(0,212,255,0.3)';ctx.lineWidth=1.2;
+    ctx.beginPath();ctx.arc(0,0,r+4,Math.PI*0.1,Math.PI*1.7,true);ctx.stroke();
+    const ax=Math.cos(Math.PI*0.1)*(r+4),ay=Math.sin(Math.PI*0.1)*(r+4);
+    ctx.beginPath();ctx.moveTo(ax-3,ay-3);ctx.lineTo(ax,ay);ctx.lineTo(ax+3,ay-2);
+    ctx.strokeStyle='rgba(0,212,255,0.5)';ctx.stroke();
+    ctx.restore();
+  }
+
+  // Ambient terminator shadow (non-tidal)
+  if(!p.tidalLock){
+    ctx.save();ctx.beginPath();ctx.arc(0,0,r,0,Math.PI*2);ctx.clip();
+    const sh=ctx.createRadialGradient(r*0.4,0,0,r*0.2,0,r*1.5);
+    sh.addColorStop(0,'rgba(0,0,0,0)');sh.addColorStop(0.6,'rgba(0,0,0,0.28)');sh.addColorStop(1,'rgba(0,0,0,0.68)');
+    ctx.fillStyle=sh;ctx.fillRect(-r,-r,r*2,r*2);ctx.restore();
+  }
+
+  // Label
+  if(showLbl){
+    const maxM=p.moons.length?Math.max(...p.moons.map(m=>m.r)):0;
+    ctx.font='400 9.5px "DM Sans"';ctx.fillStyle=h2a(p.color,0.55);ctx.textAlign='center';
+    ctx.fillText(p.name,0,Math.max(r,maxM)+18);
+  }
+  ctx.restore();
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// INPUT — Camera, Star Drag, Planet Drag, Palette Drag
+// ═══════════════════════════════════════════════════════════════════════
+document.addEventListener('mousemove',e=>{
+  if(palDrag&&palDrag.active){ghostEl.style.left=e.clientX+'px';ghostEl.style.top=e.clientY+'px'}
+});
+document.addEventListener('mouseup',e=>{
+  if(palDrag&&palDrag.active){
+    const rect=canvas.getBoundingClientRect();
+    if(e.clientX>=rect.left&&e.clientX<=rect.right&&e.clientY>=rect.top&&e.clientY<=rect.bottom)
+      dropPlanet(e.clientX,e.clientY,palDrag.key);
+    palDrag.el.classList.remove('dragging');
+    palDrag=null;ghostEl.style.display='none';
+  }
+});
+
+canvas.addEventListener('mousedown',e=>{
+  if(palDrag)return;
+  const wx=(e.clientX-W/2)/cam.zoom-cam.x,wy=(e.clientY-H/2)/cam.zoom-cam.y;
+
+  // Companion star drag
+  if(system&&system.starMode!=='single'){
+    let best=null,bestD=Infinity;
+    system.stars.forEach(s=>{
+      if(!s.isBcomp&&!s.isCcomp&&!s.isDcomp)return;
+      const d=Math.hypot(wx-s.x,wy-s.y);
+      if(d<Math.max(s.def.r+16,22/cam.zoom)&&d<bestD){bestD=d;best=s}
+    });
+    if(best){starDragActive=true;starDragTarget=best;canvas.style.cursor='grabbing';return}
+  }
+  // Planet orbit drag (Alt/Shift)
+  if(system&&(e.altKey||e.shiftKey)){
+    let best=null,bestD=Infinity;
+    system.planets.forEach(p=>{
+      const ppx=Math.cos(p.angle)*p.orbitPx,ppy=Math.sin(p.angle)*p.orbitPx;
+      const d=Math.hypot(wx-ppx,wy-ppy);
+      if(d<Math.max(p.sz+6,14/cam.zoom)&&d<bestD){bestD=d;best=p}
+    });
+    if(best){planetDragActive=true;planetDragTarget=best;canvas.style.cursor='grabbing';return}
+  }
+  drag=true;dragSt={x:e.clientX,y:e.clientY};camSt={x:cam.x,y:cam.y};canvas.style.cursor='grabbing';
+});
+canvas.addEventListener('mousemove',e=>{
+  const wx=(e.clientX-W/2)/cam.zoom-cam.x,wy=(e.clientY-H/2)/cam.zoom-cam.y;
+  if(!drag&&!starDragActive&&!planetDragActive&&system&&system.starMode!=='single'){
+    let over=false;
+    system.stars.forEach(s=>{
+      if(!s.isBcomp&&!s.isCcomp&&!s.isDcomp)return;
+      if(Math.hypot(wx-s.x,wy-s.y)<Math.max(s.def.r+16,22/cam.zoom))over=true;
+    });
+    canvas.style.cursor=over?'grab':'crosshair';
+  }
+  if(starDragActive&&starDragTarget){
+    const s=starDragTarget;
+    if(s.isBcomp){
+      const newSep=Math.hypot(wx,wy)*2;
+      s.bAngle=Math.atan2(wy,wx);s.bSep=newSep;
+      system.stars[0].bSep=newSep;
+      s.x=wx;s.y=wy;system.stars[0].x=-wx;system.stars[0].y=-wy;
+      document.getElementById('bsep-val').textContent=(newSep/Math.max(system.AU,1)).toFixed(2)+' AU';
+    }
+    if(s.isCcomp){
+      const dist=Math.hypot(wx,wy);
+      s.cAngle=Math.atan2(wy,wx);s.cSep=dist;s.x=wx;s.y=wy;
+      document.getElementById('csep-val').textContent=(dist/Math.max(system.AU,1)).toFixed(1)+' AU';
+    }
+    if(s.isDcomp){
+      const dist=Math.hypot(wx,wy);
+      s.dAngle=Math.atan2(wy,wx);s.x=wx;s.y=wy;
+      if(s.isDfar)s.dSep=dist;
+      document.getElementById('dsep-val')&&(document.getElementById('dsep-val').textContent=(dist/Math.max(system.AU,1)).toFixed(1)+' AU');
+    }
+  }
+  if(drag&&!planetDragActive&&!starDragActive){
+    tcam.x=camSt.x+(e.clientX-dragSt.x)/cam.zoom;
+    tcam.y=camSt.y+(e.clientY-dragSt.y)/cam.zoom;
+    setCam('free',document.getElementById('cam-free'));
+  }
+  if(planetDragActive&&planetDragTarget){
+    const dist=Math.hypot(wx,wy);
+    planetDragTarget.orbitPx=Math.max(60,dist);
+    planetDragTarget.angle=Math.atan2(wy,wx);
+    if(selPlanet===planetDragTarget)document.getElementById('orb-slider').value=Math.round(dist);
+  }
+});
+canvas.addEventListener('mouseup',e=>{
+  if(starDragActive){starDragActive=false;starDragTarget=null;canvas.style.cursor='crosshair';return}
+  if(planetDragActive){planetDragActive=false;planetDragTarget=null;canvas.style.cursor='crosshair';return}
+  if(drag&&Math.abs(e.clientX-dragSt.x)<5&&Math.abs(e.clientY-dragSt.y)<5)handleClick(e.clientX,e.clientY);
+  drag=false;canvas.style.cursor='crosshair';
+});
+canvas.addEventListener('mouseleave',()=>{drag=false;starDragActive=false;canvas.style.cursor='crosshair'});
+canvas.addEventListener('wheel',e=>{
+  e.preventDefault();
+  if(selPlanet&&e.ctrlKey){
+    selPlanet.sz=Math.max(2,Math.min(32,selPlanet.sz+(e.deltaY>0?-0.5:0.5)));
+    document.getElementById('sz-slider').value=Math.round(selPlanet.sz);
+    drawIcon(selPlanet);return;
+  }
+  tcam.zoom=Math.max(0.03,Math.min(40,tcam.zoom*(e.deltaY>0?0.87:1.15)));
+},{passive:false});
+canvas.addEventListener('touchstart',e=>{
+  if(e.touches.length===1){drag=true;dragSt={x:e.touches[0].clientX,y:e.touches[0].clientY};camSt={x:cam.x,y:cam.y}}
+},{passive:true});
+canvas.addEventListener('touchmove',e=>{
+  if(e.touches.length===1&&drag){tcam.x=camSt.x+(e.touches[0].clientX-dragSt.x)/cam.zoom;tcam.y=camSt.y+(e.touches[0].clientY-dragSt.y)/cam.zoom}
+},{passive:true});
+canvas.addEventListener('touchend',()=>{drag=false});
+
+function handleClick(cx,cy){
+  if(!system)return;
+  const wx=(cx-W/2)/cam.zoom-cam.x,wy=(cy-H/2)/cam.zoom-cam.y;
+
+  // ── Check moon clicks first (smaller targets, need priority) ──
+  let bestMoon=null,bestMoonParent=null,bestMoonIdx=-1,bestMoonD=Infinity;
+  system.planets.forEach(p=>{
+    const ppx=Math.cos(p.angle)*p.orbitPx,ppy=Math.sin(p.angle)*p.orbitPx;
+    p.moons.forEach((m,mi)=>{
+      const mx=ppx+Math.cos(m.angle)*m.r, my=ppy+Math.sin(m.angle)*m.r;
+      const d=Math.hypot(wx-mx,wy-my);
+      const hitR=Math.max(m.sz+6, 10/cam.zoom);
+      if(d<hitR&&d<bestMoonD){bestMoonD=d;bestMoon=m;bestMoonParent=p;bestMoonIdx=mi}
+    });
+  });
+  if(bestMoon){openMoonInfo(bestMoon,bestMoonParent,bestMoonIdx);return}
+
+  // ── Check planet clicks ──
+  let best=null,bestD=Infinity;
+  system.planets.forEach(p=>{
+    const ppx=Math.cos(p.angle)*p.orbitPx,ppy=Math.sin(p.angle)*p.orbitPx;
+    const d=Math.hypot(wx-ppx,wy-ppy);
+    if(d<Math.max(p.sz+8,18/cam.zoom)&&d<bestD){bestD=d;best=p}
+  });
+  if(best){closeMoonInfo();openInfo(best)}else{closeInfo();}
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// RESIZE
+// ═══════════════════════════════════════════════════════════════════════
+function resize(){
+  W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;
+}
+window.addEventListener('resize',()=>{
+  resize();
+  if(system){
+    const AU=Math.min(W,H)*0.08,sc=AU/system.AU;
+    system.planets.forEach(p=>p.orbitPx*=sc);
+    if(system.asteroidBelt)system.asteroidBelt.r*=sc;
+    if(system.oort){system.oort.pts.forEach(p=>p.r*=sc);system.oort.comets.forEach(c=>{c.r*=sc;c.perihelion*=sc;c.startR*=sc;c.tailLen*=sc})}
+    system.hz.inner*=sc;system.hz.outer*=sc;
+    system.stars.forEach(s=>{s.x=(s.x||0)*sc;s.y=(s.y||0)*sc;if(s.bSep)s.bSep*=sc;if(s.cSep)s.cSep*=sc;if(s.dSep)s.dSep*=sc});
+    system.AU=AU;fitSys();
+  }
+});
+
+// ── INIT ──
+function init(){
+  resize();
+  bgStars=[];
+  for(let i=0;i<700;i++)bgStars.push({x:rnd(0,W),y:rnd(0,H),r:rnd(0.4,1.1),a:rnd(0.04,0.28),tw:rnd(0,Math.PI*2)});
+  buildPalette();
+  loadSavedSystems();
+  requestAnimationFrame(loop);
+}
+init();
+
+// ═══════════════════════════════════════════════════════════════════════
+// SHOW YOUR WORK — full-screen page
+// ═══════════════════════════════════════════════════════════════════════
+let mathTabActive = 'general';
+
+function openMathPage(){
+  const ov=document.getElementById('math-overlay');
+  ov.style.cssText='display:block!important;position:fixed!important;inset:0!important;z-index:9999!important;background:#09090B!important;overflow-y:auto!important';
+  ov.scrollTop=0;
+  // If no system, force general tab
+  if(!system) setMathTab('general');
+  else setMathTab(mathTabActive);
+}
+function closeMathPage(){
+  document.getElementById('math-overlay').style.display='none';
+}
+function setMathTab(tab){
+  mathTabActive=tab;
+  const tg=document.getElementById('math-tab-general');
+  const ts=document.getElementById('math-tab-system');
+  const activeStyle='border-bottom:2px solid #00D4FF;color:#00D4FF';
+  const inactiveStyle='border-bottom:2px solid transparent;color:rgba(255,255,255,0.3)';
+  tg.style.cssText=tg.style.cssText.replace(/border-bottom:[^;]+/,'').replace(/color:[^;]+/,'');
+  ts.style.cssText=ts.style.cssText.replace(/border-bottom:[^;]+/,'').replace(/color:[^;]+/,'');
+  if(tab==='general'){
+    tg.style.borderBottom='2px solid #00D4FF'; tg.style.color='#00D4FF';
+    ts.style.borderBottom='2px solid transparent'; ts.style.color='rgba(255,255,255,0.3)';
+    document.getElementById('math-refresh-btn').style.display='none';
+    buildGeneralPage();
+  } else {
+    ts.style.borderBottom='2px solid #00D4FF'; ts.style.color='#00D4FF';
+    tg.style.borderBottom='2px solid transparent'; tg.style.color='rgba(255,255,255,0.3)';
+    document.getElementById('math-refresh-btn').style.display='inline-block';
+    if(!system){
+      document.getElementById('math-page-content').innerHTML='<div style="grid-column:1/-1;text-align:center;padding:60px 0;font-family:DM Sans,sans-serif;font-size:13px;color:rgba(255,255,255,0.2)">Generate a system first to see per-system orbital mechanics.</div>';
+    } else {
+      refreshMathPage();
+    }
+  }
+}
+
+function buildGeneralPage(){
+  const el=document.getElementById('math-page-content');
+  let cards=[];
+
+  cards.push(card('What is SOLARIS?',`
+    ${mrow('Purpose','A procedural star system simulator for science fiction worldbuilding. Every orbit is grounded in real astrophysics.')}
+    ${mrow('Core question','Given the physics of your stellar configuration, where can stable worlds exist — and what conditions would they experience?')}
+    ${mrow('The Cascade','Stellar physics drives planetary environment, which drives biology, which drives psychology, which drives mythology, which drives culture. Change the star, everything shifts.')}
+  `,'full'));
+
+  cards.push(card('Kepler’s Third Law',`
+    <div class="math-formula">T² ∝ a³<br>T = 14 × a^1.5 &nbsp; [sim-s, a in AU]</div>
+    ${mrow('What it means','A planet twice as far from its star takes 2¹·⁵ ≈ 2.83× longer to complete one orbit. Distance and time are inseparable.')}
+    ${mrow('Example','At 1 AU: T = 14 sim-s. At 4 AU: T = 14 × 8 = 112 sim-s. At 0.1 AU: T = 0.44 sim-s.')}
+    ${mrow('Calibration','1 AU around a 1 L☉ star = 14 simulation seconds. All other periods scale from this anchor.')}
+    ${mrow('Worldbuilding implication','Outer planets have long, cold years. Inner planets have short, hot years. Year length shapes seasons, biology, and cultural calendars.')}
+  `));
+
+  cards.push(card('Circular Velocity & the Shell Theorem',`
+    <div class="math-formula">v_circ = √( GM / r )</div>
+    ${mrow('What it means','The exact speed a planet needs to maintain a stable circular orbit at radius r. Too fast = spiral out. Too slow = spiral in.')}
+    ${mrow('Shell theorem','Only mass interior to a planet’s orbit matters for setting v_circ. A distant companion star perturbs the orbit but doesn’t set the baseline speed — it’s exterior mass and contributes zero to v_circ.')}
+    ${mrow('Planet mass','Planets are treated as massless test particles. M☉ ÷ M⊕ ≈ 333,000. Planet–planet gravity is < 0.03% of stellar gravity at closest approach — negligible.')}
+    ${mrow('Worldbuilding implication','Planets close to massive stars move faster and experience stronger tidal forces. This affects volcanism, plate tectonics, and magnetic field strength.')}
+  `));
+
+  cards.push(card('Habitable Zone',`
+    <div class="math-formula">HZ ∝ √L_total<br>inner ≈ 0.95 AU, outer ≈ 1.67 AU (1 L☉)</div>
+    ${mrow('What it means','The range of orbital distances where liquid water could exist on a rocky surface, given the stellar flux. Named the circumstellar habitable zone (CHZ).')}
+    ${mrow('Inner edge','Runaway greenhouse effect. Water evaporates into the atmosphere, creating a feedback loop that bakes the planet (like Venus).')}
+    ${mrow('Outer edge','Maximum greenhouse limit. CO₂ freezes out and can no longer keep the planet warm (like early Mars).')}
+    ${mrow('Multi-star systems','For binary and trinary systems, SOLARIS sums all stellar luminosities and scales the HZ by √L_total. A G+K binary at 1.7 L☉ combined moves the HZ out by a factor of √1.7 ≈ 1.30.')}
+    ${mrow('Reference','Kopparapu et al. (2013), ApJ 765:131')}
+    ${mrow('Worldbuilding implication','The HZ is probabilistic, not a guarantee. Atmospheric composition, albedo, and tidal heating can all push a world into or out of habitability.')}
+  `));
+
+  cards.push(card('Multi-Star Stability (Holman & Wiegert)',`
+    <div class="math-formula">a_max ≈ 0.30 × a_C &nbsp; (P-type, conservative)<br>a_min ≈ 3.5 × a_AB &nbsp; (circumbinary clearance)</div>
+    ${mrow('P-type orbits','Circumbinary — the planet orbits both stars together, outside the binary. Requires the orbit to be large enough that the binary looks like a single mass.')}
+    ${mrow('S-type orbits','Satellite-type — the planet orbits one star only, inside a binary. SOLARIS does not currently model S-type orbits.')}
+    ${mrow('Inner clearance','Circumbinary planets must stay beyond ~3.5× the A–B separation. Inside that, orbital resonances with the binary create chaos zones.')}
+    ${mrow('Outer limit','With a third star (C) at distance a_C, planets must stay inside ~0.30× a_C. Beyond that, C’s tidal perturbation overwhelms the primary’s restoring force.')}
+    ${mrow('Why 0.30?','The exact fraction depends on mass ratio and orbital eccentricity. Published empirical range: 0.30–0.38 × a_C. SOLARIS uses 0.30 as a conservative margin.')}
+    ${mrow('Reference','Holman & Wiegert (1999), AJ 117:621')}
+    ${mrow('Worldbuilding implication','Multi-star systems have compressed habitable regions. The fewer stable orbits available, the more precious each habitable world becomes.')}
+  `));
+
+  cards.push(card('N-Body Physics & the Integrator',`
+    <div class="math-formula">Velocity Verlet (2nd-order symplectic)<br>x(t+Δt) = x + vΔt + ½ aΔt²<br>v(t+Δt) = v + ½(a₀+a₁)Δt</div>
+    ${mrow('What it means','At each timestep, positions are updated using current velocity and acceleration, then velocity is updated using the average of old and new acceleration. This keeps energy stable over long runs.')}
+    ${mrow('Adaptive substeps','Each frame is subdivided so no substep exceeds 0.025 sim-s. At speed ×10, this means up to 8 sub-steps per frame. The integrator stays stable even at high simulation rates.')}
+    ${mrow('Stars vs. planets','Stars follow prescribed Keplerian orbits around the system barycenter (not true N-body for stars). Planets feel gravity from all stars simultaneously. This is accurate for hierarchical systems.')}
+    ${mrow('Ejection guard','If a planet’s kinetic energy exceeds 2.5× its escape velocity, it is respawned at its stable orbital radius. This is a simulation artifact protection, not physical. The "This System" tab shows if and when it has fired.')}
+    ${mrow('Worldbuilding implication','You can watch Kozai-Lidov-like oscillations in trinary systems — the distant companion gradually pumps eccentricity into inner planet orbits over time.')}
+  `));
+
+  cards.push(card('Tidal Locking',`
+    ${mrow('What it means','A body whose rotational period equals its orbital period, so one face permanently points toward the primary. The Moon is tidally locked to Earth.')}
+    ${mrow('Mechanism','Differential gravitational force across the body creates a tidal bulge. Friction dissipates rotational energy until the bulge aligns permanently with the primary.')}
+    ${mrow('Timescale','Proportional to a⁶ / (M_star × R_planet³). Inner planets around dim red stars lock fastest — often within a billion years.')}
+    ${mrow('Twilight zone','Tidally locked worlds have a permanent day side, night side, and a narrow terminator ring where temperatures may permit liquid water. A worldbuilding classic.')}
+    ${mrow('In SOLARIS','Tidal lock is a per-planet toggle. The night-side gradient and terminator glow are rendered in real time. The planet’s dark face always tracks away from the primary.')}
+  `));
+
+  cards.push(card('Oort Cloud & Long-Period Comets',`
+    ${mrow('Hills Cloud','The inner toroidal region (~2,000–20,000 AU equivalent). Gravitationally bound to the system, slightly flattened from the ecliptic plane.')}
+    ${mrow('Outer shell','The spherical outer Oort Cloud (~20,000–100,000 AU). Nearly isotropic. Vulnerable to perturbation by passing stars.')}
+    ${mrow('Comets','Long-period comets originate in the outer shell, perturbed inward by stellar flybys or galactic tides. Their tails always point away from the primary (solar wind pressure).')}
+    ${mrow('Worldbuilding implication','An active Oort cloud means regular cometary bombardment of inner worlds — water and organic delivery, but also extinction-level impacts. A quiet Oort cloud means a geologically older, more stable system.')}
+  `,'full'));
+
+  el.innerHTML=cards.join('');
+}
+
+function refreshMathPage(){
+  const el = document.getElementById('math-page-content');
+  if(!system){ el.innerHTML='<div style="color:rgba(255,255,255,0.2);padding:40px;text-align:center">Generate a system first.</div>'; return; }
+
+  const AU = system.AU;
+  const k  = 2*Math.PI/14;
+  const GM_base = k*k*AU*AU*AU;
+
+  const starLumLabels = {blue:'~16 M☉ (O/B type)',white:'~2.1 M☉ (A type)',yellow:'~1.0 M☉ (G type)',orange:'~0.7 M☉ (K type)',red:'~0.3 M☉ (M type)'};
+  const starTempLabels = {blue:'25,000–50,000 K',white:'7,500–10,000 K',yellow:'5,300–6,000 K',orange:'3,700–5,200 K',red:'2,400–3,700 K'};
+
+  let cards = [];
+
+  // ── Physics model card ──
+  cards.push(card('Physics Model', `
+    ${mrow('Integrator','Velocity Verlet — time-symmetric, 2nd-order accurate')}
+    ${mrow('Substep cap','Δt ≤ 0.025 sim-s per substep (auto-subdivides at high speed)')}
+    ${mrow('Planet masses','Not computed. Planets are massless test particles.')}
+    ${mrow('Why no planet mass?','M☉ ÷ M⊕ ≈ 333,000. Planet-planet gravity is < 0.03% of stellar gravity at closest approach — below any visible threshold.')}
+    ${mrow('Star masses','Stars interact gravitationally with planets but not each other (stars follow prescribed Keplerian orbits around barycenter).')}
+    <div class="math-formula">T = 14 × a^1.5 sim-s<br>v_circ = √( GM_interior / r )<br>GM_base = (2π/14)² × AU³</div>
+    ${mrow('AU (pixels)','1 AU = '+AU.toFixed(1)+' px (canvas-relative)')}
+    ${mrow('GM_base',GM_base.toExponential(3)+' px³/sim-s²')}
+  `,'full'));
+
+  // ── One card per star ──
+  system.stars.forEach((s,i)=>{
+    const lbl = ['A','B','C','D'][i]||String(i);
+    let rows = '';
+    rows += mrow('Type', s.def.name + ' (' + s.key + ')');
+    rows += mrow('Approx. mass', starLumLabels[s.key]||'—');
+    rows += mrow('Surface temp.', starTempLabels[s.key]||'—');
+    rows += mrow('Luminosity (sim)', s.def.lum.toFixed(2) + ' L☉');
+    rows += mrow('GM', (GM_base * s.def.lum).toExponential(3) + ' px³/sim-s²');
+    if(i===0){
+      rows += '<hr class="math-divider">';
+      const sumLum=system.stars.reduce((s,st)=>s+(st.def.lum||1),0);
+      const lumScale=Math.sqrt(sumLum).toFixed(3);
+      rows += mrow('Habitable zone', (system.hz.inner/AU).toFixed(2)+'–'+(system.hz.outer/AU).toFixed(2)+' AU (combined)');
+      rows += mrow('Combined lum.', sumLum.toFixed(2)+' L☉ → HZ scale factor: √'+sumLum.toFixed(2)+' = '+lumScale);
+      rows += mrow('HZ method','Sum all stellar luminosities, scale single-star HZ by √L_total (Kopparapu et al. 2013)');
+    }
+    if(s.isBcomp){
+      const bAU = (s.bSep/AU).toFixed(2);
+      const T_AB = (14*Math.pow(parseFloat(bAU),1.5)).toFixed(2);
+      rows += '<hr class="math-divider">';
+      rows += mrow('Role','Inner companion (A+B binary)');
+      rows += mrow('A–B separation', bAU+' AU');
+      rows += mrow('Binary period', T_AB+' sim-s');
+      rows += mrow('Angular speed', (s.angSpd*(180/Math.PI)).toFixed(3)+'°/sim-s  (Keplerian)');
+      rows += mrow('Inner clear zone','Circumbinary planets must orbit > 3.5× a_AB = '+(parseFloat(bAU)*3.5).toFixed(2)+' AU');
+    }
+    if(s.isCcomp){
+      const cAU = (s.cSep/AU).toFixed(2);
+      const T_C = (14*Math.pow(parseFloat(cAU),1.5)).toFixed(2);
+      const hwLimit = (parseFloat(cAU)*0.30).toFixed(2);
+      rows += '<hr class="math-divider">';
+      rows += mrow('Role','Distant trinary companion');
+      rows += mrow('C separation', cAU+' AU from AB barycenter');
+      rows += mrow('C orbital period', T_C+' sim-s  (T = 14 × a^1.5)');
+      rows += mrow('Angular speed', (s.angSpd*(180/Math.PI)).toFixed(4)+'°/sim-s  (Keplerian)');
+      rows += '<hr class="math-divider">';
+      rows += mrow('Outer stability limit','<span class="math-val stable">a_max = 0.30 × a_C = '+hwLimit+' AU</span>');
+      rows += mrow('Reference','Holman & Wiegert (1999), AJ 117:621');
+      rows += mrow('Why 0.30×?','P-type orbits become chaotic when the companion'+String.fromCharCode(8217)+'s tidal perturbation exceeds the primary'+String.fromCharCode(8217)+'s restoring force. Published range: 0.30–0.38× a_C depending on mass ratio and eccentricity.');
+    }
+    cards.push(card('Star ' + lbl + ' — ' + s.def.name, rows));
+  });
+
+  // ── Orbital mechanics card (Kepler summary) ──
+  cards.push(card('Kepler'+String.fromCharCode(8217)+'s Third Law — All Orbits',`
+    <div class="math-formula">T² ∝ a³<br>T = 14 × a^1.5  [sim-seconds, a in AU]<br>Calibrated: 1 AU orbit around 1 L☉ star = 14 sim-s</div>
+    ${mrow('At 0.5 AU','T = '+(14*Math.pow(0.5,1.5)).toFixed(1)+' sim-s')}
+    ${mrow('At 1.0 AU','T = 14.0 sim-s')}
+    ${mrow('At 2.0 AU','T = '+(14*Math.pow(2,1.5)).toFixed(1)+' sim-s')}
+    ${mrow('At 5.0 AU','T = '+(14*Math.pow(5,1.5)).toFixed(1)+' sim-s')}
+    ${mrow('At 10.0 AU','T = '+(14*Math.pow(10,1.5)).toFixed(1)+' sim-s')}
+    <hr class="math-divider">
+    ${mrow('Circular velocity','v_circ = √(GM_interior / r)')}
+    ${mrow('Shell theorem','Only mass interior to planet'+String.fromCharCode(8217)+'s orbit contributes to v_circ. Exterior companions perturb but don'+String.fromCharCode(8217)+'t set the baseline speed.')}
+  `));
+
+  // ── Planet cards ──
+  system.planets.forEach(p=>{
+    const au = (p.orbitPx/AU);
+    const auStr = au.toFixed(3);
+    const T = (14*Math.pow(Math.max(au,0.01),1.5)).toFixed(2);
+    let stab = 'Stable'; let stabCls = 'stable';
+
+    const cStar = system.stars.find(s=>s.isCcomp);
+    const bStar = system.stars.find(s=>s.isBcomp);
+    if(cStar){
+      const limit = (cStar.cSep/AU)*0.30;
+      if(au > limit*0.85){ stab='Unstable — beyond H&W limit'; stabCls='danger'; }
+      else if(au > limit*0.65){ stab='Marginally stable'; stabCls='warn'; }
+    }
+    if(bStar && au < (bStar.bSep/AU)*3.5){ stab='Unstable — inside binary clear zone'; stabCls='danger'; }
+
+    let speedStr = '—';
+    if(p.vx !== undefined){
+      const v = Math.hypot(p.vx, p.vy);
+      const v_circ = Math.sqrt(GM_base * system.stars[0].def.lum / p.orbitPx);
+      const ratio = (v/v_circ).toFixed(3);
+      speedStr = v.toFixed(1)+' px/sim-s  (v/v_circ = '+ratio+')';
+    }
+
+    // Hill sphere: r_H = a × (m_planet / 3M_star)^(1/3)
+    // Mass proxy: sz³ / 100000 (dimensionless, terrestrial density assumption)
+    const m_proxy = Math.pow(p.sz,3)/100000;
+    const r_Hill_AU = au * Math.pow(m_proxy / (3 * system.stars[0].def.lum * 1e4), 1/3);
+    const hillStr = r_Hill_AU > 0.0001 ? r_Hill_AU.toFixed(4)+' AU (approx)' : '< 0.0001 AU';
+
+    let rows = '';
+    rows += `<div class="math-planet-header">${p.name||'Planet '+(p.index+1)}</div>`;
+    rows += `<div class="math-planet-sub">${p.typeDef?.name||p.type}</div>`;
+    rows += mrow('Orbital radius', auStr+' AU  ('+p.orbitPx.toFixed(0)+' px)');
+    rows += mrow('Orbital period', T+' sim-s');
+    rows += mrow('Current speed', speedStr);
+    rows += mrow('Hill sphere', hillStr);
+    rows += mrow('Stability', '<span class="math-val '+stabCls+'">'+stab+'</span>');
+    if(p.ejectionCount){
+      const secAgo=p.lastEjected?Math.round((Date.now()-p.lastEjected)/1000)+'s ago':'—';
+      rows += mrow('Ejection guard', '<span class="math-val warn">Fired '+p.ejectionCount+'× (last: '+secAgo+'). Planet was respawned at stable radius. Consider reducing orbit or C-separation.</span>');
+    }
+    if(p.tidalLock) rows += mrow('Tidal lock','Rotation period = orbital period. One face always toward primary.');
+    if(p.retrograde) rows += mrow('Retrograde','Orbits counter-clockwise. May indicate past collision or capture.');
+    if(p.moons?.length) rows += mrow('Moons', p.moons.length+' moon(s) (Keplerian sub-orbits, not N-body)');
+
+    cards.push(card('', rows));
+  });
+
+  // ── Notes card ──
+  cards.push(card('Simulation Notes &amp; Limitations', `
+    ${mrow('Time compression','~10⁸× real time. Orbital shapes are qualitatively correct; eccentricities may evolve due to live star perturbations (Kozai-Lidov-like mechanism).')}
+    ${mrow('Ejection guard','If a planet exceeds 2.5× escape velocity or drifts beyond 60 AU equivalent, it is respawned at its last stable orbital radius. This is a simulation artifact protection.')}
+    ${mrow('Integrator error','Velocity Verlet conserves energy to O(Δt²). Small energy drift accumulates over thousands of orbits at high speed. Use low speed for precision.')}
+    ${mrow('Planet mass','Not included. This is the standard "restricted N-body" or "massless test particle" approximation used in planetary system simulations (e.g., Mercury, REBOUND).')}
+    ${mrow('Star motion','Stars follow prescribed Keplerian orbits (not true N-body). This is accurate for hierarchical systems where stellar separations are well-defined.')}
+  `,'full'));
+
+  el.innerHTML = cards.join('');
+}
+
+function card(title, content, extra){
+  const cls = 'math-card' + (extra==='full'?' full':'');
+  const hdr = title ? `<div class="math-card-title">${title}</div>` : '';
+  return `<div class="${cls}">${hdr}${content}</div>`;
+}
+function mrow(lbl, val){
+  return `<div class="math-row"><div class="math-lbl">${lbl}</div><div class="math-val">${val}</div></div>`;
+}
+
+// Enable/disable the Show Your Work button based on whether system exists
+function updateMathBtn(){
+  const btn = document.getElementById('math-link-btn');
+  if(!btn) return;
+  if(system){
+    btn.style.opacity='1';
+    btn.style.color='rgba(0,212,255,0.7)';
+    btn.style.borderColor='rgba(0,212,255,0.25)';
+    btn.style.cursor='pointer';
+  } else {
+    btn.style.opacity='0.3';
+    btn.style.color='rgba(0,212,255,0.35)';
+    btn.style.borderColor='rgba(0,212,255,0.08)';
+    btn.style.cursor='default';
+  }
+}
+
+</script>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- SHOW YOUR WORK — Full-screen overlay page                          -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<div id="math-overlay" style="
+  display:none;position:fixed;inset:0;z-index:200;
+  background:#09090B;overflow-y:auto;
+  font-family:'DM Sans',sans-serif;
+">
+  <!-- Header -->
+  <div style="
+    position:sticky;top:0;z-index:10;
+    background:rgba(9,9,11,0.96);backdrop-filter:blur(20px);
+    border-bottom:1px solid rgba(255,255,255,0.06);
+    padding:14px 24px 0;
+  ">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px">
+      <div>
+        <div style="font-family:'MD Nichrome Test','Space Grotesk',sans-serif;font-weight:300;font-size:18px;letter-spacing:3px;text-transform:uppercase;color:#FAFAFA">Show Your Work</div>
+        <div style="font-family:'DM Sans',sans-serif;font-size:10px;color:rgba(255,255,255,0.28);margin-top:2px;letter-spacing:1px">Orbital mechanics · SOLARIS</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;padding-top:4px">
+        <button onclick="refreshMathPage()" id="math-refresh-btn" style="font-size:12px;letter-spacing:1.5px;padding:5px 12px;background:rgba(0,212,255,0.06);border-color:rgba(0,212,255,0.2);color:rgba(0,212,255,0.6);display:none">↺ Refresh</button>
+        <button onclick="closeMathPage()" style="font-size:12px;letter-spacing:1.5px;padding:5px 12px">✕ Close</button>
+      </div>
+    </div>
+    <!-- Mode tabs -->
+    <div style="display:flex;gap:0">
+      <div id="math-tab-general" onclick="setMathTab('general')" style="font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;padding:8px 18px 10px;cursor:pointer;border-bottom:2px solid #00D4FF;color:#00D4FF;transition:all 0.2s">How It Works</div>
+      <div id="math-tab-system" onclick="setMathTab('system')" style="font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;padding:8px 18px 10px;cursor:pointer;border-bottom:2px solid transparent;color:rgba(255,255,255,0.3);transition:all 0.2s" id="math-tab-system">This System</div>
+    </div>
+  </div>
+
+  <!-- Content area -->
+  <div id="math-page-content" style="
+    max-width:900px;margin:0 auto;padding:32px 24px 64px;
+    display:grid;grid-template-columns:1fr 1fr;gap:20px;
+  "></div>
+</div>
+
+<style>
+.math-card{
+  background:rgba(13,13,15,0.94);
+  border:1px solid rgba(255,255,255,0.06);
+  padding:20px 22px;
+}
+.math-card-title{
+  font-family:'DM Sans',sans-serif;font-weight:500;
+  font-size:12px;letter-spacing:2.5px;text-transform:uppercase;
+  color:rgba(0,212,255,0.4);
+  border-bottom:1px solid rgba(0,212,255,0.06);
+  padding-bottom:10px;margin-bottom:14px;
+}
+.math-row{
+  display:flex;gap:10px;margin-bottom:7px;align-items:flex-start;
+  font-size:11px;line-height:1.55;
+}
+.math-lbl{
+  min-width:130px;flex-shrink:0;
+  font-family:'DM Sans',sans-serif;font-size:12px;letter-spacing:0.8px;
+  text-transform:uppercase;color:rgba(255,255,255,0.25);padding-top:1px;
+}
+.math-val{
+  font-family:'JetBrains Mono',monospace;font-size:13px;
+  color:rgba(255,255,255,0.7);flex:1;
+}
+.math-val.note{
+  font-family:'DM Sans',sans-serif;font-size:10px;
+  color:rgba(255,255,255,0.45);font-style:italic;
+}
+.math-val.stable{color:#00E5A0}
+.math-val.warn{color:#FFA500}
+.math-val.danger{color:#E74C3C}
+.math-formula{
+  background:rgba(0,212,255,0.03);border:1px solid rgba(0,212,255,0.07);
+  padding:10px 14px;margin:10px 0;font-family:'JetBrains Mono',monospace;
+  font-size:10px;color:rgba(0,212,255,0.55);line-height:1.7;
+}
+.math-divider{
+  border:none;border-top:1px solid rgba(255,255,255,0.04);margin:10px 0;
+}
+.math-planet-header{
+  font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:300;
+  color:rgba(255,255,255,0.75);margin-bottom:4px;
+}
+.math-planet-sub{
+  font-family:'DM Sans',sans-serif;font-size:10px;
+  color:rgba(255,255,255,0.3);margin-bottom:12px;
+}
+/* Full-width card spans both columns */
+.math-card.full{grid-column:1/-1}
+</style>
+
+</body>
+</html>
