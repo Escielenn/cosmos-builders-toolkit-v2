@@ -7,9 +7,10 @@
  * Spec: StellarForge_Layout_Normalization_Spec_Apr2926.md
  */
 
-import { type ReactNode } from "react";
+import { type ReactNode, useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, FileText } from "lucide-react";
+import CascadeSuggestionToast from "@/components/tools/CascadeSuggestionToast";
 import PageShell from "@/components/layout/PageShell";
 import { PageBursts } from "@/components/ui/data-burst";
 import { TOOL_PAGE_BURSTS } from "@/lib/data-bursts";
@@ -98,6 +99,17 @@ export default function ToolPageLayout({
   const ToolIcon = getToolIcon(toolType);
   const introData = TOOL_INTROS[cfg.introKey];
 
+  // Track save completion to show cascade suggestions
+  const [showCascadeSuggestion, setShowCascadeSuggestion] = useState(false);
+  const prevSaving = useRef(false);
+  useEffect(() => {
+    // Detect save completion: isSaving went from true → false
+    if (prevSaving.current && !isSaving) {
+      setShowCascadeSuggestion(true);
+    }
+    prevSaving.current = !!isSaving;
+  }, [isSaving]);
+
   return (
     <PageShell className={pageShellClassName}>
       <main className="relative container mx-auto px-4 pt-24 pb-16">
@@ -176,6 +188,14 @@ export default function ToolPageLayout({
         {/* ── Tool-specific content ─────────────────────────────── */}
         {children}
       </main>
+
+      {/* ── Cascade Suggestion (after save) ──────────────────── */}
+      <CascadeSuggestionToast
+        toolType={toolType}
+        worldId={worldId}
+        visible={showCascadeSuggestion}
+        onDismiss={() => setShowCascadeSuggestion(false)}
+      />
     </PageShell>
   );
 }
