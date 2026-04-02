@@ -61,6 +61,7 @@ const WorldBibleDialog = ({
   const [selectedWorksheets, setSelectedWorksheets] = useState<Set<string>>(new Set());
   const [includeWorldNotes, setIncludeWorldNotes] = useState(true);
   const [worldNotes, setWorldNotes] = useState<string>("");
+  const [exportStructure, setExportStructure] = useState<"cascade" | "entity">("cascade");
 
   // Fetch worksheets and notes when dialog opens
   useEffect(() => {
@@ -263,6 +264,37 @@ const WorldBibleDialog = ({
           </div>
         ) : (
           <div className="flex-1 overflow-y-auto space-y-4 py-2 pr-1">
+            {/* Structure toggle */}
+            <div className="flex items-center gap-1 p-0.5 bg-muted/30 w-fit">
+              <button
+                onClick={() => setExportStructure("cascade")}
+                className={cn(
+                  "px-3 py-1.5 text-[10px] uppercase tracking-wider font-heading transition-colors",
+                  exportStructure === "cascade"
+                    ? "bg-primary/10 text-primary border border-primary/25"
+                    : "text-tier-4 hover:text-tier-3"
+                )}
+              >
+                Cascade
+              </button>
+              <button
+                onClick={() => setExportStructure("entity")}
+                className={cn(
+                  "px-3 py-1.5 text-[10px] uppercase tracking-wider font-heading transition-colors",
+                  exportStructure === "entity"
+                    ? "bg-primary/10 text-primary border border-primary/25"
+                    : "text-tier-4 hover:text-tier-3"
+                )}
+              >
+                Entity
+              </button>
+            </div>
+            <p className="text-[10px] text-tier-4">
+              {exportStructure === "cascade"
+                ? "Organized by cascade layer: Environment → Biology → Culture → Mythology. Reads like a textbook."
+                : "Organized by entity: one chapter per major element, all data compiled per entity. Reads like an encyclopedia."}
+            </p>
+
             {/* Select All / Deselect All */}
             <div className="flex items-center justify-between">
               <span className="text-sm text-muted-foreground">

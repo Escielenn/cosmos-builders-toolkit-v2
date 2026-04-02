@@ -23,14 +23,14 @@ Active task list and development priorities. Review this at the start of each se
 - [x] **Phase 2: UX Discoverability** (2026-04-01) — Codex Quick Access descriptions, wiki edit hint, WorldGraph label, Timeline QuickExport
 - [x] **Phase 3: Cross-Tool Entity Recognition** (2026-04-01) — fuzzy name matching, EntityMatchDialog, useEntityMatch hook, all 21 tools integrated
 - [x] **Phase 4: Export Format Bugs** (2026-04-02) — explicit PDF MIME types in ExportDialog, QuickExportButton, WorldBibleDialog
-- [ ] **Phase 5: Simulator Normalization** — fonts, nav, branding (see Simulator Addendum)
-- [ ] **Phase 6: Simulation Save/Replay** — PostMessage bridge + DB table
-- [ ] **Phase 7: Narrative Bridge panel** — simulator writing connection
-- [ ] **Phase 8: Publish to World** — all simulators + Cartographer
-- [ ] **Phase 9: Cascade Guidance System** — downstream suggestions, progress indicator
-- [ ] **Phase 10: Writing ↔ Entity Linking** — junction table, post-write suggestions
-- [ ] **Phase 11: World Bible Dual Export** — cascade-organized vs entity-centric
-- [ ] **Phase 12: Guided First-World Experience** — cascade-path empty state
+- [x] **Phase 5: Simulator Normalization** (2026-04-02) — font increases (12-14px targets), nav + branding normalization across ROGUE, Tidelock, ExoForge, Solaris
+- [x] **Phase 6: Simulation Save/Replay** (2026-04-02) — simulation_saves DB table, useSimulationSave hook, PostMessage bridge, SaveSimulationDialog, LoadSimulationSheet, all 5 wrappers integrated
+- [x] **Phase 7: Narrative Bridge panel** (2026-04-02) — NarrativeBridgePanel, per-simulator cascade questions, all 5 wrappers integrated
+- [x] **Phase 8: Publish to World** (2026-04-02) — PublishToWorldDialog, fuzzy match integration, PostMessage bridge, all simulators
+- [x] **Phase 9: Cascade Guidance System** (2026-04-02) — CascadeSuggestionToast, CascadeProgressBar, cascade-guidance.ts config
+- [x] **Phase 10: Writing ↔ Entity Linking** (2026-04-02) — writing_entry_entities table, useWritingEntityLinks hook, post-write entity scanning
+- [x] **Phase 11: World Bible Dual Export** (2026-04-02) — cascade vs entity structure toggle in WorldBibleDialog
+- [x] **Phase 12: Guided First-World Experience** (2026-04-02) — GuidedFirstWorld cascade-path component
 
 ---
 
