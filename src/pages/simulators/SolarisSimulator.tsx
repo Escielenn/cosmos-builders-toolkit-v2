@@ -7,7 +7,7 @@ import SaveSimulationDialog from "@/components/simulators/SaveSimulationDialog";
 import LoadSimulationSheet from "@/components/simulators/LoadSimulationSheet";
 import Header from "@/components/layout/Header";
 
-const ExoforgeSimulator = () => {
+const SolarisSimulator = () => {
   const [loaded, setLoaded] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const worldId = useWorldId();
@@ -22,7 +22,7 @@ const ExoforgeSimulator = () => {
     loadSave,
     requestSave,
   } = useSimulationSave({
-    simulatorType: "exoforge",
+    simulatorType: "solaris",
     worldId,
     iframeRef,
   });
@@ -36,14 +36,14 @@ const ExoforgeSimulator = () => {
             <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 bg-background">
               <div className="w-10 h-10 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
               <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground animate-pulse">
-                Initializing EXOFORGE
+                Initializing SOLARIS
               </p>
             </div>
           )}
           <iframe
             ref={iframeRef}
-            src="/tools/exoforge/sim.html"
-            title="ExoForge — Procedural Exoplanet Forge"
+            src="/tools/solaris/sim.html"
+            title="Solaris — Procedural Star System Simulator"
             allow="fullscreen"
             className={`w-full h-full border-0 transition-opacity duration-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}
             style={{ position: 'absolute', inset: 0 }}
@@ -96,4 +96,4 @@ const ExoforgeSimulator = () => {
   );
 };
 
-export default ExoforgeSimulator;
+export default SolarisSimulator;
