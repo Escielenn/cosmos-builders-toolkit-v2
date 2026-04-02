@@ -28,7 +28,7 @@ Back Link → Quote Bar → Action Bar → Title → Intro Section → Content
 - Removed `"Tool 4"`, `"Tool #3"`, `"Pro Tool"` badges — replaced with inline `PRO` text
 - Standardized export labels to `"Export [BrandName]"` for all tools
 - Context-aware back link: "Back to World" (from world context) or "Back to Tools" (standalone)
-- Timeline assigned brand name "Chronolog"
+- Timeline assigned brand name "Epoch"
 - ECR (Cascade) added to TOOL_INTROS with Dune, Left Hand of Darkness, Blindsight examples
 
 ---
@@ -39,7 +39,7 @@ Back Link → Quote Bar → Action Bar → Title → Intro Section → Content
 - **Codex Quick Access:** Each link now shows a 1-line description ("Browse and edit all knowledge entries", "Visualize entities and their relationships", etc.)
 - **Wiki editing hint:** New `FirstTimeHint` in view mode — "Click Edit to start writing. Type [[ to link to any element in your world."
 - **Knowledge Graph label:** Title + description overlay on the graph page
-- **Timeline QuickExportButton:** Added missing quick export button with brand name "Chronolog"
+- **Timeline QuickExportButton:** Added missing quick export button with brand name "Epoch"
 
 ---
 

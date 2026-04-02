@@ -20,6 +20,8 @@ import { useWritingPreferences } from "@/hooks/use-writing-preferences";
 import { useWritingStats } from "@/hooks/use-writing-stats";
 import { GoalSetting } from "@/components/writing/GoalSetting";
 import TagInput from "@/components/tags/TagInput";
+import EntitySuggestionBar from "@/components/writing/EntitySuggestionBar";
+import { useWritingEntityLinks } from "@/hooks/use-writing-entity-links";
 import type { WritingPrompt } from "@/lib/writing/prompts";
 import { CATEGORY_LABELS } from "@/lib/writing/prompts";
 import { cn } from "@/lib/utils";
@@ -72,6 +74,9 @@ export function WriteSheet({
   const [tags, setTags] = useState<string[]>([]);
   const [entryId, setEntryId] = useState<string | null>(null);
   const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
+
+  // Entity linking — write first, suggest after
+  const entityLinks = useWritingEntityLinks(entryId ?? undefined, worldId ?? undefined);
 
   // Timers
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -136,6 +141,8 @@ export function WriteSheet({
                 () => setSaveStatus("idle"),
                 2500
               );
+              // Scan for entity mentions after save
+              if (worldId) entityLinks.scanForEntities(saveContent);
             },
           }
         );
@@ -155,6 +162,8 @@ export function WriteSheet({
                 () => setSaveStatus("idle"),
                 2500
               );
+              // Scan for entity mentions after first save
+              if (worldId) entityLinks.scanForEntities(saveContent);
             },
           }
         );
@@ -377,6 +386,15 @@ export function WriteSheet({
                 worldId={worldId || undefined}
               />
             </Suspense>
+
+            {/* Entity suggestion bar — write first, suggest after */}
+            {entityLinks.showSuggestions && (
+              <EntitySuggestionBar
+                suggestions={entityLinks.suggestions}
+                onLink={(entityId) => entityLinks.createLink.mutate(entityId)}
+                onDismiss={entityLinks.dismissSuggestions}
+              />
+            )}
           </div>
 
           {/* ─── Fixed footer ──────────────────────────────────────────── */}

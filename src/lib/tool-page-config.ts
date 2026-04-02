@@ -120,7 +120,7 @@ export const TOOL_PAGE_CONFIGS: Record<string, ToolPageConfig> = {
   ),
   "timeline": config(
     "timeline",
-    "Chronolog",
+    "Epoch",
     "Timeline",
     "Plot events across deep time. Build multi-track timelines that reveal how characters, civilizations, and technologies intersect.",
   ),

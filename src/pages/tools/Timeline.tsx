@@ -358,7 +358,7 @@ const Timeline = () => {
       moodboardCount={state.moodboard?.length || 0}
       extraActions={
         <QuickExportButton
-          toolName="Chronolog"
+          toolName="Epoch"
           worldName={worldId ? worldName : undefined}
           formState={state}
           summaryTemplate={

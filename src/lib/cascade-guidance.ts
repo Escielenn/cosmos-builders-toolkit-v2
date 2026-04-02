@@ -84,7 +84,7 @@ const DOWNSTREAM_SUGGESTIONS: Record<string, CascadeSuggestion[]> = {
   ],
   mythology: [
     { toolType: "environmental-chain-reaction", brandName: "Cascade", fullName: "Environmental Chain Reaction", prompt: "Trace the full cascade from physics to culture. Verify internal consistency." },
-    { toolType: "timeline", brandName: "Chronolog", fullName: "Timeline", prompt: "Plot how these elements play out across deep time." },
+    { toolType: "timeline", brandName: "Epoch", fullName: "Timeline", prompt: "Plot how these elements play out across deep time." },
   ],
   narrative: [],
 };

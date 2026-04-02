@@ -15,7 +15,7 @@ Active task list and development priorities. Review this at the start of each se
   - [x] Create shared `ToolPageLayout` component enforcing canonical structure
   - [x] Create `tool-page-config.ts` with metadata for all 21 tools
   - [x] Add missing TOOL_INTROS entry for ECR (Cascade)
-  - [x] Assign Timeline brand name: "Chronolog"
+  - [x] Assign Timeline brand name: "Epoch"
   - [x] Migrate all 21 tool pages to ToolPageLayout
   - [x] Remove all "Tool N" / "Pro Tool" badges from headers
   - [x] Standardize export labels to "Export [BrandName]"
