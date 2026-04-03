@@ -78,14 +78,14 @@ const Header = () => {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/30 backdrop-blur-xl bg-gradient-to-r from-[#000000]/95 to-[#0A0E17]/95">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-2 group shrink-0">
+        <Link to="/" className="flex items-center gap-2 group shrink-0 mr-6">
           <CubeLogo size={32} className="rounded-lg" />
           {isSubscribed ? (
             <>
-              <span className="hidden md:inline font-display text-lg font-light tracking-sf-wide text-foreground/90 uppercase">
+              <span className="hidden xl:inline font-display text-lg font-light tracking-sf-wide text-foreground/90 uppercase">
                 STELLARFORGE
               </span>
-              <span className="md:hidden font-display text-lg font-light tracking-sf-wide text-foreground/90 uppercase">
+              <span className="xl:hidden font-display text-lg font-light tracking-sf-wide text-foreground/90 uppercase">
                 SF
               </span>
             </>
@@ -102,7 +102,7 @@ const Header = () => {
         <div className="flex items-center gap-2">
           {/* Mobile Menu */}
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-            <SheetTrigger asChild className="md:hidden">
+            <SheetTrigger asChild className="xl:hidden">
               <Button variant="ghost" size="icon">
                 <Menu className="w-5 h-5" />
                 <span className="sr-only">Open menu</span>

@@ -118,8 +118,8 @@ function ToolDetail({
   const navigate = useNavigate();
 
   const toolPath =
-    tool.type === "simulator"
-      ? `/simulators/${tool.id}`
+    tool.id === "rogue"
+      ? "/rogue"
       : `/tools/${tool.id}`;
 
   return (

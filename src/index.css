@@ -1850,6 +1850,68 @@ html {
   color: #3DFFCD;
 }
 
+/* ── FAB Help Trigger (collapsed mode on tool pages) ── */
+.sf-fab-help-trigger {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(14, 19, 32, 0.92);
+  border: 1px solid rgba(61, 255, 205, 0.2);
+  color: rgba(61, 255, 205, 0.5);
+  cursor: pointer;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  transition: border-color 0.25s, color 0.25s, box-shadow 0.25s, transform 0.2s;
+  margin-left: auto;
+}
+
+.sf-fab-help-trigger:hover {
+  border-color: rgba(61, 255, 205, 0.4);
+  color: #3DFFCD;
+  box-shadow: 0 0 16px rgba(61, 255, 205, 0.15);
+}
+
+.sf-fab-help-trigger.active {
+  border-color: rgba(61, 255, 205, 0.4);
+  color: #3DFFCD;
+  box-shadow: 0 0 16px rgba(61, 255, 205, 0.15);
+  transform: rotate(15deg);
+}
+
+/* ── FAB Menu Items (expanded from help trigger) ── */
+.sf-fab-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  font-family: var(--sf-font-heading);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  background: rgba(14, 19, 32, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(224, 228, 232, 0.6);
+  cursor: pointer;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 4px;
+  text-decoration: none;
+  margin-left: auto;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+
+.sf-fab-menu-item:hover {
+  border-color: rgba(61, 255, 205, 0.3);
+  color: #3DFFCD;
+  background: rgba(61, 255, 205, 0.06);
+}
+
 /* ── Instrument Nav (SectionNavigation) ── */
 .sf-instrument-nav-item {
   font-family: var(--sf-font-heading);

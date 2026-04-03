@@ -149,6 +149,12 @@ const proTools = [
     description: "Interactive galaxy mapping tool. Generate procedural galaxies with 3D projection, empire territories, trade routes, and wormholes.",
     status: "available",
   },
+  {
+    id: "solaris",
+    title: "Solaris: Procedural Star System Simulator",
+    description: "Design single and multi-star systems with real orbital mechanics, habitable zone science, and N-body dynamics.",
+    status: "available",
+  },
 ];
 
 const comingSoonByCategory = [
@@ -358,6 +364,23 @@ const ToolShowcase = () => {
                 </div>
                 <h3 className="font-heading font-light text-base mb-2">Exosky: Alien Night Sky</h3>
                 <p className="text-sm text-muted-foreground line-clamp-2">Alien night sky simulator. View the stars from any exoplanet using real astronomical data and create your own constellations.</p>
+              </GlassPanel>
+            </Link>
+          </motion.div>
+          <motion.div variants={fadeUpItem}>
+            <Link to="/tools/solaris" className="block h-full">
+              <GlassPanel lightArc hover className="p-5 h-full">
+                <div className="flex items-start justify-between mb-3">
+                  <div className="w-12 h-12 rounded-sm flex items-center justify-center bg-gradient-to-br from-amber-500/20 to-yellow-500/20 sf-card-icon overflow-hidden">
+                    <img src="/icons/star-system-builder.svg" alt="" className="w-8 h-8" draggable={false} />
+                  </div>
+                  <Badge variant="secondary" className="text-xs bg-amber-500/20 text-amber-600 dark:text-amber-400">
+                    <Zap className="w-3 h-3 mr-1" />
+                    Pro
+                  </Badge>
+                </div>
+                <h3 className="font-heading font-light text-base mb-2">Solaris: Star System Simulator</h3>
+                <p className="text-sm text-muted-foreground line-clamp-2">Design single and multi-star systems with real orbital mechanics, habitable zone science, and N-body dynamics.</p>
               </GlassPanel>
             </Link>
           </motion.div>

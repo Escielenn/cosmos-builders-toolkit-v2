@@ -67,7 +67,7 @@ export const BOOKSHELF_DATA: BookEntry[] = [
     title: "Dragon's Egg",
     author: "Robert L. Forward",
     year: "1980",
-    isbn: "9780345375667",
+    isbn: "9781857988932",
     description:
       "The Cheela live on a neutron star at 67 billion g. Forward shows how extreme gravity constrains biology\u2014flat, millimeter-tall creatures whose million-to-one time dilation creates one of SF\u2019s most poignant first-contact scenarios.",
     toolsReferenced: [

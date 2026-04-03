@@ -21,7 +21,7 @@ import {
   Weight,
   Eye,
   ChevronDown,
-  Map,
+  Map as MapIcon,
   Zap,
 } from "lucide-react";
 import {
@@ -115,6 +115,13 @@ const toolsByCategory: {
         title: "Stellar Cartographer: Galaxy Mapper",
         description:
           "Interactive galaxy mapping tool. Generate procedural galaxies with 3D projection, empire territories, trade routes, and wormholes.",
+        status: "available",
+      },
+      {
+        id: "solaris",
+        title: "Solaris: Procedural Star System Simulator",
+        description:
+          "Design single and multi-star systems with real orbital mechanics, habitable zone science, and N-body dynamics.",
         status: "available",
       },
     ],
@@ -668,7 +675,7 @@ const Index = () => {
                   to="/roadmap"
                   className="text-[11px] font-medium uppercase tracking-[1.5px] text-primary/70 hover:text-primary transition-colors duration-300 flex items-center gap-1.5"
                 >
-                  <Map className="w-3.5 h-3.5" />
+                  <MapIcon className="w-3.5 h-3.5" />
                   Vote on the Roadmap
                 </Link>
               )}

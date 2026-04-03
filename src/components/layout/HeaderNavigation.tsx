@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { Plus, Globe, Wrench, BookOpen, Compass, Map, Star, Leaf, Users, Sparkles, ScrollText, Layers, Rocket } from "lucide-react";
+import { Plus, Globe, Wrench, BookOpen, Compass, Map, Star, Leaf, Users, Sparkles, ScrollText, Layers, Rocket, Mail } from "lucide-react";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -82,10 +82,11 @@ const TOOL_ROUTES: Record<string, string> = {
   "sensorium": "/tools/sensorium",
   "gravitas": "/tools/gravitas",
   "kardashev-scale": "/tools/kardashev-scale",
-  "rogue": "/simulators/rogue",
-  "tidelock": "/simulators/tidelock",
-  "exosky": "/simulators/exosky",
-  "exoforge": "/simulators/exoforge",
+  "rogue": "/rogue",
+  "tidelock": "/tools/tidelock",
+  "exosky": "/tools/exosky",
+  "exoforge": "/tools/exoforge",
+  "solaris": "/tools/solaris",
   "stellar-cartographer": "/tools/stellar-cartographer",
 };
 
@@ -117,7 +118,7 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
   const { worlds } = useWorlds();
 
   return (
-    <NavigationMenu className="hidden md:flex items-center">
+    <NavigationMenu className="hidden xl:flex items-center">
       <NavigationMenuList className="gap-5 items-center space-x-0">
         {/* ── Worlds dropdown ─────────────────────────────── */}
         <NavigationMenuItem>
@@ -343,8 +344,8 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
 
         <NavigationMenuItem>
           <NavigationMenuLink asChild>
-            <Link to="/contact" className={navLinkClass}>
-              Contact
+            <Link to="/contact" className={navLinkClass} title="Contact">
+              <Mail className="w-4 h-4" />
             </Link>
           </NavigationMenuLink>
         </NavigationMenuItem>

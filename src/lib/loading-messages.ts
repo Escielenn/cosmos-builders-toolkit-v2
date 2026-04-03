@@ -101,6 +101,11 @@ const loadingMessages: Record<string, string[]> = {
     "INITIALIZING N-BODY ENGINE...",
     "LOADING GRAVITATIONAL MODEL...",
   ],
+  "tools/solaris": [
+    "COMPUTING STELLAR ORBITS...",
+    "RESOLVING HABITABLE ZONE BOUNDARIES...",
+    "INITIALIZING N-BODY INTEGRATOR...",
+  ],
   "tools/exosky": [
     "RENDERING ALIEN ATMOSPHERE...",
     "COMPUTING STELLAR POSITIONS...",

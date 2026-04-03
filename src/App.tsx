@@ -101,6 +101,7 @@ const ExoskySimulator = lazy(() => import("./pages/simulators/ExoskySimulator"))
 const ExoskyScience = lazy(() => import("./pages/simulators/ExoskyScience"));
 const ExoforgeSimulator = lazy(() => import("./pages/simulators/ExoforgeSimulator"));
 const ExoforgeScience = lazy(() => import("./pages/simulators/ExoforgeScience"));
+const SolarisSimulator = lazy(() => import("./pages/simulators/SolarisSimulator"));
 
 // Lazy loaded cartographer wrapper pages
 const StellarCartographer = lazy(() => import("./pages/cartographers/StellarCartographer"));
@@ -401,6 +402,14 @@ const App = () => (
                   }
                 />
                 <Route path="/tools/exoforge/science" element={<ExoforgeScience />} />
+                <Route
+                  path="/tools/solaris"
+                  element={
+                    <ProToolGuard toolId="solaris">
+                      <SolarisSimulator />
+                    </ProToolGuard>
+                  }
+                />
                 {/* Cartographer Wrapper Pages - Pro gated */}
                 <Route
                   path="/tools/stellar-cartographer"

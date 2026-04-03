@@ -545,6 +545,26 @@ export const TOOL_WIKI: Record<string, ToolWikiEntry> = {
       { toolId: 'evolutionary-biology', strength: 'optional', note: 'Environmental parameters constrain biology' },
     ],
   },
+  solaris: {
+    id: 'solaris',
+    tagline: 'Procedural star system simulator—single, binary, trinary, and quaternary stellar configurations with real orbital mechanics.',
+    category: 'stars-systems',
+    complexity: 'advanced',
+    type: 'simulator',
+    cascade: 'physics',
+    workshopWeek: 1,
+    timeEstimate: '15-45 min',
+    buildsOn: [
+      { toolId: 'habitable-zone-calculator', strength: 'recommended', note: 'Helps understand habitable zone boundaries' },
+      { toolId: 'star-system-builder', strength: 'optional', note: 'Worksheet-based system design complements simulation' },
+    ],
+    feedsInto: [
+      { toolId: 'planetary-profile', strength: 'recommended', note: 'System architecture constrains planetary conditions' },
+      { toolId: 'exosky', strength: 'recommended', note: 'Multi-star systems create unique sky appearances' },
+      { toolId: 'tidelock', strength: 'optional', note: 'Close-in orbits may produce tidal locking' },
+      { toolId: 'rogue', strength: 'optional', note: 'System stability informs encounter scenarios' },
+    ],
+  },
   gravitas: {
     id: 'gravitas',
     tagline: 'Simulate gravity aboard spacecraft—rotation, thrust gravity, zero-g, and experiential effects.',
