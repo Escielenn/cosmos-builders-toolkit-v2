@@ -118,8 +118,8 @@ const BackgroundSelector = () => {
             className={cn(
               "h-9 w-9",
               backgroundVisible
-                ? "text-muted-foreground hover:text-foreground"
-                : "text-muted-foreground/40 hover:text-muted-foreground"
+                ? "text-muted-foreground hover:text-primary hover:bg-primary/10"
+                : "text-muted-foreground/40 hover:text-primary/60 hover:bg-primary/10"
             )}
             onClick={toggleBackgroundVisible}
           >

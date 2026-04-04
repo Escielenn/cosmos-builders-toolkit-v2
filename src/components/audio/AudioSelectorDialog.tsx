@@ -53,7 +53,7 @@ export default function AudioSelectorDialog() {
         <Button
           variant="ghost"
           size="icon"
-          className="h-9 w-9 text-muted-foreground hover:text-foreground"
+          className="h-9 w-9 text-muted-foreground hover:text-primary hover:bg-primary/10"
           aria-label="Open audio selector"
         >
           <Music className="w-4 h-4" />

@@ -234,7 +234,7 @@ const Header = () => {
           <Button
             variant="ghost"
             size="sm"
-            className="gap-2 text-muted-foreground hover:text-foreground"
+            className="gap-2 text-muted-foreground hover:text-primary hover:bg-primary/10"
             onClick={() => setSearchOpen(true)}
           >
             <Search className="w-4 h-4" />
@@ -267,12 +267,12 @@ const Header = () => {
           {!loading && user ? (
             <DropdownMenu modal={false}>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="gap-2 px-2">
-                  <Avatar className="w-8 h-8">
+                <Button variant="ghost" className="gap-2 px-2 hover:bg-primary/10">
+                  <Avatar className="w-8 h-8 shrink-0">
                     <AvatarImage src={profile?.avatar_url || undefined} />
                     <AvatarFallback className="text-xs">{initials}</AvatarFallback>
                   </Avatar>
-                  <span className="hidden sm:inline text-sm">
+                  <span className="hidden sm:inline text-sm truncate max-w-[120px]">
                     {profile?.display_name || user.email?.split("@")[0]}
                   </span>
                   {isVanguard ? (

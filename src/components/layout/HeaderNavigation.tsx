@@ -136,7 +136,7 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
                     {worlds.slice(0, 8).map((world) => (
                       <NavigationMenuLink key={world.id} asChild>
                         <Link
-                          to={`/world/${world.id}`}
+                          to={`/worlds/${world.id}`}
                           className="flex items-center gap-2 px-2 py-1.5 text-sm text-tier-2 hover:text-tier-1 hover:bg-white/5 rounded-sm transition-colors"
                         >
                           <Globe className="w-3.5 h-3.5 text-primary/60 shrink-0" />
@@ -344,7 +344,7 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
 
         <NavigationMenuItem>
           <NavigationMenuLink asChild>
-            <Link to="/contact" className={navLinkClass} title="Contact">
+            <Link to="/contact" className={`${navLinkClass} hover:bg-primary/10 rounded-sm p-1.5`} title="Contact">
               <Mail className="w-4 h-4" />
             </Link>
           </NavigationMenuLink>
