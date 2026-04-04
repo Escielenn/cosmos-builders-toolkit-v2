@@ -232,7 +232,7 @@ const Header = () => {
           <AudioSelectorDialog />
           <BackgroundSelector />
           <button
-            className="sf-nav-link inline-flex items-center justify-center gap-2 h-9 px-2 rounded-sm text-muted-foreground hover:text-primary transition-colors"
+            className="sf-nav-link inline-flex items-center justify-center gap-2 h-9 px-2 text-muted-foreground hover:text-primary transition-colors"
             onClick={() => setSearchOpen(true)}
           >
             <Search className="w-4 h-4 relative z-[1]" />
@@ -265,7 +265,7 @@ const Header = () => {
           {!loading && user ? (
             <DropdownMenu modal={false}>
               <DropdownMenuTrigger asChild>
-                <button className="sf-nav-link inline-flex items-center gap-2 px-2 h-9 rounded-sm text-foreground/80 hover:text-primary transition-colors">
+                <button className="sf-nav-link inline-flex items-center gap-2 px-2 h-9 text-foreground/80 hover:text-primary transition-colors">
                   <Avatar className="w-7 h-7 shrink-0 relative z-[1]">
                     <AvatarImage src={profile?.avatar_url || undefined} />
                     <AvatarFallback className="text-xs">{initials}</AvatarFallback>
