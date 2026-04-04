@@ -75,9 +75,10 @@ input[type=text]:focus{border-color:rgba(0,212,255,0.38)}
 /* INFO PANEL */
 #info-panel{top:16px;right:16px;width:272px;display:none}
 #info-panel.visible{display:block}
-.planet-hdr{display:flex;align-items:center;gap:10px;margin-bottom:10px;position:relative}
-#icon-canvas{width:44px;height:44px;border-radius:50%;flex-shrink:0}
-.p-name-input{font-family:'Space Grotesk',sans-serif;font-weight:300;font-size:16px;letter-spacing:2px;text-transform:uppercase;color:#FAFAFA;background:transparent;border:none;border-bottom:1px solid transparent;outline:none;width:185px;transition:border-color 0.2s;cursor:pointer;padding:0}
+.planet-hdr{display:flex;align-items:center;gap:10px;margin-bottom:10px;position:relative;overflow:visible}
+#icon-canvas{width:36px;height:36px;border-radius:50%;flex-shrink:0}
+.planet-hdr>div{min-width:0;flex:1;padding-right:24px}
+.p-name-input{font-family:'Space Grotesk',sans-serif;font-weight:300;font-size:15px;letter-spacing:2px;text-transform:uppercase;color:#FAFAFA;background:transparent;border:none;border-bottom:1px solid transparent;outline:none;width:100%;transition:border-color 0.2s;cursor:pointer;padding:0}
 .p-name-input:focus{border-bottom-color:rgba(0,212,255,0.4);cursor:text}
 .p-type-lbl{font-family:'DM Sans',sans-serif;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-top:2px}
 .close-x{position:absolute;top:0;right:0;padding:3px 7px;font-size:12px;letter-spacing:1px}
@@ -309,7 +310,7 @@ input[type=text]:focus{border-color:rgba(0,212,255,0.38)}
 <div class="panel" id="info-panel">
   <button class="close-x" onclick="closeInfo()">✕</button>
   <div class="planet-hdr">
-    <canvas id="icon-canvas" width="44" height="44"></canvas>
+    <canvas id="icon-canvas" width="36" height="36"></canvas>
     <div>
       <input class="p-name-input" id="p-name-input" type="text" value="—" onchange="renamePlanet(this.value)" onfocus="this.select()">
       <div class="p-type-lbl" id="p-type-lbl">—</div>
