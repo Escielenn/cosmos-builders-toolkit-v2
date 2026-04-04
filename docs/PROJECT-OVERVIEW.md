@@ -490,12 +490,23 @@ Deploy: `npx vercel --prod` (manual; CI/CD pipeline is on the backlog).
 
 ## Current State & Active Work
 
-- **Auth migration planned:** Supabase Auth → Clerk (spec complete, implementation pending)
-- **Solaris simulator:** Recently added, needs full integration into routing/showcase
+### Recently Deployed (April 2-4, 2026)
+- **Remediation Phases 1-12:** Layout normalization, entity recognition, simulator save/replay, narrative bridge, publish-to-world, cascade guidance, writing-entity linking, world bible dual export, guided first-world experience
+- **World Graph & Entity Layer (v0.6100):** `entities` and `entity_connections` Supabase tables with full CRUD. React Flow graph with cascade filter bar, cascade flow layout, list view, tree view. Analytical tools (gravity, narrative distance, tension detection, clusters, what-if). Cascade audit mode. Timeline scrubber. Export (PNG/JSON/MD).
+- **StellarForgeEditor:** Tiptap-based unified editor with 3 presets (compact/rich/full), @entity mentions, wiki links, word count, focus mode
+- **Entity-Powered Sidebar:** Tool/Wiki views, drag-and-drop reorder, color picker, Registry/Entities tabs in WorldLayout
+- **Dedicated Writing Space:** `/worlds/:id/write` route with document CRUD, entity sidebar, auto-save
+- **UI Consistency Fixes:** 10 issues resolved (worksheet overlap, nav fonts, simulator unboxed titles, tools mega menu, Narrative Bridge notes, video fallbacks, Mythos CTA)
+- **Version numbering:** v0.6100 displayed in header, CHANGELOG.md established
+
+### Planned / In Progress
+- **Textarea migration:** Replace remaining plain `<textarea>` elements with StellarForgeEditor across all surfaces
+- **Auth migration:** Supabase Auth → Clerk (spec complete in STACK-ARCHITECTURE.md, implementation pending)
+- **Stripe billing:** Org-tier pricing, checkout/portal endpoints
 - **SENSORIUM:** ~70% complete (Phase 1 done, Phases 2-5 partial)
 - **i18n:** Infrastructure ready, ~2,000-4,000 strings need extraction
 - **Testing:** Minimal coverage — Vitest + Playwright configured but few tests written
-- **CI/CD:** Manual deploys via Vercel CLI; GitHub Actions pipeline on backlog
+- **CI/CD:** Manual deploys via Vercel git integration; GitHub Actions pipeline on backlog
 
 ---
 

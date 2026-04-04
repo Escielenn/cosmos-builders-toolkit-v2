@@ -10,27 +10,34 @@ Active task list and development priorities. Review this at the start of each se
 
 > Tasks currently in progress or next up.
 
-### Remediation Implementation (from diagnostic specs)
-- [x] **Phase 1: Layout Normalization** — `ToolPageLayout.tsx` + `tool-page-config.ts` (2026-04-01)
-  - [x] Create shared `ToolPageLayout` component enforcing canonical structure
-  - [x] Create `tool-page-config.ts` with metadata for all 21 tools
-  - [x] Add missing TOOL_INTROS entry for ECR (Cascade)
-  - [x] Assign Timeline brand name: "Epoch"
-  - [x] Migrate all 21 tool pages to ToolPageLayout
-  - [x] Remove all "Tool N" / "Pro Tool" badges from headers
-  - [x] Standardize export labels to "Export [BrandName]"
-  - [x] Standardize back link (context-aware: "Back to World" / "Back to Tools")
-- [x] **Phase 2: UX Discoverability** (2026-04-01) — Codex Quick Access descriptions, wiki edit hint, WorldGraph label, Timeline QuickExport
-- [x] **Phase 3: Cross-Tool Entity Recognition** (2026-04-01) — fuzzy name matching, EntityMatchDialog, useEntityMatch hook, all 21 tools integrated
-- [x] **Phase 4: Export Format Bugs** (2026-04-02) — explicit PDF MIME types in ExportDialog, QuickExportButton, WorldBibleDialog
-- [x] **Phase 5: Simulator Normalization** (2026-04-02) — font increases (12-14px targets), nav + branding normalization across ROGUE, Tidelock, ExoForge, Solaris
-- [x] **Phase 6: Simulation Save/Replay** (2026-04-02) — simulation_saves DB table, useSimulationSave hook, PostMessage bridge, SaveSimulationDialog, LoadSimulationSheet, all 5 wrappers integrated
-- [x] **Phase 7: Narrative Bridge panel** (2026-04-02) — NarrativeBridgePanel, per-simulator cascade questions, all 5 wrappers integrated
-- [x] **Phase 8: Publish to World** (2026-04-02) — PublishToWorldDialog, fuzzy match integration, PostMessage bridge, all simulators
-- [x] **Phase 9: Cascade Guidance System** (2026-04-02) — CascadeSuggestionToast, CascadeProgressBar, cascade-guidance.ts config
-- [x] **Phase 10: Writing ↔ Entity Linking** (2026-04-02) — writing_entry_entities table, useWritingEntityLinks hook, post-write entity scanning
-- [x] **Phase 11: World Bible Dual Export** (2026-04-02) — cascade vs entity structure toggle in WorldBibleDialog
-- [x] **Phase 12: Guided First-World Experience** (2026-04-02) — GuidedFirstWorld cascade-path component
+### Textarea → StellarForgeEditor Migration
+- [ ] Audit ALL `<textarea>` elements in the codebase
+- [ ] Replace World Notes textarea with `<StellarForgeEditor preset="rich" />`
+- [ ] Replace Entity Description textarea with `<StellarForgeEditor preset="rich" />`
+- [ ] Replace Entity Notes textarea with `<StellarForgeEditor preset="rich" />`
+- [ ] Replace Connection Notes with `<StellarForgeEditor preset="compact" />`
+- [ ] Replace any remaining plain textareas on worksheet tools
+- [ ] Migrate existing plain-text content → Tiptap JSON (or render HTML gracefully)
+- [ ] Verify @ mentions work in all replaced editors
+
+### World Graph Polish & Edge Cases
+- [ ] Timeline scrubber: wire temporal filtering to actually hide/show edges based on time_start/time_end
+- [ ] Test Graph with 100+ entities for performance (force sim, React Flow virtualization)
+- [ ] Add "Unpin" option to node right-click context menu
+- [ ] Test cascade audit export (markdown) end-to-end
+- [ ] Verify undo/redo history tracks operations correctly
+- [ ] Test onboarding tooltips display once then dismiss permanently
+
+### Entity Sidebar Refinements
+- [ ] Test drag-and-drop reorder with live Supabase data
+- [ ] Verify color picker updates persist to Supabase
+- [ ] Test Registry↔Entities tab toggle in WorldLayout
+
+### Writing Space Polish
+- [ ] Test auto-save with real Supabase documents
+- [ ] Verify entity sidebar click inserts @mention at cursor
+- [ ] Test document create/rename/delete lifecycle
+- [ ] Add version history (snapshot on manual save / every 5 minutes)
 
 ---
 
@@ -63,10 +70,6 @@ Active task list and development priorities. Review this at the start of each se
 
 > Important but not blocking current work.
 
-### Solaris Simulator
-- [ ] Integrate Solaris simulator into main app routing
-- [ ] Landing page entry and tool showcase card
-
 ### SENSORIUM Completion
 - [ ] Phase 2: Weighted plausibility scoring (`calculatePlausibilityScore`)
 - [ ] Phase 3: Push-to-worksheet sync
@@ -82,7 +85,7 @@ Active task list and development priorities. Review this at the start of each se
 
 ## Priority 4 — Long-Term / Backlog
 
-> Tracked for reference. See also [BACKLOG.md](BACKLOG.md) for detailed specs.
+> Tracked for reference.
 
 ### i18n String Extraction
 - [ ] Extract ~2,000-4,000 keys across tools, simulators, landing, exports
@@ -114,10 +117,34 @@ Active task list and development priorities. Review this at the start of each se
 
 ## Completed
 
-> Move finished tasks here with completion date.
+### April 4, 2026 — World Graph + Editor + Writing Space (v0.6100)
+- [x] **World Graph & Entity Layer** — entities/entity_connections tables, migration applied, types regenerated
+- [x] **Graph Phases 1-5** — EntityNode, CascadeEdge, force layout, cascade gravity, pinning, cascade filter bar, cascade flow layout, list view, search, graph export (PNG/JSON/MD)
+- [x] **Analytical Tools** — gravity analysis, narrative distance, tension detection, cluster discovery, what-if removal
+- [x] **Cascade Audit Mode** — full upstream/downstream tree tracing with what-if prompts
+- [x] **Timeline Scrubber** — temporal layer UI with play/pause/rewind
+- [x] **Mind Map / Tree View** — entity hierarchy from parent_entity_id, expand/collapse, add child
+- [x] **StellarForgeEditor** — Tiptap with 3 presets (compact/rich/full), @entity mentions, word count, focus mode
+- [x] **Entity-Powered Sidebar** — Tool/Wiki views, drag-and-drop, color picker, search, Registry/Entities tabs
+- [x] **Dedicated Writing Space** — /worlds/:id/write with document CRUD, entity sidebar, auto-save
+- [x] **Version Number** — v0.6100 in header, CHANGELOG.md created
+- [x] **UI Consistency Fixes** (10 issues) — worksheet overlap, nav fonts, simulator unboxed titles, tools mega menu, Guide dropdown, Narrative Bridge notes, video thumbnail fallback, Mythos CTA
+- [x] **Quick Bug Fixes** — World Notes resize, Codex font bump, Connections click-to-select
 
-*(none yet)*
+### April 1-2, 2026 — Remediation Phases 1-12
+- [x] Phase 1: Layout Normalization — ToolPageLayout + tool-page-config
+- [x] Phase 2: UX Discoverability — Codex Quick Access, wiki edit hint
+- [x] Phase 3: Cross-Tool Entity Recognition — fuzzy matching, EntityMatchDialog
+- [x] Phase 4: Export Format Bugs — explicit PDF MIME types
+- [x] Phase 5: Simulator Normalization — font increases, nav branding
+- [x] Phase 6: Simulation Save/Replay — simulation_saves table, PostMessage bridge
+- [x] Phase 7: Narrative Bridge Panel — NarrativeBridgePanel, per-simulator questions
+- [x] Phase 8: Publish to World — PublishToWorldDialog, fuzzy match integration
+- [x] Phase 9: Cascade Guidance System — CascadeSuggestionToast, CascadeProgressBar
+- [x] Phase 10: Writing ↔ Entity Linking — writing_entry_entities table, entity scanning
+- [x] Phase 11: World Bible Dual Export — cascade vs entity structure toggle
+- [x] Phase 12: Guided First-World Experience — GuidedFirstWorld component
 
 ---
 
-*Last updated: 2026-04-01*
+*Last updated: 2026-04-04*
