@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState, lazy, Suspense } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Loader } from "@/components/ui/loader";
-import { Layers, LayoutGrid } from "lucide-react";
+import { Layers, LayoutGrid, Network, GitBranch } from "lucide-react";
 import { useWorldLayoutContext } from "@/contexts/WorldLayoutContext";
 import { useWorldOutline } from "@/hooks/use-world-outline";
 import { useCreateEntry } from "@/hooks/use-world-entries";
@@ -12,11 +12,19 @@ const KnowledgeGraphView = lazy(
   () => import("@/components/outline/KnowledgeGraphView")
 );
 
+const WorldEntityGraph = lazy(
+  () => import("@/components/graph/WorldEntityGraph")
+);
+
+type GraphMode = "entity" | "knowledge";
+
 const WorldGraph = () => {
   const navigate = useNavigate();
   const { worldId } = useParams<{ worldId: string }>();
   const layoutContext = useWorldLayoutContext();
   const resolvedWorldId = layoutContext?.worldId ?? worldId ?? "";
+
+  const [graphMode, setGraphMode] = useState<GraphMode>("entity");
 
   const { layers, entries, connections, isLoading, error } =
     useWorldOutline(resolvedWorldId);
@@ -103,7 +111,7 @@ const WorldGraph = () => {
     );
   }
 
-  if (isLoading) {
+  if (isLoading && graphMode === "knowledge") {
     return (
       <div className="flex items-center justify-center h-full">
         <Loader size="sm" />
@@ -111,7 +119,7 @@ const WorldGraph = () => {
     );
   }
 
-  if (error) {
+  if (error && graphMode === "knowledge") {
     return (
       <div className="flex items-center justify-center h-full">
         <p className="font-mono text-xs uppercase tracking-wider text-destructive/60">
@@ -123,62 +131,109 @@ const WorldGraph = () => {
 
   return (
     <div className="h-full w-full relative">
-      {/* Title + description */}
-      <div className="absolute top-3 left-3 z-10 max-w-xs pointer-events-none">
-        <p className="font-heading text-[10px] uppercase tracking-[2px] text-tier-3">
-          Knowledge Graph
-        </p>
-        <p className="text-[9px] text-tier-4 font-sans normal-case tracking-normal mt-0.5">
-          Visualize entities and their relationships across your world
-        </p>
-      </div>
-
-      {/* Entries-only toggle */}
-      <div className="absolute top-3 right-3 z-10 flex items-center gap-1">
-        <button
-          onClick={() => setEntriesOnly(false)}
-          className={`flex items-center gap-1 px-2.5 py-1 text-[9px] uppercase tracking-[1.5px] transition-colors ${
-            !entriesOnly
-              ? "bg-teal/10 border border-teal/25 text-teal"
-              : "bg-[#0D1117]/90 border border-border/20 text-tier-4 hover:text-tier-3"
-          }`}
-          title="Show all elements"
-        >
-          <Layers className="w-3 h-3" />
-          All
-        </button>
-        <button
-          onClick={() => setEntriesOnly(true)}
-          className={`flex items-center gap-1 px-2.5 py-1 text-[9px] uppercase tracking-[1.5px] transition-colors ${
-            entriesOnly
-              ? "bg-teal/10 border border-teal/25 text-teal"
-              : "bg-[#0D1117]/90 border border-border/20 text-tier-4 hover:text-tier-3"
-          }`}
-          title="Show entries only"
-        >
-          <LayoutGrid className="w-3 h-3" />
-          Entries
-        </button>
-      </div>
-
-      <Suspense
-        fallback={
-          <div className="flex items-center justify-center h-full">
-            <Loader size="sm" />
-          </div>
-        }
+      {/* Graph mode toggle — top center */}
+      <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 flex items-center gap-0.5"
+        style={{
+          background: "rgba(15,15,16,0.92)",
+          backdropFilter: "blur(16px)",
+          border: "1px solid rgba(255,255,255,0.06)",
+          padding: "3px",
+        }}
       >
-        <KnowledgeGraphView
-          elements={filteredElements}
-          entries={filteredEntries}
-          connections={filteredConnections}
-          worldId={resolvedWorldId}
-          onElementClick={handleElementClick}
-          onCreateConnection={handleCreateConnection}
-          onDeleteConnection={handleDeleteConnection}
-          onCreateEntry={handleCreateEntry}
-        />
-      </Suspense>
+        <button
+          onClick={() => setGraphMode("entity")}
+          className={`flex items-center gap-1 px-3 py-1 text-[9px] uppercase tracking-[1.5px] transition-colors ${
+            graphMode === "entity"
+              ? "bg-teal/10 text-teal"
+              : "text-tier-4 hover:text-tier-3"
+          }`}
+        >
+          <Network className="w-3 h-3" />
+          Entity Graph
+        </button>
+        <button
+          onClick={() => setGraphMode("knowledge")}
+          className={`flex items-center gap-1 px-3 py-1 text-[9px] uppercase tracking-[1.5px] transition-colors ${
+            graphMode === "knowledge"
+              ? "bg-teal/10 text-teal"
+              : "text-tier-4 hover:text-tier-3"
+          }`}
+        >
+          <GitBranch className="w-3 h-3" />
+          Knowledge Graph
+        </button>
+      </div>
+
+      {graphMode === "entity" ? (
+        <Suspense
+          fallback={
+            <div className="flex items-center justify-center h-full">
+              <Loader size="sm" />
+            </div>
+          }
+        >
+          <WorldEntityGraph worldId={resolvedWorldId} />
+        </Suspense>
+      ) : (
+        <>
+          {/* Title + description */}
+          <div className="absolute top-12 left-3 z-10 max-w-xs pointer-events-none">
+            <p className="font-heading text-[10px] uppercase tracking-[2px] text-tier-3">
+              Knowledge Graph
+            </p>
+            <p className="text-[9px] text-tier-4 font-sans normal-case tracking-normal mt-0.5">
+              Worksheets and wiki entries
+            </p>
+          </div>
+
+          {/* Entries-only toggle */}
+          <div className="absolute top-12 right-3 z-10 flex items-center gap-1">
+            <button
+              onClick={() => setEntriesOnly(false)}
+              className={`flex items-center gap-1 px-2.5 py-1 text-[9px] uppercase tracking-[1.5px] transition-colors ${
+                !entriesOnly
+                  ? "bg-teal/10 border border-teal/25 text-teal"
+                  : "bg-[#0D1117]/90 border border-border/20 text-tier-4 hover:text-tier-3"
+              }`}
+              title="Show all elements"
+            >
+              <Layers className="w-3 h-3" />
+              All
+            </button>
+            <button
+              onClick={() => setEntriesOnly(true)}
+              className={`flex items-center gap-1 px-2.5 py-1 text-[9px] uppercase tracking-[1.5px] transition-colors ${
+                entriesOnly
+                  ? "bg-teal/10 border border-teal/25 text-teal"
+                  : "bg-[#0D1117]/90 border border-border/20 text-tier-4 hover:text-tier-3"
+              }`}
+              title="Show entries only"
+            >
+              <LayoutGrid className="w-3 h-3" />
+              Entries
+            </button>
+          </div>
+
+          <Suspense
+            fallback={
+              <div className="flex items-center justify-center h-full">
+                <Loader size="sm" />
+              </div>
+            }
+          >
+            <KnowledgeGraphView
+              elements={filteredElements}
+              entries={filteredEntries}
+              connections={filteredConnections}
+              worldId={resolvedWorldId}
+              onElementClick={handleElementClick}
+              onCreateConnection={handleCreateConnection}
+              onDeleteConnection={handleDeleteConnection}
+              onCreateEntry={handleCreateEntry}
+            />
+          </Suspense>
+        </>
+      )}
     </div>
   );
 };
