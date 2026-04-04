@@ -243,7 +243,21 @@ const BackgroundSelector = () => {
                       playsInline
                       autoPlay
                       className="w-full h-full object-cover"
+                      onError={(e) => {
+                        // .mov files won't play in Chrome/Firefox — show fallback
+                        const el = e.currentTarget;
+                        el.style.display = "none";
+                        const fallback = el.nextElementSibling as HTMLElement | null;
+                        if (fallback?.dataset.videoFallback) fallback.style.display = "flex";
+                      }}
                     />
+                    <div
+                      data-video-fallback
+                      className="absolute inset-0 items-center justify-center"
+                      style={{ display: "none", background: "linear-gradient(135deg, #0d1117 0%, #1a1f2e 50%, #0d1117 100%)" }}
+                    >
+                      <span className="text-[10px] font-mono text-tier-3 uppercase tracking-wider">{option.name}</span>
+                    </div>
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
                     <span className="absolute bottom-2 left-2 text-xs font-medium text-white">
                       {option.name}

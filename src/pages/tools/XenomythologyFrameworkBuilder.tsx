@@ -2677,6 +2677,38 @@ const XenomythologyFrameworkBuilder = () => {
             </div>
           </CollapsibleSection>
 
+          {/* Xenomythology CTA */}
+          <div
+            className="mt-8 p-6"
+            style={{
+              background: "rgba(15, 15, 16, 0.92)",
+              border: "1px solid rgba(0, 212, 255, 0.15)",
+              backdropFilter: "blur(16px)",
+              borderRadius: 8,
+            }}
+          >
+            <h4 className="font-heading text-[9px] font-light tracking-[2.5px] uppercase text-emerald/40 mb-3">
+              // Explore Xenomythology
+            </h4>
+            <p className="font-sans text-sm text-tier-2 leading-relaxed mb-4">
+              Xenomythology is the study of how mythology will evolve beyond Earth — how
+              alien environments, biologies, and psychologies will generate entirely new
+              mythological systems. The myths you're building aren't just decoration for
+              your world; they're the deepest expression of how your species makes meaning.
+            </p>
+            <a
+              href="https://xenomythology.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-4 py-2 text-[11px] font-heading font-medium uppercase tracking-[1.5px] text-tier-1 border border-white/10 hover:border-primary/30 hover:shadow-[0_0_20px_rgba(21,193,123,0.15)] transition-all"
+            >
+              Explore Xenomythology
+              <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+            </a>
+          </div>
+
           </div>
 
           {/* Sticky Sidebar - visible on large screens when parameters selected */}

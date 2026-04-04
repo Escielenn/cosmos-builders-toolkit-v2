@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Plus, Globe, Wrench, BookOpen, Compass, Map, Star, Leaf, Users, Sparkles, ScrollText, Layers, Rocket, Mail } from "lucide-react";
+import { getToolIcon } from "@/components/icons/tool-icons";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -212,29 +213,35 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
             Tools
           </NavigationMenuTrigger>
           <NavigationMenuContent className="">
-            <div className="w-[420px] p-3">
-              <div className="grid grid-cols-2 gap-x-4 gap-y-3">
+            <div className="w-[640px] p-5">
+              <div className="grid grid-cols-3 gap-x-6 gap-y-4">
                 {NAV_CATEGORIES.map((cat) => {
                   const tools = getNavCategoryTools(cat.id);
                   if (tools.length === 0) return null;
-                  const Icon = cat.icon;
+                  const CatIcon = cat.icon;
                   return (
                     <div key={cat.id}>
-                      <p className={cn("text-[10px] font-medium uppercase tracking-[1.5px] px-1 mb-1 flex items-center gap-1.5", cat.color)}>
-                        <Icon className="w-3 h-3" />
+                      <p className={cn("text-[9px] font-heading font-light uppercase tracking-[2.5px] px-1 mb-2 flex items-center gap-1.5 pb-1.5 border-b border-white/[0.06]", cat.color)}>
+                        <CatIcon className="w-3 h-3" />
                         {cat.label}
                       </p>
-                      <div className="space-y-0">
+                      <div className="space-y-0.5">
                         {tools.map((tool) => {
                           const route = TOOL_ROUTES[tool.id];
                           if (!route) return null;
+                          const ToolIcon = getToolIcon(tool.id);
                           return (
                             <NavigationMenuLink key={tool.id} asChild>
                               <Link
                                 to={route}
-                                className="block px-1 py-1 text-[11px] text-tier-2 hover:text-tier-1 hover:bg-white/5 rounded-sm transition-colors truncate"
+                                className="flex items-center gap-2 px-1.5 py-1.5 text-[12px] text-tier-2 hover:text-tier-1 hover:bg-[rgba(0,212,255,0.06)] rounded-md transition-colors"
                               >
-                                {shortName(tool.id)}
+                                {ToolIcon ? (
+                                  <ToolIcon className="w-4 h-4 shrink-0" />
+                                ) : (
+                                  <CatIcon className="w-4 h-4 shrink-0 text-tier-4" />
+                                )}
+                                <span className="truncate">{shortName(tool.id)}</span>
                               </Link>
                             </NavigationMenuLink>
                           );
@@ -244,7 +251,7 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
                   );
                 })}
               </div>
-              <div className="border-t border-white/8 mt-3 pt-2">
+              <div className="border-t border-white/[0.08] mt-4 pt-3">
                 <NavigationMenuLink asChild>
                   <Link
                     to="/guide/tools"
@@ -264,7 +271,7 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
           <NavigationMenuTrigger className={triggerClass}>
             Guide
           </NavigationMenuTrigger>
-          <NavigationMenuContent className="">
+          <NavigationMenuContent className="!left-auto !right-0">
             <div className="w-[220px] p-3 space-y-0.5">
               <NavigationMenuLink asChild>
                 <Link

@@ -113,7 +113,7 @@ export default function ToolPageLayout({
 
   return (
     <PageShell className={pageShellClassName}>
-      <main className="relative container mx-auto px-4 pt-24 pb-16">
+      <main className="relative container mx-auto px-4 xl:pr-[280px] pt-24 pb-16">
         <PageBursts bursts={TOOL_PAGE_BURSTS[toolType]} />
 
         {/* ── Back Link (context-aware) ─────────────────────────── */}

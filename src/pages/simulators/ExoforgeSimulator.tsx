@@ -64,6 +64,34 @@ const ExoforgeSimulator = () => {
             style={{ position: 'absolute', inset: 0 }}
             onLoad={() => setLoaded(true)}
           />
+          {/* Unboxed floating title overlay — covers iframe internal title */}
+          {loaded && (
+            <div
+              className="absolute z-20 pointer-events-none select-none"
+              style={{
+                top: 0,
+                left: 0,
+                width: 360,
+                height: 120,
+                background: 'radial-gradient(ellipse at 0% 0%, rgba(9,9,11,0.95) 0%, rgba(9,9,11,0.7) 50%, transparent 100%)',
+              }}
+            >
+              <div style={{ position: 'absolute', top: 20, left: 20 }}>
+                <h1
+                  className="font-display text-[28px] font-light uppercase tracking-[4px] text-tier-1 leading-none"
+                  style={{ textShadow: '0 0 20px rgba(0, 0, 0, 0.6)' }}
+                >
+                  ExoForge
+                </h1>
+                <p
+                  className="font-display text-[10px] font-light uppercase tracking-[3px] mt-1"
+                  style={{ color: 'rgba(0, 229, 160, 0.35)', textShadow: '0 0 20px rgba(0, 0, 0, 0.6)' }}
+                >
+                  StellarForge.tools
+                </p>
+              </div>
+            </div>
+          )}
           {/* Save/Load controls */}
           {loaded && worldId && (
             <div className="absolute bottom-3 left-3 z-20 flex items-center gap-1.5">

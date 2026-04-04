@@ -122,6 +122,19 @@ export default function NarrativeBridgePanel({
           </div>
         ))}
 
+        {/* General Notes — freeform textarea */}
+        <div>
+          <label className="font-heading text-[10px] uppercase tracking-[2px] text-[#00D4FF]/70 block mb-1.5">
+            General Notes
+          </label>
+          <textarea
+            value={notes["general_notes"] ?? ""}
+            onChange={(e) => updateNote("general_notes", e.target.value)}
+            placeholder="Free-form notes, observations, story ideas..."
+            className="w-full font-sans text-[12px] leading-relaxed text-tier-2 placeholder:text-tier-4 bg-white/[0.03] border border-white/[0.08] rounded-[6px] px-[14px] py-3 min-h-[120px] resize-y focus:outline-none focus:border-[rgba(0,212,255,0.25)] transition-colors"
+          />
+        </div>
+
         {/* Footer: save + count */}
         <div className="pt-3 border-t border-white/[0.06] space-y-2">
           <div className="flex items-center justify-between">
