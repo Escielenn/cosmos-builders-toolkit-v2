@@ -346,7 +346,7 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
           <NavigationMenuLink asChild>
             <Link
               to="/contact"
-              className="inline-flex items-center justify-center w-9 h-9 rounded-sm text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
+              className="sf-nav-link inline-flex items-center justify-center w-9 h-9 rounded-sm text-muted-foreground hover:text-primary transition-colors"
               title="Contact"
             >
               <Mail className="w-4 h-4" />
