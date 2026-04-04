@@ -64,17 +64,17 @@ const SolarisSimulator = () => {
             style={{ position: 'absolute', inset: 0 }}
             onLoad={() => setLoaded(true)}
           />
-          {/* Save/Load controls */}
+          {/* Save/Load/Publish controls — bottom-left to avoid overlapping iframe UI */}
           {loaded && worldId && (
-            <div className="absolute top-3 right-3 z-20 flex items-center gap-1.5">
+            <div className="absolute bottom-3 left-3 z-20 flex items-center gap-1.5">
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setPublishDialogOpen(true)}
+                onClick={requestSave}
                 className="bg-[#09090B]/80 border-white/10 text-[#00D4FF] hover:bg-[#09090B] text-[10px] uppercase tracking-wider h-7 px-2.5"
               >
-                <Rocket className="w-3 h-3 mr-1" />
-                Publish
+                <Save className="w-3 h-3 mr-1" />
+                Save
               </Button>
               <Button
                 variant="outline"
@@ -88,11 +88,11 @@ const SolarisSimulator = () => {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={requestSave}
+                onClick={() => setPublishDialogOpen(true)}
                 className="bg-[#09090B]/80 border-white/10 text-[#00D4FF] hover:bg-[#09090B] text-[10px] uppercase tracking-wider h-7 px-2.5"
               >
-                <Save className="w-3 h-3 mr-1" />
-                Save
+                <Rocket className="w-3 h-3 mr-1" />
+                Publish
               </Button>
             </div>
           )}

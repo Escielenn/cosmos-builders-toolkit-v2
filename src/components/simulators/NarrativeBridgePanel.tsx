@@ -11,9 +11,10 @@
  */
 
 import { useState, useCallback } from "react";
-import { PenLine, X, ChevronRight } from "lucide-react";
+import { PenLine, X, ChevronLeft, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
 import type { SimulatorNarrativeConfig } from "@/lib/simulator-narrative-questions";
 
 interface NarrativeBridgePanelProps {
@@ -34,30 +35,49 @@ export default function NarrativeBridgePanel({
   open,
   onOpenChange,
 }: NarrativeBridgePanelProps) {
+  const { toast } = useToast();
+  const [saved, setSaved] = useState(false);
+
   const updateNote = useCallback(
     (id: string, value: string) => {
       onNotesChange({ ...notes, [id]: value });
+      setSaved(false);
     },
     [notes, onNotesChange]
   );
 
+  const handleSave = useCallback(() => {
+    // Notes are stored in React state and passed to PublishToWorldDialog.
+    // Persist to localStorage as a backup so they survive page refreshes.
+    try {
+      const key = `sf-narrative-${config.simulatorType}`;
+      localStorage.setItem(key, JSON.stringify(notes));
+    } catch {}
+    setSaved(true);
+    toast({ title: "Notes saved", description: "Narrative notes saved locally." });
+  }, [notes, config.simulatorType, toast]);
+
+  const filledCount = Object.values(notes).filter((v) => v.trim()).length;
+
+  // Collapsed state — tab button on the right edge
   if (!open) {
     return (
       <button
         onClick={() => onOpenChange(true)}
-        className="fixed right-0 top-1/2 -translate-y-1/2 z-30 bg-[#09090B]/90 border border-white/[0.08] border-r-0 px-2 py-4 hover:bg-[#09090B] transition-colors group"
+        className="absolute right-0 top-1/2 -translate-y-1/2 z-30 bg-[#09090B]/90 border border-white/[0.08] border-r-0 px-2 py-4 hover:bg-[#09090B] transition-colors group"
         title="Narrative Bridge"
       >
         <span className="font-heading text-[9px] uppercase tracking-[2px] text-[#00D4FF]/50 group-hover:text-[#00D4FF] transition-colors [writing-mode:vertical-lr] rotate-180">
           Narrative Bridge
         </span>
-        <ChevronRight className="w-3 h-3 text-[#00D4FF]/30 group-hover:text-[#00D4FF]/60 mt-2 mx-auto" />
+        <ChevronLeft className="w-3 h-3 text-[#00D4FF]/30 group-hover:text-[#00D4FF]/60 mt-2 mx-auto" />
       </button>
     );
   }
 
+  // Expanded panel
   return (
-    <div className="fixed right-0 top-0 bottom-0 z-30 w-80 bg-[#09090B]/95 backdrop-blur-xl border-l border-white/[0.08] overflow-y-auto animate-in slide-in-from-right duration-300">
+    <div className="absolute right-0 top-0 bottom-0 z-30 w-80 bg-[#09090B]/95 backdrop-blur-xl border-l border-white/[0.08] overflow-y-auto animate-in slide-in-from-right duration-300">
       {/* Header */}
       <div className="sticky top-0 z-10 bg-[#09090B]/95 backdrop-blur-xl px-4 py-3 border-b border-white/[0.06]">
         <div className="flex items-center justify-between">
@@ -69,7 +89,8 @@ export default function NarrativeBridgePanel({
           </div>
           <button
             onClick={() => onOpenChange(false)}
-            className="text-tier-4 hover:text-tier-2 transition-colors"
+            className="text-tier-4 hover:text-tier-2 transition-colors p-1"
+            aria-label="Close Narrative Bridge"
           >
             <X className="w-4 h-4" />
           </button>
@@ -101,10 +122,25 @@ export default function NarrativeBridgePanel({
           </div>
         ))}
 
-        {/* Filled count indicator */}
-        <div className="pt-2 border-t border-white/[0.06]">
-          <p className="font-mono text-[9px] text-tier-4 uppercase tracking-wider">
-            {Object.values(notes).filter((v) => v.trim()).length} / {config.questions.length} notes written
+        {/* Footer: save + count */}
+        <div className="pt-3 border-t border-white/[0.06] space-y-2">
+          <div className="flex items-center justify-between">
+            <p className="font-mono text-[9px] text-tier-4 uppercase tracking-wider">
+              {filledCount} / {config.questions.length} notes written
+            </p>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleSave}
+              disabled={filledCount === 0}
+              className="h-6 text-[9px] uppercase tracking-wider px-2 gap-1 border-[#00D4FF]/20 text-[#00D4FF] hover:bg-[#00D4FF]/10"
+            >
+              <Save className="w-3 h-3" />
+              {saved ? "Saved" : "Save Notes"}
+            </Button>
+          </div>
+          <p className="text-[8px] text-tier-5 leading-relaxed">
+            Notes are included when you Publish to World.
           </p>
         </div>
       </div>

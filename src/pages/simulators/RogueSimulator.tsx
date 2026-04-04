@@ -66,7 +66,7 @@ const RogueSimulator = () => {
           />
           {/* Save/Load controls */}
           {loaded && worldId && (
-            <div className="absolute top-3 right-3 z-20 flex items-center gap-1.5">
+            <div className="absolute bottom-3 left-3 z-20 flex items-center gap-1.5">
               <Button
                 variant="outline"
                 size="sm"
