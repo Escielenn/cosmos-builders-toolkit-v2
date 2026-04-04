@@ -105,7 +105,7 @@ const CodexElementRow = memo(({
           onBlur={commitRename}
           onKeyDown={handleKeyDown}
           title="Rename entry"
-          className="text-[12px] flex-1 leading-tight bg-transparent border-b border-primary/40 outline-none text-foreground/90 px-0 py-0"
+          className="text-[14px] flex-1 leading-tight bg-transparent border-b border-primary/40 outline-none text-foreground/90 px-0 py-0"
         />
       </div>
     );
@@ -150,7 +150,7 @@ const CodexElementRow = memo(({
       {/* Title */}
       <span
         className={cn(
-          "text-[12px] truncate flex-1 leading-tight",
+          "text-[14px] truncate flex-1 leading-tight",
           element.isDraft ? "text-foreground/40" : "text-foreground/75",
           isActive && "text-foreground/90"
         )}

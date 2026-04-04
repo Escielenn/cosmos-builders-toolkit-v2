@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { User, LogIn, LogOut, ChevronDown, Zap, Menu, Globe, Wrench, BookOpen, Sparkles, Mail, Settings, Search, Image, Download, Library, Archive, Map, Compass, PenTool, Award } from "lucide-react";
 import HeaderNavigation from "./HeaderNavigation";
+import { APP_VERSION } from "@/config/version";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import CubeLogo from "@/components/icons/CubeLogo";
@@ -78,23 +79,28 @@ const Header = () => {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/30 backdrop-blur-xl bg-gradient-to-r from-[#000000]/95 to-[#0A0E17]/95">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-2 group shrink-0 mr-6">
-          <CubeLogo size={32} className="rounded-lg" />
-          {isSubscribed ? (
-            <>
-              <span className="hidden xl:inline font-display text-lg font-light tracking-sf-wide text-foreground/90 uppercase">
-                STELLARFORGE
-              </span>
-              <span className="xl:hidden font-display text-lg font-light tracking-sf-wide text-foreground/90 uppercase">
+        <div className="flex flex-col shrink-0 mr-6">
+          <Link to="/" className="flex items-center gap-2 group">
+            <CubeLogo size={32} className="rounded-lg" />
+            {isSubscribed ? (
+              <>
+                <span className="hidden xl:inline font-display text-lg font-light tracking-sf-wide text-foreground/90 uppercase">
+                  STELLARFORGE
+                </span>
+                <span className="xl:hidden font-display text-lg font-light tracking-sf-wide text-foreground/90 uppercase">
+                  SF
+                </span>
+              </>
+            ) : (
+              <span className="font-display text-lg font-light tracking-sf-wide text-foreground/90 uppercase">
                 SF
               </span>
-            </>
-          ) : (
-            <span className="font-display text-lg font-light tracking-sf-wide text-foreground/90 uppercase">
-              SF
-            </span>
-          )}
-        </Link>
+            )}
+          </Link>
+          <span className="hidden xl:block font-sans text-[10px] font-light tracking-[0.5px] text-white/20 ml-[42px] -mt-1">
+            v{APP_VERSION}
+          </span>
+        </div>
 
         {/* Desktop Navigation */}
         <HeaderNavigation isSubscribed={isSubscribed} />

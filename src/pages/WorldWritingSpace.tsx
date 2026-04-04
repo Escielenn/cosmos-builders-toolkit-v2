@@ -1,0 +1,522 @@
+// ---------------------------------------------------------------------------
+// WorldWritingSpace — Dedicated writing environment for a world.
+//
+// Route: /worlds/:worldId/write
+// Layout: collapsible entity sidebar (left) + full StellarForge editor (main)
+// Features: document CRUD, auto-save, entity @mentions from sidebar
+// ---------------------------------------------------------------------------
+
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useParams } from "react-router-dom";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Plus,
+  Trash2,
+  Pencil,
+  FileText,
+  ChevronDown,
+  Check,
+  X,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useAuth } from "@/contexts/AuthContext";
+import { useEntities } from "@/hooks/use-entity-graph";
+import {
+  useWritingDocuments,
+  useCreateDocument,
+  useUpdateDocumentContent,
+  useRenameDocument,
+  useDeleteDocument,
+} from "@/hooks/use-writing-documents";
+import { StellarForgeEditor } from "@/components/editor/StellarForgeEditor";
+import {
+  ENTITY_TYPE_COLORS,
+  ENTITY_TYPE_LABELS,
+} from "@/services/entity-graph-types";
+import type { Entity } from "@/services/entity-graph-types";
+import type { WorldEntry } from "@/services/world-data";
+
+// ---------------------------------------------------------------------------
+// Constants
+// ---------------------------------------------------------------------------
+
+const SIDEBAR_WIDTH = 260;
+const COLLAPSED_WIDTH = 0;
+const AUTOSAVE_DELAY = 5000; // 5 seconds of inactivity
+
+// ---------------------------------------------------------------------------
+// Component
+// ---------------------------------------------------------------------------
+
+const WorldWritingSpace = () => {
+  const { worldId } = useParams<{ worldId: string }>();
+  const { user } = useAuth();
+
+  // Data
+  const { data: entities } = useEntities(worldId);
+  const { data: documents, isLoading: docsLoading } =
+    useWritingDocuments(worldId);
+  const createDoc = useCreateDocument(worldId);
+  const updateContent = useUpdateDocumentContent(worldId);
+  const renameDoc = useRenameDocument(worldId);
+  const deleteDoc = useDeleteDocument(worldId);
+
+  // UI state
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [selectedDocId, setSelectedDocId] = useState<string | null>(null);
+  const [docDropdownOpen, setDocDropdownOpen] = useState(false);
+  const [renamingDocId, setRenamingDocId] = useState<string | null>(null);
+  const [renameValue, setRenameValue] = useState("");
+  const [editorContent, setEditorContent] = useState("");
+  const [entityFilter, setEntityFilter] = useState("");
+
+  // Auto-save refs
+  const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lastSavedContentRef = useRef<string>("");
+  const pendingContentRef = useRef<string>("");
+
+  // Select first document when docs load
+  useEffect(() => {
+    if (documents && documents.length > 0 && !selectedDocId) {
+      const first = documents[0];
+      setSelectedDocId(first.id);
+      setEditorContent(first.content || "");
+      lastSavedContentRef.current = first.content || "";
+      pendingContentRef.current = first.content || "";
+    }
+  }, [documents, selectedDocId]);
+
+  // Get currently selected document
+  const selectedDoc = documents?.find((d) => d.id === selectedDocId) ?? null;
+
+  // ---------------------------------------------------------------------------
+  // Auto-save logic
+  // ---------------------------------------------------------------------------
+
+  const flushSave = useCallback(() => {
+    if (!selectedDocId) return;
+    const content = pendingContentRef.current;
+    if (content !== lastSavedContentRef.current) {
+      lastSavedContentRef.current = content;
+      updateContent.mutate({ docId: selectedDocId, content });
+    }
+  }, [selectedDocId, updateContent]);
+
+  const handleEditorChange = useCallback(
+    (html: string) => {
+      pendingContentRef.current = html;
+
+      // Clear existing timer
+      if (saveTimerRef.current) {
+        clearTimeout(saveTimerRef.current);
+      }
+
+      // Set new 5-second inactivity timer
+      saveTimerRef.current = setTimeout(() => {
+        flushSave();
+      }, AUTOSAVE_DELAY);
+    },
+    [flushSave]
+  );
+
+  // Save on blur (the editor also fires onBlur internally)
+  const handleEditorBlur = useCallback(() => {
+    if (saveTimerRef.current) {
+      clearTimeout(saveTimerRef.current);
+      saveTimerRef.current = null;
+    }
+    flushSave();
+  }, [flushSave]);
+
+  // Cleanup timer on unmount
+  useEffect(() => {
+    return () => {
+      if (saveTimerRef.current) {
+        clearTimeout(saveTimerRef.current);
+      }
+      // Final flush
+    };
+  }, []);
+
+  // ---------------------------------------------------------------------------
+  // Document actions
+  // ---------------------------------------------------------------------------
+
+  const handleCreateDocument = useCallback(async () => {
+    if (!worldId || !user) return;
+    const result = await createDoc.mutateAsync("Untitled Document");
+    setSelectedDocId(result.id);
+    setEditorContent("");
+    lastSavedContentRef.current = "";
+    pendingContentRef.current = "";
+    setDocDropdownOpen(false);
+  }, [worldId, user, createDoc]);
+
+  const handleSelectDocument = useCallback(
+    (doc: WorldEntry) => {
+      // Flush current before switching
+      flushSave();
+      setSelectedDocId(doc.id);
+      setEditorContent(doc.content || "");
+      lastSavedContentRef.current = doc.content || "";
+      pendingContentRef.current = doc.content || "";
+      setDocDropdownOpen(false);
+    },
+    [flushSave]
+  );
+
+  const handleDeleteDocument = useCallback(
+    (docId: string) => {
+      deleteDoc.mutate(docId);
+      if (selectedDocId === docId) {
+        const remaining = documents?.filter((d) => d.id !== docId) ?? [];
+        if (remaining.length > 0) {
+          handleSelectDocument(remaining[0]);
+        } else {
+          setSelectedDocId(null);
+          setEditorContent("");
+          lastSavedContentRef.current = "";
+          pendingContentRef.current = "";
+        }
+      }
+    },
+    [deleteDoc, selectedDocId, documents, handleSelectDocument]
+  );
+
+  const handleStartRename = useCallback((doc: WorldEntry) => {
+    setRenamingDocId(doc.id);
+    setRenameValue(doc.title);
+  }, []);
+
+  const handleConfirmRename = useCallback(() => {
+    if (renamingDocId && renameValue.trim()) {
+      renameDoc.mutate({ docId: renamingDocId, title: renameValue.trim() });
+    }
+    setRenamingDocId(null);
+    setRenameValue("");
+  }, [renamingDocId, renameValue, renameDoc]);
+
+  const handleCancelRename = useCallback(() => {
+    setRenamingDocId(null);
+    setRenameValue("");
+  }, []);
+
+  // ---------------------------------------------------------------------------
+  // Entity sidebar — insert @mention
+  // ---------------------------------------------------------------------------
+
+  const handleEntityClick = useCallback((_entity: Entity) => {
+    // Dispatch a custom event that the editor can listen for,
+    // or insert @trigger text. We use the toolbar @ button approach:
+    // The StellarForgeEditor already supports entity mentions via worldId.
+    // We insert an @ + entity name prefix to trigger the autocomplete.
+    const editorEl = document.querySelector(".tiptap");
+    if (editorEl) {
+      // Focus the editor and insert @EntityName to trigger mention
+      (editorEl as HTMLElement).focus();
+      // Use a small delay to ensure focus is settled
+      setTimeout(() => {
+        document.execCommand("insertText", false, `@${_entity.name} `);
+      }, 50);
+    }
+  }, []);
+
+  // Filtered entities
+  const filteredEntities = (entities ?? []).filter((e) =>
+    entityFilter
+      ? e.name.toLowerCase().includes(entityFilter.toLowerCase()) ||
+        e.entity_type.toLowerCase().includes(entityFilter.toLowerCase())
+      : true
+  );
+
+  // Group entities by type
+  const groupedEntities = filteredEntities.reduce<Record<string, Entity[]>>(
+    (acc, entity) => {
+      const type = entity.entity_type;
+      if (!acc[type]) acc[type] = [];
+      acc[type].push(entity);
+      return acc;
+    },
+    {}
+  );
+
+  // ---------------------------------------------------------------------------
+  // Render
+  // ---------------------------------------------------------------------------
+
+  if (!worldId) return null;
+
+  return (
+    <div className="flex h-full w-full overflow-hidden">
+      {/* ----------------------------------------------------------------- */}
+      {/* Entity Sidebar */}
+      {/* ----------------------------------------------------------------- */}
+      <aside
+        className={cn(
+          "h-full flex-shrink-0 border-r border-white/[0.06] bg-[#0E1320]/90 backdrop-blur-md transition-all duration-300 ease-out overflow-hidden",
+          sidebarOpen ? "w-[260px]" : "w-0"
+        )}
+        style={{ width: sidebarOpen ? SIDEBAR_WIDTH : COLLAPSED_WIDTH }}
+      >
+        <div className="flex h-full flex-col" style={{ width: SIDEBAR_WIDTH }}>
+          {/* Sidebar header */}
+          <div className="flex items-center justify-between border-b border-white/[0.06] px-3 py-2.5">
+            <span className="font-heading text-[11px] font-light uppercase tracking-[2px] text-tier-3">
+              World Entities
+            </span>
+            <button
+              onClick={() => setSidebarOpen(false)}
+              className="p-1 text-tier-4 hover:text-tier-2 transition-colors"
+              title="Collapse sidebar"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+          </div>
+
+          {/* Entity filter */}
+          <div className="px-3 py-2">
+            <input
+              type="text"
+              value={entityFilter}
+              onChange={(e) => setEntityFilter(e.target.value)}
+              placeholder="Filter entities..."
+              className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xs px-2.5 py-1.5 text-xs text-tier-2 placeholder:text-tier-5 focus:border-[#15C17B]/35 focus:outline-none"
+            />
+          </div>
+
+          {/* Entity list */}
+          <div className="flex-1 overflow-y-auto px-1 pb-4 sf-custom-scrollbar">
+            {Object.entries(groupedEntities).map(([type, entities]) => (
+              <div key={type} className="mb-3">
+                <div className="px-2 py-1">
+                  <span className="text-[9px] font-medium uppercase tracking-[1.5px] text-tier-4">
+                    {ENTITY_TYPE_LABELS[type as keyof typeof ENTITY_TYPE_LABELS] ?? type}
+                  </span>
+                </div>
+                {entities.map((entity) => (
+                  <button
+                    key={entity.id}
+                    onClick={() => handleEntityClick(entity)}
+                    className="w-full flex items-center gap-2 px-2 py-1.5 text-left rounded-sm hover:bg-white/[0.04] transition-colors group"
+                    title={`Insert @${entity.name}`}
+                  >
+                    <span
+                      className="w-2 h-2 rounded-full flex-shrink-0"
+                      style={{
+                        backgroundColor:
+                          entity.color ||
+                          ENTITY_TYPE_COLORS[entity.entity_type] ||
+                          "#15C17B",
+                      }}
+                    />
+                    <span className="text-xs text-tier-2 truncate group-hover:text-tier-1 transition-colors">
+                      {entity.name}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            ))}
+
+            {filteredEntities.length === 0 && (
+              <div className="px-3 py-6 text-center">
+                <span className="text-[10px] uppercase tracking-[1.5px] text-tier-5">
+                  {entityFilter ? "No matches" : "No entities yet"}
+                </span>
+              </div>
+            )}
+          </div>
+        </div>
+      </aside>
+
+      {/* ----------------------------------------------------------------- */}
+      {/* Main Editor Area */}
+      {/* ----------------------------------------------------------------- */}
+      <div className="flex-1 flex flex-col h-full overflow-hidden">
+        {/* Top bar: sidebar toggle + document selector */}
+        <div className="flex items-center gap-2 border-b border-white/[0.06] bg-[#0E1320]/60 px-3 py-2">
+          {/* Sidebar toggle (shown when collapsed) */}
+          {!sidebarOpen && (
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="p-1.5 text-tier-4 hover:text-tier-2 transition-colors border border-white/[0.08] rounded-sm"
+              title="Show entity sidebar"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          )}
+
+          {/* Document dropdown */}
+          <div className="relative flex-1 max-w-md">
+            <button
+              onClick={() => setDocDropdownOpen((p) => !p)}
+              className="flex items-center gap-2 px-3 py-1.5 bg-white/[0.04] border border-white/[0.08] rounded-xs hover:border-white/[0.15] transition-colors w-full min-w-0"
+            >
+              <FileText className="w-3.5 h-3.5 text-tier-4 flex-shrink-0" />
+              <span className="text-sm text-tier-2 truncate">
+                {selectedDoc?.title || "Select a document..."}
+              </span>
+              <ChevronDown className="w-3.5 h-3.5 text-tier-4 ml-auto flex-shrink-0" />
+            </button>
+
+            {/* Dropdown panel */}
+            {docDropdownOpen && (
+              <>
+                {/* Backdrop */}
+                <div
+                  className="fixed inset-0 z-40"
+                  onClick={() => setDocDropdownOpen(false)}
+                />
+                <div className="absolute left-0 top-full mt-1 z-50 w-full min-w-[280px] bg-[#161C2B] border border-white/[0.08] rounded-xs shadow-xl overflow-hidden">
+                  {/* Create new */}
+                  <button
+                    onClick={handleCreateDocument}
+                    disabled={createDoc.isPending}
+                    className="flex items-center gap-2 w-full px-3 py-2 text-sm text-[#15C17B] hover:bg-[#15C17B]/[0.06] transition-colors border-b border-white/[0.06]"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    <span className="font-sans text-xs font-medium uppercase tracking-[1px]">
+                      New Document
+                    </span>
+                  </button>
+
+                  {/* Document list */}
+                  <div className="max-h-[240px] overflow-y-auto sf-custom-scrollbar">
+                    {docsLoading && (
+                      <div className="px-3 py-4 text-center">
+                        <span className="text-[10px] uppercase tracking-[1.5px] text-tier-5">
+                          Loading...
+                        </span>
+                      </div>
+                    )}
+                    {documents?.map((doc) => (
+                      <div
+                        key={doc.id}
+                        className={cn(
+                          "flex items-center group px-3 py-2 hover:bg-white/[0.04] transition-colors cursor-pointer",
+                          doc.id === selectedDocId && "bg-white/[0.04]"
+                        )}
+                      >
+                        {renamingDocId === doc.id ? (
+                          <div className="flex items-center gap-1 flex-1 min-w-0">
+                            <input
+                              type="text"
+                              value={renameValue}
+                              onChange={(e) => setRenameValue(e.target.value)}
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter") handleConfirmRename();
+                                if (e.key === "Escape") handleCancelRename();
+                              }}
+                              autoFocus
+                              className="flex-1 min-w-0 bg-white/[0.06] border border-white/[0.15] rounded-xs px-2 py-0.5 text-xs text-tier-1 focus:outline-none focus:border-[#15C17B]/35"
+                            />
+                            <button
+                              onClick={handleConfirmRename}
+                              className="p-0.5 text-[#15C17B] hover:text-[#3DFFCD]"
+                            >
+                              <Check className="w-3.5 h-3.5" />
+                            </button>
+                            <button
+                              onClick={handleCancelRename}
+                              className="p-0.5 text-tier-4 hover:text-tier-2"
+                            >
+                              <X className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        ) : (
+                          <>
+                            <div
+                              className="flex-1 min-w-0"
+                              onClick={() => handleSelectDocument(doc)}
+                            >
+                              <span className="text-xs text-tier-2 truncate block">
+                                {doc.title}
+                              </span>
+                              <span className="text-[9px] text-tier-5 font-mono">
+                                {new Date(doc.updated_at).toLocaleDateString()}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleStartRename(doc);
+                                }}
+                                className="p-1 text-tier-4 hover:text-tier-2"
+                                title="Rename"
+                              >
+                                <Pencil className="w-3 h-3" />
+                              </button>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleDeleteDocument(doc.id);
+                                }}
+                                className="p-1 text-tier-4 hover:text-[#FF3366]"
+                                title="Delete"
+                              >
+                                <Trash2 className="w-3 h-3" />
+                              </button>
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    ))}
+                    {!docsLoading && (!documents || documents.length === 0) && (
+                      <div className="px-3 py-4 text-center">
+                        <span className="text-[10px] uppercase tracking-[1.5px] text-tier-5">
+                          No documents yet
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+
+          {/* Auto-save indicator */}
+          {updateContent.isPending && (
+            <span className="text-[9px] font-mono uppercase tracking-[1.5px] text-tier-4 flex-shrink-0">
+              Saving...
+            </span>
+          )}
+        </div>
+
+        {/* Editor area */}
+        <div className="flex-1 overflow-y-auto px-4 py-4 md:px-8 md:py-6">
+          {selectedDoc ? (
+            <div className="max-w-4xl mx-auto">
+              <StellarForgeEditor
+                key={selectedDocId}
+                content={editorContent}
+                onChange={handleEditorChange}
+                worldId={worldId}
+                preset="full"
+                placeholder="Begin writing. Use @ to mention entities, [[ to link wiki pages..."
+                minHeight="calc(100vh - 220px)"
+              />
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center h-full gap-4">
+              <FileText className="w-10 h-10 text-tier-5" />
+              <p className="text-sm text-tier-4 text-center max-w-xs">
+                Create a new document to start writing in this world.
+              </p>
+              <button
+                onClick={handleCreateDocument}
+                disabled={createDoc.isPending}
+                className="flex items-center gap-2 px-4 py-2 bg-[#15C17B] text-white font-sans text-sm font-medium rounded-none hover:shadow-[0_0_20px_rgba(61,255,205,0.2)] transition-all"
+              >
+                <Plus className="w-4 h-4" />
+                New Document
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default WorldWritingSpace;

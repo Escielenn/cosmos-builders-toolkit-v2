@@ -56,11 +56,11 @@ const CodexSection = ({
         ) : (
           <ChevronRight className="w-2.5 h-2.5 text-muted-foreground/40 shrink-0" />
         )}
-        <span className="font-heading text-[11px] uppercase tracking-[3px] text-primary/60 flex-1">
+        <span className="font-heading text-[13px] uppercase tracking-[3px] text-primary/60 flex-1">
           {section.label}
         </span>
         {section.elements.length > 0 && (
-          <span className="font-mono text-[9px] text-muted-foreground/30">
+          <span className="font-mono text-[11px] text-muted-foreground/30">
             {section.elements.length}
           </span>
         )}

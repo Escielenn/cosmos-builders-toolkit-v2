@@ -2549,6 +2549,128 @@ html {
   text-align: center;
 }
 
+/* ------------------------------------------------------------------ */
+/* Entity Mention inline chip (@mentions)                             */
+/* ------------------------------------------------------------------ */
+
+.sf-entity-mention {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: color-mix(in srgb, var(--mention-color, #00FF88) 6%, transparent);
+  border: 1px solid color-mix(in srgb, var(--mention-color, #00FF88) 15%, transparent);
+  border-radius: 3px;
+  padding: 1px 6px;
+  cursor: pointer;
+  vertical-align: baseline;
+  transition: background 0.15s ease, border-color 0.15s ease;
+  white-space: nowrap;
+}
+
+.sf-entity-mention:hover {
+  background: color-mix(in srgb, var(--mention-color, #00FF88) 12%, transparent);
+  border-color: color-mix(in srgb, var(--mention-color, #00FF88) 25%, transparent);
+}
+
+.sf-entity-mention-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.sf-entity-mention-label {
+  font-family: var(--sf-font-body, 'DM Sans', sans-serif);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--mention-color, #00FF88);
+  line-height: 1.4;
+}
+
+/* ------------------------------------------------------------------ */
+/* Entity Mention autocomplete suggestion list                        */
+/* ------------------------------------------------------------------ */
+
+.sf-entity-mention-list {
+  position: fixed;
+  z-index: 1000;
+  background: #0C1019;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  min-width: 260px;
+  max-width: 360px;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.sf-entity-mention-item {
+  padding: 8px 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.15s ease;
+}
+
+.sf-entity-mention-item:hover,
+.sf-entity-mention-item.selected {
+  background: rgba(0, 255, 136, 0.06);
+}
+
+.sf-entity-mention-item-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.sf-entity-mention-item-name {
+  font-family: var(--sf-font-body, 'DM Sans', sans-serif);
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.85);
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sf-entity-mention-item-type {
+  font-family: var(--sf-font-mono, 'JetBrains Mono', monospace);
+  font-size: 8px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: rgba(255, 255, 255, 0.3);
+  flex-shrink: 0;
+}
+
+.sf-entity-mention-empty {
+  padding: 12px;
+  font-family: var(--sf-font-mono, 'JetBrains Mono', monospace);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: rgba(255, 255, 255, 0.25);
+  text-align: center;
+}
+
+/* ------------------------------------------------------------------ */
+/* StellarForgeEditor focus mode                                      */
+/* ------------------------------------------------------------------ */
+
+.sf-focus-mode {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: var(--sf-void, #0A0E17);
+  display: flex;
+  flex-direction: column;
+}
+
+.sf-focus-mode .sf-writing-toolbar {
+  justify-content: center;
+}
+
 /* Wiki infobox */
 .sf-infobox {
   background: #0C1019;

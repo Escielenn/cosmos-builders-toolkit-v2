@@ -1,12 +1,19 @@
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useState, useCallback, useMemo, useRef, useEffect } from "react";
 import { Outlet, useParams, useNavigate } from "react-router-dom";
 import Header from "@/components/layout/Header";
 import { Loader } from "@/components/ui/loader";
 import { useWorld } from "@/hooks/use-world";
 import { useSubscription } from "@/hooks/use-subscription";
 import Codex from "@/components/codex/Codex";
+import EntitySidebar from "@/components/world/EntitySidebar";
+import { DeleteConfirmDialog } from "@/components/dialogs/DeleteConfirmDialog";
+import { useDeleteEntity, useEntities } from "@/hooks/use-entity-graph";
 import { WorldLayoutProvider } from "@/contexts/WorldLayoutContext";
 import { WorldThemeProvider } from "@/contexts/WorldThemeContext";
+import { BookOpen, Network } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+type SidebarTab = "codex" | "entities";
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -27,6 +34,36 @@ const WorldLayout = () => {
   const navigate = useNavigate();
   const { data: world, isLoading, error } = useWorld(worldId);
   const { isSubscribed } = useSubscription();
+
+  // Sidebar tab — codex vs entities
+  const [sidebarTab, setSidebarTab] = useState<SidebarTab>(() => {
+    try {
+      return (localStorage.getItem("sf-sidebar-tab") as SidebarTab) || "codex";
+    } catch {
+      return "codex";
+    }
+  });
+
+  const handleSidebarTabChange = useCallback((tab: SidebarTab) => {
+    setSidebarTab(tab);
+    localStorage.setItem("sf-sidebar-tab", tab);
+  }, []);
+
+  // Entity deletion state
+  const [deleteEntityId, setDeleteEntityId] = useState<string | null>(null);
+  const deleteEntityMutation = useDeleteEntity(worldId);
+  const { data: entitiesData } = useEntities(worldId);
+  const deleteEntityName = useMemo(() => {
+    if (!deleteEntityId || !entitiesData) return "";
+    return entitiesData.find((e) => e.id === deleteEntityId)?.name ?? "";
+  }, [deleteEntityId, entitiesData]);
+
+  const confirmDeleteEntity = useCallback(() => {
+    if (deleteEntityId) {
+      deleteEntityMutation.mutate(deleteEntityId);
+    }
+    setDeleteEntityId(null);
+  }, [deleteEntityId, deleteEntityMutation]);
 
   // Sidebar state — persisted in localStorage
   const [collapsed, setCollapsed] = useState(() => {
@@ -150,16 +187,66 @@ const WorldLayout = () => {
             className="sf-world-layout"
             style={{ height: `calc(100vh - ${HEADER_HEIGHT}px)`, marginTop: HEADER_HEIGHT }}
           >
-            {/* Codex Sidebar */}
+            {/* Sidebar */}
             <aside
               className={`sf-codex ${collapsed ? "sf-codex--collapsed" : ""}`}
               style={{ width: collapsed ? COLLAPSED_WIDTH : width }}
             >
-              <Codex
-                worldId={worldId}
-                collapsed={collapsed}
-                onCollapse={toggleCollapse}
-              />
+              {/* Tab toggle — hidden when collapsed */}
+              {!collapsed && (
+                <div className="flex border-b border-border/10">
+                  <button
+                    onClick={() => handleSidebarTabChange("codex")}
+                    className={cn(
+                      "flex-1 flex items-center justify-center gap-1.5 px-2 py-2 text-[10px] uppercase tracking-[1.5px] transition-colors",
+                      sidebarTab === "codex"
+                        ? "text-teal border-b-2 border-teal bg-teal/[0.04]"
+                        : "text-tier-4 hover:text-tier-3"
+                    )}
+                    title="Registry (worksheets)"
+                  >
+                    <BookOpen className="w-3 h-3" />
+                    Registry
+                  </button>
+                  <button
+                    onClick={() => handleSidebarTabChange("entities")}
+                    className={cn(
+                      "flex-1 flex items-center justify-center gap-1.5 px-2 py-2 text-[10px] uppercase tracking-[1.5px] transition-colors",
+                      sidebarTab === "entities"
+                        ? "text-teal border-b-2 border-teal bg-teal/[0.04]"
+                        : "text-tier-4 hover:text-tier-3"
+                    )}
+                    title="Entity graph"
+                  >
+                    <Network className="w-3 h-3" />
+                    Entities
+                  </button>
+                </div>
+              )}
+
+              {/* Active sidebar content */}
+              {sidebarTab === "codex" ? (
+                <Codex
+                  worldId={worldId}
+                  collapsed={collapsed}
+                  onCollapse={toggleCollapse}
+                />
+              ) : (
+                collapsed ? (
+                  <Codex
+                    worldId={worldId}
+                    collapsed={collapsed}
+                    onCollapse={toggleCollapse}
+                  />
+                ) : (
+                  <EntitySidebar
+                    worldId={worldId}
+                    onEntityClick={(entityId) => navigate(`/worlds/${worldId}/graph?entity=${entityId}`)}
+                    onCreateEntity={() => navigate(`/worlds/${worldId}/graph?create=true`)}
+                    onDeleteEntity={setDeleteEntityId}
+                  />
+                )
+              )}
             </aside>
 
             {/* Resize handle */}
@@ -176,6 +263,15 @@ const WorldLayout = () => {
             </main>
           </div>
         </div>
+
+        {/* Entity delete confirmation */}
+        <DeleteConfirmDialog
+          open={!!deleteEntityId}
+          onOpenChange={(open) => !open && setDeleteEntityId(null)}
+          onConfirm={confirmDeleteEntity}
+          itemName={deleteEntityName}
+          itemType="entity"
+        />
       </WorldThemeProvider>
     </WorldLayoutProvider>
   );

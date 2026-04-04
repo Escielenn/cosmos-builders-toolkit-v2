@@ -40,7 +40,7 @@ import {
   type SimulationNodeDatum,
   type SimulationLinkDatum,
 } from "d3-force";
-import { Plus, LayoutGrid, Zap, List, Network, Columns3, Route, Gauge, Waypoints, AlertTriangle, Boxes, Trash2, ScanSearch, Clock, Download, Undo2, Redo2 } from "lucide-react";
+import { Plus, LayoutGrid, Zap, List, Network, Columns3, Route, Gauge, Waypoints, AlertTriangle, Boxes, Trash2, ScanSearch, Clock, Download, Undo2, Redo2, TreePine } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Loader } from "@/components/ui/loader";
 
@@ -51,6 +51,7 @@ import { CreateEntityModal, type CreateEntityFormData } from "./CreateEntityModa
 import { CascadeFilterBar } from "./CascadeFilterBar";
 import { GraphSearch } from "./GraphSearch";
 import { EntityListView } from "./EntityListView";
+import { EntityTreeView } from "./EntityTreeView";
 import { cascadeFlowLayout, traceCascadePath, type CascadePath } from "./graph-algorithms";
 import { AnalysisPanel, type AnalysisMode } from "./AnalysisPanel";
 import { CascadeAuditPanel } from "./CascadeAuditPanel";
@@ -65,6 +66,7 @@ import {
   useEntityConnections,
   useCreateEntity,
   useDeleteEntity,
+  useUpdateEntity,
   useCreateEntityConnection,
   useDeleteEntityConnection,
   useBatchUpdatePositions,
@@ -284,7 +286,7 @@ function countConnections(connections: EntityConnection[]): Map<string, number> 
 // View modes
 // ---------------------------------------------------------------------------
 
-type ViewMode = "graph" | "list";
+type ViewMode = "graph" | "list" | "tree";
 
 // ---------------------------------------------------------------------------
 // Inner graph (needs ReactFlowProvider to be above it)
@@ -349,6 +351,7 @@ function InnerGraph({ worldId, entities, connections }: InnerGraphProps) {
   // Mutations
   const createEntity = useCreateEntity(worldId);
   const deleteEntity = useDeleteEntity(worldId);
+  const updateEntity = useUpdateEntity(worldId);
   const createConnection = useCreateEntityConnection(worldId);
   const deleteConnection = useDeleteEntityConnection(worldId);
   const batchUpdatePositions = useBatchUpdatePositions(worldId);
@@ -671,6 +674,35 @@ function InnerGraph({ worldId, entities, connections }: InnerGraphProps) {
     [entities]
   );
 
+  // Tree view: create child opens create modal (parent_entity_id set externally)
+  const handleTreeCreateChild = useCallback(
+    (parentId: string) => {
+      // For now, just open the create entity modal.
+      // The parent_entity_id will need to be set after creation.
+      setShowCreateEntity(true);
+    },
+    []
+  );
+
+  // Tree view: delete entity with confirmation
+  const handleTreeDeleteEntity = useCallback(
+    (entityId: string) => {
+      const entity = entities.find((e) => e.id === entityId);
+      if (entity && window.confirm(`Delete entity "${entity.name}"?`)) {
+        deleteEntity.mutate(entityId);
+      }
+    },
+    [entities, deleteEntity]
+  );
+
+  // Tree view: reparent entity
+  const handleTreeReparent = useCallback(
+    (entityId: string, newParentId: string | null) => {
+      updateEntity.mutate({ id: entityId, parent_entity_id: newParentId });
+    },
+    [updateEntity]
+  );
+
   // ---------------------------------------------------------------------------
   // Empty state
   // ---------------------------------------------------------------------------
@@ -713,6 +745,88 @@ function InnerGraph({ worldId, entities, connections }: InnerGraphProps) {
   }
 
   // ---------------------------------------------------------------------------
+  // Tree view
+  // ---------------------------------------------------------------------------
+
+  if (viewMode === "tree") {
+    return (
+      <div className="relative h-full w-full">
+        {/* Toolbar */}
+        <div
+          className="absolute top-3 left-3 z-10 flex items-center gap-1.5"
+          style={{
+            background: "rgba(15,15,16,0.92)",
+            backdropFilter: "blur(16px)",
+            border: "1px solid rgba(255,255,255,0.06)",
+            padding: "6px 10px",
+          }}
+        >
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => setShowCreateEntity(true)}
+            className="h-7 text-[10px] uppercase tracking-[1.2px] font-sans text-tier-3 hover:text-tier-1"
+          >
+            <Plus className="w-3 h-3 mr-1" />
+            Entity
+          </Button>
+          <div className="w-px h-4 bg-border/20" />
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => setViewMode("graph")}
+            className="h-7 text-[10px] uppercase tracking-[1.2px] font-sans text-tier-3 hover:text-tier-1"
+          >
+            <Network className="w-3 h-3 mr-1" />
+            Graph
+          </Button>
+          <Button
+            size="sm"
+            variant="ghost"
+            className="h-7 text-[10px] uppercase tracking-[1.2px] font-sans text-tier-1 bg-white/5"
+          >
+            <TreePine className="w-3 h-3 mr-1" />
+            Tree
+          </Button>
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => setViewMode("list")}
+            className="h-7 text-[10px] uppercase tracking-[1.2px] font-sans text-tier-3 hover:text-tier-1"
+          >
+            <List className="w-3 h-3 mr-1" />
+            List
+          </Button>
+        </div>
+
+        <div className="pt-14 h-full">
+          <EntityTreeView
+            entities={entities}
+            onCreateChild={handleTreeCreateChild}
+            onDeleteEntity={handleTreeDeleteEntity}
+            onReparent={handleTreeReparent}
+            onFocusEntity={handleListEntityClick}
+          />
+        </div>
+
+        <CreateEntityModal
+          open={showCreateEntity}
+          onClose={() => setShowCreateEntity(false)}
+          onSubmit={handleCreateEntity}
+        />
+
+        <ConnectionModal
+          open={connectionModalState.open}
+          onClose={() => setConnectionModalState((s) => ({ ...s, open: false }))}
+          onSubmit={handleCreateConnection}
+          sourceName={connectionModalState.sourceName}
+          targetName={connectionModalState.targetName}
+        />
+      </div>
+    );
+  }
+
+  // ---------------------------------------------------------------------------
   // List view
   // ---------------------------------------------------------------------------
 
@@ -743,10 +857,19 @@ function InnerGraph({ worldId, entities, connections }: InnerGraphProps) {
             size="sm"
             variant="ghost"
             onClick={() => setViewMode("graph")}
-            className="h-7 text-[10px] uppercase tracking-[1.2px] font-sans text-teal"
+            className="h-7 text-[10px] uppercase tracking-[1.2px] font-sans text-tier-3 hover:text-tier-1"
           >
             <Network className="w-3 h-3 mr-1" />
             Graph
+          </Button>
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => setViewMode("tree")}
+            className="h-7 text-[10px] uppercase tracking-[1.2px] font-sans text-tier-3 hover:text-tier-1"
+          >
+            <TreePine className="w-3 h-3 mr-1" />
+            Tree
           </Button>
           <Button
             size="sm"
@@ -905,6 +1028,15 @@ function InnerGraph({ worldId, entities, connections }: InnerGraphProps) {
         >
           <Network className="w-3 h-3 mr-1" />
           Graph
+        </Button>
+        <Button
+          size="sm"
+          variant="ghost"
+          onClick={() => setViewMode("tree")}
+          className="h-7 text-[10px] uppercase tracking-[1.2px] font-sans text-tier-3 hover:text-tier-1"
+        >
+          <TreePine className="w-3 h-3 mr-1" />
+          Tree
         </Button>
         <Button
           size="sm"

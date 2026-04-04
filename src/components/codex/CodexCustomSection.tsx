@@ -421,11 +421,11 @@ const CodexCustomSection = ({
         ) : (
           <ChevronRight className="w-2.5 h-2.5 text-muted-foreground/40 shrink-0" />
         )}
-        <span className="font-heading text-[9px] uppercase tracking-[3px] text-muted-foreground/50 flex-1">
+        <span className="font-heading text-[11px] uppercase tracking-[3px] text-muted-foreground/50 flex-1">
           Custom
         </span>
         {elements.length > 0 && (
-          <span className="font-mono text-[8px] text-muted-foreground/30">
+          <span className="font-mono text-[10px] text-muted-foreground/30">
             {elements.length}
           </span>
         )}

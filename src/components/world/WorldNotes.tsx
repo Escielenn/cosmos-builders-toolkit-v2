@@ -166,13 +166,15 @@ function NoteCard({
                 </div>
               }
             >
-              <RichTextEditor
-                content={localContent}
-                onChange={updateContent}
-                readOnly={!!readOnly}
-                placeholder="Write your note here..."
-                minHeight="120px"
-              />
+              <div style={{ resize: "vertical", overflow: "auto", minHeight: "200px", maxHeight: "80vh" }}>
+                <RichTextEditor
+                  content={localContent}
+                  onChange={updateContent}
+                  readOnly={!!readOnly}
+                  placeholder="Write your note here..."
+                  minHeight="100%"
+                />
+              </div>
             </Suspense>
           </div>
         )}

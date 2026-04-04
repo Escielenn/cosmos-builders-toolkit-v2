@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, Network, ExternalLink, LayoutGrid, List, ChevronDown, ChevronRight, Globe, Dna, Sparkles, GitBranch, Rocket, Zap, Calculator, FileText, Filter, Crown, Users } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
 import Header from "@/components/layout/Header";
@@ -59,24 +59,8 @@ type ViewMode = "mindmap" | "outline";
 type SortBy = "toolType" | "title" | "connections";
 type FilterBy = "all" | string;
 
-// Tool routes for navigation
-const TOOL_ROUTES: Record<string, string> = {
-  "planetary-profile": "/tools/planetary-profile",
-  "evolutionary-biology": "/tools/evolutionary-biology",
-  "xenomythology-framework-builder": "/tools/xenomythology-framework-builder",
-  "environmental-chain-reaction": "/tools/environmental-chain-reaction",
-  "spacecraft-designer": "/tools/spacecraft-designer",
-  "propulsion-consequences-map": "/tools/propulsion-consequences-map",
-  "drake-equation-calculator": "/tools/drake-equation-calculator",
-  "star-system-builder": "/tools/star-system-builder",
-  "empire-designer": "/tools/empire-designer",
-  "technology-consequences": "/tools/technology-consequences",
-  "species-interaction-matrix": "/tools/species-interaction-matrix",
-};
-
 const WorldConnections = () => {
   const { worldId } = useParams<{ worldId: string }>();
-  const navigate = useNavigate();
   const isInWorldLayout = useIsWorldLayout();
   const { worlds } = useWorlds();
   const { nodes, edges, isLoading } = useWorldGraph(worldId);
@@ -84,6 +68,7 @@ const WorldConnections = () => {
   const [sortBy, setSortBy] = useState<SortBy>("toolType");
   const [filterBy, setFilterBy] = useState<FilterBy>("all");
   const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set(["all"]));
+  const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
 
   const world = worlds.find((w) => w.id === worldId);
 
@@ -104,11 +89,8 @@ const WorldConnections = () => {
     return { filteredNodes: filtered, filteredEdges: filteredE };
   }, [nodes, edges, filterBy]);
 
-  const handleNodeClick = (nodeId: string, toolType: string) => {
-    const route = TOOL_ROUTES[toolType];
-    if (route) {
-      navigate(`${route}?worldId=${worldId}&worksheetId=${nodeId}`);
-    }
+  const handleNodeClick = (nodeId: string, _toolType: string) => {
+    setSelectedNodeId((prev) => (prev === nodeId ? null : nodeId));
   };
 
   // Get connection count for each node (using filtered data)
@@ -288,6 +270,7 @@ const WorldConnections = () => {
                 nodes={filteredNodes}
                 edges={filteredEdges}
                 onNodeClick={handleNodeClick}
+                selectedNodeId={selectedNodeId}
                 width={900}
                 height={600}
               />
@@ -340,12 +323,12 @@ const WorldConnections = () => {
                               const NodeIcon = TOOL_ICONS[node.toolType] || FileText;
 
                               return (
-                                <div key={node.id} className="p-3 pl-10 hover:bg-muted/20 transition-colors">
+                                <div key={node.id} className={cn("p-3 pl-10 hover:bg-muted/20 transition-colors", selectedNodeId === node.id && "bg-primary/10 border-l-2 border-l-primary")}>
                                   <div className="flex items-start justify-between gap-4">
                                     <div className="flex-1 min-w-0">
                                       <button
                                         onClick={() => handleNodeClick(node.id, node.toolType)}
-                                        className="font-medium text-left hover:text-primary transition-colors truncate block w-full"
+                                        className={cn("font-medium text-left hover:text-primary transition-colors truncate block w-full", selectedNodeId === node.id && "text-primary")}
                                       >
                                         {node.speciesName || node.title}
                                       </button>

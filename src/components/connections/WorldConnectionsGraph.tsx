@@ -17,6 +17,7 @@ interface WorldConnectionsGraphProps {
   nodes: GraphNode[];
   edges: GraphEdge[];
   onNodeClick: (nodeId: string, toolType: string) => void;
+  selectedNodeId?: string | null;
   width?: number;
   height?: number;
 }
@@ -34,6 +35,7 @@ const WorldConnectionsGraph = ({
   nodes,
   edges,
   onNodeClick,
+  selectedNodeId = null,
   width = 800,
   height = 600,
 }: WorldConnectionsGraphProps) => {
@@ -186,7 +188,8 @@ const WorldConnectionsGraph = ({
     return connected;
   };
 
-  const connectedNodes = hoveredNode ? getConnectedNodes(hoveredNode) : new Set<string>();
+  const activeNode = hoveredNode || selectedNodeId;
+  const connectedNodes = activeNode ? getConnectedNodes(activeNode) : new Set<string>();
 
   if (nodes.length === 0) {
     return (
@@ -234,9 +237,9 @@ const WorldConnectionsGraph = ({
           if (!sourcePos || !targetPos) return null;
 
           const isHighlighted =
-            hoveredNode !== null &&
-            (edge.source === hoveredNode ||
-              edge.target === hoveredNode);
+            activeNode !== null &&
+            (edge.source === activeNode ||
+              edge.target === activeNode);
 
           return (
             <ConnectionEdge
@@ -259,11 +262,11 @@ const WorldConnectionsGraph = ({
 
           if (!pos) return null;
 
-          const isHovered = hoveredNode === node.id;
+          const isHovered = hoveredNode === node.id || selectedNodeId === node.id;
           const isConnected =
-            hoveredNode !== null && connectedNodes.has(node.id);
+            activeNode !== null && connectedNodes.has(node.id);
           const opacity =
-            hoveredNode === null || isConnected ? 1 : 0.3;
+            activeNode === null || isConnected ? 1 : 0.3;
 
           return (
             <g
