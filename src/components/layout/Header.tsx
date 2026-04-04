@@ -231,17 +231,15 @@ const Header = () => {
           </Sheet>
           <AudioSelectorDialog />
           <BackgroundSelector />
-          <Button
-            variant="ghost"
-            size="sm"
-            className="gap-2 text-muted-foreground hover:text-primary hover:bg-primary/10"
+          <button
+            className="sf-nav-link inline-flex items-center justify-center gap-2 h-9 px-2 rounded-sm text-muted-foreground hover:text-primary transition-colors"
             onClick={() => setSearchOpen(true)}
           >
-            <Search className="w-4 h-4" />
-            <kbd className="hidden sm:inline-flex h-5 items-center gap-1 rounded border border-border/50 bg-muted/50 px-1.5 font-mono text-[10px] font-medium text-muted-foreground">
+            <Search className="w-4 h-4 relative z-[1]" />
+            <kbd className="hidden sm:inline-flex h-5 items-center gap-1 rounded border border-border/50 bg-muted/50 px-1.5 font-mono text-[10px] font-medium text-muted-foreground relative z-[1]">
               <span className="text-xs">⌘</span>K
             </kbd>
-          </Button>
+          </button>
           {!loading && user && !isSubscribed && (
             <Button
               variant="outline"
@@ -267,27 +265,27 @@ const Header = () => {
           {!loading && user ? (
             <DropdownMenu modal={false}>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="gap-2 px-2 hover:bg-primary/10">
-                  <Avatar className="w-8 h-8 shrink-0">
+                <button className="sf-nav-link inline-flex items-center gap-2 px-2 h-9 rounded-sm text-foreground/80 hover:text-primary transition-colors">
+                  <Avatar className="w-7 h-7 shrink-0 relative z-[1]">
                     <AvatarImage src={profile?.avatar_url || undefined} />
                     <AvatarFallback className="text-xs">{initials}</AvatarFallback>
                   </Avatar>
-                  <span className="hidden sm:inline text-sm truncate max-w-[120px]">
+                  <span className="hidden sm:inline text-sm truncate max-w-[120px] relative z-[1]">
                     {profile?.display_name || user.email?.split("@")[0]}
                   </span>
                   {isVanguard ? (
-                    <span className="hidden sm:inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-medium bg-violet-500/20 text-violet-400 sf-shimmer-violet">
+                    <span className="hidden sm:inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-medium bg-violet-500/20 text-violet-400 sf-shimmer-violet relative z-[1]">
                       <Sparkles className="w-3 h-3" />
                       Vanguard
                     </span>
                   ) : isSubscribed ? (
-                    <span className="hidden sm:inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-medium bg-amber-500/20 text-amber-600 dark:text-amber-400 sf-shimmer">
+                    <span className="hidden sm:inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-medium bg-amber-500/20 text-amber-600 dark:text-amber-400 sf-shimmer relative z-[1]">
                       <Zap className="w-3 h-3" />
                       Pro
                     </span>
                   ) : null}
-                  <ChevronDown className="w-4 h-4 text-muted-foreground" />
-                </Button>
+                  <ChevronDown className="w-4 h-4 text-muted-foreground relative z-[1]" />
+                </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48 bg-[#0c1019]/95 backdrop-blur-xl border-white/10">
                 <DropdownMenuItem onClick={() => navigate("/profile")}>

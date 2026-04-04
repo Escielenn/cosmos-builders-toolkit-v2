@@ -50,14 +50,12 @@ export default function AudioSelectorDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-9 w-9 text-muted-foreground hover:text-primary hover:bg-primary/10"
+        <button
+          className="sf-nav-link inline-flex items-center justify-center w-9 h-9 rounded-sm text-muted-foreground hover:text-primary transition-colors"
           aria-label="Open audio selector"
         >
-          <Music className="w-4 h-4" />
-        </Button>
+          <Music className="w-4 h-4 relative z-[1]" />
+        </button>
       </DialogTrigger>
 
       <DialogContent className="sm:max-w-xl max-h-[80vh] flex flex-col">

@@ -112,20 +112,18 @@ const BackgroundSelector = () => {
     <>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Button
-            variant="ghost"
-            size="icon"
+          <button
             className={cn(
-              "h-9 w-9",
+              "sf-nav-link inline-flex items-center justify-center w-9 h-9 rounded-sm transition-colors",
               backgroundVisible
-                ? "text-muted-foreground hover:text-primary hover:bg-primary/10"
-                : "text-muted-foreground/40 hover:text-primary/60 hover:bg-primary/10"
+                ? "text-muted-foreground hover:text-primary"
+                : "text-muted-foreground/40 hover:text-primary/60"
             )}
             onClick={toggleBackgroundVisible}
           >
-            {backgroundVisible ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+            {backgroundVisible ? <Eye className="w-4 h-4 relative z-[1]" /> : <EyeOff className="w-4 h-4 relative z-[1]" />}
             <span className="sr-only">Toggle Background</span>
-          </Button>
+          </button>
         </TooltipTrigger>
         <TooltipContent side="bottom">
           <p className="text-xs">{backgroundVisible ? "Hide background" : "Show background"}</p>
