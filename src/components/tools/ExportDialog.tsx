@@ -22,6 +22,7 @@ import { useToast } from "@/hooks/use-toast";
 import { safeOpenWindow } from "@/lib/url-validation";
 import { EXPORT_THEMES } from "@/lib/export/themes";
 import { cn } from "@/lib/utils";
+import { SocialShareButtons } from "@/components/sharing/SocialShareButtons";
 
 import { setActiveTheme, resetActiveTheme } from "@/lib/pdf/styles";
 
@@ -764,6 +765,14 @@ const ExportDialog = ({
             )}
             {format === "notion" ? "Export to Notion" : "Download"}
           </Button>
+        </div>
+
+        {/* Social sharing */}
+        <div className="mt-4 pt-4 border-t border-border/10">
+          <SocialShareButtons
+            url={window.location.href}
+            title={`${toolName} — Built with StellarForge`}
+          />
         </div>
       </DialogContent>
     </Dialog>

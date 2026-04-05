@@ -8,6 +8,8 @@
 
 import { useParams, Link, useLocation } from "react-router-dom";
 import { useState, useMemo } from "react";
+import { useMetaTags } from "@/hooks/use-meta-tags";
+import { useAuth } from "@/contexts/AuthContext";
 import { SocialShareButtons } from "@/components/sharing/SocialShareButtons";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, ChevronDown, ChevronUp, Globe, Link2, X } from "lucide-react";
@@ -37,6 +39,7 @@ import type { WorldTheme } from "@/hooks/use-world";
 
 interface ShowcaseWorld {
   id: string;
+  user_id: string;
   name: string;
   description: string | null;
   header_image_url: string | null;
@@ -58,7 +61,7 @@ function useShowcaseWorld(worldId: string | undefined) {
       if (!worldId) return null;
       const { data, error } = await supabase
         .from("worlds")
-        .select("id, name, description, header_image_url, header_image_focus_y, icon, tags, theme, created_at")
+        .select("id, user_id, name, description, header_image_url, header_image_focus_y, icon, tags, theme, created_at")
         .eq("id", worldId)
         .maybeSingle();
       if (error) throw error;
@@ -355,10 +358,35 @@ export default function WorldShowcase() {
   const { worldId } = useParams<{ worldId: string }>();
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
+  const { user } = useAuth();
   const { data: world, isLoading: worldLoading } = useShowcaseWorld(worldId);
   const { data: entities = [], isLoading: entitiesLoading } =
     useShowcaseEntities(worldId);
   const { data: connections = [] } = useShowcaseConnections(worldId);
+
+  // --- Feature 1: Dynamic OG meta tags ---
+  useMetaTags({
+    title: world?.name,
+    description: world?.description || (world ? `Explore ${world.name} — a world built with StellarForge` : undefined),
+    url: window.location.href,
+    image: world?.header_image_url || undefined,
+  });
+
+  // --- Feature 3: Public/Private toggle (localStorage placeholder) ---
+  const storageKey = worldId ? `sf-showcase-public-${worldId}` : null;
+  const [isPublic, setIsPublic] = useState<boolean>(() => {
+    if (!storageKey) return false;
+    return localStorage.getItem(storageKey) === "true";
+  });
+  const isOwner = !!(user && world && user.id === world.user_id);
+
+  const togglePublic = () => {
+    const next = !isPublic;
+    setIsPublic(next);
+    if (storageKey) {
+      localStorage.setItem(storageKey, String(next));
+    }
+  };
 
   // Group entities by cascade stage
   const groupedEntities = useMemo(() => {
@@ -435,6 +463,25 @@ export default function WorldShowcase() {
   return (
     <div className="min-h-screen bg-sf-void">
       <Header />
+
+      {/* ----------------------------------------------------------------- */}
+      {/* Public/Private Banner (owner only)                                */}
+      {/* ----------------------------------------------------------------- */}
+      {isOwner && !isPublic && (
+        <div className="bg-[#FFB800]/[0.06] border-b border-[#FFB800]/[0.15] px-6 py-3">
+          <div className="max-w-5xl mx-auto flex items-center justify-between gap-4">
+            <span className="font-sans text-sm text-[#FFB800]">
+              This showcase is private. Only you can see it.
+            </span>
+            <button
+              onClick={togglePublic}
+              className="font-sans text-xs font-medium uppercase tracking-[1px] px-4 py-1.5 bg-[#15C17B]/[0.06] border border-[#15C17B]/[0.15] text-[#15C17B] hover:bg-[#15C17B]/[0.12] transition-colors"
+            >
+              Make Public
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* ----------------------------------------------------------------- */}
       {/* Hero Header                                                       */}
@@ -522,6 +569,22 @@ export default function WorldShowcase() {
                   {tag}
                 </span>
               ))}
+            </div>
+          )}
+
+          {/* Public badge + toggle (owner only) */}
+          {isOwner && isPublic && (
+            <div className="flex items-center gap-3 mt-4">
+              <span className="inline-flex items-center gap-1.5 font-mono text-[11px] px-2.5 py-1 rounded-sm bg-[#15C17B]/[0.06] border border-[#15C17B]/[0.15] text-[#15C17B]">
+                <Globe className="w-3 h-3" />
+                Public
+              </span>
+              <button
+                onClick={togglePublic}
+                className="font-sans text-[11px] font-medium uppercase tracking-[1px] text-tier-4 hover:text-tier-2 transition-colors"
+              >
+                Make Private
+              </button>
             </div>
           )}
 

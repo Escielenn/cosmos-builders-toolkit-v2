@@ -3,8 +3,14 @@ import Footer from "@/components/layout/Footer";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Link } from "react-router-dom";
 import { ArrowLeft, Compass, Layers, User, Sparkles } from "lucide-react";
+import { useMetaTags } from "@/hooks/use-meta-tags";
 
 const AboutUs = () => {
+  useMetaTags({
+    title: "About StellarForge",
+    description: "The story behind StellarForge — science fiction worldbuilding tools built on the Environmental Cascade.",
+  });
+
   return (
     <div className="min-h-screen bg-background sf-atmosphere">
       <Header />

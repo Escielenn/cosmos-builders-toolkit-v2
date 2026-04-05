@@ -1,5 +1,11 @@
 # StellarForge Changelog
 
+## 0.6231
+- Added: Dynamic Open Graph meta tags (useMetaTags hook) on Showcase, About, Writing Space
+- Added: Social sharing buttons in ExportDialog (all tools get share on export)
+- Added: Public/private toggle on World Showcase (owner-only, localStorage placeholder)
+- Added: Showcase owner banner ("This showcase is private" with Make Public button)
+
 ## 0.6221
 - Added: 47 new writing prompts (62 total across 5 categories)
 - Added: Personalized prompt generator from world entity data

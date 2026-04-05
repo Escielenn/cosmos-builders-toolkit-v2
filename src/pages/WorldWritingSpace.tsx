@@ -8,6 +8,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useMetaTags } from "@/hooks/use-meta-tags";
 import {
   ChevronLeft,
   ChevronRight,
@@ -69,6 +70,9 @@ const WorldWritingSpace = () => {
   const updateContent = useUpdateDocumentContent(worldId);
   const renameDoc = useRenameDocument(worldId);
   const deleteDoc = useDeleteDocument(worldId);
+
+  // Dynamic meta tags
+  useMetaTags({ title: "Writing Space" });
 
   // UI state
   const [zenMode, setZenMode] = useState(false);
