@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Upload } from "lucide-react";
+import { ArrowLeft, Upload, Globe } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -17,6 +17,7 @@ import { useWorlds } from "@/hooks/use-worlds";
 import { useAuth } from "@/contexts/AuthContext";
 import { PageBursts } from "@/components/ui/data-burst";
 import { WORLDS_BURSTS } from "@/lib/data-bursts";
+import ExampleWorldBanner from "@/components/community/ExampleWorldBanner";
 
 const Worlds = () => {
   const { user, loading } = useAuth();
@@ -125,6 +126,20 @@ const Worlds = () => {
               onClear={() => setSelectedTags([])}
             />
           )}
+        </div>
+
+        {/* Example World Banner */}
+        <ExampleWorldBanner />
+
+        {/* Browse Community Link */}
+        <div className="flex items-center justify-end mb-4">
+          <Link
+            to="/community"
+            className="inline-flex items-center gap-1.5 font-sans text-xs font-medium uppercase tracking-[1px] text-primary hover:text-primary/80 transition-colors"
+          >
+            <Globe className="w-3.5 h-3.5" />
+            Browse Community Worlds
+          </Link>
         </div>
 
         {/* Worlds Grid */}

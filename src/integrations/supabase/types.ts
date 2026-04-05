@@ -397,6 +397,21 @@ export type Database = {
           },
         ]
       }
+      hidden_example_worlds: {
+        Row: {
+          hidden_at: string
+          user_id: string
+        }
+        Insert: {
+          hidden_at?: string
+          user_id: string
+        }
+        Update: {
+          hidden_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       notion_connections: {
         Row: {
           access_token: string
@@ -957,6 +972,41 @@ export type Database = {
           },
         ]
       }
+      world_comments: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          updated_at: string
+          user_id: string
+          world_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          updated_at?: string
+          user_id: string
+          world_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          updated_at?: string
+          user_id?: string
+          world_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "world_comments_world_id_fkey"
+            columns: ["world_id"]
+            isOneToOne: false
+            referencedRelation: "worlds"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       world_connections: {
         Row: {
           connection_type: string
@@ -1113,6 +1163,35 @@ export type Database = {
           },
           {
             foreignKeyName: "world_entries_world_id_fkey"
+            columns: ["world_id"]
+            isOneToOne: false
+            referencedRelation: "worlds"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      world_favorites: {
+        Row: {
+          created_at: string
+          id: string
+          user_id: string
+          world_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          user_id: string
+          world_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          user_id?: string
+          world_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "world_favorites_world_id_fkey"
             columns: ["world_id"]
             isOneToOne: false
             referencedRelation: "worlds"
@@ -1347,50 +1426,72 @@ export type Database = {
           calendar_config: Json | null
           created_at: string
           description: string | null
+          fork_count: number
+          forked_from: string | null
           header_image_focus_y: number
           header_image_url: string | null
           icon: string | null
           id: string
+          is_example: boolean
+          license: string
           name: string
           snapshot_at: string | null
           tags: string[] | null
           theme: Json | null
           updated_at: string
           user_id: string
+          visibility: string
         }
         Insert: {
           archived_at?: string | null
           calendar_config?: Json | null
           created_at?: string
           description?: string | null
+          fork_count?: number
+          forked_from?: string | null
           header_image_focus_y?: number
           header_image_url?: string | null
           icon?: string | null
           id?: string
+          is_example?: boolean
+          license?: string
           name: string
           snapshot_at?: string | null
           tags?: string[] | null
           theme?: Json | null
           updated_at?: string
           user_id: string
+          visibility?: string
         }
         Update: {
           archived_at?: string | null
           calendar_config?: Json | null
           created_at?: string
           description?: string | null
+          fork_count?: number
+          forked_from?: string | null
           header_image_focus_y?: number
           header_image_url?: string | null
           icon?: string | null
           id?: string
+          is_example?: boolean
+          license?: string
           name?: string
           snapshot_at?: string | null
           tags?: string[] | null
           theme?: Json | null
           updated_at?: string
           user_id?: string
+          visibility?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "worlds_forked_from_fkey"
+            columns: ["forked_from"]
+            isOneToOne: false
+            referencedRelation: "worlds"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "worlds_user_id_fkey"
             columns: ["user_id"]
@@ -1651,6 +1752,7 @@ export type Database = {
       }
       cleanup_world_versions: { Args: never; Returns: number }
       compile_world_snapshot: { Args: { p_world_id: string }; Returns: Json }
+      fork_world: { Args: { p_source_world_id: string }; Returns: string }
       get_collaborators_for_world: {
         Args: { p_world_id: string }
         Returns: Json

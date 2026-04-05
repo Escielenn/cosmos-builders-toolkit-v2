@@ -1,5 +1,24 @@
 # StellarForge Changelog
 
+## 0.6341
+- Added: Community Worlds system — visibility (private/community/public), licensing,
+  favorites, comments, fork_world RPC for deep-copying worlds
+- Added: Community browse page at /community with search, sort, world cards
+- Added: Fork button, favorite toggle, license badges, comment section
+- Added: Example world banner on worlds page
+- Added: Visibility + license controls in ShareDialog
+- Added: Community features on World Showcase (fork, favorite, comments)
+- Added: "The Tidelock Archives" example world seed data (10 entities, 12 connections,
+  full cascade from physics through culture)
+- Rebuilt: Writing Space with three-panel layout
+  - Left: Entity Facts panel (list mode → detail mode with connections)
+  - Right: Reference panel (Notes tab, Pinned tab, History tab)
+  - Top: Collapsible moodboard strip
+  - Extracted: WritingTopBar, WritingEntityPanel, WritingReferencePanel,
+    WritingMoodboardStrip components
+- Added: Keyboard shortcuts for panel toggling (Ctrl+\, Ctrl+Shift+\, Ctrl+M)
+- Added: Pinnable reference items (localStorage-based)
+
 ## 0.6241
 - Fixed: KardashevScale export — wrong QuickExportButton props, missing PDF templates
 - Added: KardashevSummaryTemplate + KardashevFullReportTemplate PDF exports

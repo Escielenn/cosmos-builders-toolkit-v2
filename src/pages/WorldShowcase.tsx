@@ -18,6 +18,9 @@ import { GlassPanel } from "@/components/ui/glass-panel";
 import { Badge } from "@/components/ui/badge";
 import { Loader } from "@/components/ui/loader";
 import { supabase } from "@/integrations/supabase/client";
+import ForkButton from "@/components/community/ForkButton";
+import FavoriteButton from "@/components/community/FavoriteButton";
+import CommentSection from "@/components/community/CommentSection";
 import {
   CASCADE_STAGES,
   CASCADE_STAGE_COLORS,
@@ -48,6 +51,9 @@ interface ShowcaseWorld {
   tags: string[];
   theme: WorldTheme;
   created_at: string;
+  visibility: string;
+  fork_count: number;
+  license: string;
 }
 
 // ---------------------------------------------------------------------------
@@ -61,7 +67,7 @@ function useShowcaseWorld(worldId: string | undefined) {
       if (!worldId) return null;
       const { data, error } = await supabase
         .from("worlds")
-        .select("id, user_id, name, description, header_image_url, header_image_focus_y, icon, tags, theme, created_at")
+        .select("id, user_id, name, description, header_image_url, header_image_focus_y, icon, tags, theme, created_at, visibility, fork_count, license")
         .eq("id", worldId)
         .maybeSingle();
       if (error) throw error;
@@ -69,6 +75,9 @@ function useShowcaseWorld(worldId: string | undefined) {
       return {
         ...data,
         theme: (data.theme ?? {}) as WorldTheme,
+        visibility: (data as any).visibility ?? "private",
+        fork_count: (data as any).fork_count ?? 0,
+        license: (data as any).license ?? "cc_by",
       } as ShowcaseWorld;
     },
     enabled: !!worldId,
@@ -379,6 +388,10 @@ export default function WorldShowcase() {
     return localStorage.getItem(storageKey) === "true";
   });
   const isOwner = !!(user && world && user.id === world.user_id);
+  const isCommunityWorld = !!(
+    world &&
+    (world.visibility === "community" || world.visibility === "public")
+  );
 
   const togglePublic = () => {
     const next = !isPublic;
@@ -596,6 +609,19 @@ export default function WorldShowcase() {
               description={world.description || "A science fiction world built with StellarForge.tools"}
             />
           </div>
+
+          {/* Community actions (fork + favorite) for community/public worlds */}
+          {isCommunityWorld && (
+            <div className="flex items-center gap-2 mt-4">
+              <FavoriteButton worldId={world.id} />
+              <ForkButton
+                worldId={world.id}
+                worldName={world.name}
+                forkCount={world.fork_count}
+                license={world.license}
+              />
+            </div>
+          )}
         </div>
 
         {/* Light arc at bottom */}
@@ -704,6 +730,15 @@ export default function WorldShowcase() {
           </div>
         )}
       </section>
+
+      {/* ----------------------------------------------------------------- */}
+      {/* Comments (community/public worlds only)                          */}
+      {/* ----------------------------------------------------------------- */}
+      {isCommunityWorld && (
+        <section className="max-w-5xl mx-auto px-6 pb-12">
+          <CommentSection worldId={world.id} />
+        </section>
+      )}
 
       {/* Footer light arc */}
       <div

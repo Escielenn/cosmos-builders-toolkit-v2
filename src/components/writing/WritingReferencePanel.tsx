@@ -1,0 +1,423 @@
+// ---------------------------------------------------------------------------
+// WritingReferencePanel — Right sidebar for the Writing Space.
+//
+// Three tabs:
+//   Notes:   World notes list with inline expand and pin button.
+//   Pinned:  User-pinned items from localStorage.
+//   History: Version history snapshots with preview and restore.
+// ---------------------------------------------------------------------------
+
+import { useCallback, useState } from "react";
+import {
+  ChevronRight,
+  X,
+  StickyNote,
+  Pin,
+  PinOff,
+  History,
+  Eye,
+  RotateCcw,
+  ChevronDown,
+  ChevronUp,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useWorldNotes } from "@/hooks/use-world-notes";
+import { useWritingPins, type PinnedItem } from "@/hooks/use-writing-pins";
+import type { DocumentSnapshot } from "@/hooks/use-document-versions";
+
+// ---------------------------------------------------------------------------
+// Props
+// ---------------------------------------------------------------------------
+
+export interface WritingReferencePanelProps {
+  worldId: string;
+  open: boolean;
+  onToggle: () => void;
+  snapshots: DocumentSnapshot[];
+  onCreateSnapshot: () => void;
+  onRestoreVersion: (snapshotId: string) => void;
+  previewSnapshot: DocumentSnapshot | null;
+  onPreviewSnapshot: (snapshot: DocumentSnapshot | null) => void;
+}
+
+// ---------------------------------------------------------------------------
+// Constants
+// ---------------------------------------------------------------------------
+
+const PANEL_WIDTH = 320;
+
+type TabId = "notes" | "pinned" | "history";
+
+const TABS: { id: TabId; label: string; icon: typeof StickyNote }[] = [
+  { id: "notes", label: "Notes", icon: StickyNote },
+  { id: "pinned", label: "Pinned", icon: Pin },
+  { id: "history", label: "History", icon: History },
+];
+
+// ---------------------------------------------------------------------------
+// Component
+// ---------------------------------------------------------------------------
+
+export function WritingReferencePanel({
+  worldId,
+  open,
+  onToggle,
+  snapshots,
+  onCreateSnapshot,
+  onRestoreVersion,
+  previewSnapshot,
+  onPreviewSnapshot,
+}: WritingReferencePanelProps) {
+  const { notes, isLoading: notesLoading } = useWorldNotes(worldId);
+  const { pins, addPin, removePin } = useWritingPins(worldId);
+
+  const [activeTab, setActiveTab] = useState<TabId>("notes");
+  const [expandedNoteId, setExpandedNoteId] = useState<string | null>(null);
+
+  // Toggle note expand
+  const handleToggleNote = useCallback((noteId: string) => {
+    setExpandedNoteId((prev) => (prev === noteId ? null : noteId));
+  }, []);
+
+  // Pin a note
+  const handlePinNote = useCallback(
+    (note: { id: string; title: string; content: string }) => {
+      addPin({
+        id: note.id,
+        type: "note",
+        title: note.title,
+        content: note.content,
+      });
+    },
+    [addPin]
+  );
+
+  // Strip HTML for preview
+  const stripHtml = (html: string) =>
+    html.replace(/<[^>]*>/g, " ").trim();
+
+  const previewText = (html: string, maxLen = 80) => {
+    const text = stripHtml(html);
+    return text.length > maxLen ? text.slice(0, maxLen) + "..." : text;
+  };
+
+  // -------------------------------------------------------------------------
+  // Render
+  // -------------------------------------------------------------------------
+
+  return (
+    <aside
+      className={cn(
+        "h-full flex-shrink-0 border-l border-white/[0.06] bg-[#0E1320]/90 backdrop-blur-md transition-all duration-300 ease-out overflow-hidden"
+      )}
+      style={{ width: open ? PANEL_WIDTH : 0 }}
+    >
+      <div
+        className="flex h-full flex-col"
+        style={{ width: PANEL_WIDTH }}
+      >
+        {/* Panel header */}
+        <div className="flex items-center justify-between border-b border-white/[0.06] px-3 py-2.5">
+          <span className="font-heading text-[11px] font-light uppercase tracking-[2px] text-tier-3">
+            Reference
+          </span>
+          <button
+            onClick={onToggle}
+            className="p-1 text-tier-4 hover:text-tier-2 transition-colors"
+            title="Collapse panel"
+          >
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        </div>
+
+        {/* Tab bar */}
+        <div className="flex border-b border-white/[0.06]">
+          {TABS.map((tab) => {
+            const Icon = tab.icon;
+            const isActive = activeTab === tab.id;
+            const count =
+              tab.id === "pinned"
+                ? pins.length
+                : tab.id === "history"
+                  ? snapshots.length
+                  : notes.length;
+
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={cn(
+                  "flex-1 flex items-center justify-center gap-1.5 px-2 py-2 text-[9px] font-heading uppercase tracking-[1.5px] transition-colors border-b-2",
+                  isActive
+                    ? "border-[#15C17B] text-[#15C17B]"
+                    : "border-transparent text-tier-4 hover:text-tier-2"
+                )}
+              >
+                <Icon className="w-3 h-3" />
+                <span>{tab.label}</span>
+                {count > 0 && (
+                  <span className="font-mono text-[8px] text-tier-5">
+                    {count}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Tab content */}
+        <div className="flex-1 overflow-y-auto sf-custom-scrollbar">
+          {/* --------------------------------------------------------------- */}
+          {/* Notes Tab */}
+          {/* --------------------------------------------------------------- */}
+          {activeTab === "notes" && (
+            <div className="py-1">
+              {notesLoading && (
+                <div className="px-3 py-6 text-center">
+                  <span className="text-[10px] uppercase tracking-[1.5px] text-tier-5">
+                    Loading notes...
+                  </span>
+                </div>
+              )}
+              {!notesLoading && notes.length === 0 && (
+                <div className="px-3 py-8 text-center">
+                  <StickyNote className="w-6 h-6 text-tier-5 mx-auto mb-2" />
+                  <p className="text-[10px] uppercase tracking-[1.5px] text-tier-5">
+                    No world notes yet
+                  </p>
+                  <p className="text-[9px] text-tier-5 mt-1">
+                    Create notes in the World Dashboard to reference them here.
+                  </p>
+                </div>
+              )}
+              {notes.map((note) => {
+                const isExpanded = expandedNoteId === note.id;
+                const isPinned = pins.some(
+                  (p) => p.id === note.id && p.type === "note"
+                );
+
+                return (
+                  <div
+                    key={note.id}
+                    className="border-b border-white/[0.03] px-3 py-2"
+                  >
+                    <div className="flex items-start gap-2">
+                      <button
+                        onClick={() => handleToggleNote(note.id)}
+                        className="flex-1 text-left min-w-0"
+                      >
+                        <span className="text-xs text-tier-2 block truncate">
+                          {note.title}
+                        </span>
+                        {!isExpanded && note.content && (
+                          <span className="text-[9px] text-tier-5 block mt-0.5">
+                            {previewText(note.content)}
+                          </span>
+                        )}
+                      </button>
+                      <div className="flex items-center gap-0.5 flex-shrink-0 mt-0.5">
+                        <button
+                          onClick={() => handleToggleNote(note.id)}
+                          className="p-0.5 text-tier-4 hover:text-tier-2"
+                          title={isExpanded ? "Collapse" : "Expand"}
+                        >
+                          {isExpanded ? (
+                            <ChevronUp className="w-3 h-3" />
+                          ) : (
+                            <ChevronDown className="w-3 h-3" />
+                          )}
+                        </button>
+                        <button
+                          onClick={() =>
+                            isPinned
+                              ? removePin(note.id)
+                              : handlePinNote(note)
+                          }
+                          className={cn(
+                            "p-0.5 transition-colors",
+                            isPinned
+                              ? "text-[#FFB800]"
+                              : "text-tier-4 hover:text-[#FFB800]"
+                          )}
+                          title={isPinned ? "Unpin" : "Pin"}
+                        >
+                          {isPinned ? (
+                            <PinOff className="w-3 h-3" />
+                          ) : (
+                            <Pin className="w-3 h-3" />
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                    {isExpanded && note.content && (
+                      <div
+                        className="mt-2 text-xs text-tier-2 leading-relaxed prose prose-sm prose-invert max-w-none [&_p]:my-1 [&_h1]:text-sm [&_h2]:text-xs [&_h3]:text-xs max-h-[300px] overflow-y-auto sf-custom-scrollbar"
+                        dangerouslySetInnerHTML={{ __html: note.content }}
+                      />
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {/* --------------------------------------------------------------- */}
+          {/* Pinned Tab */}
+          {/* --------------------------------------------------------------- */}
+          {activeTab === "pinned" && (
+            <div className="py-1">
+              {pins.length === 0 && (
+                <div className="px-3 py-8 text-center">
+                  <Pin className="w-6 h-6 text-tier-5 mx-auto mb-2" />
+                  <p className="text-[10px] uppercase tracking-[1.5px] text-tier-5">
+                    No pinned items
+                  </p>
+                  <p className="text-[9px] text-tier-5 mt-1">
+                    Pin notes from the Notes tab to keep them visible while writing.
+                  </p>
+                </div>
+              )}
+              {pins.map((pin) => (
+                <div
+                  key={`${pin.type}-${pin.id}`}
+                  className="border-b border-white/[0.03] px-3 py-2"
+                >
+                  <div className="flex items-start gap-2">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-xs text-tier-2 truncate block">
+                          {pin.title}
+                        </span>
+                        <span className="text-[8px] font-mono uppercase tracking-wider text-tier-5 bg-white/[0.04] px-1 py-px rounded-sm flex-shrink-0">
+                          {pin.type}
+                        </span>
+                      </div>
+                      {pin.content && (
+                        <span className="text-[9px] text-tier-5 block mt-0.5">
+                          {previewText(pin.content)}
+                        </span>
+                      )}
+                    </div>
+                    <button
+                      onClick={() => removePin(pin.id)}
+                      className="p-0.5 text-[#FFB800] hover:text-[#FF3366] transition-colors flex-shrink-0 mt-0.5"
+                      title="Unpin"
+                    >
+                      <PinOff className="w-3 h-3" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* --------------------------------------------------------------- */}
+          {/* History Tab */}
+          {/* --------------------------------------------------------------- */}
+          {activeTab === "history" && (
+            <div>
+              {/* Snapshot preview */}
+              {previewSnapshot && (
+                <div className="border-b border-white/[0.06] p-3 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-heading uppercase tracking-[1.5px] text-[#5B8DEF]">
+                      Preview
+                    </span>
+                    <button
+                      onClick={() => onPreviewSnapshot(null)}
+                      className="text-[9px] text-tier-4 hover:text-tier-2 uppercase tracking-wider"
+                    >
+                      Close
+                    </button>
+                  </div>
+                  <div
+                    className="text-xs text-tier-2 max-h-[200px] overflow-y-auto sf-custom-scrollbar prose prose-sm prose-invert max-w-none [&_p]:my-1 [&_h1]:text-sm [&_h2]:text-xs [&_h3]:text-xs"
+                    dangerouslySetInnerHTML={{
+                      __html: previewSnapshot.content,
+                    }}
+                  />
+                  <button
+                    onClick={() => onRestoreVersion(previewSnapshot.id)}
+                    className="w-full flex items-center justify-center gap-2 px-3 py-1.5 bg-[#5B8DEF]/[0.08] border border-[#5B8DEF]/20 text-[#5B8DEF] text-[10px] font-sans font-medium uppercase tracking-[1px] hover:bg-[#5B8DEF]/[0.15] transition-colors"
+                  >
+                    <RotateCcw className="w-3 h-3" />
+                    Restore This Version
+                  </button>
+                </div>
+              )}
+
+              {/* Snapshot list */}
+              {snapshots.length === 0 ? (
+                <div className="px-3 py-8 text-center">
+                  <History className="w-6 h-6 text-tier-5 mx-auto mb-2" />
+                  <p className="text-[10px] uppercase tracking-[1.5px] text-tier-5">
+                    No snapshots yet
+                  </p>
+                  <p className="text-[9px] text-tier-5 mt-1">
+                    Press Ctrl+S to save a snapshot, or wait for auto-save every 5 min.
+                  </p>
+                </div>
+              ) : (
+                <div className="py-1">
+                  {snapshots.map((snapshot, idx) => (
+                    <div
+                      key={snapshot.id}
+                      className={cn(
+                        "flex items-start gap-2 px-3 py-2 hover:bg-white/[0.04] transition-colors group cursor-pointer border-b border-white/[0.03]",
+                        previewSnapshot?.id === snapshot.id &&
+                          "bg-[#5B8DEF]/[0.04]"
+                      )}
+                      onClick={() => onPreviewSnapshot(snapshot)}
+                    >
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-1.5">
+                          <span className="font-mono text-[10px] text-tier-3">
+                            {new Date(snapshot.timestamp).toLocaleTimeString(
+                              [],
+                              { hour: "2-digit", minute: "2-digit" }
+                            )}
+                          </span>
+                          {idx === 0 && (
+                            <span className="text-[8px] font-mono uppercase tracking-wider text-[#15C17B]/60 bg-[#15C17B]/[0.06] border border-[#15C17B]/[0.12] px-1 py-px">
+                              Latest
+                            </span>
+                          )}
+                        </div>
+                        <span className="text-[9px] text-tier-5 font-mono block mt-0.5">
+                          {new Date(snapshot.timestamp).toLocaleDateString()}{" "}
+                          &middot; {snapshot.wordCount.toLocaleString()} words
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity mt-0.5">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onPreviewSnapshot(snapshot);
+                          }}
+                          className="p-1 text-tier-4 hover:text-[#5B8DEF]"
+                          title="Preview"
+                        >
+                          <Eye className="w-3 h-3" />
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onRestoreVersion(snapshot.id);
+                          }}
+                          className="p-1 text-tier-4 hover:text-[#5B8DEF]"
+                          title="Restore"
+                        >
+                          <RotateCcw className="w-3 h-3" />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+    </aside>
+  );
+}

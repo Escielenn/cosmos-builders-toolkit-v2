@@ -54,6 +54,7 @@ const Archive = lazy(() => import("./pages/Archive"));
 const Commendations = lazy(() => import("./pages/Commendations"));
 const AboutUs = lazy(() => import("./pages/AboutUs"));
 const WorldShowcase = lazy(() => import("./pages/WorldShowcase"));
+const Community = lazy(() => import("./pages/Community"));
 
 // Lazy loaded tool pages (heavy, only loaded when accessed)
 const EnvironmentalChainReaction = lazy(() => import("./pages/tools/EnvironmentalChainReaction"));
@@ -189,6 +190,7 @@ const App = () => (
                 <Route path="/archive" element={<Archive />} />
                 <Route path="/commendations" element={<Commendations />} />
                 <Route path="/about" element={<AboutUs />} />
+                <Route path="/community" element={<Community />} />
                 <Route path="/worlds" element={<Worlds />} />
                 {/* Public world showcase — outside WorldLayout (no sidebar) */}
                 <Route path="/worlds/:worldId/showcase" element={<WorldShowcase />} />
