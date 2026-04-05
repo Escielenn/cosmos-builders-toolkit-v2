@@ -42,6 +42,7 @@ export interface ConnectionModalProps {
   targetName: string;
   initialData?: Partial<ConnectionFormData>;
   mode?: "create" | "edit";
+  worldId?: string;
 }
 
 export interface ConnectionFormData {
@@ -68,6 +69,7 @@ export function ConnectionModal({
   targetName,
   initialData,
   mode = "create",
+  worldId,
 }: ConnectionModalProps) {
   const [cascadeStage, setCascadeStage] = useState<ConnectionCascadeStage>(
     initialData?.cascade_stage ?? "culture"
@@ -313,6 +315,7 @@ export function ConnectionModal({
               onChange={setNotes}
               preset="compact"
               placeholder="Optional notes about this connection..."
+              worldId={worldId}
               minHeight="60px"
             />
           </div>

@@ -846,6 +846,7 @@ function InnerGraph({ worldId, entities, connections }: InnerGraphProps) {
           open={showCreateEntity}
           onClose={() => setShowCreateEntity(false)}
           onSubmit={handleCreateEntity}
+          worldId={worldId}
         />
       </div>
     );
@@ -920,6 +921,7 @@ function InnerGraph({ worldId, entities, connections }: InnerGraphProps) {
           open={showCreateEntity}
           onClose={() => setShowCreateEntity(false)}
           onSubmit={handleCreateEntity}
+          worldId={worldId}
         />
 
         <ConnectionModal
@@ -928,6 +930,7 @@ function InnerGraph({ worldId, entities, connections }: InnerGraphProps) {
           onSubmit={handleCreateConnection}
           sourceName={connectionModalState.sourceName}
           targetName={connectionModalState.targetName}
+          worldId={worldId}
         />
       </div>
     );
@@ -1002,6 +1005,7 @@ function InnerGraph({ worldId, entities, connections }: InnerGraphProps) {
           open={showCreateEntity}
           onClose={() => setShowCreateEntity(false)}
           onSubmit={handleCreateEntity}
+          worldId={worldId}
         />
 
         <ConnectionModal
@@ -1010,6 +1014,7 @@ function InnerGraph({ worldId, entities, connections }: InnerGraphProps) {
           onSubmit={handleCreateConnection}
           sourceName={connectionModalState.sourceName}
           targetName={connectionModalState.targetName}
+          worldId={worldId}
         />
       </div>
     );

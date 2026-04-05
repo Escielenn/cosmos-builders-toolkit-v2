@@ -36,6 +36,7 @@ export interface CreateEntityModalProps {
   open: boolean;
   onClose: () => void;
   onSubmit: (data: CreateEntityFormData) => void;
+  worldId?: string;
 }
 
 export interface CreateEntityFormData {
@@ -54,6 +55,7 @@ export function CreateEntityModal({
   open,
   onClose,
   onSubmit,
+  worldId,
 }: CreateEntityModalProps) {
   const [name, setName] = useState("");
   const [entityType, setEntityType] = useState<EntityType>("planet");
@@ -182,6 +184,7 @@ export function CreateEntityModal({
               onChange={setSummary}
               preset="compact"
               placeholder="One-line description for graph tooltips..."
+              worldId={worldId}
               minHeight="50px"
             />
           </div>

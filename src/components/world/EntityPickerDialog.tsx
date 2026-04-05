@@ -192,6 +192,7 @@ export default function EntityPickerDialog({
                   onChange={setDescription}
                   preset="compact"
                   placeholder="A brief description of this element..."
+                  worldId={worldId}
                   minHeight="80px"
                 />
               </div>
