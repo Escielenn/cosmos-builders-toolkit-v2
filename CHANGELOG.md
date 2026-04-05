@@ -1,5 +1,13 @@
 # StellarForge Changelog
 
+## 0.6101
+- Fixed: World Graph crash — default to Knowledge Graph, Entity Graph wrapped in error boundary
+- Fixed: Note/document title reduced from oversized to text-xl, editable title in writing space
+- Fixed: Resize handle now expands content (flex:1), not just border
+- Fixed: New note starts at 160px min-height instead of single line
+- Fixed: Notes title field restyled (font-heading text-lg font-light)
+- Archived completed spec docs, updated ROADMAP and PROJECT-OVERVIEW
+
 ## 0.6100
 - Added: World Graph & Entity Layer (entities, connections, cascade-aware relationships)
 - Added: Graph analytical tools (gravity, narrative distance, tension detection, clusters, what-if removal)

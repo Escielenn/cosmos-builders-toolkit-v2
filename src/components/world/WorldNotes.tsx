@@ -100,7 +100,7 @@ function NoteCard({
           </button>
 
           {readOnly ? (
-            <span className="font-heading text-sm text-tier-2 flex-1 truncate">
+            <span className="font-heading text-lg font-light text-tier-1 flex-1 truncate">
               {note.title}
             </span>
           ) : (
@@ -110,7 +110,7 @@ function NoteCard({
               onChange={(e) => setEditingTitle(e.target.value)}
               onBlur={handleTitleBlur}
               onKeyDown={handleTitleKeyDown}
-              className="font-heading text-sm text-tier-2 flex-1 bg-transparent border-none outline-none focus:border-b focus:border-primary/30 px-0 py-0 truncate"
+              className="font-heading text-lg font-light text-tier-1 flex-1 bg-transparent border-0 border-b border-white/[0.08] outline-none focus:border-primary/30 rounded-none px-0 py-0.5 truncate"
               placeholder="Note title..."
             />
           )}
@@ -166,13 +166,23 @@ function NoteCard({
                 </div>
               }
             >
-              <div style={{ resize: "vertical", overflow: "auto", minHeight: "200px", maxHeight: "80vh" }}>
+              <div
+                className="sf-note-resize-wrapper"
+                style={{
+                  resize: "vertical",
+                  overflow: "hidden",
+                  minHeight: "200px",
+                  maxHeight: "80vh",
+                  display: "flex",
+                  flexDirection: "column",
+                }}
+              >
                 <RichTextEditor
                   content={localContent}
                   onChange={updateContent}
                   readOnly={!!readOnly}
                   placeholder="Write your note here..."
-                  minHeight="100%"
+                  minHeight="160px"
                 />
               </div>
             </Suspense>

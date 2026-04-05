@@ -70,6 +70,7 @@ const WorldWritingSpace = () => {
   const [renameValue, setRenameValue] = useState("");
   const [editorContent, setEditorContent] = useState("");
   const [entityFilter, setEntityFilter] = useState("");
+  const [docTitle, setDocTitle] = useState("");
 
   // Auto-save refs
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -82,6 +83,7 @@ const WorldWritingSpace = () => {
       const first = documents[0];
       setSelectedDocId(first.id);
       setEditorContent(first.content || "");
+      setDocTitle(first.title || "");
       lastSavedContentRef.current = first.content || "";
       pendingContentRef.current = first.content || "";
     }
@@ -148,6 +150,7 @@ const WorldWritingSpace = () => {
     const result = await createDoc.mutateAsync("Untitled Document");
     setSelectedDocId(result.id);
     setEditorContent("");
+    setDocTitle(result.title || "Untitled Document");
     lastSavedContentRef.current = "";
     pendingContentRef.current = "";
     setDocDropdownOpen(false);
@@ -159,6 +162,7 @@ const WorldWritingSpace = () => {
       flushSave();
       setSelectedDocId(doc.id);
       setEditorContent(doc.content || "");
+      setDocTitle(doc.title || "");
       lastSavedContentRef.current = doc.content || "";
       pendingContentRef.current = doc.content || "";
       setDocDropdownOpen(false);
@@ -487,6 +491,28 @@ const WorldWritingSpace = () => {
         <div className="flex-1 overflow-y-auto px-4 py-4 md:px-8 md:py-6">
           {selectedDoc ? (
             <div className="max-w-4xl mx-auto">
+              {/* Editable document title */}
+              <input
+                type="text"
+                value={docTitle}
+                onChange={(e) => setDocTitle(e.target.value)}
+                onBlur={() => {
+                  const trimmed = docTitle.trim();
+                  if (trimmed && trimmed !== selectedDoc.title) {
+                    renameDoc.mutate({ docId: selectedDoc.id, title: trimmed });
+                  } else if (!trimmed) {
+                    setDocTitle(selectedDoc.title);
+                  }
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    (e.target as HTMLInputElement).blur();
+                  }
+                }}
+                className="w-full font-heading text-xl font-light tracking-wide text-tier-1 bg-transparent border-0 border-b border-white/[0.08] outline-none focus:border-[#15C17B]/30 rounded-none px-0 py-2 mb-4"
+                placeholder="Document title..."
+              />
               <StellarForgeEditor
                 key={selectedDocId}
                 content={editorContent}
@@ -494,7 +520,7 @@ const WorldWritingSpace = () => {
                 worldId={worldId}
                 preset="full"
                 placeholder="Begin writing. Use @ to mention entities, [[ to link wiki pages..."
-                minHeight="calc(100vh - 220px)"
+                minHeight="calc(100vh - 280px)"
               />
             </div>
           ) : (

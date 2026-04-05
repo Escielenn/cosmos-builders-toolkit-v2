@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState, lazy, Suspense } from "react";
+import { useCallback, useMemo, useState, lazy, Suspense, Component, type ReactNode, type ErrorInfo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Loader } from "@/components/ui/loader";
 import { Layers, LayoutGrid, Network, GitBranch } from "lucide-react";
@@ -18,13 +18,48 @@ const WorldEntityGraph = lazy(
 
 type GraphMode = "entity" | "knowledge";
 
+/** Inline error boundary so entity graph crashes don't take down the whole page */
+class GraphErrorBoundary extends Component<
+  { children: ReactNode; onFallback?: () => void },
+  { hasError: boolean; error: Error | null }
+> {
+  state = { hasError: false, error: null as Error | null };
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error };
+  }
+  componentDidCatch(error: Error, info: ErrorInfo) {
+    console.error("Entity Graph error:", error, info.componentStack);
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="flex flex-col items-center justify-center h-full gap-3">
+          <p className="font-mono text-xs uppercase tracking-wider text-destructive/60">
+            Entity Graph encountered an error.
+          </p>
+          <p className="text-[10px] text-tier-4 font-sans max-w-xs text-center">
+            {this.state.error?.message}
+          </p>
+          <button
+            onClick={() => this.setState({ hasError: false, error: null })}
+            className="text-[10px] text-teal uppercase tracking-wider font-sans hover:text-teal/80"
+          >
+            Retry
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 const WorldGraph = () => {
   const navigate = useNavigate();
   const { worldId } = useParams<{ worldId: string }>();
   const layoutContext = useWorldLayoutContext();
   const resolvedWorldId = layoutContext?.worldId ?? worldId ?? "";
 
-  const [graphMode, setGraphMode] = useState<GraphMode>("entity");
+  const [graphMode, setGraphMode] = useState<GraphMode>("knowledge");
 
   const { layers, entries, connections, isLoading, error } =
     useWorldOutline(resolvedWorldId);
@@ -165,15 +200,17 @@ const WorldGraph = () => {
       </div>
 
       {graphMode === "entity" ? (
-        <Suspense
-          fallback={
-            <div className="flex items-center justify-center h-full">
-              <Loader size="sm" />
-            </div>
-          }
-        >
-          <WorldEntityGraph worldId={resolvedWorldId} />
-        </Suspense>
+        <GraphErrorBoundary>
+          <Suspense
+            fallback={
+              <div className="flex items-center justify-center h-full">
+                <Loader size="sm" />
+              </div>
+            }
+          >
+            <WorldEntityGraph worldId={resolvedWorldId} />
+          </Suspense>
+        </GraphErrorBoundary>
       ) : (
         <>
           {/* Title + description */}

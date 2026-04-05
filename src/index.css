@@ -905,6 +905,31 @@ html {
     color: #5B8DEF !important;
   }
 
+  /* ---- Note resize wrapper: editor fills container ---- */
+  .sf-note-resize-wrapper > .sf-bracket-panel {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sf-note-resize-wrapper > .sf-bracket-panel > div {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* The EditorContent wrapper (last div child) fills remaining space */
+  .sf-note-resize-wrapper > .sf-bracket-panel > div > div:last-of-type {
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  /* Ensure ProseMirror inside notes has adequate min-height */
+  .sf-note-resize-wrapper .ProseMirror {
+    min-height: 160px;
+  }
+
   /* ---- Writing surface theme variants ---- */
 
   /* Deep Space — dark void with cool off-white text */
