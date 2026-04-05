@@ -351,6 +351,12 @@ export const DEFAULT_FORM_STATE: SensoriumFormState = {
     storyHooks: "",
     integrationNotes: "",
   },
+  environmentSliders: {
+    atmosphericDensity: 5,
+    lightLevel: 5,
+    temperatureRange: 5,
+    conductivity: 3,
+  },
   generalNotes: "",
   moodboard: [],
 };

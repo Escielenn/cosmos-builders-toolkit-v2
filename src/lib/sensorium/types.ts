@@ -241,6 +241,14 @@ export interface SensoriumFormState {
     integrationNotes: string;
   };
 
+  // Environment fine-tuning sliders (0-10, supplement presets)
+  environmentSliders?: {
+    atmosphericDensity: number;
+    lightLevel: number;
+    temperatureRange: number;
+    conductivity: number;
+  };
+
   // Worksheet linking
   _linkedWorksheets?: {
     starSystem?: LinkedWorksheetRef;

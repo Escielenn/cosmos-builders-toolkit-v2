@@ -1,5 +1,15 @@
 # StellarForge Changelog
 
+## 0.6146
+- Added: SENSORIUM push-to-worksheet sync (insights pushed to linked star/planet/evo-bio worksheets)
+- Added: SENSORIUM environment fine-tuning sliders (atmospheric density, light, temp, conductivity)
+- Added: SENSORIUM comparative species view (your species vs human baseline side-by-side)
+- Added: SENSORIUM perceptual narrative generator (template-based "what it feels like" snapshot)
+- Added: SENSORIUM tooltips on environment settings and sliders
+- Added: SENSORIUM Ctrl+S keyboard shortcut for save
+- Added: SENSORIUM tutorial banner (dismissible, localStorage-persisted)
+- Added: Framer Motion fade-in on Perceptual Snapshot card
+
 ## 0.6121
 - Added: Writing Space version history (localStorage snapshots, 5-min auto, Ctrl+S manual)
 - Added: Version history panel with preview and restore

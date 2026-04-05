@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, lazy, Suspense } from "react";
+import { useState, useEffect, useMemo, useCallback, lazy, Suspense } from "react";
 import { useWorldId } from "@/hooks/use-world-id";
 import { useSearchParams } from "react-router-dom";
 import {
@@ -7,7 +7,8 @@ import {
   ScanEye,
   Zap,
   AlertTriangle,
-
+  Upload,
+  X,
   Sun,
   Waves,
   FlaskConical,
@@ -41,6 +42,7 @@ import QuickExportButton from "@/components/tools/QuickExportButton";
 import ExportDialog from "@/components/tools/ExportDialog";
 import ShareDialog from "@/components/sharing/ShareDialog";
 import { useWorksheetShare } from "@/hooks/use-sharing";
+import { motion } from "framer-motion";
 import { useEntityMatch } from "@/hooks/use-entity-match";
 import EntityMatchDialog from "@/components/tools/EntityMatchDialog";
 import type { MoodboardImage } from "@/hooks/use-moodboard";
@@ -73,6 +75,7 @@ import {
   MAGNETIC_STRENGTH_OPTIONS,
   SEASONAL_VARIATION_OPTIONS,
   DEFAULT_FORM_STATE,
+  HUMAN_SENSES,
   getModalityById,
 } from "@/lib/sensorium/data";
 import {
@@ -83,6 +86,8 @@ import {
   aggregateImplications,
   buildSensoriumCopyText,
 } from "@/lib/sensorium/calculations";
+import { pushSensoriumToWorksheets } from "@/lib/sensorium/push-to-worksheet";
+import { generatePerceptualNarrative } from "@/lib/sensorium/perceptual-narrative";
 import {
   LinkedWorksheetRef,
   getLinkConfigsForTool,
@@ -101,6 +106,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import {
   Tabs,
@@ -159,6 +165,10 @@ const Sensorium = () => {
     new Set(["section-environment"])
   );
   const [activeCategory, setActiveCategory] = useState<string>("electromagnetic");
+  const [isPushing, setIsPushing] = useState(false);
+  const [tutorialDismissed, setTutorialDismissed] = useState(
+    () => localStorage.getItem("sf-sensorium-tutorial-seen") === "true"
+  );
 
   // Worksheet hooks
   const entityMatch = useEntityMatch(worldId);
@@ -228,6 +238,14 @@ const Sensorium = () => {
   const implications = useMemo(
     () => aggregateImplications(formState.finalSelection),
     [formState.finalSelection]
+  );
+
+  const perceptualNarrative = useMemo(
+    () =>
+      formState.finalSelection.length > 0
+        ? generatePerceptualNarrative(formState.finalSelection, formState.environment)
+        : "",
+    [formState.finalSelection, formState.environment]
   );
 
   const validationResult = useMemo(() => {
@@ -363,6 +381,30 @@ const Sensorium = () => {
     }));
   };
 
+  const handlePushToWorksheets = useCallback(async () => {
+    setIsPushing(true);
+    try {
+      const result = await pushSensoriumToWorksheets(formState);
+      if (result.updated.length > 0) {
+        toast({ title: `Pushed to ${result.updated.length} worksheet(s)` });
+      }
+      if (result.errors.length > 0) {
+        toast({
+          title: "Some pushes failed",
+          description: result.errors.join("; "),
+          variant: "destructive",
+        });
+      }
+      if (result.updated.length === 0 && result.errors.length === 0) {
+        toast({ title: "No linked worksheets to push to" });
+      }
+    } catch {
+      toast({ title: "Push failed", variant: "destructive" });
+    } finally {
+      setIsPushing(false);
+    }
+  }, [formState, toast]);
+
   const handleCopyResults = () => {
     const text = buildSensoriumCopyText(formState);
     navigator.clipboard.writeText(text);
@@ -439,6 +481,24 @@ const Sensorium = () => {
     if (id) {
       await updateWorksheetTags.mutateAsync({ worksheetId: id, tags });
     }
+  };
+
+  // ─── Keyboard Shortcuts ────────────────────────────────────────
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === "s") {
+        e.preventDefault();
+        handleSave();
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [worldId, user, currentWorksheetId, formState]);
+
+  const dismissTutorial = () => {
+    setTutorialDismissed(true);
+    localStorage.setItem("sf-sensorium-tutorial-seen", "true");
   };
 
   // ─── Render Helpers ───────────────────────────────────────────
@@ -532,6 +592,25 @@ const Sensorium = () => {
           {/* Main content */}
           <div className="flex-1 min-w-0 space-y-6">
 
+            {/* Tutorial banner */}
+            {!tutorialDismissed && (
+              <GlassPanel className="p-4 flex items-start gap-3 border-l-2 border-l-primary/40">
+                <div className="flex-1">
+                  <p className="text-sm text-tier-2">
+                    Start by selecting your environment, then choose sensory modalities. SENSORIUM will score their plausibility and budget.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={dismissTutorial}
+                  className="text-tier-4 hover:text-tier-2 transition-colors flex-shrink-0 mt-0.5"
+                  aria-label="Dismiss tutorial"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </GlassPanel>
+            )}
+
             {/* ═══ Section 1: Environment ═══ */}
             <CollapsibleSection
               id="section-environment"
@@ -552,7 +631,14 @@ const Sensorium = () => {
                 {/* Star Preset */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label>Star Type</Label>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Label className="cursor-help">Star Type</Label>
+                      </TooltipTrigger>
+                      <TooltipContent side="top">
+                        Spectral class determines peak light wavelength and UV output, shaping which visual senses evolve.
+                      </TooltipContent>
+                    </Tooltip>
                     <Select
                       value={formState.environment.star.preset}
                       onValueChange={handleStarPresetChange}
@@ -574,7 +660,14 @@ const Sensorium = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label>Atmosphere</Label>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Label className="cursor-help">Atmosphere</Label>
+                      </TooltipTrigger>
+                      <TooltipContent side="top">
+                        Atmospheric pressure and opacity affect sound transmission, chemical senses, and light scattering.
+                      </TooltipContent>
+                    </Tooltip>
                     <Select
                       value={formState.environment.atmosphere.preset}
                       onValueChange={handleAtmospherePresetChange}
@@ -770,6 +863,56 @@ const Sensorium = () => {
                     </div>
                   </div>
                 )}
+
+                {/* Fine-Tuning Sliders */}
+                <GlassPanel className="p-4 space-y-4 mt-2">
+                  <h4 className="font-heading text-sm font-light uppercase tracking-[3px] text-emerald">
+                    FINE-TUNING
+                  </h4>
+                  {(
+                    [
+                      ["atmosphericDensity", "Atmospheric Density"],
+                      ["lightLevel", "Light Level"],
+                      ["temperatureRange", "Temperature Range"],
+                      ["conductivity", "Conductivity"],
+                    ] as const
+                  ).map(([key, label]) => (
+                    <div key={key} className="space-y-1">
+                      <div className="flex items-center justify-between">
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Label className="cursor-help">{label}</Label>
+                          </TooltipTrigger>
+                          <TooltipContent side="top">
+                            {key === "atmosphericDensity" && "How dense is the atmosphere? Affects sound propagation and chemical senses."}
+                            {key === "lightLevel" && "Ambient light level. Low values favor non-visual senses."}
+                            {key === "temperatureRange" && "Range of temperatures the species encounters. Wider ranges favor thermoreception."}
+                            {key === "conductivity" && "Electrical conductivity of the environment. High values enable electroreception."}
+                          </TooltipContent>
+                        </Tooltip>
+                        <span className="font-mono text-xs text-tier-3">
+                          {formState.environmentSliders?.[key] ?? 5}
+                        </span>
+                      </div>
+                      <Slider
+                        min={0}
+                        max={10}
+                        step={1}
+                        value={[formState.environmentSliders?.[key] ?? 5]}
+                        onValueChange={([v]) =>
+                          setFormState((prev) => ({
+                            ...prev,
+                            environmentSliders: {
+                              ...prev.environmentSliders!,
+                              [key]: v,
+                            },
+                          }))
+                        }
+                        aria-label={label}
+                      />
+                    </div>
+                  ))}
+                </GlassPanel>
               </div>
             </CollapsibleSection>
 
@@ -1269,6 +1412,47 @@ const Sensorium = () => {
                       </GlassPanel>
                     </div>
 
+                    {/* Comparative Species View */}
+                    <GlassPanel className="p-4 mt-2">
+                      <h4 className="font-heading text-sm font-light uppercase tracking-[3px] text-emerald mb-3">
+                        COMPARATIVE VIEW
+                      </h4>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <p className="text-[11px] font-medium uppercase tracking-[1.5px] text-tier-3 mb-2">
+                            Your Species
+                          </p>
+                          <div className="space-y-1">
+                            {MODALITIES.map((mod) => {
+                              const has = formState.finalSelection.includes(mod.id);
+                              return (
+                                <div key={mod.id} className={`flex items-center gap-2 text-xs ${has ? "text-tier-2" : "text-tier-4 opacity-40"}`}>
+                                  <span className={`w-1.5 h-1.5 flex-shrink-0 ${has ? "bg-emerald-400" : "bg-tier-4"}`} />
+                                  {mod.name}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                        <div>
+                          <p className="text-[11px] font-medium uppercase tracking-[1.5px] text-tier-3 mb-2">
+                            Human Baseline
+                          </p>
+                          <div className="space-y-1">
+                            {MODALITIES.map((mod) => {
+                              const has = HUMAN_SENSES.includes(mod.id);
+                              return (
+                                <div key={mod.id} className={`flex items-center gap-2 text-xs ${has ? "text-tier-2" : "text-tier-4 opacity-40"}`}>
+                                  <span className={`w-1.5 h-1.5 flex-shrink-0 ${has ? "bg-cyan-400" : "bg-tier-4"}`} />
+                                  {mod.name}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      </div>
+                    </GlassPanel>
+
                     {perceptionGaps.conflictPotential.length > 0 && (
                       <GlassPanel className="p-4">
                         <h4 className="text-sm font-medium text-amber-400 mb-2">
@@ -1403,15 +1587,49 @@ const Sensorium = () => {
                   }
                 />
 
-                {/* Copy results */}
-                <Button
-                  variant="outline"
-                  className="gap-2"
-                  onClick={handleCopyResults}
-                >
-                  <Copy className="h-4 w-4" />
-                  Copy to Clipboard
-                </Button>
+                {/* Perceptual Snapshot */}
+                {perceptualNarrative && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    <GlassPanel className="p-4">
+                      <h4 className="font-heading text-sm font-light uppercase tracking-[3px] text-emerald mb-3">
+                        PERCEPTUAL SNAPSHOT
+                      </h4>
+                      <p className="text-sm text-tier-2 italic font-sans leading-relaxed">
+                        {perceptualNarrative}
+                      </p>
+                    </GlassPanel>
+                  </motion.div>
+                )}
+
+                {/* Action buttons */}
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    variant="outline"
+                    className="gap-2"
+                    onClick={handleCopyResults}
+                  >
+                    <Copy className="h-4 w-4" />
+                    Copy to Clipboard
+                  </Button>
+
+                  {worldId && formState._linkedWorksheets && (
+                    Object.values(formState._linkedWorksheets).some((ref) => ref?.worksheetId)
+                  ) && (
+                    <Button
+                      variant="outline"
+                      className="gap-2"
+                      onClick={handlePushToWorksheets}
+                      disabled={isPushing}
+                    >
+                      <Upload className="h-4 w-4" />
+                      {isPushing ? "Pushing..." : "Push to Worksheets"}
+                    </Button>
+                  )}
+                </div>
               </div>
             </CollapsibleSection>
           </div>

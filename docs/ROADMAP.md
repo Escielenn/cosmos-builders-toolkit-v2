@@ -72,10 +72,10 @@ Active task list and development priorities. Review this at the start of each se
 > Important but not blocking current work.
 
 ### SENSORIUM Completion
-- [ ] Phase 2: Weighted plausibility scoring (`calculatePlausibilityScore`)
-- [ ] Phase 3: Push-to-worksheet sync
-- [ ] Phase 4: Fine-tuning sliders, comparative species view, perceptual simulation text
-- [ ] Phase 5: Tooltips, keyboard nav, Framer Motion, tutorial overlay
+- [x] Phase 2: Weighted plausibility scoring (already complete — deriveModalities, metabolic budget, perception gaps) (2026-04-04)
+- [x] Phase 3: Push-to-worksheet sync (2026-04-04)
+- [x] Phase 4: Fine-tuning sliders, comparative species view, perceptual simulation text (2026-04-04)
+- [x] Phase 5: Tooltips, keyboard nav, Framer Motion, tutorial overlay (2026-04-04)
 
 ### Export System
 - [ ] Notion export expansion
