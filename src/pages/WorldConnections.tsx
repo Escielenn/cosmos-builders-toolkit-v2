@@ -30,6 +30,7 @@ import { useEntities, useDeleteEntity, useUpdateEntity, useCreateEntity } from "
 import { EntityTreeView } from "@/components/graph/EntityTreeView";
 import { CreateEntityModal, type CreateEntityFormData } from "@/components/graph/CreateEntityModal";
 import { useToast } from "@/hooks/use-toast";
+import { useMetaTags } from "@/hooks/use-meta-tags";
 
 // Tool icon mapping
 const TOOL_ICONS: Record<string, React.ElementType> = {
@@ -78,6 +79,8 @@ const WorldConnections = () => {
   const [showCreateEntity, setShowCreateEntity] = useState(false);
   const [createEntityParentId, setCreateEntityParentId] = useState<string | null>(null);
   const { toast } = useToast();
+
+  useMetaTags({ title: "World Connections" });
 
   // Entity data for the mind map (tree) view
   const { data: entities } = useEntities(resolvedWorldId || undefined);

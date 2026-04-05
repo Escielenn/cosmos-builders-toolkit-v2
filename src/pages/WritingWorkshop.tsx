@@ -28,6 +28,7 @@ import { WriteSheet } from "@/components/writing/WriteSheet";
 import { StatsPanel } from "@/components/writing/StatsPanel";
 import { PromptBrowser } from "@/components/writing/PromptBrowser";
 import { useWritingPreferences } from "@/hooks/use-writing-preferences";
+import { useMetaTags } from "@/hooks/use-meta-tags";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -49,6 +50,8 @@ const WritingWorkshop = () => {
   const { entries, isLoading } = useWritingEntries();
   const deleteEntry = useDeleteEntry();
   const { preferences } = useWritingPreferences();
+
+  useMetaTags({ title: "Writing Workshop" });
 
   // Filters
   const [searchQuery, setSearchQuery] = useState("");

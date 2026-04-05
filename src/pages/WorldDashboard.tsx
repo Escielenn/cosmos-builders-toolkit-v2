@@ -81,6 +81,7 @@ import { WORLD_DASHBOARD_BURSTS } from "@/lib/data-bursts";
 import { DeleteConfirmDialog } from "@/components/dialogs/DeleteConfirmDialog";
 import { ToastAction } from "@/components/ui/toast";
 import { useToast } from "@/hooks/use-toast";
+import { useMetaTags } from "@/hooks/use-meta-tags";
 import RecentActivity from "@/components/world/RecentActivity";
 const TOOLS = [
   {
@@ -445,6 +446,7 @@ const WorldDashboard = () => {
   const isInWorldLayout = useIsWorldLayout();
   const { toast } = useToast();
   const { data: world, isLoading: worldLoading, error: worldError } = useWorld(worldId);
+  useMetaTags({ title: world?.name || "World Dashboard" });
   const { worksheets, isLoading: worksheetsLoading, deleteWorksheet } = useWorksheets(worldId);
   const { deleteWorld, updateWorld, archiveWorld, unarchiveWorld } = useWorlds();
   const renameWorksheet = useRenameWorksheet();

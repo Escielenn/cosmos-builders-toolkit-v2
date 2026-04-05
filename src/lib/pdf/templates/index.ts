@@ -38,3 +38,5 @@ export { default as SensoriumSummaryTemplate } from "./SensoriumSummaryTemplate"
 export { default as SensoriumFullReportTemplate } from "./SensoriumFullReportTemplate";
 export { default as GravitasSummaryTemplate } from "./GravitasSummaryTemplate";
 export { default as GravitasFullReportTemplate } from "./GravitasFullReportTemplate";
+export { default as KardashevSummaryTemplate } from "./KardashevSummaryTemplate";
+export { default as KardashevFullReportTemplate } from "./KardashevFullReportTemplate";

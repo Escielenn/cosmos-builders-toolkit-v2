@@ -48,6 +48,10 @@ import KeyChoicesSidebar, {
 import QuickExportButton from "@/components/tools/QuickExportButton";
 import ExportDialog from "@/components/tools/ExportDialog";
 import ShareDialog from "@/components/sharing/ShareDialog";
+import {
+  KardashevSummaryTemplate,
+  KardashevFullReportTemplate,
+} from "@/lib/pdf/templates";
 import { useEntityMatch } from "@/hooks/use-entity-match";
 import EntityMatchDialog from "@/components/tools/EntityMatchDialog";
 import type { MoodboardImage } from "@/hooks/use-moodboard";
@@ -342,10 +346,11 @@ const KardashevScale = () => {
       isCloudEnabled={!!(worldId && user)}
       extraActions={
         <QuickExportButton
-          toolType={TOOL_TYPE}
-          worksheetId={currentWorksheetId}
-          formData={formState}
-          results={results}
+          toolName="K-Scale"
+          worldName={currentWorld?.name}
+          formState={formState}
+          summaryTemplate={<KardashevSummaryTemplate formState={formState} worldName={currentWorld?.name} />}
+          fullTemplate={<KardashevFullReportTemplate formState={formState} worldName={currentWorld?.name} />}
         />
       }
       worksheetId={currentWorksheetId}
@@ -923,6 +928,8 @@ const KardashevScale = () => {
         toolName="K-Scale"
         worldName={currentWorld?.name}
         formState={formState}
+        summaryTemplate={<KardashevSummaryTemplate formState={formState} worldName={currentWorld?.name} />}
+        fullTemplate={<KardashevFullReportTemplate formState={formState} worldName={currentWorld?.name} />}
         defaultFilename="kardashev-scale"
       />
 

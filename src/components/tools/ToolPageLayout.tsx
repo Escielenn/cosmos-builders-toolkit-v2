@@ -24,6 +24,7 @@ import { WorksheetTagsBar } from "@/components/tools/WorksheetTagsBar";
 import { getToolIcon } from "@/components/icons/tool-icons";
 import { getToolPageConfig } from "@/lib/tool-page-config";
 import { useWorldId } from "@/hooks/use-world-id";
+import { useMetaTags } from "@/hooks/use-meta-tags";
 
 // ─── Props ───────────────────────────────────────────────────────────
 
@@ -99,6 +100,11 @@ export default function ToolPageLayout({
   const worldId = useWorldId();
   const ToolIcon = getToolIcon(toolType);
   const introData = TOOL_INTROS[cfg.introKey];
+
+  useMetaTags({
+    title: `${cfg.brandName}: ${cfg.fullName}`,
+    description: cfg.subtitle,
+  });
 
   // Track save completion to show cascade suggestions
   const [showCascadeSuggestion, setShowCascadeSuggestion] = useState(false);

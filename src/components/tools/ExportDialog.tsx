@@ -272,6 +272,14 @@ const ExportDialog = ({
     }
   };
 
+  /** Open a blob URL in a new tab and revoke after a delay to free memory. */
+  const previewBlob = (blob: Blob) => {
+    const url = URL.createObjectURL(blob);
+    window.open(url, "_blank");
+    // Revoke after a generous delay so the new tab finishes loading
+    setTimeout(() => URL.revokeObjectURL(url), 60_000);
+  };
+
   const handlePreview = async () => {
     setIsPreviewing(true);
 
@@ -279,16 +287,14 @@ const ExportDialog = ({
       switch (format) {
         case "json": {
           const dataStr = JSON.stringify(formState, null, 2);
-          const blob = new Blob([dataStr], { type: "application/json" });
-          window.open(URL.createObjectURL(blob), "_blank");
+          previewBlob(new Blob([dataStr], { type: "application/json" }));
           break;
         }
 
         case "csv": {
           const { worksheetToCSV } = await loadCsvExport();
           const csvPreview = worksheetToCSV(toolName, formState as Record<string, unknown>);
-          const csvBlob = new Blob([csvPreview], { type: "text/csv;charset=utf-8" });
-          window.open(URL.createObjectURL(csvBlob), "_blank");
+          previewBlob(new Blob([csvPreview], { type: "text/csv;charset=utf-8" }));
           break;
         }
 
@@ -300,8 +306,7 @@ const ExportDialog = ({
               worldName,
               state: formState as import("@/lib/timeline/types").TimelineState,
             });
-            const blob = new Blob([mdContent], { type: "text/markdown;charset=utf-8" });
-            window.open(URL.createObjectURL(blob), "_blank");
+            previewBlob(new Blob([mdContent], { type: "text/markdown;charset=utf-8" }));
           } else {
             const { generateGenericText } = await loadTextGenerator();
             const textContent = generateGenericText({
@@ -310,8 +315,7 @@ const ExportDialog = ({
               worksheetTitle,
               data: formState as Record<string, unknown>,
             });
-            const blob = new Blob([textContent], { type: "text/plain;charset=utf-8" });
-            window.open(URL.createObjectURL(blob), "_blank");
+            previewBlob(new Blob([textContent], { type: "text/plain;charset=utf-8" }));
           }
           break;
         }
@@ -344,8 +348,7 @@ const ExportDialog = ({
             resetActiveTheme();
           }
           // Wrap with explicit MIME type so browsers open the PDF viewer
-          const pdfBlob = new Blob([blob], { type: "application/pdf" });
-          window.open(URL.createObjectURL(pdfBlob), "_blank");
+          previewBlob(new Blob([blob], { type: "application/pdf" }));
           break;
         }
       }

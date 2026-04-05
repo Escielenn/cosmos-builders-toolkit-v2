@@ -1,5 +1,13 @@
 # StellarForge Changelog
 
+## 0.6241
+- Fixed: KardashevScale export — wrong QuickExportButton props, missing PDF templates
+- Added: KardashevSummaryTemplate + KardashevFullReportTemplate PDF exports
+- Fixed: PDF preview memory leak — previewBlob helper with 60s delayed revocation
+- Added: OG meta tags on all 21 tool pages (via ToolPageLayout), WorldDashboard, WritingWorkshop, WorldConnections
+- Added: vendor-three and vendor-html2canvas manual chunks for bundle optimization
+- Completed: Systematic bug-fix audit — 21 tools checked, 1 critical fix (K-Scale), 20 passing
+
 ## 0.6231
 - Added: Dynamic Open Graph meta tags (useMetaTags hook) on Showcase, About, Writing Space
 - Added: Social sharing buttons in ExportDialog (all tools get share on export)

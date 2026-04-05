@@ -59,6 +59,10 @@ export default defineConfig({
           "vendor-docx": ["docx", "file-saver"],
           // D3 for visualizations
           "vendor-d3": ["d3-force"],
+          // Three.js (Solaris simulator only)
+          "vendor-three": ["three", "@react-three/fiber", "@react-three/drei"],
+          // html2canvas (visual export only)
+          "vendor-html2canvas": ["html2canvas"],
           // Supabase
           "vendor-supabase": ["@supabase/supabase-js"],
           // React Query
