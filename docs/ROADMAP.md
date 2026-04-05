@@ -78,9 +78,9 @@ Active task list and development priorities. Review this at the start of each se
 - [x] Phase 5: Tooltips, keyboard nav, Framer Motion, tutorial overlay (2026-04-04)
 
 ### Export System
-- [ ] Notion export expansion
-- [ ] CSV/spreadsheet export for data-heavy tools
-- [ ] Cross-tool linked export (multiple worksheets as one document)
+- [x] Notion export expansion (already fully implemented — OAuth, export, disconnect) (pre-existing)
+- [x] CSV/spreadsheet export for data-heavy tools (2026-04-04)
+- [x] Cross-tool linked export (multiple worksheets as one document) (2026-04-04)
 
 ---
 

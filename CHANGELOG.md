@@ -1,5 +1,12 @@
 # StellarForge Changelog
 
+## 0.6166
+- Added: CSV export for worksheets (flattened key-value), entities, and connections
+- Added: CSV tab in ExportDialog with preview
+- Added: Cross-tool linked export (unified document with inline cross-references)
+- Added: "Include cross-references" checkbox in World Export for Text/Markdown formats
+- Added: Relationships appendix in linked exports
+
 ## 0.6156
 - Fixed: Mind Map now uses EntityTreeView with full entity hierarchy
 - Fixed: WorldConnections "Mind Map" view replaced with entity-based tree (drag-to-reparent, context menus, detail panel)

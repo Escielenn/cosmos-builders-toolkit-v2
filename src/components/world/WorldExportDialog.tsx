@@ -10,6 +10,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { useNotion } from "@/hooks/use-notion";
@@ -24,6 +26,7 @@ import UpgradeDialog from "@/components/subscription/UpgradeDialog";
 const loadDocxGenerator = () => import("@/lib/docx");
 const loadMarkdownExport = () => import("@/lib/export/markdown-export");
 const loadScrivenerExport = () => import("@/lib/export/scrivener-export");
+const loadLinkedExport = () => import("@/lib/export/linked-export");
 
 interface Worksheet {
   id: string;
@@ -58,6 +61,7 @@ const WorldExportDialog = ({
   const [worksheets, setWorksheets] = useState<Worksheet[]>([]);
   const [showUpgrade, setShowUpgrade] = useState(false);
   const [format, setFormat] = useState<ExportFormat>("json");
+  const [includeCrossReferences, setIncludeCrossReferences] = useState(false);
 
   // Fetch worksheets when dialog opens
   useEffect(() => {
@@ -147,29 +151,48 @@ const WorldExportDialog = ({
         }
 
         case "text": {
-          let textContent = `${worldName.toUpperCase()}\n`;
-          textContent += `${"=".repeat(worldName.length)}\n\n`;
-          textContent += `Exported: ${new Date().toLocaleDateString()}\n`;
-          textContent += `Total Worksheets: ${worksheets.length}\n\n`;
+          if (includeCrossReferences) {
+            const { generateLinkedExport } = await loadLinkedExport();
+            const textContent = await generateLinkedExport(
+              {
+                worldId,
+                worksheetIds: worksheets.map((w) => w.id),
+                format: "text",
+                includeCrossReferences: true,
+              },
+              supabase
+            );
+            const blob = new Blob([textContent], { type: "text/plain;charset=utf-8" });
+            downloadBlob(blob, generateFilename("txt"));
+            toast({
+              title: "EXPORT COMPLETE.",
+              description: `Exported ${worksheets.length} worksheet${worksheets.length === 1 ? "" : "s"} with cross-references as text file.`,
+            });
+          } else {
+            let textContent = `${worldName.toUpperCase()}\n`;
+            textContent += `${"=".repeat(worldName.length)}\n\n`;
+            textContent += `Exported: ${new Date().toLocaleDateString()}\n`;
+            textContent += `Total Worksheets: ${worksheets.length}\n\n`;
 
-          for (const [toolType, toolWorksheets] of Object.entries(worksheetsByTool)) {
-            const formattedToolName = toolType.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
-            textContent += `\n${formattedToolName}\n`;
-            textContent += `${"-".repeat(formattedToolName.length)}\n\n`;
+            for (const [toolType, toolWorksheets] of Object.entries(worksheetsByTool)) {
+              const formattedToolName = toolType.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+              textContent += `\n${formattedToolName}\n`;
+              textContent += `${"-".repeat(formattedToolName.length)}\n\n`;
 
-            for (const worksheet of toolWorksheets) {
-              textContent += `  ${worksheet.title}\n`;
-              textContent += `  Updated: ${new Date(worksheet.updated_at).toLocaleDateString()}\n`;
-              textContent += `  ${JSON.stringify(worksheet.data, null, 2).split("\n").join("\n  ")}\n\n`;
+              for (const worksheet of toolWorksheets) {
+                textContent += `  ${worksheet.title}\n`;
+                textContent += `  Updated: ${new Date(worksheet.updated_at).toLocaleDateString()}\n`;
+                textContent += `  ${JSON.stringify(worksheet.data, null, 2).split("\n").join("\n  ")}\n\n`;
+              }
             }
-          }
 
-          const blob = new Blob([textContent], { type: "text/plain;charset=utf-8" });
-          downloadBlob(blob, generateFilename("txt"));
-          toast({
-            title: "EXPORT COMPLETE.",
-            description: `Exported ${worksheets.length} worksheet${worksheets.length === 1 ? "" : "s"} as text file.`,
-          });
+            const blob = new Blob([textContent], { type: "text/plain;charset=utf-8" });
+            downloadBlob(blob, generateFilename("txt"));
+            toast({
+              title: "EXPORT COMPLETE.",
+              description: `Exported ${worksheets.length} worksheet${worksheets.length === 1 ? "" : "s"} as text file.`,
+            });
+          }
           break;
         }
 
@@ -190,18 +213,37 @@ const WorldExportDialog = ({
         }
 
         case "markdown": {
-          const { downloadMarkdownZip } = await loadMarkdownExport();
-          const snapshot = await compileWorldSnapshot(worldId);
-          const exportSections = formatWorldForExport(snapshot);
-          await downloadMarkdownZip(
-            worldName,
-            snapshot.world.description || undefined,
-            exportSections,
-          );
-          toast({
-            title: "EXPORT COMPLETE.",
-            description: `Exported world as Markdown ZIP with wiki links and chronicle.`,
-          });
+          if (includeCrossReferences) {
+            const { generateLinkedExport } = await loadLinkedExport();
+            const mdContent = await generateLinkedExport(
+              {
+                worldId,
+                worksheetIds: worksheets.map((w) => w.id),
+                format: "markdown",
+                includeCrossReferences: true,
+              },
+              supabase
+            );
+            const blob = new Blob([mdContent], { type: "text/markdown;charset=utf-8" });
+            downloadBlob(blob, generateFilename("md"));
+            toast({
+              title: "EXPORT COMPLETE.",
+              description: `Exported world as Markdown with cross-references and relationships appendix.`,
+            });
+          } else {
+            const { downloadMarkdownZip } = await loadMarkdownExport();
+            const snapshot = await compileWorldSnapshot(worldId);
+            const exportSections = formatWorldForExport(snapshot);
+            await downloadMarkdownZip(
+              worldName,
+              snapshot.world.description || undefined,
+              exportSections,
+            );
+            toast({
+              title: "EXPORT COMPLETE.",
+              description: `Exported world as Markdown ZIP with wiki links and chronicle.`,
+            });
+          }
           break;
         }
 
@@ -443,6 +485,19 @@ const WorldExportDialog = ({
                 )}
               </TabsContent>
             </Tabs>
+
+            {(format === "text" || format === "markdown") && worksheets.length > 1 && (
+              <div className="flex items-center space-x-2 pt-2 border-t border-border">
+                <Checkbox
+                  id="includeCrossRefs"
+                  checked={includeCrossReferences}
+                  onCheckedChange={(checked) => setIncludeCrossReferences(checked as boolean)}
+                />
+                <Label htmlFor="includeCrossRefs" className="text-sm cursor-pointer">
+                  Include cross-references between worksheets
+                </Label>
+              </div>
+            )}
 
             {worksheets.length === 0 && (
               <p className="text-sm text-muted-foreground text-center py-2">

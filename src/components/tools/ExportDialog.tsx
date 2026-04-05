@@ -1,5 +1,5 @@
 import { useState, useEffect, ReactElement } from "react";
-import { Download, FileText, FileJson, Eye, FileType, FileSpreadsheet, ExternalLink, Unplug, Check } from "lucide-react";
+import { Download, FileText, FileJson, Eye, FileType, FileSpreadsheet, ExternalLink, Unplug, Check, Table2 } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
 import { useNotion } from "@/hooks/use-notion";
 import { useAuth } from "@/contexts/AuthContext";
@@ -29,8 +29,9 @@ import { setActiveTheme, resetActiveTheme } from "@/lib/pdf/styles";
 const loadPdfRenderer = () => import("@react-pdf/renderer");
 const loadTextGenerator = () => import("@/lib/text");
 const loadDocxGenerator = () => import("@/lib/docx");
+const loadCsvExport = () => import("@/lib/export/csv-export");
 
-export type ExportFormat = "pdf-summary" | "pdf-full" | "text" | "word" | "json" | "notion";
+export type ExportFormat = "pdf-summary" | "pdf-full" | "text" | "word" | "json" | "csv" | "notion";
 
 interface ExportDialogProps {
   open: boolean;
@@ -67,7 +68,7 @@ const ExportDialog = ({
     // Validate saved format is usable with current templates
     if (saved === "pdf-summary" && summaryTemplate) return saved;
     if (saved === "pdf-full" && fullTemplate) return saved;
-    if (saved === "text" || saved === "word" || saved === "json" || saved === "notion") return saved;
+    if (saved === "text" || saved === "word" || saved === "json" || saved === "csv" || saved === "notion") return saved;
     // Fallback
     return hasPdfTemplates ? "pdf-summary" : "text";
   };
@@ -98,6 +99,8 @@ const ExportDialog = ({
         return "docx";
       case "json":
         return "json";
+      case "csv":
+        return "csv";
       case "notion":
         return "";
     }
@@ -113,6 +116,14 @@ const ExportDialog = ({
           const blob = new Blob([dataStr], { type: "application/json;charset=utf-8" });
           downloadBlob(blob, `${filename}.json`);
           toast({ title: "EXPORT COMPLETE.", description: "Downloaded as JSON file." });
+          break;
+        }
+
+        case "csv": {
+          const { worksheetToCSV, downloadCSV } = await loadCsvExport();
+          const csvContent = worksheetToCSV(toolName, formState as Record<string, unknown>);
+          downloadCSV(csvContent, `${filename}.csv`);
+          toast({ title: "EXPORT COMPLETE.", description: "Downloaded as CSV file." });
           break;
         }
 
@@ -272,6 +283,14 @@ const ExportDialog = ({
           break;
         }
 
+        case "csv": {
+          const { worksheetToCSV } = await loadCsvExport();
+          const csvPreview = worksheetToCSV(toolName, formState as Record<string, unknown>);
+          const csvBlob = new Blob([csvPreview], { type: "text/csv;charset=utf-8" });
+          window.open(URL.createObjectURL(csvBlob), "_blank");
+          break;
+        }
+
         case "text": {
           if (isTimelineData(formState)) {
             const { generateTimelineMarkdown } = await loadTextGenerator();
@@ -393,17 +412,21 @@ const ExportDialog = ({
               case "json":
                 setFormat("json");
                 break;
+              case "csv":
+                setFormat("csv");
+                break;
               case "notion":
                 setFormat("notion");
                 break;
             }
           }}
         >
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="pdf">PDF</TabsTrigger>
             <TabsTrigger value="text">Text</TabsTrigger>
             <TabsTrigger value="word">Word</TabsTrigger>
             <TabsTrigger value="json">JSON</TabsTrigger>
+            <TabsTrigger value="csv">CSV</TabsTrigger>
             <TabsTrigger value="notion">Notion</TabsTrigger>
           </TabsList>
 
@@ -534,6 +557,43 @@ const ExportDialog = ({
                 </p>
               </div>
             </div>
+          </TabsContent>
+
+          <TabsContent value="csv" className="space-y-4 pt-4">
+            <div
+              className="flex items-center space-x-3 p-3 rounded-lg border border-border bg-accent/5 cursor-pointer"
+              onClick={() => setFormat("csv")}
+            >
+              <Table2 className="w-5 h-5 text-muted-foreground" />
+              <div className="flex-1">
+                <span className="font-medium">CSV Export (.csv)</span>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Spreadsheet-compatible format. Flattened field/value rows for Excel, Google Sheets, or data analysis.
+                </p>
+              </div>
+            </div>
+            {formState && typeof formState === "object" && (
+              <div className="rounded-lg border border-border bg-muted/30 p-3 max-h-40 overflow-auto">
+                <p className="text-[11px] font-medium uppercase tracking-[1.5px] text-muted-foreground mb-2">
+                  Preview
+                </p>
+                <pre className="text-xs font-mono text-muted-foreground whitespace-pre-wrap">
+                  {(() => {
+                    try {
+                      const pairs = Object.entries(formState as Record<string, unknown>).slice(0, 8);
+                      return pairs
+                        .map(([k, v]) => {
+                          const val = typeof v === "object" ? JSON.stringify(v).slice(0, 50) : String(v ?? "").slice(0, 50);
+                          return `${k}: ${val}`;
+                        })
+                        .join("\n") + (Object.keys(formState as Record<string, unknown>).length > 8 ? "\n..." : "");
+                    } catch {
+                      return "Preview not available";
+                    }
+                  })()}
+                </pre>
+              </div>
+            )}
           </TabsContent>
 
           <TabsContent value="notion" className="space-y-4 pt-4">
