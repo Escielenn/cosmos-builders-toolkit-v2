@@ -1,6 +1,6 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback, lazy, Suspense } from "react";
 import { Link, useParams } from "react-router-dom";
-import { ArrowLeft, Network, ExternalLink, LayoutGrid, List, ChevronDown, ChevronRight, Globe, Dna, Sparkles, GitBranch, Rocket, Zap, Calculator, FileText, Filter, Crown, Users } from "lucide-react";
+import { ArrowLeft, Network, ExternalLink, LayoutGrid, List, ChevronDown, ChevronRight, Globe, Dna, Sparkles, GitBranch, Rocket, Zap, Calculator, FileText, Filter, Crown, Users, TreePine, Plus } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
 import Header from "@/components/layout/Header";
 import { GlassPanel } from "@/components/ui/glass-panel";
@@ -23,9 +23,13 @@ import {
   DrakeContextCard,
 } from "@/components/connections";
 import { cn } from "@/lib/utils";
-import { useIsWorldLayout } from "@/contexts/WorldLayoutContext";
+import { useIsWorldLayout, useWorldLayoutContext } from "@/contexts/WorldLayoutContext";
 import { PageBursts } from "@/components/ui/data-burst";
 import { WORLD_CONNECTIONS_BURSTS } from "@/lib/data-bursts";
+import { useEntities, useDeleteEntity, useUpdateEntity, useCreateEntity } from "@/hooks/use-entity-graph";
+import { EntityTreeView } from "@/components/graph/EntityTreeView";
+import { CreateEntityModal, type CreateEntityFormData } from "@/components/graph/CreateEntityModal";
+import { useToast } from "@/hooks/use-toast";
 
 // Tool icon mapping
 const TOOL_ICONS: Record<string, React.ElementType> = {
@@ -55,12 +59,14 @@ const FILTER_OPTIONS = [
   { value: "species-interaction-matrix", label: "Species Matrix", icon: Users },
 ];
 
-type ViewMode = "mindmap" | "outline";
+type ViewMode = "mindmap" | "worksheet" | "outline";
 type SortBy = "toolType" | "title" | "connections";
 type FilterBy = "all" | string;
 
 const WorldConnections = () => {
   const { worldId } = useParams<{ worldId: string }>();
+  const layoutContext = useWorldLayoutContext();
+  const resolvedWorldId = layoutContext?.worldId ?? worldId ?? "";
   const isInWorldLayout = useIsWorldLayout();
   const { worlds } = useWorlds();
   const { nodes, edges, isLoading } = useWorldGraph(worldId);
@@ -69,6 +75,42 @@ const WorldConnections = () => {
   const [filterBy, setFilterBy] = useState<FilterBy>("all");
   const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set(["all"]));
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
+  const [showCreateEntity, setShowCreateEntity] = useState(false);
+  const [createEntityParentId, setCreateEntityParentId] = useState<string | null>(null);
+  const { toast } = useToast();
+
+  // Entity data for the mind map (tree) view
+  const { data: entities } = useEntities(resolvedWorldId || undefined);
+  const deleteEntity = useDeleteEntity(resolvedWorldId || undefined);
+  const updateEntity = useUpdateEntity(resolvedWorldId || undefined);
+  const createEntity = useCreateEntity(resolvedWorldId || undefined);
+
+  const handleTreeCreateChild = useCallback((parentId: string) => {
+    setCreateEntityParentId(parentId);
+    setShowCreateEntity(true);
+  }, []);
+
+  const handleTreeDeleteEntity = useCallback((entityId: string) => {
+    if (window.confirm("Delete this entity? This cannot be undone.")) {
+      deleteEntity.mutate(entityId);
+    }
+  }, [deleteEntity]);
+
+  const handleTreeReparent = useCallback((entityId: string, newParentId: string | null) => {
+    updateEntity.mutate({ id: entityId, parent_entity_id: newParentId });
+  }, [updateEntity]);
+
+  const handleCreateEntity = useCallback((formData: CreateEntityFormData) => {
+    createEntity.mutate({
+      name: formData.name,
+      entity_type: formData.entity_type,
+      custom_type_label: formData.custom_type_label,
+      cascade_stage: formData.cascade_stage,
+      summary: formData.summary,
+      parent_entity_id: createEntityParentId,
+    });
+    setCreateEntityParentId(null);
+  }, [createEntity, createEntityParentId]);
 
   const world = worlds.find((w) => w.id === worldId);
 
@@ -207,8 +249,15 @@ const WorldConnections = () => {
                 value="mindmap"
                 className="px-3 py-1.5 text-sm data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
               >
-                <LayoutGrid className="w-4 h-4 mr-1.5" />
+                <TreePine className="w-4 h-4 mr-1.5" />
                 Mind Map
+              </ToggleGroupItem>
+              <ToggleGroupItem
+                value="worksheet"
+                className="px-3 py-1.5 text-sm data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+              >
+                <LayoutGrid className="w-4 h-4 mr-1.5" />
+                Worksheet Graph
               </ToggleGroupItem>
               <ToggleGroupItem
                 value="outline"
@@ -266,6 +315,32 @@ const WorldConnections = () => {
                 </div>
               </div>
             ) : viewMode === "mindmap" ? (
+              <div className="min-h-[600px]">
+                {entities && entities.length > 0 ? (
+                  <EntityTreeView
+                    entities={entities}
+                    onCreateChild={handleTreeCreateChild}
+                    onDeleteEntity={handleTreeDeleteEntity}
+                    onReparent={handleTreeReparent}
+                    onFocusEntity={(id) => setSelectedNodeId(id)}
+                  />
+                ) : (
+                  <div className="flex flex-col items-center justify-center h-[400px] text-center">
+                    <TreePine className="w-8 h-8 text-tier-4 mb-3" />
+                    <h3 className="font-heading text-sm font-light uppercase tracking-[2px] text-tier-1 mb-2">
+                      Your World Map
+                    </h3>
+                    <p className="text-[11px] font-sans text-tier-3 leading-relaxed mb-4 max-w-xs">
+                      No entities yet. Create a star or planet and watch your world's hierarchy grow.
+                    </p>
+                    <Button onClick={() => { setCreateEntityParentId(null); setShowCreateEntity(true); }} className="text-xs font-sans">
+                      <Plus className="w-3.5 h-3.5 mr-1.5" />
+                      Create First Entity
+                    </Button>
+                  </div>
+                )}
+              </div>
+            ) : viewMode === "worksheet" ? (
               <WorldConnectionsGraph
                 nodes={filteredNodes}
                 edges={filteredEdges}
@@ -424,6 +499,14 @@ const WorldConnections = () => {
             </GlassPanel>
           </div>
         </div>
+
+        {/* Create Entity Modal (for mind map) */}
+        <CreateEntityModal
+          open={showCreateEntity}
+          onClose={() => { setShowCreateEntity(false); setCreateEntityParentId(null); }}
+          onSubmit={handleCreateEntity}
+          worldId={resolvedWorldId}
+        />
     </>
   );
 

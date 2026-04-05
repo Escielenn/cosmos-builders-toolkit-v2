@@ -1,5 +1,12 @@
 # StellarForge Changelog
 
+## 0.6156
+- Fixed: Mind Map now uses EntityTreeView with full entity hierarchy
+- Fixed: WorldConnections "Mind Map" view replaced with entity-based tree (drag-to-reparent, context menus, detail panel)
+- Added: Three view modes on Connections page: Mind Map (entity tree), Worksheet Graph (old D3), Outline
+- Added: Create Entity button on empty mind map state
+- Added: Entity creation from mind map with parent pre-fill
+
 ## 0.6146
 - Added: SENSORIUM push-to-worksheet sync (insights pushed to linked star/planet/evo-bio worksheets)
 - Added: SENSORIUM environment fine-tuning sliders (atmospheric density, light, temp, conductivity)
