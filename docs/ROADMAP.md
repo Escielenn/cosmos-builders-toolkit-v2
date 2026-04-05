@@ -127,8 +127,17 @@ Active task list and development priorities. Review this at the start of each se
 - [ ] Vitest + React Testing Library
 - [ ] Bundle size optimization
 
+### In-App Writing Tools (Advanced)
+- [x] Tiptap editor foundation (StellarForgeEditor with 3 presets) (2026-04-04)
+- [x] Entity @mentions wired to world data (2026-04-04)
+- [ ] **BlockNote evaluation** — Notion-style block editor on top of Tiptap (blocknotejs.org) for cleaner default UX
+- [ ] **Novel.sh reference study** — open-source Notion editor with AI slash-commands (novel.sh)
+- [ ] **Pandoc export quality** — wrap Pandoc in Trigger.dev background job for professional Word/PDF/Scrivener exports
+- [ ] **Yjs collaborative editing** — CRDT-based real-time sync via Supabase Realtime transport (yjs.dev)
+- [ ] **PartyKit alternative** — multiplayer features without raw Yjs complexity (partykit.dev)
+
 ### Collaboration
-- [ ] Real-time co-editing via Supabase Realtime
+- [ ] Real-time co-editing (via Yjs + Supabase Realtime or PartyKit)
 - [ ] Per-field comments/annotations
 - [ ] Activity feed on world dashboard
 
@@ -147,7 +156,7 @@ Active task list and development priorities. Review this at the start of each se
 
 ## Completed
 
-### April 4, 2026 — v0.6100 → v0.6196
+### April 4, 2026 — v0.6100 → v0.6231
 - [x] World Graph & Entity Layer (5 phases, analytical tools, cascade audit, timeline)
 - [x] Mind Map functional rebuild (entity tree on Connections page)
 - [x] StellarForgeEditor (Tiptap, 3 presets, @mentions, focus mode)
@@ -155,8 +164,10 @@ Active task list and development priorities. Review this at the start of each se
 - [x] Dedicated Writing Space + Zen Mode + version history
 - [x] SENSORIUM Phases 2-5 (scoring, push-to-worksheet, sliders, narrative, polish)
 - [x] Export System (CSV, cross-tool linked, Notion pre-existing)
-- [x] UI Consistency Fixes (10 issues)
-- [x] PDF download fix (delayed revokeObjectURL)
+- [x] UI Consistency Fixes (10 issues), PDF download fix
+- [x] About Us page, World Showcase, Social sharing, OG meta tags
+- [x] Writing prompts (62 total + personalized + Prompt of the Day)
+- [x] SF quote affiliate links, Archive/Delete UX, Recent Activity dashboard
 - [x] About Us page, World Showcase page, Social sharing
 - [x] Version system (v0.6196), CHANGELOG.md
 - [x] Multiple hotfixes (graph crash, notes bugs, @mentions)
