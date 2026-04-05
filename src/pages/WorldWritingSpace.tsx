@@ -21,6 +21,7 @@ import {
   History,
   RotateCcw,
   Eye,
+  Maximize2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -70,6 +71,7 @@ const WorldWritingSpace = () => {
   const deleteDoc = useDeleteDocument(worldId);
 
   // UI state
+  const [zenMode, setZenMode] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [selectedDocId, setSelectedDocId] = useState<string | null>(null);
   const [docDropdownOpen, setDocDropdownOpen] = useState(false);
@@ -267,6 +269,19 @@ const WorldWritingSpace = () => {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [handleManualSave]);
 
+  // Escape key exits zen mode
+  useEffect(() => {
+    if (!zenMode) return;
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        setZenMode(false);
+      }
+    };
+    window.addEventListener("keydown", handleEsc);
+    return () => window.removeEventListener("keydown", handleEsc);
+  }, [zenMode]);
+
   // ---------------------------------------------------------------------------
   // Entity sidebar — insert @mention
   // ---------------------------------------------------------------------------
@@ -311,6 +326,66 @@ const WorldWritingSpace = () => {
   // ---------------------------------------------------------------------------
 
   if (!worldId) return null;
+
+  // ---------------------------------------------------------------------------
+  // Zen Mode — full-viewport distraction-free overlay
+  // ---------------------------------------------------------------------------
+
+  if (zenMode && selectedDoc) {
+    return (
+      <div className="fixed inset-0 z-[9999] bg-[#0A0E17] flex flex-col items-center overflow-hidden">
+        {/* Exit button — top-right corner */}
+        <button
+          onClick={() => setZenMode(false)}
+          className="fixed top-4 right-4 z-[10000] flex items-center gap-2 px-3 py-2 text-[10px] font-heading uppercase tracking-[1.5px] text-tier-4 hover:text-tier-2 border border-white/[0.08] hover:border-white/[0.15] bg-[#0E1320]/80 backdrop-blur-md rounded-xs transition-all opacity-40 hover:opacity-100"
+          title="Exit Zen Mode (Esc)"
+        >
+          <X className="w-3.5 h-3.5" />
+          <span>Exit Zen</span>
+        </button>
+
+        {/* Centered editor area */}
+        <div className="flex-1 w-full max-w-[72ch] overflow-y-auto px-6 py-12 md:py-16">
+          {/* Document title */}
+          <input
+            type="text"
+            value={docTitle}
+            onChange={(e) => setDocTitle(e.target.value)}
+            onBlur={() => {
+              const trimmed = docTitle.trim();
+              if (trimmed && trimmed !== selectedDoc.title) {
+                renameDoc.mutate({ docId: selectedDoc.id, title: trimmed });
+              } else if (!trimmed) {
+                setDocTitle(selectedDoc.title);
+              }
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                (e.target as HTMLInputElement).blur();
+              }
+            }}
+            className="w-full font-heading text-2xl font-light tracking-wide text-tier-1 bg-transparent border-0 border-b border-white/[0.06] outline-none focus:border-[#15C17B]/20 rounded-none px-0 py-2 mb-6"
+            placeholder="Document title..."
+          />
+
+          <StellarForgeEditor
+            key={`zen-${selectedDocId}`}
+            content={editorContent}
+            onChange={handleEditorChange}
+            worldId={worldId}
+            preset="full"
+            placeholder="Begin writing..."
+            minHeight="calc(100vh - 200px)"
+          />
+        </div>
+      </div>
+    );
+  }
+
+  // ---------------------------------------------------------------------------
+  // Normal Mode
+  // ---------------------------------------------------------------------------
 
   return (
     <div className="flex h-full w-full overflow-hidden">
@@ -545,6 +620,18 @@ const WorldWritingSpace = () => {
             <span className="text-[9px] font-mono uppercase tracking-[1.5px] text-tier-4 flex-shrink-0">
               Saving...
             </span>
+          )}
+
+          {/* Zen Mode toggle */}
+          {selectedDoc && (
+            <button
+              onClick={() => setZenMode(true)}
+              className="flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] font-heading uppercase tracking-[1.5px] border border-white/[0.08] text-tier-4 hover:text-tier-2 hover:border-white/[0.15] rounded-xs transition-colors flex-shrink-0"
+              title="Enter Zen Mode (distraction-free)"
+            >
+              <Maximize2 className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Zen</span>
+            </button>
           )}
 
           {/* History button */}

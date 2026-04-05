@@ -1,5 +1,14 @@
 # StellarForge Changelog
 
+## 0.6196
+- Fixed: PDF export download — delayed URL.revokeObjectURL across all 5 export dialogs
+- Added: Zen Mode for Writing Space — full-screen distraction-free editing (Escape to exit)
+- Added: About Us page at /about — team, mission, Environmental Cascade philosophy
+- Added: World Showcase page at /worlds/:id/showcase — public-facing world display with
+  entity gallery, cascade coverage bar, stats, inline entity detail expansion
+- Added: SocialShareButtons component — share to Twitter/X, Reddit, LinkedIn, Facebook, copy link
+- Added: Social sharing on World Showcase hero section
+
 ## 0.6166
 - Added: CSV export for worksheets (flattened key-value), entities, and connections
 - Added: CSV tab in ExportDialog with preview

@@ -114,8 +114,12 @@ const WorldExportDialog = ({
     const a = document.createElement("a");
     a.href = url;
     a.download = filename;
+    document.body.appendChild(a);
     a.click();
-    URL.revokeObjectURL(url);
+    setTimeout(() => {
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }, 200);
   };
 
   const PRO_FORMATS: ExportFormat[] = ["word", "markdown", "scrivener"];

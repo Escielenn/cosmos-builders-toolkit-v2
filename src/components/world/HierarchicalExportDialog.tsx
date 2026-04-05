@@ -97,8 +97,12 @@ const HierarchicalExportDialog = ({
       const a = document.createElement("a");
       a.href = url;
       a.download = `${worldName.toLowerCase().replace(/\s+/g, "-")}-${selectedCategory}-view.pdf`;
+      document.body.appendChild(a);
       a.click();
-      URL.revokeObjectURL(url);
+      setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }, 200);
 
       toast({
         title: "View exported",

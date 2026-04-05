@@ -57,8 +57,13 @@ const QuickExportButton = ({
     const a = document.createElement("a");
     a.href = url;
     a.download = name;
+    a.style.display = "none";
+    document.body.appendChild(a);
     a.click();
-    URL.revokeObjectURL(url);
+    setTimeout(() => {
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }, 200);
   };
 
   const resolveFormat = () => {
