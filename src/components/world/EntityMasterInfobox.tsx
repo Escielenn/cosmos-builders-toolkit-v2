@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { StellarForgeEditor } from "@/components/editor/StellarForgeEditor";
 import { Button } from "@/components/ui/button";
 import { Check, Pencil, X } from "lucide-react";
 import { ENTITY_MASTER_FIELDS, type MasterFieldDef } from "@/lib/entity-config";
@@ -114,6 +114,7 @@ export default function EntityMasterInfobox({
               field={field}
               value={draft[field.key]}
               onChange={(v) => updateField(field.key, v)}
+              worldId={worldId}
             />
           ) : (
             <ReadOnlyField
@@ -168,9 +169,10 @@ function ReadOnlyField({
         <span className="text-[10px] font-medium uppercase tracking-[1.5px] text-tier-3">
           {field.label}
         </span>
-        <p className="text-xs text-tier-2 mt-0.5 whitespace-pre-wrap">
-          {String(value ?? "")}
-        </p>
+        <div
+          className="text-xs text-tier-2 mt-0.5 prose prose-invert prose-sm max-w-none"
+          dangerouslySetInnerHTML={{ __html: String(value ?? "") }}
+        />
       </div>
     );
   }
@@ -191,10 +193,12 @@ function EditableField({
   field,
   value,
   onChange,
+  worldId,
 }: {
   field: MasterFieldDef;
   value: unknown;
   onChange: (v: unknown) => void;
+  worldId: string;
 }) {
   const stringVal = value != null ? String(value) : "";
 
@@ -202,11 +206,12 @@ function EditableField({
     return (
       <div className="col-span-2 space-y-1">
         <Label className="text-[10px]">{field.label}</Label>
-        <Textarea
-          value={stringVal}
-          onChange={(e) => onChange(e.target.value)}
-          rows={2}
-          className="text-xs"
+        <StellarForgeEditor
+          content={stringVal}
+          onChange={(html) => onChange(html)}
+          preset="rich"
+          worldId={worldId}
+          minHeight="60px"
         />
       </div>
     );

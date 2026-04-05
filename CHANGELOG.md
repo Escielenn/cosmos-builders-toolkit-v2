@@ -1,5 +1,11 @@
 # StellarForge Changelog
 
+## 0.6116
+- Replaced: Entity description/notes/summary textareas with StellarForgeEditor (4 components)
+- Added: Node right-click context menu in graph (Cascade Audit, Unpin, Delete)
+- Added: Timeline scrubber temporal filtering (edges hide/show based on time position)
+- Added: Historical connections shown as dashed lines during timeline playback
+
 ## 0.6111
 - Added: Mind Map drag-to-reparent (HTML5 drag-and-drop with circular reference prevention)
 - Added: Entity detail side panel on tree node click (280px slide-out with edit/delete)

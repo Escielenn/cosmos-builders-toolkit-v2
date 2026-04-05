@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
-import { Textarea } from "@/components/ui/textarea";
+import { StellarForgeEditor } from "@/components/editor/StellarForgeEditor";
 import {
   Select,
   SelectContent,
@@ -308,11 +308,12 @@ export function ConnectionModal({
             <Label className="text-[11px] font-medium uppercase tracking-[1.5px] text-tier-3">
               Notes
             </Label>
-            <Textarea
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
+            <StellarForgeEditor
+              content={notes}
+              onChange={setNotes}
+              preset="compact"
               placeholder="Optional notes about this connection..."
-              className="text-xs rounded-xs min-h-[60px] resize-none"
+              minHeight="60px"
             />
           </div>
         </div>

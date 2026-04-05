@@ -40,7 +40,7 @@ import {
   type SimulationNodeDatum,
   type SimulationLinkDatum,
 } from "d3-force";
-import { Plus, LayoutGrid, Zap, List, Network, Columns3, Route, Gauge, Waypoints, AlertTriangle, Boxes, Trash2, ScanSearch, Clock, Download, Undo2, Redo2, TreePine } from "lucide-react";
+import { Plus, LayoutGrid, Zap, List, Network, Columns3, Route, Gauge, Waypoints, AlertTriangle, Boxes, Trash2, ScanSearch, Clock, Download, Undo2, Redo2, TreePine, Pin, PinOff, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Loader } from "@/components/ui/loader";
 
@@ -159,7 +159,8 @@ function buildEdges(
   connections: EntityConnection[],
   activeStages: Set<CascadeStage>,
   cascadePath: CascadePath | null,
-  analysisHighlightedConnections: string[]
+  analysisHighlightedConnections: string[],
+  timelineFilter?: { visible: Set<string>; historical: Set<string> }
 ): Edge[] {
   const allActive = activeStages.size === CASCADE_STAGES.length;
   const hasCascadePath = cascadePath && cascadePath.entityIds.size > 0;
@@ -167,6 +168,68 @@ function buildEdges(
   const analysisSet = hasAnalysisHighlight ? new Set(analysisHighlightedConnections) : null;
 
   return connections.map((c) => {
+    // Timeline filtering: hide edges not in the visible or historical sets
+    if (timelineFilter) {
+      const isVisible = timelineFilter.visible.has(c.id);
+      const isHistorical = timelineFilter.historical.has(c.id);
+      if (!isVisible && !isHistorical) {
+        return {
+          id: c.id,
+          source: c.source_entity_id,
+          target: c.target_entity_id,
+          type: "cascadeEdge",
+          hidden: true,
+          style: { opacity: 0, transition: "opacity 200ms ease" },
+          data: {
+            connectionId: c.id,
+            relationshipType: c.relationship_type,
+            relationshipLabel: c.relationship_label,
+            cascadeStage: c.cascade_stage,
+            bidirectional: c.bidirectional,
+            strength: c.strength,
+            status: c.status,
+          } satisfies CascadeEdgeData,
+          markerEnd: c.bidirectional
+            ? undefined
+            : { type: MarkerType.ArrowClosed, width: 10, height: 10 },
+        };
+      }
+
+      // Historical edges get dashed style and reduced opacity
+      if (isHistorical) {
+        let opacity = 0.35;
+        // Still apply cascade/analysis dimming
+        if (hasAnalysisHighlight) {
+          opacity = analysisSet!.has(c.id) ? 0.35 : 0.05;
+        } else if (hasCascadePath) {
+          opacity = cascadePath.connectionIds.has(c.id) ? 0.35 : 0.05;
+        } else if (!allActive) {
+          const stage = c.cascade_stage as CascadeStage;
+          opacity = activeStages.has(stage) ? 0.35 : 0.05;
+        }
+
+        return {
+          id: c.id,
+          source: c.source_entity_id,
+          target: c.target_entity_id,
+          type: "cascadeEdge",
+          style: { opacity, strokeDasharray: "6 3", transition: "opacity 200ms ease" },
+          data: {
+            connectionId: c.id,
+            relationshipType: c.relationship_type,
+            relationshipLabel: c.relationship_label,
+            cascadeStage: c.cascade_stage,
+            bidirectional: c.bidirectional,
+            strength: c.strength,
+            status: c.status,
+          } satisfies CascadeEdgeData,
+          markerEnd: c.bidirectional
+            ? undefined
+            : { type: MarkerType.ArrowClosed, width: 10, height: 10 },
+        };
+      }
+    }
+
     let opacity = 1;
     if (hasAnalysisHighlight) {
       opacity = analysisSet!.has(c.id) ? 1 : 0.05;
@@ -338,6 +401,13 @@ function InnerGraph({ worldId, entities, connections }: InnerGraphProps) {
     return traceCascadePath(entities, connections, cascadePathEntityId);
   }, [cascadePathEntityId, entities, connections]);
 
+  // Context menu (right-click on node)
+  const [contextMenu, setContextMenu] = useState<{
+    x: number;
+    y: number;
+    entityId: string;
+  } | null>(null);
+
   // Modals
   const [showCreateEntity, setShowCreateEntity] = useState(false);
   const [connectionModalState, setConnectionModalState] = useState<{
@@ -391,9 +461,15 @@ function InnerGraph({ worldId, entities, connections }: InnerGraphProps) {
     () => buildNodes(entitiesWithPositions, connectionCounts, activeStages, highlightedEntityId, cascadePath, analysisHighlightedEntities),
     [entitiesWithPositions, connectionCounts, activeStages, highlightedEntityId, cascadePath, analysisHighlightedEntities]
   );
+  // Compute timeline filter when scrubber is active
+  const timelineFilter = useMemo(() => {
+    if (!showTimeline || timelineBounds.timePoints.length === 0) return undefined;
+    return filterConnectionsByTime(connections, timelineBounds.timePoints, timelineIndex);
+  }, [showTimeline, timelineBounds.timePoints, connections, timelineIndex]);
+
   const initialEdges = useMemo(
-    () => buildEdges(connections, activeStages, cascadePath, analysisHighlightedConnections),
-    [connections, activeStages, cascadePath, analysisHighlightedConnections]
+    () => buildEdges(connections, activeStages, cascadePath, analysisHighlightedConnections, timelineFilter),
+    [connections, activeStages, cascadePath, analysisHighlightedConnections, timelineFilter]
   );
 
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
@@ -513,8 +589,9 @@ function InnerGraph({ worldId, entities, connections }: InnerGraphProps) {
         }
       }
 
-      // Escape clears analysis/audit/cascade path
+      // Escape clears analysis/audit/cascade path/context menu
       if (e.key === "Escape") {
+        setContextMenu(null);
         setCascadePathEntityId(null);
         setHighlightedEntityId(null);
         setAuditEntityId(null);
@@ -612,15 +689,45 @@ function InnerGraph({ worldId, entities, connections }: InnerGraphProps) {
   const handleNodeContextMenu = useCallback(
     (e: React.MouseEvent, node: Node) => {
       e.preventDefault();
-      // Right-click activates cascade audit (or cascade path if already auditing)
-      if (auditEntityId === node.id) {
-        setAuditEntityId(null);
-      } else {
-        setAuditEntityId(node.id);
-      }
+      setContextMenu({ x: e.clientX, y: e.clientY, entityId: node.id });
     },
-    [auditEntityId]
+    []
   );
+
+  // Close context menu on click anywhere
+  const handlePaneClick = useCallback(() => {
+    setContextMenu(null);
+  }, []);
+
+  // Context menu actions
+  const handleContextCascadeAudit = useCallback(() => {
+    if (!contextMenu) return;
+    setAuditEntityId(contextMenu.entityId);
+    setContextMenu(null);
+  }, [contextMenu]);
+
+  const handleContextUnpin = useCallback(() => {
+    if (!contextMenu) return;
+    const entity = entities.find((e) => e.id === contextMenu.entityId);
+    batchUpdatePositions.mutate([
+      {
+        id: contextMenu.entityId,
+        graph_x: entity?.graph_x ?? 0,
+        graph_y: entity?.graph_y ?? 0,
+        pinned: false,
+      },
+    ]);
+    setContextMenu(null);
+  }, [contextMenu, batchUpdatePositions, entities]);
+
+  const handleContextDelete = useCallback(() => {
+    if (!contextMenu) return;
+    const entity = entities.find((e) => e.id === contextMenu.entityId);
+    if (entity && window.confirm(`Delete entity "${entity.name}"? This will also remove all its connections.`)) {
+      deleteEntity.mutate(entity.id);
+    }
+    setContextMenu(null);
+  }, [contextMenu, entities, deleteEntity]);
 
   // Toggle analysis mode
   const toggleAnalysis = useCallback((mode: AnalysisMode) => {
@@ -1160,6 +1267,7 @@ function InnerGraph({ worldId, entities, connections }: InnerGraphProps) {
         onNodeDragStop={handleNodeDragStop}
         onNodeClick={handleNodeClick}
         onNodeContextMenu={handleNodeContextMenu}
+        onPaneClick={handlePaneClick}
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
         fitView
@@ -1210,6 +1318,58 @@ function InnerGraph({ worldId, entities, connections }: InnerGraphProps) {
           </defs>
         </svg>
       </ReactFlow>
+
+      {/* Node context menu */}
+      {contextMenu && (() => {
+        const ctxEntity = entities.find((e) => e.id === contextMenu.entityId);
+        if (!ctxEntity) return null;
+        return (
+          <div
+            className="fixed z-50"
+            style={{
+              left: contextMenu.x,
+              top: contextMenu.y,
+              background: "rgba(14,19,32,0.96)",
+              backdropFilter: "blur(16px)",
+              border: "1px solid rgba(255,255,255,0.08)",
+              minWidth: 160,
+            }}
+          >
+            <div className="px-3 py-1.5 border-b border-white/[0.06]">
+              <span className="text-[10px] font-mono text-tier-3 uppercase tracking-[1px] truncate block max-w-[180px]">
+                {ctxEntity.name}
+              </span>
+            </div>
+            <button
+              type="button"
+              onClick={handleContextCascadeAudit}
+              className="w-full flex items-center gap-2 px-3 py-2 text-[11px] font-sans text-tier-2 hover:bg-white/[0.04] hover:text-tier-1 transition-colors text-left"
+            >
+              <ScanSearch className="w-3 h-3 text-tier-4" />
+              Cascade Audit
+            </button>
+            {ctxEntity.pinned && (
+              <button
+                type="button"
+                onClick={handleContextUnpin}
+                className="w-full flex items-center gap-2 px-3 py-2 text-[11px] font-sans text-tier-2 hover:bg-white/[0.04] hover:text-tier-1 transition-colors text-left"
+              >
+                <PinOff className="w-3 h-3 text-tier-4" />
+                Unpin
+              </button>
+            )}
+            <div className="border-t border-white/[0.06]" />
+            <button
+              type="button"
+              onClick={handleContextDelete}
+              className="w-full flex items-center gap-2 px-3 py-2 text-[11px] font-sans text-red-400 hover:bg-red-500/[0.06] hover:text-red-300 transition-colors text-left"
+            >
+              <Trash2 className="w-3 h-3" />
+              Delete Entity
+            </button>
+          </div>
+        );
+      })()}
 
       {/* Cascade Audit Panel */}
       {auditEntityId && (

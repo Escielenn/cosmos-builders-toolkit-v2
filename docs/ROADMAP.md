@@ -11,19 +11,20 @@ Active task list and development priorities. Review this at the start of each se
 > Tasks currently in progress or next up.
 
 ### Textarea → StellarForgeEditor Migration
-- [ ] Audit ALL `<textarea>` elements in the codebase
+- [x] Audit ALL `<textarea>` elements in the codebase (2026-04-04)
 - [ ] Replace World Notes textarea with `<StellarForgeEditor preset="rich" />`
-- [ ] Replace Entity Description textarea with `<StellarForgeEditor preset="rich" />`
-- [ ] Replace Entity Notes textarea with `<StellarForgeEditor preset="rich" />`
-- [ ] Replace Connection Notes with `<StellarForgeEditor preset="compact" />`
-- [ ] Replace any remaining plain textareas on worksheet tools
+- [x] Replace Entity Description textarea with `<StellarForgeEditor preset="rich" />` (2026-04-04)
+- [x] Replace Entity Notes textarea with `<StellarForgeEditor preset="rich" />` (2026-04-04)
+- [x] Replace Connection Notes with `<StellarForgeEditor preset="compact" />` (2026-04-04)
+- [ ] Replace remaining plain textareas on worksheet tools (80+ across 5 tools — low priority, short-form fields)
 - [ ] Migrate existing plain-text content → Tiptap JSON (or render HTML gracefully)
 - [ ] Verify @ mentions work in all replaced editors
 
 ### World Graph Polish & Edge Cases
-- [ ] Timeline scrubber: wire temporal filtering to actually hide/show edges based on time_start/time_end
+- [x] Timeline scrubber: wire temporal filtering to hide/show edges (2026-04-04)
 - [ ] Test Graph with 100+ entities for performance (force sim, React Flow virtualization)
-- [ ] Add "Unpin" option to node right-click context menu
+- [x] Add "Unpin" option to node right-click context menu (2026-04-04)
+- [x] Add right-click context menu with Cascade Audit, Unpin, Delete (2026-04-04)
 - [ ] Test cascade audit export (markdown) end-to-end
 - [ ] Verify undo/redo history tracks operations correctly
 - [ ] Test onboarding tooltips display once then dismiss permanently

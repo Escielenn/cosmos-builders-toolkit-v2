@@ -9,7 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { StellarForgeEditor } from "@/components/editor/StellarForgeEditor";
 import {
   Select,
   SelectContent,
@@ -177,11 +177,12 @@ export function CreateEntityModal({
             <Label className="text-[11px] font-medium uppercase tracking-[1.5px] text-tier-3">
               Summary
             </Label>
-            <Textarea
-              value={summary}
-              onChange={(e) => setSummary(e.target.value)}
+            <StellarForgeEditor
+              content={summary}
+              onChange={setSummary}
+              preset="compact"
               placeholder="One-line description for graph tooltips..."
-              className="text-xs rounded-xs min-h-[50px] resize-none"
+              minHeight="50px"
             />
           </div>
         </div>

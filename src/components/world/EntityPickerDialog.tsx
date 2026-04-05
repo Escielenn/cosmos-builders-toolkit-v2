@@ -26,7 +26,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { StellarForgeEditor } from "@/components/editor/StellarForgeEditor";
 import {
   CREATABLE_ENTITY_TYPES,
   ENTITY_TYPE_LABELS,
@@ -187,12 +187,12 @@ export default function EntityPickerDialog({
                     (optional)
                   </span>
                 </Label>
-                <Textarea
-                  id="entity-description"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
+                <StellarForgeEditor
+                  content={description}
+                  onChange={setDescription}
+                  preset="compact"
                   placeholder="A brief description of this element..."
-                  rows={3}
+                  minHeight="80px"
                 />
               </div>
             </div>
