@@ -9,6 +9,7 @@ export interface SFQuote {
   author: string;
   source: string;   // Book or story title
   isbn: string;     // For affiliate links
+  affiliateUrl?: string;  // Direct Amazon product link (overrides search-based URL)
 }
 
 export interface SFQuoteWithLinks extends SFQuote {
@@ -24,18 +25,21 @@ export const GENERAL_QUOTES: SFQuote[] = [
     author: "Frank Herbert",
     source: "Dune",
     isbn: "9780441172719",
+    affiliateUrl: "https://www.amazon.com/dp/0441172717?tag=jdaba-20",
   },
   {
     text: "The sky above the port was the color of television, tuned to a dead channel.",
     author: "William Gibson",
     source: "Neuromancer",
     isbn: "9780441569595",
+    affiliateUrl: "https://www.amazon.com/dp/0441569595?tag=jdaba-20",
   },
   {
     text: "We are a way for the cosmos to know itself.",
     author: "Carl Sagan",
     source: "Cosmos",
     isbn: "9780345539434",
+    affiliateUrl: "https://www.amazon.com/dp/0345539435?tag=jdaba-20",
   },
 ];
 
@@ -51,6 +55,7 @@ export const TOOL_QUOTES: Record<string, SFQuote[]> = {
       author: "Liu Cixin",
       source: "The Dark Forest",
       isbn: "9780765386694",
+      affiliateUrl: "https://www.amazon.com/dp/0765386690?tag=jdaba-20",
     },
   ],
   "planetary-profile": [
@@ -59,6 +64,7 @@ export const TOOL_QUOTES: Record<string, SFQuote[]> = {
       author: "Frank Herbert",
       source: "Dune",
       isbn: "9780441172719",
+      affiliateUrl: "https://www.amazon.com/dp/0441172717?tag=jdaba-20",
     },
   ],
   "evolutionary-biology": [
@@ -67,6 +73,7 @@ export const TOOL_QUOTES: Record<string, SFQuote[]> = {
       author: "Peter Watts",
       source: "Blindsight",
       isbn: "9780765312839",
+      affiliateUrl: "https://www.amazon.com/dp/0765312832?tag=jdaba-20",
     },
   ],
   "spacecraft-designer": [
@@ -75,6 +82,7 @@ export const TOOL_QUOTES: Record<string, SFQuote[]> = {
       author: "Douglas Adams",
       source: "The Hitchhiker\u2019s Guide to the Galaxy",
       isbn: "9780345391803",
+      affiliateUrl: "https://www.amazon.com/dp/0345391802?tag=jdaba-20",
     },
   ],
 };

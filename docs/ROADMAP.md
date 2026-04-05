@@ -10,12 +10,13 @@ Active task list and development priorities. Review this at the start of each se
 
 > Must fix before any feature work.
 
-### PDF Preview/Download Not Working
-- [ ] **PDF export neither previews nor initiates download** — check PDF generation library, verify async handling, ensure download triggers after generation
-- [ ] Test across all tools that offer PDF export (ExportDialog + QuickExportButton)
+### PDF Preview/Download
+- [x] Fix download timing (delayed revokeObjectURL across 5 export dialogs) (2026-04-04)
+- [ ] Verify PDF preview renders correctly in ExportDialog preview tab
+- [ ] Test PDF export across all tools that support it
 
 ### Security Review
-- [ ] **Full security review** — first pass done 2/5, needs refresh after entity layer + writing space additions
+- [ ] **Full security review** — refresh after entity layer + writing space additions
 - [ ] Audit RLS policies on new tables (entities, entity_connections)
 - [ ] Review exposed API surfaces and auth guards
 
@@ -26,29 +27,25 @@ Active task list and development priorities. Review this at the start of each se
 
 ---
 
-## Priority 2 — Auth & Infrastructure (Dedicated Session Required)
+## Priority 2 — Auth & Infrastructure (Dedicated Session)
 
-> Clerk migration needs dashboard config + careful cutover. Plan a focused session.
+> Clerk migration needs dashboard config + careful cutover.
 
 ### Clerk Auth Migration
-- [ ] **Migrate from Supabase Auth to Clerk** — see [STACK-ARCHITECTURE.md](STACK-ARCHITECTURE.md) for full spec
-  - [ ] Create Clerk application, configure JWT template (`supabase`)
-  - [ ] Install `@clerk/clerk-react` and configure `<ClerkProvider>`
+- [ ] **Migrate from Supabase Auth to Clerk** — see [STACK-ARCHITECTURE.md](STACK-ARCHITECTURE.md)
+  - [ ] Create Clerk application, configure JWT template
+  - [ ] Install `@clerk/clerk-react`, configure `<ClerkProvider>`
   - [ ] Replace `supabase.auth.*` calls with Clerk session/token flow
   - [ ] Build webhook handler for user/org sync
-  - [ ] Rewrite all RLS policies to use `clerk_user_id()` helper
-  - [ ] Migrate existing users from Supabase Auth → Clerk (bcrypt password import)
-  - [ ] Add 2FA support via Clerk dashboard
-  - [ ] Add additional OAuth providers (GitHub, Discord, Apple, Notion)
-  - [ ] Remove all Supabase Auth references
-  - [ ] Test full flow: sign-up → user sync → subscribe → access gated content
+  - [ ] Rewrite RLS policies for `clerk_user_id()`
+  - [ ] Migrate existing users (bcrypt import)
+  - [ ] Add 2FA + additional OAuth (GitHub, Discord, Apple, Notion)
+  - [ ] Test full flow end-to-end
 
 ### Stripe Billing
-- [ ] Finalize org-tier pricing (Group, Classroom, Institution)
-- [ ] Build checkout session creation endpoint
-- [ ] Build customer portal endpoint
+- [ ] Finalize org-tier pricing
+- [ ] Build checkout/portal endpoints
 - [ ] Wire Stripe Customer to Clerk user ID
-- [ ] Add Pro badge gating throughout the UI based on subscription status
 
 ---
 
@@ -58,121 +55,114 @@ Active task list and development priorities. Review this at the start of each se
 
 ### Writing & Focus Mode
 - [x] Dedicated Writing Space (`/worlds/:id/write`) (2026-04-04)
-- [ ] **Pure writing mode** — ability to see only their writing and nothing else (full-screen distraction-free editor, hide all chrome)
+- [x] Zen Mode — full-screen distraction-free editing (2026-04-04)
 
-### World Display Page
-- [ ] **World Display Page like Kanka** — public-facing world showcase page
-  - Reference: https://kanka.io/features
-  - Entity gallery, hierarchical navigation, public/private toggle
-  - Rich world overview with header image, description, entity counts
+### World Display
+- [x] World Showcase page (`/worlds/:id/showcase`) (2026-04-04)
+- [ ] **Public/private toggle** for world showcase visibility
 
-### About Us Page
-- [ ] **About Us page** — team, mission, story behind StellarForge
+### About Us
+- [x] About Us page (`/about`) (2026-04-04)
 
-### Share System
-- [x] Share Links for individual worksheets (ShareDialog exists on all tools) (pre-existing)
-- [ ] **Share links for all tool outputs** — shareable URLs for planet profiles, species designs, etc.
-  - Public/private toggle
-  - Share to anyone with link vs members only
-- [ ] **Social sharing links** — share to Twitter/X, Reddit, Discord, etc. with Open Graph previews
+### Social Sharing
+- [x] SocialShareButtons component (Twitter/X, Reddit, LinkedIn, Facebook, copy) (2026-04-04)
+- [x] Social sharing on World Showcase (2026-04-04)
+- [ ] **Open Graph meta tags** — dynamic OG tags per page for rich link previews
+- [ ] Social sharing on individual worksheets and tool outputs
 
-### Archive & Delete
-- [x] Archive functionality exists (worlds have `archived_at`, worksheets have archive support) (pre-existing)
-- [ ] **Polish archive/delete UX** — confirm dialogs, recovery from archive, permanent delete with warning
-- [ ] Ensure archive/delete works for all entity types (worlds, worksheets, entities, documents)
-
-### Mind Map Tool
-- [x] Mind Map functional rebuild — entity-based tree with drag-to-reparent (2026-04-04)
-- [ ] **Verify all 7 functional requirements** in production (runtime testing needed)
-
-### Icons & Visual Polish
-- [ ] **Improve icons for UI elements** — mail, tool icons, etc.
-  - Upload custom SVGs for tools
-  - Wire into tool-icons.tsx and profile avatar picker
-- [ ] **Additional screenshots for Features page** — capture current tool states for marketing
-
-### Writing Prompts
-- [ ] **Writing Prompts / Prompt of the Day** — AI-generated or curated prompts based on worldbuilding data
-  - "Write a scene where [Species X] encounters [Environmental Challenge Y] on [Planet Z]"
-  - Prompt engine reads from entity data for personalization
+### Writing Prompts Expansion
+- [x] Writing prompts system exists (15-20 static prompts, PromptBrowser, PromptCard) (pre-existing)
+- [ ] **Expand prompt library** — add 50+ prompts across all categories
+- [ ] **Personalized prompts from entity data** — "Write a scene where [Species X] encounters [Challenge Y] on [Planet Z]"
+- [ ] **Prompt of the Day** — rotating featured prompt on homepage/dashboard
 
 ### SF Quotes with Affiliate Links
-- [ ] **Rotating SF quotes across platform** — cite source with affiliate link to purchase book
-  - Extend existing ToolPageQuote system with affiliate URLs
-  - Track click-through for revenue reporting
+- [ ] **Extend ToolPageQuote with affiliate URLs** — cite source with purchase link
+- [ ] Add affiliate link click tracking
+
+### Archive & Delete UX
+- [ ] **Polish confirm dialogs** — recovery from archive, permanent delete with warning
+- [ ] Ensure archive/delete works for entities and documents (not just worlds/worksheets)
+
+### World Activity & History
+- [ ] **Recent activity section** at top of each world dashboard (last edited worksheets, entities, notes)
+- [ ] **History section** per world and per element (changelog of modifications)
+
+### Promotional Content
+- [ ] **"See it in Action" section** on preview/landing page — interactive demo or video embed
+- [ ] **Features screenshot video** — screen recording walkthrough of key features
+
+### Icons & Visual Polish
+- [ ] **Improve tool icons** — custom SVGs, wire into tool-icons.tsx
+- [ ] **Additional screenshots** for Features page
 
 ### Tutorial Videos
-- [ ] **Tutorial videos per major tool/workflow** — onboarding video, tool walkthroughs, "build a world with me" series
+- [ ] Tutorial videos per tool/workflow
+- [ ] Onboarding video, "build a world with me" series
 
 ### Additional Apps / Tools
-- [ ] **Additional apps** — scope TBD (new worldbuilding tools beyond current 21?)
+- [ ] Scope TBD — new worldbuilding tools beyond current 21
 
 ---
 
 ## Priority 4 — Long-Term / Backlog
 
-> Tracked for reference.
-
 ### Remaining Editor Migration
-- [ ] Replace remaining plain textareas on worksheet tools (80+ across 5 tools — low priority, short-form fields)
-- [ ] Migrate existing plain-text content → Tiptap JSON (or render HTML gracefully)
+- [ ] Replace remaining plain textareas on worksheet tools (low priority)
+- [ ] Migrate existing plain-text content → Tiptap JSON
 
-### Graph & Sidebar Testing (Runtime Verification)
+### Runtime Verification
 - [ ] Test Graph with 100+ entities for performance
-- [ ] Test cascade audit export (markdown) end-to-end
-- [ ] Verify undo/redo history tracks operations correctly
-- [ ] Test onboarding tooltips dismiss permanently
-- [ ] Test entity sidebar drag-and-drop with live Supabase data
-- [ ] Verify color picker updates persist
-- [ ] Test writing space auto-save, document CRUD lifecycle
-- [ ] Verify @mentions work in all replaced editors
+- [ ] Test cascade audit markdown export end-to-end
+- [ ] Verify undo/redo, onboarding dismiss, entity sidebar drag-drop
+- [ ] Test writing space auto-save, document CRUD, @mentions
 
-### i18n String Extraction
-- [ ] Extract ~2,000-4,000 keys across tools, simulators, landing, exports
-- [ ] Add target languages and translation files
-- [ ] PDF font support for CJK languages
+### i18n
+- [ ] Extract ~2,000-4,000 keys
+- [ ] Add target languages
+- [ ] PDF font support for CJK
 
 ### CI/CD & Testing
-- [ ] GitHub Actions pipeline (replace manual deploy)
-- [ ] Vitest + React Testing Library test suite
-- [ ] Bundle size optimization (lazy-load react-pdf)
+- [ ] GitHub Actions pipeline
+- [ ] Vitest + React Testing Library
+- [ ] Bundle size optimization
 
-### Collaboration Features
-- [ ] Real-time co-editing (field-level sync via Supabase Realtime)
-- [ ] Per-field comments/annotations on worksheets
+### Collaboration
+- [ ] Real-time co-editing via Supabase Realtime
+- [ ] Per-field comments/annotations
 - [ ] Activity feed on world dashboard
 
-### Accessibility Audit
-- [ ] Full keyboard navigation audit
-- [ ] Screen reader testing (ARIA labels, live regions)
-- [ ] Color contrast audit on glass-panel components
+### Accessibility
+- [ ] Keyboard navigation audit
+- [ ] Screen reader testing
+- [ ] Color contrast audit
 - [ ] `prefers-reduced-motion` support
 
 ### Content
 - [ ] More Learn articles via Sanity CMS
-- [ ] Bookshelf expansion (curated reading lists)
-- [ ] Embedded video walkthroughs per tool
+- [ ] Bookshelf expansion
+- [ ] Embedded video walkthroughs
 
 ---
 
 ## Completed
 
-### April 4, 2026 — v0.6100 → v0.6166
-- [x] **World Graph & Entity Layer** — entities/entity_connections tables, 5 phases, all analytical tools
-- [x] **Mind Map functional rebuild** — entity tree with drag-to-reparent on Connections page
-- [x] **StellarForgeEditor** — Tiptap with 3 presets, @entity mentions, word count, focus mode
-- [x] **Entity-Powered Sidebar** — Tool/Wiki views, drag-and-drop, color picker, Registry/Entities tabs
-- [x] **Dedicated Writing Space** — /worlds/:id/write with document CRUD, auto-save, version history
-- [x] **SENSORIUM Phases 2-5** — scoring, push-to-worksheet, sliders, comparative view, narrative, polish
-- [x] **Export System** — CSV export, cross-tool linked export, Notion (pre-existing)
-- [x] **UI Consistency Fixes** — 10 issues (worksheet overlap, nav fonts, simulator titles, mega menu, etc.)
-- [x] **Version System** — v0.6166 in header, CHANGELOG.md
-- [x] **Hotfixes** — graph crash, notes resize, title sizing, @mentions threading
+### April 4, 2026 — v0.6100 → v0.6196
+- [x] World Graph & Entity Layer (5 phases, analytical tools, cascade audit, timeline)
+- [x] Mind Map functional rebuild (entity tree on Connections page)
+- [x] StellarForgeEditor (Tiptap, 3 presets, @mentions, focus mode)
+- [x] Entity-Powered Sidebar (Tool/Wiki views, drag-drop, color picker)
+- [x] Dedicated Writing Space + Zen Mode + version history
+- [x] SENSORIUM Phases 2-5 (scoring, push-to-worksheet, sliders, narrative, polish)
+- [x] Export System (CSV, cross-tool linked, Notion pre-existing)
+- [x] UI Consistency Fixes (10 issues)
+- [x] PDF download fix (delayed revokeObjectURL)
+- [x] About Us page, World Showcase page, Social sharing
+- [x] Version system (v0.6196), CHANGELOG.md
+- [x] Multiple hotfixes (graph crash, notes bugs, @mentions)
 
 ### April 1-2, 2026 — Remediation Phases 1-12
-- [x] Layout Normalization, UX Discoverability, Entity Recognition, Export Fixes
-- [x] Simulator Normalization, Save/Replay, Narrative Bridge, Publish to World
-- [x] Cascade Guidance, Writing-Entity Linking, World Bible Export, Guided First-World
+- [x] Layout Normalization through Guided First-World Experience
 
 ---
 

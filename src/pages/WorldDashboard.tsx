@@ -23,16 +23,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+// AlertDialog imports removed — using DeleteConfirmDialog instead
 import {
   Dialog,
   DialogContent,
@@ -87,6 +78,10 @@ import { ENTITY_TYPE_LABELS } from "@/lib/entity-config";
 import { useIsWorldLayout } from "@/contexts/WorldLayoutContext";
 import { PageBursts } from "@/components/ui/data-burst";
 import { WORLD_DASHBOARD_BURSTS } from "@/lib/data-bursts";
+import { DeleteConfirmDialog } from "@/components/dialogs/DeleteConfirmDialog";
+import { ToastAction } from "@/components/ui/toast";
+import { useToast } from "@/hooks/use-toast";
+import RecentActivity from "@/components/world/RecentActivity";
 const TOOLS = [
   {
     id: "environmental-chain-reaction",
@@ -302,7 +297,7 @@ const SortableWorksheetGroup = ({
   isOwner: boolean;
   worksheetEntryMap: Map<string, string>;
   onRename: (id: string, title: string) => void;
-  onDelete: (id: string) => void;
+  onDelete: (id: string, title: string) => void;
 }) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: tool.id });
   const style = {
@@ -408,7 +403,7 @@ const SortableWorksheetGroup = ({
                     {isOwner && (
                       <DropdownMenuItem
                         className="text-destructive"
-                        onClick={() => onDelete(worksheet.id)}
+                        onClick={() => onDelete(worksheet.id, worksheet.title || "Untitled")}
                       >
                         <Trash2 className="w-4 h-4 mr-2" />
                         Delete
@@ -448,9 +443,10 @@ const WorldDashboard = () => {
   const location = useLocation();
   const notesRef = useRef<HTMLElement>(null);
   const isInWorldLayout = useIsWorldLayout();
+  const { toast } = useToast();
   const { data: world, isLoading: worldLoading, error: worldError } = useWorld(worldId);
   const { worksheets, isLoading: worksheetsLoading, deleteWorksheet } = useWorksheets(worldId);
-  const { deleteWorld, updateWorld, archiveWorld } = useWorlds();
+  const { deleteWorld, updateWorld, archiveWorld, unarchiveWorld } = useWorlds();
   const renameWorksheet = useRenameWorksheet();
   const { data: role } = useMyWorldRole(worldId);
   const isOwner = role === "owner";
@@ -512,7 +508,7 @@ const WorldDashboard = () => {
   const worksheetEntryMap = entryMapQuery.data ?? new Map<string, string>();
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [worksheetToDelete, setWorksheetToDelete] = useState<string | null>(null);
+  const [worksheetToDelete, setWorksheetToDelete] = useState<{ id: string; title: string } | null>(null);
   const [worksheetToRename, setWorksheetToRename] = useState<{ id: string; title: string } | null>(null);
   const [renameValue, setRenameValue] = useState("");
   const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -567,12 +563,26 @@ const WorldDashboard = () => {
   const handleArchiveWorld = async () => {
     if (!worldId) return;
     await archiveWorld.mutateAsync(worldId);
+    toast({
+      title: "World archived",
+      description: `"${world?.name}" has been moved to your archive.`,
+      action: (
+        <ToastAction
+          altText="Undo archive"
+          onClick={() => {
+            unarchiveWorld.mutate(worldId);
+          }}
+        >
+          Undo
+        </ToastAction>
+      ),
+    });
     navigate("/");
   };
 
   const handleDeleteWorksheet = async () => {
     if (!worksheetToDelete) return;
-    await deleteWorksheet.mutateAsync(worksheetToDelete);
+    await deleteWorksheet.mutateAsync(worksheetToDelete.id);
     setWorksheetToDelete(null);
   };
 
@@ -798,6 +808,9 @@ const WorldDashboard = () => {
           </div>
         </div>
 
+        {/* Recent Activity */}
+        {worldId && <RecentActivity worldId={worldId} />}
+
         {/* World Notes */}
         {worldId && (
           <section id="notes" ref={notesRef} className="mb-8">
@@ -944,7 +957,7 @@ const WorldDashboard = () => {
                         isOwner={isOwner}
                         worksheetEntryMap={worksheetEntryMap}
                         onRename={openRenameDialog}
-                        onDelete={setWorksheetToDelete}
+                        onDelete={(id, title) => setWorksheetToDelete({ id, title })}
                       />
                     );
                   })}
@@ -975,47 +988,24 @@ const WorldDashboard = () => {
       )}
 
       {/* Delete World Dialog */}
-      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete World</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to delete "{world.name}"? This will also delete all worksheets
-              associated with this world. This action cannot be undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleDeleteWorld}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-            >
-              Delete
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <DeleteConfirmDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        itemName={world.name}
+        itemType="world"
+        onConfirm={handleDeleteWorld}
+        isDeleting={deleteWorld.isPending}
+      />
 
       {/* Delete Worksheet Dialog */}
-      <AlertDialog open={!!worksheetToDelete} onOpenChange={() => setWorksheetToDelete(null)}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete Worksheet</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to delete this worksheet? This action cannot be undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleDeleteWorksheet}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-            >
-              Delete
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <DeleteConfirmDialog
+        open={!!worksheetToDelete}
+        onOpenChange={(open) => { if (!open) setWorksheetToDelete(null); }}
+        itemName={worksheetToDelete?.title ?? "Untitled"}
+        itemType="worksheet"
+        onConfirm={handleDeleteWorksheet}
+        isDeleting={deleteWorksheet.isPending}
+      />
 
       {/* Rename Worksheet Dialog */}
       <Dialog open={!!worksheetToRename} onOpenChange={() => setWorksheetToRename(null)}>

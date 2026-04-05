@@ -224,13 +224,11 @@ export const useWorksheets = (worldId: string | undefined, includeArchived: bool
         .eq("id", worksheetId);
 
       if (error) throw error;
+      return worksheetId;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["worksheets"] });
-      toast({
-        title: "Worksheet archived",
-        description: "The worksheet has been moved to your archive.",
-      });
+      // Toast is handled at the call site to support undo action
     },
     onError: (error) => {
       toast({

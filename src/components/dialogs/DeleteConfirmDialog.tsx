@@ -17,7 +17,7 @@ interface DeleteConfirmDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   itemName: string;
-  itemType: "world" | "worksheet";
+  itemType: "world" | "worksheet" | "entity" | "note" | "entry";
   onConfirm: () => void;
   isDeleting?: boolean;
 }
@@ -48,10 +48,14 @@ export function DeleteConfirmDialog({
     onOpenChange(newOpen);
   };
 
-  const cascadeWarning =
-    itemType === "world"
-      ? "This will permanently delete this world and all its worksheets, notes, and connections."
-      : "This will permanently delete this worksheet and all its data.";
+  const cascadeWarnings: Record<string, string> = {
+    world: "This will permanently delete this world and all its worksheets, notes, and connections.",
+    worksheet: "This will permanently delete this worksheet and all its data.",
+    entity: "This will permanently delete this entity and any linked data.",
+    note: "This will permanently delete this note.",
+    entry: "This will permanently delete this entry and any linked data.",
+  };
+  const cascadeWarning = cascadeWarnings[itemType] ?? "This will permanently delete this item.";
 
   return (
     <AlertDialog open={open} onOpenChange={handleOpenChange}>

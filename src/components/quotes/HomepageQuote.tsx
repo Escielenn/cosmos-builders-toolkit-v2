@@ -42,6 +42,19 @@ export function HomepageQuote() {
         <span className="font-mono text-xs text-primary/60">
           <em>{quote.source}</em>
         </span>
+        {quote.affiliateUrl && (
+          <>
+            <span className="text-tier-5 text-[10px] hidden sm:inline">|</span>
+            <a
+              href={quote.affiliateUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden sm:inline text-[9px] text-tier-4 hover:text-primary transition-colors"
+            >
+              Get the book &rarr;
+            </a>
+          </>
+        )}
         <span className="text-tier-5 text-[10px] hidden sm:inline">|</span>
         <span className="hidden sm:flex items-center gap-2">
           <a

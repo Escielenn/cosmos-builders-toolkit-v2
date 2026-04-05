@@ -1,5 +1,16 @@
 # StellarForge Changelog
 
+## 0.6221
+- Added: 47 new writing prompts (62 total across 5 categories)
+- Added: Personalized prompt generator from world entity data
+- Added: Prompt of the Day on homepage (deterministic by date)
+- Added: SF quote affiliate links with "Get the book" links
+- Added: Archive undo toast with restore action
+- Added: Type-to-confirm delete dialogs for worlds and worksheets
+- Added: Recent Activity section on World Dashboard (last 10 edited items)
+- Verified: RLS policies on entities + entity_connections tables are secure
+- Updated: Roadmap with 3 new Notion items (See it in Action, features video, activity/history)
+
 ## 0.6196
 - Fixed: PDF export download — delayed URL.revokeObjectURL across all 5 export dialogs
 - Added: Zen Mode for Writing Space — full-screen distraction-free editing (Escape to exit)

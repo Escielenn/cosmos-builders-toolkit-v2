@@ -55,6 +55,7 @@ import Footer from "@/components/layout/Footer";
 import RecentArticles from "@/components/landing/RecentArticles";
 import WelcomeDialog from "@/components/onboarding/WelcomeDialog";
 import { TagFilter } from "@/components/dashboard/TagFilter";
+import { PromptOfTheDay } from "@/components/writing/PromptOfTheDay";
 import { ArchiveToggle } from "@/components/dashboard/ArchiveToggle";
 import SharedWorldsSection from "@/components/dashboard/SharedWorldsSection";
 import SFDivider from "@/components/ui/sf-divider";
@@ -577,6 +578,16 @@ const Index = () => {
               <span className="font-mono text-[10px] uppercase tracking-[2px]">Scroll</span>
               <ChevronDown className="w-4 h-4 mt-0.5" />
             </div>
+          </section>
+        )}
+
+        {/* Prompt of the Day — logged-in users */}
+        {user && (
+          <section className="mb-16">
+            <h2 className="font-heading font-light text-2xl uppercase tracking-sf-wide mb-6">
+              Today's Writing Prompt
+            </h2>
+            <PromptOfTheDay />
           </section>
         )}
 

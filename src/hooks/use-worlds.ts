@@ -171,13 +171,11 @@ export const useWorlds = (includeArchived: boolean = false) => {
         .eq("id", worldId);
 
       if (error) throw error;
+      return worldId;
     },
-    onSuccess: () => {
+    onSuccess: (_data, worldId) => {
       queryClient.invalidateQueries({ queryKey: ["worlds"] });
-      toast({
-        title: "World archived",
-        description: "The world has been moved to your archive.",
-      });
+      // Toast with undo is handled at the call site for richer context
     },
     onError: (error) => {
       toast({

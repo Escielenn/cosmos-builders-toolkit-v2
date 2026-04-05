@@ -28,6 +28,19 @@ export function ToolPageQuote({ toolId }: ToolPageQuoteProps) {
           <span className="font-mono text-[11px] text-primary/60">
             <em>{quote.source}</em>
           </span>
+          {quote.affiliateUrl && (
+            <>
+              <span className="text-tier-5">|</span>
+              <a
+                href={quote.affiliateUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[9px] text-tier-4 hover:text-primary transition-colors"
+              >
+                Get the book &rarr;
+              </a>
+            </>
+          )}
           <span className="text-tier-5">|</span>
           <a
             href={quote.amazonUrl}
