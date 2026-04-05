@@ -20,7 +20,11 @@ import {
 } from "@/components/ui/collapsible";
 import { DeleteConfirmDialog } from "@/components/dialogs/DeleteConfirmDialog";
 
-const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
+const StellarForgeEditorLazy = lazy(() =>
+  import("@/components/editor/StellarForgeEditor").then((m) => ({
+    default: m.StellarForgeEditor,
+  }))
+);
 
 interface WorldNotesProps {
   worldId: string;
@@ -177,10 +181,12 @@ function NoteCard({
                   flexDirection: "column",
                 }}
               >
-                <RichTextEditor
+                <StellarForgeEditorLazy
                   content={localContent}
                   onChange={updateContent}
                   readOnly={!!readOnly}
+                  worldId={worldId}
+                  preset="rich"
                   placeholder="Write your note here..."
                   minHeight="160px"
                 />

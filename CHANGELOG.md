@@ -1,5 +1,11 @@
 # StellarForge Changelog
 
+## 0.6121
+- Added: Writing Space version history (localStorage snapshots, 5-min auto, Ctrl+S manual)
+- Added: Version history panel with preview and restore
+- Replaced: World Notes RichTextEditor → StellarForgeEditor preset="rich" with @mentions
+- Added: World Notes now supports @entity mentions and [[wiki links
+
 ## 0.6116
 - Replaced: Entity description/notes/summary textareas with StellarForgeEditor (4 components)
 - Added: Node right-click context menu in graph (Cascade Audit, Unpin, Delete)

@@ -12,7 +12,7 @@ Active task list and development priorities. Review this at the start of each se
 
 ### Textarea → StellarForgeEditor Migration
 - [x] Audit ALL `<textarea>` elements in the codebase (2026-04-04)
-- [ ] Replace World Notes textarea with `<StellarForgeEditor preset="rich" />`
+- [x] Replace World Notes textarea with `<StellarForgeEditor preset="rich" />` (2026-04-04)
 - [x] Replace Entity Description textarea with `<StellarForgeEditor preset="rich" />` (2026-04-04)
 - [x] Replace Entity Notes textarea with `<StellarForgeEditor preset="rich" />` (2026-04-04)
 - [x] Replace Connection Notes with `<StellarForgeEditor preset="compact" />` (2026-04-04)
@@ -38,7 +38,7 @@ Active task list and development priorities. Review this at the start of each se
 - [ ] Test auto-save with real Supabase documents
 - [ ] Verify entity sidebar click inserts @mention at cursor
 - [ ] Test document create/rename/delete lifecycle
-- [ ] Add version history (snapshot on manual save / every 5 minutes)
+- [x] Add version history (snapshot on manual save / every 5 minutes) (2026-04-04)
 
 ---
 

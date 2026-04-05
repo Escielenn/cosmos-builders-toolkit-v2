@@ -18,8 +18,15 @@ import {
   ChevronDown,
   Check,
   X,
+  History,
+  RotateCcw,
+  Eye,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import {
+  useDocumentVersions,
+  type DocumentSnapshot,
+} from "@/hooks/use-document-versions";
 import { useAuth } from "@/contexts/AuthContext";
 import { useEntities } from "@/hooks/use-entity-graph";
 import {
@@ -71,6 +78,17 @@ const WorldWritingSpace = () => {
   const [editorContent, setEditorContent] = useState("");
   const [entityFilter, setEntityFilter] = useState("");
   const [docTitle, setDocTitle] = useState("");
+
+  // Version history
+  const [historyOpen, setHistoryOpen] = useState(false);
+  const [previewSnapshot, setPreviewSnapshot] =
+    useState<DocumentSnapshot | null>(null);
+
+  const {
+    snapshots,
+    createSnapshot,
+    restoreVersion,
+  } = useDocumentVersions(selectedDocId, docTitle, editorContent);
 
   // Auto-save refs
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -205,6 +223,49 @@ const WorldWritingSpace = () => {
     setRenamingDocId(null);
     setRenameValue("");
   }, []);
+
+  // ---------------------------------------------------------------------------
+  // Version history actions
+  // ---------------------------------------------------------------------------
+
+  const handleManualSave = useCallback(() => {
+    flushSave();
+    createSnapshot();
+  }, [flushSave, createSnapshot]);
+
+  const handleRestoreVersion = useCallback(
+    (snapshotId: string) => {
+      const snapshot = restoreVersion(snapshotId);
+      if (!snapshot) return;
+
+      // Apply restored content
+      setEditorContent(snapshot.content);
+      pendingContentRef.current = snapshot.content;
+      lastSavedContentRef.current = ""; // Force next save to persist
+
+      // Trigger a save immediately
+      if (selectedDocId) {
+        updateContent.mutate({ docId: selectedDocId, content: snapshot.content });
+        lastSavedContentRef.current = snapshot.content;
+      }
+
+      setPreviewSnapshot(null);
+      setHistoryOpen(false);
+    },
+    [restoreVersion, selectedDocId, updateContent]
+  );
+
+  // Ctrl+S keyboard shortcut
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === "s") {
+        e.preventDefault();
+        handleManualSave();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [handleManualSave]);
 
   // ---------------------------------------------------------------------------
   // Entity sidebar — insert @mention
@@ -485,59 +546,204 @@ const WorldWritingSpace = () => {
               Saving...
             </span>
           )}
+
+          {/* History button */}
+          {selectedDoc && (
+            <button
+              onClick={() => setHistoryOpen((p) => !p)}
+              className={cn(
+                "flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] font-heading uppercase tracking-[1.5px] border rounded-xs transition-colors flex-shrink-0",
+                historyOpen
+                  ? "border-[#5B8DEF]/30 text-[#5B8DEF] bg-[#5B8DEF]/[0.06]"
+                  : "border-white/[0.08] text-tier-4 hover:text-tier-2 hover:border-white/[0.15]"
+              )}
+              title="Version History"
+            >
+              <History className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">History</span>
+              {snapshots.length > 0 && (
+                <span className="font-mono text-[9px] text-tier-5">
+                  {snapshots.length}
+                </span>
+              )}
+            </button>
+          )}
         </div>
 
-        {/* Editor area */}
-        <div className="flex-1 overflow-y-auto px-4 py-4 md:px-8 md:py-6">
-          {selectedDoc ? (
-            <div className="max-w-4xl mx-auto">
-              {/* Editable document title */}
-              <input
-                type="text"
-                value={docTitle}
-                onChange={(e) => setDocTitle(e.target.value)}
-                onBlur={() => {
-                  const trimmed = docTitle.trim();
-                  if (trimmed && trimmed !== selectedDoc.title) {
-                    renameDoc.mutate({ docId: selectedDoc.id, title: trimmed });
-                  } else if (!trimmed) {
-                    setDocTitle(selectedDoc.title);
-                  }
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    (e.target as HTMLInputElement).blur();
-                  }
-                }}
-                className="w-full font-heading text-xl font-light tracking-wide text-tier-1 bg-transparent border-0 border-b border-white/[0.08] outline-none focus:border-[#15C17B]/30 rounded-none px-0 py-2 mb-4"
-                placeholder="Document title..."
-              />
-              <StellarForgeEditor
-                key={selectedDocId}
-                content={editorContent}
-                onChange={handleEditorChange}
-                worldId={worldId}
-                preset="full"
-                placeholder="Begin writing. Use @ to mention entities, [[ to link wiki pages..."
-                minHeight="calc(100vh - 280px)"
-              />
-            </div>
-          ) : (
-            <div className="flex flex-col items-center justify-center h-full gap-4">
-              <FileText className="w-10 h-10 text-tier-5" />
-              <p className="text-sm text-tier-4 text-center max-w-xs">
-                Create a new document to start writing in this world.
-              </p>
-              <button
-                onClick={handleCreateDocument}
-                disabled={createDoc.isPending}
-                className="flex items-center gap-2 px-4 py-2 bg-[#15C17B] text-white font-sans text-sm font-medium rounded-none hover:shadow-[0_0_20px_rgba(61,255,205,0.2)] transition-all"
-              >
-                <Plus className="w-4 h-4" />
-                New Document
-              </button>
-            </div>
+        {/* Editor area + history panel */}
+        <div className="flex-1 flex overflow-hidden">
+          {/* Main editor */}
+          <div className="flex-1 overflow-y-auto px-4 py-4 md:px-8 md:py-6">
+            {selectedDoc ? (
+              <div className="max-w-4xl mx-auto">
+                {/* Editable document title */}
+                <input
+                  type="text"
+                  value={docTitle}
+                  onChange={(e) => setDocTitle(e.target.value)}
+                  onBlur={() => {
+                    const trimmed = docTitle.trim();
+                    if (trimmed && trimmed !== selectedDoc.title) {
+                      renameDoc.mutate({ docId: selectedDoc.id, title: trimmed });
+                    } else if (!trimmed) {
+                      setDocTitle(selectedDoc.title);
+                    }
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      (e.target as HTMLInputElement).blur();
+                    }
+                  }}
+                  className="w-full font-heading text-xl font-light tracking-wide text-tier-1 bg-transparent border-0 border-b border-white/[0.08] outline-none focus:border-[#15C17B]/30 rounded-none px-0 py-2 mb-4"
+                  placeholder="Document title..."
+                />
+                <StellarForgeEditor
+                  key={selectedDocId}
+                  content={editorContent}
+                  onChange={handleEditorChange}
+                  worldId={worldId}
+                  preset="full"
+                  placeholder="Begin writing. Use @ to mention entities, [[ to link wiki pages..."
+                  minHeight="calc(100vh - 280px)"
+                />
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center h-full gap-4">
+                <FileText className="w-10 h-10 text-tier-5" />
+                <p className="text-sm text-tier-4 text-center max-w-xs">
+                  Create a new document to start writing in this world.
+                </p>
+                <button
+                  onClick={handleCreateDocument}
+                  disabled={createDoc.isPending}
+                  className="flex items-center gap-2 px-4 py-2 bg-[#15C17B] text-white font-sans text-sm font-medium rounded-none hover:shadow-[0_0_20px_rgba(61,255,205,0.2)] transition-all"
+                >
+                  <Plus className="w-4 h-4" />
+                  New Document
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Version History Panel */}
+          {historyOpen && (
+            <aside className="w-[300px] flex-shrink-0 border-l border-white/[0.06] bg-[#0E1320]/90 backdrop-blur-md overflow-hidden flex flex-col">
+              {/* Panel header */}
+              <div className="flex items-center justify-between border-b border-white/[0.06] px-3 py-2.5">
+                <span className="font-heading text-[11px] font-light uppercase tracking-[2px] text-tier-3">
+                  Version History
+                </span>
+                <button
+                  onClick={() => {
+                    setHistoryOpen(false);
+                    setPreviewSnapshot(null);
+                  }}
+                  className="p-1 text-tier-4 hover:text-tier-2 transition-colors"
+                  title="Close history"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* Snapshot preview */}
+              {previewSnapshot && (
+                <div className="border-b border-white/[0.06] p-3 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-heading uppercase tracking-[1.5px] text-[#5B8DEF]">
+                      Preview
+                    </span>
+                    <button
+                      onClick={() => setPreviewSnapshot(null)}
+                      className="text-[9px] text-tier-4 hover:text-tier-2 uppercase tracking-wider"
+                    >
+                      Close
+                    </button>
+                  </div>
+                  <div
+                    className="text-xs text-tier-2 max-h-[200px] overflow-y-auto sf-custom-scrollbar prose prose-sm prose-invert max-w-none [&_p]:my-1 [&_h1]:text-sm [&_h2]:text-xs [&_h3]:text-xs"
+                    dangerouslySetInnerHTML={{ __html: previewSnapshot.content }}
+                  />
+                  <button
+                    onClick={() => handleRestoreVersion(previewSnapshot.id)}
+                    className="w-full flex items-center justify-center gap-2 px-3 py-1.5 bg-[#5B8DEF]/[0.08] border border-[#5B8DEF]/20 text-[#5B8DEF] text-[10px] font-sans font-medium uppercase tracking-[1px] hover:bg-[#5B8DEF]/[0.15] transition-colors"
+                  >
+                    <RotateCcw className="w-3 h-3" />
+                    Restore This Version
+                  </button>
+                </div>
+              )}
+
+              {/* Snapshot list */}
+              <div className="flex-1 overflow-y-auto sf-custom-scrollbar">
+                {snapshots.length === 0 ? (
+                  <div className="px-3 py-8 text-center">
+                    <History className="w-6 h-6 text-tier-5 mx-auto mb-2" />
+                    <p className="text-[10px] uppercase tracking-[1.5px] text-tier-5">
+                      No snapshots yet
+                    </p>
+                    <p className="text-[9px] text-tier-5 mt-1">
+                      Press Ctrl+S to save a snapshot, or wait for auto-save every 5 min.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="py-1">
+                    {snapshots.map((snapshot, idx) => (
+                      <div
+                        key={snapshot.id}
+                        className={cn(
+                          "flex items-start gap-2 px-3 py-2 hover:bg-white/[0.04] transition-colors group cursor-pointer border-b border-white/[0.03]",
+                          previewSnapshot?.id === snapshot.id && "bg-[#5B8DEF]/[0.04]"
+                        )}
+                        onClick={() => setPreviewSnapshot(snapshot)}
+                      >
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-1.5">
+                            <span className="font-mono text-[10px] text-tier-3">
+                              {new Date(snapshot.timestamp).toLocaleTimeString([], {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
+                            </span>
+                            {idx === 0 && (
+                              <span className="text-[8px] font-mono uppercase tracking-wider text-[#15C17B]/60 bg-[#15C17B]/[0.06] border border-[#15C17B]/[0.12] px-1 py-px">
+                                Latest
+                              </span>
+                            )}
+                          </div>
+                          <span className="text-[9px] text-tier-5 font-mono block mt-0.5">
+                            {new Date(snapshot.timestamp).toLocaleDateString()} &middot;{" "}
+                            {snapshot.wordCount.toLocaleString()} words
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity mt-0.5">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setPreviewSnapshot(snapshot);
+                            }}
+                            className="p-1 text-tier-4 hover:text-[#5B8DEF]"
+                            title="Preview"
+                          >
+                            <Eye className="w-3 h-3" />
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleRestoreVersion(snapshot.id);
+                            }}
+                            className="p-1 text-tier-4 hover:text-[#5B8DEF]"
+                            title="Restore"
+                          >
+                            <RotateCcw className="w-3 h-3" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </aside>
           )}
         </div>
       </div>
