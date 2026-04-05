@@ -1,5 +1,12 @@
 # StellarForge Changelog
 
+## 0.6111
+- Added: Mind Map drag-to-reparent (HTML5 drag-and-drop with circular reference prevention)
+- Added: Entity detail side panel on tree node click (280px slide-out with edit/delete)
+- Added: Enhanced context menu (Edit Entity, Remove from Tree, divider before Delete)
+- Added: Visual drag feedback (cyan glow for valid targets, red for invalid)
+- Added: Drop on empty space makes entity a root node
+
 ## 0.6101
 - Fixed: World Graph crash — default to Knowledge Graph, Entity Graph wrapped in error boundary
 - Fixed: Note/document title reduced from oversized to text-xl, editable title in writing space
