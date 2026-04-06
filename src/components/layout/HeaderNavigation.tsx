@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { Plus, Globe, Wrench, BookOpen, Compass, Map, Star, Leaf, Users, Sparkles, ScrollText, Layers, Rocket, Mail, BookMarked, Info } from "lucide-react";
+import { Plus, Globe, Wrench, BookOpen, Compass, Map, Star, Leaf, Users, Sparkles, ScrollText, Layers, Rocket, Mail, BookMarked, Info, PenLine } from "lucide-react";
 import { getToolIcon } from "@/components/icons/tool-icons";
 import {
   NavigationMenu,
@@ -340,19 +340,49 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
           </NavigationMenuContent>
         </NavigationMenuItem>
 
+        {/* ── Write dropdown ──────────────────────────────── */}
+        <NavigationMenuItem>
+          <NavigationMenuTrigger className={triggerClass}>
+            Write
+          </NavigationMenuTrigger>
+          <NavigationMenuContent className="">
+            <div className="w-[220px] p-3 space-y-0.5">
+              <NavigationMenuLink asChild>
+                <Link
+                  to="/workshop"
+                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-tier-2 hover:text-tier-1 hover:bg-white/5 rounded-sm transition-colors"
+                >
+                  <PenLine className="w-3.5 h-3.5 text-primary/60" />
+                  Writing Space
+                </Link>
+              </NavigationMenuLink>
+              <NavigationMenuLink asChild>
+                <Link
+                  to="/workshop#prompt"
+                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-tier-2 hover:text-tier-1 hover:bg-white/5 rounded-sm transition-colors"
+                >
+                  <Sparkles className="w-3.5 h-3.5 text-primary/60" />
+                  Daily Prompt
+                </Link>
+              </NavigationMenuLink>
+              <NavigationMenuLink asChild>
+                <Link
+                  to="/workshop#prompts"
+                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-tier-2 hover:text-tier-1 hover:bg-white/5 rounded-sm transition-colors"
+                >
+                  <BookOpen className="w-3.5 h-3.5 text-primary/60" />
+                  Prompt Browser
+                </Link>
+              </NavigationMenuLink>
+            </div>
+          </NavigationMenuContent>
+        </NavigationMenuItem>
+
         {/* ── Flat links ──────────────────────────────────── */}
         <NavigationMenuItem>
           <NavigationMenuLink asChild>
             <Link to="/learn" className={navLinkClass}>
               Learn
-            </Link>
-          </NavigationMenuLink>
-        </NavigationMenuItem>
-
-        <NavigationMenuItem>
-          <NavigationMenuLink asChild>
-            <Link to="/workshop" className={navLinkClass}>
-              Workshop
             </Link>
           </NavigationMenuLink>
         </NavigationMenuItem>

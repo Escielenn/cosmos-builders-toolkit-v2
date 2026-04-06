@@ -1,5 +1,13 @@
 # StellarForge Changelog
 
+## 0.6381
+- Fixed: Dropdown positioning — viewport wrapper now spans full nav width (left-0 right-0)
+  so Guide dropdown aligns under its trigger instead of shifting left
+- Changed: "Workshop" → "Write" dropdown with Writing Space, Daily Prompt, Prompt Browser
+- Reordered: Header nav is now Worlds | Tools | Write | Learn | Community | Guide | Pricing
+- Updated: Mobile menu "Workshop" → "Write" with sub-items (Daily Prompt, Prompt Browser)
+- Updated: User dropdown "Workshop" → "Write"
+
 ## 0.6371
 - Added: EntityHistory component (created/modified timestamps on entity details)
 - Added: Entity history in TreeView detail panel and WritingEntityPanel

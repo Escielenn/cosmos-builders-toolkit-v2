@@ -208,14 +208,30 @@ const Header = () => {
                   <Library className="w-5 h-5" />
                   Bookshelf
                 </Link>
-                <Link
-                  to="/workshop"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
-                >
-                  <PenTool className="w-5 h-5" />
-                  Workshop
-                </Link>
+                <div className="space-y-0.5">
+                  <Link
+                    to="/workshop"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
+                  >
+                    <PenTool className="w-5 h-5" />
+                    Write
+                  </Link>
+                  <Link
+                    to="/workshop#prompt"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-3 px-3 py-3 pl-11 text-xs text-muted-foreground/70 hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
+                  >
+                    Daily Prompt
+                  </Link>
+                  <Link
+                    to="/workshop#prompts"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-3 px-3 py-3 pl-11 text-xs text-muted-foreground/70 hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
+                  >
+                    Prompt Browser
+                  </Link>
+                </div>
                 <Link
                   to="/roadmap"
                   onClick={() => setMobileMenuOpen(false)}
@@ -345,7 +361,7 @@ const Header = () => {
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => navigate("/workshop")}>
                   <PenTool className="w-4 h-4 mr-2" />
-                  Workshop
+                  Write
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => navigate("/commendations")}>
                   <Award className="w-4 h-4 mr-2" />
