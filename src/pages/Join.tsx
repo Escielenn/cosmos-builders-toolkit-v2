@@ -25,7 +25,7 @@ import { AUTH_BURSTS } from "@/lib/data-bursts";
 const emailSchema = z.string().email("Valid email required.");
 const passwordSchema = z.string().min(6, "Minimum 6 characters.");
 
-const JOIN_SECRET = import.meta.env.VITE_JOIN_SECRET || "";
+const JOIN_SECRET = import.meta.env.VITE_JOIN_SECRET || "stellarforge-early-access";
 
 const Join = () => {
   const { code } = useParams<{ code: string }>();
