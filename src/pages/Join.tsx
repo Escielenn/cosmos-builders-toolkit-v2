@@ -53,11 +53,8 @@ const Join = () => {
     return () => { document.head.removeChild(meta); };
   }, []);
 
-  useEffect(() => {
-    if (!loading && user) {
-      navigate("/");
-    }
-  }, [user, loading, navigate]);
+  // Don't auto-redirect — show the page even if logged in
+  // (user may be testing the link or sharing the screen)
 
   const validateForm = () => {
     const newErrors: { email?: string; password?: string } = {};
@@ -109,6 +106,24 @@ const Join = () => {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <Loader />
+      </div>
+    );
+  }
+
+  // Already logged in
+  if (!loading && user) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
+        <CubeLogo size={48} className="rounded-lg mb-6" />
+        <h1 className="font-display text-xl font-light tracking-[0.1em] mb-3">
+          YOU'RE ALREADY SIGNED IN
+        </h1>
+        <p className="text-sm text-tier-3 mb-6 text-center max-w-sm">
+          You already have a StellarForge account. Head to your dashboard to start building.
+        </p>
+        <Link to="/" className="text-sm text-primary hover:underline">
+          Go to Dashboard
+        </Link>
       </div>
     );
   }
