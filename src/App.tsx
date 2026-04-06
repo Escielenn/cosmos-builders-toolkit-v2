@@ -86,6 +86,7 @@ const LearnArticle = lazy(() => import("./pages/learn/LearnArticle"));
 // Lazy loaded content pages
 const Bookshelf = lazy(() => import("./pages/Bookshelf"));
 const WritingWorkshop = lazy(() => import("./pages/WritingWorkshop"));
+const PromptBrowser = lazy(() => import("./pages/PromptBrowser"));
 
 // Lazy loaded utility pages
 const NotionCallback = lazy(() => import("./pages/NotionCallback"));
@@ -215,6 +216,8 @@ const App = () => (
                     </ProToolGuard>
                   }
                 />
+                {/* Prompt Browser */}
+                <Route path="/prompts" element={<PromptBrowser />} />
                 {/* Free Tools */}
                 <Route path="/tools/environmental-chain-reaction" element={<EnvironmentalChainReaction />} />
                 <Route path="/tools/propulsion-consequences-map" element={<PropulsionConsequencesMap />} />

@@ -13,7 +13,7 @@ import { useCallback, useEffect, useState } from "react";
 
 export interface PinnedItem {
   id: string;
-  type: "note" | "entity" | "snippet";
+  type: "note" | "entity" | "snippet" | "worksheet";
   title: string;
   content: string;
   pinnedAt: string; // ISO

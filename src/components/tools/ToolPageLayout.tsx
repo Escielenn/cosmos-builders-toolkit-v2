@@ -25,6 +25,7 @@ import { getToolIcon } from "@/components/icons/tool-icons";
 import { getToolPageConfig } from "@/lib/tool-page-config";
 import { useWorldId } from "@/hooks/use-world-id";
 import { useMetaTags } from "@/hooks/use-meta-tags";
+import { PinToWritingButton } from "@/components/tools/PinToWritingButton";
 
 // ─── Props ───────────────────────────────────────────────────────────
 
@@ -154,6 +155,18 @@ export default function ToolPageLayout({
           worldId={worldId}
           worksheetId={worksheetId ?? undefined}
         />
+
+        {/* ── Pin to Writing Space (only when inside a world with a saved worksheet) */}
+        {worldId && worksheetId && (
+          <PinToWritingButton
+            worldId={worldId}
+            itemId={worksheetId}
+            itemType="worksheet"
+            title={`${cfg.brandName}: ${cfg.fullName}`}
+            content={cfg.subtitle}
+            className="mb-2 -mt-3"
+          />
+        )}
 
         {/* ── Title ─────────────────────────────────────────────── */}
         <div className="mb-8">

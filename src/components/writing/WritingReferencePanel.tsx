@@ -2,8 +2,8 @@
 // WritingReferencePanel — Right sidebar for the Writing Space.
 //
 // Three tabs:
-//   Notes:   World notes list with inline expand and pin button.
-//   Pinned:  User-pinned items from localStorage.
+//   Notes:   Browse & pin worksheets, world notes with inline expand and pin.
+//   Pinned:  User-pinned items (notes, worksheets, entities) from localStorage.
 //   History: Version history snapshots with preview and restore.
 // ---------------------------------------------------------------------------
 
@@ -19,10 +19,14 @@ import {
   RotateCcw,
   ChevronDown,
   ChevronUp,
+  FileText,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useWorldNotes } from "@/hooks/use-world-notes";
 import { useWritingPins, type PinnedItem } from "@/hooks/use-writing-pins";
+import { useWorksheets } from "@/hooks/use-worksheets";
+import { TOOL_PAGE_CONFIGS } from "@/lib/tool-page-config";
+import { getToolIcon } from "@/components/icons/tool-icons";
 import type { DocumentSnapshot } from "@/hooks/use-document-versions";
 
 // ---------------------------------------------------------------------------
@@ -70,9 +74,11 @@ export function WritingReferencePanel({
 }: WritingReferencePanelProps) {
   const { notes, isLoading: notesLoading } = useWorldNotes(worldId);
   const { pins, addPin, removePin } = useWritingPins(worldId);
+  const { worksheets, isLoading: worksheetsLoading } = useWorksheets(worldId);
 
   const [activeTab, setActiveTab] = useState<TabId>("notes");
   const [expandedNoteId, setExpandedNoteId] = useState<string | null>(null);
+  const [worksheetsExpanded, setWorksheetsExpanded] = useState(false);
 
   // Toggle note expand
   const handleToggleNote = useCallback((noteId: string) => {
@@ -87,6 +93,22 @@ export function WritingReferencePanel({
         type: "note",
         title: note.title,
         content: note.content,
+      });
+    },
+    [addPin]
+  );
+
+  // Pin a worksheet
+  const handlePinWorksheet = useCallback(
+    (ws: { id: string; tool_type: string; title: string | null }) => {
+      const cfg = TOOL_PAGE_CONFIGS[ws.tool_type];
+      const displayTitle =
+        ws.title || (cfg ? `${cfg.brandName}: ${cfg.fullName}` : ws.tool_type);
+      addPin({
+        id: ws.id,
+        type: "worksheet",
+        title: displayTitle,
+        content: cfg?.subtitle ?? "",
       });
     },
     [addPin]
@@ -172,6 +194,87 @@ export function WritingReferencePanel({
           {/* --------------------------------------------------------------- */}
           {activeTab === "notes" && (
             <div className="py-1">
+              {/* ----- Browse & Pin Worksheets ----- */}
+              {(worksheets && worksheets.length > 0) && (
+                <div className="border-b border-white/[0.06]">
+                  <button
+                    onClick={() => setWorksheetsExpanded((p) => !p)}
+                    className="flex items-center justify-between w-full px-3 py-2 hover:bg-white/[0.03] transition-colors"
+                  >
+                    <span className="font-heading text-[10px] font-light uppercase tracking-[1.5px] text-tier-3 flex items-center gap-1.5">
+                      <FileText className="w-3 h-3" />
+                      Worksheets
+                      <span className="font-mono text-[8px] text-tier-5">
+                        {worksheets.length}
+                      </span>
+                    </span>
+                    {worksheetsExpanded ? (
+                      <ChevronUp className="w-3 h-3 text-tier-4" />
+                    ) : (
+                      <ChevronDown className="w-3 h-3 text-tier-4" />
+                    )}
+                  </button>
+                  {worksheetsExpanded && (
+                    <div className="pb-1">
+                      {worksheets.map((ws) => {
+                        const cfg = TOOL_PAGE_CONFIGS[ws.tool_type];
+                        const ToolIcon = getToolIcon(ws.tool_type);
+                        const displayTitle =
+                          ws.title ||
+                          (cfg
+                            ? `${cfg.brandName}: ${cfg.fullName}`
+                            : ws.tool_type);
+                        const isWsPinned = pins.some(
+                          (p) =>
+                            p.id === ws.id && p.type === "worksheet",
+                        );
+
+                        return (
+                          <div
+                            key={ws.id}
+                            className="flex items-center gap-2 px-3 py-1.5 hover:bg-white/[0.03] transition-colors"
+                          >
+                            {ToolIcon ? (
+                              <ToolIcon className="w-3.5 h-3.5 text-tier-4 flex-shrink-0" />
+                            ) : (
+                              <FileText className="w-3.5 h-3.5 text-tier-4 flex-shrink-0" />
+                            )}
+                            <span className="flex-1 text-[10px] text-tier-2 truncate">
+                              {displayTitle}
+                            </span>
+                            <button
+                              onClick={() =>
+                                isWsPinned
+                                  ? removePin(ws.id)
+                                  : handlePinWorksheet(ws)
+                              }
+                              className={cn(
+                                "p-0.5 transition-colors flex-shrink-0",
+                                isWsPinned
+                                  ? "text-[#FFB800]"
+                                  : "text-tier-4 hover:text-[#FFB800]",
+                              )}
+                              title={
+                                isWsPinned
+                                  ? "Unpin"
+                                  : "Pin to Writing Space"
+                              }
+                            >
+                              {isWsPinned ? (
+                                <PinOff className="w-3 h-3" />
+                              ) : (
+                                <Pin className="w-3 h-3" />
+                              )}
+                            </button>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* ----- World Notes ----- */}
               {notesLoading && (
                 <div className="px-3 py-6 text-center">
                   <span className="text-[10px] uppercase tracking-[1.5px] text-tier-5">
@@ -273,7 +376,7 @@ export function WritingReferencePanel({
                     No pinned items
                   </p>
                   <p className="text-[9px] text-tier-5 mt-1">
-                    Pin notes from the Notes tab to keep them visible while writing.
+                    Pin notes or worksheets from the Notes tab to keep them visible while writing.
                   </p>
                 </div>
               )}
@@ -295,10 +398,12 @@ export function WritingReferencePanel({
                               ? "text-[#00FF88]/70 bg-[#00FF88]/[0.06] border border-[#00FF88]/[0.12]"
                               : pin.type === "note"
                                 ? "text-[#FFB800]/70 bg-[#FFB800]/[0.06] border border-[#FFB800]/[0.12]"
-                                : "text-tier-5 bg-white/[0.04]"
+                                : pin.type === "worksheet"
+                                  ? "text-[#5B8DEF]/70 bg-[#5B8DEF]/[0.06] border border-[#5B8DEF]/[0.12]"
+                                  : "text-tier-5 bg-white/[0.04]"
                           )}
                         >
-                          {pin.type}
+                          {pin.type === "worksheet" ? "sheet" : pin.type}
                         </span>
                       </div>
                       {pin.content && (

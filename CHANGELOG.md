@@ -1,5 +1,17 @@
 # StellarForge Changelog
 
+## 0.6411
+- Fixed: Write dropdown links — Writing Space goes to most recent world's /write,
+  Daily Prompt to /workshop, Prompt Browser to new /prompts page
+- Added: Prompt Browser page (/prompts) — weekly rotation of 7 prompts with timer,
+  acted-upon tracking, expired prompt count, deterministic selection by week
+- Added: useWeeklyPrompts hook — deterministic weekly prompt rotation with localStorage
+- Added: "Pin to Writing Space" button on all worksheet tool pages
+- Added: PinToWritingButton component — works from any page, pin/unpin toggle with toast
+- Added: Worksheets browsable in Writing Space reference panel (Notes tab, top section)
+- Added: Worksheet pins show stellar-blue badges in Pinned tab
+- Extended: PinnedItem type supports 'worksheet' alongside entity/note/snippet
+
 ## 0.6381
 - Fixed: Dropdown positioning — viewport wrapper now spans full nav width (left-0 right-0)
   so Guide dropdown aligns under its trigger instead of shifting left

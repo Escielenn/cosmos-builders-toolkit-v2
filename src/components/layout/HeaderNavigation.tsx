@@ -349,7 +349,7 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
             <div className="w-[220px] p-3 space-y-0.5">
               <NavigationMenuLink asChild>
                 <Link
-                  to="/workshop"
+                  to={worlds.length > 0 ? `/worlds/${worlds[0].id}/write` : "/workshop"}
                   className="flex items-center gap-2 px-2 py-1.5 text-sm text-tier-2 hover:text-tier-1 hover:bg-white/5 rounded-sm transition-colors"
                 >
                   <PenLine className="w-3.5 h-3.5 text-primary/60" />
@@ -358,7 +358,7 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
               </NavigationMenuLink>
               <NavigationMenuLink asChild>
                 <Link
-                  to="/workshop#prompt"
+                  to="/workshop"
                   className="flex items-center gap-2 px-2 py-1.5 text-sm text-tier-2 hover:text-tier-1 hover:bg-white/5 rounded-sm transition-colors"
                 >
                   <Sparkles className="w-3.5 h-3.5 text-primary/60" />
@@ -367,7 +367,7 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
               </NavigationMenuLink>
               <NavigationMenuLink asChild>
                 <Link
-                  to="/workshop#prompts"
+                  to="/prompts"
                   className="flex items-center gap-2 px-2 py-1.5 text-sm text-tier-2 hover:text-tier-1 hover:bg-white/5 rounded-sm transition-colors"
                 >
                   <BookOpen className="w-3.5 h-3.5 text-primary/60" />
