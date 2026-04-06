@@ -14,6 +14,8 @@ const Footer = () => {
       { name: "Tools", href: "/#tools" },
       { name: "Roadmap", href: "/roadmap" },
       { name: "Writing Workshop", href: "/workshop" },
+      { name: "Community", href: "/community" },
+      { name: "Commendations", href: "/commendations" },
     ],
     resources: [
       { name: "Guide", href: "/guide" },
@@ -22,6 +24,7 @@ const Footer = () => {
       { name: "Field Manual", href: "/guide/field-manual" },
       { name: "Bookshelf", href: "/bookshelf" },
       { name: "Contact", href: "/contact" },
+      { name: "About", href: "/about" },
     ],
     legal: [
       { name: "Privacy Policy", href: "/privacy" },

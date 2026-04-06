@@ -1,4 +1,4 @@
-import { Rocket, Zap, Sparkles } from "lucide-react";
+import { Rocket, Zap, Sparkles, PenLine } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -56,6 +56,12 @@ const LoggedInHero = () => {
             </Link>
           </Button>
         )}
+        <Button variant="outline" size="lg" className="gap-2" asChild>
+          <Link to="/workshop">
+            <PenLine className="w-4 h-4" />
+            Continue Writing
+          </Link>
+        </Button>
         {isSubscribed && (
           <Button variant="outline" size="lg" className="gap-2" asChild>
             <a href="#tools">

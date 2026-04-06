@@ -37,6 +37,7 @@ import WorldCard from "@/components/dashboard/WorldCard";
 import CreateWorldButton from "@/components/dashboard/CreateWorldButton";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { useWorlds } from "@/hooks/use-worlds";
 import { useSubscription } from "@/hooks/use-subscription";
@@ -593,6 +594,26 @@ const Index = () => {
 
         {/* Shared with Me Section */}
         {user && <SharedWorldsSection />}
+
+        {/* From the Community Section — logged-in users */}
+        {user && (
+          <section className="mb-16">
+            <h2 className="font-heading font-light text-2xl uppercase tracking-sf-wide mb-6">
+              From the Community
+            </h2>
+            <GlassPanel className="p-8 flex flex-col items-center text-center gap-4">
+              <p className="text-sm text-muted-foreground max-w-md">
+                Discover worlds built by the community — explore shared creations, find inspiration, and see what other builders are forging.
+              </p>
+              <Button size="lg" className="gap-2" asChild>
+                <Link to="/community">
+                  <Users className="w-4 h-4" />
+                  Browse Community
+                </Link>
+              </Button>
+            </GlassPanel>
+          </section>
+        )}
 
         {/* Worldbuilding Tools Section - logged-in users only (non-logged-in see ToolShowcase) */}
         {user && (

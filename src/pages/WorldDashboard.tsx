@@ -1,5 +1,5 @@
 import { useParams, Link, useNavigate, useLocation } from "react-router-dom";
-import { ArrowLeft, Edit, Globe, FileText, Rocket, Zap, Trash2, MoreVertical, Calculator, Plus, Sparkles, Pencil, ChevronRight, Dna, Network, Sun, Crown, Cpu, Users, Download, Layers, BookOpen, Atom, Clock, Archive, Tag, Orbit, Languages, Weight, Eye, Camera, Palette, Library, GripVertical } from "lucide-react";
+import { ArrowLeft, Edit, Globe, FileText, Rocket, Zap, Trash2, MoreVertical, Calculator, Plus, Sparkles, Pencil, ChevronRight, Dna, Network, Sun, Crown, Cpu, Users, Download, Layers, BookOpen, Atom, Clock, Archive, Tag, Orbit, Languages, Weight, Eye, Camera, Palette, Library, GripVertical, PenLine } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
 import { CosmicTelemetry } from "@/components/layout/CosmicVelocityTicker";
 import CascadeProgressBar from "@/components/dashboard/CascadeProgressBar";
@@ -684,6 +684,12 @@ const WorldDashboard = () => {
             Back to Dashboard
           </Link>
           <div className="flex items-center gap-2">
+            <Button size="sm" asChild>
+              <Link to={`/worlds/${worldId}/write`}>
+                <PenLine className="w-4 h-4 mr-2" />
+                Write
+              </Link>
+            </Button>
             <Button variant="outline" size="sm" asChild>
               <Link to={`/worlds/${worldId}/wiki`}>
                 <Library className="w-4 h-4 mr-2" />
@@ -718,6 +724,12 @@ const WorldDashboard = () => {
               World Bible
             </Button>
             )}
+            <Button variant="outline" size="sm" asChild>
+              <Link to={`/worlds/${worldId}/showcase`}>
+                <Eye className="w-4 h-4 mr-2" />
+                Showcase
+              </Link>
+            </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="icon" className="h-8 w-8">

@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { Plus, Globe, Wrench, BookOpen, Compass, Map, Star, Leaf, Users, Sparkles, ScrollText, Layers, Rocket, Mail } from "lucide-react";
+import { Plus, Globe, Wrench, BookOpen, Compass, Map, Star, Leaf, Users, Sparkles, ScrollText, Layers, Rocket, Mail, BookMarked, Info } from "lucide-react";
 import { getToolIcon } from "@/components/icons/tool-icons";
 import {
   NavigationMenu,
@@ -311,11 +311,29 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
               </NavigationMenuLink>
               <NavigationMenuLink asChild>
                 <Link
+                  to="/bookshelf"
+                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-tier-2 hover:text-tier-1 hover:bg-white/5 rounded-sm transition-colors"
+                >
+                  <BookMarked className="w-3.5 h-3.5 text-primary/60" />
+                  Bookshelf
+                </Link>
+              </NavigationMenuLink>
+              <NavigationMenuLink asChild>
+                <Link
                   to="/roadmap"
                   className="flex items-center gap-2 px-2 py-1.5 text-sm text-tier-2 hover:text-tier-1 hover:bg-white/5 rounded-sm transition-colors"
                 >
                   <Map className="w-3.5 h-3.5 text-primary/60" />
                   Roadmap
+                </Link>
+              </NavigationMenuLink>
+              <NavigationMenuLink asChild>
+                <Link
+                  to="/about"
+                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-tier-2 hover:text-tier-1 hover:bg-white/5 rounded-sm transition-colors"
+                >
+                  <Info className="w-3.5 h-3.5 text-primary/60" />
+                  About StellarForge
                 </Link>
               </NavigationMenuLink>
             </div>
@@ -335,6 +353,14 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
           <NavigationMenuLink asChild>
             <Link to="/workshop" className={navLinkClass}>
               Workshop
+            </Link>
+          </NavigationMenuLink>
+        </NavigationMenuItem>
+
+        <NavigationMenuItem>
+          <NavigationMenuLink asChild>
+            <Link to="/community" className={navLinkClass}>
+              Community
             </Link>
           </NavigationMenuLink>
         </NavigationMenuItem>

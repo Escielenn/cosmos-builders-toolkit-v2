@@ -1,5 +1,16 @@
 # StellarForge Changelog
 
+## 0.6351
+- Fixed: UX navigation — every major feature now reachable through normal navigation
+- Added: "Write" and "Showcase" links in world sidebar quick access
+- Added: Prominent "Write" CTA (primary button) on World Dashboard toolbar
+- Added: "Community" flat link in desktop header navigation
+- Added: "Bookshelf" and "About StellarForge" in Guide dropdown
+- Added: Community, Commendations, Bookshelf, About in mobile menu
+- Added: Community, Commendations in Footer product column; About in resources
+- Added: "From the Community" section on homepage for logged-in users
+- Added: "Continue Writing" button in LoggedInHero
+
 ## 0.6341
 - Added: Community Worlds system — visibility (private/community/public), licensing,
   favorites, comments, fork_world RPC for deep-copying worlds

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { User, LogIn, LogOut, ChevronDown, Zap, Menu, Globe, Wrench, BookOpen, Sparkles, Mail, Settings, Search, Image, Download, Library, Archive, Map, Compass, PenTool, Award } from "lucide-react";
+import { User, LogIn, LogOut, ChevronDown, Zap, Menu, Globe, Wrench, BookOpen, Sparkles, Mail, Settings, Search, Image, Download, Library, Archive, Map, Compass, PenTool, Award, Users, Info } from "lucide-react";
 import HeaderNavigation from "./HeaderNavigation";
 import { APP_VERSION } from "@/config/version";
 import { Link, useNavigate, useLocation } from "react-router-dom";
@@ -141,12 +141,28 @@ const Header = () => {
                   My Collection
                 </Link>
                 <Link
+                  to="/community"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
+                >
+                  <Users className="w-5 h-5" />
+                  Community
+                </Link>
+                <Link
                   to="/archive"
                   onClick={() => setMobileMenuOpen(false)}
                   className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
                 >
                   <Archive className="w-5 h-5" />
                   Archive
+                </Link>
+                <Link
+                  to="/commendations"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
+                >
+                  <Award className="w-5 h-5" />
+                  Commendations
                 </Link>
                 <button
                   onClick={() => {
@@ -185,6 +201,14 @@ const Header = () => {
                   Learn
                 </Link>
                 <Link
+                  to="/bookshelf"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
+                >
+                  <Library className="w-5 h-5" />
+                  Bookshelf
+                </Link>
+                <Link
                   to="/workshop"
                   onClick={() => setMobileMenuOpen(false)}
                   className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
@@ -217,6 +241,14 @@ const Header = () => {
                 >
                   <Mail className="w-5 h-5" />
                   Contact
+                </Link>
+                <Link
+                  to="/about"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
+                >
+                  <Info className="w-5 h-5" />
+                  About
                 </Link>
               </nav>
               {!loading && !user && (
