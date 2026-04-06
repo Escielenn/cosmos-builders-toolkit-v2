@@ -1,5 +1,12 @@
 # StellarForge Changelog
 
+## 0.6371
+- Added: EntityHistory component (created/modified timestamps on entity details)
+- Added: Entity history in TreeView detail panel and WritingEntityPanel
+- Added: Delete confirmation for writing documents (window.confirm with name)
+- Added: Social sharing on SharedWorksheetView (public share pages)
+- Updated: Roadmap — marked 10+ previously completed items as done
+
 ## 0.6361
 - Fixed: Header nav alignment — flat links (Learn/Workshop/Community) now match
   dropdown trigger baseline with h-10 flex items-center

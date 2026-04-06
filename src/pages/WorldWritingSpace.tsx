@@ -225,6 +225,9 @@ const WorldWritingSpace = () => {
 
   const handleDeleteDocument = useCallback(
     (docId: string) => {
+      const doc = documents?.find((d) => d.id === docId);
+      const docName = doc?.title || "this document";
+      if (!window.confirm(`Delete "${docName}"? This cannot be undone.`)) return;
       deleteDoc.mutate(docId);
       if (selectedDocId === docId) {
         const remaining = documents?.filter((d) => d.id !== docId) ?? [];

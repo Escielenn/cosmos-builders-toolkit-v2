@@ -26,6 +26,7 @@ import {
   type Entity,
   type CascadeStage,
 } from "@/services/entity-graph-types";
+import { EntityHistory } from "@/components/world/EntityHistory";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -299,6 +300,13 @@ function EntityDetailPanel({
             </div>
           </div>
         )}
+
+        {/* History */}
+        <EntityHistory
+          createdAt={entity.created_at}
+          updatedAt={entity.updated_at}
+          className="pt-3 border-t border-white/[0.04]"
+        />
       </div>
 
       {/* Panel footer actions */}

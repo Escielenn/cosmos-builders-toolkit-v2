@@ -6,6 +6,7 @@ import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
 import SharedPageHeader from "@/components/sharing/SharedPageHeader";
 import WorksheetDataRenderer from "@/components/sharing/WorksheetDataRenderer";
+import { SocialShareButtons } from "@/components/sharing/SocialShareButtons";
 import { useSharedWorksheet } from "@/hooks/use-sharing";
 import { getToolDisplayName } from "@/lib/tools-config";
 import { PageBursts } from "@/components/ui/data-burst";
@@ -108,6 +109,15 @@ const SharedWorksheetView = () => {
               toolType={data.tool_type}
               data={data.data}
             />
+
+            {/* Social sharing */}
+            <GlassPanel className="p-5">
+              <SocialShareButtons
+                url={window.location.href}
+                title={data.title || "StellarForge Worksheet"}
+                description={`${getToolDisplayName(data.tool_type)} worksheet${data.world_name ? ` from the world of ${data.world_name}` : ""} — built with StellarForge`}
+              />
+            </GlassPanel>
 
             {/* Footer */}
             <GlassPanel className="p-6 text-center">

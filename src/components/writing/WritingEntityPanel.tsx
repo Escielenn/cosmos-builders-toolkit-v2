@@ -32,6 +32,7 @@ import type {
   EntityConnection,
   CascadeStage,
 } from "@/services/entity-graph-types";
+import { EntityHistory } from "@/components/world/EntityHistory";
 
 // ---------------------------------------------------------------------------
 // Props
@@ -299,6 +300,13 @@ export function WritingEntityPanel({
                 </div>
               </div>
             )}
+
+            {/* History */}
+            <EntityHistory
+              createdAt={selectedEntity.created_at}
+              updatedAt={selectedEntity.updated_at}
+              className="pt-2"
+            />
 
             {/* Insert buttons */}
             <div className="flex gap-2 pt-2 border-t border-white/[0.06]">

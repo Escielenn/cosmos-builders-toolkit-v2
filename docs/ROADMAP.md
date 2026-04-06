@@ -67,26 +67,27 @@ Active task list and development priorities. Review this at the start of each se
 ### Social Sharing
 - [x] SocialShareButtons component (Twitter/X, Reddit, LinkedIn, Facebook, copy) (2026-04-04)
 - [x] Social sharing on World Showcase (2026-04-04)
-- [ ] **Open Graph meta tags** — dynamic OG tags per page for rich link previews
-- [ ] Social sharing on individual worksheets and tool outputs
+- [x] Dynamic OG meta tags on all tool pages, Showcase, About, Dashboard, Writing (2026-04-04)
+- [x] Social sharing in ExportDialog (all tools get share on export) (2026-04-04)
+- [x] Social sharing on individual worksheet public share pages (2026-04-05)
 
 ### Writing Prompts Expansion
-- [x] Writing prompts system exists (15-20 static prompts, PromptBrowser, PromptCard) (pre-existing)
-- [ ] **Expand prompt library** — add 50+ prompts across all categories
-- [ ] **Personalized prompts from entity data** — "Write a scene where [Species X] encounters [Challenge Y] on [Planet Z]"
-- [ ] **Prompt of the Day** — rotating featured prompt on homepage/dashboard
+- [x] Expanded to 62 prompts across 5 categories (2026-04-04)
+- [x] Personalized prompt generator from entity data (2026-04-04)
+- [x] Prompt of the Day on homepage (2026-04-04)
 
 ### SF Quotes with Affiliate Links
-- [ ] **Extend ToolPageQuote with affiliate URLs** — cite source with purchase link
+- [x] Affiliate URLs on ToolPageQuote and HomepageQuote (2026-04-04)
 - [ ] Add affiliate link click tracking
 
 ### Archive & Delete UX
-- [ ] **Polish confirm dialogs** — recovery from archive, permanent delete with warning
-- [ ] Ensure archive/delete works for entities and documents (not just worlds/worksheets)
+- [x] Type-to-confirm delete dialogs for worlds and worksheets (2026-04-04)
+- [x] Archive undo toast with restore action (2026-04-04)
+- [x] Delete confirmation for documents (2026-04-05) — entities already had confirm
 
 ### World Activity & History
-- [ ] **Recent activity section** at top of each world dashboard (last edited worksheets, entities, notes)
-- [ ] **History section** per world and per element (changelog of modifications)
+- [x] Recent Activity section on World Dashboard (last 10 items) (2026-04-04)
+- [x] Entity history timestamps (created/modified) on detail panels (2026-04-05)
 
 ### Promotional Content
 - [ ] **"See it in Action" section** on preview/landing page — interactive demo or video embed
