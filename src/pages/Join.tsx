@@ -102,16 +102,8 @@ const Join = () => {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <Loader />
-      </div>
-    );
-  }
-
-  // Already logged in
-  if (!loading && user) {
+  // Already logged in (skip loading check — render form immediately)
+  if (user) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
         <CubeLogo size={48} className="rounded-lg mb-6" />
