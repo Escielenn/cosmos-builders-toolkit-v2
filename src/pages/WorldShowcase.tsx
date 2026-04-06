@@ -55,6 +55,7 @@ interface ShowcaseWorld {
   visibility: string;
   fork_count: number;
   license: string;
+  is_example: boolean;
 }
 
 // ---------------------------------------------------------------------------
@@ -68,7 +69,7 @@ function useShowcaseWorld(worldId: string | undefined) {
       if (!worldId) return null;
       const { data, error } = await supabase
         .from("worlds")
-        .select("id, user_id, name, description, header_image_url, header_image_focus_y, icon, tags, theme, created_at, visibility, fork_count, license")
+        .select("id, user_id, name, description, header_image_url, header_image_focus_y, icon, tags, theme, created_at, visibility, fork_count, license, is_example")
         .eq("id", worldId)
         .maybeSingle();
       if (error) throw error;
@@ -79,6 +80,7 @@ function useShowcaseWorld(worldId: string | undefined) {
         visibility: (data as any).visibility ?? "private",
         fork_count: (data as any).fork_count ?? 0,
         license: (data as any).license ?? "cc_by",
+        is_example: (data as any).is_example ?? false,
       } as ShowcaseWorld;
     },
     enabled: !!worldId,
@@ -532,6 +534,40 @@ export default function WorldShowcase() {
   return (
     <div className="min-h-screen bg-sf-void">
       <Header />
+
+      {/* ----------------------------------------------------------------- */}
+      {/* Sample World Banner                                               */}
+      {/* ----------------------------------------------------------------- */}
+      {world.is_example && (
+        <div
+          className="border-b px-6 py-4"
+          style={{
+            background: "linear-gradient(135deg, rgba(91,141,239,0.08) 0%, rgba(21,193,123,0.06) 100%)",
+            borderColor: "rgba(91,141,239,0.15)",
+          }}
+        >
+          <div className="max-w-5xl mx-auto">
+            <div className="flex items-start gap-3">
+              <span className="text-2xl mt-0.5">🌗</span>
+              <div>
+                <p className="font-heading text-sm font-light uppercase tracking-[2px] text-stellar mb-1">
+                  Sample World — The Tidelock Archives
+                </p>
+                <p className="text-[12px] text-tier-2 leading-relaxed max-w-2xl">
+                  This is StellarForge's example world, demonstrating the full Environmental Cascade
+                  from physics through culture. Explore the entities, connections, and lore to see
+                  how a world comes together.
+                </p>
+                <p className="text-[11px] text-tier-3 leading-relaxed mt-1.5">
+                  <strong className="text-tier-2">Want to edit or build on this world?</strong> Fork
+                  it to create your own copy under your account. The original community world stays
+                  unchanged — your fork is yours to modify freely.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ----------------------------------------------------------------- */}
       {/* Visibility Banner (owner only)                                    */}
