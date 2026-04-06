@@ -102,7 +102,7 @@ function shortName(toolId: string): string {
 // ─── Nav link style ───────────────────────────────────────────────────
 
 const navLinkClass =
-  "sf-nav-link text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground hover:text-primary transition-colors duration-300 leading-none";
+  "sf-nav-link text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground hover:text-primary transition-colors duration-300 leading-none h-10 flex items-center";
 
 const triggerClass =
   "sf-nav-link text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground hover:text-primary transition-colors duration-300 bg-transparent hover:bg-transparent focus:bg-transparent data-[state=open]:bg-transparent data-[active]:bg-transparent h-auto p-0 gap-1 rounded-none leading-none";

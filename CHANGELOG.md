@@ -1,5 +1,15 @@
 # StellarForge Changelog
 
+## 0.6361
+- Fixed: Header nav alignment — flat links (Learn/Workshop/Community) now match
+  dropdown trigger baseline with h-10 flex items-center
+- Added: "WRITING SPACE" page title label in top bar
+- Fixed: Zen mode document title reduced from text-2xl to text-lg
+- Added: "Pin to References" button in entity detail panel (pins entity to right panel)
+- Added: Entity pins show emerald badges in reference panel (vs amber for notes)
+- Added: [[ and @ shortcut buttons in writing top bar (blue bracket, green at-sign)
+- Added: Tooltips on [[ and @ buttons explaining wiki links and entity mentions
+
 ## 0.6351
 - Fixed: UX navigation — every major feature now reachable through normal navigation
 - Added: "Write" and "Showcase" links in world sidebar quick access

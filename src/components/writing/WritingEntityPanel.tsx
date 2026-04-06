@@ -16,6 +16,7 @@ import {
   ArrowLeft,
   AtSign,
   Link2,
+  Pin,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useEntities, useEntityConnections } from "@/hooks/use-entity-graph";
@@ -42,6 +43,7 @@ export interface WritingEntityPanelProps {
   onToggle: () => void;
   onInsertMention: (name: string) => void;
   onInsertWikiLink: (name: string) => void;
+  onPinEntity?: (entity: Entity) => void;
 }
 
 // ---------------------------------------------------------------------------
@@ -60,6 +62,7 @@ export function WritingEntityPanel({
   onToggle,
   onInsertMention,
   onInsertWikiLink,
+  onPinEntity,
 }: WritingEntityPanelProps) {
   const { data: entities } = useEntities(worldId);
   const { data: connections } = useEntityConnections(worldId);
@@ -314,6 +317,19 @@ export function WritingEntityPanel({
                 Wiki Link
               </button>
             </div>
+
+            {/* Pin to references */}
+            {onPinEntity && (
+              <div className="pt-1">
+                <button
+                  onClick={() => onPinEntity(selectedEntity)}
+                  className="w-full flex items-center justify-center gap-1.5 px-2 py-2 text-[10px] font-sans font-medium uppercase tracking-[1px] text-[#FFB800] bg-[#FFB800]/[0.06] border border-[#FFB800]/[0.15] rounded-sm hover:bg-[#FFB800]/[0.12] transition-colors"
+                >
+                  <Pin className="w-3 h-3" />
+                  Pin to References
+                </button>
+              </div>
+            )}
           </div>
         ) : (
           <>

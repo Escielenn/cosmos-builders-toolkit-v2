@@ -40,6 +40,8 @@ import { WritingMoodboardStrip } from "@/components/writing/WritingMoodboardStri
 import type { MoodboardImage } from "@/components/writing/WritingMoodboardStrip";
 import { WritingTopBar } from "@/components/writing/WritingTopBar";
 import type { WorldEntry } from "@/services/world-data";
+import type { Entity } from "@/services/entity-graph-types";
+import { useWritingPins } from "@/hooks/use-writing-pins";
 import { supabase } from "@/integrations/supabase/client";
 
 // ---------------------------------------------------------------------------
@@ -106,6 +108,7 @@ const WorldWritingSpace = () => {
   const renameDoc = useRenameDocument(worldId);
   const deleteDoc = useDeleteDocument(worldId);
   const { data: moodboardImages } = useWorldMoodboardImages(worldId);
+  const { addPin } = useWritingPins(worldId ?? "");
 
   // Dynamic meta tags
   useMetaTags({ title: "Writing Space" });
@@ -313,6 +316,42 @@ const WorldWritingSpace = () => {
     }
   }, []);
 
+  const handlePinEntity = useCallback(
+    (entity: Entity) => {
+      addPin({
+        id: entity.id,
+        type: "entity",
+        title: entity.name,
+        content: entity.summary || entity.description || "",
+      });
+    },
+    [addPin]
+  );
+
+  // ---------------------------------------------------------------------------
+  // Insert shortcut helpers (for top bar [[ and @ buttons)
+  // ---------------------------------------------------------------------------
+
+  const handleInsertBracketShortcut = useCallback(() => {
+    const editorEl = document.querySelector(".tiptap");
+    if (editorEl) {
+      (editorEl as HTMLElement).focus();
+      setTimeout(() => {
+        document.execCommand("insertText", false, "[[");
+      }, 50);
+    }
+  }, []);
+
+  const handleInsertMentionShortcut = useCallback(() => {
+    const editorEl = document.querySelector(".tiptap");
+    if (editorEl) {
+      (editorEl as HTMLElement).focus();
+      setTimeout(() => {
+        document.execCommand("insertText", false, "@");
+      }, 50);
+    }
+  }, []);
+
   // ---------------------------------------------------------------------------
   // Keyboard shortcuts
   // ---------------------------------------------------------------------------
@@ -408,7 +447,7 @@ const WorldWritingSpace = () => {
                 (e.target as HTMLInputElement).blur();
               }
             }}
-            className="w-full font-heading text-2xl font-light tracking-wide text-tier-1 bg-transparent border-0 border-b border-white/[0.06] outline-none focus:border-[#15C17B]/20 rounded-none px-0 py-2 mb-6"
+            className="w-full font-heading text-lg font-light tracking-wide text-tier-1 bg-transparent border-0 border-b border-white/[0.06] outline-none focus:border-[#15C17B]/20 rounded-none px-0 py-2 mb-6"
             placeholder="Document title..."
           />
 
@@ -450,6 +489,7 @@ const WorldWritingSpace = () => {
           onToggle={() => setLeftPanelOpen((p) => !p)}
           onInsertMention={handleInsertMention}
           onInsertWikiLink={handleInsertWikiLink}
+          onPinEntity={handlePinEntity}
         />
 
         {/* ----------------------------------------------------------------- */}
@@ -481,6 +521,8 @@ const WorldWritingSpace = () => {
             onToggleMoodboard={() => setMoodboardOpen((p) => !p)}
             hasMoodboardImages={moodImages.length > 0}
             onEnterZen={() => setZenMode(true)}
+            onInsertBracket={handleInsertBracketShortcut}
+            onInsertMention={handleInsertMentionShortcut}
           />
 
           {/* Editor area */}

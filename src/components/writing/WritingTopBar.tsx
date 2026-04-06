@@ -20,6 +20,7 @@ import {
   ImageIcon,
   PanelRight,
   StickyNote,
+  AtSign,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { WorldEntry } from "@/services/world-data";
@@ -63,6 +64,10 @@ export interface WritingTopBarProps {
 
   // Zen mode
   onEnterZen: () => void;
+
+  // Insert shortcut callbacks
+  onInsertBracket?: () => void;
+  onInsertMention?: () => void;
 }
 
 // ---------------------------------------------------------------------------
@@ -93,6 +98,8 @@ export function WritingTopBar({
   onToggleMoodboard,
   hasMoodboardImages,
   onEnterZen,
+  onInsertBracket,
+  onInsertMention,
 }: WritingTopBarProps) {
   const [docDropdownOpen, setDocDropdownOpen] = useState(false);
 
@@ -111,6 +118,11 @@ export function WritingTopBar({
 
   return (
     <div className="flex items-center gap-2 border-b border-white/[0.06] bg-[#0E1320]/60 px-3 py-2">
+      {/* Page label */}
+      <span className="font-heading text-[10px] font-light uppercase tracking-[2px] text-tier-3 flex-shrink-0 hidden md:inline">
+        Writing Space
+      </span>
+
       {/* Left panel toggle */}
       <button
         onClick={onToggleLeftPanel}
@@ -263,6 +275,26 @@ export function WritingTopBar({
         <span className="text-[9px] font-mono uppercase tracking-[1.5px] text-tier-4 flex-shrink-0">
           Saving...
         </span>
+      )}
+
+      {/* Insert shortcut buttons */}
+      {onInsertBracket && (
+        <button
+          onClick={onInsertBracket}
+          className="flex items-center justify-center px-2 py-1.5 font-mono text-xs text-[#5B8DEF] bg-[#5B8DEF]/[0.06] border border-[#5B8DEF]/[0.12] rounded-xs hover:bg-[#5B8DEF]/[0.12] transition-colors flex-shrink-0"
+          title="Insert [[ to trigger wiki link autocomplete"
+        >
+          [[
+        </button>
+      )}
+      {onInsertMention && (
+        <button
+          onClick={onInsertMention}
+          className="flex items-center justify-center px-2 py-1.5 text-[#00FF88] bg-[#00FF88]/[0.06] border border-[#00FF88]/[0.12] rounded-xs hover:bg-[#00FF88]/[0.12] transition-colors flex-shrink-0"
+          title="Insert @ to trigger entity mention autocomplete"
+        >
+          <AtSign className="w-3.5 h-3.5" />
+        </button>
       )}
 
       {/* Moodboard toggle */}

@@ -288,7 +288,16 @@ export function WritingReferencePanel({
                         <span className="text-xs text-tier-2 truncate block">
                           {pin.title}
                         </span>
-                        <span className="text-[8px] font-mono uppercase tracking-wider text-tier-5 bg-white/[0.04] px-1 py-px rounded-sm flex-shrink-0">
+                        <span
+                          className={cn(
+                            "text-[8px] font-mono uppercase tracking-wider px-1 py-px rounded-sm flex-shrink-0",
+                            pin.type === "entity"
+                              ? "text-[#00FF88]/70 bg-[#00FF88]/[0.06] border border-[#00FF88]/[0.12]"
+                              : pin.type === "note"
+                                ? "text-[#FFB800]/70 bg-[#FFB800]/[0.06] border border-[#FFB800]/[0.12]"
+                                : "text-tier-5 bg-white/[0.04]"
+                          )}
+                        >
                           {pin.type}
                         </span>
                       </div>
