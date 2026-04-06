@@ -25,7 +25,13 @@ import { AUTH_BURSTS } from "@/lib/data-bursts";
 const emailSchema = z.string().email("Valid email required.");
 const passwordSchema = z.string().min(6, "Minimum 6 characters.");
 
-const JOIN_SECRET = import.meta.env.VITE_JOIN_SECRET || "stellarforge-early-access";
+// Invite codes that grant access to the sign-up form.
+// Add new codes here as needed. The URL is /join/<code>
+const VALID_CODES = new Set([
+  "stellarforge-early-access",
+  "vanguard-2026",
+  "alpha",
+]);
 
 const Join = () => {
   const { code } = useParams<{ code: string }>();
@@ -42,7 +48,7 @@ const Join = () => {
   const { toast } = useToast();
 
   // Validate the join code
-  const isValidCode = JOIN_SECRET && code === JOIN_SECRET;
+  const isValidCode = !!(code && VALID_CODES.has(code));
 
   // Prevent crawling of this page
   useEffect(() => {
