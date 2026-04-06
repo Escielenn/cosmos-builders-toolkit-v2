@@ -271,7 +271,7 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
           <NavigationMenuTrigger className={triggerClass}>
             Guide
           </NavigationMenuTrigger>
-          <NavigationMenuContent className="!left-auto !right-0">
+          <NavigationMenuContent className="">
             <div className="w-[220px] p-3 space-y-0.5">
               <NavigationMenuLink asChild>
                 <Link
