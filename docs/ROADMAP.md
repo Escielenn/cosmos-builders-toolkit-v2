@@ -16,9 +16,9 @@ Active task list and development priorities. Review this at the start of each se
 - [ ] Test PDF export across all tools that support it
 
 ### Security Review
-- [ ] **Full security review** — refresh after entity layer + writing space additions
-- [ ] Audit RLS policies on new tables (entities, entity_connections)
-- [ ] Review exposed API surfaces and auth guards
+- [x] Security review — fixed comments/favorites INSERT policies (2026-04-05)
+- [x] Audit RLS on entities, entity_connections, world_favorites, world_comments (2026-04-05)
+- [ ] Review exposed API surfaces and auth guards (deeper pass)
 
 ### Phase 3 Bug Fix Pass
 - [ ] Systematic bug-fix pass across all tools and features
@@ -59,7 +59,7 @@ Active task list and development priorities. Review this at the start of each se
 
 ### World Display
 - [x] World Showcase page (`/worlds/:id/showcase`) (2026-04-04)
-- [ ] **Public/private toggle** for world showcase visibility
+- [x] Database-backed visibility toggle (Private/Community/Public) on Showcase (2026-04-05)
 
 ### About Us
 - [x] About Us page (`/about`) (2026-04-04)
@@ -78,7 +78,7 @@ Active task list and development priorities. Review this at the start of each se
 
 ### SF Quotes with Affiliate Links
 - [x] Affiliate URLs on ToolPageQuote and HomepageQuote (2026-04-04)
-- [ ] Add affiliate link click tracking
+- [x] Affiliate link click tracking (localStorage-based) (2026-04-05)
 
 ### Archive & Delete UX
 - [x] Type-to-confirm delete dialogs for worlds and worksheets (2026-04-04)

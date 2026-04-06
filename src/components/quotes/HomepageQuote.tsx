@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { motion } from "framer-motion";
 import { scrollReveal, viewportOnce } from "@/lib/animations";
 import { getHomepageQuote } from "@/lib/sf-quotes";
+import { trackAffiliateClick } from "@/hooks/use-affiliate-tracking";
 
 export function HomepageQuote() {
   const quote = useMemo(() => getHomepageQuote(), []);
@@ -50,6 +51,7 @@ export function HomepageQuote() {
               target="_blank"
               rel="noopener noreferrer"
               className="hidden sm:inline text-[9px] text-tier-4 hover:text-primary transition-colors"
+              onClick={() => trackAffiliateClick(quote.isbn, quote.affiliateUrl!)}
             >
               Get the book &rarr;
             </a>
@@ -62,6 +64,7 @@ export function HomepageQuote() {
             target="_blank"
             rel="noopener noreferrer"
             className="text-[10px] text-tier-4 hover:text-amber-400 transition-colors uppercase tracking-[1px]"
+            onClick={() => trackAffiliateClick(quote.isbn, quote.amazonUrl)}
           >
             Amazon
           </a>
@@ -70,6 +73,7 @@ export function HomepageQuote() {
             target="_blank"
             rel="noopener noreferrer"
             className="text-[10px] text-tier-4 hover:text-emerald-400 transition-colors uppercase tracking-[1px]"
+            onClick={() => trackAffiliateClick(quote.isbn, quote.bookshopUrl)}
           >
             Bookshop
           </a>

@@ -6,18 +6,19 @@
 // world stats, cascade coverage bar, and inline entity detail expansion.
 // ---------------------------------------------------------------------------
 
-import { useParams, Link, useLocation } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { useState, useMemo } from "react";
 import { useMetaTags } from "@/hooks/use-meta-tags";
 import { useAuth } from "@/contexts/AuthContext";
 import { SocialShareButtons } from "@/components/sharing/SocialShareButtons";
-import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, ChevronDown, ChevronUp, Globe, Link2, X } from "lucide-react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { ArrowLeft, ChevronDown, ChevronUp, Globe, Link2, Lock, Users } from "lucide-react";
 import Header from "@/components/layout/Header";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Badge } from "@/components/ui/badge";
 import { Loader } from "@/components/ui/loader";
 import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 import ForkButton from "@/components/community/ForkButton";
 import FavoriteButton from "@/components/community/FavoriteButton";
 import CommentSection from "@/components/community/CommentSection";
@@ -334,6 +335,55 @@ function EntityCard({
   );
 }
 
+/** Visibility selector — owner-only three-option control */
+type WorldVisibility = "private" | "community" | "public";
+
+const VISIBILITY_CONFIG: {
+  value: WorldVisibility;
+  label: string;
+  icon: typeof Globe;
+  color: string;
+}[] = [
+  { value: "private", label: "Private", icon: Lock, color: "#FFB800" },
+  { value: "community", label: "Community", icon: Users, color: "#15C17B" },
+  { value: "public", label: "Public", icon: Globe, color: "#4D9FFF" },
+];
+
+function VisibilitySelector({
+  current,
+  onSelect,
+  disabled,
+}: {
+  current: WorldVisibility;
+  onSelect: (v: WorldVisibility) => void;
+  disabled?: boolean;
+}) {
+  return (
+    <div className="flex items-center gap-1">
+      {VISIBILITY_CONFIG.map((opt) => {
+        const Icon = opt.icon;
+        const isActive = current === opt.value;
+        return (
+          <button
+            key={opt.value}
+            onClick={() => onSelect(opt.value)}
+            disabled={disabled}
+            className="flex items-center gap-1.5 px-3 py-1.5 font-sans text-[11px] font-medium uppercase tracking-[1px] transition-all duration-200 disabled:opacity-50"
+            style={{
+              backgroundColor: isActive ? `${opt.color}0F` : "transparent",
+              border: `1px solid ${isActive ? `${opt.color}26` : "rgba(255,255,255,0.06)"}`,
+              color: isActive ? opt.color : "rgba(255,255,255,0.28)",
+            }}
+          >
+            <Icon className="w-3 h-3" />
+            {opt.label}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 /** Stats card */
 function StatCard({
   label,
@@ -366,6 +416,8 @@ function StatCard({
 export default function WorldShowcase() {
   const { worldId } = useParams<{ worldId: string }>();
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
 
   const { user } = useAuth();
   const { data: world, isLoading: worldLoading } = useShowcaseWorld(worldId);
@@ -381,25 +433,29 @@ export default function WorldShowcase() {
     image: world?.header_image_url || undefined,
   });
 
-  // --- Feature 3: Public/Private toggle (localStorage placeholder) ---
-  const storageKey = worldId ? `sf-showcase-public-${worldId}` : null;
-  const [isPublic, setIsPublic] = useState<boolean>(() => {
-    if (!storageKey) return false;
-    return localStorage.getItem(storageKey) === "true";
-  });
+  // --- Visibility (database-backed) ---
   const isOwner = !!(user && world && user.id === world.user_id);
-  const isCommunityWorld = !!(
-    world &&
-    (world.visibility === "community" || world.visibility === "public")
-  );
+  const visibility = (world?.visibility ?? "private") as WorldVisibility;
+  const isCommunityWorld = visibility === "community" || visibility === "public";
 
-  const togglePublic = () => {
-    const next = !isPublic;
-    setIsPublic(next);
-    if (storageKey) {
-      localStorage.setItem(storageKey, String(next));
-    }
-  };
+  const updateVisibility = useMutation({
+    mutationFn: async (newVisibility: WorldVisibility) => {
+      const { error } = await supabase
+        .from("worlds")
+        .update({ visibility: newVisibility })
+        .eq("id", worldId!);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["showcase-world", worldId] });
+      queryClient.invalidateQueries({ queryKey: ["worlds"] });
+      queryClient.invalidateQueries({ queryKey: ["community-worlds"] });
+      toast({ title: "Visibility updated." });
+    },
+    onError: (err) => {
+      toast({ title: "Failed to update visibility", description: (err as Error).message, variant: "destructive" });
+    },
+  });
 
   // Group entities by cascade stage
   const groupedEntities = useMemo(() => {
@@ -478,20 +534,31 @@ export default function WorldShowcase() {
       <Header />
 
       {/* ----------------------------------------------------------------- */}
-      {/* Public/Private Banner (owner only)                                */}
+      {/* Visibility Banner (owner only)                                    */}
       {/* ----------------------------------------------------------------- */}
-      {isOwner && !isPublic && (
-        <div className="bg-[#FFB800]/[0.06] border-b border-[#FFB800]/[0.15] px-6 py-3">
-          <div className="max-w-5xl mx-auto flex items-center justify-between gap-4">
-            <span className="font-sans text-sm text-[#FFB800]">
-              This showcase is private. Only you can see it.
+      {isOwner && (
+        <div
+          className="border-b px-6 py-3"
+          style={{
+            backgroundColor: visibility === "private" ? "rgba(255,184,0,0.06)" : visibility === "community" ? "rgba(21,193,123,0.06)" : "rgba(77,159,255,0.06)",
+            borderColor: visibility === "private" ? "rgba(255,184,0,0.15)" : visibility === "community" ? "rgba(21,193,123,0.15)" : "rgba(77,159,255,0.15)",
+          }}
+        >
+          <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <span className="font-sans text-sm" style={{
+              color: visibility === "private" ? "#FFB800" : visibility === "community" ? "#15C17B" : "#4D9FFF",
+            }}>
+              {visibility === "private"
+                ? "This showcase is private. Only you can see it."
+                : visibility === "community"
+                ? "Visible to signed-in StellarForge users."
+                : "Visible to anyone with the link."}
             </span>
-            <button
-              onClick={togglePublic}
-              className="font-sans text-xs font-medium uppercase tracking-[1px] px-4 py-1.5 bg-[#15C17B]/[0.06] border border-[#15C17B]/[0.15] text-[#15C17B] hover:bg-[#15C17B]/[0.12] transition-colors"
-            >
-              Make Public
-            </button>
+            <VisibilitySelector
+              current={visibility}
+              onSelect={(v) => updateVisibility.mutate(v)}
+              disabled={updateVisibility.isPending}
+            />
           </div>
         </div>
       )}
@@ -585,19 +652,13 @@ export default function WorldShowcase() {
             </div>
           )}
 
-          {/* Public badge + toggle (owner only) */}
-          {isOwner && isPublic && (
-            <div className="flex items-center gap-3 mt-4">
+          {/* Visibility badge (non-owner visitors see status; owner sees it in top banner) */}
+          {!isOwner && isCommunityWorld && (
+            <div className="flex items-center gap-2 mt-4">
               <span className="inline-flex items-center gap-1.5 font-mono text-[11px] px-2.5 py-1 rounded-sm bg-[#15C17B]/[0.06] border border-[#15C17B]/[0.15] text-[#15C17B]">
                 <Globe className="w-3 h-3" />
-                Public
+                {visibility === "public" ? "Public" : "Community"}
               </span>
-              <button
-                onClick={togglePublic}
-                className="font-sans text-[11px] font-medium uppercase tracking-[1px] text-tier-4 hover:text-tier-2 transition-colors"
-              >
-                Make Private
-              </button>
             </div>
           )}
 

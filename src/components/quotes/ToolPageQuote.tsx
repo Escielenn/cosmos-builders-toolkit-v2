@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { BookOpen } from "lucide-react";
 import { getToolQuote } from "@/lib/sf-quotes";
+import { trackAffiliateClick } from "@/hooks/use-affiliate-tracking";
 
 interface ToolPageQuoteProps {
   toolId: string;
@@ -36,6 +37,7 @@ export function ToolPageQuote({ toolId }: ToolPageQuoteProps) {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-[9px] text-tier-4 hover:text-primary transition-colors"
+                onClick={() => trackAffiliateClick(quote.isbn, quote.affiliateUrl!)}
               >
                 Get the book &rarr;
               </a>
@@ -47,6 +49,7 @@ export function ToolPageQuote({ toolId }: ToolPageQuoteProps) {
             target="_blank"
             rel="noopener noreferrer"
             className="text-[10px] text-tier-4 hover:text-amber-400 transition-colors"
+            onClick={() => trackAffiliateClick(quote.isbn, quote.amazonUrl)}
           >
             Amazon
           </a>
@@ -55,6 +58,7 @@ export function ToolPageQuote({ toolId }: ToolPageQuoteProps) {
             target="_blank"
             rel="noopener noreferrer"
             className="text-[10px] text-tier-4 hover:text-emerald-400 transition-colors"
+            onClick={() => trackAffiliateClick(quote.isbn, quote.bookshopUrl)}
           >
             Bookshop
           </a>

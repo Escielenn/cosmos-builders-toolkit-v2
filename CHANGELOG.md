@@ -1,5 +1,13 @@
 # StellarForge Changelog
 
+## 0.6421
+- Fixed: Showcase visibility now database-backed (Private/Community/Public selector
+  replaces localStorage, updates worlds.visibility column directly)
+- Fixed: Security — comments and favorites INSERT policies now require world to be
+  community/public (prevented commenting/favoriting private worlds)
+- Added: Affiliate link click tracking (localStorage-based, fire-and-forget)
+- Added: Security fix migration applied to Supabase
+
 ## 0.6411
 - Fixed: Write dropdown links — Writing Space goes to most recent world's /write,
   Daily Prompt to /workshop, Prompt Browser to new /prompts page
