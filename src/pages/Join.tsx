@@ -282,26 +282,26 @@ const Join = () => {
             {/* NDA / Confidentiality notice */}
             <div className="p-4 rounded-sm bg-amber-500/[0.06] border border-amber-500/20">
               <p className="text-xs font-medium text-amber-400 uppercase tracking-wider mb-2">
-                Early Access — Confidential Preview
+                Early Access - Confidential Preview
               </p>
               <p className="text-[11px] text-tier-2 leading-relaxed mb-2">
                 StellarForge is in active development. By creating an account, you agree to the following early access terms:
               </p>
               <ul className="text-[11px] text-tier-3 leading-relaxed space-y-1.5 list-none">
                 <li className="flex gap-2">
-                  <span className="text-amber-400 shrink-0">—</span>
+                  <span className="text-amber-400 shrink-0">-</span>
                   <span><strong className="text-tier-2">Confidentiality.</strong> This is a private preview. No screenshots, recordings, reviews, social media posts, or public discussion of the product, its features, or its interface.</span>
                 </li>
                 <li className="flex gap-2">
-                  <span className="text-amber-400 shrink-0">—</span>
+                  <span className="text-amber-400 shrink-0">-</span>
                   <span><strong className="text-tier-2">Early access pricing.</strong> Current pricing reflects the early access period and is lower than launch pricing. Your rate is locked for as long as your subscription remains active.</span>
                 </li>
                 <li className="flex gap-2">
-                  <span className="text-amber-400 shrink-0">—</span>
-                  <span><strong className="text-tier-2">Work in progress.</strong> Features may change, and you may encounter bugs. We have a fully working bug reporting system — your feedback directly shapes the product.</span>
+                  <span className="text-amber-400 shrink-0">-</span>
+                  <span><strong className="text-tier-2">Work in progress.</strong> Features may change, and you may encounter bugs. We have a fully working bug reporting system - your feedback directly shapes the product.</span>
                 </li>
                 <li className="flex gap-2">
-                  <span className="text-amber-400 shrink-0">—</span>
+                  <span className="text-amber-400 shrink-0">-</span>
                   <span><strong className="text-tier-2">Support & Roadmap.</strong> We are available for direct support, and our full development roadmap is visible at <a href="/roadmap" className="text-primary hover:underline">stellarforge.tools/roadmap</a>.</span>
                 </li>
               </ul>

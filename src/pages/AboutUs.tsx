@@ -8,7 +8,7 @@ import { useMetaTags } from "@/hooks/use-meta-tags";
 const AboutUs = () => {
   useMetaTags({
     title: "About StellarForge",
-    description: "The story behind StellarForge — science fiction worldbuilding tools built on the Environmental Cascade.",
+    description: "The story behind StellarForge - science fiction worldbuilding tools built on the Environmental Cascade.",
   });
 
   return (

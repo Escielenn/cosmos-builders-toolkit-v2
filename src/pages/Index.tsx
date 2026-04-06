@@ -582,16 +582,6 @@ const Index = () => {
           </section>
         )}
 
-        {/* Prompt of the Day — logged-in users */}
-        {user && (
-          <section className="mb-16">
-            <h2 className="font-heading font-light text-2xl uppercase tracking-sf-wide mb-6">
-              Today's Writing Prompt
-            </h2>
-            <PromptOfTheDay />
-          </section>
-        )}
-
         {/* Shared with Me Section */}
         {user && <SharedWorldsSection />}
 
@@ -603,7 +593,7 @@ const Index = () => {
             </h2>
             <GlassPanel className="p-8 flex flex-col items-center text-center gap-4">
               <p className="text-sm text-muted-foreground max-w-md">
-                Discover worlds built by the community — explore shared creations, find inspiration, and see what other builders are forging.
+                Discover worlds built by the community - explore shared creations, find inspiration, and see what other builders are forging.
               </p>
               <Button size="lg" className="gap-2" asChild>
                 <Link to="/community">
@@ -724,6 +714,16 @@ const Index = () => {
                 <QuickUpgradeCard />
               </div>
             )}
+          </section>
+        )}
+
+        {/* Prompt of the Day — logged-in users */}
+        {user && (
+          <section className="mb-16">
+            <h2 className="font-heading font-light text-2xl uppercase tracking-sf-wide mb-6">
+              Today's Writing Prompt
+            </h2>
+            <PromptOfTheDay />
           </section>
         )}
 

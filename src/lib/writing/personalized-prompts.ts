@@ -1,5 +1,5 @@
 /**
- * Personalized prompt generator — creates writing prompts from a world's entities.
+ * Personalized prompt generator - creates writing prompts from a world's entities.
  *
  * Takes entity data (planets, species, factions, characters, etc.) and produces
  * 3-5 prompts that reference actual names, types, and relationships.
@@ -8,7 +8,7 @@
 import type { WritingPrompt, PromptCategory, PromptDifficulty } from "./prompts";
 
 // ---------------------------------------------------------------------------
-// Entity shape (minimal — works with WorldEntry from world-data service)
+// Entity shape (minimal - works with WorldEntry from world-data service)
 // ---------------------------------------------------------------------------
 
 export interface Entity {
@@ -43,7 +43,7 @@ const TEMPLATES: PromptTemplate[] = [
     wordGoal: 500,
     build: (e) => [
       `Dawn on ${e.planet.title}`,
-      `On ${e.planet.title}, the sun is rising — but nothing about this sunrise is familiar. Describe the first ten minutes of daylight: the color of the sky, the texture of the air, the sounds that begin. Ground every detail in the physics and environment of this world.`,
+      `On ${e.planet.title}, the sun is rising, but nothing about this sunrise is familiar. Describe the first ten minutes of daylight: the color of the sky, the texture of the air, the sounds that begin. Ground every detail in the physics and environment of this world.`,
     ],
   },
   {
@@ -73,7 +73,7 @@ const TEMPLATES: PromptTemplate[] = [
     wordGoal: 800,
     build: (e) => [
       `What the ${e.species.title} Cannot Perceive`,
-      `The ${e.species.title} have a rich sensory world — but there are things they simply cannot detect. Describe the aspects of their own planet that are invisible to them, and how this blind spot has shaped their science, their myths, and their mistakes.`,
+      `The ${e.species.title} have a rich sensory world, but there are things they simply cannot detect. Describe the aspects of their own planet that are invisible to them, and how this blind spot has shaped their science, their myths, and their mistakes.`,
     ],
   },
   {
@@ -83,7 +83,7 @@ const TEMPLATES: PromptTemplate[] = [
     wordGoal: 450,
     build: (e) => [
       `${e.character.title}'s Secret`,
-      `${e.character.title} has been keeping a secret that could change everything. Write the moment they almost reveal it — and pull back. What stops them? What would happen if the truth came out?`,
+      `${e.character.title} has been keeping a secret that could change everything. Write the moment they almost reveal it, and pull back. What stops them? What would happen if the truth came out?`,
     ],
   },
   {
@@ -103,7 +103,7 @@ const TEMPLATES: PromptTemplate[] = [
     wordGoal: 500,
     build: (e) => [
       `Aboard the ${e.vessel.title}`,
-      `Something is wrong aboard the ${e.vessel.title}, but no one can pinpoint what. The instruments read normal, the crew is healthy, and yet everyone feels it — a wrongness in the hum of the engines. Write the scene when someone finally figures out the cause.`,
+      `Something is wrong aboard the ${e.vessel.title}, but no one can pinpoint what. The instruments read normal, the crew is healthy, and yet everyone feels it: a wrongness in the hum of the engines. Write the scene when someone finally figures out the cause.`,
     ],
   },
   {
@@ -113,7 +113,7 @@ const TEMPLATES: PromptTemplate[] = [
     wordGoal: 650,
     build: (e) => [
       `The Consequences of ${e.technology.title}`,
-      `When ${e.technology.title} was invented, no one predicted what it would do to daily life three generations later. Write a scene set in that future — where the technology's second- and third-order effects have reshaped society in ways its creators never imagined.`,
+      `When ${e.technology.title} was invented, no one predicted what it would do to daily life three generations later. Write a scene set in that future, where the technology's second- and third-order effects have reshaped society in ways its creators never imagined.`,
     ],
   },
   {
@@ -123,7 +123,7 @@ const TEMPLATES: PromptTemplate[] = [
     wordGoal: 600,
     build: (e) => [
       `The Heretic's Version`,
-      `The dominant mythology surrounding ${e.mythology.title} is accepted by nearly everyone — except one person who has found evidence that the story is wrong. Write the moment they decide whether to speak or stay silent.`,
+      `The dominant mythology surrounding ${e.mythology.title} is accepted by nearly everyone, except one person who has found evidence that the story is wrong. Write the moment they decide whether to speak or stay silent.`,
     ],
   },
   {
@@ -133,7 +133,7 @@ const TEMPLATES: PromptTemplate[] = [
     wordGoal: 500,
     build: (e) => [
       `Return to ${e.location.title}`,
-      `A traveler returns to ${e.location.title} after twenty years away. Everything has changed — or has it? Write the walk through a place that is simultaneously familiar and alien, grounding every observation in sensory detail.`,
+      `A traveler returns to ${e.location.title} after twenty years away. Everything has changed. Or has it? Write the walk through a place that is simultaneously familiar and alien, grounding every observation in sensory detail.`,
     ],
   },
 
@@ -146,7 +146,7 @@ const TEMPLATES: PromptTemplate[] = [
     wordGoal: 750,
     build: (e) => [
       `How ${e.species.title} Shaped ${e.planet.title}`,
-      `The ${e.species.title} have lived on ${e.planet.title} long enough to change it. Describe the ways their biology, agriculture, and industry have altered the planet's surface, atmosphere, or ecosystems — intentionally or not.`,
+      `The ${e.species.title} have lived on ${e.planet.title} long enough to change it. Describe the ways their biology, agriculture, and industry have altered the planet's surface, atmosphere, or ecosystems, intentionally or not.`,
     ],
   },
   {
@@ -156,7 +156,7 @@ const TEMPLATES: PromptTemplate[] = [
     wordGoal: 800,
     build: (e) => [
       `First Words Between Worlds`,
-      `The ${e.species.title} and the ${e.species2.title} are meeting for the first time. Neither species communicates the way the other expects. Write the attempt at dialogue — what succeeds, what fails, and what is accidentally communicated.`,
+      `The ${e.species.title} and the ${e.species2.title} are meeting for the first time. Neither species communicates the way the other expects. Write the attempt at dialogue: what succeeds, what fails, and what is accidentally communicated.`,
     ],
   },
   {
@@ -166,7 +166,7 @@ const TEMPLATES: PromptTemplate[] = [
     wordGoal: 850,
     build: (e) => [
       `The ${e.faction.title}–${e.faction2.title} Accord`,
-      `${e.faction.title} and ${e.faction2.title} have been enemies for generations. A ceasefire has been called, and representatives meet in neutral territory. Write the negotiation — the tension, the concessions, the thing neither side is willing to say aloud.`,
+      `${e.faction.title} and ${e.faction2.title} have been enemies for generations. A ceasefire has been called, and representatives meet in neutral territory. Write the negotiation: the tension, the concessions, the thing neither side is willing to say aloud.`,
     ],
   },
   {
@@ -176,7 +176,7 @@ const TEMPLATES: PromptTemplate[] = [
     wordGoal: 700,
     build: (e) => [
       `${e.character.title}'s Betrayal`,
-      `${e.character.title} has been secretly communicating with enemies of ${e.faction.title}. Today, someone found the evidence. Write the confrontation — not just the accusation, but what ${e.character.title} believes they were doing and why.`,
+      `${e.character.title} has been secretly communicating with enemies of ${e.faction.title}. Today, someone found the evidence. Write the confrontation: not just the accusation, but what ${e.character.title} believes they were doing and why.`,
     ],
   },
   {
@@ -186,7 +186,7 @@ const TEMPLATES: PromptTemplate[] = [
     wordGoal: 500,
     build: (e) => [
       `${e.character.title} Touches Ground`,
-      `${e.character.title} has spent their entire life in space. Today they set foot on ${e.planet.title} for the first time. Write the sensory overwhelm — the wind, the gravity, the smell of soil, the terrifying openness of a sky without walls.`,
+      `${e.character.title} has spent their entire life in space. Today they set foot on ${e.planet.title} for the first time. Write the sensory overwhelm: the wind, the gravity, the smell of soil, the terrifying openness of a sky without walls.`,
     ],
   },
   {
@@ -196,7 +196,7 @@ const TEMPLATES: PromptTemplate[] = [
     wordGoal: 900,
     build: (e) => [
       `When ${e.planet.title} Dies`,
-      `${e.planet.title} is dying — slowly, but undeniably. The ${e.species.title} must decide: adapt, migrate, or accept the end. Write the moment the community faces the choice, exploring what it means to lose a homeworld.`,
+      `${e.planet.title} is dying. Slowly, but undeniably. The ${e.species.title} must decide: adapt, migrate, or accept the end. Write the moment the community faces the choice, exploring what it means to lose a homeworld.`,
     ],
   },
   {
@@ -206,7 +206,7 @@ const TEMPLATES: PromptTemplate[] = [
     wordGoal: 650,
     build: (e) => [
       `The ${e.artifact.title} Speaks`,
-      `After decades of study, someone finally activates ${e.artifact.title}. It does something no one expected. Write the scene in the lab — the anticipation, the activation, and the aftermath.`,
+      `After decades of study, someone finally activates ${e.artifact.title}. It does something no one expected. Write the scene in the lab: the anticipation, the activation, and the aftermath.`,
     ],
   },
   {

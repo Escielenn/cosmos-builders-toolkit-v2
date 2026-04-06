@@ -430,7 +430,7 @@ export default function WorldShowcase() {
   // --- Feature 1: Dynamic OG meta tags ---
   useMetaTags({
     title: world?.name,
-    description: world?.description || (world ? `Explore ${world.name} — a world built with StellarForge` : undefined),
+    description: world?.description || (world ? `Explore ${world.name} - a world built with StellarForge` : undefined),
     url: window.location.href,
     image: world?.header_image_url || undefined,
   });
@@ -551,7 +551,7 @@ export default function WorldShowcase() {
               <span className="text-2xl mt-0.5">🌗</span>
               <div>
                 <p className="font-heading text-sm font-light uppercase tracking-[2px] text-stellar mb-1">
-                  Sample World — The Tidelock Archives
+                  Sample World - The Tidelock Archives
                 </p>
                 <p className="text-[12px] text-tier-2 leading-relaxed max-w-2xl">
                   This is StellarForge's example world, demonstrating the full Environmental Cascade
@@ -561,7 +561,7 @@ export default function WorldShowcase() {
                 <p className="text-[11px] text-tier-3 leading-relaxed mt-1.5">
                   <strong className="text-tier-2">Want to edit or build on this world?</strong> Fork
                   it to create your own copy under your account. The original community world stays
-                  unchanged — your fork is yours to modify freely.
+                  unchanged. Your fork is yours to modify freely.
                 </p>
               </div>
             </div>
@@ -702,7 +702,7 @@ export default function WorldShowcase() {
           <div className="mt-6">
             <SocialShareButtons
               url={window.location.href}
-              title={`${world.name} — Built with StellarForge`}
+              title={`${world.name} - Built with StellarForge`}
               description={world.description || "A science fiction world built with StellarForge.tools"}
             />
           </div>

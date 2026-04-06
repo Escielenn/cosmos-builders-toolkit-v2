@@ -1,4 +1,4 @@
-/** Static SF writing prompts — placeholder data until Sanity CMS integration. */
+/** Static SF writing prompts - placeholder data until Sanity CMS integration. */
 
 export type PromptCategory = 'worldbuilding' | 'character' | 'scene' | 'dialogue' | 'theme';
 export type PromptDifficulty = 'beginner' | 'intermediate' | 'advanced';
@@ -32,7 +32,7 @@ export const WRITING_PROMPTS: WritingPrompt[] = [
   {
     id: "wp-003",
     title: "The Translator's Dilemma",
-    prompt: "Two species are meeting for the first time. One communicates through bioluminescent patterns, the other through subsonic vibrations. Write the dialogue—including what gets lost in translation.",
+    prompt: "Two species are meeting for the first time. One communicates through bioluminescent patterns, the other through subsonic vibrations. Write the dialogue, including what gets lost in translation.",
     category: "dialogue",
     difficulty: "advanced",
     wordGoal: 800,
@@ -56,7 +56,7 @@ export const WRITING_PROMPTS: WritingPrompt[] = [
   {
     id: "wp-006",
     title: "Cascade Failure",
-    prompt: "A single environmental change—the extinction of a keystone pollinator—triggers a cascade that reshapes an entire alien ecosystem. Trace the chain of consequences across three generations.",
+    prompt: "A single environmental change - the extinction of a keystone pollinator - triggers a cascade that reshapes an entire alien ecosystem. Trace the chain of consequences across three generations.",
     category: "worldbuilding",
     difficulty: "advanced",
     wordGoal: 1000,
@@ -104,7 +104,7 @@ export const WRITING_PROMPTS: WritingPrompt[] = [
   {
     id: "wp-012",
     title: "Myths They Tell",
-    prompt: "An alien species has a creation myth that is scientifically accurate—they just don't know it yet. Write the myth as an elder tells it to children, then show the scientist who realizes the truth.",
+    prompt: "An alien species has a creation myth that is scientifically accurate - they just don't know it yet. Write the myth as an elder tells it to children, then show the scientist who realizes the truth.",
     category: "theme",
     difficulty: "intermediate",
     wordGoal: 700,
@@ -139,7 +139,7 @@ export const WRITING_PROMPTS: WritingPrompt[] = [
   {
     id: "wp-016",
     title: "Tidal Lock",
-    prompt: "A tidally locked planet has a permanent day side and a permanent night side. Describe the narrow twilight band where most life thrives — the geology, the weather patterns, the way organisms have adapted to eternal dusk.",
+    prompt: "A tidally locked planet has a permanent day side and a permanent night side. Describe the narrow twilight band where most life thrives: the geology, the weather patterns, the way organisms have adapted to eternal dusk.",
     category: "worldbuilding",
     difficulty: "intermediate",
     wordGoal: 700,
@@ -147,7 +147,7 @@ export const WRITING_PROMPTS: WritingPrompt[] = [
   {
     id: "wp-017",
     title: "The Sound of a Binary Sunset",
-    prompt: "On a planet orbiting a binary star system, sunset happens twice — and sometimes simultaneously. Describe how the double-shadow phenomenon has shaped the local culture's concept of time, seasons, and ritual.",
+    prompt: "On a planet orbiting a binary star system, sunset happens twice, and sometimes simultaneously. Describe how the double-shadow phenomenon has shaped the local culture's concept of time, seasons, and ritual.",
     category: "worldbuilding",
     difficulty: "advanced",
     wordGoal: 800,
@@ -155,7 +155,7 @@ export const WRITING_PROMPTS: WritingPrompt[] = [
   {
     id: "wp-018",
     title: "Living Atmosphere",
-    prompt: "The atmosphere itself is alive — a diffuse colonial organism spanning the entire sky. How does surface life co-exist with it? What happens when the atmosphere gets hungry?",
+    prompt: "The atmosphere itself is alive, a diffuse colonial organism spanning the entire sky. How does surface life co-exist with it? What happens when the atmosphere gets hungry?",
     category: "worldbuilding",
     difficulty: "advanced",
     wordGoal: 900,
@@ -163,7 +163,7 @@ export const WRITING_PROMPTS: WritingPrompt[] = [
   {
     id: "wp-019",
     title: "The Dry Ocean",
-    prompt: "A world that once had vast oceans lost its water over millions of years. Describe the ocean basins now — what sediment layers remain, what creatures adapted to the slow drying, and what the deepest trench looks like today.",
+    prompt: "A world that once had vast oceans lost its water over millions of years. Describe the ocean basins now: what sediment layers remain, what creatures adapted to the slow drying, and what the deepest trench looks like today.",
     category: "worldbuilding",
     difficulty: "intermediate",
     wordGoal: 750,
@@ -187,7 +187,7 @@ export const WRITING_PROMPTS: WritingPrompt[] = [
   {
     id: "wp-022",
     title: "Subsurface Eden",
-    prompt: "Life on this ice moon exists entirely beneath a frozen crust, warmed by tidal heating. Describe the ecosystem around a hydrothermal vent — the food chain, the light sources, the pressure.",
+    prompt: "Life on this ice moon exists entirely beneath a frozen crust, warmed by tidal heating. Describe the ecosystem around a hydrothermal vent: the food chain, the light sources, the pressure.",
     category: "worldbuilding",
     difficulty: "beginner",
     wordGoal: 500,
@@ -211,7 +211,7 @@ export const WRITING_PROMPTS: WritingPrompt[] = [
   {
     id: "wp-025",
     title: "Pressure Gradient Civilization",
-    prompt: "On a super-Earth with extreme atmospheric pressure differences between lowlands and highlands, two civilizations evolved in isolation — one adapted to crushing depths, the other to thin air. Describe the border zone.",
+    prompt: "On a super-Earth with extreme atmospheric pressure differences between lowlands and highlands, two civilizations evolved in isolation. One adapted to crushing depths, the other to thin air. Describe the border zone.",
     category: "worldbuilding",
     difficulty: "intermediate",
     wordGoal: 750,
@@ -219,7 +219,7 @@ export const WRITING_PROMPTS: WritingPrompt[] = [
   {
     id: "wp-026",
     title: "Orbital Debris Culture",
-    prompt: "A ring of ancient debris orbits the planet — the remains of a moon that was shattered millennia ago. How has this ring influenced the planet's tides, agriculture, mythology, and navigation?",
+    prompt: "A ring of ancient debris orbits the planet, the remains of a moon that was shattered millennia ago. How has this ring influenced the planet's tides, agriculture, mythology, and navigation?",
     category: "worldbuilding",
     difficulty: "intermediate",
     wordGoal: 700,
@@ -230,7 +230,7 @@ export const WRITING_PROMPTS: WritingPrompt[] = [
   {
     id: "wp-027",
     title: "The Hive Individualist",
-    prompt: "In a eusocial species where individual identity is nearly meaningless, one worker begins to want things for itself. Write its internal experience — how does desire feel to a mind not built for it?",
+    prompt: "In a eusocial species where individual identity is nearly meaningless, one worker begins to want things for itself. Write its internal experience. How does desire feel to a mind not built for it?",
     category: "character",
     difficulty: "advanced",
     wordGoal: 800,
@@ -238,7 +238,7 @@ export const WRITING_PROMPTS: WritingPrompt[] = [
   {
     id: "wp-028",
     title: "Memory Trader",
-    prompt: "A xenobiologist discovers that the alien species she studies can literally trade memories — cutting experiences from their own minds and grafting them into others. She is offered one. Write the scene.",
+    prompt: "A xenobiologist discovers that the alien species she studies can literally trade memories, cutting experiences from their own minds and grafting them into others. She is offered one. Write the scene.",
     category: "character",
     difficulty: "intermediate",
     wordGoal: 600,
@@ -254,7 +254,7 @@ export const WRITING_PROMPTS: WritingPrompt[] = [
   {
     id: "wp-030",
     title: "Predator Turned Herbivore",
-    prompt: "An alien species has genetically engineered away its predatory instincts over centuries. Write from the perspective of one who discovers old recordings of the hunt — and feels something stir.",
+    prompt: "An alien species has genetically engineered away its predatory instincts over centuries. Write from the perspective of one who discovers old recordings of the hunt, and feels something stir.",
     category: "character",
     difficulty: "intermediate",
     wordGoal: 700,
@@ -262,7 +262,7 @@ export const WRITING_PROMPTS: WritingPrompt[] = [
   {
     id: "wp-031",
     title: "The Gravity Swimmer",
-    prompt: "A low-gravity native visits a high-gravity world for the first time. Every step is agony, every breath is labor. Write the character's first day — their physical struggle and psychological determination.",
+    prompt: "A low-gravity native visits a high-gravity world for the first time. Every step is agony, every breath is labor. Write the character's first day: their physical struggle and psychological determination.",
     category: "character",
     difficulty: "beginner",
     wordGoal: 500,
@@ -278,7 +278,7 @@ export const WRITING_PROMPTS: WritingPrompt[] = [
   {
     id: "wp-033",
     title: "The Child Who Sees Dark Matter",
-    prompt: "A child born on a deep-space station perceives something the adults cannot — patterns in the void that correspond to dark matter filaments. Write the scene where she tries to explain what she sees.",
+    prompt: "A child born on a deep-space station perceives something the adults cannot: patterns in the void that correspond to dark matter filaments. Write the scene where she tries to explain what she sees.",
     category: "character",
     difficulty: "beginner",
     wordGoal: 450,
@@ -286,7 +286,7 @@ export const WRITING_PROMPTS: WritingPrompt[] = [
   {
     id: "wp-034",
     title: "Symbiont Separation",
-    prompt: "Two organisms that have been symbiotic partners for forty years must be separated for medical reasons. Write from both perspectives — the host and the symbiont — as the procedure begins.",
+    prompt: "Two organisms that have been symbiotic partners for forty years must be separated for medical reasons. Write from both perspectives, the host and the symbiont, as the procedure begins.",
     category: "character",
     difficulty: "advanced",
     wordGoal: 900,
@@ -329,7 +329,7 @@ export const WRITING_PROMPTS: WritingPrompt[] = [
   {
     id: "wp-039",
     title: "The Water Reclamation Funeral",
-    prompt: "On a desert world where water is sacred, funerals involve reclaiming every drop from the deceased. Write the ceremony for a beloved community leader — the grief, the ritual, the practicality.",
+    prompt: "On a desert world where water is sacred, funerals involve reclaiming every drop from the deceased. Write the ceremony for a beloved community leader: the grief, the ritual, the practicality.",
     category: "scene",
     difficulty: "intermediate",
     wordGoal: 700,
@@ -337,7 +337,7 @@ export const WRITING_PROMPTS: WritingPrompt[] = [
   {
     id: "wp-040",
     title: "Gravity Well Rescue",
-    prompt: "A ship is caught in a gas giant's gravity well and sinking. The rescue window is twelve minutes. Write the rescue from inside the doomed ship — the physics, the fear, the decisions.",
+    prompt: "A ship is caught in a gas giant's gravity well and sinking. The rescue window is twelve minutes. Write the rescue from inside the doomed ship: the physics, the fear, the decisions.",
     category: "scene",
     difficulty: "advanced",
     wordGoal: 900,
@@ -361,7 +361,7 @@ export const WRITING_PROMPTS: WritingPrompt[] = [
   {
     id: "wp-043",
     title: "The Quarantine Break",
-    prompt: "A biologist inside a Level-5 quarantine facility realizes that the alien organism they are studying has already escaped containment — three days ago. Write the moment of discovery and the first response.",
+    prompt: "A biologist inside a Level-5 quarantine facility realizes that the alien organism they are studying has already escaped containment. Three days ago. Write the moment of discovery and the first response.",
     category: "scene",
     difficulty: "advanced",
     wordGoal: 850,
@@ -369,7 +369,7 @@ export const WRITING_PROMPTS: WritingPrompt[] = [
   {
     id: "wp-044",
     title: "Landing on a Living World",
-    prompt: "The landing team's boots sink into the ground — and the ground flinches. The entire surface is a single organism. Write the first ten minutes after they realize the planet is alive.",
+    prompt: "The landing team's boots sink into the ground, and the ground flinches. The entire surface is a single organism. Write the first ten minutes after they realize the planet is alive.",
     category: "scene",
     difficulty: "intermediate",
     wordGoal: 700,
@@ -380,7 +380,7 @@ export const WRITING_PROMPTS: WritingPrompt[] = [
   {
     id: "wp-045",
     title: "Chemical Conversation",
-    prompt: "A species communicates through pheromone cocktails. A human linguist has built a crude chemical translator. Write their first real conversation — messy, partial, and full of misunderstandings.",
+    prompt: "A species communicates through pheromone cocktails. A human linguist has built a crude chemical translator. Write their first real conversation: messy, partial, and full of misunderstandings.",
     category: "dialogue",
     difficulty: "advanced",
     wordGoal: 800,
@@ -396,7 +396,7 @@ export const WRITING_PROMPTS: WritingPrompt[] = [
   {
     id: "wp-047",
     title: "Liar's Frequency",
-    prompt: "An alien species is physically incapable of lying — their biology makes deception impossible. Write a trade negotiation between them and a human delegation that they know can lie.",
+    prompt: "An alien species is physically incapable of lying. Their biology makes deception impossible. Write a trade negotiation between them and a human delegation that they know can lie.",
     category: "dialogue",
     difficulty: "intermediate",
     wordGoal: 700,
@@ -412,7 +412,7 @@ export const WRITING_PROMPTS: WritingPrompt[] = [
   {
     id: "wp-049",
     title: "Parent and Larva",
-    prompt: "An alien parent explains death to their offspring — but in this species, death is a metamorphosis into a completely different organism. Write the conversation, revealing the biology through dialogue.",
+    prompt: "An alien parent explains death to their offspring, but in this species, death is a metamorphosis into a completely different organism. Write the conversation, revealing the biology through dialogue.",
     category: "dialogue",
     difficulty: "intermediate",
     wordGoal: 600,
@@ -420,7 +420,7 @@ export const WRITING_PROMPTS: WritingPrompt[] = [
   {
     id: "wp-050",
     title: "The Mutiny Vote",
-    prompt: "A generation ship crew votes on whether to change course toward a newly discovered habitable world — abandoning their original destination and the promises made to the founders. Write the debate.",
+    prompt: "A generation ship crew votes on whether to change course toward a newly discovered habitable world, abandoning their original destination and the promises made to the founders. Write the debate.",
     category: "dialogue",
     difficulty: "intermediate",
     wordGoal: 750,
@@ -428,7 +428,7 @@ export const WRITING_PROMPTS: WritingPrompt[] = [
   {
     id: "wp-051",
     title: "Singing the Law",
-    prompt: "In a species where laws are encoded as songs, a young legislator proposes a new law by composing a melody. An elder objects — not to the law, but to the harmony. Write the musical argument.",
+    prompt: "In a species where laws are encoded as songs, a young legislator proposes a new law by composing a melody. An elder objects, not to the law, but to the harmony. Write the musical argument.",
     category: "dialogue",
     difficulty: "beginner",
     wordGoal: 500,
@@ -447,7 +447,7 @@ export const WRITING_PROMPTS: WritingPrompt[] = [
   {
     id: "wp-053",
     title: "The Identity Ship",
-    prompt: "A consciousness is copied across three bodies to survive a journey. When they arrive, all three copies insist they are the original. Write the philosophical crisis — who is real?",
+    prompt: "A consciousness is copied across three bodies to survive a journey. When they arrive, all three copies insist they are the original. Write the philosophical crisis. Who is real?",
     category: "theme",
     difficulty: "advanced",
     wordGoal: 800,
@@ -463,7 +463,7 @@ export const WRITING_PROMPTS: WritingPrompt[] = [
   {
     id: "wp-055",
     title: "Transcendence Tax",
-    prompt: "A civilization can upload minds into a digital paradise — but for every mind that ascends, one must stay behind to maintain the hardware. Write about the people who stay.",
+    prompt: "A civilization can upload minds into a digital paradise, but for every mind that ascends, one must stay behind to maintain the hardware. Write about the people who stay.",
     category: "theme",
     difficulty: "advanced",
     wordGoal: 900,
@@ -471,7 +471,7 @@ export const WRITING_PROMPTS: WritingPrompt[] = [
   {
     id: "wp-056",
     title: "The Ethics of Terraforming",
-    prompt: "Terraforming a planet will make it habitable for humans but will destroy the existing microbial biosphere — the only other life ever found. Write the ethics committee hearing.",
+    prompt: "Terraforming a planet will make it habitable for humans but will destroy the existing microbial biosphere, the only other life ever found. Write the ethics committee hearing.",
     category: "theme",
     difficulty: "intermediate",
     wordGoal: 750,
@@ -479,7 +479,7 @@ export const WRITING_PROMPTS: WritingPrompt[] = [
   {
     id: "wp-057",
     title: "A Thousand Years of Tuesday",
-    prompt: "A time loop traps a space station in the same 24 hours for what feels like centuries. Write about the person who has lived this day a thousand times — what changes, what doesn't, and what they've learned.",
+    prompt: "A time loop traps a space station in the same 24 hours for what feels like centuries. Write about the person who has lived this day a thousand times: what changes, what doesn't, and what they've learned.",
     category: "theme",
     difficulty: "intermediate",
     wordGoal: 700,
@@ -487,7 +487,7 @@ export const WRITING_PROMPTS: WritingPrompt[] = [
   {
     id: "wp-058",
     title: "The Zoo Hypothesis",
-    prompt: "Humanity discovers it has been observed by an advanced civilization for millennia — treated as a nature preserve. Write the moment the 'zookeepers' finally make contact and explain the rules.",
+    prompt: "Humanity discovers it has been observed by an advanced civilization for millennia, treated as a nature preserve. Write the moment the 'zookeepers' finally make contact and explain the rules.",
     category: "theme",
     difficulty: "beginner",
     wordGoal: 500,
@@ -495,7 +495,7 @@ export const WRITING_PROMPTS: WritingPrompt[] = [
   {
     id: "wp-059",
     title: "Entropy's Witness",
-    prompt: "In the far future, the last intelligent being watches the final stars go dark. Write their meditation on whether existence was worth it — not as despair, but as honest accounting.",
+    prompt: "In the far future, the last intelligent being watches the final stars go dark. Write their meditation on whether existence was worth it. Not as despair, but as honest accounting.",
     category: "theme",
     difficulty: "advanced",
     wordGoal: 800,
@@ -503,7 +503,7 @@ export const WRITING_PROMPTS: WritingPrompt[] = [
   {
     id: "wp-060",
     title: "The Inherited War",
-    prompt: "Two species have been at war so long that neither remembers why it started. A historian from each side meets to reconstruct the original cause — and discovers it was a translation error. Write the revelation.",
+    prompt: "Two species have been at war so long that neither remembers why it started. A historian from each side meets to reconstruct the original cause, and discovers it was a translation error. Write the revelation.",
     category: "theme",
     difficulty: "intermediate",
     wordGoal: 700,
@@ -519,7 +519,7 @@ export const WRITING_PROMPTS: WritingPrompt[] = [
   {
     id: "wp-062",
     title: "The Moral Weight of Simulation",
-    prompt: "A civilization discovers it can simulate entire universes — complete with suffering, conscious beings, and moral complexity. The beings inside don't know they're simulated. Should the simulation keep running? Write the debate.",
+    prompt: "A civilization discovers it can simulate entire universes, complete with suffering, conscious beings, and moral complexity. The beings inside don't know they're simulated. Should the simulation keep running? Write the debate.",
     category: "theme",
     difficulty: "advanced",
     wordGoal: 900,
@@ -535,7 +535,7 @@ function getDayOfYear(): number {
   return Math.floor(diff / (1000 * 60 * 60 * 24));
 }
 
-/** Get today's prompt (deterministic — same for all users on the same day). */
+/** Get today's prompt (deterministic - same for all users on the same day). */
 export function getTodaysPrompt(): WritingPrompt {
   const day = getDayOfYear();
   return WRITING_PROMPTS[day % WRITING_PROMPTS.length];

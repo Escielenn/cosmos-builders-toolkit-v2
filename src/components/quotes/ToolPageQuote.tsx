@@ -25,7 +25,7 @@ export function ToolPageQuote({ toolId }: ToolPageQuoteProps) {
           <span className="font-mono text-[11px] text-tier-4">
             {quote.author}
           </span>
-          <span className="text-tier-5 text-[10px]">&mdash;</span>
+          <span className="text-tier-5 text-[10px]">-</span>
           <span className="font-mono text-[11px] text-primary/60">
             <em>{quote.source}</em>
           </span>

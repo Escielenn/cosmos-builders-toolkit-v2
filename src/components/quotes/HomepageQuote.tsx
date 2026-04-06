@@ -39,7 +39,7 @@ export function HomepageQuote() {
         <span className="font-mono text-xs text-tier-3">
           {quote.author}
         </span>
-        <span className="text-tier-5 text-xs">&mdash;</span>
+        <span className="text-tier-5 text-xs">-</span>
         <span className="font-mono text-xs text-primary/60">
           <em>{quote.source}</em>
         </span>

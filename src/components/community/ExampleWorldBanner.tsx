@@ -1,11 +1,11 @@
 // ---------------------------------------------------------------------------
-// ExampleWorldBanner — Promotional banner for the example world (Tidelock Archives)
+// ExampleWorldBanner - Promotional banner for the example world (Tidelock Archives)
 // Shown on the Worlds page. Users can view, fork, or hide.
 // ---------------------------------------------------------------------------
 
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Eye, GitFork, X, Globe } from "lucide-react";
+import { Eye, GitFork, X, Globe, ExternalLink } from "lucide-react";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
 import { Loader } from "@/components/ui/loader";
@@ -79,14 +79,41 @@ function useHideExample(worldId: string | undefined) {
   });
 }
 
+/** Check if the user has already forked the example world. Returns the forked world ID if found. */
+function useHasForkedExample(exampleWorldId: string | undefined) {
+  const { user } = useAuth();
+
+  return useQuery<string | null>({
+    queryKey: ["example-forked", exampleWorldId, user?.id],
+    queryFn: async () => {
+      if (!user || !exampleWorldId) return null;
+
+      const { data, error } = await supabase
+        .from("worlds")
+        .select("id")
+        .eq("user_id", user.id)
+        .eq("forked_from", exampleWorldId)
+        .limit(1)
+        .maybeSingle();
+
+      if (error) throw error;
+      return data?.id ?? null;
+    },
+    enabled: !!user && !!exampleWorldId,
+    staleTime: 5 * 60_000,
+  });
+}
+
 export default function ExampleWorldBanner() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { data: exampleWorld, isLoading } = useExampleWorld();
   const { data: isHidden = false } = useIsExampleHidden(exampleWorld?.id);
   const hideExample = useHideExample(exampleWorld?.id);
+  const { data: forkedWorldId } = useHasForkedExample(exampleWorld?.id);
   const forkWorld = useForkWorld();
   const [dismissed, setDismissed] = useState(false);
+  const alreadyForked = !!forkedWorldId;
 
   // Don't render if: loading, no example world, hidden, or dismissed
   if (isLoading || !exampleWorld || isHidden || dismissed) return null;
@@ -126,7 +153,9 @@ export default function ExampleWorldBanner() {
               Explore The Tidelock Archives
             </h3>
             <p className="font-sans text-xs text-tier-3 mt-0.5">
-              Our example world -- see how a fully-built world looks in StellarForge.
+              {alreadyForked
+                ? "You've already forked this world. View the original or go to your copy."
+                : "Our example world - see how a fully-built world looks in StellarForge."}
             </p>
           </div>
         </div>
@@ -142,20 +171,30 @@ export default function ExampleWorldBanner() {
           </Link>
 
           {user && exampleWorld.license !== "view_only" && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleFork}
-              disabled={forkWorld.isPending}
-              className="gap-1.5 text-tier-3 hover:text-primary"
-            >
-              {forkWorld.isPending ? (
-                <Loader variant="inline" size="sm" />
-              ) : (
-                <GitFork className="w-3.5 h-3.5" />
-              )}
-              Fork
-            </Button>
+            alreadyForked ? (
+              <Link
+                to={`/worlds/${forkedWorldId}`}
+                className="inline-flex items-center gap-1.5 font-sans text-xs font-medium uppercase tracking-[1px] px-3 py-1.5 bg-primary/[0.06] border border-primary/[0.15] text-primary hover:bg-primary/[0.12] transition-colors"
+              >
+                <ExternalLink className="w-3.5 h-3.5" />
+                Go to Your Copy
+              </Link>
+            ) : (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleFork}
+                disabled={forkWorld.isPending}
+                className="gap-1.5 text-tier-3 hover:text-primary"
+              >
+                {forkWorld.isPending ? (
+                  <Loader variant="inline" size="sm" />
+                ) : (
+                  <GitFork className="w-3.5 h-3.5" />
+                )}
+                Fork
+              </Button>
+            )
           )}
 
           <Button

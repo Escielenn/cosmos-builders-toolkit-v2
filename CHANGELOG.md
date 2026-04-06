@@ -1,5 +1,13 @@
 # StellarForge Changelog
 
+## 0.6432
+- Moved: Writing prompt now below tools on homepage (was above)
+- Removed: All emdashes from user-facing copy (35+ in prompts, 17+ in example world, quotes, pages)
+- Fixed: Duplicate fork prevention on ExampleWorldBanner (shows "Go to Your Copy" if already forked)
+- Expanded: Example world now has 14 entities, 19 connections (added character, technology, artifact, event)
+- Added: Kel Vorathi (blind negotiator), Bloom Lanterns, The Farthest Shade Stone, The Great Dimming
+- Cleaned: Emdashes removed from database entity descriptions and notes
+
 ## 0.6421
 - Fixed: Showcase visibility now database-backed (Private/Community/Public selector
   replaces localStorage, updates worlds.visibility column directly)
