@@ -523,7 +523,7 @@ const Index = () => {
                 <ArchiveToggle
                   showArchived={showArchived}
                   onToggle={setShowArchived}
-                  archivedCount={showArchived ? archivedCount : worlds.filter((w) => w.archived_at).length || (allWorldTags.length > 0 ? 0 : 0)}
+                  archivedCount={worlds.filter((w) => w.archived_at !== null).length}
                 />
               </div>
               {availableTags.length > 0 && (
