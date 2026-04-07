@@ -266,56 +266,20 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
           </NavigationMenuContent>
         </NavigationMenuItem>
 
-        {/* ── Guide dropdown ──────────────────────────────── */}
+        {/* ── About dropdown ──────────────────────────────── */}
         <NavigationMenuItem>
           <NavigationMenuTrigger className={triggerClass}>
-            Guide
+            About
           </NavigationMenuTrigger>
           <NavigationMenuContent className="">
             <div className="w-[220px] p-3 space-y-0.5">
               <NavigationMenuLink asChild>
                 <Link
-                  to="/guide"
+                  to="/about"
                   className="flex items-center gap-2 px-2 py-1.5 text-sm text-tier-2 hover:text-tier-1 hover:bg-white/5 rounded-sm transition-colors"
                 >
-                  <Compass className="w-3.5 h-3.5 text-primary/60" />
-                  Field Manual
-                </Link>
-              </NavigationMenuLink>
-              <NavigationMenuLink asChild>
-                <Link
-                  to="/getting-started"
-                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-tier-2 hover:text-tier-1 hover:bg-white/5 rounded-sm transition-colors"
-                >
-                  <Sparkles className="w-3.5 h-3.5 text-primary/60" />
-                  Getting Started
-                </Link>
-              </NavigationMenuLink>
-              <NavigationMenuLink asChild>
-                <Link
-                  to="/guide/tools"
-                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-tier-2 hover:text-tier-1 hover:bg-white/5 rounded-sm transition-colors"
-                >
-                  <Wrench className="w-3.5 h-3.5 text-primary/60" />
-                  Tool Reference
-                </Link>
-              </NavigationMenuLink>
-              <NavigationMenuLink asChild>
-                <Link
-                  to="/learn"
-                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-tier-2 hover:text-tier-1 hover:bg-white/5 rounded-sm transition-colors"
-                >
-                  <BookOpen className="w-3.5 h-3.5 text-primary/60" />
-                  SF University
-                </Link>
-              </NavigationMenuLink>
-              <NavigationMenuLink asChild>
-                <Link
-                  to="/bookshelf"
-                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-tier-2 hover:text-tier-1 hover:bg-white/5 rounded-sm transition-colors"
-                >
-                  <BookMarked className="w-3.5 h-3.5 text-primary/60" />
-                  Bookshelf
+                  <Info className="w-3.5 h-3.5 text-primary/60" />
+                  About StellarForge
                 </Link>
               </NavigationMenuLink>
               <NavigationMenuLink asChild>
@@ -329,11 +293,11 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
               </NavigationMenuLink>
               <NavigationMenuLink asChild>
                 <Link
-                  to="/about"
+                  to="/contact"
                   className="flex items-center gap-2 px-2 py-1.5 text-sm text-tier-2 hover:text-tier-1 hover:bg-white/5 rounded-sm transition-colors"
                 >
-                  <Info className="w-3.5 h-3.5 text-primary/60" />
-                  About StellarForge
+                  <Mail className="w-3.5 h-3.5 text-primary/60" />
+                  Contact
                 </Link>
               </NavigationMenuLink>
             </div>
@@ -378,13 +342,60 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
           </NavigationMenuContent>
         </NavigationMenuItem>
 
-        {/* ── Flat links ──────────────────────────────────── */}
+        {/* ── Learn dropdown ──────────────────────────────── */}
         <NavigationMenuItem>
-          <NavigationMenuLink asChild>
-            <Link to="/learn" className={navLinkClass}>
-              Learn
-            </Link>
-          </NavigationMenuLink>
+          <NavigationMenuTrigger className={triggerClass}>
+            Learn
+          </NavigationMenuTrigger>
+          <NavigationMenuContent className="">
+            <div className="w-[240px] p-3 space-y-0.5">
+              <NavigationMenuLink asChild>
+                <Link
+                  to="/learn"
+                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-tier-2 hover:text-tier-1 hover:bg-white/5 rounded-sm transition-colors"
+                >
+                  <BookOpen className="w-3.5 h-3.5 text-primary/60" />
+                  SF University
+                </Link>
+              </NavigationMenuLink>
+              <NavigationMenuLink asChild>
+                <Link
+                  to="/guide"
+                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-tier-2 hover:text-tier-1 hover:bg-white/5 rounded-sm transition-colors"
+                >
+                  <Compass className="w-3.5 h-3.5 text-primary/60" />
+                  Field Manual
+                </Link>
+              </NavigationMenuLink>
+              <NavigationMenuLink asChild>
+                <Link
+                  to="/getting-started"
+                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-tier-2 hover:text-tier-1 hover:bg-white/5 rounded-sm transition-colors"
+                >
+                  <Sparkles className="w-3.5 h-3.5 text-primary/60" />
+                  Getting Started
+                </Link>
+              </NavigationMenuLink>
+              <NavigationMenuLink asChild>
+                <Link
+                  to="/guide/tools"
+                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-tier-2 hover:text-tier-1 hover:bg-white/5 rounded-sm transition-colors"
+                >
+                  <Wrench className="w-3.5 h-3.5 text-primary/60" />
+                  Tool Reference
+                </Link>
+              </NavigationMenuLink>
+              <NavigationMenuLink asChild>
+                <Link
+                  to="/bookshelf"
+                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-tier-2 hover:text-tier-1 hover:bg-white/5 rounded-sm transition-colors"
+                >
+                  <BookMarked className="w-3.5 h-3.5 text-primary/60" />
+                  Bookshelf
+                </Link>
+              </NavigationMenuLink>
+            </div>
+          </NavigationMenuContent>
         </NavigationMenuItem>
 
         <NavigationMenuItem>
@@ -405,17 +416,6 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
           </NavigationMenuItem>
         )}
 
-        <NavigationMenuItem>
-          <NavigationMenuLink asChild>
-            <Link
-              to="/contact"
-              className="sf-nav-link inline-flex items-center justify-center w-9 h-9 text-muted-foreground hover:text-primary transition-colors"
-              title="Contact"
-            >
-              <Mail className="w-4 h-4 relative z-[1]" />
-            </Link>
-          </NavigationMenuLink>
-        </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>
   );

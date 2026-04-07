@@ -8,16 +8,41 @@ import { cn } from "@/lib/utils";
 const NavigationMenu = React.forwardRef<
   React.ElementRef<typeof NavigationMenuPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof NavigationMenuPrimitive.Root>
->(({ className, children, ...props }, ref) => (
-  <NavigationMenuPrimitive.Root
-    ref={ref}
-    className={cn("relative z-10 flex max-w-max flex-1 items-center justify-center", className)}
-    {...props}
-  >
-    {children}
-    <NavigationMenuViewport />
-  </NavigationMenuPrimitive.Root>
-));
+>(({ className, children, ...props }, ref) => {
+  const rootRef = React.useRef<HTMLElement>(null);
+  const [viewportLeft, setViewportLeft] = React.useState(0);
+
+  // Track which trigger is active and position the viewport under it
+  React.useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+    const observer = new MutationObserver(() => {
+      const activeTrigger = root.querySelector('[data-state="open"]') as HTMLElement | null;
+      if (activeTrigger) {
+        const rootRect = root.getBoundingClientRect();
+        const triggerRect = activeTrigger.getBoundingClientRect();
+        setViewportLeft(triggerRect.left - rootRect.left);
+      }
+    });
+    observer.observe(root, { attributes: true, subtree: true, attributeFilter: ["data-state"] });
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <NavigationMenuPrimitive.Root
+      ref={(node) => {
+        (rootRef as React.MutableRefObject<HTMLElement | null>).current = node;
+        if (typeof ref === "function") ref(node);
+        else if (ref) (ref as React.MutableRefObject<HTMLElement | null>).current = node;
+      }}
+      className={cn("relative z-10 flex max-w-max flex-1 items-center justify-center", className)}
+      {...props}
+    >
+      {children}
+      <NavigationMenuViewport style={{ left: viewportLeft }} />
+    </NavigationMenuPrimitive.Root>
+  );
+});
 NavigationMenu.displayName = NavigationMenuPrimitive.Root.displayName;
 
 const NavigationMenuList = React.forwardRef<
@@ -75,9 +100,12 @@ const NavigationMenuLink = NavigationMenuPrimitive.Link;
 
 const NavigationMenuViewport = React.forwardRef<
   React.ElementRef<typeof NavigationMenuPrimitive.Viewport>,
-  React.ComponentPropsWithoutRef<typeof NavigationMenuPrimitive.Viewport>
->(({ className, ...props }, ref) => (
-  <div className={cn("absolute left-0 top-full flex justify-center")}>
+  React.ComponentPropsWithoutRef<typeof NavigationMenuPrimitive.Viewport> & { style?: React.CSSProperties }
+>(({ className, style, ...props }, ref) => (
+  <div
+    className={cn("absolute top-full")}
+    style={{ left: style?.left ?? 0, transition: "left 200ms ease", ...style }}
+  >
     <NavigationMenuPrimitive.Viewport
       className={cn(
         "origin-top-center relative mt-1.5 h-[var(--radix-navigation-menu-viewport-height)] w-full overflow-hidden rounded-none border border-white/10 bg-[#0c1019] backdrop-blur-xl text-popover-foreground shadow-[0_8px_40px_rgba(0,0,0,0.8)] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-90 md:w-[var(--radix-navigation-menu-viewport-width)]",
