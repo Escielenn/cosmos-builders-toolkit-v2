@@ -121,7 +121,8 @@ const WorldWritingSpace = () => {
   const renameFolderMutation = useRenameFolder(worldId);
   const deleteFolderMutation = useDeleteFolder(worldId);
   const { data: moodboardImages } = useWorldMoodboardImages(worldId);
-  const { addPin } = useWritingPins(worldId ?? "");
+  const resolvedWorldId = worldId || "";
+  const { addPin } = useWritingPins(resolvedWorldId);
   const { toast } = useToast();
 
   // Dynamic meta tags
@@ -140,7 +141,7 @@ const WorldWritingSpace = () => {
 
   // Writing preferences (line spacing + font)
   type LineSpacing = "1" | "1.5" | "2";
-  type WritingFont = "DM Sans" | "Georgia" | "Merriweather";
+  type WritingFont = "DM Sans" | "Georgia" | "Merriweather" | "Times New Roman" | "Courier New" | "Lora";
 
   const writingPrefsKey = `sf-writing-prefs-${worldId}`;
   const [lineSpacing, setLineSpacing] = useState<LineSpacing>(() => {
@@ -165,7 +166,13 @@ const WorldWritingSpace = () => {
 
   const editorStyle: CSSProperties = {
     lineHeight: lineSpacing === "2" ? 2 : lineSpacing === "1.5" ? 1.625 : 1.5,
-    fontFamily: writingFont === "Georgia" ? "Georgia, serif" : writingFont === "Merriweather" ? "'Merriweather', Georgia, serif" : undefined,
+    fontFamily:
+      writingFont === "Georgia" ? "Georgia, serif" :
+      writingFont === "Merriweather" ? "'Merriweather', Georgia, serif" :
+      writingFont === "Times New Roman" ? "'Times New Roman', Times, serif" :
+      writingFont === "Courier New" ? "'Courier New', Courier, monospace" :
+      writingFont === "Lora" ? "'Lora', Georgia, serif" :
+      undefined,
   };
 
   // Version history
@@ -653,7 +660,10 @@ const WorldWritingSpace = () => {
                 >
                   <option value="DM Sans">DM Sans</option>
                   <option value="Georgia">Georgia</option>
+                  <option value="Times New Roman">Times New Roman</option>
                   <option value="Merriweather">Merriweather</option>
+                  <option value="Lora">Lora</option>
+                  <option value="Courier New">Courier New</option>
                 </select>
               </div>
             </div>
@@ -723,7 +733,7 @@ const WorldWritingSpace = () => {
         {/* Reference Panel (Right) */}
         {/* ----------------------------------------------------------------- */}
         <WritingReferencePanel
-          worldId={worldId}
+          worldId={resolvedWorldId}
           open={rightPanelOpen}
           onToggle={() => setRightPanelOpen((p) => !p)}
           snapshots={snapshots}
