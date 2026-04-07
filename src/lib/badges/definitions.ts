@@ -98,7 +98,7 @@ export const BADGE_DEFINITIONS: BadgeDefinition[] = [
   {
     id: "world-born",
     name: "World Born",
-    description: "Created your first world—a universe begins with a single act of will.",
+    description: "Created your first world -a universe begins with a single act of will.",
     lockedHint: "Create your first world",
     tier: "nascent",
     category: "exploration",
@@ -163,7 +163,7 @@ export const BADGE_DEFINITIONS: BadgeDefinition[] = [
   {
     id: "systems-thinker",
     name: "Systems Thinker",
-    description: "Used 5 different tools. You see the cascade—not just the pieces.",
+    description: "Used 5 different tools. You see the cascade -not just the pieces.",
     lockedHint: "Use 5 different tool types",
     tier: "stellar",
     category: "depth",
@@ -176,7 +176,7 @@ export const BADGE_DEFINITIONS: BadgeDefinition[] = [
   {
     id: "week-one",
     name: "Week One",
-    description: "Seven consecutive days of writing. You are no longer visiting—you live here.",
+    description: "Seven consecutive days of writing. You are no longer visiting -you live here.",
     lockedHint: "Achieve a 7-day writing streak",
     tier: "stellar",
     category: "consistency",
@@ -265,7 +265,7 @@ export const BADGE_DEFINITIONS: BadgeDefinition[] = [
   {
     id: "novelist",
     name: "Novelist",
-    description: "Fifty thousand words—a novel's worth of worldbuilding prose.",
+    description: "Fifty thousand words -a novel's worth of worldbuilding prose.",
     lockedHint: "Write 50,000 total words",
     tier: "stellar",
     category: "consistency",
@@ -287,7 +287,7 @@ export const BADGE_DEFINITIONS: BadgeDefinition[] = [
   {
     id: "cascade-complete",
     name: "Cascade Complete",
-    description: "Every layer of the cascade—physics through culture—unified in service of your vision. Legendary.",
+    description: "Every layer of the cascade -physics through culture -unified in service of your vision. Legendary.",
     lockedHint: "Complete all 6 cascade layers, build 3+ worlds, and write 5,000+ words",
     tier: "legendary",
     category: "depth",
@@ -350,7 +350,7 @@ export const BADGE_DEFINITIONS: BadgeDefinition[] = [
   {
     id: "month-one",
     name: "Month One",
-    description: "Thirty consecutive days of writing. The craft is no longer a habit—it's who you are.",
+    description: "Thirty consecutive days of writing. The craft is no longer a habit -it's who you are.",
     lockedHint: "Achieve a 30-day writing streak",
     tier: "stellar",
     category: "consistency",
@@ -474,7 +474,7 @@ export const BADGE_DEFINITIONS: BadgeDefinition[] = [
   {
     id: "full-spectrum",
     name: "Full Spectrum",
-    description: "Every cascade layer touched—physics through culture. You see the whole frequency.",
+    description: "Every cascade layer touched -physics through culture. You see the whole frequency.",
     lockedHint: "Use tools from all 6 cascade layers",
     tier: "stellar",
     category: "depth",

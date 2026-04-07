@@ -27,7 +27,7 @@ export const TIER_STYLES: Record<BadgeTier, TierStyle> = {
     border: "border-primary/[0.15]",
     text: "text-primary",
     glow: "shadow-[0_0_12px_hsl(157_100%_62%/0.15)]",
-    earnMessage: "You see the system now—not just the parts.",
+    earnMessage: "You see the system now -not just the parts.",
   },
   legendary: {
     bg: "bg-amber-500/[0.06]",
