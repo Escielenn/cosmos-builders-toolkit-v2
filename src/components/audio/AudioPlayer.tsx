@@ -13,6 +13,7 @@ import {
   ChevronDown,
   Music,
   ListMusic,
+  AlertTriangle,
 } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { useAudioPlayer, useAudioControls } from "@/hooks/use-audio-player";
@@ -47,12 +48,14 @@ export default function AudioPlayer() {
 
   const isPlaying = state.status === "playing";
   const isLoading = state.status === "loading";
+  const isError = state.status === "error";
 
   return state.minimized ? (
     <MinimizedBar
       trackTitle={state.currentTrack?.title ?? "No Track"}
       isPlaying={isPlaying}
       isLoading={isLoading}
+      isError={isError}
       progress={state.progress}
       duration={state.duration}
       onTogglePlay={controls.togglePlayPause}
@@ -75,6 +78,7 @@ interface MinimizedBarProps {
   trackTitle: string;
   isPlaying: boolean;
   isLoading: boolean;
+  isError: boolean;
   progress: number;
   duration: number;
   onTogglePlay: () => void;
@@ -85,6 +89,7 @@ function MinimizedBar({
   trackTitle,
   isPlaying,
   isLoading,
+  isError,
   progress,
   duration,
   onTogglePlay,
@@ -103,17 +108,25 @@ function MinimizedBar({
       </div>
 
       <div className="flex items-center gap-3 px-4 h-10">
-        <Music className="w-3.5 h-3.5 text-primary/50 shrink-0" />
+        {isError ? (
+          <AlertTriangle className="w-3.5 h-3.5 text-amber-400/70 shrink-0" />
+        ) : (
+          <Music className="w-3.5 h-3.5 text-primary/50 shrink-0" />
+        )}
 
         <span className="text-xs text-tier-2 truncate flex-1">
-          {trackTitle}
+          {isError ? (
+            <span className="text-tier-4">{trackTitle} <span className="text-amber-400/60">— Unavailable</span></span>
+          ) : (
+            trackTitle
+          )}
         </span>
 
         <button
           type="button"
           onClick={onTogglePlay}
-          disabled={isLoading}
-          className="p-1.5 text-tier-2 hover:text-primary transition-colors"
+          disabled={isLoading || isError}
+          className="p-1.5 text-tier-2 hover:text-primary transition-colors disabled:opacity-30"
           aria-label={isPlaying ? "Pause" : "Play"}
         >
           {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
@@ -154,6 +167,7 @@ interface ExpandedBarProps {
 function ExpandedBar({ state, controls, progressBarRef }: ExpandedBarProps) {
   const isPlaying = state.status === "playing";
   const isLoading = state.status === "loading";
+  const isError = state.status === "error";
 
   const handleProgressClick = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
@@ -212,12 +226,19 @@ function ExpandedBar({ state, controls, progressBarRef }: ExpandedBarProps) {
             <ListMusic className="w-4 h-4" />
           </button>
           <div className="min-w-0">
-            <p className="text-sm text-tier-2 truncate leading-tight">
+            <p className="text-sm text-tier-2 truncate leading-tight flex items-center gap-1.5">
+              {isError && <AlertTriangle className="w-3 h-3 text-amber-400/70 shrink-0" />}
               {state.currentTrack?.title ?? "No Track"}
+              {isError && <span className="text-[10px] text-amber-400/60 shrink-0">— Unavailable</span>}
             </p>
-            {state.currentTrack?.artist && (
+            {state.currentTrack?.artist && !isError && (
               <p className="text-[10px] text-tier-4 truncate leading-tight">
                 {state.currentTrack.artist}
+              </p>
+            )}
+            {isError && (
+              <p className="text-[10px] text-tier-4 truncate leading-tight">
+                Audio file could not be loaded
               </p>
             )}
           </div>
@@ -249,8 +270,8 @@ function ExpandedBar({ state, controls, progressBarRef }: ExpandedBarProps) {
           <button
             type="button"
             onClick={controls.togglePlayPause}
-            disabled={isLoading}
-            className="p-2 w-10 h-10 flex items-center justify-center bg-primary/10 border border-primary/20 text-primary hover:bg-primary/20 transition-colors"
+            disabled={isLoading || isError}
+            className="p-2 w-10 h-10 flex items-center justify-center bg-primary/10 border border-primary/20 text-primary hover:bg-primary/20 transition-colors disabled:opacity-30"
             aria-label={isPlaying ? "Pause" : "Play"}
           >
             {isPlaying ? (

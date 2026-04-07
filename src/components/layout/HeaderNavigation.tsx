@@ -312,13 +312,16 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
           <NavigationMenuContent className="">
             <div className="w-[220px] p-3 space-y-0.5">
               <NavigationMenuLink asChild>
-                <Link
-                  to={worlds.length > 0 ? `/worlds/${worlds[0].id}/write` : "/workshop"}
-                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-tier-2 hover:text-tier-1 hover:bg-white/5 rounded-sm transition-colors"
+                <button
+                  onClick={() => {
+                    const id = worlds.length > 0 ? worlds[0].id : null;
+                    navigate(id ? `/worlds/${id}/write` : "/worlds");
+                  }}
+                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-tier-2 hover:text-tier-1 hover:bg-white/5 rounded-sm transition-colors w-full text-left"
                 >
                   <PenLine className="w-3.5 h-3.5 text-primary/60" />
                   Writing Space
-                </Link>
+                </button>
               </NavigationMenuLink>
               <NavigationMenuLink asChild>
                 <Link

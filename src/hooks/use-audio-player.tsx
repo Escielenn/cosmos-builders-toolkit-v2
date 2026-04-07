@@ -404,14 +404,21 @@ export function AudioProvider({ children }: { children: ReactNode }) {
       setDuration(audio.duration || 0);
     };
 
+    const handleError = () => {
+      setStatus("error");
+      stopProgressTick();
+    };
+
     audio.addEventListener("ended", handleEnded);
     audio.addEventListener("loadedmetadata", handleLoadedMetadata);
+    audio.addEventListener("error", handleError);
 
     return () => {
       audio.removeEventListener("ended", handleEnded);
       audio.removeEventListener("loadedmetadata", handleLoadedMetadata);
+      audio.removeEventListener("error", handleError);
     };
-  }, [next]);
+  }, [next, stopProgressTick]);
 
   // ---- context values (memoized) ----
   const stateValue = useMemo<AudioStateValue>(
