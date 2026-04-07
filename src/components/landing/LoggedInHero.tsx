@@ -4,10 +4,13 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useSubscription } from "@/hooks/use-subscription";
+import { useWorlds } from "@/hooks/use-worlds";
 import { heroReveal, staggerContainer, fadeUpItem } from "@/lib/animations";
 
 const LoggedInHero = () => {
   const { isSubscribed, isVanguard } = useSubscription();
+  const { worlds } = useWorlds();
+  const mostRecentWorldId = worlds.length > 0 ? worlds[0].id : null;
 
   return (
     <motion.section
@@ -57,7 +60,7 @@ const LoggedInHero = () => {
           </Button>
         )}
         <Button variant="outline" size="lg" className="gap-2" asChild>
-          <Link to="/workshop">
+          <Link to={mostRecentWorldId ? `/worlds/${mostRecentWorldId}/write` : "/workshop"}>
             <PenLine className="w-4 h-4" />
             Continue Writing
           </Link>

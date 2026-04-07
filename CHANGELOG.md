@@ -1,5 +1,16 @@
 # StellarForge Changelog
 
+## 0.6462
+- Fixed: "Continue Writing" hero button now routes to most recent world's Writing Space
+  (was going to /workshop prompt page)
+- Added: Chapters/folders in Writing Space - organize documents into named chapters
+- Added: Hierarchical document navigator in top bar (expandable folders, drag-to-move)
+- Added: Create Chapter, Create Document in Chapter, Rename/Delete Chapter
+- Added: Drag documents between chapters (HTML5 drag-drop)
+- Added: Unfiled section for parentless documents
+- Added: useCreateFolder, useMoveDocument, useRenameFolder, useDeleteFolder hooks
+- Uses existing parent_id column in world_entries (zero migration needed)
+
 ## 0.6432
 - Moved: Writing prompt now below tools on homepage (was above)
 - Removed: All emdashes from user-facing copy (35+ in prompts, 17+ in example world, quotes, pages)

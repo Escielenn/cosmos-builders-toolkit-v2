@@ -32,6 +32,10 @@ import {
   useUpdateDocumentContent,
   useRenameDocument,
   useDeleteDocument,
+  useCreateFolder,
+  useMoveDocument,
+  useRenameFolder,
+  useDeleteFolder,
 } from "@/hooks/use-writing-documents";
 import { StellarForgeEditor } from "@/components/editor/StellarForgeEditor";
 import { WritingEntityPanel } from "@/components/writing/WritingEntityPanel";
@@ -101,12 +105,20 @@ const WorldWritingSpace = () => {
   const { user } = useAuth();
 
   // Data
-  const { data: documents, isLoading: docsLoading } =
-    useWritingDocuments(worldId);
+  const {
+    data: documents,
+    isLoading: docsLoading,
+    folders,
+    unfiledDocs,
+  } = useWritingDocuments(worldId);
   const createDoc = useCreateDocument(worldId);
   const updateContent = useUpdateDocumentContent(worldId);
   const renameDoc = useRenameDocument(worldId);
   const deleteDoc = useDeleteDocument(worldId);
+  const createFolder = useCreateFolder(worldId);
+  const moveDocument = useMoveDocument(worldId);
+  const renameFolderMutation = useRenameFolder(worldId);
+  const deleteFolderMutation = useDeleteFolder(worldId);
   const { data: moodboardImages } = useWorldMoodboardImages(worldId);
   const { addPin } = useWritingPins(worldId ?? "");
 
@@ -200,15 +212,21 @@ const WorldWritingSpace = () => {
   // Document actions
   // ---------------------------------------------------------------------------
 
-  const handleCreateDocument = useCallback(async () => {
-    if (!worldId || !user) return;
-    const result = await createDoc.mutateAsync("Untitled Document");
-    setSelectedDocId(result.id);
-    setEditorContent("");
-    setDocTitle(result.title || "Untitled Document");
-    lastSavedContentRef.current = "";
-    pendingContentRef.current = "";
-  }, [worldId, user, createDoc]);
+  const handleCreateDocument = useCallback(
+    async (folderId?: string | null) => {
+      if (!worldId || !user) return;
+      const result = await createDoc.mutateAsync({
+        title: "Untitled Document",
+        parentId: folderId ?? null,
+      });
+      setSelectedDocId(result.id);
+      setEditorContent("");
+      setDocTitle(result.title || "Untitled Document");
+      lastSavedContentRef.current = "";
+      pendingContentRef.current = "";
+    },
+    [worldId, user, createDoc]
+  );
 
   const handleSelectDocument = useCallback(
     (doc: WorldEntry) => {
@@ -261,6 +279,39 @@ const WorldWritingSpace = () => {
     setRenamingDocId(null);
     setRenameValue("");
   }, []);
+
+  // ---------------------------------------------------------------------------
+  // Folder/chapter actions
+  // ---------------------------------------------------------------------------
+
+  const handleCreateFolder = useCallback(
+    (title: string) => {
+      if (!worldId || !user) return;
+      createFolder.mutate(title);
+    },
+    [worldId, user, createFolder]
+  );
+
+  const handleMoveDocument = useCallback(
+    (docId: string, folderId: string | null) => {
+      moveDocument.mutate({ docId, folderId });
+    },
+    [moveDocument]
+  );
+
+  const handleRenameFolder = useCallback(
+    (folderId: string, title: string) => {
+      renameFolderMutation.mutate({ folderId, title });
+    },
+    [renameFolderMutation]
+  );
+
+  const handleDeleteFolder = useCallback(
+    (folderId: string) => {
+      deleteFolderMutation.mutate(folderId);
+    },
+    [deleteFolderMutation]
+  );
 
   // ---------------------------------------------------------------------------
   // Version history actions
@@ -526,6 +577,12 @@ const WorldWritingSpace = () => {
             onEnterZen={() => setZenMode(true)}
             onInsertBracket={handleInsertBracketShortcut}
             onInsertMention={handleInsertMentionShortcut}
+            folders={folders}
+            unfiledDocs={unfiledDocs}
+            onCreateFolder={handleCreateFolder}
+            onMoveDocument={handleMoveDocument}
+            onRenameFolder={handleRenameFolder}
+            onDeleteFolder={handleDeleteFolder}
           />
 
           {/* Editor area */}

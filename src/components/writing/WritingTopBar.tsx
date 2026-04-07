@@ -3,9 +3,12 @@
 //
 // Layout: left panel toggle | document dropdown + rename | save indicator |
 //         moodboard toggle | right panel toggle | zen button
+//
+// The document dropdown now supports a hierarchical folder/chapter structure.
+// Folders are expandable groups; documents can be dragged between folders.
 // ---------------------------------------------------------------------------
 
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import {
   ChevronRight,
   ChevronLeft,
@@ -19,11 +22,14 @@ import {
   Maximize2,
   ImageIcon,
   PanelRight,
-  StickyNote,
   AtSign,
+  FolderOpen,
+  FolderClosed,
+  GripVertical,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { WorldEntry } from "@/services/world-data";
+import type { WritingFolder, WritingDocument } from "@/hooks/use-writing-documents";
 
 // ---------------------------------------------------------------------------
 // Props
@@ -37,7 +43,7 @@ export interface WritingTopBarProps {
   selectedDocId: string | null;
 
   // Document CRUD handlers
-  onCreateDocument: () => void;
+  onCreateDocument: (folderId?: string | null) => void;
   isCreating: boolean;
   onSelectDocument: (doc: WorldEntry) => void;
   onStartRename: (doc: WorldEntry) => void;
@@ -68,6 +74,14 @@ export interface WritingTopBarProps {
   // Insert shortcut callbacks
   onInsertBracket?: () => void;
   onInsertMention?: () => void;
+
+  // Folder/chapter system
+  folders?: WritingFolder[];
+  unfiledDocs?: WritingDocument[];
+  onCreateFolder?: (title: string) => void;
+  onMoveDocument?: (docId: string, folderId: string | null) => void;
+  onRenameFolder?: (folderId: string, title: string) => void;
+  onDeleteFolder?: (folderId: string) => void;
 }
 
 // ---------------------------------------------------------------------------
@@ -100,13 +114,49 @@ export function WritingTopBar({
   onEnterZen,
   onInsertBracket,
   onInsertMention,
+  folders = [],
+  unfiledDocs = [],
+  onCreateFolder,
+  onMoveDocument,
+  onRenameFolder,
+  onDeleteFolder,
 }: WritingTopBarProps) {
   const [docDropdownOpen, setDocDropdownOpen] = useState(false);
+  const [expandedFolders, setExpandedFolders] = useState<Set<string>>(
+    new Set()
+  );
+  const [creatingChapter, setCreatingChapter] = useState(false);
+  const [newChapterTitle, setNewChapterTitle] = useState("");
+  const [renamingFolderId, setRenamingFolderId] = useState<string | null>(null);
+  const [renameFolderValue, setRenameFolderValue] = useState("");
+  const [dragOverFolderId, setDragOverFolderId] = useState<string | null>(null);
+  const [dragOverUnfiled, setDragOverUnfiled] = useState(false);
+  const [folderContextMenu, setFolderContextMenu] = useState<{
+    folderId: string;
+    x: number;
+    y: number;
+  } | null>(null);
+  const newChapterInputRef = useRef<HTMLInputElement>(null);
 
-  const handleCreateDocument = useCallback(() => {
-    onCreateDocument();
-    setDocDropdownOpen(false);
-  }, [onCreateDocument]);
+  const hasFolders = folders.length > 0;
+  const useHierarchy = hasFolders || onCreateFolder;
+
+  const toggleFolder = useCallback((folderId: string) => {
+    setExpandedFolders((prev) => {
+      const next = new Set(prev);
+      if (next.has(folderId)) next.delete(folderId);
+      else next.add(folderId);
+      return next;
+    });
+  }, []);
+
+  const handleCreateDocument = useCallback(
+    (folderId?: string | null) => {
+      onCreateDocument(folderId);
+      setDocDropdownOpen(false);
+    },
+    [onCreateDocument]
+  );
 
   const handleSelectDocument = useCallback(
     (doc: WorldEntry) => {
@@ -114,6 +164,174 @@ export function WritingTopBar({
       setDocDropdownOpen(false);
     },
     [onSelectDocument]
+  );
+
+  const handleCreateChapter = useCallback(() => {
+    const title = newChapterTitle.trim();
+    if (title && onCreateFolder) {
+      onCreateFolder(title);
+      setNewChapterTitle("");
+      setCreatingChapter(false);
+    }
+  }, [newChapterTitle, onCreateFolder]);
+
+  const handleConfirmFolderRename = useCallback(() => {
+    if (renamingFolderId && renameFolderValue.trim() && onRenameFolder) {
+      onRenameFolder(renamingFolderId, renameFolderValue.trim());
+    }
+    setRenamingFolderId(null);
+    setRenameFolderValue("");
+  }, [renamingFolderId, renameFolderValue, onRenameFolder]);
+
+  const handleCancelFolderRename = useCallback(() => {
+    setRenamingFolderId(null);
+    setRenameFolderValue("");
+  }, []);
+
+  // Drag-and-drop handlers
+  const handleDragStart = useCallback(
+    (e: React.DragEvent, docId: string) => {
+      e.dataTransfer.setData("text/plain", docId);
+      e.dataTransfer.effectAllowed = "move";
+    },
+    []
+  );
+
+  const handleDragOverFolder = useCallback(
+    (e: React.DragEvent, folderId: string) => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = "move";
+      setDragOverFolderId(folderId);
+      setDragOverUnfiled(false);
+    },
+    []
+  );
+
+  const handleDragOverUnfiled = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    setDragOverFolderId(null);
+    setDragOverUnfiled(true);
+  }, []);
+
+  const handleDragLeave = useCallback(() => {
+    setDragOverFolderId(null);
+    setDragOverUnfiled(false);
+  }, []);
+
+  const handleDropOnFolder = useCallback(
+    (e: React.DragEvent, folderId: string) => {
+      e.preventDefault();
+      const docId = e.dataTransfer.getData("text/plain");
+      if (docId && onMoveDocument) {
+        onMoveDocument(docId, folderId);
+      }
+      setDragOverFolderId(null);
+    },
+    [onMoveDocument]
+  );
+
+  const handleDropOnUnfiled = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
+      const docId = e.dataTransfer.getData("text/plain");
+      if (docId && onMoveDocument) {
+        onMoveDocument(docId, null);
+      }
+      setDragOverUnfiled(false);
+    },
+    [onMoveDocument]
+  );
+
+  const handleFolderContextMenu = useCallback(
+    (e: React.MouseEvent, folderId: string) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setFolderContextMenu({ folderId, x: e.clientX, y: e.clientY });
+    },
+    []
+  );
+
+  // ----- Render a single document row -----
+  const renderDocRow = (doc: WorldEntry, indented: boolean = false) => (
+    <div
+      key={doc.id}
+      draggable={!!onMoveDocument}
+      onDragStart={(e) => handleDragStart(e, doc.id)}
+      className={cn(
+        "flex items-center group py-1.5 hover:bg-white/[0.04] transition-colors cursor-pointer",
+        indented ? "pl-8 pr-3" : "pl-3 pr-3",
+        doc.id === selectedDocId && "bg-white/[0.04]"
+      )}
+    >
+      {renamingDocId === doc.id ? (
+        <div className="flex items-center gap-1 flex-1 min-w-0">
+          <input
+            type="text"
+            value={renameValue}
+            onChange={(e) => onRenameValueChange(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") onConfirmRename();
+              if (e.key === "Escape") onCancelRename();
+            }}
+            autoFocus
+            className="flex-1 min-w-0 bg-white/[0.06] border border-white/[0.15] rounded-xs px-2 py-0.5 text-xs text-tier-1 focus:outline-none focus:border-[#15C17B]/35"
+          />
+          <button
+            onClick={onConfirmRename}
+            className="p-0.5 text-[#15C17B] hover:text-[#3DFFCD]"
+          >
+            <Check className="w-3.5 h-3.5" />
+          </button>
+          <button
+            onClick={onCancelRename}
+            className="p-0.5 text-tier-4 hover:text-tier-2"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      ) : (
+        <>
+          {onMoveDocument && (
+            <GripVertical className="w-3 h-3 text-tier-5 mr-1.5 flex-shrink-0 opacity-0 group-hover:opacity-100 cursor-grab" />
+          )}
+          <FileText className="w-3 h-3 text-tier-4 mr-1.5 flex-shrink-0" />
+          <div
+            className="flex-1 min-w-0"
+            onClick={() => handleSelectDocument(doc)}
+          >
+            <span className="text-xs text-tier-2 truncate block font-sans">
+              {doc.title}
+            </span>
+            <span className="text-[9px] text-tier-5 font-mono">
+              {new Date(doc.updated_at).toLocaleDateString()}
+            </span>
+          </div>
+          <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onStartRename(doc);
+              }}
+              className="p-1 text-tier-4 hover:text-tier-2"
+              title="Rename"
+            >
+              <Pencil className="w-3 h-3" />
+            </button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onDeleteDocument(doc.id);
+              }}
+              className="p-1 text-tier-4 hover:text-[#FF3366]"
+              title="Delete"
+            >
+              <Trash2 className="w-3 h-3" />
+            </button>
+          </div>
+        </>
+      )}
+    </div>
   );
 
   return (
@@ -157,26 +375,82 @@ export function WritingTopBar({
         {/* Dropdown panel */}
         {docDropdownOpen && (
           <>
-            {/* Backdrop */}
+            {/* Backdrop — closes dropdown and context menu */}
             <div
               className="fixed inset-0 z-40"
-              onClick={() => setDocDropdownOpen(false)}
+              onClick={() => {
+                setDocDropdownOpen(false);
+                setFolderContextMenu(null);
+              }}
             />
-            <div className="absolute left-0 top-full mt-1 z-50 w-full min-w-[280px] bg-[#161C2B] border border-white/[0.08] rounded-xs shadow-xl overflow-hidden">
-              {/* Create new */}
-              <button
-                onClick={handleCreateDocument}
-                disabled={isCreating}
-                className="flex items-center gap-2 w-full px-3 py-2 text-sm text-[#15C17B] hover:bg-[#15C17B]/[0.06] transition-colors border-b border-white/[0.06]"
-              >
-                <Plus className="w-3.5 h-3.5" />
-                <span className="font-sans text-xs font-medium uppercase tracking-[1px]">
-                  New Document
-                </span>
-              </button>
+            <div className="absolute left-0 top-full mt-1 z-50 w-full min-w-[300px] bg-[#161C2B] border border-white/[0.08] rounded-xs shadow-xl overflow-hidden">
+              {/* Action bar: New Chapter + New Document */}
+              <div className="flex items-center border-b border-white/[0.06]">
+                {onCreateFolder && (
+                  <button
+                    onClick={() => {
+                      setCreatingChapter(true);
+                      setTimeout(() => newChapterInputRef.current?.focus(), 50);
+                    }}
+                    className="flex items-center gap-1.5 flex-1 px-3 py-2 text-[#FFB800] hover:bg-[#FFB800]/[0.06] transition-colors"
+                  >
+                    <FolderOpen className="w-3.5 h-3.5" />
+                    <span className="font-sans text-[10px] font-medium uppercase tracking-[1px]">
+                      New Chapter
+                    </span>
+                  </button>
+                )}
+                <button
+                  onClick={() => handleCreateDocument(null)}
+                  disabled={isCreating}
+                  className="flex items-center gap-1.5 flex-1 px-3 py-2 text-[#15C17B] hover:bg-[#15C17B]/[0.06] transition-colors"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span className="font-sans text-[10px] font-medium uppercase tracking-[1px]">
+                    New Document
+                  </span>
+                </button>
+              </div>
 
-              {/* Document list */}
-              <div className="max-h-[240px] overflow-y-auto sf-custom-scrollbar">
+              {/* New chapter inline input */}
+              {creatingChapter && (
+                <div className="flex items-center gap-1 px-3 py-2 border-b border-white/[0.06] bg-[#FFB800]/[0.03]">
+                  <FolderOpen className="w-3.5 h-3.5 text-[#FFB800] flex-shrink-0" />
+                  <input
+                    ref={newChapterInputRef}
+                    type="text"
+                    value={newChapterTitle}
+                    onChange={(e) => setNewChapterTitle(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") handleCreateChapter();
+                      if (e.key === "Escape") {
+                        setCreatingChapter(false);
+                        setNewChapterTitle("");
+                      }
+                    }}
+                    placeholder="Chapter title..."
+                    className="flex-1 min-w-0 bg-white/[0.06] border border-white/[0.15] rounded-xs px-2 py-0.5 text-xs text-tier-1 focus:outline-none focus:border-[#FFB800]/35 placeholder:text-tier-5"
+                  />
+                  <button
+                    onClick={handleCreateChapter}
+                    className="p-0.5 text-[#FFB800] hover:text-[#FFB800]/80"
+                  >
+                    <Check className="w-3.5 h-3.5" />
+                  </button>
+                  <button
+                    onClick={() => {
+                      setCreatingChapter(false);
+                      setNewChapterTitle("");
+                    }}
+                    className="p-0.5 text-tier-4 hover:text-tier-2"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              )}
+
+              {/* Hierarchical document list */}
+              <div className="max-h-[320px] overflow-y-auto sf-custom-scrollbar">
                 {docsLoading && (
                   <div className="px-3 py-4 text-center">
                     <span className="text-[10px] uppercase tracking-[1.5px] text-tier-5">
@@ -184,88 +458,240 @@ export function WritingTopBar({
                     </span>
                   </div>
                 )}
-                {documents?.map((doc) => (
-                  <div
-                    key={doc.id}
-                    className={cn(
-                      "flex items-center group px-3 py-2 hover:bg-white/[0.04] transition-colors cursor-pointer",
-                      doc.id === selectedDocId && "bg-white/[0.04]"
-                    )}
-                  >
-                    {renamingDocId === doc.id ? (
-                      <div className="flex items-center gap-1 flex-1 min-w-0">
-                        <input
-                          type="text"
-                          value={renameValue}
-                          onChange={(e) => onRenameValueChange(e.target.value)}
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter") onConfirmRename();
-                            if (e.key === "Escape") onCancelRename();
-                          }}
-                          autoFocus
-                          className="flex-1 min-w-0 bg-white/[0.06] border border-white/[0.15] rounded-xs px-2 py-0.5 text-xs text-tier-1 focus:outline-none focus:border-[#15C17B]/35"
-                        />
-                        <button
-                          onClick={onConfirmRename}
-                          className="p-0.5 text-[#15C17B] hover:text-[#3DFFCD]"
-                        >
-                          <Check className="w-3.5 h-3.5" />
-                        </button>
-                        <button
-                          onClick={onCancelRename}
-                          className="p-0.5 text-tier-4 hover:text-tier-2"
-                        >
-                          <X className="w-3.5 h-3.5" />
-                        </button>
+
+                {!docsLoading && useHierarchy && (
+                  <>
+                    {/* Folders */}
+                    {folders.map((folder) => {
+                      const isExpanded = expandedFolders.has(folder.id);
+                      const isRenaming = renamingFolderId === folder.id;
+                      const isDragOver = dragOverFolderId === folder.id;
+
+                      return (
+                        <div key={folder.id}>
+                          {/* Folder header */}
+                          <div
+                            className={cn(
+                              "flex items-center group px-3 py-1.5 transition-colors cursor-pointer select-none",
+                              isDragOver
+                                ? "bg-[#FFB800]/[0.1] border-l-2 border-[#FFB800]"
+                                : "hover:bg-white/[0.04]"
+                            )}
+                            onClick={() => toggleFolder(folder.id)}
+                            onContextMenu={(e) =>
+                              handleFolderContextMenu(e, folder.id)
+                            }
+                            onDragOver={(e) =>
+                              handleDragOverFolder(e, folder.id)
+                            }
+                            onDragLeave={handleDragLeave}
+                            onDrop={(e) => handleDropOnFolder(e, folder.id)}
+                          >
+                            <ChevronRight
+                              className={cn(
+                                "w-3 h-3 text-tier-4 mr-1 flex-shrink-0 transition-transform",
+                                isExpanded && "rotate-90"
+                              )}
+                            />
+                            {isExpanded ? (
+                              <FolderOpen className="w-3.5 h-3.5 text-[#FFB800] mr-1.5 flex-shrink-0" />
+                            ) : (
+                              <FolderClosed className="w-3.5 h-3.5 text-[#FFB800]/60 mr-1.5 flex-shrink-0" />
+                            )}
+
+                            {isRenaming ? (
+                              <div className="flex items-center gap-1 flex-1 min-w-0">
+                                <input
+                                  type="text"
+                                  value={renameFolderValue}
+                                  onChange={(e) =>
+                                    setRenameFolderValue(e.target.value)
+                                  }
+                                  onKeyDown={(e) => {
+                                    e.stopPropagation();
+                                    if (e.key === "Enter")
+                                      handleConfirmFolderRename();
+                                    if (e.key === "Escape")
+                                      handleCancelFolderRename();
+                                  }}
+                                  onClick={(e) => e.stopPropagation()}
+                                  autoFocus
+                                  className="flex-1 min-w-0 bg-white/[0.06] border border-white/[0.15] rounded-xs px-2 py-0.5 text-xs text-tier-1 focus:outline-none focus:border-[#FFB800]/35"
+                                />
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleConfirmFolderRename();
+                                  }}
+                                  className="p-0.5 text-[#FFB800] hover:text-[#FFB800]/80"
+                                >
+                                  <Check className="w-3.5 h-3.5" />
+                                </button>
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleCancelFolderRename();
+                                  }}
+                                  className="p-0.5 text-tier-4 hover:text-tier-2"
+                                >
+                                  <X className="w-3.5 h-3.5" />
+                                </button>
+                              </div>
+                            ) : (
+                              <>
+                                <span className="flex-1 min-w-0 text-[11px] font-heading font-light uppercase tracking-[1.5px] text-tier-2 truncate">
+                                  {folder.title}
+                                </span>
+                                <span className="text-[9px] font-mono text-tier-5 mr-1">
+                                  {folder.documents.length}
+                                </span>
+                                {/* Add doc to this folder */}
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleCreateDocument(folder.id);
+                                  }}
+                                  className="p-0.5 text-tier-5 hover:text-[#15C17B] opacity-0 group-hover:opacity-100 transition-opacity"
+                                  title="New document in this chapter"
+                                >
+                                  <Plus className="w-3 h-3" />
+                                </button>
+                              </>
+                            )}
+                          </div>
+
+                          {/* Folder children */}
+                          {isExpanded && (
+                            <div>
+                              {folder.documents.length === 0 && (
+                                <div className="pl-8 pr-3 py-2">
+                                  <span className="text-[9px] uppercase tracking-[1px] text-tier-5 italic">
+                                    Empty chapter
+                                  </span>
+                                </div>
+                              )}
+                              {folder.documents.map((doc) =>
+                                renderDocRow(doc, true)
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+
+                    {/* Unfiled documents */}
+                    {unfiledDocs.length > 0 && (
+                      <div
+                        className={cn(
+                          folders.length > 0 &&
+                            "border-t border-white/[0.06] mt-1 pt-1"
+                        )}
+                        onDragOver={handleDragOverUnfiled}
+                        onDragLeave={handleDragLeave}
+                        onDrop={handleDropOnUnfiled}
+                      >
+                        {folders.length > 0 && (
+                          <div
+                            className={cn(
+                              "px-3 py-1 transition-colors",
+                              dragOverUnfiled && "bg-white/[0.04]"
+                            )}
+                          >
+                            <span className="text-[9px] font-heading font-light uppercase tracking-[1.5px] text-tier-4">
+                              Unfiled
+                            </span>
+                          </div>
+                        )}
+                        {unfiledDocs.map((doc) =>
+                          renderDocRow(doc, false)
+                        )}
                       </div>
-                    ) : (
-                      <>
-                        <div
-                          className="flex-1 min-w-0"
-                          onClick={() => handleSelectDocument(doc)}
-                        >
-                          <span className="text-xs text-tier-2 truncate block">
-                            {doc.title}
-                          </span>
-                          <span className="text-[9px] text-tier-5 font-mono">
-                            {new Date(doc.updated_at).toLocaleDateString()}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              onStartRename(doc);
-                            }}
-                            className="p-1 text-tier-4 hover:text-tier-2"
-                            title="Rename"
-                          >
-                            <Pencil className="w-3 h-3" />
-                          </button>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              onDeleteDocument(doc.id);
-                            }}
-                            className="p-1 text-tier-4 hover:text-[#FF3366]"
-                            title="Delete"
-                          >
-                            <Trash2 className="w-3 h-3" />
-                          </button>
-                        </div>
-                      </>
                     )}
-                  </div>
-                ))}
-                {!docsLoading && (!documents || documents.length === 0) && (
-                  <div className="px-3 py-4 text-center">
-                    <span className="text-[10px] uppercase tracking-[1.5px] text-tier-5">
-                      No documents yet
-                    </span>
-                  </div>
+
+                    {/* Empty state */}
+                    {!docsLoading &&
+                      folders.length === 0 &&
+                      unfiledDocs.length === 0 && (
+                        <div className="px-3 py-4 text-center">
+                          <span className="text-[10px] uppercase tracking-[1.5px] text-tier-5">
+                            No documents yet
+                          </span>
+                        </div>
+                      )}
+                  </>
+                )}
+
+                {/* Flat list fallback (no folder system) */}
+                {!docsLoading && !useHierarchy && (
+                  <>
+                    {documents?.map((doc) => renderDocRow(doc, false))}
+                    {(!documents || documents.length === 0) && (
+                      <div className="px-3 py-4 text-center">
+                        <span className="text-[10px] uppercase tracking-[1.5px] text-tier-5">
+                          No documents yet
+                        </span>
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
             </div>
+
+            {/* Folder context menu */}
+            {folderContextMenu && (
+              <>
+                <div
+                  className="fixed inset-0 z-[60]"
+                  onClick={() => setFolderContextMenu(null)}
+                />
+                <div
+                  className="fixed z-[61] bg-[#161C2B] border border-white/[0.1] rounded-xs shadow-xl overflow-hidden min-w-[140px]"
+                  style={{
+                    left: folderContextMenu.x,
+                    top: folderContextMenu.y,
+                  }}
+                >
+                  <button
+                    onClick={() => {
+                      const folder = folders.find(
+                        (f) => f.id === folderContextMenu.folderId
+                      );
+                      if (folder) {
+                        setRenamingFolderId(folder.id);
+                        setRenameFolderValue(folder.title);
+                      }
+                      setFolderContextMenu(null);
+                    }}
+                    className="flex items-center gap-2 w-full px-3 py-2 text-xs text-tier-2 hover:bg-white/[0.06] transition-colors"
+                  >
+                    <Pencil className="w-3 h-3 text-tier-4" />
+                    <span className="font-sans">Rename</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (onDeleteFolder) {
+                        const folder = folders.find(
+                          (f) => f.id === folderContextMenu.folderId
+                        );
+                        const name = folder?.title || "this chapter";
+                        if (
+                          window.confirm(
+                            `Delete "${name}"? Documents inside will be moved to Unfiled.`
+                          )
+                        ) {
+                          onDeleteFolder(folderContextMenu.folderId);
+                        }
+                      }
+                      setFolderContextMenu(null);
+                    }}
+                    className="flex items-center gap-2 w-full px-3 py-2 text-xs text-[#FF3366] hover:bg-[#FF3366]/[0.06] transition-colors"
+                  >
+                    <Trash2 className="w-3 h-3" />
+                    <span className="font-sans">Delete</span>
+                  </button>
+                </div>
+              </>
+            )}
           </>
         )}
       </div>
