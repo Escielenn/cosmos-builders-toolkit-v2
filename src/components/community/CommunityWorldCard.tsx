@@ -31,7 +31,7 @@ export default function CommunityWorldCard({ world }: CommunityWorldCardProps) {
             {world.name}
           </h3>
           <span className="font-sans text-[11px] text-tier-3">
-            by {world.owner_display_name}
+            by {world.is_example ? "StellarForge" : world.owner_display_name}
           </span>
         </div>
         <LicenseBadge license={world.license} />
