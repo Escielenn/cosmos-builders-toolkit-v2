@@ -1,5 +1,5 @@
 import { Rocket, Zap, Sparkles, PenLine } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -10,7 +10,7 @@ import { heroReveal, staggerContainer, fadeUpItem } from "@/lib/animations";
 const LoggedInHero = () => {
   const { isSubscribed, isVanguard } = useSubscription();
   const { worlds } = useWorlds();
-  const mostRecentWorldId = worlds.length > 0 ? worlds[0].id : null;
+  const navigate = useNavigate();
 
   return (
     <motion.section
@@ -59,11 +59,17 @@ const LoggedInHero = () => {
             </Link>
           </Button>
         )}
-        <Button variant="outline" size="lg" className="gap-2" asChild>
-          <Link to={mostRecentWorldId ? `/worlds/${mostRecentWorldId}/write` : "/worlds"}>
-            <PenLine className="w-4 h-4" />
-            Continue Writing
-          </Link>
+        <Button
+          variant="outline"
+          size="lg"
+          className="gap-2"
+          onClick={() => {
+            const id = worlds.length > 0 ? worlds[0].id : null;
+            navigate(id ? `/worlds/${id}/write` : "/worlds");
+          }}
+        >
+          <PenLine className="w-4 h-4" />
+          Continue Writing
         </Button>
         {isSubscribed && (
           <Button variant="outline" size="lg" className="gap-2" asChild>
