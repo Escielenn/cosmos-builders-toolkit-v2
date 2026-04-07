@@ -16,7 +16,7 @@
 //           version history, world notes, pinned items, moodboard
 // ---------------------------------------------------------------------------
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useMetaTags } from "@/hooks/use-meta-tags";
@@ -47,6 +47,7 @@ import type { WorldEntry } from "@/services/world-data";
 import type { Entity } from "@/services/entity-graph-types";
 import { useWritingPins } from "@/hooks/use-writing-pins";
 import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -121,6 +122,7 @@ const WorldWritingSpace = () => {
   const deleteFolderMutation = useDeleteFolder(worldId);
   const { data: moodboardImages } = useWorldMoodboardImages(worldId);
   const { addPin } = useWritingPins(worldId ?? "");
+  const { toast } = useToast();
 
   // Dynamic meta tags
   useMetaTags({ title: "Writing Space" });
@@ -135,6 +137,36 @@ const WorldWritingSpace = () => {
   const [renameValue, setRenameValue] = useState("");
   const [editorContent, setEditorContent] = useState("");
   const [docTitle, setDocTitle] = useState("");
+
+  // Writing preferences (line spacing + font)
+  type LineSpacing = "1" | "1.5" | "2";
+  type WritingFont = "DM Sans" | "Georgia" | "Merriweather";
+
+  const writingPrefsKey = `sf-writing-prefs-${worldId}`;
+  const [lineSpacing, setLineSpacing] = useState<LineSpacing>(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem(writingPrefsKey) || "{}");
+      return saved.lineSpacing ?? "1.5";
+    } catch { return "1.5"; }
+  });
+  const [writingFont, setWritingFont] = useState<WritingFont>(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem(writingPrefsKey) || "{}");
+      return saved.writingFont ?? "DM Sans";
+    } catch { return "DM Sans"; }
+  });
+
+  // Persist writing prefs
+  useEffect(() => {
+    try {
+      localStorage.setItem(writingPrefsKey, JSON.stringify({ lineSpacing, writingFont }));
+    } catch { /* ignore */ }
+  }, [lineSpacing, writingFont, writingPrefsKey]);
+
+  const editorStyle: CSSProperties = {
+    lineHeight: lineSpacing === "2" ? 2 : lineSpacing === "1.5" ? 1.625 : 1.5,
+    fontFamily: writingFont === "Georgia" ? "Georgia, serif" : writingFont === "Merriweather" ? "'Merriweather', Georgia, serif" : undefined,
+  };
 
   // Version history
   const [previewSnapshot, setPreviewSnapshot] =
@@ -378,8 +410,9 @@ const WorldWritingSpace = () => {
         title: entity.name,
         content: entity.summary || entity.description || "",
       });
+      toast({ title: "Pinned to References" });
     },
-    [addPin]
+    [addPin, toast]
   );
 
   // ---------------------------------------------------------------------------
@@ -473,7 +506,7 @@ const WorldWritingSpace = () => {
         {/* Exit button — top-right corner */}
         <button
           onClick={() => setZenMode(false)}
-          className="fixed top-4 right-4 z-[10000] flex items-center gap-2 px-3 py-2 text-[10px] font-heading uppercase tracking-[1.5px] text-tier-4 hover:text-tier-2 border border-white/[0.08] hover:border-white/[0.15] bg-[#0E1320]/80 backdrop-blur-md rounded-xs transition-all opacity-40 hover:opacity-100"
+          className="fixed top-4 right-4 z-[10000] flex items-center gap-2 px-3 py-2 text-[10px] font-heading uppercase tracking-[1.5px] text-tier-4 hover:text-tier-2 border border-white/[0.08] hover:border-white/[0.15] bg-[#0E1320]/80 backdrop-blur-md rounded-xs transition-all opacity-60 hover:opacity-100"
           title="Exit Zen Mode (Esc)"
         >
           <X className="w-3.5 h-3.5" />
@@ -505,15 +538,17 @@ const WorldWritingSpace = () => {
             placeholder="Document title..."
           />
 
-          <StellarForgeEditor
-            key={`zen-${selectedDocId}`}
-            content={editorContent}
-            onChange={handleEditorChange}
-            worldId={worldId}
-            preset="full"
-            placeholder="Begin writing..."
-            minHeight="calc(100vh - 200px)"
-          />
+          <div style={editorStyle}>
+            <StellarForgeEditor
+              key={`zen-${selectedDocId}`}
+              content={editorContent}
+              onChange={handleEditorChange}
+              worldId={worldId}
+              preset="full"
+              placeholder="Begin writing..."
+              minHeight="calc(100vh - 200px)"
+            />
+          </div>
         </div>
       </div>
     );
@@ -549,7 +584,7 @@ const WorldWritingSpace = () => {
         {/* ----------------------------------------------------------------- */}
         {/* Center: Top Bar + Editor */}
         {/* ----------------------------------------------------------------- */}
-        <div className="flex-1 flex flex-col h-full overflow-hidden">
+        <div className="flex-1 flex flex-col h-full overflow-hidden bg-[#0A0E17]">
           {/* Top Bar */}
           <WritingTopBar
             documents={documents}
@@ -585,6 +620,45 @@ const WorldWritingSpace = () => {
             onDeleteFolder={handleDeleteFolder}
           />
 
+          {/* Formatting bar */}
+          {selectedDoc && (
+            <div className="flex items-center gap-4 px-4 md:px-8 py-1.5 border-b border-white/[0.04] bg-[#0A0E17]">
+              {/* Line spacing */}
+              <div className="flex items-center gap-1.5">
+                <span className="text-[9px] font-sans font-medium uppercase tracking-[1.2px] text-tier-4">Spacing</span>
+                <div className="flex">
+                  {(["1", "1.5", "2"] as const).map((val) => (
+                    <button
+                      key={val}
+                      onClick={() => setLineSpacing(val)}
+                      className={`px-2 py-0.5 text-[10px] font-mono border border-white/[0.08] transition-colors ${
+                        lineSpacing === val
+                          ? "bg-[#15C17B]/[0.08] border-[#15C17B]/20 text-[#15C17B]"
+                          : "text-tier-4 hover:text-tier-2 hover:border-white/[0.15]"
+                      } ${val === "1" ? "rounded-l-xs" : val === "2" ? "rounded-r-xs" : ""} ${val !== "1" ? "-ml-px" : ""}`}
+                    >
+                      {val === "1" ? "1x" : val === "1.5" ? "1.5x" : "2x"}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Font selector */}
+              <div className="flex items-center gap-1.5">
+                <span className="text-[9px] font-sans font-medium uppercase tracking-[1.2px] text-tier-4">Font</span>
+                <select
+                  value={writingFont}
+                  onChange={(e) => setWritingFont(e.target.value as WritingFont)}
+                  className="text-[10px] font-sans bg-white/[0.04] border border-white/[0.08] text-tier-2 rounded-xs px-2 py-0.5 outline-none focus:border-[#15C17B]/30 cursor-pointer"
+                >
+                  <option value="DM Sans">DM Sans</option>
+                  <option value="Georgia">Georgia</option>
+                  <option value="Merriweather">Merriweather</option>
+                </select>
+              </div>
+            </div>
+          )}
+
           {/* Editor area */}
           <div className="flex-1 overflow-y-auto px-4 py-4 md:px-8 md:py-6">
             {selectedDoc ? (
@@ -614,15 +688,17 @@ const WorldWritingSpace = () => {
                   className="w-full font-heading text-xl font-light tracking-wide text-tier-1 bg-transparent border-0 border-b border-white/[0.08] outline-none focus:border-[#15C17B]/30 rounded-none px-0 py-2 mb-4"
                   placeholder="Document title..."
                 />
-                <StellarForgeEditor
-                  key={selectedDocId}
-                  content={editorContent}
-                  onChange={handleEditorChange}
-                  worldId={worldId}
-                  preset="full"
-                  placeholder="Begin writing. Use @ to mention entities, [[ to link wiki pages..."
-                  minHeight="calc(100vh - 280px)"
-                />
+                <div style={editorStyle}>
+                  <StellarForgeEditor
+                    key={selectedDocId}
+                    content={editorContent}
+                    onChange={handleEditorChange}
+                    worldId={worldId}
+                    preset="full"
+                    placeholder="Begin writing. Use @ to mention entities, [[ to link wiki pages..."
+                    minHeight="calc(100vh - 320px)"
+                  />
+                </div>
               </div>
             ) : (
               <div className="flex flex-col items-center justify-center h-full gap-4">

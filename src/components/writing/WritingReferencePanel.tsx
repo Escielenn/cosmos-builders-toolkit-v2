@@ -7,7 +7,7 @@
 //   History: Version history snapshots with preview and restore.
 // ---------------------------------------------------------------------------
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   ChevronRight,
   X,
@@ -20,6 +20,7 @@ import {
   ChevronDown,
   ChevronUp,
   FileText,
+  Pencil,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useWorldNotes } from "@/hooks/use-world-notes";
@@ -50,12 +51,13 @@ export interface WritingReferencePanelProps {
 
 const PANEL_WIDTH = 320;
 
-type TabId = "notes" | "pinned" | "history";
+type TabId = "notes" | "pinned" | "history" | "scratch";
 
 const TABS: { id: TabId; label: string; icon: typeof StickyNote }[] = [
   { id: "notes", label: "Notes", icon: StickyNote },
   { id: "pinned", label: "Pinned", icon: Pin },
   { id: "history", label: "History", icon: History },
+  { id: "scratch", label: "Scratch", icon: Pencil },
 ];
 
 // ---------------------------------------------------------------------------
@@ -77,12 +79,53 @@ export function WritingReferencePanel({
   const { worksheets, isLoading: worksheetsLoading } = useWorksheets(worldId);
 
   const [activeTab, setActiveTab] = useState<TabId>("notes");
-  const [expandedNoteId, setExpandedNoteId] = useState<string | null>(null);
+  const [expandedNoteIds, setExpandedNoteIds] = useState<Set<string>>(new Set());
   const [worksheetsExpanded, setWorksheetsExpanded] = useState(false);
+
+  // Scratchpad — persisted to localStorage
+  const scratchKey = `sf-scratchpad-${worldId}`;
+  const [scratchText, setScratchText] = useState(() => {
+    try {
+      return localStorage.getItem(scratchKey) ?? "";
+    } catch {
+      return "";
+    }
+  });
+  const scratchTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleScratchChange = useCallback(
+    (value: string) => {
+      setScratchText(value);
+      if (scratchTimerRef.current) clearTimeout(scratchTimerRef.current);
+      scratchTimerRef.current = setTimeout(() => {
+        try {
+          localStorage.setItem(scratchKey, value);
+        } catch {
+          // storage full — ignore
+        }
+      }, 400);
+    },
+    [scratchKey]
+  );
+
+  // Cleanup scratch debounce timer
+  useEffect(() => {
+    return () => {
+      if (scratchTimerRef.current) clearTimeout(scratchTimerRef.current);
+    };
+  }, []);
 
   // Toggle note expand
   const handleToggleNote = useCallback((noteId: string) => {
-    setExpandedNoteId((prev) => (prev === noteId ? null : noteId));
+    setExpandedNoteIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(noteId)) {
+        next.delete(noteId);
+      } else {
+        next.add(noteId);
+      }
+      return next;
+    });
   }, []);
 
   // Pin a note
@@ -162,7 +205,9 @@ export function WritingReferencePanel({
                 ? pins.length
                 : tab.id === "history"
                   ? snapshots.length
-                  : notes.length;
+                  : tab.id === "notes"
+                    ? notes.length
+                    : 0;
 
             return (
               <button
@@ -294,7 +339,7 @@ export function WritingReferencePanel({
                 </div>
               )}
               {notes.map((note) => {
-                const isExpanded = expandedNoteId === note.id;
+                const isExpanded = expandedNoteIds.has(note.id);
                 const isPinned = pins.some(
                   (p) => p.id === note.id && p.type === "note"
                 );
@@ -428,6 +473,23 @@ export function WritingReferencePanel({
           {/* --------------------------------------------------------------- */}
           {/* History Tab */}
           {/* --------------------------------------------------------------- */}
+          {/* --------------------------------------------------------------- */}
+          {/* Scratch Tab */}
+          {/* --------------------------------------------------------------- */}
+          {activeTab === "scratch" && (
+            <div className="flex flex-col h-full p-3">
+              <span className="font-heading text-[10px] font-light uppercase tracking-[1.5px] text-tier-3 mb-2">
+                Scratchpad
+              </span>
+              <textarea
+                value={scratchText}
+                onChange={(e) => handleScratchChange(e.target.value)}
+                className="flex-1 w-full min-h-[300px] resize-none font-sans text-sm text-tier-2 bg-white/[0.03] border border-white/[0.08] rounded-xs p-3 outline-none focus:border-[#15C17B]/30 placeholder:text-tier-5 sf-custom-scrollbar"
+                placeholder="Quick thoughts, scraps, ideas..."
+              />
+            </div>
+          )}
+
           {activeTab === "history" && (
             <div>
               {/* Snapshot preview */}

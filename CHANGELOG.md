@@ -1,5 +1,15 @@
 # StellarForge Changelog
 
+## 0.6512
+- Fixed: Dark background gap in writing area (bg-void on center column)
+- Fixed: Zen mode exit button more visible (opacity 60 instead of 40)
+- Fixed: Pin to References now shows toast confirmation
+- Added: Multiple notes open simultaneously in reference panel
+- Added: Scratchpad tab in reference panel (auto-saves to localStorage)
+- Added: Line spacing options (1x / 1.5x / 2x) in writing formatting bar
+- Added: Font selector (DM Sans / Georgia / Merriweather) for prose writing
+- Added: Writing format preferences persist per world
+
 ## 0.6462
 - Fixed: "Continue Writing" hero button now routes to most recent world's Writing Space
   (was going to /workshop prompt page)
