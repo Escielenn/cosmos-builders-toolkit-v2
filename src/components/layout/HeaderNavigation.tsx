@@ -323,10 +323,15 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
               <NavigationMenuLink asChild>
                 <Link
                   to="/workshop"
-                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-tier-2 hover:text-tier-1 hover:bg-white/5 rounded-sm transition-colors"
+                  className="flex items-start gap-2 px-2 py-1.5 text-sm text-tier-2 hover:text-tier-1 hover:bg-white/5 rounded-sm transition-colors"
                 >
-                  <Sparkles className="w-3.5 h-3.5 text-primary/60" />
-                  Daily Prompt
+                  <Sparkles className="w-3.5 h-3.5 text-primary/60 mt-0.5" />
+                  <div>
+                    <span>Daily Prompt</span>
+                    <span className="block text-[10px] text-tier-4 font-normal normal-case tracking-normal">
+                      & Writing Entries
+                    </span>
+                  </div>
                 </Link>
               </NavigationMenuLink>
               <NavigationMenuLink asChild>

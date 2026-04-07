@@ -154,7 +154,7 @@ export default function ExampleWorldBanner() {
             </h3>
             <p className="font-sans text-xs text-tier-3 mt-0.5">
               {alreadyForked
-                ? "You've already forked this world. View the original or go to your copy."
+                ? "You've already forked this world. View the original or go to your fork."
                 : "Our example world - see how a fully-built world looks in StellarForge."}
             </p>
           </div>
@@ -177,7 +177,7 @@ export default function ExampleWorldBanner() {
                 className="inline-flex items-center gap-1.5 font-sans text-xs font-medium uppercase tracking-[1px] px-3 py-1.5 bg-primary/[0.06] border border-primary/[0.15] text-primary hover:bg-primary/[0.12] transition-colors"
               >
                 <ExternalLink className="w-3.5 h-3.5" />
-                Go to Your Copy
+                Go to Your Fork
               </Link>
             ) : (
               <Button

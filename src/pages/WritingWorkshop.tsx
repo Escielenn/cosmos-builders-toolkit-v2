@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Search, PenTool, Plus, Archive } from "lucide-react";
+import { ArrowLeft, Search, PenTool, Plus, Archive, BookOpen } from "lucide-react";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { GlassPanel } from "@/components/ui/glass-panel";
@@ -181,6 +181,17 @@ const WritingWorkshop = () => {
 
         {/* Browse All Prompts */}
         <PromptBrowser onStartWriting={handleStartWriting} />
+
+        {/* Link to full Prompt Browser page */}
+        <div className="mb-8">
+          <Link
+            to="/prompts"
+            className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[1px] text-primary/70 hover:text-primary transition-colors"
+          >
+            <BookOpen className="w-3.5 h-3.5" />
+            Browse All Weekly Prompts
+          </Link>
+        </div>
 
         {/* Your Entries */}
         <section>
