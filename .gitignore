@@ -32,7 +32,6 @@ dist-ssr
 
 # Large media files (deployed via Vercel CLI, too large for GitHub)
 public/video/
-public/music/
 
 # Reference/temp files
 images_of_ref/
