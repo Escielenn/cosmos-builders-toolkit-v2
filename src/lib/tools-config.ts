@@ -86,7 +86,7 @@ export const TOOL_DISPLAY_NAMES: Record<string, string> = {
   // Cartographers
   'stellar-cartographer': 'Stellar Cartographer: Galaxy Mapper',
   // Workshop
-  'writing-workshop': 'Writing Workshop',
+  'writing-workshop': 'Writing Prompts',
 };
 
 export const getToolDisplayName = (toolType: string): string => {

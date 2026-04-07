@@ -26,10 +26,12 @@ import SettingsDialog from "@/components/settings/SettingsDialog";
 import GlobalSearch from "@/components/search/GlobalSearch";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSubscription } from "@/hooks/use-subscription";
+import { useWorlds } from "@/hooks/use-worlds";
 
 const Header = () => {
   const { user, profile, signOut, loading } = useAuth();
   const { isSubscribed, isVanguard } = useSubscription();
+  const { worlds } = useWorlds();
   const navigate = useNavigate();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -215,7 +217,7 @@ const Header = () => {
                     className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
                   >
                     <PenTool className="w-5 h-5" />
-                    Write
+                    Writing Prompts
                   </Link>
                   <Link
                     to="/workshop#prompt"
@@ -359,7 +361,7 @@ const Header = () => {
                   <Archive className="w-4 h-4 mr-2" />
                   Archive
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate("/workshop")}>
+                <DropdownMenuItem onClick={() => navigate(worlds.length > 0 ? `/worlds/${worlds[0].id}/write` : "/workshop")}>
                   <PenTool className="w-4 h-4 mr-2" />
                   Write
                 </DropdownMenuItem>

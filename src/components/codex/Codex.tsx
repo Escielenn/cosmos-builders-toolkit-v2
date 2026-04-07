@@ -187,7 +187,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
   // Default click handler — respects defaultView preference
   const navigateToElement = useCallback(
     (element: CodexElement) => {
-      // Writing entries → navigate to Writing Workshop
+      // Writing entries → navigate to Writing Prompts
       if (element.kind === "writing") {
         navigate(`/writing-workshop?entryId=${element.id}`);
         return;

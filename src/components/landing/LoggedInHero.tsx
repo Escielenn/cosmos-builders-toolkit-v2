@@ -60,7 +60,7 @@ const LoggedInHero = () => {
           </Button>
         )}
         <Button variant="outline" size="lg" className="gap-2" asChild>
-          <Link to={mostRecentWorldId ? `/worlds/${mostRecentWorldId}/write` : "/workshop"}>
+          <Link to={mostRecentWorldId ? `/worlds/${mostRecentWorldId}/write` : "/worlds"}>
             <PenLine className="w-4 h-4" />
             Continue Writing
           </Link>

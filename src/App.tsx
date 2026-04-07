@@ -207,7 +207,7 @@ const App = () => (
                   <Route path="write" element={<WorldWritingSpace />} />
                 </Route>
                 <Route path="/bookshelf" element={<Bookshelf />} />
-                {/* Writing Workshop - Pro gated */}
+                {/* Writing Prompts - Pro gated */}
                 <Route
                   path="/workshop"
                   element={

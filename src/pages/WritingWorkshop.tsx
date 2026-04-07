@@ -51,7 +51,7 @@ const WritingWorkshop = () => {
   const deleteEntry = useDeleteEntry();
   const { preferences } = useWritingPreferences();
 
-  useMetaTags({ title: "Writing Workshop" });
+  useMetaTags({ title: "Writing Prompts" });
 
   // Filters
   const [searchQuery, setSearchQuery] = useState("");
@@ -161,12 +161,10 @@ const WritingWorkshop = () => {
         {/* Page header */}
         <div className="mb-8">
           <h1 className="font-display text-3xl md:text-4xl tracking-sf-title text-tier-1 uppercase mb-2">
-            Writing Workshop
+            Writing Prompts
           </h1>
           <p className="text-tier-2 max-w-2xl">
-            A daily writing practice for science fiction worldbuilders. Respond to
-            today's prompt or start a freeform entry. All entries auto-save as you
-            write.
+            Daily prompts, your entries, and writing practice.
           </p>
         </div>
 

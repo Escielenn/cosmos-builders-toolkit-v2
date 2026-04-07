@@ -337,7 +337,7 @@ export function WritingTopBar({
   return (
     <div className="flex items-center gap-2 border-b border-white/[0.06] bg-[#0E1320]/60 px-3 py-2">
       {/* Page label */}
-      <span className="font-heading text-[10px] font-light uppercase tracking-[2px] text-tier-3 flex-shrink-0 hidden md:inline">
+      <span className="font-heading text-[11px] font-light uppercase tracking-[2px] text-tier-2 flex-shrink-0">
         Writing Space
       </span>
 

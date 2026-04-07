@@ -122,7 +122,7 @@ export const BADGE_DEFINITIONS: BadgeDefinition[] = [
     id: "first-words",
     name: "First Words",
     description: "Put words on the page. The hardest part is already behind you.",
-    lockedHint: "Write your first entry in the Writing Workshop",
+    lockedHint: "Write your first entry in Writing Prompts",
     tier: "nascent",
     category: "exploration",
     icon: PenLine,

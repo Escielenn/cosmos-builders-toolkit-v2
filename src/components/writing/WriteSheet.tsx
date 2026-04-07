@@ -267,10 +267,10 @@ export function WriteSheet({
           onInteractOutside={(e) => e.preventDefault()}
         >
           <DialogPrimitive.Title className="sr-only">
-            Writing Workshop
+            Writing Prompts
           </DialogPrimitive.Title>
           <DialogPrimitive.Description className="sr-only">
-            Write and edit your workshop entry.
+            Write and edit your prompt entry.
           </DialogPrimitive.Description>
 
           {/* Close button */}
