@@ -236,6 +236,7 @@ const ShareDialog = ({
                     size="icon"
                     onClick={handleCopy}
                     className="shrink-0"
+                    aria-label={copied ? "Link copied" : "Copy share link"}
                   >
                     {copied ? (
                       <Check className="w-4 h-4 text-green-500" />

@@ -185,6 +185,7 @@ const WorksheetLinkSelector = ({
                   onClick={handleRefresh}
                   disabled={isRefreshing || disabled}
                   className="h-10 w-10"
+                  aria-label="Refresh synced data"
                 >
                   <RefreshCw
                     className={`w-4 h-4 ${isRefreshing ? "animate-pulse opacity-50" : ""}`}
@@ -209,6 +210,7 @@ const WorksheetLinkSelector = ({
                   onClick={handleUnlink}
                   disabled={disabled}
                   className="h-10 w-10"
+                  aria-label="Unlink worksheet"
                 >
                   <Unlink className="w-4 h-4" />
                 </Button>

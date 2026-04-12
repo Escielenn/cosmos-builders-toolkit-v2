@@ -99,7 +99,7 @@ const SupportTicketForm = ({ onSuccess }: SupportTicketFormProps) => {
         </p>
         <div className="inline-flex items-center gap-2 bg-muted px-4 py-2 rounded-md mb-4">
           <span className="font-mono text-sm">{ticketNumber}</span>
-          <Button variant="ghost" size="icon" onClick={copyTicketNumber}>
+          <Button variant="ghost" size="icon" onClick={copyTicketNumber} aria-label="Copy ticket number">
             <Copy className="w-4 h-4" />
           </Button>
         </div>

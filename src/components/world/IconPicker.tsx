@@ -53,6 +53,7 @@ const IconPicker = ({ value, onChange, disabled }: IconPickerProps) => {
         disabled={disabled}
         onClick={() => setOpen(true)}
         className="w-12 h-12 rounded-none overflow-hidden shrink-0"
+        aria-label="Choose world icon"
       >
         <WorldIconRenderer iconId={value} className="w-8 h-8" />
       </Button>

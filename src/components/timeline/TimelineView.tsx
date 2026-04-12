@@ -231,7 +231,7 @@ const TimelineView = forwardRef<HTMLDivElement, TimelineViewProps>(({
     <div ref={ref} className="space-y-2">
       {/* Zoom Toolbar */}
       <div className="flex items-center gap-3 px-2">
-        <Button variant="ghost" size="icon" className="w-7 h-7" onClick={() => {
+        <Button variant="ghost" size="icon" className="w-7 h-7" aria-label="Zoom out timeline" onClick={() => {
           dispatch({
             type: "SET_VIEW_STATE",
             payload: { pixelsPerYear: clampZoom(pixelsPerYear * 0.5), centerYear },
@@ -248,7 +248,7 @@ const TimelineView = forwardRef<HTMLDivElement, TimelineViewProps>(({
             step={1}
           />
         </div>
-        <Button variant="ghost" size="icon" className="w-7 h-7" onClick={() => {
+        <Button variant="ghost" size="icon" className="w-7 h-7" aria-label="Zoom in timeline" onClick={() => {
           dispatch({
             type: "SET_VIEW_STATE",
             payload: { pixelsPerYear: clampZoom(pixelsPerYear * 2), centerYear },

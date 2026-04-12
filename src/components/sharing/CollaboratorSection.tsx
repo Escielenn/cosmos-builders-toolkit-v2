@@ -180,7 +180,7 @@ const CollaboratorSection = ({ worldId, worldName }: CollaboratorSectionProps) =
               </Select>
               <AlertDialog>
                 <AlertDialogTrigger asChild>
-                  <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0">
+                  <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0" aria-label="Remove collaborator">
                     <X className="w-3.5 h-3.5" />
                   </Button>
                 </AlertDialogTrigger>
@@ -246,6 +246,7 @@ const CollaboratorSection = ({ worldId, worldName }: CollaboratorSectionProps) =
                   cancelInvite.mutate({ inviteId: invite.id, worldId })
                 }
                 disabled={cancelInvite.isPending}
+                aria-label="Cancel invite"
               >
                 <X className="w-3.5 h-3.5" />
               </Button>

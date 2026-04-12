@@ -98,6 +98,7 @@ const SharedWorldCard = ({
                 variant="ghost"
                 size="icon"
                 className="h-8 w-8 -mr-2 -mt-1 text-muted-foreground"
+                aria-label="Leave shared world"
               >
                 <LogOut className="w-4 h-4" />
               </Button>

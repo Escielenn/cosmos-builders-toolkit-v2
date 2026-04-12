@@ -152,6 +152,7 @@ const VersionHistory = ({ worldId, worldName }: VersionHistoryProps) => {
                         onClick={() => handleDownload(v)}
                         disabled={downloadingId === v.id}
                         title="Download this version"
+                        aria-label="Download this version"
                       >
                         {downloadingId === v.id ? (
                           <Loader variant="inline" size="sm" />
@@ -165,6 +166,7 @@ const VersionHistory = ({ worldId, worldName }: VersionHistoryProps) => {
                         className="h-7 w-7"
                         onClick={() => setRestoreTarget(v)}
                         title="Restore this version"
+                        aria-label="Restore this version"
                       >
                         <RotateCcw className="w-3.5 h-3.5" />
                       </Button>

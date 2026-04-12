@@ -80,6 +80,7 @@ export function WorksheetTitle({
           className="h-7 w-7"
           onClick={handleSave}
           disabled={isSaving || !editValue.trim()}
+          aria-label="Save worksheet title"
         >
           <Check className="w-4 h-4 text-green-500" />
         </Button>
@@ -89,6 +90,7 @@ export function WorksheetTitle({
           className="h-7 w-7"
           onClick={handleCancel}
           disabled={isSaving}
+          aria-label="Cancel editing title"
         >
           <X className="w-4 h-4 text-muted-foreground" />
         </Button>

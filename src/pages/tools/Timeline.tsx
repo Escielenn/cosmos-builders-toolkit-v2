@@ -397,6 +397,7 @@ const Timeline = () => {
               onClick={() => dispatch({ type: "UNDO" })}
               disabled={!canUndo}
               title="Undo (Ctrl+Z)"
+              aria-label="Undo"
             >
               <Undo2 className="w-4 h-4" />
             </Button>
@@ -407,6 +408,7 @@ const Timeline = () => {
               onClick={() => dispatch({ type: "REDO" })}
               disabled={!canRedo}
               title="Redo (Ctrl+Shift+Z)"
+              aria-label="Redo"
             >
               <Redo2 className="w-4 h-4" />
             </Button>

@@ -45,6 +45,7 @@ const SelectedParametersSidebar = ({
           size="icon"
           onClick={() => setIsCollapsed(!isCollapsed)}
           className="absolute top-2 right-2 z-10 w-6 h-6"
+          aria-label={isCollapsed ? "Expand parameters sidebar" : "Collapse parameters sidebar"}
         >
           {isCollapsed ? (
             <ChevronLeft className="w-4 h-4" />

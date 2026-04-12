@@ -203,6 +203,7 @@ const TrackLane = memo(
               size="icon"
               className="w-5 h-5"
               onClick={() => onEditTrack(track)}
+              aria-label="Edit track"
             >
               <Pencil className="w-3 h-3" />
             </Button>
@@ -211,6 +212,7 @@ const TrackLane = memo(
               size="icon"
               className="w-5 h-5 text-destructive hover:text-destructive"
               onClick={() => onDeleteTrack(track.id)}
+              aria-label="Delete track"
             >
               <Trash2 className="w-3 h-3" />
             </Button>

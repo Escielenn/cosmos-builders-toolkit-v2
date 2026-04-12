@@ -723,6 +723,7 @@ const EvolutionaryBiology = () => {
             size="icon"
             onClick={() => onChange(items.filter((_, i) => i !== index))}
             className="h-10 w-10 text-tier-2 hover:text-destructive"
+            aria-label="Remove item"
           >
             <Trash2 className="w-4 h-4" />
           </Button>

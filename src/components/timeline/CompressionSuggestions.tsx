@@ -79,6 +79,7 @@ const CompressionSuggestions = () => {
               className="w-5 h-5 text-primary hover:text-primary"
               onClick={() => handleAccept(s)}
               title="Create compression"
+              aria-label="Create compression"
             >
               <Shrink className="w-3 h-3" />
             </Button>
@@ -88,6 +89,7 @@ const CompressionSuggestions = () => {
               className="w-4 h-4 text-muted-foreground hover:text-foreground"
               onClick={() => handleDismiss(s.id)}
               title="Dismiss"
+              aria-label="Dismiss suggestion"
             >
               <X className="w-2.5 h-2.5" />
             </Button>

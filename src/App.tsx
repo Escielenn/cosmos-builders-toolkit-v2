@@ -1,4 +1,5 @@
 import { Suspense, lazy } from "react";
+import { MotionConfig } from "framer-motion";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -163,6 +164,7 @@ const App = () => (
       <BadgeProvider>
       <BackgroundProvider>
       <AudioProvider>
+        <MotionConfig reducedMotion="user">
         <TooltipProvider>
           <Toaster />
           <Sonner />
@@ -450,6 +452,7 @@ const App = () => (
             <AudioPlayer />
           </BrowserRouter>
         </TooltipProvider>
+        </MotionConfig>
       </AudioProvider>
       </BackgroundProvider>
       </BadgeProvider>

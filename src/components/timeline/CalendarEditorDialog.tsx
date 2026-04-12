@@ -155,6 +155,7 @@ const CalendarEditorDialog = ({
                     size="icon"
                     className="w-7 h-7"
                     onClick={() => handleEdit(cal)}
+                    aria-label="Edit calendar"
                   >
                     <CalendarDays className="w-3.5 h-3.5" />
                   </Button>
@@ -163,6 +164,7 @@ const CalendarEditorDialog = ({
                     size="icon"
                     className="w-7 h-7 text-destructive hover:text-destructive"
                     onClick={() => handleDelete(cal.id)}
+                    aria-label="Delete calendar"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
                   </Button>
@@ -298,6 +300,7 @@ const CalendarEditorDialog = ({
                     className="w-6 h-6"
                     onClick={() => handleRemoveUnit(index)}
                     disabled={units.length <= 1}
+                    aria-label="Remove time unit"
                   >
                     <Trash2 className="w-3 h-3" />
                   </Button>

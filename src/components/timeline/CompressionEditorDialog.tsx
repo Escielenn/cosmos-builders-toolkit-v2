@@ -144,6 +144,7 @@ const CompressionEditorDialog = ({
                     size="icon"
                     className="w-7 h-7"
                     onClick={() => handleEdit(comp)}
+                    aria-label="Edit compression range"
                   >
                     <Minus className="w-3.5 h-3.5" />
                   </Button>
@@ -152,6 +153,7 @@ const CompressionEditorDialog = ({
                     size="icon"
                     className="w-7 h-7 text-destructive hover:text-destructive"
                     onClick={() => handleDelete(comp.id)}
+                    aria-label="Delete compression range"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
                   </Button>

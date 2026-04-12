@@ -886,6 +886,7 @@ const LexDrift = () => {
                       size="icon"
                       className="shrink-0 mt-5"
                       onClick={() => removeContactEvent(event.id)}
+                      aria-label="Remove contact event"
                     >
                       <Trash2 className="w-4 h-4 text-destructive" />
                     </Button>
@@ -1257,6 +1258,7 @@ const LexDrift = () => {
                           variant="ghost"
                           size="icon"
                           onClick={() => removeShip(ship.id)}
+                          aria-label="Remove ship"
                         >
                           <Trash2 className="w-4 h-4 text-destructive" />
                         </Button>

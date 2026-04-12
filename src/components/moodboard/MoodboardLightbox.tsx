@@ -64,6 +64,7 @@ export function MoodboardLightbox({
         size="icon"
         className="absolute top-4 right-4 text-white hover:bg-white/10 z-10"
         onClick={onClose}
+        aria-label="Close lightbox"
       >
         <X className="w-6 h-6" />
       </Button>
@@ -75,6 +76,7 @@ export function MoodboardLightbox({
           size="icon"
           className="absolute left-4 top-1/2 -translate-y-1/2 text-white hover:bg-white/10 z-10 h-12 w-12"
           onClick={handlePrev}
+          aria-label="Previous image"
         >
           <ChevronLeft className="w-8 h-8" />
         </Button>
@@ -87,6 +89,7 @@ export function MoodboardLightbox({
           size="icon"
           className="absolute right-4 top-1/2 -translate-y-1/2 text-white hover:bg-white/10 z-10 h-12 w-12"
           onClick={handleNext}
+          aria-label="Next image"
         >
           <ChevronRight className="w-8 h-8" />
         </Button>

@@ -143,7 +143,7 @@ const WorldCard = ({
             </Link>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-8 w-8 -mr-2 -mt-1">
+                <Button variant="ghost" size="icon" className="h-8 w-8 -mr-2 -mt-1" aria-label="World options">
                   <MoreHorizontal className="w-4 h-4" />
                 </Button>
               </DropdownMenuTrigger>
