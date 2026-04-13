@@ -19,9 +19,9 @@ const ICON_FILES: Record<string, string> = {
   "planetary-profile": "planetary-profile.svg",
   "propulsion-consequences-map": "propulsion-consequences.svg",
   "space-expansion-modeler": "space-expansion.svg",
-  "species-interaction-matrix": "technology-consequences.svg",
+  "species-interaction-matrix": "species-interaction.svg",
   "star-system-builder": "star-system-builder.svg",
-  "technology-consequences": "species-interaction.svg",
+  "technology-consequences": "technology-consequences.svg",
   "time-dilation": "time-dilation-calculator.svg",
   "xenomythology-framework-builder": "xenomythology-framework.svg",
   "lexdrift": "003-book.svg",
@@ -35,7 +35,7 @@ const ICON_FILES: Record<string, string> = {
   "gravitas": "045-planet.svg",
   "stellar-cartographer": "003-map.svg",
   "kardashev-scale": "011-sun.svg",
-  "solaris": "star-system-builder.svg",
+  "solaris": "022-solar system.svg",
 };
 
 function createImgIcon(filename: string): React.FC<ToolIconProps> {
