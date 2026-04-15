@@ -73,6 +73,8 @@ import WorldSnapshotDialog from "@/components/world/WorldSnapshotDialog";
 import WorldAppearanceDialog from "@/components/world/WorldAppearanceDialog";
 import VersionHistory from "@/components/world/VersionHistory";
 import EntityPickerDialog from "@/components/world/EntityPickerDialog";
+import CreateElementDialog from "@/components/world/CreateElementDialog";
+import { FLAGS } from "@/lib/feature-flags";
 import { useWorldEntities } from "@/hooks/use-world-entities";
 import { ENTITY_TYPE_LABELS } from "@/lib/entity-config";
 import { useIsWorldLayout } from "@/contexts/WorldLayoutContext";
@@ -1199,11 +1201,19 @@ const WorldDashboard = () => {
       />
 
       {worldId && (
-        <EntityPickerDialog
-          open={entityPickerOpen}
-          onOpenChange={setEntityPickerOpen}
-          worldId={worldId}
-        />
+        FLAGS.UNIFIED_ENTITIES ? (
+          <CreateElementDialog
+            open={entityPickerOpen}
+            onOpenChange={setEntityPickerOpen}
+            worldId={worldId}
+          />
+        ) : (
+          <EntityPickerDialog
+            open={entityPickerOpen}
+            onOpenChange={setEntityPickerOpen}
+            worldId={worldId}
+          />
+        )
       )}
 
       {/* Edit Tags Dialog */}

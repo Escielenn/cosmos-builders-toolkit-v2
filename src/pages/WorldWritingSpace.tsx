@@ -38,6 +38,8 @@ import {
   useDeleteFolder,
 } from "@/hooks/use-writing-documents";
 import { StellarForgeEditor } from "@/components/editor/StellarForgeEditor";
+import { EntityHoverCard, type HoverCardAnchor } from "@/components/writing/EntityHoverCard";
+import { useEntities } from "@/hooks/use-entity-graph";
 import { WritingEntityPanel } from "@/components/writing/WritingEntityPanel";
 import { WritingReferencePanel } from "@/components/writing/WritingReferencePanel";
 import { WritingMoodboardStrip } from "@/components/writing/WritingMoodboardStrip";
@@ -133,6 +135,33 @@ const WorldWritingSpace = () => {
   const [leftPanelOpen, setLeftPanelOpen] = useState(true);
   const [rightPanelOpen, setRightPanelOpen] = useState(false);
   const [moodboardOpen, setMoodboardOpen] = useState(false);
+  const [hoverCard, setHoverCard] = useState<{
+    entityId: string;
+    anchor: HoverCardAnchor;
+  } | null>(null);
+
+  // Entity data for hover card
+  const { data: entities = [] } = useEntities(worldId);
+  const hoverCardEntity = useMemo(
+    () => hoverCard ? entities.find((e) => e.id === hoverCard.entityId) ?? null : null,
+    [hoverCard, entities]
+  );
+
+  // Listen for entity mention clicks in the editor (dispatched by EntityMention node)
+  useEffect(() => {
+    const handler = (event: Event) => {
+      const customEvent = event as CustomEvent<{
+        entityId: string;
+        entityType: string;
+        anchor?: HoverCardAnchor;
+      }>;
+      const detail = customEvent.detail;
+      if (!detail?.entityId || !detail.anchor) return;
+      setHoverCard({ entityId: detail.entityId, anchor: detail.anchor });
+    };
+    window.addEventListener("sf-navigate-entity", handler);
+    return () => window.removeEventListener("sf-navigate-entity", handler);
+  }, []);
   const [selectedDocId, setSelectedDocId] = useState<string | null>(null);
   const [renamingDocId, setRenamingDocId] = useState<string | null>(null);
   const [renameValue, setRenameValue] = useState("");
@@ -743,6 +772,16 @@ const WorldWritingSpace = () => {
           onPreviewSnapshot={setPreviewSnapshot}
         />
       </div>
+
+      {/* Entity hover card for @mention clicks */}
+      {hoverCard && hoverCardEntity && worldId && (
+        <EntityHoverCard
+          entity={hoverCardEntity}
+          anchor={hoverCard.anchor}
+          worldId={worldId}
+          onDismiss={() => setHoverCard(null)}
+        />
+      )}
     </div>
   );
 };

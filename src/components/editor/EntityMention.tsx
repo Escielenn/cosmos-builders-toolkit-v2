@@ -94,9 +94,19 @@ export const EntityMention = Node.create({
       dom.addEventListener("click", (e) => {
         e.preventDefault();
         if (node.attrs.id) {
+          const rect = dom.getBoundingClientRect();
           window.dispatchEvent(
             new CustomEvent("sf-navigate-entity", {
-              detail: { entityId: node.attrs.id, entityType },
+              detail: {
+                entityId: node.attrs.id,
+                entityType,
+                anchor: {
+                  top: rect.bottom + window.scrollY,
+                  left: rect.left + window.scrollX,
+                  width: rect.width,
+                  height: rect.height,
+                },
+              },
             })
           );
         }
