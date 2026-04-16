@@ -34,6 +34,7 @@ import ShareDialog from "@/components/sharing/ShareDialog";
 import { useWorksheetShare } from "@/hooks/use-sharing";
 import type { MoodboardImage } from "@/hooks/use-moodboard";
 import { useEntityMatch } from "@/hooks/use-entity-match";
+import { useEntityPrepopulate } from "@/hooks/use-entity-prepopulate";
 import EntityMatchDialog from "@/components/tools/EntityMatchDialog";
 import { useTags } from "@/hooks/use-tags";
 import { WorksheetNotesSheet } from "@/components/tools/WorksheetNotesSheet";
@@ -275,6 +276,9 @@ const PlanetaryProfile = () => {
   const currentWorld = worldId ? worlds.find((w) => w.id === worldId) : null;
   const worldName = currentWorld?.name;
 
+  // Entity pre-populate (when launched from entity hover card / CreateElementDialog)
+  const entityPrep = useEntityPrepopulate(TOOL_TYPE);
+
   // Supabase hooks
   const entityMatch = useEntityMatch(worldId);
   const { createWorksheet, updateWorksheet } = useWorksheets(worldId || undefined, false, {
@@ -334,6 +338,29 @@ const PlanetaryProfile = () => {
       }
     }
   }, [existingWorksheet]);
+
+  // Pre-fill from entity when launched via ?entityId= (no existing worksheet)
+  useEffect(() => {
+    if (entityPrep.entity && !worksheetId && !currentWorksheetId) {
+      const patch = entityPrep.formPatch;
+      if (Object.keys(patch).length > 0) {
+        setFormState((prev) => {
+          const merged = { ...prev };
+          for (const [key, value] of Object.entries(patch)) {
+            if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+              (merged as Record<string, unknown>)[key] = {
+                ...((merged as Record<string, unknown>)[key] as Record<string, unknown> ?? {}),
+                ...(value as Record<string, unknown>),
+              };
+            } else {
+              (merged as Record<string, unknown>)[key] = value;
+            }
+          }
+          return merged;
+        });
+      }
+    }
+  }, [entityPrep.entity, entityPrep.formPatch, worksheetId, currentWorksheetId]);
 
   // Fallback to localStorage if no worldId (standalone mode)
   useEffect(() => {
@@ -478,15 +505,20 @@ const PlanetaryProfile = () => {
   // Handle new worksheet creation from dialog
   const handleWorksheetCreate = async (name: string): Promise<string> => {
     const worksheetData = formState as unknown as Json;
+    const title = name || entityPrep.entityName || "Untitled";
     const result = await createWorksheet.mutateAsync({
       worldId: worldId!,
       toolType: TOOL_TYPE,
-      title: name,
+      title,
       data: worksheetData,
     });
     setCurrentWorksheetId(result.id);
     setCurrentWorksheetTitle(result.title);
     setSearchParams({ worldId: worldId!, worksheetId: result.id });
+    // Auto-link worksheet to entity when launched from entity context
+    if (entityPrep.hasEntityId) {
+      void entityPrep.linkWorksheet(result.id);
+    }
     return result.id;
   };
 
