@@ -387,12 +387,12 @@ const WorldWritingSpace = () => {
 
   const handleManualSave = useCallback(() => {
     flushSave();
-    createSnapshot();
+    void createSnapshot();
   }, [flushSave, createSnapshot]);
 
   const handleRestoreVersion = useCallback(
-    (snapshotId: string) => {
-      const snapshot = restoreVersion(snapshotId);
+    async (snapshotId: string) => {
+      const snapshot = await restoreVersion(snapshotId);
       if (!snapshot) return;
 
       // Apply restored content
