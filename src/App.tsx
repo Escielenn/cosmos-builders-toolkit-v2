@@ -49,6 +49,7 @@ const WorldGraph = lazy(() => import("./pages/WorldGraph"));
 const WikiPageRoute = lazy(() => import("./pages/WikiPageRoute"));
 const WorldChronicle = lazy(() => import("./pages/WorldChronicle"));
 const WorldWritingSpace = lazy(() => import("./pages/WorldWritingSpace"));
+const WorldCustomTypes = lazy(() => import("./pages/WorldCustomTypes"));
 const WikiBrowse = lazy(() => import("./pages/WikiBrowse"));
 const Collection = lazy(() => import("./pages/Collection"));
 const Archive = lazy(() => import("./pages/Archive"));
@@ -207,6 +208,7 @@ const App = () => (
                   <Route path="graph" element={<WorldGraph />} />
                   <Route path="connections" element={<WorldConnections />} />
                   <Route path="write" element={<WorldWritingSpace />} />
+                  <Route path="custom-types" element={<WorldCustomTypes />} />
                 </Route>
                 <Route path="/bookshelf" element={<Bookshelf />} />
                 {/* Writing Prompts - Pro gated */}

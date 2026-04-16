@@ -36,6 +36,14 @@ import {
   type EntityType,
 } from "@/services/entity-graph-types";
 import { useCreateEntity } from "@/hooks/use-entity-graph";
+import {
+  useEntityTypeTemplates,
+  type EntityTypeTemplate,
+} from "@/hooks/use-entity-type-templates";
+import {
+  TemplateFieldsForm,
+  type CustomFieldValues,
+} from "@/components/world/TemplateFieldsForm";
 import { cn } from "@/lib/utils";
 
 // ---------------------------------------------------------------------------
@@ -154,15 +162,19 @@ export default function CreateElementDialog({
 }: CreateElementDialogProps) {
   const navigate = useNavigate();
   const createEntity = useCreateEntity(worldId);
+  const { data: templates = [] } = useEntityTypeTemplates(worldId);
 
   const [step, setStep] = useState<Step>(initialType ? "basics" : "pick");
   const [selectedType, setSelectedType] = useState<CreatableEntityType | null>(
     initialType ?? null
   );
+  const [selectedTemplate, setSelectedTemplate] =
+    useState<EntityTypeTemplate | null>(null);
   const [customLabel, setCustomLabel] = useState("");
   const [name, setName] = useState("");
   const [summary, setSummary] = useState("");
   const [description, setDescription] = useState("");
+  const [templateValues, setTemplateValues] = useState<CustomFieldValues>({});
   const [createdEntityId, setCreatedEntityId] = useState<string | null>(null);
 
   const applicableTools = useMemo(
@@ -173,10 +185,12 @@ export default function CreateElementDialog({
   const reset = () => {
     setStep(initialType ? "basics" : "pick");
     setSelectedType(initialType ?? null);
+    setSelectedTemplate(null);
     setCustomLabel("");
     setName("");
     setSummary("");
     setDescription("");
+    setTemplateValues({});
     setCreatedEntityId(null);
   };
 
@@ -187,6 +201,15 @@ export default function CreateElementDialog({
 
   const handleTypePick = (type: CreatableEntityType) => {
     setSelectedType(type);
+    setSelectedTemplate(null);
+    setStep("basics");
+  };
+
+  const handleTemplatePick = (template: EntityTypeTemplate) => {
+    setSelectedTemplate(template);
+    setSelectedType("custom");
+    setCustomLabel(template.label);
+    setTemplateValues({});
     setStep("basics");
   };
 
@@ -194,17 +217,26 @@ export default function CreateElementDialog({
     if (!selectedType || !name.trim()) return;
     const entityType = toEntityType(selectedType);
 
+    // Build metadata payload — include template reference + _custom values
+    // when a template is active.
+    const metadata: Record<string, unknown> = {};
+    if (selectedTemplate) {
+      metadata._template_id = selectedTemplate.id;
+      metadata._template_key = selectedTemplate.type_key;
+      metadata._custom = templateValues;
+    }
+
     const created = await createEntity.mutateAsync({
       name: name.trim(),
       entity_type: entityType,
       custom_type_label:
-        selectedType === "custom" && customLabel.trim()
-          ? customLabel.trim()
-          : null,
+        (selectedTemplate?.label ??
+          (selectedType === "custom" && customLabel.trim() ? customLabel.trim() : null)),
       cascade_stage: ENTITY_TYPE_CASCADE_DEFAULTS[entityType],
       summary: summary.trim() || null,
       description: description.trim() || null,
-      color: ENTITY_TYPE_COLORS[entityType],
+      color: selectedTemplate?.color || ENTITY_TYPE_COLORS[entityType],
+      metadata: Object.keys(metadata).length > 0 ? metadata : undefined,
     });
 
     setCreatedEntityId(created.id);
@@ -246,7 +278,7 @@ export default function CreateElementDialog({
             </DialogHeader>
 
             <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 py-4">
-              {CREATABLE_ENTITY_TYPES.map((type) => {
+              {CREATABLE_ENTITY_TYPES.filter((t) => t !== "custom").map((type) => {
                 const Icon = ICON_MAP[type];
                 return (
                   <button
@@ -257,23 +289,66 @@ export default function CreateElementDialog({
                       "flex flex-col items-center gap-1.5 p-3",
                       "border border-border/10 bg-white/[0.02]",
                       "hover:bg-primary/5 hover:border-primary/20",
-                      "transition-colors group",
-                      type === "custom" && "col-span-3 sm:col-span-4 flex-row justify-center gap-3 py-2"
+                      "transition-colors group"
                     )}
                   >
-                    <Icon
-                      className={cn(
-                        "text-muted-foreground/40 group-hover:text-primary/60 transition-colors",
-                        type === "custom" ? "w-4 h-4" : "w-5 h-5"
-                      )}
-                    />
+                    <Icon className="w-5 h-5 text-muted-foreground/40 group-hover:text-primary/60 transition-colors" />
                     <span className="text-[10px] font-heading uppercase tracking-wider text-tier-3 group-hover:text-tier-2 transition-colors">
                       {PICKER_LABELS[type]}
-                      {type === "custom" && " — define your own"}
                     </span>
                   </button>
                 );
               })}
+            </div>
+
+            {/* Your custom templates */}
+            {templates.length > 0 && (
+              <div className="pt-3 border-t border-white/5">
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-[10px] font-heading uppercase tracking-[1.5px] text-[#00FF88]">
+                    Your custom types
+                  </h3>
+                  <a
+                    href={`/worlds/${worldId}/custom-types`}
+                    className="text-[10px] text-tier-4 hover:text-tier-2"
+                  >
+                    Manage →
+                  </a>
+                </div>
+                <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                  {templates.map((t) => (
+                    <button
+                      key={t.id}
+                      type="button"
+                      onClick={() => handleTemplatePick(t)}
+                      className="flex flex-col items-center gap-1.5 p-3 border border-border/10 bg-white/[0.02] hover:bg-primary/5 hover:border-primary/20 transition-colors"
+                      title={t.description ?? undefined}
+                    >
+                      <Shapes
+                        className="w-5 h-5 text-muted-foreground/40"
+                        style={t.color ? { color: t.color } : undefined}
+                      />
+                      <span className="text-[10px] font-heading uppercase tracking-wider text-tier-3">
+                        {t.label}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Custom (ad-hoc, no template) button */}
+            <div className="pt-3">
+              <button
+                type="button"
+                onClick={() => handleTypePick("custom")}
+                className="w-full flex items-center justify-center gap-2 py-2 border border-dashed border-white/10 text-tier-4 hover:text-tier-2 hover:border-primary/20 transition-colors"
+              >
+                <Shapes className="w-4 h-4" />
+                <span className="text-[10px] font-heading uppercase tracking-wider">
+                  One-off custom element
+                </span>
+              </button>
             </div>
           </>
         )}
@@ -282,21 +357,32 @@ export default function CreateElementDialog({
           <>
             <DialogHeader>
               <DialogTitle className="font-heading text-xl tracking-wider flex items-center gap-2">
-                {(() => {
+                {selectedTemplate ? (
+                  <Shapes
+                    className="w-4 h-4"
+                    style={
+                      selectedTemplate.color
+                        ? { color: selectedTemplate.color }
+                        : { color: "hsl(var(--primary))" }
+                    }
+                  />
+                ) : (() => {
                   const Icon = ICON_MAP[selectedType];
                   return <Icon className="w-4 h-4 text-primary" />;
                 })()}
-                NEW {PICKER_LABELS[selectedType].toUpperCase()}
+                NEW {(selectedTemplate?.label ?? PICKER_LABELS[selectedType]).toUpperCase()}
               </DialogTitle>
               <DialogDescription>
                 Give your{" "}
-                {PICKER_LABELS[selectedType].toLowerCase()} a name and a short
-                summary. You can add details later.
+                {(selectedTemplate?.label ?? PICKER_LABELS[selectedType]).toLowerCase()} a name
+                {selectedTemplate && selectedTemplate.fields.length > 0
+                  ? `, then fill in the ${selectedTemplate.fields.length} template field${selectedTemplate.fields.length === 1 ? "" : "s"}.`
+                  : " and a short summary. You can add details later."}
               </DialogDescription>
             </DialogHeader>
 
-            <div className="space-y-4 py-4">
-              {selectedType === "custom" && (
+            <div className="space-y-4 py-4 max-h-[60vh] overflow-y-auto pr-1">
+              {selectedType === "custom" && !selectedTemplate && (
                 <div className="space-y-2">
                   <Label htmlFor="entity-custom-label">
                     Custom type label{" "}
@@ -360,6 +446,25 @@ export default function CreateElementDialog({
                   minHeight="80px"
                 />
               </div>
+
+              {/* Template-driven fields */}
+              {selectedTemplate && selectedTemplate.fields.length > 0 && (
+                <div className="pt-3 border-t border-white/5 space-y-3">
+                  <div className="flex items-center gap-2">
+                    <div className="h-px flex-1 bg-white/5" />
+                    <span className="text-[10px] uppercase tracking-[1.5px] text-[#00FF88] font-heading">
+                      {selectedTemplate.label} fields
+                    </span>
+                    <div className="h-px flex-1 bg-white/5" />
+                  </div>
+                  <TemplateFieldsForm
+                    fields={selectedTemplate.fields}
+                    values={templateValues}
+                    onChange={setTemplateValues}
+                    disabled={createEntity.isPending}
+                  />
+                </div>
+              )}
             </div>
 
             <DialogFooter className="gap-2">
