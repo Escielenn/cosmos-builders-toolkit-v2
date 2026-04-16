@@ -39,6 +39,7 @@ import {
 } from "@/hooks/use-writing-documents";
 import { StellarForgeEditor } from "@/components/editor/StellarForgeEditor";
 import { EntityHoverCard, type HoverCardAnchor } from "@/components/writing/EntityHoverCard";
+import { ChapterTree } from "@/components/writing/ChapterTree";
 import { useEntities } from "@/hooks/use-entity-graph";
 import { WritingEntityPanel } from "@/components/writing/WritingEntityPanel";
 import { WritingReferencePanel } from "@/components/writing/WritingReferencePanel";
@@ -132,6 +133,7 @@ const WorldWritingSpace = () => {
 
   // UI state
   const [zenMode, setZenMode] = useState(false);
+  const [chaptersPanelOpen, setChaptersPanelOpen] = useState(true);
   const [leftPanelOpen, setLeftPanelOpen] = useState(true);
   const [rightPanelOpen, setRightPanelOpen] = useState(false);
   const [moodboardOpen, setMoodboardOpen] = useState(false);
@@ -382,6 +384,31 @@ const WorldWritingSpace = () => {
   );
 
   // ---------------------------------------------------------------------------
+  // ChapterTree adapter handlers
+  // (thin wrappers over existing handlers whose signatures differ)
+  // ---------------------------------------------------------------------------
+
+  const handleChapterSelect = useCallback(
+    (docId: string) => {
+      const doc = documents?.find((d) => d.id === docId);
+      if (doc) handleSelectDocument(doc);
+    },
+    [documents, handleSelectDocument]
+  );
+
+  const handleChapterRename = useCallback(
+    (docId: string, newTitle: string) => {
+      renameDoc.mutate({ docId, title: newTitle });
+    },
+    [renameDoc]
+  );
+
+  const handleChapterNewFolder = useCallback(() => {
+    const name = window.prompt("Folder name?");
+    if (name && name.trim()) handleCreateFolder(name.trim());
+  }, [handleCreateFolder]);
+
+  // ---------------------------------------------------------------------------
   // Version history actions
   // ---------------------------------------------------------------------------
 
@@ -488,10 +515,17 @@ const WorldWritingSpace = () => {
         return;
       }
 
-      // Ctrl+\ — toggle left panel
+      // Ctrl+\ — toggle entity panel
       if ((e.ctrlKey || e.metaKey) && !e.shiftKey && e.key === "\\") {
         e.preventDefault();
         setLeftPanelOpen((p) => !p);
+        return;
+      }
+
+      // Ctrl+[ — toggle chapter tree
+      if ((e.ctrlKey || e.metaKey) && !e.shiftKey && e.key === "[") {
+        e.preventDefault();
+        setChaptersPanelOpen((p) => !p);
         return;
       }
 
@@ -603,8 +637,27 @@ const WorldWritingSpace = () => {
         onToggle={() => setMoodboardOpen((p) => !p)}
       />
 
-      {/* Main row: left panel + center + right panel */}
+      {/* Main row: chapter tree + entity panel + center + right panel */}
       <div className="flex flex-1 overflow-hidden">
+        {/* ----------------------------------------------------------------- */}
+        {/* Chapter Tree (Leftmost) */}
+        {/* ----------------------------------------------------------------- */}
+        <ChapterTree
+          open={chaptersPanelOpen}
+          onToggle={() => setChaptersPanelOpen((p) => !p)}
+          folders={folders}
+          unfiledDocs={unfiledDocs}
+          selectedDocId={selectedDocId}
+          onSelectDocument={handleChapterSelect}
+          onCreateDocument={handleCreateDocument}
+          onCreateFolder={handleChapterNewFolder}
+          onRenameDocument={handleChapterRename}
+          onDeleteDocument={handleDeleteDocument}
+          onMoveDocument={handleMoveDocument}
+          onRenameFolder={handleRenameFolder}
+          onDeleteFolder={handleDeleteFolder}
+        />
+
         {/* ----------------------------------------------------------------- */}
         {/* Entity Panel (Left) */}
         {/* ----------------------------------------------------------------- */}
