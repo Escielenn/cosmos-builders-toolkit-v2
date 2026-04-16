@@ -45,8 +45,7 @@ function useIsExampleHidden(worldId: string | undefined) {
 
       const { data, error } = await supabase
         .from("hidden_example_worlds")
-        .select("id")
-        .eq("world_id", worldId)
+        .select("user_id")
         .eq("user_id", user.id)
         .maybeSingle();
 
@@ -69,7 +68,7 @@ function useHideExample(worldId: string | undefined) {
 
       const { error } = await supabase
         .from("hidden_example_worlds")
-        .insert({ world_id: worldId, user_id: user.id });
+        .insert({ user_id: user.id });
 
       if (error) throw error;
     },

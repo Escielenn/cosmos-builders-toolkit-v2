@@ -681,8 +681,8 @@ const WorldWritingSpace = () => {
             onConfirmRename={handleConfirmRename}
             onCancelRename={handleCancelRename}
             isSaving={updateContent.isPending}
-            leftPanelOpen={leftPanelOpen}
-            onToggleLeftPanel={() => setLeftPanelOpen((p) => !p)}
+            leftPanelOpen={sidebarOpen}
+            onToggleLeftPanel={() => setSidebarOpen((p) => !p)}
             rightPanelOpen={rightPanelOpen}
             onToggleRightPanel={() => setRightPanelOpen((p) => !p)}
             moodboardOpen={moodboardOpen}
