@@ -145,6 +145,8 @@ export function EntityHoverCard({
     };
     const onClick = (e: MouseEvent) => {
       if (cardRef.current && !cardRef.current.contains(e.target as Node)) {
+        const target = e.target as HTMLElement;
+        if (target.closest("[data-radix-popper-content-wrapper], [data-radix-menu-content]")) return;
         onDismiss();
       }
     };

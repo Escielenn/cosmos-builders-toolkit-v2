@@ -45,6 +45,8 @@ export interface WritingEntityPanelProps {
   onInsertMention: (name: string) => void;
   onInsertWikiLink: (name: string) => void;
   onPinEntity?: (entity: Entity) => void;
+  /** When true, renders content only (no outer aside/width management). Used inside WritingSidebar. */
+  embedded?: boolean;
 }
 
 // ---------------------------------------------------------------------------
@@ -64,6 +66,7 @@ export function WritingEntityPanel({
   onInsertMention,
   onInsertWikiLink,
   onPinEntity,
+  embedded,
 }: WritingEntityPanelProps) {
   const { data: entities } = useEntities(worldId);
   const { data: connections } = useEntityConnections(worldId);
@@ -136,14 +139,8 @@ export function WritingEntityPanel({
   // Render
   // -------------------------------------------------------------------------
 
-  return (
-    <aside
-      className={cn(
-        "h-full flex-shrink-0 border-r border-white/[0.06] bg-[#0E1320]/90 backdrop-blur-md transition-all duration-300 ease-out overflow-hidden"
-      )}
-      style={{ width: open ? PANEL_WIDTH : 0 }}
-    >
-      <div className="flex h-full flex-col" style={{ width: PANEL_WIDTH }}>
+  const panelContent = (
+      <div className="flex h-full flex-col" style={embedded ? undefined : { width: PANEL_WIDTH }}>
         {/* Panel header */}
         <div className="flex items-center justify-between border-b border-white/[0.06] px-3 py-2.5">
           {selectedEntity ? (
@@ -424,6 +421,18 @@ export function WritingEntityPanel({
           </>
         )}
       </div>
+  );
+
+  if (embedded) return <div className="h-full overflow-hidden">{panelContent}</div>;
+
+  return (
+    <aside
+      className={cn(
+        "h-full flex-shrink-0 border-r border-white/[0.06] bg-[#0E1320]/90 backdrop-blur-md transition-all duration-300 ease-out overflow-hidden"
+      )}
+      style={{ width: open ? PANEL_WIDTH : 0 }}
+    >
+      {panelContent}
     </aside>
   );
 }

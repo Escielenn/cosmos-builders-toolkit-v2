@@ -63,6 +63,8 @@ export interface ChapterTreeProps {
   onMoveDocument: (docId: string, folderId: string | null) => void;
   onRenameFolder: (folderId: string, newTitle: string) => void;
   onDeleteFolder: (folderId: string) => void;
+  /** When true, renders content only (no outer aside/collapsed rail). Used inside WritingSidebar. */
+  embedded?: boolean;
 }
 
 // ---------------------------------------------------------------------------
@@ -94,6 +96,7 @@ export function ChapterTree({
   onMoveDocument,
   onRenameFolder,
   onDeleteFolder,
+  embedded,
 }: ChapterTreeProps): JSX.Element {
   const [collapsedFolders, setCollapsedFolders] = useState<Set<string>>(new Set());
   const [renamingId, setRenamingId] = useState<string | null>(null);
@@ -150,10 +153,10 @@ export function ChapterTree({
   }, [folders, unfiledDocs]);
 
   // ---------------------------------------------------------------------------
-  // Collapsed rail
+  // Collapsed rail (standalone mode only)
   // ---------------------------------------------------------------------------
 
-  if (!open) {
+  if (!open && !embedded) {
     return (
       <aside
         className={cn(
@@ -175,17 +178,11 @@ export function ChapterTree({
   }
 
   // ---------------------------------------------------------------------------
-  // Full panel
+  // Content — used both standalone and embedded
   // ---------------------------------------------------------------------------
 
-  return (
-    <aside
-      className={cn(
-        "shrink-0 h-full flex flex-col border-r border-white/5",
-        "bg-[hsl(222_25%_9%_/_0.8)]"
-      )}
-      style={{ width: 260 }}
-    >
+  const content = (
+    <>
       {/* Header */}
       <div className="flex items-center justify-between px-3 py-2 border-b border-white/5">
         <div className="flex-1 min-w-0">
@@ -217,15 +214,17 @@ export function ChapterTree({
           >
             <FolderPlus className="w-3.5 h-3.5" />
           </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-7 w-7 text-tier-4 hover:text-tier-2"
-            onClick={onToggle}
-            aria-label="Collapse chapter tree"
-          >
-            <PanelLeftClose className="w-3.5 h-3.5" />
-          </Button>
+          {!embedded && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-7 w-7 text-tier-4 hover:text-tier-2"
+              onClick={onToggle}
+              aria-label="Collapse chapter tree"
+            >
+              <PanelLeftClose className="w-3.5 h-3.5" />
+            </Button>
+          )}
         </div>
       </div>
 
@@ -400,6 +399,20 @@ export function ChapterTree({
           </div>
         )}
       </div>
+    </>
+  );
+
+  if (embedded) return <div className="flex flex-col h-full overflow-hidden">{content}</div>;
+
+  return (
+    <aside
+      className={cn(
+        "shrink-0 h-full flex flex-col border-r border-white/5",
+        "bg-[hsl(222_25%_9%_/_0.8)]"
+      )}
+      style={{ width: 260 }}
+    >
+      {content}
     </aside>
   );
 }

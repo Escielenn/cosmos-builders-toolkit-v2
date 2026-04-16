@@ -39,9 +39,8 @@ import {
 } from "@/hooks/use-writing-documents";
 import { StellarForgeEditor } from "@/components/editor/StellarForgeEditor";
 import { EntityHoverCard, type HoverCardAnchor } from "@/components/writing/EntityHoverCard";
-import { ChapterTree } from "@/components/writing/ChapterTree";
+import { WritingSidebar, type SidebarTab } from "@/components/writing/WritingSidebar";
 import { useEntities } from "@/hooks/use-entity-graph";
-import { WritingEntityPanel } from "@/components/writing/WritingEntityPanel";
 import { WritingReferencePanel } from "@/components/writing/WritingReferencePanel";
 import { WritingMoodboardStrip } from "@/components/writing/WritingMoodboardStrip";
 import type { MoodboardImage } from "@/components/writing/WritingMoodboardStrip";
@@ -133,8 +132,8 @@ const WorldWritingSpace = () => {
 
   // UI state
   const [zenMode, setZenMode] = useState(false);
-  const [chaptersPanelOpen, setChaptersPanelOpen] = useState(true);
-  const [leftPanelOpen, setLeftPanelOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarTab, setSidebarTab] = useState<SidebarTab>("chapters");
   const [rightPanelOpen, setRightPanelOpen] = useState(false);
   const [moodboardOpen, setMoodboardOpen] = useState(false);
   const [hoverCard, setHoverCard] = useState<{
@@ -515,17 +514,10 @@ const WorldWritingSpace = () => {
         return;
       }
 
-      // Ctrl+\ — toggle entity panel
-      if ((e.ctrlKey || e.metaKey) && !e.shiftKey && e.key === "\\") {
+      // Ctrl+[ — toggle sidebar
+      if ((e.ctrlKey || e.metaKey) && !e.shiftKey && (e.key === "[" || e.key === "\\")) {
         e.preventDefault();
-        setLeftPanelOpen((p) => !p);
-        return;
-      }
-
-      // Ctrl+[ — toggle chapter tree
-      if ((e.ctrlKey || e.metaKey) && !e.shiftKey && e.key === "[") {
-        e.preventDefault();
-        setChaptersPanelOpen((p) => !p);
+        setSidebarOpen((p) => !p);
         return;
       }
 
@@ -637,37 +629,35 @@ const WorldWritingSpace = () => {
         onToggle={() => setMoodboardOpen((p) => !p)}
       />
 
-      {/* Main row: chapter tree + entity panel + center + right panel */}
+      {/* Main row: sidebar + center + right panel */}
       <div className="flex flex-1 overflow-hidden">
         {/* ----------------------------------------------------------------- */}
-        {/* Chapter Tree (Leftmost) */}
+        {/* Unified Sidebar (Chapters / Entities tabs) */}
         {/* ----------------------------------------------------------------- */}
-        <ChapterTree
-          open={chaptersPanelOpen}
-          onToggle={() => setChaptersPanelOpen((p) => !p)}
-          folders={folders}
-          unfiledDocs={unfiledDocs}
-          selectedDocId={selectedDocId}
-          onSelectDocument={handleChapterSelect}
-          onCreateDocument={handleCreateDocument}
-          onCreateFolder={handleChapterNewFolder}
-          onRenameDocument={handleChapterRename}
-          onDeleteDocument={handleDeleteDocument}
-          onMoveDocument={handleMoveDocument}
-          onRenameFolder={handleRenameFolder}
-          onDeleteFolder={handleDeleteFolder}
-        />
-
-        {/* ----------------------------------------------------------------- */}
-        {/* Entity Panel (Left) */}
-        {/* ----------------------------------------------------------------- */}
-        <WritingEntityPanel
-          worldId={worldId}
-          open={leftPanelOpen}
-          onToggle={() => setLeftPanelOpen((p) => !p)}
-          onInsertMention={handleInsertMention}
-          onInsertWikiLink={handleInsertWikiLink}
-          onPinEntity={handlePinEntity}
+        <WritingSidebar
+          open={sidebarOpen}
+          onToggle={() => setSidebarOpen((p) => !p)}
+          activeTab={sidebarTab}
+          onTabChange={setSidebarTab}
+          chapterProps={{
+            folders,
+            unfiledDocs,
+            selectedDocId,
+            onSelectDocument: handleChapterSelect,
+            onCreateDocument: handleCreateDocument,
+            onCreateFolder: handleChapterNewFolder,
+            onRenameDocument: handleChapterRename,
+            onDeleteDocument: handleDeleteDocument,
+            onMoveDocument: handleMoveDocument,
+            onRenameFolder: handleRenameFolder,
+            onDeleteFolder: handleDeleteFolder,
+          }}
+          entityProps={{
+            worldId: worldId || "",
+            onInsertMention: handleInsertMention,
+            onInsertWikiLink: handleInsertWikiLink,
+            onPinEntity: handlePinEntity,
+          }}
         />
 
         {/* ----------------------------------------------------------------- */}
