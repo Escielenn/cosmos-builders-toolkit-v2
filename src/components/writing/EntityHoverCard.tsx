@@ -116,17 +116,26 @@ export function EntityHoverCard({
     [entity.entity_type]
   );
 
-  // Positioning — keep card inside viewport
+  // Positioning — keep card inside viewport, flip upward if near bottom
+  const ESTIMATED_CARD_HEIGHT = 320;
   const position = useMemo(() => {
     const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+
     let left = anchor.left;
     if (left + CARD_WIDTH > viewportWidth - 16) {
       left = Math.max(16, viewportWidth - CARD_WIDTH - 16);
     }
-    return {
-      top: anchor.top + CARD_OFFSET,
-      left,
-    };
+
+    // Flip above the mention if there isn't room below
+    const spaceBelow = viewportHeight - anchor.top;
+    const flipUp = spaceBelow < ESTIMATED_CARD_HEIGHT + CARD_OFFSET + 16;
+
+    const top = flipUp
+      ? Math.max(16, anchor.top - anchor.height - ESTIMATED_CARD_HEIGHT - CARD_OFFSET)
+      : anchor.top + CARD_OFFSET;
+
+    return { top, left, flipUp };
   }, [anchor]);
 
   // Escape key + click-outside dismissal
@@ -187,6 +196,8 @@ export function EntityHoverCard({
         top: position.top,
         left: position.left,
         width: CARD_WIDTH,
+        maxHeight: `calc(100vh - 32px)`,
+        overflowY: "auto",
       }}
     >
       {/* Accent bar */}
