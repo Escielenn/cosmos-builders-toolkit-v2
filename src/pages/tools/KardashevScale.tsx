@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import ToolPageLayout from "@/components/tools/ToolPageLayout";
 import { GlassPanel } from "@/components/ui/glass-panel";
+import { StatGrid } from "@/components/ui/stat-grid";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
@@ -556,25 +557,29 @@ const KardashevScale = () => {
                 </p>
               </GlassPanel>
 
-              {/* Comparison stats */}
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-                <div className="p-3 bg-white/[0.02] border border-white/[0.06]">
-                  <span className="text-[10px] uppercase tracking-[1.5px] text-t4 block mb-1">Total Power</span>
-                  <span className="font-mono text-t1">{formatPower(results.totalPowerWatts)}</span>
-                </div>
-                <div className="p-3 bg-white/[0.02] border border-white/[0.06]">
-                  <span className="text-[10px] uppercase tracking-[1.5px] text-t4 block mb-1">vs Earth</span>
-                  <span className="font-mono text-t1">{formatMultiple(results.earthMultiple)}</span>
-                </div>
-                <div className="p-3 bg-white/[0.02] border border-white/[0.06]">
-                  <span className="text-[10px] uppercase tracking-[1.5px] text-t4 block mb-1">vs Sun</span>
-                  <span className="font-mono text-t1">{formatMultiple(results.solarMultiple)}</span>
-                </div>
-                <div className="p-3 bg-white/[0.02] border border-white/[0.06]">
-                  <span className="text-[10px] uppercase tracking-[1.5px] text-t4 block mb-1">vs Galaxy</span>
-                  <span className="font-mono text-t1">{formatMultiple(results.galaxyMultiple)}</span>
-                </div>
-              </div>
+              {/* Comparison stats — StatGrid primitive */}
+              <StatGrid cols={4}>
+                <StatGrid.Cell
+                  label="TOTAL POWER"
+                  value={formatPower(results.totalPowerWatts)}
+                  accent="amber"
+                />
+                <StatGrid.Cell
+                  label="vs EARTH"
+                  value={formatMultiple(results.earthMultiple)}
+                  accent="amber"
+                />
+                <StatGrid.Cell
+                  label="vs SUN"
+                  value={formatMultiple(results.solarMultiple)}
+                  accent="amber"
+                />
+                <StatGrid.Cell
+                  label="vs GALAXY"
+                  value={formatMultiple(results.galaxyMultiple)}
+                  accent="amber"
+                />
+              </StatGrid>
 
               {/* Characteristics */}
               <div className="space-y-2">

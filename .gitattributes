@@ -1,0 +1,23 @@
+# Normalize text files to LF in the repo, let checkout use OS-native line endings.
+# Avoids the CRLF warning noise on Windows after bulk sed operations.
+* text=auto eol=lf
+
+# Binary files — never convert
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.gif binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.otf binary
+*.mp3 binary
+*.mp4 binary
+*.mov binary
+*.webm binary
+*.pdf binary
+*.zip binary
+*.tar.gz binary
+*.svg text eol=lf

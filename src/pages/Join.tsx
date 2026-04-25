@@ -22,8 +22,8 @@ import { TERMS_CONTENT } from "@/lib/legal/terms-content";
 import { PageBursts } from "@/components/ui/data-burst";
 import { AUTH_BURSTS } from "@/lib/data-bursts";
 
-const emailSchema = z.string().email("Valid email required.");
-const passwordSchema = z.string().min(6, "Minimum 6 characters.");
+const emailSchema = z.string().email("VALID EMAIL REQUIRED.");
+const passwordSchema = z.string().min(6, "AT LEAST 6 CHARS REQUIRED.");
 
 // Invite codes that grant access to the sign-up form.
 // Add new codes here as needed. The URL is /join/<code>

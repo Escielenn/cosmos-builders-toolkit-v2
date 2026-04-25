@@ -17,6 +17,8 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { GlassPanel } from "@/components/ui/glass-panel";
+import { StatGrid } from "@/components/ui/stat-grid";
+import { KeyValueRow } from "@/components/ui/key-value-row";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -931,51 +933,64 @@ const HabitableZoneCalculator = () => {
                       </div>
                     </div>
 
-                    {/* Key Metrics Grid */}
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-1">
-                        <div className="text-xs text-t4 uppercase tracking-wider">Stellar Flux</div>
-                        <div className="text-lg font-mono">{result.stellarFluxFormatted}</div>
-                        <div className="text-xs text-t4">Earth = 1.0</div>
-                      </div>
-                      <div className="space-y-1">
-                        <div className="text-xs text-t4 uppercase tracking-wider">Year Length</div>
-                        <div className="text-lg font-mono">{result.orbitalPeriodFormatted}</div>
-                      </div>
-                    </div>
+                    {/* Key Metrics Grid — StatGrid primitive */}
+                    <StatGrid cols={2}>
+                      <StatGrid.Cell
+                        label="STELLAR FLUX"
+                        value={result.stellarFluxFormatted}
+                        unit="EARTH = 1.0"
+                        accent="amber"
+                      />
+                      <StatGrid.Cell
+                        label="YEAR LENGTH"
+                        value={result.orbitalPeriodFormatted}
+                        accent="amber"
+                      />
+                    </StatGrid>
 
-                    {/* HZ Boundaries */}
+                    {/* HZ Boundaries — KeyValueRow list */}
                     <div>
-                      <h3 className="text-sm font-medium mb-3">Habitable Zone Boundaries</h3>
-                      <div className="space-y-2 text-sm">
-                        <div className="flex justify-between">
-                          <span className="text-t2">Recent Venus (optimistic inner)</span>
-                          <span className="font-mono">{result.innerEdgeRecentVenusFormatted}</span>
+                      <p className="font-mono text-[11px] tracking-[0.18em] uppercase text-sf-teal mb-3">
+                        // HABITABLE ZONE BOUNDARIES
+                      </p>
+                      <div className="space-y-1">
+                        <KeyValueRow
+                          label="RECENT VENUS (OPTIMISTIC INNER)"
+                          value={result.innerEdgeRecentVenusFormatted}
+                          accent="amber"
+                        />
+                        <KeyValueRow
+                          label="RUNAWAY GREENHOUSE (CONSERVATIVE)"
+                          value={result.innerEdgeRunawayFormatted}
+                          accent="amber"
+                        />
+                        <KeyValueRow
+                          label="MAXIMUM GREENHOUSE (CONSERVATIVE)"
+                          value={result.outerEdgeMaxGreenhouseFormatted}
+                          accent="amber"
+                        />
+                        <KeyValueRow
+                          label="EARLY MARS (OPTIMISTIC OUTER)"
+                          value={result.outerEdgeEarlyMarsFormatted}
+                          accent="amber"
+                        />
+                        <div className="border-t border-sf-border pt-2 mt-2">
+                        <KeyValueRow
+                          label="SNOWLINE (FROST LINE)"
+                          value={result.snowlineFormatted}
+                          accent="stellar"
+                        />
                         </div>
-                        <div className="flex justify-between">
-                          <span className="text-t2">Runaway Greenhouse (conservative)</span>
-                          <span className="font-mono">{result.innerEdgeRunawayFormatted}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-t2">Maximum Greenhouse (conservative)</span>
-                          <span className="font-mono">{result.outerEdgeMaxGreenhouseFormatted}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-t2">Early Mars (optimistic outer)</span>
-                          <span className="font-mono">{result.outerEdgeEarlyMarsFormatted}</span>
-                        </div>
-                        <div className="flex justify-between border-t border-sf-border pt-2 mt-2">
-                          <span className="text-t2">Snowline (frost line)</span>
-                          <span className="font-mono">{result.snowlineFormatted}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-t2">Conservative HZ Width</span>
-                          <span className="font-mono">{result.conservativeWidthFormatted}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-t2">Optimistic HZ Width</span>
-                          <span className="font-mono">{result.optimisticWidthFormatted}</span>
-                        </div>
+                        <KeyValueRow
+                          label="CONSERVATIVE HZ WIDTH"
+                          value={result.conservativeWidthFormatted}
+                          accent="amber"
+                        />
+                        <KeyValueRow
+                          label="OPTIMISTIC HZ WIDTH"
+                          value={result.optimisticWidthFormatted}
+                          accent="amber"
+                        />
                       </div>
                     </div>
 

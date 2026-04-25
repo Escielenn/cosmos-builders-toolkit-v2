@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(echo \"---EXIT:$?---\")",
+      "WebFetch(domain:www.blocknotejs.org)",
+      "WebFetch(domain:novel.sh)",
+      "Bash(git rev-list *)",
+      "mcp__claude_ai_Vercel__get_deployment",
+      "Bash(awk -F: '{print $1}' \"C:\\\\Users\\\\NCG\\\\.claude\\\\projects\\\\c--Users-NCG-Dropbox-Repositories-cosmos-builders-toolkit-v2\\\\3e29beac-2733-4b8e-9815-a71fbc52b242\\\\tool-results\\\\bqcyrke0k.txt\")",
+      "Bash(awk -F: '{print $1}')"
+    ],
+    "additionalDirectories": [
+      "C:\\Users\\NCG\\Dropbox\\Repositories\\cosmos-builders-toolkit-v2\\src\\components\\showcase",
+      "C:\\Users\\NCG\\Dropbox\\Repositories\\cosmos-builders-toolkit-v2\\src\\components\\world"
+    ]
+  }
+}

@@ -14,6 +14,7 @@ import {
   AlertTriangle,
 } from "lucide-react";
 import { GlassPanel } from "@/components/ui/glass-panel";
+import { StatGrid } from "@/components/ui/stat-grid";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -940,35 +941,27 @@ const TimeDilationCalculator = () => {
                   </p>
                 </div>
 
-                {/* Ship Time / Observer Time */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <GlassPanel className="p-5">
-                    <p className="font-mono text-xs uppercase tracking-sf-wide text-t2 mb-1">
-                      Ship Time (Travelers)
-                    </p>
-                    <p className="font-mono text-2xl font-semibold text-t1">
-                      {calculationResult.shipTimeFormatted}
-                    </p>
-                    <p className="text-xs text-t4 mt-1">
-                      Time experienced aboard the vessel
-                    </p>
-                  </GlassPanel>
-                  <GlassPanel className="p-5">
-                    <p className="font-mono text-xs uppercase tracking-sf-wide text-t2 mb-1">
-                      Observer Time ({
-                        formState.referenceFrame.frame === "custom"
-                          ? formState.referenceFrame.customName || "Home"
-                          : REFERENCE_FRAMES.find((f) => f.id === formState.referenceFrame.frame)?.label || "Home"
-                      })
-                    </p>
-                    <p className="font-mono text-2xl font-semibold text-t1">
-                      {calculationResult.observerTimeFormatted}
-                    </p>
-                    <p className="text-xs text-t4 mt-1">
-                      Time elapsed in the stationary frame
-                    </p>
-                  </GlassPanel>
-                </div>
+                {/* Ship Time / Observer Time — StatGrid primitive */}
+                <StatGrid cols={2}>
+                  <StatGrid.Cell
+                    label="SHIP TIME (TRAVELERS)"
+                    value={calculationResult.shipTimeFormatted}
+                    unit="TIME EXPERIENCED ABOARD VESSEL"
+                    accent="amber"
+                  />
+                  <StatGrid.Cell
+                    label={`OBSERVER TIME (${(
+                      formState.referenceFrame.frame === "custom"
+                        ? formState.referenceFrame.customName || "HOME"
+                        : REFERENCE_FRAMES.find(
+                            (f) => f.id === formState.referenceFrame.frame,
+                          )?.label || "HOME"
+                    ).toUpperCase()})`}
+                    value={calculationResult.observerTimeFormatted}
+                    unit="TIME ELAPSED IN STATIONARY FRAME"
+                    accent="amber"
+                  />
+                </StatGrid>
 
                 {/* Time Difference */}
                 <GlassPanel className={`p-5 border-l-4 ${sColors.border}`}>

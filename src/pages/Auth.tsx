@@ -17,8 +17,8 @@ import { AUTH_BURSTS } from "@/lib/data-bursts";
 
 const YOUTUBE_VIDEO_ID = "iGYxmAQa8DY";
 
-const emailSchema = z.string().email("Valid email required.");
-const passwordSchema = z.string().min(6, "Minimum 6 characters.");
+const emailSchema = z.string().email("VALID EMAIL REQUIRED.");
+const passwordSchema = z.string().min(6, "AT LEAST 6 CHARS REQUIRED.");
 
 const Auth = () => {
   // Login state

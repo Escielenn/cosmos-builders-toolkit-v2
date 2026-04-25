@@ -2,6 +2,7 @@ import { useState, useCallback, useMemo, useRef, useEffect } from "react";
 import { Outlet, useParams, useNavigate } from "react-router-dom";
 import Header from "@/components/layout/Header";
 import { Loader } from "@/components/ui/loader";
+import { LoadingState } from "@/components/ui/loading-state";
 import { useWorld } from "@/hooks/use-world";
 import { useSubscription } from "@/hooks/use-subscription";
 import Codex from "@/components/codex/Codex";
@@ -158,7 +159,7 @@ const WorldLayout = () => {
       <div className="min-h-screen bg-background">
         <Header />
         <div className="flex items-center justify-center" style={{ height: `calc(100vh - ${HEADER_HEIGHT}px)` }}>
-          <Loader size="sm" />
+          <LoadingState message="LOADING WORLD FILE..." />
         </div>
       </div>
     );
@@ -170,7 +171,7 @@ const WorldLayout = () => {
         <Header />
         <div className="flex items-center justify-center" style={{ height: `calc(100vh - ${HEADER_HEIGHT}px)` }}>
           <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-sf-crimson">
-            World data unavailable. Retry.
+            // WORLD DATA UNAVAILABLE. RETRY WHEN READY.
           </p>
         </div>
       </div>
