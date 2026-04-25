@@ -71,7 +71,7 @@ const ProStatusBanner = ({ isSubscribed }: ProStatusBannerProps) => {
       <GlassPanel className="p-4 border-amber-500/30 bg-amber-500/5 relative">
         <button
           onClick={handleDismiss}
-          className="absolute top-3 right-3 text-t3 hover:text-foreground transition-colors"
+          className="absolute top-3 right-3 text-t3 hover:text-t1 transition-colors"
           aria-label="Dismiss"
         >
           <X className="w-4 h-4" />

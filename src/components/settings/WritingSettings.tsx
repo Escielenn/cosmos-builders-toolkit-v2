@@ -36,7 +36,7 @@ const WritingSettings = () => {
                   "relative flex items-start gap-3 p-3 rounded-lg border text-left transition-all",
                   isSelected
                     ? "border-primary bg-primary/5 ring-1 ring-primary"
-                    : "border-border hover:border-primary/50 hover:bg-accent/50"
+                    : "border-sf-border hover:border-primary/50 hover:bg-accent/50"
                 )}
               >
                 {/* Color swatch */}

@@ -641,7 +641,7 @@ const Index = () => {
                     className={`px-3 py-1.5 text-[10px] uppercase tracking-[0.12em] font-medium rounded transition-all ${
                       sortMode === mode
                         ? 'bg-primary/15 text-primary'
-                        : 'text-t3 hover:text-foreground hover:bg-muted/30'
+                        : 'text-t3 hover:text-t1 hover:bg-muted/30'
                     }`}
                   >
                     {label}

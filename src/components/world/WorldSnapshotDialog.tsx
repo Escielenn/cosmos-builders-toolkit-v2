@@ -123,12 +123,12 @@ const WorldSnapshotDialog = ({
               className={`w-full flex items-start gap-3 p-3 rounded-lg border transition-colors text-left ${
                 action === id
                   ? "border-primary/30 bg-primary/5"
-                  : "border-border hover:border-border/80 hover:bg-accent/5"
+                  : "border-sf-border hover:border-sf-border/80 hover:bg-accent/5"
               }`}
             >
               <Icon className={`w-5 h-5 mt-0.5 flex-shrink-0 ${action === id ? "text-primary" : "text-t3"}`} />
               <div className="flex-1 min-w-0">
-                <span className={`text-sm font-medium ${action === id ? "text-foreground" : "text-t2"}`}>
+                <span className={`text-sm font-medium ${action === id ? "text-t1" : "text-t2"}`}>
                   {label}
                 </span>
                 <p className="text-xs text-t3 mt-0.5">

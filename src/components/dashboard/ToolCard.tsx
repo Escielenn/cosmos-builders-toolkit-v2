@@ -96,7 +96,7 @@ const ToolCard = ({
           </Link>
         ) : isLocked ? (
           <Link to="/pricing">
-            <h3 className="font-heading font-semibold text-lg text-t3 hover:text-foreground transition-colors flex items-center gap-2">
+            <h3 className="font-heading font-semibold text-lg text-t3 hover:text-t1 transition-colors flex items-center gap-2">
               <Lock className="w-4 h-4" />
               {title}
             </h3>

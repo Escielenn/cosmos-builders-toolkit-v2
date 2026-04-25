@@ -637,7 +637,7 @@ const LexDrift = () => {
                   {STARTING_LANGUAGES.map((lang) => (
                     <div
                       key={lang.id}
-                      className="flex items-center gap-2 p-2 rounded-lg border border-border hover:border-primary/50 transition-colors"
+                      className="flex items-center gap-2 p-2 rounded-lg border border-sf-border hover:border-primary/50 transition-colors"
                     >
                       <Checkbox
                         id={`lang-${lang.id}`}
@@ -846,7 +846,7 @@ const LexDrift = () => {
                   </Button>
                 </div>
                 {formState.social.contactEvents.map((event) => (
-                  <div key={event.id} className="flex gap-2 items-start p-3 rounded-lg border border-border">
+                  <div key={event.id} className="flex gap-2 items-start p-3 rounded-lg border border-sf-border">
                     <div className="grid grid-cols-3 gap-2 flex-1">
                       <div className="space-y-1">
                         <span className="text-xs text-t4">Year</span>
@@ -929,7 +929,7 @@ const LexDrift = () => {
                     <p className="font-mono text-xs uppercase tracking-sf-wide text-t2 mb-1">
                       Mutual Intelligibility
                     </p>
-                    <p className="font-mono text-2xl font-semibold text-foreground">
+                    <p className="font-mono text-2xl font-semibold text-t1">
                       {calculationResult.intelligibilityPercent.toFixed(0)}%
                     </p>
                     <p className="text-xs text-t4 mt-1">
@@ -940,7 +940,7 @@ const LexDrift = () => {
                     <p className="font-mono text-xs uppercase tracking-sf-wide text-t2 mb-1">
                       Estimated New Vocabulary
                     </p>
-                    <p className="font-mono text-2xl font-semibold text-foreground">
+                    <p className="font-mono text-2xl font-semibold text-t1">
                       ~{calculationResult.estimatedNewTerms.toLocaleString()} terms
                     </p>
                     <p className="text-xs text-t4 mt-1">
@@ -1033,7 +1033,7 @@ const LexDrift = () => {
                   <p className="font-mono text-xs uppercase tracking-sf-wide text-primary/60 mb-2">
                     Historical Analogue
                   </p>
-                  <p className="font-heading font-semibold text-foreground mb-1">
+                  <p className="font-heading font-semibold text-t1 mb-1">
                     {calculationResult.historicalAnalogue.title}
                     <span className="text-t2 text-sm font-normal ml-2">
                       ({calculationResult.historicalAnalogue.period})
@@ -1097,7 +1097,7 @@ const LexDrift = () => {
                     ].map(({ label, value }) => (
                       <div key={label} className="flex justify-between items-center">
                         <span className="text-sm text-t3">{label}</span>
-                        <span className={`font-mono text-sm ${value > 1 ? "text-orange-400" : value < 1 ? "text-sf-emerald" : "text-foreground"}`}>
+                        <span className={`font-mono text-sm ${value > 1 ? "text-orange-400" : value < 1 ? "text-sf-emerald" : "text-t1"}`}>
                           ×{value.toFixed(2)}
                         </span>
                       </div>

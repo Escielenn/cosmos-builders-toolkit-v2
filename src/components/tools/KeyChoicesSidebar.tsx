@@ -98,7 +98,7 @@ const KeyChoicesSidebar = ({
                   className={cn(
                     "flex items-center justify-between w-full text-left px-2 py-1.5 text-xs transition-colors font-heading tracking-wider uppercase",
                     hasValues
-                      ? "text-foreground hover:bg-muted/50"
+                      ? "text-t1 hover:bg-muted/50"
                       : "text-t3 hover:bg-muted/30"
                   )}
                 >
@@ -282,7 +282,7 @@ export const MobileKeyChoices = ({
                       className={cn(
                         "flex items-center justify-between w-full text-left px-2 py-1.5 text-xs transition-colors font-heading tracking-wider uppercase",
                         hasValues
-                          ? "text-foreground hover:bg-muted/50"
+                          ? "text-t1 hover:bg-muted/50"
                           : "text-t3 hover:bg-muted/30"
                       )}
                     >

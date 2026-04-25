@@ -206,7 +206,7 @@ const WorldConnections = () => {
         <div className="mb-8">
           <Link
             to={worldId ? `/worlds/${worldId}` : "/"}
-            className="inline-flex items-center gap-2 text-sm text-t3 hover:text-foreground transition-colors mb-4"
+            className="inline-flex items-center gap-2 text-sm text-t3 hover:text-t1 transition-colors mb-4"
           >
             <ArrowLeft className="w-4 h-4" />
             Back to {world?.name || "World"}

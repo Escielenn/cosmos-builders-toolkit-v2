@@ -507,7 +507,7 @@ const Sensorium = () => {
     switch (status) {
       case "recommended": return "text-sf-cyan border-cyan-500/50 bg-cyan-500/10";
       case "possible": return "text-sf-amber border-amber-500/50 bg-amber-500/10";
-      case "implausible": return "text-t2 border-border bg-muted/20 opacity-60";
+      case "implausible": return "text-t2 border-sf-border bg-muted/20 opacity-60";
       default: return "";
     }
   };
@@ -970,20 +970,20 @@ const Sensorium = () => {
                   <TabsContent value="derive" className="mt-4">
                     <div className="space-y-3 mb-4">
                       <p className="text-sm text-t3">
-                        Based on your environment, each sense is scored for plausibility. <strong className="text-foreground">Click any card to add it to your species' final sensory suite.</strong> You can select implausible senses too—sometimes the best stories break the rules.
+                        Based on your environment, each sense is scored for plausibility. <strong className="text-t1">Click any card to add it to your species' final sensory suite.</strong> You can select implausible senses too—sometimes the best stories break the rules.
                       </p>
                       <div className="flex flex-wrap gap-3 text-[11px]">
                         <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 bg-cyan-500/60" /> Recommended</span>
                         <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 bg-amber-500/60" /> Possible</span>
                         <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 bg-muted-foreground/40" /> Implausible</span>
-                        <span className="flex items-center gap-1.5 ml-2 pl-2 border-l border-border"><Check className="h-3 w-3 text-sf-emerald" /> Selected by you</span>
+                        <span className="flex items-center gap-1.5 ml-2 pl-2 border-l border-sf-border"><Check className="h-3 w-3 text-sf-emerald" /> Selected by you</span>
                       </div>
                     </div>
                   </TabsContent>
                   <TabsContent value="validate" className="mt-4">
                     <div className="space-y-3 mb-4">
                       <p className="text-sm text-t3">
-                        Pick senses freely without environmental guidance, then validate them. <strong className="text-foreground">Click cards to select, then review plausibility scores below.</strong>
+                        Pick senses freely without environmental guidance, then validate them. <strong className="text-t1">Click cards to select, then review plausibility scores below.</strong>
                       </p>
                       <div className="flex flex-wrap gap-3 text-[11px]">
                         <span className="flex items-center gap-1.5"><Check className="h-3 w-3 text-sf-amber" /> Selected for validation</span>
@@ -1303,7 +1303,7 @@ const Sensorium = () => {
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                             {entries.map((entry, i) => (
                               <GlassPanel key={i} className="p-3">
-                                <p className="text-xs font-medium text-foreground">
+                                <p className="text-xs font-medium text-t1">
                                   {entry.modalityName}
                                 </p>
                                 <p className="text-xs text-t4 mt-1">
@@ -1383,7 +1383,7 @@ const Sensorium = () => {
                         </h4>
                         {perceptionGaps.speciesPerceives.length > 0 ? (
                           perceptionGaps.speciesPerceives.map((name) => (
-                            <p key={name} className="text-sm text-foreground">
+                            <p key={name} className="text-sm text-t1">
                               + {name}
                             </p>
                           ))
@@ -1400,7 +1400,7 @@ const Sensorium = () => {
                         </h4>
                         {perceptionGaps.speciesBlind.length > 0 ? (
                           perceptionGaps.speciesBlind.map((name) => (
-                            <p key={name} className="text-sm text-foreground">
+                            <p key={name} className="text-sm text-t1">
                               − {name}
                             </p>
                           ))

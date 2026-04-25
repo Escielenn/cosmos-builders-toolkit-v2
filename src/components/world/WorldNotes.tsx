@@ -270,7 +270,7 @@ const WorldNotes = ({ worldId, readOnly }: WorldNotesProps) => {
                     type="button"
                     onClick={() => createNote.mutate()}
                     disabled={createNote.isPending}
-                    className="sf-fill-sweep sf-fill-sweep--secondary w-full flex items-center justify-center gap-2 px-3 py-2 border border-border/15 text-[10px] font-heading uppercase tracking-wider text-t3/40 hover:text-primary/60 hover:border-primary/20 transition-colors"
+                    className="sf-fill-sweep sf-fill-sweep--secondary w-full flex items-center justify-center gap-2 px-3 py-2 border border-sf-border text-[10px] font-heading uppercase tracking-wider text-t3/40 hover:text-primary/60 hover:border-primary/20 transition-colors"
                   >
                     <Plus className="w-3.5 h-3.5" />
                     Add Note

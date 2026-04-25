@@ -317,7 +317,7 @@ const ShareDialog = ({
                     >
                       <RadioGroupItem value={opt.value} />
                       <div>
-                        <span className="text-sm font-medium text-foreground">
+                        <span className="text-sm font-medium text-t1">
                           {opt.label}
                         </span>
                         <p className="text-xs text-t3">{opt.desc}</p>

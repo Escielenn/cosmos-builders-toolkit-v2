@@ -52,8 +52,8 @@ const CompressionMarker = memo(
                 <div className="absolute inset-0 bg-gradient-to-r from-background/80 via-muted/30 to-background/80" />
                 {/* Angled parallel lines */}
                 <svg className="w-full h-full absolute inset-0 opacity-30" preserveAspectRatio="none">
-                  <line x1="35%" y1="0" x2="40%" y2="100%" stroke="currentColor" strokeWidth="1.5" className="text-foreground/40" />
-                  <line x1="55%" y1="0" x2="60%" y2="100%" stroke="currentColor" strokeWidth="1.5" className="text-foreground/40" />
+                  <line x1="35%" y1="0" x2="40%" y2="100%" stroke="currentColor" strokeWidth="1.5" className="text-t1/40" />
+                  <line x1="55%" y1="0" x2="60%" y2="100%" stroke="currentColor" strokeWidth="1.5" className="text-t1/40" />
                 </svg>
                 {compression.label && (
                   <span className="relative text-[9px] text-t3 font-medium px-1 bg-background/60 rounded whitespace-nowrap">

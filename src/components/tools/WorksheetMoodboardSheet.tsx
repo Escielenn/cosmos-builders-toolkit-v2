@@ -30,7 +30,7 @@ export function WorksheetMoodboardSheet({
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="right" className="w-full sm:max-w-xl p-0 flex flex-col">
-        <SheetHeader className="p-6 pb-4 border-b border-border">
+        <SheetHeader className="p-6 pb-4 border-b border-sf-border">
           <SheetTitle className="flex items-center gap-2 font-heading">
             <ImageIcon className="w-5 h-5 text-primary" />
             Moodboard

@@ -168,7 +168,7 @@ export function WikiEditor({
       <div className="rounded-none border border-[#5B8DEF]/15 bg-background overflow-hidden">
         {/* Toolbar — matches sf-writing-toolbar pattern */}
         {!readOnly && (
-          <div className="sf-writing-toolbar flex items-center gap-0.5 p-1.5 border-b border-border bg-muted/30 flex-wrap">
+          <div className="sf-writing-toolbar flex items-center gap-0.5 p-1.5 border-b border-sf-border bg-muted/30 flex-wrap">
             <ToolbarBtn
               onClick={() => editor.chain().focus().toggleBold().run()}
               active={editor.isActive("bold")}

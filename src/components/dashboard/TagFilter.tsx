@@ -64,7 +64,7 @@ export function TagFilter({
           variant="ghost"
           size="sm"
           onClick={onClear}
-          className="h-6 px-2 text-xs text-t3 hover:text-foreground"
+          className="h-6 px-2 text-xs text-t3 hover:text-t1"
         >
           Clear filters
         </Button>

@@ -68,7 +68,7 @@ const EventMarker = memo(
           e.stopPropagation();
           onToggleExpand();
         }}
-        className="absolute -left-4 top-1/2 -translate-y-1/2 text-t3 hover:text-foreground z-10"
+        className="absolute -left-4 top-1/2 -translate-y-1/2 text-t3 hover:text-t1 z-10"
         style={{ marginLeft: nesting.indent }}
       >
         {isExpanded ? (

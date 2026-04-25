@@ -23,7 +23,7 @@ const CodexCollapsed = ({ sections, onExpand }: CodexCollapsedProps) => {
       {/* Expand button */}
       <button
         onClick={onExpand}
-        className="sf-fill-sweep sf-fill-sweep--secondary w-8 h-7 flex items-center justify-center border border-sf-border text-t3 hover:text-foreground transition-colors mb-2"
+        className="sf-fill-sweep sf-fill-sweep--secondary w-8 h-7 flex items-center justify-center border border-sf-border text-t3 hover:text-t1 transition-colors mb-2"
         aria-label="Expand Registry"
       >
         <span className="text-[10px]">▶</span>

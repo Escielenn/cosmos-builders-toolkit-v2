@@ -35,7 +35,7 @@ export function MoodboardImage({
   };
 
   return (
-    <div className="group relative rounded-lg overflow-hidden bg-muted/30 border border-border">
+    <div className="group relative rounded-lg overflow-hidden bg-muted/30 border border-sf-border">
       {/* Image */}
       <div
         className="aspect-video cursor-pointer relative"
@@ -88,7 +88,7 @@ export function MoodboardImage({
             <p
               className={cn(
                 "text-xs flex-1 truncate",
-                image.caption ? "text-foreground" : "text-t3 italic cursor-pointer hover:text-foreground"
+                image.caption ? "text-t1" : "text-t3 italic cursor-pointer hover:text-t1"
               )}
               onClick={() => !disabled && setIsEditing(true)}
             >

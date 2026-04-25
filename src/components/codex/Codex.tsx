@@ -335,7 +335,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
       <div className="px-3 pt-2 pb-1">
         <button
           onClick={onCollapse}
-          className="sf-fill-sweep sf-fill-sweep--secondary w-full flex items-center justify-center h-6 border border-border/15 text-t3/40 hover:text-t2 transition-colors"
+          className="sf-fill-sweep sf-fill-sweep--secondary w-full flex items-center justify-center h-6 border border-sf-border text-t3/40 hover:text-t2 transition-colors"
           aria-label="Collapse Registry"
         >
           <span className="text-[10px]">◀</span>
@@ -531,7 +531,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
             Default view:
           </span>
           <Select value={defaultView} onValueChange={handleDefaultViewChange}>
-            <SelectTrigger className="h-5 text-[10px] flex-1 border-border/15 bg-transparent">
+            <SelectTrigger className="h-5 text-[10px] flex-1 border-sf-border bg-transparent">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>

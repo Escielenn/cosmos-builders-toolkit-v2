@@ -832,7 +832,7 @@ const SpeciesInteractionMatrix = () => {
                       </div>
                     </div>
 
-                    <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                    <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-border bg-background/50 animate-pulse" />}>
                       <RichTextEditor
                         content={currentPair.physicalNotes}
                         onChange={(value) => updatePair(selectedPairIndex, { physicalNotes: value })}
@@ -925,7 +925,7 @@ const SpeciesInteractionMatrix = () => {
                         </Select>
                       </div>
                     </div>
-                    <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                    <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-border bg-background/50 animate-pulse" />}>
                       <RichTextEditor
                         content={currentPair.communicationNotes}
                         onChange={(value) => updatePair(selectedPairIndex, { communicationNotes: value })}
@@ -1018,7 +1018,7 @@ const SpeciesInteractionMatrix = () => {
                         </Select>
                       </div>
                     </div>
-                    <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                    <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-border bg-background/50 animate-pulse" />}>
                       <RichTextEditor
                         content={currentPair.economicNotes}
                         onChange={(value) => updatePair(selectedPairIndex, { economicNotes: value })}
@@ -1111,7 +1111,7 @@ const SpeciesInteractionMatrix = () => {
                         </Select>
                       </div>
                     </div>
-                    <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                    <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-border bg-background/50 animate-pulse" />}>
                       <RichTextEditor
                         content={currentPair.politicalNotes}
                         onChange={(value) => updatePair(selectedPairIndex, { politicalNotes: value })}
@@ -1204,7 +1204,7 @@ const SpeciesInteractionMatrix = () => {
                         </Select>
                       </div>
                     </div>
-                    <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                    <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-border bg-background/50 animate-pulse" />}>
                       <RichTextEditor
                         content={currentPair.culturalNotes}
                         onChange={(value) => updatePair(selectedPairIndex, { culturalNotes: value })}
@@ -1297,7 +1297,7 @@ const SpeciesInteractionMatrix = () => {
                         </Select>
                       </div>
                     </div>
-                    <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                    <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-border bg-background/50 animate-pulse" />}>
                       <RichTextEditor
                         content={currentPair.historicalNotes}
                         onChange={(value) => updatePair(selectedPairIndex, { historicalNotes: value })}
@@ -1354,7 +1354,7 @@ const SpeciesInteractionMatrix = () => {
                         </Select>
                       </div>
                     </div>
-                    <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                    <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-border bg-background/50 animate-pulse" />}>
                       <RichTextEditor
                         content={currentPair.tensionNotes}
                         onChange={(value) => updatePair(selectedPairIndex, { tensionNotes: value })}
@@ -1437,7 +1437,7 @@ const SpeciesInteractionMatrix = () => {
 
                 <div className="space-y-2">
                   <Label>Synthesis Notes</Label>
-                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-border bg-background/50 animate-pulse" />}>
                     <RichTextEditor
                       content={formState.synthesisNotes}
                       onChange={(value) => updateField("synthesisNotes", value)}

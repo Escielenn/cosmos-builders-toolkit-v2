@@ -330,7 +330,7 @@ const SettingsDialog = ({
                         "relative aspect-video rounded-lg overflow-hidden border-2 transition-all hover:scale-105",
                         backgroundId === option.id
                           ? "border-primary ring-2 ring-primary/50"
-                          : "border-border hover:border-primary/50"
+                          : "border-sf-border hover:border-primary/50"
                       )}
                     >
                       <div className="w-full h-full bg-background starfield-preview" />
@@ -361,7 +361,7 @@ const SettingsDialog = ({
                         "relative aspect-video rounded-lg overflow-hidden border-2 transition-all hover:scale-105",
                         backgroundId === option.id
                           ? "border-primary ring-2 ring-primary/50"
-                          : "border-border hover:border-primary/50"
+                          : "border-sf-border hover:border-primary/50"
                       )}
                     >
                       <video
@@ -400,7 +400,7 @@ const SettingsDialog = ({
                         "relative aspect-video rounded-lg overflow-hidden border-2 transition-all hover:scale-105",
                         backgroundId === option.id
                           ? "border-primary ring-2 ring-primary/50"
-                          : "border-border hover:border-primary/50"
+                          : "border-sf-border hover:border-primary/50"
                       )}
                     >
                       <img
@@ -436,7 +436,7 @@ const SettingsDialog = ({
                         "relative aspect-video rounded-lg overflow-hidden border-2 transition-all hover:scale-105",
                         backgroundId === option.id
                           ? "border-primary ring-2 ring-primary/50"
-                          : "border-border hover:border-primary/50"
+                          : "border-sf-border hover:border-primary/50"
                       )}
                     >
                       <div
@@ -467,7 +467,7 @@ const SettingsDialog = ({
                         "relative aspect-video rounded-lg overflow-hidden border-2 transition-all hover:scale-105",
                         backgroundId === option.id
                           ? "border-primary ring-2 ring-primary/50"
-                          : "border-border hover:border-primary/50"
+                          : "border-sf-border hover:border-primary/50"
                       )}
                     >
                       <div
@@ -504,7 +504,7 @@ const SettingsDialog = ({
                         "relative w-24 aspect-video rounded-lg overflow-hidden border-2 transition-all hover:scale-105",
                         backgroundId === "custom"
                           ? "border-primary ring-2 ring-primary/50"
-                          : "border-border hover:border-primary/50"
+                          : "border-sf-border hover:border-primary/50"
                       )}
                     >
                       <img
@@ -530,7 +530,7 @@ const SettingsDialog = ({
                   )}
                   <button
                     onClick={() => bgInputRef.current?.click()}
-                    className="w-24 aspect-video rounded-lg overflow-hidden border-2 border-dashed border-border hover:border-primary/50 transition-all hover:scale-105 flex flex-col items-center justify-center gap-1 bg-muted/50"
+                    className="w-24 aspect-video rounded-lg overflow-hidden border-2 border-dashed border-sf-border hover:border-primary/50 transition-all hover:scale-105 flex flex-col items-center justify-center gap-1 bg-muted/50"
                   >
                     <Upload className="w-4 h-4 text-t3" />
                     <span className="text-[10px] text-t3">
@@ -545,7 +545,7 @@ const SettingsDialog = ({
           {/* Integrations Tab */}
           <TabsContent value="integrations" className="mt-4 space-y-4">
             {/* Notion */}
-            <div className="p-4 rounded-lg border border-border bg-muted/20">
+            <div className="p-4 rounded-lg border border-sf-border bg-muted/20">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-lg bg-white flex items-center justify-center">
@@ -725,7 +725,7 @@ const SettingsDialog = ({
                     "flex items-center justify-between p-3 rounded-lg border transition-colors text-left",
                     i18n.language === lang.code
                       ? "border-primary bg-primary/10"
-                      : "border-border hover:border-primary/30 hover:bg-accent/5"
+                      : "border-sf-border hover:border-primary/30 hover:bg-accent/5"
                   )}
                 >
                   <span className="font-medium">{lang.label}</span>

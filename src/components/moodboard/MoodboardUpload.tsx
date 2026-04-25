@@ -98,7 +98,7 @@ export function MoodboardUpload({
           "relative border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors",
           isDragging
             ? "border-primary bg-primary/10"
-            : "border-border hover:border-primary/50 hover:bg-muted/50",
+            : "border-sf-border hover:border-primary/50 hover:bg-muted/50",
           (disabled || isLoading) && "opacity-50 cursor-not-allowed"
         )}
       >

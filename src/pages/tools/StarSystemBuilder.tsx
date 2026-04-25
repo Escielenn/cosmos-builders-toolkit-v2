@@ -683,7 +683,7 @@ const StarSystemBuilder = () => {
                     {SPECTRAL_CLASSES.map((star) => (
                       <div
                         key={star.id}
-                        className="flex items-start space-x-3 p-3 rounded-lg border border-border hover:border-primary/50 transition-colors"
+                        className="flex items-start space-x-3 p-3 rounded-lg border border-sf-border hover:border-primary/50 transition-colors"
                       >
                         <RadioGroupItem value={star.id} id={star.id} className="mt-1" />
                         <div className="flex-1">
@@ -770,7 +770,7 @@ const StarSystemBuilder = () => {
                     {STELLAR_CONFIGURATIONS.map((config) => (
                       <div
                         key={config.id}
-                        className="flex items-start space-x-3 p-3 rounded-lg border border-border hover:border-primary/50 transition-colors"
+                        className="flex items-start space-x-3 p-3 rounded-lg border border-sf-border hover:border-primary/50 transition-colors"
                       >
                         <RadioGroupItem value={config.id} id={`config-${config.id}`} className="mt-1" />
                         <div className="flex-1">
@@ -808,7 +808,7 @@ const StarSystemBuilder = () => {
 
                 {/* Binary/Multiple star details */}
                 {formState.configuration.type !== "single" && (
-                  <div className="space-y-4 p-4 border border-border rounded-lg">
+                  <div className="space-y-4 p-4 border border-sf-border rounded-lg">
                     <p className="text-sm font-medium">Companion Star Details</p>
 
                     <div className="space-y-2">
@@ -876,7 +876,7 @@ const StarSystemBuilder = () => {
 
                 <div className="space-y-2">
                   <Label>Configuration Notes</Label>
-                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-border bg-background/50 animate-pulse" />}>
                     <RichTextEditor
                       content={formState.configuration.configurationNotes}
                       onChange={(value) => updateConfiguration("configurationNotes", value)}
@@ -900,7 +900,7 @@ const StarSystemBuilder = () => {
                 {formState.bodies.map((body, index) => (
                   <div
                     key={body.id}
-                    className="p-4 border border-border rounded-lg space-y-4"
+                    className="p-4 border border-sf-border rounded-lg space-y-4"
                   >
                     <div className="flex items-center justify-between">
                       <p className="font-medium">Body {index + 1}</p>
@@ -1088,7 +1088,7 @@ const StarSystemBuilder = () => {
                     {ORBITAL_RESONANCES.map((res) => (
                       <div
                         key={res.id}
-                        className="flex items-start space-x-3 p-3 rounded-lg border border-border hover:border-primary/50 transition-colors"
+                        className="flex items-start space-x-3 p-3 rounded-lg border border-sf-border hover:border-primary/50 transition-colors"
                       >
                         <RadioGroupItem value={res.id} id={`res-${res.id}`} className="mt-1" />
                         <div className="flex-1">
@@ -1111,7 +1111,7 @@ const StarSystemBuilder = () => {
 
                 <div className="space-y-2">
                   <Label>Resonance Notes</Label>
-                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-border bg-background/50 animate-pulse" />}>
                     <RichTextEditor
                       content={formState.orbits.resonanceNotes}
                       onChange={(value) => updateOrbits("resonanceNotes", value)}
@@ -1197,7 +1197,7 @@ const StarSystemBuilder = () => {
                     {SYSTEM_AGES.map((age) => (
                       <div
                         key={age.id}
-                        className="flex items-start space-x-3 p-3 rounded-lg border border-border hover:border-primary/50 transition-colors"
+                        className="flex items-start space-x-3 p-3 rounded-lg border border-sf-border hover:border-primary/50 transition-colors"
                       >
                         <RadioGroupItem value={age.id} id={`age-${age.id}`} className="mt-1" />
                         <div className="flex-1">
@@ -1329,7 +1329,7 @@ const StarSystemBuilder = () => {
                     {HZ_MODIFIERS.map((mod) => (
                       <div
                         key={mod.id}
-                        className="flex items-start gap-2 p-2 rounded border border-border"
+                        className="flex items-start gap-2 p-2 rounded border border-sf-border"
                       >
                         <Checkbox
                           id={`mod-${mod.id}`}

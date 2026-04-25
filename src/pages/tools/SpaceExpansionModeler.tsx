@@ -101,7 +101,7 @@ const TOOL_TYPE = "space-expansion-modeler";
 const LOCAL_STORAGE_KEY = "space-expansion-worksheet";
 
 const EditorSkeleton = () => (
-  <div className="min-h-[120px] rounded-md border border-border bg-background/50 animate-pulse" />
+  <div className="min-h-[120px] rounded-md border border-sf-border bg-background/50 animate-pulse" />
 );
 
 const PHASE_IDS: ExpansionPhaseId[] = [
@@ -501,7 +501,7 @@ const SpaceExpansionModeler = () => {
             Space expansion is not a linear march outward. It pulses, stalls, redirects, and sometimes retreats based on the interaction of multiple forces. This tool helps you model those dynamics systematically, revealing consequences and story hooks you hadn't considered.
           </p>
           <div className="text-sm text-t3">
-            <strong className="text-foreground">The Cascade:</strong>
+            <strong className="text-t1">The Cascade:</strong>
             <p className="mt-1">
               Resources shape industry. Industry shapes economy. Economy shapes politics. Politics shapes expansion. Each phase emerges from the interplay of six force categories, modified by walls, catalysts, gaps, and barriers.
             </p>
@@ -530,7 +530,7 @@ const SpaceExpansionModeler = () => {
                         className="flex items-center justify-between w-full text-left px-3 py-2 rounded-lg bg-background/50 hover:bg-background/80 transition-colors text-sm"
                       >
                         <span>
-                          <strong className="text-foreground">{ex.name}</strong>
+                          <strong className="text-t1">{ex.name}</strong>
                           <span className="text-t2 ml-2">—{ex.source}</span>
                         </span>
                         <ChevronDown className="w-4 h-4 text-t2 shrink-0" />
@@ -538,9 +538,9 @@ const SpaceExpansionModeler = () => {
                     </CollapsibleTrigger>
                     <CollapsibleContent>
                       <div className="px-3 py-2 text-sm text-t3 space-y-2">
-                        <p><strong className="text-foreground">Model:</strong> {ex.model}</p>
-                        <p><strong className="text-foreground">Dominant Forces:</strong> {ex.dominantForces}</p>
-                        <p><strong className="text-foreground">Consequence:</strong> {ex.consequence}</p>
+                        <p><strong className="text-t1">Model:</strong> {ex.model}</p>
+                        <p><strong className="text-t1">Dominant Forces:</strong> {ex.dominantForces}</p>
+                        <p><strong className="text-t1">Consequence:</strong> {ex.consequence}</p>
                       </div>
                     </CollapsibleContent>
                   </Collapsible>

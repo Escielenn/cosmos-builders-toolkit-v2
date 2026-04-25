@@ -168,7 +168,7 @@ const EvoBioMockup = () => {
               <span
                 className={`text-[10px] transition-colors duration-300 ${
                   completedSections.includes(index)
-                    ? "text-foreground"
+                    ? "text-t1"
                     : "text-t3"
                 }`}
               >

@@ -164,7 +164,7 @@ const WorksheetSelectorDialog = ({
                       "w-full text-left p-3 rounded-lg border transition-colors",
                       selectedWorksheetId === worksheet.id
                         ? "border-primary bg-primary/10"
-                        : "border-border hover:border-primary/50 hover:bg-muted/50"
+                        : "border-sf-border hover:border-primary/50 hover:bg-muted/50"
                     )}
                   >
                     <div className="flex items-start gap-3">
@@ -197,7 +197,7 @@ const WorksheetSelectorDialog = ({
               </div>
             </ScrollArea>
 
-            <div className="flex gap-2 mt-4 pt-4 border-t border-border">
+            <div className="flex gap-2 mt-4 pt-4 border-t border-sf-border">
               <Button
                 variant="outline"
                 onClick={() => setShowCreateForm(true)}

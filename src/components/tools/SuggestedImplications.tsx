@@ -97,7 +97,7 @@ const SuggestedImplications = ({
                   <button
                     type="button"
                     onClick={() => handleDismiss(implication.id)}
-                    className="absolute top-2 right-2 p-1 text-t3 hover:text-foreground transition-colors"
+                    className="absolute top-2 right-2 p-1 text-t3 hover:text-t1 transition-colors"
                     aria-label="Dismiss"
                   >
                     <X className="w-4 h-4" />
@@ -156,7 +156,7 @@ const SuggestedImplications = ({
 
                     {/* Expanded details */}
                     {isExpanded && (
-                      <div className="mt-4 pt-4 border-t border-border space-y-4">
+                      <div className="mt-4 pt-4 border-t border-sf-border space-y-4">
                         <p className="text-sm text-t3">
                           {implication.explanation}
                         </p>
@@ -201,7 +201,7 @@ const SuggestedImplications = ({
               <button
                 type="button"
                 onClick={() => setDismissedIds(new Set())}
-                className="text-xs text-t3 hover:text-foreground transition-colors"
+                className="text-xs text-t3 hover:text-t1 transition-colors"
               >
                 Show {dismissedIds.size} dismissed suggestion{dismissedIds.size !== 1 ? "s" : ""}
               </button>

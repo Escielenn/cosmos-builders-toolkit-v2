@@ -30,7 +30,7 @@ export function WorksheetNotesSheet({
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="right" className="w-full sm:max-w-lg p-0 flex flex-col">
-        <SheetHeader className="p-6 pb-4 border-b border-border">
+        <SheetHeader className="p-6 pb-4 border-b border-sf-border">
           <SheetTitle className="flex items-center gap-2 font-heading">
             <StickyNote className="w-5 h-5 text-primary" />
             {title}
@@ -42,7 +42,7 @@ export function WorksheetNotesSheet({
         <div className="flex-1 overflow-y-auto p-4">
           <Suspense
             fallback={
-              <div className="rounded-md border border-border bg-background/50 animate-pulse min-h-[300px]" />
+              <div className="rounded-md border border-sf-border bg-background/50 animate-pulse min-h-[300px]" />
             }
           >
             <RichTextEditor

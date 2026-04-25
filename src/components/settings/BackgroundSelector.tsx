@@ -66,7 +66,7 @@ const BackgroundSelector = () => {
           "relative aspect-video rounded-lg overflow-hidden border-2 transition-all hover:scale-105",
           isSelected
             ? "border-primary ring-2 ring-primary/50"
-            : "border-border hover:border-primary/50"
+            : "border-sf-border hover:border-primary/50"
         )}
       >
         {isGradientOrColor ? (
@@ -178,7 +178,7 @@ const BackgroundSelector = () => {
                     "relative aspect-video rounded-lg overflow-hidden border-2 transition-all hover:scale-105",
                     !hasUserPreference
                       ? "border-primary ring-2 ring-primary/50"
-                      : "border-border hover:border-primary/50"
+                      : "border-sf-border hover:border-primary/50"
                   )}
                 >
                   <div className="w-full h-full bg-gradient-to-br from-purple-900/50 via-blue-900/50 to-cyan-900/50 flex items-center justify-center">
@@ -233,7 +233,7 @@ const BackgroundSelector = () => {
                       "relative aspect-video rounded-lg overflow-hidden border-2 transition-all hover:scale-105",
                       isSelected
                         ? "border-primary ring-2 ring-primary/50"
-                        : "border-border hover:border-primary/50"
+                        : "border-sf-border hover:border-primary/50"
                     )}
                   >
                     <video
@@ -313,7 +313,7 @@ const BackgroundSelector = () => {
                     "relative aspect-video rounded-lg overflow-hidden border-2 transition-all hover:scale-105",
                     backgroundId === "custom"
                       ? "border-primary ring-2 ring-primary/50"
-                      : "border-border hover:border-primary/50"
+                      : "border-sf-border hover:border-primary/50"
                   )}
                 >
                   <img
@@ -343,7 +343,7 @@ const BackgroundSelector = () => {
               ) : null}
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="relative aspect-video rounded-lg overflow-hidden border-2 border-dashed border-border hover:border-primary/50 transition-all hover:scale-105 flex flex-col items-center justify-center gap-2 bg-muted/50"
+                className="relative aspect-video rounded-lg overflow-hidden border-2 border-dashed border-sf-border hover:border-primary/50 transition-all hover:scale-105 flex flex-col items-center justify-center gap-2 bg-muted/50"
               >
                 <Upload className="w-6 h-6 text-t3" />
                 <span className="text-xs font-medium text-t3">

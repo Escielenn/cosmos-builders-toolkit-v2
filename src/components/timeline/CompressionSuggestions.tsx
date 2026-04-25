@@ -86,7 +86,7 @@ const CompressionSuggestions = () => {
             <Button
               variant="ghost"
               size="icon"
-              className="w-4 h-4 text-t3 hover:text-foreground"
+              className="w-4 h-4 text-t3 hover:text-t1"
               onClick={() => handleDismiss(s.id)}
               title="Dismiss"
               aria-label="Dismiss suggestion"
@@ -100,7 +100,7 @@ const CompressionSuggestions = () => {
       <Button
         variant="ghost"
         size="sm"
-        className="text-[10px] h-5 px-1.5 text-t3 hover:text-foreground shrink-0"
+        className="text-[10px] h-5 px-1.5 text-t3 hover:text-t1 shrink-0"
         onClick={handleDismissAll}
       >
         Dismiss all

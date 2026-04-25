@@ -126,7 +126,7 @@ const Collection = () => {
             <h2 className="font-heading font-light text-xl uppercase tracking-sf-wide">
               My Worlds
             </h2>
-            <span className="text-xs text-t3 group-hover:text-foreground transition-colors flex items-center gap-1">
+            <span className="text-xs text-t3 group-hover:text-t1 transition-colors flex items-center gap-1">
               View all
               <ChevronRight className="w-3.5 h-3.5" />
             </span>

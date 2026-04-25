@@ -347,7 +347,7 @@ const WorldExportDialog = ({
 
               <TabsContent value="json" className="space-y-4 pt-4">
                 <div
-                  className="flex items-center space-x-3 p-3 rounded-lg border border-border bg-accent/5"
+                  className="flex items-center space-x-3 p-3 rounded-lg border border-sf-border bg-accent/5"
                 >
                   <FileJson className="w-5 h-5 text-t3" />
                   <div className="flex-1">
@@ -361,7 +361,7 @@ const WorldExportDialog = ({
 
               <TabsContent value="text" className="space-y-4 pt-4">
                 <div
-                  className="flex items-center space-x-3 p-3 rounded-lg border border-border bg-accent/5"
+                  className="flex items-center space-x-3 p-3 rounded-lg border border-sf-border bg-accent/5"
                 >
                   <FileType className="w-5 h-5 text-t3" />
                   <div className="flex-1">
@@ -375,7 +375,7 @@ const WorldExportDialog = ({
 
               <TabsContent value="word" className="space-y-4 pt-4">
                 <div
-                  className="flex items-center space-x-3 p-3 rounded-lg border border-border bg-accent/5"
+                  className="flex items-center space-x-3 p-3 rounded-lg border border-sf-border bg-accent/5"
                 >
                   <FileSpreadsheet className="w-5 h-5 text-t3" />
                   <div className="flex-1">
@@ -389,7 +389,7 @@ const WorldExportDialog = ({
 
               <TabsContent value="markdown" className="space-y-4 pt-4">
                 <div
-                  className="flex items-center space-x-3 p-3 rounded-lg border border-border bg-accent/5"
+                  className="flex items-center space-x-3 p-3 rounded-lg border border-sf-border bg-accent/5"
                 >
                   <FileText className="w-5 h-5 text-t3" />
                   <div className="flex-1">
@@ -403,7 +403,7 @@ const WorldExportDialog = ({
 
               <TabsContent value="scrivener" className="space-y-4 pt-4">
                 <div
-                  className="flex items-center space-x-3 p-3 rounded-lg border border-border bg-accent/5"
+                  className="flex items-center space-x-3 p-3 rounded-lg border border-sf-border bg-accent/5"
                 >
                   <BookOpen className="w-5 h-5 text-t3" />
                   <div className="flex-1">
@@ -422,7 +422,7 @@ const WorldExportDialog = ({
                   </div>
                 ) : isConnected ? (
                   <div className="space-y-4">
-                    <div className="flex items-center space-x-3 p-3 rounded-lg border border-border bg-accent/5">
+                    <div className="flex items-center space-x-3 p-3 rounded-lg border border-sf-border bg-accent/5">
                       <img
                         src="https://www.notion.so/images/favicon.ico"
                         alt="Notion"
@@ -491,7 +491,7 @@ const WorldExportDialog = ({
             </Tabs>
 
             {(format === "text" || format === "markdown") && worksheets.length > 1 && (
-              <div className="flex items-center space-x-2 pt-2 border-t border-border">
+              <div className="flex items-center space-x-2 pt-2 border-t border-sf-border">
                 <Checkbox
                   id="includeCrossRefs"
                   checked={includeCrossReferences}

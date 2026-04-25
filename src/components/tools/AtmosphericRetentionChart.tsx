@@ -39,7 +39,7 @@ const AtmosphericRetentionChart = ({ retentionData, className }: AtmosphericRete
                   style={{ color: gas.statusColor }}
                   aria-label={STATUS_LABELS[gas.status]}
                 />
-                <span className="font-medium text-foreground">{gas.formula}</span>
+                <span className="font-medium text-t1">{gas.formula}</span>
                 <span className="text-t3 text-xs">{gas.name}</span>
               </div>
               <div className="flex items-center gap-2 text-xs">

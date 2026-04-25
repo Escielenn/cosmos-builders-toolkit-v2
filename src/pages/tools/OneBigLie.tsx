@@ -139,7 +139,7 @@ const EXTERNAL_RESOURCES = [
 
 // Rich text editor skeleton
 const EditorSkeleton = () => (
-  <div className="min-h-[120px] rounded-md border border-border bg-background/50 animate-pulse" />
+  <div className="min-h-[120px] rounded-md border border-sf-border bg-background/50 animate-pulse" />
 );
 
 // Helper: count non-empty string fields in an object
@@ -485,7 +485,7 @@ const OneBigLie = () => {
             entire world—from physics to biology to mythology to culture.
           </p>
           <div className="text-sm text-t3 mb-4">
-            <strong className="text-foreground">The Cascade Principle:</strong>
+            <strong className="text-t1">The Cascade Principle:</strong>
             <p className="mt-1">
               Physics shapes environment. Environment shapes biology. Biology shapes psychology. Psychology shapes mythology. Mythology shapes culture. Change one element at the
               foundation and everything above it shifts.
@@ -493,7 +493,7 @@ const OneBigLie = () => {
           </div>
 
           {/* SF Examples Accordion */}
-          <div className="mt-6 pt-4 border-t border-border">
+          <div className="mt-6 pt-4 border-t border-sf-border">
             <h4 className="text-sm font-medium mb-3">
               SF Reference Examples
             </h4>
@@ -506,7 +506,7 @@ const OneBigLie = () => {
                       className="flex items-center justify-between w-full text-left px-3 py-2 rounded-lg bg-background/50 hover:bg-background/80 transition-colors text-sm"
                     >
                       <span>
-                        <strong className="text-foreground">
+                        <strong className="text-t1">
                           {example.name}
                         </strong>
                         <span className="text-t2 ml-2">
@@ -519,11 +519,11 @@ const OneBigLie = () => {
                   <CollapsibleContent>
                     <div className="px-3 py-2 text-sm text-t3 space-y-2">
                       <p>
-                        <strong className="text-foreground">The Lie:</strong>{" "}
+                        <strong className="text-t1">The Lie:</strong>{" "}
                         {example.lie}
                       </p>
                       <p>
-                        <strong className="text-foreground">The Cascade:</strong>{" "}
+                        <strong className="text-t1">The Cascade:</strong>{" "}
                         {example.cascade}
                       </p>
                     </div>
@@ -534,7 +534,7 @@ const OneBigLie = () => {
           </div>
 
           {/* External Resources */}
-          <div className="mt-6 pt-4 border-t border-border">
+          <div className="mt-6 pt-4 border-t border-sf-border">
             <h4 className="text-sm font-medium mb-3">Reference Resources</h4>
             <div className="flex flex-wrap gap-2">
               {EXTERNAL_RESOURCES.map((resource) => (

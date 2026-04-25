@@ -1313,7 +1313,7 @@ function ResultItem({ label, value, warn, span }: { label: string; value: string
   return (
     <div className={span ? "col-span-full" : ""}>
       <p className="text-xs text-t4 uppercase tracking-wider">{label}</p>
-      <p className={`font-mono text-sm ${warn ? "text-sf-amber" : "text-foreground"}`}>{value}</p>
+      <p className={`font-mono text-sm ${warn ? "text-sf-amber" : "text-t1"}`}>{value}</p>
     </div>
   );
 }

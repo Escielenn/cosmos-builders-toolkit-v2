@@ -193,10 +193,10 @@ const Join = () => {
 
           <div className="relative my-4">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-border"></div>
+              <div className="w-full border-t border-sf-border"></div>
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-card px-2 text-t4">or create with email</span>
+              <span className="bg-sf-surface px-2 text-t4">or create with email</span>
             </div>
           </div>
 
@@ -309,7 +309,7 @@ const Join = () => {
 
             {/* Privacy notice */}
             <div className="p-3 rounded-sm bg-primary/5 border border-primary/20">
-              <p className="text-xs font-medium text-foreground mb-1">
+              <p className="text-xs font-medium text-t1 mb-1">
                 Your Worlds Are Yours Alone
               </p>
               <p className="text-[11px] text-t3 leading-relaxed">
@@ -326,7 +326,7 @@ const Join = () => {
           <DialogHeader>
             <DialogTitle className="font-heading text-xl">Terms of Service</DialogTitle>
           </DialogHeader>
-          <div className="prose prose-invert prose-sm max-w-none [&_h2]:text-lg [&_h2]:font-heading [&_h2]:font-light [&_h2]:tracking-[0.08em] [&_h2]:mt-6 [&_h2]:mb-3 [&_h3]:text-base [&_h3]:font-semibold [&_h3]:mt-4 [&_h3]:mb-2 [&_h4]:text-sm [&_h4]:font-semibold [&_h4]:mt-3 [&_h4]:mb-1 [&_p]:text-sm [&_p]:text-t3 [&_p]:leading-relaxed [&_p]:mb-3 [&_li]:text-sm [&_li]:text-t3 [&_hr]:border-sf-border [&_hr]:my-4 [&_strong]:text-foreground">
+          <div className="prose prose-invert prose-sm max-w-none [&_h2]:text-lg [&_h2]:font-heading [&_h2]:font-light [&_h2]:tracking-[0.08em] [&_h2]:mt-6 [&_h2]:mb-3 [&_h3]:text-base [&_h3]:font-semibold [&_h3]:mt-4 [&_h3]:mb-2 [&_h4]:text-sm [&_h4]:font-semibold [&_h4]:mt-3 [&_h4]:mb-1 [&_p]:text-sm [&_p]:text-t3 [&_p]:leading-relaxed [&_p]:mb-3 [&_li]:text-sm [&_li]:text-t3 [&_hr]:border-sf-border [&_hr]:my-4 [&_strong]:text-t1">
             <ReactMarkdown>{TERMS_CONTENT}</ReactMarkdown>
           </div>
         </DialogContent>

@@ -667,7 +667,7 @@ const EmpireDesigner = () => {
                     {GOVERNMENT_TYPES.map((gov) => (
                       <div
                         key={gov.id}
-                        className="flex items-start space-x-3 p-3 rounded-lg border border-border hover:border-primary/50 transition-colors"
+                        className="flex items-start space-x-3 p-3 rounded-lg border border-sf-border hover:border-primary/50 transition-colors"
                       >
                         <RadioGroupItem value={gov.id} id={gov.id} className="mt-1" />
                         <div className="flex-1">
@@ -795,7 +795,7 @@ const EmpireDesigner = () => {
                     {POWER_BRANCHES.map((branch) => (
                       <div
                         key={branch.id}
-                        className="flex items-start gap-2 p-2 rounded border border-border"
+                        className="flex items-start gap-2 p-2 rounded border border-sf-border"
                       >
                         <Checkbox
                           id={`branch-${branch.id}`}
@@ -1220,7 +1220,7 @@ const EmpireDesigner = () => {
                 {formState.factions.map((faction, index) => (
                   <div
                     key={faction.id}
-                    className="p-4 border border-border rounded-lg space-y-4"
+                    className="p-4 border border-sf-border rounded-lg space-y-4"
                   >
                     <div className="flex items-center justify-between">
                       <p className="font-medium">Faction {index + 1}</p>
@@ -1540,7 +1540,7 @@ const EmpireDesigner = () => {
 
                 <div className="space-y-2">
                   <Label>Consistency Notes</Label>
-                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-border bg-background/50 animate-pulse" />}>
                     <RichTextEditor
                       content={formState.synthesis.consistencyNotes}
                       onChange={(value) => updateSynthesis("consistencyNotes", value)}

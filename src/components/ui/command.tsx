@@ -88,7 +88,7 @@ const CommandGroup = React.forwardRef<
   <CommandPrimitive.Group
     ref={ref}
     className={cn(
-      "overflow-hidden p-1 text-foreground [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-t3",
+      "overflow-hidden p-1 text-t1 [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-t3",
       className,
     )}
     {...props}
@@ -112,7 +112,7 @@ const CommandItem = React.forwardRef<
   <CommandPrimitive.Item
     ref={ref}
     className={cn(
-      "relative flex cursor-default select-none items-center rounded-lg px-3 py-2 text-sm outline-none data-[disabled=true]:pointer-events-none data-[selected='true']:bg-muted/50 data-[selected=true]:text-foreground data-[disabled=true]:opacity-50 transition-colors",
+      "relative flex cursor-default select-none items-center rounded-lg px-3 py-2 text-sm outline-none data-[disabled=true]:pointer-events-none data-[selected='true']:bg-muted/50 data-[selected=true]:text-t1 data-[disabled=true]:opacity-50 transition-colors",
       className,
     )}
     {...props}

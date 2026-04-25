@@ -168,7 +168,7 @@ const PropulsionMockup = () => {
                 <div className="text-[8px] text-t3 uppercase tracking-wider">
                   {consequence.domain}
                 </div>
-                <div className="text-[10px] text-foreground mt-0.5">
+                <div className="text-[10px] text-t1 mt-0.5">
                   {consequence.effect}
                 </div>
               </div>

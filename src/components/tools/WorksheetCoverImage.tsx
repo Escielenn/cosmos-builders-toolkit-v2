@@ -96,7 +96,7 @@ export function WorksheetCoverImage({
             type="button"
             variant="ghost"
             size="sm"
-            className="text-xs text-t3 hover:text-foreground h-7"
+            className="text-xs text-t3 hover:text-t1 h-7"
             onClick={() => fileInputRef.current?.click()}
             disabled={disabled || isUploading}
           >
@@ -111,7 +111,7 @@ export function WorksheetCoverImage({
             type="button"
             variant="ghost"
             size="sm"
-            className="text-xs text-t3 hover:text-foreground h-7"
+            className="text-xs text-t3 hover:text-t1 h-7"
             onClick={() => setMoodboardPickerOpen(true)}
             disabled={disabled}
           >
@@ -139,7 +139,7 @@ export function WorksheetCoverImage({
         className="hidden"
         disabled={disabled || isUploading}
       />
-      <div className="relative w-full aspect-[3/1] rounded-lg overflow-hidden border border-border mt-2">
+      <div className="relative w-full aspect-[3/1] rounded-lg overflow-hidden border border-sf-border mt-2">
         <img
           src={imageUrl}
           alt="Worksheet cover"

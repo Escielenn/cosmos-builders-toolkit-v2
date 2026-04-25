@@ -195,8 +195,8 @@ const EventDetailPanel = ({
                   className={cn(
                     "flex-1 px-2 py-1 rounded border text-[11px] font-medium transition-colors",
                     event.importance === il.id
-                      ? "border-primary bg-primary/10 text-foreground"
-                      : "border-sf-border text-t3 hover:border-border"
+                      ? "border-primary bg-primary/10 text-t1"
+                      : "border-sf-border text-t3 hover:border-sf-border"
                   )}
                 >
                   {il.label}
@@ -404,8 +404,8 @@ const EventDetailPanel = ({
                         className={cn(
                           "flex items-center gap-1 px-2 py-0.5 rounded-full border text-[11px] font-medium transition-colors",
                           isActive
-                            ? "border-primary bg-primary/10 text-foreground"
-                            : "border-sf-border text-t3 hover:border-border"
+                            ? "border-primary bg-primary/10 text-t1"
+                            : "border-sf-border text-t3 hover:border-sf-border"
                         )}
                       >
                         <span

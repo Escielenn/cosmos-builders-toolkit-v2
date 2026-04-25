@@ -172,7 +172,7 @@ const Header = () => {
                     setMobileMenuOpen(false);
                     scrollToSection("tools");
                   }}
-                  className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-t3 hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors text-left"
+                  className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-t3 hover:text-t1 hover:bg-sf-teal/[0.06] rounded-none transition-colors duration-base text-left"
                 >
                   <Wrench className="w-5 h-5" />
                   Tools

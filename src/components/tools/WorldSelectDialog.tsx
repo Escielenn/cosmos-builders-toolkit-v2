@@ -137,7 +137,7 @@ const WorldSelectDialog = ({
                           "w-full text-left p-3 rounded-lg border transition-colors",
                           selectedWorldId === world.id
                             ? "border-primary bg-primary/10"
-                            : "border-border hover:border-primary/50 hover:bg-muted/50"
+                            : "border-sf-border hover:border-primary/50 hover:bg-muted/50"
                         )}
                       >
                         <div className="font-medium">{world.name}</div>

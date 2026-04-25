@@ -157,7 +157,7 @@ export function ChronicleEventDialog({
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="The Divine Order Is Founded"
-              className="rounded-none bg-transparent border-border/15 font-[--sf-font-body]"
+              className="rounded-none bg-transparent border-sf-border font-[--sf-font-body]"
             />
           </div>
 
@@ -171,7 +171,7 @@ export function ChronicleEventDialog({
                 value={eventDate}
                 onChange={(e) => handleDateChange(e.target.value)}
                 placeholder="1128 EO"
-                className="rounded-none bg-transparent border-border/15 font-mono text-sm"
+                className="rounded-none bg-transparent border-sf-border font-mono text-sm"
               />
             </div>
             <div>
@@ -180,7 +180,7 @@ export function ChronicleEventDialog({
                 type="number"
                 value={sortValue}
                 onChange={(e) => setSortValue(Number(e.target.value))}
-                className="rounded-none bg-transparent border-border/15 font-mono text-sm"
+                className="rounded-none bg-transparent border-sf-border font-mono text-sm"
               />
             </div>
           </div>
@@ -210,7 +210,7 @@ export function ChronicleEventDialog({
                   value={endDate}
                   onChange={(e) => handleEndDateChange(e.target.value)}
                   placeholder="1350 EO"
-                  className="rounded-none bg-transparent border-border/15 font-mono text-sm"
+                  className="rounded-none bg-transparent border-sf-border font-mono text-sm"
                 />
               </div>
               <div>
@@ -221,7 +221,7 @@ export function ChronicleEventDialog({
                   type="number"
                   value={endSortValue}
                   onChange={(e) => setEndSortValue(Number(e.target.value))}
-                  className="rounded-none bg-transparent border-border/15 font-mono text-sm"
+                  className="rounded-none bg-transparent border-sf-border font-mono text-sm"
                 />
               </div>
             </div>
@@ -231,7 +231,7 @@ export function ChronicleEventDialog({
           <div>
             <label className="sf-chronicle-form-label">Event Type</label>
             <Select value={eventType} onValueChange={setEventType}>
-              <SelectTrigger className="rounded-none bg-transparent border-border/15">
+              <SelectTrigger className="rounded-none bg-transparent border-sf-border">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent className="rounded-none">
@@ -248,7 +248,7 @@ export function ChronicleEventDialog({
           <div>
             <label className="sf-chronicle-form-label">Layer</label>
             <Select value={layer || "none"} onValueChange={(v) => setLayer(v === "none" ? "" : v)}>
-              <SelectTrigger className="rounded-none bg-transparent border-border/15">
+              <SelectTrigger className="rounded-none bg-transparent border-sf-border">
                 <SelectValue placeholder="None" />
               </SelectTrigger>
               <SelectContent className="rounded-none">
@@ -272,7 +272,7 @@ export function ChronicleEventDialog({
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Describe this event..."
               rows={3}
-              className="rounded-none bg-transparent border-border/15 font-[--sf-font-body] text-sm resize-none"
+              className="rounded-none bg-transparent border-sf-border font-[--sf-font-body] text-sm resize-none"
             />
           </div>
 
@@ -282,7 +282,7 @@ export function ChronicleEventDialog({
               Link to Wiki Page
             </label>
             {linkedEntryId ? (
-              <div className="flex items-center gap-2 px-3 py-2 border border-border/15 text-sm">
+              <div className="flex items-center gap-2 px-3 py-2 border border-sf-border text-sm">
                 <span className="text-[#5B8DEF] font-medium truncate flex-1">
                   {linkedEntryTitle}
                 </span>
@@ -303,10 +303,10 @@ export function ChronicleEventDialog({
                   value={entrySearch}
                   onChange={(e) => handleEntrySearch(e.target.value)}
                   placeholder="Search elements..."
-                  className="rounded-none bg-transparent border-border/15 text-sm"
+                  className="rounded-none bg-transparent border-sf-border text-sm"
                 />
                 {entryResults.length > 0 && (
-                  <div className="absolute top-full left-0 right-0 z-10 mt-1 bg-[#0C1019] border border-border/15">
+                  <div className="absolute top-full left-0 right-0 z-10 mt-1 bg-[#0C1019] border border-sf-border">
                     {entryResults.map((entry) => (
                       <button
                         key={entry.id}
@@ -335,7 +335,7 @@ export function ChronicleEventDialog({
                 Parent Event (if sub-event)
               </label>
               <Select value={parentId || "none"} onValueChange={(v) => setParentId(v === "none" ? "" : v)}>
-                <SelectTrigger className="rounded-none bg-transparent border-border/15">
+                <SelectTrigger className="rounded-none bg-transparent border-sf-border">
                   <SelectValue placeholder="None" />
                 </SelectTrigger>
                 <SelectContent className="rounded-none">
@@ -357,7 +357,7 @@ export function ChronicleEventDialog({
           )}
 
           {/* Actions */}
-          <div className="flex items-center justify-between pt-2 border-t border-border/8">
+          <div className="flex items-center justify-between pt-2 border-t border-sf-border">
             {isEditing && onDelete ? (
               <button
                 type="button"
@@ -373,7 +373,7 @@ export function ChronicleEventDialog({
               <button
                 type="button"
                 onClick={() => onOpenChange(false)}
-                className="sf-fill-sweep sf-fill-sweep--secondary px-4 py-1.5 border border-border/15 text-[10px] uppercase tracking-wider text-t3/50"
+                className="sf-fill-sweep sf-fill-sweep--secondary px-4 py-1.5 border border-sf-border text-[10px] uppercase tracking-wider text-t3/50"
               >
                 Cancel
               </button>

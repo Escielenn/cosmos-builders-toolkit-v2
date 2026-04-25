@@ -67,13 +67,13 @@ export function DeleteConfirmDialog({
           </AlertDialogTitle>
           <AlertDialogDescription className="space-y-3">
             <p>{cascadeWarning}</p>
-            <p className="font-medium text-foreground">THIS CANNOT BE UNDONE.</p>
+            <p className="font-medium text-t1">THIS CANNOT BE UNDONE.</p>
           </AlertDialogDescription>
         </AlertDialogHeader>
 
         <div className="space-y-2 py-2">
           <Label htmlFor="confirm-delete" className="text-sm text-t3">
-            Type <span className="font-semibold text-foreground">{itemName}</span> to confirm
+            Type <span className="font-semibold text-t1">{itemName}</span> to confirm
           </Label>
           <Input
             id="confirm-delete"

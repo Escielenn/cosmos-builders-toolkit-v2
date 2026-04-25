@@ -55,17 +55,17 @@ const NotionCallback = () => {
         {status === "success" && (
           <>
             <CheckCircle2 className="w-12 h-12 text-green-500 mx-auto" />
-            <p className="text-lg text-foreground">{message}</p>
+            <p className="text-lg text-t1">{message}</p>
           </>
         )}
 
         {status === "error" && (
           <>
             <XCircle className="w-12 h-12 text-sf-crimson mx-auto" />
-            <p className="text-lg text-foreground">{message}</p>
+            <p className="text-lg text-t1">{message}</p>
             <button
               onClick={() => window.close()}
-              className="text-sm text-t3 underline hover:text-foreground"
+              className="text-sm text-t3 underline hover:text-t1"
             >
               Close window
             </button>

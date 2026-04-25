@@ -151,7 +151,7 @@ const CodexElementRow = memo(({
       <span
         className={cn(
           "text-[14px] truncate flex-1 leading-tight",
-          element.isDraft ? "text-foreground/40" : "text-foreground/75",
+          element.isDraft ? "text-t1/40" : "text-t1/75",
           isActive && "text-t1"
         )}
       >

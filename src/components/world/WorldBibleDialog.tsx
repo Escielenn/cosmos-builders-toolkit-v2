@@ -316,7 +316,7 @@ const WorldBibleDialog = ({
 
             {/* World Notes toggle */}
             {worldNotes && (
-              <div className="flex items-center space-x-2 p-3 rounded-lg border border-border bg-accent/5">
+              <div className="flex items-center space-x-2 p-3 rounded-lg border border-sf-border bg-accent/5">
                 <Checkbox
                   id="include-notes"
                   checked={includeWorldNotes}
@@ -347,7 +347,7 @@ const WorldBibleDialog = ({
                   return (
                     <div
                       key={cw.chapter.id}
-                      className="rounded-lg border border-border overflow-hidden"
+                      className="rounded-lg border border-sf-border overflow-hidden"
                     >
                       {/* Chapter header */}
                       <div className="flex items-center space-x-2 p-3 bg-muted/30">
@@ -405,7 +405,7 @@ const WorldBibleDialog = ({
         )}
 
         {/* Inline theme picker */}
-        <div className="pt-3 border-t border-border">
+        <div className="pt-3 border-t border-sf-border">
           <Label className="text-xs text-t3 mb-2 block">PDF Theme</Label>
           <div className="flex gap-2 flex-wrap">
             {EXPORT_THEMES.map((theme) => {
@@ -420,7 +420,7 @@ const WorldBibleDialog = ({
                     "flex gap-0.5 p-1.5 rounded-md border transition-all",
                     isSelected
                       ? "border-primary ring-1 ring-primary/50"
-                      : "border-border hover:border-primary/50"
+                      : "border-sf-border hover:border-primary/50"
                   )}
                 >
                   {theme.swatch.map((color, i) => (

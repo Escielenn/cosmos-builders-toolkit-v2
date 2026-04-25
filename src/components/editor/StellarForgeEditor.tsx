@@ -315,7 +315,7 @@ export function StellarForgeEditor({
       >
         {/* Toolbar */}
         {!readOnly && (
-          <div className="sf-writing-toolbar flex items-center gap-0.5 p-1.5 border-b border-border bg-muted/30 flex-wrap">
+          <div className="sf-writing-toolbar flex items-center gap-0.5 p-1.5 border-b border-sf-border bg-muted/30 flex-wrap">
             {/* Bold + Italic (always shown) */}
             <ToolbarBtn
               onClick={() => editor.chain().focus().toggleBold().run()}
@@ -568,7 +568,7 @@ export function StellarForgeEditor({
 
         {/* Word Count Footer (full preset only) */}
         {config.showWordCount && !readOnly && (
-          <div className="flex items-center justify-end px-3 py-1.5 border-t border-border bg-muted/20">
+          <div className="flex items-center justify-end px-3 py-1.5 border-t border-sf-border bg-muted/20">
             <span className="font-mono text-[10px] tracking-[1.5px] uppercase text-t4">
               {wordCount.toLocaleString()} {wordCount === 1 ? "word" : "words"}
             </span>

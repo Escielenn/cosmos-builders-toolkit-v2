@@ -137,7 +137,7 @@ const TagInput = ({
 
         {/* Suggestions dropdown */}
         {isFocused && inputValue && suggestions.length > 0 && (
-          <div className="absolute z-10 w-full mt-1 bg-popover border border-border rounded-md shadow-lg max-h-48 overflow-auto">
+          <div className="absolute z-10 w-full mt-1 bg-popover border border-sf-border rounded-md shadow-lg max-h-48 overflow-auto">
             {suggestions.map((suggestion, index) => (
               <button
                 key={suggestion.id}
@@ -164,14 +164,14 @@ const TagInput = ({
 
         {/* Create new tag hint - also clickable */}
         {isFocused && inputValue && suggestions.length === 0 && (
-          <div className="absolute z-10 w-full mt-1 bg-popover border border-border rounded-md shadow-lg">
+          <div className="absolute z-10 w-full mt-1 bg-popover border border-sf-border rounded-md shadow-lg">
             <button
               type="button"
               onMouseDown={(e) => e.preventDefault()}
               onClick={() => addTag(inputValue)}
               className="w-full px-3 py-2 text-sm text-left text-t3 hover:bg-accent/50 transition-colors"
             >
-              Press Enter to create "<span className="text-foreground">{inputValue}</span>"
+              Press Enter to create "<span className="text-t1">{inputValue}</span>"
             </button>
           </div>
         )}

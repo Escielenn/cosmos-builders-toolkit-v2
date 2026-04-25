@@ -229,7 +229,7 @@ export default function WorldAppearanceDialog({
                       className="w-[5px] h-[5px] rounded-full border"
                       style={{ borderColor: accentColor, opacity: 0.5 }}
                     />
-                    <span className="text-xs text-foreground/50">Draft Entry</span>
+                    <span className="text-xs text-t1/50">Draft Entry</span>
                     <span className="text-[7px] uppercase tracking-wider text-t3/50">DRAFT</span>
                   </div>
                 </div>

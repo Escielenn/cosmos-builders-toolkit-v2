@@ -44,7 +44,7 @@ const renderValue = (value: unknown, depth: number = 0): React.ReactNode => {
     return (
       <div className="space-y-3">
         {value.map((item, i) => (
-          <div key={i} className="pl-4 border-l-2 border-border">
+          <div key={i} className="pl-4 border-l-2 border-sf-border">
             {typeof item === "object" && item !== null ? (
               renderObject(item as Record<string, unknown>, depth + 1)
             ) : (
@@ -121,7 +121,7 @@ const WorksheetDataRenderer = ({ data }: WorksheetDataRendererProps) => {
 
         return (
           <GlassPanel key={key} className="p-6">
-            <h3 className="font-heading font-semibold text-lg mb-4 text-foreground">
+            <h3 className="font-heading font-semibold text-lg mb-4 text-t1">
               {formatLabel(key)}
             </h3>
             {rendered}

@@ -223,8 +223,8 @@ const CompressionEditorDialog = ({
                   className={cn(
                     "px-3 py-2 rounded-md border text-xs font-medium transition-colors text-center",
                     style === opt.id
-                      ? "border-primary bg-primary/10 text-foreground"
-                      : "border-sf-border text-t3 hover:border-border"
+                      ? "border-primary bg-primary/10 text-t1"
+                      : "border-sf-border text-t3 hover:border-sf-border"
                   )}
                 >
                   {opt.label}

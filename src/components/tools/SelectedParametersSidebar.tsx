@@ -86,7 +86,7 @@ const SelectedParametersSidebar = ({
                 </div>
               ))}
             </div>
-            <p className="text-xs text-t3 mt-4 pt-3 border-t border-border">
+            <p className="text-xs text-t3 mt-4 pt-3 border-t border-sf-border">
               {footerText}
             </p>
           </div>

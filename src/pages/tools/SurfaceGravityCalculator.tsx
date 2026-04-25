@@ -769,22 +769,22 @@ const SurfaceGravityCalculator = () => {
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                     <GlassPanel className="p-3 text-center">
                       <div className="text-xs text-t4 mb-1">Escape Velocity</div>
-                      <div className="font-mono text-lg text-foreground">{result.escapeVelocity.toFixed(2)}</div>
+                      <div className="font-mono text-lg text-t1">{result.escapeVelocity.toFixed(2)}</div>
                       <div className="text-xs text-t4">km/s</div>
                     </GlassPanel>
                     <GlassPanel className="p-3 text-center">
                       <div className="text-xs text-t4 mb-1">Orbital Velocity</div>
-                      <div className="font-mono text-lg text-foreground">{result.orbitalVelocity.toFixed(2)}</div>
+                      <div className="font-mono text-lg text-t1">{result.orbitalVelocity.toFixed(2)}</div>
                       <div className="text-xs text-t4">km/s</div>
                     </GlassPanel>
                     <GlassPanel className="p-3 text-center">
                       <div className="text-xs text-t4 mb-1">Mean Density</div>
-                      <div className="font-mono text-lg text-foreground">{result.meanDensity.toFixed(2)}</div>
+                      <div className="font-mono text-lg text-t1">{result.meanDensity.toFixed(2)}</div>
                       <div className="text-xs text-t4">g/cm³ ({result.densityRatio.toFixed(2)}× Earth)</div>
                     </GlassPanel>
                     <GlassPanel className="p-3 text-center">
                       <div className="text-xs text-t4 mb-1">Δv to Orbit</div>
-                      <div className="font-mono text-lg text-foreground">{result.deltaV.deltaVToOrbit.toFixed(1)}</div>
+                      <div className="font-mono text-lg text-t1">{result.deltaV.deltaVToOrbit.toFixed(1)}</div>
                       <div className="text-xs text-t4">km/s ({result.deltaV.earthComparison.toFixed(2)}× Earth)</div>
                     </GlassPanel>
                   </div>

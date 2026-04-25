@@ -219,7 +219,7 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
             <button
               type="button"
               onClick={() => setIsEditing(!isEditing)}
-              className="sf-fill-sweep sf-fill-sweep--secondary flex items-center gap-1.5 px-3 py-1.5 border border-border/15 text-[10px] uppercase tracking-wider"
+              className="sf-fill-sweep sf-fill-sweep--secondary flex items-center gap-1.5 px-3 py-1.5 border border-sf-border text-[10px] uppercase tracking-wider"
             >
               {isEditing ? (
                 <>
@@ -235,7 +235,7 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
           {toolSource && (
             <button
               onClick={handleViewInTool}
-              className="sf-fill-sweep sf-fill-sweep--secondary flex items-center gap-1.5 px-3 py-1.5 border border-border/15 text-[10px] uppercase tracking-wider"
+              className="sf-fill-sweep sf-fill-sweep--secondary flex items-center gap-1.5 px-3 py-1.5 border border-sf-border text-[10px] uppercase tracking-wider"
             >
               <ExternalLink className="w-3 h-3" /> View in Tool
             </button>
@@ -284,7 +284,7 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
         )}
         {/* Cover upload — compact inline button in edit mode */}
         {canEdit && isEditing && (
-          <label className="ml-auto flex items-center gap-1 px-2 py-0.5 border border-border/15 text-[9px] uppercase tracking-wider text-t3/40 hover:text-t3/70 cursor-pointer transition-colors">
+          <label className="ml-auto flex items-center gap-1 px-2 py-0.5 border border-sf-border text-[9px] uppercase tracking-wider text-t3/40 hover:text-t3/70 cursor-pointer transition-colors">
             <ImagePlus className="w-3 h-3" />
             {entry.cover_image_url ? "Change cover" : "Add cover"}
             <input
@@ -473,7 +473,7 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
           <div className="flex gap-2">
             <button
               onClick={handleViewInTool}
-              className="sf-fill-sweep sf-fill-sweep--secondary px-3 py-1.5 border border-border/15 text-[10px] uppercase tracking-wider"
+              className="sf-fill-sweep sf-fill-sweep--secondary px-3 py-1.5 border border-sf-border text-[10px] uppercase tracking-wider"
             >
               View in {typeLabel}
             </button>
@@ -531,7 +531,7 @@ function ConnectionSuggestionBar({
         value={connType}
         onChange={(e) => setConnType(e.target.value)}
         title="Connection type"
-        className="bg-transparent border border-border/15 px-1.5 py-0.5 text-[9px] uppercase tracking-wider text-t2"
+        className="bg-transparent border border-sf-border px-1.5 py-0.5 text-[9px] uppercase tracking-wider text-t2"
       >
         {CONNECTION_TYPES.map((t) => (
           <option key={t} value={t}>

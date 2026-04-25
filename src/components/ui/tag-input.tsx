@@ -127,7 +127,7 @@ export function TagInput({
       </div>
 
       {showSuggestions && filteredSuggestions.length > 0 && (
-        <div className="absolute z-50 w-full mt-1 py-1 bg-popover border border-border rounded-md shadow-md">
+        <div className="absolute z-50 w-full mt-1 py-1 bg-popover border border-sf-border rounded-md shadow-md">
           {filteredSuggestions.map((suggestion) => (
             <button
               key={suggestion}

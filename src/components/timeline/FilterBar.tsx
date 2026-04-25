@@ -113,7 +113,7 @@ const FilterBar = () => {
           <button
             type="button"
             onClick={() => setSearchInput("")}
-            className="absolute right-2 top-1/2 -translate-y-1/2 text-t3 hover:text-foreground"
+            className="absolute right-2 top-1/2 -translate-y-1/2 text-t3 hover:text-t1"
           >
             <X className="w-3 h-3" />
           </button>
@@ -219,8 +219,8 @@ const FilterBar = () => {
             className={cn(
               "px-2 py-1 rounded border text-[10px] font-medium transition-colors h-8",
               filter.importanceLevels.includes(il.id)
-                ? "border-primary bg-primary/10 text-foreground"
-                : "border-sf-border text-t3 hover:border-border"
+                ? "border-primary bg-primary/10 text-t1"
+                : "border-sf-border text-t3 hover:border-sf-border"
             )}
           >
             {il.label}
@@ -349,7 +349,7 @@ const FilterBar = () => {
         <Button
           variant="ghost"
           size="sm"
-          className="h-8 text-xs text-t3 hover:text-foreground gap-1"
+          className="h-8 text-xs text-t3 hover:text-t1 gap-1"
           onClick={() => dispatch({ type: "CLEAR_FILTERS" })}
         >
           <X className="w-3 h-3" />

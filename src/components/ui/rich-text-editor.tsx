@@ -141,7 +141,7 @@ const RichTextEditor = ({
     >
       {/* Toolbar */}
       {!readOnly && (
-        <div className="sf-writing-toolbar flex items-center gap-0.5 p-1.5 border-b border-border bg-muted/30 flex-wrap">
+        <div className="sf-writing-toolbar flex items-center gap-0.5 p-1.5 border-b border-sf-border bg-muted/30 flex-wrap">
           <ToolbarButton
             onClick={() => editor.chain().focus().toggleBold().run()}
             isActive={editor.isActive("bold")}

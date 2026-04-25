@@ -224,7 +224,7 @@ export default function WikiBrowse() {
                     className={`px-2.5 py-1 text-[10px] uppercase tracking-wider border transition-colors ${
                       activeLayer === layer
                         ? "bg-teal/10 border-teal/25 text-teal"
-                        : "border-border/15 text-t3 hover:text-t2"
+                        : "border-sf-border text-t3 hover:text-t2"
                     }`}
                   >
                     {LAYER_LABELS[layer as CascadeLayer] || layer}
@@ -250,7 +250,7 @@ export default function WikiBrowse() {
                     className={`px-2.5 py-1 text-[10px] uppercase tracking-wider border transition-colors ${
                       activeType === type
                         ? "bg-teal/10 border-teal/25 text-teal"
-                        : "border-border/15 text-t3 hover:text-t2"
+                        : "border-sf-border text-t3 hover:text-t2"
                     }`}
                   >
                     {ENTITY_TYPE_LABELS[type] || type}
@@ -280,7 +280,7 @@ export default function WikiBrowse() {
                     className={`px-2.5 py-1 text-[10px] tracking-wider border transition-colors ${
                       activeTags.includes(tag)
                         ? "bg-teal/10 border-teal/25 text-teal"
-                        : "border-border/15 text-t3 hover:text-t2"
+                        : "border-sf-border text-t3 hover:text-t2"
                     }`}
                   >
                     {tag}

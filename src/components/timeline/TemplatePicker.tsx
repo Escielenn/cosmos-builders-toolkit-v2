@@ -148,7 +148,7 @@ const TemplatePicker = ({
         {confirming && confirmedTemplate ? (
           <div className="space-y-4 pt-2">
             <p className="text-sm text-t3">
-              Applying <span className="font-medium text-foreground">{confirmedTemplate.name}</span> will
+              Applying <span className="font-medium text-t1">{confirmedTemplate.name}</span> will
               replace your current tracks, events, and links. This cannot be undone.
             </p>
             <div className="flex justify-end gap-2">

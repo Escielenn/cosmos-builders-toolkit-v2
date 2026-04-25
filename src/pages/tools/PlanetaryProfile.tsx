@@ -664,12 +664,12 @@ const PlanetaryProfile = () => {
             This tool helps you create scientifically-grounded planetary environments and explore how they shape the societies, psychology, and narratives of their inhabitants. Start with the physical parameters, then trace their consequences through to story.
           </p>
           <div className="text-sm text-t3 mb-4">
-            <strong className="text-foreground">The Cascade Principle:</strong>
+            <strong className="text-t1">The Cascade Principle:</strong>
             <p className="mt-1">Star Type → Orbital Parameters → Physical Characteristics → Atmosphere → Climate → Habitability → Three Pressures → Narrative</p>
           </div>
 
           {/* External Resources */}
-          <div className="mt-6 pt-4 border-t border-border">
+          <div className="mt-6 pt-4 border-t border-sf-border">
             <h4 className="text-sm font-medium mb-3">Reference Resources</h4>
             <div className="flex flex-wrap gap-2">
               {EXTERNAL_RESOURCES.map((resource) => (
@@ -712,7 +712,7 @@ const PlanetaryProfile = () => {
                   className="space-y-2"
                 >
                   {STAR_TYPES.map((star) => (
-                    <div key={star.id} className="flex items-start gap-3 p-3 rounded-lg border border-border hover:border-primary/50 transition-colors">
+                    <div key={star.id} className="flex items-start gap-3 p-3 rounded-lg border border-sf-border hover:border-primary/50 transition-colors">
                       <RadioGroupItem value={star.id} id={`star-${star.id}`} className="mt-1" />
                       <Label htmlFor={`star-${star.id}`} className="cursor-pointer flex-1">
                         <div className="font-medium">{star.name}</div>
@@ -743,7 +743,7 @@ const PlanetaryProfile = () => {
                   <li>What does the sky look like? What color is sunlight?</li>
                   <li>How does the star's lifetime affect your civilization's perspective?</li>
                 </ul>
-                <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-border bg-background/50 animate-pulse" />}>
                   <RichTextEditor
                     content={formState.stellarEnvironment.starTypeNotes}
                     onChange={(value) => updateStellarEnvironment("starTypeNotes", value)}
@@ -803,21 +803,21 @@ const PlanetaryProfile = () => {
                   onValueChange={(value) => updateStellarEnvironment("tidalLocking", value)}
                   className="grid gap-2 md:grid-cols-3"
                 >
-                  <div className="flex items-start gap-2 p-2 rounded border border-border hover:border-primary/50">
+                  <div className="flex items-start gap-2 p-2 rounded border border-sf-border hover:border-primary/50">
                     <RadioGroupItem value="locked" id="tidal-locked" className="mt-0.5" />
                     <Label htmlFor="tidal-locked" className="cursor-pointer text-sm">
                       <span className="font-medium">Tidally Locked</span>
                       <span className="text-t2 block text-xs">Same side always faces star</span>
                     </Label>
                   </div>
-                  <div className="flex items-start gap-2 p-2 rounded border border-border hover:border-primary/50">
+                  <div className="flex items-start gap-2 p-2 rounded border border-sf-border hover:border-primary/50">
                     <RadioGroupItem value="resonance" id="tidal-resonance" className="mt-0.5" />
                     <Label htmlFor="tidal-resonance" className="cursor-pointer text-sm">
                       <span className="font-medium">Spin-Orbit Resonance</span>
                       <span className="text-t2 block text-xs">Like Mercury (3:2 ratio)</span>
                     </Label>
                   </div>
-                  <div className="flex items-start gap-2 p-2 rounded border border-border hover:border-primary/50">
+                  <div className="flex items-start gap-2 p-2 rounded border border-sf-border hover:border-primary/50">
                     <RadioGroupItem value="free" id="tidal-free" className="mt-0.5" />
                     <Label htmlFor="tidal-free" className="cursor-pointer text-sm">
                       <span className="font-medium">Free Rotation</span>
@@ -844,7 +844,7 @@ const PlanetaryProfile = () => {
                   <li>Where do settlements cluster? (Terminator zone?)</li>
                   <li>How does this affect weather, culture, psychology?</li>
                 </ul>
-                <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-border bg-background/50 animate-pulse" />}>
                   <RichTextEditor
                     content={formState.stellarEnvironment.tidalLockingNotes}
                     onChange={(value) => updateStellarEnvironment("tidalLockingNotes", value)}
@@ -947,7 +947,7 @@ const PlanetaryProfile = () => {
                 <p className="text-xs text-t4">Select the dominant gases in your atmosphere</p>
                 <div className="grid gap-2 md:grid-cols-2">
                   {ATMOSPHERIC_GASES.primary.map((gas) => (
-                    <div key={gas.id} className="flex items-start gap-2 p-2 rounded border border-border">
+                    <div key={gas.id} className="flex items-start gap-2 p-2 rounded border border-sf-border">
                       <Checkbox
                         id={`primary-${gas.id}`}
                         checked={formState.atmosphericComposition.primaryGases.includes(gas.id)}
@@ -967,7 +967,7 @@ const PlanetaryProfile = () => {
                 <Label className="text-sm font-medium">Secondary/Trace Gases</Label>
                 <div className="grid gap-2 md:grid-cols-2">
                   {ATMOSPHERIC_GASES.secondary.map((gas) => (
-                    <div key={gas.id} className="flex items-start gap-2 p-2 rounded border border-border">
+                    <div key={gas.id} className="flex items-start gap-2 p-2 rounded border border-sf-border">
                       <Checkbox
                         id={`secondary-${gas.id}`}
                         checked={formState.atmosphericComposition.secondaryGases.includes(gas.id)}
@@ -1047,7 +1047,7 @@ const PlanetaryProfile = () => {
                   className="grid gap-2 md:grid-cols-2"
                 >
                   {HYDROSPHERE_OPTIONS.map((option) => (
-                    <div key={option.id} className="flex items-start gap-2 p-2 rounded border border-border hover:border-primary/50">
+                    <div key={option.id} className="flex items-start gap-2 p-2 rounded border border-sf-border hover:border-primary/50">
                       <RadioGroupItem value={option.id} id={`water-${option.id}`} className="mt-0.5" />
                       <Label htmlFor={`water-${option.id}`} className="cursor-pointer text-sm">
                         <span className="font-medium">{option.name}</span>
@@ -1096,7 +1096,7 @@ const PlanetaryProfile = () => {
                   <li>Are there unique water features (tides, currents, underground rivers)?</li>
                   <li>What role does water play in culture and conflict?</li>
                 </ul>
-                <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-border bg-background/50 animate-pulse" />}>
                   <RichTextEditor
                     content={formState.hydrosphere.hydrosphereNotes}
                     onChange={(value) => updateHydrosphere("hydrosphereNotes", value)}
@@ -1158,7 +1158,7 @@ const PlanetaryProfile = () => {
                   <li>What technologies are required?</li>
                   <li>How does temperature affect daily rhythms?</li>
                 </ul>
-                <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-border bg-background/50 animate-pulse" />}>
                   <RichTextEditor
                     content={formState.temperatureProfile.temperatureNotes}
                     onChange={(value) => updateTemperatureProfile("temperatureNotes", value)}
@@ -1188,7 +1188,7 @@ const PlanetaryProfile = () => {
                   className="space-y-2"
                 >
                   {HABITABILITY_TIERS.map((tier) => (
-                    <div key={tier.tier} className="flex items-start gap-3 p-3 rounded-lg border border-border hover:border-primary/50 transition-colors">
+                    <div key={tier.tier} className="flex items-start gap-3 p-3 rounded-lg border border-sf-border hover:border-primary/50 transition-colors">
                       <RadioGroupItem value={tier.tier.toString()} id={`tier-${tier.tier}`} className="mt-1" />
                       <Label htmlFor={`tier-${tier.tier}`} className="cursor-pointer flex-1">
                         <div className="font-medium">Tier {tier.tier}: {tier.name}</div>
@@ -1224,7 +1224,7 @@ const PlanetaryProfile = () => {
                 <p className="text-xs text-t4">What do inhabitants need to survive?</p>
                 <div className="grid gap-2 md:grid-cols-2">
                   {ADAPTATION_OPTIONS.map((option) => (
-                    <div key={option.id} className="flex items-start gap-2 p-2 rounded border border-border">
+                    <div key={option.id} className="flex items-start gap-2 p-2 rounded border border-sf-border">
                       <Checkbox
                         id={`adapt-${option.id}`}
                         checked={formState.habitability.requiredAdaptations.includes(option.id)}
@@ -1246,7 +1246,7 @@ const PlanetaryProfile = () => {
                   <li>What technologies are essential?</li>
                   <li>What cultural practices emerged from adaptation?</li>
                 </ul>
-                <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-border bg-background/50 animate-pulse" />}>
                   <RichTextEditor
                     content={formState.habitability.adaptationNotes}
                     onChange={(value) => updateHabitability("adaptationNotes", value)}
@@ -1276,7 +1276,7 @@ const PlanetaryProfile = () => {
                   className="grid gap-2 md:grid-cols-3"
                 >
                   {TECTONIC_LEVELS.map((level) => (
-                    <div key={level.id} className="flex items-start gap-2 p-2 rounded border border-border hover:border-primary/50">
+                    <div key={level.id} className="flex items-start gap-2 p-2 rounded border border-sf-border hover:border-primary/50">
                       <RadioGroupItem value={level.id} id={`tectonic-${level.id}`} className="mt-0.5" />
                       <Label htmlFor={`tectonic-${level.id}`} className="cursor-pointer text-sm">
                         <span className="font-medium">{level.name}</span>
@@ -1366,7 +1366,7 @@ const PlanetaryProfile = () => {
               </div>
 
               {/* Survival Pressure */}
-              <div className="space-y-4 p-4 rounded-lg border border-border">
+              <div className="space-y-4 p-4 rounded-lg border border-sf-border">
                 <h4 className="font-semibold text-primary">1. Survival Pressure</h4>
                 <p className="text-xs text-t4">The physical challenges of staying alive</p>
 
@@ -1397,7 +1397,7 @@ const PlanetaryProfile = () => {
               </div>
 
               {/* Social Pressure */}
-              <div className="space-y-4 p-4 rounded-lg border border-border">
+              <div className="space-y-4 p-4 rounded-lg border border-sf-border">
                 <h4 className="font-semibold text-accent">2. Social Pressure</h4>
                 <p className="text-xs text-t4">How the environment shapes society and culture</p>
 
@@ -1428,7 +1428,7 @@ const PlanetaryProfile = () => {
               </div>
 
               {/* Psychological Pressure */}
-              <div className="space-y-4 p-4 rounded-lg border border-border">
+              <div className="space-y-4 p-4 rounded-lg border border-sf-border">
                 <h4 className="font-semibold text-primary">3. Psychological Pressure</h4>
                 <p className="text-xs text-t4">Mental and emotional effects of the environment</p>
 
@@ -1557,7 +1557,7 @@ const PlanetaryProfile = () => {
               {EXOPLANET_EXAMPLES.map((example, index) => (
                 <Collapsible key={index}>
                   <CollapsibleTrigger asChild>
-                    <button className="w-full p-4 rounded-lg border border-border hover:border-primary/50 transition-colors text-left flex items-center justify-between">
+                    <button className="w-full p-4 rounded-lg border border-sf-border hover:border-primary/50 transition-colors text-left flex items-center justify-between">
                       <div>
                         <span className="font-medium text-sm">{example.name}</span>
                         <span className="text-xs text-t4 block">{example.type} • {example.distance}</span>
@@ -1618,7 +1618,7 @@ const PlanetaryProfile = () => {
               </div>
 
               <div className="space-y-3">
-                <div className="flex items-start gap-3 p-3 rounded border border-border">
+                <div className="flex items-start gap-3 p-3 rounded border border-sf-border">
                   <Checkbox
                     id="check-star-gravity"
                     checked={formState.consistencyCheck.starGravityConsistent}
@@ -1632,7 +1632,7 @@ const PlanetaryProfile = () => {
                   </Label>
                 </div>
 
-                <div className="flex items-start gap-3 p-3 rounded border border-border">
+                <div className="flex items-start gap-3 p-3 rounded border border-sf-border">
                   <Checkbox
                     id="check-atmosphere-temp"
                     checked={formState.consistencyCheck.atmosphereTempConsistent}
@@ -1646,7 +1646,7 @@ const PlanetaryProfile = () => {
                   </Label>
                 </div>
 
-                <div className="flex items-start gap-3 p-3 rounded border border-border">
+                <div className="flex items-start gap-3 p-3 rounded border border-sf-border">
                   <Checkbox
                     id="check-water-temp"
                     checked={formState.consistencyCheck.waterTempConsistent}
@@ -1660,7 +1660,7 @@ const PlanetaryProfile = () => {
                   </Label>
                 </div>
 
-                <div className="flex items-start gap-3 p-3 rounded border border-border">
+                <div className="flex items-start gap-3 p-3 rounded border border-sf-border">
                   <Checkbox
                     id="check-gravity-biology"
                     checked={formState.consistencyCheck.gravityBiologyConsistent}
@@ -1674,7 +1674,7 @@ const PlanetaryProfile = () => {
                   </Label>
                 </div>
 
-                <div className="flex items-start gap-3 p-3 rounded border border-border">
+                <div className="flex items-start gap-3 p-3 rounded border border-sf-border">
                   <Checkbox
                     id="check-pressures-environment"
                     checked={formState.consistencyCheck.pressuresEnvironmentConsistent}
@@ -1696,7 +1696,7 @@ const PlanetaryProfile = () => {
                   <li>Are there handwaves or soft-SF elements?</li>
                   <li>What aspects need more research or development?</li>
                 </ul>
-                <Suspense fallback={<div className="min-h-[100px] rounded-md border border-border bg-background/50 animate-pulse" />}>
+                <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-border bg-background/50 animate-pulse" />}>
                   <RichTextEditor
                     content={formState.consistencyCheck.consistencyNotes}
                     onChange={(value) => updateConsistencyCheck("consistencyNotes", value)}
