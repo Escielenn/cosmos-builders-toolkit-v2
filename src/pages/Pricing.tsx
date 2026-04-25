@@ -15,6 +15,7 @@ import WelcomeDialog from "@/components/onboarding/WelcomeDialog";
 import { FREE_TOOL_IDS, PRO_TOOL_IDS, PRICING } from "@/lib/tools-config";
 import { PageBursts } from "@/components/ui/data-burst";
 import { PRICING_BURSTS } from "@/lib/data-bursts";
+import { ParallaxStrips } from "@/components/ambient/ParallaxStrips";
 
 const Pricing = () => {
   const [searchParams] = useSearchParams();
@@ -72,8 +73,8 @@ const Pricing = () => {
           }
         } else {
           toast({
-            title: "Subscription pending",
-            description: "Your payment was received. It may take a moment to activate.",
+            title: "SUBSCRIPTION PENDING.",
+            description: "PAYMENT RECEIVED. ACTIVATION IN PROGRESS.",
           });
           refreshSubscription();
         }
@@ -84,8 +85,8 @@ const Pricing = () => {
     } else if (searchParams.get('canceled') === 'true') {
       handledRef.current = true;
       toast({
-        title: "Checkout canceled",
-        description: "Upgrade available at any time.",
+        title: "CHECKOUT CANCELED.",
+        description: "CLEARANCE AVAILABLE WHEN READY.",
       });
       window.history.replaceState({}, '', '/pricing');
     }
@@ -107,7 +108,7 @@ const Pricing = () => {
       }
     } catch (error) {
       toast({
-        title: "Error",
+        title: "OPERATION FAILED.",
         description: error instanceof Error ? error.message : "Failed to start checkout. Retry when ready.",
         variant: "destructive",
       });
@@ -125,7 +126,7 @@ const Pricing = () => {
       }
     } catch (error) {
       toast({
-        title: "Error",
+        title: "OPERATION FAILED.",
         description: "Failed to open billing portal. Retry when ready.",
         variant: "destructive",
       });
@@ -171,18 +172,22 @@ const Pricing = () => {
 
       <main className="relative container mx-auto px-4 pt-24 pb-16">
         <PageBursts bursts={PRICING_BURSTS} />
-        {/* Hero */}
-        <section className="text-center mb-12">
-          <Badge className="mb-4" variant="secondary">
-            <Sparkles className="w-3 h-3 mr-1" />
-            ACCESS TIERS
-          </Badge>
-          <h1 className="font-display text-4xl md:text-5xl font-light mb-4 tracking-sf-wide">
-            UPGRADE YOUR ACCESS
-          </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Free accounts access {FREE_TOOL_IDS.length} instruments. Pro unlocks all {totalTools}. Vanguard shapes what comes next.
-          </p>
+        {/* Hero — with parallax telemetry strips */}
+        <section className="relative overflow-hidden text-center mb-12 py-12">
+          <div className="absolute inset-0 opacity-40 pointer-events-none">
+            <ParallaxStrips height={280} />
+          </div>
+          <div className="relative z-10">
+            <p className="font-mono text-[11px] tracking-[0.18em] text-sf-teal uppercase mb-4">
+              // ACCESS TIERS
+            </p>
+            <h1 className="font-display text-4xl md:text-5xl font-light mb-4 tracking-sf-title text-t1 uppercase">
+              UPGRADE YOUR ACCESS
+            </h1>
+            <p className="text-lg text-t3 max-w-2xl mx-auto">
+              Free accounts access {FREE_TOOL_IDS.length} instruments. Pro unlocks all {totalTools}. Vanguard shapes what comes next.
+            </p>
+          </div>
         </section>
 
         {/* Pricing Cards */}
@@ -197,7 +202,7 @@ const Pricing = () => {
             <ul className="space-y-3 mb-8">
               {freeFeatures.map((feature) => (
                 <li key={feature} className="flex items-center gap-2 text-sm">
-                  <Check className="w-4 h-4 text-emerald-500 shrink-0" />
+                  <Check className="w-4 h-4 text-sf-emerald shrink-0" />
                   <span className="text-tier-2">{feature}</span>
                 </li>
               ))}
@@ -225,7 +230,7 @@ const Pricing = () => {
 
             <div className="mb-6">
               <h2 className="font-heading text-xl font-light uppercase tracking-[2px] mb-2 flex items-center gap-2">
-                <Zap className="w-5 h-5 text-amber-500" />
+                <Zap className="w-5 h-5 text-sf-amber" />
                 PRO ACCESS
               </h2>
               <div className="flex items-baseline gap-2">
@@ -238,7 +243,7 @@ const Pricing = () => {
             <ul className="space-y-3 mb-8">
               {proFeatures.map((feature) => (
                 <li key={feature} className="flex items-center gap-2 text-sm">
-                  <Check className="w-4 h-4 text-emerald-500 shrink-0" />
+                  <Check className="w-4 h-4 text-sf-emerald shrink-0" />
                   <span className="text-tier-2">{feature}</span>
                 </li>
               ))}
@@ -254,7 +259,7 @@ const Pricing = () => {
             ) : isSubscribed && tier === 'pro' ? (
               <div className="space-y-3">
                 <div className="p-3 rounded-sm bg-emerald-500/10 text-center">
-                  <p className="text-sm font-medium text-emerald-400">
+                  <p className="text-sm font-medium text-sf-emerald">
                     Pro active ({subscription?.plan_type})
                   </p>
                 </div>
@@ -314,7 +319,7 @@ const Pricing = () => {
 
             <div className="mb-6">
               <h2 className="font-heading text-xl font-light uppercase tracking-[2px] mb-2 flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-violet-400" />
+                <Sparkles className="w-5 h-5 text-sf-violet" />
                 VANGUARD ACCESS
               </h2>
               <div className="flex items-baseline gap-2">
@@ -327,7 +332,7 @@ const Pricing = () => {
             <ul className="space-y-3 mb-8">
               {vanguardFeatures.map((feature) => (
                 <li key={feature} className="flex items-center gap-2 text-sm">
-                  <Check className="w-4 h-4 text-violet-400 shrink-0" />
+                  <Check className="w-4 h-4 text-sf-violet shrink-0" />
                   <span className="text-tier-2">{feature}</span>
                 </li>
               ))}
@@ -343,7 +348,7 @@ const Pricing = () => {
             ) : isVanguard ? (
               <div className="space-y-3">
                 <div className="p-3 rounded-sm bg-violet-500/10 text-center">
-                  <p className="text-sm font-medium text-violet-400">
+                  <p className="text-sm font-medium text-sf-violet">
                     Vanguard active ({subscription?.plan_type})
                   </p>
                 </div>
@@ -425,7 +430,7 @@ const Pricing = () => {
           <GlassPanel className="p-8 border-violet-500/15">
             <div className="flex items-start gap-4 mb-6">
               <div className="w-12 h-12 rounded-sm bg-violet-500/10 flex items-center justify-center shrink-0">
-                <Map className="w-6 h-6 text-violet-400" />
+                <Map className="w-6 h-6 text-sf-violet" />
               </div>
               <div>
                 <h3 className="font-heading text-lg font-light uppercase tracking-[2px] mb-1">Vanguard: Shape What Comes Next</h3>

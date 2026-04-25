@@ -120,7 +120,7 @@ export function TagInput({
             onFocus={() => setShowSuggestions(true)}
             onKeyDown={handleKeyDown}
             placeholder={value.length === 0 ? placeholder : ""}
-            className="flex-1 min-w-[80px] bg-transparent outline-none text-sm placeholder:text-muted-foreground"
+            className="flex-1 min-w-[80px] bg-transparent outline-none text-sm placeholder:text-t3"
             disabled={disabled}
           />
         )}
@@ -142,7 +142,7 @@ export function TagInput({
       )}
 
       {value.length >= maxTags && (
-        <p className="text-xs text-muted-foreground mt-1">
+        <p className="text-xs text-t3 mt-1">
           Maximum {maxTags} tags reached
         </p>
       )}

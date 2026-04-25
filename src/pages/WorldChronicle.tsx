@@ -12,7 +12,7 @@ const WorldChronicle = () => {
   if (!worldId) {
     return (
       <div className="flex items-center justify-center h-full">
-        <p className="font-mono text-xs uppercase tracking-wider text-muted-foreground/50">
+        <p className="font-mono text-xs uppercase tracking-wider text-t3/50">
           World not found.
         </p>
       </div>

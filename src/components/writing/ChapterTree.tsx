@@ -310,7 +310,7 @@ export function ChapterTree({
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
                       onClick={() => onDeleteFolder(folder.id)}
-                      className="text-xs text-destructive focus:text-destructive"
+                      className="text-xs text-sf-crimson focus:text-sf-crimson"
                     >
                       Delete folder
                     </DropdownMenuItem>
@@ -578,7 +578,7 @@ function DocRow({
               e.stopPropagation();
               onDelete();
             }}
-            className="text-xs text-destructive focus:text-destructive"
+            className="text-xs text-sf-crimson focus:text-sf-crimson"
           >
             Delete
           </DropdownMenuItem>

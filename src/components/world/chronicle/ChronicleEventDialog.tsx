@@ -142,7 +142,7 @@ export function ChronicleEventDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[480px] bg-[#0C1019] border-border/10 rounded-none p-0">
+      <DialogContent className="sm:max-w-[480px] bg-[#0C1019] border-sf-border rounded-none p-0">
         <DialogHeader className="px-6 pt-6 pb-0">
           <DialogTitle className="sf-tool-section text-left">
             {isEditing ? "Edit Event" : "New Event"}
@@ -292,7 +292,7 @@ export function ChronicleEventDialog({
                     setLinkedEntryId("");
                     setLinkedEntryTitle("");
                   }}
-                  className="text-muted-foreground/30 hover:text-muted-foreground/60 text-[9px] uppercase tracking-wider"
+                  className="text-t3/30 hover:text-t3/60 text-[9px] uppercase tracking-wider"
                 >
                   Remove
                 </button>
@@ -362,7 +362,7 @@ export function ChronicleEventDialog({
               <button
                 type="button"
                 onClick={() => onDelete(event!.id)}
-                className="sf-fill-sweep sf-fill-sweep--secondary px-3 py-1.5 border border-destructive/20 text-destructive/70 text-[10px] uppercase tracking-wider"
+                className="sf-fill-sweep sf-fill-sweep--secondary px-3 py-1.5 border border-destructive/20 text-sf-crimson/70 text-[10px] uppercase tracking-wider"
               >
                 Delete
               </button>
@@ -373,7 +373,7 @@ export function ChronicleEventDialog({
               <button
                 type="button"
                 onClick={() => onOpenChange(false)}
-                className="sf-fill-sweep sf-fill-sweep--secondary px-4 py-1.5 border border-border/15 text-[10px] uppercase tracking-wider text-muted-foreground/50"
+                className="sf-fill-sweep sf-fill-sweep--secondary px-4 py-1.5 border border-border/15 text-[10px] uppercase tracking-wider text-t3/50"
               >
                 Cancel
               </button>

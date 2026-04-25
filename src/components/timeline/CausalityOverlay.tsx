@@ -144,7 +144,7 @@ const CausalityOverlay = memo(
                   <p className="text-xs font-semibold" style={{ color: config.color }}>
                     {config.label}
                   </p>
-                  <p className="text-[10px] text-muted-foreground">
+                  <p className="text-[10px] text-t3">
                     {sourceEvent.name} → {targetEvent.name}
                   </p>
                   {link.label && (

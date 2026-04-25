@@ -14,7 +14,7 @@ const SECTIONS = [
       "Learn the Environmental Cascade principle and build your first world through a guided 4-step pathway.",
     to: "/getting-started",
     icon: Sparkles,
-    accent: "text-emerald-400",
+    accent: "text-sf-emerald",
     accentBorder: "group-hover:border-emerald-400/20",
     accentBar: "bg-emerald-400/60",
   },

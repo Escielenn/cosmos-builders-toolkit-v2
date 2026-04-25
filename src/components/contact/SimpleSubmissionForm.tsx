@@ -124,11 +124,11 @@ const SimpleSubmissionForm = ({ type, onSuccess }: SimpleSubmissionFormProps) =>
   if (submitted) {
     return (
       <div className="text-center py-8">
-        <CheckCircle className="w-12 h-12 text-emerald-500 mx-auto mb-4" />
+        <CheckCircle className="w-12 h-12 text-sf-emerald mx-auto mb-4" />
         <h3 className="font-heading text-xl font-semibold mb-2">
           {config.successTitle}
         </h3>
-        <p className="text-muted-foreground mb-4">{config.successMessage}</p>
+        <p className="text-t3 mb-4">{config.successMessage}</p>
         {config.showTicket && ticketNumber && (
           <>
             <div className="inline-flex items-center gap-2 bg-muted px-4 py-2 rounded-md mb-4">
@@ -137,7 +137,7 @@ const SimpleSubmissionForm = ({ type, onSuccess }: SimpleSubmissionFormProps) =>
                 <Copy className="w-4 h-4" />
               </Button>
             </div>
-            <p className="text-sm text-muted-foreground mb-4">
+            <p className="text-sm text-t3 mb-4">
               Save this ticket number for your reference.
             </p>
           </>
@@ -174,7 +174,7 @@ const SimpleSubmissionForm = ({ type, onSuccess }: SimpleSubmissionFormProps) =>
             />
           </div>
           {errors.name && (
-            <p className="text-sm text-destructive">{errors.name.message}</p>
+            <p className="text-sm text-sf-crimson">{errors.name.message}</p>
           )}
         </div>
 
@@ -190,7 +190,7 @@ const SimpleSubmissionForm = ({ type, onSuccess }: SimpleSubmissionFormProps) =>
             />
           </div>
           {errors.email && (
-            <p className="text-sm text-destructive">{errors.email.message}</p>
+            <p className="text-sm text-sf-crimson">{errors.email.message}</p>
           )}
         </div>
       </div>
@@ -206,7 +206,7 @@ const SimpleSubmissionForm = ({ type, onSuccess }: SimpleSubmissionFormProps) =>
           />
         </div>
         {errors.subject && (
-          <p className="text-sm text-destructive">{errors.subject.message}</p>
+          <p className="text-sm text-sf-crimson">{errors.subject.message}</p>
         )}
       </div>
 
@@ -222,7 +222,7 @@ const SimpleSubmissionForm = ({ type, onSuccess }: SimpleSubmissionFormProps) =>
           />
         </div>
         {errors.message && (
-          <p className="text-sm text-destructive">{errors.message.message}</p>
+          <p className="text-sm text-sf-crimson">{errors.message.message}</p>
         )}
       </div>
 

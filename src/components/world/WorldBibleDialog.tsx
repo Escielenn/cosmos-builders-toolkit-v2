@@ -301,7 +301,7 @@ const WorldBibleDialog = ({
 
             {/* Select All / Deselect All */}
             <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">
+              <span className="text-sm text-t3">
                 {selectedCount} of {allWorksheets.length} worksheet{allWorksheets.length !== 1 ? "s" : ""} selected
               </span>
               <div className="flex gap-2">
@@ -324,7 +324,7 @@ const WorldBibleDialog = ({
                 />
                 <Label htmlFor="include-notes" className="flex-1 cursor-pointer">
                   <span className="font-medium">Include World Notes</span>
-                  <p className="text-xs text-muted-foreground mt-0.5">
+                  <p className="text-xs text-t3 mt-0.5">
                     Add your world notes as the opening chapter
                   </p>
                 </Label>
@@ -333,7 +333,7 @@ const WorldBibleDialog = ({
 
             {/* Chapter tree */}
             {chaptersWithWs.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground">
+              <div className="text-center py-8 text-t3">
                 <p>No worksheets found in this world.</p>
               </div>
             ) : (
@@ -361,7 +361,7 @@ const WorldBibleDialog = ({
                           <span className="font-semibold text-sm">
                             Ch. {cw.chapter.number}: {cw.chapter.title}
                           </span>
-                          <span className="text-xs text-muted-foreground ml-2">
+                          <span className="text-xs text-t3 ml-2">
                             ({cw.worksheets.length})
                           </span>
                         </div>
@@ -398,7 +398,7 @@ const WorldBibleDialog = ({
         {isGenerating && (
           <div className="space-y-2">
             <Progress value={progress} className="h-2" />
-            <p className="text-xs text-muted-foreground text-center">
+            <p className="text-xs text-t3 text-center">
               Generating World Bible...
             </p>
           </div>
@@ -406,7 +406,7 @@ const WorldBibleDialog = ({
 
         {/* Inline theme picker */}
         <div className="pt-3 border-t border-border">
-          <Label className="text-xs text-muted-foreground mb-2 block">PDF Theme</Label>
+          <Label className="text-xs text-t3 mb-2 block">PDF Theme</Label>
           <div className="flex gap-2 flex-wrap">
             {EXPORT_THEMES.map((theme) => {
               const isSelected = preferences.themeId === theme.id;
@@ -426,7 +426,7 @@ const WorldBibleDialog = ({
                   {theme.swatch.map((color, i) => (
                     <div
                       key={i}
-                      className="w-4 h-4 rounded-sm border border-border/30"
+                      className="w-4 h-4 rounded-sm border border-sf-border"
                       style={{ backgroundColor: color }}
                     />
                   ))}

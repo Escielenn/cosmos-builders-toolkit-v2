@@ -150,7 +150,7 @@ const ExportDialog = ({
             });
             const blob = new Blob([textContent], { type: "text/plain;charset=utf-8" });
             downloadBlob(blob, `${filename}.txt`);
-            toast({ title: "EXPORT COMPLETE.", description: "Downloaded as text file." });
+            toast({ title: "EXPORT COMPLETE.", description: "TRANSMISSION LOGGED (TXT)." });
           }
           break;
         }
@@ -163,7 +163,7 @@ const ExportDialog = ({
             worksheetTitle,
             data: formState as Record<string, unknown>,
           });
-          toast({ title: "EXPORT COMPLETE.", description: "Downloaded as Word document." });
+          toast({ title: "EXPORT COMPLETE.", description: "TRANSMISSION LOGGED (DOCX)." });
           break;
         }
 
@@ -442,7 +442,7 @@ const ExportDialog = ({
 
           <TabsContent value="pdf" className="space-y-4 pt-4">
             {!hasPdfTemplates ? (
-              <div className="text-center p-6 text-muted-foreground">
+              <div className="text-center p-6 text-t3">
                 <FileText className="w-12 h-12 mx-auto mb-3 opacity-50" />
                 <p className="font-medium">PDF export coming soon</p>
                 <p className="text-sm mt-1">
@@ -459,11 +459,11 @@ const ExportDialog = ({
                   <RadioGroupItem value="pdf-summary" id="pdf-summary" disabled={!summaryTemplate} />
                   <Label htmlFor="pdf-summary" className={`flex-1 ${summaryTemplate ? "cursor-pointer" : "cursor-not-allowed"}`}>
                     <div className="flex items-center gap-2">
-                      <FileText className="w-4 h-4 text-muted-foreground" />
+                      <FileText className="w-4 h-4 text-t3" />
                       <span className="font-medium">Summary (1-2 pages)</span>
-                      {!summaryTemplate && <span className="text-xs text-muted-foreground">(Coming soon)</span>}
+                      {!summaryTemplate && <span className="text-xs text-t3">(Coming soon)</span>}
                     </div>
-                    <p className="text-xs text-muted-foreground mt-1">
+                    <p className="text-xs text-t3 mt-1">
                       Key results and variable values only
                     </p>
                   </Label>
@@ -472,11 +472,11 @@ const ExportDialog = ({
                   <RadioGroupItem value="pdf-full" id="pdf-full" disabled={!fullTemplate} />
                   <Label htmlFor="pdf-full" className={`flex-1 ${fullTemplate ? "cursor-pointer" : "cursor-not-allowed"}`}>
                     <div className="flex items-center gap-2">
-                      <FileText className="w-4 h-4 text-muted-foreground" />
+                      <FileText className="w-4 h-4 text-t3" />
                       <span className="font-medium">Full Report</span>
-                      {!fullTemplate && <span className="text-xs text-muted-foreground">(Coming soon)</span>}
+                      {!fullTemplate && <span className="text-xs text-t3">(Coming soon)</span>}
                     </div>
-                    <p className="text-xs text-muted-foreground mt-1">
+                    <p className="text-xs text-t3 mt-1">
                       All content including notes and worldbuilding
                     </p>
                   </Label>
@@ -486,7 +486,7 @@ const ExportDialog = ({
 
             {/* Inline theme picker */}
             <div className="pt-3 border-t border-border">
-              <Label className="text-xs text-muted-foreground mb-2 block">PDF Theme</Label>
+              <Label className="text-xs text-t3 mb-2 block">PDF Theme</Label>
               <div className="flex gap-2 flex-wrap">
                 {EXPORT_THEMES.map((theme) => {
                   const isSelected = persistedPrefs.themeId === theme.id;
@@ -506,7 +506,7 @@ const ExportDialog = ({
                       {theme.swatch.map((color, i) => (
                         <div
                           key={i}
-                          className="w-4 h-4 rounded-sm border border-border/30"
+                          className="w-4 h-4 rounded-sm border border-sf-border"
                           style={{ backgroundColor: color }}
                         />
                       ))}
@@ -525,12 +525,12 @@ const ExportDialog = ({
               className="flex items-center space-x-3 p-3 rounded-lg border border-border bg-accent/5 cursor-pointer"
               onClick={() => setFormat("text")}
             >
-              <FileType className="w-5 h-5 text-muted-foreground" />
+              <FileType className="w-5 h-5 text-t3" />
               <div className="flex-1">
                 <span className="font-medium">
                   {isTimelineData(formState) ? "Markdown (.md)" : "Plain Text (.txt)"}
                 </span>
-                <p className="text-xs text-muted-foreground mt-1">
+                <p className="text-xs text-t3 mt-1">
                   {isTimelineData(formState)
                     ? "Structured Markdown with tracks, events, and links. Great for documentation and wikis."
                     : "Universal format, works everywhere. ASCII formatted with sections and tables."}
@@ -544,10 +544,10 @@ const ExportDialog = ({
               className="flex items-center space-x-3 p-3 rounded-lg border border-border bg-accent/5 cursor-pointer"
               onClick={() => setFormat("word")}
             >
-              <FileSpreadsheet className="w-5 h-5 text-muted-foreground" />
+              <FileSpreadsheet className="w-5 h-5 text-t3" />
               <div className="flex-1">
                 <span className="font-medium">Microsoft Word (.docx)</span>
-                <p className="text-xs text-muted-foreground mt-1">
+                <p className="text-xs text-t3 mt-1">
                   Fully editable document with formatting. Great for collaboration and further editing.
                 </p>
               </div>
@@ -559,10 +559,10 @@ const ExportDialog = ({
               className="flex items-center space-x-3 p-3 rounded-lg border border-border bg-accent/5 cursor-pointer"
               onClick={() => setFormat("json")}
             >
-              <FileJson className="w-5 h-5 text-muted-foreground" />
+              <FileJson className="w-5 h-5 text-t3" />
               <div className="flex-1">
                 <span className="font-medium">JSON Export (.json)</span>
-                <p className="text-xs text-muted-foreground mt-1">
+                <p className="text-xs text-t3 mt-1">
                   Machine-readable data file. For backups or importing into other tools.
                 </p>
               </div>
@@ -574,20 +574,20 @@ const ExportDialog = ({
               className="flex items-center space-x-3 p-3 rounded-lg border border-border bg-accent/5 cursor-pointer"
               onClick={() => setFormat("csv")}
             >
-              <Table2 className="w-5 h-5 text-muted-foreground" />
+              <Table2 className="w-5 h-5 text-t3" />
               <div className="flex-1">
                 <span className="font-medium">CSV Export (.csv)</span>
-                <p className="text-xs text-muted-foreground mt-1">
+                <p className="text-xs text-t3 mt-1">
                   Spreadsheet-compatible format. Flattened field/value rows for Excel, Google Sheets, or data analysis.
                 </p>
               </div>
             </div>
             {formState && typeof formState === "object" && (
               <div className="rounded-lg border border-border bg-muted/30 p-3 max-h-40 overflow-auto">
-                <p className="text-[11px] font-medium uppercase tracking-[1.5px] text-muted-foreground mb-2">
+                <p className="text-[11px] font-medium uppercase tracking-[1.5px] text-t3 mb-2">
                   Preview
                 </p>
-                <pre className="text-xs font-mono text-muted-foreground whitespace-pre-wrap">
+                <pre className="text-xs font-mono text-t3 whitespace-pre-wrap">
                   {(() => {
                     try {
                       const pairs = Object.entries(formState as Record<string, unknown>).slice(0, 8);
@@ -608,7 +608,7 @@ const ExportDialog = ({
 
           <TabsContent value="notion" className="space-y-4 pt-4">
             {!user ? (
-              <div className="text-center p-6 text-muted-foreground">
+              <div className="text-center p-6 text-t3">
                 <p>Please sign in to export to Notion.</p>
               </div>
             ) : isConnected ? (
@@ -624,7 +624,7 @@ const ExportDialog = ({
                   />
                   <div className="flex-1">
                     <span className="font-medium">Export to Notion</span>
-                    <p className="text-xs text-muted-foreground mt-1">
+                    <p className="text-xs text-t3 mt-1">
                       Create a new page in your Notion workspace with all worksheet data.
                     </p>
                   </div>
@@ -654,7 +654,7 @@ const ExportDialog = ({
                     variant="ghost"
                     size="sm"
                     onClick={disconnect}
-                    className="text-muted-foreground hover:text-destructive flex-shrink-0"
+                    className="text-t3 hover:text-sf-crimson flex-shrink-0"
                   >
                     <Unplug className="w-4 h-4 mr-1" />
                     Disconnect
@@ -668,7 +668,7 @@ const ExportDialog = ({
                   alt="Notion"
                   className="w-12 h-12 mx-auto opacity-50"
                 />
-                <p className="text-muted-foreground">
+                <p className="text-t3">
                   Connect your Notion workspace to export worksheets directly as pages.
                 </p>
                 <Button onClick={connect} disabled={isConnecting}>
@@ -731,7 +731,7 @@ const ExportDialog = ({
                   onChange={(e) => setFilename(e.target.value)}
                   className="flex-1"
                 />
-                <span className="flex items-center text-sm text-muted-foreground">
+                <span className="flex items-center text-sm text-t3">
                   .{getFileExtension(format)}
                 </span>
               </div>
@@ -771,7 +771,7 @@ const ExportDialog = ({
         </div>
 
         {/* Social sharing */}
-        <div className="mt-4 pt-4 border-t border-border/10">
+        <div className="mt-4 pt-4 border-t border-sf-border">
           <SocialShareButtons
             url={window.location.href}
             title={`${toolName} — Built with StellarForge`}

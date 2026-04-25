@@ -140,10 +140,10 @@ const LOCAL_STORAGE_KEY = "lexdrift-v1";
 // ─── Severity color helpers ──────────────────────────────────────────
 
 const SEVERITY_STYLES = {
-  dialect: { text: "text-emerald-400", border: "border-l-emerald-400", bg: "bg-emerald-400/10" },
-  significant: { text: "text-cyan-400", border: "border-l-cyan-400", bg: "bg-cyan-400/10" },
+  dialect: { text: "text-sf-emerald", border: "border-l-emerald-400", bg: "bg-emerald-400/10" },
+  significant: { text: "text-sf-cyan", border: "border-l-cyan-400", bg: "bg-cyan-400/10" },
   reduced: { text: "text-orange-500", border: "border-l-orange-500", bg: "bg-orange-500/10" },
-  separate: { text: "text-red-500", border: "border-l-red-500", bg: "bg-red-500/10" },
+  separate: { text: "text-sf-crimson", border: "border-l-red-500", bg: "bg-red-500/10" },
 };
 
 // ─── Component ───────────────────────────────────────────────────────
@@ -200,7 +200,7 @@ const LexDrift = () => {
         }
         toast({
           title: "Worksheet Loaded",
-          description: "Your saved work has been restored from the cloud.",
+          description: "WORK RESTORED FROM CLOUD.",
         });
       } catch {
         // Ignore parse errors
@@ -433,8 +433,8 @@ const LexDrift = () => {
           });
         } else {
           toast({
-            title: "Error",
-            description: "Please select or create a worksheet first.",
+            title: "OPERATION FAILED.",
+            description: "SELECT OR CREATE A WORKSHEET BEFORE TRANSMITTING.",
             variant: "destructive",
           });
         }
@@ -442,7 +442,7 @@ const LexDrift = () => {
         // Error handled by mutation
       }
     } else {
-      toast({ title: "Draft Saved", description: "Your work has been saved locally." });
+      toast({ title: "Draft Saved", description: "WORK SECURED TO LOCAL STORAGE." });
     }
   };
 
@@ -484,7 +484,7 @@ const LexDrift = () => {
     if (!calculationResult.valid) return;
     const text = buildCopyText(calculationResult, formState);
     navigator.clipboard.writeText(text);
-    toast({ title: "Copied", description: "Analysis copied to clipboard." });
+    toast({ title: "COPIED TO CLIPBOARD.", description: "ANALYSIS COPIED TO CLIPBOARD." });
   };
 
   const worldNameForExport = worldId ? worldName : undefined;
@@ -751,7 +751,7 @@ const LexDrift = () => {
             <button
               type="button"
               onClick={() => setShowAdvanced(!showAdvanced)}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-sm border border-border/50 bg-accent/5 hover:bg-accent/10 transition-colors"
+              className="flex items-center gap-2 px-3 py-1.5 rounded-sm border border-sf-border bg-accent/5 hover:bg-accent/10 transition-colors"
             >
               <span className="font-mono text-[10px] uppercase tracking-[1.5px] text-tier-3">
                 {showAdvanced ? "▾ Hide" : "▸ Show"} Advanced Parameters
@@ -888,7 +888,7 @@ const LexDrift = () => {
                       onClick={() => removeContactEvent(event.id)}
                       aria-label="Remove contact event"
                     >
-                      <Trash2 className="w-4 h-4 text-destructive" />
+                      <Trash2 className="w-4 h-4 text-sf-crimson" />
                     </Button>
                   </div>
                 ))}
@@ -1073,7 +1073,7 @@ const LexDrift = () => {
                 {/* Liturgical Note */}
                 {calculationResult.liturgicalNote && (
                   <GlassPanel className="p-5 border-l-4 border-l-amber-500/50">
-                    <p className="font-mono text-xs uppercase tracking-sf-wide text-amber-400/60 mb-2">
+                    <p className="font-mono text-xs uppercase tracking-sf-wide text-sf-amber/60 mb-2">
                       Liturgical Preservation
                     </p>
                     <p className="text-sm text-tier-3 leading-relaxed">
@@ -1097,12 +1097,12 @@ const LexDrift = () => {
                     ].map(({ label, value }) => (
                       <div key={label} className="flex justify-between items-center">
                         <span className="text-sm text-tier-3">{label}</span>
-                        <span className={`font-mono text-sm ${value > 1 ? "text-orange-400" : value < 1 ? "text-emerald-400" : "text-foreground"}`}>
+                        <span className={`font-mono text-sm ${value > 1 ? "text-orange-400" : value < 1 ? "text-sf-emerald" : "text-foreground"}`}>
                           ×{value.toFixed(2)}
                         </span>
                       </div>
                     ))}
-                    <div className="pt-2 border-t border-border/50 flex justify-between items-center">
+                    <div className="pt-2 border-t border-sf-border flex justify-between items-center">
                       <span className="text-sm font-medium">Combined</span>
                       <span className="font-mono text-sm font-bold text-primary">
                         ×{calculationResult.totalModifier.toFixed(3)}
@@ -1260,7 +1260,7 @@ const LexDrift = () => {
                           onClick={() => removeShip(ship.id)}
                           aria-label="Remove ship"
                         >
-                          <Trash2 className="w-4 h-4 text-destructive" />
+                          <Trash2 className="w-4 h-4 text-sf-crimson" />
                         </Button>
                       </div>
                       <div className="grid grid-cols-2 gap-4">

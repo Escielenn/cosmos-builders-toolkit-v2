@@ -126,12 +126,12 @@ const WorldSnapshotDialog = ({
                   : "border-border hover:border-border/80 hover:bg-accent/5"
               }`}
             >
-              <Icon className={`w-5 h-5 mt-0.5 flex-shrink-0 ${action === id ? "text-primary" : "text-muted-foreground"}`} />
+              <Icon className={`w-5 h-5 mt-0.5 flex-shrink-0 ${action === id ? "text-primary" : "text-t3"}`} />
               <div className="flex-1 min-w-0">
-                <span className={`text-sm font-medium ${action === id ? "text-foreground" : "text-foreground/80"}`}>
+                <span className={`text-sm font-medium ${action === id ? "text-foreground" : "text-t2"}`}>
                   {label}
                 </span>
-                <p className="text-xs text-muted-foreground mt-0.5">
+                <p className="text-xs text-t3 mt-0.5">
                   {description}
                 </p>
               </div>
@@ -141,7 +141,7 @@ const WorldSnapshotDialog = ({
 
         {action === "save-version" && (
           <div className="space-y-2">
-            <Label htmlFor="version-label" className="text-xs uppercase tracking-wider text-muted-foreground">
+            <Label htmlFor="version-label" className="text-xs uppercase tracking-wider text-t3">
               Version Label (optional)
             </Label>
             <Input

@@ -102,7 +102,7 @@ const FilterBar = () => {
     <div className="flex items-center gap-2 flex-wrap mb-3">
       {/* Search Input */}
       <div className="relative w-48">
-        <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
+        <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-t3" />
         <Input
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
@@ -113,7 +113,7 @@ const FilterBar = () => {
           <button
             type="button"
             onClick={() => setSearchInput("")}
-            className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+            className="absolute right-2 top-1/2 -translate-y-1/2 text-t3 hover:text-foreground"
           >
             <X className="w-3 h-3" />
           </button>
@@ -188,7 +188,7 @@ const FilterBar = () => {
           <div className="space-y-2">
             {eventTypeCategories.map((cat) => (
               <div key={cat.label}>
-                <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider px-2 mb-0.5">
+                <p className="text-[10px] font-semibold text-t3 uppercase tracking-wider px-2 mb-0.5">
                   {cat.label}
                 </p>
                 {cat.types.map((et) => (
@@ -220,7 +220,7 @@ const FilterBar = () => {
               "px-2 py-1 rounded border text-[10px] font-medium transition-colors h-8",
               filter.importanceLevels.includes(il.id)
                 ? "border-primary bg-primary/10 text-foreground"
-                : "border-border/50 text-muted-foreground hover:border-border"
+                : "border-sf-border text-t3 hover:border-border"
             )}
           >
             {il.label}
@@ -249,7 +249,7 @@ const FilterBar = () => {
         <PopoverContent className="w-56 p-3" align="start">
           <div className="space-y-2">
             <div className="space-y-1">
-              <label className="text-[10px] text-muted-foreground font-medium">From Year</label>
+              <label className="text-[10px] text-t3 font-medium">From Year</label>
               <Input
                 type="number"
                 className="h-7 text-xs"
@@ -270,7 +270,7 @@ const FilterBar = () => {
               />
             </div>
             <div className="space-y-1">
-              <label className="text-[10px] text-muted-foreground font-medium">To Year</label>
+              <label className="text-[10px] text-t3 font-medium">To Year</label>
               <Input
                 type="number"
                 className="h-7 text-xs"
@@ -349,7 +349,7 @@ const FilterBar = () => {
         <Button
           variant="ghost"
           size="sm"
-          className="h-8 text-xs text-muted-foreground hover:text-foreground gap-1"
+          className="h-8 text-xs text-t3 hover:text-foreground gap-1"
           onClick={() => dispatch({ type: "CLEAR_FILTERS" })}
         >
           <X className="w-3 h-3" />

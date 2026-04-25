@@ -19,10 +19,10 @@ import { BOOKSHELF_BURSTS } from "@/lib/data-bursts";
 const CoverFallback = ({ title, author }: { title: string; author: string }) => (
   <div className="w-full h-full bg-gradient-to-br from-primary/20 to-accent/10 flex flex-col items-center justify-center p-3 text-center">
     <BookOpen className="w-8 h-8 text-primary/40 mb-2" />
-    <p className="text-xs font-heading font-semibold text-foreground/70 leading-tight">
+    <p className="text-xs font-heading font-semibold text-t2 leading-tight">
       {title}
     </p>
-    <p className="text-[10px] text-muted-foreground mt-1">{author}</p>
+    <p className="text-[10px] text-t3 mt-1">{author}</p>
   </div>
 );
 
@@ -51,11 +51,11 @@ const BookCard = ({ book }: { book: BookEntry }) => {
         <h3 className="font-heading font-semibold leading-tight">
           <em>{book.title}</em>
         </h3>
-        <p className="text-sm text-muted-foreground mt-1">
+        <p className="text-sm text-t3 mt-1">
           {book.author} ({book.year})
         </p>
 
-        <p className="text-xs text-muted-foreground mt-3 leading-relaxed flex-1">
+        <p className="text-xs text-t3 mt-3 leading-relaxed flex-1">
           {book.description}
         </p>
 
@@ -74,8 +74,8 @@ const BookCard = ({ book }: { book: BookEntry }) => {
         </div>
 
         {/* Store links */}
-        <div className="flex items-center gap-3 mt-4 pt-3 border-t border-border/50">
-          <ShoppingCart className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+        <div className="flex items-center gap-3 mt-4 pt-3 border-t border-sf-border">
+          <ShoppingCart className="w-3.5 h-3.5 text-t3 shrink-0" />
           <a
             href={getAmazonUrl(book.title, book.author)}
             target="_blank"
@@ -120,14 +120,13 @@ const Bookshelf = () => {
       <main className="container mx-auto px-4 pt-24 pb-16 relative z-10">
         {/* Hero */}
         <div className="text-center mb-12">
-          <Badge variant="outline" className="mb-4">
-            <BookOpen className="w-3 h-3 mr-1" />
-            {searchTerm.length >= 2 ? `${filteredBooks.length} of ${BOOKSHELF_DATA.length}` : BOOKSHELF_DATA.length} Works
-          </Badge>
-          <h1 className="font-display text-3xl md:text-4xl font-bold mb-4">
-            The StellarForge Bookshelf
+          <p className="font-mono text-[11px] tracking-[0.18em] text-sf-teal uppercase mb-4">
+            // CATALOG · {searchTerm.length >= 2 ? `${filteredBooks.length} OF ${BOOKSHELF_DATA.length}` : `${BOOKSHELF_DATA.length} WORKS`}
+          </p>
+          <h1 className="font-display text-3xl md:text-4xl font-light tracking-sf-title text-t1 mb-4 uppercase">
+            THE STELLARFORGE BOOKSHELF
           </h1>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-t3 max-w-2xl mx-auto">
             The science fiction novels that inspired our worldbuilding tools.
             Each book demonstrates how a single constraint—environmental,
             biological, technological, or political—cascades through an
@@ -137,7 +136,7 @@ const Bookshelf = () => {
 
         {/* Search */}
         <div className="relative max-w-md mx-auto mb-10">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-t3" />
           <Input
             placeholder="Search by title, author, or topic..."
             value={searchTerm}
@@ -154,14 +153,14 @@ const Bookshelf = () => {
             ))}
           </div>
         ) : (
-          <p className="text-center text-muted-foreground py-12">
+          <p className="text-center text-t3 py-12">
             No books found for &ldquo;{searchTerm}&rdquo;
           </p>
         )}
 
         {/* Footer note */}
         <div className="text-center mt-12">
-          <p className="text-xs text-muted-foreground">
+          <p className="text-xs text-t3">
             Links may include affiliate referrals that help support StellarForge
             at no extra cost to you.
           </p>

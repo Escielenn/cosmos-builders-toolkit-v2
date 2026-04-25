@@ -43,7 +43,7 @@ const components: PortableTextComponents = {
       <p className="mb-4 leading-relaxed">{children}</p>
     ),
     blockquote: ({ children }) => (
-      <blockquote className="border-l-4 border-primary pl-4 my-4 italic text-muted-foreground">
+      <blockquote className="border-l-4 border-primary pl-4 my-4 italic text-t3">
         {children}
       </blockquote>
     ),
@@ -86,7 +86,7 @@ const components: PortableTextComponents = {
             className="rounded-lg w-full"
           />
           {imageValue.caption && (
-            <figcaption className="text-center text-sm text-muted-foreground mt-2">
+            <figcaption className="text-center text-sm text-t3 mt-2">
               {imageValue.caption}
             </figcaption>
           )}

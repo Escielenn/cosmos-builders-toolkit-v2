@@ -78,7 +78,7 @@ export default function StarSystemDiagram({
           System Diagram
         </h3>
         <div className="h-[300px] bg-[#0D0D0F] rounded-lg flex items-center justify-center">
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-t3">
             Select a spectral class above to visualize your system
           </p>
         </div>
@@ -112,7 +112,7 @@ export default function StarSystemDiagram({
         className="h-[350px] md:h-[450px]"
       />
       {/* Info strip */}
-      <div className="mt-3 flex flex-wrap items-center gap-x-6 gap-y-1 text-xs text-muted-foreground">
+      <div className="mt-3 flex flex-wrap items-center gap-x-6 gap-y-1 text-xs text-t3">
         {hz && (
           <span className="font-mono">
             HZ: {hz.runawayGreenhouse.toFixed(3)}–{hz.maxGreenhouse.toFixed(3)} AU

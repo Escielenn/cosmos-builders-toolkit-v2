@@ -54,13 +54,13 @@ const CodexSection = ({
         {expanded ? (
           <ChevronDown className="w-2.5 h-2.5 text-primary/50 shrink-0" />
         ) : (
-          <ChevronRight className="w-2.5 h-2.5 text-muted-foreground/40 shrink-0" />
+          <ChevronRight className="w-2.5 h-2.5 text-t3/40 shrink-0" />
         )}
         <span className="font-heading text-[13px] uppercase tracking-[3px] text-primary/60 flex-1">
           {section.label}
         </span>
         {section.elements.length > 0 && (
-          <span className="font-mono text-[11px] text-muted-foreground/30">
+          <span className="font-mono text-[11px] text-t3/30">
             {section.elements.length}
           </span>
         )}
@@ -70,7 +70,7 @@ const CodexSection = ({
       {expanded && (
         <div>
           {sortedElements.length === 0 ? (
-            <p className="px-3 py-1.5 text-[11px] text-muted-foreground/25 italic">
+            <p className="px-3 py-1.5 text-[11px] text-t3/25 italic">
               No data on file. Use a tool to generate entries.
             </p>
           ) : (

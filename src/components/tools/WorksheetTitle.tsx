@@ -92,7 +92,7 @@ export function WorksheetTitle({
           disabled={isSaving}
           aria-label="Cancel editing title"
         >
-          <X className="w-4 h-4 text-muted-foreground" />
+          <X className="w-4 h-4 text-t3" />
         </Button>
       </div>
     );
@@ -113,12 +113,12 @@ export function WorksheetTitle({
       {icon}
       <span className={cn(
         "text-lg font-semibold",
-        title ? "text-primary" : "text-muted-foreground italic"
+        title ? "text-primary" : "text-t3 italic"
       )}>
         {title || "Untitled"}
       </span>
       {!disabled && (
-        <Pencil className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+        <Pencil className="w-4 h-4 text-t3 opacity-0 group-hover:opacity-100 transition-opacity" />
       )}
     </div>
   );

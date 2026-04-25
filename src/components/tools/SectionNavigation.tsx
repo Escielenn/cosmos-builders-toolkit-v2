@@ -74,8 +74,8 @@ const SectionNavigation = ({ sections, mode = 'floating' }: SectionNavigationPro
 
   const NavigationContent = () => (
     <>
-      <h4 className="font-heading text-[9px] font-light tracking-[2.5px] uppercase text-emerald/40 mb-3 pb-2 border-b border-emerald/[0.06]">
-        // NAVIGATION
+      <h4 className="font-heading text-[11px] font-medium tracking-[0.2em] uppercase text-sf-teal/60 mb-3 pb-2 border-b border-sf-teal/[0.08]">
+        <span className="font-mono text-sf-teal mr-1">//</span> NAVIGATION
       </h4>
       <nav className="space-y-0.5">
         {sections.map((section, idx) => {
@@ -151,7 +151,7 @@ const SectionNavigation = ({ sections, mode = 'floating' }: SectionNavigationPro
               <span className="text-[10px] tracking-[1.5px] uppercase font-heading">NAV</span>
             </Button>
           </SheetTrigger>
-          <SheetContent side="right" className="w-72 bg-background/95 backdrop-blur-lg">
+          <SheetContent side="right" className="w-72 bg-sf-surface/95 backdrop-blur-sf-side border-sf-border sf-sb">
             <div className="pt-6">
               <NavigationContent />
             </div>

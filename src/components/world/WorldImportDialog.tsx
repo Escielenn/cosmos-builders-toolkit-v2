@@ -135,10 +135,10 @@ const WorldImportDialog = ({ open, onOpenChange }: WorldImportDialogProps) => {
               onClick={() => fileInputRef.current?.click()}
               className="w-full flex flex-col items-center gap-3 p-8 rounded-lg border-2 border-dashed border-border hover:border-primary/30 hover:bg-accent/5 transition-colors"
             >
-              <Upload className="w-8 h-8 text-muted-foreground" />
+              <Upload className="w-8 h-8 text-t3" />
               <div className="text-center">
                 <p className="text-sm font-medium">Select snapshot file</p>
-                <p className="text-xs text-muted-foreground mt-1">
+                <p className="text-xs text-t3 mt-1">
                   .json or .zip exported from StellarForge
                 </p>
               </div>
@@ -149,13 +149,13 @@ const WorldImportDialog = ({ open, onOpenChange }: WorldImportDialogProps) => {
             {/* File info */}
             <div className="flex items-center gap-3 p-3 rounded-lg bg-accent/5 border border-border">
               {selectedFile?.name.endsWith(".zip") ? (
-                <FolderArchive className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+                <FolderArchive className="w-5 h-5 text-t3 flex-shrink-0" />
               ) : (
-                <FileJson className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+                <FileJson className="w-5 h-5 text-t3 flex-shrink-0" />
               )}
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium truncate">{selectedFile?.name}</p>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-t3">
                   Format v{preview.format_version}
                 </p>
               </div>
@@ -164,42 +164,42 @@ const WorldImportDialog = ({ open, onOpenChange }: WorldImportDialogProps) => {
             {/* Preview */}
             <div className="space-y-3">
               <div className="space-y-1">
-                <p className="text-xs uppercase tracking-wider text-muted-foreground font-heading">
+                <p className="text-xs uppercase tracking-wider text-t3 font-heading">
                   World Name
                 </p>
                 <p className="text-sm font-medium">{preview.world.name}</p>
               </div>
               {preview.world.description && (
                 <div className="space-y-1">
-                  <p className="text-xs uppercase tracking-wider text-muted-foreground font-heading">
+                  <p className="text-xs uppercase tracking-wider text-t3 font-heading">
                     Description
                   </p>
-                  <p className="text-sm text-muted-foreground line-clamp-2">
+                  <p className="text-sm text-t3 line-clamp-2">
                     {preview.world.description}
                   </p>
                 </div>
               )}
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <p className="text-xs uppercase tracking-wider text-muted-foreground font-heading">
+                  <p className="text-xs uppercase tracking-wider text-t3 font-heading">
                     Worksheets
                   </p>
                   <p className="text-sm font-mono">{preview.worksheets.length}</p>
                 </div>
                 <div className="space-y-1">
-                  <p className="text-xs uppercase tracking-wider text-muted-foreground font-heading">
+                  <p className="text-xs uppercase tracking-wider text-t3 font-heading">
                     Notes
                   </p>
                   <p className="text-sm font-mono">{preview.notes.length}</p>
                 </div>
                 <div className="space-y-1">
-                  <p className="text-xs uppercase tracking-wider text-muted-foreground font-heading">
+                  <p className="text-xs uppercase tracking-wider text-t3 font-heading">
                     Connections
                   </p>
                   <p className="text-sm font-mono">{preview.connections.length}</p>
                 </div>
                 <div className="space-y-1">
-                  <p className="text-xs uppercase tracking-wider text-muted-foreground font-heading">
+                  <p className="text-xs uppercase tracking-wider text-t3 font-heading">
                     Entries
                   </p>
                   <p className="text-sm font-mono">{preview.entries.length}</p>
@@ -207,7 +207,7 @@ const WorldImportDialog = ({ open, onOpenChange }: WorldImportDialogProps) => {
               </div>
             </div>
 
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs text-t3">
               The world will be imported as "{preview.world.name} (imported)" under your account.
             </p>
           </div>

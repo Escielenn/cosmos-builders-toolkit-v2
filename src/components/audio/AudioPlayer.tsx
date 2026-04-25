@@ -109,14 +109,14 @@ function MinimizedBar({
 
       <div className="flex items-center gap-3 px-4 h-10">
         {isError ? (
-          <AlertTriangle className="w-3.5 h-3.5 text-amber-400/70 shrink-0" />
+          <AlertTriangle className="w-3.5 h-3.5 text-sf-amber/70 shrink-0" />
         ) : (
           <Music className="w-3.5 h-3.5 text-primary/50 shrink-0" />
         )}
 
         <span className="text-xs text-tier-2 truncate flex-1">
           {isError ? (
-            <span className="text-tier-4">{trackTitle} <span className="text-amber-400/60">— Unavailable</span></span>
+            <span className="text-tier-4">{trackTitle} <span className="text-sf-amber/60">— Unavailable</span></span>
           ) : (
             trackTitle
           )}
@@ -227,9 +227,9 @@ function ExpandedBar({ state, controls, progressBarRef }: ExpandedBarProps) {
           </button>
           <div className="min-w-0">
             <p className="text-sm text-tier-2 truncate leading-tight flex items-center gap-1.5">
-              {isError && <AlertTriangle className="w-3 h-3 text-amber-400/70 shrink-0" />}
+              {isError && <AlertTriangle className="w-3 h-3 text-sf-amber/70 shrink-0" />}
               {state.currentTrack?.title ?? "No Track"}
-              {isError && <span className="text-[10px] text-amber-400/60 shrink-0">— Unavailable</span>}
+              {isError && <span className="text-[10px] text-sf-amber/60 shrink-0">— Unavailable</span>}
             </p>
             {state.currentTrack?.artist && !isError && (
               <p className="text-[10px] text-tier-4 truncate leading-tight">

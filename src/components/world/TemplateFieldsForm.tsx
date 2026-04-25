@@ -68,7 +68,7 @@ export function TemplateFieldsForm({
         const labelEl = (
           <Label htmlFor={id} className="flex items-center gap-1">
             {f.label}
-            {required && <span className="text-destructive">*</span>}
+            {required && <span className="text-sf-crimson">*</span>}
           </Label>
         );
         const helpEl = f.help_text ? (

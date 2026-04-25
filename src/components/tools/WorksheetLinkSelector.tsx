@@ -142,7 +142,7 @@ const WorksheetLinkSelector = ({
       </Label>
 
       {description && (
-        <p className="text-xs text-muted-foreground">{description}</p>
+        <p className="text-xs text-t3">{description}</p>
       )}
 
       <div className="flex items-center gap-2">
@@ -160,7 +160,7 @@ const WorksheetLinkSelector = ({
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="none">
-              <span className="text-muted-foreground">No link</span>
+              <span className="text-t3">No link</span>
             </SelectItem>
             {worksheets.map((worksheet) => (
               <SelectItem key={worksheet.id} value={worksheet.id}>
@@ -168,7 +168,7 @@ const WorksheetLinkSelector = ({
               </SelectItem>
             ))}
             {worksheets.length === 0 && !loadingWorksheets && (
-              <div className="px-2 py-4 text-center text-sm text-muted-foreground">
+              <div className="px-2 py-4 text-center text-sm text-t3">
                 No {getToolDisplayName(targetToolType)} worksheets in this world
               </div>
             )}
@@ -195,7 +195,7 @@ const WorksheetLinkSelector = ({
               <TooltipContent>
                 <p>Refresh synced data</p>
                 {syncedAt && (
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-xs text-t3">
                     Last synced {syncedAt}
                   </p>
                 )}
@@ -223,8 +223,8 @@ const WorksheetLinkSelector = ({
 
       {/* Show synced data preview */}
       {value?.syncedData && Object.keys(value.syncedData).length > 1 && (
-        <div className="p-3 rounded-lg border border-border/50 bg-muted/30 text-xs space-y-1">
-          <div className="flex items-center justify-between text-muted-foreground">
+        <div className="p-3 rounded-lg border border-sf-border bg-muted/30 text-xs space-y-1">
+          <div className="flex items-center justify-between text-t3">
             <span>Synced data from "{linkedTitle}"</span>
             {syncedAt && <span>{syncedAt}</span>}
           </div>
@@ -234,7 +234,7 @@ const WorksheetLinkSelector = ({
               .slice(0, 6)
               .map(([key, val]) => (
                 <div key={key} className="flex justify-between">
-                  <span className="text-muted-foreground truncate">
+                  <span className="text-t3 truncate">
                     {formatFieldName(key)}:
                   </span>
                   <span className="font-medium truncate ml-2">

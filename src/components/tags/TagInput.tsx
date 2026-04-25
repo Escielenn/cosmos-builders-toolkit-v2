@@ -121,7 +121,7 @@ const TagInput = ({
       {/* Input */}
       <div className="relative">
         <div className="relative flex items-center">
-          <Plus className="absolute left-2.5 w-4 h-4 text-muted-foreground" />
+          <Plus className="absolute left-2.5 w-4 h-4 text-t3" />
           <Input
             ref={inputRef}
             value={inputValue}
@@ -154,7 +154,7 @@ const TagInput = ({
                   style={{ backgroundColor: suggestion.color }}
                 />
                 <span>{suggestion.name}</span>
-                <span className="text-xs text-muted-foreground ml-auto">
+                <span className="text-xs text-t3 ml-auto">
                   {suggestion.usage_count} use{suggestion.usage_count !== 1 ? "s" : ""}
                 </span>
               </button>
@@ -169,7 +169,7 @@ const TagInput = ({
               type="button"
               onMouseDown={(e) => e.preventDefault()}
               onClick={() => addTag(inputValue)}
-              className="w-full px-3 py-2 text-sm text-left text-muted-foreground hover:bg-accent/50 transition-colors"
+              className="w-full px-3 py-2 text-sm text-left text-t3 hover:bg-accent/50 transition-colors"
             >
               Press Enter to create "<span className="text-foreground">{inputValue}</span>"
             </button>

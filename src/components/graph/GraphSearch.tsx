@@ -88,7 +88,7 @@ export function GraphSearch({
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search entities..."
-          className="h-7 w-[160px] text-[11px] rounded-xs border-border/30 bg-transparent"
+          className="h-7 w-[160px] text-[11px] rounded-xs border-sf-border bg-transparent"
         />
         <button
           type="button"

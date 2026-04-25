@@ -88,13 +88,13 @@ function NoteCard({
 
   return (
     <>
-      <div className="border border-border/10 bg-white/[0.01]">
+      <div className="border border-sf-border bg-white/[0.01]">
         {/* Note header */}
         <div className="flex items-center gap-2 px-4 py-2">
           <button
             type="button"
             onClick={() => setIsOpen(!isOpen)}
-            className="shrink-0 text-muted-foreground/40 hover:text-muted-foreground/70 transition-colors"
+            className="shrink-0 text-t3/40 hover:text-t3/70 transition-colors"
           >
             {isOpen ? (
               <ChevronUp className="w-3.5 h-3.5" />
@@ -120,7 +120,7 @@ function NoteCard({
           )}
 
           {isSaving && (
-            <span className="font-mono text-[8px] uppercase tracking-wider text-muted-foreground/30 shrink-0">
+            <span className="font-mono text-[8px] uppercase tracking-wider text-t3/30 shrink-0">
               Saving...
             </span>
           )}
@@ -129,7 +129,7 @@ function NoteCard({
             <button
               type="button"
               onClick={() => setDeleteOpen(true)}
-              className="shrink-0 text-muted-foreground/20 hover:text-destructive/60 transition-colors"
+              className="shrink-0 text-t3/20 hover:text-sf-crimson/60 transition-colors"
               title="Delete note"
             >
               <Trash2 className="w-3.5 h-3.5" />
@@ -228,7 +228,7 @@ const WorldNotes = ({ worldId, readOnly }: WorldNotesProps) => {
               <FileText className="w-5 h-5 text-primary" />
               <span className="font-heading font-medium">World Notes</span>
               {notes.length > 0 && (
-                <span className="font-mono text-[10px] text-muted-foreground/40">
+                <span className="font-mono text-[10px] text-t3/40">
                   {notes.length}
                 </span>
               )}
@@ -249,7 +249,7 @@ const WorldNotes = ({ worldId, readOnly }: WorldNotesProps) => {
             ) : (
               <>
                 {notes.length === 0 && (
-                  <p className="text-[11px] text-muted-foreground/30 italic py-2">
+                  <p className="text-[11px] text-t3/30 italic py-2">
                     No notes yet. Add one to start capturing ideas about your world.
                   </p>
                 )}
@@ -270,7 +270,7 @@ const WorldNotes = ({ worldId, readOnly }: WorldNotesProps) => {
                     type="button"
                     onClick={() => createNote.mutate()}
                     disabled={createNote.isPending}
-                    className="sf-fill-sweep sf-fill-sweep--secondary w-full flex items-center justify-center gap-2 px-3 py-2 border border-border/15 text-[10px] font-heading uppercase tracking-wider text-muted-foreground/40 hover:text-primary/60 hover:border-primary/20 transition-colors"
+                    className="sf-fill-sweep sf-fill-sweep--secondary w-full flex items-center justify-center gap-2 px-3 py-2 border border-border/15 text-[10px] font-heading uppercase tracking-wider text-t3/40 hover:text-primary/60 hover:border-primary/20 transition-colors"
                   >
                     <Plus className="w-3.5 h-3.5" />
                     Add Note

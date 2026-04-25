@@ -206,7 +206,7 @@ const WorldConnections = () => {
         <div className="mb-8">
           <Link
             to={worldId ? `/worlds/${worldId}` : "/"}
-            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4"
+            className="inline-flex items-center gap-2 text-sm text-t3 hover:text-foreground transition-colors mb-4"
           >
             <ArrowLeft className="w-4 h-4" />
             Back to {world?.name || "World"}
@@ -220,7 +220,7 @@ const WorldConnections = () => {
                   World Connections
                 </h1>
               </div>
-              <p className="text-muted-foreground max-w-2xl">
+              <p className="text-t3 max-w-2xl">
                 Visualize how your worksheets are connected. Planets link to
                 species, species link to mythologies, and everything flows from
                 environmental pressures.
@@ -241,7 +241,7 @@ const WorldConnections = () => {
         {/* View Controls */}
         <div className="flex flex-wrap items-center gap-4 mb-6">
           <div className="flex items-center gap-2">
-            <span className="text-sm text-muted-foreground">View:</span>
+            <span className="text-sm text-t3">View:</span>
             <ToggleGroup
               type="single"
               value={viewMode}
@@ -273,8 +273,8 @@ const WorldConnections = () => {
           </div>
 
           <div className="flex items-center gap-2">
-            <Filter className="w-4 h-4 text-muted-foreground" />
-            <span className="text-sm text-muted-foreground">Filter:</span>
+            <Filter className="w-4 h-4 text-t3" />
+            <span className="text-sm text-t3">Filter:</span>
             <Select value={filterBy} onValueChange={(v) => setFilterBy(v as FilterBy)}>
               <SelectTrigger className="w-[160px] h-9">
                 <SelectValue />
@@ -291,7 +291,7 @@ const WorldConnections = () => {
 
           {viewMode === "outline" && (
             <div className="flex items-center gap-2">
-              <span className="text-sm text-muted-foreground">Sort by:</span>
+              <span className="text-sm text-t3">Sort by:</span>
               <Select value={sortBy} onValueChange={(v) => setSortBy(v as SortBy)}>
                 <SelectTrigger className="w-[160px] h-9">
                   <SelectValue />
@@ -311,7 +311,7 @@ const WorldConnections = () => {
           {/* Graph or Outline */}
           <GlassPanel className="xl:col-span-3 p-4 md:p-6 min-h-[600px]">
             {isLoading ? (
-              <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+              <div className="w-full h-full flex items-center justify-center text-t3">
                 <div className="text-center">
                   <Loader className="mb-4" />
                   <p>Loading connections...</p>
@@ -356,7 +356,7 @@ const WorldConnections = () => {
               /* Outline View */
               <div className="space-y-4 max-h-[560px] overflow-y-auto">
                 {filteredNodes.length === 0 ? (
-                  <div className="text-center py-12 text-muted-foreground">
+                  <div className="text-center py-12 text-t3">
                     {filterBy !== "all" ? (
                       <>
                         <p className="text-lg mb-2">No worksheets match this filter</p>
@@ -375,16 +375,16 @@ const WorldConnections = () => {
                     const isExpanded = expandedGroups.has(toolType) || expandedGroups.has("all");
 
                     return (
-                      <div key={toolType} className="border border-border/50 rounded-lg overflow-hidden">
+                      <div key={toolType} className="border border-sf-border rounded-lg overflow-hidden">
                         {/* Group Header */}
                         <button
                           onClick={() => toggleGroup(toolType)}
                           className="w-full flex items-center gap-3 p-3 bg-muted/30 hover:bg-muted/50 transition-colors"
                         >
                           {isExpanded ? (
-                            <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                            <ChevronDown className="w-4 h-4 text-t3" />
                           ) : (
-                            <ChevronRight className="w-4 h-4 text-muted-foreground" />
+                            <ChevronRight className="w-4 h-4 text-t3" />
                           )}
                           <IconComponent className="w-5 h-5 text-primary" />
                           <span className="font-medium">{getToolDisplayName(toolType)}</span>
@@ -494,7 +494,7 @@ const WorldConnections = () => {
             {/* Help Text */}
             <GlassPanel className="p-4">
               <h3 className="font-medium text-sm mb-2">How It Works</h3>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-t3">
                 Click any node to open that worksheet. Hover to highlight
                 connected items. Connections are created when you link
                 worksheets together using the "Link" buttons in each tool.

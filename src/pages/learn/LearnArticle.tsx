@@ -45,7 +45,7 @@ const categoryColors: Record<string, string> = {
   basics: "bg-blue-500/20 text-blue-400",
   science: "bg-green-500/20 text-green-400",
   craft: "bg-purple-500/20 text-purple-400",
-  "case-studies": "bg-amber-500/20 text-amber-400",
+  "case-studies": "bg-amber-500/20 text-sf-amber",
 };
 
 const LearnArticle = () => {
@@ -86,14 +86,14 @@ const LearnArticle = () => {
         <main className="container mx-auto px-4 pt-24 pb-16">
           <Link
             to="/learn"
-            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
+            className="inline-flex items-center gap-2 text-sm text-t3 hover:text-foreground transition-colors mb-6"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back to Learn
+            ← RETURN TO ARCHIVE
           </Link>
           <GlassPanel className="p-8 text-center">
             <h1 className="text-2xl font-bold mb-2">Article Not Found</h1>
-            <p className="text-muted-foreground">
+            <p className="text-t3">
               This article doesn't exist or hasn't been published yet.
             </p>
           </GlassPanel>
@@ -114,10 +114,10 @@ const LearnArticle = () => {
         {/* Back Link */}
         <Link
           to="/learn"
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
+          className="inline-flex items-center gap-2 text-sm text-t3 hover:text-foreground transition-colors mb-6"
         >
           <ArrowLeft className="w-4 h-4" />
-          Back to Learn
+          ← RETURN TO ARCHIVE
         </Link>
 
         {/* Article Header */}
@@ -128,10 +128,10 @@ const LearnArticle = () => {
           <h1 className="font-display text-3xl md:text-4xl font-bold mt-4 mb-4">
             {article.title}
           </h1>
-          <p className="text-lg text-muted-foreground mb-4">
+          <p className="text-lg text-t3 mb-4">
             {article.description}
           </p>
-          <div className="flex items-center gap-4 text-sm text-muted-foreground">
+          <div className="flex items-center gap-4 text-sm text-t3">
             <span className="flex items-center gap-1">
               <Calendar className="w-4 h-4" />
               {new Date(article.publishedDate).toLocaleDateString("en-US", {
@@ -162,21 +162,21 @@ const LearnArticle = () => {
             ) : FallbackContent ? (
               <FallbackContent />
             ) : (
-              <p className="text-muted-foreground">
+              <p className="text-t3">
                 Content not available.
               </p>
             )}
           </article>
         </GlassPanel>
 
-        {/* Back to Learn */}
+        {/* ← RETURN TO ARCHIVE */}
         <div className="mt-8 text-center">
           <Link
             to="/learn"
             className="inline-flex items-center gap-2 text-primary hover:underline"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back to all articles
+            ← RETURN TO ARCHIVE
           </Link>
         </div>
       </main>

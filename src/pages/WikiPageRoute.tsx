@@ -14,7 +14,7 @@ const WikiPageRoute = () => {
   if (!worldId || !entryId) {
     return (
       <div className="flex items-center justify-center h-full">
-        <p className="font-mono text-xs uppercase tracking-wider text-muted-foreground/50">
+        <p className="font-mono text-xs uppercase tracking-wider text-t3/50">
           Page not found.
         </p>
       </div>

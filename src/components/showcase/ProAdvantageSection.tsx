@@ -50,15 +50,15 @@ const ProAdvantageSection = () => {
     <section className="py-16 md:py-24">
       <div className="text-center mb-12">
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-sm bg-amber-500/10 border border-amber-500/30 mb-6">
-          <Zap className="w-4 h-4 text-amber-500" />
-          <span className="text-sm text-amber-500 uppercase tracking-wider">
+          <Zap className="w-4 h-4 text-sf-amber" />
+          <span className="text-sm text-sf-amber uppercase tracking-wider">
             Pro Subscription
           </span>
         </div>
         <h2 className="font-display font-light text-3xl md:text-4xl uppercase tracking-sf-wide mb-4">
           Why Go Pro?
         </h2>
-        <p className="text-muted-foreground max-w-2xl mx-auto">
+        <p className="text-t3 max-w-2xl mx-auto">
           Unlock the full power of StellarForge with tools designed for serious worldbuilders.
         </p>
       </div>
@@ -75,7 +75,7 @@ const ProAdvantageSection = () => {
             >
               <div className="flex gap-4">
                 <div className="w-12 h-12 rounded-none bg-amber-500/10 flex items-center justify-center shrink-0">
-                  <Icon className="w-6 h-6 text-amber-500" />
+                  <Icon className="w-6 h-6 text-sf-amber" />
                 </div>
                 <div>
                   <div className="flex items-center gap-2 mb-2">
@@ -88,7 +88,7 @@ const ProAdvantageSection = () => {
                       </Badge>
                     )}
                   </div>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-t3">
                     {benefit.description}
                   </p>
                 </div>
@@ -109,7 +109,7 @@ const ProAdvantageSection = () => {
             See Pricing
           </Link>
         </Button>
-        <p className="text-sm text-muted-foreground mt-3">
+        <p className="text-sm text-t3 mt-3">
           Starting at ${PRICING.pro.monthly.price}/month • Cancel anytime
         </p>
       </div>

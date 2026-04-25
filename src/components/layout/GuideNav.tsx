@@ -53,7 +53,7 @@ export function GuideNav() {
               "px-4 py-2 text-xs uppercase tracking-wider border rounded-md transition-all",
               active
                 ? "text-primary border-primary/30 bg-primary/[0.06]"
-                : "text-muted-foreground hover:text-primary border-border/30 hover:border-primary/30"
+                : "text-t3 hover:text-primary border-sf-border hover:border-primary/30"
             )}
             aria-current={active ? "page" : undefined}
           >

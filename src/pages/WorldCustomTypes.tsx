@@ -98,7 +98,7 @@ export default function WorldCustomTypes() {
             to={`/worlds/${worldId}`}
             className="inline-flex items-center gap-1 text-xs text-tier-4 hover:text-tier-2 mb-3"
           >
-            <ChevronLeft className="w-3.5 h-3.5" /> Back to world
+            <ChevronLeft className="w-3.5 h-3.5" /> ← RETURN TO WORLD
           </Link>
           <h1 className="font-display text-3xl md:text-4xl tracking-[0.08em] text-tier-1 mb-1">
             CUSTOM ELEMENT TYPES
@@ -303,7 +303,7 @@ function TemplateDetailEditor({
             variant="ghost"
             size="sm"
             onClick={onDelete}
-            className="text-xs text-tier-4 hover:text-destructive"
+            className="text-xs text-tier-4 hover:text-sf-crimson"
           >
             <Trash2 className="w-3.5 h-3.5 mr-1.5" />
             Delete template

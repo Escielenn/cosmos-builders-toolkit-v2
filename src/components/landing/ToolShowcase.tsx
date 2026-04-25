@@ -212,7 +212,7 @@ const ToolPreviewCard = ({ id, title, description, status, isPro }: ToolPreviewC
         )}
         <div className="flex gap-2">
           {isPro && (
-            <Badge variant="secondary" className="text-xs bg-amber-500/20 text-amber-600 dark:text-amber-400 sf-shimmer">
+            <Badge variant="secondary" className="text-xs bg-amber-500/20 text-sf-amber dark:text-sf-amber sf-shimmer">
               <Zap className="w-3 h-3 mr-1" />
               Pro
             </Badge>
@@ -226,7 +226,7 @@ const ToolPreviewCard = ({ id, title, description, status, isPro }: ToolPreviewC
         </div>
       </div>
       <h3 className="font-heading font-light text-base mb-2">{title}</h3>
-      <p className="text-sm text-muted-foreground line-clamp-2">{description}</p>
+      <p className="text-sm text-t3 line-clamp-2">{description}</p>
     </GlassPanel>
   );
 };
@@ -274,7 +274,7 @@ const ToolShowcase = () => {
           variants={scrollReveal}
         >
           <h2 className="font-heading font-light text-2xl uppercase tracking-sf-wide">Pro Tools</h2>
-          <Badge variant="secondary" className="bg-amber-500/20 text-amber-600 dark:text-amber-400 sf-badge-enter">
+          <Badge variant="secondary" className="bg-amber-500/20 text-sf-amber dark:text-sf-amber sf-badge-enter">
             <Zap className="w-3 h-3 mr-1" />
             27 Tools
           </Badge>
@@ -304,7 +304,7 @@ const ToolShowcase = () => {
           variants={scrollReveal}
         >
           <h2 className="font-heading font-light text-2xl uppercase tracking-sf-wide">Simulators</h2>
-          <Badge variant="secondary" className="bg-amber-500/20 text-amber-600 dark:text-amber-400 sf-badge-enter">
+          <Badge variant="secondary" className="bg-amber-500/20 text-sf-amber dark:text-sf-amber sf-badge-enter">
             <Zap className="w-3 h-3 mr-1" />
             Pro
           </Badge>
@@ -323,13 +323,13 @@ const ToolShowcase = () => {
                   <div className="w-12 h-12 rounded-sm flex items-center justify-center bg-gradient-to-br from-red-500/20 to-orange-500/20 sf-card-icon overflow-hidden">
                     <img src="/icons/035-black hole.svg" alt="" className="w-8 h-8" draggable={false} />
                   </div>
-                  <Badge variant="secondary" className="text-xs bg-amber-500/20 text-amber-600 dark:text-amber-400">
+                  <Badge variant="secondary" className="text-xs bg-amber-500/20 text-sf-amber dark:text-sf-amber">
                     <Zap className="w-3 h-3 mr-1" />
                     Pro
                   </Badge>
                 </div>
                 <h3 className="font-heading font-light text-base mb-2">Rogue: Wandering Object Encounters</h3>
-                <p className="text-sm text-muted-foreground line-clamp-2">N-body gravitational encounter simulator. Launch black holes at real star systems and watch chaos unfold.</p>
+                <p className="text-sm text-t3 line-clamp-2">N-body gravitational encounter simulator. Launch black holes at real star systems and watch chaos unfold.</p>
               </GlassPanel>
             </Link>
           </motion.div>
@@ -340,13 +340,13 @@ const ToolShowcase = () => {
                   <div className="w-12 h-12 rounded-sm flex items-center justify-center bg-gradient-to-br from-cyan-500/20 to-blue-500/20 sf-card-icon overflow-hidden">
                     <img src="/icons/044-day and night.svg" alt="" className="w-8 h-8" draggable={false} />
                   </div>
-                  <Badge variant="secondary" className="text-xs bg-amber-500/20 text-amber-600 dark:text-amber-400">
+                  <Badge variant="secondary" className="text-xs bg-amber-500/20 text-sf-amber dark:text-sf-amber">
                     <Zap className="w-3 h-3 mr-1" />
                     Pro
                   </Badge>
                 </div>
                 <h3 className="font-heading font-light text-base mb-2">Tidelock: Locked World Simulator</h3>
-                <p className="text-sm text-muted-foreground line-clamp-2">Tidally locked world simulator. Explore habitable zones, atmospheric dynamics, and surface conditions on exoplanets.</p>
+                <p className="text-sm text-t3 line-clamp-2">Tidally locked world simulator. Explore habitable zones, atmospheric dynamics, and surface conditions on exoplanets.</p>
               </GlassPanel>
             </Link>
           </motion.div>
@@ -357,13 +357,13 @@ const ToolShowcase = () => {
                   <div className="w-12 h-12 rounded-sm flex items-center justify-center bg-gradient-to-br from-indigo-500/20 to-purple-500/20 sf-card-icon overflow-hidden">
                     <img src="/icons/016-constellation.svg" alt="" className="w-8 h-8" draggable={false} />
                   </div>
-                  <Badge variant="secondary" className="text-xs bg-amber-500/20 text-amber-600 dark:text-amber-400">
+                  <Badge variant="secondary" className="text-xs bg-amber-500/20 text-sf-amber dark:text-sf-amber">
                     <Zap className="w-3 h-3 mr-1" />
                     Pro
                   </Badge>
                 </div>
                 <h3 className="font-heading font-light text-base mb-2">Exosky: Alien Night Sky</h3>
-                <p className="text-sm text-muted-foreground line-clamp-2">Alien night sky simulator. View the stars from any exoplanet using real astronomical data and create your own constellations.</p>
+                <p className="text-sm text-t3 line-clamp-2">Alien night sky simulator. View the stars from any exoplanet using real astronomical data and create your own constellations.</p>
               </GlassPanel>
             </Link>
           </motion.div>
@@ -374,13 +374,13 @@ const ToolShowcase = () => {
                   <div className="w-12 h-12 rounded-sm flex items-center justify-center bg-gradient-to-br from-amber-500/20 to-yellow-500/20 sf-card-icon overflow-hidden">
                     <img src="/icons/star-system-builder.svg" alt="" className="w-8 h-8" draggable={false} />
                   </div>
-                  <Badge variant="secondary" className="text-xs bg-amber-500/20 text-amber-600 dark:text-amber-400">
+                  <Badge variant="secondary" className="text-xs bg-amber-500/20 text-sf-amber dark:text-sf-amber">
                     <Zap className="w-3 h-3 mr-1" />
                     Pro
                   </Badge>
                 </div>
                 <h3 className="font-heading font-light text-base mb-2">Solaris: Star System Simulator</h3>
-                <p className="text-sm text-muted-foreground line-clamp-2">Design single and multi-star systems with real orbital mechanics, habitable zone science, and N-body dynamics.</p>
+                <p className="text-sm text-t3 line-clamp-2">Design single and multi-star systems with real orbital mechanics, habitable zone science, and N-body dynamics.</p>
               </GlassPanel>
             </Link>
           </motion.div>
@@ -404,7 +404,7 @@ const ToolShowcase = () => {
         </motion.div>
         {comingSoonByCategory.map((cat) => (
           <div key={cat.category} className="mb-8 last:mb-0">
-            <h3 className="font-heading font-light text-sm uppercase tracking-sf-wide text-muted-foreground mb-4">
+            <h3 className="font-heading font-light text-sm uppercase tracking-sf-wide text-t3 mb-4">
               {cat.category}
             </h3>
             <motion.div
@@ -421,7 +421,7 @@ const ToolShowcase = () => {
                       <h4 className="font-heading font-light text-sm">{tool.title}</h4>
                       <Badge variant="outline" className="text-[10px] shrink-0">Soon</Badge>
                     </div>
-                    <p className="text-xs text-muted-foreground">{tool.subtitle}</p>
+                    <p className="text-xs text-t3">{tool.subtitle}</p>
                   </GlassPanel>
                 </motion.div>
               ))}
@@ -444,7 +444,7 @@ const ToolShowcase = () => {
             BEGIN
           </Link>
         </Button>
-        <p className="text-sm text-muted-foreground mt-3">
+        <p className="text-sm text-t3 mt-3">
           No credit card required.
         </p>
       </motion.div>

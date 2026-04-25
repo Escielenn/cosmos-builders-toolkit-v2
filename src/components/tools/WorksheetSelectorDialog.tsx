@@ -168,12 +168,12 @@ const WorksheetSelectorDialog = ({
                     )}
                   >
                     <div className="flex items-start gap-3">
-                      <FileText className="w-5 h-5 text-muted-foreground mt-0.5 flex-shrink-0" />
+                      <FileText className="w-5 h-5 text-t3 mt-0.5 flex-shrink-0" />
                       <div className="flex-1 min-w-0">
                         <div className="font-medium truncate">
                           {worksheet.title || "Untitled"}
                         </div>
-                        <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
+                        <div className="flex items-center gap-1 text-xs text-t3 mt-1">
                           <Calendar className="w-3 h-3" />
                           {formatDistanceToNow(new Date(worksheet.updated_at), { addSuffix: true })}
                         </div>
@@ -186,7 +186,7 @@ const WorksheetSelectorDialog = ({
                               );
                             })}
                             {worksheet.tags.length > 3 && (
-                              <span className="text-xs text-muted-foreground">+{worksheet.tags.length - 3}</span>
+                              <span className="text-xs text-t3">+{worksheet.tags.length - 3}</span>
                             )}
                           </div>
                         )}

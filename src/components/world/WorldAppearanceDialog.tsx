@@ -105,7 +105,7 @@ export default function WorldAppearanceDialog({
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
               <DialogTitle className="font-heading text-xl tracking-wider flex items-center gap-2">
-                <Zap className="w-5 h-5 text-amber-400" />
+                <Zap className="w-5 h-5 text-sf-amber" />
                 WORLD APPEARANCE
               </DialogTitle>
               <DialogDescription>
@@ -113,7 +113,7 @@ export default function WorldAppearanceDialog({
               </DialogDescription>
             </DialogHeader>
             <div className="py-4 text-center">
-              <p className="text-sm text-muted-foreground mb-4">
+              <p className="text-sm text-t3 mb-4">
                 Pro includes custom theming, all export formats, 365-day version history, and unlimited worlds.
               </p>
               <Button onClick={() => setUpgradeOpen(true)}>
@@ -134,7 +134,7 @@ export default function WorldAppearanceDialog({
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle className="font-heading text-xl tracking-wider flex items-center gap-2">
-              <Zap className="w-4 h-4 text-amber-400" />
+              <Zap className="w-4 h-4 text-sf-amber" />
               WORLD APPEARANCE
             </DialogTitle>
             <DialogDescription>
@@ -145,7 +145,7 @@ export default function WorldAppearanceDialog({
           <div className="space-y-6 py-4">
             {/* Accent Color */}
             <div className="space-y-3">
-              <label className="font-mono text-[9px] uppercase tracking-[2px] text-muted-foreground">
+              <label className="font-mono text-[9px] uppercase tracking-[2px] text-t3">
                 // ACCENT COLOR
               </label>
 
@@ -182,7 +182,7 @@ export default function WorldAppearanceDialog({
 
             {/* Cover Image */}
             <div className="space-y-3">
-              <label className="font-mono text-[9px] uppercase tracking-[2px] text-muted-foreground">
+              <label className="font-mono text-[9px] uppercase tracking-[2px] text-t3">
                 // COVER IMAGE
               </label>
               <HeaderImageUpload
@@ -194,7 +194,7 @@ export default function WorldAppearanceDialog({
 
             {/* Soundtrack */}
             <div className="space-y-3">
-              <label className="font-mono text-[9px] uppercase tracking-[2px] text-muted-foreground">
+              <label className="font-mono text-[9px] uppercase tracking-[2px] text-t3">
                 // SOUNDTRACK
               </label>
               <SoundtrackPicker value={soundtrackId} onChange={setSoundtrackId} />
@@ -202,7 +202,7 @@ export default function WorldAppearanceDialog({
 
             {/* Preview */}
             <div className="space-y-2">
-              <label className="font-mono text-[9px] uppercase tracking-[2px] text-muted-foreground">
+              <label className="font-mono text-[9px] uppercase tracking-[2px] text-t3">
                 // PREVIEW
               </label>
               <div className="bg-[#0C1019] border border-white/6 p-4 space-y-3">
@@ -222,7 +222,7 @@ export default function WorldAppearanceDialog({
                       className="w-[5px] h-[5px] rounded-full"
                       style={{ backgroundColor: accentColor, opacity: 0.7 }}
                     />
-                    <span className="text-xs text-foreground/80">Kepler-442b</span>
+                    <span className="text-xs text-t2">Kepler-442b</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span
@@ -230,7 +230,7 @@ export default function WorldAppearanceDialog({
                       style={{ borderColor: accentColor, opacity: 0.5 }}
                     />
                     <span className="text-xs text-foreground/50">Draft Entry</span>
-                    <span className="text-[7px] uppercase tracking-wider text-muted-foreground/50">DRAFT</span>
+                    <span className="text-[7px] uppercase tracking-wider text-t3/50">DRAFT</span>
                   </div>
                 </div>
                 {/* Mock infobox border */}
@@ -247,7 +247,7 @@ export default function WorldAppearanceDialog({
                 </div>
                 {/* Mock completion bar */}
                 <div className="flex items-center gap-2">
-                  <span className="font-mono text-[8px] uppercase tracking-wider text-muted-foreground/40">
+                  <span className="font-mono text-[8px] uppercase tracking-wider text-t3/40">
                     SURVEY:
                   </span>
                   <div className="flex-1 h-1 bg-white/5 relative">
@@ -256,7 +256,7 @@ export default function WorldAppearanceDialog({
                       style={{ backgroundColor: accentColor, width: "68%", opacity: 0.8 }}
                     />
                   </div>
-                  <span className="font-mono text-[8px] text-muted-foreground/40">68%</span>
+                  <span className="font-mono text-[8px] text-t3/40">68%</span>
                 </div>
               </div>
             </div>

@@ -310,7 +310,7 @@ const DrakeEquationCalculator = () => {
     };
     if (n < 10) return {
       label: "Lonely",
-      color: "text-cyan-400",
+      color: "text-sf-cyan",
       description: "A handful of civilizations might exist. Finding each other would be like finding needles in a cosmic haystack."
     };
     if (n < 100) return {
@@ -330,7 +330,7 @@ const DrakeEquationCalculator = () => {
     };
     return {
       label: "Teeming",
-      color: "text-red-400",
+      color: "text-sf-crimson",
       description: "A galaxy full of life. Civilizations bump into each other regularly. Think Star Trek or Star Wars. The Fermi Paradox becomes very pressing."
     };
   };
@@ -409,7 +409,7 @@ const DrakeEquationCalculator = () => {
         setLastSavedToCloud(new Date(existingWorksheet.updated_at));
         toast({
           title: "Worksheet Loaded",
-          description: "Your saved work has been restored from the cloud.",
+          description: "WORK RESTORED FROM CLOUD.",
         });
       } catch (e) {
         console.error("Failed to load worksheet:", e);
@@ -484,8 +484,8 @@ const DrakeEquationCalculator = () => {
         } else {
           // Should not reach here - worksheet must be created via selector first
           toast({
-            title: "Error",
-            description: "Please select or create a worksheet first.",
+            title: "OPERATION FAILED.",
+            description: "SELECT OR CREATE A WORKSHEET BEFORE TRANSMITTING.",
             variant: "destructive",
           });
         }
@@ -497,7 +497,7 @@ const DrakeEquationCalculator = () => {
     } else {
       toast({
         title: "Draft Saved",
-        description: "Your work has been saved locally.",
+        description: "WORK SECURED TO LOCAL STORAGE.",
       });
     }
   };

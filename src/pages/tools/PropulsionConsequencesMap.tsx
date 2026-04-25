@@ -475,7 +475,7 @@ const PropulsionConsequencesMap = () => {
         }
         toast({
           title: "Worksheet Loaded",
-          description: "Your saved work has been restored from the cloud.",
+          description: "WORK RESTORED FROM CLOUD.",
         });
       } catch {
         // Ignore parse errors
@@ -648,8 +648,8 @@ const PropulsionConsequencesMap = () => {
         } else {
           // Should not reach here - worksheet must be created via selector first
           toast({
-            title: "Error",
-            description: "Please select or create a worksheet first.",
+            title: "OPERATION FAILED.",
+            description: "SELECT OR CREATE A WORKSHEET BEFORE TRANSMITTING.",
             variant: "destructive",
           });
         }
@@ -659,7 +659,7 @@ const PropulsionConsequencesMap = () => {
     } else {
       toast({
         title: "Draft Saved",
-        description: "Your work has been saved locally.",
+        description: "WORK SECURED TO LOCAL STORAGE.",
       });
     }
   };
@@ -1009,15 +1009,15 @@ const PropulsionConsequencesMap = () => {
                   </div>
                 </div>
                 {costGuidance && (
-                  <div className="p-3 rounded-lg bg-muted/50 border border-border/50 space-y-2 md:col-span-2">
+                  <div className="p-3 rounded-lg bg-muted/50 border border-sf-border space-y-2 md:col-span-2">
                     <p className="text-xs font-medium text-tier-2 flex items-center gap-1.5">
                       <Info className="w-3.5 h-3.5" />
                       Cost guidance for{" "}
                       {PROPULSION_TYPES.find((t) => t.value === formState.system.type)?.label || formState.system.type}
                     </p>
                     <div className="grid gap-1.5 text-xs text-tier-4">
-                      <p><span className="font-medium text-foreground/80">Fuel:</span> {costGuidance.fuel}</p>
-                      <p><span className="font-medium text-foreground/80">Construction:</span> {costGuidance.construction}</p>
+                      <p><span className="font-medium text-t2">Fuel:</span> {costGuidance.fuel}</p>
+                      <p><span className="font-medium text-t2">Construction:</span> {costGuidance.construction}</p>
                     </div>
                   </div>
                 )}
@@ -1649,7 +1649,7 @@ const PropulsionConsequencesMap = () => {
                           </thead>
                           <tbody>
                             {example.data.map((row, i) => (
-                              <tr key={i} className="border-b border-border/50">
+                              <tr key={i} className="border-b border-sf-border">
                                 <td className="p-2 text-primary font-medium">{row.domain}</td>
                                 <td className="p-2 text-tier-2">{row.consequence}</td>
                               </tr>

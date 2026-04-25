@@ -173,7 +173,7 @@ export function WritingReferencePanel({
   return (
     <aside
       className={cn(
-        "h-full flex-shrink-0 border-l border-white/[0.06] bg-[#0E1320]/90 backdrop-blur-md transition-all duration-300 ease-out overflow-hidden"
+        "h-full flex-shrink-0 border-l border-white/[0.06] bg-sf-surface/90 backdrop-blur-md transition-all duration-300 ease-out overflow-hidden"
       )}
       style={{ width: open ? PANEL_WIDTH : 0 }}
     >

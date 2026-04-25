@@ -79,7 +79,7 @@ const ElementPickerDialog = ({
 
         {/* Search */}
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-t3" />
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -91,7 +91,7 @@ const ElementPickerDialog = ({
         {/* Worksheet list */}
         <div className="max-h-80 overflow-y-auto -mx-1 space-y-3">
           {groups.length === 0 ? (
-            <p className="text-sm text-muted-foreground text-center py-6">
+            <p className="text-sm text-t3 text-center py-6">
               {worksheets.length === 0
                 ? "No worksheets in this world yet."
                 : "No worksheets match your search."}
@@ -103,7 +103,7 @@ const ElementPickerDialog = ({
                 <div key={group.toolType}>
                   <div className="flex items-center gap-2 px-2 py-1">
                     {ToolIcon && <ToolIcon className="w-4 h-4 rounded-sm" />}
-                    <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+                    <span className="text-[10px] font-semibold text-t3 uppercase tracking-wider">
                       {group.displayName}
                     </span>
                   </div>

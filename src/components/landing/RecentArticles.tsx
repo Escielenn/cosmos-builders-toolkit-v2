@@ -18,7 +18,7 @@ const categoryColors: Record<string, string> = {
   basics: "bg-blue-500/20 text-blue-400",
   science: "bg-green-500/20 text-green-400",
   craft: "bg-purple-500/20 text-purple-400",
-  "case-studies": "bg-amber-500/20 text-amber-400",
+  "case-studies": "bg-amber-500/20 text-sf-amber",
 };
 
 const RecentArticles = () => {
@@ -45,7 +45,7 @@ const RecentArticles = () => {
         </h2>
         <Link
           to="/learn"
-          className="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-1"
+          className="text-sm text-t3 hover:text-primary transition-colors flex items-center gap-1"
         >
           View all <ArrowRight className="w-4 h-4" />
         </Link>
@@ -83,7 +83,7 @@ const RecentArticles = () => {
                   <h3 className="font-heading font-semibold mt-2 mb-1 line-clamp-2 group-hover:text-primary transition-colors">
                     {article.title}
                   </h3>
-                  <span className="text-xs text-muted-foreground flex items-center gap-1">
+                  <span className="text-xs text-t3 flex items-center gap-1">
                     <Calendar className="w-3 h-3" />
                     {new Date(article.publishedDate).toLocaleDateString("en-US", {
                       month: "short",

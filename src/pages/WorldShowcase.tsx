@@ -640,7 +640,7 @@ export default function WorldShowcase() {
             className="inline-flex items-center gap-2 font-sans text-xs text-tier-4 hover:text-tier-2 transition-colors mb-8"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
-            Back to Dashboard
+            ← RETURN TO BRIDGE
           </Link>
 
           {/* World icon + name */}

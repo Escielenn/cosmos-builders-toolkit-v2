@@ -371,7 +371,7 @@ const SpacecraftDesigner = () => {
         }
         toast({
           title: "Worksheet Loaded",
-          description: "Your saved work has been restored from the cloud.",
+          description: "WORK RESTORED FROM CLOUD.",
         });
       } catch {
         // Ignore parse errors
@@ -520,8 +520,8 @@ const SpacecraftDesigner = () => {
         } else {
           // Should not reach here - worksheet must be created via selector first
           toast({
-            title: "Error",
-            description: "Please select or create a worksheet first.",
+            title: "OPERATION FAILED.",
+            description: "SELECT OR CREATE A WORKSHEET BEFORE TRANSMITTING.",
             variant: "destructive",
           });
         }
@@ -531,7 +531,7 @@ const SpacecraftDesigner = () => {
     } else {
       toast({
         title: "Draft Saved",
-        description: "Your work has been saved locally.",
+        description: "WORK SECURED TO LOCAL STORAGE.",
       });
     }
   };

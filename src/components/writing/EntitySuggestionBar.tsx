@@ -63,7 +63,7 @@ export default function EntitySuggestionBar({
         </div>
         <button
           onClick={onDismiss}
-          className="text-muted-foreground/30 hover:text-muted-foreground/60 transition-colors shrink-0"
+          className="text-t3/30 hover:text-t3/60 transition-colors shrink-0"
         >
           <X className="w-3 h-3" />
         </button>

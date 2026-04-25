@@ -46,18 +46,18 @@ const CompressionSuggestions = () => {
   const confidenceColor = (c: CompressionSuggestion["confidence"]) => {
     switch (c) {
       case "high":
-        return "bg-emerald-500/20 text-emerald-400 border-emerald-500/30";
+        return "bg-emerald-500/20 text-sf-emerald border-emerald-500/30";
       case "medium":
-        return "bg-amber-500/20 text-amber-400 border-amber-500/30";
+        return "bg-amber-500/20 text-sf-amber border-amber-500/30";
       case "low":
         return "bg-zinc-500/20 text-zinc-400 border-zinc-500/30";
     }
   };
 
   return (
-    <div className="flex items-center gap-2 px-3 py-1.5 bg-muted/30 border border-border/30 rounded-lg text-xs">
-      <Lightbulb className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-      <span className="text-muted-foreground shrink-0">
+    <div className="flex items-center gap-2 px-3 py-1.5 bg-muted/30 border border-sf-border rounded-lg text-xs">
+      <Lightbulb className="w-3.5 h-3.5 text-sf-amber shrink-0" />
+      <span className="text-t3 shrink-0">
         {visible.length} gap{visible.length !== 1 ? "s" : ""} detected
       </span>
 
@@ -86,7 +86,7 @@ const CompressionSuggestions = () => {
             <Button
               variant="ghost"
               size="icon"
-              className="w-4 h-4 text-muted-foreground hover:text-foreground"
+              className="w-4 h-4 text-t3 hover:text-foreground"
               onClick={() => handleDismiss(s.id)}
               title="Dismiss"
               aria-label="Dismiss suggestion"
@@ -100,7 +100,7 @@ const CompressionSuggestions = () => {
       <Button
         variant="ghost"
         size="sm"
-        className="text-[10px] h-5 px-1.5 text-muted-foreground hover:text-foreground shrink-0"
+        className="text-[10px] h-5 px-1.5 text-t3 hover:text-foreground shrink-0"
         onClick={handleDismissAll}
       >
         Dismiss all

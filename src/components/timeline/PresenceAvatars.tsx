@@ -21,7 +21,7 @@ const PresenceAvatars = ({ presences }: PresenceAvatarsProps) => {
   return (
     <TooltipProvider delayDuration={150}>
       <div className="flex items-center gap-0.5">
-        <span className="text-[10px] text-muted-foreground mr-1">Viewing:</span>
+        <span className="text-[10px] text-t3 mr-1">Viewing:</span>
         {visible.map((p) => (
           <Tooltip key={p.userId}>
             <TooltipTrigger asChild>
@@ -54,7 +54,7 @@ const PresenceAvatars = ({ presences }: PresenceAvatarsProps) => {
         {overflow > 0 && (
           <Tooltip>
             <TooltipTrigger asChild>
-              <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center text-[10px] font-medium text-muted-foreground -ml-1 ring-2 ring-border">
+              <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center text-[10px] font-medium text-t3 -ml-1 ring-2 ring-border">
                 +{overflow}
               </div>
             </TooltipTrigger>

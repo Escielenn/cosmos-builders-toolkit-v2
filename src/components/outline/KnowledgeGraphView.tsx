@@ -259,8 +259,8 @@ const KnowledgeGraphView = ({
     <div className="relative h-full" onKeyDown={handleKeyDown} tabIndex={0}>
       {/* Connection type picker dialog */}
       {pendingConnection && (
-        <div className="absolute top-3 left-1/2 -translate-x-1/2 z-50 bg-[#0D1117] border border-border/50 p-3 flex items-center gap-2 shadow-xl">
-          <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-heading">
+        <div className="absolute top-3 left-1/2 -translate-x-1/2 z-50 bg-[#0D1117] border border-sf-border p-3 flex items-center gap-2 shadow-xl">
+          <span className="text-[10px] uppercase tracking-wider text-t3 font-heading">
             Relationship:
           </span>
           <Select
@@ -305,11 +305,11 @@ const KnowledgeGraphView = ({
         <Background variant={BackgroundVariant.Dots} gap={20} size={1} color="rgba(255,255,255,0.04)" />
         <Controls
           showInteractive={false}
-          className="!bg-[#0D1117] !border-border/30 !shadow-none [&>button]:!bg-transparent [&>button]:!border-border/20 [&>button]:!text-muted-foreground [&>button:hover]:!bg-accent/10"
+          className="!bg-[#0D1117] !border-sf-border !shadow-none [&>button]:!bg-transparent [&>button]:!border-sf-border [&>button]:!text-t3 [&>button:hover]:!bg-accent/10"
         />
         <MiniMap
           nodeStrokeWidth={3}
-          className="!bg-[#0D1117] !border-border/30"
+          className="!bg-[#0D1117] !border-sf-border"
           maskColor="rgba(0,0,0,0.7)"
         />
 

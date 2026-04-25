@@ -23,7 +23,7 @@ const FieldManual = () => {
               Operational Reference
             </h1>
           </div>
-          <p className="text-sm text-muted-foreground font-mono uppercase tracking-wider">
+          <p className="text-sm text-t3 font-mono uppercase tracking-wider">
             StellarForge Systems
           </p>
         </header>

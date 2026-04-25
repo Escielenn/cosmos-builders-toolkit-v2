@@ -23,7 +23,7 @@ const ShowcaseHero = () => {
           </h1>
 
           {/* Subhead */}
-          <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mb-10 leading-relaxed sf-reveal sf-reveal-3">
+          <p className="text-lg md:text-xl text-t3 max-w-3xl mx-auto mb-10 leading-relaxed sf-reveal sf-reveal-3">
             Every parameter cascades. Every choice has consequences. Build worlds
             where the physics shapes the environment, the environment shapes the biology,
             and the biology shapes the culture.
@@ -136,7 +136,7 @@ const MockToolCard = ({ title, value, delay, color }: MockToolCardProps) => {
 
   const textColorMap = {
     cyan: "text-sf-cyan",
-    amber: "text-amber-500",
+    amber: "text-sf-amber",
     violet: "text-sf-violet",
     emerald: "text-sf-emerald",
     azure: "text-sf-azure",
@@ -156,7 +156,7 @@ const MockToolCard = ({ title, value, delay, color }: MockToolCardProps) => {
         animationDelay: `${delay}s`,
       }}
     >
-      <div className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
+      <div className="text-xs text-t3 uppercase tracking-wider mb-1">
         {title}
       </div>
       <div className={`text-sm md:text-base font-heading font-light ${textColorMap[color]}`}>

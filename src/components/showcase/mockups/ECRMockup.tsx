@@ -28,7 +28,7 @@ const ECRMockup = () => {
     <div className="w-full h-full flex flex-col bg-sf-void/50 rounded-lg p-4 md:p-6">
       {/* Header */}
       <div className="text-center mb-4">
-        <div className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
+        <div className="text-xs text-t3 uppercase tracking-wider mb-1">
           Environmental Chain Reaction
         </div>
         <div className="text-sm font-mono text-sf-cyan">
@@ -70,7 +70,7 @@ const ECRMockup = () => {
                   }`}
                 >
                   <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-mono text-muted-foreground">
+                    <span className="text-[10px] font-mono text-t3">
                       L{item.level}
                     </span>
                     <span
@@ -86,8 +86,8 @@ const ECRMockup = () => {
                         key={example}
                         className={`text-[8px] px-1.5 py-0.5 rounded border transition-all duration-300 ${
                           isActive
-                            ? "border-muted/30 text-muted-foreground"
-                            : "border-transparent text-muted-foreground opacity-60"
+                            ? "border-muted/30 text-t3"
+                            : "border-transparent text-t3 opacity-60"
                         }`}
                       >
                         {example}
@@ -127,7 +127,7 @@ const ECRMockup = () => {
           />
           <span
             className={`text-[10px] uppercase tracking-wider transition-colors duration-500 ${
-              activeLevel >= 5 ? "text-sf-emerald" : "text-muted-foreground"
+              activeLevel >= 5 ? "text-sf-emerald" : "text-t3"
             }`}
           >
             {activeLevel >= 5 ? "Chain Complete" : "Tracing..."}

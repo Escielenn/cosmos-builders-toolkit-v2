@@ -34,7 +34,7 @@ const Contact = () => {
           <h1 className="font-display text-4xl md:text-5xl font-light mb-4 tracking-sf-wide">
             COMMUNICATIONS CHANNEL
           </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg text-t3 max-w-2xl mx-auto">
             Report anomalies, request features, or make contact.
           </p>
         </section>
@@ -56,14 +56,14 @@ const Contact = () => {
               <div className="text-center p-4">
                 <MessageSquare className="w-8 h-8 text-primary mx-auto mb-2" />
                 <h4 className="font-medium mb-1">Email</h4>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-t3">
                   support@stellarforge.tools
                 </p>
               </div>
               <div className="text-center p-4">
                 <Clock className="w-8 h-8 text-primary mx-auto mb-2" />
                 <h4 className="font-medium mb-1">Response Time</h4>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-t3">
                   Usually within 24-48 hours
                 </p>
               </div>

@@ -331,7 +331,7 @@ const PlanetaryProfile = () => {
         }
         toast({
           title: "Worksheet Loaded",
-          description: "Your saved work has been restored from the cloud.",
+          description: "WORK RESTORED FROM CLOUD.",
         });
       } catch {
         // Ignore parse errors
@@ -491,7 +491,7 @@ const PlanetaryProfile = () => {
     } else {
       toast({
         title: "Draft Saved",
-        description: "Your work has been saved locally.",
+        description: "WORK SECURED TO LOCAL STORAGE.",
       });
     }
   };
@@ -1606,7 +1606,7 @@ const PlanetaryProfile = () => {
                   {consistencyScore === totalChecks ? (
                     <Check className="w-5 h-5 text-green-500" />
                   ) : (
-                    <AlertCircle className="w-5 h-5 text-amber-500" />
+                    <AlertCircle className="w-5 h-5 text-sf-amber" />
                   )}
                   <span className="font-medium">
                     Consistency Score: {consistencyScore}/{totalChecks}

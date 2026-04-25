@@ -136,7 +136,7 @@ const CalendarEditorDialog = ({
 
           <div className="space-y-2 max-h-[50vh] overflow-y-auto">
             {state.calendars.length === 0 && (
-              <p className="text-sm text-muted-foreground text-center py-4">
+              <p className="text-sm text-t3 text-center py-4">
                 No custom calendars yet. Create one to use alien or fictional date systems.
               </p>
             )}
@@ -144,7 +144,7 @@ const CalendarEditorDialog = ({
               <GlassPanel key={cal.id} className="p-3 flex items-center justify-between gap-3">
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium truncate">{cal.name}</p>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-xs text-t3">
                     {cal.units.map((u) => u.name).join(" > ")}
                     {cal.epochLabel && ` (${cal.epochLabel})`}
                   </p>
@@ -162,7 +162,7 @@ const CalendarEditorDialog = ({
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="w-7 h-7 text-destructive hover:text-destructive"
+                    className="w-7 h-7 text-sf-crimson hover:text-sf-crimson"
                     onClick={() => handleDelete(cal.id)}
                     aria-label="Delete calendar"
                   >
@@ -221,7 +221,7 @@ const CalendarEditorDialog = ({
                 value={epochLabel}
                 onChange={(e) => setEpochLabel(e.target.value)}
               />
-              <span className="text-[10px] text-muted-foreground block">
+              <span className="text-[10px] text-t3 block">
                 Suffix shown after dates (optional)
               </span>
             </div>
@@ -234,7 +234,7 @@ const CalendarEditorDialog = ({
                 value={baseYearOffset}
                 onChange={(e) => setBaseYearOffset(e.target.value)}
               />
-              <span className="text-[10px] text-muted-foreground block">
+              <span className="text-[10px] text-t3 block">
                 Calendar Year 0 = Earth Year X
               </span>
             </div>
@@ -256,10 +256,10 @@ const CalendarEditorDialog = ({
                   key={index}
                   className={cn(
                     "grid grid-cols-[auto_1fr_1fr_60px_60px_auto] gap-1.5 items-center",
-                    "p-2 rounded-md border border-border/30 bg-muted/10"
+                    "p-2 rounded-md border border-sf-border bg-muted/10"
                   )}
                 >
-                  <GripVertical className="w-3.5 h-3.5 text-muted-foreground/50" />
+                  <GripVertical className="w-3.5 h-3.5 text-t3/50" />
                   <Input
                     placeholder="Name"
                     value={unit.name}
@@ -291,7 +291,7 @@ const CalendarEditorDialog = ({
                       title={`How many ${units[index + 1]?.plural || "sub-units"} per ${unit.name || "unit"}`}
                     />
                   ) : (
-                    <span className="text-[10px] text-muted-foreground text-center">base</span>
+                    <span className="text-[10px] text-t3 text-center">base</span>
                   )}
                   <Button
                     type="button"
@@ -309,7 +309,7 @@ const CalendarEditorDialog = ({
             </div>
 
             {units.length > 1 && (
-              <p className="text-[10px] text-muted-foreground">
+              <p className="text-[10px] text-t3">
                 "Sub" = how many of the next unit fit in this one. E.g., if a Year has 12 Months, enter 12.
               </p>
             )}

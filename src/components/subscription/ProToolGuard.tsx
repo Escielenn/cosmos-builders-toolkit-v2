@@ -44,14 +44,14 @@ const ProToolGuard = ({ toolId, children }: ProToolGuardProps) => {
         <main className="container mx-auto px-4 pt-24 pb-16 flex items-center justify-center">
           <GlassPanel className="max-w-md p-8 text-center">
             <div className="w-16 h-16 mx-auto mb-6 rounded-sm bg-violet-500/20 flex items-center justify-center">
-              <Sparkles className="w-8 h-8 text-violet-400" />
+              <Sparkles className="w-8 h-8 text-sf-violet" />
             </div>
 
             <h1 className="font-heading text-2xl font-light tracking-[0.12em] mb-2">
               VANGUARD EARLY ACCESS
             </h1>
 
-            <p className="text-muted-foreground mb-2">
+            <p className="text-t3 mb-2">
               This instrument is in early access, available exclusively to Vanguard members.
             </p>
             <p className="text-sm text-tier-3 mb-6">
@@ -103,7 +103,7 @@ const ProToolGuard = ({ toolId, children }: ProToolGuardProps) => {
               ACCESS EXPIRED
             </h1>
 
-            <p className="text-muted-foreground mb-2">
+            <p className="text-t3 mb-2">
               Your Pro subscription has ended, but your worlds and worksheets are exactly where you left them.
             </p>
             <p className="text-sm text-tier-3 mb-6">
@@ -142,14 +142,14 @@ const ProToolGuard = ({ toolId, children }: ProToolGuardProps) => {
       <main className="container mx-auto px-4 pt-24 pb-16 flex items-center justify-center">
         <GlassPanel className="max-w-md p-8 text-center">
           <div className="w-16 h-16 mx-auto mb-6 rounded-sm bg-amber-500/20 flex items-center justify-center">
-            <Lock className="w-8 h-8 text-amber-500" />
+            <Lock className="w-8 h-8 text-sf-amber" />
           </div>
 
           <h1 className="font-heading text-2xl font-light tracking-[0.12em] mb-2">
             RESTRICTED INSTRUMENT
           </h1>
 
-          <p className="text-muted-foreground mb-6">
+          <p className="text-t3 mb-6">
             This instrument requires Pro clearance. Upgrade to access the full manifest.
           </p>
 
@@ -185,8 +185,8 @@ const ProToolGuard = ({ toolId, children }: ProToolGuardProps) => {
           </div>
 
           <div className="mt-8 pt-6 border-t border-border">
-            <p className="text-xs text-muted-foreground mb-2">Pro includes:</p>
-            <ul className="text-xs text-muted-foreground space-y-1">
+            <p className="text-xs text-t3 mb-2">Pro includes:</p>
+            <ul className="text-xs text-t3 space-y-1">
               <li>All 25 worldbuilding instruments</li>
               <li>Unlimited worlds and worksheets</li>
               <li>Cloud sync across devices</li>

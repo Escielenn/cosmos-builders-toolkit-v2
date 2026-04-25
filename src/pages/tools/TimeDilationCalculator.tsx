@@ -130,10 +130,10 @@ const LOCAL_STORAGE_KEY = "time-dilation-calculator-v1";
 // ─── Severity color helpers ──────────────────────────────────────────
 
 const SEVERITY_STYLES = {
-  negligible: { text: "text-emerald-400", border: "border-l-emerald-400", bg: "bg-emerald-400/10" },
-  notable: { text: "text-amber-400", border: "border-l-amber-400", bg: "bg-amber-400/10" },
+  negligible: { text: "text-sf-emerald", border: "border-l-emerald-400", bg: "bg-emerald-400/10" },
+  notable: { text: "text-sf-amber", border: "border-l-amber-400", bg: "bg-amber-400/10" },
   significant: { text: "text-orange-500", border: "border-l-orange-500", bg: "bg-orange-500/10" },
-  extreme: { text: "text-red-500", border: "border-l-red-500", bg: "bg-red-500/10" },
+  extreme: { text: "text-sf-crimson", border: "border-l-red-500", bg: "bg-red-500/10" },
 };
 
 // ─── Logarithmic slider mapping ──────────────────────────────────────
@@ -211,7 +211,7 @@ const TimeDilationCalculator = () => {
         }
         toast({
           title: "Worksheet Loaded",
-          description: "Your saved work has been restored from the cloud.",
+          description: "WORK RESTORED FROM CLOUD.",
         });
       } catch {
         // Ignore parse errors
@@ -427,8 +427,8 @@ const TimeDilationCalculator = () => {
           });
         } else {
           toast({
-            title: "Error",
-            description: "Please select or create a worksheet first.",
+            title: "OPERATION FAILED.",
+            description: "SELECT OR CREATE A WORKSHEET BEFORE TRANSMITTING.",
             variant: "destructive",
           });
         }
@@ -436,7 +436,7 @@ const TimeDilationCalculator = () => {
         // Error handled by mutation
       }
     } else {
-      toast({ title: "Draft Saved", description: "Your work has been saved locally." });
+      toast({ title: "Draft Saved", description: "WORK SECURED TO LOCAL STORAGE." });
     }
   };
 
@@ -478,7 +478,7 @@ const TimeDilationCalculator = () => {
     if (!calculationResult.valid) return;
     const text = buildCopyText(calculationResult, formState);
     navigator.clipboard.writeText(text);
-    toast({ title: "Copied", description: "Narrative copied to clipboard." });
+    toast({ title: "COPIED TO CLIPBOARD.", description: "NARRATIVE COPIED TO CLIPBOARD." });
   };
 
   const worldNameForExport = worldId ? worldName : undefined;
@@ -822,8 +822,8 @@ const TimeDilationCalculator = () => {
               {isAlcubierre && (
                 <div className="p-4 rounded-lg border border-amber-500/30 bg-amber-500/5">
                   <div className="flex items-center gap-3 mb-2">
-                    <AlertTriangle className="w-4 h-4 text-amber-400" />
-                    <span className="text-sm font-medium text-amber-400">Alcubierre Drive—Speculative Physics</span>
+                    <AlertTriangle className="w-4 h-4 text-sf-amber" />
+                    <span className="text-sm font-medium text-sf-amber">Alcubierre Drive—Speculative Physics</span>
                   </div>
                   <p className="text-xs text-tier-4 mb-3">
                     Inside the warp bubble, spacetime is flat—the traveler is technically stationary.
@@ -1079,7 +1079,7 @@ const TimeDilationCalculator = () => {
                         </div>
                       </div>
                       {calculationResult.peakVelocityCapped && (
-                        <p className="text-xs text-amber-400 mt-3 font-mono">
+                        <p className="text-xs text-sf-amber mt-3 font-mono">
                           ⚠ Peak velocity capped at propulsion maximum
                         </p>
                       )}

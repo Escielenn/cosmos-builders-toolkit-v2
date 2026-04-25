@@ -93,7 +93,7 @@ export const useWorksheets = (worldId: string | undefined, includeArchived: bool
       queryClient.invalidateQueries({ queryKey: ["worksheets", worldId] });
       toast({
         title: "Worksheet saved",
-        description: "Your work has been saved to the cloud.",
+        description: "WORK SECURED TO CLOUD STORAGE.",
       });
       // Non-blocking auto-snapshot (rate-limited to every 15 min)
       if (worldId) maybeSnapshotWorld(worldId);

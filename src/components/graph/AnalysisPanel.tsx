@@ -101,7 +101,7 @@ export function AnalysisPanel({
       }}
     >
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-border/10">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-sf-border">
         <div className="flex items-center gap-2">
           <ActiveIcon className="w-3.5 h-3.5 text-teal" />
           <h3 className="font-heading text-[11px] uppercase tracking-[2px] text-teal">
@@ -207,7 +207,7 @@ function GravityContent({
             border: "1px solid rgba(255,184,0,0.15)",
           }}
         >
-          <span className="text-amber-400 font-medium">{orphanCount} orphan{orphanCount !== 1 ? "s" : ""}</span>
+          <span className="text-sf-amber font-medium">{orphanCount} orphan{orphanCount !== 1 ? "s" : ""}</span>
           <span className="text-tier-4"> — unconnected entities</span>
         </div>
       )}
@@ -236,7 +236,7 @@ function GravityContent({
                 {r.weightedConnections}
               </span>
               {r.isOrphan && (
-                <span className="text-[8px] text-amber-400 uppercase tracking-[0.5px]">
+                <span className="text-[8px] text-sf-amber uppercase tracking-[0.5px]">
                   orphan
                 </span>
               )}
@@ -308,7 +308,7 @@ function PathsContent({
           </span>
         </div>
         <div className="flex items-center gap-2">
-          <Target className="w-3 h-3 text-amber-400" />
+          <Target className="w-3 h-3 text-sf-amber" />
           <span className="text-[10px] font-sans text-tier-3">Target:</span>
           <span className="text-[10px] font-mono text-tier-1">
             {targetName ?? "Click a second node..."}
@@ -328,7 +328,7 @@ function PathsContent({
           key={i}
           type="button"
           onClick={() => handlePathClick(path, i)}
-          className="w-full text-left px-3 py-2 space-y-1 hover:bg-white/[0.03] transition-colors border border-border/10"
+          className="w-full text-left px-3 py-2 space-y-1 hover:bg-white/[0.03] transition-colors border border-sf-border"
         >
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-sans text-tier-2">
@@ -508,7 +508,7 @@ function ClustersContent({
           key={cluster.id}
           type="button"
           onClick={() => onHighlightEntities(cluster.entityIds)}
-          className="w-full text-left px-3 py-2 space-y-1 hover:bg-white/[0.03] transition-colors border border-border/10"
+          className="w-full text-left px-3 py-2 space-y-1 hover:bg-white/[0.03] transition-colors border border-sf-border"
         >
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-heading uppercase tracking-[1.5px] text-tier-1">
@@ -538,7 +538,7 @@ function ClustersContent({
       {/* Bridge entities */}
       {result.bridgeEntities.length > 0 && (
         <div className="mt-2">
-          <h4 className="text-[9px] font-heading uppercase tracking-[2px] text-amber-400 mb-1.5">
+          <h4 className="text-[9px] font-heading uppercase tracking-[2px] text-sf-amber mb-1.5">
             Bridge Entities
           </h4>
           <p className="text-[9px] text-tier-4 font-sans mb-1">
@@ -546,7 +546,7 @@ function ClustersContent({
           </p>
           {result.bridgeEntities.map((b) => (
             <div key={b.entityId} className="flex items-center gap-2 px-2 py-1">
-              <Waypoints className="w-3 h-3 text-amber-400" />
+              <Waypoints className="w-3 h-3 text-sf-amber" />
               <span className="text-[10px] font-sans text-tier-2">{b.name}</span>
               <span className="text-[8px] text-tier-5 font-mono">
                 {b.clusterIds.length} clusters
@@ -645,7 +645,7 @@ function WhatIfContent({
           {/* Newly orphaned */}
           {result.newlyOrphanedEntities.length > 0 && (
             <div>
-              <h4 className="text-[9px] font-heading uppercase tracking-[2px] text-amber-400 mb-1">
+              <h4 className="text-[9px] font-heading uppercase tracking-[2px] text-sf-amber mb-1">
                 Newly Orphaned: {result.newlyOrphanedEntities.length}
               </h4>
               {result.newlyOrphanedEntities.map((o) => (
@@ -653,7 +653,7 @@ function WhatIfContent({
                   key={o.entityId}
                   className="flex items-center gap-2 px-2 py-1 text-[9px]"
                 >
-                  <AlertTriangle className="w-2.5 h-2.5 text-amber-400" />
+                  <AlertTriangle className="w-2.5 h-2.5 text-sf-amber" />
                   <span className="text-tier-2 font-sans">{o.entityName}</span>
                 </div>
               ))}

@@ -564,11 +564,11 @@ const WorldWritingSpace = () => {
 
   if (zenMode && selectedDoc) {
     return (
-      <div className="fixed inset-0 z-[9999] bg-[#0A0E17] flex flex-col items-center overflow-hidden">
+      <div className="fixed inset-0 z-[9999] bg-sf-void flex flex-col items-center overflow-hidden">
         {/* Exit button — top-right corner */}
         <button
           onClick={() => setZenMode(false)}
-          className="fixed top-4 right-4 z-[10000] flex items-center gap-2 px-3 py-2 text-[10px] font-heading uppercase tracking-[1.5px] text-tier-4 hover:text-tier-2 border border-white/[0.08] hover:border-white/[0.15] bg-[#0E1320]/80 backdrop-blur-md rounded-xs transition-all opacity-60 hover:opacity-100"
+          className="fixed top-4 right-4 z-[10000] flex items-center gap-2 px-3 py-2 text-[10px] font-heading uppercase tracking-[1.5px] text-tier-4 hover:text-tier-2 border border-white/[0.08] hover:border-white/[0.15] bg-sf-surface/80 backdrop-blur-md rounded-xs transition-all opacity-60 hover:opacity-100"
           title="Exit Zen Mode (Esc)"
         >
           <X className="w-3.5 h-3.5" />
@@ -663,7 +663,7 @@ const WorldWritingSpace = () => {
         {/* ----------------------------------------------------------------- */}
         {/* Center: Top Bar + Editor */}
         {/* ----------------------------------------------------------------- */}
-        <div className="flex-1 flex flex-col h-full overflow-hidden bg-[#0A0E17]">
+        <div className="flex-1 flex flex-col h-full overflow-hidden bg-sf-void">
           {/* Top Bar */}
           <WritingTopBar
             documents={documents}
@@ -701,7 +701,7 @@ const WorldWritingSpace = () => {
 
           {/* Formatting bar */}
           {selectedDoc && (
-            <div className="flex items-center gap-4 px-4 md:px-8 py-1.5 border-b border-white/[0.04] bg-[#0A0E17]">
+            <div className="flex items-center gap-4 px-4 md:px-8 py-1.5 border-b border-white/[0.04] bg-sf-void">
               {/* Line spacing */}
               <div className="flex items-center gap-1.5">
                 <span className="text-[9px] font-sans font-medium uppercase tracking-[1.2px] text-tier-4">Spacing</span>

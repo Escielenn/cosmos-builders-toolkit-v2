@@ -650,7 +650,7 @@ const EvolutionaryBiology = () => {
             role="checkbox"
             aria-checked={isChecked}
             tabIndex={0}
-            className="flex items-start gap-3 p-3 rounded-lg border border-border/50 hover:border-primary/50 cursor-pointer transition-colors"
+            className="flex items-start gap-3 p-3 rounded-lg border border-sf-border hover:border-primary/50 cursor-pointer transition-colors"
             onClick={(e) => {
               e.preventDefault();
               if (isChecked) {
@@ -722,7 +722,7 @@ const EvolutionaryBiology = () => {
             variant="ghost"
             size="icon"
             onClick={() => onChange(items.filter((_, i) => i !== index))}
-            className="h-10 w-10 text-tier-2 hover:text-destructive"
+            className="h-10 w-10 text-tier-2 hover:text-sf-crimson"
             aria-label="Remove item"
           >
             <Trash2 className="w-4 h-4" />
@@ -951,7 +951,7 @@ const EvolutionaryBiology = () => {
             <GlassPanel className="p-6">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 rounded-lg bg-emerald-500/20 flex items-center justify-center">
-                  <Dna className="w-5 h-5 text-emerald-500" />
+                  <Dna className="w-5 h-5 text-sf-emerald" />
                 </div>
                 <div>
                   <h2 className="font-heading text-[11px] font-light uppercase tracking-[3px] text-[hsl(var(--sf-section-green))]">Species Identity</h2>
@@ -990,7 +990,7 @@ const EvolutionaryBiology = () => {
 
                 {/* Planet Link - only show if in a world */}
                 {worldId && (
-                  <div className="pt-4 border-t border-border/50">
+                  <div className="pt-4 border-t border-sf-border">
                     <h4 className="text-sm font-medium mb-3">Environmental Context</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {linkConfigs.map((config) => (
@@ -1009,7 +1009,7 @@ const EvolutionaryBiology = () => {
                     {(formState._linkedWorksheets?.planet || formState._linkedWorksheets?.ecr) && (
                       <div className="mt-3 p-3 bg-muted/30 rounded-lg">
                         <p className="text-xs text-tier-4">
-                          <span className="text-emerald-500 font-medium">Linked data</span> from your planet and environment worksheets
+                          <span className="text-sf-emerald font-medium">Linked data</span> from your planet and environment worksheets
                           will help inform evolutionary pressures and biological constraints.
                         </p>
                       </div>
@@ -1288,7 +1288,7 @@ const EvolutionaryBiology = () => {
                     newItem={{ trait: "", selectivePressure: "", tradeoff: "" }}
                     addLabel="Add Adaptation"
                     renderItem={(item, _, updateItem) => (
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-2 p-3 rounded-lg border border-border/50">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-2 p-3 rounded-lg border border-sf-border">
                         <Input
                           value={item.trait}
                           onChange={(e) => updateItem({ trait: e.target.value })}
@@ -1452,7 +1452,7 @@ const EvolutionaryBiology = () => {
                     newItem={{ type: "", count: "", function: "" }}
                     addLabel="Add Limb Type"
                     renderItem={(item, _, updateItem) => (
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-2 p-3 rounded-lg border border-border/50">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-2 p-3 rounded-lg border border-sf-border">
                         <Select
                           value={item.type}
                           onValueChange={(value) => updateItem({ type: value })}
@@ -1585,7 +1585,7 @@ const EvolutionaryBiology = () => {
                     newItem={{ sense: "", location: "", capabilities: "" }}
                     addLabel="Add Sensory Organ"
                     renderItem={(item, _, updateItem) => (
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-2 p-3 rounded-lg border border-border/50">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-2 p-3 rounded-lg border border-sf-border">
                         <Select
                           value={item.sense}
                           onValueChange={(value) => updateItem({ sense: value })}
@@ -1801,7 +1801,7 @@ const EvolutionaryBiology = () => {
                     newItem={{ stage: "", duration: "", characteristics: "" }}
                     addLabel="Add Life Stage"
                     renderItem={(item, _, updateItem) => (
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-2 p-3 rounded-lg border border-border/50">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-2 p-3 rounded-lg border border-sf-border">
                         <Input
                           value={item.stage}
                           onChange={(e) => updateItem({ stage: e.target.value })}
@@ -2435,7 +2435,7 @@ const EvolutionaryBiology = () => {
                     newItem={{ trait: "", ancestralFunction: "", currentState: "" }}
                     addLabel="Add Vestigial Trait"
                     renderItem={(item, _, updateItem) => (
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-2 p-3 rounded-lg border border-border/50">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-2 p-3 rounded-lg border border-sf-border">
                         <Input
                           value={item.trait}
                           onChange={(e) => updateItem({ trait: e.target.value })}

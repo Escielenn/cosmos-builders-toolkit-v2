@@ -34,7 +34,7 @@ const QuestionSection = ({
       {example && (
         <Tooltip>
           <TooltipTrigger asChild>
-            <Info className="w-4 h-4 text-muted-foreground cursor-help" />
+            <Info className="w-4 h-4 text-t3 cursor-help" />
           </TooltipTrigger>
           <TooltipContent className="max-w-sm">
             <p className="text-xs">{example}</p>

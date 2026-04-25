@@ -55,13 +55,13 @@ const ToolCard = ({
           >
             <FallbackIcon
               className={`w-6 h-6 ${
-                canAccess ? "text-primary-foreground" : "text-muted-foreground"
+                canAccess ? "text-primary-foreground" : "text-t3"
               }`}
             />
           </div>
         ) : (
           <div className="w-12 h-12 rounded-sm bg-muted flex items-center justify-center">
-            <span className="text-muted-foreground">?</span>
+            <span className="text-t3">?</span>
           </div>
         )}
         <div className="flex items-center gap-2">
@@ -74,7 +74,7 @@ const ToolCard = ({
             </Badge>
           )}
           {isPro && !isSubscribed && (
-            <Badge variant="secondary" className="text-xs bg-amber-500/20 text-amber-600 dark:text-amber-400 sf-shimmer">
+            <Badge variant="secondary" className="text-xs bg-amber-500/20 text-sf-amber dark:text-sf-amber sf-shimmer">
               <Zap className="w-3 h-3 mr-1" />
               Pro
             </Badge>
@@ -96,17 +96,17 @@ const ToolCard = ({
           </Link>
         ) : isLocked ? (
           <Link to="/pricing">
-            <h3 className="font-heading font-semibold text-lg text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2">
+            <h3 className="font-heading font-semibold text-lg text-t3 hover:text-foreground transition-colors flex items-center gap-2">
               <Lock className="w-4 h-4" />
               {title}
             </h3>
           </Link>
         ) : (
-          <h3 className="font-heading font-semibold text-lg text-muted-foreground">
+          <h3 className="font-heading font-semibold text-lg text-t3">
             {title}
           </h3>
         )}
-        <p className="text-sm text-muted-foreground mt-1">{description}</p>
+        <p className="text-sm text-t3 mt-1">{description}</p>
         {category && (
           <Badge
             variant="outline"

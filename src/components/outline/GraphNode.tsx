@@ -110,19 +110,19 @@ const GraphNodeComponent = memo(({ data, selected }: NodeProps) => {
 
         {/* Icon */}
         {nodeData.kind === "entry" ? (
-          (() => { const EntryIcon = getEntryIcon(nodeData.entryType); return <EntryIcon className="w-3 h-3 text-muted-foreground shrink-0" />; })()
+          (() => { const EntryIcon = getEntryIcon(nodeData.entryType); return <EntryIcon className="w-3 h-3 text-t3 shrink-0" />; })()
         ) : (
-          <FileText className="w-3 h-3 text-muted-foreground shrink-0" />
+          <FileText className="w-3 h-3 text-t3 shrink-0" />
         )}
 
         {/* Title */}
-        <span className="text-[10px] text-foreground/80 truncate flex-1 leading-tight">
+        <span className="text-[10px] text-t2 truncate flex-1 leading-tight">
           {nodeData.label}
         </span>
       </div>
 
       {nodeData.toolDisplayName && (
-        <span className="block text-[7px] text-muted-foreground/50 uppercase tracking-wider mt-0.5 font-mono">
+        <span className="block text-[7px] text-t3/50 uppercase tracking-wider mt-0.5 font-mono">
           {nodeData.toolDisplayName}
         </span>
       )}

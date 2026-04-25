@@ -72,7 +72,7 @@ export function SocialShareButtons({
             href={link.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] font-sans text-tier-2 hover:text-tier-1 border border-border/20 hover:border-white/15 transition-colors"
+            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] font-sans text-tier-2 hover:text-tier-1 border border-sf-border hover:border-white/15 transition-colors"
             style={{ borderLeftColor: `${link.color}40`, borderLeftWidth: 2 }}
           >
             <ExternalLink className="w-3 h-3" />
@@ -82,7 +82,7 @@ export function SocialShareButtons({
 
         <button
           onClick={handleCopy}
-          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] font-sans text-tier-2 hover:text-teal border border-border/20 hover:border-teal/20 transition-colors"
+          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] font-sans text-tier-2 hover:text-teal border border-sf-border hover:border-teal/20 transition-colors"
         >
           {copied ? (
             <Check className="w-3 h-3 text-teal" />

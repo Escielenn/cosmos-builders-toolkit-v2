@@ -36,7 +36,7 @@ const CalendarDateInput = ({ calendar, value, onChange }: CalendarDateInputProps
               min={index === 0 ? undefined : 0}
               max={parentSubunits ? parentSubunits - 1 : undefined}
             />
-            <span className="text-[10px] text-muted-foreground mt-0.5 block">
+            <span className="text-[10px] text-t3 mt-0.5 block">
               {unit.name}
               {parentSubunits && !isSmallest ? ` (0-${parentSubunits - 1})` : ""}
               {index === 0 ? " (required)" : ""}

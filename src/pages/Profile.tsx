@@ -133,7 +133,7 @@ const Profile = () => {
           onClick={() => navigate("/")}
         >
           <ArrowLeft className="w-4 h-4" />
-          Back to Home
+          ← RETURN TO BRIDGE
         </Button>
 
         <GlassPanel className="p-8">
@@ -181,7 +181,7 @@ const Profile = () => {
                     Browse Avatars
                   </Button>
                 </div>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-t3">
                   Upload custom or select from presets.
                 </p>
               </div>
@@ -191,7 +191,7 @@ const Profile = () => {
             <div className="space-y-2">
               <Label>Email</Label>
               <Input value={user?.email || ""} disabled />
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-t3">
                 Locked. Cannot be modified.
               </p>
             </div>
@@ -252,7 +252,7 @@ const Profile = () => {
         {/* Subscription Section */}
         <GlassPanel className="p-8 mt-6">
           <h2 className="font-heading text-xl font-bold mb-4 flex items-center gap-2">
-            <Zap className="w-5 h-5 text-amber-500" />
+            <Zap className="w-5 h-5 text-sf-amber" />
             Subscription
           </h2>
 
@@ -269,15 +269,15 @@ const Profile = () => {
 
               {subscription.status === 'past_due' && (
                 <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 flex items-center gap-2">
-                  <AlertCircle className="w-5 h-5 text-red-500" />
-                  <p className="text-sm text-red-600 dark:text-red-400">
+                  <AlertCircle className="w-5 h-5 text-sf-crimson" />
+                  <p className="text-sm text-red-600 dark:text-sf-crimson">
                     Payment failed. Update payment method to restore access.
                   </p>
                 </div>
               )}
 
               <div className="grid grid-cols-2 gap-4 text-sm">
-                <div className="flex items-center gap-2 text-muted-foreground">
+                <div className="flex items-center gap-2 text-t3">
                   <Calendar className="w-4 h-4" />
                   <span>Current period ends</span>
                 </div>
@@ -289,11 +289,11 @@ const Profile = () => {
 
                 {subscription.cancel_at_period_end && (
                   <>
-                    <div className="flex items-center gap-2 text-muted-foreground">
-                      <AlertCircle className="w-4 h-4 text-amber-500" />
+                    <div className="flex items-center gap-2 text-t3">
+                      <AlertCircle className="w-4 h-4 text-sf-amber" />
                       <span>Cancels on</span>
                     </div>
-                    <div className="text-amber-600 dark:text-amber-400">
+                    <div className="text-sf-amber dark:text-sf-amber">
                       {subscription.current_period_end
                         ? new Date(subscription.current_period_end).toLocaleDateString()
                         : 'N/A'}
@@ -314,7 +314,7 @@ const Profile = () => {
                     }
                   } catch (error) {
                     toast({
-                      title: "Error",
+                      title: "OPERATION FAILED.",
                       description: "Failed to open billing portal. Retry when ready.",
                       variant: "destructive",
                     });
@@ -333,7 +333,7 @@ const Profile = () => {
             </div>
           ) : (
             <div className="space-y-4">
-              <p className="text-muted-foreground">
+              <p className="text-t3">
                 Standard clearance. Upgrade for full instrument access.
               </p>
               <Button
@@ -379,7 +379,7 @@ function CommendationsSummary({ navigate }: { navigate: (path: string) => void }
               Commendations
             </h3>
             <p className="font-sans text-[11px] text-tier-4 mt-0.5">
-              {isLoading ? "Loading..." : `${earnedCount} of ${totalCount} earned`}
+              {isLoading ? "INITIALIZING..." : `${earnedCount} OF ${totalCount} EARNED`}
             </p>
           </div>
         </div>

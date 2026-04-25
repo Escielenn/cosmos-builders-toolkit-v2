@@ -120,7 +120,7 @@ export default function UploadTab() {
                 <button
                   type="button"
                   onClick={() => deleteTrack.mutate({ trackId: track.id })}
-                  className="p-1 text-tier-4 hover:text-destructive opacity-0 group-hover:opacity-100 transition-all"
+                  className="p-1 text-tier-4 hover:text-sf-crimson opacity-0 group-hover:opacity-100 transition-all"
                   aria-label="Delete track"
                 >
                   <Trash2 className="w-3 h-3" />

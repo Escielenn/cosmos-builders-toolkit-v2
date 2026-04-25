@@ -316,7 +316,7 @@ const StarSystemBuilder = () => {
         }
         toast({
           title: "Worksheet Loaded",
-          description: "Your saved work has been restored from the cloud.",
+          description: "WORK RESTORED FROM CLOUD.",
         });
       } catch {
         // Ignore parse errors
@@ -524,8 +524,8 @@ const StarSystemBuilder = () => {
           });
         } else {
           toast({
-            title: "Error",
-            description: "Please select or create a worksheet first.",
+            title: "OPERATION FAILED.",
+            description: "SELECT OR CREATE A WORKSHEET BEFORE TRANSMITTING.",
             variant: "destructive",
           });
         }
@@ -535,7 +535,7 @@ const StarSystemBuilder = () => {
     } else {
       toast({
         title: "Draft Saved",
-        description: "Your work has been saved locally.",
+        description: "WORK SECURED TO LOCAL STORAGE.",
       });
     }
   };
@@ -909,7 +909,7 @@ const StarSystemBuilder = () => {
                           variant="ghost"
                           size="sm"
                           onClick={() => removeBody(body.id)}
-                          className="text-destructive hover:text-destructive"
+                          className="text-sf-crimson hover:text-sf-crimson"
                         >
                           <Trash2 className="w-4 h-4" />
                         </Button>

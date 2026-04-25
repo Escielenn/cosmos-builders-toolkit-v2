@@ -84,7 +84,7 @@ const PlanetaryMockup = () => {
 
         {/* Atmosphere composition */}
         <div className="mt-auto">
-          <div className="text-[10px] text-muted-foreground mb-1">Atmosphere</div>
+          <div className="text-[10px] text-t3 mb-1">Atmosphere</div>
           <div className="flex gap-1 h-3 rounded-full overflow-hidden">
             <div
               className="bg-blue-500/70 transition-all duration-500"
@@ -103,7 +103,7 @@ const PlanetaryMockup = () => {
               style={{ width: statsVisible[3] ? "2%" : "0%" }}
             />
           </div>
-          <div className="flex justify-between text-[8px] text-muted-foreground mt-1">
+          <div className="flex justify-between text-[8px] text-t3 mt-1">
             <span>N₂ 70%</span>
             <span>O₂ 20%</span>
             <span>Ar 8%</span>
@@ -133,7 +133,7 @@ interface StatRowProps {
 const StatRow = ({ label, value, visible }: StatRowProps) => {
   return (
     <div className="flex items-center justify-between">
-      <span className="text-[10px] text-muted-foreground">{label}</span>
+      <span className="text-[10px] text-t3">{label}</span>
       <span
         className={`text-xs font-mono text-sf-cyan transition-all duration-300 ${
           visible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-2"

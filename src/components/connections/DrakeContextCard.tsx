@@ -13,7 +13,7 @@ const DrakeContextCard = ({ worldId }: DrakeContextCardProps) => {
   return (
     <GlassPanel className="p-4">
       <div className="flex items-center gap-2 mb-3">
-        <Calculator className="w-4 h-4 text-red-500" />
+        <Calculator className="w-4 h-4 text-sf-crimson" />
         <span className="font-medium text-sm">Drake Context</span>
       </div>
 
@@ -22,10 +22,10 @@ const DrakeContextCard = ({ worldId }: DrakeContextCardProps) => {
           {/* N Value */}
           {drake.nValue !== null && (
             <div className="flex items-center justify-between">
-              <span className="text-xs text-muted-foreground">
+              <span className="text-xs text-t3">
                 Civilizations (N):
               </span>
-              <span className="font-mono text-red-500 font-medium">
+              <span className="font-mono text-sf-crimson font-medium">
                 {Math.round(drake.nValue).toLocaleString()}
               </span>
             </div>
@@ -34,10 +34,10 @@ const DrakeContextCard = ({ worldId }: DrakeContextCardProps) => {
           {/* Interpretation */}
           {drake.interpretation && (
             <div className="flex items-center justify-between">
-              <span className="text-xs text-muted-foreground">Galaxy:</span>
+              <span className="text-xs text-t3">Galaxy:</span>
               <Badge
                 variant="secondary"
-                className="text-xs bg-red-500/10 text-red-500"
+                className="text-xs bg-red-500/10 text-sf-crimson"
               >
                 {drake.interpretation}
               </Badge>
@@ -45,22 +45,22 @@ const DrakeContextCard = ({ worldId }: DrakeContextCardProps) => {
           )}
 
           {/* Counts */}
-          <div className="pt-2 border-t border-border/50 space-y-2">
+          <div className="pt-2 border-t border-sf-border space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-xs text-muted-foreground flex items-center gap-1">
+              <span className="text-xs text-t3 flex items-center gap-1">
                 <Globe className="w-3 h-3" />
                 Planets:
               </span>
-              <span className="font-mono text-cyan-500">
+              <span className="font-mono text-sf-cyan">
                 {drake.planetCount}
               </span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-xs text-muted-foreground flex items-center gap-1">
+              <span className="text-xs text-t3 flex items-center gap-1">
                 <Users className="w-3 h-3" />
                 Species:
               </span>
-              <span className="font-mono text-emerald-500">
+              <span className="font-mono text-sf-emerald">
                 {drake.speciesCount}
               </span>
             </div>
@@ -68,16 +68,16 @@ const DrakeContextCard = ({ worldId }: DrakeContextCardProps) => {
 
           {/* Suggestion */}
           {drake.suggestion && (
-            <div className="pt-2 border-t border-border/50">
-              <div className="flex items-start gap-2 p-2 bg-muted/30 rounded text-xs text-muted-foreground">
-                <Lightbulb className="w-3 h-3 mt-0.5 text-amber-500 shrink-0" />
+            <div className="pt-2 border-t border-sf-border">
+              <div className="flex items-start gap-2 p-2 bg-muted/30 rounded text-xs text-t3">
+                <Lightbulb className="w-3 h-3 mt-0.5 text-sf-amber shrink-0" />
                 <span>{drake.suggestion}</span>
               </div>
             </div>
           )}
         </div>
       ) : (
-        <p className="text-xs text-muted-foreground">
+        <p className="text-xs text-t3">
           {drake.suggestion}
         </p>
       )}

@@ -65,11 +65,11 @@ const GeneralContactForm = ({ onSuccess }: GeneralContactFormProps) => {
   if (submitted) {
     return (
       <div className="text-center py-8">
-        <CheckCircle className="w-12 h-12 text-emerald-500 mx-auto mb-4" />
+        <CheckCircle className="w-12 h-12 text-sf-emerald mx-auto mb-4" />
         <h3 className="font-heading text-xl font-semibold mb-2">
           TRANSMISSION RECEIVED.
         </h3>
-        <p className="text-muted-foreground">Response within 24-48 hours.</p>
+        <p className="text-t3">Response within 24-48 hours.</p>
         <Button
           variant="outline"
           className="mt-4"
@@ -99,7 +99,7 @@ const GeneralContactForm = ({ onSuccess }: GeneralContactFormProps) => {
           />
         </div>
         {errors.name && (
-          <p className="text-sm text-destructive">{errors.name.message}</p>
+          <p className="text-sm text-sf-crimson">{errors.name.message}</p>
         )}
       </div>
 
@@ -115,7 +115,7 @@ const GeneralContactForm = ({ onSuccess }: GeneralContactFormProps) => {
           />
         </div>
         {errors.email && (
-          <p className="text-sm text-destructive">{errors.email.message}</p>
+          <p className="text-sm text-sf-crimson">{errors.email.message}</p>
         )}
       </div>
 
@@ -131,7 +131,7 @@ const GeneralContactForm = ({ onSuccess }: GeneralContactFormProps) => {
           />
         </div>
         {errors.message && (
-          <p className="text-sm text-destructive">{errors.message.message}</p>
+          <p className="text-sm text-sf-crimson">{errors.message.message}</p>
         )}
       </div>
 

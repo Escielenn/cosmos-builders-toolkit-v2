@@ -48,7 +48,7 @@ export function ToolPageQuote({ toolId }: ToolPageQuoteProps) {
             href={quote.amazonUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[10px] text-tier-4 hover:text-amber-400 transition-colors"
+            className="text-[10px] text-tier-4 hover:text-sf-amber transition-colors"
             onClick={() => trackAffiliateClick(quote.isbn, quote.amazonUrl)}
           >
             Amazon
@@ -57,7 +57,7 @@ export function ToolPageQuote({ toolId }: ToolPageQuoteProps) {
             href={quote.bookshopUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[10px] text-tier-4 hover:text-emerald-400 transition-colors"
+            className="text-[10px] text-tier-4 hover:text-sf-emerald transition-colors"
             onClick={() => trackAffiliateClick(quote.isbn, quote.bookshopUrl)}
           >
             Bookshop

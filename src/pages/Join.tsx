@@ -139,7 +139,7 @@ const Join = () => {
           contact the person who shared it with you.
         </p>
         <Link to="/auth" className="text-sm text-primary hover:underline">
-          Back to login
+          ← RETURN TO AUTHENTICATION
         </Link>
       </div>
     );
@@ -147,7 +147,7 @@ const Join = () => {
 
   return (
     <div className="relative min-h-screen bg-background flex flex-col">
-      <header className="border-b border-border/50 backdrop-blur-xl bg-background/80">
+      <header className="border-b border-sf-border backdrop-blur-xl bg-background/80">
         <div className="container mx-auto px-4 h-16 flex items-center">
           <Link to="/auth" className="flex items-center gap-3 group">
             <CubeLogo size={40} className="rounded-lg" />
@@ -155,7 +155,7 @@ const Join = () => {
               <span className="font-display font-light text-lg leading-tight tracking-sf-wide">
                 STELLARFORGE
               </span>
-              <span className="text-xs text-muted-foreground">Science Fiction Worldbuilding Tools</span>
+              <span className="text-xs text-t3">Science Fiction Worldbuilding Tools</span>
             </div>
           </Link>
         </div>
@@ -226,7 +226,7 @@ const Join = () => {
                   disabled={isLoading}
                 />
               </div>
-              {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
+              {errors.email && <p className="text-sm text-sf-crimson">{errors.email}</p>}
             </div>
             <div className="space-y-2">
               <Label htmlFor="signup-password">Password</Label>
@@ -240,7 +240,7 @@ const Join = () => {
                   disabled={isLoading}
                 />
               </div>
-              {errors.password && <p className="text-sm text-destructive">{errors.password}</p>}
+              {errors.password && <p className="text-sm text-sf-crimson">{errors.password}</p>}
             </div>
 
             {/* TOS Checkbox */}
@@ -281,7 +281,7 @@ const Join = () => {
           <div className="mt-6 space-y-3">
             {/* NDA / Confidentiality notice */}
             <div className="p-4 rounded-sm bg-amber-500/[0.06] border border-amber-500/20">
-              <p className="text-xs font-medium text-amber-400 uppercase tracking-wider mb-2">
+              <p className="text-xs font-medium text-sf-amber uppercase tracking-wider mb-2">
                 Early Access - Confidential Preview
               </p>
               <p className="text-[11px] text-tier-2 leading-relaxed mb-2">
@@ -289,19 +289,19 @@ const Join = () => {
               </p>
               <ul className="text-[11px] text-tier-3 leading-relaxed space-y-1.5 list-none">
                 <li className="flex gap-2">
-                  <span className="text-amber-400 shrink-0">-</span>
+                  <span className="text-sf-amber shrink-0">-</span>
                   <span><strong className="text-tier-2">Confidentiality.</strong> This is a private preview. No screenshots, recordings, reviews, social media posts, or public discussion of the product, its features, or its interface.</span>
                 </li>
                 <li className="flex gap-2">
-                  <span className="text-amber-400 shrink-0">-</span>
+                  <span className="text-sf-amber shrink-0">-</span>
                   <span><strong className="text-tier-2">Early access pricing.</strong> Current pricing reflects the early access period and is lower than launch pricing. Your rate is locked for as long as your subscription remains active.</span>
                 </li>
                 <li className="flex gap-2">
-                  <span className="text-amber-400 shrink-0">-</span>
+                  <span className="text-sf-amber shrink-0">-</span>
                   <span><strong className="text-tier-2">Work in progress.</strong> Features may change, and you may encounter bugs. We have a fully working bug reporting system - your feedback directly shapes the product.</span>
                 </li>
                 <li className="flex gap-2">
-                  <span className="text-amber-400 shrink-0">-</span>
+                  <span className="text-sf-amber shrink-0">-</span>
                   <span><strong className="text-tier-2">Support & Roadmap.</strong> We are available for direct support, and our full development roadmap is visible at <a href="/roadmap" className="text-primary hover:underline">stellarforge.tools/roadmap</a>.</span>
                 </li>
               </ul>
@@ -326,7 +326,7 @@ const Join = () => {
           <DialogHeader>
             <DialogTitle className="font-heading text-xl">Terms of Service</DialogTitle>
           </DialogHeader>
-          <div className="prose prose-invert prose-sm max-w-none [&_h2]:text-lg [&_h2]:font-heading [&_h2]:font-light [&_h2]:tracking-[0.08em] [&_h2]:mt-6 [&_h2]:mb-3 [&_h3]:text-base [&_h3]:font-semibold [&_h3]:mt-4 [&_h3]:mb-2 [&_h4]:text-sm [&_h4]:font-semibold [&_h4]:mt-3 [&_h4]:mb-1 [&_p]:text-sm [&_p]:text-muted-foreground [&_p]:leading-relaxed [&_p]:mb-3 [&_li]:text-sm [&_li]:text-muted-foreground [&_hr]:border-border/30 [&_hr]:my-4 [&_strong]:text-foreground">
+          <div className="prose prose-invert prose-sm max-w-none [&_h2]:text-lg [&_h2]:font-heading [&_h2]:font-light [&_h2]:tracking-[0.08em] [&_h2]:mt-6 [&_h2]:mb-3 [&_h3]:text-base [&_h3]:font-semibold [&_h3]:mt-4 [&_h3]:mb-2 [&_h4]:text-sm [&_h4]:font-semibold [&_h4]:mt-3 [&_h4]:mb-1 [&_p]:text-sm [&_p]:text-t3 [&_p]:leading-relaxed [&_p]:mb-3 [&_li]:text-sm [&_li]:text-t3 [&_hr]:border-sf-border [&_hr]:my-4 [&_strong]:text-foreground">
             <ReactMarkdown>{TERMS_CONTENT}</ReactMarkdown>
           </div>
         </DialogContent>

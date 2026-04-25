@@ -68,7 +68,7 @@ const EventMarker = memo(
           e.stopPropagation();
           onToggleExpand();
         }}
-        className="absolute -left-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground z-10"
+        className="absolute -left-4 top-1/2 -translate-y-1/2 text-t3 hover:text-foreground z-10"
         style={{ marginLeft: nesting.indent }}
       >
         {isExpanded ? (
@@ -91,7 +91,7 @@ const EventMarker = memo(
 
       // Child count badge when collapsed
       const childBadge = hasChildren && !isExpanded ? (
-        <span className="absolute -right-1 -top-1 w-4 h-4 rounded-full bg-muted text-[8px] font-bold flex items-center justify-center text-foreground/70 border border-border/50">
+        <span className="absolute -right-1 -top-1 w-4 h-4 rounded-full bg-muted text-[8px] font-bold flex items-center justify-center text-t2 border border-sf-border">
           +
         </span>
       ) : null;
@@ -137,7 +137,7 @@ const EventMarker = memo(
           </TooltipTrigger>
           <TooltipContent side="top" className="max-w-xs">
             <p className="font-semibold text-sm">{event.name}</p>
-            <p className="text-xs text-muted-foreground">{formatDateRange(event)}</p>
+            <p className="text-xs text-t3">{formatDateRange(event)}</p>
             {event.shortDescription && (
               <p className="text-xs mt-1">{event.shortDescription}</p>
             )}
@@ -174,7 +174,7 @@ const EventMarker = memo(
         </TooltipTrigger>
         <TooltipContent side="top" className="max-w-xs">
           <p className="font-semibold text-sm">{event.name}</p>
-          <p className="text-xs text-muted-foreground">{formatDateRange(event)}</p>
+          <p className="text-xs text-t3">{formatDateRange(event)}</p>
           {event.shortDescription && (
             <p className="text-xs mt-1">{event.shortDescription}</p>
           )}

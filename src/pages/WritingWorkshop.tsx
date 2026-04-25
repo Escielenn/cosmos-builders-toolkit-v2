@@ -152,18 +152,21 @@ const WritingWorkshop = () => {
         {/* Back link */}
         <Link
           to="/"
-          className="inline-flex items-center gap-1.5 text-tier-3 hover:text-tier-1 transition-colors mb-6 text-sm"
+          className="inline-flex items-center gap-2 font-heading text-[11px] uppercase tracking-[0.2em] font-medium text-t3 hover:text-sf-teal-bright transition-colors duration-base mb-6"
         >
           <ArrowLeft className="w-4 h-4" />
-          Dashboard
+          ← RETURN TO BRIDGE
         </Link>
 
         {/* Page header */}
         <div className="mb-8">
-          <h1 className="font-display text-3xl md:text-4xl tracking-sf-title text-tier-1 uppercase mb-2">
+          <p className="font-mono text-[11px] tracking-[0.18em] text-sf-teal uppercase mb-2">
+            // WORKSHOP
+          </p>
+          <h1 className="font-display text-3xl md:text-4xl font-light tracking-sf-title text-t1 uppercase mb-2">
             Writing Prompts
           </h1>
-          <p className="text-tier-2 max-w-2xl">
+          <p className="text-t2 max-w-2xl">
             Daily prompts, your entries, and writing practice.
           </p>
         </div>
@@ -266,7 +269,7 @@ const WritingWorkshop = () => {
                       e.stopPropagation();
                       setDeleteTarget(entry.id);
                     }}
-                    className="absolute top-3 right-3 p-1.5 rounded-sm bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity text-tier-4 hover:text-amber-400"
+                    className="absolute top-3 right-3 p-1.5 rounded-sm bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity text-tier-4 hover:text-sf-amber"
                     aria-label="Archive entry"
                   >
                     <Archive className="w-3.5 h-3.5" />

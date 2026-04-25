@@ -35,11 +35,11 @@ interface NavCategory {
 }
 
 const NAV_CATEGORIES: NavCategory[] = [
-  { id: "stars-systems", label: "Stars & Systems", icon: Star, color: "text-amber-400" },
+  { id: "stars-systems", label: "Stars & Systems", icon: Star, color: "text-sf-amber" },
   { id: "worlds", label: "Worlds", icon: Globe, color: "text-blue-400" },
-  { id: "life", label: "Life", icon: Leaf, color: "text-emerald-400" },
+  { id: "life", label: "Life", icon: Leaf, color: "text-sf-emerald" },
   { id: "travel", label: "Travel & Spacecraft", icon: Rocket, color: "text-orange-400" },
-  { id: "civilizations", label: "Civilizations", icon: Users, color: "text-violet-400" },
+  { id: "civilizations", label: "Civilizations", icon: Users, color: "text-sf-violet" },
   { id: "mythology", label: "Mythology", icon: ScrollText, color: "text-blue-300" },
   { id: "integration", label: "Integration", icon: Layers, color: "text-teal-400" },
 ];
@@ -102,10 +102,10 @@ function shortName(toolId: string): string {
 // ─── Nav link style ───────────────────────────────────────────────────
 
 const navLinkClass =
-  "sf-nav-link text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground hover:text-primary transition-colors duration-300 leading-none h-10 flex items-center";
+  "sf-nav-link text-xs font-medium uppercase tracking-[0.15em] text-t3 hover:text-primary transition-colors duration-300 leading-none h-10 flex items-center";
 
 const triggerClass =
-  "sf-nav-link text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground hover:text-primary transition-colors duration-300 bg-transparent hover:bg-transparent focus:bg-transparent data-[state=open]:bg-transparent data-[active]:bg-transparent h-auto p-0 gap-1 rounded-none leading-none";
+  "sf-nav-link text-xs font-medium uppercase tracking-[0.15em] text-t3 hover:text-primary transition-colors duration-300 bg-transparent hover:bg-transparent focus:bg-transparent data-[state=open]:bg-transparent data-[active]:bg-transparent h-auto p-0 gap-1 rounded-none leading-none";
 
 // ─── Component ────────────────────────────────────────────────────────
 

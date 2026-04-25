@@ -68,7 +68,7 @@ export function EntryTagsBar({
           <Button
             variant="ghost"
             size="sm"
-            className="h-6 px-2 text-xs text-muted-foreground hover:text-foreground"
+            className="h-6 px-2 text-xs text-t3 hover:text-foreground"
             onClick={() => setShowInput(true)}
           >
             <Plus className="w-3 h-3 mr-1" />

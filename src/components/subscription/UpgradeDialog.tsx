@@ -45,7 +45,7 @@ const UpgradeDialog = ({ open, onOpenChange, toolName }: UpgradeDialogProps) => 
     } catch (error) {
       console.error("Checkout error:", error);
       toast({
-        title: "Error",
+        title: "OPERATION FAILED.",
         description: "Failed to start checkout. Retry when ready.",
         variant: "destructive",
       });
@@ -59,7 +59,7 @@ const UpgradeDialog = ({ open, onOpenChange, toolName }: UpgradeDialogProps) => 
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 font-heading text-xl">
-            <Zap className="w-5 h-5 text-amber-500" />
+            <Zap className="w-5 h-5 text-sf-amber" />
             UPGRADE CLEARANCE
           </DialogTitle>
           <DialogDescription>
@@ -76,7 +76,7 @@ const UpgradeDialog = ({ open, onOpenChange, toolName }: UpgradeDialogProps) => 
             <div className="flex justify-between items-start mb-2">
               <div>
                 <h3 className="font-semibold">Monthly</h3>
-                <p className="text-2xl font-bold">${PRICING.pro.monthly.price}<span className="text-sm font-normal text-muted-foreground">/month</span></p>
+                <p className="text-2xl font-bold">${PRICING.pro.monthly.price}<span className="text-sm font-normal text-t3">/month</span></p>
               </div>
               <Button
                 size="sm"
@@ -90,7 +90,7 @@ const UpgradeDialog = ({ open, onOpenChange, toolName }: UpgradeDialogProps) => 
                 )}
               </Button>
             </div>
-            <p className="text-xs text-muted-foreground">Billed monthly, cancel anytime</p>
+            <p className="text-xs text-t3">Billed monthly, cancel anytime</p>
           </div>
 
           {/* Yearly Plan */}
@@ -103,7 +103,7 @@ const UpgradeDialog = ({ open, onOpenChange, toolName }: UpgradeDialogProps) => 
             <div className="flex justify-between items-start mb-2">
               <div>
                 <h3 className="font-semibold">Yearly</h3>
-                <p className="text-2xl font-bold">${PRICING.pro.yearly.price}<span className="text-sm font-normal text-muted-foreground">/year</span></p>
+                <p className="text-2xl font-bold">${PRICING.pro.yearly.price}<span className="text-sm font-normal text-t3">/year</span></p>
               </div>
               <Button
                 size="sm"
@@ -117,7 +117,7 @@ const UpgradeDialog = ({ open, onOpenChange, toolName }: UpgradeDialogProps) => 
                 )}
               </Button>
             </div>
-            <p className="text-xs text-muted-foreground">Billed annually (~${PRICING.pro.yearly.monthlyEquivalent}/month)</p>
+            <p className="text-xs text-t3">Billed annually (~${PRICING.pro.yearly.monthlyEquivalent}/month)</p>
           </div>
         </div>
 
@@ -132,7 +132,7 @@ const UpgradeDialog = ({ open, onOpenChange, toolName }: UpgradeDialogProps) => 
               "Priority support",
               "All future instruments and features",
             ].map((feature) => (
-              <li key={feature} className="flex items-center gap-2 text-muted-foreground">
+              <li key={feature} className="flex items-center gap-2 text-t3">
                 <Check className="w-4 h-4 text-green-500" />
                 {feature}
               </li>

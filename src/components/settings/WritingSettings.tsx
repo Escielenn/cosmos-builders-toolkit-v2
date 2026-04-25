@@ -44,7 +44,7 @@ const WritingSettings = () => {
                   {theme.swatch.map((color, i) => (
                     <div
                       key={i}
-                      className="w-4 h-4 rounded-sm border border-border/50"
+                      className="w-4 h-4 rounded-sm border border-sf-border"
                       style={{ backgroundColor: color }}
                     />
                   ))}
@@ -53,7 +53,7 @@ const WritingSettings = () => {
                   <p className="text-sm font-medium leading-tight">
                     {theme.name}
                   </p>
-                  <p className="text-xs text-muted-foreground mt-0.5 truncate">
+                  <p className="text-xs text-t3 mt-0.5 truncate">
                     {theme.description}
                   </p>
                 </div>
@@ -64,7 +64,7 @@ const WritingSettings = () => {
             );
           })}
         </div>
-        <p className="text-xs text-muted-foreground">
+        <p className="text-xs text-t3">
           Theme applies to all rich text editors across tools and world notes.
         </p>
       </div>

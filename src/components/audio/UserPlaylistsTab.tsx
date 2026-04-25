@@ -83,7 +83,7 @@ export default function UserPlaylistsTab() {
                       currentTracks: expanded.tracks,
                     })
                   }
-                  className="px-2 text-tier-4 hover:text-destructive transition-colors"
+                  className="px-2 text-tier-4 hover:text-sf-crimson transition-colors"
                   aria-label="Remove track"
                 >
                   <X className="w-3 h-3" />
@@ -166,7 +166,7 @@ export default function UserPlaylistsTab() {
               <button
                 type="button"
                 onClick={() => deletePlaylist.mutate(playlist.id)}
-                className="absolute bottom-2 right-2 p-1 text-tier-4 hover:text-destructive opacity-0 group-hover:opacity-100 transition-all"
+                className="absolute bottom-2 right-2 p-1 text-tier-4 hover:text-sf-crimson opacity-0 group-hover:opacity-100 transition-all"
                 aria-label="Delete playlist"
               >
                 <Trash2 className="w-3 h-3" />

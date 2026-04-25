@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/select";
 import { PageBursts } from "@/components/ui/data-burst";
 import { COLLECTION_BURSTS } from "@/lib/data-bursts";
+import { EmptyState } from "@/components/ui/empty-state";
 
 type SortBy = "recent" | "alphabetical" | "tool-type";
 
@@ -110,10 +111,10 @@ const Collection = () => {
         {/* Back Navigation */}
         <Link
           to="/"
-          className="inline-flex items-center text-muted-foreground hover:text-foreground transition-colors mb-6"
+          className="inline-flex items-center gap-2 font-heading text-[11px] uppercase tracking-[0.2em] font-medium text-t3 hover:text-sf-teal-bright transition-colors duration-base mb-6"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
-          Back to Home
+          ← RETURN TO BRIDGE
         </Link>
 
         {/* My Worlds Quick Access */}
@@ -125,7 +126,7 @@ const Collection = () => {
             <h2 className="font-heading font-light text-xl uppercase tracking-sf-wide">
               My Worlds
             </h2>
-            <span className="text-xs text-muted-foreground group-hover:text-foreground transition-colors flex items-center gap-1">
+            <span className="text-xs text-t3 group-hover:text-foreground transition-colors flex items-center gap-1">
               View all
               <ChevronRight className="w-3.5 h-3.5" />
             </span>
@@ -135,11 +136,14 @@ const Collection = () => {
               <Loader size="sm" />
             </div>
           ) : worlds.length === 0 ? (
-            <GlassPanel className="p-8 text-center">
-              <p className="text-sm text-muted-foreground">
-                WORLD INDEX: EMPTY. Initialize a world to populate this archive.
-              </p>
-            </GlassPanel>
+            <EmptyState
+              hideDial
+              title="WORLD INDEX: EMPTY"
+              description="INITIALIZE A WORLD TO POPULATE THIS ARCHIVE."
+              actionLabel="CREATE WORLD"
+              actionTo="/worlds"
+              className="py-10"
+            />
           ) : (
             <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-thin">
               {worlds.slice(0, 6).map((world) => {
@@ -156,7 +160,7 @@ const Collection = () => {
                           {world.name}
                         </h3>
                       </div>
-                      <p className="text-xs text-muted-foreground truncate">
+                      <p className="text-xs text-t3 truncate">
                         {world.description || "No description"}
                       </p>
                     </GlassPanel>
@@ -166,7 +170,7 @@ const Collection = () => {
               {worlds.length > 6 && (
                 <Link to="/worlds" className="shrink-0">
                   <GlassPanel hover className="p-4 w-44 h-full flex items-center justify-center">
-                    <span className="text-sm text-muted-foreground">
+                    <span className="text-sm text-t3">
                       +{worlds.length - 6} more
                     </span>
                   </GlassPanel>
@@ -188,7 +192,7 @@ const Collection = () => {
           </div>
           <div className="flex items-center gap-3">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-t3" />
               <Input
                 placeholder="Search worksheets..."
                 value={searchQuery}
@@ -240,19 +244,15 @@ const Collection = () => {
             <Loader />
           </div>
         ) : filteredWorksheets.length === 0 ? (
-          <GlassPanel className="p-12 text-center">
-            <FileText className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-            <h3 className="font-semibold mb-2">
-              {searchQuery || selectedToolType
-                ? "No matching records"
-                : "WORKSHEET INDEX: EMPTY"}
-            </h3>
-            <p className="text-sm text-muted-foreground">
-              {searchQuery || selectedToolType
-                ? "Adjust filters or search parameters."
-                : "Begin a survey in any world to populate this index."}
-            </p>
-          </GlassPanel>
+          <EmptyState
+            eyebrow="// WORKSHEET INDEX"
+            title={searchQuery || selectedToolType ? "NO MATCHING RECORDS" : "WORKSHEET INDEX: EMPTY"}
+            description={
+              searchQuery || selectedToolType
+                ? "ADJUST FILTERS OR SEARCH PARAMETERS."
+                : "BEGIN A SURVEY IN ANY WORLD TO POPULATE THIS INDEX."
+            }
+          />
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredWorksheets.map((worksheet) => {
@@ -276,14 +276,14 @@ const Collection = () => {
                         <h3 className="font-semibold truncate">
                           {worksheet.title || "Untitled"}
                         </h3>
-                        <p className="text-xs text-muted-foreground mt-0.5">
+                        <p className="text-xs text-t3 mt-0.5">
                           {getToolDisplayName(worksheet.tool_type)}
                         </p>
-                        <div className="flex items-center gap-1.5 mt-2 text-xs text-muted-foreground">
+                        <div className="flex items-center gap-1.5 mt-2 text-xs text-t3">
                           <WorldIconRenderer iconId={worksheet.worlds.icon} className="w-3.5 h-3.5" />
                           <span className="truncate">{worksheet.worlds.name}</span>
                         </div>
-                        <p className="text-xs text-muted-foreground mt-1">
+                        <p className="text-xs text-t3 mt-1">
                           Updated{" "}
                           {format(
                             new Date(worksheet.updated_at),
@@ -310,7 +310,7 @@ const Collection = () => {
                               );
                             })}
                             {worksheet.tags.length > 3 && (
-                              <span className="text-xs text-muted-foreground">
+                              <span className="text-xs text-t3">
                                 +{worksheet.tags.length - 3}
                               </span>
                             )}

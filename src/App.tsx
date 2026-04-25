@@ -15,6 +15,8 @@ import CookieConsent from "./components/common/CookieConsent";
 import TextureOverlay from "./components/layout/TextureOverlay";
 import DataBurstOverlay from "./components/layout/DataBurstOverlay";
 import VideoBackground from "./components/layout/VideoBackground";
+import { StellarBackground } from "./components/layout/StellarBackground";
+import { KonamiCode } from "./components/ambient/KonamiCode";
 import StatusBar from "./components/layout/StatusBar";
 import { Loader } from "@/components/ui/loader";
 import { getLoadingMessage } from "@/lib/loading-messages";
@@ -172,6 +174,8 @@ const App = () => (
           <Sonner />
           <BrowserRouter>
             <ScrollToTop />
+            <StellarBackground />
+            <KonamiCode />
             <VideoBackground />
             <BadgeEvaluatorMount />
             <BadgeEarnedDialog />

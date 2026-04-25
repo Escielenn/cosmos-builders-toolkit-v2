@@ -23,7 +23,7 @@ export function BadgeEarnedDialog() {
     <Dialog open={!!currentId} onOpenChange={() => dismissNext()}>
       <DialogContent
         className={cn(
-          "rounded-none max-w-sm border bg-[#0E1320]/95 backdrop-blur-xl",
+          "rounded-none max-w-sm border bg-sf-surface/95 backdrop-blur-xl",
           tier.border,
           tier.glow
         )}

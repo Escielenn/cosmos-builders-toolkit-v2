@@ -2,6 +2,10 @@ import { Link } from "react-router-dom";
 import { Mail, Linkedin, Instagram } from "lucide-react";
 import CubeLogo from "@/components/icons/CubeLogo";
 import SubstackIcon from "@/components/icons/SubstackIcon";
+import { APP_VERSION } from "@/config/version";
+import { VelocityDial } from "@/components/ambient/VelocityDial";
+import { BuildSigil } from "@/components/ambient/BuildSigil";
+import { CommitTicker } from "@/components/ambient/CommitTicker";
 /* CosmicVelocityTicker removed — velocity data now in StatusBar */
 
 const Footer = () => {
@@ -58,23 +62,26 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="border-t border-dashed border-border/20 bg-[#0A0E17]/80 backdrop-blur-sm">
+    <footer className="border-t border-dashed border-sf-border bg-sf-void/80 backdrop-blur-sf-panel">
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-12">
           {/* Brand */}
           <div className="lg:col-span-2">
-            <Link to="/" className="flex items-center gap-3 mb-4">
-              <CubeLogo size={36} className="rounded-lg" />
-              <div className="flex flex-col">
-                <span className="font-display font-light text-lg leading-tight tracking-sf-wide text-white uppercase">
-                  STELLARFORGE
-                </span>
-                <span className="text-xs text-muted-foreground tracking-wide font-mono">
-                  39.87°N 104.97°W
-                </span>
-              </div>
-            </Link>
-            <p className="text-sm text-muted-foreground max-w-xs mb-6">
+            <div className="flex items-start gap-4 mb-4">
+              <Link to="/" className="flex items-center gap-3">
+                <CubeLogo size={36} className="rounded-none" />
+                <div className="flex flex-col">
+                  <span className="font-display font-light text-lg leading-tight tracking-sf-wide text-t1 uppercase">
+                    STELLARFORGE
+                  </span>
+                  <span className="font-mono text-[11px] text-t4 tracking-[0.18em]">
+                    39.87°N · 104.97°W
+                  </span>
+                </div>
+              </Link>
+              <VelocityDial className="hidden md:block w-28 shrink-0 ml-auto" />
+            </div>
+            <p className="text-sm text-t3 max-w-xs mb-6">
               Science-first worldbuilding tools for writers, game designers, and
               creators who demand internal consistency.
             </p>
@@ -86,7 +93,7 @@ const Footer = () => {
                   href={item.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-muted-foreground hover:text-primary transition-colors"
+                  className="text-t3 hover:text-sf-teal-bright transition-colors duration-base"
                   aria-label={item.name}
                 >
                   <item.icon className="w-5 h-5" />
@@ -95,11 +102,11 @@ const Footer = () => {
             </div>
 
             {/* Privacy Statement */}
-            <div className="mt-6 pt-4 border-t border-dashed border-border/15">
-              <h4 className="text-sm font-semibold text-foreground mb-2">
+            <div className="mt-6 pt-4 border-t border-dashed border-sf-border">
+              <h4 className="font-heading text-[11px] font-medium uppercase tracking-[0.2em] text-t1 mb-2">
                 YOUR WORLDS ARE YOURS ALONE
               </h4>
-              <p className="text-xs text-muted-foreground leading-relaxed">
+              <p className="text-xs text-t3 leading-relaxed">
                 All creative content is encrypted, user-isolated, and never accessed by StellarForge systems.
                 No AI training. No data mining. No third-party sharing.
               </p>
@@ -108,7 +115,7 @@ const Footer = () => {
 
           {/* Product */}
           <div>
-            <h3 className="font-heading text-xs font-medium uppercase tracking-wider text-foreground mb-4">
+            <h3 className="font-heading text-[11px] font-medium uppercase tracking-[0.2em] text-t3 mb-4">
               Product
             </h3>
             <ul className="space-y-3">
@@ -116,7 +123,7 @@ const Footer = () => {
                 <li key={item.name}>
                   <Link
                     to={item.href}
-                    className="text-sm text-muted-foreground hover:text-primary transition-colors sf-text-link"
+                    className="text-sm text-t3 hover:text-sf-teal-bright transition-colors duration-base sf-text-link"
                   >
                     {item.name}
                   </Link>
@@ -127,7 +134,7 @@ const Footer = () => {
 
           {/* Resources */}
           <div>
-            <h3 className="font-heading text-xs font-medium uppercase tracking-wider text-foreground mb-4">
+            <h3 className="font-heading text-[11px] font-medium uppercase tracking-[0.2em] text-t3 mb-4">
               Resources
             </h3>
             <ul className="space-y-3">
@@ -135,7 +142,7 @@ const Footer = () => {
                 <li key={item.name}>
                   <Link
                     to={item.href}
-                    className="text-sm text-muted-foreground hover:text-primary transition-colors sf-text-link"
+                    className="text-sm text-t3 hover:text-sf-teal-bright transition-colors duration-base sf-text-link"
                   >
                     {item.name}
                   </Link>
@@ -146,7 +153,7 @@ const Footer = () => {
 
           {/* Legal */}
           <div>
-            <h3 className="font-heading text-xs font-medium uppercase tracking-wider text-foreground mb-4">
+            <h3 className="font-heading text-[11px] font-medium uppercase tracking-[0.2em] text-t3 mb-4">
               Legal
             </h3>
             <ul className="space-y-3">
@@ -154,7 +161,7 @@ const Footer = () => {
                 <li key={item.name}>
                   <Link
                     to={item.href}
-                    className="text-sm text-muted-foreground hover:text-primary transition-colors sf-text-link"
+                    className="text-sm text-t3 hover:text-sf-teal-bright transition-colors duration-base sf-text-link"
                   >
                     {item.name}
                   </Link>
@@ -164,37 +171,41 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Bottom Bar */}
-        <div className="mt-12 pt-8 border-t border-dashed border-border/20">
+        {/* Bottom Bar — coordinates, build, copyright */}
+        <div className="mt-12 pt-8 border-t border-dashed border-sf-border">
           <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
-            <div className="text-xs text-muted-foreground text-center sm:text-left">
+            <div className="font-mono text-[11px] tracking-[0.18em] text-t4 text-center sm:text-left space-y-1">
               <p>
-                A{" "}
+                <span className="text-t5">//</span>{" "}
                 <a
                   href="https://dreamsidestudios.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-primary transition-colors sf-text-link"
+                  className="hover:text-sf-teal-bright transition-colors duration-base sf-text-link"
                 >
-                  Dreamside Studios
+                  DREAMSIDE STUDIOS
                 </a>{" "}
-                production
+                PRODUCTION
               </p>
-              <p className="mt-1">
+              <p>
                 © 2025–{currentYear}{" "}
                 <a
                   href="https://jbatt.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-primary transition-colors sf-text-link"
+                  className="hover:text-sf-teal-bright transition-colors duration-base sf-text-link"
                 >
-                  Jason D. Batt, Ph.D.
-                </a>{" "}
-                All rights reserved.
+                  JASON D. BATT, PH.D.
+                </a>
               </p>
-              <p className="mt-1">
-                Unauthorized copying, modification, or distribution prohibited.
+              <p className="text-t5">
+                UNAUTHORIZED COPYING, MODIFICATION, OR DISTRIBUTION PROHIBITED.
               </p>
+            </div>
+            <div className="font-mono text-[11px] tracking-[0.18em] text-t5 text-center sm:text-right space-y-1">
+              <p>39.87°N · 104.97°W</p>
+              <p><BuildSigil /></p>
+              <p className="hidden sm:block"><CommitTicker /></p>
             </div>
           </div>
         </div>

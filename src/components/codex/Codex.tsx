@@ -322,7 +322,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
   if (error || !codexData) {
     return (
       <div className="p-3">
-        <p className="font-mono text-[10px] uppercase tracking-wider text-destructive/60">
+        <p className="font-mono text-[10px] uppercase tracking-wider text-sf-crimson/60">
           Registry unavailable.
         </p>
       </div>
@@ -335,7 +335,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
       <div className="px-3 pt-2 pb-1">
         <button
           onClick={onCollapse}
-          className="sf-fill-sweep sf-fill-sweep--secondary w-full flex items-center justify-center h-6 border border-border/15 text-muted-foreground/40 hover:text-foreground/70 transition-colors"
+          className="sf-fill-sweep sf-fill-sweep--secondary w-full flex items-center justify-center h-6 border border-border/15 text-t3/40 hover:text-t2 transition-colors"
           aria-label="Collapse Registry"
         >
           <span className="text-[10px]">◀</span>
@@ -350,7 +350,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
         {layoutContext?.worldIcon && (
           <WorldIconRenderer iconId={layoutContext.worldIcon} className="w-4 h-4 text-primary/60 shrink-0" />
         )}
-        <span className="font-heading text-[14px] uppercase tracking-[2px] text-foreground/80 block truncate">
+        <span className="font-heading text-[14px] uppercase tracking-[2px] text-t2 block truncate">
           {codexData.worldName}
         </span>
       </button>
@@ -359,7 +359,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
       <button
         type="button"
         onClick={() => navigate(`/worlds/${worldId}#notes`)}
-        className="px-3 py-1 w-full text-left flex items-center gap-2 text-muted-foreground/40 hover:text-foreground/70 transition-colors"
+        className="px-3 py-1 w-full text-left flex items-center gap-2 text-t3/40 hover:text-t2 transition-colors"
       >
         <FileText className="w-3.5 h-3.5" />
         <span className="font-mono text-[10px] uppercase tracking-wider">World Notes</span>
@@ -418,7 +418,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
                 className={`flex items-center gap-1 px-1.5 py-0.5 text-[10px] tracking-wider border transition-colors ${
                   activeTags.includes(tag)
                     ? "bg-teal/10 border-teal/25 text-teal"
-                    : "border-border/10 text-tier-4 hover:text-tier-3"
+                    : "border-sf-border text-tier-4 hover:text-tier-3"
                 }`}
               >
                 <Tag className="w-2.5 h-2.5" />
@@ -479,7 +479,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
             filterElements(codexData.customEntries).length === 0;
           return allEmpty ? (
             <div className="px-3 py-6 text-center">
-              <p className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground/30">
+              <p className="font-mono text-[10px] uppercase tracking-wider text-t3/30">
                 No matches found
               </p>
             </div>
@@ -527,7 +527,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
       {/* Default view setting */}
       <div className="px-3 pb-2">
         <div className="flex items-center gap-2">
-          <span className="font-mono text-[9px] uppercase tracking-wider text-muted-foreground/30 whitespace-nowrap">
+          <span className="font-mono text-[9px] uppercase tracking-wider text-t3/30 whitespace-nowrap">
             Default view:
           </span>
           <Select value={defaultView} onValueChange={handleDefaultViewChange}>

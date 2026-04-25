@@ -10,10 +10,10 @@ import { resetAllHints } from "@/lib/onboarding/hints";
 export function ManualSection({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="mb-5">
-      <h3 className="font-heading text-[11px] uppercase tracking-[2px] text-foreground/90 mb-1.5">
+      <h3 className="font-heading text-[11px] uppercase tracking-[2px] text-t1 mb-1.5">
         {title}
       </h3>
-      <div className="text-[12px] text-muted-foreground leading-relaxed space-y-1.5 pl-0.5">
+      <div className="text-[12px] text-t3 leading-relaxed space-y-1.5 pl-0.5">
         {children}
       </div>
     </div>
@@ -67,7 +67,7 @@ export function FieldManualContent() {
           technology, and narrative. Click entries to navigate between
           tools and wiki pages.
         </p>
-        <p className="font-mono text-[10px] text-muted-foreground/50">
+        <p className="font-mono text-[10px] text-t3/50">
           Completion indicators: ● surveyed&ensp;◐ partial&ensp;○ pending
         </p>
       </ManualSection>

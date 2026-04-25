@@ -30,7 +30,7 @@ const changelog: ChangelogEntry[] = [
 const typeStyles: Record<ChangelogEntry["type"], { bg: string; text: string; label: string }> = {
   feature: { bg: "bg-green-500/20", text: "text-green-400", label: "New Feature" },
   improvement: { bg: "bg-blue-500/20", text: "text-blue-400", label: "Improvement" },
-  fix: { bg: "bg-amber-500/20", text: "text-amber-400", label: "Bug Fix" },
+  fix: { bg: "bg-amber-500/20", text: "text-sf-amber", label: "Bug Fix" },
   policy: { bg: "bg-purple-500/20", text: "text-purple-400", label: "Policy Update" },
 };
 
@@ -56,7 +56,7 @@ const Changelog = () => {
                 <Badge className={`${style.bg} ${style.text} border-0`}>
                   {style.label}
                 </Badge>
-                <span className="text-sm text-muted-foreground">{entry.date}</span>
+                <span className="text-sm text-t3">{entry.date}</span>
               </div>
 
               {/* Title */}
@@ -65,7 +65,7 @@ const Changelog = () => {
               {/* Changes list */}
               <ul className="space-y-2">
                 {entry.changes.map((change, i) => (
-                  <li key={i} className="flex items-start gap-2 text-muted-foreground">
+                  <li key={i} className="flex items-start gap-2 text-t3">
                     <span className="text-primary mt-1.5">•</span>
                     <span>{change}</span>
                   </li>
@@ -77,7 +77,7 @@ const Changelog = () => {
 
         {/* Future updates notice */}
         <section className="pt-8 border-t border-border">
-          <p className="text-muted-foreground text-center">
+          <p className="text-t3 text-center">
             Subscribe to our{" "}
             <a
               href="https://xenomythology.substack.com/"

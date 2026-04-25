@@ -97,7 +97,7 @@ const SharedWorldCard = ({
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 -mr-2 -mt-1 text-muted-foreground"
+                className="h-8 w-8 -mr-2 -mt-1 text-t3"
                 aria-label="Leave shared world"
               >
                 <LogOut className="w-4 h-4" />
@@ -123,12 +123,12 @@ const SharedWorldCard = ({
 
         <div className="flex-1">
           {ownerDisplayName && (
-            <p className="text-xs text-muted-foreground mb-1">
+            <p className="text-xs text-t3 mb-1">
               Shared by {ownerDisplayName}
             </p>
           )}
           {description && (
-            <p className="text-sm text-muted-foreground line-clamp-2">
+            <p className="text-sm text-t3 line-clamp-2">
               {description}
             </p>
           )}
@@ -140,7 +140,7 @@ const SharedWorldCard = ({
                 </Badge>
               ))}
               {tags.length > 3 && (
-                <span className="text-xs text-muted-foreground">
+                <span className="text-xs text-t3">
                   +{tags.length - 3}
                 </span>
               )}
@@ -148,8 +148,8 @@ const SharedWorldCard = ({
           )}
         </div>
 
-        <div className="pt-2 border-t border-border/50 mt-auto">
-          <p className="text-xs text-muted-foreground">
+        <div className="pt-2 border-t border-sf-border mt-auto">
+          <p className="text-xs text-t3">
             Last updated: {formattedDate}
           </p>
         </div>

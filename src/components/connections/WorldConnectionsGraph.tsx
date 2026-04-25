@@ -193,7 +193,7 @@ const WorldConnectionsGraph = ({
 
   if (nodes.length === 0) {
     return (
-      <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+      <div className="w-full h-full flex items-center justify-center text-t3">
         <div className="text-center">
           <p className="text-lg mb-2">No worksheets in this world yet</p>
           <p className="text-sm">Create some worksheets to see connections</p>

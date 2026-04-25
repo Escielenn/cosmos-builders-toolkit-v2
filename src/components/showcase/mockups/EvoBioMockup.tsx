@@ -135,7 +135,7 @@ const EvoBioMockup = () => {
 
       {/* Right: Section checklist */}
       <div className="flex-1 flex flex-col">
-        <div className="text-[10px] text-muted-foreground uppercase tracking-wider mb-3">
+        <div className="text-[10px] text-t3 uppercase tracking-wider mb-3">
           Design Progress
         </div>
 
@@ -169,7 +169,7 @@ const EvoBioMockup = () => {
                 className={`text-[10px] transition-colors duration-300 ${
                   completedSections.includes(index)
                     ? "text-foreground"
-                    : "text-muted-foreground"
+                    : "text-t3"
                 }`}
               >
                 {section}
@@ -180,7 +180,7 @@ const EvoBioMockup = () => {
 
         {/* Progress indicator */}
         <div className="mt-3">
-          <div className="flex justify-between text-[10px] text-muted-foreground mb-1">
+          <div className="flex justify-between text-[10px] text-t3 mb-1">
             <span>Completion</span>
             <span>{Math.round((completedSections.length / 13) * 100)}%</span>
           </div>

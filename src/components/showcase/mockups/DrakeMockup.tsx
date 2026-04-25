@@ -24,13 +24,13 @@ const DrakeMockup = () => {
     <div className="w-full h-full flex flex-col bg-sf-void/50 rounded-lg p-4 md:p-6">
       {/* Header */}
       <div className="text-center mb-4 md:mb-6">
-        <div className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
+        <div className="text-xs text-t3 uppercase tracking-wider mb-1">
           Drake Equation
         </div>
         <div className="text-2xl md:text-4xl font-display font-light text-sf-cyan">
           N = <span style={{ animation: "pulse-value 2s ease-in-out infinite" }}>{nValue}</span>
         </div>
-        <div className="text-xs text-muted-foreground mt-1">
+        <div className="text-xs text-t3 mt-1">
           {nValue > 100 ? "Crowded Galaxy" : nValue > 50 ? "Moderate" : "Sparse"}
         </div>
       </div>
@@ -86,7 +86,7 @@ const SliderRow = ({ label, description, delay }: SliderRowProps) => {
 
       {/* Description */}
       <div className="w-24 hidden md:block">
-        <span className="text-[10px] text-muted-foreground truncate">
+        <span className="text-[10px] text-t3 truncate">
           {description}
         </span>
       </div>

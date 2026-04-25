@@ -248,7 +248,7 @@ const ImportFromECRModal = ({
 
         <div className="space-y-4 py-4">
           {worksheets.length === 0 ? (
-            <div className="text-center py-6 text-muted-foreground">
+            <div className="text-center py-6 text-t3">
               <AlertCircle className="w-8 h-8 mx-auto mb-2 opacity-50" />
               <p>No Environmental Chain Reaction worksheets found for this world.</p>
               <p className="text-sm mt-1">Complete an ECR worksheet first to import data.</p>
@@ -278,7 +278,7 @@ const ImportFromECRModal = ({
                           <Check className="w-4 h-4 text-primary" />
                         )}
                       </div>
-                      <span className="text-xs text-muted-foreground">
+                      <span className="text-xs text-t3">
                         Updated {new Date(worksheet.updated_at).toLocaleDateString()}
                       </span>
                     </button>
@@ -305,7 +305,7 @@ const ImportFromECRModal = ({
                     <div className="space-y-2 p-2 bg-muted/30 rounded-lg mt-2">
                       {preview.map((item, i) => (
                         <div key={i} className="flex items-center justify-between text-sm">
-                          <span className="text-muted-foreground">{item.field}:</span>
+                          <span className="text-t3">{item.field}:</span>
                           <Badge variant="secondary" className="text-xs">
                             {item.value}
                           </Badge>
@@ -331,7 +331,7 @@ const ImportFromECRModal = ({
                     >
                       Link worksheets together
                     </label>
-                    <p className="text-xs text-muted-foreground mt-1">
+                    <p className="text-xs text-t3 mt-1">
                       Changes in the ECR worksheet will be reflected here. You'll see a "Linked" indicator.
                     </p>
                   </div>

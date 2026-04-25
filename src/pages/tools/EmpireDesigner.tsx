@@ -330,7 +330,7 @@ const EmpireDesigner = () => {
         }
         toast({
           title: "Worksheet Loaded",
-          description: "Your saved work has been restored from the cloud.",
+          description: "WORK RESTORED FROM CLOUD.",
         });
       } catch {
         // Ignore parse errors
@@ -543,8 +543,8 @@ const EmpireDesigner = () => {
           });
         } else {
           toast({
-            title: "Error",
-            description: "Please select or create a worksheet first.",
+            title: "OPERATION FAILED.",
+            description: "SELECT OR CREATE A WORKSHEET BEFORE TRANSMITTING.",
             variant: "destructive",
           });
         }
@@ -554,7 +554,7 @@ const EmpireDesigner = () => {
     } else {
       toast({
         title: "Draft Saved",
-        description: "Your work has been saved locally.",
+        description: "WORK SECURED TO LOCAL STORAGE.",
       });
     }
   };
@@ -1229,7 +1229,7 @@ const EmpireDesigner = () => {
                           variant="ghost"
                           size="sm"
                           onClick={() => removeFaction(faction.id)}
-                          className="text-destructive hover:text-destructive"
+                          className="text-sf-crimson hover:text-sf-crimson"
                         >
                           <Trash2 className="w-4 h-4" />
                         </Button>

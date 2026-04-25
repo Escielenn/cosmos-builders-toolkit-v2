@@ -88,7 +88,7 @@ const CreateWorldButton = () => {
           </div>
           <div className="text-center">
             <h3 className="font-heading font-semibold text-lg">INITIALIZE NEW WORLD</h3>
-            <p className="text-sm text-muted-foreground mt-1">
+            <p className="text-sm text-t3 mt-1">
               Begin survey.
             </p>
           </div>
@@ -163,10 +163,10 @@ const CreateWorldButton = () => {
               World Initialized.
             </h2>
             <div className="space-y-2">
-              <p className="text-sm text-muted-foreground leading-relaxed">
+              <p className="text-sm text-t3 leading-relaxed">
                 Everything you create here is yours.
               </p>
-              <p className="text-sm text-muted-foreground leading-relaxed">
+              <p className="text-sm text-t3 leading-relaxed">
                 Encrypted, versioned, exportable. Always.
               </p>
             </div>

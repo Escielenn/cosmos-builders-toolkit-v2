@@ -167,7 +167,7 @@ const ShareDialog = ({
       await navigator.clipboard.writeText(shareUrl);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-      toast({ title: "Link copied to clipboard" });
+      toast({ title: "LINK COPIED TO CLIPBOARD." });
     } catch {
       toast({ title: "Failed to copy", variant: "destructive" });
     }
@@ -247,7 +247,7 @@ const ShareDialog = ({
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <div className="flex items-center gap-2 text-sm text-t3">
                     <Eye className="w-3.5 h-3.5" />
                     <span>{shareData?.view_count || 0} views</span>
                   </div>
@@ -258,7 +258,7 @@ const ShareDialog = ({
                         variant="ghost"
                         size="sm"
                         disabled={regenerateToken.isPending}
-                        className="text-muted-foreground"
+                        className="text-t3"
                       >
                         {regenerateToken.isPending ? (
                           <Loader variant="inline" size="sm" className="mr-1.5" />
@@ -286,7 +286,7 @@ const ShareDialog = ({
                   </AlertDialog>
                 </div>
 
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-t3">
                   Anyone with this link can view a read-only copy.
                 </p>
               </div>
@@ -320,7 +320,7 @@ const ShareDialog = ({
                         <span className="text-sm font-medium text-foreground">
                           {opt.label}
                         </span>
-                        <p className="text-xs text-muted-foreground">{opt.desc}</p>
+                        <p className="text-xs text-t3">{opt.desc}</p>
                       </div>
                     </label>
                   ))}

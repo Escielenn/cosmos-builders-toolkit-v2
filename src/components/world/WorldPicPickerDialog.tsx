@@ -61,7 +61,7 @@ const WorldPicPickerDialog = ({
 
         {/* Search */}
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-t3" />
           <Input
             placeholder="Search illustrations..."
             value={search}
@@ -79,7 +79,7 @@ const WorldPicPickerDialog = ({
                 "px-2.5 py-1 rounded-md text-xs font-medium transition-colors",
                 activeCategory === "All"
                   ? "bg-primary text-primary-foreground"
-                  : "bg-muted/50 text-muted-foreground hover:bg-muted"
+                  : "bg-muted/50 text-t3 hover:bg-muted"
               )}
             >
               All ({ALL_WORLD_PICS.length})
@@ -95,7 +95,7 @@ const WorldPicPickerDialog = ({
                     "px-2.5 py-1 rounded-md text-xs font-medium transition-colors",
                     activeCategory === cat
                       ? "bg-primary text-primary-foreground"
-                      : "bg-muted/50 text-muted-foreground hover:bg-muted"
+                      : "bg-muted/50 text-t3 hover:bg-muted"
                   )}
                 >
                   {cat} ({count})
@@ -108,7 +108,7 @@ const WorldPicPickerDialog = ({
         {/* Grid */}
         <div className="flex-1 overflow-y-auto min-h-0">
           {filteredPics.length === 0 ? (
-            <div className="flex items-center justify-center h-32 text-muted-foreground text-sm">
+            <div className="flex items-center justify-center h-32 text-t3 text-sm">
               No illustrations found
             </div>
           ) : (
@@ -135,7 +135,7 @@ const WorldPicPickerDialog = ({
         </div>
 
         {/* Count */}
-        <div className="text-xs text-muted-foreground text-center pt-1 border-t">
+        <div className="text-xs text-t3 text-center pt-1 border-t">
           {filteredPics.length} illustration{filteredPics.length !== 1 ? "s" : ""}
           {search.trim() ? ` matching "${search}"` : ""}
         </div>

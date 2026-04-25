@@ -43,13 +43,13 @@ const categoryColors: Record<string, string> = {
   basics: "bg-blue-500/20 text-blue-400",
   science: "bg-green-500/20 text-green-400",
   craft: "bg-purple-500/20 text-purple-400",
-  "case-studies": "bg-amber-500/20 text-amber-400",
+  "case-studies": "bg-amber-500/20 text-sf-amber",
 };
 
 const STATUS_LABELS: Record<string, { label: string; className: string }> = {
   upcoming: { label: "UPCOMING", className: "bg-white/5 border-white/10 text-tier-3" },
-  enrolling: { label: "ENROLLING NOW", className: "bg-emerald-500/6 border-emerald-500/15 text-emerald-400" },
-  in_progress: { label: "IN SESSION", className: "bg-amber-500/6 border-amber-500/15 text-amber-400" },
+  enrolling: { label: "ENROLLING NOW", className: "bg-emerald-500/6 border-emerald-500/15 text-sf-emerald" },
+  in_progress: { label: "IN SESSION", className: "bg-amber-500/6 border-amber-500/15 text-sf-amber" },
 };
 
 function CourseDiscountBadge({ course, courseDiscount, tier }: { course: CourseListItem; courseDiscount: string; tier: string }) {
@@ -58,12 +58,12 @@ function CourseDiscountBadge({ course, courseDiscount, tier }: { course: CourseL
     // Show generic "Members save" message
     const maxDiscount = course.vanguardYearlyDiscount || "25%";
     return (
-      <span className="text-xs text-violet-400">Members save up to {maxDiscount}</span>
+      <span className="text-xs text-sf-violet">Members save up to {maxDiscount}</span>
     );
   }
 
   return (
-    <Badge className="bg-violet-500/6 border border-violet-500/15 text-violet-400 text-xs">
+    <Badge className="bg-violet-500/6 border border-violet-500/15 text-sf-violet text-xs">
       {courseDiscount} off
     </Badge>
   );
@@ -95,14 +95,14 @@ const LearnIndex = () => {
         <PageBursts bursts={LEARN_INDEX_BURSTS} />
         {/* Hero Section */}
         <section className="text-center mb-12">
-          <div className="w-16 h-16 rounded-none bg-primary/10 flex items-center justify-center mx-auto mb-6">
-            <BookOpen className="w-8 h-8 text-primary" />
+          <div className="w-16 h-16 rounded-none bg-sf-teal/[0.06] border border-sf-teal/[0.15] flex items-center justify-center mx-auto mb-6">
+            <BookOpen className="w-8 h-8 text-sf-teal" />
           </div>
-          <p className="text-sm font-medium uppercase tracking-sf-wide text-muted-foreground mb-2">Learn</p>
-          <h1 className="font-display text-4xl md:text-5xl font-light mb-4 tracking-sf-wide">
-            <span className="gradient-text">SF University</span>
+          <p className="font-mono text-[11px] tracking-[0.18em] text-sf-teal uppercase mb-3">// ARCHIVE</p>
+          <h1 className="font-display text-4xl md:text-5xl font-light mb-4 tracking-sf-title text-t1 uppercase">
+            SF University
           </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg text-t3 max-w-2xl mx-auto">
             Deep dives into worldbuilding concepts, science for storytellers,
             and the craft of creating believable fictional universes.
           </p>
@@ -115,13 +115,13 @@ const LearnIndex = () => {
         <div className="flex justify-center gap-2 -mt-4 mb-8">
           <a
             href="#courses"
-            className="px-4 py-2 text-xs uppercase tracking-wider text-muted-foreground hover:text-primary border border-border/30 rounded-md hover:border-primary/30 transition-all"
+            className="px-4 py-2 text-xs uppercase tracking-wider text-t3 hover:text-primary border border-sf-border rounded-md hover:border-primary/30 transition-all"
           >
             Courses
           </a>
           <Link
             to="/roadmap"
-            className="px-4 py-2 text-xs uppercase tracking-wider text-muted-foreground hover:text-primary border border-border/30 rounded-md hover:border-primary/30 transition-all"
+            className="px-4 py-2 text-xs uppercase tracking-wider text-t3 hover:text-primary border border-sf-border rounded-md hover:border-primary/30 transition-all"
           >
             Roadmap
           </Link>
@@ -129,7 +129,7 @@ const LearnIndex = () => {
 
         {/* Search */}
         <div className="relative max-w-md mx-auto mb-10">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-t3" />
           <Input
             placeholder="Search articles..."
             value={searchTerm}
@@ -148,7 +148,7 @@ const LearnIndex = () => {
         {/* Error State */}
         {error && !isLoading && (
           <GlassPanel className="p-4 mb-8 border-amber-500/50">
-            <p className="text-amber-400 text-sm">
+            <p className="text-sf-amber text-sm">
               Unable to load articles from CMS. Showing cached content.
             </p>
           </GlassPanel>
@@ -180,7 +180,7 @@ const LearnIndex = () => {
                               >
                                 {categoryLabels[article.category]}
                               </Badge>
-                              <span className="text-xs text-muted-foreground">
+                              <span className="text-xs text-t3">
                                 {new Date(article.publishedDate).toLocaleDateString(
                                   "en-US",
                                   { month: "short", day: "numeric", year: "numeric" }
@@ -190,11 +190,11 @@ const LearnIndex = () => {
                             <h3 className="font-semibold group-hover:text-primary transition-colors">
                               {article.title}
                             </h3>
-                            <p className="text-sm text-muted-foreground mt-1">
+                            <p className="text-sm text-t3 mt-1">
                               {article.description}
                             </p>
                           </div>
-                          <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors shrink-0 mt-1" />
+                          <ArrowRight className="w-5 h-5 text-t3 group-hover:text-primary transition-colors shrink-0 mt-1" />
                         </div>
                       </GlassPanel>
                     </Link>
@@ -203,7 +203,7 @@ const LearnIndex = () => {
               </>
             )}
             {!isSearching && searchResults && searchResults.length === 0 && (
-              <p className="text-center text-muted-foreground py-8">
+              <p className="text-center text-t3 py-8">
                 No articles found for &ldquo;{searchTerm}&rdquo;
               </p>
             )}
@@ -240,11 +240,11 @@ const LearnIndex = () => {
                       <h3 className="font-heading text-xl font-semibold mt-3 mb-2 group-hover:text-primary transition-colors">
                         {article.title}
                       </h3>
-                      <p className="text-muted-foreground text-sm mb-4">
+                      <p className="text-t3 text-sm mb-4">
                         {article.description}
                       </p>
                       <div className="flex items-center justify-between">
-                        <span className="text-xs text-muted-foreground flex items-center gap-1">
+                        <span className="text-xs text-t3 flex items-center gap-1">
                           <Calendar className="w-3 h-3" />
                           {new Date(article.publishedDate).toLocaleDateString(
                             "en-US",
@@ -271,7 +271,7 @@ const LearnIndex = () => {
         {!isLoading && !isSearchActive && (
           <section className="mb-12">
             <div className="flex items-center gap-3 mb-6">
-              <Beaker className="w-5 h-5 text-muted-foreground" />
+              <Beaker className="w-5 h-5 text-t3" />
               <h2 className="font-heading text-2xl font-semibold">
                 Simulator Science: Showing Our Work
               </h2>
@@ -290,7 +290,7 @@ const LearnIndex = () => {
                   <h3 className="font-semibold group-hover:text-primary transition-colors">
                     ROGUE: The Science
                   </h3>
-                  <p className="text-sm text-muted-foreground mt-1">
+                  <p className="text-sm text-t3 mt-1">
                     The real astrophysics behind gravitational encounters, rogue planets, and N-body dynamics.
                   </p>
                 </GlassPanel>
@@ -308,7 +308,7 @@ const LearnIndex = () => {
                   <h3 className="font-semibold group-hover:text-primary transition-colors">
                     TIDELOCK: The Science
                   </h3>
-                  <p className="text-sm text-muted-foreground mt-1">
+                  <p className="text-sm text-t3 mt-1">
                     The science of tidally locked worlds, atmospheric circulation, and habitability around red dwarf stars.
                   </p>
                 </GlassPanel>
@@ -326,7 +326,7 @@ const LearnIndex = () => {
                   <h3 className="font-semibold group-hover:text-primary transition-colors">
                     EXOSKY: The Science
                   </h3>
-                  <p className="text-sm text-muted-foreground mt-1">
+                  <p className="text-sm text-t3 mt-1">
                     How real stellar catalogs, parallax, and coordinate transforms create accurate alien night skies.
                   </p>
                 </GlassPanel>
@@ -344,7 +344,7 @@ const LearnIndex = () => {
                   <h3 className="font-semibold group-hover:text-primary transition-colors">
                     EXOFORGE: The Science
                   </h3>
-                  <p className="text-sm text-muted-foreground mt-1">
+                  <p className="text-sm text-t3 mt-1">
                     Terrain generation, composition spectra, biome models, and the physics behind procedural exoplanet forging.
                   </p>
                 </GlassPanel>
@@ -357,7 +357,7 @@ const LearnIndex = () => {
         {!isLoading && !isSearchActive && featuredCourses.length > 0 && (
           <section id="courses" className="mb-12 scroll-mt-24">
             <div className="flex items-center gap-3 mb-6">
-              <GraduationCap className="w-5 h-5 text-violet-400" />
+              <GraduationCap className="w-5 h-5 text-sf-violet" />
               <h2 className="font-heading text-2xl font-light uppercase tracking-[2px]">
                 Courses
               </h2>
@@ -453,9 +453,9 @@ const LearnIndex = () => {
             {!user && (
               <GlassPanel className="p-4 mt-4 border-violet-500/10 text-center">
                 <p className="text-sm text-tier-3">
-                  <Zap className="w-3.5 h-3.5 inline-block mr-1 text-amber-500 -mt-0.5" />
+                  <Zap className="w-3.5 h-3.5 inline-block mr-1 text-sf-amber -mt-0.5" />
                   Pro members save 5–10% on all courses.{" "}
-                  <Sparkles className="w-3.5 h-3.5 inline-block mr-1 text-violet-400 -mt-0.5" />
+                  <Sparkles className="w-3.5 h-3.5 inline-block mr-1 text-sf-violet -mt-0.5" />
                   Vanguard members save up to 25%.{" "}
                   <Link to="/pricing" className="text-primary hover:underline">
                     View plans
@@ -488,7 +488,7 @@ const LearnIndex = () => {
                         </div>
                       ) : (
                         <div className="w-32 md:w-48 shrink-0 bg-muted/30 flex items-center justify-center">
-                          <BookOpen className="w-8 h-8 text-muted-foreground/30" />
+                          <BookOpen className="w-8 h-8 text-t3/30" />
                         </div>
                       )}
                       <div className="flex-1 p-4 flex items-start justify-between gap-4">
@@ -500,7 +500,7 @@ const LearnIndex = () => {
                             >
                               {categoryLabels[article.category]}
                             </Badge>
-                            <span className="text-xs text-muted-foreground">
+                            <span className="text-xs text-t3">
                               {new Date(article.publishedDate).toLocaleDateString(
                                 "en-US",
                                 {
@@ -514,11 +514,11 @@ const LearnIndex = () => {
                           <h3 className="font-semibold group-hover:text-primary transition-colors">
                             {article.title}
                           </h3>
-                          <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
+                          <p className="text-sm text-t3 mt-1 line-clamp-2">
                             {article.description}
                           </p>
                         </div>
-                        <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors shrink-0 mt-1" />
+                        <ArrowRight className="w-5 h-5 text-t3 group-hover:text-primary transition-colors shrink-0 mt-1" />
                       </div>
                     </div>
                   </GlassPanel>

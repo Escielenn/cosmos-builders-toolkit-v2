@@ -30,12 +30,12 @@ const FirstTimeHint = ({ hintId, icon: Icon, variant, className = "" }: FirstTim
 
   const textColor =
     resolvedVariant === "warning"
-      ? "text-amber-400/70"
+      ? "text-sf-amber/70"
       : "text-primary/70";
 
   const iconColor =
     resolvedVariant === "warning"
-      ? "text-amber-400/60"
+      ? "text-sf-amber/60"
       : "text-primary/60";
 
   const fontSize =
@@ -62,7 +62,7 @@ const FirstTimeHint = ({ hintId, icon: Icon, variant, className = "" }: FirstTim
       </div>
       <button
         onClick={dismiss}
-        className="absolute top-1.5 right-1.5 text-muted-foreground/30 hover:text-muted-foreground/60 transition-colors"
+        className="absolute top-1.5 right-1.5 text-t3/30 hover:text-t3/60 transition-colors"
         aria-label="Dismiss hint"
       >
         <X className="w-3 h-3" />

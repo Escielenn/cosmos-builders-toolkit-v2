@@ -258,7 +258,7 @@ const SettingsDialog = ({
                     Browse Avatars
                   </Button>
                 </div>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-t3">
                   Upload your own or choose a preset avatar.
                 </p>
               </div>
@@ -268,7 +268,7 @@ const SettingsDialog = ({
             <div className="space-y-2">
               <Label>Email</Label>
               <Input value={user?.email || ""} disabled />
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-t3">
                 Email cannot be changed.
               </p>
             </div>
@@ -318,7 +318,7 @@ const SettingsDialog = ({
 
               {/* Default */}
               <div className="mb-4">
-                <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2">
+                <p className="text-xs text-t3 uppercase tracking-wider mb-2">
                   Default
                 </p>
                 <div className="grid grid-cols-3 gap-2">
@@ -349,7 +349,7 @@ const SettingsDialog = ({
 
               {/* Videos */}
               <div className="mb-4">
-                <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2">
+                <p className="text-xs text-t3 uppercase tracking-wider mb-2">
                   Animated Backdrops
                 </p>
                 <div className="grid grid-cols-3 gap-2">
@@ -388,7 +388,7 @@ const SettingsDialog = ({
 
               {/* Space Images */}
               <div className="mb-4">
-                <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2">
+                <p className="text-xs text-t3 uppercase tracking-wider mb-2">
                   Space Images
                 </p>
                 <div className="grid grid-cols-3 gap-2">
@@ -424,7 +424,7 @@ const SettingsDialog = ({
 
               {/* Gradients */}
               <div className="mb-4">
-                <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2">
+                <p className="text-xs text-t3 uppercase tracking-wider mb-2">
                   Gradients
                 </p>
                 <div className="grid grid-cols-4 gap-2">
@@ -455,7 +455,7 @@ const SettingsDialog = ({
 
               {/* Colors */}
               <div className="mb-4">
-                <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2">
+                <p className="text-xs text-t3 uppercase tracking-wider mb-2">
                   Solid Colors
                 </p>
                 <div className="grid grid-cols-4 gap-2">
@@ -486,7 +486,7 @@ const SettingsDialog = ({
 
               {/* Custom Upload */}
               <div>
-                <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2">
+                <p className="text-xs text-t3 uppercase tracking-wider mb-2">
                   Custom
                 </p>
                 <div className="flex gap-2">
@@ -519,7 +519,7 @@ const SettingsDialog = ({
                         }}
                         className="absolute top-1 left-1 w-4 h-4 rounded-sm bg-destructive flex items-center justify-center"
                       >
-                        <X className="w-2.5 h-2.5 text-destructive-foreground" />
+                        <X className="w-2.5 h-2.5 text-sf-crimson-foreground" />
                       </button>
                       {backgroundId === "custom" && (
                         <div className="absolute top-1 right-1 w-4 h-4 rounded-sm bg-primary flex items-center justify-center">
@@ -532,8 +532,8 @@ const SettingsDialog = ({
                     onClick={() => bgInputRef.current?.click()}
                     className="w-24 aspect-video rounded-lg overflow-hidden border-2 border-dashed border-border hover:border-primary/50 transition-all hover:scale-105 flex flex-col items-center justify-center gap-1 bg-muted/50"
                   >
-                    <Upload className="w-4 h-4 text-muted-foreground" />
-                    <span className="text-[10px] text-muted-foreground">
+                    <Upload className="w-4 h-4 text-t3" />
+                    <span className="text-[10px] text-t3">
                       Upload
                     </span>
                   </button>
@@ -562,7 +562,7 @@ const SettingsDialog = ({
                   </div>
                   <div>
                     <h4 className="font-medium">Notion</h4>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-t3">
                       {isNotionConnected
                         ? `Connected to ${notionConnection?.workspace_name || "workspace"}`
                         : "Export worksheets to Notion"}
@@ -595,7 +595,7 @@ const SettingsDialog = ({
             </div>
 
             {/* Placeholder for future integrations */}
-            <p className="text-xs text-muted-foreground text-center">
+            <p className="text-xs text-t3 text-center">
               More integrations coming soon
             </p>
           </TabsContent>
@@ -605,7 +605,7 @@ const SettingsDialog = ({
             {isSubscribed && subscription ? (
               <>
                 <div className="flex items-center gap-2">
-                  <Badge className="bg-amber-500/20 text-amber-600 dark:text-amber-400">
+                  <Badge className="bg-amber-500/20 text-sf-amber dark:text-sf-amber">
                     <Zap className="w-3 h-3 mr-1" />
                     Pro Active
                   </Badge>
@@ -618,15 +618,15 @@ const SettingsDialog = ({
 
                 {subscription.status === "past_due" && (
                   <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 flex items-center gap-2">
-                    <AlertCircle className="w-5 h-5 text-red-500" />
-                    <p className="text-sm text-red-600 dark:text-red-400">
+                    <AlertCircle className="w-5 h-5 text-sf-crimson" />
+                    <p className="text-sm text-red-600 dark:text-sf-crimson">
                       Payment failed. Please update your payment method.
                     </p>
                   </div>
                 )}
 
                 <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div className="flex items-center gap-2 text-muted-foreground">
+                  <div className="flex items-center gap-2 text-t3">
                     <Calendar className="w-4 h-4" />
                     <span>Current period ends</span>
                   </div>
@@ -638,11 +638,11 @@ const SettingsDialog = ({
 
                   {subscription.cancel_at_period_end && (
                     <>
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <AlertCircle className="w-4 h-4 text-amber-500" />
+                      <div className="flex items-center gap-2 text-t3">
+                        <AlertCircle className="w-4 h-4 text-sf-amber" />
                         <span>Cancels on</span>
                       </div>
-                      <div className="text-amber-600 dark:text-amber-400">
+                      <div className="text-sf-amber dark:text-sf-amber">
                         {subscription.current_period_end
                           ? new Date(subscription.current_period_end).toLocaleDateString()
                           : "N/A"}
@@ -663,7 +663,7 @@ const SettingsDialog = ({
                       }
                     } catch {
                       toast({
-                        title: "Error",
+                        title: "OPERATION FAILED.",
                         description: "Failed to open billing portal.",
                         variant: "destructive",
                       });
@@ -682,10 +682,10 @@ const SettingsDialog = ({
               </>
             ) : (
               <div className="space-y-4 text-center py-4">
-                <Zap className="w-12 h-12 text-amber-500 mx-auto" />
+                <Zap className="w-12 h-12 text-sf-amber mx-auto" />
                 <div>
                   <h4 className="font-medium mb-1">Upgrade to Pro</h4>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-t3">
                     Unlock all worldbuilding tools and advanced features.
                   </p>
                 </div>
@@ -712,7 +712,7 @@ const SettingsDialog = ({
           <TabsContent value="language" className="mt-4 space-y-4">
             <div>
               <h4 className="text-sm font-medium mb-1">Language</h4>
-              <p className="text-sm text-muted-foreground mb-4">
+              <p className="text-sm text-t3 mb-4">
                 Choose your preferred language. More languages coming soon.
               </p>
             </div>
@@ -735,7 +735,7 @@ const SettingsDialog = ({
                 </button>
               ))}
             </div>
-            <p className="text-xs text-muted-foreground text-center pt-2">
+            <p className="text-xs text-t3 text-center pt-2">
               Want StellarForge in your language?{" "}
               <a
                 href="https://github.com/anthropics/claude-code/issues"

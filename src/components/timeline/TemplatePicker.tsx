@@ -42,9 +42,9 @@ const CATEGORY_LABELS: Record<TemplateCategory, string> = {
 
 const CATEGORY_COLORS: Record<TemplateCategory, string> = {
   civilization: "bg-blue-500/20 text-blue-400 border-blue-500/30",
-  character: "bg-violet-500/20 text-violet-400 border-violet-500/30",
-  conflict: "bg-red-500/20 text-red-400 border-red-500/30",
-  exploration: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
+  character: "bg-violet-500/20 text-sf-violet border-violet-500/30",
+  conflict: "bg-red-500/20 text-sf-crimson border-red-500/30",
+  exploration: "bg-emerald-500/20 text-sf-emerald border-emerald-500/30",
 };
 
 interface TemplatePickerProps {
@@ -147,7 +147,7 @@ const TemplatePicker = ({
 
         {confirming && confirmedTemplate ? (
           <div className="space-y-4 pt-2">
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-t3">
               Applying <span className="font-medium text-foreground">{confirmedTemplate.name}</span> will
               replace your current tracks, events, and links. This cannot be undone.
             </p>
@@ -181,12 +181,12 @@ const TemplatePicker = ({
                   type="button"
                   onClick={() => handleSelect(template)}
                   className={cn(
-                    "flex flex-col items-start gap-2 p-4 rounded-lg border border-border/40",
-                    "bg-muted/20 hover:bg-muted/40 hover:border-border/60 transition-colors text-left"
+                    "flex flex-col items-start gap-2 p-4 rounded-lg border border-sf-border",
+                    "bg-muted/20 hover:bg-muted/40 hover:border-sf-border transition-colors text-left"
                   )}
                 >
                   <div className="flex items-center gap-2 w-full">
-                    <Icon className="w-5 h-5 text-muted-foreground shrink-0" />
+                    <Icon className="w-5 h-5 text-t3 shrink-0" />
                     <span className="text-sm font-medium flex-1 truncate">
                       {template.name}
                     </span>
@@ -197,10 +197,10 @@ const TemplatePicker = ({
                       {CATEGORY_LABELS[template.category]}
                     </Badge>
                   </div>
-                  <p className="text-xs text-muted-foreground leading-relaxed">
+                  <p className="text-xs text-t3 leading-relaxed">
                     {template.description}
                   </p>
-                  <div className="flex items-center gap-3 text-[10px] text-muted-foreground/70">
+                  <div className="flex items-center gap-3 text-[10px] text-t3/70">
                     <span>{template.tracks.length} tracks</span>
                     <span>{template.events.length} events</span>
                     <div className="flex items-center gap-0.5">

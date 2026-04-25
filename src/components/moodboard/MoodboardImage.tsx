@@ -43,7 +43,7 @@ export function MoodboardImage({
       >
         {imageError ? (
           <div className="w-full h-full flex items-center justify-center bg-muted">
-            <span className="text-sm text-muted-foreground">Image not found</span>
+            <span className="text-sm text-t3">Image not found</span>
           </div>
         ) : (
           <>
@@ -88,7 +88,7 @@ export function MoodboardImage({
             <p
               className={cn(
                 "text-xs flex-1 truncate",
-                image.caption ? "text-foreground" : "text-muted-foreground italic cursor-pointer hover:text-foreground"
+                image.caption ? "text-foreground" : "text-t3 italic cursor-pointer hover:text-foreground"
               )}
               onClick={() => !disabled && setIsEditing(true)}
             >
@@ -108,7 +108,7 @@ export function MoodboardImage({
                 <Button
                   size="icon"
                   variant="ghost"
-                  className="h-6 w-6 text-destructive hover:text-destructive"
+                  className="h-6 w-6 text-sf-crimson hover:text-sf-crimson"
                   onClick={() => onDelete(image.id)}
                   aria-label="Delete image"
                 >

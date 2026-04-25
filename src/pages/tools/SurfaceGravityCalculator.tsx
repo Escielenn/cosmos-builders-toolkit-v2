@@ -298,7 +298,7 @@ const SurfaceGravityCalculator = () => {
         setCurrentWorksheetId(existingWorksheet.id);
         setCurrentWorksheetTitle(existingWorksheet.title);
         if (existingWorksheet.tags) setWorksheetTags(existingWorksheet.tags);
-        toast({ title: "Worksheet Loaded", description: "Your saved work has been restored." });
+        toast({ title: "Worksheet Loaded", description: "WORK RESTORED." });
       } catch {
         console.error("Failed to load worksheet data");
       }
@@ -437,7 +437,7 @@ const SurfaceGravityCalculator = () => {
   const handleCopyResults = () => {
     const text = buildCopyText(result, formState);
     navigator.clipboard.writeText(text);
-    toast({ title: "Copied", description: "Results copied to clipboard." });
+    toast({ title: "COPIED TO CLIPBOARD.", description: "RESULTS COPIED TO CLIPBOARD." });
   };
 
   // ─── Save ──────────────────────────────────────────────────────────
@@ -453,7 +453,7 @@ const SurfaceGravityCalculator = () => {
           worksheetId: wsId,
           data: formState as unknown as Json,
         });
-        toast({ title: "Saved", description: "Worksheet saved to cloud." });
+        toast({ title: "FILE SECURED.", description: "WORKSHEET SECURED TO CLOUD." });
       } else {
         const ws = await createWorksheet.mutateAsync({
           worldId,
@@ -562,7 +562,7 @@ const SurfaceGravityCalculator = () => {
                     className={`p-3 rounded-lg border text-left transition-colors ${
                       formState.primary.planetPreset === preset.id
                         ? "border-primary bg-primary/10"
-                        : "border-border/50 hover:border-primary/30 hover:bg-accent/5"
+                        : "border-sf-border hover:border-primary/30 hover:bg-accent/5"
                     }`}
                   >
                     <div className="flex items-center gap-1.5 mb-1">
@@ -669,7 +669,7 @@ const SurfaceGravityCalculator = () => {
 
                 {/* Density warning */}
                 {result.valid && result.meanDensity > 15 && (
-                  <div className="flex items-center gap-2 text-amber-400 text-xs">
+                  <div className="flex items-center gap-2 text-sf-amber text-xs">
                     <AlertTriangle className="w-3.5 h-3.5" />
                     Density ({result.meanDensity.toFixed(1)} g/cm³) exceeds any known planet — intentional?
                   </div>
@@ -759,7 +759,7 @@ const SurfaceGravityCalculator = () => {
                       {result.regimeLabel}
                     </Badge>
                     {result.deltaV.gravityLocked && (
-                      <Badge className="mt-2 ml-2 bg-red-500/20 text-red-400 border-red-500/30">
+                      <Badge className="mt-2 ml-2 bg-red-500/20 text-sf-crimson border-red-500/30">
                         GRAVITY-LOCKED
                       </Badge>
                     )}

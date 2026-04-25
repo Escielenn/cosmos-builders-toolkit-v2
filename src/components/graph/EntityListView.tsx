@@ -155,7 +155,7 @@ export function EntityListView({
     <div className="h-full flex" style={{ background: "#0A0E17" }}>
       {/* Left sidebar: filters */}
       <div
-        className="w-[180px] shrink-0 overflow-y-auto border-r border-border/10 p-3 space-y-5"
+        className="w-[180px] shrink-0 overflow-y-auto border-r border-sf-border p-3 space-y-5"
         style={{ background: "rgba(14,19,32,0.9)" }}
       >
         {/* Cascade filter */}
@@ -316,7 +316,7 @@ export function EntityListView({
 
               {/* Expanded connections */}
               {isExpanded && (
-                <div className="ml-7 border-l border-border/10 pl-3 pb-2 space-y-0.5">
+                <div className="ml-7 border-l border-sf-border pl-3 pb-2 space-y-0.5">
                   {entityConns.length === 0 && (
                     <p className="text-[10px] text-tier-5 font-sans py-1 italic">
                       No connections yet.

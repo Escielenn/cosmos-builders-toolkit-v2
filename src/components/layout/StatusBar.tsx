@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import { SolCounter } from "@/components/ambient/SolCounter";
+import { LunarPhase } from "@/components/ambient/LunarPhase";
+import { TargetStar } from "@/components/ambient/TargetStar";
 
 // Simulator routes — status bar hidden on these (same as TextureOverlay)
 const SIMULATOR_ROUTES = ["/rogue", "/tools/tidelock", "/tools/exosky", "/tools/stellar-cartographer"];
@@ -70,41 +73,47 @@ const StatusBar = () => {
       {/* Left: velocity data */}
       <div className="hidden md:flex items-center gap-4">
         <span>
-          <span className="text-[rgba(224,228,232,0.25)]">CMB </span>
-          <span className="text-[rgba(255,179,71,0.4)]">627 km/s</span>
+          <span className="text-t4">CMB </span>
+          <span className="text-sf-amber-warm/60">627 km/s</span>
         </span>
-        <span className="text-[rgba(224,228,232,0.12)]">·</span>
+        <span className="text-t5">·</span>
         <span>
-          <span className="text-[rgba(224,228,232,0.25)]">GALACTIC </span>
-          <span className="text-[rgba(255,179,71,0.4)]">230 km/s</span>
+          <span className="text-t4">GALACTIC </span>
+          <span className="text-sf-amber-warm/60">230 km/s</span>
         </span>
-        <span className="text-[rgba(224,228,232,0.12)]">·</span>
+        <span className="text-t5">·</span>
         <span>
-          <span className="text-[rgba(224,228,232,0.25)]">SOLAR </span>
-          <span className="text-[rgba(255,179,71,0.4)]">29.78 km/s</span>
+          <span className="text-t4">SOLAR </span>
+          <span className="text-sf-amber-warm/60">29.78 km/s</span>
         </span>
       </div>
 
       {/* Mobile left: condensed */}
       <div className="flex md:hidden items-center gap-2">
-        <span className="text-[rgba(224,228,232,0.25)]">CMB </span>
-        <span className="text-[rgba(255,179,71,0.4)]">627 km/s</span>
+        <span className="text-t4">CMB </span>
+        <span className="text-sf-amber-warm/60">627 km/s</span>
       </div>
 
-      {/* Center: sector info */}
-      <div className="hidden md:block">
-        <span className="text-[rgba(61,255,205,0.3)]">
+      {/* Center: sector + target star + lunar phase */}
+      <div className="hidden md:flex items-center gap-4">
+        <span className="text-sf-teal/40">
           // SECTOR: {sector}
         </span>
+        <span className="hidden xl:inline text-t5">·</span>
+        <TargetStar className="hidden xl:inline" />
+        <span className="hidden 2xl:inline text-t5">·</span>
+        <LunarPhase className="hidden 2xl:inline" />
       </div>
 
-      {/* Right: session + date */}
+      {/* Right: session + date + sol counter */}
       <div className="flex items-center gap-3">
-        <span className="text-[rgba(224,228,232,0.18)]">
+        <span className="text-t4">
           SESSION {formatTime(elapsed)}
         </span>
-        <span className="hidden md:inline text-[rgba(224,228,232,0.12)]">·</span>
-        <span className="hidden md:inline text-[rgba(224,228,232,0.18)]">{today}</span>
+        <span className="hidden md:inline text-t5">·</span>
+        <span className="hidden md:inline text-t4">{today}</span>
+        <span className="hidden lg:inline text-t5">·</span>
+        <SolCounter className="hidden lg:inline" />
       </div>
     </div>
   );

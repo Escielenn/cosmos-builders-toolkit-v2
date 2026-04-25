@@ -130,8 +130,8 @@ export function Chronicle({ worldId }: ChronicleProps) {
   if (error || !data) {
     return (
       <div className="flex items-center justify-center h-64">
-        <p className="font-mono text-xs uppercase tracking-wider text-destructive/60">
-          Chronicle unavailable.
+        <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-sf-crimson/70">
+          CHRONICLE UNAVAILABLE. RETRY WHEN READY.
         </p>
       </div>
     );
@@ -145,7 +145,7 @@ export function Chronicle({ worldId }: ChronicleProps) {
       <div className="sf-chronicle-header">
         <div>
           <h1 className="sf-chronicle-heading">Chronicle</h1>
-          <p className="font-mono text-[9px] uppercase tracking-[2px] text-muted-foreground/30 mt-1">
+          <p className="font-mono text-[9px] uppercase tracking-[2px] text-t3/30 mt-1">
             {data.worldName}
             {data.calendarConfig.era_label && (
               <span>
@@ -158,10 +158,10 @@ export function Chronicle({ worldId }: ChronicleProps) {
         <button
           type="button"
           onClick={handleAddEvent}
-          className="sf-fill-sweep px-3 py-1.5 border border-[#3DFFCD]/20 text-[#3DFFCD]/70 text-[10px] uppercase tracking-wider flex items-center gap-1.5"
+          className="sf-fill-sweep px-3 py-1.5 border border-sf-teal/20 text-sf-teal/80 text-[11px] font-mono uppercase tracking-[0.18em] flex items-center gap-1.5 hover:text-sf-teal-bright transition-colors duration-base"
         >
           <Plus className="w-3 h-3" />
-          Add Event
+          LOG EVENT
         </button>
       </div>
 
@@ -171,10 +171,10 @@ export function Chronicle({ worldId }: ChronicleProps) {
       {/* Empty state */}
       {isEmpty && (
         <div className="flex items-center justify-center py-32">
-          <p className="font-mono text-[10px] uppercase tracking-[3px] text-muted-foreground/25 text-center max-w-xs leading-relaxed">
-            No events recorded.
+          <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-t4 text-center max-w-xs leading-relaxed">
+            // CHRONICLE INDEX: EMPTY.
             <br />
-            Log the first event to begin your Chronicle.
+            LOG THE FIRST EVENT TO BEGIN YOUR CHRONICLE.
           </p>
         </div>
       )}
@@ -196,12 +196,12 @@ export function Chronicle({ worldId }: ChronicleProps) {
                   className="sf-chronicle-era-badge"
                   data-layer={era.layer || undefined}
                 >
-                  <span className="font-mono text-[8px] text-muted-foreground/25 mr-2">
+                  <span className="font-mono text-[8px] text-t3/25 mr-2">
                     {era.eventDate}
                   </span>
                   {era.title}
                   {era.endDate && (
-                    <span className="text-muted-foreground/25 ml-1">
+                    <span className="text-t3/25 ml-1">
                       — {era.endDate}
                     </span>
                   )}
@@ -254,7 +254,7 @@ export function Chronicle({ worldId }: ChronicleProps) {
           {/* End marker */}
           <div className="sf-chronicle-end">
             <div className="sf-chronicle-end-marker" />
-            <span className="font-mono text-[8px] uppercase tracking-[2px] text-muted-foreground/15 mt-2">
+            <span className="font-mono text-[8px] uppercase tracking-[2px] text-t3/15 mt-2">
               Present
             </span>
           </div>

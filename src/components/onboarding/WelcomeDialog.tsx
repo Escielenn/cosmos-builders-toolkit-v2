@@ -82,13 +82,13 @@ const ACCENT = {
   teal: {
     gradient: "from-transparent via-primary/60 to-transparent",
     icon: "text-primary",
-    check: "text-emerald-500",
+    check: "text-sf-emerald",
     upsell: "text-primary/60 hover:text-primary",
   },
   violet: {
     gradient: "from-transparent via-violet-500/60 to-transparent",
-    icon: "text-violet-400",
-    check: "text-violet-400",
+    icon: "text-sf-violet",
+    check: "text-sf-violet",
     upsell: "",
   },
 };
@@ -168,7 +168,7 @@ export default function WelcomeDialog({ open, onOpenChange, variant }: WelcomeDi
 
           {/* PWA install section (signup only) */}
           {config.showPwaPrompt && !isStandalone && (
-            <div className="border-t border-border/20 pt-4 space-y-2">
+            <div className="border-t border-sf-border pt-4 space-y-2">
               <p className="text-[11px] font-medium uppercase tracking-[1.5px] text-tier-3">
                 Quick Access
               </p>

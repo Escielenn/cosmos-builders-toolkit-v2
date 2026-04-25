@@ -57,7 +57,7 @@ const SelectedParametersSidebar = ({
         {isCollapsed ? (
           <div className="p-2 pt-10">
             <div
-              className="writing-mode-vertical text-xs text-muted-foreground font-medium"
+              className="writing-mode-vertical text-xs text-t3 font-medium"
               style={{ writingMode: "vertical-rl", textOrientation: "mixed" }}
             >
               {parameters.length} Factor{parameters.length !== 1 ? "s" : ""} Selected
@@ -79,14 +79,14 @@ const SelectedParametersSidebar = ({
                   </div>
                   <div className="text-sm font-medium">{param.optionLabel}</div>
                   {param.specificValue && (
-                    <div className="text-xs text-muted-foreground mt-1 italic">
+                    <div className="text-xs text-t3 mt-1 italic">
                       "{param.specificValue}"
                     </div>
                   )}
                 </div>
               ))}
             </div>
-            <p className="text-xs text-muted-foreground mt-4 pt-3 border-t border-border">
+            <p className="text-xs text-t3 mt-4 pt-3 border-t border-border">
               {footerText}
             </p>
           </div>

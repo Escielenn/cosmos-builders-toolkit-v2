@@ -43,7 +43,7 @@ export function WritingMoodboardStrip({
   // Collapsed state — thin bar
   if (!open) {
     return (
-      <div className="flex items-center gap-2 px-3 py-1 border-b border-white/[0.06] bg-[#0E1320]/40 h-8">
+      <div className="flex items-center gap-2 px-3 py-1 border-b border-white/[0.06] bg-sf-surface/40 h-8">
         <button
           onClick={onToggle}
           className="flex items-center gap-1.5 text-tier-4 hover:text-tier-2 transition-colors"
@@ -82,7 +82,7 @@ export function WritingMoodboardStrip({
 
   // Expanded state — scrollable row
   return (
-    <div className="border-b border-white/[0.06] bg-[#0E1320]/40">
+    <div className="border-b border-white/[0.06] bg-sf-surface/40">
       {/* Header */}
       <div className="flex items-center gap-2 px-3 py-1">
         <button

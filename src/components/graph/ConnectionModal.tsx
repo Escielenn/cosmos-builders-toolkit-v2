@@ -117,7 +117,7 @@ export function ConnectionModal({
   return (
     <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
       <DialogContent
-        className="sm:max-w-[480px] border-border/30"
+        className="sm:max-w-[480px] border-sf-border"
         style={{
           background: "rgba(15,15,16,0.98)",
           backdropFilter: "blur(20px)",
@@ -217,7 +217,7 @@ export function ConnectionModal({
                 className={`flex items-center gap-1.5 px-3 py-1.5 text-[10px] uppercase tracking-[1.2px] font-sans border transition-colors ${
                   !bidirectional
                     ? "border-teal/25 bg-teal/10 text-teal"
-                    : "border-border/20 text-tier-4 hover:text-tier-3"
+                    : "border-sf-border text-tier-4 hover:text-tier-3"
                 }`}
               >
                 One-way
@@ -228,7 +228,7 @@ export function ConnectionModal({
                 className={`flex items-center gap-1.5 px-3 py-1.5 text-[10px] uppercase tracking-[1.2px] font-sans border transition-colors ${
                   bidirectional
                     ? "border-teal/25 bg-teal/10 text-teal"
-                    : "border-border/20 text-tier-4 hover:text-tier-3"
+                    : "border-sf-border text-tier-4 hover:text-tier-3"
                 }`}
               >
                 Mutual
@@ -270,7 +270,7 @@ export function ConnectionModal({
                   className={`px-2.5 py-1 text-[10px] uppercase tracking-[1.2px] font-sans border transition-colors ${
                     status === s
                       ? "border-teal/25 bg-teal/10 text-teal"
-                      : "border-border/20 text-tier-4 hover:text-tier-3"
+                      : "border-sf-border text-tier-4 hover:text-tier-3"
                   }`}
                 >
                   {s}

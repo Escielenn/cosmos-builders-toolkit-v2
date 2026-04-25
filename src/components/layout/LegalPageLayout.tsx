@@ -21,26 +21,26 @@ interface LegalPageLayoutProps {
   bursts?: DataBurstConfig[];
 }
 
-// Custom markdown components for better styling
+// Custom markdown components — April 2026 handoff: mono eyebrows, t-tier text, zero radius.
 const markdownComponents: Components = {
   h2: ({ children }) => (
-    <h2 className="flex items-center gap-3 text-2xl font-heading font-light tracking-[0.08em] text-foreground mt-12 mb-6 pt-8 border-t border-border/30 first:mt-0 first:pt-0 first:border-t-0">
-      <span className="w-1 h-8 bg-primary rounded-full" />
+    <h2 className="flex items-center gap-3 font-heading text-2xl font-light uppercase tracking-[0.08em] text-t1 mt-12 mb-6 pt-8 border-t border-sf-border first:mt-0 first:pt-0 first:border-t-0">
+      <span className="w-1 h-8 bg-sf-teal" />
       {children}
     </h2>
   ),
   h3: ({ children }) => (
-    <h3 className="text-lg font-heading font-semibold text-foreground/90 mt-8 mb-4 pl-4 border-l-2 border-primary/30">
+    <h3 className="font-heading text-lg font-medium uppercase tracking-[0.12em] text-t1 mt-8 mb-4 pl-4 border-l-2 border-sf-teal/40">
       {children}
     </h3>
   ),
   h4: ({ children }) => (
-    <h4 className="text-base font-semibold text-foreground/80 mt-6 mb-3">
+    <h4 className="font-heading text-base font-medium uppercase tracking-[0.1em] text-t2 mt-6 mb-3">
       {children}
     </h4>
   ),
   p: ({ children }) => (
-    <p className="text-muted-foreground leading-relaxed my-4">
+    <p className="text-t2 leading-relaxed my-4">
       {children}
     </p>
   ),
@@ -50,20 +50,20 @@ const markdownComponents: Components = {
     </ul>
   ),
   li: ({ children }) => (
-    <li className="flex items-start gap-3 text-muted-foreground">
-      <span className="mt-2 w-1.5 h-1.5 rounded-full bg-primary/60 flex-shrink-0" />
+    <li className="flex items-start gap-3 text-t2">
+      <span className="mt-2 w-1.5 h-1.5 bg-sf-teal/70 flex-shrink-0" />
       <span>{children}</span>
     </li>
   ),
   strong: ({ children }) => (
-    <strong className="text-foreground font-semibold">
+    <strong className="text-t1 font-medium">
       {children}
     </strong>
   ),
   a: ({ href, children }) => (
     <a
       href={href}
-      className="text-primary sf-text-link"
+      className="text-sf-teal hover:text-sf-teal-bright transition-colors duration-base sf-text-link"
       target={href?.startsWith("http") ? "_blank" : undefined}
       rel={href?.startsWith("http") ? "noopener noreferrer" : undefined}
     >
@@ -71,10 +71,10 @@ const markdownComponents: Components = {
     </a>
   ),
   hr: () => (
-    <hr className="my-10 border-0 h-px bg-gradient-to-r from-transparent via-border/50 to-transparent" />
+    <hr className="my-10 border-0 h-px bg-gradient-to-r from-transparent via-sf-border-strong to-transparent" />
   ),
   blockquote: ({ children }) => (
-    <blockquote className="my-6 pl-4 border-l-4 border-primary/40 bg-primary/5 py-4 pr-4 rounded-r-lg italic text-muted-foreground">
+    <blockquote className="my-6 pl-4 border-l-2 border-sf-teal/40 bg-sf-teal/[0.04] py-4 pr-4 italic text-t3">
       {children}
     </blockquote>
   ),
@@ -99,27 +99,28 @@ const LegalPageLayout = ({
         {/* Back Link */}
         <Link
           to="/"
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
+          className="inline-flex items-center gap-2 font-heading text-[11px] uppercase tracking-[0.2em] font-medium text-t3 hover:text-sf-teal-bright transition-colors duration-base mb-6"
         >
           <ArrowLeft className="w-4 h-4" />
-          Back to Home
+          ← RETURN TO BRIDGE
         </Link>
 
         {/* Header */}
         <header className="mb-8">
-          <Badge variant="secondary" className="mb-4">
+          <p className="font-mono text-[11px] tracking-[0.18em] text-sf-teal uppercase mb-4 flex items-center gap-2">
+            <span>//</span>
             {badgeIcon}
             {badgeText}
-          </Badge>
-          <h1 className="font-display text-3xl md:text-4xl font-bold mb-4">
+          </p>
+          <h1 className="font-display text-3xl md:text-4xl font-light tracking-sf-title mb-4 text-t1 uppercase">
             {title}
           </h1>
           {subtitle && (
-            <p className="text-lg text-muted-foreground mb-4">{subtitle}</p>
+            <p className="text-lg text-t3 mb-4">{subtitle}</p>
           )}
-          <div className="flex items-center gap-1 text-sm text-muted-foreground">
-            <Calendar className="w-4 h-4" />
-            Last updated: {lastUpdated}
+          <div className="flex items-center gap-2 font-mono text-[11px] tracking-[0.18em] uppercase text-t4">
+            <Calendar className="w-3 h-3" />
+            LAST UPDATED · {lastUpdated}
           </div>
         </header>
 

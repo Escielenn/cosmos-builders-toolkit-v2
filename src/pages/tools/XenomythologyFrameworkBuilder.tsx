@@ -646,7 +646,7 @@ const XenomythologyFrameworkBuilder = () => {
         }
         toast({
           title: "Worksheet Loaded",
-          description: "Your saved work has been restored from the cloud.",
+          description: "WORK RESTORED FROM CLOUD.",
         });
       } catch {
         // Ignore parse errors
@@ -879,8 +879,8 @@ const XenomythologyFrameworkBuilder = () => {
         } else {
           // Should not reach here - worksheet must be created via selector first
           toast({
-            title: "Error",
-            description: "Please select or create a worksheet first.",
+            title: "OPERATION FAILED.",
+            description: "SELECT OR CREATE A WORKSHEET BEFORE TRANSMITTING.",
             variant: "destructive",
           });
         }
@@ -890,7 +890,7 @@ const XenomythologyFrameworkBuilder = () => {
     } else {
       toast({
         title: "Draft Saved",
-        description: "Your work has been saved locally.",
+        description: "WORK SECURED TO LOCAL STORAGE.",
       });
     }
   };
@@ -1378,7 +1378,7 @@ const XenomythologyFrameworkBuilder = () => {
         <div className="flex items-center gap-2 mb-6 flex-wrap">
           {/* Linked Species indicator */}
           {formState._linkedWorksheets?.species && (
-            <Badge variant="secondary" className="text-xs bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+            <Badge variant="secondary" className="text-xs bg-emerald-500/10 text-emerald-600 dark:text-sf-emerald">
               <Dna className="w-3 h-3 mr-1" />
               {formState._linkedWorksheets.species.speciesName}
             </Badge>

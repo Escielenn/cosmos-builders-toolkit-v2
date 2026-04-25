@@ -299,7 +299,7 @@ const SpeciesInteractionMatrix = () => {
         }
         toast({
           title: "Worksheet Loaded",
-          description: "Your saved work has been restored from the cloud.",
+          description: "WORK RESTORED FROM CLOUD.",
         });
       } catch {
         // Ignore parse errors
@@ -472,8 +472,8 @@ const SpeciesInteractionMatrix = () => {
           });
         } else {
           toast({
-            title: "Error",
-            description: "Please select or create a worksheet first.",
+            title: "OPERATION FAILED.",
+            description: "SELECT OR CREATE A WORKSHEET BEFORE TRANSMITTING.",
             variant: "destructive",
           });
         }
@@ -483,7 +483,7 @@ const SpeciesInteractionMatrix = () => {
     } else {
       toast({
         title: "Draft Saved",
-        description: "Your work has been saved locally.",
+        description: "WORK SECURED TO LOCAL STORAGE.",
       });
     }
   };
@@ -597,7 +597,7 @@ const SpeciesInteractionMatrix = () => {
                               variant="ghost"
                               size="sm"
                               onClick={() => handleImportFromEvoBio(index)}
-                              className="text-emerald-500 hover:text-emerald-600"
+                              className="text-sf-emerald hover:text-emerald-600"
                               title="Import from Evolutionary Biology"
                             >
                               <Dna className="w-4 h-4" />
@@ -608,7 +608,7 @@ const SpeciesInteractionMatrix = () => {
                               variant="ghost"
                               size="sm"
                               onClick={() => removeSpecies(index)}
-                              className="text-destructive"
+                              className="text-sf-crimson"
                             >
                               <Trash2 className="w-4 h-4" />
                             </Button>

@@ -14,13 +14,13 @@ const GravityScaleBar = ({ gravityRatio, className }: GravityScaleBarProps) => {
 
   return (
     <div className={cn("space-y-2", className)}>
-      <div className="flex items-center justify-between text-xs text-muted-foreground">
+      <div className="flex items-center justify-between text-xs text-t3">
         <span>0g</span>
         <span>{MAX_G}g+</span>
       </div>
 
       {/* Scale bar */}
-      <div className="relative h-8 rounded-md overflow-hidden bg-muted/30 border border-border/50">
+      <div className="relative h-8 rounded-md overflow-hidden bg-muted/30 border border-sf-border">
         {/* Color zones */}
         <div className="absolute inset-0 flex">
           <div className="h-full bg-blue-500/10" style={{ width: `${(0.3 / MAX_G) * 100}%` }} />
@@ -41,7 +41,7 @@ const GravityScaleBar = ({ gravityRatio, className }: GravityScaleBarProps) => {
               style={{ left: `${percent}%`, transform: "translateX(-50%)" }}
             >
               <div className="w-px h-3 bg-foreground/20" />
-              <span className="text-[9px] text-muted-foreground leading-none mt-0.5 whitespace-nowrap">
+              <span className="text-[9px] text-t3 leading-none mt-0.5 whitespace-nowrap">
                 {world.label ?? world.name}
               </span>
             </div>

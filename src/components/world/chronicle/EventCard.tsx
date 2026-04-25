@@ -57,7 +57,7 @@ export function EventCard({
       <div className="sf-chronicle-date" style={layerColor ? { color: layerColor } : undefined}>
         {dateDisplay}
         {endDisplay && (
-          <span className="text-muted-foreground/30"> — {endDisplay}</span>
+          <span className="text-t3/30"> — {endDisplay}</span>
         )}
       </div>
 
@@ -70,7 +70,7 @@ export function EventCard({
         {event.layer && (
           <>
             {" "}
-            <span className="text-muted-foreground/20">&middot;</span>{" "}
+            <span className="text-t3/20">&middot;</span>{" "}
             {event.layer}
           </>
         )}
@@ -89,10 +89,10 @@ export function EventCard({
         <div className="sf-chronicle-children">
           {event.children.map((child, i) => (
             <div key={child.id} className="sf-chronicle-child">
-              <span className="font-mono text-[10px] text-muted-foreground/20 mr-1.5">
+              <span className="font-mono text-[10px] text-t3/20 mr-1.5">
                 {i < event.children.length - 1 ? "├" : "└"}
               </span>
-              <span className="font-mono text-[9px] text-muted-foreground/30 mr-2">
+              <span className="font-mono text-[9px] text-t3/30 mr-2">
                 {child.eventDate}
               </span>
               {child.title}

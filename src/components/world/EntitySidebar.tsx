@@ -137,7 +137,7 @@ function ColorDotPicker({
       <PopoverContent
         side="right"
         align="start"
-        className="w-48 p-3 bg-[#0D1117] border-border/20"
+        className="w-48 p-3 bg-[#0D1117] border-sf-border"
         onClick={(e) => e.stopPropagation()}
       >
         <p className="font-sans text-[10px] uppercase tracking-[1.5px] text-tier-3 mb-2">
@@ -287,7 +287,7 @@ function SortableEntityRow({
             </span>
           </button>
         </ContextMenuTrigger>
-        <ContextMenuContent className="w-44 bg-[#0D1117] border-border/20">
+        <ContextMenuContent className="w-44 bg-[#0D1117] border-sf-border">
           <ContextMenuItem
             onClick={() => onEntityClick(entity.id)}
             className="text-xs gap-2"
@@ -298,7 +298,7 @@ function SortableEntityRow({
           <ContextMenuSeparator />
           <ContextMenuItem
             onClick={() => onDeleteEntity(entity.id)}
-            className="text-xs gap-2 text-destructive focus:text-destructive"
+            className="text-xs gap-2 text-sf-crimson focus:text-sf-crimson"
           >
             <Trash2 className="w-3.5 h-3.5" />
             Delete
@@ -368,7 +368,7 @@ function StaticEntityRow({
           </span>
         </button>
       </ContextMenuTrigger>
-      <ContextMenuContent className="w-44 bg-[#0D1117] border-border/20">
+      <ContextMenuContent className="w-44 bg-[#0D1117] border-sf-border">
         <ContextMenuItem
           onClick={() => onEntityClick(entity.id)}
           className="text-xs gap-2"
@@ -379,7 +379,7 @@ function StaticEntityRow({
         <ContextMenuSeparator />
         <ContextMenuItem
           onClick={() => onDeleteEntity(entity.id)}
-          className="text-xs gap-2 text-destructive focus:text-destructive"
+          className="text-xs gap-2 text-sf-crimson focus:text-sf-crimson"
         >
           <Trash2 className="w-3.5 h-3.5" />
           Delete
@@ -402,7 +402,7 @@ function DragPreviewRow({ entity }: { entity: Entity }) {
         className="w-3 h-3 rounded-full shrink-0"
         style={{ backgroundColor: entityColor }}
       />
-      <span className="text-[13px] font-sans text-foreground/90 truncate">
+      <span className="text-[13px] font-sans text-t1 truncate">
         {entity.name}
       </span>
     </div>
@@ -470,9 +470,9 @@ function CascadeGroup({
         className="sf-fill-sweep sf-fill-sweep--secondary w-full flex items-center gap-1.5 px-3 py-1.5 text-left"
       >
         {expanded ? (
-          <ChevronDown className="w-2.5 h-2.5 text-muted-foreground/40 shrink-0" />
+          <ChevronDown className="w-2.5 h-2.5 text-t3/40 shrink-0" />
         ) : (
-          <ChevronRight className="w-2.5 h-2.5 text-muted-foreground/40 shrink-0" />
+          <ChevronRight className="w-2.5 h-2.5 text-t3/40 shrink-0" />
         )}
         <span
           className="font-heading text-[11px] uppercase tracking-[3px] flex-1"
@@ -480,7 +480,7 @@ function CascadeGroup({
         >
           {CASCADE_STAGE_LABELS[stage]}
         </span>
-        <span className="font-mono text-[10px] text-muted-foreground/30">
+        <span className="font-mono text-[10px] text-t3/30">
           {entities.length}
         </span>
       </button>
@@ -517,7 +517,7 @@ function CascadeGroup({
       )}
 
       {expanded && entities.length === 0 && (
-        <p className="px-3 py-1.5 text-[10px] text-muted-foreground/25 italic">
+        <p className="px-3 py-1.5 text-[10px] text-t3/25 italic">
           No entities.
         </p>
       )}
@@ -614,7 +614,7 @@ const EntitySidebar = ({
   if (error) {
     return (
       <div className="p-3">
-        <p className="font-mono text-[10px] uppercase tracking-wider text-destructive/60">
+        <p className="font-mono text-[10px] uppercase tracking-wider text-sf-crimson/60">
           Entity data unavailable.
         </p>
       </div>
@@ -627,7 +627,7 @@ const EntitySidebar = ({
       <div className="px-3 pt-3 pb-1">
         <button
           onClick={onCreateEntity}
-          className="sf-fill-sweep sf-fill-sweep--secondary w-full flex items-center justify-center gap-1.5 px-3 py-1.5 border border-border/15 text-[10px] font-heading uppercase tracking-wider text-muted-foreground/40 hover:text-primary/60 hover:border-primary/20 transition-colors"
+          className="sf-fill-sweep sf-fill-sweep--secondary w-full flex items-center justify-center gap-1.5 px-3 py-1.5 border border-border/15 text-[10px] font-heading uppercase tracking-wider text-t3/40 hover:text-primary/60 hover:border-primary/20 transition-colors"
         >
           <Plus className="w-3 h-3" />
           Create Entity
@@ -698,7 +698,7 @@ const EntitySidebar = ({
         {viewMode === "wiki" && alphabeticalList && (
           <div>
             {alphabeticalList.length === 0 ? (
-              <p className="px-3 py-4 text-center text-[10px] text-muted-foreground/25 italic">
+              <p className="px-3 py-4 text-center text-[10px] text-t3/25 italic">
                 {searchQuery ? "No matches found." : "No entities yet."}
               </p>
             ) : (
@@ -721,7 +721,7 @@ const EntitySidebar = ({
           searchQuery &&
           Object.values(cascadeGroups).every((g) => g.length === 0) && (
             <div className="px-3 py-6 text-center">
-              <p className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground/30">
+              <p className="font-mono text-[10px] uppercase tracking-wider text-t3/30">
                 No matches found
               </p>
             </div>
@@ -729,8 +729,8 @@ const EntitySidebar = ({
       </div>
 
       {/* Entity count footer */}
-      <div className="px-3 py-2 border-t border-border/10">
-        <span className="font-mono text-[9px] uppercase tracking-wider text-muted-foreground/30">
+      <div className="px-3 py-2 border-t border-sf-border">
+        <span className="font-mono text-[9px] uppercase tracking-wider text-t3/30">
           {entities?.length ?? 0} entities
         </span>
       </div>

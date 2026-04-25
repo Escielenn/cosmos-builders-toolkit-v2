@@ -40,13 +40,13 @@ const AtmosphericRetentionChart = ({ retentionData, className }: AtmosphericRete
                   aria-label={STATUS_LABELS[gas.status]}
                 />
                 <span className="font-medium text-foreground">{gas.formula}</span>
-                <span className="text-muted-foreground text-xs">{gas.name}</span>
+                <span className="text-t3 text-xs">{gas.name}</span>
               </div>
               <div className="flex items-center gap-2 text-xs">
                 <span className="font-mono" style={{ color: gas.statusColor }}>
                   {STATUS_LABELS[gas.status]}
                 </span>
-                <span className="text-muted-foreground font-mono">
+                <span className="text-t3 font-mono">
                   λ={gas.escapeParameter.toFixed(1)}
                 </span>
               </div>
@@ -74,7 +74,7 @@ const AtmosphericRetentionChart = ({ retentionData, className }: AtmosphericRete
       })}
 
       {/* Legend */}
-      <div className="flex items-center gap-4 pt-1 text-[10px] text-muted-foreground">
+      <div className="flex items-center gap-4 pt-1 text-[10px] text-t3">
         <div className="flex items-center gap-1">
           <div className="w-px h-3 bg-foreground/20" />
           <span>λ=6 retention threshold</span>

@@ -185,7 +185,7 @@ const Timeline = () => {
         }
         toast({
           title: "Worksheet Loaded",
-          description: "Your saved work has been restored from the cloud.",
+          description: "WORK RESTORED FROM CLOUD.",
         });
       } catch {
         // Ignore parse errors
@@ -272,8 +272,8 @@ const Timeline = () => {
           });
         } else {
           toast({
-            title: "Error",
-            description: "Please select or create a worksheet first.",
+            title: "OPERATION FAILED.",
+            description: "SELECT OR CREATE A WORKSHEET BEFORE TRANSMITTING.",
             variant: "destructive",
           });
         }
@@ -281,7 +281,7 @@ const Timeline = () => {
         // Error handled by mutation
       }
     } else {
-      toast({ title: "Draft Saved", description: "Your work has been saved locally." });
+      toast({ title: "Draft Saved", description: "WORK SECURED TO LOCAL STORAGE." });
     }
   };
 
@@ -380,7 +380,7 @@ const Timeline = () => {
     >
         {/* Early Development Banner */}
         <div className="flex items-center gap-3 px-4 py-3 rounded-lg border border-amber-500/30 bg-amber-500/10 mb-6">
-          <Construction className="w-5 h-5 text-amber-500 shrink-0" />
+          <Construction className="w-5 h-5 text-sf-amber shrink-0" />
           <p className="text-sm text-amber-200/90">
             <span className="font-semibold">Early Preview.</span>{" "}
             Timeline is in active development and does not represent the final product. Features may change or be incomplete.
@@ -692,7 +692,7 @@ class TimelineErrorBoundary extends Component<
         <PageShell>
           <main className="container mx-auto px-4 pt-24 pb-16">
             <GlassPanel className="p-8 text-center">
-              <h2 className="text-xl font-bold text-destructive mb-4">
+              <h2 className="text-xl font-bold text-sf-crimson mb-4">
                 Timeline failed to render
               </h2>
               <pre className="text-left text-sm bg-muted/30 p-4 rounded-lg overflow-auto max-h-64 mb-4">

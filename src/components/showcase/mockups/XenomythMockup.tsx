@@ -27,7 +27,7 @@ const XenomythMockup = () => {
     <div className="w-full h-full flex flex-col bg-sf-void/50 rounded-lg p-4 md:p-6">
       {/* Header */}
       <div className="text-center mb-4">
-        <div className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
+        <div className="text-xs text-t3 uppercase tracking-wider mb-1">
           Mythological Framework
         </div>
         <div className="text-sm md:text-base font-display text-sf-violet">
@@ -58,7 +58,7 @@ const XenomythMockup = () => {
                 }}
               >
                 <span className="text-xl md:text-2xl">{archetype.symbol}</span>
-                <span className="text-[10px] text-muted-foreground">
+                <span className="text-[10px] text-t3">
                   {archetype.name}
                 </span>
               </div>
@@ -94,7 +94,7 @@ const XenomythMockup = () => {
       <div className="mt-4 space-y-2">
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 bg-sf-violet animate-pulse" />
-          <span className="text-[10px] text-muted-foreground">
+          <span className="text-[10px] text-t3">
             Creation Myth: The First Light emerged from...
           </span>
         </div>
@@ -103,7 +103,7 @@ const XenomythMockup = () => {
             className="w-2 h-2 bg-sf-cyan"
             style={{ animation: "cascade-glow 3s ease-in-out infinite 0.5s" }}
           />
-          <span className="text-[10px] text-muted-foreground">
+          <span className="text-[10px] text-t3">
             Hero's Journey: The chosen must descend into...
           </span>
         </div>

@@ -157,10 +157,10 @@ export const useCreateWorksheetShare = () => {
       queryClient.invalidateQueries({
         queryKey: shareKeys.worksheetShare(data.worksheet_id),
       });
-      toast({ title: "Link sharing enabled", description: "Anyone with the link can view this worksheet." });
+      toast({ title: "SHARE CHANNEL OPEN.", description: "Anyone with the link may now view this worksheet." });
     },
     onError: (error) => {
-      toast({ title: "Failed to enable sharing", description: error.message, variant: "destructive" });
+      toast({ title: "SHARE CHANNEL FAILED.", description: error.message, variant: "destructive" });
     },
   });
 };
@@ -204,10 +204,10 @@ export const useCreateWorldShare = () => {
       queryClient.invalidateQueries({
         queryKey: shareKeys.worldShare(data.world_id),
       });
-      toast({ title: "Link sharing enabled", description: "Anyone with the link can view this world." });
+      toast({ title: "SHARE CHANNEL OPEN.", description: "Anyone with the link may now view this world." });
     },
     onError: (error) => {
-      toast({ title: "Failed to enable sharing", description: error.message, variant: "destructive" });
+      toast({ title: "SHARE CHANNEL FAILED.", description: error.message, variant: "destructive" });
     },
   });
 };
@@ -291,7 +291,7 @@ export const useRegenerateShareToken = () => {
         ? shareKeys.worksheetShare(entityId)
         : shareKeys.worldShare(entityId);
       queryClient.invalidateQueries({ queryKey: key });
-      toast({ title: "Link regenerated", description: "Previous shared links no longer work." });
+      toast({ title: "LINK REGENERATED.", description: "PREVIOUS SHARED LINKS DEPRECATED." });
     },
     onError: (error) => {
       toast({ title: "Failed to regenerate link", description: error.message, variant: "destructive" });

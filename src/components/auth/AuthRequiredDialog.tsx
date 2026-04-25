@@ -48,7 +48,7 @@ const AuthRequiredDialog = ({ open, onOpenChange }: AuthRequiredDialogProps) => 
             AUTHENTICATE
           </Button>
         </div>
-        <p className="text-xs text-muted-foreground text-center mt-4">
+        <p className="text-xs text-t3 text-center mt-4">
           By signing up, you agree to our Terms of Service and Privacy Policy.
         </p>
       </DialogContent>

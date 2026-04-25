@@ -93,10 +93,10 @@ export function WikiEditor({
           "prose-p:my-1.5 prose-p:leading-relaxed",
           "prose-ul:my-1.5 prose-ol:my-1.5",
           "prose-li:my-0.5",
-          "prose-blockquote:border-l-primary prose-blockquote:text-muted-foreground",
+          "prose-blockquote:border-l-primary prose-blockquote:text-t3",
           "prose-code:text-xs prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded",
           "prose-pre:bg-[#0d1117] prose-pre:p-3 prose-pre:rounded-none",
-          "[&_.is-editor-empty:first-child::before]:text-muted-foreground/50 [&_.is-editor-empty:first-child::before]:content-[attr(data-placeholder)] [&_.is-editor-empty:first-child::before]:float-left [&_.is-editor-empty:first-child::before]:pointer-events-none [&_.is-editor-empty:first-child::before]:h-0"
+          "[&_.is-editor-empty:first-child::before]:text-t3/50 [&_.is-editor-empty:first-child::before]:content-[attr(data-placeholder)] [&_.is-editor-empty:first-child::before]:float-left [&_.is-editor-empty:first-child::before]:pointer-events-none [&_.is-editor-empty:first-child::before]:h-0"
         ),
       },
     },
@@ -276,7 +276,7 @@ export function WikiEditor({
                         "w-3.5 h-3.5 rounded-full border transition-all",
                         preferences.themeId === theme.id
                           ? "ring-2 ring-[#5B8DEF] ring-offset-1 ring-offset-background border-[#5B8DEF]"
-                          : "border-border/50 hover:border-foreground/50"
+                          : "border-sf-border hover:border-foreground/50"
                       )}
                       style={{ backgroundColor: theme.swatch[0] }}
                       aria-label={theme.name}

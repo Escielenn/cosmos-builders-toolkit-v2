@@ -115,7 +115,7 @@ const WorldSelectDialog = ({
                 <Loader size="sm" />
               </div>
             ) : worlds.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground">
+              <div className="text-center py-8 text-t3">
                 <p>You don't have any worlds yet.</p>
                 <Button
                   variant="link"
@@ -142,7 +142,7 @@ const WorldSelectDialog = ({
                       >
                         <div className="font-medium">{world.name}</div>
                         {world.description && (
-                          <div className="text-xs text-muted-foreground mt-1 line-clamp-2">
+                          <div className="text-xs text-t3 mt-1 line-clamp-2">
                             {world.description}
                           </div>
                         )}
@@ -198,7 +198,7 @@ const WorldSelectDialog = ({
 
           <TabsContent value="local" className="mt-4">
             <div className="text-center py-4">
-              <p className="text-muted-foreground mb-4">
+              <p className="text-t3 mb-4">
                 Save to your browser's local storage. Your work will be
                 available only on this device.
               </p>

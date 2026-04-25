@@ -180,7 +180,7 @@ const GlobalSearch = ({ open, onOpenChange }: GlobalSearchProps) => {
                 >
                   <Icon className="mr-2 h-4 w-4 shrink-0 text-primary" />
                   <span className="truncate">{getWorksheetDisplayName(worksheet)}</span>
-                  <span className="ml-2 shrink-0 text-xs text-muted-foreground">
+                  <span className="ml-2 shrink-0 text-xs text-t3">
                     {getToolDisplayName(worksheet.tool_type)}
                   </span>
                 </CommandItem>

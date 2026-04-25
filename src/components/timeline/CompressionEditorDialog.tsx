@@ -123,7 +123,7 @@ const CompressionEditorDialog = ({
 
           <div className="space-y-2 max-h-[50vh] overflow-y-auto">
             {state.compressions.length === 0 && (
-              <p className="text-sm text-muted-foreground text-center py-4">
+              <p className="text-sm text-t3 text-center py-4">
                 No compressions yet. Create one to collapse long stretches of uneventful time.
               </p>
             )}
@@ -133,7 +133,7 @@ const CompressionEditorDialog = ({
                   <p className="text-sm font-medium truncate">
                     {comp.label || `${comp.startYear.toLocaleString()} — ${comp.endYear.toLocaleString()}`}
                   </p>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-xs text-t3">
                     {(comp.endYear - comp.startYear).toLocaleString()} years, {comp.style} style
                     {comp.isExpanded ? " (expanded)" : ""}
                   </p>
@@ -151,7 +151,7 @@ const CompressionEditorDialog = ({
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="w-7 h-7 text-destructive hover:text-destructive"
+                    className="w-7 h-7 text-sf-crimson hover:text-sf-crimson"
                     onClick={() => handleDelete(comp.id)}
                     aria-label="Delete compression range"
                   >
@@ -224,7 +224,7 @@ const CompressionEditorDialog = ({
                     "px-3 py-2 rounded-md border text-xs font-medium transition-colors text-center",
                     style === opt.id
                       ? "border-primary bg-primary/10 text-foreground"
-                      : "border-border/50 text-muted-foreground hover:border-border"
+                      : "border-sf-border text-t3 hover:border-border"
                   )}
                 >
                   {opt.label}
@@ -244,7 +244,7 @@ const CompressionEditorDialog = ({
               max={120}
               step={4}
             />
-            <p className="text-[10px] text-muted-foreground">
+            <p className="text-[10px] text-t3">
               How wide the compressed region appears on the timeline.
             </p>
           </div>

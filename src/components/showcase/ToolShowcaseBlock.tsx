@@ -69,13 +69,13 @@ const ToolShowcaseBlock = ({
                 {title}
               </h3>
               {isPro && (
-                <Badge className="bg-amber-500/20 text-amber-500 border-amber-500/30 sf-shimmer">
+                <Badge className="bg-amber-500/20 text-sf-amber border-amber-500/30 sf-shimmer">
                   <Zap className="w-3 h-3 mr-1" />
                   Pro
                 </Badge>
               )}
             </div>
-            <p className="text-muted-foreground">{description}</p>
+            <p className="text-t3">{description}</p>
           </div>
         </div>
 
@@ -84,7 +84,7 @@ const ToolShowcaseBlock = ({
           {features.map((feature, index) => (
             <li key={index} className="flex items-start gap-3">
               <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-              <span className="text-sm text-muted-foreground">{feature}</span>
+              <span className="text-sm text-t3">{feature}</span>
             </li>
           ))}
         </ul>

@@ -12,7 +12,7 @@ const ToolIntroSection = ({ data }: ToolIntroSectionProps) => {
       <h2 className="font-heading text-xl font-light uppercase tracking-[2px] mb-3 gradient-text">
         {data.title}
       </h2>
-      <p className="text-muted-foreground mb-6">{data.purpose}</p>
+      <p className="text-t3 mb-6">{data.purpose}</p>
 
       <h4 className="font-heading text-xs font-medium uppercase tracking-sf-wide text-tier-4 mb-4">
         In Published Science Fiction
@@ -33,12 +33,12 @@ const ToolIntroSection = ({ data }: ToolIntroSectionProps) => {
             {example.quotes.map((quote, qi) => (
               <blockquote
                 key={qi}
-                className="border-l-2 border-primary/20 pl-4 italic text-sm text-muted-foreground"
+                className="border-l-2 border-primary/20 pl-4 italic text-sm text-t3"
               >
                 &ldquo;{quote}&rdquo;
               </blockquote>
             ))}
-            <p className="text-sm text-muted-foreground">{example.explanation}</p>
+            <p className="text-sm text-t3">{example.explanation}</p>
           </div>
         ))}
       </div>

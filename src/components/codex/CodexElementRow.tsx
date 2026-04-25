@@ -94,9 +94,9 @@ const CodexElementRow = memo(({
           </span>
         )}
         {element.kind === "entry" && element.type === "lore" ? (
-          <Folder className="w-3 h-3 text-amber-400/60 shrink-0" />
+          <Folder className="w-3 h-3 text-sf-amber/60 shrink-0" />
         ) : (
-          <FileText className="w-3 h-3 text-muted-foreground/50 shrink-0" />
+          <FileText className="w-3 h-3 text-t3/50 shrink-0" />
         )}
         <input
           ref={inputRef}
@@ -105,7 +105,7 @@ const CodexElementRow = memo(({
           onBlur={commitRename}
           onKeyDown={handleKeyDown}
           title="Rename entry"
-          className="text-[14px] flex-1 leading-tight bg-transparent border-b border-primary/40 outline-none text-foreground/90 px-0 py-0"
+          className="text-[14px] flex-1 leading-tight bg-transparent border-b border-primary/40 outline-none text-t1 px-0 py-0"
         />
       </div>
     );
@@ -140,11 +140,11 @@ const CodexElementRow = memo(({
       ) : element.kind === "note" ? (
         <StickyNote className="w-3 h-3 text-primary/50 shrink-0" />
       ) : element.kind === "entry" && element.type === "lore" ? (
-        <Folder className="w-3 h-3 text-amber-400/60 shrink-0" />
+        <Folder className="w-3 h-3 text-sf-amber/60 shrink-0" />
       ) : element.kind === "entry" ? (
-        <FileText className="w-3 h-3 text-muted-foreground/50 shrink-0" />
+        <FileText className="w-3 h-3 text-t3/50 shrink-0" />
       ) : (
-        <FileText className="w-3 h-3 text-muted-foreground/50 shrink-0" />
+        <FileText className="w-3 h-3 text-t3/50 shrink-0" />
       )}
 
       {/* Title */}
@@ -152,7 +152,7 @@ const CodexElementRow = memo(({
         className={cn(
           "text-[14px] truncate flex-1 leading-tight",
           element.isDraft ? "text-foreground/40" : "text-foreground/75",
-          isActive && "text-foreground/90"
+          isActive && "text-t1"
         )}
       >
         {element.title}
@@ -165,7 +165,7 @@ const CodexElementRow = memo(({
 
       {/* Draft badge */}
       {element.isDraft && element.kind === "worksheet" && (
-        <span className="font-mono text-[7px] uppercase tracking-wider text-muted-foreground/30 shrink-0">
+        <span className="font-mono text-[7px] uppercase tracking-wider text-t3/30 shrink-0">
           Draft
         </span>
       )}

@@ -273,7 +273,7 @@ const SortableToolCard = ({ tool, worldId }: { tool: typeof TOOLS[number]; world
             )}
             <div>
               <h3 className="font-semibold">{tool.name}</h3>
-              <p className="text-sm text-muted-foreground mt-1">{tool.description}</p>
+              <p className="text-sm text-t3 mt-1">{tool.description}</p>
             </div>
           </div>
         </GlassPanel>
@@ -354,12 +354,12 @@ const SortableWorksheetGroup = ({
             className="p-3 flex items-center justify-between"
           >
             <div className="flex items-center gap-3 flex-1 min-w-0">
-              <FileText className="w-4 h-4 text-muted-foreground shrink-0" />
+              <FileText className="w-4 h-4 text-t3 shrink-0" />
               <div className="min-w-0">
                 <h4 className="font-medium truncate">
                   {worksheet.title || "Untitled"}
                 </h4>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-t3">
                   Updated {format(new Date(worksheet.updated_at), "MMM d, yyyy")}
                 </p>
                 {worksheet.tags && worksheet.tags.length > 0 && (
@@ -371,7 +371,7 @@ const SortableWorksheetGroup = ({
                       );
                     })}
                     {worksheet.tags.length > 4 && (
-                      <span className="text-xs text-muted-foreground">+{worksheet.tags.length - 4}</span>
+                      <span className="text-xs text-t3">+{worksheet.tags.length - 4}</span>
                     )}
                   </div>
                 )}
@@ -405,7 +405,7 @@ const SortableWorksheetGroup = ({
                     </DropdownMenuItem>
                     {isOwner && (
                       <DropdownMenuItem
-                        className="text-destructive"
+                        className="text-sf-crimson"
                         onClick={() => onDelete(worksheet.id, worksheet.title || "Untitled")}
                       >
                         <Trash2 className="w-4 h-4 mr-2" />
@@ -643,19 +643,19 @@ const WorldDashboard = () => {
       <>
         <Link
           to="/"
-          className="inline-flex items-center text-muted-foreground hover:text-foreground mb-6 transition-colors"
+          className="inline-flex items-center gap-2 font-heading text-[11px] uppercase tracking-[0.2em] font-medium text-t3 hover:text-sf-teal-bright transition-colors duration-base mb-6"
         >
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Back to Dashboard
+          <ArrowLeft className="w-4 h-4" />
+          ← RETURN TO BRIDGE
         </Link>
-        <GlassPanel className="p-8 text-center">
-          <Globe className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
-          <h1 className="text-2xl font-bold mb-2">World Not Found</h1>
-          <p className="text-muted-foreground mb-6">
-            This world doesn't exist or you don't have access to it.
+        <GlassPanel className="p-12 text-center">
+          <p className="font-mono text-[11px] tracking-[0.18em] text-sf-crimson uppercase mb-4">// STATUS: UNREACHABLE</p>
+          <h1 className="font-display text-3xl md:text-4xl font-light tracking-sf-title uppercase text-t1 mb-4">WORLD NOT FOUND</h1>
+          <p className="font-mono text-[11px] tracking-[0.18em] uppercase text-t3 mb-6">
+            RECORD DOES NOT EXIST OR CLEARANCE INSUFFICIENT.
           </p>
-          <Button asChild>
-            <Link to="/">Return to Dashboard</Link>
+          <Button variant="sf-primary" size="sf-md" asChild>
+            <Link to="/">RETURN TO BRIDGE</Link>
           </Button>
         </GlassPanel>
       </>
@@ -680,10 +680,10 @@ const WorldDashboard = () => {
         <div className="flex items-center justify-between mb-6">
           <Link
             to="/"
-            className="inline-flex items-center text-muted-foreground hover:text-foreground transition-colors"
+            className="inline-flex items-center gap-2 font-heading text-[11px] uppercase tracking-[0.2em] font-medium text-t3 hover:text-sf-teal-bright transition-colors duration-base"
           >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Dashboard
+            <ArrowLeft className="w-4 h-4" />
+            ← RETURN TO BRIDGE
           </Link>
           <div className="flex items-center gap-2">
             <Button size="sm" asChild>
@@ -765,7 +765,7 @@ const WorldDashboard = () => {
                 )}
                 {isOwner && (
                 <DropdownMenuItem
-                  className="text-destructive"
+                  className="text-sf-crimson"
                   onClick={() => setDeleteDialogOpen(true)}
                 >
                   <Trash2 className="w-4 h-4 mr-2" />
@@ -813,7 +813,7 @@ const WorldDashboard = () => {
             canEdit={canEdit}
           />
           <div className="flex items-center gap-3 mt-3 px-1">
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-t3">
               Last updated {format(new Date(world.updated_at), "MMMM d, yyyy")}
             </p>
             {worksheets.length > 0 && (
@@ -861,7 +861,7 @@ const WorldDashboard = () => {
 
             {worldEntities.length === 0 ? (
               <GlassPanel className="p-6 text-center">
-                <p className="text-sm text-muted-foreground/40 italic">
+                <p className="text-sm text-t3/40 italic">
                   No elements yet. Create planets, species, factions, and more—then attach worksheets to them.
                 </p>
                 {canEdit && (
@@ -1089,8 +1089,8 @@ const WorldDashboard = () => {
               {editHeaderImageUrl && (
                 <div className="space-y-1 pt-1">
                   <div className="flex items-center justify-between">
-                    <Label className="text-xs text-muted-foreground">Vertical Position</Label>
-                    <span className="text-xs text-muted-foreground tabular-nums">{editHeaderImageFocusY}%</span>
+                    <Label className="text-xs text-t3">Vertical Position</Label>
+                    <span className="text-xs text-t3 tabular-nums">{editHeaderImageFocusY}%</span>
                   </div>
                   <Slider
                     value={[editHeaderImageFocusY]}
@@ -1100,7 +1100,7 @@ const WorldDashboard = () => {
                     step={1}
                     aria-label="Vertical image position"
                   />
-                  <div className="flex justify-between text-[10px] text-muted-foreground">
+                  <div className="flex justify-between text-[10px] text-t3">
                     <span>Top</span>
                     <span>Center</span>
                     <span>Bottom</span>

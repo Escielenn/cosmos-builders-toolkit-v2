@@ -99,6 +99,13 @@
     --sf-tier-3: 0 0% 100% / 0.45;          /* muted — labels, column headers */
     --sf-tier-4: 0 0% 100% / 0.28;          /* quiet — units, helper text */
     --sf-tier-5: 0 0% 100% / 0.15;          /* ghost — citations, metadata */
+
+    /* April 2026 handoff — flat text tier aliases for arbitrary-value utilities */
+    --t1: #FAFAFA;
+    --t2: #C8C8C8;
+    --t3: rgba(255, 255, 255, 0.45);
+    --t4: rgba(255, 255, 255, 0.28);
+    --t5: rgba(255, 255, 255, 0.15);
     --sf-section-green: 153 80% 60% / 1;
     --sf-section-border: 153 100% 45% / 0.06;
 
@@ -827,7 +834,14 @@ html {
     overflow-y: auto;
     overflow-x: hidden;
     background: hsl(var(--sf-void));
+    /* April 2026 handoff — thumb in sb-thumb grey, track matches void */
+    scrollbar-color: #2E3548 #0A0E17;
+    scrollbar-width: thin;
   }
+  .sf-world-main::-webkit-scrollbar { width: 8px; height: 8px; }
+  .sf-world-main::-webkit-scrollbar-track { background: #0A0E17; }
+  .sf-world-main::-webkit-scrollbar-thumb { background: #2E3548; border: 0; border-radius: 0; }
+  .sf-world-main::-webkit-scrollbar-thumb:hover { background: #3D4658; }
 
   /* Tool content when rendered inside WorldLayout */
   .sf-tool-content {
@@ -3309,4 +3323,95 @@ html {
     align-items: flex-start;
     padding-left: 13px;
   }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   APRIL 2026 HANDOFF — Additive utility classes (global scope)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ───── Scrollbar skin (reusable) ─────
+   Apply to any scroll container:   <div className="sf-sb"> or sf-sb--slim / sf-sb--idle */
+.sf-sb {
+  scrollbar-color: #2E3548 #0A0E17;
+  scrollbar-width: thin;
+}
+.sf-sb::-webkit-scrollbar         { width: 8px; height: 8px; }
+.sf-sb::-webkit-scrollbar-track   { background: #0A0E17; border: 0; }
+.sf-sb::-webkit-scrollbar-thumb   { background: #2E3548; border: 0; border-radius: 0; }
+.sf-sb::-webkit-scrollbar-thumb:hover { background: #3D4658; }
+.sf-sb::-webkit-scrollbar-corner  { background: #0A0E17; }
+
+.sf-sb--slim::-webkit-scrollbar { width: 6px; height: 6px; }
+.sf-sb--slim { scrollbar-width: thin; }
+
+.sf-sb--idle::-webkit-scrollbar-thumb {
+  background: transparent;
+  transition: background 300ms ease 800ms;
+}
+.sf-sb--idle:hover::-webkit-scrollbar-thumb,
+.sf-sb--idle.is-scrolling::-webkit-scrollbar-thumb {
+  background: #2E3548;
+  transition-delay: 0ms;
+}
+
+/* ───── Starfield (mount via <StellarBackground />) ───── */
+.sf-starfield {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.4), transparent 50%),
+    radial-gradient(1px 1px at 40% 70%, rgba(255,255,255,0.3), transparent 50%),
+    radial-gradient(1.5px 1.5px at 60% 20%, rgba(91,141,239,0.4), transparent 50%),
+    radial-gradient(1px 1px at 80% 50%, rgba(255,255,255,0.3), transparent 50%),
+    radial-gradient(1px 1px at 10% 80%, rgba(255,255,255,0.35), transparent 50%),
+    radial-gradient(1px 1px at 90% 85%, rgba(21,193,123,0.4), transparent 50%),
+    radial-gradient(1px 1px at 50% 95%, rgba(255,255,255,0.25), transparent 50%),
+    radial-gradient(1px 1px at 30% 15%, rgba(255,255,255,0.25), transparent 50%),
+    radial-gradient(1px 1px at 70% 40%, rgba(255,255,255,0.3), transparent 50%),
+    radial-gradient(1px 1px at 15% 55%, rgba(255,255,255,0.3), transparent 50%);
+  background-size: 800px 600px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sf-starfield { background-size: 1000px 750px; }
+}
+
+/* ───── Grain overlay (SVG fractal noise, 3% opacity) ───── */
+.sf-grain::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.03;
+  z-index: 1;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ───── Bracket decoration (focal panels only) ─────
+   Use .sf-bracket on a relatively positioned element for teal L-shaped corners */
+.sf-bracket { position: relative; }
+.sf-bracket::before,
+.sf-bracket::after {
+  content: '';
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border: 1px solid hsl(var(--sf-teal));
+}
+.sf-bracket::before { top: -1px;    left: -1px;  border-right: 0; border-bottom: 0; }
+.sf-bracket::after  { bottom: -1px; right: -1px; border-left: 0;  border-top: 0;    }
+
+/* ───── Panel glow underline — 1px light arc along bottom edge ───── */
+.sf-panel-glow { position: relative; }
+.sf-panel-glow::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(61, 255, 205, 0.25), transparent);
+  pointer-events: none;
 }

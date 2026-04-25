@@ -67,7 +67,7 @@ export function MoodboardPickerDialog({
         </DialogHeader>
 
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-t3" />
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -82,7 +82,7 @@ export function MoodboardPickerDialog({
               <Loader size="sm" />
             </div>
           ) : filtered.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
+            <div className="flex flex-col items-center justify-center py-12 text-t3">
               <ImageIcon className="w-8 h-8 mb-2" />
               <p className="text-sm">
                 {images.length === 0
@@ -94,7 +94,7 @@ export function MoodboardPickerDialog({
             <div className="space-y-4 pr-4">
               {Array.from(grouped.entries()).map(([worldName, worldImages]) => (
                 <div key={worldName}>
-                  <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">
+                  <h4 className="text-xs font-medium text-t3 uppercase tracking-wider mb-2">
                     {worldName}
                   </h4>
                   <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">

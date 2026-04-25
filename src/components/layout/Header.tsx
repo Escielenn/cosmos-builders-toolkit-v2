@@ -24,6 +24,7 @@ import BackgroundSelector from "@/components/settings/BackgroundSelector";
 import AudioSelectorDialog from "@/components/audio/AudioSelectorDialog";
 import SettingsDialog from "@/components/settings/SettingsDialog";
 import GlobalSearch from "@/components/search/GlobalSearch";
+import { JulianDayClock } from "@/components/ambient/JulianDayClock";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSubscription } from "@/hooks/use-subscription";
 import { useWorlds } from "@/hooks/use-worlds";
@@ -79,22 +80,22 @@ const Header = () => {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/30 backdrop-blur-xl bg-gradient-to-r from-[#000000]/95 to-[#0A0E17]/95">
+    <header className="fixed top-0 left-0 right-0 z-50 border-b border-sf-border backdrop-blur-sf-side bg-sf-void/85">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         <div className="flex flex-col shrink-0 mr-6">
           <Link to="/" className="flex items-center gap-2 group">
-            <CubeLogo size={32} className="rounded-lg" />
+            <CubeLogo size={32} className="rounded-none" />
             {isSubscribed ? (
               <>
-                <span className="hidden xl:inline font-display text-lg font-light tracking-sf-wide text-foreground/90 uppercase">
+                <span className="hidden xl:inline font-display text-lg font-light tracking-sf-wide text-t1 uppercase">
                   STELLARFORGE
                 </span>
-                <span className="xl:hidden font-display text-lg font-light tracking-sf-wide text-foreground/90 uppercase">
+                <span className="xl:hidden font-display text-lg font-light tracking-sf-wide text-t1 uppercase">
                   SF
                 </span>
               </>
             ) : (
-              <span className="font-display text-lg font-light tracking-sf-wide text-foreground/90 uppercase">
+              <span className="font-display text-lg font-light tracking-sf-wide text-t1 uppercase">
                 SF
               </span>
             )}
@@ -116,11 +117,11 @@ const Header = () => {
                 <span className="sr-only">Open menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-72 bg-[#0f0f0f]/98 border-border/30">
+            <SheetContent side="right" className="w-72 bg-sf-surface/95 border-sf-border sf-sb">
               <SheetHeader className="text-left">
                 <SheetTitle className="flex items-center gap-3">
-                  <CubeLogo size={32} className="rounded-lg" />
-                  <span className="font-display text-sm font-light tracking-sf-wide text-foreground/90 uppercase">
+                  <CubeLogo size={32} className="rounded-none" />   {/* sheet header */}
+                  <span className="font-display text-sm font-light tracking-sf-wide text-t1 uppercase">
                     SF
                   </span>
                 </SheetTitle>
@@ -129,7 +130,7 @@ const Header = () => {
                 <Link
                   to="/worlds"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
+                  className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-t3 hover:text-t1 hover:bg-sf-teal/[0.06] rounded-none transition-colors duration-base"
                 >
                   <Globe className="w-5 h-5" />
                   My Worlds
@@ -137,7 +138,7 @@ const Header = () => {
                 <Link
                   to="/collection"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
+                  className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-t3 hover:text-t1 hover:bg-sf-teal/[0.06] rounded-none transition-colors duration-base"
                 >
                   <Library className="w-5 h-5" />
                   My Collection
@@ -145,7 +146,7 @@ const Header = () => {
                 <Link
                   to="/community"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
+                  className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-t3 hover:text-t1 hover:bg-sf-teal/[0.06] rounded-none transition-colors duration-base"
                 >
                   <Users className="w-5 h-5" />
                   Community
@@ -153,7 +154,7 @@ const Header = () => {
                 <Link
                   to="/archive"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
+                  className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-t3 hover:text-t1 hover:bg-sf-teal/[0.06] rounded-none transition-colors duration-base"
                 >
                   <Archive className="w-5 h-5" />
                   Archive
@@ -161,7 +162,7 @@ const Header = () => {
                 <Link
                   to="/commendations"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
+                  className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-t3 hover:text-t1 hover:bg-sf-teal/[0.06] rounded-none transition-colors duration-base"
                 >
                   <Award className="w-5 h-5" />
                   Commendations
@@ -171,7 +172,7 @@ const Header = () => {
                     setMobileMenuOpen(false);
                     scrollToSection("tools");
                   }}
-                  className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors text-left"
+                  className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-t3 hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors text-left"
                 >
                   <Wrench className="w-5 h-5" />
                   Tools
@@ -180,7 +181,7 @@ const Header = () => {
                   <Link
                     to="/features"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
+                    className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-t3 hover:text-t1 hover:bg-sf-teal/[0.06] rounded-none transition-colors duration-base"
                   >
                     <Sparkles className="w-5 h-5" />
                     Features
@@ -189,7 +190,7 @@ const Header = () => {
                 <Link
                   to="/guide"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
+                  className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-t3 hover:text-t1 hover:bg-sf-teal/[0.06] rounded-none transition-colors duration-base"
                 >
                   <Compass className="w-5 h-5" />
                   Guide
@@ -197,7 +198,7 @@ const Header = () => {
                 <Link
                   to="/learn"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
+                  className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-t3 hover:text-t1 hover:bg-sf-teal/[0.06] rounded-none transition-colors duration-base"
                 >
                   <BookOpen className="w-5 h-5" />
                   Learn
@@ -205,7 +206,7 @@ const Header = () => {
                 <Link
                   to="/bookshelf"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
+                  className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-t3 hover:text-t1 hover:bg-sf-teal/[0.06] rounded-none transition-colors duration-base"
                 >
                   <Library className="w-5 h-5" />
                   Bookshelf
@@ -214,7 +215,7 @@ const Header = () => {
                   <Link
                     to="/workshop"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
+                    className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-t3 hover:text-t1 hover:bg-sf-teal/[0.06] rounded-none transition-colors duration-base"
                   >
                     <PenTool className="w-5 h-5" />
                     Writing Prompts
@@ -222,14 +223,14 @@ const Header = () => {
                   <Link
                     to="/workshop#prompt"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-3 px-3 py-3 pl-11 text-xs text-muted-foreground/70 hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
+                    className="flex items-center gap-3 px-3 py-3 pl-11 text-xs text-t4 hover:text-t1 hover:bg-sf-teal/[0.06] rounded-none transition-colors duration-base"
                   >
                     Daily Prompt
                   </Link>
                   <Link
                     to="/workshop#prompts"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-3 px-3 py-3 pl-11 text-xs text-muted-foreground/70 hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
+                    className="flex items-center gap-3 px-3 py-3 pl-11 text-xs text-t4 hover:text-t1 hover:bg-sf-teal/[0.06] rounded-none transition-colors duration-base"
                   >
                     Prompt Browser
                   </Link>
@@ -237,7 +238,7 @@ const Header = () => {
                 <Link
                   to="/roadmap"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
+                  className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-t3 hover:text-t1 hover:bg-sf-teal/[0.06] rounded-none transition-colors duration-base"
                 >
                   <Map className="w-5 h-5" />
                   Roadmap
@@ -246,7 +247,7 @@ const Header = () => {
                   <Link
                     to="/pricing"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
+                    className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-t3 hover:text-t1 hover:bg-sf-teal/[0.06] rounded-none transition-colors duration-base"
                   >
                     <Sparkles className="w-5 h-5" />
                     Pricing
@@ -255,7 +256,7 @@ const Header = () => {
                 <Link
                   to="/contact"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
+                  className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-t3 hover:text-t1 hover:bg-sf-teal/[0.06] rounded-none transition-colors duration-base"
                 >
                   <Mail className="w-5 h-5" />
                   Contact
@@ -263,14 +264,14 @@ const Header = () => {
                 <Link
                   to="/about"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 rounded-lg transition-colors"
+                  className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-t3 hover:text-t1 hover:bg-sf-teal/[0.06] rounded-none transition-colors duration-base"
                 >
                   <Info className="w-5 h-5" />
                   About
                 </Link>
               </nav>
               {!loading && !user && (
-                <div className="mt-8 pt-8 border-t border-border/30">
+                <div className="mt-8 pt-8 border-t border-sf-border">
                   <Button
                     className="w-full gap-2"
                     onClick={() => {
@@ -287,12 +288,13 @@ const Header = () => {
           </Sheet>
           <AudioSelectorDialog />
           <BackgroundSelector />
+          <JulianDayClock className="hidden lg:inline-flex" />
           <button
-            className="sf-nav-link inline-flex items-center justify-center gap-2 h-9 px-2 text-muted-foreground hover:text-primary transition-colors"
+            className="sf-nav-link inline-flex items-center justify-center gap-2 h-9 px-2 text-t3 hover:text-primary transition-colors"
             onClick={() => setSearchOpen(true)}
           >
             <Search className="w-4 h-4 relative z-[1]" />
-            <kbd className="hidden sm:inline-flex h-5 items-center gap-1 rounded border border-border/50 bg-muted/50 px-1.5 font-mono text-[10px] font-medium text-muted-foreground relative z-[1]">
+            <kbd className="hidden sm:inline-flex h-5 items-center gap-1 rounded border border-sf-border bg-muted/50 px-1.5 font-mono text-[10px] font-medium text-t3 relative z-[1]">
               <span className="text-xs">⌘</span>K
             </kbd>
           </button>
@@ -300,28 +302,28 @@ const Header = () => {
             <Button
               variant="outline"
               size="sm"
-              className="hidden sm:inline-flex gap-1.5 border-amber-500/50 text-amber-600 dark:text-amber-400 hover:bg-amber-500/10"
+              className="hidden sm:inline-flex gap-1.5 border-sf-amber/[0.5] text-sf-amber hover:bg-sf-amber/[0.08] rounded-none"
               onClick={() => navigate("/pricing")}
             >
               <Zap className="w-3.5 h-3.5" />
-              Upgrade to Pro
+              UNLOCK PRO
             </Button>
           )}
           {!loading && user && isSubscribed && !isVanguard && (
             <Button
               variant="outline"
               size="sm"
-              className="hidden lg:inline-flex gap-1.5 border-violet-500/50 text-violet-400 hover:bg-violet-500/10"
+              className="hidden lg:inline-flex gap-1.5 border-sf-violet/[0.5] text-sf-violet hover:bg-sf-violet/[0.08] rounded-none"
               onClick={() => navigate("/pricing")}
             >
               <Sparkles className="w-3.5 h-3.5" />
-              Upgrade to Vanguard
+              UNLOCK VANGUARD
             </Button>
           )}
           {!loading && user ? (
             <DropdownMenu modal={false}>
               <DropdownMenuTrigger asChild>
-                <button className="sf-nav-link inline-flex items-center gap-2 px-2 h-9 text-foreground/80 hover:text-primary transition-colors">
+                <button className="sf-nav-link inline-flex items-center gap-2 px-2 h-9 text-t2 hover:text-primary transition-colors">
                   <Avatar className="w-7 h-7 shrink-0 relative z-[1]">
                     <AvatarImage src={profile?.avatar_url || undefined} />
                     <AvatarFallback className="text-xs">{initials}</AvatarFallback>
@@ -330,20 +332,20 @@ const Header = () => {
                     {profile?.display_name || user.email?.split("@")[0]}
                   </span>
                   {isVanguard ? (
-                    <span className="hidden sm:inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-medium bg-violet-500/20 text-violet-400 sf-shimmer-violet relative z-[1]">
+                    <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-sf-tag font-mono text-[11px] uppercase tracking-[0.18em] bg-sf-violet/[0.06] border border-sf-violet/[0.15] text-sf-violet sf-shimmer-violet relative z-[1]">
                       <Sparkles className="w-3 h-3" />
                       Vanguard
                     </span>
                   ) : isSubscribed ? (
-                    <span className="hidden sm:inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-medium bg-amber-500/20 text-amber-600 dark:text-amber-400 sf-shimmer relative z-[1]">
+                    <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-sf-tag font-mono text-[11px] uppercase tracking-[0.18em] bg-sf-amber/[0.06] border border-sf-amber/[0.15] text-sf-amber sf-shimmer relative z-[1]">
                       <Zap className="w-3 h-3" />
                       Pro
                     </span>
                   ) : null}
-                  <ChevronDown className="w-4 h-4 text-muted-foreground relative z-[1]" />
+                  <ChevronDown className="w-4 h-4 text-t3 relative z-[1]" />
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48 bg-[#0c1019]/95 backdrop-blur-xl border-white/10">
+              <DropdownMenuContent align="end" className="w-48 bg-sf-surface/95 backdrop-blur-sf-side border-sf-border rounded-none">
                 <DropdownMenuItem onClick={() => navigate("/profile")}>
                   <User className="w-4 h-4 mr-2" />
                   Profile
@@ -392,13 +394,13 @@ const Header = () => {
                   Export Settings
                 </DropdownMenuItem>
                 {isVanguard ? (
-                  <DropdownMenuItem onClick={() => navigate("/pricing")} className="text-violet-400">
-                    <Sparkles className="w-4 h-4 mr-2 text-violet-400" />
+                  <DropdownMenuItem onClick={() => navigate("/pricing")} className="text-sf-violet">
+                    <Sparkles className="w-4 h-4 mr-2 text-sf-violet" />
                     Manage Vanguard
                   </DropdownMenuItem>
                 ) : isSubscribed ? (
-                  <DropdownMenuItem onClick={() => navigate("/pricing")} className="text-amber-600 dark:text-amber-400">
-                    <Zap className="w-4 h-4 mr-2 text-amber-500" />
+                  <DropdownMenuItem onClick={() => navigate("/pricing")} className="text-sf-amber">
+                    <Zap className="w-4 h-4 mr-2 text-sf-amber" />
                     Manage Subscription
                   </DropdownMenuItem>
                 ) : (

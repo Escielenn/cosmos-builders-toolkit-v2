@@ -349,10 +349,10 @@ const WorldExportDialog = ({
                 <div
                   className="flex items-center space-x-3 p-3 rounded-lg border border-border bg-accent/5"
                 >
-                  <FileJson className="w-5 h-5 text-muted-foreground" />
+                  <FileJson className="w-5 h-5 text-t3" />
                   <div className="flex-1">
                     <span className="font-medium">JSON Export (.json)</span>
-                    <p className="text-xs text-muted-foreground mt-1">
+                    <p className="text-xs text-t3 mt-1">
                       Machine-readable format. For backups or importing into other tools.
                     </p>
                   </div>
@@ -363,10 +363,10 @@ const WorldExportDialog = ({
                 <div
                   className="flex items-center space-x-3 p-3 rounded-lg border border-border bg-accent/5"
                 >
-                  <FileType className="w-5 h-5 text-muted-foreground" />
+                  <FileType className="w-5 h-5 text-t3" />
                   <div className="flex-1">
                     <span className="font-medium">Plain Text (.txt)</span>
-                    <p className="text-xs text-muted-foreground mt-1">
+                    <p className="text-xs text-t3 mt-1">
                       Universal format, works everywhere. Human-readable with sections.
                     </p>
                   </div>
@@ -377,10 +377,10 @@ const WorldExportDialog = ({
                 <div
                   className="flex items-center space-x-3 p-3 rounded-lg border border-border bg-accent/5"
                 >
-                  <FileSpreadsheet className="w-5 h-5 text-muted-foreground" />
+                  <FileSpreadsheet className="w-5 h-5 text-t3" />
                   <div className="flex-1">
                     <span className="font-medium">Microsoft Word (.docx)</span>
-                    <p className="text-xs text-muted-foreground mt-1">
+                    <p className="text-xs text-t3 mt-1">
                       Fully editable document with formatting. Great for sharing.
                     </p>
                   </div>
@@ -391,10 +391,10 @@ const WorldExportDialog = ({
                 <div
                   className="flex items-center space-x-3 p-3 rounded-lg border border-border bg-accent/5"
                 >
-                  <FileText className="w-5 h-5 text-muted-foreground" />
+                  <FileText className="w-5 h-5 text-t3" />
                   <div className="flex-1">
                     <span className="font-medium">Markdown (.zip)</span>
-                    <p className="text-xs text-muted-foreground mt-1">
+                    <p className="text-xs text-t3 mt-1">
                       Organized .md files with [[wiki-links]] and a chronicle folder. Opens in Obsidian, Notion, or any text editor.
                     </p>
                   </div>
@@ -405,10 +405,10 @@ const WorldExportDialog = ({
                 <div
                   className="flex items-center space-x-3 p-3 rounded-lg border border-border bg-accent/5"
                 >
-                  <BookOpen className="w-5 h-5 text-muted-foreground" />
+                  <BookOpen className="w-5 h-5 text-t3" />
                   <div className="flex-1">
                     <span className="font-medium">Scrivener Project (.zip)</span>
-                    <p className="text-xs text-muted-foreground mt-1">
+                    <p className="text-xs text-t3 mt-1">
                       Full .scriv project with RTF documents. Unzip and open in Scrivener 3.
                     </p>
                   </div>
@@ -417,7 +417,7 @@ const WorldExportDialog = ({
 
               <TabsContent value="notion" className="space-y-4 pt-4">
                 {!user ? (
-                  <div className="text-center p-6 text-muted-foreground">
+                  <div className="text-center p-6 text-t3">
                     <p>Please sign in to export to Notion.</p>
                   </div>
                 ) : isConnected ? (
@@ -430,7 +430,7 @@ const WorldExportDialog = ({
                       />
                       <div className="flex-1">
                         <span className="font-medium">Export to Notion</span>
-                        <p className="text-xs text-muted-foreground mt-1">
+                        <p className="text-xs text-t3 mt-1">
                           Create a new page in your Notion workspace with all world data.
                         </p>
                       </div>
@@ -460,7 +460,7 @@ const WorldExportDialog = ({
                         variant="ghost"
                         size="sm"
                         onClick={disconnect}
-                        className="text-muted-foreground hover:text-destructive flex-shrink-0"
+                        className="text-t3 hover:text-sf-crimson flex-shrink-0"
                       >
                         <Unplug className="w-4 h-4 mr-1" />
                         Disconnect
@@ -474,7 +474,7 @@ const WorldExportDialog = ({
                       alt="Notion"
                       className="w-12 h-12 mx-auto opacity-50"
                     />
-                    <p className="text-muted-foreground">
+                    <p className="text-t3">
                       Connect your Notion workspace to export worlds directly as pages.
                     </p>
                     <Button onClick={connect} disabled={isConnecting}>
@@ -504,7 +504,7 @@ const WorldExportDialog = ({
             )}
 
             {worksheets.length === 0 && (
-              <p className="text-sm text-muted-foreground text-center py-2">
+              <p className="text-sm text-t3 text-center py-2">
                 This world has no worksheets to export yet.
               </p>
             )}

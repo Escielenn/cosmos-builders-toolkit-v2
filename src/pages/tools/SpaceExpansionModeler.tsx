@@ -166,7 +166,7 @@ const SpaceExpansionModeler = () => {
         if (existingWorksheet.tags) {
           setWorksheetTags(existingWorksheet.tags);
         }
-        toast({ title: "Worksheet Loaded", description: "Your saved work has been restored." });
+        toast({ title: "Worksheet Loaded", description: "WORK RESTORED." });
       } catch { /* ignore */ }
     }
   }, [existingWorksheet]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -193,11 +193,11 @@ const SpaceExpansionModeler = () => {
             data: worksheetData,
           });
         } else {
-          toast({ title: "Error", description: "Please select or create a worksheet first.", variant: "destructive" });
+          toast({ title: "OPERATION FAILED.", description: "SELECT OR CREATE A WORKSHEET BEFORE TRANSMITTING.", variant: "destructive" });
         }
       } catch { /* handled by mutation */ }
     } else {
-      toast({ title: "Draft Saved", description: "Your work has been saved locally." });
+      toast({ title: "Draft Saved", description: "WORK SECURED TO LOCAL STORAGE." });
     }
   };
 
@@ -910,7 +910,7 @@ const SpaceExpansionModeler = () => {
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="h-7 w-7 p-0 text-tier-2 hover:text-destructive"
+                          className="h-7 w-7 p-0 text-tier-2 hover:text-sf-crimson"
                           onClick={() => removeModifier(mod.id)}
                         >
                           <Trash2 className="w-3.5 h-3.5" />

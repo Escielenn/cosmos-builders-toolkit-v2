@@ -38,7 +38,7 @@ const ConnectionLegend = () => {
                   style={{ color: `hsl(${color})` }}
                 />
               </div>
-              <span className="text-xs text-muted-foreground">{name}</span>
+              <span className="text-xs text-t3">{name}</span>
             </div>
           );
         })}
@@ -52,21 +52,21 @@ const ConnectionLegend = () => {
             className="w-6 h-1 rounded-full"
             style={{ backgroundColor: "hsl(190 100% 50%)" }}
           />
-          <span className="text-xs text-muted-foreground">Planet Link</span>
+          <span className="text-xs text-t3">Planet Link</span>
         </div>
         <div className="flex items-center gap-2">
           <div
             className="w-6 h-1 rounded-full"
             style={{ backgroundColor: "hsl(153 100% 50%)" }}
           />
-          <span className="text-xs text-muted-foreground">Species Link</span>
+          <span className="text-xs text-t3">Species Link</span>
         </div>
         <div className="flex items-center gap-2">
           <div
             className="w-6 h-1 rounded-full"
             style={{ backgroundColor: "hsl(328 100% 50%)" }}
           />
-          <span className="text-xs text-muted-foreground">Environment Link</span>
+          <span className="text-xs text-t3">Environment Link</span>
         </div>
       </div>
     </GlassPanel>

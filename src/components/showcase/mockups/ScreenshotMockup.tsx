@@ -45,11 +45,11 @@ export const ScreenshotPlaceholder = ({ toolName }: { toolName: string }) => {
   return (
     <div className="w-full h-full flex flex-col items-center justify-center gap-3 p-6 text-center bg-sf-surface/50 rounded-lg border border-dashed border-muted/30">
       <div className="w-12 h-12 rounded-sm bg-muted/50 flex items-center justify-center">
-        <ImageOff className="w-6 h-6 text-muted-foreground" />
+        <ImageOff className="w-6 h-6 text-t3" />
       </div>
       <div>
-        <div className="text-sm text-muted-foreground">{toolName}</div>
-        <div className="text-xs text-muted-foreground/60 mt-1">Screenshot coming soon</div>
+        <div className="text-sm text-t3">{toolName}</div>
+        <div className="text-xs text-t3/60 mt-1">Screenshot coming soon</div>
       </div>
     </div>
   );

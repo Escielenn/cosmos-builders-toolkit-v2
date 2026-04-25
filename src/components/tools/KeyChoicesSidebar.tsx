@@ -77,7 +77,7 @@ const KeyChoicesSidebar = ({
 
   const SidebarContent = () => (
     <>
-      <h4 className="font-mono text-[9px] tracking-[2px] uppercase text-muted-foreground/60 mb-3 flex items-center gap-2">
+      <h4 className="font-mono text-[9px] tracking-[2px] uppercase text-t3/60 mb-3 flex items-center gap-2">
         <ClipboardList className="w-3.5 h-3.5" />
         // READOUT
       </h4>
@@ -99,7 +99,7 @@ const KeyChoicesSidebar = ({
                     "flex items-center justify-between w-full text-left px-2 py-1.5 text-xs transition-colors font-heading tracking-wider uppercase",
                     hasValues
                       ? "text-foreground hover:bg-muted/50"
-                      : "text-muted-foreground hover:bg-muted/30"
+                      : "text-t3 hover:bg-muted/30"
                   )}
                 >
                   <span className="truncate">{section.title}</span>
@@ -141,7 +141,7 @@ const KeyChoicesSidebar = ({
                     );
                   })}
                   {!hasValues && (
-                    <span className="text-xs text-muted-foreground italic font-mono">
+                    <span className="text-xs text-t3 italic font-mono">
                       — NO DATA —
                     </span>
                   )}
@@ -261,7 +261,7 @@ export const MobileKeyChoices = ({
       </SheetTrigger>
       <SheetContent side="right" className="w-72 bg-background/95 backdrop-blur-lg">
         <div className="pt-6">
-          <h4 className="font-mono text-[9px] tracking-[2px] uppercase text-muted-foreground/60 mb-3 flex items-center gap-2">
+          <h4 className="font-mono text-[9px] tracking-[2px] uppercase text-t3/60 mb-3 flex items-center gap-2">
             <ClipboardList className="w-3.5 h-3.5" />
             // READOUT
           </h4>
@@ -283,7 +283,7 @@ export const MobileKeyChoices = ({
                         "flex items-center justify-between w-full text-left px-2 py-1.5 text-xs transition-colors font-heading tracking-wider uppercase",
                         hasValues
                           ? "text-foreground hover:bg-muted/50"
-                          : "text-muted-foreground hover:bg-muted/30"
+                          : "text-t3 hover:bg-muted/30"
                       )}
                     >
                       <span className="truncate">{section.title}</span>
@@ -325,7 +325,7 @@ export const MobileKeyChoices = ({
                         );
                       })}
                       {!hasValues && (
-                        <span className="text-xs text-muted-foreground italic font-mono">
+                        <span className="text-xs text-t3 italic font-mono">
                           — NO DATA —
                         </span>
                       )}

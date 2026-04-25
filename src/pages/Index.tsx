@@ -379,7 +379,7 @@ const ComingSoonCard = ({ title, subtitle }: { title: string; subtitle: string }
       <h3 className="font-heading font-semibold text-sm">{title}</h3>
       <Badge variant="outline" className="text-[10px] shrink-0">Coming Soon</Badge>
     </div>
-    <p className="text-xs text-muted-foreground">{subtitle}</p>
+    <p className="text-xs text-t3">{subtitle}</p>
   </GlassPanel>
 );
 
@@ -547,7 +547,7 @@ const Index = () => {
 
               {!isLoading && filteredWorlds.length === 0 && (
                 <GlassPanel className="p-5 h-full min-h-[200px] flex flex-col items-center justify-center border-dashed border border-muted">
-                  <p className="text-sm text-muted-foreground text-center">
+                  <p className="text-sm text-t3 text-center">
                     {selectedTags.length > 0
                       ? "No worlds match the selected tags."
                       : "Your worlds will appear here once you create them."}
@@ -592,7 +592,7 @@ const Index = () => {
               From the Community
             </h2>
             <GlassPanel className="p-8 flex flex-col items-center text-center gap-4">
-              <p className="text-sm text-muted-foreground max-w-md">
+              <p className="text-sm text-t3 max-w-md">
                 Discover worlds built by the community - explore shared creations, find inspiration, and see what other builders are forging.
               </p>
               <Button size="lg" className="gap-2" asChild>
@@ -628,7 +628,7 @@ const Index = () => {
                   </Link>
                 </div>
               </div>
-              <div className="flex items-center gap-1 p-0.5 bg-muted/20 rounded-md border border-border/20 w-fit">
+              <div className="flex items-center gap-1 p-0.5 bg-muted/20 rounded-md border border-sf-border w-fit">
                 {([
                   { mode: 'category' as SortMode, label: 'Category' },
                   { mode: 'type' as SortMode, label: 'Type' },
@@ -641,7 +641,7 @@ const Index = () => {
                     className={`px-3 py-1.5 text-[10px] uppercase tracking-[0.12em] font-medium rounded transition-all ${
                       sortMode === mode
                         ? 'bg-primary/15 text-primary'
-                        : 'text-muted-foreground hover:text-foreground hover:bg-muted/30'
+                        : 'text-t3 hover:text-foreground hover:bg-muted/30'
                     }`}
                   >
                     {label}
@@ -666,7 +666,7 @@ const Index = () => {
                       {label}
                     </h3>
                   </div>
-                  <p className="text-xs text-muted-foreground ml-[18px]">
+                  <p className="text-xs text-t3 ml-[18px]">
                     {description}
                   </p>
                 </div>
@@ -689,7 +689,7 @@ const Index = () => {
 
             {/* Coming Soon */}
             <div className="mt-8 mb-6 flex items-center justify-between">
-              <h3 className="font-heading font-light text-lg uppercase tracking-sf-wide text-muted-foreground">
+              <h3 className="font-heading font-light text-lg uppercase tracking-sf-wide text-t3">
                 Coming Soon
               </h3>
               {isSubscribed && (
@@ -744,7 +744,7 @@ const Index = () => {
                   <h3 className="font-heading font-light text-lg mb-2 uppercase tracking-wider">
                     Cross-Tool Integration
                   </h3>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-t3">
                     Data flows between tools. Your spacecraft references your
                     planet's atmosphere automatically.
                   </p>
@@ -756,7 +756,7 @@ const Index = () => {
                   <h3 className="font-heading font-light text-lg mb-2 uppercase tracking-wider">
                     Export & Print
                   </h3>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-t3">
                     Generate beautiful PDFs, print-friendly views, and markdown
                     exports of your worldbuilding.
                   </p>
@@ -768,7 +768,7 @@ const Index = () => {
                   <h3 className="font-heading font-light text-lg mb-2 uppercase tracking-wider">
                     Shareable Links
                   </h3>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-t3">
                     Share your worlds with collaborators or readers via read-only
                     links.
                   </p>

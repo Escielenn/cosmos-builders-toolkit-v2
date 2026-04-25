@@ -116,8 +116,8 @@ const BackgroundSelector = () => {
             className={cn(
               "sf-nav-link inline-flex items-center justify-center w-9 h-9 transition-colors",
               backgroundVisible
-                ? "text-muted-foreground hover:text-primary"
-                : "text-muted-foreground/40 hover:text-primary/60"
+                ? "text-t3 hover:text-primary"
+                : "text-t3/40 hover:text-primary/60"
             )}
             onClick={toggleBackgroundVisible}
           >
@@ -168,7 +168,7 @@ const BackgroundSelector = () => {
           <TabsContent value="images" className="mt-4 space-y-4">
             {/* Random Option */}
             <div>
-              <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3">
+              <h4 className="text-xs font-medium text-t3 uppercase tracking-wider mb-3">
                 Auto-Rotate
               </h4>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -200,7 +200,7 @@ const BackgroundSelector = () => {
               </div>
             </div>
             <div>
-              <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3">
+              <h4 className="text-xs font-medium text-t3 uppercase tracking-wider mb-3">
                 Default
               </h4>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -208,14 +208,14 @@ const BackgroundSelector = () => {
               </div>
             </div>
             <div>
-              <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3">
+              <h4 className="text-xs font-medium text-t3 uppercase tracking-wider mb-3">
                 Space Images
               </h4>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                 {spaceOptions.map(renderOption)}
               </div>
             </div>
-            <p className="text-xs text-muted-foreground text-center">
+            <p className="text-xs text-t3 text-center">
               Photos from Unsplash
             </p>
           </TabsContent>
@@ -271,7 +271,7 @@ const BackgroundSelector = () => {
                 );
               })}
             </div>
-            <p className="text-xs text-muted-foreground text-center mt-4">
+            <p className="text-xs text-t3 text-center mt-4">
               Animated space backdrops
             </p>
           </TabsContent>
@@ -281,7 +281,7 @@ const BackgroundSelector = () => {
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
               {gradientOptions.map(renderOption)}
             </div>
-            <p className="text-xs text-muted-foreground text-center mt-4">
+            <p className="text-xs text-t3 text-center mt-4">
               Smooth gradient backgrounds
             </p>
           </TabsContent>
@@ -291,7 +291,7 @@ const BackgroundSelector = () => {
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
               {colorOptions.map(renderOption)}
             </div>
-            <p className="text-xs text-muted-foreground text-center mt-4">
+            <p className="text-xs text-t3 text-center mt-4">
               Solid color backgrounds for minimal distraction
             </p>
           </TabsContent>
@@ -337,7 +337,7 @@ const BackgroundSelector = () => {
                     }}
                     className="absolute top-2 left-2 w-5 h-5 rounded-sm bg-destructive flex items-center justify-center hover:bg-destructive/80"
                   >
-                    <X className="w-3 h-3 text-destructive-foreground" />
+                    <X className="w-3 h-3 text-sf-crimson-foreground" />
                   </button>
                 </button>
               ) : null}
@@ -345,13 +345,13 @@ const BackgroundSelector = () => {
                 onClick={() => fileInputRef.current?.click()}
                 className="relative aspect-video rounded-lg overflow-hidden border-2 border-dashed border-border hover:border-primary/50 transition-all hover:scale-105 flex flex-col items-center justify-center gap-2 bg-muted/50"
               >
-                <Upload className="w-6 h-6 text-muted-foreground" />
-                <span className="text-xs font-medium text-muted-foreground">
+                <Upload className="w-6 h-6 text-t3" />
+                <span className="text-xs font-medium text-t3">
                   Upload Image
                 </span>
               </button>
             </div>
-            <p className="text-xs text-muted-foreground text-center mt-4">
+            <p className="text-xs text-t3 text-center mt-4">
               Max upload size: 5MB
             </p>
           </TabsContent>

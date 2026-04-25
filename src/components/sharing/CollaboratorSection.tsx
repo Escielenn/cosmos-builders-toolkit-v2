@@ -64,7 +64,7 @@ const CollaboratorSection = ({ worldId, worldName }: CollaboratorSectionProps) =
           <Label className="font-medium">Invite Collaborators</Label>
           <Badge className="bg-primary/10 text-primary text-xs">Pro</Badge>
         </div>
-        <p className="text-sm text-muted-foreground mb-3">
+        <p className="text-sm text-t3 mb-3">
           Invite others to view or edit your worlds with collaborator invites.
         </p>
         <Button variant="outline" size="sm" asChild>
@@ -139,7 +139,7 @@ const CollaboratorSection = ({ worldId, worldName }: CollaboratorSectionProps) =
       {/* Current collaborators */}
       {collaborators.length > 0 && (
         <div className="space-y-2">
-          <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">
+          <p className="text-xs text-t3 font-medium uppercase tracking-wider">
             Members
           </p>
           {collaborators.map((collab) => (
@@ -214,13 +214,13 @@ const CollaboratorSection = ({ worldId, worldName }: CollaboratorSectionProps) =
       {/* Pending invites */}
       {invites.length > 0 && (
         <div className="space-y-2">
-          <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">
+          <p className="text-xs text-t3 font-medium uppercase tracking-wider">
             Pending Invites
           </p>
           {invites.map((invite: WorldInvite) => (
             <div key={invite.id} className="flex items-center gap-2 text-sm">
-              <Mail className="w-4 h-4 text-muted-foreground shrink-0" />
-              <span className="flex-1 truncate text-muted-foreground">
+              <Mail className="w-4 h-4 text-t3 shrink-0" />
+              <span className="flex-1 truncate text-t3">
                 {invite.invited_email}
               </span>
               <Badge variant="outline" className="text-xs shrink-0">
@@ -256,7 +256,7 @@ const CollaboratorSection = ({ worldId, worldName }: CollaboratorSectionProps) =
       )}
 
       {!isLoading && collaborators.length === 0 && invites.length === 0 && (
-        <p className="text-xs text-muted-foreground text-center py-2">
+        <p className="text-xs text-t3 text-center py-2">
           No collaborators yet. Invite someone by email above.
         </p>
       )}

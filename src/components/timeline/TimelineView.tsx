@@ -204,11 +204,11 @@ const TimelineView = forwardRef<HTMLDivElement, TimelineViewProps>(({
   if (state.tracks.length === 0) {
     return (
       <GlassPanel className="flex flex-col items-center justify-center py-24 text-center">
-        <Layers className="w-12 h-12 text-muted-foreground/40 mb-4" />
+        <Layers className="w-12 h-12 text-t3/40 mb-4" />
         <h3 className="font-heading text-lg font-semibold mb-2">
           NO TRACKS DEFINED
         </h3>
-        <p className="text-sm text-muted-foreground max-w-md">
+        <p className="text-sm text-t3 max-w-md">
           Tracks are swim lanes for different entities—characters, civilizations,
           ships, planets. Add a track, then place events on it.
         </p>
@@ -282,12 +282,12 @@ const TimelineView = forwardRef<HTMLDivElement, TimelineViewProps>(({
           >
             {/* Time Axis */}
             <div
-              className="sticky top-0 z-20 flex border-b border-border/40 bg-background/95 backdrop-blur-sm"
+              className="sticky top-0 z-20 flex border-b border-sf-border bg-background/95 backdrop-blur-sm"
               style={{ height: TIME_AXIS_HEIGHT }}
             >
               {/* Header spacer */}
               <div
-                className="shrink-0 border-r border-border/30"
+                className="shrink-0 border-r border-sf-border"
                 style={{ width: TRACK_HEADER_WIDTH }}
               />
               {/* Tick marks */}
@@ -305,8 +305,8 @@ const TimelineView = forwardRef<HTMLDivElement, TimelineViewProps>(({
                       <span
                         className={`text-[10px] leading-none mb-1 whitespace-nowrap ${
                           tick.isMajor
-                            ? "text-foreground/70 font-medium"
-                            : "text-muted-foreground/50"
+                            ? "text-t2 font-medium"
+                            : "text-t3/50"
                         }`}
                       >
                         {tick.label}

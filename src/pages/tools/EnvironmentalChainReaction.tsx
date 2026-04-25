@@ -511,7 +511,7 @@ const EnvironmentalChainReaction = () => {
         }
         toast({
           title: "Worksheet Loaded",
-          description: "Your saved work has been restored from the cloud.",
+          description: "WORK RESTORED FROM CLOUD.",
         });
       } catch {
         // Ignore parse errors
@@ -528,7 +528,7 @@ const EnvironmentalChainReaction = () => {
           setFormState(JSON.parse(saved));
           toast({
             title: "Draft Loaded",
-            description: "Your previous work has been restored.",
+            description: "PREVIOUS WORK RESTORED.",
           });
         } catch {
           // Ignore parse errors
@@ -813,7 +813,7 @@ const EnvironmentalChainReaction = () => {
     } else {
       toast({
         title: "Draft Saved",
-        description: "Your work has been saved locally.",
+        description: "WORK SECURED TO LOCAL STORAGE.",
       });
     }
   };
@@ -824,7 +824,7 @@ const EnvironmentalChainReaction = () => {
       if (selection.type === "local") {
         toast({
           title: "Draft Saved",
-          description: "Your work has been saved locally.",
+          description: "WORK SECURED TO LOCAL STORAGE.",
         });
       } else if (selection.type === "existing") {
         await saveToSupabase(selection.worldId);
@@ -945,7 +945,7 @@ const EnvironmentalChainReaction = () => {
                         </thead>
                         <tbody>
                           {example.cascade.map((level) => (
-                            <tr key={level.level} className="border-b border-border/50">
+                            <tr key={level.level} className="border-b border-sf-border">
                               <td className="p-2 text-primary font-medium">{level.level}</td>
                               <td className="p-2 text-tier-2">{level.details}</td>
                             </tr>
@@ -980,7 +980,7 @@ const EnvironmentalChainReaction = () => {
           >
             {/* Link to Planet (if in a world context) */}
             {worldId && linkConfigs.length > 0 && (
-              <div className="mb-6 p-4 rounded-lg border border-border/50 bg-muted/20">
+              <div className="mb-6 p-4 rounded-lg border border-sf-border bg-muted/20">
                 <h4 className="font-medium text-sm mb-3 flex items-center gap-2">
                   <ExternalLink className="w-4 h-4 text-primary" />
                   Link to Other Worksheets

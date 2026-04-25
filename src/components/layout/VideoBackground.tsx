@@ -51,7 +51,7 @@ const VideoBackground = () => {
       />
 
       {/* Dark overlay for text contrast */}
-      <div className="absolute inset-0 bg-[#0A0E17]/50" />
+      <div className="absolute inset-0 bg-sf-void/50" />
     </div>
   );
 };

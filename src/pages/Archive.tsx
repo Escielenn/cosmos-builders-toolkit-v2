@@ -54,10 +54,10 @@ const Archive = () => {
         {/* Back Navigation */}
         <Link
           to="/"
-          className="inline-flex items-center text-muted-foreground hover:text-foreground transition-colors mb-6"
+          className="inline-flex items-center gap-2 font-heading text-[11px] uppercase tracking-[0.2em] font-medium text-t3 hover:text-sf-teal-bright transition-colors duration-base mb-6"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
-          Back to Home
+          ← RETURN TO BRIDGE
         </Link>
 
         {/* Header */}
@@ -79,9 +79,9 @@ const Archive = () => {
           </div>
         ) : archivedWorlds.length === 0 ? (
           <GlassPanel className="p-12 text-center">
-            <ArchiveIcon className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+            <ArchiveIcon className="w-12 h-12 mx-auto mb-4 text-t3" />
             <h3 className="font-semibold mb-2">Your archive is empty</h3>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-t3">
               When you archive a world, it will appear here. You can restore it
               at any time.
             </p>

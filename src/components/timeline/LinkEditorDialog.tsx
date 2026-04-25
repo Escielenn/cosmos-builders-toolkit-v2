@@ -138,7 +138,7 @@ const LinkEditorDialog = ({
                         className="w-2 h-2 rounded-full"
                         style={{ backgroundColor: group.trackColor }}
                       />
-                      <span className="text-[10px] font-semibold text-muted-foreground uppercase">
+                      <span className="text-[10px] font-semibold text-t3 uppercase">
                         {group.trackName}
                       </span>
                     </div>
@@ -168,7 +168,7 @@ const LinkEditorDialog = ({
                       "flex items-center gap-2 px-3 py-2 rounded-md border text-xs font-medium transition-colors",
                       linkType === lt.id
                         ? "border-primary bg-primary/10 text-foreground"
-                        : "border-border/50 text-muted-foreground hover:border-border"
+                        : "border-sf-border text-t3 hover:border-border"
                     )}
                   >
                     <span
@@ -200,7 +200,7 @@ const LinkEditorDialog = ({
                         className="w-2 h-2 rounded-full"
                         style={{ backgroundColor: group.trackColor }}
                       />
-                      <span className="text-[10px] font-semibold text-muted-foreground uppercase">
+                      <span className="text-[10px] font-semibold text-t3 uppercase">
                         {group.trackName}
                       </span>
                     </div>

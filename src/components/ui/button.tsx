@@ -12,7 +12,7 @@ const buttonVariants = cva(
         // Primary: solid cyan with fill-sweep
         default: "bg-primary text-primary-foreground sf-btn-lift",
         // Destructive: crimson with white fill-sweep (same pattern as primary)
-        destructive: "bg-destructive text-destructive-foreground sf-btn-lift",
+        destructive: "bg-destructive text-sf-crimson-foreground sf-btn-lift",
         // Outline: transparent with border, primary fill-sweep
         outline: "border border-muted-foreground bg-transparent sf-fill-sweep sf-fill-sweep--primary hover:border-primary hover:text-primary",
         // Secondary: elevated surface with neutral fill-sweep
@@ -23,12 +23,22 @@ const buttonVariants = cva(
         link: "text-primary sf-text-link",
         // StellarForge signature: uppercase, letter-spaced, primary fill-sweep
         sf: "bg-transparent border border-muted-foreground text-foreground uppercase tracking-[0.15em] text-xs font-medium sf-fill-sweep sf-fill-sweep--primary hover:border-primary hover:text-primary",
+        /* ── April 2026 handoff ── zero-radius, teal-filled primary */
+        "sf-primary":
+          "border border-sf-teal bg-sf-teal text-[#08110C] font-sans font-medium uppercase tracking-[1.2px] transition-base ease-sf-out hover:shadow-sf-glow-teal hover:-translate-y-[1px] active:translate-y-0",
+        /* ── April 2026 handoff ── transparent outline ghost */
+        "sf-ghost":
+          "border border-sf-border-strong bg-transparent text-t1 font-sans font-medium uppercase tracking-[1.2px] transition-base ease-sf-out hover:border-sf-teal hover:text-sf-teal-bright hover:shadow-sf-inset-teal",
       },
       size: {
         default: "h-10 px-4 py-2",
         sm: "h-9 px-3",
         lg: "h-11 px-8",
         icon: "h-10 w-10",
+        /* ── April 2026 handoff sizes ── match tracking-[1.2px] text sizes from the spec */
+        "sf-sm": "h-9 text-[11px] px-4 py-2",
+        "sf-md": "h-10 text-[13px] px-[22px] py-3",
+        "sf-lg": "h-12 text-[14px] px-7 py-4",
       },
     },
     defaultVariants: {

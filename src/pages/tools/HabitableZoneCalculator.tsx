@@ -126,11 +126,11 @@ const SECTIONS: Section[] = [
 // ─── Zone Color Helper ──────────────────────────────────────────────
 
 const ZONE_BADGE_STYLES: Record<string, string> = {
-  "#E74C3C": "bg-red-500/20 text-red-400 border-red-500/30",
+  "#E74C3C": "bg-red-500/20 text-sf-crimson border-red-500/30",
   "#FFA500": "bg-orange-500/20 text-orange-400 border-orange-500/30",
-  "#2ECC71": "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
+  "#2ECC71": "bg-emerald-500/20 text-sf-emerald border-emerald-500/30",
   "#4D9FFF": "bg-blue-500/20 text-blue-400 border-blue-500/30",
-  "#ADD8E6": "bg-cyan-500/20 text-cyan-400 border-cyan-500/30",
+  "#ADD8E6": "bg-cyan-500/20 text-sf-cyan border-cyan-500/30",
 };
 
 const SPECTRAL_LABELS = ["O", "B", "A", "F", "G", "K", "M"];
@@ -193,7 +193,7 @@ const HabitableZoneCalculator = () => {
         }
         toast({
           title: "Worksheet Loaded",
-          description: "Your saved work has been restored from the cloud.",
+          description: "WORK RESTORED FROM CLOUD.",
         });
       } catch {
         // Ignore parse errors
@@ -343,8 +343,8 @@ const HabitableZoneCalculator = () => {
           });
         } else {
           toast({
-            title: "Error",
-            description: "Please select or create a worksheet first.",
+            title: "OPERATION FAILED.",
+            description: "SELECT OR CREATE A WORKSHEET BEFORE TRANSMITTING.",
             variant: "destructive",
           });
         }
@@ -352,7 +352,7 @@ const HabitableZoneCalculator = () => {
         // Error handled by mutation
       }
     } else {
-      toast({ title: "Draft Saved", description: "Your work has been saved locally." });
+      toast({ title: "Draft Saved", description: "WORK SECURED TO LOCAL STORAGE." });
     }
   };
 
@@ -394,12 +394,12 @@ const HabitableZoneCalculator = () => {
     if (!result.valid) return;
     const text = buildCopyText(result, formState);
     navigator.clipboard.writeText(text);
-    toast({ title: "Copied", description: "Results copied to clipboard." });
+    toast({ title: "COPIED TO CLIPBOARD.", description: "RESULTS COPIED TO CLIPBOARD." });
   };
 
   const worldNameForExport = worldId ? worldName : undefined;
   const zoneColor = result.valid ? ZONE_COLORS[result.planetZone] : "#2ECC71";
-  const zoneBadgeStyle = ZONE_BADGE_STYLES[zoneColor] || "bg-emerald-500/20 text-emerald-400";
+  const zoneBadgeStyle = ZONE_BADGE_STYLES[zoneColor] || "bg-emerald-500/20 text-sf-emerald";
 
   // Get known planets for the current preset + user-added planets
   const currentPreset = STAR_PRESETS.find((p) => p.id === formState.star.presetId);
@@ -882,7 +882,7 @@ const HabitableZoneCalculator = () => {
                       <button
                         type="button"
                         onClick={() => setAdditionalPlanets((prev) => prev.filter((_, j) => j !== i))}
-                        className="text-xs text-red-400/60 hover:text-red-400 transition-colors ml-auto"
+                        className="text-xs text-sf-crimson/60 hover:text-sf-crimson transition-colors ml-auto"
                       >
                         ×
                       </button>

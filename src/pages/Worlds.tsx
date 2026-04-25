@@ -18,6 +18,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { PageBursts } from "@/components/ui/data-burst";
 import { WORLDS_BURSTS } from "@/lib/data-bursts";
 import ExampleWorldBanner from "@/components/community/ExampleWorldBanner";
+import { ParallaxStrips } from "@/components/ambient/ParallaxStrips";
+import { EmptyState } from "@/components/ui/empty-state";
 
 const Worlds = () => {
   const { user, loading } = useAuth();
@@ -85,18 +87,25 @@ const Worlds = () => {
         {/* Back Navigation */}
         <Link
           to="/"
-          className="inline-flex items-center text-muted-foreground hover:text-foreground transition-colors mb-6"
+          className="inline-flex items-center gap-2 font-heading text-[11px] uppercase tracking-[0.2em] font-medium text-t3 hover:text-sf-teal-bright transition-colors duration-base mb-6"
         >
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Back to Home
+          <ArrowLeft className="w-4 h-4" />
+          ← RETURN TO BRIDGE
         </Link>
 
-        {/* Header */}
-        <div className="flex flex-col gap-4 mb-8">
+        {/* Header — parallax telemetry backdrop */}
+        <div className="relative overflow-hidden mb-8">
+          <div className="absolute inset-0 opacity-40 pointer-events-none -z-0">
+            <ParallaxStrips height={180} />
+          </div>
+          <div className="relative z-10 flex flex-col gap-4 py-6">
           <div className="flex items-center justify-between">
-            <h1 className="font-heading font-light text-2xl uppercase tracking-sf-wide">
-              My Worlds
-            </h1>
+            <div>
+              <p className="font-mono text-[11px] tracking-[0.18em] text-sf-teal uppercase mb-2">// WORLD INDEX</p>
+              <h1 className="font-display font-light text-3xl md:text-4xl uppercase tracking-sf-title text-t1">
+                MY WORLDS
+              </h1>
+            </div>
             <div className="flex items-center gap-2">
             <Button variant="outline" size="sm" onClick={() => setImportDialogOpen(true)}>
               <Upload className="w-4 h-4 mr-2" />
@@ -126,6 +135,7 @@ const Worlds = () => {
               onClear={() => setSelectedTags([])}
             />
           )}
+          </div>
         </div>
 
         {/* Example World Banner */}
@@ -135,10 +145,10 @@ const Worlds = () => {
         <div className="flex items-center justify-end mb-4">
           <Link
             to="/community"
-            className="inline-flex items-center gap-1.5 font-sans text-xs font-medium uppercase tracking-[1px] text-primary hover:text-primary/80 transition-colors"
+            className="inline-flex items-center gap-1.5 font-heading text-[11px] font-medium uppercase tracking-[0.2em] text-sf-teal hover:text-sf-teal-bright transition-colors duration-base"
           >
             <Globe className="w-3.5 h-3.5" />
-            Browse Community Worlds
+            BROWSE COMMUNITY WORLDS
           </Link>
         </div>
 
@@ -153,13 +163,17 @@ const Worlds = () => {
           )}
 
           {!isLoading && filteredWorlds.length === 0 && (
-            <GlassPanel className="p-5 h-full min-h-[200px] flex flex-col items-center justify-center border-dashed border border-muted">
-              <p className="text-sm text-muted-foreground text-center">
-                {selectedTags.length > 0
-                  ? "No worlds match the selected tags."
-                  : "Your worlds will appear here once you create them."}
-              </p>
-            </GlassPanel>
+            <div className="col-span-full">
+              <EmptyState
+                eyebrow="// WORLD INDEX"
+                title="INDEX: EMPTY"
+                description={
+                  selectedTags.length > 0
+                    ? "NO WORLDS MATCH FILTER CRITERIA. ADJUST TAG SELECTION."
+                    : "NO WORLDS ON FILE. BEGIN SURVEY WHEN READY."
+                }
+              />
+            </div>
           )}
 
           {filteredWorlds.map((world) => (

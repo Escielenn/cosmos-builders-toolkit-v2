@@ -39,15 +39,15 @@ import {
 
 const CATEGORY_COLORS: Record<PromptCategory, string> = {
   worldbuilding: "text-blue-400 border-blue-400/20 bg-blue-400/[0.06]",
-  character: "text-violet-400 border-violet-400/20 bg-violet-400/[0.06]",
-  scene: "text-amber-400 border-amber-400/20 bg-amber-400/[0.06]",
-  dialogue: "text-emerald-400 border-emerald-400/20 bg-emerald-400/[0.06]",
-  theme: "text-cyan-400 border-cyan-400/20 bg-cyan-400/[0.06]",
+  character: "text-sf-violet border-violet-400/20 bg-violet-400/[0.06]",
+  scene: "text-sf-amber border-amber-400/20 bg-amber-400/[0.06]",
+  dialogue: "text-sf-emerald border-emerald-400/20 bg-emerald-400/[0.06]",
+  theme: "text-sf-cyan border-cyan-400/20 bg-cyan-400/[0.06]",
 };
 
 const DIFFICULTY_COLORS: Record<string, string> = {
-  beginner: "text-emerald-400 border-emerald-400/15 bg-emerald-400/[0.06]",
-  intermediate: "text-amber-400 border-amber-400/15 bg-amber-400/[0.06]",
+  beginner: "text-sf-emerald border-emerald-400/15 bg-emerald-400/[0.06]",
+  intermediate: "text-sf-amber border-amber-400/15 bg-amber-400/[0.06]",
   advanced: "text-rose-400 border-rose-400/15 bg-rose-400/[0.06]",
 };
 
@@ -148,7 +148,7 @@ const PromptBrowserPage = () => {
             </div>
 
             {expiredCount > 0 && (
-              <div className="flex items-center gap-2 text-amber-400/70">
+              <div className="flex items-center gap-2 text-sf-amber/70">
                 <AlertTriangle className="w-3.5 h-3.5" />
                 <span className="font-mono text-xs">
                   {expiredCount} prompt{expiredCount !== 1 ? "s" : ""} expired last week
@@ -253,7 +253,7 @@ function TodayPromptContent({
           </Badge>
         </div>
         {isActedOn && (
-          <Badge className="text-[10px] px-2 py-0.5 rounded-sm border border-emerald-400/20 bg-emerald-400/[0.06] text-emerald-400 ml-auto">
+          <Badge className="text-[10px] px-2 py-0.5 rounded-sm border border-emerald-400/20 bg-emerald-400/[0.06] text-sf-emerald ml-auto">
             <Check className="w-3 h-3 mr-1" />
             Completed
           </Badge>
@@ -325,8 +325,8 @@ function PromptCard({
       {isCompleted && (
         <div className="absolute inset-0 bg-sf-void/40 z-10 pointer-events-none flex items-center justify-center">
           <div className="flex items-center gap-1.5 bg-emerald-400/10 border border-emerald-400/20 rounded-sm px-3 py-1.5">
-            <Check className="w-4 h-4 text-emerald-400" />
-            <span className="font-mono text-xs text-emerald-400 uppercase tracking-wider">
+            <Check className="w-4 h-4 text-sf-emerald" />
+            <span className="font-mono text-xs text-sf-emerald uppercase tracking-wider">
               Completed
             </span>
           </div>

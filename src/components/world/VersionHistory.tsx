@@ -100,15 +100,15 @@ const VersionHistory = ({ worldId, worldName }: VersionHistoryProps) => {
           className="w-full flex items-center justify-between p-4 hover:bg-accent/5 transition-colors text-left"
         >
           <div className="flex items-center gap-2">
-            <History className="w-4 h-4 text-muted-foreground" />
-            <span className="text-xs uppercase tracking-wider text-muted-foreground font-heading">
+            <History className="w-4 h-4 text-t3" />
+            <span className="text-xs uppercase tracking-wider text-t3 font-heading">
               Archive Log
             </span>
           </div>
           {expanded ? (
-            <ChevronUp className="w-4 h-4 text-muted-foreground" />
+            <ChevronUp className="w-4 h-4 text-t3" />
           ) : (
-            <ChevronDown className="w-4 h-4 text-muted-foreground" />
+            <ChevronDown className="w-4 h-4 text-t3" />
           )}
         </button>
 
@@ -120,7 +120,7 @@ const VersionHistory = ({ worldId, worldName }: VersionHistoryProps) => {
               </div>
             ) : versions.length === 0 ? (
               <div className="p-4 text-center">
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-t3">
                   No snapshots yet. Versions are created automatically as you work, or manually via the Snapshot button.
                 </p>
               </div>
@@ -133,14 +133,14 @@ const VersionHistory = ({ worldId, worldName }: VersionHistoryProps) => {
                   >
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">
-                        <span className="text-sm font-mono text-foreground/80">
+                        <span className="text-sm font-mono text-t2">
                           v{v.version_number}
                         </span>
-                        <span className="text-xs text-muted-foreground truncate">
+                        <span className="text-xs text-t3 truncate">
                           {getVersionLabel(v)}
                         </span>
                       </div>
-                      <p className="text-xs text-muted-foreground mt-0.5" title={format(new Date(v.created_at), "PPpp")}>
+                      <p className="text-xs text-t3 mt-0.5" title={format(new Date(v.created_at), "PPpp")}>
                         {formatDistanceToNow(new Date(v.created_at), { addSuffix: true })}
                       </p>
                     </div>

@@ -24,19 +24,19 @@ const LoggedInHero = () => {
           STELLARFORGE
         </h1>
         {isVanguard ? (
-          <Badge className="bg-violet-500/20 text-violet-400 gap-1 sf-shimmer-violet">
+          <Badge className="bg-violet-500/20 text-sf-violet gap-1 sf-shimmer-violet">
             <Sparkles className="w-3 h-3" />
             Vanguard
           </Badge>
         ) : isSubscribed ? (
-          <Badge className="bg-amber-500/20 text-amber-600 dark:text-amber-400 gap-1 sf-shimmer">
+          <Badge className="bg-amber-500/20 text-sf-amber dark:text-sf-amber gap-1 sf-shimmer">
             <Zap className="w-3 h-3" />
             Pro
           </Badge>
         ) : null}
       </motion.div>
 
-      <motion.p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-6" variants={fadeUpItem}>
+      <motion.p className="text-lg text-t3 max-w-2xl mx-auto mb-6" variants={fadeUpItem}>
         {isVanguard
           ? "All instruments operational. Vanguard clearance active."
           : isSubscribed
@@ -81,7 +81,7 @@ const LoggedInHero = () => {
       </motion.div>
 
       {!isSubscribed && (
-        <motion.p className="text-sm text-muted-foreground mt-4" variants={fadeUpItem}>
+        <motion.p className="text-sm text-t3 mt-4" variants={fadeUpItem}>
           3 instruments available · 27 require Pro Access
         </motion.p>
       )}

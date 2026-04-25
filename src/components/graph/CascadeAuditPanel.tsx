@@ -138,7 +138,7 @@ export function CascadeAuditPanel({
       }}
     >
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-border/10">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-sf-border">
         <div className="flex items-center gap-2">
           <span
             className="w-2 h-2 rounded-full"
@@ -210,7 +210,7 @@ export function CascadeAuditPanel({
           <button
             type="button"
             onClick={() => result && exportCascadeAuditAsMarkdown(result)}
-            className="flex items-center gap-1 text-[10px] font-sans text-tier-3 uppercase tracking-[1px] py-1.5 px-3 border border-border/20 hover:bg-white/5 transition-colors"
+            className="flex items-center gap-1 text-[10px] font-sans text-tier-3 uppercase tracking-[1px] py-1.5 px-3 border border-sf-border hover:bg-white/5 transition-colors"
           >
             <Download className="w-3 h-3" />
             MD
@@ -246,8 +246,8 @@ export function CascadeAuditPanel({
         {/* Downstream */}
         <div>
           <div className="flex items-center gap-1.5 mb-2">
-            <ArrowDown className="w-3 h-3 text-amber-400" />
-            <h4 className="text-[9px] font-heading uppercase tracking-[2px] text-amber-400">
+            <ArrowDown className="w-3 h-3 text-sf-amber" />
+            <h4 className="text-[9px] font-heading uppercase tracking-[2px] text-sf-amber">
               Downstream (what this produces)
             </h4>
           </div>

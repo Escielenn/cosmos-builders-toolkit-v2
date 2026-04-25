@@ -357,7 +357,7 @@ export default function WikiBrowse() {
                           </>
                         )}
                         {entry.isDraft && (
-                          <span className="px-1 py-0.5 bg-amber-500/15 text-amber-400 text-[7px] uppercase tracking-widest">
+                          <span className="px-1 py-0.5 bg-amber-500/15 text-sf-amber text-[7px] uppercase tracking-widest">
                             Draft
                           </span>
                         )}

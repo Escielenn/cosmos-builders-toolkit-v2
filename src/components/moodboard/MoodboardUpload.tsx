@@ -105,17 +105,17 @@ export function MoodboardUpload({
         {isLoading ? (
           <div className="flex flex-col items-center gap-2">
             <Loader />
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-t3">
               {isUploading ? "Uploading..." : "Adding..."}
             </p>
           </div>
         ) : (
           <div className="flex flex-col items-center gap-2">
-            <Upload className="w-8 h-8 text-muted-foreground" />
-            <p className="text-sm text-muted-foreground">
+            <Upload className="w-8 h-8 text-t3" />
+            <p className="text-sm text-t3">
               Drag & drop an image here, or click to select
             </p>
-            <p className="text-xs text-muted-foreground/70">
+            <p className="text-xs text-t3/70">
               Max 5MB. JPG, PNG, GIF, WebP supported.
             </p>
           </div>

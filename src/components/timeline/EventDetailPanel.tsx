@@ -122,7 +122,7 @@ const EventDetailPanel = ({
             />
             <SheetTitle className="text-lg">{event.name}</SheetTitle>
           </div>
-          <p className="text-xs text-muted-foreground">{dateRangeDisplay}</p>
+          <p className="text-xs text-t3">{dateRangeDisplay}</p>
         </SheetHeader>
 
         <div className="mt-6 space-y-5">
@@ -196,7 +196,7 @@ const EventDetailPanel = ({
                     "flex-1 px-2 py-1 rounded border text-[11px] font-medium transition-colors",
                     event.importance === il.id
                       ? "border-primary bg-primary/10 text-foreground"
-                      : "border-border/50 text-muted-foreground hover:border-border"
+                      : "border-sf-border text-t3 hover:border-border"
                   )}
                 >
                   {il.label}
@@ -405,7 +405,7 @@ const EventDetailPanel = ({
                           "flex items-center gap-1 px-2 py-0.5 rounded-full border text-[11px] font-medium transition-colors",
                           isActive
                             ? "border-primary bg-primary/10 text-foreground"
-                            : "border-border/50 text-muted-foreground hover:border-border"
+                            : "border-sf-border text-t3 hover:border-border"
                         )}
                       >
                         <span
@@ -456,7 +456,7 @@ const EventDetailPanel = ({
                           <span className="font-medium" style={{ color: config.color }}>
                             {config.label}
                           </span>
-                          <span className="truncate text-muted-foreground">
+                          <span className="truncate text-t3">
                             {target?.name || "Unknown"}
                           </span>
                         </button>
@@ -476,7 +476,7 @@ const EventDetailPanel = ({
                           <span className="font-medium" style={{ color: config.color }}>
                             {config.label} by
                           </span>
-                          <span className="truncate text-muted-foreground">
+                          <span className="truncate text-t3">
                             {source?.name || "Unknown"}
                           </span>
                         </button>
@@ -484,7 +484,7 @@ const EventDetailPanel = ({
                     })}
                   </div>
                 ) : (
-                  <p className="text-[10px] text-muted-foreground">
+                  <p className="text-[10px] text-t3">
                     No causality links yet.
                   </p>
                 )}
@@ -523,12 +523,12 @@ const EventDetailPanel = ({
                           {ToolIcon ? (
                             <ToolIcon className="w-3.5 h-3.5 rounded-sm shrink-0" />
                           ) : (
-                            <Link2 className="w-3 h-3 shrink-0 text-muted-foreground" />
+                            <Link2 className="w-3 h-3 shrink-0 text-t3" />
                           )}
-                          <span className="truncate text-muted-foreground">
+                          <span className="truncate text-t3">
                             {link.worksheetTitle}
                           </span>
-                          <span className="text-[9px] text-muted-foreground/50 shrink-0">
+                          <span className="text-[9px] text-t3/50 shrink-0">
                             {getToolDisplayName(link.toolType)}
                           </span>
                           {onDeleteElementLink && (
@@ -536,7 +536,7 @@ const EventDetailPanel = ({
                               type="button"
                               title="Remove link"
                               onClick={() => onDeleteElementLink(link.id)}
-                              className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-destructive shrink-0"
+                              className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity text-t3 hover:text-sf-crimson shrink-0"
                             >
                               <X className="w-3 h-3" />
                             </button>
@@ -546,7 +546,7 @@ const EventDetailPanel = ({
                     })}
                   </div>
                 ) : (
-                  <p className="text-[10px] text-muted-foreground">
+                  <p className="text-[10px] text-t3">
                     No linked elements yet.
                   </p>
                 )}
@@ -555,7 +555,7 @@ const EventDetailPanel = ({
           })()}
 
           {/* Delete */}
-          <div className="pt-4 border-t border-border/30">
+          <div className="pt-4 border-t border-sf-border">
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <Button variant="destructive" size="sm" className="w-full">

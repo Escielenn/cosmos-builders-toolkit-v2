@@ -189,7 +189,7 @@ const Gravitas = () => {
         setCurrentWorksheetId(existingWorksheet.id);
         setCurrentWorksheetTitle(existingWorksheet.title);
         if (existingWorksheet.tags) setWorksheetTags(existingWorksheet.tags);
-        toast({ title: "Worksheet Loaded", description: "Your saved work has been restored." });
+        toast({ title: "Worksheet Loaded", description: "WORK RESTORED." });
       } catch {
         console.error("Failed to load worksheet data");
       }
@@ -293,7 +293,7 @@ const Gravitas = () => {
   const handleCopyResults = () => {
     const text = buildCopyText(formState.activeMode, allResults);
     navigator.clipboard.writeText(text);
-    toast({ title: "Copied", description: "Results copied to clipboard." });
+    toast({ title: "COPIED TO CLIPBOARD.", description: "RESULTS COPIED TO CLIPBOARD." });
   };
 
   // ─── Save / Worksheet Management ───────────────────────────────────
@@ -308,7 +308,7 @@ const Gravitas = () => {
           worksheetId: wsId,
           data: formState as unknown as Json,
         });
-        toast({ title: "Saved", description: "Worksheet saved to cloud." });
+        toast({ title: "FILE SECURED.", description: "WORKSHEET SECURED TO CLOUD." });
       } else {
         const ws = await createWorksheet.mutateAsync({
           worldId,
@@ -373,7 +373,7 @@ const Gravitas = () => {
       case "high_gravity": return "text-orange-400";
       case "microgravity":
       case "milligravity":
-      case "extreme_gravity": return "text-red-400";
+      case "extreme_gravity": return "text-sf-crimson";
       default: return "text-tier-2";
     }
   })();
@@ -430,7 +430,7 @@ const Gravitas = () => {
                   className={`p-3 rounded-lg border text-left transition-colors ${
                     formState.realismMode === mode
                       ? "border-primary bg-primary/10"
-                      : "border-border/50 hover:border-primary/30 hover:bg-accent/5"
+                      : "border-sf-border hover:border-primary/30 hover:bg-accent/5"
                   }`}
                 >
                   <span className="font-medium text-sm">{REALISM_LABELS[mode]}</span>
@@ -440,8 +440,8 @@ const Gravitas = () => {
             </div>
             {formState.realismMode === "hard_sf" && formState.activeMode === "artificial" && (
               <div className="flex items-center gap-2 mt-3 p-3 rounded-lg bg-red-500/10 border border-red-500/30">
-                <AlertTriangle className="w-4 h-4 text-red-400 shrink-0" />
-                <p className="text-sm text-red-400">Artificial gravity is not available in Hard SF mode. Switch to Hybrid or Soft SF.</p>
+                <AlertTriangle className="w-4 h-4 text-sf-crimson shrink-0" />
+                <p className="text-sm text-sf-crimson">Artificial gravity is not available in Hard SF mode. Switch to Hybrid or Soft SF.</p>
               </div>
             )}
           </CollapsibleSection>
@@ -475,7 +475,7 @@ const Gravitas = () => {
                           setActiveSpinPreset(preset.id);
                           setFormState((prev) => ({ ...prev, spin: { ...preset.values } }));
                         }}
-                        className={`p-2 rounded-lg border text-left transition-colors ${activeSpinPreset === preset.id ? "border-primary bg-primary/10" : "border-border/50 hover:border-primary/30 hover:bg-accent/5"}`}
+                        className={`p-2 rounded-lg border text-left transition-colors ${activeSpinPreset === preset.id ? "border-primary bg-primary/10" : "border-sf-border hover:border-primary/30 hover:bg-accent/5"}`}
                       >
                         <span className="font-medium text-xs">{preset.name}</span>
                         <p className="text-[10px] text-tier-2">{preset.description}</p>
@@ -540,7 +540,7 @@ const Gravitas = () => {
                           setActiveThrustPreset(preset.id);
                           setFormState((prev) => ({ ...prev, thrust: { ...prev.thrust, ...preset.values } }));
                         }}
-                        className={`p-2 rounded-lg border text-left transition-colors ${activeThrustPreset === preset.id ? "border-primary bg-primary/10" : "border-border/50 hover:border-primary/30 hover:bg-accent/5"}`}
+                        className={`p-2 rounded-lg border text-left transition-colors ${activeThrustPreset === preset.id ? "border-primary bg-primary/10" : "border-sf-border hover:border-primary/30 hover:bg-accent/5"}`}
                       >
                         <span className="font-medium text-xs">{preset.name}</span>
                         <p className="text-[10px] text-tier-2">{preset.description}</p>
@@ -674,7 +674,7 @@ const Gravitas = () => {
                           setActiveOrbitalPreset(preset.id);
                           setFormState((prev) => ({ ...prev, orbital: { ...preset.values } }));
                         }}
-                        className={`p-2 rounded-lg border text-left transition-colors ${activeOrbitalPreset === preset.id ? "border-primary bg-primary/10" : "border-border/50 hover:border-primary/30 hover:bg-accent/5"}`}
+                        className={`p-2 rounded-lg border text-left transition-colors ${activeOrbitalPreset === preset.id ? "border-primary bg-primary/10" : "border-sf-border hover:border-primary/30 hover:bg-accent/5"}`}
                       >
                         <span className="font-medium text-xs">{preset.name}</span>
                         <p className="text-[10px] text-tier-2">{preset.description}</p>
@@ -744,8 +744,8 @@ const Gravitas = () => {
               <TabsContent value="artificial" className="mt-4 space-y-6">
                 {formState.realismMode === "hard_sf" && (
                   <div className="flex items-center gap-2 p-3 rounded-lg bg-red-500/10 border border-red-500/30">
-                    <AlertTriangle className="w-4 h-4 text-red-400 shrink-0" />
-                    <p className="text-sm text-red-400">
+                    <AlertTriangle className="w-4 h-4 text-sf-crimson shrink-0" />
+                    <p className="text-sm text-sf-crimson">
                       Artificial gravity violates known physics. Switch to Hybrid or Soft SF mode to use this module.
                     </p>
                   </div>
@@ -1048,7 +1048,7 @@ const Gravitas = () => {
               {/* Physics violations for artificial */}
               {formState.activeMode === "artificial" && formState.realismMode !== "soft_sf" && (
                 <div className="mt-4 p-3 rounded-lg bg-amber-500/10 border border-amber-500/30">
-                  <p className="text-xs font-medium text-amber-400 mb-2">Physics Violations:</p>
+                  <p className="text-xs font-medium text-sf-amber mb-2">Physics Violations:</p>
                   <ul className="text-xs text-amber-300/80 space-y-1">
                     {artificialResult.physics_violations.map((v, i) => (
                       <li key={i} className="flex items-start gap-1.5">
@@ -1200,7 +1200,7 @@ const Gravitas = () => {
         <ToolSidebar>
           <SectionNavigation sections={SECTIONS} mode="inline" />
           <GlassPanel className="p-4 w-56">
-            <h4 className="font-mono text-[9px] tracking-[2px] uppercase text-muted-foreground/60 mb-3">
+            <h4 className="font-mono text-[9px] tracking-[2px] uppercase text-t3/60 mb-3">
               // READOUT
             </h4>
             <div className="text-center mb-3">
@@ -1313,7 +1313,7 @@ function ResultItem({ label, value, warn, span }: { label: string; value: string
   return (
     <div className={span ? "col-span-full" : ""}>
       <p className="text-xs text-tier-4 uppercase tracking-wider">{label}</p>
-      <p className={`font-mono text-sm ${warn ? "text-amber-400" : "text-foreground"}`}>{value}</p>
+      <p className={`font-mono text-sm ${warn ? "text-sf-amber" : "text-foreground"}`}>{value}</p>
     </div>
   );
 }

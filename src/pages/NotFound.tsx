@@ -135,40 +135,40 @@ const NotFound = () => {
 
         {/* Error code */}
         <motion.p
-          className="font-mono text-[10px] tracking-[6px] text-primary/40 uppercase mb-4"
+          className="font-mono text-[11px] tracking-[0.18em] text-sf-teal/50 uppercase mb-4"
           variants={fadeUpItem}
         >
-          Signal Lost — Error 404
+          // SIGNAL LOST — ERROR 404
         </motion.p>
 
         {/* Title */}
         <motion.h1
-          className="font-display text-4xl md:text-5xl font-light uppercase tracking-sf-wide text-tier-1 mb-4"
+          className="font-display text-4xl md:text-5xl font-light uppercase tracking-sf-title text-t1 mb-4"
           variants={heroReveal}
         >
-          Lost in Space
+          COORDINATES DO NOT MATCH
         </motion.h1>
 
         {/* Description */}
         <motion.p
-          className="text-sm text-tier-3 leading-relaxed mb-2"
+          className="font-mono text-[11px] tracking-[0.18em] uppercase text-t3 leading-relaxed mb-2"
           variants={fadeUpItem}
         >
-          The coordinates you've entered don't correspond to any charted system.
-          You may have drifted beyond the edge of known space.
+          THE COORDINATES ENTERED DO NOT CORRESPOND TO ANY CHARTED RECORD.
+          VESSEL HAS DRIFTED BEYOND KNOWN SPACE.
         </motion.p>
 
         {/* Failed coordinates readout */}
         {showCoords && (
           <motion.div
-            className="font-mono text-[11px] text-tier-4 mb-8 py-2 px-4 inline-block border border-white/5 bg-white/[0.02]"
+            className="font-mono text-[11px] text-t4 mb-8 py-2 px-4 inline-block border border-sf-border bg-sf-surface/40 tracking-[0.18em]"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
           >
-            <span className="text-crimson/60">UNREACHABLE</span>
+            <span className="text-sf-crimson/70">UNREACHABLE</span>
             {"  "}
-            <span className="text-tier-5">{location.pathname}</span>
+            <span className="text-t5">{location.pathname}</span>
           </motion.div>
         )}
 
@@ -177,23 +177,23 @@ const NotFound = () => {
           className="flex flex-col sm:flex-row gap-3 justify-center mt-8"
           variants={fadeUpItem}
         >
-          <Button size="lg" className="gap-2" asChild>
+          <Button variant="sf-primary" size="sf-lg" className="gap-2" asChild>
             <Link to="/">
               <Compass className="w-4 h-4" />
-              Return to Known Space
+              RETURN TO KNOWN SPACE
             </Link>
           </Button>
-          <Button variant="outline" size="lg" className="gap-2" asChild>
+          <Button variant="sf-ghost" size="sf-lg" className="gap-2" asChild>
             <Link to="/contact">
               <Radio className="w-4 h-4" />
-              Send Distress Signal
+              SEND DISTRESS SIGNAL
             </Link>
           </Button>
         </motion.div>
 
         {/* Tagline */}
         <motion.p
-          className="mt-10 text-xs italic text-[#5B8DEF]/40 tracking-wide"
+          className="mt-10 text-xs italic text-sf-stellar/50 tracking-wide"
           variants={fadeUpItem}
         >
           These worlds exist in you. Waiting to be found.

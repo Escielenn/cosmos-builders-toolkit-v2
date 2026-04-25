@@ -26,7 +26,7 @@ export function TagFilter({
 
   return (
     <div className={cn("flex flex-wrap items-center gap-2", className)}>
-      <Tag className="w-4 h-4 text-muted-foreground" />
+      <Tag className="w-4 h-4 text-t3" />
 
       {/* Selected tags */}
       {selectedTags.map((tag) => (
@@ -54,7 +54,7 @@ export function TagFilter({
       ))}
 
       {unselectedTags.length > 5 && (
-        <span className="text-xs text-muted-foreground">
+        <span className="text-xs text-t3">
           +{unselectedTags.length - 5} more
         </span>
       )}
@@ -64,7 +64,7 @@ export function TagFilter({
           variant="ghost"
           size="sm"
           onClick={onClear}
-          className="h-6 px-2 text-xs text-muted-foreground hover:text-foreground"
+          className="h-6 px-2 text-xs text-t3 hover:text-foreground"
         >
           Clear filters
         </Button>

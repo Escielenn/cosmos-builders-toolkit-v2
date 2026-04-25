@@ -408,7 +408,7 @@ const Sensorium = () => {
   const handleCopyResults = () => {
     const text = buildSensoriumCopyText(formState);
     navigator.clipboard.writeText(text);
-    toast({ title: "Copied to clipboard" });
+    toast({ title: "COPIED TO CLIPBOARD." });
   };
 
   const handleSave = async () => {
@@ -505,8 +505,8 @@ const Sensorium = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "recommended": return "text-cyan-400 border-cyan-500/50 bg-cyan-500/10";
-      case "possible": return "text-amber-400 border-amber-500/50 bg-amber-500/10";
+      case "recommended": return "text-sf-cyan border-cyan-500/50 bg-cyan-500/10";
+      case "possible": return "text-sf-amber border-amber-500/50 bg-amber-500/10";
       case "implausible": return "text-tier-2 border-border bg-muted/20 opacity-60";
       default: return "";
     }
@@ -840,7 +840,7 @@ const Sensorium = () => {
 
                 {/* Worksheet Links */}
                 {worldId && (
-                  <div className="pt-4 border-t border-border/50">
+                  <div className="pt-4 border-t border-sf-border">
                     <h4 className="text-sm font-medium mb-3">Link Worksheets</h4>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       {linkConfigs.map((config) => (
@@ -976,7 +976,7 @@ const Sensorium = () => {
                         <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 bg-cyan-500/60" /> Recommended</span>
                         <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 bg-amber-500/60" /> Possible</span>
                         <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 bg-muted-foreground/40" /> Implausible</span>
-                        <span className="flex items-center gap-1.5 ml-2 pl-2 border-l border-border"><Check className="h-3 w-3 text-emerald-400" /> Selected by you</span>
+                        <span className="flex items-center gap-1.5 ml-2 pl-2 border-l border-border"><Check className="h-3 w-3 text-sf-emerald" /> Selected by you</span>
                       </div>
                     </div>
                   </TabsContent>
@@ -986,7 +986,7 @@ const Sensorium = () => {
                         Pick senses freely without environmental guidance, then validate them. <strong className="text-foreground">Click cards to select, then review plausibility scores below.</strong>
                       </p>
                       <div className="flex flex-wrap gap-3 text-[11px]">
-                        <span className="flex items-center gap-1.5"><Check className="h-3 w-3 text-amber-400" /> Selected for validation</span>
+                        <span className="flex items-center gap-1.5"><Check className="h-3 w-3 text-sf-amber" /> Selected for validation</span>
                       </div>
                     </div>
                   </TabsContent>
@@ -1039,7 +1039,7 @@ const Sensorium = () => {
                               {/* Selected indicator */}
                               {isSelected && (
                                 <div className="absolute top-2 right-2">
-                                  <Check className="h-4 w-4 text-emerald-400" />
+                                  <Check className="h-4 w-4 text-sf-emerald" />
                                 </div>
                               )}
 
@@ -1083,7 +1083,7 @@ const Sensorium = () => {
                       Validation Result: {validationResult.overallPlausibility}% plausible
                     </h4>
                     {validationResult.warnings.map((w, i) => (
-                      <p key={i} className="text-xs text-amber-400 flex items-center gap-1">
+                      <p key={i} className="text-xs text-sf-amber flex items-center gap-1">
                         <AlertTriangle className="h-3 w-3" /> {w}
                       </p>
                     ))}
@@ -1091,7 +1091,7 @@ const Sensorium = () => {
                       <div className="mt-2">
                         <p className="text-xs text-tier-4 font-medium">Conflicts:</p>
                         {validationResult.conflictingSenses.map((c, i) => (
-                          <p key={i} className="text-xs text-red-400">
+                          <p key={i} className="text-xs text-sf-crimson">
                             {getModalityById(c.a)?.name} ↔ {getModalityById(c.b)?.name}: {c.reason}
                           </p>
                         ))}
@@ -1148,13 +1148,13 @@ const Sensorium = () => {
                     />
                   </div>
                   {metabolicBudget.overBudget && (
-                    <p className="text-xs text-red-400 flex items-center gap-1">
+                    <p className="text-xs text-sf-crimson flex items-center gap-1">
                       <AlertTriangle className="h-3 w-3" />
                       Over budget—this sensory suite requires extraordinary metabolic justification.
                     </p>
                   )}
                   {!metabolicBudget.overBudget && metabolicBudget.totalCost > metabolicBudget.warningThreshold && (
-                    <p className="text-xs text-amber-400 flex items-center gap-1">
+                    <p className="text-xs text-sf-amber flex items-center gap-1">
                       <AlertTriangle className="h-3 w-3" />
                       Approaching metabolic limit. Consider the energy demands on your species.
                     </p>
@@ -1317,7 +1317,7 @@ const Sensorium = () => {
                     })}
 
                     {/* User notes per category */}
-                    <div className="space-y-4 pt-4 border-t border-border/50">
+                    <div className="space-y-4 pt-4 border-t border-sf-border">
                       <h4 className="text-sm font-medium">Your Worldbuilding Notes</h4>
                       {(
                         [
@@ -1378,7 +1378,7 @@ const Sensorium = () => {
                   <>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <GlassPanel className="p-4">
-                        <h4 className="text-sm font-medium text-cyan-400 mb-2">
+                        <h4 className="text-sm font-medium text-sf-cyan mb-2">
                           Species Perceives (Humans Don't)
                         </h4>
                         {perceptionGaps.speciesPerceives.length > 0 ? (
@@ -1395,7 +1395,7 @@ const Sensorium = () => {
                       </GlassPanel>
 
                       <GlassPanel className="p-4">
-                        <h4 className="text-sm font-medium text-red-400 mb-2">
+                        <h4 className="text-sm font-medium text-sf-crimson mb-2">
                           Species Blind (Humans Have)
                         </h4>
                         {perceptionGaps.speciesBlind.length > 0 ? (
@@ -1455,7 +1455,7 @@ const Sensorium = () => {
 
                     {perceptionGaps.conflictPotential.length > 0 && (
                       <GlassPanel className="p-4">
-                        <h4 className="text-sm font-medium text-amber-400 mb-2">
+                        <h4 className="text-sm font-medium text-sf-amber mb-2">
                           Conflict Potential
                         </h4>
                         {perceptionGaps.conflictPotential.map((hook, i) => (

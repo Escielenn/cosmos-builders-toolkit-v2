@@ -34,7 +34,7 @@ class GraphErrorBoundary extends Component<
     if (this.state.hasError) {
       return (
         <div className="flex flex-col items-center justify-center h-full gap-3">
-          <p className="font-mono text-xs uppercase tracking-wider text-destructive/60">
+          <p className="font-mono text-xs uppercase tracking-wider text-sf-crimson/60">
             Entity Graph encountered an error.
           </p>
           <p className="text-[10px] text-tier-4 font-sans max-w-xs text-center">
@@ -139,7 +139,7 @@ const WorldGraph = () => {
   if (!resolvedWorldId) {
     return (
       <div className="flex items-center justify-center h-full">
-        <p className="font-mono text-xs uppercase tracking-wider text-muted-foreground/50">
+        <p className="font-mono text-xs uppercase tracking-wider text-t3/50">
           No world selected.
         </p>
       </div>
@@ -157,7 +157,7 @@ const WorldGraph = () => {
   if (error && graphMode === "knowledge") {
     return (
       <div className="flex items-center justify-center h-full">
-        <p className="font-mono text-xs uppercase tracking-wider text-destructive/60">
+        <p className="font-mono text-xs uppercase tracking-wider text-sf-crimson/60">
           Graph unavailable.
         </p>
       </div>
@@ -230,7 +230,7 @@ const WorldGraph = () => {
               className={`flex items-center gap-1 px-2.5 py-1 text-[9px] uppercase tracking-[1.5px] transition-colors ${
                 !entriesOnly
                   ? "bg-teal/10 border border-teal/25 text-teal"
-                  : "bg-[#0D1117]/90 border border-border/20 text-tier-4 hover:text-tier-3"
+                  : "bg-[#0D1117]/90 border border-sf-border text-tier-4 hover:text-tier-3"
               }`}
               title="Show all elements"
             >
@@ -242,7 +242,7 @@ const WorldGraph = () => {
               className={`flex items-center gap-1 px-2.5 py-1 text-[9px] uppercase tracking-[1.5px] transition-colors ${
                 entriesOnly
                   ? "bg-teal/10 border border-teal/25 text-teal"
-                  : "bg-[#0D1117]/90 border border-border/20 text-tier-4 hover:text-tier-3"
+                  : "bg-[#0D1117]/90 border border-sf-border text-tier-4 hover:text-tier-3"
               }`}
               title="Show entries only"
             >

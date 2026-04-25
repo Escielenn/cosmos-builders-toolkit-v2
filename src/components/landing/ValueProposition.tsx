@@ -30,7 +30,7 @@ const ValueProposition = () => {
             <h3 className="font-heading font-light text-lg mb-2 uppercase tracking-wider">
               Systematic Worldbuilding
             </h3>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-t3">
               Every choice cascades logically. Define gravity, and watch how it
               shapes biology, psychology, mythology, and culture.
             </p>
@@ -42,7 +42,7 @@ const ValueProposition = () => {
             <h3 className="font-heading font-light text-lg mb-2 uppercase tracking-wider">
               Cross-Tool Integration
             </h3>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-t3">
               Data flows between tools. Your spacecraft references your planet's
               atmosphere automatically—no duplicate entry.
             </p>
@@ -54,7 +54,7 @@ const ValueProposition = () => {
             <h3 className="font-heading font-light text-lg mb-2 uppercase tracking-wider">
               Export Everything
             </h3>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-t3">
               Generate beautiful PDFs, print-friendly views, and JSON exports.
               Share your worlds with collaborators via read-only links.
             </p>

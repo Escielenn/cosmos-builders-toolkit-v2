@@ -76,7 +76,7 @@ export function MoodboardSection({
           ))}
         </div>
       ) : (
-        <p className="text-sm text-muted-foreground text-center py-4">
+        <p className="text-sm text-t3 text-center py-4">
           NO IMAGES ON FILE.
         </p>
       )}

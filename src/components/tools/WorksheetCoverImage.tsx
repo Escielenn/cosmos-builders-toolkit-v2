@@ -96,7 +96,7 @@ export function WorksheetCoverImage({
             type="button"
             variant="ghost"
             size="sm"
-            className="text-xs text-muted-foreground hover:text-foreground h-7"
+            className="text-xs text-t3 hover:text-foreground h-7"
             onClick={() => fileInputRef.current?.click()}
             disabled={disabled || isUploading}
           >
@@ -111,7 +111,7 @@ export function WorksheetCoverImage({
             type="button"
             variant="ghost"
             size="sm"
-            className="text-xs text-muted-foreground hover:text-foreground h-7"
+            className="text-xs text-t3 hover:text-foreground h-7"
             onClick={() => setMoodboardPickerOpen(true)}
             disabled={disabled}
           >

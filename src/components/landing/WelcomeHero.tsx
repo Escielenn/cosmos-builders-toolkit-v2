@@ -5,12 +5,17 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { heroReveal, staggerContainer, fadeUpItem, easing } from "@/lib/animations";
 import { BracketPanel } from "@/components/ui/bracket-panel";
+import { ParallaxStrips } from "@/components/ambient/ParallaxStrips";
 
 const WelcomeHero = () => {
   return (
-    <BracketPanel className="mb-8 py-12 md:py-16">
+    <BracketPanel className="relative mb-8 py-12 md:py-16 overflow-hidden">
+      {/* April 2026 handoff — ambient parallax telemetry behind hero */}
+      <div className="absolute inset-0 opacity-60 pointer-events-none">
+        <ParallaxStrips height={420} />
+      </div>
       <motion.section
-        className="text-center"
+        className="relative z-10 text-center"
         initial="hidden"
         animate="visible"
         variants={staggerContainer}
@@ -35,7 +40,7 @@ const WelcomeHero = () => {
 
       {/* Subhead */}
       <motion.p
-        className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mb-10 leading-relaxed"
+        className="text-lg md:text-xl text-t3 max-w-3xl mx-auto mb-10 leading-relaxed"
         variants={fadeUpItem}
       >
         Define your planet's gravity, and watch how it shapes biology, psychology,
@@ -60,7 +65,7 @@ const WelcomeHero = () => {
       </motion.div>
 
       <motion.p
-        className="text-sm text-muted-foreground"
+        className="text-sm text-t3"
         variants={fadeUpItem}
       >
         3 tools free forever • 27 (and counting) more with Pro Access

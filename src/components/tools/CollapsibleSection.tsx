@@ -72,7 +72,7 @@ const CollapsibleSection = ({
       <CollapsibleTrigger asChild>
         <button
           type="button"
-          className={`w-full p-4 md:p-6 flex items-center justify-between text-left ${hoverClass} transition-colors border-b border-[hsl(var(--sf-section-border))] ${variant === "default" ? "" : "rounded-lg"}`}
+          className={`w-full p-4 md:p-6 flex items-center justify-between text-left ${hoverClass} transition-colors border-b border-[hsl(var(--sf-section-border))] rounded-none`}
         >
           <div className="flex items-center gap-3">
             {/* Numbered badge */}
@@ -97,7 +97,7 @@ const CollapsibleSection = ({
                         onClick={(e) => e.stopPropagation()}
                         onKeyDown={(e) => e.stopPropagation()}
                       >
-                        <Info className="w-4 h-4 text-muted-foreground opacity-60 hover:opacity-100 transition-opacity" />
+                        <Info className="w-4 h-4 text-t3 opacity-60 hover:opacity-100 transition-opacity" />
                       </span>
                     </TooltipTrigger>
                     <TooltipContent side="right" className="max-w-xs">

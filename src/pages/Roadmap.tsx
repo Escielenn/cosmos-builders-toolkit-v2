@@ -27,15 +27,15 @@ const STATUS_CONFIG: Record<string, { label: string; className: string }> = {
   },
   in_progress: {
     label: "IN PROGRESS",
-    className: "bg-amber-500/6 border-amber-500/15 text-amber-400",
+    className: "bg-amber-500/6 border-amber-500/15 text-sf-amber",
   },
   beta: {
     label: "BETA",
-    className: "bg-violet-500/6 border-violet-500/15 text-violet-400",
+    className: "bg-violet-500/6 border-violet-500/15 text-sf-violet",
   },
   released: {
     label: "RELEASED",
-    className: "bg-emerald-500/6 border-emerald-500/15 text-emerald-400",
+    className: "bg-emerald-500/6 border-emerald-500/15 text-sf-emerald",
   },
 };
 
@@ -54,7 +54,7 @@ function VoteBudgetBar({ used, remaining, max }: { used: number; remaining: numb
         <span className="text-xs font-medium uppercase tracking-[1.5px] text-tier-3">
           VOTE BUDGET
         </span>
-        <span className="font-mono text-sm text-violet-400">
+        <span className="font-mono text-sm text-sf-violet">
           {remaining}/{max} <span className="text-tier-4">remaining</span>
         </span>
       </div>
@@ -96,7 +96,7 @@ function RoadmapCard({ item, canVote }: { item: RoadmapItem; canVote: boolean })
       await removeVote.mutateAsync({ itemId: item.id, count: myVotes });
     } catch (err) {
       toast({
-        title: "Error",
+        title: "OPERATION FAILED.",
         description: err instanceof Error ? err.message : "Try again.",
         variant: "destructive",
       });
@@ -165,7 +165,7 @@ function RoadmapCard({ item, canVote }: { item: RoadmapItem; canVote: boolean })
             <Button
               variant="ghost"
               size="sm"
-              className="gap-1 text-tier-4 hover:text-crimson ml-auto"
+              className="gap-1 text-tier-4 hover:text-sf-crimson ml-auto"
               onClick={handleRemoveVote}
               disabled={removeVote.isPending}
             >
@@ -273,7 +273,7 @@ const Roadmap = () => {
         {/* Non-Vanguard CTA */}
         {!isVanguard && (
           <GlassPanel className="p-6 mt-8 border-violet-500/15 text-center">
-            <Telescope className="w-8 h-8 text-violet-400 mx-auto mb-3" />
+            <Telescope className="w-8 h-8 text-sf-violet mx-auto mb-3" />
             <h3 className="font-heading text-lg font-light uppercase tracking-[2px] mb-2">
               Want to shape the roadmap?
             </h3>

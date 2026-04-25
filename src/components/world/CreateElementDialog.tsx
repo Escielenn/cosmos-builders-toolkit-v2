@@ -287,12 +287,12 @@ export default function CreateElementDialog({
                     onClick={() => handleTypePick(type)}
                     className={cn(
                       "flex flex-col items-center gap-1.5 p-3",
-                      "border border-border/10 bg-white/[0.02]",
+                      "border border-sf-border bg-white/[0.02]",
                       "hover:bg-primary/5 hover:border-primary/20",
                       "transition-colors group"
                     )}
                   >
-                    <Icon className="w-5 h-5 text-muted-foreground/40 group-hover:text-primary/60 transition-colors" />
+                    <Icon className="w-5 h-5 text-t3/40 group-hover:text-primary/60 transition-colors" />
                     <span className="text-[10px] font-heading uppercase tracking-wider text-tier-3 group-hover:text-tier-2 transition-colors">
                       {PICKER_LABELS[type]}
                     </span>
@@ -321,11 +321,11 @@ export default function CreateElementDialog({
                       key={t.id}
                       type="button"
                       onClick={() => handleTemplatePick(t)}
-                      className="flex flex-col items-center gap-1.5 p-3 border border-border/10 bg-white/[0.02] hover:bg-primary/5 hover:border-primary/20 transition-colors"
+                      className="flex flex-col items-center gap-1.5 p-3 border border-sf-border bg-white/[0.02] hover:bg-primary/5 hover:border-primary/20 transition-colors"
                       title={t.description ?? undefined}
                     >
                       <Shapes
-                        className="w-5 h-5 text-muted-foreground/40"
+                        className="w-5 h-5 text-t3/40"
                         style={t.color ? { color: t.color } : undefined}
                       />
                       <span className="text-[10px] font-heading uppercase tracking-wider text-tier-3">
@@ -510,7 +510,7 @@ export default function CreateElementDialog({
                         className="justify-start h-9"
                         onClick={() => handleRunTool(slug)}
                       >
-                        <Wrench className="w-3.5 h-3.5 mr-2 text-muted-foreground" />
+                        <Wrench className="w-3.5 h-3.5 mr-2 text-t3" />
                         {TOOL_LABELS[slug] ?? slug.replace(/-/g, " ")}
                       </Button>
                     ))}
@@ -524,7 +524,7 @@ export default function CreateElementDialog({
                   className="justify-start h-9"
                   onClick={handleOpenGraph}
                 >
-                  <Layers className="w-3.5 h-3.5 mr-2 text-muted-foreground" />
+                  <Layers className="w-3.5 h-3.5 mr-2 text-t3" />
                   Open in the world graph
                 </Button>
                 <Button

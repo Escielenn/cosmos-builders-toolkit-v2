@@ -29,7 +29,7 @@ const FinalCTASection = () => {
           <span className="gradient-text">ON STANDBY.</span>
         </h2>
 
-        <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-10 relative">
+        <p className="text-lg text-t3 max-w-2xl mx-auto mb-10 relative">
           Join thousands of science fiction writers creating worlds with
           scientific rigor and narrative depth.
         </p>
@@ -54,7 +54,7 @@ const FinalCTASection = () => {
           </Button>
         </div>
 
-        <div className="mt-8 flex flex-wrap gap-6 justify-center text-sm text-muted-foreground relative">
+        <div className="mt-8 flex flex-wrap gap-6 justify-center text-sm text-t3 relative">
           <span>✓ 3 tools free forever</span>
           <span>✓ No credit card required</span>
           <span>✓ Export your work anytime</span>

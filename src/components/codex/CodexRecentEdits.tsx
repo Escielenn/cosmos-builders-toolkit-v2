@@ -12,7 +12,7 @@ const CodexRecentEdits = ({ items, onItemClick }: CodexRecentEditsProps) => {
   return (
     <div className="px-3 pt-2 pb-1">
       <div className="sf-divider mb-2" />
-      <span className="font-heading text-[10px] uppercase tracking-[2px] text-muted-foreground/40 block mb-1.5">
+      <span className="font-heading text-[10px] uppercase tracking-[2px] text-t3/40 block mb-1.5">
         Recent Edits
       </span>
       {items.map((item) => (
@@ -21,10 +21,10 @@ const CodexRecentEdits = ({ items, onItemClick }: CodexRecentEditsProps) => {
           onClick={() => onItemClick(item)}
           className="sf-fill-sweep sf-fill-sweep--secondary w-full flex items-center justify-between gap-2 py-1 px-1 text-left"
         >
-          <span className="text-[13px] text-foreground/70 truncate">
+          <span className="text-[13px] text-t2 truncate">
             {item.title}
           </span>
-          <span className="font-mono text-[8px] text-muted-foreground/40 whitespace-nowrap shrink-0">
+          <span className="font-mono text-[8px] text-t3/40 whitespace-nowrap shrink-0">
             {formatDistanceToNow(new Date(item.updatedAt), { addSuffix: true })}
           </span>
         </button>

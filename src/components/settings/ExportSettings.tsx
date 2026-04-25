@@ -58,7 +58,7 @@ const ExportSettings = () => {
             ))}
           </SelectContent>
         </Select>
-        <p className="text-xs text-muted-foreground">
+        <p className="text-xs text-t3">
           Used by Quick Export and as the initial selection in the Export dialog.
         </p>
       </div>
@@ -86,7 +86,7 @@ const ExportSettings = () => {
                   {theme.swatch.map((color, i) => (
                     <div
                       key={i}
-                      className="w-4 h-4 rounded-sm border border-border/50"
+                      className="w-4 h-4 rounded-sm border border-sf-border"
                       style={{ backgroundColor: color }}
                     />
                   ))}
@@ -95,7 +95,7 @@ const ExportSettings = () => {
                   <p className="text-sm font-medium leading-tight">
                     {theme.name}
                   </p>
-                  <p className="text-xs text-muted-foreground mt-0.5 truncate">
+                  <p className="text-xs text-t3 mt-0.5 truncate">
                     {theme.description}
                   </p>
                 </div>
@@ -106,7 +106,7 @@ const ExportSettings = () => {
             );
           })}
         </div>
-        <p className="text-xs text-muted-foreground">
+        <p className="text-xs text-t3">
           Theme affects PDF exports. DOCX and text exports are unaffected.
         </p>
       </div>

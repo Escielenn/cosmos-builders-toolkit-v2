@@ -10,6 +10,7 @@
 import { type ReactNode, useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, FileText } from "lucide-react";
+import { getToolAccent, accentTextClass, accentArcClass } from "@/lib/tool-accents";
 import CascadeSuggestionToast from "@/components/tools/CascadeSuggestionToast";
 import UpstreamCallout from "@/components/tools/UpstreamCallout";
 import PageShell from "@/components/layout/PageShell";
@@ -101,6 +102,7 @@ export default function ToolPageLayout({
   const worldId = useWorldId();
   const ToolIcon = getToolIcon(toolType);
   const introData = TOOL_INTROS[cfg.introKey];
+  const accent = getToolAccent(toolType);
 
   useMetaTags({
     title: `${cfg.brandName}: ${cfg.fullName}`,
@@ -126,10 +128,10 @@ export default function ToolPageLayout({
         {/* ── Back Link (context-aware) ─────────────────────────── */}
         <Link
           to={worldId ? `/worlds/${worldId}` : "/"}
-          className="inline-flex items-center gap-2 text-sm text-tier-3 hover:text-foreground transition-colors mb-6"
+          className="inline-flex items-center gap-2 font-heading text-[11px] uppercase tracking-[0.2em] font-medium text-t3 hover:text-sf-teal-bright transition-colors duration-base mb-6"
         >
           <ArrowLeft className="w-4 h-4" />
-          {worldId ? "Back to World" : "Back to Tools"}
+          {worldId ? "← Return to World" : "← Return to Instruments"}
         </Link>
 
         {/* ── Quote Bar ─────────────────────────────────────────── */}
@@ -168,21 +170,26 @@ export default function ToolPageLayout({
           />
         )}
 
-        {/* ── Title ─────────────────────────────────────────────── */}
+        {/* ── Title — per-tool accent: amber physics / azure worlds / emerald life / violet civ / stellar myth / teal integration ── */}
         <div className="mb-8">
+          <p className={`font-mono text-[11px] tracking-[0.18em] uppercase ${accentTextClass(accent)} mb-2`}>
+            // CATEGORY: {accent.toUpperCase()}
+          </p>
           <div className="flex items-center gap-3">
-            {ToolIcon && <ToolIcon className="w-8 h-8 rounded-sm shrink-0" />}
-            <h1 className="font-display text-3xl md:text-4xl tracking-sf-title">
+            {ToolIcon && <ToolIcon className="w-8 h-8 rounded-none shrink-0" />}
+            <h1 className="font-display text-3xl md:text-4xl tracking-sf-title text-t1 uppercase">
               <span className="font-normal">{cfg.brandName}:</span>{" "}
               <span className="font-light">{cfg.fullName}</span>
             </h1>
             {cfg.isPro && (
-              <span className="font-mono text-[9px] tracking-[0.1em] text-primary/40 uppercase self-start mt-2">
+              <span className="font-mono text-[11px] tracking-[0.18em] uppercase self-start mt-2 px-2 py-0.5 rounded-sf-tag border border-sf-violet/[0.15] bg-sf-violet/[0.06] text-sf-violet">
                 PRO
               </span>
             )}
           </div>
-          <p className="text-tier-2 mt-2 max-w-2xl">{cfg.subtitle}</p>
+          <p className="text-t2 mt-2 max-w-2xl">{cfg.subtitle}</p>
+          {/* Accent light arc under the title */}
+          <div className={`mt-4 h-px w-24 bg-gradient-to-r ${accentArcClass(accent)}`} aria-hidden />
 
           {/* Worksheet title + tags (shown when a worksheet is loaded) */}
           {worksheetId && onRenameWorksheet && (

@@ -93,7 +93,7 @@ const QuickExportButton = ({
           const dataStr = JSON.stringify(formState, null, 2);
           const blob = new Blob([dataStr], { type: "application/json;charset=utf-8" });
           downloadBlob(blob, `${filename}.json`);
-          toast({ title: "Exported", description: "Downloaded as JSON." });
+          toast({ title: "EXPORT COMPLETE.", description: "TRANSMISSION LOGGED (JSON)." });
           break;
         }
 
@@ -107,7 +107,7 @@ const QuickExportButton = ({
           });
           const blob = new Blob([textContent], { type: "text/plain;charset=utf-8" });
           downloadBlob(blob, `${filename}.txt`);
-          toast({ title: "Exported", description: "Downloaded as text file." });
+          toast({ title: "EXPORT COMPLETE.", description: "TRANSMISSION LOGGED (TXT)." });
           break;
         }
 
@@ -119,7 +119,7 @@ const QuickExportButton = ({
             worksheetTitle,
             data: formState as Record<string, unknown>,
           });
-          toast({ title: "Exported", description: "Downloaded as Word document." });
+          toast({ title: "EXPORT COMPLETE.", description: "TRANSMISSION LOGGED (DOCX)." });
           break;
         }
 
@@ -145,7 +145,7 @@ const QuickExportButton = ({
           const pdfBlob = new Blob([blob], { type: "application/pdf" });
           downloadBlob(pdfBlob, `${filename}.pdf`);
           toast({
-            title: "Exported",
+            title: "EXPORT COMPLETE.",
             description: `Downloaded as ${format === "pdf-summary" ? "summary" : "full report"} PDF.`,
           });
           break;

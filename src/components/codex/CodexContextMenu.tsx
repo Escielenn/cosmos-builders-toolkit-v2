@@ -40,7 +40,7 @@ const CodexContextMenu = ({
   return (
     <ContextMenu>
       <ContextMenuTrigger asChild>{children}</ContextMenuTrigger>
-      <ContextMenuContent className="w-48 bg-[#0D1117] border-border/20">
+      <ContextMenuContent className="w-48 bg-[#0D1117] border-sf-border">
         {onOpenWiki && (
           <ContextMenuItem
             onClick={() => onOpenWiki(element)}
@@ -131,7 +131,7 @@ const CodexContextMenu = ({
         {onDelete && (
           <ContextMenuItem
             onClick={() => onDelete(element)}
-            className="text-xs gap-2 text-destructive focus:text-destructive"
+            className="text-xs gap-2 text-sf-crimson focus:text-sf-crimson"
           >
             <Trash2 className="w-3.5 h-3.5" />
             Delete

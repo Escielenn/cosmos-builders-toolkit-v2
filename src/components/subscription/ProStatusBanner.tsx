@@ -47,7 +47,7 @@ const ProStatusBanner = ({ isSubscribed }: ProStatusBannerProps) => {
                     Active
                   </Badge>
                 </p>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-t3">
                   All {TOTAL_TOOLS} worldbuilding tools unlocked
                 </p>
               </div>
@@ -71,7 +71,7 @@ const ProStatusBanner = ({ isSubscribed }: ProStatusBannerProps) => {
       <GlassPanel className="p-4 border-amber-500/30 bg-amber-500/5 relative">
         <button
           onClick={handleDismiss}
-          className="absolute top-3 right-3 text-muted-foreground hover:text-foreground transition-colors"
+          className="absolute top-3 right-3 text-t3 hover:text-foreground transition-colors"
           aria-label="Dismiss"
         >
           <X className="w-4 h-4" />
@@ -79,14 +79,14 @@ const ProStatusBanner = ({ isSubscribed }: ProStatusBannerProps) => {
 
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
           <div className="w-10 h-10 rounded-sm bg-amber-500/20 flex items-center justify-center shrink-0">
-            <Sparkles className="w-5 h-5 text-amber-500" />
+            <Sparkles className="w-5 h-5 text-sf-amber" />
           </div>
 
           <div className="flex-1">
-            <p className="font-medium text-amber-600 dark:text-amber-400 mb-1">
+            <p className="font-medium text-sf-amber dark:text-sf-amber mb-1">
               Unlock All {TOTAL_TOOLS} Worldbuilding Tools
             </p>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-t3">
               Go Pro to access all {PRO_TOOL_IDS.length} premium tools including Planetary Profiles, Star System Builder,
               Empire Designer, Evolutionary Biology, and more.
             </p>

@@ -66,7 +66,7 @@ const IconPicker = ({ value, onChange, disabled }: IconPickerProps) => {
           <div className="space-y-3 max-h-[65vh] overflow-y-auto pr-1">
             {ICON_CATEGORIES.map((category) => (
               <div key={category}>
-                <p className="text-xs text-muted-foreground mb-2">{category}</p>
+                <p className="text-xs text-t3 mb-2">{category}</p>
                 <div className="grid grid-cols-10 gap-1">
                   {WORLD_ICONS.filter((icon) => icon.category === category).map(
                     (icon) => {
@@ -94,7 +94,7 @@ const IconPicker = ({ value, onChange, disabled }: IconPickerProps) => {
 
             {/* Illustration previews */}
             <div className="pt-2 border-t">
-              <p className="text-xs text-muted-foreground mb-2">Illustrations</p>
+              <p className="text-xs text-t3 mb-2">Illustrations</p>
               <div className="grid grid-cols-10 gap-1">
                 {PREVIEW_PICS.map((filename) => (
                   <button

@@ -91,7 +91,7 @@ const PropulsionMockup = () => {
             >
               {type.name}
             </div>
-            <div className="text-[8px] text-muted-foreground">{type.speed}</div>
+            <div className="text-[8px] text-t3">{type.speed}</div>
           </button>
         ))}
       </div>
@@ -165,7 +165,7 @@ const PropulsionMockup = () => {
 
               {/* Consequence card */}
               <div className="w-24 bg-sf-surface border border-muted/30 rounded-lg p-2 text-center">
-                <div className="text-[8px] text-muted-foreground uppercase tracking-wider">
+                <div className="text-[8px] text-t3 uppercase tracking-wider">
                   {consequence.domain}
                 </div>
                 <div className="text-[10px] text-foreground mt-0.5">
@@ -182,7 +182,7 @@ const PropulsionMockup = () => {
         {["Economic", "Political", "Social"].map((domain) => (
           <div
             key={domain}
-            className="px-2 py-1 rounded border border-muted/20 text-[8px] text-muted-foreground"
+            className="px-2 py-1 rounded border border-muted/20 text-[8px] text-t3"
           >
             {domain}
           </div>

@@ -19,11 +19,11 @@ const renderValue = (value: unknown, depth: number = 0): React.ReactNode => {
   if (value === null || value === undefined || value === "") return null;
 
   if (typeof value === "string") {
-    return <p className="text-foreground/90 whitespace-pre-wrap">{value}</p>;
+    return <p className="text-t1 whitespace-pre-wrap">{value}</p>;
   }
 
   if (typeof value === "number" || typeof value === "boolean") {
-    return <p className="text-foreground/90">{String(value)}</p>;
+    return <p className="text-t1">{String(value)}</p>;
   }
 
   if (Array.isArray(value)) {
@@ -32,7 +32,7 @@ const renderValue = (value: unknown, depth: number = 0): React.ReactNode => {
     // Array of strings
     if (value.every((v) => typeof v === "string")) {
       return (
-        <ul className="list-disc list-inside space-y-1 text-foreground/90">
+        <ul className="list-disc list-inside space-y-1 text-t1">
           {value.map((item, i) => (
             <li key={i}>{item}</li>
           ))}
@@ -48,7 +48,7 @@ const renderValue = (value: unknown, depth: number = 0): React.ReactNode => {
             {typeof item === "object" && item !== null ? (
               renderObject(item as Record<string, unknown>, depth + 1)
             ) : (
-              <p className="text-foreground/90">{String(item)}</p>
+              <p className="text-t1">{String(item)}</p>
             )}
           </div>
         ))}
@@ -60,7 +60,7 @@ const renderValue = (value: unknown, depth: number = 0): React.ReactNode => {
     return renderObject(value as Record<string, unknown>, depth + 1);
   }
 
-  return <p className="text-foreground/90">{String(value)}</p>;
+  return <p className="text-t1">{String(value)}</p>;
 };
 
 const renderObject = (obj: Record<string, unknown>, depth: number): React.ReactNode => {
@@ -83,7 +83,7 @@ const renderObject = (obj: Record<string, unknown>, depth: number): React.ReactN
 
         return (
           <div key={key}>
-            <h4 className="text-sm font-medium text-muted-foreground mb-1">
+            <h4 className="text-sm font-medium text-t3 mb-1">
               {formatLabel(key)}
             </h4>
             {rendered}
@@ -108,7 +108,7 @@ const WorksheetDataRenderer = ({ data }: WorksheetDataRendererProps) => {
   if (entries.length === 0) {
     return (
       <GlassPanel className="p-6">
-        <p className="text-muted-foreground text-center">NO DATA ON FILE.</p>
+        <p className="text-t3 text-center">NO DATA ON FILE.</p>
       </GlassPanel>
     );
   }

@@ -61,7 +61,7 @@ export function DeleteConfirmDialog({
     <AlertDialog open={open} onOpenChange={handleOpenChange}>
       <AlertDialogContent className="max-w-md">
         <AlertDialogHeader>
-          <AlertDialogTitle className="flex items-center gap-2 text-destructive">
+          <AlertDialogTitle className="flex items-center gap-2 text-sf-crimson">
             <AlertTriangle className="w-5 h-5" />
             CONFIRM: Delete {itemType}
           </AlertDialogTitle>
@@ -72,7 +72,7 @@ export function DeleteConfirmDialog({
         </AlertDialogHeader>
 
         <div className="space-y-2 py-2">
-          <Label htmlFor="confirm-delete" className="text-sm text-muted-foreground">
+          <Label htmlFor="confirm-delete" className="text-sm text-t3">
             Type <span className="font-semibold text-foreground">{itemName}</span> to confirm
           </Label>
           <Input
@@ -93,7 +93,7 @@ export function DeleteConfirmDialog({
               handleConfirm();
             }}
             disabled={!isConfirmValid || isDeleting}
-            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            className="bg-destructive text-sf-crimson-foreground hover:bg-destructive/90"
           >
             {isDeleting ? "Deleting..." : "CONFIRM DELETION"}
           </AlertDialogAction>

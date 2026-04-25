@@ -27,7 +27,7 @@ export function ArchiveToggle({
       />
       <Label
         htmlFor="show-archived"
-        className="flex items-center gap-1.5 text-sm text-muted-foreground cursor-pointer"
+        className="flex items-center gap-1.5 text-sm text-t3 cursor-pointer"
       >
         <Archive className="w-3.5 h-3.5" />
         Show archived

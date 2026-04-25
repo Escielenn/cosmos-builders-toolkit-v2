@@ -1277,7 +1277,7 @@ function InnerGraph({ worldId, entities, connections }: InnerGraphProps) {
         edgeTypes={edgeTypes}
         fitView
         proOptions={{ hideAttribution: true }}
-        className="bg-[#0A0E17]"
+        className="bg-sf-void"
         defaultEdgeOptions={{
           type: "cascadeEdge",
         }}
@@ -1290,11 +1290,11 @@ function InnerGraph({ worldId, entities, connections }: InnerGraphProps) {
         />
         <Controls
           showInteractive={false}
-          className="!bg-[#0D1117] !border-border/30 !shadow-none [&>button]:!bg-transparent [&>button]:!border-border/20 [&>button]:!text-muted-foreground [&>button:hover]:!bg-accent/10"
+          className="!bg-[#0D1117] !border-sf-border !shadow-none [&>button]:!bg-transparent [&>button]:!border-sf-border [&>button]:!text-t3 [&>button:hover]:!bg-accent/10"
         />
         <MiniMap
           nodeStrokeWidth={3}
-          className="!bg-[#0D1117] !border-border/30"
+          className="!bg-[#0D1117] !border-sf-border"
           maskColor="rgba(0,0,0,0.7)"
           nodeColor={(node) => {
             const d = node.data as unknown as EntityNodeData;
@@ -1367,7 +1367,7 @@ function InnerGraph({ worldId, entities, connections }: InnerGraphProps) {
             <button
               type="button"
               onClick={handleContextDelete}
-              className="w-full flex items-center gap-2 px-3 py-2 text-[11px] font-sans text-red-400 hover:bg-red-500/[0.06] hover:text-red-300 transition-colors text-left"
+              className="w-full flex items-center gap-2 px-3 py-2 text-[11px] font-sans text-sf-crimson hover:bg-red-500/[0.06] hover:text-red-300 transition-colors text-left"
             >
               <Trash2 className="w-3 h-3" />
               Delete Entity

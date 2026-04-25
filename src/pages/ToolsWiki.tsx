@@ -90,7 +90,7 @@ function ToolWikiCard({
             {typeMeta.label}
           </Badge>
           {isPro && (
-            <Badge variant="outline" className="text-[9px] text-violet-400 border-violet-400/20 px-1.5 py-0">
+            <Badge variant="outline" className="text-[9px] text-sf-violet border-violet-400/20 px-1.5 py-0">
               PRO
             </Badge>
           )}
@@ -148,7 +148,7 @@ function ToolDetail({
           {typeMeta.label}
         </Badge>
         {isPro && (
-          <Badge variant="outline" className="text-[10px] text-violet-400 border-violet-400/20 px-2 py-0.5">
+          <Badge variant="outline" className="text-[10px] text-sf-violet border-violet-400/20 px-2 py-0.5">
             PRO
           </Badge>
         )}
@@ -156,7 +156,7 @@ function ToolDetail({
 
       {/* Cascade position */}
       <GlassPanel className="p-3">
-        <h4 className="font-mono text-[9px] tracking-[2px] uppercase text-muted-foreground/60 mb-2">
+        <h4 className="font-mono text-[9px] tracking-[2px] uppercase text-t3/60 mb-2">
           // CASCADE POSITION
         </h4>
         <div className="flex items-center gap-1 overflow-x-auto pb-1">
@@ -207,7 +207,7 @@ function ToolDetail({
       {/* Relationships */}
       {tool.buildsOn.length > 0 && (
         <div>
-          <h4 className="font-mono text-[9px] tracking-[2px] uppercase text-muted-foreground/60 mb-2">
+          <h4 className="font-mono text-[9px] tracking-[2px] uppercase text-t3/60 mb-2">
             // BUILDS ON
           </h4>
           <div className="space-y-1.5">
@@ -222,7 +222,7 @@ function ToolDetail({
                   variant="outline"
                   className={`text-[9px] shrink-0 mt-0.5 px-1.5 py-0 ${
                     rel.strength === "required"
-                      ? "text-amber-400 border-amber-400/20"
+                      ? "text-sf-amber border-amber-400/20"
                       : rel.strength === "recommended"
                       ? "text-tier-3 border-white/10"
                       : "text-tier-4 border-white/5"
@@ -241,7 +241,7 @@ function ToolDetail({
 
       {tool.feedsInto.length > 0 && (
         <div>
-          <h4 className="font-mono text-[9px] tracking-[2px] uppercase text-muted-foreground/60 mb-2">
+          <h4 className="font-mono text-[9px] tracking-[2px] uppercase text-t3/60 mb-2">
             // FEEDS INTO
           </h4>
           <div className="space-y-1.5">
@@ -256,7 +256,7 @@ function ToolDetail({
                   variant="outline"
                   className={`text-[9px] shrink-0 mt-0.5 px-1.5 py-0 ${
                     rel.strength === "required"
-                      ? "text-amber-400 border-amber-400/20"
+                      ? "text-sf-amber border-amber-400/20"
                       : rel.strength === "recommended"
                       ? "text-tier-3 border-white/10"
                       : "text-tier-4 border-white/5"

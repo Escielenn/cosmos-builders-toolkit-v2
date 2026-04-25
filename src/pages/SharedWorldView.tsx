@@ -26,15 +26,15 @@ const SharedWorldView = () => {
         {isLoading && (
           <div className="flex flex-col items-center justify-center py-24">
             <Loader className="mb-4" />
-            <p className="text-sm text-muted-foreground">Loading shared world...</p>
+            <p className="text-sm text-t3">Loading shared world...</p>
           </div>
         )}
 
         {error && !isLoading && (
           <div className="flex flex-col items-center justify-center py-24 text-center">
-            <AlertCircle className="w-12 h-12 text-muted-foreground mb-4" />
+            <AlertCircle className="w-12 h-12 text-t3 mb-4" />
             <h1 className="font-heading text-2xl font-semibold mb-2">Link not available</h1>
-            <p className="text-muted-foreground mb-6 max-w-md">
+            <p className="text-t3 mb-6 max-w-md">
               This share link may have been disabled, expired, or the world may have been deleted.
             </p>
             <Button asChild>
@@ -72,10 +72,10 @@ const SharedWorldView = () => {
               </div>
 
               {data.description && (
-                <p className="text-lg text-muted-foreground">{data.description}</p>
+                <p className="text-lg text-t3">{data.description}</p>
               )}
 
-              <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+              <div className="flex flex-wrap items-center gap-4 text-sm text-t3">
                 {data.owner_display_name && (
                   <div className="flex items-center gap-2">
                     {data.owner_avatar_url ? (
@@ -145,7 +145,7 @@ const SharedWorldView = () => {
                             </div>
                           )}
                         </div>
-                        <span className="text-xs text-muted-foreground shrink-0">
+                        <span className="text-xs text-t3 shrink-0">
                           {new Date(ws.updated_at).toLocaleDateString("en-US", {
                             month: "short",
                             day: "numeric",
@@ -160,7 +160,7 @@ const SharedWorldView = () => {
 
             {data.worksheets && data.worksheets.length === 0 && (
               <GlassPanel className="p-6 text-center">
-                <p className="text-muted-foreground mb-4">
+                <p className="text-t3 mb-4">
                   This world has no worksheets yet.
                 </p>
                 <CosmicTelemetry
@@ -173,7 +173,7 @@ const SharedWorldView = () => {
 
             {/* Footer */}
             <GlassPanel className="p-6 text-center">
-              <p className="text-sm text-muted-foreground mb-3">
+              <p className="text-sm text-t3 mb-3">
                 Built with StellarForge—the science fiction worldbuilding toolkit
               </p>
               <Button size="sm" asChild>

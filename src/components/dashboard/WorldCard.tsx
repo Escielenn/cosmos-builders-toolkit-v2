@@ -173,7 +173,7 @@ const WorldCard = ({
                 )}
                 <DropdownMenuItem
                   onClick={() => setShowDeleteDialog(true)}
-                  className="text-destructive focus:text-destructive"
+                  className="text-sf-crimson focus:text-sf-crimson"
                 >
                   <Trash2 className="w-4 h-4 mr-2" />
                   Delete permanently
@@ -184,7 +184,7 @@ const WorldCard = ({
 
           <div className="flex-1">
             {description && (
-              <p className="text-sm text-muted-foreground line-clamp-2">
+              <p className="text-sm text-t3 line-clamp-2">
                 {description}
               </p>
             )}
@@ -196,14 +196,14 @@ const WorldCard = ({
                   </Badge>
                 ))}
                 {tags.length > 3 && (
-                  <span className="text-xs text-muted-foreground">+{tags.length - 3}</span>
+                  <span className="text-xs text-t3">+{tags.length - 3}</span>
                 )}
               </div>
             )}
           </div>
 
-          <div className="pt-2 border-t border-border/50 mt-auto flex items-center justify-between">
-            <p className="text-xs text-muted-foreground">
+          <div className="pt-2 border-t border-sf-border mt-auto flex items-center justify-between">
+            <p className="text-xs text-t3">
               Last updated: {formattedDate}
             </p>
             {snapshotAt && (

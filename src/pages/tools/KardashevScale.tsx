@@ -205,7 +205,7 @@ const KardashevScale = () => {
     if (currentWorksheetId) {
       updateWorksheet.mutate(
         { worksheetId: currentWorksheetId, data },
-        { onSuccess: () => toast({ title: "Saved" }) }
+        { onSuccess: () => toast({ title: "FILE SECURED." }) }
       );
     } else if (user) {
       createWorksheet.mutate(
@@ -214,7 +214,7 @@ const KardashevScale = () => {
           onSuccess: (ws) => {
             setCurrentWorksheetId(ws.id);
             setSearchParams((p) => { p.set("worksheetId", ws.id); return p; });
-            toast({ title: "Saved" });
+            toast({ title: "FILE SECURED." });
           },
         }
       );
@@ -287,7 +287,7 @@ const KardashevScale = () => {
 
   const handleCopy = useCallback(() => {
     navigator.clipboard.writeText(buildCopyText(results, calcInput));
-    toast({ title: "Copied to clipboard" });
+    toast({ title: "COPIED TO CLIPBOARD." });
   }, [results, calcInput, toast]);
 
   const handleNewWorksheet = useCallback(() => {
@@ -505,7 +505,7 @@ const KardashevScale = () => {
                         className={cn(
                           "text-[8px] py-0 shrink-0",
                           source.category === "planetary" && "text-blue-400 border-blue-400/20",
-                          source.category === "stellar" && "text-amber-400 border-amber-400/20",
+                          source.category === "stellar" && "text-sf-amber border-amber-400/20",
                           source.category === "galactic" && "text-pink-400 border-pink-400/20",
                           source.category === "exotic" && "text-tier-1 border-white/20"
                         )}
@@ -714,7 +714,7 @@ const KardashevScale = () => {
                 const total = Object.values(formState.budgetPercentages).reduce((s, v) => s + v, 0);
                 if (Math.abs(total - 100) > 1) {
                   return (
-                    <div className="flex items-center gap-2 p-2 bg-amber-500/[0.06] border border-amber-500/[0.15] text-amber-400 text-xs">
+                    <div className="flex items-center gap-2 p-2 bg-amber-500/[0.06] border border-amber-500/[0.15] text-sf-amber text-xs">
                       <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
                       Budget total is {total}% (should be 100%)
                     </div>

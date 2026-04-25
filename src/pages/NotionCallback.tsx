@@ -48,7 +48,7 @@ const NotionCallback = () => {
         {status === "loading" && (
           <>
             <Loader />
-            <p className="text-lg text-muted-foreground">{message}</p>
+            <p className="text-lg text-t3">{message}</p>
           </>
         )}
 
@@ -61,11 +61,11 @@ const NotionCallback = () => {
 
         {status === "error" && (
           <>
-            <XCircle className="w-12 h-12 text-destructive mx-auto" />
+            <XCircle className="w-12 h-12 text-sf-crimson mx-auto" />
             <p className="text-lg text-foreground">{message}</p>
             <button
               onClick={() => window.close()}
-              className="text-sm text-muted-foreground underline hover:text-foreground"
+              className="text-sm text-t3 underline hover:text-foreground"
             >
               Close window
             </button>

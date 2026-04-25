@@ -163,8 +163,8 @@ const HeaderImageUpload = ({
             <Loader />
           ) : (
             <>
-              <ImageIcon className="w-8 h-8 text-muted-foreground" />
-              <span className="text-sm text-muted-foreground">
+              <ImageIcon className="w-8 h-8 text-t3" />
+              <span className="text-sm text-t3">
                 Add a header image for your world
               </span>
               <div className="flex gap-2">
@@ -191,7 +191,7 @@ const HeaderImageUpload = ({
                   </Button>
                 )}
               </div>
-              <span className="text-xs text-muted-foreground">
+              <span className="text-xs text-t3">
                 Recommended: 1200x400 or similar 3:1 ratio
               </span>
             </>

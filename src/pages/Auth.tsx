@@ -66,14 +66,14 @@ const Auth = () => {
     setIsLoading(false);
     if (error) {
       toast({
-        title: "Sign in failed",
+        title: "AUTHENTICATION FAILED.",
         description: error.message === "Invalid login credentials"
           ? "CREDENTIALS NOT RECOGNIZED. VERIFY AND RETRY."
           : error.message,
         variant: "destructive",
       });
     } else {
-      toast({ title: "SESSION ESTABLISHED.", description: "Proceed." });
+      toast({ title: "SESSION ESTABLISHED." });
       navigate("/");
     }
   };
@@ -84,7 +84,7 @@ const Auth = () => {
     setIsLoading(false);
     if (error) {
       toast({
-        title: `${provider.charAt(0).toUpperCase() + provider.slice(1)} sign in failed`,
+        title: `${provider.toUpperCase()} AUTHENTICATION FAILED.`,
         description: error.message,
         variant: "destructive",
       });
@@ -114,8 +114,8 @@ const Auth = () => {
         onSuccess: () => setEaSubmitted(true),
         onError: () => {
           toast({
-            title: "Submission failed",
-            description: "Please try again.",
+            title: "TRANSMISSION FAILED.",
+            description: "RETRY WHEN READY.",
             variant: "destructive",
           });
         },
@@ -141,17 +141,20 @@ const Auth = () => {
           {/* Hero */}
           <div className="text-center space-y-6">
             <div className="flex justify-center">
-              <CubeLogo size={80} className="rounded-lg" />
+              <CubeLogo size={80} className="rounded-none" />
             </div>
             <div>
-              <h1 className="font-display text-4xl md:text-5xl font-light tracking-[0.15em] mb-3">
+              <p className="font-mono text-[11px] tracking-[0.18em] text-sf-teal uppercase mb-3">
+                // CLEARANCE REQUIRED
+              </p>
+              <h1 className="font-display text-4xl md:text-5xl font-light tracking-[0.08em] mb-3 text-t1 uppercase">
                 STELLARFORGE
               </h1>
-              <p className="text-tier-3 text-sm tracking-[0.2em] uppercase">
+              <p className="text-t3 text-sm tracking-[0.2em] uppercase font-heading">
                 Science Fiction Worldbuilding Tools
               </p>
             </div>
-            <p className="text-tier-2 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
+            <p className="text-t2 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
               Design planets, species, civilizations, and spacecraft with scientific rigor.
               Every parameter cascades logically—environment shapes biology, biology shapes
               psychology, psychology shapes mythology, mythology shapes culture.
@@ -162,37 +165,37 @@ const Auth = () => {
           {/* Value Props */}
           <div className="grid md:grid-cols-3 gap-6">
             <GlassPanel className="p-6 text-center md:text-left">
-              <div className="w-10 h-10 rounded-sm bg-primary/[0.06] border border-primary/[0.15] flex items-center justify-center mb-3 mx-auto md:mx-0">
+              <div className="w-10 h-10 rounded-none bg-sf-teal/[0.06] border border-sf-teal/[0.15] flex items-center justify-center mb-3 mx-auto md:mx-0">
                 <Layers className="w-5 h-5 text-primary" />
               </div>
-              <h3 className="font-heading text-[11px] font-light uppercase tracking-[2px] text-[hsl(var(--sf-section-green))] mb-2">
+              <h3 className="font-heading text-[11px] font-medium uppercase tracking-[0.2em] text-sf-teal mb-2">
                 Systematic Worldbuilding
               </h3>
-              <p className="text-sm text-tier-3">
+              <p className="text-sm text-t3">
                 20+ interconnected tools. Environment shapes biology, biology shapes
                 psychology, psychology shapes mythology, mythology shapes culture.
               </p>
             </GlassPanel>
             <GlassPanel className="p-6 text-center md:text-left">
-              <div className="w-10 h-10 rounded-sm bg-accent/[0.06] border border-accent/[0.15] flex items-center justify-center mb-3 mx-auto md:mx-0">
-                <Share2 className="w-5 h-5 text-accent" />
+              <div className="w-10 h-10 rounded-none bg-sf-stellar/[0.06] border border-sf-stellar/[0.15] flex items-center justify-center mb-3 mx-auto md:mx-0">
+                <Share2 className="w-5 h-5 text-sf-stellar" />
               </div>
-              <h3 className="font-heading text-[11px] font-light uppercase tracking-[2px] text-[hsl(var(--sf-section-green))] mb-2">
+              <h3 className="font-heading text-[11px] font-medium uppercase tracking-[0.2em] text-sf-teal mb-2">
                 Cross-Tool Integration
               </h3>
-              <p className="text-sm text-tier-3">
+              <p className="text-sm text-t3">
                 Data flows between tools. Your spacecraft references your planet's
                 atmosphere automatically.
               </p>
             </GlassPanel>
             <GlassPanel className="p-6 text-center md:text-left">
-              <div className="w-10 h-10 rounded-sm bg-primary/[0.06] border border-primary/[0.15] flex items-center justify-center mb-3 mx-auto md:mx-0">
+              <div className="w-10 h-10 rounded-none bg-sf-teal/[0.06] border border-sf-teal/[0.15] flex items-center justify-center mb-3 mx-auto md:mx-0">
                 <FileDown className="w-5 h-5 text-primary" />
               </div>
-              <h3 className="font-heading text-[11px] font-light uppercase tracking-[2px] text-[hsl(var(--sf-section-green))] mb-2">
+              <h3 className="font-heading text-[11px] font-medium uppercase tracking-[0.2em] text-sf-teal mb-2">
                 Export Everything
               </h3>
-              <p className="text-sm text-tier-3">
+              <p className="text-sm text-t3">
                 PDF reports, DOCX documents, shared links, and full World Bible exports.
                 Your data is always yours.
               </p>
@@ -218,7 +221,7 @@ const Auth = () => {
               <h2 className="font-heading text-xl font-light tracking-[0.1em] mb-2">
                 REQUEST EARLY ACCESS
               </h2>
-              <p className="text-sm text-tier-3">
+              <p className="text-sm text-t3">
                 StellarForge is in closed beta. Request access and we'll be in touch.
               </p>
             </div>
@@ -231,7 +234,7 @@ const Auth = () => {
                 <h3 className="font-heading text-sm font-light tracking-[0.1em] uppercase">
                   TRANSMISSION RECEIVED
                 </h3>
-                <p className="text-sm text-tier-3">
+                <p className="text-sm text-t3">
                   We'll review your request and reach out when a spot opens up.
                 </p>
               </div>
@@ -261,7 +264,7 @@ const Auth = () => {
                       disabled={submitEarlyAccess.isPending}
                     />
                   </div>
-                  {eaErrors.name && <p className="text-sm text-destructive">{eaErrors.name}</p>}
+                  {eaErrors.name && <p className="text-sm text-sf-crimson">{eaErrors.name}</p>}
                 </div>
 
                 <div className="space-y-2">
@@ -276,7 +279,7 @@ const Auth = () => {
                       disabled={submitEarlyAccess.isPending}
                     />
                   </div>
-                  {eaErrors.email && <p className="text-sm text-destructive">{eaErrors.email}</p>}
+                  {eaErrors.email && <p className="text-sm text-sf-crimson">{eaErrors.email}</p>}
                 </div>
 
                 <div className="space-y-2">
@@ -284,14 +287,14 @@ const Auth = () => {
                   <div className="sf-input-bracketed">
                     <textarea
                       id="ea-writing"
-                      className="flex min-h-[80px] w-full rounded-sm border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-none"
+                      className="flex min-h-[80px] w-full rounded-none border border-sf-border bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-t4 focus-visible:outline-none focus-visible:border-sf-teal/[0.35] disabled:cursor-not-allowed disabled:opacity-50 resize-none transition-colors duration-base"
                       placeholder="Hard sci-fi novels, TTRPG campaigns, screenwriting..."
                       value={eaWriting}
                       onChange={(e) => setEaWriting(e.target.value)}
                       disabled={submitEarlyAccess.isPending}
                     />
                   </div>
-                  {eaErrors.writingFocus && <p className="text-sm text-destructive">{eaErrors.writingFocus}</p>}
+                  {eaErrors.writingFocus && <p className="text-sm text-sf-crimson">{eaErrors.writingFocus}</p>}
                 </div>
 
                 <div className="space-y-2">
@@ -361,10 +364,10 @@ const Auth = () => {
 
                 <div className="relative my-4">
                   <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-border"></div>
+                    <div className="w-full border-t border-dashed border-sf-border"></div>
                   </div>
-                  <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-card px-2 text-tier-4">or email</span>
+                  <div className="relative flex justify-center font-mono text-[11px] tracking-[0.18em] uppercase">
+                    <span className="bg-sf-surface px-2 text-t4">// OR EMAIL</span>
                   </div>
                 </div>
 
@@ -381,7 +384,7 @@ const Auth = () => {
                         disabled={isLoading}
                       />
                     </div>
-                    {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
+                    {errors.email && <p className="text-sm text-sf-crimson">{errors.email}</p>}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="login-password">Password</Label>
@@ -395,7 +398,7 @@ const Auth = () => {
                         disabled={isLoading}
                       />
                     </div>
-                    {errors.password && <p className="text-sm text-destructive">{errors.password}</p>}
+                    {errors.password && <p className="text-sm text-sf-crimson">{errors.password}</p>}
                   </div>
                   <Button type="submit" className="w-full gap-2" size="lg" disabled={isLoading}>
                     {isLoading ? (
@@ -411,8 +414,8 @@ const Auth = () => {
           </div>
 
           {/* Footer */}
-          <div className="text-center text-tier-4 text-xs pb-8">
-            <p>&copy; {new Date().getFullYear()} StellarForge. All rights reserved.</p>
+          <div className="text-center font-mono text-[11px] tracking-[0.18em] text-t5 pb-8 uppercase">
+            <p>© {new Date().getFullYear()} STELLARFORGE · 39.87°N · 104.97°W</p>
           </div>
 
         </div>

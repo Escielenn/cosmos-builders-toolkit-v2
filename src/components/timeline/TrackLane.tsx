@@ -110,19 +110,19 @@ const TrackLane = memo(
 
     return (
       <div
-        className="flex border-b border-border/20 group/track"
+        className="flex border-b border-sf-border group/track"
         style={{ height }}
       >
         {/* Track Header — sticky left */}
         <div
-          className="sticky left-0 z-10 flex items-center gap-1.5 px-2 bg-background/95 backdrop-blur-sm border-r border-border/30 shrink-0"
+          className="sticky left-0 z-10 flex items-center gap-1.5 px-2 bg-background/95 backdrop-blur-sm border-r border-sf-border shrink-0"
           style={{ width: TRACK_HEADER_WIDTH }}
         >
           {/* Collapse toggle */}
           <button
             type="button"
             onClick={() => onToggleCollapse(track.id)}
-            className="text-muted-foreground hover:text-foreground transition-colors p-0.5"
+            className="text-t3 hover:text-foreground transition-colors p-0.5"
           >
             {track.isCollapsed ? (
               <ChevronRight className="w-3.5 h-3.5" />
@@ -143,13 +143,13 @@ const TrackLane = memo(
           {/* Folded track chips */}
           {foldedTracks.length > 0 && (
             <div className="flex items-center gap-0.5 ml-0.5">
-              <Layers className="w-3 h-3 text-muted-foreground/60 shrink-0" />
+              <Layers className="w-3 h-3 text-t3/60 shrink-0" />
               {foldedTracks.map((ft) => (
                 <button
                   key={ft.id}
                   type="button"
                   onClick={() => dispatch({ type: "UNFOLD_TRACK", payload: ft.id })}
-                  className="flex items-center gap-0.5 px-1 py-0 rounded text-[9px] text-muted-foreground hover:text-foreground bg-muted/30 hover:bg-muted/50 transition-colors"
+                  className="flex items-center gap-0.5 px-1 py-0 rounded text-[9px] text-t3 hover:text-foreground bg-muted/30 hover:bg-muted/50 transition-colors"
                   title={`Unfold ${ft.name}`}
                 >
                   <span
@@ -173,7 +173,7 @@ const TrackLane = memo(
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-44 p-1.5" align="start" side="bottom">
-                  <p className="text-[10px] font-medium text-muted-foreground px-1.5 mb-1">
+                  <p className="text-[10px] font-medium text-t3 px-1.5 mb-1">
                     Fold into...
                   </p>
                   {foldTargets.map((target) => (
@@ -210,7 +210,7 @@ const TrackLane = memo(
             <Button
               variant="ghost"
               size="icon"
-              className="w-5 h-5 text-destructive hover:text-destructive"
+              className="w-5 h-5 text-sf-crimson hover:text-sf-crimson"
               onClick={() => onDeleteTrack(track.id)}
               aria-label="Delete track"
             >

@@ -111,7 +111,7 @@ export default function RecentActivity({ worldId }: RecentActivityProps) {
   if (isLoading) {
     return (
       <section className="mb-8">
-        <h2 className="font-heading text-sm font-light uppercase tracking-[3px] text-emerald-400 mb-3 flex items-center gap-2">
+        <h2 className="font-heading text-sm font-light uppercase tracking-[3px] text-sf-emerald mb-3 flex items-center gap-2">
           <Activity className="w-3.5 h-3.5" />
           Recent Activity
         </h2>
@@ -128,7 +128,7 @@ export default function RecentActivity({ worldId }: RecentActivityProps) {
 
   return (
     <section className="mb-8">
-      <h2 className="font-heading text-sm font-light uppercase tracking-[3px] text-emerald-400 mb-3 flex items-center gap-2">
+      <h2 className="font-heading text-sm font-light uppercase tracking-[3px] text-sf-emerald mb-3 flex items-center gap-2">
         <Activity className="w-3.5 h-3.5" />
         Recent Activity
       </h2>

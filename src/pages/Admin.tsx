@@ -102,39 +102,39 @@ const TH = ({ children, className = "" }: { children?: React.ReactNode; classNam
 );
 
 const categoryColors: Record<string, string> = {
-  bug: "bg-red-500/[0.06] border-red-500/[0.15] text-red-400",
+  bug: "bg-red-500/[0.06] border-red-500/[0.15] text-sf-crimson",
   feature: "bg-blue-400/[0.06] border-blue-400/[0.15] text-blue-400",
-  billing: "bg-amber-500/[0.06] border-amber-500/[0.15] text-amber-500",
+  billing: "bg-amber-500/[0.06] border-amber-500/[0.15] text-sf-amber",
   account: "bg-sky-500/[0.06] border-sky-500/[0.15] text-sky-400",
   other: "bg-white/[0.04] border-white/[0.1] text-tier-3",
 };
 
 const priorityColors: Record<string, string> = {
-  urgent: "bg-red-500/[0.06] border-red-500/[0.15] text-red-400 animate-pulse",
-  high: "bg-amber-500/[0.06] border-amber-500/[0.15] text-amber-500",
+  urgent: "bg-red-500/[0.06] border-red-500/[0.15] text-sf-crimson animate-pulse",
+  high: "bg-amber-500/[0.06] border-amber-500/[0.15] text-sf-amber",
   normal: "bg-white/[0.04] border-white/[0.1] text-tier-3",
   low: "bg-white/[0.02] border-white/[0.06] text-tier-4",
 };
 
 const ticketStatusColors: Record<string, string> = {
   open: "bg-primary/[0.06] border-primary/[0.15] text-primary",
-  in_progress: "bg-amber-500/[0.06] border-amber-500/[0.15] text-amber-500",
+  in_progress: "bg-amber-500/[0.06] border-amber-500/[0.15] text-sf-amber",
   waiting: "bg-sky-500/[0.06] border-sky-500/[0.15] text-sky-400",
-  resolved: "bg-emerald-500/[0.06] border-emerald-500/[0.15] text-emerald-400",
+  resolved: "bg-emerald-500/[0.06] border-emerald-500/[0.15] text-sf-emerald",
   closed: "bg-white/[0.02] border-white/[0.06] text-tier-4",
 };
 
 const contactStatusColors: Record<string, string> = {
   new: "bg-primary/[0.06] border-primary/[0.15] text-primary",
   read: "bg-sky-500/[0.06] border-sky-500/[0.15] text-sky-400",
-  responded: "bg-emerald-500/[0.06] border-emerald-500/[0.15] text-emerald-400",
+  responded: "bg-emerald-500/[0.06] border-emerald-500/[0.15] text-sf-emerald",
   archived: "bg-white/[0.02] border-white/[0.06] text-tier-4",
 };
 
 const subStatusColors: Record<string, string> = {
   active: "bg-primary/[0.06] border-primary/[0.15] text-primary",
   canceled: "bg-white/[0.02] border-white/[0.06] text-tier-4",
-  past_due: "bg-red-500/[0.06] border-red-500/[0.15] text-red-400",
+  past_due: "bg-red-500/[0.06] border-red-500/[0.15] text-sf-crimson",
   trialing: "bg-sky-500/[0.06] border-sky-500/[0.15] text-sky-400",
 };
 
@@ -242,7 +242,7 @@ const TaskItem = ({
       </span>
 
       {todo.linked_ticket_id && (
-        <span className="shrink-0 text-[8px] font-medium uppercase tracking-wider px-1 py-0.5 rounded-sm bg-amber-500/[0.06] border border-amber-500/[0.15] text-amber-500">
+        <span className="shrink-0 text-[8px] font-medium uppercase tracking-wider px-1 py-0.5 rounded-sm bg-amber-500/[0.06] border border-amber-500/[0.15] text-sf-amber">
           TKT
         </span>
       )}
@@ -254,7 +254,7 @@ const TaskItem = ({
 
       <button
         onClick={handleDelete}
-        className="shrink-0 opacity-0 group-hover:opacity-100 text-tier-4 hover:text-red-400 transition-all"
+        className="shrink-0 opacity-0 group-hover:opacity-100 text-tier-4 hover:text-sf-crimson transition-all"
       >
         <X className="w-3 h-3" />
       </button>
@@ -390,7 +390,7 @@ const TasksSidebarContent = ({ onNavigate }: { onNavigate: (tab: string) => void
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="rounded-none text-[10px] h-6 gap-1 text-tier-4 hover:text-red-400"
+                        className="rounded-none text-[10px] h-6 gap-1 text-tier-4 hover:text-sf-crimson"
                         onClick={() => clearDone.mutate()}
                         disabled={clearDone.isPending}
                       >
@@ -421,7 +421,7 @@ const OverviewTab = ({ onTabChange }: { onTabChange: (tab: string) => void }) =>
 
   const activityIcon = (type: string) => {
     switch (type) {
-      case "ticket": return <Ticket className="w-3.5 h-3.5 text-amber-500" />;
+      case "ticket": return <Ticket className="w-3.5 h-3.5 text-sf-amber" />;
       case "contact": return <MessageSquare className="w-3.5 h-3.5 text-sky-400" />;
       case "signup": return <UserPlus className="w-3.5 h-3.5 text-primary" />;
       default: return null;
@@ -458,7 +458,7 @@ const OverviewTab = ({ onTabChange }: { onTabChange: (tab: string) => void }) =>
 
       {/* Recent Activity Feed */}
       <div>
-        <h2 className="font-heading text-sm font-light uppercase tracking-[3px] text-emerald-400 mb-4">
+        <h2 className="font-heading text-sm font-light uppercase tracking-[3px] text-sf-emerald mb-4">
           Recent Activity
         </h2>
         <GlassPanel className="divide-y divide-white/[0.04]">
@@ -481,7 +481,7 @@ const OverviewTab = ({ onTabChange }: { onTabChange: (tab: string) => void }) =>
                 <StatusBadge
                   status={item.type}
                   colorMap={{
-                    ticket: "bg-amber-500/[0.06] border-amber-500/[0.15] text-amber-500",
+                    ticket: "bg-amber-500/[0.06] border-amber-500/[0.15] text-sf-amber",
                     contact: "bg-sky-500/[0.06] border-sky-500/[0.15] text-sky-400",
                     signup: "bg-primary/[0.06] border-primary/[0.15] text-primary",
                   }}
@@ -620,7 +620,7 @@ const UsersTab = () => {
                                     <div><span className="text-tier-4">Period ends:</span> <span className="text-tier-2 font-mono text-xs">{formatDate(userDetail.subscription.current_period_end)}</span></div>
                                   )}
                                   {userDetail.subscription.cancel_at_period_end && (
-                                    <div className="text-xs text-red-400">Canceling at period end</div>
+                                    <div className="text-xs text-sf-crimson">Canceling at period end</div>
                                   )}
                                   {userDetail.subscription.canceled_at && (
                                     <div><span className="text-tier-4">Canceled:</span> <span className="text-tier-2 font-mono text-xs">{formatDate(userDetail.subscription.canceled_at)}</span></div>
@@ -799,7 +799,7 @@ const TicketsTab = () => {
                     </td>
                     <td className="px-3 py-3 font-mono text-xs text-tier-2">
                       {t.ticket_number}
-                      {hasNotes && <span className="ml-1.5 text-amber-500" title="Has admin notes">*</span>}
+                      {hasNotes && <span className="ml-1.5 text-sf-amber" title="Has admin notes">*</span>}
                     </td>
                     <td className="px-3 py-3 text-tier-2 max-w-[200px] truncate">{t.subject}</td>
                     <td className="px-3 py-3"><StatusBadge status={t.category} colorMap={categoryColors} /></td>
@@ -940,7 +940,7 @@ const ContactsTab = () => {
                     </td>
                     <td className="px-3 py-3 text-tier-2">
                       {c.name}
-                      {hasNotes && <span className="ml-1.5 text-amber-500" title="Has admin notes">*</span>}
+                      {hasNotes && <span className="ml-1.5 text-sf-amber" title="Has admin notes">*</span>}
                     </td>
                     <td className="px-3 py-3 text-tier-3 text-xs">{c.email}</td>
                     <td className="px-3 py-3 text-tier-3 max-w-[250px] truncate text-xs">{c.message}</td>
@@ -994,7 +994,7 @@ const SubscriptionsTab = () => {
 
       {/* Individual Subscriptions */}
       <div>
-        <h2 className="font-heading text-sm font-light uppercase tracking-[3px] text-emerald-400 mb-4">
+        <h2 className="font-heading text-sm font-light uppercase tracking-[3px] text-sf-emerald mb-4">
           Individual Subscriptions
         </h2>
         <div className="space-y-4">
@@ -1030,7 +1030,7 @@ const SubscriptionsTab = () => {
                       </td>
                       <td className="px-3 py-3">
                         {s.cancel_at_period_end ? (
-                          <span className="text-red-400 text-xs">Yes</span>
+                          <span className="text-sf-crimson text-xs">Yes</span>
                         ) : (
                           <span className="text-tier-4 text-xs">No</span>
                         )}
@@ -1087,7 +1087,7 @@ const Admin = () => {
             <h1 className="font-display text-3xl md:text-4xl tracking-[0.08em] text-tier-1">
               MISSION CONTROL
             </h1>
-            <span className="inline-flex items-center gap-1 rounded-sm border px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider bg-red-500/[0.06] border-red-500/[0.15] text-red-400">
+            <span className="inline-flex items-center gap-1 rounded-sm border px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider bg-red-500/[0.06] border-red-500/[0.15] text-sf-crimson">
               <AlertTriangle className="w-3 h-3" /> Admin Only
             </span>
           </div>

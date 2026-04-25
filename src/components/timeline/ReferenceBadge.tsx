@@ -61,9 +61,9 @@ const ReferenceBadge = memo(
         </TooltipTrigger>
         <TooltipContent side="top" className="max-w-xs">
           <p className="font-semibold text-xs">{event.name}</p>
-          <p className="text-[10px] text-muted-foreground">{formatDateRange(event)}</p>
+          <p className="text-[10px] text-t3">{formatDateRange(event)}</p>
           {primaryTrack && (
-            <p className="text-[10px] text-muted-foreground mt-0.5">
+            <p className="text-[10px] text-t3 mt-0.5">
               In: {primaryTrack.name}
             </p>
           )}

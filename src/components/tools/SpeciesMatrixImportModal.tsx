@@ -199,11 +199,11 @@ const SpeciesMatrixImportModal = ({
           <div className="space-y-2">
             <Label>Select Worksheet</Label>
             {isLoading ? (
-              <div className="text-sm text-muted-foreground">
+              <div className="text-sm text-t3">
                 Loading worksheets...
               </div>
             ) : !matrixWorksheets || matrixWorksheets.length === 0 ? (
-              <div className="text-sm text-muted-foreground p-4 border border-dashed rounded-lg text-center">
+              <div className="text-sm text-t3 p-4 border border-dashed rounded-lg text-center">
                 No Species Interaction Matrix worksheets found in this world.
                 <br />
                 <span className="text-xs">
@@ -237,7 +237,7 @@ const SpeciesMatrixImportModal = ({
             <div className="space-y-2">
               <Label>Select Species</Label>
               {speciesList.length === 0 ? (
-                <div className="text-sm text-muted-foreground p-4 border border-dashed rounded-lg text-center">
+                <div className="text-sm text-t3 p-4 border border-dashed rounded-lg text-center">
                   No named species found in this worksheet.
                 </div>
               ) : (
@@ -255,7 +255,7 @@ const SpeciesMatrixImportModal = ({
                           <Users className="w-4 h-4 text-pink-500" />
                           <span className="font-medium">{s.name}</span>
                           {s.shortDescription && (
-                            <span className="text-muted-foreground text-sm truncate max-w-[200px]">
+                            <span className="text-t3 text-sm truncate max-w-[200px]">
                               - {s.shortDescription}
                             </span>
                           )}
@@ -298,7 +298,7 @@ const SpeciesMatrixImportModal = ({
                   {/* Fields with values */}
                   {fieldsWithValues.length > 0 && (
                     <>
-                      <div className="text-xs text-muted-foreground uppercase tracking-wide mb-2">
+                      <div className="text-xs text-t3 uppercase tracking-wide mb-2">
                         Available Data ({fieldsWithValues.length})
                       </div>
                       {fieldsWithValues.map((field) => (
@@ -313,7 +313,7 @@ const SpeciesMatrixImportModal = ({
                           />
                           <div className="flex-1 min-w-0">
                             <div className="text-sm font-medium">{field.label}</div>
-                            <div className="text-xs text-muted-foreground line-clamp-2">
+                            <div className="text-xs text-t3 line-clamp-2">
                               {field.value}
                             </div>
                           </div>
@@ -328,7 +328,7 @@ const SpeciesMatrixImportModal = ({
                   {/* Fields without values */}
                   {fieldsWithoutValues.length > 0 && (
                     <>
-                      <div className="text-xs text-muted-foreground uppercase tracking-wide mt-4 mb-2">
+                      <div className="text-xs text-t3 uppercase tracking-wide mt-4 mb-2">
                         Not Available ({fieldsWithoutValues.length})
                       </div>
                       {fieldsWithoutValues.map((field) => (
@@ -339,7 +339,7 @@ const SpeciesMatrixImportModal = ({
                           <Checkbox disabled className="mt-0.5" />
                           <div className="flex-1 min-w-0">
                             <div className="text-sm">{field.label}</div>
-                            <div className="text-xs text-muted-foreground italic">
+                            <div className="text-xs text-t3 italic">
                               Not filled in species data
                             </div>
                           </div>
@@ -361,7 +361,7 @@ const SpeciesMatrixImportModal = ({
                   {selectedSpecies.name}
                 </span>
               </div>
-              <p className="text-xs text-muted-foreground mt-1">
+              <p className="text-xs text-t3 mt-1">
                 {selectedFields.size} of {fieldsWithValues.length} fields
                 selected for import
               </p>

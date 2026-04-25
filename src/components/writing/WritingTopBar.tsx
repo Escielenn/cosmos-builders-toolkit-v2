@@ -335,7 +335,7 @@ export function WritingTopBar({
   );
 
   return (
-    <div className="flex items-center gap-2 border-b border-white/[0.06] bg-[#0E1320]/60 px-3 py-2">
+    <div className="flex items-center gap-2 border-b border-white/[0.06] bg-sf-surface/60 px-3 py-2">
       {/* Page label */}
       <span className="font-heading text-[11px] font-light uppercase tracking-[2px] text-tier-2 flex-shrink-0">
         Writing Space
@@ -383,7 +383,7 @@ export function WritingTopBar({
                 setFolderContextMenu(null);
               }}
             />
-            <div className="absolute left-0 top-full mt-1 z-50 w-full min-w-[300px] bg-[#161C2B] border border-white/[0.08] rounded-xs shadow-xl overflow-hidden">
+            <div className="absolute left-0 top-full mt-1 z-50 w-full min-w-[300px] bg-sf-surface-elevated border border-white/[0.08] rounded-xs shadow-xl overflow-hidden">
               {/* Action bar: New Chapter + New Document */}
               <div className="flex items-center border-b border-white/[0.06]">
                 {onCreateFolder && (
@@ -645,7 +645,7 @@ export function WritingTopBar({
                   onClick={() => setFolderContextMenu(null)}
                 />
                 <div
-                  className="fixed z-[61] bg-[#161C2B] border border-white/[0.1] rounded-xs shadow-xl overflow-hidden min-w-[140px]"
+                  className="fixed z-[61] bg-sf-surface-elevated border border-white/[0.1] rounded-xs shadow-xl overflow-hidden min-w-[140px]"
                   style={{
                     left: folderContextMenu.x,
                     top: folderContextMenu.y,

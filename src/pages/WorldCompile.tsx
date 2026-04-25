@@ -221,7 +221,7 @@ export default function WorldCompile() {
             to={`/worlds/${worldId}/write`}
             className="inline-flex items-center gap-1 text-xs text-tier-4 hover:text-tier-2 mb-3"
           >
-            <ChevronLeft className="w-3.5 h-3.5" /> Back to writing space
+            <ChevronLeft className="w-3.5 h-3.5" /> ← RETURN TO WRITING SPACE
           </Link>
           <h1 className="font-display text-3xl md:text-4xl tracking-[0.08em] text-tier-1 mb-1">
             COMPILE MANUSCRIPT

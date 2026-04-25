@@ -137,7 +137,7 @@ const HierarchicalExportDialog = ({
             <Loader />
           </div>
         ) : !categoryWorksheets || categoryWorksheets.length === 0 ? (
-          <div className="text-center py-8 text-muted-foreground">
+          <div className="text-center py-8 text-t3">
             <p>No worksheets found in this world to export.</p>
           </div>
         ) : (
@@ -174,7 +174,7 @@ const HierarchicalExportDialog = ({
                             {cw.worksheets.length}
                           </Badge>
                         </div>
-                        <p className="text-sm text-muted-foreground mt-0.5">
+                        <p className="text-sm text-t3 mt-0.5">
                           {cw.category.description}
                         </p>
                       </div>
@@ -188,7 +188,7 @@ const HierarchicalExportDialog = ({
 
         {/* Inline theme picker */}
         <div className="pt-3 border-t border-border">
-          <Label className="text-xs text-muted-foreground mb-2 block">PDF Theme</Label>
+          <Label className="text-xs text-t3 mb-2 block">PDF Theme</Label>
           <div className="flex gap-2 flex-wrap">
             {EXPORT_THEMES.map((theme) => {
               const isSelected = preferences.themeId === theme.id;
@@ -208,7 +208,7 @@ const HierarchicalExportDialog = ({
                   {theme.swatch.map((color, i) => (
                     <div
                       key={i}
-                      className="w-4 h-4 rounded-sm border border-border/30"
+                      className="w-4 h-4 rounded-sm border border-sf-border"
                       style={{ backgroundColor: color }}
                     />
                   ))}

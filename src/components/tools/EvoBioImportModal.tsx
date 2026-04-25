@@ -139,7 +139,7 @@ const EvoBioImportModal = ({
       <DialogContent className="max-w-2xl max-h-[85vh] flex flex-col">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Dna className="w-5 h-5 text-emerald-500" />
+            <Dna className="w-5 h-5 text-sf-emerald" />
             Import Species from Evolutionary Biology
           </DialogTitle>
           <DialogDescription>
@@ -153,11 +153,11 @@ const EvoBioImportModal = ({
           <div className="space-y-2">
             <Label>Select Species</Label>
             {isLoading ? (
-              <div className="text-sm text-muted-foreground">
+              <div className="text-sm text-t3">
                 Loading species...
               </div>
             ) : !evoBioWorksheets || evoBioWorksheets.length === 0 ? (
-              <div className="text-sm text-muted-foreground p-4 border border-dashed rounded-lg text-center">
+              <div className="text-sm text-t3 p-4 border border-dashed rounded-lg text-center">
                 No species worksheets found in this world.
                 <br />
                 <span className="text-xs">
@@ -180,10 +180,10 @@ const EvoBioImportModal = ({
                     return (
                       <SelectItem key={w.id} value={w.id}>
                         <div className="flex items-center gap-2">
-                          <Dna className="w-4 h-4 text-emerald-500" />
+                          <Dna className="w-4 h-4 text-sf-emerald" />
                           <span className="font-medium">{name}</span>
                           {w.title && w.title !== name && (
-                            <span className="text-muted-foreground text-sm">
+                            <span className="text-t3 text-sm">
                               ({w.title})
                             </span>
                           )}
@@ -226,7 +226,7 @@ const EvoBioImportModal = ({
                   {/* Fields with values */}
                   {fieldsWithValues.length > 0 && (
                     <>
-                      <div className="text-xs text-muted-foreground uppercase tracking-wide mb-2">
+                      <div className="text-xs text-t3 uppercase tracking-wide mb-2">
                         Available Data ({fieldsWithValues.length})
                       </div>
                       {fieldsWithValues.map((field) => (
@@ -243,12 +243,12 @@ const EvoBioImportModal = ({
                             <div className="text-sm font-medium">
                               {field.label}
                             </div>
-                            <div className="text-xs text-muted-foreground line-clamp-2">
+                            <div className="text-xs text-t3 line-clamp-2">
                               {field.value}
                             </div>
                           </div>
                           {selectedFields.has(field.targetField) && (
-                            <Check className="w-4 h-4 text-emerald-500 shrink-0" />
+                            <Check className="w-4 h-4 text-sf-emerald shrink-0" />
                           )}
                         </label>
                       ))}
@@ -258,7 +258,7 @@ const EvoBioImportModal = ({
                   {/* Fields without values */}
                   {fieldsWithoutValues.length > 0 && (
                     <>
-                      <div className="text-xs text-muted-foreground uppercase tracking-wide mt-4 mb-2">
+                      <div className="text-xs text-t3 uppercase tracking-wide mt-4 mb-2">
                         Not Available ({fieldsWithoutValues.length})
                       </div>
                       {fieldsWithoutValues.map((field) => (
@@ -269,7 +269,7 @@ const EvoBioImportModal = ({
                           <Checkbox disabled className="mt-0.5" />
                           <div className="flex-1 min-w-0">
                             <div className="text-sm">{field.label}</div>
-                            <div className="text-xs text-muted-foreground italic">
+                            <div className="text-xs text-t3 italic">
                               Not filled in species design
                             </div>
                           </div>
@@ -286,12 +286,12 @@ const EvoBioImportModal = ({
           {selectedId && mappedSpecies && (
             <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-lg">
               <div className="flex items-center gap-2">
-                <Dna className="w-4 h-4 text-emerald-500" />
-                <span className="font-medium text-emerald-500">
+                <Dna className="w-4 h-4 text-sf-emerald" />
+                <span className="font-medium text-sf-emerald">
                   {speciesName}
                 </span>
               </div>
-              <p className="text-xs text-muted-foreground mt-1">
+              <p className="text-xs text-t3 mt-1">
                 {selectedFields.size} of {fieldsWithValues.length} fields
                 selected for import
               </p>
