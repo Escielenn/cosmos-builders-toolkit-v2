@@ -335,16 +335,23 @@
     pointer-events: none;
   }
 
-  /* April 2026 handoff fix: backgrounds stay strictly decorative behind content.
-     Previously when a custom/gradient/video background was active, we forced
-     `.bg-background` and `.sf-world-main` to `background: transparent !important`
-     so the backdrop could show through — but that also dropped the contrast floor
-     on content panels, and users reported badge cards/writing entries becoming
-     dim/unreadable on /commendations, /workshop, and WorldLayout routes.
-     The `::before` / `::after` pseudo-element layers at z-index: -2 / -1 already
-     paint the background behind everything; content containers now keep their
-     normal opaque surfaces. The user still sees the active background in page
-     margins and gaps between panels, but never through content. */
+  /* April 2026 handoff + follow-up fix: backgrounds must be VISIBLE when selected
+     (the `::before` / `::after` pseudo-element layers at z-index: -2 / -1 paint
+     them), BUT they must never dim content panels.
+     We scope the transparency to the page-level wrapper pattern:
+     `.min-h-screen.bg-background` (only matches the top-level page div, never
+     content panels). `.sf-world-main` gets the same treatment for WorldLayout.
+     Earlier fix removed these rules entirely, which made selected backgrounds
+     invisible (the dark page wrapper covered them). */
+  .custom-background .min-h-screen.bg-background,
+  .custom-background .sf-world-main,
+  .gradient-background .min-h-screen.bg-background,
+  .gradient-background .sf-world-main,
+  .video-background .min-h-screen.bg-background,
+  .video-background .sf-world-main {
+    background-color: transparent !important;
+    background: transparent !important;
+  }
 
   /* Hide starfield effect when custom background is active */
   .custom-background .starfield::before {

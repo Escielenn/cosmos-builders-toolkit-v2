@@ -40,6 +40,7 @@ import {
 import { StellarForgeEditor } from "@/components/editor/StellarForgeEditor";
 import { EntityHoverCard, type HoverCardAnchor } from "@/components/writing/EntityHoverCard";
 import { WritingSidebar, type SidebarTab } from "@/components/writing/WritingSidebar";
+import { PromptDialog } from "@/components/ui/prompt-dialog";
 import { useEntities } from "@/hooks/use-entity-graph";
 import { WritingReferencePanel } from "@/components/writing/WritingReferencePanel";
 import { WritingMoodboardStrip } from "@/components/writing/WritingMoodboardStrip";
@@ -134,6 +135,23 @@ const WorldWritingSpace = () => {
   const [zenMode, setZenMode] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [sidebarTab, setSidebarTab] = useState<SidebarTab>("chapters");
+  const [newFolderPromptOpen, setNewFolderPromptOpen] = useState(false);
+  const [wideMode, setWideMode] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem("sf-writing-wide-mode") === "true";
+    } catch {
+      return false;
+    }
+  });
+  const toggleWideMode = useCallback(() => {
+    setWideMode((prev) => {
+      const next = !prev;
+      try {
+        localStorage.setItem("sf-writing-wide-mode", String(next));
+      } catch {}
+      return next;
+    });
+  }, []);
   const [rightPanelOpen, setRightPanelOpen] = useState(false);
   const [moodboardOpen, setMoodboardOpen] = useState(false);
   const [hoverCard, setHoverCard] = useState<{
@@ -403,9 +421,9 @@ const WorldWritingSpace = () => {
   );
 
   const handleChapterNewFolder = useCallback(() => {
-    const name = window.prompt("Folder name?");
-    if (name && name.trim()) handleCreateFolder(name.trim());
-  }, [handleCreateFolder]);
+    // April 2026 handoff: no native browser prompts — open themed PromptDialog.
+    setNewFolderPromptOpen(true);
+  }, []);
 
   // ---------------------------------------------------------------------------
   // Version history actions
@@ -689,6 +707,8 @@ const WorldWritingSpace = () => {
             onToggleMoodboard={() => setMoodboardOpen((p) => !p)}
             hasMoodboardImages={moodImages.length > 0}
             onEnterZen={() => setZenMode(true)}
+            wideMode={wideMode}
+            onToggleWideMode={toggleWideMode}
             onInsertBracket={handleInsertBracketShortcut}
             onInsertMention={handleInsertMentionShortcut}
             folders={folders}
@@ -741,10 +761,10 @@ const WorldWritingSpace = () => {
             </div>
           )}
 
-          {/* Editor area */}
+          {/* Editor area — wideMode bypasses the max-w-4xl centering */}
           <div className="flex-1 overflow-y-auto px-4 py-4 md:px-8 md:py-6">
             {selectedDoc ? (
-              <div className="max-w-4xl mx-auto">
+              <div className={wideMode ? "w-full" : "max-w-4xl mx-auto"}>
                 {/* Editable document title */}
                 <input
                   type="text"
@@ -825,6 +845,18 @@ const WorldWritingSpace = () => {
           onDismiss={() => setHoverCard(null)}
         />
       )}
+
+      {/* Themed new-folder prompt (replaces native window.prompt) */}
+      <PromptDialog
+        open={newFolderPromptOpen}
+        onOpenChange={setNewFolderPromptOpen}
+        title="NEW FOLDER"
+        description="NAME THE FOLDER BEFORE TRANSMITTING."
+        label="Folder name"
+        placeholder="e.g. Act One"
+        confirmLabel="CREATE FOLDER"
+        onSubmit={(name) => handleCreateFolder(name)}
+      />
     </div>
   );
 };

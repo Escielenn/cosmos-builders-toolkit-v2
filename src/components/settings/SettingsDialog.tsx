@@ -371,7 +371,28 @@ const SettingsDialog = ({
                         playsInline
                         autoPlay
                         className="w-full h-full object-cover"
+                        onError={(e) => {
+                          // .mov won't play in Chrome/Firefox — swap in fallback tile
+                          const el = e.currentTarget;
+                          el.style.display = "none";
+                          const fallback = el.nextElementSibling as HTMLElement | null;
+                          if (fallback?.dataset.videoFallback !== undefined)
+                            fallback.style.display = "flex";
+                        }}
                       />
+                      <div
+                        data-video-fallback
+                        className="absolute inset-0 items-center justify-center"
+                        style={{
+                          display: "none",
+                          background:
+                            "linear-gradient(135deg, #0d1117 0%, #1a1f2e 50%, #0d1117 100%)",
+                        }}
+                      >
+                        <span className="font-mono text-[9px] text-t3 uppercase tracking-[0.18em]">
+                          // NO PREVIEW
+                        </span>
+                      </div>
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                       <span className="absolute bottom-1 left-1 text-[10px] font-medium text-white">
                         {option.name}

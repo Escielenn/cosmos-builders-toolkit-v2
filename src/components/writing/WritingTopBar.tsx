@@ -20,6 +20,7 @@ import {
   Check,
   X,
   Maximize2,
+  StretchHorizontal,
   ImageIcon,
   PanelRight,
   AtSign,
@@ -71,6 +72,10 @@ export interface WritingTopBarProps {
   // Zen mode
   onEnterZen: () => void;
 
+  // Edge-to-edge / wide mode — expands editor from max-w-4xl to full width
+  wideMode: boolean;
+  onToggleWideMode: () => void;
+
   // Insert shortcut callbacks
   onInsertBracket?: () => void;
   onInsertMention?: () => void;
@@ -112,6 +117,8 @@ export function WritingTopBar({
   onToggleMoodboard,
   hasMoodboardImages,
   onEnterZen,
+  wideMode,
+  onToggleWideMode,
   onInsertBracket,
   onInsertMention,
   folders = [],
@@ -755,11 +762,29 @@ export function WritingTopBar({
         <span className="hidden sm:inline">Ref</span>
       </button>
 
+      {/* Wide-mode toggle — expands editor from centered max-w-4xl to edge-to-edge */}
+      {selectedDoc && (
+        <button
+          onClick={onToggleWideMode}
+          className={cn(
+            "flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] font-heading uppercase tracking-[1.5px] border rounded-xs transition-colors duration-base flex-shrink-0",
+            wideMode
+              ? "border-sf-teal/30 text-sf-teal bg-sf-teal/[0.06]"
+              : "border-sf-border text-t4 hover:text-t2 hover:border-sf-border-strong"
+          )}
+          title="Toggle wide mode (edge-to-edge editor)"
+          aria-pressed={wideMode}
+        >
+          <StretchHorizontal className="w-3.5 h-3.5" />
+          <span className="hidden sm:inline">Wide</span>
+        </button>
+      )}
+
       {/* Zen Mode toggle */}
       {selectedDoc && (
         <button
           onClick={onEnterZen}
-          className="flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] font-heading uppercase tracking-[1.5px] border border-white/[0.08] text-t4 hover:text-t2 hover:border-white/[0.15] rounded-xs transition-colors flex-shrink-0"
+          className="flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] font-heading uppercase tracking-[1.5px] border border-sf-border text-t4 hover:text-t2 hover:border-sf-border-strong rounded-xs transition-colors duration-base flex-shrink-0"
           title="Enter Zen Mode (distraction-free)"
         >
           <Maximize2 className="w-3.5 h-3.5" />

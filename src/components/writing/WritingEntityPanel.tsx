@@ -141,23 +141,27 @@ export function WritingEntityPanel({
 
   const panelContent = (
       <div className="flex h-full flex-col" style={embedded ? undefined : { width: PANEL_WIDTH }}>
-        {/* Panel header */}
-        <div className="flex items-center justify-between border-b border-white/[0.06] px-3 py-2.5">
+        {/* Panel header — in embedded mode, the parent WritingSidebar already
+            shows tab labels + collapse, so we only render the Back button
+            when an entity is selected. Otherwise skip the header entirely. */}
+        {(!embedded || selectedEntity) && (
+        <div className="flex items-center justify-between border-b border-sf-border px-3 py-2.5">
           {selectedEntity ? (
             <button
               onClick={handleBack}
-              className="flex items-center gap-1.5 text-t3 hover:text-t1 transition-colors"
+              className="flex items-center gap-1.5 text-t3 hover:text-sf-teal-bright transition-colors duration-base"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
-              <span className="font-heading text-[11px] font-light uppercase tracking-[2px]">
-                Back
+              <span className="font-heading text-[11px] font-medium uppercase tracking-[0.2em]">
+                ← BACK
               </span>
             </button>
           ) : (
-            <span className="font-heading text-[11px] font-light uppercase tracking-[2px] text-t3">
-              World Entities
+            <span className="font-heading text-[11px] font-medium uppercase tracking-[0.2em] text-t3">
+              WORLD ENTITIES
             </span>
           )}
+          {!embedded && (
           <button
             onClick={onToggle}
             className="p-1 text-t4 hover:text-t2 transition-colors"
@@ -165,7 +169,9 @@ export function WritingEntityPanel({
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
+          )}
         </div>
+        )}
 
         {/* --------------------------------------------------------------- */}
         {/* Detail Mode */}
@@ -411,10 +417,20 @@ export function WritingEntityPanel({
               })}
 
               {filteredEntities.length === 0 && (
-                <div className="px-3 py-6 text-center">
-                  <span className="text-[10px] uppercase tracking-[1.5px] text-t5">
-                    {filter ? "No matches" : "No entities yet"}
-                  </span>
+                <div className="px-3 py-8 text-center space-y-2">
+                  <p className="font-mono text-[10px] tracking-[0.18em] uppercase text-sf-teal">
+                    // ENTITY INDEX
+                  </p>
+                  <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-t4 leading-relaxed">
+                    {filter
+                      ? "NO MATCHING RECORDS."
+                      : "NO ENTITIES ON FILE."}
+                  </p>
+                  {!filter && (
+                    <p className="font-sans text-[11px] text-t4 leading-relaxed normal-case tracking-normal">
+                      Entities cross-referenced from your world's Codex appear here for @mention + pin while you write.
+                    </p>
+                  )}
                 </div>
               )}
             </div>

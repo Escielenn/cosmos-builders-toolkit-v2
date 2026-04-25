@@ -5,6 +5,7 @@ const VideoBackground = () => {
   const { isVideoBackground, videoUrl, backgroundVisible } = useBackground();
   const videoRef = useRef<HTMLVideoElement>(null);
   const [loaded, setLoaded] = useState(false);
+  const [failed, setFailed] = useState(false);
 
   // Respect prefers-reduced-motion
   const [reducedMotion, setReducedMotion] = useState(false);
@@ -19,6 +20,7 @@ const VideoBackground = () => {
   // Reset loaded state and play when video URL changes
   useEffect(() => {
     setLoaded(false);
+    setFailed(false);
     const video = videoRef.current;
     if (video && isVideoBackground && videoUrl && !reducedMotion) {
       video.load();
@@ -36,19 +38,33 @@ const VideoBackground = () => {
       {/* Solid black base — prevents any previous background from bleeding through */}
       <div className="absolute inset-0 bg-black" />
 
-      <video
-        ref={videoRef}
-        src={videoUrl}
-        muted
-        loop
-        playsInline
-        autoPlay
-        preload="auto"
-        onCanPlay={() => setLoaded(true)}
-        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
-          loaded ? "opacity-40" : "opacity-0"
-        }`}
-      />
+      {!failed && (
+        <video
+          ref={videoRef}
+          src={videoUrl}
+          muted
+          loop
+          playsInline
+          autoPlay
+          preload="auto"
+          onCanPlay={() => setLoaded(true)}
+          onError={() => setFailed(true)}
+          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
+            loaded ? "opacity-40" : "opacity-0"
+          }`}
+        />
+      )}
+
+      {/* Fallback gradient when .mov or other unsupported format fails to play */}
+      {failed && (
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(135deg, #0d1117 0%, #1a1f2e 50%, #0d1117 100%)",
+          }}
+        />
+      )}
 
       {/* Dark overlay for text contrast */}
       <div className="absolute inset-0 bg-sf-void/50" />
