@@ -335,12 +335,16 @@
     pointer-events: none;
   }
 
-  /* When custom background is active, make page containers transparent */
-  .custom-background .bg-background,
-  .custom-background .sf-world-main {
-    background-color: transparent !important;
-    background: transparent !important;
-  }
+  /* April 2026 handoff fix: backgrounds stay strictly decorative behind content.
+     Previously when a custom/gradient/video background was active, we forced
+     `.bg-background` and `.sf-world-main` to `background: transparent !important`
+     so the backdrop could show through — but that also dropped the contrast floor
+     on content panels, and users reported badge cards/writing entries becoming
+     dim/unreadable on /commendations, /workshop, and WorldLayout routes.
+     The `::before` / `::after` pseudo-element layers at z-index: -2 / -1 already
+     paint the background behind everything; content containers now keep their
+     normal opaque surfaces. The user still sees the active background in page
+     margins and gaps between panels, but never through content. */
 
   /* Hide starfield effect when custom background is active */
   .custom-background .starfield::before {
@@ -363,12 +367,6 @@
     pointer-events: none;
   }
 
-  .gradient-background .bg-background,
-  .gradient-background .sf-world-main {
-    background-color: transparent !important;
-    background: transparent !important;
-  }
-
   .gradient-background .starfield::before {
     display: none;
   }
@@ -378,12 +376,6 @@
     @apply relative;
     min-height: 100vh;
     isolation: isolate;
-  }
-
-  .video-background .bg-background,
-  .video-background .sf-world-main {
-    background-color: transparent !important;
-    background: transparent !important;
   }
 
   .video-background .starfield::before {
