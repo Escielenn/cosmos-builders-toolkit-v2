@@ -68,7 +68,7 @@ const EvoBioMockup = () => {
   ];
 
   return (
-    <div className="w-full h-full flex bg-sf-void/50 rounded-lg p-4 md:p-6 gap-4">
+    <div className="w-full h-full flex bg-sf-void/50 rounded-none p-4 md:p-6 gap-4">
       {/* Left: Species silhouette with traits */}
       <div className="flex-1 flex flex-col items-center justify-center relative">
         {/* Simple creature silhouette */}

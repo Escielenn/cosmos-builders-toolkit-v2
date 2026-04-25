@@ -121,7 +121,7 @@ const WorldCard = ({
             </div>
           )}
           {/* Icon overlay - positioned outside overflow-hidden container */}
-          <div className="absolute -bottom-5 left-4 w-10 h-10 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 border-2 border-background flex items-center justify-center shadow-lg z-10 overflow-hidden">
+          <div className="absolute -bottom-5 left-4 w-10 h-10 rounded-none bg-gradient-to-br from-primary/20 to-accent/20 border-2 border-background flex items-center justify-center shadow-lg z-10 overflow-hidden">
             <WorldIconRenderer iconId={icon} className="w-7 h-7 text-primary" />
           </div>
           {/* Archived badge */}

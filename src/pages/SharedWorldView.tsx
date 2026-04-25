@@ -62,7 +62,7 @@ const SharedWorldView = () => {
             <div className="space-y-3">
               <div className="flex items-center gap-3">
                 {data.icon && (
-                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-none bg-primary/10 flex items-center justify-center">
                     <WorldIconRenderer iconId={data.icon} className="w-7 h-7 text-primary" />
                   </div>
                 )}

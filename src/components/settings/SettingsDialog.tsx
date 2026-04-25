@@ -327,7 +327,7 @@ const SettingsDialog = ({
                       key={option.id}
                       onClick={() => setBackground(option.id)}
                       className={cn(
-                        "relative aspect-video rounded-lg overflow-hidden border-2 transition-all hover:scale-105",
+                        "relative aspect-video rounded-none overflow-hidden border-2 transition-all hover:scale-105",
                         backgroundId === option.id
                           ? "border-primary ring-2 ring-primary/50"
                           : "border-sf-border hover:border-primary/50"
@@ -358,7 +358,7 @@ const SettingsDialog = ({
                       key={option.id}
                       onClick={() => setBackground(option.id)}
                       className={cn(
-                        "relative aspect-video rounded-lg overflow-hidden border-2 transition-all hover:scale-105",
+                        "relative aspect-video rounded-none overflow-hidden border-2 transition-all hover:scale-105",
                         backgroundId === option.id
                           ? "border-primary ring-2 ring-primary/50"
                           : "border-sf-border hover:border-primary/50"
@@ -397,7 +397,7 @@ const SettingsDialog = ({
                       key={option.id}
                       onClick={() => setBackground(option.id)}
                       className={cn(
-                        "relative aspect-video rounded-lg overflow-hidden border-2 transition-all hover:scale-105",
+                        "relative aspect-video rounded-none overflow-hidden border-2 transition-all hover:scale-105",
                         backgroundId === option.id
                           ? "border-primary ring-2 ring-primary/50"
                           : "border-sf-border hover:border-primary/50"
@@ -433,7 +433,7 @@ const SettingsDialog = ({
                       key={option.id}
                       onClick={() => setBackground(option.id)}
                       className={cn(
-                        "relative aspect-video rounded-lg overflow-hidden border-2 transition-all hover:scale-105",
+                        "relative aspect-video rounded-none overflow-hidden border-2 transition-all hover:scale-105",
                         backgroundId === option.id
                           ? "border-primary ring-2 ring-primary/50"
                           : "border-sf-border hover:border-primary/50"
@@ -464,7 +464,7 @@ const SettingsDialog = ({
                       key={option.id}
                       onClick={() => setBackground(option.id)}
                       className={cn(
-                        "relative aspect-video rounded-lg overflow-hidden border-2 transition-all hover:scale-105",
+                        "relative aspect-video rounded-none overflow-hidden border-2 transition-all hover:scale-105",
                         backgroundId === option.id
                           ? "border-primary ring-2 ring-primary/50"
                           : "border-sf-border hover:border-primary/50"
@@ -501,7 +501,7 @@ const SettingsDialog = ({
                     <button
                       onClick={() => setBackground("custom")}
                       className={cn(
-                        "relative w-24 aspect-video rounded-lg overflow-hidden border-2 transition-all hover:scale-105",
+                        "relative w-24 aspect-video rounded-none overflow-hidden border-2 transition-all hover:scale-105",
                         backgroundId === "custom"
                           ? "border-primary ring-2 ring-primary/50"
                           : "border-sf-border hover:border-primary/50"
@@ -530,7 +530,7 @@ const SettingsDialog = ({
                   )}
                   <button
                     onClick={() => bgInputRef.current?.click()}
-                    className="w-24 aspect-video rounded-lg overflow-hidden border-2 border-dashed border-sf-border hover:border-primary/50 transition-all hover:scale-105 flex flex-col items-center justify-center gap-1 bg-muted/50"
+                    className="w-24 aspect-video rounded-none overflow-hidden border-2 border-dashed border-sf-border hover:border-primary/50 transition-all hover:scale-105 flex flex-col items-center justify-center gap-1 bg-muted/50"
                   >
                     <Upload className="w-4 h-4 text-t3" />
                     <span className="text-[10px] text-t3">
@@ -545,10 +545,10 @@ const SettingsDialog = ({
           {/* Integrations Tab */}
           <TabsContent value="integrations" className="mt-4 space-y-4">
             {/* Notion */}
-            <div className="p-4 rounded-lg border border-sf-border bg-muted/20">
+            <div className="p-4 rounded-none border border-sf-border bg-muted/20">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-white flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-none bg-white flex items-center justify-center">
                     <svg viewBox="0 0 120 126" className="w-6 h-6">
                       <path
                         d="M20.6927 21.9315C24.5836 25.0924 26.0018 24.8437 33.4291 24.2214L100.218 19.6204C101.651 19.6204 100.469 18.1815 99.9564 17.9361L88.7891 9.71566C86.6109 8.02493 83.6873 6.08329 78.0982 6.58511L13.7636 11.6956C11.3273 11.9443 10.8291 13.1865 11.8309 14.1298L20.6927 21.9315Z"
@@ -617,7 +617,7 @@ const SettingsDialog = ({
                 </div>
 
                 {subscription.status === "past_due" && (
-                  <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 flex items-center gap-2">
+                  <div className="p-3 rounded-none bg-red-500/10 border border-red-500/20 flex items-center gap-2">
                     <AlertCircle className="w-5 h-5 text-sf-crimson" />
                     <p className="text-sm text-red-600 dark:text-sf-crimson">
                       Payment failed. Please update your payment method.
@@ -722,7 +722,7 @@ const SettingsDialog = ({
                   key={lang.code}
                   onClick={() => i18n.changeLanguage(lang.code)}
                   className={cn(
-                    "flex items-center justify-between p-3 rounded-lg border transition-colors text-left",
+                    "flex items-center justify-between p-3 rounded-none border transition-colors text-left",
                     i18n.language === lang.code
                       ? "border-primary bg-primary/10"
                       : "border-sf-border hover:border-primary/30 hover:bg-accent/5"

@@ -779,7 +779,7 @@ const WorldDashboard = () => {
 
         {/* Collaborator Banner */}
         {!isOwner && role && (
-          <div className="mb-4 p-3 rounded-lg bg-primary/5 border border-primary/10 flex items-center gap-2 text-sm">
+          <div className="mb-4 p-3 rounded-none bg-primary/5 border border-primary/10 flex items-center gap-2 text-sm">
             <Users className="w-4 h-4 text-primary shrink-0" />
             <span>
               You have <Badge variant="secondary" className="mx-1">{role === "editor" ? "Editor" : "Viewer"}</Badge> access to this world

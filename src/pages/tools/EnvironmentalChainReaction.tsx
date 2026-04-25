@@ -919,7 +919,7 @@ const EnvironmentalChainReaction = () => {
             {SF_CASCADE_EXAMPLES.map((example) => (
               <Collapsible key={example.title}>
                 <CollapsibleTrigger asChild>
-                  <button type="button" className="w-full p-4 rounded-lg border border-sf-border hover:border-primary/50 transition-colors text-left flex items-center justify-between">
+                  <button type="button" className="w-full p-4 rounded-none border border-sf-border hover:border-primary/50 transition-colors text-left flex items-center justify-between">
                     <span className="font-medium text-sm">
                       {example.title}{" "}
                       <span className="text-t2 font-normal">
@@ -930,7 +930,7 @@ const EnvironmentalChainReaction = () => {
                   </button>
                 </CollapsibleTrigger>
                 <CollapsibleContent>
-                  <div className="mt-2 p-4 rounded-lg bg-muted/30 space-y-4">
+                  <div className="mt-2 p-4 rounded-none bg-muted/30 space-y-4">
                     <p className="text-sm">
                       <strong className="text-primary">Core Parameter:</strong>{" "}
                       <span className="text-t2">{example.parameter}</span>
@@ -980,7 +980,7 @@ const EnvironmentalChainReaction = () => {
           >
             {/* Link to Planet (if in a world context) */}
             {worldId && linkConfigs.length > 0 && (
-              <div className="mb-6 p-4 rounded-lg border border-sf-border bg-muted/20">
+              <div className="mb-6 p-4 rounded-none border border-sf-border bg-muted/20">
                 <h4 className="font-medium text-sm mb-3 flex items-center gap-2">
                   <ExternalLink className="w-4 h-4 text-primary" />
                   Link to Other Worksheets
@@ -1006,7 +1006,7 @@ const EnvironmentalChainReaction = () => {
             )}
 
             {/* Mode Toggle */}
-            <div className="flex items-center gap-4 mb-6 p-4 bg-primary/5 rounded-lg border border-primary/20">
+            <div className="flex items-center gap-4 mb-6 p-4 bg-primary/5 rounded-none border border-primary/20">
               <Label className="text-sm font-medium">
                 Selection Mode:
               </Label>
@@ -1014,7 +1014,7 @@ const EnvironmentalChainReaction = () => {
                 type="single"
                 value={formState.parameter.mode || "single"}
                 onValueChange={(value) => toggleParameterMode(value as "single" | "multiple")}
-                className="bg-background/50 rounded-lg p-1"
+                className="bg-background/50 rounded-none p-1"
               >
                 <ToggleGroupItem
                   value="single"
@@ -1191,7 +1191,7 @@ const EnvironmentalChainReaction = () => {
                 ))}
 
                 {(formState.parameter.types?.length || 0) > 0 && (
-                  <div className="mt-4 p-3 bg-primary/10 rounded-lg">
+                  <div className="mt-4 p-3 bg-primary/10 rounded-none">
                     <p className="text-sm text-t3">
                       <strong className="text-primary">
                         {formState.parameter.types?.length} factor

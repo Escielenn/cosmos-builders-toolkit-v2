@@ -28,7 +28,7 @@ interface SolarisControlsProps {
 
 const S = {
   panel:
-    "absolute left-3 top-14 z-10 w-52 bg-[rgba(15,15,16,0.92)] border border-white/[0.08] backdrop-blur-[16px] rounded-lg p-3.5 space-y-4 overflow-y-auto max-h-[calc(100%-80px)]",
+    "absolute left-3 top-14 z-10 w-52 bg-[rgba(15,15,16,0.92)] border border-white/[0.08] backdrop-blur-[16px] rounded-none p-3.5 space-y-4 overflow-y-auto max-h-[calc(100%-80px)]",
   sectionLabel:
     "font-heading text-[10px] uppercase tracking-[2px] text-[rgba(0,212,255,0.35)] mb-1.5 block",
   btn: "px-2 py-1 text-[9px] uppercase tracking-[1.5px] font-heading transition-colors border",

@@ -611,7 +611,7 @@ const DrakeEquationCalculator = () => {
               it's a framework for deciding how populated your galaxy should be.
             </p>
 
-            <div className="bg-accent/20 p-4 rounded-lg my-4 font-mono text-center text-lg">
+            <div className="bg-accent/20 p-4 rounded-none my-4 font-mono text-center text-lg">
               N = R* × f<sub>p</sub> × n<sub>e</sub> × f<sub>l</sub> × f<sub>i</sub> × f<sub>c</sub> × L
             </div>
 
@@ -721,7 +721,7 @@ const DrakeEquationCalculator = () => {
               {interpretation.description}
             </p>
 
-            <div className="mt-8 bg-accent/20 rounded-lg p-4 text-left">
+            <div className="mt-8 bg-accent/20 rounded-none p-4 text-left">
               <h4 className="font-semibold mb-2">The Equation</h4>
               <div className="font-mono text-sm overflow-x-auto">
                 N = {formState.values.rStar} × {formState.values.fp} × {formState.values.ne} × {formState.values.fl} × {formState.values.fi} × {formState.values.fc} × {formatNumber(formState.values.L)}

@@ -76,7 +76,7 @@ const IconPicker = ({ value, onChange, disabled }: IconPickerProps) => {
                           key={icon.id}
                           onClick={() => handleSelect(icon.id)}
                           className={cn(
-                            "w-10 h-10 flex items-center justify-center rounded-lg transition-colors",
+                            "w-10 h-10 flex items-center justify-center rounded-none transition-colors",
                             "hover:bg-accent hover:text-accent-foreground",
                             value === icon.id &&
                               "bg-primary text-primary-foreground"

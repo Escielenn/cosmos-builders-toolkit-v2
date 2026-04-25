@@ -91,7 +91,7 @@ const SuggestedImplications = ({
               return (
                 <div
                   key={implication.id}
-                  className="relative bg-background/50 rounded-lg border border-amber-500/20 overflow-hidden"
+                  className="relative bg-background/50 rounded-none border border-amber-500/20 overflow-hidden"
                 >
                   {/* Dismiss button */}
                   <button

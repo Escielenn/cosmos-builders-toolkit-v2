@@ -223,7 +223,7 @@ const WorksheetLinkSelector = ({
 
       {/* Show synced data preview */}
       {value?.syncedData && Object.keys(value.syncedData).length > 1 && (
-        <div className="p-3 rounded-lg border border-sf-border bg-muted/30 text-xs space-y-1">
+        <div className="p-3 rounded-none border border-sf-border bg-muted/30 text-xs space-y-1">
           <div className="flex items-center justify-between text-t3">
             <span>Synced data from "{linkedTitle}"</span>
             {syncedAt && <span>{syncedAt}</span>}

@@ -62,7 +62,7 @@ const ShowcaseHero = () => {
  */
 const DashboardMockup = () => {
   return (
-    <div className="relative aspect-[16/9] overflow-hidden rounded-lg bg-sf-void/50">
+    <div className="relative aspect-[16/9] overflow-hidden rounded-none bg-sf-void/50">
       {/* Grid background */}
       <div className="absolute inset-0 grid-bg opacity-30" />
 
@@ -146,7 +146,7 @@ const MockToolCard = ({ title, value, delay, color }: MockToolCardProps) => {
   return (
     <div
       className={`
-        bg-sf-surface/80 backdrop-blur-sm border rounded-lg p-3 md:p-4
+        bg-sf-surface/80 backdrop-blur-sm border rounded-none p-3 md:p-4
         transform transition-all duration-500
         hover:scale-105 hover:z-10
         ${colorMap[color]}

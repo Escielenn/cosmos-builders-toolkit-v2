@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ClipboardList, ChevronRight, ChevronDown } from "lucide-react";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
+import { KeyValueRow } from "@/components/ui/key-value-row";
 import { cn } from "@/lib/utils";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import {
@@ -111,38 +112,45 @@ const KeyChoicesSidebar = ({
                 </button>
               </CollapsibleTrigger>
               <CollapsibleContent>
-                <div className="pl-2 pr-1 py-1 space-y-1.5">
+                <div className="pl-2 pr-1 py-1 space-y-1">
                   {section.choices.map((choice, idx) => {
                     const value = formatValue(choice);
                     if (!value) return null;
 
-                    return (
-                      <div key={idx} className="text-xs">
-                        <span className="sf-readout-label">
-                          {choice.label}:
-                        </span>
-                        {choice.asList && Array.isArray(choice.value) ? (
-                          <ul className="mt-0.5 ml-2 space-y-0.5">
+                    // List-style values render as a bullet list; scalar values
+                    // render as a telemetry KeyValueRow (mono label : mono value).
+                    if (choice.asList && Array.isArray(choice.value)) {
+                      return (
+                        <div key={idx} className="text-[11px]">
+                          <span className="font-mono text-t4 uppercase tracking-[0.12em]">
+                            {choice.label.toUpperCase()}
+                          </span>
+                          <ul className="mt-1 ml-1 space-y-0.5">
                             {choice.value.map((v, i) => (
                               <li
                                 key={i}
-                                className="sf-readout-value before:content-['•'] before:mr-1 before:text-[rgba(255,179,71,0.4)]"
+                                className="font-mono text-[11px] tabular-nums text-t1 before:content-['·'] before:mr-1.5 before:text-sf-amber-warm"
                               >
                                 {v}
                               </li>
                             ))}
                           </ul>
-                        ) : (
-                          <span className="ml-1 sf-readout-value font-medium">
-                            {value}
-                          </span>
-                        )}
-                      </div>
+                        </div>
+                      );
+                    }
+
+                    return (
+                      <KeyValueRow
+                        key={idx}
+                        label={choice.label.toUpperCase()}
+                        value={value}
+                        accent="amber"
+                      />
                     );
                   })}
                   {!hasValues && (
-                    <span className="text-xs text-t3 italic font-mono">
-                      — NO DATA —
+                    <span className="font-mono text-[11px] tracking-[0.18em] text-t5 uppercase">
+                      // NO DATA ON FILE
                     </span>
                   )}
                 </div>

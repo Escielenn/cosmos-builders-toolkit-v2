@@ -689,7 +689,7 @@ const TimeDilationCalculator = () => {
                 {PROPULSION_METHODS.map((method) => (
                   <div
                     key={method.id}
-                    className="flex items-start gap-3 p-3 rounded-lg border border-sf-border hover:border-primary/50 transition-colors"
+                    className="flex items-start gap-3 p-3 rounded-none border border-sf-border hover:border-primary/50 transition-colors"
                   >
                     <RadioGroupItem value={method.id} id={`prop-${method.id}`} className="mt-0.5" />
                     <label htmlFor={`prop-${method.id}`} className="cursor-pointer flex-1">
@@ -740,7 +740,7 @@ const TimeDilationCalculator = () => {
                 onValueChange={(val) => updateVelocityProfile("mode", val)}
                 className="grid gap-3 md:grid-cols-2"
               >
-                <div className="flex items-start gap-3 p-4 rounded-lg border border-sf-border hover:border-primary/50 transition-colors">
+                <div className="flex items-start gap-3 p-4 rounded-none border border-sf-border hover:border-primary/50 transition-colors">
                   <RadioGroupItem value="constant" id="vp-constant" className="mt-0.5" />
                   <label htmlFor="vp-constant" className="cursor-pointer">
                     <div className="font-medium text-sm">Constant Velocity</div>
@@ -749,7 +749,7 @@ const TimeDilationCalculator = () => {
                     </div>
                   </label>
                 </div>
-                <div className="flex items-start gap-3 p-4 rounded-lg border border-sf-border hover:border-primary/50 transition-colors">
+                <div className="flex items-start gap-3 p-4 rounded-none border border-sf-border hover:border-primary/50 transition-colors">
                   <RadioGroupItem value="brachistochrone" id="vp-brach" className="mt-0.5" />
                   <label htmlFor="vp-brach" className="cursor-pointer">
                     <div className="font-medium text-sm">Brachistochrone</div>
@@ -820,7 +820,7 @@ const TimeDilationCalculator = () => {
 
               {/* Alcubierre dilation toggle */}
               {isAlcubierre && (
-                <div className="p-4 rounded-lg border border-amber-500/30 bg-amber-500/5">
+                <div className="p-4 rounded-none border border-amber-500/30 bg-amber-500/5">
                   <div className="flex items-center gap-3 mb-2">
                     <AlertTriangle className="w-4 h-4 text-sf-amber" />
                     <span className="text-sm font-medium text-sf-amber">Alcubierre Drive—Speculative Physics</span>
@@ -1155,7 +1155,7 @@ const TimeDilationCalculator = () => {
                 {REFERENCE_FRAMES.map((frame) => (
                   <div
                     key={frame.id}
-                    className="flex items-start gap-3 p-3 rounded-lg border border-sf-border hover:border-primary/50 transition-colors"
+                    className="flex items-start gap-3 p-3 rounded-none border border-sf-border hover:border-primary/50 transition-colors"
                   >
                     <RadioGroupItem value={frame.id} id={`frame-${frame.id}`} className="mt-0.5" />
                     <label htmlFor={`frame-${frame.id}`} className="cursor-pointer">
@@ -1194,7 +1194,7 @@ const TimeDilationCalculator = () => {
                 <p className="text-xs text-t4 mb-2">
                   Describe the moment of departure. Who is watching? What is being left behind?
                 </p>
-                <Suspense fallback={<div className="h-32 animate-pulse bg-muted rounded-lg" />}>
+                <Suspense fallback={<div className="h-32 animate-pulse bg-muted rounded-none" />}>
                   <RichTextEditor
                     content={formState.storyNotes.departureMoment}
                     onChange={(html) => updateStoryNotes("departureMoment", html)}
@@ -1208,7 +1208,7 @@ const TimeDilationCalculator = () => {
                 <p className="text-xs text-t4 mb-2">
                   How does the time difference affect your characters' relationships and plans?
                 </p>
-                <Suspense fallback={<div className="h-32 animate-pulse bg-muted rounded-lg" />}>
+                <Suspense fallback={<div className="h-32 animate-pulse bg-muted rounded-none" />}>
                   <RichTextEditor
                     content={formState.storyNotes.timeDilationImpact}
                     onChange={(html) => updateStoryNotes("timeDilationImpact", html)}
@@ -1222,7 +1222,7 @@ const TimeDilationCalculator = () => {
                 <p className="text-xs text-t4 mb-2">
                   What has changed when they arrive (or return)? What surprises await?
                 </p>
-                <Suspense fallback={<div className="h-32 animate-pulse bg-muted rounded-lg" />}>
+                <Suspense fallback={<div className="h-32 animate-pulse bg-muted rounded-none" />}>
                   <RichTextEditor
                     content={formState.storyNotes.returnExperience}
                     onChange={(html) => updateStoryNotes("returnExperience", html)}
@@ -1236,7 +1236,7 @@ const TimeDilationCalculator = () => {
                 <p className="text-xs text-t4 mb-2">
                   How does your society handle time-displaced travelers? Are there laws, customs, or stigmas?
                 </p>
-                <Suspense fallback={<div className="h-32 animate-pulse bg-muted rounded-lg" />}>
+                <Suspense fallback={<div className="h-32 animate-pulse bg-muted rounded-none" />}>
                   <RichTextEditor
                     content={formState.storyNotes.socialConsequences}
                     onChange={(html) => updateStoryNotes("socialConsequences", html)}

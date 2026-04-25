@@ -427,7 +427,7 @@ const Gravitas = () => {
                 <button
                   key={mode}
                   onClick={() => setRealism(mode)}
-                  className={`p-3 rounded-lg border text-left transition-colors ${
+                  className={`p-3 rounded-none border text-left transition-colors ${
                     formState.realismMode === mode
                       ? "border-primary bg-primary/10"
                       : "border-sf-border hover:border-primary/30 hover:bg-accent/5"
@@ -439,7 +439,7 @@ const Gravitas = () => {
               ))}
             </div>
             {formState.realismMode === "hard_sf" && formState.activeMode === "artificial" && (
-              <div className="flex items-center gap-2 mt-3 p-3 rounded-lg bg-red-500/10 border border-red-500/30">
+              <div className="flex items-center gap-2 mt-3 p-3 rounded-none bg-red-500/10 border border-red-500/30">
                 <AlertTriangle className="w-4 h-4 text-sf-crimson shrink-0" />
                 <p className="text-sm text-sf-crimson">Artificial gravity is not available in Hard SF mode. Switch to Hybrid or Soft SF.</p>
               </div>
@@ -475,7 +475,7 @@ const Gravitas = () => {
                           setActiveSpinPreset(preset.id);
                           setFormState((prev) => ({ ...prev, spin: { ...preset.values } }));
                         }}
-                        className={`p-2 rounded-lg border text-left transition-colors ${activeSpinPreset === preset.id ? "border-primary bg-primary/10" : "border-sf-border hover:border-primary/30 hover:bg-accent/5"}`}
+                        className={`p-2 rounded-none border text-left transition-colors ${activeSpinPreset === preset.id ? "border-primary bg-primary/10" : "border-sf-border hover:border-primary/30 hover:bg-accent/5"}`}
                       >
                         <span className="font-medium text-xs">{preset.name}</span>
                         <p className="text-[10px] text-t2">{preset.description}</p>
@@ -540,7 +540,7 @@ const Gravitas = () => {
                           setActiveThrustPreset(preset.id);
                           setFormState((prev) => ({ ...prev, thrust: { ...prev.thrust, ...preset.values } }));
                         }}
-                        className={`p-2 rounded-lg border text-left transition-colors ${activeThrustPreset === preset.id ? "border-primary bg-primary/10" : "border-sf-border hover:border-primary/30 hover:bg-accent/5"}`}
+                        className={`p-2 rounded-none border text-left transition-colors ${activeThrustPreset === preset.id ? "border-primary bg-primary/10" : "border-sf-border hover:border-primary/30 hover:bg-accent/5"}`}
                       >
                         <span className="font-medium text-xs">{preset.name}</span>
                         <p className="text-[10px] text-t2">{preset.description}</p>
@@ -674,7 +674,7 @@ const Gravitas = () => {
                           setActiveOrbitalPreset(preset.id);
                           setFormState((prev) => ({ ...prev, orbital: { ...preset.values } }));
                         }}
-                        className={`p-2 rounded-lg border text-left transition-colors ${activeOrbitalPreset === preset.id ? "border-primary bg-primary/10" : "border-sf-border hover:border-primary/30 hover:bg-accent/5"}`}
+                        className={`p-2 rounded-none border text-left transition-colors ${activeOrbitalPreset === preset.id ? "border-primary bg-primary/10" : "border-sf-border hover:border-primary/30 hover:bg-accent/5"}`}
                       >
                         <span className="font-medium text-xs">{preset.name}</span>
                         <p className="text-[10px] text-t2">{preset.description}</p>
@@ -743,7 +743,7 @@ const Gravitas = () => {
               {/* ── Artificial Parameters ─── */}
               <TabsContent value="artificial" className="mt-4 space-y-6">
                 {formState.realismMode === "hard_sf" && (
-                  <div className="flex items-center gap-2 p-3 rounded-lg bg-red-500/10 border border-red-500/30">
+                  <div className="flex items-center gap-2 p-3 rounded-none bg-red-500/10 border border-red-500/30">
                     <AlertTriangle className="w-4 h-4 text-sf-crimson shrink-0" />
                     <p className="text-sm text-sf-crimson">
                       Artificial gravity violates known physics. Switch to Hybrid or Soft SF mode to use this module.
@@ -1047,7 +1047,7 @@ const Gravitas = () => {
 
               {/* Physics violations for artificial */}
               {formState.activeMode === "artificial" && formState.realismMode !== "soft_sf" && (
-                <div className="mt-4 p-3 rounded-lg bg-amber-500/10 border border-amber-500/30">
+                <div className="mt-4 p-3 rounded-none bg-amber-500/10 border border-amber-500/30">
                   <p className="text-xs font-medium text-sf-amber mb-2">Physics Violations:</p>
                   <ul className="text-xs text-amber-300/80 space-y-1">
                     {artificialResult.physics_violations.map((v, i) => (

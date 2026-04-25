@@ -103,7 +103,7 @@ export function MoodboardPickerDialog({
                         key={image.id}
                         onClick={() => handleSelect(image.url)}
                         className={cn(
-                          "relative aspect-square rounded-lg overflow-hidden border-2 transition-all hover:scale-105",
+                          "relative aspect-square rounded-none overflow-hidden border-2 transition-all hover:scale-105",
                           currentImageUrl === image.url
                             ? "border-primary ring-2 ring-primary/50"
                             : "border-sf-border hover:border-primary/50"

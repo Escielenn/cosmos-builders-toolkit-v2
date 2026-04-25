@@ -64,26 +64,26 @@ export default function NarrativeBridgePanel({
     return (
       <button
         onClick={() => onOpenChange(true)}
-        className="absolute right-0 top-1/2 -translate-y-1/2 z-30 bg-[#09090B]/90 border border-white/[0.08] border-r-0 px-2 py-4 hover:bg-[#09090B] transition-colors group"
+        className="absolute right-0 top-1/2 -translate-y-1/2 z-30 bg-sf-void/90 border border-sf-border border-r-0 px-2 py-4 hover:bg-sf-void transition-colors group"
         title="Narrative Bridge"
       >
-        <span className="font-heading text-[9px] uppercase tracking-[2px] text-[#00D4FF]/50 group-hover:text-[#00D4FF] transition-colors [writing-mode:vertical-lr] rotate-180">
+        <span className="font-heading text-[9px] uppercase tracking-[2px] text-sf-cyan/50 group-hover:text-sf-cyan transition-colors [writing-mode:vertical-lr] rotate-180">
           Narrative Bridge
         </span>
-        <ChevronLeft className="w-3 h-3 text-[#00D4FF]/30 group-hover:text-[#00D4FF]/60 mt-2 mx-auto" />
+        <ChevronLeft className="w-3 h-3 text-sf-cyan/30 group-hover:text-sf-cyan/60 mt-2 mx-auto" />
       </button>
     );
   }
 
   // Expanded panel
   return (
-    <div className="absolute right-0 top-0 bottom-0 z-30 w-80 bg-[#09090B]/95 backdrop-blur-xl border-l border-white/[0.08] overflow-y-auto animate-in slide-in-from-right duration-300">
+    <div className="absolute right-0 top-0 bottom-0 z-30 w-80 bg-sf-void/95 backdrop-blur-sf-side border-l border-sf-border overflow-y-auto animate-in slide-in-from-right duration-300">
       {/* Header */}
-      <div className="sticky top-0 z-10 bg-[#09090B]/95 backdrop-blur-xl px-4 py-3 border-b border-white/[0.06]">
+      <div className="sticky top-0 z-10 bg-sf-void/95 backdrop-blur-sf-side px-4 py-3 border-b border-white/[0.06]">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <PenLine className="w-3.5 h-3.5 text-[#00D4FF]" />
-            <span className="font-heading text-[10px] uppercase tracking-[2px] text-[#00D4FF]">
+            <PenLine className="w-3.5 h-3.5 text-sf-cyan" />
+            <span className="font-heading text-[10px] uppercase tracking-[2px] text-sf-cyan">
               Narrative Bridge
             </span>
           </div>
@@ -117,21 +117,21 @@ export default function NarrativeBridgePanel({
               value={notes[q.id] ?? ""}
               onChange={(e) => updateNote(q.id, e.target.value)}
               placeholder="Write your thoughts..."
-              className="min-h-[80px] bg-white/[0.03] border-white/[0.08] text-t2 text-xs resize-y"
+              className="min-h-[80px] bg-white/[0.03] border-sf-border text-t2 text-xs resize-y"
             />
           </div>
         ))}
 
         {/* General Notes — freeform textarea */}
         <div>
-          <label className="font-heading text-[10px] uppercase tracking-[2px] text-[#00D4FF]/70 block mb-1.5">
+          <label className="font-heading text-[10px] uppercase tracking-[2px] text-sf-cyan/70 block mb-1.5">
             General Notes
           </label>
           <textarea
             value={notes["general_notes"] ?? ""}
             onChange={(e) => updateNote("general_notes", e.target.value)}
             placeholder="Free-form notes, observations, story ideas..."
-            className="w-full font-sans text-[12px] leading-relaxed text-t2 placeholder:text-t4 bg-white/[0.03] border border-white/[0.08] rounded-[6px] px-[14px] py-3 min-h-[120px] resize-y focus:outline-none focus:border-[rgba(0,212,255,0.25)] transition-colors"
+            className="w-full font-sans text-[12px] leading-relaxed text-t2 placeholder:text-t4 bg-white/[0.03] border border-sf-border rounded-[6px] px-[14px] py-3 min-h-[120px] resize-y focus:outline-none focus:border-[rgba(0,212,255,0.25)] transition-colors"
           />
         </div>
 
@@ -146,7 +146,7 @@ export default function NarrativeBridgePanel({
               size="sm"
               onClick={handleSave}
               disabled={filledCount === 0}
-              className="h-6 text-[9px] uppercase tracking-wider px-2 gap-1 border-[#00D4FF]/20 text-[#00D4FF] hover:bg-[#00D4FF]/10"
+              className="h-6 text-[9px] uppercase tracking-wider px-2 gap-1 border-sf-cyan/20 text-sf-cyan hover:bg-sf-cyan/10"
             >
               <Save className="w-3 h-3" />
               {saved ? "Saved" : "Save Notes"}

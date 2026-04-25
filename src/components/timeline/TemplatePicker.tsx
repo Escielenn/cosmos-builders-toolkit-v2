@@ -181,7 +181,7 @@ const TemplatePicker = ({
                   type="button"
                   onClick={() => handleSelect(template)}
                   className={cn(
-                    "flex flex-col items-start gap-2 p-4 rounded-lg border border-sf-border",
+                    "flex flex-col items-start gap-2 p-4 rounded-none border border-sf-border",
                     "bg-muted/20 hover:bg-muted/40 hover:border-sf-border transition-colors text-left"
                   )}
                 >

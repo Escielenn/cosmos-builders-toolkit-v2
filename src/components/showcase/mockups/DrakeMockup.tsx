@@ -21,7 +21,7 @@ const DrakeMockup = () => {
   }, []);
 
   return (
-    <div className="w-full h-full flex flex-col bg-sf-void/50 rounded-lg p-4 md:p-6">
+    <div className="w-full h-full flex flex-col bg-sf-void/50 rounded-none p-4 md:p-6">
       {/* Header */}
       <div className="text-center mb-4 md:mb-6">
         <div className="text-xs text-t3 uppercase tracking-wider mb-1">

@@ -562,7 +562,7 @@ const HabitableZoneCalculator = () => {
                     <button
                       key={preset.id}
                       onClick={() => handlePresetSelect(preset.id)}
-                      className={`p-3 rounded-lg border text-left transition-all ${
+                      className={`p-3 rounded-none border text-left transition-all ${
                         formState.star.presetId === preset.id
                           ? "border-primary bg-primary/10 text-t1"
                           : "border-sf-border hover:border-primary/50 hover:bg-muted/50 text-t2"

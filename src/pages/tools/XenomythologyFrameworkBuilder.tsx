@@ -1465,7 +1465,7 @@ const XenomythologyFrameworkBuilder = () => {
           >
             <div className="space-y-8">
               {/* Sensory Architecture */}
-              <div className="space-y-6 p-4 rounded-lg border border-sf-border">
+              <div className="space-y-6 p-4 rounded-none border border-sf-border">
                 <h4 className="font-semibold text-primary">Sensory Architecture</h4>
 
                 <CheckboxGroup
@@ -1505,7 +1505,7 @@ const XenomythologyFrameworkBuilder = () => {
               </div>
 
               {/* Physical Form */}
-              <div className="space-y-6 p-4 rounded-lg border border-sf-border">
+              <div className="space-y-6 p-4 rounded-none border border-sf-border">
                 <h4 className="font-semibold text-accent">Physical Form</h4>
 
                 <div className="grid gap-6 md:grid-cols-2">
@@ -1581,7 +1581,7 @@ const XenomythologyFrameworkBuilder = () => {
               </div>
 
               {/* Cognitive Architecture */}
-              <div className="space-y-6 p-4 rounded-lg border border-sf-border">
+              <div className="space-y-6 p-4 rounded-none border border-sf-border">
                 <h4 className="font-semibold text-primary">Cognitive Architecture</h4>
 
                 <RadioGroupField
@@ -1650,7 +1650,7 @@ const XenomythologyFrameworkBuilder = () => {
           >
             <div className="space-y-8">
               {/* Planetary Conditions */}
-              <div className="space-y-6 p-4 rounded-lg border border-sf-border">
+              <div className="space-y-6 p-4 rounded-none border border-sf-border">
                 <h4 className="font-semibold text-primary">Planetary Conditions</h4>
 
                 <div className="grid gap-6 md:grid-cols-2">
@@ -1731,7 +1731,7 @@ const XenomythologyFrameworkBuilder = () => {
               </div>
 
               {/* Evolutionary Pressures */}
-              <div className="space-y-6 p-4 rounded-lg border border-sf-border">
+              <div className="space-y-6 p-4 rounded-none border border-sf-border">
                 <h4 className="font-semibold text-accent">Evolutionary Pressures</h4>
 
                 <CheckboxGroup
@@ -1764,7 +1764,7 @@ const XenomythologyFrameworkBuilder = () => {
               </div>
 
               {/* Existential Parameters */}
-              <div className="space-y-6 p-4 rounded-lg border border-sf-border">
+              <div className="space-y-6 p-4 rounded-none border border-sf-border">
                 <h4 className="font-semibold text-primary">Existential Parameters</h4>
 
                 <RadioGroupField
@@ -1833,7 +1833,7 @@ const XenomythologyFrameworkBuilder = () => {
             thinkLike="a Jungian psychologist: Archetypes emerge from existential pressures that require mythic resolution."
           >
             <div className="space-y-8">
-              <div className="p-4 rounded-lg bg-accent/10 border border-accent/20">
+              <div className="p-4 rounded-none bg-accent/10 border border-accent/20">
                 <p className="text-sm text-t3">
                   <strong className="text-accent">Critical Insight:</strong> Archetypes are not universal forms like "The Mother" or "The Hero" but universal cognitive structures that emerge from existential pressures requiring mythic resolution. Different species facing different pressures will generate entirely different archetypal forms.
                 </p>
@@ -1848,7 +1848,7 @@ const XenomythologyFrameworkBuilder = () => {
                   </p>
 
                   {formState.pressureAnalysis.map((pressure, index) => (
-                    <div key={pressure.pressure} className="p-4 rounded-lg border border-sf-border space-y-4">
+                    <div key={pressure.pressure} className="p-4 rounded-none border border-sf-border space-y-4">
                       <h5 className="font-medium text-primary">
                         Pressure: {getChallengeName(pressure.pressure)}
                       </h5>
@@ -1894,7 +1894,7 @@ const XenomythologyFrameworkBuilder = () => {
               )}
 
               {formState.pressureAnalysis.length === 0 && (
-                <div className="p-4 rounded-lg border border-dashed border-muted text-center">
+                <div className="p-4 rounded-none border border-dashed border-muted text-center">
                   <p className="text-sm text-t3">
                     Select survival challenges in Section 2 to generate pressure analysis forms.
                   </p>
@@ -1902,7 +1902,7 @@ const XenomythologyFrameworkBuilder = () => {
               )}
 
               {/* Novel Archetypal Forms */}
-              <div className="space-y-6 p-4 rounded-lg border border-sf-border">
+              <div className="space-y-6 p-4 rounded-none border border-sf-border">
                 <h4 className="font-semibold">Novel Archetypal Forms</h4>
                 <p className="text-sm text-t3">
                   These fields appear based on your species' unique biology and environment.
@@ -1998,7 +1998,7 @@ const XenomythologyFrameworkBuilder = () => {
               </div>
 
               {/* Archetypal Pantheon Builder */}
-              <div className="space-y-6 p-4 rounded-lg border border-sf-border">
+              <div className="space-y-6 p-4 rounded-none border border-sf-border">
                 <div className="flex items-center justify-between">
                   <div>
                     <h4 className="font-semibold">Species-Specific Archetypal Pantheon</h4>
@@ -2013,7 +2013,7 @@ const XenomythologyFrameworkBuilder = () => {
                 </div>
 
                 {formState.archetypePantheon.map((archetype, index) => (
-                  <div key={index} className="p-4 rounded-lg bg-muted/30 space-y-4">
+                  <div key={index} className="p-4 rounded-none bg-muted/30 space-y-4">
                     <div className="flex items-center justify-between">
                       <h5 className="font-medium">Archetype {index + 1}</h5>
                       <Button variant="ghost" size="sm" onClick={() => removeArchetype(index)}>
@@ -2078,7 +2078,7 @@ const XenomythologyFrameworkBuilder = () => {
                 ))}
 
                 {formState.archetypePantheon.length === 0 && (
-                  <div className="p-4 rounded-lg border border-dashed border-muted text-center">
+                  <div className="p-4 rounded-none border border-dashed border-muted text-center">
                     <Sparkles className="w-8 h-8 mx-auto mb-2 text-t2" />
                     <p className="text-sm text-t3">
                       Click "Add Archetype" to start building your species' unique archetypal pantheon.
@@ -2099,7 +2099,7 @@ const XenomythologyFrameworkBuilder = () => {
           >
             <div className="space-y-8">
               {/* Creation Narrative */}
-              <div className="space-y-6 p-4 rounded-lg border border-sf-border">
+              <div className="space-y-6 p-4 rounded-none border border-sf-border">
                 <h4 className="font-semibold text-primary">Creation Narrative</h4>
 
                 <QuestionSection
@@ -2138,7 +2138,7 @@ const XenomythologyFrameworkBuilder = () => {
               </div>
 
               {/* Cosmological Structure */}
-              <div className="space-y-6 p-4 rounded-lg border border-sf-border">
+              <div className="space-y-6 p-4 rounded-none border border-sf-border">
                 <h4 className="font-semibold text-accent">Cosmological Structure</h4>
 
                 <RadioGroupField
@@ -2169,7 +2169,7 @@ const XenomythologyFrameworkBuilder = () => {
               </div>
 
               {/* Divine Conceptualization */}
-              <div className="space-y-6 p-4 rounded-lg border border-sf-border">
+              <div className="space-y-6 p-4 rounded-none border border-sf-border">
                 <h4 className="font-semibold text-primary">Divine Conceptualization</h4>
 
                 <RadioGroupField
@@ -2190,7 +2190,7 @@ const XenomythologyFrameworkBuilder = () => {
                   </div>
 
                   {formState.divineConceptualization.deities.map((deity, index) => (
-                    <div key={index} className="p-4 rounded-lg bg-muted/30 space-y-4">
+                    <div key={index} className="p-4 rounded-none bg-muted/30 space-y-4">
                       <div className="flex items-center justify-between">
                         <h5 className="font-medium">Deity {index + 1}</h5>
                         <Button variant="ghost" size="sm" onClick={() => removeDeity(index)}>
@@ -2277,7 +2277,7 @@ const XenomythologyFrameworkBuilder = () => {
               </div>
 
               {/* Mythic Cycles */}
-              <div className="space-y-6 p-4 rounded-lg border border-sf-border">
+              <div className="space-y-6 p-4 rounded-none border border-sf-border">
                 <h4 className="font-semibold text-accent">Core Mythic Cycles</h4>
 
                 <QuestionSection
@@ -2324,7 +2324,7 @@ const XenomythologyFrameworkBuilder = () => {
               </div>
 
               {/* Symbolic Catalog */}
-              <div className="space-y-6 p-4 rounded-lg border border-sf-border">
+              <div className="space-y-6 p-4 rounded-none border border-sf-border">
                 <div className="flex items-center justify-between">
                   <div>
                     <h4 className="font-semibold">Symbolic Catalog</h4>
@@ -2339,7 +2339,7 @@ const XenomythologyFrameworkBuilder = () => {
                 </div>
 
                 {formState.symbolicCatalog.map((entity, index) => (
-                  <div key={index} className="p-4 rounded-lg bg-muted/30 space-y-4">
+                  <div key={index} className="p-4 rounded-none bg-muted/30 space-y-4">
                     <div className="flex items-center justify-between">
                       <h5 className="font-medium">Entity {index + 1}</h5>
                       <Button variant="ghost" size="sm" onClick={() => removeSymbolicEntity(index)}>
@@ -2406,7 +2406,7 @@ const XenomythologyFrameworkBuilder = () => {
           >
             <div className="space-y-8">
               {/* Ritual Structure */}
-              <div className="space-y-6 p-4 rounded-lg border border-sf-border">
+              <div className="space-y-6 p-4 rounded-none border border-sf-border">
                 <h4 className="font-semibold text-primary">Ritual Structure</h4>
 
                 <CheckboxGroup
@@ -2436,7 +2436,7 @@ const XenomythologyFrameworkBuilder = () => {
               </div>
 
               {/* Sacred Specialists */}
-              <div className="space-y-6 p-4 rounded-lg border border-sf-border">
+              <div className="space-y-6 p-4 rounded-none border border-sf-border">
                 <h4 className="font-semibold text-accent">Sacred Specialists</h4>
 
                 <RadioGroupField
@@ -2474,7 +2474,7 @@ const XenomythologyFrameworkBuilder = () => {
               </div>
 
               {/* Sacred Spaces */}
-              <div className="space-y-6 p-4 rounded-lg border border-sf-border">
+              <div className="space-y-6 p-4 rounded-none border border-sf-border">
                 <h4 className="font-semibold text-primary">Sacred Spaces</h4>
 
                 <QuestionSection
@@ -2511,7 +2511,7 @@ const XenomythologyFrameworkBuilder = () => {
               </div>
 
               {/* Death Practices & Eschatology */}
-              <div className="space-y-6 p-4 rounded-lg border border-sf-border">
+              <div className="space-y-6 p-4 rounded-none border border-sf-border">
                 <h4 className="font-semibold text-accent">Death Practices & Eschatology</h4>
 
                 <QuestionSection
@@ -2568,7 +2568,7 @@ const XenomythologyFrameworkBuilder = () => {
           >
             <div className="space-y-8">
               {/* Ethical Framework */}
-              <div className="space-y-6 p-4 rounded-lg border border-sf-border">
+              <div className="space-y-6 p-4 rounded-none border border-sf-border">
                 <h4 className="font-semibold text-primary">Ethical Framework</h4>
                 <p className="text-sm text-t3">
                   Based on this mythology, what behaviors are considered virtuous, taboo, or ambiguous?
@@ -2603,7 +2603,7 @@ const XenomythologyFrameworkBuilder = () => {
               </div>
 
               {/* Art & Symbolism */}
-              <div className="space-y-6 p-4 rounded-lg border border-sf-border">
+              <div className="space-y-6 p-4 rounded-none border border-sf-border">
                 <h4 className="font-semibold text-accent">Art & Symbolism</h4>
 
                 <QuestionSection
@@ -2619,7 +2619,7 @@ const XenomythologyFrameworkBuilder = () => {
               </div>
 
               {/* Science/Knowledge Relationship */}
-              <div className="space-y-6 p-4 rounded-lg border border-sf-border">
+              <div className="space-y-6 p-4 rounded-none border border-sf-border">
                 <h4 className="font-semibold text-primary">Science/Knowledge Relationship</h4>
                 <p className="text-sm text-t3">
                   How would this mythology interact with empirical understanding?
@@ -2652,7 +2652,7 @@ const XenomythologyFrameworkBuilder = () => {
 
               {/* Summary Display */}
               {formState.archetypePantheon.length > 0 && (
-                <div className="p-6 rounded-lg bg-gradient-to-br from-primary/10 to-accent/10 border border-primary/20">
+                <div className="p-6 rounded-none bg-gradient-to-br from-primary/10 to-accent/10 border border-primary/20">
                   <h4 className="font-semibold mb-4 flex items-center gap-2">
                     <Sparkles className="w-5 h-5 text-primary" />
                     Your Archetypal Pantheon Summary

@@ -101,7 +101,7 @@ export function WorksheetTitle({
   return (
     <div
       className={cn(
-        "flex items-center gap-2 mt-2 px-3 py-1.5 rounded-lg bg-primary/10 w-fit group cursor-pointer hover:bg-primary/15 transition-colors",
+        "flex items-center gap-2 mt-2 px-3 py-1.5 rounded-none bg-primary/10 w-fit group cursor-pointer hover:bg-primary/15 transition-colors",
         disabled && "cursor-default hover:bg-primary/10",
         className
       )}

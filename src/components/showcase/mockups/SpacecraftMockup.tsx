@@ -45,7 +45,7 @@ const SpacecraftMockup = () => {
   ];
 
   return (
-    <div className="w-full h-full flex flex-col bg-sf-void/50 rounded-lg p-4 md:p-6">
+    <div className="w-full h-full flex flex-col bg-sf-void/50 rounded-none p-4 md:p-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div>

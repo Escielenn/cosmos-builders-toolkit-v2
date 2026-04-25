@@ -503,7 +503,7 @@ const OneBigLie = () => {
                   <CollapsibleTrigger asChild>
                     <button
                       type="button"
-                      className="flex items-center justify-between w-full text-left px-3 py-2 rounded-lg bg-background/50 hover:bg-background/80 transition-colors text-sm"
+                      className="flex items-center justify-between w-full text-left px-3 py-2 rounded-none bg-background/50 hover:bg-background/80 transition-colors text-sm"
                     >
                       <span>
                         <strong className="text-t1">

@@ -667,7 +667,7 @@ const EmpireDesigner = () => {
                     {GOVERNMENT_TYPES.map((gov) => (
                       <div
                         key={gov.id}
-                        className="flex items-start space-x-3 p-3 rounded-lg border border-sf-border hover:border-primary/50 transition-colors"
+                        className="flex items-start space-x-3 p-3 rounded-none border border-sf-border hover:border-primary/50 transition-colors"
                       >
                         <RadioGroupItem value={gov.id} id={gov.id} className="mt-1" />
                         <div className="flex-1">
@@ -1220,7 +1220,7 @@ const EmpireDesigner = () => {
                 {formState.factions.map((faction, index) => (
                   <div
                     key={faction.id}
-                    className="p-4 border border-sf-border rounded-lg space-y-4"
+                    className="p-4 border border-sf-border rounded-none space-y-4"
                   >
                     <div className="flex items-center justify-between">
                       <p className="font-medium">Faction {index + 1}</p>

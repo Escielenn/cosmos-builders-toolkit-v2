@@ -347,7 +347,7 @@ const WorldExportDialog = ({
 
               <TabsContent value="json" className="space-y-4 pt-4">
                 <div
-                  className="flex items-center space-x-3 p-3 rounded-lg border border-sf-border bg-accent/5"
+                  className="flex items-center space-x-3 p-3 rounded-none border border-sf-border bg-accent/5"
                 >
                   <FileJson className="w-5 h-5 text-t3" />
                   <div className="flex-1">
@@ -361,7 +361,7 @@ const WorldExportDialog = ({
 
               <TabsContent value="text" className="space-y-4 pt-4">
                 <div
-                  className="flex items-center space-x-3 p-3 rounded-lg border border-sf-border bg-accent/5"
+                  className="flex items-center space-x-3 p-3 rounded-none border border-sf-border bg-accent/5"
                 >
                   <FileType className="w-5 h-5 text-t3" />
                   <div className="flex-1">
@@ -375,7 +375,7 @@ const WorldExportDialog = ({
 
               <TabsContent value="word" className="space-y-4 pt-4">
                 <div
-                  className="flex items-center space-x-3 p-3 rounded-lg border border-sf-border bg-accent/5"
+                  className="flex items-center space-x-3 p-3 rounded-none border border-sf-border bg-accent/5"
                 >
                   <FileSpreadsheet className="w-5 h-5 text-t3" />
                   <div className="flex-1">
@@ -389,7 +389,7 @@ const WorldExportDialog = ({
 
               <TabsContent value="markdown" className="space-y-4 pt-4">
                 <div
-                  className="flex items-center space-x-3 p-3 rounded-lg border border-sf-border bg-accent/5"
+                  className="flex items-center space-x-3 p-3 rounded-none border border-sf-border bg-accent/5"
                 >
                   <FileText className="w-5 h-5 text-t3" />
                   <div className="flex-1">
@@ -403,7 +403,7 @@ const WorldExportDialog = ({
 
               <TabsContent value="scrivener" className="space-y-4 pt-4">
                 <div
-                  className="flex items-center space-x-3 p-3 rounded-lg border border-sf-border bg-accent/5"
+                  className="flex items-center space-x-3 p-3 rounded-none border border-sf-border bg-accent/5"
                 >
                   <BookOpen className="w-5 h-5 text-t3" />
                   <div className="flex-1">
@@ -422,7 +422,7 @@ const WorldExportDialog = ({
                   </div>
                 ) : isConnected ? (
                   <div className="space-y-4">
-                    <div className="flex items-center space-x-3 p-3 rounded-lg border border-sf-border bg-accent/5">
+                    <div className="flex items-center space-x-3 p-3 rounded-none border border-sf-border bg-accent/5">
                       <img
                         src="https://www.notion.so/images/favicon.ico"
                         alt="Notion"
@@ -435,7 +435,7 @@ const WorldExportDialog = ({
                         </p>
                       </div>
                     </div>
-                    <div className="flex items-center justify-between gap-3 p-3 rounded-lg bg-muted/50 overflow-hidden">
+                    <div className="flex items-center justify-between gap-3 p-3 rounded-none bg-muted/50 overflow-hidden">
                       <div className="flex items-center gap-2 min-w-0 flex-1">
                         {connection?.workspace_icon ? (
                           connection.workspace_icon.startsWith("http") ? (

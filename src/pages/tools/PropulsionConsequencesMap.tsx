@@ -797,7 +797,7 @@ const PropulsionConsequencesMap = () => {
                   className="grid gap-2 md:grid-cols-2"
                 >
                   {PROPULSION_TYPES.map((type) => (
-                    <div key={type.value} className="flex items-start gap-3 p-3 rounded-lg border border-sf-border hover:border-primary/50 transition-colors">
+                    <div key={type.value} className="flex items-start gap-3 p-3 rounded-none border border-sf-border hover:border-primary/50 transition-colors">
                       <RadioGroupItem value={type.value} id={type.value} className="mt-0.5" />
                       <Label htmlFor={type.value} className="cursor-pointer flex-1">
                         <span className="font-medium">{type.label}</span>
@@ -877,7 +877,7 @@ const PropulsionConsequencesMap = () => {
                         ? ` with ${formState.system.acceleration} acceleration (brachistochrone trajectory)`
                         : " (cruise velocity)"}
                     </p>
-                    <div className="rounded-lg border border-sf-border divide-y divide-border/50">
+                    <div className="rounded-none border border-sf-border divide-y divide-border/50">
                       {BENCHMARK_ROUTES.map((route) => (
                         <div key={route.key} className="flex items-center justify-between px-4 py-2.5">
                           <div className="flex items-baseline gap-2">
@@ -892,7 +892,7 @@ const PropulsionConsequencesMap = () => {
                     </div>
                   </>
                 ) : isFTL ? (
-                  <div className="p-4 rounded-lg bg-accent/10 border border-accent/20">
+                  <div className="p-4 rounded-none bg-accent/10 border border-accent/20">
                     <p className="text-sm text-t3 mb-3">
                       FTL travel times depend on your setting's specific mechanics. Define travel times for key routes:
                     </p>
@@ -1009,7 +1009,7 @@ const PropulsionConsequencesMap = () => {
                   </div>
                 </div>
                 {costGuidance && (
-                  <div className="p-3 rounded-lg bg-muted/50 border border-sf-border space-y-2 md:col-span-2">
+                  <div className="p-3 rounded-none bg-muted/50 border border-sf-border space-y-2 md:col-span-2">
                     <p className="text-xs font-medium text-t2 flex items-center gap-1.5">
                       <Info className="w-3.5 h-3.5" />
                       Cost guidance for{" "}
@@ -1059,7 +1059,7 @@ const PropulsionConsequencesMap = () => {
                 <Label className="text-sm font-medium">Access Stratification</Label>
                 <div className="grid gap-2">
                   {ACCESS_STRATIFICATIONS.map((option) => (
-                    <div key={option.id} className="flex items-start gap-3 p-3 rounded-lg border border-sf-border">
+                    <div key={option.id} className="flex items-start gap-3 p-3 rounded-none border border-sf-border">
                       <Checkbox
                         id={`access-${option.id}`}
                         checked={(formState.economic.accessStratification as string[] || []).includes(option.id)}
@@ -1097,7 +1097,7 @@ const PropulsionConsequencesMap = () => {
                 <p className="text-xs text-t4">What's worth shipping given travel costs and time?</p>
                 <div className="grid gap-2">
                   {TRADE_VIABILITY.map((option) => (
-                    <div key={option.id} className="flex items-start gap-3 p-3 rounded-lg border border-sf-border">
+                    <div key={option.id} className="flex items-start gap-3 p-3 rounded-none border border-sf-border">
                       <Checkbox
                         id={`trade-${option.id}`}
                         checked={(formState.economic.tradeViability as string[] || []).includes(option.id)}
@@ -1172,7 +1172,7 @@ const PropulsionConsequencesMap = () => {
                 onChange={(value) => updateDomain("political", "transitTime", value)}
               />
 
-              <div className="p-4 rounded-lg bg-muted/50 space-y-3">
+              <div className="p-4 rounded-none bg-muted/50 space-y-3">
                 <h4 className="text-sm font-medium">What This Means for Governance:</h4>
                 <div className="grid gap-3 text-sm">
                   <div>
@@ -1204,7 +1204,7 @@ const PropulsionConsequencesMap = () => {
                 <p className="text-xs text-t4">Select the model(s) that fit your propulsion parameters</p>
                 <div className="grid gap-2">
                   {GOVERNANCE_STRUCTURES.map((structure) => (
-                    <div key={structure.id} className="flex items-start gap-3 p-3 rounded-lg border border-sf-border">
+                    <div key={structure.id} className="flex items-start gap-3 p-3 rounded-none border border-sf-border">
                       <Checkbox
                         id={`gov-${structure.id}`}
                         checked={(formState.political.governanceStructures as string[] || []).includes(structure.id)}
@@ -1348,7 +1348,7 @@ const PropulsionConsequencesMap = () => {
                 <p className="text-xs text-t4">What military structures fit your propulsion?</p>
                 <div className="grid gap-2 md:grid-cols-2">
                   {MILITARY_STRUCTURES.map((structure) => (
-                    <div key={structure.id} className="flex items-start gap-3 p-3 rounded-lg border border-sf-border">
+                    <div key={structure.id} className="flex items-start gap-3 p-3 rounded-none border border-sf-border">
                       <Checkbox
                         id={`mil-${structure.id}`}
                         checked={(formState.military.organization as string[] || []).includes(structure.id)}
@@ -1427,7 +1427,7 @@ const PropulsionConsequencesMap = () => {
                 onChange={(value) => updateDomain("social", "career", value)}
               />
 
-              <div className="p-4 rounded-lg bg-accent/10 border border-accent/20 space-y-3">
+              <div className="p-4 rounded-none bg-accent/10 border border-accent/20 space-y-3">
                 <h4 className="text-sm font-medium flex items-center gap-2">
                   <Info className="w-4 h-4 text-accent" />
                   Time Dilation Effects (If Applicable)
@@ -1632,13 +1632,13 @@ const PropulsionConsequencesMap = () => {
               {SF_EXAMPLES.map((example, index) => (
                 <Collapsible key={index}>
                   <CollapsibleTrigger asChild>
-                    <button type="button" className="w-full p-4 rounded-lg border border-sf-border hover:border-primary/50 transition-colors text-left flex items-center justify-between">
+                    <button type="button" className="w-full p-4 rounded-none border border-sf-border hover:border-primary/50 transition-colors text-left flex items-center justify-between">
                       <span className="font-medium text-sm">{example.title}</span>
                       <ChevronDown className="w-4 h-4 text-t2" />
                     </button>
                   </CollapsibleTrigger>
                   <CollapsibleContent>
-                    <div className="mt-2 p-4 rounded-lg bg-muted/30 space-y-4">
+                    <div className="mt-2 p-4 rounded-none bg-muted/30 space-y-4">
                       <div className="overflow-x-auto">
                         <table className="w-full text-sm">
                           <thead>

@@ -801,7 +801,7 @@ const SpacecraftDesigner = () => {
             thinkLike="an engineer who lives aboard: The drive isn't just propulsion—it's the ship's heartbeat."
           >
             <div className="space-y-6">
-              <div className="p-4 rounded-lg bg-accent/10 border border-accent/20">
+              <div className="p-4 rounded-none bg-accent/10 border border-accent/20">
                 <p className="text-sm text-t3">
                   <strong className="text-accent">Link to Tool 3:</strong> If you've completed the Propulsion Consequences Map, use your propulsion system here. The drive type fundamentally shapes ship architecture and crew life.
                 </p>
@@ -1396,13 +1396,13 @@ const SpacecraftDesigner = () => {
               {SF_EXAMPLES.map((example, index) => (
                 <Collapsible key={index}>
                   <CollapsibleTrigger asChild>
-                    <button type="button" className="w-full p-4 rounded-lg border border-sf-border hover:border-primary/50 transition-colors text-left flex items-center justify-between">
+                    <button type="button" className="w-full p-4 rounded-none border border-sf-border hover:border-primary/50 transition-colors text-left flex items-center justify-between">
                       <span className="font-medium text-sm">{example.title}</span>
                       <ChevronDown className="w-4 h-4 text-t2" />
                     </button>
                   </CollapsibleTrigger>
                   <CollapsibleContent>
-                    <div className="mt-2 p-4 rounded-lg bg-muted/30 space-y-3">
+                    <div className="mt-2 p-4 rounded-none bg-muted/30 space-y-3">
                       {example.aspects.map((aspect, i) => (
                         <div key={i}>
                           <span className="text-sm font-medium text-primary">{aspect.label}:</span>

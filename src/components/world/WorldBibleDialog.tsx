@@ -316,7 +316,7 @@ const WorldBibleDialog = ({
 
             {/* World Notes toggle */}
             {worldNotes && (
-              <div className="flex items-center space-x-2 p-3 rounded-lg border border-sf-border bg-accent/5">
+              <div className="flex items-center space-x-2 p-3 rounded-none border border-sf-border bg-accent/5">
                 <Checkbox
                   id="include-notes"
                   checked={includeWorldNotes}
@@ -347,7 +347,7 @@ const WorldBibleDialog = ({
                   return (
                     <div
                       key={cw.chapter.id}
-                      className="rounded-lg border border-sf-border overflow-hidden"
+                      className="rounded-none border border-sf-border overflow-hidden"
                     >
                       {/* Chapter header */}
                       <div className="flex items-center space-x-2 p-3 bg-muted/30">

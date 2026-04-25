@@ -683,7 +683,7 @@ const StarSystemBuilder = () => {
                     {SPECTRAL_CLASSES.map((star) => (
                       <div
                         key={star.id}
-                        className="flex items-start space-x-3 p-3 rounded-lg border border-sf-border hover:border-primary/50 transition-colors"
+                        className="flex items-start space-x-3 p-3 rounded-none border border-sf-border hover:border-primary/50 transition-colors"
                       >
                         <RadioGroupItem value={star.id} id={star.id} className="mt-1" />
                         <div className="flex-1">
@@ -770,7 +770,7 @@ const StarSystemBuilder = () => {
                     {STELLAR_CONFIGURATIONS.map((config) => (
                       <div
                         key={config.id}
-                        className="flex items-start space-x-3 p-3 rounded-lg border border-sf-border hover:border-primary/50 transition-colors"
+                        className="flex items-start space-x-3 p-3 rounded-none border border-sf-border hover:border-primary/50 transition-colors"
                       >
                         <RadioGroupItem value={config.id} id={`config-${config.id}`} className="mt-1" />
                         <div className="flex-1">
@@ -808,7 +808,7 @@ const StarSystemBuilder = () => {
 
                 {/* Binary/Multiple star details */}
                 {formState.configuration.type !== "single" && (
-                  <div className="space-y-4 p-4 border border-sf-border rounded-lg">
+                  <div className="space-y-4 p-4 border border-sf-border rounded-none">
                     <p className="text-sm font-medium">Companion Star Details</p>
 
                     <div className="space-y-2">
@@ -900,7 +900,7 @@ const StarSystemBuilder = () => {
                 {formState.bodies.map((body, index) => (
                   <div
                     key={body.id}
-                    className="p-4 border border-sf-border rounded-lg space-y-4"
+                    className="p-4 border border-sf-border rounded-none space-y-4"
                   >
                     <div className="flex items-center justify-between">
                       <p className="font-medium">Body {index + 1}</p>
@@ -1088,7 +1088,7 @@ const StarSystemBuilder = () => {
                     {ORBITAL_RESONANCES.map((res) => (
                       <div
                         key={res.id}
-                        className="flex items-start space-x-3 p-3 rounded-lg border border-sf-border hover:border-primary/50 transition-colors"
+                        className="flex items-start space-x-3 p-3 rounded-none border border-sf-border hover:border-primary/50 transition-colors"
                       >
                         <RadioGroupItem value={res.id} id={`res-${res.id}`} className="mt-1" />
                         <div className="flex-1">
@@ -1197,7 +1197,7 @@ const StarSystemBuilder = () => {
                     {SYSTEM_AGES.map((age) => (
                       <div
                         key={age.id}
-                        className="flex items-start space-x-3 p-3 rounded-lg border border-sf-border hover:border-primary/50 transition-colors"
+                        className="flex items-start space-x-3 p-3 rounded-none border border-sf-border hover:border-primary/50 transition-colors"
                       >
                         <RadioGroupItem value={age.id} id={`age-${age.id}`} className="mt-1" />
                         <div className="flex-1">

@@ -50,7 +50,7 @@ export function GuideNav() {
             key={item.to}
             to={item.to}
             className={cn(
-              "px-4 py-2 text-xs uppercase tracking-wider border rounded-md transition-all",
+              "px-4 py-2 text-xs uppercase tracking-wider border rounded-none transition-all",
               active
                 ? "text-primary border-primary/30 bg-primary/[0.06]"
                 : "text-t3 hover:text-primary border-sf-border hover:border-primary/30"

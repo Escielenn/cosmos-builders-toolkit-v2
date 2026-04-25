@@ -83,7 +83,7 @@ const components: PortableTextComponents = {
           <img
             src={urlFor(imageValue).width(800).url()}
             alt={imageValue.alt || "Article image"}
-            className="rounded-lg w-full"
+            className="rounded-none w-full"
           />
           {imageValue.caption && (
             <figcaption className="text-center text-sm text-t3 mt-2">
@@ -96,7 +96,7 @@ const components: PortableTextComponents = {
     code: ({ value }) => {
       const codeValue = value as CodeValue;
       return (
-        <pre className="bg-muted p-4 rounded-lg overflow-x-auto my-4">
+        <pre className="bg-muted p-4 rounded-none overflow-x-auto my-4">
           <code className="text-sm font-mono">
             {codeValue?.code}
           </code>

@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import ToolPageLayout from "@/components/tools/ToolPageLayout";
 import { GlassPanel } from "@/components/ui/glass-panel";
+import { StatGrid } from "@/components/ui/stat-grid";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -559,7 +560,7 @@ const SurfaceGravityCalculator = () => {
                   <button
                     key={preset.id}
                     onClick={() => handlePresetSelect(preset.id)}
-                    className={`p-3 rounded-lg border text-left transition-colors ${
+                    className={`p-3 rounded-none border text-left transition-colors ${
                       formState.primary.planetPreset === preset.id
                         ? "border-primary bg-primary/10"
                         : "border-sf-border hover:border-primary/30 hover:bg-accent/5"
@@ -746,53 +747,60 @@ const SurfaceGravityCalculator = () => {
               defaultOpen
             >
               {result.valid && (
-                <div className="space-y-4">
-                  {/* Big gravity display */}
-                  <div className="text-center py-4">
-                    <div className="font-mono text-5xl font-bold text-primary">
+                <div className="space-y-6">
+                  {/* Big gravity readout — display-font hero */}
+                  <div className="text-center py-6">
+                    <p className="font-mono text-[11px] tracking-[0.18em] uppercase text-sf-amber mb-3">// SURFACE GRAVITY</p>
+                    <div className="font-display font-light text-6xl md:text-7xl tracking-[0.02em] text-sf-amber">
                       {formatGravity(result.gravity)}
                     </div>
-                    <div className="text-sm text-t3 mt-1">
-                      {result.gravityMs2.toFixed(2)} m/s²
+                    <div className="font-mono text-[11px] tracking-[0.18em] uppercase text-t4 mt-2">
+                      {result.gravityMs2.toFixed(2)} M/S²
                     </div>
-                    <Badge className={`mt-2 ${result.regimeColor}`}>
-                      {result.regimeLabel}
-                    </Badge>
-                    {result.deltaV.gravityLocked && (
-                      <Badge className="mt-2 ml-2 bg-red-500/20 text-sf-crimson border-red-500/30">
-                        GRAVITY-LOCKED
+                    <div className="flex flex-wrap justify-center gap-2 mt-4">
+                      <Badge className={`${result.regimeColor}`}>
+                        {result.regimeLabel}
                       </Badge>
-                    )}
+                      {result.deltaV.gravityLocked && (
+                        <Badge className="bg-sf-crimson/[0.06] text-sf-crimson border-sf-crimson/[0.15]">
+                          GRAVITY-LOCKED
+                        </Badge>
+                      )}
+                    </div>
                   </div>
 
-                  {/* Data grid */}
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                    <GlassPanel className="p-3 text-center">
-                      <div className="text-xs text-t4 mb-1">Escape Velocity</div>
-                      <div className="font-mono text-lg text-t1">{result.escapeVelocity.toFixed(2)}</div>
-                      <div className="text-xs text-t4">km/s</div>
-                    </GlassPanel>
-                    <GlassPanel className="p-3 text-center">
-                      <div className="text-xs text-t4 mb-1">Orbital Velocity</div>
-                      <div className="font-mono text-lg text-t1">{result.orbitalVelocity.toFixed(2)}</div>
-                      <div className="text-xs text-t4">km/s</div>
-                    </GlassPanel>
-                    <GlassPanel className="p-3 text-center">
-                      <div className="text-xs text-t4 mb-1">Mean Density</div>
-                      <div className="font-mono text-lg text-t1">{result.meanDensity.toFixed(2)}</div>
-                      <div className="text-xs text-t4">g/cm³ ({result.densityRatio.toFixed(2)}× Earth)</div>
-                    </GlassPanel>
-                    <GlassPanel className="p-3 text-center">
-                      <div className="text-xs text-t4 mb-1">Δv to Orbit</div>
-                      <div className="font-mono text-lg text-t1">{result.deltaV.deltaVToOrbit.toFixed(1)}</div>
-                      <div className="text-xs text-t4">km/s ({result.deltaV.earthComparison.toFixed(2)}× Earth)</div>
-                    </GlassPanel>
-                  </div>
+                  {/* Data grid — StatGrid primitive */}
+                  <StatGrid cols={4}>
+                    <StatGrid.Cell
+                      label="ESCAPE VELOCITY"
+                      value={result.escapeVelocity.toFixed(2)}
+                      unit="km/s"
+                      accent="amber"
+                    />
+                    <StatGrid.Cell
+                      label="ORBITAL VELOCITY"
+                      value={result.orbitalVelocity.toFixed(2)}
+                      unit="km/s"
+                      accent="amber"
+                    />
+                    <StatGrid.Cell
+                      label="MEAN DENSITY"
+                      value={result.meanDensity.toFixed(2)}
+                      unit={`g/cm³ · ${result.densityRatio.toFixed(2)}× EARTH`}
+                      accent="amber"
+                    />
+                    <StatGrid.Cell
+                      label="Δv TO ORBIT"
+                      value={result.deltaV.deltaVToOrbit.toFixed(1)}
+                      unit={`km/s · ${result.deltaV.earthComparison.toFixed(2)}× EARTH`}
+                      accent="amber"
+                    />
+                  </StatGrid>
 
                   <div className="flex justify-end">
-                    <Button variant="outline" size="sm" onClick={handleCopyResults} className="gap-1.5">
+                    <Button variant="sf-ghost" size="sf-sm" onClick={handleCopyResults} className="gap-1.5">
                       <Copy className="w-3.5 h-3.5" />
-                      Copy Results
+                      COPY RESULTS
                     </Button>
                   </div>
                 </div>
@@ -807,26 +815,33 @@ const SurfaceGravityCalculator = () => {
               guidance={SECTION_HELPERS["weight-comparisons"]}
             >
               {result.valid && (
-                <div className="space-y-4">
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                    <GlassPanel className="p-3">
-                      <div className="text-xs text-t4 mb-1">70 kg Human Weighs</div>
-                      <div className="font-mono text-xl text-primary">{result.humanWeight.planetWeightKg.toFixed(1)} kg</div>
-                    </GlassPanel>
-                    <GlassPanel className="p-3">
-                      <div className="text-xs text-t4 mb-1">2m Drop Time</div>
-                      <div className="font-mono text-xl text-primary">{result.dropTime.toFixed(2)}s</div>
-                      <div className="text-xs text-t4">Impact: {result.dropSpeed.toFixed(1)} km/h</div>
-                    </GlassPanel>
-                    <GlassPanel className="p-3">
-                      <div className="text-xs text-t4 mb-1">High Jump (2m on Earth)</div>
-                      <div className="font-mono text-xl text-primary">{result.jumpHeight.toFixed(2)}m</div>
-                    </GlassPanel>
-                    <GlassPanel className="p-3">
-                      <div className="text-xs text-t4 mb-1">Terminal Velocity</div>
-                      <div className="font-mono text-xl text-primary">~{result.terminalVelocity.toFixed(0)} km/h</div>
-                    </GlassPanel>
-                  </div>
+                <div className="space-y-6">
+                  <StatGrid cols={4}>
+                    <StatGrid.Cell
+                      label="70 KG HUMAN WEIGHS"
+                      value={result.humanWeight.planetWeightKg.toFixed(1)}
+                      unit="kg"
+                      accent="amber"
+                    />
+                    <StatGrid.Cell
+                      label="2M DROP TIME"
+                      value={result.dropTime.toFixed(2)}
+                      unit={`s · IMPACT ${result.dropSpeed.toFixed(1)} km/h`}
+                      accent="amber"
+                    />
+                    <StatGrid.Cell
+                      label="HIGH JUMP (2M ON EARTH)"
+                      value={result.jumpHeight.toFixed(2)}
+                      unit="m"
+                      accent="amber"
+                    />
+                    <StatGrid.Cell
+                      label="TERMINAL VELOCITY"
+                      value={`~${result.terminalVelocity.toFixed(0)}`}
+                      unit="km/h"
+                      accent="amber"
+                    />
+                  </StatGrid>
 
                   {/* Ball Drop Animation */}
                   <BallDropAnimation earthG={9.80665} planetG={result.gravityMs2} planetLabel={`${result.gravity.toFixed(2)}g`} />
@@ -945,7 +960,7 @@ const SurfaceGravityCalculator = () => {
 
                       <div className="pt-4 space-y-2">
                         <Label>Your Notes — {cat.label}</Label>
-                        <Suspense fallback={<div className="min-h-[100px] bg-muted/30 animate-pulse rounded-lg" />}>
+                        <Suspense fallback={<div className="min-h-[100px] bg-muted/30 animate-pulse rounded-none" />}>
                           <RichTextEditor
                             content={formState.cascade[noteKey]}
                             onChange={(val) =>
@@ -981,7 +996,7 @@ const SurfaceGravityCalculator = () => {
                 ].map(({ key, label, placeholder }) => (
                   <div key={key} className="space-y-2">
                     <Label>{label}</Label>
-                    <Suspense fallback={<div className="min-h-[100px] bg-muted/30 animate-pulse rounded-lg" />}>
+                    <Suspense fallback={<div className="min-h-[100px] bg-muted/30 animate-pulse rounded-none" />}>
                       <RichTextEditor
                         content={formState.storyNotes[key as keyof typeof formState.storyNotes]}
                         onChange={(val) =>

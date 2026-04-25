@@ -120,7 +120,7 @@ const WorldSnapshotDialog = ({
             <button
               key={id}
               onClick={() => setAction(id)}
-              className={`w-full flex items-start gap-3 p-3 rounded-lg border transition-colors text-left ${
+              className={`w-full flex items-start gap-3 p-3 rounded-none border transition-colors text-left ${
                 action === id
                   ? "border-primary/30 bg-primary/5"
                   : "border-sf-border hover:border-sf-border/80 hover:bg-accent/5"

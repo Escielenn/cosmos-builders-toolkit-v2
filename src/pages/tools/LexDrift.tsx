@@ -637,7 +637,7 @@ const LexDrift = () => {
                   {STARTING_LANGUAGES.map((lang) => (
                     <div
                       key={lang.id}
-                      className="flex items-center gap-2 p-2 rounded-lg border border-sf-border hover:border-primary/50 transition-colors"
+                      className="flex items-center gap-2 p-2 rounded-none border border-sf-border hover:border-primary/50 transition-colors"
                     >
                       <Checkbox
                         id={`lang-${lang.id}`}
@@ -846,7 +846,7 @@ const LexDrift = () => {
                   </Button>
                 </div>
                 {formState.social.contactEvents.map((event) => (
-                  <div key={event.id} className="flex gap-2 items-start p-3 rounded-lg border border-sf-border">
+                  <div key={event.id} className="flex gap-2 items-start p-3 rounded-none border border-sf-border">
                     <div className="grid grid-cols-3 gap-2 flex-1">
                       <div className="space-y-1">
                         <span className="text-xs text-t4">Year</span>
@@ -1201,7 +1201,7 @@ const LexDrift = () => {
                   Linguistic Principles
                 </p>
                 {SCIENTIFIC_NOTES.map((note) => (
-                  <div key={note.title} className="flex gap-3 p-3 rounded-lg bg-accent/5">
+                  <div key={note.title} className="flex gap-3 p-3 rounded-none bg-accent/5">
                     <Info className="w-4 h-4 text-primary shrink-0 mt-0.5" />
                     <div>
                       <p className="text-sm font-medium mb-0.5">{note.title}</p>
@@ -1392,7 +1392,7 @@ const LexDrift = () => {
                 <p className="text-xs text-t4 mb-2">
                   How do your characters relate to their language? Is it a source of pride, shame, or indifference?
                 </p>
-                <Suspense fallback={<div className="h-32 animate-pulse bg-muted rounded-lg" />}>
+                <Suspense fallback={<div className="h-32 animate-pulse bg-muted rounded-none" />}>
                   <RichTextEditor
                     content={formState.storyNotes.linguisticIdentity}
                     onChange={(html) => updateStoryNotes("linguisticIdentity", html)}
@@ -1406,7 +1406,7 @@ const LexDrift = () => {
                 <p className="text-xs text-t4 mb-2">
                   When your travelers meet someone who speaks "old Earth" standard, what happens?
                 </p>
-                <Suspense fallback={<div className="h-32 animate-pulse bg-muted rounded-lg" />}>
+                <Suspense fallback={<div className="h-32 animate-pulse bg-muted rounded-none" />}>
                   <RichTextEditor
                     content={formState.storyNotes.firstContact}
                     onChange={(html) => updateStoryNotes("firstContact", html)}
@@ -1420,7 +1420,7 @@ const LexDrift = () => {
                 <p className="text-xs text-t4 mb-2">
                   What does the community try to preserve? Songs, stories, technical manuals, religious texts?
                 </p>
-                <Suspense fallback={<div className="h-32 animate-pulse bg-muted rounded-lg" />}>
+                <Suspense fallback={<div className="h-32 animate-pulse bg-muted rounded-none" />}>
                   <RichTextEditor
                     content={formState.storyNotes.culturalPreservation}
                     onChange={(html) => updateStoryNotes("culturalPreservation", html)}
@@ -1434,7 +1434,7 @@ const LexDrift = () => {
                 <p className="text-xs text-t4 mb-2">
                   How does the relationship to the old language change across generations?
                 </p>
-                <Suspense fallback={<div className="h-32 animate-pulse bg-muted rounded-lg" />}>
+                <Suspense fallback={<div className="h-32 animate-pulse bg-muted rounded-none" />}>
                   <RichTextEditor
                     content={formState.storyNotes.generationalShift}
                     onChange={(html) => updateStoryNotes("generationalShift", html)}

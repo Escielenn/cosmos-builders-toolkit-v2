@@ -24,7 +24,7 @@ const XenomythMockup = () => {
   ];
 
   return (
-    <div className="w-full h-full flex flex-col bg-sf-void/50 rounded-lg p-4 md:p-6">
+    <div className="w-full h-full flex flex-col bg-sf-void/50 rounded-none p-4 md:p-6">
       {/* Header */}
       <div className="text-center mb-4">
         <div className="text-xs text-t3 uppercase tracking-wider mb-1">
@@ -46,7 +46,7 @@ const XenomythMockup = () => {
             return (
               <div
                 key={archetype.name}
-                className={`absolute w-16 md:w-20 h-20 md:h-24 rounded-lg bg-sf-surface border transition-all duration-500 flex flex-col items-center justify-center gap-1 ${
+                className={`absolute w-16 md:w-20 h-20 md:h-24 rounded-none bg-sf-surface border transition-all duration-500 flex flex-col items-center justify-center gap-1 ${
                   isActive
                     ? `border-${archetype.color}/50 shadow-[0_0_20px_rgba(155,93,229,0.3)] scale-110 z-10`
                     : "border-muted/30 opacity-60"

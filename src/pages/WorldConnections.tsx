@@ -246,7 +246,7 @@ const WorldConnections = () => {
               type="single"
               value={viewMode}
               onValueChange={(v) => v && setViewMode(v as ViewMode)}
-              className="bg-background/50 rounded-lg p-1"
+              className="bg-background/50 rounded-none p-1"
             >
               <ToggleGroupItem
                 value="mindmap"
@@ -375,7 +375,7 @@ const WorldConnections = () => {
                     const isExpanded = expandedGroups.has(toolType) || expandedGroups.has("all");
 
                     return (
-                      <div key={toolType} className="border border-sf-border rounded-lg overflow-hidden">
+                      <div key={toolType} className="border border-sf-border rounded-none overflow-hidden">
                         {/* Group Header */}
                         <button
                           onClick={() => toggleGroup(toolType)}

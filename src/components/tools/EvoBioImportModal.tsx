@@ -157,7 +157,7 @@ const EvoBioImportModal = ({
                 Loading species...
               </div>
             ) : !evoBioWorksheets || evoBioWorksheets.length === 0 ? (
-              <div className="text-sm text-t3 p-4 border border-dashed rounded-lg text-center">
+              <div className="text-sm text-t3 p-4 border border-dashed rounded-none text-center">
                 No species worksheets found in this world.
                 <br />
                 <span className="text-xs">
@@ -198,7 +198,7 @@ const EvoBioImportModal = ({
 
           {/* Preview with Checkboxes */}
           {selectedId && previewFields.length > 0 && (
-            <div className="border rounded-lg overflow-hidden">
+            <div className="border rounded-none overflow-hidden">
               <div className="flex items-center justify-between p-3 border-b bg-muted/30">
                 <h4 className="font-medium text-sm">Fields to Import</h4>
                 <div className="flex items-center gap-2">
@@ -232,7 +232,7 @@ const EvoBioImportModal = ({
                       {fieldsWithValues.map((field) => (
                         <label
                           key={field.targetField}
-                          className="flex items-start gap-3 p-2 rounded-lg hover:bg-muted/50 cursor-pointer"
+                          className="flex items-start gap-3 p-2 rounded-none hover:bg-muted/50 cursor-pointer"
                         >
                           <Checkbox
                             checked={selectedFields.has(field.targetField)}
@@ -264,7 +264,7 @@ const EvoBioImportModal = ({
                       {fieldsWithoutValues.map((field) => (
                         <div
                           key={field.targetField}
-                          className="flex items-start gap-3 p-2 rounded-lg opacity-50"
+                          className="flex items-start gap-3 p-2 rounded-none opacity-50"
                         >
                           <Checkbox disabled className="mt-0.5" />
                           <div className="flex-1 min-w-0">
@@ -284,7 +284,7 @@ const EvoBioImportModal = ({
 
           {/* Selected species summary */}
           {selectedId && mappedSpecies && (
-            <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-lg">
+            <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-none">
               <div className="flex items-center gap-2">
                 <Dna className="w-4 h-4 text-sf-emerald" />
                 <span className="font-medium text-sf-emerald">

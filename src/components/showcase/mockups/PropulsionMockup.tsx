@@ -58,13 +58,13 @@ const PropulsionMockup = () => {
   const currentConsequences = consequences[activeType as keyof typeof consequences] || [];
 
   return (
-    <div className="w-full h-full flex flex-col bg-sf-void/50 rounded-lg p-4 md:p-6">
+    <div className="w-full h-full flex flex-col bg-sf-void/50 rounded-none p-4 md:p-6">
       {/* Propulsion selector */}
       <div className="flex gap-2 mb-4">
         {propulsionTypes.map((type, index) => (
           <button
             key={type.name}
-            className={`flex-1 px-2 py-1.5 rounded-lg border text-[10px] transition-all duration-300 ${
+            className={`flex-1 px-2 py-1.5 rounded-none border text-[10px] transition-all duration-300 ${
               index === activeType
                 ? `border-${type.color}/50 bg-${type.color}/10`
                 : "border-muted/20 bg-transparent opacity-50"
@@ -164,7 +164,7 @@ const PropulsionMockup = () => {
               </svg>
 
               {/* Consequence card */}
-              <div className="w-24 bg-sf-surface border border-muted/30 rounded-lg p-2 text-center">
+              <div className="w-24 bg-sf-surface border border-muted/30 rounded-none p-2 text-center">
                 <div className="text-[8px] text-t3 uppercase tracking-wider">
                   {consequence.domain}
                 </div>

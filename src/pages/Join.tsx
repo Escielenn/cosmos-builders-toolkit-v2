@@ -112,7 +112,7 @@ const Join = () => {
   if (user) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
-        <CubeLogo size={48} className="rounded-lg mb-6" />
+        <CubeLogo size={48} className="rounded-none mb-6" />
         <h1 className="font-display text-xl font-light tracking-[0.1em] mb-3">
           YOU'RE ALREADY SIGNED IN
         </h1>
@@ -130,7 +130,7 @@ const Join = () => {
   if (!isValidCode) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
-        <CubeLogo size={48} className="rounded-lg mb-6" />
+        <CubeLogo size={48} className="rounded-none mb-6" />
         <h1 className="font-display text-xl font-light tracking-[0.1em] mb-3">
           LINK EXPIRED OR INVALID
         </h1>
@@ -150,7 +150,7 @@ const Join = () => {
       <header className="border-b border-sf-border backdrop-blur-xl bg-background/80">
         <div className="container mx-auto px-4 h-16 flex items-center">
           <Link to="/auth" className="flex items-center gap-3 group">
-            <CubeLogo size={40} className="rounded-lg" />
+            <CubeLogo size={40} className="rounded-none" />
             <div className="flex flex-col">
               <span className="font-display font-light text-lg leading-tight tracking-sf-wide">
                 STELLARFORGE

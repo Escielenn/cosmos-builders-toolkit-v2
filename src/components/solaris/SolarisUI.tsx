@@ -14,7 +14,7 @@ interface SolarisUIProps {
 
 const S = {
   panel:
-    "absolute right-3 top-14 z-10 w-56 bg-[rgba(15,15,16,0.92)] border border-white/[0.08] backdrop-blur-[16px] rounded-lg p-3.5 space-y-3 max-h-[calc(100%-80px)] overflow-y-auto",
+    "absolute right-3 top-14 z-10 w-56 bg-[rgba(15,15,16,0.92)] border border-white/[0.08] backdrop-blur-[16px] rounded-none p-3.5 space-y-3 max-h-[calc(100%-80px)] overflow-y-auto",
   sectionLabel:
     "font-heading text-[10px] uppercase tracking-[2px] text-[rgba(0,212,255,0.35)] mb-1.5 block",
   row: "flex items-baseline justify-between py-0.5",

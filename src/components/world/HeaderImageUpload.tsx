@@ -108,7 +108,7 @@ const HeaderImageUpload = ({
       />
 
       {currentImageUrl ? (
-        <div className="relative w-full aspect-[3/1] rounded-lg overflow-hidden border border-sf-border">
+        <div className="relative w-full aspect-[3/1] rounded-none overflow-hidden border border-sf-border">
           <img
             src={currentImageUrl}
             alt="World header"
@@ -158,7 +158,7 @@ const HeaderImageUpload = ({
           </div>
         </div>
       ) : (
-        <div className="w-full aspect-[3/1] rounded-lg border-2 border-dashed border-sf-border hover:border-primary/50 transition-colors flex flex-col items-center justify-center gap-3 bg-muted/30">
+        <div className="w-full aspect-[3/1] rounded-none border-2 border-dashed border-sf-border hover:border-primary/50 transition-colors flex flex-col items-center justify-center gap-3 bg-muted/30">
           {isUploading ? (
             <Loader />
           ) : (

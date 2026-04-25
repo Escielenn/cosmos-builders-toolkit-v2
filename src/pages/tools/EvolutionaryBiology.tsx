@@ -650,7 +650,7 @@ const EvolutionaryBiology = () => {
             role="checkbox"
             aria-checked={isChecked}
             tabIndex={0}
-            className="flex items-start gap-3 p-3 rounded-lg border border-sf-border hover:border-primary/50 cursor-pointer transition-colors"
+            className="flex items-start gap-3 p-3 rounded-none border border-sf-border hover:border-primary/50 cursor-pointer transition-colors"
             onClick={(e) => {
               e.preventDefault();
               if (isChecked) {
@@ -950,7 +950,7 @@ const EvolutionaryBiology = () => {
             {/* Species Identity Panel */}
             <GlassPanel className="p-6">
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-lg bg-emerald-500/20 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-none bg-emerald-500/20 flex items-center justify-center">
                   <Dna className="w-5 h-5 text-sf-emerald" />
                 </div>
                 <div>
@@ -1007,7 +1007,7 @@ const EvolutionaryBiology = () => {
                       ))}
                     </div>
                     {(formState._linkedWorksheets?.planet || formState._linkedWorksheets?.ecr) && (
-                      <div className="mt-3 p-3 bg-muted/30 rounded-lg">
+                      <div className="mt-3 p-3 bg-muted/30 rounded-none">
                         <p className="text-xs text-t4">
                           <span className="text-sf-emerald font-medium">Linked data</span> from your planet and environment worksheets
                           will help inform evolutionary pressures and biological constraints.
@@ -1288,7 +1288,7 @@ const EvolutionaryBiology = () => {
                     newItem={{ trait: "", selectivePressure: "", tradeoff: "" }}
                     addLabel="Add Adaptation"
                     renderItem={(item, _, updateItem) => (
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-2 p-3 rounded-lg border border-sf-border">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-2 p-3 rounded-none border border-sf-border">
                         <Input
                           value={item.trait}
                           onChange={(e) => updateItem({ trait: e.target.value })}
@@ -1452,7 +1452,7 @@ const EvolutionaryBiology = () => {
                     newItem={{ type: "", count: "", function: "" }}
                     addLabel="Add Limb Type"
                     renderItem={(item, _, updateItem) => (
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-2 p-3 rounded-lg border border-sf-border">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-2 p-3 rounded-none border border-sf-border">
                         <Select
                           value={item.type}
                           onValueChange={(value) => updateItem({ type: value })}
@@ -1585,7 +1585,7 @@ const EvolutionaryBiology = () => {
                     newItem={{ sense: "", location: "", capabilities: "" }}
                     addLabel="Add Sensory Organ"
                     renderItem={(item, _, updateItem) => (
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-2 p-3 rounded-lg border border-sf-border">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-2 p-3 rounded-none border border-sf-border">
                         <Select
                           value={item.sense}
                           onValueChange={(value) => updateItem({ sense: value })}
@@ -1801,7 +1801,7 @@ const EvolutionaryBiology = () => {
                     newItem={{ stage: "", duration: "", characteristics: "" }}
                     addLabel="Add Life Stage"
                     renderItem={(item, _, updateItem) => (
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-2 p-3 rounded-lg border border-sf-border">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-2 p-3 rounded-none border border-sf-border">
                         <Input
                           value={item.stage}
                           onChange={(e) => updateItem({ stage: e.target.value })}
@@ -2435,7 +2435,7 @@ const EvolutionaryBiology = () => {
                     newItem={{ trait: "", ancestralFunction: "", currentState: "" }}
                     addLabel="Add Vestigial Trait"
                     renderItem={(item, _, updateItem) => (
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-2 p-3 rounded-lg border border-sf-border">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-2 p-3 rounded-none border border-sf-border">
                         <Input
                           value={item.trait}
                           onChange={(e) => updateItem({ trait: e.target.value })}

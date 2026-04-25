@@ -34,9 +34,9 @@ export default function LoadSimulationSheet({
 }: LoadSimulationSheetProps) {
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="w-80 bg-sf-surface border-white/[0.08]">
+      <SheetContent side="right" className="w-80 bg-sf-surface border-sf-border">
         <SheetHeader>
-          <SheetTitle className="font-heading text-sm font-light uppercase tracking-[3px] text-[#00D4FF] flex items-center gap-2">
+          <SheetTitle className="font-heading text-sm font-light uppercase tracking-[3px] text-sf-cyan flex items-center gap-2">
             <FolderOpen className="w-4 h-4" />
             Saved Simulations
           </SheetTitle>
@@ -78,7 +78,7 @@ export default function LoadSimulationSheet({
                     onLoad(save);
                     onOpenChange(false);
                   }}
-                  className="shrink-0 text-[#00D4FF] hover:text-[#00D4FF]/80"
+                  className="shrink-0 text-sf-cyan hover:text-sf-cyan/80"
                 >
                   <Play className="w-3.5 h-3.5 mr-1" />
                   Load

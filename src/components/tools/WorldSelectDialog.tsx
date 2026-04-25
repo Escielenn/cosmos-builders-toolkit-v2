@@ -134,7 +134,7 @@ const WorldSelectDialog = ({
                         key={world.id}
                         onClick={() => setSelectedWorldId(world.id)}
                         className={cn(
-                          "w-full text-left p-3 rounded-lg border transition-colors",
+                          "w-full text-left p-3 rounded-none border transition-colors",
                           selectedWorldId === world.id
                             ? "border-primary bg-primary/10"
                             : "border-sf-border hover:border-primary/50 hover:bg-muted/50"

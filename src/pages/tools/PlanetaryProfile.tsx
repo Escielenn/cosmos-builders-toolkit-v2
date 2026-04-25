@@ -712,7 +712,7 @@ const PlanetaryProfile = () => {
                   className="space-y-2"
                 >
                   {STAR_TYPES.map((star) => (
-                    <div key={star.id} className="flex items-start gap-3 p-3 rounded-lg border border-sf-border hover:border-primary/50 transition-colors">
+                    <div key={star.id} className="flex items-start gap-3 p-3 rounded-none border border-sf-border hover:border-primary/50 transition-colors">
                       <RadioGroupItem value={star.id} id={`star-${star.id}`} className="mt-1" />
                       <Label htmlFor={`star-${star.id}`} className="cursor-pointer flex-1">
                         <div className="font-medium">{star.name}</div>
@@ -1188,7 +1188,7 @@ const PlanetaryProfile = () => {
                   className="space-y-2"
                 >
                   {HABITABILITY_TIERS.map((tier) => (
-                    <div key={tier.tier} className="flex items-start gap-3 p-3 rounded-lg border border-sf-border hover:border-primary/50 transition-colors">
+                    <div key={tier.tier} className="flex items-start gap-3 p-3 rounded-none border border-sf-border hover:border-primary/50 transition-colors">
                       <RadioGroupItem value={tier.tier.toString()} id={`tier-${tier.tier}`} className="mt-1" />
                       <Label htmlFor={`tier-${tier.tier}`} className="cursor-pointer flex-1">
                         <div className="font-medium">Tier {tier.tier}: {tier.name}</div>
@@ -1359,14 +1359,14 @@ const PlanetaryProfile = () => {
             thinkLike="an anthropologist and psychologist: Environment creates culture creates psychology."
           >
             <div className="space-y-6">
-              <div className="p-4 rounded-lg bg-accent/10 border border-accent/20">
+              <div className="p-4 rounded-none bg-accent/10 border border-accent/20">
                 <p className="text-sm text-t3">
                   <strong className="text-accent">The Three Pressures Framework:</strong> Every environment exerts three types of pressure on its inhabitants—survival pressure (physical challenges), social pressure (how environment shapes society), and psychological pressure (mental and emotional effects).
                 </p>
               </div>
 
               {/* Survival Pressure */}
-              <div className="space-y-4 p-4 rounded-lg border border-sf-border">
+              <div className="space-y-4 p-4 rounded-none border border-sf-border">
                 <h4 className="font-semibold text-primary">1. Survival Pressure</h4>
                 <p className="text-xs text-t4">The physical challenges of staying alive</p>
 
@@ -1397,7 +1397,7 @@ const PlanetaryProfile = () => {
               </div>
 
               {/* Social Pressure */}
-              <div className="space-y-4 p-4 rounded-lg border border-sf-border">
+              <div className="space-y-4 p-4 rounded-none border border-sf-border">
                 <h4 className="font-semibold text-accent">2. Social Pressure</h4>
                 <p className="text-xs text-t4">How the environment shapes society and culture</p>
 
@@ -1428,7 +1428,7 @@ const PlanetaryProfile = () => {
               </div>
 
               {/* Psychological Pressure */}
-              <div className="space-y-4 p-4 rounded-lg border border-sf-border">
+              <div className="space-y-4 p-4 rounded-none border border-sf-border">
                 <h4 className="font-semibold text-primary">3. Psychological Pressure</h4>
                 <p className="text-xs text-t4">Mental and emotional effects of the environment</p>
 
@@ -1557,7 +1557,7 @@ const PlanetaryProfile = () => {
               {EXOPLANET_EXAMPLES.map((example, index) => (
                 <Collapsible key={index}>
                   <CollapsibleTrigger asChild>
-                    <button className="w-full p-4 rounded-lg border border-sf-border hover:border-primary/50 transition-colors text-left flex items-center justify-between">
+                    <button className="w-full p-4 rounded-none border border-sf-border hover:border-primary/50 transition-colors text-left flex items-center justify-between">
                       <div>
                         <span className="font-medium text-sm">{example.name}</span>
                         <span className="text-xs text-t4 block">{example.type} • {example.distance}</span>
@@ -1566,7 +1566,7 @@ const PlanetaryProfile = () => {
                     </button>
                   </CollapsibleTrigger>
                   <CollapsibleContent>
-                    <div className="mt-2 p-4 rounded-lg bg-muted/30 space-y-3">
+                    <div className="mt-2 p-4 rounded-none bg-muted/30 space-y-3">
                       <div>
                         <span className="text-sm font-medium text-primary">Star Type:</span>
                         <span className="text-sm text-t3 ml-2">{example.starType}</span>
@@ -1601,7 +1601,7 @@ const PlanetaryProfile = () => {
             subtitle="Verify your world hangs together logically"
           >
             <div className="space-y-6">
-              <div className="p-4 rounded-lg bg-muted/30">
+              <div className="p-4 rounded-none bg-muted/30">
                 <div className="flex items-center gap-2 mb-4">
                   {consistencyScore === totalChecks ? (
                     <Check className="w-5 h-5 text-green-500" />

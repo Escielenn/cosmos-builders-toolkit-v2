@@ -1030,7 +1030,7 @@ const Sensorium = () => {
                                   toggleValidateSelection(mod.id);
                                 }
                               }}
-                              className={`relative p-3 rounded-lg border text-left transition-all hover:scale-[1.02] cursor-pointer ${
+                              className={`relative p-3 rounded-none border text-left transition-all hover:scale-[1.02] cursor-pointer ${
                                 isSelected
                                   ? "border-emerald-500 bg-emerald-500/15 ring-1 ring-emerald-500/30"
                                   : getStatusColor(status)

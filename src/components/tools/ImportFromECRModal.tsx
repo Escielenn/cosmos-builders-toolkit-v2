@@ -264,7 +264,7 @@ const ImportFromECRModal = ({
                       type="button"
                       key={worksheet.id}
                       onClick={() => setSelectedWorksheetId(worksheet.id)}
-                      className={`w-full p-3 rounded-lg border text-left transition-colors ${
+                      className={`w-full p-3 rounded-none border text-left transition-colors ${
                         selectedWorksheetId === worksheet.id
                           ? "border-primary bg-primary/5"
                           : "border-sf-border hover:border-primary/50"
@@ -302,7 +302,7 @@ const ImportFromECRModal = ({
                     </button>
                   </CollapsibleTrigger>
                   <CollapsibleContent>
-                    <div className="space-y-2 p-2 bg-muted/30 rounded-lg mt-2">
+                    <div className="space-y-2 p-2 bg-muted/30 rounded-none mt-2">
                       {preview.map((item, i) => (
                         <div key={i} className="flex items-center justify-between text-sm">
                           <span className="text-t3">{item.field}:</span>
@@ -318,7 +318,7 @@ const ImportFromECRModal = ({
 
               {/* Link Option */}
               {selectedWorksheetId && (
-                <div className="flex items-start gap-3 p-3 rounded-lg bg-blue-500/5 border border-blue-500/20">
+                <div className="flex items-start gap-3 p-3 rounded-none bg-blue-500/5 border border-blue-500/20">
                   <Checkbox
                     id="link-worksheet"
                     checked={linkWorksheet}
