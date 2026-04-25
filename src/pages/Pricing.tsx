@@ -16,6 +16,7 @@ import { FREE_TOOL_IDS, PRO_TOOL_IDS, PRICING } from "@/lib/tools-config";
 import { PageBursts } from "@/components/ui/data-burst";
 import { PRICING_BURSTS } from "@/lib/data-bursts";
 import { ParallaxStrips } from "@/components/ambient/ParallaxStrips";
+import { SectionHero } from "@/components/ui/section-hero";
 
 const Pricing = () => {
   const [searchParams] = useSearchParams();
@@ -173,20 +174,16 @@ const Pricing = () => {
       <main className="relative container mx-auto px-4 pt-24 pb-16">
         <PageBursts bursts={PRICING_BURSTS} />
         {/* Hero — with parallax telemetry strips */}
-        <section className="relative overflow-hidden text-center mb-12 py-12">
+        <section className="relative overflow-hidden mb-16 py-12">
           <div className="absolute inset-0 opacity-40 pointer-events-none">
-            <ParallaxStrips height={280} />
+            <ParallaxStrips height={300} />
           </div>
           <div className="relative z-10">
-            <p className="font-mono text-[11px] tracking-[0.18em] text-sf-teal uppercase mb-4">
-              // ACCESS TIERS
-            </p>
-            <h1 className="font-display text-4xl md:text-5xl font-light mb-4 tracking-sf-title text-t1 uppercase">
-              UPGRADE YOUR ACCESS
-            </h1>
-            <p className="text-lg text-t3 max-w-2xl mx-auto">
-              Free accounts access {FREE_TOOL_IDS.length} instruments. Pro unlocks all {totalTools}. Vanguard shapes what comes next.
-            </p>
+            <SectionHero
+              eyebrow="// ACCESS TIERS"
+              title={<>Upgrade your <span className="text-sf-teal">access.</span></>}
+              subtitle={`Free accounts access ${FREE_TOOL_IDS.length} instruments. Pro unlocks all ${totalTools}. Vanguard shapes what comes next.`}
+            />
           </div>
         </section>
 

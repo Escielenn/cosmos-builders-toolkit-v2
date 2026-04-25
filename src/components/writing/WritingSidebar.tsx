@@ -85,7 +85,7 @@ export function WritingSidebar({
           className={cn(
             "flex items-center gap-1.5 flex-1 px-3 py-2 text-[11px] font-heading uppercase tracking-[1.2px] transition-colors",
             activeTab === "chapters"
-              ? "text-[#15C17B] border-b-2 border-[#15C17B]"
+              ? "text-sf-teal border-b-2 border-[#15C17B]"
               : "text-t4 hover:text-t2 border-b-2 border-transparent"
           )}
         >
@@ -98,7 +98,7 @@ export function WritingSidebar({
           className={cn(
             "flex items-center gap-1.5 flex-1 px-3 py-2 text-[11px] font-heading uppercase tracking-[1.2px] transition-colors",
             activeTab === "entities"
-              ? "text-[#15C17B] border-b-2 border-[#15C17B]"
+              ? "text-sf-teal border-b-2 border-[#15C17B]"
               : "text-t4 hover:text-t2 border-b-2 border-transparent"
           )}
         >

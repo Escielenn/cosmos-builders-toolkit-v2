@@ -134,28 +134,29 @@ const NotFound = () => {
         </motion.div>
 
         {/* Error code */}
-        <motion.p
-          className="font-mono text-[11px] tracking-[0.18em] text-sf-teal/50 uppercase mb-4"
+        <motion.div
+          className="inline-flex items-center gap-3.5 font-mono uppercase text-sf-teal text-[12px] tracking-[3px] mb-7 justify-center"
           variants={fadeUpItem}
         >
-          // SIGNAL LOST — ERROR 404
-        </motion.p>
+          <span aria-hidden className="block w-12 h-px bg-sf-teal" />
+          <span>// SIGNAL LOST — ERROR 404</span>
+        </motion.div>
 
-        {/* Title */}
+        {/* Title — text-sf-h1 (56px) sentence case */}
         <motion.h1
-          className="font-display text-4xl md:text-5xl font-light uppercase tracking-sf-title text-t1 mb-4"
+          className="font-display font-light text-sf-h1 leading-[1] text-t1 mb-7"
           variants={heroReveal}
         >
-          COORDINATES DO NOT MATCH
+          Coordinates do not <span className="text-sf-crimson">match.</span>
         </motion.h1>
 
         {/* Description */}
         <motion.p
-          className="font-mono text-[11px] tracking-[0.18em] uppercase text-t3 leading-relaxed mb-2"
+          className="font-sans text-sf-body text-t3 leading-[1.55] max-w-[560px] mx-auto mb-2"
           variants={fadeUpItem}
         >
-          THE COORDINATES ENTERED DO NOT CORRESPOND TO ANY CHARTED RECORD.
-          VESSEL HAS DRIFTED BEYOND KNOWN SPACE.
+          The coordinates entered do not correspond to any charted record.
+          Vessel has drifted beyond known space.
         </motion.p>
 
         {/* Failed coordinates readout */}

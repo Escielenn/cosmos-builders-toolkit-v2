@@ -29,8 +29,8 @@ export default function FavoriteButton({ worldId, className }: FavoriteButtonPro
       size="sm"
       onClick={handleClick}
       disabled={!user || toggle.isPending}
-      className={`gap-1.5 text-t3 hover:text-[#FF3366] ${
-        isFavorited ? "text-[#FF3366]" : ""
+      className={`gap-1.5 text-t3 hover:text-sf-crimson ${
+        isFavorited ? "text-sf-crimson" : ""
       } ${className ?? ""}`}
       aria-label={isFavorited ? "Remove from favorites" : "Add to favorites"}
     >

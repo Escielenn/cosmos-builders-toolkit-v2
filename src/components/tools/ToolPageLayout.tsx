@@ -10,7 +10,7 @@
 import { type ReactNode, useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, FileText } from "lucide-react";
-import { getToolAccent, accentTextClass, accentArcClass } from "@/lib/tool-accents";
+import { getToolAccent, accentTextClass, accentArcClass, accentBgClass } from "@/lib/tool-accents";
 import CascadeSuggestionToast from "@/components/tools/CascadeSuggestionToast";
 import UpstreamCallout from "@/components/tools/UpstreamCallout";
 import PageShell from "@/components/layout/PageShell";
@@ -170,26 +170,28 @@ export default function ToolPageLayout({
           />
         )}
 
-        {/* ── Title — per-tool accent: amber physics / azure worlds / emerald life / violet civ / stellar myth / teal integration ── */}
-        <div className="mb-8">
-          <p className={`font-mono text-[11px] tracking-[0.18em] uppercase ${accentTextClass(accent)} mb-2`}>
-            // CATEGORY: {accent.toUpperCase()}
-          </p>
-          <div className="flex items-center gap-3">
-            {ToolIcon && <ToolIcon className="w-8 h-8 rounded-none shrink-0" />}
-            <h1 className="font-display text-3xl md:text-4xl tracking-sf-title text-t1 uppercase">
+        {/* ── Title — section-header pattern with per-tool cascade accent ── */}
+        <div className="mb-10">
+          {/* Mono eyebrow with cascade-color hairline rule */}
+          <div className={`inline-flex items-center gap-3.5 font-mono uppercase ${accentTextClass(accent)} text-[11px] tracking-[2.5px] mb-7`}>
+            <span aria-hidden className={`block w-12 h-px ${accentBgClass(accent)}`} />
+            <span>// {accent.toUpperCase()} · {cfg.brandName.toUpperCase()}</span>
+          </div>
+          <div className="flex items-start gap-4 flex-wrap">
+            {ToolIcon && <ToolIcon className="w-10 h-10 rounded-none shrink-0 mt-1" />}
+            <h1 className="font-display font-light text-sf-h1 leading-[1] text-t1 flex-1 min-w-[280px]">
               <span className="font-normal">{cfg.brandName}:</span>{" "}
               <span className="font-light">{cfg.fullName}</span>
             </h1>
             {cfg.isPro && (
-              <span className="font-mono text-[11px] tracking-[0.18em] uppercase self-start mt-2 px-2 py-0.5 rounded-sf-tag border border-sf-violet/[0.15] bg-sf-violet/[0.06] text-sf-violet">
+              <span className="font-mono text-[11px] tracking-[0.18em] uppercase self-start mt-2 px-2 py-0.5 rounded-sf-tag border border-sf-violet/[0.15] bg-sf-violet/[0.06] text-sf-violet shrink-0">
                 PRO
               </span>
             )}
           </div>
-          <p className="text-t2 mt-2 max-w-2xl">{cfg.subtitle}</p>
+          <p className="font-sans text-sf-body text-t2 mt-7 max-w-[780px] leading-[1.55]">{cfg.subtitle}</p>
           {/* Accent light arc under the title */}
-          <div className={`mt-4 h-px w-24 bg-gradient-to-r ${accentArcClass(accent)}`} aria-hidden />
+          <div className={`mt-7 h-px w-24 bg-gradient-to-r ${accentArcClass(accent)}`} aria-hidden />
 
           {/* Worksheet title + tags (shown when a worksheet is loaded) */}
           {worksheetId && onRenameWorksheet && (

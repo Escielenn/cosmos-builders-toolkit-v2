@@ -142,7 +142,7 @@ export function ChronicleEventDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[480px] bg-[#0C1019] border-sf-border rounded-none p-0">
+      <DialogContent className="sm:max-w-[480px] bg-sf-surface border-sf-border rounded-none p-0">
         <DialogHeader className="px-6 pt-6 pb-0">
           <DialogTitle className="sf-tool-section text-left">
             {isEditing ? "Edit Event" : "New Event"}
@@ -306,7 +306,7 @@ export function ChronicleEventDialog({
                   className="rounded-none bg-transparent border-sf-border text-sm"
                 />
                 {entryResults.length > 0 && (
-                  <div className="absolute top-full left-0 right-0 z-10 mt-1 bg-[#0C1019] border border-sf-border">
+                  <div className="absolute top-full left-0 right-0 z-10 mt-1 bg-sf-surface border border-sf-border">
                     {entryResults.map((entry) => (
                       <button
                         key={entry.id}

@@ -230,7 +230,7 @@ const WorldGraph = () => {
               className={`flex items-center gap-1 px-2.5 py-1 text-[9px] uppercase tracking-[1.5px] transition-colors ${
                 !entriesOnly
                   ? "bg-teal/10 border border-teal/25 text-teal"
-                  : "bg-[#0D1117]/90 border border-sf-border text-t4 hover:text-t3"
+                  : "bg-sf-void/90 border border-sf-border text-t4 hover:text-t3"
               }`}
               title="Show all elements"
             >
@@ -242,7 +242,7 @@ const WorldGraph = () => {
               className={`flex items-center gap-1 px-2.5 py-1 text-[9px] uppercase tracking-[1.5px] transition-colors ${
                 entriesOnly
                   ? "bg-teal/10 border border-teal/25 text-teal"
-                  : "bg-[#0D1117]/90 border border-sf-border text-t4 hover:text-t3"
+                  : "bg-sf-void/90 border border-sf-border text-t4 hover:text-t3"
               }`}
               title="Show entries only"
             >

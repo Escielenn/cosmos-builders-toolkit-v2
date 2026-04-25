@@ -40,7 +40,7 @@ const CodexContextMenu = ({
   return (
     <ContextMenu>
       <ContextMenuTrigger asChild>{children}</ContextMenuTrigger>
-      <ContextMenuContent className="w-48 bg-[#0D1117] border-sf-border">
+      <ContextMenuContent className="w-48 bg-sf-void border-sf-border">
         {onOpenWiki && (
           <ContextMenuItem
             onClick={() => onOpenWiki(element)}

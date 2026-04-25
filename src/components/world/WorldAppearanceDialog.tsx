@@ -205,7 +205,7 @@ export default function WorldAppearanceDialog({
               <label className="font-mono text-[9px] uppercase tracking-[2px] text-t3">
                 // PREVIEW
               </label>
-              <div className="bg-[#0C1019] border border-white/6 p-4 space-y-3">
+              <div className="bg-sf-surface border border-white/6 p-4 space-y-3">
                 {/* Mock section header */}
                 <div className="flex items-center gap-2">
                   <span

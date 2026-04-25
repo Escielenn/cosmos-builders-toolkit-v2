@@ -16,7 +16,7 @@ const FieldManualSheet = ({ open, onOpenChange }: FieldManualSheetProps) => {
     <Sheet open={open} onOpenChange={onOpenChange} modal={false}>
       <SheetContent
         side="right"
-        className="sm:max-w-md w-[90vw] bg-[#0C1019] border-l border-sf-border overflow-y-auto p-0"
+        className="sm:max-w-md w-[90vw] bg-sf-surface border-l border-sf-border overflow-y-auto p-0"
       >
         {/* Header */}
         <SheetHeader className="px-5 pt-5 pb-0">

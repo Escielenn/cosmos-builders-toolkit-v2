@@ -1290,11 +1290,11 @@ function InnerGraph({ worldId, entities, connections }: InnerGraphProps) {
         />
         <Controls
           showInteractive={false}
-          className="!bg-[#0D1117] !border-sf-border !shadow-none [&>button]:!bg-transparent [&>button]:!border-sf-border [&>button]:!text-t3 [&>button:hover]:!bg-accent/10"
+          className="!bg-sf-void !border-sf-border !shadow-none [&>button]:!bg-transparent [&>button]:!border-sf-border [&>button]:!text-t3 [&>button:hover]:!bg-accent/10"
         />
         <MiniMap
           nodeStrokeWidth={3}
-          className="!bg-[#0D1117] !border-sf-border"
+          className="!bg-sf-void !border-sf-border"
           maskColor="rgba(0,0,0,0.7)"
           nodeColor={(node) => {
             const d = node.data as unknown as EntityNodeData;

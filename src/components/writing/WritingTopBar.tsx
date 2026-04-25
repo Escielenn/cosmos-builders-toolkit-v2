@@ -286,7 +286,7 @@ export function WritingTopBar({
           />
           <button
             onClick={onConfirmRename}
-            className="p-0.5 text-[#15C17B] hover:text-[#3DFFCD]"
+            className="p-0.5 text-sf-teal hover:text-[#3DFFCD]"
           >
             <Check className="w-3.5 h-3.5" />
           </button>
@@ -330,7 +330,7 @@ export function WritingTopBar({
                 e.stopPropagation();
                 onDeleteDocument(doc.id);
               }}
-              className="p-1 text-t4 hover:text-[#FF3366]"
+              className="p-1 text-t4 hover:text-sf-crimson"
               title="Delete"
             >
               <Trash2 className="w-3 h-3" />
@@ -354,7 +354,7 @@ export function WritingTopBar({
         className={cn(
           "p-1.5 transition-colors border rounded-sm flex-shrink-0",
           leftPanelOpen
-            ? "border-[#15C17B]/20 text-[#15C17B] bg-[#15C17B]/[0.06]"
+            ? "border-[#15C17B]/20 text-sf-teal bg-sf-teal/[0.06]"
             : "border-white/[0.08] text-t4 hover:text-t2 hover:border-white/[0.15]"
         )}
         title="Toggle entity panel (Ctrl+\\)"
@@ -399,7 +399,7 @@ export function WritingTopBar({
                       setCreatingChapter(true);
                       setTimeout(() => newChapterInputRef.current?.focus(), 50);
                     }}
-                    className="flex items-center gap-1.5 flex-1 px-3 py-2 text-[#FFB800] hover:bg-[#FFB800]/[0.06] transition-colors"
+                    className="flex items-center gap-1.5 flex-1 px-3 py-2 text-sf-amber hover:bg-sf-amber/[0.06] transition-colors"
                   >
                     <FolderOpen className="w-3.5 h-3.5" />
                     <span className="font-sans text-[10px] font-medium uppercase tracking-[1px]">
@@ -410,7 +410,7 @@ export function WritingTopBar({
                 <button
                   onClick={() => handleCreateDocument(null)}
                   disabled={isCreating}
-                  className="flex items-center gap-1.5 flex-1 px-3 py-2 text-[#15C17B] hover:bg-[#15C17B]/[0.06] transition-colors"
+                  className="flex items-center gap-1.5 flex-1 px-3 py-2 text-sf-teal hover:bg-sf-teal/[0.06] transition-colors"
                 >
                   <Plus className="w-3.5 h-3.5" />
                   <span className="font-sans text-[10px] font-medium uppercase tracking-[1px]">
@@ -422,7 +422,7 @@ export function WritingTopBar({
               {/* New chapter inline input */}
               {creatingChapter && (
                 <div className="flex items-center gap-1 px-3 py-2 border-b border-white/[0.06] bg-[#FFB800]/[0.03]">
-                  <FolderOpen className="w-3.5 h-3.5 text-[#FFB800] flex-shrink-0" />
+                  <FolderOpen className="w-3.5 h-3.5 text-sf-amber flex-shrink-0" />
                   <input
                     ref={newChapterInputRef}
                     type="text"
@@ -440,7 +440,7 @@ export function WritingTopBar({
                   />
                   <button
                     onClick={handleCreateChapter}
-                    className="p-0.5 text-[#FFB800] hover:text-[#FFB800]/80"
+                    className="p-0.5 text-sf-amber hover:text-sf-amber/80"
                   >
                     <Check className="w-3.5 h-3.5" />
                   </button>
@@ -501,9 +501,9 @@ export function WritingTopBar({
                               )}
                             />
                             {isExpanded ? (
-                              <FolderOpen className="w-3.5 h-3.5 text-[#FFB800] mr-1.5 flex-shrink-0" />
+                              <FolderOpen className="w-3.5 h-3.5 text-sf-amber mr-1.5 flex-shrink-0" />
                             ) : (
-                              <FolderClosed className="w-3.5 h-3.5 text-[#FFB800]/60 mr-1.5 flex-shrink-0" />
+                              <FolderClosed className="w-3.5 h-3.5 text-sf-amber/60 mr-1.5 flex-shrink-0" />
                             )}
 
                             {isRenaming ? (
@@ -530,7 +530,7 @@ export function WritingTopBar({
                                     e.stopPropagation();
                                     handleConfirmFolderRename();
                                   }}
-                                  className="p-0.5 text-[#FFB800] hover:text-[#FFB800]/80"
+                                  className="p-0.5 text-sf-amber hover:text-sf-amber/80"
                                 >
                                   <Check className="w-3.5 h-3.5" />
                                 </button>
@@ -558,7 +558,7 @@ export function WritingTopBar({
                                     e.stopPropagation();
                                     handleCreateDocument(folder.id);
                                   }}
-                                  className="p-0.5 text-t5 hover:text-[#15C17B] opacity-0 group-hover:opacity-100 transition-opacity"
+                                  className="p-0.5 text-t5 hover:text-sf-teal opacity-0 group-hover:opacity-100 transition-opacity"
                                   title="New document in this chapter"
                                 >
                                   <Plus className="w-3 h-3" />
@@ -691,7 +691,7 @@ export function WritingTopBar({
                       }
                       setFolderContextMenu(null);
                     }}
-                    className="flex items-center gap-2 w-full px-3 py-2 text-xs text-[#FF3366] hover:bg-[#FF3366]/[0.06] transition-colors"
+                    className="flex items-center gap-2 w-full px-3 py-2 text-xs text-sf-crimson hover:bg-[#FF3366]/[0.06] transition-colors"
                   >
                     <Trash2 className="w-3 h-3" />
                     <span className="font-sans">Delete</span>
@@ -714,7 +714,7 @@ export function WritingTopBar({
       {onInsertBracket && (
         <button
           onClick={onInsertBracket}
-          className="flex items-center justify-center px-2 py-1.5 font-mono text-xs text-[#5B8DEF] bg-[#5B8DEF]/[0.06] border border-[#5B8DEF]/[0.12] rounded-xs hover:bg-[#5B8DEF]/[0.12] transition-colors flex-shrink-0"
+          className="flex items-center justify-center px-2 py-1.5 font-mono text-xs text-sf-stellar bg-sf-stellar/[0.06] border border-[#5B8DEF]/[0.12] rounded-xs hover:bg-sf-stellar/[0.12] transition-colors flex-shrink-0"
           title="Insert [[ to trigger wiki link autocomplete"
         >
           [[
@@ -723,7 +723,7 @@ export function WritingTopBar({
       {onInsertMention && (
         <button
           onClick={onInsertMention}
-          className="flex items-center justify-center px-2 py-1.5 text-[#00FF88] bg-[#00FF88]/[0.06] border border-[#00FF88]/[0.12] rounded-xs hover:bg-[#00FF88]/[0.12] transition-colors flex-shrink-0"
+          className="flex items-center justify-center px-2 py-1.5 text-sf-emerald bg-sf-emerald/[0.06] border border-sf-emerald/[0.12] rounded-xs hover:bg-[#00FF88]/[0.12] transition-colors flex-shrink-0"
           title="Insert @ to trigger entity mention autocomplete"
         >
           <AtSign className="w-3.5 h-3.5" />
@@ -737,7 +737,7 @@ export function WritingTopBar({
           className={cn(
             "flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] font-heading uppercase tracking-[1.5px] border rounded-xs transition-colors flex-shrink-0",
             moodboardOpen
-              ? "border-[#FFB800]/30 text-[#FFB800] bg-[#FFB800]/[0.06]"
+              ? "border-[#FFB800]/30 text-sf-amber bg-sf-amber/[0.06]"
               : "border-white/[0.08] text-t4 hover:text-t2 hover:border-white/[0.15]"
           )}
           title="Toggle moodboard (Ctrl+M)"
@@ -753,7 +753,7 @@ export function WritingTopBar({
         className={cn(
           "flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] font-heading uppercase tracking-[1.5px] border rounded-xs transition-colors flex-shrink-0",
           rightPanelOpen
-            ? "border-[#5B8DEF]/30 text-[#5B8DEF] bg-[#5B8DEF]/[0.06]"
+            ? "border-[#5B8DEF]/30 text-sf-stellar bg-sf-stellar/[0.06]"
             : "border-white/[0.08] text-t4 hover:text-t2 hover:border-white/[0.15]"
         )}
         title="Toggle reference panel (Ctrl+Shift+\\)"

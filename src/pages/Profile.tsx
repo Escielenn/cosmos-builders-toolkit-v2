@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { GlassPanel } from "@/components/ui/glass-panel";
+import { SectionHero } from "@/components/ui/section-hero";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Save, ArrowLeft, Upload, Zap, Calendar, CreditCard, AlertCircle, Award, ChevronRight } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
@@ -136,9 +137,13 @@ const Profile = () => {
           ← RETURN TO BRIDGE
         </Button>
 
-        <GlassPanel className="p-8">
-          <h1 className="font-heading text-2xl font-bold mb-6">PERSONNEL FILE</h1>
+        <SectionHero
+          eyebrow="// PERSONNEL FILE"
+          title={<>Personnel <span className="text-sf-teal">file.</span></>}
+          className="mb-10"
+        />
 
+        <GlassPanel className="p-8">
           <div className="space-y-6">
             {/* Avatar */}
             <div className="flex items-center gap-6">

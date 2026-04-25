@@ -4,6 +4,7 @@ import { BookOpen, ExternalLink, ShoppingCart, Search } from "lucide-react";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { GlassPanel } from "@/components/ui/glass-panel";
+import { SectionHero } from "@/components/ui/section-hero";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import {
@@ -119,19 +120,12 @@ const Bookshelf = () => {
       <PageBursts bursts={BOOKSHELF_BURSTS} />
       <main className="container mx-auto px-4 pt-24 pb-16 relative z-10">
         {/* Hero */}
-        <div className="text-center mb-12">
-          <p className="font-mono text-[11px] tracking-[0.18em] text-sf-teal uppercase mb-4">
-            // CATALOG · {searchTerm.length >= 2 ? `${filteredBooks.length} OF ${BOOKSHELF_DATA.length}` : `${BOOKSHELF_DATA.length} WORKS`}
-          </p>
-          <h1 className="font-display text-3xl md:text-4xl font-light tracking-sf-title text-t1 mb-4 uppercase">
-            THE STELLARFORGE BOOKSHELF
-          </h1>
-          <p className="text-t3 max-w-2xl mx-auto">
-            The science fiction novels that inspired our worldbuilding tools.
-            Each book demonstrates how a single constraint—environmental,
-            biological, technological, or political—cascades through an
-            entire world.
-          </p>
+        <div className="mb-12">
+          <SectionHero
+            eyebrow={`// CATALOG · ${searchTerm.length >= 2 ? `${filteredBooks.length} OF ${BOOKSHELF_DATA.length}` : `${BOOKSHELF_DATA.length} WORKS`}`}
+            title={<>The StellarForge <span className="text-sf-teal">bookshelf.</span></>}
+            subtitle="The science fiction novels that inspired our worldbuilding tools. Each book demonstrates how a single constraint — environmental, biological, technological, or political — cascades through an entire world."
+          />
         </div>
 
         {/* Search */}

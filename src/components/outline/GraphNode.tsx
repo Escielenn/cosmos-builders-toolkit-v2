@@ -85,7 +85,7 @@ const GraphNodeComponent = memo(({ data, selected }: NodeProps) => {
     <div
       className={cn(
         "sf-fill-sweep sf-fill-sweep--primary",
-        "relative w-[140px] px-2.5 py-2 bg-[#0D1117] transition-colors",
+        "relative w-[140px] px-2.5 py-2 bg-sf-void transition-colors",
         "border",
         selected && "shadow-lg"
       )}

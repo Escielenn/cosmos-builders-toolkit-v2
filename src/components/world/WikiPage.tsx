@@ -520,7 +520,7 @@ function ConnectionSuggestionBar({
   const [connType, setConnType] = useState("related_to");
 
   return (
-    <div className="flex items-center gap-2 px-3 py-2 bg-[#0C1019] border border-sf-border text-[10px]">
+    <div className="flex items-center gap-2 px-3 py-2 bg-sf-surface border border-sf-border text-[10px]">
       <span className="font-mono uppercase tracking-wider text-t3/40">
         Link detected:
       </span>

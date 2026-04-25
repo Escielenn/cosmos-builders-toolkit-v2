@@ -5,6 +5,7 @@ import { Loader } from "@/components/ui/loader";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { GlassPanel } from "@/components/ui/glass-panel";
+import { SectionHero } from "@/components/ui/section-hero";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -94,18 +95,12 @@ const LearnIndex = () => {
       <main className="relative container mx-auto px-4 pt-24 pb-16">
         <PageBursts bursts={LEARN_INDEX_BURSTS} />
         {/* Hero Section */}
-        <section className="text-center mb-12">
-          <div className="w-16 h-16 rounded-none bg-sf-teal/[0.06] border border-sf-teal/[0.15] flex items-center justify-center mx-auto mb-6">
-            <BookOpen className="w-8 h-8 text-sf-teal" />
-          </div>
-          <p className="font-mono text-[11px] tracking-[0.18em] text-sf-teal uppercase mb-3">// ARCHIVE</p>
-          <h1 className="font-display text-4xl md:text-5xl font-light mb-4 tracking-sf-title text-t1 uppercase">
-            SF University
-          </h1>
-          <p className="text-lg text-t3 max-w-2xl mx-auto">
-            Deep dives into worldbuilding concepts, science for storytellers,
-            and the craft of creating believable fictional universes.
-          </p>
+        <section className="mb-12">
+          <SectionHero
+            eyebrow="// ARCHIVE"
+            title={<>SF <span className="text-sf-teal">university.</span></>}
+            subtitle="Deep dives into worldbuilding concepts, science for storytellers, and the craft of creating believable fictional universes."
+          />
         </section>
 
         {/* Cross-section navigation */}

@@ -95,7 +95,7 @@ export function WikiEditor({
           "prose-li:my-0.5",
           "prose-blockquote:border-l-primary prose-blockquote:text-t3",
           "prose-code:text-xs prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded",
-          "prose-pre:bg-[#0d1117] prose-pre:p-3 prose-pre:rounded-none",
+          "prose-pre:bg-sf-void prose-pre:p-3 prose-pre:rounded-none",
           "[&_.is-editor-empty:first-child::before]:text-t3/50 [&_.is-editor-empty:first-child::before]:content-[attr(data-placeholder)] [&_.is-editor-empty:first-child::before]:float-left [&_.is-editor-empty:first-child::before]:pointer-events-none [&_.is-editor-empty:first-child::before]:h-0"
         ),
       },

@@ -98,7 +98,18 @@ const ARC: Record<ToolAccent, string> = {
   crimson: "from-sf-crimson via-sf-crimson/30 to-transparent",
 };
 
+const BG: Record<ToolAccent, string> = {
+  amber: "bg-sf-amber",
+  azure: "bg-sf-azure",
+  emerald: "bg-sf-emerald",
+  violet: "bg-sf-violet",
+  stellar: "bg-sf-stellar",
+  teal: "bg-sf-teal",
+  crimson: "bg-sf-crimson",
+};
+
 export const accentTextClass = (accent: ToolAccent): string => TEXT[accent];
 export const accentBorderClass = (accent: ToolAccent): string => BORDER[accent];
 export const accentChipClass = (accent: ToolAccent): string => CHIP[accent];
 export const accentArcClass = (accent: ToolAccent): string => ARC[accent];
+export const accentBgClass = (accent: ToolAccent): string => BG[accent];

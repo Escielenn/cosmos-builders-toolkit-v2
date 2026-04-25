@@ -20,6 +20,7 @@ import { WORLDS_BURSTS } from "@/lib/data-bursts";
 import ExampleWorldBanner from "@/components/community/ExampleWorldBanner";
 import { ParallaxStrips } from "@/components/ambient/ParallaxStrips";
 import { EmptyState } from "@/components/ui/empty-state";
+import { SectionHero } from "@/components/ui/section-hero";
 
 const Worlds = () => {
   const { user, loading } = useAuth();
@@ -94,19 +95,19 @@ const Worlds = () => {
         </Link>
 
         {/* Header — parallax telemetry backdrop */}
-        <div className="relative overflow-hidden mb-8">
+        <div className="relative overflow-hidden mb-12">
           <div className="absolute inset-0 opacity-40 pointer-events-none -z-0">
-            <ParallaxStrips height={180} />
+            <ParallaxStrips height={220} />
           </div>
-          <div className="relative z-10 flex flex-col gap-4 py-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="font-mono text-[11px] tracking-[0.18em] text-sf-teal uppercase mb-2">// WORLD INDEX</p>
-              <h1 className="font-display font-light text-3xl md:text-4xl uppercase tracking-sf-title text-t1">
-                MY WORLDS
-              </h1>
-            </div>
-            <div className="flex items-center gap-2">
+          <div className="relative z-10 flex flex-col gap-6 py-10">
+            <div className="flex items-end justify-between gap-6 flex-wrap">
+              <SectionHero
+                eyebrow="// WORLD INDEX"
+                title={<>My <span className="text-sf-teal">worlds.</span></>}
+                subtitle="Each world is its own cascade — physics shapes environment, environment shapes biology, biology shapes culture. Pick one to continue, or begin a new survey."
+                className="flex-1 min-w-[280px]"
+              />
+            <div className="flex items-center gap-2 shrink-0">
             <Button variant="outline" size="sm" onClick={() => setImportDialogOpen(true)}>
               <Upload className="w-4 h-4 mr-2" />
               Import

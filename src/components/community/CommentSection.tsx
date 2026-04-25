@@ -116,7 +116,7 @@ export default function CommentSection({ worldId }: CommentSectionProps) {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="w-7 h-7 opacity-0 group-hover:opacity-100 text-t4 hover:text-[#FF3366] transition-all"
+                  className="w-7 h-7 opacity-0 group-hover:opacity-100 text-t4 hover:text-sf-crimson transition-all"
                   onClick={() => deleteComment.mutate(comment.id)}
                   disabled={deleteComment.isPending}
                   aria-label="Delete comment"

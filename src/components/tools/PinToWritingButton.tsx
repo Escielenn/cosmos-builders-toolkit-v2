@@ -72,7 +72,7 @@ export function PinToWritingButton({
       className={cn(
         "inline-flex items-center gap-1 px-2 py-1 text-[9px] font-sans font-medium uppercase tracking-[1.2px] transition-colors",
         isPinned
-          ? "text-[#FFB800] hover:text-[#FF3366]"
+          ? "text-[#FFB800] hover:text-sf-crimson"
           : "text-t4 hover:text-[#FFB800]",
         className,
       )}

@@ -138,25 +138,22 @@ const Auth = () => {
       <div className="flex-1 overflow-y-auto">
         <div className="container mx-auto px-4 max-w-4xl py-12 md:py-20 space-y-12">
 
-          {/* Hero */}
-          <div className="text-center space-y-6">
-            <div className="flex justify-center">
-              <CubeLogo size={80} className="rounded-none" />
+          {/* Hero — display-font scale per April 2026 handoff */}
+          <div className="space-y-7">
+            <CubeLogo size={80} className="rounded-none" />
+            <div className="inline-flex items-center gap-3.5 font-mono uppercase text-sf-teal text-[12px] tracking-[3px]">
+              <span aria-hidden className="block w-12 h-px bg-sf-teal" />
+              <span>// CLEARANCE REQUIRED</span>
             </div>
-            <div>
-              <p className="font-mono text-[11px] tracking-[0.18em] text-sf-teal uppercase mb-3">
-                // CLEARANCE REQUIRED
-              </p>
-              <h1 className="font-display text-4xl md:text-5xl font-light tracking-[0.08em] mb-3 text-t1 uppercase">
-                STELLARFORGE
-              </h1>
-              <p className="text-t3 text-sm tracking-[0.2em] uppercase font-heading">
-                Science Fiction Worldbuilding Tools
-              </p>
-            </div>
-            <p className="text-t2 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
+            <h1 className="font-display font-light text-sf-hero leading-[0.98] text-t1 max-w-[12ch]">
+              <span className="text-sf-teal">Stellar</span>forge.
+            </h1>
+            <p className="font-heading text-[11px] tracking-[0.2em] uppercase text-t3">
+              Science Fiction Worldbuilding Tools
+            </p>
+            <p className="font-sans text-[19px] text-t2 max-w-[780px] leading-[1.55]">
               Design planets, species, civilizations, and spacecraft with scientific rigor.
-              Every parameter cascades logically—environment shapes biology, biology shapes
+              Every parameter cascades logically — environment shapes biology, biology shapes
               psychology, psychology shapes mythology, mythology shapes culture.
               Build worlds that hold together.
             </p>

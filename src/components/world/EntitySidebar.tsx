@@ -137,7 +137,7 @@ function ColorDotPicker({
       <PopoverContent
         side="right"
         align="start"
-        className="w-48 p-3 bg-[#0D1117] border-sf-border"
+        className="w-48 p-3 bg-sf-void border-sf-border"
         onClick={(e) => e.stopPropagation()}
       >
         <p className="font-sans text-[10px] uppercase tracking-[1.5px] text-t3 mb-2">
@@ -287,7 +287,7 @@ function SortableEntityRow({
             </span>
           </button>
         </ContextMenuTrigger>
-        <ContextMenuContent className="w-44 bg-[#0D1117] border-sf-border">
+        <ContextMenuContent className="w-44 bg-sf-void border-sf-border">
           <ContextMenuItem
             onClick={() => onEntityClick(entity.id)}
             className="text-xs gap-2"
@@ -368,7 +368,7 @@ function StaticEntityRow({
           </span>
         </button>
       </ContextMenuTrigger>
-      <ContextMenuContent className="w-44 bg-[#0D1117] border-sf-border">
+      <ContextMenuContent className="w-44 bg-sf-void border-sf-border">
         <ContextMenuItem
           onClick={() => onEntityClick(entity.id)}
           className="text-xs gap-2"

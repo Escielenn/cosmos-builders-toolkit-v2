@@ -20,7 +20,7 @@ export function DeleteEventDialog({
 }: DeleteEventDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[400px] bg-[#0C1019] border-sf-border rounded-none">
+      <DialogContent className="sm:max-w-[400px] bg-sf-surface border-sf-border rounded-none">
         <DialogHeader>
           <DialogTitle className="sf-tool-section text-left">
             Confirm Removal

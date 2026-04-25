@@ -4,6 +4,7 @@ import { ArrowLeft, Search, PenTool, Plus, Archive, BookOpen } from "lucide-reac
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { GlassPanel } from "@/components/ui/glass-panel";
+import { SectionHero } from "@/components/ui/section-hero";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -159,17 +160,12 @@ const WritingWorkshop = () => {
         </Link>
 
         {/* Page header */}
-        <div className="mb-8">
-          <p className="font-mono text-[11px] tracking-[0.18em] text-sf-teal uppercase mb-2">
-            // WORKSHOP
-          </p>
-          <h1 className="font-display text-3xl md:text-4xl font-light tracking-sf-title text-t1 uppercase mb-2">
-            Writing Prompts
-          </h1>
-          <p className="text-t2 max-w-2xl">
-            Daily prompts, your entries, and writing practice.
-          </p>
-        </div>
+        <SectionHero
+          eyebrow="// WORKSHOP"
+          title={<>Writing <span className="text-sf-teal">prompts.</span></>}
+          subtitle="Daily prompts, your entries, and writing practice — captured here while the rest of the world cascades around them."
+          className="mb-12"
+        />
 
         {/* Stats Panel */}
         <StatsPanel

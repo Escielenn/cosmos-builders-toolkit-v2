@@ -255,7 +255,7 @@ function EntityDetailPanel({
               </span>
               <button
                 onClick={() => onReparent(entity.id, null)}
-                className="text-[9px] font-sans text-[#FF3366] hover:text-[#FF3366]/80 uppercase tracking-[0.5px] ml-auto shrink-0 transition-colors"
+                className="text-[9px] font-sans text-sf-crimson hover:text-sf-crimson/80 uppercase tracking-[0.5px] ml-auto shrink-0 transition-colors"
               >
                 Remove
               </button>
@@ -329,7 +329,7 @@ function EntityDetailPanel({
         )}
         <button
           onClick={() => onDelete(entity.id)}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-sans font-medium text-[#FF3366] hover:bg-[#FF3366]/10 transition-colors ml-auto"
+          className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-sans font-medium text-sf-crimson hover:bg-sf-crimson/10 transition-colors ml-auto"
           style={{
             background: "rgba(255, 51, 102, 0.04)",
             border: "1px solid rgba(255, 51, 102, 0.15)",
@@ -460,7 +460,7 @@ function ContextMenu({
             onClick={item.action}
             className={`w-full flex items-center gap-2 px-3 py-1.5 text-left text-[11px] font-sans tracking-[0.5px] transition-colors ${
               item.danger
-                ? "text-[#FF3366] hover:bg-[#FF3366]/10"
+                ? "text-sf-crimson hover:bg-sf-crimson/10"
                 : "text-t2 hover:bg-white/5 hover:text-t1"
             }`}
           >

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { GlassPanel } from "@/components/ui/glass-panel";
+import { SectionHero } from "@/components/ui/section-hero";
 import { BADGE_DEFINITIONS, type BadgeTier, type BadgeCategory } from "@/lib/badges/definitions";
 import { TIER_STYLES, TIER_LABELS } from "@/lib/badges/tiers";
 import { useEarnedBadges } from "@/hooks/use-badges";
@@ -89,15 +90,12 @@ export default function Commendations() {
           </Button>
 
           {/* Header */}
-          <div className="mb-10">
-            <h1 className="font-display text-3xl md:text-4xl tracking-sf-title text-t1 uppercase">
-              Commendations
-            </h1>
-            <p className="font-sans text-t3 text-sm mt-3 max-w-xl">
-              Marks of progress along the cascade. Each commendation is earned through
-              use—worlds built, words written, systems explored.
-            </p>
-          </div>
+          <SectionHero
+            eyebrow="// COMMENDATIONS"
+            title={<>Marks of <span className="text-sf-teal">progress.</span></>}
+            subtitle="Each commendation is earned through use — worlds built, words written, systems explored. The cascade rewards the doer, not the visitor."
+            className="mb-12"
+          />
 
           {/* Progress overview */}
           <GlassPanel className="p-6 mb-8">

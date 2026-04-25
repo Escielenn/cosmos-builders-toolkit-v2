@@ -216,7 +216,7 @@ export function WritingReferencePanel({
                 className={cn(
                   "flex-1 flex items-center justify-center gap-1.5 px-2 py-2 text-[9px] font-heading uppercase tracking-[1.5px] transition-colors border-b-2",
                   isActive
-                    ? "border-[#15C17B] text-[#15C17B]"
+                    ? "border-[#15C17B] text-sf-teal"
                     : "border-transparent text-t4 hover:text-t2"
                 )}
               >
@@ -296,8 +296,8 @@ export function WritingReferencePanel({
                               className={cn(
                                 "p-0.5 transition-colors flex-shrink-0",
                                 isWsPinned
-                                  ? "text-[#FFB800]"
-                                  : "text-t4 hover:text-[#FFB800]",
+                                  ? "text-sf-amber"
+                                  : "text-t4 hover:text-sf-amber",
                               )}
                               title={
                                 isWsPinned
@@ -384,8 +384,8 @@ export function WritingReferencePanel({
                           className={cn(
                             "p-0.5 transition-colors",
                             isPinned
-                              ? "text-[#FFB800]"
-                              : "text-t4 hover:text-[#FFB800]"
+                              ? "text-sf-amber"
+                              : "text-t4 hover:text-sf-amber"
                           )}
                           title={isPinned ? "Unpin" : "Pin"}
                         >
@@ -440,11 +440,11 @@ export function WritingReferencePanel({
                           className={cn(
                             "text-[8px] font-mono uppercase tracking-wider px-1 py-px rounded-sm flex-shrink-0",
                             pin.type === "entity"
-                              ? "text-[#00FF88]/70 bg-[#00FF88]/[0.06] border border-[#00FF88]/[0.12]"
+                              ? "text-sf-emerald/70 bg-sf-emerald/[0.06] border border-sf-emerald/[0.12]"
                               : pin.type === "note"
-                                ? "text-[#FFB800]/70 bg-[#FFB800]/[0.06] border border-[#FFB800]/[0.12]"
+                                ? "text-sf-amber/70 bg-sf-amber/[0.06] border border-[#FFB800]/[0.12]"
                                 : pin.type === "worksheet"
-                                  ? "text-[#5B8DEF]/70 bg-[#5B8DEF]/[0.06] border border-[#5B8DEF]/[0.12]"
+                                  ? "text-sf-stellar/70 bg-sf-stellar/[0.06] border border-[#5B8DEF]/[0.12]"
                                   : "text-t5 bg-white/[0.04]"
                           )}
                         >
@@ -459,7 +459,7 @@ export function WritingReferencePanel({
                     </div>
                     <button
                       onClick={() => removePin(pin.id)}
-                      className="p-0.5 text-[#FFB800] hover:text-[#FF3366] transition-colors flex-shrink-0 mt-0.5"
+                      className="p-0.5 text-sf-amber hover:text-sf-crimson transition-colors flex-shrink-0 mt-0.5"
                       title="Unpin"
                     >
                       <PinOff className="w-3 h-3" />
@@ -496,7 +496,7 @@ export function WritingReferencePanel({
               {previewSnapshot && (
                 <div className="border-b border-white/[0.06] p-3 space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-heading uppercase tracking-[1.5px] text-[#5B8DEF]">
+                    <span className="text-[10px] font-heading uppercase tracking-[1.5px] text-sf-stellar">
                       Preview
                     </span>
                     <button
@@ -514,7 +514,7 @@ export function WritingReferencePanel({
                   />
                   <button
                     onClick={() => onRestoreVersion(previewSnapshot.id)}
-                    className="w-full flex items-center justify-center gap-2 px-3 py-1.5 bg-[#5B8DEF]/[0.08] border border-[#5B8DEF]/20 text-[#5B8DEF] text-[10px] font-sans font-medium uppercase tracking-[1px] hover:bg-[#5B8DEF]/[0.15] transition-colors"
+                    className="w-full flex items-center justify-center gap-2 px-3 py-1.5 bg-[#5B8DEF]/[0.08] border border-[#5B8DEF]/20 text-sf-stellar text-[10px] font-sans font-medium uppercase tracking-[1px] hover:bg-[#5B8DEF]/[0.15] transition-colors"
                   >
                     <RotateCcw className="w-3 h-3" />
                     Restore This Version
@@ -554,7 +554,7 @@ export function WritingReferencePanel({
                             )}
                           </span>
                           {idx === 0 && (
-                            <span className="text-[8px] font-mono uppercase tracking-wider text-[#15C17B]/60 bg-[#15C17B]/[0.06] border border-[#15C17B]/[0.12] px-1 py-px">
+                            <span className="text-[8px] font-mono uppercase tracking-wider text-sf-teal/60 bg-sf-teal/[0.06] border border-[#15C17B]/[0.12] px-1 py-px">
                               Latest
                             </span>
                           )}
@@ -570,7 +570,7 @@ export function WritingReferencePanel({
                             e.stopPropagation();
                             onPreviewSnapshot(snapshot);
                           }}
-                          className="p-1 text-t4 hover:text-[#5B8DEF]"
+                          className="p-1 text-t4 hover:text-sf-stellar"
                           title="Preview"
                         >
                           <Eye className="w-3 h-3" />
@@ -580,7 +580,7 @@ export function WritingReferencePanel({
                             e.stopPropagation();
                             onRestoreVersion(snapshot.id);
                           }}
-                          className="p-1 text-t4 hover:text-[#5B8DEF]"
+                          className="p-1 text-t4 hover:text-sf-stellar"
                           title="Restore"
                         >
                           <RotateCcw className="w-3 h-3" />
