@@ -57,34 +57,11 @@ const ExoskySimulator = () => {
         <Header />
         <div style={{ position: "fixed", top: 64, left: 0, right: 0, bottom: 0 }}>
           <Suspense fallback={<SimLoader />}>
-            <ExoSkyV2 />
+            <ExoSkyV2
+              narrativeBridgeOpen={narrativeBridge.panelProps.open}
+              worldId={worldId}
+            />
           </Suspense>
-          {/* Unboxed floating title overlay — covers component internal title */}
-          <div
-            className="absolute z-20 pointer-events-none select-none"
-            style={{
-              top: 0,
-              left: 0,
-              width: 360,
-              height: 120,
-              background: 'radial-gradient(ellipse at 0% 0%, rgba(9,9,11,0.95) 0%, rgba(9,9,11,0.7) 50%, transparent 100%)',
-            }}
-          >
-            <div style={{ position: 'absolute', top: 16, left: 18 }}>
-              <h1
-                className="font-display text-[26px] font-light uppercase tracking-[6px] text-t1 leading-none"
-                style={{ textShadow: '0 0 20px rgba(0, 0, 0, 0.6)' }}
-              >
-                EXOSKY
-              </h1>
-              <p
-                className="font-display text-[10px] font-light uppercase tracking-[3px] mt-1"
-                style={{ color: 'rgba(0, 229, 160, 0.35)', textShadow: '0 0 20px rgba(0, 0, 0, 0.6)' }}
-              >
-                StellarForge.tools
-              </p>
-            </div>
-          </div>
           {/* Save/Load controls */}
           {worldId && (
             <div className="absolute bottom-3 left-3 z-20 flex items-center gap-1.5">

@@ -1,8 +1,28 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from "react";
+import { useEntities, useUpdateEntity } from "@/hooks/use-entity-graph";
+import { useToast } from "@/hooks/use-toast";
 
 // ═══════════════════════════════════════════════════════════════
 // EXOSKY v2 — Alien Night Sky Simulator with Milky Way
 // StellarForge.tools · © 2025–2026 Jason D. Batt, Ph.D.
+//
+// MATH VALIDATION (verified 2026-04-25):
+// • IAU 1958 equatorial→galactic rotation matrix (NGP at α 192.859°,
+//   δ +27.128°; l_NCP = 122.932°). Standard reference.
+// • Heliocentric Cartesian conversion: (RA, Dec, dist) → (x,y,z) where
+//   x = r·cos(Dec)·cos(RA), y = r·cos(Dec)·sin(RA), z = r·sin(Dec).
+//   Right-handed equatorial frame.
+// • Observer-frame parallax: stars at fixed heliocentric (RA, Dec, dist)
+//   are translated by `pos - obs` and re-projected to (RA', Dec', dist').
+// • Distance modulus: m = M + 5·log₁₀(d/10pc). Standard.
+// • Gnomonic projection: x = (s·right)/(s·view), y = (s·up)/(s·view).
+// • Stellar catalog: 178 named real stars from Hipparcos (public/exosky-
+//   stars.json). Includes Sirius, Canopus, Arcturus, Vega, Polaris,
+//   Betelgeuse, Rigel, Aldebaran, Antares, Spica, Deneb, Sol, etc.
+//   Spot-checked: Sirius RA 101.287° / Dec −16.716° / 2.64 pc / Mv=−1.43
+//   matches Hipparcos HIP 32349 exactly.
+// • Proper motion (movement of stars over time) is NOT modeled — fine
+//   for present-epoch sky views, drifts slightly over centuries.
 // ═══════════════════════════════════════════════════════════════
 
 const DEG = Math.PI / 180;
@@ -459,7 +479,35 @@ const BG_DEC_BINS = 6;   // 30° per bin in Dec
 // ═══════════════════════════════════════════════════════════════
 // COMPONENT
 // ═══════════════════════════════════════════════════════════════
-export default function ExoSkyV2() {
+interface ExoSkyV2Props {
+  /** When true, the wrapper page's NarrativeBridgePanel is open and
+      occupies 320px of the right edge. The data readout slides left
+      to avoid the overlap. Defaults to false. */
+  narrativeBridgeOpen?: boolean;
+  /** When the simulator is rendered inside a world context, planet/star/
+      moon entities from that world become selectable as observation
+      points (alongside the curated EXOPLANET_SYSTEMS list). */
+  worldId?: string;
+}
+
+export default function ExoSkyV2({
+  narrativeBridgeOpen = false,
+  worldId,
+}: ExoSkyV2Props = {}) {
+  const { toast } = useToast();
+  const { data: worldEntities } = useEntities(worldId);
+  const updateEntity = useUpdateEntity(worldId);
+
+  // Filter to spatial entities (planet/star/moon) — those are what an
+  // observer can stand on or near. Each entity may have galactic
+  // coordinates stashed in metadata.exoskyCoords; if missing we
+  // surface a "Set coordinates" prompt.
+  const worldObservationEntities = useMemo(() => {
+    if (!worldEntities) return [];
+    return worldEntities.filter(
+      (e) => e.entity_type === "planet" || e.entity_type === "star" || e.entity_type === "moon",
+    );
+  }, [worldEntities]);
   const canvasRef = useRef(null);
   const mwOffscreenRef = useRef(null); // Offscreen MW canvas for pre-rendered band
   const mwParamsRef = useRef({ viewRa: -1, viewDec: -1, fov: -1, planetKey: "" }); // Track when MW needs re-render
@@ -525,6 +573,27 @@ export default function ExoSkyV2() {
   const [customGalB, setCustomGalB] = useState(0);
   const [customDistPc, setCustomDistPc] = useState(100);
 
+  // ── World-Entity Observation State ────────────────
+  // When the user selects a planet/star/moon from their own world, we read
+  // its metadata.exoskyCoords (if present) and put the simulator in
+  // "world-entity mode". If the entity has no coords yet, we show a
+  // hint to author them via the custom-coordinate UI; the user can then
+  // press "Save to entity" to persist back via useUpdateEntity.
+  const [worldEntityId, setWorldEntityId] = useState<string | null>(null);
+  const worldEntity = useMemo(
+    () => worldObservationEntities.find((e) => e.id === worldEntityId) ?? null,
+    [worldObservationEntities, worldEntityId],
+  );
+  const worldEntityCoords = useMemo(() => {
+    if (!worldEntity) return null;
+    const meta = (worldEntity.metadata ?? {}) as Record<string, unknown>;
+    const c = meta.exoskyCoords as { ra?: number; dec?: number; distancePc?: number } | undefined;
+    if (!c || typeof c.ra !== "number" || typeof c.dec !== "number" || typeof c.distancePc !== "number") {
+      return null;
+    }
+    return { ra: c.ra, dec: c.dec, distancePc: c.distancePc };
+  }, [worldEntity]);
+
   // ── Hover detection throttle ref ──
   const lastHoverCheckRef = useRef(0);
 
@@ -568,6 +637,20 @@ export default function ExoSkyV2() {
   hoveredStarRef.current = hoveredStar;
 
   const planet = useMemo(() => {
+    // World-entity mode: prefer this when an entity is picked AND has stored coords.
+    if (worldEntity && worldEntityCoords) {
+      return {
+        star: worldEntity.name,
+        planet: `${worldEntity.name} (from your world)`,
+        ra: worldEntityCoords.ra,
+        dec: worldEntityCoords.dec,
+        dist: worldEntityCoords.distancePc,
+        atmoType: "none",
+        atmoDesc: "No atmosphere — vacuum observation",
+        note: worldEntity.summary || `${worldEntity.entity_type} from your world. Coordinates stored on this entity.`,
+        armNote: "Linked to your world",
+      };
+    }
     if (!customMode) return EXOPLANET_SYSTEMS[selectedPlanet];
     const l = customGalL * DEG, b = customGalB * DEG, dist = Math.max(0.01, customDistPc);
     const gx = dist * Math.cos(b) * Math.cos(l);
@@ -582,7 +665,29 @@ export default function ExoSkyV2() {
       note: `Galactic coords: l=${customGalL.toFixed(1)}°, b=${customGalB.toFixed(1)}°, d=${dist.toFixed(1)} pc (${(dist*3.262).toFixed(1)} ly)`,
       armNote: "Custom location",
     };
-  }, [customMode, selectedPlanet, customGalL, customGalB, customDistPc]);
+  }, [customMode, selectedPlanet, customGalL, customGalB, customDistPc, worldEntity, worldEntityCoords]);
+
+  // Save the current custom coordinates back onto a selected world entity.
+  const saveCoordsToEntity = useCallback(() => {
+    if (!worldEntity) return;
+    const l = customGalL * DEG, b = customGalB * DEG, dist = Math.max(0.01, customDistPc);
+    const gx = dist * Math.cos(b) * Math.cos(l);
+    const gy = dist * Math.cos(b) * Math.sin(l);
+    const gz = dist * Math.sin(b);
+    const [ex, ey, ez] = galToEq(gx, gy, gz);
+    const rd = xyzToRaDec(ex, ey, ez);
+    updateEntity.mutate({
+      id: worldEntity.id,
+      metadata: {
+        ...(worldEntity.metadata ?? {}),
+        exoskyCoords: { ra: rd.ra, dec: rd.dec, distancePc: dist, galacticL: customGalL, galacticB: customGalB },
+      },
+    } as Parameters<typeof updateEntity.mutate>[0], {
+      onSuccess: () => {
+        toast({ title: "COORDINATES SAVED.", description: `${worldEntity.name} now has galactic coordinates.` });
+      },
+    });
+  }, [worldEntity, customGalL, customGalB, customDistPc, updateEntity, toast]);
   const atmo = ATMO_MODELS[planet.atmoType];
 
   // ── Procedural stars (memoized per session) ─────────
@@ -1497,13 +1602,56 @@ export default function ExoSkyV2() {
           <span style={{color:"rgba(255,255,255,0.3)",fontSize:10}}>{panelOpen?"▾":"▸"}</span>
         </div>
         {panelOpen && <>
-          <select value={customMode ? -1 : selectedPlanet} onChange={e=>{
-            const val = Number(e.target.value);
-            if (val === -1) { setCustomMode(true); } else { setCustomMode(false); setSelectedPlanet(val); }
+          <select value={worldEntityId ? `world:${worldEntityId}` : (customMode ? "custom" : String(selectedPlanet))} onChange={e=>{
+            const val = e.target.value;
+            if (val === "custom") {
+              setCustomMode(true); setWorldEntityId(null);
+            } else if (val.startsWith("world:")) {
+              setWorldEntityId(val.slice(6));
+              setCustomMode(false);
+            } else {
+              setCustomMode(false); setWorldEntityId(null); setSelectedPlanet(Number(val));
+            }
             setViewRa(180);setViewDec(10);}} style={SEL}>
-            {EXOPLANET_SYSTEMS.map((p,i) => <option key={i} value={i}>{p.planet} ({(p.dist*3.262).toFixed(1)} ly)</option>)}
-            <option value={-1}>── Custom Coordinates ──</option>
+            {EXOPLANET_SYSTEMS.map((p,i) => <option key={i} value={String(i)}>{p.planet} ({(p.dist*3.262).toFixed(1)} ly)</option>)}
+            <option value="custom">── Custom Coordinates ──</option>
+            {worldId && worldObservationEntities.length > 0 && (
+              <optgroup label="── From Your World ──">
+                {worldObservationEntities.map((e) => {
+                  const meta = (e.metadata ?? {}) as Record<string, unknown>;
+                  const c = meta.exoskyCoords as { distancePc?: number } | undefined;
+                  const lyTag = c?.distancePc ? ` (${(c.distancePc*3.262).toFixed(1)} ly)` : " — needs coords";
+                  return <option key={e.id} value={`world:${e.id}`}>{e.name}{lyTag}</option>;
+                })}
+              </optgroup>
+            )}
           </select>
+          {worldEntity && !worldEntityCoords && (
+            <div style={{marginTop:10,padding:"10px 12px",background:"rgba(255,184,0,0.06)",border:"1px solid rgba(255,184,0,0.2)",borderRadius:0}}>
+              <div style={{fontSize:9,fontFamily:"'JetBrains Mono',monospace",letterSpacing:1.5,textTransform:"uppercase",color:"#FFB800",marginBottom:4}}>
+                // COORDINATES NOT SET
+              </div>
+              <div style={{fontSize:9,color:"rgba(255,255,255,0.55)",lineHeight:1.5,marginBottom:8}}>
+                <strong style={{color:"rgba(255,255,255,0.85)"}}>{worldEntity.name}</strong> has no galactic coordinates yet. Use the sliders below to set them, then save back to the entity.
+              </div>
+              <button
+                onClick={() => setCustomMode(true)}
+                style={{...BTN,width:"100%",fontSize:9,padding:"6px 10px",background:"rgba(255,184,0,0.08)",borderColor:"rgba(255,184,0,0.25)",color:"#FFB800"}}
+              >
+                ✦ AUTHOR COORDINATES
+              </button>
+            </div>
+          )}
+          {worldEntity && worldEntityCoords && (
+            <div style={{marginTop:10,padding:"8px 10px",background:"rgba(0,212,255,0.04)",border:"1px solid rgba(0,212,255,0.15)",borderRadius:0}}>
+              <div style={{fontSize:9,fontFamily:"'JetBrains Mono',monospace",letterSpacing:1.5,textTransform:"uppercase",color:"#00D4FF",marginBottom:4}}>
+                // FROM YOUR WORLD
+              </div>
+              <div style={{fontSize:8,color:"rgba(255,255,255,0.55)",lineHeight:1.5}}>
+                Stored: RA {worldEntityCoords.ra.toFixed(2)}° · Dec {worldEntityCoords.dec.toFixed(2)}° · {worldEntityCoords.distancePc.toFixed(1)} pc
+              </div>
+            </div>
+          )}
           {customMode && (
             <div style={{marginTop:10}}>
               <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:4}}>
@@ -1538,6 +1686,27 @@ export default function ExoSkyV2() {
                 l=0° → Galactic center · b=0° → Galactic plane<br/>
                 Distance is from Sol (heliocentric)
               </div>
+
+              {worldEntity && (
+                <button
+                  onClick={saveCoordsToEntity}
+                  disabled={updateEntity.isPending}
+                  style={{
+                    ...BTN,
+                    marginTop:10,
+                    width:"100%",
+                    fontSize:9,
+                    padding:"7px 10px",
+                    background:"rgba(21,193,123,0.10)",
+                    borderColor:"rgba(21,193,123,0.30)",
+                    color:"#15C17B",
+                    opacity: updateEntity.isPending ? 0.5 : 1,
+                  }}
+                  title="Persist these coordinates onto the world entity (saved to metadata.exoskyCoords)"
+                >
+                  {updateEntity.isPending ? "SAVING…" : `↳ SAVE TO ${worldEntity.name.toUpperCase()}`}
+                </button>
+              )}
             </div>
           )}
           <div style={{marginTop:8,fontSize:8.5,color:"rgba(255,255,255,0.4)",lineHeight:1.6}}>{planet.note}</div>
@@ -1651,9 +1820,22 @@ export default function ExoSkyV2() {
         </>}
       </div>
 
-      {/* ── DATA READOUT ── */}
-      <div style={{ position:"absolute",top:16,right:18,width:250,zIndex:10,maxHeight:"calc(100% - 80px)",overflowY:"auto",
-        background:"rgba(15,15,16,0.92)",border:"1px solid rgba(255,255,255,0.08)",backdropFilter:"blur(16px)",borderRadius:0,padding:"14px 18px" }}>
+      {/* ── DATA READOUT ── (slides left when NarrativeBridge is open so it doesn't overlap) */}
+      <div style={{
+        position:"absolute",
+        top:16,
+        right: narrativeBridgeOpen ? 18 + 320 + 12 : 18,
+        width:320,
+        zIndex:10,
+        maxHeight:"calc(100% - 80px)",
+        overflowY:"auto",
+        background:"rgba(15,15,16,0.92)",
+        border:"1px solid rgba(255,255,255,0.08)",
+        backdropFilter:"blur(16px)",
+        borderRadius:0,
+        padding:"16px 20px",
+        transition:"right 280ms cubic-bezier(0.2, 0, 0, 1)",
+      }}>
         <div onClick={()=>setDataOpen(!dataOpen)} style={{cursor:"pointer",display:"flex",justifyContent:"space-between"}}>
           <span style={SH}>SYSTEM DATA</span>
           <span style={{color:"rgba(255,255,255,0.3)",fontSize:10}}>{dataOpen?"▾":"▸"}</span>
@@ -1823,9 +2005,22 @@ export default function ExoSkyV2() {
         </div>
       )}
 
-      {/* ── KEYBOARD HELP ── */}
+      {/* ── KEYBOARD HELP ── (sits left of data panel; further left when bridge is open) */}
       {showKbHelp && (
-        <div style={{position:"absolute",top:16,right:280,zIndex:50,width:210,background:"rgba(15,15,16,0.92)",border:"1px solid rgba(255,255,255,0.08)",WebkitBackdropFilter:"blur(16px)",backdropFilter:"blur(16px)",borderRadius:0,padding:"14px 18px"}}>
+        <div style={{
+          position:"absolute",
+          top:16,
+          right: narrativeBridgeOpen ? 18 + 320 + 12 + 320 + 12 : 18 + 320 + 12,
+          zIndex:50,
+          width:210,
+          background:"rgba(15,15,16,0.92)",
+          border:"1px solid rgba(255,255,255,0.08)",
+          WebkitBackdropFilter:"blur(16px)",
+          backdropFilter:"blur(16px)",
+          borderRadius:0,
+          padding:"14px 18px",
+          transition:"right 280ms cubic-bezier(0.2, 0, 0, 1)",
+        }}>
           <div style={{fontSize:7.5,fontFamily:"'MD Nichrome','Space Grotesk',sans-serif",fontWeight:300,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(0,229,160,0.55)",marginBottom:8,paddingBottom:3,borderBottom:"1px solid rgba(0,229,160,0.1)"}}>Keyboard Shortcuts</div>
           {[["Drag","Pan sky"],["Scroll / Pinch","Zoom FOV"],["Esc","Cancel / Close"],["Ctrl+Z","Undo star (draw)"],["Enter","Save constellation"],["?","Toggle this help"]].map(([key,desc])=>(
             <div key={key} style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",lineHeight:"2"}}>

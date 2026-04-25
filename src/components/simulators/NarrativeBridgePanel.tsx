@@ -59,18 +59,29 @@ export default function NarrativeBridgePanel({
 
   const filledCount = Object.values(notes).filter((v) => v.trim()).length;
 
-  // Collapsed state — tab button on the right edge
+  // Collapsed state — tab button on the right edge.
+  // April 2026 handoff: highly visible at rest (sf-cyan 80% + glow + chevron),
+  // with a filled-count badge so the user knows there's content waiting.
   if (!open) {
     return (
       <button
         onClick={() => onOpenChange(true)}
-        className="absolute right-0 top-1/2 -translate-y-1/2 z-30 bg-sf-void/90 border border-sf-border border-r-0 px-2 py-4 hover:bg-sf-void transition-colors group"
-        title="Narrative Bridge"
+        className="absolute right-0 top-1/2 -translate-y-1/2 z-30 bg-sf-cyan/[0.08] border border-sf-cyan/40 border-r-0 px-2.5 py-5 hover:bg-sf-cyan/[0.16] hover:border-sf-cyan/70 transition-colors duration-base group shadow-[0_0_18px_rgba(0,212,255,0.18)]"
+        title="Open Narrative Bridge"
+        aria-label="Open Narrative Bridge"
       >
-        <span className="font-heading text-[9px] uppercase tracking-[2px] text-sf-cyan/50 group-hover:text-sf-cyan transition-colors [writing-mode:vertical-lr] rotate-180">
+        <ChevronLeft className="w-3.5 h-3.5 text-sf-cyan group-hover:text-white mb-2 mx-auto" />
+        <span className="font-heading text-[10px] font-medium uppercase tracking-[2px] text-sf-cyan group-hover:text-white transition-colors [writing-mode:vertical-lr] rotate-180 inline-block">
           Narrative Bridge
         </span>
-        <ChevronLeft className="w-3 h-3 text-sf-cyan/30 group-hover:text-sf-cyan/60 mt-2 mx-auto" />
+        {filledCount > 0 && (
+          <span
+            className="absolute -left-2 -top-2 min-w-[20px] h-5 px-1.5 inline-flex items-center justify-center rounded-sf-tag bg-sf-teal text-[10px] font-mono font-medium text-[#08110C] tabular-nums tracking-tight"
+            aria-label={`${filledCount} answered`}
+          >
+            {filledCount}
+          </span>
+        )}
       </button>
     );
   }

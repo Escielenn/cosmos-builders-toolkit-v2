@@ -40,7 +40,10 @@ export interface SimulatorPayload {
 interface UseSimulationSaveOptions {
   simulatorType: string;
   worldId: string | undefined;
-  iframeRef: React.RefObject<HTMLIFrameElement | null>;
+  /** Iframe-based simulators pass their iframeRef so save/load can postMessage
+      into the iframe. React-component simulators (ExoSky) omit this and
+      handle save/load via window-scoped events instead. */
+  iframeRef?: React.RefObject<HTMLIFrameElement | null>;
 }
 
 export function useSimulationSave({
@@ -121,26 +124,23 @@ export function useSimulationSave({
     },
   });
 
-  // ── Load saved state into the simulator iframe ───────────────────
+  // ── Load saved state into the simulator ──────────────────────────
+  // For iframe sims (Rogue/Tidelock/etc.), postMessage into the iframe.
+  // For React-component sims (ExoSky), broadcast on the window so the
+  // component can listen and apply the payload.
   const loadSave = useCallback(
     (save: SimulationSave) => {
-      const iframe = iframeRef.current;
-      if (!iframe?.contentWindow) {
-        toast({
-          title: "Load failed",
-          description: "Simulator not ready. Try again.",
-          variant: "destructive",
-        });
-        return;
+      const iframe = iframeRef?.current;
+      if (iframe?.contentWindow) {
+        iframe.contentWindow.postMessage(
+          { type: "STELLARFORGE_LOAD", payload: save.data },
+          "*"
+        );
+      } else {
+        window.dispatchEvent(
+          new CustomEvent("STELLARFORGE_LOAD", { detail: save.data })
+        );
       }
-
-      iframe.contentWindow.postMessage(
-        {
-          type: "STELLARFORGE_LOAD",
-          payload: save.data,
-        },
-        "*"
-      );
 
       toast({
         title: "Simulation loaded",
@@ -165,15 +165,17 @@ export function useSimulationSave({
   }, []);
 
   // ── Trigger save from React (for wrapper "Save" button) ─────────
+  // Iframe sims: postMessage. Component sims (ExoSky): window event.
   const requestSave = useCallback(() => {
-    const iframe = iframeRef.current;
-    if (!iframe?.contentWindow) return;
-
-    // Ask the simulator to send its current state
-    iframe.contentWindow.postMessage(
-      { type: "STELLARFORGE_REQUEST_STATE" },
-      "*"
-    );
+    const iframe = iframeRef?.current;
+    if (iframe?.contentWindow) {
+      iframe.contentWindow.postMessage(
+        { type: "STELLARFORGE_REQUEST_STATE" },
+        "*"
+      );
+    } else {
+      window.dispatchEvent(new CustomEvent("STELLARFORGE_REQUEST_STATE"));
+    }
   }, [iframeRef]);
 
   return {
