@@ -141,16 +141,16 @@ export default function RecentActivity({ worldId }: RecentActivityProps) {
               to={item.linkTo}
               className="flex items-center gap-3 px-4 py-2.5 hover:bg-white/[0.03] transition-colors group"
             >
-              <Icon className="w-3.5 h-3.5 text-tier-4 shrink-0 group-hover:text-tier-3 transition-colors" />
+              <Icon className="w-3.5 h-3.5 text-t4 shrink-0 group-hover:text-t3 transition-colors" />
               <div className="flex-1 min-w-0">
-                <span className="text-sm text-tier-2 truncate block group-hover:text-tier-1 transition-colors">
+                <span className="text-sm text-t2 truncate block group-hover:text-t1 transition-colors">
                   {item.name}
                 </span>
               </div>
-              <span className="font-mono text-[9px] uppercase tracking-[1px] text-tier-4 shrink-0">
+              <span className="font-mono text-[9px] uppercase tracking-[1px] text-t4 shrink-0">
                 {TYPE_LABELS[item.type]}
               </span>
-              <span className="font-mono text-[9px] text-tier-5 shrink-0 w-24 text-right">
+              <span className="font-mono text-[9px] text-t5 shrink-0 w-24 text-right">
                 {formatDistanceToNow(new Date(item.updatedAt), {
                   addSuffix: true,
                 })}

@@ -603,7 +603,7 @@ const TechnologyConsequences = () => {
                         <RadioGroupItem value={opt.value} id={`infra-${opt.value}`} />
                         <Label htmlFor={`infra-${opt.value}`} className="font-normal cursor-pointer">
                           <span className="font-medium">{opt.label}</span>
-                          <span className="text-xs text-tier-4 block">{opt.description}</span>
+                          <span className="text-xs text-t4 block">{opt.description}</span>
                         </Label>
                       </div>
                     ))}
@@ -630,7 +630,7 @@ const TechnologyConsequences = () => {
                         <RadioGroupItem value={opt.value} id={`env-${opt.value}`} />
                         <Label htmlFor={`env-${opt.value}`} className="font-normal cursor-pointer">
                           <span className="font-medium">{opt.label}</span>
-                          <span className="text-xs text-tier-4 block">{opt.description}</span>
+                          <span className="text-xs text-t4 block">{opt.description}</span>
                         </Label>
                       </div>
                     ))}
@@ -657,7 +657,7 @@ const TechnologyConsequences = () => {
                         <RadioGroupItem value={opt.value} id={`res-${opt.value}`} />
                         <Label htmlFor={`res-${opt.value}`} className="font-normal cursor-pointer">
                           <span className="font-medium">{opt.label}</span>
-                          <span className="text-xs text-tier-4 block">{opt.description}</span>
+                          <span className="text-xs text-t4 block">{opt.description}</span>
                         </Label>
                       </div>
                     ))}
@@ -713,7 +713,7 @@ const TechnologyConsequences = () => {
                         <RadioGroupItem value={opt.value} id={`ind-${opt.value}`} />
                         <Label htmlFor={`ind-${opt.value}`} className="font-normal cursor-pointer">
                           <span className="font-medium">{opt.label}</span>
-                          <span className="text-xs text-tier-4 block">{opt.description}</span>
+                          <span className="text-xs text-t4 block">{opt.description}</span>
                         </Label>
                       </div>
                     ))}
@@ -740,7 +740,7 @@ const TechnologyConsequences = () => {
                         <RadioGroupItem value={opt.value} id={`emp-${opt.value}`} />
                         <Label htmlFor={`emp-${opt.value}`} className="font-normal cursor-pointer">
                           <span className="font-medium">{opt.label}</span>
-                          <span className="text-xs text-tier-4 block">{opt.description}</span>
+                          <span className="text-xs text-t4 block">{opt.description}</span>
                         </Label>
                       </div>
                     ))}
@@ -767,7 +767,7 @@ const TechnologyConsequences = () => {
                         <RadioGroupItem value={opt.value} id={`wea-${opt.value}`} />
                         <Label htmlFor={`wea-${opt.value}`} className="font-normal cursor-pointer">
                           <span className="font-medium">{opt.label}</span>
-                          <span className="text-xs text-tier-4 block">{opt.description}</span>
+                          <span className="text-xs text-t4 block">{opt.description}</span>
                         </Label>
                       </div>
                     ))}
@@ -804,7 +804,7 @@ const TechnologyConsequences = () => {
                         <RadioGroupItem value={opt.value} id={`cls-${opt.value}`} />
                         <Label htmlFor={`cls-${opt.value}`} className="font-normal cursor-pointer">
                           <span className="font-medium">{opt.label}</span>
-                          <span className="text-xs text-tier-4 block">{opt.description}</span>
+                          <span className="text-xs text-t4 block">{opt.description}</span>
                         </Label>
                       </div>
                     ))}
@@ -831,7 +831,7 @@ const TechnologyConsequences = () => {
                         <RadioGroupItem value={opt.value} id={`fam-${opt.value}`} />
                         <Label htmlFor={`fam-${opt.value}`} className="font-normal cursor-pointer">
                           <span className="font-medium">{opt.label}</span>
-                          <span className="text-xs text-tier-4 block">{opt.description}</span>
+                          <span className="text-xs text-t4 block">{opt.description}</span>
                         </Label>
                       </div>
                     ))}
@@ -858,7 +858,7 @@ const TechnologyConsequences = () => {
                         <RadioGroupItem value={opt.value} id={`com-${opt.value}`} />
                         <Label htmlFor={`com-${opt.value}`} className="font-normal cursor-pointer">
                           <span className="font-medium">{opt.label}</span>
-                          <span className="text-xs text-tier-4 block">{opt.description}</span>
+                          <span className="text-xs text-t4 block">{opt.description}</span>
                         </Label>
                       </div>
                     ))}
@@ -885,7 +885,7 @@ const TechnologyConsequences = () => {
                         <RadioGroupItem value={opt.value} id={`idt-${opt.value}`} />
                         <Label htmlFor={`idt-${opt.value}`} className="font-normal cursor-pointer">
                           <span className="font-medium">{opt.label}</span>
-                          <span className="text-xs text-tier-4 block">{opt.description}</span>
+                          <span className="text-xs text-t4 block">{opt.description}</span>
                         </Label>
                       </div>
                     ))}
@@ -922,7 +922,7 @@ const TechnologyConsequences = () => {
                         <RadioGroupItem value={opt.value} id={`pow-${opt.value}`} />
                         <Label htmlFor={`pow-${opt.value}`} className="font-normal cursor-pointer">
                           <span className="font-medium">{opt.label}</span>
-                          <span className="text-xs text-tier-4 block">{opt.description}</span>
+                          <span className="text-xs text-t4 block">{opt.description}</span>
                         </Label>
                       </div>
                     ))}
@@ -949,7 +949,7 @@ const TechnologyConsequences = () => {
                         <RadioGroupItem value={opt.value} id={`sur-${opt.value}`} />
                         <Label htmlFor={`sur-${opt.value}`} className="font-normal cursor-pointer">
                           <span className="font-medium">{opt.label}</span>
-                          <span className="text-xs text-tier-4 block">{opt.description}</span>
+                          <span className="text-xs text-t4 block">{opt.description}</span>
                         </Label>
                       </div>
                     ))}
@@ -976,7 +976,7 @@ const TechnologyConsequences = () => {
                         <RadioGroupItem value={opt.value} id={`gov-${opt.value}`} />
                         <Label htmlFor={`gov-${opt.value}`} className="font-normal cursor-pointer">
                           <span className="font-medium">{opt.label}</span>
-                          <span className="text-xs text-tier-4 block">{opt.description}</span>
+                          <span className="text-xs text-t4 block">{opt.description}</span>
                         </Label>
                       </div>
                     ))}
@@ -1013,7 +1013,7 @@ const TechnologyConsequences = () => {
                         <RadioGroupItem value={opt.value} id={`war-${opt.value}`} />
                         <Label htmlFor={`war-${opt.value}`} className="font-normal cursor-pointer">
                           <span className="font-medium">{opt.label}</span>
-                          <span className="text-xs text-tier-4 block">{opt.description}</span>
+                          <span className="text-xs text-t4 block">{opt.description}</span>
                         </Label>
                       </div>
                     ))}
@@ -1040,7 +1040,7 @@ const TechnologyConsequences = () => {
                         <RadioGroupItem value={opt.value} id={`def-${opt.value}`} />
                         <Label htmlFor={`def-${opt.value}`} className="font-normal cursor-pointer">
                           <span className="font-medium">{opt.label}</span>
-                          <span className="text-xs text-tier-4 block">{opt.description}</span>
+                          <span className="text-xs text-t4 block">{opt.description}</span>
                         </Label>
                       </div>
                     ))}
@@ -1067,7 +1067,7 @@ const TechnologyConsequences = () => {
                         <RadioGroupItem value={opt.value} id={`det-${opt.value}`} />
                         <Label htmlFor={`det-${opt.value}`} className="font-normal cursor-pointer">
                           <span className="font-medium">{opt.label}</span>
-                          <span className="text-xs text-tier-4 block">{opt.description}</span>
+                          <span className="text-xs text-t4 block">{opt.description}</span>
                         </Label>
                       </div>
                     ))}
@@ -1104,7 +1104,7 @@ const TechnologyConsequences = () => {
                         <RadioGroupItem value={opt.value} id={`per-${opt.value}`} />
                         <Label htmlFor={`per-${opt.value}`} className="font-normal cursor-pointer">
                           <span className="font-medium">{opt.label}</span>
-                          <span className="text-xs text-tier-4 block">{opt.description}</span>
+                          <span className="text-xs text-t4 block">{opt.description}</span>
                         </Label>
                       </div>
                     ))}
@@ -1131,7 +1131,7 @@ const TechnologyConsequences = () => {
                         <RadioGroupItem value={opt.value} id={`val-${opt.value}`} />
                         <Label htmlFor={`val-${opt.value}`} className="font-normal cursor-pointer">
                           <span className="font-medium">{opt.label}</span>
-                          <span className="text-xs text-tier-4 block">{opt.description}</span>
+                          <span className="text-xs text-t4 block">{opt.description}</span>
                         </Label>
                       </div>
                     ))}
@@ -1158,7 +1158,7 @@ const TechnologyConsequences = () => {
                         <RadioGroupItem value={opt.value} id={`fea-${opt.value}`} />
                         <Label htmlFor={`fea-${opt.value}`} className="font-normal cursor-pointer">
                           <span className="font-medium">{opt.label}</span>
-                          <span className="text-xs text-tier-4 block">{opt.description}</span>
+                          <span className="text-xs text-t4 block">{opt.description}</span>
                         </Label>
                       </div>
                     ))}
@@ -1192,7 +1192,7 @@ const TechnologyConsequences = () => {
                     </CardHeader>
                     <CardContent className="space-y-2">
                       <p className="text-sm">{example.description}</p>
-                      <p className="text-xs text-tier-4 italic">{example.consequences}</p>
+                      <p className="text-xs text-t4 italic">{example.consequences}</p>
                     </CardContent>
                   </Card>
                 ))}

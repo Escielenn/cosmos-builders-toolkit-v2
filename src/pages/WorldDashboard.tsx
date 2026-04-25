@@ -253,7 +253,7 @@ const SortableToolCard = ({ tool, worldId }: { tool: typeof TOOLS[number]; world
     <div ref={setNodeRef} style={style} className="group/card relative">
       <button
         type="button"
-        className="absolute top-2 right-2 z-10 p-1 cursor-grab active:cursor-grabbing text-tier-5 opacity-0 group-hover/card:opacity-100 transition-opacity touch-none"
+        className="absolute top-2 right-2 z-10 p-1 cursor-grab active:cursor-grabbing text-t5 opacity-0 group-hover/card:opacity-100 transition-opacity touch-none"
         {...attributes}
         {...listeners}
         tabIndex={-1}
@@ -318,7 +318,7 @@ const SortableWorksheetGroup = ({
         <div className="flex items-center gap-2">
           <button
             type="button"
-            className="p-0.5 cursor-grab active:cursor-grabbing text-tier-5 opacity-0 group-hover/wsgroup:opacity-100 transition-opacity touch-none"
+            className="p-0.5 cursor-grab active:cursor-grabbing text-t5 opacity-0 group-hover/wsgroup:opacity-100 transition-opacity touch-none"
             {...attributes}
             {...listeners}
             tabIndex={-1}
@@ -880,7 +880,7 @@ const WorldDashboard = () => {
               <div className="space-y-3">
                 {Object.entries(entitiesByType).map(([type, entries]) => (
                   <div key={type}>
-                    <h3 className="font-heading text-xs font-light uppercase tracking-[2px] text-tier-3 mb-2">
+                    <h3 className="font-heading text-xs font-light uppercase tracking-[2px] text-t3 mb-2">
                       {ENTITY_TYPE_LABELS[type] ?? type}
                     </h3>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
@@ -891,12 +891,12 @@ const WorldDashboard = () => {
                         >
                           <GlassPanel className="p-3 hover:bg-accent/50 transition-colors cursor-pointer group">
                             <div className="flex items-center gap-2">
-                              <span className="font-heading text-sm text-tier-2 group-hover:text-tier-1 transition-colors truncate">
+                              <span className="font-heading text-sm text-t2 group-hover:text-t1 transition-colors truncate">
                                 {entry.title}
                               </span>
                             </div>
                             {(entry.metadata as Record<string, unknown>)?.description && (
-                              <p className="text-[11px] text-tier-4 mt-1 line-clamp-1">
+                              <p className="text-[11px] text-t4 mt-1 line-clamp-1">
                                 {String((entry.metadata as Record<string, unknown>).description)}
                               </p>
                             )}

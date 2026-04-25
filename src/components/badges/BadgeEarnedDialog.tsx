@@ -47,12 +47,12 @@ export function BadgeEarnedDialog() {
           </div>
 
           {/* Badge name */}
-          <h2 className="font-heading text-xl uppercase tracking-[2px] text-tier-1">
+          <h2 className="font-heading text-xl uppercase tracking-[2px] text-t1">
             {badge.name}
           </h2>
 
           {/* Description */}
-          <p className="font-sans text-sm text-tier-2 max-w-[280px]">
+          <p className="font-sans text-sm text-t2 max-w-[280px]">
             {badge.description}
           </p>
 

@@ -66,7 +66,7 @@ export default function EntitySyncNotice({
           <p className="text-xs font-heading uppercase tracking-wider text-amber">
             Worksheet Update Available
           </p>
-          <p className="text-[11px] text-tier-3 mt-1">
+          <p className="text-[11px] text-t3 mt-1">
             {toolName} has new data that differs from this entity's details.
           </p>
         </div>
@@ -75,11 +75,11 @@ export default function EntitySyncNotice({
       <div className="space-y-1 ml-6">
         {pendingChanges.map((change) => (
           <div key={change.field} className="flex items-baseline gap-2 text-[11px]">
-            <span className="text-tier-3 font-medium">{change.label}:</span>
-            <span className="text-tier-4 line-through">
+            <span className="text-t3 font-medium">{change.label}:</span>
+            <span className="text-t4 line-through">
               {formatValue(change.oldValue)}
             </span>
-            <span className="text-tier-2">→</span>
+            <span className="text-t2">→</span>
             <span className="text-amber font-mono">
               {formatValue(change.newValue)}
             </span>

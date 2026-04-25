@@ -78,7 +78,7 @@ const TidelockSimulator = () => {
             >
               <div style={{ position: 'absolute', top: 18, left: 18 }}>
                 <h1
-                  className="font-display text-[26px] font-light uppercase tracking-[6px] text-tier-1 leading-none"
+                  className="font-display text-[26px] font-light uppercase tracking-[6px] text-t1 leading-none"
                   style={{ textShadow: '0 0 20px rgba(0, 0, 0, 0.6)' }}
                 >
                   TIDELOCK

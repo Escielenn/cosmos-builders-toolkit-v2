@@ -183,12 +183,12 @@ export function WritingReferencePanel({
       >
         {/* Panel header */}
         <div className="flex items-center justify-between border-b border-white/[0.06] px-3 py-2.5">
-          <span className="font-heading text-[11px] font-light uppercase tracking-[2px] text-tier-3">
+          <span className="font-heading text-[11px] font-light uppercase tracking-[2px] text-t3">
             Reference
           </span>
           <button
             onClick={onToggle}
-            className="p-1 text-tier-4 hover:text-tier-2 transition-colors"
+            className="p-1 text-t4 hover:text-t2 transition-colors"
             title="Collapse panel"
           >
             <ChevronRight className="w-4 h-4" />
@@ -217,13 +217,13 @@ export function WritingReferencePanel({
                   "flex-1 flex items-center justify-center gap-1.5 px-2 py-2 text-[9px] font-heading uppercase tracking-[1.5px] transition-colors border-b-2",
                   isActive
                     ? "border-[#15C17B] text-[#15C17B]"
-                    : "border-transparent text-tier-4 hover:text-tier-2"
+                    : "border-transparent text-t4 hover:text-t2"
                 )}
               >
                 <Icon className="w-3 h-3" />
                 <span>{tab.label}</span>
                 {count > 0 && (
-                  <span className="font-mono text-[8px] text-tier-5">
+                  <span className="font-mono text-[8px] text-t5">
                     {count}
                   </span>
                 )}
@@ -246,17 +246,17 @@ export function WritingReferencePanel({
                     onClick={() => setWorksheetsExpanded((p) => !p)}
                     className="flex items-center justify-between w-full px-3 py-2 hover:bg-white/[0.03] transition-colors"
                   >
-                    <span className="font-heading text-[10px] font-light uppercase tracking-[1.5px] text-tier-3 flex items-center gap-1.5">
+                    <span className="font-heading text-[10px] font-light uppercase tracking-[1.5px] text-t3 flex items-center gap-1.5">
                       <FileText className="w-3 h-3" />
                       Worksheets
-                      <span className="font-mono text-[8px] text-tier-5">
+                      <span className="font-mono text-[8px] text-t5">
                         {worksheets.length}
                       </span>
                     </span>
                     {worksheetsExpanded ? (
-                      <ChevronUp className="w-3 h-3 text-tier-4" />
+                      <ChevronUp className="w-3 h-3 text-t4" />
                     ) : (
-                      <ChevronDown className="w-3 h-3 text-tier-4" />
+                      <ChevronDown className="w-3 h-3 text-t4" />
                     )}
                   </button>
                   {worksheetsExpanded && (
@@ -280,11 +280,11 @@ export function WritingReferencePanel({
                             className="flex items-center gap-2 px-3 py-1.5 hover:bg-white/[0.03] transition-colors"
                           >
                             {ToolIcon ? (
-                              <ToolIcon className="w-3.5 h-3.5 text-tier-4 flex-shrink-0" />
+                              <ToolIcon className="w-3.5 h-3.5 text-t4 flex-shrink-0" />
                             ) : (
-                              <FileText className="w-3.5 h-3.5 text-tier-4 flex-shrink-0" />
+                              <FileText className="w-3.5 h-3.5 text-t4 flex-shrink-0" />
                             )}
-                            <span className="flex-1 text-[10px] text-tier-2 truncate">
+                            <span className="flex-1 text-[10px] text-t2 truncate">
                               {displayTitle}
                             </span>
                             <button
@@ -297,7 +297,7 @@ export function WritingReferencePanel({
                                 "p-0.5 transition-colors flex-shrink-0",
                                 isWsPinned
                                   ? "text-[#FFB800]"
-                                  : "text-tier-4 hover:text-[#FFB800]",
+                                  : "text-t4 hover:text-[#FFB800]",
                               )}
                               title={
                                 isWsPinned
@@ -322,18 +322,18 @@ export function WritingReferencePanel({
               {/* ----- World Notes ----- */}
               {notesLoading && (
                 <div className="px-3 py-6 text-center">
-                  <span className="text-[10px] uppercase tracking-[1.5px] text-tier-5">
+                  <span className="text-[10px] uppercase tracking-[1.5px] text-t5">
                     Loading notes...
                   </span>
                 </div>
               )}
               {!notesLoading && notes.length === 0 && (
                 <div className="px-3 py-8 text-center">
-                  <StickyNote className="w-6 h-6 text-tier-5 mx-auto mb-2" />
-                  <p className="text-[10px] uppercase tracking-[1.5px] text-tier-5">
+                  <StickyNote className="w-6 h-6 text-t5 mx-auto mb-2" />
+                  <p className="text-[10px] uppercase tracking-[1.5px] text-t5">
                     No world notes yet
                   </p>
-                  <p className="text-[9px] text-tier-5 mt-1">
+                  <p className="text-[9px] text-t5 mt-1">
                     Create notes in the World Dashboard to reference them here.
                   </p>
                 </div>
@@ -354,11 +354,11 @@ export function WritingReferencePanel({
                         onClick={() => handleToggleNote(note.id)}
                         className="flex-1 text-left min-w-0"
                       >
-                        <span className="text-xs text-tier-2 block truncate">
+                        <span className="text-xs text-t2 block truncate">
                           {note.title}
                         </span>
                         {!isExpanded && note.content && (
-                          <span className="text-[9px] text-tier-5 block mt-0.5">
+                          <span className="text-[9px] text-t5 block mt-0.5">
                             {previewText(note.content)}
                           </span>
                         )}
@@ -366,7 +366,7 @@ export function WritingReferencePanel({
                       <div className="flex items-center gap-0.5 flex-shrink-0 mt-0.5">
                         <button
                           onClick={() => handleToggleNote(note.id)}
-                          className="p-0.5 text-tier-4 hover:text-tier-2"
+                          className="p-0.5 text-t4 hover:text-t2"
                           title={isExpanded ? "Collapse" : "Expand"}
                         >
                           {isExpanded ? (
@@ -385,7 +385,7 @@ export function WritingReferencePanel({
                             "p-0.5 transition-colors",
                             isPinned
                               ? "text-[#FFB800]"
-                              : "text-tier-4 hover:text-[#FFB800]"
+                              : "text-t4 hover:text-[#FFB800]"
                           )}
                           title={isPinned ? "Unpin" : "Pin"}
                         >
@@ -399,7 +399,7 @@ export function WritingReferencePanel({
                     </div>
                     {isExpanded && note.content && (
                       <div
-                        className="mt-2 text-xs text-tier-2 leading-relaxed prose prose-sm prose-invert max-w-none [&_p]:my-1 [&_h1]:text-sm [&_h2]:text-xs [&_h3]:text-xs max-h-[300px] overflow-y-auto sf-custom-scrollbar"
+                        className="mt-2 text-xs text-t2 leading-relaxed prose prose-sm prose-invert max-w-none [&_p]:my-1 [&_h1]:text-sm [&_h2]:text-xs [&_h3]:text-xs max-h-[300px] overflow-y-auto sf-custom-scrollbar"
                         dangerouslySetInnerHTML={{ __html: note.content }}
                       />
                     )}
@@ -416,11 +416,11 @@ export function WritingReferencePanel({
             <div className="py-1">
               {pins.length === 0 && (
                 <div className="px-3 py-8 text-center">
-                  <Pin className="w-6 h-6 text-tier-5 mx-auto mb-2" />
-                  <p className="text-[10px] uppercase tracking-[1.5px] text-tier-5">
+                  <Pin className="w-6 h-6 text-t5 mx-auto mb-2" />
+                  <p className="text-[10px] uppercase tracking-[1.5px] text-t5">
                     No pinned items
                   </p>
-                  <p className="text-[9px] text-tier-5 mt-1">
+                  <p className="text-[9px] text-t5 mt-1">
                     Pin notes or worksheets from the Notes tab to keep them visible while writing.
                   </p>
                 </div>
@@ -433,7 +433,7 @@ export function WritingReferencePanel({
                   <div className="flex items-start gap-2">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-1.5">
-                        <span className="text-xs text-tier-2 truncate block">
+                        <span className="text-xs text-t2 truncate block">
                           {pin.title}
                         </span>
                         <span
@@ -445,14 +445,14 @@ export function WritingReferencePanel({
                                 ? "text-[#FFB800]/70 bg-[#FFB800]/[0.06] border border-[#FFB800]/[0.12]"
                                 : pin.type === "worksheet"
                                   ? "text-[#5B8DEF]/70 bg-[#5B8DEF]/[0.06] border border-[#5B8DEF]/[0.12]"
-                                  : "text-tier-5 bg-white/[0.04]"
+                                  : "text-t5 bg-white/[0.04]"
                           )}
                         >
                           {pin.type === "worksheet" ? "sheet" : pin.type}
                         </span>
                       </div>
                       {pin.content && (
-                        <span className="text-[9px] text-tier-5 block mt-0.5">
+                        <span className="text-[9px] text-t5 block mt-0.5">
                           {previewText(pin.content)}
                         </span>
                       )}
@@ -478,13 +478,13 @@ export function WritingReferencePanel({
           {/* --------------------------------------------------------------- */}
           {activeTab === "scratch" && (
             <div className="flex flex-col h-full p-3">
-              <span className="font-heading text-[10px] font-light uppercase tracking-[1.5px] text-tier-3 mb-2">
+              <span className="font-heading text-[10px] font-light uppercase tracking-[1.5px] text-t3 mb-2">
                 Scratchpad
               </span>
               <textarea
                 value={scratchText}
                 onChange={(e) => handleScratchChange(e.target.value)}
-                className="flex-1 w-full min-h-[300px] resize-none font-sans text-sm text-tier-2 bg-white/[0.03] border border-white/[0.08] rounded-xs p-3 outline-none focus:border-[#15C17B]/30 placeholder:text-tier-5 sf-custom-scrollbar"
+                className="flex-1 w-full min-h-[300px] resize-none font-sans text-sm text-t2 bg-white/[0.03] border border-white/[0.08] rounded-xs p-3 outline-none focus:border-[#15C17B]/30 placeholder:text-t5 sf-custom-scrollbar"
                 placeholder="Quick thoughts, scraps, ideas..."
               />
             </div>
@@ -501,13 +501,13 @@ export function WritingReferencePanel({
                     </span>
                     <button
                       onClick={() => onPreviewSnapshot(null)}
-                      className="text-[9px] text-tier-4 hover:text-tier-2 uppercase tracking-wider"
+                      className="text-[9px] text-t4 hover:text-t2 uppercase tracking-wider"
                     >
                       Close
                     </button>
                   </div>
                   <div
-                    className="text-xs text-tier-2 max-h-[200px] overflow-y-auto sf-custom-scrollbar prose prose-sm prose-invert max-w-none [&_p]:my-1 [&_h1]:text-sm [&_h2]:text-xs [&_h3]:text-xs"
+                    className="text-xs text-t2 max-h-[200px] overflow-y-auto sf-custom-scrollbar prose prose-sm prose-invert max-w-none [&_p]:my-1 [&_h1]:text-sm [&_h2]:text-xs [&_h3]:text-xs"
                     dangerouslySetInnerHTML={{
                       __html: previewSnapshot.content,
                     }}
@@ -525,11 +525,11 @@ export function WritingReferencePanel({
               {/* Snapshot list */}
               {snapshots.length === 0 ? (
                 <div className="px-3 py-8 text-center">
-                  <History className="w-6 h-6 text-tier-5 mx-auto mb-2" />
-                  <p className="text-[10px] uppercase tracking-[1.5px] text-tier-5">
+                  <History className="w-6 h-6 text-t5 mx-auto mb-2" />
+                  <p className="text-[10px] uppercase tracking-[1.5px] text-t5">
                     No snapshots yet
                   </p>
-                  <p className="text-[9px] text-tier-5 mt-1">
+                  <p className="text-[9px] text-t5 mt-1">
                     Press Ctrl+S to save a snapshot, or wait for auto-save every 5 min.
                   </p>
                 </div>
@@ -547,7 +547,7 @@ export function WritingReferencePanel({
                     >
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-1.5">
-                          <span className="font-mono text-[10px] text-tier-3">
+                          <span className="font-mono text-[10px] text-t3">
                             {new Date(snapshot.timestamp).toLocaleTimeString(
                               [],
                               { hour: "2-digit", minute: "2-digit" }
@@ -559,7 +559,7 @@ export function WritingReferencePanel({
                             </span>
                           )}
                         </div>
-                        <span className="text-[9px] text-tier-5 font-mono block mt-0.5">
+                        <span className="text-[9px] text-t5 font-mono block mt-0.5">
                           {new Date(snapshot.timestamp).toLocaleDateString()}{" "}
                           &middot; {snapshot.wordCount.toLocaleString()} words
                         </span>
@@ -570,7 +570,7 @@ export function WritingReferencePanel({
                             e.stopPropagation();
                             onPreviewSnapshot(snapshot);
                           }}
-                          className="p-1 text-tier-4 hover:text-[#5B8DEF]"
+                          className="p-1 text-t4 hover:text-[#5B8DEF]"
                           title="Preview"
                         >
                           <Eye className="w-3 h-3" />
@@ -580,7 +580,7 @@ export function WritingReferencePanel({
                             e.stopPropagation();
                             onRestoreVersion(snapshot.id);
                           }}
-                          className="p-1 text-tier-4 hover:text-[#5B8DEF]"
+                          className="p-1 text-t4 hover:text-[#5B8DEF]"
                           title="Restore"
                         >
                           <RotateCcw className="w-3 h-3" />

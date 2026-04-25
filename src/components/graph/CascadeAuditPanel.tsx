@@ -55,12 +55,12 @@ function AuditTreeNode({
     <div style={{ paddingLeft: depth > 0 ? 12 : 0 }}>
       <div className="flex items-start gap-1.5 py-0.5 group">
         {depth > 0 && (
-          <span className="text-[9px] text-tier-5 mt-0.5 shrink-0">
+          <span className="text-[9px] text-t5 mt-0.5 shrink-0">
             {node.connectionLabel}
           </span>
         )}
         {depth > 0 && (
-          <ChevronRight className="w-2.5 h-2.5 text-tier-5 mt-0.5 shrink-0" />
+          <ChevronRight className="w-2.5 h-2.5 text-t5 mt-0.5 shrink-0" />
         )}
         <button
           type="button"
@@ -71,7 +71,7 @@ function AuditTreeNode({
             className="w-1.5 h-1.5 rounded-full shrink-0"
             style={{ background: entityColor }}
           />
-          <span className="text-[10px] font-sans text-tier-2">
+          <span className="text-[10px] font-sans text-t2">
             {node.entityName}
           </span>
           <span
@@ -151,7 +151,7 @@ export function CascadeAuditPanel({
         <button
           type="button"
           onClick={onClose}
-          className="text-tier-4 hover:text-tier-2 transition-colors"
+          className="text-t4 hover:text-t2 transition-colors"
         >
           <X className="w-3.5 h-3.5" />
         </button>
@@ -166,10 +166,10 @@ export function CascadeAuditPanel({
             background: `${rootColor}06`,
           }}
         >
-          <div className="text-[11px] font-heading uppercase tracking-[1.5px] text-tier-1">
+          <div className="text-[11px] font-heading uppercase tracking-[1.5px] text-t1">
             The Cascade of: {result.rootEntityName}
           </div>
-          <div className="text-[9px] font-sans text-tier-3 mt-0.5">
+          <div className="text-[9px] font-sans text-t3 mt-0.5">
             {CASCADE_STAGE_LABELS[result.rootCascadeStage]} stage
           </div>
         </div>
@@ -177,23 +177,23 @@ export function CascadeAuditPanel({
         {/* Stats */}
         <div className="flex gap-3 text-[9px] font-mono">
           <div>
-            <span className="text-tier-4">Depth:</span>{" "}
-            <span className="text-tier-1">{result.cascadeDepth} stages</span>
+            <span className="text-t4">Depth:</span>{" "}
+            <span className="text-t1">{result.cascadeDepth} stages</span>
             {result.cascadeDepth === 6 && (
               <span className="text-teal ml-1">(full cascade)</span>
             )}
           </div>
           <div>
-            <span className="text-tier-4">Affected:</span>{" "}
-            <span className="text-tier-1">{result.totalAffected}</span>
+            <span className="text-t4">Affected:</span>{" "}
+            <span className="text-t1">{result.totalAffected}</span>
           </div>
           {result.widestBranch && (
             <div>
-              <span className="text-tier-4">Widest:</span>{" "}
+              <span className="text-t4">Widest:</span>{" "}
               <span style={{ color: CASCADE_STAGE_COLORS[result.widestBranch.stage] }}>
                 {result.widestBranch.stage}
               </span>{" "}
-              <span className="text-tier-3">({result.widestBranch.count})</span>
+              <span className="text-t3">({result.widestBranch.count})</span>
             </div>
           )}
         </div>
@@ -210,7 +210,7 @@ export function CascadeAuditPanel({
           <button
             type="button"
             onClick={() => result && exportCascadeAuditAsMarkdown(result)}
-            className="flex items-center gap-1 text-[10px] font-sans text-tier-3 uppercase tracking-[1px] py-1.5 px-3 border border-sf-border hover:bg-white/5 transition-colors"
+            className="flex items-center gap-1 text-[10px] font-sans text-t3 uppercase tracking-[1px] py-1.5 px-3 border border-sf-border hover:bg-white/5 transition-colors"
           >
             <Download className="w-3 h-3" />
             MD
@@ -226,7 +226,7 @@ export function CascadeAuditPanel({
             </h4>
           </div>
           {result.upstream.length === 0 ? (
-            <p className="text-[9px] text-tier-5 font-sans italic pl-4">
+            <p className="text-[9px] text-t5 font-sans italic pl-4">
               No upstream connections found.
             </p>
           ) : (
@@ -252,7 +252,7 @@ export function CascadeAuditPanel({
             </h4>
           </div>
           {result.downstream.length === 0 ? (
-            <p className="text-[9px] text-tier-5 font-sans italic pl-4">
+            <p className="text-[9px] text-t5 font-sans italic pl-4">
               No downstream cascade effects yet.
             </p>
           ) : (
@@ -278,7 +278,7 @@ export function CascadeAuditPanel({
           }}
         >
           <Lightbulb className="w-3.5 h-3.5 text-stellar mt-0.5 shrink-0" />
-          <p className="text-[10px] font-sans text-tier-2 leading-snug italic">
+          <p className="text-[10px] font-sans text-t2 leading-snug italic">
             {result.whatIfPrompt}
           </p>
         </div>

@@ -44,13 +44,13 @@ export default function LoadSimulationSheet({
 
         <div className="mt-4 space-y-2">
           {isLoading && (
-            <p className="font-mono text-[10px] uppercase tracking-wider text-tier-4 text-center py-4">
+            <p className="font-mono text-[10px] uppercase tracking-wider text-t4 text-center py-4">
               Loading...
             </p>
           )}
 
           {!isLoading && saves.length === 0 && (
-            <p className="font-mono text-[10px] uppercase tracking-wider text-tier-4 text-center py-4">
+            <p className="font-mono text-[10px] uppercase tracking-wider text-t4 text-center py-4">
               No saved simulations
             </p>
           )}
@@ -62,8 +62,8 @@ export default function LoadSimulationSheet({
             >
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0">
-                  <p className="text-sm text-tier-1 truncate">{save.name}</p>
-                  <p className="font-mono text-[9px] text-tier-4 mt-0.5">
+                  <p className="text-sm text-t1 truncate">{save.name}</p>
+                  <p className="font-mono text-[9px] text-t4 mt-0.5">
                     {new Date(save.updated_at).toLocaleDateString(undefined, {
                       month: "short",
                       day: "numeric",

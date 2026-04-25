@@ -209,7 +209,7 @@ function CascadeDiagram({
                   <span
                     key={sub}
                     className={`text-[9px] font-mono transition-colors duration-300 ${
-                      isActive || isDownstream ? "text-tier-4" : "text-tier-5"
+                      isActive || isDownstream ? "text-t4" : "text-t5"
                     }`}
                   >
                     {sub}
@@ -220,7 +220,7 @@ function CascadeDiagram({
             {i < CASCADE_STAGES.length - 1 && (
               <ChevronRight
                 className={`w-3 h-3 shrink-0 hidden md:block transition-colors duration-300 ${
-                  isDownstream || isActive ? "text-tier-3" : "text-tier-5"
+                  isDownstream || isActive ? "text-t3" : "text-t5"
                 }`}
               />
             )}
@@ -268,7 +268,7 @@ function PathwayStep({
               ? "bg-primary/10 border border-primary/30 text-primary"
               : isComplete
               ? "bg-primary/5 border border-primary/15 text-primary/60"
-              : "bg-white/[0.03] border border-white/10 text-tier-4"
+              : "bg-white/[0.03] border border-white/10 text-t4"
           }`}
         >
           {isComplete ? <Check className="w-3.5 h-3.5" /> : step.number}
@@ -278,8 +278,8 @@ function PathwayStep({
             isActive
               ? "text-[hsl(var(--sf-section-green))]"
               : isComplete
-              ? "text-tier-3"
-              : "text-tier-4"
+              ? "text-t3"
+              : "text-t4"
           }`}
         >
           {step.title}
@@ -289,7 +289,7 @@ function PathwayStep({
       {/* Expanded content */}
       {isActive && (
         <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
-          <p className="text-tier-2 text-sm leading-relaxed">{step.intro}</p>
+          <p className="text-t2 text-sm leading-relaxed">{step.intro}</p>
 
           {/* Tool links */}
           <div className="flex flex-wrap gap-2">
@@ -309,7 +309,7 @@ function PathwayStep({
                       PRO
                     </Badge>
                   )}
-                  <ExternalLink className="w-3 h-3 ml-0.5 text-tier-4" />
+                  <ExternalLink className="w-3 h-3 ml-0.5 text-t4" />
                 </Button>
               );
             })}
@@ -317,10 +317,10 @@ function PathwayStep({
 
           {/* Expected output */}
           <GlassPanel className="p-3">
-            <span className="text-tier-4 text-[10px] uppercase tracking-wider block mb-1">
+            <span className="text-t4 text-[10px] uppercase tracking-wider block mb-1">
               What you'll create
             </span>
-            <span className="text-tier-2 text-xs">{step.output}</span>
+            <span className="text-t2 text-xs">{step.output}</span>
           </GlassPanel>
 
           {/* Cascade forward */}
@@ -377,18 +377,18 @@ const GettingStarted = () => {
 
         {/* ── Section 1: Cascade Tutorial ─────────────────── */}
         <section className="mb-16">
-          <h1 className="font-display text-3xl md:text-4xl tracking-sf-title text-tier-1 mb-4">
+          <h1 className="font-display text-3xl md:text-4xl tracking-sf-title text-t1 mb-4">
             EVERYTHING CASCADES.
           </h1>
 
-          <div className="space-y-4 text-tier-2 text-sm leading-relaxed max-w-2xl mb-8">
+          <div className="space-y-4 text-t2 text-sm leading-relaxed max-w-2xl mb-8">
             <p>
               In science fiction, nothing exists in isolation. A planet's gravity
               shapes how life moves. How life moves shapes how minds develop. How
               minds develop shapes what they worship. What they worship shapes how
               they organize society.
             </p>
-            <p className="text-tier-1 font-medium">
+            <p className="text-t1 font-medium">
               Physics → Environment → Biology → Psychology → Mythology → Culture
             </p>
             <p>
@@ -397,7 +397,7 @@ const GettingStarted = () => {
               builds on what comes before. Each output becomes input for what
               follows.
             </p>
-            <p className="text-tier-3">
+            <p className="text-t3">
               You don't have to start at the beginning. But understanding{" "}
               <em>where</em> you're starting helps you know <em>what</em> will
               cascade from your choices.
@@ -414,13 +414,13 @@ const GettingStarted = () => {
               onStageClick={handleCascadeClick}
             />
             {cascadeActiveStage && (
-              <p className="text-tier-3 text-xs mt-3 animate-in fade-in duration-200">
+              <p className="text-t3 text-xs mt-3 animate-in fade-in duration-200">
                 {
                   CASCADE_STAGES.find((s) => s.id === cascadeActiveStage)
                     ?.description
                 }
                 {" "}
-                <span className="text-tier-4">
+                <span className="text-t4">
                   Everything to the right shifts when this changes.
                 </span>
               </p>
@@ -440,7 +440,7 @@ const GettingStarted = () => {
           <h2 className="font-heading text-xl font-light uppercase tracking-[2px] gradient-text mb-2">
             Where Does Your World Begin?
           </h2>
-          <p className="text-tier-3 text-sm mb-6">
+          <p className="text-t3 text-sm mb-6">
             Most stories start with a spark—a scene, a creature, a concept.
             Where's yours?
           </p>
@@ -466,18 +466,18 @@ const GettingStarted = () => {
                     <div className="flex items-start gap-3">
                       <Icon
                         className={`w-5 h-5 shrink-0 mt-0.5 ${
-                          isSelected ? "text-primary" : "text-tier-3"
+                          isSelected ? "text-primary" : "text-t3"
                         }`}
                       />
                       <div>
                         <h3
                           className={`text-sm font-medium mb-1 ${
-                            isSelected ? "text-tier-1" : "text-tier-2"
+                            isSelected ? "text-t1" : "text-t2"
                           }`}
                         >
                           {entry.label}
                         </h3>
-                        <p className="text-tier-4 text-xs leading-relaxed">
+                        <p className="text-t4 text-xs leading-relaxed">
                           {entry.description}
                         </p>
                       </div>
@@ -491,14 +491,14 @@ const GettingStarted = () => {
           {/* Selected entry response */}
           {selectedEntryData && (
             <GlassPanel className="p-5 animate-in fade-in slide-in-from-bottom-2 duration-300">
-              <p className="text-tier-2 text-sm leading-relaxed italic mb-4">
+              <p className="text-t2 text-sm leading-relaxed italic mb-4">
                 "{selectedEntryData.tone}"
               </p>
 
               {selectedEntryData.action === "pathway" && (
                 <div className="flex items-center gap-2">
                   <ArrowRight className="w-4 h-4 text-primary" />
-                  <span className="text-tier-3 text-xs">
+                  <span className="text-t3 text-xs">
                     Scroll down for the Guided First World pathway.
                   </span>
                 </div>
@@ -507,7 +507,7 @@ const GettingStarted = () => {
               {selectedEntryData.action === "tools" &&
                 "suggestedTools" in selectedEntryData && (
                   <div>
-                    <span className="text-tier-4 text-[10px] uppercase tracking-wider block mb-2">
+                    <span className="text-t4 text-[10px] uppercase tracking-wider block mb-2">
                       Suggested starting tools
                     </span>
                     <div className="flex flex-wrap gap-2">
@@ -551,10 +551,10 @@ const GettingStarted = () => {
           <h2 className="font-heading text-xl font-light uppercase tracking-[2px] gradient-text mb-2">
             The Guided First World
           </h2>
-          <p className="text-tier-3 text-sm mb-2">
+          <p className="text-t3 text-sm mb-2">
             Build a documented planet with life and cultural implications in 4 steps.
           </p>
-          <p className="text-tier-4 text-xs mb-8">
+          <p className="text-t4 text-xs mb-8">
             Each step links to the actual tool. Complete them in order to experience the cascade firsthand.
           </p>
 
@@ -621,10 +621,10 @@ const GettingStarted = () => {
           {/* Completion message */}
           {completedSteps.length === PATHWAY_STEPS.length && (
             <GlassPanel glow className="p-5 mt-8 text-center animate-in fade-in duration-500">
-              <h3 className="font-heading text-lg font-light uppercase tracking-[2px] text-tier-1 mb-2">
+              <h3 className="font-heading text-lg font-light uppercase tracking-[2px] text-t1 mb-2">
                 You've Built a World
               </h3>
-              <p className="text-tier-2 text-sm leading-relaxed max-w-lg mx-auto mb-4">
+              <p className="text-t2 text-sm leading-relaxed max-w-lg mx-auto mb-4">
                 Not just a planet—a cascading system where physics led to environment,
                 environment led to biology, biology led to psychology, and psychology
                 led to culture. Everything connects. This is your foundation.

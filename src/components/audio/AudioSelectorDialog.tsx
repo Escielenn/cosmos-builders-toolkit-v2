@@ -78,7 +78,7 @@ export default function AudioSelectorDialog() {
               className={`px-3 py-2 text-[11px] font-medium uppercase tracking-[1.5px] transition-colors border-b-2 -mb-px ${
                 activeTab === tab.id
                   ? "border-primary text-primary"
-                  : "border-transparent text-tier-4 hover:text-tier-2"
+                  : "border-transparent text-t4 hover:text-t2"
               }`}
             >
               {tab.label}
@@ -120,7 +120,7 @@ function CuratedTab({ expandedPlaylist, onExpandPlaylist }: CuratedTabProps) {
         <button
           type="button"
           onClick={() => onExpandPlaylist(null)}
-          className="text-[10px] text-tier-4 hover:text-tier-2 uppercase tracking-wider mb-3 transition-colors"
+          className="text-[10px] text-t4 hover:text-t2 uppercase tracking-wider mb-3 transition-colors"
         >
           &larr; Back to playlists
         </button>
@@ -140,7 +140,7 @@ function CuratedTab({ expandedPlaylist, onExpandPlaylist }: CuratedTabProps) {
 
   return (
     <div className="py-3 space-y-4">
-      <p className="text-[10px] text-tier-4 uppercase tracking-[1.5px]">
+      <p className="text-[10px] text-t4 uppercase tracking-[1.5px]">
         Ambient playlists
       </p>
 

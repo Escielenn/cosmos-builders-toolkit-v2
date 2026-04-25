@@ -167,7 +167,7 @@ export function ChapterTree({
         <Button
           variant="ghost"
           size="icon"
-          className="h-7 w-7 text-tier-4 hover:text-tier-2"
+          className="h-7 w-7 text-t4 hover:text-t2"
           onClick={onToggle}
           aria-label="Open chapter tree"
         >
@@ -186,10 +186,10 @@ export function ChapterTree({
       {/* Header */}
       <div className="flex items-center justify-between px-3 py-2 border-b border-white/5">
         <div className="flex-1 min-w-0">
-          <h2 className="font-heading text-[11px] tracking-[1.5px] uppercase text-tier-3">
+          <h2 className="font-heading text-[11px] tracking-[1.5px] uppercase text-t3">
             Chapters
           </h2>
-          <p className="text-[10px] text-tier-5 font-mono">
+          <p className="text-[10px] text-t5 font-mono">
             {totalDocs} doc{totalDocs === 1 ? "" : "s"} · {totalWords.toLocaleString()} words
           </p>
         </div>
@@ -197,7 +197,7 @@ export function ChapterTree({
           <Button
             variant="ghost"
             size="icon"
-            className="h-7 w-7 text-tier-3 hover:text-tier-1"
+            className="h-7 w-7 text-t3 hover:text-t1"
             onClick={() => onCreateDocument(null)}
             aria-label="New document"
             title="New document"
@@ -207,7 +207,7 @@ export function ChapterTree({
           <Button
             variant="ghost"
             size="icon"
-            className="h-7 w-7 text-tier-3 hover:text-tier-1"
+            className="h-7 w-7 text-t3 hover:text-t1"
             onClick={onCreateFolder}
             aria-label="New folder"
             title="New folder"
@@ -218,7 +218,7 @@ export function ChapterTree({
             <Button
               variant="ghost"
               size="icon"
-              className="h-7 w-7 text-tier-4 hover:text-tier-2"
+              className="h-7 w-7 text-t4 hover:text-t2"
               onClick={onToggle}
               aria-label="Collapse chapter tree"
             >
@@ -251,7 +251,7 @@ export function ChapterTree({
               >
                 <button
                   type="button"
-                  className="shrink-0 text-tier-4 hover:text-tier-2"
+                  className="shrink-0 text-t4 hover:text-t2"
                   onClick={() => toggleFolder(folder.id)}
                   aria-label={collapsed ? "Expand folder" : "Collapse folder"}
                 >
@@ -275,12 +275,12 @@ export function ChapterTree({
                   <button
                     type="button"
                     onDoubleClick={() => beginRename(folder.id, folder.title)}
-                    className="flex-1 text-left text-xs font-medium text-tier-2 truncate hover:text-tier-1"
+                    className="flex-1 text-left text-xs font-medium text-t2 truncate hover:text-t1"
                   >
                     {folder.title}
                   </button>
                 )}
-                <span className="text-[10px] font-mono text-tier-5 shrink-0">
+                <span className="text-[10px] font-mono text-t5 shrink-0">
                   {folder.documents.length}
                 </span>
                 <DropdownMenu>
@@ -288,7 +288,7 @@ export function ChapterTree({
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-5 w-5 shrink-0 opacity-0 group-hover:opacity-100 text-tier-4"
+                      className="h-5 w-5 shrink-0 opacity-0 group-hover:opacity-100 text-t4"
                       aria-label="Folder actions"
                     >
                       <MoreVertical className="w-3 h-3" />
@@ -322,7 +322,7 @@ export function ChapterTree({
               {!collapsed && (
                 <div className="pl-6">
                   {folder.documents.length === 0 ? (
-                    <div className="px-2 py-1 text-[10px] text-tier-5 italic">
+                    <div className="px-2 py-1 text-[10px] text-t5 italic">
                       empty
                     </div>
                   ) : (
@@ -356,7 +356,7 @@ export function ChapterTree({
         {unfiledDocs.length > 0 && (
           <div className="mt-2 pt-2 border-t border-white/5">
             <div className="px-3 py-1">
-              <span className="text-[9px] uppercase tracking-[1.5px] text-tier-5 font-heading">
+              <span className="text-[9px] uppercase tracking-[1.5px] text-t5 font-heading">
                 Unfiled
               </span>
             </div>
@@ -385,8 +385,8 @@ export function ChapterTree({
         {/* Empty state */}
         {folders.length === 0 && unfiledDocs.length === 0 && (
           <div className="px-4 py-8 text-center">
-            <FileText className="w-8 h-8 mx-auto mb-2 text-tier-5 opacity-40" />
-            <p className="text-xs text-tier-4 mb-3">No documents yet</p>
+            <FileText className="w-8 h-8 mx-auto mb-2 text-t5 opacity-40" />
+            <p className="text-xs text-t4 mb-3">No documents yet</p>
             <Button
               variant="outline"
               size="sm"
@@ -475,7 +475,7 @@ function DocRow({
       <FileText
         className={cn(
           "w-3 h-3 shrink-0",
-          selected ? "text-primary" : "text-tier-4"
+          selected ? "text-primary" : "text-t4"
         )}
       />
       {isRenaming ? (
@@ -499,14 +499,14 @@ function DocRow({
           }}
           className={cn(
             "flex-1 text-left text-xs truncate",
-            selected ? "text-tier-1 font-medium" : "text-tier-2"
+            selected ? "text-t1 font-medium" : "text-t2"
           )}
         >
           {doc.title || "Untitled"}
         </button>
       )}
       {words > 0 && (
-        <span className="text-[9px] font-mono text-tier-5 shrink-0">
+        <span className="text-[9px] font-mono text-t5 shrink-0">
           {words < 1000 ? words : `${Math.round(words / 100) / 10}k`}
         </span>
       )}
@@ -515,7 +515,7 @@ function DocRow({
           <Button
             variant="ghost"
             size="icon"
-            className="h-5 w-5 shrink-0 opacity-0 group-hover:opacity-100 text-tier-4"
+            className="h-5 w-5 shrink-0 opacity-0 group-hover:opacity-100 text-t4"
             aria-label="Document actions"
             data-stop-select
             onClick={(e) => e.stopPropagation()}
@@ -539,7 +539,7 @@ function DocRow({
                 Move to…
               </DropdownMenuSubTrigger>
               <DropdownMenuSubContent>
-                <DropdownMenuLabel className="text-[10px] uppercase tracking-[1.5px] text-tier-4">
+                <DropdownMenuLabel className="text-[10px] uppercase tracking-[1.5px] text-t4">
                   Move to folder
                 </DropdownMenuLabel>
                 {otherFolders.map((f) => (

@@ -113,7 +113,7 @@ const SortableRow = ({
       {/* Drag handle — only this triggers drag */}
       <button
         type="button"
-        className="shrink-0 p-0.5 cursor-grab active:cursor-grabbing text-tier-5 opacity-0 group-hover/sortable:opacity-100 transition-opacity touch-none"
+        className="shrink-0 p-0.5 cursor-grab active:cursor-grabbing text-t5 opacity-0 group-hover/sortable:opacity-100 transition-opacity touch-none"
         {...attributes}
         {...listeners}
         tabIndex={-1}
@@ -130,7 +130,7 @@ const SortableRow = ({
             e.stopPropagation();
             onToggleFolder?.();
           }}
-          className="shrink-0 p-0.5 text-tier-4 hover:text-tier-2 transition-colors"
+          className="shrink-0 p-0.5 text-t4 hover:text-t2 transition-colors"
           aria-label={isFolderExpanded ? "Collapse folder" : "Expand folder"}
         >
           {isFolderExpanded ? (

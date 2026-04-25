@@ -17,23 +17,23 @@ export default function SoundtrackPicker({ value, onChange }: SoundtrackPickerPr
       {selected ? (
         <div className="flex items-center gap-2 px-3 py-2 bg-primary/[0.06] border border-primary/15">
           <Music className="w-3.5 h-3.5 text-primary shrink-0" />
-          <span className="text-sm text-tier-2 flex-1 truncate">
+          <span className="text-sm text-t2 flex-1 truncate">
             {selected.name}
           </span>
-          <span className="font-mono text-[9px] text-tier-4">
+          <span className="font-mono text-[9px] text-t4">
             {selected.tracks.length} tracks
           </span>
           <button
             type="button"
             onClick={() => onChange(null)}
-            className="p-0.5 text-tier-4 hover:text-tier-2 transition-colors"
+            className="p-0.5 text-t4 hover:text-t2 transition-colors"
             aria-label="Remove soundtrack"
           >
             <X className="w-3.5 h-3.5" />
           </button>
         </div>
       ) : (
-        <p className="text-[11px] text-tier-4">No soundtrack set</p>
+        <p className="text-[11px] text-t4">No soundtrack set</p>
       )}
 
       {/* Playlist picker */}
@@ -67,12 +67,12 @@ function PlaylistOption({
       className={`w-full text-left px-3 py-1.5 flex items-center gap-2 transition-colors ${
         isSelected
           ? "bg-primary/[0.06] text-primary"
-          : "hover:bg-white/[0.03] text-tier-3"
+          : "hover:bg-white/[0.03] text-t3"
       }`}
     >
       <Music className="w-3 h-3 shrink-0" />
       <span className="text-xs truncate flex-1">{playlist.name}</span>
-      <span className="font-mono text-[9px] text-tier-5">
+      <span className="font-mono text-[9px] text-t5">
         {playlist.source === "curated" ? "CURATED" : "CUSTOM"}
       </span>
     </button>

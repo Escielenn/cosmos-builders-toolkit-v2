@@ -141,7 +141,7 @@ export default function EntityPickerDialog({
                     className="flex flex-col items-center gap-1.5 p-3 border border-sf-border bg-white/[0.02] hover:bg-primary/5 hover:border-primary/20 transition-colors group"
                   >
                     <Icon className="w-5 h-5 text-t3/40 group-hover:text-primary/60 transition-colors" />
-                    <span className="text-[10px] font-heading uppercase tracking-wider text-tier-3 group-hover:text-tier-2 transition-colors">
+                    <span className="text-[10px] font-heading uppercase tracking-wider text-t3 group-hover:text-t2 transition-colors">
                       {label}
                     </span>
                   </button>
@@ -183,7 +183,7 @@ export default function EntityPickerDialog({
               <div className="space-y-2">
                 <Label htmlFor="entity-description">
                   Description{" "}
-                  <span className="text-tier-4 font-normal normal-case tracking-normal">
+                  <span className="text-t4 font-normal normal-case tracking-normal">
                     (optional)
                   </span>
                 </Label>

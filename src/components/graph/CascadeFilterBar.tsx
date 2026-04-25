@@ -100,7 +100,7 @@ export function CascadeFilterBar({
         <button
           type="button"
           onClick={() => onChange(new Set(ALL_STAGES))}
-          className="ml-1 text-[8px] text-tier-4 hover:text-tier-3 uppercase tracking-[1px] font-sans transition-colors"
+          className="ml-1 text-[8px] text-t4 hover:text-t3 uppercase tracking-[1px] font-sans transition-colors"
         >
           Reset
         </button>

@@ -37,7 +37,7 @@ class GraphErrorBoundary extends Component<
           <p className="font-mono text-xs uppercase tracking-wider text-sf-crimson/60">
             Entity Graph encountered an error.
           </p>
-          <p className="text-[10px] text-tier-4 font-sans max-w-xs text-center">
+          <p className="text-[10px] text-t4 font-sans max-w-xs text-center">
             {this.state.error?.message}
           </p>
           <button
@@ -180,7 +180,7 @@ const WorldGraph = () => {
           className={`flex items-center gap-1 px-3 py-1 text-[9px] uppercase tracking-[1.5px] transition-colors ${
             graphMode === "entity"
               ? "bg-teal/10 text-teal"
-              : "text-tier-4 hover:text-tier-3"
+              : "text-t4 hover:text-t3"
           }`}
         >
           <Network className="w-3 h-3" />
@@ -191,7 +191,7 @@ const WorldGraph = () => {
           className={`flex items-center gap-1 px-3 py-1 text-[9px] uppercase tracking-[1.5px] transition-colors ${
             graphMode === "knowledge"
               ? "bg-teal/10 text-teal"
-              : "text-tier-4 hover:text-tier-3"
+              : "text-t4 hover:text-t3"
           }`}
         >
           <GitBranch className="w-3 h-3" />
@@ -215,10 +215,10 @@ const WorldGraph = () => {
         <>
           {/* Title + description */}
           <div className="absolute top-12 left-3 z-10 max-w-xs pointer-events-none">
-            <p className="font-heading text-[10px] uppercase tracking-[2px] text-tier-3">
+            <p className="font-heading text-[10px] uppercase tracking-[2px] text-t3">
               Knowledge Graph
             </p>
-            <p className="text-[9px] text-tier-4 font-sans normal-case tracking-normal mt-0.5">
+            <p className="text-[9px] text-t4 font-sans normal-case tracking-normal mt-0.5">
               Worksheets and wiki entries
             </p>
           </div>
@@ -230,7 +230,7 @@ const WorldGraph = () => {
               className={`flex items-center gap-1 px-2.5 py-1 text-[9px] uppercase tracking-[1.5px] transition-colors ${
                 !entriesOnly
                   ? "bg-teal/10 border border-teal/25 text-teal"
-                  : "bg-[#0D1117]/90 border border-sf-border text-tier-4 hover:text-tier-3"
+                  : "bg-[#0D1117]/90 border border-sf-border text-t4 hover:text-t3"
               }`}
               title="Show all elements"
             >
@@ -242,7 +242,7 @@ const WorldGraph = () => {
               className={`flex items-center gap-1 px-2.5 py-1 text-[9px] uppercase tracking-[1.5px] transition-colors ${
                 entriesOnly
                   ? "bg-teal/10 border border-teal/25 text-teal"
-                  : "bg-[#0D1117]/90 border border-sf-border text-tier-4 hover:text-tier-3"
+                  : "bg-[#0D1117]/90 border border-sf-border text-t4 hover:text-t3"
               }`}
               title="Show entries only"
             >

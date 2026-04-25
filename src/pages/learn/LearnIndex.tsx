@@ -47,7 +47,7 @@ const categoryColors: Record<string, string> = {
 };
 
 const STATUS_LABELS: Record<string, { label: string; className: string }> = {
-  upcoming: { label: "UPCOMING", className: "bg-white/5 border-white/10 text-tier-3" },
+  upcoming: { label: "UPCOMING", className: "bg-white/5 border-white/10 text-t3" },
   enrolling: { label: "ENROLLING NOW", className: "bg-emerald-500/6 border-emerald-500/15 text-sf-emerald" },
   in_progress: { label: "IN SESSION", className: "bg-amber-500/6 border-amber-500/15 text-sf-amber" },
 };
@@ -384,20 +384,20 @@ const LearnIndex = () => {
                           {statusCfg.label}
                         </Badge>
                         {course.tags?.map((tag) => (
-                          <Badge key={tag} variant="outline" className="text-tier-3 border-white/10">
+                          <Badge key={tag} variant="outline" className="text-t3 border-white/10">
                             {tag}
                           </Badge>
                         ))}
                       </div>
 
                       {/* Title */}
-                      <h3 className="font-heading text-lg font-light uppercase tracking-[2px] text-tier-1 mb-2">
+                      <h3 className="font-heading text-lg font-light uppercase tracking-[2px] text-t1 mb-2">
                         {course.title}
                       </h3>
 
                       {/* Instructor + dates */}
-                      <div className="flex items-center gap-3 text-xs text-tier-3 mb-3">
-                        <span>Instructor: <span className="text-tier-2">{course.instructor}</span></span>
+                      <div className="flex items-center gap-3 text-xs text-t3 mb-3">
+                        <span>Instructor: <span className="text-t2">{course.instructor}</span></span>
                         {course.startDate && (
                           <span className="flex items-center gap-1">
                             <Calendar className="w-3 h-3" />
@@ -414,14 +414,14 @@ const LearnIndex = () => {
                       </div>
 
                       {/* Description */}
-                      <p className="text-sm text-tier-2 mb-4 leading-relaxed line-clamp-3">
+                      <p className="text-sm text-t2 mb-4 leading-relaxed line-clamp-3">
                         {course.description}
                       </p>
 
                       {/* Price + discount + register */}
                       <div className="flex items-center justify-between flex-wrap gap-3">
                         <div className="flex items-center gap-3">
-                          <span className="font-mono text-tier-1">{course.price}</span>
+                          <span className="font-mono text-t1">{course.price}</span>
                           <CourseDiscountBadge
                             course={course}
                             courseDiscount={courseDiscount}
@@ -452,7 +452,7 @@ const LearnIndex = () => {
             {/* Discount upsell for non-subscribed users */}
             {!user && (
               <GlassPanel className="p-4 mt-4 border-violet-500/10 text-center">
-                <p className="text-sm text-tier-3">
+                <p className="text-sm text-t3">
                   <Zap className="w-3.5 h-3.5 inline-block mr-1 text-sf-amber -mt-0.5" />
                   Pro members save 5–10% on all courses.{" "}
                   <Sparkles className="w-3.5 h-3.5 inline-block mr-1 text-sf-violet -mt-0.5" />

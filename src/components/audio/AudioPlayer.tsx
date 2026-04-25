@@ -114,9 +114,9 @@ function MinimizedBar({
           <Music className="w-3.5 h-3.5 text-primary/50 shrink-0" />
         )}
 
-        <span className="text-xs text-tier-2 truncate flex-1">
+        <span className="text-xs text-t2 truncate flex-1">
           {isError ? (
-            <span className="text-tier-4">{trackTitle} <span className="text-sf-amber/60">— Unavailable</span></span>
+            <span className="text-t4">{trackTitle} <span className="text-sf-amber/60">— Unavailable</span></span>
           ) : (
             trackTitle
           )}
@@ -126,7 +126,7 @@ function MinimizedBar({
           type="button"
           onClick={onTogglePlay}
           disabled={isLoading || isError}
-          className="p-1.5 text-tier-2 hover:text-primary transition-colors disabled:opacity-30"
+          className="p-1.5 text-t2 hover:text-primary transition-colors disabled:opacity-30"
           aria-label={isPlaying ? "Pause" : "Play"}
         >
           {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
@@ -135,7 +135,7 @@ function MinimizedBar({
         <button
           type="button"
           onClick={openAudioSelector}
-          className="p-1.5 text-tier-4 hover:text-tier-2 transition-colors"
+          className="p-1.5 text-t4 hover:text-t2 transition-colors"
           aria-label="Browse tracks"
         >
           <ListMusic className="w-4 h-4" />
@@ -144,7 +144,7 @@ function MinimizedBar({
         <button
           type="button"
           onClick={onExpand}
-          className="p-1.5 text-tier-4 hover:text-tier-2 transition-colors"
+          className="p-1.5 text-t4 hover:text-t2 transition-colors"
           aria-label="Expand player"
         >
           <ChevronUp className="w-4 h-4" />
@@ -226,18 +226,18 @@ function ExpandedBar({ state, controls, progressBarRef }: ExpandedBarProps) {
             <ListMusic className="w-4 h-4" />
           </button>
           <div className="min-w-0">
-            <p className="text-sm text-tier-2 truncate leading-tight flex items-center gap-1.5">
+            <p className="text-sm text-t2 truncate leading-tight flex items-center gap-1.5">
               {isError && <AlertTriangle className="w-3 h-3 text-sf-amber/70 shrink-0" />}
               {state.currentTrack?.title ?? "No Track"}
               {isError && <span className="text-[10px] text-sf-amber/60 shrink-0">— Unavailable</span>}
             </p>
             {state.currentTrack?.artist && !isError && (
-              <p className="text-[10px] text-tier-4 truncate leading-tight">
+              <p className="text-[10px] text-t4 truncate leading-tight">
                 {state.currentTrack.artist}
               </p>
             )}
             {isError && (
-              <p className="text-[10px] text-tier-4 truncate leading-tight">
+              <p className="text-[10px] text-t4 truncate leading-tight">
                 Audio file could not be loaded
               </p>
             )}
@@ -250,7 +250,7 @@ function ExpandedBar({ state, controls, progressBarRef }: ExpandedBarProps) {
             type="button"
             onClick={controls.toggleShuffle}
             className={`p-2 transition-colors ${
-              state.shuffle ? "text-primary" : "text-tier-4 hover:text-tier-2"
+              state.shuffle ? "text-primary" : "text-t4 hover:text-t2"
             }`}
             aria-label="Toggle shuffle"
             aria-pressed={state.shuffle}
@@ -261,7 +261,7 @@ function ExpandedBar({ state, controls, progressBarRef }: ExpandedBarProps) {
           <button
             type="button"
             onClick={controls.prev}
-            className="p-2 text-tier-3 hover:text-tier-1 transition-colors"
+            className="p-2 text-t3 hover:text-t1 transition-colors"
             aria-label="Previous track"
           >
             <SkipBack className="w-4 h-4" />
@@ -284,7 +284,7 @@ function ExpandedBar({ state, controls, progressBarRef }: ExpandedBarProps) {
           <button
             type="button"
             onClick={controls.next}
-            className="p-2 text-tier-3 hover:text-tier-1 transition-colors"
+            className="p-2 text-t3 hover:text-t1 transition-colors"
             aria-label="Next track"
           >
             <SkipForward className="w-4 h-4" />
@@ -294,7 +294,7 @@ function ExpandedBar({ state, controls, progressBarRef }: ExpandedBarProps) {
             type="button"
             onClick={cycleRepeat}
             className={`p-2 transition-colors ${
-              state.repeat !== "none" ? "text-primary" : "text-tier-4 hover:text-tier-2"
+              state.repeat !== "none" ? "text-primary" : "text-t4 hover:text-t2"
             }`}
             aria-label={`Repeat: ${state.repeat}`}
           >
@@ -308,14 +308,14 @@ function ExpandedBar({ state, controls, progressBarRef }: ExpandedBarProps) {
 
         {/* Time + Volume (right) */}
         <div className="flex items-center gap-3 flex-1 justify-end">
-          <span className="font-mono text-[10px] text-tier-4 tabular-nums whitespace-nowrap hidden sm:inline">
+          <span className="font-mono text-[10px] text-t4 tabular-nums whitespace-nowrap hidden sm:inline">
             {formatTime(state.progress)} / {formatTime(state.duration)}
           </span>
 
           <button
             type="button"
             onClick={controls.toggleMute}
-            className="p-1.5 text-tier-4 hover:text-tier-2 transition-colors"
+            className="p-1.5 text-t4 hover:text-t2 transition-colors"
             aria-label={state.muted ? "Unmute" : "Mute"}
           >
             {state.muted ? (
@@ -339,7 +339,7 @@ function ExpandedBar({ state, controls, progressBarRef }: ExpandedBarProps) {
           <button
             type="button"
             onClick={() => controls.setMinimized(true)}
-            className="p-1.5 text-tier-4 hover:text-tier-2 transition-colors"
+            className="p-1.5 text-t4 hover:text-t2 transition-colors"
             aria-label="Minimize player"
           >
             <ChevronDown className="w-4 h-4" />

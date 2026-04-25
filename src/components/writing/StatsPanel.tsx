@@ -19,7 +19,7 @@ function StatCell({
 }) {
   return (
     <GlassPanel className="p-3">
-      <span className="block text-[11px] font-medium uppercase tracking-[1.5px] text-tier-3 mb-1.5">
+      <span className="block text-[11px] font-medium uppercase tracking-[1.5px] text-t3 mb-1.5">
         {label}
       </span>
       {children}
@@ -48,12 +48,12 @@ export function StatsPanel({ entries, dailyGoalWords }: StatsPanelProps) {
           <div className="flex items-center gap-3 flex-1 min-w-[180px]">
             <div className="flex-1">
               <div className="flex items-center justify-between mb-1.5">
-                <span className="text-[11px] font-medium uppercase tracking-[1.5px] text-tier-3">
+                <span className="text-[11px] font-medium uppercase tracking-[1.5px] text-t3">
                   Today
                 </span>
-                <span className="font-mono text-[11px] text-tier-2">
+                <span className="font-mono text-[11px] text-t2">
                   {formatNumber(stats.wordsToday)}
-                  <span className="text-tier-4"> / {formatNumber(dailyGoalWords)}</span>
+                  <span className="text-t4"> / {formatNumber(dailyGoalWords)}</span>
                 </span>
               </div>
               <div className="h-1.5 rounded-xs bg-white/[0.06] overflow-hidden">
@@ -70,33 +70,33 @@ export function StatsPanel({ entries, dailyGoalWords }: StatsPanelProps) {
           <div className="flex items-center gap-1.5">
             <Flame
               className={`w-4 h-4 ${
-                stats.currentStreak >= 1 ? "text-primary" : "text-tier-5"
+                stats.currentStreak >= 1 ? "text-primary" : "text-t5"
               }`}
             />
-            <span className="font-mono text-sm text-tier-1">
+            <span className="font-mono text-sm text-t1">
               {stats.currentStreak}
             </span>
-            <span className="text-tier-4 text-xs">
+            <span className="text-t4 text-xs">
               day streak
             </span>
           </div>
 
           {/* Total words */}
           <div className="hidden sm:flex items-center gap-1.5">
-            <span className="font-mono text-sm text-tier-1">
+            <span className="font-mono text-sm text-t1">
               {formatNumber(stats.totalWords)}
             </span>
-            <span className="text-tier-4 text-xs">
+            <span className="text-t4 text-xs">
               total words
             </span>
           </div>
 
           {/* Total entries */}
           <div className="hidden sm:flex items-center gap-1.5">
-            <span className="font-mono text-sm text-tier-1">
+            <span className="font-mono text-sm text-t1">
               {formatNumber(stats.totalEntries)}
             </span>
-            <span className="text-tier-4 text-xs">
+            <span className="text-t4 text-xs">
               {stats.totalEntries === 1 ? "entry" : "entries"}
             </span>
           </div>
@@ -107,7 +107,7 @@ export function StatsPanel({ entries, dailyGoalWords }: StatsPanelProps) {
       <button
         type="button"
         onClick={() => setExpanded(!expanded)}
-        className="flex items-center gap-2 text-tier-4 hover:text-tier-2 transition-colors text-xs mb-3"
+        className="flex items-center gap-2 text-t4 hover:text-t2 transition-colors text-xs mb-3"
       >
         <ChevronDown
           className={`w-3.5 h-3.5 transition-transform ${
@@ -122,7 +122,7 @@ export function StatsPanel({ entries, dailyGoalWords }: StatsPanelProps) {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {/* Words This Week */}
           <StatCell label="Words This Week">
-            <span className="font-mono text-tier-1">
+            <span className="font-mono text-t1">
               {formatNumber(stats.wordsThisWeek)}
             </span>
           </StatCell>
@@ -130,10 +130,10 @@ export function StatsPanel({ entries, dailyGoalWords }: StatsPanelProps) {
           {/* Longest Streak */}
           <StatCell label="Longest Streak">
             <div className="flex items-center gap-2">
-              <span className="font-mono text-tier-1">
+              <span className="font-mono text-t1">
                 {stats.longestStreak}
               </span>
-              <span className="text-tier-4 text-xs">
+              <span className="text-t4 text-xs">
                 {stats.longestStreak === 1 ? "day" : "days"}
               </span>
             </div>
@@ -142,10 +142,10 @@ export function StatsPanel({ entries, dailyGoalWords }: StatsPanelProps) {
           {/* Entries This Month */}
           <StatCell label="This Month">
             <div className="flex items-center gap-2">
-              <span className="font-mono text-tier-1">
+              <span className="font-mono text-t1">
                 {formatNumber(stats.entriesThisMonth)}
               </span>
-              <span className="text-tier-4 text-xs">
+              <span className="text-t4 text-xs">
                 {stats.entriesThisMonth === 1 ? "entry" : "entries"}
               </span>
             </div>

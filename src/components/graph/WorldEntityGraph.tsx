@@ -818,14 +818,14 @@ function InnerGraph({ worldId, entities, connections }: InnerGraphProps) {
     return (
       <div className="h-full w-full flex items-center justify-center" style={{ background: "#0A0E17" }}>
         <div className="text-center max-w-xs">
-          <div className="flex justify-center gap-4 mb-4 text-tier-4">
+          <div className="flex justify-center gap-4 mb-4 text-t4">
             <span className="inline-block w-3 h-3 border border-tier-4/40" />
             <span className="inline-block w-3 h-3 border border-tier-4/40 mt-3" />
           </div>
-          <h2 className="font-heading text-sm font-light uppercase tracking-[2px] text-tier-1 mb-2">
+          <h2 className="font-heading text-sm font-light uppercase tracking-[2px] text-t1 mb-2">
             Your World Graph
           </h2>
-          <p className="text-[11px] font-sans text-tier-3 leading-relaxed mb-4">
+          <p className="text-[11px] font-sans text-t3 leading-relaxed mb-4">
             Create your first entity to begin mapping the connections between
             your world's elements.
           </p>
@@ -836,7 +836,7 @@ function InnerGraph({ worldId, entities, connections }: InnerGraphProps) {
             <Plus className="w-3.5 h-3.5 mr-1.5" />
             Create Entity
           </Button>
-          <p className="text-[9px] text-tier-5 mt-3">
+          <p className="text-[9px] text-t5 mt-3">
             Start with a planet or star. The Environmental Cascade flows from
             physics through culture.
           </p>
@@ -873,7 +873,7 @@ function InnerGraph({ worldId, entities, connections }: InnerGraphProps) {
             size="sm"
             variant="ghost"
             onClick={() => setShowCreateEntity(true)}
-            className="h-7 text-[10px] uppercase tracking-[1.2px] font-sans text-tier-3 hover:text-tier-1"
+            className="h-7 text-[10px] uppercase tracking-[1.2px] font-sans text-t3 hover:text-t1"
           >
             <Plus className="w-3 h-3 mr-1" />
             Entity
@@ -883,7 +883,7 @@ function InnerGraph({ worldId, entities, connections }: InnerGraphProps) {
             size="sm"
             variant="ghost"
             onClick={() => setViewMode("graph")}
-            className="h-7 text-[10px] uppercase tracking-[1.2px] font-sans text-tier-3 hover:text-tier-1"
+            className="h-7 text-[10px] uppercase tracking-[1.2px] font-sans text-t3 hover:text-t1"
           >
             <Network className="w-3 h-3 mr-1" />
             Graph
@@ -891,7 +891,7 @@ function InnerGraph({ worldId, entities, connections }: InnerGraphProps) {
           <Button
             size="sm"
             variant="ghost"
-            className="h-7 text-[10px] uppercase tracking-[1.2px] font-sans text-tier-1 bg-white/5"
+            className="h-7 text-[10px] uppercase tracking-[1.2px] font-sans text-t1 bg-white/5"
           >
             <TreePine className="w-3 h-3 mr-1" />
             Tree
@@ -900,7 +900,7 @@ function InnerGraph({ worldId, entities, connections }: InnerGraphProps) {
             size="sm"
             variant="ghost"
             onClick={() => setViewMode("list")}
-            className="h-7 text-[10px] uppercase tracking-[1.2px] font-sans text-tier-3 hover:text-tier-1"
+            className="h-7 text-[10px] uppercase tracking-[1.2px] font-sans text-t3 hover:text-t1"
           >
             <List className="w-3 h-3 mr-1" />
             List
@@ -957,7 +957,7 @@ function InnerGraph({ worldId, entities, connections }: InnerGraphProps) {
             size="sm"
             variant="ghost"
             onClick={() => setShowCreateEntity(true)}
-            className="h-7 text-[10px] uppercase tracking-[1.2px] font-sans text-tier-3 hover:text-tier-1"
+            className="h-7 text-[10px] uppercase tracking-[1.2px] font-sans text-t3 hover:text-t1"
           >
             <Plus className="w-3 h-3 mr-1" />
             Entity
@@ -967,7 +967,7 @@ function InnerGraph({ worldId, entities, connections }: InnerGraphProps) {
             size="sm"
             variant="ghost"
             onClick={() => setViewMode("graph")}
-            className="h-7 text-[10px] uppercase tracking-[1.2px] font-sans text-tier-3 hover:text-tier-1"
+            className="h-7 text-[10px] uppercase tracking-[1.2px] font-sans text-t3 hover:text-t1"
           >
             <Network className="w-3 h-3 mr-1" />
             Graph
@@ -976,7 +976,7 @@ function InnerGraph({ worldId, entities, connections }: InnerGraphProps) {
             size="sm"
             variant="ghost"
             onClick={() => setViewMode("tree")}
-            className="h-7 text-[10px] uppercase tracking-[1.2px] font-sans text-tier-3 hover:text-tier-1"
+            className="h-7 text-[10px] uppercase tracking-[1.2px] font-sans text-t3 hover:text-t1"
           >
             <TreePine className="w-3 h-3 mr-1" />
             Tree
@@ -984,7 +984,7 @@ function InnerGraph({ worldId, entities, connections }: InnerGraphProps) {
           <Button
             size="sm"
             variant="ghost"
-            className="h-7 text-[10px] uppercase tracking-[1.2px] font-sans text-tier-1 bg-white/5"
+            className="h-7 text-[10px] uppercase tracking-[1.2px] font-sans text-t1 bg-white/5"
           >
             <List className="w-3 h-3 mr-1" />
             List
@@ -1043,7 +1043,7 @@ function InnerGraph({ worldId, entities, connections }: InnerGraphProps) {
           size="sm"
           variant="ghost"
           onClick={() => setShowCreateEntity(true)}
-          className="h-7 text-[10px] uppercase tracking-[1.2px] font-sans text-tier-3 hover:text-tier-1"
+          className="h-7 text-[10px] uppercase tracking-[1.2px] font-sans text-t3 hover:text-t1"
         >
           <Plus className="w-3 h-3 mr-1" />
           Entity
@@ -1059,7 +1059,7 @@ function InnerGraph({ worldId, entities, connections }: InnerGraphProps) {
           size="sm"
           variant="ghost"
           onClick={handleAutoLayout}
-          className="h-7 text-[10px] uppercase tracking-[1.2px] font-sans text-tier-3 hover:text-tier-1"
+          className="h-7 text-[10px] uppercase tracking-[1.2px] font-sans text-t3 hover:text-t1"
         >
           <LayoutGrid className="w-3 h-3 mr-1" />
           Auto
@@ -1068,7 +1068,7 @@ function InnerGraph({ worldId, entities, connections }: InnerGraphProps) {
           size="sm"
           variant="ghost"
           onClick={handleCascadeFlowLayout}
-          className="h-7 text-[10px] uppercase tracking-[1.2px] font-sans text-tier-3 hover:text-tier-1"
+          className="h-7 text-[10px] uppercase tracking-[1.2px] font-sans text-t3 hover:text-t1"
           title="Cascade Flow Layout — arrange by cascade stage"
         >
           <Columns3 className="w-3 h-3 mr-1" />
@@ -1078,7 +1078,7 @@ function InnerGraph({ worldId, entities, connections }: InnerGraphProps) {
           size="sm"
           variant="ghost"
           onClick={() => reactFlow.fitView({ padding: 0.15 })}
-          className="h-7 text-[10px] uppercase tracking-[1.2px] font-sans text-tier-3 hover:text-tier-1"
+          className="h-7 text-[10px] uppercase tracking-[1.2px] font-sans text-t3 hover:text-t1"
         >
           <Zap className="w-3 h-3 mr-1" />
           Fit
@@ -1090,7 +1090,7 @@ function InnerGraph({ worldId, entities, connections }: InnerGraphProps) {
           variant="ghost"
           onClick={() => history.undo()}
           disabled={!history.canUndo}
-          className="h-7 w-7 p-0 text-tier-3 hover:text-tier-1 disabled:opacity-20"
+          className="h-7 w-7 p-0 text-t3 hover:text-t1 disabled:opacity-20"
           title="Undo (Ctrl+Z)"
         >
           <Undo2 className="w-3 h-3" />
@@ -1100,7 +1100,7 @@ function InnerGraph({ worldId, entities, connections }: InnerGraphProps) {
           variant="ghost"
           onClick={() => history.redo()}
           disabled={!history.canRedo}
-          className="h-7 w-7 p-0 text-tier-3 hover:text-tier-1 disabled:opacity-20"
+          className="h-7 w-7 p-0 text-t3 hover:text-t1 disabled:opacity-20"
           title="Redo (Ctrl+Y)"
         >
           <Redo2 className="w-3 h-3" />
@@ -1115,7 +1115,7 @@ function InnerGraph({ worldId, entities, connections }: InnerGraphProps) {
               exportGraphAsPNG(graphContainerRef.current);
             }
           }}
-          className="h-7 text-[10px] uppercase tracking-[1.2px] font-sans text-tier-3 hover:text-tier-1"
+          className="h-7 text-[10px] uppercase tracking-[1.2px] font-sans text-t3 hover:text-t1"
           title="Export as PNG"
         >
           <Download className="w-3 h-3 mr-1" />
@@ -1125,7 +1125,7 @@ function InnerGraph({ worldId, entities, connections }: InnerGraphProps) {
           size="sm"
           variant="ghost"
           onClick={() => exportGraphAsJSON(entities, connections)}
-          className="h-7 text-[10px] uppercase tracking-[1.2px] font-sans text-tier-3 hover:text-tier-1"
+          className="h-7 text-[10px] uppercase tracking-[1.2px] font-sans text-t3 hover:text-t1"
           title="Export as JSON"
         >
           <Download className="w-3 h-3 mr-1" />
@@ -1136,7 +1136,7 @@ function InnerGraph({ worldId, entities, connections }: InnerGraphProps) {
         <Button
           size="sm"
           variant="ghost"
-          className="h-7 text-[10px] uppercase tracking-[1.2px] font-sans text-tier-1 bg-white/5"
+          className="h-7 text-[10px] uppercase tracking-[1.2px] font-sans text-t1 bg-white/5"
         >
           <Network className="w-3 h-3 mr-1" />
           Graph
@@ -1145,7 +1145,7 @@ function InnerGraph({ worldId, entities, connections }: InnerGraphProps) {
           size="sm"
           variant="ghost"
           onClick={() => setViewMode("tree")}
-          className="h-7 text-[10px] uppercase tracking-[1.2px] font-sans text-tier-3 hover:text-tier-1"
+          className="h-7 text-[10px] uppercase tracking-[1.2px] font-sans text-t3 hover:text-t1"
         >
           <TreePine className="w-3 h-3 mr-1" />
           Tree
@@ -1154,7 +1154,7 @@ function InnerGraph({ worldId, entities, connections }: InnerGraphProps) {
           size="sm"
           variant="ghost"
           onClick={() => setViewMode("list")}
-          className="h-7 text-[10px] uppercase tracking-[1.2px] font-sans text-tier-3 hover:text-tier-1"
+          className="h-7 text-[10px] uppercase tracking-[1.2px] font-sans text-t3 hover:text-t1"
         >
           <List className="w-3 h-3 mr-1" />
           List
@@ -1186,7 +1186,7 @@ function InnerGraph({ worldId, entities, connections }: InnerGraphProps) {
             className={`h-6 text-[9px] uppercase tracking-[1px] font-sans ${
               analysisMode === mode
                 ? "text-teal bg-teal/10"
-                : "text-tier-4 hover:text-tier-2"
+                : "text-t4 hover:text-t2"
             }`}
           >
             <ModeIcon className="w-3 h-3 mr-0.5" />
@@ -1199,7 +1199,7 @@ function InnerGraph({ worldId, entities, connections }: InnerGraphProps) {
           variant="ghost"
           onClick={() => setAuditEntityId((prev) => prev ? null : (analysisSelectedEntities[0] ?? null))}
           className={`h-6 text-[9px] uppercase tracking-[1px] font-sans ${
-            auditEntityId ? "text-teal bg-teal/10" : "text-tier-4 hover:text-tier-2"
+            auditEntityId ? "text-teal bg-teal/10" : "text-t4 hover:text-t2"
           }`}
           title="Select a node, then click Audit to trace its cascade"
         >
@@ -1214,7 +1214,7 @@ function InnerGraph({ worldId, entities, connections }: InnerGraphProps) {
             setTimelineIndex(0);
           }}
           className={`h-6 text-[9px] uppercase tracking-[1px] font-sans ${
-            showTimeline ? "text-teal bg-teal/10" : "text-tier-4 hover:text-tier-2"
+            showTimeline ? "text-teal bg-teal/10" : "text-t4 hover:text-t2"
           }`}
         >
           <Clock className="w-3 h-3 mr-0.5" />
@@ -1245,18 +1245,18 @@ function InnerGraph({ worldId, entities, connections }: InnerGraphProps) {
           <span className="text-[10px] font-sans text-teal uppercase tracking-[1px]">
             Cascade Path
           </span>
-          <span className="text-[10px] font-mono text-tier-2">
+          <span className="text-[10px] font-mono text-t2">
             {entities.find((e) => e.id === cascadePathEntityId)?.name}
           </span>
           {cascadePath && (
-            <span className="text-[9px] font-mono text-tier-4">
+            <span className="text-[9px] font-mono text-t4">
               {cascadePath.entityIds.size} entities
             </span>
           )}
           <button
             type="button"
             onClick={() => setCascadePathEntityId(null)}
-            className="text-tier-4 hover:text-tier-2 text-[9px] uppercase tracking-[1px] font-sans ml-1"
+            className="text-t4 hover:text-t2 text-[9px] uppercase tracking-[1px] font-sans ml-1"
           >
             Clear
           </button>
@@ -1341,25 +1341,25 @@ function InnerGraph({ worldId, entities, connections }: InnerGraphProps) {
             }}
           >
             <div className="px-3 py-1.5 border-b border-white/[0.06]">
-              <span className="text-[10px] font-mono text-tier-3 uppercase tracking-[1px] truncate block max-w-[180px]">
+              <span className="text-[10px] font-mono text-t3 uppercase tracking-[1px] truncate block max-w-[180px]">
                 {ctxEntity.name}
               </span>
             </div>
             <button
               type="button"
               onClick={handleContextCascadeAudit}
-              className="w-full flex items-center gap-2 px-3 py-2 text-[11px] font-sans text-tier-2 hover:bg-white/[0.04] hover:text-tier-1 transition-colors text-left"
+              className="w-full flex items-center gap-2 px-3 py-2 text-[11px] font-sans text-t2 hover:bg-white/[0.04] hover:text-t1 transition-colors text-left"
             >
-              <ScanSearch className="w-3 h-3 text-tier-4" />
+              <ScanSearch className="w-3 h-3 text-t4" />
               Cascade Audit
             </button>
             {ctxEntity.pinned && (
               <button
                 type="button"
                 onClick={handleContextUnpin}
-                className="w-full flex items-center gap-2 px-3 py-2 text-[11px] font-sans text-tier-2 hover:bg-white/[0.04] hover:text-tier-1 transition-colors text-left"
+                className="w-full flex items-center gap-2 px-3 py-2 text-[11px] font-sans text-t2 hover:bg-white/[0.04] hover:text-t1 transition-colors text-left"
               >
-                <PinOff className="w-3 h-3 text-tier-4" />
+                <PinOff className="w-3 h-3 text-t4" />
                 Unpin
               </button>
             )}

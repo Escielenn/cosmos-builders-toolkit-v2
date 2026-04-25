@@ -43,7 +43,7 @@ const QuestionSection = ({
       )}
     </div>
     {prompts.length > 0 && (
-      <ul className="text-xs text-tier-4 mb-2 list-disc list-inside">
+      <ul className="text-xs text-t4 mb-2 list-disc list-inside">
         {prompts.map((prompt, i) => (
           <li key={i}>{prompt}</li>
         ))}

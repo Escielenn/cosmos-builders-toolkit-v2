@@ -124,20 +124,20 @@ export function ConnectionModal({
         }}
       >
         <DialogHeader>
-          <DialogTitle className="font-heading text-sm font-light uppercase tracking-[2px] text-tier-1">
+          <DialogTitle className="font-heading text-sm font-light uppercase tracking-[2px] text-t1">
             {mode === "create" ? "New Connection" : "Edit Connection"}
           </DialogTitle>
         </DialogHeader>
 
         {/* Source → Target display */}
         <div className="flex items-center gap-2 py-2">
-          <span className="text-xs font-mono text-tier-2 truncate max-w-[140px]">
+          <span className="text-xs font-mono text-t2 truncate max-w-[140px]">
             {sourceName}
           </span>
-          <span className="text-tier-4 text-[10px]">
+          <span className="text-t4 text-[10px]">
             {bidirectional ? "< - >" : "- - >"}
           </span>
-          <span className="text-xs font-mono text-tier-2 truncate max-w-[140px]">
+          <span className="text-xs font-mono text-t2 truncate max-w-[140px]">
             {targetName}
           </span>
         </div>
@@ -145,7 +145,7 @@ export function ConnectionModal({
         <div className="space-y-4">
           {/* Cascade Stage */}
           <div className="space-y-1.5">
-            <Label className="text-[11px] font-medium uppercase tracking-[1.5px] text-tier-3">
+            <Label className="text-[11px] font-medium uppercase tracking-[1.5px] text-t3">
               Cascade Stage
             </Label>
             <Select
@@ -175,7 +175,7 @@ export function ConnectionModal({
 
           {/* Relationship Type */}
           <div className="space-y-1.5">
-            <Label className="text-[11px] font-medium uppercase tracking-[1.5px] text-tier-3">
+            <Label className="text-[11px] font-medium uppercase tracking-[1.5px] text-t3">
               Relationship Type
             </Label>
             <Select value={relationshipType} onValueChange={setRelationshipType}>
@@ -194,7 +194,7 @@ export function ConnectionModal({
 
           {/* Display Label */}
           <div className="space-y-1.5">
-            <Label className="text-[11px] font-medium uppercase tracking-[1.5px] text-tier-3">
+            <Label className="text-[11px] font-medium uppercase tracking-[1.5px] text-t3">
               Display Label
             </Label>
             <Input
@@ -207,7 +207,7 @@ export function ConnectionModal({
 
           {/* Direction */}
           <div className="space-y-1.5">
-            <Label className="text-[11px] font-medium uppercase tracking-[1.5px] text-tier-3">
+            <Label className="text-[11px] font-medium uppercase tracking-[1.5px] text-t3">
               Direction
             </Label>
             <div className="flex gap-3">
@@ -217,7 +217,7 @@ export function ConnectionModal({
                 className={`flex items-center gap-1.5 px-3 py-1.5 text-[10px] uppercase tracking-[1.2px] font-sans border transition-colors ${
                   !bidirectional
                     ? "border-teal/25 bg-teal/10 text-teal"
-                    : "border-sf-border text-tier-4 hover:text-tier-3"
+                    : "border-sf-border text-t4 hover:text-t3"
                 }`}
               >
                 One-way
@@ -228,7 +228,7 @@ export function ConnectionModal({
                 className={`flex items-center gap-1.5 px-3 py-1.5 text-[10px] uppercase tracking-[1.2px] font-sans border transition-colors ${
                   bidirectional
                     ? "border-teal/25 bg-teal/10 text-teal"
-                    : "border-sf-border text-tier-4 hover:text-tier-3"
+                    : "border-sf-border text-t4 hover:text-t3"
                 }`}
               >
                 Mutual
@@ -239,7 +239,7 @@ export function ConnectionModal({
           {/* Strength Slider */}
           <div className="space-y-1.5">
             <div className="flex items-center justify-between">
-              <Label className="text-[11px] font-medium uppercase tracking-[1.5px] text-tier-3">
+              <Label className="text-[11px] font-medium uppercase tracking-[1.5px] text-t3">
                 Strength
               </Label>
               <span className="text-[11px] font-mono" style={{ color: stageColor }}>
@@ -258,7 +258,7 @@ export function ConnectionModal({
 
           {/* Status */}
           <div className="space-y-1.5">
-            <Label className="text-[11px] font-medium uppercase tracking-[1.5px] text-tier-3">
+            <Label className="text-[11px] font-medium uppercase tracking-[1.5px] text-t3">
               Status
             </Label>
             <div className="flex flex-wrap gap-2">
@@ -270,7 +270,7 @@ export function ConnectionModal({
                   className={`px-2.5 py-1 text-[10px] uppercase tracking-[1.2px] font-sans border transition-colors ${
                     status === s
                       ? "border-teal/25 bg-teal/10 text-teal"
-                      : "border-sf-border text-tier-4 hover:text-tier-3"
+                      : "border-sf-border text-t4 hover:text-t3"
                   }`}
                 >
                   {s}
@@ -282,7 +282,7 @@ export function ConnectionModal({
           {/* Temporal bounds */}
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <Label className="text-[11px] font-medium uppercase tracking-[1.5px] text-tier-3">
+              <Label className="text-[11px] font-medium uppercase tracking-[1.5px] text-t3">
                 Time Start
               </Label>
               <Input
@@ -293,7 +293,7 @@ export function ConnectionModal({
               />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-[11px] font-medium uppercase tracking-[1.5px] text-tier-3">
+              <Label className="text-[11px] font-medium uppercase tracking-[1.5px] text-t3">
                 Time End
               </Label>
               <Input
@@ -307,7 +307,7 @@ export function ConnectionModal({
 
           {/* Notes */}
           <div className="space-y-1.5">
-            <Label className="text-[11px] font-medium uppercase tracking-[1.5px] text-tier-3">
+            <Label className="text-[11px] font-medium uppercase tracking-[1.5px] text-t3">
               Notes
             </Label>
             <StellarForgeEditor

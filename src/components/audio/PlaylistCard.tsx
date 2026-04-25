@@ -31,10 +31,10 @@ export default function PlaylistCard({ playlist, onSelect }: PlaylistCardProps) 
     >
       {/* Icon */}
       <div className="flex items-center gap-2 mb-1.5">
-        <Music className={`w-4 h-4 ${isActive ? "text-primary" : "text-tier-4"}`} />
+        <Music className={`w-4 h-4 ${isActive ? "text-primary" : "text-t4"}`} />
         <span
           className={`text-sm font-medium truncate ${
-            isActive ? "text-primary" : "text-tier-2"
+            isActive ? "text-primary" : "text-t2"
           }`}
         >
           {playlist.name}
@@ -42,7 +42,7 @@ export default function PlaylistCard({ playlist, onSelect }: PlaylistCardProps) 
       </div>
 
       {/* Meta */}
-      <p className="text-[10px] text-tier-4 font-mono uppercase tracking-wider">
+      <p className="text-[10px] text-t4 font-mono uppercase tracking-wider">
         {playlist.tracks.length} {playlist.tracks.length === 1 ? "track" : "tracks"}
       </p>
 
@@ -53,7 +53,7 @@ export default function PlaylistCard({ playlist, onSelect }: PlaylistCardProps) 
         className={`absolute top-2 right-2 p-1.5 transition-all ${
           isPlaying
             ? "text-primary opacity-100"
-            : "text-tier-3 opacity-0 group-hover:opacity-100 hover:text-primary"
+            : "text-t3 opacity-0 group-hover:opacity-100 hover:text-primary"
         }`}
         aria-label={`Play ${playlist.name}`}
       >

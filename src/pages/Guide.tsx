@@ -65,10 +65,10 @@ const Guide = () => {
           <div className="font-mono text-[9px] uppercase tracking-[3px] text-primary/40 mb-3">
             // Navigation Systems
           </div>
-          <h1 className="font-display text-3xl md:text-4xl tracking-sf-title text-tier-1 mb-3">
+          <h1 className="font-display text-3xl md:text-4xl tracking-sf-title text-t1 mb-3">
             STELLARFORGE GUIDE
           </h1>
-          <p className="text-sm text-tier-2 max-w-lg mx-auto leading-relaxed">
+          <p className="text-sm text-t2 max-w-lg mx-auto leading-relaxed">
             All systems reference. All courses charted.
           </p>
         </header>
@@ -92,11 +92,11 @@ const Guide = () => {
                       <Icon className="w-5 h-5" strokeWidth={1.5} />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h2 className="font-heading text-sm font-light uppercase tracking-[2px] text-tier-1 mb-2 flex items-center gap-2">
+                      <h2 className="font-heading text-sm font-light uppercase tracking-[2px] text-t1 mb-2 flex items-center gap-2">
                         {section.title}
-                        <ChevronRight className="w-3.5 h-3.5 text-tier-4 transition-transform duration-300 group-hover:translate-x-0.5" />
+                        <ChevronRight className="w-3.5 h-3.5 text-t4 transition-transform duration-300 group-hover:translate-x-0.5" />
                       </h2>
-                      <p className="text-xs text-tier-3 leading-relaxed">
+                      <p className="text-xs text-t3 leading-relaxed">
                         {section.description}
                       </p>
                     </div>

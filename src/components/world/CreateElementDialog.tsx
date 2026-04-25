@@ -293,7 +293,7 @@ export default function CreateElementDialog({
                     )}
                   >
                     <Icon className="w-5 h-5 text-t3/40 group-hover:text-primary/60 transition-colors" />
-                    <span className="text-[10px] font-heading uppercase tracking-wider text-tier-3 group-hover:text-tier-2 transition-colors">
+                    <span className="text-[10px] font-heading uppercase tracking-wider text-t3 group-hover:text-t2 transition-colors">
                       {PICKER_LABELS[type]}
                     </span>
                   </button>
@@ -310,7 +310,7 @@ export default function CreateElementDialog({
                   </h3>
                   <a
                     href={`/worlds/${worldId}/custom-types`}
-                    className="text-[10px] text-tier-4 hover:text-tier-2"
+                    className="text-[10px] text-t4 hover:text-t2"
                   >
                     Manage →
                   </a>
@@ -328,7 +328,7 @@ export default function CreateElementDialog({
                         className="w-5 h-5 text-t3/40"
                         style={t.color ? { color: t.color } : undefined}
                       />
-                      <span className="text-[10px] font-heading uppercase tracking-wider text-tier-3">
+                      <span className="text-[10px] font-heading uppercase tracking-wider text-t3">
                         {t.label}
                       </span>
                     </button>
@@ -342,7 +342,7 @@ export default function CreateElementDialog({
               <button
                 type="button"
                 onClick={() => handleTypePick("custom")}
-                className="w-full flex items-center justify-center gap-2 py-2 border border-dashed border-white/10 text-tier-4 hover:text-tier-2 hover:border-primary/20 transition-colors"
+                className="w-full flex items-center justify-center gap-2 py-2 border border-dashed border-white/10 text-t4 hover:text-t2 hover:border-primary/20 transition-colors"
               >
                 <Shapes className="w-4 h-4" />
                 <span className="text-[10px] font-heading uppercase tracking-wider">
@@ -386,7 +386,7 @@ export default function CreateElementDialog({
                 <div className="space-y-2">
                   <Label htmlFor="entity-custom-label">
                     Custom type label{" "}
-                    <span className="text-tier-4 font-normal normal-case tracking-normal">
+                    <span className="text-t4 font-normal normal-case tracking-normal">
                       (optional)
                     </span>
                   </Label>
@@ -418,7 +418,7 @@ export default function CreateElementDialog({
               <div className="space-y-2">
                 <Label htmlFor="entity-summary">
                   Summary{" "}
-                  <span className="text-tier-4 font-normal normal-case tracking-normal">
+                  <span className="text-t4 font-normal normal-case tracking-normal">
                     (one line, optional)
                   </span>
                 </Label>
@@ -433,7 +433,7 @@ export default function CreateElementDialog({
               <div className="space-y-2">
                 <Label htmlFor="entity-description">
                   Description{" "}
-                  <span className="text-tier-4 font-normal normal-case tracking-normal">
+                  <span className="text-t4 font-normal normal-case tracking-normal">
                     (optional)
                   </span>
                 </Label>
@@ -499,7 +499,7 @@ export default function CreateElementDialog({
             <div className="space-y-2 py-4">
               {applicableTools.length > 0 && (
                 <div className="space-y-2">
-                  <Label className="text-[11px] uppercase tracking-[1.5px] text-tier-3">
+                  <Label className="text-[11px] uppercase tracking-[1.5px] text-t3">
                     Run a tool on this {PICKER_LABELS[selectedType].toLowerCase()}
                   </Label>
                   <div className="flex flex-col gap-1.5">
@@ -529,7 +529,7 @@ export default function CreateElementDialog({
                 </Button>
                 <Button
                   variant="ghost"
-                  className="justify-start h-9 text-tier-3"
+                  className="justify-start h-9 text-t3"
                   onClick={handleClose}
                 >
                   I'll fill it in later

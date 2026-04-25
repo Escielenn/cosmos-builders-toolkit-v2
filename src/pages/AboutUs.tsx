@@ -18,10 +18,10 @@ const AboutUs = () => {
       <main className="relative container mx-auto px-4 pt-24 pb-16">
         {/* Hero */}
         <section className="text-center mb-16">
-          <h1 className="font-display text-4xl md:text-5xl font-light tracking-sf-title text-tier-1 mb-4">
+          <h1 className="font-display text-4xl md:text-5xl font-light tracking-sf-title text-t1 mb-4">
             ABOUT STELLARFORGE
           </h1>
-          <p className="text-lg text-tier-2 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-lg text-t2 max-w-2xl mx-auto leading-relaxed">
             A science fiction worldbuilding platform for writers who demand
             scientific credibility alongside creative imagination.
           </p>
@@ -34,11 +34,11 @@ const AboutUs = () => {
               <div className="w-8 h-8 flex items-center justify-center bg-[#15C17B]/[0.06] border border-[#15C17B]/[0.15]">
                 <Compass className="w-4 h-4 text-[#15C17B]" />
               </div>
-              <h2 className="font-heading text-xl font-light uppercase tracking-[2px] text-tier-1">
+              <h2 className="font-heading text-xl font-light uppercase tracking-[2px] text-t1">
                 The Story
               </h2>
             </div>
-            <div className="space-y-4 text-tier-2 leading-relaxed">
+            <div className="space-y-4 text-t2 leading-relaxed">
               <p>
                 StellarForge began as a curriculum for a science fiction writing
                 workshop. The core insight was simple: most worldbuilding tools
@@ -72,7 +72,7 @@ const AboutUs = () => {
               <div className="w-8 h-8 flex items-center justify-center bg-[#5B8DEF]/[0.06] border border-[#5B8DEF]/[0.15]">
                 <Layers className="w-4 h-4 text-[#5B8DEF]" />
               </div>
-              <h2 className="font-heading text-xl font-light uppercase tracking-[2px] text-tier-1">
+              <h2 className="font-heading text-xl font-light uppercase tracking-[2px] text-t1">
                 The Cascade
               </h2>
             </div>
@@ -93,14 +93,14 @@ const AboutUs = () => {
                     {step.label}
                   </span>
                   {i < 5 && (
-                    <span className="text-tier-5 text-xs select-none">
+                    <span className="text-t5 text-xs select-none">
                       &rarr;
                     </span>
                   )}
                 </span>
               ))}
             </div>
-            <p className="text-tier-2 leading-relaxed mt-4">
+            <p className="text-t2 leading-relaxed mt-4">
               Each layer builds on what came before. Each output becomes input
               for what follows. The result is worlds with genuine internal
               consistency, the kind of lived-in coherence that separates
@@ -116,13 +116,13 @@ const AboutUs = () => {
               <div className="w-8 h-8 flex items-center justify-center bg-[#9B5DE5]/[0.06] border border-[#9B5DE5]/[0.15]">
                 <User className="w-4 h-4 text-[#9B5DE5]" />
               </div>
-              <h2 className="font-heading text-xl font-light uppercase tracking-[2px] text-tier-1">
+              <h2 className="font-heading text-xl font-light uppercase tracking-[2px] text-t1">
                 The Founder
               </h2>
             </div>
-            <div className="space-y-4 text-tier-2 leading-relaxed">
+            <div className="space-y-4 text-t2 leading-relaxed">
               <p>
-                <span className="text-tier-1 font-medium">
+                <span className="text-t1 font-medium">
                   Jason D. Batt, Ph.D.
                 </span>{" "}
                 is a writer, educator, and researcher whose work sits at the
@@ -148,13 +148,13 @@ const AboutUs = () => {
             <div className="flex items-center justify-center gap-3 mb-6">
               <Sparkles className="w-5 h-5 text-[#15C17B]" />
             </div>
-            <p className="font-display text-2xl md:text-3xl font-light tracking-sf-title text-tier-1 mb-4">
+            <p className="font-display text-2xl md:text-3xl font-light tracking-sf-title text-t1 mb-4">
               These worlds exist in you.
             </p>
-            <p className="font-display text-2xl md:text-3xl font-light tracking-sf-title text-tier-1 mb-8">
+            <p className="font-display text-2xl md:text-3xl font-light tracking-sf-title text-t1 mb-8">
               Waiting to be found.
             </p>
-            <p className="text-tier-3 text-sm leading-relaxed max-w-lg mx-auto">
+            <p className="text-t3 text-sm leading-relaxed max-w-lg mx-auto">
               StellarForge is built for writers who believe that the best science
               fiction begins with a question, not a formula. Our tools help you
               explore the consequences of that question, rigorously and
@@ -167,7 +167,7 @@ const AboutUs = () => {
         <div className="text-center">
           <Link
             to="/"
-            className="inline-flex items-center gap-2 text-sm text-tier-3 hover:text-[#15C17B] transition-colors"
+            className="inline-flex items-center gap-2 text-sm text-t3 hover:text-[#15C17B] transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
             <span className="font-heading text-xs uppercase tracking-[1.5px]">

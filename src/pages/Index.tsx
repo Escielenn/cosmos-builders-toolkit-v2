@@ -575,7 +575,7 @@ const Index = () => {
             </div>
 
             {/* Scroll hint */}
-            <div className="flex flex-col items-center mt-8 text-tier-4 animate-pulse">
+            <div className="flex flex-col items-center mt-8 text-t4 animate-pulse">
               <span className="font-mono text-[10px] uppercase tracking-[2px]">Scroll</span>
               <ChevronDown className="w-4 h-4 mt-0.5" />
             </div>
@@ -622,7 +622,7 @@ const Index = () => {
                   </Link>
                   <Link
                     to="/guide/tools"
-                    className="text-xs text-tier-3 hover:text-tier-2 font-heading uppercase tracking-wider transition-colors"
+                    className="text-xs text-t3 hover:text-t2 font-heading uppercase tracking-wider transition-colors"
                   >
                     Browse All →
                   </Link>

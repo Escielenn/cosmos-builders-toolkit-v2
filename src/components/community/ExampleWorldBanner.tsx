@@ -148,10 +148,10 @@ export default function ExampleWorldBanner() {
         <div className="flex items-center gap-3 flex-1 min-w-0">
           <Globe className="w-8 h-8 text-primary flex-shrink-0" />
           <div className="min-w-0">
-            <h3 className="font-heading text-sm font-light uppercase tracking-[2px] text-tier-1">
+            <h3 className="font-heading text-sm font-light uppercase tracking-[2px] text-t1">
               Explore The Tidelock Archives
             </h3>
-            <p className="font-sans text-xs text-tier-3 mt-0.5">
+            <p className="font-sans text-xs text-t3 mt-0.5">
               {alreadyForked
                 ? "You've already forked this world. View the original or go to your fork."
                 : "Our example world - see how a fully-built world looks in StellarForge."}
@@ -184,7 +184,7 @@ export default function ExampleWorldBanner() {
                 size="sm"
                 onClick={handleFork}
                 disabled={forkWorld.isPending}
-                className="gap-1.5 text-tier-3 hover:text-primary"
+                className="gap-1.5 text-t3 hover:text-primary"
               >
                 {forkWorld.isPending ? (
                   <Loader variant="inline" size="sm" />
@@ -199,7 +199,7 @@ export default function ExampleWorldBanner() {
           <Button
             variant="ghost"
             size="icon"
-            className="w-7 h-7 text-tier-4 hover:text-tier-2"
+            className="w-7 h-7 text-t4 hover:text-t2"
             onClick={handleHide}
             aria-label="Hide example world banner"
           >

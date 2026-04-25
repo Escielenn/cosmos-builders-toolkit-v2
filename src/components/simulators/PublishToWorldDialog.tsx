@@ -171,7 +171,7 @@ export default function PublishToWorldDialog({
               <Globe className="w-4 h-4" />
               Publish to World
             </DialogTitle>
-            <DialogDescription className="text-tier-2 mt-2">
+            <DialogDescription className="text-t2 mt-2">
               Create a world entity from this simulation. It will appear in your
               Codex and knowledge graph.
             </DialogDescription>
@@ -179,7 +179,7 @@ export default function PublishToWorldDialog({
 
           <div className="space-y-3 mt-2">
             <div>
-              <Label className="text-[11px] font-medium uppercase tracking-[1.5px] text-tier-3">
+              <Label className="text-[11px] font-medium uppercase tracking-[1.5px] text-t3">
                 Entity Name
               </Label>
               <Input
@@ -193,16 +193,16 @@ export default function PublishToWorldDialog({
             </div>
 
             <div>
-              <Label className="text-[11px] font-medium uppercase tracking-[1.5px] text-tier-3">
+              <Label className="text-[11px] font-medium uppercase tracking-[1.5px] text-t3">
                 Entity Type
               </Label>
-              <p className="text-sm text-tier-2 mt-1 capitalize">
+              <p className="text-sm text-t2 mt-1 capitalize">
                 {entryType.replace("_", " ")}
               </p>
             </div>
 
             {narrativeNotes && Object.values(narrativeNotes).some((v) => v.trim()) && (
-              <p className="text-[10px] text-tier-4 font-mono uppercase tracking-wider">
+              <p className="text-[10px] text-t4 font-mono uppercase tracking-wider">
                 + Narrative notes will be attached
               </p>
             )}

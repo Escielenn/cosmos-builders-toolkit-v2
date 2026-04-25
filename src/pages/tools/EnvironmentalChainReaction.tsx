@@ -899,7 +899,7 @@ const EnvironmentalChainReaction = () => {
           <blockquote className="border-l-2 border-primary pl-4 italic text-lg mb-4">
             "Physics shapes environment, environment shapes biology, biology shapes psychology, psychology shapes mythology, and mythology shapes culture."
           </blockquote>
-          <p className="text-tier-2">
+          <p className="text-t2">
             This tool applies the xenomythological principle that planetary
             conditions generate unique cultures, psychologies, and
             spiritualities. A desert world doesn't just have different
@@ -922,18 +922,18 @@ const EnvironmentalChainReaction = () => {
                   <button type="button" className="w-full p-4 rounded-lg border border-border hover:border-primary/50 transition-colors text-left flex items-center justify-between">
                     <span className="font-medium text-sm">
                       {example.title}{" "}
-                      <span className="text-tier-2 font-normal">
+                      <span className="text-t2 font-normal">
                         (<Link to={`/bookshelf#${example.isbn}`} className="text-primary hover:underline" onClick={(e) => e.stopPropagation()}><em>{example.bookTitle}</em></Link>)
                       </span>
                     </span>
-                    <ChevronDown className="w-4 h-4 text-tier-2 shrink-0 ml-2" />
+                    <ChevronDown className="w-4 h-4 text-t2 shrink-0 ml-2" />
                   </button>
                 </CollapsibleTrigger>
                 <CollapsibleContent>
                   <div className="mt-2 p-4 rounded-lg bg-muted/30 space-y-4">
                     <p className="text-sm">
                       <strong className="text-primary">Core Parameter:</strong>{" "}
-                      <span className="text-tier-2">{example.parameter}</span>
+                      <span className="text-t2">{example.parameter}</span>
                     </p>
                     <div className="overflow-x-auto">
                       <table className="w-full text-sm">
@@ -947,7 +947,7 @@ const EnvironmentalChainReaction = () => {
                           {example.cascade.map((level) => (
                             <tr key={level.level} className="border-b border-sf-border">
                               <td className="p-2 text-primary font-medium">{level.level}</td>
-                              <td className="p-2 text-tier-2">{level.details}</td>
+                              <td className="p-2 text-t2">{level.details}</td>
                             </tr>
                           ))}
                         </tbody>
@@ -985,7 +985,7 @@ const EnvironmentalChainReaction = () => {
                   <ExternalLink className="w-4 h-4 text-primary" />
                   Link to Other Worksheets
                 </h4>
-                <p className="text-xs text-tier-4 mb-3">
+                <p className="text-xs text-t4 mb-3">
                   Connect this analysis to other worksheets to import relevant data.
                 </p>
                 <div className="space-y-3">
@@ -1061,7 +1061,7 @@ const EnvironmentalChainReaction = () => {
                                 className="cursor-pointer"
                               >
                                 <span className="font-medium">{option.label}</span>
-                                <span className="text-tier-2 ml-2">
+                                <span className="text-t2 ml-2">
                                  —{option.description}
                                 </span>
                               </Label>
@@ -1137,7 +1137,7 @@ const EnvironmentalChainReaction = () => {
                                   className="cursor-pointer"
                                 >
                                   <span className="font-medium">{option.label}</span>
-                                  <span className="text-tier-2 ml-2">
+                                  <span className="text-t2 ml-2">
                                    —{option.description}
                                   </span>
                                 </Label>
@@ -1192,7 +1192,7 @@ const EnvironmentalChainReaction = () => {
 
                 {(formState.parameter.types?.length || 0) > 0 && (
                   <div className="mt-4 p-3 bg-primary/10 rounded-lg">
-                    <p className="text-sm text-tier-3">
+                    <p className="text-sm text-t3">
                       <strong className="text-primary">
                         {formState.parameter.types?.length} factor
                         {(formState.parameter.types?.length || 0) !== 1 ? "s" : ""} selected.
@@ -1441,7 +1441,7 @@ const EnvironmentalChainReaction = () => {
 
         {/* Final Reminder */}
         <GlassPanel className="p-6 mt-8 text-center">
-          <p className="text-tier-2 italic">
+          <p className="text-t2 italic">
             The most believable worlds aren't the most complex—they're the most
             internally consistent. Every element should cascade logically from
             your core environmental choice.

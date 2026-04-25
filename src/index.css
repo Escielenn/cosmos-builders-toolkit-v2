@@ -253,12 +253,11 @@
 }
 
 @layer components {
-  /* Aesthetic Bridge — text tier utilities */
-  .text-tier-1 { color: hsl(var(--sf-tier-1)); }
-  .text-tier-2 { color: hsl(var(--sf-tier-2)); }
-  .text-tier-3 { color: hsl(var(--sf-tier-3)); }
-  .text-tier-4 { color: hsl(var(--sf-tier-4)); }
-  .text-tier-5 { color: hsl(var(--sf-tier-5)); }
+  /* Text tiers — April 2026 handoff: use `text-t1`..`text-t5` Tailwind utilities
+     (defined in tailwind.config.ts colors). Legacy `.text-tier-N` classes were
+     migrated to `text-tN` site-wide and removed from this file in the cleanup
+     commit. The HSL CSS vars `--sf-tier-1..5` remain for any handwritten CSS
+     that still references them. */
 
   /* Glass panel component */
   .glass-panel {

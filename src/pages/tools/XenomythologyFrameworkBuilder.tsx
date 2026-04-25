@@ -458,7 +458,7 @@ const CheckboxGroup = ({
       <div>
         <Label className="text-sm font-medium">{label}</Label>
         {description && (
-          <p className="text-xs text-tier-4">{description}</p>
+          <p className="text-xs text-t4">{description}</p>
         )}
       </div>
       <div className={`grid gap-2 md:grid-cols-${columns}`}>
@@ -474,7 +474,7 @@ const CheckboxGroup = ({
             />
             <Label htmlFor={`checkbox-${option.id}`} className="cursor-pointer text-sm">
               <span className="font-medium">{option.name}</span>
-              <span className="text-tier-2 block text-xs">{option.description}</span>
+              <span className="text-t2 block text-xs">{option.description}</span>
             </Label>
           </div>
         ))}
@@ -492,7 +492,7 @@ const CheckboxGroup = ({
             <div className="flex-1">
               <Label htmlFor={`checkbox-other-${label.replace(/\s+/g, "-")}`} className="cursor-pointer text-sm">
                 <span className="font-medium">Other</span>
-                <span className="text-tier-2 block text-xs">Custom option not listed above</span>
+                <span className="text-t2 block text-xs">Custom option not listed above</span>
               </Label>
               {selected.includes("__other__") && (
                 <Input
@@ -535,7 +535,7 @@ const RadioGroupField = ({
     <div>
       <Label className="text-sm font-medium">{label}</Label>
       {description && (
-        <p className="text-xs text-tier-4">{description}</p>
+        <p className="text-xs text-t4">{description}</p>
       )}
     </div>
     <RadioGroup
@@ -551,7 +551,7 @@ const RadioGroupField = ({
           <RadioGroupItem value={option.id} id={`radio-${option.id}`} className="mt-0.5" />
           <Label htmlFor={`radio-${option.id}`} className="cursor-pointer text-sm">
             <span className="font-medium">{option.name}</span>
-            <span className="text-tier-2 block text-xs">{option.description}</span>
+            <span className="text-t2 block text-xs">{option.description}</span>
           </Label>
         </div>
       ))}
@@ -565,7 +565,7 @@ const RadioGroupField = ({
           <div className="flex-1">
             <Label htmlFor={`radio-other-${label.replace(/\s+/g, "-")}`} className="cursor-pointer text-sm">
               <span className="font-medium">Other</span>
-              <span className="text-tier-2 block text-xs">Custom option not listed above</span>
+              <span className="text-t2 block text-xs">Custom option not listed above</span>
             </Label>
             {value === "__other__" && (
               <Input
@@ -1422,10 +1422,10 @@ const XenomythologyFrameworkBuilder = () => {
           <blockquote className="border-l-2 border-primary pl-4 italic text-lg mb-4">
             "The process of creating archetypal structures is likely universal to intelligence, but the actual forms these structures take are entirely species-specific."
           </blockquote>
-          <p className="text-tier-2 mb-4">
+          <p className="text-t2 mb-4">
             Xenomythology studies how myth and religion might form among extraterrestrial intelligent species. Rather than transplanting human myths to alien contexts, this tool asks: What universal patterns in myth-making arise from intelligence itself, and how would these patterns manifest differently based on radically different biologies, environments, and evolutionary histories?
           </p>
-          <div className="text-sm text-tier-3 mb-4">
+          <div className="text-sm text-t3 mb-4">
             <strong className="text-foreground">The Core Principle:</strong>
             <p className="mt-1">Biology + Environment + Evolutionary Pressures → Unique Archetypal Forms → Species-Specific Mythology</p>
           </div>
@@ -1834,7 +1834,7 @@ const XenomythologyFrameworkBuilder = () => {
           >
             <div className="space-y-8">
               <div className="p-4 rounded-lg bg-accent/10 border border-accent/20">
-                <p className="text-sm text-tier-3">
+                <p className="text-sm text-t3">
                   <strong className="text-accent">Critical Insight:</strong> Archetypes are not universal forms like "The Mother" or "The Hero" but universal cognitive structures that emerge from existential pressures requiring mythic resolution. Different species facing different pressures will generate entirely different archetypal forms.
                 </p>
               </div>
@@ -1843,7 +1843,7 @@ const XenomythologyFrameworkBuilder = () => {
               {formState.pressureAnalysis.length > 0 && (
                 <div className="space-y-6">
                   <h4 className="font-semibold">Pressure Analysis Matrix</h4>
-                  <p className="text-sm text-tier-3">
+                  <p className="text-sm text-t3">
                     For each survival challenge you selected, analyze how it generates archetypal structures.
                   </p>
 
@@ -1895,7 +1895,7 @@ const XenomythologyFrameworkBuilder = () => {
 
               {formState.pressureAnalysis.length === 0 && (
                 <div className="p-4 rounded-lg border border-dashed border-muted text-center">
-                  <p className="text-sm text-tier-3">
+                  <p className="text-sm text-t3">
                     Select survival challenges in Section 2 to generate pressure analysis forms.
                   </p>
                 </div>
@@ -1904,7 +1904,7 @@ const XenomythologyFrameworkBuilder = () => {
               {/* Novel Archetypal Forms */}
               <div className="space-y-6 p-4 rounded-lg border border-border">
                 <h4 className="font-semibold">Novel Archetypal Forms</h4>
-                <p className="text-sm text-tier-3">
+                <p className="text-sm text-t3">
                   These fields appear based on your species' unique biology and environment.
                 </p>
 
@@ -1991,7 +1991,7 @@ const XenomythologyFrameworkBuilder = () => {
                 {!showMetamorphicArchetype && !showHiveMindArchetype && !showMultiParentalArchetype &&
                  !showLongevityArchetype && !showBinaryStarArchetype && !showTidallyLockedArchetype &&
                  !showOceanWorldArchetype && !showNoSkyArchetype && (
-                  <p className="text-sm text-tier-3 italic">
+                  <p className="text-sm text-t3 italic">
                     No special archetype fields triggered by current selections. These appear when you select specific biology or environment options.
                   </p>
                 )}
@@ -2002,7 +2002,7 @@ const XenomythologyFrameworkBuilder = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <h4 className="font-semibold">Species-Specific Archetypal Pantheon</h4>
-                    <p className="text-sm text-tier-3">
+                    <p className="text-sm text-t3">
                       Define 5-12 archetypal forms derived from your species' pressures, biology, and environment.
                     </p>
                   </div>
@@ -2079,8 +2079,8 @@ const XenomythologyFrameworkBuilder = () => {
 
                 {formState.archetypePantheon.length === 0 && (
                   <div className="p-4 rounded-lg border border-dashed border-muted text-center">
-                    <Sparkles className="w-8 h-8 mx-auto mb-2 text-tier-2" />
-                    <p className="text-sm text-tier-3">
+                    <Sparkles className="w-8 h-8 mx-auto mb-2 text-t2" />
+                    <p className="text-sm text-t3">
                       Click "Add Archetype" to start building your species' unique archetypal pantheon.
                     </p>
                   </div>
@@ -2269,7 +2269,7 @@ const XenomythologyFrameworkBuilder = () => {
                   ))}
 
                   {formState.divineConceptualization.deities.length === 0 && (
-                    <p className="text-sm text-tier-3 italic text-center py-4">
+                    <p className="text-sm text-t3 italic text-center py-4">
                       Add deities to define their divine characteristics.
                     </p>
                   )}
@@ -2328,7 +2328,7 @@ const XenomythologyFrameworkBuilder = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <h4 className="font-semibold">Symbolic Catalog</h4>
-                    <p className="text-sm text-tier-3">
+                    <p className="text-sm text-t3">
                       Sacred/significant entities that carry symbolic weight.
                     </p>
                   </div>
@@ -2388,7 +2388,7 @@ const XenomythologyFrameworkBuilder = () => {
                 ))}
 
                 {formState.symbolicCatalog.length === 0 && (
-                  <p className="text-sm text-tier-3 italic text-center py-4">
+                  <p className="text-sm text-t3 italic text-center py-4">
                     Add symbolic entities to build your mythology's bestiary.
                   </p>
                 )}
@@ -2570,7 +2570,7 @@ const XenomythologyFrameworkBuilder = () => {
               {/* Ethical Framework */}
               <div className="space-y-6 p-4 rounded-lg border border-border">
                 <h4 className="font-semibold text-primary">Ethical Framework</h4>
-                <p className="text-sm text-tier-3">
+                <p className="text-sm text-t3">
                   Based on this mythology, what behaviors are considered virtuous, taboo, or ambiguous?
                 </p>
 
@@ -2621,7 +2621,7 @@ const XenomythologyFrameworkBuilder = () => {
               {/* Science/Knowledge Relationship */}
               <div className="space-y-6 p-4 rounded-lg border border-border">
                 <h4 className="font-semibold text-primary">Science/Knowledge Relationship</h4>
-                <p className="text-sm text-tier-3">
+                <p className="text-sm text-t3">
                   How would this mythology interact with empirical understanding?
                 </p>
 
@@ -2662,12 +2662,12 @@ const XenomythologyFrameworkBuilder = () => {
                       <div key={index} className="p-3 rounded bg-background/50">
                         <strong className="text-primary">{archetype.name || `Archetype ${index + 1}`}</strong>
                         {archetype.evolutionaryOrigin && (
-                          <span className="text-xs text-tier-4 ml-2">
+                          <span className="text-xs text-t4 ml-2">
                             (from {archetype.evolutionaryOrigin})
                           </span>
                         )}
                         {archetype.cognitiveFunction && (
-                          <p className="text-sm text-tier-3 mt-1">{archetype.cognitiveFunction}</p>
+                          <p className="text-sm text-t3 mt-1">{archetype.cognitiveFunction}</p>
                         )}
                       </div>
                     ))}
@@ -2690,7 +2690,7 @@ const XenomythologyFrameworkBuilder = () => {
             <h4 className="font-heading text-[9px] font-light tracking-[2.5px] uppercase text-emerald/40 mb-3">
               // Explore Xenomythology
             </h4>
-            <p className="font-sans text-sm text-tier-2 leading-relaxed mb-4">
+            <p className="font-sans text-sm text-t2 leading-relaxed mb-4">
               Xenomythology is the study of how mythology will evolve beyond Earth — how
               alien environments, biologies, and psychologies will generate entirely new
               mythological systems. The myths you're building aren't just decoration for
@@ -2700,7 +2700,7 @@ const XenomythologyFrameworkBuilder = () => {
               href="https://xenomythology.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2 text-[11px] font-heading font-medium uppercase tracking-[1.5px] text-tier-1 border border-white/10 hover:border-primary/30 hover:shadow-[0_0_20px_rgba(21,193,123,0.15)] transition-all"
+              className="inline-flex items-center gap-2 px-4 py-2 text-[11px] font-heading font-medium uppercase tracking-[1.5px] text-t1 border border-white/10 hover:border-primary/30 hover:shadow-[0_0_20px_rgba(21,193,123,0.15)] transition-all"
             >
               Explore Xenomythology
               <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

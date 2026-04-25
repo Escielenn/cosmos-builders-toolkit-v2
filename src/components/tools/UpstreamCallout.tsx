@@ -31,10 +31,10 @@ function CalloutItem({ callout, toolType, index }: CalloutItemProps) {
       <p className="font-mono text-[10px] uppercase tracking-wider text-primary/50 mb-1">
         Upstream Context
       </p>
-      <p className="text-xs text-tier-3 leading-relaxed pr-5">
+      <p className="text-xs text-t3 leading-relaxed pr-5">
         {callout.message}
       </p>
-      <p className="text-[9px] text-tier-5 mt-1">
+      <p className="text-[9px] text-t5 mt-1">
         Source: {callout.sourceBrandName}
       </p>
       <button

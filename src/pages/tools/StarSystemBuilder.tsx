@@ -672,7 +672,7 @@ const StarSystemBuilder = () => {
 
                 <div className="space-y-3">
                   <Label>Spectral Class</Label>
-                  <p className="text-sm text-tier-3">
+                  <p className="text-sm text-t3">
                     The star's temperature and color determine habitability, planetary formation, and visual atmosphere.
                   </p>
                   <RadioGroup
@@ -690,10 +690,10 @@ const StarSystemBuilder = () => {
                           <Label htmlFor={star.id} className="font-medium cursor-pointer">
                             {star.name}
                           </Label>
-                          <p className="text-xs text-tier-4 mt-1">
+                          <p className="text-xs text-t4 mt-1">
                             {star.description}
                           </p>
-                          <p className="text-xs text-tier-4">
+                          <p className="text-xs text-t4">
                             Temp: {star.temperature} | Lifetime: {star.lifetime}
                           </p>
                         </div>
@@ -706,7 +706,7 @@ const StarSystemBuilder = () => {
                 {selectedStarClass && (
                   <GlassPanel className="p-4 bg-primary/5 border-primary/20">
                     <p className="text-sm font-medium mb-2">Worldbuilding Implications:</p>
-                    <ul className="text-sm text-tier-3 space-y-1">
+                    <ul className="text-sm text-t3 space-y-1">
                       {selectedStarClass.consequences.map((c, i) => (
                         <li key={i} className="flex items-start gap-2">
                           <span className="text-primary">•</span>
@@ -714,7 +714,7 @@ const StarSystemBuilder = () => {
                         </li>
                       ))}
                     </ul>
-                    <p className="text-sm text-tier-3 mt-3 italic">
+                    <p className="text-sm text-t3 mt-3 italic">
                       {selectedStarClass.worldbuilding}
                     </p>
                   </GlassPanel>
@@ -782,7 +782,7 @@ const StarSystemBuilder = () => {
                               {config.stability}
                             </Badge>
                           </div>
-                          <p className="text-xs text-tier-4 mt-1">
+                          <p className="text-xs text-t4 mt-1">
                             {config.description}
                           </p>
                         </div>
@@ -795,7 +795,7 @@ const StarSystemBuilder = () => {
                 {selectedConfig && (
                   <GlassPanel className="p-4 bg-primary/5 border-primary/20">
                     <p className="text-sm font-medium mb-2">Consequences:</p>
-                    <ul className="text-sm text-tier-3 space-y-1">
+                    <ul className="text-sm text-t3 space-y-1">
                       {selectedConfig.consequences.map((c, i) => (
                         <li key={i} className="flex items-start gap-2">
                           <span className="text-primary">•</span>
@@ -1095,11 +1095,11 @@ const StarSystemBuilder = () => {
                           <Label htmlFor={`res-${res.id}`} className="font-medium cursor-pointer">
                             {res.name}
                           </Label>
-                          <p className="text-xs text-tier-4 mt-1">
+                          <p className="text-xs text-t4 mt-1">
                             {res.description}
                           </p>
                           {res.examples && (
-                            <p className="text-xs text-tier-4 italic">
+                            <p className="text-xs text-t4 italic">
                               Examples: {res.examples.join(", ")}
                             </p>
                           )}
@@ -1204,7 +1204,7 @@ const StarSystemBuilder = () => {
                           <Label htmlFor={`age-${age.id}`} className="font-medium cursor-pointer">
                             {age.name}
                           </Label>
-                          <p className="text-xs text-tier-4 mt-1">
+                          <p className="text-xs text-t4 mt-1">
                             {age.description}
                           </p>
                         </div>
@@ -1322,7 +1322,7 @@ const StarSystemBuilder = () => {
 
                 <div className="space-y-3">
                   <Label>Habitability Modifiers</Label>
-                  <p className="text-sm text-tier-3">
+                  <p className="text-sm text-t3">
                     Factors that extend or contract the habitable zone
                   </p>
                   <div className="grid md:grid-cols-2 gap-3">
@@ -1340,7 +1340,7 @@ const StarSystemBuilder = () => {
                           <Label htmlFor={`mod-${mod.id}`} className="text-sm cursor-pointer">
                             {mod.name}
                           </Label>
-                          <p className="text-xs text-tier-4">{mod.description}</p>
+                          <p className="text-xs text-t4">{mod.description}</p>
                         </div>
                       </div>
                     ))}
@@ -1390,7 +1390,7 @@ const StarSystemBuilder = () => {
               <div className="space-y-6">
                 <div className="space-y-2">
                   <Label>System Character</Label>
-                  <p className="text-sm text-tier-3">
+                  <p className="text-sm text-t3">
                     If this system were a character, what would its personality be?
                   </p>
                   <Textarea
@@ -1403,7 +1403,7 @@ const StarSystemBuilder = () => {
 
                 <div className="space-y-2">
                   <Label>Visual Signature</Label>
-                  <p className="text-sm text-tier-3">
+                  <p className="text-sm text-t3">
                     What would you see from a ship entering this system?
                   </p>
                   <Textarea
@@ -1482,7 +1482,7 @@ const StarSystemBuilder = () => {
                         <Badge variant="outline" className="text-xs mt-1">
                           {example.configuration}
                         </Badge>
-                        <p className="text-sm text-tier-3 mt-2">
+                        <p className="text-sm text-t3 mt-2">
                           {example.description}
                         </p>
                         <p className="text-sm text-primary mt-2 italic">
@@ -1506,7 +1506,7 @@ const StarSystemBuilder = () => {
               <div className="space-y-6">
                 <div className="space-y-3">
                   <Label>Consistency Checks</Label>
-                  <p className="text-sm text-tier-3">
+                  <p className="text-sm text-t3">
                     Verify your system makes physical sense
                   </p>
                   <div className="space-y-2">

@@ -380,7 +380,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
           className={`flex items-center gap-1 px-2 py-1 text-[10px] uppercase tracking-[1.5px] transition-colors ${
             groupBy === "cascade"
               ? "text-teal bg-teal/8 border border-teal/20"
-              : "text-tier-4 hover:text-tier-3"
+              : "text-t4 hover:text-t3"
           }`}
           title="Group by cascade layer"
         >
@@ -392,7 +392,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
           className={`flex items-center gap-1 px-2 py-1 text-[10px] uppercase tracking-[1.5px] transition-colors ${
             groupBy === "entity"
               ? "text-teal bg-teal/8 border border-teal/20"
-              : "text-tier-4 hover:text-tier-3"
+              : "text-t4 hover:text-t3"
           }`}
           title="Group by entity type"
         >
@@ -418,7 +418,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
                 className={`flex items-center gap-1 px-1.5 py-0.5 text-[10px] tracking-wider border transition-colors ${
                   activeTags.includes(tag)
                     ? "bg-teal/10 border-teal/25 text-teal"
-                    : "border-sf-border text-tier-4 hover:text-tier-3"
+                    : "border-sf-border text-t4 hover:text-t3"
                 }`}
               >
                 <Tag className="w-2.5 h-2.5" />

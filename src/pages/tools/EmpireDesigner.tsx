@@ -674,7 +674,7 @@ const EmpireDesigner = () => {
                           <Label htmlFor={gov.id} className="font-medium cursor-pointer">
                             {gov.name}
                           </Label>
-                          <p className="text-xs text-tier-4 mt-1">
+                          <p className="text-xs text-t4 mt-1">
                             {gov.description}
                           </p>
                         </div>
@@ -707,7 +707,7 @@ const EmpireDesigner = () => {
                 {selectedGovType && (
                   <GlassPanel className="p-4 bg-primary/5 border-primary/20">
                     <p className="text-sm font-medium mb-2">Consequences of {selectedGovType.name}:</p>
-                    <ul className="text-sm text-tier-3 space-y-1">
+                    <ul className="text-sm text-t3 space-y-1">
                       {selectedGovType.consequences.map((c, i) => (
                         <li key={i} className="flex items-start gap-2">
                           <span className="text-primary">•</span>
@@ -788,7 +788,7 @@ const EmpireDesigner = () => {
               <div className="space-y-6">
                 <div className="space-y-3">
                   <Label>Active Branches/Power Centers</Label>
-                  <p className="text-sm text-tier-3">
+                  <p className="text-sm text-t3">
                     Select all that have significant independent power
                   </p>
                   <div className="grid md:grid-cols-2 gap-3">
@@ -806,7 +806,7 @@ const EmpireDesigner = () => {
                           <Label htmlFor={`branch-${branch.id}`} className="text-sm cursor-pointer">
                             {branch.name}
                           </Label>
-                          <p className="text-xs text-tier-4">{branch.description}</p>
+                          <p className="text-xs text-t4">{branch.description}</p>
                         </div>
                       </div>
                     ))}
@@ -1486,7 +1486,7 @@ const EmpireDesigner = () => {
                         <Badge variant="outline" className="text-xs mt-1">
                           {example.type}
                         </Badge>
-                        <p className="text-sm text-tier-3 mt-2">
+                        <p className="text-sm text-t3 mt-2">
                           {example.description}
                         </p>
                         <p className="text-sm text-primary mt-2 italic">

@@ -91,7 +91,7 @@ export default function CascadeSuggestionToast({
             <p className="font-heading text-[9px] uppercase tracking-[2px] text-primary/60 mb-1">
               Cascade Suggestion
             </p>
-            <p className="text-xs text-tier-2 leading-relaxed">
+            <p className="text-xs text-t2 leading-relaxed">
               {suggestion.prompt}
             </p>
           </div>
@@ -108,7 +108,7 @@ export default function CascadeSuggestionToast({
             </Button>
             <button
               onClick={handleDismiss}
-              className="text-tier-4 hover:text-tier-2 transition-colors p-1"
+              className="text-t4 hover:text-t2 transition-colors p-1"
             >
               <X className="w-3 h-3" />
             </button>

@@ -216,10 +216,10 @@ function EntityCard({
             style={{ backgroundColor: color }}
           />
           <div className="min-w-0">
-            <h3 className="font-heading text-sm font-light text-tier-1 truncate">
+            <h3 className="font-heading text-sm font-light text-t1 truncate">
               {entity.name}
             </h3>
-            <span className="font-sans text-[11px] font-medium uppercase tracking-[1.5px] text-tier-3">
+            <span className="font-sans text-[11px] font-medium uppercase tracking-[1.5px] text-t3">
               {entity.custom_type_label || ENTITY_TYPE_LABELS[entity.entity_type]}
             </span>
           </div>
@@ -236,16 +236,16 @@ function EntityCard({
             {CASCADE_STAGE_LABELS[entity.cascade_stage]}
           </span>
           {isExpanded ? (
-            <ChevronUp className="w-3.5 h-3.5 text-tier-4" />
+            <ChevronUp className="w-3.5 h-3.5 text-t4" />
           ) : (
-            <ChevronDown className="w-3.5 h-3.5 text-tier-4" />
+            <ChevronDown className="w-3.5 h-3.5 text-t4" />
           )}
         </div>
       </div>
 
       {/* Summary */}
       {entity.summary && !isExpanded && (
-        <p className="font-sans text-xs text-tier-2 mt-2 line-clamp-2 leading-relaxed">
+        <p className="font-sans text-xs text-t2 mt-2 line-clamp-2 leading-relaxed">
           {entity.summary}
         </p>
       )}
@@ -255,7 +255,7 @@ function EntityCard({
         <div className="mt-4 space-y-4 border-t border-white/[0.06] pt-4">
           {/* Summary */}
           {entity.summary && (
-            <p className="font-sans text-sm text-tier-2 leading-relaxed">
+            <p className="font-sans text-sm text-t2 leading-relaxed">
               {entity.summary}
             </p>
           )}
@@ -263,10 +263,10 @@ function EntityCard({
           {/* Description */}
           {entity.description && (
             <div className="space-y-1">
-              <span className="font-sans text-[11px] font-medium uppercase tracking-[1.5px] text-tier-3">
+              <span className="font-sans text-[11px] font-medium uppercase tracking-[1.5px] text-t3">
                 Description
               </span>
-              <p className="font-sans text-sm text-tier-2 leading-relaxed whitespace-pre-wrap">
+              <p className="font-sans text-sm text-t2 leading-relaxed whitespace-pre-wrap">
                 {entity.description}
               </p>
             </div>
@@ -278,7 +278,7 @@ function EntityCard({
               {entity.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="font-mono text-[10px] px-2 py-0.5 rounded-sm bg-white/[0.04] border border-white/[0.08] text-tier-3"
+                  className="font-mono text-[10px] px-2 py-0.5 rounded-sm bg-white/[0.04] border border-white/[0.08] text-t3"
                 >
                   {tag}
                 </span>
@@ -289,7 +289,7 @@ function EntityCard({
           {/* Connections */}
           {relatedConnections.length > 0 && (
             <div className="space-y-2">
-              <span className="font-sans text-[11px] font-medium uppercase tracking-[1.5px] text-tier-3 flex items-center gap-1.5">
+              <span className="font-sans text-[11px] font-medium uppercase tracking-[1.5px] text-t3 flex items-center gap-1.5">
                 <Link2 className="w-3 h-3" />
                 Connections
               </span>
@@ -313,10 +313,10 @@ function EntityCard({
                         className="w-1.5 h-1.5 rounded-full flex-shrink-0"
                         style={{ backgroundColor: otherColor }}
                       />
-                      <span className="font-mono text-[11px] text-tier-4">
+                      <span className="font-mono text-[11px] text-t4">
                         {formatRelationshipType(conn.relationship_type)}
                       </span>
-                      <span className="font-sans text-xs text-tier-2">
+                      <span className="font-sans text-xs text-t2">
                         {other.name}
                       </span>
                     </div>
@@ -399,12 +399,12 @@ function StatCard({
   return (
     <GlassPanel className="p-4 text-center">
       <div
-        className="font-mono text-2xl text-tier-1 mb-1"
+        className="font-mono text-2xl text-t1 mb-1"
         style={color ? { color } : undefined}
       >
         {value}
       </div>
-      <div className="font-sans text-[11px] font-medium uppercase tracking-[1.5px] text-tier-3">
+      <div className="font-sans text-[11px] font-medium uppercase tracking-[1.5px] text-t3">
         {label}
       </div>
     </GlassPanel>
@@ -507,11 +507,11 @@ export default function WorldShowcase() {
       <div className="min-h-screen bg-sf-void">
         <Header />
         <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-          <Globe className="w-12 h-12 text-tier-4" />
-          <h1 className="font-heading text-xl font-light uppercase tracking-[2px] text-tier-2">
+          <Globe className="w-12 h-12 text-t4" />
+          <h1 className="font-heading text-xl font-light uppercase tracking-[2px] text-t2">
             World Not Found
           </h1>
-          <p className="font-sans text-sm text-tier-3 max-w-md text-center">
+          <p className="font-sans text-sm text-t3 max-w-md text-center">
             This world may be private, or the link may be incorrect.
           </p>
           <Link
@@ -553,13 +553,13 @@ export default function WorldShowcase() {
                 <p className="font-heading text-sm font-light uppercase tracking-[2px] text-stellar mb-1">
                   Sample World - The Tidelock Archives
                 </p>
-                <p className="text-[12px] text-tier-2 leading-relaxed max-w-2xl">
+                <p className="text-[12px] text-t2 leading-relaxed max-w-2xl">
                   This is StellarForge's example world, demonstrating the full Environmental Cascade
                   from physics through culture. Explore the entities, connections, and lore to see
                   how a world comes together.
                 </p>
-                <p className="text-[11px] text-tier-3 leading-relaxed mt-1.5">
-                  <strong className="text-tier-2">Want to edit or build on this world?</strong> Fork
+                <p className="text-[11px] text-t3 leading-relaxed mt-1.5">
+                  <strong className="text-t2">Want to edit or build on this world?</strong> Fork
                   it to create your own copy under your account. The original community world stays
                   unchanged. Your fork is yours to modify freely.
                 </p>
@@ -637,7 +637,7 @@ export default function WorldShowcase() {
           {/* Back link */}
           <Link
             to={`/worlds/${world.id}`}
-            className="inline-flex items-center gap-2 font-sans text-xs text-tier-4 hover:text-tier-2 transition-colors mb-8"
+            className="inline-flex items-center gap-2 font-sans text-xs text-t4 hover:text-t2 transition-colors mb-8"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             ← RETURN TO BRIDGE
@@ -648,14 +648,14 @@ export default function WorldShowcase() {
             <span className="text-4xl" role="img" aria-label="World icon">
               {world.icon || "🌍"}
             </span>
-            <h1 className="font-display text-3xl md:text-5xl tracking-sf-title text-tier-1 uppercase">
+            <h1 className="font-display text-3xl md:text-5xl tracking-sf-title text-t1 uppercase">
               {world.name}
             </h1>
           </div>
 
           {/* Description */}
           {world.description && (
-            <p className="font-sans text-base md:text-lg text-tier-2 max-w-2xl leading-relaxed mb-6">
+            <p className="font-sans text-base md:text-lg text-t2 max-w-2xl leading-relaxed mb-6">
               {world.description}
             </p>
           )}
@@ -680,7 +680,7 @@ export default function WorldShowcase() {
               {world.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="font-mono text-[11px] px-2.5 py-1 rounded-sm bg-white/[0.04] border border-white/[0.08] text-tier-3"
+                  className="font-mono text-[11px] px-2.5 py-1 rounded-sm bg-white/[0.04] border border-white/[0.08] text-t3"
                 >
                   {tag}
                 </span>
@@ -768,8 +768,8 @@ export default function WorldShowcase() {
       <section className="max-w-5xl mx-auto px-6 pb-20">
         {entities.length === 0 ? (
           <GlassPanel className="p-12 text-center">
-            <Globe className="w-10 h-10 text-tier-4 mx-auto mb-4" />
-            <p className="font-sans text-sm text-tier-3">
+            <Globe className="w-10 h-10 text-t4 mx-auto mb-4" />
+            <p className="font-sans text-sm text-t3">
               This world has no entities yet.
             </p>
           </GlassPanel>
@@ -793,7 +793,7 @@ export default function WorldShowcase() {
                     >
                       {CASCADE_STAGE_LABELS[stage]}
                     </h2>
-                    <span className="font-mono text-[11px] text-tier-4">
+                    <span className="font-mono text-[11px] text-t4">
                       {stageEntities.length}
                     </span>
                     <div
@@ -846,7 +846,7 @@ export default function WorldShowcase() {
         }}
       />
       <div className="text-center pb-12">
-        <span className="font-mono text-[9px] uppercase tracking-[2px] text-tier-5">
+        <span className="font-mono text-[9px] uppercase tracking-[2px] text-t5">
           Built with StellarForge
         </span>
       </div>

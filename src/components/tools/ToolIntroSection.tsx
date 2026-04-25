@@ -14,7 +14,7 @@ const ToolIntroSection = ({ data }: ToolIntroSectionProps) => {
       </h2>
       <p className="text-t3 mb-6">{data.purpose}</p>
 
-      <h4 className="font-heading text-xs font-medium uppercase tracking-sf-wide text-tier-4 mb-4">
+      <h4 className="font-heading text-xs font-medium uppercase tracking-sf-wide text-t4 mb-4">
         In Published Science Fiction
       </h4>
 

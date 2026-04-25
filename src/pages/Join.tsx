@@ -116,7 +116,7 @@ const Join = () => {
         <h1 className="font-display text-xl font-light tracking-[0.1em] mb-3">
           YOU'RE ALREADY SIGNED IN
         </h1>
-        <p className="text-sm text-tier-3 mb-6 text-center max-w-sm">
+        <p className="text-sm text-t3 mb-6 text-center max-w-sm">
           You already have a StellarForge account. Head to your dashboard to start building.
         </p>
         <Link to="/" className="text-sm text-primary hover:underline">
@@ -134,7 +134,7 @@ const Join = () => {
         <h1 className="font-display text-xl font-light tracking-[0.1em] mb-3">
           LINK EXPIRED OR INVALID
         </h1>
-        <p className="text-sm text-tier-3 mb-6 text-center max-w-sm">
+        <p className="text-sm text-t3 mb-6 text-center max-w-sm">
           This invitation link is no longer valid. If you believe this is an error,
           contact the person who shared it with you.
         </p>
@@ -168,7 +168,7 @@ const Join = () => {
             <h1 className="font-display text-2xl font-light tracking-[0.12em] mb-2">
               ESTABLISH CREDENTIALS
             </h1>
-            <p className="text-sm text-tier-3">
+            <p className="text-sm text-t3">
               You've been invited to join the early access program.
             </p>
           </div>
@@ -196,13 +196,13 @@ const Join = () => {
               <div className="w-full border-t border-border"></div>
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-card px-2 text-tier-4">or create with email</span>
+              <span className="bg-card px-2 text-t4">or create with email</span>
             </div>
           </div>
 
           <form onSubmit={handleSignUp} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="signup-name">Display Name <span className="text-tier-4 normal-case tracking-normal">(optional)</span></Label>
+              <Label htmlFor="signup-name">Display Name <span className="text-t4 normal-case tracking-normal">(optional)</span></Label>
               <div className="sf-input-bracketed">
                 <Input
                   id="signup-name"
@@ -252,7 +252,7 @@ const Join = () => {
                 disabled={isLoading}
                 className="mt-0.5"
               />
-              <label htmlFor="tos-accept" className="text-xs text-tier-3 leading-relaxed cursor-pointer">
+              <label htmlFor="tos-accept" className="text-xs text-t3 leading-relaxed cursor-pointer">
                 I have read and agree to the{" "}
                 <button
                   type="button"
@@ -284,25 +284,25 @@ const Join = () => {
               <p className="text-xs font-medium text-sf-amber uppercase tracking-wider mb-2">
                 Early Access - Confidential Preview
               </p>
-              <p className="text-[11px] text-tier-2 leading-relaxed mb-2">
+              <p className="text-[11px] text-t2 leading-relaxed mb-2">
                 StellarForge is in active development. By creating an account, you agree to the following early access terms:
               </p>
-              <ul className="text-[11px] text-tier-3 leading-relaxed space-y-1.5 list-none">
+              <ul className="text-[11px] text-t3 leading-relaxed space-y-1.5 list-none">
                 <li className="flex gap-2">
                   <span className="text-sf-amber shrink-0">-</span>
-                  <span><strong className="text-tier-2">Confidentiality.</strong> This is a private preview. No screenshots, recordings, reviews, social media posts, or public discussion of the product, its features, or its interface.</span>
+                  <span><strong className="text-t2">Confidentiality.</strong> This is a private preview. No screenshots, recordings, reviews, social media posts, or public discussion of the product, its features, or its interface.</span>
                 </li>
                 <li className="flex gap-2">
                   <span className="text-sf-amber shrink-0">-</span>
-                  <span><strong className="text-tier-2">Early access pricing.</strong> Current pricing reflects the early access period and is lower than launch pricing. Your rate is locked for as long as your subscription remains active.</span>
+                  <span><strong className="text-t2">Early access pricing.</strong> Current pricing reflects the early access period and is lower than launch pricing. Your rate is locked for as long as your subscription remains active.</span>
                 </li>
                 <li className="flex gap-2">
                   <span className="text-sf-amber shrink-0">-</span>
-                  <span><strong className="text-tier-2">Work in progress.</strong> Features may change, and you may encounter bugs. We have a fully working bug reporting system - your feedback directly shapes the product.</span>
+                  <span><strong className="text-t2">Work in progress.</strong> Features may change, and you may encounter bugs. We have a fully working bug reporting system - your feedback directly shapes the product.</span>
                 </li>
                 <li className="flex gap-2">
                   <span className="text-sf-amber shrink-0">-</span>
-                  <span><strong className="text-tier-2">Support & Roadmap.</strong> We are available for direct support, and our full development roadmap is visible at <a href="/roadmap" className="text-primary hover:underline">stellarforge.tools/roadmap</a>.</span>
+                  <span><strong className="text-t2">Support & Roadmap.</strong> We are available for direct support, and our full development roadmap is visible at <a href="/roadmap" className="text-primary hover:underline">stellarforge.tools/roadmap</a>.</span>
                 </li>
               </ul>
             </div>
@@ -312,7 +312,7 @@ const Join = () => {
               <p className="text-xs font-medium text-foreground mb-1">
                 Your Worlds Are Yours Alone
               </p>
-              <p className="text-[11px] text-tier-3 leading-relaxed">
+              <p className="text-[11px] text-t3 leading-relaxed">
                 All creative content is encrypted, user-isolated, and never accessed by StellarForge systems. No AI training. No data mining. No third-party sharing.
               </p>
             </div>

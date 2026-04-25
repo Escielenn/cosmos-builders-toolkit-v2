@@ -53,7 +53,7 @@ export function TemplateFieldsForm({
 
   if (fields.length === 0) {
     return (
-      <div className="text-xs text-tier-4 italic">
+      <div className="text-xs text-t4 italic">
         This template has no fields defined.
       </div>
     );
@@ -72,7 +72,7 @@ export function TemplateFieldsForm({
           </Label>
         );
         const helpEl = f.help_text ? (
-          <p className="text-[11px] text-tier-4 mt-0.5">{f.help_text}</p>
+          <p className="text-[11px] text-t4 mt-0.5">{f.help_text}</p>
         ) : null;
 
         switch (f.field_type) {
@@ -209,7 +209,7 @@ export function TemplateFieldsForm({
                         className={
                           isOn
                             ? "text-xs px-2 py-1 border border-primary bg-primary/10 text-primary"
-                            : "text-xs px-2 py-1 border border-white/10 text-tier-3 hover:border-primary/40"
+                            : "text-xs px-2 py-1 border border-white/10 text-t3 hover:border-primary/40"
                         }
                       >
                         {opt}

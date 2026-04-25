@@ -130,7 +130,7 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
             <div className="w-[280px] p-3">
               {user && worlds.length > 0 ? (
                 <>
-                  <p className="text-[10px] font-medium uppercase tracking-[1.5px] text-tier-3 px-2 mb-2">
+                  <p className="text-[10px] font-medium uppercase tracking-[1.5px] text-t3 px-2 mb-2">
                     Your Worlds
                   </p>
                   <div className="max-h-[200px] overflow-y-auto space-y-0.5">
@@ -138,7 +138,7 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
                       <NavigationMenuLink key={world.id} asChild>
                         <Link
                           to={`/worlds/${world.id}`}
-                          className="flex items-center gap-2 px-2 py-1.5 text-sm text-tier-2 hover:text-tier-1 hover:bg-white/5 rounded-sm transition-colors"
+                          className="flex items-center gap-2 px-2 py-1.5 text-sm text-t2 hover:text-t1 hover:bg-white/5 rounded-sm transition-colors"
                         >
                           <Globe className="w-3.5 h-3.5 text-primary/60 shrink-0" />
                           <span className="truncate">{world.name}</span>
@@ -149,7 +149,7 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
                       <NavigationMenuLink asChild>
                         <Link
                           to="/worlds"
-                          className="flex items-center gap-2 px-2 py-1.5 text-xs text-tier-4 hover:text-tier-2 transition-colors"
+                          className="flex items-center gap-2 px-2 py-1.5 text-xs text-t4 hover:text-t2 transition-colors"
                         >
                           +{worlds.length - 8} more...
                         </Link>
@@ -179,7 +179,7 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
                 </>
               ) : user ? (
                 <div className="text-center py-4">
-                  <p className="text-xs text-tier-3 mb-3">No worlds yet</p>
+                  <p className="text-xs text-t3 mb-3">No worlds yet</p>
                   <NavigationMenuLink asChild>
                     <button
                       onClick={() => navigate("/worlds?create=true")}
@@ -192,7 +192,7 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
                 </div>
               ) : (
                 <div className="text-center py-4">
-                  <p className="text-xs text-tier-3 mb-2">Sign in to create worlds</p>
+                  <p className="text-xs text-t3 mb-2">Sign in to create worlds</p>
                   <NavigationMenuLink asChild>
                     <Link
                       to="/auth"
@@ -234,12 +234,12 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
                             <NavigationMenuLink key={tool.id} asChild>
                               <Link
                                 to={route}
-                                className="flex items-center gap-2 px-1.5 py-1.5 text-[12px] text-tier-2 hover:text-tier-1 hover:bg-[rgba(0,212,255,0.06)] rounded-md transition-colors"
+                                className="flex items-center gap-2 px-1.5 py-1.5 text-[12px] text-t2 hover:text-t1 hover:bg-[rgba(0,212,255,0.06)] rounded-md transition-colors"
                               >
                                 {ToolIcon ? (
                                   <ToolIcon className="w-4 h-4 shrink-0" />
                                 ) : (
-                                  <CatIcon className="w-4 h-4 shrink-0 text-tier-4" />
+                                  <CatIcon className="w-4 h-4 shrink-0 text-t4" />
                                 )}
                                 <span className="truncate">{shortName(tool.id)}</span>
                               </Link>
@@ -276,7 +276,7 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
               <NavigationMenuLink asChild>
                 <Link
                   to="/about"
-                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-tier-2 hover:text-tier-1 hover:bg-white/5 rounded-sm transition-colors"
+                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-t2 hover:text-t1 hover:bg-white/5 rounded-sm transition-colors"
                 >
                   <Info className="w-3.5 h-3.5 text-primary/60" />
                   About StellarForge
@@ -285,7 +285,7 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
               <NavigationMenuLink asChild>
                 <Link
                   to="/roadmap"
-                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-tier-2 hover:text-tier-1 hover:bg-white/5 rounded-sm transition-colors"
+                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-t2 hover:text-t1 hover:bg-white/5 rounded-sm transition-colors"
                 >
                   <Map className="w-3.5 h-3.5 text-primary/60" />
                   Roadmap
@@ -294,7 +294,7 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
               <NavigationMenuLink asChild>
                 <Link
                   to="/contact"
-                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-tier-2 hover:text-tier-1 hover:bg-white/5 rounded-sm transition-colors"
+                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-t2 hover:text-t1 hover:bg-white/5 rounded-sm transition-colors"
                 >
                   <Mail className="w-3.5 h-3.5 text-primary/60" />
                   Contact
@@ -317,7 +317,7 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
                     const id = worlds.length > 0 ? worlds[0].id : null;
                     navigate(id ? `/worlds/${id}/write` : "/worlds");
                   }}
-                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-tier-2 hover:text-tier-1 hover:bg-white/5 rounded-sm transition-colors w-full text-left"
+                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-t2 hover:text-t1 hover:bg-white/5 rounded-sm transition-colors w-full text-left"
                 >
                   <PenLine className="w-3.5 h-3.5 text-primary/60" />
                   Writing Space
@@ -326,12 +326,12 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
               <NavigationMenuLink asChild>
                 <Link
                   to="/workshop"
-                  className="flex items-start gap-2 px-2 py-1.5 text-sm text-tier-2 hover:text-tier-1 hover:bg-white/5 rounded-sm transition-colors"
+                  className="flex items-start gap-2 px-2 py-1.5 text-sm text-t2 hover:text-t1 hover:bg-white/5 rounded-sm transition-colors"
                 >
                   <Sparkles className="w-3.5 h-3.5 text-primary/60 mt-0.5" />
                   <div>
                     <span>Daily Prompt</span>
-                    <span className="block text-[10px] text-tier-4 font-normal normal-case tracking-normal">
+                    <span className="block text-[10px] text-t4 font-normal normal-case tracking-normal">
                       & Writing Entries
                     </span>
                   </div>
@@ -340,7 +340,7 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
               <NavigationMenuLink asChild>
                 <Link
                   to="/prompts"
-                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-tier-2 hover:text-tier-1 hover:bg-white/5 rounded-sm transition-colors"
+                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-t2 hover:text-t1 hover:bg-white/5 rounded-sm transition-colors"
                 >
                   <BookOpen className="w-3.5 h-3.5 text-primary/60" />
                   Prompt Browser
@@ -360,7 +360,7 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
               <NavigationMenuLink asChild>
                 <Link
                   to="/learn"
-                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-tier-2 hover:text-tier-1 hover:bg-white/5 rounded-sm transition-colors"
+                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-t2 hover:text-t1 hover:bg-white/5 rounded-sm transition-colors"
                 >
                   <BookOpen className="w-3.5 h-3.5 text-primary/60" />
                   SF University
@@ -369,7 +369,7 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
               <NavigationMenuLink asChild>
                 <Link
                   to="/guide"
-                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-tier-2 hover:text-tier-1 hover:bg-white/5 rounded-sm transition-colors"
+                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-t2 hover:text-t1 hover:bg-white/5 rounded-sm transition-colors"
                 >
                   <Compass className="w-3.5 h-3.5 text-primary/60" />
                   Field Manual
@@ -378,7 +378,7 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
               <NavigationMenuLink asChild>
                 <Link
                   to="/getting-started"
-                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-tier-2 hover:text-tier-1 hover:bg-white/5 rounded-sm transition-colors"
+                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-t2 hover:text-t1 hover:bg-white/5 rounded-sm transition-colors"
                 >
                   <Sparkles className="w-3.5 h-3.5 text-primary/60" />
                   Getting Started
@@ -387,7 +387,7 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
               <NavigationMenuLink asChild>
                 <Link
                   to="/guide/tools"
-                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-tier-2 hover:text-tier-1 hover:bg-white/5 rounded-sm transition-colors"
+                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-t2 hover:text-t1 hover:bg-white/5 rounded-sm transition-colors"
                 >
                   <Wrench className="w-3.5 h-3.5 text-primary/60" />
                   Tool Reference
@@ -396,7 +396,7 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
               <NavigationMenuLink asChild>
                 <Link
                   to="/bookshelf"
-                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-tier-2 hover:text-tier-1 hover:bg-white/5 rounded-sm transition-colors"
+                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-t2 hover:text-t1 hover:bg-white/5 rounded-sm transition-colors"
                 >
                   <BookMarked className="w-3.5 h-3.5 text-primary/60" />
                   Bookshelf

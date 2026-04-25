@@ -104,7 +104,7 @@ function NoteCard({
           </button>
 
           {readOnly ? (
-            <span className="font-heading text-lg font-light text-tier-1 flex-1 truncate">
+            <span className="font-heading text-lg font-light text-t1 flex-1 truncate">
               {note.title}
             </span>
           ) : (
@@ -114,7 +114,7 @@ function NoteCard({
               onChange={(e) => setEditingTitle(e.target.value)}
               onBlur={handleTitleBlur}
               onKeyDown={handleTitleKeyDown}
-              className="font-heading text-lg font-light text-tier-1 flex-1 bg-transparent border-0 border-b border-white/[0.08] outline-none focus:border-primary/30 rounded-none px-0 py-0.5 truncate"
+              className="font-heading text-lg font-light text-t1 flex-1 bg-transparent border-0 border-b border-white/[0.08] outline-none focus:border-primary/30 rounded-none px-0 py-0.5 truncate"
               placeholder="Note title..."
             />
           )}

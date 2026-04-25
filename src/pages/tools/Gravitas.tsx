@@ -374,7 +374,7 @@ const Gravitas = () => {
       case "microgravity":
       case "milligravity":
       case "extreme_gravity": return "text-sf-crimson";
-      default: return "text-tier-2";
+      default: return "text-t2";
     }
   })();
 
@@ -434,7 +434,7 @@ const Gravitas = () => {
                   }`}
                 >
                   <span className="font-medium text-sm">{REALISM_LABELS[mode]}</span>
-                  <p className="text-[11px] text-tier-2 mt-1">{REALISM_DESCRIPTIONS[mode]}</p>
+                  <p className="text-[11px] text-t2 mt-1">{REALISM_DESCRIPTIONS[mode]}</p>
                 </button>
               ))}
             </div>
@@ -460,7 +460,7 @@ const Gravitas = () => {
                   );
                 })}
               </TabsList>
-              <p className="text-xs text-tier-4 mt-2">{MODE_DESCRIPTIONS[formState.activeMode]}</p>
+              <p className="text-xs text-t4 mt-2">{MODE_DESCRIPTIONS[formState.activeMode]}</p>
 
               {/* ── Spin Parameters ─── */}
               <TabsContent value="spin" className="mt-4 space-y-6">
@@ -478,7 +478,7 @@ const Gravitas = () => {
                         className={`p-2 rounded-lg border text-left transition-colors ${activeSpinPreset === preset.id ? "border-primary bg-primary/10" : "border-sf-border hover:border-primary/30 hover:bg-accent/5"}`}
                       >
                         <span className="font-medium text-xs">{preset.name}</span>
-                        <p className="text-[10px] text-tier-2">{preset.description}</p>
+                        <p className="text-[10px] text-t2">{preset.description}</p>
                       </button>
                     ))}
                   </div>
@@ -495,7 +495,7 @@ const Gravitas = () => {
                     onValueChange={([v]) => updateSpin("radius_m", Math.round(sliderToLog(v, 10, 10000)))}
                     min={0} max={1000} step={1}
                   />
-                  <div className="flex justify-between text-xs text-tier-4"><span>10 m</span><span>10,000 m</span></div>
+                  <div className="flex justify-between text-xs text-t4"><span>10 m</span><span>10,000 m</span></div>
                 </div>
 
                 {/* RPM */}
@@ -509,7 +509,7 @@ const Gravitas = () => {
                     onValueChange={([v]) => updateSpin("rotation_rpm", v / 100)}
                     min={1} max={1000} step={1}
                   />
-                  <div className="flex justify-between text-xs text-tier-4"><span>0.01 RPM</span><span>10 RPM</span></div>
+                  <div className="flex justify-between text-xs text-t4"><span>0.01 RPM</span><span>10 RPM</span></div>
                 </div>
 
                 {/* Human Height */}
@@ -523,7 +523,7 @@ const Gravitas = () => {
                     onValueChange={([v]) => updateSpin("human_height_m", v / 10)}
                     min={5} max={25} step={1}
                   />
-                  <div className="flex justify-between text-xs text-tier-4"><span>0.5 m</span><span>2.5 m</span></div>
+                  <div className="flex justify-between text-xs text-t4"><span>0.5 m</span><span>2.5 m</span></div>
                 </div>
               </TabsContent>
 
@@ -543,7 +543,7 @@ const Gravitas = () => {
                         className={`p-2 rounded-lg border text-left transition-colors ${activeThrustPreset === preset.id ? "border-primary bg-primary/10" : "border-sf-border hover:border-primary/30 hover:bg-accent/5"}`}
                       >
                         <span className="font-medium text-xs">{preset.name}</span>
-                        <p className="text-[10px] text-tier-2">{preset.description}</p>
+                        <p className="text-[10px] text-t2">{preset.description}</p>
                       </button>
                     ))}
                   </div>
@@ -560,7 +560,7 @@ const Gravitas = () => {
                     onValueChange={([v]) => updateThrust("acceleration_g", parseFloat(sliderToLog(v, 0.001, 10).toFixed(3)))}
                     min={0} max={1000} step={1}
                   />
-                  <div className="flex justify-between text-xs text-tier-4"><span>0.001 g</span><span>10 g</span></div>
+                  <div className="flex justify-between text-xs text-t4"><span>0.001 g</span><span>10 g</span></div>
                 </div>
 
                 {/* Distance */}
@@ -574,7 +574,7 @@ const Gravitas = () => {
                     onValueChange={([v]) => updateThrust("mission_distance_au", parseFloat(sliderToLog(v, 0.01, 1000).toFixed(2)))}
                     min={0} max={1000} step={1}
                   />
-                  <div className="flex justify-between text-xs text-tier-4"><span>0.01 AU</span><span>1,000 AU</span></div>
+                  <div className="flex justify-between text-xs text-t4"><span>0.01 AU</span><span>1,000 AU</span></div>
                 </div>
 
                 {/* Propulsion Mode */}
@@ -602,7 +602,7 @@ const Gravitas = () => {
 
               {/* ── Combined Parameters ─── */}
               <TabsContent value="combined" className="mt-4 space-y-6">
-                <p className="text-sm text-tier-3">
+                <p className="text-sm text-t3">
                   Enter the spin and thrust gravity components to calculate the resultant vector.
                   You can use values from the Spin and Thrust modes.
                 </p>
@@ -677,7 +677,7 @@ const Gravitas = () => {
                         className={`p-2 rounded-lg border text-left transition-colors ${activeOrbitalPreset === preset.id ? "border-primary bg-primary/10" : "border-sf-border hover:border-primary/30 hover:bg-accent/5"}`}
                       >
                         <span className="font-medium text-xs">{preset.name}</span>
-                        <p className="text-[10px] text-tier-2">{preset.description}</p>
+                        <p className="text-[10px] text-t2">{preset.description}</p>
                       </button>
                     ))}
                   </div>
@@ -694,7 +694,7 @@ const Gravitas = () => {
                     onValueChange={([v]) => updateOrbital("parent_mass_kg", sliderToLog(v, 1e15, 1e31))}
                     min={0} max={1000} step={1}
                   />
-                  <div className="flex justify-between text-xs text-tier-4"><span>10¹⁵ kg</span><span>10³¹ kg</span></div>
+                  <div className="flex justify-between text-xs text-t4"><span>10¹⁵ kg</span><span>10³¹ kg</span></div>
                 </div>
 
                 {/* Parent body radius */}
@@ -708,7 +708,7 @@ const Gravitas = () => {
                     onValueChange={([v]) => updateOrbital("parent_radius_km", Math.round(sliderToLog(v, 1, 100000)))}
                     min={0} max={1000} step={1}
                   />
-                  <div className="flex justify-between text-xs text-tier-4"><span>1 km</span><span>100,000 km</span></div>
+                  <div className="flex justify-between text-xs text-t4"><span>1 km</span><span>100,000 km</span></div>
                 </div>
 
                 {/* Altitude */}
@@ -722,7 +722,7 @@ const Gravitas = () => {
                     onValueChange={([v]) => updateOrbital("altitude_km", v === 0 ? 0 : Math.round(sliderToLog(v, 1, 1000000)))}
                     min={0} max={1000} step={1}
                   />
-                  <div className="flex justify-between text-xs text-tier-4"><span>Surface</span><span>1,000,000 km</span></div>
+                  <div className="flex justify-between text-xs text-t4"><span>Surface</span><span>1,000,000 km</span></div>
                 </div>
 
                 {/* Habitat size (for tidal gradient) */}
@@ -736,7 +736,7 @@ const Gravitas = () => {
                     onValueChange={([v]) => updateOrbital("habitat_size_km", parseFloat(sliderToLog(v, 0.001, 100).toFixed(3)))}
                     min={0} max={1000} step={1}
                   />
-                  <div className="flex justify-between text-xs text-tier-4"><span>1 m</span><span>100 km</span></div>
+                  <div className="flex justify-between text-xs text-t4"><span>1 m</span><span>100 km</span></div>
                 </div>
               </TabsContent>
 
@@ -762,7 +762,7 @@ const Gravitas = () => {
                     onValueChange={([v]) => updateArtificial("desired_g", v / 100)}
                     min={1} max={500} step={1}
                   />
-                  <div className="flex justify-between text-xs text-tier-4"><span>0.01 g</span><span>5 g</span></div>
+                  <div className="flex justify-between text-xs text-t4"><span>0.01 g</span><span>5 g</span></div>
                 </div>
 
                 {/* Direction */}
@@ -827,7 +827,7 @@ const Gravitas = () => {
             <GlassPanel className="p-6">
               {/* Primary readout */}
               <div className="text-center mb-6">
-                <p className="text-xs uppercase tracking-wider text-tier-2 mb-1">Effective Gravity</p>
+                <p className="text-xs uppercase tracking-wider text-t2 mb-1">Effective Gravity</p>
                 <p className={`font-mono text-4xl font-light ${statusColor}`}>{formatG(effectiveG)}</p>
                 <p className={`text-sm mt-1 ${statusColor}`}>{gravityLabel}</p>
               </div>
@@ -1076,7 +1076,7 @@ const Gravitas = () => {
                 <div>
                   <h4 className="text-sm font-medium mb-2">Movement & Locomotion</h4>
                   <GlassPanel className="p-4">
-                    <p className="text-sm text-tier-3 leading-relaxed">{movementText}</p>
+                    <p className="text-sm text-t3 leading-relaxed">{movementText}</p>
                   </GlassPanel>
                 </div>
               )}
@@ -1085,7 +1085,7 @@ const Gravitas = () => {
                 <div>
                   <h4 className="text-sm font-medium mb-2">Fluid Behavior</h4>
                   <GlassPanel className="p-4">
-                    <p className="text-sm text-tier-3 leading-relaxed">{fluidText}</p>
+                    <p className="text-sm text-t3 leading-relaxed">{fluidText}</p>
                   </GlassPanel>
                 </div>
               )}
@@ -1102,10 +1102,10 @@ const Gravitas = () => {
                       }))}
                       min={1} max={120} step={1}
                     />
-                    <div className="flex justify-between text-xs text-tier-4"><span>1 month</span><span>10 years</span></div>
+                    <div className="flex justify-between text-xs text-t4"><span>1 month</span><span>10 years</span></div>
                   </div>
                   <GlassPanel className="p-4 mt-2">
-                    <p className="text-sm text-tier-3 leading-relaxed">{healthText}</p>
+                    <p className="text-sm text-t3 leading-relaxed">{healthText}</p>
                   </GlassPanel>
                 </div>
               )}
@@ -1114,7 +1114,7 @@ const Gravitas = () => {
                 <div>
                   <h4 className="text-sm font-medium mb-2">Architectural Requirements</h4>
                   <GlassPanel className="p-4">
-                    <p className="text-sm text-tier-3 leading-relaxed">{architectureText}</p>
+                    <p className="text-sm text-t3 leading-relaxed">{architectureText}</p>
                   </GlassPanel>
                 </div>
               )}
@@ -1123,7 +1123,7 @@ const Gravitas = () => {
                 <div>
                   <h4 className="text-sm font-medium mb-2">Mythological Implications</h4>
                   <GlassPanel className="p-4">
-                    <p className="text-sm text-tier-3 leading-relaxed whitespace-pre-line">{mythologyText}</p>
+                    <p className="text-sm text-t3 leading-relaxed whitespace-pre-line">{mythologyText}</p>
                   </GlassPanel>
                 </div>
               )}
@@ -1132,7 +1132,7 @@ const Gravitas = () => {
                 <div>
                   <h4 className="text-sm font-medium mb-2">Narrative Snippet</h4>
                   <GlassPanel className="p-4 border-primary/20">
-                    <p className="text-sm italic text-tier-2 leading-relaxed">{narrativeText}</p>
+                    <p className="text-sm italic text-t2 leading-relaxed">{narrativeText}</p>
                   </GlassPanel>
                 </div>
               )}
@@ -1204,51 +1204,51 @@ const Gravitas = () => {
               // READOUT
             </h4>
             <div className="text-center mb-3">
-              <p className="text-[10px] uppercase tracking-wider text-tier-3 mb-1">Effective Gravity</p>
+              <p className="text-[10px] uppercase tracking-wider text-t3 mb-1">Effective Gravity</p>
               <p className={`font-mono text-2xl font-light ${statusColor}`}>{formatG(effectiveG)}</p>
               <p className={`text-[10px] mt-0.5 ${statusColor}`}>{gravityLabel}</p>
             </div>
             <div className="space-y-1.5 text-[10px]">
               <div className="flex justify-between">
-                <span className="text-tier-4">Mode</span>
-                <span className="text-tier-2 font-mono">{MODE_LABELS[formState.activeMode]}</span>
+                <span className="text-t4">Mode</span>
+                <span className="text-t2 font-mono">{MODE_LABELS[formState.activeMode]}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-tier-4">Realism</span>
-                <span className="text-tier-2 font-mono">{REALISM_LABELS[formState.realismMode]}</span>
+                <span className="text-t4">Realism</span>
+                <span className="text-t2 font-mono">{REALISM_LABELS[formState.realismMode]}</span>
               </div>
               {formState.activeMode === "spin" && (
                 <>
                   <div className="flex justify-between">
-                    <span className="text-tier-4">Radius</span>
-                    <span className="text-tier-2 font-mono">{formState.spin.radius_m.toFixed(0)} m</span>
+                    <span className="text-t4">Radius</span>
+                    <span className="text-t2 font-mono">{formState.spin.radius_m.toFixed(0)} m</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-tier-4">RPM</span>
-                    <span className="text-tier-2 font-mono">{formState.spin.rotation_rpm.toFixed(2)}</span>
+                    <span className="text-t4">RPM</span>
+                    <span className="text-t2 font-mono">{formState.spin.rotation_rpm.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-tier-4">Coriolis</span>
-                    <span className="text-tier-2 font-mono">{spinResult.coriolis_intensity}</span>
+                    <span className="text-t4">Coriolis</span>
+                    <span className="text-t2 font-mono">{spinResult.coriolis_intensity}</span>
                   </div>
                 </>
               )}
               {formState.activeMode === "thrust" && (
                 <>
                   <div className="flex justify-between">
-                    <span className="text-tier-4">Accel</span>
-                    <span className="text-tier-2 font-mono">{formState.thrust.acceleration_g.toFixed(2)} g</span>
+                    <span className="text-t4">Accel</span>
+                    <span className="text-t2 font-mono">{formState.thrust.acceleration_g.toFixed(2)} g</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-tier-4">Trip</span>
-                    <span className="text-tier-2 font-mono">{thrustResult.trip_duration_days.toFixed(0)} d</span>
+                    <span className="text-t4">Trip</span>
+                    <span className="text-t2 font-mono">{thrustResult.trip_duration_days.toFixed(0)} d</span>
                   </div>
                 </>
               )}
               {formState.activeMode === "orbital" && (
                 <div className="flex justify-between">
-                  <span className="text-tier-4">Surface g</span>
-                  <span className="text-tier-2 font-mono">{formatG(orbitalResult.surface_g)}</span>
+                  <span className="text-t4">Surface g</span>
+                  <span className="text-t2 font-mono">{formatG(orbitalResult.surface_g)}</span>
                 </div>
               )}
             </div>
@@ -1312,7 +1312,7 @@ const Gravitas = () => {
 function ResultItem({ label, value, warn, span }: { label: string; value: string; warn?: boolean; span?: boolean }) {
   return (
     <div className={span ? "col-span-full" : ""}>
-      <p className="text-xs text-tier-4 uppercase tracking-wider">{label}</p>
+      <p className="text-xs text-t4 uppercase tracking-wider">{label}</p>
       <p className={`font-mono text-sm ${warn ? "text-sf-amber" : "text-foreground"}`}>{value}</p>
     </div>
   );

@@ -59,7 +59,7 @@ export function WritingSidebar({
         <Button
           variant="ghost"
           size="icon"
-          className="h-7 w-7 text-tier-4 hover:text-tier-2"
+          className="h-7 w-7 text-t4 hover:text-t2"
           onClick={onToggle}
           aria-label="Open sidebar"
         >
@@ -86,7 +86,7 @@ export function WritingSidebar({
             "flex items-center gap-1.5 flex-1 px-3 py-2 text-[11px] font-heading uppercase tracking-[1.2px] transition-colors",
             activeTab === "chapters"
               ? "text-[#15C17B] border-b-2 border-[#15C17B]"
-              : "text-tier-4 hover:text-tier-2 border-b-2 border-transparent"
+              : "text-t4 hover:text-t2 border-b-2 border-transparent"
           )}
         >
           <BookOpen className="w-3.5 h-3.5" />
@@ -99,7 +99,7 @@ export function WritingSidebar({
             "flex items-center gap-1.5 flex-1 px-3 py-2 text-[11px] font-heading uppercase tracking-[1.2px] transition-colors",
             activeTab === "entities"
               ? "text-[#15C17B] border-b-2 border-[#15C17B]"
-              : "text-tier-4 hover:text-tier-2 border-b-2 border-transparent"
+              : "text-t4 hover:text-t2 border-b-2 border-transparent"
           )}
         >
           <Dna className="w-3.5 h-3.5" />
@@ -108,7 +108,7 @@ export function WritingSidebar({
         <Button
           variant="ghost"
           size="icon"
-          className="h-7 w-7 text-tier-4 hover:text-tier-2 mx-1 shrink-0"
+          className="h-7 w-7 text-t4 hover:text-t2 mx-1 shrink-0"
           onClick={onToggle}
           aria-label="Collapse sidebar"
         >

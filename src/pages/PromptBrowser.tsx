@@ -121,7 +121,7 @@ const PromptBrowserPage = () => {
         {/* ── Back link ──────────────────────────────────────── */}
         <button
           onClick={() => navigate(-1)}
-          className="flex items-center gap-1.5 text-xs text-tier-4 hover:text-tier-2 transition-colors mb-6"
+          className="flex items-center gap-1.5 text-xs text-t4 hover:text-t2 transition-colors mb-6"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
           Back
@@ -129,18 +129,18 @@ const PromptBrowserPage = () => {
 
         {/* ── Page header ────────────────────────────────────── */}
         <div className="mb-10">
-          <h1 className="font-display text-3xl md:text-4xl tracking-[0.08em] text-tier-1 mb-3">
+          <h1 className="font-display text-3xl md:text-4xl tracking-[0.08em] text-t1 mb-3">
             PROMPT BROWSER
           </h1>
           <div className="flex flex-wrap items-center gap-4 text-sm">
-            <div className="flex items-center gap-2 text-tier-2">
+            <div className="flex items-center gap-2 text-t2">
               <Calendar className="w-4 h-4 text-primary/60" />
               <span className="font-heading text-sm font-light uppercase tracking-[1.5px]">
                 {weekLabel}
               </span>
             </div>
 
-            <div className="flex items-center gap-2 text-tier-3">
+            <div className="flex items-center gap-2 text-t3">
               <Clock className="w-3.5 h-3.5" />
               <span className="font-mono text-xs">
                 {daysRemaining} {daysRemaining === 1 ? "day" : "days"} remaining
@@ -157,7 +157,7 @@ const PromptBrowserPage = () => {
             )}
           </div>
 
-          <p className="text-tier-3 text-sm mt-3 max-w-2xl leading-relaxed">
+          <p className="text-t3 text-sm mt-3 max-w-2xl leading-relaxed">
             Seven prompts rotate each week — one for every day. Act on them before
             Sunday or they vanish. Each prompt is tuned for science fiction
             worldbuilders at different experience levels.
@@ -166,7 +166,7 @@ const PromptBrowserPage = () => {
 
         {/* ── Today's prompt (highlighted) ───────────────────── */}
         <section className="mb-10">
-          <p className="text-[10px] font-medium uppercase tracking-[1.5px] text-tier-3 mb-3 flex items-center gap-2">
+          <p className="text-[10px] font-medium uppercase tracking-[1.5px] text-t3 mb-3 flex items-center gap-2">
             <Sparkles className="w-3.5 h-3.5 text-primary/60" />
             Today's Prompt
           </p>
@@ -182,7 +182,7 @@ const PromptBrowserPage = () => {
 
         {/* ── This Week's Prompts grid ───────────────────────── */}
         <section>
-          <h2 className="font-heading text-xl font-light uppercase tracking-[2px] text-tier-1 mb-6">
+          <h2 className="font-heading text-xl font-light uppercase tracking-[2px] text-t1 mb-6">
             This Week's Prompts
           </h2>
 
@@ -207,7 +207,7 @@ const PromptBrowserPage = () => {
 
         {/* ── Stats footer ───────────────────────────────────── */}
         <div className="mt-12 border-t border-white/[0.06] pt-6">
-          <div className="flex flex-wrap items-center gap-6 text-xs text-tier-4">
+          <div className="flex flex-wrap items-center gap-6 text-xs text-t4">
             <span className="font-mono">
               {actedOn.size}/{weekPrompts.length} prompts acted on this week
             </span>
@@ -260,19 +260,19 @@ function TodayPromptContent({
         )}
       </div>
 
-      <h2 className="font-heading text-lg font-light uppercase tracking-[2px] text-tier-1 mb-3">
+      <h2 className="font-heading text-lg font-light uppercase tracking-[2px] text-t1 mb-3">
         {prompt.title}
       </h2>
 
-      <p className="text-tier-2 italic leading-relaxed mb-5">
+      <p className="text-t2 italic leading-relaxed mb-5">
         {prompt.prompt}
       </p>
 
       <div className="flex items-center justify-between">
         {prompt.wordGoal && (
           <div className="flex items-center gap-2">
-            <Target className="w-3.5 h-3.5 text-tier-4" />
-            <span className="font-mono text-xs text-tier-4">
+            <Target className="w-3.5 h-3.5 text-t4" />
+            <span className="font-mono text-xs text-t4">
               {prompt.wordGoal} words
             </span>
           </div>
@@ -335,7 +335,7 @@ function PromptCard({
 
       {/* Day label + today badge */}
       <div className="flex items-center gap-2 mb-3">
-        <span className="font-mono text-[10px] text-tier-4 uppercase tracking-[1.5px]">
+        <span className="font-mono text-[10px] text-t4 uppercase tracking-[1.5px]">
           {dayLabel}
         </span>
         {isToday && (
@@ -360,12 +360,12 @@ function PromptCard({
       </div>
 
       {/* Title */}
-      <h3 className="font-heading text-xs font-light uppercase tracking-[1.5px] text-tier-1 mb-2">
+      <h3 className="font-heading text-xs font-light uppercase tracking-[1.5px] text-t1 mb-2">
         {prompt.title}
       </h3>
 
       {/* Prompt excerpt */}
-      <p className="text-xs text-tier-3 italic leading-relaxed line-clamp-3 mb-auto">
+      <p className="text-xs text-t3 italic leading-relaxed line-clamp-3 mb-auto">
         {prompt.prompt}
       </p>
 
@@ -373,8 +373,8 @@ function PromptCard({
       <div className="flex items-center justify-between mt-4 pt-3 border-t border-white/[0.06]">
         {prompt.wordGoal && (
           <div className="flex items-center gap-1.5">
-            <Target className="w-3 h-3 text-tier-5" />
-            <span className="font-mono text-[10px] text-tier-5">
+            <Target className="w-3 h-3 text-t5" />
+            <span className="font-mono text-[10px] text-t5">
               {prompt.wordGoal} words
             </span>
           </div>
@@ -386,7 +386,7 @@ function PromptCard({
           disabled={isCompleted}
           className={`ml-auto flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-[1px] transition-colors ${
             isCompleted
-              ? "text-tier-5 cursor-default"
+              ? "text-t5 cursor-default"
               : "text-primary hover:text-primary/80 cursor-pointer"
           }`}
         >

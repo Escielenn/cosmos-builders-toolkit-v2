@@ -386,11 +386,11 @@ const KardashevScale = () => {
               >
                 <div className="flex items-center gap-2 mb-1">
                   <span className="text-lg">{preset.emoji}</span>
-                  <span className="text-xs font-medium text-tier-2 truncate">
+                  <span className="text-xs font-medium text-t2 truncate">
                     {preset.label}
                   </span>
                 </div>
-                <p className="text-[10px] text-tier-4 line-clamp-2">
+                <p className="text-[10px] text-t4 line-clamp-2">
                   {preset.description}
                 </p>
                 {preset.reference && (
@@ -414,10 +414,10 @@ const KardashevScale = () => {
             {/* Power slider */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <Label className="text-[11px] uppercase tracking-[1.5px] text-tier-3">
+                <Label className="text-[11px] uppercase tracking-[1.5px] text-t3">
                   Total Power Consumption
                 </Label>
-                <span className="font-mono text-sm text-tier-1">
+                <span className="font-mono text-sm text-t1">
                   {formatPower(formState.totalPowerWatts)}
                 </span>
               </div>
@@ -428,7 +428,7 @@ const KardashevScale = () => {
                 max={1000}
                 step={1}
               />
-              <div className="flex justify-between text-[9px] font-mono text-tier-5">
+              <div className="flex justify-between text-[9px] font-mono text-t5">
                 <span>10^0 W</span>
                 <span>10^16 W (Type I)</span>
                 <span>10^26 W (Type II)</span>
@@ -440,14 +440,14 @@ const KardashevScale = () => {
             {/* Kardashev number readout */}
             <div className="flex items-center gap-4 p-3 bg-white/[0.02] border border-white/[0.06]">
               <div>
-                <span className="text-[10px] uppercase tracking-[1.5px] text-tier-4">Kardashev Number</span>
-                <div className="font-mono text-2xl text-tier-1">
+                <span className="text-[10px] uppercase tracking-[1.5px] text-t4">Kardashev Number</span>
+                <div className="font-mono text-2xl text-t1">
                   {results.valid ? formatKardashev(results.kardashevNumber) : "—"}
                 </div>
               </div>
               <div>
-                <span className="text-[10px] uppercase tracking-[1.5px] text-tier-4">Log₁₀ Power</span>
-                <div className="font-mono text-lg text-tier-2">
+                <span className="text-[10px] uppercase tracking-[1.5px] text-t4">Log₁₀ Power</span>
+                <div className="font-mono text-lg text-t2">
                   {formState.powerLog10.toFixed(1)} W
                 </div>
               </div>
@@ -455,7 +455,7 @@ const KardashevScale = () => {
 
             {/* Growth rate */}
             <div className="space-y-2">
-              <Label className="text-[11px] uppercase tracking-[1.5px] text-tier-3">
+              <Label className="text-[11px] uppercase tracking-[1.5px] text-t3">
                 Annual Growth Rate
               </Label>
               <Select
@@ -477,7 +477,7 @@ const KardashevScale = () => {
 
             {/* Quick energy source reference */}
             <div className="space-y-2">
-              <Label className="text-[11px] uppercase tracking-[1.5px] text-tier-3">
+              <Label className="text-[11px] uppercase tracking-[1.5px] text-t3">
                 Energy Source Reference
               </Label>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 max-h-[240px] overflow-y-auto">
@@ -497,7 +497,7 @@ const KardashevScale = () => {
                     className="text-left p-2 border border-white/[0.04] hover:border-white/[0.12] bg-white/[0.01] hover:bg-white/[0.03] transition-colors"
                   >
                     <div className="flex items-center justify-between gap-2">
-                      <span className="text-[11px] text-tier-2 truncate">
+                      <span className="text-[11px] text-t2 truncate">
                         {source.label}
                       </span>
                       <Badge
@@ -507,13 +507,13 @@ const KardashevScale = () => {
                           source.category === "planetary" && "text-blue-400 border-blue-400/20",
                           source.category === "stellar" && "text-sf-amber border-amber-400/20",
                           source.category === "galactic" && "text-pink-400 border-pink-400/20",
-                          source.category === "exotic" && "text-tier-1 border-white/20"
+                          source.category === "exotic" && "text-t1 border-white/20"
                         )}
                       >
                         {source.category}
                       </Badge>
                     </div>
-                    <span className="font-mono text-[10px] text-tier-4">
+                    <span className="font-mono text-[10px] text-t4">
                       {formatPower(source.powerWatts)}
                     </span>
                   </button>
@@ -539,7 +539,7 @@ const KardashevScale = () => {
                   className="absolute inset-0 opacity-[0.03]"
                   style={{ background: `radial-gradient(circle at 50% 50%, ${results.band.color}, transparent 70%)` }}
                 />
-                <p className="text-[10px] uppercase tracking-[2px] text-tier-4 mb-2">
+                <p className="text-[10px] uppercase tracking-[2px] text-t4 mb-2">
                   Your Civilization Is
                 </p>
                 <h3
@@ -548,10 +548,10 @@ const KardashevScale = () => {
                 >
                   {results.band.label.toUpperCase()}
                 </h3>
-                <p className="font-mono text-sm text-tier-2 mb-3">
+                <p className="font-mono text-sm text-t2 mb-3">
                   K = {formatKardashev(results.kardashevNumber)}
                 </p>
-                <p className="text-sm text-tier-3 max-w-lg mx-auto">
+                <p className="text-sm text-t3 max-w-lg mx-auto">
                   {results.band.description}
                 </p>
               </GlassPanel>
@@ -559,31 +559,31 @@ const KardashevScale = () => {
               {/* Comparison stats */}
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
                 <div className="p-3 bg-white/[0.02] border border-white/[0.06]">
-                  <span className="text-[10px] uppercase tracking-[1.5px] text-tier-4 block mb-1">Total Power</span>
-                  <span className="font-mono text-tier-1">{formatPower(results.totalPowerWatts)}</span>
+                  <span className="text-[10px] uppercase tracking-[1.5px] text-t4 block mb-1">Total Power</span>
+                  <span className="font-mono text-t1">{formatPower(results.totalPowerWatts)}</span>
                 </div>
                 <div className="p-3 bg-white/[0.02] border border-white/[0.06]">
-                  <span className="text-[10px] uppercase tracking-[1.5px] text-tier-4 block mb-1">vs Earth</span>
-                  <span className="font-mono text-tier-1">{formatMultiple(results.earthMultiple)}</span>
+                  <span className="text-[10px] uppercase tracking-[1.5px] text-t4 block mb-1">vs Earth</span>
+                  <span className="font-mono text-t1">{formatMultiple(results.earthMultiple)}</span>
                 </div>
                 <div className="p-3 bg-white/[0.02] border border-white/[0.06]">
-                  <span className="text-[10px] uppercase tracking-[1.5px] text-tier-4 block mb-1">vs Sun</span>
-                  <span className="font-mono text-tier-1">{formatMultiple(results.solarMultiple)}</span>
+                  <span className="text-[10px] uppercase tracking-[1.5px] text-t4 block mb-1">vs Sun</span>
+                  <span className="font-mono text-t1">{formatMultiple(results.solarMultiple)}</span>
                 </div>
                 <div className="p-3 bg-white/[0.02] border border-white/[0.06]">
-                  <span className="text-[10px] uppercase tracking-[1.5px] text-tier-4 block mb-1">vs Galaxy</span>
-                  <span className="font-mono text-tier-1">{formatMultiple(results.galaxyMultiple)}</span>
+                  <span className="text-[10px] uppercase tracking-[1.5px] text-t4 block mb-1">vs Galaxy</span>
+                  <span className="font-mono text-t1">{formatMultiple(results.galaxyMultiple)}</span>
                 </div>
               </div>
 
               {/* Characteristics */}
               <div className="space-y-2">
-                <Label className="text-[11px] uppercase tracking-[1.5px] text-tier-3">
+                <Label className="text-[11px] uppercase tracking-[1.5px] text-t3">
                   Civilization Characteristics
                 </Label>
                 <ul className="space-y-1.5">
                   {results.band.characteristics.map((c, i) => (
-                    <li key={i} className="flex items-start gap-2 text-sm text-tier-2">
+                    <li key={i} className="flex items-start gap-2 text-sm text-t2">
                       <Zap className="w-3 h-3 text-primary/60 mt-1 shrink-0" />
                       {c}
                     </li>
@@ -594,7 +594,7 @@ const KardashevScale = () => {
               {/* Projections */}
               {results.projections.length > 0 && (
                 <div className="space-y-2">
-                  <Label className="text-[11px] uppercase tracking-[1.5px] text-tier-3">
+                  <Label className="text-[11px] uppercase tracking-[1.5px] text-t3">
                     Growth Projections ({GROWTH_RATES[formState.growthRate].label})
                   </Label>
                   <div className="space-y-1.5">
@@ -603,12 +603,12 @@ const KardashevScale = () => {
                         key={p.level}
                         className="flex items-center justify-between p-2 bg-white/[0.02] border border-white/[0.04]"
                       >
-                        <span className="text-sm text-tier-2">{p.label}</span>
+                        <span className="text-sm text-t2">{p.label}</span>
                         <div className="text-right">
-                          <span className="font-mono text-sm text-tier-1">
+                          <span className="font-mono text-sm text-t1">
                             {formatYears(p.yearsToReach)}
                           </span>
-                          <span className="text-[9px] text-tier-4 ml-2">
+                          <span className="text-[9px] text-t4 ml-2">
                             ({formatPower(p.powerRequired)})
                           </span>
                         </div>
@@ -620,7 +620,7 @@ const KardashevScale = () => {
 
               {/* Scale visualization */}
               <div className="space-y-2">
-                <Label className="text-[11px] uppercase tracking-[1.5px] text-tier-3">
+                <Label className="text-[11px] uppercase tracking-[1.5px] text-t3">
                   Kardashev Scale Position
                 </Label>
                 <div className="relative h-10 bg-white/[0.02] border border-white/[0.06] overflow-hidden">
@@ -650,7 +650,7 @@ const KardashevScale = () => {
                     }}
                   />
                 </div>
-                <div className="flex justify-between text-[8px] font-mono text-tier-5">
+                <div className="flex justify-between text-[8px] font-mono text-t5">
                   <span>Sub-I</span>
                   <span>I</span>
                   <span>II</span>
@@ -689,12 +689,12 @@ const KardashevScale = () => {
                   <div key={cat.id} className="space-y-1.5">
                     <div className="flex items-center justify-between">
                       <div>
-                        <span className="text-xs text-tier-2">{cat.label}</span>
-                        <span className="text-[10px] text-tier-4 ml-2">
+                        <span className="text-xs text-t2">{cat.label}</span>
+                        <span className="text-[10px] text-t4 ml-2">
                           ({cat.description})
                         </span>
                       </div>
-                      <span className="font-mono text-xs text-tier-1">
+                      <span className="font-mono text-xs text-t1">
                         {pct}% — {formatPower(allocated)}
                       </span>
                     </div>
@@ -798,14 +798,14 @@ const KardashevScale = () => {
                                 </Badge>
                               )}
                             </div>
-                            <p className="text-sm text-tier-2">{imp.text}</p>
+                            <p className="text-sm text-t2">{imp.text}</p>
                           </div>
                         );
                       })}
 
                     {/* User notes for this cascade category */}
                     <div className="mt-4">
-                      <Label className="text-[11px] uppercase tracking-[1.5px] text-tier-3 mb-2 block">
+                      <Label className="text-[11px] uppercase tracking-[1.5px] text-t3 mb-2 block">
                         Your Notes — {cat.category}
                       </Label>
                       <Suspense
@@ -854,7 +854,7 @@ const KardashevScale = () => {
               { key: "dailyLife" as const, label: "Daily Life Impact", placeholder: "How does this energy level affect ordinary people's lives?" },
             ].map(({ key, label, placeholder }) => (
               <div key={key}>
-                <Label className="text-[11px] uppercase tracking-[1.5px] text-tier-3 mb-2 block">
+                <Label className="text-[11px] uppercase tracking-[1.5px] text-t3 mb-2 block">
                   {label}
                 </Label>
                 <Suspense

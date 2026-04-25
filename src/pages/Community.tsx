@@ -60,7 +60,7 @@ const Community = () => {
               Community Worlds
             </h1>
           </div>
-          <p className="font-sans text-sm text-tier-2 max-w-xl">
+          <p className="font-sans text-sm text-t2 max-w-xl">
             Explore worlds built by the StellarForge community. Fork them to use
             as a starting point, or just browse for inspiration.
           </p>
@@ -69,7 +69,7 @@ const Community = () => {
         {/* Search + Sort Bar */}
         <div className="flex flex-col sm:flex-row gap-3 mb-8 mt-6">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-tier-4" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-t4" />
             <Input
               type="text"
               placeholder="Search worlds, tags, or creators..."
@@ -105,11 +105,11 @@ const Community = () => {
         {/* Empty State */}
         {!isLoading && worlds.length === 0 && (
           <GlassPanel className="p-12 text-center max-w-lg mx-auto">
-            <Layers className="w-10 h-10 text-tier-4 mx-auto mb-4" />
-            <h2 className="font-heading text-sm font-light uppercase tracking-[2px] text-tier-2 mb-2">
+            <Layers className="w-10 h-10 text-t4 mx-auto mb-4" />
+            <h2 className="font-heading text-sm font-light uppercase tracking-[2px] text-t2 mb-2">
               No Community Worlds Yet
             </h2>
-            <p className="font-sans text-xs text-tier-3 max-w-sm mx-auto">
+            <p className="font-sans text-xs text-t3 max-w-sm mx-auto">
               {search
                 ? "No worlds match your search. Try a different query."
                 : "Be the first to share a world with the community. Set your world's visibility to Community or Public in its share settings."}

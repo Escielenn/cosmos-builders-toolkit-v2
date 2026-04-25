@@ -67,7 +67,7 @@ export default function Commendations() {
   if (!user) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-tier-3 font-sans text-sm">Sign in to view your commendations.</p>
+        <p className="text-t3 font-sans text-sm">Sign in to view your commendations.</p>
       </div>
     );
   }
@@ -81,7 +81,7 @@ export default function Commendations() {
           <Button
             variant="ghost"
             size="sm"
-            className="gap-1.5 text-tier-4 hover:text-tier-2 mb-6 -ml-2"
+            className="gap-1.5 text-t4 hover:text-t2 mb-6 -ml-2"
             onClick={() => navigate("/profile")}
           >
             <ArrowLeft className="w-4 h-4" />
@@ -90,10 +90,10 @@ export default function Commendations() {
 
           {/* Header */}
           <div className="mb-10">
-            <h1 className="font-display text-3xl md:text-4xl tracking-sf-title text-tier-1 uppercase">
+            <h1 className="font-display text-3xl md:text-4xl tracking-sf-title text-t1 uppercase">
               Commendations
             </h1>
-            <p className="font-sans text-tier-3 text-sm mt-3 max-w-xl">
+            <p className="font-sans text-t3 text-sm mt-3 max-w-xl">
               Marks of progress along the cascade. Each commendation is earned through
               use—worlds built, words written, systems explored.
             </p>
@@ -105,7 +105,7 @@ export default function Commendations() {
               <span className="font-heading text-xs uppercase tracking-[3px] text-emerald">
                 Overall Progress
               </span>
-              <span className="font-mono text-sm text-tier-1">
+              <span className="font-mono text-sm text-t1">
                 {earnedCount} / {totalCount}
               </span>
             </div>
@@ -137,15 +137,15 @@ export default function Commendations() {
                     <div className="flex items-center justify-between mb-1">
                       <span className={cn(
                         "font-heading text-[11px] uppercase tracking-[2px] transition-colors",
-                        isActive ? "text-primary" : "text-tier-2 group-hover:text-tier-1"
+                        isActive ? "text-primary" : "text-t2 group-hover:text-t1"
                       )}>
                         {CATEGORY_LABELS[category]}
                       </span>
-                      <span className="font-mono text-[11px] text-tier-4">
+                      <span className="font-mono text-[11px] text-t4">
                         {earned}/{total}
                       </span>
                     </div>
-                    <p className="font-sans text-[10px] text-tier-5 leading-relaxed">
+                    <p className="font-sans text-[10px] text-t5 leading-relaxed">
                       {CATEGORY_DESCRIPTIONS[category]}
                     </p>
                   </button>
@@ -156,7 +156,7 @@ export default function Commendations() {
             {/* Active filter indicator */}
             {activeCategory && (
               <div className="mt-4 flex items-center gap-2">
-                <span className="font-mono text-[9px] uppercase tracking-wider text-tier-4">
+                <span className="font-mono text-[9px] uppercase tracking-wider text-t4">
                   Showing:
                 </span>
                 <span className="font-heading text-[11px] uppercase tracking-[2px] text-primary">
@@ -165,7 +165,7 @@ export default function Commendations() {
                 <button
                   type="button"
                   onClick={() => setActiveCategory(null)}
-                  className="font-mono text-[9px] uppercase tracking-wider text-tier-4 hover:text-tier-2 ml-auto transition-colors"
+                  className="font-mono text-[9px] uppercase tracking-wider text-t4 hover:text-t2 ml-auto transition-colors"
                 >
                   Show All
                 </button>
@@ -201,7 +201,7 @@ export default function Commendations() {
                         {TIER_LABELS[tier]}
                       </span>
                       <div className="flex-1 h-px bg-white/[0.06]" />
-                      <span className="font-mono text-[11px] text-tier-4">
+                      <span className="font-mono text-[11px] text-t4">
                         {tierEarned} / {badges.length}
                       </span>
                     </div>

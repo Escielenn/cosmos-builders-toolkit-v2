@@ -146,10 +146,10 @@ export default function WelcomeDialog({ open, onOpenChange, variant }: WelcomeDi
 
           {/* Title & subtitle */}
           <div className="space-y-2">
-            <h2 className="font-display text-2xl tracking-sf-title text-tier-1 uppercase">
+            <h2 className="font-display text-2xl tracking-sf-title text-t1 uppercase">
               {config.title}
             </h2>
-            <p className="text-sm text-tier-2 leading-relaxed">
+            <p className="text-sm text-t2 leading-relaxed">
               {config.subtitle}
             </p>
           </div>
@@ -160,7 +160,7 @@ export default function WelcomeDialog({ open, onOpenChange, variant }: WelcomeDi
               {config.features.map((feature) => (
                 <div key={feature} className="flex items-start gap-2.5">
                   <Check className={`w-4 h-4 mt-0.5 shrink-0 ${accent.check}`} />
-                  <span className="text-sm text-tier-2">{feature}</span>
+                  <span className="text-sm text-t2">{feature}</span>
                 </div>
               ))}
             </div>
@@ -169,7 +169,7 @@ export default function WelcomeDialog({ open, onOpenChange, variant }: WelcomeDi
           {/* PWA install section (signup only) */}
           {config.showPwaPrompt && !isStandalone && (
             <div className="border-t border-sf-border pt-4 space-y-2">
-              <p className="text-[11px] font-medium uppercase tracking-[1.5px] text-tier-3">
+              <p className="text-[11px] font-medium uppercase tracking-[1.5px] text-t3">
                 Quick Access
               </p>
               {canPrompt ? (
@@ -183,7 +183,7 @@ export default function WelcomeDialog({ open, onOpenChange, variant }: WelcomeDi
                   Install StellarForge
                 </Button>
               ) : (
-                <p className="text-xs text-tier-4 flex items-center justify-center gap-1.5">
+                <p className="text-xs text-t4 flex items-center justify-center gap-1.5">
                   <Bookmark className="w-3.5 h-3.5" />
                   {manualInstructions}
                 </p>

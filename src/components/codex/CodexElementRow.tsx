@@ -160,7 +160,7 @@ const CodexElementRow = memo(({
 
       {/* Pin indicator */}
       {isPinned && (
-        <Pin className="w-2.5 h-2.5 text-tier-5 shrink-0" />
+        <Pin className="w-2.5 h-2.5 text-t5 shrink-0" />
       )}
 
       {/* Draft badge */}

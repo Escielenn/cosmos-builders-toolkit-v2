@@ -196,20 +196,20 @@ const Pricing = () => {
           <GlassPanel className="p-8">
             <div className="mb-6">
               <h2 className="font-heading text-xl font-light uppercase tracking-[2px] mb-2">STANDARD ACCESS</h2>
-              <p className="text-4xl font-light text-tier-1">$0<span className="text-lg text-tier-3">/forever</span></p>
+              <p className="text-4xl font-light text-t1">$0<span className="text-lg text-t3">/forever</span></p>
             </div>
 
             <ul className="space-y-3 mb-8">
               {freeFeatures.map((feature) => (
                 <li key={feature} className="flex items-center gap-2 text-sm">
                   <Check className="w-4 h-4 text-sf-emerald shrink-0" />
-                  <span className="text-tier-2">{feature}</span>
+                  <span className="text-t2">{feature}</span>
                 </li>
               ))}
             </ul>
 
-            <p className="text-xs text-tier-3 uppercase tracking-[1.5px] mb-3">Free instruments:</p>
-            <ul className="text-sm text-tier-3 space-y-1 mb-6">
+            <p className="text-xs text-t3 uppercase tracking-[1.5px] mb-3">Free instruments:</p>
+            <ul className="text-sm text-t3 space-y-1 mb-6">
               <li>Environmental Chain Reaction</li>
               <li>Spacecraft Designer</li>
               <li>Propulsion Consequences Map</li>
@@ -234,17 +234,17 @@ const Pricing = () => {
                 PRO ACCESS
               </h2>
               <div className="flex items-baseline gap-2">
-                <p className="text-4xl font-light text-tier-1">${PRICING.pro.monthly.price}</p>
-                <span className="text-lg text-tier-3">/month</span>
+                <p className="text-4xl font-light text-t1">${PRICING.pro.monthly.price}</p>
+                <span className="text-lg text-t3">/month</span>
               </div>
-              <p className="text-sm text-tier-3">or ${PRICING.pro.yearly.price}/year (save {PRICING.pro.yearly.savings})</p>
+              <p className="text-sm text-t3">or ${PRICING.pro.yearly.price}/year (save {PRICING.pro.yearly.savings})</p>
             </div>
 
             <ul className="space-y-3 mb-8">
               {proFeatures.map((feature) => (
                 <li key={feature} className="flex items-center gap-2 text-sm">
                   <Check className="w-4 h-4 text-sf-emerald shrink-0" />
-                  <span className="text-tier-2">{feature}</span>
+                  <span className="text-t2">{feature}</span>
                 </li>
               ))}
             </ul>
@@ -277,7 +277,7 @@ const Pricing = () => {
               </div>
             ) : isVanguard ? (
               <div className="p-3 rounded-sm bg-emerald-500/10 text-center">
-                <p className="text-sm text-tier-3">Included in your Vanguard access</p>
+                <p className="text-sm text-t3">Included in your Vanguard access</p>
               </div>
             ) : (
               <div className="space-y-3">
@@ -323,17 +323,17 @@ const Pricing = () => {
                 VANGUARD ACCESS
               </h2>
               <div className="flex items-baseline gap-2">
-                <p className="text-4xl font-light text-tier-1">${PRICING.vanguard.monthly.price}</p>
-                <span className="text-lg text-tier-3">/month</span>
+                <p className="text-4xl font-light text-t1">${PRICING.vanguard.monthly.price}</p>
+                <span className="text-lg text-t3">/month</span>
               </div>
-              <p className="text-sm text-tier-3">or ${PRICING.vanguard.yearly.price}/year (save {PRICING.vanguard.yearly.savings})</p>
+              <p className="text-sm text-t3">or ${PRICING.vanguard.yearly.price}/year (save {PRICING.vanguard.yearly.savings})</p>
             </div>
 
             <ul className="space-y-3 mb-8">
               {vanguardFeatures.map((feature) => (
                 <li key={feature} className="flex items-center gap-2 text-sm">
                   <Check className="w-4 h-4 text-sf-violet shrink-0" />
-                  <span className="text-tier-2">{feature}</span>
+                  <span className="text-t2">{feature}</span>
                 </li>
               ))}
             </ul>
@@ -390,7 +390,7 @@ const Pricing = () => {
                   ) : null}
                   Monthly — ${PRICING.vanguard.monthly.price}/month
                 </Button>
-                <p className="text-xs text-tier-4 text-center">
+                <p className="text-xs text-t4 text-center">
                   Your Pro plan will be upgraded. Stripe handles the prorated billing.
                 </p>
               </div>
@@ -434,18 +434,18 @@ const Pricing = () => {
               </div>
               <div>
                 <h3 className="font-heading text-lg font-light uppercase tracking-[2px] mb-1">Vanguard: Shape What Comes Next</h3>
-                <p className="text-sm text-tier-2">
+                <p className="text-sm text-t2">
                   Vanguard members don't just use StellarForge—they help build it. Vote on the roadmap, get early access to new instruments before anyone else, and join bi-weekly Office Hours to discuss science fiction worldbuilding directly with the creator.
                 </p>
               </div>
             </div>
-            <div className="grid sm:grid-cols-2 gap-4 text-sm text-tier-3">
+            <div className="grid sm:grid-cols-2 gap-4 text-sm text-t3">
               <div>
-                <p className="text-tier-2 font-medium mb-1">Office Hours (Starting Late April)</p>
+                <p className="text-t2 font-medium mb-1">Office Hours (Starting Late April)</p>
                 <p>Bi-weekly Zoom/Discord sessions focused on SF worldbuilding and science fiction craft.</p>
               </div>
               <div>
-                <p className="text-tier-2 font-medium mb-1">Course Discounts</p>
+                <p className="text-t2 font-medium mb-1">Course Discounts</p>
                 <p>Vanguard Annual saves 25% on all SF worldbuilding courses. Monthly saves 10%. Pro Annual saves 10%, Monthly saves 5%.</p>
               </div>
             </div>
@@ -458,28 +458,28 @@ const Pricing = () => {
             <h3 className="font-heading text-xl font-light uppercase tracking-[2px] mb-4">Frequently Asked Questions</h3>
             <div className="space-y-4 text-sm">
               <div>
-                <p className="font-medium text-tier-2">Can I cancel anytime?</p>
-                <p className="text-tier-3">Yes! Cancel anytime from your billing portal. You'll keep access until the end of your billing period.</p>
+                <p className="font-medium text-t2">Can I cancel anytime?</p>
+                <p className="text-t3">Yes! Cancel anytime from your billing portal. You'll keep access until the end of your billing period.</p>
               </div>
               <div>
-                <p className="font-medium text-tier-2">What payment methods do you accept?</p>
-                <p className="text-tier-3">We accept all major credit cards, debit cards, and many local payment methods through Stripe.</p>
+                <p className="font-medium text-t2">What payment methods do you accept?</p>
+                <p className="text-t3">We accept all major credit cards, debit cards, and many local payment methods through Stripe.</p>
               </div>
               <div>
-                <p className="font-medium text-tier-2">Will I lose my data if I cancel?</p>
-                <p className="text-tier-3">No. Your worlds and worksheets remain saved. You just won't be able to access Pro/Vanguard tools.</p>
+                <p className="font-medium text-t2">Will I lose my data if I cancel?</p>
+                <p className="text-t3">No. Your worlds and worksheets remain saved. You just won't be able to access Pro/Vanguard tools.</p>
               </div>
               <div>
-                <p className="font-medium text-tier-2">Can I upgrade from Pro to Vanguard?</p>
-                <p className="text-tier-3">Yes! Upgrade anytime. Stripe prorates the billing so you only pay the difference for the remainder of your current period.</p>
+                <p className="font-medium text-t2">Can I upgrade from Pro to Vanguard?</p>
+                <p className="text-t3">Yes! Upgrade anytime. Stripe prorates the billing so you only pay the difference for the remainder of your current period.</p>
               </div>
               <div>
-                <p className="font-medium text-tier-2">Can I switch between monthly and yearly?</p>
-                <p className="text-tier-3">Yes! You can change your plan anytime through the billing portal.</p>
+                <p className="font-medium text-t2">Can I switch between monthly and yearly?</p>
+                <p className="text-t3">Yes! You can change your plan anytime through the billing portal.</p>
               </div>
               <div>
-                <p className="font-medium text-tier-2">What are roadmap votes?</p>
-                <p className="text-tier-3">Vanguard members get 10 votes per billing period to cast on upcoming tools and features. The highest-voted items get priority in development.</p>
+                <p className="font-medium text-t2">What are roadmap votes?</p>
+                <p className="text-t3">Vanguard members get 10 votes per billing period to cast on upcoming tools and features. The highest-voted items get priority in development.</p>
               </div>
             </div>
           </GlassPanel>

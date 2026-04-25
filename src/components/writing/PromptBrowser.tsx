@@ -22,7 +22,7 @@ export function PromptBrowser({ onStartWriting }: PromptBrowserProps) {
       <button
         type="button"
         onClick={() => setExpanded(!expanded)}
-        className="flex items-center gap-2 text-tier-3 hover:text-tier-1 transition-colors text-sm mb-4"
+        className="flex items-center gap-2 text-t3 hover:text-t1 transition-colors text-sm mb-4"
       >
         <ChevronDown
           className={`w-4 h-4 transition-transform ${
@@ -60,16 +60,16 @@ export function PromptBrowser({ onStartWriting }: PromptBrowserProps) {
                         {DIFFICULTY_LABELS[p.difficulty]}
                       </Badge>
                     </div>
-                    <h4 className="font-heading text-xs font-light uppercase tracking-[1.5px] text-tier-1 mb-1.5">
+                    <h4 className="font-heading text-xs font-light uppercase tracking-[1.5px] text-t1 mb-1.5">
                       {p.title}
                     </h4>
-                    <p className="text-xs text-tier-3 italic leading-relaxed line-clamp-2 mb-auto">
+                    <p className="text-xs text-t3 italic leading-relaxed line-clamp-2 mb-auto">
                       {p.prompt}
                     </p>
                     {p.wordGoal && (
                       <div className="flex items-center gap-1.5 mt-2">
-                        <Target className="w-3 h-3 text-tier-5" />
-                        <span className="font-mono text-[10px] text-tier-5">
+                        <Target className="w-3 h-3 text-t5" />
+                        <span className="font-mono text-[10px] text-t5">
                           {p.wordGoal} words
                         </span>
                       </div>

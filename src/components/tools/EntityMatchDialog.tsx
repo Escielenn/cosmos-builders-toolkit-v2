@@ -56,8 +56,8 @@ export default function EntityMatchDialog({
           <DialogTitle className="font-heading text-sm font-light uppercase tracking-[3px] text-primary">
             Entity Match Detected
           </DialogTitle>
-          <DialogDescription className="text-tier-2 mt-3 leading-relaxed">
-            <span className="font-mono text-tier-1 text-sm">
+          <DialogDescription className="text-t2 mt-3 leading-relaxed">
+            <span className="font-mono text-t1 text-sm">
               &ldquo;{best.title}&rdquo;
             </span>{" "}
             already exists in {layerLabel}.
@@ -69,17 +69,17 @@ export default function EntityMatchDialog({
 
         {candidates.length > 1 && (
           <div className="mt-2 space-y-1">
-            <p className="font-mono text-[9px] uppercase tracking-wider text-tier-4">
+            <p className="font-mono text-[9px] uppercase tracking-wider text-t4">
               Other possible matches
             </p>
             {candidates.slice(1, 4).map((c) => (
               <button
                 key={c.id}
                 onClick={() => onLink(c)}
-                className="w-full text-left px-3 py-1.5 text-xs text-tier-3 hover:text-tier-1 hover:bg-white/[0.04] transition-colors flex items-center justify-between"
+                className="w-full text-left px-3 py-1.5 text-xs text-t3 hover:text-t1 hover:bg-white/[0.04] transition-colors flex items-center justify-between"
               >
                 <span>{c.title}</span>
-                <span className="font-mono text-[9px] text-tier-5">
+                <span className="font-mono text-[9px] text-t5">
                   {Math.round(c.score * 100)}%
                 </span>
               </button>

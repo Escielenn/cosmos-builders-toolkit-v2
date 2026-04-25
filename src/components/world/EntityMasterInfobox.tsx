@@ -80,7 +80,7 @@ export default function EntityMasterInfobox({
         <button
           type="button"
           onClick={startEditing}
-          className="text-[10px] text-tier-4 hover:text-primary/60 transition-colors flex items-center gap-1"
+          className="text-[10px] text-t4 hover:text-primary/60 transition-colors flex items-center gap-1"
         >
           <Pencil className="w-3 h-3" />
           Add details
@@ -99,7 +99,7 @@ export default function EntityMasterInfobox({
           <button
             type="button"
             onClick={startEditing}
-            className="text-tier-4 hover:text-tier-2 transition-colors"
+            className="text-t4 hover:text-t2 transition-colors"
           >
             <Pencil className="w-3 h-3" />
           </button>
@@ -166,11 +166,11 @@ function ReadOnlyField({
   if (field.key === "description") {
     return (
       <div className="col-span-2">
-        <span className="text-[10px] font-medium uppercase tracking-[1.5px] text-tier-3">
+        <span className="text-[10px] font-medium uppercase tracking-[1.5px] text-t3">
           {field.label}
         </span>
         <div
-          className="text-xs text-tier-2 mt-0.5 prose prose-invert prose-sm max-w-none"
+          className="text-xs text-t2 mt-0.5 prose prose-invert prose-sm max-w-none"
           dangerouslySetInnerHTML={{ __html: String(value ?? "") }}
         />
       </div>
@@ -179,10 +179,10 @@ function ReadOnlyField({
 
   return (
     <div>
-      <span className="text-[10px] font-medium uppercase tracking-[1.5px] text-tier-3">
+      <span className="text-[10px] font-medium uppercase tracking-[1.5px] text-t3">
         {field.label}
       </span>
-      <p className="font-mono text-xs text-tier-1 mt-0.5">
+      <p className="font-mono text-xs text-t1 mt-0.5">
         {String(value ?? "—")}
       </p>
     </div>
@@ -224,7 +224,7 @@ function EditableField({
         <select
           value={stringVal}
           onChange={(e) => onChange(e.target.value)}
-          className="w-full text-xs bg-white/[0.04] border border-sf-border rounded-xs px-2 py-1.5 text-tier-2"
+          className="w-full text-xs bg-white/[0.04] border border-sf-border rounded-xs px-2 py-1.5 text-t2"
         >
           <option value="">—</option>
           {field.options.map((opt) => (

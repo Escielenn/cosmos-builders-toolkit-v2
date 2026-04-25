@@ -50,7 +50,7 @@ export function BadgeCard({ definition, earned, earnedAt }: BadgeCardProps) {
       </div>
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
-          <p className={cn("font-heading text-[12px] uppercase tracking-[2px] text-tier-1")}>
+          <p className={cn("font-heading text-[12px] uppercase tracking-[2px] text-t1")}>
             {definition.name}
           </p>
           <span
@@ -64,7 +64,7 @@ export function BadgeCard({ definition, earned, earnedAt }: BadgeCardProps) {
             {TIER_LABELS[definition.tier]}
           </span>
         </div>
-        <p className="font-sans text-[11px] text-tier-2 mt-0.5">
+        <p className="font-sans text-[11px] text-t2 mt-0.5">
           {definition.description}
         </p>
         {earnedAt && (

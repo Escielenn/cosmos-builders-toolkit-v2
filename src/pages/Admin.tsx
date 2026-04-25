@@ -87,16 +87,16 @@ const StatCard = ({
     className={`p-5 ${onClick ? "cursor-pointer hover:bg-white/[0.02] transition-colors" : ""}`}
     onClick={onClick}
   >
-    <p className="text-[11px] font-medium uppercase tracking-[1.5px] text-tier-3 mb-2">
+    <p className="text-[11px] font-medium uppercase tracking-[1.5px] text-t3 mb-2">
       {label}
     </p>
-    <p className="font-mono text-3xl text-tier-1">{value}</p>
-    {sub && <p className="text-xs text-tier-4 mt-1">{sub}</p>}
+    <p className="font-mono text-3xl text-t1">{value}</p>
+    {sub && <p className="text-xs text-t4 mt-1">{sub}</p>}
   </GlassPanel>
 );
 
 const TH = ({ children, className = "" }: { children?: React.ReactNode; className?: string }) => (
-  <th className={`text-left text-[11px] font-medium uppercase tracking-[1.5px] text-tier-3 px-3 py-3 ${className}`}>
+  <th className={`text-left text-[11px] font-medium uppercase tracking-[1.5px] text-t3 px-3 py-3 ${className}`}>
     {children}
   </th>
 );
@@ -106,14 +106,14 @@ const categoryColors: Record<string, string> = {
   feature: "bg-blue-400/[0.06] border-blue-400/[0.15] text-blue-400",
   billing: "bg-amber-500/[0.06] border-amber-500/[0.15] text-sf-amber",
   account: "bg-sky-500/[0.06] border-sky-500/[0.15] text-sky-400",
-  other: "bg-white/[0.04] border-white/[0.1] text-tier-3",
+  other: "bg-white/[0.04] border-white/[0.1] text-t3",
 };
 
 const priorityColors: Record<string, string> = {
   urgent: "bg-red-500/[0.06] border-red-500/[0.15] text-sf-crimson animate-pulse",
   high: "bg-amber-500/[0.06] border-amber-500/[0.15] text-sf-amber",
-  normal: "bg-white/[0.04] border-white/[0.1] text-tier-3",
-  low: "bg-white/[0.02] border-white/[0.06] text-tier-4",
+  normal: "bg-white/[0.04] border-white/[0.1] text-t3",
+  low: "bg-white/[0.02] border-white/[0.06] text-t4",
 };
 
 const ticketStatusColors: Record<string, string> = {
@@ -121,25 +121,25 @@ const ticketStatusColors: Record<string, string> = {
   in_progress: "bg-amber-500/[0.06] border-amber-500/[0.15] text-sf-amber",
   waiting: "bg-sky-500/[0.06] border-sky-500/[0.15] text-sky-400",
   resolved: "bg-emerald-500/[0.06] border-emerald-500/[0.15] text-sf-emerald",
-  closed: "bg-white/[0.02] border-white/[0.06] text-tier-4",
+  closed: "bg-white/[0.02] border-white/[0.06] text-t4",
 };
 
 const contactStatusColors: Record<string, string> = {
   new: "bg-primary/[0.06] border-primary/[0.15] text-primary",
   read: "bg-sky-500/[0.06] border-sky-500/[0.15] text-sky-400",
   responded: "bg-emerald-500/[0.06] border-emerald-500/[0.15] text-sf-emerald",
-  archived: "bg-white/[0.02] border-white/[0.06] text-tier-4",
+  archived: "bg-white/[0.02] border-white/[0.06] text-t4",
 };
 
 const subStatusColors: Record<string, string> = {
   active: "bg-primary/[0.06] border-primary/[0.15] text-primary",
-  canceled: "bg-white/[0.02] border-white/[0.06] text-tier-4",
+  canceled: "bg-white/[0.02] border-white/[0.06] text-t4",
   past_due: "bg-red-500/[0.06] border-red-500/[0.15] text-sf-crimson",
   trialing: "bg-sky-500/[0.06] border-sky-500/[0.15] text-sky-400",
 };
 
 const StatusBadge = ({ status, colorMap }: { status: string; colorMap: Record<string, string> }) => (
-  <span className={`inline-flex items-center rounded-sm border px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider ${colorMap[status] ?? "text-tier-3"}`}>
+  <span className={`inline-flex items-center rounded-sm border px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider ${colorMap[status] ?? "text-t3"}`}>
     {status.replace(/_/g, " ")}
   </span>
 );
@@ -224,7 +224,7 @@ const TaskItem = ({
     >
       <button
         onClick={toggleDone}
-        className="shrink-0 text-tier-3 hover:text-primary transition-colors"
+        className="shrink-0 text-t3 hover:text-primary transition-colors"
       >
         {isDone ? (
           <CheckSquare className="w-3.5 h-3.5 text-primary" />
@@ -237,7 +237,7 @@ const TaskItem = ({
         <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${dotColor}`} />
       )}
 
-      <span className={`text-xs truncate flex-1 ${isDone ? "line-through text-tier-4" : "text-tier-2"}`}>
+      <span className={`text-xs truncate flex-1 ${isDone ? "line-through text-t4" : "text-t2"}`}>
         {todo.title}
       </span>
 
@@ -254,7 +254,7 @@ const TaskItem = ({
 
       <button
         onClick={handleDelete}
-        className="shrink-0 opacity-0 group-hover:opacity-100 text-tier-4 hover:text-sf-crimson transition-all"
+        className="shrink-0 opacity-0 group-hover:opacity-100 text-t4 hover:text-sf-crimson transition-all"
       >
         <X className="w-3 h-3" />
       </button>
@@ -293,7 +293,7 @@ const TasksSidebarContent = ({ onNavigate }: { onNavigate: (tab: string) => void
       {/* Header */}
       <div className="flex items-center justify-between px-3 py-3 border-b border-white/[0.06]">
         <div className="flex items-center gap-2">
-          <h3 className="text-[11px] font-medium uppercase tracking-[1.5px] text-tier-3">
+          <h3 className="text-[11px] font-medium uppercase tracking-[1.5px] text-t3">
             Tasks
           </h3>
           {pendingTodos.length > 0 && (
@@ -326,14 +326,14 @@ const TasksSidebarContent = ({ onNavigate }: { onNavigate: (tab: string) => void
             value={newTitle}
             onChange={(e) => setNewTitle(e.target.value)}
             onKeyDown={handleKeyDown}
-            className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xs text-xs text-tier-2 placeholder:text-tier-4 px-2 py-1.5 focus:border-primary/35 focus:outline-none"
+            className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xs text-xs text-t2 placeholder:text-t4 px-2 py-1.5 focus:border-primary/35 focus:outline-none"
           />
           <div className="flex items-center gap-2">
             <select
               value={newPriority}
               onChange={(e) => setNewPriority(e.target.value)}
               title="Priority"
-              className="bg-white/[0.04] border border-white/[0.1] rounded-xs text-[10px] text-tier-3 px-1.5 py-1 focus:outline-none"
+              className="bg-white/[0.04] border border-white/[0.1] rounded-xs text-[10px] text-t3 px-1.5 py-1 focus:outline-none"
             >
               <option value="low">Low</option>
               <option value="normal">Normal</option>
@@ -357,7 +357,7 @@ const TasksSidebarContent = ({ onNavigate }: { onNavigate: (tab: string) => void
         {isLoading ? (
           <div className="flex justify-center py-6"><Loader size="sm" /></div>
         ) : pendingTodos.length === 0 && doneTodos.length === 0 ? (
-          <p className="text-center text-tier-4 text-xs py-8">No tasks yet</p>
+          <p className="text-center text-t4 text-xs py-8">No tasks yet</p>
         ) : (
           <>
             {/* Active tasks */}
@@ -371,7 +371,7 @@ const TasksSidebarContent = ({ onNavigate }: { onNavigate: (tab: string) => void
             {doneTodos.length > 0 && (
               <div className="border-t border-white/[0.06]">
                 <button
-                  className="w-full flex items-center justify-between px-3 py-2 text-[10px] font-medium uppercase tracking-wider text-tier-4 hover:text-tier-3 transition-colors"
+                  className="w-full flex items-center justify-between px-3 py-2 text-[10px] font-medium uppercase tracking-wider text-t4 hover:text-t3 transition-colors"
                   onClick={() => setShowDone(!showDone)}
                 >
                   <span className="flex items-center gap-1.5">
@@ -390,7 +390,7 @@ const TasksSidebarContent = ({ onNavigate }: { onNavigate: (tab: string) => void
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="rounded-none text-[10px] h-6 gap-1 text-tier-4 hover:text-sf-crimson"
+                        className="rounded-none text-[10px] h-6 gap-1 text-t4 hover:text-sf-crimson"
                         onClick={() => clearDone.mutate()}
                         disabled={clearDone.isPending}
                       >
@@ -465,7 +465,7 @@ const OverviewTab = ({ onTabChange }: { onTabChange: (tab: string) => void }) =>
           {activityLoading ? (
             <div className="flex justify-center py-8"><Loader /></div>
           ) : !activity?.length ? (
-            <p className="text-center text-tier-4 py-8">No recent activity</p>
+            <p className="text-center text-t4 py-8">No recent activity</p>
           ) : (
             activity.map((item: ActivityItem, i: number) => (
               <div
@@ -486,11 +486,11 @@ const OverviewTab = ({ onTabChange }: { onTabChange: (tab: string) => void }) =>
                     signup: "bg-primary/[0.06] border-primary/[0.15] text-primary",
                   }}
                 />
-                <span className="text-sm text-tier-2 truncate flex-1">{item.title}</span>
+                <span className="text-sm text-t2 truncate flex-1">{item.title}</span>
                 {item.metadata && (
-                  <span className="text-xs text-tier-4 hidden sm:inline">{item.metadata}</span>
+                  <span className="text-xs text-t4 hidden sm:inline">{item.metadata}</span>
                 )}
-                <span className="text-xs text-tier-4 shrink-0">{timeAgo(item.created_at)}</span>
+                <span className="text-xs text-t4 shrink-0">{timeAgo(item.created_at)}</span>
               </div>
             ))
           )}
@@ -516,13 +516,13 @@ const UsersTab = () => {
     <div className="space-y-4">
       {/* Search */}
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-tier-4" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-t4" />
         <input
           type="text"
           placeholder="Search by name or email..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full pl-10 pr-4 py-2.5 bg-white/[0.04] border border-white/[0.1] rounded-xs text-sm text-tier-2 placeholder:text-tier-4 focus:border-primary/35 focus:outline-none"
+          className="w-full pl-10 pr-4 py-2.5 bg-white/[0.04] border border-white/[0.1] rounded-xs text-sm text-t2 placeholder:text-t4 focus:border-primary/35 focus:outline-none"
         />
       </div>
 
@@ -552,21 +552,21 @@ const UsersTab = () => {
                       className="border-b border-white/[0.04] hover:bg-white/[0.02] cursor-pointer"
                       onClick={() => setExpandedId(isExpanded ? null : u.id)}
                     >
-                      <td className="px-2 py-3 text-tier-4">
+                      <td className="px-2 py-3 text-t4">
                         {isExpanded ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5" />}
                       </td>
-                      <td className="px-3 py-3 text-tier-2">
-                        {u.display_name || <span className="text-tier-4 italic">No name</span>}
+                      <td className="px-3 py-3 text-t2">
+                        {u.display_name || <span className="text-t4 italic">No name</span>}
                       </td>
-                      <td className="px-3 py-3 text-tier-3 text-xs">{u.email || "—"}</td>
-                      <td className="px-3 py-3 text-tier-4 font-mono text-xs">{formatDate(u.created_at)}</td>
-                      <td className="px-3 py-3 text-center font-mono text-tier-2">{u.world_count}</td>
-                      <td className="px-3 py-3 text-center font-mono text-tier-2">{u.worksheet_count}</td>
+                      <td className="px-3 py-3 text-t3 text-xs">{u.email || "—"}</td>
+                      <td className="px-3 py-3 text-t4 font-mono text-xs">{formatDate(u.created_at)}</td>
+                      <td className="px-3 py-3 text-center font-mono text-t2">{u.world_count}</td>
+                      <td className="px-3 py-3 text-center font-mono text-t2">{u.worksheet_count}</td>
                       <td className="px-3 py-3">
                         {u.subscription_status ? (
                           <StatusBadge status={u.subscription_status} colorMap={subStatusColors} />
                         ) : (
-                          <span className="text-tier-4 text-xs">Free</span>
+                          <span className="text-t4 text-xs">Free</span>
                         )}
                       </td>
                     </tr>
@@ -576,65 +576,65 @@ const UsersTab = () => {
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {/* Left: Profile */}
                             <div className="space-y-3">
-                              <h4 className="text-[11px] font-medium uppercase tracking-[1.5px] text-tier-3">Profile</h4>
+                              <h4 className="text-[11px] font-medium uppercase tracking-[1.5px] text-t3">Profile</h4>
                               <div className="space-y-1.5 text-sm">
-                                <div><span className="text-tier-4">Email:</span> <span className="text-tier-2">{userDetail.email}</span></div>
-                                <div><span className="text-tier-4">Display Name:</span> <span className="text-tier-2">{userDetail.display_name || "—"}</span></div>
-                                {userDetail.bio && <div><span className="text-tier-4">Bio:</span> <span className="text-tier-3 text-xs">{userDetail.bio}</span></div>}
-                                <div><span className="text-tier-4">Joined:</span> <span className="text-tier-2 font-mono text-xs">{formatDate(userDetail.created_at)}</span></div>
+                                <div><span className="text-t4">Email:</span> <span className="text-t2">{userDetail.email}</span></div>
+                                <div><span className="text-t4">Display Name:</span> <span className="text-t2">{userDetail.display_name || "—"}</span></div>
+                                {userDetail.bio && <div><span className="text-t4">Bio:</span> <span className="text-t3 text-xs">{userDetail.bio}</span></div>}
+                                <div><span className="text-t4">Joined:</span> <span className="text-t2 font-mono text-xs">{formatDate(userDetail.created_at)}</span></div>
                               </div>
 
-                              <h4 className="text-[11px] font-medium uppercase tracking-[1.5px] text-tier-3 pt-2">Usage</h4>
+                              <h4 className="text-[11px] font-medium uppercase tracking-[1.5px] text-t3 pt-2">Usage</h4>
                               <div className="flex gap-6 text-sm">
                                 <div className="flex items-center gap-1.5">
-                                  <Globe className="w-3.5 h-3.5 text-tier-4" />
-                                  <span className="font-mono text-tier-2">{userDetail.world_count}</span>
-                                  <span className="text-tier-4">worlds</span>
+                                  <Globe className="w-3.5 h-3.5 text-t4" />
+                                  <span className="font-mono text-t2">{userDetail.world_count}</span>
+                                  <span className="text-t4">worlds</span>
                                 </div>
                                 <div className="flex items-center gap-1.5">
-                                  <FileText className="w-3.5 h-3.5 text-tier-4" />
-                                  <span className="font-mono text-tier-2">{userDetail.worksheet_count}</span>
-                                  <span className="text-tier-4">worksheets</span>
+                                  <FileText className="w-3.5 h-3.5 text-t4" />
+                                  <span className="font-mono text-t2">{userDetail.worksheet_count}</span>
+                                  <span className="text-t4">worksheets</span>
                                 </div>
                                 <div className="flex items-center gap-1.5">
-                                  <LinkIcon className="w-3.5 h-3.5 text-tier-4" />
-                                  <span className="font-mono text-tier-2">{userDetail.collaborator_count}</span>
-                                  <span className="text-tier-4">collabs</span>
+                                  <LinkIcon className="w-3.5 h-3.5 text-t4" />
+                                  <span className="font-mono text-t2">{userDetail.collaborator_count}</span>
+                                  <span className="text-t4">collabs</span>
                                 </div>
                               </div>
                               {userDetail.notion_connected && (
-                                <div className="text-xs text-tier-3">Notion connected</div>
+                                <div className="text-xs text-t3">Notion connected</div>
                               )}
                             </div>
 
                             {/* Right: Subscription */}
                             <div className="space-y-3">
-                              <h4 className="text-[11px] font-medium uppercase tracking-[1.5px] text-tier-3">Subscription</h4>
+                              <h4 className="text-[11px] font-medium uppercase tracking-[1.5px] text-t3">Subscription</h4>
                               {userDetail.subscription ? (
                                 <div className="space-y-1.5 text-sm">
                                   <div className="flex items-center gap-2">
                                     <StatusBadge status={userDetail.subscription.status} colorMap={subStatusColors} />
-                                    <span className="text-tier-3 text-xs">{userDetail.subscription.plan_type}</span>
+                                    <span className="text-t3 text-xs">{userDetail.subscription.plan_type}</span>
                                   </div>
                                   {userDetail.subscription.current_period_end && (
-                                    <div><span className="text-tier-4">Period ends:</span> <span className="text-tier-2 font-mono text-xs">{formatDate(userDetail.subscription.current_period_end)}</span></div>
+                                    <div><span className="text-t4">Period ends:</span> <span className="text-t2 font-mono text-xs">{formatDate(userDetail.subscription.current_period_end)}</span></div>
                                   )}
                                   {userDetail.subscription.cancel_at_period_end && (
                                     <div className="text-xs text-sf-crimson">Canceling at period end</div>
                                   )}
                                   {userDetail.subscription.canceled_at && (
-                                    <div><span className="text-tier-4">Canceled:</span> <span className="text-tier-2 font-mono text-xs">{formatDate(userDetail.subscription.canceled_at)}</span></div>
+                                    <div><span className="text-t4">Canceled:</span> <span className="text-t2 font-mono text-xs">{formatDate(userDetail.subscription.canceled_at)}</span></div>
                                   )}
                                 </div>
                               ) : (
-                                <p className="text-tier-4 text-sm">No subscription</p>
+                                <p className="text-t4 text-sm">No subscription</p>
                               )}
                               {userDetail.stripe_customer_id && (
                                 <a
                                   href={`https://dashboard.stripe.com/customers/${userDetail.stripe_customer_id}`}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="inline-flex items-center gap-1.5 text-xs text-tier-3 hover:text-primary transition-colors mt-2"
+                                  className="inline-flex items-center gap-1.5 text-xs text-t3 hover:text-primary transition-colors mt-2"
                                 >
                                   Open in Stripe <ExternalLink className="w-3 h-3" />
                                 </a>
@@ -649,7 +649,7 @@ const UsersTab = () => {
               })}
               {(!users || users.length === 0) && (
                 <tr>
-                  <td colSpan={7} className="px-4 py-8 text-center text-tier-4">
+                  <td colSpan={7} className="px-4 py-8 text-center text-t4">
                     {searchQuery.length >= 2 ? "No users match your search" : "No users found"}
                   </td>
                 </tr>
@@ -682,19 +682,19 @@ const TicketDetail = ({ ticket }: { ticket: AdminTicket }) => {
 
   return (
     <div className="space-y-4">
-      <div className="flex gap-4 text-xs text-tier-3">
-        <span><span className="text-tier-4">From:</span> {ticket.name}</span>
-        <span><span className="text-tier-4">Email:</span> {ticket.email}</span>
-        <span><span className="text-tier-4">Submitted:</span> {formatDate(ticket.created_at)}</span>
+      <div className="flex gap-4 text-xs text-t3">
+        <span><span className="text-t4">From:</span> {ticket.name}</span>
+        <span><span className="text-t4">Email:</span> {ticket.email}</span>
+        <span><span className="text-t4">Submitted:</span> {formatDate(ticket.created_at)}</span>
       </div>
 
-      <p className="text-sm text-tier-2 whitespace-pre-wrap leading-relaxed bg-white/[0.02] p-3 rounded-xs border border-white/[0.04]">
+      <p className="text-sm text-t2 whitespace-pre-wrap leading-relaxed bg-white/[0.02] p-3 rounded-xs border border-white/[0.04]">
         {ticket.message}
       </p>
 
       {/* Status */}
       <div className="flex items-center gap-2">
-        <span className="text-[11px] font-medium uppercase tracking-[1.5px] text-tier-4 w-16">Status:</span>
+        <span className="text-[11px] font-medium uppercase tracking-[1.5px] text-t4 w-16">Status:</span>
         {TICKET_STATUSES.map((s) => (
           <Button
             key={s}
@@ -711,7 +711,7 @@ const TicketDetail = ({ ticket }: { ticket: AdminTicket }) => {
 
       {/* Priority */}
       <div className="flex items-center gap-2">
-        <span className="text-[11px] font-medium uppercase tracking-[1.5px] text-tier-4 w-16">Priority:</span>
+        <span className="text-[11px] font-medium uppercase tracking-[1.5px] text-t4 w-16">Priority:</span>
         {TICKET_PRIORITIES.map((p) => (
           <Button
             key={p}
@@ -728,13 +728,13 @@ const TicketDetail = ({ ticket }: { ticket: AdminTicket }) => {
 
       {/* Admin Notes */}
       <div className="space-y-2">
-        <span className="text-[11px] font-medium uppercase tracking-[1.5px] text-tier-4">Admin Notes</span>
+        <span className="text-[11px] font-medium uppercase tracking-[1.5px] text-t4">Admin Notes</span>
         <textarea
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
           placeholder="Internal notes..."
           rows={3}
-          className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xs text-sm text-tier-2 placeholder:text-tier-4 p-3 focus:border-primary/35 focus:outline-none resize-none"
+          className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xs text-sm text-t2 placeholder:text-t4 p-3 focus:border-primary/35 focus:outline-none resize-none"
           onClick={(e) => e.stopPropagation()}
         />
         {notesChanged && (
@@ -794,18 +794,18 @@ const TicketsTab = () => {
                     className="border-b border-white/[0.04] hover:bg-white/[0.02] cursor-pointer"
                     onClick={() => setExpandedId(isExpanded ? null : t.id)}
                   >
-                    <td className="px-2 py-3 text-tier-4">
+                    <td className="px-2 py-3 text-t4">
                       {isExpanded ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5" />}
                     </td>
-                    <td className="px-3 py-3 font-mono text-xs text-tier-2">
+                    <td className="px-3 py-3 font-mono text-xs text-t2">
                       {t.ticket_number}
                       {hasNotes && <span className="ml-1.5 text-sf-amber" title="Has admin notes">*</span>}
                     </td>
-                    <td className="px-3 py-3 text-tier-2 max-w-[200px] truncate">{t.subject}</td>
+                    <td className="px-3 py-3 text-t2 max-w-[200px] truncate">{t.subject}</td>
                     <td className="px-3 py-3"><StatusBadge status={t.category} colorMap={categoryColors} /></td>
                     <td className="px-3 py-3"><StatusBadge status={t.priority} colorMap={priorityColors} /></td>
                     <td className="px-3 py-3"><StatusBadge status={t.status} colorMap={ticketStatusColors} /></td>
-                    <td className="px-3 py-3 text-tier-4 text-xs">{timeAgo(t.created_at)}</td>
+                    <td className="px-3 py-3 text-t4 text-xs">{timeAgo(t.created_at)}</td>
                   </tr>
                   {isExpanded && (
                     <tr key={`${t.id}-detail`} className="border-b border-white/[0.04]">
@@ -818,7 +818,7 @@ const TicketsTab = () => {
               );
             })}
             {(!tickets || tickets.length === 0) && (
-              <tr><td colSpan={7} className="px-4 py-8 text-center text-tier-4">No tickets found</td></tr>
+              <tr><td colSpan={7} className="px-4 py-8 text-center text-t4">No tickets found</td></tr>
             )}
           </tbody>
         </table>
@@ -845,19 +845,19 @@ const ContactDetail = ({ contact }: { contact: AdminContact }) => {
 
   return (
     <div className="space-y-4">
-      <div className="flex gap-4 text-xs text-tier-3">
-        <span><span className="text-tier-4">From:</span> {contact.name}</span>
-        <span><span className="text-tier-4">Email:</span> {contact.email}</span>
-        <span><span className="text-tier-4">Received:</span> {formatDate(contact.created_at)}</span>
+      <div className="flex gap-4 text-xs text-t3">
+        <span><span className="text-t4">From:</span> {contact.name}</span>
+        <span><span className="text-t4">Email:</span> {contact.email}</span>
+        <span><span className="text-t4">Received:</span> {formatDate(contact.created_at)}</span>
       </div>
 
-      <p className="text-sm text-tier-2 whitespace-pre-wrap leading-relaxed bg-white/[0.02] p-3 rounded-xs border border-white/[0.04]">
+      <p className="text-sm text-t2 whitespace-pre-wrap leading-relaxed bg-white/[0.02] p-3 rounded-xs border border-white/[0.04]">
         {contact.message}
       </p>
 
       {/* Status */}
       <div className="flex items-center gap-2">
-        <span className="text-[11px] font-medium uppercase tracking-[1.5px] text-tier-4 w-16">Status:</span>
+        <span className="text-[11px] font-medium uppercase tracking-[1.5px] text-t4 w-16">Status:</span>
         {CONTACT_STATUSES.map((s) => (
           <Button
             key={s}
@@ -874,13 +874,13 @@ const ContactDetail = ({ contact }: { contact: AdminContact }) => {
 
       {/* Admin Notes */}
       <div className="space-y-2">
-        <span className="text-[11px] font-medium uppercase tracking-[1.5px] text-tier-4">Admin Notes</span>
+        <span className="text-[11px] font-medium uppercase tracking-[1.5px] text-t4">Admin Notes</span>
         <textarea
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
           placeholder="Internal notes..."
           rows={3}
-          className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xs text-sm text-tier-2 placeholder:text-tier-4 p-3 focus:border-primary/35 focus:outline-none resize-none"
+          className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xs text-sm text-t2 placeholder:text-t4 p-3 focus:border-primary/35 focus:outline-none resize-none"
           onClick={(e) => e.stopPropagation()}
         />
         {notesChanged && (
@@ -935,17 +935,17 @@ const ContactsTab = () => {
                     className="border-b border-white/[0.04] hover:bg-white/[0.02] cursor-pointer"
                     onClick={() => setExpandedId(isExpanded ? null : c.id)}
                   >
-                    <td className="px-2 py-3 text-tier-4">
+                    <td className="px-2 py-3 text-t4">
                       {isExpanded ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5" />}
                     </td>
-                    <td className="px-3 py-3 text-tier-2">
+                    <td className="px-3 py-3 text-t2">
                       {c.name}
                       {hasNotes && <span className="ml-1.5 text-sf-amber" title="Has admin notes">*</span>}
                     </td>
-                    <td className="px-3 py-3 text-tier-3 text-xs">{c.email}</td>
-                    <td className="px-3 py-3 text-tier-3 max-w-[250px] truncate text-xs">{c.message}</td>
+                    <td className="px-3 py-3 text-t3 text-xs">{c.email}</td>
+                    <td className="px-3 py-3 text-t3 max-w-[250px] truncate text-xs">{c.message}</td>
                     <td className="px-3 py-3"><StatusBadge status={c.status} colorMap={contactStatusColors} /></td>
-                    <td className="px-3 py-3 text-tier-4 text-xs">{timeAgo(c.created_at)}</td>
+                    <td className="px-3 py-3 text-t4 text-xs">{timeAgo(c.created_at)}</td>
                   </tr>
                   {isExpanded && (
                     <tr key={`${c.id}-detail`} className="border-b border-white/[0.04]">
@@ -958,7 +958,7 @@ const ContactsTab = () => {
               );
             })}
             {(!contacts || contacts.length === 0) && (
-              <tr><td colSpan={6} className="px-4 py-8 text-center text-tier-4">No contacts found</td></tr>
+              <tr><td colSpan={6} className="px-4 py-8 text-center text-t4">No contacts found</td></tr>
             )}
           </tbody>
         </table>
@@ -1019,20 +1019,20 @@ const SubscriptionsTab = () => {
                 <tbody>
                   {subs?.map((s) => (
                     <tr key={s.id} className="border-b border-white/[0.04] hover:bg-white/[0.02]">
-                      <td className="px-3 py-3 text-tier-2">
-                        {s.display_name || <span className="text-tier-4 italic">No name</span>}
+                      <td className="px-3 py-3 text-t2">
+                        {s.display_name || <span className="text-t4 italic">No name</span>}
                       </td>
-                      <td className="px-3 py-3 text-tier-3 text-xs">{s.email || "—"}</td>
-                      <td className="px-3 py-3 text-tier-2 font-mono text-xs">{s.plan_type}</td>
+                      <td className="px-3 py-3 text-t3 text-xs">{s.email || "—"}</td>
+                      <td className="px-3 py-3 text-t2 font-mono text-xs">{s.plan_type}</td>
                       <td className="px-3 py-3"><StatusBadge status={s.status} colorMap={subStatusColors} /></td>
-                      <td className="px-3 py-3 text-tier-4 font-mono text-xs">
+                      <td className="px-3 py-3 text-t4 font-mono text-xs">
                         {s.current_period_end ? formatDate(s.current_period_end) : "—"}
                       </td>
                       <td className="px-3 py-3">
                         {s.cancel_at_period_end ? (
                           <span className="text-sf-crimson text-xs">Yes</span>
                         ) : (
-                          <span className="text-tier-4 text-xs">No</span>
+                          <span className="text-t4 text-xs">No</span>
                         )}
                       </td>
                       <td className="px-3 py-3">
@@ -1040,7 +1040,7 @@ const SubscriptionsTab = () => {
                           href={`https://dashboard.stripe.com/subscriptions/${s.stripe_subscription_id}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-tier-4 hover:text-primary transition-colors"
+                          className="text-t4 hover:text-primary transition-colors"
                           title="Open in Stripe"
                         >
                           <ExternalLink className="w-3.5 h-3.5" />
@@ -1049,7 +1049,7 @@ const SubscriptionsTab = () => {
                     </tr>
                   ))}
                   {(!subs || subs.length === 0) && (
-                    <tr><td colSpan={7} className="px-4 py-8 text-center text-tier-4">No subscriptions found</td></tr>
+                    <tr><td colSpan={7} className="px-4 py-8 text-center text-t4">No subscriptions found</td></tr>
                   )}
                 </tbody>
               </table>
@@ -1063,7 +1063,7 @@ const SubscriptionsTab = () => {
           href="https://dashboard.stripe.com"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 text-sm text-tier-3 hover:text-primary transition-colors"
+          className="inline-flex items-center gap-2 text-sm text-t3 hover:text-primary transition-colors"
         >
           Open Stripe Dashboard
           <ExternalLink className="w-3.5 h-3.5" />
@@ -1084,14 +1084,14 @@ const Admin = () => {
       <main className="min-h-screen pt-20 pb-16">
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6">
           <div className="flex items-center gap-3 mb-2">
-            <h1 className="font-display text-3xl md:text-4xl tracking-[0.08em] text-tier-1">
+            <h1 className="font-display text-3xl md:text-4xl tracking-[0.08em] text-t1">
               MISSION CONTROL
             </h1>
             <span className="inline-flex items-center gap-1 rounded-sm border px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider bg-red-500/[0.06] border-red-500/[0.15] text-sf-crimson">
               <AlertTriangle className="w-3 h-3" /> Admin Only
             </span>
           </div>
-          <p className="text-tier-4 text-xs mb-8 font-mono">
+          <p className="text-t4 text-xs mb-8 font-mono">
             Secured via SECURITY DEFINER RPCs — all queries verify is_admin before executing.
           </p>
 

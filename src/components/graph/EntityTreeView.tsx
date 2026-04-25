@@ -158,12 +158,12 @@ function EntityDetailPanel({
         className="flex items-center justify-between px-4 py-3 shrink-0"
         style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}
       >
-        <span className="text-[10px] font-sans font-medium uppercase tracking-[1.5px] text-tier-3">
+        <span className="text-[10px] font-sans font-medium uppercase tracking-[1.5px] text-t3">
           Entity Details
         </span>
         <button
           onClick={onClose}
-          className="flex items-center justify-center w-6 h-6 text-tier-4 hover:text-tier-2 transition-colors"
+          className="flex items-center justify-center w-6 h-6 text-t4 hover:text-t2 transition-colors"
         >
           <X className="w-3.5 h-3.5" />
         </button>
@@ -178,7 +178,7 @@ function EntityDetailPanel({
               className="w-2.5 h-2.5 rounded-full shrink-0"
               style={{ background: nodeColor }}
             />
-            <span className="font-heading text-lg font-light tracking-wide text-tier-1 truncate">
+            <span className="font-heading text-lg font-light tracking-wide text-t1 truncate">
               {entity.name}
             </span>
           </div>
@@ -213,10 +213,10 @@ function EntityDetailPanel({
         {/* Summary */}
         {entity.summary && (
           <div>
-            <label className="block text-[10px] font-sans font-medium uppercase tracking-[1.5px] text-tier-3 mb-1.5">
+            <label className="block text-[10px] font-sans font-medium uppercase tracking-[1.5px] text-t3 mb-1.5">
               Summary
             </label>
-            <p className="text-[12px] font-sans text-tier-2 leading-relaxed">
+            <p className="text-[12px] font-sans text-t2 leading-relaxed">
               {entity.summary}
             </p>
           </div>
@@ -225,10 +225,10 @@ function EntityDetailPanel({
         {/* Description */}
         {entity.description && (
           <div>
-            <label className="block text-[10px] font-sans font-medium uppercase tracking-[1.5px] text-tier-3 mb-1.5">
+            <label className="block text-[10px] font-sans font-medium uppercase tracking-[1.5px] text-t3 mb-1.5">
               Description
             </label>
-            <p className="text-[12px] font-sans text-tier-2 leading-relaxed whitespace-pre-wrap">
+            <p className="text-[12px] font-sans text-t2 leading-relaxed whitespace-pre-wrap">
               {entity.description}
             </p>
           </div>
@@ -236,7 +236,7 @@ function EntityDetailPanel({
 
         {/* Parent entity */}
         <div>
-          <label className="block text-[10px] font-sans font-medium uppercase tracking-[1.5px] text-tier-3 mb-1.5">
+          <label className="block text-[10px] font-sans font-medium uppercase tracking-[1.5px] text-t3 mb-1.5">
             Parent
           </label>
           {parentEntity ? (
@@ -250,7 +250,7 @@ function EntityDetailPanel({
                     "#00D4FF",
                 }}
               />
-              <span className="text-[12px] font-heading text-tier-2 truncate">
+              <span className="text-[12px] font-heading text-t2 truncate">
                 {parentEntity.name}
               </span>
               <button
@@ -261,7 +261,7 @@ function EntityDetailPanel({
               </button>
             </div>
           ) : (
-            <span className="text-[11px] font-sans text-tier-4 italic">
+            <span className="text-[11px] font-sans text-t4 italic">
               Root entity (no parent)
             </span>
           )}
@@ -269,10 +269,10 @@ function EntityDetailPanel({
 
         {/* Child count */}
         <div>
-          <label className="block text-[10px] font-sans font-medium uppercase tracking-[1.5px] text-tier-3 mb-1.5">
+          <label className="block text-[10px] font-sans font-medium uppercase tracking-[1.5px] text-t3 mb-1.5">
             Children
           </label>
-          <span className="text-[13px] font-mono text-tier-2">
+          <span className="text-[13px] font-mono text-t2">
             {childCount}
           </span>
         </div>
@@ -280,14 +280,14 @@ function EntityDetailPanel({
         {/* Tags */}
         {entity.tags && entity.tags.length > 0 && (
           <div>
-            <label className="block text-[10px] font-sans font-medium uppercase tracking-[1.5px] text-tier-3 mb-1.5">
+            <label className="block text-[10px] font-sans font-medium uppercase tracking-[1.5px] text-t3 mb-1.5">
               Tags
             </label>
             <div className="flex flex-wrap gap-1">
               {entity.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="text-[9px] font-mono px-1.5 py-0.5 text-tier-3"
+                  className="text-[9px] font-mono px-1.5 py-0.5 text-t3"
                   style={{
                     background: "rgba(255,255,255,0.04)",
                     border: "1px solid rgba(255,255,255,0.06)",
@@ -317,7 +317,7 @@ function EntityDetailPanel({
         {onEdit && (
           <button
             onClick={() => onEdit(entity.id)}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-sans font-medium text-tier-2 hover:text-tier-1 transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-sans font-medium text-t2 hover:text-t1 transition-colors"
             style={{
               background: "rgba(255,255,255,0.04)",
               border: "1px solid rgba(255,255,255,0.08)",
@@ -461,7 +461,7 @@ function ContextMenu({
             className={`w-full flex items-center gap-2 px-3 py-1.5 text-left text-[11px] font-sans tracking-[0.5px] transition-colors ${
               item.danger
                 ? "text-[#FF3366] hover:bg-[#FF3366]/10"
-                : "text-tier-2 hover:bg-white/5 hover:text-tier-1"
+                : "text-t2 hover:bg-white/5 hover:text-t1"
             }`}
           >
             <item.icon className="w-3 h-3 shrink-0" />
@@ -584,9 +584,9 @@ function TreeNodeRow({
       >
         {hasChildren ? (
           expanded ? (
-            <ChevronDown className="w-3 h-3 text-tier-3" />
+            <ChevronDown className="w-3 h-3 text-t3" />
           ) : (
-            <ChevronRight className="w-3 h-3 text-tier-4" />
+            <ChevronRight className="w-3 h-3 text-t4" />
           )
         ) : (
           <span className="w-1 h-1 rounded-full bg-tier-5" />
@@ -600,7 +600,7 @@ function TreeNodeRow({
       />
 
       {/* Entity name */}
-      <span className="font-heading text-[13px] font-light tracking-wide text-tier-1 truncate max-w-[200px]">
+      <span className="font-heading text-[13px] font-light tracking-wide text-t1 truncate max-w-[200px]">
         {entity.name}
       </span>
 
@@ -627,7 +627,7 @@ function TreeNodeRow({
 
       {/* Child count */}
       {hasChildren && (
-        <span className="text-[9px] font-mono text-tier-4">
+        <span className="text-[9px] font-mono text-t4">
           {node.children.length}
         </span>
       )}
@@ -642,7 +642,7 @@ function TreeNodeRow({
             e.stopPropagation();
             onCreateChild(entity.id);
           }}
-          className="flex items-center justify-center w-5 h-5 text-tier-4 hover:text-teal transition-colors"
+          className="flex items-center justify-center w-5 h-5 text-t4 hover:text-teal transition-colors"
           title="Add child entity"
         >
           <Plus className="w-3 h-3" />
@@ -912,8 +912,8 @@ export function EntityTreeView({
               onClick={() => setLayout(key)}
               className={`flex items-center gap-1 px-2 py-1 text-[9px] font-sans uppercase tracking-[1px] transition-colors ${
                 layout === key
-                  ? "text-tier-1 bg-white/5"
-                  : "text-tier-4 hover:text-tier-2"
+                  ? "text-t1 bg-white/5"
+                  : "text-t4 hover:text-t2"
               }`}
               title={label}
             >
@@ -927,14 +927,14 @@ export function EntityTreeView({
         <div className="flex items-center gap-1">
           <button
             onClick={expandAll}
-            className="text-[9px] font-sans uppercase tracking-[1px] text-tier-4 hover:text-tier-2 px-1.5 py-0.5 transition-colors"
+            className="text-[9px] font-sans uppercase tracking-[1px] text-t4 hover:text-t2 px-1.5 py-0.5 transition-colors"
           >
             Expand All
           </button>
-          <span className="text-tier-5 text-[9px]">/</span>
+          <span className="text-t5 text-[9px]">/</span>
           <button
             onClick={collapseAll}
-            className="text-[9px] font-sans uppercase tracking-[1px] text-tier-4 hover:text-tier-2 px-1.5 py-0.5 transition-colors"
+            className="text-[9px] font-sans uppercase tracking-[1px] text-t4 hover:text-t2 px-1.5 py-0.5 transition-colors"
           >
             Collapse All
           </button>
@@ -942,10 +942,10 @@ export function EntityTreeView({
 
         {/* Stats */}
         <div className="ml-auto flex items-center gap-3">
-          <span className="text-[9px] font-mono text-tier-4">
+          <span className="text-[9px] font-mono text-t4">
             {rootCount} root{rootCount !== 1 ? "s" : ""}
           </span>
-          <span className="text-[9px] font-mono text-tier-5">
+          <span className="text-[9px] font-mono text-t5">
             {totalCount} total
           </span>
         </div>
@@ -962,7 +962,7 @@ export function EntityTreeView({
       >
         {tree.length === 0 ? (
           <div className="flex items-center justify-center h-full">
-            <p className="text-[11px] font-sans text-tier-4">
+            <p className="text-[11px] font-sans text-t4">
               No entities yet. Create one to begin.
             </p>
           </div>

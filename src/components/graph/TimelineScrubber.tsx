@@ -84,13 +84,13 @@ export function TimelineScrubber({
           border: "1px solid rgba(255,255,255,0.06)",
         }}
       >
-        <span className="text-[10px] text-tier-4 font-sans">
+        <span className="text-[10px] text-t4 font-sans">
           No temporal data. Add time_start / time_end to connections.
         </span>
         <button
           type="button"
           onClick={onClose}
-          className="text-tier-4 hover:text-tier-2"
+          className="text-t4 hover:text-t2"
         >
           <X className="w-3 h-3" />
         </button>
@@ -131,7 +131,7 @@ export function TimelineScrubber({
             size="sm"
             variant="ghost"
             onClick={handleRewind}
-            className="h-6 w-6 p-0 text-tier-3 hover:text-tier-1"
+            className="h-6 w-6 p-0 text-t3 hover:text-t1"
           >
             <SkipBack className="w-3 h-3" />
           </Button>
@@ -139,7 +139,7 @@ export function TimelineScrubber({
             size="sm"
             variant="ghost"
             onClick={togglePlay}
-            className="h-6 w-6 p-0 text-tier-3 hover:text-tier-1"
+            className="h-6 w-6 p-0 text-t3 hover:text-t1"
           >
             {isPlaying ? (
               <Pause className="w-3 h-3" />
@@ -179,8 +179,8 @@ export function TimelineScrubber({
 
           {/* Labels */}
           <div className="flex justify-between mt-0.5">
-            <span className="text-[8px] font-mono text-tier-5">{firstLabel}</span>
-            <span className="text-[8px] font-mono text-tier-5">{lastLabel}</span>
+            <span className="text-[8px] font-mono text-t5">{firstLabel}</span>
+            <span className="text-[8px] font-mono text-t5">{lastLabel}</span>
           </div>
         </div>
 
@@ -195,7 +195,7 @@ export function TimelineScrubber({
         <button
           type="button"
           onClick={onClose}
-          className="text-tier-4 hover:text-tier-2 shrink-0"
+          className="text-t4 hover:text-t2 shrink-0"
         >
           <X className="w-3 h-3" />
         </button>

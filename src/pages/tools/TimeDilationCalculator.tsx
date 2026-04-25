@@ -526,7 +526,7 @@ const TimeDilationCalculator = () => {
           <blockquote className="border-l-2 border-primary pl-4 italic text-lg mb-4">
             "The faster you travel through space, the slower you travel through time."
           </blockquote>
-          <p className="text-tier-2">
+          <p className="text-t2">
             Calculate how relativistic speeds affect the passage of time for your travelers.
             Choose a journey, select a propulsion method, and see how much time your characters
             lose—or gain—relative to the people they left behind. All calculations use
@@ -546,7 +546,7 @@ const TimeDilationCalculator = () => {
             icon={<Rocket className="w-5 h-5" />}
             defaultOpen={true}
           >
-            <p className="text-sm text-tier-3 italic mb-6">{SECTION_HELPERS.journey}</p>
+            <p className="text-sm text-t3 italic mb-6">{SECTION_HELPERS.journey}</p>
             <div className="space-y-6">
               {/* Category select */}
               <div className="space-y-2">
@@ -593,7 +593,7 @@ const TimeDilationCalculator = () => {
                           <SelectItem key={pair.id} value={pair.id}>
                             {pair.origin} → {pair.destination}
                             {pair.annotation && (
-                              <span className="text-tier-2 ml-2">({pair.annotation})</span>
+                              <span className="text-t2 ml-2">({pair.annotation})</span>
                             )}
                           </SelectItem>
                         ))}
@@ -664,7 +664,7 @@ const TimeDilationCalculator = () => {
                   }
                 />
                 <Label className="cursor-pointer">Calculate Round Trip</Label>
-                <span className="text-xs text-tier-4">
+                <span className="text-xs text-t4">
                   (doubles the journey distance)
                 </span>
               </div>
@@ -679,7 +679,7 @@ const TimeDilationCalculator = () => {
             levelNumber={2}
             icon={<Gauge className="w-5 h-5" />}
           >
-            <p className="text-sm text-tier-3 italic mb-6">{SECTION_HELPERS.propulsion}</p>
+            <p className="text-sm text-t3 italic mb-6">{SECTION_HELPERS.propulsion}</p>
             <div className="space-y-4">
               <RadioGroup
                 value={formState.propulsion.method}
@@ -694,14 +694,14 @@ const TimeDilationCalculator = () => {
                     <RadioGroupItem value={method.id} id={`prop-${method.id}`} className="mt-0.5" />
                     <label htmlFor={`prop-${method.id}`} className="cursor-pointer flex-1">
                       <div className="font-medium text-sm">{method.label}</div>
-                      <div className="text-xs text-tier-4 mt-0.5">
+                      <div className="text-xs text-t4 mt-0.5">
                         {method.isAlcubierre
                           ? `Superluminal (${method.maxVelocityC}×c)`
                           : method.id === "custom"
                             ? "Set your own"
                             : `Max: ${(method.maxVelocityC * 100).toFixed(3)}% c`}
                       </div>
-                      <div className="text-xs text-tier-4/70 mt-0.5 italic">{method.note}</div>
+                      <div className="text-xs text-t4/70 mt-0.5 italic">{method.note}</div>
                     </label>
                   </div>
                 ))}
@@ -733,7 +733,7 @@ const TimeDilationCalculator = () => {
             levelNumber={3}
             icon={<Clock className="w-5 h-5" />}
           >
-            <p className="text-sm text-tier-3 italic mb-6">{SECTION_HELPERS.velocity}</p>
+            <p className="text-sm text-t3 italic mb-6">{SECTION_HELPERS.velocity}</p>
             <div className="space-y-6">
               <RadioGroup
                 value={formState.velocityProfile.mode}
@@ -744,7 +744,7 @@ const TimeDilationCalculator = () => {
                   <RadioGroupItem value="constant" id="vp-constant" className="mt-0.5" />
                   <label htmlFor="vp-constant" className="cursor-pointer">
                     <div className="font-medium text-sm">Constant Velocity</div>
-                    <div className="text-xs text-tier-4 mt-1">
+                    <div className="text-xs text-t4 mt-1">
                       Instantaneous acceleration to cruising speed. Simple, clean math.
                     </div>
                   </label>
@@ -753,7 +753,7 @@ const TimeDilationCalculator = () => {
                   <RadioGroupItem value="brachistochrone" id="vp-brach" className="mt-0.5" />
                   <label htmlFor="vp-brach" className="cursor-pointer">
                     <div className="font-medium text-sm">Brachistochrone</div>
-                    <div className="text-xs text-tier-4 mt-1">
+                    <div className="text-xs text-t4 mt-1">
                       Accelerate halfway, decelerate the rest. Realistic flight profile.
                     </div>
                   </label>
@@ -785,7 +785,7 @@ const TimeDilationCalculator = () => {
                     step={1}
                     aria-label="Travel velocity"
                   />
-                  <div className="flex justify-between text-xs text-tier-4">
+                  <div className="flex justify-between text-xs text-t4">
                     <span>0</span>
                     <span>Max: {(currentMaxVelocity * 100).toFixed(3)}% c</span>
                   </div>
@@ -811,7 +811,7 @@ const TimeDilationCalculator = () => {
                     step={1}
                     aria-label="Acceleration in g-forces"
                   />
-                  <div className="flex justify-between text-xs text-tier-4">
+                  <div className="flex justify-between text-xs text-t4">
                     <span>0.1g</span>
                     <span>10g</span>
                   </div>
@@ -825,7 +825,7 @@ const TimeDilationCalculator = () => {
                     <AlertTriangle className="w-4 h-4 text-sf-amber" />
                     <span className="text-sm font-medium text-sf-amber">Alcubierre Drive—Speculative Physics</span>
                   </div>
-                  <p className="text-xs text-tier-4 mb-3">
+                  <p className="text-xs text-t4 mb-3">
                     Inside the warp bubble, spacetime is flat—the traveler is technically stationary.
                     Choose how your story interprets the time dilation effect.
                   </p>
@@ -862,7 +862,7 @@ const TimeDilationCalculator = () => {
               <>
                 {/* Hero: Lorentz Factor */}
                 <GlassPanel glow className="p-6 md:p-8 text-center">
-                  <p className="font-mono text-xs uppercase tracking-sf-ultra text-tier-2 mb-2">
+                  <p className="font-mono text-xs uppercase tracking-sf-ultra text-t2 mb-2">
                     Lorentz Factor (γ)
                   </p>
                   <p className={`font-mono text-5xl md:text-6xl font-sf-light ${sColors.text}`}>
@@ -870,7 +870,7 @@ const TimeDilationCalculator = () => {
                       ? calculationResult.lorentzFactor.toFixed(6)
                       : calculationResult.lorentzFactor.toLocaleString(undefined, { maximumFractionDigits: 2 })}
                   </p>
-                  <p className="text-sm text-tier-3 mt-3">
+                  <p className="text-sm text-t3 mt-3">
                     Peak velocity:{" "}
                     <span className="font-mono text-foreground">
                       {calculationResult.peakVelocityFraction >= 1
@@ -886,7 +886,7 @@ const TimeDilationCalculator = () => {
 
                 {/* Speed of Light Bar */}
                 <div className="px-1 py-4">
-                  <p className="font-mono text-xs uppercase tracking-sf-wide text-tier-2 mb-3">
+                  <p className="font-mono text-xs uppercase tracking-sf-wide text-t2 mb-3">
                     Velocity Scale
                   </p>
                   <div className="relative h-6 rounded-sm overflow-hidden bg-accent/10 border border-border">
@@ -909,7 +909,7 @@ const TimeDilationCalculator = () => {
                     ))}
                   </div>
                   <div className="relative mt-1 h-3">
-                    <span className="absolute left-0 font-mono text-[7px] text-tier-4">0</span>
+                    <span className="absolute left-0 font-mono text-[7px] text-t4">0</span>
                     {[
                       { v: 10, label: "10%" },
                       { v: 50, label: "50%" },
@@ -918,15 +918,15 @@ const TimeDilationCalculator = () => {
                     ].map((ref) => (
                       <span
                         key={ref.label}
-                        className="absolute font-mono text-[7px] text-tier-4 -translate-x-1/2"
+                        className="absolute font-mono text-[7px] text-t4 -translate-x-1/2"
                         style={{ left: `${ref.v}%` }}
                       >
                         {ref.label}
                       </span>
                     ))}
-                    <span className="absolute right-0 font-mono text-[7px] text-tier-4">c</span>
+                    <span className="absolute right-0 font-mono text-[7px] text-t4">c</span>
                   </div>
-                  <p className="font-mono text-[8px] text-center text-tier-4 mt-1">
+                  <p className="font-mono text-[8px] text-center text-t4 mt-1">
                     {calculationResult.peakVelocityFraction >= 1
                       ? `${calculationResult.peakVelocityFraction.toFixed(1)}× the speed of light (FTL)`
                       : calculationResult.peakVelocityFraction >= 0.99
@@ -943,18 +943,18 @@ const TimeDilationCalculator = () => {
                 {/* Ship Time / Observer Time */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <GlassPanel className="p-5">
-                    <p className="font-mono text-xs uppercase tracking-sf-wide text-tier-2 mb-1">
+                    <p className="font-mono text-xs uppercase tracking-sf-wide text-t2 mb-1">
                       Ship Time (Travelers)
                     </p>
                     <p className="font-mono text-2xl font-semibold text-foreground">
                       {calculationResult.shipTimeFormatted}
                     </p>
-                    <p className="text-xs text-tier-4 mt-1">
+                    <p className="text-xs text-t4 mt-1">
                       Time experienced aboard the vessel
                     </p>
                   </GlassPanel>
                   <GlassPanel className="p-5">
-                    <p className="font-mono text-xs uppercase tracking-sf-wide text-tier-2 mb-1">
+                    <p className="font-mono text-xs uppercase tracking-sf-wide text-t2 mb-1">
                       Observer Time ({
                         formState.referenceFrame.frame === "custom"
                           ? formState.referenceFrame.customName || "Home"
@@ -964,7 +964,7 @@ const TimeDilationCalculator = () => {
                     <p className="font-mono text-2xl font-semibold text-foreground">
                       {calculationResult.observerTimeFormatted}
                     </p>
-                    <p className="text-xs text-tier-4 mt-1">
+                    <p className="text-xs text-t4 mt-1">
                       Time elapsed in the stationary frame
                     </p>
                   </GlassPanel>
@@ -972,13 +972,13 @@ const TimeDilationCalculator = () => {
 
                 {/* Time Difference */}
                 <GlassPanel className={`p-5 border-l-4 ${sColors.border}`}>
-                  <p className="font-mono text-xs uppercase tracking-sf-wide text-tier-2 mb-1">
+                  <p className="font-mono text-xs uppercase tracking-sf-wide text-t2 mb-1">
                     Time Difference
                   </p>
                   <p className={`font-mono text-3xl font-semibold ${sColors.text}`}>
                     {calculationResult.timeDifferenceFormatted}
                   </p>
-                  <p className="text-sm text-tier-3 mt-2">
+                  <p className="text-sm text-t3 mt-2">
                     {formState.roundTrip ? "Total round-trip difference" : "One-way difference"}
                   </p>
                 </GlassPanel>
@@ -1016,7 +1016,7 @@ const TimeDilationCalculator = () => {
 
                   return (
                     <div className="px-1 py-4">
-                      <p className="font-mono text-xs uppercase tracking-sf-wide text-tier-2 mb-3">
+                      <p className="font-mono text-xs uppercase tracking-sf-wide text-t2 mb-3">
                         Time Divergence
                       </p>
                       <svg viewBox={`0 0 ${W} ${H}`} className="w-full" preserveAspectRatio="xMidYMid meet">
@@ -1050,12 +1050,12 @@ const TimeDilationCalculator = () => {
                 {formState.velocityProfile.mode === "brachistochrone" &&
                   calculationResult.accelerationPhaseSeconds !== undefined && (
                     <GlassPanel className="p-5">
-                      <p className="font-mono text-xs uppercase tracking-sf-wide text-tier-2 mb-3">
+                      <p className="font-mono text-xs uppercase tracking-sf-wide text-t2 mb-3">
                         Flight Profile
                       </p>
                       <div className="space-y-2">
                         <div className="flex justify-between items-center">
-                          <span className="text-sm text-tier-3">Acceleration Phase</span>
+                          <span className="text-sm text-t3">Acceleration Phase</span>
                           <span className="font-mono text-sm">
                             {formatDuration(calculationResult.accelerationPhaseSeconds)}
                           </span>
@@ -1063,7 +1063,7 @@ const TimeDilationCalculator = () => {
                         {calculationResult.cruisePhaseSeconds !== undefined &&
                           calculationResult.cruisePhaseSeconds > 0 && (
                             <div className="flex justify-between items-center">
-                              <span className="text-sm text-tier-3">
+                              <span className="text-sm text-t3">
                                 Cruise Phase (velocity capped)
                               </span>
                               <span className="font-mono text-sm">
@@ -1072,7 +1072,7 @@ const TimeDilationCalculator = () => {
                             </div>
                           )}
                         <div className="flex justify-between items-center">
-                          <span className="text-sm text-tier-3">Deceleration Phase</span>
+                          <span className="text-sm text-t3">Deceleration Phase</span>
                           <span className="font-mono text-sm">
                             {formatDuration(calculationResult.decelerationPhaseSeconds!)}
                           </span>
@@ -1091,7 +1091,7 @@ const TimeDilationCalculator = () => {
                   <p className="font-mono text-xs uppercase tracking-sf-wide text-primary/60 mb-3">
                     Narrative Summary
                   </p>
-                  <p className="text-sm leading-relaxed text-tier-2">
+                  <p className="text-sm leading-relaxed text-t2">
                     {calculationResult.narrativeSummary}
                   </p>
                   <Button
@@ -1108,7 +1108,7 @@ const TimeDilationCalculator = () => {
                 {/* Story Callouts */}
                 {calculationResult.storyCallouts.length > 0 && (
                   <div className="space-y-3">
-                    <p className="font-mono text-xs uppercase tracking-sf-wide text-tier-2">
+                    <p className="font-mono text-xs uppercase tracking-sf-wide text-t2">
                       What This Means For Your Story
                     </p>
                     {calculationResult.storyCallouts.map((callout, i) => (
@@ -1119,7 +1119,7 @@ const TimeDilationCalculator = () => {
                         <p className="font-heading text-sm font-semibold mb-1">
                           {callout.title}
                         </p>
-                        <p className="text-xs text-tier-4 leading-relaxed">
+                        <p className="text-xs text-t4 leading-relaxed">
                           {callout.prompt}
                         </p>
                       </div>
@@ -1129,8 +1129,8 @@ const TimeDilationCalculator = () => {
               </>
             ) : (
               <GlassPanel className="p-8 text-center">
-                <Clock className="w-8 h-8 text-tier-2 mx-auto mb-3 opacity-50" />
-                <p className="text-tier-2">
+                <Clock className="w-8 h-8 text-t2 mx-auto mb-3 opacity-50" />
+                <p className="text-t2">
                   {calculationResult.error || "Configure your journey and propulsion to see results."}
                 </p>
               </GlassPanel>
@@ -1145,7 +1145,7 @@ const TimeDilationCalculator = () => {
             levelNumber={5}
             icon={<Radio className="w-5 h-5" />}
           >
-            <p className="text-sm text-tier-3 italic mb-6">{SECTION_HELPERS.reference}</p>
+            <p className="text-sm text-t3 italic mb-6">{SECTION_HELPERS.reference}</p>
             <div className="space-y-4">
               <RadioGroup
                 value={formState.referenceFrame.frame}
@@ -1160,7 +1160,7 @@ const TimeDilationCalculator = () => {
                     <RadioGroupItem value={frame.id} id={`frame-${frame.id}`} className="mt-0.5" />
                     <label htmlFor={`frame-${frame.id}`} className="cursor-pointer">
                       <div className="font-medium text-sm">{frame.label}</div>
-                      <div className="text-xs text-tier-4">{frame.description}</div>
+                      <div className="text-xs text-t4">{frame.description}</div>
                     </label>
                   </div>
                 ))}
@@ -1187,11 +1187,11 @@ const TimeDilationCalculator = () => {
             levelNumber={6}
             icon={<BookOpen className="w-5 h-5" />}
           >
-            <p className="text-sm text-tier-3 italic mb-6">{SECTION_HELPERS.story}</p>
+            <p className="text-sm text-t3 italic mb-6">{SECTION_HELPERS.story}</p>
             <div className="space-y-8">
               <div className="space-y-2">
                 <Label>The Departure Moment</Label>
-                <p className="text-xs text-tier-4 mb-2">
+                <p className="text-xs text-t4 mb-2">
                   Describe the moment of departure. Who is watching? What is being left behind?
                 </p>
                 <Suspense fallback={<div className="h-32 animate-pulse bg-muted rounded-lg" />}>
@@ -1205,7 +1205,7 @@ const TimeDilationCalculator = () => {
 
               <div className="space-y-2">
                 <Label>The Time Gap's Impact</Label>
-                <p className="text-xs text-tier-4 mb-2">
+                <p className="text-xs text-t4 mb-2">
                   How does the time difference affect your characters' relationships and plans?
                 </p>
                 <Suspense fallback={<div className="h-32 animate-pulse bg-muted rounded-lg" />}>
@@ -1219,7 +1219,7 @@ const TimeDilationCalculator = () => {
 
               <div className="space-y-2">
                 <Label>The Return / Arrival</Label>
-                <p className="text-xs text-tier-4 mb-2">
+                <p className="text-xs text-t4 mb-2">
                   What has changed when they arrive (or return)? What surprises await?
                 </p>
                 <Suspense fallback={<div className="h-32 animate-pulse bg-muted rounded-lg" />}>
@@ -1233,7 +1233,7 @@ const TimeDilationCalculator = () => {
 
               <div className="space-y-2">
                 <Label>Social Consequences</Label>
-                <p className="text-xs text-tier-4 mb-2">
+                <p className="text-xs text-t4 mb-2">
                   How does your society handle time-displaced travelers? Are there laws, customs, or stigmas?
                 </p>
                 <Suspense fallback={<div className="h-32 animate-pulse bg-muted rounded-lg" />}>

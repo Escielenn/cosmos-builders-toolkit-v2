@@ -660,10 +660,10 @@ const PlanetaryProfile = () => {
           <blockquote className="border-l-2 border-primary pl-4 italic text-lg mb-4">
             "The environment isn't just a backdrop—it's a character that shapes every aspect of the story."
           </blockquote>
-          <p className="text-tier-2 mb-4">
+          <p className="text-t2 mb-4">
             This tool helps you create scientifically-grounded planetary environments and explore how they shape the societies, psychology, and narratives of their inhabitants. Start with the physical parameters, then trace their consequences through to story.
           </p>
-          <div className="text-sm text-tier-3 mb-4">
+          <div className="text-sm text-t3 mb-4">
             <strong className="text-foreground">The Cascade Principle:</strong>
             <p className="mt-1">Star Type → Orbital Parameters → Physical Characteristics → Atmosphere → Climate → Habitability → Three Pressures → Narrative</p>
           </div>
@@ -703,7 +703,7 @@ const PlanetaryProfile = () => {
               {/* Star Type Selection */}
               <div className="space-y-3">
                 <Label className="text-sm font-medium">Star Type</Label>
-                <p className="text-xs text-tier-4">
+                <p className="text-xs text-t4">
                   Your star's type determines habitable zone distance, radiation levels, stellar lifetime, and likelihood of tidal locking.
                 </p>
                 <RadioGroup
@@ -716,8 +716,8 @@ const PlanetaryProfile = () => {
                       <RadioGroupItem value={star.id} id={`star-${star.id}`} className="mt-1" />
                       <Label htmlFor={`star-${star.id}`} className="cursor-pointer flex-1">
                         <div className="font-medium">{star.name}</div>
-                        <div className="text-xs text-tier-4 mb-2">{star.description}</div>
-                        <div className="text-xs text-tier-4">
+                        <div className="text-xs text-t4 mb-2">{star.description}</div>
+                        <div className="text-xs text-t4">
                           <strong>Examples:</strong> {star.examples.join(", ")}
                         </div>
                         {formState.stellarEnvironment.starType === star.id && (
@@ -738,7 +738,7 @@ const PlanetaryProfile = () => {
 
               <div className="space-y-2">
                 <Label className="text-sm font-medium">Star Type Notes</Label>
-                <ul className="text-xs text-tier-4 mb-2 list-disc list-inside">
+                <ul className="text-xs text-t4 mb-2 list-disc list-inside">
                   <li>How does your star's type affect daily life on your planet?</li>
                   <li>What does the sky look like? What color is sunlight?</li>
                   <li>How does the star's lifetime affect your civilization's perspective?</li>
@@ -807,21 +807,21 @@ const PlanetaryProfile = () => {
                     <RadioGroupItem value="locked" id="tidal-locked" className="mt-0.5" />
                     <Label htmlFor="tidal-locked" className="cursor-pointer text-sm">
                       <span className="font-medium">Tidally Locked</span>
-                      <span className="text-tier-2 block text-xs">Same side always faces star</span>
+                      <span className="text-t2 block text-xs">Same side always faces star</span>
                     </Label>
                   </div>
                   <div className="flex items-start gap-2 p-2 rounded border border-border hover:border-primary/50">
                     <RadioGroupItem value="resonance" id="tidal-resonance" className="mt-0.5" />
                     <Label htmlFor="tidal-resonance" className="cursor-pointer text-sm">
                       <span className="font-medium">Spin-Orbit Resonance</span>
-                      <span className="text-tier-2 block text-xs">Like Mercury (3:2 ratio)</span>
+                      <span className="text-t2 block text-xs">Like Mercury (3:2 ratio)</span>
                     </Label>
                   </div>
                   <div className="flex items-start gap-2 p-2 rounded border border-border hover:border-primary/50">
                     <RadioGroupItem value="free" id="tidal-free" className="mt-0.5" />
                     <Label htmlFor="tidal-free" className="cursor-pointer text-sm">
                       <span className="font-medium">Free Rotation</span>
-                      <span className="text-tier-2 block text-xs">Normal day/night cycle</span>
+                      <span className="text-t2 block text-xs">Normal day/night cycle</span>
                     </Label>
                   </div>
                 </RadioGroup>
@@ -832,14 +832,14 @@ const PlanetaryProfile = () => {
                   <Label className="text-sm font-medium">Tidal Locking Consequences</Label>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Info className="w-4 h-4 text-tier-2 cursor-help" />
+                      <Info className="w-4 h-4 text-t2 cursor-help" />
                     </TooltipTrigger>
                     <TooltipContent className="max-w-sm">
                       <p className="text-xs">On a tidally locked world, civilization might cluster in the twilight terminator zone, with 'Dawnward' and 'Nightward' having distinct cultural meanings.</p>
                     </TooltipContent>
                   </Tooltip>
                 </div>
-                <ul className="text-xs text-tier-4 mb-2 list-disc list-inside">
+                <ul className="text-xs text-t4 mb-2 list-disc list-inside">
                   <li>If locked: How do inhabitants deal with eternal day/night?</li>
                   <li>Where do settlements cluster? (Terminator zone?)</li>
                   <li>How does this affect weather, culture, psychology?</li>
@@ -874,7 +874,7 @@ const PlanetaryProfile = () => {
                     value={formState.physicalCharacteristics.planetaryMass}
                     onChange={(e) => updatePhysicalCharacteristics("planetaryMass", e.target.value)}
                   />
-                  <p className="text-xs text-tier-4">Affects gravity, atmosphere retention, and tectonics</p>
+                  <p className="text-xs text-t4">Affects gravity, atmosphere retention, and tectonics</p>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="surface-gravity">Surface Gravity</Label>
@@ -884,7 +884,7 @@ const PlanetaryProfile = () => {
                     value={formState.physicalCharacteristics.surfaceGravity}
                     onChange={(e) => updatePhysicalCharacteristics("surfaceGravity", e.target.value)}
                   />
-                  <p className="text-xs text-tier-4">Directly impacts biology, architecture, and movement</p>
+                  <p className="text-xs text-t4">Directly impacts biology, architecture, and movement</p>
                 </div>
               </div>
 
@@ -944,7 +944,7 @@ const PlanetaryProfile = () => {
               {/* Primary Gases */}
               <div className="space-y-3">
                 <Label className="text-sm font-medium">Primary Atmospheric Gases</Label>
-                <p className="text-xs text-tier-4">Select the dominant gases in your atmosphere</p>
+                <p className="text-xs text-t4">Select the dominant gases in your atmosphere</p>
                 <div className="grid gap-2 md:grid-cols-2">
                   {ATMOSPHERIC_GASES.primary.map((gas) => (
                     <div key={gas.id} className="flex items-start gap-2 p-2 rounded border border-border">
@@ -955,7 +955,7 @@ const PlanetaryProfile = () => {
                       />
                       <Label htmlFor={`primary-${gas.id}`} className="cursor-pointer text-sm">
                         <span className="font-medium">{gas.name}</span>
-                        <span className="text-tier-2 block text-xs">{gas.description}</span>
+                        <span className="text-t2 block text-xs">{gas.description}</span>
                       </Label>
                     </div>
                   ))}
@@ -975,7 +975,7 @@ const PlanetaryProfile = () => {
                       />
                       <Label htmlFor={`secondary-${gas.id}`} className="cursor-pointer text-sm">
                         <span className="font-medium">{gas.name}</span>
-                        <span className="text-tier-2 block text-xs">{gas.description}</span>
+                        <span className="text-t2 block text-xs">{gas.description}</span>
                       </Label>
                     </div>
                   ))}
@@ -1011,7 +1011,7 @@ const PlanetaryProfile = () => {
                   value={formState.atmosphericComposition.skyColor}
                   onChange={(e) => updateAtmosphericComposition("skyColor", e.target.value)}
                 />
-                <p className="text-xs text-tier-4">Depends on atmospheric composition and stellar light</p>
+                <p className="text-xs text-t4">Depends on atmospheric composition and stellar light</p>
               </div>
 
               <QuestionSection
@@ -1051,7 +1051,7 @@ const PlanetaryProfile = () => {
                       <RadioGroupItem value={option.id} id={`water-${option.id}`} className="mt-0.5" />
                       <Label htmlFor={`water-${option.id}`} className="cursor-pointer text-sm">
                         <span className="font-medium">{option.name}</span>
-                        <span className="text-tier-2 block text-xs">{option.description}</span>
+                        <span className="text-t2 block text-xs">{option.description}</span>
                       </Label>
                     </div>
                   ))}
@@ -1091,7 +1091,7 @@ const PlanetaryProfile = () => {
 
               <div className="space-y-2">
                 <Label className="text-sm font-medium">Hydrosphere Notes</Label>
-                <ul className="text-xs text-tier-4 mb-2 list-disc list-inside">
+                <ul className="text-xs text-t4 mb-2 list-disc list-inside">
                   <li>How does water distribution affect settlement patterns?</li>
                   <li>Are there unique water features (tides, currents, underground rivers)?</li>
                   <li>What role does water play in culture and conflict?</li>
@@ -1153,7 +1153,7 @@ const PlanetaryProfile = () => {
 
               <div className="space-y-2">
                 <Label className="text-sm font-medium">Temperature Narrative Impact</Label>
-                <ul className="text-xs text-tier-4 mb-2 list-disc list-inside">
+                <ul className="text-xs text-t4 mb-2 list-disc list-inside">
                   <li>How do inhabitants adapt to temperature?</li>
                   <li>What technologies are required?</li>
                   <li>How does temperature affect daily rhythms?</li>
@@ -1192,9 +1192,9 @@ const PlanetaryProfile = () => {
                       <RadioGroupItem value={tier.tier.toString()} id={`tier-${tier.tier}`} className="mt-1" />
                       <Label htmlFor={`tier-${tier.tier}`} className="cursor-pointer flex-1">
                         <div className="font-medium">Tier {tier.tier}: {tier.name}</div>
-                        <div className="text-xs text-tier-4 mb-2">{tier.description}</div>
+                        <div className="text-xs text-t4 mb-2">{tier.description}</div>
                         {formState.habitability.habitabilityTier === tier.tier.toString() && (
-                          <ul className="text-xs text-tier-4 list-disc list-inside">
+                          <ul className="text-xs text-t4 list-disc list-inside">
                             {tier.characteristics.map((c, i) => (
                               <li key={i}>{c}</li>
                             ))}
@@ -1221,7 +1221,7 @@ const PlanetaryProfile = () => {
               {/* Required Adaptations */}
               <div className="space-y-3">
                 <Label className="text-sm font-medium">Required Adaptations</Label>
-                <p className="text-xs text-tier-4">What do inhabitants need to survive?</p>
+                <p className="text-xs text-t4">What do inhabitants need to survive?</p>
                 <div className="grid gap-2 md:grid-cols-2">
                   {ADAPTATION_OPTIONS.map((option) => (
                     <div key={option.id} className="flex items-start gap-2 p-2 rounded border border-border">
@@ -1232,7 +1232,7 @@ const PlanetaryProfile = () => {
                       />
                       <Label htmlFor={`adapt-${option.id}`} className="cursor-pointer text-sm">
                         <span className="font-medium">{option.name}</span>
-                        <span className="text-tier-2 block text-xs">{option.description}</span>
+                        <span className="text-t2 block text-xs">{option.description}</span>
                       </Label>
                     </div>
                   ))}
@@ -1241,7 +1241,7 @@ const PlanetaryProfile = () => {
 
               <div className="space-y-2">
                 <Label className="text-sm font-medium">Adaptation Notes</Label>
-                <ul className="text-xs text-tier-4 mb-2 list-disc list-inside">
+                <ul className="text-xs text-t4 mb-2 list-disc list-inside">
                   <li>How have inhabitants adapted over time?</li>
                   <li>What technologies are essential?</li>
                   <li>What cultural practices emerged from adaptation?</li>
@@ -1280,7 +1280,7 @@ const PlanetaryProfile = () => {
                       <RadioGroupItem value={level.id} id={`tectonic-${level.id}`} className="mt-0.5" />
                       <Label htmlFor={`tectonic-${level.id}`} className="cursor-pointer text-sm">
                         <span className="font-medium">{level.name}</span>
-                        <span className="text-tier-2 block text-xs">{level.description}</span>
+                        <span className="text-t2 block text-xs">{level.description}</span>
                       </Label>
                     </div>
                   ))}
@@ -1360,7 +1360,7 @@ const PlanetaryProfile = () => {
           >
             <div className="space-y-6">
               <div className="p-4 rounded-lg bg-accent/10 border border-accent/20">
-                <p className="text-sm text-tier-3">
+                <p className="text-sm text-t3">
                   <strong className="text-accent">The Three Pressures Framework:</strong> Every environment exerts three types of pressure on its inhabitants—survival pressure (physical challenges), social pressure (how environment shapes society), and psychological pressure (mental and emotional effects).
                 </p>
               </div>
@@ -1368,7 +1368,7 @@ const PlanetaryProfile = () => {
               {/* Survival Pressure */}
               <div className="space-y-4 p-4 rounded-lg border border-border">
                 <h4 className="font-semibold text-primary">1. Survival Pressure</h4>
-                <p className="text-xs text-tier-4">The physical challenges of staying alive</p>
+                <p className="text-xs text-t4">The physical challenges of staying alive</p>
 
                 <QuestionSection
                   id="survival-pressure"
@@ -1399,7 +1399,7 @@ const PlanetaryProfile = () => {
               {/* Social Pressure */}
               <div className="space-y-4 p-4 rounded-lg border border-border">
                 <h4 className="font-semibold text-accent">2. Social Pressure</h4>
-                <p className="text-xs text-tier-4">How the environment shapes society and culture</p>
+                <p className="text-xs text-t4">How the environment shapes society and culture</p>
 
                 <QuestionSection
                   id="social-pressure"
@@ -1430,7 +1430,7 @@ const PlanetaryProfile = () => {
               {/* Psychological Pressure */}
               <div className="space-y-4 p-4 rounded-lg border border-border">
                 <h4 className="font-semibold text-primary">3. Psychological Pressure</h4>
-                <p className="text-xs text-tier-4">Mental and emotional effects of the environment</p>
+                <p className="text-xs text-t4">Mental and emotional effects of the environment</p>
 
                 <QuestionSection
                   id="psychological-pressure"
@@ -1560,20 +1560,20 @@ const PlanetaryProfile = () => {
                     <button className="w-full p-4 rounded-lg border border-border hover:border-primary/50 transition-colors text-left flex items-center justify-between">
                       <div>
                         <span className="font-medium text-sm">{example.name}</span>
-                        <span className="text-xs text-tier-4 block">{example.type} • {example.distance}</span>
+                        <span className="text-xs text-t4 block">{example.type} • {example.distance}</span>
                       </div>
-                      <ChevronDown className="w-4 h-4 text-tier-2" />
+                      <ChevronDown className="w-4 h-4 text-t2" />
                     </button>
                   </CollapsibleTrigger>
                   <CollapsibleContent>
                     <div className="mt-2 p-4 rounded-lg bg-muted/30 space-y-3">
                       <div>
                         <span className="text-sm font-medium text-primary">Star Type:</span>
-                        <span className="text-sm text-tier-3 ml-2">{example.starType}</span>
+                        <span className="text-sm text-t3 ml-2">{example.starType}</span>
                       </div>
                       <div>
                         <span className="text-sm font-medium text-primary">Characteristics:</span>
-                        <ul className="text-sm text-tier-3 list-disc list-inside mt-1">
+                        <ul className="text-sm text-t3 list-disc list-inside mt-1">
                           {example.characteristics.map((c, i) => (
                             <li key={i}>{c}</li>
                           ))}
@@ -1581,7 +1581,7 @@ const PlanetaryProfile = () => {
                       </div>
                       <div>
                         <span className="text-sm font-medium text-accent">Story Potential:</span>
-                        <ul className="text-sm text-tier-3 list-disc list-inside mt-1">
+                        <ul className="text-sm text-t3 list-disc list-inside mt-1">
                           {example.storyPotential.map((s, i) => (
                             <li key={i}>{s}</li>
                           ))}
@@ -1612,7 +1612,7 @@ const PlanetaryProfile = () => {
                     Consistency Score: {consistencyScore}/{totalChecks}
                   </span>
                 </div>
-                <p className="text-xs text-tier-4">
+                <p className="text-xs text-t4">
                   Check each item to confirm you've considered how these elements interact.
                 </p>
               </div>
@@ -1626,7 +1626,7 @@ const PlanetaryProfile = () => {
                   />
                   <Label htmlFor="check-star-gravity" className="cursor-pointer text-sm">
                     <span className="font-medium">Star Type ↔ Gravity Consistent</span>
-                    <span className="text-tier-2 block text-xs">
+                    <span className="text-t2 block text-xs">
                       Does your star type make sense with your planet's mass and orbital parameters?
                     </span>
                   </Label>
@@ -1640,7 +1640,7 @@ const PlanetaryProfile = () => {
                   />
                   <Label htmlFor="check-atmosphere-temp" className="cursor-pointer text-sm">
                     <span className="font-medium">Atmosphere ↔ Temperature Consistent</span>
-                    <span className="text-tier-2 block text-xs">
+                    <span className="text-t2 block text-xs">
                       Does your atmospheric composition support your temperature profile?
                     </span>
                   </Label>
@@ -1654,7 +1654,7 @@ const PlanetaryProfile = () => {
                   />
                   <Label htmlFor="check-water-temp" className="cursor-pointer text-sm">
                     <span className="font-medium">Water State ↔ Temperature Consistent</span>
-                    <span className="text-tier-2 block text-xs">
+                    <span className="text-t2 block text-xs">
                       Is water in the right state (liquid, ice, vapor) for your temperature range?
                     </span>
                   </Label>
@@ -1668,7 +1668,7 @@ const PlanetaryProfile = () => {
                   />
                   <Label htmlFor="check-gravity-biology" className="cursor-pointer text-sm">
                     <span className="font-medium">Gravity ↔ Biology Consistent</span>
-                    <span className="text-tier-2 block text-xs">
+                    <span className="text-t2 block text-xs">
                       Do your habitability adaptations make sense for your gravity level?
                     </span>
                   </Label>
@@ -1682,7 +1682,7 @@ const PlanetaryProfile = () => {
                   />
                   <Label htmlFor="check-pressures-environment" className="cursor-pointer text-sm">
                     <span className="font-medium">Three Pressures ↔ Environment Consistent</span>
-                    <span className="text-tier-2 block text-xs">
+                    <span className="text-t2 block text-xs">
                       Do your survival/social/psychological pressures logically flow from your environment?
                     </span>
                   </Label>
@@ -1691,7 +1691,7 @@ const PlanetaryProfile = () => {
 
               <div className="space-y-2">
                 <Label className="text-sm font-medium">Consistency Notes</Label>
-                <ul className="text-xs text-tier-4 mb-2 list-disc list-inside">
+                <ul className="text-xs text-t4 mb-2 list-disc list-inside">
                   <li>Any intentional inconsistencies that need explanation?</li>
                   <li>Are there handwaves or soft-SF elements?</li>
                   <li>What aspects need more research or development?</li>

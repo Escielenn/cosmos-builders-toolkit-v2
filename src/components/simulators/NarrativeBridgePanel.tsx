@@ -89,13 +89,13 @@ export default function NarrativeBridgePanel({
           </div>
           <button
             onClick={() => onOpenChange(false)}
-            className="text-tier-4 hover:text-tier-2 transition-colors p-1"
+            className="text-t4 hover:text-t2 transition-colors p-1"
             aria-label="Close Narrative Bridge"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
-        <p className="text-[10px] text-tier-3 mt-1.5 leading-relaxed">
+        <p className="text-[10px] text-t3 mt-1.5 leading-relaxed">
           {config.contextTemplate}
         </p>
       </div>
@@ -110,14 +110,14 @@ export default function NarrativeBridgePanel({
             >
               {q.layer}
             </label>
-            <p className="text-[11px] text-tier-3 leading-relaxed mb-2">
+            <p className="text-[11px] text-t3 leading-relaxed mb-2">
               {q.prompt}
             </p>
             <Textarea
               value={notes[q.id] ?? ""}
               onChange={(e) => updateNote(q.id, e.target.value)}
               placeholder="Write your thoughts..."
-              className="min-h-[80px] bg-white/[0.03] border-white/[0.08] text-tier-2 text-xs resize-y"
+              className="min-h-[80px] bg-white/[0.03] border-white/[0.08] text-t2 text-xs resize-y"
             />
           </div>
         ))}
@@ -131,14 +131,14 @@ export default function NarrativeBridgePanel({
             value={notes["general_notes"] ?? ""}
             onChange={(e) => updateNote("general_notes", e.target.value)}
             placeholder="Free-form notes, observations, story ideas..."
-            className="w-full font-sans text-[12px] leading-relaxed text-tier-2 placeholder:text-tier-4 bg-white/[0.03] border border-white/[0.08] rounded-[6px] px-[14px] py-3 min-h-[120px] resize-y focus:outline-none focus:border-[rgba(0,212,255,0.25)] transition-colors"
+            className="w-full font-sans text-[12px] leading-relaxed text-t2 placeholder:text-t4 bg-white/[0.03] border border-white/[0.08] rounded-[6px] px-[14px] py-3 min-h-[120px] resize-y focus:outline-none focus:border-[rgba(0,212,255,0.25)] transition-colors"
           />
         </div>
 
         {/* Footer: save + count */}
         <div className="pt-3 border-t border-white/[0.06] space-y-2">
           <div className="flex items-center justify-between">
-            <p className="font-mono text-[9px] text-tier-4 uppercase tracking-wider">
+            <p className="font-mono text-[9px] text-t4 uppercase tracking-wider">
               {filledCount} / {config.questions.length} notes written
             </p>
             <Button
@@ -152,7 +152,7 @@ export default function NarrativeBridgePanel({
               {saved ? "Saved" : "Save Notes"}
             </Button>
           </div>
-          <p className="text-[8px] text-tier-5 leading-relaxed">
+          <p className="text-[8px] text-t5 leading-relaxed">
             Notes are included when you Publish to World.
           </p>
         </div>

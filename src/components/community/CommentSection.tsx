@@ -59,7 +59,7 @@ export default function CommentSection({ worldId }: CommentSectionProps) {
           Comments
         </h3>
         {comments.length > 0 && (
-          <span className="font-mono text-[11px] text-tier-4">
+          <span className="font-mono text-[11px] text-t4">
             {comments.length}
           </span>
         )}
@@ -71,7 +71,7 @@ export default function CommentSection({ worldId }: CommentSectionProps) {
           <Loader size="sm" />
         </div>
       ) : comments.length === 0 ? (
-        <p className="font-sans text-sm text-tier-3 text-center py-6">
+        <p className="font-sans text-sm text-t3 text-center py-6">
           No comments yet. Be the first to share your thoughts.
         </p>
       ) : (
@@ -90,23 +90,23 @@ export default function CommentSection({ worldId }: CommentSectionProps) {
                     className="w-8 h-8 rounded-sm object-cover"
                   />
                 ) : (
-                  <User className="w-4 h-4 text-tier-4" />
+                  <User className="w-4 h-4 text-t4" />
                 )}
               </div>
 
               <div className="flex-1 min-w-0">
                 {/* Name + time */}
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="font-sans text-xs font-medium text-tier-2">
+                  <span className="font-sans text-xs font-medium text-t2">
                     {comment.display_name}
                   </span>
-                  <span className="font-mono text-[10px] text-tier-4">
+                  <span className="font-mono text-[10px] text-t4">
                     {timeAgo(comment.created_at)}
                   </span>
                 </div>
 
                 {/* Body */}
-                <p className="font-sans text-sm text-tier-2 leading-relaxed whitespace-pre-wrap break-words">
+                <p className="font-sans text-sm text-t2 leading-relaxed whitespace-pre-wrap break-words">
                   {comment.body}
                 </p>
               </div>
@@ -116,7 +116,7 @@ export default function CommentSection({ worldId }: CommentSectionProps) {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="w-7 h-7 opacity-0 group-hover:opacity-100 text-tier-4 hover:text-[#FF3366] transition-all"
+                  className="w-7 h-7 opacity-0 group-hover:opacity-100 text-t4 hover:text-[#FF3366] transition-all"
                   onClick={() => deleteComment.mutate(comment.id)}
                   disabled={deleteComment.isPending}
                   aria-label="Delete comment"
@@ -140,7 +140,7 @@ export default function CommentSection({ worldId }: CommentSectionProps) {
             maxLength={2000}
           />
           <div className="flex items-center justify-between">
-            <span className="font-mono text-[10px] text-tier-5">
+            <span className="font-mono text-[10px] text-t5">
               {body.length} / 2000
             </span>
             <Button
@@ -156,7 +156,7 @@ export default function CommentSection({ worldId }: CommentSectionProps) {
           </div>
         </div>
       ) : (
-        <p className="font-sans text-xs text-tier-4 text-center border-t border-white/[0.06] pt-4">
+        <p className="font-sans text-xs text-t4 text-center border-t border-white/[0.06] pt-4">
           Sign in to leave a comment.
         </p>
       )}

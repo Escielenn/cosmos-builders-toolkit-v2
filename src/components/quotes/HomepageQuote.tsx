@@ -24,7 +24,7 @@ export function HomepageQuote() {
         >
           &ldquo;
         </span>
-        <p className="text-lg md:text-xl italic text-tier-2 leading-relaxed">
+        <p className="text-lg md:text-xl italic text-t2 leading-relaxed">
           {quote.text}
         </p>
         <span
@@ -36,34 +36,34 @@ export function HomepageQuote() {
       </blockquote>
 
       <footer className="mt-4 flex items-center justify-center gap-2 flex-wrap">
-        <span className="font-mono text-xs text-tier-3">
+        <span className="font-mono text-xs text-t3">
           {quote.author}
         </span>
-        <span className="text-tier-5 text-xs">-</span>
+        <span className="text-t5 text-xs">-</span>
         <span className="font-mono text-xs text-primary/60">
           <em>{quote.source}</em>
         </span>
         {quote.affiliateUrl && (
           <>
-            <span className="text-tier-5 text-[10px] hidden sm:inline">|</span>
+            <span className="text-t5 text-[10px] hidden sm:inline">|</span>
             <a
               href={quote.affiliateUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden sm:inline text-[9px] text-tier-4 hover:text-primary transition-colors"
+              className="hidden sm:inline text-[9px] text-t4 hover:text-primary transition-colors"
               onClick={() => trackAffiliateClick(quote.isbn, quote.affiliateUrl!)}
             >
               Get the book &rarr;
             </a>
           </>
         )}
-        <span className="text-tier-5 text-[10px] hidden sm:inline">|</span>
+        <span className="text-t5 text-[10px] hidden sm:inline">|</span>
         <span className="hidden sm:flex items-center gap-2">
           <a
             href={quote.amazonUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[10px] text-tier-4 hover:text-sf-amber transition-colors uppercase tracking-[1px]"
+            className="text-[10px] text-t4 hover:text-sf-amber transition-colors uppercase tracking-[1px]"
             onClick={() => trackAffiliateClick(quote.isbn, quote.amazonUrl)}
           >
             Amazon
@@ -72,7 +72,7 @@ export function HomepageQuote() {
             href={quote.bookshopUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[10px] text-tier-4 hover:text-sf-emerald transition-colors uppercase tracking-[1px]"
+            className="text-[10px] text-t4 hover:text-sf-emerald transition-colors uppercase tracking-[1px]"
             onClick={() => trackAffiliateClick(quote.isbn, quote.bookshopUrl)}
           >
             Bookshop

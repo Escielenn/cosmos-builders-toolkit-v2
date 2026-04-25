@@ -226,11 +226,11 @@ export function EntityHoverCard({
                 {typeLabel}
               </Badge>
             </div>
-            <h3 className="font-heading text-base font-light text-tier-1 truncate">
+            <h3 className="font-heading text-base font-light text-t1 truncate">
               {entity.name}
             </h3>
             {entity.summary && (
-              <p className="text-xs text-tier-3 mt-1 line-clamp-2">
+              <p className="text-xs text-t3 mt-1 line-clamp-2">
                 {entity.summary}
               </p>
             )}
@@ -248,7 +248,7 @@ export function EntityHoverCard({
 
         {/* Description preview */}
         {descriptionPreview && (
-          <p className="text-xs text-tier-2 leading-relaxed line-clamp-4 pt-1 border-t border-white/5">
+          <p className="text-xs text-t2 leading-relaxed line-clamp-4 pt-1 border-t border-white/5">
             {descriptionPreview}
           </p>
         )}

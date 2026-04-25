@@ -495,12 +495,12 @@ const SpaceExpansionModeler = () => {
           </h2>
           <blockquote className="border-l-2 border-primary pl-4 italic text-lg mb-4">
             "One 'what if?' Follow the ripples. Over time, you get to a full world that fits well together."
-            <span className="block text-sm text-tier-3 mt-1">—Adrian Tchaikovsky</span>
+            <span className="block text-sm text-t3 mt-1">—Adrian Tchaikovsky</span>
           </blockquote>
-          <p className="text-tier-2 mb-4">
+          <p className="text-t2 mb-4">
             Space expansion is not a linear march outward. It pulses, stalls, redirects, and sometimes retreats based on the interaction of multiple forces. This tool helps you model those dynamics systematically, revealing consequences and story hooks you hadn't considered.
           </p>
-          <div className="text-sm text-tier-3">
+          <div className="text-sm text-t3">
             <strong className="text-foreground">The Cascade:</strong>
             <p className="mt-1">
               Resources shape industry. Industry shapes economy. Economy shapes politics. Politics shapes expansion. Each phase emerges from the interplay of six force categories, modified by walls, catalysts, gaps, and barriers.
@@ -518,7 +518,7 @@ const SpaceExpansionModeler = () => {
               title="SF Examples"
               thinkLike="a reader: what stories model these dynamics?"
             >
-              <p className="text-sm text-tier-3 italic mb-4">
+              <p className="text-sm text-t3 italic mb-4">
                 {SECTION_HELPERS.examples}
               </p>
               <div className="space-y-2">
@@ -531,13 +531,13 @@ const SpaceExpansionModeler = () => {
                       >
                         <span>
                           <strong className="text-foreground">{ex.name}</strong>
-                          <span className="text-tier-2 ml-2">—{ex.source}</span>
+                          <span className="text-t2 ml-2">—{ex.source}</span>
                         </span>
-                        <ChevronDown className="w-4 h-4 text-tier-2 shrink-0" />
+                        <ChevronDown className="w-4 h-4 text-t2 shrink-0" />
                       </button>
                     </CollapsibleTrigger>
                     <CollapsibleContent>
-                      <div className="px-3 py-2 text-sm text-tier-3 space-y-2">
+                      <div className="px-3 py-2 text-sm text-t3 space-y-2">
                         <p><strong className="text-foreground">Model:</strong> {ex.model}</p>
                         <p><strong className="text-foreground">Dominant Forces:</strong> {ex.dominantForces}</p>
                         <p><strong className="text-foreground">Consequence:</strong> {ex.consequence}</p>
@@ -554,7 +554,7 @@ const SpaceExpansionModeler = () => {
               title="Quick-Start Templates"
               thinkLike="an architect: choose a blueprint to customize"
             >
-              <p className="text-sm text-tier-3 italic mb-4">
+              <p className="text-sm text-t3 italic mb-4">
                 {SECTION_HELPERS.templates}
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -562,9 +562,9 @@ const SpaceExpansionModeler = () => {
                   <GlassPanel key={tmpl.id} className="p-4 hover:border-primary/30 transition-colors">
                     <h4 className="font-heading font-medium text-sm mb-1">{tmpl.name}</h4>
                     <p className="text-xs text-primary mb-2">{tmpl.tagline}</p>
-                    <p className="text-xs text-tier-4 mb-3">{tmpl.description}</p>
+                    <p className="text-xs text-t4 mb-3">{tmpl.description}</p>
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] text-tier-2 italic">{tmpl.reference}</span>
+                      <span className="text-[10px] text-t2 italic">{tmpl.reference}</span>
                       <Button
                         variant="outline"
                         size="sm"
@@ -587,7 +587,7 @@ const SpaceExpansionModeler = () => {
               thinkLike="a mission planner: what's the starting point?"
               defaultOpen
             >
-              <p className="text-sm text-tier-3 italic mb-4">
+              <p className="text-sm text-t3 italic mb-4">
                 {SECTION_HELPERS.foundation}
               </p>
               <div className="space-y-4">
@@ -619,7 +619,7 @@ const SpaceExpansionModeler = () => {
                 </div>
                 <div className="space-y-2">
                   <Label>The One Big Lie (Physics Departure)</Label>
-                  <p className="text-xs text-tier-4">
+                  <p className="text-xs text-t4">
                     What single physics departure makes this expansion possible?
                   </p>
                   <Suspense fallback={<EditorSkeleton />}>
@@ -634,7 +634,7 @@ const SpaceExpansionModeler = () => {
                 </div>
                 <div className="space-y-2">
                   <Label>Starting Conditions</Label>
-                  <p className="text-xs text-tier-4">
+                  <p className="text-xs text-t4">
                     What's the state of civilization when expansion begins?
                   </p>
                   <Suspense fallback={<EditorSkeleton />}>
@@ -657,7 +657,7 @@ const SpaceExpansionModeler = () => {
               levelNumber={2}
               thinkLike="a historian: what milestones mark each era?"
             >
-              <p className="text-sm text-tier-3 italic mb-4">
+              <p className="text-sm text-t3 italic mb-4">
                 {SECTION_HELPERS.phases}
               </p>
               <div className="space-y-4">
@@ -670,7 +670,7 @@ const SpaceExpansionModeler = () => {
                       )}
                       <GlassPanel className={`p-4 ${phase.reached ? "border-primary/30" : "opacity-60"}`}>
                         <div className="flex items-center gap-3 mb-3">
-                          <div className={`w-8 h-8 rounded-sm flex items-center justify-center text-xs font-mono ${phase.reached ? "bg-primary/20 text-primary" : "bg-muted text-tier-2"}`}>
+                          <div className={`w-8 h-8 rounded-sm flex items-center justify-center text-xs font-mono ${phase.reached ? "bg-primary/20 text-primary" : "bg-muted text-t2"}`}>
                             {idx + 1}
                           </div>
                           <div className="flex-1">
@@ -681,7 +681,7 @@ const SpaceExpansionModeler = () => {
                             />
                           </div>
                           <div className="flex items-center gap-2">
-                            <Label htmlFor={`reached-${phase.id}`} className="text-xs text-tier-4">
+                            <Label htmlFor={`reached-${phase.id}`} className="text-xs text-t4">
                               Reached
                             </Label>
                             <Switch
@@ -692,7 +692,7 @@ const SpaceExpansionModeler = () => {
                           </div>
                         </div>
                         {phaseDef && (
-                          <p className="text-xs text-tier-4 mb-3 ml-11">
+                          <p className="text-xs text-t4 mb-3 ml-11">
                             {phaseDef.description}
                           </p>
                         )}
@@ -783,7 +783,7 @@ const SpaceExpansionModeler = () => {
               levelNumber={3}
               thinkLike="a strategic analyst: what's pushing and pulling?"
             >
-              <p className="text-sm text-tier-3 italic mb-4">
+              <p className="text-sm text-t3 italic mb-4">
                 {SECTION_HELPERS.forces}
               </p>
 
@@ -816,11 +816,11 @@ const SpaceExpansionModeler = () => {
                         <h4 className={`font-heading font-medium text-sm ${forceDef.tailwindColor}`}>
                           {forceDef.name}
                         </h4>
-                        <span className="text-xs text-tier-4 ml-auto font-mono">
+                        <span className="text-xs text-t4 ml-auto font-mono">
                           {force.intensity}%
                         </span>
                       </div>
-                      <p className="text-xs text-tier-4 mb-3 italic">
+                      <p className="text-xs text-t4 mb-3 italic">
                         {forceDef.thinkLike}
                       </p>
                       <div className="space-y-3">
@@ -893,7 +893,7 @@ const SpaceExpansionModeler = () => {
               levelNumber={4}
               thinkLike="a crisis analyst: what accelerates, blocks, or redirects?"
             >
-              <p className="text-sm text-tier-3 italic mb-4">
+              <p className="text-sm text-t3 italic mb-4">
                 {SECTION_HELPERS.modifiers}
               </p>
 
@@ -910,7 +910,7 @@ const SpaceExpansionModeler = () => {
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="h-7 w-7 p-0 text-tier-2 hover:text-sf-crimson"
+                          className="h-7 w-7 p-0 text-t2 hover:text-sf-crimson"
                           onClick={() => removeModifier(mod.id)}
                         >
                           <Trash2 className="w-3.5 h-3.5" />
@@ -1052,7 +1052,7 @@ const SpaceExpansionModeler = () => {
               levelNumber={5}
               thinkLike="a systems analyst: how do forces interact?"
             >
-              <p className="text-sm text-tier-3 italic mb-4">
+              <p className="text-sm text-t3 italic mb-4">
                 {SECTION_HELPERS.matrix}
               </p>
 
@@ -1088,7 +1088,7 @@ const SpaceExpansionModeler = () => {
                       <GlassPanel key={`${forceA}-${forceB}`} className="p-3">
                         <div className="flex items-center gap-2 mb-2">
                           <span className={`text-xs font-medium ${defA.tailwindColor}`}>{defA.name}</span>
-                          <span className="text-xs text-tier-4">×</span>
+                          <span className="text-xs text-t4">×</span>
                           <span className={`text-xs font-medium ${defB.tailwindColor}`}>{defB.name}</span>
                           {interDef && (
                             <Badge
@@ -1160,7 +1160,7 @@ const SpaceExpansionModeler = () => {
               levelNumber={6}
               thinkLike="a storyteller: what narrative emerges?"
             >
-              <p className="text-sm text-tier-3 italic mb-4">
+              <p className="text-sm text-t3 italic mb-4">
                 {SECTION_HELPERS.synthesis}
               </p>
               <div className="space-y-4">
@@ -1215,7 +1215,7 @@ const SpaceExpansionModeler = () => {
                 </div>
                 <div className="space-y-2">
                   <Label>Narrative Theme</Label>
-                  <p className="text-xs text-tier-4">
+                  <p className="text-xs text-t4">
                     What story does this expansion model tell? What's the human drama?
                   </p>
                   <Suspense fallback={<EditorSkeleton />}>
@@ -1230,7 +1230,7 @@ const SpaceExpansionModeler = () => {
                 </div>
                 <div className="space-y-2">
                   <Label>Story Hooks</Label>
-                  <p className="text-xs text-tier-4">
+                  <p className="text-xs text-t4">
                     What specific stories, conflicts, or character situations emerge from this model?
                   </p>
                   <Suspense fallback={<EditorSkeleton />}>

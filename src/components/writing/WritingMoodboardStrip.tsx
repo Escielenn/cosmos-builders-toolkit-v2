@@ -46,7 +46,7 @@ export function WritingMoodboardStrip({
       <div className="flex items-center gap-2 px-3 py-1 border-b border-white/[0.06] bg-sf-surface/40 h-8">
         <button
           onClick={onToggle}
-          className="flex items-center gap-1.5 text-tier-4 hover:text-tier-2 transition-colors"
+          className="flex items-center gap-1.5 text-t4 hover:text-t2 transition-colors"
         >
           <ImageIcon className="w-3 h-3" />
           <span className="text-[9px] font-heading uppercase tracking-[1.5px]">
@@ -71,7 +71,7 @@ export function WritingMoodboardStrip({
             </div>
           ))}
           {images.length > 4 && (
-            <span className="text-[8px] font-mono text-tier-5">
+            <span className="text-[8px] font-mono text-t5">
               +{images.length - 4}
             </span>
           )}
@@ -87,7 +87,7 @@ export function WritingMoodboardStrip({
       <div className="flex items-center gap-2 px-3 py-1">
         <button
           onClick={onToggle}
-          className="flex items-center gap-1.5 text-tier-3 hover:text-tier-1 transition-colors"
+          className="flex items-center gap-1.5 text-t3 hover:text-t1 transition-colors"
         >
           <ImageIcon className="w-3 h-3" />
           <span className="text-[9px] font-heading uppercase tracking-[1.5px]">
@@ -95,7 +95,7 @@ export function WritingMoodboardStrip({
           </span>
           <ChevronUp className="w-3 h-3" />
         </button>
-        <span className="text-[8px] font-mono text-tier-5">
+        <span className="text-[8px] font-mono text-t5">
           {images.length} image{images.length !== 1 ? "s" : ""}
         </span>
       </div>
@@ -114,7 +114,7 @@ export function WritingMoodboardStrip({
             </div>
             {img.caption && (
               <div className="absolute bottom-0 left-0 right-0 bg-black/60 px-1.5 py-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                <span className="text-[8px] text-tier-3 line-clamp-1">
+                <span className="text-[8px] text-t3 line-clamp-1">
                   {img.caption}
                 </span>
               </div>

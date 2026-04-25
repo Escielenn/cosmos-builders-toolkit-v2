@@ -117,7 +117,7 @@ export default function WorksheetLauncherGrid({
                     </div>
                   )}
                   <div className="flex-1 min-w-0">
-                    <span className="text-xs font-heading text-tier-2 group-hover:text-tier-1 transition-colors line-clamp-1">
+                    <span className="text-xs font-heading text-t2 group-hover:text-t1 transition-colors line-clamp-1">
                       {displayName}
                     </span>
                     {linked ? (
@@ -129,8 +129,8 @@ export default function WorksheetLauncherGrid({
                       </div>
                     ) : canEdit ? (
                       <div className="flex items-center gap-1 mt-0.5">
-                        <Plus className="w-2.5 h-2.5 text-tier-4" />
-                        <span className="text-[10px] text-tier-4">
+                        <Plus className="w-2.5 h-2.5 text-t4" />
+                        <span className="text-[10px] text-t4">
                           Start Worksheet
                         </span>
                       </div>

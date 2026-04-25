@@ -107,14 +107,14 @@ const CollapsibleSection = ({
                 )}
               </div>
               {subtitle && (
-                <p className="text-xs text-tier-4">{subtitle}</p>
+                <p className="text-xs text-t4">{subtitle}</p>
               )}
             </div>
           </div>
           {isOpen ? (
-            <ChevronUp className="w-5 h-5 text-tier-4" />
+            <ChevronUp className="w-5 h-5 text-t4" />
           ) : (
-            <ChevronDown className="w-5 h-5 text-tier-4" />
+            <ChevronDown className="w-5 h-5 text-t4" />
           )}
         </button>
       </CollapsibleTrigger>

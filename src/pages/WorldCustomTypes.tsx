@@ -96,14 +96,14 @@ export default function WorldCustomTypes() {
         <div className="mb-8">
           <Link
             to={`/worlds/${worldId}`}
-            className="inline-flex items-center gap-1 text-xs text-tier-4 hover:text-tier-2 mb-3"
+            className="inline-flex items-center gap-1 text-xs text-t4 hover:text-t2 mb-3"
           >
             <ChevronLeft className="w-3.5 h-3.5" /> ← RETURN TO WORLD
           </Link>
-          <h1 className="font-display text-3xl md:text-4xl tracking-[0.08em] text-tier-1 mb-1">
+          <h1 className="font-display text-3xl md:text-4xl tracking-[0.08em] text-t1 mb-1">
             CUSTOM ELEMENT TYPES
           </h1>
-          <p className="text-sm text-tier-3 max-w-2xl">
+          <p className="text-sm text-t3 max-w-2xl">
             Define your own element types with custom fields. Every entity
             created from a template will carry these fields — great for homebrew
             concepts like sword styles, deities, trading routes, or anything
@@ -137,10 +137,10 @@ export default function WorldCustomTypes() {
 
             <div className="border-t border-white/5 pt-2 space-y-0.5">
               {isLoading && (
-                <div className="text-xs text-tier-5 p-2">Loading...</div>
+                <div className="text-xs text-t5 p-2">Loading...</div>
               )}
               {!isLoading && templates.length === 0 && (
-                <div className="p-3 text-xs text-tier-5 border border-dashed border-white/10 text-center">
+                <div className="p-3 text-xs text-t5 border border-dashed border-white/10 text-center">
                   <Sparkles className="w-6 h-6 mx-auto mb-2 opacity-40" />
                   No custom types yet.
                   <br />
@@ -162,7 +162,7 @@ export default function WorldCustomTypes() {
                   <Shapes
                     className={cn(
                       "w-3.5 h-3.5 shrink-0",
-                      selectedId === t.id ? "text-primary" : "text-tier-4"
+                      selectedId === t.id ? "text-primary" : "text-t4"
                     )}
                     style={t.color ? { color: t.color } : undefined}
                   />
@@ -170,12 +170,12 @@ export default function WorldCustomTypes() {
                     <div
                       className={cn(
                         "text-sm truncate",
-                        selectedId === t.id ? "text-tier-1 font-medium" : "text-tier-2"
+                        selectedId === t.id ? "text-t1 font-medium" : "text-t2"
                       )}
                     >
                       {t.label}
                     </div>
-                    <div className="text-[10px] font-mono text-tier-5">
+                    <div className="text-[10px] font-mono text-t5">
                       {t.type_key} · {t.fields.length} field{t.fields.length === 1 ? "" : "s"}
                     </div>
                   </div>
@@ -199,11 +199,11 @@ export default function WorldCustomTypes() {
             ) : (
               <div className="h-full min-h-[400px] flex items-center justify-center border border-dashed border-white/10 p-8">
                 <div className="text-center max-w-sm">
-                  <Shapes className="w-10 h-10 mx-auto mb-3 text-tier-5 opacity-40" />
-                  <h3 className="font-heading text-sm uppercase tracking-[2px] text-tier-2 mb-2">
+                  <Shapes className="w-10 h-10 mx-auto mb-3 text-t5 opacity-40" />
+                  <h3 className="font-heading text-sm uppercase tracking-[2px] text-t2 mb-2">
                     No template selected
                   </h3>
-                  <p className="text-xs text-tier-4">
+                  <p className="text-xs text-t4">
                     Create or pick a template on the left to edit its fields.
                   </p>
                 </div>
@@ -292,10 +292,10 @@ function TemplateDetailEditor({
       <div className="border border-white/10 bg-white/[0.02] p-4">
         <div className="flex items-start justify-between gap-3 mb-4">
           <div>
-            <div className="text-[10px] font-heading uppercase tracking-[2px] text-tier-4 mb-1">
+            <div className="text-[10px] font-heading uppercase tracking-[2px] text-t4 mb-1">
               Template
             </div>
-            <div className="text-[10px] font-mono text-tier-5">
+            <div className="text-[10px] font-mono text-t5">
               key: {template.type_key}
             </div>
           </div>
@@ -303,7 +303,7 @@ function TemplateDetailEditor({
             variant="ghost"
             size="sm"
             onClick={onDelete}
-            className="text-xs text-tier-4 hover:text-sf-crimson"
+            className="text-xs text-t4 hover:text-sf-crimson"
           >
             <Trash2 className="w-3.5 h-3.5 mr-1.5" />
             Delete template
@@ -312,7 +312,7 @@ function TemplateDetailEditor({
 
         <div className="space-y-3">
           <div className="space-y-1">
-            <Label htmlFor="t-label" className="text-[10px] uppercase tracking-[1.5px] text-tier-4">
+            <Label htmlFor="t-label" className="text-[10px] uppercase tracking-[1.5px] text-t4">
               Display label
             </Label>
             <Input
@@ -324,9 +324,9 @@ function TemplateDetailEditor({
             />
           </div>
           <div className="space-y-1">
-            <Label htmlFor="t-desc" className="text-[10px] uppercase tracking-[1.5px] text-tier-4">
+            <Label htmlFor="t-desc" className="text-[10px] uppercase tracking-[1.5px] text-t4">
               Description{" "}
-              <span className="text-tier-5 font-normal normal-case tracking-normal">(optional)</span>
+              <span className="text-t5 font-normal normal-case tracking-normal">(optional)</span>
             </Label>
             <Input
               id="t-desc"
@@ -338,7 +338,7 @@ function TemplateDetailEditor({
             />
           </div>
           <div className="space-y-1 max-w-[160px]">
-            <Label htmlFor="t-color" className="text-[10px] uppercase tracking-[1.5px] text-tier-4">
+            <Label htmlFor="t-color" className="text-[10px] uppercase tracking-[1.5px] text-t4">
               Accent color
             </Label>
             <div className="flex items-center gap-2">
@@ -370,7 +370,7 @@ function TemplateDetailEditor({
             <h3 className="font-heading text-sm uppercase tracking-[2px] text-[#00FF88]">
               Fields
             </h3>
-            <p className="text-xs text-tier-4 mt-0.5">
+            <p className="text-xs text-t4 mt-0.5">
               Every {template.label.toLowerCase()} entity will carry these fields.
             </p>
           </div>
@@ -387,7 +387,7 @@ function TemplateDetailEditor({
 
         {template.fields.length === 0 ? (
           <div className="border border-dashed border-white/10 p-6 text-center">
-            <p className="text-xs text-tier-4">
+            <p className="text-xs text-t4">
               No fields yet. Add one to define the schema.
             </p>
           </div>

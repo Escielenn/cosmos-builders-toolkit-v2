@@ -146,7 +146,7 @@ export function WritingEntityPanel({
           {selectedEntity ? (
             <button
               onClick={handleBack}
-              className="flex items-center gap-1.5 text-tier-3 hover:text-tier-1 transition-colors"
+              className="flex items-center gap-1.5 text-t3 hover:text-t1 transition-colors"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               <span className="font-heading text-[11px] font-light uppercase tracking-[2px]">
@@ -154,13 +154,13 @@ export function WritingEntityPanel({
               </span>
             </button>
           ) : (
-            <span className="font-heading text-[11px] font-light uppercase tracking-[2px] text-tier-3">
+            <span className="font-heading text-[11px] font-light uppercase tracking-[2px] text-t3">
               World Entities
             </span>
           )}
           <button
             onClick={onToggle}
-            className="p-1 text-tier-4 hover:text-tier-2 transition-colors"
+            className="p-1 text-t4 hover:text-t2 transition-colors"
             title="Collapse panel"
           >
             <ChevronLeft className="w-4 h-4" />
@@ -174,7 +174,7 @@ export function WritingEntityPanel({
           <div className="flex-1 overflow-y-auto sf-custom-scrollbar px-3 py-3 space-y-4">
             {/* Name + type + stage badges */}
             <div>
-              <h3 className="font-heading text-sm font-light tracking-wide text-tier-1 mb-1.5">
+              <h3 className="font-heading text-sm font-light tracking-wide text-t1 mb-1.5">
                 {selectedEntity.name}
               </h3>
               <div className="flex flex-wrap gap-1.5">
@@ -228,10 +228,10 @@ export function WritingEntityPanel({
             {/* Summary */}
             {selectedEntity.summary && (
               <div>
-                <span className="text-[9px] font-medium uppercase tracking-[1.5px] text-tier-4 block mb-1">
+                <span className="text-[9px] font-medium uppercase tracking-[1.5px] text-t4 block mb-1">
                   Summary
                 </span>
-                <p className="text-xs text-tier-2 leading-relaxed">
+                <p className="text-xs text-t2 leading-relaxed">
                   {selectedEntity.summary}
                 </p>
               </div>
@@ -240,11 +240,11 @@ export function WritingEntityPanel({
             {/* Description (rendered HTML) */}
             {selectedEntity.description && (
               <div>
-                <span className="text-[9px] font-medium uppercase tracking-[1.5px] text-tier-4 block mb-1">
+                <span className="text-[9px] font-medium uppercase tracking-[1.5px] text-t4 block mb-1">
                   Description
                 </span>
                 <div
-                  className="text-xs text-tier-2 leading-relaxed prose prose-sm prose-invert max-w-none [&_p]:my-1 [&_h1]:text-sm [&_h2]:text-xs [&_h3]:text-xs"
+                  className="text-xs text-t2 leading-relaxed prose prose-sm prose-invert max-w-none [&_p]:my-1 [&_h1]:text-sm [&_h2]:text-xs [&_h3]:text-xs"
                   dangerouslySetInnerHTML={{
                     __html: selectedEntity.description,
                   }}
@@ -255,7 +255,7 @@ export function WritingEntityPanel({
             {/* Connections */}
             {entityConnections.length > 0 && (
               <div>
-                <span className="text-[9px] font-medium uppercase tracking-[1.5px] text-tier-4 block mb-1.5">
+                <span className="text-[9px] font-medium uppercase tracking-[1.5px] text-t4 block mb-1.5">
                   Connections ({entityConnections.length})
                 </span>
                 <div className="space-y-1">
@@ -284,10 +284,10 @@ export function WritingEntityPanel({
                           }}
                         />
                         <div className="flex-1 min-w-0">
-                          <span className="text-[9px] font-mono uppercase tracking-[1px] text-tier-4 block">
+                          <span className="text-[9px] font-mono uppercase tracking-[1px] text-t4 block">
                             {formatRelType(conn.relationship_type)}
                           </span>
-                          <span className="text-xs text-tier-2 truncate block group-hover:text-tier-1 transition-colors">
+                          <span className="text-xs text-t2 truncate block group-hover:text-t1 transition-colors">
                             {otherEntity.name}
                           </span>
                         </div>
@@ -345,13 +345,13 @@ export function WritingEntityPanel({
             {/* Search input */}
             <div className="px-3 py-2">
               <div className="relative">
-                <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-tier-5" />
+                <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-t5" />
                 <input
                   type="text"
                   value={filter}
                   onChange={(e) => setFilter(e.target.value)}
                   placeholder="Search entities..."
-                  className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xs pl-7 pr-2.5 py-1.5 text-xs text-tier-2 placeholder:text-tier-5 focus:border-[#15C17B]/35 focus:outline-none"
+                  className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xs pl-7 pr-2.5 py-1.5 text-xs text-t2 placeholder:text-t5 focus:border-[#15C17B]/35 focus:outline-none"
                 />
               </div>
             </div>
@@ -377,7 +377,7 @@ export function WritingEntityPanel({
                       >
                         {CASCADE_STAGE_LABELS[stage]}
                       </span>
-                      <span className="text-[8px] font-mono text-tier-5 ml-auto">
+                      <span className="text-[8px] font-mono text-t5 ml-auto">
                         {stageEntities.length}
                       </span>
                     </div>
@@ -397,10 +397,10 @@ export function WritingEntityPanel({
                               "#15C17B",
                           }}
                         />
-                        <span className="text-xs text-tier-2 truncate group-hover:text-tier-1 transition-colors flex-1">
+                        <span className="text-xs text-t2 truncate group-hover:text-t1 transition-colors flex-1">
                           {entity.name}
                         </span>
-                        <span className="text-[8px] font-mono text-tier-5 uppercase tracking-wider flex-shrink-0">
+                        <span className="text-[8px] font-mono text-t5 uppercase tracking-wider flex-shrink-0">
                           {ENTITY_TYPE_LABELS[entity.entity_type] ??
                             entity.entity_type}
                         </span>
@@ -412,7 +412,7 @@ export function WritingEntityPanel({
 
               {filteredEntities.length === 0 && (
                 <div className="px-3 py-6 text-center">
-                  <span className="text-[10px] uppercase tracking-[1.5px] text-tier-5">
+                  <span className="text-[10px] uppercase tracking-[1.5px] text-t5">
                     {filter ? "No matches" : "No entities yet"}
                   </span>
                 </div>

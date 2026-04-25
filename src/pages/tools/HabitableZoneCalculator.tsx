@@ -448,9 +448,9 @@ const HabitableZoneCalculator = () => {
           </h2>
           <blockquote className="border-l-2 border-primary pl-4 italic text-lg mb-4">
             "The highest function of ecology is the understanding of consequences."
-            <span className="block text-sm text-tier-3 mt-1">— Frank Herbert, Dune</span>
+            <span className="block text-sm text-t3 mt-1">— Frank Herbert, Dune</span>
           </blockquote>
-          <p className="text-tier-2">
+          <p className="text-t2">
             Define your host star and place your planet. See instantly where it falls relative to the
             habitable zone — and what that means for climate, biology, psychology, mythology, and culture.
             All calculations use Kopparapu et al. (2013) habitable zone boundaries.
@@ -479,13 +479,13 @@ const HabitableZoneCalculator = () => {
                 <button
                   type="button"
                   onClick={() => setImportOpen(!importOpen)}
-                  className="w-full h-10 px-3 flex items-center justify-between gap-2 rounded-xs border border-border bg-muted/30 text-sm text-tier-2 hover:border-primary/50 transition-colors"
+                  className="w-full h-10 px-3 flex items-center justify-between gap-2 rounded-xs border border-border bg-muted/30 text-sm text-t2 hover:border-primary/50 transition-colors"
                 >
                   <span className="flex items-center gap-1.5">
-                    <Import className="w-3.5 h-3.5 text-tier-4" />
+                    <Import className="w-3.5 h-3.5 text-t4" />
                     Import
                   </span>
-                  <ChevronDown className={`w-3.5 h-3.5 text-tier-4 transition-transform ${importOpen ? "rotate-180" : ""}`} />
+                  <ChevronDown className={`w-3.5 h-3.5 text-t4 transition-transform ${importOpen ? "rotate-180" : ""}`} />
                 </button>
               </div>
             )}
@@ -494,7 +494,7 @@ const HabitableZoneCalculator = () => {
           {/* Import body picker */}
           {importOpen && worldId && starSystemWorksheets.length > 0 && (
             <div className="mt-4 border-t border-border pt-4">
-              <p className="text-xs text-tier-4 mb-3">Select a body from your Star System worksheets:</p>
+              <p className="text-xs text-t4 mb-3">Select a body from your Star System worksheets:</p>
               <div className="space-y-3">
                 {starSystemWorksheets.map((ws) => {
                   const wsData = ws.data as Record<string, unknown> | null;
@@ -502,7 +502,7 @@ const HabitableZoneCalculator = () => {
                   if (bodies.length === 0) return null;
                   return (
                     <div key={ws.id}>
-                      <div className="text-xs font-medium text-tier-3 mb-1.5">{ws.title}</div>
+                      <div className="text-xs font-medium text-t3 mb-1.5">{ws.title}</div>
                       <div className="flex flex-wrap gap-2">
                         {bodies.map((body) => {
                           const dist = parseFloat(body.distanceFromStar);
@@ -518,8 +518,8 @@ const HabitableZoneCalculator = () => {
                               }}
                               className="px-3 py-1.5 rounded-sm border border-border text-xs hover:border-primary/50 hover:bg-primary/5 transition-colors"
                             >
-                              <span className="text-tier-1">{body.name}</span>
-                              <span className="text-tier-4 ml-2">{dist} AU</span>
+                              <span className="text-t1">{body.name}</span>
+                              <span className="text-t4 ml-2">{dist} AU</span>
                             </button>
                           );
                         })}
@@ -552,7 +552,7 @@ const HabitableZoneCalculator = () => {
               icon={<Sun className="w-5 h-5" />}
               defaultOpen={true}
             >
-              <p className="text-sm text-tier-3 italic mb-6">{SECTION_HELPERS.star}</p>
+              <p className="text-sm text-t3 italic mb-6">{SECTION_HELPERS.star}</p>
 
               {/* Star Presets */}
               <div className="space-y-2 mb-6">
@@ -565,11 +565,11 @@ const HabitableZoneCalculator = () => {
                       className={`p-3 rounded-lg border text-left transition-all ${
                         formState.star.presetId === preset.id
                           ? "border-primary bg-primary/10 text-foreground"
-                          : "border-border hover:border-primary/50 hover:bg-muted/50 text-tier-2"
+                          : "border-border hover:border-primary/50 hover:bg-muted/50 text-t2"
                       }`}
                     >
                       <div className="font-medium text-sm">{preset.label}</div>
-                      <div className="text-xs text-tier-4 mt-0.5 line-clamp-1">{preset.description}</div>
+                      <div className="text-xs text-t4 mt-0.5 line-clamp-1">{preset.description}</div>
                     </button>
                   ))}
                 </div>
@@ -619,7 +619,7 @@ const HabitableZoneCalculator = () => {
                   onValueChange={([v]) => updateStar({ mass: sliderToLog(v, 0.08, 50) })}
                   aria-label="Star mass in solar masses"
                 />
-                <div className="flex justify-between text-xs text-tier-4">
+                <div className="flex justify-between text-xs text-t4">
                   <span>0.08 M&#x2609;</span>
                   <span>50 M&#x2609;</span>
                 </div>
@@ -630,7 +630,7 @@ const HabitableZoneCalculator = () => {
                 <div className="flex items-center justify-between">
                   <Label>Star Luminosity</Label>
                   <div className="flex items-center gap-3">
-                    <label className="flex items-center gap-2 text-xs text-tier-4 cursor-pointer">
+                    <label className="flex items-center gap-2 text-xs text-t4 cursor-pointer">
                       <Switch
                         checked={formState.star.autoLuminosity}
                         onCheckedChange={(checked) => updateStar({ autoLuminosity: checked })}
@@ -657,7 +657,7 @@ const HabitableZoneCalculator = () => {
                   disabled={formState.star.autoLuminosity}
                   aria-label="Star luminosity in solar luminosities"
                 />
-                <div className="flex justify-between text-xs text-tier-4">
+                <div className="flex justify-between text-xs text-t4">
                   <span>0.0001 L&#x2609;</span>
                   <span>100,000 L&#x2609;</span>
                 </div>
@@ -679,7 +679,7 @@ const HabitableZoneCalculator = () => {
                   onValueChange={([v]) => updateStar({ temperature: sliderToLog(v, 2000, 50000) })}
                   aria-label="Star surface temperature in Kelvin"
                 />
-                <div className="flex justify-between text-xs text-tier-4">
+                <div className="flex justify-between text-xs text-t4">
                   <span>2,000 K</span>
                   <span>50,000 K</span>
                 </div>
@@ -722,7 +722,7 @@ const HabitableZoneCalculator = () => {
                     onValueChange={([v]) => updatePlanet({ orbitalDistance: sliderToLog(v, 0.01, 100) })}
                     aria-label="Planet orbital distance in AU"
                   />
-                  <div className="flex justify-between text-xs text-tier-4">
+                  <div className="flex justify-between text-xs text-t4">
                     <span>0.01 AU</span>
                     <span>100 AU</span>
                   </div>
@@ -733,15 +733,15 @@ const HabitableZoneCalculator = () => {
                   <div className="mt-4 rounded-sm border p-3" style={{ borderColor: `${zoneColor}30`, backgroundColor: `${zoneColor}08` }}>
                     <div className="flex items-center justify-between gap-4 flex-wrap">
                       <div className="space-y-0.5">
-                        <div className="text-[10px] font-mono uppercase tracking-wider text-tier-4">Equilibrium</div>
+                        <div className="text-[10px] font-mono uppercase tracking-wider text-t4">Equilibrium</div>
                         <div className="text-lg font-mono font-light" style={{ color: zoneColor }}>
                           {result.equilibriumTempFormatted}
                         </div>
                       </div>
-                      <div className="text-tier-4 text-lg">→</div>
+                      <div className="text-t4 text-lg">→</div>
                       <div className="space-y-0.5">
-                        <div className="text-[10px] font-mono uppercase tracking-wider text-tier-4">Est. Surface (+{formState.planet.greenhouseWarming ?? 33} K)</div>
-                        <div className="text-lg font-mono font-light text-tier-1">
+                        <div className="text-[10px] font-mono uppercase tracking-wider text-t4">Est. Surface (+{formState.planet.greenhouseWarming ?? 33} K)</div>
+                        <div className="text-lg font-mono font-light text-t1">
                           {result.estimatedSurfaceTempFormatted}
                         </div>
                       </div>
@@ -768,7 +768,7 @@ const HabitableZoneCalculator = () => {
                     onValueChange={([v]) => updatePlanet({ greenhouseWarming: v })}
                     aria-label="Greenhouse warming in Kelvin"
                   />
-                  <div className="flex justify-between text-xs text-tier-4">
+                  <div className="flex justify-between text-xs text-t4">
                     <span>0 K (none)</span>
                     <span>100 K (extreme)</span>
                   </div>
@@ -786,7 +786,7 @@ const HabitableZoneCalculator = () => {
                         className={`px-2 py-0.5 rounded-sm text-[10px] font-mono border transition-colors ${
                           (formState.planet.greenhouseWarming ?? 33) === preset.value
                             ? "border-primary bg-primary/10 text-primary"
-                            : "border-border text-tier-4 hover:border-primary/50"
+                            : "border-border text-t4 hover:border-primary/50"
                         }`}
                       >
                         {preset.label}
@@ -806,7 +806,7 @@ const HabitableZoneCalculator = () => {
               icon={<Globe className="w-5 h-5" />}
               defaultOpen={true}
             >
-              <p className="text-sm text-tier-3 italic mb-6">{SECTION_HELPERS.planet}</p>
+              <p className="text-sm text-t3 italic mb-6">{SECTION_HELPERS.planet}</p>
 
               <div className="space-y-6">
                 {/* Zone Classification */}
@@ -820,7 +820,7 @@ const HabitableZoneCalculator = () => {
                     </div>
                     {result.percentThroughHZ >= 0 && (
                       <div className="space-y-1">
-                        <div className="flex justify-between text-xs text-tier-4">
+                        <div className="flex justify-between text-xs text-t4">
                           <span>Inner Edge</span>
                           <span>{Math.round(result.percentThroughHZ)}% through HZ</span>
                           <span>Outer Edge</span>
@@ -852,7 +852,7 @@ const HabitableZoneCalculator = () => {
                     </button>
                   </div>
                   {additionalPlanets.length === 0 && (
-                    <p className="text-xs text-tier-4 italic">Add planets to compare positions on the orbital diagram.</p>
+                    <p className="text-xs text-t4 italic">Add planets to compare positions on the orbital diagram.</p>
                   )}
                   {additionalPlanets.map((p, i) => (
                     <div key={i} className="flex items-center gap-2">
@@ -878,7 +878,7 @@ const HabitableZoneCalculator = () => {
                         step={0.01}
                         min={0.001}
                       />
-                      <span className="text-xs text-tier-4">AU</span>
+                      <span className="text-xs text-t4">AU</span>
                       <button
                         type="button"
                         onClick={() => setAdditionalPlanets((prev) => prev.filter((_, j) => j !== i))}
@@ -899,47 +899,47 @@ const HabitableZoneCalculator = () => {
                   <Thermometer className="w-5 h-5 text-primary" />
                   Analysis Results
                 </h2>
-                <p className="text-sm text-tier-3 italic mb-6">{SECTION_HELPERS.results}</p>
+                <p className="text-sm text-t3 italic mb-6">{SECTION_HELPERS.results}</p>
 
                 {result.valid ? (
                   <div className="space-y-6">
                     {/* Hero: Temperature Display */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="text-center p-5 rounded-sm bg-muted/30">
-                        <div className="text-[10px] font-mono uppercase tracking-wider text-tier-4 mb-1">
+                        <div className="text-[10px] font-mono uppercase tracking-wider text-t4 mb-1">
                           Equilibrium Temperature
                         </div>
                         <div className="text-3xl font-mono font-light" style={{ color: zoneColor }}>
                           {Math.round(result.equilibriumTemp)} K
                         </div>
-                        <div className="text-sm text-tier-3 mt-1">
+                        <div className="text-sm text-t3 mt-1">
                           ({Math.round(result.equilibriumTemp - 273.15)}&deg;C)
                         </div>
-                        <div className="text-[10px] text-tier-5 mt-2">No atmosphere</div>
+                        <div className="text-[10px] text-t5 mt-2">No atmosphere</div>
                       </div>
                       <div className="text-center p-5 rounded-sm bg-muted/30 border border-primary/10">
-                        <div className="text-[10px] font-mono uppercase tracking-wider text-tier-4 mb-1">
+                        <div className="text-[10px] font-mono uppercase tracking-wider text-t4 mb-1">
                           Est. Surface Temperature
                         </div>
-                        <div className="text-3xl font-mono font-light text-tier-1">
+                        <div className="text-3xl font-mono font-light text-t1">
                           {Math.round(result.estimatedSurfaceTemp)} K
                         </div>
-                        <div className="text-sm text-tier-3 mt-1">
+                        <div className="text-sm text-t3 mt-1">
                           ({Math.round(result.estimatedSurfaceTemp - 273.15)}&deg;C)
                         </div>
-                        <div className="text-[10px] text-tier-5 mt-2">+{formState.planet.greenhouseWarming ?? 33} K greenhouse</div>
+                        <div className="text-[10px] text-t5 mt-2">+{formState.planet.greenhouseWarming ?? 33} K greenhouse</div>
                       </div>
                     </div>
 
                     {/* Key Metrics Grid */}
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-1">
-                        <div className="text-xs text-tier-4 uppercase tracking-wider">Stellar Flux</div>
+                        <div className="text-xs text-t4 uppercase tracking-wider">Stellar Flux</div>
                         <div className="text-lg font-mono">{result.stellarFluxFormatted}</div>
-                        <div className="text-xs text-tier-4">Earth = 1.0</div>
+                        <div className="text-xs text-t4">Earth = 1.0</div>
                       </div>
                       <div className="space-y-1">
-                        <div className="text-xs text-tier-4 uppercase tracking-wider">Year Length</div>
+                        <div className="text-xs text-t4 uppercase tracking-wider">Year Length</div>
                         <div className="text-lg font-mono">{result.orbitalPeriodFormatted}</div>
                       </div>
                     </div>
@@ -949,31 +949,31 @@ const HabitableZoneCalculator = () => {
                       <h3 className="text-sm font-medium mb-3">Habitable Zone Boundaries</h3>
                       <div className="space-y-2 text-sm">
                         <div className="flex justify-between">
-                          <span className="text-tier-2">Recent Venus (optimistic inner)</span>
+                          <span className="text-t2">Recent Venus (optimistic inner)</span>
                           <span className="font-mono">{result.innerEdgeRecentVenusFormatted}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-tier-2">Runaway Greenhouse (conservative)</span>
+                          <span className="text-t2">Runaway Greenhouse (conservative)</span>
                           <span className="font-mono">{result.innerEdgeRunawayFormatted}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-tier-2">Maximum Greenhouse (conservative)</span>
+                          <span className="text-t2">Maximum Greenhouse (conservative)</span>
                           <span className="font-mono">{result.outerEdgeMaxGreenhouseFormatted}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-tier-2">Early Mars (optimistic outer)</span>
+                          <span className="text-t2">Early Mars (optimistic outer)</span>
                           <span className="font-mono">{result.outerEdgeEarlyMarsFormatted}</span>
                         </div>
                         <div className="flex justify-between border-t border-border pt-2 mt-2">
-                          <span className="text-tier-2">Snowline (frost line)</span>
+                          <span className="text-t2">Snowline (frost line)</span>
                           <span className="font-mono">{result.snowlineFormatted}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-tier-2">Conservative HZ Width</span>
+                          <span className="text-t2">Conservative HZ Width</span>
                           <span className="font-mono">{result.conservativeWidthFormatted}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-tier-2">Optimistic HZ Width</span>
+                          <span className="text-t2">Optimistic HZ Width</span>
                           <span className="font-mono">{result.optimisticWidthFormatted}</span>
                         </div>
                       </div>
@@ -988,13 +988,13 @@ const HabitableZoneCalculator = () => {
                           Copy
                         </Button>
                       </div>
-                      <p className="text-sm text-tier-3 italic">
+                      <p className="text-sm text-t3 italic">
                         {result.narrativeSummary}
                       </p>
                     </div>
                   </div>
                 ) : (
-                  <p className="text-sm text-tier-3">{result.error || "Adjust parameters to see results."}</p>
+                  <p className="text-sm text-t3">{result.error || "Adjust parameters to see results."}</p>
                 )}
               </GlassPanel>
             </div>
@@ -1008,7 +1008,7 @@ const HabitableZoneCalculator = () => {
               icon={<BookOpen className="w-5 h-5" />}
               defaultOpen={true}
             >
-              <p className="text-sm text-tier-3 italic mb-6">{SECTION_HELPERS.implications}</p>
+              <p className="text-sm text-t3 italic mb-6">{SECTION_HELPERS.implications}</p>
 
               {result.valid && (
                 <div className="space-y-4">
@@ -1043,7 +1043,7 @@ const HabitableZoneCalculator = () => {
                             </Badge>
                             <span className="text-sm font-medium">{impl.title}</span>
                           </div>
-                          <p className="text-xs text-tier-4">{impl.description}</p>
+                          <p className="text-xs text-t4">{impl.description}</p>
                         </GlassPanel>
                       );
                     })}
@@ -1060,12 +1060,12 @@ const HabitableZoneCalculator = () => {
               levelNumber={6}
               icon={<FileText className="w-5 h-5" />}
             >
-              <p className="text-sm text-tier-3 italic mb-6">{SECTION_HELPERS.story}</p>
+              <p className="text-sm text-t3 italic mb-6">{SECTION_HELPERS.story}</p>
 
               <div className="space-y-6">
                 <div className="space-y-2">
                   <Label>Star Description</Label>
-                  <p className="text-xs text-tier-4">How does this star appear from the planet's surface?</p>
+                  <p className="text-xs text-t4">How does this star appear from the planet's surface?</p>
                   <Suspense fallback={<div className="h-24 bg-muted rounded animate-pulse" />}>
                     <RichTextEditor
                       content={formState.storyNotes.starDescription}
@@ -1077,7 +1077,7 @@ const HabitableZoneCalculator = () => {
 
                 <div className="space-y-2">
                   <Label>Planet Setting</Label>
-                  <p className="text-xs text-tier-4">What does daily life look like on this world?</p>
+                  <p className="text-xs text-t4">What does daily life look like on this world?</p>
                   <Suspense fallback={<div className="h-24 bg-muted rounded animate-pulse" />}>
                     <RichTextEditor
                       content={formState.storyNotes.planetSetting}
@@ -1089,7 +1089,7 @@ const HabitableZoneCalculator = () => {
 
                 <div className="space-y-2">
                   <Label>Habitability Narrative</Label>
-                  <p className="text-xs text-tier-4">How does the HZ position shape survival?</p>
+                  <p className="text-xs text-t4">How does the HZ position shape survival?</p>
                   <Suspense fallback={<div className="h-24 bg-muted rounded animate-pulse" />}>
                     <RichTextEditor
                       content={formState.storyNotes.habitabilityNarrative}
@@ -1101,7 +1101,7 @@ const HabitableZoneCalculator = () => {
 
                 <div className="space-y-2">
                   <Label>Worldbuilding Notes</Label>
-                  <p className="text-xs text-tier-4">Additional notes for your universe</p>
+                  <p className="text-xs text-t4">Additional notes for your universe</p>
                   <Suspense fallback={<div className="h-24 bg-muted rounded animate-pulse" />}>
                     <RichTextEditor
                       content={formState.storyNotes.worldbuildingNotes}

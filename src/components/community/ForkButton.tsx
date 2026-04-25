@@ -57,7 +57,7 @@ export default function ForkButton({
         size="sm"
         onClick={() => setConfirmOpen(true)}
         disabled={!user || isViewOnly || forkWorld.isPending}
-        className={`gap-1.5 text-tier-3 hover:text-primary ${className ?? ""}`}
+        className={`gap-1.5 text-t3 hover:text-primary ${className ?? ""}`}
         aria-label={isViewOnly ? "Forking not allowed" : "Fork this world"}
         title={isViewOnly ? "This world is view-only and cannot be forked" : undefined}
       >
@@ -77,7 +77,7 @@ export default function ForkButton({
             <AlertDialogTitle className="font-heading uppercase tracking-[2px]">
               Fork World
             </AlertDialogTitle>
-            <AlertDialogDescription className="text-tier-2">
+            <AlertDialogDescription className="text-t2">
               This will create a copy of <strong>{worldName}</strong> in your
               worlds. The original creator will be credited and the fork count
               will increase.

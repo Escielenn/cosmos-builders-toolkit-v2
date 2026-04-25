@@ -140,7 +140,7 @@ function ColorDotPicker({
         className="w-48 p-3 bg-[#0D1117] border-sf-border"
         onClick={(e) => e.stopPropagation()}
       >
-        <p className="font-sans text-[10px] uppercase tracking-[1.5px] text-tier-3 mb-2">
+        <p className="font-sans text-[10px] uppercase tracking-[1.5px] text-t3 mb-2">
           Entity Color
         </p>
 
@@ -167,7 +167,7 @@ function ColorDotPicker({
         <button
           type="button"
           onClick={() => handleColorSelect(ENTITY_TYPE_COLORS[entityType])}
-          className="w-full flex items-center gap-2 px-2 py-1 text-[10px] text-tier-4 hover:text-tier-2 transition-colors mb-2"
+          className="w-full flex items-center gap-2 px-2 py-1 text-[10px] text-t4 hover:text-t2 transition-colors mb-2"
         >
           <span
             className="w-3 h-3 rounded-full border border-white/10"
@@ -184,7 +184,7 @@ function ColorDotPicker({
             onChange={(e) => setCustomHex(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleCustomSubmit()}
             placeholder="#FF00AA"
-            className="flex-1 bg-white/4 border border-white/10 rounded-xs px-2 py-1 text-[11px] font-mono text-tier-2 placeholder:text-tier-5 focus:border-teal/35 outline-none"
+            className="flex-1 bg-white/4 border border-white/10 rounded-xs px-2 py-1 text-[11px] font-mono text-t2 placeholder:text-t5 focus:border-teal/35 outline-none"
           />
           <button
             type="button"
@@ -241,7 +241,7 @@ function SortableEntityRow({
       {/* Drag handle */}
       <button
         type="button"
-        className="shrink-0 p-0.5 cursor-grab active:cursor-grabbing text-tier-5 opacity-0 group-hover/entity-row:opacity-100 transition-opacity touch-none"
+        className="shrink-0 p-0.5 cursor-grab active:cursor-grabbing text-t5 opacity-0 group-hover/entity-row:opacity-100 transition-opacity touch-none"
         {...attributes}
         {...listeners}
         tabIndex={-1}
@@ -270,7 +270,7 @@ function SortableEntityRow({
             />
 
             {/* Entity name */}
-            <span className="flex-1 min-w-0 font-sans text-[13px] text-tier-2 truncate">
+            <span className="flex-1 min-w-0 font-sans text-[13px] text-t2 truncate">
               {entity.name}
             </span>
 
@@ -351,7 +351,7 @@ function StaticEntityRow({
           />
 
           {/* Entity name */}
-          <span className="flex-1 min-w-0 font-sans text-[13px] text-tier-2 truncate">
+          <span className="flex-1 min-w-0 font-sans text-[13px] text-t2 truncate">
             {entity.name}
           </span>
 
@@ -637,13 +637,13 @@ const EntitySidebar = ({
       {/* Search input */}
       <div className="px-3 py-1.5">
         <div className="relative">
-          <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 text-tier-4 pointer-events-none" />
+          <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 text-t4 pointer-events-none" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search entities..."
-            className="w-full bg-white/4 border border-white/10 rounded-xs pl-7 pr-2 py-1.5 text-[12px] font-sans text-tier-2 placeholder:text-tier-5 focus:border-teal/35 outline-none"
+            className="w-full bg-white/4 border border-white/10 rounded-xs pl-7 pr-2 py-1.5 text-[12px] font-sans text-t2 placeholder:text-t5 focus:border-teal/35 outline-none"
           />
         </div>
       </div>
@@ -656,7 +656,7 @@ const EntitySidebar = ({
             "flex items-center gap-1 px-2 py-1 text-[10px] uppercase tracking-[1.5px] transition-colors",
             viewMode === "tool"
               ? "text-teal bg-teal/8 border border-teal/20"
-              : "text-tier-4 hover:text-tier-3"
+              : "text-t4 hover:text-t3"
           )}
           title="Group by cascade stage"
         >
@@ -669,7 +669,7 @@ const EntitySidebar = ({
             "flex items-center gap-1 px-2 py-1 text-[10px] uppercase tracking-[1.5px] transition-colors",
             viewMode === "wiki"
               ? "text-teal bg-teal/8 border border-teal/20"
-              : "text-tier-4 hover:text-tier-3"
+              : "text-t4 hover:text-t3"
           )}
           title="Alphabetical list"
         >

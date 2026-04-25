@@ -65,13 +65,13 @@ export function TemplateFieldEditor({
 
   return (
     <div className="border border-white/10 bg-white/[0.02] p-3 flex items-start gap-2">
-      <GripVertical className="w-3.5 h-3.5 mt-2 text-tier-5 shrink-0" />
+      <GripVertical className="w-3.5 h-3.5 mt-2 text-t5 shrink-0" />
 
       <div className="flex-1 space-y-2 min-w-0">
         {/* Row 1: label + field_type */}
         <div className="grid grid-cols-2 gap-2">
           <div className="space-y-1">
-            <Label htmlFor={`f-label-${field.id}`} className="text-[10px] uppercase tracking-[1.5px] text-tier-4">
+            <Label htmlFor={`f-label-${field.id}`} className="text-[10px] uppercase tracking-[1.5px] text-t4">
               Label
             </Label>
             <Input
@@ -83,7 +83,7 @@ export function TemplateFieldEditor({
             />
           </div>
           <div className="space-y-1">
-            <Label htmlFor={`f-type-${field.id}`} className="text-[10px] uppercase tracking-[1.5px] text-tier-4">
+            <Label htmlFor={`f-type-${field.id}`} className="text-[10px] uppercase tracking-[1.5px] text-t4">
               Type
             </Label>
             <Select
@@ -108,9 +108,9 @@ export function TemplateFieldEditor({
         {/* Row 2: key + required */}
         <div className="grid grid-cols-2 gap-2">
           <div className="space-y-1">
-            <Label htmlFor={`f-key-${field.id}`} className="text-[10px] uppercase tracking-[1.5px] text-tier-4">
+            <Label htmlFor={`f-key-${field.id}`} className="text-[10px] uppercase tracking-[1.5px] text-t4">
               Key
-              <span className="text-tier-5 font-mono normal-case tracking-normal ml-1">
+              <span className="text-t5 font-mono normal-case tracking-normal ml-1">
                 (programmatic, a-z 0-9 _)
               </span>
             </Label>
@@ -131,7 +131,7 @@ export function TemplateFieldEditor({
               onCheckedChange={(v) => onChange({ required: !!v })}
               disabled={disabled}
             />
-            <Label htmlFor={`f-req-${field.id}`} className="text-xs text-tier-2 cursor-pointer">
+            <Label htmlFor={`f-req-${field.id}`} className="text-xs text-t2 cursor-pointer">
               Required field
             </Label>
           </div>
@@ -140,9 +140,9 @@ export function TemplateFieldEditor({
         {/* Row 3 (conditional): options for select/multiselect */}
         {usesOptions && (
           <div className="space-y-1">
-            <Label className="text-[10px] uppercase tracking-[1.5px] text-tier-4">
+            <Label className="text-[10px] uppercase tracking-[1.5px] text-t4">
               Options
-              <span className="text-tier-5 font-mono normal-case tracking-normal ml-1">
+              <span className="text-t5 font-mono normal-case tracking-normal ml-1">
                 (comma-separated)
               </span>
             </Label>
@@ -159,9 +159,9 @@ export function TemplateFieldEditor({
 
         {/* Help text (optional) */}
         <div className="space-y-1">
-          <Label htmlFor={`f-help-${field.id}`} className="text-[10px] uppercase tracking-[1.5px] text-tier-4">
+          <Label htmlFor={`f-help-${field.id}`} className="text-[10px] uppercase tracking-[1.5px] text-t4">
             Help text{" "}
-            <span className="text-tier-5 font-normal normal-case tracking-normal">(optional)</span>
+            <span className="text-t5 font-normal normal-case tracking-normal">(optional)</span>
           </Label>
           <Input
             id={`f-help-${field.id}`}
@@ -177,7 +177,7 @@ export function TemplateFieldEditor({
       <Button
         variant="ghost"
         size="icon"
-        className="h-7 w-7 shrink-0 text-tier-4 hover:text-sf-crimson"
+        className="h-7 w-7 shrink-0 text-t4 hover:text-sf-crimson"
         onClick={onDelete}
         disabled={disabled}
         aria-label="Delete field"

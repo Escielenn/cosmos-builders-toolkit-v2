@@ -277,7 +277,7 @@ export function WriteSheet({
           <button
             type="button"
             onClick={() => onOpenChange(false)}
-            className="fixed top-5 right-5 z-[60] p-2 rounded-sm text-tier-4 hover:text-tier-1 transition-colors"
+            className="fixed top-5 right-5 z-[60] p-2 rounded-sm text-t4 hover:text-t1 transition-colors"
             aria-label="Close"
           >
             <X className="w-5 h-5" />
@@ -294,7 +294,7 @@ export function WriteSheet({
             <div className="relative">
               {entryId && (
                 <Pencil className={cn(
-                  "absolute left-0 text-tier-5 transition-all duration-500",
+                  "absolute left-0 text-t5 transition-all duration-500",
                   isWriting ? "top-1 w-3.5 h-3.5 -translate-x-5" : "top-2.5 w-4 h-4 -translate-x-7"
                 )} />
               )}
@@ -304,7 +304,7 @@ export function WriteSheet({
                 onBlur={handleTitleBlur}
                 placeholder="Untitled Entry"
                 className={cn(
-                  "w-full bg-transparent border-0 border-b border-white/[0.06] focus:border-primary/30 outline-none font-display uppercase tracking-sf-title text-tier-1 placeholder:text-tier-5 transition-all duration-500 ease-out pb-3",
+                  "w-full bg-transparent border-0 border-b border-white/[0.06] focus:border-primary/30 outline-none font-display uppercase tracking-sf-title text-t1 placeholder:text-t5 transition-all duration-500 ease-out pb-3",
                   isWriting
                     ? "text-lg md:text-xl mb-2"
                     : "text-3xl md:text-5xl mb-3"
@@ -312,7 +312,7 @@ export function WriteSheet({
               />
               {prompt && (
                 <p className={cn(
-                  "text-tier-3 italic leading-relaxed transition-all duration-500 ease-out",
+                  "text-t3 italic leading-relaxed transition-all duration-500 ease-out",
                   isWriting ? "text-xs mb-4" : "text-sm mb-8"
                 )}>
                   {prompt.prompt}
@@ -336,12 +336,12 @@ export function WriteSheet({
                   >
                     <Globe className="w-3 h-3" />
                     {selectedWorld ? selectedWorld.name : "No world"}
-                    <ChevronDown className="w-3 h-3 text-tier-4" />
+                    <ChevronDown className="w-3 h-3 text-t4" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="start">
                   <DropdownMenuItem onClick={() => handleWorldChange(null)}>
-                    <span className="text-tier-3">Standalone</span>
+                    <span className="text-t3">Standalone</span>
                   </DropdownMenuItem>
                   {worlds.map((w) => (
                     <DropdownMenuItem
@@ -402,20 +402,20 @@ export function WriteSheet({
             <div className="max-w-3xl mx-auto px-6 py-3 flex items-center justify-between">
               {/* Left: word count + daily goal */}
               <div className="flex items-center gap-3">
-                <span className="font-mono text-xs text-tier-3">
+                <span className="font-mono text-xs text-t3">
                   {wordCount} {wordCount === 1 ? "word" : "words"}
                 </span>
 
                 {prompt?.wordGoal && (
                   <>
-                    <span className="text-tier-5">/</span>
-                    <span className="font-mono text-xs text-tier-4">
+                    <span className="text-t5">/</span>
+                    <span className="font-mono text-xs text-t4">
                       {prompt.wordGoal} goal
                     </span>
                   </>
                 )}
 
-                <span className="text-tier-5 hidden sm:inline">|</span>
+                <span className="text-t5 hidden sm:inline">|</span>
 
                 <div className="hidden sm:flex items-center gap-2">
                   <div className="w-16 h-1 rounded-xs bg-white/[0.06] overflow-hidden">
@@ -424,7 +424,7 @@ export function WriteSheet({
                       style={{ width: `${goalProgress}%` }}
                     />
                   </div>
-                  <span className="font-mono text-[10px] text-tier-4">
+                  <span className="font-mono text-[10px] text-t4">
                     {stats.wordsToday}/{preferences.dailyGoalWords}
                   </span>
                   <GoalSetting compact />
@@ -435,7 +435,7 @@ export function WriteSheet({
               <div className="flex items-center gap-3">
                 {/* Auto-save status indicator */}
                 {saveStatus === "saving" && (
-                  <span className="flex items-center gap-1.5 text-xs text-tier-3">
+                  <span className="flex items-center gap-1.5 text-xs text-t3">
                     <Loader2 className="w-3.5 h-3.5 animate-spin" />
                     <span className="hidden sm:inline">Saving</span>
                   </span>
@@ -447,7 +447,7 @@ export function WriteSheet({
                   </span>
                 )}
                 {saveStatus === "idle" && entryId && (
-                  <span className="flex items-center gap-1 text-[10px] text-tier-5">
+                  <span className="flex items-center gap-1 text-[10px] text-t5">
                     <Check className="w-3 h-3" />
                     <span className="hidden sm:inline">Auto-saved</span>
                   </span>

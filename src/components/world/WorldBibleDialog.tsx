@@ -276,7 +276,7 @@ const WorldBibleDialog = ({
                   "px-3 py-1.5 text-[10px] uppercase tracking-wider font-heading transition-colors",
                   exportStructure === "cascade"
                     ? "bg-primary/10 text-primary border border-primary/25"
-                    : "text-tier-4 hover:text-tier-3"
+                    : "text-t4 hover:text-t3"
                 )}
               >
                 Cascade
@@ -287,13 +287,13 @@ const WorldBibleDialog = ({
                   "px-3 py-1.5 text-[10px] uppercase tracking-wider font-heading transition-colors",
                   exportStructure === "entity"
                     ? "bg-primary/10 text-primary border border-primary/25"
-                    : "text-tier-4 hover:text-tier-3"
+                    : "text-t4 hover:text-t3"
                 )}
               >
                 Entity
               </button>
             </div>
-            <p className="text-[10px] text-tier-4">
+            <p className="text-[10px] text-t4">
               {exportStructure === "cascade"
                 ? "Organized by cascade layer: Environment → Biology → Culture → Mythology. Reads like a textbook."
                 : "Organized by entity: one chapter per major element, all data compiled per entity. Reads like an encyclopedia."}

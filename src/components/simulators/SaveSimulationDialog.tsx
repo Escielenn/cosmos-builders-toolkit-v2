@@ -51,14 +51,14 @@ export default function SaveSimulationDialog({
           <DialogTitle className="font-heading text-sm font-light uppercase tracking-[3px] text-[#00D4FF]">
             Save Simulation
           </DialogTitle>
-          <DialogDescription className="text-tier-2 mt-2">
+          <DialogDescription className="text-t2 mt-2">
             Save the current simulation state for later replay or publishing to your world.
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-3 mt-2">
           <div>
-            <Label className="text-[11px] font-medium uppercase tracking-[1.5px] text-tier-3">
+            <Label className="text-[11px] font-medium uppercase tracking-[1.5px] text-t3">
               Simulation Name
             </Label>
             <Input

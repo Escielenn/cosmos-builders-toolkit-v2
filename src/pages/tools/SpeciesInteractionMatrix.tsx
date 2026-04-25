@@ -711,12 +711,12 @@ const SpeciesInteractionMatrix = () => {
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
                             <span className="font-medium">{pair.a.name || `Species ${formState.species.indexOf(pair.a) + 1}`}</span>
-                            <ArrowRight className="w-4 h-4 text-tier-2" />
+                            <ArrowRight className="w-4 h-4 text-t2" />
                             <span className="font-medium">{pair.b.name || `Species ${formState.species.indexOf(pair.b) + 1}`}</span>
                           </div>
                         </div>
                         {formState.pairs[index]?.overallRelationship && (
-                          <p className="text-xs text-tier-4 mt-2">
+                          <p className="text-xs text-t4 mt-2">
                             {RELATIONSHIP_LEVELS.find(r => r.value === formState.pairs[index].overallRelationship)?.label}
                           </p>
                         )}
@@ -750,7 +750,7 @@ const SpeciesInteractionMatrix = () => {
                             <RadioGroupItem value={opt.value} id={`rel-${opt.value}`} />
                             <Label htmlFor={`rel-${opt.value}`} className="font-normal cursor-pointer">
                               <span className="font-medium">{opt.label}</span>
-                              <span className="text-xs text-tier-4 block">{opt.description}</span>
+                              <span className="text-xs text-t4 block">{opt.description}</span>
                             </Label>
                           </div>
                         ))}
@@ -1382,7 +1382,7 @@ const SpeciesInteractionMatrix = () => {
                     </CardHeader>
                     <CardContent className="space-y-2">
                       <p className="text-sm">{example.description}</p>
-                      <p className="text-xs text-tier-4 italic">{example.dynamics}</p>
+                      <p className="text-xs text-t4 italic">{example.dynamics}</p>
                     </CardContent>
                   </Card>
                 ))}

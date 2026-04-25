@@ -23,7 +23,7 @@ import { ROADMAP_BURSTS } from "@/lib/data-bursts";
 const STATUS_CONFIG: Record<string, { label: string; className: string }> = {
   planned: {
     label: "PLANNED",
-    className: "bg-white/5 border-white/10 text-tier-3",
+    className: "bg-white/5 border-white/10 text-t3",
   },
   in_progress: {
     label: "IN PROGRESS",
@@ -51,11 +51,11 @@ function VoteBudgetBar({ used, remaining, max }: { used: number; remaining: numb
   return (
     <GlassPanel className="p-4 mb-6 border-violet-500/15">
       <div className="flex items-center justify-between mb-2">
-        <span className="text-xs font-medium uppercase tracking-[1.5px] text-tier-3">
+        <span className="text-xs font-medium uppercase tracking-[1.5px] text-t3">
           VOTE BUDGET
         </span>
         <span className="font-mono text-sm text-sf-violet">
-          {remaining}/{max} <span className="text-tier-4">remaining</span>
+          {remaining}/{max} <span className="text-t4">remaining</span>
         </span>
       </div>
       <div className="h-2 bg-white/5 rounded-sm overflow-hidden">
@@ -111,7 +111,7 @@ function RoadmapCard({ item, canVote }: { item: RoadmapItem; canVote: boolean })
     <GlassPanel className="p-6 group">
       {/* Header row */}
       <div className="flex items-center gap-2 mb-3 flex-wrap">
-        <Badge variant="outline" className="gap-1 text-tier-3 border-white/10">
+        <Badge variant="outline" className="gap-1 text-t3 border-white/10">
           <CategoryIcon className="w-3 h-3" />
           {item.category.toUpperCase()}
         </Badge>
@@ -119,16 +119,16 @@ function RoadmapCard({ item, canVote }: { item: RoadmapItem; canVote: boolean })
           {statusCfg.label}
         </Badge>
         {item.target_quarter && (
-          <span className="text-xs font-mono text-tier-4 ml-auto">{item.target_quarter}</span>
+          <span className="text-xs font-mono text-t4 ml-auto">{item.target_quarter}</span>
         )}
       </div>
 
       {/* Title & description */}
-      <h3 className="font-heading text-lg font-light uppercase tracking-[2px] text-tier-1 mb-2">
+      <h3 className="font-heading text-lg font-light uppercase tracking-[2px] text-t1 mb-2">
         {item.title}
       </h3>
       {item.description && (
-        <p className="text-sm text-tier-2 mb-4 leading-relaxed">{item.description}</p>
+        <p className="text-sm text-t2 mb-4 leading-relaxed">{item.description}</p>
       )}
 
       {/* Vote bar */}
@@ -139,8 +139,8 @@ function RoadmapCard({ item, canVote }: { item: RoadmapItem; canVote: boolean })
             style={{ width: `${voteBarPct}%` }}
           />
         </div>
-        <span className="font-mono text-sm text-tier-1 tabular-nums min-w-[60px] text-right">
-          {item.vote_count} <span className="text-tier-4 text-xs">votes</span>
+        <span className="font-mono text-sm text-t1 tabular-nums min-w-[60px] text-right">
+          {item.vote_count} <span className="text-t4 text-xs">votes</span>
         </span>
       </div>
 
@@ -165,7 +165,7 @@ function RoadmapCard({ item, canVote }: { item: RoadmapItem; canVote: boolean })
             <Button
               variant="ghost"
               size="sm"
-              className="gap-1 text-tier-4 hover:text-sf-crimson ml-auto"
+              className="gap-1 text-t4 hover:text-sf-crimson ml-auto"
               onClick={handleRemoveVote}
               disabled={removeVote.isPending}
             >
@@ -217,10 +217,10 @@ const Roadmap = () => {
         <PageBursts bursts={ROADMAP_BURSTS} />
         {/* Hero */}
         <section className="text-center mb-8">
-          <h1 className="font-display text-3xl md:text-4xl font-light tracking-sf-title text-tier-1 mb-3">
+          <h1 className="font-display text-3xl md:text-4xl font-light tracking-sf-title text-t1 mb-3">
             ROADMAP
           </h1>
-          <p className="text-tier-2 max-w-xl mx-auto">
+          <p className="text-t2 max-w-xl mx-auto">
             Shape what comes next. Vanguard members vote to prioritize upcoming tools and features.
           </p>
         </section>
@@ -243,7 +243,7 @@ const Roadmap = () => {
               className={`px-4 py-2 text-xs font-heading uppercase tracking-[1.5px] border transition-colors whitespace-nowrap ${
                 statusFilter === tab.value
                   ? 'border-teal-500/30 bg-teal-500/6 text-teal-400'
-                  : 'border-white/8 text-tier-3 hover:border-white/15 hover:text-tier-2'
+                  : 'border-white/8 text-t3 hover:border-white/15 hover:text-t2'
               }`}
             >
               {tab.label}
@@ -253,10 +253,10 @@ const Roadmap = () => {
 
         {/* Roadmap items */}
         {isLoading ? (
-          <div className="text-center py-16 text-tier-3">Loading roadmap...</div>
+          <div className="text-center py-16 text-t3">Loading roadmap...</div>
         ) : items.length === 0 ? (
           <GlassPanel className="p-8 text-center">
-            <p className="text-tier-3">No roadmap items match this filter.</p>
+            <p className="text-t3">No roadmap items match this filter.</p>
           </GlassPanel>
         ) : (
           <div className="space-y-4">
@@ -277,7 +277,7 @@ const Roadmap = () => {
             <h3 className="font-heading text-lg font-light uppercase tracking-[2px] mb-2">
               Want to shape the roadmap?
             </h3>
-            <p className="text-sm text-tier-2 mb-4 max-w-md mx-auto">
+            <p className="text-sm text-t2 mb-4 max-w-md mx-auto">
               Vanguard members get 10 votes per month to prioritize what gets built next, plus early access to new tools, Office Hours, and more.
             </p>
             <Button

@@ -35,7 +35,7 @@ export function PromptCard({ onStartWriting }: PromptCardProps) {
                 {DIFFICULTY_LABELS[prompt.difficulty]}
               </Badge>
             </div>
-            <span className="font-mono text-[10px] text-tier-4 uppercase tracking-[1.5px] ml-auto">
+            <span className="font-mono text-[10px] text-t4 uppercase tracking-[1.5px] ml-auto">
               {source === "scheduled"
                 ? "Scheduled Prompt"
                 : source === "featured"
@@ -44,19 +44,19 @@ export function PromptCard({ onStartWriting }: PromptCardProps) {
             </span>
           </div>
 
-          <h2 className="font-heading text-lg font-light uppercase tracking-[2px] text-tier-1 mb-3">
+          <h2 className="font-heading text-lg font-light uppercase tracking-[2px] text-t1 mb-3">
             {prompt.title}
           </h2>
 
-          <p className="text-tier-2 italic leading-relaxed line-clamp-3 mb-4">
+          <p className="text-t2 italic leading-relaxed line-clamp-3 mb-4">
             {prompt.prompt}
           </p>
 
           <div className="flex items-center justify-between">
             {prompt.wordGoal && (
               <div className="flex items-center gap-2">
-                <Target className="w-3.5 h-3.5 text-tier-4" />
-                <span className="font-mono text-xs text-tier-4">
+                <Target className="w-3.5 h-3.5 text-t4" />
+                <span className="font-mono text-xs text-t4">
                   {prompt.wordGoal} words
                 </span>
               </div>

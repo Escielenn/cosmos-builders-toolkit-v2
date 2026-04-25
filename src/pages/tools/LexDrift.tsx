@@ -533,7 +533,7 @@ const LexDrift = () => {
           <blockquote className="border-l-2 border-primary pl-4 italic text-lg mb-4">
             "Isolation is the engine of linguistic divergence."
           </blockquote>
-          <p className="text-tier-2">
+          <p className="text-t2">
             Model how languages evolve during long-duration space missions and interstellar colonization.
             Based on McKenzie & Punske (2019), Polynesian expansion studies, and colonial dialect research,
             this tool calculates divergence rates, predicts change types, and generates sample texts showing
@@ -553,7 +553,7 @@ const LexDrift = () => {
             icon={<Globe className="w-5 h-5" />}
             defaultOpen={true}
           >
-            <p className="text-sm text-tier-3 italic mb-6">{SECTION_HELPERS.mission}</p>
+            <p className="text-sm text-t3 italic mb-6">{SECTION_HELPERS.mission}</p>
             <div className="space-y-6">
               {/* Duration */}
               <div className="space-y-3">
@@ -571,7 +571,7 @@ const LexDrift = () => {
                   step={10}
                   aria-label="Mission duration"
                 />
-                <div className="flex justify-between text-xs text-tier-4">
+                <div className="flex justify-between text-xs text-t4">
                   <span>50 years</span>
                   <span>1,000 years</span>
                 </div>
@@ -593,7 +593,7 @@ const LexDrift = () => {
                   step={50}
                   aria-label="Population"
                 />
-                <div className="flex justify-between text-xs text-tier-4">
+                <div className="flex justify-between text-xs text-t4">
                   <span>50</span>
                   <span>50,000</span>
                 </div>
@@ -611,7 +611,7 @@ const LexDrift = () => {
                     {ISOLATION_LEVELS.map((level) => (
                       <SelectItem key={level.id} value={level.id}>
                         <span className="font-medium">{level.label}</span>
-                        <span className="text-tier-2 ml-2">— {level.description}</span>
+                        <span className="text-t2 ml-2">— {level.description}</span>
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -628,7 +628,7 @@ const LexDrift = () => {
             levelNumber={2}
             icon={<Languages className="w-5 h-5" />}
           >
-            <p className="text-sm text-tier-3 italic mb-6">{SECTION_HELPERS.linguistic}</p>
+            <p className="text-sm text-t3 italic mb-6">{SECTION_HELPERS.linguistic}</p>
             <div className="space-y-6">
               {/* Starting Languages */}
               <div className="space-y-3">
@@ -650,7 +650,7 @@ const LexDrift = () => {
                       />
                       <label htmlFor={`lang-${lang.id}`} className="cursor-pointer text-sm flex-1">
                         <span className="font-medium">{lang.label}</span>
-                        <span className="text-tier-2 ml-1 text-xs">({lang.family})</span>
+                        <span className="text-t2 ml-1 text-xs">({lang.family})</span>
                       </label>
                     </div>
                   ))}
@@ -724,7 +724,7 @@ const LexDrift = () => {
                     onCheckedChange={(checked) => updateLinguistic("liturgicalPreservation", checked)}
                   />
                   <Label className="cursor-pointer">Liturgical Preservation</Label>
-                  <span className="text-xs text-tier-4">(preserve one variety for ceremony)</span>
+                  <span className="text-xs text-t4">(preserve one variety for ceremony)</span>
                 </div>
                 {formState.linguistic.liturgicalPreservation && (
                   <Select
@@ -753,12 +753,12 @@ const LexDrift = () => {
               onClick={() => setShowAdvanced(!showAdvanced)}
               className="flex items-center gap-2 px-3 py-1.5 rounded-sm border border-sf-border bg-accent/5 hover:bg-accent/10 transition-colors"
             >
-              <span className="font-mono text-[10px] uppercase tracking-[1.5px] text-tier-3">
+              <span className="font-mono text-[10px] uppercase tracking-[1.5px] text-t3">
                 {showAdvanced ? "▾ Hide" : "▸ Show"} Advanced Parameters
               </span>
             </button>
             {!showAdvanced && (
-              <span className="font-mono text-[10px] text-tier-4">
+              <span className="font-mono text-[10px] text-t4">
                 Using default social factors
               </span>
             )}
@@ -774,7 +774,7 @@ const LexDrift = () => {
             icon={<GraduationCap className="w-5 h-5" />}
             defaultOpen={true}
           >
-            <p className="text-sm text-tier-3 italic mb-6">{SECTION_HELPERS.social}</p>
+            <p className="text-sm text-t3 italic mb-6">{SECTION_HELPERS.social}</p>
             <div className="space-y-6">
               {/* Education Policy */}
               <div className="space-y-2">
@@ -788,7 +788,7 @@ const LexDrift = () => {
                     {EDUCATION_POLICIES.map((policy) => (
                       <SelectItem key={policy.id} value={policy.id}>
                         <span className="font-medium">{policy.label}</span>
-                        <span className="text-tier-2 ml-2">— {policy.description}</span>
+                        <span className="text-t2 ml-2">— {policy.description}</span>
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -811,7 +811,7 @@ const LexDrift = () => {
                   step={5}
                   aria-label="Identity pressure"
                 />
-                <div className="flex justify-between text-xs text-tier-4">
+                <div className="flex justify-between text-xs text-t4">
                   <span>Earth-identified</span>
                   <span>Strongly Divergent</span>
                 </div>
@@ -829,7 +829,7 @@ const LexDrift = () => {
                     {MEDIA_ACCESS_LEVELS.map((level) => (
                       <SelectItem key={level.id} value={level.id}>
                         <span className="font-medium">{level.label}</span>
-                        <span className="text-tier-2 ml-2">— {level.description}</span>
+                        <span className="text-t2 ml-2">— {level.description}</span>
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -849,7 +849,7 @@ const LexDrift = () => {
                   <div key={event.id} className="flex gap-2 items-start p-3 rounded-lg border border-border">
                     <div className="grid grid-cols-3 gap-2 flex-1">
                       <div className="space-y-1">
-                        <span className="text-xs text-tier-4">Year</span>
+                        <span className="text-xs text-t4">Year</span>
                         <Input
                           type="number"
                           value={event.year}
@@ -859,7 +859,7 @@ const LexDrift = () => {
                         />
                       </div>
                       <div className="space-y-1">
-                        <span className="text-xs text-tier-4">Type</span>
+                        <span className="text-xs text-t4">Type</span>
                         <Select
                           value={event.type}
                           onValueChange={(val) => updateContactEvent(event.id, "type", val)}
@@ -873,7 +873,7 @@ const LexDrift = () => {
                         </Select>
                       </div>
                       <div className="space-y-1">
-                        <span className="text-xs text-tier-4">Notes</span>
+                        <span className="text-xs text-t4">Notes</span>
                         <Input
                           value={event.description}
                           onChange={(e) => updateContactEvent(event.id, "description", e.target.value)}
@@ -912,7 +912,7 @@ const LexDrift = () => {
               <>
                 {/* Hero: Divergence Score */}
                 <GlassPanel glow className="p-6 md:p-8 text-center">
-                  <p className="font-mono text-xs uppercase tracking-sf-ultra text-tier-2 mb-2">
+                  <p className="font-mono text-xs uppercase tracking-sf-ultra text-t2 mb-2">
                     Language Divergence
                   </p>
                   <p className={`font-mono text-5xl md:text-6xl font-sf-light ${sColors.text}`}>
@@ -926,24 +926,24 @@ const LexDrift = () => {
                 {/* Intelligibility / New Terms */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <GlassPanel className="p-5">
-                    <p className="font-mono text-xs uppercase tracking-sf-wide text-tier-2 mb-1">
+                    <p className="font-mono text-xs uppercase tracking-sf-wide text-t2 mb-1">
                       Mutual Intelligibility
                     </p>
                     <p className="font-mono text-2xl font-semibold text-foreground">
                       {calculationResult.intelligibilityPercent.toFixed(0)}%
                     </p>
-                    <p className="text-xs text-tier-4 mt-1">
+                    <p className="text-xs text-t4 mt-1">
                       {calculationResult.intelligibilityDescription}
                     </p>
                   </GlassPanel>
                   <GlassPanel className="p-5">
-                    <p className="font-mono text-xs uppercase tracking-sf-wide text-tier-2 mb-1">
+                    <p className="font-mono text-xs uppercase tracking-sf-wide text-t2 mb-1">
                       Estimated New Vocabulary
                     </p>
                     <p className="font-mono text-2xl font-semibold text-foreground">
                       ~{calculationResult.estimatedNewTerms.toLocaleString()} terms
                     </p>
-                    <p className="text-xs text-tier-4 mt-1">
+                    <p className="text-xs text-t4 mt-1">
                       {calculationResult.vocabularyCategories.join(" · ")}
                     </p>
                   </GlassPanel>
@@ -976,7 +976,7 @@ const LexDrift = () => {
 
                   return (
                     <div className="px-1 py-2">
-                      <p className="font-mono text-[10px] uppercase tracking-[2px] text-tier-2 mb-2">Divergence Over Time</p>
+                      <p className="font-mono text-[10px] uppercase tracking-[2px] text-t2 mb-2">Divergence Over Time</p>
                       <svg viewBox={`0 0 ${W} ${H}`} className="w-full max-w-[480px]" aria-label="Divergence and intelligibility over generations">
                         {/* Grid lines */}
                         {[0, 25, 50, 75, 100].map(v => (
@@ -1011,18 +1011,18 @@ const LexDrift = () => {
                 {/* Sound & Grammar Changes */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <GlassPanel className={`p-5 border-l-4 ${sColors.border}`}>
-                    <p className="font-mono text-xs uppercase tracking-sf-wide text-tier-2 mb-2">
+                    <p className="font-mono text-xs uppercase tracking-sf-wide text-t2 mb-2">
                       Sound Changes
                     </p>
-                    <p className="text-sm text-tier-3 leading-relaxed">
+                    <p className="text-sm text-t3 leading-relaxed">
                       {calculationResult.soundChanges}
                     </p>
                   </GlassPanel>
                   <GlassPanel className={`p-5 border-l-4 ${sColors.border}`}>
-                    <p className="font-mono text-xs uppercase tracking-sf-wide text-tier-2 mb-2">
+                    <p className="font-mono text-xs uppercase tracking-sf-wide text-t2 mb-2">
                       Grammar Changes
                     </p>
-                    <p className="text-sm text-tier-3 leading-relaxed">
+                    <p className="text-sm text-t3 leading-relaxed">
                       {calculationResult.grammarChanges}
                     </p>
                   </GlassPanel>
@@ -1035,11 +1035,11 @@ const LexDrift = () => {
                   </p>
                   <p className="font-heading font-semibold text-foreground mb-1">
                     {calculationResult.historicalAnalogue.title}
-                    <span className="text-tier-2 text-sm font-normal ml-2">
+                    <span className="text-t2 text-sm font-normal ml-2">
                       ({calculationResult.historicalAnalogue.period})
                     </span>
                   </p>
-                  <p className="text-sm text-tier-3 leading-relaxed">
+                  <p className="text-sm text-t3 leading-relaxed">
                     {calculationResult.historicalAnalogue.description}
                   </p>
                 </GlassPanel>
@@ -1047,24 +1047,24 @@ const LexDrift = () => {
                 {/* Sign Language Results */}
                 {calculationResult.signLanguageDivergence !== undefined && (
                   <GlassPanel className="p-5">
-                    <p className="font-mono text-xs uppercase tracking-sf-wide text-tier-2 mb-2">
+                    <p className="font-mono text-xs uppercase tracking-sf-wide text-t2 mb-2">
                       Sign Language Track
                     </p>
                     <div className="grid grid-cols-2 gap-4 mb-3">
                       <div>
-                        <span className="text-xs text-tier-4">Divergence</span>
+                        <span className="text-xs text-t4">Divergence</span>
                         <p className="font-mono text-lg font-semibold">
                           {calculationResult.signLanguageDivergence.toFixed(1)}%
                         </p>
                       </div>
                       <div>
-                        <span className="text-xs text-tier-4">Intelligibility</span>
+                        <span className="text-xs text-t4">Intelligibility</span>
                         <p className="font-mono text-lg font-semibold">
                           {calculationResult.signLanguageIntelligibility?.toFixed(0)}%
                         </p>
                       </div>
                     </div>
-                    <p className="text-xs text-tier-4 italic">
+                    <p className="text-xs text-t4 italic">
                       {calculationResult.signLanguageNote}
                     </p>
                   </GlassPanel>
@@ -1076,7 +1076,7 @@ const LexDrift = () => {
                     <p className="font-mono text-xs uppercase tracking-sf-wide text-sf-amber/60 mb-2">
                       Liturgical Preservation
                     </p>
-                    <p className="text-sm text-tier-3 leading-relaxed">
+                    <p className="text-sm text-t3 leading-relaxed">
                       {calculationResult.liturgicalNote}
                     </p>
                   </GlassPanel>
@@ -1084,7 +1084,7 @@ const LexDrift = () => {
 
                 {/* Modifier Breakdown */}
                 <GlassPanel className="p-5">
-                  <p className="font-mono text-xs uppercase tracking-sf-wide text-tier-2 mb-3">
+                  <p className="font-mono text-xs uppercase tracking-sf-wide text-t2 mb-3">
                     Divergence Modifiers
                   </p>
                   <div className="space-y-2">
@@ -1096,7 +1096,7 @@ const LexDrift = () => {
                       { label: "Media", value: calculationResult.mediaModifier },
                     ].map(({ label, value }) => (
                       <div key={label} className="flex justify-between items-center">
-                        <span className="text-sm text-tier-3">{label}</span>
+                        <span className="text-sm text-t3">{label}</span>
                         <span className={`font-mono text-sm ${value > 1 ? "text-orange-400" : value < 1 ? "text-sf-emerald" : "text-foreground"}`}>
                           ×{value.toFixed(2)}
                         </span>
@@ -1116,7 +1116,7 @@ const LexDrift = () => {
                   <p className="font-mono text-xs uppercase tracking-sf-wide text-primary/60 mb-3">
                     Narrative Summary
                   </p>
-                  <p className="text-sm leading-relaxed text-tier-2">
+                  <p className="text-sm leading-relaxed text-t2">
                     {calculationResult.narrativeSummary}
                   </p>
                   <Button
@@ -1133,7 +1133,7 @@ const LexDrift = () => {
                 {/* Story Callouts */}
                 {calculationResult.storyCallouts.length > 0 && (
                   <div className="space-y-3">
-                    <p className="font-mono text-xs uppercase tracking-sf-wide text-tier-2">
+                    <p className="font-mono text-xs uppercase tracking-sf-wide text-t2">
                       What This Means For Your Story
                     </p>
                     {calculationResult.storyCallouts.map((callout, i) => (
@@ -1144,7 +1144,7 @@ const LexDrift = () => {
                         <p className="font-heading text-sm font-semibold mb-1">
                           {callout.title}
                         </p>
-                        <p className="text-xs text-tier-4 leading-relaxed">
+                        <p className="text-xs text-t4 leading-relaxed">
                           {callout.prompt}
                         </p>
                       </div>
@@ -1154,8 +1154,8 @@ const LexDrift = () => {
               </>
             ) : (
               <GlassPanel className="p-8 text-center">
-                <Languages className="w-8 h-8 text-tier-2 mx-auto mb-3 opacity-50" />
-                <p className="text-tier-2">
+                <Languages className="w-8 h-8 text-t2 mx-auto mb-3 opacity-50" />
+                <p className="text-t2">
                   {calculationResult.error || "Configure your mission parameters to see predictions."}
                 </p>
               </GlassPanel>
@@ -1170,7 +1170,7 @@ const LexDrift = () => {
             levelNumber={5}
             icon={<BookOpen className="w-5 h-5" />}
           >
-            <p className="text-sm text-tier-3 italic mb-6">{SECTION_HELPERS.samples}</p>
+            <p className="text-sm text-t3 italic mb-6">{SECTION_HELPERS.samples}</p>
             <div className="space-y-4">
               <GlassPanel className="p-4 border-l-4 border-l-primary">
                 <p className="font-mono text-xs uppercase tracking-sf-wide text-primary/60 mb-2">
@@ -1186,18 +1186,18 @@ const LexDrift = () => {
                     key={sample.years}
                     className={`p-4 ${isRelevant ? "" : "opacity-40"}`}
                   >
-                    <p className="font-mono text-xs uppercase tracking-sf-wide text-tier-2 mb-2">
+                    <p className="font-mono text-xs uppercase tracking-sf-wide text-t2 mb-2">
                       {sample.label}
                     </p>
                     <p className="text-sm font-medium mb-2 font-mono">{sample.text}</p>
-                    <p className="text-xs text-tier-4 italic">{sample.notes}</p>
+                    <p className="text-xs text-t4 italic">{sample.notes}</p>
                   </GlassPanel>
                 );
               })}
 
               {/* Scientific Notes */}
               <div className="pt-4 space-y-3">
-                <p className="font-mono text-xs uppercase tracking-sf-wide text-tier-2">
+                <p className="font-mono text-xs uppercase tracking-sf-wide text-t2">
                   Linguistic Principles
                 </p>
                 {SCIENTIFIC_NOTES.map((note) => (
@@ -1205,7 +1205,7 @@ const LexDrift = () => {
                     <Info className="w-4 h-4 text-primary shrink-0 mt-0.5" />
                     <div>
                       <p className="text-sm font-medium mb-0.5">{note.title}</p>
-                      <p className="text-xs text-tier-4">{note.text}</p>
+                      <p className="text-xs text-t4">{note.text}</p>
                     </div>
                   </div>
                 ))}
@@ -1221,7 +1221,7 @@ const LexDrift = () => {
             levelNumber={6}
             icon={<Ship className="w-5 h-5" />}
           >
-            <p className="text-sm text-tier-3 italic mb-6">{SECTION_HELPERS.multiShip}</p>
+            <p className="text-sm text-t3 italic mb-6">{SECTION_HELPERS.multiShip}</p>
             <div className="space-y-6">
               <div className="flex items-center gap-3">
                 <Switch
@@ -1265,7 +1265,7 @@ const LexDrift = () => {
                       </div>
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-1">
-                          <span className="text-xs text-tier-4">Departs at Year</span>
+                          <span className="text-xs text-t4">Departs at Year</span>
                           <Input
                             type="number"
                             value={ship.departureYear}
@@ -1275,7 +1275,7 @@ const LexDrift = () => {
                           />
                         </div>
                         <div className="space-y-1">
-                          <span className="text-xs text-tier-4">Population</span>
+                          <span className="text-xs text-t4">Population</span>
                           <Input
                             type="number"
                             value={ship.population}
@@ -1290,7 +1290,7 @@ const LexDrift = () => {
                   {/* Multi-ship results */}
                   {calculationResult.valid && calculationResult.shipResults && calculationResult.shipResults.length > 0 && (
                     <div className="space-y-3">
-                      <p className="font-mono text-xs uppercase tracking-sf-wide text-tier-2">
+                      <p className="font-mono text-xs uppercase tracking-sf-wide text-t2">
                         Inter-Ship Analysis
                       </p>
                       {calculationResult.shipResults.map((sr, i) => (
@@ -1303,19 +1303,19 @@ const LexDrift = () => {
                           </div>
                           <div className="grid grid-cols-3 gap-3 text-center mb-2">
                             <div>
-                              <p className="text-xs text-tier-4">Departs</p>
+                              <p className="text-xs text-t4">Departs</p>
                               <p className="font-mono text-sm">Year {sr.departureYear}</p>
                             </div>
                             <div>
-                              <p className="text-xs text-tier-4">Earth Divergence</p>
+                              <p className="text-xs text-t4">Earth Divergence</p>
                               <p className="font-mono text-sm">{sr.divergenceFromEarth.toFixed(1)}%</p>
                             </div>
                             <div>
-                              <p className="text-xs text-tier-4">Inter-Ship Intel.</p>
+                              <p className="text-xs text-t4">Inter-Ship Intel.</p>
                               <p className="font-mono text-sm">{sr.intelligibilityWithPrimary.toFixed(0)}%</p>
                             </div>
                           </div>
-                          <p className="text-xs text-tier-4">{sr.note}</p>
+                          <p className="text-xs text-t4">{sr.note}</p>
                         </GlassPanel>
                       ))}
 
@@ -1337,7 +1337,7 @@ const LexDrift = () => {
 
                         return (
                           <div className="mt-4">
-                            <p className="font-mono text-[10px] uppercase tracking-[2px] text-tier-2 mb-2">Language Family Tree</p>
+                            <p className="font-mono text-[10px] uppercase tracking-[2px] text-t2 mb-2">Language Family Tree</p>
                             <svg viewBox={`0 0 ${W} ${H}`} className="w-full max-w-[440px]" aria-label="Language family tree showing divergence branches">
                               {/* Root node: Earth Standard */}
                               <circle cx={rootX} cy={rootY} r={4} fill="rgba(0,212,255,0.6)" />
@@ -1385,11 +1385,11 @@ const LexDrift = () => {
             levelNumber={7}
             icon={<Users className="w-5 h-5" />}
           >
-            <p className="text-sm text-tier-3 italic mb-6">{SECTION_HELPERS.story}</p>
+            <p className="text-sm text-t3 italic mb-6">{SECTION_HELPERS.story}</p>
             <div className="space-y-8">
               <div className="space-y-2">
                 <Label>Linguistic Identity</Label>
-                <p className="text-xs text-tier-4 mb-2">
+                <p className="text-xs text-t4 mb-2">
                   How do your characters relate to their language? Is it a source of pride, shame, or indifference?
                 </p>
                 <Suspense fallback={<div className="h-32 animate-pulse bg-muted rounded-lg" />}>
@@ -1403,7 +1403,7 @@ const LexDrift = () => {
 
               <div className="space-y-2">
                 <Label>First Contact Moment</Label>
-                <p className="text-xs text-tier-4 mb-2">
+                <p className="text-xs text-t4 mb-2">
                   When your travelers meet someone who speaks "old Earth" standard, what happens?
                 </p>
                 <Suspense fallback={<div className="h-32 animate-pulse bg-muted rounded-lg" />}>
@@ -1417,7 +1417,7 @@ const LexDrift = () => {
 
               <div className="space-y-2">
                 <Label>Cultural Preservation</Label>
-                <p className="text-xs text-tier-4 mb-2">
+                <p className="text-xs text-t4 mb-2">
                   What does the community try to preserve? Songs, stories, technical manuals, religious texts?
                 </p>
                 <Suspense fallback={<div className="h-32 animate-pulse bg-muted rounded-lg" />}>
@@ -1431,7 +1431,7 @@ const LexDrift = () => {
 
               <div className="space-y-2">
                 <Label>Generational Shift</Label>
-                <p className="text-xs text-tier-4 mb-2">
+                <p className="text-xs text-t4 mb-2">
                   How does the relationship to the old language change across generations?
                 </p>
                 <Suspense fallback={<div className="h-32 animate-pulse bg-muted rounded-lg" />}>

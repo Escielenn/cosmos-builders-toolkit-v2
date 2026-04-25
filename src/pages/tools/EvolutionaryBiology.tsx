@@ -684,7 +684,7 @@ const EvolutionaryBiology = () => {
             <div>
               <span className="font-medium text-sm">{option.name}</span>
               {option.description && (
-                <p className="text-xs text-tier-4 mt-0.5">
+                <p className="text-xs text-t4 mt-0.5">
                   {option.description}
                 </p>
               )}
@@ -722,7 +722,7 @@ const EvolutionaryBiology = () => {
             variant="ghost"
             size="icon"
             onClick={() => onChange(items.filter((_, i) => i !== index))}
-            className="h-10 w-10 text-tier-2 hover:text-sf-crimson"
+            className="h-10 w-10 text-t2 hover:text-sf-crimson"
             aria-label="Remove item"
           >
             <Trash2 className="w-4 h-4" />
@@ -916,10 +916,10 @@ const EvolutionaryBiology = () => {
           <blockquote className="border-l-2 border-primary pl-4 italic text-lg mb-4">
             "Every trait is a solution to a problem. Every solution creates new problems."
           </blockquote>
-          <p className="text-tier-2 mb-4">
+          <p className="text-t2 mb-4">
             This tool helps you design alien species where biology emerges from environment, and psychology emerges from biology. Start with the survival pressures your world creates, then trace their consequences through biochemistry, body plan, sensory systems, reproduction, social structure, cognition, and psychology.
           </p>
-          <div className="text-sm text-tier-3 mb-4">
+          <div className="text-sm text-t3 mb-4">
             <strong className="text-foreground">The Evolutionary Cascade:</strong>
             <p className="mt-1">Environment → Survival Pressures → Biochemistry → Body Plan → Sensory Systems → Reproduction → Social Structure → Cognition → Communication → Psychology</p>
           </div>
@@ -955,7 +955,7 @@ const EvolutionaryBiology = () => {
                 </div>
                 <div>
                   <h2 className="font-heading text-[11px] font-light uppercase tracking-[3px] text-[hsl(var(--sf-section-green))]">Species Identity</h2>
-                  <p className="text-xs text-tier-4">Name your species and link to environmental context</p>
+                  <p className="text-xs text-t4">Name your species and link to environmental context</p>
                 </div>
               </div>
 
@@ -983,7 +983,7 @@ const EvolutionaryBiology = () => {
                     onChange={(e) => setFormState(prev => ({ ...prev, speciesName: e.target.value }))}
                     className="text-lg"
                   />
-                  <p className="text-xs text-tier-4">
+                  <p className="text-xs text-t4">
                     Give your species a distinctive name that reflects their nature or culture.
                   </p>
                 </div>
@@ -1008,7 +1008,7 @@ const EvolutionaryBiology = () => {
                     </div>
                     {(formState._linkedWorksheets?.planet || formState._linkedWorksheets?.ecr) && (
                       <div className="mt-3 p-3 bg-muted/30 rounded-lg">
-                        <p className="text-xs text-tier-4">
+                        <p className="text-xs text-t4">
                           <span className="text-sf-emerald font-medium">Linked data</span> from your planet and environment worksheets
                           will help inform evolutionary pressures and biological constraints.
                         </p>
@@ -1033,7 +1033,7 @@ const EvolutionaryBiology = () => {
               >
                 <div className="space-y-2">
                   <Label>Primary Survival Pressures</Label>
-                  <p className="text-xs text-tier-4 mb-3">
+                  <p className="text-xs text-t4 mb-3">
                     What environmental challenges shaped this species?
                   </p>
                   <CheckboxGroup
@@ -1214,7 +1214,7 @@ const EvolutionaryBiology = () => {
                   <Label>Temperature Range (°C)</Label>
                   <div className="grid grid-cols-3 gap-4">
                     <div>
-                      <Label className="text-xs text-tier-4">Min</Label>
+                      <Label className="text-xs text-t4">Min</Label>
                       <Input
                         value={formState.biochemistry.temperatureRange.min}
                         onChange={(e) =>
@@ -1226,7 +1226,7 @@ const EvolutionaryBiology = () => {
                       />
                     </div>
                     <div>
-                      <Label className="text-xs text-tier-4">Optimal</Label>
+                      <Label className="text-xs text-t4">Optimal</Label>
                       <Input
                         value={formState.biochemistry.temperatureRange.optimal}
                         onChange={(e) =>
@@ -1238,7 +1238,7 @@ const EvolutionaryBiology = () => {
                       />
                     </div>
                     <div>
-                      <Label className="text-xs text-tier-4">Max</Label>
+                      <Label className="text-xs text-t4">Max</Label>
                       <Input
                         value={formState.biochemistry.temperatureRange.max}
                         onChange={(e) =>
@@ -1279,7 +1279,7 @@ const EvolutionaryBiology = () => {
               >
                 <div className="space-y-2">
                   <Label>Key Adaptations</Label>
-                  <p className="text-xs text-tier-4 mb-3">
+                  <p className="text-xs text-t4 mb-3">
                     For each trait, identify what pressure selected for it and what tradeoff it required.
                   </p>
                   <DynamicList
@@ -2308,7 +2308,7 @@ const EvolutionaryBiology = () => {
               >
                 <div className="space-y-2">
                   <Label>Emotion Analogs</Label>
-                  <p className="text-xs text-tier-4 mb-3">
+                  <p className="text-xs text-t4 mb-3">
                     What emotional states would evolution have selected for?
                   </p>
                   <CheckboxGroup
@@ -2426,7 +2426,7 @@ const EvolutionaryBiology = () => {
               >
                 <div className="space-y-2">
                   <Label>Vestigial Traits</Label>
-                  <p className="text-xs text-tier-4 mb-3">
+                  <p className="text-xs text-t4 mb-3">
                     What evolutionary leftovers hint at their history?
                   </p>
                   <DynamicList
@@ -2517,7 +2517,7 @@ const EvolutionaryBiology = () => {
               >
                 <div className="space-y-2">
                   <Label>Human Assumptions Avoided</Label>
-                  <p className="text-xs text-tier-4 mb-3">
+                  <p className="text-xs text-t4 mb-3">
                     Check the human assumptions this species genuinely differs from.
                   </p>
                   <CheckboxGroup

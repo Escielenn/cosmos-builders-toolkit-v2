@@ -139,10 +139,10 @@ export default function WikiBrowse() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="font-heading text-xl font-light uppercase tracking-[2px] text-tier-1">
+          <h1 className="font-heading text-xl font-light uppercase tracking-[2px] text-t1">
             Wiki
           </h1>
-          <p className="text-[11px] text-tier-4 mt-1">
+          <p className="text-[11px] text-t4 mt-1">
             {allEntries.length} {allEntries.length === 1 ? "entry" : "entries"}
             {filtered.length !== allEntries.length &&
               ` · ${filtered.length} shown`}
@@ -161,7 +161,7 @@ export default function WikiBrowse() {
       {/* Search + Filter toggle */}
       <div className="flex items-center gap-2 mb-4">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-tier-4" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-t4" />
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -191,7 +191,7 @@ export default function WikiBrowse() {
       {showFilters && (
         <GlassPanel className="mb-4 p-4">
           <div className="flex items-center justify-between mb-3">
-            <span className="font-heading text-[9px] uppercase tracking-[2px] text-tier-3">
+            <span className="font-heading text-[9px] uppercase tracking-[2px] text-t3">
               Filters
             </span>
             {hasActiveFilters && (
@@ -201,7 +201,7 @@ export default function WikiBrowse() {
                   setActiveType(null);
                   setActiveTags([]);
                 }}
-                className="text-[9px] uppercase tracking-wider text-tier-4 hover:text-tier-2 transition-colors"
+                className="text-[9px] uppercase tracking-wider text-t4 hover:text-t2 transition-colors"
               >
                 Clear all
               </button>
@@ -211,7 +211,7 @@ export default function WikiBrowse() {
           {/* Layer filter */}
           {availableLayers.length > 0 && (
             <div className="mb-3">
-              <span className="text-[9px] uppercase tracking-[1.5px] text-tier-4 block mb-1.5">
+              <span className="text-[9px] uppercase tracking-[1.5px] text-t4 block mb-1.5">
                 Cascade Layer
               </span>
               <div className="flex flex-wrap gap-1.5">
@@ -224,7 +224,7 @@ export default function WikiBrowse() {
                     className={`px-2.5 py-1 text-[10px] uppercase tracking-wider border transition-colors ${
                       activeLayer === layer
                         ? "bg-teal/10 border-teal/25 text-teal"
-                        : "border-border/15 text-tier-3 hover:text-tier-2"
+                        : "border-border/15 text-t3 hover:text-t2"
                     }`}
                   >
                     {LAYER_LABELS[layer as CascadeLayer] || layer}
@@ -237,7 +237,7 @@ export default function WikiBrowse() {
           {/* Type filter */}
           {availableTypes.length > 0 && (
             <div className="mb-3">
-              <span className="text-[9px] uppercase tracking-[1.5px] text-tier-4 block mb-1.5">
+              <span className="text-[9px] uppercase tracking-[1.5px] text-t4 block mb-1.5">
                 Entity Type
               </span>
               <div className="flex flex-wrap gap-1.5">
@@ -250,7 +250,7 @@ export default function WikiBrowse() {
                     className={`px-2.5 py-1 text-[10px] uppercase tracking-wider border transition-colors ${
                       activeType === type
                         ? "bg-teal/10 border-teal/25 text-teal"
-                        : "border-border/15 text-tier-3 hover:text-tier-2"
+                        : "border-border/15 text-t3 hover:text-t2"
                     }`}
                   >
                     {ENTITY_TYPE_LABELS[type] || type}
@@ -263,7 +263,7 @@ export default function WikiBrowse() {
           {/* Tag filter */}
           {codexData && codexData.worldTags.length > 0 && (
             <div>
-              <span className="text-[9px] uppercase tracking-[1.5px] text-tier-4 block mb-1.5">
+              <span className="text-[9px] uppercase tracking-[1.5px] text-t4 block mb-1.5">
                 Tags
               </span>
               <div className="flex flex-wrap gap-1.5">
@@ -280,7 +280,7 @@ export default function WikiBrowse() {
                     className={`px-2.5 py-1 text-[10px] tracking-wider border transition-colors ${
                       activeTags.includes(tag)
                         ? "bg-teal/10 border-teal/25 text-teal"
-                        : "border-border/15 text-tier-3 hover:text-tier-2"
+                        : "border-border/15 text-t3 hover:text-t2"
                     }`}
                   >
                     {tag}
@@ -295,13 +295,13 @@ export default function WikiBrowse() {
       {/* Entry grid */}
       {filtered.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 text-center">
-          <FileText className="w-8 h-8 text-tier-4 mb-3" />
-          <p className="text-tier-3 text-sm mb-1">
+          <FileText className="w-8 h-8 text-t4 mb-3" />
+          <p className="text-t3 text-sm mb-1">
             {allEntries.length === 0
               ? "No wiki entries yet"
               : "No entries match your filters"}
           </p>
-          <p className="text-tier-4 text-xs mb-4">
+          <p className="text-t4 text-xs mb-4">
             {allEntries.length === 0
               ? "Entries are created automatically when you use tools, or you can create one manually."
               : "Try adjusting your search or filter criteria."}
@@ -340,17 +340,17 @@ export default function WikiBrowse() {
                       <IconComponent className="w-4 h-4 text-teal" />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <h3 className="font-sans text-sm text-tier-1 truncate">
+                      <h3 className="font-sans text-sm text-t1 truncate">
                         {entry.title}
                       </h3>
                       <div className="flex items-center gap-1.5 mt-1">
-                        <span className="text-[9px] uppercase tracking-wider text-tier-4 font-mono">
+                        <span className="text-[9px] uppercase tracking-wider text-t4 font-mono">
                           {ENTITY_TYPE_LABELS[entry.type] || entry.type}
                         </span>
                         {entry.layer && (
                           <>
-                            <span className="text-tier-5">&middot;</span>
-                            <span className="text-[9px] uppercase tracking-wider text-tier-5 font-mono">
+                            <span className="text-t5">&middot;</span>
+                            <span className="text-[9px] uppercase tracking-wider text-t5 font-mono">
                               {LAYER_LABELS[entry.layer as CascadeLayer] ||
                                 entry.layer}
                             </span>
@@ -377,7 +377,7 @@ export default function WikiBrowse() {
                         />
                       ))}
                       {entry.tags.length > 3 && (
-                        <span className="text-[9px] text-tier-4">
+                        <span className="text-[9px] text-t4">
                           +{entry.tags.length - 3}
                         </span>
                       )}
@@ -385,7 +385,7 @@ export default function WikiBrowse() {
                   )}
 
                   {/* Timestamp */}
-                  <p className="text-[9px] text-tier-5 mt-2 font-mono">
+                  <p className="text-[9px] text-t5 mt-2 font-mono">
                     {format(new Date(entry.updatedAt), "MMM d, yyyy")}
                   </p>
                 </GlassPanel>

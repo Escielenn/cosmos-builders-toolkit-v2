@@ -45,7 +45,7 @@ export default function TrackRow({
           <button
             type="button"
             onClick={() => play(track)}
-            className="text-tier-4 group-hover:text-tier-2 transition-colors"
+            className="text-t4 group-hover:text-t2 transition-colors"
             aria-label={`Play ${track.title}`}
           >
             <span className="group-hover:hidden font-mono text-[10px]">
@@ -60,13 +60,13 @@ export default function TrackRow({
       <div className="min-w-0 flex-1">
         <p
           className={`text-sm truncate leading-tight ${
-            isThis ? "text-primary" : "text-tier-2"
+            isThis ? "text-primary" : "text-t2"
           }`}
         >
           {track.title}
         </p>
         {track.artist && (
-          <p className="text-[10px] text-tier-4 truncate leading-tight">
+          <p className="text-[10px] text-t4 truncate leading-tight">
             {track.artist}
           </p>
         )}
@@ -74,7 +74,7 @@ export default function TrackRow({
 
       {/* Duration (if known) */}
       {track.duration != null && track.duration > 0 && (
-        <span className="font-mono text-[10px] text-tier-4 tabular-nums shrink-0">
+        <span className="font-mono text-[10px] text-t4 tabular-nums shrink-0">
           {Math.floor(track.duration / 60)}:{Math.floor(track.duration % 60).toString().padStart(2, "0")}
         </span>
       )}
@@ -84,7 +84,7 @@ export default function TrackRow({
         <AddToPlaylistDialog track={track}>
           <button
             type="button"
-            className="p-1 text-tier-4 hover:text-primary opacity-0 group-hover:opacity-100 transition-all"
+            className="p-1 text-t4 hover:text-primary opacity-0 group-hover:opacity-100 transition-all"
             aria-label="Add to playlist"
           >
             <ListPlus className="w-3.5 h-3.5" />

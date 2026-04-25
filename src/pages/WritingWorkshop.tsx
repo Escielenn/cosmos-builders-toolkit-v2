@@ -199,7 +199,7 @@ const WritingWorkshop = () => {
         {/* Your Entries */}
         <section>
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-heading text-xl font-light uppercase tracking-[2px] text-tier-1">
+            <h2 className="font-heading text-xl font-light uppercase tracking-[2px] text-t1">
               Your Entries
             </h2>
             <Button
@@ -216,7 +216,7 @@ const WritingWorkshop = () => {
           {/* Filter bar */}
           <div className="flex items-center gap-3 mb-6 flex-wrap">
             <div className="relative flex-1 min-w-[200px]">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-tier-4" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-t4" />
               <Input
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -269,7 +269,7 @@ const WritingWorkshop = () => {
                       e.stopPropagation();
                       setDeleteTarget(entry.id);
                     }}
-                    className="absolute top-3 right-3 p-1.5 rounded-sm bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity text-tier-4 hover:text-sf-amber"
+                    className="absolute top-3 right-3 p-1.5 rounded-sm bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity text-t4 hover:text-sf-amber"
                     aria-label="Archive entry"
                   >
                     <Archive className="w-3.5 h-3.5" />
@@ -279,9 +279,9 @@ const WritingWorkshop = () => {
             </div>
           ) : (
             <GlassPanel className="p-8 text-center">
-              <PenTool className="w-8 h-8 text-tier-4 mx-auto mb-3" />
-              <p className="text-tier-2 mb-1">No entries yet</p>
-              <p className="text-tier-4 text-sm">
+              <PenTool className="w-8 h-8 text-t4 mx-auto mb-3" />
+              <p className="text-t2 mb-1">No entries yet</p>
+              <p className="text-t4 text-sm">
                 Start writing from today's prompt or create a freeform entry.
               </p>
             </GlassPanel>

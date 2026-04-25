@@ -70,7 +70,7 @@ export default function GuidedFirstWorld({ worldId }: GuidedFirstWorldProps) {
       <h2 className="font-heading text-sm font-light uppercase tracking-[3px] text-primary mb-1">
         Begin Your World
       </h2>
-      <p className="text-tier-3 text-sm mb-6">
+      <p className="text-t3 text-sm mb-6">
         Every world follows the cascade — physics shapes environment, environment shapes biology, biology shapes culture. Start anywhere, but the path below traces the natural order.
       </p>
 
@@ -104,13 +104,13 @@ export default function GuidedFirstWorld({ worldId }: GuidedFirstWorldProps) {
                 >
                   {step.layer}
                 </span>
-                <span className="font-mono text-[9px] text-tier-4">
+                <span className="font-mono text-[9px] text-t4">
                   {step.brandName}
                 </span>
               </div>
-              <p className="text-xs text-tier-3 mt-0.5">
+              <p className="text-xs text-t3 mt-0.5">
                 {step.isStart ? (
-                  <span className="text-tier-2">{step.description}</span>
+                  <span className="text-t2">{step.description}</span>
                 ) : (
                   step.description
                 )}
@@ -119,7 +119,7 @@ export default function GuidedFirstWorld({ worldId }: GuidedFirstWorldProps) {
 
             {/* Arrow */}
             <ChevronRight
-              className="w-3.5 h-3.5 text-tier-5 group-hover:text-tier-3 transition-colors shrink-0"
+              className="w-3.5 h-3.5 text-t5 group-hover:text-t3 transition-colors shrink-0"
             />
           </Link>
         ))}
@@ -132,7 +132,7 @@ export default function GuidedFirstWorld({ worldId }: GuidedFirstWorldProps) {
             <ChevronRight className="w-4 h-4" />
           </Link>
         </Button>
-        <p className="text-[9px] text-tier-5 font-mono uppercase tracking-wider mt-2">
+        <p className="text-[9px] text-t5 font-mono uppercase tracking-wider mt-2">
           Or start with any tool — there are no wrong paths
         </p>
       </div>

@@ -66,15 +66,15 @@ function ToolWikiCard({
     >
       <GlassPanel className="p-4 h-full">
         <div className="flex items-start justify-between gap-2 mb-2">
-          <h3 className="font-heading text-sm font-light uppercase tracking-[2px] text-tier-1 leading-tight">
+          <h3 className="font-heading text-sm font-light uppercase tracking-[2px] text-t1 leading-tight">
             {displayName}
           </h3>
-          <span className="text-tier-4 font-mono text-[10px] shrink-0">
+          <span className="text-t4 font-mono text-[10px] shrink-0">
             {compMeta.icon}
           </span>
         </div>
 
-        <p className="text-tier-3 text-xs leading-relaxed mb-3 line-clamp-2">
+        <p className="text-t3 text-xs leading-relaxed mb-3 line-clamp-2">
           {tool.tagline}
         </p>
 
@@ -86,7 +86,7 @@ function ToolWikiCard({
           >
             {catMeta.label}
           </Badge>
-          <Badge variant="outline" className="text-[9px] text-tier-4 border-white/10 px-1.5 py-0">
+          <Badge variant="outline" className="text-[9px] text-t4 border-white/10 px-1.5 py-0">
             {typeMeta.label}
           </Badge>
           {isPro && (
@@ -126,10 +126,10 @@ function ToolDetail({
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h2 className="font-display text-2xl tracking-sf-title text-tier-1 mb-2">
+        <h2 className="font-display text-2xl tracking-sf-title text-t1 mb-2">
           {displayName}
         </h2>
-        <p className="text-tier-2 text-sm leading-relaxed">{tool.tagline}</p>
+        <p className="text-t2 text-sm leading-relaxed">{tool.tagline}</p>
       </div>
 
       {/* Tags row */}
@@ -141,10 +141,10 @@ function ToolDetail({
         >
           {catMeta.label}
         </Badge>
-        <Badge variant="outline" className="text-[10px] text-tier-3 border-white/10 px-2 py-0.5">
+        <Badge variant="outline" className="text-[10px] text-t3 border-white/10 px-2 py-0.5">
           {compMeta.icon} {compMeta.label}
         </Badge>
-        <Badge variant="outline" className="text-[10px] text-tier-3 border-white/10 px-2 py-0.5">
+        <Badge variant="outline" className="text-[10px] text-t3 border-white/10 px-2 py-0.5">
           {typeMeta.label}
         </Badge>
         {isPro && (
@@ -171,7 +171,7 @@ function ToolDetail({
                   className={`text-[9px] font-mono uppercase tracking-wider px-2 py-1 rounded-sm shrink-0 transition-colors ${
                     isActive
                       ? "bg-primary/10 border border-primary/30 text-primary"
-                      : "text-tier-5 border border-transparent"
+                      : "text-t5 border border-transparent"
                   }`}
                 >
                   {CASCADE_META[pos].label}
@@ -189,16 +189,16 @@ function ToolDetail({
       {/* Meta row */}
       <div className="grid grid-cols-2 gap-3">
         <GlassPanel className="p-3">
-          <span className="text-tier-4 text-[10px] uppercase tracking-wider block mb-1">
+          <span className="text-t4 text-[10px] uppercase tracking-wider block mb-1">
             Time Estimate
           </span>
-          <span className="font-mono text-tier-2 text-sm">{tool.timeEstimate}</span>
+          <span className="font-mono text-t2 text-sm">{tool.timeEstimate}</span>
         </GlassPanel>
         <GlassPanel className="p-3">
-          <span className="text-tier-4 text-[10px] uppercase tracking-wider block mb-1">
+          <span className="text-t4 text-[10px] uppercase tracking-wider block mb-1">
             Workshop
           </span>
-          <span className="font-mono text-tier-2 text-sm">
+          <span className="font-mono text-t2 text-sm">
             {WORKSHOP_WEEKS[tool.workshopWeek]?.theme ?? `Week ${tool.workshopWeek}`}
           </span>
         </GlassPanel>
@@ -224,13 +224,13 @@ function ToolDetail({
                     rel.strength === "required"
                       ? "text-sf-amber border-amber-400/20"
                       : rel.strength === "recommended"
-                      ? "text-tier-3 border-white/10"
-                      : "text-tier-4 border-white/5"
+                      ? "text-t3 border-white/10"
+                      : "text-t4 border-white/5"
                   }`}
                 >
                   {rel.strength}
                 </Badge>
-                <span className="text-tier-2 text-xs group-hover:text-primary transition-colors">
+                <span className="text-t2 text-xs group-hover:text-primary transition-colors">
                   {getToolDisplayName(rel.toolId)}
                 </span>
               </button>
@@ -258,13 +258,13 @@ function ToolDetail({
                     rel.strength === "required"
                       ? "text-sf-amber border-amber-400/20"
                       : rel.strength === "recommended"
-                      ? "text-tier-3 border-white/10"
-                      : "text-tier-4 border-white/5"
+                      ? "text-t3 border-white/10"
+                      : "text-t4 border-white/5"
                   }`}
                 >
                   {rel.strength}
                 </Badge>
-                <span className="text-tier-2 text-xs group-hover:text-primary transition-colors">
+                <span className="text-t2 text-xs group-hover:text-primary transition-colors">
                   {getToolDisplayName(rel.toolId)}
                 </span>
               </button>
@@ -312,7 +312,7 @@ function SectionGroup({
         </h3>
       </div>
       {description && (
-        <p className="text-tier-4 text-xs ml-5 mb-3">{description}</p>
+        <p className="text-t4 text-xs ml-5 mb-3">{description}</p>
       )}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-3">
         {tools.map((tool) => (
@@ -400,15 +400,15 @@ const ToolsWiki = () => {
           <div className="flex items-center gap-3 mb-2">
             <CubeLogo size={36} />
             <div>
-              <span className="font-display text-xs tracking-[4px] uppercase text-tier-3 block leading-none">
+              <span className="font-display text-xs tracking-[4px] uppercase text-t3 block leading-none">
                 STELLARFORGE
               </span>
-              <h1 className="font-display text-3xl md:text-4xl tracking-sf-title text-tier-1 leading-tight">
+              <h1 className="font-display text-3xl md:text-4xl tracking-sf-title text-t1 leading-tight">
                 TOOL REFERENCE
               </h1>
             </div>
           </div>
-          <p className="text-tier-2 text-sm max-w-2xl leading-relaxed mt-3">
+          <p className="text-t2 text-sm max-w-2xl leading-relaxed mt-3">
             {allTools.length} tools organized by the Environmental Cascade.
             Each tool builds on what comes before—each output becomes input for what follows.
           </p>
@@ -427,28 +427,28 @@ const ToolsWiki = () => {
           <TabsList className="bg-transparent border-b border-white/5 rounded-none w-full justify-start gap-0 h-auto p-0 mb-6">
             <TabsTrigger
               value="category"
-              className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:bg-transparent bg-transparent text-tier-3 text-xs uppercase tracking-[1.5px] font-heading px-4 py-2.5"
+              className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:bg-transparent bg-transparent text-t3 text-xs uppercase tracking-[1.5px] font-heading px-4 py-2.5"
             >
               <Layers className="w-3.5 h-3.5 mr-1.5" />
               Category
             </TabsTrigger>
             <TabsTrigger
               value="cascade"
-              className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:bg-transparent bg-transparent text-tier-3 text-xs uppercase tracking-[1.5px] font-heading px-4 py-2.5"
+              className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:bg-transparent bg-transparent text-t3 text-xs uppercase tracking-[1.5px] font-heading px-4 py-2.5"
             >
               <ArrowRight className="w-3.5 h-3.5 mr-1.5" />
               Cascade
             </TabsTrigger>
             <TabsTrigger
               value="complexity"
-              className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:bg-transparent bg-transparent text-tier-3 text-xs uppercase tracking-[1.5px] font-heading px-4 py-2.5"
+              className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:bg-transparent bg-transparent text-t3 text-xs uppercase tracking-[1.5px] font-heading px-4 py-2.5"
             >
               <BarChart3 className="w-3.5 h-3.5 mr-1.5" />
               Complexity
             </TabsTrigger>
             <TabsTrigger
               value="workshop"
-              className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:bg-transparent bg-transparent text-tier-3 text-xs uppercase tracking-[1.5px] font-heading px-4 py-2.5"
+              className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:bg-transparent bg-transparent text-t3 text-xs uppercase tracking-[1.5px] font-heading px-4 py-2.5"
             >
               <Calendar className="w-3.5 h-3.5 mr-1.5" />
               Workshop
@@ -471,7 +471,7 @@ const ToolsWiki = () => {
 
           {/* Cascade View */}
           <TabsContent value="cascade">
-            <p className="text-tier-3 text-xs mb-6 max-w-xl">
+            <p className="text-t3 text-xs mb-6 max-w-xl">
               Tools arranged along the Environmental Cascade. Change something upstream and everything downstream shifts.
             </p>
             {cascadeGroups.map(({ position, meta, tools }) => (
@@ -500,7 +500,7 @@ const ToolsWiki = () => {
 
           {/* Workshop View */}
           <TabsContent value="workshop">
-            <p className="text-tier-3 text-xs mb-6 max-w-xl">
+            <p className="text-t3 text-xs mb-6 max-w-xl">
               Tools organized by the 6-week workshop curriculum. Each week builds on the previous.
             </p>
             {workshopGroups.map(({ week, meta, tools }) => (

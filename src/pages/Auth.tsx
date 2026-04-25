@@ -298,7 +298,7 @@ const Auth = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="ea-heard">How did you hear about StellarForge? <span className="text-tier-4 normal-case tracking-normal">(optional)</span></Label>
+                  <Label htmlFor="ea-heard">How did you hear about StellarForge? <span className="text-t4 normal-case tracking-normal">(optional)</span></Label>
                   <div className="sf-input-bracketed">
                     <Input
                       id="ea-heard"

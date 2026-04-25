@@ -41,7 +41,7 @@ export function PromptOfTheDay() {
       {/* Header */}
       <div className="flex items-center gap-2 mb-4">
         <Sparkles className="w-4 h-4 text-sf-teal" />
-        <span className="font-heading text-xs font-medium uppercase tracking-sf-wide text-tier-4">
+        <span className="font-heading text-xs font-medium uppercase tracking-sf-wide text-t4">
           Today's Prompt
         </span>
       </div>
@@ -57,12 +57,12 @@ export function PromptOfTheDay() {
       </div>
 
       {/* Title */}
-      <h3 className="font-heading text-lg font-light uppercase tracking-[2px] text-tier-1 mb-3">
+      <h3 className="font-heading text-lg font-light uppercase tracking-[2px] text-t1 mb-3">
         {prompt.title}
       </h3>
 
       {/* Prompt text */}
-      <p className="text-tier-2 italic leading-relaxed line-clamp-3 mb-5">
+      <p className="text-t2 italic leading-relaxed line-clamp-3 mb-5">
         {prompt.prompt}
       </p>
 
@@ -70,8 +70,8 @@ export function PromptOfTheDay() {
       <div className="flex items-center justify-between">
         {prompt.wordGoal && (
           <div className="flex items-center gap-2">
-            <Target className="w-3.5 h-3.5 text-tier-4" />
-            <span className="font-mono text-xs text-tier-4">
+            <Target className="w-3.5 h-3.5 text-t4" />
+            <span className="font-mono text-xs text-t4">
               {prompt.wordGoal} words
             </span>
           </div>

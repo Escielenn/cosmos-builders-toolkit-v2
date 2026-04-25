@@ -507,7 +507,7 @@ const Sensorium = () => {
     switch (status) {
       case "recommended": return "text-sf-cyan border-cyan-500/50 bg-cyan-500/10";
       case "possible": return "text-sf-amber border-amber-500/50 bg-amber-500/10";
-      case "implausible": return "text-tier-2 border-border bg-muted/20 opacity-60";
+      case "implausible": return "text-t2 border-border bg-muted/20 opacity-60";
       default: return "";
     }
   };
@@ -596,14 +596,14 @@ const Sensorium = () => {
             {!tutorialDismissed && (
               <GlassPanel className="p-4 flex items-start gap-3 border-l-2 border-l-primary/40">
                 <div className="flex-1">
-                  <p className="text-sm text-tier-2">
+                  <p className="text-sm text-t2">
                     Start by selecting your environment, then choose sensory modalities. SENSORIUM will score their plausibility and budget.
                   </p>
                 </div>
                 <button
                   type="button"
                   onClick={dismissTutorial}
-                  className="text-tier-4 hover:text-tier-2 transition-colors flex-shrink-0 mt-0.5"
+                  className="text-t4 hover:text-t2 transition-colors flex-shrink-0 mt-0.5"
                   aria-label="Dismiss tutorial"
                 >
                   <X className="h-4 w-4" />
@@ -654,7 +654,7 @@ const Sensorium = () => {
                         ))}
                       </SelectContent>
                     </Select>
-                    <p className="text-xs text-tier-4">
+                    <p className="text-xs text-t4">
                       Peak λ: {formState.environment.star.peakWavelength} nm · UV: {formState.environment.star.uvOutput} · {formState.environment.star.temperature} K
                     </p>
                   </div>
@@ -683,7 +683,7 @@ const Sensorium = () => {
                         ))}
                       </SelectContent>
                     </Select>
-                    <p className="text-xs text-tier-4">
+                    <p className="text-xs text-t4">
                       {formState.environment.atmosphere.hasAtmosphere
                         ? `${formState.environment.atmosphere.pressure} atm · ${formState.environment.atmosphere.opacity}`
                         : "No atmosphere (vacuum)"}
@@ -890,7 +890,7 @@ const Sensorium = () => {
                             {key === "conductivity" && "Electrical conductivity of the environment. High values enable electroreception."}
                           </TooltipContent>
                         </Tooltip>
-                        <span className="font-mono text-xs text-tier-3">
+                        <span className="font-mono text-xs text-t3">
                           {formState.environmentSliders?.[key] ?? 5}
                         </span>
                       </div>
@@ -969,7 +969,7 @@ const Sensorium = () => {
 
                   <TabsContent value="derive" className="mt-4">
                     <div className="space-y-3 mb-4">
-                      <p className="text-sm text-tier-3">
+                      <p className="text-sm text-t3">
                         Based on your environment, each sense is scored for plausibility. <strong className="text-foreground">Click any card to add it to your species' final sensory suite.</strong> You can select implausible senses too—sometimes the best stories break the rules.
                       </p>
                       <div className="flex flex-wrap gap-3 text-[11px]">
@@ -982,7 +982,7 @@ const Sensorium = () => {
                   </TabsContent>
                   <TabsContent value="validate" className="mt-4">
                     <div className="space-y-3 mb-4">
-                      <p className="text-sm text-tier-3">
+                      <p className="text-sm text-t3">
                         Pick senses freely without environmental guidance, then validate them. <strong className="text-foreground">Click cards to select, then review plausibility scores below.</strong>
                       </p>
                       <div className="flex flex-wrap gap-3 text-[11px]">
@@ -1052,7 +1052,7 @@ const Sensorium = () => {
                                   <h4 className="text-sm font-medium truncate pr-6">
                                     {mod.name}
                                   </h4>
-                                  <p className="text-xs text-tier-4 line-clamp-2 mt-0.5">
+                                  <p className="text-xs text-t4 line-clamp-2 mt-0.5">
                                     {mod.description}
                                   </p>
                                   <div className="flex items-center gap-2 mt-2">
@@ -1062,7 +1062,7 @@ const Sensorium = () => {
                                     >
                                       {status} ({score})
                                     </Badge>
-                                    <span className="text-[10px] text-tier-2">
+                                    <span className="text-[10px] text-t2">
                                       {mod.evolution.metabolicCost} cost
                                     </span>
                                   </div>
@@ -1089,7 +1089,7 @@ const Sensorium = () => {
                     ))}
                     {validationResult.conflictingSenses.length > 0 && (
                       <div className="mt-2">
-                        <p className="text-xs text-tier-4 font-medium">Conflicts:</p>
+                        <p className="text-xs text-t4 font-medium">Conflicts:</p>
                         {validationResult.conflictingSenses.map((c, i) => (
                           <p key={i} className="text-xs text-sf-crimson">
                             {getModalityById(c.a)?.name} ↔ {getModalityById(c.b)?.name}: {c.reason}
@@ -1139,7 +1139,7 @@ const Sensorium = () => {
                     <span>
                       Total: <span className="font-bold">{(metabolicBudget.totalCost * 100).toFixed(0)}%</span>
                     </span>
-                    <span className="text-tier-2">Max sustainable: 100%</span>
+                    <span className="text-t2">Max sustainable: 100%</span>
                   </div>
                   <div className="h-4 bg-muted overflow-hidden">
                     <div
@@ -1173,7 +1173,7 @@ const Sensorium = () => {
                             style={{ width: `${s.cost * 100}%` }}
                           />
                         </div>
-                        <div className="w-10 text-right text-tier-2">
+                        <div className="w-10 text-right text-t2">
                           {(s.cost * 100).toFixed(0)}%
                         </div>
                       </div>
@@ -1288,7 +1288,7 @@ const Sensorium = () => {
             >
               <div className="space-y-6">
                 {formState.finalSelection.length === 0 ? (
-                  <p className="text-sm text-tier-3 italic">
+                  <p className="text-sm text-t3 italic">
                     Select senses in the Sensory Palette to see worldbuilding implications.
                   </p>
                 ) : (
@@ -1306,7 +1306,7 @@ const Sensorium = () => {
                                 <p className="text-xs font-medium text-foreground">
                                   {entry.modalityName}
                                 </p>
-                                <p className="text-xs text-tier-4 mt-1">
+                                <p className="text-xs text-t4 mt-1">
                                   {entry.text}
                                 </p>
                               </GlassPanel>
@@ -1371,7 +1371,7 @@ const Sensorium = () => {
             >
               <div className="space-y-4">
                 {formState.finalSelection.length === 0 ? (
-                  <p className="text-sm text-tier-3 italic">
+                  <p className="text-sm text-t3 italic">
                     Select senses to see perception gaps vs. human baseline.
                   </p>
                 ) : (
@@ -1388,7 +1388,7 @@ const Sensorium = () => {
                             </p>
                           ))
                         ) : (
-                          <p className="text-sm text-tier-3 italic">
+                          <p className="text-sm text-t3 italic">
                             No alien senses beyond human range
                           </p>
                         )}
@@ -1405,7 +1405,7 @@ const Sensorium = () => {
                             </p>
                           ))
                         ) : (
-                          <p className="text-sm text-tier-3 italic">
+                          <p className="text-sm text-t3 italic">
                             No human senses missing
                           </p>
                         )}
@@ -1419,14 +1419,14 @@ const Sensorium = () => {
                       </h4>
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <p className="text-[11px] font-medium uppercase tracking-[1.5px] text-tier-3 mb-2">
+                          <p className="text-[11px] font-medium uppercase tracking-[1.5px] text-t3 mb-2">
                             Your Species
                           </p>
                           <div className="space-y-1">
                             {MODALITIES.map((mod) => {
                               const has = formState.finalSelection.includes(mod.id);
                               return (
-                                <div key={mod.id} className={`flex items-center gap-2 text-xs ${has ? "text-tier-2" : "text-tier-4 opacity-40"}`}>
+                                <div key={mod.id} className={`flex items-center gap-2 text-xs ${has ? "text-t2" : "text-t4 opacity-40"}`}>
                                   <span className={`w-1.5 h-1.5 flex-shrink-0 ${has ? "bg-emerald-400" : "bg-tier-4"}`} />
                                   {mod.name}
                                 </div>
@@ -1435,14 +1435,14 @@ const Sensorium = () => {
                           </div>
                         </div>
                         <div>
-                          <p className="text-[11px] font-medium uppercase tracking-[1.5px] text-tier-3 mb-2">
+                          <p className="text-[11px] font-medium uppercase tracking-[1.5px] text-t3 mb-2">
                             Human Baseline
                           </p>
                           <div className="space-y-1">
                             {MODALITIES.map((mod) => {
                               const has = HUMAN_SENSES.includes(mod.id);
                               return (
-                                <div key={mod.id} className={`flex items-center gap-2 text-xs ${has ? "text-tier-2" : "text-tier-4 opacity-40"}`}>
+                                <div key={mod.id} className={`flex items-center gap-2 text-xs ${has ? "text-t2" : "text-t4 opacity-40"}`}>
                                   <span className={`w-1.5 h-1.5 flex-shrink-0 ${has ? "bg-cyan-400" : "bg-tier-4"}`} />
                                   {mod.name}
                                 </div>
@@ -1459,7 +1459,7 @@ const Sensorium = () => {
                           Conflict Potential
                         </h4>
                         {perceptionGaps.conflictPotential.map((hook, i) => (
-                          <p key={i} className="text-sm text-tier-3">
+                          <p key={i} className="text-sm text-t3">
                             • {hook}
                           </p>
                         ))}
@@ -1598,7 +1598,7 @@ const Sensorium = () => {
                       <h4 className="font-heading text-sm font-light uppercase tracking-[3px] text-emerald mb-3">
                         PERCEPTUAL SNAPSHOT
                       </h4>
-                      <p className="text-sm text-tier-2 italic font-sans leading-relaxed">
+                      <p className="text-sm text-t2 italic font-sans leading-relaxed">
                         {perceptualNarrative}
                       </p>
                     </GlassPanel>

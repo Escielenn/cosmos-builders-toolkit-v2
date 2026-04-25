@@ -27,10 +27,10 @@ export default function UserPlaylistsTab() {
   if (!isSubscribed) {
     return (
       <div className="py-8 text-center space-y-2">
-        <p className="text-tier-3 text-xs uppercase tracking-wider">
+        <p className="text-t3 text-xs uppercase tracking-wider">
           Pro feature
         </p>
-        <p className="text-tier-4 text-[11px]">
+        <p className="text-t4 text-[11px]">
           Upgrade to Pro to create custom playlists.
         </p>
       </div>
@@ -40,7 +40,7 @@ export default function UserPlaylistsTab() {
   if (isLoading) {
     return (
       <div className="py-8 text-center">
-        <p className="text-tier-4 text-xs uppercase tracking-wider animate-pulse">
+        <p className="text-t4 text-xs uppercase tracking-wider animate-pulse">
           Loading playlists...
         </p>
       </div>
@@ -54,7 +54,7 @@ export default function UserPlaylistsTab() {
         <button
           type="button"
           onClick={() => setExpanded(null)}
-          className="text-[10px] text-tier-4 hover:text-tier-2 uppercase tracking-wider mb-3 transition-colors flex items-center gap-1"
+          className="text-[10px] text-t4 hover:text-t2 uppercase tracking-wider mb-3 transition-colors flex items-center gap-1"
         >
           <ArrowLeft className="w-3 h-3" /> Back
         </button>
@@ -64,7 +64,7 @@ export default function UserPlaylistsTab() {
         </h3>
 
         {expanded.tracks.length === 0 ? (
-          <p className="text-tier-4 text-xs py-4 text-center">
+          <p className="text-t4 text-xs py-4 text-center">
             No tracks yet. Browse curated tracks and add them to this playlist.
           </p>
         ) : (
@@ -83,7 +83,7 @@ export default function UserPlaylistsTab() {
                       currentTracks: expanded.tracks,
                     })
                   }
-                  className="px-2 text-tier-4 hover:text-sf-crimson transition-colors"
+                  className="px-2 text-t4 hover:text-sf-crimson transition-colors"
                   aria-label="Remove track"
                 >
                   <X className="w-3 h-3" />
@@ -152,7 +152,7 @@ export default function UserPlaylistsTab() {
 
       {/* Playlists grid */}
       {(playlists ?? []).length === 0 ? (
-        <p className="text-tier-4 text-xs text-center py-4">
+        <p className="text-t4 text-xs text-center py-4">
           No playlists yet. Create one to get started.
         </p>
       ) : (
@@ -166,7 +166,7 @@ export default function UserPlaylistsTab() {
               <button
                 type="button"
                 onClick={() => deletePlaylist.mutate(playlist.id)}
-                className="absolute bottom-2 right-2 p-1 text-tier-4 hover:text-sf-crimson opacity-0 group-hover:opacity-100 transition-all"
+                className="absolute bottom-2 right-2 p-1 text-t4 hover:text-sf-crimson opacity-0 group-hover:opacity-100 transition-all"
                 aria-label="Delete playlist"
               >
                 <Trash2 className="w-3 h-3" />

@@ -23,10 +23,10 @@ export default function UploadTab() {
   if (!isSubscribed) {
     return (
       <div className="py-8 text-center space-y-2">
-        <p className="text-tier-3 text-xs uppercase tracking-wider">
+        <p className="text-t3 text-xs uppercase tracking-wider">
           Pro feature
         </p>
-        <p className="text-tier-4 text-[11px]">
+        <p className="text-t4 text-[11px]">
           Upgrade to Pro to upload your own audio tracks.
         </p>
       </div>
@@ -45,11 +45,11 @@ export default function UploadTab() {
     <div className="py-3 space-y-4">
       {/* Upload button */}
       <div className="border-2 border-dashed border-white/10 p-4 text-center space-y-2">
-        <Upload className="w-5 h-5 mx-auto text-tier-4" />
-        <p className="text-[11px] text-tier-3">
+        <Upload className="w-5 h-5 mx-auto text-t4" />
+        <p className="text-[11px] text-t3">
           Drop an audio file or click to browse
         </p>
-        <p className="text-[9px] text-tier-5 font-mono uppercase tracking-wider">
+        <p className="text-[9px] text-t5 font-mono uppercase tracking-wider">
           {ACCEPTED_EXTENSIONS.join(", ")} — Max {MAX_FILE_SIZE / 1024 / 1024}MB
         </p>
         <Button
@@ -72,11 +72,11 @@ export default function UploadTab() {
 
       {/* Track list */}
       {isLoading ? (
-        <p className="text-tier-4 text-xs text-center animate-pulse">
+        <p className="text-t4 text-xs text-center animate-pulse">
           Loading uploads...
         </p>
       ) : (tracks ?? []).length === 0 ? (
-        <p className="text-tier-4 text-xs text-center">
+        <p className="text-t4 text-xs text-center">
           No uploaded tracks yet.
         </p>
       ) : (
@@ -95,7 +95,7 @@ export default function UploadTab() {
                 <button
                   type="button"
                   onClick={() => (isPlaying ? pause() : play(track))}
-                  className={`shrink-0 ${isThis ? "text-primary" : "text-tier-4 hover:text-tier-2"}`}
+                  className={`shrink-0 ${isThis ? "text-primary" : "text-t4 hover:text-t2"}`}
                   aria-label={isPlaying ? "Pause" : "Play"}
                 >
                   {isPlaying ? (
@@ -106,13 +106,13 @@ export default function UploadTab() {
                 </button>
 
                 <div className="min-w-0 flex-1">
-                  <p className={`text-sm truncate ${isThis ? "text-primary" : "text-tier-2"}`}>
+                  <p className={`text-sm truncate ${isThis ? "text-primary" : "text-t2"}`}>
                     {track.title}
                   </p>
                 </div>
 
                 {track.duration != null && track.duration > 0 && (
-                  <span className="font-mono text-[10px] text-tier-4 tabular-nums">
+                  <span className="font-mono text-[10px] text-t4 tabular-nums">
                     {Math.floor(track.duration / 60)}:{Math.floor(track.duration % 60).toString().padStart(2, "0")}
                   </span>
                 )}
@@ -120,7 +120,7 @@ export default function UploadTab() {
                 <button
                   type="button"
                   onClick={() => deleteTrack.mutate({ trackId: track.id })}
-                  className="p-1 text-tier-4 hover:text-sf-crimson opacity-0 group-hover:opacity-100 transition-all"
+                  className="p-1 text-t4 hover:text-sf-crimson opacity-0 group-hover:opacity-100 transition-all"
                   aria-label="Delete track"
                 >
                   <Trash2 className="w-3 h-3" />

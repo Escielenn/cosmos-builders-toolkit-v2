@@ -329,11 +329,11 @@ const WorldConnections = () => {
                   />
                 ) : (
                   <div className="flex flex-col items-center justify-center h-[400px] text-center">
-                    <TreePine className="w-8 h-8 text-tier-4 mb-3" />
-                    <h3 className="font-heading text-sm font-light uppercase tracking-[2px] text-tier-1 mb-2">
+                    <TreePine className="w-8 h-8 text-t4 mb-3" />
+                    <h3 className="font-heading text-sm font-light uppercase tracking-[2px] text-t1 mb-2">
                       Your World Map
                     </h3>
-                    <p className="text-[11px] font-sans text-tier-3 leading-relaxed mb-4 max-w-xs">
+                    <p className="text-[11px] font-sans text-t3 leading-relaxed mb-4 max-w-xs">
                       No entities yet. Create a star or planet and watch your world's hierarchy grow.
                     </p>
                     <Button onClick={() => { setCreateEntityParentId(null); setShowCreateEntity(true); }} className="text-xs font-sans">

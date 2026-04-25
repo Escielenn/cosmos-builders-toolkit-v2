@@ -378,12 +378,12 @@ function CommendationsSummary({ navigate }: { navigate: (path: string) => void }
             <h3 className="font-heading text-sm uppercase tracking-[3px] text-emerald">
               Commendations
             </h3>
-            <p className="font-sans text-[11px] text-tier-4 mt-0.5">
+            <p className="font-sans text-[11px] text-t4 mt-0.5">
               {isLoading ? "INITIALIZING..." : `${earnedCount} OF ${totalCount} EARNED`}
             </p>
           </div>
         </div>
-        <ChevronRight className="w-4 h-4 text-tier-4 group-hover:text-tier-2 transition-colors" />
+        <ChevronRight className="w-4 h-4 text-t4 group-hover:text-t2 transition-colors" />
       </button>
     </GlassPanel>
   );

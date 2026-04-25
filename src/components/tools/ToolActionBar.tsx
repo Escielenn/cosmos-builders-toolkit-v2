@@ -205,7 +205,7 @@ const ToolActionBar = ({
           <Button
             variant="ghost"
             size="sm"
-            className="text-tier-4 hover:text-tier-2"
+            className="text-t4 hover:text-t2"
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           >
             <ChevronUp className="w-4 h-4 mr-1" />

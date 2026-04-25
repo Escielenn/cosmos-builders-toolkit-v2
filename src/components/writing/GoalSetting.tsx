@@ -45,7 +45,7 @@ export function GoalSetting({ compact = false }: GoalSettingProps) {
       <PopoverTrigger asChild>
         <button
           type="button"
-          className="inline-flex items-center gap-1.5 text-tier-4 hover:text-tier-2 transition-colors"
+          className="inline-flex items-center gap-1.5 text-t4 hover:text-t2 transition-colors"
         >
           <Target className="w-3.5 h-3.5" />
           {!compact && (

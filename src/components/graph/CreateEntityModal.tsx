@@ -96,7 +96,7 @@ export function CreateEntityModal({
         }}
       >
         <DialogHeader>
-          <DialogTitle className="font-heading text-sm font-light uppercase tracking-[2px] text-tier-1">
+          <DialogTitle className="font-heading text-sm font-light uppercase tracking-[2px] text-t1">
             New Entity
           </DialogTitle>
         </DialogHeader>
@@ -104,7 +104,7 @@ export function CreateEntityModal({
         <div className="space-y-4">
           {/* Name */}
           <div className="space-y-1.5">
-            <Label className="text-[11px] font-medium uppercase tracking-[1.5px] text-tier-3">
+            <Label className="text-[11px] font-medium uppercase tracking-[1.5px] text-t3">
               Name
             </Label>
             <Input
@@ -118,7 +118,7 @@ export function CreateEntityModal({
 
           {/* Entity Type */}
           <div className="space-y-1.5">
-            <Label className="text-[11px] font-medium uppercase tracking-[1.5px] text-tier-3">
+            <Label className="text-[11px] font-medium uppercase tracking-[1.5px] text-t3">
               Type
             </Label>
             <Select value={entityType} onValueChange={(v) => handleTypeChange(v as EntityType)}>
@@ -138,7 +138,7 @@ export function CreateEntityModal({
           {/* Custom type label */}
           {entityType === "custom" && (
             <div className="space-y-1.5">
-              <Label className="text-[11px] font-medium uppercase tracking-[1.5px] text-tier-3">
+              <Label className="text-[11px] font-medium uppercase tracking-[1.5px] text-t3">
                 Custom Type Label
               </Label>
               <Input
@@ -152,7 +152,7 @@ export function CreateEntityModal({
 
           {/* Cascade Stage */}
           <div className="space-y-1.5">
-            <Label className="text-[11px] font-medium uppercase tracking-[1.5px] text-tier-3">
+            <Label className="text-[11px] font-medium uppercase tracking-[1.5px] text-t3">
               Cascade Stage
             </Label>
             <Select
@@ -176,7 +176,7 @@ export function CreateEntityModal({
 
           {/* Summary */}
           <div className="space-y-1.5">
-            <Label className="text-[11px] font-medium uppercase tracking-[1.5px] text-tier-3">
+            <Label className="text-[11px] font-medium uppercase tracking-[1.5px] text-t3">
               Summary
             </Label>
             <StellarForgeEditor
