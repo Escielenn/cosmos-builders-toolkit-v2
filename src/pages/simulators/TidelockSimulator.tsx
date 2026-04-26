@@ -56,23 +56,25 @@ const TidelockSimulator = () => {
               </p>
             </div>
           )}
-          {/* Iframe shrinks 340px right when NarrativeBridge is open. */}
-          <iframe
-            ref={iframeRef}
-            src="/tools/tidelock/sim.html"
-            title="Tidelock — Locked World Simulator"
-            allow="fullscreen"
-            className={`border-0 transition-opacity duration-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}
+          {/* Wrapper shrinks 340px right when NarrativeBridge is open;
+              iframe inside stays w-full h-full so its WebGL canvas sizes
+              reliably. */}
+          <div
+            className="absolute inset-y-0 left-0"
             style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
               right: narrativeBridge.panelProps.open ? 340 : 0,
-              bottom: 0,
-              transition: 'right 280ms cubic-bezier(0.2, 0, 0, 1), opacity 500ms',
+              transition: 'right 280ms cubic-bezier(0.2, 0, 0, 1)',
             }}
-            onLoad={() => setLoaded(true)}
-          />
+          >
+            <iframe
+              ref={iframeRef}
+              src="/tools/tidelock/sim.html"
+              title="Tidelock — Locked World Simulator"
+              allow="fullscreen"
+              className={`w-full h-full border-0 transition-opacity duration-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}
+              onLoad={() => setLoaded(true)}
+            />
+          </div>
           {/* Save/Load controls */}
           {loaded && worldId && (
             <div className="absolute bottom-3 left-3 z-20 flex items-center gap-1.5">
