@@ -1594,7 +1594,7 @@ export default function ExoSkyV2({
       </div>
 
       {/* ── CONTROL PANEL ── */}
-      <div style={{ position:"absolute",top:120,left:18,width:240,zIndex:10,maxHeight:"calc(100% - 150px)",overflowY:"auto",
+      <div style={{ position:"absolute",top:120,left:18,width:272,zIndex:10,maxHeight:"calc(100% - 150px)",overflowY:"auto",
         background: panelOpen?"rgba(15,15,16,0.92)":"rgba(15,15,16,0.7)", border:"1px solid rgba(255,255,255,0.08)",
         backdropFilter:"blur(16px)",borderRadius:0,padding:panelOpen?"14px 18px":"8px 14px",transition:"all 0.3s" }}>
         <div onClick={()=>setPanelOpen(!panelOpen)} style={{cursor:"pointer",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
@@ -2052,18 +2052,18 @@ export default function ExoSkyV2({
 function DR({ l, v, vc }) {
   return (
     <div style={{display:"flex",justifyContent:"space-between",lineHeight:1.9,alignItems:"baseline"}}>
-      <span style={{color:"rgba(255,255,255,0.3)",fontWeight:300,fontFamily:"'DM Sans',sans-serif",fontSize:9.5}}>{l}</span>
-      <span style={{color:vc||"rgba(255,255,255,0.7)",fontWeight:500,fontFamily:"'JetBrains Mono',monospace",fontSize:9}}>{v}</span>
+      <span style={{color:"rgba(255,255,255,0.55)",fontWeight:300,fontFamily:"'DM Sans',sans-serif",fontSize:12}}>{l}</span>
+      <span style={{color:vc||"rgba(255,255,255,0.85)",fontWeight:500,fontFamily:"'JetBrains Mono',monospace",fontSize:14}}>{v}</span>
     </div>
   );
 }
 
 // ── STYLE TOKENS ──────────────────────────────────────────────
-const SH = { fontSize:7.5,fontFamily:"'MD Nichrome','Space Grotesk',sans-serif",fontWeight:300,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(0,229,160,0.4)",marginTop:0,marginBottom:1,paddingBottom:2,borderBottom:"1px solid rgba(0,229,160,0.06)",width:"100%" } as const;
-const LBL = { fontSize:8,fontFamily:"'DM Sans',sans-serif",fontWeight:400,letterSpacing:1.2,textTransform:"uppercase",color:"rgba(255,255,255,0.35)" };
-const VAL = { fontSize:10,fontFamily:"'JetBrains Mono',monospace",fontWeight:300,color:"rgba(255,255,255,0.5)" };
-const SEL = { width:"100%",marginTop:8,fontFamily:"'DM Sans',sans-serif",fontSize:9,background:"rgba(255,255,255,0.04)",color:"rgba(255,255,255,0.7)",border:"1px solid rgba(255,255,255,0.1)",padding:"6px 8px",borderRadius:0,outline:"none" };
-const BTN = { fontFamily:"'DM Sans',sans-serif",fontSize:8,fontWeight:400,letterSpacing:1.5,textTransform:"uppercase",padding:"7px 12px",border:"1px solid rgba(0,212,255,0.2)",background:"rgba(0,212,255,0.08)",color:"#00D4FF",cursor:"pointer",borderRadius:0,transition:"all 0.2s" } as const;
+const SH = { fontSize:12,fontFamily:"'MD Nichrome','Space Grotesk',sans-serif",fontWeight:300,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(0,229,160,0.5)",marginTop:0,marginBottom:2,paddingBottom:3,borderBottom:"1px solid rgba(0,229,160,0.1)",width:"100%" } as const;
+const LBL = { fontSize:12,fontFamily:"'DM Sans',sans-serif",fontWeight:300,color:"rgba(255,255,255,0.55)" };
+const VAL = { fontSize:14,fontFamily:"'JetBrains Mono',monospace",fontWeight:500,color:"rgba(255,255,255,0.85)" };
+const SEL = { width:"100%",marginTop:8,fontFamily:"'DM Sans',sans-serif",fontSize:12,background:"rgba(255,255,255,0.04)",color:"rgba(255,255,255,0.78)",border:"1px solid rgba(255,255,255,0.1)",padding:"7px 10px",borderRadius:0,outline:"none" };
+const BTN = { fontFamily:"'DM Sans',sans-serif",fontSize:11,fontWeight:400,letterSpacing:1.5,textTransform:"uppercase",padding:"7px 12px",border:"1px solid rgba(0,212,255,0.2)",background:"rgba(0,212,255,0.08)",color:"#00D4FF",cursor:"pointer",borderRadius:0,transition:"all 0.2s" } as const;
 const CKL = { display:"flex",alignItems:"center",gap:8,marginTop:6,fontSize:9,color:"rgba(255,255,255,0.5)",cursor:"pointer" };
 const CK = { accentColor:"#00D4FF",width:11,height:11 };
 const NUM_INPUT = { width:55,fontFamily:"'JetBrains Mono',monospace",fontSize:8,background:"rgba(255,255,255,0.04)",color:"rgba(255,255,255,0.6)",border:"1px solid rgba(255,255,255,0.08)",padding:"3px 5px",borderRadius:0,outline:"none",textAlign:"right" } as const;
