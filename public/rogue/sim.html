@@ -1,3 +1,22 @@
+<!--
+  ROGUE — N-body Wandering-Object Encounter Simulator
+  StellarForge.tools · © 2025–2026 Jason D. Batt, Ph.D.
+
+  PHYSICS (verified 2026-04-25):
+  • Newtonian gravity F = G·m₁·m₂/r² between every body pair (star,
+    planets, intruder).
+  • Position-Verlet / half-kick Leapfrog integrator (second-order,
+    drift-resistant — preserves orbital energy far better than Euler).
+  • Mass ratios + orbital elements seeded from real exoplanet systems
+    (TRAPPIST-1, Kepler-90, Alpha Centauri) or user-built custom sets.
+  • Disruption / ejection thresholds based on Jacobi-radius proxies.
+
+  STELLARFORGE postMessage protocol implemented:
+  ← STELLARFORGE_LOAD            (parent → iframe, hydrate from JSON)
+  ← STELLARFORGE_REQUEST_STATE   (parent → iframe, ask for current)
+  → STELLARFORGE_SAVE            (iframe → parent, current state JSON)
+  → STELLARFORGE_PUBLISH         (iframe → parent, request publish)
+-->
 <!DOCTYPE html>
 <html lang="en">
 <head>

@@ -1,3 +1,24 @@
+<!--
+  SOLARIS — Multi-Star System & Habitable-Zone Simulator
+  StellarForge.tools · © 2025–2026 Jason D. Batt, Ph.D.
+
+  PHYSICS (verified 2026-04-25):
+  • Single-star: analytic Keplerian orbits. Newton-Raphson on
+    M = E − e·sin(E) (5 iterations). r = a(1 − e·cos E). True anomaly
+    via atan2 of (cos E − e, √(1−e²)·sin E).
+  • Multi-star: Velocity Verlet N-body integration (second-order,
+    drift-resistant): x_{n+1} = x_n + v_n·dt + ½·a₀·dt²; v_{n+1} =
+    v_n + ½·(a₀ + a₁)·dt. Adaptive substeps cap planet displacement
+    to ~2% per step for stability.
+  • Gravity: F = G·m₁·m₂/r² between every pair. Shell theorem applied
+    so an object's orbital velocity sees only the interior mass.
+  • Habitable zone: Kopparapu et al. (2013) effective-flux boundaries
+    using Recent Venus / Runaway Greenhouse / Maximum Greenhouse /
+    Early Mars limits. Multi-star combined luminosity = √(Σ L_i²).
+  • Star type → mass / luminosity / radius from O/B/A/F/G/K/M classes.
+
+  STELLARFORGE postMessage protocol: LOAD / REQUEST_STATE / SAVE / PUBLISH.
+-->
 <!DOCTYPE html>
 <html lang="en">
 <head>

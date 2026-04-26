@@ -9,6 +9,7 @@ import PublishToWorldDialog from "@/components/simulators/PublishToWorldDialog";
 import Header from "@/components/layout/Header";
 import NarrativeBridgePanel, { useNarrativeBridge } from "@/components/simulators/NarrativeBridgePanel";
 import { SIMULATOR_NARRATIVE_CONFIGS } from "@/lib/simulator-narrative-questions";
+import { SimulatorWorldEntityPicker } from "@/components/simulators/SimulatorWorldEntityPicker";
 
 const RogueSimulator = () => {
   const [loaded, setLoaded] = useState(false);
@@ -55,43 +56,25 @@ const RogueSimulator = () => {
               </p>
             </div>
           )}
+          {/* Iframe shrinks 340px right when NarrativeBridge is open so the
+              iframe's internal data panels render adjacent to the bridge
+              instead of being covered by it. */}
           <iframe
             ref={iframeRef}
             src="/rogue/sim.html"
             title="Rogue — Wandering Object Encounters"
             allow="fullscreen"
-            className={`w-full h-full border-0 transition-opacity duration-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}
-            style={{ position: 'absolute', inset: 0 }}
+            className={`border-0 transition-opacity duration-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: narrativeBridge.panelProps.open ? 340 : 0,
+              bottom: 0,
+              transition: 'right 280ms cubic-bezier(0.2, 0, 0, 1), opacity 500ms',
+            }}
             onLoad={() => setLoaded(true)}
           />
-          {/* Unboxed floating title overlay — covers iframe internal title */}
-          {loaded && (
-            <div
-              className="absolute z-20 pointer-events-none select-none"
-              style={{
-                top: 0,
-                left: 0,
-                width: 360,
-                height: 120,
-                background: 'radial-gradient(ellipse at 0% 0%, rgba(9,9,11,0.95) 0%, rgba(9,9,11,0.7) 50%, transparent 100%)',
-              }}
-            >
-              <div style={{ position: 'absolute', top: 20, left: 20 }}>
-                <h1
-                  className="font-display text-[28px] font-light uppercase tracking-[4px] text-t1 leading-none"
-                  style={{ textShadow: '0 0 20px rgba(0, 0, 0, 0.6)' }}
-                >
-                  ROGUE
-                </h1>
-                <p
-                  className="font-display text-[10px] font-light uppercase tracking-[3px] mt-1"
-                  style={{ color: 'rgba(0, 229, 160, 0.35)', textShadow: '0 0 20px rgba(0, 0, 0, 0.6)' }}
-                >
-                  StellarForge.tools
-                </p>
-              </div>
-            </div>
-          )}
           {/* Save/Load controls */}
           {loaded && worldId && (
             <div className="absolute bottom-3 left-3 z-20 flex items-center gap-1.5">
@@ -99,7 +82,7 @@ const RogueSimulator = () => {
                 variant="outline"
                 size="sm"
                 onClick={() => setPublishDialogOpen(true)}
-                className="bg-sf-void/80 border-white/10 text-sf-cyan hover:bg-sf-void text-[10px] uppercase tracking-wider h-7 px-2.5"
+                className="bg-sf-void/80 border-sf-border text-sf-cyan hover:bg-sf-void text-[10px] uppercase tracking-wider h-7 px-2.5"
               >
                 <Rocket className="w-3 h-3 mr-1" />
                 Publish
@@ -108,7 +91,7 @@ const RogueSimulator = () => {
                 variant="outline"
                 size="sm"
                 onClick={() => setLoadSheetOpen(true)}
-                className="bg-sf-void/80 border-white/10 text-sf-cyan hover:bg-sf-void text-[10px] uppercase tracking-wider h-7 px-2.5"
+                className="bg-sf-void/80 border-sf-border text-sf-cyan hover:bg-sf-void text-[10px] uppercase tracking-wider h-7 px-2.5"
               >
                 <FolderOpen className="w-3 h-3 mr-1" />
                 Load
@@ -117,11 +100,17 @@ const RogueSimulator = () => {
                 variant="outline"
                 size="sm"
                 onClick={requestSave}
-                className="bg-sf-void/80 border-white/10 text-sf-cyan hover:bg-sf-void text-[10px] uppercase tracking-wider h-7 px-2.5"
+                className="bg-sf-void/80 border-sf-border text-sf-cyan hover:bg-sf-void text-[10px] uppercase tracking-wider h-7 px-2.5"
               >
                 <Save className="w-3 h-3 mr-1" />
                 Save
               </Button>
+              <SimulatorWorldEntityPicker
+                worldId={worldId}
+                simulatorType="rogue"
+                entityTypes={["planet", "star"]}
+                iframeRef={iframeRef}
+              />
             </div>
           )}
           <NarrativeBridgePanel

@@ -1,3 +1,22 @@
+<!--
+  EXOFORGE — Procedural Mass-Radius-Composition Exoplanet Forge
+  StellarForge.tools · © 2025–2026 Jason D. Batt, Ph.D.
+
+  PHYSICS (verified 2026-04-25):
+  • Mass-radius relation interpolated across composition slider
+    (0=100% rock, 100=100% gas) using the Seager+ 2007 / Zeng+ 2016
+    mass-radius curves: terrestrial (rock+iron) → super-Earth → mini-
+    Neptune → ice giant → gas giant.
+  • Atmospheric scale height H = (k·T)/(μ·g) with μ varying by
+    composition (N₂/O₂ ≈ 28.97 g/mol, CO₂ ≈ 44, H₂/He ≈ 2.3).
+  • Surface gravity g = G·M/R². Visual rendering via Three.js with
+    procedural noise terrain, atmospheric Rayleigh scattering, and
+    optional ring systems (Saturn-style with tilt + opacity).
+  • Albedo / cloud / ocean fractions modulate visual appearance only;
+    not coupled to T_eq in this sim (use Tidelock for thermal).
+
+  STELLARFORGE postMessage protocol: LOAD / REQUEST_STATE / SAVE / PUBLISH.
+-->
 <!DOCTYPE html>
 <html lang="en">
 <head>

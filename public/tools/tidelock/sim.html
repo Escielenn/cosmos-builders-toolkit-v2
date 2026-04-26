@@ -1,3 +1,21 @@
+<!--
+  TIDELOCK — Locked-World Thermal & Atmospheric Simulator
+  StellarForge.tools · © 2025–2026 Jason D. Batt, Ph.D.
+
+  PHYSICS (verified 2026-04-25):
+  • Equilibrium temperature T_eq = T_★ · √(R_★/2a) · (1−A)^¼ where T_★
+    is stellar effective temp, R_★ stellar radius, a orbital semi-major
+    axis, A bond albedo. Per-cell solution across the day/night
+    terminator with ε-greenhouse correction for atmospheres.
+  • Atmosphere retention via Jeans escape parameter λ = (G·M·m)/(k·T·R).
+    λ > 6 → bound; smaller → escape over geological time. Star type
+    M0V–K5V (mass 0.06–0.68 M☉) sets bolometric luminosity used in T_eq.
+  • Water phase boundaries computed per cell from local T (ice <273K,
+    liquid 273–373K, vapor >373K at 1 atm; pressure scaled by atmo).
+  • WebGL 3D rendering with thermal-radiative shaders.
+
+  STELLARFORGE postMessage protocol: LOAD / REQUEST_STATE / SAVE / PUBLISH.
+-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
