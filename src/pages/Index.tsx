@@ -332,7 +332,7 @@ const toolsByCategory: {
 type SortMode = 'category' | 'type' | 'complexity';
 
 const TYPE_GROUP_META: Record<ToolType, { label: string; color: string; description: string }> = {
-  worksheet: { label: 'Worksheets', color: '#4D9FFF', description: 'In-depth design tools with guided questions and exportable results.' },
+  worksheet: { label: 'Worksheets', color: '#7FB8FF', description: 'In-depth design tools with guided questions and exportable results.' },
   calculator: { label: 'Calculators', color: '#FFB800', description: 'Quick-reference tools for specific physical parameters.' },
   simulator: { label: 'Simulators', color: '#00FF88', description: 'Interactive visual simulations and procedural generators.' },
   cartographer: { label: 'Cartographers', color: '#9B5DE5', description: 'Spatial mapping and visualization tools.' },
@@ -648,10 +648,31 @@ const Index = () => {
                   </button>
                 ))}
               </div>
+              {/* Quick-jump nav — scrolls to each group section under the active sort mode. */}
+              <div className="flex flex-wrap items-center gap-1.5">
+                {groupedTools.map(({ key, label, color }) => (
+                  <button
+                    type="button"
+                    key={key}
+                    onClick={() => {
+                      document
+                        .getElementById(`tools-group-${key}`)
+                        ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }}
+                    className="flex items-center gap-1.5 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] font-medium rounded border border-sf-border hover:border-sf-border-strong text-t3 hover:text-t1 transition-all"
+                  >
+                    <span
+                      className="w-1.5 h-1.5 rounded-full shrink-0"
+                      style={{ backgroundColor: color }}
+                    />
+                    <span style={{ color }}>{label}</span>
+                  </button>
+                ))}
+              </div>
             </div>
 
             {groupedTools.map(({ key, label, color, description, tools: sectionTools }, idx) => (
-              <div key={key}>
+              <div key={key} id={`tools-group-${key}`} className="scroll-mt-24">
                 {idx > 0 && <SFDivider className="hidden md:block" />}
                 <div className="mt-8 first:mt-0 mb-6">
                   <div className="flex items-center gap-2.5 mb-1">
