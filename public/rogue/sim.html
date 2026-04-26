@@ -163,13 +163,6 @@ select option{background:#0F0F10;color:#c8c8c8}
     <h1>ROGUE</h1>
     <div class="sub">N-Body Gravitational Encounter Simulator</div>
     <div class="sys-name" id="sys-display">Our Solar System</div>
-    <div class="credit">A <a href="https://stellarforge.tools" target="_parent">Stellar Forge</a> tool · <a href="https://dreamsidestudios.com" target="_blank" rel="noopener noreferrer">Jason D. Batt, Ph.D.</a> · <a href="/rogue/science" target="_parent">The Science</a></div>
-    <div class="nav-links">
-      <a href="/" target="_parent">Home</a>
-      <a href="/worlds" target="_parent">Worlds</a>
-      <a href="/#tools" target="_parent">Tools</a>
-      <a href="/rogue/science" target="_parent" class="science-link">The Science</a>
-    </div>
   </div>
   <div id="badge" class="p st-wait">● Awaiting Launch</div>
 
@@ -465,9 +458,18 @@ function storePrevPositions(){for(const b of bodies)prevPositions[b.name]={x:b.x
 
 let stars=[];for(let i=0;i<500;i++)stars.push({x:Math.random()*4000-2000,y:Math.random()*4000-2000,b:Math.random()*.3+.05,s:Math.random()<.07?1.6:Math.random()<.2?1.1:.6});
 
-function resize(){canvas.width=innerWidth;canvas.height=innerHeight}addEventListener('resize',resize);resize();
-function toS(wx,wy){return{sx:canvas.width/2+(wx-cam.x)*cam.zoom,sy:canvas.height/2-(wy-cam.y)*cam.zoom}}
-function toW(sx,sy){return{wx:(sx-canvas.width/2)/cam.zoom+cam.x,wy:-(sy-canvas.height/2)/cam.zoom+cam.y}}
+let W=window.innerWidth, H=window.innerHeight, dpr=1;
+function resize(){
+  dpr=Math.min(window.devicePixelRatio||1,2);
+  W=window.innerWidth;H=window.innerHeight;
+  const c=canvas;
+  c.width=W*dpr;c.height=H*dpr;
+  c.style.width=W+'px';c.style.height=H+'px';
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+}
+addEventListener('resize',resize);resize();
+function toS(wx,wy){return{sx:W/2+(wx-cam.x)*cam.zoom,sy:H/2-(wy-cam.y)*cam.zoom}}
+function toW(sx,sy){return{wx:(sx-W/2)/cam.zoom+cam.x,wy:-(sy-H/2)/cam.zoom+cam.y}}
 // Parse hex color to RGB components — cached to avoid repeated parseInt calls
 const _hexRgbCache={};
 function hexToRgb(h){if(_hexRgbCache[h])return _hexRgbCache[h];const r=parseInt(h.slice(1,3),16),g=parseInt(h.slice(3,5),16),b=parseInt(h.slice(5,7),16);_hexRgbCache[h]=[r,g,b];return _hexRgbCache[h];}
@@ -685,9 +687,9 @@ function makeGrad(cx,cy,r0,r1,stops){
 }
 
 // === DRAWING ===
-function drawStars2(){for(const s of stars){const px=((canvas.width/2+s.x-cam.x*.04*cam.zoom)%canvas.width+canvas.width)%canvas.width,py=((canvas.height/2+s.y+cam.y*.04*cam.zoom)%canvas.height+canvas.height)%canvas.height;ctx.fillStyle=`rgba(255,255,255,${s.b})`;ctx.beginPath();ctx.arc(px,py,s.s,0,Math.PI*2);ctx.fill();}}
+function drawStars2(){for(const s of stars){const px=((W/2+s.x-cam.x*.04*cam.zoom)%W+W)%W,py=((H/2+s.y+cam.y*.04*cam.zoom)%H+H)%H;ctx.fillStyle=`rgba(255,255,255,${s.b})`;ctx.beginPath();ctx.arc(px,py,s.s,0,Math.PI*2);ctx.fill();}}
 
-function drawGrid(){if(!document.getElementById('chk-grid').checked)return;const vau=canvas.width/cam.zoom;let sp=1;if(vau>15)sp=2;if(vau>30)sp=5;if(vau>80)sp=10;if(vau>200)sp=25;if(vau>500)sp=50;if(vau<4)sp=.5;if(vau<1.5)sp=.25;if(vau<.5)sp=.1;if(vau<.15)sp=.02;if(vau<.05)sp=.005;const l=toW(0,0).wx,r=toW(canvas.width,0).wx,t=toW(0,0).wy,bt=toW(0,canvas.height).wy;ctx.strokeStyle='rgba(255,255,255,.02)';ctx.lineWidth=1;for(let x=Math.floor(l/sp)*sp;x<=r+sp;x+=sp){const s=toS(x,0);ctx.beginPath();ctx.moveTo(s.sx,0);ctx.lineTo(s.sx,canvas.height);ctx.stroke();}for(let y=Math.floor(bt/sp)*sp;y<=t+sp;y+=sp){const s=toS(0,y);ctx.beginPath();ctx.moveTo(0,s.sy);ctx.lineTo(canvas.width,s.sy);ctx.stroke();}}
+function drawGrid(){if(!document.getElementById('chk-grid').checked)return;const vau=W/cam.zoom;let sp=1;if(vau>15)sp=2;if(vau>30)sp=5;if(vau>80)sp=10;if(vau>200)sp=25;if(vau>500)sp=50;if(vau<4)sp=.5;if(vau<1.5)sp=.25;if(vau<.5)sp=.1;if(vau<.15)sp=.02;if(vau<.05)sp=.005;const l=toW(0,0).wx,r=toW(W,0).wx,t=toW(0,0).wy,bt=toW(0,H).wy;ctx.strokeStyle='rgba(255,255,255,.02)';ctx.lineWidth=1;for(let x=Math.floor(l/sp)*sp;x<=r+sp;x+=sp){const s=toS(x,0);ctx.beginPath();ctx.moveTo(s.sx,0);ctx.lineTo(s.sx,H);ctx.stroke();}for(let y=Math.floor(bt/sp)*sp;y<=t+sp;y+=sp){const s=toS(0,y);ctx.beginPath();ctx.moveTo(0,s.sy);ctx.lineTo(W,s.sy);ctx.stroke();}}
 
 function drawOrbitalPaths(){if(!document.getElementById('chk-orbits').checked)return;const sys=getSystemDef();const allStars=bodies.filter(b=>b.isStar);const tm=allStars.reduce((s,b)=>s+b.mass,0);const cx=allStars.reduce((s,b)=>s+b.x*b.mass,0)/tm,cy=allStars.reduce((s,b)=>s+b.y*b.mass,0)/tm;const cs=toS(cx,cy);(sys.planets||[]).forEach(pd=>{const rPx=pd.a*cam.zoom;if(rPx<2||rPx>10000)return;ctx.strokeStyle=hexRGBA(pd.color,.07);ctx.lineWidth=1;ctx.setLineDash([2,4]);ctx.beginPath();ctx.arc(cs.sx,cs.sy,rPx,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);});}
 
@@ -756,18 +758,18 @@ function updateCam(){
   // Delta-time camera smoothing (framerate independent)
   const smoothing=1-Math.pow(0.0001,frameDt/1000);
   cam.x+=(targetCam.x-cam.x)*smoothing;cam.y+=(targetCam.y-cam.y)*smoothing;cam.zoom+=(targetCam.zoom-cam.zoom)*smoothing;
-  document.getElementById('zv-text').textContent=(canvas.width/cam.zoom).toFixed(cam.zoom>500?3:1)+' AU';
+  document.getElementById('zv-text').textContent=(W/cam.zoom).toFixed(cam.zoom>500?3:1)+' AU';
 }
 function updateCamBtns(){document.querySelectorAll('#cam-btns button, #planet-cam-btns button').forEach(b=>{b.className=b.dataset.cam===camMode?'ab':'';});}
-function fitAll(){let minX=0,maxX=0,minY=0,maxY=0;for(const b of bodies){if(b.isIntruder&&!b.active)continue;minX=Math.min(minX,b.x);maxX=Math.max(maxX,b.x);minY=Math.min(minY,b.y);maxY=Math.max(maxY,b.y);}const pad=Math.max(1,(maxX-minX)*.1);targetCam.x=(minX+maxX)/2;targetCam.y=(minY+maxY)/2;targetCam.zoom=Math.min(canvas.width/((maxX-minX)+pad*2),canvas.height/((maxY-minY)+pad*2))*.85;targetCam.zoom=Math.max(1,Math.min(5000,targetCam.zoom));}
-function fitInner(){const sys=getSystemDef();const inner=Math.max(.1,...(sys.planets||[]).slice(0,Math.min(4,(sys.planets||[]).length)).map(p=>p.a));targetCam.x=0;targetCam.y=0;targetCam.zoom=Math.min(canvas.width,canvas.height)/(inner*2.5);}
+function fitAll(){let minX=0,maxX=0,minY=0,maxY=0;for(const b of bodies){if(b.isIntruder&&!b.active)continue;minX=Math.min(minX,b.x);maxX=Math.max(maxX,b.x);minY=Math.min(minY,b.y);maxY=Math.max(maxY,b.y);}const pad=Math.max(1,(maxX-minX)*.1);targetCam.x=(minX+maxX)/2;targetCam.y=(minY+maxY)/2;targetCam.zoom=Math.min(W/((maxX-minX)+pad*2),H/((maxY-minY)+pad*2))*.85;targetCam.zoom=Math.max(1,Math.min(5000,targetCam.zoom));}
+function fitInner(){const sys=getSystemDef();const inner=Math.max(.1,...(sys.planets||[]).slice(0,Math.min(4,(sys.planets||[]).length)).map(p=>p.a));targetCam.x=0;targetCam.y=0;targetCam.zoom=Math.min(W,H)/(inner*2.5);}
 
 function animate(timestamp){
   // Delta time tracking
   frameDt=timestamp-lastFrameTime;lastFrameTime=timestamp;
   if(frameDt>100)frameDt=16.67; // cap after tab switch
 
-  ctx.fillStyle='#09090B';ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle='#09090B';ctx.fillRect(0,0,W,H);
   // Cache checkbox reads once per frame to avoid repeated DOM queries in draw functions
   showLabels=document.getElementById('chk-labels').checked;
   updateCam();drawStars2();drawGrid();drawHabitableZone();drawOrbitalPaths();drawTrails();drawGravityLines();
@@ -875,7 +877,7 @@ function applyCustomSystem(){
   customSystem={name,starMass,starType,binary,planets,habZone,defaultZoom:55,note:'Custom system'};
   // Auto-zoom
   const maxA=planets.length?Math.max(...planets.map(p=>p.a)):5;
-  customSystem.defaultZoom=Math.min(canvas.width,canvas.height)/(maxA*2.5);
+  customSystem.defaultZoom=Math.min(W,H)/(maxA*2.5);
 
   currentSystem='custom';
   document.getElementById('sys-select').value='custom';
@@ -918,7 +920,7 @@ function loadFromURL(){
     }).sort((a,b)=>a.a-b.a);
     const L=Math.pow(data.sm,3.5);
     const maxA=planets.length?Math.max(...planets.map(p=>p.a)):5;
-    customSystem={name:data.n,starMass:data.sm,starType,binary,planets,habZone:[.95*Math.sqrt(L),1.37*Math.sqrt(L)],defaultZoom:Math.min(canvas.width,canvas.height)/(maxA*2.5),note:'Shared custom system'};
+    customSystem={name:data.n,starMass:data.sm,starType,binary,planets,habZone:[.95*Math.sqrt(L),1.37*Math.sqrt(L)],defaultZoom:Math.min(W,H)/(maxA*2.5),note:'Shared custom system'};
     currentSystem='custom';
     document.getElementById('sys-select').value='custom';
     return true;

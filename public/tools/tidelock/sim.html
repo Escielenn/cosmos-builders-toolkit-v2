@@ -148,7 +148,7 @@ button.active{background:rgba(0,212,255,0.1);border-color:rgba(0,212,255,0.3);co
 #kb-help.visible{display:flex}
 #biome-legend{position:fixed;bottom:40px;left:18px;z-index:10;background:rgba(15,15,16,0.85);border:1px solid rgba(255,255,255,0.06);padding:10px 14px;font-family:var(--font-mono);font-size:9px;backdrop-filter:blur(12px);pointer-events:none;display:flex;flex-direction:column;gap:4px}
 #temp-graph{position:fixed;bottom:40px;right:18px;z-index:10;background:rgba(15,15,16,0.88);border:1px solid rgba(255,255,255,0.06);padding:8px;backdrop-filter:blur(12px);pointer-events:none}
-#temp-graph .tg-title{font-family:var(--font-display);font-weight:300;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:rgba(0,229,160,0.35);margin-bottom:4px;text-align:center}
+#temp-graph .tg-title{font-family:var(--font-display);font-weight:300;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(0,229,160,0.55);margin-bottom:6px;text-align:center}
 @media(max-width:1024px){#biome-legend{display:none !important}#kb-help{display:none !important}#temp-graph{display:none !important}}
 </style>
 </head>
@@ -157,15 +157,7 @@ button.active{background:rgba(0,212,255,0.1);border-color:rgba(0,212,255,0.3);co
 
 <div id="title-block">
   <h1>TIDELOCK</h1>
-  <div class="subtitle">STELLARFORGE.TOOLS</div>
   <div class="context-label">Tidally Locked World Simulator</div>
-  <div class="credit">A <a href="https://stellarforge.tools" target="_parent">Stellar Forge</a> tool · <a href="https://dreamsidestudios.com" target="_blank" rel="noopener noreferrer">Jason D. Batt, Ph.D.</a></div>
-  <div class="nav-links">
-    <a href="/" target="_parent">Home</a>
-    <a href="/worlds" target="_parent">Worlds</a>
-    <a href="/#tools" target="_parent">Tools</a>
-    <a href="/tools/tidelock/science" target="_parent" class="science-link">The Science</a>
-  </div>
   <div style="margin-top:10px;display:flex;align-items:center;pointer-events:all;">
     <div id="badge" class="badge-waiting">CONFIGURING</div>
     <span id="info-btn" title="About TIDELOCK">ℹ</span>
@@ -323,7 +315,7 @@ button.active{background:rgba(0,212,255,0.1);border-color:rgba(0,212,255,0.3);co
 
 <div id="temp-graph">
   <div class="tg-title">Temperature Cross-Section</div>
-  <canvas id="tempCanvas" width="240" height="120"></canvas>
+  <canvas id="tempCanvas" width="320" height="160"></canvas>
 </div>
 
 <script src="/vendor/three.r128.min.js"></script>
@@ -1155,7 +1147,7 @@ function drawTempGraph(){
   if(!cv)return;
   var ctx=cv.getContext('2d');
   var W=cv.width,H=cv.height;
-  var PL=30,PR=8,PT=8,PB=20;
+  var PL=36,PR=10,PT=10,PB=24;
   var pw=W-PL-PR,ph=H-PT-PB;
   ctx.clearRect(0,0,W,H);
 
@@ -1216,29 +1208,29 @@ function drawTempGraph(){
   ctx.stroke();
 
   // Labels
-  ctx.fillStyle='rgba(255,255,255,0.3)';
-  ctx.font='7px JetBrains Mono,monospace';
+  ctx.fillStyle='rgba(255,255,255,0.55)';
+  ctx.font='10px JetBrains Mono,monospace';
   ctx.textAlign='center';
-  ctx.fillText('Substellar',PL+4,H-3);
-  ctx.fillText('Terminator',PL+pw/2,H-3);
-  ctx.fillText('Antistellar',PL+pw-4,H-3);
+  ctx.fillText('Substellar',PL+8,H-4);
+  ctx.fillText('Terminator',PL+pw/2,H-4);
+  ctx.fillText('Antistellar',PL+pw-8,H-4);
 
   ctx.textAlign='right';
-  ctx.fillText(Math.round(tMax)+'K',PL-2,PT+6);
-  ctx.fillText(Math.round(tMin)+'K',PL-2,PT+ph);
+  ctx.fillText(Math.round(tMax)+'K',PL-3,PT+9);
+  ctx.fillText(Math.round(tMin)+'K',PL-3,PT+ph);
 
   // Habitable zone labels
-  ctx.fillStyle='rgba(46,204,113,0.35)';
+  ctx.fillStyle='rgba(46,204,113,0.6)';
   ctx.textAlign='left';
-  ctx.font='6px JetBrains Mono,monospace';
-  if(y273>PT+8&&y273<PT+ph-4)ctx.fillText('273K',PL+pw+1,y273+3);
-  if(y373>PT+4&&y373<PT+ph-8)ctx.fillText('373K',PL+pw+1,y373+3);
+  ctx.font='9px JetBrains Mono,monospace';
+  if(y273>PT+10&&y273<PT+ph-5)ctx.fillText('273K',PL+pw+2,y273+3);
+  if(y373>PT+5&&y373<PT+ph-10)ctx.fillText('373K',PL+pw+2,y373+3);
 
   // Key temperature markers
-  ctx.fillStyle='rgba(255,212,59,0.6)';
-  ctx.beginPath();ctx.arc(xP(0),yP(D.tSSP),2.5,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle='rgba(0,212,255,0.6)';
-  ctx.beginPath();ctx.arc(xP(Math.PI),yP(D.tASP),2.5,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='rgba(255,212,59,0.7)';
+  ctx.beginPath();ctx.arc(xP(0),yP(D.tSSP),3,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='rgba(0,212,255,0.7)';
+  ctx.beginPath();ctx.arc(xP(Math.PI),yP(D.tASP),3,0,Math.PI*2);ctx.fill();
   ctx.fillStyle='rgba(255,255,255,0.4)';
   ctx.beginPath();ctx.arc(xP(Math.PI/2),yP(D.tTerm),2.5,0,Math.PI*2);ctx.fill();
 }
