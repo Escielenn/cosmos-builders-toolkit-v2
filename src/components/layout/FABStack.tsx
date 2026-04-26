@@ -55,9 +55,9 @@ const FABStack = () => {
   // Hide on auth page
   if (pathname === "/auth") return null;
 
-  // Position: simulators → right of sidebar, otherwise → bottom-right
+  // Position: simulators → bottom-right past narrative bridge tab; otherwise → bottom-right
   const positionClass = isSimulator
-    ? "bottom-4 left-[280px]"
+    ? "bottom-4 right-12"
     : `${audioOffset || "bottom-6"} right-4`;
 
   return (

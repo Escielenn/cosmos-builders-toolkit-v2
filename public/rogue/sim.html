@@ -54,7 +54,7 @@ body.dragging{cursor:grabbing}
 canvas{display:block;position:absolute;top:0;left:0}
 #ui{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:10}
 .p{pointer-events:all;background:var(--surface-base);border:1px solid var(--border-subtle);backdrop-filter:blur(16px);border-radius:0}
-#title{position:absolute;top:14px;left:14px;padding:12px 18px}
+#title{position:fixed;top:18px;left:18px;padding:0;background:none;border:none;backdrop-filter:none;z-index:20;pointer-events:none}
 #title h1{font-family:var(--font-display);font-size:26px;font-weight:300;color:#fff;letter-spacing:6px;margin-bottom:2px;text-transform:uppercase}
 #title .sub{font-family:var(--font-body);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.45)}
 #title .sys-name{font-size:10px;color:var(--accent-cyan);margin-top:4px;font-style:normal;font-family:var(--font-body);opacity:.6}
@@ -65,7 +65,7 @@ canvas{display:block;position:absolute;top:0;left:0}
 #title .nav-links a:hover{color:var(--accent-cyan);border-color:rgba(0,212,255,.25);background:rgba(0,212,255,.06)}
 #title .nav-links a.science-link{color:rgba(0,212,255,.6);border-color:rgba(0,212,255,.2);background:rgba(0,212,255,.04)}
 #title .nav-links a.science-link:hover{color:var(--accent-cyan);border-color:rgba(0,212,255,.4);background:rgba(0,212,255,.1)}
-#badge{position:absolute;top:140px;left:14px;padding:6px 14px;font-size:9px;font-family:var(--font-display);font-weight:300;letter-spacing:2px;text-transform:uppercase;transition:all .5s;border-radius:0}
+#badge{position:absolute;top:90px;left:18px;padding:6px 14px;font-size:9px;font-family:var(--font-display);font-weight:300;letter-spacing:2px;text-transform:uppercase;transition:all .5s;border-radius:0}
 .st-orbit{background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.2);color:var(--accent-cyan)}
 .st-perturb{background:rgba(255,165,0,.08);border:1px solid rgba(255,165,0,.2);color:#ffa500}
 .st-eject{background:rgba(46,204,113,.08);border:1px solid rgba(46,204,113,.2);color:#2ecc71;animation:pulse 2s infinite}
@@ -115,7 +115,7 @@ select option{background:#0F0F10;color:#c8c8c8}
 .type-bd.a{background:rgba(200,85,61,.12)!important;border-color:rgba(200,85,61,.35)!important;color:#c8553d!important}
 .type-rp.a{background:rgba(139,105,20,.12)!important;border-color:rgba(139,105,20,.35)!important;color:#8b6914!important}
 
-#data{position:absolute;top:14px;right:14px;padding:14px 18px;width:255px;font-size:12px;font-family:var(--font-body);line-height:1.9;max-height:calc(100vh - 140px);overflow-y:auto}
+#data{position:absolute;top:18px;right:48px;padding:14px 18px;width:255px;font-size:12px;font-family:var(--font-body);line-height:1.9;max-height:calc(100vh - 140px);overflow-y:auto}
 #data::-webkit-scrollbar{width:3px}#data::-webkit-scrollbar-track{background:transparent}#data::-webkit-scrollbar-thumb{background:rgba(0,229,160,.12)}
 .ds{font-size:12px;font-family:var(--font-display);font-weight:300;letter-spacing:2.5px;text-transform:uppercase;color:rgba(0,229,160,.5);margin-top:7px;margin-bottom:1px;padding-bottom:2px;border-bottom:1px solid rgba(0,229,160,.1)}
 .ds:first-child{margin-top:0}
@@ -159,7 +159,7 @@ select option{background:#0F0F10;color:#c8c8c8}
 <body>
 <canvas id="sim"></canvas>
 <div id="ui">
-  <div id="title" class="p">
+  <div id="title">
     <h1>ROGUE</h1>
     <div class="sub">N-Body Gravitational Encounter Simulator</div>
     <div class="sys-name" id="sys-display">Our Solar System</div>

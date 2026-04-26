@@ -89,15 +89,32 @@ body {
   z-index: 10;
 }
 
-.panel::-webkit-scrollbar { width: 3px; }
-.panel::-webkit-scrollbar-track { background: transparent; }
-.panel::-webkit-scrollbar-thumb { background: rgba(0, 229, 160, 0.12); border-radius: 0; }
-
-/* === TITLE PANEL — MD Nichrome === */
-#title-panel {
-  top: 20px; left: 20px;
-  padding: 16px 22px;
+.panel::-webkit-scrollbar { width: 6px; }
+.panel::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.02); }
+.panel::-webkit-scrollbar-thumb { background: rgba(0, 229, 160, 0.28); border-radius: 0; }
+.panel::-webkit-scrollbar-thumb:hover { background: rgba(0, 229, 160, 0.5); }
+/* Bottom fade to communicate "more below" */
+.panel.scrollable::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 6px;
+  height: 24px;
+  background: linear-gradient(to bottom, transparent, var(--bg-panel, rgba(13,13,15,0.94)));
+  pointer-events: none;
 }
+
+/* === TITLE BLOCK — unboxed, Tidelock-reference === */
+#title-panel {
+  position: fixed;
+  top: 18px; left: 18px;
+  padding: 0;
+  background: none;
+  border: none;
+  backdrop-filter: none;
+  z-index: 20;
+  pointer-events: none;
+}
+#title-panel #badge { pointer-events: auto; }
 #title-panel h1 {
   font-family: 'MD Nichrome Test', 'Space Grotesk', sans-serif;
   font-weight: 300;
