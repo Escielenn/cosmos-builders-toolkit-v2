@@ -1,4 +1,4 @@
-import { MoreHorizontal, Trash2, Download, Share2, Archive, ArchiveRestore } from "lucide-react";
+import { MoreHorizontal, Trash2, Download, Share2, Archive, ArchiveRestore, GitFork } from "lucide-react";
 import { Link } from "react-router-dom";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
@@ -29,6 +29,8 @@ interface WorldCardProps {
   archivedAt?: string | null;
   snapshotAt?: string | null;
   updatedAt: string;
+  forkedFrom?: string | null;
+  source?: { id: string; name: string } | null;
   onDelete: (id: string) => void;
   onArchive?: (id: string) => void;
   onUnarchive?: (id: string) => void;
@@ -45,10 +47,13 @@ const WorldCard = ({
   archivedAt,
   snapshotAt,
   updatedAt,
+  forkedFrom,
+  source,
   onDelete,
   onArchive,
   onUnarchive,
 }: WorldCardProps) => {
+  const isFork = !!forkedFrom;
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showExportDialog, setShowExportDialog] = useState(false);
   const [showShareDialog, setShowShareDialog] = useState(false);
@@ -124,13 +129,24 @@ const WorldCard = ({
           <div className="absolute -bottom-5 left-4 w-10 h-10 rounded-none bg-gradient-to-br from-primary/20 to-accent/20 border-2 border-background flex items-center justify-center shadow-lg z-10 overflow-hidden">
             <WorldIconRenderer iconId={icon} className="w-7 h-7 text-primary" />
           </div>
-          {/* Archived badge */}
-          {isArchived && (
-            <Badge variant="secondary" className="absolute top-2 right-2 gap-1">
-              <Archive className="w-3 h-3" />
-              Archived
-            </Badge>
-          )}
+          {/* Status badges (Fork / Archived) — stacked top-right */}
+          <div className="absolute top-2 right-2 flex flex-col items-end gap-1">
+            {isFork && (
+              <span
+                className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-sm bg-sf-stellar/[0.06] border border-sf-stellar/[0.15] text-sf-stellar font-mono text-[10px] tracking-[0.18em] uppercase"
+                title={source ? `Forked from ${source.name}` : "Forked from another world"}
+              >
+                <GitFork className="w-3 h-3" />
+                Fork
+              </span>
+            )}
+            {isArchived && (
+              <Badge variant="secondary" className="gap-1">
+                <Archive className="w-3 h-3" />
+                Archived
+              </Badge>
+            )}
+          </div>
         </div>
 
         {/* Content */}
@@ -186,6 +202,12 @@ const WorldCard = ({
             {description && (
               <p className="text-sm text-t3 line-clamp-2">
                 {description}
+              </p>
+            )}
+            {isFork && source && (
+              <p className="text-xs text-t4 mt-1 inline-flex items-center gap-1">
+                <GitFork className="w-3 h-3" />
+                Forked from <span className="text-t3">{source.name}</span>
               </p>
             )}
             {tags.length > 0 && (
