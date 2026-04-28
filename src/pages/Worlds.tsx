@@ -190,6 +190,8 @@ const Worlds = () => {
               archivedAt={world.archived_at}
               snapshotAt={world.snapshot_at}
               updatedAt={world.updated_at}
+              forkedFrom={world.forked_from}
+              source={world.source}
               onDelete={handleDeleteWorld}
               onArchive={handleArchiveWorld}
               onUnarchive={handleUnarchiveWorld}
