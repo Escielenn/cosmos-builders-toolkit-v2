@@ -1,0 +1,226 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-04-27T00:00:00.000Z",
+  "title": "Design System: StellarForge",
+  "extensions": {
+    "colorMeta": {
+      "deep-void": {
+        "role": "neutral",
+        "displayName": "Deep Void",
+        "canonical": "hsl(222 30% 5%)",
+        "tonalRamp": ["#05070C", "#0A0E17", "#10141F", "#161B28", "#1D2333", "#262D40", "#2F374D", "#39425B"]
+      },
+      "panel-navy": {
+        "role": "neutral",
+        "displayName": "Panel Navy",
+        "canonical": "hsl(222 25% 9%)",
+        "tonalRamp": ["#080B11", "#0E1320", "#141A2A", "#1A2135", "#222A42", "#2B344E", "#353F5B", "#404B6A"]
+      },
+      "surface-lift": {
+        "role": "neutral",
+        "displayName": "Surface Lift",
+        "canonical": "hsl(222 20% 12%)",
+        "tonalRamp": ["#0A0D14", "#11151E", "#161C2B", "#1D2436", "#252D43", "#2E3851", "#374260", "#414D70"]
+      },
+      "beacon-teal": {
+        "role": "primary",
+        "displayName": "Beacon Teal",
+        "canonical": "hsl(157 80% 42%)",
+        "tonalRamp": ["#073C25", "#0A5538", "#0D7048", "#108B5C", "#13A66E", "#15C17B", "#3DD594", "#6BE2B0"]
+      },
+      "phosphor-glow": {
+        "role": "primary",
+        "displayName": "Phosphor Glow",
+        "canonical": "hsl(157 100% 62%)",
+        "tonalRamp": ["#0F614A", "#168465", "#1DA77F", "#24CB99", "#2BEDB3", "#3DFFCD", "#6FFFD9", "#A0FFE5"],
+        "usage": "Glow only — never solid fill."
+      },
+      "telemetry-amber": {
+        "role": "secondary",
+        "displayName": "Telemetry Amber",
+        "canonical": "hsl(43 100% 50%)",
+        "tonalRamp": ["#3D2B00", "#5C4100", "#7D5800", "#9E7000", "#C08800", "#FFB800", "#FFC940", "#FFD980"]
+      },
+      "wonder-blue": {
+        "role": "secondary",
+        "displayName": "Wonder Blue",
+        "canonical": "hsl(220 82% 65%)",
+        "tonalRamp": ["#0F1F47", "#1B3270", "#264599", "#3258C2", "#436FE0", "#5B8DEF", "#85ABF4", "#AFC8F9"]
+      },
+      "section-green": {
+        "role": "secondary",
+        "displayName": "Section Green",
+        "canonical": "hsl(153 100% 50%)",
+        "tonalRamp": ["#003D24", "#005C36", "#007D49", "#009F5C", "#00C172", "#00FF88", "#3FFFA4", "#7FFFC0"],
+        "usage": "Section dividers only."
+      },
+      "pro-indigo": {
+        "role": "secondary",
+        "displayName": "Pro Indigo",
+        "canonical": "hsl(263 74% 63%)",
+        "tonalRamp": ["#2A1352", "#3D1C75", "#502699", "#6431BC", "#7D44D4", "#9B5DE5", "#B583EC", "#CFA9F2"],
+        "usage": "Pro-tier badges only."
+      },
+      "hazard-crimson": {
+        "role": "secondary",
+        "displayName": "Hazard Crimson",
+        "canonical": "hsl(347 100% 60%)",
+        "tonalRamp": ["#5C0F23", "#820F2C", "#A80F36", "#CE0F40", "#F31F4D", "#FF3366", "#FF5C84", "#FF85A2"],
+        "usage": "Destructive actions only."
+      },
+      "link-azure": {
+        "role": "secondary",
+        "displayName": "Link Azure",
+        "canonical": "hsl(215 100% 65%)",
+        "tonalRamp": ["#0A2A66", "#0F3D99", "#1450C1", "#1A63E0", "#3A82F0", "#4D9FFF", "#7FBAFF", "#B1D5FF"]
+      },
+      "legacy-cyan": {
+        "role": "secondary",
+        "displayName": "Legacy Cyan",
+        "canonical": "hsl(190 100% 50%)",
+        "tonalRamp": ["#003342", "#004D63", "#006685", "#0080A6", "#0099C7", "#00D4FF", "#40DEFF", "#7FE9FF"],
+        "usage": "Simulator canvases only — do not extend."
+      },
+      "tier-1-text": {
+        "role": "neutral",
+        "displayName": "Tier-1 Text",
+        "canonical": "#FAFAFA",
+        "usage": "Titles and result values only."
+      },
+      "tier-2-text": {
+        "role": "neutral",
+        "displayName": "Tier-2 Text",
+        "canonical": "#C8C8C8",
+        "usage": "Body text and descriptions."
+      }
+    },
+    "typographyMeta": {
+      "hero": { "displayName": "Hero", "purpose": "Marketing hero only." },
+      "display": { "displayName": "Display / H1", "purpose": "Tool page titles only — never inside cards or buttons." },
+      "headline": { "displayName": "Headline / H2", "purpose": "Section opens." },
+      "title": { "displayName": "Title / H3", "purpose": "Subsection headers." },
+      "body": { "displayName": "Body", "purpose": "Running prose, max 65–75ch." },
+      "label": { "displayName": "Label", "purpose": "Every form label site-wide. Uppercase, tracked." },
+      "data": { "displayName": "Data / Mono", "purpose": "Readouts, telemetry, numbered badges." }
+    },
+    "shadows": [
+      { "name": "glow-teal", "value": "0 0 24px rgba(61,255,205,0.30)", "purpose": "Hover state on primary CTAs." },
+      { "name": "glow-amber", "value": "0 0 20px rgba(255,184,0,0.25)", "purpose": "Warning indicators, velocity ticker." },
+      { "name": "glow-crimson", "value": "0 0 20px rgba(255,51,102,0.25)", "purpose": "Destructive button hover." },
+      { "name": "inset-teal", "value": "inset 0 0 20px rgba(61,255,205,0.08)", "purpose": "Focused input fields." },
+      { "name": "glass-drop", "value": "0 8px 32px rgba(0,0,0,0.4)", "purpose": "The only drop-shadow in the system. Glass panels lifting off the void." }
+    ],
+    "motion": [
+      { "name": "duration-fast", "value": "120ms", "purpose": "Micro-interactions (hover, focus shift)." },
+      { "name": "duration-base", "value": "180ms", "purpose": "Default state transitions." },
+      { "name": "duration-slow", "value": "280ms", "purpose": "Reveal, expand, dialog enter." },
+      { "name": "duration-ambient", "value": "2400ms", "purpose": "Pulse, scan, breathing animations." },
+      { "name": "ease-sf-out", "value": "cubic-bezier(0.2, 0, 0, 1)", "purpose": "Default exponential ease-out. No bounce." },
+      { "name": "ease-sf-inout", "value": "cubic-bezier(0.4, 0, 0.2, 1)", "purpose": "Symmetric in-out for elements that need to settle." },
+      { "name": "ease-sf-snap", "value": "cubic-bezier(0.6, 0, 0.1, 1)", "purpose": "Sharp snap for instrument-like state changes." }
+    ],
+    "breakpoints": [
+      { "name": "sm",  "value": "640px",  "purpose": "Mobile floor — most tool sidebars hide here." },
+      { "name": "md",  "value": "768px",  "purpose": "Tablet portrait." },
+      { "name": "lg",  "value": "1024px", "purpose": "Tablet landscape — WorldLayout sidebar auto-collapses below this." },
+      { "name": "xl",  "value": "1280px", "purpose": "Desktop — tool-page right rail (xl:pr-[280px]) appears." },
+      { "name": "2xl", "value": "1400px", "purpose": "Container max-width." }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The lit indicator on the bridge — Beacon Teal CTA. Used for the primary action only.",
+      "html": "<button class=\"ds-btn-primary\">SAVE WORLD</button>",
+      "css": ".ds-btn-primary { background: hsl(157 80% 42%); color: #fff; font-family: 'DM Sans', system-ui, sans-serif; font-size: 14px; font-weight: 500; letter-spacing: 0.04em; padding: 12px 24px; border: none; border-radius: 0; cursor: pointer; transition: box-shadow 180ms cubic-bezier(0.2, 0, 0, 1); } .ds-btn-primary:hover { box-shadow: 0 0 24px rgba(61, 255, 205, 0.3); } .ds-btn-primary:focus-visible { outline: 2px solid hsl(157 100% 62%); outline-offset: 2px; } .ds-btn-primary:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; }"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "input-text",
+      "description": "Quiet stroke over Panel Navy. Border-shift on focus is the affordance.",
+      "html": "<input class=\"ds-input-text\" type=\"text\" placeholder=\"Planet name\" />",
+      "css": ".ds-input-text { background: rgba(255, 255, 255, 0.04); color: rgba(255, 255, 255, 0.8); font-family: 'DM Sans', system-ui, sans-serif; font-size: 14px; padding: 12px 16px; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 2px; transition: border-color 180ms cubic-bezier(0.2, 0, 0, 1), box-shadow 180ms cubic-bezier(0.2, 0, 0, 1); } .ds-input-text::placeholder { color: rgba(255, 255, 255, 0.3); } .ds-input-text:focus { outline: none; border-color: hsl(157 80% 42% / 0.35); box-shadow: inset 0 0 20px rgba(61, 255, 205, 0.08); } .ds-input-text:focus-visible { outline: 2px solid hsl(157 100% 62%); outline-offset: 2px; }"
+    },
+    {
+      "name": "Glass Panel",
+      "kind": "card",
+      "refersTo": "card-glass",
+      "description": "The canonical container. Sharp zero-radius corners, blurred over the void, with an optional light-arc at the bottom edge.",
+      "html": "<div class=\"ds-glass-panel\"><div class=\"ds-glass-panel-content\">PANEL CONTENT</div></div>",
+      "css": ".ds-glass-panel { position: relative; background: rgba(14, 19, 32, 0.9); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 0; backdrop-filter: blur(16px); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4); padding: 24px; } .ds-glass-panel::after { content: ''; position: absolute; bottom: 0; left: 10%; right: 10%; height: 1px; background: linear-gradient(to right, transparent, rgba(61, 255, 205, 0.25), transparent); pointer-events: none; } .ds-glass-panel-content { font-family: 'DM Sans', system-ui, sans-serif; font-size: 15px; line-height: 1.55; color: #C8C8C8; }"
+    },
+    {
+      "name": "Glow Badge (Teal)",
+      "kind": "chip",
+      "refersTo": "badge-glow-teal",
+      "description": "The 0.06 / 0.15 / 1.0 stack incarnated. Used for status, count, category tags.",
+      "html": "<span class=\"ds-badge-glow-teal\">SAVED</span>",
+      "css": ".ds-badge-glow-teal { display: inline-flex; align-items: center; gap: 4px; background: rgba(21, 193, 123, 0.06); border: 1px solid rgba(21, 193, 123, 0.15); color: hsl(157 80% 42%); font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 500; letter-spacing: 0.18em; padding: 4px 8px; border-radius: 3px; text-transform: uppercase; }"
+    },
+    {
+      "name": "Nav Item (Active)",
+      "kind": "nav",
+      "refersTo": "nav-item-active",
+      "description": "Instrument-style nav: 2px Phosphor Glow left border, mono numeric prefix in Velocity Amber, Jura uppercase label.",
+      "html": "<a class=\"ds-nav-item active\" href=\"#\"><span class=\"ds-nav-num\">02</span><span class=\"ds-nav-label\">PLANETARY PROFILE</span></a>",
+      "css": ".ds-nav-item { display: flex; align-items: center; gap: 12px; padding: 8px 12px; border-left: 2px solid transparent; font-family: 'Jura', system-ui, sans-serif; font-size: 11px; font-weight: 500; letter-spacing: 1.2px; text-transform: uppercase; color: rgba(255, 255, 255, 0.4); text-decoration: none; transition: color 180ms cubic-bezier(0.2, 0, 0, 1), border-color 180ms cubic-bezier(0.2, 0, 0, 1); } .ds-nav-item:hover { color: #C8C8C8; } .ds-nav-item.active { border-left-color: hsl(157 100% 62%); color: hsl(157 100% 62%); background: rgba(21, 193, 123, 0.06); } .ds-nav-num { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: rgba(255, 179, 71, 0.4); } .ds-nav-item.active .ds-nav-num { color: rgba(255, 179, 71, 0.8); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Bridge of a Slow Ship",
+    "overview": "StellarForge looks like the cockpit of a science vessel that has time. Not the panicked flicker of a NASA-cosplay launch sequence, not the chrome-and-orange of a Hollywood spaceship — the lit ring of a deep-space observatory at hour 38 of a 200-day transit, where the navigator has the room dim, the coffee cold, and is patiently making the next reading. Linear's discipline meets Are.na's curatorial slowness. Every element earns its brightness; nothing strobes.\n\nThe system rejects four specific moods carried verbatim from PRODUCT.md: generic AI-tool SaaS gradients and glassmorphic hero cards; friendly writing-platform pastels and encouragement copy; NASA-cosplay neon-green CRT-terminal mimicry; empty Notion-clone soft-grey neutering. What's left is a quiet space-navy interface lit by a single teal beacon, with monospace numerals where data lives, sharp zero-radius edges throughout, and a 5-tier text hierarchy that refuses to put labels at the same brightness as titles.",
+    "keyCharacteristics": [
+      "Three-tier surface depth (deep void → panel navy → surface lift), no shadows, no blur-as-default.",
+      "Single primary accent (Beacon Teal) carries CTAs, focus, and active state. Secondary accents each have one job.",
+      "Sharp edges. Zero radius on panels, 4px max on cards, 3px on badges, 2px on inputs.",
+      "Four typefaces, four jobs: MD Nichrome H1 only, Jura sectional, DM Sans body and buttons, JetBrains Mono data and labels.",
+      "Light arcs over shadows: depth signaled by a 1px gradient line at panel edges, not a drop shadow.",
+      "Restrained motion: 120–280ms state changes, exponential ease-out, no bounce, no choreographed entrances."
+    ],
+    "rules": [
+      { "name": "The 0.06 / 0.15 / 1.0 Glow Rule", "section": "colors", "body": "Interactive accent elements stack: background hsl(accent / 0.06), border hsl(accent / 0.15), text hsl(accent). Glow is Phosphor Glow at 0.2 alpha in box-shadow only. Solid 1.0 fills are reserved for the primary CTA and the destructive button." },
+      { "name": "The One Voice Rule", "section": "colors", "body": "Beacon Teal is used on ≤10% of any given screen. Its rarity is the point. If the page reads as 'teal-themed,' the rule has been broken." },
+      { "name": "The No Pure-Black Rule", "section": "colors", "body": "#000 and #fff are forbidden. Every neutral tints toward navy. The cool drift is the texture of the system." },
+      { "name": "The Nichrome H1-Only Rule", "section": "typography", "body": "MD Nichrome appears as H1 and the marketing hero. Nowhere else. Buttons, cards, body, badges — all DM Sans." },
+      { "name": "The Two-Weight Rule", "section": "typography", "body": "300 (light) and 500 (medium) only. Bold (700) is forbidden. Hierarchy lives in scale and tracking, not weight saturation." },
+      { "name": "The Tier Discipline Rule", "section": "typography", "body": "Never put labels, units, and descriptions at the same brightness. Tier-1 (#FAFAFA) is reserved for titles and results." },
+      { "name": "The Light-Arc Rule", "section": "elevation", "body": "Edges of important panels carry a 1px Phosphor Glow gradient line, not a shadow. This is the system's signature elevation cue." },
+      { "name": "The Flat-By-Default Rule", "section": "elevation", "body": "No drop-shadows under cards. Surfaces are flat at rest. Glow appears only as a response to state." },
+      { "name": "The Glassmorphism Tax", "section": "elevation", "body": "Backdrop-blur is permitted only on glass panels that float over the void. Decorative blur on non-floating cards is forbidden." }
+    ],
+    "dos": [
+      "Do use the 5-tier text hierarchy on every page.",
+      "Do reserve Tier-1 (#FAFAFA) for titles and result values only.",
+      "Do use MD Nichrome for H1 page titles only.",
+      "Do put DM Sans on every button.",
+      "Do apply the 0.06 / 0.15 / 1.0 glow stack to all accent-colored interactive elements.",
+      "Do use light arcs at panel edges instead of drop-shadows.",
+      "Do keep panels at zero radius.",
+      "Do use weight contrast (300 vs 500) for hierarchy.",
+      "Do test every interactive element with a :focus-visible ring.",
+      "Do respect prefers-reduced-motion."
+    ],
+    "donts": [
+      "Don't use Inter.",
+      "Don't use MD Nichrome on buttons, badges, body text, or labels.",
+      "Don't use bold (font-weight 700) anywhere.",
+      "Don't use #000 or #fff directly.",
+      "Don't use Phosphor Glow as a solid fill or text color.",
+      "Don't use gradient text (background-clip: text).",
+      "Don't use border-left greater than 1px as a colored stripe.",
+      "Don't add drop-shadows under cards.",
+      "Don't use glassmorphism decoratively on non-floating surfaces.",
+      "Don't put labels, units, descriptions, and titles at the same brightness.",
+      "Don't mimic NASA mission-control chrome.",
+      "Don't use SaaS purple-gradient hero cards or floating-screenshot heroes.",
+      "Don't add encouragement copy.",
+      "Don't soft-grey-and-white the whole surface.",
+      "Don't use em dashes or double hyphens in copy.",
+      "Don't use modal-as-first-thought.",
+      "Don't use rounded corners on GlassPanel."
+    ]
+  }
+}
