@@ -18,8 +18,6 @@ interface World {
   archived_at: string | null;
   created_at: string;
   updated_at: string;
-  forked_from: string | null;
-  source: { id: string; name: string } | null;
 }
 
 interface CreateWorldInput {
@@ -53,7 +51,7 @@ export const useWorlds = (includeArchived: boolean = false) => {
 
       let query = supabase
         .from("worlds")
-        .select("*, source:forked_from(id, name)")
+        .select("*")
         .order("updated_at", { ascending: false });
 
       if (!includeArchived) {
