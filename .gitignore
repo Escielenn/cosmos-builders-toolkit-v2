@@ -46,3 +46,5 @@ src/lib/pdf/templates/test123.txt
 # Claude Code local files
 .claude/settings.json
 .claude/scheduled_tasks.lock
+.claude/worktrees/
+.claude/plans/
