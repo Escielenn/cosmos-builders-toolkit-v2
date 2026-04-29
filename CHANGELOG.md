@@ -1,5 +1,27 @@
 # StellarForge Changelog
 
+## 0.6552
+- Fixed: Genesis (Planetary Profile) crash on render — `<Info />` lucide icon was used in
+  the Tidal Locking section but never imported, throwing ReferenceError into the
+  ErrorBoundary as soon as the worksheet mounted
+- Hardened: Build script now runs `tsc --noEmit` before `vite build` so undefined-identifier
+  bugs fail CI instead of reaching production. Added standalone `npm run typecheck` script.
+- Fixed: Forks now appear in My Worlds. The useWorlds query was relying on RLS alone with
+  no row filter and silently returned [] in production; added explicit
+  `.eq("user_id", user.id)` to mirror the working pattern used elsewhere
+- Added: FORK badge (Wonder Blue accent, mono small caps) on world cards when
+  forked_from is set, stacked with the Archived badge in the header overlay
+- Added: "Forked from {sourceName}" subtitle below the description on fork cards.
+  useWorlds now joins `source:forked_from(id, name)` for one-round-trip attribution.
+- Fixed: world_invites 403 hitting the badge evaluator on every page load. The
+  "Invited users can view own invites" RLS policy read from auth.users which the
+  authenticated role cannot SELECT; replaced with `auth.jwt() ->> 'email'`.
+  Migration: `supabase/migrations/20260428_fix_world_invites_rls_auth_users.sql`
+- Added: PRODUCT.md, DESIGN.md, and DESIGN.json at repo root (impeccable design-system
+  foundation — Stitch-format token spec, register: product, scholarly/instrumental/patient
+  brand voice, four named anti-references, WCAG 2.2 AA target). North Star metaphor:
+  "The Bridge of a Slow Ship."
+
 ## 0.6512
 - Fixed: Dark background gap in writing area (bg-void on center column)
 - Fixed: Zen mode exit button more visible (opacity 60 instead of 40)
