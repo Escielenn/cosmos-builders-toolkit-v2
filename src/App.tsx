@@ -1,3 +1,7 @@
+// Side-effect import: registers a handler that auto-reloads the page when a
+// dynamic chunk fails to fetch (long-lived tab on a previous deploy).
+import "@/lib/preload-error-recovery";
+
 import { Suspense, lazy } from "react";
 import { MotionConfig } from "framer-motion";
 import { Toaster } from "@/components/ui/toaster";

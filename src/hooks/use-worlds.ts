@@ -85,6 +85,25 @@ export const useWorlds = (includeArchived: boolean = false) => {
     enabled: !!user,
   });
 
+  // Count-only query for archived worlds. Lives independently of worldsQuery
+  // so the ArchiveToggle stays visible on /worlds even when the current view
+  // is filtering archived rows out (otherwise the count is always 0 and the
+  // toggle hides itself, leaving archived worlds unreachable from /worlds).
+  const archivedCountQuery = useQuery({
+    queryKey: ["worlds", "archivedCount", user?.id],
+    queryFn: async () => {
+      if (!user) return 0;
+      const { count, error } = await supabase
+        .from("worlds")
+        .select("id", { count: "exact", head: true })
+        .eq("user_id", user.id)
+        .not("archived_at", "is", null);
+      if (error) throw error;
+      return count ?? 0;
+    },
+    enabled: !!user,
+  });
+
   const createWorld = useMutation({
     mutationFn: async (input: CreateWorldInput) => {
       if (!user) throw new Error("Not authenticated");
@@ -246,6 +265,7 @@ export const useWorlds = (includeArchived: boolean = false) => {
     isLoading: worldsQuery.isLoading,
     error: worldsQuery.error,
     allWorldTags: allWorldTagsQuery.data || [],
+    archivedCount: archivedCountQuery.data ?? 0,
     createWorld,
     updateWorld,
     deleteWorld,

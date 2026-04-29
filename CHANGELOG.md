@@ -1,5 +1,21 @@
 # StellarForge Changelog
 
+## 0.6572
+- Fixed: ArchiveToggle catch-22 on /worlds. The toggle hides itself when
+  `archivedCount === 0`, but the count was computed from the already-filtered
+  `worlds` array (which excludes archived rows by design). Result: users
+  with only archived worlds had no way to see the toggle, and no path to
+  recover archived worlds from /worlds. Added a separate `archivedCount`
+  count-only query in useWorlds that is independent of the current view.
+  Toggle now appears correctly whenever the user has any archived worlds,
+  regardless of which view they're on.
+- Added: preload-error-recovery handler. When a dynamic import fails to
+  fetch a chunk (e.g., long-lived tab on a previous deploy whose chunk
+  hashes no longer exist on the server), the page auto-reloads once to
+  pick up the latest deploy. A sessionStorage guard with a 30-second TTL
+  prevents reload loops if the issue persists. Imported as a side effect
+  at the top of App.tsx.
+
 ## 0.6562
 - Fixed: Genesis (Planetary Profile) crash continued after 0.6552 — `<Check />` and
   `<AlertCircle />` lucide icons in the consistency-score block at line 1607-1609 were

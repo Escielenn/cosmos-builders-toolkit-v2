@@ -29,7 +29,7 @@ const Worlds = () => {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [importDialogOpen, setImportDialogOpen] = useState(false);
 
-  const { worlds, isLoading, deleteWorld, archiveWorld, unarchiveWorld } =
+  const { worlds, isLoading, archivedCount, deleteWorld, archiveWorld, unarchiveWorld } =
     useWorlds(showArchived);
 
   useEffect(() => {
@@ -37,10 +37,6 @@ const Worlds = () => {
       navigate("/auth");
     }
   }, [user, loading, navigate]);
-
-  const archivedCount = useMemo(() => {
-    return worlds.filter((w) => w.archived_at !== null).length;
-  }, [worlds]);
 
   const availableTags = useMemo(() => {
     const tagSet = new Set<string>();
@@ -115,11 +111,7 @@ const Worlds = () => {
             <ArchiveToggle
               showArchived={showArchived}
               onToggle={setShowArchived}
-              archivedCount={
-                showArchived
-                  ? archivedCount
-                  : worlds.filter((w) => w.archived_at).length
-              }
+              archivedCount={archivedCount}
             />
             </div>
           </div>
