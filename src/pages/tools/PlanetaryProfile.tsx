@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, lazy, Suspense } from "react";
 import { useWorldId } from "@/hooks/use-world-id";
 import { Link, useSearchParams } from "react-router-dom";
-import { ExternalLink, Globe, ChevronDown } from "lucide-react";
+import { ExternalLink, Globe, ChevronDown, Info } from "lucide-react";
 import ToolPageLayout from "@/components/tools/ToolPageLayout";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
