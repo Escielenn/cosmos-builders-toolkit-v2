@@ -1,5 +1,21 @@
 # StellarForge Changelog
 
+## 0.6562
+- Fixed: Genesis (Planetary Profile) crash continued after 0.6552 — `<Check />` and
+  `<AlertCircle />` lucide icons in the consistency-score block at line 1607-1609 were
+  also missing from the import. Added both.
+- Fixed: build gate from 0.6552 was security theater. Root tsconfig.json uses project
+  references with `"files": []`, so `tsc --noEmit` against it was a no-op (exited 0
+  without checking anything). Replaced with `scripts/typecheck-strict.mjs` which runs
+  tsc against tsconfig.app.json and fails the build only on TS2304/TS2552 (the exact
+  "Cannot find name" class that crashed Genesis). Pre-existing type-mismatch errors
+  do not block the build.
+- Fixed: forks still not appearing in My Worlds after 0.6552. The embed
+  `source:forked_from(id, name)` was suspected of triggering RLS interaction that
+  filtered parent rows. Removed the JOIN; world cards render without source-name
+  attribution for now (FORK badge still shows). Source attribution can be added back
+  via a separate query if/when the PostgREST embed behavior is understood.
+
 ## 0.6552
 - Fixed: Genesis (Planetary Profile) crash on render — `<Info />` lucide icon was used in
   the Tidal Locking section but never imported, throwing ReferenceError into the
