@@ -36,8 +36,8 @@ const SurfaceGravitySummaryTemplate = ({ formState: rawFormState, worldName, dat
         <PDFSection title="Planet Parameters">
           <View style={{ flexDirection: "row", gap: spacing.md }}>
             <View style={{ flex: 1 }}>
-              <PDFKeyValuePair label="Mass" value={`${data?.primary?.mass?.toFixed(3) || "—"} M⊕`} />
-              <PDFKeyValuePair label="Radius" value={`${data?.primary?.radius?.toFixed(3) || "—"} R⊕`} />
+              <PDFKeyValuePair label="Mass" value={`${data?.primary?.mass?.toFixed(3) || "-"} M⊕`} />
+              <PDFKeyValuePair label="Radius" value={`${data?.primary?.radius?.toFixed(3) || "-"} R⊕`} />
             </View>
             <View style={{ flex: 1 }}>
               <PDFKeyValuePair label="Composition" value={composition?.label || "Custom"} />
@@ -52,7 +52,7 @@ const SurfaceGravitySummaryTemplate = ({ formState: rawFormState, worldName, dat
             <PDFResultBox
               label="Surface Gravity"
               value={formatGravity(result.gravity)}
-              subtitle={`${result.gravityMs2.toFixed(2)} m/s² — ${result.regimeLabel}`}
+              subtitle={`${result.gravityMs2.toFixed(2)} m/s², ${result.regimeLabel}`}
             />
             <View style={{ flexDirection: "row", gap: spacing.md, marginTop: spacing.sm }}>
               <View style={{ flex: 1 }}>

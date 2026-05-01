@@ -38,7 +38,7 @@ export function htmlToPlainText(html: string): string {
 
 /**
  * Recursively strip HTML from all string values in an object.
- * Safe to call on plain text — htmlToPlainText passes through non-HTML strings unchanged.
+ * Safe to call on plain text, htmlToPlainText passes through non-HTML strings unchanged.
  */
 export function deepStripHtml<T>(data: T): T {
   if (typeof data === "string") return htmlToPlainText(data) as T;

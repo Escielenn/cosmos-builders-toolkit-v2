@@ -1,11 +1,11 @@
 /**
- * useSimulationSave — Manages saving and loading simulation state via PostMessage.
+ * useSimulationSave, Manages saving and loading simulation state via PostMessage.
  *
  * Listens for STELLARFORGE_SAVE messages from simulator iframes and persists
  * them to the simulation_saves table. Also handles loading saved state back
  * into the simulator via STELLARFORGE_LOAD messages.
  *
- * Spec: StellarForge_Simulator_Addendum — Simulation Save & Replay
+ * Spec: StellarForge_Simulator_Addendum, Simulation Save & Replay
  */
 
 import { useState, useEffect, useCallback, useRef } from "react";

@@ -60,7 +60,7 @@ const OneBigLieSummaryTemplate = ({
           </Text>
         </PDFSection>
 
-        {/* Formal Declaration—prominent bordered box */}
+        {/* Formal Declaration, prominent bordered box */}
         <View style={{
           ...styles.resultBox,
           alignItems: "flex-start",

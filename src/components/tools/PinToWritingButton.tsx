@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// PinToWritingButton — Pin any item to the Writing Space reference panel.
+// PinToWritingButton, Pin any item to the Writing Space reference panel.
 //
 // Reads/writes localStorage directly using the same key format as
 // useWritingPins, so it works from any page without needing to be inside
@@ -21,7 +21,7 @@ export interface PinToWritingButtonProps {
   itemId: string;
   itemType: "worksheet" | "entity" | "note";
   title: string;
-  /** Optional summary or first 200 chars — shown in the Pinned tab preview. */
+  /** Optional summary or first 200 chars, shown in the Pinned tab preview. */
   content?: string;
   className?: string;
 }

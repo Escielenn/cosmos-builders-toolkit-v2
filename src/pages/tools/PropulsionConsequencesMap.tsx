@@ -198,7 +198,7 @@ const COST_COMPARISONS = [
 
 const ACCESS_STRATIFICATIONS = [
   { id: "universal", label: "Universal access", description: "Everyone can afford travel (cheap/subsidized)" },
-  { id: "middle", label: "Middle class & up", description: "Like modern air travel—affordable but significant expense" },
+  { id: "middle", label: "Middle class & up", description: "Like modern air travel, affordable but significant expense" },
   { id: "elite", label: "Elite only", description: "Wealthy individuals, corporations, governments" },
   { id: "state", label: "State monopoly", description: "Only government-authorized travel" },
   { id: "corporate", label: "Corporate control", description: "Companies own all ships, control access" },
@@ -276,7 +276,7 @@ function calcTravelTimeSeconds(
     const tAccel = vMax / a;
     const dAccel = 0.5 * a * tAccel * tAccel;
     if (2 * dAccel >= d) {
-      // Pure brachistochrone—never reaches max velocity
+      // Pure brachistochrone, never reaches max velocity
       return 2 * Math.sqrt(d / a);
     }
     // Accelerate, cruise, decelerate
@@ -288,7 +288,7 @@ function calcTravelTimeSeconds(
 }
 
 function formatDuration(seconds: number): string {
-  if (!isFinite(seconds) || seconds <= 0) return "—";
+  if (!isFinite(seconds) || seconds <= 0) return "-";
   const days = seconds / 86400;
   const months = days / 30.44;
   const years = days / 365.25;
@@ -327,19 +327,19 @@ const PROPULSION_COST_GUIDANCE: Record<string, { fuel: string; construction: str
     construction: "Proven technology, moderate cost. $100M–$2B per vehicle (comparable to modern rockets).",
   },
   ion: {
-    fuel: "Very efficient—minimal fuel mass. Xenon propellant is moderately priced, quantities are small.",
+    fuel: "Very efficient, minimal fuel mass. Xenon propellant is moderately priced, quantities are small.",
     construction: "Moderate cost. Solar arrays or compact reactor + ion engines. $200M–$1B.",
   },
   "nuclear-thermal": {
-    fuel: "Enriched uranium + hydrogen propellant—regulated and expensive. 2–3× more efficient than chemical.",
+    fuel: "Enriched uranium + hydrogen propellant, regulated and expensive. 2–3× more efficient than chemical.",
     construction: "Requires nuclear-rated facilities. $1B–$10B per vehicle.",
   },
   "nuclear-pulse": {
-    fuel: "Nuclear devices as propellant—politically and economically extreme. Thousands of bombs per mission.",
+    fuel: "Nuclear devices as propellant, politically and economically extreme. Thousands of bombs per mission.",
     construction: "Manhattan Project scale engineering. $10B–$100B+ per vehicle.",
   },
   fusion: {
-    fuel: "Deuterium/He-3—abundant in gas giants but expensive to harvest and transport.",
+    fuel: "Deuterium/He-3, abundant in gas giants but expensive to harvest and transport.",
     construction: "Requires mature fusion technology. $10B–$100B per vessel, decreasing with infrastructure.",
   },
   antimatter: {
@@ -351,12 +351,12 @@ const PROPULSION_COST_GUIDANCE: Record<string, { fuel: string; construction: str
     construction: "Sail material is relatively cheap. Total cost depends on laser array vs. pure solar.",
   },
   bussard: {
-    fuel: "Free (scoops interstellar hydrogen)—but collection efficiency is debated. Drag may exceed thrust.",
+    fuel: "Free (scoops interstellar hydrogen), but collection efficiency is debated. Drag may exceed thrust.",
     construction: "Enormous magnetic scoop (potentially thousands of km). Megastructure-scale investment.",
   },
   alcubierre: {
     fuel: "Requires exotic matter with negative energy density. Cost undefined by current physics.",
-    construction: "Beyond current tech—spacetime manipulation. Define based on your setting's physics.",
+    construction: "Beyond current tech, spacetime manipulation. Define based on your setting's physics.",
   },
   hyperspace: {
     fuel: "Setting-dependent. Consider: rare exotic fuel (elite travel) or abundant fuel (mass transit)?",
@@ -364,7 +364,7 @@ const PROPULSION_COST_GUIDANCE: Record<string, { fuel: string; construction: str
   },
   wormhole: {
     fuel: "Portal maintenance may require exotic matter or enormous energy. Transit itself could be cheap.",
-    construction: "Infrastructure-heavy—wormhole creation is the major cost. Ships themselves can be simple.",
+    construction: "Infrastructure-heavy, wormhole creation is the major cost. Ships themselves can be simple.",
   },
   generation: {
     fuel: "Conventional propulsion fuel for centuries plus ecosystem maintenance. Massive reserves required.",
@@ -382,7 +382,7 @@ const SF_EXAMPLES = [
       { domain: "Social", consequence: 'Belter culture distinct from planets; "Gravity wells" vs. spacers; Long-term health effects' },
       { domain: "Psychology", consequence: 'Direction is relative; "Down" is thrust direction; Belters distrust grounders' },
     ],
-    insight: "Architecture follows thrust—ships built like towers with decks perpendicular to drive",
+    insight: "Architecture follows thrust, ships built like towers with decks perpendicular to drive",
   },
   {
     title: "DUNE - Holtzman Effect (Instantaneous FTL)",
@@ -393,7 +393,7 @@ const SF_EXAMPLES = [
       { domain: "Social", consequence: "Aristocratic houses travel freely; Common people rarely leave planets; Cultural homogeneity across empire" },
       { domain: "Psychology", consequence: '"Distance" becomes political rather than physical; Fear of being trapped on-planet; Navigator mutation accepted' },
     ],
-    insight: "FTL doesn't create freedom—it creates monopoly. Whoever controls travel controls everything.",
+    insight: "FTL doesn't create freedom, it creates monopoly. Whoever controls travel controls everything.",
   },
   {
     title: "REVELATION SPACE - Lighthugger Ships (Relativistic, No FTL)",
@@ -404,7 +404,7 @@ const SF_EXAMPLES = [
       { domain: "Social", consequence: 'Ship crews experience years while centuries pass outside; "Ultras" become separate culture/species; Family bonds impossible across systems' },
       { domain: "Psychology", consequence: "Time as weapon and barrier; Present = moving target; Spacers psychologically alien to grounders" },
     ],
-    insight: "Time dilation creates permanent cultural divide—spacers and grounders are effectively different species.",
+    insight: "Time dilation creates permanent cultural divide, spacers and grounders are effectively different species.",
   },
   {
     title: "HYPERION CANTOS - Hawking Drive + Farcaster Network",
@@ -747,7 +747,7 @@ const PropulsionConsequencesMap = () => {
             Propulsion as Worldbuilding
           </h2>
           <blockquote className="border-l-2 border-primary pl-4 italic text-lg mb-4">
-            "Your propulsion system isn't just a way to move the plot between locations—it fundamentally shapes economics, politics, relationships, and psychology."
+            "Your propulsion system isn't just a way to move the plot between locations, it fundamentally shapes economics, politics, relationships, and psychology."
           </blockquote>
           <p className="text-t2 mb-4">
             Fast travel creates empires; slow travel creates autonomous colonies. Cheap travel democratizes; expensive travel stratifies.
@@ -801,7 +801,7 @@ const PropulsionConsequencesMap = () => {
                       <RadioGroupItem value={type.value} id={type.value} className="mt-0.5" />
                       <Label htmlFor={type.value} className="cursor-pointer flex-1">
                         <span className="font-medium">{type.label}</span>
-                        <span className="text-t2 ml-2 text-sm">—{type.description}</span>
+                        <span className="text-t2 ml-2 text-sm">, {type.description}</span>
                       </Label>
                     </div>
                   ))}
@@ -929,7 +929,7 @@ const PropulsionConsequencesMap = () => {
                   </>
                 )}
 
-                {/* Custom route — always editable */}
+                {/* Custom route, always editable */}
                 <div className="grid grid-cols-2 gap-2 items-center">
                   <Input
                     placeholder="Custom route (e.g., Between your worlds)"
@@ -1076,7 +1076,7 @@ const PropulsionConsequencesMap = () => {
                       />
                       <Label htmlFor={`access-${option.id}`} className="cursor-pointer">
                         <span className="font-medium">{option.label}</span>
-                        <span className="text-t2 ml-2 text-sm">—{option.description}</span>
+                        <span className="text-t2 ml-2 text-sm">, {option.description}</span>
                       </Label>
                     </div>
                   ))}
@@ -1114,7 +1114,7 @@ const PropulsionConsequencesMap = () => {
                       />
                       <Label htmlFor={`trade-${option.id}`} className="cursor-pointer">
                         <span className="font-medium">{option.label}</span>
-                        <span className="text-t2 ml-2 text-sm">—{option.description}</span>
+                        <span className="text-t2 ml-2 text-sm">, {option.description}</span>
                       </Label>
                     </div>
                   ))}
@@ -1221,7 +1221,7 @@ const PropulsionConsequencesMap = () => {
                       />
                       <Label htmlFor={`gov-${structure.id}`} className="cursor-pointer flex-1">
                         <span className="font-medium">{structure.label}</span>
-                        <span className="text-t2 ml-2 text-sm">—{structure.description}</span>
+                        <span className="text-t2 ml-2 text-sm">, {structure.description}</span>
                         <p className="text-xs text-primary mt-1">Example: {structure.example}</p>
                       </Label>
                     </div>
@@ -1365,7 +1365,7 @@ const PropulsionConsequencesMap = () => {
                       />
                       <Label htmlFor={`mil-${structure.id}`} className="cursor-pointer">
                         <span className="font-medium">{structure.label}</span>
-                        <span className="text-t2 ml-2 text-sm">—{structure.description}</span>
+                        <span className="text-t2 ml-2 text-sm">, {structure.description}</span>
                       </Label>
                     </div>
                   ))}
@@ -1438,7 +1438,7 @@ const PropulsionConsequencesMap = () => {
                 <div className="text-sm space-y-2">
                   <p><span className="font-medium text-accent">For travelers:</span> Outlive friends/family, return to changed societies, professional obsolescence</p>
                   <p><span className="font-medium text-accent">For stay-at-homes:</span> Loved ones age slowly, "temporal immigrants" from past returning</p>
-                  <p className="text-xs text-t4 italic">Example: Joe Haldeman's The Forever War—soldiers fight centuries-long war, experience only years</p>
+                  <p className="text-xs text-t4 italic">Example: Joe Haldeman's The Forever War, soldiers fight centuries-long war, experience only years</p>
                 </div>
               </div>
 

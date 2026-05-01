@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// useEntityPrepopulate — pre-fills tool form state from a linked entity.
+// useEntityPrepopulate, pre-fills tool form state from a linked entity.
 //
 // When a tool page is opened with ?entityId=<uuid> in the URL:
 //   1. Fetches the entity from the `entities` table.
@@ -11,7 +11,7 @@
 //      entity_worksheets junction row after saving.
 //
 // If the entity has no relevant metadata values, returns the entity name
-// only — still useful for pre-filling the worksheet title.
+// only, still useful for pre-filling the worksheet title.
 // ---------------------------------------------------------------------------
 
 import { useMemo, useCallback } from "react";
@@ -72,7 +72,7 @@ function buildFormPatch(
 export interface EntityPrepopulateResult {
   /** The entity fetched via ?entityId=, or null. */
   entity: Entity | null;
-  /** Entity's name — use for worksheet title pre-fill. */
+  /** Entity's name, use for worksheet title pre-fill. */
   entityName: string | null;
   /**
    * Partial form state derived from the entity's metadata fields

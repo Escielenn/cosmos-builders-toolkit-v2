@@ -41,7 +41,7 @@ const SpaceExpansionFullReportTemplate = ({ formState, worldName }: Props) => {
       {/* ── Page 1: Foundation & Phases ── */}
       <Page size="LETTER" style={styles.page}>
         <PDFHeader
-          toolName="Exodus—Full Report"
+          toolName="Exodus, Full Report"
           worldName={worldName}
           date={date}
         />
@@ -157,7 +157,7 @@ const SpaceExpansionFullReportTemplate = ({ formState, worldName }: Props) => {
       {reachedPhases.map((phase) => (
         <Page key={phase.id} size="LETTER" style={styles.page}>
           <PDFHeader
-            toolName="Exodus—Full Report"
+            toolName="Exodus, Full Report"
             worldName={worldName}
             date={date}
             hideLogo
@@ -174,7 +174,7 @@ const SpaceExpansionFullReportTemplate = ({ formState, worldName }: Props) => {
                       {forceDef.name}
                     </Text>
                     <Text style={{ fontSize: typography.sizes.xs, color: colors.text.muted, marginLeft: spacing.sm }}>
-                      {force.intensity}%—{force.direction}
+                      {force.intensity}%, {force.direction}
                     </Text>
                   </View>
                   {force.keyActors && (
@@ -205,7 +205,7 @@ const SpaceExpansionFullReportTemplate = ({ formState, worldName }: Props) => {
       {data.modifiers?.length > 0 && (
         <Page size="LETTER" style={styles.page}>
           <PDFHeader
-            toolName="Exodus—Full Report"
+            toolName="Exodus, Full Report"
             worldName={worldName}
             date={date}
             hideLogo
@@ -268,7 +268,7 @@ const SpaceExpansionFullReportTemplate = ({ formState, worldName }: Props) => {
         return (
           <Page key={`matrix-${phase.id}`} size="LETTER" style={styles.page}>
             <PDFHeader
-              toolName="Exodus—Full Report"
+              toolName="Exodus, Full Report"
               worldName={worldName}
               date={date}
               hideLogo
@@ -312,7 +312,7 @@ const SpaceExpansionFullReportTemplate = ({ formState, worldName }: Props) => {
       {/* ── Page: Synthesis ── */}
       <Page size="LETTER" style={styles.page}>
         <PDFHeader
-          toolName="Exodus—Full Report"
+          toolName="Exodus, Full Report"
           worldName={worldName}
           date={date}
           hideLogo

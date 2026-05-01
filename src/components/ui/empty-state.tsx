@@ -5,11 +5,11 @@ import { Button } from "@/components/ui/button";
 import { VelocityDial } from "@/components/ambient/VelocityDial";
 
 /**
- * EmptyState — centered composition for zero-data states. April 2026 handoff.
+ * EmptyState, centered composition for zero-data states. April 2026 handoff.
  *
  * Uses the VelocityDial as the centerpiece (ambient telemetry while nothing
  * is loaded). Mono eyebrow, display-font title, Ship's Voice subtitle, single
- * primary CTA. Never "Oops! Nothing here yet!" — always a mission-control
+ * primary CTA. Never "Oops! Nothing here yet!", always a mission-control
  * style index announcement.
  *
  * Usage:
@@ -22,11 +22,11 @@ import { VelocityDial } from "@/components/ambient/VelocityDial";
  *   />
  */
 interface EmptyStateProps extends React.HTMLAttributes<HTMLDivElement> {
-  /** Mono eyebrow — e.g. "// WORLD INDEX" */
+  /** Mono eyebrow, e.g. "// WORLD INDEX" */
   eyebrow?: string;
-  /** Display-font H1 — e.g. "INDEX: EMPTY" */
+  /** Display-font H1, e.g. "INDEX: EMPTY" */
   title: string;
-  /** Mono uppercase subtitle — e.g. "BEGIN SURVEY WHEN READY." */
+  /** Mono uppercase subtitle, e.g. "BEGIN SURVEY WHEN READY." */
   description?: string;
   /** Primary action button label */
   actionLabel?: string;

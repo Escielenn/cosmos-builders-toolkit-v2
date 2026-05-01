@@ -672,7 +672,7 @@ const SurfaceGravityCalculator = () => {
                 {result.valid && result.meanDensity > 15 && (
                   <div className="flex items-center gap-2 text-sf-amber text-xs">
                     <AlertTriangle className="w-3.5 h-3.5" />
-                    Density ({result.meanDensity.toFixed(1)} g/cm³) exceeds any known planet — intentional?
+                    Density ({result.meanDensity.toFixed(1)} g/cm³) exceeds any known planet, intentional?
                   </div>
                 )}
               </div>
@@ -748,7 +748,7 @@ const SurfaceGravityCalculator = () => {
             >
               {result.valid && (
                 <div className="space-y-6">
-                  {/* Big gravity readout — display-font hero */}
+                  {/* Big gravity readout, display-font hero */}
                   <div className="text-center py-6">
                     <p className="font-mono text-[11px] tracking-[0.18em] uppercase text-sf-amber mb-3">// SURFACE GRAVITY</p>
                     <div className="font-display font-light text-6xl md:text-7xl tracking-[0.02em] text-sf-amber">
@@ -769,7 +769,7 @@ const SurfaceGravityCalculator = () => {
                     </div>
                   </div>
 
-                  {/* Data grid — StatGrid primitive */}
+                  {/* Data grid, StatGrid primitive */}
                   <StatGrid cols={4}>
                     <StatGrid.Cell
                       label="ESCAPE VELOCITY"
@@ -959,7 +959,7 @@ const SurfaceGravityCalculator = () => {
                       )}
 
                       <div className="pt-4 space-y-2">
-                        <Label>Your Notes — {cat.label}</Label>
+                        <Label>Your Notes, {cat.label}</Label>
                         <Suspense fallback={<div className="min-h-[100px] bg-muted/30 animate-pulse rounded-none" />}>
                           <RichTextEditor
                             content={formState.cascade[noteKey]}

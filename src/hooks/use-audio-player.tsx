@@ -39,7 +39,7 @@ function lsSet(key: string, value: unknown) {
   try {
     localStorage.setItem(key, JSON.stringify(value));
   } catch {
-    // quota exceeded — ignore
+    // quota exceeded, ignore
   }
 }
 
@@ -188,7 +188,7 @@ export function AudioProvider({ children }: { children: ReactNode }) {
         setStatus("playing");
         startProgressTick();
       } catch (err: unknown) {
-        // Browser autoplay blocked — pause state, user can click play
+        // Browser autoplay blocked, pause state, user can click play
         if (err instanceof DOMException && err.name === "NotAllowedError") {
           setStatus("paused");
         } else {

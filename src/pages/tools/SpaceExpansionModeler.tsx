@@ -495,7 +495,7 @@ const SpaceExpansionModeler = () => {
           </h2>
           <blockquote className="border-l-2 border-primary pl-4 italic text-lg mb-4">
             "One 'what if?' Follow the ripples. Over time, you get to a full world that fits well together."
-            <span className="block text-sm text-t3 mt-1">—Adrian Tchaikovsky</span>
+            <span className="block text-sm text-t3 mt-1">, Adrian Tchaikovsky</span>
           </blockquote>
           <p className="text-t2 mb-4">
             Space expansion is not a linear march outward. It pulses, stalls, redirects, and sometimes retreats based on the interaction of multiple forces. This tool helps you model those dynamics systematically, revealing consequences and story hooks you hadn't considered.
@@ -531,7 +531,7 @@ const SpaceExpansionModeler = () => {
                       >
                         <span>
                           <strong className="text-t1">{ex.name}</strong>
-                          <span className="text-t2 ml-2">—{ex.source}</span>
+                          <span className="text-t2 ml-2">, {ex.source}</span>
                         </span>
                         <ChevronDown className="w-4 h-4 text-t2 shrink-0" />
                       </button>
@@ -939,7 +939,7 @@ const SpaceExpansionModeler = () => {
                               <SelectContent>
                                 {MODIFIER_TYPES.map((t) => (
                                   <SelectItem key={t.id} value={t.id}>
-                                    {t.name}—{t.description.slice(0, 50)}...
+                                    {t.name}, {t.description.slice(0, 50)}...
                                   </SelectItem>
                                 ))}
                               </SelectContent>
@@ -1198,7 +1198,7 @@ const SpaceExpansionModeler = () => {
                       <SelectContent>
                         {TRAJECTORY_OPTIONS.map((t) => (
                           <SelectItem key={t.value} value={t.value}>
-                            {t.label}—{t.description}
+                            {t.label}, {t.description}
                           </SelectItem>
                         ))}
                       </SelectContent>

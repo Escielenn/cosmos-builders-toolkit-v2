@@ -91,7 +91,7 @@ export function generateTimelineMarkdown({
       const target = events.find((e) => e.id === link.targetEventId);
       if (!source || !target) continue;
       const typeLabel = LINK_TYPE_CONFIG[link.linkType]?.label || link.linkType;
-      const labelSuffix = link.label ? ` — ${link.label}` : "";
+      const labelSuffix = link.label ? `, ${link.label}` : "";
       lines.push(`- **${source.name}** → *${typeLabel}* → **${target.name}**${labelSuffix}`);
     }
     lines.push("");
@@ -122,7 +122,7 @@ export function generateTimelineMarkdown({
 
     for (const c of compressions) {
       const label = c.label ? `: ${c.label}` : "";
-      lines.push(`- **${formatYear(c.startYear)} — ${formatYear(c.endYear)}**${label} (${c.style})`);
+      lines.push(`- **${formatYear(c.startYear)}, ${formatYear(c.endYear)}**${label} (${c.style})`);
     }
     lines.push("");
   }
@@ -162,7 +162,7 @@ function renderEvent(
   const heading = level === 0 ? "####" : "-";
 
   lines.push(
-    `${indent}${heading} ${formatDateRange(event)} — ${event.name}`
+    `${indent}${heading} ${formatDateRange(event)}, ${event.name}`
   );
   lines.push("");
   lines.push(`${indent}**Type:** ${typeLabel} | **Importance:** ${importanceLabel}`);
@@ -200,7 +200,7 @@ function getDateRange(events: TimelineEvent[]): string {
     const end = e.endYear ?? e.startYear;
     if (end > max) max = end;
   }
-  return `${formatYear(min)} — ${formatYear(max)}`;
+  return `${formatYear(min)}, ${formatYear(max)}`;
 }
 
 function formatYear(year: number): string {

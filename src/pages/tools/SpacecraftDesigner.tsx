@@ -277,7 +277,7 @@ const SF_EXAMPLES = [
       { label: "Lived-In Feel", value: "Cluttered corridors, exposed wiring, game table, smuggling compartments" },
       { label: "Cultural Elements", value: "Corellian engineering philosophy, smuggler modifications, Wookiee co-pilot accommodations" },
       { label: "Character", value: "Unreliable but beloved, 'fastest hunk of junk in the galaxy', personality emerges from quirks" },
-      { label: "Key Detail", value: "The holochess table—serves no practical purpose but makes it feel like a home" },
+      { label: "Key Detail", value: "The holochess table, serves no practical purpose but makes it feel like a home" },
     ],
   },
   {
@@ -286,7 +286,7 @@ const SF_EXAMPLES = [
       { label: "Lived-In Feel", value: "Coffee maker as essential equipment, juice (thrust) constantly affects life, crash couches everywhere" },
       { label: "Cultural Elements", value: "Originally Martian military, adapted by Belters, cooking becomes bonding ritual" },
       { label: "Character", value: "Former warship becoming home, crew relationships reflected in who uses what spaces" },
-      { label: "Key Detail", value: "The galley as social center—where crew connects between crises" },
+      { label: "Key Detail", value: "The galley as social center, where crew connects between crises" },
     ],
   },
   {
@@ -294,8 +294,8 @@ const SF_EXAMPLES = [
     aspects: [
       { label: "Lived-In Feel", value: "Industrial grunge, coffee stains, worn surfaces, cramped crew quarters vs. pristine company equipment" },
       { label: "Cultural Elements", value: "Working-class aesthetic, 'truckers in space', crew tensions visible in territory" },
-      { label: "Character", value: "Hostile environment even before the alien—ship doesn't care about crew comfort" },
-      { label: "Key Detail", value: "The mess hall where crew eat together—class tensions visible in seating" },
+      { label: "Character", value: "Hostile environment even before the alien, ship doesn't care about crew comfort" },
+      { label: "Key Detail", value: "The mess hall where crew eat together, class tensions visible in seating" },
     ],
   },
   {
@@ -304,7 +304,7 @@ const SF_EXAMPLES = [
       { label: "Lived-In Feel", value: "Kitchen, infirmary, cargo bay as basketball court, individual crew quarters showing personality" },
       { label: "Cultural Elements", value: "Chinese-Western fusion in design, each crew member's space reflects their culture" },
       { label: "Character", value: "Ship as surrogate family home, named for battlefield (trauma embedded in identity)" },
-      { label: "Key Detail", value: "Each crew member's bunk is personalized—Kaylee's frilly, Jayne's weapon-covered" },
+      { label: "Key Detail", value: "Each crew member's bunk is personalized, Kaylee's frilly, Jayne's weapon-covered" },
     ],
   },
 ];
@@ -619,7 +619,7 @@ const SpacecraftDesigner = () => {
             Ships as Characters
           </h2>
           <blockquote className="border-l-2 border-primary pl-4 italic text-lg mb-4">
-            "The best SF ships aren't just vehicles—they're places people live, with all the mess, personality, and history that implies."
+            "The best SF ships aren't just vehicles, they're places people live, with all the mess, personality, and history that implies."
           </blockquote>
           <p className="text-t2 mb-4">
             A lived-in ship tells stories through its details: the worn patch on the pilot's seat, the coffee stains near the nav console, the shrine in the cargo bay. This tool helps you design vessels that feel real.
@@ -669,7 +669,7 @@ const SpacecraftDesigner = () => {
                     value={formState.identity.name}
                     onChange={(e) => updateIdentity("name", e.target.value)}
                   />
-                  <p className="text-xs text-t4">Names carry meaning—what does this one suggest?</p>
+                  <p className="text-xs text-t4">Names carry meaning, what does this one suggest?</p>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="age">Ship Age</Label>
@@ -798,7 +798,7 @@ const SpacecraftDesigner = () => {
             title="Propulsion & Architecture"
             subtitle="How does the drive system shape daily life?"
             levelNumber={2}
-            thinkLike="an engineer who lives aboard: The drive isn't just propulsion—it's the ship's heartbeat."
+            thinkLike="an engineer who lives aboard: The drive isn't just propulsion, it's the ship's heartbeat."
           >
             <div className="space-y-6">
               <div className="p-4 rounded-none bg-accent/10 border border-accent/20">
@@ -881,7 +881,7 @@ const SpacecraftDesigner = () => {
                   "Can crew feel vibration through the deck?",
                   "How does this affect sleep, conversation, work?",
                 ]}
-                example="The constant thrum of engines becomes white noise—crew notice when it stops, not when it runs."
+                example="The constant thrum of engines becomes white noise, crew notice when it stops, not when it runs."
                 value={formState.propulsion.noiseVibration}
                 onChange={(value) => updatePropulsion("noiseVibration", value)}
               />
@@ -892,7 +892,7 @@ const SpacecraftDesigner = () => {
           <CollapsibleSection
             id="section-lifesupport"
             title="Life Support Systems"
-            subtitle="Keeping crew alive—and what happens when things fail"
+            subtitle="Keeping crew alive, and what happens when things fail"
             levelNumber={3}
             thinkLike="a life support engineer: Everything is connected. One failure cascades into others."
           >
@@ -1048,7 +1048,7 @@ const SpacecraftDesigner = () => {
                   "How much personal space does each crew member have?",
                   "What personalization is allowed/common?",
                 ]}
-                example="On Serenity, each crew member's bunk reflects their personality—Kaylee's is frilly, Jayne's is covered in weapons."
+                example="On Serenity, each crew member's bunk reflects their personality, Kaylee's is frilly, Jayne's is covered in weapons."
                 value={formState.living.crewQuarters}
                 onChange={(value) => updateLiving("crewQuarters", value)}
               />
@@ -1061,7 +1061,7 @@ const SpacecraftDesigner = () => {
                   "Mess hall, lounge, recreation area?",
                   "What activities happen in shared spaces?",
                 ]}
-                example="The holochess table on the Falcon, the galley on the Rocinante—ships need social spaces."
+                example="The holochess table on the Falcon, the galley on the Rocinante, ships need social spaces."
                 value={formState.living.commonAreas}
                 onChange={(value) => updateLiving("commonAreas", value)}
               />
@@ -1108,7 +1108,7 @@ const SpacecraftDesigner = () => {
                 label="Work Spaces"
                 prompts={[
                   "Bridge/cockpit setup and who's usually there?",
-                  "Engineering spaces—accessible or restricted?",
+                  "Engineering spaces, accessible or restricted?",
                   "Cargo handling areas?",
                 ]}
                 value={formState.living.workspaces}
@@ -1305,7 +1305,7 @@ const SpacecraftDesigner = () => {
                   "Reliable workhorse, temperamental diva, battle-scarred veteran?",
                   "How does crew talk about the ship? As 'it' or 'she/he'?",
                 ]}
-                example="The Falcon is 'a piece of junk' that 'made the Kessel Run in less than twelve parsecs'—contradiction is character."
+                example="The Falcon is 'a piece of junk' that 'made the Kessel Run in less than twelve parsecs', contradiction is character."
                 value={formState.character.personality}
                 onChange={(value) => updateCharacter("personality", value)}
               />
@@ -1452,7 +1452,7 @@ const SpacecraftDesigner = () => {
                   Sensory Signature (One Paragraph)
                 </Label>
                 <p className="text-xs text-t4">
-                  Write a paragraph describing what it's like to step aboard this ship for the first time—sight, sound, smell, feel.
+                  Write a paragraph describing what it's like to step aboard this ship for the first time, sight, sound, smell, feel.
                 </p>
                 <Suspense fallback={<div className="min-h-[150px] rounded-md border border-sf-border bg-background/50 animate-pulse" />}>
                   <RichTextEditor

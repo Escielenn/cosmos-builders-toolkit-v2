@@ -1,12 +1,12 @@
 // ---------------------------------------------------------------------------
-// useEntityTypeTemplates — custom entity type templates per world.
+// useEntityTypeTemplates, custom entity type templates per world.
 //
 // Templates are stored in `entity_type_templates`, fields in
 // `entity_type_fields`. Each world can define its own custom types
 // (e.g. "Deity", "Sword Style", "Trading Route") with a schema of
 // fields that apply to every entity created from that template.
 //
-// Per-entity ad-hoc fields are NOT handled here — they live under
+// Per-entity ad-hoc fields are NOT handled here, they live under
 // entity.metadata._extra in the entities table and are managed by
 // a separate hook (use-entity-custom-fields, if/when added).
 // ---------------------------------------------------------------------------
@@ -129,7 +129,7 @@ function isMissingTableError(error: unknown): boolean {
 }
 
 // ---------------------------------------------------------------------------
-// READ — all templates + fields for a world
+// READ, all templates + fields for a world
 // ---------------------------------------------------------------------------
 
 export function useEntityTypeTemplates(worldId: string | undefined) {

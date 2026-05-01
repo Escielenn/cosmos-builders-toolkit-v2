@@ -163,7 +163,7 @@ const WritingWorkshop = () => {
         <SectionHero
           eyebrow="// WORKSHOP"
           title={<>Writing <span className="text-sf-teal">prompts.</span></>}
-          subtitle="Daily prompts, your entries, and writing practice — captured here while the rest of the world cascades around them."
+          subtitle="Daily prompts, your entries, and writing practice, captured here while the rest of the world cascades around them."
           className="mb-12"
         />
 

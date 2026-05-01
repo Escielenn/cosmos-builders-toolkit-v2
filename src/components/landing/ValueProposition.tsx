@@ -44,7 +44,7 @@ const ValueProposition = () => {
             </h3>
             <p className="text-sm text-t3">
               Data flows between tools. Your spacecraft references your planet's
-              atmosphere automatically—no duplicate entry.
+              atmosphere automatically. No duplicate entry.
             </p>
           </motion.div>
           <motion.div className="text-center md:text-left" variants={fadeUpItem}>

@@ -49,7 +49,7 @@ export default function TrackRow({
             aria-label={`Play ${track.title}`}
           >
             <span className="group-hover:hidden font-mono text-[10px]">
-              {index != null ? index + 1 : "—"}
+              {index != null ? index + 1 : "-"}
             </span>
             <Play className="w-3.5 h-3.5 hidden group-hover:block" />
           </button>

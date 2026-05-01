@@ -166,7 +166,7 @@ const WorldGraph = () => {
 
   return (
     <div className="h-full w-full relative">
-      {/* Graph mode toggle — top center */}
+      {/* Graph mode toggle, top center */}
       <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 flex items-center gap-0.5"
         style={{
           background: "rgba(15,15,16,0.92)",

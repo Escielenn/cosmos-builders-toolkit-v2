@@ -45,7 +45,7 @@ const RenderEvoBio = ({ ws }: { ws: WorksheetData }) => {
         <PDFKeyValuePair label="Size Range" value={
           get(d, "bodyPlan.sizeRange.min") && get(d, "bodyPlan.sizeRange.max")
             ? `${get(d, "bodyPlan.sizeRange.min")} - ${get(d, "bodyPlan.sizeRange.max")}`
-            : "—"
+            : "-"
         } />
         <PDFKeyValuePair label="Primary Senses" value={get(d, "sensory.primarySenses")} />
         <PDFKeyValuePair label="Locomotion" value={get(d, "locomotion.primaryMode")} />
@@ -86,8 +86,8 @@ const RenderSpeciesMatrix = ({ ws }: { ws: WorksheetData }) => {
             </View>
             {species.map((sp) => (
               <View key={sp.id} style={styles.tableRow}>
-                <Text style={{ ...styles.tableCell, flex: 1 }}>{sp.name || "—"}</Text>
-                <Text style={{ ...styles.tableCell, flex: 1 }}>{sp.type || "—"}</Text>
+                <Text style={{ ...styles.tableCell, flex: 1 }}>{sp.name || "-"}</Text>
+                <Text style={{ ...styles.tableCell, flex: 1 }}>{sp.type || "-"}</Text>
               </View>
             ))}
           </View>

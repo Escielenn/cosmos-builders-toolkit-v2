@@ -1,9 +1,9 @@
 // ---------------------------------------------------------------------------
-// WorldEntityGraph — Main graph canvas for the entity layer.
+// WorldEntityGraph, Main graph canvas for the entity layer.
 // Phase 1: Nodes, edges, force layout, pinning, connection creation.
 // Phase 2: Cascade filter, search, list view, cascade flow layout,
 //          cascade path highlighting.
-// Phase 3: Analytical tools — gravity, paths, tensions, clusters, what-if.
+// Phase 3: Analytical tools, gravity, paths, tensions, clusters, what-if.
 // ---------------------------------------------------------------------------
 
 import {
@@ -435,7 +435,7 @@ function InnerGraph({ worldId, entities, connections }: InnerGraphProps) {
   // Connection counts
   const connectionCounts = useMemo(() => countConnections(connections), [connections]);
 
-  // Force layout — run once when entities have no positions
+  // Force layout, run once when entities have no positions
   const needsLayout = useMemo(
     () => entities.some((e) => e.graph_x == null && e.graph_y == null),
     [entities]
@@ -667,7 +667,7 @@ function InnerGraph({ worldId, entities, connections }: InnerGraphProps) {
     [nodes, reactFlow]
   );
 
-  // Node click — feeds into analysis modes (paths, what-if)
+  // Node click, feeds into analysis modes (paths, what-if)
   const handleNodeClick = useCallback(
     (_: unknown, node: Node) => {
       if (analysisMode === "paths") {
@@ -733,13 +733,13 @@ function InnerGraph({ worldId, entities, connections }: InnerGraphProps) {
   const toggleAnalysis = useCallback((mode: AnalysisMode) => {
     setAnalysisMode((prev) => {
       if (prev === mode) {
-        // Closing — clear all analysis state
+        // Closing, clear all analysis state
         setAnalysisSelectedEntities([]);
         setAnalysisHighlightedEntities([]);
         setAnalysisHighlightedConnections([]);
         return null;
       }
-      // Opening new mode — clear previous state
+      // Opening new mode, clear previous state
       setAnalysisSelectedEntities([]);
       setAnalysisHighlightedEntities([]);
       setAnalysisHighlightedConnections([]);
@@ -1069,7 +1069,7 @@ function InnerGraph({ worldId, entities, connections }: InnerGraphProps) {
           variant="ghost"
           onClick={handleCascadeFlowLayout}
           className="h-7 text-[10px] uppercase tracking-[1.2px] font-sans text-t3 hover:text-t1"
-          title="Cascade Flow Layout — arrange by cascade stage"
+          title="Cascade Flow Layout, arrange by cascade stage"
         >
           <Columns3 className="w-3 h-3 mr-1" />
           Flow
@@ -1161,7 +1161,7 @@ function InnerGraph({ worldId, entities, connections }: InnerGraphProps) {
         </Button>
       </div>
 
-      {/* Analysis toolbar — second row */}
+      {/* Analysis toolbar, second row */}
       <div
         className="absolute top-14 right-3 z-10 flex items-center gap-0.5"
         style={{
@@ -1222,7 +1222,7 @@ function InnerGraph({ worldId, entities, connections }: InnerGraphProps) {
         </Button>
       </div>
 
-      {/* Cascade filter bar — third row */}
+      {/* Cascade filter bar, third row */}
       <div className="absolute top-[88px] left-3 z-10">
         <CascadeFilterBar
           activeStages={activeStages}

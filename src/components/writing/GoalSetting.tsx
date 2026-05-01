@@ -13,7 +13,7 @@ import { useWritingPreferences } from "@/hooks/use-writing-preferences";
 const QUICK_GOALS = [250, 500, 750, 1000];
 
 interface GoalSettingProps {
-  /** Compact mode hides the label text — used in WriteSheet footer */
+  /** Compact mode hides the label text, used in WriteSheet footer */
   compact?: boolean;
 }
 

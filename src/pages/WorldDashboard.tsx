@@ -23,7 +23,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-// AlertDialog imports removed — using DeleteConfirmDialog instead
+// AlertDialog imports removed, using DeleteConfirmDialog instead
 import {
   Dialog,
   DialogContent,
@@ -834,14 +834,14 @@ const WorldDashboard = () => {
           </section>
         )}
 
-        {/* Version History — owner only */}
+        {/* Version History, owner only */}
         {isOwner && worldId && (
           <section className="mb-8">
             <VersionHistory worldId={worldId} worldName={world.name} />
           </section>
         )}
 
-        {/* World Elements — entity-first entries */}
+        {/* World Elements, entity-first entries */}
         {worldId && (
           <section className="mb-8">
             <div className="flex items-center justify-between mb-4">
@@ -862,7 +862,7 @@ const WorldDashboard = () => {
             {worldEntities.length === 0 ? (
               <GlassPanel className="p-6 text-center">
                 <p className="text-sm text-t3/40 italic">
-                  No elements yet. Create planets, species, factions, and more—then attach worksheets to them.
+                  No elements yet. Create planets, species, factions, and more, then attach worksheets to them.
                 </p>
                 {canEdit && (
                   <Button

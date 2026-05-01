@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// CommentSection — Comment list + new comment form for community worlds
+// CommentSection, Comment list + new comment form for community worlds
 // ---------------------------------------------------------------------------
 
 import { useState } from "react";

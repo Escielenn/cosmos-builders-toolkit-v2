@@ -1,10 +1,10 @@
 /**
- * LoadSimulationSheet — Shows saved simulations for replay.
+ * LoadSimulationSheet, Shows saved simulations for replay.
  *
  * Renders in a side sheet, listing saved simulation states with
  * name, date, and a load button.
  *
- * Spec: StellarForge_Simulator_Addendum — Simulation Save & Replay
+ * Spec: StellarForge_Simulator_Addendum, Simulation Save & Replay
  */
 
 import { FolderOpen, Play } from "lucide-react";

@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// GraphSearch — Quick search/filter entities by name in the graph.
+// GraphSearch, Quick search/filter entities by name in the graph.
 // ---------------------------------------------------------------------------
 
 import { useState, useCallback, useRef, useEffect } from "react";

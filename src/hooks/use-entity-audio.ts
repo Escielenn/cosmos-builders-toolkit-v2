@@ -7,7 +7,7 @@ import { findCuratedPlaylist, CURATED_PLAYLISTS } from "@/lib/audio/curated-play
 import type { AudioPlaylist } from "@/lib/audio/types";
 
 // ---------------------------------------------------------------------------
-// World soundtrack — reads/writes worlds.theme.soundtrack_playlist_id
+// World soundtrack, reads/writes worlds.theme.soundtrack_playlist_id
 // ---------------------------------------------------------------------------
 
 export function useWorldSoundtrack(worldId: string | undefined) {

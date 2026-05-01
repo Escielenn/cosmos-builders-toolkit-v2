@@ -530,7 +530,7 @@ const TimeDilationCalculator = () => {
           <p className="text-t2">
             Calculate how relativistic speeds affect the passage of time for your travelers.
             Choose a journey, select a propulsion method, and see how much time your characters
-            lose—or gain—relative to the people they left behind. All calculations use
+            lose, or gain, relative to the people they left behind. All calculations use
             special relativity; results update in real time.
           </p>
         </GlassPanel>
@@ -769,7 +769,7 @@ const TimeDilationCalculator = () => {
                     <span className="font-mono text-sm text-primary">
                       {parseFloat(formState.velocityProfile.velocityFraction)
                         ? `${(parseFloat(formState.velocityProfile.velocityFraction) * 100).toFixed(4)}% c`
-                        : "—"}
+                        : "-"}
                     </span>
                   </div>
                   <Slider
@@ -824,10 +824,10 @@ const TimeDilationCalculator = () => {
                 <div className="p-4 rounded-none border border-amber-500/30 bg-amber-500/5">
                   <div className="flex items-center gap-3 mb-2">
                     <AlertTriangle className="w-4 h-4 text-sf-amber" />
-                    <span className="text-sm font-medium text-sf-amber">Alcubierre Drive—Speculative Physics</span>
+                    <span className="text-sm font-medium text-sf-amber">Alcubierre Drive, Speculative Physics</span>
                   </div>
                   <p className="text-xs text-t4 mb-3">
-                    Inside the warp bubble, spacetime is flat—the traveler is technically stationary.
+                    Inside the warp bubble, spacetime is flat, the traveler is technically stationary.
                     Choose how your story interprets the time dilation effect.
                   </p>
                   <div className="flex items-center gap-3">
@@ -931,17 +931,17 @@ const TimeDilationCalculator = () => {
                     {calculationResult.peakVelocityFraction >= 1
                       ? `${calculationResult.peakVelocityFraction.toFixed(1)}× the speed of light (FTL)`
                       : calculationResult.peakVelocityFraction >= 0.99
-                      ? "Deep relativistic—extreme time dilation"
+                      ? "Deep relativistic, extreme time dilation"
                       : calculationResult.peakVelocityFraction >= 0.5
-                      ? "Relativistic—significant time dilation effects"
+                      ? "Relativistic, significant time dilation effects"
                       : calculationResult.peakVelocityFraction >= 0.1
-                      ? "Sub-relativistic—minimal dilation effects"
-                      : "Non-relativistic—negligible dilation"
+                      ? "Sub-relativistic, minimal dilation effects"
+                      : "Non-relativistic, negligible dilation"
                     }
                   </p>
                 </div>
 
-                {/* Ship Time / Observer Time — StatGrid primitive */}
+                {/* Ship Time / Observer Time, StatGrid primitive */}
                 <StatGrid cols={2}>
                   <StatGrid.Cell
                     label="SHIP TIME (TRAVELERS)"

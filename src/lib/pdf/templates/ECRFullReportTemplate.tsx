@@ -192,7 +192,7 @@ const ECRFullReportTemplate = ({
           </Text>
           <Text style={{ fontSize: typography.sizes.xs, color: colors.text.muted, marginTop: spacing.sm, lineHeight: 1.4 }}>
             This worksheet traces how planetary conditions cascade through five levels to create unique cultures,
-            psychologies, and spiritualities. A desert world doesn't just have different weather—it produces
+            psychologies, and spiritualities. A desert world doesn't just have different weather, it produces
             different religions, social structures, technologies, and concepts of value.
           </Text>
         </View>
@@ -417,7 +417,7 @@ const ECRFullReportTemplate = ({
         {/* Final Quote */}
         <View style={{ marginTop: spacing.xl, padding: spacing.md, backgroundColor: "#f5f5f5", borderRadius: 4 }}>
           <Text style={{ fontSize: typography.sizes.sm, color: colors.text.secondary, fontStyle: "italic", textAlign: "center", lineHeight: 1.5 }}>
-            "The most believable worlds aren't the most complex—they're the most internally consistent.
+            "The most believable worlds aren't the most complex, they're the most internally consistent.
             Every element should cascade logically from your core environmental choice."
           </Text>
         </View>

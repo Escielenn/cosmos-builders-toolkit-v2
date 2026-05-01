@@ -86,20 +86,15 @@ const Header = () => {
           <div className="flex flex-col">
             <Link to="/" className="flex items-center gap-2 group">
               <CubeLogo size={32} className="rounded-none" />
-              {isSubscribed ? (
-                <>
-                  <span className="hidden xl:inline font-display text-lg font-light tracking-sf-wide text-t1 uppercase">
-                    STELLARFORGE
-                  </span>
-                  <span className="xl:hidden font-display text-lg font-light tracking-sf-wide text-t1 uppercase">
-                    SF
-                  </span>
-                </>
-              ) : (
-                <span className="font-display text-lg font-light tracking-sf-wide text-t1 uppercase">
-                  SF
-                </span>
-              )}
+              {/* Full wordmark at xl+ for everyone (brand visibility for
+                  logged-out visitors during OPEN EARLY ACCESS); SF
+                  abbreviation below xl for compact layouts. */}
+              <span className="hidden xl:inline font-display text-lg font-light tracking-sf-title text-t1">
+                <span className="text-sf-teal">Stellar</span>forge
+              </span>
+              <span className="xl:hidden font-display text-lg font-light tracking-sf-wide text-t1 uppercase">
+                SF
+              </span>
             </Link>
             <span className="hidden xl:block font-sans text-[10px] font-light tracking-[0.5px] text-white/20 ml-[42px] -mt-1">
               v{APP_VERSION}

@@ -1,5 +1,5 @@
 /**
- * Canonical tool page configuration — single source of truth for layout metadata.
+ * Canonical tool page configuration, single source of truth for layout metadata.
  * Every worksheet tool page reads from this to render its header via ToolPageLayout.
  *
  * Spec: StellarForge_Layout_Normalization_Spec_Apr2926.md
@@ -54,7 +54,7 @@ export const TOOL_PAGE_CONFIGS: Record<string, ToolPageConfig> = {
     "spacecraft-designer",
     "Vessel",
     "Lived-In Spacecraft Designer",
-    "Design ships that feel inhabited — with cultural context, life support realities, and ship-as-character development.",
+    "Design ships that feel inhabited, with cultural context, life support realities, and ship-as-character development.",
   ),
   "propulsion-consequences-map": config(
     "propulsion-consequences-map",
@@ -116,7 +116,7 @@ export const TOOL_PAGE_CONFIGS: Record<string, ToolPageConfig> = {
     "space-expansion-modeler",
     "Exodus",
     "Space Expansion Modeler",
-    "Model how competing forces — industrial, governmental, religious, economic — shape expansion beyond Earth.",
+    "Model how competing forces, industrial, governmental, religious, economic, shape expansion beyond Earth.",
   ),
   "timeline": config(
     "timeline",

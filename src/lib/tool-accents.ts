@@ -1,13 +1,13 @@
 /**
- * tool-accents — per-tool color accent (April 2026 handoff).
+ * tool-accents, per-tool color accent (April 2026 handoff).
  *
  * Each tool inherits the cascade color of its category:
- *   amber   — Stars & Systems / physics tools
- *   azure   — Worlds / environmental tools
- *   emerald — Life / biology tools
- *   violet  — Civilizations tools
- *   stellar — Mythology tools
- *   teal    — Integration / meta tools (default)
+ *   amber  , Stars & Systems / physics tools
+ *   azure  , Worlds / environmental tools
+ *   emerald, Life / biology tools
+ *   violet , Civilizations tools
+ *   stellar, Mythology tools
+ *   teal   , Integration / meta tools (default)
  *
  * Maps tool slug → accent token name.
  */
@@ -15,7 +15,7 @@
 export type ToolAccent = "amber" | "azure" | "emerald" | "violet" | "stellar" | "teal" | "crimson";
 
 export const TOOL_ACCENTS: Record<string, ToolAccent> = {
-  // Physics / Stars & Systems — amber
+  // Physics / Stars & Systems, amber
   "drake-equation-calculator": "amber",
   "star-system-builder": "amber",
   "habitable-zone-calculator": "amber",
@@ -24,26 +24,26 @@ export const TOOL_ACCENTS: Record<string, ToolAccent> = {
   "surface-gravity-calculator": "amber",
   "gravitas": "amber",
 
-  // Worlds / environment — azure
+  // Worlds / environment, azure
   "planetary-profile": "azure",
   "environmental-chain-reaction": "azure",
   "sensorium": "azure",
 
-  // Life / biology — emerald
+  // Life / biology, emerald
   "evolutionary-biology": "emerald",
   "species-interaction-matrix": "emerald",
 
-  // Civilizations — violet
+  // Civilizations, violet
   "empire-designer": "violet",
   "technology-consequences": "violet",
   "space-expansion-modeler": "violet",
   "one-big-lie": "violet",
   "lexdrift": "violet",
 
-  // Mythology — stellar
+  // Mythology, stellar
   "xenomythology-framework-builder": "stellar",
 
-  // Integration / vehicles / time — teal
+  // Integration / vehicles / time, teal
   "propulsion-consequences-map": "teal",
   "spacecraft-designer": "teal",
   "timeline": "teal",
@@ -54,7 +54,7 @@ export function getToolAccent(toolType: string): ToolAccent {
   return TOOL_ACCENTS[toolType] ?? "teal";
 }
 
-// Static class maps — Tailwind's JIT detects concrete class strings; dynamic
+// Static class maps, Tailwind's JIT detects concrete class strings; dynamic
 // `text-sf-${accent}` would purge. The values below appear verbatim here so
 // all variants are retained in the final CSS bundle.
 

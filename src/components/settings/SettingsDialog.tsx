@@ -372,7 +372,7 @@ const SettingsDialog = ({
                         autoPlay
                         className="w-full h-full object-cover"
                         onError={(e) => {
-                          // .mov won't play in Chrome/Firefox — swap in fallback tile
+                          // .mov won't play in Chrome/Firefox, swap in fallback tile
                           const el = e.currentTarget;
                           el.style.display = "none";
                           const fallback = el.nextElementSibling as HTMLElement | null;
@@ -540,7 +540,7 @@ const SettingsDialog = ({
                         }}
                         className="absolute top-1 left-1 w-4 h-4 rounded-sm bg-destructive flex items-center justify-center"
                       >
-                        <X className="w-2.5 h-2.5 text-sf-crimson-foreground" />
+                        <X className="w-2.5 h-2.5 text-destructive-foreground" />
                       </button>
                       {backgroundId === "custom" && (
                         <div className="absolute top-1 right-1 w-4 h-4 rounded-sm bg-primary flex items-center justify-center">

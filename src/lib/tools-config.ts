@@ -2,7 +2,7 @@
 
 export type SubscriptionTier = 'free' | 'pro' | 'vanguard';
 
-// Early access tools — Vanguard-only until general Pro release.
+// Early access tools, Vanguard-only until general Pro release.
 // Move tool IDs from here to PRO_TOOL_IDS when they graduate.
 export const EARLY_ACCESS_TOOL_IDS: string[] = [];
 

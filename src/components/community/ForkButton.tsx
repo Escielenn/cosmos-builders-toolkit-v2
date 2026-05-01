@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// ForkButton — Fork with confirmation dialog, shows fork_count
+// ForkButton, Fork with confirmation dialog, shows fork_count
 // ---------------------------------------------------------------------------
 
 import { useState } from "react";

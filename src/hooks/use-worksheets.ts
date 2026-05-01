@@ -36,7 +36,7 @@ interface UpdateWorksheetInput {
 }
 
 interface UseWorksheetsOptions {
-  /** Called after a draft wiki page is created/updated — used for entity match checks */
+  /** Called after a draft wiki page is created/updated, used for entity match checks */
   onDraftCreated?: (worksheetId: string, title: string) => void;
 }
 
@@ -64,7 +64,7 @@ export const useWorksheets = (worldId: string | undefined, includeArchived: bool
 
       if (error) throw error;
 
-      // RLS handles access control — owners and collaborators both allowed
+      // RLS handles access control, owners and collaborators both allowed
       return (data as Worksheet[]) || [];
     },
     enabled: !!user && !!worldId,
@@ -328,7 +328,7 @@ export const useWorksheetsByType = (
 
       if (error) throw error;
 
-      // RLS handles access control — owners and collaborators both allowed
+      // RLS handles access control, owners and collaborators both allowed
       return (data as Worksheet[]) || [];
     },
     enabled: !!user && !!worldId,

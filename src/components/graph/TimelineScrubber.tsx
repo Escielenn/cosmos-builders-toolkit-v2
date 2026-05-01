@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// TimelineScrubber — Horizontal timeline bar for temporal layer filtering.
+// TimelineScrubber, Horizontal timeline bar for temporal layer filtering.
 // Section 8.3 of the spec.
 // ---------------------------------------------------------------------------
 
@@ -98,7 +98,7 @@ export function TimelineScrubber({
     );
   }
 
-  const currentLabel = timePoints[currentIndex] ?? "—";
+  const currentLabel = timePoints[currentIndex] ?? "-";
   const firstLabel = timePoints[0];
   const lastLabel = timePoints[timePoints.length - 1];
 

@@ -558,7 +558,7 @@ const UsersTab = () => {
                       <td className="px-3 py-3 text-t2">
                         {u.display_name || <span className="text-t4 italic">No name</span>}
                       </td>
-                      <td className="px-3 py-3 text-t3 text-xs">{u.email || "—"}</td>
+                      <td className="px-3 py-3 text-t3 text-xs">{u.email || "-"}</td>
                       <td className="px-3 py-3 text-t4 font-mono text-xs">{formatDate(u.created_at)}</td>
                       <td className="px-3 py-3 text-center font-mono text-t2">{u.world_count}</td>
                       <td className="px-3 py-3 text-center font-mono text-t2">{u.worksheet_count}</td>
@@ -579,7 +579,7 @@ const UsersTab = () => {
                               <h4 className="text-[11px] font-medium uppercase tracking-[1.5px] text-t3">Profile</h4>
                               <div className="space-y-1.5 text-sm">
                                 <div><span className="text-t4">Email:</span> <span className="text-t2">{userDetail.email}</span></div>
-                                <div><span className="text-t4">Display Name:</span> <span className="text-t2">{userDetail.display_name || "—"}</span></div>
+                                <div><span className="text-t4">Display Name:</span> <span className="text-t2">{userDetail.display_name || "-"}</span></div>
                                 {userDetail.bio && <div><span className="text-t4">Bio:</span> <span className="text-t3 text-xs">{userDetail.bio}</span></div>}
                                 <div><span className="text-t4">Joined:</span> <span className="text-t2 font-mono text-xs">{formatDate(userDetail.created_at)}</span></div>
                               </div>
@@ -1022,11 +1022,11 @@ const SubscriptionsTab = () => {
                       <td className="px-3 py-3 text-t2">
                         {s.display_name || <span className="text-t4 italic">No name</span>}
                       </td>
-                      <td className="px-3 py-3 text-t3 text-xs">{s.email || "—"}</td>
+                      <td className="px-3 py-3 text-t3 text-xs">{s.email || "-"}</td>
                       <td className="px-3 py-3 text-t2 font-mono text-xs">{s.plan_type}</td>
                       <td className="px-3 py-3"><StatusBadge status={s.status} colorMap={subStatusColors} /></td>
                       <td className="px-3 py-3 text-t4 font-mono text-xs">
-                        {s.current_period_end ? formatDate(s.current_period_end) : "—"}
+                        {s.current_period_end ? formatDate(s.current_period_end) : "-"}
                       </td>
                       <td className="px-3 py-3">
                         {s.cancel_at_period_end ? (
@@ -1092,7 +1092,7 @@ const Admin = () => {
             </span>
           </div>
           <p className="text-t4 text-xs mb-8 font-mono">
-            Secured via SECURITY DEFINER RPCs — all queries verify is_admin before executing.
+            Secured via SECURITY DEFINER RPCs. All queries verify is_admin before executing.
           </p>
 
           <div className="flex gap-6">

@@ -1,5 +1,5 @@
-// LEXDRIFT — Pure Calculation Engine
-// No React dependencies—importable by both page components and PDF templates
+// LEXDRIFT, Pure Calculation Engine
+// No React dependencies, importable by both page components and PDF templates
 
 import type { DivergenceSeverity } from "./data";
 import {
@@ -475,7 +475,7 @@ function generateNarrative(
 // ─── Copy Text Builder ──────────────────────────────────────────────
 
 export function buildCopyText(result: LexDriftResult, formState: FormStateForCalc): string {
-  let text = "Lexdrift — LANGUAGE EVOLUTION ANALYSIS\n";
+  let text = "Lexdrift, LANGUAGE EVOLUTION ANALYSIS\n";
   text += "======================================\n\n";
   text += `Duration: ${formState.mission.duration} years (${result.generations.toFixed(0)} generations)\n`;
   text += `Population: ${formState.mission.population.toLocaleString()}\n`;
@@ -512,7 +512,7 @@ function makeErrorResult(error: string): LexDriftResult {
     generations: 0,
     effectiveRate: 0,
     severity: "dialect",
-    severityLabel: "—",
+    severityLabel: "-",
     populationModifier: 1,
     isolationModifier: 1,
     educationModifier: 1,

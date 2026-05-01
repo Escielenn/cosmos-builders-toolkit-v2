@@ -9,7 +9,7 @@
  * - JSON: Single .json file with the complete world object
  * - ZIP:  .zip containing world.json + any future binary assets
  *
- * Never includes user_id in exported data — safe for sharing.
+ * Never includes user_id in exported data, safe for sharing.
  */
 
 import { supabase } from "@/integrations/supabase/client";
@@ -181,7 +181,7 @@ export async function maybeSnapshotWorld(worldId: string): Promise<boolean> {
 
     return data === true;
   } catch {
-    // Non-blocking — never throw from auto-snapshots
+    // Non-blocking, never throw from auto-snapshots
     return false;
   }
 }
@@ -264,11 +264,11 @@ export async function downloadSnapshotAsZip(
       `Format: ${snapshot.format_version}`,
       ``,
       `Contents:`,
-      `  world.json       — Complete world snapshot (machine-readable)`,
-      `  worksheets/      — Individual worksheet files by tool type`,
-      `  notes/           — World notes (HTML)`,
-      `  entries.json     — World entries/journal`,
-      `  connections.json — Cross-worksheet connections`,
+      `  world.json      , Complete world snapshot (machine-readable)`,
+      `  worksheets/     , Individual worksheet files by tool type`,
+      `  notes/          , World notes (HTML)`,
+      `  entries.json    , World entries/journal`,
+      `  connections.json, Cross-worksheet connections`,
       ``,
       `To import this world back into StellarForge, use the`,
       `"Import World" feature on the Worlds page.`,
@@ -332,7 +332,7 @@ export async function createWorldFromSnapshot(
       description: snapshot.world.description,
       icon: snapshot.world.icon,
       tags: snapshot.world.tags,
-      // Skip header_image_url — images are user-specific storage
+      // Skip header_image_url, images are user-specific storage
     })
     .select("id")
     .single();

@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// SocialShareButtons — Share to Twitter/X, Reddit, Discord copy, etc.
+// SocialShareButtons, Share to Twitter/X, Reddit, Discord copy, etc.
 // ---------------------------------------------------------------------------
 
 import { useState } from "react";

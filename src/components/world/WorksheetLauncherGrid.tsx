@@ -81,7 +81,7 @@ export default function WorksheetLauncherGrid({
       // Open existing worksheet
       navigate(`/tools/${toolSlug}?worldId=${worldId}&worksheetId=${existing.worksheet_id}`);
     } else {
-      // Navigate to tool page — user will create a new worksheet there
+      // Navigate to tool page, user will create a new worksheet there
       // The entity linking happens in Phase 3 via entity-prepopulate
       navigate(`/tools/${toolSlug}?worldId=${worldId}&entityId=${entityId}`);
     }

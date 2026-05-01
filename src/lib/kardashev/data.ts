@@ -1,6 +1,6 @@
 // ─── K-Scale: Kardashev Scale Calculator ─────────────────────────────
 // Data, types, presets, and cascade content for the Kardashev Scale tool.
-// No React dependencies — importable from PDF templates.
+// No React dependencies, importable from PDF templates.
 
 // ─── Types ────────────────────────────────────────────────────────────
 
@@ -96,7 +96,7 @@ export const KARDASHEV_BANDS: KardashevBand[] = [
   },
   {
     level: "I",
-    label: "Type I — Planetary",
+    label: "Type I, Planetary",
     minPower: 16,
     maxPower: 17,
     color: "#3B82F6",
@@ -111,7 +111,7 @@ export const KARDASHEV_BANDS: KardashevBand[] = [
   },
   {
     level: "I-II",
-    label: "Type I-II — Interplanetary",
+    label: "Type I-II, Interplanetary",
     minPower: 17,
     maxPower: 24,
     color: "#8B5CF6",
@@ -126,7 +126,7 @@ export const KARDASHEV_BANDS: KardashevBand[] = [
   },
   {
     level: "II",
-    label: "Type II — Stellar",
+    label: "Type II, Stellar",
     minPower: 24,
     maxPower: 26,
     color: "#F59E0B",
@@ -141,7 +141,7 @@ export const KARDASHEV_BANDS: KardashevBand[] = [
   },
   {
     level: "II-III",
-    label: "Type II-III — Interstellar",
+    label: "Type II-III, Interstellar",
     minPower: 26,
     maxPower: 36,
     color: "#EF4444",
@@ -156,7 +156,7 @@ export const KARDASHEV_BANDS: KardashevBand[] = [
   },
   {
     level: "III",
-    label: "Type III — Galactic",
+    label: "Type III, Galactic",
     minPower: 36,
     maxPower: 37,
     color: "#EC4899",
@@ -171,7 +171,7 @@ export const KARDASHEV_BANDS: KardashevBand[] = [
   },
   {
     level: "III+",
-    label: "Type III+ — Intergalactic",
+    label: "Type III+, Intergalactic",
     minPower: 37,
     maxPower: 45,
     color: "#14B8A6",

@@ -39,6 +39,6 @@ export function saveExportPreferences(
     const updated = { ...current, ...prefs };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
   } catch {
-    // Silently fail — localStorage may be unavailable
+    // Silently fail, localStorage may be unavailable
   }
 }

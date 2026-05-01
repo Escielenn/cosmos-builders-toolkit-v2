@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// useMetaTags — Dynamic Open Graph and Twitter meta tag management for SPA.
+// useMetaTags, Dynamic Open Graph and Twitter meta tag management for SPA.
 // Updates document.title and meta tags on mount, restores defaults on unmount.
 // ---------------------------------------------------------------------------
 

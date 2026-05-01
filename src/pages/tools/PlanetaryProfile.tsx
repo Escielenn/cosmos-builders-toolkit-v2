@@ -658,7 +658,7 @@ const PlanetaryProfile = () => {
             Building Believable Worlds
           </h2>
           <blockquote className="border-l-2 border-primary pl-4 italic text-lg mb-4">
-            "The environment isn't just a backdrop—it's a character that shapes every aspect of the story."
+            "The environment isn't just a backdrop, it's a character that shapes every aspect of the story."
           </blockquote>
           <p className="text-t2 mb-4">
             This tool helps you create scientifically-grounded planetary environments and explore how they shape the societies, psychology, and narratives of their inhabitants. Start with the physical parameters, then trace their consequences through to story.
@@ -1361,7 +1361,7 @@ const PlanetaryProfile = () => {
             <div className="space-y-6">
               <div className="p-4 rounded-none bg-accent/10 border border-accent/20">
                 <p className="text-sm text-t3">
-                  <strong className="text-accent">The Three Pressures Framework:</strong> Every environment exerts three types of pressure on its inhabitants—survival pressure (physical challenges), social pressure (how environment shapes society), and psychological pressure (mental and emotional effects).
+                  <strong className="text-accent">The Three Pressures Framework:</strong> Every environment exerts three types of pressure on its inhabitants, survival pressure (physical challenges), social pressure (how environment shapes society), and psychological pressure (mental and emotional effects).
                 </p>
               </div>
 
@@ -1490,7 +1490,7 @@ const PlanetaryProfile = () => {
                   "Is it hostile, nurturing, indifferent, capricious?",
                   "What 'mood' does it evoke?",
                 ]}
-                example="Arrakis is hostile but vital—a stern teacher that rewards those who learn its ways. Pandora is lush but alien—beautiful but never quite safe."
+                example="Arrakis is hostile but vital, a stern teacher that rewards those who learn its ways. Pandora is lush but alien, beautiful but never quite safe."
                 value={formState.narrative.environmentAsCharacter}
                 onChange={(value) => updateNarrative("environmentAsCharacter", value)}
               />

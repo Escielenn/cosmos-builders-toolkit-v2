@@ -92,7 +92,7 @@ const CompressionMarker = memo(
         <TooltipContent side="top" className="max-w-xs">
           <p className="font-semibold text-xs">{label}</p>
           <p className="text-[10px] text-t3">
-            {compression.startYear.toLocaleString()} — {compression.endYear.toLocaleString()} ({formatYearSpan(yearSpan)})
+            {compression.startYear.toLocaleString()} to {compression.endYear.toLocaleString()} ({formatYearSpan(yearSpan)})
           </p>
           <p className="text-[10px] text-t3 mt-0.5">
             Click to {compression.isExpanded ? "compress" : "expand"}

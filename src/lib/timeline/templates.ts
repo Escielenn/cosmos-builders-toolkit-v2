@@ -1,4 +1,4 @@
-// Timeline Tool — Pre-built Template Data (Phase 4)
+// Timeline Tool, Pre-built Template Data (Phase 4)
 
 import type { TrackType, EventType, ImportanceLevel } from "./types";
 
@@ -245,7 +245,7 @@ export const TIMELINE_TEMPLATES: TimelineTemplate[] = [
         eventType: "birth",
         importance: "major",
         shortDescription:
-          "The first children born entirely in space mark a psychological shift—the ship becomes home, not a vehicle.",
+          "The first children born entirely in space mark a psychological shift, the ship becomes home, not a vehicle.",
         hasDuration: false,
         relativeYear: 25,
       },
@@ -305,7 +305,7 @@ export const TIMELINE_TEMPLATES: TimelineTemplate[] = [
         eventType: "settlement",
         importance: "epochal",
         shortDescription:
-          "The first colonists set foot on solid ground—a world none of their ancestors ever saw.",
+          "The first colonists set foot on solid ground, a world none of their ancestors ever saw.",
         hasDuration: false,
         relativeYear: 352,
       },

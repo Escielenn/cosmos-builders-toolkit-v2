@@ -116,7 +116,7 @@ const BackupStatusWidget = ({ worlds }: BackupStatusWidgetProps) => {
                   <span className="text-t3 text-[11px] font-mono shrink-0">
                     {wb.snapshotAt
                       ? formatDistanceToNow(new Date(wb.snapshotAt), { addSuffix: false })
-                      : "—"}
+                      : "-"}
                   </span>
                   <span className="text-t3 text-[10px] font-mono shrink-0">
                     v{wb.versionCount}

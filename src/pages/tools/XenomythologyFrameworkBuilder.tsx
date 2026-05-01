@@ -2691,7 +2691,7 @@ const XenomythologyFrameworkBuilder = () => {
               // Explore Xenomythology
             </h4>
             <p className="font-sans text-sm text-t2 leading-relaxed mb-4">
-              Xenomythology is the study of how mythology will evolve beyond Earth — how
+              Xenomythology is the study of how mythology will evolve beyond Earth, how
               alien environments, biologies, and psychologies will generate entirely new
               mythological systems. The myths you're building aren't just decoration for
               your world; they're the deepest expression of how your species makes meaning.

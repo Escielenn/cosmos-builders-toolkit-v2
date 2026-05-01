@@ -1,5 +1,5 @@
 /**
- * SolarisUI — Floating data readout panel (right side).
+ * SolarisUI, Floating data readout panel (right side).
  * Shows star info + selected body info.
  * HTML overlay in simulator aesthetic (cyan on deep black).
  */

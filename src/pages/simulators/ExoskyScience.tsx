@@ -7,7 +7,7 @@ const ExoskyScience = () => {
       <Header />
       <iframe
         src="/tools/exosky/science.html"
-        title="Exosky — The Science"
+        title="Exosky, The Science"
         className="flex-1 w-full border-0"
         style={{ marginTop: 64, minHeight: "calc(100vh - 64px)" }}
       />

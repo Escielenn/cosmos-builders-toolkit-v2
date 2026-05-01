@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// useWritingDocuments — React Query hooks for writing-space documents.
+// useWritingDocuments, React Query hooks for writing-space documents.
 //
 // Documents are stored as world_entries with entry_type = 'document'.
 // Folders are stored as world_entries with entry_type = 'folder'.

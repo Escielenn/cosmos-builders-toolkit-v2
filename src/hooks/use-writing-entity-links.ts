@@ -1,10 +1,10 @@
 /**
- * useWritingEntityLinks — Manages linking writing entries to specific entities.
+ * useWritingEntityLinks, Manages linking writing entries to specific entities.
  *
  * After a writing entry is saved, extracts entity names from the text
  * content and suggests linking to existing world entries.
  *
- * Spec: StellarForge_Final_Remediation_Spec_v2 — Issue 6
+ * Spec: StellarForge_Final_Remediation_Spec_v2, Issue 6
  */
 
 import { useState, useCallback } from "react";

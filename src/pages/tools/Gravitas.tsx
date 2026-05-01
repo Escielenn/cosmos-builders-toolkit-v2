@@ -1196,7 +1196,7 @@ const Gravitas = () => {
           </CollapsibleSection>
         </div>
 
-        {/* Desktop Sidebar — Navigation + Live Readout */}
+        {/* Desktop Sidebar, Navigation + Live Readout */}
         <ToolSidebar>
           <SectionNavigation sections={SECTIONS} mode="inline" />
           <GlassPanel className="p-4 w-56">

@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// EntityHistory — Subtle metadata showing when an entity was created/modified.
+// EntityHistory, Subtle metadata showing when an entity was created/modified.
 // Uses date-fns formatDistanceToNow for relative timestamps.
 // ---------------------------------------------------------------------------
 

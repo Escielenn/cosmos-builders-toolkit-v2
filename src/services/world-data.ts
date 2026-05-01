@@ -118,7 +118,7 @@ export const LAYER_TOOL_MAP: Record<CascadeLayer, string[]> = {
     "surface-gravity-calculator",
   ],
   biology: ["evolutionary-biology", "sensorium", "species-interaction-matrix"],
-  psychology: [], // No dedicated tool — evo-bio psychology sections
+  psychology: [], // No dedicated tool, evo-bio psychology sections
   culture: ["empire-designer", "lexdrift", "space-expansion-modeler"],
   mythology: ["xenomythology-framework-builder"],
   technology: [
@@ -510,7 +510,7 @@ export async function getCodexData(worldId: string): Promise<CodexData> {
   if (worldRes.error) throw worldRes.error;
   if (worksheetsRes.error) throw worksheetsRes.error;
   if (entriesRes.error) throw entriesRes.error;
-  // Writing entries and world notes are non-critical — gracefully handle errors
+  // Writing entries and world notes are non-critical, gracefully handle errors
   const writingEntries = writingEntriesRes.data ?? [];
   const worldNotes = worldNotesRes.data ?? [];
 
@@ -677,7 +677,7 @@ export async function getCodexData(worldId: string): Promise<CodexData> {
     isExpanded: sectionElements[key].length > 0,
   }));
 
-  // Custom entries: entries with NO tool_source — build as tree
+  // Custom entries: entries with NO tool_source, build as tree
   const customRaw = entries.filter((e) => !e.tool_source);
   const customTree = buildEntryTree(customRaw);
 

@@ -5,7 +5,7 @@
  * that bridge physics output to narrative implications. This is the
  * Environmental Cascade applied to simulators.
  *
- * Spec: StellarForge_Simulator_Addendum — Narrative Bridge
+ * Spec: StellarForge_Simulator_Addendum, Narrative Bridge
  */
 
 export interface NarrativeQuestion {
@@ -44,9 +44,9 @@ export const SIMULATOR_NARRATIVE_CONFIGS: Record<string, SimulatorNarrativeConfi
     simulatorType: "tidelock",
     contextTemplate: "Your world is tidally locked to its star.",
     questions: [
-      { id: "tide-env", ...SHARED_LAYERS.environment, prompt: "What are conditions like in each zone — permanent day, permanent night, and the terminator band between them?" },
+      { id: "tide-env", ...SHARED_LAYERS.environment, prompt: "What are conditions like in each zone, permanent day, permanent night, and the terminator band between them?" },
       { id: "tide-bio", ...SHARED_LAYERS.biology, prompt: "How does life differ across the zones? What organisms thrive at the terminator?" },
-      { id: "tide-cul", ...SHARED_LAYERS.culture, prompt: "What civilizations form on each side? What role does the terminator zone play — border, trade route, sacred ground?" },
+      { id: "tide-cul", ...SHARED_LAYERS.culture, prompt: "What civilizations form on each side? What role does the terminator zone play, border, trade route, sacred ground?" },
       { id: "tide-myth", ...SHARED_LAYERS.mythology, prompt: "What myths explain the frozen sun? How do the inhabitants understand a sky that never changes?" },
     ],
   },

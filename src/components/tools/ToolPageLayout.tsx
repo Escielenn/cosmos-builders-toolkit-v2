@@ -1,5 +1,5 @@
 /**
- * ToolPageLayout — Canonical layout wrapper for all 21 worksheet tool pages.
+ * ToolPageLayout, Canonical layout wrapper for all 21 worksheet tool pages.
  *
  * Enforces consistent structure: back link → quote bar → action bar → title → intro → children.
  * Every tool page wraps its CollapsibleSections (and any tool-specific content) in this layout.
@@ -44,7 +44,7 @@ interface ToolPageLayoutProps {
   isSaving?: boolean;
   isShared?: boolean;
   isCloudEnabled?: boolean;
-  /** Slot for QuickExportButton — rendered inside the action bar */
+  /** Slot for QuickExportButton, rendered inside the action bar */
   extraActions?: ReactNode;
   onNotesClick?: () => void;
   onMoodboardClick?: () => void;
@@ -170,7 +170,7 @@ export default function ToolPageLayout({
           />
         )}
 
-        {/* ── Title — section-header pattern with per-tool cascade accent ── */}
+        {/* ── Title, section-header pattern with per-tool cascade accent ── */}
         <div className="mb-10">
           {/* Mono eyebrow with cascade-color hairline rule */}
           <div className={`inline-flex items-center gap-3.5 font-mono uppercase ${accentTextClass(accent)} text-[11px] tracking-[2.5px] mb-7`}>

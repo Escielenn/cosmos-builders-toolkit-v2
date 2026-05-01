@@ -1058,7 +1058,7 @@ const StarSystemBuilder = () => {
               </div>
             </CollapsibleSection>
 
-            {/* System Diagram — always visible, updates live */}
+            {/* System Diagram, always visible, updates live */}
             <div id="section-diagram" className="scroll-mt-24">
               <StarSystemDiagram
                 spectralClass={formState.primaryStar.spectralClass}

@@ -1,12 +1,12 @@
 /**
- * Cascade Guidance System — downstream suggestions and progress tracking.
+ * Cascade Guidance System, downstream suggestions and progress tracking.
  *
  * After completing a tool, suggests the next cascade step. Also provides
  * completion status per cascade layer for dashboard display.
  *
  * Cascade order: Stars & Systems → Worlds → Life → Civilizations → Mythology → Integration
  *
- * Spec: StellarForge_Final_Remediation_Spec_v2 — Issue 5
+ * Spec: StellarForge_Final_Remediation_Spec_v2, Issue 5
  */
 
 import type { CascadeLayer } from "@/services/world-data";

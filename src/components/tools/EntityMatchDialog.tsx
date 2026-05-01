@@ -1,11 +1,11 @@
 /**
- * EntityMatchDialog — Ship's-computer-voice dialog shown when a worksheet
+ * EntityMatchDialog, Ship's-computer-voice dialog shown when a worksheet
  * name fuzzy-matches an existing entity in the same world.
  *
  * "ENTITY MATCH DETECTED. Kepler-442b already exists in this world.
  *  Link this worksheet to the existing record?"
  *
- * Spec: StellarForge_Final_Remediation_Spec_v2 — Issue 2
+ * Spec: StellarForge_Final_Remediation_Spec_v2, Issue 2
  */
 
 import {

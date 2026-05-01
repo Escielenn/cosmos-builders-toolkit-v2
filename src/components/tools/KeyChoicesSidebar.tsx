@@ -334,7 +334,7 @@ export const MobileKeyChoices = ({
                       })}
                       {!hasValues && (
                         <span className="text-xs text-t3 italic font-mono">
-                          — NO DATA —
+                          · NO DATA ·
                         </span>
                       )}
                     </div>

@@ -40,7 +40,7 @@ const SensoriumFullReportTemplate = ({ formState: rawFormState, worldName, date 
       {/* Page 1: Environment & Selected Senses */}
       <Page size="LETTER" style={styles.page}>
         <PDFHeader
-          toolName="Sensorium — Full Report"
+          toolName="Sensorium, Full Report"
           worldName={worldName}
           date={date}
           hideLogo
@@ -56,18 +56,18 @@ const SensoriumFullReportTemplate = ({ formState: rawFormState, worldName, date 
         <PDFSection title="Environment Configuration">
           <View style={{ flexDirection: "row", gap: spacing.md }}>
             <View style={{ flex: 1 }}>
-              <PDFKeyValuePair label="Star Type" value={starPreset?.label || data?.environment?.star?.preset || "—"} />
-              <PDFKeyValuePair label="Temperature" value={`${data?.environment?.star?.temperature || "—"} K`} />
-              <PDFKeyValuePair label="Peak Wavelength" value={`${data?.environment?.star?.peakWavelength || "—"} nm`} />
-              <PDFKeyValuePair label="UV Output" value={data?.environment?.star?.uvOutput || "—"} />
-              <PDFKeyValuePair label="Luminosity" value={`${data?.environment?.star?.luminosity || "—"} L☉`} />
+              <PDFKeyValuePair label="Star Type" value={starPreset?.label || data?.environment?.star?.preset || "-"} />
+              <PDFKeyValuePair label="Temperature" value={`${data?.environment?.star?.temperature || "-"} K`} />
+              <PDFKeyValuePair label="Peak Wavelength" value={`${data?.environment?.star?.peakWavelength || "-"} nm`} />
+              <PDFKeyValuePair label="UV Output" value={data?.environment?.star?.uvOutput || "-"} />
+              <PDFKeyValuePair label="Luminosity" value={`${data?.environment?.star?.luminosity || "-"} L☉`} />
             </View>
             <View style={{ flex: 1 }}>
               <PDFKeyValuePair label="Atmosphere" value={atmoPreset?.label || "Custom"} />
-              <PDFKeyValuePair label="Pressure" value={`${data?.environment?.atmosphere?.pressure ?? "—"} atm`} />
-              <PDFKeyValuePair label="Opacity" value={data?.environment?.atmosphere?.opacity || "—"} />
-              <PDFKeyValuePair label="Medium" value={data?.environment?.medium?.type || "—"} />
-              <PDFKeyValuePair label="Conductivity" value={data?.environment?.medium?.conductivity || "—"} />
+              <PDFKeyValuePair label="Pressure" value={`${data?.environment?.atmosphere?.pressure ?? "-"} atm`} />
+              <PDFKeyValuePair label="Opacity" value={data?.environment?.atmosphere?.opacity || "-"} />
+              <PDFKeyValuePair label="Medium" value={data?.environment?.medium?.type || "-"} />
+              <PDFKeyValuePair label="Conductivity" value={data?.environment?.medium?.conductivity || "-"} />
             </View>
           </View>
           <View style={{ flexDirection: "row", gap: spacing.md, marginTop: spacing.xs }}>
@@ -137,7 +137,7 @@ const SensoriumFullReportTemplate = ({ formState: rawFormState, worldName, date 
                   of metabolic capacity used
                 </Text>
                 <Text style={{ fontSize: typography.sizes.xs, color: colors.text.muted }}>
-                  {budget.overBudget ? "Over budget—requires extraordinary justification" : budget.totalCost > budget.warningThreshold ? "Approaching limit—metabolically expensive" : "Within sustainable range"}
+                  {budget.overBudget ? "Over budget, requires extraordinary justification" : budget.totalCost > budget.warningThreshold ? "Approaching limit, metabolically expensive" : "Within sustainable range"}
                 </Text>
               </View>
             </View>
@@ -150,7 +150,7 @@ const SensoriumFullReportTemplate = ({ formState: rawFormState, worldName, date 
       {/* Page 2: Modality Details */}
       {selectedModalities.length > 0 && (
         <Page size="LETTER" style={styles.page}>
-          <PDFHeader toolName="Sensorium — Modality Details" hideLogo />
+          <PDFHeader toolName="Sensorium, Modality Details" hideLogo />
 
           {selectedModalities.map((mod) => {
             if (!mod) return null;
@@ -179,7 +179,7 @@ const SensoriumFullReportTemplate = ({ formState: rawFormState, worldName, date 
       {/* Page 3: Worldbuilding Implications */}
       {selectedIds.length > 0 && (
         <Page size="LETTER" style={styles.page}>
-          <PDFHeader toolName="Sensorium — Worldbuilding Implications" hideLogo />
+          <PDFHeader toolName="Sensorium, Worldbuilding Implications" hideLogo />
 
           {Object.entries(implications).map(([category, entries]) => {
             if (entries.length === 0) return null;
@@ -221,7 +221,7 @@ const SensoriumFullReportTemplate = ({ formState: rawFormState, worldName, date 
 
       {/* Page 4: Perception Gaps + Profile + Synthesis */}
       <Page size="LETTER" style={styles.page}>
-        <PDFHeader toolName="Sensorium — Perception & Synthesis" hideLogo />
+        <PDFHeader toolName="Sensorium, Perception & Synthesis" hideLogo />
 
         {/* Perception Gaps */}
         {selectedIds.length > 0 && (

@@ -1,10 +1,10 @@
 /**
  * CSV Export Utilities
  *
- * A) worksheetToCSV  — flattens a single worksheet's formState into field/value rows
- * B) entitiesToCSV   — exports entities table with resolved names
- * C) connectionsToCSV — exports entity connections with resolved source/target names
- * D) downloadCSV     — triggers a browser download of a CSV string
+ * A) worksheetToCSV , flattens a single worksheet's formState into field/value rows
+ * B) entitiesToCSV  , exports entities table with resolved names
+ * C) connectionsToCSV, exports entity connections with resolved source/target names
+ * D) downloadCSV    , triggers a browser download of a CSV string
  */
 
 // ──────────────────────────────────────────────
@@ -111,7 +111,7 @@ export function worksheetCSVPreview(
 }
 
 // ──────────────────────────────────────────────
-// B) World-level CSV — Entities
+// B) World-level CSV, Entities
 // ──────────────────────────────────────────────
 
 export interface Entity {
@@ -158,7 +158,7 @@ export function entitiesToCSV(entities: Entity[]): string {
 }
 
 // ──────────────────────────────────────────────
-// C) World-level CSV — Entity Connections
+// C) World-level CSV, Entity Connections
 // ──────────────────────────────────────────────
 
 export interface EntityConnection {

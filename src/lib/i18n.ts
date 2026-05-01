@@ -3,7 +3,7 @@ import { initReactI18next } from "react-i18next";
 import HttpBackend from "i18next-http-backend";
 import LanguageDetector from "i18next-browser-languagedetector";
 
-// Supported languages — add new ones here as translations are completed
+// Supported languages, add new ones here as translations are completed
 export const SUPPORTED_LANGUAGES = [
   { code: "en", label: "English" },
   // { code: "es", label: "Español" },
@@ -22,7 +22,7 @@ i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    // Namespaces — add more as tool pages get extracted
+    // Namespaces, add more as tool pages get extracted
     ns: ["common"],
     defaultNS: "common",
 
@@ -45,7 +45,7 @@ i18n
       escapeValue: false, // React already escapes
     },
 
-    // Don't show keys while loading — show nothing until ready
+    // Don't show keys while loading, show nothing until ready
     react: {
       useSuspense: true,
     },

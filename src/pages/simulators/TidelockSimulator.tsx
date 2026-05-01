@@ -69,7 +69,7 @@ const TidelockSimulator = () => {
             <iframe
               ref={iframeRef}
               src="/tools/tidelock/sim.html"
-              title="Tidelock — Locked World Simulator"
+              title="Tidelock, Locked World Simulator"
               allow="fullscreen"
               className={`w-full h-full border-0 transition-opacity duration-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}
               onLoad={() => setLoaded(true)}

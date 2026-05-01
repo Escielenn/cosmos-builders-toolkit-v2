@@ -141,7 +141,7 @@ export default function OrbitalDiagram({
         if (r < 5 || r > minDim) continue;
 
         if (highlightAllPlanets) {
-          // Active style — same cyan glow as the primary planet
+          // Active style, same cyan glow as the primary planet
           ctx.setLineDash([4, 4]);
           ctx.lineWidth = 0.8;
           ctx.strokeStyle = "rgba(0, 212, 255, 0.2)";

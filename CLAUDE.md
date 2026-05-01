@@ -545,6 +545,31 @@ Mobile: Floating button bottom-right opens a Sheet.
 
 ---
 
+### Z-Index Stacking Order
+
+The site has many always-on overlays. Use this stack so new chrome doesn't fight existing chrome.
+
+| Layer | Range | Used by |
+|-------|-------|---------|
+| Backgrounds | `z-0` | StellarBackground, VideoBackground, DataBurstOverlay, BreathingStar (ambient) |
+| In-flow content overlap | `z-[1]` | Icons / text that need to sit above their own button hover-fill |
+| Default page content | `z-10` to `z-30` | `<main>` regions, page sections |
+| FABStack (help button) | `z-40` | Floating help / contact menu |
+| Header (fixed top) | `z-50` | Site header bar |
+| Site banner | `z-50` | BetaBanner (sits inside Header context, doesn't need higher) |
+| Toast / Sonner | `z-[100]` | Default Sonner toaster |
+| Radix dialog overlay | `z-50` (its own context) | All dialogs/modals via Radix |
+| AudioPlayer | `z-[8999]` | Persistent player bar |
+| Site-critical overlays | `z-[9999]` | TextureOverlay, KonamiCode reveal |
+
+**Rules:**
+- Don't introduce new z-index values without consulting this table.
+- Avoid `z-[8999]` and `z-[9999]` for new components. Those are reserved.
+- New overlays should slot into one of the existing tiers (40, 50, 100).
+- AudioPlayer's `bottom-6` interacts with FABStack — if both are mounted, the FABStack's `audioOffset` logic in [`FABStack.tsx`](src/components/layout/FABStack.tsx) lifts the help button above the player bar. Maintain that pattern when adding new bottom-anchored chrome.
+
+---
+
 ### Simulator-Specific Guidelines
 
 When building interactive canvas-based tools:

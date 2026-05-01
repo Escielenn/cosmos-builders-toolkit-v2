@@ -12,7 +12,7 @@ import {
 import type { CascadeAuditResult, CascadeAuditNode } from "./graph-algorithms";
 
 // ---------------------------------------------------------------------------
-// PNG Export — uses html2canvas on the graph container
+// PNG Export, uses html2canvas on the graph container
 // ---------------------------------------------------------------------------
 
 export async function exportGraphAsPNG(
@@ -40,7 +40,7 @@ export async function exportGraphAsPNG(
 }
 
 // ---------------------------------------------------------------------------
-// JSON Export — full entity + connection data
+// JSON Export, full entity + connection data
 // ---------------------------------------------------------------------------
 
 export function exportGraphAsJSON(
@@ -151,7 +151,7 @@ function renderAuditTree(
     const typeLabel = (ENTITY_TYPE_LABELS as Record<string, string>)[node.entityType] ?? node.entityType;
     const stageLabel = CASCADE_STAGE_LABELS[node.cascadeStage];
     lines.push(
-      `${indent}${arrow} **${node.entityName}** (${typeLabel}, ${stageLabel})${node.connectionLabel ? ` — _${node.connectionLabel}_` : ""}`
+      `${indent}${arrow} **${node.entityName}** (${typeLabel}, ${stageLabel})${node.connectionLabel ? `, _${node.connectionLabel}_` : ""}`
     );
     if (node.children.length > 0) {
       renderAuditTree(node.children, lines, depth + 1, arrow);

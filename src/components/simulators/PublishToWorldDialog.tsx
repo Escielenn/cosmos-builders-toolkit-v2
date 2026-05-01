@@ -1,5 +1,5 @@
 /**
- * PublishToWorldDialog — Creates a world entity from simulator output.
+ * PublishToWorldDialog, Creates a world entity from simulator output.
  *
  * When a simulator sends a STELLARFORGE_PUBLISH message (or the user
  * clicks "Publish to World"), this dialog:
@@ -7,7 +7,7 @@
  * 2. Shows EntityMatchDialog if matches found
  * 3. Creates a new entity or links to existing
  *
- * Spec: StellarForge_Final_Remediation_Spec_v2 — Issue 4
+ * Spec: StellarForge_Final_Remediation_Spec_v2, Issue 4
  */
 
 import { useState, useCallback, useEffect } from "react";
@@ -91,7 +91,7 @@ export default function PublishToWorldDialog({
         return;
       }
 
-      // No matches — create new entity
+      // No matches, create new entity
       await createEntity();
     } catch (error) {
       toast({
@@ -144,7 +144,7 @@ export default function PublishToWorldDialog({
 
   const handleMatchLink = useCallback(
     (_candidate: EntityMatchCandidate) => {
-      // Entity already exists — just close and notify
+      // Entity already exists, just close and notify
       setMatchDialogOpen(false);
       toast({
         title: "Entity exists",

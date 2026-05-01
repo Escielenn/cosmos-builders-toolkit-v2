@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// WorldShowcase — Public-facing showcase page for a world.
+// WorldShowcase, Public-facing showcase page for a world.
 //
 // Route: /worlds/:worldId/showcase
 // Read-only display: hero header, entity gallery grouped by cascade stage,
@@ -59,7 +59,7 @@ interface ShowcaseWorld {
 }
 
 // ---------------------------------------------------------------------------
-// Data hooks (public — no auth requirement)
+// Data hooks (public, no auth requirement)
 // ---------------------------------------------------------------------------
 
 function useShowcaseWorld(worldId: string | undefined) {
@@ -128,7 +128,7 @@ function useShowcaseConnections(worldId: string | undefined) {
 // Sub-components
 // ---------------------------------------------------------------------------
 
-/** Cascade coverage bar — horizontal segments for populated stages */
+/** Cascade coverage bar, horizontal segments for populated stages */
 function CascadeCoverageBar({ entities }: { entities: Entity[] }) {
   const populated = useMemo(() => {
     const stages = new Set(entities.map((e) => e.cascade_stage));
@@ -337,7 +337,7 @@ function EntityCard({
   );
 }
 
-/** Visibility selector — owner-only three-option control */
+/** Visibility selector, owner-only three-option control */
 type WorldVisibility = "private" | "community" | "public";
 
 const VISIBILITY_CONFIG: {
@@ -763,7 +763,7 @@ export default function WorldShowcase() {
       </section>
 
       {/* ----------------------------------------------------------------- */}
-      {/* Entity Gallery — grouped by cascade stage                         */}
+      {/* Entity Gallery, grouped by cascade stage                         */}
       {/* ----------------------------------------------------------------- */}
       <section className="max-w-5xl mx-auto px-6 pb-20">
         {entities.length === 0 ? (

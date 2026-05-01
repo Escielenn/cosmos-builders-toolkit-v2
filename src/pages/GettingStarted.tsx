@@ -75,7 +75,7 @@ const ENTRY_POINTS = [
     label: "I'm starting from scratch",
     description:
       "No specific idea yet. Want to explore what's possible and let a world emerge from the tools.",
-    tone: "Let's build from the ground up—literally. We'll start with a star, find a habitable zone, design a planet, and watch how that environment shapes everything that lives there.",
+    tone: "Let's build from the ground up. Literally. We'll start with a star, find a habitable zone, design a planet, and watch how that environment shapes everything that lives there.",
     action: "pathway",
   },
   {
@@ -84,7 +84,7 @@ const ENTRY_POINTS = [
     label: "I have a story concept",
     description:
       "Has plot or themes but needs a world that serves them. Knows what should happen but not where.",
-    tone: "Your story's needs will constrain your world—which actually makes building easier. Start with the tools that match your narrative requirements.",
+    tone: "Your story's needs will constrain your world, which actually makes building easier. Start with the tools that match your narrative requirements.",
     action: "tools",
     suggestedTools: [
       "one-big-lie",
@@ -112,7 +112,7 @@ const ENTRY_POINTS = [
     label: "Just exploring",
     description:
       "Want to browse, experiment, and learn the tools without commitment.",
-    tone: "The forge is yours. Browse tools by what they help you build. Try anything—nothing is permanent until you save it.",
+    tone: "The forge is yours. Browse tools by what they help you build. Try anything; nothing is permanent until you save it.",
     action: "wiki",
   },
 ] as const;
@@ -125,7 +125,7 @@ const PATHWAY_STEPS = [
     title: "Star & Habitable Zone",
     toolIds: ["habitable-zone-calculator", "star-system-builder"],
     intro:
-      "Every world orbits something. The star you choose determines almost everything else—how much light and heat reach your planet, what colors dominate the sky, how long a \"year\" feels, and whether your world is tidally locked to a red dwarf or spinning freely around a yellow sun like ours.",
+      "Every world orbits something. The star you choose determines almost everything else: how much light and heat reach your planet, what colors dominate the sky, how long a \"year\" feels, and whether your world is tidally locked to a red dwarf or spinning freely around a yellow sun like ours.",
     cascadeForward:
       "This star determines where your planet can exist and still have liquid water. Let's place your world in that zone.",
     output: "Star type, habitable zone boundaries, orbital parameters.",
@@ -135,7 +135,7 @@ const PATHWAY_STEPS = [
     title: "Planetary Profile",
     toolIds: ["planetary-profile", "surface-gravity-calculator"],
     intro:
-      "Now we build the planet itself. Mass determines gravity—how hard it is to stand up, how high creatures can jump, how thick the atmosphere can be. Rotation determines day length—how organisms sleep, hunt, and photosynthesize. These aren't arbitrary numbers; they're the physics that will shape every living thing.",
+      "Now we build the planet itself. Mass determines gravity: how hard it is to stand up, how high creatures can jump, how thick the atmosphere can be. Rotation determines day length: how organisms sleep, hunt, and photosynthesize. These aren't arbitrary numbers; they're the physics that will shape every living thing.",
     cascadeForward:
       "Gravity and atmosphere determine climate patterns. Higher gravity means denser air, different weather, and constraints on how large flying creatures can be. Let's see what life emerges.",
     output: "Mass, gravity, atmosphere, day length, climate zones.",
@@ -145,7 +145,7 @@ const PATHWAY_STEPS = [
     title: "Life & Evolution",
     toolIds: ["evolutionary-biology", "sensorium"],
     intro:
-      "The environment you've built isn't just a backdrop—it's a filter. Every trait your species has exists because it helped their ancestors survive here, in this gravity, under this light, across these biomes. Evolution isn't random; it's a conversation between organisms and their world.",
+      "The environment you've built isn't just a backdrop. It's a filter. Every trait your species has exists because it helped their ancestors survive here, in this gravity, under this light, across these biomes. Evolution isn't random; it's a conversation between organisms and their world.",
     cascadeForward:
       "Biology becomes psychology. A species with different senses, metabolism, and social structures doesn't think like a human. Their bodies shape their metaphors, their senses shape their art.",
     output: "Species profile, sensory systems, evolutionary rationale.",
@@ -441,7 +441,7 @@ const GettingStarted = () => {
             Where Does Your World Begin?
           </h2>
           <p className="text-t3 text-sm mb-6">
-            Most stories start with a spark—a scene, a creature, a concept.
+            Most stories start with a spark: a scene, a creature, a concept.
             Where's yours?
           </p>
 
@@ -625,7 +625,7 @@ const GettingStarted = () => {
                 You've Built a World
               </h3>
               <p className="text-t2 text-sm leading-relaxed max-w-lg mx-auto mb-4">
-                Not just a planet—a cascading system where physics led to environment,
+                Not just a planet, but a cascading system where physics led to environment,
                 environment led to biology, biology led to psychology, and psychology
                 led to culture. Everything connects. This is your foundation.
               </p>

@@ -69,7 +69,7 @@ const ExoforgeSimulator = () => {
             <iframe
               ref={iframeRef}
               src="/tools/exoforge/sim.html"
-              title="ExoForge — Procedural Exoplanet Forge"
+              title="ExoForge, Procedural Exoplanet Forge"
               allow="fullscreen"
               className={`w-full h-full border-0 transition-opacity duration-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}
               onLoad={() => setLoaded(true)}

@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// WritingTopBar — Extracted top bar for the Writing Space.
+// WritingTopBar, Extracted top bar for the Writing Space.
 //
 // Layout: left panel toggle | document dropdown + rename | save indicator |
 //         moodboard toggle | right panel toggle | zen button
@@ -72,7 +72,7 @@ export interface WritingTopBarProps {
   // Zen mode
   onEnterZen: () => void;
 
-  // Edge-to-edge / wide mode — expands editor from max-w-4xl to full width
+  // Edge-to-edge / wide mode, expands editor from max-w-4xl to full width
   wideMode: boolean;
   onToggleWideMode: () => void;
 
@@ -382,7 +382,7 @@ export function WritingTopBar({
         {/* Dropdown panel */}
         {docDropdownOpen && (
           <>
-            {/* Backdrop — closes dropdown and context menu */}
+            {/* Backdrop, closes dropdown and context menu */}
             <div
               className="fixed inset-0 z-40"
               onClick={() => {
@@ -762,7 +762,7 @@ export function WritingTopBar({
         <span className="hidden sm:inline">Ref</span>
       </button>
 
-      {/* Wide-mode toggle — expands editor from centered max-w-4xl to edge-to-edge */}
+      {/* Wide-mode toggle, expands editor from centered max-w-4xl to edge-to-edge */}
       {selectedDoc && (
         <button
           onClick={onToggleWideMode}

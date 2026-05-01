@@ -88,7 +88,7 @@ const ProToolGuard = ({ toolId, children }: ProToolGuardProps) => {
     return <>{children}</>;
   }
 
-  // Lapsed subscriber — warmer re-subscribe message
+  // Lapsed subscriber, warmer re-subscribe message
   if (hasLapsedSubscription && user) {
     return (
       <div className="min-h-screen bg-background">
@@ -135,7 +135,7 @@ const ProToolGuard = ({ toolId, children }: ProToolGuardProps) => {
     );
   }
 
-  // Never subscribed — upgrade prompt
+  // Never subscribed, upgrade prompt
   return (
     <div className="min-h-screen bg-background">
       <Header />

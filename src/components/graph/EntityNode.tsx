@@ -48,7 +48,7 @@ const EntityNode = memo(({ data, selected }: NodeProps) => {
           : "none",
       }}
     >
-      {/* Connection handles — visible on hover */}
+      {/* Connection handles, visible on hover */}
       <Handle
         type="target"
         position={Position.Top}

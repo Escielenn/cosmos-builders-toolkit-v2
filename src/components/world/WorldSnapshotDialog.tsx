@@ -45,7 +45,7 @@ const WorldSnapshotDialog = ({
 
     try {
       if (action === "save-version") {
-        // RPC compiles + saves atomically — no separate compile needed
+        // RPC compiles + saves atomically, no separate compile needed
         const result = await saveWorldSnapshotRpc(worldId, versionLabel || undefined);
         toast({
           title: "VERSION SAVED.",
@@ -111,7 +111,7 @@ const WorldSnapshotDialog = ({
         <DialogHeader>
           <DialogTitle>World Snapshot</DialogTitle>
           <DialogDescription>
-            Compile a complete snapshot of "{worldName}" — all worksheets, notes, connections, and entries.
+            Compile a complete snapshot of "{worldName}", including all worksheets, notes, connections, and entries.
           </DialogDescription>
         </DialogHeader>
 

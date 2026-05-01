@@ -3,11 +3,11 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 /**
- * Eyebrow — small uppercase label above a heading. April 2026 handoff.
+ * Eyebrow, small uppercase label above a heading. April 2026 handoff.
  *
  * Two flavors:
- *   font="heading" (default) — Jura 500 weight, 0.2em tracking
- *   font="mono"              — JetBrains Mono 400, 0.18em tracking; accepts a
+ *   font="heading" (default), Jura 500 weight, 0.2em tracking
+ *   font="mono"             , JetBrains Mono 400, 0.18em tracking; accepts a
  *                              `prefix` (e.g. "// 01 ·") in teal
  *
  * Tone: t3 (default, muted) or teal (accent).
@@ -33,7 +33,7 @@ const eyebrowVariants = cva("inline-flex items-center gap-sf-2 uppercase leading
 export interface EyebrowProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "children">,
     VariantProps<typeof eyebrowVariants> {
-  /** mono-prefix, e.g. "// 01" or "§" — rendered in teal before the label */
+  /** mono-prefix, e.g. "// 01" or "§", rendered in teal before the label */
   prefix?: string;
   children: React.ReactNode;
 }

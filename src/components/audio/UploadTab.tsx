@@ -50,7 +50,7 @@ export default function UploadTab() {
           Drop an audio file or click to browse
         </p>
         <p className="text-[9px] text-t5 font-mono uppercase tracking-wider">
-          {ACCEPTED_EXTENSIONS.join(", ")} — Max {MAX_FILE_SIZE / 1024 / 1024}MB
+          {ACCEPTED_EXTENSIONS.join(", ")} · Max {MAX_FILE_SIZE / 1024 / 1024}MB
         </p>
         <Button
           variant="outline"

@@ -9,7 +9,7 @@ import { ParallaxStrips } from "@/components/ambient/ParallaxStrips";
 const WelcomeHero = () => {
   return (
     <BracketPanel className="relative mb-8 py-16 md:py-24 px-6 md:px-12 overflow-hidden">
-      {/* April 2026 handoff — ambient parallax telemetry behind hero */}
+      {/* April 2026 handoff, ambient parallax telemetry behind hero */}
       <div className="absolute inset-0 opacity-60 pointer-events-none">
         <ParallaxStrips height={520} />
       </div>
@@ -27,7 +27,7 @@ const WelcomeHero = () => {
           </div>
         </motion.div>
 
-        {/* Hero H1 — text-sf-hero (96px), display, sentence case */}
+        {/* Hero H1, text-sf-hero (96px), display, sentence case */}
         <motion.h1
           className="font-display font-light text-sf-hero leading-[0.98] text-t1 mb-7 max-w-[12ch]"
           variants={heroReveal}
@@ -35,13 +35,13 @@ const WelcomeHero = () => {
           Build worlds <em className="not-italic text-sf-teal">that feel real.</em>
         </motion.h1>
 
-        {/* Subhead — sf-body t2 19px max-w 780 */}
+        {/* Subhead, sf-body t2 19px max-w 780 */}
         <motion.p
           className="font-sans text-[19px] text-t2 max-w-[780px] mb-12 leading-[1.55]"
           variants={fadeUpItem}
         >
           Define your planet's gravity, and watch how it shapes biology, psychology,
-          mythology, and culture. Every tool builds on the last — creating worlds
+          mythology, and culture. Every tool builds on the last, creating worlds
           with internal consistency and depth.
         </motion.p>
 
@@ -68,7 +68,7 @@ const WelcomeHero = () => {
           3 TOOLS FREE FOREVER · 27 MORE WITH PRO CLEARANCE
         </motion.p>
 
-        {/* Early-access disclaimer — small, navigator-log voice */}
+        {/* Early-access disclaimer, small, navigator-log voice */}
         <motion.p
           className="mt-6 font-sans text-sm text-t3 max-w-[640px] leading-[1.55]"
           variants={fadeUpItem}

@@ -450,16 +450,16 @@ const HabitableZoneCalculator = () => {
           </h2>
           <blockquote className="border-l-2 border-primary pl-4 italic text-lg mb-4">
             "The highest function of ecology is the understanding of consequences."
-            <span className="block text-sm text-t3 mt-1">— Frank Herbert, Dune</span>
+            <span className="block text-sm text-t3 mt-1">,  Frank Herbert, Dune</span>
           </blockquote>
           <p className="text-t2">
             Define your host star and place your planet. See instantly where it falls relative to the
-            habitable zone — and what that means for climate, biology, psychology, mythology, and culture.
+            habitable zone, and what that means for climate, biology, psychology, mythology, and culture.
             All calculations use Kopparapu et al. (2013) habitable zone boundaries.
           </p>
         </GlassPanel>
 
-        {/* Your Planet — name + import from star system */}
+        {/* Your Planet, name + import from star system */}
         <GlassPanel className="p-4 md:p-6 mb-8">
           <h2 className="font-heading text-[11px] font-light uppercase tracking-[3px] text-[hsl(var(--sf-section-green))] mb-4 flex items-center gap-2">
             <Globe className="w-5 h-5 text-primary" />
@@ -730,7 +730,7 @@ const HabitableZoneCalculator = () => {
                   </div>
                 </div>
 
-                {/* Live temperature readout — connected to distance slider */}
+                {/* Live temperature readout, connected to distance slider */}
                 {result.valid && (
                   <div className="mt-4 rounded-sm border p-3" style={{ borderColor: `${zoneColor}30`, backgroundColor: `${zoneColor}08` }}>
                     <div className="flex items-center justify-between gap-4 flex-wrap">
@@ -933,7 +933,7 @@ const HabitableZoneCalculator = () => {
                       </div>
                     </div>
 
-                    {/* Key Metrics Grid — StatGrid primitive */}
+                    {/* Key Metrics Grid, StatGrid primitive */}
                     <StatGrid cols={2}>
                       <StatGrid.Cell
                         label="STELLAR FLUX"
@@ -948,7 +948,7 @@ const HabitableZoneCalculator = () => {
                       />
                     </StatGrid>
 
-                    {/* HZ Boundaries — KeyValueRow list */}
+                    {/* HZ Boundaries, KeyValueRow list */}
                     <div>
                       <p className="font-mono text-[11px] tracking-[0.18em] uppercase text-sf-teal mb-3">
                         // HABITABLE ZONE BOUNDARIES

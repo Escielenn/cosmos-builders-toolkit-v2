@@ -2,7 +2,7 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 /**
- * DataTable — bridge-console table primitive. April 2026 handoff §09.
+ * DataTable, bridge-console table primitive. April 2026 handoff §09.
  *
  * - 1px borders throughout, no alt-row shading.
  * - Header uses mono eyebrow styling (11px, 0.18em, uppercase, t4).

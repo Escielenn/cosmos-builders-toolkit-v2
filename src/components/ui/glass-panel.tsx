@@ -8,9 +8,9 @@ interface GlassPanelProps extends React.HTMLAttributes<HTMLDivElement> {
   hover?: boolean;
   /** StellarForge light arc accent at bottom edge */
   lightArc?: boolean;
-  /** April 2026 handoff — three layers, never stack four deep */
+  /** April 2026 handoff, three layers, never stack four deep */
   layer?: PanelLayer;
-  /** April 2026 handoff — teal L-shaped corner brackets (focal panels only) */
+  /** April 2026 handoff, teal L-shaped corner brackets (focal panels only) */
   bracket?: boolean;
 }
 

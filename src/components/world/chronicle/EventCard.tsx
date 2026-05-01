@@ -57,7 +57,7 @@ export function EventCard({
       <div className="sf-chronicle-date" style={layerColor ? { color: layerColor } : undefined}>
         {dateDisplay}
         {endDisplay && (
-          <span className="text-t3/30"> — {endDisplay}</span>
+          <span className="text-t3/30"> · {endDisplay}</span>
         )}
       </div>
 

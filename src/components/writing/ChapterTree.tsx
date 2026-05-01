@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// ChapterTree — collapsible folder tree for the writing space.
+// ChapterTree, collapsible folder tree for the writing space.
 //
 // Replaces the top-bar document dropdown as the primary chapter navigation.
 // Shows folders + nested documents + unfiled documents in a left rail that
@@ -178,7 +178,7 @@ export function ChapterTree({
   }
 
   // ---------------------------------------------------------------------------
-  // Content — used both standalone and embedded
+  // Content, used both standalone and embedded
   // ---------------------------------------------------------------------------
 
   const content = (
@@ -418,7 +418,7 @@ export function ChapterTree({
 }
 
 // ---------------------------------------------------------------------------
-// DocRow — single document row in the tree
+// DocRow, single document row in the tree
 // ---------------------------------------------------------------------------
 
 interface DocRowProps {

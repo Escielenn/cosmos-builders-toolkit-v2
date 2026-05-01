@@ -99,7 +99,7 @@ const WorksheetSelectorDialog = ({
             {worldName && (
               <span className="text-primary font-medium">{worldName}</span>
             )}
-            {worldName && "—"}
+            {worldName && " · "}
             {shouldShowCreateForm
               ? `Enter a name for your new ${toolDisplayName.toLowerCase()}.`
               : `You have ${worksheets.length} ${toolDisplayName.toLowerCase()}${worksheets.length !== 1 ? "s" : ""} in this world.`}

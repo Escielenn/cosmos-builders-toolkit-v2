@@ -80,7 +80,7 @@ const EventMarker = memo(
     ) : null;
 
     if (event.hasDuration && event.endYear != null) {
-      // Duration event — render as a bar
+      // Duration event, render as a bar
       const endDecimal = eventToDecimalYear(
         event.endYear,
         event.endMonth,
@@ -147,7 +147,7 @@ const EventMarker = memo(
       );
     }
 
-    // Point event — render as a dot
+    // Point event, render as a dot
     const dotSize = importanceConfig.dotSize * nesting.dotScale;
 
     return (

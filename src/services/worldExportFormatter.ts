@@ -8,7 +8,7 @@
  *   3. Chronicle events → timeline entries linked to elements
  *
  * All downstream export formats (PDF, DOCX, Markdown, Scrivener) consume
- * the same ExportSection[] — single source of truth.
+ * the same ExportSection[], single source of truth.
  */
 
 import type { WorldSnapshot, WorldSnapshotEntry, WorldSnapshotChronicleEvent } from "@/lib/export/world-snapshot";

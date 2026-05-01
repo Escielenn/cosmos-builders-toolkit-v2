@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// useGraphHistory — Lightweight undo/redo for graph operations.
+// useGraphHistory, Lightweight undo/redo for graph operations.
 // Stores a stack of operations with their reverse actions.
 // ---------------------------------------------------------------------------
 

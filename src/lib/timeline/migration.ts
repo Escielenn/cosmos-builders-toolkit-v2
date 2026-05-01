@@ -1,4 +1,4 @@
-// Timeline — Data Migration (Phase 1 → Phase 2 → Phase 3)
+// Timeline, Data Migration (Phase 1 → Phase 2 → Phase 3)
 
 import type { TimelineState } from "./types";
 import { initialTimelineState } from "./constants";
@@ -23,7 +23,7 @@ export function migrateTimelineState(raw: unknown): TimelineState {
         : { ...initialTimelineState.viewState },
     generalNotes: typeof data.generalNotes === "string" ? data.generalNotes : "",
     moodboard: Array.isArray(data.moodboard) ? data.moodboard : [],
-    // Phase 2 fields — default to empty when absent
+    // Phase 2 fields, default to empty when absent
     calendars: Array.isArray(data.calendars) ? data.calendars : [],
     compressions: Array.isArray(data.compressions) ? data.compressions : [],
     expandedEventIds: Array.isArray(data.expandedEventIds) ? data.expandedEventIds : [],

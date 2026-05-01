@@ -443,7 +443,7 @@ const KardashevScale = () => {
               <div>
                 <span className="text-[10px] uppercase tracking-[1.5px] text-t4">Kardashev Number</span>
                 <div className="font-mono text-2xl text-t1">
-                  {results.valid ? formatKardashev(results.kardashevNumber) : "—"}
+                  {results.valid ? formatKardashev(results.kardashevNumber) : "-"}
                 </div>
               </div>
               <div>
@@ -469,7 +469,7 @@ const KardashevScale = () => {
                 <SelectContent>
                   {Object.entries(GROWTH_RATES).map(([key, val]) => (
                     <SelectItem key={key} value={key}>
-                      {val.label} — {val.description}
+                      {val.label}, {val.description}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -557,7 +557,7 @@ const KardashevScale = () => {
                 </p>
               </GlassPanel>
 
-              {/* Comparison stats — StatGrid primitive */}
+              {/* Comparison stats, StatGrid primitive */}
               <StatGrid cols={4}>
                 <StatGrid.Cell
                   label="TOTAL POWER"
@@ -700,7 +700,7 @@ const KardashevScale = () => {
                         </span>
                       </div>
                       <span className="font-mono text-xs text-t1">
-                        {pct}% — {formatPower(allocated)}
+                        {pct}%, {formatPower(allocated)}
                       </span>
                     </div>
                     <Slider
@@ -811,7 +811,7 @@ const KardashevScale = () => {
                     {/* User notes for this cascade category */}
                     <div className="mt-4">
                       <Label className="text-[11px] uppercase tracking-[1.5px] text-t3 mb-2 block">
-                        Your Notes — {cat.category}
+                        Your Notes, {cat.category}
                       </Label>
                       <Suspense
                         fallback={

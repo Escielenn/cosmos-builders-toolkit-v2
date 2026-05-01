@@ -1,7 +1,7 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { Navigate, useLocation } from "react-router-dom";
 
-const PRIVATE_MODE = false; // OPEN EARLY ACCESS — site is publicly browsable; per-page guards still protect authenticated routes (Worlds, Tools, Profile, etc.)
+const PRIVATE_MODE = false; // OPEN EARLY ACCESS, site is publicly browsable; per-page guards still protect authenticated routes (Worlds, Tools, Profile, etc.)
 
 export default function SiteGate({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();

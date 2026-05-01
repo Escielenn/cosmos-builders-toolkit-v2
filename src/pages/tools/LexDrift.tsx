@@ -611,7 +611,7 @@ const LexDrift = () => {
                     {ISOLATION_LEVELS.map((level) => (
                       <SelectItem key={level.id} value={level.id}>
                         <span className="font-medium">{level.label}</span>
-                        <span className="text-t2 ml-2">— {level.description}</span>
+                        <span className="text-t2 ml-2">,  {level.description}</span>
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -788,7 +788,7 @@ const LexDrift = () => {
                     {EDUCATION_POLICIES.map((policy) => (
                       <SelectItem key={policy.id} value={policy.id}>
                         <span className="font-medium">{policy.label}</span>
-                        <span className="text-t2 ml-2">— {policy.description}</span>
+                        <span className="text-t2 ml-2">,  {policy.description}</span>
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -800,7 +800,7 @@ const LexDrift = () => {
                 <div className="flex items-center justify-between">
                   <Label>Identity Pressure</Label>
                   <span className="font-mono text-sm text-primary">
-                    {formState.social.identityPressure}% — {getIdentityLabel(formState.social.identityPressure)}
+                    {formState.social.identityPressure}%, {getIdentityLabel(formState.social.identityPressure)}
                   </span>
                 </div>
                 <Slider
@@ -829,7 +829,7 @@ const LexDrift = () => {
                     {MEDIA_ACCESS_LEVELS.map((level) => (
                       <SelectItem key={level.id} value={level.id}>
                         <span className="font-medium">{level.label}</span>
-                        <span className="text-t2 ml-2">— {level.description}</span>
+                        <span className="text-t2 ml-2">,  {level.description}</span>
                       </SelectItem>
                     ))}
                   </SelectContent>

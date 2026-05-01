@@ -1,4 +1,4 @@
-// SENSORIUM — Pure calculation functions
+// SENSORIUM, Pure calculation functions
 // No React dependencies. Safe to import from PDF templates.
 
 import { MODALITIES, HUMAN_SENSES, getModalityById } from "./data";
@@ -201,12 +201,12 @@ function evaluateEMBoost(
       if (peak < 400)
         return {
           delta: 20,
-          reason: `Star peaks at ${peak}nm (UV range)—UV vision is optimal`,
+          reason: `Star peaks at ${peak}nm (UV range), UV vision is optimal`,
         };
       if (peak > 700)
         return {
           delta: -10,
-          reason: "Star emits minimal UV—little evolutionary pressure for UV vision",
+          reason: "Star emits minimal UV, little evolutionary pressure for UV vision",
         };
       return { delta: 0, reason: "" };
 
@@ -214,12 +214,12 @@ function evaluateEMBoost(
       if (peak >= 400 && peak <= 700)
         return {
           delta: 20,
-          reason: `Star peaks at ${peak}nm (visible range)—visible vision is optimal`,
+          reason: `Star peaks at ${peak}nm (visible range), visible vision is optimal`,
         };
       if (peak > 1000)
         return {
           delta: -15,
-          reason: "Star emits very little visible light—visible vision is inefficient",
+          reason: "Star emits very little visible light, visible vision is inefficient",
         };
       return { delta: 0, reason: "" };
 
@@ -227,12 +227,12 @@ function evaluateEMBoost(
       if (peak > 700)
         return {
           delta: 20,
-          reason: `Star peaks at ${peak}nm (infrared)—IR vision captures most available light`,
+          reason: `Star peaks at ${peak}nm (infrared), IR vision captures most available light`,
         };
       if (peak < 400)
         return {
           delta: -10,
-          reason: "Star emits predominantly in UV—IR vision offers little advantage",
+          reason: "Star emits predominantly in UV, IR vision offers little advantage",
         };
       return { delta: 0, reason: "" };
 
@@ -320,7 +320,7 @@ export function validateSelection(
         return `${mod?.name || p.modalityId} is implausible in this environment`;
       }),
     ...conflictingSenses.map(
-      (c) => `Potential conflict: ${c.a} and ${c.b}—${c.reason}`
+      (c) => `Potential conflict: ${c.a} and ${c.b}, ${c.reason}`
     ),
   ];
 
@@ -360,7 +360,7 @@ function getSuggestionsForImplausible(
 
   if (suggestions.length === 0) {
     suggestions.push(
-      "Review environmental parameters—multiple conditions are unfavorable"
+      "Review environmental parameters, multiple conditions are unfavorable"
     );
   }
 
@@ -378,7 +378,7 @@ function detectConflicts(selectedIds: string[]): SenseConflict[] {
       a: "echolocation",
       b: "ultrasonic-hearing",
       reason:
-        "Both use ultrasonic frequencies—likely a single evolved system rather than two separate senses",
+        "Both use ultrasonic frequencies, likely a single evolved system rather than two separate senses",
     });
   }
 
@@ -390,7 +390,7 @@ function detectConflicts(selectedIds: string[]): SenseConflict[] {
       a: "passive-electroreception",
       b: "active-electroreception",
       reason:
-        "Active electroreception typically includes passive capability—consider merging into one system",
+        "Active electroreception typically includes passive capability, consider merging into one system",
     });
   }
 
@@ -402,7 +402,7 @@ function detectConflicts(selectedIds: string[]): SenseConflict[] {
       a: "airborne-smell",
       b: "distance-chemoreception",
       reason:
-        "Distance chemoreception is an enhanced form of olfaction—these may be one system with two capabilities",
+        "Distance chemoreception is an enhanced form of olfaction, these may be one system with two capabilities",
     });
   }
 
@@ -485,7 +485,7 @@ export function calculatePerceptionGaps(
     !selectedIds.includes("uv-vision")
   ) {
     conflictPotential.push(
-      "Species has no optical vision—human body language, writing, and visual signals are meaningless"
+      "Species has no optical vision, human body language, writing, and visual signals are meaningless"
     );
   }
 
@@ -503,13 +503,13 @@ export function calculatePerceptionGaps(
     selectedIds.includes("active-electroreception")
   ) {
     conflictPotential.push(
-      "Species can detect bioelectric fields—lying, hiding emotions, or concealing illness is nearly impossible"
+      "Species can detect bioelectric fields, lying, hiding emotions, or concealing illness is nearly impossible"
     );
   }
 
   if (selectedIds.includes("magnetoreception")) {
     conflictPotential.push(
-      "Species has innate compass sense—concept of 'being lost' may not exist in their language"
+      "Species has innate compass sense, concept of 'being lost' may not exist in their language"
     );
   }
 
@@ -518,7 +518,7 @@ export function calculatePerceptionGaps(
     !selectedIds.includes("visible-light")
   ) {
     conflictPotential.push(
-      "Species sees the world as a heat map—cold objects and beings are effectively invisible"
+      "Species sees the world as a heat map, cold objects and beings are effectively invisible"
     );
   }
 
@@ -527,7 +527,7 @@ export function calculatePerceptionGaps(
     !selectedIds.includes("aquatic-smell")
   ) {
     conflictPotential.push(
-      "Species lacks any form of olfaction—food culture, perfumery, and scent-based memories don't exist"
+      "Species lacks any form of olfaction, food culture, perfumery, and scent-based memories don't exist"
     );
   }
 

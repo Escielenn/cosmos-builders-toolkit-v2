@@ -1,4 +1,4 @@
-// GRAVITAS — Constants, presets, reference tables, section definitions
+// GRAVITAS, Constants, presets, reference tables, section definitions
 
 import type {
   SpinPreset,

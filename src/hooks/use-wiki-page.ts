@@ -129,7 +129,7 @@ export function useWikiPage(
     enabled: !!entryId && !!worldId,
   });
 
-  // Fetch backlinks — entries whose content contains a wiki-link to this entry
+  // Fetch backlinks, entries whose content contains a wiki-link to this entry
   const backlinksQuery = useQuery({
     queryKey: ["wiki-page-backlinks", worldId, entryId],
     queryFn: async () => {
@@ -153,7 +153,7 @@ export function useWikiPage(
     enabled: !!entryId && !!worldId,
   });
 
-  // Dead link detection — find wiki-link targets that no longer exist
+  // Dead link detection, find wiki-link targets that no longer exist
   const deadLinksQuery = useQuery({
     queryKey: ["wiki-page-dead-links", entryId, entryQuery.data?.content],
     queryFn: async () => {
@@ -181,7 +181,7 @@ export function useWikiPage(
     enabled: !!entryQuery.data?.content,
   });
 
-  // Update content mutation (optimistic — preview shows new content immediately)
+  // Update content mutation (optimistic, preview shows new content immediately)
   const contentMutation = useMutation({
     mutationFn: async (content: string) => {
       if (!entryId) return;

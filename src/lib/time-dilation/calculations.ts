@@ -1,5 +1,5 @@
-// Time Dilation Calculator—Pure Calculation Engine
-// No React dependencies—importable by both page components and PDF templates
+// Time Dilation Calculator, Pure Calculation Engine
+// No React dependencies, importable by both page components and PDF templates
 
 import type { DilationSeverity } from "./data";
 import { PROPULSION_METHODS, JOURNEY_PRESETS, STORY_PROMPTS } from "./data";
@@ -115,7 +115,7 @@ export function lorentzFactor(velocityFractionC: number): number {
 // ─── Duration Formatting ─────────────────────────────────────────────
 
 export function formatDuration(seconds: number): string {
-  if (!isFinite(seconds) || isNaN(seconds)) return "—";
+  if (!isFinite(seconds) || isNaN(seconds)) return "-";
 
   const absSeconds = Math.abs(seconds);
 
@@ -416,7 +416,7 @@ export function calculateTimeDilation(formState: FormStateForCalc): TimeDilation
       storyCallouts: [
         {
           title: "Inside the Warp Bubble",
-          prompt: "Your character experiences normal time inside the Alcubierre bubble. The strangeness is outside—causality violations, potential communication paradoxes, and the question of what happens at the bubble boundary.",
+          prompt: "Your character experiences normal time inside the Alcubierre bubble. The strangeness is outside, causality violations, potential communication paradoxes, and the question of what happens at the bubble boundary.",
         },
       ],
     };
@@ -461,7 +461,7 @@ export function calculateTimeDilation(formState: FormStateForCalc): TimeDilation
       storyCallouts: [
         {
           title: "Inverted Dilation",
-          prompt: "At superluminal speeds with this interpretation, the traveler ages MORE than the observer. Time debt runs in the opposite direction—your character arrives older than expected.",
+          prompt: "At superluminal speeds with this interpretation, the traveler ages MORE than the observer. Time debt runs in the opposite direction, your character arrives older than expected.",
         },
         {
           title: "Causality Concerns",
@@ -529,7 +529,7 @@ function generateNarrative(
             : formState.referenceFrame.frame.charAt(0).toUpperCase() + formState.referenceFrame.frame.slice(1);
 
   if (isAlcubierre) {
-    return `Ship departs ${origin} for ${destination} via Alcubierre drive. At warp factor ${result.peakVelocityFraction.toFixed(1)}×c, the journey takes ${observerTime} from ${frameName}'s perspective. ${result.timeDifferenceSeconds === 0 ? "Inside the warp bubble, the traveler experiences the same duration—no time dilation." : `The traveler experiences ${shipTime}—${timeDiff} more than observers.`}`;
+    return `Ship departs ${origin} for ${destination} via Alcubierre drive. At warp factor ${result.peakVelocityFraction.toFixed(1)}×c, the journey takes ${observerTime} from ${frameName}'s perspective. ${result.timeDifferenceSeconds === 0 ? "Inside the warp bubble, the traveler experiences the same duration, no time dilation." : `The traveler experiences ${shipTime}, ${timeDiff} more than observers.`}`;
   }
 
   const velocityStr = result.peakVelocityFraction < 0.001
@@ -539,7 +539,7 @@ function generateNarrative(
   let narrative = `Ship departs ${origin} for ${destination} at peak velocity ${velocityStr}. `;
 
   if (result.severity === "negligible") {
-    narrative += `On ${frameName}: ${observerTime} pass. On the ship: ${shipTime} pass. Time dilation is negligible at this speed—your travelers won't notice the difference.`;
+    narrative += `On ${frameName}: ${observerTime} pass. On the ship: ${shipTime} pass. Time dilation is negligible at this speed, your travelers won't notice the difference.`;
   } else {
     narrative += `On ${frameName}: ${observerTime} pass. On the ship: ${shipTime} pass. Time lost by the traveler: ${timeDiff}.`;
   }
@@ -555,7 +555,7 @@ function generateNarrative(
     narrative += " Note: This journey would take longer than recorded human history.";
   }
   if (result.observerTimeSeconds > SECONDS_PER_YEAR * 1e6) {
-    narrative += " At this timescale, stellar evolution becomes relevant—stars may have died en route.";
+    narrative += " At this timescale, stellar evolution becomes relevant, stars may have died en route.";
   }
 
   return narrative;
@@ -617,9 +617,9 @@ function makeErrorResult(distanceMeters: number, distanceLY: number, error: stri
     shipTimeSeconds: 0,
     observerTimeSeconds: 0,
     timeDifferenceSeconds: 0,
-    shipTimeFormatted: "—",
-    observerTimeFormatted: "—",
-    timeDifferenceFormatted: "—",
+    shipTimeFormatted: "-",
+    observerTimeFormatted: "-",
+    timeDifferenceFormatted: "-",
     distanceFormatted: formatDistance(distanceLY),
     severity: "negligible",
     narrativeSummary: "",

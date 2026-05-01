@@ -68,7 +68,7 @@ function textToRtf(content: string): string {
       lines.push(`\\pard\\f1\\fs26\\cf2 ${escapeRtf(para.replace("### ", ""))}\\par`);
       lines.push("\\pard\\plain\\f0\\fs24\\cf0");
     } else {
-      // Regular paragraph — handle single newlines as line breaks
+      // Regular paragraph, handle single newlines as line breaks
       const escaped = escapeRtf(para.trim()).replace(/\n/g, "\\line ");
       lines.push(`${escaped}\\par`);
     }

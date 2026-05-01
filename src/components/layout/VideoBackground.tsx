@@ -35,7 +35,7 @@ const VideoBackground = () => {
       className="fixed inset-0 z-0 overflow-hidden pointer-events-none no-print"
       aria-hidden="true"
     >
-      {/* Solid black base — prevents any previous background from bleeding through */}
+      {/* Solid black base, prevents any previous background from bleeding through */}
       <div className="absolute inset-0 bg-black" />
 
       {!failed && (

@@ -43,7 +43,7 @@ const SubscriptionBanner = () => {
         <div className="flex items-center gap-2 px-3 py-1.5 border border-crimson/15 bg-crimson/5">
           <AlertTriangle className="w-3.5 h-3.5 text-crimson shrink-0" />
           <p className="text-xs text-t3 flex-1">
-            {tierLabel} access expired—your data is safe
+            {tierLabel} access expired. Your data is safe.
           </p>
           <button
             type="button"

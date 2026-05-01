@@ -1,4 +1,4 @@
-// Timeline — Context + Reducer (Phase 2 State Management)
+// Timeline, Context + Reducer (Phase 2 State Management)
 
 import { createContext, useContext, useReducer, type Dispatch, type ReactNode } from "react";
 import type {
@@ -50,7 +50,7 @@ export type TimelineAction =
   | { type: "UPDATE_COMPRESSION"; payload: TimeCompression }
   | { type: "DELETE_COMPRESSION"; payload: string }
   | { type: "TOGGLE_COMPRESSION_EXPAND"; payload: string }
-  // Phase 3: Filtering (ephemeral — not persisted)
+  // Phase 3: Filtering (ephemeral, not persisted)
   | { type: "SET_FILTER"; payload: Partial<TimelineFilter> }
   | { type: "CLEAR_FILTERS" }
   // Phase 3: Track Folding
@@ -363,7 +363,7 @@ function applyAction(state: ReducerState, action: TimelineAction): ReducerState 
       };
     }
 
-    // ── Filtering (Phase 3 — ephemeral) ──────────────────────────
+    // ── Filtering (Phase 3, ephemeral) ──────────────────────────
     case "SET_FILTER":
       return { ...state, filter: { ...state.filter, ...action.payload } };
 

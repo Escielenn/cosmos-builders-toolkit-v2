@@ -1,10 +1,10 @@
 /**
- * CascadeProgressBar — Shows cascade layer completion status.
+ * CascadeProgressBar, Shows cascade layer completion status.
  *
  * Renders as a horizontal row of layer badges, each showing
  * empty / partial / populated status.
  *
- * Spec: StellarForge_Final_Remediation_Spec_v2 — Issue 5
+ * Spec: StellarForge_Final_Remediation_Spec_v2, Issue 5
  */
 
 import { getCascadeProgress, type CascadeLayerStatus } from "@/lib/cascade-guidance";

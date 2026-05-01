@@ -1,10 +1,10 @@
 /**
- * EntitySuggestionBar — Shown after saving a writing entry when entity
+ * EntitySuggestionBar, Shown after saving a writing entry when entity
  * names are detected in the text content.
  *
  * "This entry mentions Kepler-442b and Voss. Link to these entities?"
  *
- * Spec: StellarForge_Final_Remediation_Spec_v2 — Issue 6
+ * Spec: StellarForge_Final_Remediation_Spec_v2, Issue 6
  */
 
 import { Link2, X } from "lucide-react";

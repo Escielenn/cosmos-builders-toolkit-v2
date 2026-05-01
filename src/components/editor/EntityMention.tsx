@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// EntityMention — Tiptap Node extension for @entity mentions.
+// EntityMention, Tiptap Node extension for @entity mentions.
 //
 // Triggered by typing `@` in the editor. Shows a floating suggestion panel
 // listing entities from the current world. On select, inserts an inline
@@ -118,7 +118,7 @@ export const EntityMention = Node.create({
 });
 
 // ---------------------------------------------------------------------------
-// useEntityMentionTrigger — monitors editor text for `@` trigger
+// useEntityMentionTrigger, monitors editor text for `@` trigger
 // ---------------------------------------------------------------------------
 
 interface EntityMentionTriggerState {

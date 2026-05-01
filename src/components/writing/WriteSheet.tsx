@@ -75,7 +75,7 @@ export function WriteSheet({
   const [entryId, setEntryId] = useState<string | null>(null);
   const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
 
-  // Entity linking — write first, suggest after
+  // Entity linking, write first, suggest after
   const entityLinks = useWritingEntityLinks(entryId ?? undefined, worldId ?? undefined);
 
   // Timers
@@ -185,7 +185,7 @@ export function WriteSheet({
     [performSave]
   );
 
-  // Manual save — flush pending and save now
+  // Manual save, flush pending and save now
   const handleManualSave = useCallback(() => {
     performSave(content, wordCount);
   }, [content, wordCount, performSave]);
@@ -261,7 +261,7 @@ export function WriteSheet({
         {/* Overlay */}
         <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 duration-300" />
 
-        {/* Content — full viewport, scrollable */}
+        {/* Content, full viewport, scrollable */}
         <DialogPrimitive.Content
           className="fixed inset-0 z-50 overflow-y-auto outline-none"
           onInteractOutside={(e) => e.preventDefault()}
@@ -290,7 +290,7 @@ export function WriteSheet({
               isWriting ? "pt-8 md:pt-10" : "pt-16 md:pt-28"
             )}
           >
-            {/* Title input — styled as display heading, shrinks when writing */}
+            {/* Title input, styled as display heading, shrinks when writing */}
             <div className="relative">
               {entryId && (
                 <Pencil className={cn(
@@ -320,7 +320,7 @@ export function WriteSheet({
               )}
             </div>
 
-            {/* Metadata row — world selector, prompt badge */}
+            {/* Metadata row, world selector, prompt badge */}
             <div
               className={cn(
                 "flex items-center gap-3 flex-wrap transition-all duration-300",
@@ -387,7 +387,7 @@ export function WriteSheet({
               />
             </Suspense>
 
-            {/* Entity suggestion bar — write first, suggest after */}
+            {/* Entity suggestion bar, write first, suggest after */}
             {entityLinks.showSuggestions && (
               <EntitySuggestionBar
                 suggestions={entityLinks.suggestions}

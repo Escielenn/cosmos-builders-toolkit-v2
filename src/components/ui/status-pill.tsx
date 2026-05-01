@@ -3,17 +3,17 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 /**
- * StatusPill — dot + label, color-coded to phase. April 2026 handoff.
+ * StatusPill, dot + label, color-coded to phase. April 2026 handoff.
  *
  * Use in the top bar, footer, and status rows. The dot is a 6×6 filled circle;
  * the label is mono 11px uppercase. Matches the Tag recipe (6/15/100 opacity)
  * but adds semantic phase presets.
  *
  * Phase presets:
- *   signal   — stellar blue (scanning / locating)
- *   ignite   — amber (parameters loaded, pre-launch)
- *   ignition — teal (live / transmitting)
- *   orbit    — violet (steady state / cruising)
+ *   signal  , stellar blue (scanning / locating)
+ *   ignite  , amber (parameters loaded, pre-launch)
+ *   ignition, teal (live / transmitting)
+ *   orbit   , violet (steady state / cruising)
  */
 const statusPillVariants = cva(
   "inline-flex items-center gap-sf-2 border px-sf-2 py-sf-1 rounded-sf-tag font-mono text-[11px] leading-none uppercase tracking-[0.18em] whitespace-nowrap select-none",

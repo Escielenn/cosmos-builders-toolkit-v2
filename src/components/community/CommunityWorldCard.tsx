@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// CommunityWorldCard — Card for a community/public world in the browse grid
+// CommunityWorldCard, Card for a community/public world in the browse grid
 // ---------------------------------------------------------------------------
 
 import { Link } from "react-router-dom";

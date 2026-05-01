@@ -6,8 +6,8 @@
  * number + year so every user sees the same set.
  *
  * Persistence (localStorage):
- *   sf-prompt-history   — { weekKey, actedOn: string[] }
- *   sf-expired-prompts  — { weekKey, count }
+ *   sf-prompt-history  , { weekKey, actedOn: string[] }
+ *   sf-expired-prompts , { weekKey, count }
  */
 
 import { useState, useCallback, useMemo, useEffect } from "react";
@@ -165,7 +165,7 @@ export function useWeeklyPrompts(): UseWeeklyPromptsReturn {
       return expired;
     }
 
-    // No data for last week — assume all 7 expired
+    // No data for last week, assume all 7 expired
     return 0;
   }, [monday]);
 

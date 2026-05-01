@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 /**
- * PromptDialog — themed replacement for `window.prompt()`.
+ * PromptDialog, themed replacement for `window.prompt()`.
  *
  * April 2026 handoff disallows native browser dialogs (they don't match the
  * bridge aesthetic and can't be styled). Use this for one-field text input

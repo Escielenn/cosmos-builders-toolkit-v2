@@ -1396,6 +1396,17 @@ html {
     transform: scaleX(1);
   }
 
+  /* Keyboard focus, visible Beacon Teal ring (Phase 1 a11y).
+     Activates the bottom accent line for parity with hover. */
+  .sf-nav-link:focus-visible {
+    outline: 2px solid hsl(var(--sf-teal-bright));
+    outline-offset: 2px;
+  }
+
+  .sf-nav-link:focus-visible::after {
+    transform: scaleX(1);
+  }
+
   /* Text link — underline sweep from left */
   .sf-text-link {
     position: relative;

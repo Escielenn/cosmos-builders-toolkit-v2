@@ -97,7 +97,7 @@ const DRAKE_VARIABLES = [
     max: 1,
     step: 0.01,
     default: 0.5,
-    scientificRange: { low: 0.001, high: 1, note: "Completely unknown—life might be easy or near-miraculous" },
+    scientificRange: { low: 0.001, high: 1, note: "Completely unknown, life might be easy or near-miraculous" },
     worldbuildingNote: "The Great Filter might be here. If life is easy, the galaxy should be teeming. If rare, we might be alone.",
   },
   {
@@ -110,7 +110,7 @@ const DRAKE_VARIABLES = [
     max: 1,
     step: 0.01,
     default: 0.5,
-    scientificRange: { low: 0.001, high: 1, note: "Earth took 4 billion years—is intelligence inevitable or a fluke?" },
+    scientificRange: { low: 0.001, high: 1, note: "Earth took 4 billion years, is intelligence inevitable or a fluke?" },
     worldbuildingNote: "Intelligence might be evolutionarily expensive. Does it always win, or do other strategies dominate?",
   },
   {
@@ -123,7 +123,7 @@ const DRAKE_VARIABLES = [
     max: 1,
     step: 0.01,
     default: 0.2,
-    scientificRange: { low: 0.01, high: 0.2, note: "Technology might not be inevitable—many paths exist" },
+    scientificRange: { low: 0.01, high: 0.2, note: "Technology might not be inevitable, many paths exist" },
     worldbuildingNote: "Not all intelligent species may develop technology. Aquatic species can't smelt metal. Some might choose other paths.",
   },
   {
@@ -636,7 +636,7 @@ const DrakeEquationCalculator = () => {
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
                       <Label className="text-base font-semibold">
-                        {variable.symbol}—{variable.name}
+                        {variable.symbol}, {variable.name}
                       </Label>
                       <Tooltip>
                         <TooltipTrigger>

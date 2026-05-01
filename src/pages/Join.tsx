@@ -59,7 +59,7 @@ const Join = () => {
     return () => { document.head.removeChild(meta); };
   }, []);
 
-  // Don't auto-redirect — show the page even if logged in
+  // Don't auto-redirect, show the page even if logged in
   // (user may be testing the link or sharing the screen)
 
   const validateForm = () => {
@@ -108,7 +108,7 @@ const Join = () => {
     }
   };
 
-  // Already logged in (skip loading check — render form immediately)
+  // Already logged in (skip loading check, render form immediately)
   if (user) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
@@ -126,7 +126,7 @@ const Join = () => {
     );
   }
 
-  // Invalid or missing code — show nothing useful
+  // Invalid or missing code, show nothing useful
   if (!isValidCode) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">

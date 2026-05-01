@@ -41,11 +41,11 @@ const STAR_TYPE_LABELS: Record<string, string> = {
 };
 
 const TIER_LABELS: Record<string, string> = {
-  "1": "Tier 1—Shirtsleeve",
-  "2": "Tier 2—Habitable",
-  "3": "Tier 3—Challenging",
-  "4": "Tier 4—Hostile",
-  "5": "Tier 5—Extreme",
+  "1": "Tier 1, Shirtsleeve",
+  "2": "Tier 2, Habitable",
+  "3": "Tier 3, Challenging",
+  "4": "Tier 4, Hostile",
+  "5": "Tier 5, Extreme",
 };
 
 const RenderStarSystem = ({ ws }: { ws: WorksheetData }) => {
@@ -56,10 +56,10 @@ const RenderStarSystem = ({ ws }: { ws: WorksheetData }) => {
         Star System: {ws.title || "Untitled"}
       </Text>
       <View style={styles.sectionContent}>
-        <PDFKeyValuePair label="System Name" value={get(d, "systemName") || ws.title || "—"} />
+        <PDFKeyValuePair label="System Name" value={get(d, "systemName") || ws.title || "-"} />
         <PDFKeyValuePair label="Star Classification" value={get(d, "starClassification")} />
         <PDFKeyValuePair label="Configuration" value={get(d, "configuration")} />
-        <PDFKeyValuePair label="Number of Bodies" value={get(d, "bodies.length") || "—"} />
+        <PDFKeyValuePair label="Number of Bodies" value={get(d, "bodies.length") || "-"} />
         {get(d, "narrativeHook") && (
           <View style={styles.notesBox}>
             <Text style={styles.notesLabel}>Narrative Hook</Text>
@@ -82,7 +82,7 @@ const RenderPlanetaryProfile = ({ ws }: { ws: WorksheetData }) => {
         Planet: {ws.title || "Untitled"}
       </Text>
       <View style={styles.sectionContent}>
-        <PDFKeyValuePair label="Star Type" value={STAR_TYPE_LABELS[starType] || starType || "—"} />
+        <PDFKeyValuePair label="Star Type" value={STAR_TYPE_LABELS[starType] || starType || "-"} />
         <PDFKeyValuePair label="Surface Gravity" value={get(d, "physicalCharacteristics.surfaceGravity")} />
         <PDFKeyValuePair label="Day Length" value={get(d, "physicalCharacteristics.dayLength")} />
         <PDFKeyValuePair label="Avg Temperature" value={get(d, "temperatureProfile.averageSurfaceTemp")} />

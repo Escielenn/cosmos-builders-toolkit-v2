@@ -49,7 +49,7 @@ const TimelineSummaryTemplate = ({
           hideLogo
         />
 
-        {/* Result Box — overview */}
+        {/* Result Box, overview */}
         <PDFResultBox
           value={`${events.length} Events`}
           label={`${tracks.length} Tracks`}
@@ -203,7 +203,7 @@ function getDateRangeStr(events: TimelineState["events"]): string {
     const end = e.endYear ?? e.startYear;
     if (end > max) max = end;
   }
-  return `${formatYear(min)} — ${formatYear(max)}`;
+  return `${formatYear(min)}, ${formatYear(max)}`;
 }
 
 function formatYear(year: number): string {

@@ -53,13 +53,13 @@ const RenderEmpire = ({ ws }: { ws: WorksheetData }) => {
     <View style={styles.section}>
       <Text style={styles.sectionTitle}>Empire: {name}</Text>
       <View style={styles.sectionContent}>
-        <PDFKeyValuePair label="Government Type" value={GOV_LABELS[govType] || govType || "—"} />
+        <PDFKeyValuePair label="Government Type" value={GOV_LABELS[govType] || govType || "-"} />
         <PDFKeyValuePair label="Legitimacy Source" value={get(d, "foundation.legitimacySource")} />
         <PDFKeyValuePair label="Age" value={get(d, "foundation.age")} />
         <PDFKeyValuePair label="Ruler" value={
           get(d, "foundation.rulerTitle") && get(d, "foundation.currentRuler")
             ? `${get(d, "foundation.rulerTitle")} ${get(d, "foundation.currentRuler")}`
-            : get(d, "foundation.currentRuler") || "—"
+            : get(d, "foundation.currentRuler") || "-"
         } />
         <PDFKeyValuePair label="Scale" value={get(d, "territory.scale")} />
         <PDFKeyValuePair label="Population" value={get(d, "territory.population")} />

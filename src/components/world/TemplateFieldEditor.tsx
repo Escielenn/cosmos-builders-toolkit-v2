@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// TemplateFieldEditor — inline editor for a single field on a template.
+// TemplateFieldEditor, inline editor for a single field on a template.
 //
 // Rendered inside the template row on the WorldCustomTypes page.
 // Handles label, field_type, options (for select/multiselect), required,

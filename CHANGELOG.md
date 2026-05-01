@@ -1,5 +1,33 @@
 # StellarForge Changelog
 
+## 0.6602
+- Changed: Header wordmark switched from ALL-CAPS "STELLARFORGE" to mixed-case
+  "Stellarforge" with the existing teal-split treatment ("Stellar" in Beacon Teal,
+  "forge" in tier-1). ALL CAPS stays for instrument vocabulary (eyebrows, status,
+  telemetry, button labels). Wordmark is now visible to ALL users at xl+ widths
+  during OPEN EARLY ACCESS, not just subscribed users; "SF" abbreviation kept
+  for compact widths.
+- Removed: All user-facing em-dashes from JSX, attributes, and string literals.
+  ~150 instances replaced across pages, components, MDX learn content, and the
+  ExoSkySimulator atmoDesc data strings. Replacements use commas, colons,
+  semicolons, periods, parens, or middle-dot separators per impeccable's rule
+  set. Placeholder em-dashes ("—" for missing values) replaced with hyphens.
+  Code comments and CSS comments left untouched (rule applies to copy, not
+  comments). The regex character class in services/entity-match.ts was
+  intentionally preserved.
+- Fixed: Typo `text-sf-crimson-foreground` (which doesn't resolve to anything
+  in tailwind.config.ts) replaced with `text-destructive-foreground` across
+  5 files: DeleteConfirmDialog, badge.tsx, button.tsx, SettingsDialog,
+  BackgroundSelector. Destructive button text is now actually white instead
+  of inheriting whatever was up the cascade.
+- Added: Visible :focus-visible ring to .sf-nav-link in src/index.css for
+  keyboard a11y. Beacon Teal outline + activates the bottom accent line for
+  parity with hover state.
+- Added: Z-Index Stacking Order section in CLAUDE.md documenting the canonical
+  layer assignments (backgrounds at 0, content at 10-30, FABStack 40, Header 50,
+  toasts 100, AudioPlayer 8999, site-critical overlays 9999) plus the
+  FABStack-AudioPlayer collision-avoidance pattern.
+
 ## 0.6592
 - Added: Logo-adjacent "Sign Up / Log In" button in Header, visible only to
   logged-out users. Uses the Beacon Teal accent (matches the primary CTA

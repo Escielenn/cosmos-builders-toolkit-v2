@@ -1,6 +1,6 @@
 import type { DataBurstConfig } from "./types";
 
-/** Watermarks for tool cards — keyed by tool slug */
+/** Watermarks for tool cards, keyed by tool slug */
 export const TOOL_CARD_WATERMARKS: Record<string, string> = {
   "environmental-chain-reaction": "ΔT = f(albedo, GHG)",
   "spacecraft-designer": "Δv = Isp · g₀ · ln(m₀/mf)",

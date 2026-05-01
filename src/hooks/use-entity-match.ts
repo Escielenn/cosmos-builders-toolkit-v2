@@ -1,5 +1,5 @@
 /**
- * useEntityMatch — Manages fuzzy entity matching state for a worksheet.
+ * useEntityMatch, Manages fuzzy entity matching state for a worksheet.
  *
  * After a worksheet is saved and a draft wiki page created, this hook
  * checks for existing entries with similar names. If found, it exposes
@@ -55,7 +55,7 @@ export function useEntityMatch(worldId: string | undefined): UseEntityMatchRetur
           setOpen(true);
         }
       } catch {
-        // Best-effort — don't block the save flow
+        // Best-effort, don't block the save flow
       }
     },
     [worldId]
@@ -72,7 +72,7 @@ export function useEntityMatch(worldId: string | undefined): UseEntityMatchRetur
           queryClient.invalidateQueries({ queryKey: ["wiki-page"] });
         }
       } catch {
-        // Silently handle — the link may already exist
+        // Silently handle, the link may already exist
       }
       setOpen(false);
       setCandidates([]);

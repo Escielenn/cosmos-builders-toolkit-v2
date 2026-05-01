@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// EntityListView — Structured relationship browser (section 5).
+// EntityListView, Structured relationship browser (section 5).
 // Accordion-style list of entities with their connections.
 // ---------------------------------------------------------------------------
 

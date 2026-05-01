@@ -60,7 +60,7 @@ const GravitasFullReportTemplate = ({ formState: rawFormState, worldName, date }
     <Document>
       {/* Page 1: Configuration & Results */}
       <Page size="LETTER" style={styles.page}>
-        <PDFHeader toolName="Gravitas — Full Report" worldName={worldName} date={date} hideLogo />
+        <PDFHeader toolName="Gravitas, Full Report" worldName={worldName} date={date} hideLogo />
 
         <PDFSection title="Configuration">
           <View style={{ flexDirection: "row", gap: spacing.md }}>
@@ -76,7 +76,7 @@ const GravitasFullReportTemplate = ({ formState: rawFormState, worldName, date }
 
         {/* Spin results */}
         {mode === "spin" && (
-          <PDFSection title="Spin Gravity — Parameters & Results">
+          <PDFSection title="Spin Gravity, Parameters & Results">
             <View style={{ flexDirection: "row", gap: spacing.md }}>
               <View style={{ flex: 1 }}>
                 <PDFKeyValuePair label="Habitat Radius" value={`${data.spin.radius_m.toFixed(0)} m`} />
@@ -98,7 +98,7 @@ const GravitasFullReportTemplate = ({ formState: rawFormState, worldName, date }
 
         {/* Thrust results */}
         {mode === "thrust" && (
-          <PDFSection title="Thrust Gravity — Parameters & Results">
+          <PDFSection title="Thrust Gravity, Parameters & Results">
             <View style={{ flexDirection: "row", gap: spacing.md }}>
               <View style={{ flex: 1 }}>
                 <PDFKeyValuePair label="Acceleration" value={`${data.thrust.acceleration_g.toFixed(3)} g`} />
@@ -124,7 +124,7 @@ const GravitasFullReportTemplate = ({ formState: rawFormState, worldName, date }
 
         {/* Combined results */}
         {mode === "combined" && (
-          <PDFSection title="Combined Vector — Parameters & Results">
+          <PDFSection title="Combined Vector, Parameters & Results">
             <View style={{ flexDirection: "row", gap: spacing.md }}>
               <View style={{ flex: 1 }}>
                 <PDFKeyValuePair label="Spin Component" value={`${data.combined.spin_g.toFixed(2)} g`} />
@@ -145,7 +145,7 @@ const GravitasFullReportTemplate = ({ formState: rawFormState, worldName, date }
 
         {/* Orbital results */}
         {mode === "orbital" && (
-          <PDFSection title="Orbital / Surface — Parameters & Results">
+          <PDFSection title="Orbital / Surface, Parameters & Results">
             <View style={{ flexDirection: "row", gap: spacing.md }}>
               <View style={{ flex: 1 }}>
                 <PDFKeyValuePair label="Parent Mass" value={`${data.orbital.parent_mass_kg.toExponential(3)} kg`} />
@@ -182,7 +182,7 @@ const GravitasFullReportTemplate = ({ formState: rawFormState, worldName, date }
 
       {/* Page 2: Experiential Output */}
       <Page size="LETTER" style={styles.page}>
-        <PDFHeader toolName="Gravitas — Experiential Output" worldName={worldName} date={date} hideLogo />
+        <PDFHeader toolName="Gravitas, Experiential Output" worldName={worldName} date={date} hideLogo />
 
         <PDFSection title="Movement & Locomotion">
           <Text style={bodyStyle}>{generateMovementDescription(ctx)}</Text>
@@ -209,7 +209,7 @@ const GravitasFullReportTemplate = ({ formState: rawFormState, worldName, date }
 
       {/* Page 3: Mythology, Narrative & Notes */}
       <Page size="LETTER" style={styles.page}>
-        <PDFHeader toolName="Gravitas — Mythology & Notes" worldName={worldName} date={date} hideLogo />
+        <PDFHeader toolName="Gravitas, Mythology & Notes" worldName={worldName} date={date} hideLogo />
 
         <PDFSection title="Mythological Implications">
           <Text style={bodyStyle}>

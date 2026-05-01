@@ -216,7 +216,7 @@ export function traceCascadePath(
 // ===========================================================================
 
 // ---------------------------------------------------------------------------
-// 7.3 Gravity Analysis — weighted degree centrality
+// 7.3 Gravity Analysis, weighted degree centrality
 // ---------------------------------------------------------------------------
 
 export interface GravityResult {
@@ -257,7 +257,7 @@ export function computeGravity(
 }
 
 // ---------------------------------------------------------------------------
-// 7.1 Narrative Distance — BFS pathfinding between two entities
+// 7.1 Narrative Distance, BFS pathfinding between two entities
 // ---------------------------------------------------------------------------
 
 export interface PathStep {
@@ -406,7 +406,7 @@ function generateStorySeed(stagesCrossed: string[]): string {
 }
 
 // ---------------------------------------------------------------------------
-// 7.2 Tension Detection — structural contradictions
+// 7.2 Tension Detection, structural contradictions
 // ---------------------------------------------------------------------------
 
 export interface Tension {
@@ -566,7 +566,7 @@ export function detectTensions(
 }
 
 // ---------------------------------------------------------------------------
-// 7.4 Cluster Discovery — simple modularity-based community detection
+// 7.4 Cluster Discovery, simple modularity-based community detection
 // Uses a greedy algorithm: start with each node in its own cluster,
 // then merge the pair with the most connections until no improvement.
 // ---------------------------------------------------------------------------
@@ -721,7 +721,7 @@ export function detectClusters(
 }
 
 // ---------------------------------------------------------------------------
-// 8.1 What-If Removal — hypothetical entity removal impact analysis
+// 8.1 What-If Removal, hypothetical entity removal impact analysis
 // ---------------------------------------------------------------------------
 
 export interface WhatIfResult {
@@ -849,7 +849,7 @@ export function analyzeRemoval(
 // ===========================================================================
 
 // ---------------------------------------------------------------------------
-// 9. Cascade Audit — full upstream/downstream tree tracing
+// 9. Cascade Audit, full upstream/downstream tree tracing
 // ---------------------------------------------------------------------------
 
 export interface CascadeAuditNode {
@@ -934,7 +934,7 @@ export function cascadeAudit(
   const allConnectionIds = new Set<string>();
   const stagesPresent = new Set<CascadeStage>([entity.cascade_stage]);
 
-  // Trace downstream (same or later cascade stage) — recursive tree
+  // Trace downstream (same or later cascade stage), recursive tree
   function traceDown(currentId: string, visited: Set<string>): CascadeAuditNode[] {
     const currentEntity = entityMap.get(currentId);
     if (!currentEntity) return [];
@@ -1055,7 +1055,7 @@ export function cascadeAudit(
 }
 
 // ---------------------------------------------------------------------------
-// 8.3 Timeline — extract temporal bounds for the scrubber
+// 8.3 Timeline, extract temporal bounds for the scrubber
 // ---------------------------------------------------------------------------
 
 export interface TimelineEvent {
@@ -1082,7 +1082,7 @@ export function extractTimelineBounds(
     if (c.time_end) timeSet.add(c.time_end);
   }
 
-  // Sort time points — attempt numeric sort, fall back to alphabetical
+  // Sort time points, attempt numeric sort, fall back to alphabetical
   const timePoints = Array.from(timeSet).sort((a, b) => {
     const numA = parseFloat(a.replace(/[^\d.-]/g, ""));
     const numB = parseFloat(b.replace(/[^\d.-]/g, ""));
@@ -1140,12 +1140,12 @@ export function filterConnectionsByTime(
     const endIdx = c.time_end ? timePoints.indexOf(c.time_end) : timePoints.length;
 
     if (startIdx > currentIndex) {
-      // Connection hasn't started yet — hidden (not in either set)
+      // Connection hasn't started yet, hidden (not in either set)
       continue;
     }
 
     if (endIdx !== -1 && endIdx < currentIndex) {
-      // Connection ended before current time — show as historical
+      // Connection ended before current time, show as historical
       historical.add(c.id);
     } else {
       // Connection is active at current time

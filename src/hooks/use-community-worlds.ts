@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// useCommunityWorlds — Fetches worlds with visibility IN ('community','public')
+// useCommunityWorlds, Fetches worlds with visibility IN ('community','public')
 // Joins with profiles for owner display_name, includes fork_count & entity count.
 // ---------------------------------------------------------------------------
 

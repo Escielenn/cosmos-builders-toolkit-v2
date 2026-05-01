@@ -35,7 +35,7 @@ function formatTime(seconds: number): string {
 }
 
 // ---------------------------------------------------------------------------
-// AudioPlayer — persistent bottom bar
+// AudioPlayer, persistent bottom bar
 // ---------------------------------------------------------------------------
 
 export default function AudioPlayer() {
@@ -116,7 +116,7 @@ function MinimizedBar({
 
         <span className="text-xs text-t2 truncate flex-1">
           {isError ? (
-            <span className="text-t4">{trackTitle} <span className="text-sf-amber/60">— Unavailable</span></span>
+            <span className="text-t4">{trackTitle} <span className="text-sf-amber/60">· Unavailable</span></span>
           ) : (
             trackTitle
           )}
@@ -190,7 +190,7 @@ function ExpandedBar({ state, controls, progressBarRef }: ExpandedBarProps) {
 
   return (
     <div className="fixed bottom-6 inset-x-0 z-[8999] bg-sf-surface/95 backdrop-blur-xl border-t border-white/8">
-      {/* Progress bar — clickable */}
+      {/* Progress bar, clickable */}
       <div
         ref={progressBarRef}
         onClick={handleProgressClick}
@@ -229,7 +229,7 @@ function ExpandedBar({ state, controls, progressBarRef }: ExpandedBarProps) {
             <p className="text-sm text-t2 truncate leading-tight flex items-center gap-1.5">
               {isError && <AlertTriangle className="w-3 h-3 text-sf-amber/70 shrink-0" />}
               {state.currentTrack?.title ?? "No Track"}
-              {isError && <span className="text-[10px] text-sf-amber/60 shrink-0">— Unavailable</span>}
+              {isError && <span className="text-[10px] text-sf-amber/60 shrink-0">· Unavailable</span>}
             </p>
             {state.currentTrack?.artist && !isError && (
               <p className="text-[10px] text-t4 truncate leading-tight">

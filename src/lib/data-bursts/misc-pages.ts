@@ -1,6 +1,6 @@
 import type { DataBurstConfig } from "./types";
 
-// Auth page — security / access control
+// Auth page, security / access control
 export const AUTH_BURSTS: DataBurstConfig[] = [
   {
     content: "CLEARANCE: PENDING",
@@ -38,7 +38,7 @@ export const AUTH_BURSTS: DataBurstConfig[] = [
   },
 ];
 
-// Archive — vault / cold storage
+// Archive, vault / cold storage
 export const ARCHIVE_BURSTS: DataBurstConfig[] = [
   {
     content: "ARCHIVE SECTOR: DELTA-7",
@@ -76,7 +76,7 @@ export const ARCHIVE_BURSTS: DataBurstConfig[] = [
   },
 ];
 
-// Bookshelf — library / reference stacks
+// Bookshelf, library / reference stacks
 export const BOOKSHELF_BURSTS: DataBurstConfig[] = [
   {
     content: "CATALOG: ACTIVE",
@@ -85,7 +85,7 @@ export const BOOKSHELF_BURSTS: DataBurstConfig[] = [
     parallax: -0.05,
   },
   {
-    content: "REF INDEX: 042.7 — ASTROBIOLOGY",
+    content: "REF INDEX: 042.7, ASTROBIOLOGY",
     position: { top: "22%", left: "1%" },
     variant: "margin",
     animation: "breathe",
@@ -113,7 +113,7 @@ export const BOOKSHELF_BURSTS: DataBurstConfig[] = [
   },
 ];
 
-// Collection — inventory / manifest
+// Collection, inventory / manifest
 export const COLLECTION_BURSTS: DataBurstConfig[] = [
   {
     content: "MANIFEST: LOADING",
@@ -151,7 +151,7 @@ export const COLLECTION_BURSTS: DataBurstConfig[] = [
   },
 ];
 
-// NotFound — lost signal / search
+// NotFound, lost signal / search
 export const NOT_FOUND_BURSTS: DataBurstConfig[] = [
   {
     content: "SIGNAL LOST",
@@ -189,7 +189,7 @@ export const NOT_FOUND_BURSTS: DataBurstConfig[] = [
   },
 ];
 
-// InviteAccept — docking / handshake
+// InviteAccept, docking / handshake
 export const INVITE_ACCEPT_BURSTS: DataBurstConfig[] = [
   {
     content: "DOCKING PROTOCOL: ACTIVE",
@@ -227,7 +227,7 @@ export const INVITE_ACCEPT_BURSTS: DataBurstConfig[] = [
   },
 ];
 
-// SharedWorksheetView — broadcast / transmission
+// SharedWorksheetView, broadcast / transmission
 export const SHARED_WORKSHEET_BURSTS: DataBurstConfig[] = [
   {
     content: "BROADCAST: OPEN CHANNEL",
@@ -264,7 +264,7 @@ export const SHARED_WORKSHEET_BURSTS: DataBurstConfig[] = [
   },
 ];
 
-// SharedWorldView — observatory / visitor
+// SharedWorldView, observatory / visitor
 export const SHARED_WORLD_BURSTS: DataBurstConfig[] = [
   {
     content: "OBSERVATORY MODE: ACTIVE",
@@ -301,7 +301,7 @@ export const SHARED_WORLD_BURSTS: DataBurstConfig[] = [
   },
 ];
 
-// WorldConnections — network / relay
+// WorldConnections, network / relay
 export const WORLD_CONNECTIONS_BURSTS: DataBurstConfig[] = [
   {
     content: "RELAY NETWORK: ONLINE",

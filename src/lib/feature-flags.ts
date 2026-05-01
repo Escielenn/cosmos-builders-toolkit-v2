@@ -6,7 +6,7 @@
  * reading import.meta.env directly in components.
  *
  * Flags default to `false` when the env var is unset or not the literal
- * string "true" — we only turn something on when explicitly asked.
+ * string "true", we only turn something on when explicitly asked.
  */
 
 function readFlag(envKey: string): boolean {

@@ -139,10 +139,10 @@ const NotFound = () => {
           variants={fadeUpItem}
         >
           <span aria-hidden className="block w-12 h-px bg-sf-teal" />
-          <span>// SIGNAL LOST — ERROR 404</span>
+          <span>// SIGNAL LOST, ERROR 404</span>
         </motion.div>
 
-        {/* Title — text-sf-h1 (56px) sentence case */}
+        {/* Title, text-sf-h1 (56px) sentence case */}
         <motion.h1
           className="font-display font-light text-sf-h1 leading-[1] text-t1 mb-7"
           variants={heroReveal}

@@ -62,7 +62,7 @@ export const useSubscription = () => {
 
       if (response.error) {
         // Extract the actual error message from the edge function JSON response body.
-        // The FunctionsHttpError stores the raw Response in .context — body not yet consumed.
+        // The FunctionsHttpError stores the raw Response in .context, body not yet consumed.
         let extractedMessage: string | undefined;
         try {
           const ctx = (response.error as any).context;
@@ -71,7 +71,7 @@ export const useSubscription = () => {
             extractedMessage = body?.error;
           }
         } catch {
-          // Body couldn't be parsed — fall through to generic message
+          // Body couldn't be parsed, fall through to generic message
         }
         throw new Error(extractedMessage || response.error.message);
       }

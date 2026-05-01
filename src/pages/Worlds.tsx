@@ -90,7 +90,7 @@ const Worlds = () => {
           ← RETURN TO BRIDGE
         </Link>
 
-        {/* Header — parallax telemetry backdrop */}
+        {/* Header, parallax telemetry backdrop */}
         <div className="relative overflow-hidden mb-12">
           <div className="absolute inset-0 opacity-40 pointer-events-none -z-0">
             <ParallaxStrips height={220} />
@@ -100,7 +100,7 @@ const Worlds = () => {
               <SectionHero
                 eyebrow="// WORLD INDEX"
                 title={<>My <span className="text-sf-teal">worlds.</span></>}
-                subtitle="Each world is its own cascade — physics shapes environment, environment shapes biology, biology shapes culture. Pick one to continue, or begin a new survey."
+                subtitle="Each world is its own cascade, physics shapes environment, environment shapes biology, biology shapes culture. Pick one to continue, or begin a new survey."
                 className="flex-1 min-w-[280px]"
               />
             <div className="flex items-center gap-2 shrink-0">

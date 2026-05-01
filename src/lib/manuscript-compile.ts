@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// manuscript-compile.ts — stitches writing-space documents into exportable
+// manuscript-compile.ts, stitches writing-space documents into exportable
 // manuscript formats.
 //
 // Supports: .docx (standard manuscript format), Markdown, plain text.
@@ -135,7 +135,7 @@ function decodeEntities(s: string): string {
 }
 
 // ---------------------------------------------------------------------------
-// .docx export — standard manuscript format
+// .docx export, standard manuscript format
 // (Times New Roman 12pt, double-spaced, 1" margins, page breaks at chapters)
 // ---------------------------------------------------------------------------
 
@@ -210,7 +210,7 @@ export async function compileManuscriptDocx(
       })
     );
 
-    // Chapter body — convert HTML to paragraphs
+    // Chapter body, convert HTML to paragraphs
     const paragraphs = htmlToParagraphs(chapter.content || "");
     for (const segments of paragraphs) {
       children.push(

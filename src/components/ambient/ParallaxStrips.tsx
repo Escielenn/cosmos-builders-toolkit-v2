@@ -1,5 +1,5 @@
 /**
- * ParallaxStrips — ambient telemetry text drifting at different speeds
+ * ParallaxStrips, ambient telemetry text drifting at different speeds
  * against page scroll. April 2026 handoff.
  *
  * Four layers of mono readouts at varying opacity/tracking. Drop into hero

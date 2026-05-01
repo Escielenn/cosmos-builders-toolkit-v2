@@ -151,7 +151,7 @@ const TimeDilationFullReportTemplate = ({ formState: rawFormState, worldName, da
         ) : (
           <PDFSection title="4. Results">
             <Text style={{ fontSize: typography.sizes.sm, color: colors.text.secondary }}>
-              {result.error || "No valid calculation—configure journey and propulsion."}
+              {result.error || "No valid calculation, configure journey and propulsion."}
             </Text>
           </PDFSection>
         )}

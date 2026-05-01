@@ -42,7 +42,7 @@ export function ManualKeyLine({ keys, description }: { keys: string; description
 }
 
 // ---------------------------------------------------------------------------
-// Full content — used by both FieldManualSheet and Guide.tsx
+// Full content, used by both FieldManualSheet and Guide.tsx
 // ---------------------------------------------------------------------------
 
 export function FieldManualContent() {
@@ -63,7 +63,7 @@ export function FieldManualContent() {
       <ManualSection title="Registry">
         <p>
           Primary world index. Tracks all elements across seven cascade
-          layers—environment, biology, psychology, culture, mythology,
+          layers: environment, biology, psychology, culture, mythology,
           technology, and narrative. Click entries to navigate between
           tools and wiki pages.
         </p>
@@ -113,7 +113,7 @@ export function FieldManualContent() {
           war, discovery, founding, death, custom).
         </p>
         <p>
-          Gap detection flags temporal lacunae—unusually large stretches
+          Gap detection flags temporal lacunae: unusually large stretches
           between events. Sub-events nest under parent events for
           hierarchical organization.
         </p>

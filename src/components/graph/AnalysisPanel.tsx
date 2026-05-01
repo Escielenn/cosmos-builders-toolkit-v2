@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// AnalysisPanel — Slide-out right panel for all graph analytical tools.
+// AnalysisPanel, Slide-out right panel for all graph analytical tools.
 // Renders the active analysis mode's content.
 // ---------------------------------------------------------------------------
 
@@ -208,7 +208,7 @@ function GravityContent({
           }}
         >
           <span className="text-sf-amber font-medium">{orphanCount} orphan{orphanCount !== 1 ? "s" : ""}</span>
-          <span className="text-t4"> — unconnected entities</span>
+          <span className="text-t4"> (unconnected entities)</span>
         </div>
       )}
 
@@ -416,7 +416,7 @@ function TensionsContent({
     <div className="space-y-3">
       <p className="text-[10px] text-t3 font-sans leading-relaxed">
         Structural contradictions that represent story opportunities. These are
-        not errors to fix — they are where drama lives.
+        not errors to fix; they are where drama lives.
       </p>
 
       {tensions.length === 0 && (
@@ -542,7 +542,7 @@ function ClustersContent({
             Bridge Entities
           </h4>
           <p className="text-[9px] text-t4 font-sans mb-1">
-            These entities link multiple clusters — natural protagonist candidates.
+            These entities link multiple clusters: natural protagonist candidates.
           </p>
           {result.bridgeEntities.map((b) => (
             <div key={b.entityId} className="flex items-center gap-2 px-2 py-1">

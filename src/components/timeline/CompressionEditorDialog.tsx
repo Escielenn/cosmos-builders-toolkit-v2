@@ -131,7 +131,7 @@ const CompressionEditorDialog = ({
               <GlassPanel key={comp.id} className="p-3 flex items-center justify-between gap-3">
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium truncate">
-                    {comp.label || `${comp.startYear.toLocaleString()} — ${comp.endYear.toLocaleString()}`}
+                    {comp.label || `${comp.startYear.toLocaleString()} to ${comp.endYear.toLocaleString()}`}
                   </p>
                   <p className="text-xs text-t3">
                     {(comp.endYear - comp.startYear).toLocaleString()} years, {comp.style} style

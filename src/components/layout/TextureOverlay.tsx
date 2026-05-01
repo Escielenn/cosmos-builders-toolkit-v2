@@ -1,7 +1,7 @@
 import { useLocation } from "react-router-dom";
 import "./texture-overlay.css";
 
-// Simulator routes use canvas/WebGL — texture overlay causes artifacts
+// Simulator routes use canvas/WebGL, texture overlay causes artifacts
 const SIMULATOR_ROUTES = ["/rogue", "/tools/tidelock", "/tools/exosky", "/tools/stellar-cartographer"];
 
 const TextureOverlay = () => {

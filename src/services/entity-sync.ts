@@ -99,7 +99,7 @@ export async function syncWorksheetToEntity(
 }
 
 /**
- * Accept all pending changes — copies worksheet values into entity master fields
+ * Accept all pending changes, copies worksheet values into entity master fields
  * and clears the pending changes marker.
  */
 export async function acceptPendingChanges(entityId: string): Promise<void> {

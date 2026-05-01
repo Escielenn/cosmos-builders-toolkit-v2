@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// useForkWorld — Calls the fork_world RPC to clone a world
+// useForkWorld, Calls the fork_world RPC to clone a world
 // ---------------------------------------------------------------------------
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";

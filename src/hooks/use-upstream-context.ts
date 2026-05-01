@@ -1,5 +1,5 @@
 /**
- * use-upstream-context — Fetches upstream worksheet data for the current tool
+ * use-upstream-context, Fetches upstream worksheet data for the current tool
  * and generates contextual callout messages.
  *
  * When a tool loads inside a world, this hook checks for worksheets from
@@ -36,7 +36,7 @@ export interface UpstreamCallout {
 }
 
 // ---------------------------------------------------------------------------
-// Helpers — safe nested field access
+// Helpers, safe nested field access
 // ---------------------------------------------------------------------------
 
 function getField(data: Record<string, unknown>, path: string): unknown {
@@ -52,7 +52,7 @@ function getField(data: Record<string, unknown>, path: string): unknown {
   return val;
 }
 
-/** Format a value for display — stringify objects/arrays simply */
+/** Format a value for display, stringify objects/arrays simply */
 function display(val: unknown): string {
   if (val === null || val === undefined) return "";
   if (typeof val === "number") return String(val);
@@ -353,7 +353,7 @@ const exodusCallouts: CalloutGenerator = (ws) => {
 
     if (parts.length > 0) {
       callouts.push({
-        message: `Dominion data: ${parts.join(" — ")}. Political structure drives expansion motives and methods.`,
+        message: `Dominion data: ${parts.join(", ")}. Political structure drives expansion motives and methods.`,
         sourceToolType: "empire-designer",
         sourceBrandName: TOOL_DISPLAY_NAMES["empire-designer"] ?? "Dominion",
       });
@@ -622,7 +622,7 @@ export function useUpstreamContext(
       return genericCallouts(toolType, worksheets);
     },
     enabled: !!user && !!worldId && !!toolType,
-    staleTime: 5 * 60 * 1000, // 5 min — upstream data changes rarely
+    staleTime: 5 * 60 * 1000, // 5 min, upstream data changes rarely
     refetchOnWindowFocus: false,
   });
 

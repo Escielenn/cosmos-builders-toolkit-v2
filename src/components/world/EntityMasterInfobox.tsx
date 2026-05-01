@@ -183,7 +183,7 @@ function ReadOnlyField({
         {field.label}
       </span>
       <p className="font-mono text-xs text-t1 mt-0.5">
-        {String(value ?? "—")}
+        {String(value ?? "-")}
       </p>
     </div>
   );
@@ -226,7 +226,7 @@ function EditableField({
           onChange={(e) => onChange(e.target.value)}
           className="w-full text-xs bg-white/[0.04] border border-sf-border rounded-xs px-2 py-1.5 text-t2"
         >
-          <option value="">—</option>
+          <option value="">-</option>
           {field.options.map((opt) => (
             <option key={opt} value={opt}>
               {opt}

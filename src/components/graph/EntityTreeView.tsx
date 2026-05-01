@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// EntityTreeView — Collapsible tree view of the entity hierarchy.
+// EntityTreeView, Collapsible tree view of the entity hierarchy.
 // Builds a tree from parent_entity_id relationships.
 // Supports drag-to-reparent and entity detail side panel.
 // ---------------------------------------------------------------------------
@@ -93,7 +93,7 @@ function buildTree(entities: Entity[]): TreeNode[] {
 }
 
 // ---------------------------------------------------------------------------
-// Descendant check — prevents circular reparenting
+// Descendant check, prevents circular reparenting
 // ---------------------------------------------------------------------------
 
 function isDescendant(
@@ -822,7 +822,7 @@ export function EntityTreeView({
         if (!prev.draggedId || prev.draggedId === targetId) {
           return { ...prev, dragOverId: targetId, dragOverValid: false };
         }
-        // Check if target is a descendant of dragged entity (invalid — would create cycle)
+        // Check if target is a descendant of dragged entity (invalid, would create cycle)
         const wouldCreateCycle = isDescendant(targetId, prev.draggedId, entities);
         e.dataTransfer.dropEffect = wouldCreateCycle ? "none" : "move";
         return {
@@ -951,7 +951,7 @@ export function EntityTreeView({
         </div>
       </div>
 
-      {/* Tree body — acts as drop zone for "make root" when dropping on empty space */}
+      {/* Tree body, acts as drop zone for "make root" when dropping on empty space */}
       <div
         className="flex-1 overflow-y-auto py-2"
         onDragOver={(e) => {

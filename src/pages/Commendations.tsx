@@ -23,9 +23,9 @@ const CATEGORY_LABELS: Record<BadgeCategory, string> = {
 };
 
 const CATEGORY_DESCRIPTIONS: Record<BadgeCategory, string> = {
-  exploration: "Charting new territory—worlds created, tools discovered, connections made.",
-  consistency: "The discipline of return—streaks held, words committed, habits forged.",
-  depth: "Mastery through layers—cascade thinking, cross-tool synthesis, architectural vision.",
+  exploration: "Charting new territory: worlds created, tools discovered, connections made.",
+  consistency: "The discipline of return: streaks held, words committed, habits forged.",
+  depth: "Mastery through layers: cascade thinking, cross-tool synthesis, architectural vision.",
 };
 
 export default function Commendations() {
@@ -93,7 +93,7 @@ export default function Commendations() {
           <SectionHero
             eyebrow="// COMMENDATIONS"
             title={<>Marks of <span className="text-sf-teal">progress.</span></>}
-            subtitle="Each commendation is earned through use — worlds built, words written, systems explored. The cascade rewards the doer, not the visitor."
+            subtitle="Each commendation is earned through use: worlds built, words written, systems explored. The cascade rewards the doer, not the visitor."
             className="mb-12"
           />
 
@@ -116,7 +116,7 @@ export default function Commendations() {
               />
             </div>
 
-            {/* Category breakdown — clickable filters */}
+            {/* Category breakdown, clickable filters */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {categoryStats.map(({ category, total, earned }) => {
                 const isActive = activeCategory === category;

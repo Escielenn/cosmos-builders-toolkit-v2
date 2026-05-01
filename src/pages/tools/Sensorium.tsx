@@ -288,8 +288,8 @@ const Sensorium = () => {
         {
           label: "Dominant",
           value: formState.perceptionProfile.dominantSense
-            ? getModalityById(formState.perceptionProfile.dominantSense)?.name || "—"
-            : "—",
+            ? getModalityById(formState.perceptionProfile.dominantSense)?.name || "-"
+            : "-",
         },
       ],
     },
@@ -970,7 +970,7 @@ const Sensorium = () => {
                   <TabsContent value="derive" className="mt-4">
                     <div className="space-y-3 mb-4">
                       <p className="text-sm text-t3">
-                        Based on your environment, each sense is scored for plausibility. <strong className="text-t1">Click any card to add it to your species' final sensory suite.</strong> You can select implausible senses too—sometimes the best stories break the rules.
+                        Based on your environment, each sense is scored for plausibility. <strong className="text-t1">Click any card to add it to your species' final sensory suite.</strong> You can select implausible senses too, sometimes the best stories break the rules.
                       </p>
                       <div className="flex flex-wrap gap-3 text-[11px]">
                         <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 bg-cyan-500/60" /> Recommended</span>
@@ -1150,7 +1150,7 @@ const Sensorium = () => {
                   {metabolicBudget.overBudget && (
                     <p className="text-xs text-sf-crimson flex items-center gap-1">
                       <AlertTriangle className="h-3 w-3" />
-                      Over budget—this sensory suite requires extraordinary metabolic justification.
+                      Over budget, this sensory suite requires extraordinary metabolic justification.
                     </p>
                   )}
                   {!metabolicBudget.overBudget && metabolicBudget.totalCost > metabolicBudget.warningThreshold && (
@@ -1468,7 +1468,7 @@ const Sensorium = () => {
 
                     <QuestionSection
                       id="gap-perceives"
-                      label="Species Perceives—Story Notes"
+                      label="Species Perceives, Story Notes"
                       prompts={[
                         "How do these extra senses create misunderstanding with humans?",
                         "What do they find obvious that humans miss entirely?",
@@ -1486,7 +1486,7 @@ const Sensorium = () => {
                     />
                     <QuestionSection
                       id="gap-blind"
-                      label="Species Blind—Story Notes"
+                      label="Species Blind, Story Notes"
                       prompts={[
                         "What human experiences are they completely blind to?",
                         "How does this blindness create vulnerability or misunderstanding?",
@@ -1504,7 +1504,7 @@ const Sensorium = () => {
                     />
                     <QuestionSection
                       id="gap-conflict"
-                      label="Conflict Potential—Story Notes"
+                      label="Conflict Potential, Story Notes"
                       prompts={[
                         "How do perception differences create dramatic tension?",
                         "What miscommunications arise from different sensory worlds?",
@@ -1545,7 +1545,7 @@ const Sensorium = () => {
                   id="narrative-summary"
                   label="Narrative Summary"
                   prompts={[
-                    "Describe what it's like to BE this species—how they experience reality.",
+                    "Describe what it's like to BE this species, how they experience reality.",
                     "Write a brief passage from their sensory perspective.",
                   ]}
                   value={formState.synthesis.narrativeSummary}

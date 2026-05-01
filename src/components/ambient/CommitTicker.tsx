@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 /**
- * CommitTicker — rotating fake "last commit" message for ambient flavor.
+ * CommitTicker, rotating fake "last commit" message for ambient flavor.
  * Picks one entry per day based on the day-of-year, so the string feels
  * stable per session but drifts across the week. April 2026 handoff §15.
  *

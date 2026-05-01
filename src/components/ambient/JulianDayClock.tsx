@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 /**
- * JulianDayClock — renders the current Julian Date in mono.
+ * JulianDayClock, renders the current Julian Date in mono.
  * Updates every 60s. Non-interactive, ambient telemetry.
  *
  * Format: `JD 2461158.5`

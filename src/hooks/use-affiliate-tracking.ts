@@ -1,5 +1,5 @@
 /**
- * Affiliate click tracking — lightweight localStorage counter.
+ * Affiliate click tracking, lightweight localStorage counter.
  * Fire-and-forget: call on link click, never blocks navigation.
  */
 
@@ -12,6 +12,6 @@ export function trackAffiliateClick(quoteId: string, affiliateUrl: string): void
     data._lastClick = new Date().toISOString();
     localStorage.setItem(key, JSON.stringify(data));
   } catch {
-    // localStorage unavailable or full — silently ignore
+    // localStorage unavailable or full, silently ignore
   }
 }

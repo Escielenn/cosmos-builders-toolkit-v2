@@ -1,5 +1,5 @@
 /**
- * Export preferences panel — embeddable in Profile page.
+ * Export preferences panel, embeddable in Profile page.
  * Lets users pick their default format, theme, and filename options.
  */
 

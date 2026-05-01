@@ -154,7 +154,7 @@ const DrakeSummaryTemplate = ({
           {DRAKE_VARIABLES.map((variable) => (
             <PDFKeyValuePair
               key={variable.id}
-              label={`${variable.symbol}—${variable.name}`}
+              label={`${variable.symbol}, ${variable.name}`}
               value={
                 variable.id === "L"
                   ? formatNumber(

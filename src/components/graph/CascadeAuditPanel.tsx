@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// CascadeAuditPanel — The Environmental Cascade turned into a revision
+// CascadeAuditPanel, The Environmental Cascade turned into a revision
 // assistant. Shows the full upstream/downstream cascade tree for an entity.
 // Section 9 of the spec.
 // ---------------------------------------------------------------------------

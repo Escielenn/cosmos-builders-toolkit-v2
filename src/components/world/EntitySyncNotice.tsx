@@ -118,7 +118,7 @@ export default function EntitySyncNotice({
 // ---------------------------------------------------------------------------
 
 function formatValue(value: unknown): string {
-  if (value === null || value === undefined) return "—";
+  if (value === null || value === undefined) return "-";
   if (typeof value === "number") return String(value);
   return String(value);
 }

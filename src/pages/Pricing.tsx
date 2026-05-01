@@ -31,7 +31,7 @@ const Pricing = () => {
   const [showVanguardWelcome, setShowVanguardWelcome] = useState(false);
   const handledRef = useRef(false);
 
-  // Handle success/cancel query params — run once only
+  // Handle success/cancel query params, run once only
   useEffect(() => {
     if (handledRef.current) return;
 
@@ -164,7 +164,7 @@ const Pricing = () => {
     "10–25% off SF courses",
   ];
 
-  // Determine if user is on Pro (not Vanguard) — show upgrade CTA
+  // Determine if user is on Pro (not Vanguard), show upgrade CTA
   const isProOnly = isSubscribed && tier === 'pro';
 
   return (
@@ -173,7 +173,7 @@ const Pricing = () => {
 
       <main className="relative container mx-auto px-4 pt-24 pb-16">
         <PageBursts bursts={PRICING_BURSTS} />
-        {/* Hero — with parallax telemetry strips */}
+        {/* Hero, with parallax telemetry strips */}
         <section className="relative overflow-hidden mb-16 py-12">
           <div className="absolute inset-0 opacity-40 pointer-events-none">
             <ParallaxStrips height={300} />
@@ -289,7 +289,7 @@ const Pricing = () => {
                   ) : (
                     <Zap className="w-4 h-4 mr-2" />
                   )}
-                  UPGRADE (YEARLY) — ${PRICING.pro.yearly.price}/year
+                  UPGRADE (YEARLY), ${PRICING.pro.yearly.price}/year
                 </Button>
                 <Button
                   variant="outline"
@@ -300,7 +300,7 @@ const Pricing = () => {
                   {loading === 'monthly' ? (
                     <Loader variant="inline" size="sm" className="mr-2" />
                   ) : null}
-                  Monthly — ${PRICING.pro.monthly.price}/month
+                  Monthly, ${PRICING.pro.monthly.price}/month
                 </Button>
               </div>
             )}
@@ -374,7 +374,7 @@ const Pricing = () => {
                   ) : (
                     <Sparkles className="w-4 h-4 mr-2" />
                   )}
-                  UPGRADE TO VANGUARD — ${PRICING.vanguard.yearly.price}/yr
+                  UPGRADE TO VANGUARD, ${PRICING.vanguard.yearly.price}/yr
                 </Button>
                 <Button
                   variant="outline"
@@ -385,7 +385,7 @@ const Pricing = () => {
                   {loading === 'vanguard-monthly' ? (
                     <Loader variant="inline" size="sm" className="mr-2" />
                   ) : null}
-                  Monthly — ${PRICING.vanguard.monthly.price}/month
+                  Monthly, ${PRICING.vanguard.monthly.price}/month
                 </Button>
                 <p className="text-xs text-t4 text-center">
                   Your Pro plan will be upgraded. Stripe handles the prorated billing.
@@ -404,7 +404,7 @@ const Pricing = () => {
                   ) : (
                     <Sparkles className="w-4 h-4 mr-2" />
                   )}
-                  VANGUARD (YEARLY) — ${PRICING.vanguard.yearly.price}/year
+                  VANGUARD (YEARLY), ${PRICING.vanguard.yearly.price}/year
                 </Button>
                 <Button
                   variant="outline"
@@ -415,7 +415,7 @@ const Pricing = () => {
                   {loading === 'vanguard-monthly' ? (
                     <Loader variant="inline" size="sm" className="mr-2" />
                   ) : null}
-                  Monthly — ${PRICING.vanguard.monthly.price}/month
+                  Monthly, ${PRICING.vanguard.monthly.price}/month
                 </Button>
               </div>
             )}
@@ -432,7 +432,7 @@ const Pricing = () => {
               <div>
                 <h3 className="font-heading text-lg font-light uppercase tracking-[2px] mb-1">Vanguard: Shape What Comes Next</h3>
                 <p className="text-sm text-t2">
-                  Vanguard members don't just use StellarForge—they help build it. Vote on the roadmap, get early access to new instruments before anyone else, and join bi-weekly Office Hours to discuss science fiction worldbuilding directly with the creator.
+                  Vanguard members don't just use StellarForge, they help build it. Vote on the roadmap, get early access to new instruments before anyone else, and join bi-weekly Office Hours to discuss science fiction worldbuilding directly with the creator.
                 </p>
               </div>
             </div>

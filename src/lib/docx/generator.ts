@@ -694,7 +694,7 @@ export const generateWorldDocx = async ({
           },
         },
         headers: {
-          default: createBrandedHeader(`${worldName} — World Bible`),
+          default: createBrandedHeader(`${worldName}, World Bible`),
         },
         footers: {
           default: createBrandedFooter(),

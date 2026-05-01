@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// WorldWritingSpace — Dedicated writing environment for a world.
+// WorldWritingSpace, Dedicated writing environment for a world.
 //
 // Route: /worlds/:worldId/write
 // Layout:
@@ -59,7 +59,7 @@ import { useToast } from "@/hooks/use-toast";
 const AUTOSAVE_DELAY = 5000; // 5 seconds of inactivity
 
 // ---------------------------------------------------------------------------
-// Hook — fetch moodboard images for a world (from worksheet data.moodboard)
+// Hook, fetch moodboard images for a world (from worksheet data.moodboard)
 // ---------------------------------------------------------------------------
 
 function useWorldMoodboardImages(worldId: string | undefined) {
@@ -421,7 +421,7 @@ const WorldWritingSpace = () => {
   );
 
   const handleChapterNewFolder = useCallback(() => {
-    // April 2026 handoff: no native browser prompts — open themed PromptDialog.
+    // April 2026 handoff: no native browser prompts, open themed PromptDialog.
     setNewFolderPromptOpen(true);
   }, []);
 
@@ -459,7 +459,7 @@ const WorldWritingSpace = () => {
   );
 
   // ---------------------------------------------------------------------------
-  // Entity panel — insert helpers
+  // Entity panel, insert helpers
   // ---------------------------------------------------------------------------
 
   const handleInsertMention = useCallback((name: string) => {
@@ -525,28 +525,28 @@ const WorldWritingSpace = () => {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Ctrl+S — manual save / snapshot
+      // Ctrl+S, manual save / snapshot
       if ((e.ctrlKey || e.metaKey) && e.key === "s") {
         e.preventDefault();
         handleManualSave();
         return;
       }
 
-      // Ctrl+[ — toggle sidebar
+      // Ctrl+[, toggle sidebar
       if ((e.ctrlKey || e.metaKey) && !e.shiftKey && (e.key === "[" || e.key === "\\")) {
         e.preventDefault();
         setSidebarOpen((p) => !p);
         return;
       }
 
-      // Ctrl+Shift+\ — toggle right panel
+      // Ctrl+Shift+\, toggle right panel
       if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === "\\") {
         e.preventDefault();
         setRightPanelOpen((p) => !p);
         return;
       }
 
-      // Ctrl+M — toggle moodboard
+      // Ctrl+M, toggle moodboard
       if ((e.ctrlKey || e.metaKey) && e.key === "m") {
         e.preventDefault();
         setMoodboardOpen((p) => !p);
@@ -577,13 +577,13 @@ const WorldWritingSpace = () => {
   if (!worldId) return null;
 
   // ---------------------------------------------------------------------------
-  // Zen Mode — full-viewport distraction-free overlay
+  // Zen Mode, full-viewport distraction-free overlay
   // ---------------------------------------------------------------------------
 
   if (zenMode && selectedDoc) {
     return (
       <div className="fixed inset-0 z-[9999] bg-sf-void flex flex-col items-center overflow-hidden">
-        {/* Exit button — top-right corner */}
+        {/* Exit button, top-right corner */}
         <button
           onClick={() => setZenMode(false)}
           className="fixed top-4 right-4 z-[10000] flex items-center gap-2 px-3 py-2 text-[10px] font-heading uppercase tracking-[1.5px] text-t4 hover:text-t2 border border-white/[0.08] hover:border-white/[0.15] bg-sf-surface/80 backdrop-blur-md rounded-xs transition-all opacity-60 hover:opacity-100"
@@ -640,7 +640,7 @@ const WorldWritingSpace = () => {
 
   return (
     <div className="flex flex-col h-full w-full overflow-hidden">
-      {/* Moodboard Strip — above everything */}
+      {/* Moodboard Strip, above everything */}
       <WritingMoodboardStrip
         images={moodImages}
         open={moodboardOpen}
@@ -761,7 +761,7 @@ const WorldWritingSpace = () => {
             </div>
           )}
 
-          {/* Editor area — wideMode bypasses the max-w-4xl centering */}
+          {/* Editor area, wideMode bypasses the max-w-4xl centering */}
           <div className="flex-1 overflow-y-auto px-4 py-4 md:px-8 md:py-6">
             {selectedDoc ? (
               <div className={wideMode ? "w-full" : "max-w-4xl mx-auto"}>

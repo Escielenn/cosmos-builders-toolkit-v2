@@ -1,4 +1,4 @@
-// GRAVITAS — TypeScript interfaces for all calculation modes
+// GRAVITAS, TypeScript interfaces for all calculation modes
 
 // ─── Calculation & Realism Modes ────────────────────────────────────
 

@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// useDocumentVersions — version history for writing-space documents.
+// useDocumentVersions, version history for writing-space documents.
 //
 // Primary storage: Supabase `document_versions` table (20-row cap per doc
 // enforced by a server-side trigger).
@@ -76,7 +76,7 @@ function saveLocalSnapshots(
   try {
     localStorage.setItem(storageKey(documentId), JSON.stringify(snapshots));
   } catch {
-    // localStorage full — evict oldest half and retry
+    // localStorage full, evict oldest half and retry
     const trimmed = snapshots.slice(Math.floor(snapshots.length / 2));
     try {
       localStorage.setItem(storageKey(documentId), JSON.stringify(trimmed));
@@ -236,7 +236,7 @@ export function useDocumentVersions(
             }
           })();
         }
-        // Clear localStorage either way — DB is now canonical
+        // Clear localStorage either way, DB is now canonical
         clearLocalSnapshots(documentId);
       }
 

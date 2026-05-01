@@ -1,6 +1,6 @@
 /**
  * One-click export button that uses the user's saved preferences.
- * Generates and downloads immediately — no dialog needed.
+ * Generates and downloads immediately, no dialog needed.
  */
 
 import { useState, type ReactElement } from "react";
@@ -72,7 +72,7 @@ const QuickExportButton = ({
     if (fmt === "pdf-summary" && summaryTemplate) return fmt;
     if (fmt === "pdf-full" && fullTemplate) return fmt;
     if (fmt === "pdf-summary" || fmt === "pdf-full") {
-      // PDF preference but no matching template — fallback to whatever is available
+      // PDF preference but no matching template, fallback to whatever is available
       if (summaryTemplate) return "pdf-summary" as const;
       if (fullTemplate) return "pdf-full" as const;
       return "json" as const;

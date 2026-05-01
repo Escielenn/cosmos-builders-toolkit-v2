@@ -84,7 +84,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
   const [codexHintDismissed] = useHintDismissed("codex");
   const [activeTags, setActiveTags] = useState<string[]>([]);
 
-  // Pinned items — persisted per world
+  // Pinned items, persisted per world
   const [pinnedIds, setPinnedIds] = useState<Set<string>>(() => {
     try {
       const stored = localStorage.getItem(`sf-codex-pinned-${worldId}`);
@@ -184,7 +184,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
     [navigate, worldId, navigateToTool]
   );
 
-  // Default click handler — respects defaultView preference
+  // Default click handler, respects defaultView preference
   const navigateToElement = useCallback(
     (element: CodexElement) => {
       // Writing entries → navigate to Writing Prompts
@@ -271,7 +271,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
       const entry = entries.find((e) => e.id === activeId);
       if (!entry?.entryId) return;
 
-      // Dropping into a folder — move entry under that parent
+      // Dropping into a folder, move entry under that parent
       if (dropIntoFolder) {
         const folderEl = entries.find((e) => e.id === dropIntoFolder);
         if (folderEl?.entryId) {

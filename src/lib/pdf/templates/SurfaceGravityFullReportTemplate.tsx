@@ -36,8 +36,8 @@ const SurfaceGravityFullReportTemplate = ({ formState: rawFormState, worldName, 
         <PDFSection title="Planet Parameters">
           <View style={{ flexDirection: "row", gap: spacing.md }}>
             <View style={{ flex: 1 }}>
-              <PDFKeyValuePair label="Mass" value={`${data?.primary?.mass?.toFixed(3) || "—"} M⊕ (${result.massKg.toExponential(3)} kg)`} />
-              <PDFKeyValuePair label="Radius" value={`${data?.primary?.radius?.toFixed(3) || "—"} R⊕ (${result.radiusKm.toFixed(0)} km)`} />
+              <PDFKeyValuePair label="Mass" value={`${data?.primary?.mass?.toFixed(3) || "-"} M⊕ (${result.massKg.toExponential(3)} kg)`} />
+              <PDFKeyValuePair label="Radius" value={`${data?.primary?.radius?.toFixed(3) || "-"} R⊕ (${result.radiusKm.toFixed(0)} km)`} />
               <PDFKeyValuePair label="Composition" value={composition?.label || "Custom"} />
             </View>
             <View style={{ flex: 1 }}>
@@ -53,7 +53,7 @@ const SurfaceGravityFullReportTemplate = ({ formState: rawFormState, worldName, 
               <PDFResultBox
                 label="Surface Gravity"
                 value={formatGravity(result.gravity)}
-                subtitle={`${result.gravityMs2.toFixed(2)} m/s² — ${result.regimeLabel}`}
+                subtitle={`${result.gravityMs2.toFixed(2)} m/s², ${result.regimeLabel}`}
               />
               <View style={{ flexDirection: "row", gap: spacing.md, marginTop: spacing.sm }}>
                 <View style={{ flex: 1 }}>
@@ -122,7 +122,7 @@ const SurfaceGravityFullReportTemplate = ({ formState: rawFormState, worldName, 
                     {gas.name}
                   </Text>
                   <Text style={{ fontSize: typography.sizes.xs, color: colors.text.muted, flex: 1 }}>
-                    λ = {gas.escapeParameter.toFixed(1)} — {gas.status}
+                    λ = {gas.escapeParameter.toFixed(1)}, {gas.status}
                   </Text>
                 </View>
               ))}

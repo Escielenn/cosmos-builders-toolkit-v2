@@ -579,7 +579,7 @@ const StellarCartographer: React.FC = () => {
     ctx.fillStyle = '#050508';
     ctx.fillRect(0, 0, w, h);
 
-    // Background stars — cached to offscreen canvas, composited with parallax offset
+    // Background stars, cached to offscreen canvas, composited with parallax offset
     if (bgDirtyRef.current || !bgCanvasRef.current || bgCanvasRef.current.width !== w * 2 || bgCanvasRef.current.height !== h * 2) {
       const bgCanvas = document.createElement('canvas');
       bgCanvas.width = w * 2;
@@ -1194,7 +1194,7 @@ const StellarCartographer: React.FC = () => {
         }));
       }
 
-      // Orbit inertia — apply decaying velocity after drag release
+      // Orbit inertia, apply decaying velocity after drag release
       if (inertiaRef.current.active) {
         const { vx, vy } = inertiaRef.current;
         const speed = Math.sqrt(vx * vx + vy * vy);

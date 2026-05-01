@@ -2,7 +2,7 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 /**
- * SectionHero — canonical section header per April 2026 handoff.
+ * SectionHero, canonical section header per April 2026 handoff.
  *
  * Mirrors the style guide's `.sg-sec-head` pattern (source/shared.css):
  *   <eyebrow>// 02 · COLOR SYSTEM</eyebrow>
@@ -18,11 +18,11 @@ import { cn } from "@/lib/utils";
  */
 
 interface SectionHeroProps extends React.HTMLAttributes<HTMLDivElement> {
-  /** Mono eyebrow text — e.g. "// 02 · COLOR SYSTEM" or "// WORLD INDEX" */
+  /** Mono eyebrow text, e.g. "// 02 · COLOR SYSTEM" or "// WORLD INDEX" */
   eyebrow?: string;
-  /** Display H1 title — sentence case. Wrap accent words in <span>...</span> with text-sf-teal class for green emphasis. */
+  /** Display H1 title, sentence case. Wrap accent words in <span>...</span> with text-sf-teal class for green emphasis. */
   title: React.ReactNode;
-  /** Body subtitle — short paragraph in t3 */
+  /** Body subtitle, short paragraph in t3 */
   subtitle?: React.ReactNode;
   /** Optional right-aligned subtitle (matches sg-sec-head-r pattern) */
   rightSubtitle?: React.ReactNode;

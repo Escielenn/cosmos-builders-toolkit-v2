@@ -1,4 +1,4 @@
-/** SF Quotes — rotating literary epigraphs for homepage and tool pages. */
+/** SF Quotes, rotating literary epigraphs for homepage and tool pages. */
 
 import { getAmazonUrl, getBookshopUrl } from "@/lib/bookshelf-data";
 

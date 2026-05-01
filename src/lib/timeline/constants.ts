@@ -1,4 +1,4 @@
-// Timeline Tool — Constants & Configuration
+// Timeline Tool, Constants & Configuration
 
 import type { EventType, TrackType, ImportanceLevel, LinkType, TimelineState } from "./types";
 

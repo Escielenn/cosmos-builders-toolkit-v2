@@ -379,13 +379,13 @@ export const SF_EXPANSION_EXAMPLES: SFExpansionExample[] = [
     name: "Aurora",
     source: "Kim Stanley Robinson",
     model: "Generation ship to Tau Ceti reveals the walls of interstellar expansion. Every gap compounds over centuries.",
-    dominantForces: "Scientific (walls dominate—ecosystem closure, radiation, alien biochemistry), Social (generational trauma, ship politics)",
+    dominantForces: "Scientific (walls dominate, ecosystem closure, radiation, alien biochemistry), Social (generational trauma, ship politics)",
     consequence: "A deliberate counter-narrative to optimistic expansion. Shows how walls (closed-loop ecology failure, immune system incompatibility with alien biomes) can make interstellar expansion fundamentally impossible without the One Big Lie.",
   },
   {
     name: "Revelation Space",
     source: "Alastair Reynolds",
-    model: "No FTL—lightspeed is the wall. Expansion happens through slowships and automated probes. Centuries of isolation create divergent civilizations.",
+    model: "No FTL, lightspeed is the wall. Expansion happens through slowships and automated probes. Centuries of isolation create divergent civilizations.",
     dominantForces: "Scientific (lighthugger tech), Industrial (Pattern Juggler biotech, alien artifacts), Social (posthuman divergence)",
     consequence: "Without FTL as a catalyst, expansion is slow and uneven. Each colony becomes culturally isolated. The Melding Plague (a wall) collapses one civilization entirely. Shows how a single technological wall can reverse centuries of expansion.",
   },
@@ -395,7 +395,7 @@ export const SF_EXPANSION_EXAMPLES: SFExpansionExample[] = [
 
 export const SECTION_HELPERS = {
   foundation: "Every expansion begins with a starting point. Define who is expanding, when, and what single physics departure (the One Big Lie) makes it possible.",
-  phases: "Space expansion happens in stages—each milestone represents a new era of capability and challenge. Not every story reaches the stars.",
+  phases: "Space expansion happens in stages, each milestone represents a new era of capability and challenge. Not every story reaches the stars.",
   forces: "Six fundamental forces shape every expansion. At each phase, configure their intensity and direction. Like ocean currents, they can push with or against the tide of expansion.",
   modifiers: "Events and conditions that alter the pace and direction of expansion. Walls stop it. Catalysts accelerate it. Gaps must be filled. Barriers must be overcome.",
   matrix: "How do the six forces interact with each other at each phase? Synergies accelerate expansion. Conflicts create drama. Tensions generate the best stories.",
@@ -644,7 +644,7 @@ export function applyTemplate(templateId: string): FormState {
       base.foundation = {
         ...base.foundation,
         expansionName: "The Long Reach",
-        oneBigLie: "None—hard science only. Chemical and nuclear thermal propulsion. No FTL, no magical drives.",
+        oneBigLie: "None, hard science only. Chemical and nuclear thermal propulsion. No FTL, no magical drives.",
         originCivilization: "International Space Consortium",
         startYear: "2030",
         startingConditions: "Incremental progress. No single catalyst. Just persistent human curiosity and resource needs.",

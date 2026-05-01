@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// WritingReferencePanel — Right sidebar for the Writing Space.
+// WritingReferencePanel, Right sidebar for the Writing Space.
 //
 // Three tabs:
 //   Notes:   Browse & pin worksheets, world notes with inline expand and pin.
@@ -82,7 +82,7 @@ export function WritingReferencePanel({
   const [expandedNoteIds, setExpandedNoteIds] = useState<Set<string>>(new Set());
   const [worksheetsExpanded, setWorksheetsExpanded] = useState(false);
 
-  // Scratchpad — persisted to localStorage
+  // Scratchpad, persisted to localStorage
   const scratchKey = `sf-scratchpad-${worldId}`;
   const [scratchText, setScratchText] = useState(() => {
     try {
@@ -101,7 +101,7 @@ export function WritingReferencePanel({
         try {
           localStorage.setItem(scratchKey, value);
         } catch {
-          // storage full — ignore
+          // storage full, ignore
         }
       }, 400);
     },

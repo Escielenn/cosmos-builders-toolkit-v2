@@ -2,7 +2,7 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 /**
- * KeyValueRow — `label :  value` line for telemetry panels. April 2026
+ * KeyValueRow, `label :  value` line for telemetry panels. April 2026
  * handoff §09. Both sides mono.
  *
  * Usage:

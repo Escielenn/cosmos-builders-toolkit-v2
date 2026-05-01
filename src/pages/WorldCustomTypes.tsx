@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// WorldCustomTypes — manage user-defined entity types for a world.
+// WorldCustomTypes, manage user-defined entity types for a world.
 //
 // Route: /worlds/:worldId/custom-types
 // Lets the user create named templates (e.g. "Deity") and define the
@@ -105,7 +105,7 @@ export default function WorldCustomTypes() {
           </h1>
           <p className="text-sm text-t3 max-w-2xl">
             Define your own element types with custom fields. Every entity
-            created from a template will carry these fields — great for homebrew
+            created from a template will carry these fields, great for homebrew
             concepts like sword styles, deities, trading routes, or anything
             unique to your world.
           </p>
@@ -217,7 +217,7 @@ export default function WorldCustomTypes() {
 }
 
 // ---------------------------------------------------------------------------
-// TemplateDetailEditor — right-pane editor for one template
+// TemplateDetailEditor, right-pane editor for one template
 // ---------------------------------------------------------------------------
 
 interface TemplateDetailEditorProps {

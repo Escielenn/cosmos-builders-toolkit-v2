@@ -1,4 +1,4 @@
-/** Ship's Voice loading messages — contextual per route. */
+/** Ship's Voice loading messages, contextual per route. */
 
 const loadingMessages: Record<string, string[]> = {
   dashboard: [

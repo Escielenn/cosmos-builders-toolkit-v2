@@ -1,10 +1,10 @@
 // ---------------------------------------------------------------------------
-// StellarForgeEditor — Unified editor wrapper with three presets.
+// StellarForgeEditor, Unified editor wrapper with three presets.
 //
 // Presets:
-//   compact — Basic toolbar (bold, italic, link), no headings, smaller min-height
-//   rich    — Full toolbar, resizable, entity mentions + wiki links
-//   full    — Like rich but with word count footer, focus mode toggle, max width
+//   compact, Basic toolbar (bold, italic, link), no headings, smaller min-height
+//   rich   , Full toolbar, resizable, entity mentions + wiki links
+//   full   , Like rich but with word count footer, focus mode toggle, max width
 //
 // All presets include entity mentions when worldId is provided.
 // Includes WikiLink extension for [[ links.
@@ -602,7 +602,7 @@ export function StellarForgeEditor({
 }
 
 // ---------------------------------------------------------------------------
-// ToolbarBtn — small toolbar button matching existing pattern
+// ToolbarBtn, small toolbar button matching existing pattern
 // ---------------------------------------------------------------------------
 
 function ToolbarBtn({

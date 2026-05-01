@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// TemplateFieldsForm — render an editable form driven by a template's
+// TemplateFieldsForm, render an editable form driven by a template's
 // field schema. Values are held as a simple key→value record and passed
 // back via onChange.
 //
@@ -8,7 +8,7 @@
 //
 // Field types supported:
 //   text, longtext, number, select, multiselect, boolean, date
-//   entity_ref — temporarily rendered as a text input (holds the UUID
+//   entity_ref, temporarily rendered as a text input (holds the UUID
 //   manually); a proper entity picker will land with A3c extended.
 // ---------------------------------------------------------------------------
 

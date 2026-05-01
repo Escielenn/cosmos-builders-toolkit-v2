@@ -1,5 +1,5 @@
 /**
- * /prompts — Weekly Prompt Browser
+ * /prompts, Weekly Prompt Browser
  *
  * Shows a weekly rotation of 7 writing prompts (one per day, Mon-Sun).
  * Users can act on prompts ("Start Writing") which creates a writing entry
@@ -158,7 +158,7 @@ const PromptBrowserPage = () => {
           </div>
 
           <p className="text-t3 text-sm mt-3 max-w-2xl leading-relaxed">
-            Seven prompts rotate each week — one for every day. Act on them before
+            Seven prompts rotate each week, one for every day. Act on them before
             Sunday or they vanish. Each prompt is tuned for science fiction
             worldbuilders at different experience levels.
           </p>

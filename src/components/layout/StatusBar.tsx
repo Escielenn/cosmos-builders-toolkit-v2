@@ -4,7 +4,7 @@ import { SolCounter } from "@/components/ambient/SolCounter";
 import { LunarPhase } from "@/components/ambient/LunarPhase";
 import { TargetStar } from "@/components/ambient/TargetStar";
 
-// Simulator routes — status bar hidden on these (same as TextureOverlay)
+// Simulator routes, status bar hidden on these (same as TextureOverlay)
 const SIMULATOR_ROUTES = ["/rogue", "/tools/tidelock", "/tools/exosky", "/tools/stellar-cartographer"];
 
 /** Map pathname to a human-readable sector label */

@@ -67,7 +67,7 @@ const WorldToolPage = () => {
 
   // Tool pages read worldId from searchParams. Since we're inside WorldLayout,
   // the worldId is available via context. Tool pages will use useWorldId() hook
-  // to resolve it. No need to inject into searchParams — the hook handles both.
+  // to resolve it. No need to inject into searchParams, the hook handles both.
 
   return (
     <Suspense

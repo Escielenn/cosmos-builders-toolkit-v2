@@ -1,7 +1,7 @@
 /**
- * VelocityDial — ambient telemetry dial (April 2026 handoff).
+ * VelocityDial, ambient telemetry dial (April 2026 handoff).
  *
- * Cycles every 3.4s through four real reference frames. Non-interactive —
+ * Cycles every 3.4s through four real reference frames. Non-interactive , 
  * drop in footers, loading states, or empty states as mission-control flavor.
  *
  * Port of design_handoff_April_2026/reference-components/VelocityDial.tsx.

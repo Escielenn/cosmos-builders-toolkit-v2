@@ -125,7 +125,7 @@ const LexDriftFullReportTemplate = ({ formState: rawFormState, worldName, date }
 
             <PDFSection title="4. Predicted Outcomes">
               <PDFKeyValuePair label="Status" value={result.severityLabel} />
-              <PDFKeyValuePair label="Mutual Intelligibility" value={`${result.intelligibilityPercent.toFixed(0)}% — ${result.intelligibilityDescription}`} />
+              <PDFKeyValuePair label="Mutual Intelligibility" value={`${result.intelligibilityPercent.toFixed(0)}%, ${result.intelligibilityDescription}`} />
               <PDFKeyValuePair label="Generations" value={result.generations.toFixed(0)} />
               <PDFKeyValuePair label="Estimated New Terms" value={`~${result.estimatedNewTerms.toLocaleString()}`} />
             </PDFSection>

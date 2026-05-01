@@ -252,7 +252,7 @@ const EventDetailPanel = ({
             </div>
           )}
 
-          {/* Start Date — Earth or Custom Calendar */}
+          {/* Start Date, Earth or Custom Calendar */}
           <div className="space-y-1.5">
             <Label className="text-xs">Start Date</Label>
             {isCustomCalendar && selectedCalendar ? (

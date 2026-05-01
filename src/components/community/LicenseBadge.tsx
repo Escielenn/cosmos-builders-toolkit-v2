@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// LicenseBadge — Shows license type with color coding and tooltip
+// LicenseBadge, Shows license type with color coding and tooltip
 // ---------------------------------------------------------------------------
 
 import {

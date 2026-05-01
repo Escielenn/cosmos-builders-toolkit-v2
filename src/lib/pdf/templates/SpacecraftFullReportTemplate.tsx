@@ -184,7 +184,7 @@ const SpacecraftFullReportTemplate = ({
         {/* Introduction */}
         <View style={{ marginBottom: spacing.lg }}>
           <Text style={{ fontSize: typography.sizes.sm, color: colors.text.secondary, lineHeight: 1.5, fontStyle: "italic" }}>
-            "The best SF ships aren't just vehicles—they're places people live, with all the mess, personality, and history that implies."
+            "The best SF ships aren't just vehicles, they're places people live, with all the mess, personality, and history that implies."
           </Text>
         </View>
 

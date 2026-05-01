@@ -1,5 +1,5 @@
 /**
- * SolarisControls — Camera mode buttons, display toggles, and speed controls.
+ * SolarisControls, Camera mode buttons, display toggles, and speed controls.
  * HTML overlay positioned over the Three.js canvas.
  * Uses the simulator aesthetic (cyan on deep black).
  */

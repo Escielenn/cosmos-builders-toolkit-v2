@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// useWritingPins — localStorage-backed pinned items for the writing space.
+// useWritingPins, localStorage-backed pinned items for the writing space.
 //
 // Allows writers to pin notes, entities, or text snippets to keep them
 // visible while writing. Stored per-world in localStorage.
@@ -47,7 +47,7 @@ function savePins(worldId: string, pins: PinnedItem[]): void {
   try {
     localStorage.setItem(storageKey(worldId), JSON.stringify(pins));
   } catch {
-    // localStorage full — silently fail
+    // localStorage full, silently fail
   }
 }
 

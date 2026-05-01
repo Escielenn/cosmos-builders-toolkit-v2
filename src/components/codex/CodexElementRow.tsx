@@ -75,7 +75,7 @@ const CodexElementRow = memo(({
 
   const sharedStyle = { paddingLeft: depth * 16 + 12 };
 
-  // Inline rename mode — render as a div with input (no nested interactives)
+  // Inline rename mode, render as a div with input (no nested interactives)
   if (editing) {
     return (
       <div

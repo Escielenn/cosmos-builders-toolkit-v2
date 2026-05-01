@@ -42,7 +42,7 @@ export const useWorld = (worldId: string | undefined) => {
 
       if (error) throw error;
 
-      // RLS handles access control — owners and collaborators both allowed
+      // RLS handles access control, owners and collaborators both allowed
       if (data) {
         return {
           ...data,

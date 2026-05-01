@@ -410,7 +410,7 @@ const ToolsWiki = () => {
           </div>
           <p className="text-t2 text-sm max-w-2xl leading-relaxed mt-3">
             {allTools.length} tools organized by the Environmental Cascade.
-            Each tool builds on what comes before—each output becomes input for what follows.
+            Each tool builds on what comes before, each output becomes input for what follows.
           </p>
           <div className="mt-4">
             <Link to="/getting-started">

@@ -29,7 +29,7 @@ const SensoriumSummaryTemplate = ({ formState: rawFormState, worldName, date }: 
     <Document>
       <Page size="LETTER" style={styles.page}>
         <PDFHeader
-          toolName="Sensorium — Alien Sensory Systems"
+          toolName="Sensorium, Alien Sensory Systems"
           worldName={worldName}
           date={date}
           hideLogo
@@ -47,14 +47,14 @@ const SensoriumSummaryTemplate = ({ formState: rawFormState, worldName, date }: 
         <PDFSection title="Environment Configuration">
           <View style={{ flexDirection: "row", gap: spacing.md }}>
             <View style={{ flex: 1 }}>
-              <PDFKeyValuePair label="Star Type" value={starPreset?.label || data?.environment?.star?.preset || "—"} />
-              <PDFKeyValuePair label="Peak Wavelength" value={`${data?.environment?.star?.peakWavelength || "—"} nm`} />
-              <PDFKeyValuePair label="UV Output" value={data?.environment?.star?.uvOutput || "—"} />
+              <PDFKeyValuePair label="Star Type" value={starPreset?.label || data?.environment?.star?.preset || "-"} />
+              <PDFKeyValuePair label="Peak Wavelength" value={`${data?.environment?.star?.peakWavelength || "-"} nm`} />
+              <PDFKeyValuePair label="UV Output" value={data?.environment?.star?.uvOutput || "-"} />
             </View>
             <View style={{ flex: 1 }}>
               <PDFKeyValuePair label="Atmosphere" value={atmoPreset?.label || "Custom"} />
-              <PDFKeyValuePair label="Pressure" value={`${data?.environment?.atmosphere?.pressure ?? "—"} atm`} />
-              <PDFKeyValuePair label="Medium" value={data?.environment?.medium?.type || "—"} />
+              <PDFKeyValuePair label="Pressure" value={`${data?.environment?.atmosphere?.pressure ?? "-"} atm`} />
+              <PDFKeyValuePair label="Medium" value={data?.environment?.medium?.type || "-"} />
             </View>
           </View>
           <View style={{ flexDirection: "row", gap: spacing.md, marginTop: spacing.xs }}>

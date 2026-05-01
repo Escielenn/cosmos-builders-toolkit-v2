@@ -1,7 +1,7 @@
 import { BreathingStar } from "@/components/ambient/BreathingStar";
 
 /**
- * StellarBackground — starfield + grain layer (April 2026 handoff).
+ * StellarBackground, starfield + grain layer (April 2026 handoff).
  *
  * Mounts once at the app root and renders a fixed, pointer-events: none
  * layer beneath all page content. The starfield (`.sf-starfield`) sits at

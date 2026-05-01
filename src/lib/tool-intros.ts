@@ -611,7 +611,7 @@ export const TOOL_INTROS: Record<string, ToolIntroData> = {
   "surface-gravity-calculator": {
     title: "The Weight of Worlds",
     purpose:
-      "Calculate surface gravity for any planet and trace how weight shapes biology, psychology, mythology, and culture. Gravity is the single most consequential worldbuilding variable — change it, and everything else follows.",
+      "Calculate surface gravity for any planet and trace how weight shapes biology, psychology, mythology, and culture. Gravity is the single most consequential worldbuilding variable, change it, and everything else follows.",
     examples: [
       {
         bookTitle: "Mission of Gravity",
@@ -622,7 +622,7 @@ export const TOOL_INTROS: Record<string, ToolIntroData> = {
           "The Mesklinites had never in their lives experienced a fall of more than a fraction of an inch, and the mere idea terrified them beyond description.",
         ],
         explanation:
-          "The gold standard for gravity-as-worldbuilding. Mesklin has 3g at the equator and 700g at the poles. Clement derives the Mesklinites' entire psychology — their pathological fear of heights, their caterpillar-like body plan, their refusal to stack objects — from a single variable: gravity.",
+          "The gold standard for gravity-as-worldbuilding. Mesklin has 3g at the equator and 700g at the poles. Clement derives the Mesklinites' entire psychology, their pathological fear of heights, their caterpillar-like body plan, their refusal to stack objects, from a single variable: gravity.",
       },
       {
         bookTitle: "Dragon's Egg",
@@ -734,7 +734,7 @@ export const TOOL_INTROS: Record<string, ToolIntroData> = {
           "Imagine you are Siri Keeton. You wake in an agony of resurrection, gasping after a billion years of... Everything was information, subject to the laws of competition.",
         ],
         explanation:
-          "The Scramblers detect electromagnetic radiation across spectra humans cannot perceive while lacking any form of consciousness. Watts derives their entire behavioral repertoire from what they can sense—and critically, from what they cannot.",
+          "The Scramblers detect electromagnetic radiation across spectra humans cannot perceive while lacking any form of consciousness. Watts derives their entire behavioral repertoire from what they can sense, and critically, from what they cannot.",
       },
       {
         bookTitle: "Dragon's Egg",
@@ -743,7 +743,7 @@ export const TOOL_INTROS: Record<string, ToolIntroData> = {
         isbn: "9780345375667",
         quotes: [],
         explanation:
-          "The Cheela perceive the world through magnetic field fluctuations and gamma radiation rather than visible light. Their sensory systems are derived entirely from the neutron star's extreme conditions—67 billion g of gravity, crushing magnetic fields, and nuclear physics as daily life.",
+          "The Cheela perceive the world through magnetic field fluctuations and gamma radiation rather than visible light. Their sensory systems are derived entirely from the neutron star's extreme conditions, 67 billion g of gravity, crushing magnetic fields, and nuclear physics as daily life.",
       },
       {
         bookTitle: "Children of Time",
@@ -752,7 +752,7 @@ export const TOOL_INTROS: Record<string, ToolIntroData> = {
         isbn: "9780316452502",
         quotes: [],
         explanation:
-          "The Portiid spiders perceive primarily through vibration and UV-reflective patterns. Tchaikovsky derives their entire civilization—architecture, communication, art—from what their senses can detect, not from human visual assumptions.",
+          "The Portiid spiders perceive primarily through vibration and UV-reflective patterns. Tchaikovsky derives their entire civilization, architecture, communication, art, from what their senses can detect, not from human visual assumptions.",
       },
     ],
   },

@@ -1,4 +1,4 @@
-// Timeline Tool — Type Definitions (Phase 1 + Phase 2)
+// Timeline Tool, Type Definitions (Phase 1 + Phase 2)
 
 export type TrackType =
   | "character"
@@ -150,7 +150,7 @@ export interface MoodboardImage {
   caption?: string;
 }
 
-// ─── Filter Types (Phase 3 — ephemeral, not persisted) ──────────────
+// ─── Filter Types (Phase 3, ephemeral, not persisted) ──────────────
 
 export interface TimelineFilter {
   searchQuery: string;

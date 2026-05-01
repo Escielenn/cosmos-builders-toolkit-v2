@@ -2,7 +2,7 @@ import { z } from "zod";
 
 // General Contact Form Schema
 export const generalContactSchema = z.object({
-  name: z.string().min(2, "NAME REQUIRED — AT LEAST 2 CHARS."),
+  name: z.string().min(2, "NAME REQUIRED, AT LEAST 2 CHARS."),
   email: z.string().email("VALID EMAIL REQUIRED."),
   message: z
     .string()
@@ -14,7 +14,7 @@ export type GeneralContactFormData = z.infer<typeof generalContactSchema>;
 
 // Support Ticket Form Schema
 export const supportTicketSchema = z.object({
-  name: z.string().min(2, "NAME REQUIRED — AT LEAST 2 CHARS."),
+  name: z.string().min(2, "NAME REQUIRED, AT LEAST 2 CHARS."),
   email: z.string().email("VALID EMAIL REQUIRED."),
   category: z.enum(["bug", "feature", "billing", "account", "other"], {
     required_error: "Select category.",
@@ -50,7 +50,7 @@ export const TICKET_PRIORITIES = [
 
 // Simple Submission Form Schema (for Feature Request, Bug Report, Beta Feedback)
 export const simpleSubmissionSchema = z.object({
-  name: z.string().min(2, "NAME REQUIRED — AT LEAST 2 CHARS."),
+  name: z.string().min(2, "NAME REQUIRED, AT LEAST 2 CHARS."),
   email: z.string().email("VALID EMAIL REQUIRED."),
   subject: z
     .string()
@@ -69,7 +69,7 @@ export type SimpleSubmissionType = "feature" | "bug" | "beta";
 
 // Early Access Request Schema
 export const earlyAccessSchema = z.object({
-  name: z.string().min(2, "NAME REQUIRED — AT LEAST 2 CHARS."),
+  name: z.string().min(2, "NAME REQUIRED, AT LEAST 2 CHARS."),
   email: z.string().email("VALID EMAIL REQUIRED."),
   writingFocus: z
     .string()

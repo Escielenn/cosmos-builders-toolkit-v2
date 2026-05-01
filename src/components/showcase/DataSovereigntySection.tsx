@@ -18,7 +18,7 @@ const DataSovereigntySection = () => {
       <hr className="sf-sovereignty-divider" />
 
       <p className="sf-sovereignty-subtext">
-        StellarForge is built on Supabase—the same open-source,
+        StellarForge is built on Supabase: the same open-source,
         enterprise-grade infrastructure trusted by production
         applications worldwide. Your data is encrypted at rest
         and in transit. It lives in secure, geographically

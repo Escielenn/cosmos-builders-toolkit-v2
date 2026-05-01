@@ -216,7 +216,7 @@ const PlanetaryFullReportTemplate = ({
         {/* Introduction */}
         <View style={{ marginBottom: spacing.lg }}>
           <Text style={{ fontSize: typography.sizes.sm, color: colors.text.secondary, lineHeight: 1.5, fontStyle: "italic" }}>
-            "The environment isn't just a backdrop—it's a character that shapes every aspect of the story."
+            "The environment isn't just a backdrop, it's a character that shapes every aspect of the story."
           </Text>
         </View>
 

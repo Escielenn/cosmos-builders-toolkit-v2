@@ -234,7 +234,7 @@ const DrakeFullReportTemplate = ({
                 <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start", marginBottom: spacing.xs }}>
                   <View style={{ flex: 1 }}>
                     <Text style={{ fontSize: typography.sizes.md, fontWeight: 600, color: colors.primary }}>
-                      {variable.symbol}—{variable.name}
+                      {variable.symbol}, {variable.name}
                     </Text>
                     <Text style={{ fontSize: typography.sizes.xs, color: colors.text.muted, marginTop: 2 }}>
                       {variable.description}

@@ -115,14 +115,14 @@ const SharedWorksheetView = () => {
               <SocialShareButtons
                 url={window.location.href}
                 title={data.title || "StellarForge Worksheet"}
-                description={`${getToolDisplayName(data.tool_type)} worksheet${data.world_name ? ` from the world of ${data.world_name}` : ""} — built with StellarForge`}
+                description={`${getToolDisplayName(data.tool_type)} worksheet${data.world_name ? ` from the world of ${data.world_name}` : ""}, built with StellarForge`}
               />
             </GlassPanel>
 
             {/* Footer */}
             <GlassPanel className="p-6 text-center">
               <p className="text-sm text-t3 mb-3">
-                Built with StellarForge—the science fiction worldbuilding toolkit
+                Built with StellarForge, the science fiction worldbuilding toolkit
               </p>
               <Button size="sm" asChild>
                 <Link to="/">Start building your world</Link>

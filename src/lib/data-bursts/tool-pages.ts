@@ -1,6 +1,6 @@
 import type { DataBurstConfig } from "./types";
 
-/** Per-tool domain data — keyed by tool slug */
+/** Per-tool domain data, keyed by tool slug */
 export const TOOL_PAGE_BURSTS: Record<string, DataBurstConfig[]> = {
   "environmental-chain-reaction": [
     { content: "CASCADE ANALYSIS // REV 4.2", position: { top: "8%", right: "3%" }, variant: "status", parallax: -0.05 },

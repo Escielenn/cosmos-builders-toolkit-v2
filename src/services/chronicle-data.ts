@@ -295,7 +295,7 @@ export async function updateCalendarConfig(
 
 /**
  * Parse a display date into an approximate sort value.
- * Best-effort heuristic — user can manually adjust.
+ * Best-effort heuristic, user can manually adjust.
  */
 export function estimateSortValue(displayDate: string): number {
   const match = displayDate.match(/-?[\d.]+/);

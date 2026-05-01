@@ -1,4 +1,4 @@
-// Time Dilation Calculator—Data Constants
+// Time Dilation Calculator, Data Constants
 // Journey presets, propulsion methods, reference frames, story prompts
 
 import type { Section } from "@/components/tools/SectionNavigation";
@@ -122,7 +122,7 @@ export const STORY_PROMPTS: Record<DilationSeverity, StoryPrompt[]> = {
   notable: [
     {
       title: "The Missed Birthday",
-      prompt: "A few days or weeks of difference—enough to miss a birthday, an anniversary, a deadline. Small but personal.",
+      prompt: "A few days or weeks of difference, enough to miss a birthday, an anniversary, a deadline. Small but personal.",
     },
     {
       title: "News Delay",
@@ -158,7 +158,7 @@ export const STORY_PROMPTS: Record<DilationSeverity, StoryPrompt[]> = {
     },
     {
       title: "The Stranger Returns",
-      prompt: "You left behind a young family. You return to find grandchildren—or an empty house. Your partner aged decades while you aged years.",
+      prompt: "You left behind a young family. You return to find grandchildren, or an empty house. Your partner aged decades while you aged years.",
     },
     {
       title: "Temporal Exile",
@@ -191,8 +191,8 @@ export const TIME_DILATION_SECTIONS: Section[] = [
 export const SECTION_HELPERS: Record<string, string> = {
   journey: "Choose your origin and destination. The distance between them determines the baseline travel time before dilation effects apply.",
   propulsion: "Your propulsion method determines the maximum speed your vessel can reach, which directly controls how much time dilation your travelers experience.",
-  velocity: "Constant velocity assumes instantaneous acceleration—clean for napkin math. Brachistochrone is realistic: accelerate halfway, decelerate the rest.",
+  velocity: "Constant velocity assumes instantaneous acceleration, clean for napkin math. Brachistochrone is realistic: accelerate halfway, decelerate the rest.",
   results: "All values computed using special relativity. The Lorentz factor (γ) tells you how much time slows for the traveler relative to the observer.",
-  reference: "Where does your story keep time? The 'home clock' is the calendar that matters for your narrative—the one your characters measure their absence against.",
+  reference: "Where does your story keep time? The 'home clock' is the calendar that matters for your narrative, the one your characters measure their absence against.",
   story: "Use these prompts to explore how time dilation affects your characters, their relationships, and the world they return to.",
 };

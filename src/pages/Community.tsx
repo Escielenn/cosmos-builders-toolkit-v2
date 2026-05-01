@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// Community — Browse page for community/public worlds
+// Community, Browse page for community/public worlds
 // Route: /community
 // ---------------------------------------------------------------------------
 

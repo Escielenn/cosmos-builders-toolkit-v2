@@ -482,7 +482,7 @@ const OneBigLie = () => {
             you're allowed one major departure from known physics, but everything
             else must follow real science rigorously. This tool guides you through
             declaring that departure and tracing its consequences across your
-            entire world—from physics to biology to mythology to culture.
+            entire world, from physics to biology to mythology to culture.
           </p>
           <div className="text-sm text-t3 mb-4">
             <strong className="text-t1">The Cascade Principle:</strong>
@@ -510,7 +510,7 @@ const OneBigLie = () => {
                           {example.name}
                         </strong>
                         <span className="text-t2 ml-2">
-                         —{example.source}
+                         , {example.source}
                         </span>
                       </span>
                       <ChevronDown className="w-4 h-4 text-t2 shrink-0" />
@@ -586,7 +586,7 @@ const OneBigLie = () => {
                   >
                     <span className="font-medium">{option.label}</span>
                     <span className="text-t2 ml-2">
-                     —{option.description}
+                     , {option.description}
                     </span>
                   </Label>
                 </div>
@@ -608,7 +608,7 @@ const OneBigLie = () => {
             <div className="space-y-6">
               <div className="space-y-2">
                 <Label>
-                  Core Statement—State your One Big Lie or One What If in one
+                  Core Statement, State your One Big Lie or One What If in one
                   clear, specific sentence. Then expand: What exactly does it
                   change about known physics or reality?
                 </Label>
@@ -627,7 +627,7 @@ const OneBigLie = () => {
 
               <div className="space-y-2">
                 <Label>
-                  What real science does this bend or break?—Identify the
+                  What real science does this bend or break?, Identify the
                   specific scientific principles, laws, or known facts your
                   element violates or reimagines.
                 </Label>
@@ -660,7 +660,7 @@ const OneBigLie = () => {
             <div className="space-y-6">
               <div className="space-y-2">
                 <Label>
-                  Narrative Justification—Why does this particular change
+                  Narrative Justification, Why does this particular change
                   interest you narratively or thematically? What story does it
                   let you tell that strict realism would prevent?
                 </Label>
@@ -683,7 +683,7 @@ const OneBigLie = () => {
 
               <div className="space-y-2">
                 <Label>
-                  What becomes possible?—Name at least one specific narrative
+                  What becomes possible?, Name at least one specific narrative
                   possibility your lie enables that realistic physics would
                   prevent.
                 </Label>
@@ -706,7 +706,7 @@ const OneBigLie = () => {
 
               <div className="space-y-2">
                 <Label>
-                  What becomes impossible or constrained?—Name at least one
+                  What becomes impossible or constrained?, Name at least one
                   constraint your lie creates. The best speculative elements
                   create problems as interesting as the possibilities they open.
                 </Label>
@@ -743,7 +743,7 @@ const OneBigLie = () => {
             <div className="space-y-6">
               <div className="space-y-2">
                 <Label>
-                  The In-World Test—Describe how a scientist or engineer in
+                  The In-World Test, Describe how a scientist or engineer in
                   your world would demonstrate, test, or prove that your Big Lie
                   works. What experiment would they run?
                 </Label>
@@ -762,7 +762,7 @@ const OneBigLie = () => {
 
               <div className="space-y-2">
                 <Label>
-                  The Rules—What are the specific rules and limitations? Under
+                  The Rules, What are the specific rules and limitations? Under
                   what conditions does it work? Under what conditions does it
                   fail? Vagueness leads to plot holes.
                 </Label>
@@ -781,7 +781,7 @@ const OneBigLie = () => {
 
               <div className="space-y-2">
                 <Label>
-                  Known Unknowns—What aspects do your characters NOT fully
+                  Known Unknowns, What aspects do your characters NOT fully
                   understand? Mystery within a framework of rules creates
                   narrative tension.
                 </Label>
@@ -804,7 +804,7 @@ const OneBigLie = () => {
           <CollapsibleSection
             id="section-physical"
             title="Physical / Biological Consequences"
-            subtitle="Cascading Consequences—Part A"
+            subtitle="Cascading Consequences, Part A"
             levelNumber={5}
             thinkLike="a biologist: what evolves?"
           >
@@ -818,7 +818,7 @@ const OneBigLie = () => {
             <div className="space-y-6">
               <div className="space-y-2">
                 <Label>
-                  Physical/Biological Impact—How does your Big Lie alter the
+                  Physical/Biological Impact, How does your Big Lie alter the
                   physical environment or biological reality? What new materials,
                   energy sources, or biological adaptations emerge?
                 </Label>
@@ -841,7 +841,7 @@ const OneBigLie = () => {
 
               <div className="space-y-2">
                 <Label>
-                  Second-Order Physical Effects—Go deeper. What does the first
+                  Second-Order Physical Effects, Go deeper. What does the first
                   impact cause in turn? If FTL exists, what happens to
                   simultaneity? If telepathy works, how does it affect brain
                   development?
@@ -869,7 +869,7 @@ const OneBigLie = () => {
           <CollapsibleSection
             id="section-tech"
             title="Technological / Economic Consequences"
-            subtitle="Cascading Consequences—Part B"
+            subtitle="Cascading Consequences, Part B"
             levelNumber={6}
             thinkLike="an economist: who profits?"
           >
@@ -880,7 +880,7 @@ const OneBigLie = () => {
             <div className="space-y-6">
               <div className="space-y-2">
                 <Label>
-                  Technological Impact—What technologies become possible (or
+                  Technological Impact, What technologies become possible (or
                   obsolete)? What industries emerge? What existing industries
                   die?
                 </Label>
@@ -903,7 +903,7 @@ const OneBigLie = () => {
 
               <div className="space-y-2">
                 <Label>
-                  Economic &amp; Power Impact—Who controls this element? Who
+                  Economic &amp; Power Impact, Who controls this element? Who
                   profits from it? Who is excluded? Scarcity and access drive
                   every economy and every conflict.
                 </Label>
@@ -930,7 +930,7 @@ const OneBigLie = () => {
           <CollapsibleSection
             id="section-social"
             title="Social / Psychological Consequences"
-            subtitle="Cascading Consequences—Part C"
+            subtitle="Cascading Consequences, Part C"
             levelNumber={7}
             thinkLike="a sociologist: how do people change?"
           >
@@ -941,7 +941,7 @@ const OneBigLie = () => {
             <div className="space-y-6">
               <div className="space-y-2">
                 <Label>
-                  Social/Psychological Impact—How does your Big Lie change the
+                  Social/Psychological Impact, How does your Big Lie change the
                   way people think, feel, and relate to each other? How does it
                   reshape families, communities, governance, or identity?
                 </Label>
@@ -966,7 +966,7 @@ const OneBigLie = () => {
 
               <div className="space-y-2">
                 <Label>
-                  Cultural &amp; Mythological Impact—What new beliefs, rituals,
+                  Cultural &amp; Mythological Impact, What new beliefs, rituals,
                   fears, or aspirations emerge? What stories do people tell about
                   it? What do they worship or dread?
                 </Label>
@@ -1005,11 +1005,11 @@ const OneBigLie = () => {
             <div className="space-y-6">
               <div className="space-y-2">
                 <Label>
-                  Rigor Area 1—Name one specific scientific domain where you
+                  Rigor Area 1, Name one specific scientific domain where you
                   will maintain strict accuracy despite your Big Lie.
                 </Label>
                 <p className="text-xs text-t4">
-                  e.g., "Orbital mechanics will be realistic—no banking turns
+                  e.g., "Orbital mechanics will be realistic, no banking turns
                   in space."
                 </p>
                 <Suspense fallback={<EditorSkeleton />}>
@@ -1027,10 +1027,10 @@ const OneBigLie = () => {
 
               <div className="space-y-2">
                 <Label>
-                  Rigor Area 2—Name a second domain of maintained rigor.
+                  Rigor Area 2, Name a second domain of maintained rigor.
                 </Label>
                 <p className="text-xs text-t4">
-                  e.g., "Biology will follow evolutionary logic—no humanoid
+                  e.g., "Biology will follow evolutionary logic, no humanoid
                   aliens without convergent evolution justification."
                 </p>
                 <Suspense fallback={<EditorSkeleton />}>
@@ -1048,10 +1048,10 @@ const OneBigLie = () => {
 
               <div className="space-y-2">
                 <Label>
-                  Rigor Area 3—Name a third domain of maintained rigor.
+                  Rigor Area 3, Name a third domain of maintained rigor.
                 </Label>
                 <p className="text-xs text-t4">
-                  e.g., "Economics will follow scarcity principles—no
+                  e.g., "Economics will follow scarcity principles, no
                   post-scarcity handwaving without technological basis."
                 </p>
                 <Suspense fallback={<EditorSkeleton />}>
@@ -1083,7 +1083,7 @@ const OneBigLie = () => {
             <div className="space-y-6">
               <div className="space-y-2">
                 <Label>
-                  The Hardest Question—What is the most difficult question
+                  The Hardest Question, What is the most difficult question
                   someone could ask about your Big Lie? The one that makes you
                   uncomfortable because you're not sure you have a good answer?
                 </Label>
@@ -1102,9 +1102,9 @@ const OneBigLie = () => {
 
               <div className="space-y-2">
                 <Label>
-                  The Edge Case—Describe a scenario where your Big Lie's rules
+                  The Edge Case, Describe a scenario where your Big Lie's rules
                   create an awkward or contradictory situation. How do you resolve
-                  it—or do you leave it as genuine mystery?
+                  it, or do you leave it as genuine mystery?
                 </Label>
                 <Suspense fallback={<EditorSkeleton />}>
                   <RichTextEditor
@@ -1121,7 +1121,7 @@ const OneBigLie = () => {
 
               <div className="space-y-2">
                 <Label>
-                  Connection to Your World—How does your Big Lie connect to
+                  Connection to Your World, How does your Big Lie connect to
                   your planetary foundation from the Planetary Profile tool? It
                   should feel like it belongs in this specific world.
                 </Label>
@@ -1157,7 +1157,7 @@ const OneBigLie = () => {
 
             <div className="space-y-2">
               <Label className="text-base font-semibold">
-                Formal Declaration—Write your formal Physics Declaration in
+                Formal Declaration, Write your formal Physics Declaration in
                 ~150 words: State your one big lie, your three areas of
                 maintained rigor, the one narrative possibility it enables, and
                 the one constraint it creates.

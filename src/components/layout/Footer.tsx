@@ -6,7 +6,7 @@ import { APP_VERSION } from "@/config/version";
 import { VelocityDial } from "@/components/ambient/VelocityDial";
 import { BuildSigil } from "@/components/ambient/BuildSigil";
 import { CommitTicker } from "@/components/ambient/CommitTicker";
-/* CosmicVelocityTicker removed — velocity data now in StatusBar */
+/* CosmicVelocityTicker removed, velocity data now in StatusBar */
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -171,7 +171,7 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Bottom Bar — coordinates, build, copyright */}
+        {/* Bottom Bar, coordinates, build, copyright */}
         <div className="mt-12 pt-8 border-t border-dashed border-sf-border">
           <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
             <div className="font-mono text-[11px] tracking-[0.18em] text-t4 text-center sm:text-left space-y-1">

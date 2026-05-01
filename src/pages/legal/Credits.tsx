@@ -44,10 +44,10 @@ Many meta and UI icons sourced from:
 
 ## Fonts
 
-- **MD Nichrome** by [Mass-Driver](https://mass-driver.com) — used for display titles
-- **Jura** — section headings and navigation
-- **DM Sans** — body text and interface
-- **JetBrains Mono** — data readouts and monospace elements
+- **MD Nichrome** by [Mass-Driver](https://mass-driver.com), used for display titles
+- **Jura**, section headings and navigation
+- **DM Sans**, body text and interface
+- **JetBrains Mono**, data readouts and monospace elements
 
 ---
 
@@ -73,7 +73,7 @@ Ambient and cinematic audio tracks from [Envato Elements](https://elements.envat
 
 ## A Note on Creative Assets
 
-All art, music, video, and icons used throughout StellarForge are created by living artists—not generative AI. We are committed to supporting and crediting human creators.
+All art, music, video, and icons used throughout StellarForge are created by living artists, not generative AI. We are committed to supporting and crediting human creators.
 `;
 
 const Credits = () => {

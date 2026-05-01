@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// WritingEntityPanel — Left sidebar for the Writing Space.
+// WritingEntityPanel, Left sidebar for the Writing Space.
 //
 // Two modes:
 //   List Mode:   Search input, entities grouped by cascade stage, click to
@@ -141,7 +141,7 @@ export function WritingEntityPanel({
 
   const panelContent = (
       <div className="flex h-full flex-col" style={embedded ? undefined : { width: PANEL_WIDTH }}>
-        {/* Panel header — in embedded mode, the parent WritingSidebar already
+        {/* Panel header, in embedded mode, the parent WritingSidebar already
             shows tab labels + collapse, so we only render the Back button
             when an entity is selected. Otherwise skip the header entirely. */}
         {(!embedded || selectedEntity) && (

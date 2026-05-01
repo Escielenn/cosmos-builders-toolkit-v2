@@ -12,7 +12,7 @@ interface State {
 }
 
 /**
- * ErrorBoundary — April 2026 handoff spec:
+ * ErrorBoundary, April 2026 handoff spec:
  * crimson bracket corners + SYSTEM FAULT header + mono stack trace.
  */
 class ErrorBoundary extends Component<Props, State> {

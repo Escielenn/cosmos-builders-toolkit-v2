@@ -3,7 +3,7 @@ import { useEntities, useUpdateEntity } from "@/hooks/use-entity-graph";
 import { useToast } from "@/hooks/use-toast";
 
 // ═══════════════════════════════════════════════════════════════
-// EXOSKY v2 — Alien Night Sky Simulator with Milky Way
+// EXOSKY v2, Alien Night Sky Simulator with Milky Way
 // StellarForge.tools · © 2025–2026 Jason D. Batt, Ph.D.
 //
 // MATH VALIDATION (verified 2026-04-25):
@@ -21,7 +21,7 @@ import { useToast } from "@/hooks/use-toast";
 //   Betelgeuse, Rigel, Aldebaran, Antares, Spica, Deneb, Sol, etc.
 //   Spot-checked: Sirius RA 101.287° / Dec −16.716° / 2.64 pc / Mv=−1.43
 //   matches Hipparcos HIP 32349 exactly.
-// • Proper motion (movement of stars over time) is NOT modeled — fine
+// • Proper motion (movement of stars over time) is NOT modeled, fine
 //   for present-epoch sky views, drifts slightly over centuries.
 // ═══════════════════════════════════════════════════════════════
 
@@ -110,7 +110,7 @@ function bvToRGB(bv) {
 
 // ── STAR CATALOG (lazy-loaded from /exosky-stars.json) ────────
 // Format: [name, RA(°), Dec(°), dist(pc), absMag, B-V]
-// ~180 brightest stars from Hipparcos — loaded lazily to reduce bundle size
+// ~180 brightest stars from Hipparcos, loaded lazily to reduce bundle size
 // See public/exosky-stars.json (compact array format: [name,ra,dec,dist,absMag,bv])
 let _starCatalogCache: Array<{name:string;ra:number;dec:number;dist:number;absMag:number;bv:number;isCatalog:true}> | null = null;
 async function loadStarCatalog() {
@@ -318,7 +318,7 @@ function generateProceduralStars(count, seed) {
 }
 
 // ── DENSE BACKGROUND STAR FIELD ───────────────────────────────
-// These are NOT individually resolved — they're the "powdered sugar"
+// These are NOT individually resolved, they're the "powdered sugar"
 // of thousands of faint, distant stars that create sky density.
 // Concentrated heavily along galactic plane for MW band reinforcement.
 function generateBackgroundField(count, seed) {
@@ -389,38 +389,38 @@ const EXOPLANET_SYSTEMS = [
   { star:"Luyten's Star", planet:"Luyten b", ra:109.998, dec:5.228, dist:3.72, atmoType:"earth_like", atmoDesc:"Possible temperate atmosphere", note:"Red dwarf, 12 ly.", armNote:"Local Bubble" },
   { star:"Teegarden's Star", planet:"Teegarden b", ra:43.254, dec:16.878, dist:3.83, atmoType:"thin_co2", atmoDesc:"Possible thin CO₂/N₂ mix", note:"Ultracool dwarf. IR-dominated.", armNote:"Local Bubble" },
   { star:"GJ 1061", planet:"GJ 1061 d", ra:53.374, dec:-44.511, dist:3.67, atmoType:"thin_n2", atmoDesc:"Speculative thin atmosphere", note:"Faint M-dwarf, 12 ly.", armNote:"Local Bubble" },
-  { star:"Kapteyn's Star", planet:"Kapteyn b", ra:77.898, dec:-44.960, dist:3.91, atmoType:"thin_co2", atmoDesc:"Ancient — minimal atmosphere", note:"~11 Gyr old system.", armNote:"Local Bubble" },
+  { star:"Kapteyn's Star", planet:"Kapteyn b", ra:77.898, dec:-44.960, dist:3.91, atmoType:"thin_co2", atmoDesc:"Ancient, minimal atmosphere", note:"~11 Gyr old system.", armNote:"Local Bubble" },
   { star:"Wolf 1061", planet:"Wolf 1061 c", ra:248.412, dec:-12.661, dist:4.31, atmoType:"thick_co2", atmoDesc:"Possibly thick CO₂ (super-Venus)", note:"Dense, hazy world.", armNote:"Local Bubble" },
   { star:"Gliese 667 C", planet:"Gliese 667 Cc", ra:259.755, dec:-34.995, dist:7.24, atmoType:"earth_like", atmoDesc:"Possible N₂/CO₂/H₂O mix", note:"Triple star system.", armNote:"Local Bubble" },
   { star:"HD 40307", planet:"HD 40307 g", ra:89.496, dec:-60.022, dist:12.83, atmoType:"thick_n2", atmoDesc:"Super-Earth, dense N₂/H₂O", note:"K-dwarf. Warm orange sun.", armNote:"Local Bubble" },
-  { star:"55 Cancri", planet:"55 Cancri e", ra:133.149, dec:28.330, dist:12.34, atmoType:"exotic", atmoDesc:"Lava world — silicate vapor / Na", note:"Ultra-hot super-Earth.", armNote:"Local Bubble" },
-  { star:"Epsilon Eridani", planet:"Epsilon Eridani b", ra:53.233, dec:-9.458, dist:3.22, atmoType:"gas_giant", atmoDesc:"H₂/He — viewing from moon", note:"Young system, 10.5 ly. Sol is bright.", armNote:"Local Bubble" },
+  { star:"55 Cancri", planet:"55 Cancri e", ra:133.149, dec:28.330, dist:12.34, atmoType:"exotic", atmoDesc:"Lava world, silicate vapor / Na", note:"Ultra-hot super-Earth.", armNote:"Local Bubble" },
+  { star:"Epsilon Eridani", planet:"Epsilon Eridani b", ra:53.233, dec:-9.458, dist:3.22, atmoType:"gas_giant", atmoDesc:"H₂/He, viewing from moon", note:"Young system, 10.5 ly. Sol is bright.", armNote:"Local Bubble" },
   { star:"Barnard's Star", planet:"Barnard b (candidate)", ra:269.452, dec:4.693, dist:1.834, atmoType:"thin_n2", atmoDesc:"Speculative thin N₂", note:"Second-closest star system. 6 ly. High proper motion.", armNote:"Local Bubble" },
-  { star:"Pollux", planet:"Pollux b (Thestias)", ra:116.329, dec:28.026, dist:10.36, atmoType:"gas_giant", atmoDesc:"H₂/He — viewing from moon", note:"Giant star with confirmed planet. 34 ly. Orange sky.", armNote:"Local Bubble" },
-  { star:"51 Pegasi", planet:"51 Pegasi b (Dimidium)", ra:344.367, dec:20.769, dist:15.36, atmoType:"gas_giant", atmoDesc:"Hot Jupiter — viewing from orbit", note:"First confirmed exoplanet (1995). 50 ly.", armNote:"Local Bubble" },
-  { star:"Beta Pictoris", planet:"Beta Pictoris b", ra:86.821, dec:-51.066, dist:19.44, atmoType:"gas_giant", atmoDesc:"Young gas giant — from moon", note:"Young system with debris disk. 63 ly.", armNote:"Local Bubble" },
-  { star:"HR 8799", planet:"HR 8799 e", ra:346.870, dec:21.134, dist:39.4, atmoType:"gas_giant", atmoDesc:"Directly imaged giant — from moon", note:"4-planet system, directly imaged. 129 ly.", armNote:"Local Bubble" },
+  { star:"Pollux", planet:"Pollux b (Thestias)", ra:116.329, dec:28.026, dist:10.36, atmoType:"gas_giant", atmoDesc:"H₂/He, viewing from moon", note:"Giant star with confirmed planet. 34 ly. Orange sky.", armNote:"Local Bubble" },
+  { star:"51 Pegasi", planet:"51 Pegasi b (Dimidium)", ra:344.367, dec:20.769, dist:15.36, atmoType:"gas_giant", atmoDesc:"Hot Jupiter, viewing from orbit", note:"First confirmed exoplanet (1995). 50 ly.", armNote:"Local Bubble" },
+  { star:"Beta Pictoris", planet:"Beta Pictoris b", ra:86.821, dec:-51.066, dist:19.44, atmoType:"gas_giant", atmoDesc:"Young gas giant, from moon", note:"Young system with debris disk. 63 ly.", armNote:"Local Bubble" },
+  { star:"HR 8799", planet:"HR 8799 e", ra:346.870, dec:21.134, dist:39.4, atmoType:"gas_giant", atmoDesc:"Directly imaged giant, from moon", note:"4-planet system, directly imaged. 129 ly.", armNote:"Local Bubble" },
   // ── DISTANT CONFIRMED PLANETS ─────────────────────────
   { star:"Kepler-186", planet:"Kepler-186f", ra:295.015, dec:43.842, dist:178.5, atmoType:"earth_like", atmoDesc:"First Earth-sized HZ planet", note:"~580 ly. Constellations reshuffled.", armNote:"Orion Spur / Perseus edge" },
   { star:"Kepler-442", planet:"Kepler-442b", ra:294.164, dec:39.247, dist:342, atmoType:"earth_like", atmoDesc:"Possible thick N₂/O₂", note:"~1,100 ly. Deep in Perseus Arm.", armNote:"Perseus Arm" },
   { star:"Kepler-452", planet:"Kepler-452b", ra:286.803, dec:44.265, dist:556, atmoType:"thick_n2", atmoDesc:"Super-Earth, likely thick atmo", note:"\"Earth's cousin.\" 1,800 ly. Alien sky.", armNote:"Perseus Arm" },
   // ── FAMOUS STARS (hypothetical moon/planet) ───────────
-  { star:"Canopus", planet:"Canopus (hypothetical)", ra:95.988, dec:-52.696, dist:95, atmoType:"none", atmoDesc:"No atmosphere — vacuum observation", note:"F-type supergiant, 310 ly. Milky Way band shifted dramatically.", armNote:"Orion Spur" },
-  { star:"Vega", planet:"Vega (hypothetical)", ra:279.235, dec:38.784, dist:7.68, atmoType:"none", atmoDesc:"No atmosphere — vacuum observation", note:"Young A-type star, 25 ly. Pole star ~12,000 AD from Earth.", armNote:"Local Bubble" },
-  { star:"Sirius", planet:"Sirius (hypothetical)", ra:101.287, dec:-16.716, dist:2.64, atmoType:"none", atmoDesc:"No atmosphere — vacuum observation", note:"Brightest star from Earth, 8.6 ly. Sol still visible nearby.", armNote:"Local Bubble" },
-  { star:"Betelgeuse", planet:"Betelgeuse (hypothetical)", ra:88.793, dec:7.407, dist:197, atmoType:"none", atmoDesc:"No atmosphere — vacuum observation", note:"Red supergiant, 643 ly. Deep in Orion Arm. Radically alien sky.", armNote:"Orion Arm" },
+  { star:"Canopus", planet:"Canopus (hypothetical)", ra:95.988, dec:-52.696, dist:95, atmoType:"none", atmoDesc:"No atmosphere, vacuum observation", note:"F-type supergiant, 310 ly. Milky Way band shifted dramatically.", armNote:"Orion Spur" },
+  { star:"Vega", planet:"Vega (hypothetical)", ra:279.235, dec:38.784, dist:7.68, atmoType:"none", atmoDesc:"No atmosphere, vacuum observation", note:"Young A-type star, 25 ly. Pole star ~12,000 AD from Earth.", armNote:"Local Bubble" },
+  { star:"Sirius", planet:"Sirius (hypothetical)", ra:101.287, dec:-16.716, dist:2.64, atmoType:"none", atmoDesc:"No atmosphere, vacuum observation", note:"Brightest star from Earth, 8.6 ly. Sol still visible nearby.", armNote:"Local Bubble" },
+  { star:"Betelgeuse", planet:"Betelgeuse (hypothetical)", ra:88.793, dec:7.407, dist:197, atmoType:"none", atmoDesc:"No atmosphere, vacuum observation", note:"Red supergiant, 643 ly. Deep in Orion Arm. Radically alien sky.", armNote:"Orion Arm" },
   { star:"Alpha Centauri A", planet:"α Centauri (hypothetical)", ra:219.902, dec:-60.834, dist:1.34, atmoType:"earth_like", atmoDesc:"Hypothetical Earth-like", note:"Closest Sun-like star, 4.37 ly. Nearly identical constellations.", armNote:"Local Bubble" },
-  { star:"Fomalhaut", planet:"Fomalhaut (hypothetical)", ra:344.413, dec:-29.622, dist:7.70, atmoType:"none", atmoDesc:"No atmosphere — vacuum observation", note:"Young A-type star with debris ring, 25 ly.", armNote:"Local Bubble" },
-  { star:"Deneb", planet:"Deneb (hypothetical)", ra:310.358, dec:45.280, dist:802, atmoType:"none", atmoDesc:"No atmosphere — vacuum observation", note:"Blue supergiant, ~2,600 ly. Deep Perseus Arm. Unrecognizable constellations.", armNote:"Perseus Arm" },
-  { star:"Arcturus", planet:"Arcturus (hypothetical)", ra:213.915, dec:19.182, dist:11.26, atmoType:"none", atmoDesc:"No atmosphere — vacuum observation", note:"Red giant, 37 ly. Halo star on different galactic orbit.", armNote:"Local Bubble" },
-  { star:"Antares", planet:"Antares (hypothetical)", ra:247.352, dec:-26.432, dist:169, atmoType:"none", atmoDesc:"No atmosphere — vacuum observation", note:"Red supergiant, 550 ly. Heart of Scorpius. Milky Way center closer.", armNote:"Sagittarius Arm edge" },
-  { star:"Aldebaran", planet:"Aldebaran (hypothetical)", ra:68.980, dec:16.509, dist:20.43, atmoType:"none", atmoDesc:"No atmosphere — vacuum observation", note:"Orange giant, 65 ly. In the Hyades stream. Subtle constellation shifts.", armNote:"Local Bubble" },
-  { star:"Rigel", planet:"Rigel (hypothetical)", ra:78.634, dec:-8.202, dist:264, atmoType:"none", atmoDesc:"No atmosphere — vacuum observation", note:"Blue supergiant, 860 ly. Orion Arm interior. Dramatic parallax.", armNote:"Orion Arm" },
-  { star:"Spica", planet:"Spica (hypothetical)", ra:201.298, dec:-11.161, dist:77, atmoType:"none", atmoDesc:"No atmosphere — vacuum observation", note:"Binary blue giant, 250 ly. Virgo cluster foreground.", armNote:"Orion Spur" },
+  { star:"Fomalhaut", planet:"Fomalhaut (hypothetical)", ra:344.413, dec:-29.622, dist:7.70, atmoType:"none", atmoDesc:"No atmosphere, vacuum observation", note:"Young A-type star with debris ring, 25 ly.", armNote:"Local Bubble" },
+  { star:"Deneb", planet:"Deneb (hypothetical)", ra:310.358, dec:45.280, dist:802, atmoType:"none", atmoDesc:"No atmosphere, vacuum observation", note:"Blue supergiant, ~2,600 ly. Deep Perseus Arm. Unrecognizable constellations.", armNote:"Perseus Arm" },
+  { star:"Arcturus", planet:"Arcturus (hypothetical)", ra:213.915, dec:19.182, dist:11.26, atmoType:"none", atmoDesc:"No atmosphere, vacuum observation", note:"Red giant, 37 ly. Halo star on different galactic orbit.", armNote:"Local Bubble" },
+  { star:"Antares", planet:"Antares (hypothetical)", ra:247.352, dec:-26.432, dist:169, atmoType:"none", atmoDesc:"No atmosphere, vacuum observation", note:"Red supergiant, 550 ly. Heart of Scorpius. Milky Way center closer.", armNote:"Sagittarius Arm edge" },
+  { star:"Aldebaran", planet:"Aldebaran (hypothetical)", ra:68.980, dec:16.509, dist:20.43, atmoType:"none", atmoDesc:"No atmosphere, vacuum observation", note:"Orange giant, 65 ly. In the Hyades stream. Subtle constellation shifts.", armNote:"Local Bubble" },
+  { star:"Rigel", planet:"Rigel (hypothetical)", ra:78.634, dec:-8.202, dist:264, atmoType:"none", atmoDesc:"No atmosphere, vacuum observation", note:"Blue supergiant, 860 ly. Orion Arm interior. Dramatic parallax.", armNote:"Orion Arm" },
+  { star:"Spica", planet:"Spica (hypothetical)", ra:201.298, dec:-11.161, dist:77, atmoType:"none", atmoDesc:"No atmosphere, vacuum observation", note:"Binary blue giant, 250 ly. Virgo cluster foreground.", armNote:"Orion Spur" },
 ];
 
 const ATMO_MODELS = {
-  none:       { name:"No Atmosphere",    skyColor:[0,0,0],     extinction:0,    haze:0,    desc:"Vacuum — raw starlight" },
+  none:       { name:"No Atmosphere",    skyColor:[0,0,0],     extinction:0,    haze:0,    desc:"Vacuum, raw starlight" },
   thin_n2:    { name:"Thin N₂",          skyColor:[5,8,18],    extinction:0.08, haze:0.05, desc:"Faint indigo wash near horizon" },
   thin_co2:   { name:"Thin CO₂",         skyColor:[18,10,5],   extinction:0.12, haze:0.08, desc:"Pale butterscotch horizon glow" },
   earth_like: { name:"Earth-like N₂/O₂", skyColor:[8,14,32],   extinction:0.18, haze:0.12, desc:"Deep blue Rayleigh scattering" },
@@ -498,7 +498,7 @@ export default function ExoSkyV2({
   const { data: worldEntities } = useEntities(worldId);
   const updateEntity = useUpdateEntity(worldId);
 
-  // Filter to spatial entities (planet/star/moon) — those are what an
+  // Filter to spatial entities (planet/star/moon), those are what an
   // observer can stand on or near. Each entity may have galactic
   // coordinates stashed in metadata.exoskyCoords; if missing we
   // surface a "Set coordinates" prompt.
@@ -646,7 +646,7 @@ export default function ExoSkyV2({
         dec: worldEntityCoords.dec,
         dist: worldEntityCoords.distancePc,
         atmoType: "none",
-        atmoDesc: "No atmosphere — vacuum observation",
+        atmoDesc: "No atmosphere, vacuum observation",
         note: worldEntity.summary || `${worldEntity.entity_type} from your world. Coordinates stored on this entity.`,
         armNote: "Linked to your world",
       };
@@ -661,7 +661,7 @@ export default function ExoSkyV2({
     return {
       star: "Custom", planet: `Custom (l=${customGalL.toFixed(1)}°, b=${customGalB.toFixed(1)}°)`,
       ra: rd.ra, dec: rd.dec, dist,
-      atmoType: "none", atmoDesc: "No atmosphere — vacuum observation",
+      atmoType: "none", atmoDesc: "No atmosphere, vacuum observation",
       note: `Galactic coords: l=${customGalL.toFixed(1)}°, b=${customGalB.toFixed(1)}°, d=${dist.toFixed(1)} pc (${(dist*3.262).toFixed(1)} ly)`,
       armNote: "Custom location",
     };
@@ -1357,7 +1357,7 @@ export default function ExoSkyV2({
     }
 
     animRef.current = requestAnimationFrame(render);
-  }, []); // Stable callback — reads all values from refs
+  }, []); // Stable callback, reads all values from refs
 
   // ── Canvas setup ────────────────────────────────────
   useEffect(() => {
@@ -1445,7 +1445,7 @@ export default function ExoSkyV2({
     const totalDist = Math.sqrt((mx-pointerDownPos.current.x)**2 + (my-pointerDownPos.current.y)**2);
     if (drawMode && totalDist < 8) return; // Don't drag yet in draw mode until threshold
     const sens = fovRef.current / 800;
-    // Update refs directly during drag — no state updates, no re-renders
+    // Update refs directly during drag, no state updates, no re-renders
     viewRaRef.current = ((viewRaRef.current - dx*sens) % 360 + 360) % 360;
     viewDecRef.current = Math.max(-89, Math.min(89, viewDecRef.current + dy*sens));
   };
@@ -1620,7 +1620,7 @@ export default function ExoSkyV2({
                 {worldObservationEntities.map((e) => {
                   const meta = (e.metadata ?? {}) as Record<string, unknown>;
                   const c = meta.exoskyCoords as { distancePc?: number } | undefined;
-                  const lyTag = c?.distancePc ? ` (${(c.distancePc*3.262).toFixed(1)} ly)` : " — needs coords";
+                  const lyTag = c?.distancePc ? ` (${(c.distancePc*3.262).toFixed(1)} ly)` : ", needs coords";
                   return <option key={e.id} value={`world:${e.id}`}>{e.name}{lyTag}</option>;
                 })}
               </optgroup>

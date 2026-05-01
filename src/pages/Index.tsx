@@ -186,7 +186,7 @@ const toolsByCategory: {
         id: "species-interaction-matrix",
         title: "Symbiosis: Species Interaction Matrix",
         description:
-          "Map predator-prey dynamics, mutualism, parasitism—the ecological web of your world.",
+          "Map predator-prey dynamics, mutualism, parasitism: the ecological web of your world.",
         icon: Network,
         status: "available",
       },
@@ -499,7 +499,7 @@ const Index = () => {
         {user && <SubscriptionBanner />}
 
         {/* Landing Page Sections - non-logged-in users only */}
-        {!user && <SFDivider label="— ·· — SECTOR: WORLDBUILDING — ·· —" className="hidden md:block" />}
+        {!user && <SFDivider label="·· · SECTOR: WORLDBUILDING · ··" className="hidden md:block" />}
         {!user && <VideoShowcase />}
         {!user && (
           <CosmicTelemetry
@@ -585,7 +585,7 @@ const Index = () => {
         {/* Shared with Me Section */}
         {user && <SharedWorldsSection />}
 
-        {/* From the Community Section — logged-in users */}
+        {/* From the Community Section, logged-in users */}
         {user && (
           <section className="mb-16">
             <h2 className="font-heading font-light text-2xl uppercase tracking-sf-wide mb-6">
@@ -648,7 +648,7 @@ const Index = () => {
                   </button>
                 ))}
               </div>
-              {/* Quick-jump nav — scrolls to each group section under the active sort mode. */}
+              {/* Quick-jump nav, scrolls to each group section under the active sort mode. */}
               <div className="flex flex-wrap items-center gap-1.5">
                 {groupedTools.map(({ key, label, color }) => (
                   <button
@@ -738,7 +738,7 @@ const Index = () => {
           </section>
         )}
 
-        {/* Prompt of the Day — logged-in users */}
+        {/* Prompt of the Day, logged-in users */}
         {user && (
           <section className="mb-16">
             <h2 className="font-heading font-light text-2xl uppercase tracking-sf-wide mb-6">
@@ -800,7 +800,7 @@ const Index = () => {
           </section>
         )}
 
-        <SFDivider label="— ·· — COMMS: LEARN — ·· —" className="hidden md:block" />
+        <SFDivider label=",  ··, COMMS: LEARN, ·· , " className="hidden md:block" />
 
         {/* Latest from Learn - shown to all users */}
         <RecentArticles />

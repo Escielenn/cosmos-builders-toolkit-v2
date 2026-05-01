@@ -1,4 +1,4 @@
-// SENSORIUM — Static data: modality database, presets, section definitions
+// SENSORIUM, Static data: modality database, presets, section definitions
 // No React dependencies. Safe to import from calculations and PDF templates.
 
 import type {
@@ -31,7 +31,7 @@ export const SECTION_GUIDANCE: Record<
   environment: {
     thinkLike: "an evolutionary biologist examining selection pressures",
     guidance:
-      "The environment determines which senses can evolve. Start here—everything else follows from these constraints.",
+      "The environment determines which senses can evolve. Start here, everything else follows from these constraints.",
   },
   "sensory-palette": {
     thinkLike: "a comparative neurobiologist",
@@ -400,7 +400,7 @@ export const MODALITIES: SensoryModality[] = [
       technology:
         "UV-based optical computing; authentication and currency via UV signatures",
       mythology:
-        "The Hidden Light—a secret truth visible only to the worthy or the initiated",
+        "The Hidden Light, a secret truth visible only to the worthy or the initiated",
     },
   },
 
@@ -429,7 +429,7 @@ export const MODALITIES: SensoryModality[] = [
       hunting: "Visual tracking, camouflage detection, depth perception",
       socialBehavior:
         "Body language, visual status displays, fashion and adornment",
-      art: "Painting, sculpture, cinema—the foundations of visual culture",
+      art: "Painting, sculpture, cinema, the foundations of visual culture",
       architecture:
         "Windows, lighting design, visual aesthetics, monumental structures",
       technology:
@@ -476,7 +476,7 @@ export const MODALITIES: SensoryModality[] = [
       technology:
         "Thermal optics as default; visible-light technology may never develop",
       mythology:
-        "The Warm Truth—heat as metaphor for life, cold as death or deception",
+        "The Warm Truth, heat as metaphor for life, cold as death or deception",
     },
   },
 
@@ -513,7 +513,7 @@ export const MODALITIES: SensoryModality[] = [
       technology:
         "Thermal computing and display; infrared communication networks",
       mythology:
-        "The Great Warmth—creation myths centered on heat as the source of all things",
+        "The Great Warmth, creation myths centered on heat as the source of all things",
     },
   },
 
@@ -542,7 +542,7 @@ export const MODALITIES: SensoryModality[] = [
       navigation:
         "Detection of Earth's electromagnetic field for orientation in murky water",
       hunting:
-        "Prey cannot hide—heartbeats and muscle twitches betray location through any barrier",
+        "Prey cannot hide, heartbeats and muscle twitches betray location through any barrier",
       socialBehavior:
         "Hierarchy read through bioelectric field strength; dominance is literally felt",
       art: "Bioelectric compositions performed by living organisms; field harmonics as music",
@@ -551,7 +551,7 @@ export const MODALITIES: SensoryModality[] = [
       technology:
         "Bioelectric interfaces; technology operated by thought-generated fields",
       mythology:
-        "The Living Current—all life connected through an invisible electric web",
+        "The Living Current, all life connected through an invisible electric web",
     },
   },
 
@@ -593,7 +593,7 @@ export const MODALITIES: SensoryModality[] = [
       technology:
         "Electric field manipulation tools; 'sculpting' reality through field generation",
       mythology:
-        "The Shaping Field—creation as an act of electrical will imposing form on chaos",
+        "The Shaping Field, creation as an act of electrical will imposing form on chaos",
     },
   },
 
@@ -633,7 +633,7 @@ export const MODALITIES: SensoryModality[] = [
       technology:
         "Infrasonic communication networks; seismographic early-warning systems",
       mythology:
-        "The Deep Voice—the world itself speaks in tones only the wise can hear",
+        "The Deep Voice, the world itself speaks in tones only the wise can hear",
     },
   },
 
@@ -671,7 +671,7 @@ export const MODALITIES: SensoryModality[] = [
       technology:
         "Telecommunications, sonar, audio recording, speech synthesis",
       mythology:
-        "The Word—creation through spoken command; naming things gives power over them",
+        "The Word, creation through spoken command; naming things gives power over them",
     },
   },
 
@@ -707,9 +707,9 @@ export const MODALITIES: SensoryModality[] = [
       architecture:
         "Ultrasonic-absorbing materials for privacy; reflective surfaces for amplification",
       technology:
-        "Ultrasonic cleaning, welding, medical imaging—developed intuitively",
+        "Ultrasonic cleaning, welding, medical imaging, developed intuitively",
       mythology:
-        "The Silent Song—truths spoken in frequencies only the chosen can hear",
+        "The Silent Song, truths spoken in frequencies only the chosen can hear",
     },
   },
 
@@ -746,14 +746,14 @@ export const MODALITIES: SensoryModality[] = [
       hunting:
         "Prey tracked by echo signature; speed, size, and density all revealed by returns",
       socialBehavior:
-        "No visual privacy—body shape, posture, even internal organs partially 'visible' via echoes",
+        "No visual privacy, body shape, posture, even internal organs partially 'visible' via echoes",
       art: "Acoustic sculpture; architecture as the primary art form since buildings shape sound",
       architecture:
-        "The most important art—spaces designed for how they sound, not how they look",
+        "The most important art, spaces designed for how they sound, not how they look",
       technology:
         "Sonar, acoustic imaging, and ultrasonic tools developed as natural extensions of perception",
       mythology:
-        "The Singing World—reality is sound; silence is void, oblivion, non-existence",
+        "The Singing World, reality is sound; silence is void, oblivion, non-existence",
     },
   },
 
@@ -796,7 +796,7 @@ export const MODALITIES: SensoryModality[] = [
       technology:
         "Seismographic instruments; vibration-based communication networks",
       mythology:
-        "The Drum of the World—the planet's heartbeat is literally perceived",
+        "The Drum of the World, the planet's heartbeat is literally perceived",
     },
   },
 
@@ -829,7 +829,7 @@ export const MODALITIES: SensoryModality[] = [
       navigation:
         "Current-mapping; wind pattern awareness; detection of obstacles by pressure shadow",
       hunting:
-        "Wake detection—prey movements tracked by the pressure waves they leave behind",
+        "Wake detection, prey movements tracked by the pressure waves they leave behind",
       socialBehavior:
         "Personal space defined by detectable pressure boundary; crowding is literally uncomfortable",
       art: "Wind instruments; flow-art; fountain design; atmospheric choreography",
@@ -838,7 +838,7 @@ export const MODALITIES: SensoryModality[] = [
       technology:
         "Fluid dynamics mastered early; weather prediction as intuitive skill",
       mythology:
-        "The Breath of the World—atmospheric currents as the living breath of the planet",
+        "The Breath of the World, atmospheric currents as the living breath of the planet",
     },
   },
 
@@ -871,14 +871,14 @@ export const MODALITIES: SensoryModality[] = [
       hunting:
         "Prey tracked by scent trail; age and health of prey deduced from chemical signature",
       socialBehavior:
-        "Chemical identity—individuals recognized by unique scent profile; kinship detection",
+        "Chemical identity, individuals recognized by unique scent profile; kinship detection",
       art: "Perfumery as high art; scent-compositions; olfactory concerts and galleries",
       architecture:
         "Scent-zoning in buildings; fragrance gardens; chemical privacy screens",
       technology:
         "Chemical analysis as intuitive skill; early pharmaceutical development",
       mythology:
-        "The Essence—each being has a unique chemical soul; scent as spiritual identity",
+        "The Essence, each being has a unique chemical soul; scent as spiritual identity",
     },
   },
 
@@ -916,7 +916,7 @@ export const MODALITIES: SensoryModality[] = [
       technology:
         "Chemistry and pharmacology as foundational sciences; molecular engineering",
       mythology:
-        "The Taste of Truth—knowledge gained by literally tasting the world's history dissolved in water",
+        "The Taste of Truth, knowledge gained by literally tasting the world's history dissolved in water",
     },
   },
 
@@ -958,7 +958,7 @@ export const MODALITIES: SensoryModality[] = [
       technology:
         "Materials science driven by tactile-chemical analysis; early toxicology",
       mythology:
-        "The First Knowing—the most ancient sense; to taste is to truly understand",
+        "The First Knowing, the most ancient sense; to taste is to truly understand",
     },
   },
 
@@ -994,13 +994,13 @@ export const MODALITIES: SensoryModality[] = [
         "Prey distance and direction derived from concentration gradients; 3D chemical tracking",
       socialBehavior:
         "Social distance regulation by chemical zones; crowding detected chemically",
-      art: "Gradient art—chemical compositions that create spatial experiences as you move through them",
+      art: "Gradient art, chemical compositions that create spatial experiences as you move through them",
       architecture:
         "Buildings with chemical zoning; rooms that smell differently at different positions",
       technology:
         "Chemical gradient computers; concentration-based measurement and sensing instruments",
       mythology:
-        "The Scent Map—the universe has a chemical topology; every place has its unique signature",
+        "The Scent Map, the universe has a chemical topology; every place has its unique signature",
     },
   },
 
@@ -1046,7 +1046,7 @@ export const MODALITIES: SensoryModality[] = [
       technology:
         "Magnetic manipulation as intuitive skill; early development of electromagnetic technology",
       mythology:
-        "The Great Alignment—the magnetic poles as sacred directions; field lines as spiritual paths",
+        "The Great Alignment, the magnetic poles as sacred directions; field lines as spiritual paths",
     },
   },
 
@@ -1086,7 +1086,7 @@ export const MODALITIES: SensoryModality[] = [
       technology:
         "Thermodynamics as intuitive science; early temperature-control technology",
       mythology:
-        "The Balance—existence as equilibrium between warmth (life) and cold (entropy)",
+        "The Balance, existence as equilibrium between warmth (life) and cold (entropy)",
     },
   },
 
@@ -1128,7 +1128,7 @@ export const MODALITIES: SensoryModality[] = [
       technology:
         "Water harvesting technology; atmospheric water generators; desert agriculture",
       mythology:
-        "The Breath of Life—water vapor as the medium of the divine; rain as blessing",
+        "The Breath of Life, water vapor as the medium of the divine; rain as blessing",
     },
   },
 
@@ -1171,13 +1171,13 @@ export const MODALITIES: SensoryModality[] = [
         "Optimal timing of ambush; prey schedule prediction; patience calibrated precisely",
       socialBehavior:
         "Punctuality as biological imperative; time-sharing protocols; generational memory",
-      art: "Temporal art—compositions experienced through duration; time-based media as instinct",
+      art: "Temporal art, compositions experienced through duration; time-based media as instinct",
       architecture:
         "Buildings designed around temporal rhythms; light-changing spaces; seasonal buildings",
       technology:
         "Clockwork technology; precise scheduling systems; chronometry as natural extension",
       mythology:
-        "The Eternal Rhythm—time is not abstract but directly perceived; cycles as sacred patterns",
+        "The Eternal Rhythm, time is not abstract but directly perceived; cycles as sacred patterns",
     },
   },
 
@@ -1219,7 +1219,7 @@ export const MODALITIES: SensoryModality[] = [
       technology:
         "Polarimetric imaging; stress analysis of materials; quality control by sight",
       mythology:
-        "The Hidden Patterns—truth has a structure that only the perceptive can see",
+        "The Hidden Patterns, truth has a structure that only the perceptive can see",
     },
   },
 
@@ -1266,7 +1266,7 @@ export const MODALITIES: SensoryModality[] = [
       technology:
         "Gravitational engineering; mass-detection instruments; early inertial navigation",
       mythology:
-        "The Great Pull—gravity as the fundamental force of connection binding all things together",
+        "The Great Pull, gravity as the fundamental force of connection binding all things together",
     },
   },
 ];

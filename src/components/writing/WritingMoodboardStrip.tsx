@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// WritingMoodboardStrip — Collapsible moodboard image strip above the editor.
+// WritingMoodboardStrip, Collapsible moodboard image strip above the editor.
 //
 // Collapsed: 32px bar with label, expand chevron, and 3-4 tiny thumbnails.
 // Expanded:  160px horizontal scrollable row of moodboard images.
@@ -40,7 +40,7 @@ export function WritingMoodboardStrip({
   // Don't render at all if no images
   if (images.length === 0) return null;
 
-  // Collapsed state — thin bar
+  // Collapsed state, thin bar
   if (!open) {
     return (
       <div className="flex items-center gap-2 px-3 py-1 border-b border-white/[0.06] bg-sf-surface/40 h-8">
@@ -80,7 +80,7 @@ export function WritingMoodboardStrip({
     );
   }
 
-  // Expanded state — scrollable row
+  // Expanded state, scrollable row
   return (
     <div className="border-b border-white/[0.06] bg-sf-surface/40">
       {/* Header */}

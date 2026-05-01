@@ -1,6 +1,6 @@
 /**
  * Client-side stats computation from the writing entries array.
- * No additional DB queries — everything derived from the entries already loaded.
+ * No additional DB queries, everything derived from the entries already loaded.
  */
 
 import { useMemo } from "react";

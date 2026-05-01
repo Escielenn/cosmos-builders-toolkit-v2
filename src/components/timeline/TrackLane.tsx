@@ -113,7 +113,7 @@ const TrackLane = memo(
         className="flex border-b border-sf-border group/track"
         style={{ height }}
       >
-        {/* Track Header — sticky left */}
+        {/* Track Header, sticky left */}
         <div
           className="sticky left-0 z-10 flex items-center gap-1.5 px-2 bg-background/95 backdrop-blur-sm border-r border-sf-border shrink-0"
           style={{ width: TRACK_HEADER_WIDTH }}
@@ -162,7 +162,7 @@ const TrackLane = memo(
             </div>
           )}
 
-          {/* Edit/Delete/Fold — shown on hover */}
+          {/* Edit/Delete/Fold, shown on hover */}
           <div className="hidden group-hover/track:flex items-center gap-0.5">
             {/* Fold into... */}
             {foldTargets.length > 0 && (

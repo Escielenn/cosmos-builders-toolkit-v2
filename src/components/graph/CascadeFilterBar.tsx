@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// CascadeFilterBar — Six toggle buttons, one per cascade stage.
+// CascadeFilterBar, Six toggle buttons, one per cascade stage.
 // Click = solo, Shift+click = toggle, double-click = reset all.
 // ---------------------------------------------------------------------------
 
@@ -32,7 +32,7 @@ export function CascadeFilterBar({
         const next = new Set(activeStages);
         if (next.has(stage)) {
           next.delete(stage);
-          // Don't allow empty set — keep at least one
+          // Don't allow empty set, keep at least one
           if (next.size === 0) next.add(stage);
         } else {
           next.add(stage);
@@ -80,7 +80,7 @@ export function CascadeFilterBar({
               border: `1px solid ${isActive ? `${color}30` : "transparent"}`,
               opacity: isActive ? 1 : 0.35,
             }}
-            title={`${CASCADE_STAGE_LABELS[stage]} — Click to solo, Shift+click to toggle`}
+            title={`${CASCADE_STAGE_LABELS[stage]}, Click to solo, Shift+click to toggle`}
           >
             <span
               className="w-1.5 h-1.5 rounded-full"

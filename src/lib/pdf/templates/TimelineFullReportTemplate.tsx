@@ -296,7 +296,7 @@ const TimelineFullReportTemplate = ({
               >
                 <View style={{ flexDirection: "row", gap: spacing.sm }}>
                   <Text style={{ fontSize: typography.sizes.sm, fontWeight: 600 }}>
-                    {formatYear(c.startYear)} — {formatYear(c.endYear)}
+                    {formatYear(c.startYear)}, {formatYear(c.endYear)}
                   </Text>
                   <Text style={{ fontSize: typography.sizes.xs, color: colors.text.muted }}>
                     ({c.style})
@@ -429,7 +429,7 @@ function getDateRangeStr(events: TimelineState["events"]): string {
     const end = e.endYear ?? e.startYear;
     if (end > max) max = end;
   }
-  return `${formatYear(min)} — ${formatYear(max)}`;
+  return `${formatYear(min)}, ${formatYear(max)}`;
 }
 
 function formatYear(year: number): string {

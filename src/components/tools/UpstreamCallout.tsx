@@ -1,5 +1,5 @@
 /**
- * UpstreamCallout — Displays contextual notes from upstream cascade layers.
+ * UpstreamCallout, Displays contextual notes from upstream cascade layers.
  *
  * Renders above the CollapsibleSections in each tool page when the user has
  * relevant upstream worksheet data in the same world. Each callout is
@@ -49,7 +49,7 @@ function CalloutItem({ callout, toolType, index }: CalloutItemProps) {
 }
 
 // ---------------------------------------------------------------------------
-// Container component — used by ToolPageLayout
+// Container component, used by ToolPageLayout
 // ---------------------------------------------------------------------------
 
 interface UpstreamCalloutProps {

@@ -1,10 +1,10 @@
 /**
- * SaveSimulationDialog — Prompts for a name when saving simulation state.
+ * SaveSimulationDialog, Prompts for a name when saving simulation state.
  *
  * Appears when the simulator iframe sends a STELLARFORGE_SAVE message,
  * or when the user clicks "Save" in the wrapper UI.
  *
- * Spec: StellarForge_Simulator_Addendum — Simulation Save & Replay
+ * Spec: StellarForge_Simulator_Addendum, Simulation Save & Replay
  */
 
 import { useState } from "react";

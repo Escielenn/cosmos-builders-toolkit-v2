@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 /**
- * LunarPhase — current moon phase glyph + label. April 2026 handoff §15.
+ * LunarPhase, current moon phase glyph + label. April 2026 handoff §15.
  *
  * Non-interactive, purely ambient. Shows phase as a filled/shaded circle
  * plus mono label (NEW, WAXING CRESCENT, FIRST QUARTER, ...).
@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
  * which is plenty for chrome.
  */
 const SYNODIC_MONTH = 29.53058867; // days
-// Reference new moon — 2000 Jan 6 18:14 UTC, JD 2451550.1.
+// Reference new moon, 2000 Jan 6 18:14 UTC, JD 2451550.1.
 const REF_JD = 2451550.1;
 
 const PHASES = [

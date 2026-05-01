@@ -12,7 +12,7 @@ import { useEntities, useUpdateEntity } from "@/hooks/use-entity-graph";
 import { useToast } from "@/hooks/use-toast";
 
 /**
- * SimulatorWorldEntityPicker — bidirectional binding between iframe-based
+ * SimulatorWorldEntityPicker, bidirectional binding between iframe-based
  * simulators (Rogue / Tidelock / Exoforge / Solaris) and the user's world
  * entities. Mirrors the ExoSky world-entity coord picker pattern, but
  * generalised for arbitrary simulator state.

@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// useEntityGraph — React Query hooks for the entity graph data layer.
+// useEntityGraph, React Query hooks for the entity graph data layer.
 // ---------------------------------------------------------------------------
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";

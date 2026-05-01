@@ -1,19 +1,19 @@
 /**
- * ship-voice — utilities for StellarForge's "Ship's Voice" copy style.
+ * ship-voice, utilities for StellarForge's "Ship's Voice" copy style.
  *
  * Per April 2026 handoff, all system messages use mission-control voice:
  * UPPERCASE, no exclamation points, past tense for confirmations, imperative
  * for actions, no emoji, no "Oops!" or "Let's go!".
  *
  * Examples:
- *   save success    — WORLD FILE SECURED.
- *   save failure    — TRANSMISSION FAILED. RETRY WHEN READY.
- *   export success  — EXPORT COMPLETE. TRANSMISSION LOGGED.
- *   load            — CALIBRATING INSTRUMENTS...
- *   network error   — CONNECTION LOST. OPERATING IN LOCAL MODE.
- *   validation fail — PARAMETERS OUTSIDE OPERATIONAL RANGE.
- *   paywall         — THIS INSTRUMENT REQUIRES PRO CLEARANCE.
- *   404             — COORDINATES DO NOT MATCH ANY KNOWN RECORD.
+ *   save success   , WORLD FILE SECURED.
+ *   save failure   , TRANSMISSION FAILED. RETRY WHEN READY.
+ *   export success , EXPORT COMPLETE. TRANSMISSION LOGGED.
+ *   load           , CALIBRATING INSTRUMENTS...
+ *   network error  , CONNECTION LOST. OPERATING IN LOCAL MODE.
+ *   validation fail, PARAMETERS OUTSIDE OPERATIONAL RANGE.
+ *   paywall        , THIS INSTRUMENT REQUIRES PRO CLEARANCE.
+ *   404            , COORDINATES DO NOT MATCH ANY KNOWN RECORD.
  */
 
 export const VOICE = {

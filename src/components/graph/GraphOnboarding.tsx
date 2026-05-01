@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// GraphOnboarding — First-time onboarding tooltips for the World Graph.
+// GraphOnboarding, First-time onboarding tooltips for the World Graph.
 // Shows once per user (persisted in localStorage).
 // ---------------------------------------------------------------------------
 
@@ -18,7 +18,7 @@ const STEPS: OnboardingStep[] = [
   {
     title: "Create Entities",
     description:
-      "Click '+ Entity' to add elements to your world — planets, species, factions, characters, and more.",
+      "Click '+ Entity' to add elements to your world: planets, species, factions, characters, and more.",
   },
   {
     title: "Connect Them",
@@ -38,7 +38,7 @@ const STEPS: OnboardingStep[] = [
   {
     title: "Cascade Audit",
     description:
-      "Right-click any entity to trace its full cascade chain — see how a single physics change ripples through culture.",
+      "Right-click any entity to trace its full cascade chain: see how a single physics change ripples through culture.",
   },
 ];
 

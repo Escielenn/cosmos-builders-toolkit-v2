@@ -58,7 +58,7 @@ const OneBigLieFullReportTemplate = ({
         {/* Introduction */}
         <View style={{ marginBottom: spacing.lg }}>
           <Text style={{ fontSize: typography.sizes.sm, color: colors.text.secondary, lineHeight: 1.5, fontStyle: "italic" }}>
-            "Hard SF isn't about getting everything right—it's about choosing what you break, and then
+            "Hard SF isn't about getting everything right, it's about choosing what you break, and then
             rigorously exploring the consequences."
           </Text>
         </View>

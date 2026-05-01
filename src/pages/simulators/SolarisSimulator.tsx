@@ -69,13 +69,13 @@ const SolarisSimulator = () => {
             <iframe
               ref={iframeRef}
               src="/tools/solaris/sim.html"
-              title="Solaris — Procedural Star System Simulator"
+              title="Solaris, Procedural Star System Simulator"
               allow="fullscreen"
               className={`w-full h-full border-0 transition-opacity duration-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}
               onLoad={() => setLoaded(true)}
             />
           </div>
-          {/* Save/Load/Publish controls — bottom-left to avoid overlapping iframe UI */}
+          {/* Save/Load/Publish controls, bottom-left to avoid overlapping iframe UI */}
           {loaded && worldId && (
             <div className="absolute bottom-3 left-3 z-20 flex items-center gap-1.5">
               <Button

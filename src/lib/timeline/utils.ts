@@ -1,4 +1,4 @@
-// Timeline Tool — Utility Functions
+// Timeline Tool, Utility Functions
 
 import type {
   TimelineEvent,
@@ -260,7 +260,7 @@ export function formatDateRange(event: TimelineEvent): string {
   const start = formatTimelineDate(event.startYear, event.startMonth, event.startDay);
   if (!event.hasDuration || event.endYear == null) return start;
   const end = formatTimelineDate(event.endYear, event.endMonth, event.endDay);
-  return `${start} — ${end}`;
+  return `${start}, ${end}`;
 }
 
 // ─── Event Helpers ────────────────────────────────────────────────
@@ -320,7 +320,7 @@ export function canSetParent(
   // Parent must be at level 0 or 1 (max depth = 2)
   const parentLevel = getEventNestingLevel(proposedParentId, events);
   if (parentLevel > 1) return false;
-  // Can't create circular references — check if proposedParent is a descendant
+  // Can't create circular references, check if proposedParent is a descendant
   const descendants = getDescendants(eventId, events);
   if (descendants.some((d) => d.id === proposedParentId)) return false;
   return true;
@@ -463,7 +463,7 @@ export function earthYearToCalendarDate(
 
   for (let i = 0; i < calendar.units.length; i++) {
     if (i === calendar.units.length - 1) {
-      // Smallest unit — take whatever is left
+      // Smallest unit, take whatever is left
       values.push(Math.round(remaining));
     } else {
       const subunits = calendar.units[i].subunitsPerUnit || 1;
@@ -527,7 +527,7 @@ export function formatEventDateRange(
   }
 
   const end = formatCalendarDate(event.endDate, calendar);
-  return `${start}${suffix} — ${end}${suffix}`;
+  return `${start}${suffix}, ${end}${suffix}`;
 }
 
 /**
@@ -575,7 +575,7 @@ export function createYearMapper(
     .sort((a, b) => a.startYear - b.startYear);
 
   if (active.length === 0) {
-    // No compressions — use standard conversion
+    // No compressions, use standard conversion
     return {
       yearToX: (year: number) => yearToX(year, centerYear, pixelsPerYear, viewportWidth),
       xToYear: (x: number) => xToYear(x, centerYear, pixelsPerYear, viewportWidth),
@@ -600,13 +600,13 @@ export function createYearMapper(
 
       for (const seg of segments) {
         if (year <= seg.startYear) {
-          // Before this compression — no more adjustments
+          // Before this compression, no more adjustments
           break;
         } else if (year >= seg.endYear) {
-          // Past this compression — subtract full saved pixels
+          // Past this compression, subtract full saved pixels
           adjustment -= seg.saved;
         } else {
-          // Inside this compression — interpolate within displayWidth
+          // Inside this compression, interpolate within displayWidth
           const fraction = (year - seg.startYear) / (seg.endYear - seg.startYear);
           const normalOffset = (year - seg.startYear) * pixelsPerYear;
           const compressedOffset = fraction * seg.displayWidth;
@@ -619,7 +619,7 @@ export function createYearMapper(
     },
 
     xToYear(x: number): number {
-      // Inverse mapping — binary search approach for accuracy
+      // Inverse mapping, binary search approach for accuracy
       // Start with the standard conversion as an estimate
       const estimate = xToYear(x, centerYear, pixelsPerYear, viewportWidth);
 
@@ -704,7 +704,7 @@ export function eventMatchesFilter(
   event: TimelineEvent,
   filter: TimelineFilter,
 ): boolean {
-  // Search query — match name or description (case-insensitive)
+  // Search query, match name or description (case-insensitive)
   if (filter.searchQuery) {
     const q = filter.searchQuery.toLowerCase();
     const nameMatch = event.name.toLowerCase().includes(q);

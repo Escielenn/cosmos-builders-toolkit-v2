@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// EntityMentionList — Floating suggestion panel for @entity mentions.
+// EntityMentionList, Floating suggestion panel for @entity mentions.
 //
 // Shows entity name, type label, and color dot. Supports keyboard navigation
 // (arrow keys + Enter to select, Escape to close). Styled per StellarForge

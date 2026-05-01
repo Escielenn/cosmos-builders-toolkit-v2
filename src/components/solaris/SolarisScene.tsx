@@ -1,5 +1,5 @@
 /**
- * SolarisScene — The Three.js canvas and scene graph.
+ * SolarisScene, The Three.js canvas and scene graph.
  * Renders the star system as an interactive orrery.
  */
 

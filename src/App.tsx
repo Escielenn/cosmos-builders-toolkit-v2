@@ -135,7 +135,7 @@ const ProToolGuard = lazy(() => import("./components/subscription/ProToolGuard")
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 5 * 60 * 1000,   // 5 min — don't refetch unless stale
+      staleTime: 5 * 60 * 1000,   // 5 min, don't refetch unless stale
       gcTime: 10 * 60 * 1000,     // 10 min garbage collection
       refetchOnWindowFocus: false, // stop redundant Supabase calls on tab switch
       retry: 1,
@@ -143,7 +143,7 @@ const queryClient = new QueryClient({
   },
 });
 
-// Loading fallback — sf-loading-screen with bracket corners + Ship's Voice message
+// Loading fallback, sf-loading-screen with bracket corners + Ship's Voice message
 const PageLoader = () => (
   <div className="sf-loading-screen" role="alert" aria-live="polite">
     <div className="sf-loading-frame">
@@ -158,7 +158,7 @@ const PageLoader = () => (
   </div>
 );
 
-/** Mounts the badge evaluator hook — only renders when user is logged in */
+/** Mounts the badge evaluator hook, only renders when user is logged in */
 function BadgeEvaluatorMount() {
   const { user } = useAuth();
   useBadgeEvaluator();
@@ -205,9 +205,9 @@ const App = () => (
                 <Route path="/about" element={<AboutUs />} />
                 <Route path="/community" element={<Community />} />
                 <Route path="/worlds" element={<Worlds />} />
-                {/* Public world showcase — outside WorldLayout (no sidebar) */}
+                {/* Public world showcase, outside WorldLayout (no sidebar) */}
                 <Route path="/worlds/:worldId/showcase" element={<WorldShowcase />} />
-                {/* World routes — nested under WorldLayout (Codex sidebar) */}
+                {/* World routes, nested under WorldLayout (Codex sidebar) */}
                 <Route path="/worlds/:worldId" element={<WorldLayout />}>
                   <Route index element={<WorldDashboard />} />
                   <Route path="tools/:toolName" element={<WorldToolPage />} />

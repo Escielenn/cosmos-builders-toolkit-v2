@@ -70,7 +70,7 @@ const RogueSimulator = () => {
             <iframe
               ref={iframeRef}
               src="/rogue/sim.html"
-              title="Rogue — Wandering Object Encounters"
+              title="Rogue, Wandering Object Encounters"
               allow="fullscreen"
               className={`w-full h-full border-0 transition-opacity duration-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}
               onLoad={() => setLoaded(true)}

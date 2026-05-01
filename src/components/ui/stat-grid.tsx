@@ -2,8 +2,8 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 /**
- * StatGrid — 4-column grid of mono eyebrow + display value. April 2026
- * handoff §09. No cards, no borders between cells by default — just spacing.
+ * StatGrid, 4-column grid of mono eyebrow + display value. April 2026
+ * handoff §09. No cards, no borders between cells by default, just spacing.
  *
  * Usage:
  *   <StatGrid>
@@ -38,7 +38,7 @@ interface CellProps extends React.HTMLAttributes<HTMLDivElement> {
   label: string;
   value: React.ReactNode;
   unit?: string;
-  /** Visual accent — applies to value text only */
+  /** Visual accent, applies to value text only */
   accent?: "teal" | "amber" | "azure" | "emerald" | "violet" | "stellar" | "crimson";
 }
 

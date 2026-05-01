@@ -211,7 +211,7 @@ const RenderStarSystem = ({ ws }: { ws: WorksheetRecord }) => {
         {ws.title || "Untitled Star System"}
       </Text>
       <View style={styles.sectionContent}>
-        <PDFKeyValuePair label="System Name" value={get(d, "systemName") || ws.title || "—"} />
+        <PDFKeyValuePair label="System Name" value={get(d, "systemName") || ws.title || "-"} />
         <PDFKeyValuePair label="Star Classification" value={get(d, "starClassification")} />
         <PDFKeyValuePair label="Configuration" value={get(d, "configuration")} />
         {get(d, "narrativeHook") && (
@@ -282,8 +282,8 @@ const RenderSpeciesMatrix = ({ ws }: { ws: WorksheetRecord }) => {
             </View>
             {species.map((sp) => (
               <View key={sp.id} style={styles.tableRow}>
-                <Text style={{ ...styles.tableCell, flex: 1 }}>{sp.name || "—"}</Text>
-                <Text style={{ ...styles.tableCell, flex: 1 }}>{sp.type || "—"}</Text>
+                <Text style={{ ...styles.tableCell, flex: 1 }}>{sp.name || "-"}</Text>
+                <Text style={{ ...styles.tableCell, flex: 1 }}>{sp.type || "-"}</Text>
               </View>
             ))}
           </View>

@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// useWorldFavorites — Favorite toggle, check, and count hooks
+// useWorldFavorites, Favorite toggle, check, and count hooks
 // ---------------------------------------------------------------------------
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";

@@ -47,7 +47,7 @@ function isFolder(el: CodexElement): boolean {
   return el.kind === "entry" && el.type === "lore";
 }
 
-// Sortable wrapper for each element row — drag handle only
+// Sortable wrapper for each element row, drag handle only
 const SortableRow = ({
   element,
   isLast,
@@ -110,7 +110,7 @@ const SortableRow = ({
         isFolderDropTarget && "bg-primary/[0.08] outline outline-1 outline-primary/30"
       )}
     >
-      {/* Drag handle — only this triggers drag */}
+      {/* Drag handle, only this triggers drag */}
       <button
         type="button"
         className="shrink-0 p-0.5 cursor-grab active:cursor-grabbing text-t5 opacity-0 group-hover/sortable:opacity-100 transition-opacity touch-none"
@@ -168,7 +168,7 @@ const SortableRow = ({
   );
 };
 
-// Child entry inside a folder (not sortable — just displays)
+// Child entry inside a folder (not sortable, just displays)
 const ChildRow = ({
   element,
   isLast,
@@ -260,7 +260,7 @@ const CodexCustomSection = ({
   const [folderDropTargetId, setFolderDropTargetId] = useState<string | null>(null);
   const folderDropRef = useRef<string | null>(null);
 
-  // Track which folders are expanded — persist per session
+  // Track which folders are expanded, persist per session
   const [expandedFolders, setExpandedFolders] = useState<Set<string>>(() => new Set());
 
   const toggleFolder = useCallback((folderId: string) => {
@@ -286,7 +286,7 @@ const CodexCustomSection = ({
       } else {
         // Find parent: it's the last folder in topLevel before this element
         // Since elements are pre-flattened in tree order, walk backwards
-        // Actually, we need a different approach — scan to find the parent
+        // Actually, we need a different approach, scan to find the parent
         // The elements array is flattened depth-first, so the parent is the
         // most recent depth-0 folder before this element
       }
@@ -340,7 +340,7 @@ const CodexCustomSection = ({
     setFolderDropTargetId(null);
   }, []);
 
-  // Detect when dragging over a folder — use ref to survive re-renders
+  // Detect when dragging over a folder, use ref to survive re-renders
   const handleDragOver = useCallback(
     (event: DragOverEvent) => {
       const { over, active } = event;
@@ -372,7 +372,7 @@ const CodexCustomSection = ({
   const handleDragEnd = useCallback(
     (event: DragEndEvent) => {
       const { active, over } = event;
-      // Read from ref — stable across re-renders during drag
+      // Read from ref, stable across re-renders during drag
       const dropTarget = folderDropRef.current;
       setDraggingId(null);
       folderDropRef.current = null;
@@ -477,7 +477,7 @@ const CodexCustomSection = ({
                         onSticky={onSticky}
                       />
 
-                      {/* Folder children — shown when expanded */}
+                      {/* Folder children, shown when expanded */}
                       {folder && folderExpanded && children.length > 0 && (
                         <div className="border-l border-sf-border ml-[18px]">
                           {children.map((child, cidx) => (

@@ -63,7 +63,7 @@ export function useExportPreferences() {
         return merged;
       }
 
-      // No cloud prefs yet — use local
+      // No cloud prefs yet, use local
       return readLocal();
     },
     staleTime: 1000 * 60 * 5, // 5 min

@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// WritingSidebar — unified tabbed sidebar for the writing space.
+// WritingSidebar, unified tabbed sidebar for the writing space.
 //
 // Merges ChapterTree + WritingEntityPanel into a single 280px rail with
 // two tabs: "Chapters" (doc management) and "Entities" (world reference).

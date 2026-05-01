@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// WorldCompile — manuscript compile + export page.
+// WorldCompile, manuscript compile + export page.
 //
 // Route: /worlds/:worldId/compile
 // Reads the chapter tree, lets user reorder/toggle which docs are included,
@@ -514,7 +514,7 @@ export default function WorldCompile() {
 }
 
 // ---------------------------------------------------------------------------
-// DocToggleRow — checkbox + title + word count for a single doc
+// DocToggleRow, checkbox + title + word count for a single doc
 // ---------------------------------------------------------------------------
 
 function DocToggleRow({

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 /**
- * TargetStar — rotating "next destination" with light-year distance.
+ * TargetStar, rotating "next destination" with light-year distance.
  * April 2026 handoff §15.
  *
  * Cycles through a fixed set of real nearby stars every 4 minutes. Non-

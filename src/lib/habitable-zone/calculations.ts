@@ -1,5 +1,5 @@
-// Habitable Zone Calculator — Pure Calculation Engine
-// No React dependencies — importable by both page components and PDF templates
+// Habitable Zone Calculator, Pure Calculation Engine
+// No React dependencies, importable by both page components and PDF templates
 
 import type { MoodboardImage } from "@/hooks/use-moodboard";
 import {
@@ -58,10 +58,10 @@ export interface FormStateForCalc {
 // ─── HZ Boundaries ──────────────────────────────────────────────────
 
 export interface HZBoundaries {
-  recentVenus: number;       // AU — optimistic inner
-  runawayGreenhouse: number; // AU — conservative inner
-  maxGreenhouse: number;     // AU — conservative outer
-  earlyMars: number;         // AU — optimistic outer
+  recentVenus: number;       // AU, optimistic inner
+  runawayGreenhouse: number; // AU, conservative inner
+  maxGreenhouse: number;     // AU, conservative outer
+  earlyMars: number;         // AU, optimistic outer
   snowline: number;          // AU
   optimisticWidth: number;   // AU
   conservativeWidth: number; // AU
@@ -108,7 +108,7 @@ export function equilibriumTemperature(
   if (distanceAU <= 0) return 0;
   // T_eq = T_0 * L^0.25 / sqrt(d) * (1-a)^0.25
   // T_0 = (S_0 / (4σ))^0.25 ≈ 278.5 K (zero-albedo equilibrium at 1 AU from Sun)
-  // Earth (L=1, d=1, a=0.3): 278.5 × 0.7^0.25 ≈ 254.8 K (-18°C) — correct
+  // Earth (L=1, d=1, a=0.3): 278.5 × 0.7^0.25 ≈ 254.8 K (-18°C), correct
   const L = Math.max(luminosityLsun, 1e-10);
   return 278.5 * Math.pow(L, 0.25) / Math.sqrt(distanceAU) * Math.pow(1 - albedo, 0.25);
 }
@@ -180,7 +180,7 @@ export function percentThroughHZ(
 // ─── Duration/Period Formatting ─────────────────────────────────────
 
 export function formatOrbitalPeriod(periodYears: number): string {
-  if (!isFinite(periodYears) || isNaN(periodYears)) return "—";
+  if (!isFinite(periodYears) || isNaN(periodYears)) return "-";
   const days = periodYears * EARTH_DAYS_PER_YEAR;
   if (days < 1) return `${(days * 24).toFixed(1)} hours`;
   if (days < 10) return `${days.toFixed(2)} Earth days`;
@@ -190,7 +190,7 @@ export function formatOrbitalPeriod(periodYears: number): string {
 }
 
 export function formatAU(au: number): string {
-  if (!isFinite(au) || isNaN(au)) return "—";
+  if (!isFinite(au) || isNaN(au)) return "-";
   if (au < 0.001) return `${(au * AU_IN_METERS / 1e6).toFixed(1)} million km`;
   if (au < 0.01) return `${au.toFixed(4)} AU`;
   if (au < 1) return `${au.toFixed(3)} AU`;
@@ -199,13 +199,13 @@ export function formatAU(au: number): string {
 }
 
 export function formatTemperature(kelvin: number): string {
-  if (!isFinite(kelvin) || isNaN(kelvin)) return "—";
+  if (!isFinite(kelvin) || isNaN(kelvin)) return "-";
   const celsius = kelvin - 273.15;
   return `${Math.round(kelvin)} K (${Math.round(celsius)}\u00B0C)`;
 }
 
 export function formatFlux(flux: number): string {
-  if (!isFinite(flux) || isNaN(flux)) return "—";
+  if (!isFinite(flux) || isNaN(flux)) return "-";
   if (flux < 0.001) return `${(flux * 1000).toFixed(2)} \u00D710\u207B\u00B3 S\u2299`;
   if (flux < 1) return `${flux.toFixed(3)} S\u2299`;
   if (flux < 100) return `${flux.toFixed(2)} S\u2299`;
@@ -322,9 +322,9 @@ function generateNarrative(
   if (result.percentThroughHZ >= 0) {
     narrative += `It sits ${Math.round(result.percentThroughHZ)}% of the way through the habitable zone (from inner to outer edge). `;
   } else if (result.planetZone === "scorched") {
-    narrative += `It lies inside the habitable zone — too close to its star for liquid surface water. `;
+    narrative += `It lies inside the habitable zone, too close to its star for liquid surface water. `;
   } else if (result.planetZone === "frozen" || result.planetZone === "near-snowline") {
-    narrative += `It lies beyond the habitable zone — too far from its star for unassisted liquid water. `;
+    narrative += `It lies beyond the habitable zone, too far from its star for unassisted liquid water. `;
   }
 
   narrative += `Equilibrium temperature: ${result.equilibriumTempFormatted}. `;
@@ -404,7 +404,7 @@ function makeErrorResult(error: string): HabitableZoneResult {
     error,
     hz: emptyHz,
     planetZone: "sweet-spot",
-    zoneName: "—",
+    zoneName: "-",
     zoneDescription: "",
     percentThroughHZ: -1,
     equilibriumTemp: 0,
@@ -413,16 +413,16 @@ function makeErrorResult(error: string): HabitableZoneResult {
     orbitalPeriodYears: 0,
     implications: [],
     narrativeSummary: "",
-    innerEdgeRecentVenusFormatted: "—",
-    innerEdgeRunawayFormatted: "—",
-    outerEdgeMaxGreenhouseFormatted: "—",
-    outerEdgeEarlyMarsFormatted: "—",
-    snowlineFormatted: "—",
-    optimisticWidthFormatted: "—",
-    conservativeWidthFormatted: "—",
-    equilibriumTempFormatted: "—",
-    estimatedSurfaceTempFormatted: "—",
-    stellarFluxFormatted: "—",
-    orbitalPeriodFormatted: "—",
+    innerEdgeRecentVenusFormatted: "-",
+    innerEdgeRunawayFormatted: "-",
+    outerEdgeMaxGreenhouseFormatted: "-",
+    outerEdgeEarlyMarsFormatted: "-",
+    snowlineFormatted: "-",
+    optimisticWidthFormatted: "-",
+    conservativeWidthFormatted: "-",
+    equilibriumTempFormatted: "-",
+    estimatedSurfaceTempFormatted: "-",
+    stellarFluxFormatted: "-",
+    orbitalPeriodFormatted: "-",
   };
 }

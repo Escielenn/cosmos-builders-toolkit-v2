@@ -120,7 +120,7 @@ export default function WikiBrowse() {
       queryClient.invalidateQueries({ queryKey: ["codex-data", worldId] });
       navigate(`/worlds/${worldId}/pages/${entry.id}`);
     } catch {
-      // Entry creation failed silently — user will see no navigation
+      // Entry creation failed silently, user will see no navigation
     }
   };
 

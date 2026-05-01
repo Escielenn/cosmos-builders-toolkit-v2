@@ -11,7 +11,7 @@ interface AutoDraftInput {
 
 /**
  * Hook that auto-creates a draft wiki page (world_entry) linked to a worksheet.
- * Call after a worksheet is created or saved. Idempotent — safe to call repeatedly.
+ * Call after a worksheet is created or saved. Idempotent, safe to call repeatedly.
  */
 export function useAutoCreateDraftPage(worldId: string | undefined) {
   const { user } = useAuth();
@@ -34,6 +34,6 @@ export function useAutoCreateDraftPage(worldId: string | undefined) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["codex-data", worldId] });
     },
-    // Silently fail — draft creation is a best-effort background operation
+    // Silently fail, draft creation is a best-effort background operation
   });
 }

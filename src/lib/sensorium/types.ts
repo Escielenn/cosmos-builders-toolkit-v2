@@ -1,4 +1,4 @@
-// SENSORIUM — Alien Sensory System Designer
+// SENSORIUM, Alien Sensory System Designer
 // Type definitions shared across data, calculations, and the tool page
 
 import type { LinkedWorksheetRef } from "@/lib/worksheet-links-config";
@@ -25,7 +25,7 @@ export type MediumType =
 export interface ModalityRequirements {
   medium: MediumType[];
   atmosphereRequired: boolean;
-  minPressure?: number; // atm — for sound propagation
+  minPressure?: number; // atm, for sound propagation
   maxPressure?: number; // atm
   minTemp?: number; // Kelvin
   maxTemp?: number; // Kelvin
@@ -213,7 +213,7 @@ export interface SensoriumFormState {
   selectedModalities: string[];
   validationResult: ValidationResult | null;
 
-  // Final curated selection (both modes — user's accepted senses)
+  // Final curated selection (both modes, user's accepted senses)
   finalSelection: string[];
 
   // Narrative sections

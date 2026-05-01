@@ -165,7 +165,7 @@ const ToolActionBar = ({
       </div>
     </div>
 
-    {/* Sticky bottom bar — appears when top bar scrolls out of view */}
+    {/* Sticky bottom bar, appears when top bar scrolls out of view */}
     <div
       className={`no-print fixed bottom-6 left-0 right-0 z-50 transition-transform duration-300 ease-out ${
         showBottomBar ? "translate-y-0" : "translate-y-[calc(100%+24px)]"

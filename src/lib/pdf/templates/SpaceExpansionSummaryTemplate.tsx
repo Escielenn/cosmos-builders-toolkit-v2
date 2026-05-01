@@ -131,7 +131,7 @@ const SpaceExpansionSummaryTemplate = ({ formState, worldName }: Props) => {
                   </Text>
                   {force.keyActors && (
                     <Text style={{ fontSize: typography.sizes.xs, color: colors.text.muted, marginLeft: spacing.sm }}>
-                      —{force.keyActors}
+                      , {force.keyActors}
                     </Text>
                   )}
                 </View>

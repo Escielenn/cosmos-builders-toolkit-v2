@@ -89,7 +89,7 @@ const InviteAccept = () => {
               {result.already_member
                 ? "You already have access to this world."
                 : result.is_owner
-                  ? "You own this world—no invite needed."
+                  ? "You own this world, no invite needed."
                   : `You now have ${result.role} access to this world.`}
             </p>
             <Button onClick={() => navigate(`/worlds/${result.world_id}`)}>

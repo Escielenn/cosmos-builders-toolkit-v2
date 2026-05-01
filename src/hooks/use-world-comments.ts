@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// useWorldComments — CRUD hooks for world comments
+// useWorldComments, CRUD hooks for world comments
 // ---------------------------------------------------------------------------
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";

@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// FavoriteButton — Heart toggle with count
+// FavoriteButton, Heart toggle with count
 // ---------------------------------------------------------------------------
 
 import { Heart } from "lucide-react";

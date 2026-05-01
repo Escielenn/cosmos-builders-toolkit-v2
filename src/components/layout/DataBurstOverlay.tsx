@@ -6,7 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useWorlds } from "@/hooks/use-worlds";
 import { useSubscription } from "@/hooks/use-subscription";
 
-// Simulator routes — overlay hidden on these (same as TextureOverlay)
+// Simulator routes, overlay hidden on these (same as TextureOverlay)
 const SIMULATOR_ROUTES = ["/rogue", "/tools/tidelock", "/tools/exosky", "/tools/stellar-cartographer"];
 
 /** Sets --scroll-y on <html> for CSS-driven parallax. Runs once globally. */

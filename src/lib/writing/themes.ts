@@ -27,7 +27,7 @@ export const WRITING_THEMES: WritingTheme[] = [
   {
     id: "captains-log",
     name: "Captain's Log",
-    description: "Warm cream paper — classic writing surface",
+    description: "Warm cream paper, classic writing surface",
     colors: {
       background: "#F5F3EF",
       text: "#1A1A2E",
@@ -75,7 +75,7 @@ export const WRITING_THEMES: WritingTheme[] = [
   {
     id: "comm-channel",
     name: "Comm Channel",
-    description: "Ship communications — deep blue with cyan",
+    description: "Ship communications, deep blue with cyan",
     colors: {
       background: "#0A1628",
       text: "#00D4FF",

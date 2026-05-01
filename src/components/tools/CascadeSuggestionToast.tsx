@@ -1,10 +1,10 @@
 /**
- * CascadeSuggestionToast — Shown after worksheet save when the next
+ * CascadeSuggestionToast, Shown after worksheet save when the next
  * cascade layer has no data yet.
  *
  * Dismissable, with a shelf life (persists dismiss for 7 days per tool).
  *
- * Spec: StellarForge_Final_Remediation_Spec_v2 — Issue 5
+ * Spec: StellarForge_Final_Remediation_Spec_v2, Issue 5
  */
 
 import { useEffect, useState, useCallback } from "react";

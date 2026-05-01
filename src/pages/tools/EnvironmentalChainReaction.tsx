@@ -65,7 +65,7 @@ const SECTIONS: Section[] = [
 // SF Examples for cascade demonstration
 const SF_CASCADE_EXAMPLES = [
   {
-    title: "ARRAKIS—Desert World",
+    title: "ARRAKIS, Desert World",
     bookTitle: "Dune",
     isbn: "9780441172719",
     parameter: "Extreme water scarcity",
@@ -76,10 +76,10 @@ const SF_CASCADE_EXAMPLES = [
       { level: "Cultural", details: "Water as currency, water-sharing as bond, tau (ritual water gift), water discipline, sietch democracy" },
       { level: "Mythological", details: "Shai-Hulud as god/devil, spice as sacred substance, water-paradise afterlife, Lisan al-Gaib prophecy" },
     ],
-    insight: "Frank Herbert traced every cultural element back to water scarcity—even their messiah myth.",
+    insight: "Frank Herbert traced every cultural element back to water scarcity, even their messiah myth.",
   },
   {
-    title: "GETHEN—Frozen World + Kemmer Biology",
+    title: "GETHEN, Frozen World + Kemmer Biology",
     bookTitle: "The Left Hand of Darkness",
     isbn: "9780441478125",
     parameter: "Ice age climate + ambisexual biology",
@@ -93,7 +93,7 @@ const SF_CASCADE_EXAMPLES = [
     insight: "Le Guin used environment + biology to reimagine human society without permanent gender.",
   },
   {
-    title: "MESKLIN—Extreme Variable Gravity",
+    title: "MESKLIN, Extreme Variable Gravity",
     bookTitle: "Mission of Gravity",
     isbn: "9780575077096",
     parameter: "3g at equator, 700g at poles",
@@ -321,7 +321,7 @@ const LEVEL2_QUESTIONS = [
       "What evolutionary remnant no longer serves its original purpose?",
       "What does this reveal about their evolutionary history?",
     ],
-    example: "Like human appendix or whale hip bones—what's your species' vestige?",
+    example: "Like human appendix or whale hip bones, what's your species' vestige?",
   },
 ];
 
@@ -903,7 +903,7 @@ const EnvironmentalChainReaction = () => {
             This tool applies the xenomythological principle that planetary
             conditions generate unique cultures, psychologies, and
             spiritualities. A desert world doesn't just have different
-            weather—it produces different religions, social structures,
+            weather, it produces different religions, social structures,
             technologies, and concepts of value.
           </p>
         </GlassPanel>
@@ -1062,7 +1062,7 @@ const EnvironmentalChainReaction = () => {
                               >
                                 <span className="font-medium">{option.label}</span>
                                 <span className="text-t2 ml-2">
-                                 —{option.description}
+                                 , {option.description}
                                 </span>
                               </Label>
                             </div>
@@ -1138,7 +1138,7 @@ const EnvironmentalChainReaction = () => {
                                 >
                                   <span className="font-medium">{option.label}</span>
                                   <span className="text-t2 ml-2">
-                                   —{option.description}
+                                   , {option.description}
                                   </span>
                                 </Label>
                               </div>
@@ -1332,7 +1332,7 @@ const EnvironmentalChainReaction = () => {
                 label="2. Internal Contradictions"
                 prompts={[
                   "Do any elements conflict?",
-                  "(Some contradictions are good—they create cultural tension!)",
+                  "(Some contradictions are good, they create cultural tension!)",
                 ]}
                 value={formState.synthesis.contradictions}
                 onChange={(value) => updateSynthesis("contradictions", value)}
@@ -1442,7 +1442,7 @@ const EnvironmentalChainReaction = () => {
         {/* Final Reminder */}
         <GlassPanel className="p-6 mt-8 text-center">
           <p className="text-t2 italic">
-            The most believable worlds aren't the most complex—they're the most
+            The most believable worlds aren't the most complex, they're the most
             internally consistent. Every element should cascade logically from
             your core environmental choice.
           </p>

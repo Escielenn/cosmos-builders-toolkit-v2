@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// EntityHoverCard — floating preview for @mention / wiki-link clicks in the
+// EntityHoverCard, floating preview for @mention / wiki-link clicks in the
 // writing space.
 //
 // Rendered as a portal near the clicked mention. Shows:
@@ -116,7 +116,7 @@ export function EntityHoverCard({
     [entity.entity_type]
   );
 
-  // Positioning — keep card inside viewport, flip upward if near bottom
+  // Positioning, keep card inside viewport, flip upward if near bottom
   const ESTIMATED_CARD_HEIGHT = 320;
   const position = useMemo(() => {
     const viewportWidth = window.innerWidth;

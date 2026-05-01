@@ -202,7 +202,7 @@ export function Chronicle({ worldId }: ChronicleProps) {
                   {era.title}
                   {era.endDate && (
                     <span className="text-t3/25 ml-1">
-                      — {era.endDate}
+                      · {era.endDate}
                     </span>
                   )}
                 </button>

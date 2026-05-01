@@ -1,5 +1,5 @@
-// Surface Gravity Calculator — Data, Constants, Presets, and Cascade Content
-// No React dependencies — importable from PDF templates
+// Surface Gravity Calculator, Data, Constants, Presets, and Cascade Content
+// No React dependencies, importable from PDF templates
 
 import type { Section } from "@/components/tools/SectionNavigation";
 
@@ -107,7 +107,7 @@ export const COMPOSITION_PRESETS: CompositionPreset[] = [
   {
     id: "custom",
     label: "Custom",
-    description: "Both sliders independent — physically implausible combinations allowed",
+    description: "Both sliders independent, physically implausible combinations allowed",
     color: "#00D4FF",
     massToRadius: (m) => m, // unused when custom
     radiusToMass: (r) => r, // unused when custom
@@ -179,7 +179,7 @@ export const PLANET_PRESETS: PlanetPreset[] = [
     radius: 0.532,
     compositionPreset: "rocky",
     source: "real",
-    description: "0.38g — the colonist's world. Low enough to reshape human biology over generations.",
+    description: "0.38g, the colonist's world. Low enough to reshape human biology over generations.",
     surfaceTemp: 210,
   },
   {
@@ -190,7 +190,7 @@ export const PLANET_PRESETS: PlanetPreset[] = [
     radius: 0.273,
     compositionPreset: "rocky",
     source: "real",
-    description: "0.16g — bounding strides and towering leaps. No atmosphere to retain.",
+    description: "0.16g, bounding strides and towering leaps. No atmosphere to retain.",
     surfaceTemp: 250,
   },
   {
@@ -201,7 +201,7 @@ export const PLANET_PRESETS: PlanetPreset[] = [
     radius: 1.34,
     compositionPreset: "rocky",
     source: "real",
-    description: "~1.3g — best known habitable zone super-Earth candidate. Noticeably heavier than home.",
+    description: "~1.3g, best known habitable zone super-Earth candidate. Noticeably heavier than home.",
     surfaceTemp: 233,
   },
   {
@@ -224,7 +224,7 @@ export const PLANET_PRESETS: PlanetPreset[] = [
     radius: 0.97,
     compositionPreset: "rocky",
     source: "fictional",
-    description: "~0.9g — Herbert never specified, but the desert ecology and human performance suggest near-Earth gravity.",
+    description: "~0.9g, Herbert never specified, but the desert ecology and human performance suggest near-Earth gravity.",
   },
   {
     id: "mesklin",
@@ -244,7 +244,7 @@ export const PLANET_PRESETS: PlanetPreset[] = [
     radius: 0.95,
     compositionPreset: "rocky",
     source: "fictional",
-    description: "~0.8g — low enough for floating mountains (with unobtanium) and massive flying creatures.",
+    description: "~0.8g, low enough for floating mountains (with unobtanium) and massive flying creatures.",
   },
 ];
 
@@ -287,7 +287,7 @@ export const DELTA_V_VERDICTS: DeltaVVerdict[] = [
     maxDeltaV: 7,
     label: "Easy Access",
     color: "text-green-400",
-    description: "Easier than Earth — your civilization reaches space with less effort. Expect early and widespread orbital infrastructure.",
+    description: "Easier than Earth, your civilization reaches space with less effort. Expect early and widespread orbital infrastructure.",
   },
   {
     maxDeltaV: 12,
@@ -311,7 +311,7 @@ export const DELTA_V_VERDICTS: DeltaVVerdict[] = [
     maxDeltaV: Infinity,
     label: "GRAVITY-LOCKED",
     color: "text-red-400",
-    description: "Effectively trapped. Reaching orbit requires physics-breaking technology or external rescue. This is one of the most profound worldbuilding choices in hard SF — intelligent beings who can see the cosmos but are imprisoned by their own world's mass.",
+    description: "Effectively trapped. Reaching orbit requires physics-breaking technology or external rescue. This is one of the most profound worldbuilding choices in hard SF, intelligent beings who can see the cosmos but are imprisoned by their own world's mass.",
   },
 ];
 
@@ -327,7 +327,7 @@ export const CASCADE_CONTENT: CascadeCategory[] = [
         regime: "microgravity",
         heading: "Life Without Weight",
         paragraphs: [
-          "In microgravity, organisms have essentially no structural constraints from gravity. Skeletal systems are vestigial or nonexistent. Bodies can be enormous, fragile, and three-dimensionally complex — think jellyfish-like forms the size of buildings.",
+          "In microgravity, organisms have essentially no structural constraints from gravity. Skeletal systems are vestigial or nonexistent. Bodies can be enormous, fragile, and three-dimensionally complex, think jellyfish-like forms the size of buildings.",
           "Flight costs almost nothing. Aerial or floating organisms dominate. Ground-dwelling body plans are an evolutionary dead end.",
           "Cardiovascular systems barely need to work against gravity. Blood pressure is low, hearts are small, and fainting from standing up is not a concept.",
         ],
@@ -340,9 +340,9 @@ export const CASCADE_CONTENT: CascadeCategory[] = [
         regime: "low",
         heading: "Graceful Giants",
         paragraphs: [
-          "Organisms can grow tall and spindly. Expect elongated limbs, lighter skeletal structures, and larger wingspans. Flight is dramatically easier — flying creatures could be massive.",
+          "Organisms can grow tall and spindly. Expect elongated limbs, lighter skeletal structures, and larger wingspans. Flight is dramatically easier, flying creatures could be massive.",
           "Cardiovascular systems need less pressure to circulate blood. Bone density decreases over generations. Bodies trend toward graceful, elongated forms.",
-          "Oceans are calmer with smaller waves. Tsunamis are less destructive. Mountains can grow much taller before crustal collapse — think Olympus Mons on Mars (0.38g).",
+          "Oceans are calmer with smaller waves. Tsunamis are less destructive. Mountains can grow much taller before crustal collapse, think Olympus Mons on Mars (0.38g).",
           "Vegetation grows tall and thin. Trees can reach extraordinary heights with minimal structural investment. Think: soaring canopies, delicate branching, world-forests.",
         ],
         prompts: [
@@ -368,9 +368,9 @@ export const CASCADE_CONTENT: CascadeCategory[] = [
         regime: "high",
         heading: "Built Like Tanks",
         paragraphs: [
-          "Biology trends toward squat, dense, powerful builds. Expect thick bones, heavy musculature, low centers of gravity, and wide flat bodies. Flight requires enormous energy — flying creatures are small or nonexistent.",
+          "Biology trends toward squat, dense, powerful builds. Expect thick bones, heavy musculature, low centers of gravity, and wide flat bodies. Flight requires enormous energy, flying creatures are small or nonexistent.",
           "Cardiovascular systems are under extreme strain. Hearts must pump harder; blood pressure is high. Beings tire quickly from vertical exertion. Spinal compression is a constant evolutionary pressure.",
-          "Vegetation grows low and wide — no tall trees. Think: ground-hugging mats, thick woody shrubs, mushroom-like spreading structures. Root systems are massive and shallow.",
+          "Vegetation grows low and wide, no tall trees. Think: ground-hugging mats, thick woody shrubs, mushroom-like spreading structures. Root systems are massive and shallow.",
           "Water falls faster and hits harder. Rain is punishing. Rivers cut deeper. Erosion is accelerated. Waterfalls are violent.",
         ],
         prompts: [
@@ -386,7 +386,7 @@ export const CASCADE_CONTENT: CascadeCategory[] = [
           "Multicellular life faces severe structural challenges above 3g. Expect armored, centipede-like body plans with distributed weight. Hydraulic rather than muscular movement becomes essential. Liquid-filled body cavities provide structural support.",
           "Vertical movement is energetically prohibitive. Life spreads horizontally. A fall of even a few body-lengths could be fatal.",
           "No vertebrate-style body plan is plausible above ~4–5g without radical biological innovation. Consider exotic biochemistry: silicon-based structures, metallic bones, fluid-filled pressure vessels.",
-          "Vegetation — if it exists — is flat, mat-like, and structurally more like coral than trees. Nothing grows upward that doesn't have to.",
+          "Vegetation, if it exists, is flat, mat-like, and structurally more like coral than trees. Nothing grows upward that doesn't have to.",
         ],
         prompts: [
           "Is complex life even possible at this gravity? What biological innovations make it work?",
@@ -405,7 +405,7 @@ export const CASCADE_CONTENT: CascadeCategory[] = [
         heading: "Thinking in Three Dimensions",
         paragraphs: [
           "Without a gravitational 'down,' spatial cognition is fully volumetric. These beings think in 3D naturally. Concepts like 'above' and 'below' may not exist in their language.",
-          "Physical vulnerability — fragile bodies in a weightless environment — may drive cooperative social strategies or technological augmentation from early evolutionary stages.",
+          "Physical vulnerability, fragile bodies in a weightless environment, may drive cooperative social strategies or technological augmentation from early evolutionary stages.",
           "Motion is constant and effortless. Stillness may be the unusual state. Psychology may associate rest with danger and motion with safety.",
         ],
         prompts: [
@@ -417,20 +417,20 @@ export const CASCADE_CONTENT: CascadeCategory[] = [
         regime: "low",
         heading: "The Sky Is Close",
         paragraphs: [
-          "Beings from low-g worlds perceive vertical space differently. 'Up' is easy, exploration is three-dimensional. Fear of falling is diminished — a fall from human-lethal height is merely bruising here.",
+          "Beings from low-g worlds perceive vertical space differently. 'Up' is easy, exploration is three-dimensional. Fear of falling is diminished, a fall from human-lethal height is merely bruising here.",
           "Physical vulnerability from fragile, elongated bodies might drive cooperative social strategies or early tool use for protection.",
           "The ease of reaching high places could make your species psychologically comfortable with heights, open spaces, and vertical environments. Agoraphilia rather than agoraphobia.",
         ],
         prompts: [
           "How does reduced fear of falling change your species' relationship with risk?",
-          "If 'up' is easy, does your species colonize vertical space naturally — cliffs, canopies, floating habitats?",
+          "If 'up' is easy, does your species colonize vertical space naturally, cliffs, canopies, floating habitats?",
         ],
       },
       {
         regime: "earthlike",
         heading: "Familiar Psychology",
         paragraphs: [
-          "Standard psychological frameworks apply. Fear of falling is calibrated to about 1g — a fall from 3 meters is dangerous but survivable. Height aversion exists but is manageable.",
+          "Standard psychological frameworks apply. Fear of falling is calibrated to about 1g, a fall from 3 meters is dangerous but survivable. Height aversion exists but is manageable.",
           "The balance between horizontal and vertical movement is familiar. Your species navigates both planes with roughly equal comfort.",
           "Focus your psychological differentiation on other factors: social structure, sensory capabilities, lifespan, or cognitive architecture.",
         ],
@@ -443,8 +443,8 @@ export const CASCADE_CONTENT: CascadeCategory[] = [
         regime: "high",
         heading: "The Ground Is Safety",
         paragraphs: [
-          "The ground is safety. Beings from high-g worlds may be psychologically averse to heights, open spaces, or unsupported structures. Claustrophilia — preference for enclosed, solid-walled spaces — is adaptive.",
-          "Physical strength is baseline survival. Cultural values emphasize endurance, solidity, and permanence. Weakness is more than social stigma — it's a death sentence.",
+          "The ground is safety. Beings from high-g worlds may be psychologically averse to heights, open spaces, or unsupported structures. Claustrophilia, preference for enclosed, solid-walled spaces, is adaptive.",
+          "Physical strength is baseline survival. Cultural values emphasize endurance, solidity, and permanence. Weakness is more than social stigma, it's a death sentence.",
           "The sky is impossibly far away. A civilization that has never easily looked up may develop fundamentally different cosmological thinking. The heavens are abstract, unreachable, alien.",
           "Patience is supreme. Everything takes more energy. Quick movements are wasteful. A high-g psychology likely values deliberation, efficiency, and conservation of effort.",
         ],
@@ -458,7 +458,7 @@ export const CASCADE_CONTENT: CascadeCategory[] = [
         heading: "Prisoners of Weight",
         paragraphs: [
           "Psychology is dominated by the omnipresence of crushing weight. Every movement is effort. Rest is not leisure but recovery. The concept of 'lightness' may be literally incomprehensible.",
-          "A fall of even a body-length could be crippling or fatal. Height phobia isn't a disorder — it's the dominant survival instinct. Mesklinites in Hal Clement's novel couldn't bear to be lifted even inches off the ground.",
+          "A fall of even a body-length could be crippling or fatal. Height phobia isn't a disorder, it's the dominant survival instinct. Mesklinites in Hal Clement's novel couldn't bear to be lifted even inches off the ground.",
           "These beings may have no concept of personal flight, no myths of angels or bird-people, no metaphor of 'rising above.' Their psychological metaphors all point sideways or downward.",
         ],
         prompts: [
@@ -477,9 +477,9 @@ export const CASCADE_CONTENT: CascadeCategory[] = [
         regime: "microgravity",
         heading: "Civilization in Free Fall",
         paragraphs: [
-          "Architecture has no need for structural support — structures are pressure vessels, not weight-bearing. Cities are spherical or amorphous. 'Floor' and 'ceiling' are arbitrary.",
+          "Architecture has no need for structural support, structures are pressure vessels, not weight-bearing. Cities are spherical or amorphous. 'Floor' and 'ceiling' are arbitrary.",
           "Manufacturing faces unique challenges: liquids form spheres, sedimentation doesn't work, convection doesn't drive cooling. But crystal growth is perfect, and zero-g materials science produces exotic alloys.",
-          "Space travel is trivial — they're already in space, conceptually. The delta-v to orbit is negligible. Expect a civilization that expands rapidly into space.",
+          "Space travel is trivial, they're already in space, conceptually. The delta-v to orbit is negligible. Expect a civilization that expands rapidly into space.",
         ],
         prompts: [
           "How does zero-g architecture differ from every civilization your readers have imagined?",
@@ -490,9 +490,9 @@ export const CASCADE_CONTENT: CascadeCategory[] = [
         regime: "low",
         heading: "Cities That Soar",
         paragraphs: [
-          "Architecture soars. Impossibly tall, thin structures are stable. Cities might be vertical. Construction is easier — materials go further, cranes lift more, workers fatigue less.",
+          "Architecture soars. Impossibly tall, thin structures are stable. Cities might be vertical. Construction is easier, materials go further, cranes lift more, workers fatigue less.",
           "Reaching orbit is cheap. A space-faring civilization develops early. Expect widespread orbital infrastructure, space stations, and asteroid mining as routine industries.",
-          "Sports and movement arts would be spectacular — imagine martial arts at 0.3g, or competitive flying with biological or mechanical wings.",
+          "Sports and movement arts would be spectacular, imagine martial arts at 0.3g, or competitive flying with biological or mechanical wings.",
           "Transportation favors flight. Ground vehicles may be less common than personal aircraft or ballistic transit.",
         ],
         prompts: [
@@ -517,7 +517,7 @@ export const CASCADE_CONTENT: CascadeCategory[] = [
         heading: "Built to Last",
         paragraphs: [
           "Architecture is bunker-like. Wide, squat, reinforced. Underground construction is preferred for structural stability. Multi-story buildings are rare and prestigious.",
-          "Reaching orbit is the Great Challenge. A high-g civilization that achieves spaceflight has overcome enormous obstacles — they would value it profoundly. Their ships would be overbuilt by human standards.",
+          "Reaching orbit is the Great Challenge. A high-g civilization that achieves spaceflight has overcome enormous obstacles, they would value it profoundly. Their ships would be overbuilt by human standards.",
           "Manufacturing benefits from gravity: smelting, casting, and material separation processes work efficiently. Industrial chemistry is well-suited to this environment.",
           "Transportation is energy-intensive. Flight requires extreme power. Ground transport dominates. Wheeled vehicles are heavy and slow but reliable.",
         ],
@@ -533,12 +533,12 @@ export const CASCADE_CONTENT: CascadeCategory[] = [
         paragraphs: [
           "Civilization spreads horizontally, never vertically. Multi-story construction may be unknown. Roads are flat and wide. Everything is built low, dense, and strong.",
           "If delta-v to orbit exceeds 30 km/s, this civilization is effectively gravity-locked. They can see the stars but cannot reach them. This is one of the most poignant worldbuilding setups in science fiction.",
-          "Technology may be extremely advanced in ground-based domains — computing, materials science, energy production, medicine — while space capability remains primitive or nonexistent.",
+          "Technology may be extremely advanced in ground-based domains, computing, materials science, energy production, medicine, while space capability remains primitive or nonexistent.",
           "Trade and expansion follow surface routes only. Oceans, if they exist, are shallow and violent. Maritime technology is engineering at its most extreme.",
         ],
         prompts: [
           "How does your gravity-locked civilization react to receiving a radio signal from space? They know intelligence exists out there but they can never visit.",
-          "What is their Fermi answer? They know why they haven't been visited — the universe is full of gravity-locked worlds.",
+          "What is their Fermi answer? They know why they haven't been visited, the universe is full of gravity-locked worlds.",
         ],
       },
     ],
@@ -553,7 +553,7 @@ export const CASCADE_CONTENT: CascadeCategory[] = [
         heading: "Myths of Stillness",
         paragraphs: [
           "In a world of constant motion, stillness is sacred. Creation myths may center on the first moment of rest, the first solid anchor point, the first being that chose to stop.",
-          "There is no 'fall from grace' — gravity doesn't pull things down. Sin might be conceptualized as being stuck, trapped, or frozen in place rather than falling.",
+          "There is no 'fall from grace', gravity doesn't pull things down. Sin might be conceptualized as being stuck, trapped, or frozen in place rather than falling.",
           "Gods may be associated with stability, density, and mass rather than height and transcendence.",
         ],
         prompts: [
@@ -566,12 +566,12 @@ export const CASCADE_CONTENT: CascadeCategory[] = [
         heading: "The Reachable Heavens",
         paragraphs: [
           "The sky is accessible. Myths treat the heavens as reachable, literal. Gods live in places you can visit. Ascension myths are practical, not metaphorical.",
-          "Creation myths may describe beings who descended from the sky — and your species might take this literally, because going to the sky is something they can actually do.",
+          "Creation myths may describe beings who descended from the sky, and your species might take this literally, because going to the sky is something they can actually do.",
           "The boundary between 'earthly' and 'divine' is permeable. Your species' relationship with transcendence is hands-on, not abstract.",
         ],
         prompts: [
           "If your species can physically reach their 'heaven,' what did they find when they got there?",
-          "How does accessible sky change their concept of death? Ascension isn't metaphorical — souls going 'up' is a physical direction they understand.",
+          "How does accessible sky change their concept of death? Ascension isn't metaphorical, souls going 'up' is a physical direction they understand.",
         ],
       },
       {
@@ -590,7 +590,7 @@ export const CASCADE_CONTENT: CascadeCategory[] = [
         heading: "The Unreachable Sky",
         paragraphs: [
           "The sky is an unreachable domain. Myths may frame the heavens as forbidden, sacred, or belonging to beings fundamentally unlike the ground-dwellers.",
-          "The concept of 'escape' carries enormous mythic weight. Heroes who defy gravity — who climb, who fly, who rise — are figures of radical transgression.",
+          "The concept of 'escape' carries enormous mythic weight. Heroes who defy gravity, who climb, who fly, who rise, are figures of radical transgression.",
           "The underworld may not be fearsome at all. Down is safe. Down is home. The terrifying direction is up.",
           "If your civilization has never seen a bird (because flight is impossible at this gravity), their myths have no winged angels, no sky-gods, no eagles bearing heroes aloft. What fills that mythic space instead?",
         ],
@@ -603,9 +603,9 @@ export const CASCADE_CONTENT: CascadeCategory[] = [
         regime: "extreme",
         heading: "The Weight of Existence",
         paragraphs: [
-          "Existence itself is a burden — and mythology reflects this. Creation myths may describe the world being pressed into existence by an incomprehensible force.",
-          "The gravity-locked civilization's mythology: they know the stars exist but cannot reach them. Their Fermi answer is built in. Their greatest myth may be the dream of weightlessness — an impossible paradise where nothing presses down.",
-          "Heroes in their mythology don't slay dragons or sail seas — they endure. The supreme virtue is bearing the unbearable weight. Atlas doesn't hold up the sky; Atlas IS the sky.",
+          "Existence itself is a burden, and mythology reflects this. Creation myths may describe the world being pressed into existence by an incomprehensible force.",
+          "The gravity-locked civilization's mythology: they know the stars exist but cannot reach them. Their Fermi answer is built in. Their greatest myth may be the dream of weightlessness, an impossible paradise where nothing presses down.",
+          "Heroes in their mythology don't slay dragons or sail seas, they endure. The supreme virtue is bearing the unbearable weight. Atlas doesn't hold up the sky; Atlas IS the sky.",
           "Death may be conceptualized not as falling but as finally being allowed to be still. Release from the constant effort of existence.",
         ],
         prompts: [
@@ -637,9 +637,9 @@ export const SECTION_HELPERS: Record<string, string> = {
   "primary-inputs": "Set planet mass and radius. Choose a composition preset to link them via empirical mass-radius relations, or use Custom for full creative freedom.",
   "advanced": "Surface temperature affects atmospheric retention. Molecular weight sets the reference atmosphere.",
   "results": "Core gravitational data: surface gravity, escape velocity, orbital velocity, and mean density.",
-  "weight-comparisons": "Intuitive comparisons for writers — how heavy is a person? How fast does something fall?",
+  "weight-comparisons": "Intuitive comparisons for writers, how heavy is a person? How fast does something fall?",
   "atmospheric-retention": "Which gases can your planet hold? Based on Jeans escape: a planet retains gas if escape velocity exceeds 6× the gas's thermal velocity.",
-  "delta-v": "How hard is it to reach orbit? The Tsiolkovsky rocket equation determines whether chemical rockets can work — or whether your civilization is gravity-locked.",
+  "delta-v": "How hard is it to reach orbit? The Tsiolkovsky rocket equation determines whether chemical rockets can work, or whether your civilization is gravity-locked.",
   "visualization": "Visual comparison of your planet to Earth, and where it falls on the gravity spectrum.",
   "worldbuilding-cascade": "The heart of this tool. Trace how gravity cascades through biology, psychology, mythology, and culture.",
   "story-notes": "Your notes on how gravity shapes your world's story.",

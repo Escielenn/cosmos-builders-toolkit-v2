@@ -120,7 +120,7 @@ export interface CreateDraftPageInput {
 
 /**
  * Creates a draft wiki entry linked to a worksheet via tool_source / tool_data_id.
- * Uses upsert semantics — if an entry already exists for this tool+worksheet, it
+ * Uses upsert semantics, if an entry already exists for this tool+worksheet, it
  * updates the title instead of creating a duplicate.
  */
 export async function createDraftWikiPage(

@@ -774,7 +774,7 @@ const ExportDialog = ({
         <div className="mt-4 pt-4 border-t border-sf-border">
           <SocialShareButtons
             url={window.location.href}
-            title={`${toolName} — Built with StellarForge`}
+            title={`${toolName}, Built with StellarForge`}
           />
         </div>
       </DialogContent>

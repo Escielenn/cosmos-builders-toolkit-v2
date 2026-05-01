@@ -155,7 +155,7 @@ export function generateMarkdownFiles(
       });
     });
 
-  // Chronicle — individual event files
+  // Chronicle, individual event files
   if (chronicleSection) {
     for (const sub of chronicleSection.subsections) {
       const eventFilename = `chronicle/${safeName(sub.title)}.md`;

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { APP_VERSION } from "@/config/version";
 
 /**
- * BuildSigil — clickable mono build-hash. On click, emits a 3-second
+ * BuildSigil, clickable mono build-hash. On click, emits a 3-second
  * telemetry burst with a random incident code. April 2026 handoff §15.
  *
  * Footer ambient. Click reveals "// BUILD 0.6522 · RUN X7A9B2 · VERIFIED" style

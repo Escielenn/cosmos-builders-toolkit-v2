@@ -93,7 +93,7 @@ export function DeleteConfirmDialog({
               handleConfirm();
             }}
             disabled={!isConfirmValid || isDeleting}
-            className="bg-destructive text-sf-crimson-foreground hover:bg-destructive/90"
+            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
           >
             {isDeleting ? "Deleting..." : "CONFIRM DELETION"}
           </AlertDialogAction>

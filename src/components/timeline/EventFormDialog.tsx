@@ -348,7 +348,7 @@ const EventFormDialog = ({
             </div>
           )}
 
-          {/* Start Date — Earth or Custom */}
+          {/* Start Date, Earth or Custom */}
           <div className="space-y-2">
             <Label>Start Date</Label>
             {isCustomCalendar && selectedCalendar ? (
@@ -406,7 +406,7 @@ const EventFormDialog = ({
             </Label>
           </div>
 
-          {/* End Date — Earth or Custom */}
+          {/* End Date, Earth or Custom */}
           {hasDuration && (
             <div className="space-y-2">
               <Label>End Date</Label>

@@ -1,4 +1,4 @@
-// LEXDRIFT — Language Evolution Data Constants
+// LEXDRIFT, Language Evolution Data Constants
 // Starting languages, social factors, story prompts, section navigation
 
 import type { Section } from "@/components/tools/SectionNavigation";
@@ -141,7 +141,7 @@ export const STORY_PROMPTS: Record<DivergenceSeverity, StoryPrompt[]> = {
     },
     {
       title: "Professional Jargon",
-      prompt: "Technical terminology evolves fastest—engineering crews develop shorthand that becomes permanent vocabulary. 'Standard' language is maintained in formal contexts.",
+      prompt: "Technical terminology evolves fastest, engineering crews develop shorthand that becomes permanent vocabulary. 'Standard' language is maintained in formal contexts.",
     },
   ],
   significant: [
@@ -165,7 +165,7 @@ export const STORY_PROMPTS: Record<DivergenceSeverity, StoryPrompt[]> = {
     },
     {
       title: "Cultural Fossils",
-      prompt: "Ceremonial language preserves archaic forms—prayers, oaths, and technical manuals in 'old speech' contrast with everyday communication.",
+      prompt: "Ceremonial language preserves archaic forms, prayers, oaths, and technical manuals in 'old speech' contrast with everyday communication.",
     },
     {
       title: "The Generation Gap",
@@ -175,11 +175,11 @@ export const STORY_PROMPTS: Record<DivergenceSeverity, StoryPrompt[]> = {
   separate: [
     {
       title: "First Contact with Humans",
-      prompt: "When ships finally meet, the encounter resembles first contact between alien species—familiar faces speaking incomprehensible languages.",
+      prompt: "When ships finally meet, the encounter resembles first contact between alien species, familiar faces speaking incomprehensible languages.",
     },
     {
       title: "Linguistic Archaeology",
-      prompt: "Scholars study the ship language's evolution like historical linguists—tracing sound shifts, grammatical innovations, and loanwords to reconstruct the journey's social history.",
+      prompt: "Scholars study the ship language's evolution like historical linguists, tracing sound shifts, grammatical innovations, and loanwords to reconstruct the journey's social history.",
     },
     {
       title: "The Babel Effect",
@@ -252,7 +252,7 @@ export const SOUND_CHANGES: Record<DivergenceSeverity, string> = {
   dialect: "Minor accent drift, vowel coloring. Speakers from different groups are easily understood but noticeably different.",
   significant: "Systematic vowel shift beginning, consonant weakening in common words. Some words become unrecognizable to outsiders.",
   reduced: "Complete vowel shift, significant consonant changes. Sound system reorganizing around new patterns. Historical recordings sound foreign.",
-  separate: "Sound system restructured. Phoneme inventory has changed—new sounds created, old ones merged or lost. Original speakers would not recognize the language.",
+  separate: "Sound system restructured. Phoneme inventory has changed, new sounds created, old ones merged or lost. Original speakers would not recognize the language.",
 };
 
 export const GRAMMAR_CHANGES: Record<DivergenceSeverity, string> = {
@@ -350,11 +350,11 @@ export const LEXDRIFT_SECTIONS: Section[] = [
 // ─── Section Helpers ────────────────────────────────────────────────
 
 export const SECTION_HELPERS: Record<string, string> = {
-  mission: "Set the physical parameters of your mission. Duration is the primary driver of divergence—longer missions mean more generations of children reshaping the language.",
+  mission: "Set the physical parameters of your mission. Duration is the primary driver of divergence, longer missions mean more generations of children reshaping the language.",
   linguistic: "Choose which Earth languages your population carries and how they interact. Multilingual ships evolve differently from monolingual ones.",
   social: "Social pressure is the accelerator or brake on language change. Education policy, identity, and media access shape how fast the language drifts.",
   results: "All predictions are based on documented rates of language change, adjusted for your scenario's unique pressures. Real language change is messier than any model.",
-  samples: "These samples show how a simple sentence might transform over time. The specific changes are illustrative—your world's actual evolution would follow its own path.",
+  samples: "These samples show how a simple sentence might transform over time. The specific changes are illustrative, your world's actual evolution would follow its own path.",
   multiShip: "When multiple ships meet, their evolved languages interact. Pidgins form for trade, creoles emerge in the next generation, and the linguistic landscape becomes complex.",
   story: "Use these prompts to explore how language change affects your characters and their society.",
 };

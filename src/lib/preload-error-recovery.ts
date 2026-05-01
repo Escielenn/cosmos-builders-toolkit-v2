@@ -4,7 +4,7 @@
 // are removed. A long-lived browser tab still has the previous deploy's HTML
 // in memory, with React.lazy() calls referencing chunk filenames that no
 // longer exist on the server. Clicking into a lazy-loaded route then throws
-// "Failed to fetch dynamically imported module" — caught by ErrorBoundary as
+// "Failed to fetch dynamically imported module", caught by ErrorBoundary as
 // SYSTEM FAULT.
 //
 // This module installs a window-level handler that reloads the page once on
@@ -20,7 +20,7 @@ if (typeof window !== "undefined") {
   window.addEventListener("vite:preloadError", () => {
     const lastAttempt = sessionStorage.getItem(RELOAD_GUARD_KEY);
     if (lastAttempt && Date.now() - Number(lastAttempt) < RELOAD_GUARD_TTL_MS) {
-      // Already tried reloading recently — let the ErrorBoundary handle it
+      // Already tried reloading recently, let the ErrorBoundary handle it
       // so the user sees a real error instead of an infinite refresh loop
       return;
     }

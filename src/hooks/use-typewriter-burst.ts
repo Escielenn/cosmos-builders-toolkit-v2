@@ -5,7 +5,7 @@ import { useEffect, useRef } from "react";
  * typing animation when they scroll into view. Each element types once,
  * then receives the `.sf-typed` class so the cursor disappears.
  *
- * Call once at the page/layout level — it watches the entire subtree.
+ * Call once at the page/layout level, it watches the entire subtree.
  */
 export function useTypewriterBurst(containerRef: React.RefObject<HTMLElement | null>) {
   const observerRef = useRef<IntersectionObserver | null>(null);

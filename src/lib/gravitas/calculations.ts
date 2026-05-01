@@ -1,4 +1,4 @@
-// GRAVITAS — Physics calculation functions for all 5 modes
+// GRAVITAS, Physics calculation functions for all 5 modes
 
 import type {
   SpinGravityInput,

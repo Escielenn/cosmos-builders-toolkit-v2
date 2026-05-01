@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 
 /**
- * KonamiCode — ↑↑↓↓←→←→BA unlocks a full-screen star chart overlay.
+ * KonamiCode, ↑↑↓↓←→←→BA unlocks a full-screen star chart overlay.
  *
  * Listens globally. On success, shows a dismissable modal titled "CAPTAIN'S
  * VIEW". Press Escape or click outside to close. Per handoff §15.

@@ -244,7 +244,7 @@ const BackgroundSelector = () => {
                       autoPlay
                       className="w-full h-full object-cover"
                       onError={(e) => {
-                        // .mov files won't play in Chrome/Firefox — show fallback
+                        // .mov files won't play in Chrome/Firefox, show fallback
                         const el = e.currentTarget;
                         el.style.display = "none";
                         const fallback = el.nextElementSibling as HTMLElement | null;
@@ -337,7 +337,7 @@ const BackgroundSelector = () => {
                     }}
                     className="absolute top-2 left-2 w-5 h-5 rounded-sm bg-destructive flex items-center justify-center hover:bg-destructive/80"
                   >
-                    <X className="w-3 h-3 text-sf-crimson-foreground" />
+                    <X className="w-3 h-3 text-destructive-foreground" />
                   </button>
                 </button>
               ) : null}

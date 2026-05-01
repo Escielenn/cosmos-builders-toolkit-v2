@@ -252,7 +252,7 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
         />
       )}
 
-      {/* Title — always editable for editors, static for viewers */}
+      {/* Title, always editable for editors, static for viewers */}
       {canEdit ? (
         <input
           ref={titleRef}
@@ -282,7 +282,7 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
             Draft
           </span>
         )}
-        {/* Cover upload — compact inline button in edit mode */}
+        {/* Cover upload, compact inline button in edit mode */}
         {canEdit && isEditing && (
           <label className="ml-auto flex items-center gap-1 px-2 py-0.5 border border-sf-border text-[9px] uppercase tracking-wider text-t3/40 hover:text-t3/70 cursor-pointer transition-colors">
             <ImagePlus className="w-3 h-3" />
@@ -308,7 +308,7 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
         </div>
       )}
 
-      {/* Wiki links hint — only show once, in edit mode */}
+      {/* Wiki links hint, only show once, in edit mode */}
       {isEditing && (
         <FirstTimeHint hintId="wiki-links" icon={Link2} className="mt-4" />
       )}

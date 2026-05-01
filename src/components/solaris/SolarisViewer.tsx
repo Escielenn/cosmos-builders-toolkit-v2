@@ -1,5 +1,5 @@
 /**
- * SolarisViewer — Top-level integration component.
+ * SolarisViewer, Top-level integration component.
  * Renders the full orrery: Three.js canvas + floating HTML panels.
  *
  * Usage:

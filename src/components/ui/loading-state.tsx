@@ -3,12 +3,12 @@ import { cn } from "@/lib/utils";
 import { getLoadingMessage } from "@/lib/loading-messages";
 
 /**
- * LoadingState — scanning-line loader (April 2026 handoff §11).
+ * LoadingState, scanning-line loader (April 2026 handoff §11).
  *
  * A rectangular frame with a 1px teal line that sweeps top-to-bottom on
  * the `sf-scan` keyframe. Ship's Voice loading message underneath.
  *
- * Never use a spinner. Never "Loading..." — pick from loading-messages.ts
+ * Never use a spinner. Never "Loading...", pick from loading-messages.ts
  * by route or pass a custom `message` prop.
  *
  * Usage:
@@ -51,7 +51,7 @@ export function LoadingState({
       {...props}
     >
       <div className={cn("relative overflow-hidden border border-sf-border bg-sf-void/60", SIZE_CLASSES[size])}>
-        {/* Corner brackets — 3px teal, one top-left + one bottom-right */}
+        {/* Corner brackets, 3px teal, one top-left + one bottom-right */}
         <span
           aria-hidden
           className="absolute top-0 left-0 w-3 h-3 border-t border-l border-sf-teal"

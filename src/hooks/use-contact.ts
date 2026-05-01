@@ -172,7 +172,7 @@ export const useContact = () => {
         return { success: true, blocked: true };
       }
 
-      // Skip DB insert — anonymous users can't write to contact_submissions (RLS).
+      // Skip DB insert, anonymous users can't write to contact_submissions (RLS).
       // The edge function email serves as the record.
       const response = await supabase.functions.invoke("submit-contact", {
         body: { ...data, type: "early-access" },

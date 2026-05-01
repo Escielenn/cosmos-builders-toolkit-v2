@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// CreateElementDialog — unified entity creation flow.
+// CreateElementDialog, unified entity creation flow.
 //
 // Writes to the `entities` table (canonical model post-unification).
 // Three-step flow:
@@ -96,7 +96,7 @@ const PLACEHOLDERS: Record<CreatableEntityType, string> = {
 };
 
 // ---------------------------------------------------------------------------
-// Tool display names (shared with EntityHoverCard — consider extracting later)
+// Tool display names (shared with EntityHoverCard, consider extracting later)
 // ---------------------------------------------------------------------------
 
 const TOOL_LABELS: Record<string, string> = {
@@ -217,7 +217,7 @@ export default function CreateElementDialog({
     if (!selectedType || !name.trim()) return;
     const entityType = toEntityType(selectedType);
 
-    // Build metadata payload — include template reference + _custom values
+    // Build metadata payload, include template reference + _custom values
     // when a template is active.
     const metadata: Record<string, unknown> = {};
     if (selectedTemplate) {

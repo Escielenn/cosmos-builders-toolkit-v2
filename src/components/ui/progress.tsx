@@ -7,7 +7,7 @@ const Progress = React.forwardRef<
   React.ElementRef<typeof ProgressPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof ProgressPrimitive.Root>
 >(({ className, value, ...props }, ref) => (
-  // April 2026 handoff — rectangular, no rounded caps. Zero radius everywhere.
+  // April 2026 handoff, rectangular, no rounded caps. Zero radius everywhere.
   <ProgressPrimitive.Root
     ref={ref}
     className={cn("relative h-[4px] w-full overflow-hidden rounded-none bg-sf-border", className)}

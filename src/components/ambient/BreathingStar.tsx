@@ -1,11 +1,11 @@
 /**
- * BreathingStar — single pulsing dot in the starfield.
+ * BreathingStar, single pulsing dot in the starfield.
  *
  * One "Polaris" anchor point in the background that breathes at 0.08–0.12 Hz
  * (a ~10s cycle). Mounted inside StellarBackground; pointer-events none, fixed
  * position.
  *
- * Per handoff §15, this is a hidden ambient detail — most users will never
+ * Per handoff §15, this is a hidden ambient detail, most users will never
  * notice consciously. That's the point.
  */
 export function BreathingStar({

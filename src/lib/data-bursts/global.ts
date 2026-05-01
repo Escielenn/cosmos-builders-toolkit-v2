@@ -1,6 +1,6 @@
 import type { DataBurstConfig } from "./types";
 
-/** Header region — upper-right, partially cropped */
+/** Header region, upper-right, partially cropped */
 export const HEADER_BURSTS: DataBurstConfig[] = [
   {
     content: "UPLINK: ACTIVE // 2.4 GHz",
@@ -24,7 +24,7 @@ export const HEADER_BURSTS: DataBurstConfig[] = [
   },
 ];
 
-/** Left edge — film frame numbers, hidden below md */
+/** Left edge, film frame numbers, hidden below md */
 export const EDGE_BURSTS: DataBurstConfig[] = [
   { content: "▸ 001", position: { top: "12%", left: "6px" }, variant: "edge", parallax: 0.06 },
   { content: "▸ 002", position: { top: "24%", left: "6px" }, variant: "edge", animation: "breathe", parallax: 0.04 },
@@ -35,14 +35,14 @@ export const EDGE_BURSTS: DataBurstConfig[] = [
   { content: "▸ 007", position: { top: "84%", left: "6px" }, variant: "edge", parallax: 0.06 },
 ];
 
-/** Right edge — secondary film frame marks */
+/** Right edge, secondary film frame marks */
 export const RIGHT_EDGE_BURSTS: DataBurstConfig[] = [
   { content: "◂ A1", position: { top: "18%", right: "6px" }, variant: "edge", parallax: 0.05 },
   { content: "◂ A2", position: { top: "42%", right: "6px" }, variant: "edge", animation: "breathe", parallax: 0.03 },
   { content: "◂ A3", position: { top: "66%", right: "6px" }, variant: "edge", parallax: 0.05 },
 ];
 
-/** Footer region — near status bar */
+/** Footer region, near status bar */
 export const FOOTER_BURSTS: DataBurstConfig[] = [
   {
     content: "T_CMB = 2.7255 ± 0.0006 K",

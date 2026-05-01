@@ -411,7 +411,7 @@ export function exportMarkdown(
   md += `---\n\n## Notable Habitable Systems\n\n`;
   const habitableStars = stars.filter(s => s.hasHabitable).slice(0, 30);
   for (const star of habitableStars) {
-    md += `- **${star.name}** — Class ${star.type}`;
+    md += `- **${star.name}**, Class ${star.type}`;
     if (star.empire) md += ` (${star.empire.name})`;
     md += `\n`;
   }

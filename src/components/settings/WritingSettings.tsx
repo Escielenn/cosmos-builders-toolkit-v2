@@ -1,5 +1,5 @@
 /**
- * Writing surface preferences panel — embeddable in Profile page.
+ * Writing surface preferences panel, embeddable in Profile page.
  * Lets users pick their default writing theme for the rich text editor.
  */
 

@@ -161,7 +161,7 @@ const HZFullReportTemplate = ({ formState: rawFormState, worldName, date }: Prop
             ))
           ) : (
             <Text style={{ fontSize: typography.sizes.sm, color: colors.text.secondary }}>
-              No implications available — configure star and planet parameters.
+              No implications available, configure star and planet parameters.
             </Text>
           )}
         </PDFSection>

@@ -150,7 +150,7 @@ const Auth = () => {
       <div className="flex-1 overflow-y-auto">
         <div className="container mx-auto px-4 max-w-4xl py-12 md:py-20 space-y-12">
 
-          {/* Hero — display-font scale per April 2026 handoff */}
+          {/* Hero, display-font scale per April 2026 handoff */}
           <div className="space-y-7">
             <CubeLogo size={80} className="rounded-none" />
             <div className="inline-flex items-center gap-3.5 font-mono uppercase text-sf-teal text-[12px] tracking-[3px]">
@@ -165,7 +165,7 @@ const Auth = () => {
             </p>
             <p className="font-sans text-[19px] text-t2 max-w-[780px] leading-[1.55]">
               Design planets, species, civilizations, and spacecraft with scientific rigor.
-              Every parameter cascades logically — environment shapes biology, biology shapes
+              Every parameter cascades logically: environment shapes biology, biology shapes
               psychology, psychology shapes mythology, mythology shapes culture.
               Build worlds that hold together.
             </p>
@@ -224,7 +224,7 @@ const Auth = () => {
             </div>
           </GlassPanel>
 
-          {/* Create Account — OAuth + email/password signup. The id is the
+          {/* Create Account, OAuth + email/password signup. The id is the
               scroll target for /auth#create-account links from elsewhere
               (e.g., the logo-adjacent Sign Up / Log In button in Header). */}
           <GlassPanel id="create-account" className="p-8 max-w-lg mx-auto scroll-mt-24" glow>
@@ -251,7 +251,7 @@ const Auth = () => {
               </div>
             ) : (
               <>
-                {/* OAuth — primary, fast path */}
+                {/* OAuth, primary, fast path */}
                 <Button
                   type="button"
                   variant="outline"
@@ -338,7 +338,7 @@ const Auth = () => {
             )}
           </GlassPanel>
 
-          {/* Existing User Login — Collapsible */}
+          {/* Existing User Login, Collapsible */}
           <div className="max-w-lg mx-auto">
             <Button
               type="button"

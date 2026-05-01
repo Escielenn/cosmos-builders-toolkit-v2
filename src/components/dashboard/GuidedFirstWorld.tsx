@@ -1,12 +1,12 @@
 /**
- * GuidedFirstWorld — Cascade-path empty state for new worlds.
+ * GuidedFirstWorld, Cascade-path empty state for new worlds.
  *
  * When a world has zero worksheets and zero entries, the dashboard
  * shows a guided path through the cascade layers.
  *
  * Dismisses automatically once any content is created.
  *
- * Spec: StellarForge_Final_Remediation_Spec_v2 — Issue 8
+ * Spec: StellarForge_Final_Remediation_Spec_v2, Issue 8
  */
 
 import { Link } from "react-router-dom";
@@ -71,7 +71,7 @@ export default function GuidedFirstWorld({ worldId }: GuidedFirstWorldProps) {
         Begin Your World
       </h2>
       <p className="text-t3 text-sm mb-6">
-        Every world follows the cascade — physics shapes environment, environment shapes biology, biology shapes culture. Start anywhere, but the path below traces the natural order.
+        Every world follows the cascade: physics shapes environment, environment shapes biology, biology shapes culture. Start anywhere, but the path below traces the natural order.
       </p>
 
       <div className="space-y-1">
@@ -133,7 +133,7 @@ export default function GuidedFirstWorld({ worldId }: GuidedFirstWorldProps) {
           </Link>
         </Button>
         <p className="text-[9px] text-t5 font-mono uppercase tracking-wider mt-2">
-          Or start with any tool — there are no wrong paths
+          Or start with any tool. There are no wrong paths.
         </p>
       </div>
     </GlassPanel>

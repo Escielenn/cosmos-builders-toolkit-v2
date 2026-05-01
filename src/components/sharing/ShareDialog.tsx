@@ -293,7 +293,7 @@ const ShareDialog = ({
             )}
           </div>
 
-          {/* Visibility & License — only for worlds */}
+          {/* Visibility & License, only for worlds */}
           {entityType === "world" && worldMeta.data && (
             <div className="space-y-4">
               {/* Visibility */}
@@ -327,7 +327,7 @@ const ShareDialog = ({
                 </RadioGroup>
               </div>
 
-              {/* License — only when community or public */}
+              {/* License, only when community or public */}
               {worldMeta.data.visibility !== "private" && (
                 <div className="space-y-2">
                   <Label className="text-xs">License</Label>

@@ -1,5 +1,5 @@
 /**
- * NarrativeBridgePanel — Slide-out panel bridging simulation physics to narrative.
+ * NarrativeBridgePanel, Slide-out panel bridging simulation physics to narrative.
  *
  * After running a simulation, offers guided cascade questions:
  * Environment → Biology → Culture → Mythology.
@@ -7,7 +7,7 @@
  * Uses the simulator aesthetic (cyan on black), rendered by the React
  * wrapper page (not inside the iframe).
  *
- * Spec: StellarForge_Simulator_Addendum — Narrative Bridge
+ * Spec: StellarForge_Simulator_Addendum, Narrative Bridge
  */
 
 import { useState, useCallback } from "react";
@@ -59,7 +59,7 @@ export default function NarrativeBridgePanel({
 
   const filledCount = Object.values(notes).filter((v) => v.trim()).length;
 
-  // Collapsed state — tab button on the right edge.
+  // Collapsed state, tab button on the right edge.
   // April 2026 handoff: highly visible at rest (sf-cyan 80% + glow + chevron),
   // with a filled-count badge so the user knows there's content waiting.
   if (!open) {
@@ -133,7 +133,7 @@ export default function NarrativeBridgePanel({
           </div>
         ))}
 
-        {/* General Notes — freeform textarea */}
+        {/* General Notes, freeform textarea */}
         <div>
           <label className="font-heading text-[10px] uppercase tracking-[2px] text-sf-cyan/70 block mb-1.5">
             General Notes

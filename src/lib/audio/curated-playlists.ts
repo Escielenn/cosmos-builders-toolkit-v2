@@ -1,7 +1,7 @@
 import type { AudioTrack, AudioPlaylist } from "./types";
 
 // ---------------------------------------------------------------------------
-// Curated tracks — static files in /public/music/
+// Curated tracks, static files in /public/music/
 // All tracks licensed via Envato Elements.
 // ---------------------------------------------------------------------------
 

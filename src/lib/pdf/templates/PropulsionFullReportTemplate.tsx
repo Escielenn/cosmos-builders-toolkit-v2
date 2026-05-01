@@ -138,7 +138,7 @@ const PropulsionFullReportTemplate = ({
         {/* Introduction */}
         <View style={{ marginBottom: spacing.lg }}>
           <Text style={{ fontSize: typography.sizes.sm, color: colors.text.secondary, lineHeight: 1.5, fontStyle: "italic" }}>
-            "Your propulsion system isn't just a way to move the plot between locations—it fundamentally shapes economics, politics, relationships, and psychology."
+            "Your propulsion system isn't just a way to move the plot between locations, it fundamentally shapes economics, politics, relationships, and psychology."
           </Text>
         </View>
 

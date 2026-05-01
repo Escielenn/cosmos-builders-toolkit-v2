@@ -36,7 +36,7 @@ const WorldLayout = () => {
   const { data: world, isLoading, error } = useWorld(worldId);
   const { isSubscribed } = useSubscription();
 
-  // Sidebar tab — codex vs entities
+  // Sidebar tab, codex vs entities
   const [sidebarTab, setSidebarTab] = useState<SidebarTab>(() => {
     try {
       return (localStorage.getItem("sf-sidebar-tab") as SidebarTab) || "codex";
@@ -66,7 +66,7 @@ const WorldLayout = () => {
     setDeleteEntityId(null);
   }, [deleteEntityId, deleteEntityMutation]);
 
-  // Sidebar state — persisted in localStorage
+  // Sidebar state, persisted in localStorage
   const [collapsed, setCollapsed] = useState(() => {
     try {
       return localStorage.getItem("sf-codex-collapsed") === "true";
@@ -193,7 +193,7 @@ const WorldLayout = () => {
               className={`sf-codex ${collapsed ? "sf-codex--collapsed" : ""}`}
               style={{ width: collapsed ? COLLAPSED_WIDTH : width }}
             >
-              {/* Tab toggle — hidden when collapsed */}
+              {/* Tab toggle, hidden when collapsed */}
               {!collapsed && (
                 <div className="flex border-b border-sf-border">
                   <button
