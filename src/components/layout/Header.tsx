@@ -82,27 +82,46 @@ const Header = () => {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-sf-border backdrop-blur-sf-side bg-sf-void/85">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-        <div className="flex flex-col shrink-0 mr-6">
-          <Link to="/" className="flex items-center gap-2 group">
-            <CubeLogo size={32} className="rounded-none" />
-            {isSubscribed ? (
-              <>
-                <span className="hidden xl:inline font-display text-lg font-light tracking-sf-wide text-t1 uppercase">
-                  STELLARFORGE
-                </span>
-                <span className="xl:hidden font-display text-lg font-light tracking-sf-wide text-t1 uppercase">
+        <div className="flex items-center gap-3 shrink-0 mr-6">
+          <div className="flex flex-col">
+            <Link to="/" className="flex items-center gap-2 group">
+              <CubeLogo size={32} className="rounded-none" />
+              {isSubscribed ? (
+                <>
+                  <span className="hidden xl:inline font-display text-lg font-light tracking-sf-wide text-t1 uppercase">
+                    STELLARFORGE
+                  </span>
+                  <span className="xl:hidden font-display text-lg font-light tracking-sf-wide text-t1 uppercase">
+                    SF
+                  </span>
+                </>
+              ) : (
+                <span className="font-display text-lg font-light tracking-sf-wide text-t1 uppercase">
                   SF
                 </span>
-              </>
-            ) : (
-              <span className="font-display text-lg font-light tracking-sf-wide text-t1 uppercase">
-                SF
-              </span>
-            )}
-          </Link>
-          <span className="hidden xl:block font-sans text-[10px] font-light tracking-[0.5px] text-white/20 ml-[42px] -mt-1">
-            v{APP_VERSION}
-          </span>
+              )}
+            </Link>
+            <span className="hidden xl:block font-sans text-[10px] font-light tracking-[0.5px] text-white/20 ml-[42px] -mt-1">
+              v{APP_VERSION}
+            </span>
+          </div>
+
+          {/* Logo-adjacent signup/login CTA for logged-out users.
+              Sends to /auth with a hash so the Auth page scrolls to the
+              CREATE ACCOUNT card on mount. */}
+          {!loading && !user && (
+            <Button
+              variant="outline"
+              size="sm"
+              asChild
+              className="hidden sm:inline-flex gap-1.5 border-sf-teal/[0.5] text-sf-teal hover:bg-sf-teal/[0.08] rounded-none"
+            >
+              <Link to="/auth#create-account">
+                <LogIn className="w-3.5 h-3.5" />
+                Sign Up / Log In
+              </Link>
+            </Button>
+          )}
         </div>
 
         {/* Desktop Navigation */}

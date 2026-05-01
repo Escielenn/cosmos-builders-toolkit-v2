@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -36,7 +36,20 @@ const Auth = () => {
 
   const { signIn, signUp, signInWithOAuth, user, loading } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const { toast } = useToast();
+
+  // Scroll to anchor target when arriving via a hash link (e.g., the
+  // logo-adjacent "Sign Up / Log In" button links to /auth#create-account).
+  // ScrollToTop runs first on route change, so we wait one frame for layout.
+  useEffect(() => {
+    if (!location.hash) return;
+    const id = location.hash.slice(1);
+    requestAnimationFrame(() => {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }, [location.hash]);
 
   useEffect(() => {
     if (!loading && user) {
@@ -211,8 +224,10 @@ const Auth = () => {
             </div>
           </GlassPanel>
 
-          {/* Create Account — OAuth + email/password signup */}
-          <GlassPanel className="p-8 max-w-lg mx-auto" glow>
+          {/* Create Account — OAuth + email/password signup. The id is the
+              scroll target for /auth#create-account links from elsewhere
+              (e.g., the logo-adjacent Sign Up / Log In button in Header). */}
+          <GlassPanel id="create-account" className="p-8 max-w-lg mx-auto scroll-mt-24" glow>
             <div className="text-center mb-6">
               <h2 className="font-heading text-xl font-light tracking-[0.1em] mb-2">
                 CREATE ACCOUNT

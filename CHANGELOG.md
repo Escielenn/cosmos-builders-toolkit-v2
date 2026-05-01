@@ -1,5 +1,17 @@
 # StellarForge Changelog
 
+## 0.6592
+- Added: Logo-adjacent "Sign Up / Log In" button in Header, visible only to
+  logged-out users. Uses the Beacon Teal accent (matches the primary CTA
+  color) with sm size so it doesn't compete with the wordmark. Hidden on
+  mobile (< sm); the existing mobile menu still has its full AUTHENTICATE
+  button. Hidden once the user is signed in.
+- Added: /auth#create-account anchor support. The button links to
+  /auth#create-account; Auth.tsx now listens for location.hash and scrolls
+  the CREATE ACCOUNT card into view via requestAnimationFrame on mount,
+  honoring scroll-mt-24 for clearance under the fixed header + banner.
+  Pattern extends to any future hash deep-link to /auth.
+
 ## 0.6582
 - Changed: Opened the site for OPEN EARLY ACCESS. SiteGate's PRIVATE_MODE flipped
   to false. Logged-out users can now browse the public surface (Index, Features,
