@@ -5,13 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { GlassPanel } from "@/components/ui/glass-panel";
-import { LogIn, Send, ChevronDown, Layers, Share2, FileDown } from "lucide-react";
+import { LogIn, Rocket, ChevronDown, Layers, Share2, FileDown } from "lucide-react";
 import CubeLogo from "@/components/icons/CubeLogo";
 import { Loader } from "@/components/ui/loader";
 import { useToast } from "@/hooks/use-toast";
-import { useContact } from "@/hooks/use-contact";
 import { z } from "zod";
-import { earlyAccessSchema } from "@/lib/contact-schemas";
 import { PageBursts } from "@/components/ui/data-burst";
 import { AUTH_BURSTS } from "@/lib/data-bursts";
 
@@ -21,26 +19,24 @@ const emailSchema = z.string().email("VALID EMAIL REQUIRED.");
 const passwordSchema = z.string().min(6, "AT LEAST 6 CHARS REQUIRED.");
 
 const Auth = () => {
-  // Login state
+  // Login state (existing-user sign-in)
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
   const [showLogin, setShowLogin] = useState(false);
 
-  // Early access state
-  const [eaName, setEaName] = useState("");
-  const [eaEmail, setEaEmail] = useState("");
-  const [eaWriting, setEaWriting] = useState("");
-  const [eaHeard, setEaHeard] = useState("");
-  const [eaHoneypot, setEaHoneypot] = useState("");
-  const [eaErrors, setEaErrors] = useState<Record<string, string>>({});
-  const [eaSubmitted, setEaSubmitted] = useState(false);
+  // Signup state (new-account creation)
+  const [signupEmail, setSignupEmail] = useState("");
+  const [signupPassword, setSignupPassword] = useState("");
+  const [signupDisplayName, setSignupDisplayName] = useState("");
+  const [signupErrors, setSignupErrors] = useState<{ email?: string; password?: string; displayName?: string }>({});
+  const [isSigningUp, setIsSigningUp] = useState(false);
+  const [signupComplete, setSignupComplete] = useState(false);
 
-  const { signIn, signInWithOAuth, user, loading } = useAuth();
+  const { signIn, signUp, signInWithOAuth, user, loading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { submitEarlyAccess } = useContact();
 
   useEffect(() => {
     if (!loading && user) {
@@ -91,36 +87,39 @@ const Auth = () => {
     }
   };
 
-  const handleEarlyAccess = async (e: React.FormEvent) => {
+  const validateSignup = () => {
+    const newErrors: { email?: string; password?: string; displayName?: string } = {};
+    const emailResult = emailSchema.safeParse(signupEmail);
+    if (!emailResult.success) newErrors.email = emailResult.error.errors[0].message;
+    const passwordResult = passwordSchema.safeParse(signupPassword);
+    if (!passwordResult.success) newErrors.password = passwordResult.error.errors[0].message;
+    setSignupErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    const parsed = earlyAccessSchema.safeParse({
-      name: eaName,
-      email: eaEmail,
-      writingFocus: eaWriting,
-      heardFrom: eaHeard || undefined,
-    });
-    if (!parsed.success) {
-      const fieldErrors: Record<string, string> = {};
-      parsed.error.errors.forEach((err) => {
-        if (err.path[0]) fieldErrors[err.path[0] as string] = err.message;
-      });
-      setEaErrors(fieldErrors);
-      return;
-    }
-    setEaErrors({});
-    submitEarlyAccess.mutate(
-      { ...parsed.data, honeypot: eaHoneypot },
-      {
-        onSuccess: () => setEaSubmitted(true),
-        onError: () => {
-          toast({
-            title: "TRANSMISSION FAILED.",
-            description: "RETRY WHEN READY.",
-            variant: "destructive",
-          });
-        },
-      }
+    if (!validateSignup()) return;
+    setIsSigningUp(true);
+    const { error } = await signUp(
+      signupEmail,
+      signupPassword,
+      signupDisplayName.trim() || undefined,
     );
+    setIsSigningUp(false);
+    if (error) {
+      toast({
+        title: "SIGNUP FAILED.",
+        description: error.message,
+        variant: "destructive",
+      });
+    } else {
+      setSignupComplete(true);
+      toast({
+        title: "ACCOUNT CREATED.",
+        description: "Check your email to confirm; you can sign in once verified.",
+      });
+    }
   };
 
   if (loading) {
@@ -143,7 +142,7 @@ const Auth = () => {
             <CubeLogo size={80} className="rounded-none" />
             <div className="inline-flex items-center gap-3.5 font-mono uppercase text-sf-teal text-[12px] tracking-[3px]">
               <span aria-hidden className="block w-12 h-px bg-sf-teal" />
-              <span>// CLEARANCE REQUIRED</span>
+              <span>// OPEN EARLY ACCESS</span>
             </div>
             <h1 className="font-display font-light text-sf-hero leading-[0.98] text-t1 max-w-[12ch]">
               <span className="text-sf-teal">Stellar</span>forge.
@@ -212,116 +211,115 @@ const Auth = () => {
             </div>
           </GlassPanel>
 
-          {/* Early Access Request */}
+          {/* Create Account — OAuth + email/password signup */}
           <GlassPanel className="p-8 max-w-lg mx-auto" glow>
             <div className="text-center mb-6">
               <h2 className="font-heading text-xl font-light tracking-[0.1em] mb-2">
-                REQUEST EARLY ACCESS
+                CREATE ACCOUNT
               </h2>
               <p className="text-sm text-t3">
-                StellarForge is in closed beta. Request access and we'll be in touch.
+                Open early access. Still under construction. Your feedback shapes what we ship.
               </p>
             </div>
 
-            {eaSubmitted ? (
+            {signupComplete ? (
               <div className="text-center py-6 space-y-3">
                 <div className="w-12 h-12 rounded-sm bg-primary/[0.06] border border-primary/[0.15] flex items-center justify-center mx-auto">
-                  <Send className="w-5 h-5 text-primary" />
+                  <Rocket className="w-5 h-5 text-primary" />
                 </div>
                 <h3 className="font-heading text-sm font-light tracking-[0.1em] uppercase">
-                  TRANSMISSION RECEIVED
+                  ACCOUNT CREATED
                 </h3>
                 <p className="text-sm text-t3">
-                  We'll review your request and reach out when a spot opens up.
+                  Check your email to confirm. You can sign in once verified.
                 </p>
               </div>
             ) : (
-              <form onSubmit={handleEarlyAccess} className="space-y-4">
-                {/* Honeypot */}
-                <div className="hidden" aria-hidden="true">
-                  <input
-                    type="text"
-                    name="website_url"
-                    tabIndex={-1}
-                    autoComplete="off"
-                    value={eaHoneypot}
-                    onChange={(e) => setEaHoneypot(e.target.value)}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="ea-name">Name</Label>
-                  <div className="sf-input-bracketed">
-                    <Input
-                      id="ea-name"
-                      type="text"
-                      placeholder="Your name"
-                      value={eaName}
-                      onChange={(e) => setEaName(e.target.value)}
-                      disabled={submitEarlyAccess.isPending}
-                    />
-                  </div>
-                  {eaErrors.name && <p className="text-sm text-sf-crimson">{eaErrors.name}</p>}
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="ea-email">Email</Label>
-                  <div className="sf-input-bracketed">
-                    <Input
-                      id="ea-email"
-                      type="email"
-                      placeholder="you@example.com"
-                      value={eaEmail}
-                      onChange={(e) => setEaEmail(e.target.value)}
-                      disabled={submitEarlyAccess.isPending}
-                    />
-                  </div>
-                  {eaErrors.email && <p className="text-sm text-sf-crimson">{eaErrors.email}</p>}
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="ea-writing">What kind of sci-fi do you write or worldbuild?</Label>
-                  <div className="sf-input-bracketed">
-                    <textarea
-                      id="ea-writing"
-                      className="flex min-h-[80px] w-full rounded-none border border-sf-border bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-t4 focus-visible:outline-none focus-visible:border-sf-teal/[0.35] disabled:cursor-not-allowed disabled:opacity-50 resize-none transition-colors duration-base"
-                      placeholder="Hard sci-fi novels, TTRPG campaigns, screenwriting..."
-                      value={eaWriting}
-                      onChange={(e) => setEaWriting(e.target.value)}
-                      disabled={submitEarlyAccess.isPending}
-                    />
-                  </div>
-                  {eaErrors.writingFocus && <p className="text-sm text-sf-crimson">{eaErrors.writingFocus}</p>}
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="ea-heard">How did you hear about StellarForge? <span className="text-t4 normal-case tracking-normal">(optional)</span></Label>
-                  <div className="sf-input-bracketed">
-                    <Input
-                      id="ea-heard"
-                      type="text"
-                      placeholder="Twitter, Reddit, a friend..."
-                      value={eaHeard}
-                      onChange={(e) => setEaHeard(e.target.value)}
-                      disabled={submitEarlyAccess.isPending}
-                    />
-                  </div>
-                </div>
-
+              <>
+                {/* OAuth — primary, fast path */}
                 <Button
-                  type="submit"
-                  className="w-full gap-2"
+                  type="button"
+                  variant="outline"
+                  className="w-full gap-2 mb-3"
                   size="lg"
-                  disabled={submitEarlyAccess.isPending}
+                  onClick={() => handleOAuthSignIn('google')}
+                  disabled={isLoading || isSigningUp}
                 >
-                  {submitEarlyAccess.isPending ? (
-                    <Loader variant="inline" size="sm" />
-                  ) : (
-                    <Send className="w-4 h-4" />
-                  )}
-                  REQUEST ACCESS
+                  <svg className="w-4 h-4" viewBox="0 0 24 24">
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+                  </svg>
+                  CONTINUE WITH GOOGLE
                 </Button>
-              </form>
+
+                <div className="relative my-4">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-dashed border-sf-border"></div>
+                  </div>
+                  <div className="relative flex justify-center font-mono text-[11px] tracking-[0.18em] uppercase">
+                    <span className="bg-sf-surface px-2 text-t4">// OR EMAIL</span>
+                  </div>
+                </div>
+
+                <form onSubmit={handleSignUp} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-display-name">
+                      Display name <span className="text-t4 normal-case tracking-normal">(optional)</span>
+                    </Label>
+                    <div className="sf-input-bracketed">
+                      <Input
+                        id="signup-display-name"
+                        type="text"
+                        placeholder="Your name"
+                        value={signupDisplayName}
+                        onChange={(e) => setSignupDisplayName(e.target.value)}
+                        disabled={isSigningUp}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-email">Email</Label>
+                    <div className="sf-input-bracketed">
+                      <Input
+                        id="signup-email"
+                        type="email"
+                        placeholder="you@example.com"
+                        value={signupEmail}
+                        onChange={(e) => setSignupEmail(e.target.value)}
+                        disabled={isSigningUp}
+                      />
+                    </div>
+                    {signupErrors.email && <p className="text-sm text-sf-crimson">{signupErrors.email}</p>}
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-password">Password</Label>
+                    <div className="sf-input-bracketed">
+                      <Input
+                        id="signup-password"
+                        type="password"
+                        placeholder="••••••••"
+                        value={signupPassword}
+                        onChange={(e) => setSignupPassword(e.target.value)}
+                        disabled={isSigningUp}
+                      />
+                    </div>
+                    {signupErrors.password && <p className="text-sm text-sf-crimson">{signupErrors.password}</p>}
+                  </div>
+
+                  <Button type="submit" className="w-full gap-2" size="lg" disabled={isSigningUp}>
+                    {isSigningUp ? (
+                      <Loader variant="inline" size="sm" />
+                    ) : (
+                      <Rocket className="w-4 h-4" />
+                    )}
+                    CREATE ACCOUNT
+                  </Button>
+                </form>
+              </>
             )}
           </GlassPanel>
 

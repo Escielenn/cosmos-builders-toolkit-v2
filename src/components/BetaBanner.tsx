@@ -8,14 +8,14 @@ interface BetaBannerProps {
 const BetaBanner = ({ position = "top" }: BetaBannerProps) => {
   return (
     <div
-      className={`bg-primary/10 border-primary/20 text-primary py-2 px-4 text-center text-sm ${
+      className={`bg-primary/10 border-primary/20 text-primary py-1 px-4 text-center ${
         position === "top" ? "border-b" : "border-t"
       }`}
     >
       <div className="container mx-auto flex items-center justify-center gap-2">
-        <FlaskConical className="w-4 h-4" />
-        <span className="font-mono text-xs tracking-wider uppercase">
-          SYSTEM STATUS: BETA · OPERATIONAL ·{" "}
+        <FlaskConical className="w-3 h-3" />
+        <span className="font-mono text-[10px] tracking-wider uppercase">
+          OPEN EARLY ACCESS · STILL BUILDING ·{" "}
           <Link
             to="/contact?tab=beta"
             className="underline hover:text-primary/80 transition-colors"

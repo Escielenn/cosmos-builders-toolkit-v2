@@ -23,7 +23,7 @@ const WelcomeHero = () => {
         <motion.div variants={fadeUpItem}>
           <div className="inline-flex items-center gap-3.5 font-mono uppercase text-sf-teal text-[12px] tracking-[3px] mb-7">
             <span aria-hidden className="block w-12 h-px bg-sf-teal" />
-            <span>// SCIENCE FICTION WORLDBUILDING</span>
+            <span>// OPEN EARLY ACCESS</span>
           </div>
         </motion.div>
 
@@ -66,6 +66,14 @@ const WelcomeHero = () => {
           variants={fadeUpItem}
         >
           3 TOOLS FREE FOREVER · 27 MORE WITH PRO CLEARANCE
+        </motion.p>
+
+        {/* Early-access disclaimer — small, navigator-log voice */}
+        <motion.p
+          className="mt-6 font-sans text-sm text-t3 max-w-[640px] leading-[1.55]"
+          variants={fadeUpItem}
+        >
+          Still under construction. Surfaces may shift. Your feedback shapes what we ship.
         </motion.p>
 
         <motion.p

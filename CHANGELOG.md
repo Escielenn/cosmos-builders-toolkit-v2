@@ -1,5 +1,25 @@
 # StellarForge Changelog
 
+## 0.6582
+- Changed: Opened the site for OPEN EARLY ACCESS. SiteGate's PRIVATE_MODE flipped
+  to false. Logged-out users can now browse the public surface (Index, Features,
+  Pricing, About, Community, Bookshelf, Learn, Guide, legal). Authenticated routes
+  (/worlds/*, /tools/*, /profile, /archive, /admin) are still protected by their
+  own per-page redirects and ProToolGuard wrappers.
+- Changed: Auth.tsx replaced the early-access REQUEST form (which submitted a
+  contact-form notification, not a real account) with a working CREATE ACCOUNT
+  flow. OAuth at top (Google, one-click signup-or-signin), email/password signup
+  below (calls signUp from AuthContext with optional display name). Existing-user
+  Sign In collapsible still at the bottom. Eyebrow updated from "// CLEARANCE
+  REQUIRED" to "// OPEN EARLY ACCESS".
+- Changed: WelcomeHero eyebrow from "// SCIENCE FICTION WORLDBUILDING" to
+  "// OPEN EARLY ACCESS". Added a short disclaimer line below the existing
+  free/pro tools note: "Still under construction. Surfaces may shift. Your
+  feedback shapes what we ship."
+- Changed: BetaBanner copy from "SYSTEM STATUS: BETA · OPERATIONAL" to
+  "OPEN EARLY ACCESS · STILL BUILDING". Reduced vertical padding (py-2 to py-1)
+  and text size (text-xs to text-[10px]) for a tighter banner. Icon now w-3 h-3.
+
 ## 0.6572
 - Fixed: ArchiveToggle catch-22 on /worlds. The toggle hides itself when
   `archivedCount === 0`, but the count was computed from the already-filtered
