@@ -1,5 +1,6 @@
 import { Component, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
+import { captureException } from "@/lib/sentry";
 
 interface Props {
   children: ReactNode;
@@ -27,6 +28,12 @@ class ErrorBoundary extends Component<Props, State> {
 
   componentDidCatch(error: Error, info: React.ErrorInfo) {
     console.error("ErrorBoundary caught:", error, info.componentStack);
+    // No-op when VITE_SENTRY_DSN is unset.
+    captureException(error, {
+      contexts: {
+        react: { componentStack: info.componentStack ?? undefined },
+      },
+    });
   }
 
   render() {

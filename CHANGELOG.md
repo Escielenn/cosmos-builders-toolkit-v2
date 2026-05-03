@@ -1,5 +1,29 @@
 # StellarForge Changelog
 
+## 0.6612
+- Added: Sentry error monitoring via @sentry/react. Initialized from
+  src/lib/sentry.ts and called in src/main.tsx before App renders.
+  DSN-gated: when VITE_SENTRY_DSN is unset, init returns early and every
+  Sentry call is a no-op (safe for local dev and contributor clones).
+- Added: ErrorBoundary now reports caught exceptions to Sentry with the
+  React component stack as context. The visual SYSTEM FAULT screen is
+  unchanged; this just adds the silent backchannel.
+- Added: Performance tracing at 10% sample rate in production, 100% in
+  dev/preview. Browser tracing integration enabled by default.
+- Added: ignoreErrors filter to drop non-actionable noise from the Sentry
+  inbox: chunk-load errors auto-recovered by preload-error-recovery,
+  ResizeObserver loop messages, AbortError, common Tanstack-retried
+  network blips. Also strips Referer header in beforeSend to avoid
+  leaking share-tokens.
+- Added: VITE_SENTRY_DSN entry in .env.example with setup notes.
+- Added: Error Monitoring (Sentry) section in CLAUDE.md documenting what
+  gets reported, what gets filtered, and what's intentionally not yet
+  wired (source-maps upload, Session Replay, user identification).
+
+Source-maps upload via @sentry/vite-plugin is a follow-up that needs a
+Sentry auth token from the user. Until then, stack traces in Sentry use
+minified function names.
+
 ## 0.6602
 - Changed: Header wordmark switched from ALL-CAPS "STELLARFORGE" to mixed-case
   "Stellarforge" with the existing teal-split treatment ("Stellar" in Beacon Teal,

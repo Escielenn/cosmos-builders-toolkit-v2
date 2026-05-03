@@ -1158,7 +1158,37 @@ RESEND_API_KEY=re_xxxxx
 VITE_SANITY_PROJECT_ID=xxxxx
 VITE_SANITY_DATASET=production
 SANITY_API_TOKEN=xxxxx
+
+# Sentry (optional)
+VITE_SENTRY_DSN=https://xxxxx@xxxxx.ingest.sentry.io/xxxxx
 ```
+
+---
+
+## Error Monitoring (Sentry)
+
+Sentry is wired in via [src/lib/sentry.ts](src/lib/sentry.ts), initialized from [src/main.tsx](src/main.tsx) before App renders. The integration is **DSN-gated**: when `VITE_SENTRY_DSN` is unset (local dev, contributor clones), `initSentry()` returns early and every subsequent Sentry call becomes a no-op. Set the env var in Vercel for preview/production to turn it on.
+
+### What gets reported
+
+- Anything caught by [src/components/ErrorBoundary.tsx](src/components/ErrorBoundary.tsx) (the SYSTEM FAULT screen) is also sent to Sentry with the React component stack as context.
+- Unhandled promise rejections and uncaught exceptions in any browser context.
+- Performance traces at 10% sample rate in production, 100% in dev/preview.
+
+### What's filtered out (in `ignoreErrors`)
+
+Update the list in [src/lib/sentry.ts](src/lib/sentry.ts) when a non-actionable pattern shows up in the inbox.
+
+- `Failed to fetch dynamically imported module` / `Importing a module script failed` / `error loading dynamically imported module` — already auto-recovered by [src/lib/preload-error-recovery.ts](src/lib/preload-error-recovery.ts).
+- `ResizeObserver loop limit exceeded` / `ResizeObserver loop completed with undelivered notifications` — browser scheduling noise, not user-impacting.
+- `AbortError` / `The user aborted a request` — expected when users navigate away mid-fetch.
+- `NetworkError when attempting to fetch resource` / `Load failed` — Tanstack Query already retries these; only the unrecovered ones matter, and those get re-raised under different messages.
+
+### What's NOT yet wired
+
+- **Source-maps upload** (readable stack traces) is a follow-up. Requires a Sentry auth token (server-side, build-time only) and the `@sentry/vite-plugin`. Until that's added, Sentry sees minified function names like `Ft` and `Bt` instead of `PlanetaryProfile`.
+- **Session Replay** is intentionally off. Heavy on bandwidth and stylistically too "session recorder" for early access. Revisit if a bug is reproducible only via interaction recording.
+- **User identification** (`Sentry.setUser`) is not called automatically — events are anonymous by default. Add a `setUser({ id })` call from `AuthContext` when the Clerk migration lands and we want per-user error tracking.
 
 ---
 
