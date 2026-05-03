@@ -1,5 +1,18 @@
 # StellarForge Changelog
 
+## 0.6622
+- Added: @sentry/vite-plugin wired in vite.config.ts for source-map upload.
+  Plugin reads SENTRY_AUTH_TOKEN from env at build time, uploads .map files
+  to Sentry release `stellarforge@<APP_VERSION>` (matched against the
+  runtime release in src/lib/sentry.ts by reading version.ts at build
+  time), then deletes the .map files post-upload via
+  filesToDeleteAfterUpload so they don't ship in the public bundle.
+  build.sourcemap: true enables .map generation. errorHandler logs a
+  warning instead of failing the build when the token's missing, so
+  contributor clones and unconfigured environments still build cleanly.
+- Configured: org=dreamside-studios, project=javascript-react-r3.
+  Stack traces in Sentry should now resolve to file:line in src/.
+
 ## 0.6612
 - Added: Sentry error monitoring via @sentry/react. Initialized from
   src/lib/sentry.ts and called in src/main.tsx before App renders.
