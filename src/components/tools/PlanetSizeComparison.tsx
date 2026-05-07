@@ -93,7 +93,7 @@ const PlanetSizeComparison = ({
     <div ref={containerRef} className={cn("w-full aspect-[2/1] min-h-[200px]", className)}>
       <canvas
         ref={canvasRef}
-        className="w-full h-full rounded-lg"
+        className="w-full h-full rounded-none"
         aria-label={`Planet size comparison: ${planetName} (${planetRadiusEarth.toFixed(2)} R⊕, ${planetGravity.toFixed(2)}g) vs Earth`}
       />
     </div>

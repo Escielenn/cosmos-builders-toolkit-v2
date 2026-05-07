@@ -339,7 +339,7 @@
 .btn:hover {
   background: rgba(0, 212, 255, 0.08);
   border-color: rgba(0, 212, 255, 0.2);
-  color: #fff;
+  color: #FAFAFA;
 }
 
 .btn.active {

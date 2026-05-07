@@ -80,7 +80,7 @@ const RecentArticles = () => {
                   <Badge className={categoryColors[article.category]}>
                     {categoryLabels[article.category]}
                   </Badge>
-                  <h3 className="font-heading font-semibold mt-2 mb-1 line-clamp-2 group-hover:text-primary transition-colors">
+                  <h3 className="font-heading font-medium mt-2 mb-1 line-clamp-2 group-hover:text-primary transition-colors">
                     {article.title}
                   </h3>
                   <span className="text-xs text-t3 flex items-center gap-1">

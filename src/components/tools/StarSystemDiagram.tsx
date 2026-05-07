@@ -73,11 +73,11 @@ export default function StarSystemDiagram({
   if (!spectralClass || !computed) {
     return (
       <GlassPanel className="p-4 md:p-6">
-        <h3 className="font-heading text-lg font-semibold mb-4 flex items-center gap-2">
+        <h3 className="font-heading text-lg font-medium mb-4 flex items-center gap-2">
           <Orbit className="w-5 h-5 text-primary" />
           System Diagram
         </h3>
-        <div className="h-[300px] bg-[#0D0D0F] rounded-lg flex items-center justify-center">
+        <div className="h-[300px] bg-sf-void rounded-none flex items-center justify-center">
           <p className="text-sm text-t3">
             Select a spectral class above to visualize your system
           </p>
@@ -93,7 +93,7 @@ export default function StarSystemDiagram({
 
   return (
     <GlassPanel className="p-4 md:p-6">
-      <h3 className="font-heading text-lg font-semibold mb-4 flex items-center gap-2">
+      <h3 className="font-heading text-lg font-medium mb-4 flex items-center gap-2">
         <Orbit className="w-5 h-5 text-primary" />
         System Diagram
       </h3>

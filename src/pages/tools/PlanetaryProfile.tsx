@@ -1367,7 +1367,7 @@ const PlanetaryProfile = () => {
 
               {/* Survival Pressure */}
               <div className="space-y-4 p-4 rounded-none border border-sf-border">
-                <h4 className="font-semibold text-primary">1. Survival Pressure</h4>
+                <h4 className="font-medium text-primary">1. Survival Pressure</h4>
                 <p className="text-xs text-t4">The physical challenges of staying alive</p>
 
                 <QuestionSection
@@ -1398,7 +1398,7 @@ const PlanetaryProfile = () => {
 
               {/* Social Pressure */}
               <div className="space-y-4 p-4 rounded-none border border-sf-border">
-                <h4 className="font-semibold text-accent">2. Social Pressure</h4>
+                <h4 className="font-medium text-accent">2. Social Pressure</h4>
                 <p className="text-xs text-t4">How the environment shapes society and culture</p>
 
                 <QuestionSection
@@ -1429,7 +1429,7 @@ const PlanetaryProfile = () => {
 
               {/* Psychological Pressure */}
               <div className="space-y-4 p-4 rounded-none border border-sf-border">
-                <h4 className="font-semibold text-primary">3. Psychological Pressure</h4>
+                <h4 className="font-medium text-primary">3. Psychological Pressure</h4>
                 <p className="text-xs text-t4">Mental and emotional effects of the environment</p>
 
                 <QuestionSection

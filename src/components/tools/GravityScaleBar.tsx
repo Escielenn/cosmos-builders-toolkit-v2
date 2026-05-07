@@ -53,7 +53,7 @@ const GravityScaleBar = ({ gravityRatio, className }: GravityScaleBarProps) => {
           className="absolute top-0 h-full flex items-center z-10"
           style={{ left: `${Math.min(userPercent, 99)}%`, transform: "translateX(-50%)" }}
         >
-          <div className="w-3 h-3 rounded-full bg-primary border-2 border-background shadow-[0_0_8px_rgba(0,212,255,0.5)]" />
+          <div className="w-3 h-3 rounded-sm bg-primary border-2 border-background shadow-[0_0_8px_rgba(0,212,255,0.5)]" />
         </div>
       </div>
 

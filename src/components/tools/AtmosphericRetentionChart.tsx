@@ -80,15 +80,15 @@ const AtmosphericRetentionChart = ({ retentionData, className }: AtmosphericRete
           <span>λ=6 retention threshold</span>
         </div>
         <div className="flex items-center gap-1">
-          <div className="w-2 h-2 rounded-full bg-[#2ECC71]/70" />
+          <div className="w-2 h-2 rounded-sm bg-[#2ECC71]/70" />
           <span>Retained</span>
         </div>
         <div className="flex items-center gap-1">
-          <div className="w-2 h-2 rounded-full bg-[#FFA500]/70" />
+          <div className="w-2 h-2 rounded-sm bg-[#FFA500]/70" />
           <span>Marginal</span>
         </div>
         <div className="flex items-center gap-1">
-          <div className="w-2 h-2 rounded-full bg-[#E74C3C]/70" />
+          <div className="w-2 h-2 rounded-sm bg-[#E74C3C]/70" />
           <span>Escapes</span>
         </div>
       </div>

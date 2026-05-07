@@ -321,7 +321,7 @@ export default function OrbitalDiagram({
   return (
     <div
       ref={containerRef}
-      className={`relative w-full bg-[#0D0D0F] rounded-lg overflow-hidden ${className}`}
+      className={`relative w-full bg-sf-void rounded-none overflow-hidden ${className}`}
       style={{ minHeight: 300 }}
     >
       <canvas
@@ -330,7 +330,7 @@ export default function OrbitalDiagram({
         role="img"
         aria-label={`Orbital diagram showing habitable zone for a ${spectralType}-type star. Planet at ${planetDistance.toFixed(3)} AU.`}
       />
-      <div className="absolute top-3 right-3 text-[7px] font-mono text-white/20">
+      <div className="absolute top-3 right-3 text-[7px] font-mono text-t5">
         Scroll to zoom
       </div>
     </div>

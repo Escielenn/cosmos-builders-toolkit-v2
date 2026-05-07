@@ -70,7 +70,7 @@ export function WorksheetTitle({
           onChange={(e) => setEditValue(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Enter worksheet name..."
-          className="h-8 text-base font-semibold max-w-xs"
+          className="h-8 text-base font-medium max-w-xs"
           autoFocus
           disabled={isSaving}
         />
@@ -112,7 +112,7 @@ export function WorksheetTitle({
     >
       {icon}
       <span className={cn(
-        "text-lg font-semibold",
+        "text-lg font-medium",
         title ? "text-primary" : "text-t3 italic"
       )}>
         {title || "Untitled"}

@@ -1,7 +1,26 @@
-import { Layers, Share2, FileDown } from "lucide-react";
 import { motion } from "framer-motion";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { scrollRevealStagger, fadeUpItem, scrollReveal, viewportOnce } from "@/lib/animations";
+
+const PRINCIPLES = [
+  {
+    n: "01",
+    label: "THE CASCADE",
+    body:
+      "Define gravity once. Biology, psychology, mythology, and culture rearrange themselves around it. Every upstream choice carries a downstream cost.",
+  },
+  {
+    n: "02",
+    label: "CROSS-TOOL INTEGRATION",
+    body:
+      "Your spacecraft already knows what your atmosphere is made of. Your species already knows what your moon does to their seasons. No duplicate entry.",
+  },
+  {
+    n: "03",
+    label: "YOUR WORLDS, EXPORTED",
+    body: "PDF, Notion, JSON, world bible. Read-only share links. They leave clean.",
+  },
+] as const;
 
 const ValueProposition = () => {
   return (
@@ -13,53 +32,44 @@ const ValueProposition = () => {
       variants={scrollReveal}
     >
       <GlassPanel glow lightArc className="p-8 md:p-12">
-        <h2 className="font-heading font-light text-2xl uppercase tracking-sf-wide text-center mb-10">
-          Why StellarForge?
-        </h2>
-        <motion.div
-          className="grid md:grid-cols-3 gap-8"
+        <div className="inline-flex items-center gap-3.5 font-mono uppercase text-sf-teal text-[12px] tracking-[3px] mb-10">
+          <span aria-hidden className="block w-12 h-px bg-sf-teal" />
+          <span>// WHY STELLARFORGE</span>
+        </div>
+
+        <motion.ol
+          className="space-y-0"
           initial="hidden"
           whileInView="visible"
           viewport={viewportOnce}
           variants={scrollRevealStagger}
         >
-          <motion.div className="text-center md:text-left" variants={fadeUpItem}>
-            <div className="w-12 h-12 rounded-none bg-primary/10 flex items-center justify-center mb-4 mx-auto md:mx-0">
-              <Layers className="w-6 h-6 text-primary" />
-            </div>
-            <h3 className="font-heading font-light text-lg mb-2 uppercase tracking-wider">
-              Systematic Worldbuilding
-            </h3>
-            <p className="text-sm text-t3">
-              Every choice cascades logically. Define gravity, and watch how it
-              shapes biology, psychology, mythology, and culture.
-            </p>
-          </motion.div>
-          <motion.div className="text-center md:text-left" variants={fadeUpItem}>
-            <div className="w-12 h-12 rounded-none bg-accent/10 flex items-center justify-center mb-4 mx-auto md:mx-0">
-              <Share2 className="w-6 h-6 text-accent" />
-            </div>
-            <h3 className="font-heading font-light text-lg mb-2 uppercase tracking-wider">
-              Cross-Tool Integration
-            </h3>
-            <p className="text-sm text-t3">
-              Data flows between tools. Your spacecraft references your planet's
-              atmosphere automatically. No duplicate entry.
-            </p>
-          </motion.div>
-          <motion.div className="text-center md:text-left" variants={fadeUpItem}>
-            <div className="w-12 h-12 rounded-none bg-primary/10 flex items-center justify-center mb-4 mx-auto md:mx-0">
-              <FileDown className="w-6 h-6 text-primary" />
-            </div>
-            <h3 className="font-heading font-light text-lg mb-2 uppercase tracking-wider">
-              Export Everything
-            </h3>
-            <p className="text-sm text-t3">
-              Generate beautiful PDFs, print-friendly views, and JSON exports.
-              Share your worlds with collaborators via read-only links.
-            </p>
-          </motion.div>
-        </motion.div>
+          {PRINCIPLES.map((p, i) => (
+            <motion.li
+              key={p.n}
+              className="grid grid-cols-[auto_1fr] gap-x-6 md:gap-x-10 py-8 first:pt-0"
+              variants={fadeUpItem}
+            >
+              <span className="font-mono text-[11px] tracking-[0.18em] text-sf-amber-warm pt-1">
+                {p.n}
+              </span>
+              <div className="space-y-3">
+                <h3 className="font-heading font-light text-xl uppercase tracking-sf-wide text-t1">
+                  {p.label}
+                </h3>
+                <p className="font-sans text-t2 leading-[1.55] max-w-[60ch]">
+                  {p.body}
+                </p>
+              </div>
+              {i < PRINCIPLES.length - 1 && (
+                <span
+                  aria-hidden
+                  className="col-span-2 h-px mt-8 bg-gradient-to-r from-transparent via-sf-teal-bright/25 to-transparent"
+                />
+              )}
+            </motion.li>
+          ))}
+        </motion.ol>
       </GlassPanel>
     </motion.section>
   );

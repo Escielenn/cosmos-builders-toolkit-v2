@@ -20,16 +20,16 @@ const LoggedInHero = () => {
       variants={staggerContainer}
     >
       <motion.div className="flex items-center justify-center gap-3 mb-4" variants={heroReveal}>
-        <h1 className="font-display font-light text-4xl md:text-5xl tracking-sf-wide text-white uppercase">
+        <h1 className="font-display font-light text-4xl md:text-5xl tracking-sf-title text-t1 uppercase">
           STELLARFORGE
         </h1>
         {isVanguard ? (
-          <Badge className="bg-violet-500/20 text-sf-violet gap-1 sf-shimmer-violet">
+          <Badge className="bg-sf-violet/20 text-sf-violet gap-1 sf-shimmer-violet">
             <Sparkles className="w-3 h-3" />
             Vanguard
           </Badge>
         ) : isSubscribed ? (
-          <Badge className="bg-amber-500/20 text-sf-amber dark:text-sf-amber gap-1 sf-shimmer">
+          <Badge className="bg-sf-amber/20 text-sf-amber dark:text-sf-amber gap-1 sf-shimmer">
             <Zap className="w-3 h-3" />
             Pro
           </Badge>

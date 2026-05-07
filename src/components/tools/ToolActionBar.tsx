@@ -158,7 +158,7 @@ const ToolActionBar = ({
             <Share2 className="w-4 h-4 mr-2" />
             Share
             {isShared && (
-              <span className="ml-1.5 w-1.5 h-1.5 rounded-full bg-primary" />
+              <span className="ml-1.5 w-1.5 h-1.5 rounded-sm bg-primary" />
             )}
           </Button>
         )}

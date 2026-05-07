@@ -1,5 +1,52 @@
 # StellarForge Changelog
 
+## 0.6632
+- Changed: ValueProposition.tsx rewritten from a 3-column identical-card grid
+  (an explicit absolute ban in the impeccable design rules) to a numbered
+  cascade. Mono "01"/"02"/"03" amber-warm prefixes, Jura uppercase headings,
+  DM Sans Tier-2 body, light-arc dividers between rows. Body lengths vary
+  intentionally so the rhythm isn't three equal blocks. Copy now leans into
+  the Cascade voice from PRODUCT.md ("Define gravity once. Biology,
+  psychology, mythology, and culture rearrange themselves around it").
+  Eyebrow uses the same `// WHY STELLARFORGE` mono-with-hairline pattern as
+  WelcomeHero.
+- Changed: font-semibold (weight 600) replaced with font-medium (weight 500)
+  in 10 locations across PlanetaryProfile, SelectedParametersSidebar,
+  SuggestedImplications, StarSystemDiagram, WorksheetTitle, and
+  RecentArticles. Weight 600 violated the Two-Weight Rule (300 / 500 only)
+  documented in DESIGN.md and CLAUDE.md.
+- Fixed: LoggedInHero H1 was using text-white and tracking-sf-wide. Both
+  violate the design system: text-white bypasses the navy-tinted Tier-1
+  neutral, and tracking-sf-wide (0.2em) is the eyebrow/label tracking, not
+  H1 tracking. Now uses text-t1 and tracking-sf-title (0.08em) per the
+  CLAUDE.md H1 spec. WelcomeHero already had this right; LoggedInHero is
+  now consistent.
+- Changed: Generic Tailwind palette swatches in LoggedInHero badges
+  (bg-violet-500/20, bg-amber-500/20) replaced with the design tokens
+  (bg-sf-violet/20, bg-sf-amber/20) so future Pro-tier color tweaks
+  propagate from the token layer.
+- Changed: rounded-lg on tool diagram containers (PlanetSizeComparison,
+  OrbitalDiagram, StarSystemDiagram placeholder) replaced with rounded-none
+  to match the surrounding GlassPanel. The rounded canvas inside a sharp
+  panel was reading as a styling discontinuity.
+- Changed: Hardcoded #0D0D0F backgrounds in OrbitalDiagram and
+  StarSystemDiagram replaced with bg-sf-void so the canvas plane sits on
+  the same color as the rest of the UI.
+- Changed: rounded-full indicator pips on GravityScaleBar (planet marker),
+  ToolActionBar (share-status dot), and AtmosphericRetentionChart (legend
+  pips) switched to rounded-sm. Sharp edges are core identity; circular
+  markers were the most divergent end of the radius spectrum. Progress
+  bars in AtmosphericRetentionChart kept rounded-full because they're
+  functional UI, not chrome.
+- Fixed: text-white/20 ghost text in OrbitalDiagram switched to text-t5,
+  aligning with the 5-tier hierarchy instead of inventing a 0.20-alpha
+  off-ladder slot.
+- Distilled: pure #fff in StellarCartographer.module.css button-hover
+  state changed to #FAFAFA (Tier-1) per the No Pure-Black Rule. Canvas
+  hex literals (#FFFFFF/#000000) in StellarCartographer.tsx and
+  OrbitalDiagram.tsx were left intact because they're physics-driven
+  (event horizons, star-core gradient endpoints), not UI chrome.
+
 ## 0.6622
 - Added: @sentry/vite-plugin wired in vite.config.ts for source-map upload.
   Plugin reads SENTRY_AUTH_TOKEN from env at build time, uploads .map files
