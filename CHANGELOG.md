@@ -1,5 +1,30 @@
 # StellarForge Changelog
 
+## 0.6642
+- Fixed: Source-maps could ship publicly when SENTRY_AUTH_TOKEN was unset
+  or upload failed. The plugin's filesToDeleteAfterUpload only fires after
+  a successful upload, and the previous errorHandler swallowed failures,
+  so a misconfigured Vercel preview or an expired/missing token would
+  result in ./dist/**/*.map being deployed and served, exposing the
+  pre-bundle source tree (file paths, variable names, comments, internal
+  Supabase patterns) to anyone who follows the //# sourceMappingURL=
+  comment in the bundle.
+- Changed: build.sourcemap is now conditional on !!process.env.SENTRY_AUTH_TOKEN.
+  When the token is set, maps emit as "hidden" so the //# sourceMappingURL=
+  comment is omitted from the bundle and the URLs aren't trivially
+  discoverable, while the Sentry plugin still gets the .map files for
+  upload + deletion. When the token is unset, maps aren't generated at
+  all so there's nothing to leak.
+- Changed: sentryVitePlugin is now only registered in the plugins array
+  when SENTRY_UPLOAD_ENABLED is true. Contributor clones and any
+  unconfigured environment skip both map generation and the upload
+  attempt entirely.
+- Changed: errorHandler now throws on upload failure instead of logging a
+  warning. With the token gating above, this only fires when the token IS
+  set but upload fails (network error, expired token, project quota),
+  which is a real CI-time misconfiguration worth surfacing rather than
+  silently shipping unuploaded maps.
+
 ## 0.6632
 - Changed: ValueProposition.tsx rewritten from a 3-column identical-card grid
   (an explicit absolute ban in the impeccable design rules) to a numbered

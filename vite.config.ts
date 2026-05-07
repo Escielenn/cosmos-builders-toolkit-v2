@@ -15,6 +15,13 @@ const versionMatch = versionSource.match(/APP_VERSION\s*=\s*"([^"]+)"/);
 const APP_VERSION = versionMatch?.[1] ?? "unknown";
 const SENTRY_RELEASE = `stellarforge@${APP_VERSION}`;
 
+// Source maps are generated only when we have a Sentry auth token to upload
+// them with. Without the token, the plugin can't delete .map files post-upload
+// (deletion runs after a successful upload), so they'd ship in ./dist/ and be
+// publicly served. Better to skip generation entirely than to risk leaking
+// pre-bundle source via map files referenced by `//# sourceMappingURL=`.
+const SENTRY_UPLOAD_ENABLED = !!process.env.SENTRY_AUTH_TOKEN;
+
 // https://vitejs.dev/config/
 export default defineConfig({
   server: {
@@ -33,29 +40,35 @@ export default defineConfig({
       gzipSize: true,
     }),
     // Sentry source-maps upload. Must be last in the plugins array per
-    // Sentry's docs so it sees the final bundle output. Disabled when
-    // SENTRY_AUTH_TOKEN is unset (local builds, contributor clones, or
-    // any environment that didn't get the token wired) — the plugin
-    // logs a warning and skips upload rather than failing the build.
-    sentryVitePlugin({
-      org: "dreamside-studios",
-      project: "javascript-react-r3",
-      authToken: process.env.SENTRY_AUTH_TOKEN,
-      release: { name: SENTRY_RELEASE },
-      sourcemaps: {
-        assets: "./dist/**",
-        // Delete .map files from the local build after upload so they
-        // aren't served from the public bundle. Sentry has them now;
-        // browsers don't need them.
-        filesToDeleteAfterUpload: "./dist/**/*.map",
-      },
-      // Don't break the build if the token's missing or upload fails.
-      // The runtime SDK still works without source-maps, just with
-      // minified stack traces.
-      errorHandler: (err) => {
-        console.warn("[sentry-vite-plugin] " + err.message);
-      },
-    }),
+    // Sentry's docs so it sees the final bundle output. Only registered
+    // when SENTRY_AUTH_TOKEN is present; without it, the plugin can't
+    // upload OR delete the .map files, so we skip both the plugin and
+    // sourcemap generation (see build.sourcemap below).
+    SENTRY_UPLOAD_ENABLED &&
+      sentryVitePlugin({
+        org: "dreamside-studios",
+        project: "javascript-react-r3",
+        authToken: process.env.SENTRY_AUTH_TOKEN,
+        release: { name: SENTRY_RELEASE },
+        sourcemaps: {
+          assets: "./dist/**",
+          // Delete .map files from the local build after upload so they
+          // aren't served from the public bundle. Sentry has them now;
+          // browsers don't need them.
+          filesToDeleteAfterUpload: "./dist/**/*.map",
+        },
+        // Fail the build if upload errors when the token IS set —
+        // misconfiguration is worth catching at CI time rather than
+        // silently shipping minified stack traces to Sentry. (When the
+        // token is absent, the plugin isn't registered at all, so this
+        // handler doesn't fire for the contributor-clone case.)
+        errorHandler: (err) => {
+          throw new Error(
+            "[sentry-vite-plugin] Source-map upload failed; failing build to avoid shipping unuploaded maps. " +
+              err.message,
+          );
+        },
+      }),
   ],
   resolve: {
     alias: {
@@ -63,10 +76,12 @@ export default defineConfig({
     },
   },
   build: {
-    // Generate .map files for sentryVitePlugin to upload. The plugin
-    // deletes them post-upload via filesToDeleteAfterUpload so they
-    // don't ship in the public bundle.
-    sourcemap: true,
+    // "hidden" emits .map files for the Sentry plugin to consume and upload,
+    // but omits the trailing `//# sourceMappingURL=` comment from the bundle
+    // so attackers can't trivially discover the map URLs even if a map file
+    // ever survives a failed deletion. When SENTRY_UPLOAD_ENABLED is false,
+    // disable map generation entirely.
+    sourcemap: SENTRY_UPLOAD_ENABLED ? "hidden" : false,
     rollupOptions: {
       output: {
         manualChunks: {
