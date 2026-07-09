@@ -135,7 +135,7 @@ const RichTextEditor = ({
     <BracketPanel color="stellar">
     <div
       className={cn(
-        "rounded-none border border-[#5B8DEF]/15 bg-background overflow-hidden relative",
+        "rounded-none border border-sf-stellar/15 bg-background overflow-hidden relative",
         className
       )}
     >
@@ -259,7 +259,7 @@ const RichTextEditor = ({
                     className={cn(
                       "w-3.5 h-3.5 rounded-full border transition-all",
                       preferences.themeId === theme.id
-                        ? "ring-2 ring-[#5B8DEF] ring-offset-1 ring-offset-background border-[#5B8DEF]"
+                        ? "ring-2 ring-sf-stellar ring-offset-1 ring-offset-background border-sf-stellar"
                         : "border-sf-border hover:border-foreground/50"
                     )}
                     style={{ backgroundColor: theme.swatch[0] }}

@@ -768,8 +768,8 @@ const DrakeEquationCalculator = () => {
                           style={{
                             width: `${barWidth}%`,
                             transform: 'translateX(-50%)',
-                            background: `linear-gradient(90deg, rgba(0,212,255,0.1), rgba(0,212,255,${0.12 + (1 - i / 7) * 0.3}), rgba(0,212,255,0.1))`,
-                            border: '1px solid rgba(0,212,255,0.12)',
+                            background: `linear-gradient(90deg, rgba(21,193,123,0.1), rgba(21,193,123,${0.12 + (1 - i / 7) * 0.3}), rgba(21,193,123,0.1))`,
+                            border: '1px solid rgba(21,193,123,0.12)',
                           }}
                         />
                       </div>

@@ -1,3 +1,10 @@
+> **ARCHIVE (SF-II, 2026-07-09):** this handoff package was absorbed into
+> the live codebase in April 2026 and is retained for reference only.
+> Nothing imports from this folder. The canonical token source is
+> `src/styles/tokens.css` (+ `tokens.ts`). Note: the "Auth: Clerk" line
+> below is WRONG for the shipped product — StellarForge stays on
+> Supabase Auth (SF-II settled decision #2).
+
 # StellarForge — Aesthetic Uplift Handoff
 
 > Canonical design-system package for the StellarForge web app. Hand this to Claude Code (or any developer) and they can recreate the full aesthetic inside your Vite + React + TypeScript + Tailwind codebase.

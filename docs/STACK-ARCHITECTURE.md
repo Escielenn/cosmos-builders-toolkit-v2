@@ -1,8 +1,10 @@
 # StellarForge Stack Architecture
 ## Claude Code Reference Document
 
-**Last updated:** April 2026  
-**Purpose:** Canonical reference for how all services connect. Read this before writing any auth, user, subscription, or billing code.
+> ⚠️ **ASPIRATIONAL — NOT CURRENT.** This document describes a **Clerk-based auth architecture that was never implemented**. The live product (v0.66xx) uses **Supabase Auth** end-to-end (see `src/contexts/AuthContext`, `src/integrations/supabase/client.ts`). Per the StellarForge II stack decision (settled 2026-06-11, see `StellarForge.tools Part IIi/STELLARFORGE_II_IMPLEMENTATION_PLAN_v2.md` §1.3): **the stack stays Vite + React Router + Supabase incl. Supabase Auth — no Clerk, no Next.js**. The Clerk migration described below is deferred indefinitely. Do NOT write auth code against this document; the as-built reference is the codebase itself until a `STACK-CURRENT.md` lands.
+
+**Last updated:** April 2026 (flagged aspirational 2026-06-11)  
+**Purpose:** ~~Canonical reference for how all services connect.~~ Historical/aspirational reference only — see banner above.
 
 ---
 

@@ -1068,7 +1068,7 @@ export default function ExoSkyV2({
         if (_fov < 120) {
           const labelPt = horizPts[Math.floor(horizPts.length * 0.85)];
           if (labelPt && labelPt.y > 20 && labelPt.y < H - 20) {
-            ctx.font = '6px "MD Nichrome", "Space Grotesk", sans-serif';
+            ctx.font = '6px "MD Nichrome", "Jura", sans-serif';
             ctx.fillStyle = "rgba(255,255,255,0.08)";
             ctx.textAlign = "center";
             ctx.letterSpacing = "3px";
@@ -1105,7 +1105,7 @@ export default function ExoSkyV2({
     if (_showConstellations) {
       const starMap = {};
       _transformedStars.forEach(s => { if (s.name) starMap[s.name] = s; });
-      ctx.strokeStyle = "rgba(0,212,255,0.05)";
+      ctx.strokeStyle = "rgba(21,193,123,0.05)";
       ctx.lineWidth = 0.7;
       ctx.setLineDash([3,5]);
       CONSTELLATION_LINES.forEach(([a,b]) => {
@@ -1167,7 +1167,7 @@ export default function ExoSkyV2({
         ctx.beginPath(); ctx.arc(p.x,p.y,pr,0,Math.PI*2);
         ctx.strokeStyle = `rgba(255,215,59,${0.25+Math.sin(t*2)*0.1})`;
         ctx.lineWidth = 1; ctx.stroke();
-        ctx.font = '7px "MD Nichrome", "Space Grotesk", sans-serif';
+        ctx.font = '7px "MD Nichrome", "Jura", sans-serif';
         ctx.fillStyle = "rgba(255,215,59,0.6)";
         ctx.textAlign = "center";
         ctx.fillText("SOL", p.x, p.y-14);
@@ -1192,7 +1192,7 @@ export default function ExoSkyV2({
       // Labels
       if (_showStarNames && s.name && eMag < 5.5 && _fov < 140 && s.isCatalog) {
         const labelAlpha = eMag < 2 ? 0.7 : eMag < 3.5 ? 0.55 : 0.35;
-        ctx.font = '9px "MD Nichrome", "Space Grotesk", sans-serif';
+        ctx.font = '9px "MD Nichrome", "Jura", sans-serif';
         ctx.fillStyle = `rgba(${r},${g},${b},${labelAlpha})`;
         ctx.textAlign = "center";
         ctx.fillText(s.name, p.x, p.y + radius + 12);
@@ -1276,7 +1276,7 @@ export default function ExoSkyV2({
         // Label at centroid
         const centP = projectStar(cons.centRa, cons.centDec, _viewRa, _viewDec, _fov, W, H, 500);
         if (centP && _fov < 130) {
-          ctx.font = '10px "MD Nichrome", "Space Grotesk", sans-serif';
+          ctx.font = '10px "MD Nichrome", "Jura", sans-serif';
           ctx.fillStyle = cc + "66";
           ctx.textAlign = "center";
           ctx.fillText(cons.name.toUpperCase(), centP.x, centP.y - 16);
@@ -1318,7 +1318,7 @@ export default function ExoSkyV2({
         ctx.fillText(`${i + 1}`, pts[i].x, pts[i].y - 10);
       }
 
-      ctx.font = '9px "MD Nichrome", "Space Grotesk", sans-serif';
+      ctx.font = '9px "MD Nichrome", "Jura", sans-serif';
       ctx.fillStyle = _drawColor + "88";
       ctx.textAlign = "center";
       ctx.fillText(`DRAWING: ${_currentDrawing.length} STAR${_currentDrawing.length !== 1 ? 'S' : ''} SELECTED`, W / 2, 24);
@@ -1326,7 +1326,7 @@ export default function ExoSkyV2({
       ctx.fillStyle = "rgba(255,255,255,0.25)";
       ctx.fillText("Click stars to connect · Esc to cancel", W / 2, 38);
     } else if (_drawMode) {
-      ctx.font = '9px "MD Nichrome", "Space Grotesk", sans-serif';
+      ctx.font = '9px "MD Nichrome", "Jura", sans-serif';
       ctx.fillStyle = _drawColor + "88";
       ctx.textAlign = "center";
       ctx.fillText("CONSTELLATION DRAWING MODE", W / 2, 24);
@@ -1336,8 +1336,8 @@ export default function ExoSkyV2({
     }
 
     // ── HUD OVERLAYS ────────────────────────────────
-    ctx.font = '16px "MD Nichrome", "Space Grotesk", sans-serif';
-    ctx.fillStyle = "rgba(0,212,255,0.3)";
+    ctx.font = '16px "MD Nichrome", "Jura", sans-serif';
+    ctx.fillStyle = "rgba(21,193,123,0.3)";
     ctx.textAlign = "right";
     ctx.fillText(`${_fov}°`, W-18, H-30);
     ctx.font = '7px "DM Sans", sans-serif';
@@ -1345,12 +1345,12 @@ export default function ExoSkyV2({
     ctx.fillText("FIELD OF VIEW", W-18, H-18);
 
     ctx.textAlign = "left";
-    ctx.font = '7px "MD Nichrome", "Space Grotesk", sans-serif';
+    ctx.font = '7px "MD Nichrome", "Jura", sans-serif';
     ctx.fillStyle = "rgba(255,255,255,0.12)";
     ctx.fillText(`${count} STARS IN VIEW`, 18, H-18);
 
     if (_showMilkyWay && !_mwReady) {
-      ctx.font = '9px "MD Nichrome", "Space Grotesk", sans-serif';
+      ctx.font = '9px "MD Nichrome", "Jura", sans-serif';
       ctx.fillStyle = "rgba(255,165,0,0.5)";
       ctx.textAlign = "center";
       ctx.fillText("COMPUTING GALACTIC STRUCTURE...", W/2, H-18);
@@ -1583,12 +1583,12 @@ export default function ExoSkyV2({
 
       {/* ── TITLE ── */}
       <div style={{ position:"absolute",top:16,left:18,zIndex:10,pointerEvents:"none" }}>
-        <div style={{ fontFamily:"'MD Nichrome','Space Grotesk',sans-serif",fontWeight:300,fontSize:26,letterSpacing:6,textTransform:"uppercase",color:"#FAFAFA" }}>EXOSKY</div>
-        <div style={{ fontFamily:"'DM Sans',sans-serif",fontSize:10,color:"rgba(0,212,255,0.6)",marginTop:4 }}>{planet.planet}</div>
-        <div style={{ display:"inline-block",marginTop:8,padding:"6px 14px",fontSize:9,fontFamily:"'MD Nichrome','Space Grotesk',sans-serif",fontWeight:300,letterSpacing:2,textTransform:"uppercase",borderRadius:0,
-          background: mwReady ? "rgba(0,212,255,0.08)" : "rgba(255,165,0,0.08)",
-          border: mwReady ? "1px solid rgba(0,212,255,0.2)" : "1px solid rgba(255,165,0,0.2)",
-          color: mwReady ? "#00D4FF" : "#FFA500",
+        <div style={{ fontFamily:"'MD Nichrome','Jura',sans-serif",fontWeight:300,fontSize:26,letterSpacing:6,textTransform:"uppercase",color:"#FAFAFA" }}>EXOSKY</div>
+        <div style={{ fontFamily:"'DM Sans',sans-serif",fontSize:10,color:"rgba(21,193,123,0.6)",marginTop:4 }}>{planet.planet}</div>
+        <div style={{ display:"inline-block",marginTop:8,padding:"6px 14px",fontSize:9,fontFamily:"'MD Nichrome','Jura',sans-serif",fontWeight:300,letterSpacing:2,textTransform:"uppercase",borderRadius:0,
+          background: mwReady ? "rgba(21,193,123,0.08)" : "rgba(255,165,0,0.08)",
+          border: mwReady ? "1px solid rgba(21,193,123,0.2)" : "1px solid rgba(255,165,0,0.2)",
+          color: mwReady ? "#15C17B" : "#FFA500",
           transition:"all 0.5s",
         }}>{mwReady ? "OBSERVING" : "COMPUTING"}</div>
       </div>
@@ -1643,8 +1643,8 @@ export default function ExoSkyV2({
             </div>
           )}
           {worldEntity && worldEntityCoords && (
-            <div style={{marginTop:10,padding:"8px 10px",background:"rgba(0,212,255,0.04)",border:"1px solid rgba(0,212,255,0.15)",borderRadius:0}}>
-              <div style={{fontSize:9,fontFamily:"'JetBrains Mono',monospace",letterSpacing:1.5,textTransform:"uppercase",color:"#00D4FF",marginBottom:4}}>
+            <div style={{marginTop:10,padding:"8px 10px",background:"rgba(21,193,123,0.04)",border:"1px solid rgba(21,193,123,0.15)",borderRadius:0}}>
+              <div style={{fontSize:9,fontFamily:"'JetBrains Mono',monospace",letterSpacing:1.5,textTransform:"uppercase",color:"#15C17B",marginBottom:4}}>
                 // FROM YOUR WORLD
               </div>
               <div style={{fontSize:8,color:"rgba(255,255,255,0.55)",lineHeight:1.5}}>
@@ -1675,8 +1675,8 @@ export default function ExoSkyV2({
               </div>
               <input type="range" min="1" max="5000" step="1" value={Math.min(5000,customDistPc)} onChange={e=>setCustomDistPc(Number(e.target.value))} style={{width:"100%"}} />
 
-              <div style={{marginTop:6,padding:"6px 8px",background:"rgba(0,212,255,0.04)",borderRadius:0,border:"1px solid rgba(0,212,255,0.08)"}}>
-                <div style={{fontSize:7,color:"rgba(0,212,255,0.3)",fontFamily:"'JetBrains Mono',monospace",lineHeight:1.7}}>
+              <div style={{marginTop:6,padding:"6px 8px",background:"rgba(21,193,123,0.04)",borderRadius:0,border:"1px solid rgba(21,193,123,0.08)"}}>
+                <div style={{fontSize:7,color:"rgba(21,193,123,0.3)",fontFamily:"'JetBrains Mono',monospace",lineHeight:1.7}}>
                   RA {planet.ra.toFixed(2)}° · Dec {planet.dec.toFixed(2)}°<br/>
                   {(customDistPc*3.262).toFixed(1)} ly from Sol
                 </div>
@@ -1710,7 +1710,7 @@ export default function ExoSkyV2({
             </div>
           )}
           <div style={{marginTop:8,fontSize:8.5,color:"rgba(255,255,255,0.4)",lineHeight:1.6}}>{planet.note}</div>
-          <div style={{marginTop:4,fontSize:8,color:"rgba(0,212,255,0.35)",fontFamily:"'JetBrains Mono',monospace"}}>{planet.armNote}</div>
+          <div style={{marginTop:4,fontSize:8,color:"rgba(21,193,123,0.35)",fontFamily:"'JetBrains Mono',monospace"}}>{planet.armNote}</div>
 
           <div style={{...SH,marginTop:14}}>ATMOSPHERE</div>
           <div style={{display:"flex",justifyContent:"space-between",marginTop:6}}>
@@ -1872,7 +1872,7 @@ export default function ExoSkyV2({
           <DR l="FOV" v={`${fov}°`} />
 
           {hoveredStar && <>
-            <div style={{...SH,marginTop:12,color:"rgba(0,212,255,0.5)"}}>SELECTED STAR</div>
+            <div style={{...SH,marginTop:12,color:"rgba(21,193,123,0.5)"}}>SELECTED STAR</div>
             <DR l="Name" v={hoveredStar.name || "Unnamed"} vc={`rgb(${hoveredStar.rgb.join(",")})`} />
             <DR l="Mag (here)" v={hoveredStar.appMag.toFixed(2)} />
             <DR l="Mag (Earth)" v={apparentMag(hoveredStar.absMag, hoveredStar.dist).toFixed(2)} />
@@ -1886,7 +1886,7 @@ export default function ExoSkyV2({
       {namingMode && (
         <div style={{position:"absolute",top:0,left:0,right:0,bottom:0,zIndex:100,display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(0,0,0,0.6)",backdropFilter:"blur(8px)"}}>
           <div style={{background:"rgba(15,15,16,0.96)",border:"1px solid rgba(0,229,160,0.08)",borderRadius:0,padding:"28px 32px",width:340,maxWidth:"90vw"}}>
-            <div style={{...SH,marginBottom:12,fontSize:9,borderBottom:"1px solid rgba(0,212,255,0.1)",paddingBottom:8}}>NAME YOUR CONSTELLATION</div>
+            <div style={{...SH,marginBottom:12,fontSize:9,borderBottom:"1px solid rgba(21,193,123,0.1)",paddingBottom:8}}>NAME YOUR CONSTELLATION</div>
             
             {/* Preview line */}
             <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:16}}>
@@ -1903,7 +1903,7 @@ export default function ExoSkyV2({
               autoFocus
               maxLength={40}
               style={{
-                width:"100%",fontFamily:"'MD Nichrome','Space Grotesk',sans-serif",fontSize:14,fontWeight:300,
+                width:"100%",fontFamily:"'MD Nichrome','Jura',sans-serif",fontSize:14,fontWeight:300,
                 letterSpacing:2,textTransform:"uppercase",
                 background:"rgba(255,255,255,0.04)",color:"#FAFAFA",
                 border:`1px solid ${drawColor}44`,borderRadius:0,
@@ -1974,7 +1974,7 @@ export default function ExoSkyV2({
               <div style={{display:"flex",alignItems:"center",gap:8,flex:1,minWidth:0}}>
                 <div style={{width:10,height:10,borderRadius:0,background:cons.color,flexShrink:0,opacity:cons.visible?1:0.3}} />
                 <div style={{minWidth:0}}>
-                  <div style={{fontSize:9,color:cons.visible?"rgba(255,255,255,0.7)":"rgba(255,255,255,0.25)",fontFamily:"'MD Nichrome','Space Grotesk',sans-serif",fontWeight:300,letterSpacing:1,textTransform:"uppercase",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>
+                  <div style={{fontSize:9,color:cons.visible?"rgba(255,255,255,0.7)":"rgba(255,255,255,0.25)",fontFamily:"'MD Nichrome','Jura',sans-serif",fontWeight:300,letterSpacing:1,textTransform:"uppercase",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>
                     {cons.name}
                   </div>
                   <div style={{fontSize:7,color:"rgba(255,255,255,0.2)",fontFamily:"'JetBrains Mono',monospace"}}>
@@ -2021,10 +2021,10 @@ export default function ExoSkyV2({
           padding:"14px 18px",
           transition:"right 280ms cubic-bezier(0.2, 0, 0, 1)",
         }}>
-          <div style={{fontSize:7.5,fontFamily:"'MD Nichrome','Space Grotesk',sans-serif",fontWeight:300,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(0,229,160,0.55)",marginBottom:8,paddingBottom:3,borderBottom:"1px solid rgba(0,229,160,0.1)"}}>Keyboard Shortcuts</div>
+          <div style={{fontSize:7.5,fontFamily:"'MD Nichrome','Jura',sans-serif",fontWeight:300,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(0,229,160,0.55)",marginBottom:8,paddingBottom:3,borderBottom:"1px solid rgba(0,229,160,0.1)"}}>Keyboard Shortcuts</div>
           {[["Drag","Pan sky"],["Scroll / Pinch","Zoom FOV"],["Esc","Cancel / Close"],["Ctrl+Z","Undo star (draw)"],["Enter","Save constellation"],["?","Toggle this help"]].map(([key,desc])=>(
             <div key={key} style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",lineHeight:"2"}}>
-              <span style={{fontFamily:"'JetBrains Mono',monospace",fontSize:9,color:"#00D4FF",fontWeight:400,minWidth:56}}>{key}</span>
+              <span style={{fontFamily:"'JetBrains Mono',monospace",fontSize:9,color:"#15C17B",fontWeight:400,minWidth:56}}>{key}</span>
               <span style={{fontFamily:"'DM Sans',sans-serif",fontSize:8.5,color:"rgba(255,255,255,0.55)",textAlign:"right"}}>{desc}</span>
             </div>
           ))}
@@ -2033,14 +2033,14 @@ export default function ExoSkyV2({
 
       {/* ── CREDITS ── */}
       <div style={{ position:"absolute",bottom:14,left:18,zIndex:10,fontFamily:"'DM Sans',sans-serif",fontSize:7,letterSpacing:1,color:"rgba(255,255,255,0.12)",pointerEvents:"none" }}>
-        © 2025–2026 JASON D. BATT, PH.D. · <span style={{color:"rgba(0,212,255,0.25)"}}>STELLARFORGE.TOOLS</span> · <a href="/tools/exosky/science" style={{color:"rgba(0,212,255,0.25)",textDecoration:"none",pointerEvents:"auto"}}>The Science</a>
+        © 2025–2026 JASON D. BATT, PH.D. · <span style={{color:"rgba(21,193,123,0.25)"}}>STELLARFORGE.TOOLS</span> · <a href="/tools/exosky/science" style={{color:"rgba(21,193,123,0.25)",textDecoration:"none",pointerEvents:"auto"}}>The Science</a>
       </div>
 
       <style>{`
-        .exosky-root ::-webkit-scrollbar{width:3px}.exosky-root ::-webkit-scrollbar-track{background:transparent}.exosky-root ::-webkit-scrollbar-thumb{background:rgba(0,212,255,0.12)}
+        .exosky-root ::-webkit-scrollbar{width:3px}.exosky-root ::-webkit-scrollbar-track{background:transparent}.exosky-root ::-webkit-scrollbar-thumb{background:rgba(21,193,123,0.12)}
         .exosky-root input[type=range]{-webkit-appearance:none;width:100%;height:2px;background:rgba(255,255,255,0.08);border-radius:1px;outline:none}
-        .exosky-root input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;height:11px;border-radius:50%;background:#00D4FF;cursor:pointer;border:2px solid rgba(0,0,0,0.5)}
-        .exosky-root input[type=checkbox]{accent-color:#00D4FF;width:11px;height:11px}
+        .exosky-root input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;height:11px;border-radius:50%;background:#15C17B;cursor:pointer;border:2px solid rgba(0,0,0,0.5)}
+        .exosky-root input[type=checkbox]{accent-color:#15C17B;width:11px;height:11px}
         .exosky-root input[type=number]{-moz-appearance:textfield}.exosky-root input[type=number]::-webkit-outer-spin-button,.exosky-root input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
         .exosky-root select option{background:#0F0F10;color:#C8C8C8}
       `}</style>
@@ -2059,12 +2059,12 @@ function DR({ l, v, vc }) {
 }
 
 // ── STYLE TOKENS ──────────────────────────────────────────────
-const SH = { fontSize:12,fontFamily:"'MD Nichrome','Space Grotesk',sans-serif",fontWeight:300,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(0,229,160,0.5)",marginTop:0,marginBottom:2,paddingBottom:3,borderBottom:"1px solid rgba(0,229,160,0.1)",width:"100%" } as const;
+const SH = { fontSize:12,fontFamily:"'MD Nichrome','Jura',sans-serif",fontWeight:300,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(0,229,160,0.5)",marginTop:0,marginBottom:2,paddingBottom:3,borderBottom:"1px solid rgba(0,229,160,0.1)",width:"100%" } as const;
 const LBL = { fontSize:12,fontFamily:"'DM Sans',sans-serif",fontWeight:300,color:"rgba(255,255,255,0.55)" };
 const VAL = { fontSize:14,fontFamily:"'JetBrains Mono',monospace",fontWeight:500,color:"rgba(255,255,255,0.85)" };
 const SEL = { width:"100%",marginTop:8,fontFamily:"'DM Sans',sans-serif",fontSize:12,background:"rgba(255,255,255,0.04)",color:"rgba(255,255,255,0.78)",border:"1px solid rgba(255,255,255,0.1)",padding:"7px 10px",borderRadius:0,outline:"none" };
-const BTN = { fontFamily:"'DM Sans',sans-serif",fontSize:11,fontWeight:400,letterSpacing:1.5,textTransform:"uppercase",padding:"7px 12px",border:"1px solid rgba(0,212,255,0.2)",background:"rgba(0,212,255,0.08)",color:"#00D4FF",cursor:"pointer",borderRadius:0,transition:"all 0.2s" } as const;
+const BTN = { fontFamily:"'DM Sans',sans-serif",fontSize:11,fontWeight:400,letterSpacing:1.5,textTransform:"uppercase",padding:"7px 12px",border:"1px solid rgba(21,193,123,0.2)",background:"rgba(21,193,123,0.08)",color:"#15C17B",cursor:"pointer",borderRadius:0,transition:"all 0.2s" } as const;
 const CKL = { display:"flex",alignItems:"center",gap:8,marginTop:6,fontSize:9,color:"rgba(255,255,255,0.5)",cursor:"pointer" };
-const CK = { accentColor:"#00D4FF",width:11,height:11 };
+const CK = { accentColor:"#15C17B",width:11,height:11 };
 const NUM_INPUT = { width:55,fontFamily:"'JetBrains Mono',monospace",fontSize:8,background:"rgba(255,255,255,0.04)",color:"rgba(255,255,255,0.6)",border:"1px solid rgba(255,255,255,0.08)",padding:"3px 5px",borderRadius:0,outline:"none",textAlign:"right" } as const;
 const MINI_BTN = { background:"none",border:"1px solid rgba(255,255,255,0.08)",borderRadius:0,padding:"2px 6px",cursor:"pointer",fontSize:10,color:"rgba(255,255,255,0.4)",lineHeight:1,transition:"all 0.15s" };

@@ -1340,7 +1340,7 @@ const LexDrift = () => {
                             <p className="font-mono text-[10px] uppercase tracking-[2px] text-t2 mb-2">Language Family Tree</p>
                             <svg viewBox={`0 0 ${W} ${H}`} className="w-full max-w-[440px]" aria-label="Language family tree showing divergence branches">
                               {/* Root node: Earth Standard */}
-                              <circle cx={rootX} cy={rootY} r={4} fill="rgba(0,212,255,0.6)" />
+                              <circle cx={rootX} cy={rootY} r={4} fill="rgba(21,193,123,0.6)" />
                               <text x={rootX} y={rootY - 10} textAnchor="middle" fill="rgba(255,255,255,0.5)" fontSize={8} fontFamily="monospace">Earth Standard</text>
 
                               {/* Branches */}

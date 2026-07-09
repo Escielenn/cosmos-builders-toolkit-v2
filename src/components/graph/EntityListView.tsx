@@ -213,7 +213,7 @@ export function EntityListView({
                   style={{
                     background:
                       filters.entityTypes.size === 0 || filters.entityTypes.has(type)
-                        ? (ENTITY_TYPE_COLORS as Record<string, string>)[type] ?? "#00D4FF"
+                        ? (ENTITY_TYPE_COLORS as Record<string, string>)[type] ?? "#15C17B"
                         : "rgba(255,255,255,0.15)",
                   }}
                 />
@@ -281,7 +281,7 @@ export function EntityListView({
 
         {filteredEntities.map((entity) => {
           const color =
-            entity.color ?? (ENTITY_TYPE_COLORS as Record<string, string>)[entity.entity_type] ?? "#00D4FF";
+            entity.color ?? (ENTITY_TYPE_COLORS as Record<string, string>)[entity.entity_type] ?? "#15C17B";
           const entityConns = connectionsByEntity.get(entity.id) ?? [];
           const isExpanded = expandedIds.has(entity.id);
 

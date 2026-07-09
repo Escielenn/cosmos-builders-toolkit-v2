@@ -28,7 +28,7 @@ import type { ExportSection, ExportSubsection } from "@/services/worldExportForm
 // StellarForge brand colors
 const COLORS = {
   primary: "007A7A", // Darker cyan for print (matches PDF)
-  accent: "00D4FF", // Bright cyan
+  accent: "15C17B", // Teal accent (SF-II; was legacy cyan)
   text: "1A1A1A",
   muted: "666666",
   border: "CCCCCC",

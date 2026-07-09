@@ -75,18 +75,18 @@ export const WRITING_THEMES: WritingTheme[] = [
   {
     id: "comm-channel",
     name: "Comm Channel",
-    description: "Ship communications, deep blue with cyan",
+    description: "Ship communications, deep blue with azure signal text",
     colors: {
       background: "#0A1628",
-      text: "#00D4FF",
+      text: "#4D9FFF",
       caret: "#5B8DEF",
-      selection: "rgba(0, 212, 255, 0.15)",
-      headingText: "#00D4FF",
-      blockquoteBorder: "rgba(0, 212, 255, 0.3)",
-      blockquoteText: "#0099CC",
-      codeBackground: "rgba(0, 212, 255, 0.08)",
+      selection: "rgba(77, 159, 255, 0.15)",
+      headingText: "#4D9FFF",
+      blockquoteBorder: "rgba(77, 159, 255, 0.3)",
+      blockquoteText: "#5B8DEF",
+      codeBackground: "rgba(77, 159, 255, 0.08)",
     },
-    swatch: ["#0A1628", "#00D4FF", "#5B8DEF"],
+    swatch: ["#0A1628", "#4D9FFF", "#5B8DEF"],
   },
 ];
 

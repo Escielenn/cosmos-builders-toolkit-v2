@@ -133,7 +133,7 @@ function EntityDetailPanel({
   onReparent: (id: string, newParentId: string | null) => void;
 }) {
   const nodeColor =
-    entity.color ?? ENTITY_TYPE_COLORS[entity.entity_type] ?? "#00D4FF";
+    entity.color ?? ENTITY_TYPE_COLORS[entity.entity_type] ?? "#15C17B";
   const cascadeColor = CASCADE_STAGE_COLORS[entity.cascade_stage];
   const parentEntity = entity.parent_entity_id
     ? entities.find((e) => e.id === entity.parent_entity_id)
@@ -247,7 +247,7 @@ function EntityDetailPanel({
                   background:
                     parentEntity.color ??
                     ENTITY_TYPE_COLORS[parentEntity.entity_type] ??
-                    "#00D4FF",
+                    "#15C17B",
                 }}
               />
               <span className="text-[12px] font-heading text-t2 truncate">
@@ -513,7 +513,7 @@ function TreeNodeRow({
   const [hovered, setHovered] = useState(false);
   const entity = node.entity;
   const hasChildren = node.children.length > 0;
-  const nodeColor = entity.color ?? ENTITY_TYPE_COLORS[entity.entity_type] ?? "#00D4FF";
+  const nodeColor = entity.color ?? ENTITY_TYPE_COLORS[entity.entity_type] ?? "#15C17B";
   const cascadeColor = CASCADE_STAGE_COLORS[entity.cascade_stage];
 
   const isDragged = dragState.draggedId === entity.id;
@@ -524,10 +524,10 @@ function TreeNodeRow({
   // Compute border style for drag feedback
   let borderStyle = "1px solid transparent";
   if (isSelected) {
-    borderStyle = "1px solid rgba(0, 212, 255, 0.3)";
+    borderStyle = "1px solid rgba(21, 193, 123, 0.3)";
   }
   if (isDragTargetValid) {
-    borderStyle = "1px solid #00D4FF";
+    borderStyle = "1px solid #15C17B";
   } else if (isDragTargetInvalid) {
     borderStyle = "1px solid #FF3366";
   }
@@ -541,11 +541,11 @@ function TreeNodeRow({
         boxShadow: isDragged ? "0 4px 12px rgba(0,0,0,0.4)" : "none",
         border: borderStyle,
         background: isDragTargetValid
-          ? "rgba(0, 212, 255, 0.04)"
+          ? "rgba(21, 193, 123, 0.04)"
           : isDragTargetInvalid
           ? "rgba(255, 51, 102, 0.04)"
           : isSelected
-          ? "rgba(0, 212, 255, 0.03)"
+          ? "rgba(21, 193, 123, 0.03)"
           : "transparent",
         cursor: isDragTargetInvalid ? "not-allowed" : "pointer",
       }}

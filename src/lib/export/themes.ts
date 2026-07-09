@@ -1,7 +1,11 @@
 /**
  * Export theme definitions for PDF and DOCX styling.
  * Each theme provides a color palette that plugs into createThemedStyles().
+ * "Classic" derives from the canonical print palette (SF-II §3.5) —
+ * brand hues come from src/styles/tokens.ts, never hand-copied hex.
  */
+
+import { printPalette } from "@/lib/pdf/palette";
 
 export interface ExportThemeColors {
   primary: string;
@@ -26,17 +30,17 @@ export const EXPORT_THEMES: ExportTheme[] = [
   {
     id: "classic",
     name: "StellarForge Classic",
-    description: "Default dark cyan on white",
+    description: "Default deep teal on white",
     colors: {
-      primary: "#007a7a",
-      primaryLight: "#f0f8f8",
-      text: { primary: "#1a1a1a", secondary: "#4a4a4a", muted: "#6a6a6a" },
-      border: "#cccccc",
-      borderLight: "#e5e5e5",
-      background: "#ffffff",
-      accent: "#00E5E5",
+      primary: printPalette.primary,
+      primaryLight: printPalette.primaryLight,
+      text: { ...printPalette.text },
+      border: printPalette.border,
+      borderLight: printPalette.borderLight,
+      background: printPalette.background,
+      accent: printPalette.accent,
     },
-    swatch: ["#007a7a", "#f0f8f8", "#ffffff"],
+    swatch: [printPalette.primary, printPalette.primaryLight, printPalette.background],
   },
   {
     id: "dark-nebula",

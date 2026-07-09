@@ -22,7 +22,7 @@ export type ConnectionCascadeStage = CascadeStage | "cross_cascade";
 
 export const CASCADE_STAGE_COLORS: Record<CascadeStage, string> = {
   physics: "#4D9FFF",
-  environment: "#00D4FF",
+  environment: "#15C17B",
   biology: "#00FF88",
   psychology: "#9B5DE5",
   mythology: "#FF00AA",
@@ -108,14 +108,14 @@ export const ENTITY_TYPE_COLORS: Record<EntityType, string> = {
   character: "#00FF88",
   faction: "#FFB800",
   location: "#4D9FFF",
-  technology: "#00D4FF",
+  technology: "#15C17B",
   vessel: "#5B8DEF",
   event: "#FF3366",
   concept: "#9B5DE5",
   language: "#00FF88",
   religion: "#FF00AA",
   artifact: "#FFB800",
-  custom: "#00D4FF",
+  custom: "#15C17B",
 };
 
 // ---------------------------------------------------------------------------

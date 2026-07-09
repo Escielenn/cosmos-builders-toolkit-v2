@@ -217,7 +217,7 @@ function BallDropAnimation({ earthG, planetG, planetLabel }: { earthG: number; p
       const pY = trackTop + pFrac * pFrac * (trackH - ballR * 2) + ballR;
       ctx.beginPath();
       ctx.arc(colW + colW / 2, pY, ballR, 0, Math.PI * 2);
-      ctx.fillStyle = "rgba(0,212,255,0.75)";
+      ctx.fillStyle = "rgba(21,193,123,0.75)";
       ctx.fill();
 
       // Labels
@@ -909,7 +909,7 @@ const SurfaceGravityCalculator = () => {
                     planetRadiusEarth={formState.primary.radius}
                     planetGravity={result.gravity}
                     planetName={PLANET_PRESETS.find((p) => p.id === formState.primary.planetPreset)?.label || "Your Planet"}
-                    compositionColor={compositionPreset?.color || "#00D4FF"}
+                    compositionColor={compositionPreset?.color || "#15C17B"}
                   />
                   <GravityScaleBar gravityRatio={result.gravity} />
                 </div>

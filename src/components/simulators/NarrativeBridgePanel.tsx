@@ -66,7 +66,7 @@ export default function NarrativeBridgePanel({
     return (
       <button
         onClick={() => onOpenChange(true)}
-        className="absolute right-0 top-1/2 -translate-y-1/2 z-30 bg-sf-cyan/[0.08] border border-sf-cyan/40 border-r-0 px-2.5 py-5 hover:bg-sf-cyan/[0.16] hover:border-sf-cyan/70 transition-colors duration-base group shadow-[0_0_18px_rgba(0,212,255,0.18)]"
+        className="absolute right-0 top-1/2 -translate-y-1/2 z-30 bg-sf-cyan/[0.08] border border-sf-cyan/40 border-r-0 px-2.5 py-5 hover:bg-sf-cyan/[0.16] hover:border-sf-cyan/70 transition-colors duration-base group shadow-[0_0_18px_rgba(21,193,123,0.18)]"
         title="Open Narrative Bridge"
         aria-label="Open Narrative Bridge"
       >
@@ -142,7 +142,7 @@ export default function NarrativeBridgePanel({
             value={notes["general_notes"] ?? ""}
             onChange={(e) => updateNote("general_notes", e.target.value)}
             placeholder="Free-form notes, observations, story ideas..."
-            className="w-full font-sans text-[12px] leading-relaxed text-t2 placeholder:text-t4 bg-white/[0.03] border border-sf-border rounded-[6px] px-[14px] py-3 min-h-[120px] resize-y focus:outline-none focus:border-[rgba(0,212,255,0.25)] transition-colors"
+            className="w-full font-sans text-[12px] leading-relaxed text-t2 placeholder:text-t4 bg-white/[0.03] border border-sf-border rounded-[6px] px-[14px] py-3 min-h-[120px] resize-y focus:outline-none focus:border-[rgba(21,193,123,0.25)] transition-colors"
           />
         </div>
 

@@ -25,7 +25,7 @@ const buttonVariants = cva(
         sf: "bg-transparent border border-muted-foreground text-t1 uppercase tracking-[0.15em] text-xs font-medium sf-fill-sweep sf-fill-sweep--primary hover:border-primary hover:text-primary",
         /* ── April 2026 handoff ── zero-radius, teal-filled primary */
         "sf-primary":
-          "border border-sf-teal bg-sf-teal text-[#08110C] font-sans font-medium uppercase tracking-[1.2px] transition-base ease-sf-out hover:shadow-sf-glow-teal hover:-translate-y-[1px] active:translate-y-0",
+          "border border-sf-teal bg-sf-teal text-[hsl(var(--accent-on-accent))] font-sans font-medium uppercase tracking-[1.2px] transition-base ease-sf-out hover:shadow-sf-glow-teal hover:-translate-y-[1px] active:translate-y-0",
         /* ── April 2026 handoff ── transparent outline ghost */
         "sf-ghost":
           "border border-sf-border-strong bg-transparent text-t1 font-sans font-medium uppercase tracking-[1.2px] transition-base ease-sf-out hover:border-sf-teal hover:text-sf-teal-bright hover:shadow-sf-inset-teal",

@@ -1,0 +1,127 @@
+# ============================================================
+# SF2 Guardrails — raw-hex ratchet (Phase 0)
+# ============================================================
+# Counts raw hex color literals in src/ and FAILS if the count
+# RISES above the recorded baseline (.github/sf2-hex-baseline.txt).
+# The count may only go down: when a PR reduces it, lower the
+# baseline in the same PR (the job reminds you).
+#
+# Baseline history: 909 (2026-06-11, v0.6642) -> 873 (2026-07-09,
+# v0.6652, cyan retirement sweep). The baseline must match the
+# enforcement command below; lower it in the same PR that reduces
+# the count.
+#
+# Exclusions — allowed hex homes:
+#   src/styles/tokens.css / tokens.ts   (the canonical token source)
+#   src/lib/palettes/**                 (data palettes, Phase 1+)
+#   src/lib/pdf/palette.ts              (generated print palette, Phase 5)
+#
+# In Phase 4 (cyan retirement complete) this ratchet flips to a hard
+# ban: baseline 0 outside the allowed homes.
+# ============================================================
+
+name: SF2 Guardrails
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  quality:
+    name: Typecheck · Lint · Test · Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      # The strict gate blocks only the error class with runtime evidence
+      # (TS2304/TS2552 undefined identifiers). Full `npm run typecheck` has
+      # pre-existing looseness — burn that down before promoting it here.
+      - name: Typecheck (strict gate — blocking)
+        run: node scripts/typecheck-strict.mjs
+
+      # 226 pre-existing lint errors as of 0.6652 — informational until the
+      # debt is ratcheted down; do NOT let it grow.
+      - name: Lint (informational)
+        run: npm run lint
+        continue-on-error: true
+
+      - name: Unit tests
+        run: npm run test
+
+      - name: Build
+        run: npm run build
+
+  hex-ratchet:
+    name: Raw-hex ratchet
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Count raw hex literals in src/
+        run: |
+          set -euo pipefail
+          BASELINE=$(tr -d '[:space:]' < .github/sf2-hex-baseline.txt)
+
+          COUNT=$(grep -rIoE \
+            --include='*.ts' --include='*.tsx' \
+            --include='*.css' --include='*.js' --include='*.jsx' \
+            --exclude='tokens.css' --exclude='tokens.ts' \
+            --exclude='palette.ts' \
+            --exclude-dir='palettes' \
+            '#[0-9a-fA-F]{6}' src | wc -l)
+
+          echo "Raw hex literals in src/: $COUNT (baseline: $BASELINE)"
+
+          if [ "$COUNT" -gt "$BASELINE" ]; then
+            echo "::error::Hex ratchet violated: $COUNT raw hex literals (baseline $BASELINE)."
+            echo "::error::New colors must come from src/styles/tokens.css / tokens.ts (or a data palette in src/lib/palettes/)."
+            echo "Worst offenders:"
+            grep -rIcE \
+              --include='*.ts' --include='*.tsx' \
+              --include='*.css' --include='*.js' --include='*.jsx' \
+              --exclude='tokens.css' --exclude='tokens.ts' \
+              --exclude='palette.ts' \
+              --exclude-dir='palettes' \
+              '#[0-9a-fA-F]{6}' src | sort -t: -k2 -rn | head -15
+            exit 1
+          fi
+
+          if [ "$COUNT" -lt "$BASELINE" ]; then
+            echo "::notice::Count dropped to $COUNT — lower .github/sf2-hex-baseline.txt to $COUNT in this PR to lock in the progress."
+          fi
+
+      - name: Cyan retirement watch (HARD BAN — retired 2026-07-09)
+        run: |
+          set -euo pipefail
+          CYAN=$(grep -rIoiE \
+            --include='*.ts' --include='*.tsx' \
+            --include='*.css' --include='*.js' --include='*.jsx' --include='*.html' \
+            '#00D4FF' src public/rogue | wc -l) || CYAN=0
+          echo "Legacy-cyan occurrences (src + public/rogue): $CYAN"
+          if [ "$CYAN" -gt 0 ]; then
+            echo "::error::Legacy cyan is RETIRED (SF-II settled decision #3). Use the teal accent tokens."
+            grep -rniE \
+              --include='*.ts' --include='*.tsx' \
+              --include='*.css' --include='*.js' --include='*.jsx' --include='*.html' \
+              '#00D4FF' src public/rogue || true
+            exit 1
+          fi
+
+      - name: Space Grotesk retirement watch (HARD BAN — four fonts only)
+        run: |
+          set -euo pipefail
+          SG=$(grep -rIl "Space Grotesk" src index.html public/rogue --include='*.ts' --include='*.tsx' --include='*.css' --include='*.html' | grep -v 'STELLARFORGE-DESIGN-SYSTEM.md' | wc -l) || SG=0
+          echo "Files referencing Space Grotesk: $SG"
+          if [ "$SG" -gt 0 ]; then
+            echo "::error::Space Grotesk is RETIRED (SF-II settled decision #4). Four fonts only: MD Nichrome / Jura / DM Sans / JetBrains Mono."
+            exit 1
+          fi

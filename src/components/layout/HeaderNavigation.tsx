@@ -234,7 +234,7 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
                             <NavigationMenuLink key={tool.id} asChild>
                               <Link
                                 to={route}
-                                className="flex items-center gap-2 px-1.5 py-1.5 text-[12px] text-t2 hover:text-t1 hover:bg-[rgba(0,212,255,0.06)] rounded-md transition-colors"
+                                className="flex items-center gap-2 px-1.5 py-1.5 text-[12px] text-t2 hover:text-t1 hover:bg-[rgba(21,193,123,0.06)] rounded-md transition-colors"
                               >
                                 {ToolIcon ? (
                                   <ToolIcon className="w-4 h-4 shrink-0" />

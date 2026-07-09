@@ -243,7 +243,7 @@ function TemplateDetailEditor({
 
   const [labelDraft, setLabelDraft] = useState(template.label);
   const [descDraft, setDescDraft] = useState(template.description ?? "");
-  const [colorDraft, setColorDraft] = useState(template.color ?? "#00D4FF");
+  const [colorDraft, setColorDraft] = useState(template.color ?? "#15C17B");
 
   const handleBlurLabel = () => {
     const v = labelDraft.trim();
@@ -356,7 +356,7 @@ function TemplateDetailEditor({
                 onChange={(e) => setColorDraft(e.target.value)}
                 onBlur={handleBlurColor}
                 className="h-9 font-mono text-xs"
-                placeholder="#00D4FF"
+                placeholder="#15C17B"
               />
             </div>
           </div>

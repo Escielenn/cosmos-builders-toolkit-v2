@@ -214,7 +214,7 @@ function GravityContent({
 
       <div className="space-y-0.5">
         {results.map((r, i) => {
-          const color = (ENTITY_TYPE_COLORS as Record<string, string>)[r.entityType] ?? "#00D4FF";
+          const color = (ENTITY_TYPE_COLORS as Record<string, string>)[r.entityType] ?? "#15C17B";
           return (
             <button
               key={r.entityId}

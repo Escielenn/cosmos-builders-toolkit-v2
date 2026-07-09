@@ -34,7 +34,7 @@ export function exportPNG(
   renderFn(ctx, canvas.width, canvas.height);
 
   // Add watermark
-  ctx.font = '600 14px "Space Grotesk", sans-serif';
+  ctx.font = '500 14px "Jura", sans-serif';
   ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
   ctx.textAlign = 'left';
   ctx.fillText(galaxyName, 20, 30);
@@ -97,8 +97,8 @@ export function exportSVG(options: SVGExportOptions): void {
 <svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
   <defs>
     <style>
-      .star-label { font-family: 'Space Grotesk', Arial, sans-serif; font-size: 10px; font-weight: 500; }
-      .title { font-family: 'Space Grotesk', Arial, sans-serif; font-size: 14px; font-weight: 600; fill: rgba(255,255,255,0.4); }
+      .star-label { font-family: 'Jura', Arial, sans-serif; font-size: 10px; font-weight: 500; }
+      .title { font-family: 'Jura', Arial, sans-serif; font-size: 14px; font-weight: 500; fill: rgba(255,255,255,0.4); }
       .subtitle { font-family: 'DM Sans', Arial, sans-serif; font-size: 9px; fill: rgba(255,255,255,0.25); }
     </style>
   </defs>
@@ -146,7 +146,7 @@ export function exportSVG(options: SVGExportOptions): void {
     const activityCfg = {
       quiescent: { glowMul: 4, color: '#FFB800', arcs: 2, arcOp: 0.2 },
       active: { glowMul: 8, color: '#FF6B35', arcs: 3, arcOp: 0.35 },
-      quasar: { glowMul: 12, color: '#00D4FF', arcs: 4, arcOp: 0.5 },
+      quasar: { glowMul: 12, color: '#15C17B', arcs: 4, arcOp: 0.5 },
     }[blackHole.activity];
     const massScale = Math.log10(Math.max(1, blackHole.mass)) / Math.log10(10000);
     const baseR = 6 + massScale * 14;

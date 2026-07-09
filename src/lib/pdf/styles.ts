@@ -1,5 +1,6 @@
 import { StyleSheet, Font } from "@react-pdf/renderer";
 import { getThemeById, type ExportThemeColors } from "@/lib/export/themes";
+import { printPalette } from "./palette";
 
 // Disable word hyphenation to prevent rendering issues
 Font.registerHyphenationCallback((word) => [word]);
@@ -23,19 +24,21 @@ Font.register({
   ],
 });
 
-// Color palette for print (darker cyan for better printing)
-export const colors = {
-  primary: "#007a7a", // Darker cyan for print
-  primaryLight: "#f0f8f8", // Very light cyan tint
+// Color palette for print — GENERATED from canonical tokens (SF-II §3.5).
+// Brand hues derive from src/styles/tokens.ts via src/lib/pdf/palette.ts;
+// do not hand-edit hex values here.
+export const colors: ExportThemeColors = {
+  primary: printPalette.primary, // teal darkened for print legibility
+  primaryLight: printPalette.primaryLight, // very light teal tint
   text: {
-    primary: "#1a1a1a",
-    secondary: "#4a4a4a",
-    muted: "#6a6a6a",
+    primary: printPalette.text.primary,
+    secondary: printPalette.text.secondary,
+    muted: printPalette.text.muted,
   },
-  border: "#cccccc",
-  borderLight: "#e5e5e5",
-  background: "#ffffff",
-  accent: "#00E5E5", // Brand cyan for highlights
+  border: printPalette.border,
+  borderLight: printPalette.borderLight,
+  background: printPalette.background,
+  accent: printPalette.accent, // brand teal for highlights
 };
 
 // Typography scale

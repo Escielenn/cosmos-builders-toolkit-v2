@@ -18,7 +18,7 @@ interface OrbitalDiagramProps {
 }
 
 const VOID_COLOR = "#0D0D0F";
-const CYAN = "#00D4FF";
+const CYAN = "#15C17B";
 const HZ_GREEN = "rgba(46, 204, 113,";
 const SNOWLINE_BLUE = "rgba(173, 216, 230, 0.35)";
 const GRID_COLOR = "rgba(255, 255, 255, 0.06)";
@@ -144,7 +144,7 @@ export default function OrbitalDiagram({
           // Active style, same cyan glow as the primary planet
           ctx.setLineDash([4, 4]);
           ctx.lineWidth = 0.8;
-          ctx.strokeStyle = "rgba(0, 212, 255, 0.2)";
+          ctx.strokeStyle = "rgba(21, 193, 123, 0.2)";
           ctx.beginPath();
           ctx.arc(cx, cy, r, 0, Math.PI * 2);
           ctx.stroke();
@@ -163,7 +163,7 @@ export default function OrbitalDiagram({
           ctx.textAlign = "left";
           ctx.fillText(kp.name, cx + r + 10, cy - 4);
           ctx.font = '8px "JetBrains Mono", monospace';
-          ctx.fillStyle = "rgba(0, 212, 255, 0.6)";
+          ctx.fillStyle = "rgba(21, 193, 123, 0.6)";
           ctx.fillText(`${kp.distanceAU.toFixed(3)} AU`, cx + r + 10, cy + 8);
         } else {
           // Ghost style
@@ -191,7 +191,7 @@ export default function OrbitalDiagram({
     if (planetR > 0 && planetR < minDim * 2) {
       ctx.setLineDash([4, 4]);
       ctx.lineWidth = 0.8;
-      ctx.strokeStyle = `rgba(0, 212, 255, 0.2)`;
+      ctx.strokeStyle = `rgba(21, 193, 123, 0.2)`;
       ctx.beginPath();
       ctx.arc(cx, cy, planetR, 0, Math.PI * 2);
       ctx.stroke();
@@ -199,7 +199,7 @@ export default function OrbitalDiagram({
 
       // Radial distance line
       ctx.lineWidth = 0.5;
-      ctx.strokeStyle = `rgba(0, 212, 255, 0.12)`;
+      ctx.strokeStyle = `rgba(21, 193, 123, 0.12)`;
       ctx.beginPath();
       ctx.moveTo(cx, cy);
       ctx.lineTo(cx + planetR, cy);
@@ -221,7 +221,7 @@ export default function OrbitalDiagram({
       const label = planetName || "Planet";
       ctx.fillText(label, cx + planetR + 10, cy - 4);
       ctx.font = '8px "JetBrains Mono", monospace';
-      ctx.fillStyle = "rgba(0, 212, 255, 0.6)";
+      ctx.fillStyle = "rgba(21, 193, 123, 0.6)";
       ctx.fillText(`${planetDistance.toFixed(3)} AU`, cx + planetR + 10, cy + 8);
     }
 

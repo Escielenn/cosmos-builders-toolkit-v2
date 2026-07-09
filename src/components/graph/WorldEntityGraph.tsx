@@ -1298,7 +1298,7 @@ function InnerGraph({ worldId, entities, connections }: InnerGraphProps) {
           maskColor="rgba(0,0,0,0.7)"
           nodeColor={(node) => {
             const d = node.data as unknown as EntityNodeData;
-            return d.color ?? ENTITY_TYPE_COLORS[d.entityType] ?? "#00D4FF";
+            return d.color ?? ENTITY_TYPE_COLORS[d.entityType] ?? "#15C17B";
           }}
           style={{ width: 180, height: 120 }}
         />

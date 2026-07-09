@@ -1,0 +1,185 @@
+/* ============================================================
+   STELLARFORGE II — CANONICAL DESIGN TOKENS (Phase 0 scaffold)
+   ============================================================
+   Status: SCAFFOLD — NOT YET IMPORTED BY THE BUILD.
+   Activation (Phase 1): add `@import './styles/tokens.css';` as the
+   first statement of src/index.css, then delete the duplicated
+   definitions from index.css's :root as each surface re-founds.
+   Until then this file is inert and changes nothing visually.
+
+   Three governed tiers (see STELLARFORGE_II_IMPLEMENTATION_PLAN_v2 §3.1):
+     Tier 1  PRIMITIVES  — raw ramps. Components never reference these.
+     Tier 2  SEMANTIC    — what components consume.
+     Tier 3  SURFACE     — only where a surface legitimately differs
+                           (simulator shell, writing themes, print).
+
+   SETTLED DECISIONS baked in (Jason, 2026-06-11):
+     • Legacy cyan is RETIRED. It has no Tier-1 primitive. The
+       simulator accent aliases the product accent (teal).
+     • The fifth legacy font is RETIRED. Four fonts only.
+
+   All HSL values are channel triplets (no hsl() wrapper) so they
+   compose as hsl(var(--token) / alpha), matching the existing
+   index.css convention. Keep in sync with src/styles/tokens.ts
+   until the Phase-1 generator lands.
+   ============================================================ */
+
+:root {
+  /* ════════════════ TIER 1 — PRIMITIVES ════════════════ */
+
+  /* Navy depth ramp (page → panel → elevated) */
+  --sf2-navy-950: 222 35% 3%;            /* below-void gradient floor   */
+  --sf2-navy-900: 222 30% 5%;            /* #0A0E17 void                */
+  --sf2-navy-850: 222 25% 9%;            /* #0E1320 surface             */
+  --sf2-navy-800: 222 20% 12%;           /* #161C2B elevated            */
+
+  /* Accent hues */
+  --sf2-teal-500: 157 80% 42%;           /* #15C17B solid fills, CTAs   */
+  --sf2-teal-300: 157 100% 62%;          /* #3DFFCD glow only           */
+  --sf2-amber-500: 43 100% 50%;          /* #FFB800 data/warning        */
+  --sf2-amber-400: 30 100% 64%;          /* #FFB347 nav numbers         */
+  --sf2-emerald-500: 153 100% 50%;       /* #00FF88 section headers     */
+  --sf2-violet-500: 263 74% 63%;         /* #9B5DE5 pro                 */
+  --sf2-stellar-500: 220 82% 65%;        /* #5B8DEF wonder/creativity   */
+  --sf2-azure-500: 215 100% 65%;         /* #4D9FFF links/info          */
+  --sf2-crimson-500: 347 100% 60%;       /* #FF3366 destructive         */
+  --sf2-magenta-500: 328 100% 50%;       /* #FF00AA sparingly           */
+  /* NOTE: no cyan primitive. Legacy cyan retired by decision (2026-06-11). */
+
+  /* White/alpha ramp for text & lines */
+  --sf2-white: 0 0% 98%;                 /* #FAFAFA */
+  --sf2-gray-300: 0 0% 78%;              /* #C8C8C8 */
+
+  /* ════════════════ TIER 2 — SEMANTIC ════════════════ */
+
+  /* Surfaces */
+  --surface-void: var(--sf2-navy-900);
+  --surface-panel: var(--sf2-navy-850);
+  --surface-elevated: var(--sf2-navy-800);
+  --surface-floor: var(--sf2-navy-950);
+
+  /* Text — the ONE five-tier hierarchy.
+     Both legacy systems (--t1…--t5 and --sf-text-*) alias to these
+     during transition, then retire. Policy: tier-4/5 are decorative
+     or unit text only — never sole carriers of meaning (AA). */
+  --text-1: hsl(var(--sf2-white));               /* titles, result values */
+  --text-2: hsl(var(--sf2-gray-300));            /* body                  */
+  --text-3: hsl(0 0% 100% / 0.45);               /* labels                */
+  --text-4: hsl(0 0% 100% / 0.28);               /* units, helpers        */
+  --text-5: hsl(0 0% 100% / 0.15);               /* ghost, citations      */
+
+  /* Accent */
+  --accent: var(--sf2-teal-500);
+  --accent-glow: var(--sf2-teal-300);            /* shadows/arcs ONLY, never fills */
+  --accent-on-accent: 160 60% 5%;                /* text on solid accent (#08110C-equiv) */
+
+  /* Category accents (cascade: Physics→…→Meta) */
+  --cat-stars: var(--sf2-amber-500);
+  --cat-worlds: var(--sf2-azure-500);
+  --cat-life: var(--sf2-emerald-500);
+  --cat-civ: var(--sf2-violet-500);
+  --cat-myth: var(--sf2-stellar-500);
+  --cat-integration: var(--sf2-teal-500);
+
+  /* Status */
+  --ok: var(--sf2-emerald-500);
+  --warn: var(--sf2-amber-500);
+  --danger: var(--sf2-crimson-500);
+  --info: var(--sf2-azure-500);
+
+  /* Lines & focus */
+  --border-subtle: 0 0% 100% / 0.08;
+  --border-strong: 0 0% 100% / 0.16;
+  --focus-ring: var(--sf2-teal-300);
+
+  /* Glow pattern (0.06 tint / 0.15 border / full text; 0.2 shadow) —
+     tokenized so it stops being copy-pasted */
+  --glow-tint-alpha: 0.06;
+  --glow-border-alpha: 0.15;
+  --glow-shadow-alpha: 0.2;
+
+  /* Radius ladder — sharp edges are identity */
+  --radius-panel: 0px;
+  --radius-secondary: 4px;
+  --radius-badge: 3px;
+  --radius-input: 2px;
+
+  /* Typography — four fonts, weights 300/400/500 only, never 700 */
+  --font-display: 'MD Nichrome', 'Jura', system-ui, sans-serif; /* H1 tool titles ONLY */
+  --font-heading: 'Jura', system-ui, sans-serif;                /* section headers, nav */
+  --font-body: 'DM Sans', system-ui, sans-serif;                /* body + ALL buttons   */
+  --font-mono: 'JetBrains Mono', monospace;                     /* data, readouts       */
+  /* NOTE: fifth legacy font retired by decision (2026-06-11). */
+
+  --tracking-title: 0.08em;
+  --tracking-wide: 0.2em;
+  --tracking-ultra: 0.4em;
+
+  /* Motion */
+  --duration-instant: 100ms;
+  --duration-fast: 150ms;
+  --duration-normal: 200ms;
+  --duration-smooth: 300ms;
+  --duration-dramatic: 500ms;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-spring: cubic-bezier(0.5, 1.5, 0.5, 1);
+
+  /* Z-index ladder (from CLAUDE.md stacking table — do not invent
+     new values; slot into a tier) */
+  --z-background: 0;
+  --z-overlap: 1;
+  --z-content: 10;
+  --z-fab: 40;
+  --z-header: 50;
+  --z-toast: 100;
+  --z-player: 8999;     /* reserved: AudioPlayer */
+  --z-critical: 9999;   /* reserved: TextureOverlay, KonamiCode */
+
+  /* ════════════════ TIER 3 — SURFACE OVERRIDES ════════════════ */
+
+  /* Simulator shell — sims keep a deeper canvas and slight radius;
+     the accent is the PRODUCT accent (cyan retired). */
+  --sim-canvas: 240 6% 4%;                       /* #09090B */
+  --sim-surface: 240 3% 6% / 0.92;               /* rgba(15,15,16,.92) */
+  --sim-radius: 8px;
+  --sim-accent: var(--accent);
+  --sim-accent-glow: var(--accent-glow);
+
+  /* Print/PDF palette is GENERATED from Tier 1 (src/lib/pdf/palette.ts,
+     Phase 5) — PDFs cannot read CSS vars; do not add print tokens here. */
+}
+
+/* ── shadcn semantic aliases ─────────────────────────────────────
+   On activation, the shadcn layer resolves through Tier 2 so every
+   Radix/shadcn component inherits the system automatically. These
+   currently mirror the live values in index.css (mapping is 1:1,
+   so activation is a no-op visually). */
+:root {
+  --background: var(--surface-void);
+  --foreground: var(--sf2-white);
+  --card: var(--surface-panel);
+  --card-foreground: var(--sf2-gray-300);
+  --popover: var(--surface-elevated);
+  --popover-foreground: var(--sf2-gray-300);
+  --primary: var(--accent);
+  --primary-foreground: var(--accent-on-accent);
+  --accent-foreground: var(--accent-on-accent);
+  --destructive: var(--danger);
+  --destructive-foreground: var(--sf2-white);
+  --border: var(--border-subtle);
+  --input: var(--border-subtle);
+  --ring: var(--focus-ring);
+}
+
+/* ── Transition aliases (retire after re-skin) ──────────────────
+   Legacy tier names point at the canonical hierarchy so old class
+   utilities keep working while surfaces migrate. Deleting this block
+   is the Phase-5 "done" signal for the text-tier unification. */
+:root {
+  --t1: var(--text-1);
+  --t2: var(--text-2);
+  --t3: var(--text-3);
+  --t4: var(--text-4);
+  --t5: var(--text-5);
+}

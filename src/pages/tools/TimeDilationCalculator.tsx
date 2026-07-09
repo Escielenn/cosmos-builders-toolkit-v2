@@ -892,13 +892,13 @@ const TimeDilationCalculator = () => {
                   </p>
                   <div className="relative h-6 rounded-sm overflow-hidden bg-accent/10 border border-sf-border">
                     <div className="absolute inset-0" style={{
-                      background: 'linear-gradient(90deg, rgba(0,229,160,0.15) 0%, rgba(0,212,255,0.2) 50%, rgba(255,165,0,0.25) 85%, rgba(255,69,0,0.35) 100%)'
+                      background: 'linear-gradient(90deg, rgba(0,229,160,0.15) 0%, rgba(21,193,123,0.2) 50%, rgba(255,165,0,0.25) 85%, rgba(255,69,0,0.35) 100%)'
                     }} />
                     <div
                       className="absolute top-0 h-full w-0.5 bg-primary transition-all duration-500"
                       style={{
                         left: `${Math.min(calculationResult.peakVelocityFraction, 1) * 100}%`,
-                        boxShadow: '0 0 8px rgba(0,212,255,0.6)',
+                        boxShadow: '0 0 8px rgba(61,255,205,0.6)',
                       }}
                     />
                     {[0.1, 0.5, 0.9, 0.99].map((v) => (
@@ -1018,7 +1018,7 @@ const TimeDilationCalculator = () => {
                         ))}
                         <line x1={PL} y1={PT + ph} x2={PL + pw} y2={PT + ph} stroke="rgba(255,255,255,0.08)" />
                         <line x1={PL} y1={PT} x2={PL} y2={PT + ph} stroke="rgba(255,255,255,0.08)" />
-                        <path d={fill} fill="rgba(0,212,255,0.06)" />
+                        <path d={fill} fill="rgba(21,193,123,0.06)" />
                         <path d={eLine} fill="none" stroke="rgba(255,165,0,0.55)" strokeWidth="1.5" />
                         <path d={sLine} fill="none" stroke="rgba(0,229,160,0.7)" strokeWidth="1.5" />
                         <circle cx={eEnd[0]} cy={eEnd[1]} r="3" fill="rgba(255,165,0,0.8)" />
@@ -1026,7 +1026,7 @@ const TimeDilationCalculator = () => {
                         <text x={eEnd[0] + 6} y={eEnd[1] + 3} fill="rgba(255,165,0,0.7)" fontSize="8" fontFamily="'JetBrains Mono',monospace">{calculationResult.observerTimeFormatted}</text>
                         <text x={sEnd[0] + 6} y={sEnd[1] + 3} fill="rgba(0,229,160,0.7)" fontSize="8" fontFamily="'JetBrains Mono',monospace">{calculationResult.shipTimeFormatted}</text>
                         {eEnd[1] < sEnd[1] - 10 && (
-                          <line x1={eEnd[0] + 3} y1={eEnd[1] + 6} x2={sEnd[0] + 3} y2={sEnd[1] - 6} stroke="rgba(0,212,255,0.2)" strokeWidth="1" strokeDasharray="2,2" />
+                          <line x1={eEnd[0] + 3} y1={eEnd[1] + 6} x2={sEnd[0] + 3} y2={sEnd[1] - 6} stroke="rgba(21,193,123,0.2)" strokeWidth="1" strokeDasharray="2,2" />
                         )}
                         <text x={PL} y={H - 4} fill="rgba(255,255,255,0.2)" fontSize="7" fontFamily="'JetBrains Mono',monospace">Depart</text>
                         <text x={PL + pw} y={H - 4} fill="rgba(255,255,255,0.2)" fontSize="7" fontFamily="'JetBrains Mono',monospace" textAnchor="end">Arrive</text>

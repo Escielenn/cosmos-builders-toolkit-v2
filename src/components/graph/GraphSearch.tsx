@@ -109,7 +109,7 @@ export function GraphSearch({
           }}
         >
           {results.map((entity) => {
-            const color = entity.color ?? ENTITY_TYPE_COLORS[entity.entity_type] ?? "#00D4FF";
+            const color = entity.color ?? ENTITY_TYPE_COLORS[entity.entity_type] ?? "#15C17B";
             return (
               <button
                 key={entity.id}

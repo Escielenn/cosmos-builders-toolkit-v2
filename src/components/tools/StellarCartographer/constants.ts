@@ -26,7 +26,7 @@ export const BACKGROUND_STAR_COUNT = 600;
 export const PARALLAX_FACTOR = 0.03;
 
 // Trade routes
-export const ROUTE_COLORS = ['#FFA500', '#FFD43B', '#00D4FF', '#2ECC71', '#E056FD', '#FF6B6B'];
+export const ROUTE_COLORS = ['#FFA500', '#FFD43B', '#15C17B', '#2ECC71', '#E056FD', '#FF6B6B'];
 export const AUTO_ROUTE_COUNT = 5;
 export const AUTO_ROUTE_MAX_HOPS = 8;
 export const AUTO_ROUTE_MIN_HOPS = 4;
@@ -72,7 +72,7 @@ export const DEFAULT_EMPIRES: Empire[] = [
   {
     id: 1,
     name: 'Terran Federation',
-    color: '#00D4FF',
+    color: '#15C17B',
     namingStyle: 'terran',
     centerX: -180,
     centerY: 0,
@@ -111,7 +111,7 @@ export const DEFAULT_EMPIRES: Empire[] = [
 export const SMBH_ACTIVITY_CONFIG = {
   quiescent: { glowMultiplier: 4, color: '#FFB800', diskArcs: 2, arcOpacity: 0.2 },
   active: { glowMultiplier: 8, color: '#FF6B35', diskArcs: 3, arcOpacity: 0.35 },
-  quasar: { glowMultiplier: 12, color: '#00D4FF', diskArcs: 4, arcOpacity: 0.5 },
+  quasar: { glowMultiplier: 12, color: '#15C17B', diskArcs: 4, arcOpacity: 0.5 },
 } as const;
 
 export const DEFAULT_SMBH_MASS = 4; // millions of solar masses (Sgr A* ≈ 4M)

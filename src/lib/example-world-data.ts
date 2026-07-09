@@ -89,7 +89,7 @@ export const EXAMPLE_WORLD: ExampleWorldSeed = {
       name: "The Twilight Band",
       entity_type: "location",
       cascade_stage: "environment",
-      color: "#00D4FF",
+      color: "#15C17B",
       summary: "The narrow habitable zone between eternal day and eternal night.",
       description:
         "A ring approximately 800 km wide circling the terminator line of Tidelock-7b. Perpetual twilight. Temperatures range from 5°C at the dark edge to 35°C at the light edge. Constant winds blow from the Darkside toward the Scorchlands as the atmosphere circulates heat. Most life and all civilization exists here.",

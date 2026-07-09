@@ -30,7 +30,7 @@ export interface EntityNodeData {
 
 const EntityNode = memo(({ data, selected }: NodeProps) => {
   const d = data as unknown as EntityNodeData;
-  const nodeColor = d.color ?? ENTITY_TYPE_COLORS[d.entityType] ?? "#00D4FF";
+  const nodeColor = d.color ?? ENTITY_TYPE_COLORS[d.entityType] ?? "#15C17B";
 
   return (
     <div

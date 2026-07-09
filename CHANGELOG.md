@@ -1,5 +1,49 @@
 # StellarForge Changelog
 
+## 0.6652
+StellarForge II Phase 1 — token foundation activated; cyan & Space Grotesk retired.
+
+- Added: `src/styles/tokens.css` is now ACTIVE — imported first by `index.css`.
+  Canonical three-tier token architecture (primitives → semantic → surface)
+  with shadcn aliases and unified `--text-1…5` hierarchy; both legacy text-tier
+  systems (`--t1…--t5`, `--sf-tier-*`) alias to it during the transition.
+- Changed: **legacy cyan retired product-wide** (SF-II settled decision #3).
+  `--sf-cyan` / `--sf-glow-cyan` now alias the teal accent, so every legacy
+  `sf-cyan` class renders teal; all ~45 files with literal cyan values
+  (graph components, simulators, Solaris UI, StellarCartographer, tools,
+  showcase mockups, Rogue's `public/rogue/*.html`) swept to teal values.
+  The "Comm Channel" writing theme re-expressed on the azure family
+  (deep blue + azure signal text) per the plan's governed-primitives rule.
+  Entity/cascade color maps: environment, technology, and custom types now
+  use teal.
+- Changed: **Space Grotesk retired** (SF-II settled decision #4). Removed from
+  the Google Fonts load; simulator/cartographer headers now use Jura. Four
+  fonts only. Canvas-export weights normalized 600 → 500 (no-bold law).
+- Changed: PDF/DOCX exports re-branded off the pre-teal cyan palette
+  (`#007a7a`/`#00E5E5`). New `src/lib/pdf/palette.ts` derives the print
+  palette from canonical tokens at module load (teal darkened for AA on
+  white paper); `lib/pdf/styles.ts`, the "Classic" export theme, and the
+  PDF header logo consume it.
+- Changed: UI primitives purged of hardcodes — `button.tsx` (`text-[#08110C]`
+  → `--accent-on-accent`), `scroll-area.tsx`, `rich-text-editor.tsx`
+  (stellar-blue literals → `sf-stellar`), `badge.tsx` glow-cyan variant now
+  aliases teal tokens instead of raw Tailwind cyan-500.
+- Removed: dead light-theme palette from `index.css` (:root) — the app
+  hard-sets `<html class="dark">`, so it was unreachable; 46 lines gone.
+  Unused `--glow-cyan`/`--glow-cyan-subtle` deleted. Stray junk file at repo
+  root deleted. `src/lib/STELLARFORGE-DESIGN-SYSTEM.md` (contradictory
+  cyan-era doc) replaced with a superseded stub; April 2026 design handoff
+  README marked ARCHIVE (its "Clerk" line flagged wrong).
+- Added: CI guardrails extended — typecheck/lint/vitest/build job in
+  `sf2-guardrails.yml`; cyan watch and a new Space Grotesk watch are now
+  HARD FAILURES; hex ratchet baseline lowered 909 → (post-sweep count).
+- Added: `docs/DESIGN-TOKENS.md` (token architecture & usage policy).
+  CLAUDE.md simulator sections corrected (sims use the product teal; the
+  "legacy cyan is intentional" note was stale).
+- Note: the two Phase-0 DB migrations (`20260611_fix_*`) remain in the repo
+  UNAPPLIED, awaiting Jason's review per the live-product rule.
+
+
 ## 0.6642
 - Fixed: Source-maps could ship publicly when SENTRY_AUTH_TOKEN was unset
   or upload failed. The plugin's filesToDeleteAfterUpload only fires after

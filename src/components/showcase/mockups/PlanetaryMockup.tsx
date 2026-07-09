@@ -46,7 +46,7 @@ const PlanetaryMockup = () => {
           style={{ animation: "orbit 8s linear infinite" }}
         >
           <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2">
-            <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-gradient-to-br from-sf-cyan to-blue-600 shadow-[0_0_15px_rgba(0,212,255,0.4)]" />
+            <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-gradient-to-br from-sf-cyan to-blue-600 shadow-[0_0_15px_rgba(21,193,123,0.4)]" />
           </div>
         </div>
 

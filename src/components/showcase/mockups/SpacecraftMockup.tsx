@@ -70,7 +70,7 @@ const SpacecraftMockup = () => {
         <svg
           viewBox="0 0 100 100"
           className="w-full h-full max-h-[120px]"
-          style={{ filter: "drop-shadow(0 0 10px rgba(0, 212, 255, 0.2))" }}
+          style={{ filter: "drop-shadow(0 0 10px rgba(21, 193, 123, 0.2))" }}
         >
           {/* Ship hull outline */}
           <path

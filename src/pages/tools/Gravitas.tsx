@@ -876,12 +876,12 @@ const Gravitas = () => {
                             {/* Rotation direction arc */}
                             <path
                               d={`M ${cx + outerR + 18} ${cy - 8} A ${outerR + 18} ${outerR + 18} 0 0 1 ${cx + outerR + 14} ${cy + 14}`}
-                              fill="none" stroke="rgba(0,212,255,0.2)" strokeWidth={1}
+                              fill="none" stroke="rgba(21,193,123,0.2)" strokeWidth={1}
                               markerEnd="url(#spinArrow)"
                             />
                             <defs>
                               <marker id="spinArrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
-                                <path d="M0,0 L6,3 L0,6" fill="rgba(0,212,255,0.3)" />
+                                <path d="M0,0 L6,3 L0,6" fill="rgba(21,193,123,0.3)" />
                               </marker>
                               <style>{`@keyframeshabSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
                             </defs>
@@ -1011,9 +1011,9 @@ const Gravitas = () => {
                             <circle cx={cx} cy={cy} r="3" fill="rgba(255,255,255,0.3)" />
                             {arrow(cx, cy, cx, cy + spinLen, "rgba(0,229,160,0.8)", "Spin", formatG(spinG))}
                             {arrow(cx, cy, cx + thrustDx, cy + thrustDy, "rgba(255,165,0,0.8)", "Thrust", formatG(thrustG))}
-                            {resLen > 2 && arrow(cx, cy, cx + resDx, cy + resDy, "rgba(0,212,255,0.9)", "Result", formatG(resultG))}
+                            {resLen > 2 && arrow(cx, cy, cx + resDx, cy + resDy, "rgba(21,193,123,0.9)", "Result", formatG(resultG))}
                             {tiltDeg > 1 && (
-                              <text x={cx + resDx / 2 + 12} y={cy + resDy / 2} fill="rgba(0,212,255,0.5)" fontSize="7" fontFamily="'JetBrains Mono',monospace">
+                              <text x={cx + resDx / 2 + 12} y={cy + resDy / 2} fill="rgba(21,193,123,0.5)" fontSize="7" fontFamily="'JetBrains Mono',monospace">
                                 {tiltDeg.toFixed(1)}°
                               </text>
                             )}

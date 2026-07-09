@@ -108,7 +108,7 @@ export const COMPOSITION_PRESETS: CompositionPreset[] = [
     id: "custom",
     label: "Custom",
     description: "Both sliders independent, physically implausible combinations allowed",
-    color: "#00D4FF",
+    color: "#15C17B",
     massToRadius: (m) => m, // unused when custom
     radiusToMass: (r) => r, // unused when custom
   },

@@ -729,7 +729,7 @@ const StellarCartographer: React.FC = () => {
 
       // Label
       if (zoom >= 0.8) {
-        ctx.font = '500 9px "Space Grotesk", sans-serif';
+        ctx.font = '500 9px "Jura", sans-serif';
         ctx.textAlign = 'center';
         ctx.fillStyle = 'rgba(5, 5, 8, 0.85)';
         ctx.fillText(blackHole.name, sx + 1, sy - visualRadius - 6 + 1);
@@ -1024,7 +1024,7 @@ const StellarCartographer: React.FC = () => {
 
       // Selection indicator
       if (selectedStar && star.id === selectedStar.id) {
-        ctx.strokeStyle = '#00D4FF';
+        ctx.strokeStyle = '#15C17B';
         ctx.lineWidth = 1.5;
         ctx.beginPath();
         ctx.arc(star.screenX, star.screenY, size + 5, 0, Math.PI * 2);
@@ -1085,7 +1085,7 @@ const StellarCartographer: React.FC = () => {
 
   const drawLabel = (ctx: CanvasRenderingContext2D, star: ScreenStar, isSelected: boolean) => {
     const fontSize = isSelected ? 10 : 8;
-    ctx.font = `500 ${fontSize}px "Space Grotesk", sans-serif`;
+    ctx.font = `500 ${fontSize}px "Jura", sans-serif`;
     ctx.textAlign = 'center';
 
     // Shadow
@@ -1149,7 +1149,7 @@ const StellarCartographer: React.FC = () => {
       const vpH = (mainCanvas.height / camera.zoom) * s;
       const vpX = cx + camera.x * s - vpW / 2;
       const vpY = cy + camera.y * s - vpH / 2;
-      mctx.strokeStyle = 'rgba(0, 212, 255, 0.5)';
+      mctx.strokeStyle = 'rgba(21, 193, 123, 0.5)';
       mctx.lineWidth = 1;
       mctx.strokeRect(vpX, vpY, vpW, vpH);
     }
@@ -2191,7 +2191,7 @@ const StellarCartographer: React.FC = () => {
             Habitable
           </div>
           <div className={styles.spectralItem}>
-            <span className={styles.spectralDot} style={{ background: 'transparent', border: '1.5px solid #00D4FF' }} />
+            <span className={styles.spectralDot} style={{ background: 'transparent', border: '1.5px solid #15C17B' }} />
             Selected
           </div>
         </div>

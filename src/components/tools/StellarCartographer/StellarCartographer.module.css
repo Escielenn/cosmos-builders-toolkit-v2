@@ -57,7 +57,7 @@
 }
 
 .toolTitle {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: 'Jura', sans-serif;
   font-size: 26px;
   font-weight: 300;
   letter-spacing: 6px;
@@ -77,7 +77,7 @@
 }
 
 .galaxyNameDisplay {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: 'Jura', sans-serif;
   font-weight: 400;
   font-size: 14px;
   letter-spacing: 1px;
@@ -95,7 +95,7 @@
 
 .navLinks a {
   font-size: 8px;
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: 'Jura', sans-serif;
   letter-spacing: 1.5px;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.4);
@@ -107,9 +107,9 @@
 }
 
 .navLinks a:hover {
-  color: #00D4FF;
-  border-color: rgba(0, 212, 255, 0.25);
-  background: rgba(0, 212, 255, 0.06);
+  color: hsl(var(--sf-teal));
+  border-color: hsl(var(--sf-teal) / 0.25);
+  background: hsl(var(--sf-teal) / 0.06);
 }
 
 .emptyState {
@@ -127,7 +127,7 @@
 .badge {
   display: inline-block;
   padding: 6px 14px;
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: 'Jura', sans-serif;
   font-size: 9px;
   font-weight: 500;
   letter-spacing: 2px;
@@ -136,15 +136,15 @@
   transition: all 0.5s;
   
   /* Default: waiting/mapped state */
-  background: rgba(0, 212, 255, 0.03);
-  border: 1px solid rgba(0, 212, 255, 0.08);
-  color: rgba(0, 212, 255, 0.4);
+  background: hsl(var(--sf-teal) / 0.03);
+  border: 1px solid hsl(var(--sf-teal) / 0.08);
+  color: hsl(var(--sf-teal) / 0.4);
 }
 
 .badge.active {
-  background: rgba(0, 212, 255, 0.08);
-  border-color: rgba(0, 212, 255, 0.2);
-  color: #00D4FF;
+  background: hsl(var(--sf-teal) / 0.08);
+  border-color: hsl(var(--sf-teal) / 0.2);
+  color: hsl(var(--sf-teal));
 }
 
 .badge.warning {
@@ -195,7 +195,7 @@
 }
 
 .controlPanel::-webkit-scrollbar-thumb {
-  background: rgba(0, 212, 255, 0.12);
+  background: hsl(var(--sf-teal) / 0.12);
   border-radius: 2px;
 }
 
@@ -221,7 +221,7 @@
 }
 
 .dataPanel::-webkit-scrollbar-thumb {
-  background: rgba(0, 212, 255, 0.12);
+  background: hsl(var(--sf-teal) / 0.12);
   border-radius: 2px;
 }
 
@@ -230,13 +230,13 @@
    ═══════════════════════════════════════════════════════════════════════════ */
 
 .sectionHeader {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: 'Jura', sans-serif;
   font-size: 7.5px;
   font-weight: 600;
   letter-spacing: 2.5px;
   text-transform: uppercase;
-  color: rgba(0, 212, 255, 0.35);
-  border-bottom: 1px solid rgba(0, 212, 255, 0.06);
+  color: hsl(var(--sf-teal) / 0.35);
+  border-bottom: 1px solid hsl(var(--sf-teal) / 0.06);
   padding-bottom: 6px;
   margin-top: 14px;
   margin-bottom: 10px;
@@ -298,7 +298,7 @@
   width: 11px;
   height: 11px;
   border-radius: 50%;
-  background: #00D4FF;
+  background: hsl(var(--sf-teal));
   cursor: pointer;
   border: 2px solid rgba(0, 0, 0, 0.5);
   transition: transform 0.15s;
@@ -312,7 +312,7 @@
   width: 11px;
   height: 11px;
   border-radius: 50%;
-  background: #00D4FF;
+  background: hsl(var(--sf-teal));
   cursor: pointer;
   border: 2px solid rgba(0, 0, 0, 0.5);
 }
@@ -322,7 +322,7 @@
    ═══════════════════════════════════════════════════════════════════════════ */
 
 .btn {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: 'Jura', sans-serif;
   font-size: 8px;
   font-weight: 500;
   letter-spacing: 1.5px;
@@ -337,26 +337,26 @@
 }
 
 .btn:hover {
-  background: rgba(0, 212, 255, 0.08);
-  border-color: rgba(0, 212, 255, 0.2);
+  background: hsl(var(--sf-teal) / 0.08);
+  border-color: hsl(var(--sf-teal) / 0.2);
   color: #FAFAFA;
 }
 
 .btn.active {
-  background: rgba(0, 212, 255, 0.1);
-  border-color: rgba(0, 212, 255, 0.3);
-  color: #00D4FF;
+  background: hsl(var(--sf-teal) / 0.1);
+  border-color: hsl(var(--sf-teal) / 0.3);
+  color: hsl(var(--sf-teal));
 }
 
 .btn.primary {
-  background: rgba(0, 212, 255, 0.1);
-  border-color: rgba(0, 212, 255, 0.3);
-  color: #00D4FF;
+  background: hsl(var(--sf-teal) / 0.1);
+  border-color: hsl(var(--sf-teal) / 0.3);
+  color: hsl(var(--sf-teal));
 }
 
 .btn.primary:hover {
-  background: rgba(0, 212, 255, 0.15);
-  border-color: rgba(0, 212, 255, 0.4);
+  background: hsl(var(--sf-teal) / 0.15);
+  border-color: hsl(var(--sf-teal) / 0.4);
 }
 
 .btn.danger {
@@ -370,9 +370,9 @@
 }
 
 .btn.publish {
-  background: rgba(0, 212, 255, 0.08);
-  border-color: rgba(0, 212, 255, 0.25);
-  color: #00D4FF;
+  background: hsl(var(--sf-teal) / 0.08);
+  border-color: hsl(var(--sf-teal) / 0.25);
+  color: hsl(var(--sf-teal));
   width: 100%;
   padding: 8px 12px;
   font-size: 9px;
@@ -380,9 +380,9 @@
 }
 
 .btn.publish:hover {
-  background: rgba(0, 212, 255, 0.14);
-  border-color: rgba(0, 212, 255, 0.4);
-  box-shadow: 0 0 12px rgba(0, 212, 255, 0.15);
+  background: hsl(var(--sf-teal) / 0.14);
+  border-color: hsl(var(--sf-teal) / 0.4);
+  box-shadow: 0 0 12px hsl(var(--sf-teal) / 0.15);
 }
 
 .btnRow {
@@ -412,7 +412,7 @@
 }
 
 .select:focus {
-  border-color: rgba(0, 212, 255, 0.35);
+  border-color: hsl(var(--sf-teal) / 0.35);
 }
 
 .select option {
@@ -438,7 +438,7 @@
 }
 
 .input:focus {
-  border-color: rgba(0, 212, 255, 0.35);
+  border-color: hsl(var(--sf-teal) / 0.35);
 }
 
 .input::placeholder {
@@ -475,7 +475,7 @@
 }
 
 .dataValue.cyan {
-  color: #00D4FF;
+  color: hsl(var(--sf-teal));
 }
 
 .dataValue.gold {
@@ -623,14 +623,14 @@
 
 .selectedStar {
   padding: 10px;
-  background: rgba(0, 212, 255, 0.03);
-  border: 1px solid rgba(0, 212, 255, 0.08);
+  background: hsl(var(--sf-teal) / 0.03);
+  border: 1px solid hsl(var(--sf-teal) / 0.08);
   border-radius: 6px;
   margin-bottom: 12px;
 }
 
 .selectedStarName {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: 'Jura', sans-serif;
   font-size: 12px;
   font-weight: 500;
   color: #FAFAFA;
@@ -685,7 +685,7 @@
 }
 
 .tooltipName {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: 'Jura', sans-serif;
   font-size: 10px;
   font-weight: 500;
   margin-bottom: 4px;
@@ -716,10 +716,10 @@
 }
 
 .zoomValue {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: 'Jura', sans-serif;
   font-size: 16px;
   font-weight: 300;
-  color: rgba(0, 212, 255, 0.5);
+  color: hsl(var(--sf-teal) / 0.5);
 }
 
 .zoomLabel {
@@ -757,13 +757,13 @@
 }
 
 .credits a {
-  color: rgba(0, 212, 255, 0.25);
+  color: hsl(var(--sf-teal) / 0.25);
   text-decoration: none;
   transition: color 0.2s;
 }
 
 .credits a:hover {
-  color: rgba(0, 212, 255, 0.5);
+  color: hsl(var(--sf-teal) / 0.5);
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -779,7 +779,7 @@
   background: rgba(255, 165, 0, 0.08);
   border: 1px solid rgba(255, 165, 0, 0.2);
   border-radius: 6px;
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: 'Jura', sans-serif;
   font-size: 9px;
   font-weight: 500;
   letter-spacing: 1.5px;
@@ -811,8 +811,8 @@
 .loadingSpinner {
   width: 32px;
   height: 32px;
-  border: 2px solid rgba(0, 212, 255, 0.12);
-  border-top-color: rgba(0, 212, 255, 0.6);
+  border: 2px solid hsl(var(--sf-teal) / 0.12);
+  border-top-color: hsl(var(--sf-teal) / 0.6);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
   margin-bottom: 16px;
@@ -823,12 +823,12 @@
 }
 
 .loadingText {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: 'Jura', sans-serif;
   font-size: 11px;
   font-weight: 500;
   letter-spacing: 3px;
   text-transform: uppercase;
-  color: rgba(0, 212, 255, 0.5);
+  color: hsl(var(--sf-teal) / 0.5);
 }
 
 .loadingSubtext {
@@ -863,12 +863,12 @@
 }
 
 .searchTitle {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: 'Jura', sans-serif;
   font-size: 9px;
   font-weight: 500;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: rgba(0, 212, 255, 0.5);
+  color: hsl(var(--sf-teal) / 0.5);
 }
 
 .searchClose {
@@ -900,7 +900,7 @@
 }
 
 .searchInput:focus {
-  border-color: rgba(0, 212, 255, 0.3);
+  border-color: hsl(var(--sf-teal) / 0.3);
 }
 
 .searchInput::placeholder {
@@ -943,7 +943,7 @@
 }
 
 .searchResultName {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: 'Jura', sans-serif;
   font-size: 11px;
   font-weight: 500;
   flex: 1;

@@ -13,7 +13,7 @@ const PlanetSizeComparison = ({
   planetRadiusEarth,
   planetGravity,
   planetName = "Your Planet",
-  compositionColor = "#00D4FF",
+  compositionColor = "#15C17B",
   className,
 }: PlanetSizeComparisonProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -137,7 +137,7 @@ function drawPlanet(
   ctx.stroke();
 
   // Name label
-  ctx.font = "600 11px 'Space Grotesk', sans-serif";
+  ctx.font = "500 11px 'Jura', sans-serif";
   ctx.fillStyle = "#FAFAFA";
   ctx.textAlign = "center";
   ctx.fillText(name, x, y - r - 14);

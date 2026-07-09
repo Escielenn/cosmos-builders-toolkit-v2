@@ -1,5 +1,6 @@
 import { View, Text, Svg, Path, Defs, G, Filter } from "@react-pdf/renderer";
 import { styles } from "../styles";
+import { printPalette } from "../palette";
 
 interface PDFHeaderProps {
   toolName: string;
@@ -20,10 +21,10 @@ const CubeLogoSvg = ({ size = 24 }: { size?: number }) => (
     <Path d="M 8 20 L 32 32 L 32 56 L 8 44 Z" fill="#0d0d0d" />
     {/* Right face */}
     <Path d="M 32 32 L 56 20 L 56 44 L 32 56 Z" fill="#141414" />
-    {/* Cyan swoosh arc */}
+    {/* Teal light-arc swoosh (brand accent) */}
     <Path
       d="M 50 16 Q 32 22, 18 36 Q 14 44, 16 50"
-      stroke="#00E5E5"
+      stroke={printPalette.accent}
       strokeWidth={3}
       strokeLinecap="round"
       fill="none"
@@ -33,7 +34,7 @@ const CubeLogoSvg = ({ size = 24 }: { size?: number }) => (
 
 // Text-only fallback logo for templates that auto-break across pages
 const TextLogo = () => (
-  <View style={{ width: 24, height: 24, backgroundColor: "#007a7a", borderRadius: 4, justifyContent: "center", alignItems: "center" }}>
+  <View style={{ width: 24, height: 24, backgroundColor: printPalette.primary, borderRadius: 4, justifyContent: "center", alignItems: "center" }}>
     <Text style={{ fontSize: 12, fontWeight: 700, color: "#ffffff" }}>SF</Text>
   </View>
 );

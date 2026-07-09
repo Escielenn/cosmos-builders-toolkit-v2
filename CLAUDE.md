@@ -108,7 +108,7 @@ The guiding principle: **the simulation is the hero, the UI is the instrument pa
   --sf-teal-bright: hsl(157 100% 62%); /* #3DFFCD */
 
   /* Simulators only (legacy) */
-  --sf-cyan: hsl(190 100% 50%);        /* #00D4FF */
+  --sf-cyan: hsl(157 80% 42%);         /* RETIRED alias → teal (legacy cyan is gone, SF-II #3) */
 
   /* Data & highlights */
   --sf-amber: hsl(43 100% 50%);        /* #FFB800 — velocity, warnings */
@@ -323,7 +323,7 @@ The guiding principle: **the simulation is the hero, the UI is the instrument pa
 ```tsx
 <Badge variant="glow">Default Teal</Badge>
 <Badge variant="glow-amber">Amber</Badge>
-<Badge variant="glow-cyan">Cyan (legacy)</Badge>
+<Badge variant="glow-cyan">Retired alias — renders teal</Badge>
 ```
 
 ```css
@@ -574,7 +574,7 @@ The site has many always-on overlays. Use this stack so new chrome doesn't fight
 
 When building interactive canvas-based tools:
 
-**Note:** Simulators use the **legacy cyan accent** (`#00D4FF`) rather than the site-wide teal. This is intentional—the cyan reads better against pure black canvas backgrounds and maintains visual consistency with existing simulators like ROGUE.
+**Note (updated 2026-07-09):** Legacy cyan is **RETIRED product-wide** (SF-II settled decision #3). Simulators now use the **product teal accent** (`#15C17B`, glow `#3DFFCD`) like every other surface; only the deeper canvas (`#09090B`) and slight panel radius remain simulator-specific. CI hard-fails on any legacy-cyan literal.
 
 #### Canvas Setup
 
@@ -590,11 +590,11 @@ ctx.fillRect(0, 0, canvas.width, canvas.height);
 #### Simulator Color Palette
 
 ```css
-/* Simulator-specific (legacy cyan system) */
+/* Simulator-specific (teal accent since SF-II; cyan retired) */
 --sim-bg: #09090B;
 --sim-panel: rgba(15, 15, 16, 0.92);
---sim-accent: #00D4FF;           /* Cyan for interactive elements */
---sim-accent-glow: rgba(0, 212, 255, 0.2);
+--sim-accent: #15C17B;           /* Product teal for interactive elements */
+--sim-accent-glow: rgba(61, 255, 205, 0.2);
 
 /* Status colors remain consistent */
 --sim-warning: #FFA500;
@@ -629,17 +629,17 @@ Bottom-center: Timeline scrubber (if time-based)
 #### Status Badges
 
 ```css
-/* Badge states use cyan in simulators */
+/* Badge states use the product teal in simulators */
 .sim-badge-waiting {
-  background: rgba(0, 212, 255, 0.03);
-  border: 1px solid rgba(0, 212, 255, 0.08);
-  color: rgba(0, 212, 255, 0.4);
+  background: rgba(21, 193, 123, 0.03);
+  border: 1px solid rgba(21, 193, 123, 0.08);
+  color: rgba(21, 193, 123, 0.4);
 }
 
 .sim-badge-active {
-  background: rgba(0, 212, 255, 0.08);
-  border: 1px solid rgba(0, 212, 255, 0.2);
-  color: #00D4FF;
+  background: rgba(21, 193, 123, 0.08);
+  border: 1px solid rgba(21, 193, 123, 0.2);
+  color: #15C17B;
 }
 
 .sim-badge-danger {
@@ -971,9 +971,9 @@ export function NewSimulator(): JSX.Element {
 
       <Canvas ref={canvasRef} />
 
-      {/* Simulator panels use legacy cyan accent, slight border-radius */}
+      {/* Simulator panels keep slight border-radius; accent is product teal */}
       <ControlPanel className="rounded-lg">
-        {/* Sliders, buttons use cyan (#00D4FF) not teal */}
+        {/* Sliders, buttons use the product teal accent */}
       </ControlPanel>
 
       <DataPanel className="rounded-lg">
@@ -997,8 +997,8 @@ export function NewSimulator(): JSX.Element {
 
 | Aspect | Site-Wide | Simulators |
 |--------|-----------|------------|
-| Primary accent | Teal `#15C17B` | Cyan `#00D4FF` |
-| Glow color | `#3DFFCD` | `#00D4FF` at 0.2 alpha |
+| Primary accent | Teal `#15C17B` | Teal `#15C17B` (cyan retired) |
+| Glow color | `#3DFFCD` | `#3DFFCD` at 0.2 alpha |
 | Background | `#0A0E17` (void) | `#09090B` (deeper) |
 | Panel radius | `rounded-none` | `rounded-lg` (8px) |
 | Panel background | `--sf-surface` at 0.9 | `rgba(15,15,16,0.92)` |
