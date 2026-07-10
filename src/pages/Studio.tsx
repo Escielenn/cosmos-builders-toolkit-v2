@@ -63,11 +63,11 @@ function Topbar({ displayName }: { displayName: string }): JSX.Element {
           <path d="M20 4 L34 12 L34 28 L20 36 L6 28 L6 12 Z" style={{ stroke: "hsl(var(--sf-teal))" }} strokeWidth="1.4" />
           <path d="M20 4 L20 20 M20 20 L6 12 M20 20 L34 12" style={{ stroke: "hsl(var(--sf-teal))" }} strokeWidth="1.2" opacity="0.7" />
         </svg>
-        <span className="font-serif text-[15px] italic text-t1">
-          Stellarforge
-          <span className="ml-1 font-display text-[11px] font-light not-italic tracking-[0.16em] text-sf-teal opacity-80">
-            STUDIO
+        <span className="flex items-baseline gap-1.5">
+          <span className="font-display text-[15px] font-light tracking-sf-title text-t1">
+            <span className="text-sf-teal">Stellar</span>forge
           </span>
+          <span className="font-serif text-[14px] italic text-t2">Studio</span>
         </span>
       </Link>
       <nav className="hidden flex-1 items-stretch px-4 md:flex">

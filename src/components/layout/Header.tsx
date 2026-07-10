@@ -227,6 +227,14 @@ const Header = () => {
                 </Link>
                 <div className="space-y-0.5">
                   <Link
+                    to="/studio"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-t2 hover:text-t1 hover:bg-sf-teal/[0.06] rounded-none transition-colors duration-base"
+                  >
+                    <PenTool className="w-5 h-5" />
+                    Studio · Write
+                  </Link>
+                  <Link
                     to="/workshop"
                     onClick={() => setMobileMenuOpen(false)}
                     className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-t3 hover:text-t1 hover:bg-sf-teal/[0.06] rounded-none transition-colors duration-base"
@@ -379,7 +387,7 @@ const Header = () => {
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => navigate("/studio")}>
                   <PenTool className="w-4 h-4 mr-2" />
-                  Write
+                  Studio
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => navigate("/commendations")}>
                   <Award className="w-4 h-4 mr-2" />

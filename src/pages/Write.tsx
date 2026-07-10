@@ -120,11 +120,23 @@ export default function Write(): JSX.Element {
   return (
     <div className="relative z-10 grid h-screen grid-rows-[44px_1fr_32px] bg-[hsl(var(--sf-void))]">
       {/* topbar */}
-      <header className="flex items-center gap-4 border-b border-sf-border px-4">
-        <Link to="/studio" className="font-serif text-[14px] italic text-t1">
-          Stellarforge <span className="font-display text-[10px] font-light not-italic tracking-[0.16em] text-sf-teal">STUDIO</span>
+      <header className="flex items-center gap-3 border-b border-sf-border px-4">
+        {/* explicit way back to the Studio overview */}
+        <Link
+          to="/studio"
+          className="flex items-center gap-1.5 border border-sf-border px-2.5 py-1 text-[12px] text-t3 transition-colors hover:border-sf-teal hover:text-t1"
+          title="Back to all your projects"
+        >
+          <span aria-hidden="true">←</span> Studio
+        </Link>
+        <Link to="/studio" className="hidden items-baseline gap-1.5 sm:flex">
+          <span className="font-display text-[14px] font-light tracking-sf-title text-t1">
+            <span className="text-sf-teal">Stellar</span>forge
+          </span>
+          <span className="font-serif text-[13px] italic text-t2">Studio</span>
         </Link>
         <div className="hidden min-w-0 items-baseline gap-2 text-[12px] text-t4 md:flex">
+          <span className="text-t5">/</span>
           {worldId && (
             <>
               <Link to={`/worlds/${worldId}`} className="hover:text-t2">World</Link>

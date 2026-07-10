@@ -1,5 +1,22 @@
 # StellarForge Changelog
 
+## 0.6732
+Studio nav prominence + editor back-affordance + wordmark fix.
+
+- Main menu: the "Write" dropdown is now "Studio" (desktop nav +
+  mobile), with a subtitle clarifying it's the writing home
+  ("Write your worlds · drafts, scenes, manuscripts"). Studio is now
+  an obvious top-level destination. Mobile hamburger gains a
+  "Studio · Write" entry above Writing Prompts.
+- Editor: added an explicit "← Studio" button in the topbar so getting
+  back to the overview (to see other projects) no longer depends on
+  discovering the wordmark link. Works in focus mode too (topbar stays).
+- Wordmark: the Studio/editor logo now renders "Stellarforge" in the
+  brand display font (teal "Stellar" + "forge") with "Studio" in serif
+  italic — matching the house wordmark, instead of the previous
+  serif-Stellarforge / display-STUDIO inversion.
+
+
 ## 0.6722
 Unified writing: Studio is now the ONE writing surface, on the real manuscript store.
 
