@@ -1,5 +1,23 @@
 # StellarForge Changelog
 
+## 0.6742
+Test suite — critical invariants encoded (backlog Tier 1).
+
+- Replaced the single placeholder test with a real suite (14 tests, 6
+  files) covering the pure-logic invariants I'd been verifying by hand:
+  - sanitizeHtml: strips scripts/event-handlers/javascript: URIs, keeps
+    safe rich-text markup (stored-XSS defense).
+  - isValidEmail: the waitlist/signup rule (new shared src/lib/validators
+    kept in lockstep with the edge function's EMAIL_RE).
+  - launch date: stamp integrity + daysUntilLaunch never negative.
+  - print palette: valid hex + accent darkened for white-paper legibility.
+  - countWords / lastSentence: streak + continue-card text math.
+- Refactor: extracted countWords + lastSentence into a pure, dependency-
+  free src/lib/text module (re-exported from the hooks) so tests don't
+  drag in the Supabase client graph. Single source, tested once.
+- CI already runs `npm run test`, so these now gate every PR.
+
+
 ## 0.6732
 Studio nav prominence + editor back-affordance + wordmark fix.
 

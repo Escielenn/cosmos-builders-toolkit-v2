@@ -83,8 +83,5 @@ export async function rollWordSession(userId: string, delta: number): Promise<vo
   });
 }
 
-export function countWords(html: string | null | undefined): number {
-  if (!html) return 0;
-  const text = html.replace(/<[^>]+>/g, " ").replace(/&nbsp;/g, " ").trim();
-  return text ? text.split(/\s+/).length : 0;
-}
+// countWords re-exported from the pure text module (single source, tested).
+export { countWords } from "@/lib/text";

@@ -8,6 +8,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+export { lastSentence } from "@/lib/text";
 
 export interface StudioWorld {
   id: string;
@@ -153,18 +154,4 @@ export function useStudioData() {
       };
     },
   });
-}
-
-/** Last full sentence of an entry's text, for the continue-writing card. */
-export function lastSentence(html: string | null | undefined): string | null {
-  if (!html) return null;
-  const text = html
-    .replace(/<[^>]+>/g, " ")
-    .replace(/&nbsp;/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-  if (!text) return null;
-  const sentences = text.match(/[^.!?…]+[.!?…]+/g);
-  const last = sentences ? sentences[sentences.length - 1].trim() : text;
-  return last.length > 220 ? "…" + last.slice(-220) : last;
 }
