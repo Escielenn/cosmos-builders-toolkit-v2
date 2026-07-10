@@ -43,6 +43,7 @@ const EarlyAccess = lazy(() => import("./pages/EarlyAccess"));
 const Studio = lazy(() => import("./pages/Studio"));
 const Write = lazy(() => import("./pages/Write"));
 const WriteIndex = lazy(() => import("./pages/Write").then((m) => ({ default: m.WriteIndex })));
+const WorldWriteRedirect = lazy(() => import("./pages/Write").then((m) => ({ default: m.WorldWriteRedirect })));
 const Roadmap = lazy(() => import("./pages/Roadmap"));
 const Features = lazy(() => import("./pages/Features"));
 const Guide = lazy(() => import("./pages/Guide"));
@@ -198,7 +199,7 @@ const App = () => (
                 <Route path="/studio" element={<Studio />} />
                 {/* Manuscript editor (Implementation Guide §4) */}
                 <Route path="/write" element={<WriteIndex />} />
-                <Route path="/write/:entryId" element={<Write />} />
+                <Route path="/write/:docId" element={<Write />} />
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/pricing" element={<Pricing />} />
@@ -227,7 +228,8 @@ const App = () => (
                   <Route path="chronicle" element={<WorldChronicle />} />
                   <Route path="graph" element={<WorldGraph />} />
                   <Route path="connections" element={<WorldConnections />} />
-                  <Route path="write" element={<WorldWritingSpace />} />
+                  {/* Legacy Writing Space unified into Studio (redirects) */}
+                  <Route path="write" element={<WorldWriteRedirect />} />
                   <Route path="custom-types" element={<WorldCustomTypes />} />
                   <Route path="compile" element={<WorldCompile />} />
                 </Route>

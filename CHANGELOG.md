@@ -1,5 +1,34 @@
 # StellarForge Changelog
 
+## 0.6722
+Unified writing: Studio is now the ONE writing surface, on the real manuscript store.
+
+- FIXED the two-writing-systems split. The old "Writing Space"
+  (/worlds/:id/write) and the new Studio editor edited DIFFERENT tables
+  (world_entries documents vs writing_entries), so your manuscript work
+  and Studio showed different content. Studio's editor now operates on
+  world_entries documents — the mature manuscript store — via the
+  existing, battle-tested document hooks. Your 16 real documents now
+  appear in Studio (verified: all reachable by the new queries).
+- Studio editor (/write/:docId) rebuilt on the manuscript store: binder
+  shows real documents + folders, autosave writes world_entries and
+  rolls word deltas into writing_sessions (streaks), Lora writer
+  register throughout. Full entity tool in the inspector — the
+  WritingEntityPanel (browse/search world entities, insert @mention,
+  insert [[wiki link]], pin) plus quick links to the wiki and graph.
+- The old /worlds/:id/write route now REDIRECTS into Studio on that
+  world's latest document (WorldWriteRedirect), so every existing "Write"
+  link across the app (dashboard, codex, prompts, compile, hero) lands
+  in the unified Studio editor with the right world context. Nav/menu
+  "Write" → Studio; Studio continue-card → /write/:docId.
+- Studio home (useStudioData) now reads world_entries documents for the
+  continue-card, recent list, and word/streak stats.
+- SF-II alignment: one writing model (world_entries), no parallel content
+  table for the main editor. The earlier writing_entries/binder_nodes/
+  scene_pins scaffolding is now unused by the main editor (writing_sessions
+  still powers streaks); safe to retire in the Pillar-B merge.
+
+
 ## 0.6712
 Backlog Tier 0/1 — DB performance sweep + auth resilience.
 

@@ -78,11 +78,12 @@ export function useStudioData() {
           .is("archived_at", null)
           .order("updated_at", { ascending: false })
           .limit(8),
+        // Manuscript store: world_entries documents (SF-II one writing model)
         supabase
-          .from("writing_entries")
-          .select("id, title, content, word_count, updated_at, world_id")
-          .eq("user_id", uid)
-          .is("archived_at", null)
+          .from("world_entries")
+          .select("id, title, content, updated_at, world_id")
+          .eq("created_by", uid)
+          .in("entry_type", ["document", "lore"])
           .order("updated_at", { ascending: false })
           .limit(60),
         supabase
@@ -101,7 +102,14 @@ export function useStudioData() {
       ]);
 
       const worlds = (worldsRes.data ?? []) as StudioWorld[];
-      const entries = (entriesRes.data ?? []) as StudioEntry[];
+      const wordCount = (html: string | null): number => {
+        if (!html) return 0;
+        const t = html.replace(/<[^>]+>/g, " ").replace(/&nbsp;/g, " ").trim();
+        return t ? t.split(/\s+/).length : 0;
+      };
+      const entries = ((entriesRes.data ?? []) as Array<Omit<StudioEntry, "word_count">>).map(
+        (e) => ({ ...e, word_count: wordCount(e.content) }),
+      ) as StudioEntry[];
       const characters = (charsRes.data ?? []) as StudioCharacter[];
       const notes = (notesRes.data ?? []) as StudioNote[];
 
