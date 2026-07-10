@@ -1,5 +1,40 @@
 # StellarForge Changelog
 
+## 0.6682
+Manuscript editor + ambient telemetry (Implementation Guide phases 4–5) + connective audit.
+
+- Added: /write/:entryId — the Scrivener-style manuscript editor (writer
+  register). 44px topbar with Outline/Editor/Corkboard segmented modes
+  (all three functional), breadcrumb, session meter, Focus toggle.
+  Binder rail: binder_nodes tree + Unfiled entries, status dots,
+  + Scene / + Chapter / + Folder (all wired). Center: Lora 18px/1.78
+  prose with drop-cap, editable Lora-italic title, status select,
+  autosaving through the existing StellarForgeEditor (@-mentions and
+  wiki-links included). Pin bar: world entities pinned per scene,
+  color-coded, unpinnable. Inspector: Synopsis tab (synopsis, time &
+  place, target words + progress bar) and References tab (entity
+  search + pin). Status bar: pulsing save state, counts, JD.
+  /write resolves to your latest piece.
+- Added: manuscript schema (additive, applied to production):
+  writing_entries gains synopsis/status/pov/location/time_label/target;
+  binder_nodes tree; scene_pins; writing_sessions daily word rollup —
+  writing_entries stays the ONE writing model (SF-II: no parallel
+  content tables). Owner-scoped RLS on all new tables.
+- Changed: all Write links now lead to the studio experience (Jason's
+  request): header user-menu Write → /studio; nav "Writing Space" →
+  "Studio" → /studio; Studio continue-card → /write/:id; Codex writing
+  entries → /write/:id.
+- Phase 5: existing footer VelocityDial gained a prefers-reduced-motion
+  guard; duplicate dial I nearly introduced was caught and removed;
+  Julian Day line added to the footer telemetry column.
+- Connective audit: scanned every to=/navigate/href target in src
+  against the route table — fixed the two real broken links
+  (/writing → /workshop; /writing-workshop?entryId → /write/:id).
+- Note: Supabase generated types not yet regenerated for the new
+  tables; access is quarantined in useManuscript.ts pending the next
+  `supabase gen types` pass.
+
+
 ## 0.6672
 Studio Home — the writer's home at /studio (Cowork Implementation Guide phase 3).
 

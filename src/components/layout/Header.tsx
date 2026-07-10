@@ -377,7 +377,7 @@ const Header = () => {
                   <Archive className="w-4 h-4 mr-2" />
                   Archive
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate(worlds.length > 0 ? `/worlds/${worlds[0].id}/write` : "/workshop")}>
+                <DropdownMenuItem onClick={() => navigate("/studio")}>
                   <PenTool className="w-4 h-4 mr-2" />
                   Write
                 </DropdownMenuItem>

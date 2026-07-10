@@ -189,7 +189,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
     (element: CodexElement) => {
       // Writing entries → navigate to Writing Prompts
       if (element.kind === "writing") {
-        navigate(`/writing-workshop?entryId=${element.id}`);
+        navigate(`/write/${element.id}`);
         return;
       }
       // World notes → navigate to dashboard notes section

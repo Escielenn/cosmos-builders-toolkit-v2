@@ -204,6 +204,7 @@ const Footer = () => {
             </div>
             <div className="font-mono text-[11px] tracking-[0.18em] text-t5 text-center sm:text-right space-y-1">
               <p>39.87°N · 104.97°W</p>
+              <p>JD {(Math.round((Date.now() / 86_400_000 + 2440587.5) * 10) / 10).toFixed(1)}</p>
               <p><BuildSigil /></p>
               <p className="hidden sm:block"><CommitTicker /></p>
             </div>

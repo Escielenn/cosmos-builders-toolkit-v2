@@ -965,6 +965,21 @@ html {
   }
 }
 
+/* ── Manuscript editor (writer register) — Lora prose ── */
+.sf-writing-serif .ProseMirror {
+  font-family: var(--font-serif, 'Lora', Georgia, serif);
+  font-size: 18px;
+  line-height: 1.78;
+  color: var(--text-2);
+}
+.sf-writing-serif .ProseMirror > p:first-of-type::first-letter {
+  font-size: 2.6em;
+  float: left;
+  line-height: 0.9;
+  padding-right: 8px;
+  color: var(--text-1);
+}
+
 /* ── Data Burst Telemetry ── */
 
 .sf-data-burst {

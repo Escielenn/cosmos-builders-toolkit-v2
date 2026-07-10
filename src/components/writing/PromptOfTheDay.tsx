@@ -78,7 +78,7 @@ export function PromptOfTheDay() {
         )}
 
         <Button asChild className="ml-auto gap-2">
-          <Link to="/writing">
+          <Link to="/workshop">
             <PenTool className="w-4 h-4" />
             Start Writing
           </Link>

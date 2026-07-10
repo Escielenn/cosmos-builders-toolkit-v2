@@ -121,7 +121,7 @@ function Rail({ worlds }: { worlds: StudioWorld[] }): JSX.Element {
           <div className="mb-2 font-serif text-[12px] italic text-t4">Workbench · {worlds[0].name}</div>
           <nav className="mb-7 space-y-0.5">
             {[
-              { label: "Write", to: `/worlds/${worlds[0].id}/write` },
+              { label: "Write", to: "/write" },
               { label: "Wiki", to: `/worlds/${worlds[0].id}/wiki` },
               { label: "Graph", to: `/worlds/${worlds[0].id}/graph` },
               { label: "Chronicle", to: `/worlds/${worlds[0].id}/chronicle` },
@@ -269,7 +269,7 @@ export default function Studio(): JSX.Element {
                   )}
                   <div className="mt-6 flex flex-wrap items-center gap-2.5">
                     <Link
-                      to={entry.world_id ? `/worlds/${entry.world_id}/write` : "/prompts"}
+                      to={`/write/${entry.id}`}
                       className="bg-sf-teal px-5 py-2.5 font-sans text-[13px] font-medium tracking-[0.04em] text-[hsl(var(--accent-on-accent))] transition-shadow hover:shadow-sf-glow-teal"
                     >
                       Continue writing

@@ -21,6 +21,7 @@ export function VelocityDial({ className }: { className?: string }) {
   const [idx, setIdx] = useState(0);
 
   useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const t = setInterval(() => setIdx((i) => (i + 1) % FRAMES.length), 3400);
     return () => clearInterval(t);
   }, []);
