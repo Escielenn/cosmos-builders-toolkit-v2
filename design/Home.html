@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>StellarForge — Bridge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=Jura:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="shared.css" />
+<style>
+  body { background: #060912; color: var(--t2); min-height: 100vh; overflow-x: hidden; }
+
+  /* Starfield + grain layer */
+  .starfield {
+    position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background-image:
+      radial-gradient(1.5px 1.5px at 20% 30%, rgba(255,255,255,0.55), transparent 50%),
+      radial-gradient(1px 1px at 80% 12%, rgba(255,255,255,0.4), transparent 50%),
+      radial-gradient(1.2px 1.2px at 65% 75%, rgba(255,255,255,0.5), transparent 50%),
+      radial-gradient(1px 1px at 12% 60%, rgba(255,255,255,0.35), transparent 50%),
+      radial-gradient(1.4px 1.4px at 90% 50%, rgba(255,255,255,0.4), transparent 50%),
+      radial-gradient(1px 1px at 35% 85%, rgba(255,255,255,0.3), transparent 50%),
+      radial-gradient(1.3px 1.3px at 55% 45%, rgba(255,255,255,0.45), transparent 50%),
+      radial-gradient(1px 1px at 5% 5%, rgba(255,255,255,0.3), transparent 50%);
+    background-size: 600px 600px, 800px 800px, 700px 700px, 900px 900px, 750px 750px, 650px 650px, 850px 850px, 500px 500px;
+  }
+  .grain {
+    position: fixed; inset: 0; pointer-events: none; z-index: 1; opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.5 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* App layout */
+  .app { position: relative; z-index: 2; display: grid; grid-template-columns: 220px 1fr 280px; min-height: 100vh; }
+
+  /* Top bar */
+  .topbar {
+    grid-column: 1 / -1;
+    height: 52px;
+    display: grid; grid-template-columns: 220px 1fr auto; align-items: center;
+    border-bottom: 1px solid var(--sf-border);
+    background: rgba(10,14,23,0.78); backdrop-filter: blur(14px);
+    position: sticky; top: 0; z-index: 10;
+  }
+  .topbar-brand { display: flex; align-items: center; gap: 10px; padding: 0 18px; height: 100%; border-right: 1px solid var(--sf-border); }
+  .topbar-cube { width: 18px; height: 18px; }
+  .topbar-cube polygon { stroke: var(--sf-teal); fill: none; stroke-width: 1.6; }
+  .topbar-cube line { stroke: var(--sf-teal); stroke-width: 1.4; }
+  .topbar-wm { font-family: var(--font-display); font-weight: 300; font-size: 14px; letter-spacing: 0.18em; color: var(--t1); }
+
+  .topbar-crumbs { display: flex; align-items: center; gap: 14px; padding: 0 22px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 1.5px; color: var(--t3); }
+  .topbar-crumbs .sep { color: var(--t5); }
+  .topbar-crumbs .here { color: var(--t1); }
+
+  .topbar-tools { display: flex; align-items: center; gap: 8px; padding: 0 18px; }
+
+  /* Pill */
+  .pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 9px; border: 1px solid currentColor;
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
+    border-radius: 0; background: transparent;
+  }
+  .pill-dot::before {
+    content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor;
+    box-shadow: 0 0 8px currentColor;
+  }
+  .pill-pro { color: var(--sf-teal-bright); background: rgba(21,193,123,0.08); }
+  .pill-amber { color: var(--sf-amber); }
+  .pill-stellar { color: var(--sf-stellar); }
+  .pill-violet { color: var(--sf-violet); }
+  .pill-crimson { color: var(--sf-crimson); }
+
+  /* Search */
+  .topbar-search {
+    flex: 1; max-width: 380px;
+    background: rgba(255,255,255,0.04); border: 1px solid var(--sf-border);
+    padding: 6px 12px; display: flex; align-items: center; gap: 10px;
+    font-family: var(--font-mono); font-size: 11px; color: var(--t3); letter-spacing: 1px;
+  }
+  .topbar-search:hover { border-color: var(--sf-border-strong); }
+  .topbar-search .kbd { margin-left: auto; padding: 1px 5px; border: 1px solid var(--sf-border); color: var(--t4); font-size: 9px; }
+
+  /* Sidebar */
+  .sidebar {
+    border-right: 1px solid var(--sf-border);
+    background: rgba(10,14,23,0.55); backdrop-filter: blur(8px);
+    padding: 22px 0;
+    position: sticky; top: 52px; height: calc(100vh - 52px); overflow-y: auto;
+  }
+  .nav-section { margin-bottom: 18px; }
+  .nav-label { font-family: var(--font-mono); font-size: 9px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--t4); padding: 0 22px; margin-bottom: 8px; }
+  .nav-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 9px 22px; border-left: 2px solid transparent;
+    color: var(--t3); font-family: var(--font-sans); font-size: 13px; font-weight: 500;
+    letter-spacing: 1px; text-transform: uppercase; cursor: pointer; transition: all 150ms;
+    text-decoration: none; user-select: none;
+  }
+  .nav-item:hover { background: rgba(255,255,255,0.03); color: var(--t2); }
+  .nav-item.active { background: rgba(21,193,123,0.06); border-left-color: var(--sf-teal); color: var(--t1); }
+  .nav-item .ic { width: 16px; height: 16px; opacity: 0.85; flex-shrink: 0; }
+  .nav-item .ic svg { width: 100%; height: 100%; }
+  .nav-item .badge { margin-left: auto; font-family: var(--font-mono); font-size: 9px; color: var(--t4); letter-spacing: 1px; }
+  .nav-item.active .badge { color: var(--sf-teal); }
+
+  /* Main + right rail */
+  .main { padding: 28px 36px 80px; min-width: 0; }
+  .right { padding: 22px 16px; border-left: 1px solid var(--sf-border); position: sticky; top: 52px; height: calc(100vh - 52px); overflow-y: auto; }
+
+  /* Eyebrows / labels */
+  .eyebrow { font-family: var(--font-mono); font-size: 10px; letter-spacing: 2px; color: var(--sf-teal); text-transform: uppercase; }
+  .label { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 2px; color: var(--t4); text-transform: uppercase; }
+
+  /* Hero */
+  .hero {
+    position: relative;
+    border: 1px solid var(--sf-border);
+    background: linear-gradient(135deg, rgba(21,193,123,0.04), rgba(91,141,239,0.03) 50%, transparent);
+    padding: 26px 28px;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background:
+      radial-gradient(circle at 100% 0%, rgba(21,193,123,0.10), transparent 40%),
+      radial-gradient(circle at 0% 100%, rgba(91,141,239,0.06), transparent 50%);
+  }
+  .hero-grid { position: relative; display: grid; grid-template-columns: 1fr 280px; gap: 36px; align-items: center; }
+  .hero h1 {
+    font-family: var(--font-display); font-weight: 300; letter-spacing: 0.04em; color: var(--t1);
+    font-size: 38px; line-height: 1.05; margin: 12px 0 6px;
+  }
+  .hero h1 em { color: var(--sf-teal-bright); font-style: normal; }
+  .hero-sub { font-size: 14px; color: var(--t3); margin: 0; }
+
+  /* Bracket corners */
+  .bracket { position: relative; }
+  .bracket::before, .bracket::after,
+  .bracket > .br-bl, .bracket > .br-br {
+    content: ''; position: absolute; width: 14px; height: 14px;
+    border-color: var(--sf-teal); border-style: solid; border-width: 0;
+  }
+  .bracket::before { top: 6px; left: 6px; border-top-width: 1.5px; border-left-width: 1.5px; }
+  .bracket::after { top: 6px; right: 6px; border-top-width: 1.5px; border-right-width: 1.5px; }
+  .bracket > .br-bl { bottom: 6px; left: 6px; border-bottom-width: 1.5px; border-left-width: 1.5px; }
+  .bracket > .br-br { bottom: 6px; right: 6px; border-bottom-width: 1.5px; border-right-width: 1.5px; }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--sf-teal); color: #08110C; border: 1px solid var(--sf-teal);
+    padding: 10px 18px; font-family: var(--font-sans); font-weight: 500; font-size: 12px;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    cursor: pointer; transition: all 180ms cubic-bezier(0.2,0,0,1);
+    text-decoration: none; border-radius: 0;
+  }
+  .btn:hover { box-shadow: 0 0 24px rgba(21,193,123,0.35); transform: translateY(-1px); }
+  .btn-ghost { background: transparent; color: var(--t1); border-color: var(--sf-border-strong); }
+  .btn-ghost:hover { border-color: var(--sf-teal); color: var(--sf-teal-bright); box-shadow: inset 0 0 0 1px rgba(21,193,123,0.4); transform: none; }
+
+  /* Section title */
+  .section { margin-top: 36px; }
+  .section-head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--sf-border); }
+  .section-title { font-family: var(--font-display); font-weight: 300; font-size: 22px; color: var(--t1); letter-spacing: 0.04em; margin: 6px 0 0; }
+  .section-sub { font-family: var(--font-mono); font-size: 10px; letter-spacing: 2px; color: var(--t4); text-transform: uppercase; }
+
+  /* World cards */
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+  .panel { border: 1px solid var(--sf-border); background: var(--sf-surface-80); padding: 18px; transition: border-color 180ms; }
+  .panel:hover { border-color: var(--sf-border-strong); }
+  .panel.elevated { background: var(--sf-surface-elevated); }
+
+  .world-card { padding: 0; cursor: pointer; }
+  .world-card .top { padding: 14px 14px 10px; display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+  .world-card .img { aspect-ratio: 16 / 9; background: linear-gradient(135deg, #0E1320, #161C2B); border-top: 1px solid var(--sf-border); border-bottom: 1px solid var(--sf-border); position: relative; overflow: hidden; }
+  .world-card .meta { padding: 12px 14px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+  .world-card .meta div { display: flex; flex-direction: column; gap: 3px; }
+  .world-card .meta .k { font-family: var(--font-mono); font-size: 8.5px; letter-spacing: 1.5px; color: var(--t4); text-transform: uppercase; }
+  .world-card .meta .v { font-family: var(--font-mono); font-size: 11px; color: var(--t1); letter-spacing: 0.5px; }
+  .world-card .name { font-family: var(--font-display); font-size: 17px; color: var(--t1); letter-spacing: 0.04em; font-weight: 300; line-height: 1.15; }
+  .world-card .id { font-family: var(--font-mono); font-size: 9px; letter-spacing: 1.5px; color: var(--t4); margin-top: 3px; }
+
+  /* Instrument grid */
+  .ig { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+  .ig-cell {
+    aspect-ratio: 1; border: 1px solid var(--sf-border); background: rgba(14,19,32,0.7);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+    padding: 6px; cursor: pointer; transition: all 150ms; position: relative;
+  }
+  .ig-cell:hover { border-color: var(--sf-teal); background: rgba(21,193,123,0.06); }
+  .ig-cell .ic { width: 22px; height: 22px; opacity: 0.85; }
+  .ig-cell .nm { font-family: var(--font-mono); font-size: 8.5px; letter-spacing: 1px; color: var(--t3); text-align: center; line-height: 1.1; }
+  .ig-cell:hover .nm { color: var(--t1); }
+  .ig-cell.locked { opacity: 0.35; }
+  .ig-cell.recent { border-color: rgba(21,193,123,0.4); }
+  .ig-cell.recent::after { content: '●'; position: absolute; top: 4px; right: 5px; color: var(--sf-teal); font-size: 6px; }
+
+  /* Activity stream */
+  .stream { font-family: var(--font-mono); font-size: 11px; }
+  .stream-row { display: grid; grid-template-columns: 70px 14px 1fr auto; gap: 12px; align-items: center; padding: 9px 0; border-top: 1px dashed rgba(255,255,255,0.06); }
+  .stream-row:first-child { border-top: 0; }
+  .stream-row .t { color: var(--t4); letter-spacing: 1px; font-size: 10px; }
+  .stream-row .d { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+  .stream-row .msg { color: var(--t2); }
+  .stream-row .msg .e { color: var(--t1); }
+  .stream-row .ref { color: var(--t4); font-size: 10px; letter-spacing: 1px; }
+  .stream-row.teal { color: var(--sf-teal); }
+  .stream-row.amber { color: var(--sf-amber); }
+  .stream-row.stellar { color: var(--sf-stellar); }
+  .stream-row.violet { color: var(--sf-violet); }
+  .stream-row.crimson { color: var(--sf-crimson); }
+  .stream-row.cyan { color: var(--sf-cyan); }
+
+  /* Cascade card */
+  .cascade-row { display: grid; grid-template-columns: 110px 1fr; gap: 12px; padding: 8px 0; border-top: 1px dashed rgba(255,255,255,0.06); }
+  .cascade-row:first-of-type { border-top: 0; }
+  .cascade-row .k { font-family: var(--font-mono); font-size: 10px; letter-spacing: 1.5px; }
+  .cascade-row .v { font-family: var(--font-mono); font-size: 12px; color: var(--t1); }
+  .cascade-row .v small { color: var(--t4); margin-left: 6px; }
+
+  /* Right rail */
+  .rail-block { margin-bottom: 22px; padding-bottom: 18px; border-bottom: 1px dashed rgba(255,255,255,0.06); }
+  .rail-block:last-child { border-bottom: 0; }
+  .rail-h { font-family: var(--font-mono); font-size: 9px; letter-spacing: 2px; color: var(--sf-teal); text-transform: uppercase; margin-bottom: 10px; }
+
+  /* Velocity dial */
+  .dial-wrap { aspect-ratio: 1; background: var(--sf-void); border: 1px solid var(--sf-border); padding: 14px; position: relative; }
+  .dial-wrap .top-tl { position: absolute; top: 8px; left: 10px; font-family: var(--font-mono); font-size: 8px; letter-spacing: 1.5px; color: var(--sf-teal); }
+  .dial-wrap .top-tr { position: absolute; top: 8px; right: 10px; font-family: var(--font-mono); font-size: 8px; letter-spacing: 1.5px; color: var(--t5); }
+  .dial-wrap .center { position: absolute; left: 50%; top: 60%; transform: translateX(-50%); text-align: center; pointer-events: none; }
+  .dial-wrap .center .nm { font-family: var(--font-mono); font-size: 8px; color: var(--t4); letter-spacing: 1.5px; }
+  .dial-wrap .center .v { font-family: var(--font-display); font-weight: 300; font-size: 22px; color: var(--t1); letter-spacing: 0.04em; margin-top: 2px; }
+  .dial-wrap .center .v small { font-size: 10px; color: var(--t4); margin-left: 2px; }
+  .dial-needle { transform-origin: 100px 100px; transition: transform 2400ms cubic-bezier(0.4,0,0.2,1); }
+
+  /* Conditions */
+  .cond-row { display: flex; justify-content: space-between; padding: 5px 0; font-family: var(--font-mono); font-size: 10px; letter-spacing: 1px; }
+  .cond-row .k { color: var(--t4); }
+  .cond-row .v { color: var(--t1); }
+
+  /* Coordinates strip */
+  .strip { font-family: var(--font-mono); font-size: 10px; color: var(--t5); letter-spacing: 1.5px; line-height: 1.7; word-spacing: 6px; }
+
+  /* Pro card */
+  .pro-card { padding: 14px; border: 1px solid rgba(21,193,123,0.25); background: linear-gradient(135deg, rgba(21,193,123,0.06), transparent); }
+  .pro-row { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; font-family: var(--font-mono); font-size: 10px; letter-spacing: 1px; }
+  .pro-row .k { color: var(--t3); }
+  .pro-row .v { color: var(--sf-teal-bright); }
+
+  /* Footer telemetry bar */
+  .telemetry-foot {
+    margin-top: 50px; padding-top: 18px; border-top: 1px solid var(--sf-border);
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: 1.5px; color: var(--t5);
+  }
+  .telemetry-foot .grp { display: flex; gap: 22px; }
+
+  /* Status dot */
+  .dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: currentColor; box-shadow: 0 0 8px currentColor; margin-right: 6px; vertical-align: 1px; }
+
+  /* Chart-ish thumbs */
+  .thumb-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(91,141,239,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(91,141,239,0.06) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+  .thumb-cells {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono); font-size: 8.5px; letter-spacing: 1.5px; color: var(--t4); text-align: center;
+  }
+
+  /* Avatar */
+  .avatar {
+    width: 28px; height: 28px; border: 1px solid var(--sf-border-strong);
+    background: linear-gradient(135deg, #15C17B, #5B8DEF);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono); font-size: 11px; color: #08110C; font-weight: 600; letter-spacing: 0.5px;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(21,193,123,0.4); }
+</style>
+</head>
+<body>
+<div class="starfield"></div>
+<div class="grain"></div>
+
+<div class="app">
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━ TOP BAR ━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="topbar">
+    <div class="topbar-brand">
+      <svg class="topbar-cube" viewBox="-50 -50 100 100">
+        <polygon points="0,-32 28,-16 28,16 0,32 -28,16 -28,-16" />
+        <line x1="0" y1="-32" x2="0" y2="0" />
+        <line x1="28" y1="-16" x2="0" y2="0" />
+        <line x1="-28" y1="-16" x2="0" y2="0" />
+      </svg>
+      <span class="topbar-wm">STELLARFORGE</span>
+    </div>
+
+    <div class="topbar-crumbs">
+      <span>// BRIDGE</span>
+      <span class="sep">·</span>
+      <span class="here">CAPTAIN'S DASHBOARD</span>
+    </div>
+
+    <div class="topbar-tools">
+      <div class="topbar-search">
+        <span style="opacity:0.6;">⌕</span>
+        <span>Search worlds, species, instruments…</span>
+        <span class="kbd">⌘ K</span>
+      </div>
+      <span class="pill pill-pro pill-dot">PRO · ALL SYSTEMS</span>
+      <div style="display:flex;align-items:center;gap:8px;padding-left:10px;border-left:1px solid var(--sf-border);">
+        <div class="avatar">JB</div>
+        <div style="display:flex;flex-direction:column;line-height:1.2;">
+          <span style="font-family:var(--font-sans);font-size:11px;color:var(--t1);letter-spacing:0.04em;">Jason Batt</span>
+          <span style="font-family:var(--font-mono);font-size:9px;color:var(--t4);letter-spacing:1.5px;">CREW SF-001</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━ SIDEBAR ━━━━━━━━━━━━━━━━━━━━ -->
+  <aside class="sidebar">
+    <div class="nav-section">
+      <div class="nav-label">// NAVIGATION</div>
+      <a class="nav-item active" href="#">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 12 L12 4 L21 12 M5 11 V20 H19 V11"/></svg></span>
+        <span>Bridge</span>
+      </a>
+      <a class="nav-item" href="#">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="8"/><ellipse cx="12" cy="12" rx="8" ry="3"/></svg></span>
+        <span>Worlds</span><span class="badge">12</span>
+      </a>
+      <a class="nav-item" href="#">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 21 V13 M8 13 C 8 9 10 6 12 6 C 14 6 16 9 16 13 V21 M12 6 V3 M9 4 L12 3 L15 4"/></svg></span>
+        <span>Species</span><span class="badge">147</span>
+      </a>
+      <a class="nav-item" href="#">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 4 H17 L19 6 V20 H5 Z M9 9 H15 M9 13 H15 M9 17 H13"/></svg></span>
+        <span>Lore</span><span class="badge">38</span>
+      </a>
+      <a class="nav-item" href="#">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14"/><circle cx="8" cy="10" r="1.5"/><path d="M3 17 L9 12 L13 15 L21 9"/></svg></span>
+        <span>Gallery</span>
+      </a>
+      <a class="nav-item" href="#">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3 L19 8 V19 L12 21 L5 19 V8 Z M12 3 V21 M5 8 L12 12 L19 8"/></svg></span>
+        <span>Publish</span>
+      </a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">// SYSTEMS</div>
+      <a class="nav-item" href="#">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="3"/><path d="M12 3 V6 M12 18 V21 M3 12 H6 M18 12 H21 M5.6 5.6 L7.7 7.7 M16.3 16.3 L18.4 18.4 M5.6 18.4 L7.7 16.3 M16.3 7.7 L18.4 5.6"/></svg></span>
+        <span>Settings</span>
+      </a>
+      <a class="nav-item" href="#">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M9 9 Q12 6 15 9 Q15 11 12 13 V15 M12 18 V18.5"/></svg></span>
+        <span>Help</span>
+      </a>
+    </div>
+
+    <div style="padding: 0 22px; margin-top: auto;">
+      <div class="pro-card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <span class="pill pill-pro pill-dot">PRO</span>
+          <span style="font-family:var(--font-mono);font-size:9px;color:var(--t4);letter-spacing:1.5px;">ANNUAL</span>
+        </div>
+        <div class="pro-row"><span class="k">INSTRUMENTS</span><span class="v">25 / 25</span></div>
+        <div class="pro-row"><span class="k">WORLDS</span><span class="v">∞</span></div>
+        <div class="pro-row"><span class="k">RENEWS</span><span class="v">2027.02.14</span></div>
+      </div>
+      <div style="margin-top:14px;font-family:var(--font-mono);font-size:9px;color:var(--t5);letter-spacing:1.5px;line-height:1.6;">
+        39.87°N · 104.97°W<br/>
+        SOL 19,838 · JD 2461785.6<br/>
+        BUILD 2026.04.24-r2
+      </div>
+    </div>
+  </aside>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━ MAIN ━━━━━━━━━━━━━━━━━━━━ -->
+  <main class="main">
+
+    <!-- HERO -->
+    <div class="hero bracket">
+      <span class="br-bl"></span><span class="br-br"></span>
+      <div class="hero-grid">
+        <div>
+          <div class="eyebrow">// SESSION ESTABLISHED · 09:42 LOCAL</div>
+          <h1>Welcome back, captain.<br/>The ship is <em>online</em>.</h1>
+          <p class="hero-sub">Three worlds in flight. Twelve transmissions awaiting review. The cascade you ran on <strong style="color:var(--t1);">Aerwyn-IV</strong> last night has settled — atmospheric model converged at 2,184 iterations.</p>
+          <div style="display:flex; gap:10px; margin-top:18px;">
+            <a class="btn" href="#">RESUME AERWYN-IV →</a>
+            <a class="btn btn-ghost" href="#">+ NEW WORLD</a>
+          </div>
+        </div>
+
+        <!-- mini cube viz -->
+        <div style="position:relative; aspect-ratio:1; max-width:240px; margin-left:auto;">
+          <svg viewBox="-100 -100 200 200" style="width:100%;height:100%;">
+            <defs>
+              <radialGradient id="cube-glow" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#15C17B" stop-opacity="0.35"/>
+                <stop offset="100%" stop-color="#15C17B" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+            <circle cx="0" cy="0" r="80" fill="url(#cube-glow)"/>
+            <g stroke="#15C17B" stroke-width="1.5" fill="none" opacity="0.85">
+              <polygon points="0,-60 52,-30 52,30 0,60 -52,30 -52,-30"/>
+              <line x1="0" y1="-60" x2="0" y2="0"/>
+              <line x1="52" y1="-30" x2="0" y2="0"/>
+              <line x1="-52" y1="-30" x2="0" y2="0"/>
+            </g>
+            <g stroke="rgba(255,255,255,0.18)" stroke-width="0.6" fill="none">
+              <ellipse cx="0" cy="0" rx="90" ry="32" transform="rotate(15)"/>
+              <ellipse cx="0" cy="0" rx="90" ry="32" transform="rotate(-25)"/>
+            </g>
+            <g fill="#3DFFCD">
+              <circle cx="76" cy="-12" r="2"/>
+              <circle cx="-58" cy="44" r="1.5"/>
+              <circle cx="22" cy="78" r="1.8"/>
+            </g>
+          </svg>
+          <div style="position:absolute; bottom:0; left:0; right:0; text-align:center;">
+            <div class="label" style="color:var(--sf-teal);">// AERWYN-IV</div>
+            <div style="font-family:var(--font-mono);font-size:10px;color:var(--t3);letter-spacing:1px;margin-top:3px;">3 species · 12 lore entries · 87% complete</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TELEMETRY ROW -->
+    <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:14px; margin-top:18px;">
+      <div class="panel" style="padding:14px;">
+        <div class="label">WORLDS · ACTIVE</div>
+        <div style="font-family:var(--font-display);font-weight:300;font-size:32px;color:var(--t1);letter-spacing:0.03em;margin-top:6px;">12</div>
+        <div style="font-family:var(--font-mono);font-size:10px;color:var(--sf-teal);letter-spacing:1px;margin-top:2px;">+2 THIS MONTH</div>
+      </div>
+      <div class="panel" style="padding:14px;">
+        <div class="label">SPECIES CATALOGUED</div>
+        <div style="font-family:var(--font-display);font-weight:300;font-size:32px;color:var(--t1);letter-spacing:0.03em;margin-top:6px;">147</div>
+        <div style="font-family:var(--font-mono);font-size:10px;color:var(--sf-amber);letter-spacing:1px;margin-top:2px;">+18 THIS WEEK</div>
+      </div>
+      <div class="panel" style="padding:14px;">
+        <div class="label">LORE ENTRIES</div>
+        <div style="font-family:var(--font-display);font-weight:300;font-size:32px;color:var(--t1);letter-spacing:0.03em;margin-top:6px;">38</div>
+        <div style="font-family:var(--font-mono);font-size:10px;color:var(--t3);letter-spacing:1px;margin-top:2px;">21,402 WORDS</div>
+      </div>
+      <div class="panel" style="padding:14px;">
+        <div class="label">INSTRUMENT HOURS</div>
+        <div style="font-family:var(--font-display);font-weight:300;font-size:32px;color:var(--t1);letter-spacing:0.03em;margin-top:6px;">412</div>
+        <div style="font-family:var(--font-mono);font-size:10px;color:var(--sf-stellar);letter-spacing:1px;margin-top:2px;">PERCENTILE 92</div>
+      </div>
+    </div>
+
+    <!-- WORLDS -->
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <div class="section-sub">// 03 WORLDS · IN FLIGHT</div>
+          <h2 class="section-title">Recent worlds</h2>
+        </div>
+        <a class="btn btn-ghost" style="padding:7px 14px;font-size:10px;" href="#">VIEW ALL 12 →</a>
+      </div>
+
+      <div class="grid-3">
+        <!-- Aerwyn-IV -->
+        <div class="panel world-card" style="border-color: rgba(21,193,123,0.25);">
+          <div class="top">
+            <div>
+              <div class="name">Aerwyn-IV</div>
+              <div class="id">SF.W.0042 · LAST: 09:11 LOCAL</div>
+            </div>
+            <span class="pill pill-pro pill-dot" style="font-size:9px;padding:3px 7px;">ACTIVE</span>
+          </div>
+          <div class="img">
+            <div class="thumb-grid"></div>
+            <!-- terrain rings -->
+            <svg viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice" style="position:absolute;inset:0;width:100%;height:100%;">
+              <defs>
+                <radialGradient id="aer-atm" cx="55%" cy="50%" r="40%">
+                  <stop offset="0%" stop-color="#15C17B" stop-opacity="0.2"/>
+                  <stop offset="80%" stop-color="#15C17B" stop-opacity="0"/>
+                </radialGradient>
+              </defs>
+              <circle cx="180" cy="90" r="68" fill="url(#aer-atm)"/>
+              <circle cx="180" cy="90" r="48" fill="#0A0E17" stroke="#15C17B" stroke-width="0.8"/>
+              <circle cx="180" cy="90" r="36" fill="none" stroke="rgba(21,193,123,0.4)" stroke-width="0.4" stroke-dasharray="2 3"/>
+              <circle cx="180" cy="90" r="24" fill="none" stroke="rgba(21,193,123,0.3)" stroke-width="0.4"/>
+              <!-- continent dots -->
+              <g fill="#3DFFCD" opacity="0.7">
+                <circle cx="166" cy="78" r="1.2"/><circle cx="194" cy="84" r="1"/><circle cx="178" cy="98" r="1.5"/><circle cx="202" cy="98" r="0.9"/>
+              </g>
+            </svg>
+            <div style="position:absolute;left:12px;bottom:8px;font-family:var(--font-mono);font-size:9px;color:rgba(21,193,123,0.8);letter-spacing:1.5px;">G 1.4 · ATM 2.1 · T -18°C</div>
+          </div>
+          <div class="meta">
+            <div><span class="k">SPECIES</span><span class="v">3</span></div>
+            <div><span class="k">LORE</span><span class="v">12</span></div>
+            <div><span class="k">CASCADE</span><span class="v" style="color:var(--sf-teal);">SETTLED</span></div>
+          </div>
+        </div>
+
+        <!-- Threnody Wyld -->
+        <div class="panel world-card">
+          <div class="top">
+            <div>
+              <div class="name">Threnody Wyld</div>
+              <div class="id">SF.W.0039 · LAST: 04.21</div>
+            </div>
+            <span class="pill pill-amber pill-dot" style="font-size:9px;padding:3px 7px;">DRAFT</span>
+          </div>
+          <div class="img">
+            <div class="thumb-grid"></div>
+            <svg viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice" style="position:absolute;inset:0;width:100%;height:100%;">
+              <!-- jagged peaks silhouette -->
+              <path d="M0,180 L0,120 L40,80 L80,110 L120,60 L160,100 L200,55 L240,95 L280,70 L320,110 L320,180 Z" fill="rgba(255,184,0,0.12)" stroke="#FFB800" stroke-width="0.7"/>
+              <path d="M0,150 L60,130 L100,140 L160,118 L220,135 L280,120 L320,138 L320,180 L0,180 Z" fill="rgba(255,184,0,0.06)" stroke="rgba(255,184,0,0.4)" stroke-width="0.5"/>
+              <circle cx="240" cy="40" r="14" fill="none" stroke="#FFB347" stroke-width="0.5"/>
+              <circle cx="240" cy="40" r="6" fill="#FFB347" opacity="0.6"/>
+            </svg>
+            <div style="position:absolute;left:12px;bottom:8px;font-family:var(--font-mono);font-size:9px;color:rgba(255,184,0,0.8);letter-spacing:1.5px;">G 0.8 · TIDAL LOCK · BIN STAR</div>
+          </div>
+          <div class="meta">
+            <div><span class="k">SPECIES</span><span class="v">7</span></div>
+            <div><span class="k">LORE</span><span class="v">5</span></div>
+            <div><span class="k">CASCADE</span><span class="v" style="color:var(--sf-amber);">PENDING</span></div>
+          </div>
+        </div>
+
+        <!-- The Long Quiet -->
+        <div class="panel world-card">
+          <div class="top">
+            <div>
+              <div class="name">The Long Quiet</div>
+              <div class="id">SF.W.0034 · LAST: 04.19</div>
+            </div>
+            <span class="pill pill-violet pill-dot" style="font-size:9px;padding:3px 7px;">PUBLISHED</span>
+          </div>
+          <div class="img">
+            <div class="thumb-grid"></div>
+            <svg viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice" style="position:absolute;inset:0;width:100%;height:100%;">
+              <!-- nebula -->
+              <defs>
+                <radialGradient id="lq-neb" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#9B5DE5" stop-opacity="0.35"/>
+                  <stop offset="60%" stop-color="#5B8DEF" stop-opacity="0.12"/>
+                  <stop offset="100%" stop-color="#9B5DE5" stop-opacity="0"/>
+                </radialGradient>
+              </defs>
+              <ellipse cx="160" cy="90" rx="120" ry="56" fill="url(#lq-neb)"/>
+              <g fill="#FAFAFA">
+                <circle cx="60" cy="60" r="0.8" opacity="0.7"/><circle cx="120" cy="100" r="1" opacity="0.8"/><circle cx="200" cy="60" r="0.9"/>
+                <circle cx="240" cy="120" r="1.2" opacity="0.9"/><circle cx="280" cy="80" r="0.7"/>
+                <circle cx="160" cy="40" r="1.5" opacity="0.95"/><circle cx="100" cy="140" r="0.8" opacity="0.6"/>
+              </g>
+              <line x1="160" y1="40" x2="240" y2="120" stroke="rgba(155,93,229,0.4)" stroke-width="0.3" stroke-dasharray="2 4"/>
+              <line x1="160" y1="40" x2="60" y2="60" stroke="rgba(155,93,229,0.4)" stroke-width="0.3" stroke-dasharray="2 4"/>
+            </svg>
+            <div style="position:absolute;left:12px;bottom:8px;font-family:var(--font-mono);font-size:9px;color:rgba(155,93,229,0.85);letter-spacing:1.5px;">DEEP SPACE · SECTOR 14</div>
+          </div>
+          <div class="meta">
+            <div><span class="k">SPECIES</span><span class="v">2</span></div>
+            <div><span class="k">LORE</span><span class="v">21</span></div>
+            <div><span class="k">CASCADE</span><span class="v" style="color:var(--sf-violet);">LOCKED</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TWO-COLUMN: INSTRUMENTS + ACTIVITY -->
+    <div class="grid-2" style="margin-top:32px; gap:18px; grid-template-columns: 1fr 1fr;">
+
+      <!-- INSTRUMENTS -->
+      <section>
+        <div class="section-head" style="margin-bottom:12px;">
+          <div>
+            <div class="section-sub">// 25 / 25 ONLINE</div>
+            <h2 class="section-title">Instrument panel</h2>
+          </div>
+          <span class="pill pill-pro pill-dot">ALL UNLOCKED</span>
+        </div>
+
+        <div class="ig" id="instruments"></div>
+      </section>
+
+      <!-- ACTIVITY -->
+      <section>
+        <div class="section-head" style="margin-bottom:12px;">
+          <div>
+            <div class="section-sub">// LAST 12 EVENTS</div>
+            <h2 class="section-title">Transmission log</h2>
+          </div>
+          <span class="label" style="color:var(--t3);">LIVE</span>
+        </div>
+
+        <div class="panel stream" style="padding:14px 16px;">
+          <div class="stream-row teal">
+            <span class="t">09:11</span>
+            <span class="d"></span>
+            <span class="msg"><span class="e">CASCADE SETTLED</span> · Aerwyn-IV atmospheric model</span>
+            <span class="ref">2,184 ITER</span>
+          </div>
+          <div class="stream-row stellar">
+            <span class="t">08:42</span>
+            <span class="d"></span>
+            <span class="msg"><span class="e">SPECIES SAVED</span> · low-slung hexapod, sub-tropical</span>
+            <span class="ref">SP.0147</span>
+          </div>
+          <div class="stream-row violet">
+            <span class="t">08:30</span>
+            <span class="d"></span>
+            <span class="msg"><span class="e">LORE ENTRY</span> · "First Glyphs of Aerwyn"</span>
+            <span class="ref">+1,422 W</span>
+          </div>
+          <div class="stream-row amber">
+            <span class="t">04.23</span>
+            <span class="d"></span>
+            <span class="msg"><span class="e">PARAMETER SHIFT</span> · gravity 1.2g → 1.4g · cascade pending</span>
+            <span class="ref">Δ +0.2g</span>
+          </div>
+          <div class="stream-row teal">
+            <span class="t">04.23</span>
+            <span class="d"></span>
+            <span class="msg"><span class="e">EXPORT COMPLETE</span> · Aerwyn-IV bible · transmission logged</span>
+            <span class="ref">.docx · 47p</span>
+          </div>
+          <div class="stream-row cyan">
+            <span class="t">04.22</span>
+            <span class="d"></span>
+            <span class="msg"><span class="e">WORLD CREATED</span> · Threnody Wyld · binary star, tidal lock</span>
+            <span class="ref">SF.W.0039</span>
+          </div>
+          <div class="stream-row violet">
+            <span class="t">04.21</span>
+            <span class="d"></span>
+            <span class="msg"><span class="e">PUBLISHED</span> · The Long Quiet · public gallery</span>
+            <span class="ref">12 VIEWS</span>
+          </div>
+          <div class="stream-row teal">
+            <span class="t">04.21</span>
+            <span class="d"></span>
+            <span class="msg"><span class="e">CHECKPOINT</span> · auto-saved 47 changes across 2 worlds</span>
+            <span class="ref">2.4 MB</span>
+          </div>
+          <div class="stream-row stellar">
+            <span class="t">04.20</span>
+            <span class="d"></span>
+            <span class="msg"><span class="e">CULTURE FORK</span> · Aerwyn highlanders → 2 sects</span>
+            <span class="ref">CL.0024</span>
+          </div>
+          <div class="stream-row crimson">
+            <span class="t">04.19</span>
+            <span class="d"></span>
+            <span class="msg"><span class="e">PARAMETER OUT OF RANGE</span> · atmosphere O₂ 38% · life unlikely · adjusted</span>
+            <span class="ref">RESOLVED</span>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- CASCADE OF THE DAY + PUBLISH -->
+    <div class="grid-2" style="margin-top:32px; gap:18px; grid-template-columns: 1.4fr 1fr;">
+      <section>
+        <div class="section-head" style="margin-bottom:12px;">
+          <div>
+            <div class="section-sub">// AERWYN-IV · LAST RUN</div>
+            <h2 class="section-title">Cascade in motion</h2>
+          </div>
+          <a class="btn btn-ghost" style="padding:7px 14px;font-size:10px;" href="#">REPLAY →</a>
+        </div>
+
+        <div class="panel" style="padding:18px 20px;">
+          <div style="font-family:var(--font-mono);font-size:10px;color:var(--sf-teal);letter-spacing:2px;margin-bottom:10px;">// CHANGE ONE NUMBER · WATCH IT RIPPLE</div>
+
+          <div class="cascade-row">
+            <span class="k" style="color:var(--sf-amber);">GRAVITY</span>
+            <span class="v">1.4 g <small>(↑ from 1.2 g · 04.23 18:42)</small></span>
+          </div>
+          <div class="cascade-row">
+            <span class="k" style="color:var(--sf-stellar);">ATMOSPHERE</span>
+            <span class="v">2.1 atm · thick · O₂ 22% <small>auto-recomputed</small></span>
+          </div>
+          <div class="cascade-row">
+            <span class="k" style="color:var(--sf-emerald);">BIOLOGY</span>
+            <span class="v">low-slung morphology · 6-limb gait · denser bones <small>147 species touched</small></span>
+          </div>
+          <div class="cascade-row">
+            <span class="k" style="color:var(--sf-violet);">CULTURE</span>
+            <span class="v">no native word for "fall" · architecture flat <small>+3 lore drafts</small></span>
+          </div>
+          <div class="cascade-row">
+            <span class="k" style="color:var(--sf-magenta);">MYTHOLOGY</span>
+            <span class="v">creation story re-cast · sky as enemy <small>+1 entry generated</small></span>
+          </div>
+
+          <div style="display:grid;grid-template-columns: 1fr 1fr 1fr 1fr;gap:10px;margin-top:18px;padding-top:14px;border-top:1px solid var(--sf-border);font-family:var(--font-mono);font-size:10px;letter-spacing:1px;">
+            <div><div style="color:var(--t4);">ITERATIONS</div><div style="color:var(--t1);font-size:13px;margin-top:3px;">2,184</div></div>
+            <div><div style="color:var(--t4);">CONVERGED</div><div style="color:var(--sf-teal);font-size:13px;margin-top:3px;">YES · 99.4%</div></div>
+            <div><div style="color:var(--t4);">RUNTIME</div><div style="color:var(--t1);font-size:13px;margin-top:3px;">14m 22s</div></div>
+            <div><div style="color:var(--t4);">SEED</div><div style="color:var(--t1);font-size:13px;margin-top:3px;">0xDEADB10C</div></div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-head" style="margin-bottom:12px;">
+          <div>
+            <div class="section-sub">// READY FOR ORBIT</div>
+            <h2 class="section-title">Publish queue</h2>
+          </div>
+        </div>
+
+        <div class="panel" style="padding:0;">
+          <div style="padding:14px 16px;border-bottom:1px solid var(--sf-border);">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <div style="font-family:var(--font-display);font-size:15px;color:var(--t1);letter-spacing:0.03em;">Aerwyn-IV · Genesis</div>
+              <span class="pill pill-pro pill-dot" style="font-size:9px;padding:3px 7px;">87% READY</span>
+            </div>
+            <div style="font-family:var(--font-mono);font-size:9.5px;color:var(--t4);letter-spacing:1.5px;margin-top:4px;">3 SPECIES · 12 LORE · CASCADE SETTLED</div>
+            <div style="height:3px;background:rgba(255,255,255,0.06);margin-top:10px;position:relative;">
+              <div style="position:absolute;left:0;top:0;bottom:0;width:87%;background:linear-gradient(90deg,#15C17B,#3DFFCD);"></div>
+            </div>
+          </div>
+          <div style="padding:14px 16px;border-bottom:1px solid var(--sf-border);">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <div style="font-family:var(--font-display);font-size:15px;color:var(--t1);letter-spacing:0.03em;">Threnody Wyld · Draft I</div>
+              <span class="pill pill-amber" style="font-size:9px;padding:3px 7px;">42% READY</span>
+            </div>
+            <div style="font-family:var(--font-mono);font-size:9.5px;color:var(--t4);letter-spacing:1.5px;margin-top:4px;">7 SPECIES · 5 LORE · CASCADE PENDING</div>
+            <div style="height:3px;background:rgba(255,255,255,0.06);margin-top:10px;position:relative;">
+              <div style="position:absolute;left:0;top:0;bottom:0;width:42%;background:#FFB800;"></div>
+            </div>
+          </div>
+          <div style="padding:14px 16px;display:flex;justify-content:space-between;align-items:center;">
+            <span class="label">PRO · UNLIMITED EXPORTS</span>
+            <a class="btn" style="padding:7px 14px;font-size:10px;" href="#">EXPORT BIBLE →</a>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- FOOTER TELEMETRY -->
+    <div class="telemetry-foot">
+      <div class="grp">
+        <span><span class="dot" style="color:var(--sf-teal);"></span>BRIDGE · NOMINAL</span>
+        <span>P95 42ms</span>
+        <span>UPTIME 99.987%</span>
+      </div>
+      <div class="grp">
+        <span>SOL 19,838</span>
+        <span>JD 2461785.6</span>
+        <span>39.87°N · 104.97°W</span>
+        <span>BUILD 2026.04.24-r2</span>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━ RIGHT RAIL ━━━━━━━━━━━━━━━━━━━━ -->
+  <aside class="right">
+    <!-- Velocity dial -->
+    <div class="rail-block">
+      <div class="rail-h">// VELOCITY · REF FRAME</div>
+      <div class="dial-wrap">
+        <span class="top-tl">VELOCITY</span>
+        <span class="top-tr">REF-FRAME</span>
+        <svg viewBox="0 0 200 200" style="width:100%;height:100%;">
+          <defs>
+            <linearGradient id="velo-arc" x1="0" x2="1">
+              <stop offset="0" stop-color="#15C17B" stop-opacity="0.1"/>
+              <stop offset="1" stop-color="#15C17B" stop-opacity="0.85"/>
+            </linearGradient>
+          </defs>
+          <!-- ticks -->
+          <g id="ticks"></g>
+          <!-- base arc -->
+          <path d="M 57.57 142.43 A 60 60 0 1 1 142.43 142.43" fill="none" stroke="#2E3548" stroke-width="3"/>
+          <!-- live arc -->
+          <path id="velo-fill" d="" fill="none" stroke="url(#velo-arc)" stroke-width="3" stroke-linecap="round"/>
+          <!-- needle -->
+          <g class="dial-needle" id="needle">
+            <line x1="100" y1="100" x2="100" y2="42" stroke="#15C17B" stroke-width="1.5"/>
+          </g>
+          <circle cx="100" cy="100" r="5" fill="#0A0E17" stroke="#15C17B" stroke-width="1.5"/>
+          <circle cx="100" cy="100" r="1.5" fill="#15C17B"/>
+        </svg>
+        <div class="center">
+          <div class="nm" id="velo-name">EARTH ROTATION</div>
+          <div class="v"><span id="velo-val">0.465</span><small id="velo-unit">km/s</small></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Local conditions -->
+    <div class="rail-block">
+      <div class="rail-h">// LOCAL CONDITIONS</div>
+      <div class="cond-row"><span class="k">LATITUDE</span><span class="v">39.873°N</span></div>
+      <div class="cond-row"><span class="k">LONGITUDE</span><span class="v">104.972°W</span></div>
+      <div class="cond-row"><span class="k">ALTITUDE</span><span class="v">5,280 ft</span></div>
+      <div class="cond-row"><span class="k">PRESSURE</span><span class="v">1013.25 hPa</span></div>
+      <div class="cond-row"><span class="k">TEMP</span><span class="v">-1.4°C</span></div>
+      <div class="cond-row"><span class="k">SUNSET</span><span class="v">19:42:08 MT</span></div>
+      <div class="cond-row"><span class="k">LUNAR</span><span class="v">0.74 · WAXING</span></div>
+      <div class="cond-row"><span class="k">SOLAR FLUX</span><span class="v">112 sfu</span></div>
+    </div>
+
+    <!-- Crew status -->
+    <div class="rail-block">
+      <div class="rail-h">// CREW · ONLINE</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div class="avatar" style="width:22px;height:22px;font-size:9px;">JB</div>
+          <div style="flex:1;min-width:0;">
+            <div style="font-family:var(--font-sans);font-size:11px;color:var(--t1);">Jason Batt <span style="color:var(--sf-teal);font-size:9px;letter-spacing:1.5px;font-family:var(--font-mono);">· YOU</span></div>
+            <div style="font-family:var(--font-mono);font-size:9px;color:var(--t4);letter-spacing:1px;">EDITING · AERWYN-IV</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div class="avatar" style="width:22px;height:22px;font-size:9px;background:linear-gradient(135deg,#9B5DE5,#FF00AA);">MR</div>
+          <div style="flex:1;min-width:0;">
+            <div style="font-family:var(--font-sans);font-size:11px;color:var(--t1);">M. Rao</div>
+            <div style="font-family:var(--font-mono);font-size:9px;color:var(--t4);letter-spacing:1px;">IDLE · 12m</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div class="avatar" style="width:22px;height:22px;font-size:9px;background:linear-gradient(135deg,#FFB800,#FF3366);">KL</div>
+          <div style="flex:1;min-width:0;">
+            <div style="font-family:var(--font-sans);font-size:11px;color:var(--t1);">K. Lindqvist</div>
+            <div style="font-family:var(--font-mono);font-size:9px;color:var(--t4);letter-spacing:1px;">READING LORE</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Coordinates strip / ambient -->
+    <div class="rail-block">
+      <div class="rail-h">// AMBIENT TELEMETRY</div>
+      <div class="strip">
+        WORLDS 00347 · SPECIES 02,184 · SAVES 19,402,718 · UPTIME 99.987% · P95 42ms · REGION US-WEST-2
+      </div>
+      <div style="margin-top:8px;font-family:var(--font-mono);font-size:9px;color:rgba(21,193,123,0.55);letter-spacing:1.5px;line-height:1.6;">
+        // [NOTE] biome/tundra parameters stable across 1e4 iterations · checksum 7F2A-91B0-44CE · seed 0xDEADB10C
+      </div>
+      <div style="margin-top:8px;font-family:var(--font-mono);font-size:9px;color:rgba(255,184,0,0.55);letter-spacing:1.5px;line-height:1.6;">
+        TRAJECTORY BOUND · ECLIPTIC +07.42° · TARGET WOLF 359 · 7.86 ly · Δv 4.22e7 m/s
+      </div>
+    </div>
+  </aside>
+</div>
+
+<script>
+// ━━━━━━━━━━━━━━━━ INSTRUMENTS GRID ━━━━━━━━━━━━━━━━
+const INSTRUMENTS = [
+  // First row — Pro indicates which were used recently
+  { code: 'PLN', name: 'Planetary',   color: '#15C17B', recent: true,  d: 'M12 12 m -7 0 a 7 7 0 1 0 14 0 a 7 7 0 1 0 -14 0 M5 12 a 7 4 0 0 0 14 0' },
+  { code: 'BIO', name: 'Biology',     color: '#00FF88', recent: true,  d: 'M8 21 V13 C 8 9 10 6 12 6 C 14 6 16 9 16 13 V21' },
+  { code: 'CSC', name: 'Cascade',     color: '#FFB800', recent: true,  d: 'M4 6 L20 6 M4 12 L16 12 M4 18 L12 18' },
+  { code: 'GRV', name: 'Gravity',     color: '#FFB347', recent: false, d: 'M4 4 L20 20 M4 20 L20 4' },
+  { code: 'ATM', name: 'Atmosphere',  color: '#5B8DEF', recent: false, d: 'M4 14 Q 8 10 12 14 T 20 14 M4 18 Q 8 14 12 18 T 20 18' },
+
+  { code: 'CLM', name: 'Climate',     color: '#4D9FFF', recent: false, d: 'M6 18 H18 A4 4 0 0 0 18 10 A6 6 0 0 0 6 12 A4 4 0 0 0 6 18' },
+  { code: 'GEO', name: 'Geology',     color: '#FFB347', recent: false, d: 'M4 18 L8 10 L12 14 L16 6 L20 18 Z' },
+  { code: 'HYD', name: 'Hydrology',   color: '#00D4FF', recent: false, d: 'M12 4 C 6 12 6 18 12 20 C 18 18 18 12 12 4 Z' },
+  { code: 'CHN', name: 'Chronos',     color: '#9B5DE5', recent: true,  d: 'M12 4 V12 L17 17 M3 12 a 9 9 0 1 0 18 0 a 9 9 0 1 0 -18 0' },
+  { code: 'EVO', name: 'Evolution',   color: '#00FF88', recent: false, d: 'M4 20 L8 12 L12 16 L16 6 L20 10' },
+
+  { code: 'CLT', name: 'Culture',     color: '#9B5DE5', recent: true,  d: 'M4 19 V11 L12 5 L20 11 V19 H4 M9 19 V13 H15 V19' },
+  { code: 'LIN', name: 'Linguistics', color: '#FF00AA', recent: false, d: 'M5 18 L9 6 L13 18 M6 14 H12 M16 18 V6 M14 18 H18' },
+  { code: 'MYT', name: 'Mythology',   color: '#9B5DE5', recent: true,  d: 'M12 2 L14.5 9 L22 9 L16 13.5 L18 21 L12 16.5 L6 21 L8 13.5 L2 9 L9.5 9 Z' },
+  { code: 'TEC', name: 'Technology',  color: '#3DFFCD', recent: false, d: 'M9 4 H15 V8 H21 V14 H15 V20 H9 V14 H3 V8 H9 Z' },
+  { code: 'ECO', name: 'Economy',     color: '#FFB800', recent: false, d: 'M4 16 L9 11 L13 14 L20 7 M16 7 H20 V11' },
+
+  { code: 'MIL', name: 'Military',    color: '#FF3366', recent: false, d: 'M12 2 L20 6 V12 C 20 17 16 21 12 22 C 8 21 4 17 4 12 V6 Z' },
+  { code: 'POL', name: 'Politics',    color: '#FFB347', recent: false, d: 'M4 20 H20 M6 20 V10 M10 20 V6 M14 20 V12 M18 20 V8' },
+  { code: 'REL', name: 'Religion',    color: '#9B5DE5', recent: false, d: 'M12 2 V22 M6 8 H18' },
+  { code: 'TRD', name: 'Trade',       color: '#FFB800', recent: false, d: 'M4 7 H20 L17 4 M20 17 H4 L7 20' },
+  { code: 'NAV', name: 'Navigation',  color: '#5B8DEF', recent: false, d: 'M3 11 L21 4 L14 22 L11 13 Z' },
+
+  { code: 'AST', name: 'Astronomy',   color: '#3DFFCD', recent: false, d: 'M5 5 L19 19 M19 5 L5 19 M12 12 m-3 0 a 3 3 0 1 0 6 0 a 3 3 0 1 0 -6 0' },
+  { code: 'PHY', name: 'Physics',     color: '#FFB800', recent: false, d: 'M12 12 m -8 0 a 8 4 0 1 0 16 0 a 8 4 0 1 0 -16 0 M12 12 m -4 -7 a 4 8 0 1 0 0 14 a 4 8 0 1 0 0 -14' },
+  { code: 'GEN', name: 'Genetics',    color: '#FF00AA', recent: false, d: 'M5 4 C 12 8 12 16 19 20 M19 4 C 12 8 12 16 5 20 M7 6 H17 M7 18 H17' },
+  { code: 'PSY', name: 'Psyche',      color: '#9B5DE5', recent: false, d: 'M4 14 C 4 8 9 4 14 6 C 19 8 21 14 18 18 C 16 21 12 21 9 19 L4 21 L6 16 Z' },
+  { code: 'NAR', name: 'Narrative',   color: '#3DFFCD', recent: true,  d: 'M5 4 H17 L19 6 V20 H5 Z M9 9 H15 M9 13 H15 M9 17 H13' },
+];
+
+const ig = document.getElementById('instruments');
+INSTRUMENTS.forEach(it => {
+  const cell = document.createElement('div');
+  cell.className = 'ig-cell' + (it.recent ? ' recent' : '');
+  cell.innerHTML = `
+    <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="${it.color}" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+      <path d="${it.d}"/>
+    </svg>
+    <span class="nm">${it.name.toUpperCase()}</span>
+  `;
+  ig.appendChild(cell);
+});
+
+// ━━━━━━━━━━━━━━━━ VELOCITY DIAL ANIMATION ━━━━━━━━━━━━━━━━
+const FRAMES = [
+  { name: 'EARTH ROTATION', v: '0.465', u: 'km/s', pct: 0.05 },
+  { name: 'SOLAR ORBIT',    v: '29.78', u: 'km/s', pct: 0.22 },
+  { name: 'SOLAR APEX',     v: '19.4',  u: 'km/s', pct: 0.15 },
+  { name: 'GALACTIC ORBIT', v: '230',   u: 'km/s', pct: 0.88 },
+];
+
+// build ticks
+const ticksG = document.getElementById('ticks');
+for (let i = 0; i < 60; i++) {
+  const a = -Math.PI * 1.25 + (i / 59) * Math.PI * 1.5;
+  const x1 = 100 + Math.cos(a) * 82, y1 = 100 + Math.sin(a) * 82;
+  const r2 = i % 5 === 0 ? 72 : 76;
+  const x2 = 100 + Math.cos(a) * r2, y2 = 100 + Math.sin(a) * r2;
+  const tick = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+  tick.setAttribute('x1', x1); tick.setAttribute('y1', y1);
+  tick.setAttribute('x2', x2); tick.setAttribute('y2', y2);
+  tick.setAttribute('stroke', i % 5 === 0 ? '#6B7484' : '#2E3548');
+  tick.setAttribute('stroke-width', i % 5 === 0 ? 1.2 : 0.8);
+  ticksG.appendChild(tick);
+}
+
+let frameIdx = 0;
+function setVelo(idx) {
+  const f = FRAMES[idx];
+  const deg = -135 + 270 * f.pct;
+  const needle = document.getElementById('needle');
+  needle.style.transform = `rotate(${deg}deg)`;
+  document.getElementById('velo-name').textContent = f.name;
+  document.getElementById('velo-val').textContent = f.v;
+  document.getElementById('velo-unit').textContent = f.u;
+
+  // arc fill
+  const start = -Math.PI * 1.25;
+  const end = start + Math.PI * 1.5 * f.pct;
+  const r = 60, cx = 100, cy = 100;
+  const arcD = `M ${cx + Math.cos(start) * r} ${cy + Math.sin(start) * r} ` +
+               `A ${r} ${r} 0 ${end - start > Math.PI ? 1 : 0} 1 ` +
+               `${cx + Math.cos(end) * r} ${cy + Math.sin(end) * r}`;
+  document.getElementById('velo-fill').setAttribute('d', arcD);
+}
+setVelo(0);
+setInterval(() => {
+  frameIdx = (frameIdx + 1) % FRAMES.length;
+  setVelo(frameIdx);
+}, 3400);
+</script>
+</body>
+</html>

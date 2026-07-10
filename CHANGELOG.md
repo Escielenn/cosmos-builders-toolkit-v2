@@ -1,5 +1,25 @@
 # StellarForge Changelog
 
+## 0.6662
+Launch infrastructure — /early waitlist page live (Cowork Implementation Guide phases 1–2).
+
+- Added: /early public landing/waitlist page (mono campaign register) built
+  from design/Landing Page.html — hero, ship's manifest panel, stat strip,
+  10-tool sample grid, live T-MINUS countdown chip.
+- Added: src/config/launch.ts — THE single LAUNCH_DATE constant
+  (2026-08-11 09:00 PT); all countdowns and copy derive from it.
+- Added: public.waitlist table (RLS enabled, deliberately NO client
+  policies) + waitlist-confirmation edge function: validates, idempotent
+  dedupe, sends mono-register Resend confirmation with EARLY40 code.
+  Applied to production and smoke-tested (invalid→400, valid→email sent,
+  duplicate→success, anon read→blocked).
+- Added: Lora serif (writer register) to font load + --font-serif token +
+  Tailwind serif family. Writer voice is Studio/editor-only per the two-
+  register rule; campaign/ops chrome stays mono.
+- Changed: design/Operating Plan.html asset checklist — waitlist landing
+  row marked DONE (was due Jul 15; shipped Jul 9).
+
+
 ## 0.6652
 StellarForge II Phase 1 — token foundation activated; cyan & Space Grotesk retired.
 

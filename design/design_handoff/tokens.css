@@ -1,0 +1,177 @@
+/*
+ * StellarForge — tokens.css
+ *
+ * Import once in your root layout BEFORE Tailwind directives so CSS variables
+ * are available to handwritten CSS, arbitrary Tailwind values (bg-[var(--sf-teal)]),
+ * and third-party components.
+ *
+ * Usage:
+ *   // app/globals.css
+ *   @import "./tokens.css";
+ *   @tailwind base;
+ *   @tailwind components;
+ *   @tailwind utilities;
+ */
+
+/* ───── FONTS ───── */
+/* Place MDNichrome-Light.woff2 and MDNichrome-Regular.woff2 in /public/fonts. */
+@font-face {
+  font-family: 'MD Nichrome';
+  src: url('/fonts/MDNichrome-Light.woff2') format('woff2');
+  font-weight: 300;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'MD Nichrome';
+  src: url('/fonts/MDNichrome-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+}
+
+/* Google fonts (or self-host — recommended for production) */
+/* In index.html <head>:
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=Jura:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet">
+*/
+
+:root {
+  /* Backgrounds */
+  --sf-void:               #0A0E17;
+  --sf-surface:            #0E1320;
+  --sf-surface-elevated:   #161C2B;
+  --sf-surface-80:         rgba(14, 19, 32, 0.9);
+
+  /* Borders */
+  --sf-border:             rgba(255, 255, 255, 0.08);
+  --sf-border-strong:      rgba(255, 255, 255, 0.14);
+
+  /* Accents */
+  --sf-teal:               #15C17B;
+  --sf-teal-bright:        #3DFFCD;
+  --sf-cyan:               #00D4FF;
+  --sf-amber:              #FFB800;
+  --sf-amber-warm:         #FFB347;
+  --sf-stellar:            #5B8DEF;
+  --sf-emerald:            #00FF88;
+  --sf-violet:             #9B5DE5;
+  --sf-crimson:            #FF3366;
+  --sf-azure:              #4D9FFF;
+  --sf-magenta:            #FF00AA;
+
+  /* Text tiers */
+  --t1: #FAFAFA;
+  --t2: #C8C8C8;
+  --t3: rgba(255, 255, 255, 0.45);
+  --t4: rgba(255, 255, 255, 0.28);
+  --t5: rgba(255, 255, 255, 0.15);
+
+  /* Fonts */
+  --font-display: 'MD Nichrome', 'Space Grotesk', sans-serif;
+  --font-heading: 'Jura', 'DM Sans', sans-serif;
+  --font-sans:    'DM Sans', system-ui, sans-serif;
+  --font-mono:    'JetBrains Mono', ui-monospace, monospace;
+
+  /* Tracking */
+  --tr-title: 0.08em;
+  --tr-wide:  0.2em;
+  --tr-ultra: 0.4em;
+
+  /* Scrollbar */
+  --sb-track:       #0A0E17;
+  --sb-thumb:       #2E3548;
+  --sb-thumb-hover: #3D4658;
+  --sb-width:       8px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  background: var(--sf-void);
+  color: var(--t2);
+  font-family: var(--font-sans);
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.55;
+}
+
+/* ───── Scrollbar skin (global) ───── */
+::-webkit-scrollbar        { width: 10px; height: 10px; }
+::-webkit-scrollbar-track  { background: var(--sf-void); }
+::-webkit-scrollbar-thumb  { background: var(--sf-surface-elevated); border: 2px solid var(--sf-void); }
+::-webkit-scrollbar-thumb:hover { background: #25304a; }
+
+/* Scrollbar utility classes — use on any scroll container */
+.sf-sb { scrollbar-color: var(--sb-thumb) var(--sb-track); scrollbar-width: thin; }
+.sf-sb::-webkit-scrollbar         { width: var(--sb-width); height: var(--sb-width); }
+.sf-sb::-webkit-scrollbar-track   { background: var(--sb-track); border: 0; }
+.sf-sb::-webkit-scrollbar-thumb   { background: var(--sb-thumb); border: 0; border-radius: 0; }
+.sf-sb::-webkit-scrollbar-thumb:hover { background: var(--sb-thumb-hover); }
+.sf-sb::-webkit-scrollbar-corner  { background: var(--sb-track); }
+
+.sf-sb--slim::-webkit-scrollbar { width: 6px; height: 6px; }
+.sf-sb--slim { scrollbar-width: thin; }
+
+.sf-sb--idle::-webkit-scrollbar-thumb {
+  background: transparent;
+  transition: background 300ms ease 800ms;
+}
+.sf-sb--idle:hover::-webkit-scrollbar-thumb,
+.sf-sb--idle.is-scrolling::-webkit-scrollbar-thumb {
+  background: var(--sb-thumb);
+  transition-delay: 0ms;
+}
+
+/* ───── Starfield ───── */
+.sf-starfield {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.4), transparent 50%),
+    radial-gradient(1px 1px at 40% 70%, rgba(255,255,255,0.3), transparent 50%),
+    radial-gradient(1.5px 1.5px at 60% 20%, rgba(91,141,239,0.4), transparent 50%),
+    radial-gradient(1px 1px at 80% 50%, rgba(255,255,255,0.3), transparent 50%),
+    radial-gradient(1px 1px at 10% 80%, rgba(255,255,255,0.35), transparent 50%),
+    radial-gradient(1px 1px at 90% 85%, rgba(21,193,123,0.4), transparent 50%),
+    radial-gradient(1px 1px at 50% 95%, rgba(255,255,255,0.25), transparent 50%),
+    radial-gradient(1px 1px at 30% 15%, rgba(255,255,255,0.25), transparent 50%),
+    radial-gradient(1px 1px at 70% 40%, rgba(255,255,255,0.3), transparent 50%),
+    radial-gradient(1px 1px at 15% 55%, rgba(255,255,255,0.3), transparent 50%);
+  background-size: 800px 600px;
+}
+
+/* ───── Grain overlay ───── */
+.sf-grain::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.03;
+  z-index: 1;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ───── Bracket decoration (for focal panels) ───── */
+.sf-bracket { position: relative; }
+.sf-bracket::before,
+.sf-bracket::after {
+  content: '';
+  position: absolute;
+  width: 12px; height: 12px;
+  border: 1px solid var(--sf-teal);
+}
+.sf-bracket::before { top: -1px;    left: -1px;  border-right: 0; border-bottom: 0; }
+.sf-bracket::after  { bottom: -1px; right: -1px; border-left: 0;  border-top: 0;    }
+
+/* ───── Panel glow underline ───── */
+.sf-panel-glow::before {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 10%; right: 10%;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(61,255,205,0.25), transparent);
+  pointer-events: none;
+}

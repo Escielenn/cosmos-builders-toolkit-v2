@@ -1,0 +1,1330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>StellarForge — Manuscript</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=Jura:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@300;400;500;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="shared.css" />
+<style>
+  html, body { height: 100%; }
+  body { background: #0B0F18; color: var(--t2); overflow: hidden; }
+  .sf-serif { font-family: 'Lora', Georgia, serif; }
+
+  .softgrain {
+    position: fixed; inset: 0; pointer-events: none; z-index: 1; opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.85' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 0.95  0 0 0 0 0.85  0 0 0 0.5 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ─────────────── LAYOUT ─────────────── */
+  .app {
+    position: relative; z-index: 2;
+    display: grid;
+    grid-template-rows: 44px 1fr 32px;
+    grid-template-columns: 280px 1fr 320px;
+    height: 100vh;
+  }
+
+  /* Top bar */
+  .topbar {
+    grid-column: 1 / -1;
+    display: grid; grid-template-columns: 280px 1fr auto; align-items: center;
+    border-bottom: 1px solid var(--sf-border);
+    background: rgba(11,15,24,0.85); backdrop-filter: blur(14px);
+  }
+  .tb-brand { display: flex; align-items: center; gap: 9px; padding: 0 16px; height: 100%; border-right: 1px solid var(--sf-border); }
+  .tb-cube { width: 16px; height: 16px; }
+  .tb-cube polygon { stroke: var(--sf-teal); fill: none; stroke-width: 1.6; }
+  .tb-cube line { stroke: var(--sf-teal); stroke-width: 1.4; }
+  .tb-wm { font-family: var(--font-display); font-weight: 300; font-size: 13px; letter-spacing: 0.18em; color: var(--t1); }
+
+  /* Center cluster: mode segmenter + abbreviated crumbs */
+  .tb-center {
+    display: flex; align-items: center; gap: 18px;
+    padding: 0 18px; min-width: 0;
+    overflow: hidden;
+  }
+  /* Below ~1180px, drop the chunkier crumb segments first */
+  @media (max-width: 1180px) {
+    .crumbs .cr-proj, .crumbs .cr-ch, .crumbs .sep:nth-of-type(2), .crumbs .sep:nth-of-type(3) { display: none; }
+  }
+  @media (max-width: 980px) {
+    .crumbs { display: none; }
+    .meter.compact .muted, .meter.compact .sep-dot:nth-of-type(2), .meter.compact .sep-dot:nth-of-type(3) { display: none; }
+    .meter.compact b:nth-of-type(2) { display: none; }
+  }
+  .modeseg {
+    display: inline-flex;
+    border: 1px solid var(--sf-border-strong);
+    background: rgba(255,255,255,0.02);
+    flex-shrink: 0;
+  }
+  .modeseg .mode {
+    height: 28px; padding: 0 12px;
+    display: inline-flex; align-items: center; gap: 7px;
+    background: transparent; border: 0;
+    border-right: 1px solid var(--sf-border);
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: 1.4px;
+    color: var(--t3); text-transform: uppercase;
+    cursor: pointer;
+  }
+  .modeseg .mode:last-child { border-right: 0; }
+  .modeseg .mode:hover { color: var(--t1); background: rgba(255,255,255,0.03); }
+  .modeseg .mode.active {
+    color: #08110C;
+    background: var(--sf-teal);
+  }
+  .modeseg .mode.active svg { stroke: #08110C; }
+
+  .crumbs {
+    display: flex; align-items: center; gap: 9px;
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: 1.3px;
+    color: var(--t4); min-width: 0;
+  }
+  .crumbs .sep { color: var(--t5); }
+  .crumbs .crumb-home { color: var(--t4); display: inline-flex; align-items: center; padding: 2px; }
+  .crumbs .crumb-home:hover { color: var(--sf-teal); }
+  .crumbs .cr-proj, .crumbs .cr-ch { color: var(--t3); text-transform: uppercase; cursor: pointer; }
+  .crumbs .cr-proj:hover, .crumbs .cr-ch:hover { color: var(--t1); }
+  .crumbs .here {
+    color: var(--t1); text-transform: none;
+    font-family: 'Lora', serif; font-style: italic; font-size: 13.5px; letter-spacing: 0;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0;
+  }
+
+  .tools { display: flex; align-items: center; gap: 6px; padding: 0 14px; height: 100%; }
+  .meter.compact {
+    display: inline-flex; align-items: center; gap: 6px;
+    height: 28px; padding: 0 11px;
+    border: 1px solid var(--sf-border);
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: 1px; color: var(--t2); text-transform: uppercase;
+    cursor: default;
+  }
+  .meter.compact b { color: var(--t1); font-weight: 500; letter-spacing: 0.5px; }
+  .meter.compact .muted { color: var(--t4); }
+  .meter.compact .sep-dot { color: var(--t5); margin: 0 1px; }
+  .meter.compact .live { width: 6px; height: 6px; border-radius: 50%; background: var(--sf-teal); box-shadow: 0 0 8px var(--sf-teal); flex-shrink: 0; }
+  .meter.compact:hover { border-color: var(--sf-border-strong); }
+
+  .ic-tool {
+    width: 28px; height: 28px;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: transparent; border: 1px solid var(--sf-border);
+    color: var(--t3); cursor: pointer;
+  }
+  .ic-tool:hover { color: var(--sf-teal-bright); border-color: var(--sf-border-strong); }
+
+  /* ─────────────── BINDER (LEFT) ─────────────── */
+  .binder {
+    border-right: 1px solid var(--sf-border);
+    background: rgba(11,15,24,0.55);
+    overflow: hidden; display: flex; flex-direction: column;
+  }
+  .binder-h {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 14px; border-bottom: 1px solid var(--sf-border);
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: 1.8px; text-transform: uppercase; color: var(--t4);
+  }
+  .binder-h .actions { display: flex; gap: 4px; }
+  .binder-h .ic-btn { width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; color: var(--t4); cursor: pointer; }
+  .binder-h .ic-btn:hover { color: var(--t1); }
+  .binder-search {
+    padding: 8px 14px; border-bottom: 1px solid var(--sf-border);
+  }
+  .binder-search input {
+    width: 100%; background: rgba(255,255,255,0.04); border: 1px solid var(--sf-border);
+    padding: 6px 10px; font-family: var(--font-mono); font-size: 11px; color: var(--t1); letter-spacing: 0.5px;
+  }
+  .binder-tree { flex: 1; overflow-y: auto; padding: 10px 0 18px; font-size: 13px; }
+
+  .b-node { user-select: none; }
+  .b-row {
+    display: flex; align-items: center; gap: 6px;
+    padding: 4px 14px; cursor: pointer;
+    color: var(--t2); font-family: var(--font-sans); font-size: 12.5px;
+    border-left: 2px solid transparent;
+  }
+  .b-row:hover { background: rgba(255,255,255,0.025); }
+  .b-row.active { background: rgba(21,193,123,0.07); border-left-color: var(--sf-teal); color: var(--t1); }
+  .b-row .twist { width: 10px; color: var(--t4); font-family: var(--font-mono); font-size: 9px; flex-shrink: 0; text-align: center; }
+  .b-row .ic { width: 14px; height: 14px; flex-shrink: 0; opacity: 0.85; display: inline-flex; align-items: center; justify-content: center; }
+  .b-row .nm { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: 'Lora', serif; font-size: 13px; }
+  .b-row .meta { font-family: var(--font-mono); font-size: 9px; color: var(--t4); letter-spacing: 1px; flex-shrink: 0; }
+  .b-row.active .nm { color: var(--t1); }
+  .b-row.active .meta { color: var(--sf-teal); }
+  .b-children { padding-left: 14px; border-left: 1px dashed rgba(255,255,255,0.05); margin-left: 22px; }
+  .b-children.collapsed { display: none; }
+
+  .b-row.book .nm { font-family: var(--font-display); font-weight: 300; letter-spacing: 0.05em; text-transform: uppercase; font-size: 11.5px; color: var(--t1); }
+  .b-row.part .nm { font-family: var(--font-mono); letter-spacing: 1.6px; text-transform: uppercase; font-size: 10.5px; color: var(--t3); }
+  .b-row.chapter .nm { font-family: 'Lora', serif; font-style: italic; }
+  .b-row.scene .nm { font-family: 'Lora', serif; }
+  .b-row.research .nm { font-family: var(--font-mono); font-size: 11px; color: var(--t3); letter-spacing: 0.5px; }
+
+  .status-dot {
+    display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--t5); margin-left: auto; flex-shrink: 0;
+  }
+  .status-dot.draft1 { background: var(--sf-amber); }
+  .status-dot.draft2 { background: var(--sf-stellar); }
+  .status-dot.final { background: var(--sf-teal); box-shadow: 0 0 6px var(--sf-teal); }
+  .status-dot.todo { background: var(--t5); border: 1px solid rgba(255,255,255,0.18); }
+
+  /* Binder footer with new buttons */
+  .binder-foot {
+    border-top: 1px solid var(--sf-border);
+    padding: 8px 14px;
+    display: flex; gap: 6px; flex-wrap: wrap;
+    background: rgba(11,15,24,0.7);
+  }
+  .binder-foot button {
+    flex: 1; min-width: 0;
+    background: transparent; border: 1px solid var(--sf-border);
+    padding: 5px 6px; font-family: var(--font-mono); font-size: 9px; color: var(--t3); letter-spacing: 1.3px; text-transform: uppercase;
+    cursor: pointer;
+  }
+  .binder-foot button:hover { border-color: var(--sf-teal); color: var(--sf-teal-bright); }
+
+  /* ─────────────── CENTER (PINS + EDITOR) ─────────────── */
+  .center {
+    display: flex; flex-direction: column;
+    overflow: hidden;
+    background: linear-gradient(180deg, #0E1320 0%, #0B0F18 100%);
+  }
+
+  /* Pinned reference cards */
+  .pinbar {
+    border-bottom: 1px solid var(--sf-border);
+    background: rgba(11,15,24,0.7);
+    padding: 10px 18px;
+    display: flex; gap: 10px; align-items: stretch;
+    overflow-x: auto;
+    flex-shrink: 0;
+  }
+  .pinbar-label {
+    font-family: var(--font-mono); font-size: 9px; letter-spacing: 1.8px; color: var(--sf-amber); text-transform: uppercase;
+    flex-shrink: 0; align-self: center; padding-right: 4px; border-right: 1px solid var(--sf-border); margin-right: 4px;
+    height: 32px; display: flex; align-items: center;
+  }
+  .pcard {
+    flex-shrink: 0;
+    border: 1px solid rgba(255,184,71,0.22);
+    background: linear-gradient(180deg, rgba(255,184,71,0.06), transparent 80%);
+    padding: 7px 12px 7px 22px;
+    position: relative;
+    display: flex; flex-direction: column; gap: 1px;
+    min-width: 180px; max-width: 240px;
+    cursor: pointer;
+  }
+  .pcard::before {
+    content: ''; position: absolute; left: 8px; top: 11px;
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--sf-amber);
+  }
+  .pcard:hover { border-color: var(--sf-amber); }
+  .pcard .src { font-family: var(--font-mono); font-size: 8.5px; color: var(--sf-amber); letter-spacing: 1.4px; text-transform: uppercase; }
+  .pcard .title { font-family: 'Lora', serif; font-size: 12px; color: var(--t1); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .pcard.char { border-color: rgba(91,141,239,0.22); background: linear-gradient(180deg, rgba(91,141,239,0.06), transparent 80%); }
+  .pcard.char::before { background: var(--sf-stellar); }
+  .pcard.char .src { color: var(--sf-stellar); }
+  .pcard.loc { border-color: rgba(21,193,123,0.22); background: linear-gradient(180deg, rgba(21,193,123,0.05), transparent 80%); }
+  .pcard.loc::before { background: var(--sf-teal); }
+  .pcard.loc .src { color: var(--sf-teal); }
+  .pcard.gloss { border-color: rgba(155,93,229,0.22); background: linear-gradient(180deg, rgba(155,93,229,0.06), transparent 80%); }
+  .pcard.gloss::before { background: var(--sf-violet); }
+  .pcard.gloss .src { color: var(--sf-violet); }
+  .pin-add {
+    flex-shrink: 0; align-self: stretch;
+    border: 1px dashed var(--sf-border); background: transparent;
+    padding: 0 14px; color: var(--t4);
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
+    cursor: pointer;
+  }
+  .pin-add:hover { border-color: var(--sf-teal); color: var(--sf-teal-bright); }
+
+  /* Editor */
+  .editor-wrap {
+    flex: 1; overflow-y: auto;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 40px 20px 80px;
+  }
+  .editor {
+    width: 100%; max-width: 720px;
+    color: var(--t1);
+  }
+  .ed-meta {
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: 1.8px; color: var(--t4); text-transform: uppercase;
+    display: flex; gap: 18px; align-items: center;
+    margin-bottom: 4px;
+  }
+  .ed-meta .status-pill {
+    color: var(--sf-stellar); border: 1px solid currentColor; padding: 2px 7px;
+  }
+  .ed-meta .pov { color: var(--sf-teal); }
+  .ed-meta .loc { color: var(--sf-amber); }
+  .ed-title {
+    font-family: 'Lora', serif; font-style: italic; font-weight: 400;
+    color: var(--t1); font-size: 30px; line-height: 1.15;
+    margin: 6px 0 4px; letter-spacing: -0.005em;
+  }
+  .ed-chap-mark { font-family: var(--font-mono); font-size: 11px; letter-spacing: 2.2px; color: var(--sf-teal); text-transform: uppercase; }
+  .ed-divider {
+    text-align: center; color: var(--t5); margin: 22px 0 18px;
+    font-family: 'Lora', serif; font-style: italic; letter-spacing: 1em;
+  }
+
+  .ed-body {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 18px; line-height: 1.78; color: #E8E8E8;
+    -webkit-font-smoothing: antialiased;
+  }
+  .ed-body p { margin: 0 0 1.1em; text-indent: 1.6em; }
+  .ed-body p.first { text-indent: 0; }
+  .ed-body p.first::first-letter {
+    font-family: 'Lora', serif; font-style: italic; font-weight: 500;
+    font-size: 3.2em; line-height: 0.85; color: var(--t1);
+    float: left; margin: 6px 8px 0 0;
+  }
+  .ed-body em { color: var(--t1); }
+  /* mini in-text references */
+  .ref-char, .ref-loc, .ref-gloss {
+    border-bottom: 1px dotted; cursor: help;
+    text-decoration: none; color: inherit;
+    padding-bottom: 1px;
+  }
+  .ref-char { border-bottom-color: var(--sf-stellar); }
+  .ref-loc { border-bottom-color: var(--sf-teal); }
+  .ref-gloss { border-bottom-color: var(--sf-violet); font-style: italic; }
+  .cursor-line {
+    border-left: 2px solid var(--sf-teal); padding-left: 14px; margin-left: -16px;
+    background: linear-gradient(90deg, rgba(21,193,123,0.05), transparent 50%);
+  }
+  .cursor-line::after {
+    content: '|'; color: var(--sf-teal-bright); animation: blink 1.05s steps(2) infinite;
+    font-weight: 400;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* ─────────────── INSPECTOR (RIGHT) ─────────────── */
+  .inspector {
+    border-left: 1px solid var(--sf-border);
+    background: rgba(11,15,24,0.55);
+    overflow-y: auto;
+  }
+  .insp-tabs {
+    display: flex; border-bottom: 1px solid var(--sf-border);
+    position: sticky; top: 0; background: rgba(11,15,24,0.92); backdrop-filter: blur(8px); z-index: 2;
+  }
+  .insp-tab {
+    flex: 1; padding: 10px 8px;
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: 1.4px; text-transform: uppercase;
+    text-align: center; color: var(--t4); cursor: pointer;
+    border-bottom: 2px solid transparent;
+  }
+  .insp-tab.active { color: var(--sf-teal); border-bottom-color: var(--sf-teal); }
+  .insp-tab:hover:not(.active) { color: var(--t2); }
+
+  .insp-block { padding: 18px 18px; border-bottom: 1px solid var(--sf-border); }
+  .insp-block:last-child { border-bottom: 0; }
+  .insp-h {
+    font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 2px; text-transform: uppercase; color: var(--t4);
+    margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;
+  }
+  .insp-h .accent { color: var(--sf-teal); }
+  .insp-row {
+    display: grid; grid-template-columns: 90px 1fr; gap: 8px;
+    padding: 4px 0;
+    font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.5px;
+  }
+  .insp-row .k { color: var(--t4); letter-spacing: 1.2px; text-transform: uppercase; font-size: 9.5px; }
+  .insp-row .v { color: var(--t1); }
+
+  .insp-syn {
+    font-family: 'Lora', serif; font-size: 13px; line-height: 1.55; color: var(--t2);
+    background: rgba(255,255,255,0.025); border: 1px dashed var(--sf-border);
+    padding: 10px 12px;
+  }
+
+  .chips { display: flex; gap: 5px; flex-wrap: wrap; }
+  .chip {
+    font-family: var(--font-mono); font-size: 9px; letter-spacing: 1.2px; text-transform: uppercase;
+    padding: 3px 7px; border: 1px solid var(--sf-border); color: var(--t3);
+  }
+  .chip.teal { color: var(--sf-teal); border-color: rgba(21,193,123,0.35); }
+  .chip.amber { color: var(--sf-amber); border-color: rgba(255,184,0,0.35); }
+  .chip.stellar { color: var(--sf-stellar); border-color: rgba(91,141,239,0.35); }
+  .chip.violet { color: var(--sf-violet); border-color: rgba(155,93,229,0.35); }
+
+  .pres-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 6px 0;
+  }
+  .pres-row .av {
+    width: 26px; height: 26px;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: 'Lora', serif; font-style: italic; font-size: 12px; color: #08110C;
+    border: 1px solid var(--sf-border-strong); flex-shrink: 0;
+  }
+  .pres-row .nm { font-family: 'Lora', serif; font-size: 12.5px; color: var(--t1); flex: 1; }
+  .pres-row .ty { font-family: var(--font-mono); font-size: 9px; letter-spacing: 1.2px; color: var(--t4); text-transform: uppercase; }
+
+  /* Cascade gauge inside inspector */
+  .cas-row { display: grid; grid-template-columns: 80px 1fr 50px; gap: 8px; align-items: center; padding: 4px 0; font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.8px; }
+  .cas-row .k { color: var(--t3); letter-spacing: 1.3px; text-transform: uppercase; font-size: 9px; }
+  .cas-row .bar { height: 3px; background: rgba(255,255,255,0.08); position: relative; }
+  .cas-row .bar > div { position: absolute; top: 0; bottom: 0; left: 0; }
+  .cas-row .v { color: var(--t1); text-align: right; }
+
+  /* ─────────────── BOTTOM BAR ─────────────── */
+  .bottom {
+    grid-column: 1 / -1;
+    border-top: 1px solid var(--sf-border);
+    background: rgba(11,15,24,0.85);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 18px;
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: 1.3px; color: var(--t4);
+  }
+  .bottom .grp { display: flex; gap: 16px; align-items: center; }
+  .bottom b { color: var(--t1); font-weight: 500; }
+  .bottom .accent { color: var(--sf-teal); }
+  .bottom .save-dot {
+    width: 6px; height: 6px; border-radius: 50%; background: var(--sf-teal);
+    box-shadow: 0 0 6px var(--sf-teal); display: inline-block; margin-right: 6px;
+  }
+  .bottom .session-bar {
+    width: 140px; height: 3px; background: rgba(255,255,255,0.08); position: relative;
+  }
+  .bottom .session-bar > div {
+    position: absolute; top: 0; bottom: 0; left: 0;
+    background: linear-gradient(90deg, var(--sf-teal), var(--sf-teal-bright));
+  }
+
+  /* ─────────────── @MENTION PICKER ─────────────── */
+  .ed-body { caret-color: var(--sf-teal-bright); }
+  .ed-body[contenteditable="true"]:focus { outline: none; }
+
+  /* the @-trigger glyph the user just typed (before they pick) */
+  .at-active {
+    color: var(--sf-teal-bright);
+    background: rgba(21,193,123,0.08);
+    border-bottom: 1px dashed var(--sf-teal);
+    padding: 0 2px;
+  }
+
+  /* inserted entity refs (extends ref-char/loc/gloss styling) */
+  .ref-char, .ref-loc, .ref-gloss, .ref-scene, .ref-cult, .ref-thing {
+    border-bottom-style: dotted; border-bottom-width: 1px;
+    cursor: pointer;
+    text-decoration: none; color: inherit;
+    padding: 0 1px 1px;
+    transition: background 0.15s;
+  }
+  .ref-char { border-bottom-color: var(--sf-stellar); }
+  .ref-loc  { border-bottom-color: var(--sf-teal); }
+  .ref-gloss{ border-bottom-color: var(--sf-violet); font-style: italic; }
+  .ref-scene{ border-bottom-color: var(--sf-amber); font-style: italic; }
+  .ref-cult { border-bottom-color: var(--sf-amber-warm); }
+  .ref-thing{ border-bottom-color: var(--sf-cyan); }
+  .ref-char:hover { background: rgba(91,141,239,0.10); }
+  .ref-loc:hover  { background: rgba(21,193,123,0.10); }
+  .ref-gloss:hover{ background: rgba(155,93,229,0.10); }
+  .ref-scene:hover{ background: rgba(255,184,0,0.10); }
+  .ref-cult:hover { background: rgba(255,184,71,0.10); }
+  .ref-thing:hover{ background: rgba(0,212,255,0.10); }
+
+  /* The picker itself */
+  .at-picker {
+    position: fixed; z-index: 100;
+    width: 420px;
+    background: rgba(13,18,28,0.97);
+    border: 1px solid var(--sf-border-strong);
+    box-shadow: 0 24px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(21,193,123,0.12);
+    backdrop-filter: blur(18px);
+    color: var(--t1);
+    display: none;
+    font-family: var(--font-sans);
+  }
+  .at-picker.open { display: block; }
+  .at-picker::before {
+    content: ''; position: absolute; top: -1px; left: -1px;
+    width: 10px; height: 10px;
+    border-top: 1px solid var(--sf-teal); border-left: 1px solid var(--sf-teal);
+  }
+  .at-picker::after {
+    content: ''; position: absolute; bottom: -1px; right: -1px;
+    width: 10px; height: 10px;
+    border-bottom: 1px solid var(--sf-teal); border-right: 1px solid var(--sf-teal);
+  }
+
+  .at-head {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--sf-border);
+    font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 1.6px; color: var(--t4); text-transform: uppercase;
+  }
+  .at-head .lab { color: var(--sf-teal); }
+  .at-head .q { flex: 1; color: var(--t1); font-family: 'Lora', serif; font-style: italic; font-size: 13px; letter-spacing: 0; text-transform: none; }
+  .at-head .q .caret { color: var(--sf-teal-bright); animation: blink 1.05s steps(2) infinite; }
+  .at-head .hint { color: var(--t4); }
+
+  .at-tabs {
+    display: flex; gap: 0;
+    border-bottom: 1px solid var(--sf-border);
+    padding: 0 6px;
+    overflow-x: auto;
+  }
+  .at-tab {
+    padding: 8px 10px;
+    font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 1.4px; color: var(--t4); text-transform: uppercase;
+    cursor: pointer; border-bottom: 2px solid transparent;
+    display: inline-flex; align-items: center; gap: 6px;
+    white-space: nowrap;
+  }
+  .at-tab:hover { color: var(--t2); }
+  .at-tab.active { color: var(--t1); border-bottom-color: currentColor; }
+  .at-tab .ct { font-size: 9px; color: var(--t5); margin-left: 1px; }
+  .at-tab.active .ct { color: var(--t3); }
+  .at-tab[data-cat="char"].active { color: var(--sf-stellar); }
+  .at-tab[data-cat="loc"].active  { color: var(--sf-teal); }
+  .at-tab[data-cat="gloss"].active{ color: var(--sf-violet); }
+  .at-tab[data-cat="scene"].active{ color: var(--sf-amber); }
+  .at-tab[data-cat="cult"].active { color: var(--sf-amber-warm); }
+  .at-tab[data-cat="thing"].active{ color: var(--sf-cyan); }
+  .at-tab[data-cat="recent"].active{ color: var(--t1); }
+
+  .at-list {
+    max-height: 300px; overflow-y: auto;
+    padding: 4px 0;
+  }
+  .at-list:empty + .at-empty { display: block; }
+  .at-empty { display: none; padding: 18px 16px; font-family: 'Lora', serif; font-style: italic; color: var(--t4); font-size: 13px; }
+
+  .at-item {
+    display: grid; grid-template-columns: 20px 1fr auto; gap: 10px;
+    padding: 7px 14px; cursor: pointer;
+    align-items: center;
+    border-left: 2px solid transparent;
+  }
+  .at-item:hover, .at-item.sel { background: rgba(21,193,123,0.06); }
+  .at-item.sel { border-left-color: var(--sf-teal); }
+  .at-item .gl {
+    width: 18px; height: 18px;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: 'Lora', serif; font-style: italic; font-size: 11px; color: #08110C;
+    border: 1px solid var(--sf-border-strong);
+    flex-shrink: 0;
+  }
+  .at-item .gl.txt { background: transparent; color: var(--t3); font-family: var(--font-mono); font-size: 10px; }
+  .at-item .body { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+  .at-item .nm { font-family: 'Lora', serif; font-size: 13.5px; color: var(--t1); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .at-item .sub { font-family: var(--font-mono); font-size: 9px; color: var(--t4); letter-spacing: 1.2px; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .at-item .badge { font-family: var(--font-mono); font-size: 8.5px; letter-spacing: 1.3px; color: var(--t4); text-transform: uppercase; padding: 2px 6px; border: 1px solid var(--sf-border); }
+  .at-item.sel .badge { color: var(--t2); border-color: var(--sf-border-strong); }
+  .at-item.create { border-top: 1px dashed var(--sf-border); margin-top: 4px; padding-top: 10px; }
+  .at-item.create .gl { color: var(--sf-teal); border-color: rgba(21,193,123,0.45); background: transparent; font-style: normal; font-weight: 500; }
+  .at-item.create .nm { color: var(--sf-teal-bright); font-style: italic; }
+
+  /* category color on item glyph */
+  .at-item[data-cat="char"]  .gl { background: linear-gradient(135deg, #5B8DEF, #4D9FFF); }
+  .at-item[data-cat="loc"]   .gl { background: linear-gradient(135deg, #3DFFCD, #15C17B); }
+  .at-item[data-cat="gloss"] .gl { background: linear-gradient(135deg, #C490FF, #9B5DE5); color: #fff; }
+  .at-item[data-cat="scene"] .gl { background: linear-gradient(135deg, #FFD27A, #FFB347); }
+  .at-item[data-cat="cult"]  .gl { background: linear-gradient(135deg, #FFE0A6, #FFB800); }
+  .at-item[data-cat="thing"] .gl { background: linear-gradient(135deg, #7AE6FF, #00D4FF); }
+
+  .at-foot {
+    display: flex; gap: 14px; align-items: center;
+    border-top: 1px solid var(--sf-border);
+    padding: 7px 14px;
+    font-family: var(--font-mono); font-size: 9px; letter-spacing: 1.4px; color: var(--t5); text-transform: uppercase;
+  }
+  .at-foot .kbd { color: var(--t3); border: 1px solid var(--sf-border); padding: 1px 5px; font-size: 8.5px; }
+  .at-foot .live { margin-left: auto; color: var(--sf-teal); display: inline-flex; align-items: center; gap: 5px; }
+  .at-foot .live::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: var(--sf-teal); box-shadow: 0 0 5px var(--sf-teal); }
+
+  /* ─────────────── SCROLLBARS ─────────────── */
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.07); }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(21,193,123,0.4); }
+</style>
+</head>
+<body>
+<div class="softgrain"></div>
+
+<div class="app">
+
+  <!-- ─────────────── TOP BAR ─────────────── -->
+  <div class="topbar">
+    <div class="tb-brand">
+      <svg class="tb-cube" viewBox="-50 -50 100 100">
+        <polygon points="0,-32 28,-16 28,16 0,32 -28,16 -28,-16" />
+        <line x1="0" y1="-32" x2="0" y2="0" />
+        <line x1="28" y1="-16" x2="0" y2="0" />
+        <line x1="-28" y1="-16" x2="0" y2="0" />
+      </svg>
+      <span class="tb-wm">STELLARFORGE</span>
+    </div>
+
+    <div class="tb-center">
+      <!-- Primary mode switcher (surfaced, not buried) -->
+      <div class="modeseg" role="tablist" aria-label="View mode">
+        <button class="mode" data-mode="outline">
+          <svg viewBox="0 0 14 14" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2 3h10 M2 7h10 M2 11h7"/></svg>
+          Outline
+        </button>
+        <button class="mode active" data-mode="editor">
+          <svg viewBox="0 0 14 14" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 2h6l3 3v7H3z M9 2v3h3"/></svg>
+          Editor
+        </button>
+        <button class="mode" data-mode="cork">
+          <svg viewBox="0 0 14 14" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="2" width="4" height="4"/><rect x="8" y="2" width="4" height="4"/><rect x="2" y="8" width="4" height="4"/><rect x="8" y="8" width="4" height="4"/></svg>
+          Corkboard
+        </button>
+      </div>
+
+      <!-- Quiet, abbreviated location -->
+      <nav class="crumbs">
+        <a href="Home (Writers).html" class="crumb-home" title="Studio">
+          <svg viewBox="0 0 14 14" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2 7l5-5 5 5 M3 6v6h8V6"/></svg>
+        </a>
+        <span class="sep">/</span>
+        <span class="cr-proj" title="Aerwyn Cycle · Book II">Aerwyn · Bk II</span>
+        <span class="sep">/</span>
+        <span class="cr-ch">Ch 7</span>
+        <span class="sep">/</span>
+        <span class="here">The negotiation at low tide</span>
+      </nav>
+    </div>
+
+    <div class="tools">
+      <span class="meter compact" title="Session · 1,402 words · 00:42:18 · Chapter 4,820 / 6,000">
+        <span class="live"></span>
+        <b>1,402</b><span class="sep-dot">·</span>
+        <span class="muted">42m</span><span class="sep-dot">·</span>
+        <span class="muted">CH</span> <b>4,820</b><span class="muted">/6k</span>
+      </span>
+      <button class="ic-tool" data-tool="focus" title="Focus mode (⌥F)">
+        <svg viewBox="0 0 14 14" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="7" cy="7" r="3"/><path d="M7 1v2 M7 11v2 M1 7h2 M11 7h2"/></svg>
+      </button>
+      <button class="ic-tool" data-tool="more" title="More">
+        <svg viewBox="0 0 14 14" width="13" height="13" fill="currentColor"><circle cx="3" cy="7" r="1.2"/><circle cx="7" cy="7" r="1.2"/><circle cx="11" cy="7" r="1.2"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ─────────────── BINDER ─────────────── -->
+  <aside class="binder">
+    <div class="binder-h">
+      <span>// BINDER · AERWYN</span>
+      <div class="actions">
+        <span class="ic-btn" title="collapse all">⤡</span>
+        <span class="ic-btn" title="filter">⌕</span>
+        <span class="ic-btn" title="more">⋯</span>
+      </div>
+    </div>
+    <div class="binder-search">
+      <input type="text" placeholder="Search binder…" />
+    </div>
+    <div class="binder-tree" id="tree"></div>
+    <div class="binder-foot">
+      <button>+ Scene</button>
+      <button>+ Chapter</button>
+      <button>+ Folder</button>
+      <button>Import</button>
+    </div>
+  </aside>
+
+  <!-- ─────────────── CENTER: PINS + EDITOR ─────────────── -->
+  <section class="center">
+
+    <!-- PIN BAR -->
+    <div class="pinbar">
+      <div class="pinbar-label">// PINNED TO SCENE</div>
+
+      <div class="pcard char">
+        <div class="src">CHARACTER · POV</div>
+        <div class="title">Iren of Caldis</div>
+      </div>
+      <div class="pcard char">
+        <div class="src">CHARACTER</div>
+        <div class="title">Mareth, the Salt Priest</div>
+      </div>
+      <div class="pcard loc">
+        <div class="src">LOCATION</div>
+        <div class="title">Caldis Flats · low tide</div>
+      </div>
+      <div class="pcard gloss">
+        <div class="src">TERM</div>
+        <div class="title">"<i>tessar-na</i>" · bone token</div>
+      </div>
+      <div class="pcard">
+        <div class="src">REF · CH 6</div>
+        <div class="title">Mareth's first appearance</div>
+      </div>
+      <div class="pcard char">
+        <div class="src">RULE · POV</div>
+        <div class="title">Iren never names him</div>
+      </div>
+
+      <button class="pin-add">+ PIN</button>
+    </div>
+
+    <!-- EDITOR -->
+    <div class="editor-wrap">
+      <article class="editor">
+        <div class="ed-chap-mark">// CHAPTER VII · SCENE 03 · DRAFT 2</div>
+        <h1 class="ed-title">The negotiation at low tide</h1>
+        <div class="ed-meta">
+          <span class="status-pill">SECOND DRAFT</span>
+          <span class="pov">POV · IREN</span>
+          <span class="loc">CALDIS FLATS · LOW TIDE</span>
+          <span>·</span>
+          <span>2,184 W · ~9 MIN</span>
+        </div>
+
+        <div class="ed-divider">· · ·</div>
+
+        <div class="ed-body" id="edBody" contenteditable="true" spellcheck="false">
+          <p class="first">The tide had gone out far enough that <a class="ref-loc">the flats</a> looked, from where <a class="ref-char">Iren</a> stood, like a slate the sea had only half-erased — a long, glistening table of mud and bone-pale stones running flat to the horizon, broken only by the black line of the salt meridian and, at its center, the priest.</p>
+
+          <p>She did not, even now, allow herself the priest's name. She had practiced this on the walk down. <em>The priest,</em> she said inside her chest. <em>The man who came for the boy.</em> Names were a kind of grammar, and there were grammars she could not afford to give him today.</p>
+
+          <p>He waited with his hands folded in front of him as if waiting were a posture he had been born into. The wind off the sea moved his robe but not his hands. Behind him, very faintly, she could hear the surf, three minutes' walk away, breathing.</p>
+
+          <p>She came down the last of the tide-ladders and stepped onto the wet sand and felt, immediately, the shock of cold through the soles of her boots. She had forgotten she was going to be cold. She had been, for two days, only afraid.</p>
+
+          <p>"You came," he said.</p>
+
+          <p>"I came."</p>
+
+          <p>He let the silence work for a moment. She let it work back. The salt meridian — that hand-wide stripe of pale crust the sea drew once a year and never twice in the same place — lay between them, neither his side nor hers, and they had both been raised with strong feelings about which side of it a person should stand on. Neither of them moved.</p>
+
+          <p>From the inside of her coat she took the <a class="ref-gloss">tessar-na</a> — the bone token, no bigger than a child's tooth — and she held it for a moment in her closed fist as if she were going to put it back. She did not put it back.</p>
+
+          <p>She set the bone token on the wet sand between them. It would, she knew, sink before either of them could decide what it <em>meant</em>—</p>
+
+          <p class="cursor-line"></p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ─────────────── INSPECTOR ─────────────── -->
+  <aside class="inspector">
+    <div class="insp-tabs">
+      <div class="insp-tab active">Synopsis</div>
+      <div class="insp-tab">Notes</div>
+      <div class="insp-tab">Refs</div>
+      <div class="insp-tab">Cascade</div>
+    </div>
+
+    <!-- Scene meta -->
+    <div class="insp-block">
+      <div class="insp-h"><span>// SCENE META</span><span class="accent">SF.SC.0413</span></div>
+      <div class="insp-row"><span class="k">STATUS</span><span class="v" style="color:var(--sf-stellar);">● Second draft</span></div>
+      <div class="insp-row"><span class="k">LABEL</span><span class="v"><span class="chip stellar">arc-pivot</span></span></div>
+      <div class="insp-row"><span class="k">POV</span><span class="v">Iren of Caldis</span></div>
+      <div class="insp-row"><span class="k">TIME</span><span class="v">Day 47 · low tide · midmorning</span></div>
+      <div class="insp-row"><span class="k">PLACE</span><span class="v">Caldis Flats, salt meridian</span></div>
+      <div class="insp-row"><span class="k">WORDS</span><span class="v">2,184 / 2,500 target</span></div>
+      <div class="insp-row"><span class="k">CREATED</span><span class="v">04.21.26</span></div>
+      <div class="insp-row"><span class="k">EDITED</span><span class="v">23:08 yesterday</span></div>
+    </div>
+
+    <!-- Synopsis -->
+    <div class="insp-block">
+      <div class="insp-h"><span>// SYNOPSIS</span><span style="color:var(--t5);">203 W</span></div>
+      <p class="insp-syn">Iren meets Mareth on the salt meridian at low tide to offer the bone token in exchange for the boy. She has resolved not to name him aloud. The negotiation should fail by halfway, then turn — but not in the direction either of them planned. Closes on the token sinking, undecided.</p>
+    </div>
+
+    <!-- Beats -->
+    <div class="insp-block">
+      <div class="insp-h"><span>// BEATS</span><span style="color:var(--t5);">5 / 7</span></div>
+      <div style="font-family:'Lora',serif;font-size:12.5px;color:var(--t2);line-height:1.55;">
+        <div style="display:flex;gap:8px;padding:3px 0;"><span style="color:var(--sf-teal);font-family:var(--font-mono);font-size:10px;">●</span><span>Iren refuses, internally, to use his name.</span></div>
+        <div style="display:flex;gap:8px;padding:3px 0;"><span style="color:var(--sf-teal);font-family:var(--font-mono);font-size:10px;">●</span><span>The cold she had not anticipated.</span></div>
+        <div style="display:flex;gap:8px;padding:3px 0;"><span style="color:var(--sf-teal);font-family:var(--font-mono);font-size:10px;">●</span><span>Token placed between them.</span></div>
+        <div style="display:flex;gap:8px;padding:3px 0;"><span style="color:var(--sf-teal);font-family:var(--font-mono);font-size:10px;">●</span><span>Mareth speaks first — her error.</span></div>
+        <div style="display:flex;gap:8px;padding:3px 0;"><span style="color:var(--sf-teal);font-family:var(--font-mono);font-size:10px;">●</span><span>Token begins to sink. Decision deferred.</span></div>
+        <div style="display:flex;gap:8px;padding:3px 0;color:var(--t4);"><span style="font-family:var(--font-mono);font-size:10px;">○</span><span>Surf turns. Mareth's hands move for the first time.</span></div>
+        <div style="display:flex;gap:8px;padding:3px 0;color:var(--t4);"><span style="font-family:var(--font-mono);font-size:10px;">○</span><span>Iren leaves first — wrong direction.</span></div>
+      </div>
+    </div>
+
+    <!-- Present in scene -->
+    <div class="insp-block">
+      <div class="insp-h"><span>// PRESENT IN SCENE</span><span style="color:var(--t5);">3</span></div>
+      <div class="pres-row">
+        <span class="av" style="background:linear-gradient(135deg,#3DFFCD,#15C17B);">I</span>
+        <span class="nm">Iren of Caldis</span>
+        <span class="ty">POV</span>
+      </div>
+      <div class="pres-row">
+        <span class="av" style="background:linear-gradient(135deg,#FFB347,#FFB800);">M</span>
+        <span class="nm">Mareth, the Salt Priest</span>
+        <span class="ty">ANT.</span>
+      </div>
+      <div class="pres-row">
+        <span class="av" style="background:linear-gradient(135deg,#5B8DEF,#4D9FFF);">T</span>
+        <span class="nm" style="color:var(--t3);">The boy <span style="font-style:normal;color:var(--t4);font-family:var(--font-mono);font-size:10px;letter-spacing:1px;">· OFF-PAGE</span></span>
+        <span class="ty">REF</span>
+      </div>
+    </div>
+
+    <!-- Tags & themes -->
+    <div class="insp-block">
+      <div class="insp-h"><span>// THEMES & TAGS</span></div>
+      <div class="chips">
+        <span class="chip teal">debt</span>
+        <span class="chip teal">grief</span>
+        <span class="chip violet">faith</span>
+        <span class="chip amber">salt</span>
+        <span class="chip stellar">cold</span>
+        <span class="chip">silence</span>
+        <span class="chip">naming</span>
+      </div>
+    </div>
+
+    <!-- Cascade Influence (the StellarForge differentiator!) -->
+    <div class="insp-block">
+      <div class="insp-h"><span>// WORLD INFLUENCE</span><span class="accent">CASCADE LIVE</span></div>
+      <div class="cas-row"><span class="k">GRAVITY</span><span class="bar"><div style="width:78%;background:#FFB347;"></div></span><span class="v">1.4 g</span></div>
+      <div class="cas-row"><span class="k">TIDE</span><span class="bar"><div style="width:14%;background:#00D4FF;"></div></span><span class="v">LOW</span></div>
+      <div class="cas-row"><span class="k">TEMP</span><span class="bar"><div style="width:32%;background:#5B8DEF;"></div></span><span class="v">−1.4°C</span></div>
+      <div class="cas-row"><span class="k">CULTURE</span><span class="bar"><div style="width:62%;background:#9B5DE5;"></div></span><span class="v">CALDIS</span></div>
+      <div style="font-family:var(--font-mono);font-size:9.5px;color:var(--t4);letter-spacing:1.4px;line-height:1.7;margin-top:8px;text-transform:uppercase;border-top:1px dashed rgba(255,255,255,0.06);padding-top:8px;">
+        // 3 lines in this scene reference world parameters · <span style="color:var(--sf-teal);">consistent</span>
+      </div>
+    </div>
+
+    <!-- Linked references -->
+    <div class="insp-block">
+      <div class="insp-h"><span>// LINKED</span></div>
+      <div style="display:flex;flex-direction:column;gap:6px;font-family:'Lora',serif;font-size:12.5px;">
+        <a style="color:var(--t2);text-decoration:none;border-bottom:1px dotted var(--sf-teal);align-self:flex-start;">Caldis Flats — atlas</a>
+        <a style="color:var(--t2);text-decoration:none;border-bottom:1px dotted var(--sf-stellar);align-self:flex-start;">Iren — character file</a>
+        <a style="color:var(--t2);text-decoration:none;border-bottom:1px dotted var(--sf-violet);align-self:flex-start;">Tessar-na — glossary entry</a>
+        <a style="color:var(--t2);text-decoration:none;border-bottom:1px dotted var(--sf-amber);align-self:flex-start;">Salt-priests of Caldis — culture</a>
+        <a style="color:var(--t2);text-decoration:none;border-bottom:1px dotted rgba(255,255,255,0.18);align-self:flex-start;">Ch 6 · "What the boy carried"</a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ─────────────── BOTTOM BAR ─────────────── -->
+  <div class="bottom">
+    <div class="grp">
+      <span><span class="save-dot"></span>SAVED · 12s ago</span>
+      <span>SCENE · <b>2,184</b> w</span>
+      <span>CHAPTER · <b>4,820</b> / 6,000 w</span>
+      <span>BOOK II · <b>42,108</b> / 60,000 w</span>
+    </div>
+    <div class="grp">
+      <span>TODAY <b class="accent">1,402</b> / 1,500</span>
+      <span class="session-bar"><div style="width:93%;"></div></span>
+      <span>STREAK · <b>12 days</b></span>
+      <span class="sep" style="color:var(--t5);">·</span>
+      <span>SOL 19,838 · JD 2461785.6</span>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─────────────── BINDER TREE ───────────────
+const TREE = [
+  {
+    type: 'book', name: 'Book I — The Tide Ladders', meta: '32k · DONE', closed: true, status: 'final',
+    children: [
+      { type: 'part', name: 'Part I', children: [
+        { type: 'chapter', name: '1 · The boy carrying water', meta: '4,120', status: 'final' },
+        { type: 'chapter', name: '2 · A grammar of refusal', meta: '3,640', status: 'final' },
+        { type: 'chapter', name: '3 · The cartographer', meta: '5,002', status: 'final' },
+      ]},
+      { type: 'part', name: 'Part II', children: [
+        { type: 'chapter', name: '4 · Caldis arrives', meta: '4,210', status: 'final' },
+        { type: 'chapter', name: '5 · Tessam goes inland', meta: '4,880', status: 'final' },
+      ]},
+    ]
+  },
+  {
+    type: 'book', name: 'Book II — The Salt Meridian', meta: '42k · ACTIVE', closed: false, active: true,
+    children: [
+      { type: 'part', name: 'Part I — Approach', closed: false, children: [
+        { type: 'chapter', name: '6 · What the boy carried', meta: '5,210', status: 'final' },
+        { type: 'chapter', name: '7 · The Salt Meridian', meta: '4,820', status: 'draft2', closed: false, active: true, children: [
+          { type: 'scene', name: 'Scene 1 · Iren prepares', meta: '1,202', status: 'draft2' },
+          { type: 'scene', name: 'Scene 2 · The walk down', meta: '1,434', status: 'draft2' },
+          { type: 'scene', name: 'Scene 3 · The negotiation at low tide', meta: '2,184', status: 'draft2', active: true },
+          { type: 'scene', name: 'Scene 4 · After', meta: '—', status: 'todo' },
+        ]},
+        { type: 'chapter', name: '8 · The token sinks', meta: '—', status: 'todo' },
+        { type: 'chapter', name: '9 · The reveal', meta: '—', status: 'todo' },
+      ]},
+      { type: 'part', name: 'Part II — Inland', closed: true, children: [
+        { type: 'chapter', name: '10 · The highlanders', meta: 'OUTLINE', status: 'todo' },
+        { type: 'chapter', name: '11 · Two sects', meta: 'OUTLINE', status: 'todo' },
+      ]},
+    ]
+  },
+  {
+    type: 'book', name: 'Book III — Untitled', meta: 'OUTLINE', closed: true, status: 'todo',
+    children: [
+      { type: 'chapter', name: 'Outline · arcs', meta: '880', status: 'draft1' },
+    ]
+  },
+  {
+    type: 'research', name: 'Research & World', closed: true,
+    children: [
+      { type: 'research', name: '◇ Atlas — Caldis Flats' },
+      { type: 'research', name: '◇ Atlas — The Salt Meridian' },
+      { type: 'research', name: '◈ Cast — full file' },
+      { type: 'research', name: '◇ Caldis tongue — glossary' },
+      { type: 'research', name: '◇ Salt-priest order — culture' },
+      { type: 'research', name: '◇ Tides & moons — physics' },
+      { type: 'research', name: '◇ Beat sheet — Cycle' },
+    ]
+  },
+  { type: 'research', name: 'Trash', closed: true, children: [
+    { type: 'research', name: 'old · Ch 7 draft 1', meta: '04.18' }
+  ]},
+];
+
+const ICONS = {
+  book: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 2h7l3 2v10H3z"/><path d="M3 12h10"/></svg>',
+  part: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2 4h12M2 8h12M2 12h8"/></svg>',
+  chapter: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 2h8l2 2v10H3z M5 6h6 M5 9h6 M5 12h4"/></svg>',
+  scene: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="2"/><path d="M8 1v3 M8 12v3 M1 8h3 M12 8h3"/></svg>',
+  research: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="7" cy="7" r="4.5"/><path d="M11 11l3 3"/></svg>',
+};
+
+function colorFor(type) {
+  return ({
+    book: 'var(--sf-teal)', part: 'var(--t3)', chapter: 'var(--sf-stellar)',
+    scene: 'var(--sf-amber)', research: 'var(--sf-violet)',
+  })[type] || 'var(--t3)';
+}
+
+function render(nodes, container) {
+  nodes.forEach(node => {
+    const wrap = document.createElement('div'); wrap.className = 'b-node';
+    const row = document.createElement('div');
+    row.className = 'b-row ' + node.type + (node.active ? ' active' : '');
+    const hasKids = node.children && node.children.length;
+    const twist = hasKids ? (node.closed ? '▸' : '▾') : '';
+    const status = node.status ? `<span class="status-dot ${node.status}"></span>` : '';
+    row.innerHTML = `
+      <span class="twist">${twist}</span>
+      <span class="ic" style="color:${colorFor(node.type)};">${ICONS[node.type] || ICONS.research}</span>
+      <span class="nm">${node.name}</span>
+      ${node.meta ? `<span class="meta">${node.meta}</span>` : ''}
+      ${status}
+    `;
+    wrap.appendChild(row);
+    if (hasKids) {
+      const kids = document.createElement('div');
+      kids.className = 'b-children' + (node.closed ? ' collapsed' : '');
+      render(node.children, kids);
+      wrap.appendChild(kids);
+      row.addEventListener('click', () => {
+        kids.classList.toggle('collapsed');
+        const t = row.querySelector('.twist');
+        t.textContent = kids.classList.contains('collapsed') ? '▸' : '▾';
+      });
+    }
+    container.appendChild(wrap);
+  });
+}
+
+render(TREE, document.getElementById('tree'));
+
+// Inspector tab toggle
+document.querySelectorAll('.insp-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.insp-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+  });
+});
+
+// Auto-save heartbeat (just visual)
+setInterval(() => {
+  const dot = document.querySelector('.bottom .save-dot');
+  if (dot) {
+    dot.style.opacity = '0.3';
+    setTimeout(() => dot.style.opacity = '1', 320);
+  }
+}, 12000);
+
+// Mode segmenter (visual only)
+document.querySelectorAll('.modeseg .mode').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.modeseg .mode').forEach(m => m.classList.remove('active'));
+    b.classList.add('active');
+  });
+});
+
+/* ─────────────── @MENTION PICKER ─────────────── */
+const ENTITIES = [
+  // Characters
+  { cat: 'char',  name: 'Iren of Caldis',         sub: 'POV · Bk II',           glyph: 'I', recent: 0 },
+  { cat: 'char',  name: 'Mareth, the Salt Priest',sub: 'Antagonist · Ch 6→',    glyph: 'M', recent: 1 },
+  { cat: 'char',  name: 'The boy',                sub: 'Off-page · referenced', glyph: 'b', recent: 5 },
+  { cat: 'char',  name: 'Tessam the Younger',     sub: 'Bk I · POV',            glyph: 'T' },
+  { cat: 'char',  name: 'Old Halen',              sub: 'Cartographer',          glyph: 'H' },
+  { cat: 'char',  name: 'Aerwyn',                 sub: 'Eponym · historical',   glyph: 'A' },
+  // Locations
+  { cat: 'loc',   name: 'Caldis Flats',           sub: 'Coastal · Bk II',       glyph: 'C', recent: 2 },
+  { cat: 'loc',   name: 'The Salt Meridian',      sub: 'Liminal · Ch 7',        glyph: 'S', recent: 3 },
+  { cat: 'loc',   name: 'Tessam Highlands',       sub: 'Inland · Bk II Pt II',  glyph: 'T' },
+  { cat: 'loc',   name: 'Caldis Town',            sub: 'Settlement',            glyph: 'C' },
+  { cat: 'loc',   name: 'The Tide Ladders',       sub: 'Bk I · titular',        glyph: 'L' },
+  // Glossary terms
+  { cat: 'gloss', name: 'tessar-na',              sub: 'Bone token · Caldis',   glyph: 'τ', recent: 4 },
+  { cat: 'gloss', name: 'salt meridian',          sub: 'Annual tide-line',      glyph: '≡' },
+  { cat: 'gloss', name: 'naming-grammar',         sub: 'Caldis cultural rule',  glyph: '◇' },
+  { cat: 'gloss', name: 'tide-ladder',            sub: 'Coastal infrastructure',glyph: '/' },
+  // Cultures
+  { cat: 'cult',  name: 'Salt-priests of Caldis', sub: 'Order · Bk II',         glyph: '☩' },
+  { cat: 'cult',  name: 'Caldis (people)',        sub: 'Coastal civ.',          glyph: '◐' },
+  { cat: 'cult',  name: 'Highlanders',            sub: 'Inland civ.',           glyph: '◑' },
+  // Things / objects
+  { cat: 'thing', name: 'The bone token',         sub: 'Object · ref. tessar-na', glyph: '◎' },
+  { cat: 'thing', name: 'Halen\'s atlas',         sub: 'Object · Ch 3, 6',      glyph: '⌗' },
+  // Scenes (cross-refs)
+  { cat: 'scene', name: 'Ch 6 · "What the boy carried"', sub: 'Bk II · prior',  glyph: '6' },
+  { cat: 'scene', name: 'Ch 5 · Tessam goes inland',     sub: 'Bk II · prior',  glyph: '5' },
+  { cat: 'scene', name: 'Ch 2 · A grammar of refusal',   sub: 'Bk I · echo',    glyph: '2' },
+];
+
+const CATS = [
+  { id: 'recent', label: 'Recent',     sing: 'recent' },
+  { id: 'char',   label: 'Characters', sing: 'character' },
+  { id: 'loc',    label: 'Places',     sing: 'place' },
+  { id: 'gloss',  label: 'Terms',      sing: 'term' },
+  { id: 'cult',   label: 'Cultures',   sing: 'culture' },
+  { id: 'thing',  label: 'Objects',    sing: 'object' },
+  { id: 'scene',  label: 'Scenes',     sing: 'scene' },
+];
+
+const editor = document.getElementById('edBody');
+const picker = document.createElement('div');
+picker.className = 'at-picker';
+picker.innerHTML = `
+  <div class="at-head">
+    <span class="lab">@LINK</span>
+    <span class="q"><span class="qt"></span><span class="caret">|</span></span>
+    <span class="hint">Esc to dismiss</span>
+  </div>
+  <div class="at-tabs"></div>
+  <div class="at-list"></div>
+  <div class="at-empty">No matches. Press <b>↵</b> to create new.</div>
+  <div class="at-foot">
+    <span><span class="kbd">↑↓</span> nav</span>
+    <span><span class="kbd">Tab</span> category</span>
+    <span><span class="kbd">↵</span> insert</span>
+    <span class="live">live · linked across cascade</span>
+  </div>
+`;
+document.body.appendChild(picker);
+
+const tabsEl = picker.querySelector('.at-tabs');
+const listEl = picker.querySelector('.at-list');
+const queryEl = picker.querySelector('.qt');
+
+let state = {
+  open: false,
+  query: '',
+  cat: 'recent',         // active filter
+  selIdx: 0,
+  atRange: null,         // Range of "@..." in document
+  results: [],
+};
+
+function renderTabs() {
+  tabsEl.innerHTML = CATS.map(c => {
+    const ct = c.id === 'recent'
+      ? ENTITIES.filter(e => e.recent !== undefined).length
+      : ENTITIES.filter(e => e.cat === c.id).length;
+    return `<div class="at-tab ${state.cat === c.id ? 'active' : ''}" data-cat="${c.id}">${c.label} <span class="ct">${ct}</span></div>`;
+  }).join('');
+  tabsEl.querySelectorAll('.at-tab').forEach(t => {
+    t.addEventListener('mousedown', e => {
+      e.preventDefault();
+      state.cat = t.dataset.cat;
+      state.selIdx = 0;
+      renderTabs(); renderList();
+    });
+  });
+}
+
+function computeResults() {
+  const q = state.query.toLowerCase();
+  let pool;
+  if (state.cat === 'recent') {
+    pool = ENTITIES.filter(e => e.recent !== undefined).sort((a, b) => a.recent - b.recent);
+  } else {
+    pool = ENTITIES.filter(e => e.cat === state.cat);
+  }
+  if (q) {
+    pool = ENTITIES.filter(e => e.name.toLowerCase().includes(q) || (e.sub || '').toLowerCase().includes(q));
+    // when searching, ignore cat unless it's not 'recent'
+    if (state.cat !== 'recent') pool = pool.filter(e => e.cat === state.cat);
+  }
+  state.results = pool.slice(0, 8);
+}
+
+function renderList() {
+  computeResults();
+  const items = state.results.map((e, i) => {
+    const catLabel = (CATS.find(c => c.id === e.cat) || {}).sing || e.cat;
+    return `<div class="at-item ${i === state.selIdx ? 'sel' : ''}" data-cat="${e.cat}" data-idx="${i}">
+      <span class="gl ${/^[a-zA-Z0-9]$/.test(e.glyph) ? '' : 'txt'}">${e.glyph}</span>
+      <div class="body">
+        <div class="nm">${highlightMatch(e.name)}</div>
+        <div class="sub">${catLabel.toUpperCase()} · ${e.sub || ''}</div>
+      </div>
+      <span class="badge">${e.cat}</span>
+    </div>`;
+  }).join('');
+
+  // create-new option (only if there's a query)
+  let createHTML = '';
+  if (state.query.trim().length >= 2) {
+    const targetCat = state.cat === 'recent' ? 'char' : state.cat;
+    const targetLabel = (CATS.find(c => c.id === targetCat) || {}).sing || targetCat;
+    createHTML = `<div class="at-item create ${state.results.length === 0 ? 'sel' : ''}" data-cat="${targetCat}" data-idx="create">
+      <span class="gl">+</span>
+      <div class="body">
+        <div class="nm">Create "${escapeHTML(state.query)}"</div>
+        <div class="sub">NEW ${targetLabel.toUpperCase()} · adds to world bible</div>
+      </div>
+      <span class="badge">new</span>
+    </div>`;
+  }
+
+  listEl.innerHTML = items + createHTML;
+  listEl.querySelectorAll('.at-item').forEach(el => {
+    el.addEventListener('mousedown', e => {
+      e.preventDefault();
+      const idx = el.dataset.idx;
+      if (idx === 'create') insertCreate();
+      else { state.selIdx = parseInt(idx, 10); insertSelected(); }
+    });
+  });
+  // Update query echo
+  queryEl.textContent = state.query ? '@' + state.query : '@';
+}
+
+function highlightMatch(name) {
+  if (!state.query) return escapeHTML(name);
+  const q = state.query.toLowerCase();
+  const lc = name.toLowerCase();
+  const i = lc.indexOf(q);
+  if (i === -1) return escapeHTML(name);
+  return escapeHTML(name.slice(0, i)) +
+    '<b style="color:var(--sf-teal-bright);font-weight:500;">' + escapeHTML(name.slice(i, i + q.length)) + '</b>' +
+    escapeHTML(name.slice(i + q.length));
+}
+function escapeHTML(s) { return s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+function getSelectionRect() {
+  const sel = window.getSelection();
+  if (!sel || sel.rangeCount === 0) return null;
+  const r = sel.getRangeAt(0).getBoundingClientRect();
+  if (r.width === 0 && r.height === 0) {
+    // collapsed at end — use parent rect approximation
+    const node = sel.anchorNode;
+    if (node && node.parentElement) return node.parentElement.getBoundingClientRect();
+  }
+  return r;
+}
+
+function positionPicker() {
+  const rect = getSelectionRect();
+  if (!rect) return;
+  const w = 420;
+  const h = 380;
+  // If rect is outside viewport (e.g. cursor scrolled out of view),
+  // anchor to the editor area's visible bottom-left.
+  let anchorLeft, anchorTop, anchorBottom;
+  const inView = rect.top >= 0 && rect.bottom <= window.innerHeight;
+  if (inView) {
+    anchorLeft = rect.left;
+    anchorTop = rect.top;
+    anchorBottom = rect.bottom;
+  } else {
+    const ed = document.querySelector('.editor');
+    const er = (ed || editor).getBoundingClientRect();
+    anchorLeft = er.left + 24;
+    anchorTop = er.top + 80;
+    anchorBottom = er.top + 80;
+  }
+  const left = Math.min(window.innerWidth - w - 16, Math.max(16, anchorLeft));
+  let top = anchorBottom + 8;
+  if (top + h > window.innerHeight - 16) top = Math.max(16, anchorTop - h - 8);
+  picker.style.left = left + 'px';
+  picker.style.top = top + 'px';
+}
+
+function openPicker() {
+  state.open = true;
+  state.query = '';
+  state.cat = 'recent';
+  state.selIdx = 0;
+  picker.classList.add('open');
+  renderTabs();
+  renderList();
+  positionPicker();
+}
+function closePicker(removeAt) {
+  if (!state.open) return;
+  state.open = false;
+  picker.classList.remove('open');
+  if (removeAt && state.atRange) {
+    // Remove the @ + query text the user typed
+    try {
+      state.atRange.deleteContents();
+    } catch (e) {}
+  }
+  // Strip leftover .at-active markers
+  document.querySelectorAll('.at-active').forEach(el => {
+    const t = document.createTextNode(el.textContent);
+    el.parentNode.replaceChild(t, el);
+  });
+  state.atRange = null;
+}
+
+function insertSelected() {
+  if (state.results.length === 0) { insertCreate(); return; }
+  const e = state.results[state.selIdx] || state.results[0];
+  insertEntity(e);
+}
+function insertCreate() {
+  if (state.query.trim().length < 1) return;
+  const targetCat = state.cat === 'recent' ? 'char' : state.cat;
+  const e = { cat: targetCat, name: state.query.trim(), isNew: true };
+  insertEntity(e);
+}
+
+function insertEntity(e) {
+  if (!state.atRange) return;
+  // Replace the @query with an entity span
+  const span = document.createElement('a');
+  span.className = 'ref-' + e.cat;
+  span.contentEditable = 'false';
+  span.dataset.entity = e.cat + ':' + e.name;
+  span.textContent = e.name;
+  if (e.isNew) span.title = 'Newly created · ' + e.cat;
+
+  state.atRange.deleteContents();
+  state.atRange.insertNode(span);
+
+  // Cursor after the span + a space
+  const space = document.createTextNode('\u00A0');
+  span.parentNode.insertBefore(space, span.nextSibling);
+  const sel = window.getSelection();
+  const r = document.createRange();
+  r.setStartAfter(space); r.collapse(true);
+  sel.removeAllRanges(); sel.addRange(r);
+
+  closePicker(false);
+  flashPin(e);
+}
+
+// Briefly highlight pin bar to suggest the new ref was added
+function flashPin(e) {
+  const pinbar = document.querySelector('.pinbar');
+  if (!pinbar) return;
+  pinbar.style.transition = 'box-shadow 0.4s';
+  pinbar.style.boxShadow = 'inset 0 -2px 0 0 var(--sf-teal)';
+  setTimeout(() => pinbar.style.boxShadow = '', 600);
+}
+
+// Watch for @ keystrokes
+editor.addEventListener('keydown', (ev) => {
+  if (state.open) {
+    // Picker keyboard handling
+    if (ev.key === 'Escape')      { ev.preventDefault(); closePicker(false); return; }
+    if (ev.key === 'ArrowDown')   { ev.preventDefault(); state.selIdx = Math.min(state.results.length - 1 + (state.query.length>=2?1:0), state.selIdx + 1); renderList(); return; }
+    if (ev.key === 'ArrowUp')     { ev.preventDefault(); state.selIdx = Math.max(0, state.selIdx - 1); renderList(); return; }
+    if (ev.key === 'Tab')         {
+      ev.preventDefault();
+      const i = CATS.findIndex(c => c.id === state.cat);
+      state.cat = CATS[(i + (ev.shiftKey ? -1 : 1) + CATS.length) % CATS.length].id;
+      state.selIdx = 0;
+      renderTabs(); renderList();
+      return;
+    }
+    if (ev.key === 'Enter')       {
+      ev.preventDefault();
+      // If selIdx is past results length and create exists, create-new
+      if (state.selIdx >= state.results.length) insertCreate();
+      else insertSelected();
+      return;
+    }
+  }
+});
+
+editor.addEventListener('input', () => {
+  // Detect @-trigger: walk back from caret to find the most recent unbroken "@..."
+  const sel = window.getSelection();
+  if (!sel || sel.rangeCount === 0) return;
+  const range = sel.getRangeAt(0);
+  if (!range.collapsed) return;
+
+  const node = range.startContainer;
+  if (node.nodeType !== 3) return; // text node
+  const offset = range.startOffset;
+  const text = node.textContent.slice(0, offset);
+  const m = text.match(/(?:^|[\s(\[—–-])(@[\w\-]*)$/);
+  if (!m) {
+    if (state.open) closePicker(false);
+    return;
+  }
+  const at = m[1];                 // includes leading @
+  const start = offset - at.length;
+
+  // Build a range covering just the "@..."
+  const r = document.createRange();
+  r.setStart(node, start);
+  r.setEnd(node, offset);
+  state.atRange = r;
+  state.query = at.slice(1);
+
+  if (!state.open) {
+    state.open = true;
+    state.cat = 'recent';
+    state.selIdx = 0;
+    picker.classList.add('open');
+    renderTabs();
+  }
+  renderList();
+  positionPicker();
+});
+
+// click outside closes
+document.addEventListener('mousedown', (e) => {
+  if (state.open && !picker.contains(e.target) && e.target !== editor && !editor.contains(e.target)) {
+    closePicker(false);
+  }
+});
+
+// Re-position on scroll/resize
+window.addEventListener('resize', () => state.open && positionPicker());
+document.querySelector('.editor-wrap').addEventListener('scroll', () => state.open && positionPicker(), true);
+
+// Keep cursor-line at the end if user types — and seed a bit of editable space
+// Make sure clicking near the bottom focuses the editor
+editor.addEventListener('click', (e) => {
+  if (e.target === editor) {
+    const last = editor.lastElementChild;
+    if (last) {
+      const r = document.createRange(); r.selectNodeContents(last); r.collapse(false);
+      const s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+    }
+  }
+});
+</script>
+</body>
+</html>

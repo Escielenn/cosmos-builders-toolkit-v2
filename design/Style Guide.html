@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>StellarForge — Aesthetic Style Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=Jura:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css" />
+<style>
+  body { color: var(--t2); }
+  .sg-root { position: relative; z-index: 2; display: grid; grid-template-columns: 280px 1fr; min-height: 100vh; }
+
+  /* Sidebar */
+  .sg-side {
+    position: sticky; top: 0; height: 100vh; overflow-y: auto;
+    border-right: 1px solid var(--sf-border);
+    background: rgba(10,14,23,0.82);
+    backdrop-filter: blur(20px);
+    padding: 28px 0;
+  }
+  .sg-brand { display: flex; align-items: center; gap: 10px; padding: 0 28px 24px; border-bottom: 1px solid var(--sf-border); }
+  .sg-brand-wm { font-family: var(--font-display); font-weight: 300; font-size: 17px; letter-spacing: 0.24em; color: var(--t1); }
+  .sg-brand-wm em { color: var(--sf-teal); font-style: normal; }
+  .sg-brand-tag { font-family: var(--font-mono); font-size: 10px; letter-spacing: 2px; color: var(--t4); margin-top: 4px; }
+
+  .sg-nav { padding: 20px 0; }
+  .sg-nav-group { padding: 0 28px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 2.4px; color: var(--t4); text-transform: uppercase; margin: 18px 0 8px; }
+  .sg-nav-group:first-child { margin-top: 0; }
+  .sg-nav a {
+    display: flex; align-items: center; gap: 12px;
+    padding: 9px 28px; color: var(--t2);
+    font-family: var(--font-sans); font-size: 13px;
+    text-decoration: none; letter-spacing: 0.5px;
+    border-left: 2px solid transparent;
+    transition: all 160ms ease;
+  }
+  .sg-nav a:hover { color: var(--t1); background: rgba(255,255,255,0.02); border-left-color: var(--sf-border-strong); }
+  .sg-nav a.active { color: var(--sf-teal-bright); border-left-color: var(--sf-teal); background: rgba(21,193,123,0.04); }
+  .sg-nav-code { font-family: var(--font-mono); font-size: 10px; color: var(--t4); min-width: 20px; }
+  .sg-nav a.active .sg-nav-code { color: var(--sf-teal); }
+
+  .sg-side-footer { padding: 24px 28px; border-top: 1px solid var(--sf-border); font-family: var(--font-mono); font-size: 10px; color: var(--t4); letter-spacing: 1.5px; line-height: 1.7; }
+
+  /* Main */
+  .sg-main { padding: 64px 80px 120px; max-width: 1400px; }
+
+  /* Hero */
+  .sg-hero { position: relative; padding: 60px 0 80px; border-bottom: 1px solid var(--sf-border); margin-bottom: 64px; }
+  .sg-hero-mono { font-family: var(--font-mono); font-size: 12px; letter-spacing: 3px; color: var(--sf-teal); display: flex; align-items: center; gap: 14px; margin-bottom: 28px; text-transform: uppercase; }
+  .sg-hero-mono::before { content: ''; width: 48px; height: 1px; background: var(--sf-teal); }
+  .sg-hero h1 {
+    font-family: var(--font-display); font-weight: 300;
+    font-size: 96px; letter-spacing: 0.03em;
+    color: var(--t1); line-height: 0.98; margin: 0 0 28px;
+  }
+  .sg-hero h1 em { font-style: normal; color: var(--sf-teal); }
+  .sg-hero p { font-size: 19px; color: var(--t2); max-width: 780px; line-height: 1.55; margin: 0; }
+  .sg-hero-stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 0; margin-top: 56px; border-top: 1px solid var(--sf-border); }
+  .sg-hero-stat { padding: 20px 24px 0 0; }
+  .sg-hero-stat + .sg-hero-stat { border-left: 1px solid var(--sf-border); padding-left: 24px; }
+  .sg-hero-stat-k { font-family: var(--font-mono); font-size: 10px; letter-spacing: 2px; color: var(--t4); text-transform: uppercase; }
+  .sg-hero-stat-v { font-family: var(--font-display); font-weight: 300; font-size: 40px; color: var(--t1); letter-spacing: 0.02em; margin-top: 6px; }
+
+  /* Section shell */
+  section.sg-sec { padding: 48px 0 64px; border-bottom: 1px solid var(--sf-border); scroll-margin-top: 24px; }
+  section.sg-sec:last-child { border-bottom: 0; }
+  .sg-sec-head { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 36px; gap: 32px; }
+  .sg-sec-head-l h2 {
+    font-family: var(--font-display); font-weight: 300;
+    font-size: 56px; letter-spacing: 0.04em;
+    color: var(--t1); margin: 8px 0 0; line-height: 1;
+  }
+  .sg-sec-code { font-family: var(--font-mono); font-size: 11px; letter-spacing: 2.5px; color: var(--sf-teal); text-transform: uppercase; }
+  .sg-sec-head-r { font-family: var(--font-sans); font-size: 15px; color: var(--t3); max-width: 440px; text-align: right; line-height: 1.55; }
+
+  /* Generic card + grid utilities */
+  .sg-card { background: var(--sf-surface-80); border: 1px solid var(--sf-border); padding: 24px; position: relative; }
+  .sg-card-title { font-family: var(--font-heading); font-size: 12px; letter-spacing: 2px; color: var(--t3); text-transform: uppercase; margin-bottom: 14px; }
+  .sg-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+  .sg-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .sg-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .sg-grid-6 { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
+
+  /* Subhead */
+  .sg-sub { font-family: var(--font-heading); font-size: 18px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--t1); font-weight: 400; margin: 40px 0 20px; display: flex; align-items: center; gap: 12px; }
+  .sg-sub::before { content: '//'; color: var(--sf-teal); font-family: var(--font-mono); font-size: 14px; }
+
+  /* Callout / rule */
+  .sg-rule { padding: 18px 24px; border-left: 3px solid var(--sf-teal); background: rgba(21,193,123,0.04); font-size: 14px; color: var(--t2); line-height: 1.6; }
+  .sg-rule--warn { border-left-color: var(--sf-crimson); background: rgba(255,51,102,0.04); }
+  .sg-rule--amber { border-left-color: var(--sf-amber); background: rgba(255,184,0,0.04); }
+  .sg-rule b { color: var(--t1); font-weight: 500; }
+
+  /* Code block */
+  .sg-code {
+    background: #070A12; border: 1px solid var(--sf-border);
+    padding: 16px 20px; font-family: var(--font-mono); font-size: 12px;
+    color: #B8D4C8; line-height: 1.7; overflow-x: auto;
+    white-space: pre;
+  }
+  .sg-code .k { color: var(--sf-teal-bright); }
+  .sg-code .v { color: #FFD280; }
+  .sg-code .c { color: var(--t4); font-style: italic; }
+  .sg-code .s { color: #9DC8FF; }
+
+  /* Do / Don't pair */
+  .sg-do-dont { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .sg-do, .sg-dont { padding: 18px 20px; border: 1px solid var(--sf-border); background: var(--sf-surface-80); }
+  .sg-do { border-left: 3px solid var(--sf-teal); }
+  .sg-dont { border-left: 3px solid var(--sf-crimson); }
+  .sg-do-label, .sg-dont-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 2px; margin-bottom: 8px; }
+  .sg-do-label { color: var(--sf-teal); }
+  .sg-dont-label { color: var(--sf-crimson); }
+
+  /* Tables */
+  .sg-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .sg-table th, .sg-table td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--sf-border); vertical-align: top; }
+  .sg-table th { font-family: var(--font-mono); font-size: 10px; letter-spacing: 2px; color: var(--t4); text-transform: uppercase; font-weight: 400; }
+  .sg-table td { color: var(--t2); }
+  .sg-table td:first-child { font-family: var(--font-mono); color: var(--sf-teal-bright); font-size: 12px; }
+
+  /* Anchor offset for sticky nav */
+  .sg-anchor { scroll-margin-top: 24px; }
+</style>
+</head>
+<body class="grain">
+<template id="__bundler_thumbnail" data-bg-color="#0A0E17">
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+    <!-- Starfield dots -->
+    <g fill="#FAFAFA" opacity="0.35">
+      <circle cx="180" cy="140" r="1.5"/><circle cx="420" cy="90" r="1"/><circle cx="680" cy="170" r="1.2"/>
+      <circle cx="920" cy="110" r="1.5"/><circle cx="1080" cy="220" r="1"/><circle cx="260" cy="320" r="1"/>
+      <circle cx="540" cy="280" r="1.2"/><circle cx="820" cy="360" r="1"/><circle cx="120" cy="520" r="1"/>
+      <circle cx="380" cy="600" r="1.3"/><circle cx="720" cy="580" r="1"/><circle cx="980" cy="650" r="1.2"/>
+    </g>
+    <!-- Bracket corners, teal -->
+    <g stroke="#15C17B" stroke-width="2" fill="none">
+      <polyline points="440,300 440,340 480,340"/>
+      <polyline points="760,460 760,420 720,420"/>
+    </g>
+    <!-- Cube glyph -->
+    <g transform="translate(600 400)" stroke="#15C17B" stroke-width="2.5" fill="none">
+      <polygon points="0,-90 78,-45 78,45 0,90 -78,45 -78,-45"/>
+      <line x1="0" y1="-90" x2="0" y2="0"/>
+      <line x1="78" y1="-45" x2="0" y2="0"/>
+      <line x1="-78" y1="-45" x2="0" y2="0"/>
+    </g>
+    <!-- Wordmark -->
+    <text x="600" y="580" text-anchor="middle" font-family="monospace" font-size="22" fill="#FAFAFA" letter-spacing="10">STELLARFORGE</text>
+    <text x="600" y="615" text-anchor="middle" font-family="monospace" font-size="12" fill="#15C17B" letter-spacing="4">// STYLE GUIDE</text>
+  </svg>
+</template>
+<div class="starfield"></div>
+
+<div class="sg-root">
+  <aside class="sg-side">
+    <div class="sg-brand">
+      <svg width="28" height="28" viewBox="0 0 40 40"><path d="M20 4 L34 12 L34 28 L20 36 L6 28 L6 12 Z" stroke="#3DFFCD" stroke-width="1.2" fill="none"/><path d="M20 4 L20 20 M20 20 L6 12 M20 20 L34 12 M20 20 L20 36" stroke="#3DFFCD" stroke-width="1" opacity="0.7" fill="none"/><circle cx="20" cy="20" r="1.8" fill="#3DFFCD"/></svg>
+      <div>
+        <div class="sg-brand-wm">STELLAR<em>FORGE</em></div>
+        <div class="sg-brand-tag">STYLE GUIDE · v1.0</div>
+      </div>
+    </div>
+
+    <nav class="sg-nav" id="sgNav">
+      <div class="sg-nav-group">Foundations</div>
+      <a href="#principles"><span class="sg-nav-code">00</span>Principles</a>
+      <a href="#tokens"><span class="sg-nav-code">01</span>Design Tokens</a>
+      <a href="#color"><span class="sg-nav-code">02</span>Color System</a>
+      <a href="#type"><span class="sg-nav-code">03</span>Typography</a>
+      <a href="#space"><span class="sg-nav-code">04</span>Space &amp; Grid</a>
+      <a href="#motion"><span class="sg-nav-code">05</span>Motion</a>
+
+      <div class="sg-nav-group">Components</div>
+      <a href="#panels"><span class="sg-nav-code">06</span>Panels &amp; Surfaces</a>
+      <a href="#buttons"><span class="sg-nav-code">07</span>Buttons &amp; Tags</a>
+      <a href="#forms"><span class="sg-nav-code">08</span>Forms &amp; Inputs</a>
+      <a href="#data"><span class="sg-nav-code">09</span>Data Display</a>
+      <a href="#nav"><span class="sg-nav-code">10</span>Navigation</a>
+      <a href="#feedback"><span class="sg-nav-code">11</span>Feedback &amp; Status</a>
+
+      <div class="sg-nav-group">Brand</div>
+      <a href="#logo"><span class="sg-nav-code">12</span>Logo &amp; Mark</a>
+      <a href="#voice"><span class="sg-nav-code">13</span>Voice &amp; Copy</a>
+      <a href="#patterns"><span class="sg-nav-code">14</span>Signature Patterns</a>
+      <a href="#ambient"><span class="sg-nav-code">15</span>Ambient Telemetry</a>
+      <a href="#scrollbars"><span class="sg-nav-code">16</span>Scrollbars</a>
+      <a href="#dosdonts"><span class="sg-nav-code">17</span>Do / Don't</a>
+    </nav>
+
+    <div class="sg-side-footer">
+      STELLARFORGE.TOOLS<br/>
+      39.87°N · 104.97°W<br/>
+      © 2026 JASON D. BATT
+    </div>
+  </aside>
+
+  <main class="sg-main">
+    <!-- HERO -->
+    <div class="sg-hero">
+      <div class="sg-hero-mono">// ship's instrument panel · aesthetic specification</div>
+      <h1>A manual<br/>for the <em>ship.</em></h1>
+      <p>Every pixel of StellarForge should feel like it came off the same bridge console. This guide is the canonical reference — tokens, components, patterns, voice, motion — so every tool, every window, every screenshot reads as one ship, one instrument family, one mission.</p>
+      <div class="sg-hero-stats">
+        <div class="sg-hero-stat"><div class="sg-hero-stat-k">Palette</div><div class="sg-hero-stat-v">12</div></div>
+        <div class="sg-hero-stat"><div class="sg-hero-stat-k">Typefaces</div><div class="sg-hero-stat-v">4</div></div>
+        <div class="sg-hero-stat"><div class="sg-hero-stat-k">Core tokens</div><div class="sg-hero-stat-v">48</div></div>
+        <div class="sg-hero-stat"><div class="sg-hero-stat-k">Radius</div><div class="sg-hero-stat-v">0</div></div>
+      </div>
+    </div>
+
+    <div id="sgSections"></div>
+
+    <div style="padding: 80px 0 0; border-top: 1px solid var(--sf-border); margin-top: 64px; display:flex; justify-content: space-between; align-items: baseline;">
+      <div style="font-family: var(--font-mono); font-size:11px; letter-spacing: 2px; color: var(--t4);">END OF DOCUMENT · MANIFEST COMPLETE</div>
+      <div style="display:flex; gap:12px;">
+        <a href="Index.html" class="sf-btn sf-btn--ghost">↵ MISSION INDEX</a>
+        <a href="Campaign.html" class="sf-btn sf-btn--ghost">↵ CAMPAIGN HUB</a>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="sg-sections.js?v=2"></script>
+<script src="sg-sections-p2.js?v=2"></script>
+<script src="sg-sections-p3.js?v=1"></script>
+<script>
+  // Inject sections
+  document.getElementById('sgSections').innerHTML = window.__SG_SECTIONS || '';
+
+  // ── Velocity dial animation
+  (function() {
+    const frames = [
+      { name: 'EARTH ROTATION', v: '0.465', u: 'km/s', pct: 0.05 },
+      { name: 'SOLAR ORBIT',    v: '29.78', u: 'km/s', pct: 0.22 },
+      { name: 'SOLAR APEX',     v: '19.4',  u: 'km/s', pct: 0.15 },
+      { name: 'GALACTIC ORBIT', v: '230',   u: 'km/s', pct: 0.88 },
+    ];
+    const needle = document.getElementById('veloNeedle');
+    const frameEl = document.getElementById('veloFrame');
+    const valEl   = document.getElementById('veloValue');
+    const arcEl   = document.getElementById('veloArcFill');
+    if (!needle) return;
+    let i = 0;
+    function setArc(pct) {
+      const start = -Math.PI * 1.25;
+      const sweep = Math.PI * 1.5 * pct;
+      const end = start + sweep;
+      const r = 60, cx = 100, cy = 100;
+      const x1 = cx + Math.cos(start)*r, y1 = cy + Math.sin(start)*r;
+      const x2 = cx + Math.cos(end)*r,   y2 = cy + Math.sin(end)*r;
+      const large = sweep > Math.PI ? 1 : 0;
+      arcEl.setAttribute('d', `M ${x1} ${y1} A ${r} ${r} 0 ${large} 1 ${x2} ${y2}`);
+    }
+    function tick() {
+      const f = frames[i % frames.length];
+      frameEl.textContent = f.name;
+      valEl.innerHTML = `${f.v}<span style="font-size:12px; color:var(--t4); margin-left:4px;">${f.u}</span>`;
+      const deg = -135 + (270 * f.pct);
+      needle.style.transform = `rotate(${deg}deg)`;
+      setArc(f.pct);
+      i++;
+    }
+    tick();
+    setInterval(tick, 3400);
+  })();
+
+  // ── Parallax strips
+  (function() {
+    const strips = document.querySelectorAll('.sf-plx-strip');
+    if (!strips.length) return;
+    const demo = document.getElementById('sf-parallax-demo');
+    function update() {
+      const rect = demo ? demo.getBoundingClientRect() : { top: 0 };
+      const progress = -rect.top * 0.5; // scroll-linked offset
+      strips.forEach(el => {
+        const speed = parseFloat(el.dataset.speed) || 1;
+        el.style.transform = `translate3d(${-progress * speed}px, 0, 0)`;
+      });
+    }
+    window.addEventListener('scroll', update, { passive: true });
+    update();
+  })();
+
+  // ── Scrollbar "is-scrolling" helper for idle-hide demo
+  document.querySelectorAll('.sf-sb--idle').forEach(el => {
+    let t;
+    el.addEventListener('scroll', () => {
+      el.classList.add('is-scrolling');
+      clearTimeout(t);
+      t = setTimeout(() => el.classList.remove('is-scrolling'), 800);
+    });
+  });
+
+  // Nav scroll-spy
+  const navLinks = Array.from(document.querySelectorAll('#sgNav a'));
+  const sections = navLinks.map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+  function onScroll() {
+    const y = window.scrollY + 120;
+    let active = sections[0];
+    for (const s of sections) { if (s && s.offsetTop <= y) active = s; }
+    navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + (active ? active.id : '')));
+  }
+  document.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+</script>
+</body>
+</html>

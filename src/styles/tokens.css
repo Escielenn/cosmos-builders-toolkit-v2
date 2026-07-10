@@ -109,6 +109,8 @@
   --font-heading: 'Jura', system-ui, sans-serif;                /* section headers, nav */
   --font-body: 'DM Sans', system-ui, sans-serif;                /* body + ALL buttons   */
   --font-mono: 'JetBrains Mono', monospace;                     /* data, readouts       */
+  --font-serif: 'Lora', Georgia, serif;                         /* WRITER register only: Studio Home,
+                                                                   manuscript editor. Never campaign/ops. */
   /* NOTE: fifth legacy font retired by decision (2026-06-11). */
 
   --tracking-title: 0.08em;

@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>StellarForge — Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=Jura:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@300;400;500;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="shared.css" />
+<style>
+  body { background: #0B0F18; color: var(--t2); min-height: 100vh; }
+  .sf-serif { font-family: 'Lora', Georgia, serif; }
+
+  /* Soft warm grain — not cold cockpit */
+  .softgrain {
+    position: fixed; inset: 0; pointer-events: none; z-index: 1; opacity: 0.04;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.85' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 0.95  0 0 0 0 0.85  0 0 0 0.5 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .nebula {
+    position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background:
+      radial-gradient(ellipse 70% 50% at 80% 0%, rgba(155,93,229,0.06), transparent 60%),
+      radial-gradient(ellipse 60% 40% at 0% 100%, rgba(21,193,123,0.04), transparent 60%);
+  }
+
+  .app { position: relative; z-index: 2; display: grid; grid-template-columns: 230px 1fr; min-height: 100vh; }
+
+  /* Top bar */
+  .topbar {
+    grid-column: 1 / -1;
+    height: 52px;
+    display: grid; grid-template-columns: 230px 1fr auto; align-items: center;
+    border-bottom: 1px solid var(--sf-border);
+    background: rgba(11,15,24,0.78); backdrop-filter: blur(14px);
+    position: sticky; top: 0; z-index: 10;
+  }
+  .topbar-brand { display: flex; align-items: center; gap: 10px; padding: 0 18px; height: 100%; border-right: 1px solid var(--sf-border); }
+  .topbar-cube { width: 18px; height: 18px; }
+  .topbar-cube polygon { stroke: var(--sf-teal); fill: none; stroke-width: 1.6; }
+  .topbar-cube line { stroke: var(--sf-teal); stroke-width: 1.4; }
+  .topbar-wm { font-family: var(--font-display); font-weight: 300; font-size: 14px; letter-spacing: 0.18em; color: var(--t1); }
+
+  .topbar-tabs { display: flex; gap: 0; padding: 0 18px; height: 100%; align-items: stretch; }
+  .tab {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 0 18px; border-bottom: 2px solid transparent;
+    font-family: var(--font-sans); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--t3); text-decoration: none; cursor: pointer;
+  }
+  .tab.active { color: var(--t1); border-bottom-color: var(--sf-teal); }
+  .tab:hover { color: var(--t2); }
+
+  .topbar-tools { display: flex; align-items: center; gap: 10px; padding: 0 18px; }
+
+  .pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 9px; border: 1px solid currentColor;
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
+    border-radius: 0; background: transparent;
+  }
+  .pill-dot::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; box-shadow: 0 0 8px currentColor; }
+  .pill-pro { color: var(--sf-teal-bright); background: rgba(21,193,123,0.08); }
+
+  .avatar {
+    width: 28px; height: 28px; border: 1px solid var(--sf-border-strong);
+    background: linear-gradient(135deg, #15C17B, #5B8DEF);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono); font-size: 11px; color: #08110C; font-weight: 600;
+  }
+
+  /* Sidebar — feels like a notebook tab bar more than a bridge nav */
+  .sidebar {
+    border-right: 1px solid var(--sf-border);
+    background: rgba(11,15,24,0.55); backdrop-filter: blur(8px);
+    padding: 24px 0;
+    position: sticky; top: 52px; height: calc(100vh - 52px); overflow-y: auto;
+  }
+  .nav-section { margin-bottom: 20px; }
+  .nav-label { font-family: var(--font-mono); font-size: 9px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--t4); padding: 0 22px; margin-bottom: 8px; }
+  .nav-item {
+    display: flex; align-items: baseline; gap: 14px;
+    padding: 8px 22px; border-left: 2px solid transparent;
+    color: var(--t3); font-family: var(--font-sans); font-size: 13px; font-weight: 500;
+    letter-spacing: 0.04em; cursor: pointer; text-decoration: none;
+  }
+  .nav-item:hover { color: var(--t2); background: rgba(255,255,255,0.02); }
+  .nav-item.active { color: var(--t1); border-left-color: var(--sf-teal); background: rgba(21,193,123,0.05); }
+  .nav-item .num { margin-left: auto; font-family: var(--font-mono); font-size: 10px; color: var(--t4); }
+  .nav-item.active .num { color: var(--sf-teal); }
+
+  /* Main */
+  .main { padding: 36px 56px 80px; max-width: 1280px; }
+
+  /* Greeting */
+  .greet { display: flex; justify-content: space-between; align-items: baseline; gap: 30px; }
+  .greet h1 {
+    font-family: 'Lora', serif; font-weight: 400; font-style: italic;
+    color: var(--t1); font-size: 38px; line-height: 1.1; margin: 6px 0 8px;
+    letter-spacing: -0.01em;
+  }
+  .greet .sub {
+    font-family: var(--font-sans); font-size: 14px; color: var(--t3);
+    max-width: 540px;
+  }
+  .greet .meta {
+    font-family: var(--font-mono); font-size: 10.5px; color: var(--t4); letter-spacing: 1.8px; text-transform: uppercase;
+  }
+
+  /* Streak strip */
+  .streak {
+    margin-top: 26px; padding: 18px 22px;
+    border: 1px solid var(--sf-border); background: rgba(14,19,32,0.6);
+    display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 24px; align-items: center;
+  }
+  .streak .row-label { font-family: var(--font-mono); font-size: 10px; color: var(--t4); letter-spacing: 1.8px; text-transform: uppercase; }
+  .streak .big { font-family: var(--font-display); font-weight: 300; color: var(--t1); font-size: 28px; letter-spacing: 0.04em; margin-top: 4px; }
+  .streak .big small { font-family: var(--font-mono); font-size: 12px; color: var(--t3); margin-left: 4px; letter-spacing: 1.5px; }
+  .streak-cells { display: flex; gap: 5px; align-items: flex-end; height: 36px; margin-top: 4px; }
+  .streak-cells span {
+    width: 12px; height: 100%; background: rgba(255,255,255,0.06);
+    border-bottom: 2px solid var(--sf-teal);
+  }
+  .streak-cells span.lit { background: linear-gradient(to top, rgba(21,193,123,0.55), rgba(21,193,123,0.18)); }
+  .streak-cells span.today { background: linear-gradient(to top, var(--sf-teal-bright), rgba(61,255,205,0.3)); border-bottom-color: var(--sf-teal-bright); }
+
+  /* Section heads */
+  .section { margin-top: 44px; }
+  .section-head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid var(--sf-border); }
+  .section-h2 {
+    font-family: 'Lora', serif; font-weight: 400; font-style: italic;
+    color: var(--t1); font-size: 22px; margin: 4px 0 0; letter-spacing: -0.005em;
+  }
+  .section-eyebrow { font-family: var(--font-mono); font-size: 10px; letter-spacing: 2px; color: var(--sf-teal); text-transform: uppercase; }
+  .link {
+    font-family: var(--font-mono); font-size: 10px; color: var(--t3); letter-spacing: 1.8px; text-transform: uppercase;
+    text-decoration: none; padding: 6px 0; border-bottom: 1px solid transparent;
+  }
+  .link:hover { color: var(--sf-teal-bright); border-bottom-color: var(--sf-teal-bright); }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--sf-teal); color: #08110C; border: 1px solid var(--sf-teal);
+    padding: 11px 20px; font-family: var(--font-sans); font-weight: 500; font-size: 12px;
+    letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer;
+    text-decoration: none; transition: all 180ms;
+  }
+  .btn:hover { box-shadow: 0 0 24px rgba(21,193,123,0.35); }
+  .btn-ghost { background: transparent; color: var(--t1); border-color: var(--sf-border-strong); }
+  .btn-ghost:hover { border-color: var(--sf-teal); color: var(--sf-teal-bright); }
+
+  /* CONTINUE WRITING — the manuscript card */
+  .continue {
+    margin-top: 26px;
+    border: 1px solid var(--sf-border-strong);
+    background: linear-gradient(180deg, rgba(21,193,123,0.04), transparent 30%);
+    display: grid; grid-template-columns: 1fr 320px;
+    overflow: hidden;
+  }
+  .continue-left { padding: 28px 32px 26px; }
+  .continue .crumb {
+    font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 1.8px; color: var(--sf-teal); text-transform: uppercase;
+  }
+  .continue .crumb .sep { color: var(--t5); margin: 0 8px; }
+  .continue h3 {
+    font-family: 'Lora', serif; font-style: italic; font-weight: 400;
+    color: var(--t1); font-size: 26px; margin: 8px 0 4px;
+  }
+  .continue .scene {
+    font-family: var(--font-sans); font-size: 12.5px; color: var(--t3);
+    letter-spacing: 0.04em;
+  }
+  .continue .lastline {
+    margin-top: 18px; padding: 14px 16px;
+    background: rgba(255,255,255,0.02); border-left: 2px solid var(--sf-teal);
+    font-family: 'Lora', serif; font-size: 15px; color: var(--t2); line-height: 1.65;
+    font-style: italic;
+  }
+  .continue .lastline em { color: var(--t1); font-style: italic; }
+  .continue-actions { margin-top: 22px; display: flex; gap: 10px; align-items: center; }
+  .continue .last-edit {
+    margin-left: auto; font-family: var(--font-mono); font-size: 10px; color: var(--t4); letter-spacing: 1.5px;
+  }
+
+  /* Right panel inside continue */
+  .continue-right {
+    border-left: 1px solid var(--sf-border);
+    background: rgba(11,15,24,0.6);
+    padding: 22px 22px;
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  .target-ring { display: flex; align-items: center; gap: 16px; }
+  .target-ring svg { width: 76px; height: 76px; flex-shrink: 0; }
+  .target-ring .nm { font-family: var(--font-mono); font-size: 9px; color: var(--t4); letter-spacing: 1.8px; text-transform: uppercase; }
+  .target-ring .v { font-family: var(--font-display); font-weight: 300; font-size: 22px; color: var(--t1); letter-spacing: 0.03em; margin-top: 2px; }
+  .target-ring .vsub { font-family: var(--font-mono); font-size: 10px; color: var(--sf-teal); letter-spacing: 1.5px; }
+
+  .prog-row { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 10.5px; color: var(--t3); letter-spacing: 1px; }
+  .prog-row .v { color: var(--t1); }
+  .prog-bar { height: 3px; background: rgba(255,255,255,0.06); margin-top: 5px; position: relative; }
+  .prog-bar > div { position: absolute; top: 0; bottom: 0; left: 0; background: linear-gradient(90deg, #15C17B, #3DFFCD); }
+
+  /* Bookshelf — projects as spines/atlases */
+  .shelf { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .book {
+    border: 1px solid var(--sf-border);
+    background: var(--sf-surface-80);
+    padding: 0; cursor: pointer; transition: border-color 180ms; overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+  .book:hover { border-color: var(--sf-border-strong); }
+  .book .cover {
+    aspect-ratio: 3 / 4;
+    position: relative; overflow: hidden;
+    border-bottom: 1px solid var(--sf-border);
+  }
+  .book .cover-inner {
+    position: absolute; inset: 14px;
+    border: 1px solid rgba(255,255,255,0.18);
+    padding: 16px;
+    display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .book .cover-mark {
+    font-family: var(--font-mono); font-size: 9px; letter-spacing: 2px;
+    color: rgba(255,255,255,0.6); text-transform: uppercase;
+  }
+  .book .cover-title {
+    font-family: 'Lora', serif; font-style: italic; font-weight: 400;
+    font-size: 22px; color: #fff; line-height: 1.05;
+  }
+  .book .cover-sub {
+    font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 1.8px;
+    color: rgba(255,255,255,0.7); text-transform: uppercase;
+  }
+  .book .meta {
+    padding: 12px 14px;
+    display: grid; grid-template-columns: 1fr auto; gap: 4px;
+  }
+  .book .name { font-family: var(--font-display); font-size: 14px; color: var(--t1); letter-spacing: 0.04em; font-weight: 300; }
+  .book .stats { font-family: var(--font-mono); font-size: 9.5px; color: var(--t4); letter-spacing: 1.2px; text-transform: uppercase; grid-column: 1 / -1; margin-top: 2px;}
+  .book .stats span + span { margin-left: 10px; }
+
+  /* Two columns: cast + scratch */
+  .col2 { display: grid; grid-template-columns: 1.4fr 1fr; gap: 26px; margin-top: 44px; }
+
+  /* CAST grid */
+  .cast { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .char {
+    border: 1px solid var(--sf-border); background: var(--sf-surface-80);
+    padding: 14px; display: flex; gap: 12px; align-items: flex-start;
+    cursor: pointer; transition: border-color 180ms;
+  }
+  .char:hover { border-color: var(--sf-border-strong); }
+  .char .portrait {
+    width: 46px; height: 46px; flex-shrink: 0;
+    border: 1px solid var(--sf-border-strong);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Lora', serif; font-style: italic; font-size: 16px; color: #08110C; font-weight: 500;
+  }
+  .char .nm { font-family: 'Lora', serif; font-style: italic; font-weight: 400; font-size: 15px; color: var(--t1); line-height: 1.1; }
+  .char .role { font-family: var(--font-mono); font-size: 9px; color: var(--t4); letter-spacing: 1.5px; text-transform: uppercase; margin-top: 3px; }
+  .char .tags { margin-top: 6px; display: flex; gap: 4px; flex-wrap: wrap; }
+  .char .tag { font-family: var(--font-mono); font-size: 8.5px; padding: 2px 5px; border: 1px solid var(--sf-border); color: var(--t3); letter-spacing: 1px; }
+
+  /* SCRATCHPAD — pinned cards */
+  .scratch { display: grid; grid-template-columns: 1fr; gap: 10px; }
+  .pin {
+    position: relative;
+    background: linear-gradient(180deg, rgba(255,184,71,0.05), transparent 70%);
+    border: 1px solid rgba(255,184,71,0.15);
+    padding: 14px 16px 14px 22px;
+  }
+  .pin::before {
+    content: ''; position: absolute; left: 8px; top: 14px;
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--sf-amber); box-shadow: 0 0 8px rgba(255,184,0,0.6);
+  }
+  .pin .label-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+  .pin .src { font-family: var(--font-mono); font-size: 9.5px; color: var(--sf-amber); letter-spacing: 1.5px; text-transform: uppercase; }
+  .pin .when { font-family: var(--font-mono); font-size: 9px; color: var(--t4); letter-spacing: 1.2px; }
+  .pin .body { font-family: 'Lora', serif; font-size: 13.5px; color: var(--t2); line-height: 1.55; }
+  .pin .body em { color: var(--t1); }
+
+  /* Today's prompt */
+  .prompt {
+    margin-top: 44px; padding: 32px 36px;
+    border: 1px solid var(--sf-border);
+    background:
+      radial-gradient(circle at 90% 10%, rgba(155,93,229,0.10), transparent 50%),
+      rgba(14,19,32,0.55);
+    position: relative;
+  }
+  .prompt .eyebrow { font-family: var(--font-mono); font-size: 10px; letter-spacing: 2px; color: var(--sf-violet); text-transform: uppercase; }
+  .prompt .text {
+    font-family: 'Lora', serif; font-style: italic; font-weight: 400;
+    color: var(--t1); font-size: 24px; line-height: 1.45; margin: 14px 0 18px;
+    max-width: 760px;
+  }
+  .prompt .meta { font-family: var(--font-mono); font-size: 10px; color: var(--t4); letter-spacing: 1.5px; text-transform: uppercase; }
+  .prompt .meta strong { color: var(--sf-violet); font-weight: 400; }
+  .prompt .actions { margin-top: 18px; display: flex; gap: 10px; }
+
+  /* Recent activity in writer voice */
+  .feed { margin-top: 28px; }
+  .feed-row {
+    display: grid; grid-template-columns: 78px 1fr auto; gap: 16px; align-items: baseline;
+    padding: 11px 0; border-top: 1px dashed rgba(255,255,255,0.06);
+    font-family: var(--font-sans); font-size: 13px; color: var(--t2);
+  }
+  .feed-row:first-child { border-top: 0; }
+  .feed-row .when { font-family: var(--font-mono); font-size: 10px; color: var(--t4); letter-spacing: 1.5px; }
+  .feed-row .verb { color: var(--t1); font-weight: 500; }
+  .feed-row .obj { font-family: 'Lora', serif; font-style: italic; color: var(--t1); }
+  .feed-row .delta { font-family: var(--font-mono); font-size: 10px; color: var(--sf-teal); letter-spacing: 1.2px; }
+  .feed-row .delta.amber { color: var(--sf-amber); }
+  .feed-row .delta.violet { color: var(--sf-violet); }
+
+  /* Footer telemetry — dialed way down */
+  .foot {
+    margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--sf-border);
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: var(--font-mono); font-size: 10px; color: var(--t5); letter-spacing: 1.5px;
+  }
+  .foot .grp { display: flex; gap: 22px; }
+  .foot .dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--sf-teal); box-shadow: 0 0 8px var(--sf-teal); margin-right: 6px; vertical-align: 1px; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(21,193,123,0.4); }
+</style>
+</head>
+<body>
+<div class="nebula"></div>
+<div class="softgrain"></div>
+
+<div class="app">
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="topbar-brand">
+      <svg class="topbar-cube" viewBox="-50 -50 100 100">
+        <polygon points="0,-32 28,-16 28,16 0,32 -28,16 -28,-16" />
+        <line x1="0" y1="-32" x2="0" y2="0" />
+        <line x1="28" y1="-16" x2="0" y2="0" />
+        <line x1="-28" y1="-16" x2="0" y2="0" />
+      </svg>
+      <span class="topbar-wm">STELLARFORGE</span>
+    </div>
+
+    <div class="topbar-tabs">
+      <a class="tab active" href="#">Studio</a>
+      <a class="tab" href="Writing.html">Manuscript</a>
+      <a class="tab" href="#">Atlas</a>
+      <a class="tab" href="#">Cast</a>
+      <a class="tab" href="#">Lore</a>
+      <a class="tab" href="#">Timeline</a>
+    </div>
+
+    <div class="topbar-tools">
+      <span class="pill pill-pro pill-dot">PRO</span>
+      <div style="display:flex;align-items:center;gap:8px;padding-left:10px;border-left:1px solid var(--sf-border);">
+        <div class="avatar">JB</div>
+        <div style="display:flex;flex-direction:column;line-height:1.2;">
+          <span style="font-family:var(--font-sans);font-size:11px;color:var(--t1);">Jason Batt</span>
+          <span style="font-family:var(--font-mono);font-size:9px;color:var(--t4);letter-spacing:1.5px;">WRITER · 03 PROJECTS</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="nav-section">
+      <div class="nav-label">// PROJECTS</div>
+      <a class="nav-item active" href="#"><span>The Aerwyn Cycle</span><span class="num">3 books</span></a>
+      <a class="nav-item" href="#"><span>Threnody Wyld</span><span class="num">draft</span></a>
+      <a class="nav-item" href="#"><span>The Long Quiet</span><span class="num">novella</span></a>
+      <a class="nav-item" href="#" style="color:var(--t4);">+ New project</a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">// AERWYN · WORKBENCH</div>
+      <a class="nav-item" href="Writing.html"><span>Manuscript</span><span class="num">68k</span></a>
+      <a class="nav-item" href="#"><span>Atlas</span><span class="num">14</span></a>
+      <a class="nav-item" href="#"><span>Cast</span><span class="num">23</span></a>
+      <a class="nav-item" href="#"><span>Cultures</span><span class="num">6</span></a>
+      <a class="nav-item" href="#"><span>Languages</span><span class="num">2</span></a>
+      <a class="nav-item" href="#"><span>Timeline</span><span class="num">412 yr</span></a>
+      <a class="nav-item" href="#"><span>Bestiary</span><span class="num">38</span></a>
+      <a class="nav-item" href="#"><span>Glossary</span><span class="num">147</span></a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">// TOOLS</div>
+      <a class="nav-item" href="#"><span>Cascade</span></a>
+      <a class="nav-item" href="#"><span>Naming forge</span></a>
+      <a class="nav-item" href="#"><span>Map maker</span></a>
+      <a class="nav-item" href="#"><span>Trash</span></a>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- GREETING -->
+    <div class="greet">
+      <div>
+        <div class="section-eyebrow">// FRIDAY · 24 APRIL · 09:42</div>
+        <h1>Good morning, Jason.</h1>
+        <p class="sub">You closed last night mid-sentence in <strong style="color:var(--t1);font-weight:500;">Chapter 7 — The Salt Meridian</strong>. The world has been quiet since.</p>
+      </div>
+      <div class="meta" style="text-align:right;">
+        DAY 47 · STREAK 12<br/>
+        <span style="color:var(--sf-teal);">↑ 1,402 words yesterday</span>
+      </div>
+    </div>
+
+    <!-- STREAK -->
+    <div class="streak">
+      <div>
+        <div class="row-label">// 14-day rhythm</div>
+        <div class="streak-cells" id="streak-cells"></div>
+      </div>
+      <div>
+        <div class="row-label">Today's words</div>
+        <div class="big">0 <small>/ 1,500</small></div>
+      </div>
+      <div>
+        <div class="row-label">Manuscript</div>
+        <div class="big">68,402 <small>/ 95k</small></div>
+      </div>
+      <div>
+        <div class="row-label">Pages this month</div>
+        <div class="big">142</div>
+      </div>
+    </div>
+
+    <!-- CONTINUE WRITING -->
+    <div class="continue">
+      <div class="continue-left">
+        <div class="crumb">
+          AERWYN <span class="sep">·</span> BOOK II — THE SALT MERIDIAN <span class="sep">·</span> CHAPTER 7 <span class="sep">·</span> SCENE 03
+        </div>
+        <h3>The negotiation at low tide</h3>
+        <div class="scene">POV: Iren · LOCATION: Caldis flats · STATUS · SECOND DRAFT</div>
+
+        <div class="lastline">
+          "She set the bone token on the wet sand between them. It would, she knew, sink before either of them could decide what it <em>meant</em>—"
+        </div>
+
+        <div class="continue-actions">
+          <a class="btn" href="Writing.html">CONTINUE WRITING →</a>
+          <a class="btn btn-ghost" href="#">REVIEW LAST SESSION</a>
+          <span class="last-edit">LAST EDIT · YESTERDAY 23:08 · 2,184 WORDS</span>
+        </div>
+      </div>
+      <div class="continue-right">
+        <div class="target-ring">
+          <svg viewBox="0 0 80 80">
+            <circle cx="40" cy="40" r="32" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="4"/>
+            <circle cx="40" cy="40" r="32" fill="none" stroke="#15C17B" stroke-width="4"
+              stroke-dasharray="201" stroke-dashoffset="80" stroke-linecap="round"
+              transform="rotate(-90 40 40)"/>
+          </svg>
+          <div>
+            <div class="nm">Chapter target</div>
+            <div class="v">60%</div>
+            <div class="vsub">~3 sessions left</div>
+          </div>
+        </div>
+        <div>
+          <div class="prog-row"><span>Book II</span><span class="v">42,108 / 60,000</span></div>
+          <div class="prog-bar"><div style="width:70%;"></div></div>
+        </div>
+        <div>
+          <div class="prog-row"><span>Cycle (3 books)</span><span class="v">68,402 / 195,000</span></div>
+          <div class="prog-bar"><div style="width:35%;"></div></div>
+        </div>
+        <div style="font-family:var(--font-mono);font-size:9.5px;color:var(--t4);letter-spacing:1.5px;line-height:1.7;border-top:1px dashed rgba(255,255,255,0.06);padding-top:10px;">
+          DRAFT 2 · 14 BETA READERS · NEXT MILESTONE: ARC CLOSE · CH 9
+        </div>
+      </div>
+    </div>
+
+    <!-- BOOKSHELF -->
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <div class="section-eyebrow">// 04 PROJECTS</div>
+          <h2 class="section-h2">Your shelf</h2>
+        </div>
+        <a class="link" href="#">All projects →</a>
+      </div>
+
+      <div class="shelf">
+        <!-- Aerwyn Cycle - active -->
+        <div class="book">
+          <div class="cover" style="background: linear-gradient(160deg, #1F4D3E 0%, #0E2920 100%);">
+            <svg viewBox="0 0 100 130" preserveAspectRatio="xMidYMid slice" style="position:absolute;inset:0;width:100%;height:100%;">
+              <defs><radialGradient id="bk1" cx="60%" cy="35%" r="40%"><stop offset="0" stop-color="#3DFFCD" stop-opacity="0.35"/><stop offset="1" stop-color="#3DFFCD" stop-opacity="0"/></radialGradient></defs>
+              <circle cx="60" cy="45" r="32" fill="url(#bk1)"/>
+              <circle cx="60" cy="45" r="20" fill="none" stroke="rgba(61,255,205,0.4)" stroke-width="0.4" stroke-dasharray="2 3"/>
+              <g fill="#3DFFCD" opacity="0.9"><circle cx="56" cy="42" r="0.8"/><circle cx="64" cy="44" r="0.7"/><circle cx="60" cy="50" r="0.9"/></g>
+            </svg>
+            <div class="cover-inner">
+              <div>
+                <div class="cover-mark">VOLUME I — III</div>
+              </div>
+              <div>
+                <div class="cover-title">The Aerwyn<br/>Cycle</div>
+                <div class="cover-sub" style="margin-top:8px;">J. BATT · 2026</div>
+              </div>
+            </div>
+          </div>
+          <div class="meta">
+            <span class="name">The Aerwyn Cycle</span>
+            <span class="pill pill-pro pill-dot" style="font-size:9px;padding:3px 6px;">ACTIVE</span>
+            <span class="stats"><span>3 BOOKS</span><span>68,402 W</span><span>EDITED 09:11</span></span>
+          </div>
+        </div>
+
+        <!-- Threnody Wyld -->
+        <div class="book">
+          <div class="cover" style="background: linear-gradient(160deg, #4D2A0E 0%, #1F1108 100%);">
+            <svg viewBox="0 0 100 130" preserveAspectRatio="xMidYMid slice" style="position:absolute;inset:0;width:100%;height:100%;">
+              <path d="M0,90 L20,70 L35,80 L55,55 L75,75 L100,60 L100,130 L0,130 Z" fill="rgba(255,184,71,0.25)" stroke="#FFB347" stroke-width="0.5"/>
+              <circle cx="78" cy="28" r="9" fill="none" stroke="#FFB347" stroke-width="0.5"/>
+              <circle cx="78" cy="28" r="4" fill="#FFB347" opacity="0.5"/>
+            </svg>
+            <div class="cover-inner">
+              <div><div class="cover-mark">A NOVEL</div></div>
+              <div>
+                <div class="cover-title">Threnody<br/>Wyld</div>
+                <div class="cover-sub" style="margin-top:8px;">DRAFT I · 32%</div>
+              </div>
+            </div>
+          </div>
+          <div class="meta">
+            <span class="name">Threnody Wyld</span>
+            <span class="pill" style="color:var(--sf-amber);font-size:9px;padding:3px 6px;">DRAFT</span>
+            <span class="stats"><span>1 BOOK</span><span>18,940 W</span><span>3 DAYS AGO</span></span>
+          </div>
+        </div>
+
+        <!-- The Long Quiet -->
+        <div class="book">
+          <div class="cover" style="background: linear-gradient(160deg, #2D1A4D 0%, #110820 100%);">
+            <svg viewBox="0 0 100 130" preserveAspectRatio="xMidYMid slice" style="position:absolute;inset:0;width:100%;height:100%;">
+              <defs><radialGradient id="bk3" cx="50%" cy="50%" r="60%"><stop offset="0" stop-color="#9B5DE5" stop-opacity="0.35"/><stop offset="1" stop-color="#9B5DE5" stop-opacity="0"/></radialGradient></defs>
+              <ellipse cx="50" cy="65" rx="50" ry="30" fill="url(#bk3)"/>
+              <g fill="#FAFAFA"><circle cx="20" cy="40" r="0.6"/><circle cx="40" cy="60" r="0.8"/><circle cx="65" cy="42" r="0.7"/><circle cx="80" cy="80" r="0.9"/><circle cx="55" cy="25" r="1"/></g>
+            </svg>
+            <div class="cover-inner">
+              <div><div class="cover-mark">A NOVELLA</div></div>
+              <div>
+                <div class="cover-title">The Long<br/>Quiet</div>
+                <div class="cover-sub" style="margin-top:8px;">PUBLISHED · 2025</div>
+              </div>
+            </div>
+          </div>
+          <div class="meta">
+            <span class="name">The Long Quiet</span>
+            <span class="pill" style="color:var(--sf-violet);font-size:9px;padding:3px 6px;">PUBLISHED</span>
+            <span class="stats"><span>NOVELLA</span><span>34,120 W</span><span>5 MO. AGO</span></span>
+          </div>
+        </div>
+
+        <!-- New project tile -->
+        <div class="book" style="background:transparent;border-style:dashed;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+          <div style="text-align:center;padding:30px 20px;">
+            <div style="font-family:var(--font-display);font-weight:300;font-size:32px;color:var(--t4);">+</div>
+            <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:1.8px;color:var(--t3);text-transform:uppercase;margin-top:8px;">Begin a new<br/>project</div>
+            <div style="font-family:var(--font-mono);font-size:9px;letter-spacing:1.5px;color:var(--t5);margin-top:14px;">FROM BLANK<br/>FROM SEED<br/>FROM IMPORT</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CAST + SCRATCHPAD -->
+    <div class="col2">
+      <section>
+        <div class="section-head" style="margin-bottom:14px;">
+          <div>
+            <div class="section-eyebrow">// AERWYN · 23 CHARACTERS</div>
+            <h2 class="section-h2">Last with the cast</h2>
+          </div>
+          <a class="link" href="#">All →</a>
+        </div>
+
+        <div class="cast">
+          <div class="char">
+            <div class="portrait" style="background:linear-gradient(135deg,#3DFFCD,#15C17B);">I</div>
+            <div>
+              <div class="nm">Iren of Caldis</div>
+              <div class="role">POV · BOOK II PROTAGONIST</div>
+              <div class="tags"><span class="tag">tide-walker</span><span class="tag">grief</span></div>
+            </div>
+          </div>
+          <div class="char">
+            <div class="portrait" style="background:linear-gradient(135deg,#FFB347,#FFB800);">M</div>
+            <div>
+              <div class="nm">Mareth, the Salt Priest</div>
+              <div class="role">ANTAGONIST · CH 7 SCENE</div>
+              <div class="tags"><span class="tag">faith</span><span class="tag">debt</span></div>
+            </div>
+          </div>
+          <div class="char">
+            <div class="portrait" style="background:linear-gradient(135deg,#9B5DE5,#FF00AA);">V</div>
+            <div>
+              <div class="nm">Vael the Younger</div>
+              <div class="role">SUPPORTING · CASCADE PENDING</div>
+              <div class="tags"><span class="tag">heir</span></div>
+            </div>
+          </div>
+          <div class="char">
+            <div class="portrait" style="background:linear-gradient(135deg,#5B8DEF,#4D9FFF);">T</div>
+            <div>
+              <div class="nm">Tessam Halt</div>
+              <div class="role">MENTOR · BOOK I CLOSED</div>
+              <div class="tags"><span class="tag">cartographer</span></div>
+            </div>
+          </div>
+          <div class="char">
+            <div class="portrait" style="background:linear-gradient(135deg,#FF3366,#FFB347);">K</div>
+            <div>
+              <div class="nm">Kel-of-the-Crows</div>
+              <div class="role">ANTAGONIST · INTRODUCED CH 6</div>
+              <div class="tags"><span class="tag">hexapod</span><span class="tag">scout</span></div>
+            </div>
+          </div>
+          <div class="char">
+            <div class="portrait" style="background:linear-gradient(135deg,#00D4FF,#5B8DEF);">A</div>
+            <div>
+              <div class="nm">Anu, the Listener</div>
+              <div class="role">SUPPORTING</div>
+              <div class="tags"><span class="tag">linguist</span><span class="tag">sect</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-head" style="margin-bottom:14px;">
+          <div>
+            <div class="section-eyebrow">// 04 PINNED</div>
+            <h2 class="section-h2">Scratchpad</h2>
+          </div>
+          <a class="link" href="#">All notes →</a>
+        </div>
+
+        <div class="scratch">
+          <div class="pin">
+            <div class="label-row"><span class="src">// IDEA · CH 8</span><span class="when">YESTERDAY 22:14</span></div>
+            <div class="body">If <em>Iren never speaks Mareth's name</em> in chapter 7 — only ever "the priest" — the reveal in 9 cuts harder. Try a pass where his name is forbidden by her POV until then.</div>
+          </div>
+          <div class="pin">
+            <div class="label-row"><span class="src">// FROM CASCADE</span><span class="when">04.23</span></div>
+            <div class="body">Gravity 1.4g means no <em>tall</em> seabirds. Caldis rookery scene needs to be re-pictured as low-slung, ground-nesting. Worth a rewrite of the opening paragraph.</div>
+          </div>
+          <div class="pin">
+            <div class="label-row"><span class="src">// QUOTE TO USE</span><span class="when">04.21</span></div>
+            <div class="body">"There is no word in our tongue for <em>fall</em>, only for <em>laying down</em>." — possibly Tessam, possibly Anu. Decide.</div>
+          </div>
+          <div class="pin">
+            <div class="label-row"><span class="src">// QUESTION FOR DRAFT 3</span><span class="when">04.18</span></div>
+            <div class="body">Does the salt meridian actually move with tide, or is that a story the priests tell? Both have a draft.</div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- TODAY'S PROMPT -->
+    <div class="prompt">
+      <div class="eyebrow">// PROMPT FROM YOUR WORLD · GENERATED 09:42</div>
+      <p class="text">"Write the first page Iren would have written, after Mareth left the flats. She has never written anything before. The page is mostly silence — but not entirely."</p>
+      <div class="meta">
+        SOURCE · <strong>AERWYN · CH 7 SCENE 03</strong> · CHARACTERS PRESENT · <strong>IREN</strong> · LOCATION · <strong>CALDIS FLATS, LOW TIDE</strong>
+      </div>
+      <div class="actions">
+        <a class="btn" href="Writing.html">OPEN AS NEW SCENE →</a>
+        <a class="btn btn-ghost" href="#">SAVE TO SCRATCHPAD</a>
+        <a class="btn btn-ghost" href="#">↻ ANOTHER</a>
+      </div>
+    </div>
+
+    <!-- ACTIVITY -->
+    <section class="section feed">
+      <div class="section-head">
+        <div>
+          <div class="section-eyebrow">// 14 RECENT</div>
+          <h2 class="section-h2">A history of small decisions</h2>
+        </div>
+      </div>
+
+      <div class="feed-row"><span class="when">23:08 yest.</span><span><span class="verb">closed</span> the session in <span class="obj">Ch 7 — The Salt Meridian</span></span><span class="delta">+1,402 W</span></div>
+      <div class="feed-row"><span class="when">22:14 yest.</span><span><span class="verb">pinned</span> an idea — <span class="obj">"Iren never speaks Mareth's name"</span></span><span class="delta amber">PIN</span></div>
+      <div class="feed-row"><span class="when">21:37 yest.</span><span><span class="verb">drafted</span> a new scene in <span class="obj">Ch 7 — Scene 03</span></span><span class="delta">SCENE +782 W</span></div>
+      <div class="feed-row"><span class="when">19:48 yest.</span><span><span class="verb">named</span> a hexapod scout — <span class="obj">Kel-of-the-Crows</span></span><span class="delta violet">CAST +1</span></div>
+      <div class="feed-row"><span class="when">04.23</span><span><span class="verb">ran cascade</span> after raising gravity to 1.4 g — <span class="obj">147 species touched</span></span><span class="delta">CASCADE</span></div>
+      <div class="feed-row"><span class="when">04.23</span><span><span class="verb">revised</span> the rookery paragraph in <span class="obj">Ch 1 — Opening</span></span><span class="delta amber">−312 / +488 W</span></div>
+      <div class="feed-row"><span class="when">04.22</span><span><span class="verb">added</span> 2 entries to <span class="obj">Glossary — Caldis tongue</span></span><span class="delta">+2</span></div>
+      <div class="feed-row"><span class="when">04.21</span><span><span class="verb">published</span> <span class="obj">The Long Quiet</span> to your public gallery</span><span class="delta violet">PUB</span></div>
+      <div class="feed-row"><span class="when">04.20</span><span><span class="verb">forked</span> a culture — <span class="obj">Aerwyn highlanders → 2 sects</span></span><span class="delta">CULTURE</span></div>
+    </section>
+
+    <!-- AMBIENT FOOTER (very dialed down) -->
+    <div class="foot">
+      <div class="grp">
+        <span><span class="dot"></span>STELLARFORGE STUDIO · ONLINE</span>
+        <span>autosave 12s ago</span>
+      </div>
+      <div class="grp">
+        <span>SOL 19,838</span>
+        <span>JD 2461785.6</span>
+        <span>39.87°N · 104.97°W</span>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  // Streak cells: 14 days, last 12 lit
+  const cells = document.getElementById('streak-cells');
+  for (let i = 0; i < 14; i++) {
+    const span = document.createElement('span');
+    if (i === 13) span.className = 'today';
+    else if (i >= 2) span.className = 'lit';
+    cells.appendChild(span);
+  }
+</script>
+</body>
+</html>

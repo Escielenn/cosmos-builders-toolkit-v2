@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>StellarForge — Operating Plan (August 11 Launch)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;500&family=Jura:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="shared.css" />
+<style>
+  body { padding: 0; }
+  .wrap { max-width: 1440px; margin: 0 auto; padding: 56px 48px 120px; }
+
+  /* Hero */
+  .op-hero {
+    border: 1px solid var(--sf-border);
+    background:
+      linear-gradient(180deg, rgba(91,141,239,0.06), transparent 60%),
+      var(--sf-surface);
+    padding: 40px 44px 36px;
+    margin-bottom: 36px;
+    position: relative;
+    overflow: hidden;
+  }
+  .op-hero::before {
+    content: ""; position: absolute; inset: 0;
+    background: radial-gradient(circle at 80% 0%, rgba(0,212,255,0.08), transparent 50%);
+    pointer-events: none;
+  }
+  .op-eyebrow {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: var(--tr-wide); color: var(--sf-cyan);
+    text-transform: uppercase; margin-bottom: 18px;
+  }
+  .op-title {
+    font-family: var(--font-display); font-weight: 300;
+    font-size: clamp(40px, 4.5vw, 64px); line-height: 1;
+    letter-spacing: var(--tr-title); color: var(--t1);
+    text-transform: uppercase; margin: 0 0 14px;
+  }
+  .op-sub {
+    font-size: 17px; color: var(--t2); max-width: 720px;
+    line-height: 1.6; margin: 0 0 28px;
+  }
+  .op-stats {
+    display: grid; grid-template-columns: repeat(5, 1fr);
+    gap: 0; border-top: 1px solid var(--sf-border);
+    padding-top: 24px;
+  }
+  .op-stat { padding: 0 20px; border-right: 1px solid var(--sf-border); }
+  .op-stat:first-child { padding-left: 0; }
+  .op-stat:last-child { border-right: 0; padding-right: 0; }
+  .op-stat-k {
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: var(--tr-wide); color: var(--t3);
+    text-transform: uppercase; margin-bottom: 8px;
+  }
+  .op-stat-v {
+    font-family: var(--font-display); font-weight: 300;
+    font-size: 22px; color: var(--t1); letter-spacing: 0.02em;
+  }
+  .op-stat-v .small { font-size: 13px; color: var(--t3); margin-left: 4px; }
+
+  /* Section */
+  .op-section { margin-top: 56px; }
+  .op-section-head {
+    display: flex; align-items: baseline; gap: 18px;
+    margin-bottom: 22px; padding-bottom: 14px;
+    border-bottom: 1px solid var(--sf-border);
+  }
+  .op-section-num {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--sf-teal); letter-spacing: var(--tr-wide);
+  }
+  .op-section-title {
+    font-family: var(--font-heading); font-weight: 300;
+    font-size: 22px; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--t1); flex: 1;
+  }
+  .op-section-meta {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--t3); letter-spacing: 0.06em;
+  }
+
+  /* Gantt chart */
+  .gantt {
+    border: 1px solid var(--sf-border);
+    background: var(--sf-surface);
+    overflow: hidden;
+  }
+  .gantt-grid {
+    display: grid;
+    grid-template-columns: 220px repeat(9, 1fr);
+  }
+  .gantt-h {
+    padding: 14px 12px;
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: var(--tr-wide); text-transform: uppercase;
+    color: var(--t3); border-bottom: 1px solid var(--sf-border-strong);
+    border-right: 1px solid var(--sf-border);
+    text-align: center;
+  }
+  .gantt-h:first-child { text-align: left; color: var(--t2); }
+  .gantt-h.launch {
+    color: var(--sf-amber); background: rgba(255,184,0,0.05);
+  }
+  .gantt-h-date {
+    display: block; color: var(--t1); font-size: 11px; margin-top: 3px;
+    letter-spacing: 0.05em;
+  }
+  .gantt-row {
+    display: grid;
+    grid-template-columns: 220px repeat(9, 1fr);
+    border-bottom: 1px solid var(--sf-border);
+    min-height: 44px;
+    align-items: stretch;
+    position: relative;
+  }
+  .gantt-row:last-child { border-bottom: 0; }
+  .gantt-row:hover { background: rgba(91,141,239,0.03); }
+  .gantt-label {
+    padding: 12px 14px;
+    font-family: var(--font-sans); font-size: 13px;
+    color: var(--t1); font-weight: 500;
+    border-right: 1px solid var(--sf-border-strong);
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .gantt-label .lane {
+    font-family: var(--font-mono); font-size: 9px;
+    color: var(--t3); letter-spacing: var(--tr-wide);
+    text-transform: uppercase; margin-top: 2px;
+  }
+  .gantt-cell {
+    border-right: 1px solid var(--sf-border);
+    position: relative; min-height: 44px;
+  }
+  .gantt-cell.launch { background: rgba(255,184,0,0.04); }
+  .bar {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    height: 18px; border-radius: 1px;
+    display: flex; align-items: center; padding: 0 8px;
+    font-family: var(--font-mono); font-size: 9px;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    white-space: nowrap; overflow: hidden;
+    border: 1px solid;
+  }
+  .bar.eng    { background: rgba(155,93,229,0.18); border-color: rgba(155,93,229,0.5); color: #d3b8ff; }
+  .bar.signal { background: rgba(91,141,239,0.18); border-color: rgba(91,141,239,0.5); color: #b8d3ff; }
+  .bar.ignite { background: rgba(0,212,255,0.16); border-color: rgba(0,212,255,0.5); color: #b8eaff; }
+  .bar.live   { background: rgba(255,184,0,0.22); border-color: rgba(255,184,0,0.7); color: #ffe28f; }
+  .bar.sustain{ background: rgba(21,193,123,0.18); border-color: rgba(21,193,123,0.5); color: #9bf2c8; }
+  .bar.press  { background: rgba(255,51,102,0.14); border-color: rgba(255,51,102,0.45); color: #ffb3c4; }
+
+  .gantt-row.phase-header {
+    grid-template-columns: 1fr;
+    background: rgba(255,255,255,0.02);
+    border-top: 1px solid var(--sf-border-strong);
+    padding: 10px 14px; min-height: 0;
+  }
+  .gantt-row.phase-header .ph {
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: var(--tr-wide); text-transform: uppercase;
+    color: var(--t3);
+  }
+  .gantt-row.phase-header .ph b { color: var(--t1); margin-right: 8px; }
+
+  /* Phase ribbon */
+  .phase-ribbon {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 0; margin-top: 24px;
+  }
+  .phase-card {
+    border: 1px solid var(--sf-border);
+    background: var(--sf-surface);
+    padding: 22px 22px 24px;
+    border-right-width: 0;
+  }
+  .phase-card:last-child { border-right-width: 1px; }
+  .phase-card-num {
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: var(--tr-wide);
+    margin-bottom: 12px;
+  }
+  .phase-card.signal  .phase-card-num { color: var(--sf-stellar); }
+  .phase-card.ignite  .phase-card-num { color: var(--sf-cyan); }
+  .phase-card.live    .phase-card-num { color: var(--sf-amber); }
+  .phase-card.sustain .phase-card-num { color: var(--sf-teal); }
+  .phase-card-name {
+    font-family: var(--font-display); font-weight: 300;
+    font-size: 22px; letter-spacing: 0.04em;
+    color: var(--t1); text-transform: uppercase; margin-bottom: 4px;
+  }
+  .phase-card-dates {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--t3); margin-bottom: 14px; letter-spacing: 0.04em;
+  }
+  .phase-card-mission {
+    font-size: 13px; color: var(--t2); line-height: 1.6;
+    margin-bottom: 14px;
+  }
+  .phase-card-kpi {
+    border-top: 1px dashed var(--sf-border);
+    padding-top: 12px; font-family: var(--font-mono);
+    font-size: 11px; color: var(--t3);
+  }
+  .phase-card-kpi b { color: var(--t1); font-weight: 500; }
+
+  /* Channel grid */
+  .channel-grid {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    gap: 0; border: 1px solid var(--sf-border);
+  }
+  .channel-card {
+    padding: 24px 24px 26px;
+    border-right: 1px solid var(--sf-border);
+    background: var(--sf-surface);
+  }
+  .channel-card:last-child { border-right: 0; }
+  .channel-flag {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 14px;
+  }
+  .channel-pri {
+    font-family: var(--font-mono); font-size: 9px;
+    padding: 3px 8px; letter-spacing: var(--tr-wide);
+    background: rgba(255,184,0,0.12); color: var(--sf-amber);
+    border: 1px solid rgba(255,184,0,0.3);
+  }
+  .channel-name {
+    font-family: var(--font-display); font-weight: 300;
+    font-size: 24px; letter-spacing: 0.04em;
+    color: var(--t1); text-transform: uppercase;
+  }
+  .channel-budget {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--sf-teal); margin-bottom: 18px;
+    letter-spacing: 0.04em;
+  }
+  .channel-list {
+    list-style: none; padding: 0; margin: 0;
+    border-top: 1px solid var(--sf-border);
+  }
+  .channel-list li {
+    padding: 10px 0;
+    border-bottom: 1px dashed var(--sf-border);
+    font-size: 13px; color: var(--t2);
+    display: grid; grid-template-columns: 70px 1fr; gap: 12px;
+    line-height: 1.5;
+  }
+  .channel-list li:last-child { border-bottom: 0; }
+  .channel-list .when {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--t3); letter-spacing: 0.04em;
+    text-transform: uppercase; padding-top: 1px;
+  }
+
+  /* Budget bar */
+  .budget {
+    display: grid; grid-template-columns: 1.4fr 1fr;
+    gap: 28px;
+  }
+  .budget-stack {
+    border: 1px solid var(--sf-border);
+    background: var(--sf-surface); padding: 24px;
+  }
+  .budget-bar {
+    height: 28px; display: flex;
+    border: 1px solid var(--sf-border);
+    margin: 16px 0 18px; overflow: hidden;
+  }
+  .budget-seg { display: flex; align-items: center; padding: 0 10px;
+    font-family: var(--font-mono); font-size: 10px; color: #000;
+    letter-spacing: 0.05em;
+  }
+  .budget-legend {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px 24px;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--t2);
+  }
+  .legend-dot {
+    display: inline-block; width: 10px; height: 10px;
+    margin-right: 8px; vertical-align: middle;
+    border: 1px solid rgba(255,255,255,0.3);
+  }
+  .budget-table {
+    border: 1px solid var(--sf-border);
+    background: var(--sf-surface); padding: 24px;
+  }
+  .budget-table h4 {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: var(--tr-wide); text-transform: uppercase;
+    color: var(--t3); margin: 0 0 16px;
+  }
+  .budget-row {
+    display: grid; grid-template-columns: 1fr auto;
+    padding: 10px 0; border-bottom: 1px dashed var(--sf-border);
+    font-size: 13px;
+  }
+  .budget-row:last-child {
+    border-bottom: 0; border-top: 1px solid var(--sf-border-strong);
+    margin-top: 6px; padding-top: 14px;
+    font-family: var(--font-display); font-weight: 300;
+    font-size: 18px; color: var(--t1);
+  }
+  .budget-row .amt {
+    font-family: var(--font-mono); color: var(--t1);
+  }
+
+  /* KPI */
+  .kpi-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 0; border: 1px solid var(--sf-border);
+  }
+  .kpi-cell {
+    padding: 24px; border-right: 1px solid var(--sf-border);
+    background: var(--sf-surface);
+  }
+  .kpi-cell:last-child { border-right: 0; }
+  .kpi-tier {
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: var(--tr-wide); color: var(--t3);
+    text-transform: uppercase; margin-bottom: 8px;
+  }
+  .kpi-name {
+    font-family: var(--font-display); font-weight: 300;
+    font-size: 20px; color: var(--t1); margin-bottom: 14px;
+    letter-spacing: 0.04em; text-transform: uppercase;
+  }
+  .kpi-targets {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px; margin-bottom: 14px;
+  }
+  .kpi-t-h {
+    font-family: var(--font-mono); font-size: 9px;
+    letter-spacing: var(--tr-wide); color: var(--t3);
+    text-transform: uppercase; margin-bottom: 4px;
+  }
+  .kpi-t-v {
+    font-family: var(--font-display); font-size: 22px;
+    color: var(--t1); font-weight: 300; letter-spacing: 0.02em;
+  }
+  .kpi-t-v.stretch { color: var(--sf-teal-bright); }
+  .kpi-source {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--t3); border-top: 1px dashed var(--sf-border);
+    padding-top: 10px; line-height: 1.5;
+  }
+
+  /* Risk list */
+  .risk-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 0; border: 1px solid var(--sf-border);
+  }
+  .risk-item {
+    padding: 22px 24px; border-right: 1px solid var(--sf-border);
+    border-bottom: 1px solid var(--sf-border);
+    background: var(--sf-surface);
+  }
+  .risk-item:nth-child(2n) { border-right: 0; }
+  .risk-item:nth-last-child(-n+2) { border-bottom: 0; }
+  .risk-flag {
+    display: inline-block;
+    font-family: var(--font-mono); font-size: 10px;
+    padding: 3px 8px; letter-spacing: var(--tr-wide);
+    margin-bottom: 12px;
+  }
+  .risk-flag.high  { background: rgba(255,51,102,0.14); color: var(--sf-crimson); border: 1px solid rgba(255,51,102,0.35); }
+  .risk-flag.med   { background: rgba(255,184,0,0.14); color: var(--sf-amber); border: 1px solid rgba(255,184,0,0.35); }
+  .risk-flag.low   { background: rgba(21,193,123,0.14); color: var(--sf-teal); border: 1px solid rgba(21,193,123,0.35); }
+  .risk-name {
+    font-family: var(--font-display); font-weight: 300;
+    font-size: 20px; letter-spacing: 0.04em; text-transform: uppercase;
+    color: var(--t1); margin-bottom: 8px;
+  }
+  .risk-body { font-size: 13px; color: var(--t2); line-height: 1.6; margin-bottom: 12px; }
+  .risk-mit {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--t3); border-top: 1px dashed var(--sf-border);
+    padding-top: 10px;
+  }
+  .risk-mit b { color: var(--sf-teal); font-weight: 500; }
+
+  /* Asset checklist */
+  .checklist {
+    border: 1px solid var(--sf-border);
+    background: var(--sf-surface);
+  }
+  .check-row {
+    display: grid;
+    grid-template-columns: 32px 1fr 100px 120px 90px;
+    padding: 12px 18px; border-bottom: 1px solid var(--sf-border);
+    align-items: center; gap: 14px;
+    font-size: 13px;
+  }
+  .check-row:last-child { border-bottom: 0; }
+  .check-row.head {
+    background: rgba(255,255,255,0.02);
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: var(--tr-wide); text-transform: uppercase;
+    color: var(--t3);
+  }
+  .check-box {
+    width: 16px; height: 16px;
+    border: 1px solid var(--sf-border-strong);
+    display: inline-block;
+  }
+  .check-row.done .check-box {
+    background: var(--sf-teal); border-color: var(--sf-teal);
+    position: relative;
+  }
+  .check-row.done .check-box::after {
+    content: ""; position: absolute;
+    left: 4px; top: 1px; width: 4px; height: 9px;
+    border-right: 2px solid #000; border-bottom: 2px solid #000;
+    transform: rotate(45deg);
+  }
+  .check-row.done .item-name { color: var(--t3); text-decoration: line-through; }
+  .item-name { color: var(--t1); }
+  .item-name .item-meta {
+    display: block; font-family: var(--font-mono);
+    font-size: 11px; color: var(--t3); margin-top: 2px;
+    letter-spacing: 0.03em;
+  }
+  .item-due {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--t2); letter-spacing: 0.04em;
+  }
+  .item-due.overdue { color: var(--sf-crimson); }
+  .item-owner {
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: var(--tr-wide); text-transform: uppercase;
+    color: var(--t3);
+  }
+  .item-status {
+    font-family: var(--font-mono); font-size: 10px;
+    padding: 3px 8px; letter-spacing: var(--tr-wide);
+    text-align: center;
+  }
+  .item-status.draft   { background: rgba(155,93,229,0.14); color: #d3b8ff; }
+  .item-status.review  { background: rgba(0,212,255,0.14); color: #b8eaff; }
+  .item-status.ready   { background: rgba(21,193,123,0.18); color: var(--sf-teal-bright); }
+  .item-status.todo    { background: rgba(255,255,255,0.05); color: var(--t3); }
+
+  /* Footer link rail */
+  .link-rail {
+    display: flex; gap: 0; margin-top: 56px;
+    border: 1px solid var(--sf-border);
+  }
+  .link-rail a {
+    flex: 1; padding: 18px 22px;
+    border-right: 1px solid var(--sf-border);
+    text-decoration: none; color: var(--t2);
+    font-family: var(--font-mono); font-size: 12px;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    background: var(--sf-surface);
+    transition: all 0.15s ease;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .link-rail a:last-child { border-right: 0; }
+  .link-rail a:hover {
+    background: var(--sf-surface-elevated); color: var(--t1);
+  }
+  .link-rail a .arrow { color: var(--sf-cyan); }
+
+  /* Print */
+  @media print {
+    body { background: #fff; color: #000; }
+    .op-hero, .gantt, .phase-card, .channel-card,
+    .budget-stack, .budget-table, .kpi-cell,
+    .risk-item, .checklist { background: #fff; border-color: #ccc; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <div class="op-hero">
+    <div class="op-eyebrow">// OPERATING PLAN · v2 · REVISED JUL 09</div>
+    <h1 class="op-title">August 11 Launch</h1>
+    <p class="op-sub">
+      Two weeks of signal, two weeks of ignition, public ignition on Tuesday August 11,
+      then a four-week sustain arc. Organic-heavy, three concentrated channels,
+      one hero hook. Budget under $2k. Auth on Clerk is the critical path.
+    </p>
+    <div class="op-stats">
+      <div class="op-stat">
+        <div class="op-stat-k">// LAUNCH</div>
+        <div class="op-stat-v">Aug 11 <span class="small">Tue · 09:00 PT</span></div>
+      </div>
+      <div class="op-stat">
+        <div class="op-stat-k">// HOOK</div>
+        <div class="op-stat-v">All Systems <span class="small">Live</span></div>
+      </div>
+      <div class="op-stat">
+        <div class="op-stat-k">// BUDGET</div>
+        <div class="op-stat-v">$1,950 <span class="small">all-in</span></div>
+      </div>
+      <div class="op-stat">
+        <div class="op-stat-k">// CHANNELS</div>
+        <div class="op-stat-v">Reddit · X · Email</div>
+      </div>
+      <div class="op-stat">
+        <div class="op-stat-k">// NORTH STAR</div>
+        <div class="op-stat-v">Pro <span class="small">conversions</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 01 · TIMELINE / GANTT -->
+  <section class="op-section">
+    <div class="op-section-head">
+      <span class="op-section-num">// 01</span>
+      <span class="op-section-title">Operating Timeline</span>
+      <span class="op-section-meta">Jul 13 – Sep 6 · 9 weeks</span>
+    </div>
+
+    <div class="gantt">
+      <!-- Header row -->
+      <div class="gantt-grid">
+        <div class="gantt-h">Workstream</div>
+        <div class="gantt-h">W1<span class="gantt-h-date">Jul 13</span></div>
+        <div class="gantt-h">W2<span class="gantt-h-date">Jul 20</span></div>
+        <div class="gantt-h">W3<span class="gantt-h-date">Jul 27</span></div>
+        <div class="gantt-h">W4<span class="gantt-h-date">Aug 3</span></div>
+        <div class="gantt-h launch">LIVE<span class="gantt-h-date">Aug 11</span></div>
+        <div class="gantt-h">W6<span class="gantt-h-date">Aug 17</span></div>
+        <div class="gantt-h">W7<span class="gantt-h-date">Aug 24</span></div>
+        <div class="gantt-h">W8<span class="gantt-h-date">Aug 31</span></div>
+        <div class="gantt-h">W9<span class="gantt-h-date">Sep 07</span></div>
+      </div>
+
+      <!-- ENGINEERING -->
+      <div class="gantt-row phase-header"><div class="ph"><b>// ENGINEERING</b>Critical path to launch</div></div>
+
+      <div class="gantt-row">
+        <div class="gantt-label">Clerk auth integration<span class="lane">eng · jason</span></div>
+        <div class="gantt-cell" style="grid-column: 2 / 4;"><div class="bar eng" style="left: 4%; right: 4%;">Build · staging</div></div>
+        <div class="gantt-cell" style="grid-column: 4 / 5;"><div class="bar eng" style="left: 4%; right: 4%;">Stress test</div></div>
+        <div class="gantt-cell" style="grid-column: 5 / 6;"><div class="bar eng" style="left: 4%; right: 4%;">Prod cutover</div></div>
+        <div class="gantt-cell launch" style="grid-column: 6 / 7;"></div>
+        <div class="gantt-cell" style="grid-column: 7 / 11;"></div>
+      </div>
+
+      <div class="gantt-row">
+        <div class="gantt-label">Soft-launch (internal)<span class="lane">eng · 50 users</span></div>
+        <div class="gantt-cell" style="grid-column: 2 / 5;"></div>
+        <div class="gantt-cell" style="grid-column: 5 / 6;"><div class="bar eng" style="left: 50%; right: 4%;">Soft</div></div>
+        <div class="gantt-cell launch" style="grid-column: 6 / 7;"></div>
+        <div class="gantt-cell" style="grid-column: 7 / 11;"></div>
+      </div>
+
+      <!-- SIGNAL -->
+      <div class="gantt-row phase-header"><div class="ph"><b>// 01 · SIGNAL</b>Jul 13 – Jul 26 · build the list</div></div>
+
+      <div class="gantt-row">
+        <div class="gantt-label">Waitlist landing live<span class="lane">marketing · jason</span></div>
+        <div class="gantt-cell" style="grid-column: 2 / 3;"><div class="bar signal" style="left: 4%; right: 4%;">Ship</div></div>
+        <div class="gantt-cell" style="grid-column: 3 / 11;"></div>
+      </div>
+
+      <div class="gantt-row">
+        <div class="gantt-label">Reddit teaser drip<span class="lane">organic · 3×/wk</span></div>
+        <div class="gantt-cell" style="grid-column: 2 / 6;"><div class="bar signal" style="left: 2%; right: 2%;">r/worldbuilding · r/scifi · r/writing</div></div>
+        <div class="gantt-cell launch" style="grid-column: 6 / 7;"><div class="bar signal" style="left: 4%; right: 4%;">peak</div></div>
+        <div class="gantt-cell" style="grid-column: 7 / 11;"></div>
+      </div>
+
+      <div class="gantt-row">
+        <div class="gantt-label">X/Twitter thread cadence<span class="lane">organic · 5×/wk</span></div>
+        <div class="gantt-cell" style="grid-column: 2 / 6;"><div class="bar signal" style="left: 2%; right: 2%;">"Building StellarForge" series · daily lore + dev</div></div>
+        <div class="gantt-cell launch" style="grid-column: 6 / 7;"></div>
+        <div class="gantt-cell" style="grid-column: 7 / 11;"></div>
+      </div>
+
+      <div class="gantt-row">
+        <div class="gantt-label">Email · teaser arc<span class="lane">existing list · 3 sends</span></div>
+        <div class="gantt-cell" style="grid-column: 2 / 3;"><div class="bar signal" style="left: 30%; right: 4%;">E1</div></div>
+        <div class="gantt-cell" style="grid-column: 3 / 4;"></div>
+        <div class="gantt-cell" style="grid-column: 4 / 5;"><div class="bar signal" style="left: 4%; right: 30%;">E2</div></div>
+        <div class="gantt-cell" style="grid-column: 5 / 11;"></div>
+      </div>
+
+      <!-- IGNITE -->
+      <div class="gantt-row phase-header"><div class="ph"><b>// 02 · IGNITE</b>Jul 27 – Aug 8 · turn up the heat</div></div>
+
+      <div class="gantt-row">
+        <div class="gantt-label">Hook A/B/C test<span class="lane">paid · $400</span></div>
+        <div class="gantt-cell" style="grid-column: 2 / 4;"></div>
+        <div class="gantt-cell" style="grid-column: 4 / 6;"><div class="bar ignite" style="left: 2%; right: 2%;">Reddit + X promoted · 3 hooks · CTR + CPL data</div></div>
+        <div class="gantt-cell launch" style="grid-column: 6 / 7;"></div>
+        <div class="gantt-cell" style="grid-column: 7 / 11;"></div>
+      </div>
+
+      <div class="gantt-row">
+        <div class="gantt-label">Press / outreach (embargo)<span class="lane">5 outlets · cold + warm</span></div>
+        <div class="gantt-cell" style="grid-column: 2 / 4;"></div>
+        <div class="gantt-cell" style="grid-column: 4 / 5;"><div class="bar press" style="left: 4%; right: 4%;">Pitch</div></div>
+        <div class="gantt-cell" style="grid-column: 5 / 6;"><div class="bar press" style="left: 4%; right: 4%;">Embargo</div></div>
+        <div class="gantt-cell launch" style="grid-column: 6 / 7;"><div class="bar press" style="left: 4%; right: 4%;">Lift</div></div>
+        <div class="gantt-cell" style="grid-column: 7 / 11;"></div>
+      </div>
+
+      <div class="gantt-row">
+        <div class="gantt-label">Boarding pass (digital)<span class="lane">design + email · free</span></div>
+        <div class="gantt-cell" style="grid-column: 2 / 4;"></div>
+        <div class="gantt-cell" style="grid-column: 4 / 5;"><div class="bar ignite" style="left: 4%; right: 4%;">Design</div></div>
+        <div class="gantt-cell" style="grid-column: 5 / 6;"><div class="bar ignite" style="left: 4%; right: 4%;">Send · waitlist</div></div>
+        <div class="gantt-cell launch" style="grid-column: 6 / 7;"></div>
+        <div class="gantt-cell" style="grid-column: 7 / 11;"></div>
+      </div>
+
+      <div class="gantt-row">
+        <div class="gantt-label">Email · countdown<span class="lane">T-7 · T-3 · T-1 · T-0</span></div>
+        <div class="gantt-cell" style="grid-column: 2 / 5;"></div>
+        <div class="gantt-cell" style="grid-column: 5 / 6;"><div class="bar ignite" style="left: 4%; right: 4%;">T-7 · T-3 · T-1</div></div>
+        <div class="gantt-cell launch" style="grid-column: 6 / 7;"><div class="bar ignite" style="left: 4%; right: 30%;">T-0</div></div>
+        <div class="gantt-cell" style="grid-column: 7 / 11;"></div>
+      </div>
+
+      <!-- LIVE -->
+      <div class="gantt-row phase-header"><div class="ph"><b>// 03 · LIVE</b>Aug 11 launch day · all hands</div></div>
+
+      <div class="gantt-row">
+        <div class="gantt-label">Launch day blitz<span class="lane">all channels · jason live</span></div>
+        <div class="gantt-cell" style="grid-column: 2 / 6;"></div>
+        <div class="gantt-cell launch" style="grid-column: 6 / 7;"><div class="bar live" style="left: 2%; right: 2%;">Reddit · X · LI · Email · PH · HN</div></div>
+        <div class="gantt-cell" style="grid-column: 7 / 11;"></div>
+      </div>
+
+      <!-- SUSTAIN -->
+      <div class="gantt-row phase-header"><div class="ph"><b>// 04 · SUSTAIN</b>Aug 17 – Sep 6 · convert &amp; retain</div></div>
+
+      <div class="gantt-row">
+        <div class="gantt-label">UGC · "first builds" gallery<span class="lane">community · curated</span></div>
+        <div class="gantt-cell" style="grid-column: 2 / 6;"></div>
+        <div class="gantt-cell launch" style="grid-column: 6 / 7;"></div>
+        <div class="gantt-cell" style="grid-column: 7 / 11;"><div class="bar sustain" style="left: 2%; right: 2%;">Repost · highlight · feature on home</div></div>
+      </div>
+
+      <div class="gantt-row">
+        <div class="gantt-label">Retention email arc<span class="lane">7 sends over 4 wks</span></div>
+        <div class="gantt-cell" style="grid-column: 2 / 6;"></div>
+        <div class="gantt-cell launch" style="grid-column: 6 / 7;"></div>
+        <div class="gantt-cell" style="grid-column: 7 / 11;"><div class="bar sustain" style="left: 2%; right: 2%;">D1 · D3 · D7 · D14 · D21 · D28 · upgrade nudge</div></div>
+      </div>
+
+      <div class="gantt-row">
+        <div class="gantt-label">Pro conversion push<span class="lane">paid · $400 · in-app</span></div>
+        <div class="gantt-cell" style="grid-column: 2 / 6;"></div>
+        <div class="gantt-cell launch" style="grid-column: 6 / 7;"></div>
+        <div class="gantt-cell" style="grid-column: 7 / 9;"></div>
+        <div class="gantt-cell" style="grid-column: 9 / 11;"><div class="bar sustain" style="left: 2%; right: 2%;">Trial-to-paid nudge campaign</div></div>
+      </div>
+
+    </div>
+
+    <!-- Phase ribbon -->
+    <div class="phase-ribbon">
+      <div class="phase-card signal">
+        <div class="phase-card-num">// 01 · SIGNAL</div>
+        <div class="phase-card-name">Build the list</div>
+        <div class="phase-card-dates">Jul 13 – Jul 26 · 14 days</div>
+        <div class="phase-card-mission">
+          Get on the radar of beginner SF writers. Three Reddit posts a week,
+          daily X threads from Jason, a clean waitlist page, two priming emails
+          to the existing list. No paid spend yet.
+        </div>
+        <div class="phase-card-kpi"><b>EXIT KPI</b> · 800 waitlist signups</div>
+      </div>
+      <div class="phase-card ignite">
+        <div class="phase-card-num">// 02 · IGNITE</div>
+        <div class="phase-card-name">Turn up the heat</div>
+        <div class="phase-card-dates">Jul 27 – Aug 8 · 14 days</div>
+        <div class="phase-card-mission">
+          $400 hook A/B/C test on Reddit + X to learn what converts.
+          Press embargo to 5 outlets. Digital boarding pass goes to the
+          waitlist. Countdown email cadence begins.
+        </div>
+        <div class="phase-card-kpi"><b>EXIT KPI</b> · winning hook + 1.5k waitlist</div>
+      </div>
+      <div class="phase-card live">
+        <div class="phase-card-num">// 03 · LIVE</div>
+        <div class="phase-card-name">Ignition</div>
+        <div class="phase-card-dates">Aug 11 · 09:00 PT · single day</div>
+        <div class="phase-card-mission">
+          Coordinated drop. Reddit, X, LinkedIn, email all-list,
+          Product Hunt, HN. Jason live in 3 subreddits answering
+          questions. Press lift goes out at 12:00 PT.
+        </div>
+        <div class="phase-card-kpi"><b>DAY-1 KPI</b> · 1,000 free signups</div>
+      </div>
+      <div class="phase-card sustain">
+        <div class="phase-card-num">// 04 · SUSTAIN</div>
+        <div class="phase-card-name">Convert &amp; retain</div>
+        <div class="phase-card-dates">Aug 17 – Sep 6 · 21 days</div>
+        <div class="phase-card-mission">
+          UGC gallery of first builds. 7-send retention email arc.
+          Final week: $400 in-app conversion push for trial-to-Pro.
+          Soft handoff to ongoing operations.
+        </div>
+        <div class="phase-card-kpi"><b>EXIT KPI</b> · 75 paying Pro users</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 · CHANNELS -->
+  <section class="op-section">
+    <div class="op-section-head">
+      <span class="op-section-num">// 02</span>
+      <span class="op-section-title">Channel Playbook</span>
+      <span class="op-section-meta">3 must-win · others evergreen</span>
+    </div>
+
+    <div class="channel-grid">
+      <div class="channel-card">
+        <div class="channel-flag">
+          <span class="channel-pri">PRIORITY 01</span>
+        </div>
+        <div class="channel-name">Reddit</div>
+        <div class="channel-budget">$400 promoted · r/worldbuilding · r/scifi · r/writing</div>
+        <ul class="channel-list">
+          <li><span class="when">3×/WK</span><span>Process posts: "I'm building a tool that…" — show, don't pitch.</span></li>
+          <li><span class="when">W3</span><span>AMA scheduled in r/worldbuilding (60 min, Jason).</span></li>
+          <li><span class="when">W4</span><span>Promoted post: winning hook from A/B test.</span></li>
+          <li><span class="when">LIVE</span><span>Jason camps in 3 threads for 4 hours, answering everything.</span></li>
+          <li><span class="when">W6+</span><span>UGC reposts — surface "first builds" with creator credit.</span></li>
+        </ul>
+      </div>
+
+      <div class="channel-card">
+        <div class="channel-flag">
+          <span class="channel-pri">PRIORITY 02</span>
+        </div>
+        <div class="channel-name">X / Twitter</div>
+        <div class="channel-budget">$200 promoted · writer-Twitter · sci-fi-Twitter</div>
+        <ul class="channel-list">
+          <li><span class="when">DAILY</span><span>"Building StellarForge" thread — one mechanic, one lore beat, one in-progress screenshot.</span></li>
+          <li><span class="when">W2</span><span>Pin: waitlist CTA with boarding-pass teaser image.</span></li>
+          <li><span class="when">W4</span><span>Hook A/B/C test — three pinned variations, rotated daily.</span></li>
+          <li><span class="when">LIVE</span><span>Live-thread launch day with screenshots every 2h.</span></li>
+          <li><span class="when">W6+</span><span>Quote-RT every UGC mention with thanks + feature.</span></li>
+        </ul>
+      </div>
+
+      <div class="channel-card">
+        <div class="channel-flag">
+          <span class="channel-pri">PRIORITY 03</span>
+        </div>
+        <div class="channel-name">Email</div>
+        <div class="channel-budget">$0 · existing list · waitlist · transactional</div>
+        <ul class="channel-list">
+          <li><span class="when">W1</span><span>E1 to existing list: "I've been building something."</span></li>
+          <li><span class="when">W3</span><span>E2: behind-the-scenes peek + waitlist nudge.</span></li>
+          <li><span class="when">W4</span><span>Boarding pass to waitlist (digital, with seat number).</span></li>
+          <li><span class="when">T-7/-3/-1</span><span>Countdown sends to full waitlist.</span></li>
+          <li><span class="when">LIVE</span><span>T-0 launch send · all-list.</span></li>
+          <li><span class="when">W6–9</span><span>D1·D3·D7·D14·D21·D28 retention arc + upgrade nudge.</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <p style="margin-top: 18px; font-family: var(--font-mono); font-size: 11px; color: var(--t3); letter-spacing: 0.04em;">
+      // EVERGREEN (no concentrated push): LinkedIn — Jason auto-cross-posts X threads. Discord — community runs itself; Jason checks in 2×/wk. PH/HN — single launch-day push, no follow-up cadence.
+    </p>
+  </section>
+
+  <!-- 03 · BUDGET -->
+  <section class="op-section">
+    <div class="op-section-head">
+      <span class="op-section-num">// 03</span>
+      <span class="op-section-title">Budget Allocation</span>
+      <span class="op-section-meta">$1,950 all-in · 9 weeks</span>
+    </div>
+
+    <div class="budget">
+      <div class="budget-stack">
+        <h4 style="font-family: var(--font-mono); font-size: 11px; letter-spacing: var(--tr-wide); text-transform: uppercase; color: var(--t3); margin: 0 0 4px;">// SPEND DISTRIBUTION</h4>
+        <div class="budget-bar">
+          <div class="budget-seg" style="background: var(--sf-cyan); width: 41%;">PAID · 41%</div>
+          <div class="budget-seg" style="background: var(--sf-amber); width: 26%;">TOOLING · 26%</div>
+          <div class="budget-seg" style="background: var(--sf-violet); width: 18%;">DESIGN · 18%</div>
+          <div class="budget-seg" style="background: var(--sf-teal); width: 15%; color: #000;">CONT. · 15%</div>
+        </div>
+        <div class="budget-legend">
+          <div><span class="legend-dot" style="background: var(--sf-cyan);"></span>Paid (Reddit/X promoted, in-app)</div>
+          <div><span class="legend-dot" style="background: var(--sf-amber);"></span>Tooling (email, analytics, scheduler)</div>
+          <div><span class="legend-dot" style="background: var(--sf-violet);"></span>Design (boarding pass print samples)</div>
+          <div><span class="legend-dot" style="background: var(--sf-teal);"></span>Contingency (unallocated reserve)</div>
+        </div>
+
+        <p style="margin: 22px 0 0; font-size: 13px; color: var(--t2); line-height: 1.6;">
+          Organic-heavy by design. Every dollar of paid is gated on data —
+          we only spend after the hook A/B test tells us what to amplify.
+          The contingency exists because Clerk integration is the critical
+          path; if it slips a week, we re-allocate to extending the teaser arc.
+        </p>
+      </div>
+
+      <div class="budget-table">
+        <h4>// LINE ITEMS</h4>
+        <div class="budget-row"><span>Reddit promoted (hook test)</span><span class="amt">$400</span></div>
+        <div class="budget-row"><span>X promoted (hook test)</span><span class="amt">$200</span></div>
+        <div class="budget-row"><span>In-app conversion ads (W9)</span><span class="amt">$200</span></div>
+        <div class="budget-row"><span>Email tooling (Loops/Resend)</span><span class="amt">$150</span></div>
+        <div class="budget-row"><span>Analytics + scheduling</span><span class="amt">$350</span></div>
+        <div class="budget-row"><span>Boarding-pass print samples</span><span class="amt">$350</span></div>
+        <div class="budget-row"><span>Contingency reserve</span><span class="amt">$300</span></div>
+        <div class="budget-row"><span>TOTAL</span><span class="amt">$1,950</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 · KPIS -->
+  <section class="op-section">
+    <div class="op-section-head">
+      <span class="op-section-num">// 04</span>
+      <span class="op-section-title">North-Star Metrics</span>
+      <span class="op-section-meta">3 metrics · base / target / stretch</span>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi-cell">
+        <div class="kpi-tier">// FUNNEL TOP</div>
+        <div class="kpi-name">Waitlist Signups</div>
+        <div class="kpi-targets">
+          <div><div class="kpi-t-h">BASE</div><div class="kpi-t-v">600</div></div>
+          <div><div class="kpi-t-h">TARGET</div><div class="kpi-t-v">1,500</div></div>
+          <div><div class="kpi-t-h">STRETCH</div><div class="kpi-t-v stretch">3,000</div></div>
+        </div>
+        <div class="kpi-source">Source: landing page form · waitlist count by EOD Aug 8. Tracks reach + curiosity quality.</div>
+      </div>
+
+      <div class="kpi-cell">
+        <div class="kpi-tier">// FUNNEL MID</div>
+        <div class="kpi-name">Free Signups · Wk 1</div>
+        <div class="kpi-targets">
+          <div><div class="kpi-t-h">BASE</div><div class="kpi-t-v">500</div></div>
+          <div><div class="kpi-t-h">TARGET</div><div class="kpi-t-v">1,200</div></div>
+          <div><div class="kpi-t-h">STRETCH</div><div class="kpi-t-v stretch">2,500</div></div>
+        </div>
+        <div class="kpi-source">Source: Clerk · signed-up users between Aug 11 09:00 PT and Aug 18 23:59 PT. Tests funnel conversion + launch reach.</div>
+      </div>
+
+      <div class="kpi-cell">
+        <div class="kpi-tier">// FUNNEL BOTTOM</div>
+        <div class="kpi-name">Pro Conversions</div>
+        <div class="kpi-targets">
+          <div><div class="kpi-t-h">BASE</div><div class="kpi-t-v">25</div></div>
+          <div><div class="kpi-t-h">TARGET</div><div class="kpi-t-v">75</div></div>
+          <div><div class="kpi-t-h">STRETCH</div><div class="kpi-t-v stretch">200</div></div>
+        </div>
+        <div class="kpi-source">Source: Stripe · paying Pro users by Sep 6 23:59 PT. The only metric that actually matters for runway.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 · RISKS -->
+  <section class="op-section">
+    <div class="op-section-head">
+      <span class="op-section-num">// 05</span>
+      <span class="op-section-title">Risk Register</span>
+      <span class="op-section-meta">flag · impact · mitigation</span>
+    </div>
+
+    <div class="risk-grid">
+      <div class="risk-item">
+        <span class="risk-flag high">HIGH · BLOCKER</span>
+        <div class="risk-name">Clerk integration slips</div>
+        <div class="risk-body">
+          Auth is the critical path. If Clerk + the existing data model
+          don't reconcile cleanly by W4, the public launch must move.
+          A "hard launch with broken signup" is worse than a one-week slip.
+        </div>
+        <div class="risk-mit">
+          <b>MITIGATION</b> · Internal soft-launch W5 (50 users). Hard go/no-go on Aug 5. Public launch date stays unannounced until that gate clears.
+        </div>
+      </div>
+
+      <div class="risk-item">
+        <span class="risk-flag med">MEDIUM</span>
+        <div class="risk-name">Hook A/B test inconclusive</div>
+        <div class="risk-body">
+          $600 paid spend over 2 weeks may not produce a statistically
+          significant winner across 3 hooks. Gut-pick "All Systems Live"
+          may be wrong for cold traffic.
+        </div>
+        <div class="risk-mit">
+          <b>MITIGATION</b> · Pre-commit decision rule: if no hook beats baseline +20% CTR by W4 day 5, default to "Blank Page Killer" (writer-empathy) for cold paid; keep "All Systems Live" for warm/email.
+        </div>
+      </div>
+
+      <div class="risk-item">
+        <span class="risk-flag med">MEDIUM</span>
+        <div class="risk-name">Press embargo leaks early</div>
+        <div class="risk-body">
+          Cold-pitching 5 outlets with a 2-week embargo is a well-known
+          leak risk. One outlet publishing early collapses the coordinated
+          launch-day press lift.
+        </div>
+        <div class="risk-mit">
+          <b>MITIGATION</b> · Tier the embargo: 2 trusted outlets get full briefing W3; rest get short "save the date" with details only on W5. If a leak happens, pull launch forward 24h rather than fight it.
+        </div>
+      </div>
+
+      <div class="risk-item">
+        <span class="risk-flag low">LOW</span>
+        <div class="risk-name">Reddit mod removal</div>
+        <div class="risk-body">
+          r/worldbuilding and r/writing have strict self-promo rules.
+          Posts read as marketing get nuked. Any single removal kills
+          channel momentum for ~7 days.
+        </div>
+        <div class="risk-mit">
+          <b>MITIGATION</b> · Mod outreach in W1 — DM mods, ask permission for AMA, follow each sub's rules to the letter. Lead with builds and process, never with a CTA.
+        </div>
+      </div>
+
+      <div class="risk-item">
+        <span class="risk-flag med">MEDIUM</span>
+        <div class="risk-name">August vacation lull (Aug 7–16)</div>
+        <div class="risk-body">
+          The final pre-launch stretch sits in peak vacation season. Engagement on Reddit/X
+          drops ~40% Sat–Mon. Risk losing momentum into the launch.
+        </div>
+        <div class="risk-mit">
+          <b>MITIGATION</b> · Schedule no major asset drops on the Aug 8–10 weekend. Use the lull to ship the boarding pass and prep launch-day content. Press embargo briefings Tue Aug 4.
+        </div>
+      </div>
+
+      <div class="risk-item">
+        <span class="risk-flag low">LOW</span>
+        <div class="risk-name">Free-to-Pro conversion underperforms</div>
+        <div class="risk-body">
+          We hit 1k free signups but only 10 convert to Pro. Means top of
+          funnel is fine; activation or value-prop on the Pro tier isn't.
+        </div>
+        <div class="risk-mit">
+          <b>MITIGATION</b> · D7 retention email is the canary — if open rates are healthy but click-through to upgrade is &lt; 2%, kill the W9 in-app spend and redirect to a UX teardown of the Pro upgrade flow.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 · ASSET CHECKLIST -->
+  <section class="op-section">
+    <div class="op-section-head">
+      <span class="op-section-num">// 06</span>
+      <span class="op-section-title">Pre-Launch Asset Checklist</span>
+      <span class="op-section-meta">14 items · all due by Aug 8</span>
+    </div>
+
+    <div class="checklist">
+      <div class="check-row head">
+        <div></div>
+        <div>Asset</div>
+        <div>Due</div>
+        <div>Owner</div>
+        <div>Status</div>
+      </div>
+
+      <div class="check-row done">
+        <div><span class="check-box"></span></div>
+        <div class="item-name">Style guide<span class="item-meta">design tokens, type, color, components</span></div>
+        <div class="item-due">Apr 28</div>
+        <div class="item-owner">Design</div>
+        <div class="item-status ready">DONE</div>
+      </div>
+
+      <div class="check-row done">
+        <div><span class="check-box"></span></div>
+        <div class="item-name">Campaign hub document<span class="item-meta">strategy, calendar, social, email, ads</span></div>
+        <div class="item-due">May 1</div>
+        <div class="item-owner">Marketing</div>
+        <div class="item-status ready">DONE</div>
+      </div>
+
+      <div class="check-row done">
+        <div><span class="check-box"></span></div>
+        <div class="item-name">Pitch deck (internal)<span class="item-meta">12 slides · for stakeholder briefing</span></div>
+        <div class="item-due">May 1</div>
+        <div class="item-owner">Marketing</div>
+        <div class="item-status ready">DONE</div>
+      </div>
+
+      <div class="check-row done">
+        <div><span class="check-box"></span></div>
+        <div class="item-name">Waitlist landing page<span class="item-meta">LIVE at /early · Supabase waitlist + Resend confirmation wired (Jul 9)</span></div>
+        <div class="item-due">Jul 15</div>
+        <div class="item-owner">Eng + Design</div>
+        <div class="item-status ready">DONE</div>
+      </div>
+
+      <div class="check-row">
+        <div><span class="check-box"></span></div>
+        <div class="item-name">Clerk auth on staging<span class="item-meta">signup, sign-in, password reset, OAuth</span></div>
+        <div class="item-due">Jul 22</div>
+        <div class="item-owner">Eng</div>
+        <div class="item-status draft">IN PROGRESS</div>
+      </div>
+
+      <div class="check-row">
+        <div><span class="check-box"></span></div>
+        <div class="item-name">Email teaser arc (E1, E2)<span class="item-meta">2 sends to existing list</span></div>
+        <div class="item-due">Jul 14</div>
+        <div class="item-owner">Marketing</div>
+        <div class="item-status draft">DRAFT</div>
+      </div>
+
+      <div class="check-row">
+        <div><span class="check-box"></span></div>
+        <div class="item-name">Reddit/X teaser content (10 posts)<span class="item-meta">"Building StellarForge" series</span></div>
+        <div class="item-due">Jul 13</div>
+        <div class="item-owner">Marketing</div>
+        <div class="item-status draft">DRAFT</div>
+      </div>
+
+      <div class="check-row">
+        <div><span class="check-box"></span></div>
+        <div class="item-name">Hook variations × 3<span class="item-meta">All Systems Live · Living World · Blank Page Killer</span></div>
+        <div class="item-due">Jul 26</div>
+        <div class="item-owner">Marketing</div>
+        <div class="item-status review">REVIEW</div>
+      </div>
+
+      <div class="check-row">
+        <div><span class="check-box"></span></div>
+        <div class="item-name">Press one-pager + outlet list<span class="item-meta">5 outlets · embargo language</span></div>
+        <div class="item-due">Jul 27</div>
+        <div class="item-owner">Marketing</div>
+        <div class="item-status todo">TODO</div>
+      </div>
+
+      <div class="check-row">
+        <div><span class="check-box"></span></div>
+        <div class="item-name">Boarding pass · digital<span class="item-meta">personalized PDF · seat number per signup</span></div>
+        <div class="item-due">Jul 29</div>
+        <div class="item-owner">Design + Eng</div>
+        <div class="item-status todo">TODO</div>
+      </div>
+
+      <div class="check-row">
+        <div><span class="check-box"></span></div>
+        <div class="item-name">Countdown email arc (T-7, T-3, T-1, T-0)<span class="item-meta">4 sends · escalating urgency</span></div>
+        <div class="item-due">Aug 3</div>
+        <div class="item-owner">Marketing</div>
+        <div class="item-status todo">TODO</div>
+      </div>
+
+      <div class="check-row">
+        <div><span class="check-box"></span></div>
+        <div class="item-name">Stripe Pro tier live<span class="item-meta">$X/mo · trial · upgrade flow</span></div>
+        <div class="item-due">Aug 3</div>
+        <div class="item-owner">Eng</div>
+        <div class="item-status todo">TODO</div>
+      </div>
+
+      <div class="check-row">
+        <div><span class="check-box"></span></div>
+        <div class="item-name">Internal soft-launch (50 users)<span class="item-meta">go/no-go gate for public launch</span></div>
+        <div class="item-due">Aug 5</div>
+        <div class="item-owner">Eng</div>
+        <div class="item-status todo">TODO</div>
+      </div>
+
+      <div class="check-row">
+        <div><span class="check-box"></span></div>
+        <div class="item-name">Retention arc (D1, D3, D7, D14, D21, D28, upgrade)<span class="item-meta">7 sends · drafted, scheduled</span></div>
+        <div class="item-due">Aug 8</div>
+        <div class="item-owner">Marketing</div>
+        <div class="item-status todo">TODO</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LINK RAIL -->
+  <div class="link-rail">
+    <a href="Index.html"><span>// MISSION INDEX</span><span class="arrow">→</span></a>
+    <a href="Campaign.html"><span>// CAMPAIGN HUB</span><span class="arrow">→</span></a>
+    <a href="Pitch Deck.html"><span>// PITCH DECK</span><span class="arrow">→</span></a>
+    <a href="Style Guide.html"><span>// STYLE GUIDE</span><span class="arrow">→</span></a>
+    <a href="Landing Page.html"><span>// WAITLIST PAGE</span><span class="arrow">→</span></a>
+  </div>
+
+</div>
+
+</body>
+</html>

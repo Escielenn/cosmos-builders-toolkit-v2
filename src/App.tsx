@@ -39,6 +39,7 @@ import Auth from "./pages/Auth";
 // Lazy loaded pages (larger, less frequently accessed)
 const Profile = lazy(() => import("./pages/Profile"));
 const Pricing = lazy(() => import("./pages/Pricing"));
+const EarlyAccess = lazy(() => import("./pages/EarlyAccess"));
 const Roadmap = lazy(() => import("./pages/Roadmap"));
 const Features = lazy(() => import("./pages/Features"));
 const Guide = lazy(() => import("./pages/Guide"));
@@ -188,6 +189,8 @@ const App = () => (
             <Suspense fallback={<PageLoader />}>
               <Routes>
                 <Route path="/" element={<Index />} />
+                {/* Public launch waitlist (Cowork Implementation Guide §2) */}
+                <Route path="/early" element={<EarlyAccess />} />
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/pricing" element={<Pricing />} />

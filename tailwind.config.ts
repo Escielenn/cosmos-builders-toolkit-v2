@@ -148,6 +148,7 @@ export default {
         display: ["MD Nichrome", "Jura", "system-ui", "sans-serif"],
         heading: ["Jura", "system-ui", "sans-serif"],
         mono: ["JetBrains Mono", "monospace"],
+        serif: ["Lora", "Georgia", "serif"], // writer register only (Studio/editor)
       },
       letterSpacing: {
         // StellarForge typography spacing

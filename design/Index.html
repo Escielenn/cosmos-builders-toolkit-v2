@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>StellarForge — Mission Index</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=JetBrains+Mono:wght@400;500&family=Jura:wght@300;400;500&family=Space+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="shared.css" />
+<style>
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 64px 48px 100px; position: relative; z-index: 2; }
+
+  .idx-head { margin-bottom: 48px; }
+  .idx-eyebrow {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: var(--tr-wide); color: var(--sf-teal);
+    text-transform: uppercase; margin-bottom: 16px;
+  }
+  .idx-title {
+    font-family: var(--font-display); font-weight: 300;
+    font-size: clamp(40px, 5vw, 60px); line-height: 1;
+    letter-spacing: var(--tr-title); color: var(--t1);
+    text-transform: uppercase; margin: 0 0 14px;
+  }
+  .idx-sub { font-size: 15px; color: var(--t3); max-width: 640px; line-height: 1.6; margin: 0; }
+  .idx-sub b { color: var(--t1); font-weight: 500; }
+
+  .group { margin-top: 40px; }
+  .group-h {
+    display: flex; align-items: baseline; gap: 14px;
+    padding-bottom: 12px; margin-bottom: 0;
+    border-bottom: 1px solid var(--sf-border-strong);
+  }
+  .group-num { font-family: var(--font-mono); font-size: 11px; color: var(--sf-teal); letter-spacing: var(--tr-wide); }
+  .group-name {
+    font-family: var(--font-heading); font-weight: 300; font-size: 18px;
+    letter-spacing: 2px; text-transform: uppercase; color: var(--t1); flex: 1;
+  }
+  .group-meta { font-family: var(--font-mono); font-size: 10px; color: var(--t4); letter-spacing: 0.06em; }
+
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border: 1px solid var(--sf-border); border-top: 0; }
+  .card {
+    display: block; text-decoration: none;
+    padding: 22px 24px 24px;
+    background: var(--sf-surface);
+    border-right: 1px solid var(--sf-border);
+    transition: background 0.15s ease;
+    position: relative;
+  }
+  .card:nth-child(3n) { border-right: 0; }
+  .card:nth-child(n+4) { border-top: 1px solid var(--sf-border); }
+  .card:hover { background: var(--sf-surface-elevated); }
+  .card:hover .card-arrow { color: var(--sf-teal-bright); transform: translateX(3px); }
+  .card-tag {
+    display: inline-block;
+    font-family: var(--font-mono); font-size: 9px;
+    letter-spacing: var(--tr-wide); text-transform: uppercase;
+    padding: 3px 8px; margin-bottom: 14px;
+  }
+  .card-tag.live    { background: rgba(21,193,123,0.12);  color: var(--sf-teal); }
+  .card-tag.concept { background: rgba(91,141,239,0.12);  color: var(--sf-stellar); }
+  .card-tag.alt     { background: rgba(255,255,255,0.05); color: var(--t3); }
+  .card-tag.doc     { background: rgba(255,184,0,0.12);   color: var(--sf-amber); }
+  .card-name {
+    font-family: var(--font-display); font-weight: 300;
+    font-size: 21px; letter-spacing: 0.04em; text-transform: uppercase;
+    color: var(--t1); margin-bottom: 6px;
+    display: flex; align-items: baseline; justify-content: space-between; gap: 10px;
+  }
+  .card-arrow { font-family: var(--font-mono); font-size: 14px; color: var(--t4); transition: all 0.15s ease; }
+  .card-desc { font-size: 12.5px; color: var(--t3); line-height: 1.55; margin: 0; }
+
+  .foot {
+    margin-top: 56px; padding-top: 18px; border-top: 1px solid var(--sf-border);
+    display: flex; justify-content: space-between;
+    font-family: var(--font-mono); font-size: 10px; color: var(--t4);
+    letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .foot .dot { color: var(--sf-teal); }
+</style>
+</head>
+<body class="grain">
+<div class="starfield"></div>
+
+<div class="wrap">
+  <div class="idx-head">
+    <div class="idx-eyebrow">// STELLARFORGE · MISSION INDEX</div>
+    <h1 class="idx-title">Everything, one hop away</h1>
+    <p class="idx-sub">Product design on top, launch campaign in the middle, system &amp; docs at the bottom. Launch anchor: <b>Tue Aug 11, 2026</b>.</p>
+  </div>
+
+  <!-- PRODUCT -->
+  <div class="group">
+    <div class="group-h">
+      <span class="group-num">// 01</span>
+      <span class="group-name">Product Design</span>
+      <span class="group-meta">hi-fi mockups · writer register</span>
+    </div>
+    <div class="cards">
+      <a class="card" href="Home (Writers).html">
+        <span class="card-tag live">Current direction</span>
+        <div class="card-name">Studio Home <span class="card-arrow">→</span></div>
+        <p class="card-desc">Logged-in writer home: continue-writing card, bookshelf, cast, scratchpad, world prompt.</p>
+      </a>
+      <a class="card" href="Writing.html">
+        <span class="card-tag live">Current direction</span>
+        <div class="card-name">Manuscript <span class="card-arrow">→</span></div>
+        <p class="card-desc">Scrivener-style editor: binder tree, pinned entities, @mention linking, inspector, cascade panel.</p>
+      </a>
+      <a class="card" href="Home.html">
+        <span class="card-tag alt">Alternate concept</span>
+        <div class="card-name">Bridge Home <span class="card-arrow">→</span></div>
+        <p class="card-desc">The cockpit-heavy dashboard concept. Kept for reference — the ship dialed to 11.</p>
+      </a>
+    </div>
+  </div>
+
+  <!-- CAMPAIGN -->
+  <div class="group">
+    <div class="group-h">
+      <span class="group-num">// 02</span>
+      <span class="group-name">Launch Campaign</span>
+      <span class="group-meta">Aug 11 launch · mono register</span>
+    </div>
+    <div class="cards">
+      <a class="card" href="Operating Plan.html">
+        <span class="card-tag live">v2 · Revised Jul 09</span>
+        <div class="card-name">Operating Plan <span class="card-arrow">→</span></div>
+        <p class="card-desc">The locked plan: 9-week Gantt, channel playbook, $1,950 budget, KPIs, risks, asset checklist.</p>
+      </a>
+      <a class="card" href="Campaign.html">
+        <span class="card-tag live">9 sectors</span>
+        <div class="card-name">Campaign Hub <span class="card-arrow">→</span></div>
+        <p class="card-desc">Strategy, creative directions, calendar, social mockups, emails, ads, press kit, promo drops.</p>
+      </a>
+      <a class="card" href="Landing Page.html">
+        <span class="card-tag live">Public surface</span>
+        <div class="card-name">Waitlist Page <span class="card-arrow">→</span></div>
+        <p class="card-desc">The early-access landing: manifest panel, tool grid, clearance form. Form needs ESP wiring.</p>
+      </a>
+      <a class="card" href="Pitch Deck.html">
+        <span class="card-tag alt">Internal</span>
+        <div class="card-name">Pitch Deck <span class="card-arrow">→</span></div>
+        <p class="card-desc">11-slide stakeholder briefing: problem, solution, goals, phases, budget, risks, ask.</p>
+      </a>
+    </div>
+  </div>
+
+  <!-- SYSTEM -->
+  <div class="group">
+    <div class="group-h">
+      <span class="group-num">// 03</span>
+      <span class="group-name">System &amp; Docs</span>
+      <span class="group-meta">ground truth · handoff</span>
+    </div>
+    <div class="cards">
+      <a class="card" href="Style Guide.html">
+        <span class="card-tag live">Ground truth</span>
+        <div class="card-name">Style Guide <span class="card-arrow">→</span></div>
+        <p class="card-desc">17 sections: tokens, type, color, components, ambient telemetry, scrollbars, voice, do/don't.</p>
+      </a>
+      <a class="card" href="Cowork Implementation Guide.md">
+        <span class="card-tag doc">For Claude Code</span>
+        <div class="card-name">Implement <span class="card-arrow">→</span></div>
+        <p class="card-desc">How to build every design here into the real Vite + React + Tailwind codebase, page by page.</p>
+      </a>
+      <a class="card" href="Cowork Update Guide.md">
+        <span class="card-tag doc">For Claude Cowork</span>
+        <div class="card-name">Maintain <span class="card-arrow">→</span></div>
+        <p class="card-desc">How to update these artifacts: project map, date-change procedure, rebuild steps, verification.</p>
+      </a>
+    </div>
+  </div>
+
+  <div class="foot">
+    <span><span class="dot">●</span> ALL SYSTEMS NOMINAL</span>
+    <span>39.87°N · 104.97°W · SOL 19,914</span>
+  </div>
+</div>
+</body>
+</html>
