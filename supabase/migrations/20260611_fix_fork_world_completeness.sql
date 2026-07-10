@@ -1,6 +1,8 @@
 -- ============================================================
 -- SF2 Phase 0 — Bug fix #2: fork_world completeness
--- Status: WRITTEN FOR REVIEW — NOT YET APPLIED TO PRODUCTION
+-- Status: APPLIED TO PRODUCTION 2026-07-10 — verified end-to-end
+-- (synthetic source world forked; all 7 bug-fixes + zero cross-world
+--  leakage confirmed, then test data removed).
 -- ============================================================
 --
 -- The original fork_world (20260405_add_community_worlds.sql) deep-copies

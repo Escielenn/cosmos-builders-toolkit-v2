@@ -1,5 +1,28 @@
 # StellarForge Changelog
 
+## 0.6702
+fork_world completeness fix — applied and verified in production.
+
+- FIXED: fork_world silently corrupted/dropped data on every fork. The
+  replacement (written 2026-06-11, now applied) fixes all seven defects:
+  world_entries parent tree flattening (children orphaned to root);
+  lost entry icon/color/tags/tool_data_id; unmapped worksheet IDs;
+  world_connections never copied; chronicle_events (timeline) never
+  copied; entity graph_x/y/pinned layout lost; entity_worksheets
+  provenance links never copied. Signature/validation/license/
+  fork_count behavior unchanged (no client change).
+- Verified end-to-end against production: built a synthetic source world
+  with nested entries, nested events, entity hierarchy + graph layout,
+  entity/world connections, worksheet links, and notes; forked it;
+  confirmed all 14 layer/tree assertions pass and zero cross-world
+  reference leaks; removed the test data.
+- Deliberately not copied (documented policy): world_versions,
+  document_versions, simulation_saves.
+- Note: pre-existing forks damaged by the old function are unchanged;
+  a repair pass is future work (SF-II Phase B0 — needs the merge
+  provenance map).
+
+
 ## 0.6692
 Comprehensive security review + repairs (all verified in production).
 
