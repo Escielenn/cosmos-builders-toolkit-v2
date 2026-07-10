@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Check, Pencil, X } from "lucide-react";
 import { ENTITY_MASTER_FIELDS, type MasterFieldDef } from "@/lib/entity-config";
 import { useUpdateEntityMetadata } from "@/hooks/use-world-entities";
+import { sanitizeHtml } from "@/lib/sanitize";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -171,7 +172,7 @@ function ReadOnlyField({
         </span>
         <div
           className="text-xs text-t2 mt-0.5 prose prose-invert prose-sm max-w-none"
-          dangerouslySetInnerHTML={{ __html: String(value ?? "") }}
+          dangerouslySetInnerHTML={{ __html: sanitizeHtml(String(value ?? "")) }}
         />
       </div>
     );

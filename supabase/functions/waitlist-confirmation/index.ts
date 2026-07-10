@@ -23,10 +23,29 @@ Deno.serve(async (req) => {
       });
     }
 
+    // Per-IP throttle: max 5 signups per hour per source IP.
+    const ip = (req.headers.get("x-forwarded-for") ?? "unknown").split(",")[0].trim();
+    const ipBytes = new TextEncoder().encode(`sf-waitlist|${ip}`);
+    const digest = await crypto.subtle.digest("SHA-256", ipBytes);
+    const ipHash = Array.from(new Uint8Array(digest)).slice(0, 16)
+      .map((b) => b.toString(16).padStart(2, "0")).join("");
+    const hourAgo = new Date(Date.now() - 3_600_000).toISOString();
+    const { count } = await supabaseAdmin
+      .from("waitlist")
+      .select("id", { count: "exact", head: true })
+      .eq("ip_hash", ipHash)
+      .gte("created_at", hourAgo);
+    if ((count ?? 0) >= 5) {
+      return new Response(JSON.stringify({ error: "rate_limited" }), {
+        status: 429,
+        headers: { ...cors, "Content-Type": "application/json" },
+      });
+    }
+
     // Idempotent insert — duplicates are a success from the user's view
     const { error: insertError } = await supabaseAdmin
       .from("waitlist")
-      .insert({ email: clean, source: typeof source === "string" ? source.slice(0, 64) : "early-landing" });
+      .insert({ email: clean, ip_hash: ipHash, source: typeof source === "string" ? source.slice(0, 64) : "early-landing" });
 
     const isDuplicate = insertError?.code === "23505";
     if (insertError && !isDuplicate) throw insertError;

@@ -1,5 +1,37 @@
 # StellarForge Changelog
 
+## 0.6692
+Comprehensive security review + repairs (all verified in production).
+
+- FIXED (high): writing_entry_entities RLS was `auth.uid() IS NOT NULL`
+  for ALL commands — any signed-in user could read/create/delete any
+  user's writing↔entity links. Applied the Phase-0 owner-scoped policy
+  migration (had been written 2026-06-11 but never applied).
+- FIXED (high): entity_connections_bidirectional view was SECURITY
+  DEFINER (Supabase advisor ERROR) — bypassed caller RLS, exposing all
+  users' graph edges to any authenticated user. Now security_invoker;
+  owner/collaborator/community policies verified intact.
+- FIXED (medium): stored-XSS defense-in-depth — added DOMPurify and a
+  shared sanitizeHtml(); all 7 dangerouslySetInnerHTML sites (wiki,
+  chronicle, infobox, writing panels, compile) now sanitize. CSP
+  (script-src 'self') remains the first wall; this is the second.
+- FIXED (medium): waitlist-confirmation v2 — per-IP throttle (5/hour,
+  SHA-256-hashed IPs, 429 beyond). Verified live: 5 pass, 6th → 429.
+- FIXED (low): audio-tracks bucket allowed ANYONE to enumerate all
+  users' file paths; listing now owner-scoped (playback via public
+  URLs unaffected). Pinned trim_document_versions search_path.
+- AUDITED clean: no secrets in repo or git history (only VITE_
+  publishable values, public by design); CSP strict (no unsafe-inline
+  scripts); edge functions verify JWT + CORS allow-listed origins;
+  Stripe webhook sig handling untouched; new manuscript tables all
+  owner-scoped RLS; waitlist/admin_todos policy-less BY DESIGN (now
+  documented in schema comments).
+- Remaining (flagged, not applied): fork_world completeness fix
+  migration (data integrity, awaiting Jason's review); advisor WARNs
+  about EXECUTE grants on SECURITY DEFINER functions are the intended
+  share-link/subscription helpers.
+
+
 ## 0.6682
 Manuscript editor + ambient telemetry (Implementation Guide phases 4–5) + connective audit.
 

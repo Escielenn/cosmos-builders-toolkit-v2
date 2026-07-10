@@ -17,6 +17,7 @@ import { useConnectionSuggestions } from "@/hooks/use-connection-suggestions";
 import { useMyWorldRole } from "@/hooks/use-collaborators";
 import FirstTimeHint from "@/components/onboarding/FirstTimeHint";
 import { EntryTagsBar } from "@/components/tags/EntryTagsBar";
+import { sanitizeHtml } from "@/lib/sanitize";
 
 const WikiEditor = lazy(() =>
   import("@/components/editor/WikiEditor").then((m) => ({
@@ -388,7 +389,7 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
       ) : entry.content ? (
         <div
           className="sf-wiki-content"
-          dangerouslySetInnerHTML={{ __html: processedContent }}
+          dangerouslySetInnerHTML={{ __html: sanitizeHtml(processedContent) }}
         />
       ) : (
         <div className="sf-wiki-draft-prompt">

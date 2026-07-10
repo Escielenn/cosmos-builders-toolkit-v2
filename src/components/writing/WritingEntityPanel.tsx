@@ -33,6 +33,7 @@ import type {
   CascadeStage,
 } from "@/services/entity-graph-types";
 import { EntityHistory } from "@/components/world/EntityHistory";
+import { sanitizeHtml } from "@/lib/sanitize";
 
 // ---------------------------------------------------------------------------
 // Props
@@ -252,7 +253,7 @@ export function WritingEntityPanel({
                 <div
                   className="text-xs text-t2 leading-relaxed prose prose-sm prose-invert max-w-none [&_p]:my-1 [&_h1]:text-sm [&_h2]:text-xs [&_h3]:text-xs"
                   dangerouslySetInnerHTML={{
-                    __html: selectedEntity.description,
+                    __html: sanitizeHtml(selectedEntity.description),
                   }}
                 />
               </div>

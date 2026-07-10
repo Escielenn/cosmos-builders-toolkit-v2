@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { ExternalLink } from "lucide-react";
 import type { ChronicleEvent, CalendarConfig } from "@/services/chronicle-data";
 import { LAYER_COLORS } from "@/services/chronicle-data";
+import { sanitizeHtml } from "@/lib/sanitize";
 
 interface EventCardProps {
   event: ChronicleEvent;
@@ -80,7 +81,7 @@ export function EventCard({
       {event.description && (
         <div
           className="sf-chronicle-description"
-          dangerouslySetInnerHTML={{ __html: event.description }}
+          dangerouslySetInnerHTML={{ __html: sanitizeHtml(event.description) }}
         />
       )}
 

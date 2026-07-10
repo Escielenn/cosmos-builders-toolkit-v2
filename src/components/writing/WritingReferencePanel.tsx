@@ -29,6 +29,7 @@ import { useWorksheets } from "@/hooks/use-worksheets";
 import { TOOL_PAGE_CONFIGS } from "@/lib/tool-page-config";
 import { getToolIcon } from "@/components/icons/tool-icons";
 import type { DocumentSnapshot } from "@/hooks/use-document-versions";
+import { sanitizeHtml } from "@/lib/sanitize";
 
 // ---------------------------------------------------------------------------
 // Props
@@ -400,7 +401,7 @@ export function WritingReferencePanel({
                     {isExpanded && note.content && (
                       <div
                         className="mt-2 text-xs text-t2 leading-relaxed prose prose-sm prose-invert max-w-none [&_p]:my-1 [&_h1]:text-sm [&_h2]:text-xs [&_h3]:text-xs max-h-[300px] overflow-y-auto sf-custom-scrollbar"
-                        dangerouslySetInnerHTML={{ __html: note.content }}
+                        dangerouslySetInnerHTML={{ __html: sanitizeHtml(note.content) }}
                       />
                     )}
                   </div>
@@ -509,7 +510,7 @@ export function WritingReferencePanel({
                   <div
                     className="text-xs text-t2 max-h-[200px] overflow-y-auto sf-custom-scrollbar prose prose-sm prose-invert max-w-none [&_p]:my-1 [&_h1]:text-sm [&_h2]:text-xs [&_h3]:text-xs"
                     dangerouslySetInnerHTML={{
-                      __html: previewSnapshot.content,
+                      __html: sanitizeHtml(previewSnapshot.content),
                     }}
                   />
                   <button

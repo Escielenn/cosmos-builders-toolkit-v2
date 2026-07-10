@@ -37,6 +37,7 @@ import {
 } from "@/lib/manuscript-compile";
 import type { WorldEntry } from "@/services/world-data";
 import { cn } from "@/lib/utils";
+import { sanitizeHtml } from "@/lib/sanitize";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -415,7 +416,7 @@ export default function WorldCompile() {
                           </h4>
                           <div
                             className="prose prose-invert prose-sm max-w-none text-t2 leading-relaxed"
-                            dangerouslySetInnerHTML={{ __html: ch.content }}
+                            dangerouslySetInnerHTML={{ __html: sanitizeHtml(ch.content) }}
                           />
                           {i < chapters.length - 1 && (
                             <div className="mt-6 border-t border-dashed border-white/10" />
