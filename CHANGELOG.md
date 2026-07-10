@@ -1,5 +1,30 @@
 # StellarForge Changelog
 
+## 0.6672
+Studio Home — the writer's home at /studio (Cowork Implementation Guide phase 3).
+
+- Added: /studio (authed; redirects to /auth) in the WRITER register —
+  Lora italic voice, sentence case, no // prefixes, glowing status dots,
+  single footer telemetry strip (JD + coordinates). Zero radius, tokens only.
+- Modules: time-aware greeting with contextual sub-line from the last
+  writing session · 14-day streak strip with lit cells + three ledger
+  stats · continue-writing hero card (world crumb, title, THE actual
+  last sentence as a teal-bordered blockquote, deep-link into
+  /worlds/:id/write) · bookshelf of world covers (3:4, gradient + inset
+  frame + Lora titles, "+ Begin a new project" dashed tile) · cast grid
+  from character entities · scratchpad from world_notes · activity log ·
+  left rail (Projects / Workbench / Tools with real routes).
+- Data: useStudioData maps the guide's model onto the LIVE schema
+  (projects→worlds, manuscript→writing_entries, cast→entities,
+  scratchpad→world_notes); streaks derive from entry-touch dates until
+  the Phase-4 sessions/word_events rollup lands. Graceful empty states
+  throughout for new accounts.
+- Note: guide phase 4 (manuscript editor: binder, pins, @mentions,
+  inspector) requires new schema (binder_nodes, scenes, pins) that must
+  be designed WITH the SF-II canonical-model migration (no parallel
+  structures) — next session's work.
+
+
 ## 0.6662
 Launch infrastructure — /early waitlist page live (Cowork Implementation Guide phases 1–2).
 

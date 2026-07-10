@@ -40,6 +40,7 @@ import Auth from "./pages/Auth";
 const Profile = lazy(() => import("./pages/Profile"));
 const Pricing = lazy(() => import("./pages/Pricing"));
 const EarlyAccess = lazy(() => import("./pages/EarlyAccess"));
+const Studio = lazy(() => import("./pages/Studio"));
 const Roadmap = lazy(() => import("./pages/Roadmap"));
 const Features = lazy(() => import("./pages/Features"));
 const Guide = lazy(() => import("./pages/Guide"));
@@ -191,6 +192,8 @@ const App = () => (
                 <Route path="/" element={<Index />} />
                 {/* Public launch waitlist (Cowork Implementation Guide §2) */}
                 <Route path="/early" element={<EarlyAccess />} />
+                {/* Writer-register studio home (Cowork Implementation Guide §3) */}
+                <Route path="/studio" element={<Studio />} />
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/pricing" element={<Pricing />} />
