@@ -10,6 +10,7 @@ import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { StellarForgeEditor } from "@/components/editor/StellarForgeEditor";
 import { WritingEntityPanel } from "@/components/writing/WritingEntityPanel";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { useToast } from "@/hooks/use-toast";
 import {
   useWritingDocuments, useCreateDocument, useUpdateDocumentContent,
@@ -48,6 +49,7 @@ export default function Write(): JSX.Element {
 
   const [focus, setFocus] = useState(false);
   const [inspector, setInspector] = useState<"entities" | "reference">("entities");
+  const [mobilePanel, setMobilePanel] = useState<"binder" | "inspector" | null>(null);
   const [title, setTitle] = useState("");
   const [savedAt, setSavedAt] = useState<Date | null>(null);
   const [words, setWords] = useState(0);
@@ -117,6 +119,74 @@ export default function Write(): JSX.Element {
   if (!loading && !user) return <Navigate to="/auth" replace />;
   if (!docLoading && doc === null) return <Navigate to="/studio" replace />;
 
+  // open a doc from the binder; on mobile also close the sheet
+  const openDoc = (id: string) => {
+    navigate(`/write/${id}`);
+    setMobilePanel(null);
+  };
+
+  // Shared binder content (renders in the desktop column AND the mobile sheet)
+  const binderContent = (
+    <div className="flex h-full min-h-0 flex-col border-r border-sf-border">
+      <div className="sf-sb sf-sb--slim min-h-0 flex-1 overflow-y-auto py-3">
+        {folders.map(({ folder, docs }) => (
+          <div key={folder.id} className="mb-2">
+            <div className="px-3 py-1 font-heading text-[11px] uppercase tracking-[1.5px] text-t4">{folder.title}</div>
+            {docs.map((d) => (
+              <DocRow key={d.id} d={d} active={d.id === docId} onOpen={() => openDoc(d.id)} />
+            ))}
+          </div>
+        ))}
+        {unfiled.map((d) => (
+          <DocRow key={d.id} d={d} active={d.id === docId} onOpen={() => openDoc(d.id)} />
+        ))}
+        {(entries?.length ?? 0) === 0 && (
+          <p className="px-3 py-4 font-serif text-[13px] italic text-t4">No documents yet.</p>
+        )}
+      </div>
+      {worldId && (
+        <div className="flex gap-1 border-t border-sf-border p-2">
+          <button onClick={newDocument} className="min-h-[40px] flex-1 border border-sf-border px-2 py-1.5 text-[11px] text-t2 transition-colors hover:border-sf-teal hover:text-t1">+ Document</button>
+          <button onClick={() => createFolder.mutate("New folder")} className="min-h-[40px] flex-1 border border-sf-border px-2 py-1.5 text-[11px] text-t2 transition-colors hover:border-sf-teal hover:text-t1">+ Folder</button>
+        </div>
+      )}
+    </div>
+  );
+
+  // Shared inspector content (desktop column AND mobile sheet)
+  const inspectorContent = worldId ? (
+    <div className="sf-sb sf-sb--slim flex h-full min-h-0 flex-col overflow-y-auto border-l border-sf-border">
+      <div className="flex border-b border-sf-border" role="tablist" aria-label="Inspector">
+        {(["entities", "reference"] as const).map((t) => (
+          <button key={t} role="tab" aria-selected={inspector === t} onClick={() => setInspector(t)}
+            className={`min-h-[44px] flex-1 border-b-2 px-3 py-2.5 text-[12px] capitalize transition-colors ${inspector === t ? "border-sf-teal text-t1" : "border-transparent text-t3 hover:text-t1"}`}>
+            {t === "entities" ? "Entities" : "References"}
+          </button>
+        ))}
+      </div>
+      {inspector === "entities" && (
+        <WritingEntityPanel
+          worldId={worldId}
+          open
+          onToggle={() => {}}
+          onInsertMention={(name) => insertIntoEditor(`@${name} `)}
+          onInsertWikiLink={(name) => insertIntoEditor(`[[${name}]]`)}
+          onPinEntity={(e: Entity) => toast({ title: `Pinned ${e.name}` })}
+          embedded
+        />
+      )}
+      {inspector === "reference" && (
+        <div className="p-4">
+          <p className="mb-3 font-serif text-[13px] italic text-t4">
+            Notes, worksheets, and pinned references from this world.
+          </p>
+          <Link to={`/worlds/${worldId}/wiki`} className="block border border-sf-border px-3 py-2 text-[13px] text-t2 transition-colors hover:border-sf-teal hover:text-t1">Open the wiki →</Link>
+          <Link to={`/worlds/${worldId}/graph`} className="mt-2 block border border-sf-border px-3 py-2 text-[13px] text-t2 transition-colors hover:border-sf-teal hover:text-t1">Open the entity graph →</Link>
+        </div>
+      )}
+    </div>
+  ) : null;
+
   return (
     <div className="relative z-10 grid h-screen grid-rows-[44px_1fr_32px] bg-[hsl(var(--sf-void))]">
       {/* topbar */}
@@ -145,8 +215,23 @@ export default function Write(): JSX.Element {
           )}
           <span className="truncate font-serif italic text-t2">{doc?.title || "Untitled"}</span>
         </div>
-        <div className="ml-auto flex items-center gap-3">
+        <div className="ml-auto flex items-center gap-2">
           <span className="hidden font-mono text-[10px] tracking-[1px] text-t4 sm:block">● {words.toLocaleString()} words</span>
+          {/* mobile panel toggles — binder + inspector are sheets below lg */}
+          {!focus && (
+            <>
+              <button onClick={() => setMobilePanel("binder")}
+                className="border border-sf-border px-2.5 py-1 text-[11px] text-t3 transition-colors hover:border-sf-teal hover:text-t1 lg:hidden">
+                Docs
+              </button>
+              {worldId && (
+                <button onClick={() => setMobilePanel("inspector")}
+                  className="border border-sf-border px-2.5 py-1 text-[11px] text-t3 transition-colors hover:border-sf-teal hover:text-t1 lg:hidden">
+                  Entities
+                </button>
+              )}
+            </>
+          )}
           <button onClick={() => setFocus(!focus)}
             className={`border px-2.5 py-1 text-[11px] transition-colors ${focus ? "border-sf-teal text-sf-teal" : "border-sf-border text-t3 hover:text-t1"}`}>
             Focus
@@ -154,34 +239,24 @@ export default function Write(): JSX.Element {
         </div>
       </header>
 
+      {/* mobile slide-over: binder */}
+      <Sheet open={mobilePanel === "binder"} onOpenChange={(o) => !o && setMobilePanel(null)}>
+        <SheetContent side="left" className="w-[280px] border-sf-border bg-sf-surface/95 p-0">
+          <div className="flex h-full flex-col pt-8">{binderContent}</div>
+        </SheetContent>
+      </Sheet>
+      {/* mobile slide-over: inspector */}
+      <Sheet open={mobilePanel === "inspector"} onOpenChange={(o) => !o && setMobilePanel(null)}>
+        <SheetContent side="right" className="w-[320px] border-sf-border bg-sf-surface/95 p-0">
+          <div className="flex h-full flex-col pt-8">{inspectorContent}</div>
+        </SheetContent>
+      </Sheet>
+
       {/* body */}
       <div className={`grid min-h-0 ${focus ? "grid-cols-1" : "grid-cols-1 lg:grid-cols-[260px_1fr_320px]"}`}>
-        {/* binder */}
+        {/* binder (desktop column) */}
         {!focus && (
-          <aside className="sf-sb sf-sb--slim hidden min-h-0 flex-col overflow-y-auto border-r border-sf-border lg:flex">
-            <div className="flex-1 py-3">
-              {folders.map(({ folder, docs }) => (
-                <div key={folder.id} className="mb-2">
-                  <div className="px-3 py-1 font-heading text-[11px] uppercase tracking-[1.5px] text-t4">{folder.title}</div>
-                  {docs.map((d) => (
-                    <DocRow key={d.id} d={d} active={d.id === docId} onOpen={() => navigate(`/write/${d.id}`)} />
-                  ))}
-                </div>
-              ))}
-              {unfiled.map((d) => (
-                <DocRow key={d.id} d={d} active={d.id === docId} onOpen={() => navigate(`/write/${d.id}`)} />
-              ))}
-              {(entries?.length ?? 0) === 0 && (
-                <p className="px-3 py-4 font-serif text-[13px] italic text-t4">No documents yet.</p>
-              )}
-            </div>
-            {worldId && (
-              <div className="flex gap-1 border-t border-sf-border p-2">
-                <button onClick={newDocument} className="flex-1 border border-sf-border px-2 py-1.5 text-[11px] text-t2 transition-colors hover:border-sf-teal hover:text-t1">+ Document</button>
-                <button onClick={() => createFolder.mutate("New folder")} className="flex-1 border border-sf-border px-2 py-1.5 text-[11px] text-t2 transition-colors hover:border-sf-teal hover:text-t1">+ Folder</button>
-              </div>
-            )}
-          </aside>
+          <aside className="hidden min-h-0 lg:flex">{binderContent}</aside>
         )}
 
         {/* editor */}
@@ -214,38 +289,9 @@ export default function Write(): JSX.Element {
           </div>
         </main>
 
-        {/* inspector — the full entity/reference tool */}
+        {/* inspector — the full entity/reference tool (desktop column) */}
         {!focus && worldId && (
-          <aside className="sf-sb sf-sb--slim hidden min-h-0 overflow-y-auto border-l border-sf-border lg:block">
-            <div className="flex border-b border-sf-border" role="tablist" aria-label="Inspector">
-              {(["entities", "reference"] as const).map((t) => (
-                <button key={t} role="tab" aria-selected={inspector === t} onClick={() => setInspector(t)}
-                  className={`flex-1 border-b-2 px-3 py-2.5 text-[12px] capitalize transition-colors ${inspector === t ? "border-sf-teal text-t1" : "border-transparent text-t3 hover:text-t1"}`}>
-                  {t === "entities" ? "Entities" : "References"}
-                </button>
-              ))}
-            </div>
-            {inspector === "entities" && (
-              <WritingEntityPanel
-                worldId={worldId}
-                open
-                onToggle={() => {}}
-                onInsertMention={(name) => insertIntoEditor(`@${name} `)}
-                onInsertWikiLink={(name) => insertIntoEditor(`[[${name}]]`)}
-                onPinEntity={(e: Entity) => toast({ title: `Pinned ${e.name}` })}
-                embedded
-              />
-            )}
-            {inspector === "reference" && (
-              <div className="p-4">
-                <p className="mb-3 font-serif text-[13px] italic text-t4">
-                  Notes, worksheets, and pinned references from this world.
-                </p>
-                <Link to={`/worlds/${worldId}/wiki`} className="block border border-sf-border px-3 py-2 text-[13px] text-t2 transition-colors hover:border-sf-teal hover:text-t1">Open the wiki →</Link>
-                <Link to={`/worlds/${worldId}/graph`} className="mt-2 block border border-sf-border px-3 py-2 text-[13px] text-t2 transition-colors hover:border-sf-teal hover:text-t1">Open the entity graph →</Link>
-              </div>
-            )}
-          </aside>
+          <aside className="hidden min-h-0 lg:block">{inspectorContent}</aside>
         )}
       </div>
 

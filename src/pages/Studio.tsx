@@ -58,7 +58,7 @@ function Topbar({ displayName }: { displayName: string }): JSX.Element {
   ];
   return (
     <header className="sticky top-0 z-40 flex h-[52px] items-stretch border-b border-sf-border bg-sf-void/90 backdrop-blur-sf-panel">
-      <Link to="/" className="flex items-center gap-2.5 border-r border-sf-border px-[22px]">
+      <Link to="/" className="flex shrink-0 items-center gap-2.5 border-r border-sf-border px-4 md:px-[22px]">
         <svg width="16" height="16" viewBox="0 0 40 40" fill="none" className="opacity-85" aria-hidden="true">
           <path d="M20 4 L34 12 L34 28 L20 36 L6 28 L6 12 Z" style={{ stroke: "hsl(var(--sf-teal))" }} strokeWidth="1.4" />
           <path d="M20 4 L20 20 M20 20 L6 12 M20 20 L34 12" style={{ stroke: "hsl(var(--sf-teal))" }} strokeWidth="1.2" opacity="0.7" />
@@ -67,15 +67,15 @@ function Topbar({ displayName }: { displayName: string }): JSX.Element {
           <span className="font-display text-[15px] font-light tracking-sf-title text-t1">
             <span className="text-sf-teal">Stellar</span>forge
           </span>
-          <span className="font-serif text-[14px] italic text-t2">Studio</span>
+          <span className="hidden font-serif text-[14px] italic text-t2 sm:inline">Studio</span>
         </span>
       </Link>
-      <nav className="hidden flex-1 items-stretch px-4 md:flex">
+      <nav className="sf-sb sf-sb--slim flex flex-1 items-stretch overflow-x-auto px-2 md:px-4">
         {tabs.map((t) => (
           <Link
             key={t.label}
             to={t.to}
-            className={`flex items-center border-b-2 px-4 text-[13px] transition-colors ${
+            className={`flex shrink-0 items-center whitespace-nowrap border-b-2 px-3 text-[13px] transition-colors md:px-4 ${
               t.active
                 ? "border-sf-teal text-t1"
                 : "border-transparent text-t3 hover:text-t2"
@@ -85,8 +85,8 @@ function Topbar({ displayName }: { displayName: string }): JSX.Element {
           </Link>
         ))}
       </nav>
-      <div className="ml-auto flex items-center gap-3 px-[18px]">
-        <span className="font-serif text-[13px] italic text-t3">{displayName}</span>
+      <div className="ml-auto flex shrink-0 items-center gap-3 px-3 md:px-[18px]">
+        <span className="hidden font-serif text-[13px] italic text-t3 sm:inline">{displayName}</span>
         <span className="relative flex h-2 w-2">
           <span className="absolute inline-flex h-full w-full animate-sf-pulse bg-sf-teal opacity-60" />
           <span className="relative inline-flex h-2 w-2 bg-sf-teal" />
@@ -235,14 +235,14 @@ export default function Studio(): JSX.Element {
                 })}
               </div>
             </div>
-            <div className="flex gap-10">
+            <div className="flex gap-5 sm:gap-10">
               {[
                 { n: data?.wordsToday ?? 0, label: "words touched today" },
                 { n: data?.totalWords ?? 0, label: "words in the archive" },
                 { n: data?.entriesThisMonth ?? 0, label: "pieces this month" },
               ].map((s) => (
                 <div key={s.label}>
-                  <div className="font-serif text-[26px] text-t1">{s.n.toLocaleString()}</div>
+                  <div className="font-serif text-[22px] text-t1 sm:text-[26px]">{s.n.toLocaleString()}</div>
                   <div className="font-serif text-[12px] italic text-t4">{s.label}</div>
                 </div>
               ))}
@@ -314,12 +314,24 @@ export default function Studio(): JSX.Element {
               {(data?.worlds ?? []).slice(0, 4).map((w, i) => (
                 <Link key={w.id} to={`/worlds/${w.id}`} className="group block">
                   <div
-                    className="relative aspect-[3/4] border border-sf-border p-3 transition-transform group-hover:-translate-y-0.5"
-                    style={{ background: COVER_GRADIENTS[i % COVER_GRADIENTS.length] }}
+                    className="relative aspect-[3/4] overflow-hidden border border-sf-border transition-transform group-hover:-translate-y-0.5"
+                    style={w.header_image_url ? undefined : { background: COVER_GRADIENTS[i % COVER_GRADIENTS.length] }}
                   >
-                    <div className="absolute inset-2 border border-sf-border" aria-hidden="true" />
-                    <div className="relative flex h-full items-end p-2">
-                      <span className="font-serif text-[15px] italic leading-snug text-t1">{w.name}</span>
+                    {/* the world's chosen header image as the cover, if set */}
+                    {w.header_image_url && (
+                      <img
+                        src={w.header_image_url}
+                        alt=""
+                        loading="lazy"
+                        className="absolute inset-0 h-full w-full object-cover"
+                        style={{ objectPosition: `50% ${w.header_image_focus_y ?? 50}%` }}
+                      />
+                    )}
+                    {/* readability gradient so the title reads over any image */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-[hsl(var(--sf-void))]/85 via-[hsl(var(--sf-void))]/20 to-transparent" aria-hidden="true" />
+                    <div className="absolute inset-2 border border-white/10" aria-hidden="true" />
+                    <div className="relative flex h-full items-end p-3">
+                      <span className="font-serif text-[15px] italic leading-snug text-t1 drop-shadow">{w.name}</span>
                     </div>
                   </div>
                   <div className="mt-2 font-serif text-[12px] italic text-t4">

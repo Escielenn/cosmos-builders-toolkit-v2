@@ -1,5 +1,24 @@
 # StellarForge Changelog
 
+## 0.6762
+Mobile pass for Studio + editor, and world-image bookshelf covers.
+
+- Editor (/write) is now usable on mobile: the binder and inspector were
+  hidden below lg with no access. Added "Docs" and "Entities" toggles in
+  the topbar that open them as slide-over sheets (shared content with the
+  desktop columns — no duplication). Touch targets ≥40–44px. The
+  "← Studio" back button was already mobile-visible.
+- Studio home mobile: the topbar nav (Studio/Worlds/Bookshelf/Community)
+  is now a horizontally-scrollable row instead of hidden below md;
+  wordmark/name condense on small screens; streak ledger stats tighten
+  their gaps at 375px.
+- Removed the global StatusBar from the /write editor — it overlapped the
+  editor's own status footer (double bottom bar). Kept everywhere else.
+- Bookshelf covers now use each world's chosen header image
+  (header_image_url + focus_y as object-position) with a readability
+  gradient, falling back to the tonal gradient when a world has no image.
+
+
 ## 0.6752
 Writing-space unification (final) + telemetry polish.
 

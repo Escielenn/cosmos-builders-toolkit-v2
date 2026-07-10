@@ -58,13 +58,16 @@ const StatusBar = () => {
   const isSimulator = SIMULATOR_ROUTES.some(
     (route) => pathname === route || pathname.startsWith(route + "/")
   );
+  // The manuscript editor is a focused full-screen surface with its own
+  // status footer — the global bar would overlap it.
+  const isEditor = pathname.startsWith("/write");
 
   useEffect(() => {
     const interval = setInterval(() => setElapsed((s) => s + 1), 1000);
     return () => clearInterval(interval);
   }, []);
 
-  if (isSimulator) return null;
+  if (isSimulator || isEditor) return null;
 
   const today = new Date().toISOString().slice(0, 10).replace(/-/g, ".");
   const sector = getSectorLabel(pathname);

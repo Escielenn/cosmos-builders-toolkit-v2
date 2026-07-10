@@ -15,6 +15,8 @@ export interface StudioWorld {
   name: string;
   description: string | null;
   updated_at: string;
+  header_image_url: string | null;
+  header_image_focus_y: number | null;
 }
 
 export interface StudioEntry {
@@ -74,7 +76,7 @@ export function useStudioData() {
       const [worldsRes, entriesRes, charsRes, notesRes] = await Promise.all([
         supabase
           .from("worlds")
-          .select("id, name, description, updated_at")
+          .select("id, name, description, updated_at, header_image_url, header_image_focus_y")
           .eq("user_id", uid)
           .is("archived_at", null)
           .order("updated_at", { ascending: false })
