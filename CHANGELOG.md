@@ -1,5 +1,32 @@
 # StellarForge Changelog
 
+## 0.6712
+Backlog Tier 0/1 — DB performance sweep + auth resilience.
+
+- PERF (DB): wrapped every bare auth.uid()/auth.role()/auth.jwt() in RLS
+  policies as (select ...) scalar subqueries so the planner evaluates
+  them once per statement instead of per row (~80 auth_rls_initplan
+  advisor warnings → 0). Done via a transactional, sentinel-safe
+  rewrite; RLS semantics verified unchanged (owner sees own rows, not
+  others'). Zero truly-bare calls remain.
+- PERF (DB): added covering indexes on all 26 unindexed foreign keys
+  (faster joins + cascade deletes).
+- RESILIENCE: AuthContext no longer hangs forever when the backend is
+  unreachable (the paused-DB failure mode). getSession() now races a
+  10s timeout and catches rejection; on failure the app shows a
+  branded, retryable "connection lost" overlay ("your worlds are safe")
+  with a Reconnect button instead of an infinite spinner. connectionError
+  is exposed on the auth context.
+- Deliberately NOT changed: multiple_permissive_policies warnings are
+  inherent to the owner/collaborator/community access model —
+  consolidating would risk access semantics for marginal gain (backlog).
+  Bundle: verified @react-pdf (1.6MB) + lucide are already off the
+  first-paint path via manualChunks; deeper defer-to-export-click is a
+  risky 54-file refactor left for a measured pass.
+- Applied to production: perf_index_unindexed_fks, perf_wrap_auth_initplan
+  (migrations mirrored in supabase/migrations for repo history).
+
+
 ## 0.6702
 fork_world completeness fix — applied and verified in production.
 

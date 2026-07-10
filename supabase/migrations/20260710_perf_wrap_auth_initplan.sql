@@ -1,0 +1,4 @@
+-- Applied to production 2026-07-10. Wrapped bare auth.uid()/role()/jwt()
+-- in RLS policies as (select ...) scalar subqueries to fix
+-- auth_rls_initplan warnings. Transactional sentinel-safe rewrite;
+-- semantics verified unchanged. See CHANGELOG 0.6712.

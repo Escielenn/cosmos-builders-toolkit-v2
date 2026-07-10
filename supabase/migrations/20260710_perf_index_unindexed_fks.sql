@@ -1,0 +1,3 @@
+-- Applied to production 2026-07-10. Covering indexes for unindexed FKs
+-- (advisor: unindexed_foreign_keys). See CHANGELOG 0.6712.
+-- Full statements executed via Supabase migration of the same name.
