@@ -64,6 +64,16 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
     dismissSuggestion,
   } = useConnectionSuggestions(worldId, entryId);
 
+  // One writing surface: prose entries (documents/lore) open in Studio,
+  // not the wiki's inline editor. The wiki remains the codex/registry for
+  // entities, tool outputs, and notes. (Jason, 2026-07-10.)
+  const isProseDoc = entry?.entry_type === "document" || entry?.entry_type === "lore";
+  useEffect(() => {
+    if (isProseDoc && entry) {
+      navigate(`/write/${entry.id}`, { replace: true });
+    }
+  }, [isProseDoc, entry, navigate]);
+
   const isDraft = entry && !entry.content;
   const toolSource = entry?.tool_source;
   const layerLabel =
@@ -177,7 +187,8 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
     [user, entryId, updateCoverImage]
   );
 
-  if (isLoading) {
+  if (isLoading || isProseDoc) {
+    // isProseDoc → redirecting to Studio; show a loader, don't flash the wiki editor
     return (
       <div className="flex items-center justify-center h-64">
         <Loader size="sm" />

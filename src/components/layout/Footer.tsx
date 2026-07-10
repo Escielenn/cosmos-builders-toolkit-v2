@@ -3,7 +3,6 @@ import { Mail, Linkedin, Instagram } from "lucide-react";
 import CubeLogo from "@/components/icons/CubeLogo";
 import SubstackIcon from "@/components/icons/SubstackIcon";
 import { APP_VERSION } from "@/config/version";
-import { VelocityDial } from "@/components/ambient/VelocityDial";
 import { BuildSigil } from "@/components/ambient/BuildSigil";
 import { CommitTicker } from "@/components/ambient/CommitTicker";
 /* CosmicVelocityTicker removed, velocity data now in StatusBar */
@@ -79,7 +78,6 @@ const Footer = () => {
                   </span>
                 </div>
               </Link>
-              <VelocityDial className="hidden md:block w-28 shrink-0 ml-auto" />
             </div>
             <p className="text-sm text-t3 max-w-xs mb-6">
               Science-first worldbuilding tools for writers, game designers, and
@@ -204,7 +202,6 @@ const Footer = () => {
             </div>
             <div className="font-mono text-[11px] tracking-[0.18em] text-t5 text-center sm:text-right space-y-1">
               <p>39.87°N · 104.97°W</p>
-              <p>JD {(Math.round((Date.now() / 86_400_000 + 2440587.5) * 10) / 10).toFixed(1)}</p>
               <p><BuildSigil /></p>
               <p className="hidden sm:block"><CommitTicker /></p>
             </div>

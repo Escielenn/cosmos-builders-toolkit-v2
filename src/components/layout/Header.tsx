@@ -24,7 +24,6 @@ import BackgroundSelector from "@/components/settings/BackgroundSelector";
 import AudioSelectorDialog from "@/components/audio/AudioSelectorDialog";
 import SettingsDialog from "@/components/settings/SettingsDialog";
 import GlobalSearch from "@/components/search/GlobalSearch";
-import { JulianDayClock } from "@/components/ambient/JulianDayClock";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSubscription } from "@/hooks/use-subscription";
 import { useWorlds } from "@/hooks/use-worlds";
@@ -310,7 +309,6 @@ const Header = () => {
           </Sheet>
           <AudioSelectorDialog />
           <BackgroundSelector />
-          <JulianDayClock className="hidden lg:inline-flex" />
           <button
             className="sf-nav-link inline-flex items-center justify-center gap-2 h-9 px-2 text-t3 hover:text-primary transition-colors"
             onClick={() => setSearchOpen(true)}

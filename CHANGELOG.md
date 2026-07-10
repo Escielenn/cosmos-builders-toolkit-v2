@@ -1,5 +1,21 @@
 # StellarForge Changelog
 
+## 0.6752
+Writing-space unification (final) + telemetry polish.
+
+- Wiki no longer a second writing surface: prose entries (document/lore)
+  opened in the wiki now redirect to the Studio editor (/write/:id).
+  The wiki/registry remains the codex for entities, tool outputs, and
+  notes. One place to write your worlds; one place to browse them.
+- Removed the clunky boxed VelocityDial from the footer — it duplicated
+  the elegant inline velocity telemetry already in the StatusBar
+  (CMB/GALACTIC/SOLAR) and its overlapping labels didn't match the
+  product's polish.
+- Julian Day moved out of the top nav into the StatusBar telemetry strip
+  (its natural home beside the Sol counter and velocity readouts), with a
+  richer mouseover: "the continuous count of days astronomers use,
+  running since Jan 1, 4713 BCE. Today, in cosmic time."
+
 ## 0.6742
 Test suite — critical invariants encoded (backlog Tier 1).
 

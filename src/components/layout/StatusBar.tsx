@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import { JulianDayClock } from "@/components/ambient/JulianDayClock";
 import { SolCounter } from "@/components/ambient/SolCounter";
 import { LunarPhase } from "@/components/ambient/LunarPhase";
 import { TargetStar } from "@/components/ambient/TargetStar";
@@ -114,6 +115,8 @@ const StatusBar = () => {
         <span className="hidden md:inline text-t4">{today}</span>
         <span className="hidden lg:inline text-t5">·</span>
         <SolCounter className="hidden lg:inline" />
+        <span className="hidden xl:inline text-t5">·</span>
+        <JulianDayClock className="hidden xl:inline" />
       </div>
     </div>
   );
