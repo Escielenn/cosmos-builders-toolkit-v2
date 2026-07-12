@@ -18,6 +18,7 @@ import { PageBursts } from "@/components/ui/data-burst";
 import { TOOL_PAGE_BURSTS } from "@/lib/data-bursts";
 import { ToolPageQuote } from "@/components/quotes/ToolPageQuote";
 import ToolActionBar from "@/components/tools/ToolActionBar";
+import { CascadeFooter } from "@/components/tools/CascadeFooter";
 import ToolIntroSection from "@/components/tools/ToolIntroSection";
 import { TOOL_INTROS } from "@/lib/tool-intros";
 import { WorksheetTitle } from "@/components/tools/WorksheetTitle";
@@ -219,6 +220,9 @@ export default function ToolPageLayout({
 
         {/* ── Tool-specific content ─────────────────────────────── */}
         {children}
+
+        {/* ── The cascade: what this tool builds on / feeds into ── */}
+        <CascadeFooter toolType={toolType} />
       </main>
 
       {/* ── Cascade Suggestion (after save) ──────────────────── */}
