@@ -44,11 +44,13 @@ export function useWritingDocuments(worldId: string | undefined) {
   const query = useQuery<WorldEntry[]>({
     queryKey: docKeys.all(worldId!),
     queryFn: async () => {
-      const { data, error } = await supabase
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data, error } = await (supabase as any)
         .from("world_entries")
         .select("*")
         .eq("world_id", worldId!)
         .in("entry_type", ["document", "lore", "folder"])
+        .is("trashed_at", null)
         .order("updated_at", { ascending: false });
 
       if (error) throw error;
@@ -223,32 +225,102 @@ export function useRenameDocument(worldId: string | undefined) {
 // Delete a document
 // ---------------------------------------------------------------------------
 
+/** Move a document to the trash (soft delete — recoverable, auto-purged ~90d). */
 export function useDeleteDocument(worldId: string | undefined) {
   const { toast } = useToast();
   const qc = useQueryClient();
 
   return useMutation({
     mutationFn: async (docId: string) => {
-      const { error } = await supabase
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { error } = await (supabase as any)
         .from("world_entries")
-        .delete()
+        .update({ trashed_at: new Date().toISOString() })
         .eq("id", docId);
-
       if (error) throw error;
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: docKeys.all(worldId!) });
-      toast({ title: "DOCUMENT DELETED." });
+      qc.invalidateQueries({ queryKey: ["trashed-documents", worldId] });
+      toast({ title: "Moved to trash", description: "Recoverable for 90 days." });
     },
     onError: (error) => {
       toast({
-        title: "DELETE FAILED.",
-        description:
-          error instanceof Error ? error.message : "Could not delete document.",
+        title: "Delete failed",
+        description: error instanceof Error ? error.message : "Could not delete document.",
         variant: "destructive",
       });
     },
   });
+}
+
+/** Trashed documents for a world (the Trash section). */
+export function useTrashedDocuments(worldId: string | undefined) {
+  return useQuery<WorldEntry[]>({
+    queryKey: ["trashed-documents", worldId],
+    enabled: !!worldId,
+    queryFn: async () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data, error } = await (supabase as any)
+        .from("world_entries")
+        .select("*")
+        .eq("world_id", worldId!)
+        .in("entry_type", ["document", "lore"])
+        .not("trashed_at", "is", null)
+        .order("trashed_at", { ascending: false });
+      if (error) throw error;
+      return (data ?? []) as WorldEntry[];
+    },
+  });
+}
+
+/** Restore a trashed document. */
+export function useRestoreDocument(worldId: string | undefined) {
+  const { toast } = useToast();
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (docId: string) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { error } = await (supabase as any)
+        .from("world_entries")
+        .update({ trashed_at: null })
+        .eq("id", docId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: docKeys.all(worldId!) });
+      qc.invalidateQueries({ queryKey: ["trashed-documents", worldId] });
+      toast({ title: "Restored" });
+    },
+  });
+}
+
+/** Permanently delete a trashed document (empties one item). */
+export function usePurgeDocument(worldId: string | undefined) {
+  const { toast } = useToast();
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (docId: string) => {
+      const { error } = await supabase.from("world_entries").delete().eq("id", docId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["trashed-documents", worldId] });
+      toast({ title: "Deleted permanently" });
+    },
+  });
+}
+
+/** Purge trashed docs older than 90 days for a world (idempotent, fire-and-forget). */
+export async function purgeExpiredTrash(worldId: string): Promise<void> {
+  const cutoff = new Date(Date.now() - 90 * 86_400_000).toISOString();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  await (supabase as any)
+    .from("world_entries")
+    .delete()
+    .eq("world_id", worldId)
+    .not("trashed_at", "is", null)
+    .lt("trashed_at", cutoff);
 }
 
 // ---------------------------------------------------------------------------

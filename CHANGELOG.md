@@ -1,5 +1,22 @@
 # StellarForge Changelog
 
+## 0.6802
+Document delete + trash in Studio, and an accessibility pass.
+
+- Studio editor documents can now be deleted. Delete is a SOFT delete
+  (trash icon on each binder row, hover/focus-revealed): the document
+  moves to a Trash section in the binder, recoverable with one click,
+  and auto-purged after 90 days. "Delete forever" is available in Trash.
+  Additive world_entries.trashed_at column (applied to production;
+  verified the live/trash filters end-to-end). Auto-purge runs
+  idempotently on editor load.
+- Accessibility: all new trash/restore/delete controls carry aria-labels
+  + titles and reveal on keyboard focus (not hover-only); the binder row
+  is now a proper title-button + trash-button pair (no nested buttons).
+  Studio/landing surfaces audited — nav uses real links, inputs labelled.
+- Also in this batch: binder drag-reorder (0.6782) and snapshot
+  "restore as a new world" (0.6792) shipped earlier in the session.
+
 ## 0.6772
 World Influence panel — the cascade, brought into the writing flow.
 

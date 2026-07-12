@@ -25,7 +25,10 @@ import { useToast } from "@/hooks/use-toast";
 import {
   useWritingDocuments, useCreateDocument, useUpdateDocumentContent,
   useCreateFolder, useRenameDocument, useReorderDocuments,
+  useDeleteDocument, useTrashedDocuments, useRestoreDocument,
+  usePurgeDocument, purgeExpiredTrash,
 } from "@/hooks/use-writing-documents";
+import { Trash2, RotateCcw, X } from "lucide-react";
 import { useWriteDoc, useLatestDoc, rollWordSession, countWords } from "@/hooks/use-write-doc";
 import type { Entity } from "@/services/entity-graph-types";
 import type { WorldEntry } from "@/services/world-data";
@@ -56,6 +59,10 @@ export default function Write(): JSX.Element {
   const createDoc = useCreateDocument(worldId);
   const createFolder = useCreateFolder(worldId);
   const reorderDocs = useReorderDocuments(worldId);
+  const trashDoc = useDeleteDocument(worldId);
+  const restoreDoc = useRestoreDocument(worldId);
+  const purgeDoc = usePurgeDocument(worldId);
+  const { data: trashed } = useTrashedDocuments(worldId);
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
@@ -65,6 +72,7 @@ export default function Write(): JSX.Element {
   const [focus, setFocus] = useState(false);
   const [inspector, setInspector] = useState<"entities" | "world" | "reference">("entities");
   const [mobilePanel, setMobilePanel] = useState<"binder" | "inspector" | null>(null);
+  const [trashOpen, setTrashOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [savedAt, setSavedAt] = useState<Date | null>(null);
   const [words, setWords] = useState(0);
@@ -85,6 +93,11 @@ export default function Write(): JSX.Element {
     document.title = doc?.title ? `${doc.title} — Studio` : "Write — Studio";
     return () => { document.title = prev; };
   }, [doc?.title]);
+
+  // Auto-purge trash older than 90 days (idempotent, fire-and-forget)
+  useEffect(() => {
+    if (worldId) purgeExpiredTrash(worldId).catch(() => {});
+  }, [worldId]);
 
   // group binder: folders → their docs; unfiled docs at root
   const { folders, unfiled } = useMemo(() => {
@@ -160,7 +173,7 @@ export default function Write(): JSX.Element {
               onDragEnd={({ active, over }) => over && reorderList(docs, String(active.id), String(over.id))}>
               <SortableContext items={docs.map((d) => d.id)} strategy={verticalListSortingStrategy}>
                 {docs.map((d) => (
-                  <SortableDocRow key={d.id} d={d} active={d.id === docId} onOpen={() => openDoc(d.id)} />
+                  <SortableDocRow key={d.id} d={d} active={d.id === docId} onOpen={() => openDoc(d.id)} onTrash={() => trashDoc.mutate(d.id)} />
                 ))}
               </SortableContext>
             </DndContext>
@@ -170,12 +183,42 @@ export default function Write(): JSX.Element {
           onDragEnd={({ active, over }) => over && reorderList(unfiled, String(active.id), String(over.id))}>
           <SortableContext items={unfiled.map((d) => d.id)} strategy={verticalListSortingStrategy}>
             {unfiled.map((d) => (
-              <SortableDocRow key={d.id} d={d} active={d.id === docId} onOpen={() => openDoc(d.id)} />
+              <SortableDocRow key={d.id} d={d} active={d.id === docId} onOpen={() => openDoc(d.id)} onTrash={() => trashDoc.mutate(d.id)} />
             ))}
           </SortableContext>
         </DndContext>
         {(entries?.length ?? 0) === 0 && (
           <p className="px-3 py-4 font-serif text-[13px] italic text-t4">No documents yet.</p>
+        )}
+        {(trashed?.length ?? 0) > 0 && (
+          <div className="mt-3 border-t border-sf-border pt-2">
+            <button
+              onClick={() => setTrashOpen((o) => !o)}
+              className="flex w-full items-center gap-2 px-3 py-1.5 text-left font-heading text-[11px] uppercase tracking-[1.5px] text-t4 hover:text-t2"
+              aria-expanded={trashOpen}
+            >
+              <Trash2 className="h-3 w-3" /> Trash ({trashed!.length})
+              <span className="ml-auto text-[9px]">{trashOpen ? "▾" : "▸"}</span>
+            </button>
+            {trashOpen && (
+              <div className="pb-1">
+                <p className="px-3 pb-1 font-serif text-[11px] italic text-t5">Auto-emptied after 90 days.</p>
+                {trashed!.map((d) => (
+                  <div key={d.id} className="group flex items-center gap-1 pr-1">
+                    <span className="min-w-0 flex-1 truncate py-1.5 pl-3 font-serif text-[13px] text-t4 line-through">{d.title || "Untitled"}</span>
+                    <button onClick={() => restoreDoc.mutate(d.id)} aria-label={`Restore ${d.title || "Untitled"}`} title="Restore"
+                      className="shrink-0 p-1.5 text-t5 opacity-0 transition-opacity hover:text-sf-teal focus-visible:opacity-100 group-hover:opacity-100">
+                      <RotateCcw className="h-3.5 w-3.5" />
+                    </button>
+                    <button onClick={() => purgeDoc.mutate(d.id)} aria-label={`Delete ${d.title || "Untitled"} permanently`} title="Delete forever"
+                      className="shrink-0 p-1.5 text-t5 opacity-0 transition-opacity hover:text-sf-crimson focus-visible:opacity-100 group-hover:opacity-100">
+                      <X className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         )}
       </div>
       {worldId && (
@@ -355,20 +398,32 @@ function DocRow({ d, active, onOpen }: { d: WorldEntry; active: boolean; onOpen:
   );
 }
 
-/** Draggable binder row (dnd-kit). A short drag reorders; a click still opens. */
-function SortableDocRow({ d, active, onOpen }: { d: WorldEntry; active: boolean; onOpen: () => void }): JSX.Element {
+/** Draggable binder row (dnd-kit). Short drag reorders; click opens; trash on hover. */
+function SortableDocRow({ d, active, onOpen, onTrash }: { d: WorldEntry; active: boolean; onOpen: () => void; onTrash: () => void }): JSX.Element {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: d.id });
   return (
-    <button
+    <div
       ref={setNodeRef}
-      onClick={onOpen}
-      {...attributes}
-      {...listeners}
       style={{ transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.5 : 1 }}
-      className={`flex w-full touch-none items-center gap-2 border-l-2 py-1.5 pl-3 pr-2 text-left font-serif text-[13px] transition-colors ${active ? "border-sf-teal bg-sf-teal/[0.06] text-t1" : "border-transparent text-t2 hover:text-t1"}`}
+      className={`group flex touch-none items-center border-l-2 pr-1 transition-colors ${active ? "border-sf-teal bg-sf-teal/[0.06]" : "border-transparent hover:bg-white/[0.02]"}`}
     >
-      <span className="truncate">{d.title || "Untitled"}</span>
-    </button>
+      <button
+        onClick={onOpen}
+        {...attributes}
+        {...listeners}
+        className={`min-w-0 flex-1 truncate py-1.5 pl-3 pr-2 text-left font-serif text-[13px] ${active ? "text-t1" : "text-t2 hover:text-t1"}`}
+      >
+        {d.title || "Untitled"}
+      </button>
+      <button
+        onClick={(e) => { e.stopPropagation(); onTrash(); }}
+        aria-label={`Move ${d.title || "Untitled"} to trash`}
+        title="Move to trash"
+        className="shrink-0 p-1.5 text-t5 opacity-0 transition-opacity hover:text-sf-crimson focus-visible:opacity-100 group-hover:opacity-100"
+      >
+        <Trash2 className="h-3.5 w-3.5" />
+      </button>
+    </div>
   );
 }
 
