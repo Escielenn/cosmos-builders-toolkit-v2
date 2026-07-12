@@ -335,6 +335,42 @@ export function useMoveDocument(worldId: string | undefined) {
 }
 
 // ---------------------------------------------------------------------------
+// Reorder documents within a list — persist sort_order (Studio binder DnD)
+// ---------------------------------------------------------------------------
+
+export function useReorderDocuments(worldId: string | undefined) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (orderedIds: string[]) => {
+      await Promise.all(
+        orderedIds.map((id, i) =>
+          supabase.from("world_entries").update({ sort_order: i * 10 }).eq("id", id),
+        ),
+      );
+    },
+    onMutate: async (orderedIds: string[]) => {
+      // optimistic: reflect the new order immediately
+      await qc.cancelQueries({ queryKey: docKeys.all(worldId!) });
+      const prev = qc.getQueryData<WorldEntry[]>(docKeys.all(worldId!));
+      if (prev) {
+        const pos = new Map(orderedIds.map((id, i) => [id, i * 10]));
+        qc.setQueryData<WorldEntry[]>(
+          docKeys.all(worldId!),
+          prev.map((e) => (pos.has(e.id) ? { ...e, sort_order: pos.get(e.id)! } : e)),
+        );
+      }
+      return { prev };
+    },
+    onError: (_e, _v, ctx) => {
+      if (ctx?.prev) qc.setQueryData(docKeys.all(worldId!), ctx.prev);
+    },
+    onSettled: () => {
+      qc.invalidateQueries({ queryKey: docKeys.all(worldId!) });
+    },
+  });
+}
+
+// ---------------------------------------------------------------------------
 // Rename a folder
 // ---------------------------------------------------------------------------
 

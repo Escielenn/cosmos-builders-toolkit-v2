@@ -12,10 +12,19 @@ import { StellarForgeEditor } from "@/components/editor/StellarForgeEditor";
 import { WritingEntityPanel } from "@/components/writing/WritingEntityPanel";
 import { WorldInfluencePanel } from "@/components/writing/WorldInfluencePanel";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
+import {
+  DndContext, closestCenter, PointerSensor, KeyboardSensor,
+  useSensor, useSensors,
+} from "@dnd-kit/core";
+import {
+  SortableContext, verticalListSortingStrategy, arrayMove,
+  useSortable, sortableKeyboardCoordinates,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { useToast } from "@/hooks/use-toast";
 import {
   useWritingDocuments, useCreateDocument, useUpdateDocumentContent,
-  useCreateFolder, useRenameDocument,
+  useCreateFolder, useRenameDocument, useReorderDocuments,
 } from "@/hooks/use-writing-documents";
 import { useWriteDoc, useLatestDoc, rollWordSession, countWords } from "@/hooks/use-write-doc";
 import type { Entity } from "@/services/entity-graph-types";
@@ -46,6 +55,11 @@ export default function Write(): JSX.Element {
   const updateContent = useUpdateDocumentContent(worldId);
   const createDoc = useCreateDocument(worldId);
   const createFolder = useCreateFolder(worldId);
+  const reorderDocs = useReorderDocuments(worldId);
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+  );
   const renameDoc = useRenameDocument(worldId);
 
   const [focus, setFocus] = useState(false);
@@ -75,11 +89,12 @@ export default function Write(): JSX.Element {
   // group binder: folders → their docs; unfiled docs at root
   const { folders, unfiled } = useMemo(() => {
     const all = entries ?? [];
-    const fol = all.filter((e) => e.entry_type === "folder");
+    const bySort = (a: WorldEntry, b: WorldEntry) => (a.sort_order ?? 0) - (b.sort_order ?? 0);
+    const fol = all.filter((e) => e.entry_type === "folder").sort(bySort);
     const docs = all.filter((e) => e.entry_type !== "folder");
     return {
-      folders: fol.map((f) => ({ folder: f, docs: docs.filter((d) => d.parent_id === f.id) })),
-      unfiled: docs.filter((d) => !d.parent_id || !fol.some((f) => f.id === d.parent_id)),
+      folders: fol.map((f) => ({ folder: f, docs: docs.filter((d) => d.parent_id === f.id).sort(bySort) })),
+      unfiled: docs.filter((d) => !d.parent_id || !fol.some((f) => f.id === d.parent_id)).sort(bySort),
     };
   }, [entries]);
 
@@ -126,6 +141,14 @@ export default function Write(): JSX.Element {
     setMobilePanel(null);
   };
 
+  // Reorder one list (a folder's docs, or unfiled) and persist sort_order.
+  const reorderList = (list: WorldEntry[], activeId: string, overId: string) => {
+    const oldIdx = list.findIndex((d) => d.id === activeId);
+    const newIdx = list.findIndex((d) => d.id === overId);
+    if (oldIdx === -1 || newIdx === -1 || oldIdx === newIdx) return;
+    reorderDocs.mutate(arrayMove(list, oldIdx, newIdx).map((d) => d.id));
+  };
+
   // Shared binder content (renders in the desktop column AND the mobile sheet)
   const binderContent = (
     <div className="flex h-full min-h-0 flex-col border-r border-sf-border">
@@ -133,14 +156,24 @@ export default function Write(): JSX.Element {
         {folders.map(({ folder, docs }) => (
           <div key={folder.id} className="mb-2">
             <div className="px-3 py-1 font-heading text-[11px] uppercase tracking-[1.5px] text-t4">{folder.title}</div>
-            {docs.map((d) => (
-              <DocRow key={d.id} d={d} active={d.id === docId} onOpen={() => openDoc(d.id)} />
-            ))}
+            <DndContext sensors={sensors} collisionDetection={closestCenter}
+              onDragEnd={({ active, over }) => over && reorderList(docs, String(active.id), String(over.id))}>
+              <SortableContext items={docs.map((d) => d.id)} strategy={verticalListSortingStrategy}>
+                {docs.map((d) => (
+                  <SortableDocRow key={d.id} d={d} active={d.id === docId} onOpen={() => openDoc(d.id)} />
+                ))}
+              </SortableContext>
+            </DndContext>
           </div>
         ))}
-        {unfiled.map((d) => (
-          <DocRow key={d.id} d={d} active={d.id === docId} onOpen={() => openDoc(d.id)} />
-        ))}
+        <DndContext sensors={sensors} collisionDetection={closestCenter}
+          onDragEnd={({ active, over }) => over && reorderList(unfiled, String(active.id), String(over.id))}>
+          <SortableContext items={unfiled.map((d) => d.id)} strategy={verticalListSortingStrategy}>
+            {unfiled.map((d) => (
+              <SortableDocRow key={d.id} d={d} active={d.id === docId} onOpen={() => openDoc(d.id)} />
+            ))}
+          </SortableContext>
+        </DndContext>
         {(entries?.length ?? 0) === 0 && (
           <p className="px-3 py-4 font-serif text-[13px] italic text-t4">No documents yet.</p>
         )}
@@ -317,6 +350,23 @@ function DocRow({ d, active, onOpen }: { d: WorldEntry; active: boolean; onOpen:
   return (
     <button onClick={onOpen}
       className={`flex w-full items-center gap-2 border-l-2 py-1.5 pl-3 pr-2 text-left font-serif text-[13px] transition-colors ${active ? "border-sf-teal bg-sf-teal/[0.06] text-t1" : "border-transparent text-t2 hover:text-t1"}`}>
+      <span className="truncate">{d.title || "Untitled"}</span>
+    </button>
+  );
+}
+
+/** Draggable binder row (dnd-kit). A short drag reorders; a click still opens. */
+function SortableDocRow({ d, active, onOpen }: { d: WorldEntry; active: boolean; onOpen: () => void }): JSX.Element {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: d.id });
+  return (
+    <button
+      ref={setNodeRef}
+      onClick={onOpen}
+      {...attributes}
+      {...listeners}
+      style={{ transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.5 : 1 }}
+      className={`flex w-full touch-none items-center gap-2 border-l-2 py-1.5 pl-3 pr-2 text-left font-serif text-[13px] transition-colors ${active ? "border-sf-teal bg-sf-teal/[0.06] text-t1" : "border-transparent text-t2 hover:text-t1"}`}
+    >
       <span className="truncate">{d.title || "Untitled"}</span>
     </button>
   );
