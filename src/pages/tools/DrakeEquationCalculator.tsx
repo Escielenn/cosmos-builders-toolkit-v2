@@ -310,7 +310,7 @@ const DrakeEquationCalculator = () => {
     };
     if (n < 10) return {
       label: "Lonely",
-      color: "text-sf-cyan",
+      color: "text-sf-teal",
       description: "A handful of civilizations might exist. Finding each other would be like finding needles in a cosmic haystack."
     };
     if (n < 100) return {

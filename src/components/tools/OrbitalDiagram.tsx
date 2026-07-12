@@ -1,5 +1,6 @@
 import { useRef, useEffect, useCallback } from "react";
 import { SPECTRAL_COLORS } from "@/lib/habitable-zone/data";
+import { tokens } from "@/styles/tokens";
 
 interface OrbitalDiagramProps {
   spectralType: string;
@@ -18,7 +19,7 @@ interface OrbitalDiagramProps {
 }
 
 const VOID_COLOR = "#0D0D0F";
-const CYAN = "#15C17B";
+const CYAN = tokens.accent.base; // brand teal (single-sourced)
 const HZ_GREEN = "rgba(46, 204, 113,";
 const SNOWLINE_BLUE = "rgba(173, 216, 230, 0.35)";
 const GRID_COLOR = "rgba(255, 255, 255, 0.06)";

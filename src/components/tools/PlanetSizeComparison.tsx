@@ -1,5 +1,6 @@
 import { useRef, useEffect, useCallback } from "react";
 import { cn } from "@/lib/utils";
+import { tokens } from "@/styles/tokens";
 
 interface PlanetSizeComparisonProps {
   planetRadiusEarth: number;
@@ -13,7 +14,7 @@ const PlanetSizeComparison = ({
   planetRadiusEarth,
   planetGravity,
   planetName = "Your Planet",
-  compositionColor = "#15C17B",
+  compositionColor = tokens.accent.base,
   className,
 }: PlanetSizeComparisonProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -138,7 +139,7 @@ function drawPlanet(
 
   // Name label
   ctx.font = "500 11px 'Jura', sans-serif";
-  ctx.fillStyle = "#FAFAFA";
+  ctx.fillStyle = tokens.text.t1;
   ctx.textAlign = "center";
   ctx.fillText(name, x, y - r - 14);
 

@@ -132,7 +132,7 @@ const ZONE_BADGE_STYLES: Record<string, string> = {
   "#FFA500": "bg-orange-500/20 text-orange-400 border-orange-500/30",
   "#2ECC71": "bg-emerald-500/20 text-sf-emerald border-emerald-500/30",
   "#4D9FFF": "bg-blue-500/20 text-blue-400 border-blue-500/30",
-  "#ADD8E6": "bg-cyan-500/20 text-sf-cyan border-cyan-500/30",
+  "#ADD8E6": "bg-sky-500/20 text-sf-azure border-sky-500/30",
 };
 
 const SPECTRAL_LABELS = ["O", "B", "A", "F", "G", "K", "M"];

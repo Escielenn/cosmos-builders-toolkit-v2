@@ -72,8 +72,8 @@ export function PinToWritingButton({
       className={cn(
         "inline-flex items-center gap-1 px-2 py-1 text-[9px] font-sans font-medium uppercase tracking-[1.2px] transition-colors",
         isPinned
-          ? "text-[#FFB800] hover:text-sf-crimson"
-          : "text-t4 hover:text-[#FFB800]",
+          ? "text-sf-amber hover:text-sf-crimson"
+          : "text-t4 hover:text-sf-amber",
         className,
       )}
       title={isPinned ? "Unpin from Writing Space" : "Pin to Writing Space"}

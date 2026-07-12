@@ -505,7 +505,7 @@ const Sensorium = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "recommended": return "text-sf-cyan border-cyan-500/50 bg-cyan-500/10";
+      case "recommended": return "text-sf-teal border-sf-teal/50 bg-sf-teal/10";
       case "possible": return "text-sf-amber border-amber-500/50 bg-amber-500/10";
       case "implausible": return "text-t2 border-sf-border bg-muted/20 opacity-60";
       default: return "";
@@ -1378,7 +1378,7 @@ const Sensorium = () => {
                   <>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <GlassPanel className="p-4">
-                        <h4 className="text-sm font-medium text-sf-cyan mb-2">
+                        <h4 className="text-sm font-medium text-sf-teal mb-2">
                           Species Perceives (Humans Don't)
                         </h4>
                         {perceptionGaps.speciesPerceives.length > 0 ? (
