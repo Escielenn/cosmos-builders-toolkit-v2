@@ -10,6 +10,7 @@
 import { useEffect } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import Header from "@/components/layout/Header";
 import {
   useStudioData,
   lastSentence,
@@ -48,53 +49,6 @@ const COVER_GRADIENTS = [
 ];
 
 // ── modules ─────────────────────────────────────────────────────────
-
-function Topbar({ displayName }: { displayName: string }): JSX.Element {
-  const tabs = [
-    { label: "Studio", to: "/studio", active: true },
-    { label: "Worlds", to: "/worlds", active: false },
-    { label: "Bookshelf", to: "/bookshelf", active: false },
-    { label: "Community", to: "/community", active: false },
-  ];
-  return (
-    <header className="sticky top-0 z-40 flex h-[52px] items-stretch border-b border-sf-border bg-sf-void/90 backdrop-blur-sf-panel">
-      <Link to="/" className="flex shrink-0 items-center gap-2.5 border-r border-sf-border px-4 md:px-[22px]">
-        <svg width="16" height="16" viewBox="0 0 40 40" fill="none" className="opacity-85" aria-hidden="true">
-          <path d="M20 4 L34 12 L34 28 L20 36 L6 28 L6 12 Z" style={{ stroke: "hsl(var(--sf-teal))" }} strokeWidth="1.4" />
-          <path d="M20 4 L20 20 M20 20 L6 12 M20 20 L34 12" style={{ stroke: "hsl(var(--sf-teal))" }} strokeWidth="1.2" opacity="0.7" />
-        </svg>
-        <span className="flex items-baseline gap-1.5">
-          <span className="font-display text-[15px] font-light tracking-sf-title text-t1">
-            <span className="text-sf-teal">Stellar</span>forge
-          </span>
-          <span className="hidden font-serif text-[14px] italic text-t2 sm:inline">Studio</span>
-        </span>
-      </Link>
-      <nav className="sf-sb sf-sb--slim flex flex-1 items-stretch overflow-x-auto px-2 md:px-4">
-        {tabs.map((t) => (
-          <Link
-            key={t.label}
-            to={t.to}
-            className={`flex shrink-0 items-center whitespace-nowrap border-b-2 px-3 text-[13px] transition-colors md:px-4 ${
-              t.active
-                ? "border-sf-teal text-t1"
-                : "border-transparent text-t3 hover:text-t2"
-            }`}
-          >
-            {t.label}
-          </Link>
-        ))}
-      </nav>
-      <div className="ml-auto flex shrink-0 items-center gap-3 px-3 md:px-[18px]">
-        <span className="hidden font-serif text-[13px] italic text-t3 sm:inline">{displayName}</span>
-        <span className="relative flex h-2 w-2">
-          <span className="absolute inline-flex h-full w-full animate-sf-pulse bg-sf-teal opacity-60" />
-          <span className="relative inline-flex h-2 w-2 bg-sf-teal" />
-        </span>
-      </div>
-    </header>
-  );
-}
 
 function Rail({ worlds }: { worlds: StudioWorld[] }): JSX.Element {
   return (
@@ -185,8 +139,8 @@ export default function Studio(): JSX.Element {
 
   return (
     <div className="relative z-10 min-h-screen">
-      <Topbar displayName={firstName} />
-      <div className="mx-auto flex max-w-[1280px]">
+      <Header />
+      <div className="mx-auto flex max-w-[1280px] pt-16">
         <Rail worlds={data?.worlds ?? []} />
 
         <main className="min-w-0 flex-1 px-6 py-10 md:px-10">
