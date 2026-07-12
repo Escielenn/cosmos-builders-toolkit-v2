@@ -17,7 +17,7 @@ import { cn } from "@/lib/utils";
  * (text-sf-hero / 96px) for the very top hero on the landing page.
  */
 
-interface SectionHeroProps extends React.HTMLAttributes<HTMLDivElement> {
+interface SectionHeroProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
   /** Mono eyebrow text, e.g. "// 02 · COLOR SYSTEM" or "// WORLD INDEX" */
   eyebrow?: string;
   /** Display H1 title, sentence case. Wrap accent words in <span>...</span> with text-sf-teal class for green emphasis. */
@@ -30,6 +30,13 @@ interface SectionHeroProps extends React.HTMLAttributes<HTMLDivElement> {
   rule?: boolean;
   /** Use the giant 96px hero scale instead of 56px section scale (default: false) */
   hero?: boolean;
+  /**
+   * "Studio meld" variant (marketing / public pages): render the title in
+   * Lora italic serif and soften the eyebrow, for the warmer writer-adjacent
+   * feel. Tools/instrument surfaces leave this off to keep the MD Nichrome
+   * cockpit look. (Jason, 2026-07-10.)
+   */
+  warm?: boolean;
 }
 
 export function SectionHero({
@@ -39,6 +46,7 @@ export function SectionHero({
   rightSubtitle,
   rule = true,
   hero = false,
+  warm = false,
   className,
   ...props
 }: SectionHeroProps) {
@@ -49,22 +57,24 @@ export function SectionHero({
           {eyebrow && (
             <div
               className={cn(
-                "inline-flex items-center gap-3.5 font-mono uppercase text-sf-teal mb-7",
+                "inline-flex items-center gap-3.5 font-mono uppercase mb-7",
+                warm ? "text-sf-teal/80" : "text-sf-teal",
                 hero ? "text-[12px] tracking-[3px]" : "text-[11px] tracking-[2.5px]",
               )}
             >
               {rule && (
-                <span aria-hidden className="block w-12 h-px bg-sf-teal" />
+                <span aria-hidden className={cn("block w-12 h-px", warm ? "bg-sf-teal/60" : "bg-sf-teal")} />
               )}
               <span>{eyebrow}</span>
             </div>
           )}
           <h1
             className={cn(
-              "font-display font-light text-t1 m-0",
+              "font-light text-t1 m-0",
+              warm ? "font-serif italic" : "font-display",
               hero
                 ? "text-sf-hero leading-[0.98]"
-                : "text-sf-h1 leading-[1]",
+                : "text-sf-h1 leading-[1.05]",
             )}
           >
             {title}

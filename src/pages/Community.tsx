@@ -56,8 +56,8 @@ const Community = () => {
         <div className="flex flex-col gap-2 mb-2">
           <div className="flex items-center gap-3">
             <Globe className="w-6 h-6 text-primary" />
-            <h1 className="font-heading font-light text-2xl uppercase tracking-sf-wide">
-              Community Worlds
+            <h1 className="font-serif italic text-[26px] font-light text-t1">
+              Community worlds
             </h1>
           </div>
           <p className="font-sans text-sm text-t2 max-w-xl">

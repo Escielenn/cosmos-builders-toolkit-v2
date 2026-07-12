@@ -32,9 +32,9 @@ const ValueProposition = () => {
       variants={scrollReveal}
     >
       <GlassPanel glow lightArc className="p-8 md:p-12">
-        <div className="inline-flex items-center gap-3.5 font-mono uppercase text-sf-teal text-[12px] tracking-[3px] mb-10">
+        <div className="inline-flex items-center gap-3.5 font-mono uppercase text-sf-teal/80 text-[11px] tracking-[3px] mb-10">
           <span aria-hidden className="block w-12 h-px bg-sf-teal" />
-          <span>// WHY STELLARFORGE</span>
+          <span>// why stellarforge</span>
         </div>
 
         <motion.ol
@@ -54,7 +54,7 @@ const ValueProposition = () => {
                 {p.n}
               </span>
               <div className="space-y-3">
-                <h3 className="font-heading font-light text-xl uppercase tracking-sf-wide text-t1">
+                <h3 className="font-serif italic text-xl text-t1">
                   {p.label}
                 </h3>
                 <p className="font-sans text-t2 leading-[1.55] max-w-[60ch]">

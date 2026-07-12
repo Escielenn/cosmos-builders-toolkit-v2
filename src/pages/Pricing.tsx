@@ -180,7 +180,8 @@ const Pricing = () => {
           </div>
           <div className="relative z-10">
             <SectionHero
-              eyebrow="// ACCESS TIERS"
+              warm
+              eyebrow="// access tiers"
               title={<>Upgrade your <span className="text-sf-teal">access.</span></>}
               subtitle={`Free accounts access ${FREE_TOOL_IDS.length} instruments. Pro unlocks all ${totalTools}. Vanguard shapes what comes next.`}
             />

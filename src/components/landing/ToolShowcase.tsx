@@ -243,7 +243,7 @@ const ToolShowcase = () => {
           viewport={viewportOnce}
           variants={scrollReveal}
         >
-          <h2 className="font-heading font-light text-2xl uppercase tracking-sf-wide">Free Forever</h2>
+          <h2 className="font-serif italic text-[26px] text-t1">Free forever</h2>
           <Badge variant="secondary" className="bg-green-500/20 text-green-600 dark:text-green-400 sf-badge-enter">
             <Check className="w-3 h-3 mr-1" />
             3 Tools
@@ -273,7 +273,7 @@ const ToolShowcase = () => {
           viewport={viewportOnce}
           variants={scrollReveal}
         >
-          <h2 className="font-heading font-light text-2xl uppercase tracking-sf-wide">Pro Tools</h2>
+          <h2 className="font-serif italic text-[26px] text-t1">Pro tools</h2>
           <Badge variant="secondary" className="bg-amber-500/20 text-sf-amber dark:text-sf-amber sf-badge-enter">
             <Zap className="w-3 h-3 mr-1" />
             27 Tools
@@ -303,7 +303,7 @@ const ToolShowcase = () => {
           viewport={viewportOnce}
           variants={scrollReveal}
         >
-          <h2 className="font-heading font-light text-2xl uppercase tracking-sf-wide">Simulators</h2>
+          <h2 className="font-serif italic text-[26px] text-t1">Simulators</h2>
           <Badge variant="secondary" className="bg-amber-500/20 text-sf-amber dark:text-sf-amber sf-badge-enter">
             <Zap className="w-3 h-3 mr-1" />
             Pro
@@ -396,7 +396,7 @@ const ToolShowcase = () => {
           viewport={viewportOnce}
           variants={scrollReveal}
         >
-          <h2 className="font-heading font-light text-2xl uppercase tracking-sf-wide">Coming Soon</h2>
+          <h2 className="font-serif italic text-[26px] text-t1">Coming soon</h2>
           <Badge variant="secondary" className="bg-blue-500/20 text-blue-600 dark:text-blue-400 sf-badge-enter">
             <Hourglass className="w-3 h-3 mr-1" />
             15 Planned
