@@ -10,6 +10,7 @@ import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { StellarForgeEditor } from "@/components/editor/StellarForgeEditor";
 import { WritingEntityPanel } from "@/components/writing/WritingEntityPanel";
+import { WorldInfluencePanel } from "@/components/writing/WorldInfluencePanel";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -48,7 +49,7 @@ export default function Write(): JSX.Element {
   const renameDoc = useRenameDocument(worldId);
 
   const [focus, setFocus] = useState(false);
-  const [inspector, setInspector] = useState<"entities" | "reference">("entities");
+  const [inspector, setInspector] = useState<"entities" | "world" | "reference">("entities");
   const [mobilePanel, setMobilePanel] = useState<"binder" | "inspector" | null>(null);
   const [title, setTitle] = useState("");
   const [savedAt, setSavedAt] = useState<Date | null>(null);
@@ -157,10 +158,10 @@ export default function Write(): JSX.Element {
   const inspectorContent = worldId ? (
     <div className="sf-sb sf-sb--slim flex h-full min-h-0 flex-col overflow-y-auto border-l border-sf-border">
       <div className="flex border-b border-sf-border" role="tablist" aria-label="Inspector">
-        {(["entities", "reference"] as const).map((t) => (
+        {(["entities", "world", "reference"] as const).map((t) => (
           <button key={t} role="tab" aria-selected={inspector === t} onClick={() => setInspector(t)}
-            className={`min-h-[44px] flex-1 border-b-2 px-3 py-2.5 text-[12px] capitalize transition-colors ${inspector === t ? "border-sf-teal text-t1" : "border-transparent text-t3 hover:text-t1"}`}>
-            {t === "entities" ? "Entities" : "References"}
+            className={`min-h-[44px] flex-1 border-b-2 px-2 py-2.5 text-[12px] capitalize transition-colors ${inspector === t ? "border-sf-teal text-t1" : "border-transparent text-t3 hover:text-t1"}`}>
+            {t === "entities" ? "Entities" : t === "world" ? "World" : "Refs"}
           </button>
         ))}
       </div>
@@ -174,6 +175,9 @@ export default function Write(): JSX.Element {
           onPinEntity={(e: Entity) => toast({ title: `Pinned ${e.name}` })}
           embedded
         />
+      )}
+      {inspector === "world" && (
+        <WorldInfluencePanel worldId={worldId} content={doc?.content} />
       )}
       {inspector === "reference" && (
         <div className="p-4">

@@ -1,5 +1,22 @@
 # StellarForge Changelog
 
+## 0.6772
+World Influence panel — the cascade, brought into the writing flow.
+
+- New "World" tab in the Studio editor inspector: shows the environmental
+  parameters your world runs on (gravity, rotation, stellar, hydrosphere,
+  atmosphere, tilt, geology — chosen in the Environmental Chain Reaction
+  tool) and, live from the prose, which ones the current scene actually
+  engages. Per-parameter reference counts + an "N of M parameters engaged
+  in this scene · consistent" footer. This is the product's core
+  differentiator (Environmental Cascade) made visible where you write.
+- Reads worksheets.tool_type='environmental-chain-reaction'
+  (data.parameter.type/types) via a new use-world-parameters hook; a pure,
+  tested src/lib/world-parameters module maps parameter slugs to labels +
+  prose scan-keywords (word-boundary aware). 4 new unit tests.
+- Empty state links straight to the Cascade tool when a world hasn't set
+  its parameters yet.
+
 ## 0.6762
 Mobile pass for Studio + editor, and world-image bookshelf covers.
 
