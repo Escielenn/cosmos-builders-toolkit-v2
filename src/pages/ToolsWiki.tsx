@@ -42,6 +42,7 @@ import {
 } from "@/lib/tools-config";
 import CubeLogo from "@/components/icons/CubeLogo";
 import { GuideNav } from "@/components/layout/GuideNav";
+import { CascadeRibbon } from "@/components/tools/CascadeRibbon";
 
 // ── Tool Card ──────────────────────────────────────────────
 
@@ -471,6 +472,7 @@ const ToolsWiki = () => {
 
           {/* Cascade View */}
           <TabsContent value="cascade">
+            <CascadeRibbon />
             <p className="text-t3 text-xs mb-6 max-w-xl">
               Tools arranged along the Environmental Cascade. Change something upstream and everything downstream shifts.
             </p>

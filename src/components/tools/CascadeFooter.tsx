@@ -12,6 +12,7 @@ import { ArrowRight, ArrowLeft } from "lucide-react";
 import {
   getToolWiki,
   CATEGORY_META,
+  CASCADE_META,
   type ToolRelationship,
   type ToolCategory,
 } from "@/lib/tool-wiki-data";
@@ -38,6 +39,9 @@ function RelCard({ rel }: { rel: ToolRelationship }): JSX.Element {
   // Strip the "Codename: " prefix for a cleaner card, keep the descriptive half.
   const full = getToolDisplayName(rel.toolId);
   const name = full.includes(":") ? full.split(":")[0].trim() : full;
+  // Cascade-layer chip: shows where this tool sits (Physics → … → Culture),
+  // so the reader sees the *movement* through the cascade, not just a link.
+  const casc = wiki ? CASCADE_META[wiki.cascade] : undefined;
   return (
     <Link
       to={`/tools/${rel.toolId}`}
@@ -50,6 +54,18 @@ function RelCard({ rel }: { rel: ToolRelationship }): JSX.Element {
           {STRENGTH_LABEL[rel.strength]}
         </span>
       </div>
+      {casc && (
+        <div className="mt-2 inline-flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[1.5px]">
+          <span
+            className="h-1 w-1 shrink-0 rounded-full"
+            style={{ backgroundColor: casc.color }}
+            aria-hidden="true"
+          />
+          <span style={{ color: casc.color }}>
+            {casc.order <= 6 ? `${casc.order} · ` : ""}{casc.label}
+          </span>
+        </div>
+      )}
       <p className="mt-1.5 text-[12px] leading-[1.5] text-t3">{rel.note}</p>
     </Link>
   );
