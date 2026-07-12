@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { History, Download, RotateCcw, ChevronDown, ChevronUp } from "lucide-react";
+import { History, Download, RotateCcw, ChevronDown, ChevronUp, GitBranch } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { Loader } from "@/components/ui/loader";
 import { Button } from "@/components/ui/button";
 import { GlassPanel } from "@/components/ui/glass-panel";
@@ -19,6 +20,7 @@ import {
   fetchWorldVersions,
   fetchVersionSnapshot,
   restoreWorldVersion,
+  restoreSnapshotAsNewWorld,
   downloadSnapshotAsJson,
   type WorldVersionSummary,
 } from "@/lib/export/world-snapshot";
@@ -32,10 +34,32 @@ interface VersionHistoryProps {
 const VersionHistory = ({ worldId, worldName }: VersionHistoryProps) => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const [expanded, setExpanded] = useState(false);
   const [restoreTarget, setRestoreTarget] = useState<WorldVersionSummary | null>(null);
   const [isRestoring, setIsRestoring] = useState(false);
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
+  const [branchingId, setBranchingId] = useState<string | null>(null);
+
+  const handleBranch = async (v: WorldVersionSummary) => {
+    setBranchingId(v.id);
+    try {
+      const newWorldId = await restoreSnapshotAsNewWorld(v.id);
+      toast({
+        title: "Branched to a new world",
+        description: `Version ${v.version_number} was restored as a separate world. Your current world is untouched.`,
+      });
+      navigate(`/worlds/${newWorldId}`);
+    } catch (error) {
+      toast({
+        title: "Branch failed",
+        description: error instanceof Error ? error.message : "Could not branch this version.",
+        variant: "destructive",
+      });
+    } finally {
+      setBranchingId(null);
+    }
+  };
 
   const { data: versions = [], isLoading } = useQuery({
     queryKey: ["world-versions", worldId],
@@ -164,8 +188,23 @@ const VersionHistory = ({ worldId, worldName }: VersionHistoryProps) => {
                         variant="ghost"
                         size="icon"
                         className="h-7 w-7"
+                        onClick={() => handleBranch(v)}
+                        disabled={branchingId === v.id}
+                        title="Restore as a new world (non-destructive)"
+                        aria-label="Restore as a new world"
+                      >
+                        {branchingId === v.id ? (
+                          <Loader variant="inline" size="sm" />
+                        ) : (
+                          <GitBranch className="w-3.5 h-3.5" />
+                        )}
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-7 w-7"
                         onClick={() => setRestoreTarget(v)}
-                        title="Restore this version"
+                        title="Restore this version (overwrites current)"
                         aria-label="Restore this version"
                       >
                         <RotateCcw className="w-3.5 h-3.5" />

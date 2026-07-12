@@ -657,6 +657,93 @@ export async function restoreWorldVersion(
 }
 
 // ──────────────────────────────────────────────
+// Restore a snapshot as a NEW world (non-destructive fork-from-snapshot).
+// Pure inserts — never touches the source world. Returns the new world id.
+// ──────────────────────────────────────────────
+
+export async function restoreSnapshotAsNewWorld(
+  versionId: string
+): Promise<string> {
+  const userId = (await supabase.auth.getUser()).data.user?.id;
+  if (!userId) throw new Error("Not authenticated");
+
+  const snapshot = await fetchVersionSnapshot(versionId);
+
+  // 1. Create the new world from the snapshot's meta (private, unforked).
+  const { data: newWorld, error: worldErr } = await supabase
+    .from("worlds")
+    .insert({
+      user_id: userId,
+      name: `${snapshot.world.name} (restored)`,
+      description: snapshot.world.description,
+      icon: snapshot.world.icon,
+      tags: snapshot.world.tags,
+      visibility: "private",
+    })
+    .select("id")
+    .single();
+  if (worldErr || !newWorld) throw new Error(`Failed to create world: ${worldErr?.message}`);
+  const newWorldId = newWorld.id as string;
+
+  // 2. Worksheets (+ id map for connections)
+  const wsMap = new Map<string, string>();
+  for (const ws of snapshot.worksheets) {
+    const { data: nw, error } = await supabase
+      .from("worksheets")
+      .insert({
+        world_id: newWorldId, user_id: userId, tool_type: ws.tool_type,
+        title: ws.title, tags: ws.tags, data: ws.data, archived_at: ws.archived_at,
+      })
+      .select("id")
+      .single();
+    if (error) { console.error(`worksheet "${ws.title}"`, error); continue; }
+    wsMap.set(ws.id, nw.id);
+  }
+
+  // 3. Notes
+  for (const note of snapshot.notes) {
+    await supabase.from("world_notes").insert({
+      world_id: newWorldId, user_id: userId, content: note.content,
+    });
+  }
+
+  // 4. Connections (remap worksheet endpoints)
+  for (const conn of snapshot.connections) {
+    const src = conn.source_worksheet_id ? wsMap.get(conn.source_worksheet_id) : null;
+    const tgt = conn.target_worksheet_id ? wsMap.get(conn.target_worksheet_id) : null;
+    if (conn.source_worksheet_id && !src) continue;
+    if (conn.target_worksheet_id && !tgt) continue;
+    if (!src && !tgt) continue;
+    await supabase.from("world_connections").insert({
+      world_id: newWorldId, source_worksheet_id: src || null, target_worksheet_id: tgt || null,
+      connection_type: conn.connection_type, description: conn.description, created_by: userId,
+    });
+  }
+
+  // 5. Entries
+  for (const entry of snapshot.entries) {
+    await supabase.from("world_entries").insert({
+      world_id: newWorldId,
+      entry_type: entry.entry_type as "note" | "milestone" | "decision" | "reference" | "lore",
+      title: entry.title, content: entry.content, metadata: entry.metadata,
+      sort_order: entry.sort_order, created_by: userId,
+    });
+  }
+
+  // 6. Chronicle events
+  for (const ce of snapshot.chronicle ?? []) {
+    await supabase.from("chronicle_events").insert({
+      world_id: newWorldId, title: ce.title, description: ce.description,
+      event_date: ce.event_date, sort_value: ce.sort_value, end_date: ce.end_date,
+      end_sort_value: ce.end_sort_value, event_type: ce.event_type, layer: ce.layer,
+      icon: ce.icon, color: ce.color, tags: ce.tags,
+    });
+  }
+
+  return newWorldId;
+}
+
+// ──────────────────────────────────────────────
 // Validation
 // ──────────────────────────────────────────────
 
