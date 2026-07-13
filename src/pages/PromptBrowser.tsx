@@ -42,7 +42,7 @@ const CATEGORY_COLORS: Record<PromptCategory, string> = {
   character: "text-sf-violet border-violet-400/20 bg-violet-400/[0.06]",
   scene: "text-sf-amber border-amber-400/20 bg-amber-400/[0.06]",
   dialogue: "text-sf-emerald border-emerald-400/20 bg-emerald-400/[0.06]",
-  theme: "text-sf-cyan border-cyan-400/20 bg-cyan-400/[0.06]",
+  theme: "text-sf-teal border-cyan-400/20 bg-cyan-400/[0.06]",
 };
 
 const DIFFICULTY_COLORS: Record<string, string> = {
