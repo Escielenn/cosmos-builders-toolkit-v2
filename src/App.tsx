@@ -122,6 +122,9 @@ const ExoforgeSimulator = lazy(() => import("./pages/simulators/ExoforgeSimulato
 const ExoforgeScience = lazy(() => import("./pages/simulators/ExoforgeScience"));
 const SolarisSimulator = lazy(() => import("./pages/simulators/SolarisSimulator"));
 
+// Dev-only: native Solaris rebuild preview (hidden; not in prod nav)
+const SolarisNativeDev = lazy(() => import("./pages/dev/SolarisNativeDev"));
+
 // Lazy loaded cartographer wrapper pages
 const StellarCartographer = lazy(() => import("./pages/cartographers/StellarCartographer"));
 
@@ -463,6 +466,8 @@ const App = () => (
                 <Route path="/terms" element={<Terms />} />
                 <Route path="/credits" element={<Credits />} />
                 <Route path="/changelog" element={<Changelog />} />
+                {/* Dev-only native Solaris rebuild preview (hidden route) */}
+                <Route path="/dev/solaris" element={<SolarisNativeDev />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>

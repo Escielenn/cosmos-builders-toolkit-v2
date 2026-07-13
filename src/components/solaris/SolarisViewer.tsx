@@ -68,6 +68,7 @@ export default function SolarisViewer({
         onBodySelect={handleBodySelect}
         selectedBody={selectedBody}
         cameraMode={cameraMode}
+        speedMultiplier={speedMultiplier}
       />
 
       {/* Floating HTML panels */}

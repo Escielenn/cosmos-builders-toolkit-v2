@@ -3,17 +3,22 @@
  * Renders the star system as an interactive orrery.
  */
 
-import { useCallback, useState } from "react";
-import { Canvas } from "@react-three/fiber";
+import { useCallback, useEffect, useRef } from "react";
+import type { ElementRef, RefObject } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
+import * as THREE from "three";
 import type { StarSystem, SelectedBody, CameraMode } from "./types";
 import { useSimulationTime } from "./hooks/useSimulationTime";
-import StarObject from "./objects/StarObject";
-import PlanetObject from "./objects/PlanetObject";
-import OrbitalPath from "./objects/OrbitalPath";
-import HabitableZone from "./objects/HabitableZone";
-import AsteroidBeltObject from "./objects/AsteroidBeltObject";
-import StarField from "./objects/StarField";
+import { keplerPosition, phaseForIndex } from "./hooks/useOrbitalPosition";
+import { StarObject } from "./objects/StarObject";
+import { PlanetObject } from "./objects/PlanetObject";
+import { OrbitalPath } from "./objects/OrbitalPath";
+import { HabitableZone } from "./objects/HabitableZone";
+import { AsteroidBeltObject } from "./objects/AsteroidBeltObject";
+import { StarField } from "./objects/StarField";
+
+type ControlsRef = RefObject<ElementRef<typeof OrbitControls>>;
 
 interface SolarisSceneProps {
   system: StarSystem;
@@ -25,6 +30,57 @@ interface SolarisSceneProps {
   onBodySelect?: (body: SelectedBody | null) => void;
   selectedBody: SelectedBody | null;
   cameraMode: CameraMode;
+  speedMultiplier: number;
+}
+
+/**
+ * CameraRig, Steers OrbitControls' target based on the active camera mode.
+ * 'free' leaves the user's target alone; 'star' eases toward the origin;
+ * 'planet-N' eases toward that planet's current orbital position (computed
+ * with the same Kepler math + phase the PlanetObject uses, so they agree).
+ * The user can still orbit/zoom around the followed body.
+ */
+function CameraRig({
+  cameraMode,
+  planets,
+  timeYears,
+  controlsRef,
+}: {
+  cameraMode: CameraMode;
+  planets: StarSystem["planets"];
+  timeYears: number;
+  controlsRef: ControlsRef;
+}) {
+  const target = useRef(new THREE.Vector3());
+
+  useFrame(() => {
+    const controls = controlsRef.current;
+    if (!controls || cameraMode === "free") return;
+
+    let tx = 0;
+    let tz = 0;
+    if (cameraMode.startsWith("planet-")) {
+      const idx = parseInt(cameraMode.slice("planet-".length), 10);
+      const p = planets[idx];
+      if (p) {
+        const [x, z] = keplerPosition(
+          p.semiMajorAxisAU,
+          p.eccentricity,
+          p.orbitalPeriodYears,
+          timeYears,
+          phaseForIndex(idx)
+        );
+        tx = x;
+        tz = z;
+      }
+    }
+
+    target.current.set(tx, 0, tz);
+    controls.target.lerp(target.current, 0.08);
+    controls.update();
+  });
+
+  return null;
 }
 
 /** Inner component that runs inside the Canvas (has access to useFrame). */
@@ -36,8 +92,16 @@ function SceneContents({
   showMoons,
   onBodySelect,
   selectedBody,
-}: Omit<SolarisSceneProps, "cameraMode" | "showLabels">) {
-  const sim = useSimulationTime(10);
+  cameraMode,
+  speedMultiplier,
+  controlsRef,
+}: Omit<SolarisSceneProps, "showLabels"> & { controlsRef: ControlsRef }) {
+  const sim = useSimulationTime(speedMultiplier);
+
+  // Keep the simulation clock in sync with the speed control.
+  useEffect(() => {
+    sim.setSpeedMultiplier(speedMultiplier);
+  }, [speedMultiplier, sim]);
 
   const handleStarClick = useCallback(() => {
     onBodySelect?.({
@@ -102,6 +166,13 @@ function SceneContents({
           <AsteroidBeltObject key={`belt-${i}`} belt={belt} visible />
         ))}
 
+      <CameraRig
+        cameraMode={cameraMode}
+        planets={system.planets}
+        timeYears={sim.timeYears}
+        controlsRef={controlsRef}
+      />
+
       {/* Invisible click plane for deselection */}
       <mesh
         position={[0, -0.5, 0]}
@@ -117,6 +188,8 @@ function SceneContents({
 }
 
 export default function SolarisScene(props: SolarisSceneProps) {
+  const controlsRef = useRef<ElementRef<typeof OrbitControls>>(null);
+
   return (
     <Canvas
       camera={{ position: [0, 45, 80], fov: 45, near: 0.1, far: 50000 }}
@@ -124,6 +197,8 @@ export default function SolarisScene(props: SolarisSceneProps) {
       style={{ background: "#09090B" }}
     >
       <OrbitControls
+        ref={controlsRef}
+        makeDefault
         enablePan
         enableZoom
         enableRotate
@@ -132,7 +207,7 @@ export default function SolarisScene(props: SolarisSceneProps) {
         dampingFactor={0.08}
         enableDamping
       />
-      <SceneContents {...props} />
+      <SceneContents {...props} controlsRef={controlsRef} />
     </Canvas>
   );
 }

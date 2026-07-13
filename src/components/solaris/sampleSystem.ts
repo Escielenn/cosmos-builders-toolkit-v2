@@ -1,0 +1,132 @@
+/**
+ * Sample StarSystem fixture for the native Solaris rebuild (M1).
+ * A curated Sol-analog used to exercise the R3F viewer on the /dev/solaris
+ * route before the procedural generator is ported (M2). Periods obey
+ * Kepler's third law for a 1 M☉ star (P = a^1.5).
+ */
+import type { StarSystem } from "./types";
+
+export const SAMPLE_SYSTEM: StarSystem = {
+  id: "sample-sol",
+  name: "Verity",
+  generatedAt: "2026-07-12T00:00:00.000Z",
+  star: {
+    name: "Verity A",
+    classification: "G",
+    massSOL: 1.0,
+    luminositySOL: 1.0,
+    radiusSOL: 1.0,
+    temperatureK: 5778,
+    colorHex: "#FFF4E8",
+    habitableZoneInnerAU: 0.95,
+    habitableZoneOuterAU: 1.37,
+  },
+  planets: [
+    {
+      name: "Cinder",
+      type: "lava-world",
+      massEarth: 0.055,
+      radiusEarth: 0.38,
+      semiMajorAxisAU: 0.39,
+      eccentricity: 0.2,
+      orbitalPeriodYears: 0.244,
+      axialTiltDeg: 2,
+      colorHex: "#CC4422",
+      hasRings: false,
+      moons: [],
+      inHabitableZone: false,
+      surfaceTempK: 700,
+    },
+    {
+      name: "Terra Nova",
+      type: "ocean-world",
+      massEarth: 1.0,
+      radiusEarth: 1.0,
+      semiMajorAxisAU: 1.0,
+      eccentricity: 0.017,
+      orbitalPeriodYears: 1.0,
+      axialTiltDeg: 23.4,
+      colorHex: "#2B6CB0",
+      atmosphereColorHex: "#8FC7FF",
+      hasRings: false,
+      moons: [
+        {
+          name: "Lumen",
+          radiusKM: 1737,
+          orbitRadiusKM: 384400,
+          periodDays: 27.3,
+          colorHex: "#C8C8C8",
+          tidally_locked: true,
+        },
+      ],
+      inHabitableZone: true,
+      surfaceTempK: 288,
+    },
+    {
+      name: "Rust",
+      type: "desert-world",
+      massEarth: 0.107,
+      radiusEarth: 0.53,
+      semiMajorAxisAU: 1.52,
+      eccentricity: 0.093,
+      orbitalPeriodYears: 1.874,
+      axialTiltDeg: 25,
+      colorHex: "#C4A35A",
+      atmosphereColorHex: "#E7B98F",
+      hasRings: false,
+      moons: [
+        {
+          name: "Fobos",
+          radiusKM: 11,
+          orbitRadiusKM: 9376,
+          periodDays: 0.319,
+          colorHex: "#8B7355",
+          tidally_locked: true,
+        },
+      ],
+      inHabitableZone: false,
+      surfaceTempK: 210,
+    },
+    {
+      name: "Colossus",
+      type: "gas-giant",
+      massEarth: 317,
+      radiusEarth: 11.2,
+      semiMajorAxisAU: 5.2,
+      eccentricity: 0.048,
+      orbitalPeriodYears: 11.86,
+      axialTiltDeg: 3,
+      colorHex: "#C49B5A",
+      hasRings: true,
+      ringColorHex: "#D8C6A0",
+      moons: [
+        {
+          name: "Io Prime",
+          radiusKM: 1821,
+          orbitRadiusKM: 421700,
+          periodDays: 1.77,
+          colorHex: "#E8D26A",
+          tidally_locked: true,
+        },
+        {
+          name: "Glace",
+          radiusKM: 1560,
+          orbitRadiusKM: 671000,
+          periodDays: 3.55,
+          colorHex: "#BFD8E0",
+          tidally_locked: true,
+        },
+      ],
+      inHabitableZone: false,
+      surfaceTempK: 110,
+    },
+  ],
+  asteroidBelts: [
+    {
+      innerAU: 2.1,
+      outerAU: 3.3,
+      density: "moderate",
+      colorHex: "#8B7355",
+    },
+  ],
+};
