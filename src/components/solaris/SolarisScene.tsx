@@ -11,6 +11,7 @@ import * as THREE from "three";
 import type { StarSystem, SelectedBody, CameraMode } from "./types";
 import { useSimulationTime } from "./hooks/useSimulationTime";
 import { keplerPosition, phaseForIndex } from "./hooks/useOrbitalPosition";
+import { auToScene } from "./utils/scaleAU";
 import { StarObject } from "./objects/StarObject";
 import { PlanetObject } from "./objects/PlanetObject";
 import { OrbitalPath } from "./objects/OrbitalPath";
@@ -130,7 +131,9 @@ function SceneContents({
 
   return (
     <>
-      <ambientLight intensity={0.04} />
+      <ambientLight intensity={0.06} />
+      {/* Faint sky/ground fill so planet night-sides aren't pure black */}
+      <hemisphereLight args={["#8ea6c8", "#0a0a12", 0.12]} />
       <StarField />
 
       <StarObject star={system.star} onClick={handleStarClick} />
@@ -187,12 +190,28 @@ function SceneContents({
   );
 }
 
+/** Scene radius of the outermost feature (orbit apoapsis or belt), for framing. */
+function systemExtent(system: StarSystem): number {
+  let maxAU = 1;
+  for (const p of system.planets) {
+    maxAU = Math.max(maxAU, p.semiMajorAxisAU * (1 + Math.abs(p.eccentricity)));
+  }
+  for (const b of system.asteroidBelts) {
+    maxAU = Math.max(maxAU, b.outerAU);
+  }
+  return auToScene(maxAU);
+}
+
 export default function SolarisScene(props: SolarisSceneProps) {
   const controlsRef = useRef<ElementRef<typeof OrbitControls>>(null);
 
+  // Frame the whole system on load: pull the camera back to fit the outermost orbit.
+  const extent = systemExtent(props.system);
+  const camPos: [number, number, number] = [0, extent * 0.75, extent * 1.35];
+
   return (
     <Canvas
-      camera={{ position: [0, 45, 80], fov: 45, near: 0.1, far: 50000 }}
+      camera={{ position: camPos, fov: 45, near: 0.1, far: 50000 }}
       gl={{ antialias: true }}
       style={{ background: "#09090B" }}
     >
@@ -202,8 +221,8 @@ export default function SolarisScene(props: SolarisSceneProps) {
         enablePan
         enableZoom
         enableRotate
-        minDistance={3}
-        maxDistance={800}
+        minDistance={2}
+        maxDistance={extent * 4}
         dampingFactor={0.08}
         enableDamping
       />

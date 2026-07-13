@@ -17,9 +17,9 @@ export function HabitableZone({ innerAU, outerAU, visible }: HabitableZoneProps)
 
   useFrame(({ clock }) => {
     if (!matRef.current) return;
-    // Oscillate opacity between 0.06 and 0.14 on a 4-second sine cycle
+    // Subtle band: oscillate opacity between 0.035 and 0.075 on a 4s cycle
     const t = clock.getElapsedTime();
-    matRef.current.opacity = 0.10 + 0.04 * Math.sin((2 * Math.PI * t) / 4);
+    matRef.current.opacity = 0.055 + 0.02 * Math.sin((2 * Math.PI * t) / 4);
   });
 
   if (!visible) return null;
@@ -31,7 +31,7 @@ export function HabitableZone({ innerAU, outerAU, visible }: HabitableZoneProps)
         ref={matRef}
         color="#2ECC71"
         transparent
-        opacity={0.08}
+        opacity={0.05}
         side={THREE.DoubleSide}
         depthWrite={false}
       />

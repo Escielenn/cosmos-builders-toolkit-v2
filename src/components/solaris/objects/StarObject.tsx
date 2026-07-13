@@ -3,6 +3,7 @@ import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import type { StarData } from "../types";
 import { starRadiusToScene } from "../utils/scaleAU";
+import { getGlowTexture } from "../utils/glowTexture";
 
 interface StarObjectProps {
   star: StarData;
@@ -40,12 +41,13 @@ export function StarObject({ star, onClick }: StarObjectProps) {
         />
       </mesh>
 
-      {/* Glow sprite */}
-      <sprite scale={[radius * 4, radius * 4, 1]}>
+      {/* Glow sprite (soft radial gradient — not a hard square) */}
+      <sprite scale={[radius * 6, radius * 6, 1]}>
         <spriteMaterial
+          map={getGlowTexture()}
           color={star.colorHex}
           transparent
-          opacity={0.3}
+          opacity={0.55}
           blending={THREE.AdditiveBlending}
           depthWrite={false}
         />
