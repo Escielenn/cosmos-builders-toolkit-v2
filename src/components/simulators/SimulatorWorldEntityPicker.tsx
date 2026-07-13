@@ -171,7 +171,7 @@ export function SimulatorWorldEntityPicker({
         variant="outline"
         size="sm"
         onClick={() => setOpen(true)}
-        className="bg-sf-void/80 border-sf-border text-sf-cyan hover:bg-sf-void text-[10px] uppercase tracking-wider h-7 px-2.5"
+        className="bg-sf-void/80 border-sf-border text-sf-teal hover:bg-sf-void text-[10px] uppercase tracking-wider h-7 px-2.5"
         title="Bind to a planet/star/system in your world"
       >
         <Globe className="w-3 h-3 mr-1" />
@@ -181,7 +181,7 @@ export function SimulatorWorldEntityPicker({
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetContent side="right" className="w-96 bg-sf-surface/95 backdrop-blur-sf-side border-sf-border sf-sb">
           <SheetHeader className="text-left">
-            <p className="font-mono text-[11px] tracking-[0.18em] text-sf-cyan uppercase">
+            <p className="font-mono text-[11px] tracking-[0.18em] text-sf-teal uppercase">
               // BIND TO ENTITY
             </p>
             <SheetTitle className="font-display text-xl font-light tracking-sf-title uppercase text-t1">
@@ -234,7 +234,7 @@ export function SimulatorWorldEntityPicker({
                       size="sm"
                       onClick={() => handleLoad(e.id)}
                       disabled={!hasPreset}
-                      className="flex-1 bg-sf-void/80 border-sf-border text-sf-cyan hover:bg-sf-void text-[10px] uppercase tracking-wider h-7 disabled:opacity-40"
+                      className="flex-1 bg-sf-void/80 border-sf-border text-sf-teal hover:bg-sf-void text-[10px] uppercase tracking-wider h-7 disabled:opacity-40"
                     >
                       Load
                     </Button>
