@@ -5,9 +5,9 @@
  * and combined-luminosity habitable zone into a deterministic, typed module
  * that emits the StarSystem shape the R3F viewer consumes.
  *
- * SCOPE (M2): single-star systems. A's multi-star architectures need a
- * stars[] model + the N-body integrator — those land in M3 alongside the
- * rigorous Kopparapu (2013) HZ. Here the HZ uses A's per-bucket constants.
+ * Supports single- and multi-star (binary/trinary/quaternary) architectures.
+ * The habitable band is anchored to the rigorous Kopparapu (2013) HZ
+ * (kopparapu.ts), and companion stars orbit the barycenter (physics.ts).
  *
  * Determinism: same seed string -> same system (mulberry32 + string hash).
  */
@@ -20,6 +20,7 @@ import type {
   MoonData,
   PlanetMeta,
 } from "./types";
+import { combinedHZ } from "./kopparapu";
 
 // ── Seeded PRNG ──────────────────────────────────────────────────────────
 function hashSeed(str: string): number {
@@ -223,49 +224,122 @@ function makePlanet(
   };
 }
 
+const round3 = (x: number) => Math.round(x * 1000) / 1000;
+
+type Architecture = "single" | "binary" | "trinary" | "quaternary";
+
+function makeStar(key: BucketKey, name: string, orbit: Partial<StarData>): StarData {
+  const bk = STAR_BUCKETS[key];
+  return {
+    name,
+    classification: bk.classification,
+    massSOL: bk.massSOL,
+    luminositySOL: bk.lum,
+    radiusSOL: bk.radiusSOL,
+    temperatureK: bk.temperatureK,
+    colorHex: bk.colorHex,
+    habitableZoneInnerAU: 0,
+    habitableZoneOuterAU: 0,
+    ...orbit,
+  };
+}
+
+/**
+ * Build the star list for an architecture. Companions orbit the barycenter on
+ * analytic Keplerian orbits (mass-weighted). Returns the circumbinary inner
+ * clearance and, for hierarchical systems, the outer stability limit imposed
+ * by the nearest distant companion (Holman & Wiegert-style ~0.3× separation).
+ */
+function buildStars(
+  rng: RNG,
+  primaryKey: BucketKey,
+  sysName: string,
+  arch: Architecture
+): { stars: StarData[]; innerClearAU: number; outerLimitAU: number } {
+  if (arch === "single") {
+    return { stars: [makeStar(primaryKey, `${sysName} A`, {})], innerClearAU: 0, outerLimitAU: Infinity };
+  }
+
+  const bKey = pickBucket(rng);
+  const mA = STAR_BUCKETS[primaryKey].massSOL;
+  const mB = STAR_BUCKETS[bKey].massSOL;
+  const sepAB = rnd(rng, 0.2, 1.0);
+  const Mab = mA + mB;
+  const Pab = Math.sqrt(sepAB ** 3 / Mab);
+  const stars: StarData[] = [
+    makeStar(primaryKey, `${sysName} A`, { orbitRadiusAU: round3((sepAB * mB) / Mab), orbitPhase: Math.PI, orbitPeriodYears: round3(Pab) }),
+    makeStar(bKey, `${sysName} B`, { orbitRadiusAU: round3((sepAB * mA) / Mab), orbitPhase: 0, orbitPeriodYears: round3(Pab) }),
+  ];
+  const innerClearAU = sepAB * 3.5;
+  let outerLimitAU = Infinity;
+
+  if (arch === "trinary" || arch === "quaternary") {
+    const cKey = pickBucket(rng);
+    const cSep = sepAB * rnd(rng, 8, 16);
+    const Mabc = Mab + STAR_BUCKETS[cKey].massSOL;
+    stars.push(makeStar(cKey, `${sysName} C`, { orbitRadiusAU: round3(cSep), orbitPhase: rnd(rng, 0, Math.PI * 2), orbitPeriodYears: round3(Math.sqrt(cSep ** 3 / Mabc)) }));
+    outerLimitAU = cSep * 0.3;
+
+    if (arch === "quaternary") {
+      const dKey = pickBucket(rng);
+      const dSep = cSep * rnd(rng, 2.5, 4.5);
+      const Mall = Mabc + STAR_BUCKETS[dKey].massSOL;
+      stars.push(makeStar(dKey, `${sysName} D`, { orbitRadiusAU: round3(dSep), orbitPhase: rnd(rng, 0, Math.PI * 2), orbitPeriodYears: round3(Math.sqrt(dSep ** 3 / Mall)) }));
+    }
+  }
+
+  return { stars, innerClearAU, outerLimitAU };
+}
+
 export interface GenerateOptions {
   seed?: string;
   planetCount?: number;
   starBucket?: BucketKey;
+  architecture?: Architecture;
   includeBelt?: boolean;
 }
 
-/** Deterministically generate a single-star system. Same seed -> same system. */
+/** Deterministically generate a system (single- or multi-star). Same seed -> same system. */
 export function generateSystem(opts: GenerateOptions | string = {}): StarSystem {
   const o: GenerateOptions = typeof opts === "string" ? { seed: opts } : opts;
   const seed = o.seed ?? Math.random().toString(36).slice(2, 10);
   const rng = mulberry32(hashSeed(seed));
 
   const bucketKey = o.starBucket ?? pickBucket(rng);
-  const b = STAR_BUCKETS[bucketKey];
-  const lum = b.lum;
   const sysName = pick(rng, SYS_NAMES);
 
-  // Combined-luminosity HZ (single star: sumLum = lum), per A.
-  const lumScale = Math.sqrt(lum);
-  const hzInner = b.hzAU[0] * lumScale;
-  const hzOuter = b.hzAU[1] * lumScale;
+  // Architecture: mostly single, with a tail of multi-star systems.
+  const arch: Architecture =
+    o.architecture ??
+    (() => {
+      const x = rng();
+      if (x < 0.7) return "single";
+      if (x < 0.88) return "binary";
+      if (x < 0.96) return "trinary";
+      return "quaternary";
+    })();
 
-  const star: StarData = {
-    name: `${sysName} A`,
-    classification: b.classification,
-    massSOL: b.massSOL,
-    luminositySOL: lum,
-    radiusSOL: b.radiusSOL,
-    temperatureK: b.temperatureK,
-    colorHex: b.colorHex,
-    habitableZoneInnerAU: Math.round(hzInner * 1000) / 1000,
-    habitableZoneOuterAU: Math.round(hzOuter * 1000) / 1000,
-  };
+  const { stars, innerClearAU, outerLimitAU } = buildStars(rng, bucketKey, sysName, arch);
+  const Mtot = stars.reduce((s, st) => s + st.massSOL, 0);
 
-  // Orbital band ranges (AU), scaled by luminosity (A's formulas, innerClear=0).
+  // Rigorous Kopparapu (2013) HZ — combined for multi-star. Realigns the
+  // habitable band with the real HZ (fixes M2's red-dwarf no-in-zone quirk).
+  const [hzInner, hzOuter] = combinedHZ(stars);
+
+  const star: StarData = { ...stars[0], habitableZoneInnerAU: round3(hzInner), habitableZoneOuterAU: round3(hzOuter) };
+  stars[0] = star;
+
+  // Bands anchored to the HZ; nothing inside the circumbinary clearance,
+  // nothing outside the hierarchical stability limit.
+  const floor = innerClearAU;
   const bandRanges: Record<Band, { min: number; max: number }> = {
-    inner: { min: 0.5 * lum, max: Math.max(0.8, 1.2 * lum) },
-    habitable: { min: Math.max(0.8, 1.2 * lum), max: Math.max(2.5, 2.5 * lum) },
-    outer: { min: Math.max(2.5, 2.5 * lum), max: Math.max(5, 5.5 * lum) },
-    remote: { min: Math.max(5, 5.5 * lum), max: Math.max(9, 9.0 * lum) },
+    inner: { min: Math.max(floor, 0.35 * hzInner), max: Math.max(floor + 0.05, 0.9 * hzInner) },
+    habitable: { min: Math.max(floor, hzInner), max: Math.max(floor + 0.1, hzOuter) },
+    outer: { min: Math.max(floor, hzOuter * 1.2), max: hzOuter * 3 },
+    remote: { min: Math.max(floor, hzOuter * 3), max: hzOuter * 6 },
   };
   (Object.values(bandRanges) as { min: number; max: number }[]).forEach((r) => {
+    if (isFinite(outerLimitAU)) r.max = Math.min(r.max, outerLimitAU);
     if (r.min >= r.max) r.min = r.max * 0.85;
   });
 
@@ -287,10 +361,10 @@ export function generateSystem(opts: GenerateOptions | string = {}): StarSystem 
     do {
       au = rnd(rng, br.min, br.max);
       tries++;
-    } while (usedAU.some((u) => Math.abs(u - au) < 0.2 * Math.max(lum, 0.3)) && tries < 30);
+    } while (usedAU.some((u) => Math.abs(u - au) < 0.12 * Math.max(hzInner, 0.1)) && tries < 30);
     usedAU.push(au);
     const archKey = pick(rng, BAND_POOL[band]);
-    planets.push(makePlanet(rng, archKey, au, planets.length, b.massSOL, hzInner, hzOuter));
+    planets.push(makePlanet(rng, archKey, au, planets.length, Mtot, hzInner, hzOuter));
   }
 
   planets.sort((p, q) => p.semiMajorAxisAU - q.semiMajorAxisAU);
@@ -305,7 +379,7 @@ export function generateSystem(opts: GenerateOptions | string = {}): StarSystem 
     const center =
       hab.length && out.length
         ? (hab[hab.length - 1].semiMajorAxisAU + out[0].semiMajorAxisAU) / 2
-        : rnd(rng, 2, 4) * lum;
+        : hzOuter * rnd(rng, 1.2, 1.8);
     const spread = rnd(rng, 0.3, 0.6);
     asteroidBelts.push({
       innerAU: Math.round((center - spread / 2) * 1000) / 1000,
@@ -319,6 +393,8 @@ export function generateSystem(opts: GenerateOptions | string = {}): StarSystem 
     id: `gen-${seed}`,
     name: sysName,
     star,
+    stars,
+    architecture: arch,
     planets,
     asteroidBelts,
     generatedAt: new Date().toISOString(),

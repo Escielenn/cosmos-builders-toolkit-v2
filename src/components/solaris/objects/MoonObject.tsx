@@ -2,16 +2,17 @@ import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import type { MoonData } from "../types";
-import { keplerPosition, phaseForIndex } from "../hooks/useOrbitalPosition";
+import { phaseForIndex } from "../hooks/useOrbitalPosition";
+import type { SolarisSim } from "../physics";
 
 interface MoonObjectProps {
   moon: MoonData;
   index: number;
-  timeYears: number;
+  sim: SolarisSim;
   parentRadius: number;
 }
 
-export function MoonObject({ moon, index, timeYears, parentRadius }: MoonObjectProps) {
+export function MoonObject({ moon, index, sim, parentRadius }: MoonObjectProps) {
   const groupRef = useRef<THREE.Group>(null);
 
   const orbitRadius = parentRadius * 2 + index * 0.5;
@@ -20,13 +21,7 @@ export function MoonObject({ moon, index, timeYears, parentRadius }: MoonObjectP
 
   useFrame(() => {
     if (!groupRef.current) return;
-
-    // Use keplerPosition with circular orbit (eccentricity = 0)
-    // We pass orbitRadius directly as AU-equivalent since it's already in scene units
-    const angle =
-      ((2 * Math.PI * timeYears) / Math.max(periodYears, 0.001)) +
-      phaseForIndex(index);
-
+    const angle = ((2 * Math.PI * sim.tYears) / Math.max(periodYears, 0.001)) + phaseForIndex(index);
     groupRef.current.position.x = Math.cos(angle) * orbitRadius;
     groupRef.current.position.z = Math.sin(angle) * orbitRadius;
   });
@@ -35,10 +30,7 @@ export function MoonObject({ moon, index, timeYears, parentRadius }: MoonObjectP
     <group ref={groupRef}>
       <mesh>
         <sphereGeometry args={[moonRadius, 16, 16]} />
-        <meshStandardMaterial
-          color={moon.colorHex}
-          roughness={0.9}
-        />
+        <meshStandardMaterial color={moon.colorHex} roughness={0.9} />
       </mesh>
     </group>
   );

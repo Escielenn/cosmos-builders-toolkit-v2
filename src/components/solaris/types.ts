@@ -10,6 +10,10 @@ export interface StarData {
   colorHex: string;
   habitableZoneInnerAU: number;
   habitableZoneOuterAU: number;
+  // Multi-star orbit about the system barycenter (undefined/0 = at the center).
+  orbitRadiusAU?: number;
+  orbitPhase?: number;
+  orbitPeriodYears?: number;
 }
 
 export type PlanetType =
@@ -80,6 +84,9 @@ export interface StarSystem {
   worldId?: string;
   name: string;
   star: StarData;
+  /** All stars incl. the primary (stars[0] === star). Absent/length 1 = single-star. */
+  stars?: StarData[];
+  architecture?: 'single' | 'binary' | 'trinary' | 'quaternary';
   planets: PlanetData[];
   asteroidBelts: AsteroidBeltData[];
   generatedAt: string;

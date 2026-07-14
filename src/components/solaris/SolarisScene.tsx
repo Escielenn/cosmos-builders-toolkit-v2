@@ -1,16 +1,20 @@
 /**
  * SolarisScene, The Three.js canvas and scene graph.
- * Renders the star system as an interactive orrery.
+ *
+ * Positions come from the SolarisSim physics engine (physics.ts). The engine
+ * is stepped once per frame by <SimStepper>, and each body reads its own
+ * position from the engine inside its useFrame — imperatively, with NO
+ * per-frame React re-render (that churn was overrunning software WebGL on
+ * multi-star scenes, and is the perf-correct approach regardless).
  */
 
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useMemo, useRef } from "react";
 import type { ElementRef, RefObject } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 import type { StarSystem, SelectedBody, CameraMode } from "./types";
-import { useSimulationTime } from "./hooks/useSimulationTime";
-import { keplerPosition, phaseForIndex } from "./hooks/useOrbitalPosition";
+import { SolarisSim } from "./physics";
 import { auToScene } from "./utils/scaleAU";
 import { StarObject } from "./objects/StarObject";
 import { PlanetObject } from "./objects/PlanetObject";
@@ -34,57 +38,46 @@ interface SolarisSceneProps {
   speedMultiplier: number;
 }
 
-/**
- * CameraRig, Steers OrbitControls' target based on the active camera mode.
- * 'free' leaves the user's target alone; 'star' eases toward the origin;
- * 'planet-N' eases toward that planet's current orbital position (computed
- * with the same Kepler math + phase the PlanetObject uses, so they agree).
- * The user can still orbit/zoom around the followed body.
- */
-function CameraRig({
-  cameraMode,
-  planets,
-  timeYears,
-  controlsRef,
-}: {
-  cameraMode: CameraMode;
-  planets: StarSystem["planets"];
-  timeYears: number;
-  controlsRef: ControlsRef;
-}) {
-  const target = useRef(new THREE.Vector3());
+/** Steps the physics engine once per frame (before bodies read positions). */
+function SimStepper({ sim, speed }: { sim: SolarisSim; speed: number }) {
+  useFrame((_, delta) => sim.step(Math.min(delta, 0.05) * speed));
+  return null;
+}
 
+/** A single point light tracking the primary star (one light keeps software WebGL happy). */
+function PrimaryLight({ sim }: { sim: SolarisSim }) {
+  const ref = useRef<THREE.PointLight>(null);
+  const intensity = Math.min(sim.stars.reduce((s, st) => s + st.lum, 0) * 1.4 + 0.6, 9);
+  useFrame(() => {
+    const s = sim.stars[0];
+    if (ref.current && s) ref.current.position.set(auToScene(s.x), 0, auToScene(s.z));
+  });
+  return <pointLight ref={ref} intensity={intensity} color="#ffffff" distance={0} decay={2} />;
+}
+
+/** Eases OrbitControls' target toward the active camera-mode body. */
+function CameraRig({ cameraMode, sim, controlsRef }: { cameraMode: CameraMode; sim: SolarisSim; controlsRef: ControlsRef }) {
+  const target = useRef(new THREE.Vector3());
   useFrame(() => {
     const controls = controlsRef.current;
     if (!controls || cameraMode === "free") return;
-
     let tx = 0;
     let tz = 0;
     if (cameraMode.startsWith("planet-")) {
       const idx = parseInt(cameraMode.slice("planet-".length), 10);
-      const p = planets[idx];
+      const p = sim.planets[idx];
       if (p) {
-        const [x, z] = keplerPosition(
-          p.semiMajorAxisAU,
-          p.eccentricity,
-          p.orbitalPeriodYears,
-          timeYears,
-          phaseForIndex(idx)
-        );
-        tx = x;
-        tz = z;
+        tx = auToScene(p.x);
+        tz = auToScene(p.z);
       }
     }
-
     target.current.set(tx, 0, tz);
     controls.target.lerp(target.current, 0.08);
     controls.update();
   });
-
   return null;
 }
 
-/** Inner component that runs inside the Canvas (has access to useFrame). */
 function SceneContents({
   system,
   showOrbitalPaths,
@@ -97,46 +90,33 @@ function SceneContents({
   speedMultiplier,
   controlsRef,
 }: Omit<SolarisSceneProps, "showLabels"> & { controlsRef: ControlsRef }) {
-  const sim = useSimulationTime(speedMultiplier);
+  const sim = useMemo(() => new SolarisSim(system), [system]);
+  const starList = system.stars && system.stars.length ? system.stars : [system.star];
 
-  // Keep the simulation clock in sync with the speed control.
-  useEffect(() => {
-    sim.setSpeedMultiplier(speedMultiplier);
-  }, [speedMultiplier, sim]);
-
-  const handleStarClick = useCallback(() => {
-    onBodySelect?.({
-      type: "star",
-      name: system.star.name,
-      data: system.star,
-    });
-  }, [system.star, onBodySelect]);
-
+  const handleStarClick = useCallback(
+    (i: number) => onBodySelect?.({ type: "star", name: starList[i].name, data: starList[i] }),
+    [starList, onBodySelect]
+  );
   const handlePlanetClick = useCallback(
     (index: number) => {
       const planet = system.planets[index];
-      if (!planet) return;
-      onBodySelect?.({
-        type: "planet",
-        name: planet.name,
-        data: planet,
-      });
+      if (planet) onBodySelect?.({ type: "planet", name: planet.name, data: planet });
     },
     [system.planets, onBodySelect]
   );
-
-  const handleBgClick = useCallback(() => {
-    onBodySelect?.(null);
-  }, [onBodySelect]);
+  const handleBgClick = useCallback(() => onBodySelect?.(null), [onBodySelect]);
 
   return (
     <>
+      <SimStepper sim={sim} speed={speedMultiplier} />
       <ambientLight intensity={0.06} />
-      {/* Faint sky/ground fill so planet night-sides aren't pure black */}
       <hemisphereLight args={["#8ea6c8", "#0a0a12", 0.12]} />
+      <PrimaryLight sim={sim} />
       <StarField />
 
-      <StarObject star={system.star} onClick={handleStarClick} />
+      {starList.map((s, i) => (
+        <StarObject key={s.name + i} star={s} sim={sim} index={i} onClick={() => handleStarClick(i)} />
+      ))}
 
       <HabitableZone
         innerAU={system.star.habitableZoneInnerAU}
@@ -147,16 +127,12 @@ function SceneContents({
       {system.planets.map((planet, i) => (
         <group key={planet.name + i}>
           {showOrbitalPaths && (
-            <OrbitalPath
-              semiMajorAxisAU={planet.semiMajorAxisAU}
-              eccentricity={planet.eccentricity}
-              colorHex={planet.colorHex}
-            />
+            <OrbitalPath semiMajorAxisAU={planet.semiMajorAxisAU} eccentricity={planet.eccentricity} colorHex={planet.colorHex} />
           )}
           <PlanetObject
             planet={planet}
+            sim={sim}
             index={i}
-            timeYears={sim.timeYears}
             onClick={() => handlePlanetClick(i)}
             selected={selectedBody?.name === planet.name}
             showMoons={showMoons}
@@ -164,57 +140,35 @@ function SceneContents({
         </group>
       ))}
 
-      {showAsteroidBelts &&
-        system.asteroidBelts.map((belt, i) => (
-          <AsteroidBeltObject key={`belt-${i}`} belt={belt} visible />
-        ))}
+      {showAsteroidBelts && system.asteroidBelts.map((belt, i) => <AsteroidBeltObject key={`belt-${i}`} belt={belt} visible />)}
 
-      <CameraRig
-        cameraMode={cameraMode}
-        planets={system.planets}
-        timeYears={sim.timeYears}
-        controlsRef={controlsRef}
-      />
+      <CameraRig cameraMode={cameraMode} sim={sim} controlsRef={controlsRef} />
 
-      {/* Invisible click plane for deselection */}
-      <mesh
-        position={[0, -0.5, 0]}
-        rotation={[-Math.PI / 2, 0, 0]}
-        onClick={handleBgClick}
-        visible={false}
-      >
-        <planeGeometry args={[2000, 2000]} />
+      <mesh position={[0, -0.5, 0]} rotation={[-Math.PI / 2, 0, 0]} onClick={handleBgClick} visible={false}>
+        <planeGeometry args={[6000, 6000]} />
         <meshBasicMaterial transparent opacity={0} />
       </mesh>
     </>
   );
 }
 
-/** Scene radius of the outermost feature (orbit apoapsis or belt), for framing. */
+/** Scene radius of the outermost feature, for framing the camera on load. */
 function systemExtent(system: StarSystem): number {
   let maxAU = 1;
-  for (const p of system.planets) {
-    maxAU = Math.max(maxAU, p.semiMajorAxisAU * (1 + Math.abs(p.eccentricity)));
-  }
-  for (const b of system.asteroidBelts) {
-    maxAU = Math.max(maxAU, b.outerAU);
-  }
+  for (const p of system.planets) maxAU = Math.max(maxAU, p.semiMajorAxisAU * (1 + Math.abs(p.eccentricity)));
+  for (const b of system.asteroidBelts) maxAU = Math.max(maxAU, b.outerAU);
+  const stars = system.stars ?? [system.star];
+  for (const s of stars) maxAU = Math.max(maxAU, s.orbitRadiusAU ?? 0);
   return auToScene(maxAU);
 }
 
 export default function SolarisScene(props: SolarisSceneProps) {
   const controlsRef = useRef<ElementRef<typeof OrbitControls>>(null);
-
-  // Frame the whole system on load: pull the camera back to fit the outermost orbit.
   const extent = systemExtent(props.system);
   const camPos: [number, number, number] = [0, extent * 0.75, extent * 1.35];
 
   return (
-    <Canvas
-      camera={{ position: camPos, fov: 45, near: 0.1, far: 50000 }}
-      gl={{ antialias: true }}
-      style={{ background: "#09090B" }}
-    >
+    <Canvas camera={{ position: camPos, fov: 45, near: 0.1, far: 50000 }} gl={{ antialias: true }} style={{ background: "#09090B" }}>
       <OrbitControls
         ref={controlsRef}
         makeDefault
