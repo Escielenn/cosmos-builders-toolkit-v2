@@ -32,6 +32,23 @@ export interface MoonData {
   tidally_locked: boolean;
 }
 
+/**
+ * Rich narrative attributes carried over from the original Solaris (A). Not
+ * used by the renderer, but preserved for the info panel (M4) and
+ * publish-to-world (M5). Optional so hand-built systems need not supply it.
+ */
+export interface PlanetMeta {
+  archetype: string; // A's planet-type key, e.g. "terrestrial", "gasgiant"
+  displayName: string; // A's human label, e.g. "Terrestrial"
+  band: 'inner' | 'habitable' | 'outer' | 'remote';
+  life: string;
+  atmosphere: string;
+  water: string;
+  hazard: string;
+  resources: string;
+  note: string;
+}
+
 export interface PlanetData {
   name: string;
   type: PlanetType;
@@ -48,6 +65,7 @@ export interface PlanetData {
   moons: MoonData[];
   inHabitableZone: boolean;
   surfaceTempK: number;
+  meta?: PlanetMeta;
 }
 
 export interface AsteroidBeltData {
@@ -65,6 +83,7 @@ export interface StarSystem {
   planets: PlanetData[];
   asteroidBelts: AsteroidBeltData[];
   generatedAt: string;
+  seed?: string;
 }
 
 export interface SolarisViewerProps {
