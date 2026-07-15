@@ -54,6 +54,8 @@ export interface PlanetMeta {
 }
 
 export interface PlanetData {
+  /** Stable id so the physics engine can reconcile edits without resetting orbits. */
+  id?: string;
   name: string;
   type: PlanetType;
   massEarth: number;

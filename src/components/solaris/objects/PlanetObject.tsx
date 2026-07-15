@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
+import { Html } from "@react-three/drei";
 import * as THREE from "three";
 import type { PlanetData } from "../types";
 import { radiusToScene, auToScene } from "../utils/scaleAU";
@@ -14,9 +15,10 @@ interface PlanetObjectProps {
   onClick?: () => void;
   selected?: boolean;
   showMoons?: boolean;
+  showLabel?: boolean;
 }
 
-export function PlanetObject({ planet, sim, index, onClick, selected = false, showMoons = true }: PlanetObjectProps) {
+export function PlanetObject({ planet, sim, index, onClick, selected = false, showMoons = true, showLabel = false }: PlanetObjectProps) {
   const groupRef = useRef<THREE.Group>(null);
   const meshRef = useRef<THREE.Mesh>(null);
 
@@ -31,8 +33,16 @@ export function PlanetObject({ planet, sim, index, onClick, selected = false, sh
     if (meshRef.current) meshRef.current.rotation.y += delta * spinSpeed;
   });
 
+  const hitRadius = Math.max(radius * 2.6, 0.9);
+
   return (
     <group ref={groupRef}>
+      {/* Invisible, larger hit-area so small planets are easy to click/select */}
+      <mesh onClick={onClick}>
+        <sphereGeometry args={[hitRadius, 12, 12]} />
+        <meshBasicMaterial transparent opacity={0} depthWrite={false} />
+      </mesh>
+
       <group rotation={[tiltRad, 0, 0]}>
         <mesh ref={meshRef} onClick={onClick}>
           <sphereGeometry args={[radius, 32, 32]} />
@@ -65,8 +75,25 @@ export function PlanetObject({ planet, sim, index, onClick, selected = false, sh
       )}
 
       {showMoons && planet.moons.map((moon, moonIdx) => (
-        <MoonObject key={moon.name} moon={moon} index={moonIdx} sim={sim} parentRadius={radius} />
+        <MoonObject key={moon.name + moonIdx} moon={moon} index={moonIdx} sim={sim} parentRadius={radius} />
       ))}
+
+      {showLabel && (
+        <Html position={[0, radius + 0.6, 0]} center zIndexRange={[10, 0]} style={{ pointerEvents: "none" }}>
+          <span
+            style={{
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: 10,
+              letterSpacing: "1px",
+              textTransform: "uppercase",
+              color: "rgba(61,255,205,0.75)",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {planet.name}
+          </span>
+        </Html>
+      )}
     </group>
   );
 }

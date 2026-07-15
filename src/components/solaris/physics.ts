@@ -35,6 +35,7 @@ export interface StarBody {
 }
 
 export interface PlanetBody {
+  id: string;
   sma: number;
   e: number;
   period: number;
@@ -92,21 +93,71 @@ export class SolarisSim {
     const maxStarR = this.stars.reduce((m, s) => Math.max(m, s.orbitR), 0);
     this.outerStableR = maxStarR > 0 ? maxStarR * 8 + 60 : 200;
 
+    this.planets = system.planets.map((p, i) => this.makeBody(p, i));
+  }
+
+  /** Create a planet body, positioned for the current time (analytic for single-star, circular seed for multi). */
+  private makeBody(p: PlanetData, index: number): PlanetBody {
+    const body: PlanetBody = {
+      id: p.id ?? `idx-${index}`,
+      sma: p.semiMajorAxisAU,
+      e: p.eccentricity,
+      period: p.orbitalPeriodYears,
+      phase: phaseForIndex(index),
+      retro: false,
+      x: 0,
+      z: 0,
+      vx: 0,
+      vz: 0,
+      ejections: 0,
+    };
+    if (this.multi) {
+      this.seedPlanet(body);
+    } else {
+      const [x, z] = keplerPosAU(body.sma, body.e, body.period, this.tYears, body.phase);
+      body.x = x;
+      body.z = z;
+    }
+    return body;
+  }
+
+  /**
+   * Reconcile the engine with an edited system WITHOUT resetting the running
+   * simulation. Existing planets (matched by id) keep their integration state
+   * and just take updated orbital params; new planets are seeded at the
+   * current time; removed planets are dropped. Star edits rebuild the star set.
+   * tYears is preserved throughout, so editing stays smooth.
+   */
+  reconcile(system: StarSystem) {
+    const list = system.stars && system.stars.length ? system.stars : [system.star];
+    if (list.length === this.stars.length) {
+      list.forEach((s, i) => {
+        const b = this.stars[i];
+        b.massSOL = s.massSOL;
+        b.lum = s.luminositySOL;
+        b.colorHex = s.colorHex;
+        b.radiusSOL = s.radiusSOL;
+        b.name = s.name;
+        b.orbitR = s.orbitRadiusAU ?? 0;
+        b.phase = s.orbitPhase ?? 0;
+        b.omega = s.orbitPeriodYears ? (2 * Math.PI) / s.orbitPeriodYears : 0;
+      });
+      this.updateStarPositions();
+    }
+    // (multi-ness change from a star add/remove is out of scope for editing; the
+    //  dev route remounts on Generate, which reconstructs the engine fresh.)
+
+    const byId = new Map(this.planets.map((b) => [b.id, b]));
     this.planets = system.planets.map((p, i) => {
-      const body: PlanetBody = {
-        sma: p.semiMajorAxisAU,
-        e: p.eccentricity,
-        period: p.orbitalPeriodYears,
-        phase: phaseForIndex(i),
-        retro: false,
-        x: 0,
-        z: 0,
-        vx: 0,
-        vz: 0,
-        ejections: 0,
-      };
-      if (this.multi) this.seedPlanet(body);
-      return body;
+      const id = p.id ?? `idx-${i}`;
+      const existing = byId.get(id);
+      if (existing) {
+        existing.sma = p.semiMajorAxisAU;
+        existing.e = p.eccentricity;
+        existing.period = p.orbitalPeriodYears;
+        return existing;
+      }
+      return this.makeBody(p, i);
     });
   }
 

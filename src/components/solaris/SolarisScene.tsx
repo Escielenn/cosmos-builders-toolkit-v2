@@ -8,7 +8,7 @@
  * multi-star scenes, and is the perf-correct approach regardless).
  */
 
-import { useCallback, useMemo, useRef } from "react";
+import { useCallback, useRef } from "react";
 import type { ElementRef, RefObject } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
@@ -84,13 +84,22 @@ function SceneContents({
   showHabitableZone,
   showAsteroidBelts,
   showMoons,
+  showLabels,
   onBodySelect,
   selectedBody,
   cameraMode,
   speedMultiplier,
   controlsRef,
-}: Omit<SolarisSceneProps, "showLabels"> & { controlsRef: ControlsRef }) {
-  const sim = useMemo(() => new SolarisSim(system), [system]);
+}: SolarisSceneProps & { controlsRef: ControlsRef }) {
+  // Persistent engine: reconcile on edits (keeps orbits + time), rebuild only on remount (Generate).
+  const simRef = useRef<SolarisSim | null>(null);
+  if (!simRef.current) simRef.current = new SolarisSim(system);
+  const sim = simRef.current;
+  const lastSystemRef = useRef(system);
+  if (lastSystemRef.current !== system) {
+    sim.reconcile(system);
+    lastSystemRef.current = system;
+  }
   const starList = system.stars && system.stars.length ? system.stars : [system.star];
 
   const handleStarClick = useCallback(
@@ -125,7 +134,7 @@ function SceneContents({
       />
 
       {system.planets.map((planet, i) => (
-        <group key={planet.name + i}>
+        <group key={planet.id ?? planet.name + i}>
           {showOrbitalPaths && (
             <OrbitalPath semiMajorAxisAU={planet.semiMajorAxisAU} eccentricity={planet.eccentricity} colorHex={planet.colorHex} />
           )}
@@ -134,8 +143,13 @@ function SceneContents({
             sim={sim}
             index={i}
             onClick={() => handlePlanetClick(i)}
-            selected={selectedBody?.name === planet.name}
+            selected={
+              !!selectedBody &&
+              selectedBody.type === "planet" &&
+              (selectedBody.data as { id?: string }).id === planet.id
+            }
             showMoons={showMoons}
+            showLabel={showLabels}
           />
         </group>
       ))}

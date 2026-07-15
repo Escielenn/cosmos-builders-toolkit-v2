@@ -162,6 +162,9 @@ function massFromRadius(render: PlanetType, r: number): number {
 
 const MOON_TONES = ["#C8C8C8", "#B0A79A", "#9FB0BF", "#8B7355", "#D8CDBE"];
 
+let _uid = 0;
+const uid = () => `p${Date.now().toString(36)}${(_uid++).toString(36)}`;
+
 function makePlanet(
   rng: RNG,
   archKey: string,
@@ -205,6 +208,7 @@ function makePlanet(
   };
 
   return {
+    id: uid(),
     name: "",
     type: a.render,
     massEarth: Math.round(massEarth * 100) / 100,
@@ -399,5 +403,48 @@ export function generateSystem(opts: GenerateOptions | string = {}): StarSystem 
     asteroidBelts,
     generatedAt: new Date().toISOString(),
     seed,
+  };
+}
+
+// ── Editing helpers (M4) ─────────────────────────────────────────────────
+export interface PaletteItem {
+  key: string;
+  name: string;
+  color: string;
+  band: Band;
+}
+
+/** All planet archetypes, for the drag/click palette (grouped by band). */
+export const PALETTE: PaletteItem[] = (Object.keys(A) as string[]).map((key) => ({
+  key,
+  name: A[key].name,
+  color: A[key].color,
+  band: A[key].band,
+}));
+
+export const PALETTE_BANDS: Band[] = ["inner", "habitable", "outer", "remote"];
+
+/** Build a single planet of an archetype at a given orbit (for editor add-planet). */
+export function createPlanet(
+  archKey: string,
+  sma: number,
+  starMassSOL: number,
+  hzInner: number,
+  hzOuter: number
+): PlanetData {
+  const p = makePlanet(Math.random, archKey, sma, 0, starMassSOL, hzInner, hzOuter);
+  p.name = A[archKey]?.name ?? "New Planet";
+  return p;
+}
+
+/** A single moon with randomized parameters (for the moon panel add button). */
+export function createMoon(): MoonData {
+  return {
+    name: "Moon",
+    radiusKM: Math.round(200 + Math.random() * 1700),
+    orbitRadiusKM: Math.round(20000 + Math.random() * 580000),
+    periodDays: Math.round((1.5 + Math.random() * 28) * 10) / 10,
+    colorHex: MOON_TONES[Math.floor(Math.random() * MOON_TONES.length)],
+    tidally_locked: true,
   };
 }
