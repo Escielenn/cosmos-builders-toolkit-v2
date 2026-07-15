@@ -4,16 +4,24 @@
  * Route: /dev/solaris  (NOT in prod nav; live Solaris stays on the static-HTML
  * iframe until parity + sign-off — see docs/SOLARIS_NATIVE_REBUILD.md).
  *
- * M4 scope: native editing — palette add-planet (click or drag), per-planet
- * sliders, rings toggle, moon panel, and the display toggles. Edits mutate
- * system state; the physics engine reconciles without resetting orbits.
+ * M5 scope: persistence. Save/Load/Publish wired through the shared
+ * useSimulationSave hook. As a component (non-iframe) simulator, it speaks the
+ * same STELLARFORGE_* protocol over window events. Payloads are written in a
+ * superset of the original sim's shape — see saveFormat.ts.
  */
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { Save, FolderOpen, Rocket } from "lucide-react";
 import Header from "@/components/layout/Header";
 import { SolarisViewer } from "@/components/solaris/SolarisViewer";
 import SolarisEditPanel from "@/components/solaris/SolarisEditPanel";
+import SaveSimulationDialog from "@/components/simulators/SaveSimulationDialog";
+import LoadSimulationSheet from "@/components/simulators/LoadSimulationSheet";
+import PublishToWorldDialog from "@/components/simulators/PublishToWorldDialog";
+import { useWorldId } from "@/hooks/use-world-id";
+import { useSimulationSave } from "@/hooks/use-simulation-save";
 import { generateSystem, createPlanet, createMoon, PALETTE } from "@/components/solaris/generator";
+import { toSavePayload, fromSavePayload } from "@/components/solaris/saveFormat";
 import type { StarSystem, PlanetData, MoonData, SelectedBody } from "@/components/solaris/types";
 
 const HEADER_H = 64;
@@ -32,6 +40,12 @@ const SolarisNativeDev = () => {
   const [genKey, setGenKey] = useState(0);
   const [system, setSystem] = useState<StarSystem>(() => generateSystem({ seed: "sol" }));
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [loadSheetOpen, setLoadSheetOpen] = useState(false);
+  const [publishOpen, setPublishOpen] = useState(false);
+
+  const worldId = useWorldId();
+  const { saves, isLoadingSaves, pendingPayload, saveDialogOpen, setSaveDialogOpen, createSave, loadSave, requestSave } =
+    useSimulationSave({ simulatorType: "solaris", worldId });
 
   const [viewerHeight, setViewerHeight] = useState(typeof window !== "undefined" ? window.innerHeight - HEADER_H : 600);
   useEffect(() => {
@@ -40,10 +54,17 @@ const SolarisNativeDev = () => {
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
-  const regenerate = (s: string) => {
-    setSystem(generateSystem({ seed: s.trim() || "sol", architecture: arch === "auto" ? undefined : arch }));
+  const systemRef = useRef(system);
+  systemRef.current = system;
+
+  const applySystem = useCallback((s: StarSystem) => {
+    setSystem(s);
     setSelectedId(null);
     setGenKey((k) => k + 1);
+  }, []);
+
+  const regenerate = (s: string) => {
+    applySystem(generateSystem({ seed: s.trim() || "sol", architecture: arch === "auto" ? undefined : arch }));
   };
   const generate = () => regenerate(seed);
   const randomize = () => {
@@ -52,17 +73,46 @@ const SolarisNativeDev = () => {
     regenerate(s);
   };
 
+  // ── STELLARFORGE protocol (component simulator speaks it over window events) ──
+  useEffect(() => {
+    const onRequestState = () => {
+      window.postMessage({ type: "STELLARFORGE_SAVE", payload: toSavePayload(systemRef.current) }, "*");
+    };
+    const onLoad = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      const restored = fromSavePayload(detail);
+      if (restored) applySystem(restored.system);
+    };
+    window.addEventListener("STELLARFORGE_REQUEST_STATE", onRequestState);
+    window.addEventListener("STELLARFORGE_LOAD", onLoad as EventListener);
+    return () => {
+      window.removeEventListener("STELLARFORGE_REQUEST_STATE", onRequestState);
+      window.removeEventListener("STELLARFORGE_LOAD", onLoad as EventListener);
+    };
+  }, [applySystem]);
+
   const selectedIndex = selectedId ? system.planets.findIndex((p) => p.id === selectedId) : -1;
 
-  // Dev/test hook: drive selection deterministically (same path a click uses).
-  const systemRef = useRef(system);
-  systemRef.current = system;
+  // Dev/test hook: deterministic selection + in-memory save→load round-trip.
   useEffect(() => {
     (window as unknown as { __solarisDev?: unknown }).__solarisDev = {
       selectFirst: () => setSelectedId(systemRef.current.planets[0]?.id ?? null),
       planetCount: () => systemRef.current.planets.length,
+      getSystem: () => systemRef.current,
+      buildPayload: () => toSavePayload(systemRef.current),
+      roundTrip: () => {
+        const payload = toSavePayload(systemRef.current);
+        const restored = fromSavePayload(payload);
+        if (restored) applySystem(restored.system);
+        return restored?.exact ?? false;
+      },
+      loadPayload: (payload: unknown) => {
+        const restored = fromSavePayload(payload as never);
+        if (restored) applySystem(restored.system);
+        return restored?.exact ?? false;
+      },
     };
-  }, []);
+  }, [applySystem]);
 
   const handleSelect = useCallback((b: SelectedBody | null) => {
     if (b && b.type === "planet") setSelectedId((b.data as { id?: string }).id ?? null);
@@ -70,21 +120,17 @@ const SolarisNativeDev = () => {
   }, []);
 
   // ── Edit handlers ──
-  const addPlanet = useCallback(
-    (archKey: string) => {
-      setSystem((s) => {
-        const hzIn = s.star.habitableZoneInnerAU;
-        const hzOut = s.star.habitableZoneOuterAU;
-        const band = PALETTE.find((p) => p.key === archKey)?.band;
-        let sma = orbitForBand(band, hzIn, hzOut);
-        while (s.planets.some((p) => Math.abs(p.semiMajorAxisAU - sma) < 0.12 * Math.max(hzIn, 0.1))) sma *= 1.15;
-        const starMass = (s.stars ?? [s.star]).reduce((sum, st) => sum + st.massSOL, 0);
-        const p = createPlanet(archKey, sma, starMass, hzIn, hzOut);
-        return { ...s, planets: [...s.planets, p] };
-      });
-    },
-    []
-  );
+  const addPlanet = useCallback((archKey: string) => {
+    setSystem((s) => {
+      const hzIn = s.star.habitableZoneInnerAU;
+      const hzOut = s.star.habitableZoneOuterAU;
+      const band = PALETTE.find((p) => p.key === archKey)?.band;
+      let sma = orbitForBand(band, hzIn, hzOut);
+      while (s.planets.some((p) => Math.abs(p.semiMajorAxisAU - sma) < 0.12 * Math.max(hzIn, 0.1))) sma *= 1.15;
+      const starMass = (s.stars ?? [s.star]).reduce((sum, st) => sum + st.massSOL, 0);
+      return { ...s, planets: [...s.planets, createPlanet(archKey, sma, starMass, hzIn, hzOut)] };
+    });
+  }, []);
 
   const patchPlanet = useCallback((index: number, patch: Partial<PlanetData>) => {
     setSystem((s) => {
@@ -125,6 +171,7 @@ const SolarisNativeDev = () => {
   }, []);
 
   const ctrl = "font-mono text-[10px] uppercase tracking-wider h-7 rounded-none border";
+  const actionBtn = `${ctrl} bg-sf-void/80 border-sf-border text-sf-teal hover:bg-sf-void px-2.5 flex items-center gap-1`;
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -151,7 +198,7 @@ const SolarisNativeDev = () => {
             onKeyDown={(e) => e.key === "Enter" && generate()}
             placeholder="seed"
             spellCheck={false}
-            className={`w-28 bg-sf-void/80 border-sf-border text-white/85 tracking-wider px-2.5 ${ctrl} font-mono focus:border-sf-teal/50 outline-none`}
+            className={`w-24 bg-sf-void/80 border-sf-border text-white/85 tracking-wider px-2.5 ${ctrl} font-mono focus:border-sf-teal/50 outline-none`}
           />
           <select value={arch} onChange={(e) => setArch(e.target.value as Arch)} className={`bg-sf-void/80 border-sf-border text-white/75 px-1.5 ${ctrl}`}>
             <option value="auto">auto</option>
@@ -168,7 +215,20 @@ const SolarisNativeDev = () => {
           </button>
         </div>
 
-        {/* key remounts (rebuilds engine) only on Generate; edits keep the same key */}
+        {/* ── Save / Load / Publish (bottom-right, clear of the edit panel) ── */}
+        <div className="absolute bottom-3 right-16 z-20 flex items-center gap-1.5">
+          <button onClick={requestSave} className={actionBtn} title="Save simulation">
+            <Save className="w-3 h-3" /> Save
+          </button>
+          <button onClick={() => setLoadSheetOpen(true)} className={actionBtn} title="Load simulation">
+            <FolderOpen className="w-3 h-3" /> Load
+          </button>
+          <button onClick={() => setPublishOpen(true)} className={actionBtn} title="Publish to world">
+            <Rocket className="w-3 h-3" /> Publish
+          </button>
+        </div>
+
+        {/* key remounts (rebuilds engine) only on Generate/Load; edits keep it stable */}
         <SolarisViewer key={genKey} system={system} height={viewerHeight} onBodySelect={handleSelect} />
 
         <SolarisEditPanel
@@ -182,6 +242,24 @@ const SolarisNativeDev = () => {
           onRemoveMoon={removeMoon}
         />
       </div>
+
+      <SaveSimulationDialog
+        open={saveDialogOpen}
+        onOpenChange={setSaveDialogOpen}
+        payload={pendingPayload}
+        onSave={(name) => {
+          if (pendingPayload) createSave.mutate({ name, data: pendingPayload });
+        }}
+        isSaving={createSave.isPending}
+      />
+      <LoadSimulationSheet open={loadSheetOpen} onOpenChange={setLoadSheetOpen} saves={saves} isLoading={isLoadingSaves} onLoad={loadSave} />
+      <PublishToWorldDialog
+        open={publishOpen}
+        onOpenChange={setPublishOpen}
+        payload={pendingPayload ?? toSavePayload(system)}
+        worldId={worldId}
+        simulatorType="solaris"
+      />
     </div>
   );
 };
