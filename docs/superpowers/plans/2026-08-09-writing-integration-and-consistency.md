@@ -2,6 +2,43 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
+## Status — updated 2026-08-09
+
+| Task | State | Commit |
+|---|---|---|
+| A1 folders visible in binder | **done** | 297d4b3 |
+| A2 sort_order stops reshuffling | **done** | 297d4b3 |
+| A3 flush autosave on doc switch | **done** | 297d4b3 |
+| A4 live save indicator / fresh title / save errors | **done** | 297d4b3 |
+| A5 atomic word ledger | **migration written, NOT applied** — needs the (user_id, day) unique constraint confirmed by someone with DB access; `rollWordSession` carries a comment pointing at it | 344288c |
+| B1 surface decision | **recorded, awaiting sign-off** — recommendation is port-then-delete | — |
+| B2 Ctrl+S + Escape | **done** | 344288c |
+| B3 goal progress in the footer | **not started** | — |
+| B4 retire WorldWritingSpace | **blocked on B1 sign-off** (deletes 865 lines; its version history is broken per BUGS 8–10 and must be fixed before porting) | — |
+| B5 auth-gated redirect + Studio world-scoped link | **done** | 344288c |
+| C1 extractWorksheetFacts + tests | **done** (11 tests) | 344288c |
+| C2 WorksheetFactsPanel in the Refs tab | **done** | 344288c |
+| C3 pins carry real data | **done** | 344288c |
+| C4 world appendix in compile | **done** | 6edf6c9 |
+| C5 extend tool coverage | **in progress** — 7 → 13 tools mapped | — |
+| D6 unify word counters | **done** | 5d3a182 |
+| D1, D2 | **blocked** — need DDL / the entity merge, gated by SF-II Phase 0 | — |
+| D3, D4, D5 | **not started** — need product decisions, see Phase D | — |
+
+**Deviation from the plan, recorded deliberately:** Task A1 proposed extracting a
+`buildBinder` helper with its own unit test. On reading the code, `useWritingDocuments`
+*already* builds the correct folder tree and then discards it, so adding a second copy
+would have duplicated the logic. The implementation consumes the hook's existing
+`folders`/`unfiledDocs` instead, and the planned test was dropped rather than testing a
+function that should not exist.
+
+**Verification standing after the work above:** typecheck-strict passes, total type
+errors unchanged at the pre-existing 254, eslint unchanged at 62 errors / 73 warnings,
+tests 18 → 29 passing, production build succeeds. The editor UI itself has **not** been
+behaviourally verified: `/write` requires authentication and no test credentials exist
+in this environment, so Phase A/B fixes are argued from code, not driven in a browser.
+They deserve a manual pass on a real account.
+
 **Goal:** Make every tool's real data usable inside the writing surface, collapse the four competing writing entry points into one, and fix the correctness bugs that currently corrupt word counts, binder order, and version history.
 
 **Architecture:** Three phases, ordered by risk. Phase A fixes correctness bugs in the live editor (`Write.tsx` + its hooks) with no schema change. Phase B resolves the writing-surface split — `WorldWritingSpace.tsx` is 865 lines of richer features (zen mode, version history, font controls) that is imported but never routed, so it is dead code today. Phase C adds real tool-data integration, built entirely on the existing `worksheets.data` blob read client-side through `entity-config.ts` `worksheetPaths` + `getNestedValue`, requiring **no new Supabase tables or columns**.
