@@ -9,7 +9,7 @@
 import { useCallback } from "react";
 import { Pin, PinOff } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useWritingPins } from "@/hooks/use-writing-pins";
+import { useWritingPins, type PinnedItemType } from "@/hooks/use-writing-pins";
 import { useToast } from "@/hooks/use-toast";
 
 // ---------------------------------------------------------------------------
@@ -19,7 +19,8 @@ import { useToast } from "@/hooks/use-toast";
 export interface PinToWritingButtonProps {
   worldId: string;
   itemId: string;
-  itemType: "worksheet" | "entity" | "note";
+  /** Shared with the pin store so the two unions can't drift. */
+  itemType: PinnedItemType;
   title: string;
   /** Optional summary or first 200 chars, shown in the Pinned tab preview. */
   content?: string;

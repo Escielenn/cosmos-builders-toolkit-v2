@@ -64,6 +64,20 @@ export function useLatestDoc() {
 }
 
 /** Roll a positive word delta into today's writing_sessions row (streaks). */
+/**
+ * Add `delta` words to today's session total.
+ *
+ * KNOWN RACE: this is a read-modify-write, so two autosaves resolving at the
+ * same time (or two open tabs) both read the same `words` and the second
+ * overwrites the first, under-counting the day. The fix is the atomic RPC in
+ * supabase/migrations/20260809_atomic_writing_session_increment.sql, which is
+ * written but NOT applied — it needs a (user_id, day) unique constraint
+ * confirmed first. Once that migration is live, replace this body with:
+ *
+ *   await supabase.rpc("increment_writing_session", {
+ *     p_user_id: userId, p_day: day, p_delta: delta,
+ *   });
+ */
 export async function rollWordSession(userId: string, delta: number): Promise<void> {
   if (delta <= 0) return;
   const day = new Date().toISOString().slice(0, 10);

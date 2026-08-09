@@ -27,6 +27,7 @@ import { useWorldNotes } from "@/hooks/use-world-notes";
 import { useWritingPins, type PinnedItem } from "@/hooks/use-writing-pins";
 import { useWorksheets } from "@/hooks/use-worksheets";
 import { TOOL_PAGE_CONFIGS } from "@/lib/tool-page-config";
+import { extractWorksheetFacts, summarizeFacts } from "@/lib/worksheet-facts";
 import { getToolIcon } from "@/components/icons/tool-icons";
 import type { DocumentSnapshot } from "@/hooks/use-document-versions";
 import { sanitizeHtml } from "@/lib/sanitize";
@@ -142,17 +143,22 @@ export function WritingReferencePanel({
     [addPin]
   );
 
-  // Pin a worksheet
+  // Pin a worksheet. The preview shows the worksheet's own values; it used to
+  // show the tool's marketing subtitle, which told the writer nothing about
+  // their world.
   const handlePinWorksheet = useCallback(
-    (ws: { id: string; tool_type: string; title: string | null }) => {
+    (ws: { id: string; tool_type: string; title: string | null; data?: unknown }) => {
       const cfg = TOOL_PAGE_CONFIGS[ws.tool_type];
       const displayTitle =
         ws.title || (cfg ? `${cfg.brandName}: ${cfg.fullName}` : ws.tool_type);
+      const summary = summarizeFacts(
+        extractWorksheetFacts(ws.tool_type, ws.data),
+      );
       addPin({
         id: ws.id,
         type: "worksheet",
         title: displayTitle,
-        content: cfg?.subtitle ?? "",
+        content: summary || cfg?.subtitle || "",
       });
     },
     [addPin]
@@ -459,7 +465,7 @@ export function WritingReferencePanel({
                       )}
                     </div>
                     <button
-                      onClick={() => removePin(pin.id)}
+                      onClick={() => removePin(pin.id, pin.type)}
                       className="p-0.5 text-sf-amber hover:text-sf-crimson transition-colors flex-shrink-0 mt-0.5"
                       title="Unpin"
                     >

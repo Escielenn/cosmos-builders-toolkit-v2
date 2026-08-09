@@ -75,7 +75,10 @@ function Rail({ worlds }: { worlds: StudioWorld[] }): JSX.Element {
           <div className="mb-2 font-serif text-[13px] italic text-t4">Workbench · {worlds[0].name}</div>
           <nav className="mb-7 space-y-0.5">
             {[
-              { label: "Write", to: "/write" },
+              // World-scoped: bare /write opens the globally most-recent doc,
+              // which under a "Workbench · <world>" heading could open a
+              // different world's manuscript.
+              { label: "Write", to: `/worlds/${worlds[0].id}/write` },
               { label: "Wiki", to: `/worlds/${worlds[0].id}/wiki` },
               { label: "Graph", to: `/worlds/${worlds[0].id}/graph` },
               { label: "Chronicle", to: `/worlds/${worlds[0].id}/chronicle` },

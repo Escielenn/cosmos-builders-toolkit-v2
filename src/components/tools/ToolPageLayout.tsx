@@ -7,7 +7,7 @@
  * Spec: StellarForge_Layout_Normalization_Spec_Apr2926.md
  */
 
-import { type ReactNode, useState, useEffect, useRef } from "react";
+import { type ReactNode, useState, useEffect, useMemo, useRef } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, FileText } from "lucide-react";
 import { getToolAccent, accentTextClass, accentArcClass, accentBgClass } from "@/lib/tool-accents";
@@ -28,6 +28,8 @@ import { getToolPageConfig } from "@/lib/tool-page-config";
 import { useWorldId } from "@/hooks/use-world-id";
 import { useMetaTags } from "@/hooks/use-meta-tags";
 import { PinToWritingButton } from "@/components/tools/PinToWritingButton";
+import { useWorksheets } from "@/hooks/use-worksheets";
+import { extractWorksheetFacts, summarizeFacts } from "@/lib/worksheet-facts";
 
 // ─── Props ───────────────────────────────────────────────────────────
 
@@ -105,6 +107,17 @@ export default function ToolPageLayout({
   const introData = TOOL_INTROS[cfg.introKey];
   const accent = getToolAccent(toolType);
 
+  // Pin preview from the saved worksheet's real values, not the tool's
+  // marketing subtitle — pinning "Genesis: Planetary Profile" used to show a
+  // product blurb in the writing space instead of the planet's gravity.
+  const { worksheets } = useWorksheets(worldId);
+  const pinSummary = useMemo(() => {
+    if (!worksheetId) return "";
+    const sheet = (worksheets ?? []).find((w) => w.id === worksheetId);
+    if (!sheet) return "";
+    return summarizeFacts(extractWorksheetFacts(sheet.tool_type, sheet.data));
+  }, [worksheets, worksheetId]);
+
   useMetaTags({
     title: `${cfg.brandName}: ${cfg.fullName}`,
     description: cfg.subtitle,
@@ -166,7 +179,7 @@ export default function ToolPageLayout({
             itemId={worksheetId}
             itemType="worksheet"
             title={`${cfg.brandName}: ${cfg.fullName}`}
-            content={cfg.subtitle}
+            content={pinSummary || cfg.subtitle}
             className="mb-2 -mt-3"
           />
         )}

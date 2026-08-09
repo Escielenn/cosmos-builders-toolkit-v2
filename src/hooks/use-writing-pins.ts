@@ -11,9 +11,12 @@ import { useCallback, useEffect, useState } from "react";
 // Types
 // ---------------------------------------------------------------------------
 
+/** Shared so the pin button and the panel can never disagree on the union. */
+export type PinnedItemType = "note" | "entity" | "snippet" | "worksheet";
+
 export interface PinnedItem {
   id: string;
-  type: "note" | "entity" | "snippet" | "worksheet";
+  type: PinnedItemType;
   title: string;
   content: string;
   pinnedAt: string; // ISO
@@ -67,6 +70,17 @@ export function useWritingPins(worldId: string) {
     setPins(loadPins(worldId));
   }, [worldId]);
 
+  // Each hook instance keeps its own copy, so pinning from a tool page in one
+  // tab left an open writing space showing stale pins until it remounted.
+  useEffect(() => {
+    if (!worldId) return;
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === storageKey(worldId)) setPins(loadPins(worldId));
+    };
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, [worldId]);
+
   const addPin = useCallback(
     (item: Omit<PinnedItem, "pinnedAt">) => {
       if (!worldId) return;
@@ -86,11 +100,15 @@ export function useWritingPins(worldId: string) {
     [worldId]
   );
 
+  // Matches on (id, type) because addPin dedupes on the same pair — filtering
+  // by id alone let a note and a worksheet sharing an id delete each other.
   const removePin = useCallback(
-    (id: string) => {
+    (id: string, type?: PinnedItemType) => {
       if (!worldId) return;
       setPins((prev) => {
-        const next = prev.filter((p) => p.id !== id);
+        const next = prev.filter((p) =>
+          type ? !(p.id === id && p.type === type) : p.id !== id,
+        );
         savePins(worldId, next);
         return next;
       });

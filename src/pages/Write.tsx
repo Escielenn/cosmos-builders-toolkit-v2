@@ -11,6 +11,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { StellarForgeEditor } from "@/components/editor/StellarForgeEditor";
 import { WritingEntityPanel } from "@/components/writing/WritingEntityPanel";
 import { WorldInfluencePanel } from "@/components/writing/WorldInfluencePanel";
+import { WorksheetFactsPanel } from "@/components/writing/WorksheetFactsPanel";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import {
   DndContext, closestCenter, PointerSensor, KeyboardSensor,
@@ -178,6 +179,21 @@ export default function Write(): JSX.Element {
     return () => window.removeEventListener("beforeunload", onBeforeUnload);
   }, [flushPending]);
 
+  // The live editor bound no shortcuts at all: Ctrl+S did nothing and focus
+  // mode had no way out but the mouse.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "s") {
+        e.preventDefault();
+        flushPending();
+        return;
+      }
+      if (e.key === "Escape" && focus) setFocus(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [flushPending, focus]);
+
   function saveTitle() {
     if (docId && worldId && title !== (doc?.title ?? "")) {
       renameDoc.mutate({ docId, title });
@@ -303,12 +319,14 @@ export default function Write(): JSX.Element {
         <WorldInfluencePanel worldId={worldId} content={doc?.content} />
       )}
       {inspector === "reference" && (
-        <div className="p-4">
-          <p className="mb-3 font-serif text-[13px] italic text-t4">
-            Notes, worksheets, and pinned references from this world.
-          </p>
-          <Link to={`/worlds/${worldId}/wiki`} className="block border border-sf-border px-3 py-2 text-[13px] text-t2 transition-colors hover:border-sf-teal hover:text-t1">Open the wiki →</Link>
-          <Link to={`/worlds/${worldId}/graph`} className="mt-2 block border border-sf-border px-3 py-2 text-[13px] text-t2 transition-colors hover:border-sf-teal hover:text-t1">Open the entity graph →</Link>
+        <div className="flex h-full min-h-0 flex-col">
+          <div className="sf-sb sf-sb--slim min-h-0 flex-1 overflow-y-auto">
+            <WorksheetFactsPanel worldId={worldId} onInsert={insertIntoEditor} />
+          </div>
+          <div className="border-t border-sf-border p-3">
+            <Link to={`/worlds/${worldId}/wiki`} className="block border border-sf-border px-3 py-2 text-[13px] text-t2 transition-colors hover:border-sf-teal hover:text-t1">Open the wiki →</Link>
+            <Link to={`/worlds/${worldId}/graph`} className="mt-2 block border border-sf-border px-3 py-2 text-[13px] text-t2 transition-colors hover:border-sf-teal hover:text-t1">Open the entity graph →</Link>
+          </div>
         </div>
       )}
     </div>
@@ -360,6 +378,7 @@ export default function Write(): JSX.Element {
             </>
           )}
           <button onClick={() => setFocus(!focus)}
+            title={focus ? "Leave focus mode (Esc)" : "Focus mode — hides the binder and inspector (Esc to exit)"}
             className={`border px-2.5 py-1 text-[12px] transition-colors ${focus ? "border-sf-teal text-sf-teal" : "border-sf-border text-t3 hover:text-t1"}`}>
             Focus
           </button>
@@ -494,18 +513,29 @@ export function WorldWriteRedirect(): JSX.Element {
   const kicked = useRef(false);
 
   useEffect(() => {
+    // Wait for auth. useWritingDocuments is gated only on worldId, so without
+    // this guard `isLoading` can settle before the session resolves and a plain
+    // navigation would fire a document-create for a signed-out visitor.
+    if (loading || !user) return;
     if (isLoading || !worldId || kicked.current) return;
+
     const docs = (entries ?? []).filter((e) => e.entry_type !== "folder");
-    kicked.current = true;
     if (docs.length > 0) {
+      kicked.current = true;
       navigate(`/write/${docs[0].id}`, { replace: true });
-    } else {
-      createDoc.mutate(
-        { title: "Untitled", parentId: null },
-        { onSuccess: (d) => navigate(`/write/${d.id}`, { replace: true }) },
-      );
+      return;
     }
-  }, [entries, isLoading, worldId]); // eslint-disable-line react-hooks/exhaustive-deps
+    // Only latch once the create is under way, so a failure can retry instead
+    // of stranding the user on the blank <div /> below.
+    kicked.current = true;
+    createDoc.mutate(
+      { title: "Untitled", parentId: null },
+      {
+        onSuccess: (d) => navigate(`/write/${d.id}`, { replace: true }),
+        onError: () => { kicked.current = false; },
+      },
+    );
+  }, [entries, isLoading, worldId, loading, user]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!loading && !user) return <Navigate to="/auth" replace />;
   return <div />;
