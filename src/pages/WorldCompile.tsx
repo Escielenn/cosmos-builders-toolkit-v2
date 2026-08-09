@@ -38,6 +38,9 @@ import {
 import type { WorldEntry } from "@/services/world-data";
 import { cn } from "@/lib/utils";
 import { sanitizeHtml } from "@/lib/sanitize";
+import { useWorksheets } from "@/hooks/use-worksheets";
+import { getToolDisplayName } from "@/lib/tools-config";
+import { extractWorksheetFacts } from "@/lib/worksheet-facts";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -138,6 +141,28 @@ export default function WorldCompile() {
   // Preview state
   const [showPreview, setShowPreview] = useState(false);
 
+  // World appendix, off by default so existing exports are unchanged.
+  const [includeAppendix, setIncludeAppendix] = useState(false);
+  const { worksheets } = useWorksheets(worldId);
+  const appendixHtml = useMemo(() => {
+    const sections = (worksheets ?? [])
+      .map((ws) => ({
+        title: ws.title || getToolDisplayName(ws.tool_type),
+        facts: extractWorksheetFacts(ws.tool_type, ws.data),
+      }))
+      .filter((s) => s.facts.length > 0);
+    if (sections.length === 0) return "";
+    // Markup, not raw newlines: the preview renders through sanitizeHtml.
+    return sections
+      .map(
+        (s) =>
+          `<h3>${s.title}</h3><ul>${s.facts
+            .map((f) => `<li><strong>${f.label}:</strong> ${f.value}</li>`)
+            .join("")}</ul>`,
+      )
+      .join("");
+  }, [worksheets]);
+
   // Build chapter list in order: folders first (in sort_order), then unfiled
   const chapters = useMemo((): ManuscriptChapter[] => {
     const result: ManuscriptChapter[] = [];
@@ -160,8 +185,18 @@ export default function WorldCompile() {
         content: doc.content || "",
       });
     }
+
+    // Optional world appendix. The compile previously carried only prose, so
+    // none of the worldbuilding reached the exported manuscript.
+    if (includeAppendix && appendixHtml) {
+      result.push({
+        id: "__world-appendix",
+        title: "Appendix: World Reference",
+        content: appendixHtml,
+      });
+    }
     return result;
-  }, [folders, unfiledDocs, includedIds]);
+  }, [folders, unfiledDocs, includedIds, includeAppendix, appendixHtml]);
 
   const totalWords = useMemo(
     () => chapters.reduce((sum, c) => sum + countWords(c.content), 0),
@@ -274,6 +309,25 @@ export default function WorldCompile() {
                     placeholder="A Novel of the Deep Reaches"
                   />
                 </div>
+
+                {appendixHtml && (
+                  <label className="mt-2 flex cursor-pointer items-start gap-2.5 border-t border-sf-border pt-3">
+                    <Checkbox
+                      checked={includeAppendix}
+                      onCheckedChange={(v) => setIncludeAppendix(v === true)}
+                      aria-label="Append a world reference chapter"
+                    />
+                    <span className="min-w-0">
+                      <span className="block text-sm text-t2">
+                        Append world reference
+                      </span>
+                      <span className="block text-xs text-t3">
+                        Adds a final chapter listing the values recorded in this
+                        world's tools.
+                      </span>
+                    </span>
+                  </label>
+                )}
               </div>
             </GlassPanel>
 
