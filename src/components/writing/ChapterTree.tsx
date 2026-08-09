@@ -71,12 +71,10 @@ export interface ChapterTreeProps {
 // Word count helper (matches writing space's counting logic)
 // ---------------------------------------------------------------------------
 
-function countWords(html: string | null | undefined): number {
-  if (!html) return 0;
-  const text = html.replace(/<[^>]*>/g, " ").trim();
-  if (!text) return 0;
-  return text.split(/\s+/).length;
-}
+// Uses the shared counter: this file's local copy stripped tags but did not
+// decode &nbsp;, so TipTap's non-breaking spaces glued adjacent words into one
+// token and the binder total disagreed with the editor footer.
+import { countWords } from "@/lib/text";
 
 // ---------------------------------------------------------------------------
 // Component

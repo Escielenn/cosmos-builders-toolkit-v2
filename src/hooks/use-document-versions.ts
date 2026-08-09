@@ -53,11 +53,9 @@ function generateLocalId(): string {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 }
 
-function countWords(html: string): number {
-  const text = html.replace(/<[^>]*>/g, " ").trim();
-  if (!text) return 0;
-  return text.split(/\s+/).length;
-}
+// Shared counter — the local copy here did not decode &nbsp;, so snapshot word
+// counts drifted from the ones shown in the editor.
+import { countWords } from "@/lib/text";
 
 function loadLocalSnapshots(documentId: string): DocumentSnapshot[] {
   try {
