@@ -16,7 +16,7 @@ import {
   type ToolRelationship,
   type ToolCategory,
 } from "@/lib/tool-wiki-data";
-import { getToolDisplayName } from "@/lib/tools-config";
+import { getToolDisplayName, getToolRoute } from "@/lib/tools-config";
 
 const CATEGORY_DOT: Record<ToolCategory, string> = {
   "stars-systems": "bg-sf-amber",
@@ -44,7 +44,7 @@ function RelCard({ rel }: { rel: ToolRelationship }): JSX.Element {
   const casc = wiki ? CASCADE_META[wiki.cascade] : undefined;
   return (
     <Link
-      to={`/tools/${rel.toolId}`}
+      to={getToolRoute(rel.toolId) ?? `/tools/${rel.toolId}`}
       className="group block border border-sf-border bg-sf-surface/60 p-3.5 transition-colors hover:border-sf-teal/40 hover:bg-sf-surface"
     >
       <div className="flex items-center gap-2">

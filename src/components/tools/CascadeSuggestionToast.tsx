@@ -10,6 +10,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronRight, X } from "lucide-react";
+import { getToolRoute } from "@/lib/tools-config";
 import { Button } from "@/components/ui/button";
 import { getDownstreamSuggestions, getToolLayer } from "@/lib/cascade-guidance";
 
@@ -73,7 +74,7 @@ export default function CascadeSuggestionToast({
     if (!suggestion) return;
     const path = worldId
       ? `/worlds/${worldId}/tools/${suggestion.toolType}`
-      : `/tools/${suggestion.toolType}`;
+      : getToolRoute(suggestion.toolType) ?? `/tools/${suggestion.toolType}`;
     navigate(path);
     handleDismiss();
   }, [suggestion, worldId, navigate, handleDismiss]);

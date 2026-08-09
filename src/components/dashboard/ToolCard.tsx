@@ -2,7 +2,7 @@ import { LucideIcon, Lock, Zap, Unlock } from "lucide-react";
 import { Link } from "react-router-dom";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Badge } from "@/components/ui/badge";
-import { isProTool } from "@/lib/tools-config";
+import { isProTool, getToolRoute } from "@/lib/tools-config";
 import { useSubscription } from "@/hooks/use-subscription";
 import { getToolIcon } from "@/components/icons/tool-icons";
 
@@ -89,7 +89,7 @@ const ToolCard = ({
 
       <div className="flex-1">
         {canAccess ? (
-          <Link to={path ?? `/tools/${id}`}>
+          <Link to={path ?? getToolRoute(id) ?? `/tools/${id}`}>
             <h3 className="font-heading font-medium text-lg hover:text-primary transition-colors">
               {title}
             </h3>

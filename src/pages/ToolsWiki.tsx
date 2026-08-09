@@ -38,6 +38,7 @@ import {
 } from "@/lib/tool-wiki-data";
 import {
   getToolDisplayName,
+  getToolRoute,
   isProTool,
 } from "@/lib/tools-config";
 import CubeLogo from "@/components/icons/CubeLogo";
@@ -118,10 +119,7 @@ function ToolDetail({
   const typeMeta = TYPE_META[tool.type];
   const navigate = useNavigate();
 
-  const toolPath =
-    tool.id === "rogue"
-      ? "/rogue"
-      : `/tools/${tool.id}`;
+  const toolPath = getToolRoute(tool.id) ?? `/tools/${tool.id}`;
 
   return (
     <div className="space-y-6">
