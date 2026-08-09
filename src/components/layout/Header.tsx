@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { User, LogIn, LogOut, ChevronDown, Zap, Menu, Globe, Wrench, BookOpen, Sparkles, Mail, Settings, Search, Image, Download, Library, Archive, Map, Compass, PenTool, Award, Users, Info } from "lucide-react";
 import HeaderNavigation from "./HeaderNavigation";
 import { APP_VERSION } from "@/config/version";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import CubeLogo from "@/components/icons/CubeLogo";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -28,12 +28,70 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useSubscription } from "@/hooks/use-subscription";
 import { useWorlds } from "@/hooks/use-worlds";
 
+/**
+ * Mobile navigation model.
+ *
+ * Grouped to mirror the desktop dropdowns in HeaderNavigation so the two
+ * surfaces name the same destinations the same way. Previously this was a flat
+ * 15-item list whose "Prompt Browser" pointed at /workshop#prompts while
+ * desktop's pointed at /prompts, and whose "Tools" was a scroll-to-section that
+ * did nothing away from the homepage.
+ */
+const MOBILE_NAV: {
+  heading: string;
+  items: { label: string; to: string; icon: typeof Globe }[];
+}[] = [
+  {
+    heading: "Worlds",
+    items: [
+      { label: "My Worlds", to: "/worlds", icon: Globe },
+      { label: "My Collection", to: "/collection", icon: Library },
+      { label: "Archive", to: "/archive", icon: Archive },
+    ],
+  },
+  {
+    heading: "Tools",
+    items: [{ label: "All Tools", to: "/guide/tools", icon: Wrench }],
+  },
+  {
+    heading: "Studio",
+    items: [
+      { label: "Studio", to: "/studio", icon: PenTool },
+      { label: "Daily Prompt", to: "/workshop", icon: Sparkles },
+      { label: "Prompt Browser", to: "/prompts", icon: BookOpen },
+    ],
+  },
+  {
+    heading: "Learn",
+    items: [
+      { label: "SF University", to: "/learn", icon: BookOpen },
+      { label: "Field Manual", to: "/guide", icon: Compass },
+      { label: "Getting Started", to: "/getting-started", icon: Sparkles },
+      { label: "Bookshelf", to: "/bookshelf", icon: Library },
+    ],
+  },
+  {
+    heading: "Community",
+    items: [
+      { label: "Community", to: "/community", icon: Users },
+      { label: "Commendations", to: "/commendations", icon: Award },
+    ],
+  },
+  {
+    heading: "About",
+    items: [
+      { label: "About StellarForge", to: "/about", icon: Info },
+      { label: "Roadmap", to: "/roadmap", icon: Map },
+      { label: "Contact", to: "/contact", icon: Mail },
+    ],
+  },
+];
+
 const Header = () => {
   const { user, profile, signOut, loading } = useAuth();
   const { isSubscribed, isVanguard } = useSubscription();
   const { worlds } = useWorlds();
   const navigate = useNavigate();
-  const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [settingsTab, setSettingsTab] = useState("account");
@@ -51,23 +109,6 @@ const Header = () => {
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, []);
-
-  const scrollToSection = (sectionId: string) => {
-    const scroll = () => {
-      const element = document.getElementById(sectionId);
-      if (element) {
-        element.scrollIntoView({ behavior: "smooth" });
-      }
-    };
-
-    if (location.pathname !== "/") {
-      navigate("/");
-      // Wait for navigation, then scroll
-      setTimeout(scroll, 100);
-    } else {
-      scroll();
-    }
-  };
 
   const initials = profile?.display_name
     ? profile.display_name.split(" ").map(n => n[0]).join("").toUpperCase()
@@ -140,156 +181,50 @@ const Header = () => {
                 </SheetTitle>
               </SheetHeader>
               <nav className="flex flex-col gap-1 mt-8">
-                <Link
-                  to="/worlds"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-t3 hover:text-t1 hover:bg-sf-teal/[0.06] rounded-none transition-colors duration-base"
-                >
-                  <Globe className="w-5 h-5" />
-                  My Worlds
-                </Link>
-                <Link
-                  to="/collection"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-t3 hover:text-t1 hover:bg-sf-teal/[0.06] rounded-none transition-colors duration-base"
-                >
-                  <Library className="w-5 h-5" />
-                  My Collection
-                </Link>
-                <Link
-                  to="/community"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-t3 hover:text-t1 hover:bg-sf-teal/[0.06] rounded-none transition-colors duration-base"
-                >
-                  <Users className="w-5 h-5" />
-                  Community
-                </Link>
-                <Link
-                  to="/archive"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-t3 hover:text-t1 hover:bg-sf-teal/[0.06] rounded-none transition-colors duration-base"
-                >
-                  <Archive className="w-5 h-5" />
-                  Archive
-                </Link>
-                <Link
-                  to="/commendations"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-t3 hover:text-t1 hover:bg-sf-teal/[0.06] rounded-none transition-colors duration-base"
-                >
-                  <Award className="w-5 h-5" />
-                  Commendations
-                </Link>
-                <button
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    scrollToSection("tools");
-                  }}
-                  className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-t3 hover:text-t1 hover:bg-sf-teal/[0.06] rounded-none transition-colors duration-base text-left"
-                >
-                  <Wrench className="w-5 h-5" />
-                  Tools
-                </button>
+                {MOBILE_NAV.map((group) => (
+                  <div key={group.heading} className="mb-4 last:mb-0">
+                    <p className="font-heading text-[11px] font-medium uppercase tracking-[2px] text-t3 px-3 mb-1.5 pb-1.5 border-b border-white/[0.06]">
+                      {group.heading}
+                    </p>
+                    {group.items.map((item) => {
+                      const Icon = item.icon;
+                      return (
+                        <Link
+                          key={item.to}
+                          to={item.to}
+                          onClick={() => setMobileMenuOpen(false)}
+                          className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-t2 hover:text-t1 hover:bg-sf-teal/[0.06] rounded-none transition-colors duration-base"
+                        >
+                          <Icon className="w-5 h-5 shrink-0" />
+                          {item.label}
+                        </Link>
+                      );
+                    })}
+                  </div>
+                ))}
                 {!isSubscribed && (
-                  <Link
-                    to="/features"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-t3 hover:text-t1 hover:bg-sf-teal/[0.06] rounded-none transition-colors duration-base"
-                  >
-                    <Sparkles className="w-5 h-5" />
-                    Features
-                  </Link>
+                  <div className="mb-0">
+                    <p className="font-heading text-[11px] font-medium uppercase tracking-[2px] text-t3 px-3 mb-1.5 pb-1.5 border-b border-white/[0.06]">
+                      Upgrade
+                    </p>
+                    <Link
+                      to="/features"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-t2 hover:text-t1 hover:bg-sf-teal/[0.06] rounded-none transition-colors duration-base"
+                    >
+                      <Sparkles className="w-5 h-5 shrink-0" />
+                      Features
+                    </Link>
+                    <Link
+                      to="/pricing"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-t2 hover:text-t1 hover:bg-sf-teal/[0.06] rounded-none transition-colors duration-base"
+                    >
+                      <Zap className="w-5 h-5 shrink-0" />
+                      Pricing
+                    </Link>
+                  </div>
                 )}
-                <Link
-                  to="/guide"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-t3 hover:text-t1 hover:bg-sf-teal/[0.06] rounded-none transition-colors duration-base"
-                >
-                  <Compass className="w-5 h-5" />
-                  Guide
-                </Link>
-                <Link
-                  to="/learn"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-t3 hover:text-t1 hover:bg-sf-teal/[0.06] rounded-none transition-colors duration-base"
-                >
-                  <BookOpen className="w-5 h-5" />
-                  Learn
-                </Link>
-                <Link
-                  to="/bookshelf"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-t3 hover:text-t1 hover:bg-sf-teal/[0.06] rounded-none transition-colors duration-base"
-                >
-                  <Library className="w-5 h-5" />
-                  Bookshelf
-                </Link>
-                <div className="space-y-0.5">
-                  <Link
-                    to="/studio"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-t2 hover:text-t1 hover:bg-sf-teal/[0.06] rounded-none transition-colors duration-base"
-                  >
-                    <PenTool className="w-5 h-5" />
-                    Studio · Write
-                  </Link>
-                  <Link
-                    to="/workshop"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-t3 hover:text-t1 hover:bg-sf-teal/[0.06] rounded-none transition-colors duration-base"
-                  >
-                    <PenTool className="w-5 h-5" />
-                    Writing Prompts
-                  </Link>
-                  <Link
-                    to="/workshop#prompt"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-3 px-3 py-3 pl-11 text-xs text-t4 hover:text-t1 hover:bg-sf-teal/[0.06] rounded-none transition-colors duration-base"
-                  >
-                    Daily Prompt
-                  </Link>
-                  <Link
-                    to="/workshop#prompts"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-3 px-3 py-3 pl-11 text-xs text-t4 hover:text-t1 hover:bg-sf-teal/[0.06] rounded-none transition-colors duration-base"
-                  >
-                    Prompt Browser
-                  </Link>
-                </div>
-                <Link
-                  to="/roadmap"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-t3 hover:text-t1 hover:bg-sf-teal/[0.06] rounded-none transition-colors duration-base"
-                >
-                  <Map className="w-5 h-5" />
-                  Roadmap
-                </Link>
-                {!isSubscribed && (
-                  <Link
-                    to="/pricing"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-t3 hover:text-t1 hover:bg-sf-teal/[0.06] rounded-none transition-colors duration-base"
-                  >
-                    <Sparkles className="w-5 h-5" />
-                    Pricing
-                  </Link>
-                )}
-                <Link
-                  to="/contact"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-t3 hover:text-t1 hover:bg-sf-teal/[0.06] rounded-none transition-colors duration-base"
-                >
-                  <Mail className="w-5 h-5" />
-                  Contact
-                </Link>
-                <Link
-                  to="/about"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-t3 hover:text-t1 hover:bg-sf-teal/[0.06] rounded-none transition-colors duration-base"
-                >
-                  <Info className="w-5 h-5" />
-                  About
-                </Link>
               </nav>
               {!loading && !user && (
                 <div className="mt-8 pt-8 border-t border-sf-border">
