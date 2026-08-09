@@ -56,6 +56,39 @@ Active task list and development priorities. Review this at the start of each se
 ### Writing & Focus Mode
 - [x] Dedicated Writing Space (`/worlds/:id/write`) (2026-04-04)
 - [x] Zen Mode — full-screen distraction-free editing (2026-04-04)
+- [x] Editor correctness pass — folders, binder order, autosave lifecycle, save state (2026-08-09)
+- [x] Tool data in the writing surface — Refs panel, real pin previews, compile appendix (2026-08-09)
+
+#### DECISION NEEDED — one writing surface
+`WorldWritingSpace.tsx` (865 lines) is imported at `App.tsx:62` but **never
+rendered as a route**; `/worlds/:worldId/write` goes to `WorldWriteRedirect`.
+Zen mode with Esc, version history, Ctrl+S, and font/line-spacing controls all
+live there, unreachable. Recommendation: **port-then-delete** — keep `Write.tsx`
+(the surface users actually reach), port the four capabilities, then delete the
+file. Ctrl+S and Esc are already ported (0.6874).
+- [ ] Sign off on port-then-delete, then port font + line-spacing prefs
+- [ ] Port version history **only after** fixing its three defects: snapshots
+      capture the content as of document *open* (the editor writes to a ref React
+      never sees), the 5-minute auto-snapshot condition is permanently false, and
+      a failed migration deletes local history unconditionally (data loss)
+- [ ] Delete `WorldWritingSpace.tsx` + its dead import
+
+#### Blocked on the StellarForge II schema gate
+- [ ] Cloud-synced pins — needs a table/payload column; pins are localStorage-only
+      today while "cloud sync across devices" is a sold Pro feature
+- [ ] Worksheet facts on entities in the editor — needs the `world_entries`/
+      `entities` merge (SF-II §4.2), since the two tables are unlinked
+- [ ] Apply `supabase/migrations/20260809_atomic_writing_session_increment.sql`
+      after confirming a `(user_id, day)` unique constraint exists — until then
+      the daily word ledger under-counts under concurrent saves
+
+#### Needs a product decision
+- [ ] Two disjoint "words today" ledgers: the editor writes `writing_sessions`,
+      the goal/streak UI reads `writing_entries.word_count`. Streaks also measure
+      *entry creation*, so a novelist editing one chapter daily shows 0 words
+- [ ] Per-document metadata (POV, status, synopsis) — `metadata: {}` is written
+      at creation and never read
+- [ ] Find/replace, typewriter mode, a scene tier below chapters, per-doc export
 
 ### World Display
 - [x] World Showcase page (`/worlds/:id/showcase`) (2026-04-04)
