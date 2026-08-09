@@ -60,6 +60,141 @@ describe("extractWorksheetFacts", () => {
     expect(facts.find((f) => f.key === "surfaceGravity")).toBeUndefined();
   });
 
+  it("reads the habitable-zone-calculator star and orbit", () => {
+    const facts = extractWorksheetFacts("habitable-zone-calculator", {
+      star: { spectralType: "K", mass: 0.8, luminosity: 0.34, temperature: 4800 },
+      planet: { orbitalDistance: 0.58, name: "Ashfall", greenhouseWarming: 33 },
+    });
+    expect(facts).toContainEqual({
+      key: "starType",
+      label: "Star Type",
+      value: "K",
+    });
+    expect(facts).toContainEqual({
+      key: "orbitalDistance",
+      label: "Orbital Distance (AU)",
+      value: "0.58",
+    });
+    expect(facts).toContainEqual({
+      key: "stellarLuminosity",
+      label: "Stellar Luminosity (Sol)",
+      value: "0.34",
+    });
+  });
+
+  it("reads the surface-gravity-calculator primary and advanced inputs", () => {
+    const facts = extractWorksheetFacts("surface-gravity-calculator", {
+      primary: { mass: 1.8, radius: 1.2, compositionPreset: "iron-rich", planetPreset: "custom", linked: true },
+      advanced: { surfaceTemp: 244, molecularWeightPreset: "earth", molecularWeight: 29 },
+    });
+    expect(facts).toContainEqual({
+      key: "mass",
+      label: "Mass (Earth masses)",
+      value: "1.8",
+    });
+    expect(facts).toContainEqual({
+      key: "radius",
+      label: "Radius (Earth radii)",
+      value: "1.2",
+    });
+    expect(facts).toContainEqual({
+      key: "composition",
+      label: "Composition",
+      value: "iron-rich",
+    });
+    expect(facts).toContainEqual({
+      key: "surfaceTemperature",
+      label: "Surface Temperature (K)",
+      value: "244",
+    });
+  });
+
+  it("reads the time-dilation journey, drive, and cruise velocity", () => {
+    const facts = extractWorksheetFacts("time-dilation", {
+      journey: {
+        presetCategory: "interstellar",
+        presetId: "sol-proxima",
+        customDistance: "",
+        customDistanceUnit: "ly",
+        originName: "Sol",
+        destinationName: "Proxima Centauri",
+      },
+      propulsion: { method: "fusion", customMaxVelocity: "" },
+      velocityProfile: { mode: "constant", velocityFraction: "0.1", gForce: "1" },
+    });
+    expect(facts).toContainEqual({
+      key: "propulsionType",
+      label: "Propulsion Type",
+      value: "fusion",
+    });
+    expect(facts).toContainEqual({ key: "origin", label: "Origin", value: "Sol" });
+    expect(facts).toContainEqual({
+      key: "destination",
+      label: "Destination",
+      value: "Proxima Centauri",
+    });
+    expect(facts).toContainEqual({
+      key: "cruiseVelocity",
+      label: "Cruise Velocity (fraction of c)",
+      value: "0.1",
+    });
+  });
+
+  it("reads the drake-equation-calculator civilization longevity", () => {
+    const facts = extractWorksheetFacts("drake-equation-calculator", {
+      values: { rStar: 1.5, fp: 1, ne: 0.4, fl: 0.5, fi: 0.5, fc: 0.2, L: 10000 },
+    });
+    expect(facts).toContainEqual({
+      key: "civilizationLongevity",
+      label: "Civilization Longevity (years)",
+      value: "10000",
+    });
+  });
+
+  it("reads the kardashev-scale energy output and growth rate", () => {
+    const facts = extractWorksheetFacts("kardashev-scale", {
+      totalPowerWatts: 3.8e26,
+      powerLog10: 26.58,
+      growthRate: "aggressive",
+      civilizationPreset: "dyson-swarm",
+    });
+    expect(facts).toContainEqual({
+      key: "energyOutput",
+      label: "Energy Output (Watts)",
+      value: String(3.8e26),
+    });
+    expect(facts).toContainEqual({
+      key: "energyGrowthRate",
+      label: "Energy Growth Rate",
+      value: "aggressive",
+    });
+  });
+
+  it("reads the species-interaction-matrix synthesis", () => {
+    const facts = extractWorksheetFacts("species-interaction-matrix", {
+      species: [],
+      pairs: [],
+      overallEquilibrium: "powder-keg",
+      overallTrajectory: "conflict",
+      centralConflict: "Two species need the same spawning water.",
+    });
+    expect(facts).toContainEqual({
+      key: "interactionEquilibrium",
+      label: "Interaction Equilibrium",
+      value: "powder-keg",
+    });
+    expect(facts).toContainEqual({
+      key: "interactionTrajectory",
+      label: "Interaction Trajectory",
+      value: "conflict",
+    });
+    expect(facts).toContainEqual({
+      key: "centralConflict",
+      label: "Central Conflict",
+      value: "Two species need the same spawning water.",
+    });
+  });
+
   it("never repeats a key even when shared across entity types", () => {
     const facts = extractWorksheetFacts("planetary-profile", {
       physicalCharacteristics: { surfaceGravity: 1.47 },

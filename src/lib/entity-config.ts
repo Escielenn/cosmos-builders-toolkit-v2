@@ -92,25 +92,60 @@ export const ENTITY_MASTER_FIELDS: Record<string, MasterFieldDef[]> = {
       label: "Star Type",
       key: "starType",
       type: "text",
-      worksheetPaths: { "planetary-profile": "stellarEnvironment.starType" },
+      worksheetPaths: {
+        "planetary-profile": "stellarEnvironment.starType",
+        "habitable-zone-calculator": "star.spectralType",
+      },
     },
     {
       label: "Mass (Earth masses)",
       key: "mass",
       type: "number",
-      worksheetPaths: { "planetary-profile": "physicalCharacteristics.planetaryMass" },
+      worksheetPaths: {
+        "planetary-profile": "physicalCharacteristics.planetaryMass",
+        "surface-gravity-calculator": "primary.mass",
+      },
     },
     {
       label: "Radius (Earth radii)",
       key: "radius",
       type: "number",
-      worksheetPaths: { "planetary-profile": "physicalCharacteristics.planetaryRadius" },
+      worksheetPaths: {
+        "planetary-profile": "physicalCharacteristics.planetaryRadius",
+        "surface-gravity-calculator": "primary.radius",
+      },
     },
     {
       label: "Surface Gravity (g)",
       key: "surfaceGravity",
       type: "number",
+      // Note: surface-gravity-calculator computes gravity from mass/radius at
+      // render time and never persists it, so there is no path to map here.
       worksheetPaths: { "planetary-profile": "physicalCharacteristics.surfaceGravity" },
+    },
+    {
+      label: "Orbital Distance (AU)",
+      key: "orbitalDistance",
+      type: "number",
+      worksheetPaths: { "habitable-zone-calculator": "planet.orbitalDistance" },
+    },
+    {
+      label: "Stellar Luminosity (Sol)",
+      key: "stellarLuminosity",
+      type: "number",
+      worksheetPaths: { "habitable-zone-calculator": "star.luminosity" },
+    },
+    {
+      label: "Composition",
+      key: "composition",
+      type: "text",
+      worksheetPaths: { "surface-gravity-calculator": "primary.compositionPreset" },
+    },
+    {
+      label: "Surface Temperature (K)",
+      key: "surfaceTemperature",
+      type: "number",
+      worksheetPaths: { "surface-gravity-calculator": "advanced.surfaceTemp" },
     },
   ],
 
@@ -163,6 +198,40 @@ export const ENTITY_MASTER_FIELDS: Record<string, MasterFieldDef[]> = {
       type: "text",
       worksheetPaths: { "evolutionary-biology": "cognition.cognitionType" },
     },
+    {
+      label: "Interaction Equilibrium",
+      key: "interactionEquilibrium",
+      type: "select",
+      options: [
+        "stable-harmony",
+        "stable-tension",
+        "unstable-improving",
+        "unstable-declining",
+        "volatile",
+        "powder-keg",
+      ],
+      worksheetPaths: { "species-interaction-matrix": "overallEquilibrium" },
+    },
+    {
+      label: "Interaction Trajectory",
+      key: "interactionTrajectory",
+      type: "select",
+      options: [
+        "integration",
+        "coexistence",
+        "separation",
+        "conflict",
+        "extinction",
+        "transcendence",
+      ],
+      worksheetPaths: { "species-interaction-matrix": "overallTrajectory" },
+    },
+    {
+      label: "Central Conflict",
+      key: "centralConflict",
+      type: "text",
+      worksheetPaths: { "species-interaction-matrix": "centralConflict" },
+    },
   ],
 
   faction: [
@@ -185,6 +254,25 @@ export const ENTITY_MASTER_FIELDS: Record<string, MasterFieldDef[]> = {
       type: "text",
       worksheetPaths: { "empire-designer": "territory.population" },
     },
+    {
+      label: "Energy Output (Watts)",
+      key: "energyOutput",
+      type: "number",
+      worksheetPaths: { "kardashev-scale": "totalPowerWatts" },
+    },
+    {
+      label: "Energy Growth Rate",
+      key: "energyGrowthRate",
+      type: "select",
+      options: ["conservative", "moderate", "aggressive", "exponential"],
+      worksheetPaths: { "kardashev-scale": "growthRate" },
+    },
+    {
+      label: "Civilization Longevity (years)",
+      key: "civilizationLongevity",
+      type: "number",
+      worksheetPaths: { "drake-equation-calculator": "values.L" },
+    },
   ],
 
   vessel: [
@@ -199,13 +287,34 @@ export const ENTITY_MASTER_FIELDS: Record<string, MasterFieldDef[]> = {
       label: "Propulsion Type",
       key: "propulsionType",
       type: "text",
-      worksheetPaths: { "spacecraft-designer": "propulsion.driveType" },
+      worksheetPaths: {
+        "spacecraft-designer": "propulsion.driveType",
+        "time-dilation": "propulsion.method",
+      },
     },
     {
       label: "Crew Size",
       key: "crewSize",
       type: "text",
       worksheetPaths: { "spacecraft-designer": "living.crewQuarters" },
+    },
+    {
+      label: "Origin",
+      key: "origin",
+      type: "text",
+      worksheetPaths: { "time-dilation": "journey.originName" },
+    },
+    {
+      label: "Destination",
+      key: "destination",
+      type: "text",
+      worksheetPaths: { "time-dilation": "journey.destinationName" },
+    },
+    {
+      label: "Cruise Velocity (fraction of c)",
+      key: "cruiseVelocity",
+      type: "text",
+      worksheetPaths: { "time-dilation": "velocityProfile.velocityFraction" },
     },
   ],
 
