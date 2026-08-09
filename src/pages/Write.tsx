@@ -5,7 +5,7 @@
  * Supersedes the old /worlds/:id/write "Writing Space" (which now
  * redirects here). SF-II: one writing model, no parallel tables.
  */
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { StellarForgeEditor } from "@/components/editor/StellarForgeEditor";
@@ -54,7 +54,10 @@ export default function Write(): JSX.Element {
   const { data: doc, isLoading: docLoading } = useWriteDoc(docId);
   const worldId = doc?.world_id;
 
-  const { data: entries } = useWritingDocuments(worldId);
+  // `data` excludes folders by design, so folders/unfiledDocs must come from
+  // the hook too. Re-deriving folders from `data` (as this once did) always
+  // yielded an empty list, which made the folder UI dead code.
+  const { data: entries, folders: folderRows, unfiledDocs } = useWritingDocuments(worldId);
   const updateContent = useUpdateDocumentContent(worldId);
   const createDoc = useCreateDocument(worldId);
   const createFolder = useCreateFolder(worldId);
@@ -78,6 +81,7 @@ export default function Write(): JSX.Element {
   const [words, setWords] = useState(0);
   const lastCount = useRef<number | null>(null);
   const debounce = useRef<ReturnType<typeof setTimeout>>();
+  const pending = useRef<{ docId: string; html: string; words: number } | null>(null);
 
   useEffect(() => {
     if (doc) {
@@ -94,42 +98,85 @@ export default function Write(): JSX.Element {
     return () => { document.title = prev; };
   }, [doc?.title]);
 
+  // "Saved · Ns ago" was computed during render with nothing scheduling a
+  // re-render, so it froze at the first value and still read "1s ago" an hour
+  // later. A ticker keeps it honest.
+  const [savedAgo, setSavedAgo] = useState("just now");
+  useEffect(() => {
+    if (!savedAt) return;
+    const tick = () => {
+      const s = Math.round((Date.now() - savedAt.getTime()) / 1000);
+      setSavedAgo(
+        s < 5 ? "just now" : s < 60 ? `${s}s ago` : `${Math.round(s / 60)}m ago`,
+      );
+    };
+    tick();
+    const id = setInterval(tick, 5000);
+    return () => clearInterval(id);
+  }, [savedAt]);
+
   // Auto-purge trash older than 90 days (idempotent, fire-and-forget)
   useEffect(() => {
     if (worldId) purgeExpiredTrash(worldId).catch(() => {});
   }, [worldId]);
 
-  // group binder: folders → their docs; unfiled docs at root
-  const { folders, unfiled } = useMemo(() => {
-    const all = entries ?? [];
-    const bySort = (a: WorldEntry, b: WorldEntry) => (a.sort_order ?? 0) - (b.sort_order ?? 0);
-    const fol = all.filter((e) => e.entry_type === "folder").sort(bySort);
-    const docs = all.filter((e) => e.entry_type !== "folder");
-    return {
-      folders: fol.map((f) => ({ folder: f, docs: docs.filter((d) => d.parent_id === f.id).sort(bySort) })),
-      unfiled: docs.filter((d) => !d.parent_id || !fol.some((f) => f.id === d.parent_id)).sort(bySort),
-    };
-  }, [entries]);
+  // Binder groups come straight from the hook, which already nests each
+  // folder's documents and collects the unfiled ones.
+  const folders = folderRows ?? [];
+  const unfiled = unfiledDocs ?? [];
+
+  // Commit any pending edit immediately.
+  //
+  // The pending payload carries its own docId: the debounce used to fire after
+  // the doc-change effect had already rebased lastCount to the NEW document,
+  // so the timer committed (old doc's words - new doc's baseline) to the streak
+  // ledger and painted the old count while the new doc was on screen.
+  const flushPending = useCallback(() => {
+    if (debounce.current) {
+      clearTimeout(debounce.current);
+      debounce.current = undefined;
+    }
+    const p = pending.current;
+    if (!p) return;
+    pending.current = null;
+
+    const delta =
+      p.docId === docId && lastCount.current !== null ? p.words - lastCount.current : 0;
+    if (p.docId === docId) {
+      lastCount.current = p.words;
+      setWords(p.words);
+    }
+    updateContent.mutate(
+      { docId: p.docId, content: p.html },
+      {
+        onSuccess: () => {
+          setSavedAt(new Date());
+          if (user && delta > 0) rollWordSession(user.id, delta);
+        },
+      },
+    );
+  }, [docId, updateContent, user]);
 
   function onContentChange(html: string) {
+    if (!docId) return;
+    pending.current = { docId, html, words: countWords(html) };
     if (debounce.current) clearTimeout(debounce.current);
-    debounce.current = setTimeout(() => {
-      if (!docId) return;
-      const w = countWords(html);
-      const delta = lastCount.current === null ? 0 : w - lastCount.current;
-      lastCount.current = w;
-      setWords(w);
-      updateContent.mutate(
-        { docId, content: html },
-        {
-          onSuccess: () => {
-            setSavedAt(new Date());
-            if (user && delta > 0) rollWordSession(user.id, delta);
-          },
-        },
-      );
-    }, 1200);
+    debounce.current = setTimeout(flushPending, 1200);
   }
+
+  // Commit before leaving the document, and before the tab closes — otherwise
+  // the last <=1.2s of typing is silently lost.
+  useEffect(() => flushPending, [docId, flushPending]);
+
+  useEffect(() => {
+    const onBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (!pending.current) return;
+      flushPending();
+      e.preventDefault();
+    };
+    window.addEventListener("beforeunload", onBeforeUnload);
+    return () => window.removeEventListener("beforeunload", onBeforeUnload);
+  }, [flushPending]);
 
   function saveTitle() {
     if (docId && worldId && title !== (doc?.title ?? "")) {
@@ -166,13 +213,13 @@ export default function Write(): JSX.Element {
   const binderContent = (
     <div className="flex h-full min-h-0 flex-col border-r border-sf-border">
       <div className="sf-sb sf-sb--slim min-h-0 flex-1 overflow-y-auto py-3">
-        {folders.map(({ folder, docs }) => (
+        {folders.map((folder) => (
           <div key={folder.id} className="mb-2">
-            <div className="px-3 py-1 font-heading text-[12px] uppercase tracking-[1.5px] text-t4">{folder.title}</div>
+            <div className="px-3 py-1 font-heading text-[12px] uppercase tracking-[1.5px] text-t3">{folder.title}</div>
             <DndContext sensors={sensors} collisionDetection={closestCenter}
-              onDragEnd={({ active, over }) => over && reorderList(docs, String(active.id), String(over.id))}>
-              <SortableContext items={docs.map((d) => d.id)} strategy={verticalListSortingStrategy}>
-                {docs.map((d) => (
+              onDragEnd={({ active, over }) => over && reorderList(folder.documents, String(active.id), String(over.id))}>
+              <SortableContext items={folder.documents.map((d) => d.id)} strategy={verticalListSortingStrategy}>
+                {folder.documents.map((d) => (
                   <SortableDocRow key={d.id} d={d} active={d.id === docId} onOpen={() => openDoc(d.id)} onTrash={() => trashDoc.mutate(d.id)} />
                 ))}
               </SortableContext>
@@ -380,7 +427,7 @@ export default function Write(): JSX.Element {
         <div className="flex items-center gap-2.5">
           <span className={`h-1.5 w-1.5 rounded-full bg-sf-teal ${updateContent.isPending ? "animate-sf-pulse" : ""}`} aria-hidden="true" />
           <span className="font-serif text-[12px] italic text-t3">
-            {updateContent.isPending ? "Saving…" : savedAt ? `Saved · ${Math.max(1, Math.round((Date.now() - savedAt.getTime()) / 1000))}s ago` : "Ready"}
+            {updateContent.isPending ? "Saving…" : savedAt ? `Saved · ${savedAgo}` : "Ready"}
           </span>
         </div>
         <div className="font-mono text-[11px] tracking-[1.5px] text-t5">{words.toLocaleString()} WORDS · JD {julianDay().toFixed(1)}</div>

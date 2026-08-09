@@ -105,6 +105,19 @@ export function useWritingDocuments(worldId: string | undefined) {
 // Create a new document
 // ---------------------------------------------------------------------------
 
+/**
+ * Next free slot at the end of a sibling list.
+ *
+ * Creating everything at 0 used to tie every new row, and because the query
+ * orders by updated_at desc those ties resolved to most-recently-edited —
+ * so typing in a document jumped it above ones the user had dragged into
+ * place. Reordering persists multiples of 10 (see useReorderDocuments).
+ */
+export function nextSortOrder(siblings: { sort_order: number | null }[]): number {
+  if (siblings.length === 0) return 0;
+  return Math.max(...siblings.map((s) => s.sort_order ?? 0)) + 10;
+}
+
 export function useCreateDocument(worldId: string | undefined) {
   const { user } = useAuth();
   const { toast } = useToast();
@@ -126,7 +139,11 @@ export function useCreateDocument(worldId: string | undefined) {
           entry_type: "document",
           content: "",
           metadata: {},
-          sort_order: 0,
+          sort_order: nextSortOrder(
+            (qc.getQueryData<WorldEntry[]>(docKeys.all(worldId!)) ?? []).filter(
+              (e) => (e.parent_id ?? null) === (parentId ?? null),
+            ),
+          ),
           parent_id: parentId ?? null,
           created_by: user!.id,
         })
@@ -156,6 +173,7 @@ export function useCreateDocument(worldId: string | undefined) {
 
 export function useUpdateDocumentContent(worldId: string | undefined) {
   const qc = useQueryClient();
+  const { toast } = useToast();
 
   return useMutation({
     mutationFn: async ({
@@ -175,8 +193,20 @@ export function useUpdateDocumentContent(worldId: string | undefined) {
       if (error) throw error;
       return data as WorldEntry;
     },
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
       qc.invalidateQueries({ queryKey: docKeys.all(worldId!) });
+      // The editor header and tab title read the single-doc query; without
+      // this they keep showing pre-save values until an unrelated refetch.
+      qc.invalidateQueries({ queryKey: ["write-doc", variables.docId] });
+    },
+    // A failed autosave used to be completely silent.
+    onError: () => {
+      toast({
+        title: "SAVE FAILED.",
+        description:
+          "Your last change did not reach the server. Copy your text before closing this tab.",
+        variant: "destructive",
+      });
     },
   });
 }
@@ -207,8 +237,9 @@ export function useRenameDocument(worldId: string | undefined) {
       if (error) throw error;
       return data as WorldEntry;
     },
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
       qc.invalidateQueries({ queryKey: docKeys.all(worldId!) });
+      qc.invalidateQueries({ queryKey: ["write-doc", variables.docId] });
     },
     onError: (error) => {
       toast({
@@ -342,7 +373,11 @@ export function useCreateFolder(worldId: string | undefined) {
           entry_type: "folder",
           content: "",
           metadata: {},
-          sort_order: 0,
+          sort_order: nextSortOrder(
+            (qc.getQueryData<WorldEntry[]>(docKeys.all(worldId!)) ?? []).filter(
+              (e) => e.entry_type === "folder",
+            ),
+          ),
           parent_id: null,
           created_by: user!.id,
         })
