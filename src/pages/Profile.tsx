@@ -256,7 +256,7 @@ const Profile = () => {
 
         {/* Subscription Section */}
         <GlassPanel className="p-8 mt-6">
-          <h2 className="font-heading text-xl font-bold mb-4 flex items-center gap-2">
+          <h2 className="font-heading text-xl font-medium mb-4 flex items-center gap-2">
             <Zap className="w-5 h-5 text-sf-amber" />
             Subscription
           </h2>
@@ -339,7 +339,7 @@ const Profile = () => {
           ) : (
             <div className="space-y-4">
               <p className="text-t3">
-                Standard clearance. Upgrade for full instrument access.
+                Standard clearance. Upgrade for full tool access.
               </p>
               <Button
                 className="w-full gap-2"

@@ -1137,7 +1137,7 @@ const Sensorium = () => {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-sm">
                     <span>
-                      Total: <span className="font-bold">{(metabolicBudget.totalCost * 100).toFixed(0)}%</span>
+                      Total: <span className="font-medium">{(metabolicBudget.totalCost * 100).toFixed(0)}%</span>
                     </span>
                     <span className="text-t2">Max sustainable: 100%</span>
                   </div>

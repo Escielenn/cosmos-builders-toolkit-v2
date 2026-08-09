@@ -1156,7 +1156,7 @@ const OneBigLie = () => {
             </p>
 
             <div className="space-y-2">
-              <Label className="text-base font-semibold">
+              <Label className="text-base font-medium">
                 Formal Declaration, Write your formal Physics Declaration in
                 ~150 words: State your one big lie, your three areas of
                 maintained rigor, the one narrative possibility it enables, and

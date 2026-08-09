@@ -20,7 +20,7 @@ import { BOOKSHELF_BURSTS } from "@/lib/data-bursts";
 const CoverFallback = ({ title, author }: { title: string; author: string }) => (
   <div className="w-full h-full bg-gradient-to-br from-primary/20 to-accent/10 flex flex-col items-center justify-center p-3 text-center">
     <BookOpen className="w-8 h-8 text-primary/40 mb-2" />
-    <p className="text-xs font-heading font-semibold text-t2 leading-tight">
+    <p className="text-xs font-heading font-medium text-t2 leading-tight">
       {title}
     </p>
     <p className="text-[10px] text-t3 mt-1">{author}</p>
@@ -49,7 +49,7 @@ const BookCard = ({ book }: { book: BookEntry }) => {
 
       {/* Content */}
       <div className="p-4 flex flex-col flex-1">
-        <h3 className="font-heading font-semibold leading-tight">
+        <h3 className="font-heading font-medium leading-tight">
           <em>{book.title}</em>
         </h3>
         <p className="text-sm text-t3 mt-1">

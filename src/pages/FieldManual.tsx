@@ -29,7 +29,7 @@ const FieldManual = () => {
         </header>
 
         <GlassPanel className="p-6 md:p-10">
-          <FieldManualContent />
+          <FieldManualContent scale="page" />
         </GlassPanel>
       </main>
 

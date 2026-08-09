@@ -95,7 +95,7 @@ function Rail({ worlds }: { worlds: StudioWorld[] }): JSX.Element {
       <div className="mb-2 font-serif text-[12px] italic text-t4">Tools</div>
       <nav className="space-y-0.5">
         {[
-          { label: "All instruments", to: "/" },
+          { label: "All tools", to: "/" },
           { label: "Chain reaction", to: "/tools/environmental-chain-reaction" },
           { label: "Prompts", to: "/prompts" },
         ].map((i) => (

@@ -90,7 +90,7 @@ const CompressionMarker = memo(
           </button>
         </TooltipTrigger>
         <TooltipContent side="top" className="max-w-xs">
-          <p className="font-semibold text-xs">{label}</p>
+          <p className="font-medium text-xs">{label}</p>
           <p className="text-[10px] text-t3">
             {compression.startYear.toLocaleString()} to {compression.endYear.toLocaleString()} ({formatYearSpan(yearSpan)})
           </p>

@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSubscription } from "@/hooks/use-subscription";
-import { isProTool, isEarlyAccessTool } from "@/lib/tools-config";
+import { isProTool, isEarlyAccessTool, PRO_TOOL_COUNT } from "@/lib/tools-config";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
 import { Lock, Zap, Clock, Sparkles } from "lucide-react";
@@ -104,7 +104,7 @@ const ProToolGuard = ({ toolId, children }: ProToolGuardProps) => {
             </h1>
 
             <p className="text-t3 mb-2">
-              Your Pro subscription has ended, but your worlds and worksheets are exactly where you left them.
+              Your Pro Access has ended, but your worlds and worksheets are exactly where you left them.
             </p>
             <p className="text-sm text-t3 mb-6">
               Resubscribe to pick up right where you left off.
@@ -187,7 +187,7 @@ const ProToolGuard = ({ toolId, children }: ProToolGuardProps) => {
           <div className="mt-8 pt-6 border-t border-sf-border">
             <p className="text-xs text-t3 mb-2">Pro includes:</p>
             <ul className="text-xs text-t3 space-y-1">
-              <li>All 25 worldbuilding instruments</li>
+              <li>All {PRO_TOOL_COUNT} Pro worldbuilding tools</li>
               <li>Unlimited worlds and worksheets</li>
               <li>Cloud sync across devices</li>
               <li>Future tools and features</li>

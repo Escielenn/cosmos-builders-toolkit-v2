@@ -739,7 +739,7 @@ const SpeciesInteractionMatrix = () => {
                 >
                   <div className="space-y-6">
                     <div className="space-y-4">
-                      <Label className="text-base font-semibold">Overall Relationship</Label>
+                      <Label className="text-base font-medium">Overall Relationship</Label>
                       <RadioGroup
                         value={currentPair.overallRelationship}
                         onValueChange={(value) => updatePair(selectedPairIndex, { overallRelationship: value })}

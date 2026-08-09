@@ -224,7 +224,7 @@ export function StellarForgeEditor({
       attributes: {
         class: cn(
           "prose prose-sm max-w-none focus:outline-none",
-          "prose-headings:font-semibold",
+          "prose-headings:font-medium",
           "prose-h1:text-xl prose-h1:mt-4 prose-h1:mb-2",
           "prose-h2:text-lg prose-h2:mt-3 prose-h2:mb-2",
           "prose-h3:text-base prose-h3:mt-2 prose-h3:mb-1",

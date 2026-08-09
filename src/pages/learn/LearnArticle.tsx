@@ -92,7 +92,7 @@ const LearnArticle = () => {
             ← RETURN TO ARCHIVE
           </Link>
           <GlassPanel className="p-8 text-center">
-            <h1 className="text-2xl font-bold mb-2">Article Not Found</h1>
+            <h1 className="text-2xl font-medium mb-2">Article Not Found</h1>
             <p className="text-t3">
               This article doesn't exist or hasn't been published yet.
             </p>
@@ -125,7 +125,7 @@ const LearnArticle = () => {
           <Badge className={categoryColors[article.category]}>
             {categoryLabels[article.category]}
           </Badge>
-          <h1 className="font-display text-3xl md:text-4xl font-bold mt-4 mb-4">
+          <h1 className="font-display text-3xl md:text-4xl font-medium mt-4 mb-4">
             {article.title}
           </h1>
           <p className="text-lg text-t3 mb-4">
@@ -156,7 +156,7 @@ const LearnArticle = () => {
 
         {/* Article Content */}
         <GlassPanel className="p-6 md:p-10">
-          <article className="prose prose-invert prose-lg max-w-none prose-headings:font-heading prose-headings:font-semibold prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-blockquote:border-primary prose-blockquote:not-italic prose-code:bg-muted prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:before:content-none prose-code:after:content-none">
+          <article className="prose prose-invert prose-lg max-w-none prose-headings:font-heading prose-headings:font-medium prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-blockquote:border-primary prose-blockquote:not-italic prose-code:bg-muted prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:before:content-none prose-code:after:content-none">
             {useSanityContent ? (
               <PortableTextRenderer content={sanityArticle.content} />
             ) : FallbackContent ? (

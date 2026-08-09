@@ -4,6 +4,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { GuideNav } from "@/components/layout/GuideNav";
+import { TOTAL_TOOL_COUNT } from "@/lib/tools-config";
 
 // ── Hub card data ──────────────────────────────────────────
 
@@ -20,8 +21,7 @@ const SECTIONS = [
   },
   {
     title: "Tool Reference",
-    description:
-      "Browse all 25 instruments by category, cascade position, complexity, or workshop week.",
+    description: `Browse all ${TOTAL_TOOL_COUNT} tools by category, cascade position, complexity, or workshop week.`,
     to: "/guide/tools",
     icon: Wrench,
     accent: "text-primary",

@@ -12,21 +12,26 @@ import {
   LAUNCH_TIME_LABEL,
   daysUntilLaunch,
 } from "@/config/launch";
+import {
+  FREE_TOOL_COUNT,
+  SIMULATOR_COUNT,
+  TOTAL_TOOL_COUNT,
+} from "@/lib/tools-config";
 
 // ── data ────────────────────────────────────────────────────────────
 
 const MANIFEST_ROWS: { label: string; value: string; tone: string }[] = [
   { label: "LAUNCH", value: `${LAUNCH_DATE_STAMP} · ${LAUNCH_TIME_LABEL}`, tone: "text-sf-teal" },
-  { label: "INSTRUMENTS", value: "25 TOOLS · 5 SIMULATORS", tone: "text-t1" },
+  { label: "INSTRUMENTS", value: `${TOTAL_TOOL_COUNT} TOOLS INCL. ${SIMULATOR_COUNT} SIMULATORS`, tone: "text-t1" },
   { label: "FRAMEWORK", value: "ENVIRONMENTAL CASCADE", tone: "text-sf-stellar" },
-  { label: "FREE TIER", value: "3 TOOLS · UNLIMITED WORLDS", tone: "text-t1" },
+  { label: "FREE TIER", value: `${FREE_TOOL_COUNT} TOOLS · UNLIMITED WORLDS`, tone: "text-t1" },
   { label: "PRO", value: "$4.99/MO · $49/YR", tone: "text-sf-amber" },
   { label: "EARLY CODE", value: "EARLY40 · 40% OFF YR 1", tone: "text-sf-teal" },
 ];
 
 const STATS: { n: string; blurb: string }[] = [
-  { n: "25", blurb: "Instruments aboard. Calibrated, stacked, and wired together. One saves, all update." },
-  { n: "5", blurb: "Full simulators: N-body, tidal lock, alien sky, procedural planet, procedural system." },
+  { n: String(TOTAL_TOOL_COUNT), blurb: "Instruments aboard. Calibrated, stacked, and wired together. One saves, all update." },
+  { n: String(SIMULATOR_COUNT), blurb: "Full simulators: N-body, tidal lock, alien sky, procedural planet, procedural system." },
   { n: "∞", blurb: "Worlds per account, free tier included. Yours alone. Not read. Not trained on." },
   { n: "$4.99", blurb: "Per month for the full manifest. Or $49 per year. Or zero for the free three tools." },
 ];

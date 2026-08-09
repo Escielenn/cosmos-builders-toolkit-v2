@@ -205,7 +205,7 @@ const TimelineView = forwardRef<HTMLDivElement, TimelineViewProps>(({
     return (
       <GlassPanel className="flex flex-col items-center justify-center py-24 text-center">
         <Layers className="w-12 h-12 text-t3/40 mb-4" />
-        <h3 className="font-heading text-lg font-semibold mb-2">
+        <h3 className="font-heading text-lg font-medium mb-2">
           NO TRACKS DEFINED
         </h3>
         <p className="text-sm text-t3 max-w-md">

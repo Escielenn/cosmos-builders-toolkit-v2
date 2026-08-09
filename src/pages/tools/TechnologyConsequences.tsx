@@ -592,7 +592,7 @@ const TechnologyConsequences = () => {
             >
               <div className="space-y-6">
                 <div className="space-y-4">
-                  <Label className="text-base font-semibold">Infrastructure Effect</Label>
+                  <Label className="text-base font-medium">Infrastructure Effect</Label>
                   <RadioGroup
                     value={formState.infrastructureEffect}
                     onValueChange={(value) => updateField("infrastructureEffect", value)}
@@ -619,7 +619,7 @@ const TechnologyConsequences = () => {
                 </div>
 
                 <div className="space-y-4">
-                  <Label className="text-base font-semibold">Environmental Effect</Label>
+                  <Label className="text-base font-medium">Environmental Effect</Label>
                   <RadioGroup
                     value={formState.environmentEffect}
                     onValueChange={(value) => updateField("environmentEffect", value)}
@@ -646,7 +646,7 @@ const TechnologyConsequences = () => {
                 </div>
 
                 <div className="space-y-4">
-                  <Label className="text-base font-semibold">Resource Effect</Label>
+                  <Label className="text-base font-medium">Resource Effect</Label>
                   <RadioGroup
                     value={formState.resourceEffect}
                     onValueChange={(value) => updateField("resourceEffect", value)}
@@ -702,7 +702,7 @@ const TechnologyConsequences = () => {
             >
               <div className="space-y-6">
                 <div className="space-y-4">
-                  <Label className="text-base font-semibold">Industry Effect</Label>
+                  <Label className="text-base font-medium">Industry Effect</Label>
                   <RadioGroup
                     value={formState.industryEffect}
                     onValueChange={(value) => updateField("industryEffect", value)}
@@ -729,7 +729,7 @@ const TechnologyConsequences = () => {
                 </div>
 
                 <div className="space-y-4">
-                  <Label className="text-base font-semibold">Employment Effect</Label>
+                  <Label className="text-base font-medium">Employment Effect</Label>
                   <RadioGroup
                     value={formState.employmentEffect}
                     onValueChange={(value) => updateField("employmentEffect", value)}
@@ -756,7 +756,7 @@ const TechnologyConsequences = () => {
                 </div>
 
                 <div className="space-y-4">
-                  <Label className="text-base font-semibold">Wealth Distribution Effect</Label>
+                  <Label className="text-base font-medium">Wealth Distribution Effect</Label>
                   <RadioGroup
                     value={formState.wealthEffect}
                     onValueChange={(value) => updateField("wealthEffect", value)}
@@ -793,7 +793,7 @@ const TechnologyConsequences = () => {
             >
               <div className="space-y-6">
                 <div className="space-y-4">
-                  <Label className="text-base font-semibold">Class Structure Effect</Label>
+                  <Label className="text-base font-medium">Class Structure Effect</Label>
                   <RadioGroup
                     value={formState.classEffect}
                     onValueChange={(value) => updateField("classEffect", value)}
@@ -820,7 +820,7 @@ const TechnologyConsequences = () => {
                 </div>
 
                 <div className="space-y-4">
-                  <Label className="text-base font-semibold">Family Structure Effect</Label>
+                  <Label className="text-base font-medium">Family Structure Effect</Label>
                   <RadioGroup
                     value={formState.familyEffect}
                     onValueChange={(value) => updateField("familyEffect", value)}
@@ -847,7 +847,7 @@ const TechnologyConsequences = () => {
                 </div>
 
                 <div className="space-y-4">
-                  <Label className="text-base font-semibold">Community Effect</Label>
+                  <Label className="text-base font-medium">Community Effect</Label>
                   <RadioGroup
                     value={formState.communityEffect}
                     onValueChange={(value) => updateField("communityEffect", value)}
@@ -874,7 +874,7 @@ const TechnologyConsequences = () => {
                 </div>
 
                 <div className="space-y-4">
-                  <Label className="text-base font-semibold">Identity Effect</Label>
+                  <Label className="text-base font-medium">Identity Effect</Label>
                   <RadioGroup
                     value={formState.identityEffect}
                     onValueChange={(value) => updateField("identityEffect", value)}
@@ -911,7 +911,7 @@ const TechnologyConsequences = () => {
             >
               <div className="space-y-6">
                 <div className="space-y-4">
-                  <Label className="text-base font-semibold">Power Distribution Effect</Label>
+                  <Label className="text-base font-medium">Power Distribution Effect</Label>
                   <RadioGroup
                     value={formState.powerEffect}
                     onValueChange={(value) => updateField("powerEffect", value)}
@@ -938,7 +938,7 @@ const TechnologyConsequences = () => {
                 </div>
 
                 <div className="space-y-4">
-                  <Label className="text-base font-semibold">Surveillance Effect</Label>
+                  <Label className="text-base font-medium">Surveillance Effect</Label>
                   <RadioGroup
                     value={formState.surveillanceEffect}
                     onValueChange={(value) => updateField("surveillanceEffect", value)}
@@ -965,7 +965,7 @@ const TechnologyConsequences = () => {
                 </div>
 
                 <div className="space-y-4">
-                  <Label className="text-base font-semibold">Governance Effect</Label>
+                  <Label className="text-base font-medium">Governance Effect</Label>
                   <RadioGroup
                     value={formState.governanceEffect}
                     onValueChange={(value) => updateField("governanceEffect", value)}
@@ -1002,7 +1002,7 @@ const TechnologyConsequences = () => {
             >
               <div className="space-y-6">
                 <div className="space-y-4">
-                  <Label className="text-base font-semibold">Warfare Effect</Label>
+                  <Label className="text-base font-medium">Warfare Effect</Label>
                   <RadioGroup
                     value={formState.warfareEffect}
                     onValueChange={(value) => updateField("warfareEffect", value)}
@@ -1029,7 +1029,7 @@ const TechnologyConsequences = () => {
                 </div>
 
                 <div className="space-y-4">
-                  <Label className="text-base font-semibold">Defense Balance</Label>
+                  <Label className="text-base font-medium">Defense Balance</Label>
                   <RadioGroup
                     value={formState.defenseEffect}
                     onValueChange={(value) => updateField("defenseEffect", value)}
@@ -1056,7 +1056,7 @@ const TechnologyConsequences = () => {
                 </div>
 
                 <div className="space-y-4">
-                  <Label className="text-base font-semibold">Deterrence Effect</Label>
+                  <Label className="text-base font-medium">Deterrence Effect</Label>
                   <RadioGroup
                     value={formState.deterrenceEffect}
                     onValueChange={(value) => updateField("deterrenceEffect", value)}
@@ -1093,7 +1093,7 @@ const TechnologyConsequences = () => {
             >
               <div className="space-y-6">
                 <div className="space-y-4">
-                  <Label className="text-base font-semibold">Perception Effect</Label>
+                  <Label className="text-base font-medium">Perception Effect</Label>
                   <RadioGroup
                     value={formState.perceptionEffect}
                     onValueChange={(value) => updateField("perceptionEffect", value)}
@@ -1120,7 +1120,7 @@ const TechnologyConsequences = () => {
                 </div>
 
                 <div className="space-y-4">
-                  <Label className="text-base font-semibold">Values Effect</Label>
+                  <Label className="text-base font-medium">Values Effect</Label>
                   <RadioGroup
                     value={formState.valuesEffect}
                     onValueChange={(value) => updateField("valuesEffect", value)}
@@ -1147,7 +1147,7 @@ const TechnologyConsequences = () => {
                 </div>
 
                 <div className="space-y-4">
-                  <Label className="text-base font-semibold">Fears Effect</Label>
+                  <Label className="text-base font-medium">Fears Effect</Label>
                   <RadioGroup
                     value={formState.fearsEffect}
                     onValueChange={(value) => updateField("fearsEffect", value)}

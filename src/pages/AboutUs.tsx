@@ -18,7 +18,7 @@ const AboutUs = () => {
       <main className="relative container mx-auto px-4 pt-24 pb-16">
         {/* Hero */}
         <section className="text-center mb-16">
-          <h1 className="font-serif italic text-4xl md:text-5xl font-light text-t1 mb-4">
+          <h1 className="font-display text-3xl md:text-4xl font-light tracking-sf-title text-t1 mb-4">
             ABOUT STELLARFORGE
           </h1>
           <p className="text-lg text-t2 max-w-2xl mx-auto leading-relaxed">
@@ -34,7 +34,7 @@ const AboutUs = () => {
               <div className="w-8 h-8 flex items-center justify-center bg-[#15C17B]/[0.06] border border-[#15C17B]/[0.15]">
                 <Compass className="w-4 h-4 text-[#15C17B]" />
               </div>
-              <h2 className="font-serif italic text-2xl font-light text-t1">
+              <h2 className="font-heading text-xl font-light uppercase tracking-[2px] text-t1">
                 The Story
               </h2>
             </div>
@@ -72,7 +72,7 @@ const AboutUs = () => {
               <div className="w-8 h-8 flex items-center justify-center bg-[#5B8DEF]/[0.06] border border-[#5B8DEF]/[0.15]">
                 <Layers className="w-4 h-4 text-[#5B8DEF]" />
               </div>
-              <h2 className="font-serif italic text-2xl font-light text-t1">
+              <h2 className="font-heading text-xl font-light uppercase tracking-[2px] text-t1">
                 The Cascade
               </h2>
             </div>
@@ -116,7 +116,7 @@ const AboutUs = () => {
               <div className="w-8 h-8 flex items-center justify-center bg-[#9B5DE5]/[0.06] border border-[#9B5DE5]/[0.15]">
                 <User className="w-4 h-4 text-[#9B5DE5]" />
               </div>
-              <h2 className="font-serif italic text-2xl font-light text-t1">
+              <h2 className="font-heading text-xl font-light uppercase tracking-[2px] text-t1">
                 The Founder
               </h2>
             </div>

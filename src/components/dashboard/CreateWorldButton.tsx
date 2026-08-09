@@ -87,7 +87,7 @@ const CreateWorldButton = () => {
             <Plus className="w-7 h-7 text-[#5B8DEF]" />
           </div>
           <div className="text-center">
-            <h3 className="font-heading font-semibold text-lg">INITIALIZE NEW WORLD</h3>
+            <h3 className="font-heading font-medium text-lg">INITIALIZE NEW WORLD</h3>
             <p className="text-sm text-t3 mt-1">
               Begin survey.
             </p>

@@ -40,7 +40,7 @@ const benefits = [
     icon: GraduationCap,
     title: "Worldbuilding Courses",
     description:
-      "Free video courses on science fiction worldbuilding, included with your Pro membership.",
+      "Free video courses on science fiction worldbuilding, included with your Pro Access.",
     comingSoon: true,
   },
 ];
@@ -52,7 +52,7 @@ const ProAdvantageSection = () => {
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-sm bg-amber-500/10 border border-amber-500/30 mb-6">
           <Zap className="w-4 h-4 text-sf-amber" />
           <span className="text-sm text-sf-amber uppercase tracking-wider">
-            Pro Subscription
+            Pro Access
           </span>
         </div>
         <h2 className="font-display font-light text-3xl md:text-4xl uppercase tracking-sf-wide mb-4">

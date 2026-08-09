@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getToolIcon } from "@/components/icons/tool-icons";
 import { scrollRevealStagger, fadeUpItem, scrollReveal, viewportOnce } from "@/lib/animations";
+import { getToolRoute } from "@/lib/tools-config";
 
 const freeTools = [
   {
@@ -149,6 +150,35 @@ const proTools = [
     description: "Interactive galaxy mapping tool. Generate procedural galaxies with 3D projection, empire territories, trade routes, and wormholes.",
     status: "available",
   },
+];
+
+// Simulators render in their own section below; they are Pro tools too, so
+// they must not also appear in `proTools` or they'd be listed twice.
+const simulators = [
+  {
+    id: "rogue",
+    title: "Rogue: Wandering Object Encounters",
+    description: "N-body gravitational encounter simulator. Launch black holes at real star systems and watch chaos unfold.",
+    status: "available",
+  },
+  {
+    id: "tidelock",
+    title: "Tidelock: Locked World Simulator",
+    description: "Tidally locked world simulator. Explore habitable zones, atmospheric dynamics, and surface conditions on exoplanets.",
+    status: "available",
+  },
+  {
+    id: "exosky",
+    title: "Exosky: Alien Night Sky",
+    description: "Alien night sky simulator. View the stars from any exoplanet using real astronomical data and create your own constellations.",
+    status: "available",
+  },
+  {
+    id: "exoforge",
+    title: "ExoForge: Procedural Exoplanet Forge",
+    description: "Procedurally generate exoplanets with scientifically grounded parameters.",
+    status: "available",
+  },
   {
     id: "solaris",
     title: "Solaris: Procedural Star System Simulator",
@@ -187,6 +217,11 @@ const comingSoonByCategory = [
   },
 ];
 
+const comingSoonCount = comingSoonByCategory.reduce(
+  (n, cat) => n + cat.items.length,
+  0
+);
+
 interface ToolPreviewCardProps {
   id: string;
   title: string;
@@ -197,8 +232,9 @@ interface ToolPreviewCardProps {
 
 const ToolPreviewCard = ({ id, title, description, status, isPro }: ToolPreviewCardProps) => {
   const CustomIcon = getToolIcon(id);
+  const route = getToolRoute(id);
 
-  return (
+  const card = (
     <GlassPanel lightArc hover className={`p-5 h-full ${isPro ? 'opacity-90' : ''}`}>
       <div className="flex items-start justify-between mb-3">
         {CustomIcon ? (
@@ -226,8 +262,17 @@ const ToolPreviewCard = ({ id, title, description, status, isPro }: ToolPreviewC
         </div>
       </div>
       <h3 className="font-heading font-light text-base mb-2">{title}</h3>
-      <p className="text-sm text-t3 line-clamp-2">{description}</p>
+      <p className="text-sm text-t2 line-clamp-2">{description}</p>
     </GlassPanel>
+  );
+
+  // Available tools are navigable; coming-soon entries stay inert.
+  if (!route || status === "coming-soon") return card;
+
+  return (
+    <Link to={route} className="block h-full" aria-label={title}>
+      {card}
+    </Link>
   );
 };
 
@@ -246,7 +291,7 @@ const ToolShowcase = () => {
           <h2 className="font-serif italic text-[26px] text-t1">Free forever</h2>
           <Badge variant="secondary" className="bg-green-500/20 text-green-600 dark:text-green-400 sf-badge-enter">
             <Check className="w-3 h-3 mr-1" />
-            3 Tools
+            {freeTools.length} Tools
           </Badge>
         </motion.div>
         <motion.div
@@ -276,7 +321,7 @@ const ToolShowcase = () => {
           <h2 className="font-serif italic text-[26px] text-t1">Pro tools</h2>
           <Badge variant="secondary" className="bg-amber-500/20 text-sf-amber dark:text-sf-amber sf-badge-enter">
             <Zap className="w-3 h-3 mr-1" />
-            27 Tools
+            {proTools.length} Tools
           </Badge>
         </motion.div>
         <motion.div
@@ -306,7 +351,7 @@ const ToolShowcase = () => {
           <h2 className="font-serif italic text-[26px] text-t1">Simulators</h2>
           <Badge variant="secondary" className="bg-amber-500/20 text-sf-amber dark:text-sf-amber sf-badge-enter">
             <Zap className="w-3 h-3 mr-1" />
-            Pro
+            {simulators.length} Pro
           </Badge>
         </motion.div>
         <motion.div
@@ -316,74 +361,11 @@ const ToolShowcase = () => {
           viewport={viewportOnce}
           variants={scrollRevealStagger}
         >
-          <motion.div variants={fadeUpItem}>
-            <Link to="/rogue" className="block h-full">
-              <GlassPanel lightArc hover className="p-5 h-full">
-                <div className="flex items-start justify-between mb-3">
-                  <div className="w-12 h-12 rounded-sm flex items-center justify-center bg-gradient-to-br from-red-500/20 to-orange-500/20 sf-card-icon overflow-hidden">
-                    <img src="/icons/035-black hole.svg" alt="" className="w-8 h-8" draggable={false} />
-                  </div>
-                  <Badge variant="secondary" className="text-xs bg-amber-500/20 text-sf-amber dark:text-sf-amber">
-                    <Zap className="w-3 h-3 mr-1" />
-                    Pro
-                  </Badge>
-                </div>
-                <h3 className="font-heading font-light text-base mb-2">Rogue: Wandering Object Encounters</h3>
-                <p className="text-sm text-t3 line-clamp-2">N-body gravitational encounter simulator. Launch black holes at real star systems and watch chaos unfold.</p>
-              </GlassPanel>
-            </Link>
-          </motion.div>
-          <motion.div variants={fadeUpItem}>
-            <Link to="/tools/tidelock" className="block h-full">
-              <GlassPanel lightArc hover className="p-5 h-full">
-                <div className="flex items-start justify-between mb-3">
-                  <div className="w-12 h-12 rounded-sm flex items-center justify-center bg-gradient-to-br from-cyan-500/20 to-blue-500/20 sf-card-icon overflow-hidden">
-                    <img src="/icons/044-day and night.svg" alt="" className="w-8 h-8" draggable={false} />
-                  </div>
-                  <Badge variant="secondary" className="text-xs bg-amber-500/20 text-sf-amber dark:text-sf-amber">
-                    <Zap className="w-3 h-3 mr-1" />
-                    Pro
-                  </Badge>
-                </div>
-                <h3 className="font-heading font-light text-base mb-2">Tidelock: Locked World Simulator</h3>
-                <p className="text-sm text-t3 line-clamp-2">Tidally locked world simulator. Explore habitable zones, atmospheric dynamics, and surface conditions on exoplanets.</p>
-              </GlassPanel>
-            </Link>
-          </motion.div>
-          <motion.div variants={fadeUpItem}>
-            <Link to="/tools/exosky" className="block h-full">
-              <GlassPanel lightArc hover className="p-5 h-full">
-                <div className="flex items-start justify-between mb-3">
-                  <div className="w-12 h-12 rounded-sm flex items-center justify-center bg-gradient-to-br from-indigo-500/20 to-purple-500/20 sf-card-icon overflow-hidden">
-                    <img src="/icons/016-constellation.svg" alt="" className="w-8 h-8" draggable={false} />
-                  </div>
-                  <Badge variant="secondary" className="text-xs bg-amber-500/20 text-sf-amber dark:text-sf-amber">
-                    <Zap className="w-3 h-3 mr-1" />
-                    Pro
-                  </Badge>
-                </div>
-                <h3 className="font-heading font-light text-base mb-2">Exosky: Alien Night Sky</h3>
-                <p className="text-sm text-t3 line-clamp-2">Alien night sky simulator. View the stars from any exoplanet using real astronomical data and create your own constellations.</p>
-              </GlassPanel>
-            </Link>
-          </motion.div>
-          <motion.div variants={fadeUpItem}>
-            <Link to="/tools/solaris" className="block h-full">
-              <GlassPanel lightArc hover className="p-5 h-full">
-                <div className="flex items-start justify-between mb-3">
-                  <div className="w-12 h-12 rounded-sm flex items-center justify-center bg-gradient-to-br from-amber-500/20 to-yellow-500/20 sf-card-icon overflow-hidden">
-                    <img src="/icons/star-system-builder.svg" alt="" className="w-8 h-8" draggable={false} />
-                  </div>
-                  <Badge variant="secondary" className="text-xs bg-amber-500/20 text-sf-amber dark:text-sf-amber">
-                    <Zap className="w-3 h-3 mr-1" />
-                    Pro
-                  </Badge>
-                </div>
-                <h3 className="font-heading font-light text-base mb-2">Solaris: Star System Simulator</h3>
-                <p className="text-sm text-t3 line-clamp-2">Design single and multi-star systems with real orbital mechanics, habitable zone science, and N-body dynamics.</p>
-              </GlassPanel>
-            </Link>
-          </motion.div>
+          {simulators.map((sim) => (
+            <motion.div key={sim.id} variants={fadeUpItem}>
+              <ToolPreviewCard id={sim.id} {...sim} isPro />
+            </motion.div>
+          ))}
         </motion.div>
       </div>
 
@@ -399,7 +381,7 @@ const ToolShowcase = () => {
           <h2 className="font-serif italic text-[26px] text-t1">Coming soon</h2>
           <Badge variant="secondary" className="bg-blue-500/20 text-blue-600 dark:text-blue-400 sf-badge-enter">
             <Hourglass className="w-3 h-3 mr-1" />
-            15 Planned
+            {comingSoonCount} Planned
           </Badge>
         </motion.div>
         {comingSoonByCategory.map((cat) => (

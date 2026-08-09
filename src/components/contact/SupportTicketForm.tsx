@@ -91,7 +91,7 @@ const SupportTicketForm = ({ onSuccess }: SupportTicketFormProps) => {
     return (
       <div className="text-center py-8">
         <CheckCircle className="w-12 h-12 text-sf-emerald mx-auto mb-4" />
-        <h3 className="font-heading text-xl font-semibold mb-2">
+        <h3 className="font-heading text-xl font-medium mb-2">
           TICKET LOGGED.
         </h3>
         <p className="text-t3 mb-4">

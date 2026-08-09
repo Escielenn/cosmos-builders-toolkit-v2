@@ -900,10 +900,10 @@ const LexDrift = () => {
           {/* ═══ Section 4: RESULTS ═══ */}
           <div id="section-results" className="space-y-4">
             <div className="flex items-center gap-3 mb-2">
-              <span className="w-8 h-8 rounded-sm bg-primary/20 text-primary flex items-center justify-center font-mono text-sm font-bold">
+              <span className="w-8 h-8 rounded-sm bg-primary/20 text-primary flex items-center justify-center font-mono text-sm font-medium">
                 4
               </span>
-              <h2 className="font-heading text-xl font-semibold">
+              <h2 className="font-heading text-xl font-medium">
                 Predicted Outcomes
               </h2>
             </div>
@@ -929,7 +929,7 @@ const LexDrift = () => {
                     <p className="font-mono text-xs uppercase tracking-sf-wide text-t2 mb-1">
                       Mutual Intelligibility
                     </p>
-                    <p className="font-mono text-2xl font-semibold text-t1">
+                    <p className="font-mono text-2xl font-medium text-t1">
                       {calculationResult.intelligibilityPercent.toFixed(0)}%
                     </p>
                     <p className="text-xs text-t4 mt-1">
@@ -940,7 +940,7 @@ const LexDrift = () => {
                     <p className="font-mono text-xs uppercase tracking-sf-wide text-t2 mb-1">
                       Estimated New Vocabulary
                     </p>
-                    <p className="font-mono text-2xl font-semibold text-t1">
+                    <p className="font-mono text-2xl font-medium text-t1">
                       ~{calculationResult.estimatedNewTerms.toLocaleString()} terms
                     </p>
                     <p className="text-xs text-t4 mt-1">
@@ -1033,7 +1033,7 @@ const LexDrift = () => {
                   <p className="font-mono text-xs uppercase tracking-sf-wide text-primary/60 mb-2">
                     Historical Analogue
                   </p>
-                  <p className="font-heading font-semibold text-t1 mb-1">
+                  <p className="font-heading font-medium text-t1 mb-1">
                     {calculationResult.historicalAnalogue.title}
                     <span className="text-t2 text-sm font-normal ml-2">
                       ({calculationResult.historicalAnalogue.period})
@@ -1053,13 +1053,13 @@ const LexDrift = () => {
                     <div className="grid grid-cols-2 gap-4 mb-3">
                       <div>
                         <span className="text-xs text-t4">Divergence</span>
-                        <p className="font-mono text-lg font-semibold">
+                        <p className="font-mono text-lg font-medium">
                           {calculationResult.signLanguageDivergence.toFixed(1)}%
                         </p>
                       </div>
                       <div>
                         <span className="text-xs text-t4">Intelligibility</span>
-                        <p className="font-mono text-lg font-semibold">
+                        <p className="font-mono text-lg font-medium">
                           {calculationResult.signLanguageIntelligibility?.toFixed(0)}%
                         </p>
                       </div>
@@ -1104,7 +1104,7 @@ const LexDrift = () => {
                     ))}
                     <div className="pt-2 border-t border-sf-border flex justify-between items-center">
                       <span className="text-sm font-medium">Combined</span>
-                      <span className="font-mono text-sm font-bold text-primary">
+                      <span className="font-mono text-sm font-medium text-primary">
                         ×{calculationResult.totalModifier.toFixed(3)}
                       </span>
                     </div>
@@ -1141,7 +1141,7 @@ const LexDrift = () => {
                         key={i}
                         className={`p-4 rounded-r-lg border-l-2 ${sColors.border} ${sColors.bg}`}
                       >
-                        <p className="font-heading text-sm font-semibold mb-1">
+                        <p className="font-heading text-sm font-medium mb-1">
                           {callout.title}
                         </p>
                         <p className="text-xs text-t4 leading-relaxed">

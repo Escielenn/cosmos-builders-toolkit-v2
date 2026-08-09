@@ -1,19 +1,51 @@
+import { createContext, useContext } from "react";
 import { RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { resetAllHints } from "@/lib/onboarding/hints";
 
 // ---------------------------------------------------------------------------
+// Scale variant
+//
+// The same content serves two surfaces: a narrow slide-over sheet, where
+// compact 12px type is right, and the full /guide/field-manual page, where
+// that same type would render a whole reference document at overlay scale
+// (with headers smaller than their own body copy). "page" reads at document
+// scale per the CLAUDE.md type ramp; "sheet" keeps the compact treatment.
+// ---------------------------------------------------------------------------
+
+type ManualScale = "sheet" | "page";
+
+const ManualScaleContext = createContext<ManualScale>("sheet");
+
+const useManualScale = () => useContext(ManualScaleContext);
+
+// ---------------------------------------------------------------------------
 // Shared sub-components
 // ---------------------------------------------------------------------------
 
 export function ManualSection({ title, children }: { title: string; children: React.ReactNode }) {
+  const scale = useManualScale();
+  const isPage = scale === "page";
+
   return (
-    <div className="mb-5">
-      <h3 className="font-heading text-[11px] uppercase tracking-[2px] text-t1 mb-1.5">
+    <div className={isPage ? "mb-8" : "mb-5"}>
+      <h3
+        className={
+          isPage
+            ? "font-heading text-sm font-light uppercase tracking-[3px] text-sf-emerald mb-3"
+            : "font-heading text-[11px] uppercase tracking-[2px] text-t1 mb-1.5"
+        }
+      >
         {title}
       </h3>
-      <div className="text-[12px] text-t3 leading-relaxed space-y-1.5 pl-0.5">
+      <div
+        className={
+          isPage
+            ? "text-sm text-t2 leading-relaxed space-y-2"
+            : "text-[12px] text-t3 leading-relaxed space-y-1.5 pl-0.5"
+        }
+      >
         {children}
       </div>
     </div>
@@ -33,10 +65,18 @@ export function ManualDivider({ label }: { label: string }) {
 }
 
 export function ManualKeyLine({ keys, description }: { keys: string; description: string }) {
+  const isPage = useManualScale() === "page";
+
   return (
     <div className="flex items-center gap-2">
-      <span className="font-mono text-[11px] text-primary/50 w-40 shrink-0">{keys}</span>
-      <span className="text-[12px]">{description}</span>
+      <span
+        className={`font-mono text-primary/70 w-40 shrink-0 ${
+          isPage ? "text-xs" : "text-[11px]"
+        }`}
+      >
+        {keys}
+      </span>
+      <span className={isPage ? "text-sm" : "text-[12px]"}>{description}</span>
     </div>
   );
 }
@@ -45,7 +85,7 @@ export function ManualKeyLine({ keys, description }: { keys: string; description
 // Full content, used by both FieldManualSheet and Guide.tsx
 // ---------------------------------------------------------------------------
 
-export function FieldManualContent() {
+export function FieldManualContent({ scale = "sheet" }: { scale?: ManualScale } = {}) {
   const { toast } = useToast();
 
   const handleResetHints = () => {
@@ -57,7 +97,7 @@ export function FieldManualContent() {
   };
 
   return (
-    <>
+    <ManualScaleContext.Provider value={scale}>
       <ManualDivider label="Navigation Systems" />
 
       <ManualSection title="Registry">
@@ -192,6 +232,6 @@ export function FieldManualContent() {
           </Button>
         </div>
       </ManualSection>
-    </>
+    </ManualScaleContext.Provider>
   );
 }

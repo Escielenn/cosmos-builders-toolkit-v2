@@ -12,7 +12,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useSubscription, type Subscription } from "@/hooks/use-subscription";
 import { useToast } from "@/hooks/use-toast";
 import WelcomeDialog from "@/components/onboarding/WelcomeDialog";
-import { FREE_TOOL_IDS, PRO_TOOL_IDS, PRICING } from "@/lib/tools-config";
+import { FREE_TOOL_IDS, PRO_TOOL_IDS, PRICING, getToolDisplayName } from "@/lib/tools-config";
 import { PageBursts } from "@/components/ui/data-burst";
 import { PRICING_BURSTS } from "@/lib/data-bursts";
 import { ParallaxStrips } from "@/components/ambient/ParallaxStrips";
@@ -75,7 +75,7 @@ const Pricing = () => {
         } else {
           toast({
             title: "SUBSCRIPTION PENDING.",
-            description: "PAYMENT RECEIVED. ACTIVATION IN PROGRESS.",
+            description: "Payment received. Activation in progress.",
           });
           refreshSubscription();
         }
@@ -87,7 +87,7 @@ const Pricing = () => {
       handledRef.current = true;
       toast({
         title: "CHECKOUT CANCELED.",
-        description: "CLEARANCE AVAILABLE WHEN READY.",
+        description: "Clearance available when ready.",
       });
       window.history.replaceState({}, '', '/pricing');
     }
@@ -183,7 +183,7 @@ const Pricing = () => {
               warm
               eyebrow="// access tiers"
               title={<>Upgrade your <span className="text-sf-teal">access.</span></>}
-              subtitle={`Free accounts access ${FREE_TOOL_IDS.length} instruments. Pro unlocks all ${totalTools}. Vanguard shapes what comes next.`}
+              subtitle={`Free accounts access ${FREE_TOOL_IDS.length} tools. Pro unlocks all ${totalTools}. Vanguard shapes what comes next.`}
             />
           </div>
         </section>
@@ -206,15 +206,19 @@ const Pricing = () => {
               ))}
             </ul>
 
-            <p className="text-xs text-t3 uppercase tracking-[1.5px] mb-3">Free instruments:</p>
-            <ul className="text-sm text-t3 space-y-1 mb-6">
-              <li>Environmental Chain Reaction</li>
-              <li>Spacecraft Designer</li>
-              <li>Propulsion Consequences Map</li>
+            <p className="text-xs text-t3 uppercase tracking-[1.5px] mb-3">Free tools:</p>
+            <ul className="text-sm text-t2 space-y-1 mb-6">
+              {FREE_TOOL_IDS.map((id) => (
+                <li key={id}>{getToolDisplayName(id)}</li>
+              ))}
             </ul>
 
-            <Button variant="outline" className="w-full" onClick={() => navigate("/")}>
-              BEGIN
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={() => navigate("/auth#create-account")}
+            >
+              Start Free
             </Button>
           </GlassPanel>
 
@@ -290,7 +294,7 @@ const Pricing = () => {
                   ) : (
                     <Zap className="w-4 h-4 mr-2" />
                   )}
-                  UPGRADE (YEARLY), ${PRICING.pro.yearly.price}/year
+                  Upgrade Yearly — ${PRICING.pro.yearly.price}/yr
                 </Button>
                 <Button
                   variant="outline"
@@ -301,7 +305,7 @@ const Pricing = () => {
                   {loading === 'monthly' ? (
                     <Loader variant="inline" size="sm" className="mr-2" />
                   ) : null}
-                  Monthly, ${PRICING.pro.monthly.price}/month
+                  Upgrade Monthly — ${PRICING.pro.monthly.price}/mo
                 </Button>
               </div>
             )}
@@ -433,13 +437,13 @@ const Pricing = () => {
               <div>
                 <h3 className="font-heading text-lg font-light uppercase tracking-[2px] mb-1">Vanguard: Shape What Comes Next</h3>
                 <p className="text-sm text-t2">
-                  Vanguard members don't just use StellarForge, they help build it. Vote on the roadmap, get early access to new instruments before anyone else, and join bi-weekly Office Hours to discuss science fiction worldbuilding directly with the creator.
+                  Vanguard members don't just use StellarForge, they help build it. Vote on the roadmap, get early access to new tools before anyone else, and join bi-weekly Office Hours to discuss science fiction worldbuilding directly with the creator.
                 </p>
               </div>
             </div>
-            <div className="grid sm:grid-cols-2 gap-4 text-sm text-t3">
+            <div className="grid sm:grid-cols-2 gap-4 text-sm text-t2">
               <div>
-                <p className="text-t2 font-medium mb-1">Office Hours (Starting Late April)</p>
+                <p className="text-t1 font-medium mb-1">Office Hours (Starting Late April)</p>
                 <p>Bi-weekly Zoom/Discord sessions focused on SF worldbuilding and science fiction craft.</p>
               </div>
               <div>
@@ -456,28 +460,28 @@ const Pricing = () => {
             <h3 className="font-heading text-xl font-light uppercase tracking-[2px] mb-4">Frequently Asked Questions</h3>
             <div className="space-y-4 text-sm">
               <div>
-                <p className="font-medium text-t2">Can I cancel anytime?</p>
-                <p className="text-t3">Yes! Cancel anytime from your billing portal. You'll keep access until the end of your billing period.</p>
+                <p className="font-medium text-t1">Can I cancel anytime?</p>
+                <p className="text-t2">Yes! Cancel anytime from your billing portal. You'll keep access until the end of your billing period.</p>
               </div>
               <div>
-                <p className="font-medium text-t2">What payment methods do you accept?</p>
-                <p className="text-t3">We accept all major credit cards, debit cards, and many local payment methods through Stripe.</p>
+                <p className="font-medium text-t1">What payment methods do you accept?</p>
+                <p className="text-t2">We accept all major credit cards, debit cards, and many local payment methods through Stripe.</p>
               </div>
               <div>
-                <p className="font-medium text-t2">Will I lose my data if I cancel?</p>
-                <p className="text-t3">No. Your worlds and worksheets remain saved. You just won't be able to access Pro/Vanguard tools.</p>
+                <p className="font-medium text-t1">Will I lose my data if I cancel?</p>
+                <p className="text-t2">No. Your worlds and worksheets remain saved. You just won't be able to access Pro/Vanguard tools.</p>
               </div>
               <div>
-                <p className="font-medium text-t2">Can I upgrade from Pro to Vanguard?</p>
-                <p className="text-t3">Yes! Upgrade anytime. Stripe prorates the billing so you only pay the difference for the remainder of your current period.</p>
+                <p className="font-medium text-t1">Can I upgrade from Pro to Vanguard?</p>
+                <p className="text-t2">Yes! Upgrade anytime. Stripe prorates the billing so you only pay the difference for the remainder of your current period.</p>
               </div>
               <div>
-                <p className="font-medium text-t2">Can I switch between monthly and yearly?</p>
-                <p className="text-t3">Yes! You can change your plan anytime through the billing portal.</p>
+                <p className="font-medium text-t1">Can I switch between monthly and yearly?</p>
+                <p className="text-t2">Yes! You can change your plan anytime through the billing portal.</p>
               </div>
               <div>
-                <p className="font-medium text-t2">What are roadmap votes?</p>
-                <p className="text-t3">Vanguard members get 10 votes per billing period to cast on upcoming tools and features. The highest-voted items get priority in development.</p>
+                <p className="font-medium text-t1">What are roadmap votes?</p>
+                <p className="text-t2">Vanguard members get 10 votes per billing period to cast on upcoming tools and features. The highest-voted items get priority in development.</p>
               </div>
             </div>
           </GlassPanel>

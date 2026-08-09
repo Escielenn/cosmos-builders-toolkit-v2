@@ -851,10 +851,10 @@ const TimeDilationCalculator = () => {
           {/* ═══ Section 4: RESULTS (always visible, instrument readout) ═══ */}
           <div id="section-results" className="space-y-4">
             <div className="flex items-center gap-3 mb-2">
-              <span className="w-8 h-8 rounded-sm bg-primary/20 text-primary flex items-center justify-center font-mono text-sm font-bold">
+              <span className="w-8 h-8 rounded-sm bg-primary/20 text-primary flex items-center justify-center font-mono text-sm font-medium">
                 4
               </span>
-              <h2 className="font-heading text-xl font-semibold">
+              <h2 className="font-heading text-xl font-medium">
                 Time Dilation Results
               </h2>
             </div>
@@ -968,7 +968,7 @@ const TimeDilationCalculator = () => {
                   <p className="font-mono text-xs uppercase tracking-sf-wide text-t2 mb-1">
                     Time Difference
                   </p>
-                  <p className={`font-mono text-3xl font-semibold ${sColors.text}`}>
+                  <p className={`font-mono text-3xl font-medium ${sColors.text}`}>
                     {calculationResult.timeDifferenceFormatted}
                   </p>
                   <p className="text-sm text-t3 mt-2">
@@ -1109,7 +1109,7 @@ const TimeDilationCalculator = () => {
                         key={i}
                         className={`p-4 rounded-r-lg border-l-2 ${sColors.border} ${sColors.bg}`}
                       >
-                        <p className="font-heading text-sm font-semibold mb-1">
+                        <p className="font-heading text-sm font-medium mb-1">
                           {callout.title}
                         </p>
                         <p className="text-xs text-t4 leading-relaxed">

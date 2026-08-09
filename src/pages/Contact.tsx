@@ -49,7 +49,7 @@ const Contact = () => {
         {/* Alternative Contact Methods */}
         <section className="max-w-2xl mx-auto">
           <GlassPanel className="p-8">
-            <h3 className="font-heading text-xl font-semibold mb-6 text-center">
+            <h3 className="font-heading text-xl font-medium mb-6 text-center">
               Other Ways to Reach Us
             </h3>
             <div className="grid md:grid-cols-2 gap-6">

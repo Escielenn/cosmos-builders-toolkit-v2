@@ -424,9 +424,11 @@
   }
 
   .sf-sovereignty-headline {
-    font-family: 'Michroma', sans-serif;
-    font-size: 14px;
+    font-family: 'Jura', sans-serif;
+    font-size: 22px;
+    font-weight: 300;
     letter-spacing: 6px;
+    line-height: 1.4;
     color: rgba(255, 255, 255, 0.92);
     margin-bottom: 32px;
   }
@@ -435,7 +437,7 @@
     font-family: 'DM Sans', sans-serif;
     font-size: 16px;
     line-height: 1.8;
-    color: rgba(255, 255, 255, 0.55);
+    color: rgba(255, 255, 255, 0.78);
     margin-bottom: 16px;
   }
 
@@ -460,7 +462,7 @@
   }
 
   .sf-sovereignty-feature-title {
-    font-family: 'Michroma', sans-serif;
+    font-family: 'Jura', sans-serif;
     font-size: 9px;
     letter-spacing: 3px;
     color: rgba(61, 255, 205, 0.6);
@@ -471,14 +473,14 @@
     font-family: 'DM Sans', sans-serif;
     font-size: 13px;
     line-height: 1.6;
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 0.7);
   }
 
   .sf-sovereignty-closing {
     font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
+    font-size: 15px;
     line-height: 1.8;
-    color: rgba(255, 255, 255, 0.35);
+    color: rgba(255, 255, 255, 0.55);
     font-style: italic;
     margin-top: 48px;
   }
@@ -567,7 +569,7 @@
   }
 
   .sf-export-sovereignty-footer p:first-of-type {
-    font-family: 'Michroma', sans-serif;
+    font-family: 'Jura', sans-serif;
     font-size: 8px;
     letter-spacing: 3px;
     color: rgba(255, 255, 255, 0.25);
@@ -2710,7 +2712,7 @@ html {
 }
 
 .sf-infobox-header {
-  font-family: var(--sf-font-accent, 'Michroma', sans-serif);
+  font-family: var(--sf-font-accent, 'Jura', sans-serif);
   font-size: 8px;
   letter-spacing: 3px;
   color: rgba(var(--sf-world-accent-rgb, 61, 255, 205), 0.5);
@@ -2764,7 +2766,7 @@ html {
 .sf-wiki-content h2 {
   font-family: var(--sf-font-heading, 'Jura', sans-serif);
   font-size: 20px;
-  font-weight: 600;
+  font-weight: 500;
   color: rgba(255, 255, 255, 0.92);
   margin-top: 32px;
   margin-bottom: 12px;
@@ -2774,7 +2776,7 @@ html {
 .sf-wiki-content h3 {
   font-family: var(--sf-font-heading, 'Jura', sans-serif);
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 500;
   color: rgba(255, 255, 255, 0.85);
   margin-top: 24px;
   margin-bottom: 8px;
@@ -3100,7 +3102,7 @@ html {
 .sf-chronicle-title {
   font-family: var(--sf-font-heading, 'Jura', sans-serif);
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 500;
   color: rgba(255, 255, 255, 0.92);
   text-transform: uppercase;
   letter-spacing: 0.5px;

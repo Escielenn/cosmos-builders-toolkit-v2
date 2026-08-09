@@ -48,7 +48,7 @@ const FinalCTASection = () => {
             asChild
           >
             <Link to="/learn">
-              Explore the Docs
+              Explore SF University
               <ArrowRight className="w-4 h-4" />
             </Link>
           </Button>

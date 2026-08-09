@@ -169,7 +169,7 @@ const HierarchicalExportDialog = ({
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
-                          <h3 className="font-semibold">{cw.category.label}</h3>
+                          <h3 className="font-medium">{cw.category.label}</h3>
                           <Badge variant="secondary" className="text-xs">
                             {cw.worksheets.length}
                           </Badge>

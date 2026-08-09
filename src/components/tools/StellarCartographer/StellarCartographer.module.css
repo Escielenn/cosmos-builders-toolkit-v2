@@ -232,7 +232,7 @@
 .sectionHeader {
   font-family: 'Jura', sans-serif;
   font-size: 7.5px;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: 2.5px;
   text-transform: uppercase;
   color: hsl(var(--sf-teal) / 0.35);

@@ -159,7 +159,7 @@ const LearnIndex = () => {
             )}
             {!isSearching && searchResults && searchResults.length > 0 && (
               <>
-                <h2 className="font-heading text-2xl font-semibold mb-6">
+                <h2 className="font-heading text-2xl font-light uppercase tracking-[2px] mb-6">
                   Results for &ldquo;{searchTerm}&rdquo;
                 </h2>
                 <div className="space-y-4">
@@ -182,7 +182,7 @@ const LearnIndex = () => {
                                 )}
                               </span>
                             </div>
-                            <h3 className="font-semibold group-hover:text-primary transition-colors">
+                            <h3 className="font-medium group-hover:text-primary transition-colors">
                               {article.title}
                             </h3>
                             <p className="text-sm text-t3 mt-1">
@@ -208,7 +208,7 @@ const LearnIndex = () => {
         {/* Featured Articles */}
         {!isLoading && !isSearchActive && featuredArticles.length > 0 && (
           <section className="mb-12">
-            <h2 className="font-heading text-2xl font-semibold mb-6">
+            <h2 className="font-heading text-2xl font-light uppercase tracking-[2px] mb-6">
               Featured
             </h2>
             <div className="grid gap-6 md:grid-cols-2">
@@ -232,7 +232,7 @@ const LearnIndex = () => {
                       <Badge className={categoryColors[article.category]}>
                         {categoryLabels[article.category]}
                       </Badge>
-                      <h3 className="font-heading text-xl font-semibold mt-3 mb-2 group-hover:text-primary transition-colors">
+                      <h3 className="font-heading text-xl font-medium mt-3 mb-2 group-hover:text-primary transition-colors">
                         {article.title}
                       </h3>
                       <p className="text-t3 text-sm mb-4">
@@ -267,7 +267,7 @@ const LearnIndex = () => {
           <section className="mb-12">
             <div className="flex items-center gap-3 mb-6">
               <Beaker className="w-5 h-5 text-t3" />
-              <h2 className="font-heading text-2xl font-semibold">
+              <h2 className="font-heading text-2xl font-light uppercase tracking-[2px]">
                 Simulator Science: Showing Our Work
               </h2>
             </div>
@@ -282,7 +282,7 @@ const LearnIndex = () => {
                       {categoryLabels.science}
                     </Badge>
                   </div>
-                  <h3 className="font-semibold group-hover:text-primary transition-colors">
+                  <h3 className="font-medium group-hover:text-primary transition-colors">
                     ROGUE: The Science
                   </h3>
                   <p className="text-sm text-t3 mt-1">
@@ -300,7 +300,7 @@ const LearnIndex = () => {
                       {categoryLabels.science}
                     </Badge>
                   </div>
-                  <h3 className="font-semibold group-hover:text-primary transition-colors">
+                  <h3 className="font-medium group-hover:text-primary transition-colors">
                     TIDELOCK: The Science
                   </h3>
                   <p className="text-sm text-t3 mt-1">
@@ -318,7 +318,7 @@ const LearnIndex = () => {
                       {categoryLabels.science}
                     </Badge>
                   </div>
-                  <h3 className="font-semibold group-hover:text-primary transition-colors">
+                  <h3 className="font-medium group-hover:text-primary transition-colors">
                     EXOSKY: The Science
                   </h3>
                   <p className="text-sm text-t3 mt-1">
@@ -336,7 +336,7 @@ const LearnIndex = () => {
                       {categoryLabels.science}
                     </Badge>
                   </div>
-                  <h3 className="font-semibold group-hover:text-primary transition-colors">
+                  <h3 className="font-medium group-hover:text-primary transition-colors">
                     EXOFORGE: The Science
                   </h3>
                   <p className="text-sm text-t3 mt-1">
@@ -464,7 +464,7 @@ const LearnIndex = () => {
         {/* All Articles */}
         {!isLoading && !isSearchActive && (
           <section>
-            <h2 className="font-heading text-2xl font-semibold mb-6">
+            <h2 className="font-heading text-2xl font-light uppercase tracking-[2px] mb-6">
               All Articles
             </h2>
             <div className="space-y-6">
@@ -506,7 +506,7 @@ const LearnIndex = () => {
                               )}
                             </span>
                           </div>
-                          <h3 className="font-semibold group-hover:text-primary transition-colors">
+                          <h3 className="font-medium group-hover:text-primary transition-colors">
                             {article.title}
                           </h3>
                           <p className="text-sm text-t3 mt-1 line-clamp-2">

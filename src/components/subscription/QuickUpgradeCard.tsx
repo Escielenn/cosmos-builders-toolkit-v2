@@ -11,7 +11,7 @@ const QuickUpgradeCard = () => {
         <Zap className="w-7 h-7 text-sf-amber" />
       </div>
 
-      <h3 className="font-heading font-semibold text-lg mb-2 text-center">
+      <h3 className="font-heading font-medium text-lg mb-2 text-center">
         Unlock {PRO_TOOL_IDS.length} More Tools
       </h3>
 

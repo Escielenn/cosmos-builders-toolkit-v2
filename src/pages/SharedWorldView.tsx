@@ -33,7 +33,7 @@ const SharedWorldView = () => {
         {error && !isLoading && (
           <div className="flex flex-col items-center justify-center py-24 text-center">
             <AlertCircle className="w-12 h-12 text-t3 mb-4" />
-            <h1 className="font-heading text-2xl font-semibold mb-2">Link not available</h1>
+            <h1 className="font-heading text-2xl font-medium mb-2">Link not available</h1>
             <p className="text-t3 mb-6 max-w-md">
               This share link may have been disabled, expired, or the world may have been deleted.
             </p>
@@ -66,7 +66,7 @@ const SharedWorldView = () => {
                     <WorldIconRenderer iconId={data.icon} className="w-7 h-7 text-primary" />
                   </div>
                 )}
-                <h1 className="font-display text-3xl md:text-4xl font-bold">
+                <h1 className="font-display text-3xl md:text-4xl font-medium">
                   {data.name}
                 </h1>
               </div>
@@ -132,7 +132,7 @@ const SharedWorldView = () => {
                           <Badge className="bg-primary/10 text-primary text-xs mb-2">
                             {getToolDisplayName(ws.tool_type)}
                           </Badge>
-                          <h3 className="font-semibold">
+                          <h3 className="font-medium">
                             {ws.title || "Untitled"}
                           </h3>
                           {ws.tags && ws.tags.length > 0 && (

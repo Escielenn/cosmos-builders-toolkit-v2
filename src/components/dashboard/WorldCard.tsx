@@ -153,7 +153,7 @@ const WorldCard = ({
         <div className="p-5 pt-8 flex flex-col flex-1">
           <div className="flex items-start justify-between mb-2">
             <Link to={`/worlds/${id}`} className="flex-1">
-              <h3 className="font-heading font-semibold text-lg hover:text-primary transition-colors">
+              <h3 className="font-heading font-medium text-lg hover:text-primary transition-colors">
                 {name}
               </h3>
             </Link>

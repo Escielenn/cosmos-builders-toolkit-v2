@@ -32,7 +32,7 @@ const SharedWorksheetView = () => {
         {error && !isLoading && (
           <div className="flex flex-col items-center justify-center py-24 text-center">
             <AlertCircle className="w-12 h-12 text-t3 mb-4" />
-            <h1 className="font-heading text-2xl font-semibold mb-2">Link not available</h1>
+            <h1 className="font-heading text-2xl font-medium mb-2">Link not available</h1>
             <p className="text-t3 mb-6 max-w-md">
               This share link may have been disabled, expired, or the worksheet may have been deleted.
             </p>
@@ -50,7 +50,7 @@ const SharedWorksheetView = () => {
                 {getToolDisplayName(data.tool_type)}
               </Badge>
 
-              <h1 className="font-display text-3xl md:text-4xl font-bold">
+              <h1 className="font-display text-3xl md:text-4xl font-medium">
                 {data.title || "Untitled Worksheet"}
               </h1>
 

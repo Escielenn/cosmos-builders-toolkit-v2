@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { useSubscription } from "@/hooks/use-subscription";
 import { useWorlds } from "@/hooks/use-worlds";
 import { heroReveal, staggerContainer, fadeUpItem } from "@/lib/animations";
+import { FREE_TOOL_COUNT, PRO_TOOL_COUNT } from "@/lib/tools-config";
 
 const LoggedInHero = () => {
   const { isSubscribed, isVanguard } = useSubscription();
@@ -82,7 +83,7 @@ const LoggedInHero = () => {
 
       {!isSubscribed && (
         <motion.p className="text-sm text-t3 mt-4" variants={fadeUpItem}>
-          3 instruments available · 27 require Pro Access
+          {FREE_TOOL_COUNT} tools available · {PRO_TOOL_COUNT} require Pro Access
         </motion.p>
       )}
     </motion.section>

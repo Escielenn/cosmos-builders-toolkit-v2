@@ -43,7 +43,7 @@ export const CookieConsent = () => {
           <Cookie className="w-8 h-8 text-primary flex-shrink-0 hidden sm:block" />
 
           <div className="flex-1">
-            <h3 className="font-semibold text-sm text-t1 mb-1">Cookie Notice</h3>
+            <h3 className="font-medium text-sm text-t1 mb-1">Cookie Notice</h3>
             <p className="text-xs text-t3 leading-relaxed">
               Essential cookies required for authentication and session management.
               No tracking cookies deployed. No third-party data sharing.{" "}

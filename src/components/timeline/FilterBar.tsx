@@ -188,7 +188,7 @@ const FilterBar = () => {
           <div className="space-y-2">
             {eventTypeCategories.map((cat) => (
               <div key={cat.label}>
-                <p className="text-[10px] font-semibold text-t3 uppercase tracking-wider px-2 mb-0.5">
+                <p className="text-[10px] font-medium text-t3 uppercase tracking-wider px-2 mb-0.5">
                   {cat.label}
                 </p>
                 {cat.types.map((et) => (

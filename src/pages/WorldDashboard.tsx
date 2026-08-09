@@ -272,7 +272,7 @@ const SortableToolCard = ({ tool, worldId }: { tool: typeof TOOLS[number]; world
               </div>
             )}
             <div>
-              <h3 className="font-semibold">{tool.name}</h3>
+              <h3 className="font-medium">{tool.name}</h3>
               <p className="text-sm text-t3 mt-1">{tool.description}</p>
             </div>
           </div>
@@ -331,7 +331,7 @@ const SortableWorksheetGroup = ({
           ) : (
             <tool.icon className="w-5 h-5 text-primary" />
           )}
-          <h3 className="font-semibold">{tool.name}</h3>
+          <h3 className="font-medium">{tool.name}</h3>
           <Badge variant="secondary" className="text-xs">
             {toolWorksheets.length}
           </Badge>
@@ -435,7 +435,7 @@ const ToolDragPreview = ({ tool }: { tool: typeof TOOLS[number] }) => {
           <tool.icon className="w-4 h-4 text-primary" />
         </div>
       )}
-      <span className="font-semibold text-sm truncate">{tool.name}</span>
+      <span className="font-medium text-sm truncate">{tool.name}</span>
     </div>
   );
 };
@@ -845,7 +845,7 @@ const WorldDashboard = () => {
         {worldId && (
           <section className="mb-8">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold">World Elements</h2>
+              <h2 className="text-xl font-medium">World Elements</h2>
               {canEdit && (
                 <Button
                   variant="outline"
@@ -913,7 +913,7 @@ const WorldDashboard = () => {
 
         {/* Tools Grid */}
         <section className="mb-8">
-          <h2 className="text-xl font-semibold mb-4">Worldbuilding Tools</h2>
+          <h2 className="text-xl font-medium mb-4">Worldbuilding Tools</h2>
           <DndContext
             sensors={dndSensors}
             collisionDetection={closestCenter}
@@ -938,7 +938,7 @@ const WorldDashboard = () => {
 
         {/* Saved Worksheets - Grouped by Tool Type */}
         <section>
-          <h2 className="text-xl font-semibold mb-4">Saved Worksheets</h2>
+          <h2 className="text-xl font-medium mb-4">Saved Worksheets</h2>
           {worksheetsLoading ? (
             <div className="space-y-3">
               <Skeleton className="h-20 w-full" />

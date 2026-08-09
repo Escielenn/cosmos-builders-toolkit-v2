@@ -141,7 +141,7 @@ const CausalityOverlay = memo(
                   />
                 </TooltipTrigger>
                 <TooltipContent side="top" className="max-w-xs">
-                  <p className="text-xs font-semibold" style={{ color: config.color }}>
+                  <p className="text-xs font-medium" style={{ color: config.color }}>
                     {config.label}
                   </p>
                   <p className="text-[10px] text-t3">

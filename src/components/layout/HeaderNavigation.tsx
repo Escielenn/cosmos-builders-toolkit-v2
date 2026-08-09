@@ -12,7 +12,7 @@ import {
 import { useWorlds } from "@/hooks/use-worlds";
 import { useAuth } from "@/contexts/AuthContext";
 import { getToolsByCategory, type ToolCategory } from "@/lib/tool-wiki-data";
-import { getToolDisplayName } from "@/lib/tools-config";
+import { getToolDisplayName, TOOL_ROUTES } from "@/lib/tools-config";
 import { cn } from "@/lib/utils";
 
 // ─── Travel & Spacecraft tools (split from civilizations) ─────────────
@@ -58,38 +58,6 @@ function getNavCategoryTools(navCatId: string) {
   }
   return getToolsByCategory(navCatId as ToolCategory);
 }
-
-// ─── Tool route mapping ───────────────────────────────────────────────
-
-const TOOL_ROUTES: Record<string, string> = {
-  "environmental-chain-reaction": "/tools/environmental-chain-reaction",
-  "spacecraft-designer": "/tools/spacecraft-designer",
-  "propulsion-consequences-map": "/tools/propulsion-consequences-map",
-  "planetary-profile": "/tools/planetary-profile",
-  "space-expansion-modeler": "/tools/space-expansion-modeler",
-  "drake-equation-calculator": "/tools/drake-equation-calculator",
-  "xenomythology-framework-builder": "/tools/xenomythology-framework-builder",
-  "evolutionary-biology": "/tools/evolutionary-biology",
-  "star-system-builder": "/tools/star-system-builder",
-  "empire-designer": "/tools/empire-designer",
-  "technology-consequences": "/tools/technology-consequences",
-  "species-interaction-matrix": "/tools/species-interaction-matrix",
-  "one-big-lie": "/tools/one-big-lie",
-  "time-dilation": "/tools/time-dilation",
-  "habitable-zone-calculator": "/tools/habitable-zone-calculator",
-  "lexdrift": "/tools/lexdrift",
-  "surface-gravity-calculator": "/tools/surface-gravity-calculator",
-  "timeline": "/tools/timeline",
-  "sensorium": "/tools/sensorium",
-  "gravitas": "/tools/gravitas",
-  "kardashev-scale": "/tools/kardashev-scale",
-  "rogue": "/rogue",
-  "tidelock": "/tools/tidelock",
-  "exosky": "/tools/exosky",
-  "exoforge": "/tools/exoforge",
-  "solaris": "/tools/solaris",
-  "stellar-cartographer": "/tools/stellar-cartographer",
-};
 
 // Short display name (without the brand prefix)
 function shortName(toolId: string): string {

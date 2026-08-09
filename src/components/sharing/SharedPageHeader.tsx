@@ -8,7 +8,7 @@ const SharedPageHeader = () => {
       <div className="container mx-auto px-4 h-14 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
           <CubeLogo size={28} />
-          <span className="font-heading font-semibold text-lg">StellarForge</span>
+          <span className="font-heading font-medium text-lg">StellarForge</span>
         </Link>
         <Button size="sm" asChild>
           <Link to="/">Create your own</Link>

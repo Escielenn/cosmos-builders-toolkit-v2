@@ -156,7 +156,7 @@ const Collection = () => {
                     <GlassPanel hover className="p-4 w-44">
                       <div className="flex items-center gap-2.5 mb-1.5">
                         <WorldIconRenderer iconId={world.icon} className="w-6 h-6 text-primary shrink-0" />
-                        <h3 className="font-semibold text-sm truncate">
+                        <h3 className="font-medium text-sm truncate">
                           {world.name}
                         </h3>
                       </div>
@@ -273,7 +273,7 @@ const Collection = () => {
                         </div>
                       )}
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold truncate">
+                        <h3 className="font-medium truncate">
                           {worksheet.title || "Untitled"}
                         </h3>
                         <p className="text-xs text-t3 mt-0.5">

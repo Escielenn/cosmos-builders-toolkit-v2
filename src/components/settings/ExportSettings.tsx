@@ -34,7 +34,7 @@ const ExportSettings = () => {
     <div className="space-y-6">
       <div className="flex items-center gap-2 mb-2">
         <Download className="w-5 h-5 text-primary" />
-        <h3 className="font-heading text-lg font-semibold">Export Settings</h3>
+        <h3 className="font-heading text-lg font-medium">Export Settings</h3>
         {isUpdating && <Loader variant="inline" size="sm" />}
       </div>
 

@@ -358,7 +358,7 @@ const WorldBibleDialog = ({
                           onCheckedChange={() => toggleChapter(cw.chapter.id)}
                         />
                         <div className="flex-1">
-                          <span className="font-semibold text-sm">
+                          <span className="font-medium text-sm">
                             Ch. {cw.chapter.number}: {cw.chapter.title}
                           </span>
                           <span className="text-xs text-t3 ml-2">

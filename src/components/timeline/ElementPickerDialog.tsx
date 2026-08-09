@@ -103,7 +103,7 @@ const ElementPickerDialog = ({
                 <div key={group.toolType}>
                   <div className="flex items-center gap-2 px-2 py-1">
                     {ToolIcon && <ToolIcon className="w-4 h-4 rounded-sm" />}
-                    <span className="text-[10px] font-semibold text-t3 uppercase tracking-wider">
+                    <span className="text-[10px] font-medium text-t3 uppercase tracking-wider">
                       {group.displayName}
                     </span>
                   </div>

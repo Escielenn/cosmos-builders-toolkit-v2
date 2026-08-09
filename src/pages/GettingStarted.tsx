@@ -477,7 +477,7 @@ const GettingStarted = () => {
                         >
                           {entry.label}
                         </h3>
-                        <p className="text-t4 text-xs leading-relaxed">
+                        <p className="text-t2 text-sm leading-relaxed">
                           {entry.description}
                         </p>
                       </div>
@@ -551,10 +551,10 @@ const GettingStarted = () => {
           <h2 className="font-heading text-xl font-light uppercase tracking-[2px] gradient-text mb-2">
             The Guided First World
           </h2>
-          <p className="text-t3 text-sm mb-2">
+          <p className="text-t2 text-sm mb-2">
             Build a documented planet with life and cultural implications in 4 steps.
           </p>
-          <p className="text-t4 text-xs mb-8">
+          <p className="text-t3 text-sm mb-8">
             Each step links to the actual tool. Complete them in order to experience the cascade firsthand.
           </p>
 

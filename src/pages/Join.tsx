@@ -326,7 +326,7 @@ const Join = () => {
           <DialogHeader>
             <DialogTitle className="font-heading text-xl">Terms of Service</DialogTitle>
           </DialogHeader>
-          <div className="prose prose-invert prose-sm max-w-none [&_h2]:text-lg [&_h2]:font-heading [&_h2]:font-light [&_h2]:tracking-[0.08em] [&_h2]:mt-6 [&_h2]:mb-3 [&_h3]:text-base [&_h3]:font-semibold [&_h3]:mt-4 [&_h3]:mb-2 [&_h4]:text-sm [&_h4]:font-semibold [&_h4]:mt-3 [&_h4]:mb-1 [&_p]:text-sm [&_p]:text-t3 [&_p]:leading-relaxed [&_p]:mb-3 [&_li]:text-sm [&_li]:text-t3 [&_hr]:border-sf-border [&_hr]:my-4 [&_strong]:text-t1">
+          <div className="prose prose-invert prose-sm max-w-none [&_h2]:text-lg [&_h2]:font-heading [&_h2]:font-light [&_h2]:tracking-[0.08em] [&_h2]:mt-6 [&_h2]:mb-3 [&_h3]:text-base [&_h3]:font-medium [&_h3]:mt-4 [&_h3]:mb-2 [&_h4]:text-sm [&_h4]:font-medium [&_h4]:mt-3 [&_h4]:mb-1 [&_p]:text-sm [&_p]:text-t3 [&_p]:leading-relaxed [&_p]:mb-3 [&_li]:text-sm [&_li]:text-t3 [&_hr]:border-sf-border [&_hr]:my-4 [&_strong]:text-t1">
             <ReactMarkdown>{TERMS_CONTENT}</ReactMarkdown>
           </div>
         </DialogContent>

@@ -87,7 +87,7 @@ export function WikiEditor({
       attributes: {
         class: cn(
           "prose prose-sm max-w-none focus:outline-none min-h-[500px]",
-          "prose-headings:font-semibold",
+          "prose-headings:font-medium",
           "prose-h2:text-lg prose-h2:mt-3 prose-h2:mb-2",
           "prose-h3:text-base prose-h3:mt-2 prose-h3:mb-1",
           "prose-p:my-1.5 prose-p:leading-relaxed",
@@ -254,7 +254,7 @@ export function WikiEditor({
               title="Insert Wiki Link [["
               className="wiki-link-btn"
             >
-              <span className="text-[#5B8DEF] font-mono text-xs font-semibold">[[</span>
+              <span className="text-[#5B8DEF] font-mono text-xs font-medium">[[</span>
             </ToolbarBtn>
 
             <div className="w-px h-5 bg-border mx-1" />

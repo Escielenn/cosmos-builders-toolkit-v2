@@ -90,19 +90,19 @@ const ToolCard = ({
       <div className="flex-1">
         {canAccess ? (
           <Link to={path ?? `/tools/${id}`}>
-            <h3 className="font-heading font-semibold text-lg hover:text-primary transition-colors">
+            <h3 className="font-heading font-medium text-lg hover:text-primary transition-colors">
               {title}
             </h3>
           </Link>
         ) : isLocked ? (
           <Link to="/pricing">
-            <h3 className="font-heading font-semibold text-lg text-t3 hover:text-t1 transition-colors flex items-center gap-2">
+            <h3 className="font-heading font-medium text-lg text-t3 hover:text-t1 transition-colors flex items-center gap-2">
               <Lock className="w-4 h-4" />
               {title}
             </h3>
           </Link>
         ) : (
-          <h3 className="font-heading font-semibold text-lg text-t3">
+          <h3 className="font-heading font-medium text-lg text-t3">
             {title}
           </h3>
         )}

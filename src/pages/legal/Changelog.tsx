@@ -50,7 +50,7 @@ const Changelog = () => {
             <section key={entry.version} className="relative">
               {/* Version header */}
               <div className="flex flex-wrap items-center gap-3 mb-4">
-                <h2 className="font-heading text-2xl font-semibold text-t1">
+                <h2 className="font-heading text-2xl font-medium text-t1">
                   v{entry.version}
                 </h2>
                 <Badge className={`${style.bg} ${style.text} border-0`}>

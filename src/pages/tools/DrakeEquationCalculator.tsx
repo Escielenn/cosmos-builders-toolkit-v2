@@ -635,7 +635,7 @@ const DrakeEquationCalculator = () => {
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
-                      <Label className="text-base font-semibold">
+                      <Label className="text-base font-medium">
                         {variable.symbol}, {variable.name}
                       </Label>
                       <Tooltip>
@@ -651,7 +651,7 @@ const DrakeEquationCalculator = () => {
                     <p className="text-sm text-t3 mb-2">{variable.description}</p>
                   </div>
                   <div className="text-right min-w-[100px]">
-                    <span className="text-2xl font-mono font-bold text-primary">
+                    <span className="text-2xl font-mono font-medium text-primary">
                       {variable.useLogScale
                         ? formatNumber(formState.values[variable.id as keyof FormState["values"]])
                         : formState.values[variable.id as keyof FormState["values"]].toFixed(variable.step < 1 ? 2 : 0)
@@ -711,7 +711,7 @@ const DrakeEquationCalculator = () => {
             <div className="text-sm text-t3 mb-2">
               Estimated number of detectable civilizations:
             </div>
-            <div className={`text-6xl font-mono font-bold mb-4 ${interpretation.color}`}>
+            <div className={`text-6xl font-mono font-medium mb-4 ${interpretation.color}`}>
               {formatNumber(N)}
             </div>
             <Badge variant="outline" className={`text-lg px-4 py-1 ${interpretation.color}`}>
@@ -722,7 +722,7 @@ const DrakeEquationCalculator = () => {
             </p>
 
             <div className="mt-8 bg-accent/20 rounded-none p-4 text-left">
-              <h4 className="font-semibold mb-2">The Equation</h4>
+              <h4 className="font-medium mb-2">The Equation</h4>
               <div className="font-mono text-sm overflow-x-auto">
                 N = {formState.values.rStar} × {formState.values.fp} × {formState.values.ne} × {formState.values.fl} × {formState.values.fi} × {formState.values.fc} × {formatNumber(formState.values.L)}
               </div>
@@ -787,11 +787,11 @@ const DrakeEquationCalculator = () => {
                 });
               })()}
               <div className="flex items-center gap-3 mt-2 pt-2 border-t border-sf-border">
-                <span className="font-mono text-xs text-primary w-8 text-right shrink-0 font-semibold">
+                <span className="font-mono text-xs text-primary w-8 text-right shrink-0 font-medium">
                   N
                 </span>
                 <div className="flex-1 text-center">
-                  <span className={`font-mono text-lg font-bold ${interpretation.color}`}>
+                  <span className={`font-mono text-lg font-medium ${interpretation.color}`}>
                     {formatNumber(N)}
                   </span>
                 </div>
@@ -812,7 +812,7 @@ const DrakeEquationCalculator = () => {
         >
           <div className="space-y-6">
             <div>
-              <Label className="text-base font-semibold">Your Answer to the Fermi Paradox</Label>
+              <Label className="text-base font-medium">Your Answer to the Fermi Paradox</Label>
               <p className="text-sm text-t3 mb-2">
                 If your N is high but your galaxy seems empty, why? If N is low, what does that mean for your characters?
               </p>
@@ -826,7 +826,7 @@ const DrakeEquationCalculator = () => {
             </div>
 
             <div>
-              <Label className="text-base font-semibold">Where Is the Great Filter?</Label>
+              <Label className="text-base font-medium">Where Is the Great Filter?</Label>
               <p className="text-sm text-t3 mb-2">
                 Which step is hardest to pass? This shapes whether your ruins are biological or technological.
               </p>
@@ -840,7 +840,7 @@ const DrakeEquationCalculator = () => {
             </div>
 
             <div>
-              <Label className="text-base font-semibold">Character of Your Galaxy</Label>
+              <Label className="text-base font-medium">Character of Your Galaxy</Label>
               <p className="text-sm text-t3 mb-2">
                 Based on your N, what's the general feel of space travel in your world?
               </p>
@@ -854,7 +854,7 @@ const DrakeEquationCalculator = () => {
             </div>
 
             <div>
-              <Label className="text-base font-semibold">Story Implications</Label>
+              <Label className="text-base font-medium">Story Implications</Label>
               <p className="text-sm text-t3 mb-2">
                 What kinds of stories does your galactic population enable or prevent?
               </p>
@@ -868,7 +868,7 @@ const DrakeEquationCalculator = () => {
             </div>
 
             <div>
-              <Label className="text-base font-semibold">Types of Civilizations</Label>
+              <Label className="text-base font-medium">Types of Civilizations</Label>
               <p className="text-sm text-t3 mb-2">
                 What kinds of civilizations exist in your galaxy? What are their relationships?
               </p>
@@ -900,7 +900,7 @@ const DrakeEquationCalculator = () => {
                 className="p-4 cursor-pointer hover:bg-accent/30 transition-colors"
                 onClick={() => applyPreset(preset)}
               >
-                <h4 className="font-semibold mb-1">{preset.name}</h4>
+                <h4 className="font-medium mb-1">{preset.name}</h4>
                 <p className="text-sm text-t3 mb-2">{preset.description}</p>
                 <div className="flex flex-wrap gap-1">
                   {preset.storyTypes.map((type) => (

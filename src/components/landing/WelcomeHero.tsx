@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { heroReveal, staggerContainer, fadeUpItem } from "@/lib/animations";
 import { BracketPanel } from "@/components/ui/bracket-panel";
 import { ParallaxStrips } from "@/components/ambient/ParallaxStrips";
+import { FREE_TOOL_COUNT, PRO_TOOL_COUNT } from "@/lib/tools-config";
 
 const WelcomeHero = () => {
   return (
@@ -67,7 +68,7 @@ const WelcomeHero = () => {
           className="font-mono text-[11px] tracking-[0.18em] uppercase text-t4"
           variants={fadeUpItem}
         >
-          3 tools free forever · 27 more with Pro
+          {FREE_TOOL_COUNT} tools free forever · {PRO_TOOL_COUNT} more with Pro
         </motion.p>
 
         {/* Early-access disclaimer, warmer voice */}

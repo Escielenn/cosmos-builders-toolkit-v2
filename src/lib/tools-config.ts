@@ -47,6 +47,24 @@ export const PRO_TOOL_IDS = [
   'writing-workshop',
 ];
 
+// The real-time simulators, a subset of PRO_TOOL_IDS. Counted separately in
+// marketing copy, so keep it derived rather than restated as a numeral.
+export const SIMULATOR_TOOL_IDS = [
+  'rogue',
+  'tidelock',
+  'exosky',
+  'exoforge',
+  'solaris',
+];
+
+// Catalog counts. Every user-facing count ("3 free, 25 with Pro", "all 28
+// tools") must read from these so marketing copy can never drift from the
+// catalog arrays above.
+export const FREE_TOOL_COUNT = FREE_TOOL_IDS.length;
+export const PRO_TOOL_COUNT = PRO_TOOL_IDS.length;
+export const TOTAL_TOOL_COUNT = FREE_TOOL_COUNT + PRO_TOOL_COUNT;
+export const SIMULATOR_COUNT = SIMULATOR_TOOL_IDS.length;
+
 export const isProTool = (toolId: string): boolean => {
   return PRO_TOOL_IDS.includes(toolId);
 };
@@ -88,6 +106,43 @@ export const TOOL_DISPLAY_NAMES: Record<string, string> = {
   // Workshop
   'writing-workshop': 'Writing Prompts',
 };
+
+// Canonical route for every tool in the catalog. Shared by the header nav,
+// the landing showcase, and the tool reference so a tool can never be listed
+// with a different destination on different surfaces.
+export const TOOL_ROUTES: Record<string, string> = {
+  'environmental-chain-reaction': '/tools/environmental-chain-reaction',
+  'spacecraft-designer': '/tools/spacecraft-designer',
+  'propulsion-consequences-map': '/tools/propulsion-consequences-map',
+  'planetary-profile': '/tools/planetary-profile',
+  'space-expansion-modeler': '/tools/space-expansion-modeler',
+  'drake-equation-calculator': '/tools/drake-equation-calculator',
+  'xenomythology-framework-builder': '/tools/xenomythology-framework-builder',
+  'evolutionary-biology': '/tools/evolutionary-biology',
+  'star-system-builder': '/tools/star-system-builder',
+  'empire-designer': '/tools/empire-designer',
+  'technology-consequences': '/tools/technology-consequences',
+  'species-interaction-matrix': '/tools/species-interaction-matrix',
+  'one-big-lie': '/tools/one-big-lie',
+  'time-dilation': '/tools/time-dilation',
+  'habitable-zone-calculator': '/tools/habitable-zone-calculator',
+  'lexdrift': '/tools/lexdrift',
+  'surface-gravity-calculator': '/tools/surface-gravity-calculator',
+  'timeline': '/tools/timeline',
+  'sensorium': '/tools/sensorium',
+  'gravitas': '/tools/gravitas',
+  'kardashev-scale': '/tools/kardashev-scale',
+  'rogue': '/rogue',
+  'tidelock': '/tools/tidelock',
+  'exosky': '/tools/exosky',
+  'exoforge': '/tools/exoforge',
+  'solaris': '/tools/solaris',
+  'stellar-cartographer': '/tools/stellar-cartographer',
+  'writing-workshop': '/workshop',
+};
+
+export const getToolRoute = (toolId: string): string | undefined =>
+  TOOL_ROUTES[toolId];
 
 export const getToolDisplayName = (toolType: string): string => {
   return TOOL_DISPLAY_NAMES[toolType] || toolType

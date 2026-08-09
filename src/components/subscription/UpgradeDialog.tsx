@@ -75,8 +75,8 @@ const UpgradeDialog = ({ open, onOpenChange, toolName }: UpgradeDialogProps) => 
           <div className="p-4 rounded-none border border-sf-border hover:border-primary/50 transition-colors">
             <div className="flex justify-between items-start mb-2">
               <div>
-                <h3 className="font-semibold">Monthly</h3>
-                <p className="text-2xl font-bold">${PRICING.pro.monthly.price}<span className="text-sm font-normal text-t3">/month</span></p>
+                <h3 className="font-medium">Monthly</h3>
+                <p className="text-2xl font-medium">${PRICING.pro.monthly.price}<span className="text-sm font-normal text-t3">/month</span></p>
               </div>
               <Button
                 size="sm"
@@ -102,8 +102,8 @@ const UpgradeDialog = ({ open, onOpenChange, toolName }: UpgradeDialogProps) => 
             </div>
             <div className="flex justify-between items-start mb-2">
               <div>
-                <h3 className="font-semibold">Yearly</h3>
-                <p className="text-2xl font-bold">${PRICING.pro.yearly.price}<span className="text-sm font-normal text-t3">/year</span></p>
+                <h3 className="font-medium">Yearly</h3>
+                <p className="text-2xl font-medium">${PRICING.pro.yearly.price}<span className="text-sm font-normal text-t3">/year</span></p>
               </div>
               <Button
                 size="sm"
@@ -125,12 +125,12 @@ const UpgradeDialog = ({ open, onOpenChange, toolName }: UpgradeDialogProps) => 
           <p className="font-medium">Pro clearance includes:</p>
           <ul className="space-y-1">
             {[
-              `All ${FREE_TOOL_IDS.length + PRO_TOOL_IDS.length} instruments`,
+              `All ${FREE_TOOL_IDS.length + PRO_TOOL_IDS.length} tools`,
               "Unlimited worlds and worksheets",
               "Cloud sync across devices",
               "Export to PDF, DOCX, and JSON",
               "Priority support",
-              "All future instruments and features",
+              "All future tools and features",
             ].map((feature) => (
               <li key={feature} className="flex items-center gap-2 text-t3">
                 <Check className="w-4 h-4 text-green-500" />

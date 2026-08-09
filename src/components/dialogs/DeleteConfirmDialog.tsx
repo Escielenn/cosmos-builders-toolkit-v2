@@ -73,7 +73,7 @@ export function DeleteConfirmDialog({
 
         <div className="space-y-2 py-2">
           <Label htmlFor="confirm-delete" className="text-sm text-t3">
-            Type <span className="font-semibold text-t1">{itemName}</span> to confirm
+            Type <span className="font-medium text-t1">{itemName}</span> to confirm
           </Label>
           <Input
             id="confirm-delete"

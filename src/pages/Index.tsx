@@ -376,7 +376,7 @@ const comingSoonItems = [
 const ComingSoonCard = ({ title, subtitle }: { title: string; subtitle: string }) => (
   <GlassPanel className="p-4 border-dashed border border-muted opacity-70">
     <div className="flex items-center justify-between mb-1">
-      <h3 className="font-heading font-semibold text-sm">{title}</h3>
+      <h3 className="font-heading font-medium text-sm">{title}</h3>
       <Badge variant="outline" className="text-[10px] shrink-0">Coming Soon</Badge>
     </div>
     <p className="text-xs text-t3">{subtitle}</p>

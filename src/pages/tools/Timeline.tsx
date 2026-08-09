@@ -382,7 +382,7 @@ const Timeline = () => {
         <div className="flex items-center gap-3 px-4 py-3 rounded-none border border-amber-500/30 bg-amber-500/10 mb-6">
           <Construction className="w-5 h-5 text-sf-amber shrink-0" />
           <p className="text-sm text-amber-200/90">
-            <span className="font-semibold">Early Preview.</span>{" "}
+            <span className="font-medium">Early Preview.</span>{" "}
             Timeline is in active development and does not represent the final product. Features may change or be incomplete.
           </p>
         </div>
@@ -692,7 +692,7 @@ class TimelineErrorBoundary extends Component<
         <PageShell>
           <main className="container mx-auto px-4 pt-24 pb-16">
             <GlassPanel className="p-8 text-center">
-              <h2 className="text-xl font-bold text-sf-crimson mb-4">
+              <h2 className="text-xl font-medium text-sf-crimson mb-4">
                 Timeline failed to render
               </h2>
               <pre className="text-left text-sm bg-muted/30 p-4 rounded-none overflow-auto max-h-64 mb-4">
