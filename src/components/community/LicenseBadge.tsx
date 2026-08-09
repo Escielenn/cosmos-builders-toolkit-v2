@@ -48,7 +48,7 @@ export default function LicenseBadge({ license, className }: LicenseBadgeProps) 
       <TooltipTrigger asChild>
         <Badge
           variant="outline"
-          className={`font-mono text-[10px] cursor-default ${className ?? ""}`}
+          className={`font-mono text-[12px] cursor-default ${className ?? ""}`}
           style={{
             backgroundColor: `${meta.color}0F`,
             borderColor: `${meta.color}26`,

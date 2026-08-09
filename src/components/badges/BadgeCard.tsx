@@ -24,10 +24,10 @@ export function BadgeCard({ definition, earned, earnedAt }: BadgeCardProps) {
           <Icon className="w-5 h-5 text-white/[0.15]" />
         </div>
         <div className="min-w-0 flex-1">
-          <p className="font-heading text-[12px] uppercase tracking-[2px] text-white/[0.28]">
+          <p className="font-heading text-[13px] uppercase tracking-[2px] text-white/[0.28]">
             {definition.name}
           </p>
-          <p className="font-sans text-[11px] text-white/[0.15] mt-0.5">
+          <p className="font-sans text-[12px] text-white/[0.15] mt-0.5">
             {definition.lockedHint}
           </p>
         </div>
@@ -50,12 +50,12 @@ export function BadgeCard({ definition, earned, earnedAt }: BadgeCardProps) {
       </div>
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
-          <p className={cn("font-heading text-[12px] uppercase tracking-[2px] text-t1")}>
+          <p className={cn("font-heading text-[13px] uppercase tracking-[2px] text-t1")}>
             {definition.name}
           </p>
           <span
             className={cn(
-              "font-mono text-[7px] uppercase tracking-wider px-1.5 py-0.5 rounded-sm border",
+              "font-mono text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded-sm border",
               tier.bg,
               tier.border,
               tier.text
@@ -64,11 +64,11 @@ export function BadgeCard({ definition, earned, earnedAt }: BadgeCardProps) {
             {TIER_LABELS[definition.tier]}
           </span>
         </div>
-        <p className="font-sans text-[11px] text-t2 mt-0.5">
+        <p className="font-sans text-[12px] text-t2 mt-0.5">
           {definition.description}
         </p>
         {earnedAt && (
-          <p className="font-mono text-[9px] text-white/[0.28] mt-1.5">
+          <p className="font-mono text-[11px] text-white/[0.28] mt-1.5">
             {new Date(earnedAt).toLocaleDateString("en-US", {
               year: "numeric",
               month: "short",

@@ -89,7 +89,7 @@ const CodexElementRow = memo(({
           <span className="absolute left-0 top-1 bottom-1 w-[2px] bg-primary/60" />
         )}
         {depth > 0 && (
-          <span className="font-mono text-[10px] text-white/[0.12] select-none shrink-0 w-3">
+          <span className="font-mono text-[12px] text-white/[0.12] select-none shrink-0 w-3">
             {isLast ? "└" : "├"}
           </span>
         )}
@@ -129,7 +129,7 @@ const CodexElementRow = memo(({
 
       {/* Tree connector */}
       {depth > 0 && (
-        <span className="font-mono text-[10px] text-white/[0.12] select-none shrink-0 w-3">
+        <span className="font-mono text-[12px] text-white/[0.12] select-none shrink-0 w-3">
           {isLast ? "└" : "├"}
         </span>
       )}
@@ -165,7 +165,7 @@ const CodexElementRow = memo(({
 
       {/* Draft badge */}
       {element.isDraft && element.kind === "worksheet" && (
-        <span className="font-mono text-[7px] uppercase tracking-wider text-t3/30 shrink-0">
+        <span className="font-mono text-[10px] uppercase tracking-wider text-t3/30 shrink-0">
           Draft
         </span>
       )}

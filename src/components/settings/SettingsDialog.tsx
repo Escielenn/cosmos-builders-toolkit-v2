@@ -334,7 +334,7 @@ const SettingsDialog = ({
                       )}
                     >
                       <div className="w-full h-full bg-background starfield-preview" />
-                      <span className="absolute bottom-1 left-1 text-[10px] font-medium text-white">
+                      <span className="absolute bottom-1 left-1 text-[12px] font-medium text-white">
                         {option.name}
                       </span>
                       {backgroundId === option.id && (
@@ -389,12 +389,12 @@ const SettingsDialog = ({
                             "linear-gradient(135deg, #0d1117 0%, #1a1f2e 50%, #0d1117 100%)",
                         }}
                       >
-                        <span className="font-mono text-[9px] text-t3 uppercase tracking-[0.18em]">
+                        <span className="font-mono text-[11px] text-t3 uppercase tracking-[0.18em]">
                           // NO PREVIEW
                         </span>
                       </div>
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                      <span className="absolute bottom-1 left-1 text-[10px] font-medium text-white">
+                      <span className="absolute bottom-1 left-1 text-[12px] font-medium text-white">
                         {option.name}
                       </span>
                       {backgroundId === option.id && (
@@ -430,7 +430,7 @@ const SettingsDialog = ({
                         className="w-full h-full object-cover"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                      <span className="absolute bottom-1 left-1 text-[10px] font-medium text-white">
+                      <span className="absolute bottom-1 left-1 text-[12px] font-medium text-white">
                         {option.name}
                       </span>
                       {backgroundId === option.id && (
@@ -554,7 +554,7 @@ const SettingsDialog = ({
                     className="w-24 aspect-video rounded-none overflow-hidden border-2 border-dashed border-sf-border hover:border-primary/50 transition-all hover:scale-105 flex flex-col items-center justify-center gap-1 bg-muted/50"
                   >
                     <Upload className="w-4 h-4 text-t3" />
-                    <span className="text-[10px] text-t3">
+                    <span className="text-[12px] text-t3">
                       Upload
                     </span>
                   </button>

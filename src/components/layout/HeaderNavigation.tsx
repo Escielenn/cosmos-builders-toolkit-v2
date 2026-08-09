@@ -98,7 +98,7 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
             <div className="w-[280px] p-3">
               {user && worlds.length > 0 ? (
                 <>
-                  <p className="text-[10px] font-medium uppercase tracking-[1.5px] text-t3 px-2 mb-2">
+                  <p className="text-[12px] font-medium uppercase tracking-[1.5px] text-t3 px-2 mb-2">
                     Your Worlds
                   </p>
                   <div className="max-h-[200px] overflow-y-auto space-y-0.5">
@@ -189,7 +189,7 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
                   const CatIcon = cat.icon;
                   return (
                     <div key={cat.id}>
-                      <p className={cn("text-[9px] font-heading font-light uppercase tracking-[2.5px] px-1 mb-2 flex items-center gap-1.5 pb-1.5 border-b border-white/[0.06]", cat.color)}>
+                      <p className={cn("text-[11px] font-heading font-light uppercase tracking-[2.5px] px-1 mb-2 flex items-center gap-1.5 pb-1.5 border-b border-white/[0.06]", cat.color)}>
                         <CatIcon className="w-3 h-3" />
                         {cat.label}
                       </p>
@@ -202,7 +202,7 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
                             <NavigationMenuLink key={tool.id} asChild>
                               <Link
                                 to={route}
-                                className="flex items-center gap-2 px-1.5 py-1.5 text-[12px] text-t2 hover:text-t1 hover:bg-[rgba(21,193,123,0.06)] rounded-md transition-colors"
+                                className="flex items-center gap-2 px-1.5 py-1.5 text-[13px] text-t2 hover:text-t1 hover:bg-[rgba(21,193,123,0.06)] rounded-md transition-colors"
                               >
                                 {ToolIcon ? (
                                   <ToolIcon className="w-4 h-4 shrink-0" />
@@ -287,7 +287,7 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
                   <PenLine className="w-3.5 h-3.5 text-primary/60 mt-0.5" />
                   <div>
                     <span>Studio</span>
-                    <span className="block text-[10px] text-t4 font-normal normal-case tracking-normal">
+                    <span className="block text-[12px] text-t4 font-normal normal-case tracking-normal">
                       Write your worlds &middot; drafts, scenes, manuscripts
                     </span>
                   </div>
@@ -301,7 +301,7 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
                   <Sparkles className="w-3.5 h-3.5 text-primary/60 mt-0.5" />
                   <div>
                     <span>Daily Prompt</span>
-                    <span className="block text-[10px] text-t4 font-normal normal-case tracking-normal">
+                    <span className="block text-[12px] text-t4 font-normal normal-case tracking-normal">
                       & Writing Entries
                     </span>
                   </div>

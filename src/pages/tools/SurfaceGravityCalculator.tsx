@@ -244,7 +244,7 @@ function BallDropAnimation({ earthG, planetG, planetLabel }: { earthG: number; p
 
   return (
     <div className="flex flex-col items-center">
-      <p className="font-mono text-[10px] uppercase tracking-[1px] text-t4 mb-2">2m Ball Drop Comparison</p>
+      <p className="font-mono text-[12px] uppercase tracking-[1px] text-t4 mb-2">2m Ball Drop Comparison</p>
       <canvas ref={canvasRef} style={{ width: 300, height: 160 }} />
     </div>
   );
@@ -570,9 +570,9 @@ const SurfaceGravityCalculator = () => {
                       <span>{preset.emoji}</span>
                       <span className="font-medium text-sm">{preset.label}</span>
                     </div>
-                    <p className="text-[11px] text-t2 line-clamp-2">{preset.description}</p>
+                    <p className="text-[12px] text-t2 line-clamp-2">{preset.description}</p>
                     {preset.source === "fictional" && (
-                      <Badge variant="outline" className="mt-1 text-[10px] px-1 py-0">Fiction</Badge>
+                      <Badge variant="outline" className="mt-1 text-[12px] px-1 py-0">Fiction</Badge>
                     )}
                   </button>
                 ))}
@@ -750,11 +750,11 @@ const SurfaceGravityCalculator = () => {
                 <div className="space-y-6">
                   {/* Big gravity readout, display-font hero */}
                   <div className="text-center py-6">
-                    <p className="font-mono text-[11px] tracking-[0.18em] uppercase text-sf-amber mb-3">// SURFACE GRAVITY</p>
+                    <p className="font-mono text-[12px] tracking-[0.18em] uppercase text-sf-amber mb-3">// SURFACE GRAVITY</p>
                     <div className="font-display font-light text-6xl md:text-7xl tracking-[0.02em] text-sf-amber">
                       {formatGravity(result.gravity)}
                     </div>
-                    <div className="font-mono text-[11px] tracking-[0.18em] uppercase text-t4 mt-2">
+                    <div className="font-mono text-[12px] tracking-[0.18em] uppercase text-t4 mt-2">
                       {result.gravityMs2.toFixed(2)} M/S²
                     </div>
                     <div className="flex flex-wrap justify-center gap-2 mt-4">
@@ -943,7 +943,7 @@ const SurfaceGravityCalculator = () => {
 
                   return (
                     <TabsContent key={cat.id} value={cat.id} className="space-y-4 mt-4">
-                      <h3 className="font-heading text-[11px] font-light uppercase tracking-[3px] text-[hsl(var(--sf-section-green))]">{block.heading}</h3>
+                      <h3 className="font-heading text-[12px] font-light uppercase tracking-[3px] text-[hsl(var(--sf-section-green))]">{block.heading}</h3>
 
                       {block.paragraphs.map((p, i) => (
                         <p key={i} className="text-sm text-t3 leading-relaxed">{p}</p>

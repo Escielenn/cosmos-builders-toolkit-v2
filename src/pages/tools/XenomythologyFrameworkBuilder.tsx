@@ -2687,7 +2687,7 @@ const XenomythologyFrameworkBuilder = () => {
               borderRadius: 8,
             }}
           >
-            <h4 className="font-heading text-[9px] font-light tracking-[2.5px] uppercase text-emerald/40 mb-3">
+            <h4 className="font-heading text-[11px] font-light tracking-[2.5px] uppercase text-emerald/40 mb-3">
               // Explore Xenomythology
             </h4>
             <p className="font-sans text-sm text-t2 leading-relaxed mb-4">
@@ -2700,7 +2700,7 @@ const XenomythologyFrameworkBuilder = () => {
               href="https://xenomythology.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2 text-[11px] font-heading font-medium uppercase tracking-[1.5px] text-t1 border border-white/10 hover:border-primary/30 hover:shadow-[0_0_20px_rgba(21,193,123,0.15)] transition-all"
+              className="inline-flex items-center gap-2 px-4 py-2 text-[12px] font-heading font-medium uppercase tracking-[1.5px] text-t1 border border-white/10 hover:border-primary/30 hover:shadow-[0_0_20px_rgba(21,193,123,0.15)] transition-all"
             >
               Explore Xenomythology
               <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

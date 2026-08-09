@@ -193,7 +193,7 @@ const EventDetailPanel = ({
                   type="button"
                   onClick={() => update({ importance: il.id })}
                   className={cn(
-                    "flex-1 px-2 py-1 rounded border text-[11px] font-medium transition-colors",
+                    "flex-1 px-2 py-1 rounded border text-[12px] font-medium transition-colors",
                     event.importance === il.id
                       ? "border-primary bg-primary/10 text-t1"
                       : "border-sf-border text-t3 hover:border-sf-border"
@@ -402,7 +402,7 @@ const EventDetailPanel = ({
                           update({ secondaryTrackIds: updated.length > 0 ? updated : undefined });
                         }}
                         className={cn(
-                          "flex items-center gap-1 px-2 py-0.5 rounded-full border text-[11px] font-medium transition-colors",
+                          "flex items-center gap-1 px-2 py-0.5 rounded-full border text-[12px] font-medium transition-colors",
                           isActive
                             ? "border-primary bg-primary/10 text-t1"
                             : "border-sf-border text-t3 hover:border-sf-border"
@@ -432,7 +432,7 @@ const EventDetailPanel = ({
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="h-6 text-[10px] gap-1"
+                      className="h-6 text-[12px] gap-1"
                       onClick={() => onAddLink(event.id)}
                     >
                       <Plus className="w-3 h-3" />
@@ -450,7 +450,7 @@ const EventDetailPanel = ({
                           key={link.id}
                           type="button"
                           onClick={() => onEditLink?.(link.id)}
-                          className="flex items-center gap-1.5 w-full px-2 py-1 rounded text-[11px] hover:bg-muted/50 transition-colors text-left"
+                          className="flex items-center gap-1.5 w-full px-2 py-1 rounded text-[12px] hover:bg-muted/50 transition-colors text-left"
                         >
                           <ArrowRight className="w-3 h-3 shrink-0" style={{ color: config.color }} />
                           <span className="font-medium" style={{ color: config.color }}>
@@ -470,7 +470,7 @@ const EventDetailPanel = ({
                           key={link.id}
                           type="button"
                           onClick={() => onEditLink?.(link.id)}
-                          className="flex items-center gap-1.5 w-full px-2 py-1 rounded text-[11px] hover:bg-muted/50 transition-colors text-left"
+                          className="flex items-center gap-1.5 w-full px-2 py-1 rounded text-[12px] hover:bg-muted/50 transition-colors text-left"
                         >
                           <ArrowLeft className="w-3 h-3 shrink-0" style={{ color: config.color }} />
                           <span className="font-medium" style={{ color: config.color }}>
@@ -484,7 +484,7 @@ const EventDetailPanel = ({
                     })}
                   </div>
                 ) : (
-                  <p className="text-[10px] text-t3">
+                  <p className="text-[12px] text-t3">
                     No causality links yet.
                   </p>
                 )}
@@ -503,7 +503,7 @@ const EventDetailPanel = ({
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="h-6 text-[10px] gap-1"
+                      className="h-6 text-[12px] gap-1"
                       onClick={() => onAddElementLink(event.id)}
                     >
                       <Plus className="w-3 h-3" />
@@ -518,7 +518,7 @@ const EventDetailPanel = ({
                       return (
                         <div
                           key={link.id}
-                          className="flex items-center gap-1.5 px-2 py-1 rounded text-[11px] group"
+                          className="flex items-center gap-1.5 px-2 py-1 rounded text-[12px] group"
                         >
                           {ToolIcon ? (
                             <ToolIcon className="w-3.5 h-3.5 rounded-sm shrink-0" />
@@ -528,7 +528,7 @@ const EventDetailPanel = ({
                           <span className="truncate text-t3">
                             {link.worksheetTitle}
                           </span>
-                          <span className="text-[9px] text-t3/50 shrink-0">
+                          <span className="text-[11px] text-t3/50 shrink-0">
                             {getToolDisplayName(link.toolType)}
                           </span>
                           {onDeleteElementLink && (
@@ -546,7 +546,7 @@ const EventDetailPanel = ({
                     })}
                   </div>
                 ) : (
-                  <p className="text-[10px] text-t3">
+                  <p className="text-[12px] text-t3">
                     No linked elements yet.
                   </p>
                 )}

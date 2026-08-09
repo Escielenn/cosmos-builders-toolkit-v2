@@ -73,7 +73,7 @@ const Footer = () => {
                   <span className="font-display font-light text-lg leading-tight tracking-sf-wide text-t1 uppercase">
                     STELLARFORGE
                   </span>
-                  <span className="font-mono text-[11px] text-t4 tracking-[0.18em]">
+                  <span className="font-mono text-[12px] text-t4 tracking-[0.18em]">
                     39.87°N · 104.97°W
                   </span>
                 </div>
@@ -101,7 +101,7 @@ const Footer = () => {
 
             {/* Privacy Statement */}
             <div className="mt-6 pt-4 border-t border-dashed border-sf-border">
-              <h4 className="font-heading text-[11px] font-medium uppercase tracking-[0.2em] text-t1 mb-2">
+              <h4 className="font-heading text-[12px] font-medium uppercase tracking-[0.2em] text-t1 mb-2">
                 YOUR WORLDS ARE YOURS ALONE
               </h4>
               <p className="text-xs text-t3 leading-relaxed">
@@ -113,7 +113,7 @@ const Footer = () => {
 
           {/* Product */}
           <div>
-            <h3 className="font-heading text-[11px] font-medium uppercase tracking-[0.2em] text-t3 mb-4">
+            <h3 className="font-heading text-[12px] font-medium uppercase tracking-[0.2em] text-t3 mb-4">
               Product
             </h3>
             <ul className="space-y-3">
@@ -132,7 +132,7 @@ const Footer = () => {
 
           {/* Resources */}
           <div>
-            <h3 className="font-heading text-[11px] font-medium uppercase tracking-[0.2em] text-t3 mb-4">
+            <h3 className="font-heading text-[12px] font-medium uppercase tracking-[0.2em] text-t3 mb-4">
               Resources
             </h3>
             <ul className="space-y-3">
@@ -151,7 +151,7 @@ const Footer = () => {
 
           {/* Legal */}
           <div>
-            <h3 className="font-heading text-[11px] font-medium uppercase tracking-[0.2em] text-t3 mb-4">
+            <h3 className="font-heading text-[12px] font-medium uppercase tracking-[0.2em] text-t3 mb-4">
               Legal
             </h3>
             <ul className="space-y-3">
@@ -172,7 +172,7 @@ const Footer = () => {
         {/* Bottom Bar, coordinates, build, copyright */}
         <div className="mt-12 pt-8 border-t border-dashed border-sf-border">
           <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
-            <div className="font-mono text-[11px] tracking-[0.18em] text-t4 text-center sm:text-left space-y-1">
+            <div className="font-mono text-[12px] tracking-[0.18em] text-t4 text-center sm:text-left space-y-1">
               <p>
                 <span className="text-t5">//</span>{" "}
                 <a
@@ -200,7 +200,7 @@ const Footer = () => {
                 UNAUTHORIZED COPYING, MODIFICATION, OR DISTRIBUTION PROHIBITED.
               </p>
             </div>
-            <div className="font-mono text-[11px] tracking-[0.18em] text-t5 text-center sm:text-right space-y-1">
+            <div className="font-mono text-[12px] tracking-[0.18em] text-t5 text-center sm:text-right space-y-1">
               <p>39.87°N · 104.97°W</p>
               <p><BuildSigil /></p>
               <p className="hidden sm:block"><CommitTicker /></p>

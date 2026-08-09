@@ -72,7 +72,7 @@ export function EmptyState({
       {!hideDial && <VelocityDial className="w-40" />}
 
       {eyebrow && (
-        <p className="font-mono text-[11px] tracking-[0.18em] uppercase text-sf-teal">
+        <p className="font-mono text-[12px] tracking-[0.18em] uppercase text-sf-teal">
           {eyebrow}
         </p>
       )}
@@ -82,7 +82,7 @@ export function EmptyState({
       </h2>
 
       {description && (
-        <p className="font-mono text-[11px] tracking-[0.18em] uppercase text-t3 max-w-md">
+        <p className="font-mono text-[12px] tracking-[0.18em] uppercase text-t3 max-w-md">
           {description}
         </p>
       )}

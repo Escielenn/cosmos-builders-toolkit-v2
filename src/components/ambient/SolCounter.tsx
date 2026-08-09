@@ -19,7 +19,7 @@ export function SolCounter({ className }: { className?: string }) {
 
   return (
     <span
-      className={`font-mono text-[11px] tracking-[0.18em] text-t4 whitespace-nowrap ${className ?? ""}`}
+      className={`font-mono text-[12px] tracking-[0.18em] text-t4 whitespace-nowrap ${className ?? ""}`}
       aria-hidden
       title="Sol count, days since 2020-01-01"
     >

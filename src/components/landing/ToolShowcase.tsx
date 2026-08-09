@@ -401,7 +401,7 @@ const ToolShowcase = () => {
                   <GlassPanel className="p-4 border-dashed border border-muted opacity-70">
                     <div className="flex items-center justify-between mb-1">
                       <h4 className="font-heading font-light text-sm">{tool.title}</h4>
-                      <Badge variant="outline" className="text-[10px] shrink-0">Soon</Badge>
+                      <Badge variant="outline" className="text-[12px] shrink-0">Soon</Badge>
                     </div>
                     <p className="text-xs text-t3">{tool.subtitle}</p>
                   </GlassPanel>

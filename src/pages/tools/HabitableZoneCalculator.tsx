@@ -461,7 +461,7 @@ const HabitableZoneCalculator = () => {
 
         {/* Your Planet, name + import from star system */}
         <GlassPanel className="p-4 md:p-6 mb-8">
-          <h2 className="font-heading text-[11px] font-light uppercase tracking-[3px] text-[hsl(var(--sf-section-green))] mb-4 flex items-center gap-2">
+          <h2 className="font-heading text-[12px] font-light uppercase tracking-[3px] text-[hsl(var(--sf-section-green))] mb-4 flex items-center gap-2">
             <Globe className="w-5 h-5 text-primary" />
             Your Planet
           </h2>
@@ -691,7 +691,7 @@ const HabitableZoneCalculator = () => {
             {/* Section 2: Orbital Diagram (always visible, hero element) */}
             <div id="section-diagram">
               <GlassPanel className="p-4 md:p-6">
-                <h2 className="font-heading text-[11px] font-light uppercase tracking-[3px] text-[hsl(var(--sf-section-green))] mb-4 flex items-center gap-2">
+                <h2 className="font-heading text-[12px] font-light uppercase tracking-[3px] text-[hsl(var(--sf-section-green))] mb-4 flex items-center gap-2">
                   <Orbit className="w-5 h-5 text-primary" />
                   Orbital Diagram
                 </h2>
@@ -735,14 +735,14 @@ const HabitableZoneCalculator = () => {
                   <div className="mt-4 rounded-sm border p-3" style={{ borderColor: `${zoneColor}30`, backgroundColor: `${zoneColor}08` }}>
                     <div className="flex items-center justify-between gap-4 flex-wrap">
                       <div className="space-y-0.5">
-                        <div className="text-[10px] font-mono uppercase tracking-wider text-t4">Equilibrium</div>
+                        <div className="text-[12px] font-mono uppercase tracking-wider text-t4">Equilibrium</div>
                         <div className="text-lg font-mono font-light" style={{ color: zoneColor }}>
                           {result.equilibriumTempFormatted}
                         </div>
                       </div>
                       <div className="text-t4 text-lg">→</div>
                       <div className="space-y-0.5">
-                        <div className="text-[10px] font-mono uppercase tracking-wider text-t4">Est. Surface (+{formState.planet.greenhouseWarming ?? 33} K)</div>
+                        <div className="text-[12px] font-mono uppercase tracking-wider text-t4">Est. Surface (+{formState.planet.greenhouseWarming ?? 33} K)</div>
                         <div className="text-lg font-mono font-light text-t1">
                           {result.estimatedSurfaceTempFormatted}
                         </div>
@@ -785,7 +785,7 @@ const HabitableZoneCalculator = () => {
                         key={preset.value}
                         type="button"
                         onClick={() => updatePlanet({ greenhouseWarming: preset.value })}
-                        className={`px-2 py-0.5 rounded-sm text-[10px] font-mono border transition-colors ${
+                        className={`px-2 py-0.5 rounded-sm text-[12px] font-mono border transition-colors ${
                           (formState.planet.greenhouseWarming ?? 33) === preset.value
                             ? "border-primary bg-primary/10 text-primary"
                             : "border-sf-border text-t4 hover:border-primary/50"
@@ -897,7 +897,7 @@ const HabitableZoneCalculator = () => {
             {/* Section 4: Analysis Results (always visible) */}
             <div id="section-results">
               <GlassPanel className="p-4 md:p-6">
-                <h2 className="font-heading text-[11px] font-light uppercase tracking-[3px] text-[hsl(var(--sf-section-green))] mb-4 flex items-center gap-2">
+                <h2 className="font-heading text-[12px] font-light uppercase tracking-[3px] text-[hsl(var(--sf-section-green))] mb-4 flex items-center gap-2">
                   <Thermometer className="w-5 h-5 text-primary" />
                   Analysis Results
                 </h2>
@@ -908,7 +908,7 @@ const HabitableZoneCalculator = () => {
                     {/* Hero: Temperature Display */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="text-center p-5 rounded-sm bg-muted/30">
-                        <div className="text-[10px] font-mono uppercase tracking-wider text-t4 mb-1">
+                        <div className="text-[12px] font-mono uppercase tracking-wider text-t4 mb-1">
                           Equilibrium Temperature
                         </div>
                         <div className="text-3xl font-mono font-light" style={{ color: zoneColor }}>
@@ -917,10 +917,10 @@ const HabitableZoneCalculator = () => {
                         <div className="text-sm text-t3 mt-1">
                           ({Math.round(result.equilibriumTemp - 273.15)}&deg;C)
                         </div>
-                        <div className="text-[10px] text-t5 mt-2">No atmosphere</div>
+                        <div className="text-[12px] text-t5 mt-2">No atmosphere</div>
                       </div>
                       <div className="text-center p-5 rounded-sm bg-muted/30 border border-primary/10">
-                        <div className="text-[10px] font-mono uppercase tracking-wider text-t4 mb-1">
+                        <div className="text-[12px] font-mono uppercase tracking-wider text-t4 mb-1">
                           Est. Surface Temperature
                         </div>
                         <div className="text-3xl font-mono font-light text-t1">
@@ -929,7 +929,7 @@ const HabitableZoneCalculator = () => {
                         <div className="text-sm text-t3 mt-1">
                           ({Math.round(result.estimatedSurfaceTemp - 273.15)}&deg;C)
                         </div>
-                        <div className="text-[10px] text-t5 mt-2">+{formState.planet.greenhouseWarming ?? 33} K greenhouse</div>
+                        <div className="text-[12px] text-t5 mt-2">+{formState.planet.greenhouseWarming ?? 33} K greenhouse</div>
                       </div>
                     </div>
 
@@ -950,7 +950,7 @@ const HabitableZoneCalculator = () => {
 
                     {/* HZ Boundaries, KeyValueRow list */}
                     <div>
-                      <p className="font-mono text-[11px] tracking-[0.18em] uppercase text-sf-teal mb-3">
+                      <p className="font-mono text-[12px] tracking-[0.18em] uppercase text-sf-teal mb-3">
                         // HABITABLE ZONE BOUNDARIES
                       </p>
                       <div className="space-y-1">
@@ -1053,7 +1053,7 @@ const HabitableZoneCalculator = () => {
                           className={`p-4 border-l-4 ${categoryColors[impl.category] || ""}`}
                         >
                           <div className="flex items-center gap-2 mb-2">
-                            <Badge variant="outline" className="text-[10px]">
+                            <Badge variant="outline" className="text-[12px]">
                               {categoryLabels[impl.category] || impl.category}
                             </Badge>
                             <span className="text-sm font-medium">{impl.title}</span>

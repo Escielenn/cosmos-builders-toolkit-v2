@@ -586,7 +586,7 @@ const WorldWritingSpace = () => {
         {/* Exit button, top-right corner */}
         <button
           onClick={() => setZenMode(false)}
-          className="fixed top-4 right-4 z-[10000] flex items-center gap-2 px-3 py-2 text-[10px] font-heading uppercase tracking-[1.5px] text-t4 hover:text-t2 border border-white/[0.08] hover:border-white/[0.15] bg-sf-surface/80 backdrop-blur-md rounded-xs transition-all opacity-60 hover:opacity-100"
+          className="fixed top-4 right-4 z-[10000] flex items-center gap-2 px-3 py-2 text-[12px] font-heading uppercase tracking-[1.5px] text-t4 hover:text-t2 border border-white/[0.08] hover:border-white/[0.15] bg-sf-surface/80 backdrop-blur-md rounded-xs transition-all opacity-60 hover:opacity-100"
           title="Exit Zen Mode (Esc)"
         >
           <X className="w-3.5 h-3.5" />
@@ -724,13 +724,13 @@ const WorldWritingSpace = () => {
             <div className="flex items-center gap-4 px-4 md:px-8 py-1.5 border-b border-white/[0.04] bg-sf-void">
               {/* Line spacing */}
               <div className="flex items-center gap-1.5">
-                <span className="text-[9px] font-sans font-medium uppercase tracking-[1.2px] text-t4">Spacing</span>
+                <span className="text-[11px] font-sans font-medium uppercase tracking-[1.2px] text-t4">Spacing</span>
                 <div className="flex">
                   {(["1", "1.5", "2"] as const).map((val) => (
                     <button
                       key={val}
                       onClick={() => setLineSpacing(val)}
-                      className={`px-2 py-0.5 text-[10px] font-mono border border-white/[0.08] transition-colors ${
+                      className={`px-2 py-0.5 text-[12px] font-mono border border-white/[0.08] transition-colors ${
                         lineSpacing === val
                           ? "bg-[#15C17B]/[0.08] border-[#15C17B]/20 text-[#15C17B]"
                           : "text-t4 hover:text-t2 hover:border-white/[0.15]"
@@ -744,11 +744,11 @@ const WorldWritingSpace = () => {
 
               {/* Font selector */}
               <div className="flex items-center gap-1.5">
-                <span className="text-[9px] font-sans font-medium uppercase tracking-[1.2px] text-t4">Font</span>
+                <span className="text-[11px] font-sans font-medium uppercase tracking-[1.2px] text-t4">Font</span>
                 <select
                   value={writingFont}
                   onChange={(e) => setWritingFont(e.target.value as WritingFont)}
-                  className="text-[10px] font-sans bg-white/[0.04] border border-white/[0.08] text-t2 rounded-xs px-2 py-0.5 outline-none focus:border-[#15C17B]/30 cursor-pointer"
+                  className="text-[12px] font-sans bg-white/[0.04] border border-white/[0.08] text-t2 rounded-xs px-2 py-0.5 outline-none focus:border-[#15C17B]/30 cursor-pointer"
                 >
                   <option value="DM Sans">DM Sans</option>
                   <option value="Georgia">Georgia</option>

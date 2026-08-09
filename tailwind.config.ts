@@ -81,9 +81,9 @@ export default {
         // Text tiers (April 2026 handoff — use alongside .text-tier-* classes)
         t1: "#FAFAFA",
         t2: "#C8C8C8",
-        t3: "rgba(255, 255, 255, 0.45)",
-        t4: "rgba(255, 255, 255, 0.28)",
-        t5: "rgba(255, 255, 255, 0.15)",
+        t3: "rgba(255, 255, 255, 0.66)",
+        t4: "rgba(255, 255, 255, 0.52)",
+        t5: "rgba(255, 255, 255, 0.38)",
         // Scrollbar swatches
         "sb-track": "#0A0E17",
         "sb-thumb": "#2E3548",
@@ -97,6 +97,13 @@ export default {
         "sf-tag": "2px", // reserved for <Tag /> only
       },
       fontSize: {
+        // Base ramp, nudged up one step from Tailwind's defaults. The UI leans
+        // hard on `text-xs`/`text-sm` (~1,600 call sites), which at 12/14px
+        // read as cramped on an ordinary desktop monitor. Raising the tokens
+        // lifts every call site at once instead of rewriting them.
+        xs:   ["13px", { lineHeight: "1.5" }],   // was 12px
+        sm:   ["15px", { lineHeight: "1.55" }],  // was 14px
+        base: ["16.5px", { lineHeight: "1.6" }], // was 16px
         // April 2026 handoff scale — use sf-* for all new display type
         "sf-hero":    ["96px", { lineHeight: "0.98", letterSpacing: "0.03em", fontWeight: "300" }],
         "sf-h1":      ["56px", { lineHeight: "1",    letterSpacing: "0.04em", fontWeight: "300" }],

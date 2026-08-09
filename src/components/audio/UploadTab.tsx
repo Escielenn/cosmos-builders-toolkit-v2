@@ -26,7 +26,7 @@ export default function UploadTab() {
         <p className="text-t3 text-xs uppercase tracking-wider">
           Pro feature
         </p>
-        <p className="text-t4 text-[11px]">
+        <p className="text-t4 text-[12px]">
           Upgrade to Pro to upload your own audio tracks.
         </p>
       </div>
@@ -46,10 +46,10 @@ export default function UploadTab() {
       {/* Upload button */}
       <div className="border-2 border-dashed border-white/10 p-4 text-center space-y-2">
         <Upload className="w-5 h-5 mx-auto text-t4" />
-        <p className="text-[11px] text-t3">
+        <p className="text-[12px] text-t3">
           Drop an audio file or click to browse
         </p>
-        <p className="text-[9px] text-t5 font-mono uppercase tracking-wider">
+        <p className="text-[11px] text-t5 font-mono uppercase tracking-wider">
           {ACCEPTED_EXTENSIONS.join(", ")} · Max {MAX_FILE_SIZE / 1024 / 1024}MB
         </p>
         <Button
@@ -112,7 +112,7 @@ export default function UploadTab() {
                 </div>
 
                 {track.duration != null && track.duration > 0 && (
-                  <span className="font-mono text-[10px] text-t4 tabular-nums">
+                  <span className="font-mono text-[12px] text-t4 tabular-nums">
                     {Math.floor(track.duration / 60)}:{Math.floor(track.duration % 60).toString().padStart(2, "0")}
                   </span>
                 )}

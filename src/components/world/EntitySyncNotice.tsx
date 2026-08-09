@@ -66,7 +66,7 @@ export default function EntitySyncNotice({
           <p className="text-xs font-heading uppercase tracking-wider text-amber">
             Worksheet Update Available
           </p>
-          <p className="text-[11px] text-t3 mt-1">
+          <p className="text-[12px] text-t3 mt-1">
             {toolName} has new data that differs from this entity's details.
           </p>
         </div>
@@ -74,7 +74,7 @@ export default function EntitySyncNotice({
 
       <div className="space-y-1 ml-6">
         {pendingChanges.map((change) => (
-          <div key={change.field} className="flex items-baseline gap-2 text-[11px]">
+          <div key={change.field} className="flex items-baseline gap-2 text-[12px]">
             <span className="text-t3 font-medium">{change.label}:</span>
             <span className="text-t4 line-through">
               {formatValue(change.oldValue)}
@@ -93,7 +93,7 @@ export default function EntitySyncNotice({
           variant="outline"
           onClick={() => acceptMutation.mutate()}
           disabled={isAnyPending}
-          className="gap-1 h-6 text-[10px] border-amber/20 text-amber hover:bg-amber/10"
+          className="gap-1 h-6 text-[12px] border-amber/20 text-amber hover:bg-amber/10"
         >
           <Check className="w-3 h-3" />
           Accept All
@@ -103,7 +103,7 @@ export default function EntitySyncNotice({
           variant="ghost"
           onClick={() => dismissMutation.mutate()}
           disabled={isAnyPending}
-          className="gap-1 h-6 text-[10px]"
+          className="gap-1 h-6 text-[12px]"
         >
           <X className="w-3 h-3" />
           Dismiss

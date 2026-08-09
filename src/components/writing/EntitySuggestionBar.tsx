@@ -42,7 +42,7 @@ export default function EntitySuggestionBar({
       <div className="flex items-start gap-3">
         <Link2 className="w-3.5 h-3.5 text-primary/60 shrink-0 mt-0.5" />
         <div className="flex-1 min-w-0">
-          <p className="font-mono text-[10px] uppercase tracking-wider text-primary/70 leading-relaxed">
+          <p className="font-mono text-[12px] uppercase tracking-wider text-primary/70 leading-relaxed">
             This entry mentions {nameList}. Link to{" "}
             {suggestions.length === 1 ? "this entity" : "these entities"}?
           </p>
@@ -53,7 +53,7 @@ export default function EntitySuggestionBar({
                 variant="outline"
                 size="sm"
                 onClick={() => onLink(s.entryId)}
-                className="h-6 text-[10px] px-2 gap-1 text-primary border-primary/20 hover:bg-primary/10"
+                className="h-6 text-[12px] px-2 gap-1 text-primary border-primary/20 hover:bg-primary/10"
               >
                 <Link2 className="w-2.5 h-2.5" />
                 {s.title}

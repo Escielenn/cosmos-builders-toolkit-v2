@@ -84,7 +84,7 @@ export function TimelineScrubber({
           border: "1px solid rgba(255,255,255,0.06)",
         }}
       >
-        <span className="text-[10px] text-t4 font-sans">
+        <span className="text-[12px] text-t4 font-sans">
           No temporal data. Add time_start / time_end to connections.
         </span>
         <button
@@ -179,14 +179,14 @@ export function TimelineScrubber({
 
           {/* Labels */}
           <div className="flex justify-between mt-0.5">
-            <span className="text-[8px] font-mono text-t5">{firstLabel}</span>
-            <span className="text-[8px] font-mono text-t5">{lastLabel}</span>
+            <span className="text-[10px] font-mono text-t5">{firstLabel}</span>
+            <span className="text-[10px] font-mono text-t5">{lastLabel}</span>
           </div>
         </div>
 
         {/* Current time */}
         <div className="shrink-0 text-center min-w-[60px]">
-          <span className="text-[10px] font-mono text-teal">
+          <span className="text-[12px] font-mono text-teal">
             {currentLabel}
           </span>
         </div>

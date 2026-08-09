@@ -22,7 +22,7 @@ const WelcomeHero = () => {
       >
         {/* Mono eyebrow (telemetry soul, kept but quieter) */}
         <motion.div variants={fadeUpItem}>
-          <div className="inline-flex items-center gap-3.5 font-mono uppercase text-sf-teal/80 text-[11px] tracking-[3px] mb-7">
+          <div className="inline-flex items-center gap-3.5 font-mono uppercase text-sf-teal/80 text-[12px] tracking-[3px] mb-7">
             <span aria-hidden className="block w-12 h-px bg-sf-teal/60" />
             <span>// open early access</span>
           </div>
@@ -65,7 +65,7 @@ const WelcomeHero = () => {
         </motion.div>
 
         <motion.p
-          className="font-mono text-[11px] tracking-[0.18em] uppercase text-t4"
+          className="font-mono text-[12px] tracking-[0.18em] uppercase text-t4"
           variants={fadeUpItem}
         >
           {FREE_TOOL_COUNT} tools free forever · {PRO_TOOL_COUNT} more with Pro

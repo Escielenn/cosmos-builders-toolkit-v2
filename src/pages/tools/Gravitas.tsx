@@ -434,7 +434,7 @@ const Gravitas = () => {
                   }`}
                 >
                   <span className="font-medium text-sm">{REALISM_LABELS[mode]}</span>
-                  <p className="text-[11px] text-t2 mt-1">{REALISM_DESCRIPTIONS[mode]}</p>
+                  <p className="text-[12px] text-t2 mt-1">{REALISM_DESCRIPTIONS[mode]}</p>
                 </button>
               ))}
             </div>
@@ -478,7 +478,7 @@ const Gravitas = () => {
                         className={`p-2 rounded-none border text-left transition-colors ${activeSpinPreset === preset.id ? "border-primary bg-primary/10" : "border-sf-border hover:border-primary/30 hover:bg-accent/5"}`}
                       >
                         <span className="font-medium text-xs">{preset.name}</span>
-                        <p className="text-[10px] text-t2">{preset.description}</p>
+                        <p className="text-[12px] text-t2">{preset.description}</p>
                       </button>
                     ))}
                   </div>
@@ -543,7 +543,7 @@ const Gravitas = () => {
                         className={`p-2 rounded-none border text-left transition-colors ${activeThrustPreset === preset.id ? "border-primary bg-primary/10" : "border-sf-border hover:border-primary/30 hover:bg-accent/5"}`}
                       >
                         <span className="font-medium text-xs">{preset.name}</span>
-                        <p className="text-[10px] text-t2">{preset.description}</p>
+                        <p className="text-[12px] text-t2">{preset.description}</p>
                       </button>
                     ))}
                   </div>
@@ -677,7 +677,7 @@ const Gravitas = () => {
                         className={`p-2 rounded-none border text-left transition-colors ${activeOrbitalPreset === preset.id ? "border-primary bg-primary/10" : "border-sf-border hover:border-primary/30 hover:bg-accent/5"}`}
                       >
                         <span className="font-medium text-xs">{preset.name}</span>
-                        <p className="text-[10px] text-t2">{preset.description}</p>
+                        <p className="text-[12px] text-t2">{preset.description}</p>
                       </button>
                     ))}
                   </div>
@@ -1200,15 +1200,15 @@ const Gravitas = () => {
         <ToolSidebar>
           <SectionNavigation sections={SECTIONS} mode="inline" />
           <GlassPanel className="p-4 w-56">
-            <h4 className="font-mono text-[9px] tracking-[2px] uppercase text-t3/60 mb-3">
+            <h4 className="font-mono text-[11px] tracking-[2px] uppercase text-t3/60 mb-3">
               // READOUT
             </h4>
             <div className="text-center mb-3">
-              <p className="text-[10px] uppercase tracking-wider text-t3 mb-1">Effective Gravity</p>
+              <p className="text-[12px] uppercase tracking-wider text-t3 mb-1">Effective Gravity</p>
               <p className={`font-mono text-2xl font-light ${statusColor}`}>{formatG(effectiveG)}</p>
-              <p className={`text-[10px] mt-0.5 ${statusColor}`}>{gravityLabel}</p>
+              <p className={`text-[12px] mt-0.5 ${statusColor}`}>{gravityLabel}</p>
             </div>
-            <div className="space-y-1.5 text-[10px]">
+            <div className="space-y-1.5 text-[12px]">
               <div className="flex justify-between">
                 <span className="text-t4">Mode</span>
                 <span className="text-t2 font-mono">{MODE_LABELS[formState.activeMode]}</span>

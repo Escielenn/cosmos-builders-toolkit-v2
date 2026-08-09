@@ -292,7 +292,7 @@ export function ChronicleEventDialog({
                     setLinkedEntryId("");
                     setLinkedEntryTitle("");
                   }}
-                  className="text-t3/30 hover:text-t3/60 text-[9px] uppercase tracking-wider"
+                  className="text-t3/30 hover:text-t3/60 text-[11px] uppercase tracking-wider"
                 >
                   Remove
                 </button>
@@ -362,7 +362,7 @@ export function ChronicleEventDialog({
               <button
                 type="button"
                 onClick={() => onDelete(event!.id)}
-                className="sf-fill-sweep sf-fill-sweep--secondary px-3 py-1.5 border border-destructive/20 text-sf-crimson/70 text-[10px] uppercase tracking-wider"
+                className="sf-fill-sweep sf-fill-sweep--secondary px-3 py-1.5 border border-destructive/20 text-sf-crimson/70 text-[12px] uppercase tracking-wider"
               >
                 Delete
               </button>
@@ -373,7 +373,7 @@ export function ChronicleEventDialog({
               <button
                 type="button"
                 onClick={() => onOpenChange(false)}
-                className="sf-fill-sweep sf-fill-sweep--secondary px-4 py-1.5 border border-sf-border text-[10px] uppercase tracking-wider text-t3/50"
+                className="sf-fill-sweep sf-fill-sweep--secondary px-4 py-1.5 border border-sf-border text-[12px] uppercase tracking-wider text-t3/50"
               >
                 Cancel
               </button>
@@ -381,7 +381,7 @@ export function ChronicleEventDialog({
                 type="button"
                 onClick={handleSubmit}
                 disabled={!title.trim() || !eventDate.trim()}
-                className="sf-fill-sweep px-4 py-1.5 border border-[#3DFFCD]/20 text-[#3DFFCD]/80 text-[10px] uppercase tracking-wider disabled:opacity-30 disabled:pointer-events-none"
+                className="sf-fill-sweep px-4 py-1.5 border border-[#3DFFCD]/20 text-[#3DFFCD]/80 text-[12px] uppercase tracking-wider disabled:opacity-30 disabled:pointer-events-none"
               >
                 {isEditing ? "Save" : "Log Event"}
               </button>

@@ -88,7 +88,7 @@ export default function CascadeSuggestionToast({
 
         <div className="flex items-start gap-3">
           <div className="flex-1 min-w-0">
-            <p className="font-heading text-[9px] uppercase tracking-[2px] text-primary/60 mb-1">
+            <p className="font-heading text-[11px] uppercase tracking-[2px] text-primary/60 mb-1">
               Cascade Suggestion
             </p>
             <p className="text-xs text-t2 leading-relaxed">
@@ -101,7 +101,7 @@ export default function CascadeSuggestionToast({
               variant="ghost"
               size="sm"
               onClick={handleNavigate}
-              className="text-primary hover:text-primary/80 text-[10px] uppercase tracking-wider h-7 px-2"
+              className="text-primary hover:text-primary/80 text-[12px] uppercase tracking-wider h-7 px-2"
             >
               {suggestion.brandName}
               <ChevronRight className="w-3 h-3 ml-0.5" />

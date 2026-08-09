@@ -377,7 +377,7 @@ const ComingSoonCard = ({ title, subtitle }: { title: string; subtitle: string }
   <GlassPanel className="p-4 border-dashed border border-muted opacity-70">
     <div className="flex items-center justify-between mb-1">
       <h3 className="font-heading font-medium text-sm">{title}</h3>
-      <Badge variant="outline" className="text-[10px] shrink-0">Coming Soon</Badge>
+      <Badge variant="outline" className="text-[12px] shrink-0">Coming Soon</Badge>
     </div>
     <p className="text-xs text-t3">{subtitle}</p>
   </GlassPanel>
@@ -576,7 +576,7 @@ const Index = () => {
 
             {/* Scroll hint */}
             <div className="flex flex-col items-center mt-8 text-t4 animate-pulse">
-              <span className="font-mono text-[10px] uppercase tracking-[2px]">Scroll</span>
+              <span className="font-mono text-[12px] uppercase tracking-[2px]">Scroll</span>
               <ChevronDown className="w-4 h-4 mt-0.5" />
             </div>
           </section>
@@ -638,7 +638,7 @@ const Index = () => {
                     type="button"
                     key={mode}
                     onClick={() => setSortMode(mode)}
-                    className={`px-3 py-1.5 text-[10px] uppercase tracking-[0.12em] font-medium rounded transition-all ${
+                    className={`px-3 py-1.5 text-[12px] uppercase tracking-[0.12em] font-medium rounded transition-all ${
                       sortMode === mode
                         ? 'bg-primary/15 text-primary'
                         : 'text-t3 hover:text-t1 hover:bg-muted/30'
@@ -659,7 +659,7 @@ const Index = () => {
                         .getElementById(`tools-group-${key}`)
                         ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     }}
-                    className="flex items-center gap-1.5 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] font-medium rounded border border-sf-border hover:border-sf-border-strong text-t3 hover:text-t1 transition-all"
+                    className="flex items-center gap-1.5 px-2.5 py-1 text-[12px] uppercase tracking-[0.12em] font-medium rounded border border-sf-border hover:border-sf-border-strong text-t3 hover:text-t1 transition-all"
                   >
                     <span
                       className="w-1.5 h-1.5 rounded-full shrink-0"
@@ -716,7 +716,7 @@ const Index = () => {
               {isSubscribed && (
                 <Link
                   to="/roadmap"
-                  className="text-[11px] font-medium uppercase tracking-[1.5px] text-primary/70 hover:text-primary transition-colors duration-300 flex items-center gap-1.5"
+                  className="text-[12px] font-medium uppercase tracking-[1.5px] text-primary/70 hover:text-primary transition-colors duration-300 flex items-center gap-1.5"
                 >
                   <MapIcon className="w-3.5 h-3.5" />
                   Vote on the Roadmap

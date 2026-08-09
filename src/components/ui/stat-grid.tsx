@@ -55,12 +55,12 @@ const VALUE_ACCENT = {
 const StatCell = React.forwardRef<HTMLDivElement, CellProps>(
   ({ label, value, unit, accent = "teal", className, ...props }, ref) => (
     <div ref={ref} className={cn("flex flex-col gap-1", className)} {...props}>
-      <span className="font-mono text-[11px] tracking-[0.18em] uppercase text-t4">
+      <span className="font-mono text-[12px] tracking-[0.18em] uppercase text-t4">
         {label}
       </span>
       <span className={cn("font-display font-light text-[34px] leading-none tracking-[0.02em]", VALUE_ACCENT[accent])}>
         {value}
-        {unit && <span className="font-mono text-[12px] text-t4 ml-1.5 tracking-[0.12em]">{unit}</span>}
+        {unit && <span className="font-mono text-[13px] text-t4 ml-1.5 tracking-[0.12em]">{unit}</span>}
       </span>
     </div>
   ),

@@ -59,7 +59,7 @@ export function SectionHero({
               className={cn(
                 "inline-flex items-center gap-3.5 font-mono uppercase mb-7",
                 warm ? "text-sf-teal/80" : "text-sf-teal",
-                hero ? "text-[12px] tracking-[3px]" : "text-[11px] tracking-[2.5px]",
+                hero ? "text-[13px] tracking-[3px]" : "text-[12px] tracking-[2.5px]",
               )}
             >
               {rule && (

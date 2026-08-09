@@ -72,7 +72,7 @@ export function TemplateFieldsForm({
           </Label>
         );
         const helpEl = f.help_text ? (
-          <p className="text-[11px] text-t4 mt-0.5">{f.help_text}</p>
+          <p className="text-[12px] text-t4 mt-0.5">{f.help_text}</p>
         ) : null;
 
         switch (f.field_type) {

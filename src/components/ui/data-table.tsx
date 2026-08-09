@@ -82,7 +82,7 @@ const Cell = React.forwardRef<HTMLTableCellElement, CellProps>(
         "px-4 py-3 text-[13px] leading-snug text-t2 align-middle",
         align === "right" && "text-right",
         align === "center" && "text-center",
-        mono && "font-mono text-[12px] tabular-nums tracking-[0.08em]",
+        mono && "font-mono text-[13px] tabular-nums tracking-[0.08em]",
         className,
       )}
       {...props}
@@ -99,7 +99,7 @@ const HeaderCell = React.forwardRef<HTMLTableCellElement, HeaderCellProps>(
     <th
       ref={ref}
       className={cn(
-        "px-4 py-3 font-mono text-[11px] font-medium tracking-[0.18em] uppercase text-t4",
+        "px-4 py-3 font-mono text-[12px] font-medium tracking-[0.18em] uppercase text-t4",
         align === "right" && "text-right",
         align === "center" && "text-center",
         align === "left" && "text-left",

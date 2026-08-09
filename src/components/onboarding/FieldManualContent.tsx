@@ -34,7 +34,7 @@ export function ManualSection({ title, children }: { title: string; children: Re
         className={
           isPage
             ? "font-heading text-sm font-light uppercase tracking-[3px] text-sf-emerald mb-3"
-            : "font-heading text-[11px] uppercase tracking-[2px] text-t1 mb-1.5"
+            : "font-heading text-[12px] uppercase tracking-[2px] text-t1 mb-1.5"
         }
       >
         {title}
@@ -43,7 +43,7 @@ export function ManualSection({ title, children }: { title: string; children: Re
         className={
           isPage
             ? "text-sm text-t2 leading-relaxed space-y-2"
-            : "text-[12px] text-t3 leading-relaxed space-y-1.5 pl-0.5"
+            : "text-[13px] text-t3 leading-relaxed space-y-1.5 pl-0.5"
         }
       >
         {children}
@@ -56,7 +56,7 @@ export function ManualDivider({ label }: { label: string }) {
   return (
     <div className="flex items-center gap-3 pt-6 pb-3">
       <div className="h-px flex-1 bg-border/20" />
-      <span className="font-mono text-[8px] uppercase tracking-[3px] text-primary/40 whitespace-nowrap">
+      <span className="font-mono text-[10px] uppercase tracking-[3px] text-primary/40 whitespace-nowrap">
         {label}
       </span>
       <div className="h-px flex-1 bg-border/20" />
@@ -71,12 +71,12 @@ export function ManualKeyLine({ keys, description }: { keys: string; description
     <div className="flex items-center gap-2">
       <span
         className={`font-mono text-primary/70 w-40 shrink-0 ${
-          isPage ? "text-xs" : "text-[11px]"
+          isPage ? "text-xs" : "text-[12px]"
         }`}
       >
         {keys}
       </span>
-      <span className={isPage ? "text-sm" : "text-[12px]"}>{description}</span>
+      <span className={isPage ? "text-sm" : "text-[13px]"}>{description}</span>
     </div>
   );
 }
@@ -107,7 +107,7 @@ export function FieldManualContent({ scale = "sheet" }: { scale?: ManualScale } 
           technology, and narrative. Click entries to navigate between
           tools and wiki pages.
         </p>
-        <p className="font-mono text-[10px] text-t3/50">
+        <p className="font-mono text-[12px] text-t3/50">
           Completion indicators: ● surveyed&ensp;◐ partial&ensp;○ pending
         </p>
       </ManualSection>
@@ -224,7 +224,7 @@ export function FieldManualContent({ scale = "sheet" }: { scale?: ManualScale } 
           <Button
             variant="outline"
             size="sm"
-            className="gap-2 text-[10px] uppercase tracking-wider"
+            className="gap-2 text-[12px] uppercase tracking-wider"
             onClick={handleResetHints}
           >
             <RotateCcw className="w-3 h-3" />

@@ -160,7 +160,7 @@ export function EntityListView({
       >
         {/* Cascade filter */}
         <div>
-          <h4 className="text-[9px] font-heading uppercase tracking-[2px] text-t4 mb-2">
+          <h4 className="text-[11px] font-heading uppercase tracking-[2px] text-t4 mb-2">
             Cascade
           </h4>
           <div className="space-y-1">
@@ -170,7 +170,7 @@ export function EntityListView({
                 type="button"
                 onClick={() => toggleCascadeFilter(stage)}
                 className={cn(
-                  "w-full flex items-center gap-1.5 px-2 py-1 text-[10px] font-sans transition-colors text-left",
+                  "w-full flex items-center gap-1.5 px-2 py-1 text-[12px] font-sans transition-colors text-left",
                   filters.cascadeStages.has(stage)
                     ? "text-t2"
                     : "text-t5"
@@ -192,7 +192,7 @@ export function EntityListView({
 
         {/* Type filter */}
         <div>
-          <h4 className="text-[9px] font-heading uppercase tracking-[2px] text-t4 mb-2">
+          <h4 className="text-[11px] font-heading uppercase tracking-[2px] text-t4 mb-2">
             Type
           </h4>
           <div className="space-y-1">
@@ -202,7 +202,7 @@ export function EntityListView({
                 type="button"
                 onClick={() => toggleTypeFilter(type)}
                 className={cn(
-                  "w-full flex items-center gap-1.5 px-2 py-1 text-[10px] font-sans transition-colors text-left",
+                  "w-full flex items-center gap-1.5 px-2 py-1 text-[12px] font-sans transition-colors text-left",
                   filters.entityTypes.size === 0 || filters.entityTypes.has(type)
                     ? "text-t2"
                     : "text-t5"
@@ -225,7 +225,7 @@ export function EntityListView({
 
         {/* Status filter */}
         <div>
-          <h4 className="text-[9px] font-heading uppercase tracking-[2px] text-t4 mb-2">
+          <h4 className="text-[11px] font-heading uppercase tracking-[2px] text-t4 mb-2">
             Status
           </h4>
           <div className="space-y-1">
@@ -235,7 +235,7 @@ export function EntityListView({
                 type="button"
                 onClick={() => toggleStatusFilter(status)}
                 className={cn(
-                  "w-full px-2 py-1 text-[10px] font-sans transition-colors text-left capitalize",
+                  "w-full px-2 py-1 text-[12px] font-sans transition-colors text-left capitalize",
                   filters.statuses.has(status) ? "text-t2" : "text-t5"
                 )}
               >
@@ -247,7 +247,7 @@ export function EntityListView({
 
         {/* Strength filter */}
         <div>
-          <h4 className="text-[9px] font-heading uppercase tracking-[2px] text-t4 mb-2">
+          <h4 className="text-[11px] font-heading uppercase tracking-[2px] text-t4 mb-2">
             Min Strength
           </h4>
           <input
@@ -263,7 +263,7 @@ export function EntityListView({
             }
             className="w-full accent-teal"
           />
-          <span className="text-[9px] font-mono text-t4">
+          <span className="text-[11px] font-mono text-t4">
             {filters.minStrength}
           </span>
         </div>
@@ -273,7 +273,7 @@ export function EntityListView({
       <div className="flex-1 overflow-y-auto p-4 space-y-1">
         {filteredEntities.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-[11px] text-t4 font-sans">
+            <p className="text-[12px] text-t4 font-sans">
               No entities match the current filters.
             </p>
           </div>
@@ -303,13 +303,13 @@ export function EntityListView({
                   className="w-2 h-2 rounded-full shrink-0"
                   style={{ background: color }}
                 />
-                <span className="text-[12px] font-heading font-light text-t1 flex-1 truncate">
+                <span className="text-[13px] font-heading font-light text-t1 flex-1 truncate">
                   {entity.name}
                 </span>
-                <span className="text-[9px] text-t4 uppercase tracking-[1px] font-sans">
+                <span className="text-[11px] text-t4 uppercase tracking-[1px] font-sans">
                   {(ENTITY_TYPE_LABELS as Record<string, string>)[entity.entity_type]}
                 </span>
-                <span className="text-[9px] font-mono text-t5">
+                <span className="text-[11px] font-mono text-t5">
                   {entityConns.length}
                 </span>
               </button>
@@ -318,7 +318,7 @@ export function EntityListView({
               {isExpanded && (
                 <div className="ml-7 border-l border-sf-border pl-3 pb-2 space-y-0.5">
                   {entityConns.length === 0 && (
-                    <p className="text-[10px] text-t5 font-sans py-1 italic">
+                    <p className="text-[12px] text-t5 font-sans py-1 italic">
                       No connections yet.
                     </p>
                   )}
@@ -341,21 +341,21 @@ export function EntityListView({
                         key={`${conn.id}-${conn.direction}`}
                         className="flex items-center gap-2 px-2 py-1 hover:bg-white/[0.03] transition-colors group/conn"
                       >
-                        <span className="text-[10px] text-t4">{arrow}</span>
-                        <span className="text-[10px] font-sans text-t3">
+                        <span className="text-[12px] text-t4">{arrow}</span>
+                        <span className="text-[12px] font-sans text-t3">
                           {conn.relationship_label ??
                             formatRelationshipType(conn.relationship_type)}
                         </span>
-                        <span className="text-[10px] text-t4">{arrow}</span>
+                        <span className="text-[12px] text-t4">{arrow}</span>
                         <button
                           type="button"
                           onClick={() => onEntityClick(otherEntity.id)}
-                          className="text-[10px] font-sans text-t2 hover:text-t1 transition-colors truncate"
+                          className="text-[12px] font-sans text-t2 hover:text-t1 transition-colors truncate"
                         >
                           {otherEntity.name}
                         </button>
                         <span
-                          className="text-[8px] uppercase tracking-[0.5px] px-1 py-0.5 shrink-0"
+                          className="text-[10px] uppercase tracking-[0.5px] px-1 py-0.5 shrink-0"
                           style={{
                             color: stageColor,
                             background: `${stageColor}10`,
@@ -382,7 +382,7 @@ export function EntityListView({
                   <button
                     type="button"
                     onClick={() => onCreateConnection(entity.id)}
-                    className="flex items-center gap-1 px-2 py-1 text-[9px] text-t4 hover:text-teal uppercase tracking-[1px] font-sans transition-colors"
+                    className="flex items-center gap-1 px-2 py-1 text-[11px] text-t4 hover:text-teal uppercase tracking-[1px] font-sans transition-colors"
                   >
                     <Plus className="w-2.5 h-2.5" />
                     Add Connection

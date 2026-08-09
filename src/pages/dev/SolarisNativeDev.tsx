@@ -170,7 +170,7 @@ const SolarisNativeDev = () => {
     });
   }, []);
 
-  const ctrl = "font-mono text-[10px] uppercase tracking-wider h-7 rounded-none border";
+  const ctrl = "font-mono text-[12px] uppercase tracking-wider h-7 rounded-none border";
   const actionBtn = `${ctrl} bg-sf-void/80 border-sf-border text-sf-teal hover:bg-sf-void px-2.5 flex items-center gap-1`;
 
   return (
@@ -186,7 +186,7 @@ const SolarisNativeDev = () => {
         }}
       >
         <div className="absolute top-2 right-3 z-20 pointer-events-none">
-          <span className="font-mono text-[9px] uppercase tracking-[2px] text-amber-400/70 border border-amber-400/20 bg-amber-400/5 px-2 py-1 rounded-none">
+          <span className="font-mono text-[11px] uppercase tracking-[2px] text-amber-400/70 border border-amber-400/20 bg-amber-400/5 px-2 py-1 rounded-none">
             Native rebuild · dev preview
           </span>
         </div>

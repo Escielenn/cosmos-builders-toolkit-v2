@@ -85,14 +85,14 @@ export function PromptDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <p className="font-mono text-[11px] tracking-[0.18em] text-sf-teal uppercase">
+          <p className="font-mono text-[12px] tracking-[0.18em] text-sf-teal uppercase">
             // INPUT REQUIRED
           </p>
           <DialogTitle className="font-display text-xl font-light tracking-sf-title uppercase text-t1">
             {title}
           </DialogTitle>
           {description && (
-            <DialogDescription className="font-mono text-[11px] tracking-[0.18em] uppercase text-t3">
+            <DialogDescription className="font-mono text-[12px] tracking-[0.18em] uppercase text-t3">
               {description}
             </DialogDescription>
           )}

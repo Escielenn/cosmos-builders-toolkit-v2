@@ -129,10 +129,10 @@ export default function ToolPageLayout({
         {/* ── Back Link (context-aware) ─────────────────────────── */}
         <Link
           to={worldId ? `/worlds/${worldId}` : "/"}
-          className="inline-flex items-center gap-2 font-heading text-[11px] uppercase tracking-[0.2em] font-medium text-t3 hover:text-sf-teal-bright transition-colors duration-base mb-6"
+          className="inline-flex items-center gap-2 font-heading text-[12px] uppercase tracking-[0.2em] font-medium text-t3 hover:text-sf-teal-bright transition-colors duration-base mb-6"
         >
           <ArrowLeft className="w-4 h-4" />
-          {worldId ? "← Return to World" : "← Return to Instruments"}
+          {worldId ? "Return to World" : "Return to Tools"}
         </Link>
 
         {/* ── Quote Bar ─────────────────────────────────────────── */}
@@ -174,7 +174,7 @@ export default function ToolPageLayout({
         {/* ── Title, section-header pattern with per-tool cascade accent ── */}
         <div className="mb-10">
           {/* Mono eyebrow with cascade-color hairline rule */}
-          <div className={`inline-flex items-center gap-3.5 font-mono uppercase ${accentTextClass(accent)} text-[11px] tracking-[2.5px] mb-7`}>
+          <div className={`inline-flex items-center gap-3.5 font-mono uppercase ${accentTextClass(accent)} text-[12px] tracking-[2.5px] mb-7`}>
             <span aria-hidden className={`block w-12 h-px ${accentBgClass(accent)}`} />
             <span>// {accent.toUpperCase()} · {cfg.brandName.toUpperCase()}</span>
           </div>
@@ -185,7 +185,7 @@ export default function ToolPageLayout({
               <span className="font-light">{cfg.fullName}</span>
             </h1>
             {cfg.isPro && (
-              <span className="font-mono text-[11px] tracking-[0.18em] uppercase self-start mt-2 px-2 py-0.5 rounded-sf-tag border border-sf-violet/[0.15] bg-sf-violet/[0.06] text-sf-violet shrink-0">
+              <span className="font-mono text-[12px] tracking-[0.18em] uppercase self-start mt-2 px-2 py-0.5 rounded-sf-tag border border-sf-violet/[0.15] bg-sf-violet/[0.06] text-sf-violet shrink-0">
                 PRO
               </span>
             )}

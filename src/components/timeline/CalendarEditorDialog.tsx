@@ -221,7 +221,7 @@ const CalendarEditorDialog = ({
                 value={epochLabel}
                 onChange={(e) => setEpochLabel(e.target.value)}
               />
-              <span className="text-[10px] text-t3 block">
+              <span className="text-[12px] text-t3 block">
                 Suffix shown after dates (optional)
               </span>
             </div>
@@ -234,7 +234,7 @@ const CalendarEditorDialog = ({
                 value={baseYearOffset}
                 onChange={(e) => setBaseYearOffset(e.target.value)}
               />
-              <span className="text-[10px] text-t3 block">
+              <span className="text-[12px] text-t3 block">
                 Calendar Year 0 = Earth Year X
               </span>
             </div>
@@ -291,7 +291,7 @@ const CalendarEditorDialog = ({
                       title={`How many ${units[index + 1]?.plural || "sub-units"} per ${unit.name || "unit"}`}
                     />
                   ) : (
-                    <span className="text-[10px] text-t3 text-center">base</span>
+                    <span className="text-[12px] text-t3 text-center">base</span>
                   )}
                   <Button
                     type="button"
@@ -309,7 +309,7 @@ const CalendarEditorDialog = ({
             </div>
 
             {units.length > 1 && (
-              <p className="text-[10px] text-t3">
+              <p className="text-[12px] text-t3">
                 "Sub" = how many of the next unit fit in this one. E.g., if a Year has 12 Months, enter 12.
               </p>
             )}

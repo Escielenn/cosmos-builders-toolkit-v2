@@ -83,7 +83,7 @@ const ProAdvantageSection = () => {
                       {benefit.title}
                     </h3>
                     {benefit.comingSoon && (
-                      <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
+                      <Badge variant="secondary" className="text-[12px] px-1.5 py-0">
                         Coming Soon
                       </Badge>
                     )}

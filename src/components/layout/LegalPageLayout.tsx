@@ -99,7 +99,7 @@ const LegalPageLayout = ({
         {/* Back Link */}
         <Link
           to="/"
-          className="inline-flex items-center gap-2 font-heading text-[11px] uppercase tracking-[0.2em] font-medium text-t3 hover:text-sf-teal-bright transition-colors duration-base mb-6"
+          className="inline-flex items-center gap-2 font-heading text-[12px] uppercase tracking-[0.2em] font-medium text-t3 hover:text-sf-teal-bright transition-colors duration-base mb-6"
         >
           <ArrowLeft className="w-4 h-4" />
           ← RETURN TO BRIDGE
@@ -107,7 +107,7 @@ const LegalPageLayout = ({
 
         {/* Header */}
         <header className="mb-8">
-          <p className="font-mono text-[11px] tracking-[0.18em] text-sf-teal uppercase mb-4 flex items-center gap-2">
+          <p className="font-mono text-[12px] tracking-[0.18em] text-sf-teal uppercase mb-4 flex items-center gap-2">
             <span>//</span>
             {badgeIcon}
             {badgeText}
@@ -118,7 +118,7 @@ const LegalPageLayout = ({
           {subtitle && (
             <p className="text-lg text-t3 mb-4">{subtitle}</p>
           )}
-          <div className="flex items-center gap-2 font-mono text-[11px] tracking-[0.18em] uppercase text-t4">
+          <div className="flex items-center gap-2 font-mono text-[12px] tracking-[0.18em] uppercase text-t4">
             <Calendar className="w-3 h-3" />
             LAST UPDATED · {lastUpdated}
           </div>

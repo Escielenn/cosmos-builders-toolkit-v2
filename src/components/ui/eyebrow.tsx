@@ -15,8 +15,8 @@ import { cn } from "@/lib/utils";
 const eyebrowVariants = cva("inline-flex items-center gap-sf-2 uppercase leading-none", {
   variants: {
     font: {
-      heading: "font-heading text-[11px] tracking-[0.2em] font-medium",
-      mono: "font-mono text-[11px] tracking-[0.18em] font-normal",
+      heading: "font-heading text-[12px] tracking-[0.2em] font-medium",
+      mono: "font-mono text-[12px] tracking-[0.18em] font-normal",
     },
     tone: {
       t3: "text-t3",

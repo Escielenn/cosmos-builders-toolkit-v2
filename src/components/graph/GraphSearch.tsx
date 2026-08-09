@@ -70,7 +70,7 @@ export function GraphSearch({
       <button
         type="button"
         onClick={handleOpen}
-        className="flex items-center gap-1 h-7 px-2 text-[10px] uppercase tracking-[1.2px] font-sans text-t3 hover:text-t1 transition-colors"
+        className="flex items-center gap-1 h-7 px-2 text-[12px] uppercase tracking-[1.2px] font-sans text-t3 hover:text-t1 transition-colors"
         title="Search entities (Ctrl+F)"
       >
         <Search className="w-3 h-3" />
@@ -88,7 +88,7 @@ export function GraphSearch({
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search entities..."
-          className="h-7 w-[160px] text-[11px] rounded-xs border-sf-border bg-transparent"
+          className="h-7 w-[160px] text-[12px] rounded-xs border-sf-border bg-transparent"
         />
         <button
           type="button"
@@ -122,10 +122,10 @@ export function GraphSearch({
                   style={{ background: color }}
                 />
                 <div className="flex-1 min-w-0">
-                  <div className="text-[11px] text-t2 truncate">
+                  <div className="text-[12px] text-t2 truncate">
                     {entity.name}
                   </div>
-                  <div className="text-[8px] text-t4 uppercase tracking-[1px]">
+                  <div className="text-[10px] text-t4 uppercase tracking-[1px]">
                     {ENTITY_TYPE_LABELS[entity.entity_type]}
                   </div>
                 </div>

@@ -49,7 +49,7 @@ export function GoalSetting({ compact = false }: GoalSettingProps) {
         >
           <Target className="w-3.5 h-3.5" />
           {!compact && (
-            <span className="font-mono text-[10px]">
+            <span className="font-mono text-[12px]">
               {preferences.dailyGoalWords} words
             </span>
           )}
@@ -77,7 +77,7 @@ export function GoalSetting({ compact = false }: GoalSettingProps) {
                 key={g}
                 variant="outline"
                 size="sm"
-                className={`flex-1 text-[10px] px-0 h-7 ${
+                className={`flex-1 text-[12px] px-0 h-7 ${
                   localGoal === g ? "border-primary/40 text-primary" : ""
                 }`}
                 onClick={() => handleSave(g)}

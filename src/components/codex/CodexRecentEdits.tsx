@@ -12,7 +12,7 @@ const CodexRecentEdits = ({ items, onItemClick }: CodexRecentEditsProps) => {
   return (
     <div className="px-3 pt-2 pb-1">
       <div className="sf-divider mb-2" />
-      <span className="font-heading text-[10px] uppercase tracking-[2px] text-t3/40 block mb-1.5">
+      <span className="font-heading text-[12px] uppercase tracking-[2px] text-t3/40 block mb-1.5">
         Recent Edits
       </span>
       {items.map((item) => (
@@ -24,7 +24,7 @@ const CodexRecentEdits = ({ items, onItemClick }: CodexRecentEditsProps) => {
           <span className="text-[13px] text-t2 truncate">
             {item.title}
           </span>
-          <span className="font-mono text-[8px] text-t3/40 whitespace-nowrap shrink-0">
+          <span className="font-mono text-[10px] text-t3/40 whitespace-nowrap shrink-0">
             {formatDistanceToNow(new Date(item.updatedAt), { addSuffix: true })}
           </span>
         </button>

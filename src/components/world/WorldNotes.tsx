@@ -120,7 +120,7 @@ function NoteCard({
           )}
 
           {isSaving && (
-            <span className="font-mono text-[8px] uppercase tracking-wider text-t3/30 shrink-0">
+            <span className="font-mono text-[10px] uppercase tracking-wider text-t3/30 shrink-0">
               Saving...
             </span>
           )}
@@ -152,7 +152,7 @@ function NoteCard({
             {note.tags.map((tag) => (
               <span
                 key={tag}
-                className="px-1.5 py-0.5 text-[10px] bg-teal/8 border border-teal/15 text-teal tracking-wider"
+                className="px-1.5 py-0.5 text-[12px] bg-teal/8 border border-teal/15 text-teal tracking-wider"
               >
                 {tag}
               </span>
@@ -228,7 +228,7 @@ const WorldNotes = ({ worldId, readOnly }: WorldNotesProps) => {
               <FileText className="w-5 h-5 text-primary" />
               <span className="font-heading font-medium">World Notes</span>
               {notes.length > 0 && (
-                <span className="font-mono text-[10px] text-t3/40">
+                <span className="font-mono text-[12px] text-t3/40">
                   {notes.length}
                 </span>
               )}
@@ -249,7 +249,7 @@ const WorldNotes = ({ worldId, readOnly }: WorldNotesProps) => {
             ) : (
               <>
                 {notes.length === 0 && (
-                  <p className="text-[11px] text-t3/30 italic py-2">
+                  <p className="text-[12px] text-t3/30 italic py-2">
                     No notes yet. Add one to start capturing ideas about your world.
                   </p>
                 )}
@@ -270,7 +270,7 @@ const WorldNotes = ({ worldId, readOnly }: WorldNotesProps) => {
                     type="button"
                     onClick={() => createNote.mutate()}
                     disabled={createNote.isPending}
-                    className="sf-fill-sweep sf-fill-sweep--secondary w-full flex items-center justify-center gap-2 px-3 py-2 border border-sf-border text-[10px] font-heading uppercase tracking-wider text-t3/40 hover:text-primary/60 hover:border-primary/20 transition-colors"
+                    className="sf-fill-sweep sf-fill-sweep--secondary w-full flex items-center justify-center gap-2 px-3 py-2 border border-sf-border text-[12px] font-heading uppercase tracking-wider text-t3/40 hover:text-primary/60 hover:border-primary/20 transition-colors"
                   >
                     <Plus className="w-3.5 h-3.5" />
                     Add Note

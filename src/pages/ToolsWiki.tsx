@@ -70,7 +70,7 @@ function ToolWikiCard({
           <h3 className="font-heading text-sm font-light uppercase tracking-[2px] text-t1 leading-tight">
             {displayName}
           </h3>
-          <span className="text-t4 font-mono text-[10px] shrink-0">
+          <span className="text-t4 font-mono text-[12px] shrink-0">
             {compMeta.icon}
           </span>
         </div>
@@ -82,16 +82,16 @@ function ToolWikiCard({
         <div className="flex flex-wrap gap-1.5">
           <Badge
             variant="outline"
-            className="text-[9px] border-transparent px-1.5 py-0"
+            className="text-[11px] border-transparent px-1.5 py-0"
             style={{ color: catMeta.color, borderColor: `${catMeta.color}30` }}
           >
             {catMeta.label}
           </Badge>
-          <Badge variant="outline" className="text-[9px] text-t4 border-white/10 px-1.5 py-0">
+          <Badge variant="outline" className="text-[11px] text-t4 border-white/10 px-1.5 py-0">
             {typeMeta.label}
           </Badge>
           {isPro && (
-            <Badge variant="outline" className="text-[9px] text-sf-violet border-violet-400/20 px-1.5 py-0">
+            <Badge variant="outline" className="text-[11px] text-sf-violet border-violet-400/20 px-1.5 py-0">
               PRO
             </Badge>
           )}
@@ -137,19 +137,19 @@ function ToolDetail({
       <div className="flex flex-wrap gap-2">
         <Badge
           variant="outline"
-          className="text-[10px] px-2 py-0.5"
+          className="text-[12px] px-2 py-0.5"
           style={{ color: catMeta.color, borderColor: `${catMeta.color}30` }}
         >
           {catMeta.label}
         </Badge>
-        <Badge variant="outline" className="text-[10px] text-t3 border-white/10 px-2 py-0.5">
+        <Badge variant="outline" className="text-[12px] text-t3 border-white/10 px-2 py-0.5">
           {compMeta.icon} {compMeta.label}
         </Badge>
-        <Badge variant="outline" className="text-[10px] text-t3 border-white/10 px-2 py-0.5">
+        <Badge variant="outline" className="text-[12px] text-t3 border-white/10 px-2 py-0.5">
           {typeMeta.label}
         </Badge>
         {isPro && (
-          <Badge variant="outline" className="text-[10px] text-sf-violet border-violet-400/20 px-2 py-0.5">
+          <Badge variant="outline" className="text-[12px] text-sf-violet border-violet-400/20 px-2 py-0.5">
             PRO
           </Badge>
         )}
@@ -157,7 +157,7 @@ function ToolDetail({
 
       {/* Cascade position */}
       <GlassPanel className="p-3">
-        <h4 className="font-mono text-[9px] tracking-[2px] uppercase text-t3/60 mb-2">
+        <h4 className="font-mono text-[11px] tracking-[2px] uppercase text-t3/60 mb-2">
           // CASCADE POSITION
         </h4>
         <div className="flex items-center gap-1 overflow-x-auto pb-1">
@@ -169,7 +169,7 @@ function ToolDetail({
               return (
                 <div
                   key={pos}
-                  className={`text-[9px] font-mono uppercase tracking-wider px-2 py-1 rounded-sm shrink-0 transition-colors ${
+                  className={`text-[11px] font-mono uppercase tracking-wider px-2 py-1 rounded-sm shrink-0 transition-colors ${
                     isActive
                       ? "bg-primary/10 border border-primary/30 text-primary"
                       : "text-t5 border border-transparent"
@@ -180,7 +180,7 @@ function ToolDetail({
               );
             })}
           {tool.cascade === "meta" && (
-            <div className="text-[9px] font-mono uppercase tracking-wider px-2 py-1 rounded-sm bg-primary/10 border border-primary/30 text-primary shrink-0">
+            <div className="text-[11px] font-mono uppercase tracking-wider px-2 py-1 rounded-sm bg-primary/10 border border-primary/30 text-primary shrink-0">
               Meta
             </div>
           )}
@@ -190,13 +190,13 @@ function ToolDetail({
       {/* Meta row */}
       <div className="grid grid-cols-2 gap-3">
         <GlassPanel className="p-3">
-          <span className="text-t4 text-[10px] uppercase tracking-wider block mb-1">
+          <span className="text-t4 text-[12px] uppercase tracking-wider block mb-1">
             Time Estimate
           </span>
           <span className="font-mono text-t2 text-sm">{tool.timeEstimate}</span>
         </GlassPanel>
         <GlassPanel className="p-3">
-          <span className="text-t4 text-[10px] uppercase tracking-wider block mb-1">
+          <span className="text-t4 text-[12px] uppercase tracking-wider block mb-1">
             Workshop
           </span>
           <span className="font-mono text-t2 text-sm">
@@ -208,7 +208,7 @@ function ToolDetail({
       {/* Relationships */}
       {tool.buildsOn.length > 0 && (
         <div>
-          <h4 className="font-mono text-[9px] tracking-[2px] uppercase text-t3/60 mb-2">
+          <h4 className="font-mono text-[11px] tracking-[2px] uppercase text-t3/60 mb-2">
             // BUILDS ON
           </h4>
           <div className="space-y-1.5">
@@ -221,7 +221,7 @@ function ToolDetail({
               >
                 <Badge
                   variant="outline"
-                  className={`text-[9px] shrink-0 mt-0.5 px-1.5 py-0 ${
+                  className={`text-[11px] shrink-0 mt-0.5 px-1.5 py-0 ${
                     rel.strength === "required"
                       ? "text-sf-amber border-amber-400/20"
                       : rel.strength === "recommended"
@@ -242,7 +242,7 @@ function ToolDetail({
 
       {tool.feedsInto.length > 0 && (
         <div>
-          <h4 className="font-mono text-[9px] tracking-[2px] uppercase text-t3/60 mb-2">
+          <h4 className="font-mono text-[11px] tracking-[2px] uppercase text-t3/60 mb-2">
             // FEEDS INTO
           </h4>
           <div className="space-y-1.5">
@@ -255,7 +255,7 @@ function ToolDetail({
               >
                 <Badge
                   variant="outline"
-                  className={`text-[9px] shrink-0 mt-0.5 px-1.5 py-0 ${
+                  className={`text-[11px] shrink-0 mt-0.5 px-1.5 py-0 ${
                     rel.strength === "required"
                       ? "text-sf-amber border-amber-400/20"
                       : rel.strength === "recommended"

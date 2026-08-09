@@ -166,7 +166,7 @@ const PromptBrowserPage = () => {
 
         {/* ── Today's prompt (highlighted) ───────────────────── */}
         <section className="mb-10">
-          <p className="text-[10px] font-medium uppercase tracking-[1.5px] text-t3 mb-3 flex items-center gap-2">
+          <p className="text-[12px] font-medium uppercase tracking-[1.5px] text-t3 mb-3 flex items-center gap-2">
             <Sparkles className="w-3.5 h-3.5 text-primary/60" />
             Today's Prompt
           </p>
@@ -242,18 +242,18 @@ function TodayPromptContent({
       <div className="flex items-center gap-3 mb-4">
         <div className="flex items-center gap-2">
           <Badge
-            className={`text-[10px] px-2 py-0.5 rounded-sm border ${CATEGORY_COLORS[prompt.category]}`}
+            className={`text-[12px] px-2 py-0.5 rounded-sm border ${CATEGORY_COLORS[prompt.category]}`}
           >
             {CATEGORY_LABELS[prompt.category]}
           </Badge>
           <Badge
-            className={`text-[10px] px-2 py-0.5 rounded-sm border ${DIFFICULTY_COLORS[prompt.difficulty]}`}
+            className={`text-[12px] px-2 py-0.5 rounded-sm border ${DIFFICULTY_COLORS[prompt.difficulty]}`}
           >
             {DIFFICULTY_LABELS[prompt.difficulty]}
           </Badge>
         </div>
         {isActedOn && (
-          <Badge className="text-[10px] px-2 py-0.5 rounded-sm border border-emerald-400/20 bg-emerald-400/[0.06] text-sf-emerald ml-auto">
+          <Badge className="text-[12px] px-2 py-0.5 rounded-sm border border-emerald-400/20 bg-emerald-400/[0.06] text-sf-emerald ml-auto">
             <Check className="w-3 h-3 mr-1" />
             Completed
           </Badge>
@@ -335,11 +335,11 @@ function PromptCard({
 
       {/* Day label + today badge */}
       <div className="flex items-center gap-2 mb-3">
-        <span className="font-mono text-[10px] text-t4 uppercase tracking-[1.5px]">
+        <span className="font-mono text-[12px] text-t4 uppercase tracking-[1.5px]">
           {dayLabel}
         </span>
         {isToday && (
-          <Badge className="text-[9px] px-1.5 py-0 rounded-sm border border-primary/20 bg-primary/[0.06] text-primary">
+          <Badge className="text-[11px] px-1.5 py-0 rounded-sm border border-primary/20 bg-primary/[0.06] text-primary">
             Today
           </Badge>
         )}
@@ -348,12 +348,12 @@ function PromptCard({
       {/* Category + difficulty badges */}
       <div className="flex items-center gap-1.5 mb-2.5">
         <Badge
-          className={`text-[9px] px-1.5 py-0 rounded-sm border ${CATEGORY_COLORS[prompt.category]}`}
+          className={`text-[11px] px-1.5 py-0 rounded-sm border ${CATEGORY_COLORS[prompt.category]}`}
         >
           {CATEGORY_LABELS[prompt.category]}
         </Badge>
         <Badge
-          className={`text-[9px] px-1.5 py-0 rounded-sm border ${DIFFICULTY_COLORS[prompt.difficulty]}`}
+          className={`text-[11px] px-1.5 py-0 rounded-sm border ${DIFFICULTY_COLORS[prompt.difficulty]}`}
         >
           {DIFFICULTY_LABELS[prompt.difficulty]}
         </Badge>
@@ -374,7 +374,7 @@ function PromptCard({
         {prompt.wordGoal && (
           <div className="flex items-center gap-1.5">
             <Target className="w-3 h-3 text-t5" />
-            <span className="font-mono text-[10px] text-t5">
+            <span className="font-mono text-[12px] text-t5">
               {prompt.wordGoal} words
             </span>
           </div>
@@ -384,7 +384,7 @@ function PromptCard({
           type="button"
           onClick={() => onStartWriting(prompt)}
           disabled={isCompleted}
-          className={`ml-auto flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-[1px] transition-colors ${
+          className={`ml-auto flex items-center gap-1.5 text-[12px] font-medium uppercase tracking-[1px] transition-colors ${
             isCompleted
               ? "text-t5 cursor-default"
               : "text-primary hover:text-primary/80 cursor-pointer"

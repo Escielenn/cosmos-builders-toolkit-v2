@@ -19,7 +19,7 @@ import { cn } from "@/lib/utils";
  *   crimson  , Stop / errors
  */
 const tagVariants = cva(
-  "inline-flex items-center gap-1 border px-2 py-0.5 rounded-sf-tag font-mono text-[11px] leading-none uppercase tracking-[0.18em] whitespace-nowrap select-none",
+  "inline-flex items-center gap-1 border px-2 py-0.5 rounded-sf-tag font-mono text-[12px] leading-none uppercase tracking-[0.18em] whitespace-nowrap select-none",
   {
     variants: {
       variant: {

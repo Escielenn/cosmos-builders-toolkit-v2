@@ -356,7 +356,7 @@ export function WriteSheet({
               </DropdownMenu>
 
               {prompt && (
-                <Badge variant="glow" className="text-[10px]">
+                <Badge variant="glow" className="text-[12px]">
                   {CATEGORY_LABELS[prompt.category]}
                 </Badge>
               )}
@@ -424,7 +424,7 @@ export function WriteSheet({
                       style={{ width: `${goalProgress}%` }}
                     />
                   </div>
-                  <span className="font-mono text-[10px] text-t4">
+                  <span className="font-mono text-[12px] text-t4">
                     {stats.wordsToday}/{preferences.dailyGoalWords}
                   </span>
                   <GoalSetting compact />
@@ -447,7 +447,7 @@ export function WriteSheet({
                   </span>
                 )}
                 {saveStatus === "idle" && entryId && (
-                  <span className="flex items-center gap-1 text-[10px] text-t5">
+                  <span className="flex items-center gap-1 text-[12px] text-t5">
                     <Check className="w-3 h-3" />
                     <span className="hidden sm:inline">Auto-saved</span>
                   </span>

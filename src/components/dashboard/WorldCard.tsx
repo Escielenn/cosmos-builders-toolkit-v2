@@ -133,7 +133,7 @@ const WorldCard = ({
           <div className="absolute top-2 right-2 flex flex-col items-end gap-1">
             {isFork && (
               <span
-                className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-sm bg-sf-stellar/[0.06] border border-sf-stellar/[0.15] text-sf-stellar font-mono text-[10px] tracking-[0.18em] uppercase"
+                className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-sm bg-sf-stellar/[0.06] border border-sf-stellar/[0.15] text-sf-stellar font-mono text-[12px] tracking-[0.18em] uppercase"
                 title={source ? `Forked from ${source.name}` : "Forked from another world"}
               >
                 <GitFork className="w-3 h-3" />

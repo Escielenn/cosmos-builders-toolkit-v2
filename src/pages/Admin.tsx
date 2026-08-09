@@ -87,7 +87,7 @@ const StatCard = ({
     className={`p-5 ${onClick ? "cursor-pointer hover:bg-white/[0.02] transition-colors" : ""}`}
     onClick={onClick}
   >
-    <p className="text-[11px] font-medium uppercase tracking-[1.5px] text-t3 mb-2">
+    <p className="text-[12px] font-medium uppercase tracking-[1.5px] text-t3 mb-2">
       {label}
     </p>
     <p className="font-mono text-3xl text-t1">{value}</p>
@@ -96,7 +96,7 @@ const StatCard = ({
 );
 
 const TH = ({ children, className = "" }: { children?: React.ReactNode; className?: string }) => (
-  <th className={`text-left text-[11px] font-medium uppercase tracking-[1.5px] text-t3 px-3 py-3 ${className}`}>
+  <th className={`text-left text-[12px] font-medium uppercase tracking-[1.5px] text-t3 px-3 py-3 ${className}`}>
     {children}
   </th>
 );
@@ -139,7 +139,7 @@ const subStatusColors: Record<string, string> = {
 };
 
 const StatusBadge = ({ status, colorMap }: { status: string; colorMap: Record<string, string> }) => (
-  <span className={`inline-flex items-center rounded-sm border px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider ${colorMap[status] ?? "text-t3"}`}>
+  <span className={`inline-flex items-center rounded-sm border px-2 py-0.5 text-[12px] font-medium uppercase tracking-wider ${colorMap[status] ?? "text-t3"}`}>
     {status.replace(/_/g, " ")}
   </span>
 );
@@ -242,12 +242,12 @@ const TaskItem = ({
       </span>
 
       {todo.linked_ticket_id && (
-        <span className="shrink-0 text-[8px] font-medium uppercase tracking-wider px-1 py-0.5 rounded-sm bg-amber-500/[0.06] border border-amber-500/[0.15] text-sf-amber">
+        <span className="shrink-0 text-[10px] font-medium uppercase tracking-wider px-1 py-0.5 rounded-sm bg-amber-500/[0.06] border border-amber-500/[0.15] text-sf-amber">
           TKT
         </span>
       )}
       {todo.linked_contact_id && (
-        <span className="shrink-0 text-[8px] font-medium uppercase tracking-wider px-1 py-0.5 rounded-sm bg-sky-500/[0.06] border border-sky-500/[0.15] text-sky-400">
+        <span className="shrink-0 text-[10px] font-medium uppercase tracking-wider px-1 py-0.5 rounded-sm bg-sky-500/[0.06] border border-sky-500/[0.15] text-sky-400">
           MSG
         </span>
       )}
@@ -293,11 +293,11 @@ const TasksSidebarContent = ({ onNavigate }: { onNavigate: (tab: string) => void
       {/* Header */}
       <div className="flex items-center justify-between px-3 py-3 border-b border-white/[0.06]">
         <div className="flex items-center gap-2">
-          <h3 className="text-[11px] font-medium uppercase tracking-[1.5px] text-t3">
+          <h3 className="text-[12px] font-medium uppercase tracking-[1.5px] text-t3">
             Tasks
           </h3>
           {pendingTodos.length > 0 && (
-            <span className="inline-flex items-center justify-center w-5 h-5 rounded-sm text-[10px] font-mono bg-primary/[0.06] border border-primary/[0.15] text-primary">
+            <span className="inline-flex items-center justify-center w-5 h-5 rounded-sm text-[12px] font-mono bg-primary/[0.06] border border-primary/[0.15] text-primary">
               {pendingTodos.length}
             </span>
           )}
@@ -333,7 +333,7 @@ const TasksSidebarContent = ({ onNavigate }: { onNavigate: (tab: string) => void
               value={newPriority}
               onChange={(e) => setNewPriority(e.target.value)}
               title="Priority"
-              className="bg-white/[0.04] border border-white/[0.1] rounded-xs text-[10px] text-t3 px-1.5 py-1 focus:outline-none"
+              className="bg-white/[0.04] border border-white/[0.1] rounded-xs text-[12px] text-t3 px-1.5 py-1 focus:outline-none"
             >
               <option value="low">Low</option>
               <option value="normal">Normal</option>
@@ -342,7 +342,7 @@ const TasksSidebarContent = ({ onNavigate }: { onNavigate: (tab: string) => void
             </select>
             <Button
               size="sm"
-              className="rounded-none text-[10px] h-6 px-2"
+              className="rounded-none text-[12px] h-6 px-2"
               onClick={handleAdd}
               disabled={!newTitle.trim() || createTodo.isPending}
             >
@@ -371,7 +371,7 @@ const TasksSidebarContent = ({ onNavigate }: { onNavigate: (tab: string) => void
             {doneTodos.length > 0 && (
               <div className="border-t border-white/[0.06]">
                 <button
-                  className="w-full flex items-center justify-between px-3 py-2 text-[10px] font-medium uppercase tracking-wider text-t4 hover:text-t3 transition-colors"
+                  className="w-full flex items-center justify-between px-3 py-2 text-[12px] font-medium uppercase tracking-wider text-t4 hover:text-t3 transition-colors"
                   onClick={() => setShowDone(!showDone)}
                 >
                   <span className="flex items-center gap-1.5">
@@ -390,7 +390,7 @@ const TasksSidebarContent = ({ onNavigate }: { onNavigate: (tab: string) => void
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="rounded-none text-[10px] h-6 gap-1 text-t4 hover:text-sf-crimson"
+                        className="rounded-none text-[12px] h-6 gap-1 text-t4 hover:text-sf-crimson"
                         onClick={() => clearDone.mutate()}
                         disabled={clearDone.isPending}
                       >
@@ -576,7 +576,7 @@ const UsersTab = () => {
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {/* Left: Profile */}
                             <div className="space-y-3">
-                              <h4 className="text-[11px] font-medium uppercase tracking-[1.5px] text-t3">Profile</h4>
+                              <h4 className="text-[12px] font-medium uppercase tracking-[1.5px] text-t3">Profile</h4>
                               <div className="space-y-1.5 text-sm">
                                 <div><span className="text-t4">Email:</span> <span className="text-t2">{userDetail.email}</span></div>
                                 <div><span className="text-t4">Display Name:</span> <span className="text-t2">{userDetail.display_name || "-"}</span></div>
@@ -584,7 +584,7 @@ const UsersTab = () => {
                                 <div><span className="text-t4">Joined:</span> <span className="text-t2 font-mono text-xs">{formatDate(userDetail.created_at)}</span></div>
                               </div>
 
-                              <h4 className="text-[11px] font-medium uppercase tracking-[1.5px] text-t3 pt-2">Usage</h4>
+                              <h4 className="text-[12px] font-medium uppercase tracking-[1.5px] text-t3 pt-2">Usage</h4>
                               <div className="flex gap-6 text-sm">
                                 <div className="flex items-center gap-1.5">
                                   <Globe className="w-3.5 h-3.5 text-t4" />
@@ -609,7 +609,7 @@ const UsersTab = () => {
 
                             {/* Right: Subscription */}
                             <div className="space-y-3">
-                              <h4 className="text-[11px] font-medium uppercase tracking-[1.5px] text-t3">Subscription</h4>
+                              <h4 className="text-[12px] font-medium uppercase tracking-[1.5px] text-t3">Subscription</h4>
                               {userDetail.subscription ? (
                                 <div className="space-y-1.5 text-sm">
                                   <div className="flex items-center gap-2">
@@ -694,13 +694,13 @@ const TicketDetail = ({ ticket }: { ticket: AdminTicket }) => {
 
       {/* Status */}
       <div className="flex items-center gap-2">
-        <span className="text-[11px] font-medium uppercase tracking-[1.5px] text-t4 w-16">Status:</span>
+        <span className="text-[12px] font-medium uppercase tracking-[1.5px] text-t4 w-16">Status:</span>
         {TICKET_STATUSES.map((s) => (
           <Button
             key={s}
             variant={ticket.status === s ? "default" : "ghost"}
             size="sm"
-            className="rounded-none text-[10px] h-7 px-2"
+            className="rounded-none text-[12px] h-7 px-2"
             disabled={updateTicket.isPending}
             onClick={(e) => { e.stopPropagation(); updateTicket.mutate({ ticketId: ticket.id, status: s }); }}
           >
@@ -711,13 +711,13 @@ const TicketDetail = ({ ticket }: { ticket: AdminTicket }) => {
 
       {/* Priority */}
       <div className="flex items-center gap-2">
-        <span className="text-[11px] font-medium uppercase tracking-[1.5px] text-t4 w-16">Priority:</span>
+        <span className="text-[12px] font-medium uppercase tracking-[1.5px] text-t4 w-16">Priority:</span>
         {TICKET_PRIORITIES.map((p) => (
           <Button
             key={p}
             variant={ticket.priority === p ? "default" : "ghost"}
             size="sm"
-            className="rounded-none text-[10px] h-7 px-2"
+            className="rounded-none text-[12px] h-7 px-2"
             disabled={updateTicket.isPending}
             onClick={(e) => { e.stopPropagation(); updateTicket.mutate({ ticketId: ticket.id, priority: p }); }}
           >
@@ -728,7 +728,7 @@ const TicketDetail = ({ ticket }: { ticket: AdminTicket }) => {
 
       {/* Admin Notes */}
       <div className="space-y-2">
-        <span className="text-[11px] font-medium uppercase tracking-[1.5px] text-t4">Admin Notes</span>
+        <span className="text-[12px] font-medium uppercase tracking-[1.5px] text-t4">Admin Notes</span>
         <textarea
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
@@ -857,13 +857,13 @@ const ContactDetail = ({ contact }: { contact: AdminContact }) => {
 
       {/* Status */}
       <div className="flex items-center gap-2">
-        <span className="text-[11px] font-medium uppercase tracking-[1.5px] text-t4 w-16">Status:</span>
+        <span className="text-[12px] font-medium uppercase tracking-[1.5px] text-t4 w-16">Status:</span>
         {CONTACT_STATUSES.map((s) => (
           <Button
             key={s}
             variant={contact.status === s ? "default" : "ghost"}
             size="sm"
-            className="rounded-none text-[10px] h-7 px-2"
+            className="rounded-none text-[12px] h-7 px-2"
             disabled={updateContact.isPending}
             onClick={(e) => { e.stopPropagation(); updateContact.mutate({ contactId: contact.id, status: s }); }}
           >
@@ -874,7 +874,7 @@ const ContactDetail = ({ contact }: { contact: AdminContact }) => {
 
       {/* Admin Notes */}
       <div className="space-y-2">
-        <span className="text-[11px] font-medium uppercase tracking-[1.5px] text-t4">Admin Notes</span>
+        <span className="text-[12px] font-medium uppercase tracking-[1.5px] text-t4">Admin Notes</span>
         <textarea
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
@@ -1087,7 +1087,7 @@ const Admin = () => {
             <h1 className="font-display text-3xl md:text-4xl tracking-[0.08em] text-t1">
               MISSION CONTROL
             </h1>
-            <span className="inline-flex items-center gap-1 rounded-sm border px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider bg-red-500/[0.06] border-red-500/[0.15] text-sf-crimson">
+            <span className="inline-flex items-center gap-1 rounded-sm border px-2 py-0.5 text-[12px] font-medium uppercase tracking-wider bg-red-500/[0.06] border-red-500/[0.15] text-sf-crimson">
               <AlertTriangle className="w-3 h-3" /> Admin Only
             </span>
           </div>

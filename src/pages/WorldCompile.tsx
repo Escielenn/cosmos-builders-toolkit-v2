@@ -323,7 +323,7 @@ export default function WorldCompile() {
                             <span className="text-xs font-medium text-t2 flex-1 text-left">
                               {folder.title}
                             </span>
-                            <span className="text-[10px] font-mono text-t5">
+                            <span className="text-[12px] font-mono text-t5">
                               {folderDocIds.filter((id) => includedIds.has(id)).length}/{folderDocIds.length}
                             </span>
                           </button>
@@ -345,7 +345,7 @@ export default function WorldCompile() {
                       <>
                         {folders.length > 0 && (
                           <div className="pt-2 border-t border-white/5">
-                            <span className="text-[9px] uppercase tracking-[1.5px] text-t5 font-heading px-2">
+                            <span className="text-[11px] uppercase tracking-[1.5px] text-t5 font-heading px-2">
                               Unfiled
                             </span>
                           </div>
@@ -476,7 +476,7 @@ export default function WorldCompile() {
                   >
                     <FileText className="w-4 h-4 mr-2" />
                     Download .docx
-                    <span className="ml-auto text-[10px] opacity-60">Standard manuscript</span>
+                    <span className="ml-auto text-[12px] opacity-60">Standard manuscript</span>
                   </Button>
                   <Button
                     variant="outline"
@@ -486,7 +486,7 @@ export default function WorldCompile() {
                   >
                     <Download className="w-4 h-4 mr-2" />
                     Download Markdown
-                    <span className="ml-auto text-[10px] opacity-60">.md</span>
+                    <span className="ml-auto text-[12px] opacity-60">.md</span>
                   </Button>
                   <Button
                     variant="outline"
@@ -496,12 +496,12 @@ export default function WorldCompile() {
                   >
                     <Download className="w-4 h-4 mr-2" />
                     Download plain text
-                    <span className="ml-auto text-[10px] opacity-60">.txt / Scrivener</span>
+                    <span className="ml-auto text-[12px] opacity-60">.txt / Scrivener</span>
                   </Button>
                 </div>
 
                 {chapters.length === 0 && (
-                  <p className="text-[11px] text-t4 text-center py-2">
+                  <p className="text-[12px] text-t4 text-center py-2">
                     Select at least one chapter to export.
                   </p>
                 )}
@@ -543,7 +543,7 @@ function DocToggleRow({
         {doc.title || "Untitled"}
       </span>
       {words > 0 && (
-        <span className="text-[9px] font-mono text-t5 shrink-0">
+        <span className="text-[11px] font-mono text-t5 shrink-0">
           {words < 1000 ? words : `${Math.round(words / 100) / 10}k`}
         </span>
       )}

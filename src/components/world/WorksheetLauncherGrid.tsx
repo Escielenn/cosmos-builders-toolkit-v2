@@ -123,14 +123,14 @@ export default function WorksheetLauncherGrid({
                     {linked ? (
                       <div className="flex items-center gap-1 mt-0.5">
                         <ExternalLink className="w-2.5 h-2.5 text-primary/40" />
-                        <span className="text-[10px] text-primary/50 truncate">
+                        <span className="text-[12px] text-primary/50 truncate">
                           {linked.worksheetTitle || "Open Worksheet"}
                         </span>
                       </div>
                     ) : canEdit ? (
                       <div className="flex items-center gap-1 mt-0.5">
                         <Plus className="w-2.5 h-2.5 text-t4" />
-                        <span className="text-[10px] text-t4">
+                        <span className="text-[12px] text-t4">
                           Start Worksheet
                         </span>
                       </div>

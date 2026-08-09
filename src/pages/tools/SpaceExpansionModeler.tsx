@@ -564,7 +564,7 @@ const SpaceExpansionModeler = () => {
                     <p className="text-xs text-primary mb-2">{tmpl.tagline}</p>
                     <p className="text-xs text-t4 mb-3">{tmpl.description}</p>
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] text-t2 italic">{tmpl.reference}</span>
+                      <span className="text-[12px] text-t2 italic">{tmpl.reference}</span>
                       <Button
                         variant="outline"
                         size="sm"
@@ -799,7 +799,7 @@ const SpaceExpansionModeler = () => {
                     disabled={!phase.reached}
                   >
                     {phase.name}
-                    {phase.reached && <span className="ml-1 text-[10px] opacity-60">●</span>}
+                    {phase.reached && <span className="ml-1 text-[12px] opacity-60">●</span>}
                   </Button>
                 ))}
               </div>
@@ -1093,7 +1093,7 @@ const SpaceExpansionModeler = () => {
                           {interDef && (
                             <Badge
                               variant="outline"
-                              className="ml-auto text-[10px]"
+                              className="ml-auto text-[12px]"
                               style={{ borderColor: interDef.hex, color: interDef.hex }}
                             >
                               {interDef.label}

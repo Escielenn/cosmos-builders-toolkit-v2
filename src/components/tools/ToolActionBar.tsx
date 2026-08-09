@@ -1,6 +1,6 @@
 import { type ReactNode, useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Save, Printer, Download, Share2, StickyNote, ImageIcon, FolderOpen, Cloud, CloudOff, ChevronUp, BookOpen } from "lucide-react";
+import { Save, Printer, Download, Share2, StickyNote, ImageIcon, FolderOpen, Cloud, CloudOff, ChevronUp, BookOpen, ChevronDown, MoreHorizontal } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -9,6 +9,14 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useLinkedEntryId } from "@/hooks/use-linked-entry";
 
 interface ToolActionBarProps {
@@ -106,61 +114,94 @@ const ToolActionBar = ({
             <p className="text-xs">{isCloudEnabled ? "Cloud sync enabled" : "Local only"}</p>
           </TooltipContent>
         </Tooltip>
-        {onOpen && (
-          <Button variant="outline" size="sm" onClick={onOpen}>
-            <FolderOpen className="w-4 h-4 mr-2" />
-            Open
-          </Button>
-        )}
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button variant="outline" size="sm" onClick={onPrint}>
-              <Printer className="w-4 h-4 mr-2" />
-              Print / PDF
+        {/* One Export control instead of three competing ones. Quick Export,
+            the format dialog, and Print/PDF used to sit side by side in this
+            row, which read as three different features. */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="sm">
+              <Download className="w-4 h-4 mr-2" />
+              {exportLabel}
+              <ChevronDown className="w-3.5 h-3.5 ml-1.5 opacity-60" />
             </Button>
-          </TooltipTrigger>
-          <TooltipContent className="max-w-xs">
-            <p className="text-xs">
-              Use your browser's print dialog and select "Save as PDF" to export as a PDF file.
-            </p>
-          </TooltipContent>
-        </Tooltip>
-        <Button variant="outline" size="sm" onClick={onExport}>
-          <Download className="w-4 h-4 mr-2" />
-          {exportLabel}
-        </Button>
-        {extraActions}
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="w-60 bg-sf-surface/95 backdrop-blur-sf-side border-sf-border rounded-none">
+            <DropdownMenuLabel className="text-[11px] uppercase tracking-[1.5px] text-t3 font-medium">
+              Export
+            </DropdownMenuLabel>
+            {extraActions && (
+              <div className="px-1 py-1 [&_button]:w-full [&_button]:justify-start">
+                {extraActions}
+              </div>
+            )}
+            <DropdownMenuItem onClick={onExport}>
+              <Download className="w-4 h-4 mr-2" />
+              Choose format…
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={onPrint}>
+              <Printer className="w-4 h-4 mr-2" />
+              Print / Save as PDF
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+
         {onNotesClick && (
           <Button variant="outline" size="sm" onClick={onNotesClick}>
             <StickyNote className="w-4 h-4 mr-2" />
             Notes
           </Button>
         )}
-        {onMoodboardClick && (
-          <Button variant="outline" size="sm" onClick={onMoodboardClick}>
-            <ImageIcon className="w-4 h-4 mr-2" />
-            Moodboard
-            {moodboardCount != null && moodboardCount > 0 && (
-              <Badge variant="secondary" className="ml-1.5 text-xs px-1.5 py-0">
-                {moodboardCount}
-              </Badge>
-            )}
-          </Button>
-        )}
-        {handleWikiClick && (
-          <Button variant="outline" size="sm" onClick={handleWikiClick}>
-            <BookOpen className="w-4 h-4 mr-2" />
-            Wiki
-          </Button>
-        )}
-        {onShare && (
-          <Button variant="outline" size="sm" onClick={onShare}>
-            <Share2 className="w-4 h-4 mr-2" />
-            Share
-            {isShared && (
-              <span className="ml-1.5 w-1.5 h-1.5 rounded-sm bg-primary" />
-            )}
-          </Button>
+
+        {/* Secondary actions collapse into one overflow menu so the bar stays
+            scannable no matter how many a given tool enables. */}
+        {(onOpen || onMoodboardClick || handleWikiClick || onShare) && (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm" aria-label="More actions">
+                <MoreHorizontal className="w-4 h-4 mr-2" />
+                More
+                <ChevronDown className="w-3.5 h-3.5 ml-1.5 opacity-60" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="w-56 bg-sf-surface/95 backdrop-blur-sf-side border-sf-border rounded-none">
+              {onMoodboardClick && (
+                <DropdownMenuItem onClick={onMoodboardClick}>
+                  <ImageIcon className="w-4 h-4 mr-2" />
+                  Moodboard
+                  {moodboardCount != null && moodboardCount > 0 && (
+                    <Badge variant="secondary" className="ml-auto text-xs px-1.5 py-0">
+                      {moodboardCount}
+                    </Badge>
+                  )}
+                </DropdownMenuItem>
+              )}
+              {handleWikiClick && (
+                <DropdownMenuItem onClick={handleWikiClick}>
+                  <BookOpen className="w-4 h-4 mr-2" />
+                  Open wiki entry
+                </DropdownMenuItem>
+              )}
+              {onShare && (
+                <DropdownMenuItem onClick={onShare}>
+                  <Share2 className="w-4 h-4 mr-2" />
+                  Share
+                  {isShared && (
+                    <span className="ml-auto w-1.5 h-1.5 rounded-sm bg-primary" />
+                  )}
+                </DropdownMenuItem>
+              )}
+              {onOpen && (
+                <>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={onOpen}>
+                    <FolderOpen className="w-4 h-4 mr-2" />
+                    Open saved worksheet…
+                  </DropdownMenuItem>
+                </>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
         )}
       </div>
     </div>

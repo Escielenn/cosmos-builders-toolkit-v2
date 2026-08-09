@@ -954,7 +954,7 @@ const EvolutionaryBiology = () => {
                   <Dna className="w-5 h-5 text-sf-emerald" />
                 </div>
                 <div>
-                  <h2 className="font-heading text-[11px] font-light uppercase tracking-[3px] text-[hsl(var(--sf-section-green))]">Species Identity</h2>
+                  <h2 className="font-heading text-[12px] font-light uppercase tracking-[3px] text-[hsl(var(--sf-section-green))]">Species Identity</h2>
                   <p className="text-xs text-t4">Name your species and link to environmental context</p>
                 </div>
               </div>

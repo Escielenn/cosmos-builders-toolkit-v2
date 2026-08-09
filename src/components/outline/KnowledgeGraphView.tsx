@@ -260,7 +260,7 @@ const KnowledgeGraphView = ({
       {/* Connection type picker dialog */}
       {pendingConnection && (
         <div className="absolute top-3 left-1/2 -translate-x-1/2 z-50 bg-sf-void border border-sf-border p-3 flex items-center gap-2 shadow-xl">
-          <span className="text-[10px] uppercase tracking-wider text-t3 font-heading">
+          <span className="text-[12px] uppercase tracking-wider text-t3 font-heading">
             Relationship:
           </span>
           <Select

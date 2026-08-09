@@ -32,7 +32,7 @@ export const KeyValueRow = React.forwardRef<HTMLDivElement, KeyValueRowProps>(
     <div
       ref={ref}
       className={cn(
-        "flex items-baseline justify-between gap-3 font-mono text-[12px] tracking-[0.12em] leading-snug",
+        "flex items-baseline justify-between gap-3 font-mono text-[13px] tracking-[0.12em] leading-snug",
         className,
       )}
       {...props}

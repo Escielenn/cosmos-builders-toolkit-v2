@@ -152,7 +152,7 @@ const CollaboratorSection = ({ worldId, worldName }: CollaboratorSectionProps) =
                 />
               ) : (
                 <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
-                  <span className="text-[10px] font-medium text-primary">
+                  <span className="text-[12px] font-medium text-primary">
                     {(collab.display_name || "?").charAt(0).toUpperCase()}
                   </span>
                 </div>

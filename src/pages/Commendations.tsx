@@ -134,16 +134,16 @@ export default function Commendations() {
                   >
                     <div className="flex items-center justify-between mb-1">
                       <span className={cn(
-                        "font-heading text-[11px] uppercase tracking-[2px] transition-colors",
+                        "font-heading text-[12px] uppercase tracking-[2px] transition-colors",
                         isActive ? "text-primary" : "text-t2 group-hover:text-t1"
                       )}>
                         {CATEGORY_LABELS[category]}
                       </span>
-                      <span className="font-mono text-[11px] text-t4">
+                      <span className="font-mono text-[12px] text-t4">
                         {earned}/{total}
                       </span>
                     </div>
-                    <p className="font-sans text-[10px] text-t5 leading-relaxed">
+                    <p className="font-sans text-[12px] text-t5 leading-relaxed">
                       {CATEGORY_DESCRIPTIONS[category]}
                     </p>
                   </button>
@@ -154,16 +154,16 @@ export default function Commendations() {
             {/* Active filter indicator */}
             {activeCategory && (
               <div className="mt-4 flex items-center gap-2">
-                <span className="font-mono text-[9px] uppercase tracking-wider text-t4">
+                <span className="font-mono text-[11px] uppercase tracking-wider text-t4">
                   Showing:
                 </span>
-                <span className="font-heading text-[11px] uppercase tracking-[2px] text-primary">
+                <span className="font-heading text-[12px] uppercase tracking-[2px] text-primary">
                   {CATEGORY_LABELS[activeCategory]}
                 </span>
                 <button
                   type="button"
                   onClick={() => setActiveCategory(null)}
-                  className="font-mono text-[9px] uppercase tracking-wider text-t4 hover:text-t2 ml-auto transition-colors"
+                  className="font-mono text-[11px] uppercase tracking-wider text-t4 hover:text-t2 ml-auto transition-colors"
                 >
                   Show All
                 </button>
@@ -174,7 +174,7 @@ export default function Commendations() {
           {/* Badges by tier */}
           {isLoading ? (
             <div className="py-12">
-              <p className="font-mono text-[10px] uppercase tracking-wider text-white/[0.15] text-center">
+              <p className="font-mono text-[12px] uppercase tracking-wider text-white/[0.15] text-center">
                 Loading commendations...
               </p>
             </div>
@@ -190,7 +190,7 @@ export default function Commendations() {
                     <div className="flex items-center gap-3 mb-4">
                       <span
                         className={cn(
-                          "font-mono text-[8px] uppercase tracking-wider px-2 py-1 rounded-sm border",
+                          "font-mono text-[10px] uppercase tracking-wider px-2 py-1 rounded-sm border",
                           tierStyle.bg,
                           tierStyle.border,
                           tierStyle.text
@@ -199,7 +199,7 @@ export default function Commendations() {
                         {TIER_LABELS[tier]}
                       </span>
                       <div className="flex-1 h-px bg-white/[0.06]" />
-                      <span className="font-mono text-[11px] text-t4">
+                      <span className="font-mono text-[12px] text-t4">
                         {tierEarned} / {badges.length}
                       </span>
                     </div>

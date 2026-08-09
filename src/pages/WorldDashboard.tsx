@@ -643,15 +643,15 @@ const WorldDashboard = () => {
       <>
         <Link
           to="/"
-          className="inline-flex items-center gap-2 font-heading text-[11px] uppercase tracking-[0.2em] font-medium text-t3 hover:text-sf-teal-bright transition-colors duration-base mb-6"
+          className="inline-flex items-center gap-2 font-heading text-[12px] uppercase tracking-[0.2em] font-medium text-t3 hover:text-sf-teal-bright transition-colors duration-base mb-6"
         >
           <ArrowLeft className="w-4 h-4" />
           ← RETURN TO BRIDGE
         </Link>
         <GlassPanel className="p-12 text-center">
-          <p className="font-mono text-[11px] tracking-[0.18em] text-sf-crimson uppercase mb-4">// STATUS: UNREACHABLE</p>
+          <p className="font-mono text-[12px] tracking-[0.18em] text-sf-crimson uppercase mb-4">// STATUS: UNREACHABLE</p>
           <h1 className="font-display text-3xl md:text-4xl font-light tracking-sf-title uppercase text-t1 mb-4">WORLD NOT FOUND</h1>
-          <p className="font-mono text-[11px] tracking-[0.18em] uppercase text-t3 mb-6">
+          <p className="font-mono text-[12px] tracking-[0.18em] uppercase text-t3 mb-6">
             RECORD DOES NOT EXIST OR CLEARANCE INSUFFICIENT.
           </p>
           <Button variant="sf-primary" size="sf-md" asChild>
@@ -680,7 +680,7 @@ const WorldDashboard = () => {
         <div className="flex items-center justify-between mb-6">
           <Link
             to="/"
-            className="inline-flex items-center gap-2 font-heading text-[11px] uppercase tracking-[0.2em] font-medium text-t3 hover:text-sf-teal-bright transition-colors duration-base"
+            className="inline-flex items-center gap-2 font-heading text-[12px] uppercase tracking-[0.2em] font-medium text-t3 hover:text-sf-teal-bright transition-colors duration-base"
           >
             <ArrowLeft className="w-4 h-4" />
             ← RETURN TO BRIDGE
@@ -896,7 +896,7 @@ const WorldDashboard = () => {
                               </span>
                             </div>
                             {(entry.metadata as Record<string, unknown>)?.description && (
-                              <p className="text-[11px] text-t4 mt-1 line-clamp-1">
+                              <p className="text-[12px] text-t4 mt-1 line-clamp-1">
                                 {String((entry.metadata as Record<string, unknown>).description)}
                               </p>
                             )}
@@ -1100,7 +1100,7 @@ const WorldDashboard = () => {
                     step={1}
                     aria-label="Vertical image position"
                   />
-                  <div className="flex justify-between text-[10px] text-t3">
+                  <div className="flex justify-between text-[12px] text-t3">
                     <span>Top</span>
                     <span>Center</span>
                     <span>Bottom</span>

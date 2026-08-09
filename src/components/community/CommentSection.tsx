@@ -59,7 +59,7 @@ export default function CommentSection({ worldId }: CommentSectionProps) {
           Comments
         </h3>
         {comments.length > 0 && (
-          <span className="font-mono text-[11px] text-t4">
+          <span className="font-mono text-[12px] text-t4">
             {comments.length}
           </span>
         )}
@@ -100,7 +100,7 @@ export default function CommentSection({ worldId }: CommentSectionProps) {
                   <span className="font-sans text-xs font-medium text-t2">
                     {comment.display_name}
                   </span>
-                  <span className="font-mono text-[10px] text-t4">
+                  <span className="font-mono text-[12px] text-t4">
                     {timeAgo(comment.created_at)}
                   </span>
                 </div>
@@ -140,7 +140,7 @@ export default function CommentSection({ worldId }: CommentSectionProps) {
             maxLength={2000}
           />
           <div className="flex items-center justify-between">
-            <span className="font-mono text-[10px] text-t5">
+            <span className="font-mono text-[12px] text-t5">
               {body.length} / 2000
             </span>
             <Button

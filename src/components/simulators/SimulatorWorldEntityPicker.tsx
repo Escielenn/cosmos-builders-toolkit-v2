@@ -171,7 +171,7 @@ export function SimulatorWorldEntityPicker({
         variant="outline"
         size="sm"
         onClick={() => setOpen(true)}
-        className="bg-sf-void/80 border-sf-border text-sf-teal hover:bg-sf-void text-[10px] uppercase tracking-wider h-7 px-2.5"
+        className="bg-sf-void/80 border-sf-border text-sf-teal hover:bg-sf-void text-[12px] uppercase tracking-wider h-7 px-2.5"
         title="Bind to a planet/star/system in your world"
       >
         <Globe className="w-3 h-3 mr-1" />
@@ -181,21 +181,21 @@ export function SimulatorWorldEntityPicker({
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetContent side="right" className="w-96 bg-sf-surface/95 backdrop-blur-sf-side border-sf-border sf-sb">
           <SheetHeader className="text-left">
-            <p className="font-mono text-[11px] tracking-[0.18em] text-sf-teal uppercase">
+            <p className="font-mono text-[12px] tracking-[0.18em] text-sf-teal uppercase">
               // BIND TO ENTITY
             </p>
             <SheetTitle className="font-display text-xl font-light tracking-sf-title uppercase text-t1">
               From your world
             </SheetTitle>
             <SheetDescription className="font-sans text-sm text-t3 leading-[1.55]">
-              Pick a {entityTypes.length === 1 ? entityTypes[0] : "spatial entity"} to load its stored {simulatorType} state, or save the current simulation onto it. Saved presets live in <code className="font-mono text-[11px] text-sf-teal">metadata.simulatorPresets.{simulatorType}</code>.
+              Pick a {entityTypes.length === 1 ? entityTypes[0] : "spatial entity"} to load its stored {simulatorType} state, or save the current simulation onto it. Saved presets live in <code className="font-mono text-[12px] text-sf-teal">metadata.simulatorPresets.{simulatorType}</code>.
             </SheetDescription>
           </SheetHeader>
 
           <div className="mt-6 space-y-2">
             {filtered.length === 0 && (
               <div className="py-6 text-center space-y-2">
-                <p className="font-mono text-[11px] tracking-[0.18em] uppercase text-t4">
+                <p className="font-mono text-[12px] tracking-[0.18em] uppercase text-t4">
                   // {entityTypes.map((t) => t.toUpperCase()).join(" / ")} INDEX: EMPTY
                 </p>
                 <p className="text-sm text-t3 normal-case tracking-normal">
@@ -214,15 +214,15 @@ export function SimulatorWorldEntityPicker({
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0 flex-1">
                       <div className="font-heading text-sm text-t1 truncate">{e.name}</div>
-                      <div className="font-mono text-[10px] tracking-[0.18em] uppercase text-t4 mt-0.5">
+                      <div className="font-mono text-[12px] tracking-[0.18em] uppercase text-t4 mt-0.5">
                         {e.entity_type}
                       </div>
                     </div>
                     <span
                       className={
                         hasPreset
-                          ? "font-mono text-[10px] tracking-[0.18em] uppercase px-2 py-0.5 rounded-sf-tag border bg-sf-teal/[0.06] border-sf-teal/[0.15] text-sf-teal whitespace-nowrap"
-                          : "font-mono text-[10px] tracking-[0.18em] uppercase px-2 py-0.5 rounded-sf-tag border bg-sf-amber/[0.06] border-sf-amber/[0.15] text-sf-amber whitespace-nowrap"
+                          ? "font-mono text-[12px] tracking-[0.18em] uppercase px-2 py-0.5 rounded-sf-tag border bg-sf-teal/[0.06] border-sf-teal/[0.15] text-sf-teal whitespace-nowrap"
+                          : "font-mono text-[12px] tracking-[0.18em] uppercase px-2 py-0.5 rounded-sf-tag border bg-sf-amber/[0.06] border-sf-amber/[0.15] text-sf-amber whitespace-nowrap"
                       }
                     >
                       {hasPreset ? "STORED" : "EMPTY"}
@@ -234,7 +234,7 @@ export function SimulatorWorldEntityPicker({
                       size="sm"
                       onClick={() => handleLoad(e.id)}
                       disabled={!hasPreset}
-                      className="flex-1 bg-sf-void/80 border-sf-border text-sf-teal hover:bg-sf-void text-[10px] uppercase tracking-wider h-7 disabled:opacity-40"
+                      className="flex-1 bg-sf-void/80 border-sf-border text-sf-teal hover:bg-sf-void text-[12px] uppercase tracking-wider h-7 disabled:opacity-40"
                     >
                       Load
                     </Button>
@@ -243,7 +243,7 @@ export function SimulatorWorldEntityPicker({
                       size="sm"
                       onClick={() => handleSaveState(e.id)}
                       disabled={isSavingThis || updateEntity.isPending}
-                      className="flex-1 bg-sf-teal/[0.08] border-sf-teal/30 text-sf-teal hover:bg-sf-teal/[0.16] text-[10px] uppercase tracking-wider h-7 disabled:opacity-40"
+                      className="flex-1 bg-sf-teal/[0.08] border-sf-teal/30 text-sf-teal hover:bg-sf-teal/[0.16] text-[12px] uppercase tracking-wider h-7 disabled:opacity-40"
                     >
                       <SaveIcon className="w-3 h-3 mr-1" />
                       {isSavingThis ? "Saving…" : "Save State"}

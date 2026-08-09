@@ -18,21 +18,21 @@ const CodexQuickAccess = ({ worldId }: CodexQuickAccessProps) => {
   return (
     <div className="px-3 pt-2 pb-1">
       <div className="sf-divider mb-2" />
-      <span className="font-heading text-[10px] uppercase tracking-[2px] text-t3/40 block mb-1.5">
+      <span className="font-heading text-[12px] uppercase tracking-[2px] text-t3/40 block mb-1.5">
         Quick Access
       </span>
       {links.map((link) => (
         <Link
           key={link.to}
           to={link.to}
-          className="sf-fill-sweep sf-fill-sweep--secondary flex items-start gap-2 py-1.5 px-1 text-[11px] text-t3 hover:text-t1 transition-colors"
+          className="sf-fill-sweep sf-fill-sweep--secondary flex items-start gap-2 py-1.5 px-1 text-[12px] text-t3 hover:text-t1 transition-colors"
         >
           <link.icon className="w-3 h-3 shrink-0 mt-0.5" />
           <div className="min-w-0">
-            <span className="uppercase tracking-wider font-heading text-[10px] block">
+            <span className="uppercase tracking-wider font-heading text-[12px] block">
               {link.label}
             </span>
-            <span className="text-[9px] text-t4 font-sans normal-case tracking-normal leading-tight block">
+            <span className="text-[11px] text-t4 font-sans normal-case tracking-normal leading-tight block">
               {link.desc}
             </span>
           </div>

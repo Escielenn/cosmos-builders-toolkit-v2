@@ -41,7 +41,7 @@ const GravityScaleBar = ({ gravityRatio, className }: GravityScaleBarProps) => {
               style={{ left: `${percent}%`, transform: "translateX(-50%)" }}
             >
               <div className="w-px h-3 bg-foreground/20" />
-              <span className="text-[9px] text-t3 leading-none mt-0.5 whitespace-nowrap">
+              <span className="text-[11px] text-t3 leading-none mt-0.5 whitespace-nowrap">
                 {world.label ?? world.name}
               </span>
             </div>

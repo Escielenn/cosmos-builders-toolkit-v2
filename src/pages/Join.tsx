@@ -284,10 +284,10 @@ const Join = () => {
               <p className="text-xs font-medium text-sf-amber uppercase tracking-wider mb-2">
                 Early Access - Confidential Preview
               </p>
-              <p className="text-[11px] text-t2 leading-relaxed mb-2">
+              <p className="text-[12px] text-t2 leading-relaxed mb-2">
                 StellarForge is in active development. By creating an account, you agree to the following early access terms:
               </p>
-              <ul className="text-[11px] text-t3 leading-relaxed space-y-1.5 list-none">
+              <ul className="text-[12px] text-t3 leading-relaxed space-y-1.5 list-none">
                 <li className="flex gap-2">
                   <span className="text-sf-amber shrink-0">-</span>
                   <span><strong className="text-t2">Confidentiality.</strong> This is a private preview. No screenshots, recordings, reviews, social media posts, or public discussion of the product, its features, or its interface.</span>
@@ -312,7 +312,7 @@ const Join = () => {
               <p className="text-xs font-medium text-t1 mb-1">
                 Your Worlds Are Yours Alone
               </p>
-              <p className="text-[11px] text-t3 leading-relaxed">
+              <p className="text-[12px] text-t3 leading-relaxed">
                 All creative content is encrypted, user-isolated, and never accessed by StellarForge systems. No AI training. No data mining. No third-party sharing.
               </p>
             </div>

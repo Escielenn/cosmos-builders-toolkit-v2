@@ -70,7 +70,7 @@ const ECRMockup = () => {
                   }`}
                 >
                   <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-mono text-t3">
+                    <span className="text-[12px] font-mono text-t3">
                       L{item.level}
                     </span>
                     <span
@@ -84,7 +84,7 @@ const ECRMockup = () => {
                     {item.examples.map((example) => (
                       <span
                         key={example}
-                        className={`text-[8px] px-1.5 py-0.5 rounded border transition-all duration-300 ${
+                        className={`text-[10px] px-1.5 py-0.5 rounded border transition-all duration-300 ${
                           isActive
                             ? "border-muted/30 text-t3"
                             : "border-transparent text-t3 opacity-60"
@@ -126,7 +126,7 @@ const ECRMockup = () => {
             }`}
           />
           <span
-            className={`text-[10px] uppercase tracking-wider transition-colors duration-500 ${
+            className={`text-[12px] uppercase tracking-wider transition-colors duration-500 ${
               activeLevel >= 5 ? "text-sf-emerald" : "text-t3"
             }`}
           >

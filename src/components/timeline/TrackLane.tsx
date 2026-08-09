@@ -149,7 +149,7 @@ const TrackLane = memo(
                   key={ft.id}
                   type="button"
                   onClick={() => dispatch({ type: "UNFOLD_TRACK", payload: ft.id })}
-                  className="flex items-center gap-0.5 px-1 py-0 rounded text-[9px] text-t3 hover:text-t1 bg-muted/30 hover:bg-muted/50 transition-colors"
+                  className="flex items-center gap-0.5 px-1 py-0 rounded text-[11px] text-t3 hover:text-t1 bg-muted/30 hover:bg-muted/50 transition-colors"
                   title={`Unfold ${ft.name}`}
                 >
                   <span
@@ -173,7 +173,7 @@ const TrackLane = memo(
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-44 p-1.5" align="start" side="bottom">
-                  <p className="text-[10px] font-medium text-t3 px-1.5 mb-1">
+                  <p className="text-[12px] font-medium text-t3 px-1.5 mb-1">
                     Fold into...
                   </p>
                   {foldTargets.map((target) => (

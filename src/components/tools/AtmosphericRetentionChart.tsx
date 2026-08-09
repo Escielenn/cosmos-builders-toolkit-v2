@@ -74,7 +74,7 @@ const AtmosphericRetentionChart = ({ retentionData, className }: AtmosphericRete
       })}
 
       {/* Legend */}
-      <div className="flex items-center gap-4 pt-1 text-[10px] text-t3">
+      <div className="flex items-center gap-4 pt-1 text-[12px] text-t3">
         <div className="flex items-center gap-1">
           <div className="w-px h-3 bg-foreground/20" />
           <span>λ=6 retention threshold</span>

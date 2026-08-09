@@ -192,7 +192,7 @@ const TemplatePicker = ({
                     </span>
                     <Badge
                       variant="outline"
-                      className={cn("text-[10px] py-0", CATEGORY_COLORS[template.category])}
+                      className={cn("text-[12px] py-0", CATEGORY_COLORS[template.category])}
                     >
                       {CATEGORY_LABELS[template.category]}
                     </Badge>
@@ -200,7 +200,7 @@ const TemplatePicker = ({
                   <p className="text-xs text-t3 leading-relaxed">
                     {template.description}
                   </p>
-                  <div className="flex items-center gap-3 text-[10px] text-t3/70">
+                  <div className="flex items-center gap-3 text-[12px] text-t3/70">
                     <span>{template.tracks.length} tracks</span>
                     <span>{template.events.length} events</span>
                     <div className="flex items-center gap-0.5">

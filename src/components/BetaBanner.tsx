@@ -14,7 +14,7 @@ const BetaBanner = ({ position = "top" }: BetaBannerProps) => {
     >
       <div className="container mx-auto flex items-center justify-center gap-2">
         <FlaskConical className="w-3 h-3" />
-        <span className="font-mono text-[10px] tracking-wider uppercase">
+        <span className="font-mono text-[12px] tracking-wider uppercase">
           OPEN EARLY ACCESS · STILL BUILDING ·{" "}
           <Link
             to="/contact?tab=beta"

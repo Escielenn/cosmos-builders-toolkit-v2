@@ -293,7 +293,7 @@ export default function CreateElementDialog({
                     )}
                   >
                     <Icon className="w-5 h-5 text-t3/40 group-hover:text-primary/60 transition-colors" />
-                    <span className="text-[10px] font-heading uppercase tracking-wider text-t3 group-hover:text-t2 transition-colors">
+                    <span className="text-[12px] font-heading uppercase tracking-wider text-t3 group-hover:text-t2 transition-colors">
                       {PICKER_LABELS[type]}
                     </span>
                   </button>
@@ -305,12 +305,12 @@ export default function CreateElementDialog({
             {templates.length > 0 && (
               <div className="pt-3 border-t border-white/5">
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-[10px] font-heading uppercase tracking-[1.5px] text-[#00FF88]">
+                  <h3 className="text-[12px] font-heading uppercase tracking-[1.5px] text-[#00FF88]">
                     Your custom types
                   </h3>
                   <a
                     href={`/worlds/${worldId}/custom-types`}
-                    className="text-[10px] text-t4 hover:text-t2"
+                    className="text-[12px] text-t4 hover:text-t2"
                   >
                     Manage →
                   </a>
@@ -328,7 +328,7 @@ export default function CreateElementDialog({
                         className="w-5 h-5 text-t3/40"
                         style={t.color ? { color: t.color } : undefined}
                       />
-                      <span className="text-[10px] font-heading uppercase tracking-wider text-t3">
+                      <span className="text-[12px] font-heading uppercase tracking-wider text-t3">
                         {t.label}
                       </span>
                     </button>
@@ -345,7 +345,7 @@ export default function CreateElementDialog({
                 className="w-full flex items-center justify-center gap-2 py-2 border border-dashed border-white/10 text-t4 hover:text-t2 hover:border-primary/20 transition-colors"
               >
                 <Shapes className="w-4 h-4" />
-                <span className="text-[10px] font-heading uppercase tracking-wider">
+                <span className="text-[12px] font-heading uppercase tracking-wider">
                   One-off custom element
                 </span>
               </button>
@@ -452,7 +452,7 @@ export default function CreateElementDialog({
                 <div className="pt-3 border-t border-white/5 space-y-3">
                   <div className="flex items-center gap-2">
                     <div className="h-px flex-1 bg-white/5" />
-                    <span className="text-[10px] uppercase tracking-[1.5px] text-[#00FF88] font-heading">
+                    <span className="text-[12px] uppercase tracking-[1.5px] text-[#00FF88] font-heading">
                       {selectedTemplate.label} fields
                     </span>
                     <div className="h-px flex-1 bg-white/5" />
@@ -499,7 +499,7 @@ export default function CreateElementDialog({
             <div className="space-y-2 py-4">
               {applicableTools.length > 0 && (
                 <div className="space-y-2">
-                  <Label className="text-[11px] uppercase tracking-[1.5px] text-t3">
+                  <Label className="text-[12px] uppercase tracking-[1.5px] text-t3">
                     Run a tool on this {PICKER_LABELS[selectedType].toLowerCase()}
                   </Label>
                   <div className="flex flex-col gap-1.5">

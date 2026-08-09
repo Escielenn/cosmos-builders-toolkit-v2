@@ -110,16 +110,16 @@ export function GraphOnboarding() {
       </div>
 
       {/* Content */}
-      <h4 className="font-heading text-[11px] uppercase tracking-[2px] text-teal mb-1.5">
+      <h4 className="font-heading text-[12px] uppercase tracking-[2px] text-teal mb-1.5">
         {current.title}
       </h4>
-      <p className="text-[11px] font-sans text-t2 leading-relaxed mb-3">
+      <p className="text-[12px] font-sans text-t2 leading-relaxed mb-3">
         {current.description}
       </p>
 
       {/* Navigation */}
       <div className="flex items-center justify-between">
-        <span className="text-[9px] font-mono text-t5">
+        <span className="text-[11px] font-mono text-t5">
           {step + 1} / {STEPS.length}
         </span>
         <div className="flex gap-2">
@@ -127,14 +127,14 @@ export function GraphOnboarding() {
             size="sm"
             variant="ghost"
             onClick={handleDismiss}
-            className="h-6 text-[10px] font-sans text-t4"
+            className="h-6 text-[12px] font-sans text-t4"
           >
             Skip
           </Button>
           <Button
             size="sm"
             onClick={handleNext}
-            className="h-6 text-[10px] font-sans"
+            className="h-6 text-[12px] font-sans"
           >
             {step >= STEPS.length - 1 ? "Got it" : "Next"}
             {step < STEPS.length - 1 && <ChevronRight className="w-3 h-3 ml-0.5" />}

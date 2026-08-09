@@ -135,7 +135,7 @@ const CascadeEdge = memo(
               }}
             >
               <span
-                className="text-[12px] font-mono font-medium"
+                className="text-[13px] font-mono font-medium"
                 style={{ color: "#FF3366" }}
               >
                 X
@@ -157,7 +157,7 @@ const CascadeEdge = memo(
               }}
             >
               <span
-                className="text-[10px] font-sans"
+                className="text-[12px] font-sans"
                 style={{ color: `${stageColor}99` }}
               >
                 {label}

@@ -265,7 +265,7 @@ const EventFormDialog = ({
                     );
                   })}
               </div>
-              <p className="text-[10px] text-t3">
+              <p className="text-[12px] text-t3">
                 Select tracks where this event should also appear as a reference.
               </p>
             </div>
@@ -366,7 +366,7 @@ const EventFormDialog = ({
                     value={startYear}
                     onChange={(e) => setStartYear(e.target.value)}
                   />
-                  <span className="text-[10px] text-t3 mt-0.5 block">Year (required)</span>
+                  <span className="text-[12px] text-t3 mt-0.5 block">Year (required)</span>
                 </div>
                 <div>
                   <Input
@@ -377,7 +377,7 @@ const EventFormDialog = ({
                     value={startMonth}
                     onChange={(e) => setStartMonth(e.target.value)}
                   />
-                  <span className="text-[10px] text-t3 mt-0.5 block">Month (1-12)</span>
+                  <span className="text-[12px] text-t3 mt-0.5 block">Month (1-12)</span>
                 </div>
                 <div>
                   <Input
@@ -388,7 +388,7 @@ const EventFormDialog = ({
                     value={startDay}
                     onChange={(e) => setStartDay(e.target.value)}
                   />
-                  <span className="text-[10px] text-t3 mt-0.5 block">Day (1-31)</span>
+                  <span className="text-[12px] text-t3 mt-0.5 block">Day (1-31)</span>
                 </div>
               </div>
             )}
@@ -425,7 +425,7 @@ const EventFormDialog = ({
                       value={endYear}
                       onChange={(e) => setEndYear(e.target.value)}
                     />
-                    <span className="text-[10px] text-t3 mt-0.5 block">Year</span>
+                    <span className="text-[12px] text-t3 mt-0.5 block">Year</span>
                   </div>
                   <div>
                     <Input
@@ -436,7 +436,7 @@ const EventFormDialog = ({
                       value={endMonth}
                       onChange={(e) => setEndMonth(e.target.value)}
                     />
-                    <span className="text-[10px] text-t3 mt-0.5 block">Month</span>
+                    <span className="text-[12px] text-t3 mt-0.5 block">Month</span>
                   </div>
                   <div>
                     <Input
@@ -447,7 +447,7 @@ const EventFormDialog = ({
                       value={endDay}
                       onChange={(e) => setEndDay(e.target.value)}
                     />
-                    <span className="text-[10px] text-t3 mt-0.5 block">Day</span>
+                    <span className="text-[12px] text-t3 mt-0.5 block">Day</span>
                   </div>
                 </div>
               )}

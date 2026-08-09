@@ -57,7 +57,7 @@ const SpacecraftMockup = () => {
           </div>
         </div>
         <div className="text-right">
-          <div className="text-[10px] text-t3">Crew</div>
+          <div className="text-[12px] text-t3">Crew</div>
           <div className="text-lg font-mono text-sf-cyan">
             {crewCount}
             <span className="text-xs text-t3">/24</span>
@@ -119,7 +119,7 @@ const SpacecraftMockup = () => {
             x="50"
             y="95"
             textAnchor="middle"
-            className="text-[8px] fill-current"
+            className="text-[10px] fill-current"
             style={{ fill: "hsl(var(--sf-cyan))" }}
           >
             {sections[activeSection]?.name}
@@ -141,7 +141,7 @@ const SpacecraftMockup = () => {
       <div className="mt-4 grid grid-cols-4 gap-2">
         {lifeSupport.map((item) => (
           <div key={item.name} className="text-center">
-            <div className="text-[8px] text-t3 mb-1">{item.name}</div>
+            <div className="text-[10px] text-t3 mb-1">{item.name}</div>
             <div
               className="text-xs font-mono"
               style={{ color: `hsl(var(--${item.color}))` }}
@@ -166,7 +166,7 @@ const SpacecraftMockup = () => {
       <div className="mt-3 flex justify-center">
         <div className="inline-flex items-center gap-2 px-3 py-1 bg-sf-cyan/10 border border-sf-cyan/30">
           <div className="w-2 h-2 bg-sf-cyan animate-pulse" />
-          <span className="text-[10px] text-sf-cyan uppercase tracking-wider">
+          <span className="text-[12px] text-sf-cyan uppercase tracking-wider">
             Long-Range Explorer
           </span>
         </div>

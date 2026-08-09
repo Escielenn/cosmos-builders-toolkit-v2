@@ -49,13 +49,13 @@ export function PromptBrowser({ onStartWriting }: PromptBrowserProps) {
                     <div className="flex items-center gap-2 mb-2">
                       <Badge
                         variant="glow"
-                        className="text-[9px] px-1.5 py-0"
+                        className="text-[11px] px-1.5 py-0"
                       >
                         {CATEGORY_LABELS[p.category]}
                       </Badge>
                       <Badge
                         variant="glow-amber"
-                        className="text-[9px] px-1.5 py-0"
+                        className="text-[11px] px-1.5 py-0"
                       >
                         {DIFFICULTY_LABELS[p.difficulty]}
                       </Badge>
@@ -69,7 +69,7 @@ export function PromptBrowser({ onStartWriting }: PromptBrowserProps) {
                     {p.wordGoal && (
                       <div className="flex items-center gap-1.5 mt-2">
                         <Target className="w-3 h-3 text-t5" />
-                        <span className="font-mono text-[10px] text-t5">
+                        <span className="font-mono text-[12px] text-t5">
                           {p.wordGoal} words
                         </span>
                       </div>

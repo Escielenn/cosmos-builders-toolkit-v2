@@ -144,11 +144,11 @@ const CausalityOverlay = memo(
                   <p className="text-xs font-medium" style={{ color: config.color }}>
                     {config.label}
                   </p>
-                  <p className="text-[10px] text-t3">
+                  <p className="text-[12px] text-t3">
                     {sourceEvent.name} → {targetEvent.name}
                   </p>
                   {link.label && (
-                    <p className="text-[10px] mt-0.5">{link.label}</p>
+                    <p className="text-[12px] mt-0.5">{link.label}</p>
                   )}
                 </TooltipContent>
               </Tooltip>

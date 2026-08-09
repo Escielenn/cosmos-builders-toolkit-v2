@@ -229,15 +229,15 @@ function ExpandedBar({ state, controls, progressBarRef }: ExpandedBarProps) {
             <p className="text-sm text-t2 truncate leading-tight flex items-center gap-1.5">
               {isError && <AlertTriangle className="w-3 h-3 text-sf-amber/70 shrink-0" />}
               {state.currentTrack?.title ?? "No Track"}
-              {isError && <span className="text-[10px] text-sf-amber/60 shrink-0">· Unavailable</span>}
+              {isError && <span className="text-[12px] text-sf-amber/60 shrink-0">· Unavailable</span>}
             </p>
             {state.currentTrack?.artist && !isError && (
-              <p className="text-[10px] text-t4 truncate leading-tight">
+              <p className="text-[12px] text-t4 truncate leading-tight">
                 {state.currentTrack.artist}
               </p>
             )}
             {isError && (
-              <p className="text-[10px] text-t4 truncate leading-tight">
+              <p className="text-[12px] text-t4 truncate leading-tight">
                 Audio file could not be loaded
               </p>
             )}
@@ -308,7 +308,7 @@ function ExpandedBar({ state, controls, progressBarRef }: ExpandedBarProps) {
 
         {/* Time + Volume (right) */}
         <div className="flex items-center gap-3 flex-1 justify-end">
-          <span className="font-mono text-[10px] text-t4 tabular-nums whitespace-nowrap hidden sm:inline">
+          <span className="font-mono text-[12px] text-t4 tabular-nums whitespace-nowrap hidden sm:inline">
             {formatTime(state.progress)} / {formatTime(state.duration)}
           </span>
 

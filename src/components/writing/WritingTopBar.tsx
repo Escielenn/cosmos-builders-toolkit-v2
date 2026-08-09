@@ -310,7 +310,7 @@ export function WritingTopBar({
             <span className="text-xs text-t2 truncate block font-sans">
               {doc.title}
             </span>
-            <span className="text-[9px] text-t5 font-mono">
+            <span className="text-[11px] text-t5 font-mono">
               {new Date(doc.updated_at).toLocaleDateString()}
             </span>
           </div>
@@ -344,7 +344,7 @@ export function WritingTopBar({
   return (
     <div className="flex items-center gap-2 border-b border-white/[0.06] bg-sf-surface/60 px-3 py-2">
       {/* Page label */}
-      <span className="font-heading text-[11px] font-light uppercase tracking-[2px] text-t2 flex-shrink-0">
+      <span className="font-heading text-[12px] font-light uppercase tracking-[2px] text-t2 flex-shrink-0">
         Writing Space
       </span>
 
@@ -402,7 +402,7 @@ export function WritingTopBar({
                     className="flex items-center gap-1.5 flex-1 px-3 py-2 text-sf-amber hover:bg-sf-amber/[0.06] transition-colors"
                   >
                     <FolderOpen className="w-3.5 h-3.5" />
-                    <span className="font-sans text-[10px] font-medium uppercase tracking-[1px]">
+                    <span className="font-sans text-[12px] font-medium uppercase tracking-[1px]">
                       New Chapter
                     </span>
                   </button>
@@ -413,7 +413,7 @@ export function WritingTopBar({
                   className="flex items-center gap-1.5 flex-1 px-3 py-2 text-sf-teal hover:bg-sf-teal/[0.06] transition-colors"
                 >
                   <Plus className="w-3.5 h-3.5" />
-                  <span className="font-sans text-[10px] font-medium uppercase tracking-[1px]">
+                  <span className="font-sans text-[12px] font-medium uppercase tracking-[1px]">
                     New Document
                   </span>
                 </button>
@@ -460,7 +460,7 @@ export function WritingTopBar({
               <div className="max-h-[320px] overflow-y-auto sf-custom-scrollbar">
                 {docsLoading && (
                   <div className="px-3 py-4 text-center">
-                    <span className="text-[10px] uppercase tracking-[1.5px] text-t5">
+                    <span className="text-[12px] uppercase tracking-[1.5px] text-t5">
                       Loading...
                     </span>
                   </div>
@@ -546,10 +546,10 @@ export function WritingTopBar({
                               </div>
                             ) : (
                               <>
-                                <span className="flex-1 min-w-0 text-[11px] font-heading font-light uppercase tracking-[1.5px] text-t2 truncate">
+                                <span className="flex-1 min-w-0 text-[12px] font-heading font-light uppercase tracking-[1.5px] text-t2 truncate">
                                   {folder.title}
                                 </span>
-                                <span className="text-[9px] font-mono text-t5 mr-1">
+                                <span className="text-[11px] font-mono text-t5 mr-1">
                                   {folder.documents.length}
                                 </span>
                                 {/* Add doc to this folder */}
@@ -572,7 +572,7 @@ export function WritingTopBar({
                             <div>
                               {folder.documents.length === 0 && (
                                 <div className="pl-8 pr-3 py-2">
-                                  <span className="text-[9px] uppercase tracking-[1px] text-t5 italic">
+                                  <span className="text-[11px] uppercase tracking-[1px] text-t5 italic">
                                     Empty chapter
                                   </span>
                                 </div>
@@ -604,7 +604,7 @@ export function WritingTopBar({
                               dragOverUnfiled && "bg-white/[0.04]"
                             )}
                           >
-                            <span className="text-[9px] font-heading font-light uppercase tracking-[1.5px] text-t4">
+                            <span className="text-[11px] font-heading font-light uppercase tracking-[1.5px] text-t4">
                               Unfiled
                             </span>
                           </div>
@@ -620,7 +620,7 @@ export function WritingTopBar({
                       folders.length === 0 &&
                       unfiledDocs.length === 0 && (
                         <div className="px-3 py-4 text-center">
-                          <span className="text-[10px] uppercase tracking-[1.5px] text-t5">
+                          <span className="text-[12px] uppercase tracking-[1.5px] text-t5">
                             No documents yet
                           </span>
                         </div>
@@ -634,7 +634,7 @@ export function WritingTopBar({
                     {documents?.map((doc) => renderDocRow(doc, false))}
                     {(!documents || documents.length === 0) && (
                       <div className="px-3 py-4 text-center">
-                        <span className="text-[10px] uppercase tracking-[1.5px] text-t5">
+                        <span className="text-[12px] uppercase tracking-[1.5px] text-t5">
                           No documents yet
                         </span>
                       </div>
@@ -705,7 +705,7 @@ export function WritingTopBar({
 
       {/* Save indicator */}
       {isSaving && (
-        <span className="text-[9px] font-mono uppercase tracking-[1.5px] text-t4 flex-shrink-0">
+        <span className="text-[11px] font-mono uppercase tracking-[1.5px] text-t4 flex-shrink-0">
           Saving...
         </span>
       )}
@@ -735,7 +735,7 @@ export function WritingTopBar({
         <button
           onClick={onToggleMoodboard}
           className={cn(
-            "flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] font-heading uppercase tracking-[1.5px] border rounded-xs transition-colors flex-shrink-0",
+            "flex items-center gap-1.5 px-2.5 py-1.5 text-[12px] font-heading uppercase tracking-[1.5px] border rounded-xs transition-colors flex-shrink-0",
             moodboardOpen
               ? "border-[#FFB800]/30 text-sf-amber bg-sf-amber/[0.06]"
               : "border-white/[0.08] text-t4 hover:text-t2 hover:border-white/[0.15]"
@@ -751,7 +751,7 @@ export function WritingTopBar({
       <button
         onClick={onToggleRightPanel}
         className={cn(
-          "flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] font-heading uppercase tracking-[1.5px] border rounded-xs transition-colors flex-shrink-0",
+          "flex items-center gap-1.5 px-2.5 py-1.5 text-[12px] font-heading uppercase tracking-[1.5px] border rounded-xs transition-colors flex-shrink-0",
           rightPanelOpen
             ? "border-[#5B8DEF]/30 text-sf-stellar bg-sf-stellar/[0.06]"
             : "border-white/[0.08] text-t4 hover:text-t2 hover:border-white/[0.15]"
@@ -767,7 +767,7 @@ export function WritingTopBar({
         <button
           onClick={onToggleWideMode}
           className={cn(
-            "flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] font-heading uppercase tracking-[1.5px] border rounded-xs transition-colors duration-base flex-shrink-0",
+            "flex items-center gap-1.5 px-2.5 py-1.5 text-[12px] font-heading uppercase tracking-[1.5px] border rounded-xs transition-colors duration-base flex-shrink-0",
             wideMode
               ? "border-sf-teal/30 text-sf-teal bg-sf-teal/[0.06]"
               : "border-sf-border text-t4 hover:text-t2 hover:border-sf-border-strong"
@@ -784,7 +784,7 @@ export function WritingTopBar({
       {selectedDoc && (
         <button
           onClick={onEnterZen}
-          className="flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] font-heading uppercase tracking-[1.5px] border border-sf-border text-t4 hover:text-t2 hover:border-sf-border-strong rounded-xs transition-colors duration-base flex-shrink-0"
+          className="flex items-center gap-1.5 px-2.5 py-1.5 text-[12px] font-heading uppercase tracking-[1.5px] border border-sf-border text-t4 hover:text-t2 hover:border-sf-border-strong rounded-xs transition-colors duration-base flex-shrink-0"
           title="Enter Zen Mode (distraction-free)"
         >
           <Maximize2 className="w-3.5 h-3.5" />

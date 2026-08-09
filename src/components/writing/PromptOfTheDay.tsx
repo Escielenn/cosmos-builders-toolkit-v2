@@ -48,10 +48,10 @@ export function PromptOfTheDay() {
 
       {/* Category + Difficulty badges */}
       <div className="flex items-center gap-2 mb-3">
-        <Badge variant="glow" className="text-[10px]">
+        <Badge variant="glow" className="text-[12px]">
           {CATEGORY_LABELS[prompt.category]}
         </Badge>
-        <Badge variant="glow-amber" className="text-[10px]">
+        <Badge variant="glow-amber" className="text-[12px]">
           {DIFFICULTY_LABELS[prompt.difficulty]}
         </Badge>
       </div>

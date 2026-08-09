@@ -28,13 +28,13 @@ function CalloutItem({ callout, toolType, index }: CalloutItemProps) {
 
   return (
     <div className="relative mb-4 px-4 py-2.5 border border-primary/10 bg-primary/[0.03] animate-in fade-in duration-300">
-      <p className="font-mono text-[10px] uppercase tracking-wider text-primary/50 mb-1">
+      <p className="font-mono text-[12px] uppercase tracking-wider text-primary/50 mb-1">
         Upstream Context
       </p>
       <p className="text-xs text-t3 leading-relaxed pr-5">
         {callout.message}
       </p>
-      <p className="text-[9px] text-t5 mt-1">
+      <p className="text-[11px] text-t5 mt-1">
         Source: {callout.sourceBrandName}
       </p>
       <button

@@ -193,7 +193,7 @@ function CascadeDiagram({
               }`}
             >
               <div
-                className="text-[10px] font-heading uppercase tracking-[2px] mb-1 transition-colors duration-300"
+                className="text-[12px] font-heading uppercase tracking-[2px] mb-1 transition-colors duration-300"
                 style={{
                   color: isActive
                     ? stage.color
@@ -208,7 +208,7 @@ function CascadeDiagram({
                 {stage.sublabels.map((sub) => (
                   <span
                     key={sub}
-                    className={`text-[9px] font-mono transition-colors duration-300 ${
+                    className={`text-[11px] font-mono transition-colors duration-300 ${
                       isActive || isDownstream ? "text-t4" : "text-t5"
                     }`}
                   >
@@ -305,7 +305,7 @@ function PathwayStep({
                 >
                   {getToolDisplayName(toolId)}
                   {isPro && (
-                    <Badge variant="outline" className="text-[8px] text-sf-violet border-violet-400/20 px-1 py-0 ml-1">
+                    <Badge variant="outline" className="text-[10px] text-sf-violet border-violet-400/20 px-1 py-0 ml-1">
                       PRO
                     </Badge>
                   )}
@@ -317,7 +317,7 @@ function PathwayStep({
 
           {/* Expected output */}
           <GlassPanel className="p-3">
-            <span className="text-t4 text-[10px] uppercase tracking-wider block mb-1">
+            <span className="text-t4 text-[12px] uppercase tracking-wider block mb-1">
               What you'll create
             </span>
             <span className="text-t2 text-xs">{step.output}</span>
@@ -406,7 +406,7 @@ const GettingStarted = () => {
 
           {/* Interactive cascade diagram */}
           <GlassPanel className="p-4">
-            <h4 className="font-mono text-[9px] tracking-[2px] uppercase text-t3/60 mb-3">
+            <h4 className="font-mono text-[11px] tracking-[2px] uppercase text-t3/60 mb-3">
               // THE ENVIRONMENTAL CASCADE
             </h4>
             <CascadeDiagram
@@ -430,7 +430,7 @@ const GettingStarted = () => {
 
         {/* ── Divider ─────────────────────────────────────── */}
         <div className="sf-divider relative">
-          <span className="absolute left-1/2 -translate-x-1/2 -top-2 bg-background px-4 font-mono text-[7px] tracking-wider text-sf-amber/30 uppercase">
+          <span className="absolute left-1/2 -translate-x-1/2 -top-2 bg-background px-4 font-mono text-[10px] tracking-wider text-sf-amber/30 uppercase">
             Entry Points
           </span>
         </div>
@@ -507,7 +507,7 @@ const GettingStarted = () => {
               {selectedEntryData.action === "tools" &&
                 "suggestedTools" in selectedEntryData && (
                   <div>
-                    <span className="text-t4 text-[10px] uppercase tracking-wider block mb-2">
+                    <span className="text-t4 text-[12px] uppercase tracking-wider block mb-2">
                       Suggested starting tools
                     </span>
                     <div className="flex flex-wrap gap-2">
@@ -541,7 +541,7 @@ const GettingStarted = () => {
 
         {/* ── Divider ─────────────────────────────────────── */}
         <div className="sf-divider relative">
-          <span className="absolute left-1/2 -translate-x-1/2 -top-2 bg-background px-4 font-mono text-[7px] tracking-wider text-sf-amber/30 uppercase">
+          <span className="absolute left-1/2 -translate-x-1/2 -top-2 bg-background px-4 font-mono text-[10px] tracking-wider text-sf-amber/30 uppercase">
             Guided Pathway
           </span>
         </div>

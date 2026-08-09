@@ -42,7 +42,7 @@ export function LunarPhase({ className }: { className?: string }) {
 
   return (
     <span
-      className={`font-mono text-[11px] tracking-[0.18em] uppercase text-t4 whitespace-nowrap inline-flex items-center gap-1.5 ${className ?? ""}`}
+      className={`font-mono text-[12px] tracking-[0.18em] uppercase text-t4 whitespace-nowrap inline-flex items-center gap-1.5 ${className ?? ""}`}
       aria-hidden
       title="Current lunar phase"
     >

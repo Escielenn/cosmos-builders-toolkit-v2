@@ -138,7 +138,7 @@ const LinkEditorDialog = ({
                         className="w-2 h-2 rounded-full"
                         style={{ backgroundColor: group.trackColor }}
                       />
-                      <span className="text-[10px] font-medium text-t3 uppercase">
+                      <span className="text-[12px] font-medium text-t3 uppercase">
                         {group.trackName}
                       </span>
                     </div>
@@ -200,7 +200,7 @@ const LinkEditorDialog = ({
                         className="w-2 h-2 rounded-full"
                         style={{ backgroundColor: group.trackColor }}
                       />
-                      <span className="text-[10px] font-medium text-t3 uppercase">
+                      <span className="text-[12px] font-medium text-t3 uppercase">
                         {group.trackName}
                       </span>
                     </div>

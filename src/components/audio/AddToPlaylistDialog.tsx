@@ -48,7 +48,7 @@ export default function AddToPlaylistDialog({ track, children }: AddToPlaylistDi
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>{children}</PopoverTrigger>
       <PopoverContent className="w-56 p-2" align="end">
-        <p className="text-[10px] text-t4 uppercase tracking-wider px-2 py-1 mb-1">
+        <p className="text-[12px] text-t4 uppercase tracking-wider px-2 py-1 mb-1">
           Add to playlist
         </p>
 

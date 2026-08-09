@@ -134,7 +134,7 @@ const FilterBar = () => {
             >
               Tracks
               {filter.trackIds.length > 0 && (
-                <Badge variant="secondary" className="ml-1 h-4 px-1 text-[10px]">
+                <Badge variant="secondary" className="ml-1 h-4 px-1 text-[12px]">
                   {filter.trackIds.length}
                 </Badge>
               )}
@@ -177,7 +177,7 @@ const FilterBar = () => {
           >
             Type
             {filter.eventTypes.length > 0 && (
-              <Badge variant="secondary" className="ml-1 h-4 px-1 text-[10px]">
+              <Badge variant="secondary" className="ml-1 h-4 px-1 text-[12px]">
                 {filter.eventTypes.length}
               </Badge>
             )}
@@ -188,7 +188,7 @@ const FilterBar = () => {
           <div className="space-y-2">
             {eventTypeCategories.map((cat) => (
               <div key={cat.label}>
-                <p className="text-[10px] font-medium text-t3 uppercase tracking-wider px-2 mb-0.5">
+                <p className="text-[12px] font-medium text-t3 uppercase tracking-wider px-2 mb-0.5">
                   {cat.label}
                 </p>
                 {cat.types.map((et) => (
@@ -217,7 +217,7 @@ const FilterBar = () => {
             type="button"
             onClick={() => toggleImportanceFilter(il.id)}
             className={cn(
-              "px-2 py-1 rounded border text-[10px] font-medium transition-colors h-8",
+              "px-2 py-1 rounded border text-[12px] font-medium transition-colors h-8",
               filter.importanceLevels.includes(il.id)
                 ? "border-primary bg-primary/10 text-t1"
                 : "border-sf-border text-t3 hover:border-sf-border"
@@ -241,7 +241,7 @@ const FilterBar = () => {
           >
             Date Range
             {filter.dateRange && (
-              <Badge variant="secondary" className="ml-1 h-4 px-1 text-[10px]">1</Badge>
+              <Badge variant="secondary" className="ml-1 h-4 px-1 text-[12px]">1</Badge>
             )}
             <ChevronDown className="w-3 h-3 ml-0.5" />
           </Button>
@@ -249,7 +249,7 @@ const FilterBar = () => {
         <PopoverContent className="w-56 p-3" align="start">
           <div className="space-y-2">
             <div className="space-y-1">
-              <label className="text-[10px] text-t3 font-medium">From Year</label>
+              <label className="text-[12px] text-t3 font-medium">From Year</label>
               <Input
                 type="number"
                 className="h-7 text-xs"
@@ -270,7 +270,7 @@ const FilterBar = () => {
               />
             </div>
             <div className="space-y-1">
-              <label className="text-[10px] text-t3 font-medium">To Year</label>
+              <label className="text-[12px] text-t3 font-medium">To Year</label>
               <Input
                 type="number"
                 className="h-7 text-xs"
@@ -294,7 +294,7 @@ const FilterBar = () => {
               <Button
                 variant="ghost"
                 size="sm"
-                className="w-full h-6 text-[10px]"
+                className="w-full h-6 text-[12px]"
                 onClick={() => dispatch({ type: "SET_FILTER", payload: { dateRange: null } })}
               >
                 Clear Range
@@ -318,7 +318,7 @@ const FilterBar = () => {
             >
               Tags
               {filter.tags.length > 0 && (
-                <Badge variant="secondary" className="ml-1 h-4 px-1 text-[10px]">
+                <Badge variant="secondary" className="ml-1 h-4 px-1 text-[12px]">
                   {filter.tags.length}
                 </Badge>
               )}
@@ -355,7 +355,7 @@ const FilterBar = () => {
           <X className="w-3 h-3" />
           Clear All
           {activeCount > 1 && (
-            <Badge variant="secondary" className="ml-0.5 h-4 px-1 text-[10px]">
+            <Badge variant="secondary" className="ml-0.5 h-4 px-1 text-[12px]">
               {activeCount}
             </Badge>
           )}
@@ -364,7 +364,7 @@ const FilterBar = () => {
 
       {/* Active filter indicator */}
       {active && (
-        <div className="flex items-center gap-1 text-[10px] text-primary/70 ml-auto">
+        <div className="flex items-center gap-1 text-[12px] text-primary/70 ml-auto">
           <Filter className="w-3 h-3" />
           Filtering active
         </div>

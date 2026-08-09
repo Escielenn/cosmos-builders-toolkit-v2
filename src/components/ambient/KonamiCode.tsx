@@ -64,7 +64,7 @@ export function KonamiCode() {
       >
         <div className="flex items-start justify-between mb-6">
           <div>
-            <p className="font-mono text-[11px] tracking-[0.18em] text-sf-teal uppercase mb-2">
+            <p className="font-mono text-[12px] tracking-[0.18em] text-sf-teal uppercase mb-2">
               // CLEARANCE GRANTED
             </p>
             <h2 className="font-display font-light text-4xl tracking-[0.04em] text-t1 uppercase">
@@ -73,7 +73,7 @@ export function KonamiCode() {
           </div>
           <button
             onClick={() => setOpen(false)}
-            className="font-mono text-[11px] tracking-[0.2em] uppercase text-t3 hover:text-sf-crimson transition-colors duration-base px-3 py-1 border border-sf-border"
+            className="font-mono text-[12px] tracking-[0.2em] uppercase text-t3 hover:text-sf-crimson transition-colors duration-base px-3 py-1 border border-sf-border"
           >
             [ESC] CLOSE
           </button>
@@ -82,16 +82,16 @@ export function KonamiCode() {
         <div className="relative aspect-video bg-sf-void border border-sf-border overflow-hidden">
           <div className="sf-starfield" />
           <div className="absolute inset-0 flex items-center justify-center flex-col gap-4">
-            <p className="font-mono text-[11px] tracking-[0.18em] text-t3 uppercase">
+            <p className="font-mono text-[12px] tracking-[0.18em] text-t3 uppercase">
               FULL-SCREEN NAVIGATIONAL CHART
             </p>
-            <p className="font-mono text-[9px] tracking-[0.18em] text-t5 uppercase">
+            <p className="font-mono text-[11px] tracking-[0.18em] text-t5 uppercase">
               TELEMETRY LOCK · 39.87°N 104.97°W · SOL COUNTER ACTIVE
             </p>
           </div>
         </div>
 
-        <p className="mt-6 font-mono text-[11px] tracking-[0.18em] text-t4 uppercase">
+        <p className="mt-6 font-mono text-[12px] tracking-[0.18em] text-t4 uppercase">
           // YOU HAVE DEMONSTRATED MASTERY OF LEGACY INPUT PROTOCOLS. WELL FLOWN.
         </p>
       </div>

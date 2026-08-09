@@ -910,7 +910,7 @@ const TimeDilationCalculator = () => {
                     ))}
                   </div>
                   <div className="relative mt-1 h-3">
-                    <span className="absolute left-0 font-mono text-[7px] text-t4">0</span>
+                    <span className="absolute left-0 font-mono text-[10px] text-t4">0</span>
                     {[
                       { v: 10, label: "10%" },
                       { v: 50, label: "50%" },
@@ -919,15 +919,15 @@ const TimeDilationCalculator = () => {
                     ].map((ref) => (
                       <span
                         key={ref.label}
-                        className="absolute font-mono text-[7px] text-t4 -translate-x-1/2"
+                        className="absolute font-mono text-[10px] text-t4 -translate-x-1/2"
                         style={{ left: `${ref.v}%` }}
                       >
                         {ref.label}
                       </span>
                     ))}
-                    <span className="absolute right-0 font-mono text-[7px] text-t4">c</span>
+                    <span className="absolute right-0 font-mono text-[10px] text-t4">c</span>
                   </div>
-                  <p className="font-mono text-[8px] text-center text-t4 mt-1">
+                  <p className="font-mono text-[10px] text-center text-t4 mt-1">
                     {calculationResult.peakVelocityFraction >= 1
                       ? `${calculationResult.peakVelocityFraction.toFixed(1)}× the speed of light (FTL)`
                       : calculationResult.peakVelocityFraction >= 0.99

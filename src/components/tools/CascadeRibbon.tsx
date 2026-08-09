@@ -27,7 +27,7 @@ export function CascadeRibbon(): JSX.Element {
 
   return (
     <div className="no-print mb-8 border border-sf-border bg-sf-surface/40 p-4 md:p-5">
-      <div className="mb-4 inline-flex items-center gap-3 font-mono text-[10px] uppercase tracking-[2.5px] text-sf-teal/80">
+      <div className="mb-4 inline-flex items-center gap-3 font-mono text-[12px] uppercase tracking-[2.5px] text-sf-teal/80">
         <span aria-hidden className="block h-px w-10 bg-sf-teal/60" />
         <span>// cascade map · upstream shapes downstream</span>
       </div>
@@ -40,19 +40,19 @@ export function CascadeRibbon(): JSX.Element {
             >
               <div className="flex items-baseline gap-1.5">
                 <span
-                  className="font-mono text-[10px] tabular-nums"
+                  className="font-mono text-[12px] tabular-nums"
                   style={{ color: s.meta.color }}
                 >
                   {s.meta.order <= 6 ? String(s.meta.order).padStart(2, "0") : "··"}
                 </span>
                 <span
-                  className="font-heading text-[12px] font-light uppercase tracking-[1px]"
+                  className="font-heading text-[13px] font-light uppercase tracking-[1px]"
                   style={{ color: s.meta.color }}
                 >
                   {s.meta.label}
                 </span>
               </div>
-              <span className="mt-1.5 font-mono text-[9px] uppercase tracking-[1px] text-t4">
+              <span className="mt-1.5 font-mono text-[11px] uppercase tracking-[1px] text-t4">
                 {s.count} {s.count === 1 ? "tool" : "tools"}
               </span>
             </div>

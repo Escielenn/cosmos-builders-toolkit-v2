@@ -56,19 +56,19 @@ class ErrorBoundary extends Component<Props, State> {
                 aria-hidden
               />
 
-              <p className="font-mono text-[11px] tracking-[0.18em] text-sf-crimson uppercase mb-3">
+              <p className="font-mono text-[12px] tracking-[0.18em] text-sf-crimson uppercase mb-3">
                 // STATUS: FAULT
               </p>
               <h1 className="font-display text-3xl md:text-4xl font-light uppercase tracking-sf-title text-t1 mb-4">
                 SYSTEM FAULT
               </h1>
-              <p className="font-mono text-[11px] tracking-[0.18em] uppercase text-t3 leading-relaxed mb-6">
+              <p className="font-mono text-[12px] tracking-[0.18em] uppercase text-t3 leading-relaxed mb-6">
                 {this.props.fallbackMessage ||
                   "AN UNEXPECTED CONDITION HAS BEEN ENCOUNTERED. INCIDENT LOGGED AUTOMATICALLY."}
               </p>
 
               {this.state.error && (
-                <pre className="font-mono text-[11px] text-left bg-sf-void/60 text-t4 p-4 rounded-none overflow-auto max-h-48 border border-sf-border sf-sb leading-relaxed">
+                <pre className="font-mono text-[12px] text-left bg-sf-void/60 text-t4 p-4 rounded-none overflow-auto max-h-48 border border-sf-border sf-sb leading-relaxed">
                   {this.state.error.message}
                   {"\n\n"}
                   {this.state.error.stack?.split("\n").slice(0, 8).join("\n")}
@@ -93,7 +93,7 @@ class ErrorBoundary extends Component<Props, State> {
               </div>
             </div>
 
-            <p className="font-mono text-[11px] tracking-[0.18em] text-t5 uppercase text-center">
+            <p className="font-mono text-[12px] tracking-[0.18em] text-t5 uppercase text-center">
               39.87°N · 104.97°W · INCIDENT-{Date.now().toString(36).toUpperCase().slice(-6)}
             </p>
           </div>

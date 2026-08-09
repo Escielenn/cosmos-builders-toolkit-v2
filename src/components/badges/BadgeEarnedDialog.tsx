@@ -32,7 +32,7 @@ export function BadgeEarnedDialog() {
           {/* Tier label */}
           <span
             className={cn(
-              "font-mono text-[8px] uppercase tracking-[3px] px-2 py-1 rounded-sm border",
+              "font-mono text-[10px] uppercase tracking-[3px] px-2 py-1 rounded-sm border",
               tier.bg,
               tier.border,
               tier.text
@@ -57,7 +57,7 @@ export function BadgeEarnedDialog() {
           </p>
 
           {/* Tier-specific earn message */}
-          <p className={cn("font-mono text-[10px] italic tracking-wide", tier.text)}>
+          <p className={cn("font-mono text-[12px] italic tracking-wide", tier.text)}>
             {tier.earnMessage}
           </p>
 

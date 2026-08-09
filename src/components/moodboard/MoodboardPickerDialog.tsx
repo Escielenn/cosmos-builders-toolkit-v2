@@ -121,7 +121,7 @@ export function MoodboardPickerDialog({
                         )}
                         {image.caption && (
                           <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/70 to-transparent p-1.5">
-                            <p className="text-[10px] text-white truncate">{image.caption}</p>
+                            <p className="text-[12px] text-white truncate">{image.caption}</p>
                           </div>
                         )}
                       </button>

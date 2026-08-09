@@ -322,7 +322,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
   if (error || !codexData) {
     return (
       <div className="p-3">
-        <p className="font-mono text-[10px] uppercase tracking-wider text-sf-crimson/60">
+        <p className="font-mono text-[12px] uppercase tracking-wider text-sf-crimson/60">
           Registry unavailable.
         </p>
       </div>
@@ -338,7 +338,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
           className="sf-fill-sweep sf-fill-sweep--secondary w-full flex items-center justify-center h-6 border border-sf-border text-t3/40 hover:text-t2 transition-colors"
           aria-label="Collapse Registry"
         >
-          <span className="text-[10px]">◀</span>
+          <span className="text-[12px]">◀</span>
         </button>
       </div>
 
@@ -362,7 +362,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
         className="px-3 py-1 w-full text-left flex items-center gap-2 text-t3/40 hover:text-t2 transition-colors"
       >
         <FileText className="w-3.5 h-3.5" />
-        <span className="font-mono text-[10px] uppercase tracking-wider">World Notes</span>
+        <span className="font-mono text-[12px] uppercase tracking-wider">World Notes</span>
       </button>
 
       {/* Codex hint */}
@@ -377,7 +377,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
       <div className="px-3 pb-1 flex items-center gap-1">
         <button
           onClick={() => handleGroupByChange("cascade")}
-          className={`flex items-center gap-1 px-2 py-1 text-[10px] uppercase tracking-[1.5px] transition-colors ${
+          className={`flex items-center gap-1 px-2 py-1 text-[12px] uppercase tracking-[1.5px] transition-colors ${
             groupBy === "cascade"
               ? "text-teal bg-teal/8 border border-teal/20"
               : "text-t4 hover:text-t3"
@@ -389,7 +389,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
         </button>
         <button
           onClick={() => handleGroupByChange("entity")}
-          className={`flex items-center gap-1 px-2 py-1 text-[10px] uppercase tracking-[1.5px] transition-colors ${
+          className={`flex items-center gap-1 px-2 py-1 text-[12px] uppercase tracking-[1.5px] transition-colors ${
             groupBy === "entity"
               ? "text-teal bg-teal/8 border border-teal/20"
               : "text-t4 hover:text-t3"
@@ -415,7 +415,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
                       : [...prev, tag]
                   )
                 }
-                className={`flex items-center gap-1 px-1.5 py-0.5 text-[10px] tracking-wider border transition-colors ${
+                className={`flex items-center gap-1 px-1.5 py-0.5 text-[12px] tracking-wider border transition-colors ${
                   activeTags.includes(tag)
                     ? "bg-teal/10 border-teal/25 text-teal"
                     : "border-sf-border text-t4 hover:text-t3"
@@ -479,7 +479,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
             filterElements(codexData.customEntries).length === 0;
           return allEmpty ? (
             <div className="px-3 py-6 text-center">
-              <p className="font-mono text-[10px] uppercase tracking-wider text-t3/30">
+              <p className="font-mono text-[12px] uppercase tracking-wider text-t3/30">
                 No matches found
               </p>
             </div>
@@ -527,16 +527,16 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
       {/* Default view setting */}
       <div className="px-3 pb-2">
         <div className="flex items-center gap-2">
-          <span className="font-mono text-[9px] uppercase tracking-wider text-t3/30 whitespace-nowrap">
+          <span className="font-mono text-[11px] uppercase tracking-wider text-t3/30 whitespace-nowrap">
             Default view:
           </span>
           <Select value={defaultView} onValueChange={handleDefaultViewChange}>
-            <SelectTrigger className="h-5 text-[10px] flex-1 border-sf-border bg-transparent">
+            <SelectTrigger className="h-5 text-[12px] flex-1 border-sf-border bg-transparent">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="tool" className="text-[10px]">Tool</SelectItem>
-              <SelectItem value="wiki" className="text-[10px]">Wiki</SelectItem>
+              <SelectItem value="tool" className="text-[12px]">Tool</SelectItem>
+              <SelectItem value="wiki" className="text-[12px]">Wiki</SelectItem>
             </SelectContent>
           </Select>
         </div>

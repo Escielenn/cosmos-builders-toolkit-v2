@@ -153,12 +153,12 @@ export function WritingEntityPanel({
               className="flex items-center gap-1.5 text-t3 hover:text-sf-teal-bright transition-colors duration-base"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
-              <span className="font-heading text-[11px] font-medium uppercase tracking-[0.2em]">
+              <span className="font-heading text-[12px] font-medium uppercase tracking-[0.2em]">
                 ← BACK
               </span>
             </button>
           ) : (
-            <span className="font-heading text-[11px] font-medium uppercase tracking-[0.2em] text-t3">
+            <span className="font-heading text-[12px] font-medium uppercase tracking-[0.2em] text-t3">
               WORLD ENTITIES
             </span>
           )}
@@ -187,7 +187,7 @@ export function WritingEntityPanel({
               <div className="flex flex-wrap gap-1.5">
                 {/* Entity type badge */}
                 <span
-                  className="inline-flex items-center gap-1 text-[9px] font-mono uppercase tracking-[1px] px-1.5 py-0.5 rounded-sm border"
+                  className="inline-flex items-center gap-1 text-[11px] font-mono uppercase tracking-[1px] px-1.5 py-0.5 rounded-sm border"
                   style={{
                     color:
                       ENTITY_TYPE_COLORS[selectedEntity.entity_type] ??
@@ -207,7 +207,7 @@ export function WritingEntityPanel({
                 </span>
                 {/* Cascade stage badge */}
                 <span
-                  className="inline-flex items-center gap-1 text-[9px] font-mono uppercase tracking-[1px] px-1.5 py-0.5 rounded-sm border"
+                  className="inline-flex items-center gap-1 text-[11px] font-mono uppercase tracking-[1px] px-1.5 py-0.5 rounded-sm border"
                   style={{
                     color:
                       CASCADE_STAGE_COLORS[
@@ -235,7 +235,7 @@ export function WritingEntityPanel({
             {/* Summary */}
             {selectedEntity.summary && (
               <div>
-                <span className="text-[9px] font-medium uppercase tracking-[1.5px] text-t4 block mb-1">
+                <span className="text-[11px] font-medium uppercase tracking-[1.5px] text-t4 block mb-1">
                   Summary
                 </span>
                 <p className="text-xs text-t2 leading-relaxed">
@@ -247,7 +247,7 @@ export function WritingEntityPanel({
             {/* Description (rendered HTML) */}
             {selectedEntity.description && (
               <div>
-                <span className="text-[9px] font-medium uppercase tracking-[1.5px] text-t4 block mb-1">
+                <span className="text-[11px] font-medium uppercase tracking-[1.5px] text-t4 block mb-1">
                   Description
                 </span>
                 <div
@@ -262,7 +262,7 @@ export function WritingEntityPanel({
             {/* Connections */}
             {entityConnections.length > 0 && (
               <div>
-                <span className="text-[9px] font-medium uppercase tracking-[1.5px] text-t4 block mb-1.5">
+                <span className="text-[11px] font-medium uppercase tracking-[1.5px] text-t4 block mb-1.5">
                   Connections ({entityConnections.length})
                 </span>
                 <div className="space-y-1">
@@ -291,7 +291,7 @@ export function WritingEntityPanel({
                           }}
                         />
                         <div className="flex-1 min-w-0">
-                          <span className="text-[9px] font-mono uppercase tracking-[1px] text-t4 block">
+                          <span className="text-[11px] font-mono uppercase tracking-[1px] text-t4 block">
                             {formatRelType(conn.relationship_type)}
                           </span>
                           <span className="text-xs text-t2 truncate block group-hover:text-t1 transition-colors">
@@ -316,14 +316,14 @@ export function WritingEntityPanel({
             <div className="flex gap-2 pt-2 border-t border-white/[0.06]">
               <button
                 onClick={() => onInsertMention(selectedEntity.name)}
-                className="flex-1 flex items-center justify-center gap-1.5 px-2 py-2 text-[10px] font-sans font-medium uppercase tracking-[1px] text-sf-teal bg-sf-teal/[0.06] border border-sf-teal/[0.15] rounded-sm hover:bg-sf-teal/[0.12] transition-colors"
+                className="flex-1 flex items-center justify-center gap-1.5 px-2 py-2 text-[12px] font-sans font-medium uppercase tracking-[1px] text-sf-teal bg-sf-teal/[0.06] border border-sf-teal/[0.15] rounded-sm hover:bg-sf-teal/[0.12] transition-colors"
               >
                 <AtSign className="w-3 h-3" />
                 Mention
               </button>
               <button
                 onClick={() => onInsertWikiLink(selectedEntity.name)}
-                className="flex-1 flex items-center justify-center gap-1.5 px-2 py-2 text-[10px] font-sans font-medium uppercase tracking-[1px] text-sf-stellar bg-sf-stellar/[0.06] border border-sf-stellar/[0.15] rounded-sm hover:bg-sf-stellar/[0.12] transition-colors"
+                className="flex-1 flex items-center justify-center gap-1.5 px-2 py-2 text-[12px] font-sans font-medium uppercase tracking-[1px] text-sf-stellar bg-sf-stellar/[0.06] border border-sf-stellar/[0.15] rounded-sm hover:bg-sf-stellar/[0.12] transition-colors"
               >
                 <Link2 className="w-3 h-3" />
                 Wiki Link
@@ -335,7 +335,7 @@ export function WritingEntityPanel({
               <div className="pt-1">
                 <button
                   onClick={() => onPinEntity(selectedEntity)}
-                  className="w-full flex items-center justify-center gap-1.5 px-2 py-2 text-[10px] font-sans font-medium uppercase tracking-[1px] text-sf-amber bg-sf-amber/[0.06] border border-sf-amber/[0.15] rounded-sm hover:bg-sf-amber/[0.12] transition-colors"
+                  className="w-full flex items-center justify-center gap-1.5 px-2 py-2 text-[12px] font-sans font-medium uppercase tracking-[1px] text-sf-amber bg-sf-amber/[0.06] border border-sf-amber/[0.15] rounded-sm hover:bg-sf-amber/[0.12] transition-colors"
                 >
                   <Pin className="w-3 h-3" />
                   Pin to References
@@ -379,12 +379,12 @@ export function WritingEntityPanel({
                         }}
                       />
                       <span
-                        className="text-[9px] font-medium uppercase tracking-[1.5px]"
+                        className="text-[11px] font-medium uppercase tracking-[1.5px]"
                         style={{ color: CASCADE_STAGE_COLORS[stage] }}
                       >
                         {CASCADE_STAGE_LABELS[stage]}
                       </span>
-                      <span className="text-[8px] font-mono text-t5 ml-auto">
+                      <span className="text-[10px] font-mono text-t5 ml-auto">
                         {stageEntities.length}
                       </span>
                     </div>
@@ -407,7 +407,7 @@ export function WritingEntityPanel({
                         <span className="text-xs text-t2 truncate group-hover:text-t1 transition-colors flex-1">
                           {entity.name}
                         </span>
-                        <span className="text-[8px] font-mono text-t5 uppercase tracking-wider flex-shrink-0">
+                        <span className="text-[10px] font-mono text-t5 uppercase tracking-wider flex-shrink-0">
                           {ENTITY_TYPE_LABELS[entity.entity_type] ??
                             entity.entity_type}
                         </span>
@@ -419,16 +419,16 @@ export function WritingEntityPanel({
 
               {filteredEntities.length === 0 && (
                 <div className="px-3 py-8 text-center space-y-2">
-                  <p className="font-mono text-[10px] tracking-[0.18em] uppercase text-sf-teal">
+                  <p className="font-mono text-[12px] tracking-[0.18em] uppercase text-sf-teal">
                     // ENTITY INDEX
                   </p>
-                  <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-t4 leading-relaxed">
+                  <p className="font-mono text-[12px] uppercase tracking-[0.18em] text-t4 leading-relaxed">
                     {filter
                       ? "NO MATCHING RECORDS."
                       : "NO ENTITIES ON FILE."}
                   </p>
                   {!filter && (
-                    <p className="font-sans text-[11px] text-t4 leading-relaxed normal-case tracking-normal">
+                    <p className="font-sans text-[12px] text-t4 leading-relaxed normal-case tracking-normal">
                       Entities cross-referenced from your world's Codex appear here for @mention + pin while you write.
                     </p>
                   )}

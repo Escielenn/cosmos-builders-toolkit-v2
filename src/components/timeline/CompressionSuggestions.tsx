@@ -69,7 +69,7 @@ const CompressionSuggestions = () => {
           >
             <Badge
               variant="outline"
-              className={`text-[10px] py-0 ${confidenceColor(s.confidence)}`}
+              className={`text-[12px] py-0 ${confidenceColor(s.confidence)}`}
             >
               {s.suggestedLabel} ({Math.round(s.gapPercentage)}%)
             </Badge>
@@ -100,7 +100,7 @@ const CompressionSuggestions = () => {
       <Button
         variant="ghost"
         size="sm"
-        className="text-[10px] h-5 px-1.5 text-t3 hover:text-t1 shrink-0"
+        className="text-[12px] h-5 px-1.5 text-t3 hover:text-t1 shrink-0"
         onClick={handleDismissAll}
       >
         Dismiss all

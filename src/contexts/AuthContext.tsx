@@ -198,7 +198,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return (
       <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-[hsl(var(--sf-void))] px-6">
         <div className="max-w-md border border-sf-border bg-sf-surface/90 p-8 text-center">
-          <div className="mb-4 font-mono text-[11px] uppercase tracking-[3px] text-sf-crimson">
+          <div className="mb-4 font-mono text-[12px] uppercase tracking-[3px] text-sf-crimson">
             {"// connection lost"}
           </div>
           <h1 className="mb-3 font-display text-2xl font-light tracking-[0.04em] text-t1">

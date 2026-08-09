@@ -158,7 +158,7 @@ function EntityDetailPanel({
         className="flex items-center justify-between px-4 py-3 shrink-0"
         style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}
       >
-        <span className="text-[10px] font-sans font-medium uppercase tracking-[1.5px] text-t3">
+        <span className="text-[12px] font-sans font-medium uppercase tracking-[1.5px] text-t3">
           Entity Details
         </span>
         <button
@@ -187,7 +187,7 @@ function EntityDetailPanel({
         {/* Type + Cascade badges */}
         <div className="flex items-center gap-2 flex-wrap">
           <span
-            className="text-[9px] font-sans font-medium uppercase tracking-[1px] px-2 py-0.5"
+            className="text-[11px] font-sans font-medium uppercase tracking-[1px] px-2 py-0.5"
             style={{
               background: `${nodeColor}0F`,
               border: `1px solid ${nodeColor}26`,
@@ -198,7 +198,7 @@ function EntityDetailPanel({
             {ENTITY_TYPE_LABELS[entity.entity_type]}
           </span>
           <span
-            className="text-[9px] font-mono uppercase tracking-[0.8px] px-2 py-0.5"
+            className="text-[11px] font-mono uppercase tracking-[0.8px] px-2 py-0.5"
             style={{
               background: `${cascadeColor}0F`,
               border: `1px solid ${cascadeColor}26`,
@@ -213,10 +213,10 @@ function EntityDetailPanel({
         {/* Summary */}
         {entity.summary && (
           <div>
-            <label className="block text-[10px] font-sans font-medium uppercase tracking-[1.5px] text-t3 mb-1.5">
+            <label className="block text-[12px] font-sans font-medium uppercase tracking-[1.5px] text-t3 mb-1.5">
               Summary
             </label>
-            <p className="text-[12px] font-sans text-t2 leading-relaxed">
+            <p className="text-[13px] font-sans text-t2 leading-relaxed">
               {entity.summary}
             </p>
           </div>
@@ -225,10 +225,10 @@ function EntityDetailPanel({
         {/* Description */}
         {entity.description && (
           <div>
-            <label className="block text-[10px] font-sans font-medium uppercase tracking-[1.5px] text-t3 mb-1.5">
+            <label className="block text-[12px] font-sans font-medium uppercase tracking-[1.5px] text-t3 mb-1.5">
               Description
             </label>
-            <p className="text-[12px] font-sans text-t2 leading-relaxed whitespace-pre-wrap">
+            <p className="text-[13px] font-sans text-t2 leading-relaxed whitespace-pre-wrap">
               {entity.description}
             </p>
           </div>
@@ -236,7 +236,7 @@ function EntityDetailPanel({
 
         {/* Parent entity */}
         <div>
-          <label className="block text-[10px] font-sans font-medium uppercase tracking-[1.5px] text-t3 mb-1.5">
+          <label className="block text-[12px] font-sans font-medium uppercase tracking-[1.5px] text-t3 mb-1.5">
             Parent
           </label>
           {parentEntity ? (
@@ -250,18 +250,18 @@ function EntityDetailPanel({
                     "#15C17B",
                 }}
               />
-              <span className="text-[12px] font-heading text-t2 truncate">
+              <span className="text-[13px] font-heading text-t2 truncate">
                 {parentEntity.name}
               </span>
               <button
                 onClick={() => onReparent(entity.id, null)}
-                className="text-[9px] font-sans text-sf-crimson hover:text-sf-crimson/80 uppercase tracking-[0.5px] ml-auto shrink-0 transition-colors"
+                className="text-[11px] font-sans text-sf-crimson hover:text-sf-crimson/80 uppercase tracking-[0.5px] ml-auto shrink-0 transition-colors"
               >
                 Remove
               </button>
             </div>
           ) : (
-            <span className="text-[11px] font-sans text-t4 italic">
+            <span className="text-[12px] font-sans text-t4 italic">
               Root entity (no parent)
             </span>
           )}
@@ -269,7 +269,7 @@ function EntityDetailPanel({
 
         {/* Child count */}
         <div>
-          <label className="block text-[10px] font-sans font-medium uppercase tracking-[1.5px] text-t3 mb-1.5">
+          <label className="block text-[12px] font-sans font-medium uppercase tracking-[1.5px] text-t3 mb-1.5">
             Children
           </label>
           <span className="text-[13px] font-mono text-t2">
@@ -280,14 +280,14 @@ function EntityDetailPanel({
         {/* Tags */}
         {entity.tags && entity.tags.length > 0 && (
           <div>
-            <label className="block text-[10px] font-sans font-medium uppercase tracking-[1.5px] text-t3 mb-1.5">
+            <label className="block text-[12px] font-sans font-medium uppercase tracking-[1.5px] text-t3 mb-1.5">
               Tags
             </label>
             <div className="flex flex-wrap gap-1">
               {entity.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="text-[9px] font-mono px-1.5 py-0.5 text-t3"
+                  className="text-[11px] font-mono px-1.5 py-0.5 text-t3"
                   style={{
                     background: "rgba(255,255,255,0.04)",
                     border: "1px solid rgba(255,255,255,0.06)",
@@ -317,7 +317,7 @@ function EntityDetailPanel({
         {onEdit && (
           <button
             onClick={() => onEdit(entity.id)}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-sans font-medium text-t2 hover:text-t1 transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-[12px] font-sans font-medium text-t2 hover:text-t1 transition-colors"
             style={{
               background: "rgba(255,255,255,0.04)",
               border: "1px solid rgba(255,255,255,0.08)",
@@ -329,7 +329,7 @@ function EntityDetailPanel({
         )}
         <button
           onClick={() => onDelete(entity.id)}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-sans font-medium text-sf-crimson hover:bg-sf-crimson/10 transition-colors ml-auto"
+          className="flex items-center gap-1.5 px-3 py-1.5 text-[12px] font-sans font-medium text-sf-crimson hover:bg-sf-crimson/10 transition-colors ml-auto"
           style={{
             background: "rgba(255, 51, 102, 0.04)",
             border: "1px solid rgba(255, 51, 102, 0.15)",
@@ -458,7 +458,7 @@ function ContextMenu({
           )}
           <button
             onClick={item.action}
-            className={`w-full flex items-center gap-2 px-3 py-1.5 text-left text-[11px] font-sans tracking-[0.5px] transition-colors ${
+            className={`w-full flex items-center gap-2 px-3 py-1.5 text-left text-[12px] font-sans tracking-[0.5px] transition-colors ${
               item.danger
                 ? "text-sf-crimson hover:bg-sf-crimson/10"
                 : "text-t2 hover:bg-white/5 hover:text-t1"
@@ -606,7 +606,7 @@ function TreeNodeRow({
 
       {/* Entity type label */}
       <span
-        className="text-[9px] font-sans font-medium uppercase tracking-[1px] shrink-0"
+        className="text-[11px] font-sans font-medium uppercase tracking-[1px] shrink-0"
         style={{ color: "rgba(255,255,255,0.35)" }}
       >
         {ENTITY_TYPE_LABELS[entity.entity_type]}
@@ -614,7 +614,7 @@ function TreeNodeRow({
 
       {/* Cascade stage badge */}
       <span
-        className="text-[8px] font-mono uppercase tracking-[0.8px] px-1.5 py-0.5 shrink-0"
+        className="text-[10px] font-mono uppercase tracking-[0.8px] px-1.5 py-0.5 shrink-0"
         style={{
           background: `${cascadeColor}0F`,
           border: `1px solid ${cascadeColor}26`,
@@ -627,7 +627,7 @@ function TreeNodeRow({
 
       {/* Child count */}
       {hasChildren && (
-        <span className="text-[9px] font-mono text-t4">
+        <span className="text-[11px] font-mono text-t4">
           {node.children.length}
         </span>
       )}
@@ -910,7 +910,7 @@ export function EntityTreeView({
             <button
               key={key}
               onClick={() => setLayout(key)}
-              className={`flex items-center gap-1 px-2 py-1 text-[9px] font-sans uppercase tracking-[1px] transition-colors ${
+              className={`flex items-center gap-1 px-2 py-1 text-[11px] font-sans uppercase tracking-[1px] transition-colors ${
                 layout === key
                   ? "text-t1 bg-white/5"
                   : "text-t4 hover:text-t2"
@@ -927,14 +927,14 @@ export function EntityTreeView({
         <div className="flex items-center gap-1">
           <button
             onClick={expandAll}
-            className="text-[9px] font-sans uppercase tracking-[1px] text-t4 hover:text-t2 px-1.5 py-0.5 transition-colors"
+            className="text-[11px] font-sans uppercase tracking-[1px] text-t4 hover:text-t2 px-1.5 py-0.5 transition-colors"
           >
             Expand All
           </button>
-          <span className="text-t5 text-[9px]">/</span>
+          <span className="text-t5 text-[11px]">/</span>
           <button
             onClick={collapseAll}
-            className="text-[9px] font-sans uppercase tracking-[1px] text-t4 hover:text-t2 px-1.5 py-0.5 transition-colors"
+            className="text-[11px] font-sans uppercase tracking-[1px] text-t4 hover:text-t2 px-1.5 py-0.5 transition-colors"
           >
             Collapse All
           </button>
@@ -942,10 +942,10 @@ export function EntityTreeView({
 
         {/* Stats */}
         <div className="ml-auto flex items-center gap-3">
-          <span className="text-[9px] font-mono text-t4">
+          <span className="text-[11px] font-mono text-t4">
             {rootCount} root{rootCount !== 1 ? "s" : ""}
           </span>
-          <span className="text-[9px] font-mono text-t5">
+          <span className="text-[11px] font-mono text-t5">
             {totalCount} total
           </span>
         </div>
@@ -962,7 +962,7 @@ export function EntityTreeView({
       >
         {tree.length === 0 ? (
           <div className="flex items-center justify-center h-full">
-            <p className="text-[11px] font-sans text-t4">
+            <p className="text-[12px] font-sans text-t4">
               No entities yet. Create one to begin.
             </p>
           </div>

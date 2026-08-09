@@ -303,7 +303,7 @@ const TimelineView = forwardRef<HTMLDivElement, TimelineViewProps>(({
                       style={{ left: x - TRACK_HEADER_WIDTH }}
                     >
                       <span
-                        className={`text-[10px] leading-none mb-1 whitespace-nowrap ${
+                        className={`text-[12px] leading-none mb-1 whitespace-nowrap ${
                           tick.isMajor
                             ? "text-t2 font-medium"
                             : "text-t3/50"

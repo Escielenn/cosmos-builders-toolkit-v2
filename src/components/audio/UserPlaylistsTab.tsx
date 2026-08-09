@@ -30,7 +30,7 @@ export default function UserPlaylistsTab() {
         <p className="text-t3 text-xs uppercase tracking-wider">
           Pro feature
         </p>
-        <p className="text-t4 text-[11px]">
+        <p className="text-t4 text-[12px]">
           Upgrade to Pro to create custom playlists.
         </p>
       </div>
@@ -54,7 +54,7 @@ export default function UserPlaylistsTab() {
         <button
           type="button"
           onClick={() => setExpanded(null)}
-          className="text-[10px] text-t4 hover:text-t2 uppercase tracking-wider mb-3 transition-colors flex items-center gap-1"
+          className="text-[12px] text-t4 hover:text-t2 uppercase tracking-wider mb-3 transition-colors flex items-center gap-1"
         >
           <ArrowLeft className="w-3 h-3" /> Back
         </button>

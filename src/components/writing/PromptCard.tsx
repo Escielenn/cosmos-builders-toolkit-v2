@@ -35,7 +35,7 @@ export function PromptCard({ onStartWriting }: PromptCardProps) {
                 {DIFFICULTY_LABELS[prompt.difficulty]}
               </Badge>
             </div>
-            <span className="font-mono text-[10px] text-t4 uppercase tracking-[1.5px] ml-auto">
+            <span className="font-mono text-[12px] text-t4 uppercase tracking-[1.5px] ml-auto">
               {source === "scheduled"
                 ? "Scheduled Prompt"
                 : source === "featured"

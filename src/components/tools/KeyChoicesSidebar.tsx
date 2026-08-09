@@ -78,7 +78,7 @@ const KeyChoicesSidebar = ({
 
   const SidebarContent = () => (
     <>
-      <h4 className="font-mono text-[9px] tracking-[2px] uppercase text-t3/60 mb-3 flex items-center gap-2">
+      <h4 className="font-mono text-[11px] tracking-[2px] uppercase text-t3/60 mb-3 flex items-center gap-2">
         <ClipboardList className="w-3.5 h-3.5" />
         // READOUT
       </h4>
@@ -121,7 +121,7 @@ const KeyChoicesSidebar = ({
                     // render as a telemetry KeyValueRow (mono label : mono value).
                     if (choice.asList && Array.isArray(choice.value)) {
                       return (
-                        <div key={idx} className="text-[11px]">
+                        <div key={idx} className="text-[12px]">
                           <span className="font-mono text-t4 uppercase tracking-[0.12em]">
                             {choice.label.toUpperCase()}
                           </span>
@@ -129,7 +129,7 @@ const KeyChoicesSidebar = ({
                             {choice.value.map((v, i) => (
                               <li
                                 key={i}
-                                className="font-mono text-[11px] tabular-nums text-t1 before:content-['·'] before:mr-1.5 before:text-sf-amber-warm"
+                                className="font-mono text-[12px] tabular-nums text-t1 before:content-['·'] before:mr-1.5 before:text-sf-amber-warm"
                               >
                                 {v}
                               </li>
@@ -149,7 +149,7 @@ const KeyChoicesSidebar = ({
                     );
                   })}
                   {!hasValues && (
-                    <span className="font-mono text-[11px] tracking-[0.18em] text-t5 uppercase">
+                    <span className="font-mono text-[12px] tracking-[0.18em] text-t5 uppercase">
                       // NO DATA ON FILE
                     </span>
                   )}
@@ -191,7 +191,7 @@ const KeyChoicesSidebar = ({
               className="rounded-none w-auto h-auto px-3 py-2.5 shadow-lg bg-background/80 backdrop-blur-sm"
             >
               <ClipboardList className="w-4 h-4 mr-2" />
-              <span className="text-[10px] tracking-[1.5px] uppercase font-heading">READOUT</span>
+              <span className="text-[12px] tracking-[1.5px] uppercase font-heading">READOUT</span>
             </Button>
           </SheetTrigger>
           <SheetContent
@@ -264,12 +264,12 @@ export const MobileKeyChoices = ({
           className="rounded-none w-auto h-auto px-3 py-2.5 shadow-lg bg-background/80 backdrop-blur-sm"
         >
           <ClipboardList className="w-4 h-4 mr-2" />
-          <span className="text-[10px] tracking-[1.5px] uppercase font-heading">READOUT</span>
+          <span className="text-[12px] tracking-[1.5px] uppercase font-heading">READOUT</span>
         </Button>
       </SheetTrigger>
       <SheetContent side="right" className="w-72 bg-background/95 backdrop-blur-lg">
         <div className="pt-6">
-          <h4 className="font-mono text-[9px] tracking-[2px] uppercase text-t3/60 mb-3 flex items-center gap-2">
+          <h4 className="font-mono text-[11px] tracking-[2px] uppercase text-t3/60 mb-3 flex items-center gap-2">
             <ClipboardList className="w-3.5 h-3.5" />
             // READOUT
           </h4>

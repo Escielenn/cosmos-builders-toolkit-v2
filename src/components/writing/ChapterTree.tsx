@@ -186,10 +186,10 @@ export function ChapterTree({
       {/* Header */}
       <div className="flex items-center justify-between px-3 py-2 border-b border-white/5">
         <div className="flex-1 min-w-0">
-          <h2 className="font-heading text-[11px] tracking-[1.5px] uppercase text-t3">
+          <h2 className="font-heading text-[12px] tracking-[1.5px] uppercase text-t3">
             Chapters
           </h2>
-          <p className="text-[10px] text-t5 font-mono">
+          <p className="text-[12px] text-t5 font-mono">
             {totalDocs} doc{totalDocs === 1 ? "" : "s"} · {totalWords.toLocaleString()} words
           </p>
         </div>
@@ -280,7 +280,7 @@ export function ChapterTree({
                     {folder.title}
                   </button>
                 )}
-                <span className="text-[10px] font-mono text-t5 shrink-0">
+                <span className="text-[12px] font-mono text-t5 shrink-0">
                   {folder.documents.length}
                 </span>
                 <DropdownMenu>
@@ -322,7 +322,7 @@ export function ChapterTree({
               {!collapsed && (
                 <div className="pl-6">
                   {folder.documents.length === 0 ? (
-                    <div className="px-2 py-1 text-[10px] text-t5 italic">
+                    <div className="px-2 py-1 text-[12px] text-t5 italic">
                       empty
                     </div>
                   ) : (
@@ -356,7 +356,7 @@ export function ChapterTree({
         {unfiledDocs.length > 0 && (
           <div className="mt-2 pt-2 border-t border-white/5">
             <div className="px-3 py-1">
-              <span className="text-[9px] uppercase tracking-[1.5px] text-t5 font-heading">
+              <span className="text-[11px] uppercase tracking-[1.5px] text-t5 font-heading">
                 Unfiled
               </span>
             </div>
@@ -506,7 +506,7 @@ function DocRow({
         </button>
       )}
       {words > 0 && (
-        <span className="text-[9px] font-mono text-t5 shrink-0">
+        <span className="text-[11px] font-mono text-t5 shrink-0">
           {words < 1000 ? words : `${Math.round(words / 100) / 10}k`}
         </span>
       )}
@@ -539,7 +539,7 @@ function DocRow({
                 Move to…
               </DropdownMenuSubTrigger>
               <DropdownMenuSubContent>
-                <DropdownMenuLabel className="text-[10px] uppercase tracking-[1.5px] text-t4">
+                <DropdownMenuLabel className="text-[12px] uppercase tracking-[1.5px] text-t4">
                   Move to folder
                 </DropdownMenuLabel>
                 {otherFolders.map((f) => (

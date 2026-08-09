@@ -753,12 +753,12 @@ const LexDrift = () => {
               onClick={() => setShowAdvanced(!showAdvanced)}
               className="flex items-center gap-2 px-3 py-1.5 rounded-sm border border-sf-border bg-accent/5 hover:bg-accent/10 transition-colors"
             >
-              <span className="font-mono text-[10px] uppercase tracking-[1.5px] text-t3">
+              <span className="font-mono text-[12px] uppercase tracking-[1.5px] text-t3">
                 {showAdvanced ? "▾ Hide" : "▸ Show"} Advanced Parameters
               </span>
             </button>
             {!showAdvanced && (
-              <span className="font-mono text-[10px] text-t4">
+              <span className="font-mono text-[12px] text-t4">
                 Using default social factors
               </span>
             )}
@@ -976,7 +976,7 @@ const LexDrift = () => {
 
                   return (
                     <div className="px-1 py-2">
-                      <p className="font-mono text-[10px] uppercase tracking-[2px] text-t2 mb-2">Divergence Over Time</p>
+                      <p className="font-mono text-[12px] uppercase tracking-[2px] text-t2 mb-2">Divergence Over Time</p>
                       <svg viewBox={`0 0 ${W} ${H}`} className="w-full max-w-[480px]" aria-label="Divergence and intelligibility over generations">
                         {/* Grid lines */}
                         {[0, 25, 50, 75, 100].map(v => (
@@ -1337,7 +1337,7 @@ const LexDrift = () => {
 
                         return (
                           <div className="mt-4">
-                            <p className="font-mono text-[10px] uppercase tracking-[2px] text-t2 mb-2">Language Family Tree</p>
+                            <p className="font-mono text-[12px] uppercase tracking-[2px] text-t2 mb-2">Language Family Tree</p>
                             <svg viewBox={`0 0 ${W} ${H}`} className="w-full max-w-[440px]" aria-label="Language family tree showing divergence branches">
                               {/* Root node: Earth Standard */}
                               <circle cx={rootX} cy={rootY} r={4} fill="rgba(21,193,123,0.6)" />

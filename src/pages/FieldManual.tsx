@@ -14,7 +14,7 @@ const FieldManual = () => {
         <GuideNav />
 
         <header className="mb-8">
-          <div className="font-mono text-[9px] uppercase tracking-[3px] text-primary/40 mb-2">
+          <div className="font-mono text-[11px] uppercase tracking-[3px] text-primary/40 mb-2">
             // Field Manual
           </div>
           <div className="flex items-center gap-3 mb-2">

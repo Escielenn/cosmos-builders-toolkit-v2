@@ -19,7 +19,7 @@ function StatCell({
 }) {
   return (
     <GlassPanel className="p-3">
-      <span className="block text-[11px] font-medium uppercase tracking-[1.5px] text-t3 mb-1.5">
+      <span className="block text-[12px] font-medium uppercase tracking-[1.5px] text-t3 mb-1.5">
         {label}
       </span>
       {children}
@@ -48,10 +48,10 @@ export function StatsPanel({ entries, dailyGoalWords }: StatsPanelProps) {
           <div className="flex items-center gap-3 flex-1 min-w-[180px]">
             <div className="flex-1">
               <div className="flex items-center justify-between mb-1.5">
-                <span className="text-[11px] font-medium uppercase tracking-[1.5px] text-t3">
+                <span className="text-[12px] font-medium uppercase tracking-[1.5px] text-t3">
                   Today
                 </span>
-                <span className="font-mono text-[11px] text-t2">
+                <span className="font-mono text-[12px] text-t2">
                   {formatNumber(stats.wordsToday)}
                   <span className="text-t4"> / {formatNumber(dailyGoalWords)}</span>
                 </span>

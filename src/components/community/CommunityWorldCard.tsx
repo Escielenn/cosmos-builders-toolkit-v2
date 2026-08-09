@@ -30,7 +30,7 @@ export default function CommunityWorldCard({ world }: CommunityWorldCardProps) {
           <h3 className="font-heading text-base font-light text-t1 truncate">
             {world.name}
           </h3>
-          <span className="font-sans text-[11px] text-t3">
+          <span className="font-sans text-[12px] text-t3">
             by {world.is_example ? "StellarForge" : world.owner_display_name}
           </span>
         </div>
@@ -50,13 +50,13 @@ export default function CommunityWorldCard({ world }: CommunityWorldCardProps) {
           {world.tags.slice(0, 4).map((tag) => (
             <span
               key={tag}
-              className="font-mono text-[10px] px-2 py-0.5 rounded-sm bg-white/[0.04] border border-white/[0.08] text-t3"
+              className="font-mono text-[12px] px-2 py-0.5 rounded-sm bg-white/[0.04] border border-white/[0.08] text-t3"
             >
               {tag}
             </span>
           ))}
           {world.tags.length > 4 && (
-            <span className="font-mono text-[10px] text-t4">
+            <span className="font-mono text-[12px] text-t4">
               +{world.tags.length - 4}
             </span>
           )}
@@ -65,12 +65,12 @@ export default function CommunityWorldCard({ world }: CommunityWorldCardProps) {
 
       {/* Stats row */}
       <div className="flex items-center gap-4 text-t4">
-        <span className="inline-flex items-center gap-1 font-mono text-[11px]">
+        <span className="inline-flex items-center gap-1 font-mono text-[12px]">
           <Layers className="w-3 h-3" />
           {world.entity_count} {world.entity_count === 1 ? "entity" : "entities"}
         </span>
         {world.is_example && (
-          <Badge variant="glow-amber" className="font-mono text-[10px] px-1.5 py-0">
+          <Badge variant="glow-amber" className="font-mono text-[12px] px-1.5 py-0">
             Example
           </Badge>
         )}

@@ -42,7 +42,7 @@ export default function PlaylistCard({ playlist, onSelect }: PlaylistCardProps) 
       </div>
 
       {/* Meta */}
-      <p className="text-[10px] text-t4 font-mono uppercase tracking-wider">
+      <p className="text-[12px] text-t4 font-mono uppercase tracking-wider">
         {playlist.tracks.length} {playlist.tracks.length === 1 ? "track" : "tracks"}
       </p>
 

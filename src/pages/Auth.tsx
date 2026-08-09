@@ -153,14 +153,14 @@ const Auth = () => {
           {/* Hero, display-font scale per April 2026 handoff */}
           <div className="space-y-7">
             <CubeLogo size={80} className="rounded-none" />
-            <div className="inline-flex items-center gap-3.5 font-mono uppercase text-sf-teal text-[12px] tracking-[3px]">
+            <div className="inline-flex items-center gap-3.5 font-mono uppercase text-sf-teal text-[13px] tracking-[3px]">
               <span aria-hidden className="block w-12 h-px bg-sf-teal" />
               <span>// OPEN EARLY ACCESS</span>
             </div>
             <h1 className="font-display font-light text-sf-hero leading-[0.98] text-t1 max-w-[12ch]">
               <span className="text-sf-teal">Stellar</span>forge.
             </h1>
-            <p className="font-heading text-[11px] tracking-[0.2em] uppercase text-t3">
+            <p className="font-heading text-[12px] tracking-[0.2em] uppercase text-t3">
               Science Fiction Worldbuilding Tools
             </p>
             <p className="font-sans text-[19px] text-t2 max-w-[780px] leading-[1.55]">
@@ -177,7 +177,7 @@ const Auth = () => {
               <div className="w-10 h-10 rounded-none bg-sf-teal/[0.06] border border-sf-teal/[0.15] flex items-center justify-center mb-3 mx-auto md:mx-0">
                 <Layers className="w-5 h-5 text-primary" />
               </div>
-              <h3 className="font-heading text-[11px] font-medium uppercase tracking-[0.2em] text-sf-teal mb-2">
+              <h3 className="font-heading text-[12px] font-medium uppercase tracking-[0.2em] text-sf-teal mb-2">
                 Systematic Worldbuilding
               </h3>
               <p className="text-sm text-t3">
@@ -189,7 +189,7 @@ const Auth = () => {
               <div className="w-10 h-10 rounded-none bg-sf-stellar/[0.06] border border-sf-stellar/[0.15] flex items-center justify-center mb-3 mx-auto md:mx-0">
                 <Share2 className="w-5 h-5 text-sf-stellar" />
               </div>
-              <h3 className="font-heading text-[11px] font-medium uppercase tracking-[0.2em] text-sf-teal mb-2">
+              <h3 className="font-heading text-[12px] font-medium uppercase tracking-[0.2em] text-sf-teal mb-2">
                 Cross-Tool Integration
               </h3>
               <p className="text-sm text-t3">
@@ -201,7 +201,7 @@ const Auth = () => {
               <div className="w-10 h-10 rounded-none bg-sf-teal/[0.06] border border-sf-teal/[0.15] flex items-center justify-center mb-3 mx-auto md:mx-0">
                 <FileDown className="w-5 h-5 text-primary" />
               </div>
-              <h3 className="font-heading text-[11px] font-medium uppercase tracking-[0.2em] text-sf-teal mb-2">
+              <h3 className="font-heading text-[12px] font-medium uppercase tracking-[0.2em] text-sf-teal mb-2">
                 Export Everything
               </h3>
               <p className="text-sm text-t3">
@@ -273,7 +273,7 @@ const Auth = () => {
                   <div className="absolute inset-0 flex items-center">
                     <div className="w-full border-t border-dashed border-sf-border"></div>
                   </div>
-                  <div className="relative flex justify-center font-mono text-[11px] tracking-[0.18em] uppercase">
+                  <div className="relative flex justify-center font-mono text-[12px] tracking-[0.18em] uppercase">
                     <span className="bg-sf-surface px-2 text-t4">// OR EMAIL</span>
                   </div>
                 </div>
@@ -376,7 +376,7 @@ const Auth = () => {
                   <div className="absolute inset-0 flex items-center">
                     <div className="w-full border-t border-dashed border-sf-border"></div>
                   </div>
-                  <div className="relative flex justify-center font-mono text-[11px] tracking-[0.18em] uppercase">
+                  <div className="relative flex justify-center font-mono text-[12px] tracking-[0.18em] uppercase">
                     <span className="bg-sf-surface px-2 text-t4">// OR EMAIL</span>
                   </div>
                 </div>
@@ -424,7 +424,7 @@ const Auth = () => {
           </div>
 
           {/* Footer */}
-          <div className="text-center font-mono text-[11px] tracking-[0.18em] text-t5 pb-8 uppercase">
+          <div className="text-center font-mono text-[12px] tracking-[0.18em] text-t5 pb-8 uppercase">
             <p>© {new Date().getFullYear()} STELLARFORGE · 39.87°N · 104.97°W</p>
           </div>
 

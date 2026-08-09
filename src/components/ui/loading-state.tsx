@@ -68,14 +68,14 @@ export function LoadingState({
         />
         {/* Centered mono sigil */}
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className="font-mono text-[10px] tracking-[0.25em] text-sf-teal/60 uppercase">
+          <span className="font-mono text-[12px] tracking-[0.25em] text-sf-teal/60 uppercase">
             //TX
           </span>
         </div>
       </div>
 
       {!silent && (
-        <p className="font-mono text-[11px] tracking-[0.18em] uppercase text-t3 text-center max-w-xs">
+        <p className="font-mono text-[12px] tracking-[0.18em] uppercase text-t3 text-center max-w-xs">
           {flavor}
         </p>
       )}

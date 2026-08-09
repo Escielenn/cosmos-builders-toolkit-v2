@@ -135,7 +135,7 @@ const NotFound = () => {
 
         {/* Error code */}
         <motion.div
-          className="inline-flex items-center gap-3.5 font-mono uppercase text-sf-teal text-[12px] tracking-[3px] mb-7 justify-center"
+          className="inline-flex items-center gap-3.5 font-mono uppercase text-sf-teal text-[13px] tracking-[3px] mb-7 justify-center"
           variants={fadeUpItem}
         >
           <span aria-hidden className="block w-12 h-px bg-sf-teal" />
@@ -162,7 +162,7 @@ const NotFound = () => {
         {/* Failed coordinates readout */}
         {showCoords && (
           <motion.div
-            className="font-mono text-[11px] text-t4 mb-8 py-2 px-4 inline-block border border-sf-border bg-sf-surface/40 tracking-[0.18em]"
+            className="font-mono text-[12px] text-t4 mb-8 py-2 px-4 inline-block border border-sf-border bg-sf-surface/40 tracking-[0.18em]"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}

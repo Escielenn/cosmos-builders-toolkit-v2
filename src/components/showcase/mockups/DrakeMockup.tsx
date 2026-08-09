@@ -86,7 +86,7 @@ const SliderRow = ({ label, description, delay }: SliderRowProps) => {
 
       {/* Description */}
       <div className="w-24 hidden md:block">
-        <span className="text-[10px] text-t3 truncate">
+        <span className="text-[12px] text-t3 truncate">
           {description}
         </span>
       </div>

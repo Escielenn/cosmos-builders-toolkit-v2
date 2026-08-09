@@ -333,7 +333,7 @@ const WorldConnections = () => {
                     <h3 className="font-heading text-sm font-light uppercase tracking-[2px] text-t1 mb-2">
                       Your World Map
                     </h3>
-                    <p className="text-[11px] font-sans text-t3 leading-relaxed mb-4 max-w-xs">
+                    <p className="text-[12px] font-sans text-t3 leading-relaxed mb-4 max-w-xs">
                       No entities yet. Create a star or planet and watch your world's hierarchy grow.
                     </p>
                     <Button onClick={() => { setCreateEntityParentId(null); setShowCreateEntity(true); }} className="text-xs font-sans">

@@ -175,7 +175,7 @@ export default function WorldCustomTypes() {
                     >
                       {t.label}
                     </div>
-                    <div className="text-[10px] font-mono text-t5">
+                    <div className="text-[12px] font-mono text-t5">
                       {t.type_key} · {t.fields.length} field{t.fields.length === 1 ? "" : "s"}
                     </div>
                   </div>
@@ -292,10 +292,10 @@ function TemplateDetailEditor({
       <div className="border border-white/10 bg-white/[0.02] p-4">
         <div className="flex items-start justify-between gap-3 mb-4">
           <div>
-            <div className="text-[10px] font-heading uppercase tracking-[2px] text-t4 mb-1">
+            <div className="text-[12px] font-heading uppercase tracking-[2px] text-t4 mb-1">
               Template
             </div>
-            <div className="text-[10px] font-mono text-t5">
+            <div className="text-[12px] font-mono text-t5">
               key: {template.type_key}
             </div>
           </div>
@@ -312,7 +312,7 @@ function TemplateDetailEditor({
 
         <div className="space-y-3">
           <div className="space-y-1">
-            <Label htmlFor="t-label" className="text-[10px] uppercase tracking-[1.5px] text-t4">
+            <Label htmlFor="t-label" className="text-[12px] uppercase tracking-[1.5px] text-t4">
               Display label
             </Label>
             <Input
@@ -324,7 +324,7 @@ function TemplateDetailEditor({
             />
           </div>
           <div className="space-y-1">
-            <Label htmlFor="t-desc" className="text-[10px] uppercase tracking-[1.5px] text-t4">
+            <Label htmlFor="t-desc" className="text-[12px] uppercase tracking-[1.5px] text-t4">
               Description{" "}
               <span className="text-t5 font-normal normal-case tracking-normal">(optional)</span>
             </Label>
@@ -338,7 +338,7 @@ function TemplateDetailEditor({
             />
           </div>
           <div className="space-y-1 max-w-[160px]">
-            <Label htmlFor="t-color" className="text-[10px] uppercase tracking-[1.5px] text-t4">
+            <Label htmlFor="t-color" className="text-[12px] uppercase tracking-[1.5px] text-t4">
               Accent color
             </Label>
             <div className="flex items-center gap-2">

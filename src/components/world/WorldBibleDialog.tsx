@@ -273,7 +273,7 @@ const WorldBibleDialog = ({
               <button
                 onClick={() => setExportStructure("cascade")}
                 className={cn(
-                  "px-3 py-1.5 text-[10px] uppercase tracking-wider font-heading transition-colors",
+                  "px-3 py-1.5 text-[12px] uppercase tracking-wider font-heading transition-colors",
                   exportStructure === "cascade"
                     ? "bg-primary/10 text-primary border border-primary/25"
                     : "text-t4 hover:text-t3"
@@ -284,7 +284,7 @@ const WorldBibleDialog = ({
               <button
                 onClick={() => setExportStructure("entity")}
                 className={cn(
-                  "px-3 py-1.5 text-[10px] uppercase tracking-wider font-heading transition-colors",
+                  "px-3 py-1.5 text-[12px] uppercase tracking-wider font-heading transition-colors",
                   exportStructure === "entity"
                     ? "bg-primary/10 text-primary border border-primary/25"
                     : "text-t4 hover:text-t3"
@@ -293,7 +293,7 @@ const WorldBibleDialog = ({
                 Entity
               </button>
             </div>
-            <p className="text-[10px] text-t4">
+            <p className="text-[12px] text-t4">
               {exportStructure === "cascade"
                 ? "Organized by cascade layer: Environment → Biology → Culture → Mythology. Reads like a textbook."
                 : "Organized by entity: one chapter per major element, all data compiled per entity. Reads like an encyclopedia."}

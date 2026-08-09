@@ -31,14 +31,17 @@ const buttonVariants = cva(
           "border border-sf-border-strong bg-transparent text-t1 font-sans font-medium uppercase tracking-[1.2px] transition-base ease-sf-out hover:border-sf-teal hover:text-sf-teal-bright hover:shadow-sf-inset-teal",
       },
       size: {
-        default: "h-10 px-4 py-2",
-        sm: "h-9 px-3",
-        lg: "h-11 px-8",
-        icon: "h-10 w-10",
+        /* Heights target a comfortable desktop hit area; `default` and up sit
+           at/above the 44px touch target in the accessibility spec. `sm` stays
+           compact for dense toolbars but no longer drops below 40px. */
+        default: "h-11 px-5 py-2",
+        sm: "h-10 px-4",
+        lg: "h-12 px-8",
+        icon: "h-11 w-11",
         /* ── April 2026 handoff sizes ── match tracking-[1.2px] text sizes from the spec */
-        "sf-sm": "h-9 text-[11px] px-4 py-2",
-        "sf-md": "h-10 text-[13px] px-[22px] py-3",
-        "sf-lg": "h-12 text-[14px] px-7 py-4",
+        "sf-sm": "h-10 text-[12px] px-4 py-2",
+        "sf-md": "h-11 text-[14px] px-[22px] py-3",
+        "sf-lg": "h-12 text-[15px] px-8 py-4",
       },
     },
     defaultVariants: {

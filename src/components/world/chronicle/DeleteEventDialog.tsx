@@ -37,7 +37,7 @@ export function DeleteEventDialog({
           <button
             type="button"
             onClick={() => onOpenChange(false)}
-            className="sf-fill-sweep sf-fill-sweep--secondary px-4 py-1.5 border border-sf-border text-[10px] uppercase tracking-wider text-t3/50"
+            className="sf-fill-sweep sf-fill-sweep--secondary px-4 py-1.5 border border-sf-border text-[12px] uppercase tracking-wider text-t3/50"
           >
             Cancel
           </button>
@@ -47,7 +47,7 @@ export function DeleteEventDialog({
               onConfirm();
               onOpenChange(false);
             }}
-            className="sf-fill-sweep px-4 py-1.5 border border-destructive/30 text-sf-crimson text-[10px] uppercase tracking-wider"
+            className="sf-fill-sweep px-4 py-1.5 border border-destructive/30 text-sf-crimson text-[12px] uppercase tracking-wider"
           >
             Delete
           </button>

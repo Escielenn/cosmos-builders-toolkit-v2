@@ -61,7 +61,7 @@ function CascadeLayerBadge({
           style={{ backgroundColor: color, opacity }}
         />
         <span
-          className="absolute -top-5 left-1/2 -translate-x-1/2 font-mono text-[7px] uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none"
+          className="absolute -top-5 left-1/2 -translate-x-1/2 font-mono text-[10px] uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none"
           style={{ color }}
         >
           {layer.label}

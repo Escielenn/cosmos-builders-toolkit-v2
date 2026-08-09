@@ -168,7 +168,7 @@ export default function Write(): JSX.Element {
       <div className="sf-sb sf-sb--slim min-h-0 flex-1 overflow-y-auto py-3">
         {folders.map(({ folder, docs }) => (
           <div key={folder.id} className="mb-2">
-            <div className="px-3 py-1 font-heading text-[11px] uppercase tracking-[1.5px] text-t4">{folder.title}</div>
+            <div className="px-3 py-1 font-heading text-[12px] uppercase tracking-[1.5px] text-t4">{folder.title}</div>
             <DndContext sensors={sensors} collisionDetection={closestCenter}
               onDragEnd={({ active, over }) => over && reorderList(docs, String(active.id), String(over.id))}>
               <SortableContext items={docs.map((d) => d.id)} strategy={verticalListSortingStrategy}>
@@ -194,15 +194,15 @@ export default function Write(): JSX.Element {
           <div className="mt-3 border-t border-sf-border pt-2">
             <button
               onClick={() => setTrashOpen((o) => !o)}
-              className="flex w-full items-center gap-2 px-3 py-1.5 text-left font-heading text-[11px] uppercase tracking-[1.5px] text-t4 hover:text-t2"
+              className="flex w-full items-center gap-2 px-3 py-1.5 text-left font-heading text-[12px] uppercase tracking-[1.5px] text-t4 hover:text-t2"
               aria-expanded={trashOpen}
             >
               <Trash2 className="h-3 w-3" /> Trash ({trashed!.length})
-              <span className="ml-auto text-[9px]">{trashOpen ? "▾" : "▸"}</span>
+              <span className="ml-auto text-[11px]">{trashOpen ? "▾" : "▸"}</span>
             </button>
             {trashOpen && (
               <div className="pb-1">
-                <p className="px-3 pb-1 font-serif text-[11px] italic text-t5">Auto-emptied after 90 days.</p>
+                <p className="px-3 pb-1 font-serif text-[12px] italic text-t5">Auto-emptied after 90 days.</p>
                 {trashed!.map((d) => (
                   <div key={d.id} className="group flex items-center gap-1 pr-1">
                     <span className="min-w-0 flex-1 truncate py-1.5 pl-3 font-serif text-[13px] text-t4 line-through">{d.title || "Untitled"}</span>
@@ -223,8 +223,8 @@ export default function Write(): JSX.Element {
       </div>
       {worldId && (
         <div className="flex gap-1 border-t border-sf-border p-2">
-          <button onClick={newDocument} className="min-h-[40px] flex-1 border border-sf-border px-2 py-1.5 text-[11px] text-t2 transition-colors hover:border-sf-teal hover:text-t1">+ Document</button>
-          <button onClick={() => createFolder.mutate("New folder")} className="min-h-[40px] flex-1 border border-sf-border px-2 py-1.5 text-[11px] text-t2 transition-colors hover:border-sf-teal hover:text-t1">+ Folder</button>
+          <button onClick={newDocument} className="min-h-[40px] flex-1 border border-sf-border px-2 py-1.5 text-[12px] text-t2 transition-colors hover:border-sf-teal hover:text-t1">+ Document</button>
+          <button onClick={() => createFolder.mutate("New folder")} className="min-h-[40px] flex-1 border border-sf-border px-2 py-1.5 text-[12px] text-t2 transition-colors hover:border-sf-teal hover:text-t1">+ Folder</button>
         </div>
       )}
     </div>
@@ -236,7 +236,7 @@ export default function Write(): JSX.Element {
       <div className="flex border-b border-sf-border" role="tablist" aria-label="Inspector">
         {(["entities", "world", "reference"] as const).map((t) => (
           <button key={t} role="tab" aria-selected={inspector === t} onClick={() => setInspector(t)}
-            className={`min-h-[44px] flex-1 border-b-2 px-2 py-2.5 text-[12px] capitalize transition-colors ${inspector === t ? "border-sf-teal text-t1" : "border-transparent text-t3 hover:text-t1"}`}>
+            className={`min-h-[44px] flex-1 border-b-2 px-2 py-2.5 text-[13px] capitalize transition-colors ${inspector === t ? "border-sf-teal text-t1" : "border-transparent text-t3 hover:text-t1"}`}>
             {t === "entities" ? "Entities" : t === "world" ? "World" : "Refs"}
           </button>
         ))}
@@ -274,7 +274,7 @@ export default function Write(): JSX.Element {
         {/* explicit way back to the Studio overview */}
         <Link
           to="/studio"
-          className="flex items-center gap-1.5 border border-sf-border px-2.5 py-1 text-[12px] text-t3 transition-colors hover:border-sf-teal hover:text-t1"
+          className="flex items-center gap-1.5 border border-sf-border px-2.5 py-1 text-[13px] text-t3 transition-colors hover:border-sf-teal hover:text-t1"
           title="Back to all your projects"
         >
           <span aria-hidden="true">←</span> Studio
@@ -285,7 +285,7 @@ export default function Write(): JSX.Element {
           </span>
           <span className="font-serif text-[13px] italic text-t2">Studio</span>
         </Link>
-        <div className="hidden min-w-0 items-baseline gap-2 text-[12px] text-t4 md:flex">
+        <div className="hidden min-w-0 items-baseline gap-2 text-[13px] text-t4 md:flex">
           <span className="text-t5">/</span>
           {worldId && (
             <>
@@ -296,24 +296,24 @@ export default function Write(): JSX.Element {
           <span className="truncate font-serif italic text-t2">{doc?.title || "Untitled"}</span>
         </div>
         <div className="ml-auto flex items-center gap-2">
-          <span className="hidden font-mono text-[10px] tracking-[1px] text-t4 sm:block">● {words.toLocaleString()} words</span>
+          <span className="hidden font-mono text-[12px] tracking-[1px] text-t4 sm:block">● {words.toLocaleString()} words</span>
           {/* mobile panel toggles — binder + inspector are sheets below lg */}
           {!focus && (
             <>
               <button onClick={() => setMobilePanel("binder")}
-                className="border border-sf-border px-2.5 py-1 text-[11px] text-t3 transition-colors hover:border-sf-teal hover:text-t1 lg:hidden">
+                className="border border-sf-border px-2.5 py-1 text-[12px] text-t3 transition-colors hover:border-sf-teal hover:text-t1 lg:hidden">
                 Docs
               </button>
               {worldId && (
                 <button onClick={() => setMobilePanel("inspector")}
-                  className="border border-sf-border px-2.5 py-1 text-[11px] text-t3 transition-colors hover:border-sf-teal hover:text-t1 lg:hidden">
+                  className="border border-sf-border px-2.5 py-1 text-[12px] text-t3 transition-colors hover:border-sf-teal hover:text-t1 lg:hidden">
                   Entities
                 </button>
               )}
             </>
           )}
           <button onClick={() => setFocus(!focus)}
-            className={`border px-2.5 py-1 text-[11px] transition-colors ${focus ? "border-sf-teal text-sf-teal" : "border-sf-border text-t3 hover:text-t1"}`}>
+            className={`border px-2.5 py-1 text-[12px] transition-colors ${focus ? "border-sf-teal text-sf-teal" : "border-sf-border text-t3 hover:text-t1"}`}>
             Focus
           </button>
         </div>
@@ -379,11 +379,11 @@ export default function Write(): JSX.Element {
       <footer className="flex items-center justify-between border-t border-sf-border px-4">
         <div className="flex items-center gap-2.5">
           <span className={`h-1.5 w-1.5 rounded-full bg-sf-teal ${updateContent.isPending ? "animate-sf-pulse" : ""}`} aria-hidden="true" />
-          <span className="font-serif text-[11px] italic text-t3">
+          <span className="font-serif text-[12px] italic text-t3">
             {updateContent.isPending ? "Saving…" : savedAt ? `Saved · ${Math.max(1, Math.round((Date.now() - savedAt.getTime()) / 1000))}s ago` : "Ready"}
           </span>
         </div>
-        <div className="font-mono text-[9px] tracking-[1.5px] text-t5">{words.toLocaleString()} WORDS · JD {julianDay().toFixed(1)}</div>
+        <div className="font-mono text-[11px] tracking-[1.5px] text-t5">{words.toLocaleString()} WORDS · JD {julianDay().toFixed(1)}</div>
       </footer>
     </div>
   );

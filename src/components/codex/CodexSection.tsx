@@ -60,7 +60,7 @@ const CodexSection = ({
           {section.label}
         </span>
         {section.elements.length > 0 && (
-          <span className="font-mono text-[11px] text-t3/30">
+          <span className="font-mono text-[12px] text-t3/30">
             {section.elements.length}
           </span>
         )}
@@ -70,7 +70,7 @@ const CodexSection = ({
       {expanded && (
         <div>
           {sortedElements.length === 0 ? (
-            <p className="px-3 py-1.5 text-[11px] text-t3/25 italic">
+            <p className="px-3 py-1.5 text-[12px] text-t3/25 italic">
               No data on file. Use a tool to generate entries.
             </p>
           ) : (

@@ -53,7 +53,7 @@ const COVER_GRADIENTS = [
 function Rail({ worlds }: { worlds: StudioWorld[] }): JSX.Element {
   return (
     <aside className="sf-sb sf-sb--slim hidden w-[230px] shrink-0 overflow-y-auto border-r border-sf-border py-6 pl-6 pr-4 lg:block">
-      <div className="mb-2 font-serif text-[12px] italic text-t4">Projects</div>
+      <div className="mb-2 font-serif text-[13px] italic text-t4">Projects</div>
       <nav className="mb-7 space-y-0.5">
         {worlds.slice(0, 6).map((w) => (
           <Link
@@ -72,7 +72,7 @@ function Rail({ worlds }: { worlds: StudioWorld[] }): JSX.Element {
       </nav>
       {worlds[0] && (
         <>
-          <div className="mb-2 font-serif text-[12px] italic text-t4">Workbench · {worlds[0].name}</div>
+          <div className="mb-2 font-serif text-[13px] italic text-t4">Workbench · {worlds[0].name}</div>
           <nav className="mb-7 space-y-0.5">
             {[
               { label: "Write", to: "/write" },
@@ -92,7 +92,7 @@ function Rail({ worlds }: { worlds: StudioWorld[] }): JSX.Element {
           </nav>
         </>
       )}
-      <div className="mb-2 font-serif text-[12px] italic text-t4">Tools</div>
+      <div className="mb-2 font-serif text-[13px] italic text-t4">Tools</div>
       <nav className="space-y-0.5">
         {[
           { label: "All tools", to: "/" },
@@ -167,7 +167,7 @@ export default function Studio(): JSX.Element {
           {/* streak strip */}
           <div className="mt-8 flex flex-wrap items-end justify-between gap-6 border-y border-sf-border py-5">
             <div>
-              <div className="mb-1.5 font-serif text-[12px] italic text-t4">The last fourteen days</div>
+              <div className="mb-1.5 font-serif text-[13px] italic text-t4">The last fourteen days</div>
               <div className="flex h-8 items-end gap-1">
                 {(data?.activityCells ?? Array(14).fill(false)).map((lit, i) => {
                   const isToday = i === 13;
@@ -197,7 +197,7 @@ export default function Studio(): JSX.Element {
               ].map((s) => (
                 <div key={s.label}>
                   <div className="font-serif text-[22px] text-t1 sm:text-[26px]">{s.n.toLocaleString()}</div>
-                  <div className="font-serif text-[12px] italic text-t4">{s.label}</div>
+                  <div className="font-serif text-[13px] italic text-t4">{s.label}</div>
                 </div>
               ))}
             </div>
@@ -236,7 +236,7 @@ export default function Studio(): JSX.Element {
                         Open the world
                       </Link>
                     )}
-                    <span className="ml-1 font-serif text-[12px] italic text-t4">
+                    <span className="ml-1 font-serif text-[13px] italic text-t4">
                       {(entry.word_count ?? 0).toLocaleString()} words so far
                     </span>
                   </div>
@@ -288,7 +288,7 @@ export default function Studio(): JSX.Element {
                       <span className="font-serif text-[15px] italic leading-snug text-t1 drop-shadow">{w.name}</span>
                     </div>
                   </div>
-                  <div className="mt-2 font-serif text-[12px] italic text-t4">
+                  <div className="mt-2 font-serif text-[13px] italic text-t4">
                     touched {timeAgo(w.updated_at)}
                   </div>
                 </Link>
@@ -325,7 +325,7 @@ export default function Studio(): JSX.Element {
                       </div>
                       <div className="font-serif text-[15px] italic text-t1">{c.name}</div>
                       {c.summary && (
-                        <div className="mt-1 line-clamp-2 text-[12px] leading-[1.5] text-t3">{c.summary}</div>
+                        <div className="mt-1 line-clamp-2 text-[13px] leading-[1.5] text-t3">{c.summary}</div>
                       )}
                     </Link>
                   ))}
@@ -356,7 +356,7 @@ export default function Studio(): JSX.Element {
                         <p className="mt-1.5 line-clamp-2 font-serif text-[13px] leading-[1.6] text-t3">
                           {n.content}
                         </p>
-                        {w && <div className="mt-2 font-serif text-[11px] italic text-t4">From {w.name}</div>}
+                        {w && <div className="mt-2 font-serif text-[12px] italic text-t4">From {w.name}</div>}
                       </Link>
                     );
                   })}
@@ -378,7 +378,7 @@ export default function Studio(): JSX.Element {
                   const w = data.worlds.find((x) => x.id === e.world_id);
                   return (
                     <div key={e.id} className="flex flex-wrap items-baseline gap-x-3 py-3">
-                      <span className="w-24 shrink-0 font-serif text-[12px] italic text-t4">
+                      <span className="w-24 shrink-0 font-serif text-[13px] italic text-t4">
                         {timeAgo(e.updated_at)}
                       </span>
                       <span className="text-[14px] text-t2">
@@ -386,7 +386,7 @@ export default function Studio(): JSX.Element {
                         {w && <span className="text-t3"> in {w.name}</span>}
                       </span>
                       {(e.word_count ?? 0) > 0 && (
-                        <span className="text-[12px] text-sf-teal">{(e.word_count ?? 0).toLocaleString()} words</span>
+                        <span className="text-[13px] text-sf-teal">{(e.word_count ?? 0).toLocaleString()} words</span>
                       )}
                     </div>
                   );
@@ -404,7 +404,7 @@ export default function Studio(): JSX.Element {
               </span>
               <span className="font-serif text-[13px] italic text-t3">Stellarforge Studio · online</span>
             </div>
-            <div className="font-mono text-[10px] tracking-[1.5px] text-t5">
+            <div className="font-mono text-[12px] tracking-[1.5px] text-t5">
               JD {julianDay().toFixed(1)} · 39.87°N 104.97°W
             </div>
           </footer>

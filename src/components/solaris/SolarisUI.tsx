@@ -16,17 +16,17 @@ const S = {
   panel:
     "absolute right-3 top-14 z-10 w-56 bg-[rgba(15,15,16,0.92)] border border-white/[0.08] backdrop-blur-[16px] rounded-none p-3.5 space-y-3 max-h-[calc(100%-80px)] overflow-y-auto",
   sectionLabel:
-    "font-heading text-[10px] uppercase tracking-[2px] text-[rgba(21,193,123,0.35)] mb-1.5 block",
+    "font-heading text-[12px] uppercase tracking-[2px] text-[rgba(21,193,123,0.35)] mb-1.5 block",
   row: "flex items-baseline justify-between py-0.5",
-  label: "font-heading text-[10px] uppercase tracking-[1.5px] text-white/30",
-  value: "font-mono text-[12px] text-white/80",
-  name: "font-heading text-[12px] uppercase tracking-[2px] text-white/90 mb-1",
+  label: "font-heading text-[12px] uppercase tracking-[1.5px] text-white/30",
+  value: "font-mono text-[13px] text-white/80",
+  name: "font-heading text-[13px] uppercase tracking-[2px] text-white/90 mb-1",
   badge:
-    "inline-block px-1.5 py-0.5 text-[8px] uppercase tracking-wider font-mono border rounded-sm mt-1",
+    "inline-block px-1.5 py-0.5 text-[10px] uppercase tracking-wider font-mono border rounded-sm mt-1",
   badgeHz:
     "bg-[rgba(46,204,113,0.1)] border-[rgba(46,204,113,0.3)] text-[#2ECC71]",
   ghost:
-    "text-[10px] text-white/15 font-mono uppercase tracking-wider text-center py-4",
+    "text-[12px] text-white/15 font-mono uppercase tracking-wider text-center py-4",
 };
 
 function fmt(n: number, decimals = 2): string {
@@ -45,7 +45,7 @@ export default function SolarisUI({ systemName, star, selectedBody }: SolarisUIP
     <div className={S.panel}>
       {/* Title */}
       <div className="pb-2 border-b border-white/[0.06]">
-        <p className="font-heading text-[9px] uppercase tracking-[2px] text-[#15C17B]/50">
+        <p className="font-heading text-[11px] uppercase tracking-[2px] text-[#15C17B]/50">
           System
         </p>
         <p className={S.name}>{systemName}</p>

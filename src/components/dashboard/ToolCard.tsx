@@ -110,7 +110,7 @@ const ToolCard = ({
         {category && (
           <Badge
             variant="outline"
-            className="mt-2 text-[10px] px-2 py-0 border-transparent"
+            className="mt-2 text-[12px] px-2 py-0 border-transparent"
             style={{ color: category.color, borderColor: `${category.color}30` }}
           >
             {category.label}

@@ -81,7 +81,7 @@ export default function EntityMasterInfobox({
         <button
           type="button"
           onClick={startEditing}
-          className="text-[10px] text-t4 hover:text-primary/60 transition-colors flex items-center gap-1"
+          className="text-[12px] text-t4 hover:text-primary/60 transition-colors flex items-center gap-1"
         >
           <Pencil className="w-3 h-3" />
           Add details
@@ -167,7 +167,7 @@ function ReadOnlyField({
   if (field.key === "description") {
     return (
       <div className="col-span-2">
-        <span className="text-[10px] font-medium uppercase tracking-[1.5px] text-t3">
+        <span className="text-[12px] font-medium uppercase tracking-[1.5px] text-t3">
           {field.label}
         </span>
         <div
@@ -180,7 +180,7 @@ function ReadOnlyField({
 
   return (
     <div>
-      <span className="text-[10px] font-medium uppercase tracking-[1.5px] text-t3">
+      <span className="text-[12px] font-medium uppercase tracking-[1.5px] text-t3">
         {field.label}
       </span>
       <p className="font-mono text-xs text-t1 mt-0.5">
@@ -206,7 +206,7 @@ function EditableField({
   if (field.key === "description") {
     return (
       <div className="col-span-2 space-y-1">
-        <Label className="text-[10px]">{field.label}</Label>
+        <Label className="text-[12px]">{field.label}</Label>
         <StellarForgeEditor
           content={stringVal}
           onChange={(html) => onChange(html)}
@@ -221,7 +221,7 @@ function EditableField({
   if (field.type === "select" && field.options) {
     return (
       <div className="space-y-1">
-        <Label className="text-[10px]">{field.label}</Label>
+        <Label className="text-[12px]">{field.label}</Label>
         <select
           value={stringVal}
           onChange={(e) => onChange(e.target.value)}
@@ -240,7 +240,7 @@ function EditableField({
 
   return (
     <div className="space-y-1">
-      <Label className="text-[10px]">{field.label}</Label>
+      <Label className="text-[12px]">{field.label}</Label>
       <Input
         type={field.type === "number" ? "number" : "text"}
         value={stringVal}

@@ -383,7 +383,7 @@ function CommendationsSummary({ navigate }: { navigate: (path: string) => void }
             <h3 className="font-heading text-sm uppercase tracking-[3px] text-emerald">
               Commendations
             </h3>
-            <p className="font-sans text-[11px] text-t4 mt-0.5">
+            <p className="font-sans text-[12px] text-t4 mt-0.5">
               {isLoading ? "INITIALIZING..." : `${earnedCount} OF ${totalCount} EARNED`}
             </p>
           </div>

@@ -54,7 +54,7 @@ const ToastAction = React.forwardRef<
   <ToastPrimitives.Action
     ref={ref}
     className={cn(
-      "inline-flex h-8 shrink-0 items-center justify-center rounded-none border border-sf-border-strong bg-transparent px-3 font-sans text-[11px] font-medium uppercase tracking-[1.2px] ring-offset-background transition-colors duration-base hover:border-sf-teal hover:text-sf-teal-bright focus:outline-none disabled:pointer-events-none disabled:opacity-50",
+      "inline-flex h-8 shrink-0 items-center justify-center rounded-none border border-sf-border-strong bg-transparent px-3 font-sans text-[12px] font-medium uppercase tracking-[1.2px] ring-offset-background transition-colors duration-base hover:border-sf-teal hover:text-sf-teal-bright focus:outline-none disabled:pointer-events-none disabled:opacity-50",
       className,
     )}
     {...props}
@@ -84,7 +84,7 @@ const ToastTitle = React.forwardRef<
   React.ElementRef<typeof ToastPrimitives.Title>,
   React.ComponentPropsWithoutRef<typeof ToastPrimitives.Title>
 >(({ className, ...props }, ref) => (
-  <ToastPrimitives.Title ref={ref} className={cn("font-mono text-[12px] uppercase tracking-[0.18em] text-t1", className)} {...props} />
+  <ToastPrimitives.Title ref={ref} className={cn("font-mono text-[13px] uppercase tracking-[0.18em] text-t1", className)} {...props} />
 ));
 ToastTitle.displayName = ToastPrimitives.Title.displayName;
 

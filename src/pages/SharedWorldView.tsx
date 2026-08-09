@@ -86,7 +86,7 @@ const SharedWorldView = () => {
                       />
                     ) : (
                       <div className="w-5 h-5 rounded-sm bg-primary/20 flex items-center justify-center">
-                        <span className="text-[10px] font-medium text-primary">
+                        <span className="text-[12px] font-medium text-primary">
                           {data.owner_display_name.charAt(0).toUpperCase()}
                         </span>
                       </div>

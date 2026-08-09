@@ -15,7 +15,11 @@ export function StellarBackground() {
   return (
     <>
       <div aria-hidden className="sf-starfield" />
-      <div aria-hidden className="sf-grain" />
+      {/* Paints via a fixed ::before. Must NOT reuse `.sf-grain`, which
+          texture-overlay.css sizes at 200% for the clipped overlay wrapper —
+          outside that wrapper it resolves against the document and adds
+          ~1200px of dead scroll below the footer. */}
+      <div aria-hidden className="sf-grain-fixed" />
       <BreathingStar />
     </>
   );

@@ -27,7 +27,7 @@ const SubscriptionBanner = () => {
           </p>
           <button
             type="button"
-            className={`shrink-0 text-[10px] font-medium uppercase tracking-[1px] ${textColor} hover:underline`}
+            className={`shrink-0 text-[12px] font-medium uppercase tracking-[1px] ${textColor} hover:underline`}
             onClick={() => navigate("/pricing")}
           >
             Renew
@@ -47,7 +47,7 @@ const SubscriptionBanner = () => {
           </p>
           <button
             type="button"
-            className="shrink-0 text-[10px] font-medium uppercase tracking-[1px] text-crimson hover:underline"
+            className="shrink-0 text-[12px] font-medium uppercase tracking-[1px] text-crimson hover:underline"
             onClick={() => navigate("/pricing")}
           >
             Resubscribe

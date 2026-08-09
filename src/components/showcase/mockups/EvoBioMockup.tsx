@@ -110,7 +110,7 @@ const EvoBioMockup = () => {
           {traits.map((trait, index) => (
             <span
               key={trait.label}
-              className={`text-[8px] px-2 py-0.5 rounded-full border transition-all duration-300 ${
+              className={`text-[10px] px-2 py-0.5 rounded-full border transition-all duration-300 ${
                 visibleTraits.includes(index)
                   ? `bg-${trait.color}/10 border-${trait.color}/30 text-${trait.color} opacity-100 scale-100`
                   : "opacity-0 scale-75"
@@ -135,7 +135,7 @@ const EvoBioMockup = () => {
 
       {/* Right: Section checklist */}
       <div className="flex-1 flex flex-col">
-        <div className="text-[10px] text-t3 uppercase tracking-wider mb-3">
+        <div className="text-[12px] text-t3 uppercase tracking-wider mb-3">
           Design Progress
         </div>
 
@@ -166,7 +166,7 @@ const EvoBioMockup = () => {
                 )}
               </div>
               <span
-                className={`text-[10px] transition-colors duration-300 ${
+                className={`text-[12px] transition-colors duration-300 ${
                   completedSections.includes(index)
                     ? "text-t1"
                     : "text-t3"
@@ -180,7 +180,7 @@ const EvoBioMockup = () => {
 
         {/* Progress indicator */}
         <div className="mt-3">
-          <div className="flex justify-between text-[10px] text-t3 mb-1">
+          <div className="flex justify-between text-[12px] text-t3 mb-1">
             <span>Completion</span>
             <span>{Math.round((completedSections.length / 13) * 100)}%</span>
           </div>

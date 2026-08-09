@@ -228,7 +228,7 @@ const CompressionEditorDialog = ({
                   )}
                 >
                   {opt.label}
-                  <span className="block text-[10px] font-normal mt-0.5">{opt.desc}</span>
+                  <span className="block text-[12px] font-normal mt-0.5">{opt.desc}</span>
                 </button>
               ))}
             </div>
@@ -244,7 +244,7 @@ const CompressionEditorDialog = ({
               max={120}
               step={4}
             />
-            <p className="text-[10px] text-t3">
+            <p className="text-[12px] text-t3">
               How wide the compressed region appears on the timeline.
             </p>
           </div>

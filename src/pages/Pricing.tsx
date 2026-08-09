@@ -379,7 +379,7 @@ const Pricing = () => {
                   ) : (
                     <Sparkles className="w-4 h-4 mr-2" />
                   )}
-                  UPGRADE TO VANGUARD, ${PRICING.vanguard.yearly.price}/yr
+                  Upgrade to Vanguard — ${PRICING.vanguard.yearly.price}/yr
                 </Button>
                 <Button
                   variant="outline"
@@ -390,7 +390,7 @@ const Pricing = () => {
                   {loading === 'vanguard-monthly' ? (
                     <Loader variant="inline" size="sm" className="mr-2" />
                   ) : null}
-                  Monthly, ${PRICING.vanguard.monthly.price}/month
+                  Upgrade Monthly — ${PRICING.vanguard.monthly.price}/mo
                 </Button>
                 <p className="text-xs text-t4 text-center">
                   Your Pro plan will be upgraded. Stripe handles the prorated billing.
@@ -409,7 +409,7 @@ const Pricing = () => {
                   ) : (
                     <Sparkles className="w-4 h-4 mr-2" />
                   )}
-                  VANGUARD (YEARLY), ${PRICING.vanguard.yearly.price}/year
+                  Upgrade Yearly — ${PRICING.vanguard.yearly.price}/yr
                 </Button>
                 <Button
                   variant="outline"
@@ -420,7 +420,7 @@ const Pricing = () => {
                   {loading === 'vanguard-monthly' ? (
                     <Loader variant="inline" size="sm" className="mr-2" />
                   ) : null}
-                  Monthly, ${PRICING.vanguard.monthly.price}/month
+                  Upgrade Monthly — ${PRICING.vanguard.monthly.price}/mo
                 </Button>
               </div>
             )}

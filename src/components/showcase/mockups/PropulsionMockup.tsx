@@ -64,7 +64,7 @@ const PropulsionMockup = () => {
         {propulsionTypes.map((type, index) => (
           <button
             key={type.name}
-            className={`flex-1 px-2 py-1.5 rounded-none border text-[10px] transition-all duration-300 ${
+            className={`flex-1 px-2 py-1.5 rounded-none border text-[12px] transition-all duration-300 ${
               index === activeType
                 ? `border-${type.color}/50 bg-${type.color}/10`
                 : "border-muted/20 bg-transparent opacity-50"
@@ -91,7 +91,7 @@ const PropulsionMockup = () => {
             >
               {type.name}
             </div>
-            <div className="text-[8px] text-t3">{type.speed}</div>
+            <div className="text-[10px] text-t3">{type.speed}</div>
           </button>
         ))}
       </div>
@@ -110,7 +110,7 @@ const PropulsionMockup = () => {
           <div className="text-center">
             <div className="text-lg">🚀</div>
             <div
-              className="text-[8px] font-mono"
+              className="text-[10px] font-mono"
               style={{ color: `hsl(var(--${propulsionTypes[activeType].color}))` }}
             >
               {propulsionTypes[activeType].speed}
@@ -165,10 +165,10 @@ const PropulsionMockup = () => {
 
               {/* Consequence card */}
               <div className="w-24 bg-sf-surface border border-muted/30 rounded-none p-2 text-center">
-                <div className="text-[8px] text-t3 uppercase tracking-wider">
+                <div className="text-[10px] text-t3 uppercase tracking-wider">
                   {consequence.domain}
                 </div>
-                <div className="text-[10px] text-t1 mt-0.5">
+                <div className="text-[12px] text-t1 mt-0.5">
                   {consequence.effect}
                 </div>
               </div>
@@ -182,7 +182,7 @@ const PropulsionMockup = () => {
         {["Economic", "Political", "Social"].map((domain) => (
           <div
             key={domain}
-            className="px-2 py-1 rounded border border-muted/20 text-[8px] text-t3"
+            className="px-2 py-1 rounded border border-muted/20 text-[10px] text-t3"
           >
             {domain}
           </div>

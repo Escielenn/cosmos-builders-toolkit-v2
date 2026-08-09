@@ -48,7 +48,7 @@ export default function TrackRow({
             className="text-t4 group-hover:text-t2 transition-colors"
             aria-label={`Play ${track.title}`}
           >
-            <span className="group-hover:hidden font-mono text-[10px]">
+            <span className="group-hover:hidden font-mono text-[12px]">
               {index != null ? index + 1 : "-"}
             </span>
             <Play className="w-3.5 h-3.5 hidden group-hover:block" />
@@ -66,7 +66,7 @@ export default function TrackRow({
           {track.title}
         </p>
         {track.artist && (
-          <p className="text-[10px] text-t4 truncate leading-tight">
+          <p className="text-[12px] text-t4 truncate leading-tight">
             {track.artist}
           </p>
         )}
@@ -74,7 +74,7 @@ export default function TrackRow({
 
       {/* Duration (if known) */}
       {track.duration != null && track.duration > 0 && (
-        <span className="font-mono text-[10px] text-t4 tabular-nums shrink-0">
+        <span className="font-mono text-[12px] text-t4 tabular-nums shrink-0">
           {Math.floor(track.duration / 60)}:{Math.floor(track.duration % 60).toString().padStart(2, "0")}
         </span>
       )}

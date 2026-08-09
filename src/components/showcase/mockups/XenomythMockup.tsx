@@ -58,7 +58,7 @@ const XenomythMockup = () => {
                 }}
               >
                 <span className="text-xl md:text-2xl">{archetype.symbol}</span>
-                <span className="text-[10px] text-t3">
+                <span className="text-[12px] text-t3">
                   {archetype.name}
                 </span>
               </div>
@@ -94,7 +94,7 @@ const XenomythMockup = () => {
       <div className="mt-4 space-y-2">
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 bg-sf-violet animate-pulse" />
-          <span className="text-[10px] text-t3">
+          <span className="text-[12px] text-t3">
             Creation Myth: The First Light emerged from...
           </span>
         </div>
@@ -103,7 +103,7 @@ const XenomythMockup = () => {
             className="w-2 h-2 bg-sf-cyan"
             style={{ animation: "cascade-glow 3s ease-in-out infinite 0.5s" }}
           />
-          <span className="text-[10px] text-t3">
+          <span className="text-[12px] text-t3">
             Hero's Journey: The chosen must descend into...
           </span>
         </div>
@@ -112,7 +112,7 @@ const XenomythMockup = () => {
       {/* Environmental influence badge */}
       <div className="mt-3 flex justify-center">
         <div className="inline-flex items-center gap-2 px-3 py-1 bg-sf-violet/10 border border-sf-violet/30">
-          <span className="text-[10px] text-sf-violet uppercase tracking-wider">
+          <span className="text-[12px] text-sf-violet uppercase tracking-wider">
             Derived from High-Gravity World
           </span>
         </div>

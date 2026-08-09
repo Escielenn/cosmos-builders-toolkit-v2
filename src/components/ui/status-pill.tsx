@@ -16,7 +16,7 @@ import { cn } from "@/lib/utils";
  *   orbit   , violet (steady state / cruising)
  */
 const statusPillVariants = cva(
-  "inline-flex items-center gap-sf-2 border px-sf-2 py-sf-1 rounded-sf-tag font-mono text-[11px] leading-none uppercase tracking-[0.18em] whitespace-nowrap select-none",
+  "inline-flex items-center gap-sf-2 border px-sf-2 py-sf-1 rounded-sf-tag font-mono text-[12px] leading-none uppercase tracking-[0.18em] whitespace-nowrap select-none",
   {
     variants: {
       variant: {

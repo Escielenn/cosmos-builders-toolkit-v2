@@ -103,14 +103,14 @@ export function VelocityDial({ className }: { className?: string }) {
         <div className="font-mono text-[9.5px] text-t4 tracking-[2px]">{f.name}</div>
         <div className="font-display font-light text-[26px] text-t1 tracking-[0.04em] mt-1">
           {f.v}
-          <span className="text-[12px] text-t4 ml-1">{f.u}</span>
+          <span className="text-[13px] text-t4 ml-1">{f.u}</span>
         </div>
       </div>
 
-      <div className="absolute left-3.5 top-3.5 font-mono text-[9px] text-sf-teal tracking-[2px]">
+      <div className="absolute left-3.5 top-3.5 font-mono text-[11px] text-sf-teal tracking-[2px]">
         VELOCITY
       </div>
-      <div className="absolute right-3.5 top-3.5 font-mono text-[9px] text-t5 tracking-[2px]">
+      <div className="absolute right-3.5 top-3.5 font-mono text-[11px] text-t5 tracking-[2px]">
         REF-FRAME
       </div>
     </div>

@@ -972,7 +972,7 @@ const Sensorium = () => {
                       <p className="text-sm text-t3">
                         Based on your environment, each sense is scored for plausibility. <strong className="text-t1">Click any card to add it to your species' final sensory suite.</strong> You can select implausible senses too, sometimes the best stories break the rules.
                       </p>
-                      <div className="flex flex-wrap gap-3 text-[11px]">
+                      <div className="flex flex-wrap gap-3 text-[12px]">
                         <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 bg-cyan-500/60" /> Recommended</span>
                         <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 bg-amber-500/60" /> Possible</span>
                         <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 bg-muted-foreground/40" /> Implausible</span>
@@ -985,7 +985,7 @@ const Sensorium = () => {
                       <p className="text-sm text-t3">
                         Pick senses freely without environmental guidance, then validate them. <strong className="text-t1">Click cards to select, then review plausibility scores below.</strong>
                       </p>
-                      <div className="flex flex-wrap gap-3 text-[11px]">
+                      <div className="flex flex-wrap gap-3 text-[12px]">
                         <span className="flex items-center gap-1.5"><Check className="h-3 w-3 text-sf-amber" /> Selected for validation</span>
                       </div>
                     </div>
@@ -1058,11 +1058,11 @@ const Sensorium = () => {
                                   <div className="flex items-center gap-2 mt-2">
                                     <Badge
                                       variant="outline"
-                                      className={`text-[10px] px-1.5 py-0 ${getStatusColor(status)}`}
+                                      className={`text-[12px] px-1.5 py-0 ${getStatusColor(status)}`}
                                     >
                                       {status} ({score})
                                     </Badge>
-                                    <span className="text-[10px] text-t2">
+                                    <span className="text-[12px] text-t2">
                                       {mod.evolution.metabolicCost} cost
                                     </span>
                                   </div>
@@ -1419,7 +1419,7 @@ const Sensorium = () => {
                       </h4>
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <p className="text-[11px] font-medium uppercase tracking-[1.5px] text-t3 mb-2">
+                          <p className="text-[12px] font-medium uppercase tracking-[1.5px] text-t3 mb-2">
                             Your Species
                           </p>
                           <div className="space-y-1">
@@ -1435,7 +1435,7 @@ const Sensorium = () => {
                           </div>
                         </div>
                         <div>
-                          <p className="text-[11px] font-medium uppercase tracking-[1.5px] text-t3 mb-2">
+                          <p className="text-[12px] font-medium uppercase tracking-[1.5px] text-t3 mb-2">
                             Human Baseline
                           </p>
                           <div className="space-y-1">

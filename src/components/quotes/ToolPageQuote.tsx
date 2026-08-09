@@ -22,11 +22,11 @@ export function ToolPageQuote({ toolId }: ToolPageQuoteProps) {
           &ldquo;{quote.text}&rdquo;
         </p>
         <p className="mt-1 flex items-center gap-2 flex-wrap">
-          <span className="font-mono text-[11px] text-t4">
+          <span className="font-mono text-[12px] text-t4">
             {quote.author}
           </span>
-          <span className="text-t5 text-[10px]">-</span>
-          <span className="font-mono text-[11px] text-primary/60">
+          <span className="text-t5 text-[12px]">-</span>
+          <span className="font-mono text-[12px] text-primary/60">
             <em>{quote.source}</em>
           </span>
           {quote.affiliateUrl && (
@@ -36,7 +36,7 @@ export function ToolPageQuote({ toolId }: ToolPageQuoteProps) {
                 href={quote.affiliateUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[9px] text-t4 hover:text-primary transition-colors"
+                className="text-[11px] text-t4 hover:text-primary transition-colors"
                 onClick={() => trackAffiliateClick(quote.isbn, quote.affiliateUrl!)}
               >
                 Get the book &rarr;
@@ -48,7 +48,7 @@ export function ToolPageQuote({ toolId }: ToolPageQuoteProps) {
             href={quote.amazonUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[10px] text-t4 hover:text-sf-amber transition-colors"
+            className="text-[12px] text-t4 hover:text-sf-amber transition-colors"
             onClick={() => trackAffiliateClick(quote.isbn, quote.amazonUrl)}
           >
             Amazon
@@ -57,7 +57,7 @@ export function ToolPageQuote({ toolId }: ToolPageQuoteProps) {
             href={quote.bookshopUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[10px] text-t4 hover:text-sf-emerald transition-colors"
+            className="text-[12px] text-t4 hover:text-sf-emerald transition-colors"
             onClick={() => trackAffiliateClick(quote.isbn, quote.bookshopUrl)}
           >
             Bookshop

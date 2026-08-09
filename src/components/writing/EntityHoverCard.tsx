@@ -216,7 +216,7 @@ export function EntityHoverCard({
             <div className="flex items-center gap-2 mb-1">
               <Badge
                 variant="outline"
-                className="text-[10px] uppercase tracking-[1.5px] font-medium border-0 px-1.5 py-0"
+                className="text-[12px] uppercase tracking-[1.5px] font-medium border-0 px-1.5 py-0"
                 style={{
                   backgroundColor: `${color}14`,
                   color,

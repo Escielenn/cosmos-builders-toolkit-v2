@@ -152,7 +152,7 @@ function CascadeCoverageBar({ entities }: { entities: Entity[] }) {
             }}
           />
           <span
-            className="font-heading text-[9px] uppercase tracking-[1.5px] transition-colors"
+            className="font-heading text-[11px] uppercase tracking-[1.5px] transition-colors"
             style={{
               color: populated[i]
                 ? CASCADE_STAGE_COLORS[stage]
@@ -219,14 +219,14 @@ function EntityCard({
             <h3 className="font-heading text-sm font-light text-t1 truncate">
               {entity.name}
             </h3>
-            <span className="font-sans text-[11px] font-medium uppercase tracking-[1.5px] text-t3">
+            <span className="font-sans text-[12px] font-medium uppercase tracking-[1.5px] text-t3">
               {entity.custom_type_label || ENTITY_TYPE_LABELS[entity.entity_type]}
             </span>
           </div>
         </div>
         <div className="flex items-center gap-2 flex-shrink-0">
           <span
-            className="font-mono text-[10px] px-1.5 py-0.5 rounded-sm"
+            className="font-mono text-[12px] px-1.5 py-0.5 rounded-sm"
             style={{
               backgroundColor: `${stageColor}0F`,
               border: `1px solid ${stageColor}26`,
@@ -263,7 +263,7 @@ function EntityCard({
           {/* Description */}
           {entity.description && (
             <div className="space-y-1">
-              <span className="font-sans text-[11px] font-medium uppercase tracking-[1.5px] text-t3">
+              <span className="font-sans text-[12px] font-medium uppercase tracking-[1.5px] text-t3">
                 Description
               </span>
               <p className="font-sans text-sm text-t2 leading-relaxed whitespace-pre-wrap">
@@ -278,7 +278,7 @@ function EntityCard({
               {entity.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="font-mono text-[10px] px-2 py-0.5 rounded-sm bg-white/[0.04] border border-white/[0.08] text-t3"
+                  className="font-mono text-[12px] px-2 py-0.5 rounded-sm bg-white/[0.04] border border-white/[0.08] text-t3"
                 >
                   {tag}
                 </span>
@@ -289,7 +289,7 @@ function EntityCard({
           {/* Connections */}
           {relatedConnections.length > 0 && (
             <div className="space-y-2">
-              <span className="font-sans text-[11px] font-medium uppercase tracking-[1.5px] text-t3 flex items-center gap-1.5">
+              <span className="font-sans text-[12px] font-medium uppercase tracking-[1.5px] text-t3 flex items-center gap-1.5">
                 <Link2 className="w-3 h-3" />
                 Connections
               </span>
@@ -313,7 +313,7 @@ function EntityCard({
                         className="w-1.5 h-1.5 rounded-full flex-shrink-0"
                         style={{ backgroundColor: otherColor }}
                       />
-                      <span className="font-mono text-[11px] text-t4">
+                      <span className="font-mono text-[12px] text-t4">
                         {formatRelationshipType(conn.relationship_type)}
                       </span>
                       <span className="font-sans text-xs text-t2">
@@ -370,7 +370,7 @@ function VisibilitySelector({
             key={opt.value}
             onClick={() => onSelect(opt.value)}
             disabled={disabled}
-            className="flex items-center gap-1.5 px-3 py-1.5 font-sans text-[11px] font-medium uppercase tracking-[1px] transition-all duration-200 disabled:opacity-50"
+            className="flex items-center gap-1.5 px-3 py-1.5 font-sans text-[12px] font-medium uppercase tracking-[1px] transition-all duration-200 disabled:opacity-50"
             style={{
               backgroundColor: isActive ? `${opt.color}0F` : "transparent",
               border: `1px solid ${isActive ? `${opt.color}26` : "rgba(255,255,255,0.06)"}`,
@@ -404,7 +404,7 @@ function StatCard({
       >
         {value}
       </div>
-      <div className="font-sans text-[11px] font-medium uppercase tracking-[1.5px] text-t3">
+      <div className="font-sans text-[12px] font-medium uppercase tracking-[1.5px] text-t3">
         {label}
       </div>
     </GlassPanel>
@@ -553,12 +553,12 @@ export default function WorldShowcase() {
                 <p className="font-heading text-sm font-light uppercase tracking-[2px] text-stellar mb-1">
                   Sample World - The Tidelock Archives
                 </p>
-                <p className="text-[12px] text-t2 leading-relaxed max-w-2xl">
+                <p className="text-[13px] text-t2 leading-relaxed max-w-2xl">
                   This is StellarForge's example world, demonstrating the full Environmental Cascade
                   from physics through culture. Explore the entities, connections, and lore to see
                   how a world comes together.
                 </p>
-                <p className="text-[11px] text-t3 leading-relaxed mt-1.5">
+                <p className="text-[12px] text-t3 leading-relaxed mt-1.5">
                   <strong className="text-t2">Want to edit or build on this world?</strong> Fork
                   it to create your own copy under your account. The original community world stays
                   unchanged. Your fork is yours to modify freely.
@@ -680,7 +680,7 @@ export default function WorldShowcase() {
               {world.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="font-mono text-[11px] px-2.5 py-1 rounded-sm bg-white/[0.04] border border-white/[0.08] text-t3"
+                  className="font-mono text-[12px] px-2.5 py-1 rounded-sm bg-white/[0.04] border border-white/[0.08] text-t3"
                 >
                   {tag}
                 </span>
@@ -691,7 +691,7 @@ export default function WorldShowcase() {
           {/* Visibility badge (non-owner visitors see status; owner sees it in top banner) */}
           {!isOwner && isCommunityWorld && (
             <div className="flex items-center gap-2 mt-4">
-              <span className="inline-flex items-center gap-1.5 font-mono text-[11px] px-2.5 py-1 rounded-sm bg-[#15C17B]/[0.06] border border-[#15C17B]/[0.15] text-[#15C17B]">
+              <span className="inline-flex items-center gap-1.5 font-mono text-[12px] px-2.5 py-1 rounded-sm bg-[#15C17B]/[0.06] border border-[#15C17B]/[0.15] text-[#15C17B]">
                 <Globe className="w-3 h-3" />
                 {visibility === "public" ? "Public" : "Community"}
               </span>
@@ -793,7 +793,7 @@ export default function WorldShowcase() {
                     >
                       {CASCADE_STAGE_LABELS[stage]}
                     </h2>
-                    <span className="font-mono text-[11px] text-t4">
+                    <span className="font-mono text-[12px] text-t4">
                       {stageEntities.length}
                     </span>
                     <div
@@ -846,7 +846,7 @@ export default function WorldShowcase() {
         }}
       />
       <div className="text-center pb-12">
-        <span className="font-mono text-[9px] uppercase tracking-[2px] text-t5">
+        <span className="font-mono text-[11px] uppercase tracking-[2px] text-t5">
           Built with StellarForge
         </span>
       </div>

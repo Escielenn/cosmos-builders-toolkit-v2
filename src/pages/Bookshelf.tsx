@@ -23,7 +23,7 @@ const CoverFallback = ({ title, author }: { title: string; author: string }) => 
     <p className="text-xs font-heading font-medium text-t2 leading-tight">
       {title}
     </p>
-    <p className="text-[10px] text-t3 mt-1">{author}</p>
+    <p className="text-[12px] text-t3 mt-1">{author}</p>
   </div>
 );
 
@@ -66,7 +66,7 @@ const BookCard = ({ book }: { book: BookEntry }) => {
             <Link key={tool.path} to={tool.path}>
               <Badge
                 variant="secondary"
-                className="text-[10px] hover:bg-primary/20 transition-colors cursor-pointer"
+                className="text-[12px] hover:bg-primary/20 transition-colors cursor-pointer"
               >
                 {tool.name}
               </Badge>

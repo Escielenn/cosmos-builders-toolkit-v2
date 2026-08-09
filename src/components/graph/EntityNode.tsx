@@ -89,7 +89,7 @@ const EntityNode = memo(({ data, selected }: NodeProps) => {
           style={{ background: nodeColor }}
         />
         <span
-          className="text-[9px] font-sans font-medium uppercase tracking-[1.2px]"
+          className="text-[11px] font-sans font-medium uppercase tracking-[1.2px]"
           style={{ color: "rgba(255,255,255,0.45)" }}
         >
           {ENTITY_TYPE_LABELS[d.entityType] ?? d.entityType}
@@ -107,7 +107,7 @@ const EntityNode = memo(({ data, selected }: NodeProps) => {
       {/* Summary */}
       {d.summary && (
         <div
-          className="text-[10px] font-sans leading-snug line-clamp-2"
+          className="text-[12px] font-sans leading-snug line-clamp-2"
           style={{ color: "rgba(255,255,255,0.45)" }}
         >
           {d.summary}
@@ -117,7 +117,7 @@ const EntityNode = memo(({ data, selected }: NodeProps) => {
       {/* Connection count */}
       {d.connectionCount > 0 && (
         <div
-          className="mt-1.5 text-[9px] font-mono"
+          className="mt-1.5 text-[11px] font-mono"
           style={{ color: `${nodeColor}99` }}
         >
           {d.connectionCount} connection{d.connectionCount !== 1 ? "s" : ""}

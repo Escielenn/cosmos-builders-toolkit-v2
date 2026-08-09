@@ -50,12 +50,12 @@ function RelCard({ rel }: { rel: ToolRelationship }): JSX.Element {
       <div className="flex items-center gap-2">
         <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${CATEGORY_DOT[cat]}`} aria-hidden="true" />
         <span className="font-heading text-[13px] font-light uppercase tracking-[1px] text-t1">{name}</span>
-        <span className="ml-auto font-mono text-[9px] uppercase tracking-[1px] text-t5">
+        <span className="ml-auto font-mono text-[11px] uppercase tracking-[1px] text-t5">
           {STRENGTH_LABEL[rel.strength]}
         </span>
       </div>
       {casc && (
-        <div className="mt-2 inline-flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[1.5px]">
+        <div className="mt-2 inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[1.5px]">
           <span
             className="h-1 w-1 shrink-0 rounded-full"
             style={{ backgroundColor: casc.color }}
@@ -66,7 +66,7 @@ function RelCard({ rel }: { rel: ToolRelationship }): JSX.Element {
           </span>
         </div>
       )}
-      <p className="mt-1.5 text-[12px] leading-[1.5] text-t3">{rel.note}</p>
+      <p className="mt-1.5 text-[13px] leading-[1.5] text-t3">{rel.note}</p>
     </Link>
   );
 }
@@ -82,14 +82,14 @@ export function CascadeFooter({ toolType }: { toolType: string }): JSX.Element |
 
   return (
     <section className="no-print mt-16 border-t border-dashed border-sf-border pt-10">
-      <div className="mb-7 inline-flex items-center gap-3.5 font-mono text-[11px] uppercase tracking-[2.5px] text-sf-teal/80">
+      <div className="mb-7 inline-flex items-center gap-3.5 font-mono text-[12px] uppercase tracking-[2.5px] text-sf-teal/80">
         <span aria-hidden className="block h-px w-12 bg-sf-teal/60" />
         <span>// the cascade{catColor ? ` · ${catColor.toLowerCase()}` : ""}</span>
       </div>
       <div className="grid gap-8 lg:grid-cols-2">
         {buildsOn.length > 0 && (
           <div>
-            <h3 className="mb-3 flex items-center gap-2 font-heading text-[12px] font-light uppercase tracking-[2px] text-t3">
+            <h3 className="mb-3 flex items-center gap-2 font-heading text-[13px] font-light uppercase tracking-[2px] text-t3">
               <ArrowLeft className="h-3.5 w-3.5" /> Builds on
             </h3>
             <div className="space-y-2">
@@ -99,7 +99,7 @@ export function CascadeFooter({ toolType }: { toolType: string }): JSX.Element |
         )}
         {feedsInto.length > 0 && (
           <div>
-            <h3 className="mb-3 flex items-center gap-2 font-heading text-[12px] font-light uppercase tracking-[2px] text-t3">
+            <h3 className="mb-3 flex items-center gap-2 font-heading text-[13px] font-light uppercase tracking-[2px] text-t3">
               Feeds into <ArrowRight className="h-3.5 w-3.5" />
             </h3>
             <div className="space-y-2">

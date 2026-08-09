@@ -56,7 +56,7 @@ const CompressionMarker = memo(
                   <line x1="55%" y1="0" x2="60%" y2="100%" stroke="currentColor" strokeWidth="1.5" className="text-t1/40" />
                 </svg>
                 {compression.label && (
-                  <span className="relative text-[9px] text-t3 font-medium px-1 bg-background/60 rounded whitespace-nowrap">
+                  <span className="relative text-[11px] text-t3 font-medium px-1 bg-background/60 rounded whitespace-nowrap">
                     {compression.label}
                   </span>
                 )}
@@ -67,7 +67,7 @@ const CompressionMarker = memo(
               <div className="w-full h-full relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-r from-background via-muted/20 to-background" />
                 {compression.label && (
-                  <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[9px] text-t3 font-medium px-1 bg-background/60 rounded whitespace-nowrap">
+                  <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[11px] text-t3 font-medium px-1 bg-background/60 rounded whitespace-nowrap">
                     {compression.label}
                   </span>
                 )}
@@ -80,7 +80,7 @@ const CompressionMarker = memo(
                 <div className="relative flex flex-col items-center gap-0.5">
                   <span className="text-primary/40 text-lg">&#8734;</span>
                   {compression.label && (
-                    <span className="text-[9px] text-t3 font-medium px-1 bg-background/60 rounded whitespace-nowrap">
+                    <span className="text-[11px] text-t3 font-medium px-1 bg-background/60 rounded whitespace-nowrap">
                       {compression.label}
                     </span>
                   )}
@@ -91,10 +91,10 @@ const CompressionMarker = memo(
         </TooltipTrigger>
         <TooltipContent side="top" className="max-w-xs">
           <p className="font-medium text-xs">{label}</p>
-          <p className="text-[10px] text-t3">
+          <p className="text-[12px] text-t3">
             {compression.startYear.toLocaleString()} to {compression.endYear.toLocaleString()} ({formatYearSpan(yearSpan)})
           </p>
-          <p className="text-[10px] text-t3 mt-0.5">
+          <p className="text-[12px] text-t3 mt-0.5">
             Click to {compression.isExpanded ? "compress" : "expand"}
           </p>
         </TooltipContent>

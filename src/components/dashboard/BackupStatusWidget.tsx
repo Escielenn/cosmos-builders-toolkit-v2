@@ -113,19 +113,19 @@ const BackupStatusWidget = ({ worlds }: BackupStatusWidgetProps) => {
                 <div key={wb.id} className="sf-backup-widget-world">
                   <span className="sf-backup-widget-dot" style={{ color }}>{dot}</span>
                   <span className="flex-1 text-t2 truncate">{wb.name}</span>
-                  <span className="text-t3 text-[11px] font-mono shrink-0">
+                  <span className="text-t3 text-[12px] font-mono shrink-0">
                     {wb.snapshotAt
                       ? formatDistanceToNow(new Date(wb.snapshotAt), { addSuffix: false })
                       : "-"}
                   </span>
-                  <span className="text-t3 text-[10px] font-mono shrink-0">
+                  <span className="text-t3 text-[12px] font-mono shrink-0">
                     v{wb.versionCount}
                   </span>
                 </div>
               );
             })}
             {worldBackups.length > 5 && (
-              <p className="text-[10px] text-t3/50 text-center pt-1">
+              <p className="text-[12px] text-t3/50 text-center pt-1">
                 +{worldBackups.length - 5} more
               </p>
             )}

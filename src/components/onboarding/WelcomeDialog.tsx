@@ -169,7 +169,7 @@ export default function WelcomeDialog({ open, onOpenChange, variant }: WelcomeDi
           {/* PWA install section (signup only) */}
           {config.showPwaPrompt && !isStandalone && (
             <div className="border-t border-sf-border pt-4 space-y-2">
-              <p className="text-[11px] font-medium uppercase tracking-[1.5px] text-t3">
+              <p className="text-[12px] font-medium uppercase tracking-[1.5px] text-t3">
                 Quick Access
               </p>
               {canPrompt ? (

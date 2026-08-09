@@ -331,7 +331,7 @@ export default function OrbitalDiagram({
         role="img"
         aria-label={`Orbital diagram showing habitable zone for a ${spectralType}-type star. Planet at ${planetDistance.toFixed(3)} AU.`}
       />
-      <div className="absolute top-3 right-3 text-[7px] font-mono text-t5">
+      <div className="absolute top-3 right-3 text-[10px] font-mono text-t5">
         Scroll to zoom
       </div>
     </div>

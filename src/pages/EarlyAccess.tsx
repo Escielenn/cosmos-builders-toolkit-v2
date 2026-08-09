@@ -107,7 +107,7 @@ function WaitlistForm(): JSX.Element {
           onChange={(e) => setEmail(e.target.value)}
           disabled={status === "sent"}
           placeholder="FREQUENCY · YOUR@EMAIL.COM"
-          className="min-w-0 flex-1 bg-transparent px-[18px] py-4 font-mono text-[13px] tracking-[0.04em] text-t1 outline-none placeholder:text-[11px] placeholder:uppercase placeholder:tracking-[1.5px] placeholder:text-t4 focus-visible:ring-1 focus-visible:ring-sf-teal"
+          className="min-w-0 flex-1 bg-transparent px-[18px] py-4 font-mono text-[13px] tracking-[0.04em] text-t1 outline-none placeholder:text-[12px] placeholder:uppercase placeholder:tracking-[1.5px] placeholder:text-t4 focus-visible:ring-1 focus-visible:ring-sf-teal"
         />
         <button
           type="submit"
@@ -121,7 +121,7 @@ function WaitlistForm(): JSX.Element {
               : "REQUEST CLEARANCE →"}
         </button>
       </form>
-      <div className="mt-[18px] font-mono text-[10px] uppercase tracking-[1.5px] text-t4" role="status">
+      <div className="mt-[18px] font-mono text-[12px] uppercase tracking-[1.5px] text-t4" role="status">
         {status === "error"
           ? "TRANSMISSION FAILED · CHECK THE ADDRESS AND RETRY"
           : status === "sent"
@@ -137,7 +137,7 @@ function LandingHero(): JSX.Element {
     <div>
       <div className="mb-6 flex items-center gap-2.5">
         <span className="h-px w-7 bg-sf-teal" aria-hidden="true" />
-        <span className="font-mono text-[11px] tracking-[2px] text-sf-teal">
+        <span className="font-mono text-[12px] tracking-[2px] text-sf-teal">
           {"// EARLY ACCESS · "}
           {LAUNCH_DATE_STAMP}
         </span>
@@ -168,10 +168,10 @@ function LandingHero(): JSX.Element {
 function ManifestPanel(): JSX.Element {
   return (
     <GlassPanel glow className="relative p-7">
-      <div className="absolute right-3.5 top-3.5 font-mono text-[10px] tracking-[1.5px] text-t4">
+      <div className="absolute right-3.5 top-3.5 font-mono text-[12px] tracking-[1.5px] text-t4">
         {"// MANIFEST"}
       </div>
-      <div className="text-[11px] font-medium uppercase tracking-[1.5px] text-t3">
+      <div className="text-[12px] font-medium uppercase tracking-[1.5px] text-t3">
         SHIP'S MANIFEST · v0.8 → 1.0
       </div>
       <dl className="mt-3.5">
@@ -180,7 +180,7 @@ function ManifestPanel(): JSX.Element {
             key={row.label}
             className={`grid grid-cols-2 gap-[18px] py-3.5 ${i > 0 ? "border-t border-sf-border" : ""}`}
           >
-            <dt className="m-0 font-mono text-[10px] uppercase tracking-[1.5px] text-t3">{row.label}</dt>
+            <dt className="m-0 font-mono text-[12px] uppercase tracking-[1.5px] text-t3">{row.label}</dt>
             <dd className={`m-0 font-mono text-[13px] ${row.tone}`}>{row.value}</dd>
           </div>
         ))}
@@ -214,11 +214,11 @@ function ToolGrid(): JSX.Element {
       <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-5">
         {TOOLS.map((tool) => (
           <div key={tool.name} className="rounded-none border border-sf-border bg-sf-surface/90 p-3.5">
-            <div className={`font-mono text-[9px] uppercase tracking-[1.5px] ${CATEGORY_TONE[tool.cat]}`}>
+            <div className={`font-mono text-[11px] uppercase tracking-[1.5px] ${CATEGORY_TONE[tool.cat]}`}>
               {tool.cat}
             </div>
             <div className="mt-1.5 font-display text-sm tracking-[0.04em] text-t1">{tool.name}</div>
-            <div className="mt-1 text-[11px] leading-[1.4] text-t3">{tool.blurb}</div>
+            <div className="mt-1 text-[12px] leading-[1.4] text-t3">{tool.blurb}</div>
           </div>
         ))}
       </div>
@@ -264,7 +264,7 @@ export default function EarlyAccess(): JSX.Element {
       <ToolGrid />
 
       {/* footer */}
-      <div className="mt-20 flex flex-col gap-2 border-t border-sf-border pt-10 font-mono text-[10px] tracking-[2px] text-t5 sm:flex-row sm:justify-between">
+      <div className="mt-20 flex flex-col gap-2 border-t border-sf-border pt-10 font-mono text-[12px] tracking-[2px] text-t5 sm:flex-row sm:justify-between">
         <span>© 2026 STELLARFORGE · ALL RIGHTS RESERVED</span>
         <span>BUILT IN THORNTON, CO · 39.87°N 104.97°W</span>
       </div>

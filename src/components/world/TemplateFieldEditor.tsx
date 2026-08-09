@@ -71,7 +71,7 @@ export function TemplateFieldEditor({
         {/* Row 1: label + field_type */}
         <div className="grid grid-cols-2 gap-2">
           <div className="space-y-1">
-            <Label htmlFor={`f-label-${field.id}`} className="text-[10px] uppercase tracking-[1.5px] text-t4">
+            <Label htmlFor={`f-label-${field.id}`} className="text-[12px] uppercase tracking-[1.5px] text-t4">
               Label
             </Label>
             <Input
@@ -83,7 +83,7 @@ export function TemplateFieldEditor({
             />
           </div>
           <div className="space-y-1">
-            <Label htmlFor={`f-type-${field.id}`} className="text-[10px] uppercase tracking-[1.5px] text-t4">
+            <Label htmlFor={`f-type-${field.id}`} className="text-[12px] uppercase tracking-[1.5px] text-t4">
               Type
             </Label>
             <Select
@@ -108,7 +108,7 @@ export function TemplateFieldEditor({
         {/* Row 2: key + required */}
         <div className="grid grid-cols-2 gap-2">
           <div className="space-y-1">
-            <Label htmlFor={`f-key-${field.id}`} className="text-[10px] uppercase tracking-[1.5px] text-t4">
+            <Label htmlFor={`f-key-${field.id}`} className="text-[12px] uppercase tracking-[1.5px] text-t4">
               Key
               <span className="text-t5 font-mono normal-case tracking-normal ml-1">
                 (programmatic, a-z 0-9 _)
@@ -140,7 +140,7 @@ export function TemplateFieldEditor({
         {/* Row 3 (conditional): options for select/multiselect */}
         {usesOptions && (
           <div className="space-y-1">
-            <Label className="text-[10px] uppercase tracking-[1.5px] text-t4">
+            <Label className="text-[12px] uppercase tracking-[1.5px] text-t4">
               Options
               <span className="text-t5 font-mono normal-case tracking-normal ml-1">
                 (comma-separated)
@@ -159,7 +159,7 @@ export function TemplateFieldEditor({
 
         {/* Help text (optional) */}
         <div className="space-y-1">
-          <Label htmlFor={`f-help-${field.id}`} className="text-[10px] uppercase tracking-[1.5px] text-t4">
+          <Label htmlFor={`f-help-${field.id}`} className="text-[12px] uppercase tracking-[1.5px] text-t4">
             Help text{" "}
             <span className="text-t5 font-normal normal-case tracking-normal">(optional)</span>
           </Label>

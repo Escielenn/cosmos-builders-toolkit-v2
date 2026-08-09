@@ -569,7 +569,7 @@ export function StellarForgeEditor({
         {/* Word Count Footer (full preset only) */}
         {config.showWordCount && !readOnly && (
           <div className="flex items-center justify-end px-3 py-1.5 border-t border-sf-border bg-muted/20">
-            <span className="font-mono text-[10px] tracking-[1.5px] uppercase text-t4">
+            <span className="font-mono text-[12px] tracking-[1.5px] uppercase text-t4">
               {wordCount.toLocaleString()} {wordCount === 1 ? "word" : "words"}
             </span>
           </div>
