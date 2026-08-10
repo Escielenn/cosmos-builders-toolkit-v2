@@ -12,6 +12,17 @@ import { StellarForgeEditor } from "@/components/editor/StellarForgeEditor";
 import { WritingEntityPanel } from "@/components/writing/WritingEntityPanel";
 import { WorldInfluencePanel } from "@/components/writing/WorldInfluencePanel";
 import { WorksheetFactsPanel } from "@/components/writing/WorksheetFactsPanel";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  compileManuscriptDocx,
+  compileManuscriptMarkdown,
+  compileManuscriptPlainText,
+} from "@/lib/manuscript-compile";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import {
   DndContext, closestCenter, PointerSensor, KeyboardSensor,
@@ -193,6 +204,53 @@ export default function Write(): JSX.Element {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [flushPending, focus]);
+
+  // Export just this document, reusing the manuscript exporters with a
+  // single-chapter list so the formatting matches a compiled manuscript.
+  const exportDoc = useCallback(
+    async (format: "docx" | "md" | "txt") => {
+      if (!doc) return;
+      flushPending();
+
+      const name = doc.title || "Untitled";
+      const meta = {
+        title: name,
+        author: user?.user_metadata?.display_name ?? "Unknown Author",
+      };
+      const chapters = [{ id: doc.id, title: name, content: doc.content || "" }];
+      const safeName = name.replace(/[^\w\d-]+/g, "-").replace(/^-+|-+$/g, "") || "document";
+
+      try {
+        if (format === "docx") {
+          await compileManuscriptDocx(meta, chapters);
+          return;
+        }
+        const text =
+          format === "md"
+            ? compileManuscriptMarkdown(meta, chapters)
+            : compileManuscriptPlainText(meta, chapters);
+        const blob = new Blob([text], {
+          type: format === "md" ? "text/markdown;charset=utf-8" : "text/plain;charset=utf-8",
+        });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `${safeName}.${format}`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        // Revoke late; revoking immediately can cancel the download in some browsers.
+        setTimeout(() => URL.revokeObjectURL(url), 10_000);
+      } catch {
+        toast({
+          title: "EXPORT FAILED.",
+          description: "Could not generate the file. Try another format.",
+          variant: "destructive",
+        });
+      }
+    },
+    [doc, user, flushPending, toast],
+  );
 
   function saveTitle() {
     if (docId && worldId && title !== (doc?.title ?? "")) {
@@ -377,6 +435,29 @@ export default function Write(): JSX.Element {
               )}
             </>
           )}
+          {/* Per-document export. The compile page could export a whole
+              manuscript, but a single document had no export path at all. */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                className="border border-sf-border px-2.5 py-1 text-[12px] text-t3 transition-colors hover:text-t1"
+                title="Export this document"
+              >
+                Export
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-52 rounded-none border-sf-border bg-sf-surface/95">
+              <DropdownMenuItem onClick={() => exportDoc("docx")}>
+                Word (.docx)
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => exportDoc("md")}>
+                Markdown (.md)
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => exportDoc("txt")}>
+                Plain text (.txt)
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <button onClick={() => setFocus(!focus)}
             title={focus ? "Leave focus mode (Esc)" : "Focus mode — hides the binder and inspector (Esc to exit)"}
             className={`border px-2.5 py-1 text-[12px] transition-colors ${focus ? "border-sf-teal text-sf-teal" : "border-sf-border text-t3 hover:text-t1"}`}>

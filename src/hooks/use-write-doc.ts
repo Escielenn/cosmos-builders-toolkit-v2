@@ -63,26 +63,32 @@ export function useLatestDoc() {
   });
 }
 
-/** Roll a positive word delta into today's writing_sessions row (streaks). */
 /**
- * Add `delta` words to today's session total.
+ * Add `delta` words to today's session total (streaks).
  *
- * KNOWN RACE: this is a read-modify-write, so two autosaves resolving at the
- * same time (or two open tabs) both read the same `words` and the second
- * overwrites the first, under-counting the day. The fix is the atomic RPC in
- * supabase/migrations/20260809_atomic_writing_session_increment.sql, which is
- * written but NOT applied — it needs a (user_id, day) unique constraint
- * confirmed first. Once that migration is live, replace this body with:
+ * Prefers the atomic RPC from
+ * supabase/migrations/20260809_atomic_writing_session_increment.sql. If that
+ * migration has not been applied yet the RPC is missing, so this falls back to
+ * the original read-modify-write — which works, but loses concurrent updates
+ * (two tabs both read the same `words` and the second overwrites the first).
  *
- *   await supabase.rpc("increment_writing_session", {
- *     p_user_id: userId, p_day: day, p_delta: delta,
- *   });
+ * The fallback exists so applying the migration needs no coordinated deploy:
+ * once the function is live, every client silently becomes atomic.
  */
 export async function rollWordSession(userId: string, delta: number): Promise<void> {
   if (delta <= 0) return;
   const day = new Date().toISOString().slice(0, 10);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const db = supabase as any;
+
+  const { error } = await db.rpc("increment_writing_session", {
+    p_user_id: userId,
+    p_day: day,
+    p_delta: delta,
+  });
+  if (!error) return;
+
+  // PGRST202 = function not found in the schema cache (migration not applied).
   const { data: row } = await db
     .from("writing_sessions")
     .select("words")
