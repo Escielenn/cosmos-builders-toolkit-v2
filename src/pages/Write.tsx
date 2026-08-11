@@ -15,6 +15,8 @@ import { WorldInfluencePanel } from "@/components/writing/WorldInfluencePanel";
 import { WorksheetFactsPanel } from "@/components/writing/WorksheetFactsPanel";
 import { DocumentMetaBar } from "@/components/writing/DocumentMetaBar";
 import { ContinuityPanel } from "@/components/writing/ContinuityPanel";
+import { FindReplaceBar } from "@/components/writing/FindReplaceBar";
+import type { Editor } from "@tiptap/react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -88,6 +90,8 @@ export default function Write(): JSX.Element {
   const updateMeta = useUpdateDocumentMeta(worldId);
 
   const [focus, setFocus] = useState(false);
+  const [findOpen, setFindOpen] = useState(false);
+  const [editorInstance, setEditorInstance] = useState<Editor | null>(null);
   const [inspector, setInspector] = useState<"entities" | "world" | "reference" | "continuity">("entities");
   const [mobilePanel, setMobilePanel] = useState<"binder" | "inspector" | null>(null);
   const [trashOpen, setTrashOpen] = useState(false);
@@ -215,6 +219,13 @@ export default function Write(): JSX.Element {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "s") {
         e.preventDefault();
         flushPending();
+        return;
+      }
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "f") {
+        // Override the browser's find: it cannot replace, and a writer asking
+        // for find in an editor means find-in-document.
+        e.preventDefault();
+        setFindOpen(true);
         return;
       }
       if (e.key === "Escape" && focus) setFocus(false);
@@ -506,6 +517,12 @@ export default function Write(): JSX.Element {
 
         {/* editor */}
         <main className="sf-sb sf-sb--idle min-h-0 overflow-y-auto">
+          {findOpen && (
+            <FindReplaceBar
+              editor={editorInstance}
+              onClose={() => setFindOpen(false)}
+            />
+          )}
           <div className="mx-auto max-w-[720px] px-6 py-10">
             <input
               value={title}
@@ -527,6 +544,7 @@ export default function Write(): JSX.Element {
             <div className="my-6 text-center text-t5" aria-hidden="true">· · ·</div>
             {doc && (
               <StellarForgeEditor
+                onEditorReady={setEditorInstance}
                 key={doc.id}
                 content={doc.content ?? ""}
                 onChange={onContentChange}

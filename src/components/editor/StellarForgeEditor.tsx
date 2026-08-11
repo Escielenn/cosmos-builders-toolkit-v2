@@ -12,7 +12,7 @@
 // ---------------------------------------------------------------------------
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useEditor, EditorContent } from "@tiptap/react";
+import { useEditor, EditorContent, type Editor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Underline from "@tiptap/extension-underline";
 import Placeholder from "@tiptap/extension-placeholder";
@@ -68,6 +68,14 @@ export interface StellarForgeEditorProps {
   readOnly?: boolean;
   className?: string;
   minHeight?: string;
+  /**
+   * Hands the TipTap instance to the parent once ready (and null on unmount).
+   *
+   * Find & replace needs to run transactions against the live document so undo
+   * stays granular; rewriting the HTML string wholesale would collapse a rename
+   * into one opaque change and lose the cursor.
+   */
+  onEditorReady?: (editor: Editor | null) => void;
 }
 
 // ---------------------------------------------------------------------------
@@ -147,6 +155,7 @@ export function StellarForgeEditor({
   readOnly = false,
   className,
   minHeight,
+  onEditorReady,
 }: StellarForgeEditorProps) {
   const config = PRESET_CONFIG[preset];
   const resolvedMinHeight = minHeight || config.defaultMinHeight;
@@ -255,6 +264,12 @@ export function StellarForgeEditor({
   // Flush on unmount
   const editorRef = useRef(editor);
   editorRef.current = editor;
+
+  // Publish the instance so the parent can run find & replace transactions.
+  useEffect(() => {
+    onEditorReady?.(editor ?? null);
+    return () => onEditorReady?.(null);
+  }, [editor, onEditorReady]);
   useEffect(() => {
     return () => {
       if (debounceRef.current) {
