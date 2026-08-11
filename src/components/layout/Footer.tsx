@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Mail, Linkedin, Instagram } from "lucide-react";
 import CubeLogo from "@/components/icons/CubeLogo";
+import { Wordmark } from "@/components/brand/Wordmark";
 import SubstackIcon from "@/components/icons/SubstackIcon";
 import { APP_VERSION } from "@/config/version";
 import { BuildSigil } from "@/components/ambient/BuildSigil";
@@ -70,9 +71,7 @@ const Footer = () => {
               <Link to="/" className="flex items-center gap-3">
                 <CubeLogo size={36} className="rounded-none" />
                 <div className="flex flex-col">
-                  <span className="font-display font-light text-lg leading-tight tracking-sf-wide text-t1 uppercase">
-                    STELLARFORGE
-                  </span>
+                  <Wordmark size="md" uppercase />
                   <span className="font-mono text-[12px] text-t4 tracking-[0.18em]">
                     39.87°N · 104.97°W
                   </span>

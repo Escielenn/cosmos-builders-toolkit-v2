@@ -9,6 +9,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { StellarForgeEditor } from "@/components/editor/StellarForgeEditor";
+import { Wordmark } from "@/components/brand/Wordmark";
 import { WritingEntityPanel } from "@/components/writing/WritingEntityPanel";
 import { WorldInfluencePanel } from "@/components/writing/WorldInfluencePanel";
 import { WorksheetFactsPanel } from "@/components/writing/WorksheetFactsPanel";
@@ -402,12 +403,7 @@ export default function Write(): JSX.Element {
         >
           <span aria-hidden="true">←</span> Studio
         </Link>
-        <Link to="/studio" className="hidden items-baseline gap-1.5 sm:flex">
-          <span className="font-display text-[14px] font-light tracking-sf-title text-t1">
-            <span className="text-sf-teal">Stellar</span>forge
-          </span>
-          <span className="font-serif text-[13px] italic text-t2">Studio</span>
-        </Link>
+        <Wordmark size="sm" suffix="Studio" to="/studio" className="hidden sm:inline-flex" />
         <div className="hidden min-w-0 items-baseline gap-2 text-[13px] text-t4 md:flex">
           <span className="text-t5">/</span>
           {worldId && (

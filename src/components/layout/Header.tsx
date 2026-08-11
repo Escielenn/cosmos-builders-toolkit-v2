@@ -5,6 +5,7 @@ import { APP_VERSION } from "@/config/version";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import CubeLogo from "@/components/icons/CubeLogo";
+import { Wordmark } from "@/components/brand/Wordmark";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -129,9 +130,7 @@ const Header = () => {
               {/* Full wordmark at xl+ for everyone (brand visibility for
                   logged-out visitors during OPEN EARLY ACCESS); SF
                   abbreviation below xl for compact layouts. */}
-              <span className="hidden xl:inline font-display text-lg font-light tracking-sf-title text-t1">
-                <span className="text-sf-teal">Stellar</span>forge
-              </span>
+              <Wordmark size="md" className="hidden xl:inline-flex" />
               <span className="xl:hidden font-display text-lg font-light tracking-sf-wide text-t1 uppercase">
                 SF
               </span>

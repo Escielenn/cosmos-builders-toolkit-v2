@@ -1,5 +1,5 @@
 import { useParams, Link, useNavigate, useLocation } from "react-router-dom";
-import { ArrowLeft, Edit, Globe, FileText, Rocket, Zap, Trash2, MoreVertical, Calculator, Plus, Sparkles, Pencil, ChevronRight, Dna, Network, Sun, Crown, Cpu, Users, Download, Layers, BookOpen, Atom, Clock, Archive, Tag, Orbit, Languages, Weight, Eye, Camera, Palette, Library, GripVertical, PenLine } from "lucide-react";
+import { ArrowLeft, ChevronDown, Edit, Globe, FileText, Rocket, Zap, Trash2, MoreVertical, Calculator, Plus, Sparkles, Pencil, ChevronRight, Dna, Network, Sun, Crown, Cpu, Users, Download, Layers, BookOpen, Atom, Clock, Archive, Tag, Orbit, Languages, Weight, Eye, Camera, Palette, Library, GripVertical, PenLine } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
 import { CosmicTelemetry } from "@/components/layout/CosmicVelocityTicker";
 import CascadeProgressBar from "@/components/dashboard/CascadeProgressBar";
@@ -21,6 +21,8 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 // AlertDialog imports removed, using DeleteConfirmDialog instead
@@ -646,7 +648,7 @@ const WorldDashboard = () => {
           className="inline-flex items-center gap-2 font-heading text-[12px] uppercase tracking-[0.2em] font-medium text-t3 hover:text-sf-teal-bright transition-colors duration-base mb-6"
         >
           <ArrowLeft className="w-4 h-4" />
-          ← RETURN TO BRIDGE
+          Return to Bridge
         </Link>
         <GlassPanel className="p-12 text-center">
           <p className="font-mono text-[12px] tracking-[0.18em] text-sf-crimson uppercase mb-4">// STATUS: UNREACHABLE</p>
@@ -655,7 +657,7 @@ const WorldDashboard = () => {
             RECORD DOES NOT EXIST OR CLEARANCE INSUFFICIENT.
           </p>
           <Button variant="sf-primary" size="sf-md" asChild>
-            <Link to="/">RETURN TO BRIDGE</Link>
+            <Link to="/">Return to Bridge</Link>
           </Button>
         </GlassPanel>
       </>
@@ -683,7 +685,7 @@ const WorldDashboard = () => {
             className="inline-flex items-center gap-2 font-heading text-[12px] uppercase tracking-[0.2em] font-medium text-t3 hover:text-sf-teal-bright transition-colors duration-base"
           >
             <ArrowLeft className="w-4 h-4" />
-            ← RETURN TO BRIDGE
+            Return to Bridge
           </Link>
           <div className="flex items-center gap-2">
             <Button size="sm" asChild>
@@ -698,47 +700,68 @@ const WorldDashboard = () => {
                 Wiki
               </Link>
             </Button>
-            <Button variant="outline" size="sm" asChild>
-              <Link to={`/worlds/${worldId}/connections`}>
-                <Network className="w-4 h-4 mr-2" />
-                View Connections
-              </Link>
-            </Button>
-            <Button variant="outline" size="sm" onClick={() => setExportDialogOpen(true)}>
-              <Download className="w-4 h-4 mr-2" />
-              Export
-            </Button>
-            {isOwner && (
-            <Button variant="outline" size="sm" onClick={() => setSnapshotDialogOpen(true)}>
-              <Camera className="w-4 h-4 mr-2" />
-              Snapshot
-            </Button>
-            )}
-            {isOwner && (
-            <Button variant="outline" size="sm" onClick={() => setViewExportDialogOpen(true)}>
-              <Layers className="w-4 h-4 mr-2" />
-              Export View
-            </Button>
-            )}
-            {isOwner && (
-            <Button variant="outline" size="sm" onClick={() => setWorldBibleDialogOpen(true)}>
-              <BookOpen className="w-4 h-4 mr-2" />
-              World Bible
-            </Button>
-            )}
-            <Button variant="outline" size="sm" asChild>
-              <Link to={`/worlds/${worldId}/showcase`}>
-                <Eye className="w-4 h-4 mr-2" />
-                Showcase
-              </Link>
-            </Button>
+            {/* One Export control. Export, Export View, World Bible and
+                Snapshot used to sit here as four peer buttons, reading as four
+                unrelated features rather than four ways to get data out. */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm">
+                  <Download className="w-4 h-4 mr-2" />
+                  Export
+                  <ChevronDown className="w-3.5 h-3.5 ml-1.5 opacity-60" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-60">
+                <DropdownMenuLabel className="text-[11px] uppercase tracking-[1.5px] text-t3 font-medium">
+                  Export
+                </DropdownMenuLabel>
+                <DropdownMenuItem onClick={() => setExportDialogOpen(true)}>
+                  <Download className="w-4 h-4 mr-2" />
+                  Export world…
+                </DropdownMenuItem>
+                {isOwner && (
+                  <DropdownMenuItem onClick={() => setViewExportDialogOpen(true)}>
+                    <Layers className="w-4 h-4 mr-2" />
+                    Export current view…
+                  </DropdownMenuItem>
+                )}
+                {isOwner && (
+                  <DropdownMenuItem onClick={() => setWorldBibleDialogOpen(true)}>
+                    <BookOpen className="w-4 h-4 mr-2" />
+                    World Bible…
+                  </DropdownMenuItem>
+                )}
+                {isOwner && (
+                  <>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={() => setSnapshotDialogOpen(true)}>
+                      <Camera className="w-4 h-4 mr-2" />
+                      Take a snapshot
+                    </DropdownMenuItem>
+                  </>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="icon" className="h-8 w-8" aria-label="World actions">
                   <MoreVertical className="w-4 h-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuItem asChild>
+                  <Link to={`/worlds/${worldId}/connections`}>
+                    <Network className="w-4 h-4 mr-2" />
+                    Connections
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to={`/worlds/${worldId}/showcase`}>
+                    <Eye className="w-4 h-4 mr-2" />
+                    Showcase
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
                 {isOwner && (
                 <DropdownMenuItem onClick={() => setEditDialogOpen(true)}>
                   <Edit className="w-4 h-4 mr-2" />

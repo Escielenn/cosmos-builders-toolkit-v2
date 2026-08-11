@@ -58,7 +58,7 @@ const SettingsDialog = ({
   const { user, profile, updateProfile } = useAuth();
   const { toast } = useToast();
   const { subscription, isSubscribed, createPortalSession } = useSubscription();
-  const { backgroundId, setBackground, options, customBackground, setCustomBackground, clearCustomBackground } = useBackground();
+  const { backgroundId, setBackground, options, customBackground, setCustomBackground, clearCustomBackground, videoBackdropsAvailable } = useBackground();
   const { connection: notionConnection, isConnected: isNotionConnected, isConnecting, connect: connectNotion, disconnect: disconnectNotion } = useNotion();
 
   // Tab state - sync with defaultTab when dialog opens
@@ -347,8 +347,9 @@ const SettingsDialog = ({
                 </div>
               </div>
 
-              {/* Videos */}
-              <div className="mb-4">
+              {/* Videos — hidden entirely when the files aren't served, rather
+                  than rendering a grid of dead "// NO PREVIEW" tiles. */}
+              <div className={cn("mb-4", !videoBackdropsAvailable && "hidden")}>
                 <p className="text-xs text-t3 uppercase tracking-wider mb-2">
                   Animated Backdrops
                 </p>

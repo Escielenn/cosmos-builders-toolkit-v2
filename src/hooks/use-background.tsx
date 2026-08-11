@@ -426,6 +426,18 @@ interface BackgroundContextValue {
   resetToRandom: () => void;
   isVideoBackground: boolean;
   videoUrl: string | null;
+  /**
+   * Whether the video backdrops are actually served.
+   *
+   * public/video/ is gitignored (~725MB), so the files are absent from every
+   * deploy and Vercel's catch-all rewrite answers them with index.html. The
+   * <video> tags then fail to decode and the picker renders a grid of dead
+   * "// NO PREVIEW" tiles. This probe checks one representative URL and lets
+   * the UI hide the section instead. It re-enables itself with no code change
+   * once the videos are hosted somewhere real (Supabase Storage is already
+   * allowed by the media-src CSP).
+   */
+  videoBackdropsAvailable: boolean;
   backgroundVisible: boolean;
   toggleBackgroundVisible: () => void;
 }
@@ -573,6 +585,27 @@ export const BackgroundProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
+  // Probe one video URL once. A real video answers with a video/* content
+  // type; an undeployed one comes back as the SPA's index.html.
+  const [videoBackdropsAvailable, setVideoBackdropsAvailable] = useState(false);
+  useEffect(() => {
+    const probe = BACKGROUND_OPTIONS.find((o) => o.type === "video")?.url;
+    if (!probe) return;
+    let cancelled = false;
+    fetch(probe, { method: "HEAD" })
+      .then((res) => {
+        const ok =
+          res.ok && (res.headers.get("content-type") ?? "").startsWith("video");
+        if (!cancelled) setVideoBackdropsAvailable(ok);
+      })
+      .catch(() => {
+        if (!cancelled) setVideoBackdropsAvailable(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const value: BackgroundContextValue = {
     backgroundId,
     setBackground,
@@ -585,6 +618,7 @@ export const BackgroundProvider = ({ children }: { children: ReactNode }) => {
     resetToRandom,
     isVideoBackground,
     videoUrl,
+    videoBackdropsAvailable,
     backgroundVisible,
     toggleBackgroundVisible,
   };
