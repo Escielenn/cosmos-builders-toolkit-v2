@@ -56,7 +56,10 @@ const CodexSection = ({
         ) : (
           <ChevronRight className="w-2.5 h-2.5 text-t3/40 shrink-0" />
         )}
-        <span className="font-heading text-[13px] uppercase tracking-[3px] text-primary/60 flex-1">
+        {/* WRITER register: a writer's binder, not an instrument readout, so
+            layers read as words. LAYER_LABELS are already title case
+            ("Environment") — the CSS `uppercase` was doing the shouting. */}
+        <span className="font-serif text-[15px] italic text-primary/80 flex-1">
           {section.label}
         </span>
         {section.elements.length > 0 && (

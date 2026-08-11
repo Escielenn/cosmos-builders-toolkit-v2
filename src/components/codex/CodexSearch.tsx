@@ -31,7 +31,7 @@ const CodexSearch = ({ value, onChange, onFocus }: CodexSearchProps) => {
         value={value}
         onChange={(e) => onChange(e.target.value)}
         onFocus={onFocus}
-        placeholder="SEARCH ELEMENTS..."
+        placeholder="Search this world..."
         className="w-full h-7 pl-6 pr-6 bg-transparent border border-sf-border text-[12px] font-mono tracking-wider text-t2 placeholder:text-t3/30 focus:outline-none focus:border-primary/30 transition-colors"
       />
       {value && (

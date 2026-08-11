@@ -12,7 +12,7 @@ const CodexRecentEdits = ({ items, onItemClick }: CodexRecentEditsProps) => {
   return (
     <div className="px-3 pt-2 pb-1">
       <div className="sf-divider mb-2" />
-      <span className="font-heading text-[12px] uppercase tracking-[2px] text-t3/40 block mb-1.5">
+      <span className="font-serif text-[13px] italic text-t3 block mb-2">
         Recent Edits
       </span>
       {items.map((item) => (

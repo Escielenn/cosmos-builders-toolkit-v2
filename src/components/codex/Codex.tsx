@@ -350,7 +350,8 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
         {layoutContext?.worldIcon && (
           <WorldIconRenderer iconId={layoutContext.worldIcon} className="w-4 h-4 text-primary/60 shrink-0" />
         )}
-        <span className="font-heading text-[14px] uppercase tracking-[2px] text-t2 block truncate">
+        {/* The world's own name, in the writer's voice — not a system label. */}
+        <span className="font-serif text-[17px] italic text-t1 block truncate">
           {codexData.worldName}
         </span>
       </button>
@@ -362,7 +363,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
         className="px-3 py-1 w-full text-left flex items-center gap-2 text-t3/40 hover:text-t2 transition-colors"
       >
         <FileText className="w-3.5 h-3.5" />
-        <span className="font-mono text-[12px] uppercase tracking-wider">World Notes</span>
+        <span className="font-serif text-[14px] italic">World notes</span>
       </button>
 
       {/* Codex hint */}
