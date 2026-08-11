@@ -66,14 +66,15 @@ export function useLatestDoc() {
 /**
  * Add `delta` words to today's session total (streaks).
  *
- * Prefers the atomic RPC from
- * supabase/migrations/20260809_atomic_writing_session_increment.sql. If that
- * migration has not been applied yet the RPC is missing, so this falls back to
- * the original read-modify-write — which works, but loses concurrent updates
- * (two tabs both read the same `words` and the second overwrites the first).
+ * Uses the atomic RPC `increment_writing_session`, applied 2026-08-10 (see
+ * supabase/migrations/20260809_atomic_writing_session_increment.sql). The
+ * function derives the user from auth.uid() and rejects a mismatched
+ * p_user_id, so a bad caller cannot write someone else's row.
  *
- * The fallback exists so applying the migration needs no coordinated deploy:
- * once the function is live, every client silently becomes atomic.
+ * The read-modify-write fallback below is retained deliberately: it keeps the
+ * app working against any environment where the function is absent (a fresh
+ * branch database, a local stack, a preview pointed at an older project). It
+ * loses concurrent updates, which is why the RPC is preferred.
  */
 export async function rollWordSession(userId: string, delta: number): Promise<void> {
   if (delta <= 0) return;
