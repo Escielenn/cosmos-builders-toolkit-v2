@@ -1,0 +1,142 @@
+import { describe, it, expect } from "vitest";
+import { checkContinuity, proseToText } from "@/lib/continuity";
+import type { WorksheetFact } from "@/lib/worksheet-facts";
+
+// Helpers build facts with keys that are ACTUALLY mapped in entity-config.ts.
+// A test keyed to an unmapped field would pass here while the feature could
+// never fire in the product.
+const fact = (key: string, label: string, value: string): WorksheetFact => ({
+  key,
+  label,
+  value,
+});
+
+const gravity = (g: string) => fact("surfaceGravity", "Surface Gravity (g)", g);
+const dayLength = (h: string) => fact("dayLength", "Day Length (hours)", h);
+const population = (p: string) => fact("population", "Population", p);
+const crew = (c: string) => fact("crewSize", "Crew Size", c);
+const orbit = (au: string) => fact("orbitalDistance", "Orbital Distance (AU)", au);
+const temp = (k: string) => fact("surfaceTemperature", "Surface Temperature (K)", k);
+
+describe("proseToText", () => {
+  it("strips tags and decodes the entities TipTap emits", () => {
+    expect(proseToText("<p>one&nbsp;two &amp; three</p>")).toBe("one two & three");
+  });
+  it("is empty for nothing", () => {
+    expect(proseToText("")).toBe("");
+    expect(proseToText(null)).toBe("");
+  });
+});
+
+describe("catches explicit contradictions", () => {
+  it("flags a gravity claim well outside tolerance", () => {
+    const notes = checkContinuity("<p>At 0.4 gravity she moved like a dancer.</p>", [gravity("1.47")]);
+    expect(notes).toHaveLength(1);
+    expect(notes[0].worldValue).toBe("1.47");
+    expect(notes[0].proseValue).toBe("0.4");
+    // The message must name both numbers so the writer can judge.
+    expect(notes[0].message).toContain("1.47");
+    expect(notes[0].message).toContain("0.4");
+  });
+
+  it("reads a number that follows the keyword", () => {
+    expect(checkContinuity("<p>The gravity of 0.3 crushed nothing.</p>", [gravity("1.47")]))
+      .toHaveLength(1);
+  });
+
+  it("flags a day length that disagrees", () => {
+    expect(checkContinuity("<p>The 40 hour day wore on.</p>", [dayLength("18")])).toHaveLength(1);
+  });
+
+  it("flags a crew count that disagrees", () => {
+    expect(checkContinuity("<p>All 12 crew were asleep.</p>", [crew("400")])).toHaveLength(1);
+  });
+
+  it("flags an orbital distance that disagrees", () => {
+    expect(checkContinuity("<p>They fell to 4 AU and held.</p>", [orbit("0.58")])).toHaveLength(1);
+  });
+
+  it("includes the offending sentence as context", () => {
+    const notes = checkContinuity(
+      "<p>She looked up. At 0.2 gravity she drifted upward.</p>",
+      [gravity("1.47")],
+    );
+    expect(notes[0].excerpt).toBe("At 0.2 gravity she drifted upward.");
+  });
+});
+
+describe("scale words — the loosest figures in fiction", () => {
+  it("treats spelled billions as the same magnitude as the recorded digits", () => {
+    // 8.7e9 recorded vs "nine billion" written: a writer rounding, not an error.
+    expect(checkContinuity("<p>Nine billion people lived there.</p>", [population("8700000000")]))
+      .toEqual([]);
+  });
+
+  it("still flags a population off by orders of magnitude", () => {
+    const notes = checkContinuity("<p>Twelve thousand citizens remained.</p>", [population("9 billion")]);
+    expect(notes).toHaveLength(1);
+  });
+
+  it("matches a recorded value that itself uses a scale word", () => {
+    expect(checkContinuity("<p>Two billion inhabitants.</p>", [population("2 billion")])).toEqual([]);
+  });
+});
+
+describe("stays quiet when it should", () => {
+  it("agrees, so says nothing", () => {
+    expect(checkContinuity("<p>At 1.47 gravity every step cost her.</p>", [gravity("1.47")])).toEqual([]);
+  });
+
+  it("does not fire when prose mentions the concept without quantifying it", () => {
+    expect(checkContinuity("<p>The gravity felt wrong.</p>", [gravity("1.47")])).toEqual([]);
+    expect(checkContinuity("<p>The crew slept.</p>", [crew("400")])).toEqual([]);
+  });
+
+  it("tolerates prose rounding a measurement", () => {
+    // "about 1.5 g" for a recorded 1.47 is the writer being human.
+    expect(checkContinuity("<p>About 1.5 gravity, give or take.</p>", [gravity("1.47")])).toEqual([]);
+    expect(checkContinuity("<p>A 19 hour day.</p>", [dayLength("18")])).toEqual([]);
+  });
+
+  it("is silent with no facts or no prose", () => {
+    expect(checkContinuity("<p>At 9 gravity.</p>", [])).toEqual([]);
+    expect(checkContinuity("", [gravity("1.47")])).toEqual([]);
+    expect(checkContinuity(null, [gravity("1.47")])).toEqual([]);
+  });
+
+  it("ignores a qualitative value it cannot compare numerically", () => {
+    expect(checkContinuity("<p>At 0.2 gravity she drifted.</p>", [gravity("crushing")])).toEqual([]);
+  });
+
+  it("ignores a fact whose key no check targets", () => {
+    const unchecked = fact("biochemicalBasis", "Biochemical Basis", "silicon");
+    expect(checkContinuity("<p>Three silicon forms.</p>", [unchecked])).toEqual([]);
+  });
+
+  it("reports each fact at most once, however often it is contradicted", () => {
+    const notes = checkContinuity(
+      "<p>At 0.2 gravity. Later 0.3 gravity. Then 0.4 gravity.</p>",
+      [gravity("1.47")],
+    );
+    expect(notes).toHaveLength(1);
+  });
+
+  it("handles several different facts independently", () => {
+    const notes = checkContinuity(
+      "<p>At 0.3 gravity she jumped. The 40 hour day dragged.</p>",
+      [gravity("1.47"), dayLength("18")],
+    );
+    expect(notes.map((n) => n.factKey).sort()).toEqual(["dayLength", "surfaceGravity"]);
+  });
+
+  it("does not crash on junk prose", () => {
+    expect(() => checkContinuity("<<<>>> &&& 12345", [gravity("1.47")])).not.toThrow();
+  });
+
+  it("handles a recorded value in scientific notation", () => {
+    // Kardashev energy output is stored as 3.8e26; parsing it as 3.8 would make
+    // every mention of it look like a contradiction.
+    const notes = checkContinuity("<p>At 273 kelvin the air held.</p>", [temp("273")]);
+    expect(notes).toEqual([]);
+  });
+});

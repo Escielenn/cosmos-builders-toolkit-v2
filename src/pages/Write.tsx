@@ -13,6 +13,8 @@ import { Wordmark } from "@/components/brand/Wordmark";
 import { WritingEntityPanel } from "@/components/writing/WritingEntityPanel";
 import { WorldInfluencePanel } from "@/components/writing/WorldInfluencePanel";
 import { WorksheetFactsPanel } from "@/components/writing/WorksheetFactsPanel";
+import { DocumentMetaBar } from "@/components/writing/DocumentMetaBar";
+import { ContinuityPanel } from "@/components/writing/ContinuityPanel";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -39,16 +41,15 @@ import {
   useWritingDocuments, useCreateDocument, useUpdateDocumentContent,
   useCreateFolder, useRenameDocument, useReorderDocuments,
   useDeleteDocument, useTrashedDocuments, useRestoreDocument,
-  usePurgeDocument, purgeExpiredTrash,
+  usePurgeDocument, purgeExpiredTrash, useUpdateDocumentMeta,
 } from "@/hooks/use-writing-documents";
 import { Trash2, RotateCcw, X } from "lucide-react";
 import { useWriteDoc, useLatestDoc, rollWordSession, countWords } from "@/hooks/use-write-doc";
+import { useSessionWords } from "@/hooks/use-session-words";
+import { useWritingPreferences } from "@/hooks/use-writing-preferences";
+import { readDocMeta } from "@/lib/document-meta";
 import type { Entity } from "@/services/entity-graph-types";
 import type { WorldEntry } from "@/services/world-data";
-
-function julianDay(): number {
-  return Math.round((Date.now() / 86_400_000 + 2440587.5) * 10) / 10;
-}
 
 // insert helpers (proven pattern from the mature editor)
 function insertIntoEditor(text: string) {
@@ -84,9 +85,10 @@ export default function Write(): JSX.Element {
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
   );
   const renameDoc = useRenameDocument(worldId);
+  const updateMeta = useUpdateDocumentMeta(worldId);
 
   const [focus, setFocus] = useState(false);
-  const [inspector, setInspector] = useState<"entities" | "world" | "reference">("entities");
+  const [inspector, setInspector] = useState<"entities" | "world" | "reference" | "continuity">("entities");
   const [mobilePanel, setMobilePanel] = useState<"binder" | "inspector" | null>(null);
   const [trashOpen, setTrashOpen] = useState(false);
   const [title, setTitle] = useState("");
@@ -138,6 +140,17 @@ export default function Write(): JSX.Element {
   const folders = folderRows ?? [];
   const unfiled = unfiledDocs ?? [];
 
+  // Today's progress against the goal the writer already set in Studio.
+  const { sessionWords, refresh: refreshSessionWords } = useSessionWords();
+  const { preferences } = useWritingPreferences();
+  const dailyGoalWords = preferences.dailyGoalWords || 500;
+  const goalPct = Math.min(100, Math.round((sessionWords / dailyGoalWords) * 100));
+  const goalMet = sessionWords >= dailyGoalWords;
+
+  // Card fields for the open document. metadata is untyped, so this tolerates
+  // whatever is already in the column.
+  const docMeta = useMemo(() => readDocMeta(doc?.metadata), [doc?.metadata]);
+
   // Commit any pending edit immediately.
   //
   // The pending payload carries its own docId: the debounce used to fire after
@@ -164,11 +177,15 @@ export default function Write(): JSX.Element {
       {
         onSuccess: () => {
           setSavedAt(new Date());
-          if (user && delta > 0) rollWordSession(user.id, delta);
+          if (user && delta > 0) {
+            // Await nothing, but refresh the footer once the ledger is written
+            // so today's total advances as you type instead of on next refetch.
+            rollWordSession(user.id, delta).then(() => refreshSessionWords());
+          }
         },
       },
     );
-  }, [docId, updateContent, user]);
+  }, [docId, updateContent, user, refreshSessionWords]);
 
   function onContentChange(html: string) {
     if (!docId) return;
@@ -356,10 +373,10 @@ export default function Write(): JSX.Element {
   const inspectorContent = worldId ? (
     <div className="sf-sb sf-sb--slim flex h-full min-h-0 flex-col overflow-y-auto border-l border-sf-border">
       <div className="flex border-b border-sf-border" role="tablist" aria-label="Inspector">
-        {(["entities", "world", "reference"] as const).map((t) => (
+        {(["entities", "world", "reference", "continuity"] as const).map((t) => (
           <button key={t} role="tab" aria-selected={inspector === t} onClick={() => setInspector(t)}
             className={`min-h-[44px] flex-1 border-b-2 px-2 py-2.5 text-[13px] capitalize transition-colors ${inspector === t ? "border-sf-teal text-t1" : "border-transparent text-t3 hover:text-t1"}`}>
-            {t === "entities" ? "Entities" : t === "world" ? "World" : "Refs"}
+            {t === "entities" ? "Entities" : t === "world" ? "World" : t === "reference" ? "Refs" : "Check"}
           </button>
         ))}
       </div>
@@ -373,6 +390,11 @@ export default function Write(): JSX.Element {
           onPinEntity={(e: Entity) => toast({ title: `Pinned ${e.name}` })}
           embedded
         />
+      )}
+      {inspector === "continuity" && (
+        <div className="sf-sb sf-sb--slim min-h-0 flex-1 overflow-y-auto">
+          <ContinuityPanel worldId={worldId} content={doc?.content} />
+        </div>
       )}
       {inspector === "world" && (
         <WorldInfluencePanel worldId={worldId} content={doc?.content} />
@@ -493,6 +515,15 @@ export default function Write(): JSX.Element {
               className="w-full bg-transparent font-serif text-[30px] italic text-t1 outline-none placeholder:text-t4"
               aria-label="Document title"
             />
+            {/* Index-card fields. Collapsed until opened so they never compete
+                with the prose; these are what a corkboard/outliner will read. */}
+            {doc && (
+              <DocumentMetaBar
+                meta={docMeta}
+                onChange={(patch) => updateMeta.mutate({ docId: doc.id, patch })}
+                disabled={updateMeta.isPending}
+              />
+            )}
             <div className="my-6 text-center text-t5" aria-hidden="true">· · ·</div>
             {doc && (
               <StellarForgeEditor
@@ -526,7 +557,25 @@ export default function Write(): JSX.Element {
             {updateContent.isPending ? "Saving…" : savedAt ? `Saved · ${savedAgo}` : "Ready"}
           </span>
         </div>
-        <div className="font-mono text-[11px] tracking-[1.5px] text-t5">{words.toLocaleString()} WORDS · JD {julianDay().toFixed(1)}</div>
+        {/* Progress toward today's goal, not an astronomical date. The editor
+            already wrote session words to writing_sessions and never read them
+            back, so the writer's own number was invisible while writing. */}
+        <div className="flex items-center gap-3 font-mono text-[11px] tracking-[1.5px] text-t5">
+          <span>{words.toLocaleString()} WORDS</span>
+          <span aria-hidden="true">·</span>
+          <span
+            className={goalMet ? "text-sf-teal" : "text-t4"}
+            title={`${sessionWords.toLocaleString()} words written today, goal ${dailyGoalWords.toLocaleString()}`}
+          >
+            {sessionWords.toLocaleString()} / {dailyGoalWords.toLocaleString()} TODAY
+          </span>
+          <span className="hidden h-1 w-24 bg-white/10 sm:block" aria-hidden="true">
+            <span
+              className={`block h-full ${goalMet ? "bg-sf-teal" : "bg-sf-teal/50"}`}
+              style={{ width: `${goalPct}%` }}
+            />
+          </span>
+        </div>
       </footer>
     </div>
   );

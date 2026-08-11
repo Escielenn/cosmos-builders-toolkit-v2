@@ -87,6 +87,16 @@ import { ToastAction } from "@/components/ui/toast";
 import { useToast } from "@/hooks/use-toast";
 import { useMetaTags } from "@/hooks/use-meta-tags";
 import RecentActivity from "@/components/world/RecentActivity";
+// Secondary panels, collapsed into a single rail. Ordered by how often a
+// writer reaches for them when opening a world.
+const DRAWERS: { id: string; label: string; ownerOnly?: boolean }[] = [
+  { id: "worksheets", label: "Worksheets" },
+  { id: "elements", label: "Elements" },
+  { id: "build", label: "Build" },
+  { id: "notes", label: "Notes" },
+  { id: "history", label: "History", ownerOnly: true },
+];
+
 const TOOLS = [
   {
     id: "environmental-chain-reaction",
@@ -523,6 +533,19 @@ const WorldDashboard = () => {
   const [viewExportDialogOpen, setViewExportDialogOpen] = useState(false);
   const [worldBibleDialogOpen, setWorldBibleDialogOpen] = useState(false);
   const [snapshotDialogOpen, setSnapshotDialogOpen] = useState(false);
+  const [openDrawer, setOpenDrawer] = useState<string | null>(() => {
+    try {
+      return localStorage.getItem(`sf-world-drawer-${worldId}`) || null;
+    } catch {
+      return null;
+    }
+  });
+  useEffect(() => {
+    try {
+      if (openDrawer) localStorage.setItem(`sf-world-drawer-${worldId}`, openDrawer);
+      else localStorage.removeItem(`sf-world-drawer-${worldId}`);
+    } catch { /* storage unavailable */ }
+  }, [openDrawer, worldId]);
   const [appearanceDialogOpen, setAppearanceDialogOpen] = useState(false);
   const [entityPickerOpen, setEntityPickerOpen] = useState(false);
   const { entities: worldEntities, grouped: entitiesByType } = useWorldEntities(worldId);
@@ -850,22 +873,52 @@ const WorldDashboard = () => {
         {/* Recent Activity */}
         {worldId && <RecentActivity worldId={worldId} />}
 
+        {/* ── Drawers ────────────────────────────────────────────────
+            Opening a world should answer "where was I, and what next?".
+            These five panels used to stack on one page — roughly a thousand
+            pixels of chrome, the tool grid alone contributing 21 cards, with
+            World Elements and Saved Worksheets both duplicating what the Codex
+            sidebar already navigates. One opens at a time; nothing was removed,
+            and the choice persists per world. */}
+        <div className="mb-8 flex flex-wrap items-center gap-1 border-y border-sf-border py-2">
+          {DRAWERS.filter((d) => !d.ownerOnly || isOwner).map((d) => (
+            <button
+              key={d.id}
+              onClick={() => setOpenDrawer((cur) => (cur === d.id ? null : d.id))}
+              aria-expanded={openDrawer === d.id}
+              className={`px-3 py-1.5 font-serif text-[15px] italic transition-colors ${
+                openDrawer === d.id ? "text-sf-teal" : "text-t3 hover:text-t1"
+              }`}
+            >
+              {d.label}
+            </button>
+          ))}
+          {openDrawer && (
+            <button
+              onClick={() => setOpenDrawer(null)}
+              className="ml-auto px-2 py-1.5 font-serif text-[13px] italic text-t4 hover:text-t2"
+            >
+              Close
+            </button>
+          )}
+        </div>
+
         {/* World Notes */}
-        {worldId && (
+        {worldId && openDrawer === "notes" && (
           <section id="notes" ref={notesRef} className="mb-8">
             <WorldNotes worldId={worldId} readOnly={!canEdit} />
           </section>
         )}
 
         {/* Version History, owner only */}
-        {isOwner && worldId && (
+        {isOwner && worldId && openDrawer === "history" && (
           <section className="mb-8">
             <VersionHistory worldId={worldId} worldName={world.name} />
           </section>
         )}
 
         {/* World Elements, entity-first entries */}
-        {worldId && (
+        {worldId && openDrawer === "elements" && (
           <section className="mb-8">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-medium">World Elements</h2>
@@ -934,7 +987,7 @@ const WorldDashboard = () => {
           </section>
         )}
 
-        {/* Tools Grid */}
+        {openDrawer === "build" && (<>
         <section className="mb-8">
           <h2 className="text-xl font-medium mb-4">Worldbuilding Tools</h2>
           <DndContext
@@ -957,9 +1010,9 @@ const WorldDashboard = () => {
               ) : null}
             </DragOverlay>
           </DndContext>
-        </section>
+        </section></>)}
 
-        {/* Saved Worksheets - Grouped by Tool Type */}
+        {openDrawer === "worksheets" && (<>
         <section>
           <h2 className="text-xl font-medium mb-4">Saved Worksheets</h2>
           {worksheetsLoading ? (
@@ -1009,7 +1062,7 @@ const WorldDashboard = () => {
               </DragOverlay>
             </DndContext>
           )}
-        </section>
+        </section></>)}
     </>
   );
 

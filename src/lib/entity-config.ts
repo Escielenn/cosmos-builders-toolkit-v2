@@ -147,6 +147,22 @@ export const ENTITY_MASTER_FIELDS: Record<string, MasterFieldDef[]> = {
       type: "number",
       worksheetPaths: { "surface-gravity-calculator": "advanced.surfaceTemp" },
     },
+    // Day length and axial tilt are plain inputs on the Planetary Profile
+    // (physicalCharacteristics.dayLength / .axialTilt) that were never mapped,
+    // so nothing could read them. The continuity check for day length depends
+    // on this mapping existing.
+    {
+      label: "Day Length (hours)",
+      key: "dayLength",
+      type: "number",
+      worksheetPaths: { "planetary-profile": "physicalCharacteristics.dayLength" },
+    },
+    {
+      label: "Axial Tilt (degrees)",
+      key: "axialTilt",
+      type: "number",
+      worksheetPaths: { "planetary-profile": "physicalCharacteristics.axialTilt" },
+    },
   ],
 
   star_system: [

@@ -12,6 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import type { WorldEntry } from "@/services/world-data";
+import { writeDocMeta, type DocumentMeta } from "@/lib/document-meta";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -214,6 +215,60 @@ export function useUpdateDocumentContent(worldId: string | undefined) {
 // ---------------------------------------------------------------------------
 // Rename a document
 // ---------------------------------------------------------------------------
+
+/**
+ * Update a document's card metadata (synopsis, POV, status, in-world date).
+ *
+ * Writes into the existing world_entries.metadata jsonb column, merging so any
+ * keys another feature owns survive. No schema change.
+ */
+export function useUpdateDocumentMeta(worldId: string | undefined) {
+  const { toast } = useToast();
+  const qc = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      docId,
+      patch,
+    }: {
+      docId: string;
+      patch: Partial<DocumentMeta>;
+    }) => {
+      // Read-modify-write on a per-document row. Unlike the session ledger this
+      // is safe: only one editor holds a document, and the merge preserves keys.
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const db = supabase as any;
+      const { data: current, error: readErr } = await db
+        .from("world_entries")
+        .select("metadata")
+        .eq("id", docId)
+        .single();
+      if (readErr) throw readErr;
+
+      const next = writeDocMeta(current?.metadata, patch);
+      const { data, error } = await db
+        .from("world_entries")
+        .update({ metadata: next })
+        .eq("id", docId)
+        .select()
+        .single();
+      if (error) throw error;
+      return data as WorldEntry;
+    },
+    onSuccess: (_data, variables) => {
+      qc.invalidateQueries({ queryKey: docKeys.all(worldId!) });
+      qc.invalidateQueries({ queryKey: ["write-doc", variables.docId] });
+    },
+    onError: (error) => {
+      toast({
+        title: "COULD NOT SAVE DETAILS.",
+        description:
+          error instanceof Error ? error.message : "Try again in a moment.",
+        variant: "destructive",
+      });
+    },
+  });
+}
 
 export function useRenameDocument(worldId: string | undefined) {
   const { toast } = useToast();
