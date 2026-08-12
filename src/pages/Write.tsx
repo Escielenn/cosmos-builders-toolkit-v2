@@ -457,7 +457,7 @@ export default function Write(): JSX.Element {
         <Link
           to="/studio"
           className="flex items-center gap-1.5 border border-sf-border px-2.5 py-1 text-[13px] text-t3 transition-colors hover:border-sf-teal hover:text-t1"
-          title="Back to all your projects"
+          title="Back to Studio"
         >
           <span aria-hidden="true">←</span> Studio
         </Link>

@@ -53,7 +53,7 @@ const COVER_GRADIENTS = [
 function Rail({ worlds }: { worlds: StudioWorld[] }): JSX.Element {
   return (
     <aside className="sf-sb sf-sb--slim hidden w-[230px] shrink-0 overflow-y-auto border-r border-sf-border py-6 pl-6 pr-4 lg:block">
-      <div className="mb-2 font-serif text-[13px] italic text-t4">Projects</div>
+      <div className="mb-2 font-serif text-[13px] italic text-t4">Worlds</div>
       <nav className="mb-7 space-y-0.5">
         {worlds.slice(0, 6).map((w) => (
           <Link
@@ -317,7 +317,7 @@ export default function Studio(): JSX.Element {
                 to="/worlds"
                 className="flex aspect-[3/4] items-center justify-center border border-dashed border-sf-border-strong font-serif text-[14px] italic text-t3 transition-colors hover:border-sf-teal hover:text-t1"
               >
-                + Begin a new project
+                + Begin a new world
               </Link>
             </div>
           </section>

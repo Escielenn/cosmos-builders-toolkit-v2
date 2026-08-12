@@ -175,6 +175,54 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
           </NavigationMenuContent>
         </NavigationMenuItem>
 
+        {/* ── Write dropdown ──────────────────────────────── */}
+        <NavigationMenuItem>
+          <NavigationMenuTrigger className={triggerClass}>
+            Studio
+          </NavigationMenuTrigger>
+          <NavigationMenuContent className="">
+            <div className="w-[240px] p-3 space-y-0.5">
+              <NavigationMenuLink asChild>
+                <button
+                  onClick={() => navigate("/studio")}
+                  className="flex items-start gap-2 px-2 py-1.5 text-sm text-t2 hover:text-t1 hover:bg-white/5 rounded-sm transition-colors w-full text-left"
+                >
+                  <PenLine className="w-3.5 h-3.5 text-primary/60 mt-0.5" />
+                  <div>
+                    <span>Studio</span>
+                    <span className="block text-[12px] text-t4 font-normal normal-case tracking-normal">
+                      Write your worlds &middot; drafts, scenes, manuscripts
+                    </span>
+                  </div>
+                </button>
+              </NavigationMenuLink>
+              <NavigationMenuLink asChild>
+                <Link
+                  to="/workshop"
+                  className="flex items-start gap-2 px-2 py-1.5 text-sm text-t2 hover:text-t1 hover:bg-white/5 rounded-sm transition-colors"
+                >
+                  <Sparkles className="w-3.5 h-3.5 text-primary/60 mt-0.5" />
+                  <div>
+                    <span>Daily Prompt</span>
+                    <span className="block text-[12px] text-t4 font-normal normal-case tracking-normal">
+                      & Writing Entries
+                    </span>
+                  </div>
+                </Link>
+              </NavigationMenuLink>
+              <NavigationMenuLink asChild>
+                <Link
+                  to="/prompts"
+                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-t2 hover:text-t1 hover:bg-white/5 rounded-sm transition-colors"
+                >
+                  <BookOpen className="w-3.5 h-3.5 text-primary/60" />
+                  Prompt Browser
+                </Link>
+              </NavigationMenuLink>
+            </div>
+          </NavigationMenuContent>
+        </NavigationMenuItem>
+
         {/* ── Tools dropdown ──────────────────────────────── */}
         <NavigationMenuItem>
           <NavigationMenuTrigger className={triggerClass}>
@@ -234,92 +282,6 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
           </NavigationMenuContent>
         </NavigationMenuItem>
 
-        {/* ── About dropdown ──────────────────────────────── */}
-        <NavigationMenuItem>
-          <NavigationMenuTrigger className={triggerClass}>
-            About
-          </NavigationMenuTrigger>
-          <NavigationMenuContent className="">
-            <div className="w-[220px] p-3 space-y-0.5">
-              <NavigationMenuLink asChild>
-                <Link
-                  to="/about"
-                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-t2 hover:text-t1 hover:bg-white/5 rounded-sm transition-colors"
-                >
-                  <Info className="w-3.5 h-3.5 text-primary/60" />
-                  About StellarForge
-                </Link>
-              </NavigationMenuLink>
-              <NavigationMenuLink asChild>
-                <Link
-                  to="/roadmap"
-                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-t2 hover:text-t1 hover:bg-white/5 rounded-sm transition-colors"
-                >
-                  <Map className="w-3.5 h-3.5 text-primary/60" />
-                  Roadmap
-                </Link>
-              </NavigationMenuLink>
-              <NavigationMenuLink asChild>
-                <Link
-                  to="/contact"
-                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-t2 hover:text-t1 hover:bg-white/5 rounded-sm transition-colors"
-                >
-                  <Mail className="w-3.5 h-3.5 text-primary/60" />
-                  Contact
-                </Link>
-              </NavigationMenuLink>
-            </div>
-          </NavigationMenuContent>
-        </NavigationMenuItem>
-
-        {/* ── Write dropdown ──────────────────────────────── */}
-        <NavigationMenuItem>
-          <NavigationMenuTrigger className={triggerClass}>
-            Studio
-          </NavigationMenuTrigger>
-          <NavigationMenuContent className="">
-            <div className="w-[240px] p-3 space-y-0.5">
-              <NavigationMenuLink asChild>
-                <button
-                  onClick={() => navigate("/studio")}
-                  className="flex items-start gap-2 px-2 py-1.5 text-sm text-t2 hover:text-t1 hover:bg-white/5 rounded-sm transition-colors w-full text-left"
-                >
-                  <PenLine className="w-3.5 h-3.5 text-primary/60 mt-0.5" />
-                  <div>
-                    <span>Studio</span>
-                    <span className="block text-[12px] text-t4 font-normal normal-case tracking-normal">
-                      Write your worlds &middot; drafts, scenes, manuscripts
-                    </span>
-                  </div>
-                </button>
-              </NavigationMenuLink>
-              <NavigationMenuLink asChild>
-                <Link
-                  to="/workshop"
-                  className="flex items-start gap-2 px-2 py-1.5 text-sm text-t2 hover:text-t1 hover:bg-white/5 rounded-sm transition-colors"
-                >
-                  <Sparkles className="w-3.5 h-3.5 text-primary/60 mt-0.5" />
-                  <div>
-                    <span>Daily Prompt</span>
-                    <span className="block text-[12px] text-t4 font-normal normal-case tracking-normal">
-                      & Writing Entries
-                    </span>
-                  </div>
-                </Link>
-              </NavigationMenuLink>
-              <NavigationMenuLink asChild>
-                <Link
-                  to="/prompts"
-                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-t2 hover:text-t1 hover:bg-white/5 rounded-sm transition-colors"
-                >
-                  <BookOpen className="w-3.5 h-3.5 text-primary/60" />
-                  Prompt Browser
-                </Link>
-              </NavigationMenuLink>
-            </div>
-          </NavigationMenuContent>
-        </NavigationMenuItem>
-
         {/* ── Learn dropdown ──────────────────────────────── */}
         <NavigationMenuItem>
           <NavigationMenuTrigger className={triggerClass}>
@@ -370,6 +332,44 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
                 >
                   <BookMarked className="w-3.5 h-3.5 text-primary/60" />
                   Bookshelf
+                </Link>
+              </NavigationMenuLink>
+            </div>
+          </NavigationMenuContent>
+        </NavigationMenuItem>
+
+        {/* ── About dropdown ──────────────────────────────── */}
+        <NavigationMenuItem>
+          <NavigationMenuTrigger className={triggerClass}>
+            About
+          </NavigationMenuTrigger>
+          <NavigationMenuContent className="">
+            <div className="w-[220px] p-3 space-y-0.5">
+              <NavigationMenuLink asChild>
+                <Link
+                  to="/about"
+                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-t2 hover:text-t1 hover:bg-white/5 rounded-sm transition-colors"
+                >
+                  <Info className="w-3.5 h-3.5 text-primary/60" />
+                  About StellarForge
+                </Link>
+              </NavigationMenuLink>
+              <NavigationMenuLink asChild>
+                <Link
+                  to="/roadmap"
+                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-t2 hover:text-t1 hover:bg-white/5 rounded-sm transition-colors"
+                >
+                  <Map className="w-3.5 h-3.5 text-primary/60" />
+                  Roadmap
+                </Link>
+              </NavigationMenuLink>
+              <NavigationMenuLink asChild>
+                <Link
+                  to="/contact"
+                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-t2 hover:text-t1 hover:bg-white/5 rounded-sm transition-colors"
+                >
+                  <Mail className="w-3.5 h-3.5 text-primary/60" />
+                  Contact
                 </Link>
               </NavigationMenuLink>
             </div>
