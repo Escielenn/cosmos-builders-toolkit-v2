@@ -81,7 +81,8 @@ export function WorksheetFactsPanel({ worldId, onInsert }: WorksheetFactsPanelPr
         </p>
         <p className="mb-4 text-[13px] leading-relaxed text-t2">
           Fill in a worldbuilding tool, or lock in a simulation, and the values
-          show up here ready to drop into your prose.
+          show up here ready to drop into your prose. Saved simulations are
+          visible to whoever owns the world.
         </p>
         <Link
           to="/guide/tools"

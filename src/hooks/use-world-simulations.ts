@@ -7,6 +7,14 @@
  * produced it.
  *
  * Read-only on purpose. Saving stays with the simulator that owns the state.
+ *
+ * Note on visibility: `simulation_saves` carries a single owner-scoped policy
+ * (`FOR ALL USING (auth.uid() = user_id)`), unlike `worksheets` and
+ * `world_entries`, which grant collaborators access. So on a shared world this
+ * returns nothing for anyone but the owner, and the client cannot tell that
+ * apart from a world with no simulations. Callers should word an empty state so
+ * it is true either way rather than asserting none exist.
+ * See docs/superpowers/plans/2026-08-12-one-source-of-truth.md §2.
  */
 
 import { useQuery } from "@tanstack/react-query";
