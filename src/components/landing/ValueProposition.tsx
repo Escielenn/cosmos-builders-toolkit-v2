@@ -5,20 +5,21 @@ import { scrollRevealStagger, fadeUpItem, scrollReveal, viewportOnce } from "@/l
 const PRINCIPLES = [
   {
     n: "01",
-    label: "THE CASCADE",
+    label: "Everything is connected",
     body:
-      "Define gravity once. Biology, psychology, mythology, and culture rearrange themselves around it. Every upstream choice carries a downstream cost.",
+      "Physics affects biology. Biology affects psychology. Psychology affects mythology, and mythology affects culture. Set your planet's gravity and watch the rest of it shift to match.",
   },
   {
     n: "02",
-    label: "CROSS-TOOL INTEGRATION",
+    label: "Cross-tool integration",
     body:
-      "Your spacecraft already knows what your atmosphere is made of. Your species already knows what your moon does to their seasons. No duplicate entry.",
+      "Fill in one tool and the others pick it up. Your spacecraft knows what your atmosphere is made of. Your species knows what your moon does to their seasons. You never type the same thing twice.",
   },
   {
     n: "03",
-    label: "YOUR WORLDS, EXPORTED",
-    body: "PDF, Notion, JSON, world bible. Read-only share links. They leave clean.",
+    label: "Your worlds and writing are yours",
+    body:
+      "Export to PDF, Notion, JSON, or a full world bible. Share a read-only link when you want someone to see it. Take your work with you whenever you like.",
   },
 ] as const;
 

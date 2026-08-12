@@ -43,9 +43,9 @@ const WelcomeHero = () => {
           variants={fadeUpItem}
         >
           <span className="font-serif italic text-t1">Change one thing, and everything shifts.</span>{" "}
-          Set your planet's gravity and watch it ripple through biology, psychology,
-          mythology, and culture. Every tool builds on the last, so your worlds hold
-          together with real internal consistency.
+          Set your planet's gravity and see what it does to biology, psychology,
+          mythology, and culture. Each tool picks up where the last one left off, so
+          your world stays consistent with itself.
         </motion.p>
 
         {/* CTA buttons */}
@@ -53,13 +53,13 @@ const WelcomeHero = () => {
           <Button variant="sf-primary" size="sf-lg" className="gap-2" asChild>
             <Link to="/auth">
               <Rocket className="w-5 h-5" />
-              BEGIN
+              Start building
             </Link>
           </Button>
           <Button variant="sf-ghost" size="sf-lg" className="gap-2" asChild>
             <Link to="/features">
               <Sparkles className="w-5 h-5" />
-              VIEW MANIFEST
+              See the tools
             </Link>
           </Button>
         </motion.div>
@@ -76,7 +76,9 @@ const WelcomeHero = () => {
           className="mt-6 font-sans text-sm text-t3 max-w-[640px] leading-[1.6]"
           variants={fadeUpItem}
         >
-          Still under construction. Surfaces may shift. Your feedback shapes what we ship.
+          We're still building StellarForge. Tools and surfaces will keep getting
+          upgraded. Tell us what's working and what isn't. Your feedback genuinely
+          shapes what we build next.
         </motion.p>
 
         {/* Signature tagline — Lora serif, the Studio voice */}

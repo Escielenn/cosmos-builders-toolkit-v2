@@ -16,11 +16,14 @@ import { WorksheetFactsPanel } from "@/components/writing/WorksheetFactsPanel";
 import { DocumentMetaBar } from "@/components/writing/DocumentMetaBar";
 import { ContinuityPanel } from "@/components/writing/ContinuityPanel";
 import { FindReplaceBar } from "@/components/writing/FindReplaceBar";
+import { Corkboard } from "@/components/writing/Corkboard";
 import type { Editor } from "@tiptap/react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -43,9 +46,9 @@ import {
   useWritingDocuments, useCreateDocument, useUpdateDocumentContent,
   useCreateFolder, useRenameDocument, useReorderDocuments,
   useDeleteDocument, useTrashedDocuments, useRestoreDocument,
-  usePurgeDocument, purgeExpiredTrash, useUpdateDocumentMeta,
+  usePurgeDocument, purgeExpiredTrash, useUpdateDocumentMeta, useMoveDocument,
 } from "@/hooks/use-writing-documents";
-import { Trash2, RotateCcw, X } from "lucide-react";
+import { Trash2, RotateCcw, X, FolderInput } from "lucide-react";
 import { useWriteDoc, useLatestDoc, rollWordSession, countWords } from "@/hooks/use-write-doc";
 import { useSessionWords } from "@/hooks/use-session-words";
 import { useWritingPreferences } from "@/hooks/use-writing-preferences";
@@ -88,9 +91,22 @@ export default function Write(): JSX.Element {
   );
   const renameDoc = useRenameDocument(worldId);
   const updateMeta = useUpdateDocumentMeta(worldId);
+  const moveDoc = useMoveDocument(worldId);
 
   const [focus, setFocus] = useState(false);
   const [findOpen, setFindOpen] = useState(false);
+  // Manuscript (single scene) vs Board (all scenes as index cards). Persisted
+  // because a writer restructuring an act stays on the board across reloads.
+  const [view, setView] = useState<"editor" | "board">(() => {
+    try {
+      return localStorage.getItem("sf-write-view") === "board" ? "board" : "editor";
+    } catch {
+      return "editor";
+    }
+  });
+  useEffect(() => {
+    try { localStorage.setItem("sf-write-view", view); } catch { /* no storage */ }
+  }, [view]);
   const [editorInstance, setEditorInstance] = useState<Editor | null>(null);
   const [inspector, setInspector] = useState<"entities" | "world" | "reference" | "continuity">("entities");
   const [mobilePanel, setMobilePanel] = useState<"binder" | "inspector" | null>(null);
@@ -143,6 +159,12 @@ export default function Write(): JSX.Element {
   // folder's documents and collects the unfiled ones.
   const folders = folderRows ?? [];
   const unfiled = unfiledDocs ?? [];
+  // Chapters a scene can be filed into. useMoveDocument existed in the hooks
+  // but was never wired up, so filing was impossible in the live editor.
+  const chapterList = useMemo(
+    () => folders.map((f) => ({ id: f.id, title: f.title })),
+    [folders],
+  );
 
   // Today's progress against the goal the writer already set in Studio.
   const { sessionWords, refresh: refreshSessionWords } = useSessionWords();
@@ -323,7 +345,7 @@ export default function Write(): JSX.Element {
               onDragEnd={({ active, over }) => over && reorderList(folder.documents, String(active.id), String(over.id))}>
               <SortableContext items={folder.documents.map((d) => d.id)} strategy={verticalListSortingStrategy}>
                 {folder.documents.map((d) => (
-                  <SortableDocRow key={d.id} d={d} active={d.id === docId} onOpen={() => openDoc(d.id)} onTrash={() => trashDoc.mutate(d.id)} />
+                  <SortableDocRow key={d.id} d={d} active={d.id === docId} onOpen={() => openDoc(d.id)} onTrash={() => trashDoc.mutate(d.id)} chapters={chapterList} onMove={(folderId) => moveDoc.mutate({ docId: d.id, folderId })} />
                 ))}
               </SortableContext>
             </DndContext>
@@ -333,7 +355,7 @@ export default function Write(): JSX.Element {
           onDragEnd={({ active, over }) => over && reorderList(unfiled, String(active.id), String(over.id))}>
           <SortableContext items={unfiled.map((d) => d.id)} strategy={verticalListSortingStrategy}>
             {unfiled.map((d) => (
-              <SortableDocRow key={d.id} d={d} active={d.id === docId} onOpen={() => openDoc(d.id)} onTrash={() => trashDoc.mutate(d.id)} />
+              <SortableDocRow key={d.id} d={d} active={d.id === docId} onOpen={() => openDoc(d.id)} onTrash={() => trashDoc.mutate(d.id)} chapters={chapterList} onMove={(folderId) => moveDoc.mutate({ docId: d.id, folderId })} />
             ))}
           </SortableContext>
         </DndContext>
@@ -487,6 +509,12 @@ export default function Write(): JSX.Element {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+          <button
+            onClick={() => setView(view === "board" ? "editor" : "board")}
+            title="Index cards for every scene, to see the shape of the manuscript"
+            className={`border px-2.5 py-1 text-[12px] transition-colors ${view === "board" ? "border-sf-teal text-sf-teal" : "border-sf-border text-t3 hover:text-t1"}`}>
+            Board
+          </button>
           <button onClick={() => setFocus(!focus)}
             title={focus ? "Leave focus mode (Esc)" : "Focus mode — hides the binder and inspector (Esc to exit)"}
             className={`border px-2.5 py-1 text-[12px] transition-colors ${focus ? "border-sf-teal text-sf-teal" : "border-sf-border text-t3 hover:text-t1"}`}>
@@ -517,12 +545,22 @@ export default function Write(): JSX.Element {
 
         {/* editor */}
         <main className="sf-sb sf-sb--idle min-h-0 overflow-y-auto">
-          {findOpen && (
+          {findOpen && view === "editor" && (
             <FindReplaceBar
               editor={editorInstance}
               onClose={() => setFindOpen(false)}
             />
           )}
+
+          {view === "board" ? (
+            <Corkboard
+              folders={folders}
+              unfiled={unfiled}
+              activeDocId={docId}
+              onOpen={(id) => { setView("editor"); openDoc(id); }}
+              onReorder={(ids) => reorderDocs.mutate(ids)}
+            />
+          ) : (
           <div className="mx-auto max-w-[720px] px-6 py-10">
             <input
               value={title}
@@ -559,6 +597,7 @@ export default function Write(): JSX.Element {
               <p className="font-serif text-[15px] italic text-t4">Select or create a document.</p>
             )}
           </div>
+          )}
         </main>
 
         {/* inspector — the full entity/reference tool (desktop column) */}
@@ -609,7 +648,15 @@ function DocRow({ d, active, onOpen }: { d: WorldEntry; active: boolean; onOpen:
 }
 
 /** Draggable binder row (dnd-kit). Short drag reorders; click opens; trash on hover. */
-function SortableDocRow({ d, active, onOpen, onTrash }: { d: WorldEntry; active: boolean; onOpen: () => void; onTrash: () => void }): JSX.Element {
+function SortableDocRow({ d, active, onOpen, onTrash, chapters, onMove }: {
+  d: WorldEntry;
+  active: boolean;
+  onOpen: () => void;
+  onTrash: () => void;
+  /** Folders this scene can be filed into. */
+  chapters?: { id: string; title: string }[];
+  onMove?: (folderId: string | null) => void;
+}): JSX.Element {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: d.id });
   return (
     <div
@@ -625,6 +672,42 @@ function SortableDocRow({ d, active, onOpen, onTrash }: { d: WorldEntry; active:
       >
         {d.title || "Untitled"}
       </button>
+      {chapters && chapters.length > 0 && onMove && (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button
+              onClick={(e) => e.stopPropagation()}
+              aria-label={`File ${d.title || "Untitled"} into a chapter`}
+              title="File into a chapter"
+              className="shrink-0 p-1.5 text-t5 opacity-0 transition-opacity hover:text-sf-teal focus-visible:opacity-100 group-hover:opacity-100"
+            >
+              <FolderInput className="h-3.5 w-3.5" />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-52">
+            <DropdownMenuLabel className="text-[11px] uppercase tracking-[1.5px] text-t3">
+              File into
+            </DropdownMenuLabel>
+            {chapters.map((c) => (
+              <DropdownMenuItem
+                key={c.id}
+                disabled={d.parent_id === c.id}
+                onClick={() => onMove(c.id)}
+              >
+                {c.title}
+              </DropdownMenuItem>
+            ))}
+            {d.parent_id && (
+              <>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => onMove(null)}>
+                  Remove from chapter
+                </DropdownMenuItem>
+              </>
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )}
       <button
         onClick={(e) => { e.stopPropagation(); onTrash(); }}
         aria-label={`Move ${d.title || "Untitled"} to trash`}
