@@ -1,3 +1,4 @@
+/** Register: WRITER (Lora) — a library a writer browses, not an instrument readout. */
 import { useState, useMemo, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, FileText, Search, ChevronRight } from "lucide-react";
@@ -111,7 +112,7 @@ const Collection = () => {
         {/* Back Navigation */}
         <Link
           to="/"
-          className="inline-flex items-center gap-2 font-heading text-[12px] uppercase tracking-[0.2em] font-medium text-t3 hover:text-sf-teal-bright transition-colors duration-base mb-6"
+          className="inline-flex items-center gap-2 font-serif text-[14px] italic text-t3 hover:text-sf-teal-bright transition-colors duration-base mb-6"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
           ← RETURN TO BRIDGE
@@ -123,7 +124,7 @@ const Collection = () => {
             to="/worlds"
             className="flex items-center justify-between group mb-4"
           >
-            <h2 className="font-heading font-light text-xl uppercase tracking-sf-wide">
+            <h2 className="font-serif text-[20px] italic text-t1">
               My Worlds
             </h2>
             <span className="text-xs text-t3 group-hover:text-t1 transition-colors flex items-center gap-1">
@@ -183,7 +184,7 @@ const Collection = () => {
         {/* Worksheets Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
           <div className="flex items-center gap-3">
-            <h2 className="font-heading font-light text-xl uppercase tracking-sf-wide">
+            <h2 className="font-serif text-[20px] italic text-t1">
               Worksheets
             </h2>
             <Badge variant="secondary" className="text-xs">

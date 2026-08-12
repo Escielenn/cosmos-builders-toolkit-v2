@@ -117,6 +117,23 @@ function Rail({ worlds }: { worlds: StudioWorld[] }): JSX.Element {
 
 // ── page ────────────────────────────────────────────────────────────
 
+/**
+ * Varied past-tense verb for the activity log, so a column of entries doesn't
+ * read "touched ... touched ... touched". Keyed off the entry id so it stays
+ * put across re-renders instead of shuffling.
+ *
+ * Every verb here means what the data actually supports: updated_at moved, so
+ * the writer edited it. Deliberately avoids "opened" or "viewed", which a
+ * timestamp cannot tell us.
+ */
+const EDIT_VERBS = ["worked on", "wrote in", "revised", "added to", "edited"] as const;
+
+function editVerb(id: string): string {
+  let h = 0;
+  for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) | 0;
+  return EDIT_VERBS[Math.abs(h) % EDIT_VERBS.length];
+}
+
 export default function Studio(): JSX.Element {
   const { user, loading } = useAuth();
   const { data } = useStudioData();
@@ -155,7 +172,7 @@ export default function Studio(): JSX.Element {
               </h1>
               <p className="mt-2 font-serif text-[15px] italic text-t3">
                 {entry
-                  ? `You last touched “${entry.title || "an untitled piece"}” ${timeAgo(entry.updated_at)}.`
+                  ? `You were last writing in “${entry.title || "an untitled piece"}” ${timeAgo(entry.updated_at)}.`
                   : "A blank page is just a world that hasn't introduced itself yet."}
               </p>
             </div>
@@ -194,7 +211,7 @@ export default function Studio(): JSX.Element {
             </div>
             <div className="flex gap-5 sm:gap-10">
               {[
-                { n: data?.wordsToday ?? 0, label: "words touched today" },
+                { n: data?.wordsToday ?? 0, label: "words written today" },
                 { n: data?.totalWords ?? 0, label: "words in the archive" },
                 { n: data?.entriesThisMonth ?? 0, label: "pieces this month" },
               ].map((s) => (
@@ -292,7 +309,7 @@ export default function Studio(): JSX.Element {
                     </div>
                   </div>
                   <div className="mt-2 font-serif text-[13px] italic text-t4">
-                    touched {timeAgo(w.updated_at)}
+                    {timeAgo(w.updated_at)}
                   </div>
                 </Link>
               ))}
@@ -385,7 +402,7 @@ export default function Studio(): JSX.Element {
                         {timeAgo(e.updated_at)}
                       </span>
                       <span className="text-[14px] text-t2">
-                        touched <em className="font-serif italic text-t1">{e.title || "Untitled"}</em>
+                        {editVerb(e.id)} <em className="font-serif italic text-t1">{e.title || "Untitled"}</em>
                         {w && <span className="text-t3"> in {w.name}</span>}
                       </span>
                       {(e.word_count ?? 0) > 0 && (

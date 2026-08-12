@@ -1,3 +1,4 @@
+/** Register: WRITER (Lora) for chrome; event data stays mono. */
 import { useWorldLayoutContext } from "@/contexts/WorldLayoutContext";
 import { Chronicle } from "@/components/world/chronicle/Chronicle";
 
@@ -12,7 +13,7 @@ const WorldChronicle = () => {
   if (!worldId) {
     return (
       <div className="flex items-center justify-center h-full">
-        <p className="font-mono text-xs uppercase tracking-wider text-t3/50">
+        <p className="font-serif text-[14px] italic text-t3">
           World not found.
         </p>
       </div>

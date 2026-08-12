@@ -1,3 +1,4 @@
+/** Register: WRITER (Lora) for chrome only; the graph canvas keeps its instrument styling. */
 import { useCallback, useMemo, useState, lazy, Suspense, Component, type ReactNode, type ErrorInfo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Loader } from "@/components/ui/loader";
@@ -34,7 +35,7 @@ class GraphErrorBoundary extends Component<
     if (this.state.hasError) {
       return (
         <div className="flex flex-col items-center justify-center h-full gap-3">
-          <p className="font-mono text-xs uppercase tracking-wider text-sf-crimson/60">
+          <p className="font-serif text-[14px] italic text-sf-crimson/80">
             Entity Graph encountered an error.
           </p>
           <p className="text-[12px] text-t4 font-sans max-w-xs text-center">
@@ -139,7 +140,7 @@ const WorldGraph = () => {
   if (!resolvedWorldId) {
     return (
       <div className="flex items-center justify-center h-full">
-        <p className="font-mono text-xs uppercase tracking-wider text-t3/50">
+        <p className="font-serif text-[14px] italic text-t3">
           No world selected.
         </p>
       </div>
@@ -157,7 +158,7 @@ const WorldGraph = () => {
   if (error && graphMode === "knowledge") {
     return (
       <div className="flex items-center justify-center h-full">
-        <p className="font-mono text-xs uppercase tracking-wider text-sf-crimson/60">
+        <p className="font-serif text-[14px] italic text-sf-crimson/80">
           Graph unavailable.
         </p>
       </div>
@@ -215,7 +216,7 @@ const WorldGraph = () => {
         <>
           {/* Title + description */}
           <div className="absolute top-12 left-3 z-10 max-w-xs pointer-events-none">
-            <p className="font-heading text-[12px] uppercase tracking-[2px] text-t3">
+            <p className="font-serif text-[13px] italic text-t3">
               Knowledge Graph
             </p>
             <p className="text-[11px] text-t4 font-sans normal-case tracking-normal mt-0.5">

@@ -1,3 +1,4 @@
+/** Register: WRITER (Lora) — a library a writer browses, not an instrument readout. */
 import { useState, useMemo, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, Upload, Globe } from "lucide-react";
@@ -84,7 +85,7 @@ const Worlds = () => {
         {/* Back Navigation */}
         <Link
           to="/"
-          className="inline-flex items-center gap-2 font-heading text-[12px] uppercase tracking-[0.2em] font-medium text-t3 hover:text-sf-teal-bright transition-colors duration-base mb-6"
+          className="inline-flex items-center gap-2 font-serif text-[14px] italic text-t3 hover:text-sf-teal-bright transition-colors duration-base mb-6"
         >
           <ArrowLeft className="w-4 h-4" />
           ← RETURN TO BRIDGE
@@ -138,7 +139,7 @@ const Worlds = () => {
         <div className="flex items-center justify-end mb-4">
           <Link
             to="/community"
-            className="inline-flex items-center gap-1.5 font-heading text-[12px] font-medium uppercase tracking-[0.2em] text-sf-teal hover:text-sf-teal-bright transition-colors duration-base"
+            className="inline-flex items-center gap-1.5 font-serif text-[14px] italic text-sf-teal hover:text-sf-teal-bright transition-colors duration-base"
           >
             <Globe className="w-3.5 h-3.5" />
             BROWSE COMMUNITY WORLDS

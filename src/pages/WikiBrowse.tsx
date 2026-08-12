@@ -1,3 +1,4 @@
+/** Register: WRITER (Lora) — reference prose, read at length. */
 import { useState, useMemo } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { Search, Plus, FileText, Filter, X } from "lucide-react";
@@ -139,7 +140,7 @@ export default function WikiBrowse() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="font-heading text-xl font-light uppercase tracking-[2px] text-t1">
+          <h1 className="font-serif text-[24px] italic text-t1">
             Wiki
           </h1>
           <p className="text-[12px] text-t4 mt-1">
@@ -191,7 +192,7 @@ export default function WikiBrowse() {
       {showFilters && (
         <GlassPanel className="mb-4 p-4">
           <div className="flex items-center justify-between mb-3">
-            <span className="font-heading text-[11px] uppercase tracking-[2px] text-t3">
+            <span className="font-serif text-[13px] italic text-t3">
               Filters
             </span>
             {hasActiveFilters && (
