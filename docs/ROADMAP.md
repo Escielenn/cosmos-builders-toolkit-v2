@@ -59,6 +59,59 @@ Active task list and development priorities. Review this at the start of each se
 - [x] Editor correctness pass — folders, binder order, autosave lifecycle, save state (2026-08-09)
 - [x] Tool data in the writing surface — Refs panel, real pin previews, compile appendix (2026-08-09)
 
+#### SESSION LOG — 2026-08-11, shipped through v0.6921
+
+All on `main` and live. Note that Vercel deploys **`main` only**; feature branches
+get *preview* deployments, which is how the work once looked "deployed" while
+production still served 0.6844.
+
+- [x] Continuity engine + Check inspector tab (2026-08-11) — compares prose against
+      recorded tool values. 12 checks, scale words ("nine billion" vs 8700000000),
+      scientific notation. `src/lib/continuity.ts`
+- [x] Per-document metadata: synopsis, POV, status, in-world date, in the existing
+      `world_entries.metadata` jsonb. No schema change. `src/lib/document-meta.ts`
+- [x] Corkboard: Board toggle, index cards grouped by chapter, drag to reorder
+- [x] Find & replace: Ctrl+F, whole-word, ProseMirror transactions
+- [x] File-into-chapter menu (wired the orphaned `useMoveDocument`)
+- [x] Per-document export (docx/md/txt); goal progress replaces the Julian Day
+- [x] World dashboard: 13 panels → 4 above the fold + a 5-drawer rail
+- [x] One `Wordmark` component (the name had rendered four different ways)
+- [x] Atomic word-ledger RPC applied + hardened (an `anon` EXECUTE grant on a
+      SECURITY DEFINER function would have let anyone inflate any user's count)
+- [x] Human-voice copy passes: landing value blocks, hero, early access, Studio,
+      Pricing CTAs, changelog
+
+#### BLOCKER — toolchain unusable while the repo sits in Dropbox
+
+Dropbox syncs `node_modules` (44,461 files), `dist` (1.4 GB) and `public/video`
+(901 MB). Under that contention `vitest` collects zero tests
+(`Timeout calling "fetch" with "/@vite/env"`), `tsc` exceeds 17 minutes,
+ripgrep times out, and `.git/index.lock` strands as a zero-byte file.
+
+- [ ] Dropbox → Preferences → Sync → Selective Sync → untick those three folders.
+      All are gitignored; copy `public/video` out first, it regenerates from nothing.
+- [ ] Then confirm: `npx vitest run` (~66 tests), `node scripts/typecheck-strict.mjs`
+
+#### NOT VERIFIED — needs a browser with a logged-in account
+
+- [ ] Corkboard (Board toggle), file-into-chapter menu, Check tab. These parse and
+      their logic is asserted, but nobody has clicked them. `/write` needs auth.
+- [ ] The 31 committed vitest specs have never been observed passing. Logic was
+      verified by transpiling the pure modules with esbuild and asserting in node
+      (58 assertions green) — that covers functions, never UI.
+
+#### NEXT
+
+- [ ] Finish the copy sweep: About, Features, Getting Started, Guide, Community
+- [ ] Writer-register conversion: `Worlds`, `Collection`, `WikiBrowse`,
+      `WorldChronicle`, `WorldGraph`. `SectionHero` already has a `warm` prop.
+- [ ] Continuity Tier 2: physical implausibility (high gravity vs effortless
+      motion, tidally locked vs "sunset")
+- [ ] Widen continuity coverage — only fields with a `worksheetPaths` entry in
+      `entity-config.ts` can be checked. **Confirm the mapping exists before
+      writing a check**: an earlier draft checked `moonCount`, which nothing
+      records, so 3 of 5 checks were dead code.
+
 #### DECISION NEEDED — one writing surface
 `WorldWritingSpace.tsx` (865 lines) is imported at `App.tsx:62` but **never
 rendered as a route**; `/worlds/:worldId/write` goes to `WorldWriteRedirect`.
