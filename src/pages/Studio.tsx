@@ -66,7 +66,7 @@ function Rail({ worlds }: { worlds: StudioWorld[] }): JSX.Element {
         ))}
         {worlds.length === 0 && (
           <div className="py-1.5 pl-3 font-serif text-[13px] italic text-t4">
-            No worlds yet — begin below.
+            No worlds yet. Start one below.
           </div>
         )}
       </nav>
@@ -123,7 +123,7 @@ export default function Studio(): JSX.Element {
 
   useEffect(() => {
     const prev = document.title;
-    document.title = "Studio — StellarForge";
+    document.title = "Studio: StellarForge";
     return () => {
       document.title = prev;
     };
@@ -248,8 +248,8 @@ export default function Studio(): JSX.Element {
                 <>
                   <h3 className="font-serif text-[24px] italic text-t1">Begin the first page.</h3>
                   <p className="mt-2 max-w-[560px] font-serif text-[15px] italic leading-[1.7] text-t3">
-                    Open a world and start writing in it — the studio will keep your place,
-                    your streak, and your last sentence waiting here.
+                    Open a world and start writing. The studio remembers where you stopped,
+                    keeps your streak going, and leaves your last sentence right here.
                   </p>
                   <div className="mt-6">
                     <Link

@@ -129,7 +129,7 @@ export default function Write(): JSX.Element {
 
   useEffect(() => {
     const prev = document.title;
-    document.title = doc?.title ? `${doc.title} — Studio` : "Write — Studio";
+    document.title = doc?.title ? `${doc.title} · Studio` : "Write · Studio";
     return () => { document.title = prev; };
   }, [doc?.title]);
 
@@ -516,7 +516,7 @@ export default function Write(): JSX.Element {
             Board
           </button>
           <button onClick={() => setFocus(!focus)}
-            title={focus ? "Leave focus mode (Esc)" : "Focus mode — hides the binder and inspector (Esc to exit)"}
+            title={focus ? "Leave focus mode (Esc)" : "Focus mode hides the binder and inspector. Press Esc to come back."}
             className={`border px-2.5 py-1 text-[12px] transition-colors ${focus ? "border-sf-teal text-sf-teal" : "border-sf-border text-t3 hover:text-t1"}`}>
             Focus
           </button>

@@ -152,13 +152,14 @@ function LandingHero(): JSX.Element {
         <em className="font-light italic text-sf-stellar">writers.</em>
       </h1>
       <p className="mb-4 max-w-[540px] text-[17px] leading-[1.55] text-t2">
-        Twenty-five interconnected worldbuilding tools, organized around one principle:{" "}
-        <strong className="font-medium text-t1">worlds cascade.</strong> Change one thing upstream
-        — gravity, a star type, a sensory bandwidth — and everything downstream shifts. Biology.
-        Politics. Mythology. Language.
+        Twenty-five worldbuilding tools that talk to each other. They all work the same
+        way:{" "}
+        <strong className="font-medium text-t1">worlds cascade.</strong> Change the gravity, the
+        star type, or how your species senses the world, and everything downstream moves with it.
+        Biology, politics, mythology, language.
       </p>
       <p className="mb-7 max-w-[540px] text-[17px] leading-[1.55] text-t3">
-        Request clearance. First 500 writers on the list get 40% off the first year of Pro.
+        Join the list. The first 500 writers get 40% off their first year of Pro.
       </p>
       <WaitlistForm />
     </div>
@@ -233,7 +234,7 @@ export default function EarlyAccess(): JSX.Element {
 
   useEffect(() => {
     const prev = document.title;
-    document.title = "StellarForge — Early Access opens August 11";
+    document.title = "StellarForge: Early Access opens August 11";
     return () => {
       document.title = prev;
     };
