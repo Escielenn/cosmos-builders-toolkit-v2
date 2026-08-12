@@ -27,6 +27,14 @@ export interface WorksheetFact {
   label: string;
   /** Always a display string; arrays are joined, numbers stringified. */
   value: string;
+  /**
+   * What to drop into the manuscript, when that differs from what's displayed.
+   *
+   * A fact whose subject is a proper noun reads the wrong way round: the row
+   * "Constellation \"The Drowned Man\" — 3 stars · 6h 22m" should insert the
+   * name, not the star count. Defaults to `value` when absent.
+   */
+  insert?: string;
 }
 
 // ---------------------------------------------------------------------------

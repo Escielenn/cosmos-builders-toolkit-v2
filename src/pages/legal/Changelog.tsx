@@ -13,15 +13,52 @@ interface ChangelogEntry {
 
 const changelog: ChangelogEntry[] = [
   {
+    version: "0.6950",
+    date: "August 2026",
+    type: "feature",
+    title: "Your simulations reach the page",
+    changes: [
+      "Star names, planet names, orbital distances, and the constellations you draw and name yourself now appear in the writing inspector, one click from your prose. Until now a saved simulation sat in the database with no way into the manuscript.",
+      "ExoSky's Save, Load, and Publish buttons work. They previously did nothing at all: the button asked the simulator for its state and nothing was listening, so no dialog ever opened and no error was shown.",
+      "ExoSky saves keep your vantage point, where you were looking, your display settings, and every constellation you named, and restore all of it.",
+      "A named constellation inserts its name into your prose rather than its star count.",
+    ],
+  },
+  {
+    version: "0.6941",
+    date: "August 2026",
+    type: "improvement",
+    title: "One word for a world",
+    changes: [
+      "The site called the same thing a project in some places and a world in others. It is a world everywhere now.",
+      "Studio sits next to Worlds in the main menu instead of fourth behind About.",
+      "The continuity checker gained a second tier. It now flags prose that contradicts the physical conditions your world runs under, not just its recorded numbers: a sunrise on a tidally locked world, rain on a world with no water, a casual stroll at three gravities. Each note explains the physics rather than just objecting.",
+      "The writing surfaces read in one voice. World pages, the codex, and the studio log now use sentence case and plain language instead of tracked capitals.",
+      "The studio log varies its verbs instead of saying every document was \"touched\".",
+    ],
+  },
+  {
+    version: "0.6922",
+    date: "August 2026",
+    type: "fix",
+    title: "Index cards were reading blank",
+    changes: [
+      "Document metadata was never actually fetched, so synopsis, POV, status, and in-world date all read as empty no matter what you had entered. Every corkboard card and the metadata bar were affected.",
+      "Find and replace in the editor, with case sensitivity and whole-word matching.",
+      "The corkboard: your manuscript as index cards, grouped by chapter, dragged to reorder.",
+      "Filing a document into a chapter from the binder.",
+    ],
+  },
+  {
     version: "0.6908",
     date: "August 2026",
     type: "feature",
     title: "Your world can answer back",
     changes: [
-      "Continuity checking: a new Check tab in the writing inspector compares your prose against the numbers your tools recorded. Write a gravity, a day length, or a population that contradicts your own worldbuilding and it says so — showing both figures, never blocking, because breaking your own rules on purpose is allowed.",
+      "Continuity checking: a new Check tab in the writing inspector compares your prose against the numbers your tools recorded. Write a gravity, a day length, or a population that contradicts your own worldbuilding and it says so, showing both figures and never blocking, because breaking your own rules on purpose is allowed.",
       "Index-card fields on every document: synopsis, POV character, draft status, and in-world date, collapsed to a single line above the prose.",
       "The writing footer now shows progress toward your daily goal instead of an astronomical date.",
-      "The world page opens quieter — secondary panels (worksheets, elements, tools, notes, history) collapse into one rail, so a world opens on where you left off rather than a wall of panels.",
+      "The world page opens quieter. Secondary panels (worksheets, elements, tools, notes, history) collapse into one rail, so a world opens on where you left off rather than a wall of panels.",
     ],
   },
   {
@@ -32,7 +69,7 @@ const changelog: ChangelogEntry[] = [
     changes: [
       "The world toolbar went from nine controls to four. Export, Export View, World Bible, and Snapshot were four separate buttons doing one job; they now live under a single Export menu.",
       "The StellarForge wordmark rendered four different ways across the site. It is now one lockup everywhere.",
-      "The Codex sidebar reads in the writer's voice — cascade layers, your world's name, and recent edits in sentence case rather than tracked capitals.",
+      "The Codex sidebar reads in the writer's voice, with cascade layers, your world's name, and recent edits in sentence case rather than tracked capitals.",
       "Background picker no longer shows a grid of empty preview tiles when animated backdrops are unavailable.",
     ],
   },
@@ -42,7 +79,7 @@ const changelog: ChangelogEntry[] = [
     type: "feature",
     title: "Tool data reaches the page",
     changes: [
-      "Real values from your tools now appear in the writing inspector's Refs panel, with one click to drop them into your prose — a planet's surface gravity, a drive's cruise velocity, a species' biochemistry.",
+      "Real values from your tools now appear in the writing inspector's Refs panel, with one click to drop them into your prose: a planet's surface gravity, a drive's cruise velocity, a species' biochemistry.",
       "Pinning a worksheet to your writing space shows its actual values instead of a description of the tool.",
       "Export a single document to Word, Markdown, or plain text from the editor.",
       "Compile can append a world reference chapter to the manuscript.",
@@ -56,7 +93,7 @@ const changelog: ChangelogEntry[] = [
     title: "Editor correctness",
     changes: [
       "Folders appear in the binder. Creating one previously wrote a row you could never see.",
-      "The binder no longer reshuffles while you type — documents stay where you dragged them.",
+      "The binder no longer reshuffles while you type. Documents stay where you dragged them.",
       "Switching documents mid-sentence no longer misattributes your word count to the wrong document.",
       "The save indicator advances instead of freezing at \"1s ago\", renaming a document updates its title immediately, and a failed save now tells you rather than failing silently.",
       "Closing a tab no longer loses the last second of typing.",
@@ -70,7 +107,7 @@ const changelog: ChangelogEntry[] = [
     title: "Readability pass",
     changes: [
       "Raised text contrast across the interface. Helper and label text was set for a dark studio and washed out on ordinary monitors.",
-      "Larger type throughout — the interface leaned on 9-12px text in nearly two thousand places.",
+      "Larger type throughout. The interface leaned on 9-12px text in nearly two thousand places.",
       "Buttons, inputs, and controls sized for comfortable clicking.",
       "Tool counts, names, and links now come from one source, so the catalog can no longer disagree with itself between pages.",
       "Fixed a decorative layer that added roughly 1,200 pixels of empty scroll below the footer on every page.",

@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { useEntities, useUpdateEntity } from "@/hooks/use-entity-graph";
 import { useToast } from "@/hooks/use-toast";
+import { toExoskyPayload, fromExoskySave } from "@/lib/simulators/exosky-save";
 
 // ═══════════════════════════════════════════════════════════════
 // EXOSKY v2, Alien Night Sky Simulator with Milky Way
@@ -666,6 +667,85 @@ export default function ExoSkyV2({
       armNote: "Custom location",
     };
   }, [customMode, selectedPlanet, customGalL, customGalB, customDistPc, worldEntity, worldEntityCoords]);
+
+  // ── Persistence bridge ──────────────────────────────────
+  // The wrapper page speaks STELLARFORGE_* over window events for component
+  // simulators (see useSimulationSave). Nothing here was listening, so Save,
+  // Load and Publish were all silent no-ops: requestSave dispatched
+  // REQUEST_STATE, no SAVE came back, and pendingPayload stayed null.
+  useEffect(() => {
+    const onRequestState = () => {
+      const payload = toExoskyPayload({
+        mode: worldEntity && worldEntityCoords ? "entity" : customMode ? "custom" : "catalog",
+        starName: planet.star,
+        planetName: planet.planet,
+        distPc: planet.dist,
+        armNote: planet.armNote,
+        atmoDesc: planet.atmoDesc,
+        galacticL: customMode ? customGalL : undefined,
+        galacticB: customMode ? customGalB : undefined,
+        viewRa, viewDec, fov,
+        showConstellations, showAtmosphere, showGrid,
+        showMilkyWay, showStarNames, showHorizon,
+        customConstellations,
+      });
+      window.postMessage({ type: "STELLARFORGE_SAVE", payload }, "*");
+    };
+
+    const onLoad = (event: Event) => {
+      const save = fromExoskySave((event as CustomEvent).detail);
+      if (!save) return;
+
+      // Restore the vantage first: constellations are drawn in that frame, so
+      // applying them against the wrong sky would put the lines in the wrong place.
+      const idx = EXOPLANET_SYSTEMS.findIndex((p) => p.planet === save.vantage.planetName);
+      if (idx >= 0) {
+        setCustomMode(false);
+        setSelectedPlanet(idx);
+      } else if (save.vantage.galacticL !== null && save.vantage.galacticB !== null) {
+        setCustomMode(true);
+        setCustomGalL(save.vantage.galacticL);
+        setCustomGalB(save.vantage.galacticB);
+        setCustomDistPc(save.vantage.distPc || 100);
+      }
+
+      setViewRa(save.view.ra);
+      setViewDec(save.view.dec);
+      setFov(save.view.fov);
+      setShowConstellations(save.display.constellations);
+      setShowAtmosphere(save.display.atmosphere);
+      setShowGrid(save.display.grid);
+      setShowMilkyWay(save.display.milkyWay);
+      setShowStarNames(save.display.starNames);
+      setShowHorizon(save.display.horizon);
+
+      setCustomConstellations(
+        save.constellations.map((c, i) => ({
+          id: Date.now() + i,
+          name: c.name,
+          color: c.color,
+          visible: true,
+          // The render loop reads newRa/newDec; the payload stores ra/dec.
+          stars: c.stars.map((s) => ({ ...s, newRa: s.ra, newDec: s.dec })),
+          planetIndex: idx >= 0 ? idx : -1,
+          planetName: c.fromPlanet,
+          centRa: c.centRa,
+          centDec: c.centDec,
+        })),
+      );
+    };
+
+    window.addEventListener("STELLARFORGE_REQUEST_STATE", onRequestState);
+    window.addEventListener("STELLARFORGE_LOAD", onLoad as EventListener);
+    return () => {
+      window.removeEventListener("STELLARFORGE_REQUEST_STATE", onRequestState);
+      window.removeEventListener("STELLARFORGE_LOAD", onLoad as EventListener);
+    };
+  }, [
+    planet, customMode, customGalL, customGalB, worldEntity, worldEntityCoords,
+    viewRa, viewDec, fov, showConstellations, showAtmosphere, showGrid,
+    showMilkyWay, showStarNames, showHorizon, customConstellations,
+  ]);
 
   // Save the current custom coordinates back onto a selected world entity.
   const saveCoordsToEntity = useCallback(() => {
