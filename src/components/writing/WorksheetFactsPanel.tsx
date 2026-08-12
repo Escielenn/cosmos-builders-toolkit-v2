@@ -59,7 +59,7 @@ export function WorksheetFactsPanel({ worldId, onInsert }: WorksheetFactsPanelPr
           No tool data yet
         </p>
         <p className="mb-4 text-[13px] leading-relaxed text-t2">
-          Fill in a worldbuilding tool and its values appear here, ready to drop
+          Fill in a worldbuilding tool and its values show up here, ready to drop
           into your prose.
         </p>
         <Link

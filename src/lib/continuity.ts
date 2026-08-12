@@ -348,3 +348,113 @@ export function checkContinuity(
 
   return notes;
 }
+
+// ---------------------------------------------------------------------------
+// TIER 2 — physical implausibility
+//
+// Tier 1 catches a contradicted *number*. Tier 2 catches a contradicted
+// *implication*: a tidally locked world has no sunrise, a 1.5 g world has no
+// effortless leaping, a starless rogue planet has no noon.
+//
+// Keyed to the qualitative cascade drivers the Environmental Chain Reaction
+// tool already stores as "{category}-{value}" slugs (see world-parameters.ts),
+// so every rule below is backed by data a writer actually chose. Nothing here
+// infers a driver the world never recorded.
+// ---------------------------------------------------------------------------
+
+export interface ImplausibilityRule {
+  /** ECR slug this applies to, e.g. "rotation-locked". */
+  slug: string;
+  /** Shown to the writer as the world's stated condition. */
+  condition: string;
+  /** Phrases that contradict it. Lowercase; matched as substrings. */
+  contradicts: string[];
+  /** Why it conflicts, in one plain sentence. */
+  because: string;
+}
+
+const IMPLAUSIBILITY: ImplausibilityRule[] = [
+  {
+    slug: "rotation-locked",
+    condition: "tidally locked",
+    contradicts: ["sunrise", "sunset", "sun rose", "sun set", "sun sank", "dawn broke", "at dawn", "at dusk"],
+    because:
+      "One face always holds the star, so the sun never rises or sets. The terminator is the only twilight.",
+  },
+  {
+    slug: "gravity-high",
+    condition: "high gravity",
+    contradicts: ["leapt", "leaped", "bounded", "effortless", "weightless", "light on her feet", "light on his feet", "sprang up", "floated"],
+    because: "Under high gravity, every step and lift costs more, not less.",
+  },
+  {
+    slug: "gravity-low",
+    condition: "low gravity",
+    contradicts: ["crushing weight", "could barely lift", "pinned to the", "leaden limbs", "impossibly heavy"],
+    because: "Low gravity makes mass easier to move, not harder.",
+  },
+  {
+    slug: "stellar-rogue",
+    condition: "a starless rogue planet",
+    contradicts: ["sunlight", "sunrise", "sunset", "noon", "the sun ", "daylight", "sunny"],
+    because: "A rogue planet has no star, so there is no sunlight and no day.",
+  },
+  {
+    slug: "atmosphere-thin",
+    condition: "a thin atmosphere",
+    contradicts: ["shouted across", "heard the roar", "gust knocked", "howling wind"],
+    because: "Thin air carries sound poorly and cannot deliver much wind force.",
+  },
+  {
+    slug: "hydrosphere-ocean",
+    condition: "an ocean world",
+    contradicts: ["endless desert", "miles of sand", "arid plain"],
+    because: "An ocean world has little exposed land, let alone desert.",
+  },
+  {
+    slug: "tilt-none",
+    condition: "no axial tilt",
+    contradicts: ["midsummer", "midwinter", "first snow of", "seasons turned", "autumn came"],
+    because: "Without tilt there are no seasons to turn.",
+  },
+];
+
+/**
+ * Flag prose that contradicts what the world's chosen drivers imply.
+ *
+ * @param html   The document's HTML.
+ * @param slugs  ECR parameter slugs for this world (from useWorldParameters).
+ */
+export function checkImplausibility(
+  html: string | null | undefined,
+  slugs: string[],
+): ContinuityNote[] {
+  const text = proseToText(html);
+  if (!text || slugs.length === 0) return [];
+
+  const lower = text.toLowerCase();
+  const active = new Set(slugs);
+  const notes: ContinuityNote[] = [];
+
+  for (const rule of IMPLAUSIBILITY) {
+    if (!active.has(rule.slug)) continue;
+
+    const hit = rule.contradicts.find((phrase) => lower.includes(phrase));
+    if (!hit) continue;
+
+    // Quote the sentence it appeared in, so the note is actionable.
+    const sentence =
+      sentences(text).find((s) => s.toLowerCase().includes(hit)) ?? "";
+
+    notes.push({
+      factKey: rule.slug,
+      factLabel: rule.condition,
+      worldValue: rule.condition,
+      proseValue: hit.trim(),
+      excerpt: sentence.length > 160 ? sentence.slice(0, 157) + "…" : sentence,
+      message: `Your world is ${rule.condition}. ${rule.because}`,
+    });
+  }
+
+  return notes;
+}

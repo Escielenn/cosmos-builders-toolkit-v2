@@ -16,7 +16,8 @@ import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useWorksheets } from "@/hooks/use-worksheets";
 import { extractWorksheetFacts } from "@/lib/worksheet-facts";
-import { checkContinuity } from "@/lib/continuity";
+import { checkContinuity, checkImplausibility } from "@/lib/continuity";
+import { useWorldParameters } from "@/hooks/use-world-parameters";
 
 // ---------------------------------------------------------------------------
 // Props
@@ -44,19 +45,31 @@ export function ContinuityPanel({ worldId, content }: ContinuityPanelProps) {
     [worksheets],
   );
 
-  const notes = useMemo(() => checkContinuity(content, facts), [content, facts]);
+  // Tier 2 needs the qualitative cascade drivers the writer chose in the
+  // Environmental Chain Reaction tool, not the numeric facts.
+  const { data: params } = useWorldParameters(worldId);
+  const slugs = useMemo(() => (params ?? []).map((p) => p.slug), [params]);
+
+  const notes = useMemo(
+    () => [
+      ...checkContinuity(content, facts),
+      ...checkImplausibility(content, slugs),
+    ],
+    [content, facts, slugs],
+  );
 
   if (!worldId) return null;
 
-  if (facts.length === 0) {
+  if (facts.length === 0 && slugs.length === 0) {
     return (
       <div className="px-4 py-6">
         <p className="mb-2 font-serif text-[15px] italic text-t3">
           Nothing to check against yet
         </p>
         <p className="text-[13px] leading-relaxed text-t2">
-          Record your world's numbers in a tool — gravity, moons, day length —
-          and this panel will tell you when the prose drifts from them.
+          Record your world's numbers in a tool. Gravity, day length, population, a
+          drive's cruise velocity. This panel tells you when the prose drifts
+          from them.
         </p>
         <Link
           to="/guide/tools"
@@ -75,9 +88,13 @@ export function ContinuityPanel({ worldId, content }: ContinuityPanelProps) {
           Consistent so far
         </p>
         <p className="text-[13px] leading-relaxed text-t2">
-          Nothing in this document contradicts the{" "}
+          Nothing here contradicts the{" "}
           {facts.length === 1 ? "one fact" : `${facts.length} facts`} your world
-          records.
+          records
+          {slugs.length > 0 && (
+            <> or the {slugs.length === 1 ? "condition" : `${slugs.length} conditions`} it runs under</>
+          )}
+          .
         </p>
       </div>
     );
@@ -112,7 +129,7 @@ export function ContinuityPanel({ worldId, content }: ContinuityPanelProps) {
       ))}
 
       <p className="px-4 py-3 font-serif text-[12px] italic text-t4">
-        Breaking your own rules on purpose is allowed — this is a reminder, not a
+        Breaking your own rules on purpose is allowed. This is a reminder, not a
         correction.
       </p>
     </div>

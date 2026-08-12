@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { checkContinuity, proseToText } from "@/lib/continuity";
+import { checkContinuity, checkImplausibility, proseToText } from "@/lib/continuity";
 import type { WorksheetFact } from "@/lib/worksheet-facts";
 
 // Helpers build facts with keys that are ACTUALLY mapped in entity-config.ts.
@@ -138,5 +138,80 @@ describe("stays quiet when it should", () => {
     // every mention of it look like a contradiction.
     const notes = checkContinuity("<p>At 273 kelvin the air held.</p>", [temp("273")]);
     expect(notes).toEqual([]);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Tier 2 — physical implausibility
+// ---------------------------------------------------------------------------
+
+describe("checkImplausibility", () => {
+  it("flags a sunrise on a tidally locked world", () => {
+    const notes = checkImplausibility(
+      "<p>She watched the sunrise over the ridge.</p>",
+      ["rotation-locked"],
+    );
+    expect(notes).toHaveLength(1);
+    expect(notes[0].message).toContain("tidally locked");
+    // The note must explain WHY, not just object.
+    expect(notes[0].message).toContain("never rises");
+    expect(notes[0].excerpt).toBe("She watched the sunrise over the ridge.");
+  });
+
+  it("flags effortless leaping under high gravity", () => {
+    const notes = checkImplausibility("<p>He leapt the fence easily.</p>", ["gravity-high"]);
+    expect(notes).toHaveLength(1);
+    expect(notes[0].proseValue).toBe("leapt");
+  });
+
+  it("flags crushing weight under low gravity", () => {
+    expect(checkImplausibility("<p>A crushing weight held her down.</p>", ["gravity-low"]))
+      .toHaveLength(1);
+  });
+
+  it("flags sunlight on a starless rogue planet", () => {
+    expect(checkImplausibility("<p>Sunlight caught the ice.</p>", ["stellar-rogue"]))
+      .toHaveLength(1);
+  });
+
+  it("flags turning seasons on a world with no tilt", () => {
+    expect(checkImplausibility("<p>Then autumn came early.</p>", ["tilt-none"]))
+      .toHaveLength(1);
+  });
+
+  it("says nothing when the world never recorded that driver", () => {
+    // Same prose, but the world is not tidally locked, so there is no conflict.
+    expect(checkImplausibility("<p>She watched the sunrise.</p>", ["gravity-high"])).toEqual([]);
+    expect(checkImplausibility("<p>She watched the sunrise.</p>", [])).toEqual([]);
+  });
+
+  it("says nothing when the prose does not contradict the driver", () => {
+    expect(checkImplausibility("<p>The terminator glowed red.</p>", ["rotation-locked"])).toEqual([]);
+    expect(checkImplausibility("<p>Every step cost her.</p>", ["gravity-high"])).toEqual([]);
+  });
+
+  it("is silent with no prose", () => {
+    expect(checkImplausibility("", ["rotation-locked"])).toEqual([]);
+    expect(checkImplausibility(null, ["rotation-locked"])).toEqual([]);
+  });
+
+  it("reports each driver at most once", () => {
+    const notes = checkImplausibility(
+      "<p>The sunrise. Later the sunset. Then dawn broke again.</p>",
+      ["rotation-locked"],
+    );
+    expect(notes).toHaveLength(1);
+  });
+
+  it("handles several drivers independently", () => {
+    const notes = checkImplausibility(
+      "<p>He leapt easily as the sunrise lit the ridge.</p>",
+      ["gravity-high", "rotation-locked"],
+    );
+    expect(notes.map((n) => n.factKey).sort()).toEqual(["gravity-high", "rotation-locked"]);
+  });
+
+  it("does not crash on junk", () => {
+    expect(() => checkImplausibility("<<>> &&&", ["gravity-high"])).not.toThrow();
   });
 });

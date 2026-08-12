@@ -202,7 +202,7 @@ export function Corkboard({
         </p>
         <p className="mx-auto max-w-sm font-serif text-[14px] leading-relaxed text-t2">
           Create a document and give it a synopsis. The board shows one card per
-          scene, so you can read the shape of the whole manuscript at once.
+          scene, so you can see the shape of the whole manuscript at once.
         </p>
       </div>
     );
