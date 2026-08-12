@@ -14,7 +14,7 @@ Track S was written as "five ground-up redesigns." That is no longer accurate, a
 
 | Simulator | Implementation | Payload | Status |
 |---|---|---|---|
-| **Exosky** | **Native React** — `src/components/simulators/ExoSkySimulator.tsx`, 1,863 lines, lazy-loaded | in-bundle, code-split | **Already converted.** This is the reference pattern. |
+| **Exosky** | **Native React** — `src/components/simulators/ExoSkySimulator.tsx`, 1,863 lines, lazy-loaded | in-bundle, code-split | **Converted, and its persistence was broken until 0.6950.** See §1a before copying it. |
 | **Solaris** | iframe → `public/tools/solaris/sim.html` (2,241 lines) | 137 KB static | **Native rebuild already built** (24 components in `src/components/solaris/`, dev route `/dev/solaris`, M1–M6 done). Awaiting cutover sign-off. |
 | **Rogue** | iframe → `public/rogue/sim.html` (977 lines) | 73 KB static | To convert. OQ6 says rebuild natively. |
 | **Tidelock** | iframe → `public/tools/tidelock/sim.html` (1,616 lines) | 88 KB static | To convert. |
@@ -23,6 +23,21 @@ Track S was written as "five ground-up redesigns." That is no longer accurate, a
 **So the work is not five rebuilds. It is one cutover that is already sitting finished, plus three conversions, against a pattern that has already shipped once.** That is a materially smaller and lower-risk job than §3.7 assumed.
 
 Science pages: `rogue`, `tidelock`, `exoforge`, `exosky` each have a `science.html`. **Solaris has none** — consistent with §3.7's note that a Solaris science page must be authored.
+
+---
+
+## 1a. The reference pattern was broken (found 2026-08-12, fixed in 0.6950)
+
+`simulation_saves` held **zero rows**, across 25 worlds, 30 worksheets and 37 world entries. Users were active; nobody had ever saved a simulation. The cause was not discoverability:
+
+**ExoSky's Save, Load and Publish were all silent no-ops.** `useSimulationSave` speaks the `STELLARFORGE_*` protocol over *window events* when no `iframeRef` is passed, which is the component-simulator path. Nothing in the 1,863-line component was listening. So Save dispatched `REQUEST_STATE`, no `SAVE` came back, `pendingPayload` stayed `null`, and the dialog never opened. No error, no toast. Load dispatched into the same void; Publish opened its dialog with a `null` payload.
+
+Two lessons that bind the remaining conversions:
+
+1. **Do not copy ExoSky's persistence blindly.** It was the pattern this plan pointed at for S-C and S-D, so the bug was one step from being reproduced three more times. The corrected pattern is the `useEffect` in `ExoSkySimulator.tsx` that registers both listeners, plus `src/lib/simulators/exosky-save.ts`.
+2. **The payload envelope is not free-form.** `useSimulationSave` inserts `data: {parameters, results}` and **discards every other top-level key**. A payload shaped any other way is silently dropped at the database boundary. State must live under `parameters`. `src/lib/__tests__/simulation-facts.test.ts` asserts the round-trip through exactly what the insert writes, and every new simulator save needs that test.
+
+**Still owed:** browser verification of a real Save → reload → Load round-trip. The unit tests prove the serialiser; they cannot prove the window-event wiring fires in a browser.
 
 ---
 
@@ -44,11 +59,24 @@ Converting is therefore not cosmetic. It is what makes the simulators part of th
 
 Ordered so that value lands early and each step de-risks the next.
 
-### Task S-A: Land the Solaris cutover (highest value, already built)
+### Task S-A: Land the Solaris cutover — **BLOCKED, do not flip the route**
 
 The native rebuild exists and is complete through M6. It is reachable only at `/dev/solaris`, so no user has it.
 
-- [ ] Read `docs/SOLARIS_M6_PARITY_AND_CUTOVER.md` and confirm the parity table is still accurate against the current native components.
+**Verified 2026-08-12: cutting over today would be a regression.** `docs/SOLARIS_M6_PARITY_AND_CUTOVER.md` says so in its own words, and its P0 list is still open. B is ahead on physics, science, rendering, determinism and save fidelity, and behind on controls. Missing in the native build:
+
+- **Play/pause.** A time-based simulator with no transport control.
+- **System name input / rename, and planet rename.** B is seed-derived only. This one blocks the stated product goal directly: reference elements cannot be *pulled into the writing studio* if the writer was never able to *name* them. Fix naming first, and it feeds `extractSolarisFacts` immediately, which already reads `parameters.sf2System` names.
+- Named architecture presets, generation conditions, separation sliders, planet-count slider.
+- Rich info panel display (the data is already preserved, so this is cheap), math overlay, Oort cloud, trails, gravity vectors, reorbit planet, rotation controls.
+- **Mobile is unusable:** scrollWidth 585 against clientWidth 390.
+
+Three items also remain unverified: real-hardware FPS (the headless harness returned contradictory 0/29/40 fps and was never a usable result), click-to-select raycast in a real browser, and mobile layout.
+
+The cutover itself stays cheap once those close: §5 is a single-file change to `src/pages/simulators/SolarisSimulator.tsx`, with the route and `ProToolGuard` unchanged and nothing deleted.
+
+- [ ] Close the P0 gaps above, **naming first**.
+- [ ] Re-read `docs/SOLARIS_M6_PARITY_AND_CUTOVER.md` and confirm the parity table against the current native components.
 - [ ] Drive both versions side by side at 1728×1080 and at 420px: `/tools/solaris` (iframe) vs `/dev/solaris` (native). Compare system generation, orbital motion, habitable-zone rendering, save, load, publish.
 - [ ] Point the `/tools/solaris` route at the native component; keep `/dev/solaris` alive for one release as a fallback.
 - [ ] Delete `public/tools/solaris/sim.html` (137 KB) **only after** a release has shipped with the native version live.
@@ -78,12 +106,16 @@ Same shape as S-C, in ascending size order (Tidelock 1,616 → ExoForge 1,686).
 
 ### Task S-E: Connect simulators to the writing surface (the differentiator)
 
-This is the step that makes the uplift worth more than a re-skin.
+This is the step that makes the uplift worth more than a re-skin. **Landed in 0.6950 for ExoSky and Solaris.**
 
-- [ ] Write `extractSimulationFacts(toolType, data)` in `src/lib/worksheet-facts.ts`, returning the same `WorksheetFact[]` shape, reading `simulation_saves` rows.
-- [ ] Surface those facts in `WorksheetFactsPanel` alongside worksheet facts, so a writer can drop a real orbital period or star class into prose.
-- [ ] Extend the continuity engine: Tidelock's locked state should drive the existing `rotation-locked` implausibility rule; Solaris orbital data should feed `orbitalDistance` and `dayLength` Tier 1 checks. **Confirm each field exists in the saved shape before writing a check** — three of the engine's first five checks were dead because they targeted unmapped fields.
-- [ ] Add tests per fact type, following `src/lib/__tests__/continuity.test.ts`.
+- [x] `extractSimulationFacts(simulatorType, data)` in `src/lib/simulation-facts.ts` (its own module, not `worksheet-facts.ts`, to avoid an import cycle with the ExoSky extractor). Returns the same `WorksheetFact[]` shape.
+- [x] Surfaced in `WorksheetFactsPanel` beside worksheet facts, via a new `useWorldSimulations(worldId)` reading every save for a world rather than one simulator's. `WorksheetFact` gained an optional `insert`, so a row whose subject is a proper noun ("Constellation \"The Drowned Man\"") inserts the *name* rather than its star count.
+- [x] ExoSky: vantage point, host star, distance in light years first, galactic region, sky description, and each hand-named constellation with its star count, sky position and brightest member.
+- [x] Solaris: system name, stars with classifications, habitable zone, planet count, and per planet its type, semi-major axis, orbital period (rendered in days when under a year) and habitable-zone flag, plus named moons.
+- [x] 24 tests in `src/lib/__tests__/simulation-facts.test.ts`, including the database round-trip and the junk-input cases.
+- [ ] **Rogue, Tidelock and ExoForge return `[]`.** They are still static iframes writing their own shapes; each needs an extractor as it converts. `hasSimulationFactSupport` reports this honestly rather than implying an empty save.
+- [ ] Extend the continuity engine: Tidelock's locked state should drive the existing `rotation-locked` implausibility rule; Solaris orbital data should feed `orbitalDistance` and `dayLength` Tier 1 checks. **Confirm each field exists in the saved shape before writing a check** — three of the engine's first five checks were dead because they targeted unmapped fields. `extractSolarisFacts` was written against the verified `sf2System` shape for exactly this reason.
+- [ ] Solaris naming (Task S-A P0) is the missing half: the extractor reads names the writer currently cannot set.
 
 ---
 
