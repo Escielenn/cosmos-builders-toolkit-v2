@@ -36,11 +36,44 @@ interface SolarisSceneProps {
   selectedBody: SelectedBody | null;
   cameraMode: CameraMode;
   speedMultiplier: number;
+  paused?: boolean;
+  /** Advance exactly one step; increment the number to fire it again. */
+  stepTick?: number;
 }
 
-/** Steps the physics engine once per frame (before bodies read positions). */
-function SimStepper({ sim, speed }: { sim: SolarisSim; speed: number }) {
-  useFrame((_, delta) => sim.step(Math.min(delta, 0.05) * speed));
+/**
+ * Steps the physics engine once per frame (before bodies read positions).
+ *
+ * While paused the engine still renders, so the camera and selection stay live,
+ * but time does not advance. A step request advances one frame's worth of
+ * simulated time at the current speed, which is what a writer wants when
+ * lining up a conjunction to describe.
+ */
+function SimStepper({
+  sim,
+  speed,
+  paused,
+  stepTick = 0,
+}: {
+  sim: SolarisSim;
+  speed: number;
+  paused: boolean;
+  stepTick?: number;
+}) {
+  const lastTick = useRef(stepTick);
+  useFrame((_, delta) => {
+    const dt = Math.min(delta, 0.05) * speed;
+    if (!paused) {
+      sim.step(dt);
+      return;
+    }
+    if (stepTick !== lastTick.current) {
+      lastTick.current = stepTick;
+      // A fixed slice, not the real frame delta: a single step should be
+      // reproducible rather than depending on how long the frame took.
+      sim.step((1 / 60) * speed);
+    }
+  });
   return null;
 }
 
@@ -89,6 +122,8 @@ function SceneContents({
   selectedBody,
   cameraMode,
   speedMultiplier,
+  paused = false,
+  stepTick = 0,
   controlsRef,
 }: SolarisSceneProps & { controlsRef: ControlsRef }) {
   // Persistent engine: reconcile on edits (keeps orbits + time), rebuild only on remount (Generate).
@@ -117,7 +152,7 @@ function SceneContents({
 
   return (
     <>
-      <SimStepper sim={sim} speed={speedMultiplier} />
+      <SimStepper sim={sim} speed={speedMultiplier} paused={paused} stepTick={stepTick} />
       <ambientLight intensity={0.06} />
       <hemisphereLight args={["#8ea6c8", "#0a0a12", 0.12]} />
       <PrimaryLight sim={sim} />

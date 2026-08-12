@@ -4,6 +4,7 @@
  * toggle, and a moon panel. Edits flow up as patches; the parent mutates the
  * system state and the physics engine reconciles smoothly.
  */
+import { useEffect, useState } from "react";
 import type { PlanetData, MoonData, StarSystem } from "./types";
 import { PALETTE, PALETTE_BANDS } from "./generator";
 
@@ -16,11 +17,81 @@ interface Props {
   onAddMoon: (index: number) => void;
   onPatchMoon: (index: number, moonIdx: number, patch: Partial<MoonData>) => void;
   onRemoveMoon: (index: number, moonIdx: number) => void;
+  onRenameSystem: (name: string) => void;
+  onRenameStar: (starIndex: number, name: string) => void;
 }
 
+const NAME_INPUT =
+  "w-full bg-white/[0.04] border border-white/[0.1] focus:border-sf-teal/40 outline-none rounded-none px-2 py-1 font-mono text-[13px] text-white/85 tracking-wide";
+
+/**
+ * A text field for a body's name.
+ *
+ * Held locally while focused and committed on blur or Enter. Writing straight
+ * through on every keystroke would push a new system object into the physics
+ * engine mid-word, and Escape would have nothing to revert to.
+ */
+function NameField({
+  value,
+  onCommit,
+  label,
+  placeholder,
+}: {
+  value: string;
+  onCommit: (next: string) => void;
+  label: string;
+  placeholder?: string;
+}) {
+  const [draft, setDraft] = useState(value);
+  const [editing, setEditing] = useState(false);
+
+  // Follow external changes (regenerate, load) unless the writer is mid-edit.
+  useEffect(() => {
+    if (!editing) setDraft(value);
+  }, [value, editing]);
+
+  const commit = () => {
+    setEditing(false);
+    const next = draft.trim();
+    if (next && next !== value) onCommit(next);
+    else setDraft(value);
+  };
+
+  return (
+    <label className="block mb-1.5">
+      <span className="block text-[11px] uppercase tracking-[1.5px] text-white/30 mb-0.5">
+        {label}
+      </span>
+      <input
+        value={draft}
+        placeholder={placeholder}
+        spellCheck={false}
+        onFocus={() => setEditing(true)}
+        onChange={(e) => setDraft(e.target.value)}
+        onBlur={commit}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            (e.target as HTMLInputElement).blur();
+          }
+          if (e.key === "Escape") {
+            setDraft(value);
+            setEditing(false);
+            (e.target as HTMLInputElement).blur();
+          }
+        }}
+        className={NAME_INPUT}
+      />
+    </label>
+  );
+}
+
+// Bottom-left, under the camera/display/time panel. The cap is a percentage of
+// the viewer rather than the viewport: the viewer sits below the site header, so
+// a vh-based cap overshot and pushed this panel over the controls above it.
 const PANEL =
-  "absolute left-3 bottom-3 z-20 w-64 bg-[rgba(13,13,15,0.94)] border border-white/[0.08] backdrop-blur-[16px] rounded-none p-3 space-y-3 max-h-[calc(100vh-260px)] overflow-y-auto";
-const SEC = "font-mono text-[12px] uppercase tracking-[2px] text-sf-teal/50 mb-1.5 block";
+  "absolute left-3 bottom-3 z-20 w-64 bg-[rgba(13,13,15,0.94)] border border-white/[0.08] backdrop-blur-[16px] rounded-none p-3 space-y-3 max-h-[48%] overflow-y-auto";
+const SEC = "font-mono text-[12px] uppercase tracking-[2px] text-[#3DFFCD]/80 mb-1.5 block";
 
 function Slider({
   label,
@@ -71,13 +142,33 @@ export default function SolarisEditPanel({
   onAddMoon,
   onPatchMoon,
   onRemoveMoon,
+  onRenameSystem,
+  onRenameStar,
 }: Props) {
   const planet = selectedIndex != null ? system.planets[selectedIndex] : null;
+  const stars = system.stars ?? [system.star];
 
   return (
     <div className={PANEL}>
-      {/* ── Palette ── */}
+      {/* ── Names ──
+          The system and its stars were seed-derived and unnameable, which made
+          the simulator useless as a source of reference material: nothing it
+          produced could be called by a name the writer chose. */}
       <div>
+        <span className={SEC}>Names</span>
+        <NameField label="System" value={system.name} onCommit={onRenameSystem} />
+        {stars.map((s, i) => (
+          <NameField
+            key={i}
+            label={stars.length === 1 ? "Star" : `Star ${String.fromCharCode(65 + i)}`}
+            value={s.name}
+            onCommit={(name) => onRenameStar(i, name)}
+          />
+        ))}
+      </div>
+
+      {/* ── Palette ── */}
+      <div className="pt-2 border-t border-white/[0.07]">
         <span className={SEC}>Add Planet</span>
         {PALETTE_BANDS.map((band) => (
           <div key={band} className="mb-2">
@@ -104,11 +195,17 @@ export default function SolarisEditPanel({
       {/* ── Selected planet editor ── */}
       {planet && selectedIndex != null ? (
         <div className="pt-2 border-t border-white/[0.07]">
-          <div className="flex items-center justify-between mb-1">
-            <span className="font-mono text-[13px] uppercase tracking-[1.5px] text-white/90">{planet.name}</span>
+          <div className="flex items-start justify-between gap-2 mb-1">
+            <div className="min-w-0 flex-1">
+              <NameField
+                label="Planet"
+                value={planet.name}
+                onCommit={(name) => onPatchPlanet(selectedIndex, { name })}
+              />
+            </div>
             <button
               onClick={() => onRemovePlanet(selectedIndex)}
-              className="text-[11px] uppercase tracking-wider text-red-400/70 hover:text-red-400 border border-white/10 hover:border-red-400/40 px-1.5 py-0.5 rounded-none"
+              className="mt-4 shrink-0 text-[11px] uppercase tracking-wider text-red-400/70 hover:text-red-400 border border-white/10 hover:border-red-400/40 px-1.5 py-0.5 rounded-none"
             >
               Remove
             </button>
@@ -142,9 +239,20 @@ export default function SolarisEditPanel({
             </div>
             {planet.moons.map((moon, mi) => (
               <div key={mi} className="mb-1.5 pl-2 border-l border-white/[0.06]">
-                <div className="flex items-center justify-between">
-                  <span className="text-[11px] uppercase tracking-wider text-white/35">Moon {mi + 1}</span>
-                  <button onClick={() => onRemoveMoon(selectedIndex, mi)} className="text-[11px] text-red-400/60 hover:text-red-400">
+                <div className="flex items-start justify-between gap-1.5">
+                  <div className="min-w-0 flex-1">
+                    <NameField
+                      label={`Moon ${mi + 1}`}
+                      value={moon.name}
+                      placeholder="Moon"
+                      onCommit={(name) => onPatchMoon(selectedIndex, mi, { name })}
+                    />
+                  </div>
+                  <button
+                    onClick={() => onRemoveMoon(selectedIndex, mi)}
+                    className="mt-4 shrink-0 text-[11px] text-red-400/60 hover:text-red-400"
+                    aria-label={`Remove moon ${mi + 1}`}
+                  >
                     ✕
                   </button>
                 </div>

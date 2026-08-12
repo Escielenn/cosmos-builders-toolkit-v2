@@ -160,13 +160,13 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
                 </div>
               ) : (
                 <div className="text-center py-4">
-                  <p className="text-xs text-t3 mb-2">Sign in to create worlds</p>
+                  <p className="text-xs text-t3 mb-2">You need an account to create worlds</p>
                   <NavigationMenuLink asChild>
                     <Link
-                      to="/auth"
+                      to="/auth#create-account"
                       className="text-xs text-primary hover:text-primary/80 transition-colors"
                     >
-                      Authenticate
+                      Sign Up / Log In
                     </Link>
                   </NavigationMenuLink>
                 </div>

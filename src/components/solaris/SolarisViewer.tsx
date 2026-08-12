@@ -6,7 +6,7 @@
  *   <SolarisViewer system={generatedSystem} height={640} />
  */
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import type {
   SolarisViewerProps,
   CameraMode,
@@ -26,6 +26,8 @@ export default function SolarisViewer({
   const [cameraMode, setCameraMode] = useState<CameraMode>(initialCameraMode);
   const [selectedBody, setSelectedBody] = useState<SelectedBody | null>(null);
   const [speedMultiplier, setSpeedMultiplier] = useState(10);
+  const [paused, setPaused] = useState(false);
+  const [stepTick, setStepTick] = useState(0);
 
   // Display toggles
   const [showOrbitalPaths, setShowOrbitalPaths] = useState(true);
@@ -41,6 +43,22 @@ export default function SolarisViewer({
     },
     [onBodySelect]
   );
+
+  // Spacebar toggles playback, per the simulator spec in CLAUDE.md. Ignored
+  // while a field has focus, so renaming a planet does not pause the orrery.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.code !== "Space") return;
+      const el = document.activeElement;
+      const tag = el?.tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+      if (el instanceof HTMLElement && el.isContentEditable) return;
+      e.preventDefault();
+      setPaused((p) => !p);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   return (
     <div className="relative w-full" style={{ height }}>
@@ -69,6 +87,8 @@ export default function SolarisViewer({
         selectedBody={selectedBody}
         cameraMode={cameraMode}
         speedMultiplier={speedMultiplier}
+        paused={paused}
+        stepTick={stepTick}
       />
 
       {/* Floating HTML panels */}
@@ -90,6 +110,9 @@ export default function SolarisViewer({
             onToggleLabels={() => setShowLabels((v) => !v)}
             speedMultiplier={speedMultiplier}
             onSpeedChange={setSpeedMultiplier}
+            paused={paused}
+            onTogglePause={() => setPaused((p) => !p)}
+            onStep={() => setStepTick((t) => t + 1)}
           />
           <SolarisUI
             systemName={system.name}

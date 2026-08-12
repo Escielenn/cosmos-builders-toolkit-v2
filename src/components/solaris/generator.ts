@@ -56,7 +56,7 @@ function toRoman(n: number): string {
 }
 
 // ── Star buckets (A's 5) mapped to spectral class + physical params ───────
-type BucketKey = "blue" | "white" | "yellow" | "orange" | "red";
+export type BucketKey = "blue" | "white" | "yellow" | "orange" | "red";
 interface StarBucket {
   classification: StarClass;
   colorHex: string;
@@ -295,13 +295,38 @@ function buildStars(
   return { stars, innerClearAU, outerLimitAU };
 }
 
+/**
+ * Guarantees the writer can demand of a generated system.
+ *
+ * Ported from the original simulator, which forces these at two points: it
+ * rewrites the band list so the required band exists, then narrows the
+ * archetype pool for that band. Both steps are needed. Forcing only the band
+ * gets you a habitable-zone slot filled with a greenhouse.
+ */
+export interface GenerateConditions {
+  /** At least one genuinely habitable world in the zone. */
+  habitable?: boolean;
+  /** At least one gas giant in the outer system. */
+  gasGiant?: boolean;
+  /** The habitable world is tidally locked. */
+  tidalLock?: boolean;
+  /** The outermost body is a starless rogue world. */
+  rogue?: boolean;
+}
+
 export interface GenerateOptions {
   seed?: string;
   planetCount?: number;
   starBucket?: BucketKey;
   architecture?: Architecture;
   includeBelt?: boolean;
+  conditions?: GenerateConditions;
 }
+
+/** Habitable-band archetypes that are actually pleasant. The band also holds
+ *  greenhouse, twilight and crystalline worlds, which satisfy the band but not
+ *  the intent of asking for a habitable world. */
+const TRULY_HABITABLE = ["terrestrial", "ocean", "superearth", "waterworld", "hycean", "jungle"];
 
 /** Deterministically generate a system (single- or multi-star). Same seed -> same system. */
 export function generateSystem(opts: GenerateOptions | string = {}): StarSystem {
@@ -348,17 +373,36 @@ export function generateSystem(opts: GenerateOptions | string = {}): StarSystem 
   });
 
   const num = o.planetCount ?? rndInt(rng, 4, 8);
+  const cond = o.conditions ?? {};
   const bandOrder: Band[] = ["inner", "habitable", "outer", "remote"];
   const bands: Band[] = [];
   for (let i = 0; i < num; i++) {
     const t = i / num;
     bands.push(t < 0.18 ? "inner" : t < 0.45 ? "habitable" : t < 0.72 ? "outer" : "remote");
   }
+
+  // ── Conditions, step one: make sure the required band exists at all ──
+  // A tidal-lock request also needs a habitable band to put it in.
+  if ((cond.habitable || cond.tidalLock) && !bands.includes("habitable")) {
+    bands[Math.min(bands.length - 1, Math.floor(num * 0.4))] = "habitable";
+  }
+  if (cond.gasGiant && !bands.includes("outer")) {
+    bands[Math.min(bands.length - 1, Math.floor(num * 0.72))] = "outer";
+  }
+  if (cond.rogue && bands.length > 0) {
+    bands[bands.length - 1] = "remote";
+  }
+
   bands.sort((x, y) => bandOrder.indexOf(x) - bandOrder.indexOf(y));
 
   const usedAU: number[] = [];
   const planets: PlanetData[] = [];
-  for (const band of bands) {
+  // Once a condition is satisfied the rest of that band generates normally, so
+  // asking for one gas giant does not turn the outer system into all giants.
+  const done = { habitable: false, gasGiant: false, tidalLock: false, rogue: false };
+
+  for (let i = 0; i < bands.length; i++) {
+    const band = bands[i];
     const br = bandRanges[band];
     let au = 0;
     let tries = 0;
@@ -366,12 +410,60 @@ export function generateSystem(opts: GenerateOptions | string = {}): StarSystem 
       au = rnd(rng, br.min, br.max);
       tries++;
     } while (usedAU.some((u) => Math.abs(u - au) < 0.12 * Math.max(hzInner, 0.1)) && tries < 30);
+
+    // ── Conditions, step two: narrow the pool for the body that satisfies it ──
+    let pool = BAND_POOL[band];
+    if (cond.habitable && band === "habitable" && !done.habitable) {
+      pool = TRULY_HABITABLE;
+      done.habitable = true;
+      // The habitable *band* is clamped by the circumbinary clearance and the
+      // hierarchical stability limit, so it can drift outside the real
+      // Kopparapu zone. Someone who asked for a habitable world wants it
+      // actually in the zone, not merely in the band named after it.
+      au = Math.min(Math.max(au, hzInner), hzOuter);
+    }
+    if (cond.gasGiant && band === "outer" && !done.gasGiant) {
+      pool = ["gasgiant"];
+      done.gasGiant = true;
+    }
+    if (cond.rogue && i === bands.length - 1) {
+      pool = ["rogue"];
+      done.rogue = true;
+      // "Outermost" has to survive the sort by orbit below. The remote band's
+      // range is clamped by the same stability limit as everything else, so it
+      // can end up inside or below the outer band. Push it clear of the field.
+      au = Math.max(au, ...usedAU.map((u) => u * 1.35), au);
+    }
+    // Applied last, and deliberately not the way the original does it. There,
+    // the habitable rule overwrites the pool afterwards, so switching both on
+    // silently loses the tidal lock. A tidally locked world is itself a
+    // habitable-band archetype, so honouring both is the correct reading.
+    if (cond.tidalLock && band === "habitable" && !done.tidalLock) {
+      pool = ["tidallocked"];
+      done.tidalLock = true;
+    }
+
     usedAU.push(au);
-    const archKey = pick(rng, BAND_POOL[band]);
+    const archKey = pick(rng, pool);
     planets.push(makePlanet(rng, archKey, au, planets.length, Mtot, hzInner, hzOuter));
   }
 
   planets.sort((p, q) => p.semiMajorAxisAU - q.semiMajorAxisAU);
+
+  // The rejection sampler above gives up after 30 tries, so a crowded system
+  // could seat two planets on the same orbit. They then render as one body
+  // clipping through another. Walk outward and push any duplicate clear.
+  const minGap = 0.05 * Math.max(hzInner, 0.1);
+  for (let i = 1; i < planets.length; i++) {
+    const gap = planets[i].semiMajorAxisAU - planets[i - 1].semiMajorAxisAU;
+    if (gap >= minGap) continue;
+    const au = round3(planets[i - 1].semiMajorAxisAU + minGap);
+    planets[i].semiMajorAxisAU = au;
+    // Keep Kepler's third law true after the nudge.
+    planets[i].orbitalPeriodYears = round3(Math.sqrt(Math.pow(au, 3) / Math.max(Mtot, 0.05)));
+    planets[i].inHabitableZone = au >= hzInner && au <= hzOuter;
+  }
+
   planets.forEach((p, i) => (p.name = `${sysName}-${toRoman(i + 1)}`));
 
   // Optional asteroid belt between the last habitable and first outer planet.

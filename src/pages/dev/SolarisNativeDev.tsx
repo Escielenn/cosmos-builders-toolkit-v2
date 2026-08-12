@@ -21,11 +21,16 @@ import PublishToWorldDialog from "@/components/simulators/PublishToWorldDialog";
 import { useWorldId } from "@/hooks/use-world-id";
 import { useSimulationSave } from "@/hooks/use-simulation-save";
 import { generateSystem, createPlanet, createMoon, PALETTE } from "@/components/solaris/generator";
+import SolarisGeneratePanel from "@/components/solaris/SolarisGeneratePanel";
+import {
+  DEFAULT_GENERATE_SETTINGS,
+  toGenerateOptions,
+  type GenerateSettings,
+} from "@/components/solaris/generateSettings";
 import { toSavePayload, fromSavePayload } from "@/components/solaris/saveFormat";
 import type { StarSystem, PlanetData, MoonData, SelectedBody } from "@/components/solaris/types";
 
 const HEADER_H = 64;
-type Arch = "auto" | "single" | "binary" | "trinary" | "quaternary";
 
 function orbitForBand(band: string | undefined, hzIn: number, hzOut: number): number {
   if (band === "inner") return 0.6 * hzIn;
@@ -35,8 +40,7 @@ function orbitForBand(band: string | undefined, hzIn: number, hzOut: number): nu
 }
 
 const SolarisNativeDev = () => {
-  const [seed, setSeed] = useState("sol");
-  const [arch, setArch] = useState<Arch>("auto");
+  const [gen, setGen] = useState<GenerateSettings>(DEFAULT_GENERATE_SETTINGS);
   const [genKey, setGenKey] = useState(0);
   const [system, setSystem] = useState<StarSystem>(() => generateSystem({ seed: "sol" }));
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -63,14 +67,17 @@ const SolarisNativeDev = () => {
     setGenKey((k) => k + 1);
   }, []);
 
-  const regenerate = (s: string) => {
-    applySystem(generateSystem({ seed: s.trim() || "sol", architecture: arch === "auto" ? undefined : arch }));
-  };
-  const generate = () => regenerate(seed);
+  const generate = useCallback(
+    (settings: GenerateSettings) => applySystem(generateSystem(toGenerateOptions(settings))),
+    [applySystem],
+  );
+
   const randomize = () => {
-    const s = Math.random().toString(36).slice(2, 9);
-    setSeed(s);
-    regenerate(s);
+    // A new seed, keeping the settings: the conditions a writer set are the
+    // part they want held constant while the system varies.
+    const next = { ...gen, seed: Math.random().toString(36).slice(2, 9) };
+    setGen(next);
+    generate(next);
   };
 
   // ── STELLARFORGE protocol (component simulator speaks it over window events) ──
@@ -170,6 +177,26 @@ const SolarisNativeDev = () => {
     });
   }, []);
 
+  // ── Naming ──
+  // These are what make the simulator a source of reference material rather
+  // than a toy: a named system and named stars survive into the save, and from
+  // there into the writing surface via extractSolarisFacts.
+  const renameSystem = useCallback((name: string) => {
+    setSystem((s) => ({ ...s, name }));
+  }, []);
+
+  const renameStar = useCallback((starIndex: number, name: string) => {
+    setSystem((s) => {
+      const stars = (s.stars ?? [s.star]).slice();
+      if (!stars[starIndex]) return s;
+      stars[starIndex] = { ...stars[starIndex], name };
+      // stars[0] and star are two views of the primary; both must agree or the
+      // readout panel and the save disagree about what the star is called.
+      const star = starIndex === 0 ? { ...s.star, name } : s.star;
+      return { ...s, star, stars };
+    });
+  }, []);
+
   const ctrl = "font-mono text-[12px] uppercase tracking-wider h-7 rounded-none border";
   const actionBtn = `${ctrl} bg-sf-void/80 border-sf-border text-sf-teal hover:bg-sf-void px-2.5 flex items-center gap-1`;
 
@@ -191,32 +218,8 @@ const SolarisNativeDev = () => {
           </span>
         </div>
 
+        {/* ── Save / Load / Publish (top-centre, clear of both side panels) ── */}
         <div className="absolute top-2 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5">
-          <input
-            value={seed}
-            onChange={(e) => setSeed(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && generate()}
-            placeholder="seed"
-            spellCheck={false}
-            className={`w-24 bg-sf-void/80 border-sf-border text-white/85 tracking-wider px-2.5 ${ctrl} font-mono focus:border-sf-teal/50 outline-none`}
-          />
-          <select value={arch} onChange={(e) => setArch(e.target.value as Arch)} className={`bg-sf-void/80 border-sf-border text-white/75 px-1.5 ${ctrl}`}>
-            <option value="auto">auto</option>
-            <option value="single">single</option>
-            <option value="binary">binary</option>
-            <option value="trinary">trinary</option>
-            <option value="quaternary">quaternary</option>
-          </select>
-          <button onClick={generate} className={`bg-sf-teal/10 border-sf-teal/30 text-sf-teal hover:bg-sf-teal/20 px-3 ${ctrl}`}>
-            Generate
-          </button>
-          <button onClick={randomize} className={`bg-sf-void/80 border-sf-border text-white/75 hover:bg-sf-void px-3 ${ctrl}`}>
-            Random
-          </button>
-        </div>
-
-        {/* ── Save / Load / Publish (bottom-right, clear of the edit panel) ── */}
-        <div className="absolute bottom-3 right-16 z-20 flex items-center gap-1.5">
           <button onClick={requestSave} className={actionBtn} title="Save simulation">
             <Save className="w-3 h-3" /> Save
           </button>
@@ -240,6 +243,15 @@ const SolarisNativeDev = () => {
           onAddMoon={addMoon}
           onPatchMoon={patchMoon}
           onRemoveMoon={removeMoon}
+          onRenameSystem={renameSystem}
+          onRenameStar={renameStar}
+        />
+
+        <SolarisGeneratePanel
+          settings={gen}
+          onChange={setGen}
+          onGenerate={() => generate(gen)}
+          onRandomize={randomize}
         />
       </div>
 

@@ -140,22 +140,11 @@ const Header = () => {
             </span>
           </div>
 
-          {/* Logo-adjacent signup/login CTA for logged-out users.
-              Sends to /auth with a hash so the Auth page scrolls to the
-              CREATE ACCOUNT card on mount. */}
-          {!loading && !user && (
-            <Button
-              variant="outline"
-              size="sm"
-              asChild
-              className="hidden sm:inline-flex gap-1.5 border-sf-teal/[0.5] text-sf-teal hover:bg-sf-teal/[0.08] rounded-none"
-            >
-              <Link to="/auth#create-account">
-                <LogIn className="w-3.5 h-3.5" />
-                Sign Up / Log In
-              </Link>
-            </Button>
-          )}
+          {/* No auth CTA here. A logged-out visitor used to get two of them at
+              once, this one and the top-right button, both going to /auth. The
+              top-right slot wins: it is where the account controls live once
+              you are signed in, and it is the only one that survives on
+              mobile. */}
         </div>
 
         {/* Desktop Navigation */}
@@ -235,7 +224,7 @@ const Header = () => {
                     }}
                   >
                     <LogIn className="w-4 h-4" />
-                    AUTHENTICATE
+                    Sign Up / Log In
                   </Button>
                 </div>
               )}
@@ -371,14 +360,19 @@ const Header = () => {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="gap-2"
-              onClick={() => navigate("/auth")}
+            /* The one auth entry point in the header. "Authenticate" read like
+               a system prompt rather than an invitation, so it says what it
+               does, and keeps the deep link to the create-account card. */
+            <Button
+              variant="outline"
+              size="sm"
+              asChild
+              className="gap-2 border-sf-teal/[0.5] text-sf-teal hover:bg-sf-teal/[0.08]"
             >
-              <LogIn className="w-4 h-4" />
-              <span className="hidden sm:inline">AUTHENTICATE</span>
+              <Link to="/auth#create-account">
+                <LogIn className="w-4 h-4" />
+                <span className="hidden sm:inline">Sign Up / Log In</span>
+              </Link>
             </Button>
           )}
         </div>
