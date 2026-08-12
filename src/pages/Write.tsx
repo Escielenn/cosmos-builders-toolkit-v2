@@ -157,8 +157,11 @@ export default function Write(): JSX.Element {
 
   // Binder groups come straight from the hook, which already nests each
   // folder's documents and collects the unfiled ones.
-  const folders = folderRows ?? [];
-  const unfiled = unfiledDocs ?? [];
+  //
+  // Memoised because `?? []` mints a new array identity on every render, which
+  // would invalidate chapterList (and anything else keyed on them) each time.
+  const folders = useMemo(() => folderRows ?? [], [folderRows]);
+  const unfiled = useMemo(() => unfiledDocs ?? [], [unfiledDocs]);
   // Chapters a scene can be filed into. useMoveDocument existed in the hooks
   // but was never wired up, so filing was impossible in the live editor.
   const chapterList = useMemo(

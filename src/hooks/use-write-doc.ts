@@ -16,6 +16,11 @@ export interface WriteDoc {
   entry_type: string;
   parent_id: string | null;
   updated_at: string;
+  /**
+   * Card fields (synopsis, POV, status, in-world date) read via
+   * readDocMeta. Untyped in the DB, so it stays unknown here.
+   */
+  metadata: unknown;
 }
 
 /** Resolve a document id → its row (and thus its world_id). */
@@ -26,7 +31,7 @@ export function useWriteDoc(docId: string | undefined) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("world_entries")
-        .select("id, world_id, title, content, entry_type, parent_id, updated_at")
+        .select("id, world_id, title, content, entry_type, parent_id, updated_at, metadata")
         .eq("id", docId)
         .maybeSingle();
       if (error) throw error;
