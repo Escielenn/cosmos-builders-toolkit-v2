@@ -124,6 +124,7 @@ const SolarisSimulator = lazy(() => import("./pages/simulators/SolarisSimulator"
 
 // Dev-only: native Solaris rebuild preview (hidden; not in prod nav)
 const SolarisNativeDev = lazy(() => import("./pages/dev/SolarisNativeDev"));
+const RogueNativeDev = lazy(() => import("./pages/dev/RogueNativeDev"));
 
 // Lazy loaded cartographer wrapper pages
 const StellarCartographer = lazy(() => import("./pages/cartographers/StellarCartographer"));
@@ -468,6 +469,8 @@ const App = () => (
                 <Route path="/changelog" element={<Changelog />} />
                 {/* Dev-only native Solaris rebuild preview (hidden route) */}
                 <Route path="/dev/solaris" element={<SolarisNativeDev />} />
+                {/* Dev-only native Rogue rebuild preview (hidden route) */}
+                <Route path="/dev/rogue" element={<RogueNativeDev />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>

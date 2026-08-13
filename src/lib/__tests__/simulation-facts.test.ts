@@ -308,10 +308,11 @@ describe("extractSimulationFacts", () => {
   });
 
   it("is empty for a simulator with no extractor yet", () => {
-    // Rogue, Tidelock and ExoForge are still static iframes writing their own
-    // shapes. Empty means "not readable yet", not "the save is empty".
-    expect(extractSimulationFacts("rogue", { parameters: {}, results: {} })).toEqual([]);
-    expect(hasSimulationFactSupport("rogue")).toBe(false);
+    // Tidelock and ExoForge are still static iframes writing their own shapes.
+    // Empty means "not readable yet", not "the save is empty".
+    expect(extractSimulationFacts("tidelock", { parameters: {}, results: {} })).toEqual([]);
+    expect(hasSimulationFactSupport("tidelock")).toBe(false);
     expect(hasSimulationFactSupport("exosky")).toBe(true);
+    expect(hasSimulationFactSupport("rogue")).toBe(true);
   });
 });
