@@ -306,13 +306,17 @@ export const ENTITY_MASTER_FIELDS: Record<string, MasterFieldDef[]> = {
       worksheetPaths: {
         "spacecraft-designer": "propulsion.driveType",
         "time-dilation": "propulsion.method",
+        "propulsion-consequences-map": "system.type",
       },
     },
     {
       label: "Crew Size",
       key: "crewSize",
       type: "text",
-      worksheetPaths: { "spacecraft-designer": "living.crewQuarters" },
+      worksheetPaths: {
+        "spacecraft-designer": "living.crewQuarters",
+        "propulsion-consequences-map": "costs.crewCapacity",
+      },
     },
     {
       label: "Origin",
@@ -330,7 +334,63 @@ export const ENTITY_MASTER_FIELDS: Record<string, MasterFieldDef[]> = {
       label: "Cruise Velocity (fraction of c)",
       key: "cruiseVelocity",
       type: "text",
+      // Deliberately not mapped to propulsion-consequences-map's
+      // system.maxVelocity: that field is free text in whatever unit the writer
+      // chose, and feeding it to a field labelled "fraction of c" would hand the
+      // continuity engine a number in the wrong unit. It gets its own field below.
       worksheetPaths: { "time-dilation": "velocityProfile.velocityFraction" },
+    },
+    // ── Propulsion Consequences Map ──
+    // EXTRA_TOOLS already listed this tool against vessels, but no field paths
+    // existed, so everything a writer entered here was invisible to the writing
+    // surface. Travel times are the most quotable numbers in the whole tool.
+    {
+      label: "Top Speed",
+      key: "topSpeed",
+      type: "text",
+      worksheetPaths: { "propulsion-consequences-map": "system.maxVelocity" },
+    },
+    {
+      label: "Acceleration",
+      key: "acceleration",
+      type: "text",
+      worksheetPaths: { "propulsion-consequences-map": "system.acceleration" },
+    },
+    {
+      label: "Energy Source",
+      key: "energySource",
+      type: "text",
+      worksheetPaths: { "propulsion-consequences-map": "system.energySource" },
+    },
+    {
+      label: "Earth to Mars",
+      key: "travelEarthMars",
+      type: "text",
+      worksheetPaths: { "propulsion-consequences-map": "benchmarks.earthMars" },
+    },
+    {
+      label: "Earth to Jupiter",
+      key: "travelEarthJupiter",
+      type: "text",
+      worksheetPaths: { "propulsion-consequences-map": "benchmarks.earthJupiter" },
+    },
+    {
+      label: "Sol to Alpha Centauri",
+      key: "travelSolAlphaCentauri",
+      type: "text",
+      worksheetPaths: { "propulsion-consequences-map": "benchmarks.solAlphaCentauri" },
+    },
+    {
+      label: "Cargo Capacity",
+      key: "cargoCapacity",
+      type: "text",
+      worksheetPaths: { "propulsion-consequences-map": "costs.cargoCapacity" },
+    },
+    {
+      label: "Service Life",
+      key: "serviceLife",
+      type: "text",
+      worksheetPaths: { "propulsion-consequences-map": "costs.serviceLife" },
     },
   ],
 
@@ -354,6 +414,41 @@ export const ENTITY_MASTER_FIELDS: Record<string, MasterFieldDef[]> = {
       type: "text",
       worksheetPaths: { "technology-consequences": "maturityLevel" },
     },
+    // ── One Big Lie ──
+    // The premise a whole world rests on, and it was invisible to the writing
+    // surface. Filed under technology because the conceit is nearly always a
+    // physical or technological one: FTL, artificial gravity, a mind that reads
+    // another. Nothing else a writer records matters more than this sentence.
+    {
+      label: "The One Big Lie",
+      key: "theOneBigLie",
+      type: "text",
+      worksheetPaths: { "one-big-lie": "coreStatement.statement" },
+    },
+    {
+      label: "Science It Breaks",
+      key: "scienceBroken",
+      type: "text",
+      worksheetPaths: { "one-big-lie": "coreStatement.scienceBroken" },
+    },
+    {
+      label: "What Becomes Possible",
+      key: "becomesPossible",
+      type: "text",
+      worksheetPaths: { "one-big-lie": "justification.whatBecomesPossible" },
+    },
+    {
+      label: "What Becomes Impossible",
+      key: "becomesImpossible",
+      type: "text",
+      worksheetPaths: { "one-big-lie": "justification.whatBecomesImpossible" },
+    },
+    {
+      label: "In-World Test",
+      key: "inWorldTest",
+      type: "text",
+      worksheetPaths: { "one-big-lie": "testability.inWorldTest" },
+    },
   ],
 
   mythology: [
@@ -374,6 +469,57 @@ export const ENTITY_MASTER_FIELDS: Record<string, MasterFieldDef[]> = {
 
   language: [
     ...GENERIC_FIELDS,
+    // ── LexDrift ──
+    // The language entity type had no fields at all, so a writer could model
+    // two centuries of linguistic drift and none of it reached their prose.
+    {
+      label: "Lingua Franca",
+      key: "linguaFranca",
+      type: "text",
+      worksheetPaths: { lexdrift: "linguistic.linguaFranca" },
+    },
+    {
+      label: "Isolation",
+      key: "isolation",
+      type: "text",
+      worksheetPaths: { lexdrift: "mission.isolation" },
+    },
+    {
+      label: "Drift Duration (years)",
+      key: "driftDuration",
+      type: "number",
+      worksheetPaths: { lexdrift: "mission.duration" },
+    },
+    {
+      label: "Speaker Population",
+      key: "speakerPopulation",
+      type: "number",
+      worksheetPaths: { lexdrift: "mission.population" },
+    },
+    {
+      label: "Education Policy",
+      key: "educationPolicy",
+      type: "text",
+      worksheetPaths: { lexdrift: "social.educationPolicy" },
+    },
+    {
+      label: "Liturgical Language",
+      key: "liturgicalLanguage",
+      type: "text",
+      worksheetPaths: { lexdrift: "linguistic.liturgicalLanguage" },
+    },
+    {
+      label: "Linguistic Identity",
+      key: "linguisticIdentity",
+      type: "text",
+      worksheetPaths: { lexdrift: "storyNotes.linguisticIdentity" },
+    },
+    {
+      label: "Generational Shift",
+      key: "generationalShift",
+      type: "text",
+      worksheetPaths: { lexdrift: "storyNotes.generationalShift" },
+    },
   ],
 
   character: [...GENERIC_FIELDS],
