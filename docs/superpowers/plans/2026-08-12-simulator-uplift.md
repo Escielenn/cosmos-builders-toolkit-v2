@@ -97,7 +97,8 @@ The cutover itself stays cheap: §5 is a single-file change to `src/pages/simula
 
 Rogue is the smallest static app (977 lines), which makes it the right first conversion.
 
-- [ ] Confirm which file is authoritative: `public/rogue/sim.html` vs `simulators/Rogue/index.html` (908 lines, likely an older copy). §3.4 flags this as an S0 question and it is still open.
+- [x] **Settled 2026-08-12: `public/rogue/sim.html` is authoritative.** 977 lines, modified 2026-07-09, and it is the file the app actually loads (`src="/rogue/sim.html"` in `RogueSimulator.tsx`). `simulators/Rogue/index.html` is 825 lines, last modified 2026-02-16, five months older, and referenced by nothing in `src/`. Port from `public/`, and read the older copy only if a behaviour looks wrong.
+- [ ] Note that `simulators/` holds **16 tracked files** of stale duplicates and handoff notes (ExoForge v3, an ExoSky jsx, Tidelock integration docs, plus this Rogue copy). Worth deleting once each conversion lands, but only then, since the specs beside them may be the only written record of intent. `simulators/Rogue/SIMULATOR_AESTHETIC.md` in particular is referenced by `CLAUDE.md`.
 - [ ] Port the N-body integrator to a pure, testable module (`src/lib/simulators/nbody.ts`) with unit tests. The physics is the valuable part and it currently has no test coverage at all.
 - [ ] Build the React component against the Exosky pattern: lazy-loaded, `useSimulationSave`, the three shared dialogs, `NarrativeBridgePanel`.
 - [ ] Match the existing feature set before adding anything. Parity first, improvements second.
