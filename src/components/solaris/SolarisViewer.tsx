@@ -22,10 +22,13 @@ export default function SolarisViewer({
   initialCameraMode = "free",
   showUI = true,
   onBodySelect,
+  onReorbit,
 }: SolarisViewerProps) {
   const [cameraMode, setCameraMode] = useState<CameraMode>(initialCameraMode);
   const [selectedBody, setSelectedBody] = useState<SelectedBody | null>(null);
-  const [speedMultiplier, setSpeedMultiplier] = useState(10);
+  // 1x, not 10x. Opening at 10x made a system look frantic before the writer
+  // had read anything, and the inner planets blurred rather than moved.
+  const [speedMultiplier, setSpeedMultiplier] = useState(1);
   const [paused, setPaused] = useState(false);
   const [stepTick, setStepTick] = useState(0);
 
@@ -89,6 +92,7 @@ export default function SolarisViewer({
         speedMultiplier={speedMultiplier}
         paused={paused}
         stepTick={stepTick}
+        onReorbit={onReorbit}
       />
 
       {/* Floating HTML panels */}

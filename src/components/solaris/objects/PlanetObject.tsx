@@ -5,6 +5,7 @@ import * as THREE from "three";
 import type { PlanetData } from "../types";
 import { radiusToScene, auToScene } from "../utils/scaleAU";
 import { getPlanetMaterial } from "../utils/planetColor";
+import { getPlanetTexture } from "../utils/planetTexture";
 import { MoonObject } from "./MoonObject";
 import type { SolarisSim } from "../physics";
 
@@ -13,17 +14,22 @@ interface PlanetObjectProps {
   sim: SolarisSim;
   index: number;
   onClick?: () => void;
+  /** Begin a drag-to-reorbit. Omit to make the planet immovable. */
+  onDragStart?: () => void;
   selected?: boolean;
   showMoons?: boolean;
   showLabel?: boolean;
 }
 
-export function PlanetObject({ planet, sim, index, onClick, selected = false, showMoons = true, showLabel = false }: PlanetObjectProps) {
+export function PlanetObject({ planet, sim, index, onClick, onDragStart, selected = false, showMoons = true, showLabel = false }: PlanetObjectProps) {
   const groupRef = useRef<THREE.Group>(null);
   const meshRef = useRef<THREE.Mesh>(null);
 
   const radius = radiusToScene(planet.radiusEarth);
   const material = getPlanetMaterial(planet.type);
+  // Cached per type and colour, so this is a map lookup after the first planet
+  // of a given appearance. Null where no canvas exists; the flat tint stands in.
+  const texture = getPlanetTexture(planet.type, planet.colorHex);
   const tiltRad = (planet.axialTiltDeg * Math.PI) / 180;
   const spinSpeed = 0.3 / radius;
 
@@ -37,8 +43,34 @@ export function PlanetObject({ planet, sim, index, onClick, selected = false, sh
 
   return (
     <group ref={groupRef}>
-      {/* Invisible, larger hit-area so small planets are easy to click/select */}
-      <mesh onClick={onClick}>
+      {/* Invisible, larger hit-area so small planets are easy to click, select
+          and grab. Also carries the drag start and the grab cursor. */}
+      <mesh
+        onClick={onClick}
+        onPointerDown={
+          onDragStart
+            ? (e) => {
+                // Keep the same gesture from also orbiting the camera.
+                e.stopPropagation();
+                onDragStart();
+              }
+            : undefined
+        }
+        onPointerOver={
+          onDragStart
+            ? () => {
+                document.body.style.cursor = "grab";
+              }
+            : undefined
+        }
+        onPointerOut={
+          onDragStart
+            ? () => {
+                document.body.style.cursor = "";
+              }
+            : undefined
+        }
+      >
         <sphereGeometry args={[hitRadius, 12, 12]} />
         <meshBasicMaterial transparent opacity={0} depthWrite={false} />
       </mesh>
@@ -47,7 +79,10 @@ export function PlanetObject({ planet, sim, index, onClick, selected = false, sh
         <mesh ref={meshRef} onClick={onClick}>
           <sphereGeometry args={[radius, 32, 32]} />
           <meshStandardMaterial
-            color={planet.colorHex}
+            map={texture ?? undefined}
+            // The texture already carries the planet's colour, so tinting it
+            // again would double-darken it. White lets the map through as painted.
+            color={texture ? "#ffffff" : planet.colorHex}
             roughness={material.roughness}
             metalness={material.metalness}
             emissive={planet.inHabitableZone ? "#22CC66" : "#000000"}

@@ -8,14 +8,14 @@
  * multi-star scenes, and is the perf-correct approach regardless).
  */
 
-import { useCallback, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import type { ElementRef, RefObject } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 import type { StarSystem, SelectedBody, CameraMode } from "./types";
 import { SolarisSim } from "./physics";
-import { auToScene } from "./utils/scaleAU";
+import { auToScene, sceneToAU, starRadiusCapForApproach } from "./utils/scaleAU";
 import { StarObject } from "./objects/StarObject";
 import { PlanetObject } from "./objects/PlanetObject";
 import { OrbitalPath } from "./objects/OrbitalPath";
@@ -39,6 +39,14 @@ interface SolarisSceneProps {
   paused?: boolean;
   /** Advance exactly one step; increment the number to fire it again. */
   stepTick?: number;
+  /**
+   * Drag a planet to a new orbit. Omit to make orbits read-only.
+   *
+   * Identified by key, not index: reorbiting re-sorts the list so it stays
+   * ordered outward, and an index captured at drag start would then point at a
+   * different planet the moment two orbits cross.
+   */
+  onReorbit?: (planetKey: string, semiMajorAxisAU: number) => void;
 }
 
 /**
@@ -88,6 +96,36 @@ function PrimaryLight({ sim }: { sim: SolarisSim }) {
   return <pointLight ref={ref} intensity={intensity} color="#ffffff" distance={0} decay={2} />;
 }
 
+/**
+ * While a planet is being dragged, projects the pointer onto the ecliptic plane
+ * and reports the position each frame.
+ *
+ * Uses a mathematical plane and the live pointer rather than pointer events on
+ * an invisible mesh: `visible={false}` is unreliable for raycasting, and this
+ * also keeps working when the pointer travels beyond the plane's bounds.
+ */
+function DragProjector({
+  active,
+  onMove,
+}: {
+  active: React.MutableRefObject<string | null>;
+  onMove: (point: THREE.Vector3) => void;
+}) {
+  const { camera, pointer } = useThree();
+  const plane = useRef(new THREE.Plane(new THREE.Vector3(0, 1, 0), 0));
+  const raycaster = useRef(new THREE.Raycaster());
+  const hit = useRef(new THREE.Vector3());
+
+  useFrame(() => {
+    if (active.current === null) return;
+    raycaster.current.setFromCamera(pointer, camera);
+    if (raycaster.current.ray.intersectPlane(plane.current, hit.current)) {
+      onMove(hit.current);
+    }
+  });
+  return null;
+}
+
 /** Eases OrbitControls' target toward the active camera-mode body. */
 function CameraRig({ cameraMode, sim, controlsRef }: { cameraMode: CameraMode; sim: SolarisSim; controlsRef: ControlsRef }) {
   const target = useRef(new THREE.Vector3());
@@ -124,6 +162,7 @@ function SceneContents({
   speedMultiplier,
   paused = false,
   stepTick = 0,
+  onReorbit,
   controlsRef,
 }: SolarisSceneProps & { controlsRef: ControlsRef }) {
   // Persistent engine: reconcile on edits (keeps orbits + time), rebuild only on remount (Generate).
@@ -136,6 +175,19 @@ function SceneContents({
     lastSystemRef.current = system;
   }
   const starList = system.stars && system.stars.length ? system.stars : [system.star];
+
+  // Cap the rendered star so it cannot swallow its innermost planet. Uses
+  // periapsis, a(1-e), because an eccentric inner orbit is judged by its
+  // closest approach, not its average distance.
+  const starRadiusCap = useMemo(() => {
+    if (system.planets.length === 0) return undefined;
+    const closest = Math.min(
+      ...system.planets.map((p) => p.semiMajorAxisAU * (1 - Math.max(0, p.eccentricity))),
+    );
+    return Number.isFinite(closest) && closest > 0
+      ? starRadiusCapForApproach(closest)
+      : undefined;
+  }, [system.planets]);
 
   const handleStarClick = useCallback(
     (i: number) => onBodySelect?.({ type: "star", name: starList[i].name, data: starList[i] }),
@@ -150,6 +202,56 @@ function SceneContents({
   );
   const handleBgClick = useCallback(() => onBodySelect?.(null), [onBodySelect]);
 
+  // ── Drag a planet to a new orbit ──────────────────────────────────
+  // The original simulator let you grab a planet and pull it in or out. Held in
+  // a ref rather than state: this changes on every pointer move, and a state
+  // update per move would re-render the whole scene mid-drag.
+  const dragIndex = useRef<string | null>(null);
+
+  const beginDrag = useCallback(
+    (key: string) => {
+      if (!onReorbit) return;
+      dragIndex.current = key;
+      // Otherwise the same pointer movement also orbits the camera.
+      if (controlsRef.current) controlsRef.current.enabled = false;
+    },
+    [onReorbit, controlsRef],
+  );
+
+  const endDrag = useCallback(() => {
+    if (dragIndex.current === null) return;
+    dragIndex.current = null;
+    if (controlsRef.current) controlsRef.current.enabled = true;
+  }, [controlsRef]);
+
+  // Release on the window, not the canvas: a drag that ends with the pointer off
+  // the canvas would otherwise leave the planet stuck to the cursor and the
+  // camera controls disabled.
+  useEffect(() => {
+    window.addEventListener("pointerup", endDrag);
+    window.addEventListener("pointercancel", endDrag);
+    return () => {
+      window.removeEventListener("pointerup", endDrag);
+      window.removeEventListener("pointercancel", endDrag);
+    };
+  }, [endDrag]);
+
+  const dragTo = useCallback(
+    (point: THREE.Vector3) => {
+      const key = dragIndex.current;
+      if (key === null || !onReorbit) return;
+      // Distance from the barycenter on the ecliptic plane is the new orbit.
+      // Only the radius is taken; angle is left to the physics engine so the
+      // planet does not teleport around its orbit as you drag.
+      const au = sceneToAU(Math.hypot(point.x, point.z));
+      // Floor keeps the planet outside the rendered star, so a drag cannot bury
+      // it in the disc the star-radius cap just cleared.
+      const floor = Math.max(0.02, sceneToAU(starRadiusCap ?? 0) * 1.15);
+      onReorbit(key, Math.max(floor, Math.min(400, au)));
+    },
+    [onReorbit, starRadiusCap],
+  );
+
   return (
     <>
       <SimStepper sim={sim} speed={speedMultiplier} paused={paused} stepTick={stepTick} />
@@ -159,7 +261,14 @@ function SceneContents({
       <StarField />
 
       {starList.map((s, i) => (
-        <StarObject key={s.name + i} star={s} sim={sim} index={i} onClick={() => handleStarClick(i)} />
+        <StarObject
+          key={s.name + i}
+          star={s}
+          sim={sim}
+          index={i}
+          maxRadius={starRadiusCap}
+          onClick={() => handleStarClick(i)}
+        />
       ))}
 
       <HabitableZone
@@ -178,6 +287,9 @@ function SceneContents({
             sim={sim}
             index={i}
             onClick={() => handlePlanetClick(i)}
+            onDragStart={
+              onReorbit ? () => beginDrag(planet.id ?? planet.name) : undefined
+            }
             selected={
               !!selectedBody &&
               selectedBody.type === "planet" &&
@@ -192,8 +304,23 @@ function SceneContents({
       {showAsteroidBelts && system.asteroidBelts.map((belt, i) => <AsteroidBeltObject key={`belt-${i}`} belt={belt} visible />)}
 
       <CameraRig cameraMode={cameraMode} sim={sim} controlsRef={controlsRef} />
+      <DragProjector active={dragIndex} onMove={dragTo} />
 
-      <mesh position={[0, -0.5, 0]} rotation={[-Math.PI / 2, 0, 0]} onClick={handleBgClick} visible={false}>
+      {/* The ecliptic plane. Doubles as the background click target and as the
+          surface a planet drag is projected onto. */}
+      <mesh
+        position={[0, -0.5, 0]}
+        rotation={[-Math.PI / 2, 0, 0]}
+        onClick={handleBgClick}
+        onPointerMove={(e) => {
+          if (dragIndex.current === null) return;
+          e.stopPropagation();
+          dragTo(e.point);
+        }}
+        onPointerUp={endDrag}
+        onPointerLeave={endDrag}
+        visible={false}
+      >
         <planeGeometry args={[6000, 6000]} />
         <meshBasicMaterial transparent opacity={0} />
       </mesh>

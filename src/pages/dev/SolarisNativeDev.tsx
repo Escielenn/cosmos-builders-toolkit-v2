@@ -177,6 +177,40 @@ const SolarisNativeDev = () => {
     });
   }, []);
 
+  /**
+   * Move a planet to a new orbit, keeping its physics honest.
+   *
+   * A dragged orbit is not just a number: the period follows Kepler's third law
+   * from the system's total mass, and whether the planet is in the habitable
+   * zone changes with it. Updating the axis alone would leave a world reporting
+   * a year it no longer has.
+   */
+  const reorbitPlanet = useCallback((planetKey: string, semiMajorAxisAU: number) => {
+    setSystem((s) => {
+      const index = s.planets.findIndex((p) => (p.id ?? p.name) === planetKey);
+      const planet = s.planets[index];
+      if (!planet) return s;
+
+      const au = Math.round(semiMajorAxisAU * 1000) / 1000;
+      if (au === planet.semiMajorAxisAU) return s;
+
+      const totalMass = (s.stars ?? [s.star]).reduce((sum, st) => sum + st.massSOL, 0);
+      const planets = s.planets.slice();
+      planets[index] = {
+        ...planet,
+        semiMajorAxisAU: au,
+        orbitalPeriodYears:
+          Math.round(Math.sqrt(Math.pow(au, 3) / Math.max(totalMass, 0.05)) * 1000) / 1000,
+        inHabitableZone:
+          au >= s.star.habitableZoneInnerAU && au <= s.star.habitableZoneOuterAU,
+      };
+      // Keep the list ordered outward so the camera buttons, the readout and the
+      // roman numerals in generated names all stay in agreement.
+      planets.sort((p, q) => p.semiMajorAxisAU - q.semiMajorAxisAU);
+      return { ...s, planets };
+    });
+  }, []);
+
   // ── Naming ──
   // These are what make the simulator a source of reference material rather
   // than a toy: a named system and named stars survive into the save, and from
@@ -232,7 +266,13 @@ const SolarisNativeDev = () => {
         </div>
 
         {/* key remounts (rebuilds engine) only on Generate/Load; edits keep it stable */}
-        <SolarisViewer key={genKey} system={system} height={viewerHeight} onBodySelect={handleSelect} />
+        <SolarisViewer
+          key={genKey}
+          system={system}
+          height={viewerHeight}
+          onBodySelect={handleSelect}
+          onReorbit={reorbitPlanet}
+        />
 
         <SolarisEditPanel
           system={system}

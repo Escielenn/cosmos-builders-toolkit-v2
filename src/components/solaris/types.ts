@@ -102,6 +102,8 @@ export interface SolarisViewerProps {
   initialCameraMode?: CameraMode;
   showUI?: boolean;
   onBodySelect?: (body: SelectedBody | null) => void;
+  /** Drag a planet to a new orbit, keyed by planet id. Omit for read-only. */
+  onReorbit?: (planetKey: string, semiMajorAxisAU: number) => void;
 }
 
 export type CameraMode = 'free' | 'star' | `planet-${number}`;

@@ -10,15 +10,18 @@ interface StarObjectProps {
   star: StarData;
   sim: SolarisSim;
   index: number;
+  /** Largest permitted rendered radius, so the star cannot swallow its
+      innermost planet. See starRadiusCapForApproach. */
+  maxRadius?: number;
   onClick?: () => void;
 }
 
-export function StarObject({ star, sim, index, onClick }: StarObjectProps) {
+export function StarObject({ star, sim, index, maxRadius, onClick }: StarObjectProps) {
   const groupRef = useRef<THREE.Group>(null);
   const coronaARef = useRef<THREE.Mesh>(null);
   const coronaBRef = useRef<THREE.Mesh>(null);
 
-  const radius = starRadiusToScene(star.radiusSOL);
+  const radius = starRadiusToScene(star.radiusSOL, maxRadius);
 
   useFrame((_state, delta) => {
     const s = sim.stars[index];
@@ -35,13 +38,15 @@ export function StarObject({ star, sim, index, onClick }: StarObjectProps) {
         <meshStandardMaterial color={star.colorHex} emissive={star.colorHex} emissiveIntensity={2.5} />
       </mesh>
 
-      {/* Glow sprite (soft radial gradient — not a hard square) */}
-      <sprite scale={[radius * 6, radius * 6, 1]}>
+      {/* Glow sprite (soft radial gradient — not a hard square).
+          Pulled in from 6x to 4x: the halo is additive, so at 6x it washed out
+          any planet on a close orbit even once the disc itself cleared it. */}
+      <sprite scale={[radius * 4, radius * 4, 1]}>
         <spriteMaterial
           map={getGlowTexture()}
           color={star.colorHex}
           transparent
-          opacity={0.55}
+          opacity={0.45}
           blending={THREE.AdditiveBlending}
           depthWrite={false}
         />
