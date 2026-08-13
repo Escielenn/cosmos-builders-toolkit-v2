@@ -63,8 +63,8 @@ const ExoskySimulator = () => {
             />
           </Suspense>
           {/* Save/Load controls */}
-          {worldId && (
-            <div className="absolute bottom-3 left-3 z-20 flex items-center gap-1.5">
+          {(
+            <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 border border-sf-teal/30 bg-sf-void/90 px-1.5 py-1 backdrop-blur-sm">
               <Button
                 variant="outline"
                 size="sm"

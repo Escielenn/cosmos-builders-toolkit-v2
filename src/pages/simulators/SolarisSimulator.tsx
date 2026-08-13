@@ -75,14 +75,18 @@ const SolarisSimulator = () => {
               onLoad={() => setLoaded(true)}
             />
           </div>
-          {/* Save/Load/Publish controls, bottom-left to avoid overlapping iframe UI */}
-          {loaded && worldId && (
-            <div className="absolute bottom-3 left-3 z-20 flex items-center gap-1.5">
+          {/* Save/Load/Publish. Top-centre because every static sim draws its own
+              control panel at bottom-left (#ctrl is bottom:14px left:14px), which
+              this group used to sit on top of. No longer gated on a world: the
+              dialogs ask which world, and gating the buttons made that
+              unreachable from the tools menu. */}
+          {loaded && (
+            <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 border border-sf-teal/30 bg-sf-void/90 px-1.5 py-1 backdrop-blur-sm">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={requestSave}
-                className="bg-sf-void/80 border-sf-border text-sf-teal hover:bg-sf-void text-[12px] uppercase tracking-wider h-7 px-2.5"
+                className="bg-sf-teal/[0.12] border-sf-teal/45 text-[#3DFFCD] hover:bg-sf-teal/25 hover:text-white text-[12px] uppercase tracking-wider h-8 px-3"
               >
                 <Save className="w-3 h-3 mr-1" />
                 Save
@@ -91,7 +95,7 @@ const SolarisSimulator = () => {
                 variant="outline"
                 size="sm"
                 onClick={() => setLoadSheetOpen(true)}
-                className="bg-sf-void/80 border-sf-border text-sf-teal hover:bg-sf-void text-[12px] uppercase tracking-wider h-7 px-2.5"
+                className="bg-sf-teal/[0.12] border-sf-teal/45 text-[#3DFFCD] hover:bg-sf-teal/25 hover:text-white text-[12px] uppercase tracking-wider h-8 px-3"
               >
                 <FolderOpen className="w-3 h-3 mr-1" />
                 Load
@@ -100,17 +104,21 @@ const SolarisSimulator = () => {
                 variant="outline"
                 size="sm"
                 onClick={() => setPublishDialogOpen(true)}
-                className="bg-sf-void/80 border-sf-border text-sf-teal hover:bg-sf-void text-[12px] uppercase tracking-wider h-7 px-2.5"
+                className="bg-sf-teal/[0.12] border-sf-teal/45 text-[#3DFFCD] hover:bg-sf-teal/25 hover:text-white text-[12px] uppercase tracking-wider h-8 px-3"
               >
                 <Rocket className="w-3 h-3 mr-1" />
                 Publish
               </Button>
-              <SimulatorWorldEntityPicker
-                worldId={worldId}
-                simulatorType="solaris"
-                entityTypes={["star", "planet"]}
-                iframeRef={iframeRef}
-              />
+              {/* Browses a world's own entities, so it genuinely needs one.
+                  Save and Publish do not: they ask which world instead. */}
+              {worldId && (
+                <SimulatorWorldEntityPicker
+                  worldId={worldId}
+                  simulatorType="solaris"
+                  entityTypes={["star", "planet"]}
+                  iframeRef={iframeRef}
+                />
+              )}
             </div>
           )}
           <NarrativeBridgePanel
