@@ -8,7 +8,7 @@
  */
 
 import { type ReactNode, useState, useEffect, useMemo, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { ArrowLeft, FileText } from "lucide-react";
 import { getToolAccent, accentTextClass, accentArcClass, accentBgClass } from "@/lib/tool-accents";
 import CascadeSuggestionToast from "@/components/tools/CascadeSuggestionToast";
@@ -26,6 +26,8 @@ import { WorksheetTagsBar } from "@/components/tools/WorksheetTagsBar";
 import { getToolIcon } from "@/components/icons/tool-icons";
 import { getToolPageConfig } from "@/lib/tool-page-config";
 import { useWorldId } from "@/hooks/use-world-id";
+import { useAuth } from "@/contexts/AuthContext";
+import SaveToWorldDialog from "@/components/tools/SaveToWorldDialog";
 import { useMetaTags } from "@/hooks/use-meta-tags";
 import { PinToWritingButton } from "@/components/tools/PinToWritingButton";
 import { useWorksheets } from "@/hooks/use-worksheets";
@@ -75,6 +77,59 @@ interface ToolPageLayoutProps {
 
 // ─── Component ───────────────────────────────────────────────────────
 
+/**
+ * Chooses a world when Save is pressed on a tool that has none.
+ *
+ * Every tool page's own handleSave reads `if (worldId && user)` and otherwise
+ * falls back to localStorage with a "saved locally" toast. That is a dead end:
+ * the work never reaches a world, so the writing surface cannot see it and it
+ * dies with the browser cache.
+ *
+ * Fixed here rather than in 21 tool pages. The layout owns the Save button, and
+ * every page already resolves its world from the `worldId` search param, so
+ * setting that param is enough to turn the page's own save into a cloud save.
+ * The pending flag then fires the real save once the world is live, because
+ * `onSave` closes over the old world id and calling it immediately would still
+ * take the local path.
+ */
+function useSaveWorldGate(
+  onSave: () => void,
+  isCloudEnabled: boolean | undefined,
+  hasWorld: boolean,
+) {
+  const { user } = useAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const [chosenWorld, setChosenWorld] = useState<string | undefined>(undefined);
+  const [pendingSave, setPendingSave] = useState(false);
+
+  useEffect(() => {
+    if (!pendingSave || !isCloudEnabled) return;
+    setPendingSave(false);
+    onSave();
+  }, [pendingSave, isCloudEnabled, onSave]);
+
+  const requestSave = () => {
+    // Signed out, or already attached to a world: nothing to ask.
+    if (hasWorld || !user) {
+      onSave();
+      return;
+    }
+    setPickerOpen(true);
+  };
+
+  const confirm = () => {
+    if (!chosenWorld) return;
+    setPickerOpen(false);
+    setPendingSave(true);
+    const next = new URLSearchParams(searchParams);
+    next.set("worldId", chosenWorld);
+    setSearchParams(next, { replace: true });
+  };
+
+  return { requestSave, pickerOpen, setPickerOpen, chosenWorld, setChosenWorld, confirm };
+}
+
 export default function ToolPageLayout({
   toolType,
   onSave,
@@ -103,6 +158,7 @@ export default function ToolPageLayout({
 }: ToolPageLayoutProps) {
   const cfg = getToolPageConfig(toolType);
   const worldId = useWorldId();
+  const saveGate = useSaveWorldGate(onSave, isCloudEnabled, !!worldId);
   const ToolIcon = getToolIcon(toolType);
   const introData = TOOL_INTROS[cfg.introKey];
   const accent = getToolAccent(toolType);
@@ -153,7 +209,7 @@ export default function ToolPageLayout({
 
         {/* ── Action Bar ────────────────────────────────────────── */}
         <ToolActionBar
-          onSave={onSave}
+          onSave={saveGate.requestSave}
           onOpen={onOpen}
           onPrint={onPrint}
           onExport={onExport}
@@ -244,6 +300,16 @@ export default function ToolPageLayout({
         worldId={worldId}
         visible={showCascadeSuggestion}
         onDismiss={() => setShowCascadeSuggestion(false)}
+      />
+
+      {/* ── Which world does this belong to? ──────────────────── */}
+      <SaveToWorldDialog
+        open={saveGate.pickerOpen}
+        onOpenChange={saveGate.setPickerOpen}
+        value={saveGate.chosenWorld}
+        onChange={saveGate.setChosenWorld}
+        onConfirm={saveGate.confirm}
+        toolName={cfg.fullName}
       />
     </PageShell>
   );
