@@ -63,20 +63,27 @@ Ordered so that value lands early and each step de-risks the next.
 
 The native rebuild exists and is complete through M6. It is reachable only at `/dev/solaris`, so no user has it.
 
-**Verified 2026-08-12: cutting over today would be a regression.** `docs/SOLARIS_M6_PARITY_AND_CUTOVER.md` says so in its own words, and its P0 list is still open. B is ahead on physics, science, rendering, determinism and save fidelity, and behind on controls. Missing in the native build:
+**Verified 2026-08-12: cutting over would have been a regression.** `docs/SOLARIS_M6_PARITY_AND_CUTOVER.md` says so in its own words. B was ahead on physics, science, rendering, determinism and save fidelity, and behind on controls.
 
-- **Play/pause.** A time-based simulator with no transport control.
-- **System name input / rename, and planet rename.** B is seed-derived only. This one blocks the stated product goal directly: reference elements cannot be *pulled into the writing studio* if the writer was never able to *name* them. Fix naming first, and it feeds `extractSolarisFacts` immediately, which already reads `parameters.sf2System` names.
-- Named architecture presets, generation conditions, separation sliders, planet-count slider.
-- Rich info panel display (the data is already preserved, so this is cheap), math overlay, Oort cloud, trails, gravity vectors, reorbit planet, rotation controls.
-- **Mobile is unusable:** scrollWidth 585 against clientWidth 390.
+**Closed in 0.6960 and 0.6970:**
 
-Three items also remain unverified: real-hardware FPS (the headless harness returned contradictory 0/29/40 fps and was never a usable result), click-to-select raycast in a real browser, and mobile layout.
+- [x] **Naming.** System, star, planet and moon. Verified in a browser through to the `sf2System` snapshot in the save payload, which is what `extractSolarisFacts` reads. This was the gap that blocked the stated product goal: reference elements cannot be pulled into the writing studio if the writer could never name them.
+- [x] **Play / pause / single step**, plus spacebar. Verified against label motion, not a canvas hash — `toDataURL` on a WebGL canvas returns empty without `preserveDrawingBuffer`, so a naive check makes "frozen" and "blind" look identical.
+- [x] **Generation conditions** (habitable, gas giant, tidal lock, rogue), forced at both the band list and the archetype pool, as the original does. Deliberately fixes the original's bug where the habitable rule overwrites the tidal one.
+- [x] **Planet-count slider, star-class picker, asteroid-belt control, named architecture presets.** The generator already supported these; no UI reached them.
+- [x] **Rich info panel.** Life, atmosphere, water, hazard, resources, the archetype note, named moons, eccentricity, tilt. All of it was preserved through generation and save and simply never displayed.
+- [x] **Reorbit planet by dragging.** Keyed by planet id, since reorbiting re-sorts the list and a captured index would follow the wrong body.
+- [x] Contrast pass on all four panels. The transport controls were unfindable, and not only because they were hidden: control text sat at `white/30` with `0.06` borders.
+- [x] Panel layout. Both left panels were anchored to the same edge with overlapping heights, so the edit panel completely covered the transport row.
 
-The cutover itself stays cheap once those close: §5 is a single-file change to `src/pages/simulators/SolarisSimulator.tsx`, with the route and `ProToolGuard` unchanged and nothing deleted.
+**Still open before the cutover:**
 
-- [ ] Close the P0 gaps above, **naming first**.
+- [ ] Separation sliders, trails, gravity vectors, Oort cloud, rotation controls, math overlay.
+- [ ] **Mobile is unusable:** scrollWidth 585 against clientWidth 390.
+- [ ] Unverified: real-hardware FPS (the headless harness returned contradictory 0/29/40 fps and was never a usable result), and click-to-select raycast in a real browser.
 - [ ] Re-read `docs/SOLARIS_M6_PARITY_AND_CUTOVER.md` and confirm the parity table against the current native components.
+
+The cutover itself stays cheap: §5 is a single-file change to `src/pages/simulators/SolarisSimulator.tsx`, with the route and `ProToolGuard` unchanged and nothing deleted.
 - [ ] Drive both versions side by side at 1728×1080 and at 420px: `/tools/solaris` (iframe) vs `/dev/solaris` (native). Compare system generation, orbital motion, habitable-zone rendering, save, load, publish.
 - [ ] Point the `/tools/solaris` route at the native component; keep `/dev/solaris` alive for one release as a fallback.
 - [ ] Delete `public/tools/solaris/sim.html` (137 KB) **only after** a release has shipped with the native version live.
@@ -127,6 +134,12 @@ Applied to each conversion as it lands, rather than as a separate later pass.
 - [ ] Measure before optimising: FPS desktop and mobile, time to first interaction, bundle delta. Record the numbers in the PR.
 - [ ] Delta-time animation everywhere (per `CLAUDE.md`: framerate-independent camera smoothing).
 - [ ] Route-level lazy loading; a simulator must not weigh on first paint of any other page.
+
+**Believable (S2a), added 2026-08-12 from owner feedback**
+- [x] Planets carry a surface, not a tint. Six procedural treatments by type, generated on a canvas and cached by type and colour (`utils/planetTexture.ts`). A gas giant and a desert world used to differ only in hue.
+- [x] The star cannot swallow its innermost planet. Stars render ~68x oversized for visibility, which put a Sun-like star's disc at 0.31 AU against a first planet at 0.34 AU, and swallowed a red dwarf's first planet entirely. The disc is now capped at half the closest approach, using periapsis.
+- [x] Default speed 1x, not 10x. Opening at 10x looked frantic and blurred the inner planets.
+- [ ] Apply the same three checks to each simulator as it converts. Flat-tinted bodies and an oversized primary are not Solaris-specific problems.
 
 **Beautiful (S2)**
 - [ ] Token-native: import from the generated tokens, no literals. Zero `#00D4FF`, zero Space Grotesk. CI cyan-watch becomes a hard failure once the last static file is gone.
