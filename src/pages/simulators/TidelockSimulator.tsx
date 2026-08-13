@@ -123,9 +123,10 @@ const TidelockSimulator = () => {
         open={saveDialogOpen}
         onOpenChange={setSaveDialogOpen}
         payload={pendingPayload}
-        onSave={(name) => {
+        worldId={worldId ?? undefined}
+        onSave={(name, chosenWorld) => {
           if (pendingPayload) {
-            createSave.mutate({ name, data: pendingPayload });
+            createSave.mutate({ name, data: pendingPayload, worldId: chosenWorld });
           }
         }}
         isSaving={createSave.isPending}

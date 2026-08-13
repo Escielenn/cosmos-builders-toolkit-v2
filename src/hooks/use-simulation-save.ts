@@ -82,13 +82,21 @@ export function useSimulationSave({
       name: string;
       data: SimulatorPayload;
       narrativeNotes?: Record<string, string>;
+      /** Chosen in the save dialog when the simulator has no world in context.
+          A save with no world is invisible to the writing surface. */
+      worldId?: string;
     }) => {
       if (!user) throw new Error("Not authenticated");
+
+      const targetWorld = input.worldId ?? worldId ?? null;
+      if (!targetWorld) {
+        throw new Error("Choose a world to save this simulation into");
+      }
 
       const { data, error } = await supabase
         .from("simulation_saves")
         .insert({
-          world_id: worldId ?? null,
+          world_id: targetWorld,
           user_id: user.id,
           simulator_type: simulatorType,
           name: input.name,

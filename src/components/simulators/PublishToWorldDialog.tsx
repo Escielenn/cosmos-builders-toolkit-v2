@@ -24,6 +24,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Loader } from "@/components/ui/loader";
+import SimulationWorldPicker from "@/components/simulators/SimulationWorldPicker";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { createEntry } from "@/services/world-entries";
@@ -69,6 +70,20 @@ export default function PublishToWorldDialog({
   const [matchCandidates, setMatchCandidates] = useState<EntityMatchCandidate[]>([]);
   const [matchDialogOpen, setMatchDialogOpen] = useState(false);
 
+  /**
+   * The world to publish into.
+   *
+   * Falls back to a picker when the simulator was opened outside a world. This
+   * dialog used to `return null` in that case, so Publish looked like a dead
+   * button: nothing rendered, nothing was logged, and the writer had no way to
+   * get their system into a world at all.
+   */
+  const [chosenWorld, setChosenWorld] = useState<string | undefined>(worldId);
+  useEffect(() => {
+    if (worldId) setChosenWorld(worldId);
+  }, [worldId]);
+  const targetWorld = worldId ?? chosenWorld;
+
   // Pre-fill name from payload
   useEffect(() => {
     if (payload?.name) setName(payload.name);
@@ -78,12 +93,12 @@ export default function PublishToWorldDialog({
     OUTPUT_TYPE_MAP[payload?.outputType ?? ""] ?? "custom";
 
   const handlePublish = useCallback(async () => {
-    if (!worldId || !user || !name.trim()) return;
+    if (!targetWorld || !user || !name.trim()) return;
 
     setIsPublishing(true);
     try {
       // Check for fuzzy matches first
-      const matches = await findFuzzyNameMatches(worldId, name.trim());
+      const matches = await findFuzzyNameMatches(targetWorld, name.trim());
       if (matches.length > 0) {
         setMatchCandidates(matches);
         setMatchDialogOpen(true);
@@ -101,16 +116,16 @@ export default function PublishToWorldDialog({
       });
       setIsPublishing(false);
     }
-  }, [worldId, user, name]);
+  }, [targetWorld, user, name]);
 
   const createEntity = useCallback(async () => {
-    if (!worldId || !user) return;
+    if (!targetWorld || !user) return;
 
     setIsPublishing(true);
     try {
       await createEntry(
         {
-          worldId,
+          worldId: targetWorld,
           title: name.trim(),
           entryType,
           metadata: {
@@ -140,7 +155,7 @@ export default function PublishToWorldDialog({
     } finally {
       setIsPublishing(false);
     }
-  }, [worldId, user, name, entryType, simulatorType, payload, narrativeNotes, toast, onOpenChange]);
+  }, [targetWorld, user, name, entryType, simulatorType, payload, narrativeNotes, toast, onOpenChange]);
 
   const handleMatchLink = useCallback(
     (_candidate: EntityMatchCandidate) => {
@@ -160,7 +175,8 @@ export default function PublishToWorldDialog({
     createEntity();
   }, [createEntity]);
 
-  if (!worldId) return null;
+  // No early return on a missing world any more. The dialog opens and asks which
+  // world to use, because the alternative was a Publish button that did nothing.
 
   return (
     <>
@@ -201,6 +217,14 @@ export default function PublishToWorldDialog({
               </p>
             </div>
 
+            {!worldId && (
+              <SimulationWorldPicker
+                value={chosenWorld}
+                onChange={setChosenWorld}
+                label="Publish into which world"
+              />
+            )}
+
             {narrativeNotes && Object.values(narrativeNotes).some((v) => v.trim()) && (
               <p className="text-[12px] text-t4 font-mono uppercase tracking-wider">
                 + Narrative notes will be attached
@@ -212,7 +236,12 @@ export default function PublishToWorldDialog({
             <Button variant="outline" onClick={() => onOpenChange(false)} disabled={isPublishing}>
               Cancel
             </Button>
-            <Button onClick={handlePublish} disabled={isPublishing || !name.trim()} className="gap-2">
+            <Button
+              onClick={handlePublish}
+              disabled={isPublishing || !name.trim() || !targetWorld}
+              title={!targetWorld ? "Choose a world first" : undefined}
+              className="gap-2"
+            >
               {isPublishing ? (
                 <Loader variant="inline" size="sm" />
               ) : (
