@@ -47,17 +47,56 @@ export default function SolarisViewer({
     [onBodySelect]
   );
 
-  // Spacebar toggles playback, per the simulator spec in CLAUDE.md. Ignored
-  // while a field has focus, so renaming a planet does not pause the orrery.
+  const [showKeys, setShowKeys] = useState(false);
+
+  /**
+   * Keyboard control, matching the set the native Rogue uses so the two
+   * simulators are learned once rather than twice.
+   *
+   * Ignored while a field has focus, so renaming a planet does not pause the
+   * orrery or step it a frame mid-word.
+   */
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.code !== "Space") return;
       const el = document.activeElement;
       const tag = el?.tagName;
       if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
       if (el instanceof HTMLElement && el.isContentEditable) return;
-      e.preventDefault();
-      setPaused((p) => !p);
+
+      switch (e.key) {
+        case " ":
+          e.preventDefault();
+          setPaused((p) => !p);
+          break;
+        case ".":
+          // Step a frame, which only means anything while paused.
+          setStepTick((t) => t + 1);
+          break;
+        case "1":
+          setCameraMode("free");
+          break;
+        case "2":
+          setCameraMode("star");
+          break;
+        case "l":
+        case "L":
+          setShowLabels((v) => !v);
+          break;
+        case "o":
+        case "O":
+          setShowOrbitalPaths((v) => !v);
+          break;
+        case "h":
+        case "H":
+          setShowHabitableZone((v) => !v);
+          break;
+        case "?":
+          setShowKeys((v) => !v);
+          break;
+        case "Escape":
+          setShowKeys(false);
+          break;
+      }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -123,6 +162,43 @@ export default function SolarisViewer({
             star={system.star}
             selectedBody={selectedBody}
           />
+
+          {/* Keyboard help, same affordance and place as the native Rogue. */}
+          <button
+            type="button"
+            onClick={() => setShowKeys((v) => !v)}
+            title="Keyboard shortcuts (?)"
+            aria-pressed={showKeys}
+            className={`absolute bottom-3 right-3 z-20 min-w-[30px] border px-2 py-1 font-mono text-[12px] backdrop-blur-sm transition-colors ${
+              showKeys
+                ? "border-[#15C17B] bg-[#15C17B]/25 text-white"
+                : "border-white/[0.35] bg-[rgba(13,13,15,0.94)] text-white/80 hover:text-white"
+            }`}
+          >
+            ?
+          </button>
+
+          {showKeys && (
+            <div className="absolute bottom-14 right-3 z-30 w-[228px] border border-white/[0.3] bg-[rgba(13,13,15,0.97)] p-3 backdrop-blur-sm">
+              <span className="mb-2 block font-mono text-[12px] uppercase tracking-[2px] text-[#3DFFCD]/80">
+                Keyboard
+              </span>
+              {[
+                ["Space", paused ? "Resume" : "Pause"],
+                [".", "Step one frame"],
+                ["1 / 2", "Free / star camera"],
+                ["L", "Labels"],
+                ["O", "Orbital paths"],
+                ["H", "Habitable zone"],
+                ["?", "This list"],
+              ].map(([k, what]) => (
+                <div key={k} className="flex items-baseline justify-between gap-3 py-0.5">
+                  <span className="shrink-0 font-mono text-[12px] text-[#3DFFCD]">{k}</span>
+                  <span className="text-right text-[12px] text-white/75">{what}</span>
+                </div>
+              ))}
+            </div>
+          )}
         </>
       )}
     </div>
