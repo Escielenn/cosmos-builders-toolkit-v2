@@ -289,6 +289,59 @@ export const ENTITY_MASTER_FIELDS: Record<string, MasterFieldDef[]> = {
       type: "number",
       worksheetPaths: { "drake-equation-calculator": "values.L" },
     },
+    // ── Space Expansion Modeler ──
+    // Listed in EXTRA_TOOLS.faction with nothing behind it, so an entire model
+    // of how a civilisation spread reached nothing. The synthesis fields are
+    // where the writer states what the expansion means, which is the part prose
+    // draws on rather than the phase tables.
+    {
+      label: "Expansion Name",
+      key: "expansionName",
+      type: "text",
+      worksheetPaths: { "space-expansion-modeler": "foundation.expansionName" },
+    },
+    {
+      label: "Origin Civilization",
+      key: "originCivilization",
+      type: "text",
+      worksheetPaths: { "space-expansion-modeler": "foundation.originCivilization" },
+    },
+    {
+      label: "Expansion Began",
+      key: "expansionStartYear",
+      type: "text",
+      worksheetPaths: { "space-expansion-modeler": "foundation.startYear" },
+    },
+    {
+      label: "Dominant Force",
+      key: "dominantForce",
+      type: "text",
+      worksheetPaths: { "space-expansion-modeler": "synthesis.dominantForce" },
+    },
+    {
+      label: "Expansion Trajectory",
+      key: "expansionTrajectory",
+      type: "text",
+      worksheetPaths: { "space-expansion-modeler": "synthesis.overallTrajectory" },
+    },
+    {
+      label: "Biggest Tension",
+      key: "biggestTension",
+      type: "text",
+      worksheetPaths: { "space-expansion-modeler": "synthesis.biggestTensionPoint" },
+    },
+    {
+      label: "Narrative Theme",
+      key: "narrativeTheme",
+      type: "text",
+      worksheetPaths: { "space-expansion-modeler": "synthesis.narrativeTheme" },
+    },
+    {
+      label: "Story Hooks",
+      key: "storyHooks",
+      type: "text",
+      worksheetPaths: { "space-expansion-modeler": "synthesis.storyHooks" },
+    },
   ],
 
   vessel: [
@@ -392,6 +445,46 @@ export const ENTITY_MASTER_FIELDS: Record<string, MasterFieldDef[]> = {
       type: "text",
       worksheetPaths: { "propulsion-consequences-map": "costs.serviceLife" },
     },
+    // ── Gravitas ──
+    // Also already listed in EXTRA_TOOLS.vessel with no paths behind it. How a
+    // ship makes its gravity decides what standing up feels like on every deck,
+    // which is a thing prose has to stay consistent about.
+    {
+      label: "Gravity Method",
+      key: "gravityMethod",
+      type: "text",
+      worksheetPaths: { gravitas: "activeMode" },
+    },
+    {
+      label: "Spin Radius (m)",
+      key: "spinRadius",
+      type: "number",
+      worksheetPaths: { gravitas: "spin.radius_m" },
+    },
+    {
+      label: "Rotation (rpm)",
+      key: "rotationRpm",
+      type: "number",
+      worksheetPaths: { gravitas: "spin.rotation_rpm" },
+    },
+    {
+      label: "Thrust Acceleration (g)",
+      key: "thrustAcceleration",
+      type: "number",
+      worksheetPaths: { gravitas: "thrust.acceleration_g" },
+    },
+    {
+      label: "Target Gravity (g)",
+      key: "targetGravity",
+      type: "number",
+      worksheetPaths: { gravitas: "artificial.desired_g" },
+    },
+    {
+      label: "Gravity Failure Mode",
+      key: "gravityFailureMode",
+      type: "text",
+      worksheetPaths: { gravitas: "artificial.failure_mode" },
+    },
   ],
 
   technology: [
@@ -423,7 +516,13 @@ export const ENTITY_MASTER_FIELDS: Record<string, MasterFieldDef[]> = {
       label: "The One Big Lie",
       key: "theOneBigLie",
       type: "text",
-      worksheetPaths: { "one-big-lie": "coreStatement.statement" },
+      // Two tools record the same premise, which is exactly what a field with
+      // several paths is for: whichever one the writer filled in, the premise
+      // reaches their prose, and entity-sync keeps the two in step.
+      worksheetPaths: {
+        "one-big-lie": "coreStatement.statement",
+        "space-expansion-modeler": "foundation.oneBigLie",
+      },
     },
     {
       label: "Science It Breaks",

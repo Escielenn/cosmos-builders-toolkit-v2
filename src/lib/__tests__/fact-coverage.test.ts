@@ -143,10 +143,71 @@ describe("newly mapped tools actually surface their values", () => {
     expect(byKey.generationalShift).toContain("third generation");
   });
 
-  it("reports the three as mapped, where before they were dark", () => {
-    for (const slug of ["propulsion-consequences-map", "one-big-lie", "lexdrift"]) {
+  it("reports the newly mapped tools as mapped, where before they were dark", () => {
+    for (const slug of [
+      "propulsion-consequences-map",
+      "one-big-lie",
+      "lexdrift",
+      "gravitas",
+      "space-expansion-modeler",
+    ]) {
       expect(hasFactMapping(slug), slug).toBe(true);
     }
+  });
+
+  it("gravitas surfaces how a ship makes its gravity", () => {
+    const byKey = Object.fromEntries(
+      extractWorksheetFacts("gravitas", {
+        activeMode: "spin",
+        spin: { radius_m: 500, rotation_rpm: 1.34 },
+        thrust: { acceleration_g: 0.3 },
+        artificial: { desired_g: 1, failure_mode: "gradual" },
+      }).map((f) => [f.key, f.value]),
+    );
+    expect(byKey.gravityMethod).toBe("spin");
+    expect(byKey.spinRadius).toBe("500");
+    expect(byKey.rotationRpm).toBe("1.34");
+    expect(byKey.thrustAcceleration).toBe("0.3");
+    expect(byKey.gravityFailureMode).toBe("gradual");
+  });
+
+  it("space-expansion-modeler surfaces the synthesis a writer draws on", () => {
+    const byKey = Object.fromEntries(
+      extractWorksheetFacts("space-expansion-modeler", {
+        foundation: {
+          expansionName: "The Long Reach",
+          originCivilization: "Terran Compact",
+          startYear: "2189",
+          oneBigLie: "Jump drives need a living navigator",
+        },
+        synthesis: {
+          dominantForce: "Resource scarcity",
+          overallTrajectory: "Overextension",
+          biggestTensionPoint: "The colonies out-produce the core",
+          narrativeTheme: "The frontier stops needing home",
+          storyHooks: "A supply convoy simply stops arriving",
+        },
+      }).map((f) => [f.key, f.value]),
+    );
+    expect(byKey.expansionName).toBe("The Long Reach");
+    expect(byKey.originCivilization).toBe("Terran Compact");
+    expect(byKey.dominantForce).toBe("Resource scarcity");
+    expect(byKey.narrativeTheme).toContain("frontier");
+    expect(byKey.storyHooks).toContain("supply convoy");
+  });
+
+  it("lets either tool supply the premise, since both record it", () => {
+    // The same field carries paths for both tools, so whichever the writer
+    // filled in reaches their prose.
+    const fromLie = extractWorksheetFacts("one-big-lie", {
+      coreStatement: { statement: "A" },
+    }).find((f) => f.key === "theOneBigLie");
+    const fromExpansion = extractWorksheetFacts("space-expansion-modeler", {
+      foundation: { oneBigLie: "B" },
+    }).find((f) => f.key === "theOneBigLie");
+    expect(fromLie?.value).toBe("A");
+    expect(fromExpansion?.value).toBe("B");
+    expect(fromLie?.label).toBe(fromExpansion?.label);
   });
 
   it("returns nothing for an empty worksheet rather than blank facts", () => {
@@ -162,7 +223,7 @@ describe("coverage across the catalogue", () => {
     const dark = allTools.filter((t) => !mapped.has(t));
 
     // A floor, not a target: this must not regress. Raise it as tools are mapped.
-    expect(reaching.length).toBeGreaterThanOrEqual(16);
+    expect(reaching.length).toBeGreaterThanOrEqual(18);
 
     // Named so the list stays visible rather than becoming a silent number.
     // environmental-chain-reaction is a deliberate exception: it records
@@ -171,13 +232,15 @@ describe("coverage across the catalogue", () => {
     expect(dark).toEqual(
       expect.arrayContaining([
         "environmental-chain-reaction",
-        "gravitas",
         "sensorium",
-        "space-expansion-modeler",
         "stellar-cartographer",
         "timeline",
       ]),
     );
+    // Named so a regression is loud: these were mapped and must stay mapped.
+    for (const slug of ["gravitas", "space-expansion-modeler"]) {
+      expect(mapped.has(slug), slug).toBe(true);
+    }
   });
 
   it("has no mapping for a tool that is not in the catalogue", () => {
