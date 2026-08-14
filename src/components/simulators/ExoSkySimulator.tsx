@@ -27,87 +27,30 @@ import { toExoskyPayload, fromExoskySave } from "@/lib/simulators/exosky-save";
 // ═══════════════════════════════════════════════════════════════
 
 const DEG = Math.PI / 180;
-const RAD = 180 / Math.PI;
-
-// ── GALACTIC CONSTANTS ────────────────────────────────────────
-const R_SUN = 8200;        // Sun's distance from galactic center (pc)
-const Z_SUN = 25;          // Sun's height above galactic plane (pc)
-const DISK_SCALE_H = 2600; // Radial scale length (pc)
-const DISK_SCALE_Z = 300;  // Vertical scale height - thin disk (pc)
-const DUST_SCALE_Z = 120;  // Dust lane scale height (pc)
-const ARM_WIDTH = 500;     // Spiral arm Gaussian width (pc)
-const ARM_PITCH = 12 * DEG;// Spiral arm pitch angle
-const BULGE_RADIUS = 1200; // Galactic bulge effective radius (pc)
-
-// ── EQUATORIAL → GALACTIC ROTATION MATRIX ─────────────────────
-// IAU 1958 system: NGP at (192.859°, 27.128°), l_NCP = 122.932°
-const R_EQ_TO_GAL = [
-  [-0.0548755604, -0.8734370902, -0.4838350155],
-  [ 0.4941094279, -0.4448296300,  0.7469822445],
-  [-0.8676661490, -0.1980763734,  0.4559837762]
-];
-
-function eqToGal(x, y, z) {
-  return [
-    R_EQ_TO_GAL[0][0]*x + R_EQ_TO_GAL[0][1]*y + R_EQ_TO_GAL[0][2]*z,
-    R_EQ_TO_GAL[1][0]*x + R_EQ_TO_GAL[1][1]*y + R_EQ_TO_GAL[1][2]*z,
-    R_EQ_TO_GAL[2][0]*x + R_EQ_TO_GAL[2][1]*y + R_EQ_TO_GAL[2][2]*z,
-  ];
-}
-
-// Transpose for inverse
-function galToEq(gx, gy, gz) {
-  return [
-    R_EQ_TO_GAL[0][0]*gx + R_EQ_TO_GAL[1][0]*gy + R_EQ_TO_GAL[2][0]*gz,
-    R_EQ_TO_GAL[0][1]*gx + R_EQ_TO_GAL[1][1]*gy + R_EQ_TO_GAL[2][1]*gz,
-    R_EQ_TO_GAL[0][2]*gx + R_EQ_TO_GAL[1][2]*gy + R_EQ_TO_GAL[2][2]*gz,
-  ];
-}
-
-// ── COORDINATE CONVERSIONS ────────────────────────────────────
-function raDecDistToXYZ(ra, dec, dist) {
-  const r = dist;
-  const cd = Math.cos(dec * DEG);
-  return [r * cd * Math.cos(ra * DEG), r * cd * Math.sin(ra * DEG), r * Math.sin(dec * DEG)];
-}
-
-function xyzToRaDec(x, y, z) {
-  const dist = Math.sqrt(x*x + y*y + z*z);
-  if (dist < 1e-12) return { ra: 0, dec: 0, dist: 0 };
-  const dec = Math.asin(Math.max(-1, Math.min(1, z / dist))) * RAD;
-  let ra = Math.atan2(y, x) * RAD;
-  if (ra < 0) ra += 360;
-  return { ra, dec, dist };
-}
-
-function eqXYZtoGalactocentric(eqX, eqY, eqZ) {
-  // Convert equatorial heliocentric XYZ to galactocentric
-  const [gx, gy, gz] = eqToGal(eqX, eqY, eqZ);
-  // In Sun-centered galactic: gx toward GC, gy toward l=90°, gz toward NGP
-  // Galactocentric: Sun is at (R_SUN, 0, Z_SUN) from center
-  // Direction toward GC is +gx from Sun, so GC is at (R_SUN, 0, -Z_SUN) from Sun in galactic frame
-  // Thus galactocentric position = (R_SUN - gx, -gy, Z_SUN + gz)
-  // Wait: l=0 is toward GC, so +gx points toward GC from Sun
-  // In GC-centric frame with x toward Sun: x_GC = R_SUN - gx, but we want
-  // a frame centered on GC. Let's use: GC x-axis through Sun, y perpendicular in plane
-  return [R_SUN - gx, -gy, Z_SUN + gz];
-}
-
-function apparentMag(absMag, distPc) {
-  if (distPc <= 0.001) return -26.7;
-  return absMag + 5 * Math.log10(distPc / 10);
-}
-
-function bvToRGB(bv) {
-  let t, r, g, b;
-  bv = Math.max(-0.4, Math.min(2.0, bv));
-  if (bv < 0)      { t=(bv+.4)/.4;  r=.61+.39*t; g=.70+.30*t; b=1; }
-  else if (bv<.4)   { t=bv/.4;       r=.83+.17*(1-t); g=.87+.13*(1-t); b=1; }
-  else if (bv<.8)   { t=(bv-.4)/.4;  r=1; g=1-.2*t; b=1-.4*t; }
-  else if (bv<1.2)  { t=(bv-.8)/.4;  r=1; g=.8-.15*t; b=.6-.25*t; }
-  else              { t=Math.min(1,(bv-1.2)/.8); r=1; g=.65-.2*t; b=.35-.2*t; }
-  return [Math.round(r*255), Math.round(g*255), Math.round(b*255)];
-}
+// ── ASTRONOMY MATHS ───────────────────────────────────────────
+// Moved to lib/simulators/astro.ts and put under test. The header above claims
+// this maths was validated; it now actually is, against the north galactic
+// pole, Sagittarius A*, the distance modulus and known star separations.
+// The duplicate definitions that used to sit here are gone, so there is one
+// copy to be right rather than two to drift apart.
+import {
+  RAD,
+  R_SUN,
+  Z_SUN,
+  DISK_SCALE_H,
+  DISK_SCALE_Z,
+  DUST_SCALE_Z,
+  ARM_WIDTH,
+  ARM_PITCH,
+  BULGE_RADIUS,
+  eqToGal,
+  galToEq,
+  raDecDistToXYZ,
+  xyzToRaDec,
+  eqXYZtoGalactocentric,
+  apparentMag,
+  bvToRGB,
+} from "@/lib/simulators/astro";
 
 // ── STAR CATALOG (lazy-loaded from /exosky-stars.json) ────────
 // Format: [name, RA(°), Dec(°), dist(pc), absMag, B-V]
