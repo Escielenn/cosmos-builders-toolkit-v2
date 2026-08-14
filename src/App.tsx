@@ -427,14 +427,13 @@ const App = () => (
                   }
                 />
                 <Route path="/tools/tidelock/science" element={<TidelockScience />} />
-                <Route
-                  path="/tools/exosky"
-                  element={
-                    <ProToolGuard toolId="exosky">
-                      <ExoskySimulator />
-                    </ProToolGuard>
-                  }
-                />
+                {/* TEMPORARILY UNGATED (0.7100), at the owner's request, so the
+                    simulator can be exercised end to end: behind ProToolGuard
+                    the canvas never mounts, which blocks any runtime check of
+                    smoothness or the save round-trip.
+                    To restore: wrap in <ProToolGuard toolId="exosky"> again.
+                    Note this makes a Pro tool free to everyone while it stands. */}
+                <Route path="/tools/exosky" element={<ExoskySimulator />} />
                 <Route path="/tools/exosky/science" element={<ExoskyScience />} />
                 <Route
                   path="/tools/exoforge"
@@ -445,14 +444,10 @@ const App = () => (
                   }
                 />
                 <Route path="/tools/exoforge/science" element={<ExoforgeScience />} />
-                <Route
-                  path="/tools/solaris"
-                  element={
-                    <ProToolGuard toolId="solaris">
-                      <SolarisSimulator />
-                    </ProToolGuard>
-                  }
-                />
+                {/* TEMPORARILY UNGATED (0.7100), same reason and same caveat as
+                    /tools/exosky above.
+                    To restore: wrap in <ProToolGuard toolId="solaris"> again. */}
+                <Route path="/tools/solaris" element={<SolarisSimulator />} />
                 {/* Cartographer Wrapper Pages - Pro gated */}
                 <Route
                   path="/tools/stellar-cartographer"

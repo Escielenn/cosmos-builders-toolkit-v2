@@ -75,8 +75,15 @@ export default {
           teal: "hsl(var(--sf-teal))",
           "teal-bright": "hsl(var(--sf-teal-bright))",
           stellar: "hsl(var(--sf-stellar))",
-          border: "rgba(255, 255, 255, 0.08)",
-          "border-strong": "rgba(255, 255, 255, 0.14)",
+          /* Container edges and dividers, used ~490 places. Raised from 0.08,
+             which measured 1.22:1 and simply did not read as an edge. At 0.22
+             it is clearly present without shouting; it is deliberately not
+             pushed to the 0.34 that 3:1 would need, because most uses here are
+             panel chrome rather than the boundary of a control. */
+          border: "rgba(255, 255, 255, 0.22)",
+          /* For the boundary of an interactive control. 0.36 clears 3:1 on both
+             the void and the tool panels. */
+          "border-strong": "rgba(255, 255, 255, 0.36)",
         },
         // Text tiers (April 2026 handoff — use alongside .text-tier-* classes)
         t1: "#FAFAFA",

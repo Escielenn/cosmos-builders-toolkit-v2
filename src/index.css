@@ -50,7 +50,12 @@
     --sf-tool-panel-alpha: 222 25% 9% / 0.95; /* Layer 3 tool panels */
     --sf-text-primary: 214 12% 89%;       /* #E0E4E8 — cool off-white */
     --sf-text-muted: 212 10% 73%;        /* #B0B8C4 — cool gray */
-    --sf-text-ghost: 220 12% 20%;        /* #2D3340 — navy ghost */
+    /* Named "text ghost" but used only as a border colour, in all four places
+       below. Raised from 20% to 40% lightness: at 20% it measured 1.51:1
+       against the void, well under the 3:1 WCAG asks for the boundary of a
+       user-interface component, and it is the colour every outlined button and
+       input on the site draws its edge with. At 40% it measures 3.14:1. */
+    --sf-text-ghost: 220 12% 40%;        /* #5A6272 — navy edge */
     --sf-text-label: 214 12% 89% / 0.35; /* labels */
     --sf-text-hint: 214 12% 89% / 0.18;  /* hints, credits */
 
