@@ -55,7 +55,7 @@ export function BadgeCard({ definition, earned, earnedAt }: BadgeCardProps) {
           </p>
           <span
             className={cn(
-              "font-mono text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded-sm border",
+              "font-mono text-[12px] uppercase tracking-wider px-1.5 py-0.5 rounded-sm border",
               tier.bg,
               tier.border,
               tier.text
@@ -68,7 +68,7 @@ export function BadgeCard({ definition, earned, earnedAt }: BadgeCardProps) {
           {definition.description}
         </p>
         {earnedAt && (
-          <p className="font-mono text-[11px] text-white/[0.28] mt-1.5">
+          <p className="font-mono text-[12px] text-white/[0.28] mt-1.5">
             {new Date(earnedAt).toLocaleDateString("en-US", {
               year: "numeric",
               month: "short",

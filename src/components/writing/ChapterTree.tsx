@@ -354,7 +354,7 @@ export function ChapterTree({
         {unfiledDocs.length > 0 && (
           <div className="mt-2 pt-2 border-t border-white/5">
             <div className="px-3 py-1">
-              <span className="text-[11px] uppercase tracking-[1.5px] text-t5 font-heading">
+              <span className="text-[12px] uppercase tracking-[1.5px] text-t5 font-heading">
                 Unfiled
               </span>
             </div>
@@ -504,7 +504,7 @@ function DocRow({
         </button>
       )}
       {words > 0 && (
-        <span className="text-[11px] font-mono text-t5 shrink-0">
+        <span className="text-[12px] font-mono text-t5 shrink-0">
           {words < 1000 ? words : `${Math.round(words / 100) / 10}k`}
         </span>
       )}

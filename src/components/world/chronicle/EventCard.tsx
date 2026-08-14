@@ -93,7 +93,7 @@ export function EventCard({
               <span className="font-mono text-[12px] text-t3/20 mr-1.5">
                 {i < event.children.length - 1 ? "├" : "└"}
               </span>
-              <span className="font-mono text-[11px] text-t3/30 mr-2">
+              <span className="font-mono text-[12px] text-t3/30 mr-2">
                 {child.eventDate}
               </span>
               {child.title}

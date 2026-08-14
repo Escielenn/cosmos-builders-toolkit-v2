@@ -91,7 +91,7 @@ const EventMarker = memo(
 
       // Child count badge when collapsed
       const childBadge = hasChildren && !isExpanded ? (
-        <span className="absolute -right-1 -top-1 w-4 h-4 rounded-full bg-muted text-[10px] font-medium flex items-center justify-center text-t2 border border-sf-border">
+        <span className="absolute -right-1 -top-1 w-4 h-4 rounded-full bg-muted text-[12px] font-medium flex items-center justify-center text-t2 border border-sf-border">
           +
         </span>
       ) : null;

@@ -242,12 +242,12 @@ const TaskItem = ({
       </span>
 
       {todo.linked_ticket_id && (
-        <span className="shrink-0 text-[10px] font-medium uppercase tracking-wider px-1 py-0.5 rounded-sm bg-amber-500/[0.06] border border-amber-500/[0.15] text-sf-amber">
+        <span className="shrink-0 text-[12px] font-medium uppercase tracking-wider px-1 py-0.5 rounded-sm bg-amber-500/[0.06] border border-amber-500/[0.15] text-sf-amber">
           TKT
         </span>
       )}
       {todo.linked_contact_id && (
-        <span className="shrink-0 text-[10px] font-medium uppercase tracking-wider px-1 py-0.5 rounded-sm bg-sky-500/[0.06] border border-sky-500/[0.15] text-sky-400">
+        <span className="shrink-0 text-[12px] font-medium uppercase tracking-wider px-1 py-0.5 rounded-sm bg-sky-500/[0.06] border border-sky-500/[0.15] text-sky-400">
           MSG
         </span>
       )}

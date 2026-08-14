@@ -50,12 +50,12 @@ function RelCard({ rel }: { rel: ToolRelationship }): JSX.Element {
       <div className="flex items-center gap-2">
         <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${CATEGORY_DOT[cat]}`} aria-hidden="true" />
         <span className="font-heading text-[13px] font-light uppercase tracking-[1px] text-t1">{name}</span>
-        <span className="ml-auto font-mono text-[11px] uppercase tracking-[1px] text-t5">
+        <span className="ml-auto font-mono text-[12px] uppercase tracking-[1px] text-t5">
           {STRENGTH_LABEL[rel.strength]}
         </span>
       </div>
       {casc && (
-        <div className="mt-2 inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[1.5px]">
+        <div className="mt-2 inline-flex items-center gap-1.5 font-mono text-[12px] uppercase tracking-[1.5px]">
           <span
             className="h-1 w-1 shrink-0 rounded-full"
             style={{ backgroundColor: casc.color }}

@@ -836,7 +836,7 @@ function InnerGraph({ worldId, entities, connections }: InnerGraphProps) {
             <Plus className="w-3.5 h-3.5 mr-1.5" />
             Create Entity
           </Button>
-          <p className="text-[11px] text-t5 mt-3">
+          <p className="text-[12px] text-t5 mt-3">
             Start with a planet or star. The Environmental Cascade flows from
             physics through culture.
           </p>
@@ -1183,7 +1183,7 @@ function InnerGraph({ worldId, entities, connections }: InnerGraphProps) {
             size="sm"
             variant="ghost"
             onClick={() => toggleAnalysis(mode)}
-            className={`h-6 text-[11px] uppercase tracking-[1px] font-sans ${
+            className={`h-6 text-[12px] uppercase tracking-[1px] font-sans ${
               analysisMode === mode
                 ? "text-teal bg-teal/10"
                 : "text-t4 hover:text-t2"
@@ -1198,7 +1198,7 @@ function InnerGraph({ worldId, entities, connections }: InnerGraphProps) {
           size="sm"
           variant="ghost"
           onClick={() => setAuditEntityId((prev) => prev ? null : (analysisSelectedEntities[0] ?? null))}
-          className={`h-6 text-[11px] uppercase tracking-[1px] font-sans ${
+          className={`h-6 text-[12px] uppercase tracking-[1px] font-sans ${
             auditEntityId ? "text-teal bg-teal/10" : "text-t4 hover:text-t2"
           }`}
           title="Select a node, then click Audit to trace its cascade"
@@ -1213,7 +1213,7 @@ function InnerGraph({ worldId, entities, connections }: InnerGraphProps) {
             setShowTimeline((p) => !p);
             setTimelineIndex(0);
           }}
-          className={`h-6 text-[11px] uppercase tracking-[1px] font-sans ${
+          className={`h-6 text-[12px] uppercase tracking-[1px] font-sans ${
             showTimeline ? "text-teal bg-teal/10" : "text-t4 hover:text-t2"
           }`}
         >
@@ -1249,14 +1249,14 @@ function InnerGraph({ worldId, entities, connections }: InnerGraphProps) {
             {entities.find((e) => e.id === cascadePathEntityId)?.name}
           </span>
           {cascadePath && (
-            <span className="text-[11px] font-mono text-t4">
+            <span className="text-[12px] font-mono text-t4">
               {cascadePath.entityIds.size} entities
             </span>
           )}
           <button
             type="button"
             onClick={() => setCascadePathEntityId(null)}
-            className="text-t4 hover:text-t2 text-[11px] uppercase tracking-[1px] font-sans ml-1"
+            className="text-t4 hover:text-t2 text-[12px] uppercase tracking-[1px] font-sans ml-1"
           >
             Clear
           </button>

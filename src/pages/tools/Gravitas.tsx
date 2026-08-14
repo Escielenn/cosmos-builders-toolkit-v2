@@ -1200,7 +1200,7 @@ const Gravitas = () => {
         <ToolSidebar>
           <SectionNavigation sections={SECTIONS} mode="inline" />
           <GlassPanel className="p-4 w-56">
-            <h4 className="font-mono text-[11px] tracking-[2px] uppercase text-t3/60 mb-3">
+            <h4 className="font-mono text-[12px] tracking-[2px] uppercase text-t3/60 mb-3">
               // READOUT
             </h4>
             <div className="text-center mb-3">

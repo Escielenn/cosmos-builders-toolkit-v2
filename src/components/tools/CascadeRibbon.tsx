@@ -52,7 +52,7 @@ export function CascadeRibbon(): JSX.Element {
                   {s.meta.label}
                 </span>
               </div>
-              <span className="mt-1.5 font-mono text-[11px] uppercase tracking-[1px] text-t4">
+              <span className="mt-1.5 font-mono text-[12px] uppercase tracking-[1px] text-t4">
                 {s.count} {s.count === 1 ? "tool" : "tools"}
               </span>
             </div>

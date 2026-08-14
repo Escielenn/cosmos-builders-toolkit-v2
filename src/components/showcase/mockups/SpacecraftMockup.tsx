@@ -119,7 +119,7 @@ const SpacecraftMockup = () => {
             x="50"
             y="95"
             textAnchor="middle"
-            className="text-[10px] fill-current"
+            className="text-[12px] fill-current"
             style={{ fill: "hsl(var(--sf-cyan))" }}
           >
             {sections[activeSection]?.name}
@@ -141,7 +141,7 @@ const SpacecraftMockup = () => {
       <div className="mt-4 grid grid-cols-4 gap-2">
         {lifeSupport.map((item) => (
           <div key={item.name} className="text-center">
-            <div className="text-[10px] text-t3 mb-1">{item.name}</div>
+            <div className="text-[12px] text-t3 mb-1">{item.name}</div>
             <div
               className="text-xs font-mono"
               style={{ color: `hsl(var(--${item.color}))` }}

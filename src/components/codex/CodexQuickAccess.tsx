@@ -32,7 +32,7 @@ const CodexQuickAccess = ({ worldId }: CodexQuickAccessProps) => {
             <span className="uppercase tracking-wider font-heading text-[12px] block">
               {link.label}
             </span>
-            <span className="text-[11px] text-t4 font-sans normal-case tracking-normal leading-tight block">
+            <span className="text-[12px] text-t4 font-sans normal-case tracking-normal leading-tight block">
               {link.desc}
             </span>
           </div>

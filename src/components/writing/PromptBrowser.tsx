@@ -49,13 +49,13 @@ export function PromptBrowser({ onStartWriting }: PromptBrowserProps) {
                     <div className="flex items-center gap-2 mb-2">
                       <Badge
                         variant="glow"
-                        className="text-[11px] px-1.5 py-0"
+                        className="text-[12px] px-1.5 py-0"
                       >
                         {CATEGORY_LABELS[p.category]}
                       </Badge>
                       <Badge
                         variant="glow-amber"
-                        className="text-[11px] px-1.5 py-0"
+                        className="text-[12px] px-1.5 py-0"
                       >
                         {DIFFICULTY_LABELS[p.difficulty]}
                       </Badge>

@@ -276,7 +276,7 @@ function SortableEntityRow({
 
             {/* Type badge */}
             <span
-              className="shrink-0 font-mono text-[11px] uppercase tracking-wider px-1.5 py-0.5 rounded-sm border"
+              className="shrink-0 font-mono text-[12px] uppercase tracking-wider px-1.5 py-0.5 rounded-sm border"
               style={{
                 color: entityColor,
                 borderColor: `${entityColor}26`,
@@ -357,7 +357,7 @@ function StaticEntityRow({
 
           {/* Type badge */}
           <span
-            className="shrink-0 font-mono text-[11px] uppercase tracking-wider px-1.5 py-0.5 rounded-sm border"
+            className="shrink-0 font-mono text-[12px] uppercase tracking-wider px-1.5 py-0.5 rounded-sm border"
             style={{
               color: entityColor,
               borderColor: `${entityColor}26`,
@@ -730,7 +730,7 @@ const EntitySidebar = ({
 
       {/* Entity count footer */}
       <div className="px-3 py-2 border-t border-sf-border">
-        <span className="font-mono text-[11px] uppercase tracking-wider text-t3/30">
+        <span className="font-mono text-[12px] uppercase tracking-wider text-t3/30">
           {entities?.length ?? 0} entities
         </span>
       </div>

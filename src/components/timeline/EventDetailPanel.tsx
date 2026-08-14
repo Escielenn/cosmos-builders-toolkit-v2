@@ -528,7 +528,7 @@ const EventDetailPanel = ({
                           <span className="truncate text-t3">
                             {link.worksheetTitle}
                           </span>
-                          <span className="text-[11px] text-t3/50 shrink-0">
+                          <span className="text-[12px] text-t3/50 shrink-0">
                             {getToolDisplayName(link.toolType)}
                           </span>
                           {onDeleteElementLink && (

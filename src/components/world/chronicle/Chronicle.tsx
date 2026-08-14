@@ -145,7 +145,7 @@ export function Chronicle({ worldId }: ChronicleProps) {
       <div className="sf-chronicle-header">
         <div>
           <h1 className="sf-chronicle-heading">Chronicle</h1>
-          <p className="font-mono text-[11px] uppercase tracking-[2px] text-t3/30 mt-1">
+          <p className="font-mono text-[12px] uppercase tracking-[2px] text-t3/30 mt-1">
             {data.worldName}
             {data.calendarConfig.era_label && (
               <span>
@@ -196,7 +196,7 @@ export function Chronicle({ worldId }: ChronicleProps) {
                   className="sf-chronicle-era-badge"
                   data-layer={era.layer || undefined}
                 >
-                  <span className="font-mono text-[10px] text-t3/25 mr-2">
+                  <span className="font-mono text-[12px] text-t3/25 mr-2">
                     {era.eventDate}
                   </span>
                   {era.title}
@@ -254,7 +254,7 @@ export function Chronicle({ worldId }: ChronicleProps) {
           {/* End marker */}
           <div className="sf-chronicle-end">
             <div className="sf-chronicle-end-marker" />
-            <span className="font-mono text-[10px] uppercase tracking-[2px] text-t3/15 mt-2">
+            <span className="font-mono text-[12px] uppercase tracking-[2px] text-t3/15 mt-2">
               Present
             </span>
           </div>

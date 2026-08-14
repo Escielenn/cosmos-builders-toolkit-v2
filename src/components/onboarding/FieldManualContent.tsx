@@ -56,7 +56,7 @@ export function ManualDivider({ label }: { label: string }) {
   return (
     <div className="flex items-center gap-3 pt-6 pb-3">
       <div className="h-px flex-1 bg-border/20" />
-      <span className="font-mono text-[10px] uppercase tracking-[3px] text-primary/40 whitespace-nowrap">
+      <span className="font-mono text-[12px] uppercase tracking-[3px] text-primary/40 whitespace-nowrap">
         {label}
       </span>
       <div className="h-px flex-1 bg-border/20" />

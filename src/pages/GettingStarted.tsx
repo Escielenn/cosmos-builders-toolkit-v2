@@ -208,7 +208,7 @@ function CascadeDiagram({
                 {stage.sublabels.map((sub) => (
                   <span
                     key={sub}
-                    className={`text-[11px] font-mono transition-colors duration-300 ${
+                    className={`text-[12px] font-mono transition-colors duration-300 ${
                       isActive || isDownstream ? "text-t4" : "text-t5"
                     }`}
                   >
@@ -305,7 +305,7 @@ function PathwayStep({
                 >
                   {getToolDisplayName(toolId)}
                   {isPro && (
-                    <Badge variant="outline" className="text-[10px] text-sf-violet border-violet-400/20 px-1 py-0 ml-1">
+                    <Badge variant="outline" className="text-[12px] text-sf-violet border-violet-400/20 px-1 py-0 ml-1">
                       PRO
                     </Badge>
                   )}
@@ -406,7 +406,7 @@ const GettingStarted = () => {
 
           {/* Interactive cascade diagram */}
           <GlassPanel className="p-4">
-            <h4 className="font-mono text-[11px] tracking-[2px] uppercase text-t3/60 mb-3">
+            <h4 className="font-mono text-[12px] tracking-[2px] uppercase text-t3/60 mb-3">
               // THE ENVIRONMENTAL CASCADE
             </h4>
             <CascadeDiagram
@@ -430,7 +430,7 @@ const GettingStarted = () => {
 
         {/* ── Divider ─────────────────────────────────────── */}
         <div className="sf-divider relative">
-          <span className="absolute left-1/2 -translate-x-1/2 -top-2 bg-background px-4 font-mono text-[10px] tracking-wider text-sf-amber/30 uppercase">
+          <span className="absolute left-1/2 -translate-x-1/2 -top-2 bg-background px-4 font-mono text-[12px] tracking-wider text-sf-amber/30 uppercase">
             Entry Points
           </span>
         </div>
@@ -541,7 +541,7 @@ const GettingStarted = () => {
 
         {/* ── Divider ─────────────────────────────────────── */}
         <div className="sf-divider relative">
-          <span className="absolute left-1/2 -translate-x-1/2 -top-2 bg-background px-4 font-mono text-[10px] tracking-wider text-sf-amber/30 uppercase">
+          <span className="absolute left-1/2 -translate-x-1/2 -top-2 bg-background px-4 font-mono text-[12px] tracking-wider text-sf-amber/30 uppercase">
             Guided Pathway
           </span>
         </div>

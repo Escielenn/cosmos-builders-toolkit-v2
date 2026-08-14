@@ -40,7 +40,7 @@ const FirstTimeHint = ({ hintId, icon: Icon, variant, className = "" }: FirstTim
 
   const fontSize =
     resolvedVariant === "compact"
-      ? "text-[11px]"
+      ? "text-[12px]"
       : "text-[12px]";
 
   const iconSize =

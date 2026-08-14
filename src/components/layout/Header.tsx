@@ -171,7 +171,7 @@ const Header = () => {
               <nav className="flex flex-col gap-1 mt-8">
                 {MOBILE_NAV.map((group) => (
                   <div key={group.heading} className="mb-4 last:mb-0">
-                    <p className="font-heading text-[11px] font-medium uppercase tracking-[2px] text-t3 px-3 mb-1.5 pb-1.5 border-b border-white/[0.06]">
+                    <p className="font-heading text-[12px] font-medium uppercase tracking-[2px] text-t3 px-3 mb-1.5 pb-1.5 border-b border-white/[0.06]">
                       {group.heading}
                     </p>
                     {group.items.map((item) => {
@@ -192,7 +192,7 @@ const Header = () => {
                 ))}
                 {!isSubscribed && (
                   <div className="mb-0">
-                    <p className="font-heading text-[11px] font-medium uppercase tracking-[2px] text-t3 px-3 mb-1.5 pb-1.5 border-b border-white/[0.06]">
+                    <p className="font-heading text-[12px] font-medium uppercase tracking-[2px] text-t3 px-3 mb-1.5 pb-1.5 border-b border-white/[0.06]">
                       Upgrade
                     </p>
                     <Link

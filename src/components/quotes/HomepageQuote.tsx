@@ -50,7 +50,7 @@ export function HomepageQuote() {
               href={quote.affiliateUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden sm:inline text-[11px] text-t4 hover:text-primary transition-colors"
+              className="hidden sm:inline text-[12px] text-t4 hover:text-primary transition-colors"
               onClick={() => trackAffiliateClick(quote.isbn, quote.affiliateUrl!)}
             >
               Get the book &rarr;

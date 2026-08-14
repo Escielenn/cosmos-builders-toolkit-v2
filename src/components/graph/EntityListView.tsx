@@ -160,7 +160,7 @@ export function EntityListView({
       >
         {/* Cascade filter */}
         <div>
-          <h4 className="text-[11px] font-heading uppercase tracking-[2px] text-t4 mb-2">
+          <h4 className="text-[12px] font-heading uppercase tracking-[2px] text-t4 mb-2">
             Cascade
           </h4>
           <div className="space-y-1">
@@ -192,7 +192,7 @@ export function EntityListView({
 
         {/* Type filter */}
         <div>
-          <h4 className="text-[11px] font-heading uppercase tracking-[2px] text-t4 mb-2">
+          <h4 className="text-[12px] font-heading uppercase tracking-[2px] text-t4 mb-2">
             Type
           </h4>
           <div className="space-y-1">
@@ -225,7 +225,7 @@ export function EntityListView({
 
         {/* Status filter */}
         <div>
-          <h4 className="text-[11px] font-heading uppercase tracking-[2px] text-t4 mb-2">
+          <h4 className="text-[12px] font-heading uppercase tracking-[2px] text-t4 mb-2">
             Status
           </h4>
           <div className="space-y-1">
@@ -247,7 +247,7 @@ export function EntityListView({
 
         {/* Strength filter */}
         <div>
-          <h4 className="text-[11px] font-heading uppercase tracking-[2px] text-t4 mb-2">
+          <h4 className="text-[12px] font-heading uppercase tracking-[2px] text-t4 mb-2">
             Min Strength
           </h4>
           <input
@@ -263,7 +263,7 @@ export function EntityListView({
             }
             className="w-full accent-teal"
           />
-          <span className="text-[11px] font-mono text-t4">
+          <span className="text-[12px] font-mono text-t4">
             {filters.minStrength}
           </span>
         </div>
@@ -306,10 +306,10 @@ export function EntityListView({
                 <span className="text-[13px] font-heading font-light text-t1 flex-1 truncate">
                   {entity.name}
                 </span>
-                <span className="text-[11px] text-t4 uppercase tracking-[1px] font-sans">
+                <span className="text-[12px] text-t4 uppercase tracking-[1px] font-sans">
                   {(ENTITY_TYPE_LABELS as Record<string, string>)[entity.entity_type]}
                 </span>
-                <span className="text-[11px] font-mono text-t5">
+                <span className="text-[12px] font-mono text-t5">
                   {entityConns.length}
                 </span>
               </button>
@@ -355,7 +355,7 @@ export function EntityListView({
                           {otherEntity.name}
                         </button>
                         <span
-                          className="text-[10px] uppercase tracking-[0.5px] px-1 py-0.5 shrink-0"
+                          className="text-[12px] uppercase tracking-[0.5px] px-1 py-0.5 shrink-0"
                           style={{
                             color: stageColor,
                             background: `${stageColor}10`,
@@ -382,7 +382,7 @@ export function EntityListView({
                   <button
                     type="button"
                     onClick={() => onCreateConnection(entity.id)}
-                    className="flex items-center gap-1 px-2 py-1 text-[11px] text-t4 hover:text-teal uppercase tracking-[1px] font-sans transition-colors"
+                    className="flex items-center gap-1 px-2 py-1 text-[12px] text-t4 hover:text-teal uppercase tracking-[1px] font-sans transition-colors"
                   >
                     <Plus className="w-2.5 h-2.5" />
                     Add Connection

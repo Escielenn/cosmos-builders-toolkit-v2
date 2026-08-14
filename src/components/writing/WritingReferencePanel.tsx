@@ -221,7 +221,7 @@ export function WritingReferencePanel({
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={cn(
-                  "flex-1 flex items-center justify-center gap-1.5 px-2 py-2 text-[11px] font-heading uppercase tracking-[1.5px] transition-colors border-b-2",
+                  "flex-1 flex items-center justify-center gap-1.5 px-2 py-2 text-[12px] font-heading uppercase tracking-[1.5px] transition-colors border-b-2",
                   isActive
                     ? "border-[#15C17B] text-sf-teal"
                     : "border-transparent text-t4 hover:text-t2"
@@ -230,7 +230,7 @@ export function WritingReferencePanel({
                 <Icon className="w-3 h-3" />
                 <span>{tab.label}</span>
                 {count > 0 && (
-                  <span className="font-mono text-[10px] text-t5">
+                  <span className="font-mono text-[12px] text-t5">
                     {count}
                   </span>
                 )}
@@ -256,7 +256,7 @@ export function WritingReferencePanel({
                     <span className="font-heading text-[12px] font-light uppercase tracking-[1.5px] text-t3 flex items-center gap-1.5">
                       <FileText className="w-3 h-3" />
                       Worksheets
-                      <span className="font-mono text-[10px] text-t5">
+                      <span className="font-mono text-[12px] text-t5">
                         {worksheets.length}
                       </span>
                     </span>
@@ -340,7 +340,7 @@ export function WritingReferencePanel({
                   <p className="text-[12px] uppercase tracking-[1.5px] text-t5">
                     No world notes yet
                   </p>
-                  <p className="text-[11px] text-t5 mt-1">
+                  <p className="text-[12px] text-t5 mt-1">
                     Create notes in the World Dashboard to reference them here.
                   </p>
                 </div>
@@ -365,7 +365,7 @@ export function WritingReferencePanel({
                           {note.title}
                         </span>
                         {!isExpanded && note.content && (
-                          <span className="text-[11px] text-t5 block mt-0.5">
+                          <span className="text-[12px] text-t5 block mt-0.5">
                             {previewText(note.content)}
                           </span>
                         )}
@@ -427,7 +427,7 @@ export function WritingReferencePanel({
                   <p className="text-[12px] uppercase tracking-[1.5px] text-t5">
                     No pinned items
                   </p>
-                  <p className="text-[11px] text-t5 mt-1">
+                  <p className="text-[12px] text-t5 mt-1">
                     Pin notes or worksheets from the Notes tab to keep them visible while writing.
                   </p>
                 </div>
@@ -445,7 +445,7 @@ export function WritingReferencePanel({
                         </span>
                         <span
                           className={cn(
-                            "text-[10px] font-mono uppercase tracking-wider px-1 py-px rounded-sm flex-shrink-0",
+                            "text-[12px] font-mono uppercase tracking-wider px-1 py-px rounded-sm flex-shrink-0",
                             pin.type === "entity"
                               ? "text-sf-emerald/70 bg-sf-emerald/[0.06] border border-sf-emerald/[0.12]"
                               : pin.type === "note"
@@ -459,7 +459,7 @@ export function WritingReferencePanel({
                         </span>
                       </div>
                       {pin.content && (
-                        <span className="text-[11px] text-t5 block mt-0.5">
+                        <span className="text-[12px] text-t5 block mt-0.5">
                           {previewText(pin.content)}
                         </span>
                       )}
@@ -508,7 +508,7 @@ export function WritingReferencePanel({
                     </span>
                     <button
                       onClick={() => onPreviewSnapshot(null)}
-                      className="text-[11px] text-t4 hover:text-t2 uppercase tracking-wider"
+                      className="text-[12px] text-t4 hover:text-t2 uppercase tracking-wider"
                     >
                       Close
                     </button>
@@ -536,7 +536,7 @@ export function WritingReferencePanel({
                   <p className="text-[12px] uppercase tracking-[1.5px] text-t5">
                     No snapshots yet
                   </p>
-                  <p className="text-[11px] text-t5 mt-1">
+                  <p className="text-[12px] text-t5 mt-1">
                     Press Ctrl+S to save a snapshot, or wait for auto-save every 5 min.
                   </p>
                 </div>
@@ -561,12 +561,12 @@ export function WritingReferencePanel({
                             )}
                           </span>
                           {idx === 0 && (
-                            <span className="text-[10px] font-mono uppercase tracking-wider text-sf-teal/60 bg-sf-teal/[0.06] border border-[#15C17B]/[0.12] px-1 py-px">
+                            <span className="text-[12px] font-mono uppercase tracking-wider text-sf-teal/60 bg-sf-teal/[0.06] border border-[#15C17B]/[0.12] px-1 py-px">
                               Latest
                             </span>
                           )}
                         </div>
-                        <span className="text-[11px] text-t5 font-mono block mt-0.5">
+                        <span className="text-[12px] text-t5 font-mono block mt-0.5">
                           {new Date(snapshot.timestamp).toLocaleDateString()}{" "}
                           &middot; {snapshot.wordCount.toLocaleString()} words
                         </span>

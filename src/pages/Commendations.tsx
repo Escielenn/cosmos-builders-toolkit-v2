@@ -154,7 +154,7 @@ export default function Commendations() {
             {/* Active filter indicator */}
             {activeCategory && (
               <div className="mt-4 flex items-center gap-2">
-                <span className="font-mono text-[11px] uppercase tracking-wider text-t4">
+                <span className="font-mono text-[12px] uppercase tracking-wider text-t4">
                   Showing:
                 </span>
                 <span className="font-heading text-[12px] uppercase tracking-[2px] text-primary">
@@ -163,7 +163,7 @@ export default function Commendations() {
                 <button
                   type="button"
                   onClick={() => setActiveCategory(null)}
-                  className="font-mono text-[11px] uppercase tracking-wider text-t4 hover:text-t2 ml-auto transition-colors"
+                  className="font-mono text-[12px] uppercase tracking-wider text-t4 hover:text-t2 ml-auto transition-colors"
                 >
                   Show All
                 </button>
@@ -190,7 +190,7 @@ export default function Commendations() {
                     <div className="flex items-center gap-3 mb-4">
                       <span
                         className={cn(
-                          "font-mono text-[10px] uppercase tracking-wider px-2 py-1 rounded-sm border",
+                          "font-mono text-[12px] uppercase tracking-wider px-2 py-1 rounded-sm border",
                           tierStyle.bg,
                           tierStyle.border,
                           tierStyle.text

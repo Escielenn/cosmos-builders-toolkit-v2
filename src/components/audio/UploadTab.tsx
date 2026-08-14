@@ -49,7 +49,7 @@ export default function UploadTab() {
         <p className="text-[12px] text-t3">
           Drop an audio file or click to browse
         </p>
-        <p className="text-[11px] text-t5 font-mono uppercase tracking-wider">
+        <p className="text-[12px] text-t5 font-mono uppercase tracking-wider">
           {ACCEPTED_EXTENSIONS.join(", ")} · Max {MAX_FILE_SIZE / 1024 / 1024}MB
         </p>
         <Button

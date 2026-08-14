@@ -145,7 +145,7 @@ export default function WorldAppearanceDialog({
           <div className="space-y-6 py-4">
             {/* Accent Color */}
             <div className="space-y-3">
-              <label className="font-mono text-[11px] uppercase tracking-[2px] text-t3">
+              <label className="font-mono text-[12px] uppercase tracking-[2px] text-t3">
                 // ACCENT COLOR
               </label>
 
@@ -182,7 +182,7 @@ export default function WorldAppearanceDialog({
 
             {/* Cover Image */}
             <div className="space-y-3">
-              <label className="font-mono text-[11px] uppercase tracking-[2px] text-t3">
+              <label className="font-mono text-[12px] uppercase tracking-[2px] text-t3">
                 // COVER IMAGE
               </label>
               <HeaderImageUpload
@@ -194,7 +194,7 @@ export default function WorldAppearanceDialog({
 
             {/* Soundtrack */}
             <div className="space-y-3">
-              <label className="font-mono text-[11px] uppercase tracking-[2px] text-t3">
+              <label className="font-mono text-[12px] uppercase tracking-[2px] text-t3">
                 // SOUNDTRACK
               </label>
               <SoundtrackPicker value={soundtrackId} onChange={setSoundtrackId} />
@@ -202,14 +202,14 @@ export default function WorldAppearanceDialog({
 
             {/* Preview */}
             <div className="space-y-2">
-              <label className="font-mono text-[11px] uppercase tracking-[2px] text-t3">
+              <label className="font-mono text-[12px] uppercase tracking-[2px] text-t3">
                 // PREVIEW
               </label>
               <div className="bg-sf-surface border border-white/6 p-4 space-y-3">
                 {/* Mock section header */}
                 <div className="flex items-center gap-2">
                   <span
-                    className="font-heading text-[11px] uppercase tracking-[3px]"
+                    className="font-heading text-[12px] uppercase tracking-[3px]"
                     style={{ color: accentColor, opacity: 0.6 }}
                   >
                     // ENVIRONMENT
@@ -230,7 +230,7 @@ export default function WorldAppearanceDialog({
                       style={{ borderColor: accentColor, opacity: 0.5 }}
                     />
                     <span className="text-xs text-t1/50">Draft Entry</span>
-                    <span className="text-[10px] uppercase tracking-wider text-t3/50">DRAFT</span>
+                    <span className="text-[12px] uppercase tracking-wider text-t3/50">DRAFT</span>
                   </div>
                 </div>
                 {/* Mock infobox border */}
@@ -239,7 +239,7 @@ export default function WorldAppearanceDialog({
                   style={{ borderTopColor: `${accentColor}80` }}
                 >
                   <span
-                    className="font-mono text-[10px] uppercase tracking-[3px]"
+                    className="font-mono text-[12px] uppercase tracking-[3px]"
                     style={{ color: accentColor, opacity: 0.5 }}
                   >
                     INFOBOX
@@ -247,7 +247,7 @@ export default function WorldAppearanceDialog({
                 </div>
                 {/* Mock completion bar */}
                 <div className="flex items-center gap-2">
-                  <span className="font-mono text-[10px] uppercase tracking-wider text-t3/40">
+                  <span className="font-mono text-[12px] uppercase tracking-wider text-t3/40">
                     SURVEY:
                   </span>
                   <div className="flex-1 h-1 bg-white/5 relative">
@@ -256,7 +256,7 @@ export default function WorldAppearanceDialog({
                       style={{ backgroundColor: accentColor, width: "68%", opacity: 0.8 }}
                     />
                   </div>
-                  <span className="font-mono text-[10px] text-t3/40">68%</span>
+                  <span className="font-mono text-[12px] text-t3/40">68%</span>
                 </div>
               </div>
             </div>

@@ -187,7 +187,7 @@ export function WritingEntityPanel({
               <div className="flex flex-wrap gap-1.5">
                 {/* Entity type badge */}
                 <span
-                  className="inline-flex items-center gap-1 text-[11px] font-mono uppercase tracking-[1px] px-1.5 py-0.5 rounded-sm border"
+                  className="inline-flex items-center gap-1 text-[12px] font-mono uppercase tracking-[1px] px-1.5 py-0.5 rounded-sm border"
                   style={{
                     color:
                       ENTITY_TYPE_COLORS[selectedEntity.entity_type] ??
@@ -207,7 +207,7 @@ export function WritingEntityPanel({
                 </span>
                 {/* Cascade stage badge */}
                 <span
-                  className="inline-flex items-center gap-1 text-[11px] font-mono uppercase tracking-[1px] px-1.5 py-0.5 rounded-sm border"
+                  className="inline-flex items-center gap-1 text-[12px] font-mono uppercase tracking-[1px] px-1.5 py-0.5 rounded-sm border"
                   style={{
                     color:
                       CASCADE_STAGE_COLORS[
@@ -235,7 +235,7 @@ export function WritingEntityPanel({
             {/* Summary */}
             {selectedEntity.summary && (
               <div>
-                <span className="text-[11px] font-medium uppercase tracking-[1.5px] text-t4 block mb-1">
+                <span className="text-[12px] font-medium uppercase tracking-[1.5px] text-t4 block mb-1">
                   Summary
                 </span>
                 <p className="text-xs text-t2 leading-relaxed">
@@ -247,7 +247,7 @@ export function WritingEntityPanel({
             {/* Description (rendered HTML) */}
             {selectedEntity.description && (
               <div>
-                <span className="text-[11px] font-medium uppercase tracking-[1.5px] text-t4 block mb-1">
+                <span className="text-[12px] font-medium uppercase tracking-[1.5px] text-t4 block mb-1">
                   Description
                 </span>
                 <div
@@ -262,7 +262,7 @@ export function WritingEntityPanel({
             {/* Connections */}
             {entityConnections.length > 0 && (
               <div>
-                <span className="text-[11px] font-medium uppercase tracking-[1.5px] text-t4 block mb-1.5">
+                <span className="text-[12px] font-medium uppercase tracking-[1.5px] text-t4 block mb-1.5">
                   Connections ({entityConnections.length})
                 </span>
                 <div className="space-y-1">
@@ -291,7 +291,7 @@ export function WritingEntityPanel({
                           }}
                         />
                         <div className="flex-1 min-w-0">
-                          <span className="text-[11px] font-mono uppercase tracking-[1px] text-t4 block">
+                          <span className="text-[12px] font-mono uppercase tracking-[1px] text-t4 block">
                             {formatRelType(conn.relationship_type)}
                           </span>
                           <span className="text-xs text-t2 truncate block group-hover:text-t1 transition-colors">
@@ -379,12 +379,12 @@ export function WritingEntityPanel({
                         }}
                       />
                       <span
-                        className="text-[11px] font-medium uppercase tracking-[1.5px]"
+                        className="text-[12px] font-medium uppercase tracking-[1.5px]"
                         style={{ color: CASCADE_STAGE_COLORS[stage] }}
                       >
                         {CASCADE_STAGE_LABELS[stage]}
                       </span>
-                      <span className="text-[10px] font-mono text-t5 ml-auto">
+                      <span className="text-[12px] font-mono text-t5 ml-auto">
                         {stageEntities.length}
                       </span>
                     </div>
@@ -407,7 +407,7 @@ export function WritingEntityPanel({
                         <span className="text-xs text-t2 truncate group-hover:text-t1 transition-colors flex-1">
                           {entity.name}
                         </span>
-                        <span className="text-[10px] font-mono text-t5 uppercase tracking-wider flex-shrink-0">
+                        <span className="text-[12px] font-mono text-t5 uppercase tracking-wider flex-shrink-0">
                           {ENTITY_TYPE_LABELS[entity.entity_type] ??
                             entity.entity_type}
                         </span>

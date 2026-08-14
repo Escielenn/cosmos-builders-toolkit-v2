@@ -165,7 +165,7 @@ const CodexElementRow = memo(({
 
       {/* Draft badge */}
       {element.isDraft && element.kind === "worksheet" && (
-        <span className="font-mono text-[10px] uppercase tracking-wider text-t3/30 shrink-0">
+        <span className="font-mono text-[12px] uppercase tracking-wider text-t3/30 shrink-0">
           Draft
         </span>
       )}

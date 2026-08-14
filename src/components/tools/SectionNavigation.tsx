@@ -222,7 +222,7 @@ export const MobileSectionNav = ({ sections }: { sections: Section[] }) => {
       </SheetTrigger>
       <SheetContent side="right" className="w-72 bg-background/95 backdrop-blur-lg">
         <div className="pt-6">
-          <h4 className="font-heading text-[11px] font-light tracking-[2.5px] uppercase text-emerald/40 mb-3 pb-2 border-b border-emerald/[0.06]">
+          <h4 className="font-heading text-[12px] font-light tracking-[2.5px] uppercase text-emerald/40 mb-3 pb-2 border-b border-emerald/[0.06]">
             // NAVIGATION
           </h4>
           <nav className="space-y-0.5">

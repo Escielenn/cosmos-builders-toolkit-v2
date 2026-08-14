@@ -2687,7 +2687,7 @@ const XenomythologyFrameworkBuilder = () => {
               borderRadius: 8,
             }}
           >
-            <h4 className="font-heading text-[11px] font-light tracking-[2.5px] uppercase text-emerald/40 mb-3">
+            <h4 className="font-heading text-[12px] font-light tracking-[2.5px] uppercase text-emerald/40 mb-3">
               // Explore Xenomythology
             </h4>
             <p className="font-sans text-sm text-t2 leading-relaxed mb-4">

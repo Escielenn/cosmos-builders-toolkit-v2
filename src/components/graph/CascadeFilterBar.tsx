@@ -87,7 +87,7 @@ export function CascadeFilterBar({
               style={{ background: color }}
             />
             <span
-              className="text-[11px] font-heading uppercase tracking-[1px]"
+              className="text-[12px] font-heading uppercase tracking-[1px]"
               style={{ color: isActive ? color : "rgba(255,255,255,0.35)" }}
             >
               {CASCADE_STAGE_LABELS[stage].slice(0, 4)}
@@ -100,7 +100,7 @@ export function CascadeFilterBar({
         <button
           type="button"
           onClick={() => onChange(new Set(ALL_STAGES))}
-          className="ml-1 text-[10px] text-t4 hover:text-t3 uppercase tracking-[1px] font-sans transition-colors"
+          className="ml-1 text-[12px] text-t4 hover:text-t3 uppercase tracking-[1px] font-sans transition-colors"
         >
           Reset
         </button>

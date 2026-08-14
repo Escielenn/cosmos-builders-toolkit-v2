@@ -147,10 +147,10 @@ export default function RecentActivity({ worldId }: RecentActivityProps) {
                   {item.name}
                 </span>
               </div>
-              <span className="font-mono text-[11px] uppercase tracking-[1px] text-t4 shrink-0">
+              <span className="font-mono text-[12px] uppercase tracking-[1px] text-t4 shrink-0">
                 {TYPE_LABELS[item.type]}
               </span>
-              <span className="font-mono text-[11px] text-t5 shrink-0 w-24 text-right">
+              <span className="font-mono text-[12px] text-t5 shrink-0 w-24 text-right">
                 {formatDistanceToNow(new Date(item.updatedAt), {
                   addSuffix: true,
                 })}

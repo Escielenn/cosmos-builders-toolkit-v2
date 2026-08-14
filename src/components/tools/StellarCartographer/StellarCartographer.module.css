@@ -68,7 +68,7 @@
 
 .toolSubtitle {
   font-family: 'DM Sans', sans-serif;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 400;
   letter-spacing: 2px;
   text-transform: uppercase;
@@ -94,7 +94,7 @@
 }
 
 .navLinks a {
-  font-size: 10px;
+  font-size: 12px;
   font-family: 'Jura', sans-serif;
   letter-spacing: 1.5px;
   text-transform: uppercase;
@@ -114,7 +114,7 @@
 
 .emptyState {
   font-family: 'DM Sans', sans-serif;
-  font-size: 11px;
+  font-size: 12px;
   color: rgba(255, 255, 255, 0.25);
   font-style: italic;
   padding: 8px 0;
@@ -128,7 +128,7 @@
   display: inline-block;
   padding: 6px 14px;
   font-family: 'Jura', sans-serif;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
   letter-spacing: 2px;
   text-transform: uppercase;
@@ -323,7 +323,7 @@
 
 .btn {
   font-family: 'Jura', sans-serif;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 500;
   letter-spacing: 1.5px;
   text-transform: uppercase;
@@ -375,7 +375,7 @@
   color: hsl(var(--sf-teal));
   width: 100%;
   padding: 8px 12px;
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 2px;
 }
 
@@ -400,7 +400,7 @@
 
 .select {
   font-family: 'DM Sans', sans-serif;
-  font-size: 11px;
+  font-size: 12px;
   width: 100%;
   background: rgba(255, 255, 255, 0.04);
   color: rgba(255, 255, 255, 0.7);
@@ -463,13 +463,13 @@
 
 .dataLabel {
   font-family: 'DM Sans', sans-serif;
-  font-size: 11px;
+  font-size: 12px;
   color: rgba(255, 255, 255, 0.4);
 }
 
 .dataValue {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.7);
 }
@@ -506,7 +506,7 @@
   align-items: center;
   gap: 3px;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
+  font-size: 12px;
   color: rgba(255, 255, 255, 0.5);
 }
 
@@ -552,7 +552,7 @@
 
 .empireName {
   font-family: 'DM Sans', sans-serif;
-  font-size: 11px;
+  font-size: 12px;
   color: rgba(255, 255, 255, 0.6);
   flex: 1;
   white-space: nowrap;
@@ -562,7 +562,7 @@
 
 .empireCount {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
+  font-size: 12px;
   color: rgba(255, 255, 255, 0.3);
 }
 
@@ -595,13 +595,13 @@
 
 .listItemName {
   font-family: 'DM Sans', sans-serif;
-  font-size: 11px;
+  font-size: 12px;
   color: rgba(255, 255, 255, 0.6);
 }
 
 .listItemMeta {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
+  font-size: 12px;
   color: rgba(255, 255, 255, 0.3);
 }
 
@@ -641,7 +641,7 @@
   display: inline-block;
   padding: 3px 8px;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
   border-radius: 4px;
   margin-bottom: 8px;
@@ -693,14 +693,14 @@
 
 .tooltipClass {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
+  font-size: 12px;
   color: rgba(255, 255, 255, 0.5);
   margin-bottom: 2px;
 }
 
 .tooltipEmpire {
   font-family: 'DM Sans', sans-serif;
-  font-size: 10px;
+  font-size: 12px;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -724,7 +724,7 @@
 
 .zoomLabel {
   font-family: 'DM Sans', sans-serif;
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 1px;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.18);
@@ -735,7 +735,7 @@
   padding-top: 6px;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
   font-family: 'DM Sans', sans-serif;
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 0.5px;
   color: rgba(255, 255, 255, 0.22);
   white-space: nowrap;
@@ -751,7 +751,7 @@
   left: 50%;
   transform: translateX(-50%);
   font-family: 'DM Sans', sans-serif;
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 1px;
   color: rgba(255, 255, 255, 0.12);
 }
@@ -780,7 +780,7 @@
   border: 1px solid rgba(255, 165, 0, 0.2);
   border-radius: 6px;
   font-family: 'Jura', sans-serif;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
   letter-spacing: 1.5px;
   text-transform: uppercase;
@@ -833,7 +833,7 @@
 
 .loadingSubtext {
   font-family: 'DM Sans', sans-serif;
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 1px;
   color: rgba(255, 255, 255, 0.2);
   margin-top: 6px;
@@ -864,7 +864,7 @@
 
 .searchTitle {
   font-family: 'Jura', sans-serif;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
   letter-spacing: 2px;
   text-transform: uppercase;
@@ -955,7 +955,7 @@
 
 .searchResultMeta {
   font-family: 'DM Sans', sans-serif;
-  font-size: 11px;
+  font-size: 12px;
   color: rgba(255, 255, 255, 0.25);
   flex-shrink: 0;
 }
@@ -973,7 +973,7 @@
   padding-top: 8px;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
   font-family: 'DM Sans', sans-serif;
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 0.5px;
   color: rgba(255, 255, 255, 0.15);
   text-align: center;

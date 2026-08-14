@@ -528,7 +528,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
       {/* Default view setting */}
       <div className="px-3 pb-2">
         <div className="flex items-center gap-2">
-          <span className="font-mono text-[11px] uppercase tracking-wider text-t3/30 whitespace-nowrap">
+          <span className="font-mono text-[12px] uppercase tracking-wider text-t3/30 whitespace-nowrap">
             Default view:
           </span>
           <Select value={defaultView} onValueChange={handleDefaultViewChange}>

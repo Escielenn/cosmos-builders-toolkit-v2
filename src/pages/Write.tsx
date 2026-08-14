@@ -373,7 +373,7 @@ export default function Write(): JSX.Element {
               aria-expanded={trashOpen}
             >
               <Trash2 className="h-3 w-3" /> Trash ({trashed!.length})
-              <span className="ml-auto text-[11px]">{trashOpen ? "▾" : "▸"}</span>
+              <span className="ml-auto text-[12px]">{trashOpen ? "▾" : "▸"}</span>
             </button>
             {trashOpen && (
               <div className="pb-1">
@@ -620,7 +620,7 @@ export default function Write(): JSX.Element {
         {/* Progress toward today's goal, not an astronomical date. The editor
             already wrote session words to writing_sessions and never read them
             back, so the writer's own number was invisible while writing. */}
-        <div className="flex items-center gap-3 font-mono text-[11px] tracking-[1.5px] text-t5">
+        <div className="flex items-center gap-3 font-mono text-[12px] tracking-[1.5px] text-t5">
           <span>{words.toLocaleString()} WORDS</span>
           <span aria-hidden="true">·</span>
           <span
@@ -688,7 +688,7 @@ function SortableDocRow({ d, active, onOpen, onTrash, chapters, onMove }: {
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-52">
-            <DropdownMenuLabel className="text-[11px] uppercase tracking-[1.5px] text-t3">
+            <DropdownMenuLabel className="text-[12px] uppercase tracking-[1.5px] text-t3">
               File into
             </DropdownMenuLabel>
             {chapters.map((c) => (

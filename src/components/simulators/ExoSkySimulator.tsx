@@ -1607,8 +1607,8 @@ export default function ExoSkyV2({
       {/* ── TITLE ── */}
       <div style={{ position:"absolute",top:16,left:18,zIndex:10,pointerEvents:"none" }}>
         <div style={{ fontFamily:"'MD Nichrome','Jura',sans-serif",fontWeight:300,fontSize:26,letterSpacing:6,textTransform:"uppercase",color:"#FAFAFA" }}>EXOSKY</div>
-        <div style={{ fontFamily:"'DM Sans',sans-serif",fontSize:10,color:"rgba(21,193,123,0.6)",marginTop:4 }}>{planet.planet}</div>
-        <div style={{ display:"inline-block",marginTop:8,padding:"6px 14px",fontSize:9,fontFamily:"'MD Nichrome','Jura',sans-serif",fontWeight:300,letterSpacing:2,textTransform:"uppercase",borderRadius:0,
+        <div style={{ fontFamily:"'DM Sans',sans-serif",fontSize:12,color:"rgba(21,193,123,0.6)",marginTop:4 }}>{planet.planet}</div>
+        <div style={{ display:"inline-block",marginTop:8,padding:"6px 14px",fontSize:12,fontFamily:"'MD Nichrome','Jura',sans-serif",fontWeight:300,letterSpacing:2,textTransform:"uppercase",borderRadius:0,
           background: mwReady ? "rgba(21,193,123,0.08)" : "rgba(255,165,0,0.08)",
           border: mwReady ? "1px solid rgba(21,193,123,0.2)" : "1px solid rgba(255,165,0,0.2)",
           color: mwReady ? "#15C17B" : "#FFA500",
@@ -1622,7 +1622,7 @@ export default function ExoSkyV2({
         backdropFilter:"blur(16px)",borderRadius:0,padding:panelOpen?"14px 18px":"8px 14px",transition:"all 0.3s" }}>
         <div onClick={()=>setPanelOpen(!panelOpen)} style={{cursor:"pointer",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
           <span style={SH}>OBSERVATION POINT</span>
-          <span style={{color:"rgba(255,255,255,0.3)",fontSize:10}}>{panelOpen?"▾":"▸"}</span>
+          <span style={{color:"rgba(255,255,255,0.3)",fontSize:12}}>{panelOpen?"▾":"▸"}</span>
         </div>
         {panelOpen && <>
           <select value={worldEntityId ? `world:${worldEntityId}` : (customMode ? "custom" : String(selectedPlanet))} onChange={e=>{
@@ -1651,15 +1651,15 @@ export default function ExoSkyV2({
           </select>
           {worldEntity && !worldEntityCoords && (
             <div style={{marginTop:10,padding:"10px 12px",background:"rgba(255,184,0,0.06)",border:"1px solid rgba(255,184,0,0.2)",borderRadius:0}}>
-              <div style={{fontSize:9,fontFamily:"'JetBrains Mono',monospace",letterSpacing:1.5,textTransform:"uppercase",color:"#FFB800",marginBottom:4}}>
+              <div style={{fontSize:12,fontFamily:"'JetBrains Mono',monospace",letterSpacing:1.5,textTransform:"uppercase",color:"#FFB800",marginBottom:4}}>
                 // COORDINATES NOT SET
               </div>
-              <div style={{fontSize:9,color:"rgba(255,255,255,0.55)",lineHeight:1.5,marginBottom:8}}>
+              <div style={{fontSize:12,color:"rgba(255,255,255,0.55)",lineHeight:1.5,marginBottom:8}}>
                 <strong style={{color:"rgba(255,255,255,0.85)"}}>{worldEntity.name}</strong> has no galactic coordinates yet. Use the sliders below to set them, then save back to the entity.
               </div>
               <button
                 onClick={() => setCustomMode(true)}
-                style={{...BTN,width:"100%",fontSize:9,padding:"6px 10px",background:"rgba(255,184,0,0.08)",borderColor:"rgba(255,184,0,0.25)",color:"#FFB800"}}
+                style={{...BTN,width:"100%",fontSize:12,padding:"6px 10px",background:"rgba(255,184,0,0.08)",borderColor:"rgba(255,184,0,0.25)",color:"#FFB800"}}
               >
                 ✦ AUTHOR COORDINATES
               </button>
@@ -1667,10 +1667,10 @@ export default function ExoSkyV2({
           )}
           {worldEntity && worldEntityCoords && (
             <div style={{marginTop:10,padding:"8px 10px",background:"rgba(21,193,123,0.04)",border:"1px solid rgba(21,193,123,0.15)",borderRadius:0}}>
-              <div style={{fontSize:9,fontFamily:"'JetBrains Mono',monospace",letterSpacing:1.5,textTransform:"uppercase",color:"#15C17B",marginBottom:4}}>
+              <div style={{fontSize:12,fontFamily:"'JetBrains Mono',monospace",letterSpacing:1.5,textTransform:"uppercase",color:"#15C17B",marginBottom:4}}>
                 // FROM YOUR WORLD
               </div>
-              <div style={{fontSize:8,color:"rgba(255,255,255,0.55)",lineHeight:1.5}}>
+              <div style={{fontSize:12,color:"rgba(255,255,255,0.55)",lineHeight:1.5}}>
                 Stored: RA {worldEntityCoords.ra.toFixed(2)}° · Dec {worldEntityCoords.dec.toFixed(2)}° · {worldEntityCoords.distancePc.toFixed(1)} pc
               </div>
             </div>
@@ -1699,13 +1699,13 @@ export default function ExoSkyV2({
               <input type="range" min="1" max="5000" step="1" value={Math.min(5000,customDistPc)} onChange={e=>setCustomDistPc(Number(e.target.value))} style={{width:"100%"}} />
 
               <div style={{marginTop:6,padding:"6px 8px",background:"rgba(21,193,123,0.04)",borderRadius:0,border:"1px solid rgba(21,193,123,0.08)"}}>
-                <div style={{fontSize:7,color:"rgba(21,193,123,0.3)",fontFamily:"'JetBrains Mono',monospace",lineHeight:1.7}}>
+                <div style={{fontSize:11,color:"rgba(21,193,123,0.3)",fontFamily:"'JetBrains Mono',monospace",lineHeight:1.7}}>
                   RA {planet.ra.toFixed(2)}° · Dec {planet.dec.toFixed(2)}°<br/>
                   {(customDistPc*3.262).toFixed(1)} ly from Sol
                 </div>
               </div>
 
-              <div style={{marginTop:6,fontSize:7,color:"rgba(255,255,255,0.2)",lineHeight:1.6}}>
+              <div style={{marginTop:6,fontSize:11,color:"rgba(255,255,255,0.2)",lineHeight:1.6}}>
                 l=0° → Galactic center · b=0° → Galactic plane<br/>
                 Distance is from Sol (heliocentric)
               </div>
@@ -1718,7 +1718,7 @@ export default function ExoSkyV2({
                     ...BTN,
                     marginTop:10,
                     width:"100%",
-                    fontSize:9,
+                    fontSize:12,
                     padding:"7px 10px",
                     background:"rgba(21,193,123,0.10)",
                     borderColor:"rgba(21,193,123,0.30)",
@@ -1733,13 +1733,13 @@ export default function ExoSkyV2({
             </div>
           )}
           <div style={{marginTop:8,fontSize:8.5,color:"rgba(255,255,255,0.4)",lineHeight:1.6}}>{planet.note}</div>
-          <div style={{marginTop:4,fontSize:8,color:"rgba(21,193,123,0.35)",fontFamily:"'JetBrains Mono',monospace"}}>{planet.armNote}</div>
+          <div style={{marginTop:4,fontSize:12,color:"rgba(21,193,123,0.35)",fontFamily:"'JetBrains Mono',monospace"}}>{planet.armNote}</div>
 
           <div style={{...SH,marginTop:14}}>ATMOSPHERE</div>
           <div style={{display:"flex",justifyContent:"space-between",marginTop:6}}>
             <span style={LBL}>Type</span><span style={VAL}>{atmo.name}</span>
           </div>
-          <div style={{fontSize:8,color:"rgba(255,255,255,0.3)",marginTop:2}}>{atmo.desc}</div>
+          <div style={{fontSize:12,color:"rgba(255,255,255,0.3)",marginTop:2}}>{atmo.desc}</div>
           <div style={{display:"flex",justifyContent:"space-between",marginTop:10,alignItems:"center"}}>
             <span style={LBL}>Density</span><span style={VAL}>{atmoDensity.toFixed(1)}×</span>
           </div>
@@ -1787,7 +1787,7 @@ export default function ExoSkyV2({
               </div>
 
               {/* Star count */}
-              <div style={{fontSize:9,color:"rgba(255,255,255,0.4)",marginBottom:8}}>
+              <div style={{fontSize:12,color:"rgba(255,255,255,0.4)",marginBottom:8}}>
                 {currentDrawing.length === 0 ? "Click stars to connect them" :
                  `${currentDrawing.length} star${currentDrawing.length !== 1 ? 's' : ''} selected`}
               </div>
@@ -1796,7 +1796,7 @@ export default function ExoSkyV2({
               {currentDrawing.length > 0 && (
                 <div style={{maxHeight:80,overflowY:"auto",marginBottom:8,padding:"4px 0"}}>
                   {currentDrawing.map((s, i) => (
-                    <div key={i} style={{fontSize:8,color:"rgba(255,255,255,0.35)",fontFamily:"'JetBrains Mono',monospace",lineHeight:1.8}}>
+                    <div key={i} style={{fontSize:12,color:"rgba(255,255,255,0.35)",fontFamily:"'JetBrains Mono',monospace",lineHeight:1.8}}>
                       <span style={{color:drawColor,marginRight:6}}>{i+1}.</span>{s.name}
                     </div>
                   ))}
@@ -1806,20 +1806,20 @@ export default function ExoSkyV2({
               {/* Action buttons */}
               <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
                 {currentDrawing.length > 0 && (
-                  <button onClick={undoLastStar} style={{...BTN,flex:1,fontSize:7,padding:"5px 6px",background:"rgba(255,255,255,0.04)",borderColor:"rgba(255,255,255,0.1)",color:"rgba(255,255,255,0.5)"}}>
+                  <button onClick={undoLastStar} style={{...BTN,flex:1,fontSize:11,padding:"5px 6px",background:"rgba(255,255,255,0.04)",borderColor:"rgba(255,255,255,0.1)",color:"rgba(255,255,255,0.5)"}}>
                     ↩ UNDO
                   </button>
                 )}
                 {currentDrawing.length >= 2 && (
-                  <button onClick={finishDrawing} style={{...BTN,flex:1,fontSize:7,padding:"5px 6px",background:"rgba(46,204,113,0.1)",borderColor:"rgba(46,204,113,0.3)",color:"#2ECC71"}}>
+                  <button onClick={finishDrawing} style={{...BTN,flex:1,fontSize:11,padding:"5px 6px",background:"rgba(46,204,113,0.1)",borderColor:"rgba(46,204,113,0.3)",color:"#2ECC71"}}>
                     ✓ NAME IT
                   </button>
                 )}
-                <button onClick={cancelDrawing} style={{...BTN,flex:1,fontSize:7,padding:"5px 6px",background:"rgba(231,76,60,0.08)",borderColor:"rgba(231,76,60,0.2)",color:"#E74C3C"}}>
+                <button onClick={cancelDrawing} style={{...BTN,flex:1,fontSize:11,padding:"5px 6px",background:"rgba(231,76,60,0.08)",borderColor:"rgba(231,76,60,0.2)",color:"#E74C3C"}}>
                   ✕ CANCEL
                 </button>
               </div>
-              <div style={{fontSize:7,color:"rgba(255,255,255,0.15)",marginTop:6}}>Esc to cancel · Ctrl+Z to undo</div>
+              <div style={{fontSize:11,color:"rgba(255,255,255,0.15)",marginTop:6}}>Esc to cancel · Ctrl+Z to undo</div>
             </div>
           )}
 
@@ -1830,14 +1830,14 @@ export default function ExoSkyV2({
                 <input type="checkbox" checked={showCustomConstellations} onChange={e=>setShowCustomConstellations(e.target.checked)} style={CK} />
                 Custom Constellations ({customConstellations.length})
               </label>
-              <button onClick={() => setConsManagerOpen(!consManagerOpen)} style={{...BTN,marginTop:6,width:"100%",fontSize:7,padding:"4px 8px",background:"rgba(255,255,255,0.03)",borderColor:"rgba(255,255,255,0.08)",color:"rgba(255,255,255,0.4)"}}>
+              <button onClick={() => setConsManagerOpen(!consManagerOpen)} style={{...BTN,marginTop:6,width:"100%",fontSize:11,padding:"4px 8px",background:"rgba(255,255,255,0.03)",borderColor:"rgba(255,255,255,0.08)",color:"rgba(255,255,255,0.4)"}}>
                 {consManagerOpen ? "▾" : "▸"} MANAGE
               </button>
             </div>
           )}
 
           <div style={{...SH,marginTop:14}}>NAVIGATION</div>
-          <div style={{fontSize:8,color:"rgba(255,255,255,0.25)",lineHeight:1.7}}>
+          <div style={{fontSize:12,color:"rgba(255,255,255,0.25)",lineHeight:1.7}}>
             Drag to look around · Scroll to zoom<br/>Hover stars for data
           </div>
         </>}
@@ -1861,7 +1861,7 @@ export default function ExoSkyV2({
       }}>
         <div onClick={()=>setDataOpen(!dataOpen)} style={{cursor:"pointer",display:"flex",justifyContent:"space-between"}}>
           <span style={SH}>SYSTEM DATA</span>
-          <span style={{color:"rgba(255,255,255,0.3)",fontSize:10}}>{dataOpen?"▾":"▸"}</span>
+          <span style={{color:"rgba(255,255,255,0.3)",fontSize:12}}>{dataOpen?"▾":"▸"}</span>
         </div>
         {dataOpen && <>
           <DR l="Host Star" v={planet.star} vc="#FFD43B" />
@@ -1909,12 +1909,12 @@ export default function ExoSkyV2({
       {namingMode && (
         <div style={{position:"absolute",top:0,left:0,right:0,bottom:0,zIndex:100,display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(0,0,0,0.6)",backdropFilter:"blur(8px)"}}>
           <div style={{background:"rgba(15,15,16,0.96)",border:"1px solid rgba(0,229,160,0.08)",borderRadius:0,padding:"28px 32px",width:340,maxWidth:"90vw"}}>
-            <div style={{...SH,marginBottom:12,fontSize:9,borderBottom:"1px solid rgba(21,193,123,0.1)",paddingBottom:8}}>NAME YOUR CONSTELLATION</div>
+            <div style={{...SH,marginBottom:12,fontSize:12,borderBottom:"1px solid rgba(21,193,123,0.1)",paddingBottom:8}}>NAME YOUR CONSTELLATION</div>
             
             {/* Preview line */}
             <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:16}}>
               <div style={{width:40,height:2,background:drawColor,borderRadius:1}} />
-              <span style={{fontSize:9,color:"rgba(255,255,255,0.35)"}}>{currentDrawing.length} stars connected</span>
+              <span style={{fontSize:12,color:"rgba(255,255,255,0.35)"}}>{currentDrawing.length} stars connected</span>
             </div>
 
             <input
@@ -1939,7 +1939,7 @@ export default function ExoSkyV2({
 
             {/* Color adjustment */}
             <div style={{display:"flex",gap:5,marginTop:14,alignItems:"center"}}>
-              <span style={{fontSize:8,color:"rgba(255,255,255,0.3)",marginRight:4}}>COLOR</span>
+              <span style={{fontSize:12,color:"rgba(255,255,255,0.3)",marginRight:4}}>COLOR</span>
               {DRAW_COLORS.map(c => (
                 <div key={c.hex} onClick={() => setDrawColor(c.hex)}
                   style={{width:16,height:16,borderRadius:0,background:c.hex,cursor:"pointer",
@@ -1951,7 +1951,7 @@ export default function ExoSkyV2({
             {/* Star list preview */}
             <div style={{marginTop:14,maxHeight:100,overflowY:"auto",padding:"8px 0",borderTop:"1px solid rgba(255,255,255,0.05)"}}>
               {currentDrawing.map((s, i) => (
-                <div key={i} style={{fontSize:8,color:"rgba(255,255,255,0.3)",fontFamily:"'JetBrains Mono',monospace",lineHeight:1.9}}>
+                <div key={i} style={{fontSize:12,color:"rgba(255,255,255,0.3)",fontFamily:"'JetBrains Mono',monospace",lineHeight:1.9}}>
                   <span style={{color:drawColor+"88",marginRight:6}}>{i+1}.</span>
                   {s.name}
                   <span style={{color:"rgba(255,255,255,0.15)",marginLeft:6}}>mag {s.appMag.toFixed(1)}</span>
@@ -1975,7 +1975,7 @@ export default function ExoSkyV2({
                 ✦ SAVE CONSTELLATION
               </button>
             </div>
-            <div style={{fontSize:7,color:"rgba(255,255,255,0.15)",marginTop:10,textAlign:"center"}}>Press Enter to save · Esc to go back</div>
+            <div style={{fontSize:11,color:"rgba(255,255,255,0.15)",marginTop:10,textAlign:"center"}}>Press Enter to save · Esc to go back</div>
           </div>
         </div>
       )}
@@ -1997,10 +1997,10 @@ export default function ExoSkyV2({
               <div style={{display:"flex",alignItems:"center",gap:8,flex:1,minWidth:0}}>
                 <div style={{width:10,height:10,borderRadius:0,background:cons.color,flexShrink:0,opacity:cons.visible?1:0.3}} />
                 <div style={{minWidth:0}}>
-                  <div style={{fontSize:9,color:cons.visible?"rgba(255,255,255,0.7)":"rgba(255,255,255,0.25)",fontFamily:"'MD Nichrome','Jura',sans-serif",fontWeight:300,letterSpacing:1,textTransform:"uppercase",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>
+                  <div style={{fontSize:12,color:cons.visible?"rgba(255,255,255,0.7)":"rgba(255,255,255,0.25)",fontFamily:"'MD Nichrome','Jura',sans-serif",fontWeight:300,letterSpacing:1,textTransform:"uppercase",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>
                     {cons.name}
                   </div>
-                  <div style={{fontSize:7,color:"rgba(255,255,255,0.2)",fontFamily:"'JetBrains Mono',monospace"}}>
+                  <div style={{fontSize:11,color:"rgba(255,255,255,0.2)",fontFamily:"'JetBrains Mono',monospace"}}>
                     {cons.stars.length} stars · {cons.planetName || EXOPLANET_SYSTEMS[cons.planetIndex]?.planet || "?"}
                   </div>
                 </div>
@@ -2021,7 +2021,7 @@ export default function ExoSkyV2({
             </div>
           ))}
           {customConstellations.length > 0 && (
-            <button onClick={exportConstellations} style={{...BTN,marginTop:12,width:"100%",fontSize:7,padding:"5px 10px"}}>
+            <button onClick={exportConstellations} style={{...BTN,marginTop:12,width:"100%",fontSize:11,padding:"5px 10px"}}>
               ↓ EXPORT ALL (JSON)
             </button>
           )}
@@ -2047,7 +2047,7 @@ export default function ExoSkyV2({
           <div style={{fontSize:7.5,fontFamily:"'MD Nichrome','Jura',sans-serif",fontWeight:300,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(0,229,160,0.55)",marginBottom:8,paddingBottom:3,borderBottom:"1px solid rgba(0,229,160,0.1)"}}>Keyboard Shortcuts</div>
           {[["Drag","Pan sky"],["Scroll / Pinch","Zoom FOV"],["Esc","Cancel / Close"],["Ctrl+Z","Undo star (draw)"],["Enter","Save constellation"],["?","Toggle this help"]].map(([key,desc])=>(
             <div key={key} style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",lineHeight:"2"}}>
-              <span style={{fontFamily:"'JetBrains Mono',monospace",fontSize:9,color:"#15C17B",fontWeight:400,minWidth:56}}>{key}</span>
+              <span style={{fontFamily:"'JetBrains Mono',monospace",fontSize:12,color:"#15C17B",fontWeight:400,minWidth:56}}>{key}</span>
               <span style={{fontFamily:"'DM Sans',sans-serif",fontSize:8.5,color:"rgba(255,255,255,0.55)",textAlign:"right"}}>{desc}</span>
             </div>
           ))}
@@ -2055,7 +2055,7 @@ export default function ExoSkyV2({
       )}
 
       {/* ── CREDITS ── */}
-      <div style={{ position:"absolute",bottom:14,left:18,zIndex:10,fontFamily:"'DM Sans',sans-serif",fontSize:7,letterSpacing:1,color:"rgba(255,255,255,0.12)",pointerEvents:"none" }}>
+      <div style={{ position:"absolute",bottom:14,left:18,zIndex:10,fontFamily:"'DM Sans',sans-serif",fontSize:11,letterSpacing:1,color:"rgba(255,255,255,0.12)",pointerEvents:"none" }}>
         © 2025–2026 JASON D. BATT, PH.D. · <span style={{color:"rgba(21,193,123,0.25)"}}>STELLARFORGE.TOOLS</span> · <a href="/tools/exosky/science" style={{color:"rgba(21,193,123,0.25)",textDecoration:"none",pointerEvents:"auto"}}>The Science</a>
       </div>
 
@@ -2086,8 +2086,8 @@ const SH = { fontSize:12,fontFamily:"'MD Nichrome','Jura',sans-serif",fontWeight
 const LBL = { fontSize:12,fontFamily:"'DM Sans',sans-serif",fontWeight:300,color:"rgba(255,255,255,0.55)" };
 const VAL = { fontSize:14,fontFamily:"'JetBrains Mono',monospace",fontWeight:500,color:"rgba(255,255,255,0.85)" };
 const SEL = { width:"100%",marginTop:8,fontFamily:"'DM Sans',sans-serif",fontSize:12,background:"rgba(255,255,255,0.04)",color:"rgba(255,255,255,0.78)",border:"1px solid rgba(255,255,255,0.1)",padding:"7px 10px",borderRadius:0,outline:"none" };
-const BTN = { fontFamily:"'DM Sans',sans-serif",fontSize:11,fontWeight:400,letterSpacing:1.5,textTransform:"uppercase",padding:"7px 12px",border:"1px solid rgba(21,193,123,0.2)",background:"rgba(21,193,123,0.08)",color:"#15C17B",cursor:"pointer",borderRadius:0,transition:"all 0.2s" } as const;
-const CKL = { display:"flex",alignItems:"center",gap:8,marginTop:6,fontSize:9,color:"rgba(255,255,255,0.5)",cursor:"pointer" };
+const BTN = { fontFamily:"'DM Sans',sans-serif",fontSize:12,fontWeight:400,letterSpacing:1.5,textTransform:"uppercase",padding:"7px 12px",border:"1px solid rgba(21,193,123,0.2)",background:"rgba(21,193,123,0.08)",color:"#15C17B",cursor:"pointer",borderRadius:0,transition:"all 0.2s" } as const;
+const CKL = { display:"flex",alignItems:"center",gap:8,marginTop:6,fontSize:12,color:"rgba(255,255,255,0.5)",cursor:"pointer" };
 const CK = { accentColor:"#15C17B",width:11,height:11 };
-const NUM_INPUT = { width:55,fontFamily:"'JetBrains Mono',monospace",fontSize:8,background:"rgba(255,255,255,0.04)",color:"rgba(255,255,255,0.6)",border:"1px solid rgba(255,255,255,0.08)",padding:"3px 5px",borderRadius:0,outline:"none",textAlign:"right" } as const;
-const MINI_BTN = { background:"none",border:"1px solid rgba(255,255,255,0.08)",borderRadius:0,padding:"2px 6px",cursor:"pointer",fontSize:10,color:"rgba(255,255,255,0.4)",lineHeight:1,transition:"all 0.15s" };
+const NUM_INPUT = { width:55,fontFamily:"'JetBrains Mono',monospace",fontSize:12,background:"rgba(255,255,255,0.04)",color:"rgba(255,255,255,0.6)",border:"1px solid rgba(255,255,255,0.08)",padding:"3px 5px",borderRadius:0,outline:"none",textAlign:"right" } as const;
+const MINI_BTN = { background:"none",border:"1px solid rgba(255,255,255,0.08)",borderRadius:0,padding:"2px 6px",cursor:"pointer",fontSize:12,color:"rgba(255,255,255,0.4)",lineHeight:1,transition:"all 0.15s" };

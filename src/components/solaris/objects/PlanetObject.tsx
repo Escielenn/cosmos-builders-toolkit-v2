@@ -118,7 +118,7 @@ export function PlanetObject({ planet, sim, index, onClick, onDragStart, selecte
           <span
             style={{
               fontFamily: "'DM Sans', sans-serif",
-              fontSize: 10,
+              fontSize: 12,
               letterSpacing: "1px",
               textTransform: "uppercase",
               color: "rgba(61,255,205,0.75)",

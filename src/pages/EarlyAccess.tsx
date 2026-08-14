@@ -215,7 +215,7 @@ function ToolGrid(): JSX.Element {
       <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-5">
         {TOOLS.map((tool) => (
           <div key={tool.name} className="rounded-none border border-sf-border bg-sf-surface/90 p-3.5">
-            <div className={`font-mono text-[11px] uppercase tracking-[1.5px] ${CATEGORY_TONE[tool.cat]}`}>
+            <div className={`font-mono text-[12px] uppercase tracking-[1.5px] ${CATEGORY_TONE[tool.cat]}`}>
               {tool.cat}
             </div>
             <div className="mt-1.5 font-display text-sm tracking-[0.04em] text-t1">{tool.name}</div>

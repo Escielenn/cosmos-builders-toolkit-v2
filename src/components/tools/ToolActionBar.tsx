@@ -126,7 +126,7 @@ const ToolActionBar = ({
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className="w-60 bg-sf-surface/95 backdrop-blur-sf-side border-sf-border rounded-none">
-            <DropdownMenuLabel className="text-[11px] uppercase tracking-[1.5px] text-t3 font-medium">
+            <DropdownMenuLabel className="text-[12px] uppercase tracking-[1.5px] text-t3 font-medium">
               Export
             </DropdownMenuLabel>
             {extraActions && (

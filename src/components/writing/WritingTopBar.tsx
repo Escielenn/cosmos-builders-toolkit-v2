@@ -310,7 +310,7 @@ export function WritingTopBar({
             <span className="text-xs text-t2 truncate block font-sans">
               {doc.title}
             </span>
-            <span className="text-[11px] text-t5 font-mono">
+            <span className="text-[12px] text-t5 font-mono">
               {new Date(doc.updated_at).toLocaleDateString()}
             </span>
           </div>
@@ -549,7 +549,7 @@ export function WritingTopBar({
                                 <span className="flex-1 min-w-0 text-[12px] font-heading font-light uppercase tracking-[1.5px] text-t2 truncate">
                                   {folder.title}
                                 </span>
-                                <span className="text-[11px] font-mono text-t5 mr-1">
+                                <span className="text-[12px] font-mono text-t5 mr-1">
                                   {folder.documents.length}
                                 </span>
                                 {/* Add doc to this folder */}
@@ -572,7 +572,7 @@ export function WritingTopBar({
                             <div>
                               {folder.documents.length === 0 && (
                                 <div className="pl-8 pr-3 py-2">
-                                  <span className="text-[11px] uppercase tracking-[1px] text-t5 italic">
+                                  <span className="text-[12px] uppercase tracking-[1px] text-t5 italic">
                                     Empty chapter
                                   </span>
                                 </div>
@@ -604,7 +604,7 @@ export function WritingTopBar({
                               dragOverUnfiled && "bg-white/[0.04]"
                             )}
                           >
-                            <span className="text-[11px] font-heading font-light uppercase tracking-[1.5px] text-t4">
+                            <span className="text-[12px] font-heading font-light uppercase tracking-[1.5px] text-t4">
                               Unfiled
                             </span>
                           </div>
@@ -705,7 +705,7 @@ export function WritingTopBar({
 
       {/* Save indicator */}
       {isSaving && (
-        <span className="text-[11px] font-mono uppercase tracking-[1.5px] text-t4 flex-shrink-0">
+        <span className="text-[12px] font-mono uppercase tracking-[1.5px] text-t4 flex-shrink-0">
           Saving...
         </span>
       )}

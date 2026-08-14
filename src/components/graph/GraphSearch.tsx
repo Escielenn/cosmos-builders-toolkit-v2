@@ -125,7 +125,7 @@ export function GraphSearch({
                   <div className="text-[12px] text-t2 truncate">
                     {entity.name}
                   </div>
-                  <div className="text-[10px] text-t4 uppercase tracking-[1px]">
+                  <div className="text-[12px] text-t4 uppercase tracking-[1px]">
                     {ENTITY_TYPE_LABELS[entity.entity_type]}
                   </div>
                 </div>

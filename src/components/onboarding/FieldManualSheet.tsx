@@ -20,13 +20,13 @@ const FieldManualSheet = ({ open, onOpenChange }: FieldManualSheetProps) => {
       >
         {/* Header */}
         <SheetHeader className="px-5 pt-5 pb-0">
-          <div className="font-mono text-[11px] uppercase tracking-[3px] text-primary/40 mb-1">
+          <div className="font-mono text-[12px] uppercase tracking-[3px] text-primary/40 mb-1">
             // Field Manual
           </div>
           <SheetTitle className="font-heading text-sm uppercase tracking-[2px] text-t2 font-light">
             Operational Reference
           </SheetTitle>
-          <p className="font-mono text-[10px] uppercase tracking-[2px] text-t3/30 mt-0.5">
+          <p className="font-mono text-[12px] uppercase tracking-[2px] text-t3/30 mt-0.5">
             StellarForge Systems
           </p>
         </SheetHeader>

@@ -53,7 +53,7 @@ const ReferenceBadge = memo(
               borderLeft: `2px solid ${color}`,
             }}
           >
-            <span className="text-[10px] font-medium truncate max-w-[60px]" style={{ color }}>
+            <span className="text-[12px] font-medium truncate max-w-[60px]" style={{ color }}>
               {event.name}
             </span>
             <ExternalLink className="w-2 h-2 shrink-0" style={{ color }} />

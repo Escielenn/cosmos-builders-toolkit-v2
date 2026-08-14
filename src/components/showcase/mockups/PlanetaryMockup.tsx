@@ -103,7 +103,7 @@ const PlanetaryMockup = () => {
               style={{ width: statsVisible[3] ? "2%" : "0%" }}
             />
           </div>
-          <div className="flex justify-between text-[10px] text-t3 mt-1">
+          <div className="flex justify-between text-[12px] text-t3 mt-1">
             <span>N₂ 70%</span>
             <span>O₂ 20%</span>
             <span>Ar 8%</span>

@@ -74,7 +74,7 @@ export function DocumentMetaBar({ meta, onChange, disabled }: DocumentMetaBarPro
           <span className="flex min-w-0 flex-1 items-center gap-2">
             {meta.status && (
               <span
-                className={`shrink-0 font-mono text-[11px] uppercase tracking-[1.5px] ${STATUS_TONE[meta.status]}`}
+                className={`shrink-0 font-mono text-[12px] uppercase tracking-[1.5px] ${STATUS_TONE[meta.status]}`}
               >
                 {STATUS_LABELS[meta.status]}
               </span>
@@ -106,7 +106,7 @@ export function DocumentMetaBar({ meta, onChange, disabled }: DocumentMetaBarPro
           />
           <div className="flex flex-wrap items-center gap-4">
             <label className="flex items-center gap-2">
-              <span className="text-[11px] font-medium uppercase tracking-[1.5px] text-t3">
+              <span className="text-[12px] font-medium uppercase tracking-[1.5px] text-t3">
                 POV
               </span>
               <input
@@ -120,7 +120,7 @@ export function DocumentMetaBar({ meta, onChange, disabled }: DocumentMetaBarPro
             </label>
 
             <label className="flex items-center gap-2">
-              <span className="text-[11px] font-medium uppercase tracking-[1.5px] text-t3">
+              <span className="text-[12px] font-medium uppercase tracking-[1.5px] text-t3">
                 When
               </span>
               <input
@@ -134,7 +134,7 @@ export function DocumentMetaBar({ meta, onChange, disabled }: DocumentMetaBarPro
             </label>
 
             <div className="flex items-center gap-1.5">
-              <span className="text-[11px] font-medium uppercase tracking-[1.5px] text-t3">
+              <span className="text-[12px] font-medium uppercase tracking-[1.5px] text-t3">
                 Status
               </span>
               {DOC_STATUSES.map((s: DocStatus) => (
@@ -143,7 +143,7 @@ export function DocumentMetaBar({ meta, onChange, disabled }: DocumentMetaBarPro
                   disabled={disabled}
                   onClick={() => onChange({ status: meta.status === s ? "" : s })}
                   aria-pressed={meta.status === s}
-                  className={`border px-2 py-1 font-mono text-[11px] uppercase tracking-[1.2px] transition-colors ${
+                  className={`border px-2 py-1 font-mono text-[12px] uppercase tracking-[1.2px] transition-colors ${
                     meta.status === s
                       ? `border-sf-teal/40 bg-sf-teal/[0.06] ${STATUS_TONE[s]}`
                       : "border-sf-border text-t4 hover:text-t2"

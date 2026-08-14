@@ -78,7 +78,7 @@ const KeyChoicesSidebar = ({
 
   const SidebarContent = () => (
     <>
-      <h4 className="font-mono text-[11px] tracking-[2px] uppercase text-t3/60 mb-3 flex items-center gap-2">
+      <h4 className="font-mono text-[12px] tracking-[2px] uppercase text-t3/60 mb-3 flex items-center gap-2">
         <ClipboardList className="w-3.5 h-3.5" />
         // READOUT
       </h4>
@@ -269,7 +269,7 @@ export const MobileKeyChoices = ({
       </SheetTrigger>
       <SheetContent side="right" className="w-72 bg-background/95 backdrop-blur-lg">
         <div className="pt-6">
-          <h4 className="font-mono text-[11px] tracking-[2px] uppercase text-t3/60 mb-3 flex items-center gap-2">
+          <h4 className="font-mono text-[12px] tracking-[2px] uppercase text-t3/60 mb-3 flex items-center gap-2">
             <ClipboardList className="w-3.5 h-3.5" />
             // READOUT
           </h4>

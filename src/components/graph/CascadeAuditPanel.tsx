@@ -55,7 +55,7 @@ function AuditTreeNode({
     <div style={{ paddingLeft: depth > 0 ? 12 : 0 }}>
       <div className="flex items-start gap-1.5 py-0.5 group">
         {depth > 0 && (
-          <span className="text-[11px] text-t5 mt-0.5 shrink-0">
+          <span className="text-[12px] text-t5 mt-0.5 shrink-0">
             {node.connectionLabel}
           </span>
         )}
@@ -75,7 +75,7 @@ function AuditTreeNode({
             {node.entityName}
           </span>
           <span
-            className="text-[10px] uppercase tracking-[0.5px] px-1 py-0.5"
+            className="text-[12px] uppercase tracking-[0.5px] px-1 py-0.5"
             style={{
               color: stageColor,
               background: `${stageColor}10`,
@@ -169,13 +169,13 @@ export function CascadeAuditPanel({
           <div className="text-[12px] font-heading uppercase tracking-[1.5px] text-t1">
             The Cascade of: {result.rootEntityName}
           </div>
-          <div className="text-[11px] font-sans text-t3 mt-0.5">
+          <div className="text-[12px] font-sans text-t3 mt-0.5">
             {CASCADE_STAGE_LABELS[result.rootCascadeStage]} stage
           </div>
         </div>
 
         {/* Stats */}
-        <div className="flex gap-3 text-[11px] font-mono">
+        <div className="flex gap-3 text-[12px] font-mono">
           <div>
             <span className="text-t4">Depth:</span>{" "}
             <span className="text-t1">{result.cascadeDepth} stages</span>
@@ -221,12 +221,12 @@ export function CascadeAuditPanel({
         <div>
           <div className="flex items-center gap-1.5 mb-2">
             <ArrowUp className="w-3 h-3 text-azure" />
-            <h4 className="text-[11px] font-heading uppercase tracking-[2px] text-azure">
+            <h4 className="text-[12px] font-heading uppercase tracking-[2px] text-azure">
               Upstream (what produced this)
             </h4>
           </div>
           {result.upstream.length === 0 ? (
-            <p className="text-[11px] text-t5 font-sans italic pl-4">
+            <p className="text-[12px] text-t5 font-sans italic pl-4">
               No upstream connections found.
             </p>
           ) : (
@@ -247,12 +247,12 @@ export function CascadeAuditPanel({
         <div>
           <div className="flex items-center gap-1.5 mb-2">
             <ArrowDown className="w-3 h-3 text-sf-amber" />
-            <h4 className="text-[11px] font-heading uppercase tracking-[2px] text-sf-amber">
+            <h4 className="text-[12px] font-heading uppercase tracking-[2px] text-sf-amber">
               Downstream (what this produces)
             </h4>
           </div>
           {result.downstream.length === 0 ? (
-            <p className="text-[11px] text-t5 font-sans italic pl-4">
+            <p className="text-[12px] text-t5 font-sans italic pl-4">
               No downstream cascade effects yet.
             </p>
           ) : (

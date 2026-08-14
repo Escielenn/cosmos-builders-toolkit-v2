@@ -62,7 +62,7 @@ const Guide = () => {
 
         {/* Page header */}
         <header className="text-center mb-12">
-          <div className="font-mono text-[11px] uppercase tracking-[3px] text-primary/40 mb-3">
+          <div className="font-mono text-[12px] uppercase tracking-[3px] text-primary/40 mb-3">
             // Navigation Systems
           </div>
           <h1 className="font-display text-3xl md:text-4xl tracking-sf-title text-t1 mb-3">

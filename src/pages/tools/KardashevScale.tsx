@@ -395,7 +395,7 @@ const KardashevScale = () => {
                   {preset.description}
                 </p>
                 {preset.reference && (
-                  <Badge variant="outline" className="mt-1 text-[10px] py-0">
+                  <Badge variant="outline" className="mt-1 text-[12px] py-0">
                     {preset.reference}
                   </Badge>
                 )}
@@ -429,7 +429,7 @@ const KardashevScale = () => {
                 max={1000}
                 step={1}
               />
-              <div className="flex justify-between text-[11px] font-mono text-t5">
+              <div className="flex justify-between text-[12px] font-mono text-t5">
                 <span>10^0 W</span>
                 <span>10^16 W (Type I)</span>
                 <span>10^26 W (Type II)</span>
@@ -504,7 +504,7 @@ const KardashevScale = () => {
                       <Badge
                         variant="outline"
                         className={cn(
-                          "text-[10px] py-0 shrink-0",
+                          "text-[12px] py-0 shrink-0",
                           source.category === "planetary" && "text-blue-400 border-blue-400/20",
                           source.category === "stellar" && "text-sf-amber border-amber-400/20",
                           source.category === "galactic" && "text-pink-400 border-pink-400/20",
@@ -613,7 +613,7 @@ const KardashevScale = () => {
                           <span className="font-mono text-sm text-t1">
                             {formatYears(p.yearsToReach)}
                           </span>
-                          <span className="text-[11px] text-t4 ml-2">
+                          <span className="text-[12px] text-t4 ml-2">
                             ({formatPower(p.powerRequired)})
                           </span>
                         </div>
@@ -655,7 +655,7 @@ const KardashevScale = () => {
                     }}
                   />
                 </div>
-                <div className="flex justify-between text-[10px] font-mono text-t5">
+                <div className="flex justify-between text-[12px] font-mono text-t5">
                   <span>Sub-I</span>
                   <span>I</span>
                   <span>II</span>
@@ -785,7 +785,7 @@ const KardashevScale = () => {
                             <div className="flex items-center gap-2 mb-1">
                               <Badge
                                 variant="outline"
-                                className="text-[10px] py-0"
+                                className="text-[12px] py-0"
                                 style={{
                                   color: KARDASHEV_BANDS.find(
                                     (b) => b.level === imp.level
@@ -798,7 +798,7 @@ const KardashevScale = () => {
                                 {imp.level.toUpperCase()}
                               </Badge>
                               {isCurrentLevel && (
-                                <Badge variant="glow" className="text-[10px] py-0">
+                                <Badge variant="glow" className="text-[12px] py-0">
                                   Current Level
                                 </Badge>
                               )}

@@ -390,7 +390,7 @@ const SettingsDialog = ({
                             "linear-gradient(135deg, #0d1117 0%, #1a1f2e 50%, #0d1117 100%)",
                         }}
                       >
-                        <span className="font-mono text-[11px] text-t3 uppercase tracking-[0.18em]">
+                        <span className="font-mono text-[12px] text-t3 uppercase tracking-[0.18em]">
                           // NO PREVIEW
                         </span>
                       </div>

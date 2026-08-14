@@ -122,7 +122,7 @@ const GraphNodeComponent = memo(({ data, selected }: NodeProps) => {
       </div>
 
       {nodeData.toolDisplayName && (
-        <span className="block text-[10px] text-t3/50 uppercase tracking-wider mt-0.5 font-mono">
+        <span className="block text-[12px] text-t3/50 uppercase tracking-wider mt-0.5 font-mono">
           {nodeData.toolDisplayName}
         </span>
       )}

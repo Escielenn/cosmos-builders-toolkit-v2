@@ -187,7 +187,7 @@ function EntityDetailPanel({
         {/* Type + Cascade badges */}
         <div className="flex items-center gap-2 flex-wrap">
           <span
-            className="text-[11px] font-sans font-medium uppercase tracking-[1px] px-2 py-0.5"
+            className="text-[12px] font-sans font-medium uppercase tracking-[1px] px-2 py-0.5"
             style={{
               background: `${nodeColor}0F`,
               border: `1px solid ${nodeColor}26`,
@@ -198,7 +198,7 @@ function EntityDetailPanel({
             {ENTITY_TYPE_LABELS[entity.entity_type]}
           </span>
           <span
-            className="text-[11px] font-mono uppercase tracking-[0.8px] px-2 py-0.5"
+            className="text-[12px] font-mono uppercase tracking-[0.8px] px-2 py-0.5"
             style={{
               background: `${cascadeColor}0F`,
               border: `1px solid ${cascadeColor}26`,
@@ -255,7 +255,7 @@ function EntityDetailPanel({
               </span>
               <button
                 onClick={() => onReparent(entity.id, null)}
-                className="text-[11px] font-sans text-sf-crimson hover:text-sf-crimson/80 uppercase tracking-[0.5px] ml-auto shrink-0 transition-colors"
+                className="text-[12px] font-sans text-sf-crimson hover:text-sf-crimson/80 uppercase tracking-[0.5px] ml-auto shrink-0 transition-colors"
               >
                 Remove
               </button>
@@ -287,7 +287,7 @@ function EntityDetailPanel({
               {entity.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="text-[11px] font-mono px-1.5 py-0.5 text-t3"
+                  className="text-[12px] font-mono px-1.5 py-0.5 text-t3"
                   style={{
                     background: "rgba(255,255,255,0.04)",
                     border: "1px solid rgba(255,255,255,0.06)",
@@ -606,7 +606,7 @@ function TreeNodeRow({
 
       {/* Entity type label */}
       <span
-        className="text-[11px] font-sans font-medium uppercase tracking-[1px] shrink-0"
+        className="text-[12px] font-sans font-medium uppercase tracking-[1px] shrink-0"
         style={{ color: "rgba(255,255,255,0.35)" }}
       >
         {ENTITY_TYPE_LABELS[entity.entity_type]}
@@ -614,7 +614,7 @@ function TreeNodeRow({
 
       {/* Cascade stage badge */}
       <span
-        className="text-[10px] font-mono uppercase tracking-[0.8px] px-1.5 py-0.5 shrink-0"
+        className="text-[12px] font-mono uppercase tracking-[0.8px] px-1.5 py-0.5 shrink-0"
         style={{
           background: `${cascadeColor}0F`,
           border: `1px solid ${cascadeColor}26`,
@@ -627,7 +627,7 @@ function TreeNodeRow({
 
       {/* Child count */}
       {hasChildren && (
-        <span className="text-[11px] font-mono text-t4">
+        <span className="text-[12px] font-mono text-t4">
           {node.children.length}
         </span>
       )}
@@ -910,7 +910,7 @@ export function EntityTreeView({
             <button
               key={key}
               onClick={() => setLayout(key)}
-              className={`flex items-center gap-1 px-2 py-1 text-[11px] font-sans uppercase tracking-[1px] transition-colors ${
+              className={`flex items-center gap-1 px-2 py-1 text-[12px] font-sans uppercase tracking-[1px] transition-colors ${
                 layout === key
                   ? "text-t1 bg-white/5"
                   : "text-t4 hover:text-t2"
@@ -927,14 +927,14 @@ export function EntityTreeView({
         <div className="flex items-center gap-1">
           <button
             onClick={expandAll}
-            className="text-[11px] font-sans uppercase tracking-[1px] text-t4 hover:text-t2 px-1.5 py-0.5 transition-colors"
+            className="text-[12px] font-sans uppercase tracking-[1px] text-t4 hover:text-t2 px-1.5 py-0.5 transition-colors"
           >
             Expand All
           </button>
-          <span className="text-t5 text-[11px]">/</span>
+          <span className="text-t5 text-[12px]">/</span>
           <button
             onClick={collapseAll}
-            className="text-[11px] font-sans uppercase tracking-[1px] text-t4 hover:text-t2 px-1.5 py-0.5 transition-colors"
+            className="text-[12px] font-sans uppercase tracking-[1px] text-t4 hover:text-t2 px-1.5 py-0.5 transition-colors"
           >
             Collapse All
           </button>
@@ -942,10 +942,10 @@ export function EntityTreeView({
 
         {/* Stats */}
         <div className="ml-auto flex items-center gap-3">
-          <span className="text-[11px] font-mono text-t4">
+          <span className="text-[12px] font-mono text-t4">
             {rootCount} root{rootCount !== 1 ? "s" : ""}
           </span>
-          <span className="text-[11px] font-mono text-t5">
+          <span className="text-[12px] font-mono text-t5">
             {totalCount} total
           </span>
         </div>

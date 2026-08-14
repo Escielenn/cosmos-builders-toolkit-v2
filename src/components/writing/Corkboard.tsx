@@ -102,7 +102,7 @@ function Card({
         )}
       </button>
 
-      <div className="mt-2 flex flex-wrap items-center gap-2 border-t border-white/[0.05] pt-2 font-mono text-[11px] uppercase tracking-[1.2px]">
+      <div className="mt-2 flex flex-wrap items-center gap-2 border-t border-white/[0.05] pt-2 font-mono text-[12px] uppercase tracking-[1.2px]">
         {meta.status && (
           <span className={STATUS_TONE[meta.status]}>{STATUS_LABELS[meta.status]}</span>
         )}
@@ -147,7 +147,7 @@ function Group({
     <section className="mb-8">
       <div className="mb-3 flex items-baseline gap-3 border-b border-white/[0.06] pb-1.5">
         <h3 className="font-serif text-[17px] italic text-sf-emerald">{title}</h3>
-        <span className="font-mono text-[11px] uppercase tracking-[1.2px] text-t4">
+        <span className="font-mono text-[12px] uppercase tracking-[1.2px] text-t4">
           {docs.length} {docs.length === 1 ? "scene" : "scenes"} ·{" "}
           {totalWords.toLocaleString()} words
         </span>

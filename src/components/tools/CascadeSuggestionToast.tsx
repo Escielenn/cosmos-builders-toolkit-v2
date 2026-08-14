@@ -89,7 +89,7 @@ export default function CascadeSuggestionToast({
 
         <div className="flex items-start gap-3">
           <div className="flex-1 min-w-0">
-            <p className="font-heading text-[11px] uppercase tracking-[2px] text-primary/60 mb-1">
+            <p className="font-heading text-[12px] uppercase tracking-[2px] text-primary/60 mb-1">
               Cascade Suggestion
             </p>
             <p className="text-xs text-t2 leading-relaxed">

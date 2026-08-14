@@ -49,7 +49,7 @@ export function WritingMoodboardStrip({
           className="flex items-center gap-1.5 text-t4 hover:text-t2 transition-colors"
         >
           <ImageIcon className="w-3 h-3" />
-          <span className="text-[11px] font-heading uppercase tracking-[1.5px]">
+          <span className="text-[12px] font-heading uppercase tracking-[1.5px]">
             Moodboard
           </span>
           <ChevronDown className="w-3 h-3" />
@@ -71,7 +71,7 @@ export function WritingMoodboardStrip({
             </div>
           ))}
           {images.length > 4 && (
-            <span className="text-[10px] font-mono text-t5">
+            <span className="text-[12px] font-mono text-t5">
               +{images.length - 4}
             </span>
           )}
@@ -90,12 +90,12 @@ export function WritingMoodboardStrip({
           className="flex items-center gap-1.5 text-t3 hover:text-t1 transition-colors"
         >
           <ImageIcon className="w-3 h-3" />
-          <span className="text-[11px] font-heading uppercase tracking-[1.5px]">
+          <span className="text-[12px] font-heading uppercase tracking-[1.5px]">
             Moodboard
           </span>
           <ChevronUp className="w-3 h-3" />
         </button>
-        <span className="text-[10px] font-mono text-t5">
+        <span className="text-[12px] font-mono text-t5">
           {images.length} image{images.length !== 1 ? "s" : ""}
         </span>
       </div>
@@ -114,7 +114,7 @@ export function WritingMoodboardStrip({
             </div>
             {img.caption && (
               <div className="absolute bottom-0 left-0 right-0 bg-black/60 px-1.5 py-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                <span className="text-[10px] text-t3 line-clamp-1">
+                <span className="text-[12px] text-t3 line-clamp-1">
                   {img.caption}
                 </span>
               </div>

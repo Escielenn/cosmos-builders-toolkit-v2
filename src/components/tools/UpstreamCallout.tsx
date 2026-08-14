@@ -34,7 +34,7 @@ function CalloutItem({ callout, toolType, index }: CalloutItemProps) {
       <p className="text-xs text-t3 leading-relaxed pr-5">
         {callout.message}
       </p>
-      <p className="text-[11px] text-t5 mt-1">
+      <p className="text-[12px] text-t5 mt-1">
         Source: {callout.sourceBrandName}
       </p>
       <button

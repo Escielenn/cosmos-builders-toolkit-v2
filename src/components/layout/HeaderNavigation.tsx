@@ -237,7 +237,7 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
                   const CatIcon = cat.icon;
                   return (
                     <div key={cat.id}>
-                      <p className={cn("text-[11px] font-heading font-light uppercase tracking-[2.5px] px-1 mb-2 flex items-center gap-1.5 pb-1.5 border-b border-white/[0.06]", cat.color)}>
+                      <p className={cn("text-[12px] font-heading font-light uppercase tracking-[2.5px] px-1 mb-2 flex items-center gap-1.5 pb-1.5 border-b border-white/[0.06]", cat.color)}>
                         <CatIcon className="w-3 h-3" />
                         {cat.label}
                       </p>

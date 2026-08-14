@@ -62,7 +62,7 @@ const GraphEdgeComponent = memo(
                 transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)`,
               }}
             >
-              <span className="text-[10px] font-mono text-t3 uppercase tracking-wider">
+              <span className="text-[12px] font-mono text-t3 uppercase tracking-wider">
                 {label}
               </span>
             </div>

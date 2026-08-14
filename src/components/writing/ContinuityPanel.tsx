@@ -112,7 +112,7 @@ export function ContinuityPanel({ worldId, content }: ContinuityPanelProps) {
             {n.message}
           </p>
 
-          <div className="mb-2 flex items-center gap-3 font-mono text-[11px] uppercase tracking-[1.2px]">
+          <div className="mb-2 flex items-center gap-3 font-mono text-[12px] uppercase tracking-[1.2px]">
             <span className="text-t4">
               World <span className="text-sf-teal">{n.worldValue}</span>
             </span>

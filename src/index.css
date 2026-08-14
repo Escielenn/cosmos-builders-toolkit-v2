@@ -467,7 +467,7 @@
 
   .sf-sovereignty-feature-title {
     font-family: 'Jura', sans-serif;
-    font-size: 11px;
+    font-size: 12px;
     letter-spacing: 3px;
     color: rgba(61, 255, 205, 0.6);
     margin-bottom: 8px;
@@ -518,7 +518,7 @@
 
   .sf-backup-widget-header {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
+    font-size: 12px;
     letter-spacing: 2px;
     color: rgba(255, 255, 255, 0.3);
     margin-bottom: 12px;
@@ -574,7 +574,7 @@
 
   .sf-export-sovereignty-footer p:first-of-type {
     font-family: 'Jura', sans-serif;
-    font-size: 10px;
+    font-size: 12px;
     letter-spacing: 3px;
     color: rgba(255, 255, 255, 0.25);
     margin-bottom: 4px;
@@ -692,7 +692,7 @@ html {
     left: 50%;
     transform: translate(-50%, -50%);
     font-family: var(--sf-font-mono);
-    font-size: 10px;
+    font-size: 12px;
     letter-spacing: 1px;
     color: rgba(255, 179, 71, 0.3);
     background: hsl(var(--sf-void));
@@ -841,7 +841,7 @@ html {
     padding: 0 16px;
     z-index: 9000;
     font-family: var(--sf-font-mono);
-    font-size: 10px;
+    font-size: 12px;
     letter-spacing: 0.5px;
     color: rgba(224, 228, 232, 0.3);
   }
@@ -991,7 +991,7 @@ html {
 .sf-data-burst {
   position: absolute;
   font-family: var(--sf-font-mono, 'JetBrains Mono', monospace);
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 0.08em;
   line-height: 1;
   white-space: nowrap;
@@ -1009,28 +1009,28 @@ html {
 
 .sf-data-burst--coordinates {
   color: rgba(91, 141, 239, 0.25);
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 0.12em;
   text-shadow: 0 0 8px rgba(91, 141, 239, 0.15);
 }
 
 .sf-data-burst--watermark {
   color: rgba(255, 179, 71, 0.12);
-  font-size: 11px;
+  font-size: 12px;
   text-transform: uppercase;
   text-shadow: 0 0 8px rgba(255, 179, 71, 0.1);
 }
 
 .sf-data-burst--starchart {
   color: rgba(91, 141, 239, 0.12);
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 0.15em;
   text-shadow: 0 0 8px rgba(91, 141, 239, 0.1);
 }
 
 .sf-data-burst--status {
   color: rgba(61, 255, 205, 0.22);
-  font-size: 10px;
+  font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.2em;
   text-shadow: 0 0 8px rgba(61, 255, 205, 0.15);
@@ -1038,7 +1038,7 @@ html {
 
 .sf-data-burst--margin {
   color: rgba(255, 179, 71, 0.18);
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 0.1em;
   writing-mode: vertical-lr;
   text-orientation: mixed;
@@ -1047,7 +1047,7 @@ html {
 
 .sf-data-burst--edge {
   color: rgba(255, 179, 71, 0.15);
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 0.05em;
   text-shadow: 0 0 8px rgba(255, 179, 71, 0.1);
 }
@@ -1924,7 +1924,7 @@ html {
   gap: 8px;
   padding: 8px 14px;
   font-family: var(--sf-font-heading);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
   letter-spacing: 1.5px;
   text-transform: uppercase;
@@ -1968,7 +1968,7 @@ html {
 }
 .sf-instrument-nav-number {
   font-family: var(--sf-font-mono);
-  font-size: 11px;
+  font-size: 12px;
   color: rgba(255, 179, 71, 0.4);
   margin-right: 6px;
 }
@@ -2035,7 +2035,7 @@ html {
 .sf-tool-epigraph-attribution {
   font-family: var(--sf-font-body);
   font-style: italic;
-  font-size: 11px;
+  font-size: 12px;
   color: rgba(255, 255, 255, 0.15);
   margin-top: 8px;
 }
@@ -2156,7 +2156,7 @@ html {
 /* Progress label */
 .sf-progress-label {
   font-family: var(--sf-font-mono);
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 1px;
   color: rgba(224, 228, 232, 0.35);
   margin-top: 6px;
@@ -2561,7 +2561,7 @@ html {
 
 .sf-wiki-autocomplete-type {
   font-family: var(--sf-font-mono, 'JetBrains Mono', monospace);
-  font-size: 10px;
+  font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 1px;
   color: rgba(255, 255, 255, 0.3);
@@ -2577,7 +2577,7 @@ html {
 .sf-wiki-autocomplete-empty {
   padding: 12px;
   font-family: var(--sf-font-mono, 'JetBrains Mono', monospace);
-  font-size: 11px;
+  font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 1px;
   color: rgba(255, 255, 255, 0.25);
@@ -2672,7 +2672,7 @@ html {
 
 .sf-entity-mention-item-type {
   font-family: var(--sf-font-mono, 'JetBrains Mono', monospace);
-  font-size: 10px;
+  font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 1px;
   color: rgba(255, 255, 255, 0.3);
@@ -2682,7 +2682,7 @@ html {
 .sf-entity-mention-empty {
   padding: 12px;
   font-family: var(--sf-font-mono, 'JetBrains Mono', monospace);
-  font-size: 11px;
+  font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 1px;
   color: rgba(255, 255, 255, 0.25);
@@ -2717,7 +2717,7 @@ html {
 
 .sf-infobox-header {
   font-family: var(--sf-font-accent, 'Jura', sans-serif);
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 3px;
   color: rgba(var(--sf-world-accent-rgb, 61, 255, 205), 0.5);
   margin-bottom: 12px;
@@ -2752,7 +2752,7 @@ html {
   padding-top: 8px;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
   font-family: var(--sf-font-mono, 'JetBrains Mono', monospace);
-  font-size: 11px;
+  font-size: 12px;
   color: rgba(255, 255, 255, 0.25);
 }
 
@@ -2904,7 +2904,7 @@ html {
 
 .sf-wiki-connection-type {
   font-family: var(--sf-font-mono, 'JetBrains Mono', monospace);
-  font-size: 11px;
+  font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 1px;
   color: rgba(255, 255, 255, 0.3);
@@ -2935,7 +2935,7 @@ html {
 /* Save indicator */
 .sf-wiki-save-indicator {
   font-family: var(--sf-font-mono, 'JetBrains Mono', monospace);
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 1px;
   text-transform: uppercase;
   color: rgba(var(--sf-world-accent-rgb, 61, 255, 205), 0.5);
@@ -3000,7 +3000,7 @@ html {
 
 .sf-chronicle-era-badge {
   font-family: var(--sf-font-mono, 'JetBrains Mono', monospace);
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 1px;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.35);
@@ -3229,7 +3229,7 @@ html {
 
 .sf-chronicle-gap-label {
   font-family: var(--sf-font-mono, 'JetBrains Mono', monospace);
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 2px;
   color: rgba(255, 255, 255, 0.15);
   background: #0A0E17;
@@ -3257,7 +3257,7 @@ html {
 .sf-chronicle-form-label {
   display: block;
   font-family: var(--sf-font-mono, 'JetBrains Mono', monospace);
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 1.5px;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.3);

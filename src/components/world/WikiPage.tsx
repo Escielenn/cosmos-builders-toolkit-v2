@@ -290,13 +290,13 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
           </>
         )}
         {isDraft && (
-          <span className="ml-2 px-1.5 py-0.5 bg-amber-500/15 text-sf-amber text-[10px] uppercase tracking-widest">
+          <span className="ml-2 px-1.5 py-0.5 bg-amber-500/15 text-sf-amber text-[12px] uppercase tracking-widest">
             Draft
           </span>
         )}
         {/* Cover upload, compact inline button in edit mode */}
         {canEdit && isEditing && (
-          <label className="ml-auto flex items-center gap-1 px-2 py-0.5 border border-sf-border text-[11px] uppercase tracking-wider text-t3/40 hover:text-t3/70 cursor-pointer transition-colors">
+          <label className="ml-auto flex items-center gap-1 px-2 py-0.5 border border-sf-border text-[12px] uppercase tracking-wider text-t3/40 hover:text-t3/70 cursor-pointer transition-colors">
             <ImagePlus className="w-3 h-3" />
             {entry.cover_image_url ? "Change cover" : "Add cover"}
             <input
@@ -543,7 +543,7 @@ function ConnectionSuggestionBar({
         value={connType}
         onChange={(e) => setConnType(e.target.value)}
         title="Connection type"
-        className="bg-transparent border border-sf-border px-1.5 py-0.5 text-[11px] uppercase tracking-wider text-t2"
+        className="bg-transparent border border-sf-border px-1.5 py-0.5 text-[12px] uppercase tracking-wider text-t2"
       >
         {CONNECTION_TYPES.map((t) => (
           <option key={t} value={t}>
@@ -554,14 +554,14 @@ function ConnectionSuggestionBar({
       <button
         type="button"
         onClick={() => onAccept(suggestion, connType)}
-        className="sf-fill-sweep sf-fill-sweep--secondary px-2 py-0.5 border border-[#3DFFCD]/20 text-[#3DFFCD]/70 text-[11px] uppercase tracking-wider"
+        className="sf-fill-sweep sf-fill-sweep--secondary px-2 py-0.5 border border-[#3DFFCD]/20 text-[#3DFFCD]/70 text-[12px] uppercase tracking-wider"
       >
         Add
       </button>
       <button
         type="button"
         onClick={() => onDismiss(suggestion)}
-        className="text-t3/30 hover:text-t3/60 text-[11px] uppercase tracking-wider"
+        className="text-t3/30 hover:text-t3/60 text-[12px] uppercase tracking-wider"
       >
         Dismiss
       </button>

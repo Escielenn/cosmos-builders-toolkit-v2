@@ -152,7 +152,7 @@ function CascadeCoverageBar({ entities }: { entities: Entity[] }) {
             }}
           />
           <span
-            className="font-heading text-[11px] uppercase tracking-[1.5px] transition-colors"
+            className="font-heading text-[12px] uppercase tracking-[1.5px] transition-colors"
             style={{
               color: populated[i]
                 ? CASCADE_STAGE_COLORS[stage]
@@ -846,7 +846,7 @@ export default function WorldShowcase() {
         }}
       />
       <div className="text-center pb-12">
-        <span className="font-mono text-[11px] uppercase tracking-[2px] text-t5">
+        <span className="font-mono text-[12px] uppercase tracking-[2px] text-t5">
           Built with StellarForge
         </span>
       </div>

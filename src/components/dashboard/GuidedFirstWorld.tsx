@@ -104,7 +104,7 @@ export default function GuidedFirstWorld({ worldId }: GuidedFirstWorldProps) {
                 >
                   {step.layer}
                 </span>
-                <span className="font-mono text-[11px] text-t4">
+                <span className="font-mono text-[12px] text-t4">
                   {step.brandName}
                 </span>
               </div>
@@ -132,7 +132,7 @@ export default function GuidedFirstWorld({ worldId }: GuidedFirstWorldProps) {
             <ChevronRight className="w-4 h-4" />
           </Link>
         </Button>
-        <p className="text-[11px] text-t5 font-mono uppercase tracking-wider mt-2">
+        <p className="text-[12px] text-t5 font-mono uppercase tracking-wider mt-2">
           Or start with any tool. There are no wrong paths.
         </p>
       </div>

@@ -292,7 +292,7 @@ export function ChronicleEventDialog({
                     setLinkedEntryId("");
                     setLinkedEntryTitle("");
                   }}
-                  className="text-t3/30 hover:text-t3/60 text-[11px] uppercase tracking-wider"
+                  className="text-t3/30 hover:text-t3/60 text-[12px] uppercase tracking-wider"
                 >
                   Remove
                 </button>

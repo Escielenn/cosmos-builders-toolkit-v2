@@ -399,7 +399,7 @@ export default function WorldCompile() {
                       <>
                         {folders.length > 0 && (
                           <div className="pt-2 border-t border-white/5">
-                            <span className="text-[11px] uppercase tracking-[1.5px] text-t5 font-heading px-2">
+                            <span className="text-[12px] uppercase tracking-[1.5px] text-t5 font-heading px-2">
                               Unfiled
                             </span>
                           </div>
@@ -597,7 +597,7 @@ function DocToggleRow({
         {doc.title || "Untitled"}
       </span>
       {words > 0 && (
-        <span className="text-[11px] font-mono text-t5 shrink-0">
+        <span className="text-[12px] font-mono text-t5 shrink-0">
           {words < 1000 ? words : `${Math.round(words / 100) / 10}k`}
         </span>
       )}

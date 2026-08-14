@@ -85,7 +85,7 @@ export function KonamiCode() {
             <p className="font-mono text-[12px] tracking-[0.18em] text-t3 uppercase">
               FULL-SCREEN NAVIGATIONAL CHART
             </p>
-            <p className="font-mono text-[11px] tracking-[0.18em] text-t5 uppercase">
+            <p className="font-mono text-[12px] tracking-[0.18em] text-t5 uppercase">
               TELEMETRY LOCK · 39.87°N 104.97°W · SOL COUNTER ACTIVE
             </p>
           </div>

@@ -34,7 +34,7 @@ export function DataProfileInfobox({
       <div className="sf-infobox-source">
         <span>Source: {toolName.toUpperCase()}</span>
         <button
-          className="sf-fill-sweep sf-fill-sweep--secondary px-2 py-1 text-[11px] uppercase tracking-wider"
+          className="sf-fill-sweep sf-fill-sweep--secondary px-2 py-1 text-[12px] uppercase tracking-wider"
           onClick={onViewInTool}
         >
           View in {toolName}

@@ -178,7 +178,7 @@ const WorldGraph = () => {
       >
         <button
           onClick={() => setGraphMode("entity")}
-          className={`flex items-center gap-1 px-3 py-1 text-[11px] uppercase tracking-[1.5px] transition-colors ${
+          className={`flex items-center gap-1 px-3 py-1 text-[12px] uppercase tracking-[1.5px] transition-colors ${
             graphMode === "entity"
               ? "bg-teal/10 text-teal"
               : "text-t4 hover:text-t3"
@@ -189,7 +189,7 @@ const WorldGraph = () => {
         </button>
         <button
           onClick={() => setGraphMode("knowledge")}
-          className={`flex items-center gap-1 px-3 py-1 text-[11px] uppercase tracking-[1.5px] transition-colors ${
+          className={`flex items-center gap-1 px-3 py-1 text-[12px] uppercase tracking-[1.5px] transition-colors ${
             graphMode === "knowledge"
               ? "bg-teal/10 text-teal"
               : "text-t4 hover:text-t3"
@@ -219,7 +219,7 @@ const WorldGraph = () => {
             <p className="font-serif text-[13px] italic text-t3">
               Knowledge Graph
             </p>
-            <p className="text-[11px] text-t4 font-sans normal-case tracking-normal mt-0.5">
+            <p className="text-[12px] text-t4 font-sans normal-case tracking-normal mt-0.5">
               Worksheets and wiki entries
             </p>
           </div>
@@ -228,7 +228,7 @@ const WorldGraph = () => {
           <div className="absolute top-12 right-3 z-10 flex items-center gap-1">
             <button
               onClick={() => setEntriesOnly(false)}
-              className={`flex items-center gap-1 px-2.5 py-1 text-[11px] uppercase tracking-[1.5px] transition-colors ${
+              className={`flex items-center gap-1 px-2.5 py-1 text-[12px] uppercase tracking-[1.5px] transition-colors ${
                 !entriesOnly
                   ? "bg-teal/10 border border-teal/25 text-teal"
                   : "bg-sf-void/90 border border-sf-border text-t4 hover:text-t3"
@@ -240,7 +240,7 @@ const WorldGraph = () => {
             </button>
             <button
               onClick={() => setEntriesOnly(true)}
-              className={`flex items-center gap-1 px-2.5 py-1 text-[11px] uppercase tracking-[1.5px] transition-colors ${
+              className={`flex items-center gap-1 px-2.5 py-1 text-[12px] uppercase tracking-[1.5px] transition-colors ${
                 entriesOnly
                   ? "bg-teal/10 border border-teal/25 text-teal"
                   : "bg-sf-void/90 border border-sf-border text-t4 hover:text-t3"

@@ -20,7 +20,7 @@ export default function SoundtrackPicker({ value, onChange }: SoundtrackPickerPr
           <span className="text-sm text-t2 flex-1 truncate">
             {selected.name}
           </span>
-          <span className="font-mono text-[11px] text-t4">
+          <span className="font-mono text-[12px] text-t4">
             {selected.tracks.length} tracks
           </span>
           <button
@@ -72,7 +72,7 @@ function PlaylistOption({
     >
       <Music className="w-3 h-3 shrink-0" />
       <span className="text-xs truncate flex-1">{playlist.name}</span>
-      <span className="font-mono text-[11px] text-t5">
+      <span className="font-mono text-[12px] text-t5">
         {playlist.source === "curated" ? "CURATED" : "CUSTOM"}
       </span>
     </button>

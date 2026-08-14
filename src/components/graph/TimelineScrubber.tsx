@@ -179,8 +179,8 @@ export function TimelineScrubber({
 
           {/* Labels */}
           <div className="flex justify-between mt-0.5">
-            <span className="text-[10px] font-mono text-t5">{firstLabel}</span>
-            <span className="text-[10px] font-mono text-t5">{lastLabel}</span>
+            <span className="text-[12px] font-mono text-t5">{firstLabel}</span>
+            <span className="text-[12px] font-mono text-t5">{lastLabel}</span>
           </div>
         </div>
 

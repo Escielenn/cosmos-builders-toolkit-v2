@@ -117,7 +117,7 @@ export function WorksheetFactsPanel({ worldId, onInsert }: WorksheetFactsPanelPr
               {href && (
                 <Link
                   to={href}
-                  className="shrink-0 font-mono text-[11px] uppercase tracking-[1px] text-t4 transition-colors hover:text-sf-teal"
+                  className="shrink-0 font-mono text-[12px] uppercase tracking-[1px] text-t4 transition-colors hover:text-sf-teal"
                   title={isSim ? "Open this simulator" : "Open this worksheet"}
                 >
                   Open
@@ -148,7 +148,7 @@ export function WorksheetFactsPanel({ worldId, onInsert }: WorksheetFactsPanelPr
 function FactRow({ fact, onInsert }: { fact: WorksheetFact; onInsert: () => void }) {
   return (
     <li className="group flex items-baseline gap-2 py-1">
-      <span className="w-[42%] shrink-0 text-[11px] font-medium uppercase tracking-[1.5px] text-t3">
+      <span className="w-[42%] shrink-0 text-[12px] font-medium uppercase tracking-[1.5px] text-t3">
         {fact.label}
       </span>
       <span className="min-w-0 flex-1 break-words font-mono text-[12px] text-t1">

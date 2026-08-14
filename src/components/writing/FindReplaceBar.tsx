@@ -179,7 +179,7 @@ export function FindReplaceBar({ editor, onClose }: FindReplaceBarProps) {
         className={`${inputClass} w-40`}
       />
 
-      <span className="min-w-[70px] font-mono text-[11px] uppercase tracking-[1.2px] text-t4">
+      <span className="min-w-[70px] font-mono text-[12px] uppercase tracking-[1.2px] text-t4">
         {query === ""
           ? ""
           : matches.length === 0
@@ -227,7 +227,7 @@ export function FindReplaceBar({ editor, onClose }: FindReplaceBarProps) {
         All
       </button>
 
-      <label className="flex cursor-pointer items-center gap-1.5 text-[11px] uppercase tracking-[1.2px] text-t3">
+      <label className="flex cursor-pointer items-center gap-1.5 text-[12px] uppercase tracking-[1.2px] text-t3">
         <input
           type="checkbox"
           checked={caseSensitive}
@@ -236,7 +236,7 @@ export function FindReplaceBar({ editor, onClose }: FindReplaceBarProps) {
         />
         Aa
       </label>
-      <label className="flex cursor-pointer items-center gap-1.5 text-[11px] uppercase tracking-[1.2px] text-t3">
+      <label className="flex cursor-pointer items-center gap-1.5 text-[12px] uppercase tracking-[1.2px] text-t3">
         <input
           type="checkbox"
           checked={wholeWord}

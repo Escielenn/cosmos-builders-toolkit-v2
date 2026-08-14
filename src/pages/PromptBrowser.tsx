@@ -339,7 +339,7 @@ function PromptCard({
           {dayLabel}
         </span>
         {isToday && (
-          <Badge className="text-[11px] px-1.5 py-0 rounded-sm border border-primary/20 bg-primary/[0.06] text-primary">
+          <Badge className="text-[12px] px-1.5 py-0 rounded-sm border border-primary/20 bg-primary/[0.06] text-primary">
             Today
           </Badge>
         )}
@@ -348,12 +348,12 @@ function PromptCard({
       {/* Category + difficulty badges */}
       <div className="flex items-center gap-1.5 mb-2.5">
         <Badge
-          className={`text-[11px] px-1.5 py-0 rounded-sm border ${CATEGORY_COLORS[prompt.category]}`}
+          className={`text-[12px] px-1.5 py-0 rounded-sm border ${CATEGORY_COLORS[prompt.category]}`}
         >
           {CATEGORY_LABELS[prompt.category]}
         </Badge>
         <Badge
-          className={`text-[11px] px-1.5 py-0 rounded-sm border ${DIFFICULTY_COLORS[prompt.difficulty]}`}
+          className={`text-[12px] px-1.5 py-0 rounded-sm border ${DIFFICULTY_COLORS[prompt.difficulty]}`}
         >
           {DIFFICULTY_LABELS[prompt.difficulty]}
         </Badge>

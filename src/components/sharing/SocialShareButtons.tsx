@@ -61,7 +61,7 @@ export function SocialShareButtons({
 
   return (
     <div className="space-y-2">
-      <p className="text-[11px] font-heading uppercase tracking-[2px] text-t4">
+      <p className="text-[12px] font-heading uppercase tracking-[2px] text-t4">
         Share
       </p>
 

@@ -222,7 +222,7 @@ function GravityContent({
               onClick={() => onSelectEntity(r.entityId)}
               className="w-full flex items-center gap-2 px-2 py-1.5 hover:bg-white/[0.03] transition-colors text-left"
             >
-              <span className="text-[11px] font-mono text-t5 w-4 text-right">
+              <span className="text-[12px] font-mono text-t5 w-4 text-right">
                 {i + 1}.
               </span>
               <span
@@ -232,11 +232,11 @@ function GravityContent({
               <span className="text-[12px] font-sans text-t2 flex-1 truncate">
                 {r.name}
               </span>
-              <span className="text-[11px] font-mono text-t4">
+              <span className="text-[12px] font-mono text-t4">
                 {r.weightedConnections}
               </span>
               {r.isOrphan && (
-                <span className="text-[10px] text-sf-amber uppercase tracking-[0.5px]">
+                <span className="text-[12px] text-sf-amber uppercase tracking-[0.5px]">
                   orphan
                 </span>
               )}
@@ -334,7 +334,7 @@ function PathsContent({
             <span className="text-[12px] font-sans text-t2">
               Path {i + 1}
             </span>
-            <span className="text-[11px] font-mono text-t4">
+            <span className="text-[12px] font-mono text-t4">
               {path.hopCount} hop{path.hopCount !== 1 ? "s" : ""}
             </span>
           </div>
@@ -344,7 +344,7 @@ function PathsContent({
             {path.cascadeStagesCrossed.map((s) => (
               <span
                 key={s}
-                className="text-[10px] uppercase tracking-[0.5px] px-1 py-0.5"
+                className="text-[12px] uppercase tracking-[0.5px] px-1 py-0.5"
                 style={{
                   color: CASCADE_STAGE_COLORS[s as CascadeStage] ?? "#FFB800",
                   background: `${CASCADE_STAGE_COLORS[s as CascadeStage] ?? "#FFB800"}10`,
@@ -357,7 +357,7 @@ function PathsContent({
           </div>
 
           {/* Story seed */}
-          <p className="text-[11px] text-t4 font-sans italic leading-snug">
+          <p className="text-[12px] text-t4 font-sans italic leading-snug">
             {path.storySeed}
           </p>
 
@@ -367,11 +367,11 @@ function PathsContent({
               {path.steps.map((step, j) => (
                 <div key={j} className="flex items-center gap-1">
                   {j > 0 && (
-                    <span className="text-[10px] text-t5 mr-1">
+                    <span className="text-[12px] text-t5 mr-1">
                       [{step.relationshipLabel}]
                     </span>
                   )}
-                  <span className="text-[11px] font-mono text-t2">
+                  <span className="text-[12px] font-mono text-t2">
                     {step.entityName}
                   </span>
                 </div>
@@ -447,11 +447,11 @@ function TensionsContent({
                 {t.title}
               </span>
             </div>
-            <p className="text-[11px] text-t3 font-sans leading-snug">
+            <p className="text-[12px] text-t3 font-sans leading-snug">
               {t.description}
             </p>
             <span
-              className="inline-block text-[10px] uppercase tracking-[0.5px] px-1.5 py-0.5"
+              className="inline-block text-[12px] uppercase tracking-[0.5px] px-1.5 py-0.5"
               style={{
                 color,
                 background: `${color}08`,
@@ -514,13 +514,13 @@ function ClustersContent({
             <span className="text-[12px] font-heading uppercase tracking-[1.5px] text-t1">
               {cluster.label}
             </span>
-            <span className="text-[11px] font-mono text-t4">
+            <span className="text-[12px] font-mono text-t4">
               {cluster.entityIds.length} entities
             </span>
           </div>
 
           {/* Entity names */}
-          <p className="text-[11px] text-t3 font-sans leading-snug">
+          <p className="text-[12px] text-t3 font-sans leading-snug">
             {cluster.entityIds
               .slice(0, 6)
               .map((id) => entityMap.get(id)?.name ?? "?")
@@ -528,7 +528,7 @@ function ClustersContent({
             {cluster.entityIds.length > 6 && ` +${cluster.entityIds.length - 6} more`}
           </p>
 
-          <div className="flex gap-3 text-[10px] text-t4 font-mono">
+          <div className="flex gap-3 text-[12px] text-t4 font-mono">
             <span>Density: {cluster.internalDensity}</span>
             <span>External: {cluster.externalConnections}</span>
           </div>
@@ -538,17 +538,17 @@ function ClustersContent({
       {/* Bridge entities */}
       {result.bridgeEntities.length > 0 && (
         <div className="mt-2">
-          <h4 className="text-[11px] font-heading uppercase tracking-[2px] text-sf-amber mb-1.5">
+          <h4 className="text-[12px] font-heading uppercase tracking-[2px] text-sf-amber mb-1.5">
             Bridge Entities
           </h4>
-          <p className="text-[11px] text-t4 font-sans mb-1">
+          <p className="text-[12px] text-t4 font-sans mb-1">
             These entities link multiple clusters: natural protagonist candidates.
           </p>
           {result.bridgeEntities.map((b) => (
             <div key={b.entityId} className="flex items-center gap-2 px-2 py-1">
               <Waypoints className="w-3 h-3 text-sf-amber" />
               <span className="text-[12px] font-sans text-t2">{b.name}</span>
-              <span className="text-[10px] text-t5 font-mono">
+              <span className="text-[12px] text-t5 font-mono">
                 {b.clusterIds.length} clusters
               </span>
             </div>
@@ -614,7 +614,7 @@ function WhatIfContent({
             <div className="text-[12px] font-heading uppercase tracking-[1.5px] text-t1">
               What if "{result.removedEntityName}" were removed?
             </div>
-            <div className="flex gap-3 mt-1 text-[11px] font-mono">
+            <div className="flex gap-3 mt-1 text-[12px] font-mono">
               <span style={{ color: impactColors[result.structuralImpact] }}>
                 {result.structuralImpact.toUpperCase()} IMPACT
               </span>
@@ -623,14 +623,14 @@ function WhatIfContent({
 
           {/* Severed connections */}
           <div>
-            <h4 className="text-[11px] font-heading uppercase tracking-[2px] text-t4 mb-1">
+            <h4 className="text-[12px] font-heading uppercase tracking-[2px] text-t4 mb-1">
               Severed Connections: {result.severedConnections.length}
             </h4>
             <div className="space-y-0.5">
               {result.severedConnections.map((s) => (
                 <div
                   key={s.connectionId}
-                  className="flex items-center gap-2 px-2 py-1 text-[11px]"
+                  className="flex items-center gap-2 px-2 py-1 text-[12px]"
                 >
                   <span className="text-t5">&times;</span>
                   <span className="text-t3 font-sans">{s.otherEntityName}</span>
@@ -645,13 +645,13 @@ function WhatIfContent({
           {/* Newly orphaned */}
           {result.newlyOrphanedEntities.length > 0 && (
             <div>
-              <h4 className="text-[11px] font-heading uppercase tracking-[2px] text-sf-amber mb-1">
+              <h4 className="text-[12px] font-heading uppercase tracking-[2px] text-sf-amber mb-1">
                 Newly Orphaned: {result.newlyOrphanedEntities.length}
               </h4>
               {result.newlyOrphanedEntities.map((o) => (
                 <div
                   key={o.entityId}
-                  className="flex items-center gap-2 px-2 py-1 text-[11px]"
+                  className="flex items-center gap-2 px-2 py-1 text-[12px]"
                 >
                   <AlertTriangle className="w-2.5 h-2.5 text-sf-amber" />
                   <span className="text-t2 font-sans">{o.entityName}</span>
@@ -663,13 +663,13 @@ function WhatIfContent({
           {/* Cascade breaks */}
           {result.cascadeBreaks.length > 0 && (
             <div>
-              <h4 className="text-[11px] font-heading uppercase tracking-[2px] text-crimson mb-1">
+              <h4 className="text-[12px] font-heading uppercase tracking-[2px] text-crimson mb-1">
                 Cascade Breaks: {result.cascadeBreaks.length}
               </h4>
               {result.cascadeBreaks.map((cb, i) => (
                 <div
                   key={i}
-                  className="px-2 py-1 text-[11px] text-t3 font-sans"
+                  className="px-2 py-1 text-[12px] text-t3 font-sans"
                 >
                   {cb.description}
                 </div>
@@ -678,7 +678,7 @@ function WhatIfContent({
           )}
 
           {/* Action hint */}
-          <p className="text-[11px] text-t5 font-sans italic">
+          <p className="text-[12px] text-t5 font-sans italic">
             {result.structuralImpact === "high"
               ? `"${result.removedEntityName}" is a load-bearing entity. Removing it disconnects ${result.newlyOrphanedEntities.length} entities and breaks ${result.cascadeBreaks.length} cascade chains.`
               : result.structuralImpact === "low"

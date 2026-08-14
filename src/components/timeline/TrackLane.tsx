@@ -149,7 +149,7 @@ const TrackLane = memo(
                   key={ft.id}
                   type="button"
                   onClick={() => dispatch({ type: "UNFOLD_TRACK", payload: ft.id })}
-                  className="flex items-center gap-0.5 px-1 py-0 rounded text-[11px] text-t3 hover:text-t1 bg-muted/30 hover:bg-muted/50 transition-colors"
+                  className="flex items-center gap-0.5 px-1 py-0 rounded text-[12px] text-t3 hover:text-t1 bg-muted/30 hover:bg-muted/50 transition-colors"
                   title={`Unfold ${ft.name}`}
                 >
                   <span

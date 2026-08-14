@@ -110,7 +110,7 @@ const EvoBioMockup = () => {
           {traits.map((trait, index) => (
             <span
               key={trait.label}
-              className={`text-[10px] px-2 py-0.5 rounded-full border transition-all duration-300 ${
+              className={`text-[12px] px-2 py-0.5 rounded-full border transition-all duration-300 ${
                 visibleTraits.includes(index)
                   ? `bg-${trait.color}/10 border-${trait.color}/30 text-${trait.color} opacity-100 scale-100`
                   : "opacity-0 scale-75"

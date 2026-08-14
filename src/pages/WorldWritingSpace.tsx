@@ -724,7 +724,7 @@ const WorldWritingSpace = () => {
             <div className="flex items-center gap-4 px-4 md:px-8 py-1.5 border-b border-white/[0.04] bg-sf-void">
               {/* Line spacing */}
               <div className="flex items-center gap-1.5">
-                <span className="text-[11px] font-sans font-medium uppercase tracking-[1.2px] text-t4">Spacing</span>
+                <span className="text-[12px] font-sans font-medium uppercase tracking-[1.2px] text-t4">Spacing</span>
                 <div className="flex">
                   {(["1", "1.5", "2"] as const).map((val) => (
                     <button
@@ -744,7 +744,7 @@ const WorldWritingSpace = () => {
 
               {/* Font selector */}
               <div className="flex items-center gap-1.5">
-                <span className="text-[11px] font-sans font-medium uppercase tracking-[1.2px] text-t4">Font</span>
+                <span className="text-[12px] font-sans font-medium uppercase tracking-[1.2px] text-t4">Font</span>
                 <select
                   value={writingFont}
                   onChange={(e) => setWritingFont(e.target.value as WritingFont)}

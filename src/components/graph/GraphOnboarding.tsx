@@ -119,7 +119,7 @@ export function GraphOnboarding() {
 
       {/* Navigation */}
       <div className="flex items-center justify-between">
-        <span className="text-[11px] font-mono text-t5">
+        <span className="text-[12px] font-mono text-t5">
           {step + 1} / {STEPS.length}
         </span>
         <div className="flex gap-2">

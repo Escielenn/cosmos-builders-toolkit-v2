@@ -69,7 +69,7 @@ export default function EntityMatchDialog({
 
         {candidates.length > 1 && (
           <div className="mt-2 space-y-1">
-            <p className="font-mono text-[11px] uppercase tracking-wider text-t4">
+            <p className="font-mono text-[12px] uppercase tracking-wider text-t4">
               Other possible matches
             </p>
             {candidates.slice(1, 4).map((c) => (
@@ -79,7 +79,7 @@ export default function EntityMatchDialog({
                 className="w-full text-left px-3 py-1.5 text-xs text-t3 hover:text-t1 hover:bg-white/[0.04] transition-colors flex items-center justify-between"
               >
                 <span>{c.title}</span>
-                <span className="font-mono text-[11px] text-t5">
+                <span className="font-mono text-[12px] text-t5">
                   {Math.round(c.score * 100)}%
                 </span>
               </button>

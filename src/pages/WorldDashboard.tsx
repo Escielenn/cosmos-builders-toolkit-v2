@@ -735,7 +735,7 @@ const WorldDashboard = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-60">
-                <DropdownMenuLabel className="text-[11px] uppercase tracking-[1.5px] text-t3 font-medium">
+                <DropdownMenuLabel className="text-[12px] uppercase tracking-[1.5px] text-t3 font-medium">
                   Export
                 </DropdownMenuLabel>
                 <DropdownMenuItem onClick={() => setExportDialogOpen(true)}>
