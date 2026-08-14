@@ -52,15 +52,15 @@ const S = {
     "absolute right-3 bottom-10 z-20 w-60 bg-[rgba(13,13,15,0.94)] border border-white/[0.08] backdrop-blur-[16px] rounded-none p-3 space-y-3 max-h-[52%] overflow-y-auto",
   // Contrast raised to match SolarisControls: chips were white/45 on a 0.02 fill
   // with a 0.06 border, which read as absent rather than merely inactive.
-  sec: "font-mono text-[12px] uppercase tracking-[2px] text-[#3DFFCD]/80 mb-1.5 block",
-  chip: "px-2 py-1 text-[11px] uppercase tracking-wide border rounded-none transition-colors min-h-[26px]",
+  sec: "font-mono text-[13px] uppercase tracking-[2px] text-[#3DFFCD]/80 mb-1.5 block",
+  chip: "px-2 py-1 text-[12px] uppercase tracking-wide border rounded-none transition-colors min-h-[26px]",
   chipOff:
     "bg-white/[0.05] border-white/[0.18] text-white/75 hover:border-sf-teal/50 hover:bg-sf-teal/[0.12] hover:text-white",
   chipOn: "bg-[rgba(21,193,123,0.22)] border-[#15C17B] text-white",
   field:
-    "w-full bg-white/[0.06] border border-white/[0.2] focus:border-sf-teal focus:bg-white/[0.08] outline-none rounded-none px-2 py-1.5 font-mono text-[13px] text-white tracking-wide",
+    "w-full bg-white/[0.06] border border-white/[0.2] focus:border-sf-teal focus:bg-white/[0.08] outline-none rounded-none px-2 py-1.5 font-mono text-[14px] text-white tracking-wide",
   action:
-    "flex-1 px-2 py-2 text-[12px] uppercase tracking-[1.5px] font-heading font-medium border rounded-none transition-colors",
+    "flex-1 px-2 py-2 text-[13px] uppercase tracking-[1.5px] font-heading font-medium border rounded-none transition-colors",
 };
 
 interface Props {
@@ -100,7 +100,7 @@ export default function SolarisGeneratePanel({
           aria-label="Generation seed"
           className={S.field}
         />
-        <p className="mt-1 text-[11px] text-white/25">
+        <p className="mt-1 text-[12px] text-white/25">
           The same seed and settings always give the same system.
         </p>
       </div>
@@ -136,9 +136,9 @@ export default function SolarisGeneratePanel({
 
       {/* Planet count */}
       <div>
-        <label className="flex items-center justify-between text-[12px] uppercase tracking-wider text-white/45 mb-1">
+        <label className="flex items-center justify-between text-[13px] uppercase tracking-wider text-white/45 mb-1">
           <span>Planets</span>
-          <span className="font-mono text-[12px] text-sf-teal">
+          <span className="font-mono text-[13px] text-sf-teal">
             {settings.planetCount ?? "auto"}
           </span>
         </label>
@@ -176,7 +176,7 @@ export default function SolarisGeneratePanel({
             </button>
           ))}
         </div>
-        <p className="mt-1 text-[11px] text-white/25">
+        <p className="mt-1 text-[12px] text-white/25">
           Each one is a guarantee. The rest of the system still varies.
         </p>
       </div>

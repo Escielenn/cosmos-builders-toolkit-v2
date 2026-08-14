@@ -38,7 +38,7 @@ export default function SimulationWorldPicker({
 
   if (isLoading) {
     return (
-      <p className="font-mono text-[12px] uppercase tracking-[1.5px] text-t4">
+      <p className="font-mono text-[13px] uppercase tracking-[1.5px] text-t4">
         // Loading your worlds…
       </p>
     );
@@ -47,10 +47,10 @@ export default function SimulationWorldPicker({
   if (!worlds || worlds.length === 0) {
     return (
       <div>
-        <Label className="text-[12px] font-medium uppercase tracking-[1.5px] text-t3">
+        <Label className="text-[13px] font-medium uppercase tracking-[1.5px] text-t3">
           {label}
         </Label>
-        <p className="mt-1.5 text-[13px] leading-relaxed text-t2">
+        <p className="mt-1.5 text-[14px] leading-relaxed text-t2">
           You don't have a world yet. Create one and the simulation can live
           inside it, where your writing can reach it.
         </p>
@@ -60,7 +60,7 @@ export default function SimulationWorldPicker({
 
   return (
     <div>
-      <Label className="text-[12px] font-medium uppercase tracking-[1.5px] text-t3">
+      <Label className="text-[13px] font-medium uppercase tracking-[1.5px] text-t3">
         {label}
       </Label>
       <Select value={value ?? ""} onValueChange={onChange}>

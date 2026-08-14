@@ -362,7 +362,7 @@ const RogueNativeDev = () => {
   );
 
   const toolBtn =
-    "flex items-center gap-1.5 border border-[#15C17B]/45 bg-[#15C17B]/[0.12] px-3 h-8 font-mono text-[12px] uppercase tracking-wider text-[#3DFFCD] transition-colors hover:bg-[#15C17B]/25 hover:text-white";
+    "flex items-center gap-1.5 border border-[#15C17B]/45 bg-[#15C17B]/[0.12] px-3 h-8 font-mono text-[13px] uppercase tracking-wider text-[#3DFFCD] transition-colors hover:bg-[#15C17B]/25 hover:text-white";
 
   return (
     <div className="min-h-screen bg-background">
@@ -371,7 +371,7 @@ const RogueNativeDev = () => {
         {/* Left of the readout panel, which is 268px wide at right-3. Sharing
             that corner put this badge straight over the status row. */}
         <div className="pointer-events-none absolute right-[292px] top-3 z-30 hidden lg:block">
-          <span className="border border-amber-400/25 bg-amber-400/[0.07] px-2 py-1 font-mono text-[11px] uppercase tracking-[2px] text-amber-400/80">
+          <span className="border border-amber-400/25 bg-amber-400/[0.07] px-2 py-1 font-mono text-[12px] uppercase tracking-[2px] text-amber-400/80">
             Native rebuild · dev preview
           </span>
         </div>

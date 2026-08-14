@@ -73,7 +73,7 @@ export default function SolarisViewer({
         >
           SOLARIS
         </p>
-        <p className="font-sans text-[10px] uppercase tracking-[2px] text-white/[0.28]">
+        <p className="font-sans text-[12px] uppercase tracking-[2px] text-white/[0.28]">
           STELLARFORGE.TOOLS
         </p>
       </div>

@@ -75,7 +75,7 @@ export default function SaveSimulationDialog({
 
         <div className="space-y-3 mt-2">
           <div>
-            <Label className="text-[12px] font-medium uppercase tracking-[1.5px] text-t3">
+            <Label className="text-[13px] font-medium uppercase tracking-[1.5px] text-t3">
               Simulation Name
             </Label>
             <Input

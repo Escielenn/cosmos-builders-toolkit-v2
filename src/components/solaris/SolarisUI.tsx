@@ -19,17 +19,17 @@ const S = {
   // Readout contrast: labels were white/30, which is below the tier-3 floor for
   // text you are meant to read rather than skim past.
   sectionLabel:
-    "font-heading text-[12px] uppercase tracking-[2px] text-[#3DFFCD]/80 mb-1.5 block",
+    "font-heading text-[13px] uppercase tracking-[2px] text-[#3DFFCD]/80 mb-1.5 block",
   row: "flex items-baseline justify-between gap-2 py-0.5",
-  label: "font-heading text-[12px] uppercase tracking-[1.5px] text-white/50 shrink-0",
-  value: "font-mono text-[13px] text-white/95 text-right",
-  name: "font-heading text-[13px] uppercase tracking-[2px] text-white mb-1",
+  label: "font-heading text-[13px] uppercase tracking-[1.5px] text-white/50 shrink-0",
+  value: "font-mono text-[14px] text-white/95 text-right",
+  name: "font-heading text-[14px] uppercase tracking-[2px] text-white mb-1",
   badge:
-    "inline-block px-1.5 py-0.5 text-[10px] uppercase tracking-wider font-mono border rounded-sm mt-1",
+    "inline-block px-1.5 py-0.5 text-[12px] uppercase tracking-wider font-mono border rounded-sm mt-1",
   badgeHz:
     "bg-[rgba(46,204,113,0.1)] border-[rgba(46,204,113,0.3)] text-[#2ECC71]",
   ghost:
-    "text-[12px] text-white/45 font-mono uppercase tracking-wider text-center py-4",
+    "text-[13px] text-white/45 font-mono uppercase tracking-wider text-center py-4",
 };
 
 function fmt(n: number, decimals = 2): string {
@@ -48,7 +48,7 @@ export default function SolarisUI({ systemName, star, selectedBody }: SolarisUIP
     <div className={S.panel}>
       {/* Title */}
       <div className="pb-2 border-b border-white/[0.06]">
-        <p className="font-heading text-[11px] uppercase tracking-[2px] text-[#15C17B]/50">
+        <p className="font-heading text-[12px] uppercase tracking-[2px] text-[#15C17B]/50">
           System
         </p>
         <p className={S.name}>{systemName}</p>
@@ -113,7 +113,7 @@ function PlanetReadout({ planet }: { planet: PlanetData }) {
           <Row label="Hazard" value={m.hazard} />
           <Row label="Resources" value={m.resources} />
           {m.note && (
-            <p className="mt-1.5 font-sans text-[12px] leading-relaxed text-white/40">
+            <p className="mt-1.5 font-sans text-[13px] leading-relaxed text-white/40">
               {m.note}
             </p>
           )}

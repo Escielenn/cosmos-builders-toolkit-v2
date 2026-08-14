@@ -1091,7 +1091,7 @@ export default function ExoSkyV2({
         if (_fov < 120) {
           const labelPt = horizPts[Math.floor(horizPts.length * 0.85)];
           if (labelPt && labelPt.y > 20 && labelPt.y < H - 20) {
-            ctx.font = '6px "MD Nichrome", "Jura", sans-serif';
+            ctx.font = '11px "MD Nichrome", "Jura", sans-serif';
             ctx.fillStyle = "rgba(255,255,255,0.08)";
             ctx.textAlign = "center";
             ctx.letterSpacing = "3px";
@@ -1190,7 +1190,7 @@ export default function ExoSkyV2({
         ctx.beginPath(); ctx.arc(p.x,p.y,pr,0,Math.PI*2);
         ctx.strokeStyle = `rgba(255,215,59,${0.25+Math.sin(t*2)*0.1})`;
         ctx.lineWidth = 1; ctx.stroke();
-        ctx.font = '7px "MD Nichrome", "Jura", sans-serif';
+        ctx.font = '11px "MD Nichrome", "Jura", sans-serif';
         ctx.fillStyle = "rgba(255,215,59,0.6)";
         ctx.textAlign = "center";
         ctx.fillText("SOL", p.x, p.y-14);
@@ -1215,7 +1215,7 @@ export default function ExoSkyV2({
       // Labels
       if (_showStarNames && s.name && eMag < 5.5 && _fov < 140 && s.isCatalog) {
         const labelAlpha = eMag < 2 ? 0.7 : eMag < 3.5 ? 0.55 : 0.35;
-        ctx.font = '9px "MD Nichrome", "Jura", sans-serif';
+        ctx.font = '12px "MD Nichrome", "Jura", sans-serif';
         ctx.fillStyle = `rgba(${r},${g},${b},${labelAlpha})`;
         ctx.textAlign = "center";
         ctx.fillText(s.name, p.x, p.y + radius + 12);
@@ -1299,7 +1299,7 @@ export default function ExoSkyV2({
         // Label at centroid
         const centP = projectStar(cons.centRa, cons.centDec, _viewRa, _viewDec, _fov, W, H, 500);
         if (centP && _fov < 130) {
-          ctx.font = '10px "MD Nichrome", "Jura", sans-serif';
+          ctx.font = '12px "MD Nichrome", "Jura", sans-serif';
           ctx.fillStyle = cc + "66";
           ctx.textAlign = "center";
           ctx.fillText(cons.name.toUpperCase(), centP.x, centP.y - 16);
@@ -1335,25 +1335,25 @@ export default function ExoSkyV2({
         ctx.arc(pts[i].x, pts[i].y, 2.5, 0, Math.PI * 2);
         ctx.fillStyle = _drawColor + "AA";
         ctx.fill();
-        ctx.font = '7px "JetBrains Mono", monospace';
+        ctx.font = '11px "JetBrains Mono", monospace';
         ctx.fillStyle = _drawColor + "88";
         ctx.textAlign = "center";
         ctx.fillText(`${i + 1}`, pts[i].x, pts[i].y - 10);
       }
 
-      ctx.font = '9px "MD Nichrome", "Jura", sans-serif';
+      ctx.font = '12px "MD Nichrome", "Jura", sans-serif';
       ctx.fillStyle = _drawColor + "88";
       ctx.textAlign = "center";
       ctx.fillText(`DRAWING: ${_currentDrawing.length} STAR${_currentDrawing.length !== 1 ? 'S' : ''} SELECTED`, W / 2, 24);
-      ctx.font = '7px "DM Sans", sans-serif';
+      ctx.font = '11px "DM Sans", sans-serif';
       ctx.fillStyle = "rgba(255,255,255,0.25)";
       ctx.fillText("Click stars to connect · Esc to cancel", W / 2, 38);
     } else if (_drawMode) {
-      ctx.font = '9px "MD Nichrome", "Jura", sans-serif';
+      ctx.font = '12px "MD Nichrome", "Jura", sans-serif';
       ctx.fillStyle = _drawColor + "88";
       ctx.textAlign = "center";
       ctx.fillText("CONSTELLATION DRAWING MODE", W / 2, 24);
-      ctx.font = '7px "DM Sans", sans-serif';
+      ctx.font = '11px "DM Sans", sans-serif';
       ctx.fillStyle = "rgba(255,255,255,0.25)";
       ctx.fillText("Click a star to begin", W / 2, 38);
     }
@@ -1363,17 +1363,17 @@ export default function ExoSkyV2({
     ctx.fillStyle = "rgba(21,193,123,0.3)";
     ctx.textAlign = "right";
     ctx.fillText(`${_fov}°`, W-18, H-30);
-    ctx.font = '7px "DM Sans", sans-serif';
+    ctx.font = '11px "DM Sans", sans-serif';
     ctx.fillStyle = "rgba(255,255,255,0.15)";
     ctx.fillText("FIELD OF VIEW", W-18, H-18);
 
     ctx.textAlign = "left";
-    ctx.font = '7px "MD Nichrome", "Jura", sans-serif';
+    ctx.font = '11px "MD Nichrome", "Jura", sans-serif';
     ctx.fillStyle = "rgba(255,255,255,0.12)";
     ctx.fillText(`${count} STARS IN VIEW`, 18, H-18);
 
     if (_showMilkyWay && !_mwReady) {
-      ctx.font = '9px "MD Nichrome", "Jura", sans-serif';
+      ctx.font = '12px "MD Nichrome", "Jura", sans-serif';
       ctx.fillStyle = "rgba(255,165,0,0.5)";
       ctx.textAlign = "center";
       ctx.fillText("COMPUTING GALACTIC STRUCTURE...", W/2, H-18);
@@ -1439,7 +1439,7 @@ export default function ExoSkyV2({
       const dist = getPinchDist();
       if (lastPinchDist.current > 0 && dist > 0) {
         const ratio = lastPinchDist.current / dist;
-        const newFov = Math.max(10, Math.min(160, fovRef.current * ratio));
+        const newFov = Math.max(12, Math.min(160, fovRef.current * ratio));
         fovRef.current = newFov;
         setFov(newFov);
       }
@@ -1509,7 +1509,7 @@ export default function ExoSkyV2({
 
     isDragging.current = false;
   };
-  const onWheel = e => { e.preventDefault(); setFov(p => Math.max(10, Math.min(160, p + (e.deltaY > 0 ? 5 : -5)))); };
+  const onWheel = e => { e.preventDefault(); setFov(p => Math.max(12, Math.min(160, p + (e.deltaY > 0 ? 5 : -5)))); };
 
   // ── Constellation drawing actions ───────────────────
   const undoLastStar = () => setCurrentDrawing(prev => prev.slice(0, -1));
@@ -1679,7 +1679,7 @@ export default function ExoSkyV2({
             <div style={{marginTop:10}}>
               <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:4}}>
                 <span style={LBL}>Galactic l (°)</span>
-                <input type="number" value={customGalL} onChange={e=>setCustomGalL(Math.max(0,Math.min(360,Number(e.target.value)||0)))}
+                <input type="number" value={customGalL} onChange={e=>setCustomGalL(Math.max(0, Math.min(360,Number(e.target.value)||0)))}
                   min={0} max={360} step={0.1} style={NUM_INPUT} />
               </div>
               <input type="range" min="0" max="360" step="0.5" value={customGalL} onChange={e=>setCustomGalL(Number(e.target.value))} style={{width:"100%"}} />

@@ -69,7 +69,7 @@ const ExoskySimulator = () => {
                 variant="outline"
                 size="sm"
                 onClick={() => setPublishDialogOpen(true)}
-                className="bg-sf-void/80 border-white/10 text-sf-teal hover:bg-sf-void text-[12px] uppercase tracking-wider h-7 px-2.5"
+                className="bg-sf-void/80 border-white/10 text-sf-teal hover:bg-sf-void text-[13px] uppercase tracking-wider h-7 px-2.5"
               >
                 <Rocket className="w-3 h-3 mr-1" />
                 Publish
@@ -78,7 +78,7 @@ const ExoskySimulator = () => {
                 variant="outline"
                 size="sm"
                 onClick={() => setLoadSheetOpen(true)}
-                className="bg-sf-void/80 border-white/10 text-sf-teal hover:bg-sf-void text-[12px] uppercase tracking-wider h-7 px-2.5"
+                className="bg-sf-void/80 border-white/10 text-sf-teal hover:bg-sf-void text-[13px] uppercase tracking-wider h-7 px-2.5"
               >
                 <FolderOpen className="w-3 h-3 mr-1" />
                 Load
@@ -87,7 +87,7 @@ const ExoskySimulator = () => {
                 variant="outline"
                 size="sm"
                 onClick={requestSave}
-                className="bg-sf-void/80 border-white/10 text-sf-teal hover:bg-sf-void text-[12px] uppercase tracking-wider h-7 px-2.5"
+                className="bg-sf-void/80 border-white/10 text-sf-teal hover:bg-sf-void text-[13px] uppercase tracking-wider h-7 px-2.5"
               >
                 <Save className="w-3 h-3 mr-1" />
                 Save

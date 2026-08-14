@@ -40,16 +40,16 @@ const S = {
   // the transport row unfindable. Interactive text now sits at tier 2 or above
   // and every button carries a border you can actually see.
   sectionLabel:
-    "font-heading text-[12px] uppercase tracking-[2px] text-[#3DFFCD]/80 mb-1.5 block",
-  btn: "px-2 py-1 text-[11px] uppercase tracking-[1.5px] font-heading transition-colors border min-h-[26px]",
+    "font-heading text-[13px] uppercase tracking-[2px] text-[#3DFFCD]/80 mb-1.5 block",
+  btn: "px-2 py-1 text-[12px] uppercase tracking-[1.5px] font-heading transition-colors border min-h-[26px]",
   btnOff:
     "bg-white/[0.05] border-white/[0.18] text-white/75 hover:bg-[rgba(21,193,123,0.12)] hover:border-[rgba(21,193,123,0.45)] hover:text-white",
   btnOn:
     "bg-[rgba(21,193,123,0.22)] border-[#15C17B] text-white",
   toggle:
-    "flex items-center gap-2 py-1 text-[12px] font-sans text-white/80 cursor-pointer select-none hover:text-white",
+    "flex items-center gap-2 py-1 text-[13px] font-sans text-white/80 cursor-pointer select-none hover:text-white",
   checkbox:
-    "w-3.5 h-3.5 rounded-none border border-white/40 flex items-center justify-center text-[10px]",
+    "w-3.5 h-3.5 rounded-none border border-white/40 flex items-center justify-center text-[12px]",
   checkboxOn: "bg-[#15C17B] border-[#15C17B] text-[#0A0E17]",
 };
 

@@ -33,17 +33,17 @@ import type { EncounterStatus } from "@/lib/simulators/nbody";
 const S = {
   panelBase:
     "absolute z-20 w-[268px] max-w-[calc(100vw-24px)] bg-[rgba(13,13,15,0.94)] border border-white/[0.1] backdrop-blur-[16px] rounded-none p-3 overflow-y-auto",
-  sec: "font-mono text-[12px] uppercase tracking-[2px] text-[#3DFFCD]/80 mb-1.5 block",
-  chip: "px-2 py-1 text-[11px] uppercase tracking-wide border rounded-none transition-colors min-h-[26px]",
+  sec: "font-mono text-[13px] uppercase tracking-[2px] text-[#3DFFCD]/80 mb-1.5 block",
+  chip: "px-2 py-1 text-[12px] uppercase tracking-wide border rounded-none transition-colors min-h-[26px]",
   chipOff:
     "bg-white/[0.05] border-white/[0.18] text-white/75 hover:border-[#15C17B]/50 hover:bg-[#15C17B]/[0.12] hover:text-white",
   chipOn: "bg-[rgba(21,193,123,0.22)] border-[#15C17B] text-white",
   row: "flex items-baseline justify-between gap-2 py-0.5",
-  label: "font-heading text-[12px] uppercase tracking-[1.5px] text-white/50 shrink-0",
-  value: "font-mono text-[13px] text-white/95 text-right",
+  label: "font-heading text-[13px] uppercase tracking-[1.5px] text-white/50 shrink-0",
+  value: "font-mono text-[14px] text-white/95 text-right",
   toggle:
-    "flex items-center gap-2 py-1 text-[12px] text-white/80 cursor-pointer select-none hover:text-white",
-  box: "w-3.5 h-3.5 rounded-none border border-white/40 flex items-center justify-center text-[10px]",
+    "flex items-center gap-2 py-1 text-[13px] text-white/80 cursor-pointer select-none hover:text-white",
+  box: "w-3.5 h-3.5 rounded-none border border-white/40 flex items-center justify-center text-[12px]",
   boxOn: "bg-[#15C17B] border-[#15C17B] text-[#0A0E17]",
 };
 
@@ -66,9 +66,9 @@ function Slider({
 }) {
   return (
     <div className="mb-2">
-      <label className="mb-1 flex items-center justify-between text-[12px] uppercase tracking-wider text-white/55">
+      <label className="mb-1 flex items-center justify-between text-[13px] uppercase tracking-wider text-white/55">
         <span>{label}</span>
-        <span className="font-mono text-[12px] text-[#3DFFCD]">{display}</span>
+        <span className="font-mono text-[13px] text-[#3DFFCD]">{display}</span>
       </label>
       <input
         type="range"
@@ -167,7 +167,7 @@ export function RogueControls({
             </button>
           ))}
         </div>
-        <p className="mt-1.5 text-[11px] leading-relaxed text-white/45">{system.note}</p>
+        <p className="mt-1.5 text-[12px] leading-relaxed text-white/45">{system.note}</p>
       </div>
 
       {/* ── Intruder ── */}
@@ -236,7 +236,7 @@ export function RogueControls({
           <button
             type="button"
             onClick={onLaunch}
-            className="w-full border border-[#15C17B] bg-[#15C17B] px-2 py-2 font-heading text-[12px] font-medium uppercase tracking-[1.5px] text-[#0A0E17] transition-colors hover:bg-[#3DFFCD]"
+            className="w-full border border-[#15C17B] bg-[#15C17B] px-2 py-2 font-heading text-[13px] font-medium uppercase tracking-[1.5px] text-[#0A0E17] transition-colors hover:bg-[#3DFFCD]"
           >
             ▶ Launch intruder
           </button>
@@ -383,7 +383,7 @@ export function RogueReadout({
     <div className={`${S.panelBase} right-3 top-3 max-h-[calc(100%-24px)]`}>
       <div className="border-b border-white/[0.08] pb-2">
         <span className={S.sec}>Status</span>
-        <p className={`font-heading text-[13px] uppercase tracking-[1.5px] ${copy.tone}`}>
+        <p className={`font-heading text-[14px] uppercase tracking-[1.5px] ${copy.tone}`}>
           ● {copy.text}
         </p>
       </div>
@@ -442,13 +442,13 @@ export function RogueReadout({
               <Row label="Mass" value={`${(selected.mass / 3.003e-6).toFixed(2)} M⊕`} />
             )}
             {ejected.has(selected.name) && (
-              <p className="mt-1.5 font-mono text-[11px] uppercase tracking-[1.2px] text-[#2ECC71]">
+              <p className="mt-1.5 font-mono text-[12px] uppercase tracking-[1.2px] text-[#2ECC71]">
                 Unbound and leaving
               </p>
             )}
           </div>
         ) : (
-          <p className="py-3 text-center font-mono text-[12px] uppercase tracking-wider text-white/45">
+          <p className="py-3 text-center font-mono text-[13px] uppercase tracking-wider text-white/45">
             Click any body to inspect
           </p>
         )}

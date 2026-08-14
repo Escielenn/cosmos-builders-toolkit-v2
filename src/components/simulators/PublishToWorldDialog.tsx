@@ -195,7 +195,7 @@ export default function PublishToWorldDialog({
 
           <div className="space-y-3 mt-2">
             <div>
-              <Label className="text-[12px] font-medium uppercase tracking-[1.5px] text-t3">
+              <Label className="text-[13px] font-medium uppercase tracking-[1.5px] text-t3">
                 Entity Name
               </Label>
               <Input
@@ -209,7 +209,7 @@ export default function PublishToWorldDialog({
             </div>
 
             <div>
-              <Label className="text-[12px] font-medium uppercase tracking-[1.5px] text-t3">
+              <Label className="text-[13px] font-medium uppercase tracking-[1.5px] text-t3">
                 Entity Type
               </Label>
               <p className="text-sm text-t2 mt-1 capitalize">
@@ -226,7 +226,7 @@ export default function PublishToWorldDialog({
             )}
 
             {narrativeNotes && Object.values(narrativeNotes).some((v) => v.trim()) && (
-              <p className="text-[12px] text-t4 font-mono uppercase tracking-wider">
+              <p className="text-[13px] text-t4 font-mono uppercase tracking-wider">
                 + Narrative notes will be attached
               </p>
             )}

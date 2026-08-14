@@ -277,13 +277,13 @@ export default function RogueCanvas({
         if (d.labels) {
           const r = bodyRadius(b, cam.zoom);
           ctx.textAlign = "center";
-          ctx.font = '10px "DM Sans", sans-serif';
+          ctx.font = '12px "DM Sans", sans-serif';
           ctx.fillStyle = withAlpha(b.color, ejectedHere ? 0.35 : 0.72);
           const glyph = b.isIntruder ? "◉" : b.sym ? `${b.sym} ` : "";
           ctx.fillText(`${glyph}${b.name.toUpperCase()}`, px, py + r + 13);
           if (ejectedHere) {
             ctx.fillStyle = "rgba(46,204,113,0.65)";
-            ctx.font = '9px "JetBrains Mono", monospace';
+            ctx.font = '12px "JetBrains Mono", monospace';
             ctx.fillText("EJECTED", px, py + r + 25);
           }
         }
