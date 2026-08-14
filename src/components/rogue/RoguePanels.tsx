@@ -32,11 +32,11 @@ import type { EncounterStatus } from "@/lib/simulators/nbody";
 
 const S = {
   panelBase:
-    "absolute z-20 w-[268px] max-w-[calc(100vw-24px)] bg-[rgba(13,13,15,0.94)] border border-white/[0.1] backdrop-blur-[16px] rounded-none p-3 overflow-y-auto",
+    "absolute z-20 w-[268px] max-w-[calc(100vw-24px)] bg-[rgba(13,13,15,0.94)] border border-white/[0.3] backdrop-blur-[16px] rounded-none p-3 overflow-y-auto",
   sec: "font-mono text-[13px] uppercase tracking-[2px] text-[#3DFFCD]/80 mb-1.5 block",
   chip: "px-2 py-1 text-[12px] uppercase tracking-wide border rounded-none transition-colors min-h-[26px]",
   chipOff:
-    "bg-white/[0.05] border-white/[0.18] text-white/75 hover:border-[#15C17B]/50 hover:bg-[#15C17B]/[0.12] hover:text-white",
+    "bg-white/[0.05] border-white/[0.35] text-white/75 hover:border-[#15C17B]/50 hover:bg-[#15C17B]/[0.12] hover:text-white",
   chipOn: "bg-[rgba(21,193,123,0.22)] border-[#15C17B] text-white",
   row: "flex items-baseline justify-between gap-2 py-0.5",
   label: "font-heading text-[13px] uppercase tracking-[1.5px] text-white/50 shrink-0",
@@ -171,7 +171,7 @@ export function RogueControls({
       </div>
 
       {/* ── Intruder ── */}
-      <div className="mt-3 border-t border-white/[0.08] pt-2.5">
+      <div className="mt-3 border-t border-white/[0.35] pt-2.5">
         <span className={S.sec}>Intruder</span>
         <div className="mb-2 flex flex-wrap gap-1">
           {(Object.keys(INTRUDER_TYPES) as IntruderKind[]).map((kind) => (
@@ -230,7 +230,7 @@ export function RogueControls({
       </div>
 
       {/* ── Transport ── */}
-      <div className="mt-3 border-t border-white/[0.08] pt-2.5">
+      <div className="mt-3 border-t border-white/[0.35] pt-2.5">
         <span className={S.sec}>Time</span>
         {!launched ? (
           <button
@@ -249,7 +249,7 @@ export function RogueControls({
                 aria-pressed={!running}
                 className={`${S.chip} flex-1 font-medium ${
                   running
-                    ? "border-[#15C17B]/55 bg-[#15C17B]/[0.14] text-[#3DFFCD] hover:bg-[#15C17B]/25"
+                    ? "border-[#15C17B]/75 bg-[#15C17B]/[0.14] text-[#3DFFCD] hover:bg-[#15C17B]/25"
                     : "border-[#15C17B] bg-[#15C17B] text-[#0A0E17]"
                 }`}
               >
@@ -261,7 +261,7 @@ export function RogueControls({
                 disabled={!canRewind}
                 title={canRewind ? "Step back" : "Nothing recorded yet"}
                 className={`${S.chip} ${
-                  canRewind ? S.chipOff : "cursor-not-allowed border-white/[0.08] text-white/25"
+                  canRewind ? S.chipOff : "cursor-not-allowed border-white/[0.35] text-white/25"
                 }`}
               >
                 ◀◀
@@ -294,7 +294,7 @@ export function RogueControls({
       </div>
 
       {/* ── Display ── */}
-      <div className="mt-3 border-t border-white/[0.08] pt-2.5">
+      <div className="mt-3 border-t border-white/[0.35] pt-2.5">
         <span className={S.sec}>Display</span>
         <Toggle
           on={display.trails}
@@ -381,7 +381,7 @@ export function RogueReadout({
 
   return (
     <div className={`${S.panelBase} right-3 top-3 max-h-[calc(100%-24px)]`}>
-      <div className="border-b border-white/[0.08] pb-2">
+      <div className="border-b border-white/[0.35] pb-2">
         <span className={S.sec}>Status</span>
         <p className={`font-heading text-[14px] uppercase tracking-[1.5px] ${copy.tone}`}>
           ● {copy.text}
@@ -411,7 +411,7 @@ export function RogueReadout({
       </div>
 
       {/* ── Selected body ── */}
-      <div className="mt-2 border-t border-white/[0.08] pt-2">
+      <div className="mt-2 border-t border-white/[0.35] pt-2">
         {selected ? (
           <div>
             <div className="mb-1 flex items-center justify-between gap-2">
@@ -455,7 +455,7 @@ export function RogueReadout({
       </div>
 
       {/* ── Bodies list, doubles as a camera picker ── */}
-      <div className="mt-2 border-t border-white/[0.08] pt-2">
+      <div className="mt-2 border-t border-white/[0.35] pt-2">
         <span className={S.sec}>Bodies</span>
         <div className="flex flex-wrap gap-1">
           <button

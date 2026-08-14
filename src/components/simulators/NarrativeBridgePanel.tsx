@@ -90,7 +90,7 @@ export default function NarrativeBridgePanel({
   return (
     <div className="absolute right-0 top-0 bottom-0 z-30 w-80 bg-sf-void/95 backdrop-blur-sf-side border-l border-sf-border overflow-y-auto animate-in slide-in-from-right duration-300">
       {/* Header */}
-      <div className="sticky top-0 z-10 bg-sf-void/95 backdrop-blur-sf-side px-4 py-3 border-b border-white/[0.06]">
+      <div className="sticky top-0 z-10 bg-sf-void/95 backdrop-blur-sf-side px-4 py-3 border-b border-white/[0.35]">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <PenLine className="w-3.5 h-3.5 text-sf-teal" />
@@ -147,7 +147,7 @@ export default function NarrativeBridgePanel({
         </div>
 
         {/* Footer: save + count */}
-        <div className="pt-3 border-t border-white/[0.06] space-y-2">
+        <div className="pt-3 border-t border-white/[0.35] space-y-2">
           <div className="flex items-center justify-between">
             <p className="font-mono text-[12px] text-t4 uppercase tracking-wider">
               {filledCount} / {config.questions.length} notes written

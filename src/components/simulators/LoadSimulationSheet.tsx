@@ -58,7 +58,7 @@ export default function LoadSimulationSheet({
           {saves.map((save) => (
             <div
               key={save.id}
-              className="p-3 border border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.04] transition-colors"
+              className="p-3 border border-white/[0.35] bg-white/[0.02] hover:bg-white/[0.04] transition-colors"
             >
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0">

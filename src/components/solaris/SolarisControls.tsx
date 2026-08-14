@@ -34,7 +34,7 @@ interface SolarisControlsProps {
 // the transport controls entirely behind the editor.
 const S = {
   panel:
-    "absolute left-3 top-14 z-10 w-52 bg-[rgba(15,15,16,0.92)] border border-white/[0.08] backdrop-blur-[16px] rounded-none p-3.5 space-y-4 overflow-y-auto max-h-[46%]",
+    "absolute left-3 top-14 z-10 w-52 bg-[rgba(15,15,16,0.92)] border border-white/[0.35] backdrop-blur-[16px] rounded-none p-3.5 space-y-4 overflow-y-auto max-h-[46%]",
   // Contrast: the previous values (label teal at 0.35, button text at white/30,
   // borders at 0.06) left every control barely visible against the panel, and
   // the transport row unfindable. Interactive text now sits at tier 2 or above
@@ -43,7 +43,7 @@ const S = {
     "font-heading text-[13px] uppercase tracking-[2px] text-[#3DFFCD]/80 mb-1.5 block",
   btn: "px-2 py-1 text-[12px] uppercase tracking-[1.5px] font-heading transition-colors border min-h-[26px]",
   btnOff:
-    "bg-white/[0.05] border-white/[0.18] text-white/75 hover:bg-[rgba(21,193,123,0.12)] hover:border-[rgba(21,193,123,0.45)] hover:text-white",
+    "bg-white/[0.05] border-white/[0.35] text-white/75 hover:bg-[rgba(21,193,123,0.12)] hover:border-[rgba(21,193,123,0.75)] hover:text-white",
   btnOn:
     "bg-[rgba(21,193,123,0.22)] border-[#15C17B] text-white",
   toggle:
@@ -138,7 +138,7 @@ export default function SolarisControls({
           </button>
           <button
             className={`${S.btn} ${
-              paused ? S.btnOff : "bg-transparent border-white/[0.08] text-white/25 cursor-not-allowed"
+              paused ? S.btnOff : "bg-transparent border-white/[0.35] text-white/25 cursor-not-allowed"
             }`}
             onClick={onStep}
             disabled={!paused}

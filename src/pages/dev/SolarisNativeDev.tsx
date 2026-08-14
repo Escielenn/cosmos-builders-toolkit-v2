@@ -232,7 +232,7 @@ const SolarisNativeDev = () => {
   }, []);
 
   const ctrl = "font-mono text-[13px] uppercase tracking-wider h-8 rounded-none border";
-  const actionBtn = `${ctrl} bg-sf-teal/[0.12] border-sf-teal/45 text-[#3DFFCD] hover:bg-sf-teal/25 hover:text-white px-3 flex items-center gap-1.5`;
+  const actionBtn = `${ctrl} bg-sf-teal/[0.12] border-sf-teal/70 text-[#3DFFCD] hover:bg-sf-teal/25 hover:text-white px-3 flex items-center gap-1.5`;
 
   return (
     <div className="min-h-screen bg-background flex flex-col">

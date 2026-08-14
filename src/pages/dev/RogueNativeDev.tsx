@@ -362,7 +362,7 @@ const RogueNativeDev = () => {
   );
 
   const toolBtn =
-    "flex items-center gap-1.5 border border-[#15C17B]/45 bg-[#15C17B]/[0.12] px-3 h-8 font-mono text-[13px] uppercase tracking-wider text-[#3DFFCD] transition-colors hover:bg-[#15C17B]/25 hover:text-white";
+    "flex items-center gap-1.5 border border-[#15C17B]/70 bg-[#15C17B]/[0.12] px-3 h-8 font-mono text-[13px] uppercase tracking-wider text-[#3DFFCD] transition-colors hover:bg-[#15C17B]/25 hover:text-white";
 
   return (
     <div className="min-h-screen bg-background">
