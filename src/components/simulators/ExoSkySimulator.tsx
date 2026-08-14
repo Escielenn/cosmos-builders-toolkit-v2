@@ -799,6 +799,49 @@ export default function ExoSkyV2({
   const planetRef = useRef(planet);
   planetRef.current = planet;
 
+  /**
+   * Per-stage render profiler, off unless asked for.
+   *
+   * The draw loop has eight distinct stages and the reported stutter could
+   * plausibly come from any of them. Guessing which one costs the most is how a
+   * rewrite ends up optimising the wrong thing: disabling the Milky Way band
+   * recovered only about a quarter of the frame, so the rest is somewhere else.
+   *
+   * Enable with ?profile=1, then read window.__exoskyProfile for a rolling
+   * median per stage. Costs one Boolean test per stage when off.
+   */
+  const profiling = useRef(
+    typeof window !== "undefined" && new URLSearchParams(window.location.search).has("profile"),
+  );
+  const profileMark = useRef(0);
+  const profileData = useRef<Record<string, number[]>>({});
+
+  const stage = useCallback((name: string) => {
+    if (!profiling.current) return;
+    const now = performance.now();
+    if (name !== "__start") {
+      (profileData.current[name] ??= []).push(now - profileMark.current);
+      // Rolling window, so a slow first frame does not dominate forever.
+      if (profileData.current[name].length > 120) profileData.current[name].shift();
+    }
+    profileMark.current = now;
+  }, []);
+
+  useEffect(() => {
+    if (!profiling.current) return;
+    (window as unknown as { __exoskyProfile?: unknown }).__exoskyProfile = () => {
+      const out: Record<string, { medianMs: number; samples: number }> = {};
+      let total = 0;
+      for (const [k, v] of Object.entries(profileData.current)) {
+        const sorted = [...v].sort((a, b) => a - b);
+        const med = sorted[Math.floor(sorted.length / 2)] ?? 0;
+        out[k] = { medianMs: +med.toFixed(2), samples: v.length };
+        total += med;
+      }
+      return { stages: out, totalMedianMs: +total.toFixed(2) };
+    };
+  }, []);
+
   // ── Canvas render ───────────────────────────────────
   const render = useCallback((time) => {
     const canvas = canvasRef.current;
@@ -833,8 +876,10 @@ export default function ExoSkyV2({
     const _planet = planetRef.current;
     const _bgBuckets = bgBucketsRef.current;
 
+    stage("__start");
     ctx.fillStyle = "#09090B";
     ctx.fillRect(0, 0, W, H);
+    stage("clear");
 
     // ── MILKY WAY BAND (offscreen canvas) ────────────
     if (_showMilkyWay && mwMapRef.current && _mwReady) {
@@ -920,6 +965,7 @@ export default function ExoSkyV2({
       }
     }
 
+    stage("milkyWay");
     // ── DENSE BACKGROUND STAR FIELD ─────────────────
     // Use spatial buckets to only iterate stars near the current view
     {
@@ -995,6 +1041,7 @@ export default function ExoSkyV2({
       }
     }
 
+    stage("backgroundField");
     // ── ATMOSPHERIC SKY GRADIENT ────────────────────
     if (_showAtmosphere && _atmo.extinction > 0) {
       const [sr, sg, sb] = _atmo.skyColor;
@@ -1014,6 +1061,7 @@ export default function ExoSkyV2({
       }
     }
 
+    stage("skyGradient");
     // ── HORIZON LINE & GROUND PLANE ────────────────
     if (_showHorizon) {
       const horizonDec = 0;
@@ -1102,6 +1150,7 @@ export default function ExoSkyV2({
       }
     }
 
+    stage("horizon");
     // ── COORDINATE GRID ─────────────────────────────
     if (_showGrid) {
       ctx.strokeStyle = "rgba(255,255,255,0.025)";
@@ -1124,6 +1173,7 @@ export default function ExoSkyV2({
       }
     }
 
+    stage("grid");
     // ── CONSTELLATION LINES ─────────────────────────
     if (_showConstellations) {
       const starMap = {};
@@ -1143,6 +1193,7 @@ export default function ExoSkyV2({
       ctx.setLineDash([]);
     }
 
+    stage("constellations");
     // ── STARS ────────────────────────────────────────
     const positions = [];
     const maxStars = 8000; // Performance cap
@@ -1226,6 +1277,7 @@ export default function ExoSkyV2({
     }
     starPositions.current = positions;
 
+    stage("stars");
     // ── DRAW MODE HOVER INDICATOR ─────────────────
     if (_drawMode && _hoveredStar) {
       const hp = projectStar(_hoveredStar.newRa, _hoveredStar.newDec, _viewRa, _viewDec, _fov, W, H, 500);
@@ -1380,6 +1432,10 @@ export default function ExoSkyV2({
     }
 
     animRef.current = requestAnimationFrame(render);
+    // `stage` is a useCallback with an empty dep list, so it is stable for the
+    // life of the component. Naming it here would re-create this deliberately
+    // stable render callback for no benefit, so the rule is silenced instead.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Stable callback, reads all values from refs
 
   // ── Canvas setup ────────────────────────────────────

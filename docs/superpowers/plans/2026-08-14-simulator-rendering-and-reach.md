@@ -48,22 +48,49 @@ The redraw condition includes `viewRa`, `viewDec` and `fov`. **So it re-runs on
 every frame in which the camera moves**, which is exactly and only when the user
 is rotating, panning or zooming.
 
-**Honest limits on the numbers.** In a headless browser the page measured about
-1 fps idle and roughly 1000 ms per frame while dragging, and disabling the Milky
-Way recovered only 28% of that. Headless canvas is far slower than real
-hardware, so those absolutes are not the owner's experience and must not be
-quoted as such. Two things do carry over: the structural defect above is real
-regardless of hardware, and **the Milky Way is not the only cost** — something
-else accounts for the remaining ~70% and has not yet been isolated.
+### R-1: DONE, and it withdrew the diagnosis above
 
-### R-1: Profile before optimising further (do this first)
-- [ ] Instrument the draw loop with `performance.mark` around each stage:
-      Milky Way, background star field, catalogue stars, constellation lines,
-      horizon and atmosphere, labels. Log a rolling median per stage.
-- [ ] Take the numbers **on real hardware**, not headless. Record them here.
-- [ ] Only then decide what to rewrite. The 28% result already shows that fixing
-      the Milky Way alone would leave the stutter largely intact, which is
-      precisely the kind of thing that turns a rewrite into a disappointment.
+The loop is now instrumented (0.7110): `?profile=1`, then read
+`window.__exoskyProfile()` for a rolling median per stage over 120 frames.
+
+**The claim that the Milky Way causes the stutter is withdrawn.** The mechanism
+in the code is real, but the evidence was not: the drag I measured never rotated
+the view. RA/Dec read identically before and after, so every "while dragging"
+figure, including the 1000 ms frames, was an idle canvas.
+
+Measured per stage, headless:
+
+```
+clear             0.0 ms
+milkyWay          0.1 ms
+backgroundField   4.7 - 7.6 ms   <- 80% of the frame
+skyGradient       0.0 ms
+horizon           0.5 ms
+grid              0.0 ms
+constellations    0.1 ms
+stars             0.2 ms
+                  ---------
+total             5.9 - 8.5 ms
+```
+
+Two conclusions. The entire JS draw fits inside a 16 ms budget, so the 700 to
+1000 ms frames measured here are **not** explained by this code and are an
+artefact of headless software rasterisation at 1920x1009. And the dominant cost
+is the **dense background star field**, not the Milky Way.
+
+The Milky Way is *untested*, not cleared: sweeping the two sliders in its redraw
+condition left it at 0.1 ms, which suggests the block is skipped at its
+`_mwReady` gate rather than running cheaply.
+
+- [ ] **Run `?profile=1` on real hardware and drag the sky.** That is the number
+      that decides R-2 and R-3, and nothing measured in a headless browser can
+      stand in for it. Record the result here.
+
+### R-1b: What the stage numbers already point at
+- [ ] `backgroundField` is 20,000 procedural points behind a spatial-bucket
+      index. At 5 to 8 ms it is the first candidate regardless of what real
+      hardware says. Check whether the bucket lookup is actually culling, or
+      whether it walks most of the field every frame.
 
 ### R-2: Cheap wins, likely large
 - [ ] **Write pixels, not rects.** Replace the 121k `fillRect` calls and their
