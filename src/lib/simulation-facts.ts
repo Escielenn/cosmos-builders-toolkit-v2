@@ -224,3 +224,67 @@ export function extractSimulationFacts(
 export function hasSimulationFactSupport(simulatorType: string): boolean {
   return (FACT_CAPABLE_SIMULATORS as readonly string[]).includes(simulatorType);
 }
+
+// ---------------------------------------------------------------------------
+// Feeding the continuity engine
+// ---------------------------------------------------------------------------
+
+/**
+ * Where a simulator fact means exactly what a continuity check means.
+ *
+ * The display facts above are written to be read: "1.33 g, heavy going", or
+ * "391 K (118°C), scorching". The continuity engine parses a number out of the
+ * value and compares it to the prose, so it needs the bare figure and it needs
+ * the key the checks actually match on (`surfaceGravity`, not `forged.gravity`).
+ *
+ * Only exact semantic matches are listed. A simulator number that merely
+ * resembles a check is worse than nothing here: the engine would tell a writer
+ * their prose contradicts their world using a figure that was never about the
+ * same thing.
+ */
+const CONTINUITY_EQUIVALENTS: Record<
+  string,
+  { key: string; label: string; unit?: string }
+> = {
+  // ExoForge builds a single world; its numbers are that world's numbers.
+  "forged.gravity": { key: "surfaceGravity", label: "Surface Gravity (g)" },
+  "forged.temperature": { key: "surfaceTemperature", label: "Surface Temperature (K)" },
+  "forged.rotation": { key: "dayLength", label: "Day Length (hours)" },
+
+  // Tidelock: the terminator, not the day side. A tidally locked world's
+  // habitable band is where a story happens, and it is the temperature a writer
+  // is describing when they describe weather.
+  "locked.gravity": { key: "surfaceGravity", label: "Surface Gravity (g)" },
+  "locked.terminator": { key: "surfaceTemperature", label: "Surface Temperature (K)" },
+};
+
+/** The leading number in a formatted display value, e.g. "391 K (118°C)" → 391. */
+function leadingNumber(value: string): number | null {
+  const m = value.match(/-?\d[\d,]*\.?\d*/);
+  if (!m) return null;
+  const n = Number(m[0].replace(/,/g, ""));
+  return Number.isFinite(n) ? n : null;
+}
+
+/**
+ * Simulator facts re-expressed in the keys and bare values the continuity
+ * engine compares against prose.
+ *
+ * Returns only the ones that map. Feed these to `checkContinuity` alongside
+ * worksheet facts, so a saved simulation can contradict the manuscript the same
+ * way a filled-in worksheet already can.
+ */
+export function toContinuityFacts(facts: WorksheetFact[]): WorksheetFact[] {
+  const out: WorksheetFact[] = [];
+  const seen = new Set<string>();
+
+  for (const fact of facts) {
+    const equiv = CONTINUITY_EQUIVALENTS[fact.key];
+    if (!equiv || seen.has(equiv.key)) continue;
+    const n = leadingNumber(fact.value);
+    if (n === null) continue;
+    seen.add(equiv.key);
+    out.push({ key: equiv.key, label: equiv.label, value: String(n) });
+  }
+  return out;
+}

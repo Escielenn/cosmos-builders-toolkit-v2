@@ -15,7 +15,9 @@
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useWorksheets } from "@/hooks/use-worksheets";
+import { useWorldSimulations } from "@/hooks/use-world-simulations";
 import { extractWorksheetFacts } from "@/lib/worksheet-facts";
+import { extractSimulationFacts, toContinuityFacts } from "@/lib/simulation-facts";
 import { checkContinuity, checkImplausibility } from "@/lib/continuity";
 import { useWorldParameters } from "@/hooks/use-world-parameters";
 
@@ -37,13 +39,23 @@ export function ContinuityPanel({ worldId, content }: ContinuityPanelProps) {
   // List hook: the single-worksheet hook throws for non-owners.
   const { worksheets } = useWorksheets(worldId);
 
-  const facts = useMemo(
-    () =>
-      (worksheets ?? []).flatMap((ws) =>
-        extractWorksheetFacts(ws.tool_type, ws.data),
-      ),
-    [worksheets],
-  );
+  // Simulations are the second source of truth about this world, and until now
+  // the Check tab could not see them: a saved Tidelock world could say the
+  // terminator sits at 279 K while the prose called it blistering, and nothing
+  // would notice.
+  const { simulations } = useWorldSimulations(worldId);
+
+  const facts = useMemo(() => {
+    const fromWorksheets = (worksheets ?? []).flatMap((ws) =>
+      extractWorksheetFacts(ws.tool_type, ws.data),
+    );
+    const fromSimulations = toContinuityFacts(
+      simulations.flatMap((sim) => extractSimulationFacts(sim.simulator_type, sim.data)),
+    );
+    // Worksheets first: a value the writer typed outranks one a simulator
+    // derived, and checkContinuity takes the first fact matching a key.
+    return [...fromWorksheets, ...fromSimulations];
+  }, [worksheets, simulations]);
 
   // Tier 2 needs the qualitative cascade drivers the writer chose in the
   // Environmental Chain Reaction tool, not the numeric facts.
