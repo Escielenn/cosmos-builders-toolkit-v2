@@ -339,15 +339,109 @@ const RogueNativeDev = () => {
       getStatus: () => status,
       getEjected: () => [...ejected],
       getYears: () => simYearsRef.current,
+      getCamera: () => camera,
+      isHelpOpen: () => showKeys,
       buildPayload,
       launch,
       isRunning: () => running,
     };
   });
 
+  /**
+   * Frame the whole system, or just its inner worlds.
+   *
+   * The systems span four orders of magnitude, so "zoom to fit" is not a
+   * convenience here: at the framing that shows Neptune, TRAPPIST-1's entire
+   * planetary system is a single pixel.
+   */
+  const fitTo = useCallback(
+    (scope: "all" | "inner") => {
+      const planets = bodiesRef.current.filter((b) => b.isPlanet);
+      if (planets.length === 0) return;
+      const orbits = planets.map((p) => p.a ?? Math.hypot(p.x, p.y)).sort((a, b) => a - b);
+      // "Inner" is the closest third, which is where a rocky system lives.
+      const reach =
+        scope === "all"
+          ? orbits[orbits.length - 1]
+          : orbits[Math.max(0, Math.floor(orbits.length / 3) - 1)];
+      if (!reach || !Number.isFinite(reach)) return;
+      // 2.4 rather than 2 leaves the outermost orbit clear of the panels.
+      setCamera({ x: 0, y: 0, zoom: (viewerHeightRef.current * 0.8) / (reach * 2.4) });
+    },
+    [],
+  );
+
+  const zoomBy = useCallback((factor: number) => {
+    setCamera((c) => ({ ...c, zoom: Math.max(0.5, Math.min(200000, c.zoom * factor)) }));
+  }, []);
+
+  /**
+   * Keyboard shortcuts, matching the original's set.
+   *
+   * Ignored while a field has focus, so typing a seed or a name does not launch
+   * an intruder or reset the system mid-word.
+   */
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const el = document.activeElement;
+      const tag = el?.tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+      if (el instanceof HTMLElement && el.isContentEditable) return;
+
+      switch (e.key) {
+        case " ":
+          e.preventDefault();
+          if (!launched) launch();
+          else setRunning((r) => !r);
+          break;
+        case "r":
+        case "R":
+          rebuild(systemKey, intruder);
+          break;
+        case "f":
+        case "F":
+          fitTo("all");
+          break;
+        case "i":
+        case "I":
+          fitTo("inner");
+          break;
+        case "+":
+        case "=":
+          zoomBy(1.3);
+          break;
+        case "-":
+        case "_":
+          zoomBy(1 / 1.3);
+          break;
+        case "1":
+          setFollowName(null);
+          break;
+        case "2":
+          setFollowName(bodiesRef.current.find((b) => b.isStar)?.name ?? null);
+          break;
+        case "3":
+          setFollowName(bodiesRef.current.find((b) => b.isIntruder)?.name ?? null);
+          break;
+        case "?":
+          setShowKeys((v) => !v);
+          break;
+        case "Escape":
+          setShowKeys(false);
+          break;
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [launched, systemKey, intruder, rebuild, fitTo, zoomBy]);
+
+  const [showKeys, setShowKeys] = useState(false);
+
   const [viewerHeight, setViewerHeight] = useState(
     typeof window !== "undefined" ? window.innerHeight - HEADER_H : 600,
   );
+  const viewerHeightRef = useRef(viewerHeight);
+  viewerHeightRef.current = viewerHeight;
   useEffect(() => {
     const onResize = () => setViewerHeight(window.innerHeight - HEADER_H);
     window.addEventListener("resize", onResize);
@@ -443,6 +537,61 @@ const RogueNativeDev = () => {
           onFollow={setFollowName}
           followName={followName}
         />
+
+        {/* ── Zoom, bottom-right, clear of both panels ── */}
+        <div className="absolute bottom-3 right-3 z-20 flex items-center gap-1 border border-white/[0.3] bg-[rgba(13,13,15,0.94)] px-1.5 py-1 backdrop-blur-sm">
+          {([
+            ["−", () => zoomBy(1 / 1.3), "Zoom out (−)"],
+            ["+", () => zoomBy(1.3), "Zoom in (+)"],
+            ["Fit", () => fitTo("all"), "Frame the whole system (F)"],
+            ["Inner", () => fitTo("inner"), "Frame the inner worlds (I)"],
+          ] as const).map(([label, fn, title]) => (
+            <button
+              key={label}
+              type="button"
+              onClick={fn}
+              title={title}
+              className="min-w-[30px] border border-white/[0.35] bg-white/[0.05] px-2 py-1 font-mono text-[12px] uppercase tracking-wider text-white/80 transition-colors hover:border-[#15C17B]/70 hover:bg-[#15C17B]/[0.15] hover:text-white"
+            >
+              {label}
+            </button>
+          ))}
+          <button
+            type="button"
+            onClick={() => setShowKeys((v) => !v)}
+            title="Keyboard shortcuts (?)"
+            aria-pressed={showKeys}
+            className={`min-w-[30px] border px-2 py-1 font-mono text-[12px] transition-colors ${
+              showKeys
+                ? "border-[#15C17B] bg-[#15C17B]/25 text-white"
+                : "border-white/[0.35] bg-white/[0.05] text-white/80 hover:text-white"
+            }`}
+          >
+            ?
+          </button>
+        </div>
+
+        {showKeys && (
+          <div className="absolute bottom-16 right-3 z-30 w-[232px] border border-white/[0.3] bg-[rgba(13,13,15,0.97)] p-3 backdrop-blur-sm">
+            <span className="mb-2 block font-mono text-[12px] uppercase tracking-[2px] text-[#3DFFCD]/80">
+              Keyboard
+            </span>
+            {[
+              ["Space", launched ? "Play / pause" : "Launch intruder"],
+              ["R", "Reset the system"],
+              ["F", "Frame everything"],
+              ["I", "Frame the inner worlds"],
+              ["+ / −", "Zoom"],
+              ["1 / 2 / 3", "Free / star / intruder"],
+              ["?", "This list"],
+            ].map(([k, what]) => (
+              <div key={k} className="flex items-baseline justify-between gap-3 py-0.5">
+                <span className="shrink-0 font-mono text-[12px] text-[#3DFFCD]">{k}</span>
+                <span className="text-right text-[12px] text-white/75">{what}</span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       <SaveSimulationDialog
