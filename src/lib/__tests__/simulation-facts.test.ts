@@ -307,12 +307,20 @@ describe("extractSimulationFacts", () => {
     expect(extractSimulationFacts("solaris", solarisPayload()).length).toBeGreaterThan(0);
   });
 
-  it("is empty for a simulator with no extractor yet", () => {
-    // Tidelock and ExoForge are still static iframes writing their own shapes.
-    // Empty means "not readable yet", not "the save is empty".
+  it("supports every simulator, including the two still on iframes", () => {
+    // Tidelock and ExoForge are still static HTML, but their save shapes are
+    // stable and documented in the files themselves, so their output reaches
+    // the writing surface without waiting for a rewrite.
+    for (const sim of ["exosky", "solaris", "rogue", "tidelock", "exoforge"]) {
+      expect(hasSimulationFactSupport(sim), sim).toBe(true);
+    }
+  });
+
+  it("is empty for an unknown simulator, and for a save with nothing in it", () => {
+    expect(extractSimulationFacts("nonesuch", { parameters: {}, results: {} })).toEqual([]);
+    expect(hasSimulationFactSupport("nonesuch")).toBe(false);
+    // A recognised simulator with an empty payload yields nothing rather than
+    // a row of blanks.
     expect(extractSimulationFacts("tidelock", { parameters: {}, results: {} })).toEqual([]);
-    expect(hasSimulationFactSupport("tidelock")).toBe(false);
-    expect(hasSimulationFactSupport("exosky")).toBe(true);
-    expect(hasSimulationFactSupport("rogue")).toBe(true);
   });
 });

@@ -22,6 +22,10 @@
 import type { WorksheetFact } from "@/lib/worksheet-facts";
 import { extractExoskyFacts } from "@/lib/simulators/exosky-save";
 import { extractRogueFacts } from "@/lib/simulators/rogue-save";
+import {
+  extractTidelockFacts,
+  extractExoforgeFacts,
+} from "@/lib/simulators/iframe-sim-facts";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -180,8 +184,14 @@ export function extractSolarisFacts(raw: unknown): WorksheetFact[] {
 // Dispatch
 // ---------------------------------------------------------------------------
 
-/** Simulators whose save shape this module can read. */
-export const FACT_CAPABLE_SIMULATORS = ["exosky", "solaris", "rogue"] as const;
+/** Simulators whose save shape this module can read: now all five. */
+export const FACT_CAPABLE_SIMULATORS = [
+  "exosky",
+  "solaris",
+  "rogue",
+  "tidelock",
+  "exoforge",
+] as const;
 
 /**
  * Labelled facts from one saved simulation.
@@ -201,6 +211,10 @@ export function extractSimulationFacts(
       return extractSolarisFacts(data);
     case "rogue":
       return extractRogueFacts(data);
+    case "tidelock":
+      return extractTidelockFacts(data);
+    case "exoforge":
+      return extractExoforgeFacts(data);
     default:
       return [];
   }
