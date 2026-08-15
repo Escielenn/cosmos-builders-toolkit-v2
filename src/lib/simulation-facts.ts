@@ -274,7 +274,15 @@ function leadingNumber(value: string): number | null {
  * worksheet facts, so a saved simulation can contradict the manuscript the same
  * way a filled-in worksheet already can.
  */
-export function toContinuityFacts(facts: WorksheetFact[]): WorksheetFact[] {
+export function toContinuityFacts(
+  facts: WorksheetFact[],
+  /**
+   * How to name this source in a note, e.g. "Your Tidelock save". A writer who
+   * disagrees with a simulated number needs to know which save to go and
+   * change; "your world" alone sends them looking through everything.
+   */
+  source?: string,
+): WorksheetFact[] {
   const out: WorksheetFact[] = [];
   const seen = new Set<string>();
 
@@ -284,7 +292,33 @@ export function toContinuityFacts(facts: WorksheetFact[]): WorksheetFact[] {
     const n = leadingNumber(fact.value);
     if (n === null) continue;
     seen.add(equiv.key);
-    out.push({ key: equiv.key, label: equiv.label, value: String(n) });
+    out.push({ key: equiv.key, label: equiv.label, value: String(n), source });
   }
   return out;
+}
+
+/** Simulator ids as a writer would see them named in the product. */
+const SIMULATOR_DISPLAY_NAMES: Record<string, string> = {
+  exosky: "ExoSky",
+  solaris: "Solaris",
+  rogue: "Rogue",
+  tidelock: "Tidelock",
+  exoforge: "ExoForge",
+};
+
+/**
+ * How a saved simulation should introduce itself in a continuity note.
+ *
+ * Prefers the name the writer gave the save, because that is what they will
+ * look for: "Your Ashgrave save records…" beats "Your ExoForge save records…"
+ * when they have four of them.
+ */
+export function simulationSourceLabel(
+  simulatorType: string,
+  saveName?: string | null,
+): string {
+  const named = (saveName ?? "").trim();
+  if (named) return `Your "${named}" save`;
+  const display = SIMULATOR_DISPLAY_NAMES[simulatorType];
+  return display ? `Your ${display} save` : "Your world";
 }

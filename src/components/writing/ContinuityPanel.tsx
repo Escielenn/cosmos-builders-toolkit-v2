@@ -17,7 +17,11 @@ import { Link } from "react-router-dom";
 import { useWorksheets } from "@/hooks/use-worksheets";
 import { useWorldSimulations } from "@/hooks/use-world-simulations";
 import { extractWorksheetFacts } from "@/lib/worksheet-facts";
-import { extractSimulationFacts, toContinuityFacts } from "@/lib/simulation-facts";
+import {
+  extractSimulationFacts,
+  toContinuityFacts,
+  simulationSourceLabel,
+} from "@/lib/simulation-facts";
 import { checkContinuity, checkImplausibility } from "@/lib/continuity";
 import { useWorldParameters } from "@/hooks/use-world-parameters";
 
@@ -49,8 +53,14 @@ export function ContinuityPanel({ worldId, content }: ContinuityPanelProps) {
     const fromWorksheets = (worksheets ?? []).flatMap((ws) =>
       extractWorksheetFacts(ws.tool_type, ws.data),
     );
-    const fromSimulations = toContinuityFacts(
-      simulations.flatMap((sim) => extractSimulationFacts(sim.simulator_type, sim.data)),
+    // Per simulation, so each note can name the save it came from. Duplicates
+    // across saves are harmless: checkContinuity takes the first fact matching
+    // a key, and these arrive newest first.
+    const fromSimulations = simulations.flatMap((sim) =>
+      toContinuityFacts(
+        extractSimulationFacts(sim.simulator_type, sim.data),
+        simulationSourceLabel(sim.simulator_type, sim.name),
+      ),
     );
     // Worksheets first: a value the writer typed outranks one a simulator
     // derived, and checkContinuity takes the first fact matching a key.

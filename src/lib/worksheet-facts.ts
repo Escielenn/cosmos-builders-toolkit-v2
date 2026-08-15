@@ -35,6 +35,15 @@ export interface WorksheetFact {
    * name, not the star count. Defaults to `value` when absent.
    */
   insert?: string;
+  /**
+   * Where this number came from, phrased to complete "… records X as Y".
+   *
+   * A continuity note that only says "your world records" leaves the writer
+   * unable to act on it: if they disagree with the number they have to guess
+   * which tool or save to go and change. Defaults to "Your world" when absent,
+   * which is right for a fact the writer typed into a worksheet themselves.
+   */
+  source?: string;
 }
 
 // ---------------------------------------------------------------------------

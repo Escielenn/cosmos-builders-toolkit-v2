@@ -62,18 +62,24 @@ export function useSimulationSave({
   const savesQuery = useQuery({
     queryKey: ["simulation-saves", worldId, simulatorType],
     queryFn: async () => {
-      if (!worldId) return [];
-      const { data, error } = await supabase
+      // Without a world in context, list this user's saves of this type across
+      // every world. The simulator can be opened straight from the tools index,
+      // and the save dialog lets a world be chosen there; scoping this query to
+      // a worldId that does not exist meant the writer saved successfully and
+      // then found the Load sheet empty, which reads as "saving does not work".
+      // RLS is owner-only, so the unscoped read returns nothing but their own.
+      let q = supabase
         .from("simulation_saves")
         .select("*")
-        .eq("world_id", worldId)
-        .eq("simulator_type", simulatorType)
-        .order("updated_at", { ascending: false });
+        .eq("simulator_type", simulatorType);
+      if (worldId) q = q.eq("world_id", worldId);
+
+      const { data, error } = await q.order("updated_at", { ascending: false });
 
       if (error) throw error;
       return (data ?? []) as SimulationSave[];
     },
-    enabled: !!user && !!worldId,
+    enabled: !!user,
   });
 
   // ── Mutation: create a new simulation save ───────────────────────
@@ -112,16 +118,26 @@ export function useSimulationSave({
       if (error) throw error;
       return data as SimulationSave;
     },
-    onSuccess: () => {
+    onSuccess: (saved) => {
+      // Invalidate the world actually written to, not just the one in context.
+      // A save into a world chosen in the dialog left the list showing the old
+      // contents, so a successful save looked like it had done nothing.
       queryClient.invalidateQueries({
-        queryKey: ["simulation-saves", worldId, simulatorType],
+        queryKey: ["simulation-saves", saved.world_id, simulatorType],
       });
+      if (worldId && worldId !== saved.world_id) {
+        queryClient.invalidateQueries({
+          queryKey: ["simulation-saves", worldId, simulatorType],
+        });
+      }
       toast({
         title: "Simulation saved",
         description: "Your simulation state has been saved.",
       });
       setSaveDialogOpen(false);
-      setPendingPayload(null);
+      // Keep the payload. It is still an accurate picture of the simulator, and
+      // clearing it here meant that saving and then publishing sent an empty
+      // payload to the world: the save succeeded and the entity arrived hollow.
     },
     onError: (error) => {
       toast({
@@ -158,13 +174,28 @@ export function useSimulationSave({
     [iframeRef, toast]
   );
 
-  // ── Listen for SAVE messages from the simulator iframe ───────────
+  /**
+   * Why the current state was asked for.
+   *
+   * The simulator answers a state request with the same STELLARFORGE_SAVE
+   * message whoever asked, so the reason has to be remembered here. Without it
+   * the only way to obtain a payload was to press Save, which is why publishing
+   * used to carry nothing: Publish opened its dialog with whatever `pendingPayload`
+   * happened to hold, and that was null unless the writer had saved first in the
+   * same session. The published entity then got `_simulator_data: {}` and arrived
+   * in the world as a bare name.
+   */
+  const requestReason = useRef<"save" | "state">("save");
+
+  // ── Listen for SAVE messages from the simulator ──────────────────
   useEffect(() => {
     const handler = (event: MessageEvent) => {
       if (event.data?.type === "STELLARFORGE_SAVE") {
         const payload = event.data.payload as SimulatorPayload;
+        // Always record it. Only the Save button should open the save dialog.
         setPendingPayload(payload);
-        setSaveDialogOpen(true);
+        if (requestReason.current === "save") setSaveDialogOpen(true);
+        requestReason.current = "save";
       }
     };
 
@@ -172,19 +203,33 @@ export function useSimulationSave({
     return () => window.removeEventListener("message", handler);
   }, []);
 
-  // ── Trigger save from React (for wrapper "Save" button) ─────────
-  // Iframe sims: postMessage. Component sims (ExoSky): window event.
-  const requestSave = useCallback(() => {
+  /** Ask the simulator for its current state. Iframe sims: postMessage.
+   *  Component sims (ExoSky, native Rogue/Solaris): window event. */
+  const askForState = useCallback(() => {
     const iframe = iframeRef?.current;
     if (iframe?.contentWindow) {
-      iframe.contentWindow.postMessage(
-        { type: "STELLARFORGE_REQUEST_STATE" },
-        "*"
-      );
+      iframe.contentWindow.postMessage({ type: "STELLARFORGE_REQUEST_STATE" }, "*");
     } else {
       window.dispatchEvent(new CustomEvent("STELLARFORGE_REQUEST_STATE"));
     }
   }, [iframeRef]);
+
+  /** Save button: fetch state, then open the save dialog when it lands. */
+  const requestSave = useCallback(() => {
+    requestReason.current = "save";
+    askForState();
+  }, [askForState]);
+
+  /**
+   * Refresh `pendingPayload` without opening anything.
+   *
+   * Call before publishing, so what reaches the world is the simulation as it
+   * stands now rather than whatever was last saved.
+   */
+  const refreshPayload = useCallback(() => {
+    requestReason.current = "state";
+    askForState();
+  }, [askForState]);
 
   return {
     saves: savesQuery.data ?? [],
@@ -195,5 +240,6 @@ export function useSimulationSave({
     createSave,
     loadSave,
     requestSave,
+    refreshPayload,
   };
 }

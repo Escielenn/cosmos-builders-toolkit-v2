@@ -1,5 +1,9 @@
 import { describe, it, expect } from "vitest";
-import { extractSimulationFacts, toContinuityFacts } from "@/lib/simulation-facts";
+import {
+  extractSimulationFacts,
+  toContinuityFacts,
+  simulationSourceLabel,
+} from "@/lib/simulation-facts";
 import { checkContinuity } from "@/lib/continuity";
 
 // ---------------------------------------------------------------------------
@@ -110,6 +114,36 @@ describe("a saved simulation can now contradict the prose", () => {
       factsFor("exoforge", exoforgeSave()),
     );
     expect(notes).toEqual([]);
+  });
+
+  it("names the save the number came from, so the writer knows what to change", () => {
+    const facts = toContinuityFacts(
+      extractSimulationFacts("tidelock", tidelockSave()),
+      simulationSourceLabel("tidelock", "Ashgrave"),
+    );
+    const notes = checkContinuity(
+      "<p>The terminator held at 480 kelvin, hot enough to blister paint.</p>",
+      facts,
+    );
+    expect(notes[0].message).toContain('Your "Ashgrave" save records');
+    // Both numbers still present, and still phrased as an observation.
+    expect(notes[0].message).toContain("279");
+    expect(notes[0].message).toContain("480");
+  });
+
+  it("falls back to the simulator's name, then to the world", () => {
+    expect(simulationSourceLabel("tidelock", null)).toBe("Your Tidelock save");
+    expect(simulationSourceLabel("tidelock", "   ")).toBe("Your Tidelock save");
+    expect(simulationSourceLabel("unknown-sim", null)).toBe("Your world");
+  });
+
+  it("still says 'Your world' for a value the writer typed themselves", () => {
+    // Worksheet facts carry no source, and that is correct: the writer does not
+    // need telling where their own typing came from.
+    const notes = checkContinuity("<p>Gravity ran to 2.4 g on the plateau.</p>", [
+      { key: "surfaceGravity", label: "Surface Gravity (g)", value: "1.0" },
+    ]);
+    expect(notes[0].message).toContain("Your world records");
   });
 
   it("lets a worksheet value win over a simulated one", () => {

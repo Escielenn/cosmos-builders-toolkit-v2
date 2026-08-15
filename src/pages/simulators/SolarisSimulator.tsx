@@ -27,6 +27,7 @@ const SolarisSimulator = () => {
     createSave,
     loadSave,
     requestSave,
+    refreshPayload,
   } = useSimulationSave({
     simulatorType: "solaris",
     worldId,
@@ -36,12 +37,15 @@ const SolarisSimulator = () => {
   useEffect(() => {
     const handler = (event: MessageEvent) => {
       if (event.data?.type === "STELLARFORGE_PUBLISH") {
+        // Ask for the live state first. Without this the dialog opened on a
+        // null payload and published a bare name into the world.
+        refreshPayload();
         setPublishDialogOpen(true);
       }
     };
     window.addEventListener("message", handler);
     return () => window.removeEventListener("message", handler);
-  }, []);
+  }, [refreshPayload]);
 
   return (
     <>
@@ -103,7 +107,12 @@ const SolarisSimulator = () => {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setPublishDialogOpen(true)}
+                onClick={() => {
+                  // Read the simulator now. Publishing used to send whatever
+                  // the last Save left behind, which was usually nothing.
+                  refreshPayload();
+                  setPublishDialogOpen(true);
+                }}
                 className="bg-sf-teal/[0.12] border-sf-teal/70 text-[#3DFFCD] hover:bg-sf-teal/25 hover:text-white text-[13px] uppercase tracking-wider h-8 px-3"
               >
                 <Rocket className="w-3 h-3 mr-1" />

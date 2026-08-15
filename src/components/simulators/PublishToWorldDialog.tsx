@@ -92,6 +92,24 @@ export default function PublishToWorldDialog({
   const entryType: EntryType =
     OUTPUT_TYPE_MAP[payload?.outputType ?? ""] ?? "custom";
 
+  /**
+   * Does the payload actually carry the simulation, or only a name?
+   *
+   * This dialog used to publish whatever it was handed, and it was handed
+   * `pendingPayload`, which was null until the writer pressed Save. Publishing
+   * straight from the simulator therefore wrote `_simulator_data: {}` and the
+   * entity arrived in the world as a bare title with empty notes: the numbers
+   * were on screen, and none of them made the trip.
+   *
+   * The pages now refresh the payload before opening this dialog. The count is
+   * kept as a guard so a future wiring mistake fails visibly instead of writing
+   * another hollow entity.
+   */
+  const fieldCount =
+    Object.keys(payload?.parameters ?? {}).length +
+    Object.keys(payload?.results ?? {}).length;
+  const hasData = fieldCount > 0;
+
   const handlePublish = useCallback(async () => {
     if (!targetWorld || !user || !name.trim()) return;
 
@@ -230,6 +248,21 @@ export default function PublishToWorldDialog({
                 + Narrative notes will be attached
               </p>
             )}
+
+            {/* Say what is travelling. A writer publishing a system they spent an
+                hour on should not have to open the Codex to find out whether the
+                numbers came with it. */}
+            {hasData ? (
+              <p className="text-[13px] text-t4 font-mono uppercase tracking-wider">
+                + {fieldCount} {fieldCount === 1 ? "value" : "values"} from the simulation
+              </p>
+            ) : (
+              <p className="text-[13px] leading-relaxed text-sf-amber">
+                Reading the simulation. If this does not clear in a moment, close
+                this and press Save first, so the entity arrives with its numbers
+                rather than just a name.
+              </p>
+            )}
           </div>
 
           <DialogFooter className="mt-4">
@@ -238,8 +271,14 @@ export default function PublishToWorldDialog({
             </Button>
             <Button
               onClick={handlePublish}
-              disabled={isPublishing || !name.trim() || !targetWorld}
-              title={!targetWorld ? "Choose a world first" : undefined}
+              disabled={isPublishing || !name.trim() || !targetWorld || !hasData}
+              title={
+                !targetWorld
+                  ? "Choose a world first"
+                  : !hasData
+                    ? "Still reading the simulation"
+                    : undefined
+              }
               className="gap-2"
             >
               {isPublishing ? (

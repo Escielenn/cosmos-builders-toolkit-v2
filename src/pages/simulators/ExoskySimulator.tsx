@@ -36,6 +36,7 @@ const ExoskySimulator = () => {
     createSave,
     loadSave,
     requestSave,
+    refreshPayload,
   } = useSimulationSave({
     simulatorType: "exosky",
     worldId,
@@ -44,12 +45,15 @@ const ExoskySimulator = () => {
   useEffect(() => {
     const handler = (event: MessageEvent) => {
       if (event.data?.type === "STELLARFORGE_PUBLISH") {
+        // Ask for the live state first. Without this the dialog opened on a
+        // null payload and published a bare name into the world.
+        refreshPayload();
         setPublishDialogOpen(true);
       }
     };
     window.addEventListener("message", handler);
     return () => window.removeEventListener("message", handler);
-  }, []);
+  }, [refreshPayload]);
 
   return (
     <>
@@ -68,7 +72,12 @@ const ExoskySimulator = () => {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setPublishDialogOpen(true)}
+                onClick={() => {
+                  // Read the simulator now. Publishing used to send whatever
+                  // the last Save left behind, which was usually nothing.
+                  refreshPayload();
+                  setPublishDialogOpen(true);
+                }}
                 className="bg-sf-void/80 border-white/10 text-sf-teal hover:bg-sf-void text-[13px] uppercase tracking-wider h-7 px-2.5"
               >
                 <Rocket className="w-3 h-3 mr-1" />

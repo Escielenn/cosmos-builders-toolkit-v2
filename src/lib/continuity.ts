@@ -340,7 +340,7 @@ export function checkContinuity(
         worldValue: fact.value,
         proseValue: formatNumber(claimed),
         excerpt: sentence.length > 160 ? sentence.slice(0, 157) + "…" : sentence,
-        message: `Your world records ${fact.label} as ${fact.value}; this reads ${formatNumber(claimed)}.`,
+        message: `${fact.source ?? "Your world"} records ${fact.label} as ${fact.value}; this reads ${formatNumber(claimed)}.`,
       });
       break;
     }
