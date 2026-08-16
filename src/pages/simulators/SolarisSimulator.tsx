@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Save, FolderOpen, Rocket } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useWorldId } from "@/hooks/use-world-id";
@@ -10,11 +11,18 @@ import Header from "@/components/layout/Header";
 import NarrativeBridgePanel, { useNarrativeBridge } from "@/components/simulators/NarrativeBridgePanel";
 import { SIMULATOR_NARRATIVE_CONFIGS } from "@/lib/simulator-narrative-questions";
 import { SimulatorWorldEntityPicker } from "@/components/simulators/SimulatorWorldEntityPicker";
+import { encodeHandoff, type HandoffPayload } from "@/lib/simulators/handoff";
+
+const HANDOFF_ROUTES: Record<string, string> = {
+  exosky: "/tools/exosky",
+  tidelock: "/tools/tidelock",
+};
 
 const SolarisSimulator = () => {
   const [loaded, setLoaded] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const worldId = useWorldId();
+  const navigate = useNavigate();
   const narrativeBridge = useNarrativeBridge();
   const [loadSheetOpen, setLoadSheetOpen] = useState(false);
   const [publishDialogOpen, setPublishDialogOpen] = useState(false);
@@ -46,6 +54,22 @@ const SolarisSimulator = () => {
     window.addEventListener("message", handler);
     return () => window.removeEventListener("message", handler);
   }, [refreshPayload]);
+
+  // The planet info panel's "Send to..." buttons post STELLARFORGE_HANDOFF
+  // with a target simulator and a Solaris-shaped payload. Encode it into the
+  // URL and navigate; ExoSky and Tidelock each read `?handoff=` on mount.
+  useEffect(() => {
+    const handler = (event: MessageEvent) => {
+      if (event.data?.type !== "STELLARFORGE_HANDOFF") return;
+      const { target, payload } = event.data as { target: string; payload: HandoffPayload };
+      const route = HANDOFF_ROUTES[target];
+      if (!route) return;
+      const encoded = encodeHandoff(payload);
+      navigate(`${route}?handoff=${encoded}`);
+    };
+    window.addEventListener("message", handler);
+    return () => window.removeEventListener("message", handler);
+  }, [navigate]);
 
   return (
     <>

@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Save, FolderOpen, Rocket } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useWorldId } from "@/hooks/use-world-id";
@@ -10,11 +11,29 @@ import Header from "@/components/layout/Header";
 import NarrativeBridgePanel, { useNarrativeBridge } from "@/components/simulators/NarrativeBridgePanel";
 import { SIMULATOR_NARRATIVE_CONFIGS } from "@/lib/simulator-narrative-questions";
 import { SimulatorWorldEntityPicker } from "@/components/simulators/SimulatorWorldEntityPicker";
+import { decodeHandoff } from "@/lib/simulators/handoff";
+
+/**
+ * Solaris's five habitable-zone bounds (public/tools/solaris/sim.html's
+ * STARS.hz, lines ~407-412), duplicated here only as far as needed to turn
+ * a handoff's `planetAU` into a zone-relative fraction. Tidelock has its
+ * own, much narrower orbital range (tidal-lock candidates sit close to
+ * their star), so what crosses over is "how far into the habitable zone
+ * was this planet", not the raw AU number.
+ */
+const SOLARIS_HZ_MID: Record<string, number> = {
+  blue: (3.5 + 7.0) / 2,
+  white: (2.4 + 4.5) / 2,
+  yellow: (1.6 + 3.0) / 2,
+  orange: (0.8 + 1.7) / 2,
+  red: (0.2 + 0.7) / 2,
+};
 
 const TidelockSimulator = () => {
   const [loaded, setLoaded] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const worldId = useWorldId();
+  const [searchParams] = useSearchParams();
   const narrativeBridge = useNarrativeBridge();
   const [loadSheetOpen, setLoadSheetOpen] = useState(false);
   const [publishDialogOpen, setPublishDialogOpen] = useState(false);
@@ -46,6 +65,35 @@ const TidelockSimulator = () => {
     window.addEventListener("message", handler);
     return () => window.removeEventListener("message", handler);
   }, [refreshPayload]);
+
+  // A Solaris planet handed off via `?handoff=`: once the iframe has loaded
+  // (so it has a listener registered), send its star and orbital distance
+  // as a STELLARFORGE_LOAD with a handoffSeed field. sim.html's own load
+  // handler applies it to the star-type dropdown and orbital-distance
+  // slider before the writer touches anything. Sent once per page load.
+  const handoffSent = useRef(false);
+  useEffect(() => {
+    if (!loaded || handoffSent.current) return;
+    const handoff = decodeHandoff(searchParams);
+    if (!handoff) return;
+    const iframe = iframeRef.current;
+    if (!iframe?.contentWindow) return;
+    handoffSent.current = true;
+    const hzMid = SOLARIS_HZ_MID[handoff.starType] ?? 1;
+    iframe.contentWindow.postMessage(
+      {
+        type: "STELLARFORGE_LOAD",
+        payload: {
+          handoffSeed: {
+            starType: handoff.starType,
+            starMassSolar: handoff.starMassLum,
+            auFraction: handoff.planetAU / hzMid,
+          },
+        },
+      },
+      "*",
+    );
+  }, [loaded, searchParams]);
 
   return (
     <>

@@ -52,6 +52,7 @@ import {
   apparentMag,
   bvToRGB,
 } from "@/lib/simulators/astro";
+import type { HandoffPayload } from "@/lib/simulators/handoff";
 
 // ── STAR CATALOG (lazy-loaded from /exosky-stars.json) ────────
 // Format: [name, RA(°), Dec(°), dist(pc), absMag, B-V]
@@ -424,6 +425,16 @@ const BG_DEC_BINS = 6;   // 30° per bin in Dec
 // ═══════════════════════════════════════════════════════════════
 // COMPONENT
 // ═══════════════════════════════════════════════════════════════
+/** A vantage seeded from a Solaris handoff: the wrapper has already turned
+    `planetAU` into a galactic l/b/distance (see ExoskySimulator.tsx's
+    deriveExoskySeed), so this component only has to apply it. */
+interface ExoSkyInitialHandoff {
+  payload: HandoffPayload;
+  galL: number;
+  galB: number;
+  distPc: number;
+}
+
 interface ExoSkyV2Props {
   /** When true, the wrapper page's NarrativeBridgePanel is open and
       occupies 320px of the right edge. The data readout slides left
@@ -433,10 +444,16 @@ interface ExoSkyV2Props {
       moon entities from that world become selectable as observation
       points (alongside the curated EXOPLANET_SYSTEMS list). */
   worldId?: string;
+  /** Present when the page was opened via `?handoff=` from Solaris. Seeds
+      the existing custom-coordinates vantage (the same one the "AUTHOR
+      COORDINATES" button turns on) on first mount, rather than adding a
+      second vantage mechanism next to it. */
+  initialHandoff?: ExoSkyInitialHandoff | null;
 }
 
 export default function ExoSkyV2({
   narrativeBridgeOpen = false,
+  initialHandoff = null,
   worldId,
 }: ExoSkyV2Props = {}) {
   const { toast } = useToast();
@@ -554,6 +571,27 @@ export default function ExoSkyV2({
   const [customGalB, setCustomGalB] = useState(0);
   const [customDistPc, setCustomDistPc] = useState(100);
 
+  // Set only when the current custom-mode vantage came from a Solaris
+  // handoff, so the "planet" derivation below can label and note it
+  // honestly instead of showing the generic "Custom (l=..., b=...)" text.
+  const [handoffPayload, setHandoffPayload] = useState<HandoffPayload | null>(null);
+
+  // Seed the custom-coordinates vantage from a Solaris handoff on first
+  // mount. This is the same mechanism the "AUTHOR COORDINATES" button
+  // turns on (setCustomMode(true) + the three custom* sliders); a handoff
+  // just sets those sliders programmatically instead of waiting for a click.
+  useEffect(() => {
+    if (!initialHandoff) return;
+    setCustomMode(true);
+    setCustomGalL(initialHandoff.galL);
+    setCustomGalB(initialHandoff.galB);
+    setCustomDistPc(initialHandoff.distPc);
+    setHandoffPayload(initialHandoff.payload);
+    // Mount-only: a handoff seeds the initial view once, it does not keep
+    // re-applying itself if the writer then adjusts the sliders by hand.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // ── World-Entity Observation State ────────────────
   // When the user selects a planet/star/moon from their own world, we read
   // its metadata.exoskyCoords (if present) and put the simulator in
@@ -639,6 +677,17 @@ export default function ExoSkyV2({
     const gz = dist * Math.sin(b);
     const [ex, ey, ez] = galToEq(gx, gy, gz);
     const rd = xyzToRaDec(ex, ey, ez);
+    if (handoffPayload) {
+      const starArticle = /^[aeiou]/i.test(handoffPayload.starType) ? "an" : "a";
+      return {
+        star: handoffPayload.starType,
+        planet: `${handoffPayload.planetName} (from Solaris)`,
+        ra: rd.ra, dec: rd.dec, dist,
+        atmoType: "none", atmoDesc: "No atmosphere, vacuum observation",
+        note: `${handoffPayload.planetType} planet, ${handoffPayload.planetAU.toFixed(2)} AU from ${starArticle} ${handoffPayload.starType} star. Distance shown here is a ${dist.toFixed(0)} pc placeholder, not part of the handoff.`,
+        armNote: "Handoff from Solaris",
+      };
+    }
     return {
       star: "Custom", planet: `Custom (l=${customGalL.toFixed(1)}°, b=${customGalB.toFixed(1)}°)`,
       ra: rd.ra, dec: rd.dec, dist,
@@ -646,7 +695,7 @@ export default function ExoSkyV2({
       note: `Galactic coords: l=${customGalL.toFixed(1)}°, b=${customGalB.toFixed(1)}°, d=${dist.toFixed(1)} pc (${(dist*3.262).toFixed(1)} ly)`,
       armNote: "Custom location",
     };
-  }, [customMode, selectedPlanet, customGalL, customGalB, customDistPc, worldEntity, worldEntityCoords]);
+  }, [customMode, selectedPlanet, customGalL, customGalB, customDistPc, worldEntity, worldEntityCoords, handoffPayload]);
 
   // ── Persistence bridge ──────────────────────────────────
   // The wrapper page speaks STELLARFORGE_* over window events for component

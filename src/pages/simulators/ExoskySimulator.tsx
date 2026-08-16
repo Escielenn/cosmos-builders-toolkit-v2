@@ -1,4 +1,5 @@
-import { lazy, Suspense, useState, useEffect } from "react";
+import { lazy, Suspense, useState, useEffect, useMemo } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Save, FolderOpen, Rocket } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Loader } from "@/components/ui/loader";
@@ -10,6 +11,22 @@ import PublishToWorldDialog from "@/components/simulators/PublishToWorldDialog";
 import Header from "@/components/layout/Header";
 import NarrativeBridgePanel, { useNarrativeBridge } from "@/components/simulators/NarrativeBridgePanel";
 import { SIMULATOR_NARRATIVE_CONFIGS } from "@/lib/simulator-narrative-questions";
+import { decodeHandoff } from "@/lib/simulators/handoff";
+
+/**
+ * A Solaris planet has an orbital distance in AU but no galactic position;
+ * ExoSky's "custom coordinates" vantage needs a galactic l/b/distance. This
+ * spreads different AU values across different patches of sky (so two
+ * handoffs don't collide) rather than claiming a real placement Solaris
+ * never had. Distance is a flat 10 pc placeholder for the same reason: the
+ * handoff carries no distance-from-Earth, so this view says so on screen.
+ */
+function deriveExoskySeed(planetAU: number, starMassLum: number) {
+  const galL = ((planetAU * 40) % 360 + 360) % 360;
+  const galB = Math.max(-60, Math.min(60, (starMassLum - 1) * 25));
+  const distPc = 10;
+  return { galL, galB, distPc };
+}
 
 const ExoSkyV2 = lazy(() => import("@/components/simulators/ExoSkySimulator"));
 
@@ -24,6 +41,12 @@ const SimLoader = () => (
 
 const ExoskySimulator = () => {
   const worldId = useWorldId();
+  const [searchParams] = useSearchParams();
+  const handoffPayload = useMemo(() => decodeHandoff(searchParams), [searchParams]);
+  const initialHandoff = useMemo(() => {
+    if (!handoffPayload) return null;
+    return { payload: handoffPayload, ...deriveExoskySeed(handoffPayload.planetAU, handoffPayload.starMassLum) };
+  }, [handoffPayload]);
   const narrativeBridge = useNarrativeBridge();
   const [loadSheetOpen, setLoadSheetOpen] = useState(false);
   const [publishDialogOpen, setPublishDialogOpen] = useState(false);
@@ -64,6 +87,7 @@ const ExoskySimulator = () => {
             <ExoSkyV2
               narrativeBridgeOpen={narrativeBridge.panelProps.open}
               worldId={worldId}
+              initialHandoff={initialHandoff}
             />
           </Suspense>
           {/* Save/Load controls */}

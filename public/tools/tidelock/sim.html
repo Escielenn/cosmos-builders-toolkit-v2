@@ -1648,8 +1648,11 @@ window.addEventListener('message', function(event) {
 
   if (event.data.type === 'STELLARFORGE_LOAD') {
     var payload = event.data.payload;
-    if (!payload || !payload.parameters) return;
-    var p = payload.parameters;
+    if (!payload) return;
+    // A cross-simulator handoff carries only `handoffSeed`, no `parameters`
+    // (it is not a full saved state). Default to an empty object so the
+    // restore blocks below simply have nothing to apply.
+    var p = payload.parameters || {};
 
     // Restore star type
     if (p.starIdx != null) {
@@ -1680,6 +1683,34 @@ window.addEventListener('message', function(event) {
     if (p.showHab != null) { S.showHab = !!p.showHab; document.getElementById('showHab').checked = S.showHab; }
     if (p.showGrid != null) { S.showGrid = !!p.showGrid; document.getElementById('showGrid').checked = S.showGrid; }
     if (p.colorScale != null) { S.colorScale = parseInt(p.colorScale); }
+
+    // A Solaris handoff: star + a habitable-zone-relative orbital distance,
+    // applied the same way a saved state's own fields are, before the first
+    // render. Matched by nearest luminosity rather than by name, since
+    // Solaris's star vocabulary (blue/white/yellow/orange/red) and this
+    // sim's spectral types (M9V..F0V) do not share keys.
+    if (payload.handoffSeed) {
+      var hs = payload.handoffSeed;
+      if (hs.starMassSolar != null) {
+        var bestIdx = 0, bestDiff = Infinity;
+        for (var si = 0; si < STARS.length; si++) {
+          var diff = Math.abs(STARS[si].lum - hs.starMassSolar);
+          if (diff < bestDiff) { bestDiff = diff; bestIdx = si; }
+        }
+        S.starIdx = bestIdx;
+        document.getElementById('starType').value = S.starIdx;
+      }
+      if (hs.auFraction != null) {
+        // Locking to the habitable zone would immediately overwrite the
+        // seeded distance in recalcPhysics(); a handoff's whole point is a
+        // specific distance, not necessarily the HZ.
+        S.lockHZ = false;
+        document.getElementById('lockHZ').checked = false;
+        S.orbDist = Math.max(0.01, Math.min(0.5, STARS[S.starIdx].hz * hs.auFraction));
+        document.getElementById('orbDist').value = S.orbDist;
+        document.getElementById('orbDistVal').textContent = S.orbDist.toFixed(3) + ' AU';
+      }
+    }
 
     recalcPhysics();
     syncUniforms();

@@ -113,6 +113,9 @@ input[type=text]:focus{border-color:rgba(0,212,255,0.38)}
 .dv.cyan{color:#00D4FF}.dv.green{color:#2ECC71}.dv.orange{color:#FFA500}.dv.gold{color:#FFD43B}.dv.red{color:#E74C3C}
 .remove-btn{width:100%;margin-top:8px;font-size:12px}
 .remove-btn:hover{background:rgba(231,76,60,0.1);border-color:rgba(231,76,60,0.3);color:#E74C3C}
+.handoff-row{display:flex;flex-direction:column;gap:4px;margin-top:10px}
+.handoff-btn{width:100%;font-size:11px;letter-spacing:1px;background:rgba(21,193,123,0.08);border-color:rgba(21,193,123,0.25);color:#15C17B}
+.handoff-btn:hover{background:rgba(21,193,123,0.16);border-color:rgba(21,193,123,0.4);color:#3DFFCD}
 /* MOON PANEL */
 #moon-panel{top:16px;right:302px;width:200px;display:none;z-index:25}
 #moon-panel.visible{display:block}
@@ -351,6 +354,11 @@ input[type=text]:focus{border-color:rgba(0,212,255,0.38)}
   <div class="sec">Properties</div>
   <div class="dgrid" id="data-grid"></div>
   <div class="world-note" id="world-note-text"></div>
+  <div class="sec">Send To</div>
+  <div class="handoff-row">
+    <button class="handoff-btn" onclick="sendToSimulator('exosky')">Open Sky in ExoSky →</button>
+    <button class="handoff-btn" onclick="sendToSimulator('tidelock')">Model Surface in Tidelock →</button>
+  </div>
   <button class="remove-btn" onclick="removePlanet()">✕ Remove Planet</button>
 </div>
 
@@ -2303,6 +2311,26 @@ window.addEventListener('message', function(event) {
     }, '*');
   }
 });
+
+// ─── Cross-simulator handoff: send the selected planet's context to
+// ExoSky (its sky) or Tidelock (its surface). Solaris only generates
+// systems; it does not itself need STELLARFORGE_HANDOFF listened for. ───
+function sendToSimulator(target){
+  if(!selPlanet||!system||!system.stars||!system.stars[0])return;
+  const star=system.stars[0];
+  window.parent.postMessage({
+    type: 'STELLARFORGE_HANDOFF',
+    target,
+    payload: {
+      from: 'solaris',
+      starType: star.key,
+      starMassLum: star.def.lum,
+      planetAU: selPlanet.orbitPx/Math.max(system.AU,1),
+      planetName: selPlanet.name,
+      planetType: selPlanet.typeKey,
+    },
+  }, '*');
+}
 
 </script>
 
