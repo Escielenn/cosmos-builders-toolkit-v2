@@ -12,8 +12,8 @@ not in an assumption about what is slow or missing.
 | | Status |
 |---|---|
 | Simulators reaching the writing surface | **5 of 5** |
-| Tools reaching it | **18 of 23** |
-| Tests | **299**, from 93 at the start of the session |
+| Tools reaching it | **20 of 23**, the other 3 by design (§4) |
+| Tests | **326**, from 93 at the start of the session |
 | Type errors / eslint | 254 / 62 errors, 73 warnings, both at baseline |
 | Native rebuilds | Solaris (`/dev/solaris`), Rogue (`/dev/rogue`) |
 | Still iframes | Tidelock, ExoForge, and the live Rogue and Solaris routes |
@@ -131,17 +131,51 @@ dangerous.
 
 ---
 
-## 4. Task T: the rest of the reach
+## 4. Task T: the rest of the reach — DONE (0.7120, 0.7140)
 
-- [ ] Five tools still dark: `sensorium`, `stellar-cartographer`, `timeline`,
-      `writing-workshop`, and `environmental-chain-reaction`. The last is a
-      deliberate exception, feeding prose through `useWorldParameters` and the
-      Tier 2 continuity rules rather than as numeric facts. The other four need
-      their persisted shapes read and mapped, exactly as 0.7010 and 0.7070 did.
-- [ ] **Feed simulator facts to the continuity engine**, not just the Refs panel.
-      `ContinuityPanel` still reads worksheets only, so a Tidelock save saying the
-      day side is 391 K cannot contradict prose that calls it temperate. This is
-      the single highest-value integration left.
+- [x] **Simulator facts feed the continuity engine** (0.7120). Five conservative
+      equivalences; a simulator number that merely resembles a check stays out.
+- [x] **`sensorium` mapped** (0.7140): three new `species` master fields for the
+      narrative pair prose contradicts most, dominant sense and blind spot.
+- [x] **`timeline` mapped** (0.7140) through a bespoke extractor, because a list
+      of events is the one shape `worksheetPaths` cannot describe.
+
+**The other two were never gaps**, and the list above was wrong to imply it:
+
+- `writing-workshop` persists nothing. Zero references to `createWorksheet`,
+  `useWorksheet` or `supabase`; it is a prompt browser that reads worlds.
+- `stellar-cartographer` publishes straight to `world_entries`, so its output
+  is entity metadata and never becomes a worksheet. It reaches worlds already.
+- `environmental-chain-reaction` remains the deliberate exception, feeding
+  prose through `useWorldParameters` and the Tier 2 rules.
+
+Tools reaching the writing surface: **20 of 23**, and the remaining three are
+exceptions rather than a backlog. The coverage test now asks `hasFactMapping`
+rather than reading the `worksheetPaths` table underneath it.
+
+---
+
+## 4b. Task P: publishing carried nothing — DONE (0.7130)
+
+Reported: publishing any simulator to a world produced a bare title and empty
+notes. Three bugs on one symptom, none of them in the simulators.
+
+`pendingPayload` is a mailbox, not a getter: it only fills when a
+`STELLARFORGE_SAVE` message *arrives*, which only happens on Save. Publish read
+it directly, got `null`, and the dialog writes `payload?.parameters ?? {}`.
+Verified in-browser that Solaris answers a state request with 16 fields and
+ExoSky with 6 — nobody was asking. Also: `createSave` cleared the payload on
+success (so save-then-publish sent nothing) and invalidated the wrong world's
+query; and the saves list was scoped to a `worldId` that is absent when a
+simulator is opened from the tools index.
+
+**Trap worth remembering:** the `STELLARFORGE_PUBLISH` listener the pages carry
+has five listeners and **no sender anywhere**. The real entry point is the
+toolbar button's `onClick`. Grep for senders before fixing a message path.
+
+- [ ] ExoForge, Tidelock and Rogue are Pro-gated, so the publish fix is verified
+      live only on Solaris and ExoSky. The other three share the iframe
+      mechanism Solaris proved and implement the protocol, but that is inference.
 
 ---
 
@@ -164,7 +198,7 @@ dangerous.
 
 ## 6. Gates
 
-Unchanged and non-negotiable: **299+ tests passing, type errors at the 254
+Unchanged and non-negotiable: **326+ tests passing, type errors at the 254
 baseline, eslint `src` at 62 errors and 73 warnings, `typecheck-strict` clean.**
 
 Two additions earned this session:
