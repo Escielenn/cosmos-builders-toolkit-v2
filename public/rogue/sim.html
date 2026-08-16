@@ -228,6 +228,7 @@ select option{background:#0F0F10;color:#c8c8c8}
     <div class="cr"><input type="checkbox" id="chk-orbits" checked><label for="chk-orbits">Reference Orbits</label></div>
     <div class="cr"><input type="checkbox" id="chk-vec"><label for="chk-vec">Velocity Vectors</label></div>
     <div class="cr"><input type="checkbox" id="chk-grav"><label for="chk-grav">Gravity Lines</label></div>
+    <div class="cr"><input type="checkbox" id="chk-gravvec"><label for="chk-gravvec">Gravity Vectors</label></div>
     <div class="cr"><input type="checkbox" id="chk-grid" checked><label for="chk-grid">AU Grid</label></div>
     <div class="cr"><input type="checkbox" id="chk-labels" checked><label for="chk-labels">Labels</label></div>
     <div class="cr"><input type="checkbox" id="chk-habzone"><label for="chk-habzone">Habitable Zone</label></div>
@@ -703,6 +704,43 @@ function drawGravityLines(){if(!document.getElementById('chk-grav').checked)retu
 
 function drawVelocityVectors(){if(!document.getElementById('chk-vec').checked)return;const vScale=cam.zoom*.02;for(const b of bodies){if(b.isIntruder&&!b.active)continue;const v2=b.vx*b.vx+b.vy*b.vy;if(b.isStar&&v2<.01)continue;const s=toS(b.x,b.y),ex=s.sx+b.vx*vScale,ey=s.sy-b.vy*vScale,dx=ex-s.sx,dy=ey-s.sy,len=Math.sqrt(dx*dx+dy*dy);if(len<3)continue;ctx.strokeStyle=b.color;ctx.lineWidth=1.2;ctx.beginPath();ctx.moveTo(s.sx,s.sy);ctx.lineTo(ex,ey);ctx.stroke();const angle=Math.atan2(dy,dx),hl=Math.min(6,len*.3);ctx.fillStyle=b.color;ctx.beginPath();ctx.moveTo(ex,ey);ctx.lineTo(ex-hl*Math.cos(angle-.4),ey-hl*Math.sin(angle-.4));ctx.lineTo(ex-hl*Math.cos(angle+.4),ey-hl*Math.sin(angle+.4));ctx.closePath();ctx.fill();}}
 
+/**
+ * Net gravitational force, as an arrow per body — distinct from the dashed
+ * "Gravity Lines" above, which only draw pull toward one reference planet.
+ * This is every body's actual acceleration: the same computeAccel() the
+ * integrator itself steps with, summed over every other active mass, so the
+ * arrow shown here is not an approximation drawn for the picture — it is the
+ * literal vector step() adds to velocity next frame.
+ */
+const GRAV_VEC_COLOR='#9B5DE5';
+function drawGravityVectors(){
+  if(!document.getElementById('chk-gravvec').checked)return;
+  const active=bodies.filter(b=>!(b.isIntruder&&!b.active));
+  if(active.length<2)return;
+  const acc=computeAccel(active,launched);
+  // Auto-scale so the strongest arrow on screen reads at a fixed pixel length,
+  // rather than a hardcoded constant that is illegible for a binary's fierce
+  // mutual pull and equally illegible for a lone outer ice giant.
+  let maxA=0;
+  for(let i=0;i<active.length;i++){const a2=acc.ax[i]*acc.ax[i]+acc.ay[i]*acc.ay[i];if(a2>maxA)maxA=a2;}
+  if(maxA<=0)return;
+  const aScale=42/Math.sqrt(maxA);
+  for(let i=0;i<active.length;i++){
+    const b=active[i],ax=acc.ax[i],ay=acc.ay[i];
+    const mag=Math.sqrt(ax*ax+ay*ay);if(mag<1e-9)continue;
+    const s=toS(b.x,b.y),len=Math.min(46,Math.max(6,mag*aScale));
+    const ux=ax/mag,uy=-ay/mag,ex=s.sx+ux*len,ey=s.sy+uy*len;
+    ctx.strokeStyle=hexRGBA(GRAV_VEC_COLOR,.55);ctx.lineWidth=1.3;
+    ctx.beginPath();ctx.moveTo(s.sx,s.sy);ctx.lineTo(ex,ey);ctx.stroke();
+    const angle=Math.atan2(ey-s.sy,ex-s.sx),hl=Math.min(6,len*.3);
+    ctx.fillStyle=hexRGBA(GRAV_VEC_COLOR,.55);
+    ctx.beginPath();ctx.moveTo(ex,ey);
+    ctx.lineTo(ex-hl*Math.cos(angle-.4),ey-hl*Math.sin(angle-.4));
+    ctx.lineTo(ex-hl*Math.cos(angle+.4),ey-hl*Math.sin(angle+.4));
+    ctx.closePath();ctx.fill();
+  }
+}
+
 function drawStar(b){
   const s=toS(b.x,b.y),time=Date.now()*.001,c=b.color;
   // Size: base from zoom, scaled by stellar radius (approx R ~ M^0.8 for main seq)
@@ -776,7 +814,7 @@ function animate(timestamp){
   showLabels=document.getElementById('chk-labels').checked;
   updateCam();drawStars2();drawGrid();drawHabitableZone();drawOrbitalPaths();drawTrails();drawGravityLines();
   for(const b of bodies){if(b.isStar)drawStar(b);else if(b.isIntruder){if(b.active)drawIntruder(b);}else drawPlanet(b);}
-  drawVelocityVectors();
+  drawVelocityVectors();drawGravityVectors();
 
   if(isRewinding&&launched){
     // Rewind: step back through history proportional to time scale
