@@ -912,6 +912,10 @@ export default function ExoSkyV2({
           fieldSize: 20000,
           bucketsVisited: per("bgBuckets"),
           starsWalked: walked,
+          // How many of the walked stars were bright enough to pay for a
+          // projectStar call. The gap between this and starsWalked is what
+          // reordering the magnitude check ahead of projection now skips.
+          starsProjected: per("bgProjected"),
           starsDrawn: per("bgDrawn"),
           // The number that decides whether the index is worth keeping.
           percentOfFieldWalked: +((walked / 20000) * 100).toFixed(1),
@@ -1112,9 +1116,20 @@ export default function ExoSkyV2({
             if (dRa > 180) dRa -= 360; if (dRa < -180) dRa += 360;
             if (Math.abs(dRa) > halfFov || Math.abs(useDec - _viewDec) > halfFov) continue;
 
-            const p = projectStar(useRa, useDec, _viewRa, _viewDec, _fov, W, H);
-            if (!p) continue;
-
+            /**
+             * Magnitude before projection, not after.
+             *
+             * eMag depends only on bg.baseMag, the precomputed galactic
+             * coordinates, and the Milky Way lookup: nothing here reads the
+             * projected screen point. projectStar is the expensive step in
+             * this loop (a normalise, an eqToGal matrix multiply, an asin, an
+             * atan2), and it used to run on every star inside the coarse box
+             * before the cheap magnitude test that actually decides whether
+             * most of them are visible. A background star field skews heavily
+             * toward dim stars by design, so most candidates fail this test;
+             * checking it first means projectStar is only paid for on the
+             * stars that stood a chance of being drawn.
+             */
             let eMag = bg.baseMag + extinctionMod;
 
             if (mwMapRef.current && _mwReady) {
@@ -1127,6 +1142,10 @@ export default function ExoSkyV2({
             }
 
             if (eMag > 7.5) continue;
+
+            tally("bgProjected");
+            const p = projectStar(useRa, useDec, _viewRa, _viewDec, _fov, W, H);
+            if (!p) continue;
 
             const alpha = Math.min(0.8, Math.max(0.04, (7.5 - eMag) / 7.0));
             const [r, g, b] = bvToRGB(bg.bv);
