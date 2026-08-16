@@ -88,7 +88,7 @@ export default function NarrativeBridgePanel({
 
   // Expanded panel
   return (
-    <div className="absolute right-0 top-0 bottom-0 z-30 w-80 bg-sf-void/95 backdrop-blur-sf-side border-l border-sf-border overflow-y-auto animate-in slide-in-from-right duration-300">
+    <div className="absolute right-0 top-0 bottom-0 z-30 w-80 max-w-[92vw] bg-sf-void/95 backdrop-blur-sf-side border-l border-sf-border overflow-y-auto animate-in slide-in-from-right duration-300">
       {/* Header */}
       <div className="sticky top-0 z-10 bg-sf-void/95 backdrop-blur-sf-side px-4 py-3 border-b border-white/[0.35]">
         <div className="flex items-center justify-between">

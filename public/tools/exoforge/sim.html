@@ -578,6 +578,7 @@ button.active, button.primary {
 #kb-help.visible{display:flex}
 @media(max-width:768px){#kb-help{display:none !important}}
 </style>
+  <link rel="stylesheet" href="../_shared/sim-mobile.css">
 </head>
 <body>
 
@@ -1385,7 +1386,8 @@ function exportFallback() {
     const dataUrl = renderer.domElement.toDataURL('image/png');
     const win = window.open();
     if (win) {
-      win.document.write(`<html><head><title>${P.name} — ExoForge Export</title><style>body{margin:0;background:#09090B;display:flex;align-items:center;justify-content:center;min-height:100vh}</style></head><body><img src="${dataUrl}" style="max-width:100%;max-height:100vh"><br></body></html>`);
+      win.document.write(`<html><head><title>${P.name} — ExoForge Export</title><style>body{margin:0;background:#09090B;display:flex;align-items:center;justify-content:center;min-height:100vh}</style>
+</head><body><img src="${dataUrl}" style="max-width:100%;max-height:100vh"><br></body></html>`);
     } else {
       alert('Export blocked by popup blocker. Please allow popups for this page, or right-click the planet and select "Save Image As".');
     }

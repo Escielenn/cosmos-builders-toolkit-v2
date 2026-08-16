@@ -1,0 +1,193 @@
+/* ==========================================================================
+   sim-mobile.css — the phone floor for every simulator.
+
+   The simulators were built as instrument panels for a wide screen, and on a
+   390px phone that shows in three measurable ways, identical across all four
+   static sims and the React one:
+
+     - controls below the 44px touch minimum (checkboxes at 11px, a slider
+       with a 3px tall hit area, transport buttons at 32px)
+     - text below the 12px legibility floor, down to 9px
+     - a control panel sized for a sidebar covering three quarters of the
+       canvas, so the simulation it controls is invisible while you use it
+
+   This file fixes the first two outright and constrains the third. It is
+   deliberately generic: element selectors where they suffice, and a list of
+   the specific ids the sims use for small type. Selectors that match nothing
+   in a given sim cost nothing, which is what lets one file serve all of them.
+
+   !important is used on purpose here. These are accessibility floors that
+   must beat the desktop styling they are overriding, and the alternative is
+   editing four inline stylesheets and keeping them in step by hand.
+   ========================================================================== */
+
+@media (max-width: 640px) {
+  /* ---- 1. Touch targets ------------------------------------------------ */
+
+  button,
+  select,
+  input[type="button"],
+  input[type="submit"],
+  input[type="text"],
+  input[type="number"],
+  input[type="search"] {
+    min-height: 44px !important;
+  }
+
+  button,
+  input[type="button"],
+  input[type="submit"] {
+    min-width: 44px !important;
+  }
+
+  /* A checkbox is hit by its label far more often than by the box. Making the
+     row itself 44px tall is what actually makes it tappable, and it keeps the
+     box small enough not to reflow the panel. */
+  label {
+    min-height: 44px !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  input[type="checkbox"],
+  input[type="radio"] {
+    width: 22px !important;
+    height: 22px !important;
+    /* The label is usually the real target; this keeps the box itself hittable
+       without pushing the row apart. */
+    margin: 11px 8px 11px 0 !important;
+  }
+
+  /* A range input's hit area is its box, so the box has to be tall even though
+     the track should stay thin. Padding does it without moving the track. */
+  input[type="range"] {
+    height: 44px !important;
+    padding: 20px 0 !important;
+    box-sizing: border-box !important;
+    background: transparent !important;
+  }
+  input[type="range"]::-webkit-slider-runnable-track {
+    height: 4px;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    width: 22px;
+    height: 22px;
+    margin-top: -9px;
+  }
+
+  /* ---- 2. Legibility floor (12px) -------------------------------------- */
+  /* Named rather than blanket, so nothing that was already fine gets bigger
+     and reflows a panel that fits.
+
+     .credit is deliberately absent: it is the same ambient attribution line
+     (9px, 12% opacity) the site-wide floor already exempts as decoration
+     below 25% opacity. Forcing it up would fight a decision made on purpose,
+     not fix an oversight. */
+
+  #badge,
+  #empty-hint,
+  #phys-note,
+  #spd-disp,
+  #title-block,
+  #z-lbl,
+  #zoom-label,
+  #biome-legend,
+  #drag-hint,
+  #kb-help,
+  #modal,
+  #scale-note,
+  #temp-graph,
+  .arch-badge,
+  .hint,
+  .note,
+  .sub,
+  .unit,
+  /* The 11px tier, found by reading the sims' own stylesheets rather than
+     guessing: tabs, legends, presets and section titles. */
+  .tab,
+  .leg-i,
+  .length,
+  .nav-links,
+  .pal-name,
+  .pal-pg,
+  .save-meta,
+  .tool-ctx,
+  .world-note,
+  .btn-group,
+  .preset-grid,
+  .tg-title,
+  .zoom-label,
+  .legend,
+  .readout-label,
+  .meta,
+  .spectrum-labels,
+  .spectrum-labels *,
+  .sys-name,
+  .temp-zone-label,
+  .axis-label,
+  .tick-label,
+  .subtitle,
+  .data-unit,
+  /* Rogue's #btn-go, a single-letter class ("a" for its accent-button style).
+     Scoped to button so it cannot collide with an unrelated one-letter class
+     elsewhere in a sim this file did not target it for. */
+  button.a,
+  /* Descendants too: the container carries the id, but the small type is
+     usually a child with its own font-size, which the container rule misses. */
+  #badge *,
+  #empty-hint *,
+  #title-block *,
+  #biome-legend *,
+  #kb-help *,
+  #modal *,
+  #temp-graph *,
+  .panel .sub,
+  .panel .lbl,
+  .panel label,
+  .panel small {
+    font-size: 12px !important;
+    line-height: 1.45 !important;
+  }
+
+  /* ---- 3. Panels stop covering the simulation -------------------------- */
+  /* The canvas is the reason the page exists. A panel may take up to 42% of
+     the height and scroll inside itself; it may not bury what it controls. */
+
+  .panel,
+  #main-panel,
+  #control-panel,
+  #controls,
+  #data-panel,
+  #info-panel,
+  /* Rogue names its control panel #ctrl. Its #ui sibling is a full-screen
+     overlay that positions everything else, so it is deliberately not capped:
+     constraining it would move every child rather than the panel. */
+  #ctrl {
+    max-height: 42vh !important;
+    max-width: 92vw !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Tighter chrome so the extra touch height does not cost content. */
+  .panel {
+    padding: 10px 12px !important;
+  }
+
+  /* ---- 4. Hint strips wrap instead of running off the screen ----------- */
+  /* These are centred with left:50% and translateX(-50%) and set to nowrap,
+     which is fine on a desktop and puts a full sentence ~700px wide on a
+     390px phone: it runs off both edges at once. */
+
+  #scale-note,
+  #drag-hint,
+  #kb-help,
+  #empty-hint,
+  .hint,
+  .note {
+    white-space: normal !important;
+    max-width: 92vw !important;
+    text-align: center;
+  }
+}

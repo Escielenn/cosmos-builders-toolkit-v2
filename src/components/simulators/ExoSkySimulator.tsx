@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { useEntities, useUpdateEntity } from "@/hooks/use-entity-graph";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { useToast } from "@/hooks/use-toast";
 import { toExoskyPayload, fromExoskySave } from "@/lib/simulators/exosky-save";
 
@@ -489,8 +490,25 @@ export default function ExoSkyV2({
   const [hoveredStar, setHoveredStar] = useState(null);
   const [atmoDensity, setAtmoDensity] = useState(1.0);
   const [mwBrightness, setMwBrightness] = useState(1.0);
+  /**
+   * Two 272-320px panels, both defaulting open, were built for a wide screen.
+   * At 390px they don't fit side by side (18+272 overlaps 390-18-320) and
+   * together they measured covering 345% of the viewport by area, so the
+   * simulation they control was invisible while using them. Collapsed by
+   * default on mobile keeps the canvas visible on first load; the stacked,
+   * height-capped positions below keep them apart if the writer opens both.
+   */
+  const isMobile = useIsMobile();
   const [panelOpen, setPanelOpen] = useState(true);
   const [dataOpen, setDataOpen] = useState(true);
+  const mobileDefaultsApplied = useRef(false);
+  useEffect(() => {
+    if (isMobile && !mobileDefaultsApplied.current) {
+      mobileDefaultsApplied.current = true;
+      setPanelOpen(false);
+      setDataOpen(false);
+    }
+  }, [isMobile]);
   const [mwReady, setMwReady] = useState(false);
 
   // ── Refs for view during drag (avoids re-renders per mousemove) ──
@@ -1770,7 +1788,12 @@ export default function ExoSkyV2({
       </div>
 
       {/* ── CONTROL PANEL ── */}
-      <div style={{ position:"absolute",top:120,left:18,width:272,zIndex:10,maxHeight:"calc(100% - 150px)",overflowY:"auto",
+      <div style={{ position:"absolute",top:120,left:18,
+        width: isMobile ? undefined : 272,
+        right: isMobile ? 18 : undefined,
+        zIndex:10,
+        maxHeight: isMobile ? "30vh" : "calc(100% - 150px)",
+        overflowY:"auto",
         background: panelOpen?"rgba(15,15,16,0.92)":"rgba(15,15,16,0.7)", border:"1px solid rgba(255,255,255,0.08)",
         backdropFilter:"blur(16px)",borderRadius:0,padding:panelOpen?"14px 18px":"8px 14px",transition:"all 0.3s" }}>
         <div onClick={()=>setPanelOpen(!panelOpen)} style={{cursor:"pointer",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
@@ -1999,11 +2022,16 @@ export default function ExoSkyV2({
       {/* ── DATA READOUT ── (slides left when NarrativeBridge is open so it doesn't overlap) */}
       <div style={{
         position:"absolute",
-        top:16,
-        right: narrativeBridgeOpen ? 18 + 320 + 12 : 18,
-        width:320,
+        // On mobile the panel is full-width, so it stacks below the control
+        // panel instead of sitting beside it. The offset is computed from the
+        // control panel's own top (120) and cap (30vh) rather than a fixed
+        // px or vh guess, so the gap holds on any phone height.
+        top: isMobile ? "calc(120px + 30vh + 12px)" : 16,
+        right: isMobile ? 18 : (narrativeBridgeOpen ? 18 + 320 + 12 : 18),
+        left: isMobile ? 18 : undefined,
+        width: isMobile ? undefined : 320,
         zIndex:10,
-        maxHeight:"calc(100% - 80px)",
+        maxHeight: isMobile ? "26vh" : "calc(100% - 80px)",
         overflowY:"auto",
         background:"rgba(15,15,16,0.92)",
         border:"1px solid rgba(255,255,255,0.08)",
@@ -2135,7 +2163,10 @@ export default function ExoSkyV2({
 
       {/* ── CONSTELLATION MANAGER ── */}
       {consManagerOpen && customConstellations.length > 0 && (
-        <div style={{position:"absolute",bottom:40,left:18,width:260,zIndex:20,
+        <div style={{position:"absolute",bottom:40,left:18,
+          width: isMobile ? undefined : 260,
+          right: isMobile ? 18 : undefined,
+          zIndex:20,
           background:"rgba(15,15,16,0.94)",border:"1px solid rgba(255,255,255,0.08)",
           backdropFilter:"blur(16px)",borderRadius:0,padding:"14px 18px",maxHeight:"40vh",overflowY:"auto"}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
@@ -2185,10 +2216,16 @@ export default function ExoSkyV2({
       {showKbHelp && (
         <div style={{
           position:"absolute",
-          top:16,
-          right: narrativeBridgeOpen ? 18 + 320 + 12 + 320 + 12 : 18 + 320 + 12,
+          top: isMobile ? 16 : 16,
+          // The desktop formula chains off the data panel's fixed 320px width;
+          // on mobile that panel has no fixed width, so the same sum would
+          // place this off the right edge of a 390px screen entirely.
+          right: isMobile ? 18 : (narrativeBridgeOpen ? 18 + 320 + 12 + 320 + 12 : 18 + 320 + 12),
+          left: isMobile ? 18 : undefined,
           zIndex:50,
-          width:210,
+          width: isMobile ? undefined : 210,
+          maxHeight: isMobile ? "60vh" : undefined,
+          overflowY: isMobile ? "auto" : undefined,
           background:"rgba(15,15,16,0.92)",
           border:"1px solid rgba(255,255,255,0.08)",
           WebkitBackdropFilter:"blur(16px)",
