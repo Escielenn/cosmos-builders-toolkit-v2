@@ -194,7 +194,35 @@ export const ENTITY_MASTER_FIELDS: Record<string, MasterFieldDef[]> = {
       label: "Species Name",
       key: "speciesName",
       type: "text",
-      worksheetPaths: { "evolutionary-biology": "speciesName" },
+      worksheetPaths: {
+        "evolutionary-biology": "speciesName",
+        sensorium: "speciesName",
+      },
+    },
+    // Sensorium's narrative fields. These are typed by the writer rather than
+    // derived by the algorithm, which is what makes them worth surfacing: a
+    // species' dominant sense and its blind spot are the two things prose
+    // contradicts most easily, and until now neither reached the writing
+    // surface at all. The derived modality list is deliberately left out; it
+    // persists as an array of ids ("infrared-vision") that would read as
+    // machine output in a panel meant for the writer's own words.
+    {
+      label: "Dominant Sense",
+      key: "dominantSense",
+      type: "text",
+      worksheetPaths: { sensorium: "perceptionProfile.dominantSense" },
+    },
+    {
+      label: "What It Perceives",
+      key: "sensoryRange",
+      type: "text",
+      worksheetPaths: { sensorium: "perceptionGapNotes.speciesPerceives" },
+    },
+    {
+      label: "What It Cannot Perceive",
+      key: "sensoryBlindSpot",
+      type: "text",
+      worksheetPaths: { sensorium: "perceptionGapNotes.speciesBlind" },
     },
     {
       label: "Body Plan",

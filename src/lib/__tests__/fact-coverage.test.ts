@@ -218,28 +218,38 @@ describe("newly mapped tools actually surface their values", () => {
 
 describe("coverage across the catalogue", () => {
   it("reports honestly which tools can reach the writing surface", () => {
-    const mapped = mappedTools();
-    const reaching = allTools.filter((t) => mapped.has(t));
-    const dark = allTools.filter((t) => !mapped.has(t));
+    // Ask the predicate the product actually uses, not the worksheetPaths table
+    // underneath it. Timeline reaches the surface through a bespoke extractor,
+    // and a path-only measure reports it dark while the panel renders its
+    // events: a shadow of the thing rather than the thing.
+    const reaching = allTools.filter((t) => hasFactMapping(t));
+    const dark = allTools.filter((t) => !hasFactMapping(t));
 
     // A floor, not a target: this must not regress. Raise it as tools are mapped.
-    expect(reaching.length).toBeGreaterThanOrEqual(18);
+    expect(reaching.length).toBeGreaterThanOrEqual(20);
 
     // Named so the list stays visible rather than becoming a silent number.
-    // environmental-chain-reaction is a deliberate exception: it records
-    // qualitative cascade conditions read through useWorldParameters and the
-    // Tier 2 continuity rules, not numeric worksheet facts.
+    // All three remaining are exceptions rather than gaps:
+    //   environmental-chain-reaction records qualitative cascade conditions,
+    //     read through useWorldParameters and the Tier 2 continuity rules.
+    //   stellar-cartographer writes straight to world_entries via Publish, so
+    //     its data is entity metadata and never becomes a worksheet.
+    //   writing-workshop persists nothing at all. It is a prompt browser that
+    //     reads worlds, so it has no data of its own to contribute.
     expect(dark).toEqual(
       expect.arrayContaining([
         "environmental-chain-reaction",
-        "sensorium",
         "stellar-cartographer",
-        "timeline",
+        "writing-workshop",
       ]),
     );
+    // The two fixed most recently, named so a regression is loud.
+    for (const slug of ["sensorium", "timeline"]) {
+      expect(hasFactMapping(slug), slug).toBe(true);
+    }
     // Named so a regression is loud: these were mapped and must stay mapped.
     for (const slug of ["gravitas", "space-expansion-modeler"]) {
-      expect(mapped.has(slug), slug).toBe(true);
+      expect(hasFactMapping(slug), slug).toBe(true);
     }
   });
 

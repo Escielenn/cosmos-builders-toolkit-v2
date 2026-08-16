@@ -15,6 +15,7 @@
 
 import { ENTITY_MASTER_FIELDS } from "@/lib/entity-config";
 import { getNestedValue } from "@/lib/entity-prepopulate";
+import { extractTimelineFacts } from "@/lib/timeline-facts";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -78,11 +79,29 @@ function toDisplay(raw: unknown): string {
  * catalog is mapped today, so callers must handle an empty result as "nothing
  * mapped yet" rather than "nothing filled in".
  */
+/**
+ * Tools whose saved shape needs a reader of its own.
+ *
+ * Kept deliberately small. A dot path is checkable at a glance and a function
+ * is not, so a tool only earns an entry here when its data is genuinely not
+ * scalars-at-paths.
+ */
+const BESPOKE_EXTRACTORS: Record<string, (data: unknown) => WorksheetFact[]> = {
+  timeline: extractTimelineFacts,
+};
+
 export function extractWorksheetFacts(
   toolType: string,
   data: unknown,
 ): WorksheetFact[] {
   if (!toolType || !data || typeof data !== "object") return [];
+
+  // Tools whose saved shape a dot path cannot describe get their own reader.
+  // Timeline records a list of events rather than scalars at fixed paths, so
+  // `worksheetPaths` has nothing to point at and the tool reached the writing
+  // surface not at all.
+  const bespoke = BESPOKE_EXTRACTORS[toolType];
+  if (bespoke) return bespoke(data);
 
   const facts: WorksheetFact[] = [];
   const seen = new Set<string>();
@@ -106,6 +125,7 @@ export function extractWorksheetFacts(
 
 /** True when this tool has any path mapping at all. */
 export function hasFactMapping(toolType: string): boolean {
+  if (toolType in BESPOKE_EXTRACTORS) return true;
   return Object.values(ENTITY_MASTER_FIELDS).some((fields) =>
     fields.some((f) => f.worksheetPaths?.[toolType]),
   );
