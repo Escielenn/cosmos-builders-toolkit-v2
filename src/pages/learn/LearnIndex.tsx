@@ -344,6 +344,24 @@ const LearnIndex = () => {
                   </p>
                 </GlassPanel>
               </Link>
+              <Link to="/tools/solaris/science">
+                <GlassPanel className="p-5 h-full hover:bg-accent/50 transition-colors cursor-pointer group">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="w-10 h-10 rounded-sm flex items-center justify-center bg-gradient-to-br from-amber-500/20 to-yellow-500/20 overflow-hidden">
+                      <img src="/icons/022-solar system.svg" alt="" className="w-6 h-6" draggable={false} />
+                    </div>
+                    <Badge variant="outline" className={categoryColors.science}>
+                      {categoryLabels.science}
+                    </Badge>
+                  </div>
+                  <h3 className="font-medium group-hover:text-primary transition-colors">
+                    SOLARIS: The Science
+                  </h3>
+                  <p className="text-sm text-t3 mt-1">
+                    Keplerian orbits, multi-star stability limits, the Kopparapu habitable zone, and the N-body integrator behind every system.
+                  </p>
+                </GlassPanel>
+              </Link>
             </div>
           </section>
         )}

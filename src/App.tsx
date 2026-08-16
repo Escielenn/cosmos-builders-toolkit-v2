@@ -121,6 +121,7 @@ const ExoskyScience = lazy(() => import("./pages/simulators/ExoskyScience"));
 const ExoforgeSimulator = lazy(() => import("./pages/simulators/ExoforgeSimulator"));
 const ExoforgeScience = lazy(() => import("./pages/simulators/ExoforgeScience"));
 const SolarisSimulator = lazy(() => import("./pages/simulators/SolarisSimulator"));
+const SolarisScience = lazy(() => import("./pages/simulators/SolarisScience"));
 
 // Dev-only: native Solaris rebuild preview (hidden; not in prod nav)
 const SolarisNativeDev = lazy(() => import("./pages/dev/SolarisNativeDev"));
@@ -448,6 +449,7 @@ const App = () => (
                     /tools/exosky above.
                     To restore: wrap in <ProToolGuard toolId="solaris"> again. */}
                 <Route path="/tools/solaris" element={<SolarisSimulator />} />
+                <Route path="/tools/solaris/science" element={<SolarisScience />} />
                 {/* Cartographer Wrapper Pages - Pro gated */}
                 <Route
                   path="/tools/stellar-cartographer"

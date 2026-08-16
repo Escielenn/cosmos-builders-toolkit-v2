@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SOLARIS — The Science | StellarForge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.cdnfonts.com/css/md-nichrome-test" rel="stylesheet">
+<style>
+:root{
+  --accent-cyan:#00D4FF;
+  --accent-green:#00E5A0;
+  --font-display:'MD Nichrome Test','MD Nichrome','Space Grotesk',sans-serif;
+  --font-body:'DM Sans',sans-serif;
+  --font-mono:'JetBrains Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:#09090B;
+  color:rgba(255,255,255,.6);
+  font-family:var(--font-body);
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+/* ── MAIN CONTENT ───────────────────────────────── */
+.science-page{
+  max-width:780px;
+  margin:0 auto;
+  padding:48px 28px 80px;
+}
+.science-page h1{
+  font-family:var(--font-display);
+  font-size:32px;font-weight:300;
+  color:#FAFAFA;
+  letter-spacing:5px;text-transform:uppercase;
+  margin-bottom:6px;
+}
+.science-page .subtitle{
+  font-size:8.5px;font-family:var(--font-body);
+  letter-spacing:2.5px;text-transform:uppercase;
+  color:rgba(0,229,160,.35);
+  margin-bottom:36px;
+}
+.sci-section{
+  font-size:9px;
+  font-family:var(--font-display);
+  font-weight:300;
+  letter-spacing:2.5px;
+  text-transform:uppercase;
+  color:rgba(0,229,160,.4);
+  margin-top:40px;
+  margin-bottom:12px;
+  padding-bottom:5px;
+  border-bottom:1px solid rgba(0,229,160,.06);
+}
+.sci-section:first-of-type{margin-top:0}
+.science-page p{
+  font-family:var(--font-body);
+  font-size:13.5px;
+  line-height:1.8;
+  color:rgba(255,255,255,.6);
+  margin:0 0 14px;
+}
+.science-page p strong{
+  color:rgba(255,255,255,.85);
+  font-weight:600;
+}
+.science-page code{
+  font-family:var(--font-mono);
+  font-size:11px;
+  color:var(--accent-cyan);
+  background:rgba(0,212,255,.06);
+  padding:1px 5px;
+  border-radius:0;
+}
+.eq{
+  font-family:var(--font-mono);
+  font-size:12.5px;
+  color:rgba(0,212,255,.7);
+  background:rgba(0,212,255,.04);
+  border:1px solid rgba(0,212,255,.06);
+  border-radius:0;
+  padding:14px 18px;
+  margin:16px 0;
+  display:block;
+  text-align:center;
+  line-height:1.9;
+  letter-spacing:.5px;
+}
+.src{
+  font-family:var(--font-body);
+  font-size:11px;
+  color:rgba(255,255,255,.35);
+  margin:5px 0;
+  line-height:1.7;
+  padding-left:12px;
+  border-left:2px solid rgba(0,229,160,.08);
+}
+.src a{color:rgba(0,229,160,.35);text-decoration:none}
+.src a:hover{color:var(--accent-green);text-decoration:underline}
+.note{
+  font-family:var(--font-body);
+  font-size:11.5px;
+  font-style:italic;
+  color:rgba(255,255,255,.35);
+  border-left:2px solid rgba(0,212,255,.12);
+  padding:10px 16px;
+  margin:16px 0;
+  background:rgba(0,212,255,.015);
+  border-radius:0;
+  line-height:1.7;
+}
+.sys-table{
+  width:100%;
+  border-collapse:collapse;
+  margin:14px 0 18px;
+  font-family:var(--font-body);
+  font-size:11.5px;
+}
+.sys-table th{
+  font-family:var(--font-display);
+  font-size:8px;font-weight:300;
+  letter-spacing:1.5px;text-transform:uppercase;
+  color:rgba(0,229,160,.35);
+  text-align:left;
+  padding:7px 10px;
+  border-bottom:1px solid rgba(0,229,160,.08);
+}
+.sys-table td{
+  color:rgba(255,255,255,.5);
+  padding:6px 10px;
+  border-bottom:1px solid rgba(255,255,255,.03);
+  line-height:1.6;
+}
+.sys-table td:first-child{
+  color:rgba(255,255,255,.7);
+  font-weight:500;
+}
+.sys-table td code{font-size:10px}
+
+/* ── RESPONSIVE ─────────────────────────────────── */
+@media(max-width:600px){
+  .science-page{padding:32px 18px 60px}
+  .science-page h1{font-size:22px;letter-spacing:3px}
+  .science-page p{font-size:12.5px}
+  .eq{font-size:10.5px;padding:10px 12px}
+  .sys-table{font-size:10px}
+  .sys-table th{font-size:7px}
+}
+</style>
+</head>
+<body>
+
+<main class="science-page">
+  <h1>Showing Our Work</h1>
+  <div class="subtitle">The Physics &amp; Data Behind SOLARIS</div>
+
+  <!-- ── WHAT IS SOLARIS ─────────────────────────── -->
+  <div class="sci-section">What Is SOLARIS?</div>
+  <p>SOLARIS is a <strong>procedural star system simulator</strong>. Drop stars onto a canvas — one, a binary pair, a hierarchical trinary, or a double binary quaternary — and it builds a full system around them: orbits, a habitable zone, planets, moons, an asteroid belt, an Oort cloud. Every orbit obeys the same physics that governs real stars.</p>
+  <p>The question SOLARIS exists to answer: <strong>given the physics of your stellar configuration, where can stable worlds exist, and what conditions would they experience?</strong> That question is the first link in the cascade this whole toolkit is built around — stellar physics drives planetary environment, which drives biology, which drives psychology, which drives culture and mythology. Change the star, and everything downstream shifts.</p>
+
+  <!-- ── ORBITAL MECHANICS ───────────────────────── -->
+  <div class="sci-section">Orbital Mechanics</div>
+  <p>Single-star systems use <strong>analytic Keplerian orbits</strong>, solved exactly rather than simulated step by step. The eccentric anomaly is found by Newton-Raphson iteration (5 passes) on Kepler's equation, and the true anomaly follows from it:</p>
+  <span class="eq">M = E − e·sin(E)<br>r = a(1 − e·cos E)</span>
+  <p>Orbital period follows Kepler's third law, calibrated so that <strong>1 AU around a 1 L☉ star completes one orbit in 14 simulation-seconds</strong>:</p>
+  <span class="eq">T² ∝ a³<br>T = 14 × a^1.5&nbsp; [sim-s, a in AU]</span>
+  <p>A planet twice as far from its star takes 2<sup>1.5</sup> ≈ 2.83× longer to complete one orbit — distance and time are inseparable. At 0.1 AU a year is 0.44 sim-seconds; at 10 AU it's 442.</p>
+  <p>Circular velocity comes from the shell theorem: only the mass interior to a planet's orbit sets its speed.</p>
+  <span class="eq">v_circ = √(GM_interior / r)</span>
+  <p>A distant companion star perturbs an orbit but doesn't set its baseline speed, because it sits outside the orbit and contributes nothing to the interior mass. Planets themselves are treated as massless test particles: the Sun outweighs Earth by a factor of roughly 333,000, so planet-planet gravity is under 0.03% of stellar gravity even at closest approach — below any threshold that would visibly matter.</p>
+
+  <!-- ── HABITABLE ZONE ──────────────────────────── -->
+  <div class="sci-section">Habitable Zone</div>
+  <p>The habitable zone is the band of orbital distances where liquid water could stand on a rocky surface, given the star's flux. SOLARIS places its inner edge at the point where a runaway greenhouse effect would bake the surface (Venus's fate) and its outer edge at the point where CO₂ freezes out and can no longer hold heat in (early Mars's fate).</p>
+  <span class="eq">HZ ∝ √L_total<br>inner ≈ 0.95 AU, outer ≈ 1.67 AU (at 1 L☉)</span>
+  <p>For a multi-star system, SOLARIS sums every star's luminosity and scales the single-star HZ by the square root of that total. A G+K binary radiating 1.7 L☉ combined pushes its habitable zone out by a factor of √1.7 ≈ 1.30 compared to either star alone.</p>
+  <div class="note">The habitable zone is probabilistic, not a guarantee. Atmospheric composition, albedo, and tidal heating can all push a real world into or out of habitability regardless of where it falls in this band — SOLARIS models the stellar-flux boundary, not the planet's own atmosphere.</div>
+  <div class="src">Kopparapu, R.K. et al. (2013). "Habitable Zones Around Main-sequence Stars: New Estimates." <em>The Astrophysical Journal</em>, 765(2), 131. <a href="https://doi.org/10.1088/0004-637X/765/2/131" target="_blank">DOI</a></div>
+
+  <!-- ── STAR TYPES ───────────────────────────────── -->
+  <div class="sci-section">Star Types</div>
+  <p>SOLARIS offers five stellar classes, spanning the range a habitable-zone story is likely to need — from the dim red dwarfs where tidal locking is the norm to the hot blue giants whose habitable zones sit dangerously close to a short stellar lifespan:</p>
+  <table class="sys-table">
+    <tr><th>Class</th><th>Approx. Mass</th><th>Surface Temp</th><th>Luminosity (L☉)</th><th>HZ (AU)</th></tr>
+    <tr><td>Blue Star</td><td><code>~16 M☉</code></td><td>25,000–50,000 K</td><td><code>4.5</code></td><td><code>3.5–7.0</code></td></tr>
+    <tr><td>White Star</td><td><code>~2.1 M☉</code></td><td>7,500–10,000 K</td><td><code>2.2</code></td><td><code>2.4–4.5</code></td></tr>
+    <tr><td>Yellow Star</td><td><code>~1.0 M☉</code></td><td>5,300–6,000 K</td><td><code>1.0</code></td><td><code>1.6–3.0</code></td></tr>
+    <tr><td>Orange Star</td><td><code>~0.7 M☉</code></td><td>3,700–5,200 K</td><td><code>0.42</code></td><td><code>0.8–1.7</code></td></tr>
+    <tr><td>Red Dwarf</td><td><code>~0.3 M☉</code></td><td>2,400–3,700 K</td><td><code>0.08</code></td><td><code>0.2–0.7</code></td></tr>
+  </table>
+  <p>Each star's gravitational parameter (GM) scales directly with its luminosity value above, which is what lets a single formula handle circular velocity around any star or combination of stars in the system.</p>
+
+  <!-- ── MULTI-STAR ARCHITECTURES ────────────────── -->
+  <div class="sci-section">Multi-Star Architectures</div>
+  <p>Real stars are frequently not alone. SOLARIS models four hierarchical configurations, each based on an architecture observed in nature:</p>
+  <table class="sys-table">
+    <tr><th>Architecture</th><th>Layout</th><th>Modeled On</th></tr>
+    <tr><td>Circumbinary (P-type)</td><td>Planets orbit both stars together</td><td>Kepler-16 ("Tatooine")</td></tr>
+    <tr><td>3+1 Hierarchical</td><td>Inner binary + distant companion</td><td>Alpha Centauri + Proxima</td></tr>
+    <tr><td>2+1 (S-type + wide)</td><td>Planet orbits one star; third companion is distant</td><td>Wide hierarchical trinaries</td></tr>
+    <tr><td>2+2 Double Binary</td><td>Two close binary pairs orbiting each other</td><td>30 Ari, ε Lyrae</td></tr>
+    <tr><td>3+1 Inner Triple</td><td>Packed inner triple + distant fourth star</td><td>TIC 120362137 (2026)</td></tr>
+  </table>
+  <p>Only P-type (circumbinary) orbits are modeled — the planet orbits the binary as a whole from outside it. S-type orbits, where a planet circles just one star inside a binary, are not currently simulated.</p>
+  <p>Stability in these systems is bounded on both sides. A circumbinary planet must stay far enough out that the binary looks like a single point mass, and — if a third star is present — close enough in that its gravity doesn't get overwhelmed by the distant companion's tidal pull:</p>
+  <span class="eq">a_min ≈ 3.5 × a_AB &nbsp; (inner clearance)<br>a_max ≈ 0.30 × a_C &nbsp; (outer stability limit)</span>
+  <p>The 0.30 factor is a conservative choice from a published empirical range of 0.30 to 0.38, which depends on the exact mass ratio and orbital eccentricity involved. Inside the clearance zone, orbital resonances with the binary create chaos; beyond the stability limit, the third star's tidal perturbation overwhelms whatever is holding the planet in place.</p>
+  <div class="src">Holman, M.J. &amp; Wiegert, P.A. (1999). "Long-Term Stability of Planets in Binary Systems." <em>The Astronomical Journal</em>, 117(1), 621. <a href="https://doi.org/10.1086/300695" target="_blank">DOI</a></div>
+  <div class="note">Multi-star systems have compressed habitable regions compared to a single star of the same total light output. The fewer stable orbits available, the more precious — and more strategically important — each habitable world becomes to a story set there.</div>
+
+  <!-- ── N-BODY INTEGRATION ──────────────────────── -->
+  <div class="sci-section">N-Body Physics &amp; the Integrator</div>
+  <p>Once a system has more than one star, planetary orbits are no longer solved analytically — they're integrated forward in time using <strong>Velocity Verlet</strong>, a second-order symplectic method chosen because it conserves energy over long runs rather than letting orbits slowly drift, which is the standard failure mode of naive integrators:</p>
+  <span class="eq">x(t+Δt) = x + vΔt + ½aΔt²<br>v(t+Δt) = v + ½(a₀ + a₁)Δt</span>
+  <p>At each step, position updates from the current velocity and acceleration; velocity then updates from the average of the old and new acceleration. Each frame is subdivided so no individual substep exceeds 0.025 sim-seconds — at 10× speed that's up to 8 sub-steps per rendered frame, which is what keeps the integrator stable even when the simulation is running fast.</p>
+  <p>Gravity is computed pairwise between every body, with the shell theorem applied so an object's orbital velocity only sees interior mass. <strong>Stars themselves follow prescribed Keplerian orbits</strong> around the system barycenter rather than true N-body motion — accurate for the hierarchical configurations SOLARIS models, where stellar separations stay well-defined rather than chaotic. Planets, by contrast, feel gravity from every star in the system simultaneously.</p>
+  <p>A safety valve exists for the integrator's own edge cases: if a planet's kinetic energy exceeds 2.5× its escape velocity — which can happen from a close stellar encounter in an unstable configuration — it's respawned at its last stable orbital radius. This is a simulation-artifact protection, not a physical event, and it's visible in the in-app "This System" data panel if it fires.</p>
+  <div class="note">Velocity Verlet conserves energy to O(Δt²), meaning small energy drift can accumulate over thousands of orbits at very high simulation speed. Run at low speed if you need to trust the fine structure of a long-term orbit. The reward for watching a trinary system at low speed: Kozai-Lidov-like oscillations, where a distant companion gradually pumps eccentricity into an inner planet's orbit over time — a real astrophysical phenomenon, visible directly.</div>
+
+  <!-- ── TIDAL LOCKING ────────────────────────────── -->
+  <div class="sci-section">Tidal Locking</div>
+  <p>A tidally locked body has a rotational period equal to its orbital period, so one face points at its primary permanently — the same relationship the Moon has with Earth. Differential gravitational force across the body raises a tidal bulge; friction bleeds off rotational energy until that bulge locks in alignment with the primary.</p>
+  <p>The timescale for this to happen is proportional to the sixth power of orbital distance and inversely proportional to stellar mass and planetary radius, which is why it matters so much for red dwarf systems: inner planets around dim, low-mass stars lock fastest, often within a billion years — well inside the age of most planetary systems.</p>
+  <p>In SOLARIS, tidal lock is a per-planet toggle. The rendered night-side gradient and terminator glow track the primary in real time, and the planet's dark face always faces away from its star as it orbits — the twilight ring at the boundary is the zone a tidally locked world's habitability actually depends on.</p>
+
+  <!-- ── ASTEROID BELTS & OORT CLOUD ──────────────── -->
+  <div class="sci-section">Asteroid Belts &amp; the Oort Cloud</div>
+  <p>When both a habitable-band planet and an outer planet exist in a generated system, SOLARIS places an asteroid belt between them — the same gap-filling role our own belt plays between Mars and Jupiter. Without both bounds present, the belt falls at a luminosity-scaled default distance instead.</p>
+  <p>Beyond the planets, two nested Oort cloud regions are modeled conceptually: the <strong>Hills Cloud</strong>, an inner, gravitationally bound and slightly flattened torus, and the <strong>outer shell</strong>, a much larger, nearly isotropic sphere vulnerable to perturbation by passing stars. Long-period comets originate in that outer shell, kicked inward by a stellar flyby or a galactic tide, and their tails always point away from the primary — driven by radiation pressure and the solar wind, not by the direction of travel.</p>
+  <div class="note">An active Oort cloud implies regular cometary bombardment of the inner system: water and organic delivery, but also the occasional extinction-level impact. A quiet one implies a geologically older, more settled system. Either is a legitimate choice for a story's backstory — SOLARIS doesn't simulate impact events, but the presence of the cloud is the physical premise either way rests on.</div>
+
+  <!-- ── PLANET CATALOG ──────────────────────────── -->
+  <div class="sci-section">Planet Catalog</div>
+  <p>SOLARIS draws from <strong>27 planet types</strong> across five bands — inner, habitable, outer, remote, and a small set of special/forming bodies — each carrying its own composition, atmosphere, hazard profile, and resource character:</p>
+  <table class="sys-table">
+    <tr><th>Band</th><th>Types</th><th>Character</th></tr>
+    <tr><td>Inner</td><td>Magma, Arid, Desert, Scarred, Lava Ocean, Iron World, Volcanic</td><td>Hot, close-orbit, geologically violent</td></tr>
+    <tr><td>Habitable</td><td>Terrestrial, Ocean, Super-Earth, Jungle, Tidal Lock, Greenhouse, Twilight, Crystalline, Water World, Hycean</td><td>Within the flux band where liquid water can stand</td></tr>
+    <tr><td>Outer</td><td>Gas Giant, Ice Giant, Rocky, Barren, Storm World, Carbon World, Companion</td><td>Cold, often massive, ring and moon systems</td></tr>
+    <tr><td>Remote</td><td>Glacial, Airless, Rogue World, Comet Body, Oort Body</td><td>Deep system edge; a rogue world has no star at all</td></tr>
+    <tr><td>Forming</td><td>Protoplanet, Moon-Sized</td><td>Still accreting, or scaled for a moon candidate</td></tr>
+  </table>
+  <p>Habitable-band planets are the deliberately deep end of the catalog: a <strong>Hycean</strong> world (hydrogen-atmosphere ocean planet, a habitability class only proposed in the 2020s) sits beside a classic <strong>Tidal Lock</strong> twilight world and a high-gravity <strong>Super-Earth</strong>, so the habitable zone in SOLARIS isn't just "Earth again" — it's a spread of real, published possibilities for what a world in the flux band could actually be.</p>
+  <p>Moons are generated for gas giants, ice giants, storm worlds, super-Earths and water worlds most reliably (1–4), and probabilistically for other types (a 40% chance of one). Each moon holds its own orbital radius, speed, and size, animated as a Keplerian sub-orbit around its parent rather than a full N-body member of the system.</p>
+
+  <!-- ── LIMITATIONS ─────────────────────────────── -->
+  <div class="sci-section">What This Tool Cannot Do</div>
+  <p><strong>No stellar mass loop-back.</strong> Star mass drives luminosity and GM in the model, but planets never feed mass back into stellar evolution — SOLARIS renders a system at one moment, not a system aging over time.</p>
+  <p><strong>No true N-body for stars.</strong> Multi-star systems place stars on prescribed Keplerian orbits around their mutual barycenter rather than solving their mutual gravity directly. This is the accurate approach for the hierarchical, well-separated configurations SOLARIS models, but it would not capture a genuinely chaotic three-body dance.</p>
+  <p><strong>No S-type orbits.</strong> A planet orbiting just one star inside a binary — common in real systems — isn't modeled; every multi-star planet here is circumbinary (P-type).</p>
+  <p><strong>No planetary mass or atmosphere physics.</strong> Planets are massless test particles gravitationally, and the catalog's atmosphere, water, and hazard fields are descriptive worldbuilding data, not the output of a climate model. Where Tidelock computes a real temperature gradient, SOLARIS assigns each planet type an established atmospheric character to build from.</p>
+  <p><strong>No collision or impact modeling.</strong> The asteroid belt and Oort cloud are rendered for their gravitational and narrative context; SOLARIS does not simulate a body actually striking a planet.</p>
+  <div class="note">Despite these limits, SOLARIS produces a system whose skeleton is real: real Kepler orbits, a real habitable-zone calculation from a cited paper, real multi-star stability bounds, and a real symplectic integrator once more than one star is in play. When you generate a system here, the physics holding it together is the same physics holding a real one together.</div>
+
+  <!-- ── FOR WRITERS ─────────────────────────────── -->
+  <div class="sci-section">For Writers</div>
+  <p>SOLARIS exists to answer a question every science fiction writer eventually has to face honestly: <strong>given this star, or these stars, where could a habitable world actually sit — and what would the sky look like from its surface?</strong></p>
+  <p>A single yellow star gives you something close to home. A circumbinary system gives you Tatooine's two suns, with the stability math to know exactly how far out a planet has to orbit to survive them. A hierarchical trinary gives you a sky where a third, distant star slowly bends the fate of a planet's orbit over centuries — a Kozai-Lidov drift you can watch happen rather than invent. None of these are arbitrary; they come from where you drop the stars and what the physics does from there.</p>
+  <p>SOLARIS is part of the <a href="https://stellarforge.tools" style="color:rgba(0,212,255,.5)">StellarForge</a> worldbuilding toolkit. A system generated here is the first link in the cascade — feed it into <strong>Habitable Zone Calculator</strong> and <strong>Planetary Profile</strong> to develop a specific world in detail, following the same principle that runs through every tool: <em>environment shapes biology, biology shapes psychology, psychology shapes culture, and culture shapes mythology.</em></p>
+</main>
+
+</body>
+</html>
