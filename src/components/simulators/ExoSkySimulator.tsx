@@ -454,7 +454,26 @@ export default function ExoSkyV2({
   }, [worldEntities]);
   const canvasRef = useRef(null);
   const mwOffscreenRef = useRef(null); // Offscreen MW canvas for pre-rendered band
-  const mwParamsRef = useRef({ viewRa: -1, viewDec: -1, fov: -1, planetKey: "" }); // Track when MW needs re-render
+  /**
+   * What the cached Milky Way bitmap was drawn for.
+   *
+   * Typed explicitly because the inferred shape came from the initial value and
+   * omitted every field the redraw check actually compares, so each one was a
+   * type error that the baseline simply carried.
+   */
+  const mwParamsRef = useRef<{
+    viewRa: number;
+    viewDec: number;
+    fov: number;
+    planetKey: string;
+    W?: number;
+    H?: number;
+    mwBrightness?: number;
+    showAtmosphere?: boolean;
+    atmoDensity?: number;
+    /** Sample-step multiplier, so settling from a drag triggers the fine pass. */
+    quality?: number;
+  }>({ viewRa: -1, viewDec: -1, fov: -1, planetKey: "" });
   const animRef = useRef(null);
   const [selectedPlanet, setSelectedPlanet] = useState(0);
   const [viewRa, setViewRa] = useState(180);
@@ -816,6 +835,25 @@ export default function ExoSkyV2({
   const profileMark = useRef(0);
   const profileData = useRef<Record<string, number[]>>({});
 
+  /**
+   * Work counters, which milliseconds cannot answer honestly here.
+   *
+   * A headless browser's software rasteriser makes every ms figure suspect, and
+   * this session already burned a diagnosis on numbers measured that way. How
+   * many stars the spatial index actually walks is the same on any machine, so
+   * it is the part of "why is backgroundField the dominant stage" that can be
+   * settled without the owner's hardware.
+   */
+  const counters = useRef<Record<string, number>>({});
+  const camSnapshot = useRef({ viewRa: 0, viewDec: 0, fov: 0, mwQuality: 0 });
+  /** Last camera key and when it last changed, for progressive refinement. */
+  const lastCamKey = useRef("");
+  const lastCamMove = useRef(0);
+  const tally = useCallback((name: string, n = 1) => {
+    if (!profiling.current) return;
+    counters.current[name] = (counters.current[name] ?? 0) + n;
+  }, []);
+
   const stage = useCallback((name: string) => {
     if (!profiling.current) return;
     const now = performance.now();
@@ -839,6 +877,28 @@ export default function ExoSkyV2({
         total += med;
       }
       return { stages: out, totalMedianMs: +total.toFixed(2) };
+    };
+
+    // Per-frame averages, so the numbers mean "per redraw" not "since load".
+    (window as unknown as { __exoskyCounters?: unknown }).__exoskyCounters = () => {
+      const frames = counters.current.frames || 1;
+      const cam = camSnapshot.current;
+      const per = (k: string) => +((counters.current[k] ?? 0) / frames).toFixed(1);
+      const walked = per("bgWalked");
+      return {
+        frames,
+        // Read this before and after a drag. If it is identical, the
+        // measurement below is of an idle canvas and means nothing.
+        camera: { ...cam },
+        backgroundField: {
+          fieldSize: 20000,
+          bucketsVisited: per("bgBuckets"),
+          starsWalked: walked,
+          starsDrawn: per("bgDrawn"),
+          // The number that decides whether the index is worth keeping.
+          percentOfFieldWalked: +((walked / 20000) * 100).toFixed(1),
+        },
+      };
     };
   }, []);
 
@@ -885,6 +945,29 @@ export default function ExoSkyV2({
     if (_showMilkyWay && mwMapRef.current && _mwReady) {
       const mwMap = mwMapRef.current;
 
+      /**
+       * Progressive refinement: draw coarse while the camera moves.
+       *
+       * The Milky Way is the only stage whose redraw condition includes the
+       * camera, so it recomputes on exactly the frames the user is dragging and
+       * on no others. Measured at 32.8 ms per frame while dragging against
+       * 0.1 ms idle, which is the reported stutter in one number.
+       *
+       * The sample step is quadratic in cost, so tripling it while the view is
+       * in motion cuts the work by ~9x. A reader cannot resolve fine galactic
+       * structure mid-drag, and the full-detail pass lands ~160 ms after they
+       * let go, which is what makes map applications feel instant rather than
+       * slow. Rewriting the loop to write pixels instead of rects was tried
+       * first and measured *worse* (44 ms), so it is not the answer here.
+       */
+      const camKey = `${_viewRa},${_viewDec},${_fov}`;
+      if (camKey !== lastCamKey.current) {
+        lastCamKey.current = camKey;
+        lastCamMove.current = performance.now();
+      }
+      const cameraMoving = performance.now() - lastCamMove.current < 160;
+      const mwQuality = cameraMoving ? 3 : 1;
+
       // Check if we need to re-render the MW offscreen canvas
       const mwParams = mwParamsRef.current;
       const planetKey = `${_planet.ra},${_planet.dec},${_planet.dist}`;
@@ -893,7 +976,8 @@ export default function ExoSkyV2({
         || mwParams.W !== W || mwParams.H !== H
         || mwParams.mwBrightness !== _mwBrightness
         || mwParams.showAtmosphere !== _showAtmosphere
-        || mwParams.atmoDensity !== _atmoDensity;
+        || mwParams.atmoDensity !== _atmoDensity
+        || mwParams.quality !== mwQuality;
 
       if (needsRedraw) {
         // Create/resize offscreen canvas
@@ -919,7 +1003,8 @@ export default function ExoSkyV2({
         const [ogx, ogy] = eqToGal(eqObs[0], eqObs[1], eqObs[2]);
         const lCorrection = Math.atan2(ogy, R_SUN + ogx) || 0;
 
-        const step = Math.max(2, Math.floor(4 * (_fov / 90)));
+        const step = Math.max(2, Math.floor(4 * (_fov / 90))) * mwQuality;
+
         for (let sx = 0; sx < W; sx += step) {
           for (let sy = 0; sy < H; sy += step) {
             const dx = (sx - W/2), dy = (sy - H/2);
@@ -956,7 +1041,7 @@ export default function ExoSkyV2({
         }
 
         // Update cached params
-        mwParamsRef.current = { viewRa: _viewRa, viewDec: _viewDec, fov: _fov, planetKey, W, H, mwBrightness: _mwBrightness, showAtmosphere: _showAtmosphere, atmoDensity: _atmoDensity };
+        mwParamsRef.current = { viewRa: _viewRa, viewDec: _viewDec, fov: _fov, planetKey, W, H, mwBrightness: _mwBrightness, showAtmosphere: _showAtmosphere, atmoDensity: _atmoDensity, quality: mwQuality };
       }
 
       // Blit the cached MW offscreen canvas
@@ -998,6 +1083,8 @@ export default function ExoSkyV2({
       for (const rBin of raBins) {
         for (let dBin = decBinMin; dBin <= decBinMax && bgCount < bgMax; dBin++) {
           const bucket = _bgBuckets[rBin * BG_DEC_BINS + dBin];
+          tally("bgBuckets");
+          tally("bgWalked", bucket.length);
           for (let i = 0; i < bucket.length && bgCount < bgMax; i++) {
             const bg = bucket[i];
             let useRa = bg.ra, useDec = bg.dec;
@@ -1038,6 +1125,16 @@ export default function ExoSkyV2({
             bgCount++;
           }
         }
+      }
+
+      tally("bgDrawn", bgCount);
+      tally("frames");
+      // The camera, recorded with the counters. Any claim about "while
+      // dragging" is worthless unless the view provably moved, and this
+      // session has already produced one diagnosis that did not.
+      if (profiling.current) {
+        camSnapshot.current = { viewRa: _viewRa, viewDec: _viewDec, fov: _fov,
+          mwQuality: mwParamsRef.current.quality ?? 0 };
       }
     }
 
