@@ -117,17 +117,29 @@ dangerous.
 
 ---
 
-## 3. Task S: finish what the simulators promise
+## 3. Task S: finish what the simulators promise — DONE (0.7160-0.7190)
 
-- [ ] **Rogue custom system builder.** The original's whole overlay for composing
-      a system rather than picking a preset. The largest remaining parity gap.
-- [ ] **Rogue share-by-URL**, which encodes a system in the link.
-- [ ] **Gravity vectors**, distinct from the gravity lines already drawn.
-- [ ] **Mobile.** Unverified on every simulator. The parity doc measured Solaris
-      at scrollWidth 585 against clientWidth 390, and nothing has re-checked it.
-- [ ] **Solaris science page**, still the only simulator without one.
-- [ ] Then flip `/tools/rogue` and `/tools/solaris` to the native builds, keeping
-      the static files one release beyond the cutover.
+- [x] **Mobile** (0.7160), measured and fixed on all five: 44px touch targets,
+      12px legibility floor, panels capped so the canvas stays visible. One
+      shared `sim-mobile.css` for the four static sims; `useIsMobile` plus a
+      stacked layout for ExoSky's React panels.
+- [x] **Solaris science page** (0.7180): the only simulator missing one, now
+      has the same depth as the other four, sourced from the sim's own
+      verified-physics header and in-app "Show Your Work" cards.
+- [x] **Rogue custom system builder** and **share-by-URL** — both already
+      shipped before this pass started. Verified live rather than trusted:
+      built a system through the builder, copied the share link, loaded it
+      cold, and it reconstructed correctly. The parity doc's claim that this
+      was "the largest remaining parity gap" was stale, the same way
+      writing-workshop and stellar-cartographer turned out to be in Task T.
+- [x] **Gravity vectors** (0.7190), the one real gap of the three: a
+      per-body arrow along net gravitational acceleration, drawn from the
+      same `computeAccel()` the integrator itself steps with — distinct
+      from the existing "Gravity Lines," which only show relative pull
+      toward one reference planet.
+
+- [ ] Flip `/tools/rogue` and `/tools/solaris` to the native builds, keeping
+      the static files one release beyond the cutover. Not started.
 
 ---
 
