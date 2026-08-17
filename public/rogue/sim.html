@@ -208,6 +208,7 @@ select option{background:#0F0F10;color:#c8c8c8}
       <button id="btn-stepf" style="display:none" title="Step forward">▶</button>
       <button id="btn-reset" title="Reset simulation">↺</button>
     </div>
+    <div class="br"><button id="btn-publish-aftermath" class="a" style="display:none">Publish Aftermath →</button></div>
 
     <div class="sh">Camera</div>
     <div class="br" id="cam-btns">
@@ -609,6 +610,27 @@ function computeAccel(bodies,full){
   return{ax,ay};
 }
 
+// Orbital elements (semi-major axis, eccentricity) from a body's current
+// state vector relative to a primary mass, via vis-viva. Rogue's live
+// physics only tracks x/y/vx/vy/mass per body — there is no running a/e —
+// so this is the one new piece of physics "Publish Aftermath" needs: a
+// mid-encounter body has no orbital elements until something computes them
+// from where it actually is right now, not where it started.
+function orbitalElementsFromState(body,primary){
+  const dx=body.x-primary.x,dy=body.y-primary.y;
+  const dvx=body.vx-primary.vx,dvy=body.vy-primary.vy;
+  const r=Math.sqrt(dx*dx+dy*dy);
+  const v2=dvx*dvx+dvy*dvy;
+  const mu=G*primary.mass;
+  // Vis-viva: v^2 = mu(2/r - 1/a)  =>  a = 1 / (2/r - v^2/mu)
+  const a=1/(2/r-v2/mu);
+  // Specific angular momentum magnitude and specific energy give e directly.
+  const h=dx*dvy-dy*dvx;
+  const e2=1-(h*h)/(mu*a);
+  const e=e2>0?Math.sqrt(e2):0;
+  return{a,e};
+}
+
 function step(dt){
   const n=bodies.length;
   const full=launched; // full N-body only after intruder is active
@@ -650,6 +672,42 @@ function checkStatus(){
   if(ejectedSet.size>=Math.max(1,Math.floor(nPlanets*.4)))setStatus('chaos','● System Disrupted — '+ejectedSet.size+' Ejected');
   else if(ejectedSet.size>0)setStatus('eject','● '+ejectedSet.size+' Planet'+(ejectedSet.size>1?'s':'')+' Ejected');
   else{const intruder=bodies.find(b=>b.isIntruder);if(intruder&&intruder.active){const dx=intruder.x-comX,dy=intruder.y-comY;if(Math.sqrt(dx*dx+dy*dy)<(getSystemDef().planets||[]).reduce((m,p)=>Math.max(m,p.a),2)*2)setStatus('perturb','● Orbits Perturbed');else setStatus('orbit','● Post-Encounter');}}
+}
+
+// Package surviving planets as a shareable system, in the same {n,sm,st,b,p}
+// shape saveToURL/loadFromURL already use — so this can be handed to the same
+// consumer without a second schema. "Survivor" reads the live ejectedSet
+// (verified 2026-08-16 against a real black-hole encounter: bodies carry no
+// per-body ejected flag; checkStatus() rebuilds ejectedSet by name every
+// step), not a b.ejected property, which does not exist on this file's bodies.
+function survivorsToSystemPayload(){
+  const stars=bodies.filter(b=>b.isStar);
+  const primary=stars.reduce((m,s)=>s.mass>m.mass?s:m,stars[0]);
+  const survivors=bodies.filter(b=>b.isPlanet&&!ejectedSet.has(b.name));
+  const planets=survivors.map(b=>{
+    // e is computed but intentionally not threaded into the payload below:
+    // loadFromURL's {n,t,m,d} shape has no eccentricity field, and extending
+    // that parser is a second concern out of scope for this task.
+    const{a,e}=orbitalElementsFromState(b,primary);void e;
+    return{n:b.name,t:b.ptype||'rocky',m:+b.mass.toFixed(3),d:+Math.max(a,0.05).toFixed(4)};
+  }).sort((x,y)=>x.d-y.d);
+  return{
+    n:(document.getElementById('sys-display')?.textContent||'Aftermath System').split(' — ')[0]+' — Aftermath',
+    sm:primary.mass,
+    st:primary.starType||'G',
+    b:null,
+    p:planets,
+  };
+}
+
+// Shown once the intruder has passed and at least one planet survived.
+// Called from the same throttled block updateData() already runs from.
+function updateAftermathButton(){
+  const btn=document.getElementById('btn-publish-aftermath');
+  if(!btn)return;
+  const survivors=bodies.filter(b=>b.isPlanet&&!ejectedSet.has(b.name)).length;
+  const show=launched&&simTime>0&&survivors>0;
+  btn.style.display=show?'':'none';
 }
 
 function setStatus(c,t){const b=document.getElementById('badge');b.className='p st-'+c;b.textContent=t;}
@@ -838,7 +896,7 @@ function animate(timestamp){
     if(stateHistory.length===0||(Date.now()%67<17))saveState();
   }
   // Throttle DOM updates to ~100ms (every ~6 frames at 60fps)
-  const now=performance.now();if(now-lastDomUpdate>100){lastDomUpdate=now;updateData();}
+  const now=performance.now();if(now-lastDomUpdate>100){lastDomUpdate=now;updateData();updateAftermathButton();}
   requestAnimationFrame(animate);
 }
 
@@ -985,6 +1043,21 @@ canvas.addEventListener('touchend',()=>{isDrag=false;touchDist=0;});
 
 document.getElementById('btn-go').addEventListener('click',launch);
 document.getElementById('btn-reset').addEventListener('click',reset);
+document.getElementById('btn-publish-aftermath').addEventListener('click',()=>{
+  const payload=survivorsToSystemPayload();
+  // Reuses the exact STELLARFORGE_SAVE message the 0.7130 fix already made
+  // reliable end to end (payload -> pendingPayload -> SaveSimulationDialog /
+  // PublishToWorldDialog) instead of inventing a parallel path.
+  window.parent.postMessage({
+    type:'STELLARFORGE_SAVE',
+    payload:{
+      name:payload.n,
+      outputType:'system',
+      parameters:payload,
+      results:{survivorCount:payload.p.length,encounterType:intruderType||'unknown'},
+    },
+  },'*');
+});
 document.getElementById('btn-pause').addEventListener('click',function(){running=!running;isRewinding=false;updateTransportUI();});
 document.getElementById('btn-rewind').addEventListener('mousedown',function(){isRewinding=true;running=false;updateTransportUI();});
 document.getElementById('btn-rewind').addEventListener('mouseup',function(){isRewinding=false;updateTransportUI();});
