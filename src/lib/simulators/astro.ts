@@ -242,7 +242,7 @@ export function angularSeparation(
  *
  * Modeled as lunisolar precession only, at the modern IAU rate. Does not
  * model nutation (the smaller, faster wobble on top of it) or the very slow
- * change in the precession rate itself over tens of thousands of years —
+ * change in the precession rate itself over tens of thousands of years:
  * both are second-order against the rate itself and not the effect a writer
  * reaching for a multi-century time slider is trying to see.
  *

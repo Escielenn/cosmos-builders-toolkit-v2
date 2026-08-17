@@ -25,6 +25,11 @@ import { toExoskyPayload, fromExoskySave } from "@/lib/simulators/exosky-save";
 //   matches Hipparcos HIP 32349 exactly.
 // • Proper motion (movement of stars over time) is NOT modeled, fine
 //   for present-epoch sky views, drifts slightly over centuries.
+// • Axial precession (the ~25,772-year wobble of an observer's rotational
+//   axis) IS modeled via the EPOCH slider, see astro.ts's precessionMatrix
+//   and applyPrecession. This changes which star sits near the pole; it
+//   does not move any star relative to any other, which is what proper
+//   motion (still unmodeled) would do.
 // ═══════════════════════════════════════════════════════════════
 
 const DEG = Math.PI / 180;
@@ -51,6 +56,7 @@ import {
   eqXYZtoGalactocentric,
   apparentMag,
   bvToRGB,
+  precessionMatrix,
 } from "@/lib/simulators/astro";
 import { describeHandoffPlanet, type HandoffPayload } from "@/lib/simulators/handoff";
 
@@ -508,6 +514,16 @@ export default function ExoSkyV2({
   const [atmoDensity, setAtmoDensity] = useState(1.0);
   const [mwBrightness, setMwBrightness] = useState(1.0);
   /**
+   * Years from J2000 (now), driving axial precession of the observer's own
+   * sky. Zero is "now" and must be a true no-op (see astro.ts's
+   * applyPrecession/precessionMatrix): the identity property is what keeps
+   * this slider from being a silent regression for every writer who never
+   * touches it. Range is a half-cycle either way (~25,772 yr full period),
+   * enough to visibly move the pole without claiming precision this model
+   * doesn't have at the tens-of-thousands-of-years scale.
+   */
+  const [epochYears, setEpochYears] = useState(0);
+  /**
    * Two 272-320px panels, both defaulting open, were built for a wide screen.
    * At 390px they don't fit side by side (18+272 overlaps 390-18-320) and
    * together they measured covering 345% of the viewport by area, so the
@@ -861,16 +877,35 @@ export default function ExoSkyV2({
   // ── Transform stars to observer frame ───────────────
   const transformedStars = useMemo(() => {
     const obs = raDecDistToXYZ(planet.ra, planet.dec, planet.dist);
+    /**
+     * Axial precession, applied to the observer-frame vector (astro.ts's own
+     * term for `rel` below) rather than per-star: the matrix is the same for
+     * every star in a given render, so it's built once here instead of once
+     * per star inside the map, which mattered at ~25,000 procedural stars.
+     *
+     * This is the one place precession belongs. It rotates every catalog and
+     * procedural star's position relative to the observer's equatorial pole,
+     * which is what actually changes "which star sits at the pole" as epoch
+     * moves. The separate 20,000-star background field (generateBackgroundField)
+     * is intentionally left untouched here, that's the Step 8 stretch scope,
+     * not this one, and the observer's galactocentric position used to seed
+     * the Milky Way structure map is a spatial fact about the observer, not
+     * an artifact of their rotational axis, so precession does not apply there.
+     */
+    const pm = precessionMatrix(epochYears);
     return allStars.map(star => {
       const pos = raDecDistToXYZ(star.ra, star.dec, star.dist);
       const rel = [pos[0]-obs[0], pos[1]-obs[1], pos[2]-obs[2]];
-      const { ra, dec, dist } = xyzToRaDec(rel[0], rel[1], rel[2]);
+      const px = pm[0][0]*rel[0] + pm[0][1]*rel[1] + pm[0][2]*rel[2];
+      const py = pm[1][0]*rel[0] + pm[1][1]*rel[1] + pm[1][2]*rel[2];
+      const pz = pm[2][0]*rel[0] + pm[2][1]*rel[1] + pm[2][2]*rel[2];
+      const { ra, dec, dist } = xyzToRaDec(px, py, pz);
       const appMag = apparentMag(star.absMag, dist);
       const rgb = bvToRGB(star.bv);
       const isSol = star.name === "Sol";
       return { ...star, newRa:ra, newDec:dec, newDist:dist, appMag, rgb, isSol };
     }).filter(s => s.appMag < 8.5).sort((a,b) => a.appMag - b.appMag);
-  }, [planet, allStars]);
+  }, [planet, allStars, epochYears]);
   const transformedStarsRef = useRef(transformedStars);
   transformedStarsRef.current = transformedStars;
   const bgBucketsRef = useRef(bgBuckets);
@@ -1994,6 +2029,16 @@ export default function ExoSkyV2({
           </div>
           <input type="range" min="0" max="3" step="0.1" value={mwBrightness} onChange={e=>setMwBrightness(Number(e.target.value))} style={{width:"100%",marginTop:4}} />
 
+          <div style={{...SH,marginTop:14}}>EPOCH</div>
+          <div style={{display:"flex",justifyContent:"space-between",marginTop:6,alignItems:"center"}}>
+            <span style={LBL}>Years From Now</span>
+            <span style={VAL}>{epochYears===0 ? "NOW" : `${epochYears>0?"+":""}${epochYears.toLocaleString()}`}</span>
+          </div>
+          <input type="range" min="-13000" max="13000" step="50" value={epochYears} onChange={e=>setEpochYears(Number(e.target.value))} style={{width:"100%",marginTop:4}} />
+          <div style={{fontSize:10,color:"rgba(255,255,255,0.3)",marginTop:4,lineHeight:1.5}}>
+            Axial precession slowly turns which star sits near the pole. Real stars do not move on this timeline, only which direction the observer's pole points.
+          </div>
+
           <div style={{...SH,marginTop:14}}>DISPLAY</div>
           {[
             ["Milky Way Band", showMilkyWay, setShowMilkyWay],
@@ -2141,6 +2186,7 @@ export default function ExoSkyV2({
           <div style={{...SH,marginTop:12}}>VIEW</div>
           <DR l="RA / Dec" v={`${viewRa.toFixed(1)}° / ${viewDec.toFixed(1)}°`} />
           <DR l="FOV" v={`${fov}°`} />
+          <DR l="Epoch" v={epochYears===0 ? "Now (J2000)" : `${epochYears>0?"+":""}${epochYears.toLocaleString()} yr`} vc={epochYears!==0?"#FFD43B":undefined} />
 
           {hoveredStar && <>
             <div style={{...SH,marginTop:12,color:"rgba(21,193,123,0.5)"}}>SELECTED STAR</div>

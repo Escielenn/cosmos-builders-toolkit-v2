@@ -505,6 +505,27 @@
     </p>
   </section>
 
+  <!-- ════ LAYER 3C: AXIAL PRECESSION ════ -->
+  <section class="section">
+    <div class="section-header">LAYER 3C</div>
+    <div class="section-title">Axial Precession</div>
+    <p>
+      A planet's rotational axis does not point at a fixed spot among the stars forever. Gravity from a sun and moon tugs on the bulge of a spinning, tilted world, and the axis slowly traces a cone, once every roughly <strong>25,772 years</strong> for Earth. This is why Polaris was not the pole star when the pyramids were built (Thuban held that spot then), and why Vega will take over the job around 13,727 CE. The EPOCH slider lets you turn that same wheel for any of EXOSKY's observation points, up to a half-cycle in either direction.
+    </p>
+
+    <div class="equation-block">
+      <span class="comment">// Precession angle, one full cycle every 25,772 years</span><br>
+      θ = −2π · (yearsFromNow / <span class="value">25772</span>)<br><br>
+      <span class="comment">// Rotate into the ecliptic frame (tilted 23.4393° from the equator),</span><br>
+      <span class="comment">// spin by θ around the ecliptic pole, rotate back out</span><br>
+      v_epoch = R_ecliptic⁻¹ · R_z(θ) · R_ecliptic · v_now
+    </div>
+
+    <p>
+      This is applied as a single rotation matrix to every star's observer-frame position before it's converted back to RA/Dec, so the whole sky turns together, the way a real precessing sky does, rather than each star drifting independently. It is a pure rotation: distances and relative geometry between stars are unchanged, only which direction is "up" relative to the fixed stars.
+    </p>
+  </section>
+
   <!-- ════ LAYER 4: MILKY WAY ════ -->
   <section class="section">
     <div class="section-header">LAYER 4</div>
@@ -646,17 +667,17 @@
     <div class="data-card">
       <div class="card-header">CURRENT LIMITATIONS</div>
       <div class="data-row"><span class="data-label">Interstellar reddening</span><span class="data-value" style="color:#FFA500">NOT APPLIED TO INDIVIDUAL STARS</span></div>
-      <div class="data-row"><span class="data-label">Proper motion</span><span class="data-value" style="color:#FFA500">FIXED J2000 EPOCH</span></div>
+      <div class="data-row"><span class="data-label">Axial precession (which star sits at the pole)</span><span class="data-value green">MODELED (EPOCH slider)</span></div>
+      <div class="data-row"><span class="data-label">Stellar proper motion (real star drift)</span><span class="data-value" style="color:#FFA500">NOT MODELED, NO PER-STAR DATA</span></div>
       <div class="data-row"><span class="data-label">Binary star systems</span><span class="data-value" style="color:#FFA500">TREATED AS SINGLE POINTS</span></div>
       <div class="data-row"><span class="data-label">Nebulae / star clusters</span><span class="data-value" style="color:#E74C3C">NOT RENDERED</span></div>
       <div class="data-row"><span class="data-label">Host star in local sky</span><span class="data-value" style="color:#E74C3C">NOT RENDERED (sun position)</span></div>
       <div class="data-row"><span class="data-label">Light pollution / surface illumination</span><span class="data-value" style="color:#E74C3C">NOT MODELED</span></div>
       <div class="data-row"><span class="data-label">Zodiacal / galactic cirrus</span><span class="data-value" style="color:#E74C3C">NOT MODELED</span></div>
-      <div class="data-row"><span class="data-label">Time evolution (rotation, seasons)</span><span class="data-value" style="color:#E74C3C">FUTURE FEATURE</span></div>
     </div>
 
     <p>
-      Individual stars do not have reddening applied based on distance and dust column — only the aggregate Milky Way band accounts for dust. Proper motion is not computed, so the sky represents a snapshot at the current epoch rather than the true appearance from thousands of years of photon travel time. These are solvable problems and may appear in future versions.
+      Individual stars do not have reddening applied based on distance and dust column, only the aggregate Milky Way band accounts for dust. The EPOCH slider (Layer 3C) rotates the whole sky the way real axial precession does, which changes which star sits near the pole over thousands of years, but it does not move any star relative to any other. Real stars also drift through space under their own proper motion, and that drift is not modeled here: this build has no per-star velocity data for the ~300 named stars or the exoplanet host stars, and fabricating motion vectors for real, named stars would be presenting invention as fact. The sky's shape (which stars are near which) is therefore a snapshot, even as the EPOCH slider turns which direction is "up."
     </p>
   </section>
 
@@ -719,6 +740,14 @@
         <div>
           <div class="source-title">Distance Modulus (standard photometric relation)</div>
           m − M = 5 log₁₀(d/10 pc). Relates apparent magnitude, absolute magnitude, and distance. Fundamental to all magnitude calculations.
+        </div>
+      </li>
+      <li>
+        <span class="source-tag paper">PAPER</span>
+        <div>
+          <div class="source-title">Capitaine, N. et al. (2003) — "Expressions for IAU 2000 Precession Quantities"</div>
+          Astronomy &amp; Astrophysics, 412, 567–586. General precession in longitude ≈ 50.29 arcsec/year, giving the ~25,772-year period used by the EPOCH slider's axial precession model.
+          <div class="source-url">doi:10.1051/0004-6361:20031539</div>
         </div>
       </li>
       <li>
