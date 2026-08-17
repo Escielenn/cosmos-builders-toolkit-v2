@@ -689,10 +689,21 @@ function survivorsToSystemPayload(){
     // loadFromURL's {n,t,m,d} shape has no eccentricity field, and extending
     // that parser is a second concern out of scope for this task.
     const{a,e}=orbitalElementsFromState(b,primary);void e;
-    return{n:b.name,t:b.ptype||'rocky',m:+b.mass.toFixed(3),d:+Math.max(a,0.05).toFixed(4)};
+    // Floor guards a hyperbolic/near-ejected survivor's negative or
+    // near-zero vis-viva 'a'. Ceiling guards the opposite case: a survivor
+    // just barely bound (specific energy just under zero) can compute an
+    // arbitrarily large 'a' as that energy approaches zero. 500 AU is a
+    // generous but bounded "still meaningfully part of this system" cap.
+    // A plausible outer-system distance is better than a four-digit AU
+    // value stated as fact.
+    return{n:b.name,t:b.ptype||'rocky',m:+b.mass.toFixed(3),d:+Math.min(Math.max(a,0.05),500).toFixed(4)};
   }).sort((x,y)=>x.d-y.d);
   return{
-    n:(document.getElementById('sys-display')?.textContent||'Aftermath System').split(' — ')[0]+' — Aftermath',
+    // sys-display's own text (e.g. "Our Solar System — 8 planets...") uses
+    // an em dash; that's pre-existing copy, out of scope here. The suffix
+    // this task generates uses '·' instead, matching this file's existing
+    // no-em-dash separator idiom (see d-star's "G V · 1.000 M☉").
+    n:(document.getElementById('sys-display')?.textContent||'Aftermath System').split(' — ')[0]+' · Aftermath',
     sm:primary.mass,
     st:primary.starType||'G',
     b:null,
