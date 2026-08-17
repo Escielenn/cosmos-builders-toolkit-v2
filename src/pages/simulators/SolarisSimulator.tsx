@@ -64,7 +64,10 @@ const SolarisSimulator = () => {
       const { target, payload } = event.data as { target: string; payload: HandoffPayload };
       const route = HANDOFF_ROUTES[target];
       if (!route) return;
-      const encoded = encodeHandoff(payload);
+      // encodeHandoff already returns URL-safe base64 (no +, / or =), but
+      // encodeURIComponent here too so this call site can't reintroduce the
+      // corruption bug even if the encoding scheme ever changes back.
+      const encoded = encodeURIComponent(encodeHandoff(payload));
       navigate(`${route}?handoff=${encoded}`);
     };
     window.addEventListener("message", handler);

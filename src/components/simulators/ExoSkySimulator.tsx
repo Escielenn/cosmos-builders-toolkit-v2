@@ -52,7 +52,7 @@ import {
   apparentMag,
   bvToRGB,
 } from "@/lib/simulators/astro";
-import type { HandoffPayload } from "@/lib/simulators/handoff";
+import { describeHandoffPlanet, type HandoffPayload } from "@/lib/simulators/handoff";
 
 // ── STAR CATALOG (lazy-loaded from /exosky-stars.json) ────────
 // Format: [name, RA(°), Dec(°), dist(pc), absMag, B-V]
@@ -678,13 +678,12 @@ export default function ExoSkyV2({
     const [ex, ey, ez] = galToEq(gx, gy, gz);
     const rd = xyzToRaDec(ex, ey, ez);
     if (handoffPayload) {
-      const starArticle = /^[aeiou]/i.test(handoffPayload.starType) ? "an" : "a";
       return {
         star: handoffPayload.starType,
         planet: `${handoffPayload.planetName} (from Solaris)`,
         ra: rd.ra, dec: rd.dec, dist,
         atmoType: "none", atmoDesc: "No atmosphere, vacuum observation",
-        note: `${handoffPayload.planetType} planet, ${handoffPayload.planetAU.toFixed(2)} AU from ${starArticle} ${handoffPayload.starType} star. Distance shown here is a ${dist.toFixed(0)} pc placeholder, not part of the handoff.`,
+        note: `${describeHandoffPlanet(handoffPayload)} Distance shown here is a ${dist.toFixed(0)} pc placeholder, not part of the handoff.`,
         armNote: "Handoff from Solaris",
       };
     }
