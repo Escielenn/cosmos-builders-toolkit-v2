@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { generateSceneProse } from "@/lib/simulators/scene-prose";
 import type { WorksheetFact } from "@/lib/worksheet-facts";
@@ -11,6 +11,15 @@ interface SceneProseButtonProps {
 export function SceneProseButton({ facts, simulatorType }: SceneProseButtonProps) {
   const [prose, setProse] = useState<string | null>(null);
   const canGenerate = facts.length > 0;
+
+  // Facts change identity when the writer loads a different save (or the
+  // simulator's live state refreshes). Without this, prose generated for a
+  // previous world would keep sitting next to a UI that now shows a
+  // different one's numbers, which reads as a stale description no writer
+  // asked for.
+  useEffect(() => {
+    setProse(null);
+  }, [facts]);
 
   return (
     <div className="mt-3">
