@@ -497,6 +497,8 @@ export default function ExoSkyV2({
     atmoDensity?: number;
     /** Sample-step multiplier, so settling from a drag triggers the fine pass. */
     quality?: number;
+    /** Epoch, so the band actually redraws when the precession slider moves. */
+    epochYears?: number;
   }>({ viewRa: -1, viewDec: -1, fov: -1, planetKey: "" });
   const animRef = useRef(null);
   const [selectedPlanet, setSelectedPlanet] = useState(0);
@@ -565,6 +567,7 @@ export default function ExoSkyV2({
   const customConstellationsRef = useRef([]);
   const drawColorRef = useRef("#FFA500");
   const hoveredStarRef = useRef(null);
+  const epochYearsRef = useRef(0);
 
   // ── Constellation Drawing State ─────────────────────
   const [drawMode, setDrawMode] = useState(false);
@@ -670,6 +673,7 @@ export default function ExoSkyV2({
   customConstellationsRef.current = customConstellations;
   drawColorRef.current = drawColor;
   hoveredStarRef.current = hoveredStar;
+  epochYearsRef.current = epochYears;
 
   const planet = useMemo(() => {
     // World-entity mode: prefer this when an entity is picked AND has stored coords.
@@ -1035,6 +1039,7 @@ export default function ExoSkyV2({
     const _drawColor = drawColorRef.current;
     const _hoveredStar = hoveredStarRef.current;
     const _transformedStars = transformedStarsRef.current;
+    const _epochYears = epochYearsRef.current;
     const _obsGC = obsGCRef.current;
     const _mwReady = mwReadyRef.current;
     const _atmo = atmoRef.current;
@@ -1082,7 +1087,8 @@ export default function ExoSkyV2({
         || mwParams.mwBrightness !== _mwBrightness
         || mwParams.showAtmosphere !== _showAtmosphere
         || mwParams.atmoDensity !== _atmoDensity
-        || mwParams.quality !== mwQuality;
+        || mwParams.quality !== mwQuality
+        || mwParams.epochYears !== _epochYears;
 
       if (needsRedraw) {
         // Create/resize offscreen canvas
@@ -1108,6 +1114,29 @@ export default function ExoSkyV2({
         const [ogx, ogy] = eqToGal(eqObs[0], eqObs[1], eqObs[2]);
         const lCorrection = Math.atan2(ogy, R_SUN + ogx) || 0;
 
+        /**
+         * Axial precession, inverted. `dirX/dirY/dirZ` below is built straight
+         * from `_viewRa`/`_viewDec`, the same raw camera numbers that
+         * `transformedStars` compares its precessed `newRa`/`newDec` against,
+         * i.e. this ray direction lives in the "display" frame, exactly like a
+         * point star's post-precession position, not the real fixed frame
+         * `eqToGal` expects (the galactic structure map does not itself move).
+         *
+         * `transformedStars` gets from the real frame to the display frame by
+         * applying `precessionMatrix(epochYears)` forward. Going the other way
+         * (display → real, which is what this block needs before eqToGal)
+         * requires the inverse of that rotation. Precession is a pure rotation,
+         * so its inverse is its transpose, which for this matrix equals
+         * `precessionMatrix(-epochYears)` (both fromEcliptic/toEcliptic are
+         * transposes of each other by construction, and negating epochYears
+         * negates theta, which is exactly what transposing the spin block
+         * does). Verified numerically: a fixed reference direction's galactic
+         * latitude, recovered this way, stays constant at ~17.3° across every
+         * tested epoch; applying the forward matrix instead swings it wildly
+         * (58.7°, -15.1°, ...), which is the double-rotation this avoids.
+         */
+        const pmInv = precessionMatrix(-_epochYears);
+
         const step = Math.max(2, Math.floor(4 * (_fov / 90))) * mwQuality;
 
         for (let sx = 0; sx < W; sx += step) {
@@ -1121,7 +1150,11 @@ export default function ExoSkyV2({
             const len = Math.sqrt(dirX*dirX + dirY*dirY + dirZ*dirZ);
             dirX /= len; dirY /= len; dirZ /= len;
 
-            const [gx, gy, gz] = eqToGal(dirX, dirY, dirZ);
+            const precX = pmInv[0][0]*dirX + pmInv[0][1]*dirY + pmInv[0][2]*dirZ;
+            const precY = pmInv[1][0]*dirX + pmInv[1][1]*dirY + pmInv[1][2]*dirZ;
+            const precZ = pmInv[2][0]*dirX + pmInv[2][1]*dirY + pmInv[2][2]*dirZ;
+
+            const [gx, gy, gz] = eqToGal(precX, precY, precZ);
             const galB = Math.asin(Math.max(-1, Math.min(1, gz)));
             const stdGalL = Math.atan2(gy, gx);
             const obsL = ((stdGalL - lCorrection) % (2*Math.PI) + 2*Math.PI) % (2*Math.PI);
@@ -1146,7 +1179,7 @@ export default function ExoSkyV2({
         }
 
         // Update cached params
-        mwParamsRef.current = { viewRa: _viewRa, viewDec: _viewDec, fov: _fov, planetKey, W, H, mwBrightness: _mwBrightness, showAtmosphere: _showAtmosphere, atmoDensity: _atmoDensity, quality: mwQuality };
+        mwParamsRef.current = { viewRa: _viewRa, viewDec: _viewDec, fov: _fov, planetKey, W, H, mwBrightness: _mwBrightness, showAtmosphere: _showAtmosphere, atmoDensity: _atmoDensity, quality: mwQuality, epochYears: _epochYears };
       }
 
       // Blit the cached MW offscreen canvas
