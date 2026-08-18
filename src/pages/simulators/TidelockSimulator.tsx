@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Save, FolderOpen, Rocket } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -69,19 +69,27 @@ const TidelockSimulator = () => {
   }, [refreshPayload]);
 
   // Plausibility notes read the same `pendingPayload.results` that Save and
-  // Publish already populate. Ask once as soon as the iframe is ready, so the
-  // strip reflects the sim's starting configuration rather than staying empty
-  // until the writer presses Save. After that, the STELLARFORGE_SAVE listener
-  // inside useSimulationSave already keeps pendingPayload current on every
-  // unsolicited save the sim posts — no timer, no polling.
+  // Publish already populate. sim.html only ever answers a state request —
+  // its one postMessage call site (STELLARFORGE_SAVE, sim.html:1756) fires
+  // solely from inside the STELLARFORGE_REQUEST_STATE handler, never on its
+  // own initiative (no spontaneous post on a slider drag, say). So
+  // `pendingPayload`, and therefore this strip, only refreshes at three
+  // moments: mount (this effect), Save click (`requestSave`), and Publish
+  // click (`refreshPayload` above). Between those, a note can go stale if the
+  // writer drags a slider without saving or publishing — but it is always
+  // current at the two moments that actually persist data, since both Save
+  // and Publish already refresh before their dialogs open. Ask once here so
+  // the strip has something to say on load rather than staying empty until
+  // the first Save; no timer, no polling.
   useEffect(() => {
     if (!loaded) return;
     refreshPayload();
   }, [loaded, refreshPayload]);
 
-  const plausibilityNotes = pendingPayload?.results
-    ? checkTidelockPlausibility(pendingPayload.results)
-    : [];
+  const plausibilityNotes = useMemo(
+    () => (pendingPayload?.results ? checkTidelockPlausibility(pendingPayload.results) : []),
+    [pendingPayload],
+  );
 
   // A Solaris planet handed off via `?handoff=`: once the iframe has loaded
   // (so it has a listener registered), send its star and orbital distance
@@ -147,10 +155,11 @@ const TidelockSimulator = () => {
           {/* Save/Load controls, plus plausibility notes on the configuration
               those controls would save or publish right now. Tidelock has no
               React-rendered data-readout panel of its own — the numeric
-              results live entirely inside sim.html's canvas overlay — so the
-              strip sits in this same floating chrome rather than "below the
-              numeric results", and only takes up space when it has something
-              to say. */}
+              results live entirely inside sim.html's own DOM readout panel
+              (its updateReadout() sets element .textContent, sim.html:1241),
+              not this wrapper — so the strip sits in this same floating
+              chrome rather than "below the numeric results", and only takes
+              up space when it has something to say. */}
           {loaded && (
             <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 flex flex-col items-stretch gap-1.5">
               <div className="flex items-center gap-1.5 border border-sf-teal/30 bg-sf-void/90 px-1.5 py-1 backdrop-blur-sm">
