@@ -14,6 +14,8 @@ import { SimulatorWorldEntityPicker } from "@/components/simulators/SimulatorWor
 import { decodeHandoff } from "@/lib/simulators/handoff";
 import { checkTidelockPlausibility } from "@/lib/simulators/plausibility-notes";
 import { PlausibilityStrip } from "@/components/simulators/PlausibilityStrip";
+import { extractSimulationFacts } from "@/lib/simulation-facts";
+import { SceneProseButton } from "@/components/simulators/SceneProseButton";
 
 /**
  * Solaris's five habitable-zone bounds (public/tools/solaris/sim.html's
@@ -88,6 +90,16 @@ const TidelockSimulator = () => {
 
   const plausibilityNotes = useMemo(
     () => (pendingPayload?.results ? checkTidelockPlausibility(pendingPayload.results) : []),
+    [pendingPayload],
+  );
+
+  // Same pendingPayload the plausibility strip above already reads, run
+  // through the same fact extractor ContinuityPanel and the Refs panel use
+  // (extractTidelockFacts under the "tidelock" dispatch), so the prose
+  // button describes the exact configuration a writer is about to Save or
+  // Publish, not a stale or separately-derived snapshot of it.
+  const sceneFacts = useMemo(
+    () => (pendingPayload ? extractSimulationFacts("tidelock", pendingPayload) : []),
     [pendingPayload],
   );
 
@@ -211,6 +223,13 @@ const TidelockSimulator = () => {
                   <PlausibilityStrip notes={plausibilityNotes} />
                 </div>
               )}
+              {/* Same floating chrome as the plausibility strip above, for the
+                  same reason: Tidelock has no React-rendered data panel of its
+                  own to sit beneath, so this sits in the chrome that exists
+                  rather than a panel that doesn't. */}
+              <div className="max-w-sm border border-sf-teal/30 bg-sf-void/90 px-3 py-2 backdrop-blur-sm">
+                <SceneProseButton facts={sceneFacts} simulatorType="tidelock" />
+              </div>
             </div>
           )}
           <NarrativeBridgePanel

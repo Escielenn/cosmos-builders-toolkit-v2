@@ -82,7 +82,13 @@ function generateTidelockProse(facts: WorksheetFact[]): string {
     }
   }
 
-  if (tidal && /lock/i.test(tidal)) {
+  // extractTidelockFacts's real values are "Confirmed", "Likely", or
+  // "Unlikely" (public/tools/tidelock/sim.html:1089), not the word "locked"
+  // itself, so matching only /lock/i left this sentence unreachable from any
+  // live simulator run, verified while checking this against the actual page.
+  // "Likely" is left out deliberately: this sentence asserts certainty a
+  // merely-likely lock has not earned.
+  if (tidal && /confirmed|lock/i.test(tidal)) {
     parts.push("The star does not move in this sky. It never has, and to anyone born here, the idea that it could is the strange one.");
   }
 
