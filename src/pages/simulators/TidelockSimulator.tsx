@@ -12,6 +12,8 @@ import NarrativeBridgePanel, { useNarrativeBridge } from "@/components/simulator
 import { SIMULATOR_NARRATIVE_CONFIGS } from "@/lib/simulator-narrative-questions";
 import { SimulatorWorldEntityPicker } from "@/components/simulators/SimulatorWorldEntityPicker";
 import { decodeHandoff } from "@/lib/simulators/handoff";
+import { checkTidelockPlausibility } from "@/lib/simulators/plausibility-notes";
+import { PlausibilityStrip } from "@/components/simulators/PlausibilityStrip";
 
 /**
  * Solaris's five habitable-zone bounds (public/tools/solaris/sim.html's
@@ -65,6 +67,21 @@ const TidelockSimulator = () => {
     window.addEventListener("message", handler);
     return () => window.removeEventListener("message", handler);
   }, [refreshPayload]);
+
+  // Plausibility notes read the same `pendingPayload.results` that Save and
+  // Publish already populate. Ask once as soon as the iframe is ready, so the
+  // strip reflects the sim's starting configuration rather than staying empty
+  // until the writer presses Save. After that, the STELLARFORGE_SAVE listener
+  // inside useSimulationSave already keeps pendingPayload current on every
+  // unsolicited save the sim posts — no timer, no polling.
+  useEffect(() => {
+    if (!loaded) return;
+    refreshPayload();
+  }, [loaded, refreshPayload]);
+
+  const plausibilityNotes = pendingPayload?.results
+    ? checkTidelockPlausibility(pendingPayload.results)
+    : [];
 
   // A Solaris planet handed off via `?handoff=`: once the iframe has loaded
   // (so it has a listener registered), send its star and orbital distance
@@ -127,50 +144,63 @@ const TidelockSimulator = () => {
               onLoad={() => setLoaded(true)}
             />
           </div>
-          {/* Save/Load controls */}
+          {/* Save/Load controls, plus plausibility notes on the configuration
+              those controls would save or publish right now. Tidelock has no
+              React-rendered data-readout panel of its own — the numeric
+              results live entirely inside sim.html's canvas overlay — so the
+              strip sits in this same floating chrome rather than "below the
+              numeric results", and only takes up space when it has something
+              to say. */}
           {loaded && (
-            <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 border border-sf-teal/30 bg-sf-void/90 px-1.5 py-1 backdrop-blur-sm">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  // Read the simulator now. Publishing used to send whatever
-                  // the last Save left behind, which was usually nothing.
-                  refreshPayload();
-                  setPublishDialogOpen(true);
-                }}
-                className="bg-sf-teal/[0.12] border-sf-teal/70 text-[#3DFFCD] hover:bg-sf-teal/25 hover:text-white text-[13px] uppercase tracking-wider h-8 px-3"
-              >
-                <Rocket className="w-3 h-3 mr-1" />
-                Publish
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setLoadSheetOpen(true)}
-                className="bg-sf-teal/[0.12] border-sf-teal/70 text-[#3DFFCD] hover:bg-sf-teal/25 hover:text-white text-[13px] uppercase tracking-wider h-8 px-3"
-              >
-                <FolderOpen className="w-3 h-3 mr-1" />
-                Load
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={requestSave}
-                className="bg-sf-teal/[0.12] border-sf-teal/70 text-[#3DFFCD] hover:bg-sf-teal/25 hover:text-white text-[13px] uppercase tracking-wider h-8 px-3"
-              >
-                <Save className="w-3 h-3 mr-1" />
-                Save
-              </Button>
-              {/* Browses a world's own entities, so it genuinely needs one.
-                  Save and Publish do not: they ask which world instead. */}
-              {worldId && (
-                <SimulatorWorldEntityPicker
-                  worldId={worldId}
-                  simulatorType="tidelock"
-                  entityTypes={["planet"]}
-                  iframeRef={iframeRef}
-                />
+            <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 flex flex-col items-stretch gap-1.5">
+              <div className="flex items-center gap-1.5 border border-sf-teal/30 bg-sf-void/90 px-1.5 py-1 backdrop-blur-sm">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    // Read the simulator now. Publishing used to send whatever
+                    // the last Save left behind, which was usually nothing.
+                    refreshPayload();
+                    setPublishDialogOpen(true);
+                  }}
+                  className="bg-sf-teal/[0.12] border-sf-teal/70 text-[#3DFFCD] hover:bg-sf-teal/25 hover:text-white text-[13px] uppercase tracking-wider h-8 px-3"
+                >
+                  <Rocket className="w-3 h-3 mr-1" />
+                  Publish
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setLoadSheetOpen(true)}
+                  className="bg-sf-teal/[0.12] border-sf-teal/70 text-[#3DFFCD] hover:bg-sf-teal/25 hover:text-white text-[13px] uppercase tracking-wider h-8 px-3"
+                >
+                  <FolderOpen className="w-3 h-3 mr-1" />
+                  Load
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={requestSave}
+                  className="bg-sf-teal/[0.12] border-sf-teal/70 text-[#3DFFCD] hover:bg-sf-teal/25 hover:text-white text-[13px] uppercase tracking-wider h-8 px-3"
+                >
+                  <Save className="w-3 h-3 mr-1" />
+                  Save
+                </Button>
+                {/* Browses a world's own entities, so it genuinely needs one.
+                    Save and Publish do not: they ask which world instead. */}
+                {worldId && (
+                  <SimulatorWorldEntityPicker
+                    worldId={worldId}
+                    simulatorType="tidelock"
+                    entityTypes={["planet"]}
+                    iframeRef={iframeRef}
+                  />
+                )}
+              </div>
+              {plausibilityNotes.length > 0 && (
+                <div className="max-w-sm border border-sf-teal/30 bg-sf-void/90 px-3 py-2 backdrop-blur-sm">
+                  <PlausibilityStrip notes={plausibilityNotes} />
+                </div>
               )}
             </div>
           )}
