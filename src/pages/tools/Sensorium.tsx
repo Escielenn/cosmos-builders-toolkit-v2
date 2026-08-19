@@ -424,20 +424,19 @@ const Sensorium = () => {
       return;
     }
 
-    const payload = {
-      title: currentWorksheetTitle || "Untitled Sensorium",
-      tool_type: TOOL_TYPE,
-      data: formState as unknown as Json,
-      world_id: worldId,
-    };
-
     if (currentWorksheetId) {
       await updateWorksheet.mutateAsync({
-        id: currentWorksheetId,
-        updates: payload,
+        worksheetId: currentWorksheetId,
+        title: currentWorksheetTitle || "Untitled Sensorium",
+        data: formState as unknown as Json,
       });
     } else {
-      const created = await createWorksheet.mutateAsync(payload);
+      const created = await createWorksheet.mutateAsync({
+        worldId,
+        toolType: TOOL_TYPE,
+        title: currentWorksheetTitle || "Untitled Sensorium",
+        data: formState as unknown as Json,
+      });
       setCurrentWorksheetId(created.id);
       if (!currentWorksheetTitle) setCurrentWorksheetTitle(created.title);
     }
@@ -457,10 +456,10 @@ const Sensorium = () => {
   const handleWorksheetCreate = async (title: string) => {
     if (!worldId || !user) return;
     const created = await createWorksheet.mutateAsync({
+      worldId,
+      toolType: TOOL_TYPE,
       title,
-      tool_type: TOOL_TYPE,
       data: DEFAULT_FORM_STATE as unknown as Json,
-      world_id: worldId,
     });
     setFormState(DEFAULT_FORM_STATE);
     setCurrentWorksheetId(created.id);

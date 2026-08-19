@@ -24,6 +24,7 @@ const SurfaceGravityCalculator = lazy(() => import("./tools/SurfaceGravityCalcul
 const TimelineTool = lazy(() => import("./tools/Timeline"));
 const Sensorium = lazy(() => import("./tools/Sensorium"));
 const Gravitas = lazy(() => import("./tools/Gravitas"));
+const KardashevScale = lazy(() => import("./tools/KardashevScale"));
 
 // Map tool slugs to their lazy components
 const TOOL_COMPONENTS: Record<string, React.LazyExoticComponent<React.ComponentType>> = {
@@ -47,6 +48,7 @@ const TOOL_COMPONENTS: Record<string, React.LazyExoticComponent<React.ComponentT
   "timeline": TimelineTool,
   "sensorium": Sensorium,
   "gravitas": Gravitas,
+  "kardashev-scale": KardashevScale,
 };
 
 /**
