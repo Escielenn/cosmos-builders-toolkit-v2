@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { checkTidelockPlausibility } from "@/lib/simulators/plausibility-notes";
 
 describe("checkTidelockPlausibility", () => {
-  it("notes a habitable band under 5 degrees as vanishingly narrow", () => {
+  it("notes a habitable band under 5 percent of surface area as vanishingly narrow", () => {
     const notes = checkTidelockPlausibility({ habPct: 1.2, tSSP: 391, tASP: 168, tTerm: 279, escVel: 11.2 });
     expect(notes.some(n => n.key === "narrowBand")).toBe(true);
   });

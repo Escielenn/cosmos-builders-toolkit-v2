@@ -682,6 +682,12 @@ function checkStatus(){
 // step), not a b.ejected property, which does not exist on this file's bodies.
 function survivorsToSystemPayload(){
   const stars=bodies.filter(b=>b.isStar);
+  // Not reachable from today's builder (a system always starts with at
+  // least one star), but stars.reduce below seeds its accumulator with
+  // stars[0]; an empty array would make that undefined, and primary.mass /
+  // orbitalElementsFromState(b, primary) further down would throw a
+  // TypeError instead of failing safely.
+  if(!stars.length)return null;
   const primary=stars.reduce((m,s)=>s.mass>m.mass?s:m,stars[0]);
   const survivors=bodies.filter(b=>b.isPlanet&&!ejectedSet.has(b.name));
   const planets=survivors.map(b=>{
@@ -1056,6 +1062,7 @@ document.getElementById('btn-go').addEventListener('click',launch);
 document.getElementById('btn-reset').addEventListener('click',reset);
 document.getElementById('btn-publish-aftermath').addEventListener('click',()=>{
   const payload=survivorsToSystemPayload();
+  if(!payload)return;
   // Reuses the exact STELLARFORGE_SAVE message the 0.7130 fix already made
   // reliable end to end (payload -> pendingPayload -> SaveSimulationDialog /
   // PublishToWorldDialog) instead of inventing a parallel path.
