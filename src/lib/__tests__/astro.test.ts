@@ -14,6 +14,8 @@ import {
   bvToRGB,
   starFromObserver,
   angularSeparation,
+  applyPrecession,
+  precessionMatrix,
 } from "@/lib/simulators/astro";
 
 // ---------------------------------------------------------------------------
@@ -280,5 +282,70 @@ describe("angular separation", () => {
     // Dubhe (165.932, 61.751) and Merak (165.460, 56.382) are about 5.4° apart.
     const sep = angularSeparation({ ra: 165.932, dec: 61.751 }, { ra: 165.46, dec: 56.382 });
     expect(sep).toBeCloseTo(5.37, 1);
+  });
+});
+
+describe("axial precession", () => {
+  it("is the identity at the reference epoch (year 0 offset)", () => {
+    const [x, y, z] = applyPrecession(1, 0, 0, 0);
+    expect(x).toBeCloseTo(1, 5);
+    expect(y).toBeCloseTo(0, 5);
+    expect(z).toBeCloseTo(0, 5);
+  });
+
+  it("completes a full cycle at the standard 25,772-year period", () => {
+    const [x, y, z] = applyPrecession(1, 0.3, -0.2, 25772);
+    expect(x).toBeCloseTo(1, 2);
+    expect(y).toBeCloseTo(0.3, 2);
+    expect(z).toBeCloseTo(-0.2, 2);
+  });
+
+  it("visibly rotates the pole over a 13,000-year half-cycle", () => {
+    // At half the precession period, a point near the pole should have moved
+    // substantially, not sit within rounding of where it started.
+    const before = applyPrecession(0, 0, 1, 0);
+    const after = applyPrecession(0, 0, 1, 12886);
+    const dist = Math.hypot(before[0] - after[0], before[1] - after[1], before[2] - after[2]);
+    expect(dist).toBeGreaterThan(0.3);
+  });
+
+  it("preserves vector length (precession is a pure rotation)", () => {
+    // (0.6, -0.5, 0.62) is not itself a unit vector (its length is ~0.9972,
+    // not 1), so the property under test is that rotation preserves whatever
+    // length the input already had, not that it snaps to unit length.
+    const input: [number, number, number] = [0.6, -0.5, 0.62];
+    const inputLen = Math.hypot(...input);
+    const [x, y, z] = applyPrecession(...input, 6000);
+    const len = Math.hypot(x, y, z);
+    expect(len).toBeCloseTo(inputLen, 5);
+  });
+
+  it("precessionMatrix(-y) is the exact inverse of precessionMatrix(y)", () => {
+    // ExoSky's Milky Way band applies precessionMatrix(-epochYears) to its
+    // ray direction while transformedStars applies precessionMatrix(epochYears)
+    // to point stars; the two are only consistent if these are exact inverses
+    // of each other. That holds algebraically here (matMul3 is not exported,
+    // so it is reimplemented locally): the matrix is a product of orthogonal
+    // rotations (transpose = inverse), and theta(y) is odd in y, so negating y
+    // negates theta, which is exactly what transposing each rotation does.
+    // Nothing pinned that identity before this test; a future refactor of
+    // precessionMatrix could silently break the inverse pairing otherwise.
+    function matMul3(a: number[][], b: number[][]): number[][] {
+      const out: number[][] = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
+      for (let i = 0; i < 3; i++)
+        for (let j = 0; j < 3; j++)
+          for (let k = 0; k < 3; k++)
+            out[i][j] += a[i][k] * b[k][j];
+      return out;
+    }
+
+    for (const y of [0, 5000, -8000, 12886]) {
+      const product = matMul3(precessionMatrix(y), precessionMatrix(-y));
+      for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+          expect(product[i][j]).toBeCloseTo(i === j ? 1 : 0, 8);
+        }
+      }
+    }
   });
 });

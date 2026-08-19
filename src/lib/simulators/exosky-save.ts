@@ -67,7 +67,15 @@ export interface ExoskySave {
     galacticL: number | null;
     galacticB: number | null;
   };
-  view: { ra: number; dec: number; fov: number };
+  view: {
+    ra: number;
+    dec: number;
+    fov: number;
+    /** Precession offset from J2000, in years; 0 is "now". Without this a
+     *  writer who sets the epoch slider and saves gets epoch 0 back on
+     *  reload with nothing to say it was not saved. */
+    epochYears: number;
+  };
   display: {
     constellations: boolean;
     atmosphere: boolean;
@@ -93,6 +101,7 @@ export interface ExoskyStateInput {
   viewRa?: unknown;
   viewDec?: unknown;
   fov?: unknown;
+  epochYears?: unknown;
   showConstellations?: unknown;
   showAtmosphere?: unknown;
   showGrid?: unknown;
@@ -210,6 +219,7 @@ export function toExoskySave(state: ExoskyStateInput): ExoskySave {
       ra: round(num(state.viewRa, 180)),
       dec: round(num(state.viewDec, 10)),
       fov: round(num(state.fov, 90)),
+      epochYears: round(num(state.epochYears, 0)),
     },
     display: {
       constellations: bool(state.showConstellations, true),
@@ -310,6 +320,7 @@ export function fromExoskySave(raw: unknown): ExoskySave | null {
     viewRa: viewRaw.ra,
     viewDec: viewRaw.dec,
     fov: viewRaw.fov,
+    epochYears: viewRaw.epochYears,
     showConstellations: displayRaw.constellations,
     showAtmosphere: displayRaw.atmosphere,
     showGrid: displayRaw.grid,

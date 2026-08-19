@@ -229,3 +229,79 @@ export function angularSeparation(
   const den = Math.sin(d1) * Math.sin(d2) + Math.cos(d1) * Math.cos(d2) * Math.cos(dRa);
   return Math.atan2(num, den) * RAD;
 }
+
+// ---------------------------------------------------------------------------
+// Axial precession
+// ---------------------------------------------------------------------------
+
+/**
+ * Axial precession: the ~25,772-year wobble of a planet's rotational axis,
+ * traced out by the pole against the fixed stars (Earth's own version is
+ * why Polaris was not the pole star in Vega's era, roughly 12,000 years ago,
+ * and will not be again roughly 12,000 years from now).
+ *
+ * Modeled as lunisolar precession only, at the modern IAU rate. Does not
+ * model nutation (the smaller, faster wobble on top of it) or the very slow
+ * change in the precession rate itself over tens of thousands of years:
+ * both are second-order against the rate itself and not the effect a writer
+ * reaching for a multi-century time slider is trying to see.
+ *
+ * Reference: IAU 2006 precession model, general precession in longitude
+ * ≈ 50.29 arcsec/year (Capitaine, N. et al. (2003), Astronomy & Astrophysics,
+ * 412, 567). 360° / 50.29 arcsec/yr ≈ 25,772 years for one full cycle.
+ */
+const PRECESSION_PERIOD_YEARS = 25772;
+const OBLIQUITY_DEG = 23.4393; // Earth's own axial tilt, held fixed by this model.
+
+function matMul3(a: number[][], b: number[][]): number[][] {
+  const out: number[][] = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
+  for (let i = 0; i < 3; i++)
+    for (let j = 0; j < 3; j++)
+      for (let k = 0; k < 3; k++)
+        out[i][j] += a[i][k] * b[k][j];
+  return out;
+}
+
+export function precessionMatrix(yearsFromJ2000: number): number[][] {
+  // Negated: precession of the equinoxes runs retrograde (westward against the
+  // planet's own spin and orbital motion). Checked against two real fixed
+  // points rather than trusted on sight: with this sign, Thuban (RA 211.097,
+  // Dec 64.376) comes closest to the pole at yearsFromJ2000 ≈ -4850, matching
+  // its real epoch as pole star around 2787 BCE, and Vega (RA 279.235,
+  // Dec 38.784) comes closest at yearsFromJ2000 ≈ +11800, matching its real
+  // future epoch around 13,727 CE. Without the negation both land exactly
+  // half a cycle off (the sky spins the right amount, the wrong way), which
+  // the algebraic tests below (identity, period, length) cannot detect since
+  // none of them depend on rotation direction.
+  const theta = -(yearsFromJ2000 / PRECESSION_PERIOD_YEARS) * 2 * Math.PI;
+  const eps = OBLIQUITY_DEG * DEG;
+  // Precession is a rotation of the equatorial pole around the ecliptic pole.
+  // Composed as: rotate into the ecliptic frame, spin by theta, rotate back.
+  const cosE = Math.cos(eps), sinE = Math.sin(eps);
+  const cosT = Math.cos(theta), sinT = Math.sin(theta);
+  const toEcliptic = [
+    [1, 0, 0],
+    [0, cosE, sinE],
+    [0, -sinE, cosE],
+  ];
+  const spin = [
+    [cosT, sinT, 0],
+    [-sinT, cosT, 0],
+    [0, 0, 1],
+  ];
+  const fromEcliptic = [
+    [1, 0, 0],
+    [0, cosE, -sinE],
+    [0, sinE, cosE],
+  ];
+  return matMul3(fromEcliptic, matMul3(spin, toEcliptic));
+}
+
+export function applyPrecession(x: number, y: number, z: number, yearsFromJ2000: number): Vec3 {
+  const m = precessionMatrix(yearsFromJ2000);
+  return [
+    m[0][0] * x + m[0][1] * y + m[0][2] * z,
+    m[1][0] * x + m[1][1] * y + m[1][2] * z,
+    m[2][0] * x + m[2][1] * y + m[2][2] * z,
+  ];
+}

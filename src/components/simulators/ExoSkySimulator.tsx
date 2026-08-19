@@ -25,6 +25,11 @@ import { toExoskyPayload, fromExoskySave } from "@/lib/simulators/exosky-save";
 //   matches Hipparcos HIP 32349 exactly.
 // • Proper motion (movement of stars over time) is NOT modeled, fine
 //   for present-epoch sky views, drifts slightly over centuries.
+// • Axial precession (the ~25,772-year wobble of an observer's rotational
+//   axis) IS modeled via the EPOCH slider, see astro.ts's precessionMatrix
+//   and applyPrecession. This changes which star sits near the pole; it
+//   does not move any star relative to any other, which is what proper
+//   motion (still unmodeled) would do.
 // ═══════════════════════════════════════════════════════════════
 
 const DEG = Math.PI / 180;
@@ -51,7 +56,9 @@ import {
   eqXYZtoGalactocentric,
   apparentMag,
   bvToRGB,
+  precessionMatrix,
 } from "@/lib/simulators/astro";
+import { describeHandoffPlanet, type HandoffPayload } from "@/lib/simulators/handoff";
 
 // ── STAR CATALOG (lazy-loaded from /exosky-stars.json) ────────
 // Format: [name, RA(°), Dec(°), dist(pc), absMag, B-V]
@@ -424,6 +431,16 @@ const BG_DEC_BINS = 6;   // 30° per bin in Dec
 // ═══════════════════════════════════════════════════════════════
 // COMPONENT
 // ═══════════════════════════════════════════════════════════════
+/** A vantage seeded from a Solaris handoff: the wrapper has already turned
+    `planetAU` into a galactic l/b/distance (see ExoskySimulator.tsx's
+    deriveExoskySeed), so this component only has to apply it. */
+interface ExoSkyInitialHandoff {
+  payload: HandoffPayload;
+  galL: number;
+  galB: number;
+  distPc: number;
+}
+
 interface ExoSkyV2Props {
   /** When true, the wrapper page's NarrativeBridgePanel is open and
       occupies 320px of the right edge. The data readout slides left
@@ -433,11 +450,25 @@ interface ExoSkyV2Props {
       moon entities from that world become selectable as observation
       points (alongside the curated EXOPLANET_SYSTEMS list). */
   worldId?: string;
+  /** Present when the page was opened via `?handoff=` from Solaris. Seeds
+      the existing custom-coordinates vantage (the same one the "AUTHOR
+      COORDINATES" button turns on) on first mount, rather than adding a
+      second vantage mechanism next to it. */
+  initialHandoff?: ExoSkyInitialHandoff | null;
+  /** Called once the mount-time handoff seed above has actually been
+      applied to state. The wrapper uses this to strip `?handoff=` from the
+      URL only after the seed has landed, not before: clearing it earlier
+      risks the wrapper re-rendering with a null `initialHandoff` prop before
+      this (possibly still-loading, since it's lazy-imported) component ever
+      reads the original value. */
+  onHandoffConsumed?: () => void;
 }
 
 export default function ExoSkyV2({
   narrativeBridgeOpen = false,
+  initialHandoff = null,
   worldId,
+  onHandoffConsumed,
 }: ExoSkyV2Props = {}) {
   const { toast } = useToast();
   const { data: worldEntities } = useEntities(worldId);
@@ -474,6 +505,8 @@ export default function ExoSkyV2({
     atmoDensity?: number;
     /** Sample-step multiplier, so settling from a drag triggers the fine pass. */
     quality?: number;
+    /** Epoch, so the band actually redraws when the precession slider moves. */
+    epochYears?: number;
   }>({ viewRa: -1, viewDec: -1, fov: -1, planetKey: "" });
   const animRef = useRef(null);
   const [selectedPlanet, setSelectedPlanet] = useState(0);
@@ -490,6 +523,16 @@ export default function ExoSkyV2({
   const [hoveredStar, setHoveredStar] = useState(null);
   const [atmoDensity, setAtmoDensity] = useState(1.0);
   const [mwBrightness, setMwBrightness] = useState(1.0);
+  /**
+   * Years from J2000 (now), driving axial precession of the observer's own
+   * sky. Zero is "now" and must be a true no-op (see astro.ts's
+   * applyPrecession/precessionMatrix): the identity property is what keeps
+   * this slider from being a silent regression for every writer who never
+   * touches it. Range is a half-cycle either way (~25,772 yr full period),
+   * enough to visibly move the pole without claiming precision this model
+   * doesn't have at the tens-of-thousands-of-years scale.
+   */
+  const [epochYears, setEpochYears] = useState(0);
   /**
    * Two 272-320px panels, both defaulting open, were built for a wide screen.
    * At 390px they don't fit side by side (18+272 overlaps 390-18-320) and
@@ -532,6 +575,7 @@ export default function ExoSkyV2({
   const customConstellationsRef = useRef([]);
   const drawColorRef = useRef("#FFA500");
   const hoveredStarRef = useRef(null);
+  const epochYearsRef = useRef(0);
 
   // ── Constellation Drawing State ─────────────────────
   const [drawMode, setDrawMode] = useState(false);
@@ -553,6 +597,28 @@ export default function ExoSkyV2({
   const [customGalL, setCustomGalL] = useState(0);
   const [customGalB, setCustomGalB] = useState(0);
   const [customDistPc, setCustomDistPc] = useState(100);
+
+  // Set only when the current custom-mode vantage came from a Solaris
+  // handoff, so the "planet" derivation below can label and note it
+  // honestly instead of showing the generic "Custom (l=..., b=...)" text.
+  const [handoffPayload, setHandoffPayload] = useState<HandoffPayload | null>(null);
+
+  // Seed the custom-coordinates vantage from a Solaris handoff on first
+  // mount. This is the same mechanism the "AUTHOR COORDINATES" button
+  // turns on (setCustomMode(true) + the three custom* sliders); a handoff
+  // just sets those sliders programmatically instead of waiting for a click.
+  useEffect(() => {
+    if (!initialHandoff) return;
+    setCustomMode(true);
+    setCustomGalL(initialHandoff.galL);
+    setCustomGalB(initialHandoff.galB);
+    setCustomDistPc(initialHandoff.distPc);
+    setHandoffPayload(initialHandoff.payload);
+    onHandoffConsumed?.();
+    // Mount-only: a handoff seeds the initial view once, it does not keep
+    // re-applying itself if the writer then adjusts the sliders by hand.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // ── World-Entity Observation State ────────────────
   // When the user selects a planet/star/moon from their own world, we read
@@ -616,6 +682,7 @@ export default function ExoSkyV2({
   customConstellationsRef.current = customConstellations;
   drawColorRef.current = drawColor;
   hoveredStarRef.current = hoveredStar;
+  epochYearsRef.current = epochYears;
 
   const planet = useMemo(() => {
     // World-entity mode: prefer this when an entity is picked AND has stored coords.
@@ -639,6 +706,19 @@ export default function ExoSkyV2({
     const gz = dist * Math.sin(b);
     const [ex, ey, ez] = galToEq(gx, gy, gz);
     const rd = xyzToRaDec(ex, ey, ez);
+    if (handoffPayload) {
+      // Sibling vantages ("Custom", line below) capitalize; matching that so
+      // describeHandoffPlanet's sentence, and this label, do not open mid-word.
+      const starLabel = handoffPayload.starType.charAt(0).toUpperCase() + handoffPayload.starType.slice(1);
+      return {
+        star: starLabel,
+        planet: `${handoffPayload.planetName} (from Solaris)`,
+        ra: rd.ra, dec: rd.dec, dist,
+        atmoType: "none", atmoDesc: "No atmosphere, vacuum observation",
+        note: `${describeHandoffPlanet(handoffPayload)} Distance (${dist.toFixed(0)} pc) and galactic position shown here are synthesized placeholders spread across the sky so handoffs do not collide, not part of the handoff itself.`,
+        armNote: "Handoff from Solaris",
+      };
+    }
     return {
       star: "Custom", planet: `Custom (l=${customGalL.toFixed(1)}°, b=${customGalB.toFixed(1)}°)`,
       ra: rd.ra, dec: rd.dec, dist,
@@ -646,7 +726,7 @@ export default function ExoSkyV2({
       note: `Galactic coords: l=${customGalL.toFixed(1)}°, b=${customGalB.toFixed(1)}°, d=${dist.toFixed(1)} pc (${(dist*3.262).toFixed(1)} ly)`,
       armNote: "Custom location",
     };
-  }, [customMode, selectedPlanet, customGalL, customGalB, customDistPc, worldEntity, worldEntityCoords]);
+  }, [customMode, selectedPlanet, customGalL, customGalB, customDistPc, worldEntity, worldEntityCoords, handoffPayload]);
 
   // ── Persistence bridge ──────────────────────────────────
   // The wrapper page speaks STELLARFORGE_* over window events for component
@@ -665,6 +745,7 @@ export default function ExoSkyV2({
         galacticL: customMode ? customGalL : undefined,
         galacticB: customMode ? customGalB : undefined,
         viewRa, viewDec, fov,
+        epochYears,
         showConstellations, showAtmosphere, showGrid,
         showMilkyWay, showStarNames, showHorizon,
         customConstellations,
@@ -675,6 +756,12 @@ export default function ExoSkyV2({
     const onLoad = (event: Event) => {
       const save = fromExoskySave((event as CustomEvent).detail);
       if (!save) return;
+
+      // A loaded save is never the original handoff, even when it happens to
+      // restore custom-coordinate mode. Without this, a stale "(from
+      // Solaris)" note describing an unrelated planet could reattach itself
+      // to whatever coordinates this save carries.
+      setHandoffPayload(null);
 
       // Restore the vantage first: constellations are drawn in that frame, so
       // applying them against the wrong sky would put the lines in the wrong place.
@@ -692,6 +779,7 @@ export default function ExoSkyV2({
       setViewRa(save.view.ra);
       setViewDec(save.view.dec);
       setFov(save.view.fov);
+      setEpochYears(save.view.epochYears);
       setShowConstellations(save.display.constellations);
       setShowAtmosphere(save.display.atmosphere);
       setShowGrid(save.display.grid);
@@ -723,7 +811,7 @@ export default function ExoSkyV2({
     };
   }, [
     planet, customMode, customGalL, customGalB, worldEntity, worldEntityCoords,
-    viewRa, viewDec, fov, showConstellations, showAtmosphere, showGrid,
+    viewRa, viewDec, fov, epochYears, showConstellations, showAtmosphere, showGrid,
     showMilkyWay, showStarNames, showHorizon, customConstellations,
   ]);
 
@@ -813,16 +901,35 @@ export default function ExoSkyV2({
   // ── Transform stars to observer frame ───────────────
   const transformedStars = useMemo(() => {
     const obs = raDecDistToXYZ(planet.ra, planet.dec, planet.dist);
+    /**
+     * Axial precession, applied to the observer-frame vector (astro.ts's own
+     * term for `rel` below) rather than per-star: the matrix is the same for
+     * every star in a given render, so it's built once here instead of once
+     * per star inside the map, which mattered at ~25,000 procedural stars.
+     *
+     * This is the one place precession belongs. It rotates every catalog and
+     * procedural star's position relative to the observer's equatorial pole,
+     * which is what actually changes "which star sits at the pole" as epoch
+     * moves. The separate 20,000-star background field (generateBackgroundField)
+     * is intentionally left untouched here, that's the Step 8 stretch scope,
+     * not this one, and the observer's galactocentric position used to seed
+     * the Milky Way structure map is a spatial fact about the observer, not
+     * an artifact of their rotational axis, so precession does not apply there.
+     */
+    const pm = precessionMatrix(epochYears);
     return allStars.map(star => {
       const pos = raDecDistToXYZ(star.ra, star.dec, star.dist);
       const rel = [pos[0]-obs[0], pos[1]-obs[1], pos[2]-obs[2]];
-      const { ra, dec, dist } = xyzToRaDec(rel[0], rel[1], rel[2]);
+      const px = pm[0][0]*rel[0] + pm[0][1]*rel[1] + pm[0][2]*rel[2];
+      const py = pm[1][0]*rel[0] + pm[1][1]*rel[1] + pm[1][2]*rel[2];
+      const pz = pm[2][0]*rel[0] + pm[2][1]*rel[1] + pm[2][2]*rel[2];
+      const { ra, dec, dist } = xyzToRaDec(px, py, pz);
       const appMag = apparentMag(star.absMag, dist);
       const rgb = bvToRGB(star.bv);
       const isSol = star.name === "Sol";
       return { ...star, newRa:ra, newDec:dec, newDist:dist, appMag, rgb, isSol };
     }).filter(s => s.appMag < 8.5).sort((a,b) => a.appMag - b.appMag);
-  }, [planet, allStars]);
+  }, [planet, allStars, epochYears]);
   const transformedStarsRef = useRef(transformedStars);
   transformedStarsRef.current = transformedStars;
   const bgBucketsRef = useRef(bgBuckets);
@@ -952,6 +1059,7 @@ export default function ExoSkyV2({
     const _drawColor = drawColorRef.current;
     const _hoveredStar = hoveredStarRef.current;
     const _transformedStars = transformedStarsRef.current;
+    const _epochYears = epochYearsRef.current;
     const _obsGC = obsGCRef.current;
     const _mwReady = mwReadyRef.current;
     const _atmo = atmoRef.current;
@@ -982,7 +1090,13 @@ export default function ExoSkyV2({
        * slow. Rewriting the loop to write pixels instead of rects was tried
        * first and measured *worse* (44 ms), so it is not the answer here.
        */
-      const camKey = `${_viewRa},${_viewDec},${_fov}`;
+      // epochYears is included here (not just viewRa/viewDec/fov) because it
+      // is also part of the redraw cache key below (mwParams.epochYears):
+      // without it in camKey, an epoch-slider drag would still force a
+      // needsRedraw every step but never trip cameraMoving, so it would
+      // always ray-march at full quality instead of getting the same cheap
+      // coarse pass a camera drag gets.
+      const camKey = `${_viewRa},${_viewDec},${_fov},${_epochYears}`;
       if (camKey !== lastCamKey.current) {
         lastCamKey.current = camKey;
         lastCamMove.current = performance.now();
@@ -999,7 +1113,8 @@ export default function ExoSkyV2({
         || mwParams.mwBrightness !== _mwBrightness
         || mwParams.showAtmosphere !== _showAtmosphere
         || mwParams.atmoDensity !== _atmoDensity
-        || mwParams.quality !== mwQuality;
+        || mwParams.quality !== mwQuality
+        || mwParams.epochYears !== _epochYears;
 
       if (needsRedraw) {
         // Create/resize offscreen canvas
@@ -1025,6 +1140,29 @@ export default function ExoSkyV2({
         const [ogx, ogy] = eqToGal(eqObs[0], eqObs[1], eqObs[2]);
         const lCorrection = Math.atan2(ogy, R_SUN + ogx) || 0;
 
+        /**
+         * Axial precession, inverted. `dirX/dirY/dirZ` below is built straight
+         * from `_viewRa`/`_viewDec`, the same raw camera numbers that
+         * `transformedStars` compares its precessed `newRa`/`newDec` against,
+         * i.e. this ray direction lives in the "display" frame, exactly like a
+         * point star's post-precession position, not the real fixed frame
+         * `eqToGal` expects (the galactic structure map does not itself move).
+         *
+         * `transformedStars` gets from the real frame to the display frame by
+         * applying `precessionMatrix(epochYears)` forward. Going the other way
+         * (display → real, which is what this block needs before eqToGal)
+         * requires the inverse of that rotation. Precession is a pure rotation,
+         * so its inverse is its transpose, which for this matrix equals
+         * `precessionMatrix(-epochYears)` (both fromEcliptic/toEcliptic are
+         * transposes of each other by construction, and negating epochYears
+         * negates theta, which is exactly what transposing the spin block
+         * does). Verified numerically: a fixed reference direction's galactic
+         * latitude, recovered this way, stays constant at ~17.3° across every
+         * tested epoch; applying the forward matrix instead swings it wildly
+         * (58.7°, -15.1°, ...), which is the double-rotation this avoids.
+         */
+        const pmInv = precessionMatrix(-_epochYears);
+
         const step = Math.max(2, Math.floor(4 * (_fov / 90))) * mwQuality;
 
         for (let sx = 0; sx < W; sx += step) {
@@ -1038,7 +1176,11 @@ export default function ExoSkyV2({
             const len = Math.sqrt(dirX*dirX + dirY*dirY + dirZ*dirZ);
             dirX /= len; dirY /= len; dirZ /= len;
 
-            const [gx, gy, gz] = eqToGal(dirX, dirY, dirZ);
+            const precX = pmInv[0][0]*dirX + pmInv[0][1]*dirY + pmInv[0][2]*dirZ;
+            const precY = pmInv[1][0]*dirX + pmInv[1][1]*dirY + pmInv[1][2]*dirZ;
+            const precZ = pmInv[2][0]*dirX + pmInv[2][1]*dirY + pmInv[2][2]*dirZ;
+
+            const [gx, gy, gz] = eqToGal(precX, precY, precZ);
             const galB = Math.asin(Math.max(-1, Math.min(1, gz)));
             const stdGalL = Math.atan2(gy, gx);
             const obsL = ((stdGalL - lCorrection) % (2*Math.PI) + 2*Math.PI) % (2*Math.PI);
@@ -1063,7 +1205,7 @@ export default function ExoSkyV2({
         }
 
         // Update cached params
-        mwParamsRef.current = { viewRa: _viewRa, viewDec: _viewDec, fov: _fov, planetKey, W, H, mwBrightness: _mwBrightness, showAtmosphere: _showAtmosphere, atmoDensity: _atmoDensity, quality: mwQuality };
+        mwParamsRef.current = { viewRa: _viewRa, viewDec: _viewDec, fov: _fov, planetKey, W, H, mwBrightness: _mwBrightness, showAtmosphere: _showAtmosphere, atmoDensity: _atmoDensity, quality: mwQuality, epochYears: _epochYears };
       }
 
       // Blit the cached MW offscreen canvas
@@ -1822,6 +1964,13 @@ export default function ExoSkyV2({
         {panelOpen && <>
           <select value={worldEntityId ? `world:${worldEntityId}` : (customMode ? "custom" : String(selectedPlanet))} onChange={e=>{
             const val = e.target.value;
+            // A <select> only fires onChange when the value actually
+            // changes, so reaching this handler always means the writer
+            // picked something other than whatever was already showing.
+            // That is never the original handoff, so its stale note (wrong
+            // planet type, wrong AU, wrong star) should not follow them to
+            // wherever they picked next.
+            setHandoffPayload(null);
             if (val === "custom") {
               setCustomMode(true); setWorldEntityId(null);
             } else if (val.startsWith("world:")) {
@@ -1945,6 +2094,16 @@ export default function ExoSkyV2({
             <span style={LBL}>Brightness</span><span style={VAL}>{mwBrightness.toFixed(1)}×</span>
           </div>
           <input type="range" min="0" max="3" step="0.1" value={mwBrightness} onChange={e=>setMwBrightness(Number(e.target.value))} style={{width:"100%",marginTop:4}} />
+
+          <div style={{...SH,marginTop:14}}>EPOCH</div>
+          <div style={{display:"flex",justifyContent:"space-between",marginTop:6,alignItems:"center"}}>
+            <span style={LBL}>Years From Now</span>
+            <span style={VAL}>{epochYears===0 ? "NOW" : `${epochYears>0?"+":""}${epochYears.toLocaleString()}`}</span>
+          </div>
+          <input type="range" min="-13000" max="13000" step="50" value={epochYears} onChange={e=>setEpochYears(Number(e.target.value))} style={{width:"100%",marginTop:4}} />
+          <div style={{fontSize:10,color:"rgba(255,255,255,0.3)",marginTop:4,lineHeight:1.5}}>
+            Axial precession slowly turns which star sits near the pole. Real stars do not move on this timeline, only which direction the observer's pole points.
+          </div>
 
           <div style={{...SH,marginTop:14}}>DISPLAY</div>
           {[
@@ -2093,6 +2252,7 @@ export default function ExoSkyV2({
           <div style={{...SH,marginTop:12}}>VIEW</div>
           <DR l="RA / Dec" v={`${viewRa.toFixed(1)}° / ${viewDec.toFixed(1)}°`} />
           <DR l="FOV" v={`${fov}°`} />
+          <DR l="Epoch" v={epochYears===0 ? "Now (J2000)" : `${epochYears>0?"+":""}${epochYears.toLocaleString()} yr`} vc={epochYears!==0?"#FFD43B":undefined} />
 
           {hoveredStar && <>
             <div style={{...SH,marginTop:12,color:"rgba(21,193,123,0.5)"}}>SELECTED STAR</div>
