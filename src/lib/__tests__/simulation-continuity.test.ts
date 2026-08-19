@@ -147,15 +147,23 @@ describe("a saved simulation can now contradict the prose", () => {
   });
 
   it("lets a worksheet value win over a simulated one", () => {
-    // Both sources are passed to the engine with worksheets first, and
-    // checkContinuity takes the first fact matching a key. A number the writer
-    // typed should outrank one a simulator derived.
+    // checkContinuity (post S-FIX) tells the two apart by `source`: a
+    // worksheet fact carries none, a simulator-derived one always does in
+    // production (ContinuityPanel.tsx always passes a label). Passing one
+    // here too, rather than through the label-less `factsFor` shortcut,
+    // is what actually exercises that distinction instead of relying on
+    // array order — the same array order the S-FIX bug this file's sibling
+    // suite regression-tests was built on.
     const worksheetFact = {
       key: "surfaceGravity",
       label: "Surface Gravity (g)",
       value: "1.0",
     };
-    const combined = [worksheetFact, ...factsFor("exoforge", exoforgeSave())];
+    const simulated = toContinuityFacts(
+      extractSimulationFacts("exoforge", exoforgeSave()),
+      "Your Exoforge save",
+    );
+    const combined = [worksheetFact, ...simulated];
     const notes = checkContinuity("<p>Gravity ran to 2.4 g on the plateau.</p>", combined);
     expect(notes).toHaveLength(1);
     // Compared against the writer's 1.0, not the simulator's 2.4.

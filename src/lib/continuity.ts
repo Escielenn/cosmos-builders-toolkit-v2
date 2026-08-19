@@ -73,6 +73,13 @@ interface CheckSpec {
    * 1.47) and that must not fire.
    */
   tolerance?: number;
+  /**
+   * Ship's-Voice plural noun for the multi-candidate message, e.g.
+   * "CONTRADICTS ALL 3 PLANETS ON FILE." This is display phrasing only — it
+   * is not entity binding. Facts carry no subject_id yet (that's S0); this
+   * just names what kind of thing a spec's field usually belongs to.
+   */
+  subjectNoun: string;
 }
 
 /**
@@ -94,36 +101,42 @@ const CHECKS: CheckSpec[] = [
     keywords: ["gravity", "gravities", "g-force", "gee", "gees", "gs"],
     kind: "measure",
     tolerance: 0.15,
+    subjectNoun: "PLANETS",
   },
   {
     keys: ["dayLength"],
     keywords: ["hour", "hours", "hour-long", "daylength"],
     kind: "measure",
     tolerance: 0.15,
+    subjectNoun: "PLANETS",
   },
   {
     keys: ["axialTilt"],
     keywords: ["tilt", "tilted", "obliquity", "degrees"],
     kind: "measure",
     tolerance: 0.2,
+    subjectNoun: "PLANETS",
   },
   {
     keys: ["mass"],
     keywords: ["earth-mass", "earth-masses", "earth masses"],
     kind: "measure",
     tolerance: 0.15,
+    subjectNoun: "PLANETS",
   },
   {
     keys: ["radius"],
     keywords: ["earth-radii", "earth radii", "earth-radius"],
     kind: "measure",
     tolerance: 0.15,
+    subjectNoun: "PLANETS",
   },
   {
     keys: ["surfaceTemperature"],
     keywords: ["kelvin", "k"],
     kind: "measure",
     tolerance: 0.15,
+    subjectNoun: "PLANETS",
   },
   // ── System ──────────────────────────────────────────────────────────
   {
@@ -131,12 +144,14 @@ const CHECKS: CheckSpec[] = [
     keywords: ["au", "astronomical", "astronomical units"],
     kind: "measure",
     tolerance: 0.15,
+    subjectNoun: "ORBITS",
   },
   {
     keys: ["stellarLuminosity"],
     keywords: ["luminosity", "luminosities", "solar luminosity"],
     kind: "measure",
     tolerance: 0.2,
+    subjectNoun: "STARS",
   },
   // ── Vessel / journey ────────────────────────────────────────────────
   {
@@ -144,11 +159,13 @@ const CHECKS: CheckSpec[] = [
     keywords: ["lightspeed", "light-speed", "of c", "fraction of c"],
     kind: "measure",
     tolerance: 0.15,
+    subjectNoun: "VESSELS",
   },
   {
     keys: ["crewSize"],
     keywords: ["crew", "crewmembers", "crewmen", "hands", "complement"],
     kind: "count",
+    subjectNoun: "VESSELS",
   },
   // ── Civilisation ────────────────────────────────────────────────────
   {
@@ -158,12 +175,14 @@ const CHECKS: CheckSpec[] = [
     // is a measurement with a wide band, not an exact count.
     kind: "measure",
     tolerance: 0.25,
+    subjectNoun: "CIVILIZATIONS",
   },
   {
     keys: ["civilizationLongevity"],
     keywords: ["years", "millennia", "centuries"],
     kind: "measure",
     tolerance: 0.25,
+    subjectNoun: "CIVILIZATIONS",
   },
 ];
 
@@ -298,6 +317,17 @@ function formatNumber(n: number): string {
 /**
  * Compare prose against recorded facts and report explicit contradictions.
  *
+ * Facts are pooled across every worksheet and simulation in the world with
+ * no subject attached (that arrives with S0 — see
+ * docs/stellarforge/11-SIMULATOR-CONSTELLATION.md §0). Until then, a key like
+ * "surfaceGravity" can have more than one candidate fact — one per planet
+ * that recorded it. Picking whichever sorts first would report confident,
+ * specific, wrong contradictions in any world with two-plus of the same
+ * entity type. Instead: a contradiction only fires when the sentence
+ * contradicts EVERY candidate for that key. If even one candidate is
+ * consistent, there is no way yet to know which one the sentence is about,
+ * so nothing is reported — a false negative, never a false positive.
+ *
  * @param html   The document's HTML (TipTap output).
  * @param facts  Facts from extractWorksheetFacts across the world's worksheets.
  */
@@ -311,36 +341,64 @@ export function checkContinuity(
   const notes: ContinuityNote[] = [];
   const seen = new Set<string>();
 
-  for (const spec of CHECKS) {
-    const fact = facts.find((f) => spec.keys.includes(f.key));
-    if (!fact) continue;
+  // Group pooled facts by key — a key with exactly one fact is the common
+  // case and behaves exactly as before; a key with several is where the
+  // wrong-answer bug lived.
+  const byKey = new Map<string, WorksheetFact[]>();
+  for (const fact of facts) {
+    const bucket = byKey.get(fact.key);
+    if (bucket) bucket.push(fact);
+    else byKey.set(fact.key, [fact]);
+  }
 
-    const worldNum = factNumber(fact);
-    if (worldNum === null) continue; // qualitative value; nothing to compare
+  for (const spec of CHECKS) {
+    const candidates = spec.keys.flatMap((k) => byKey.get(k) ?? []);
+    if (candidates.length === 0) continue;
+
+    // A value the writer typed outranks one a simulator derived (pre-existing
+    // rule — see toContinuityFacts/simulationSourceLabel). Worksheet facts
+    // carry no `source`; simulator-derived facts do. When both exist for a
+    // key, only the writer-typed ones are candidates — this is a source
+    // precedence rule, not a subject-ambiguity one, and orthogonal to the
+    // two-planet case just below: it only narrows the set BEFORE asking
+    // whether every remaining candidate agrees.
+    const authored = candidates.filter((f) => !f.source);
+    const working = authored.length > 0 ? authored : candidates;
+
+    const comparable = working
+      .map((fact) => ({ fact, worldNum: factNumber(fact) }))
+      .filter((c): c is { fact: WorksheetFact; worldNum: number } => c.worldNum !== null);
+    if (comparable.length === 0) continue; // every candidate is qualitative; nothing to compare
 
     for (const sentence of sentences(text)) {
       const claimed = quantityNear(sentence, spec.keywords);
       if (claimed === null) continue;
 
-      const contradicts =
+      const allContradict = comparable.every(({ worldNum }) =>
         spec.kind === "count"
           ? claimed !== worldNum
           : Math.abs(claimed - worldNum) >
-            Math.max(Math.abs(worldNum) * (spec.tolerance ?? 0.15), 1e-9);
+            Math.max(Math.abs(worldNum) * (spec.tolerance ?? 0.15), 1e-9),
+      );
+      if (!allContradict) continue;
 
-      if (!contradicts) continue;
+      // One note per key — repeating the same mismatch every sentence is noise.
+      const dedupeKey = spec.keys.join("|");
+      if (seen.has(dedupeKey)) continue;
+      seen.add(dedupeKey);
 
-      // One note per fact — repeating the same mismatch every sentence is noise.
-      if (seen.has(fact.key)) continue;
-      seen.add(fact.key);
+      const first = comparable[0].fact;
+      const multi = comparable.length > 1;
 
       notes.push({
-        factKey: fact.key,
-        factLabel: fact.label,
-        worldValue: fact.value,
+        factKey: first.key,
+        factLabel: first.label,
+        worldValue: multi ? comparable.map((c) => c.fact.value).join(" / ") : first.value,
         proseValue: formatNumber(claimed),
         excerpt: sentence.length > 160 ? sentence.slice(0, 157) + "…" : sentence,
-        message: `${fact.source ?? "Your world"} records ${fact.label} as ${fact.value}; this reads ${formatNumber(claimed)}.`,
+        message: multi
+          ? `CONTRADICTS ALL ${comparable.length} ${spec.subjectNoun} ON FILE.`
+          : `${first.source ?? "Your world"} records ${first.label} as ${first.value}; this reads ${formatNumber(claimed)}.`,
       });
       break;
     }

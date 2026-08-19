@@ -65,6 +65,62 @@ describe("catches explicit contradictions", () => {
   });
 });
 
+describe("multi-candidate facts — the two-planet world (S-FIX)", () => {
+  // Two Planetary Profile worksheets both record "surfaceGravity", so the
+  // pooled facts array has two candidates for the same key. Before S-FIX,
+  // checkContinuity took whichever sorted first and reported confident,
+  // specific, wrong contradictions against a planet the sentence might not
+  // even be about.
+  const twoPlanets = [gravity("1.47"), gravity("0.3")];
+
+  it("does not fire when the sentence is consistent with at least one candidate", () => {
+    // 0.3 matches the second planet exactly. The old code, sorting the first
+    // planet (1.47) to the front, would have reported a false contradiction
+    // every time. The fix must report nothing here.
+    const notes = checkContinuity("<p>At 0.3 gravity she barely felt her own weight.</p>", twoPlanets);
+    expect(notes).toHaveLength(0);
+  });
+
+  it("fires, and says so, only when the sentence contradicts every candidate", () => {
+    const notes = checkContinuity("<p>At 9.8 gravity she was crushed flat.</p>", twoPlanets);
+    expect(notes).toHaveLength(1);
+    expect(notes[0].message).toBe("CONTRADICTS ALL 2 PLANETS ON FILE.");
+    expect(notes[0].worldValue).toBe("1.47 / 0.3");
+    expect(notes[0].proseValue).toBe("9.8");
+  });
+
+  it("keeps single-candidate behaviour byte-identical", () => {
+    // Constraint from the brief: a key with exactly one fact must be
+    // unchanged — same math, same message shape as before S-FIX.
+    const notes = checkContinuity("<p>At 0.4 gravity she moved like a dancer.</p>", [gravity("1.47")]);
+    expect(notes).toHaveLength(1);
+    expect(notes[0].message).toBe("Your world records Surface Gravity (g) as 1.47; this reads 0.4.");
+  });
+
+  it("a third consistent candidate still suppresses the contradiction", () => {
+    const threePlanets = [gravity("1.47"), gravity("9.8"), gravity("0.3")];
+    const notes = checkContinuity("<p>At 0.3 gravity she barely felt her own weight.</p>", threePlanets);
+    expect(notes).toHaveLength(0);
+  });
+
+  it("names the right count when three candidates are all contradicted", () => {
+    const threePlanets = [gravity("1.47"), gravity("9.8"), gravity("2.1")];
+    const notes = checkContinuity("<p>At 0.3 gravity she barely felt her own weight.</p>", threePlanets);
+    expect(notes).toHaveLength(1);
+    expect(notes[0].message).toBe("CONTRADICTS ALL 3 PLANETS ON FILE.");
+  });
+
+  it("ignores a qualitative (non-numeric) candidate when judging 'every candidate'", () => {
+    // A candidate whose value can't be parsed as a number can't be
+    // contradicted, so it shouldn't count toward "every candidate agrees"
+    // in either direction.
+    const mixed = [gravity("1.47"), fact("surfaceGravity", "Surface Gravity (g)", "unknown")];
+    const notes = checkContinuity("<p>At 9.8 gravity she was crushed flat.</p>", mixed);
+    expect(notes).toHaveLength(1);
+    expect(notes[0].message).toBe("Your world records Surface Gravity (g) as 1.47; this reads 9.8.");
+  });
+});
+
 describe("scale words — the loosest figures in fiction", () => {
   it("treats spelled billions as the same magnitude as the recorded digits", () => {
     // 8.7e9 recorded vs "nine billion" written: a writer rounding, not an error.
