@@ -37,7 +37,7 @@ const TidelockSimulator = () => {
   const [loaded, setLoaded] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const worldId = useWorldId();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const narrativeBridge = useNarrativeBridge();
   const [loadSheetOpen, setLoadSheetOpen] = useState(false);
   const [publishDialogOpen, setPublishDialogOpen] = useState(false);
@@ -71,18 +71,23 @@ const TidelockSimulator = () => {
   }, [refreshPayload]);
 
   // Plausibility notes read the same `pendingPayload.results` that Save and
-  // Publish already populate. sim.html only ever answers a state request —
-  // its one postMessage call site (STELLARFORGE_SAVE, sim.html:1756) fires
+  // Publish already populate. sim.html only ever answers a state request:
+  // its one postMessage call site (STELLARFORGE_SAVE, sim.html:1778) fires
   // solely from inside the STELLARFORGE_REQUEST_STATE handler, never on its
   // own initiative (no spontaneous post on a slider drag, say). So
   // `pendingPayload`, and therefore this strip, only refreshes at three
   // moments: mount (this effect), Save click (`requestSave`), and Publish
   // click (`refreshPayload` above). Between those, a note can go stale if the
-  // writer drags a slider without saving or publishing — but it is always
+  // writer drags a slider without saving or publishing, but it is always
   // current at the two moments that actually persist data, since both Save
   // and Publish already refresh before their dialogs open. Ask once here so
   // the strip has something to say on load rather than staying empty until
   // the first Save; no timer, no polling.
+  //
+  // NOTE: when a `?handoff=` seed is present, this early call races the
+  // handoff effect below and would read Tidelock's stock defaults before the
+  // seed lands. The handoff effect re-requests state itself, after posting
+  // the seed, which is what actually lands in `pendingPayload` in that case.
   useEffect(() => {
     if (!loaded) return;
     refreshPayload();
@@ -108,6 +113,15 @@ const TidelockSimulator = () => {
   // as a STELLARFORGE_LOAD with a handoffSeed field. sim.html's own load
   // handler applies it to the star-type dropdown and orbital-distance
   // slider before the writer touches anything. Sent once per page load.
+  //
+  // refreshPayload() is called here, after the seed postMessage, on purpose:
+  // postMessages to the same target window are delivered and processed in
+  // order, so by the time sim.html handles the STELLARFORGE_REQUEST_STATE
+  // this triggers, the seed above has already been applied. The plausibility
+  // effect above also calls refreshPayload() on mount, but that call can
+  // land before this seed exists (Tidelock's stock defaults), so this
+  // second, later call is what actually leaves `pendingPayload` holding the
+  // seeded configuration.
   const handoffSent = useRef(false);
   useEffect(() => {
     if (!loaded || handoffSent.current) return;
@@ -122,15 +136,25 @@ const TidelockSimulator = () => {
         type: "STELLARFORGE_LOAD",
         payload: {
           handoffSeed: {
-            starType: handoff.starType,
-            starMassSolar: handoff.starMassLum,
+            // starType is not read on the Tidelock side (sim.html matches by
+            // nearest luminosity, via starLuminosity below, since Solaris's
+            // blue/white/yellow/orange/red vocabulary and Tidelock's M9V..F0V
+            // spectral types share no keys). Left out rather than sent dead.
+            starLuminosity: handoff.starMassLum,
             auFraction: handoff.planetAU / hzMid,
           },
         },
       },
       "*",
     );
-  }, [loaded, searchParams]);
+    refreshPayload();
+    // The seed has been applied (or is about to be, per the ordering above);
+    // strip the param so a mid-session refresh does not silently re-seed and
+    // discard whatever the writer has since configured.
+    const next = new URLSearchParams(searchParams);
+    next.delete("handoff");
+    setSearchParams(next, { replace: true });
+  }, [loaded, searchParams, refreshPayload, setSearchParams]);
 
   return (
     <>
@@ -166,10 +190,10 @@ const TidelockSimulator = () => {
           </div>
           {/* Save/Load controls, plus plausibility notes on the configuration
               those controls would save or publish right now. Tidelock has no
-              React-rendered data-readout panel of its own — the numeric
+              React-rendered data-readout panel of its own: the numeric
               results live entirely inside sim.html's own DOM readout panel
-              (its updateReadout() sets element .textContent, sim.html:1241),
-              not this wrapper — so the strip sits in this same floating
+              (its updateReadout() sets element .textContent, sim.html:1243),
+              not this wrapper. So the strip sits in this same floating
               chrome rather than "below the numeric results", and only takes
               up space when it has something to say. */}
           {loaded && (

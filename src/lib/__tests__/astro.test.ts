@@ -15,6 +15,7 @@ import {
   starFromObserver,
   angularSeparation,
   applyPrecession,
+  precessionMatrix,
 } from "@/lib/simulators/astro";
 
 // ---------------------------------------------------------------------------
@@ -317,5 +318,34 @@ describe("axial precession", () => {
     const [x, y, z] = applyPrecession(...input, 6000);
     const len = Math.hypot(x, y, z);
     expect(len).toBeCloseTo(inputLen, 5);
+  });
+
+  it("precessionMatrix(-y) is the exact inverse of precessionMatrix(y)", () => {
+    // ExoSky's Milky Way band applies precessionMatrix(-epochYears) to its
+    // ray direction while transformedStars applies precessionMatrix(epochYears)
+    // to point stars; the two are only consistent if these are exact inverses
+    // of each other. That holds algebraically here (matMul3 is not exported,
+    // so it is reimplemented locally): the matrix is a product of orthogonal
+    // rotations (transpose = inverse), and theta(y) is odd in y, so negating y
+    // negates theta, which is exactly what transposing each rotation does.
+    // Nothing pinned that identity before this test; a future refactor of
+    // precessionMatrix could silently break the inverse pairing otherwise.
+    function matMul3(a: number[][], b: number[][]): number[][] {
+      const out: number[][] = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
+      for (let i = 0; i < 3; i++)
+        for (let j = 0; j < 3; j++)
+          for (let k = 0; k < 3; k++)
+            out[i][j] += a[i][k] * b[k][j];
+      return out;
+    }
+
+    for (const y of [0, 5000, -8000, 12886]) {
+      const product = matMul3(precessionMatrix(y), precessionMatrix(-y));
+      for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+          expect(product[i][j]).toBeCloseTo(i === j ? 1 : 0, 8);
+        }
+      }
+    }
   });
 });

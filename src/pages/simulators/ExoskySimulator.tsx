@@ -1,4 +1,4 @@
-import { lazy, Suspense, useState, useEffect, useMemo } from "react";
+import { lazy, Suspense, useState, useEffect, useMemo, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Save, FolderOpen, Rocket } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -41,12 +41,25 @@ const SimLoader = () => (
 
 const ExoskySimulator = () => {
   const worldId = useWorldId();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const handoffPayload = useMemo(() => decodeHandoff(searchParams), [searchParams]);
   const initialHandoff = useMemo(() => {
     if (!handoffPayload) return null;
     return { payload: handoffPayload, ...deriveExoskySeed(handoffPayload.planetAU, handoffPayload.starMassLum) };
   }, [handoffPayload]);
+  // Called by ExoSkyV2 once it has actually applied initialHandoff to its own
+  // state, not before: stripping the param earlier risks this wrapper
+  // re-rendering with a null initialHandoff before the lazy-loaded component
+  // below has mounted and read the original value. A refresh mid-session
+  // would otherwise silently re-seed and discard whatever the writer has
+  // since configured.
+  const clearHandoffParam = useCallback(() => {
+    setSearchParams((prev) => {
+      const next = new URLSearchParams(prev);
+      next.delete("handoff");
+      return next;
+    }, { replace: true });
+  }, [setSearchParams]);
   const narrativeBridge = useNarrativeBridge();
   const [loadSheetOpen, setLoadSheetOpen] = useState(false);
   const [publishDialogOpen, setPublishDialogOpen] = useState(false);
@@ -88,6 +101,7 @@ const ExoskySimulator = () => {
               narrativeBridgeOpen={narrativeBridge.panelProps.open}
               worldId={worldId}
               initialHandoff={initialHandoff}
+              onHandoffConsumed={clearHandoffParam}
             />
           </Suspense>
           {/* Save/Load controls */}

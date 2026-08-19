@@ -117,7 +117,18 @@ const SOLARIS_PLANET_TYPE_LABELS: Record<string, string> = {
 
 /** Lower-cased so it drops straight into mid-sentence prose, e.g. "gas giant". */
 export function solarisPlanetTypeLabel(typeKey: string): string {
-  return (SOLARIS_PLANET_TYPE_LABELS[typeKey] ?? typeKey).toLowerCase();
+  // Own-property check only: typeKey comes from decodeHandoff's untrusted URL
+  // param, validated only as "a non-empty string". A plain object lookup
+  // (SOLARIS_PLANET_TYPE_LABELS[typeKey]) falls through to Object.prototype
+  // for keys like "constructor" or "toString", returning a function rather
+  // than undefined; `?? typeKey` never fires (a function isn't nullish), and
+  // the .toLowerCase() below throws. hasOwnProperty keeps the lookup to the
+  // map's own entries only, so an unrecognised key (including a prototype
+  // name) falls back to the raw key exactly as before.
+  const label = Object.prototype.hasOwnProperty.call(SOLARIS_PLANET_TYPE_LABELS, typeKey)
+    ? SOLARIS_PLANET_TYPE_LABELS[typeKey]
+    : typeKey;
+  return label.toLowerCase();
 }
 
 /**

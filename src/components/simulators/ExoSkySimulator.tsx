@@ -455,12 +455,20 @@ interface ExoSkyV2Props {
       COORDINATES" button turns on) on first mount, rather than adding a
       second vantage mechanism next to it. */
   initialHandoff?: ExoSkyInitialHandoff | null;
+  /** Called once the mount-time handoff seed above has actually been
+      applied to state. The wrapper uses this to strip `?handoff=` from the
+      URL only after the seed has landed, not before: clearing it earlier
+      risks the wrapper re-rendering with a null `initialHandoff` prop before
+      this (possibly still-loading, since it's lazy-imported) component ever
+      reads the original value. */
+  onHandoffConsumed?: () => void;
 }
 
 export default function ExoSkyV2({
   narrativeBridgeOpen = false,
   initialHandoff = null,
   worldId,
+  onHandoffConsumed,
 }: ExoSkyV2Props = {}) {
   const { toast } = useToast();
   const { data: worldEntities } = useEntities(worldId);
@@ -606,6 +614,7 @@ export default function ExoSkyV2({
     setCustomGalB(initialHandoff.galB);
     setCustomDistPc(initialHandoff.distPc);
     setHandoffPayload(initialHandoff.payload);
+    onHandoffConsumed?.();
     // Mount-only: a handoff seeds the initial view once, it does not keep
     // re-applying itself if the writer then adjusts the sliders by hand.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -698,12 +707,15 @@ export default function ExoSkyV2({
     const [ex, ey, ez] = galToEq(gx, gy, gz);
     const rd = xyzToRaDec(ex, ey, ez);
     if (handoffPayload) {
+      // Sibling vantages ("Custom", line below) capitalize; matching that so
+      // describeHandoffPlanet's sentence, and this label, do not open mid-word.
+      const starLabel = handoffPayload.starType.charAt(0).toUpperCase() + handoffPayload.starType.slice(1);
       return {
-        star: handoffPayload.starType,
+        star: starLabel,
         planet: `${handoffPayload.planetName} (from Solaris)`,
         ra: rd.ra, dec: rd.dec, dist,
         atmoType: "none", atmoDesc: "No atmosphere, vacuum observation",
-        note: `${describeHandoffPlanet(handoffPayload)} Distance shown here is a ${dist.toFixed(0)} pc placeholder, not part of the handoff.`,
+        note: `${describeHandoffPlanet(handoffPayload)} Distance (${dist.toFixed(0)} pc) and galactic position shown here are synthesized placeholders spread across the sky so handoffs do not collide, not part of the handoff itself.`,
         armNote: "Handoff from Solaris",
       };
     }
@@ -733,6 +745,7 @@ export default function ExoSkyV2({
         galacticL: customMode ? customGalL : undefined,
         galacticB: customMode ? customGalB : undefined,
         viewRa, viewDec, fov,
+        epochYears,
         showConstellations, showAtmosphere, showGrid,
         showMilkyWay, showStarNames, showHorizon,
         customConstellations,
@@ -743,6 +756,12 @@ export default function ExoSkyV2({
     const onLoad = (event: Event) => {
       const save = fromExoskySave((event as CustomEvent).detail);
       if (!save) return;
+
+      // A loaded save is never the original handoff, even when it happens to
+      // restore custom-coordinate mode. Without this, a stale "(from
+      // Solaris)" note describing an unrelated planet could reattach itself
+      // to whatever coordinates this save carries.
+      setHandoffPayload(null);
 
       // Restore the vantage first: constellations are drawn in that frame, so
       // applying them against the wrong sky would put the lines in the wrong place.
@@ -760,6 +779,7 @@ export default function ExoSkyV2({
       setViewRa(save.view.ra);
       setViewDec(save.view.dec);
       setFov(save.view.fov);
+      setEpochYears(save.view.epochYears);
       setShowConstellations(save.display.constellations);
       setShowAtmosphere(save.display.atmosphere);
       setShowGrid(save.display.grid);
@@ -791,7 +811,7 @@ export default function ExoSkyV2({
     };
   }, [
     planet, customMode, customGalL, customGalB, worldEntity, worldEntityCoords,
-    viewRa, viewDec, fov, showConstellations, showAtmosphere, showGrid,
+    viewRa, viewDec, fov, epochYears, showConstellations, showAtmosphere, showGrid,
     showMilkyWay, showStarNames, showHorizon, customConstellations,
   ]);
 
@@ -1070,7 +1090,13 @@ export default function ExoSkyV2({
        * slow. Rewriting the loop to write pixels instead of rects was tried
        * first and measured *worse* (44 ms), so it is not the answer here.
        */
-      const camKey = `${_viewRa},${_viewDec},${_fov}`;
+      // epochYears is included here (not just viewRa/viewDec/fov) because it
+      // is also part of the redraw cache key below (mwParams.epochYears):
+      // without it in camKey, an epoch-slider drag would still force a
+      // needsRedraw every step but never trip cameraMoving, so it would
+      // always ray-march at full quality instead of getting the same cheap
+      // coarse pass a camera drag gets.
+      const camKey = `${_viewRa},${_viewDec},${_fov},${_epochYears}`;
       if (camKey !== lastCamKey.current) {
         lastCamKey.current = camKey;
         lastCamMove.current = performance.now();
@@ -1938,6 +1964,13 @@ export default function ExoSkyV2({
         {panelOpen && <>
           <select value={worldEntityId ? `world:${worldEntityId}` : (customMode ? "custom" : String(selectedPlanet))} onChange={e=>{
             const val = e.target.value;
+            // A <select> only fires onChange when the value actually
+            // changes, so reaching this handler always means the writer
+            // picked something other than whatever was already showing.
+            // That is never the original handoff, so its stale note (wrong
+            // planet type, wrong AU, wrong star) should not follow them to
+            // wherever they picked next.
+            setHandoffPayload(null);
             if (val === "custom") {
               setCustomMode(true); setWorldEntityId(null);
             } else if (val.startsWith("world:")) {
