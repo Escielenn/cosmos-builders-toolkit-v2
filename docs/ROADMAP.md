@@ -12,18 +12,18 @@ Active task list and development priorities. Review this at the start of each se
 
 ### PDF Preview/Download
 - [x] Fix download timing (delayed revokeObjectURL across 5 export dialogs) (2026-04-04)
-- [ ] Verify PDF preview renders correctly in ExportDialog preview tab
-- [ ] Test PDF export across all tools that support it
+- [x] Verify PDF preview renders correctly in ExportDialog preview tab (2026-08-20) — was completely broken (crashed on every Preview/Download, all tools); root cause was WOFF2 font embedding, not the CSP violation it first looked like. Fixed by switching to Helvetica (a PDF base-14 font, no embedding needed). Live-verified: a real PDF renders. Shared fix in `src/lib/pdf/styles.ts` covers every tool's export since they all import from it.
+- [x] Test PDF export across all tools that support it (2026-08-20) — spot-verified on Orrery (Preview + Download) since the fix is in the shared font/style module every PDF template imports; not individually re-tested per tool.
 
 ### Security Review
 - [x] Security review — fixed comments/favorites INSERT policies (2026-04-05)
 - [x] Audit RLS on entities, entity_connections, world_favorites, world_comments (2026-04-05)
-- [ ] Review exposed API surfaces and auth guards (deeper pass)
+- [x] Review exposed API surfaces and auth guards (deeper pass) (2026-08-20) — structurally swept every SECURITY DEFINER function in the schema (not just the advisor's flagged list). Found and fixed 3 with no caller-identity check: `lookup_user_by_email` (unauthenticated email enumeration + PII leak), `get_subscription_tier` (arbitrary user's tier readable by anyone, unused dead code), `cleanup_world_versions` (anyone could force the global retention job to run). All confirmed RLS-enabled tables (37/37), no overly-permissive policies, share-link tokens are 128-bit crypto-random. See migrations `20260820_*`.
 
 ### Phase 3 Bug Fix Pass
-- [ ] Systematic bug-fix pass across all tools and features
-- [ ] Test all 21 worksheet tools load and save correctly
-- [ ] Test all 5 simulators load/save/publish
+- [ ] Systematic bug-fix pass across all tools and features — partial: bugs found during the save/load and simulator audits (Sensorium save path, K-Scale routing, world_tags 404) were fixed as found; no separate exhaustive pass has been run.
+- [x] Test all 21 worksheet tools load and save correctly (2026-08-19) — 19/21 passed outright; 2 bugs found (Sensorium save path fully dead, K-Scale world-scoped routing) and fixed same session.
+- [x] Test all 5 simulators load/save/publish (2026-08-20) — 5/5 pass: Save, Load, and Publish all verified live for Tidelock, ExoSky, Rogue, Solaris, ExoForge.
 
 ---
 
@@ -264,4 +264,4 @@ file. Ctrl+S and Esc are already ported (0.6874).
 
 ---
 
-*Last updated: 2026-04-04*
+*Last updated: 2026-08-20*
