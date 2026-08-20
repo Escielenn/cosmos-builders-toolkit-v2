@@ -5,24 +5,12 @@ import { printPalette } from "./palette";
 // Disable word hyphenation to prevent rendering issues
 Font.registerHyphenationCallback((word) => [word]);
 
-// Register fonts (using system fonts as fallback)
-Font.register({
-  family: "Inter",
-  fonts: [
-    {
-      src: "https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hiJ-Ek-_EeA.woff2",
-      fontWeight: 400,
-    },
-    {
-      src: "https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuGKYAZ9hiJ-Ek-_EeA.woff2",
-      fontWeight: 600,
-    },
-    {
-      src: "https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuFuYAZ9hiJ-Ek-_EeA.woff2",
-      fontWeight: 700,
-    },
-  ],
-});
+// Deliberately NOT using Font.register() for a custom typeface. react-pdf's
+// browser bundle only reliably embeds TTF; the Google Fonts WOFF2 files
+// previously registered here crashed fontkit's glyph encoder on every export
+// ("RangeError: Offset is outside the bounds of the DataView" — a known
+// react-pdf/fontkit incompatibility, not fixable via CSP). Helvetica is one
+// of the 14 PDF base fonts: no embedding, no network fetch, always renders.
 
 // Color palette for print — GENERATED from canonical tokens (SF-II §3.5).
 // Brand hues derive from src/styles/tokens.ts via src/lib/pdf/palette.ts;
@@ -43,7 +31,7 @@ export const colors: ExportThemeColors = {
 
 // Typography scale
 export const typography = {
-  fontFamily: "Inter",
+  fontFamily: "Helvetica",
   sizes: {
     xs: 8,
     sm: 9,
