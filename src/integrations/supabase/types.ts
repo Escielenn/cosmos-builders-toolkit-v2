@@ -65,6 +65,67 @@ export type Database = {
           },
         ]
       }
+      binder_nodes: {
+        Row: {
+          created_at: string
+          entry_id: string | null
+          id: string
+          kind: string
+          parent_id: string | null
+          sort_order: number
+          title: string
+          updated_at: string
+          user_id: string
+          world_id: string
+        }
+        Insert: {
+          created_at?: string
+          entry_id?: string | null
+          id?: string
+          kind: string
+          parent_id?: string | null
+          sort_order?: number
+          title?: string
+          updated_at?: string
+          user_id: string
+          world_id: string
+        }
+        Update: {
+          created_at?: string
+          entry_id?: string | null
+          id?: string
+          kind?: string
+          parent_id?: string | null
+          sort_order?: number
+          title?: string
+          updated_at?: string
+          user_id?: string
+          world_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "binder_nodes_entry_id_fkey"
+            columns: ["entry_id"]
+            isOneToOne: false
+            referencedRelation: "writing_entries"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "binder_nodes_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "binder_nodes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "binder_nodes_world_id_fkey"
+            columns: ["world_id"]
+            isOneToOne: false
+            referencedRelation: "worlds"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       chronicle_events: {
         Row: {
           color: string | null
@@ -182,6 +243,57 @@ export type Database = {
           user_id?: string | null
         }
         Relationships: []
+      }
+      document_versions: {
+        Row: {
+          content_html: string
+          created_at: string
+          document_id: string
+          id: string
+          snapshot_reason: string
+          title: string
+          user_id: string
+          word_count: number
+          world_id: string
+        }
+        Insert: {
+          content_html?: string
+          created_at?: string
+          document_id: string
+          id?: string
+          snapshot_reason?: string
+          title?: string
+          user_id: string
+          word_count?: number
+          world_id: string
+        }
+        Update: {
+          content_html?: string
+          created_at?: string
+          document_id?: string
+          id?: string
+          snapshot_reason?: string
+          title?: string
+          user_id?: string
+          word_count?: number
+          world_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "document_versions_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: false
+            referencedRelation: "world_entries"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "document_versions_world_id_fkey"
+            columns: ["world_id"]
+            isOneToOne: false
+            referencedRelation: "worlds"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       entities: {
         Row: {
@@ -351,6 +463,112 @@ export type Database = {
           },
           {
             foreignKeyName: "entity_connections_world_id_fkey"
+            columns: ["world_id"]
+            isOneToOne: false
+            referencedRelation: "worlds"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      entity_type_fields: {
+        Row: {
+          created_at: string
+          field_key: string
+          field_type: string
+          help_text: string | null
+          id: string
+          label: string
+          options: Json
+          placeholder: string | null
+          ref_entity_types: string[] | null
+          required: boolean
+          sort_order: number
+          template_id: string
+        }
+        Insert: {
+          created_at?: string
+          field_key: string
+          field_type: string
+          help_text?: string | null
+          id?: string
+          label: string
+          options?: Json
+          placeholder?: string | null
+          ref_entity_types?: string[] | null
+          required?: boolean
+          sort_order?: number
+          template_id: string
+        }
+        Update: {
+          created_at?: string
+          field_key?: string
+          field_type?: string
+          help_text?: string | null
+          id?: string
+          label?: string
+          options?: Json
+          placeholder?: string | null
+          ref_entity_types?: string[] | null
+          required?: boolean
+          sort_order?: number
+          template_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "entity_type_fields_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "entity_type_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      entity_type_templates: {
+        Row: {
+          base_entity_type: string
+          color: string | null
+          created_at: string
+          description: string | null
+          icon: string | null
+          id: string
+          label: string
+          sort_order: number
+          type_key: string
+          updated_at: string
+          user_id: string
+          world_id: string
+        }
+        Insert: {
+          base_entity_type?: string
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          label: string
+          sort_order?: number
+          type_key: string
+          updated_at?: string
+          user_id: string
+          world_id: string
+        }
+        Update: {
+          base_entity_type?: string
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          label?: string
+          sort_order?: number
+          type_key?: string
+          updated_at?: string
+          user_id?: string
+          world_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "entity_type_templates_world_id_fkey"
             columns: ["world_id"]
             isOneToOne: false
             referencedRelation: "worlds"
@@ -570,6 +788,48 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      scene_pins: {
+        Row: {
+          created_at: string
+          entity_id: string
+          entry_id: string
+          id: string
+          sort_order: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          entity_id: string
+          entry_id: string
+          id?: string
+          sort_order?: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          entity_id?: string
+          entry_id?: string
+          id?: string
+          sort_order?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scene_pins_entity_id_fkey"
+            columns: ["entity_id"]
+            isOneToOne: false
+            referencedRelation: "entities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "scene_pins_entry_id_fkey"
+            columns: ["entry_id"]
+            isOneToOne: false
+            referencedRelation: "writing_entries"
             referencedColumns: ["id"]
           },
         ]
@@ -815,6 +1075,33 @@ export type Database = {
           tracks?: Json
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      waitlist: {
+        Row: {
+          confirmation_sent: boolean
+          created_at: string
+          email: string
+          id: string
+          ip_hash: string | null
+          source: string
+        }
+        Insert: {
+          confirmation_sent?: boolean
+          created_at?: string
+          email: string
+          id?: string
+          ip_hash?: string | null
+          source?: string
+        }
+        Update: {
+          confirmation_sent?: boolean
+          created_at?: string
+          email?: string
+          id?: string
+          ip_hash?: string | null
+          source?: string
         }
         Relationships: []
       }
@@ -1103,6 +1390,7 @@ export type Database = {
           title: string
           tool_data_id: string | null
           tool_source: string | null
+          trashed_at: string | null
           updated_at: string
           world_id: string
         }
@@ -1123,6 +1411,7 @@ export type Database = {
           title: string
           tool_data_id?: string | null
           tool_source?: string | null
+          trashed_at?: string | null
           updated_at?: string
           world_id: string
         }
@@ -1143,6 +1432,7 @@ export type Database = {
           title?: string
           tool_data_id?: string | null
           tool_source?: string | null
+          trashed_at?: string | null
           updated_at?: string
           world_id?: string
         }
@@ -1507,8 +1797,14 @@ export type Database = {
           content: string | null
           created_at: string
           id: string
+          location_entity_id: string | null
+          pov_entity_id: string | null
           prompt_id: string | null
+          status: string
+          synopsis: string | null
           tags: string[] | null
+          target_words: number | null
+          time_label: string | null
           title: string | null
           updated_at: string
           user_id: string
@@ -1520,8 +1816,14 @@ export type Database = {
           content?: string | null
           created_at?: string
           id?: string
+          location_entity_id?: string | null
+          pov_entity_id?: string | null
           prompt_id?: string | null
+          status?: string
+          synopsis?: string | null
           tags?: string[] | null
+          target_words?: number | null
+          time_label?: string | null
           title?: string | null
           updated_at?: string
           user_id: string
@@ -1533,8 +1835,14 @@ export type Database = {
           content?: string | null
           created_at?: string
           id?: string
+          location_entity_id?: string | null
+          pov_entity_id?: string | null
           prompt_id?: string | null
+          status?: string
+          synopsis?: string | null
           tags?: string[] | null
+          target_words?: number | null
+          time_label?: string | null
           title?: string | null
           updated_at?: string
           user_id?: string
@@ -1542,6 +1850,20 @@ export type Database = {
           world_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "writing_entries_location_entity_id_fkey"
+            columns: ["location_entity_id"]
+            isOneToOne: false
+            referencedRelation: "entities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "writing_entries_pov_entity_id_fkey"
+            columns: ["pov_entity_id"]
+            isOneToOne: false
+            referencedRelation: "entities"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "writing_entries_world_id_fkey"
             columns: ["world_id"]
@@ -1586,6 +1908,27 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      writing_sessions: {
+        Row: {
+          day: string
+          updated_at: string
+          user_id: string
+          words: number
+        }
+        Insert: {
+          day: string
+          updated_at?: string
+          user_id: string
+          words?: number
+        }
+        Update: {
+          day?: string
+          updated_at?: string
+          user_id?: string
+          words?: number
+        }
+        Relationships: []
       }
     }
     Views: {
@@ -1762,6 +2105,10 @@ export type Database = {
       get_subscription_tier: {
         Args: { check_user_id: string }
         Returns: string
+      }
+      increment_writing_session: {
+        Args: { p_day: string; p_delta: number; p_user_id: string }
+        Returns: undefined
       }
       lookup_user_by_email: { Args: { p_email: string }; Returns: Json }
       maybe_snapshot_world: { Args: { p_world_id: string }; Returns: boolean }

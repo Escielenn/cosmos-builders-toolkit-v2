@@ -22,7 +22,7 @@ export function useTags() {
       if (!user) return [];
 
       const { data, error } = await supabase
-        .from("worksheet_tags")
+        .from("world_tags")
         .select("*")
         .eq("user_id", user.id)
         .order("usage_count", { ascending: false });
@@ -68,7 +68,7 @@ export function useTags() {
       if (!user) throw new Error("Not authenticated");
 
       const { data, error } = await supabase
-        .from("worksheet_tags")
+        .from("world_tags")
         .upsert(
           {
             user_id: user.id,
@@ -92,7 +92,7 @@ export function useTags() {
   const deleteTag = useMutation({
     mutationFn: async (tagId: string) => {
       const { error } = await supabase
-        .from("worksheet_tags")
+        .from("world_tags")
         .delete()
         .eq("id", tagId);
 
