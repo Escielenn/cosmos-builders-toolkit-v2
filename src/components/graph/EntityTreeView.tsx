@@ -39,6 +39,8 @@ export interface EntityTreeViewProps {
   onReparent: (entityId: string, newParentId: string | null) => void;
   onFocusEntity: (entityId: string) => void;
   onEditEntity?: (entityId: string) => void;
+  /** Selects and expands the path to this entity on mount (e.g. from a ?focus= deep link). */
+  initialFocusId?: string | null;
 }
 
 type TreeLayout = "horizontal" | "vertical" | "radial";
@@ -757,6 +759,7 @@ export function EntityTreeView({
   onReparent,
   onFocusEntity,
   onEditEntity,
+  initialFocusId,
 }: EntityTreeViewProps) {
   const [layout, setLayout] = useState<TreeLayout>("vertical");
   const [expandedIds, setExpandedIds] = useState<Set<string>>(() => {
@@ -766,7 +769,23 @@ export function EntityTreeView({
     return new Set(roots.map((e) => e.id));
   });
   const [contextMenu, setContextMenu] = useState<ContextMenuState | null>(null);
-  const [selectedEntityId, setSelectedEntityId] = useState<string | null>(null);
+  const [selectedEntityId, setSelectedEntityId] = useState<string | null>(initialFocusId ?? null);
+
+  // Deep-link focus: expand the path to the target entity and select it.
+  useEffect(() => {
+    if (!initialFocusId || !entities.some((e) => e.id === initialFocusId)) return;
+    setSelectedEntityId(initialFocusId);
+    setExpandedIds((prev) => {
+      const next = new Set(prev);
+      let current = entities.find((e) => e.id === initialFocusId);
+      while (current?.parent_entity_id) {
+        next.add(current.parent_entity_id);
+        current = entities.find((e) => e.id === current!.parent_entity_id);
+      }
+      return next;
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialFocusId, entities]);
 
   // Drag-and-drop state
   const [dragState, setDragState] = useState<DragState>({

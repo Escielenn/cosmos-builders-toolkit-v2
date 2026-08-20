@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Network, BookOpen, ScrollText, Library, PenLine, Eye } from "lucide-react";
+import { Network, ScrollText, Library, PenLine, Eye } from "lucide-react";
 
 interface CodexQuickAccessProps {
   worldId: string;
@@ -10,8 +10,7 @@ const CodexQuickAccess = ({ worldId }: CodexQuickAccessProps) => {
     { label: "Write", icon: PenLine, to: `/worlds/${worldId}/write`, desc: "Draft prose and scenes for your world" },
     { label: "Wiki", icon: Library, to: `/worlds/${worldId}/wiki`, desc: "Browse and edit all knowledge entries" },
     { label: "Chronicle", icon: ScrollText, to: `/worlds/${worldId}/chronicle`, desc: "Timeline of world events" },
-    { label: "World Graph", icon: Network, to: `/worlds/${worldId}/graph`, desc: "Visualize entities and their relationships" },
-    { label: "Connections", icon: BookOpen, to: `/worlds/${worldId}/connections`, desc: "Explore worksheet-to-worksheet data flow" },
+    { label: "Connections", icon: Network, to: `/worlds/${worldId}/connections`, desc: "Entity relationships and worksheet-to-worksheet data flow" },
     { label: "Showcase", icon: Eye, to: `/worlds/${worldId}/showcase`, desc: "Public showcase page for your world" },
   ];
 

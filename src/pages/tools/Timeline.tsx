@@ -2,7 +2,7 @@ import { Component, useState, useEffect, useCallback, useRef } from "react";
 import PageShell from "@/components/layout/PageShell";
 import { useWorldId } from "@/hooks/use-world-id";
 import type { ReactNode, ErrorInfo } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, Link } from "react-router-dom";
 import {
   Layers,
   CalendarPlus,
@@ -16,7 +16,10 @@ import {
   Camera,
   Undo2,
   Redo2,
+  ScrollText,
+  X,
 } from "lucide-react";
+import { useHintDismissed } from "@/hooks/use-hint-dismissed";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -107,6 +110,8 @@ const Timeline = () => {
 
   const currentWorld = worldId ? worlds.find((w) => w.id === worldId) : null;
   const worldName = currentWorld?.name;
+
+  const [chronicleHintDismissed, dismissChronicleHint] = useHintDismissed("timeline-chronicle-pointer");
 
   const entityMatch = useEntityMatch(worldId);
   const { createWorksheet, updateWorksheet } = useWorksheets(worldId || undefined, false, {
@@ -386,6 +391,27 @@ const Timeline = () => {
             Timeline is in active development and does not represent the final product. Features may change or be incomplete.
           </p>
         </div>
+
+        {/* Chronicle pointer, world-scoped tracks/events vs. the world's canonical event timeline */}
+        {worldId && !chronicleHintDismissed && (
+          <div className="relative flex items-center gap-3 px-4 py-3 rounded-none border border-sf-teal/15 bg-sf-teal/[0.03] mb-6">
+            <ScrollText className="w-5 h-5 text-sf-teal/60 shrink-0" />
+            <p className="text-sm text-t2 pr-6">
+              For this world's story-wide event timeline, use{" "}
+              <Link to={`/worlds/${worldId}/chronicle`} className="text-sf-teal underline underline-offset-2 hover:text-sf-teal-bright">
+                Chronicle
+              </Link>
+              . Timeline stays for track-based scheduling within a single worksheet.
+            </p>
+            <button
+              onClick={dismissChronicleHint}
+              className="absolute top-2.5 right-2.5 text-t4 hover:text-t3 transition-colors"
+              aria-label="Dismiss Chronicle pointer"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        )}
 
         {/* Toolbar */}
         <div className="flex items-center gap-3 mb-4 flex-wrap">

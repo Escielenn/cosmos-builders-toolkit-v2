@@ -5,7 +5,6 @@ import "@/lib/preload-error-recovery";
 import { Suspense, lazy } from "react";
 import { MotionConfig } from "framer-motion";
 import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -16,10 +15,8 @@ import AudioPlayer from "@/components/audio/AudioPlayer";
 import ScrollToTop from "./components/ScrollToTop";
 import FABStack from "./components/layout/FABStack";
 import CookieConsent from "./components/common/CookieConsent";
-import TextureOverlay from "./components/layout/TextureOverlay";
-import DataBurstOverlay from "./components/layout/DataBurstOverlay";
-import VideoBackground from "./components/layout/VideoBackground";
-import { StellarBackground } from "./components/layout/StellarBackground";
+import AmbientEffects from "./components/layout/AmbientEffects";
+import BackgroundLayer from "./components/layout/BackgroundLayer";
 import { KonamiCode } from "./components/ambient/KonamiCode";
 import StatusBar from "./components/layout/StatusBar";
 import { Loader } from "@/components/ui/loader";
@@ -56,7 +53,7 @@ const WorldConnections = lazy(() => import("./pages/WorldConnections"));
 const Worlds = lazy(() => import("./pages/Worlds"));
 const WorldLayout = lazy(() => import("./layouts/WorldLayout"));
 const WorldToolPage = lazy(() => import("./pages/WorldToolPage"));
-const WorldGraph = lazy(() => import("./pages/WorldGraph"));
+const WorldGraphRedirect = lazy(() => import("./pages/WorldGraphRedirect"));
 const WikiPageRoute = lazy(() => import("./pages/WikiPageRoute"));
 const WorldChronicle = lazy(() => import("./pages/WorldChronicle"));
 const WorldWritingSpace = lazy(() => import("./pages/WorldWritingSpace"));
@@ -185,12 +182,10 @@ const App = () => (
         <MotionConfig reducedMotion="user">
         <TooltipProvider>
           <Toaster />
-          <Sonner />
           <BrowserRouter>
             <ScrollToTop />
-            <StellarBackground />
+            <BackgroundLayer />
             <KonamiCode />
-            <VideoBackground />
             <BadgeEvaluatorMount />
             <BadgeEarnedDialog />
             <ErrorBoundary>
@@ -231,7 +226,7 @@ const App = () => (
                   <Route path="pages/:entryId" element={<WikiPageRoute />} />
                   <Route path="wiki" element={<WikiBrowse />} />
                   <Route path="chronicle" element={<WorldChronicle />} />
-                  <Route path="graph" element={<WorldGraph />} />
+                  <Route path="graph" element={<WorldGraphRedirect />} />
                   <Route path="connections" element={<WorldConnections />} />
                   {/* Legacy Writing Space unified into Studio (redirects) */}
                   <Route path="write" element={<WorldWriteRedirect />} />
@@ -476,8 +471,7 @@ const App = () => (
             </ErrorBoundary>
             <FABStack />
             <CookieConsent />
-            <TextureOverlay />
-            <DataBurstOverlay />
+            <AmbientEffects />
             <StatusBar />
             <AudioPlayer />
           </BrowserRouter>

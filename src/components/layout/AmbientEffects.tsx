@@ -5,8 +5,9 @@ import { HEADER_BURSTS, EDGE_BURSTS, RIGHT_EDGE_BURSTS, FOOTER_BURSTS } from "@/
 import { useAuth } from "@/contexts/AuthContext";
 import { useWorlds } from "@/hooks/use-worlds";
 import { useSubscription } from "@/hooks/use-subscription";
+import "./texture-overlay.css";
 
-// Simulator routes, overlay hidden on these (same as TextureOverlay)
+// Simulator routes use canvas/WebGL; both effects cause artifacts there.
 const SIMULATOR_ROUTES = ["/rogue", "/tools/tidelock", "/tools/exosky", "/tools/stellar-cartographer"];
 
 /** Sets --scroll-y on <html> for CSS-driven parallax. Runs once globally. */
@@ -41,10 +42,18 @@ const renderBurst = (b: (typeof HEADER_BURSTS)[number], key: string) =>
     <DataBurst key={key} content={b.content} position={b.position} variant={b.variant} animation={b.animation} parallax={b.parallax} />
   );
 
-const DataBurstOverlay = () => {
+/**
+ * AmbientEffects, single mount point for decorative overlays.
+ *
+ * Merges the grain/scanline texture (TextureOverlay) and the data-burst
+ * telemetry flourishes (DataBurstOverlay) — chrome audit, 06-BUILD-ORDER.md
+ * Phase 0 ("always-on layer count from ten to six"). Both were independently
+ * mounted, both share the same simulator-route exclusion; one component now.
+ */
+const AmbientEffects = () => {
   const { pathname } = useLocation();
   const { user } = useAuth();
-  const { data: worlds } = useWorlds();
+  const { worlds } = useWorlds();
   const { isSubscribed } = useSubscription();
 
   useScrollYProperty();
@@ -59,24 +68,31 @@ const DataBurstOverlay = () => {
   const tier = user ? (isSubscribed ? "PRO" : "FREE") : "ANON";
 
   return (
-    <div
-      className="fixed inset-0 pointer-events-none select-none z-0 overflow-hidden"
-      aria-hidden="true"
-    >
-      {HEADER_BURSTS.map((b, i) => renderBurst(b, `h${i}`))}
-      {EDGE_BURSTS.map((b, i) => renderBurst(b, `e${i}`))}
-      {RIGHT_EDGE_BURSTS.map((b, i) => renderBurst(b, `r${i}`))}
-      {FOOTER_BURSTS.map((b, i) => renderBurst(b, `f${i}`))}
-      {user && (
-        <DataBurst
-          content={`TIER: ${tier} // WORLDS: ${worldCount}`}
-          position={{ bottom: "52px", right: "12px" }}
-          variant="status"
-          animation="breathe"
-        />
-      )}
-    </div>
+    <>
+      <div className="sf-texture-overlay" aria-hidden="true">
+        <div className="sf-grain" />
+        <div className="sf-scanlines" />
+      </div>
+
+      <div
+        className="fixed inset-0 pointer-events-none select-none z-0 overflow-hidden"
+        aria-hidden="true"
+      >
+        {HEADER_BURSTS.map((b, i) => renderBurst(b, `h${i}`))}
+        {EDGE_BURSTS.map((b, i) => renderBurst(b, `e${i}`))}
+        {RIGHT_EDGE_BURSTS.map((b, i) => renderBurst(b, `r${i}`))}
+        {FOOTER_BURSTS.map((b, i) => renderBurst(b, `f${i}`))}
+        {user && (
+          <DataBurst
+            content={`TIER: ${tier} // WORLDS: ${worldCount}`}
+            position={{ bottom: "52px", right: "12px" }}
+            variant="status"
+            animation="breathe"
+          />
+        )}
+      </div>
+    </>
   );
 };
 
-export default DataBurstOverlay;
+export default AmbientEffects;

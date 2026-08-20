@@ -242,8 +242,8 @@ const WorldLayout = () => {
                 ) : (
                   <EntitySidebar
                     worldId={worldId}
-                    onEntityClick={(entityId) => navigate(`/worlds/${worldId}/graph?entity=${entityId}`)}
-                    onCreateEntity={() => navigate(`/worlds/${worldId}/graph?create=true`)}
+                    onEntityClick={(entityId) => navigate(`/worlds/${worldId}/connections?focus=${entityId}`)}
+                    onCreateEntity={() => navigate(`/worlds/${worldId}/connections?create=true`)}
                     onDeleteEntity={setDeleteEntityId}
                   />
                 )

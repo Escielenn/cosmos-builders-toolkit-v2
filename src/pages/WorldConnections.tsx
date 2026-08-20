@@ -1,5 +1,5 @@
-import { useState, useMemo, useCallback, lazy, Suspense } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useState, useMemo, useCallback, useEffect, lazy, Suspense } from "react";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import { ArrowLeft, Network, ExternalLink, LayoutGrid, List, ChevronDown, ChevronRight, Globe, Dna, Sparkles, GitBranch, Rocket, Zap, Calculator, FileText, Filter, Crown, Users, TreePine, Plus } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
 import Header from "@/components/layout/Header";
@@ -71,6 +71,8 @@ const WorldConnections = () => {
   const isInWorldLayout = useIsWorldLayout();
   const { worlds } = useWorlds();
   const { nodes, edges, isLoading } = useWorldGraph(worldId);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const focusEntityId = searchParams.get("focus");
   const [viewMode, setViewMode] = useState<ViewMode>("mindmap");
   const [sortBy, setSortBy] = useState<SortBy>("toolType");
   const [filterBy, setFilterBy] = useState<FilterBy>("all");
@@ -87,6 +89,30 @@ const WorldConnections = () => {
   const deleteEntity = useDeleteEntity(resolvedWorldId || undefined);
   const updateEntity = useUpdateEntity(resolvedWorldId || undefined);
   const createEntity = useCreateEntity(resolvedWorldId || undefined);
+
+  // Deep links from EntityHoverCard, CreateElementDialog, and the world sidebar
+  // (`?focus=<id>` selects an entity; `?create=true` opens the create dialog).
+  // Consume once, then strip so the params don't stick around after navigation.
+  useEffect(() => {
+    const hasCreate = searchParams.get("create") === "true";
+    const hasFocus = searchParams.has("focus");
+    if (!hasCreate && !hasFocus) return;
+    if (hasCreate) {
+      setCreateEntityParentId(null);
+      setShowCreateEntity(true);
+    }
+    // Strip after EntityTreeView has had a render to pick up initialFocusId.
+    const id = window.setTimeout(() => {
+      setSearchParams((prev) => {
+        const next = new URLSearchParams(prev);
+        next.delete("create");
+        next.delete("focus");
+        return next;
+      }, { replace: true });
+    }, 0);
+    return () => window.clearTimeout(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleTreeCreateChild = useCallback((parentId: string) => {
     setCreateEntityParentId(parentId);
@@ -326,6 +352,7 @@ const WorldConnections = () => {
                     onDeleteEntity={handleTreeDeleteEntity}
                     onReparent={handleTreeReparent}
                     onFocusEntity={(id) => setSelectedNodeId(id)}
+                    initialFocusId={focusEntityId}
                   />
                 ) : (
                   <div className="flex flex-col items-center justify-center h-[400px] text-center">
