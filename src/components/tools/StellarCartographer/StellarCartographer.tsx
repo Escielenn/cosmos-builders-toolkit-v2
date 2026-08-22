@@ -2091,7 +2091,7 @@ const StellarCartographer: React.FC = () => {
               &#9671; {selectedStar ? `Publish "${selectedStar.name}"` : 'Publish Galaxy'}
             </button>
             {selectedStar && (
-              <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.35)', marginTop: 4, letterSpacing: '0.5px' }}>
+              <div style={{ fontSize: 12, color: 'var(--t4)', marginTop: 4, letterSpacing: '0.5px' }}>
                 Deselect star to publish entire galaxy
               </div>
             )}
