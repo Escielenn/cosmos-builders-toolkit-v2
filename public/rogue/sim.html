@@ -816,6 +816,16 @@ function drawGravityVectors(){
   }
 }
 
+// Label text sized off cam.zoom directly, not off the body's rendered radius.
+// Radii saturate (stars cap at 28px, planets at 45% of that) so the scene
+// doesn't turn into a screen-filling blob at high zoom — but that saturation
+// was leaking into label size too, so text stopped growing at ~9px while
+// zoom still had 8x of range left. Zooming in past that point moved bodies
+// further apart with no way to make their names readable. Floor/ceiling here
+// keep labels legible even fully zoomed out and let them keep growing well
+// past where the orbs themselves stop.
+function labelFontPx(){return Math.max(11,Math.min(20,cam.zoom*.025+9));}
+
 function drawStar(b){
   const s=toS(b.x,b.y),time=Date.now()*.001,c=b.color;
   // Size: base from zoom, scaled by stellar radius (approx R ~ M^0.8 for main seq)
@@ -824,7 +834,7 @@ function drawStar(b){
   const g=makeGrad(s.sx,s.sy,0,r*5,[[0,hexRGBA(c,.2)],[.3,hexRGBA(c,.07)],[1,hexRGBA(c,0)]]);ctx.fillStyle=g;ctx.beginPath();ctx.arc(s.sx,s.sy,r*5,0,Math.PI*2);ctx.fill();
   const rayAlpha=hexRGBA(c,.06);for(let i=0;i<6;i++){const a=(i/6)*Math.PI*2+time*.08,len=r*(1.4+Math.sin(time*1.2+i)*.2);ctx.strokeStyle=rayAlpha;ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(s.sx+Math.cos(a)*r,s.sy+Math.sin(a)*r);ctx.lineTo(s.sx+Math.cos(a)*len,s.sy+Math.sin(a)*len);ctx.stroke();}
   const cg=makeGrad(s.sx-r*.2,s.sy-r*.2,0,r,[[0,lighten(c,60)],[.4,c],[1,darken(c,40)]]);ctx.fillStyle=cg;ctx.beginPath();ctx.arc(s.sx,s.sy,r,0,Math.PI*2);ctx.fill();
-  if(showLabels){ctx.fillStyle=hexRGBA(c,.4);ctx.font=`${Math.max(7,Math.min(9,r*.6))}px "DM Sans"`;ctx.textAlign='center';ctx.fillText(b.name.toUpperCase(),s.sx,s.sy+r+12);}
+  if(showLabels){ctx.fillStyle=hexRGBA(c,.4);ctx.font=`${labelFontPx()}px "DM Sans"`;ctx.textAlign='center';ctx.fillText(b.name.toUpperCase(),s.sx,s.sy+r+12);}
 }
 
 function drawPlanet(b){
@@ -838,7 +848,7 @@ function drawPlanet(b){
   // Rings for gas giants with size > 1
   if(b.ptype==='gas'&&b.size>1&&r>3){ctx.save();ctx.translate(s.sx,s.sy);ctx.scale(1,.3);ctx.strokeStyle=hexRGBA(b.color,ej?.15:.3);ctx.lineWidth=2;ctx.beginPath();ctx.arc(0,0,r*1.8,0,Math.PI*2);ctx.stroke();ctx.restore();}
   if(ej){ctx.fillStyle='rgba(150,180,210,.25)';ctx.beginPath();ctx.arc(s.sx,s.sy,r,0,Math.PI*2);ctx.fill();}
-  if(showLabels){ctx.fillStyle=hexRGBA(b.color,ej?.25:.4);ctx.font=`${Math.max(6,Math.min(9,r*.8))}px "DM Sans"`;ctx.textAlign='center';ctx.fillText((b.sym||'●')+' '+b.name.toUpperCase(),s.sx,s.sy+r+11);if(ej){ctx.fillStyle='rgba(46,204,113,.3)';ctx.fillText('EJECTED',s.sx,s.sy+r+20);}}
+  if(showLabels){const lf=labelFontPx();ctx.fillStyle=hexRGBA(b.color,ej?.25:.4);ctx.font=`${lf}px "DM Sans"`;ctx.textAlign='center';ctx.fillText((b.sym||'●')+' '+b.name.toUpperCase(),s.sx,s.sy+r+11);if(ej){ctx.fillStyle='rgba(46,204,113,.3)';ctx.fillText('EJECTED',s.sx,s.sy+r+11+lf*1.15);}}
 }
 
 function drawIntruder(b){
@@ -846,9 +856,9 @@ function drawIntruder(b){
   // Size intruder proportionally to system
   const sys=getSystemDef();const starM=sys.starMass||1;const starR=Math.pow(Math.max(.08,starM),.8);
   const starPx=Math.max(6,Math.min(28,cam.zoom*.04*starR+4));
-  if(b.intruderType==='bh'){const r=Math.max(4,Math.min(starPx*.7,cam.zoom*.035+3));const lg=makeGrad(s.sx,s.sy,r*1.5,r*5,[[0,'rgba(231,76,60,.08)'],[1,'rgba(150,30,20,0)']]);ctx.fillStyle=lg;ctx.beginPath();ctx.arc(s.sx,s.sy,r*5,0,Math.PI*2);ctx.fill();ctx.save();ctx.translate(s.sx,s.sy);ctx.rotate(.3+time*.04);ctx.scale(1,.3);for(let i=0;i<3;i++){ctx.strokeStyle=`rgba(255,${110-i*25},${50-i*10},${.22-i*.05})`;ctx.lineWidth=2.5-i*.5;ctx.beginPath();ctx.arc(0,0,r*(2+i*.5),0,Math.PI*2);ctx.stroke();}ctx.restore();ctx.fillStyle='#000';ctx.beginPath();ctx.arc(s.sx,s.sy,r,0,Math.PI*2);ctx.fill();ctx.strokeStyle='rgba(180,50,30,.5)';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(s.sx,s.sy,r,0,Math.PI*2);ctx.stroke();if(showLabels){ctx.fillStyle='rgba(231,76,60,.4)';ctx.font='8px "DM Sans"';ctx.textAlign='center';ctx.fillText('● BLACK HOLE',s.sx,s.sy+r*1.5+14);}}
-  else if(b.intruderType==='bd'){const r=Math.max(5,Math.min(starPx*.6,cam.zoom*.04+3));const g=makeGrad(s.sx,s.sy,0,r*4,[[0,'rgba(200,85,61,.15)'],[1,'rgba(100,30,20,0)']]);ctx.fillStyle=g;ctx.beginPath();ctx.arc(s.sx,s.sy,r*4,0,Math.PI*2);ctx.fill();const cg=makeGrad(s.sx-r*.25,s.sy-r*.25,0,r,[[0,'#d4785a'],[.8,'#6b3020'],[1,'#3a1810']]);ctx.fillStyle=cg;ctx.beginPath();ctx.arc(s.sx,s.sy,r,0,Math.PI*2);ctx.fill();if(showLabels){ctx.fillStyle='rgba(200,85,61,.4)';ctx.font='8px "DM Sans"';ctx.textAlign='center';ctx.fillText('◉ BROWN DWARF',s.sx,s.sy+r+14);}}
-  else{const r=Math.max(4,Math.min(starPx*.5,cam.zoom*.03+2));const cg=makeGrad(s.sx-r*.3,s.sy-r*.3,0,r,[[0,'#b89860'],[.8,'#5a4410'],[1,'#2a2008']]);ctx.fillStyle=cg;ctx.beginPath();ctx.arc(s.sx,s.sy,r,0,Math.PI*2);ctx.fill();if(showLabels){ctx.fillStyle='rgba(139,105,20,.4)';ctx.font='8px "DM Sans"';ctx.textAlign='center';ctx.fillText('◉ ROGUE PLANET',s.sx,s.sy+r+14);}}
+  if(b.intruderType==='bh'){const r=Math.max(4,Math.min(starPx*.7,cam.zoom*.035+3));const lg=makeGrad(s.sx,s.sy,r*1.5,r*5,[[0,'rgba(231,76,60,.08)'],[1,'rgba(150,30,20,0)']]);ctx.fillStyle=lg;ctx.beginPath();ctx.arc(s.sx,s.sy,r*5,0,Math.PI*2);ctx.fill();ctx.save();ctx.translate(s.sx,s.sy);ctx.rotate(.3+time*.04);ctx.scale(1,.3);for(let i=0;i<3;i++){ctx.strokeStyle=`rgba(255,${110-i*25},${50-i*10},${.22-i*.05})`;ctx.lineWidth=2.5-i*.5;ctx.beginPath();ctx.arc(0,0,r*(2+i*.5),0,Math.PI*2);ctx.stroke();}ctx.restore();ctx.fillStyle='#000';ctx.beginPath();ctx.arc(s.sx,s.sy,r,0,Math.PI*2);ctx.fill();ctx.strokeStyle='rgba(180,50,30,.5)';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(s.sx,s.sy,r,0,Math.PI*2);ctx.stroke();if(showLabels){ctx.fillStyle='rgba(231,76,60,.4)';ctx.font=`${labelFontPx()}px "DM Sans"`;ctx.textAlign='center';ctx.fillText('● BLACK HOLE',s.sx,s.sy+r*1.5+14);}}
+  else if(b.intruderType==='bd'){const r=Math.max(5,Math.min(starPx*.6,cam.zoom*.04+3));const g=makeGrad(s.sx,s.sy,0,r*4,[[0,'rgba(200,85,61,.15)'],[1,'rgba(100,30,20,0)']]);ctx.fillStyle=g;ctx.beginPath();ctx.arc(s.sx,s.sy,r*4,0,Math.PI*2);ctx.fill();const cg=makeGrad(s.sx-r*.25,s.sy-r*.25,0,r,[[0,'#d4785a'],[.8,'#6b3020'],[1,'#3a1810']]);ctx.fillStyle=cg;ctx.beginPath();ctx.arc(s.sx,s.sy,r,0,Math.PI*2);ctx.fill();if(showLabels){ctx.fillStyle='rgba(200,85,61,.4)';ctx.font=`${labelFontPx()}px "DM Sans"`;ctx.textAlign='center';ctx.fillText('◉ BROWN DWARF',s.sx,s.sy+r+14);}}
+  else{const r=Math.max(4,Math.min(starPx*.5,cam.zoom*.03+2));const cg=makeGrad(s.sx-r*.3,s.sy-r*.3,0,r,[[0,'#b89860'],[.8,'#5a4410'],[1,'#2a2008']]);ctx.fillStyle=cg;ctx.beginPath();ctx.arc(s.sx,s.sy,r,0,Math.PI*2);ctx.fill();if(showLabels){ctx.fillStyle='rgba(139,105,20,.4)';ctx.font=`${labelFontPx()}px "DM Sans"`;ctx.textAlign='center';ctx.fillText('◉ ROGUE PLANET',s.sx,s.sy+r+14);}}
 }
 
 function updateData(){
