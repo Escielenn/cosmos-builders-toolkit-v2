@@ -5,7 +5,9 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-none text-sm font-medium ring-offset-background transition-all duration-300 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 active:scale-[0.98]",
+  // Focus ring and disabled colors come from the global :focus-visible / :disabled
+  // rules in src/styles/tokens.css — a component rule here would suppress them.
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-none text-sm font-medium transition-all duration-300 ease-out disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 active:scale-[0.98]",
   {
     variants: {
       variant: {
@@ -14,7 +16,7 @@ const buttonVariants = cva(
         // Destructive: crimson with white fill-sweep (same pattern as primary)
         destructive: "bg-destructive text-destructive-foreground sf-btn-lift",
         // Outline: transparent with border, primary fill-sweep
-        outline: "border border-muted-foreground bg-transparent sf-fill-sweep sf-fill-sweep--primary hover:border-primary hover:text-primary",
+        outline: "border border-sf-line-interactive bg-transparent sf-fill-sweep sf-fill-sweep--primary hover:border-primary hover:text-primary",
         // Secondary: elevated surface with neutral fill-sweep
         secondary: "bg-secondary text-secondary-foreground sf-fill-sweep sf-fill-sweep--secondary",
         // Ghost: minimal with subtle fill-sweep
@@ -22,24 +24,24 @@ const buttonVariants = cva(
         // Link: sweep underline on hover
         link: "text-primary sf-text-link",
         // StellarForge signature: uppercase, letter-spaced, primary fill-sweep
-        sf: "bg-transparent border border-muted-foreground text-t1 uppercase tracking-[0.15em] text-xs font-medium sf-fill-sweep sf-fill-sweep--primary hover:border-primary hover:text-primary",
+        sf: "bg-transparent border border-sf-line-interactive text-t1 uppercase tracking-[0.15em] text-xs font-medium sf-fill-sweep sf-fill-sweep--primary hover:border-primary hover:text-primary",
         /* ── April 2026 handoff ── zero-radius, teal-filled primary */
         "sf-primary":
           "border border-sf-teal bg-sf-teal text-[hsl(var(--accent-on-accent))] font-sans font-medium uppercase tracking-[1.2px] transition-base ease-sf-out hover:shadow-sf-glow-teal hover:-translate-y-[1px] active:translate-y-0",
         /* ── April 2026 handoff ── transparent outline ghost */
         "sf-ghost":
-          "border border-sf-border-strong bg-transparent text-t1 font-sans font-medium uppercase tracking-[1.2px] transition-base ease-sf-out hover:border-sf-teal hover:text-sf-teal-bright hover:shadow-sf-inset-teal",
+          "border border-sf-line-interactive bg-transparent text-t1 font-sans font-medium uppercase tracking-[1.2px] transition-base ease-sf-out hover:border-sf-teal hover:text-sf-teal-bright hover:shadow-sf-inset-teal",
       },
       size: {
-        /* Heights target a comfortable desktop hit area; `default` and up sit
-           at/above the 44px touch target in the accessibility spec. `sm` stays
-           compact for dense toolbars but no longer drops below 40px. */
-        default: "h-11 px-5 py-2",
-        sm: "h-10 px-4",
+        /* Heights target a comfortable desktop hit area; every size clears the
+           44px hit-target minimum via min-h-hit, even where the visual height
+           (padding-driven) reads more compact. */
+        default: "h-11 min-h-hit px-5 py-2",
+        sm: "h-10 min-h-hit px-4",
         lg: "h-12 px-8",
         icon: "h-11 w-11",
         /* ── April 2026 handoff sizes ── match tracking-[1.2px] text sizes from the spec */
-        "sf-sm": "h-10 text-[12px] px-4 py-2",
+        "sf-sm": "h-10 min-h-hit text-[12px] px-4 py-2",
         "sf-md": "h-11 text-[14px] px-[22px] py-3",
         "sf-lg": "h-12 text-[15px] px-8 py-4",
       },

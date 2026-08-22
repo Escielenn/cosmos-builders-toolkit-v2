@@ -15,6 +15,10 @@
       object-src 'none';
       base-uri 'self';
     " />
+    <!-- StellarForge System: prevent a flash of default contrast/ambient on load.
+         External file, not inline, so it isn't blocked by the CSP's script-src
+         (no 'unsafe-inline' there on purpose). -->
+    <script src="/no-flash.js"></script>
     <title>StellarForge - Science Fiction Worldbuilding Tools</title>
     <meta name="description" content="Science fiction worldbuilding tools. Create rich, lived-in worlds with comprehensive tools for spacecraft, planets, cultures, and more." />
     <meta name="author" content="StellarForge" />

@@ -8,8 +8,9 @@ const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<"input">>(
       <input
         type={type}
         className={cn(
-          // April 2026 handoff: zero radius, teal focus ring at 35% opacity.
-          "flex h-11 w-full rounded-none border border-sf-border bg-background px-4 py-2 text-base font-mono file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-t1 placeholder:font-heading placeholder:uppercase placeholder:tracking-[0.08em] placeholder:text-t3/60 focus-visible:outline-none focus-visible:border-sf-teal/[0.35] disabled:cursor-not-allowed disabled:opacity-50 md:text-sm transition-colors duration-base",
+          // Border, focus ring, and disabled colors come from the global
+          // input/select/textarea and :focus-visible rules in tokens.css.
+          "flex h-11 w-full rounded-none border border-sf-line-interactive bg-background px-4 py-2 text-base font-mono file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-t1 placeholder:font-heading placeholder:uppercase placeholder:tracking-[0.08em] disabled:cursor-not-allowed transition-colors duration-base",
           className,
         )}
         ref={ref}

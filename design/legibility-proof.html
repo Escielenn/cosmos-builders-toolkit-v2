@@ -1,0 +1,229 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>StellarForge — Legibility: before / after</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;background:#05070C;color:#C9CDD3;font-family:'DM Sans',system-ui,sans-serif;font-size:16px;line-height:1.6}
+  .wrap{max-width:1280px;margin:0 auto;padding:40px 24px 80px}
+  h1{font-size:30px;font-weight:400;color:#FAFAFA;letter-spacing:.02em;margin:0 0 6px}
+  .lede{max-width:70ch;color:#A7AAB0;margin:0 0 34px}
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+  @media(max-width:940px){.split{grid-template-columns:1fr}}
+  .pane{position:relative;border:1px solid #3A4258;overflow:hidden}
+  .tag{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+        padding:9px 16px;background:#141A28;color:#A7AAB0;border-bottom:1px solid #3A4258}
+  .body{padding:28px 26px 30px;position:relative;z-index:2}
+  .card{padding:18px 20px}
+  .kv{display:flex;justify-content:space-between;padding:9px 0}
+  .row{display:flex;gap:12px;margin-top:20px;flex-wrap:wrap}
+  .grain{position:absolute;inset:0;z-index:1;pointer-events:none;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+  table{width:100%;border-collapse:collapse;margin-top:14px;font-size:14px}
+  th{text-align:left;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;
+     text-transform:uppercase;color:#9799A0;font-weight:500;padding:8px 10px;border-bottom:1px solid #3A4258}
+  td{padding:8px 10px;border-bottom:1px solid #232A3A;vertical-align:middle}
+  td.n{font-family:'JetBrains Mono',monospace;color:#C9CDD3}
+  code{font-family:'JetBrains Mono',monospace;font-size:12px;color:#A7AAB0}
+  .sw{display:inline-block;width:15px;height:15px;margin-right:9px;vertical-align:-3px;border:1px solid #3A4258}
+  .chip{display:inline-block;padding:6px 14px;font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:.08em}
+  h2.sec{font-size:20px;font-weight:500;color:#FAFAFA;margin:48px 0 4px}
+  .note{max-width:74ch;color:#A7AAB0;margin:0}
+  .ratio{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:12px;margin-top:16px}
+  .rc{border:1px solid #3A4258;padding:14px 16px;background:#0F1420}
+  .rc .lbl{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#9799A0}
+  .rc .was{color:#FF658B;font-family:'JetBrains Mono',monospace;font-size:20px}
+  .rc .now{color:#3DFFCD;font-family:'JetBrains Mono',monospace;font-size:20px}
+  .arrow{color:#787D87;padding:0 6px}
+</style></head><body><div class="wrap">
+
+<h1>Legibility — before / after</h1>
+<p class="lede">Same layout, same copy, same brand void. The only difference is the token set.
+Look at the panel edges, the button outlines, the mono eyebrows, and the disabled button.</p>
+
+<div class="split">
+<section class="pane" style="background:#0A0E17">
+  <header class="tag">BEFORE — shipping today</header>
+  <div class="body">
+
+    <div style="font-size:11px;letter-spacing:0.18em;font-weight:500;text-transform:uppercase;color:rgba(255,255,255,0.28);font-family:ui-monospace,monospace">// 02 · WORLD SURVEY</div>
+    <h2 style="font-size:34px;font-weight:300;color:#FAFAFA;margin:10px 0 6px;letter-spacing:.02em">Genesis: Planetary Profile</h2>
+    <p style="font-size:15px;line-height:1.55;color:#C8C8C8;margin:0 0 22px;max-width:52ch">Define your world's stellar environment, physical characteristics, and the narrative pressures that shape life.</p>
+
+    <div class="card" style="background:#0E1320;border:1px solid rgba(255,255,255,0.08)">
+      <div style="font-size:11px;letter-spacing:0.18em;font-weight:500;text-transform:uppercase;color:rgba(255,255,255,0.28);font-family:ui-monospace,monospace">SURFACE CONDITIONS</div>
+      <div class="kv">
+        <span style="font-family:ui-monospace,monospace;font-size:13px;color:rgba(255,255,255,0.45)">SURFACE GRAVITY</span>
+        <span style="font-family:ui-monospace,monospace;font-size:13px;color:#15C17B">1.40 g</span>
+      </div>
+      <div class="kv" style="border-top:1px solid rgba(255,255,255,0.08)">
+        <span style="font-family:ui-monospace,monospace;font-size:13px;color:rgba(255,255,255,0.45)">DAY LENGTH</span>
+        <span style="font-family:ui-monospace,monospace;font-size:13px;color:#C8C8C8">TIDALLY LOCKED</span>
+      </div>
+      <div class="kv" style="border-top:1px solid rgba(255,255,255,0.08)">
+        <span style="font-family:ui-monospace,monospace;font-size:13px;color:rgba(255,255,255,0.45)">ATMOSPHERE</span>
+        <span style="font-family:ui-monospace,monospace;font-size:13px;color:#C8C8C8">0.6 bar</span>
+      </div>
+      <p style="font-size:13px;color:rgba(255,255,255,0.15);margin:14px 0 0;font-family:ui-monospace,monospace">// PROJECTED · NOT CANON</p>
+    </div>
+
+    <div class="card" style="background:#161C2B;border:1px solid rgba(255,255,255,0.08);margin-top:14px">
+      <div style="font-size:11px;letter-spacing:0.18em;font-weight:500;text-transform:uppercase;color:rgba(255,255,255,0.28);font-family:ui-monospace,monospace">ELEVATED PANEL</div>
+      <p style="font-size:15px;line-height:1.55;color:#C8C8C8;margin:8px 0 0">This sits one layer above the card behind it.</p>
+    </div>
+
+    <label style="display:block;margin:22px 0 7px;font-size:11px;letter-spacing:0.18em;font-weight:500;text-transform:uppercase;color:rgba(255,255,255,0.28);font-family:ui-monospace,monospace">PLANET NAME</label>
+    <input value="" placeholder="Enter designation"
+      style="width:100%;padding:11px 14px;background:#0E1320;border:1px solid rgba(255,255,255,0.14);color:#FAFAFA;border-radius:0;font-size:16px;font-family:inherit">
+
+    <div class="row">
+      <button style="padding:12px 22px;background:#15C17B;border:1px solid #15C17B;color:#08110C;border-radius:0;text-transform:uppercase;letter-spacing:1.2px;font-size:13px;font-weight:500;font-family:inherit;cursor:pointer">Save Draft</button>
+      <button style="padding:12px 22px;background:transparent;border:1px solid rgba(255,255,255,0.14);color:#FAFAFA;border-radius:0;text-transform:uppercase;letter-spacing:1.2px;font-size:13px;font-weight:500;font-family:inherit;cursor:pointer">Export</button>
+      <button style="padding:12px 22px;border:1px solid;border-radius:0;text-transform:uppercase;letter-spacing:1.2px;font-size:13px;font-weight:500;font-family:inherit;opacity:0.4;background:#15C17B;border-color:#15C17B;color:#08110C">Publish</button>
+    </div>
+
+    <div class="row" style="margin-top:12px">
+      <button class="focusdemo" style="padding:12px 22px;background:transparent;border:1px solid rgba(255,255,255,0.14);color:#FAFAFA;border-radius:0;text-transform:uppercase;letter-spacing:1.2px;font-size:13px;font-weight:500;font-family:inherit;">Focused (no ring)</button>
+      <span style="align-self:center;font-size:13px;color:#FF3366;font-family:ui-monospace,monospace">PARAMETERS OUTSIDE RANGE</span>
+    </div>
+
+    <div style="margin-top:22px;height:1px;background:rgba(255,255,255,0.08)"></div>
+    <p style="font-size:12px;color:rgba(255,255,255,0.15);margin:12px 0 0;font-family:ui-monospace,monospace;letter-spacing:0.18em">39.87°N · 104.97°W · JD 2461268.583</p>
+  </div>
+  <div class="grain" style="opacity:.03"></div>
+</section>
+<section class="pane" style="background:#0A0E17">
+  <header class="tag">AFTER — derived</header>
+  <div class="body">
+
+    <div style="font-size:12px;letter-spacing:0.12em;font-weight:600;text-transform:uppercase;color:#9799A0;font-family:ui-monospace,monospace">// 02 · WORLD SURVEY</div>
+    <h2 style="font-size:34px;font-weight:300;color:#FAFAFA;margin:10px 0 6px;letter-spacing:.02em">Genesis: Planetary Profile</h2>
+    <p style="font-size:16px;line-height:1.6;color:#C9CDD3;margin:0 0 22px;max-width:52ch">Define your world's stellar environment, physical characteristics, and the narrative pressures that shape life.</p>
+
+    <div class="card" style="background:#1B2334;border:1px solid #676B75">
+      <div style="font-size:12px;letter-spacing:0.12em;font-weight:600;text-transform:uppercase;color:#9799A0;font-family:ui-monospace,monospace">SURFACE CONDITIONS</div>
+      <div class="kv">
+        <span style="font-family:ui-monospace,monospace;font-size:13px;color:#A7AAB0">SURFACE GRAVITY</span>
+        <span style="font-family:ui-monospace,monospace;font-size:13px;color:#15C17B">1.40 g</span>
+      </div>
+      <div class="kv" style="border-top:1px solid #676B75">
+        <span style="font-family:ui-monospace,monospace;font-size:13px;color:#A7AAB0">DAY LENGTH</span>
+        <span style="font-family:ui-monospace,monospace;font-size:13px;color:#C9CDD3">TIDALLY LOCKED</span>
+      </div>
+      <div class="kv" style="border-top:1px solid #676B75">
+        <span style="font-family:ui-monospace,monospace;font-size:13px;color:#A7AAB0">ATMOSPHERE</span>
+        <span style="font-family:ui-monospace,monospace;font-size:13px;color:#C9CDD3">0.6 bar</span>
+      </div>
+      <p style="font-size:13px;color:#9799A0;margin:14px 0 0;font-family:ui-monospace,monospace">// PROJECTED · NOT CANON</p>
+    </div>
+
+    <div class="card" style="background:#273249;border:1px solid #676B75;margin-top:14px">
+      <div style="font-size:12px;letter-spacing:0.12em;font-weight:600;text-transform:uppercase;color:#9799A0;font-family:ui-monospace,monospace">ELEVATED PANEL</div>
+      <p style="font-size:16px;line-height:1.6;color:#C9CDD3;margin:8px 0 0">This sits one layer above the card behind it.</p>
+    </div>
+
+    <label style="display:block;margin:22px 0 7px;font-size:12px;letter-spacing:0.12em;font-weight:600;text-transform:uppercase;color:#9799A0;font-family:ui-monospace,monospace">PLANET NAME</label>
+    <input value="" placeholder="Enter designation"
+      style="width:100%;min-height:44px;padding:11px 14px;background:#1B2334;border:1px solid #787D87;color:#FAFAFA;border-radius:0;font-size:16px;font-family:inherit">
+
+    <div class="row">
+      <button style="min-height:44px;padding:14px 24px;background:#15C17B;border:1px solid #15C17B;color:#0B0F18;border-radius:0;text-transform:uppercase;letter-spacing:1.2px;font-size:13px;font-weight:500;font-family:inherit;cursor:pointer">Save Draft</button>
+      <button style="min-height:44px;padding:14px 24px;background:transparent;border:1px solid #787D87;color:#FAFAFA;border-radius:0;text-transform:uppercase;letter-spacing:1.2px;font-size:13px;font-weight:500;font-family:inherit;cursor:pointer">Export</button>
+      <button style="min-height:44px;padding:14px 24px;border:1px solid;border-radius:0;text-transform:uppercase;letter-spacing:1.2px;font-size:13px;font-weight:500;font-family:inherit;background:#151B29;border-color:#575C65;color:#787B81">Publish</button>
+    </div>
+
+    <div class="row" style="margin-top:12px">
+      <button class="focusdemo" style="min-height:44px;padding:14px 24px;background:transparent;border:1px solid #787D87;color:#FAFAFA;border-radius:0;text-transform:uppercase;letter-spacing:1.2px;font-size:13px;font-weight:500;font-family:inherit;outline:2px solid #3DFFCD;outline-offset:2px">Focused</button>
+      <span style="align-self:center;font-size:13px;color:#FF658B;font-family:ui-monospace,monospace">PARAMETERS OUTSIDE RANGE</span>
+    </div>
+
+    <div style="margin-top:22px;height:1px;background:#676B75"></div>
+    <p style="font-size:12px;color:#9799A0;margin:12px 0 0;font-family:ui-monospace,monospace;letter-spacing:0.10em">39.87°N · 104.97°W · JD 2461268.583</p>
+  </div>
+  <div class="grain" style="opacity:.03"></div>
+</section></div>
+
+<h2 class="sec">What moved</h2>
+<div class="ratio">
+  <div class="rc"><div class="lbl">Panel / button border</div><span class="was">1.20:1</span><span class="arrow">→</span><span class="now">2.4–3.1:1</span></div>
+  <div class="rc"><div class="lbl">Plane separation</div><span class="was">1.04:1</span><span class="arrow">→</span><span class="now">1.23:1</span></div>
+  <div class="rc"><div class="lbl">Mono eyebrow (t4)</div><span class="was">2.45:1</span><span class="arrow">→</span><span class="now">4.50:1</span></div>
+  <div class="rc"><div class="lbl">t5 / near-hidden</div><span class="was">1.51:1</span><span class="arrow">→</span><span class="now">retired</span></div>
+  <div class="rc"><div class="lbl">Disabled button</div><span class="was">2.21:1</span><span class="arrow">→</span><span class="now">4.05:1</span></div>
+  <div class="rc"><div class="lbl">Visible focus ring</div><span class="was">none</span><span class="arrow">→</span><span class="now">10.0:1</span></div>
+  <div class="rc"><div class="lbl">Scrollbar thumb</div><span class="was">1.40:1</span><span class="arrow">→</span><span class="now">2.40:1</span></div>
+  <div class="rc"><div class="lbl">Body / editor size</div><span class="was">15 px</span><span class="arrow">→</span><span class="now">16 / 18 px</span></div>
+</div>
+
+<h2 class="sec">Accents — every brand hue survived</h2>
+<p class="note">Nothing was recoloured. Each accent now carries two stops: the canonical hue for fills,
+borders and icons, and a lifted variant that is the only value legal for body-size text. The button
+column proves each hue can still carry a solid label.</p>
+<table>
+  <thead><tr><th>Token</th><th>Canonical — fills, borders, icons</th><th>–text — body copy only</th><th>Filled</th></tr></thead>
+  <tbody><tr>
+          <td class="n">teal</td>
+          <td><span class="sw" style="background:#15C17B"></span><code>#15C17B</code></td>
+          <td><span class="sw" style="background:#15C17B"></span><code>#15C17B</code></td>
+          <td><span class="chip" style="background:#15C17B;color:#0B0F18">Button</span></td>
+        </tr><tr>
+          <td class="n">teal-bright</td>
+          <td><span class="sw" style="background:#3DFFCD"></span><code>#3DFFCD</code></td>
+          <td><span class="sw" style="background:#3DFFCD"></span><code>#3DFFCD</code></td>
+          <td><span class="chip" style="background:#3DFFCD;color:#0B0F18">Button</span></td>
+        </tr><tr>
+          <td class="n">amber</td>
+          <td><span class="sw" style="background:#FFB800"></span><code>#FFB800</code></td>
+          <td><span class="sw" style="background:#FFB800"></span><code>#FFB800</code></td>
+          <td><span class="chip" style="background:#FFB800;color:#0B0F18">Button</span></td>
+        </tr><tr>
+          <td class="n">amber-warm</td>
+          <td><span class="sw" style="background:#FFB347"></span><code>#FFB347</code></td>
+          <td><span class="sw" style="background:#FFB347"></span><code>#FFB347</code></td>
+          <td><span class="chip" style="background:#FFB347;color:#0B0F18">Button</span></td>
+        </tr><tr>
+          <td class="n">stellar</td>
+          <td><span class="sw" style="background:#5B8DEF"></span><code>#5B8DEF</code></td>
+          <td><span class="sw" style="background:#6698FC"></span><code>#6698FC</code></td>
+          <td><span class="chip" style="background:#5B8DEF;color:#0B0F18">Button</span></td>
+        </tr><tr>
+          <td class="n">emerald</td>
+          <td><span class="sw" style="background:#00FF88"></span><code>#00FF88</code></td>
+          <td><span class="sw" style="background:#00FF88"></span><code>#00FF88</code></td>
+          <td><span class="chip" style="background:#00FF88;color:#0B0F18">Button</span></td>
+        </tr><tr>
+          <td class="n">violet</td>
+          <td><span class="sw" style="background:#9B5DE5"></span><code>#9B5DE5</code></td>
+          <td><span class="sw" style="background:#BA7DFF"></span><code>#BA7DFF</code></td>
+          <td><span class="chip" style="background:#9B5DE5;color:#0B0F18">Button</span></td>
+        </tr><tr>
+          <td class="n">crimson</td>
+          <td><span class="sw" style="background:#FF3366"></span><code>#FF3366</code></td>
+          <td><span class="sw" style="background:#FF658B"></span><code>#FF658B</code></td>
+          <td><span class="chip" style="background:#FF3366;color:#0B0F18">Button</span></td>
+        </tr><tr>
+          <td class="n">azure</td>
+          <td><span class="sw" style="background:#4D9FFF"></span><code>#4D9FFF</code></td>
+          <td><span class="sw" style="background:#4D9FFF"></span><code>#4D9FFF</code></td>
+          <td><span class="chip" style="background:#4D9FFF;color:#0B0F18">Button</span></td>
+        </tr><tr>
+          <td class="n">magenta</td>
+          <td><span class="sw" style="background:#FF00AA"></span><code>#FF00AA</code></td>
+          <td><span class="sw" style="background:#FF54D4"></span><code>#FF54D4</code></td>
+          <td><span class="chip" style="background:#FF00AA;color:#0B0F18">Button</span></td>
+        </tr><tr>
+          <td class="n">cyan</td>
+          <td><span class="sw" style="background:#15C17B"></span><code>#15C17B</code></td>
+          <td><span class="sw" style="background:#15C17B"></span><code>#15C17B</code></td>
+          <td><span class="chip" style="background:#15C17B;color:#0B0F18">Button</span></td>
+        </tr></tbody>
+</table>
+
+<h2 class="sec">Planes</h2>
+<div class="ratio">
+  <div class="rc" style="background:#0A0E17"><div class="lbl">void</div><code>#0A0E17</code><div style="font-size:12px;color:#9799A0">unchanged — the brand</div></div>
+  <div class="rc" style="background:#1B2334"><div class="lbl">surface</div><code>#1B2334</code><div style="font-size:12px;color:#9799A0">was #0E1320</div></div>
+  <div class="rc" style="background:#273249"><div class="lbl">elevated</div><code>#273249</code><div style="font-size:12px;color:#9799A0">was #161C2B</div></div>
+</div>
+
+</div></body></html>

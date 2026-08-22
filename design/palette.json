@@ -1,0 +1,79 @@
+{
+  "planes": {
+    "void": "#0A0E17",
+    "surface": "#1B2334",
+    "elevated": "#273249"
+  },
+  "text": {
+    "t1": "#FAFAFA",
+    "t2": "#C9CDD3",
+    "t3": "#A7AAB0",
+    "t4": "#9799A0"
+  },
+  "line": {
+    "hairline": "#50555E",
+    "default": "#676B75",
+    "interactive": "#787D87",
+    "emphasis": "#979BA5"
+  },
+  "accent": {
+    "teal": "#15C17B",
+    "teal-bright": "#3DFFCD",
+    "amber": "#FFB800",
+    "amber-warm": "#FFB347",
+    "stellar": "#5B8DEF",
+    "emerald": "#00FF88",
+    "violet": "#9B5DE5",
+    "crimson": "#FF3366",
+    "azure": "#4D9FFF",
+    "magenta": "#FF00AA",
+    "cyan": "#15C17B"
+  },
+  "accent_text": {
+    "teal": "#15C17B",
+    "teal-bright": "#3DFFCD",
+    "amber": "#FFB800",
+    "amber-warm": "#FFB347",
+    "stellar": "#6698FC",
+    "emerald": "#00FF88",
+    "violet": "#BA7DFF",
+    "crimson": "#FF658B",
+    "azure": "#4D9FFF",
+    "magenta": "#FF54D4",
+    "cyan": "#15C17B"
+  },
+  "scrim": "rgba(5, 7, 12, 0.72)",
+  "on_accent": {
+    "teal": "#0B0F18",
+    "teal-bright": "#0B0F18",
+    "amber": "#0B0F18",
+    "amber-warm": "#0B0F18",
+    "stellar": "#0B0F18",
+    "emerald": "#0B0F18",
+    "violet": "#0B0F18",
+    "crimson": "#0B0F18",
+    "azure": "#0B0F18",
+    "magenta": "#0B0F18",
+    "cyan": "#0B0F18"
+  },
+  "fill_capable": {
+    "teal": true,
+    "teal-bright": true,
+    "amber": true,
+    "amber-warm": true,
+    "stellar": true,
+    "emerald": true,
+    "violet": true,
+    "crimson": true,
+    "azure": true,
+    "magenta": true,
+    "cyan": true
+  },
+  "state": {
+    "disabled_bg": "#151B29",
+    "disabled_line": "#575C65",
+    "disabled_text": "#787B81",
+    "focus": "#3DFFCD",
+    "selection_bg": "#277D82"
+  }
+}

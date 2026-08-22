@@ -237,7 +237,7 @@
   .glass-panel {
     @apply rounded-none border backdrop-blur-xl;
     background: hsl(var(--glass));
-    border-color: hsl(var(--glass-border));
+    border-color: var(--sf-line);
     box-shadow: var(--shadow-glass);
   }
 

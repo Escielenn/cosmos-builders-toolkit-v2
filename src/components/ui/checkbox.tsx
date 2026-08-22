@@ -8,12 +8,13 @@ const Checkbox = React.forwardRef<
   React.ElementRef<typeof CheckboxPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root>
 >(({ className, ...props }, ref) => (
-  // @ts-expect-error - Radix renders as button, needs type="button" to prevent form submission
   <CheckboxPrimitive.Root
     ref={ref}
     type="button"
     className={cn(
-      "peer h-4 w-4 shrink-0 rounded-none border border-primary ring-offset-background data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+      // Focus ring and disabled colors come from the global :focus-visible /
+      // :disabled rules in tokens.css — no component ring/opacity needed.
+      "peer h-4 w-4 shrink-0 rounded-none border border-sf-line-interactive data-[state=checked]:bg-primary data-[state=checked]:border-primary data-[state=checked]:text-primary-foreground disabled:cursor-not-allowed",
       className,
     )}
     {...props}
