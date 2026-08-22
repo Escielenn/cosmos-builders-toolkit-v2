@@ -14,7 +14,7 @@ import {
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { GlassPanel } from "@/components/ui/glass-panel";
-import { Badge } from "@/components/ui/badge";
+import { ProBadge } from "@/components/ui/pro-badge";
 import { Button } from "@/components/ui/button";
 import { getToolDisplayName, isProTool } from "@/lib/tools-config";
 import { GuideNav } from "@/components/layout/GuideNav";
@@ -304,11 +304,7 @@ function PathwayStep({
                   onClick={() => navigate(`/tools/${toolId}`)}
                 >
                   {getToolDisplayName(toolId)}
-                  {isPro && (
-                    <Badge variant="outline" className="text-[12px] text-sf-violet border-violet-400/20 px-1 py-0 ml-1">
-                      PRO
-                    </Badge>
-                  )}
+                  {isPro && <ProBadge className="ml-1" />}
                   <ExternalLink className="w-3 h-3 ml-0.5 text-t4" />
                 </Button>
               );

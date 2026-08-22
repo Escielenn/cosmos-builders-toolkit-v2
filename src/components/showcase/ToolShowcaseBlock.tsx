@@ -1,8 +1,8 @@
-import { Zap, Check, Lock } from "lucide-react";
+import { Check, Lock } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { ProBadge } from "@/components/ui/pro-badge";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { getToolIcon } from "@/components/icons/tool-icons";
 import { scrollReveal, viewportOnce } from "@/lib/animations";
@@ -68,12 +68,7 @@ const ToolShowcaseBlock = ({
               <h3 className="font-heading font-light text-xl md:text-2xl uppercase tracking-wider">
                 {title}
               </h3>
-              {isPro && (
-                <Badge className="bg-amber-500/20 text-sf-amber border-amber-500/30 sf-shimmer">
-                  <Zap className="w-3 h-3 mr-1" />
-                  Pro
-                </Badge>
-              )}
+              {isPro && <ProBadge />}
             </div>
             <p className="text-t3">{description}</p>
           </div>

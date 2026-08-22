@@ -2,6 +2,7 @@ import { Rocket, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
+import { FREE_TOOL_COUNT } from "@/lib/tools-config";
 
 const FinalCTASection = () => {
   return (
@@ -55,7 +56,7 @@ const FinalCTASection = () => {
         </div>
 
         <div className="mt-8 flex flex-wrap gap-6 justify-center text-sm text-t3 relative">
-          <span>✓ 3 tools free forever</span>
+          <span>✓ {FREE_TOOL_COUNT} tools free forever</span>
           <span>✓ No credit card required</span>
           <span>✓ Export your work anytime</span>
         </div>

@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Badge } from "@/components/ui/badge";
+import { ProBadge } from "@/components/ui/pro-badge";
 import { Button } from "@/components/ui/button";
 import { getToolIcon } from "@/components/icons/tool-icons";
 import { scrollRevealStagger, fadeUpItem, scrollReveal, viewportOnce } from "@/lib/animations";
@@ -247,12 +248,7 @@ const ToolPreviewCard = ({ id, title, description, status, isPro }: ToolPreviewC
           </div>
         )}
         <div className="flex gap-2">
-          {isPro && (
-            <Badge variant="secondary" className="text-xs bg-amber-500/20 text-sf-amber dark:text-sf-amber sf-shimmer">
-              <Zap className="w-3 h-3 mr-1" />
-              Pro
-            </Badge>
-          )}
+          {isPro && <ProBadge />}
           {status === "coming-soon" && (
             <Badge variant="secondary" className="text-xs">
               <Clock className="w-3 h-3 mr-1" />

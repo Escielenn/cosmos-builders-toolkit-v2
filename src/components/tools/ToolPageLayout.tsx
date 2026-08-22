@@ -32,6 +32,7 @@ import { useMetaTags } from "@/hooks/use-meta-tags";
 import { PinToWritingButton } from "@/components/tools/PinToWritingButton";
 import { useWorksheets } from "@/hooks/use-worksheets";
 import { extractWorksheetFacts, summarizeFacts } from "@/lib/worksheet-facts";
+import { ProBadge } from "@/components/ui/pro-badge";
 
 // ─── Props ───────────────────────────────────────────────────────────
 
@@ -253,11 +254,7 @@ export default function ToolPageLayout({
               <span className="font-normal">{cfg.brandName}:</span>{" "}
               <span className="font-light">{cfg.fullName}</span>
             </h1>
-            {cfg.isPro && (
-              <span className="font-mono text-[12px] tracking-[0.18em] uppercase self-start mt-2 px-2 py-0.5 rounded-sf-tag border border-sf-violet/[0.15] bg-sf-violet/[0.06] text-sf-violet shrink-0">
-                PRO
-              </span>
-            )}
+            {cfg.isPro && <ProBadge className="self-start mt-2 shrink-0" />}
           </div>
           <p className="font-sans text-sf-body text-t2 mt-7 max-w-[780px] leading-[1.55]">{cfg.subtitle}</p>
           {/* Accent light arc under the title */}

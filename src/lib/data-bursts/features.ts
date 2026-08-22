@@ -1,4 +1,5 @@
 import type { DataBurstConfig } from "./types";
+import { TOTAL_TOOL_COUNT } from "@/lib/tools-config";
 
 export const FEATURES_BURSTS: DataBurstConfig[] = [
   {
@@ -9,7 +10,7 @@ export const FEATURES_BURSTS: DataBurstConfig[] = [
     parallax: -0.05,
   },
   {
-    content: "SYSTEMS: 30 TOOLS ONLINE",
+    content: `SYSTEMS: ${TOTAL_TOOL_COUNT} TOOLS ONLINE`,
     position: { top: "18%", left: "1%" },
     variant: "margin",
     animation: "breathe",

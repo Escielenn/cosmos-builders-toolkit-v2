@@ -1,7 +1,8 @@
-import { LucideIcon, Lock, Zap, Unlock } from "lucide-react";
+import { LucideIcon, Lock, Unlock } from "lucide-react";
 import { Link } from "react-router-dom";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Badge } from "@/components/ui/badge";
+import { ProBadge } from "@/components/ui/pro-badge";
 import { isProTool, getToolRoute } from "@/lib/tools-config";
 import { useSubscription } from "@/hooks/use-subscription";
 import { getToolIcon } from "@/components/icons/tool-icons";
@@ -73,12 +74,7 @@ const ToolCard = ({
               </span>
             </Badge>
           )}
-          {isPro && !isSubscribed && (
-            <Badge variant="secondary" className="text-xs bg-amber-500/20 text-sf-amber dark:text-sf-amber sf-shimmer">
-              <Zap className="w-3 h-3 mr-1" />
-              Pro
-            </Badge>
-          )}
+          {isPro && !isSubscribed && <ProBadge />}
           {week && (
             <Badge variant="secondary" className="text-xs">
               Tool {week}

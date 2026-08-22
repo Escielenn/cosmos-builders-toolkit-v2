@@ -12,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
 import { PageBursts } from "@/components/ui/data-burst";
 import { AUTH_BURSTS } from "@/lib/data-bursts";
+import { TOTAL_TOOL_COUNT } from "@/lib/tools-config";
 
 const YOUTUBE_VIDEO_ID = "iGYxmAQa8DY";
 
@@ -181,7 +182,7 @@ const Auth = () => {
                 Systematic Worldbuilding
               </h3>
               <p className="text-sm text-t3">
-                20+ interconnected tools. Environment shapes biology, biology shapes
+                {TOTAL_TOOL_COUNT} interconnected tools. Environment shapes biology, biology shapes
                 psychology, psychology shapes mythology, mythology shapes culture.
               </p>
             </GlassPanel>

@@ -152,7 +152,7 @@ function LandingHero(): JSX.Element {
         <em className="font-light italic text-sf-stellar">writers.</em>
       </h1>
       <p className="mb-4 max-w-[540px] text-[17px] leading-[1.55] text-t2">
-        Twenty-five worldbuilding tools that talk to each other. They all work the same
+        {TOTAL_TOOL_COUNT} worldbuilding tools that talk to each other. They all work the same
         way:{" "}
         <strong className="font-medium text-t1">worlds cascade.</strong> Change the gravity, the
         star type, or how your species senses the world, and everything downstream moves with it.

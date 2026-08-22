@@ -13,6 +13,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Badge } from "@/components/ui/badge";
+import { ProBadge } from "@/components/ui/pro-badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
@@ -91,11 +92,7 @@ function ToolWikiCard({
           <Badge variant="outline" className="text-[12px] text-t4 border-white/10 px-1.5 py-0">
             {typeMeta.label}
           </Badge>
-          {isPro && (
-            <Badge variant="outline" className="text-[12px] text-sf-violet border-violet-400/20 px-1.5 py-0">
-              PRO
-            </Badge>
-          )}
+          {isPro && <ProBadge />}
         </div>
       </GlassPanel>
     </button>
@@ -146,11 +143,7 @@ function ToolDetail({
         <Badge variant="outline" className="text-[12px] text-t3 border-white/10 px-2 py-0.5">
           {typeMeta.label}
         </Badge>
-        {isPro && (
-          <Badge variant="outline" className="text-[12px] text-sf-violet border-violet-400/20 px-2 py-0.5">
-            PRO
-          </Badge>
-        )}
+        {isPro && <ProBadge />}
       </div>
 
       {/* Cascade position */}
