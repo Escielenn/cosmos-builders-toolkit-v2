@@ -74,14 +74,14 @@ function Card({
       ref={setNodeRef}
       style={{ transform: CSS.Transform.toString(transform), transition }}
       className={`group relative flex min-h-[150px] flex-col border bg-sf-surface/70 p-3 transition-colors ${
-        active ? "border-sf-teal/50" : "border-sf-border hover:border-sf-teal/30"
+        active ? "border-sf-teal" : "border-sf-line-interactive hover:border-sf-teal"
       } ${isDragging ? "z-10 opacity-80" : ""}`}
     >
       <button
         {...attributes}
         {...listeners}
         aria-label={`Reorder ${doc.title || "Untitled"}`}
-        className="absolute right-1 top-1 cursor-grab p-1 text-t5 opacity-0 transition-opacity group-hover:opacity-100"
+        className="absolute right-1 top-1 cursor-grab p-1 text-t4 opacity-0 transition-opacity group-hover:opacity-100"
       >
         <GripVertical className="h-3 w-3" />
       </button>
@@ -96,19 +96,19 @@ function Card({
             {meta.synopsis}
           </span>
         ) : (
-          <span className="block font-serif text-[13px] italic text-t5">
+          <span className="block font-serif text-[13px] italic text-t3">
             No synopsis yet
           </span>
         )}
       </button>
 
-      <div className="mt-2 flex flex-wrap items-center gap-2 border-t border-white/[0.05] pt-2 font-mono text-[12px] uppercase tracking-[1.2px]">
+      <div className="mt-2 flex flex-wrap items-center gap-2 border-t border-sf-line pt-2 font-mono text-[12px] uppercase tracking-[1.2px]">
         {meta.status && (
           <span className={STATUS_TONE[meta.status]}>{STATUS_LABELS[meta.status]}</span>
         )}
         {meta.pov && <span className="text-t4">{meta.pov}</span>}
-        {meta.when && <span className="text-t5">{meta.when}</span>}
-        <span className="ml-auto text-t5">{words.toLocaleString()}w</span>
+        {meta.when && <span className="text-t4">{meta.when}</span>}
+        <span className="ml-auto text-t4">{words.toLocaleString()}w</span>
       </div>
     </div>
   );
@@ -145,7 +145,7 @@ function Group({
 
   return (
     <section className="mb-8">
-      <div className="mb-3 flex items-baseline gap-3 border-b border-white/[0.06] pb-1.5">
+      <div className="mb-3 flex items-baseline gap-3 border-b border-sf-line pb-1.5">
         <h3 className="font-serif text-[17px] italic text-sf-emerald">{title}</h3>
         <span className="font-mono text-[12px] uppercase tracking-[1.2px] text-t4">
           {docs.length} {docs.length === 1 ? "scene" : "scenes"} ·{" "}

@@ -69,7 +69,7 @@ export function GoalSetting({ compact = false }: GoalSettingProps) {
             onKeyDown={(e) => {
               if (e.key === "Enter") handleSave(localGoal);
             }}
-            className="bg-transparent border-white/[0.08] rounded-xs font-mono text-sm"
+            className="bg-transparent rounded-xs font-mono text-sm"
           />
           <div className="flex items-center gap-1.5">
             {QUICK_GOALS.map((g) => (
@@ -78,7 +78,7 @@ export function GoalSetting({ compact = false }: GoalSettingProps) {
                 variant="outline"
                 size="sm"
                 className={`flex-1 text-[12px] px-0 h-7 ${
-                  localGoal === g ? "border-primary/40 text-primary" : ""
+                  localGoal === g ? "border-primary text-primary" : ""
                 }`}
                 onClick={() => handleSave(g)}
               >

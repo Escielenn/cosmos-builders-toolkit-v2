@@ -146,7 +146,7 @@ export function WritingEntityPanel({
             shows tab labels + collapse, so we only render the Back button
             when an entity is selected. Otherwise skip the header entirely. */}
         {(!embedded || selectedEntity) && (
-        <div className="flex items-center justify-between border-b border-sf-border px-3 py-2.5">
+        <div className="flex items-center justify-between border-b border-sf-line px-3 py-2.5">
           {selectedEntity ? (
             <button
               onClick={handleBack}
@@ -313,7 +313,7 @@ export function WritingEntityPanel({
             />
 
             {/* Insert buttons */}
-            <div className="flex gap-2 pt-2 border-t border-white/[0.06]">
+            <div className="flex gap-2 pt-2 border-t border-sf-line">
               <button
                 onClick={() => onInsertMention(selectedEntity.name)}
                 className="flex-1 flex items-center justify-center gap-1.5 px-2 py-2 text-[12px] font-sans font-medium uppercase tracking-[1px] text-sf-teal bg-sf-teal/[0.06] border border-sf-teal/[0.15] rounded-sm hover:bg-sf-teal/[0.12] transition-colors"
@@ -352,13 +352,13 @@ export function WritingEntityPanel({
             {/* Search input */}
             <div className="px-3 py-2">
               <div className="relative">
-                <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-t5" />
+                <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-t4" />
                 <input
                   type="text"
                   value={filter}
                   onChange={(e) => setFilter(e.target.value)}
                   placeholder="Search entities..."
-                  className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xs pl-7 pr-2.5 py-1.5 text-xs text-t2 placeholder:text-t5 focus:border-[#15C17B]/35 focus:outline-none"
+                  className="w-full rounded-xs pl-7 pr-2.5 py-1.5 text-xs text-t2"
                 />
               </div>
             </div>
@@ -384,7 +384,7 @@ export function WritingEntityPanel({
                       >
                         {CASCADE_STAGE_LABELS[stage]}
                       </span>
-                      <span className="text-[12px] font-mono text-t5 ml-auto">
+                      <span className="text-[12px] font-mono text-t4 ml-auto">
                         {stageEntities.length}
                       </span>
                     </div>
@@ -407,7 +407,7 @@ export function WritingEntityPanel({
                         <span className="text-xs text-t2 truncate group-hover:text-t1 transition-colors flex-1">
                           {entity.name}
                         </span>
-                        <span className="text-[12px] font-mono text-t5 uppercase tracking-wider flex-shrink-0">
+                        <span className="text-[12px] font-mono text-t4 uppercase tracking-wider flex-shrink-0">
                           {ENTITY_TYPE_LABELS[entity.entity_type] ??
                             entity.entity_type}
                         </span>
@@ -445,7 +445,7 @@ export function WritingEntityPanel({
   return (
     <aside
       className={cn(
-        "h-full flex-shrink-0 border-r border-white/[0.06] bg-sf-surface/90 backdrop-blur-md transition-all duration-300 ease-out overflow-hidden"
+        "h-full flex-shrink-0 border-r border-sf-line bg-sf-surface/90 backdrop-blur-md transition-all duration-300 ease-out overflow-hidden"
       )}
       style={{ width: open ? PANEL_WIDTH : 0 }}
     >

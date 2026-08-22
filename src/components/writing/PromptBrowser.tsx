@@ -68,8 +68,8 @@ export function PromptBrowser({ onStartWriting }: PromptBrowserProps) {
                     </p>
                     {p.wordGoal && (
                       <div className="flex items-center gap-1.5 mt-2">
-                        <Target className="w-3 h-3 text-t5" />
-                        <span className="font-mono text-[12px] text-t5">
+                        <Target className="w-3 h-3 text-t4" />
+                        <span className="font-mono text-[12px] text-t4">
                           {p.wordGoal} words
                         </span>
                       </div>

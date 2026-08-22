@@ -294,7 +294,7 @@ export function WriteSheet({
             <div className="relative">
               {entryId && (
                 <Pencil className={cn(
-                  "absolute left-0 text-t5 transition-all duration-500",
+                  "absolute left-0 text-t4 transition-all duration-500",
                   isWriting ? "top-1 w-3.5 h-3.5 -translate-x-5" : "top-2.5 w-4 h-4 -translate-x-7"
                 )} />
               )}
@@ -304,7 +304,7 @@ export function WriteSheet({
                 onBlur={handleTitleBlur}
                 placeholder="Untitled Entry"
                 className={cn(
-                  "w-full bg-transparent border-0 border-b border-white/[0.06] focus:border-primary/30 outline-none font-display uppercase tracking-sf-title text-t1 placeholder:text-t5 transition-all duration-500 ease-out pb-3",
+                  "w-full bg-transparent border-0 border-b border-sf-line focus:border-primary font-display uppercase tracking-sf-title text-t1 transition-all duration-500 ease-out pb-3",
                   isWriting
                     ? "text-lg md:text-xl mb-2"
                     : "text-3xl md:text-5xl mb-3"
@@ -375,7 +375,7 @@ export function WriteSheet({
             {/* Editor */}
             <Suspense
               fallback={
-                <div className="rounded-xs border border-white/[0.06] bg-white/[0.02] animate-pulse min-h-[400px]" />
+                <div className="rounded-xs border border-sf-line bg-white/[0.02] animate-pulse min-h-[400px]" />
               }
             >
               <RichTextEditor
@@ -398,7 +398,7 @@ export function WriteSheet({
           </div>
 
           {/* ─── Fixed footer ──────────────────────────────────────────── */}
-          <div className="fixed bottom-0 left-0 right-0 z-[60] bg-background/95 backdrop-blur-md border-t border-white/[0.06]">
+          <div className="fixed bottom-0 left-0 right-0 z-[60] bg-background/95 backdrop-blur-md border-t border-sf-line">
             <div className="max-w-3xl mx-auto px-6 py-3 flex items-center justify-between">
               {/* Left: word count + daily goal */}
               <div className="flex items-center gap-3">
@@ -408,14 +408,14 @@ export function WriteSheet({
 
                 {prompt?.wordGoal && (
                   <>
-                    <span className="text-t5">/</span>
+                    <span className="text-t4">/</span>
                     <span className="font-mono text-xs text-t4">
                       {prompt.wordGoal} goal
                     </span>
                   </>
                 )}
 
-                <span className="text-t5 hidden sm:inline">|</span>
+                <span className="text-t4 hidden sm:inline">|</span>
 
                 <div className="hidden sm:flex items-center gap-2">
                   <div className="w-16 h-1 rounded-xs bg-white/[0.06] overflow-hidden">
@@ -447,7 +447,7 @@ export function WriteSheet({
                   </span>
                 )}
                 {saveStatus === "idle" && entryId && (
-                  <span className="flex items-center gap-1 text-[12px] text-t5">
+                  <span className="flex items-center gap-1 text-[12px] text-t4">
                     <Check className="w-3 h-3" />
                     <span className="hidden sm:inline">Auto-saved</span>
                   </span>

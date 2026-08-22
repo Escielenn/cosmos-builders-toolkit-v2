@@ -160,13 +160,14 @@ export function FindReplaceBar({ editor, onClose }: FindReplaceBarProps) {
     }
   };
 
-  const inputClass =
-    "border border-sf-border bg-white/[0.04] px-2 py-1 font-serif text-[14px] text-t2 placeholder:text-t5 focus:border-sf-teal/40 focus:outline-none";
+  // Border, focus ring, and placeholder colors come from the global
+  // input/select/textarea and :focus-visible rules in tokens.css.
+  const inputClass = "px-2 py-1 font-serif text-[14px] text-t2";
 
   return (
     <div
       onKeyDown={onKeyDown}
-      className="flex flex-wrap items-center gap-2 border-b border-sf-border bg-sf-surface/60 px-4 py-2"
+      className="flex flex-wrap items-center gap-2 border-b border-sf-line bg-sf-surface/60 px-4 py-2"
       role="search"
       aria-label="Find and replace in this document"
     >
@@ -191,7 +192,7 @@ export function FindReplaceBar({ editor, onClose }: FindReplaceBarProps) {
         onClick={() => select(current - 1)}
         disabled={matches.length === 0}
         aria-label="Previous match"
-        className="border border-sf-border p-1 text-t4 hover:text-t1 disabled:opacity-40"
+        className="border border-sf-line-interactive p-1 text-t4 hover:text-t1"
       >
         <ChevronUp className="h-3 w-3" />
       </button>
@@ -199,7 +200,7 @@ export function FindReplaceBar({ editor, onClose }: FindReplaceBarProps) {
         onClick={() => select(current + 1)}
         disabled={matches.length === 0}
         aria-label="Next match"
-        className="border border-sf-border p-1 text-t4 hover:text-t1 disabled:opacity-40"
+        className="border border-sf-line-interactive p-1 text-t4 hover:text-t1"
       >
         <ChevronDown className="h-3 w-3" />
       </button>
@@ -215,14 +216,14 @@ export function FindReplaceBar({ editor, onClose }: FindReplaceBarProps) {
       <button
         onClick={replaceCurrent}
         disabled={matches.length === 0}
-        className="border border-sf-border px-2 py-1 font-serif text-[13px] italic text-t3 hover:text-t1 disabled:opacity-40"
+        className="border border-sf-line-interactive px-2 py-1 font-serif text-[13px] italic text-t3 hover:text-t1"
       >
         Replace
       </button>
       <button
         onClick={replaceEvery}
         disabled={matches.length === 0}
-        className="border border-sf-border px-2 py-1 font-serif text-[13px] italic text-t3 hover:text-t1 disabled:opacity-40"
+        className="border border-sf-line-interactive px-2 py-1 font-serif text-[13px] italic text-t3 hover:text-t1"
       >
         All
       </button>

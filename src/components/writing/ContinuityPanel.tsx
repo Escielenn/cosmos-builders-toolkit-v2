@@ -95,7 +95,7 @@ export function ContinuityPanel({ worldId, content }: ContinuityPanelProps) {
         </p>
         <Link
           to="/guide/tools"
-          className="mt-3 inline-block border border-sf-border px-3 py-2 text-[13px] text-t2 transition-colors hover:border-sf-teal hover:text-t1"
+          className="mt-3 inline-block border border-sf-line-interactive px-3 py-2 text-[13px] text-t2 transition-colors hover:border-sf-teal hover:text-t1"
         >
           Browse the tools
         </Link>
@@ -129,7 +129,7 @@ export function ContinuityPanel({ worldId, content }: ContinuityPanelProps) {
       </p>
 
       {notes.map((n) => (
-        <div key={n.factKey} className="border-b border-white/[0.04] px-4 py-3">
+        <div key={n.factKey} className="border-b border-sf-line-hairline px-4 py-3">
           <p className="mb-1.5 font-serif text-[14px] leading-relaxed text-t1">
             {n.message}
           </p>
@@ -138,13 +138,13 @@ export function ContinuityPanel({ worldId, content }: ContinuityPanelProps) {
             <span className="text-t4">
               World <span className="text-sf-teal">{n.worldValue}</span>
             </span>
-            <span className="text-t5" aria-hidden="true">vs</span>
+            <span className="text-t4 text-[10px]" aria-hidden="true">vs</span>
             <span className="text-t4">
               Prose <span className="text-sf-amber">{n.proseValue}</span>
             </span>
           </div>
 
-          <p className="border-l border-sf-border pl-2 font-serif text-[13px] italic text-t3">
+          <p className="border-l border-sf-line pl-2 font-serif text-[13px] italic text-t3">
             {n.excerpt}
           </p>
         </div>

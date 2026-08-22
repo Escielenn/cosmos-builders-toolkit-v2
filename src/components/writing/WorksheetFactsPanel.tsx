@@ -86,7 +86,7 @@ export function WorksheetFactsPanel({ worldId, onInsert }: WorksheetFactsPanelPr
         </p>
         <Link
           to="/guide/tools"
-          className="inline-flex items-center gap-1.5 border border-sf-border px-3 py-2 text-[13px] text-t2 transition-colors hover:border-sf-teal hover:text-t1"
+          className="inline-flex items-center gap-1.5 border border-sf-line-interactive px-3 py-2 text-[13px] text-t2 transition-colors hover:border-sf-teal hover:text-t1"
         >
           Browse the tools
           <ExternalLink className="h-3 w-3" />
@@ -110,7 +110,7 @@ export function WorksheetFactsPanel({ worldId, onInsert }: WorksheetFactsPanelPr
 
         return (
           <div key={group.id} className="mb-4 last:mb-0">
-            <div className="flex items-baseline gap-2 border-b border-white/[0.06] px-3 pb-1.5">
+            <div className="flex items-baseline gap-2 border-b border-sf-line px-3 pb-1.5">
               <span className="min-w-0 flex-1 truncate font-heading text-[12px] uppercase tracking-[1.5px] text-sf-emerald">
                 {group.title}
               </span>
@@ -158,7 +158,7 @@ function FactRow({ fact, onInsert }: { fact: WorksheetFact; onInsert: () => void
         onClick={onInsert}
         title={`Insert "${fact.insert ?? fact.value}" at the cursor`}
         aria-label={`Insert ${fact.label} into the document`}
-        className="shrink-0 p-1 text-t5 opacity-0 transition-opacity hover:text-sf-teal focus-visible:opacity-100 group-hover:opacity-100"
+        className="shrink-0 p-1 text-t4 opacity-0 transition-opacity hover:text-sf-teal focus-visible:opacity-100 group-hover:opacity-100"
       >
         <CornerDownLeft className="h-3 w-3" />
       </button>

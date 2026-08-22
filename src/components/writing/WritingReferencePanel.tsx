@@ -180,7 +180,7 @@ export function WritingReferencePanel({
   return (
     <aside
       className={cn(
-        "h-full flex-shrink-0 border-l border-white/[0.06] bg-sf-surface/90 backdrop-blur-md transition-all duration-300 ease-out overflow-hidden"
+        "h-full flex-shrink-0 border-l border-sf-line bg-sf-surface/90 backdrop-blur-md transition-all duration-300 ease-out overflow-hidden"
       )}
       style={{ width: open ? PANEL_WIDTH : 0 }}
     >
@@ -189,7 +189,7 @@ export function WritingReferencePanel({
         style={{ width: PANEL_WIDTH }}
       >
         {/* Panel header */}
-        <div className="flex items-center justify-between border-b border-white/[0.06] px-3 py-2.5">
+        <div className="flex items-center justify-between border-b border-sf-line px-3 py-2.5">
           <span className="font-heading text-[12px] font-light uppercase tracking-[2px] text-t3">
             Reference
           </span>
@@ -203,7 +203,7 @@ export function WritingReferencePanel({
         </div>
 
         {/* Tab bar */}
-        <div className="flex border-b border-white/[0.06]">
+        <div className="flex border-b border-sf-line">
           {TABS.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -230,7 +230,7 @@ export function WritingReferencePanel({
                 <Icon className="w-3 h-3" />
                 <span>{tab.label}</span>
                 {count > 0 && (
-                  <span className="font-mono text-[12px] text-t5">
+                  <span className="font-mono text-[12px] text-t4">
                     {count}
                   </span>
                 )}
@@ -248,7 +248,7 @@ export function WritingReferencePanel({
             <div className="py-1">
               {/* ----- Browse & Pin Worksheets ----- */}
               {(worksheets && worksheets.length > 0) && (
-                <div className="border-b border-white/[0.06]">
+                <div className="border-b border-sf-line">
                   <button
                     onClick={() => setWorksheetsExpanded((p) => !p)}
                     className="flex items-center justify-between w-full px-3 py-2 hover:bg-white/[0.03] transition-colors"
@@ -256,7 +256,7 @@ export function WritingReferencePanel({
                     <span className="font-heading text-[12px] font-light uppercase tracking-[1.5px] text-t3 flex items-center gap-1.5">
                       <FileText className="w-3 h-3" />
                       Worksheets
-                      <span className="font-mono text-[12px] text-t5">
+                      <span className="font-mono text-[12px] text-t4">
                         {worksheets.length}
                       </span>
                     </span>
@@ -329,18 +329,18 @@ export function WritingReferencePanel({
               {/* ----- World Notes ----- */}
               {notesLoading && (
                 <div className="px-3 py-6 text-center">
-                  <span className="text-[12px] uppercase tracking-[1.5px] text-t5">
+                  <span className="text-[12px] uppercase tracking-[1.5px] text-t4">
                     Loading notes...
                   </span>
                 </div>
               )}
               {!notesLoading && notes.length === 0 && (
                 <div className="px-3 py-8 text-center">
-                  <StickyNote className="w-6 h-6 text-t5 mx-auto mb-2" />
-                  <p className="text-[12px] uppercase tracking-[1.5px] text-t5">
+                  <StickyNote className="w-6 h-6 text-t4 mx-auto mb-2" />
+                  <p className="text-[12px] uppercase tracking-[1.5px] text-t4">
                     No world notes yet
                   </p>
-                  <p className="text-[12px] text-t5 mt-1">
+                  <p className="text-[12px] text-t4 mt-1">
                     Create notes in the World Dashboard to reference them here.
                   </p>
                 </div>
@@ -354,7 +354,7 @@ export function WritingReferencePanel({
                 return (
                   <div
                     key={note.id}
-                    className="border-b border-white/[0.03] px-3 py-2"
+                    className="border-b border-sf-line-hairline px-3 py-2"
                   >
                     <div className="flex items-start gap-2">
                       <button
@@ -365,7 +365,7 @@ export function WritingReferencePanel({
                           {note.title}
                         </span>
                         {!isExpanded && note.content && (
-                          <span className="text-[12px] text-t5 block mt-0.5">
+                          <span className="text-[12px] text-t4 block mt-0.5">
                             {previewText(note.content)}
                           </span>
                         )}
@@ -423,11 +423,11 @@ export function WritingReferencePanel({
             <div className="py-1">
               {pins.length === 0 && (
                 <div className="px-3 py-8 text-center">
-                  <Pin className="w-6 h-6 text-t5 mx-auto mb-2" />
-                  <p className="text-[12px] uppercase tracking-[1.5px] text-t5">
+                  <Pin className="w-6 h-6 text-t4 mx-auto mb-2" />
+                  <p className="text-[12px] uppercase tracking-[1.5px] text-t4">
                     No pinned items
                   </p>
-                  <p className="text-[12px] text-t5 mt-1">
+                  <p className="text-[12px] text-t4 mt-1">
                     Pin notes or worksheets from the Notes tab to keep them visible while writing.
                   </p>
                 </div>
@@ -435,7 +435,7 @@ export function WritingReferencePanel({
               {pins.map((pin) => (
                 <div
                   key={`${pin.type}-${pin.id}`}
-                  className="border-b border-white/[0.03] px-3 py-2"
+                  className="border-b border-sf-line-hairline px-3 py-2"
                 >
                   <div className="flex items-start gap-2">
                     <div className="flex-1 min-w-0">
@@ -447,19 +447,19 @@ export function WritingReferencePanel({
                           className={cn(
                             "text-[12px] font-mono uppercase tracking-wider px-1 py-px rounded-sm flex-shrink-0",
                             pin.type === "entity"
-                              ? "text-sf-emerald/70 bg-sf-emerald/[0.06] border border-sf-emerald/[0.12]"
+                              ? "text-sf-emerald bg-sf-emerald/[0.06] border border-sf-emerald"
                               : pin.type === "note"
-                                ? "text-sf-amber/70 bg-sf-amber/[0.06] border border-[#FFB800]/[0.12]"
+                                ? "text-sf-amber bg-sf-amber/[0.06] border border-sf-amber"
                                 : pin.type === "worksheet"
-                                  ? "text-sf-stellar/70 bg-sf-stellar/[0.06] border border-[#5B8DEF]/[0.12]"
-                                  : "text-t5 bg-white/[0.04]"
+                                  ? "text-sf-stellar-text bg-sf-stellar/[0.06] border border-sf-stellar"
+                                  : "text-t4 bg-white/[0.04]"
                           )}
                         >
                           {pin.type === "worksheet" ? "sheet" : pin.type}
                         </span>
                       </div>
                       {pin.content && (
-                        <span className="text-[12px] text-t5 block mt-0.5">
+                        <span className="text-[12px] text-t4 block mt-0.5">
                           {previewText(pin.content)}
                         </span>
                       )}
@@ -491,7 +491,7 @@ export function WritingReferencePanel({
               <textarea
                 value={scratchText}
                 onChange={(e) => handleScratchChange(e.target.value)}
-                className="flex-1 w-full min-h-[300px] resize-none font-sans text-sm text-t2 bg-white/[0.03] border border-white/[0.08] rounded-xs p-3 outline-none focus:border-[#15C17B]/30 placeholder:text-t5 sf-custom-scrollbar"
+                className="flex-1 w-full min-h-[300px] resize-none font-sans text-sm text-t2 rounded-xs p-3 sf-custom-scrollbar"
                 placeholder="Quick thoughts, scraps, ideas..."
               />
             </div>
@@ -501,7 +501,7 @@ export function WritingReferencePanel({
             <div>
               {/* Snapshot preview */}
               {previewSnapshot && (
-                <div className="border-b border-white/[0.06] p-3 space-y-2">
+                <div className="border-b border-sf-line p-3 space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-[12px] font-heading uppercase tracking-[1.5px] text-sf-stellar">
                       Preview
@@ -532,11 +532,11 @@ export function WritingReferencePanel({
               {/* Snapshot list */}
               {snapshots.length === 0 ? (
                 <div className="px-3 py-8 text-center">
-                  <History className="w-6 h-6 text-t5 mx-auto mb-2" />
-                  <p className="text-[12px] uppercase tracking-[1.5px] text-t5">
+                  <History className="w-6 h-6 text-t4 mx-auto mb-2" />
+                  <p className="text-[12px] uppercase tracking-[1.5px] text-t4">
                     No snapshots yet
                   </p>
-                  <p className="text-[12px] text-t5 mt-1">
+                  <p className="text-[12px] text-t4 mt-1">
                     Press Ctrl+S to save a snapshot, or wait for auto-save every 5 min.
                   </p>
                 </div>
@@ -546,7 +546,7 @@ export function WritingReferencePanel({
                     <div
                       key={snapshot.id}
                       className={cn(
-                        "flex items-start gap-2 px-3 py-2 hover:bg-white/[0.04] transition-colors group cursor-pointer border-b border-white/[0.03]",
+                        "flex items-start gap-2 px-3 py-2 hover:bg-white/[0.04] transition-colors group cursor-pointer border-b border-sf-line-hairline",
                         previewSnapshot?.id === snapshot.id &&
                           "bg-[#5B8DEF]/[0.04]"
                       )}
@@ -566,7 +566,7 @@ export function WritingReferencePanel({
                             </span>
                           )}
                         </div>
-                        <span className="text-[12px] text-t5 font-mono block mt-0.5">
+                        <span className="text-[12px] text-t4 font-mono block mt-0.5">
                           {new Date(snapshot.timestamp).toLocaleDateString()}{" "}
                           &middot; {snapshot.wordCount.toLocaleString()} words
                         </span>

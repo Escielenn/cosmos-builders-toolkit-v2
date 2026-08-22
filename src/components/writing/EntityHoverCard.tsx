@@ -192,7 +192,7 @@ export function EntityHoverCard({
       className={cn(
         "fixed z-50 shadow-2xl",
         "bg-[hsl(222_25%_9%_/_0.97)] backdrop-blur-md",
-        "border border-white/10"
+        "border border-sf-line"
       )}
       style={{
         top: position.top,
@@ -248,13 +248,13 @@ export function EntityHoverCard({
 
         {/* Description preview */}
         {descriptionPreview && (
-          <p className="text-xs text-t2 leading-relaxed line-clamp-4 pt-1 border-t border-white/5">
+          <p className="text-xs text-t2 leading-relaxed line-clamp-4 pt-1 border-t border-sf-line">
             {descriptionPreview}
           </p>
         )}
 
         {/* Actions */}
-        <div className="flex flex-col gap-1.5 pt-2 border-t border-white/5">
+        <div className="flex flex-col gap-1.5 pt-2 border-t border-sf-line">
           {onOpenFullPanel && (
             <Button
               variant="ghost"

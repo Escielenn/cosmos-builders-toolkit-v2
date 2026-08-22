@@ -52,7 +52,7 @@ export function WritingSidebar({
     return (
       <aside
         className={cn(
-          "shrink-0 w-8 h-full border-r border-white/5",
+          "shrink-0 w-8 h-full border-r border-sf-line",
           "bg-[hsl(222_25%_9%_/_0.6)] flex flex-col items-center py-2 gap-2"
         )}
       >
@@ -72,13 +72,13 @@ export function WritingSidebar({
   return (
     <aside
       className={cn(
-        "shrink-0 h-full flex flex-col border-r border-white/5",
+        "shrink-0 h-full flex flex-col border-r border-sf-line",
         "bg-[hsl(222_25%_9%_/_0.8)]"
       )}
       style={{ width: SIDEBAR_WIDTH }}
     >
       {/* Tab bar + collapse */}
-      <div className="flex items-center border-b border-white/5 shrink-0">
+      <div className="flex items-center border-b border-sf-line shrink-0">
         <button
           type="button"
           onClick={() => onTabChange("chapters")}

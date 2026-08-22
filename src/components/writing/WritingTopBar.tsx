@@ -282,7 +282,7 @@ export function WritingTopBar({
               if (e.key === "Escape") onCancelRename();
             }}
             autoFocus
-            className="flex-1 min-w-0 bg-white/[0.06] border border-white/[0.15] rounded-xs px-2 py-0.5 text-xs text-t1 focus:outline-none focus:border-[#15C17B]/35"
+            className="flex-1 min-w-0 rounded-xs px-2 py-0.5 text-xs text-t1 focus:border-sf-teal"
           />
           <button
             onClick={onConfirmRename}
@@ -300,7 +300,7 @@ export function WritingTopBar({
       ) : (
         <>
           {onMoveDocument && (
-            <GripVertical className="w-3 h-3 text-t5 mr-1.5 flex-shrink-0 opacity-0 group-hover:opacity-100 cursor-grab" />
+            <GripVertical className="w-3 h-3 text-t4 mr-1.5 flex-shrink-0 opacity-0 group-hover:opacity-100 cursor-grab" />
           )}
           <FileText className="w-3 h-3 text-t4 mr-1.5 flex-shrink-0" />
           <div
@@ -310,7 +310,7 @@ export function WritingTopBar({
             <span className="text-xs text-t2 truncate block font-sans">
               {doc.title}
             </span>
-            <span className="text-[12px] text-t5 font-mono">
+            <span className="text-[12px] text-t4 font-mono">
               {new Date(doc.updated_at).toLocaleDateString()}
             </span>
           </div>
@@ -342,7 +342,7 @@ export function WritingTopBar({
   );
 
   return (
-    <div className="flex items-center gap-2 border-b border-white/[0.06] bg-sf-surface/60 px-3 py-2">
+    <div className="flex items-center gap-2 border-b border-sf-line bg-sf-surface/60 px-3 py-2">
       {/* Page label */}
       <span className="font-heading text-[12px] font-light uppercase tracking-[2px] text-t2 flex-shrink-0">
         Writing Space
@@ -354,8 +354,8 @@ export function WritingTopBar({
         className={cn(
           "p-1.5 transition-colors border rounded-sm flex-shrink-0",
           leftPanelOpen
-            ? "border-[#15C17B]/20 text-sf-teal bg-sf-teal/[0.06]"
-            : "border-white/[0.08] text-t4 hover:text-t2 hover:border-white/[0.15]"
+            ? "border-sf-teal text-sf-teal bg-sf-teal/[0.06]"
+            : "border-sf-line-interactive text-t4 hover:text-t2 hover:border-sf-line-emphasis"
         )}
         title="Toggle entity panel (Ctrl+\\)"
       >
@@ -370,7 +370,7 @@ export function WritingTopBar({
       <div className="relative flex-1 max-w-md">
         <button
           onClick={() => setDocDropdownOpen((p) => !p)}
-          className="flex items-center gap-2 px-3 py-1.5 bg-white/[0.04] border border-white/[0.08] rounded-xs hover:border-white/[0.15] transition-colors w-full min-w-0"
+          className="flex items-center gap-2 px-3 py-1.5 bg-white/[0.04] border border-sf-line-interactive rounded-xs hover:border-sf-line-emphasis transition-colors w-full min-w-0"
         >
           <FileText className="w-3.5 h-3.5 text-t4 flex-shrink-0" />
           <span className="text-sm text-t2 truncate">
@@ -390,9 +390,9 @@ export function WritingTopBar({
                 setFolderContextMenu(null);
               }}
             />
-            <div className="absolute left-0 top-full mt-1 z-50 w-full min-w-[300px] bg-sf-surface-elevated border border-white/[0.08] rounded-xs shadow-xl overflow-hidden">
+            <div className="absolute left-0 top-full mt-1 z-50 w-full min-w-[300px] bg-sf-surface-elevated border border-sf-line rounded-xs shadow-xl overflow-hidden">
               {/* Action bar: New Chapter + New Document */}
-              <div className="flex items-center border-b border-white/[0.06]">
+              <div className="flex items-center border-b border-sf-line">
                 {onCreateFolder && (
                   <button
                     onClick={() => {
@@ -421,7 +421,7 @@ export function WritingTopBar({
 
               {/* New chapter inline input */}
               {creatingChapter && (
-                <div className="flex items-center gap-1 px-3 py-2 border-b border-white/[0.06] bg-[#FFB800]/[0.03]">
+                <div className="flex items-center gap-1 px-3 py-2 border-b border-sf-line bg-sf-amber/[0.03]">
                   <FolderOpen className="w-3.5 h-3.5 text-sf-amber flex-shrink-0" />
                   <input
                     ref={newChapterInputRef}
@@ -436,7 +436,7 @@ export function WritingTopBar({
                       }
                     }}
                     placeholder="Chapter title..."
-                    className="flex-1 min-w-0 bg-white/[0.06] border border-white/[0.15] rounded-xs px-2 py-0.5 text-xs text-t1 focus:outline-none focus:border-[#FFB800]/35 placeholder:text-t5"
+                    className="flex-1 min-w-0 rounded-xs px-2 py-0.5 text-xs text-t1 focus:border-sf-amber"
                   />
                   <button
                     onClick={handleCreateChapter}
@@ -460,7 +460,7 @@ export function WritingTopBar({
               <div className="max-h-[320px] overflow-y-auto sf-custom-scrollbar">
                 {docsLoading && (
                   <div className="px-3 py-4 text-center">
-                    <span className="text-[12px] uppercase tracking-[1.5px] text-t5">
+                    <span className="text-[12px] uppercase tracking-[1.5px] text-t4">
                       Loading...
                     </span>
                   </div>
@@ -523,7 +523,7 @@ export function WritingTopBar({
                                   }}
                                   onClick={(e) => e.stopPropagation()}
                                   autoFocus
-                                  className="flex-1 min-w-0 bg-white/[0.06] border border-white/[0.15] rounded-xs px-2 py-0.5 text-xs text-t1 focus:outline-none focus:border-[#FFB800]/35"
+                                  className="flex-1 min-w-0 rounded-xs px-2 py-0.5 text-xs text-t1 focus:border-sf-amber"
                                 />
                                 <button
                                   onClick={(e) => {
@@ -549,7 +549,7 @@ export function WritingTopBar({
                                 <span className="flex-1 min-w-0 text-[12px] font-heading font-light uppercase tracking-[1.5px] text-t2 truncate">
                                   {folder.title}
                                 </span>
-                                <span className="text-[12px] font-mono text-t5 mr-1">
+                                <span className="text-[12px] font-mono text-t4 mr-1">
                                   {folder.documents.length}
                                 </span>
                                 {/* Add doc to this folder */}
@@ -558,7 +558,7 @@ export function WritingTopBar({
                                     e.stopPropagation();
                                     handleCreateDocument(folder.id);
                                   }}
-                                  className="p-0.5 text-t5 hover:text-sf-teal opacity-0 group-hover:opacity-100 transition-opacity"
+                                  className="p-0.5 text-t4 hover:text-sf-teal opacity-0 group-hover:opacity-100 transition-opacity"
                                   title="New document in this chapter"
                                 >
                                   <Plus className="w-3 h-3" />
@@ -572,7 +572,7 @@ export function WritingTopBar({
                             <div>
                               {folder.documents.length === 0 && (
                                 <div className="pl-8 pr-3 py-2">
-                                  <span className="text-[12px] uppercase tracking-[1px] text-t5 italic">
+                                  <span className="text-[12px] uppercase tracking-[1px] text-t4 italic">
                                     Empty chapter
                                   </span>
                                 </div>
@@ -591,7 +591,7 @@ export function WritingTopBar({
                       <div
                         className={cn(
                           folders.length > 0 &&
-                            "border-t border-white/[0.06] mt-1 pt-1"
+                            "border-t border-sf-line mt-1 pt-1"
                         )}
                         onDragOver={handleDragOverUnfiled}
                         onDragLeave={handleDragLeave}
@@ -620,7 +620,7 @@ export function WritingTopBar({
                       folders.length === 0 &&
                       unfiledDocs.length === 0 && (
                         <div className="px-3 py-4 text-center">
-                          <span className="text-[12px] uppercase tracking-[1.5px] text-t5">
+                          <span className="text-[12px] uppercase tracking-[1.5px] text-t4">
                             No documents yet
                           </span>
                         </div>
@@ -634,7 +634,7 @@ export function WritingTopBar({
                     {documents?.map((doc) => renderDocRow(doc, false))}
                     {(!documents || documents.length === 0) && (
                       <div className="px-3 py-4 text-center">
-                        <span className="text-[12px] uppercase tracking-[1.5px] text-t5">
+                        <span className="text-[12px] uppercase tracking-[1.5px] text-t4">
                           No documents yet
                         </span>
                       </div>
@@ -652,7 +652,7 @@ export function WritingTopBar({
                   onClick={() => setFolderContextMenu(null)}
                 />
                 <div
-                  className="fixed z-[61] bg-sf-surface-elevated border border-white/[0.1] rounded-xs shadow-xl overflow-hidden min-w-[140px]"
+                  className="fixed z-[61] bg-sf-surface-elevated border border-sf-line rounded-xs shadow-xl overflow-hidden min-w-[140px]"
                   style={{
                     left: folderContextMenu.x,
                     top: folderContextMenu.y,
@@ -714,7 +714,7 @@ export function WritingTopBar({
       {onInsertBracket && (
         <button
           onClick={onInsertBracket}
-          className="flex items-center justify-center px-2 py-1.5 font-mono text-xs text-sf-stellar bg-sf-stellar/[0.06] border border-[#5B8DEF]/[0.12] rounded-xs hover:bg-sf-stellar/[0.12] transition-colors flex-shrink-0"
+          className="flex items-center justify-center px-2 py-1.5 font-mono text-xs text-sf-stellar bg-sf-stellar/[0.06] border border-sf-stellar rounded-xs hover:bg-sf-stellar/[0.12] transition-colors flex-shrink-0"
           title="Insert [[ to trigger wiki link autocomplete"
         >
           [[
@@ -723,7 +723,7 @@ export function WritingTopBar({
       {onInsertMention && (
         <button
           onClick={onInsertMention}
-          className="flex items-center justify-center px-2 py-1.5 text-sf-emerald bg-sf-emerald/[0.06] border border-sf-emerald/[0.12] rounded-xs hover:bg-[#00FF88]/[0.12] transition-colors flex-shrink-0"
+          className="flex items-center justify-center px-2 py-1.5 text-sf-emerald bg-sf-emerald/[0.06] border border-sf-emerald rounded-xs hover:bg-[#00FF88]/[0.12] transition-colors flex-shrink-0"
           title="Insert @ to trigger entity mention autocomplete"
         >
           <AtSign className="w-3.5 h-3.5" />
@@ -737,8 +737,8 @@ export function WritingTopBar({
           className={cn(
             "flex items-center gap-1.5 px-2.5 py-1.5 text-[12px] font-heading uppercase tracking-[1.5px] border rounded-xs transition-colors flex-shrink-0",
             moodboardOpen
-              ? "border-[#FFB800]/30 text-sf-amber bg-sf-amber/[0.06]"
-              : "border-white/[0.08] text-t4 hover:text-t2 hover:border-white/[0.15]"
+              ? "border-sf-amber text-sf-amber bg-sf-amber/[0.06]"
+              : "border-sf-line-interactive text-t4 hover:text-t2 hover:border-sf-line-emphasis"
           )}
           title="Toggle moodboard (Ctrl+M)"
         >
@@ -753,8 +753,8 @@ export function WritingTopBar({
         className={cn(
           "flex items-center gap-1.5 px-2.5 py-1.5 text-[12px] font-heading uppercase tracking-[1.5px] border rounded-xs transition-colors flex-shrink-0",
           rightPanelOpen
-            ? "border-[#5B8DEF]/30 text-sf-stellar bg-sf-stellar/[0.06]"
-            : "border-white/[0.08] text-t4 hover:text-t2 hover:border-white/[0.15]"
+            ? "border-sf-stellar text-sf-stellar bg-sf-stellar/[0.06]"
+            : "border-sf-line-interactive text-t4 hover:text-t2 hover:border-sf-line-emphasis"
         )}
         title="Toggle reference panel (Ctrl+Shift+\\)"
       >
@@ -769,8 +769,8 @@ export function WritingTopBar({
           className={cn(
             "flex items-center gap-1.5 px-2.5 py-1.5 text-[12px] font-heading uppercase tracking-[1.5px] border rounded-xs transition-colors duration-base flex-shrink-0",
             wideMode
-              ? "border-sf-teal/30 text-sf-teal bg-sf-teal/[0.06]"
-              : "border-sf-border text-t4 hover:text-t2 hover:border-sf-border-strong"
+              ? "border-sf-teal text-sf-teal bg-sf-teal/[0.06]"
+              : "border-sf-line-interactive text-t4 hover:text-t2 hover:border-sf-line-emphasis"
           )}
           title="Toggle wide mode (edge-to-edge editor)"
           aria-pressed={wideMode}
@@ -784,7 +784,7 @@ export function WritingTopBar({
       {selectedDoc && (
         <button
           onClick={onEnterZen}
-          className="flex items-center gap-1.5 px-2.5 py-1.5 text-[12px] font-heading uppercase tracking-[1.5px] border border-sf-border text-t4 hover:text-t2 hover:border-sf-border-strong rounded-xs transition-colors duration-base flex-shrink-0"
+          className="flex items-center gap-1.5 px-2.5 py-1.5 text-[12px] font-heading uppercase tracking-[1.5px] border border-sf-line-interactive text-t4 hover:text-t2 hover:border-sf-line-emphasis rounded-xs transition-colors duration-base flex-shrink-0"
           title="Enter Zen Mode (distraction-free)"
         >
           <Maximize2 className="w-3.5 h-3.5" />

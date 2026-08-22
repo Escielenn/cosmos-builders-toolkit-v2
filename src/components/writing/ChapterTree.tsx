@@ -158,7 +158,7 @@ export function ChapterTree({
     return (
       <aside
         className={cn(
-          "shrink-0 w-8 h-full border-r border-white/5",
+          "shrink-0 w-8 h-full border-r border-sf-line",
           "bg-[hsl(222_25%_9%_/_0.6)] flex flex-col items-center py-2"
         )}
       >
@@ -182,12 +182,12 @@ export function ChapterTree({
   const content = (
     <>
       {/* Header */}
-      <div className="flex items-center justify-between px-3 py-2 border-b border-white/5">
+      <div className="flex items-center justify-between px-3 py-2 border-b border-sf-line">
         <div className="flex-1 min-w-0">
           <h2 className="font-heading text-[12px] tracking-[1.5px] uppercase text-t3">
             Chapters
           </h2>
-          <p className="text-[12px] text-t5 font-mono">
+          <p className="text-[12px] text-t4 font-mono">
             {totalDocs} doc{totalDocs === 1 ? "" : "s"} · {totalWords.toLocaleString()} words
           </p>
         </div>
@@ -278,7 +278,7 @@ export function ChapterTree({
                     {folder.title}
                   </button>
                 )}
-                <span className="text-[12px] font-mono text-t5 shrink-0">
+                <span className="text-[12px] font-mono text-t4 shrink-0">
                   {folder.documents.length}
                 </span>
                 <DropdownMenu>
@@ -320,7 +320,7 @@ export function ChapterTree({
               {!collapsed && (
                 <div className="pl-6">
                   {folder.documents.length === 0 ? (
-                    <div className="px-2 py-1 text-[12px] text-t5 italic">
+                    <div className="px-2 py-1 text-[12px] text-t4 italic">
                       empty
                     </div>
                   ) : (
@@ -352,9 +352,9 @@ export function ChapterTree({
 
         {/* Unfiled */}
         {unfiledDocs.length > 0 && (
-          <div className="mt-2 pt-2 border-t border-white/5">
+          <div className="mt-2 pt-2 border-t border-sf-line">
             <div className="px-3 py-1">
-              <span className="text-[12px] uppercase tracking-[1.5px] text-t5 font-heading">
+              <span className="text-[12px] uppercase tracking-[1.5px] text-t4 font-heading">
                 Unfiled
               </span>
             </div>
@@ -383,7 +383,7 @@ export function ChapterTree({
         {/* Empty state */}
         {folders.length === 0 && unfiledDocs.length === 0 && (
           <div className="px-4 py-8 text-center">
-            <FileText className="w-8 h-8 mx-auto mb-2 text-t5 opacity-40" />
+            <FileText className="w-8 h-8 mx-auto mb-2 text-t4" />
             <p className="text-xs text-t4 mb-3">No documents yet</p>
             <Button
               variant="outline"
@@ -405,7 +405,7 @@ export function ChapterTree({
   return (
     <aside
       className={cn(
-        "shrink-0 h-full flex flex-col border-r border-white/5",
+        "shrink-0 h-full flex flex-col border-r border-sf-line",
         "bg-[hsl(222_25%_9%_/_0.8)]"
       )}
       style={{ width: 260 }}
@@ -504,7 +504,7 @@ function DocRow({
         </button>
       )}
       {words > 0 && (
-        <span className="text-[12px] font-mono text-t5 shrink-0">
+        <span className="text-[12px] font-mono text-t4 shrink-0">
           {words < 1000 ? words : `${Math.round(words / 100) / 10}k`}
         </span>
       )}

@@ -51,17 +51,17 @@ export function EntryCard({ entry, onClick }: EntryCardProps) {
               </Badge>
             ))}
             {entry.tags.length > 3 && (
-              <span className="text-[12px] text-t5">+{entry.tags.length - 3}</span>
+              <span className="text-[12px] text-t4">+{entry.tags.length - 3}</span>
             )}
           </div>
         )}
 
-        <div className="mt-4 pt-3 border-t border-white/[0.06] flex items-center gap-3 flex-wrap">
+        <div className="mt-4 pt-3 border-t border-sf-line flex items-center gap-3 flex-wrap">
           <span className="font-mono text-[12px] text-t4">
             {entry.word_count} {entry.word_count === 1 ? "word" : "words"}
           </span>
 
-          <span className="text-t5 text-[12px]">&middot;</span>
+          <span className="text-t4 text-[12px]">&middot;</span>
 
           <span className="font-mono text-[12px] text-t4">
             {formatDistanceToNow(new Date(entry.updated_at), {
@@ -71,7 +71,7 @@ export function EntryCard({ entry, onClick }: EntryCardProps) {
 
           {entry.worlds && (
             <>
-              <span className="text-t5 text-[12px]">&middot;</span>
+              <span className="text-t4 text-[12px]">&middot;</span>
               <span className="flex items-center gap-1.5 text-[12px] text-t3">
                 <Globe className="w-3 h-3" />
                 {entry.worlds.name}

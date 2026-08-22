@@ -43,7 +43,7 @@ export function WritingMoodboardStrip({
   // Collapsed state, thin bar
   if (!open) {
     return (
-      <div className="flex items-center gap-2 px-3 py-1 border-b border-white/[0.06] bg-sf-surface/40 h-8">
+      <div className="flex items-center gap-2 px-3 py-1 border-b border-sf-line bg-sf-surface/40 h-8">
         <button
           onClick={onToggle}
           className="flex items-center gap-1.5 text-t4 hover:text-t2 transition-colors"
@@ -60,7 +60,7 @@ export function WritingMoodboardStrip({
           {images.slice(0, 4).map((img) => (
             <div
               key={img.id}
-              className="w-5 h-5 rounded-sm overflow-hidden border border-white/[0.08] flex-shrink-0"
+              className="w-5 h-5 rounded-sm overflow-hidden border border-sf-line flex-shrink-0"
             >
               <img
                 src={img.url}
@@ -71,7 +71,7 @@ export function WritingMoodboardStrip({
             </div>
           ))}
           {images.length > 4 && (
-            <span className="text-[12px] font-mono text-t5">
+            <span className="text-[12px] font-mono text-t4">
               +{images.length - 4}
             </span>
           )}
@@ -82,7 +82,7 @@ export function WritingMoodboardStrip({
 
   // Expanded state, scrollable row
   return (
-    <div className="border-b border-white/[0.06] bg-sf-surface/40">
+    <div className="border-b border-sf-line bg-sf-surface/40">
       {/* Header */}
       <div className="flex items-center gap-2 px-3 py-1">
         <button
@@ -95,7 +95,7 @@ export function WritingMoodboardStrip({
           </span>
           <ChevronUp className="w-3 h-3" />
         </button>
-        <span className="text-[12px] font-mono text-t5">
+        <span className="text-[12px] font-mono text-t4">
           {images.length} image{images.length !== 1 ? "s" : ""}
         </span>
       </div>
@@ -104,7 +104,7 @@ export function WritingMoodboardStrip({
       <div className="flex gap-2 px-3 pb-2 overflow-x-auto sf-custom-scrollbar">
         {images.map((img) => (
           <div key={img.id} className="flex-shrink-0 group relative">
-            <div className="w-[140px] h-[100px] rounded-sm overflow-hidden border border-white/[0.08] hover:border-white/[0.2] transition-colors">
+            <div className="w-[140px] h-[100px] rounded-sm overflow-hidden border border-sf-line hover:border-sf-line-emphasis transition-colors">
               <img
                 src={img.url}
                 alt={img.caption || ""}

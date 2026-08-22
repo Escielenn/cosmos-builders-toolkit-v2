@@ -70,7 +70,7 @@ export function StatsPanel({ entries, dailyGoalWords }: StatsPanelProps) {
           <div className="flex items-center gap-1.5">
             <Flame
               className={`w-4 h-4 ${
-                stats.currentStreak >= 1 ? "text-primary" : "text-t5"
+                stats.currentStreak >= 1 ? "text-primary" : "text-t4"
               }`}
             />
             <span className="font-mono text-sm text-t1">

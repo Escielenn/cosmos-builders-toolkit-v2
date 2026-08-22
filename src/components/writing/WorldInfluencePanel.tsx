@@ -48,13 +48,13 @@ export function WorldInfluencePanel({
       {isLoading && <p className="font-serif text-[13px] italic text-t4">Reading the cascade…</p>}
 
       {!isLoading && total === 0 && (
-        <div className="border border-dashed border-sf-border p-4">
+        <div className="border border-dashed border-sf-line p-4">
           <p className="font-serif text-[13px] italic leading-relaxed text-t3">
             This world hasn't set its environmental parameters yet.
           </p>
           <Link
             to={`/tools/environmental-chain-reaction?worldId=${worldId}`}
-            className="mt-3 inline-block border border-sf-border px-3 py-1.5 text-[13px] text-t2 transition-colors hover:border-sf-teal hover:text-t1"
+            className="mt-3 inline-block border border-sf-line-interactive px-3 py-1.5 text-[13px] text-t2 transition-colors hover:border-sf-teal hover:text-t1"
           >
             Open the Cascade tool →
           </Link>
@@ -67,7 +67,7 @@ export function WorldInfluencePanel({
             {rows.map(({ param, hits }) => (
               <div
                 key={param.slug}
-                className="flex items-center gap-2.5 border-b border-sf-border/60 py-2"
+                className="flex items-center gap-2.5 border-b border-sf-line-hairline py-2"
               >
                 <span
                   className="h-1.5 w-1.5 shrink-0 rounded-full"
@@ -78,7 +78,7 @@ export function WorldInfluencePanel({
                   {param.label}
                 </span>
                 <span
-                  className={`font-mono text-[12px] tracking-[1px] ${hits > 0 ? "text-sf-teal" : "text-t5"}`}
+                  className={`font-mono text-[12px] tracking-[1px] ${hits > 0 ? "text-sf-teal" : "text-t4"}`}
                   title={hits > 0 ? `${hits} reference${hits === 1 ? "" : "s"} in this scene` : "Not referenced yet"}
                 >
                   {hits > 0 ? `×${hits}` : "—"}

@@ -54,7 +54,7 @@ export function DocumentMetaBar({ meta, onChange, disabled }: DocumentMetaBarPro
   };
 
   return (
-    <div className="mb-6 border-y border-sf-border/60">
+    <div className="mb-6 border-y border-sf-line">
       <button
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
@@ -102,7 +102,7 @@ export function DocumentMetaBar({ meta, onChange, disabled }: DocumentMetaBarPro
             disabled={disabled}
             rows={2}
             placeholder="What happens in this scene?"
-            className="mb-3 w-full resize-y border border-sf-border bg-white/[0.03] px-3 py-2 font-serif text-[15px] leading-relaxed text-t2 placeholder:text-t5 focus:border-sf-teal/40 focus:outline-none"
+            className="mb-3 w-full resize-y px-3 py-2 font-serif text-[15px] leading-relaxed text-t2"
           />
           <div className="flex flex-wrap items-center gap-4">
             <label className="flex items-center gap-2">
@@ -115,7 +115,7 @@ export function DocumentMetaBar({ meta, onChange, disabled }: DocumentMetaBarPro
                 onBlur={() => commit("pov", pov)}
                 disabled={disabled}
                 placeholder="Whose eyes?"
-                className="w-36 border border-sf-border bg-white/[0.03] px-2 py-1 font-serif text-[14px] text-t2 placeholder:text-t5 focus:border-sf-teal/40 focus:outline-none"
+                className="w-36 px-2 py-1 font-serif text-[14px] text-t2"
               />
             </label>
 
@@ -129,7 +129,7 @@ export function DocumentMetaBar({ meta, onChange, disabled }: DocumentMetaBarPro
                 onBlur={() => commit("when", when)}
                 disabled={disabled}
                 placeholder="In-world date"
-                className="w-36 border border-sf-border bg-white/[0.03] px-2 py-1 font-serif text-[14px] text-t2 placeholder:text-t5 focus:border-sf-teal/40 focus:outline-none"
+                className="w-36 px-2 py-1 font-serif text-[14px] text-t2"
               />
             </label>
 
@@ -145,8 +145,8 @@ export function DocumentMetaBar({ meta, onChange, disabled }: DocumentMetaBarPro
                   aria-pressed={meta.status === s}
                   className={`border px-2 py-1 font-mono text-[12px] uppercase tracking-[1.2px] transition-colors ${
                     meta.status === s
-                      ? `border-sf-teal/40 bg-sf-teal/[0.06] ${STATUS_TONE[s]}`
-                      : "border-sf-border text-t4 hover:text-t2"
+                      ? `border-sf-teal bg-sf-teal/[0.06] ${STATUS_TONE[s]}`
+                      : "border-sf-line-interactive text-t4 hover:text-t2"
                   }`}
                 >
                   {STATUS_LABELS[s]}
