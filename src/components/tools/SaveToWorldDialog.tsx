@@ -53,7 +53,7 @@ export default function SaveToWorldDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md bg-sf-surface border-sf-border">
+      <DialogContent className="sm:max-w-md bg-sf-surface border-sf-line">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 font-heading text-sm font-light uppercase tracking-[3px] text-sf-teal">
             <Globe className="h-4 w-4" />

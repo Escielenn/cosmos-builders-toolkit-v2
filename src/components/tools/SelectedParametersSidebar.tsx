@@ -72,7 +72,7 @@ const SelectedParametersSidebar = ({
               {parameters.map((param) => (
                 <div
                   key={param.typeId}
-                  className="border-l-2 border-primary/50 pl-3 py-1"
+                  className="border-l-2 border-primary pl-3 py-1"
                 >
                   <div className="text-xs font-medium text-primary">
                     {param.categoryLabel}
@@ -86,7 +86,7 @@ const SelectedParametersSidebar = ({
                 </div>
               ))}
             </div>
-            <p className="text-xs text-t3 mt-4 pt-3 border-t border-sf-border">
+            <p className="text-xs text-t3 mt-4 pt-3 border-t border-sf-line">
               {footerText}
             </p>
           </div>

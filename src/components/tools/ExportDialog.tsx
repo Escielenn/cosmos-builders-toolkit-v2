@@ -455,7 +455,7 @@ const ExportDialog = ({
                 onValueChange={(value) => setFormat(value as ExportFormat)}
                 className="space-y-2"
               >
-                <div className={`flex items-center space-x-3 p-3 rounded-none border border-sf-border transition-colors ${summaryTemplate ? "hover:bg-accent/10 cursor-pointer" : "opacity-50 cursor-not-allowed"}`}>
+                <div className={`flex items-center space-x-3 p-3 rounded-none border border-sf-line-interactive transition-colors ${summaryTemplate ? "hover:bg-accent/10 cursor-pointer" : "opacity-50 cursor-not-allowed"}`}>
                   <RadioGroupItem value="pdf-summary" id="pdf-summary" disabled={!summaryTemplate} />
                   <Label htmlFor="pdf-summary" className={`flex-1 ${summaryTemplate ? "cursor-pointer" : "cursor-not-allowed"}`}>
                     <div className="flex items-center gap-2">
@@ -468,7 +468,7 @@ const ExportDialog = ({
                     </p>
                   </Label>
                 </div>
-                <div className={`flex items-center space-x-3 p-3 rounded-none border border-sf-border transition-colors ${fullTemplate ? "hover:bg-accent/10 cursor-pointer" : "opacity-50 cursor-not-allowed"}`}>
+                <div className={`flex items-center space-x-3 p-3 rounded-none border border-sf-line-interactive transition-colors ${fullTemplate ? "hover:bg-accent/10 cursor-pointer" : "opacity-50 cursor-not-allowed"}`}>
                   <RadioGroupItem value="pdf-full" id="pdf-full" disabled={!fullTemplate} />
                   <Label htmlFor="pdf-full" className={`flex-1 ${fullTemplate ? "cursor-pointer" : "cursor-not-allowed"}`}>
                     <div className="flex items-center gap-2">
@@ -485,7 +485,7 @@ const ExportDialog = ({
             )}
 
             {/* Inline theme picker */}
-            <div className="pt-3 border-t border-sf-border">
+            <div className="pt-3 border-t border-sf-line">
               <Label className="text-xs text-t3 mb-2 block">PDF Theme</Label>
               <div className="flex gap-2 flex-wrap">
                 {EXPORT_THEMES.map((theme) => {
@@ -500,13 +500,13 @@ const ExportDialog = ({
                         "flex gap-0.5 p-1.5 rounded-md border transition-all",
                         isSelected
                           ? "border-primary ring-1 ring-primary/50"
-                          : "border-sf-border hover:border-primary/50"
+                          : "border-sf-line-interactive hover:border-primary"
                       )}
                     >
                       {theme.swatch.map((color, i) => (
                         <div
                           key={i}
-                          className="w-4 h-4 rounded-sm border border-sf-border"
+                          className="w-4 h-4 rounded-sm border border-sf-line"
                           style={{ backgroundColor: color }}
                         />
                       ))}
@@ -522,7 +522,7 @@ const ExportDialog = ({
 
           <TabsContent value="text" className="space-y-4 pt-4">
             <div
-              className="flex items-center space-x-3 p-3 rounded-none border border-sf-border bg-accent/5 cursor-pointer"
+              className="flex items-center space-x-3 p-3 rounded-none border border-sf-line-interactive bg-accent/5 cursor-pointer"
               onClick={() => setFormat("text")}
             >
               <FileType className="w-5 h-5 text-t3" />
@@ -541,7 +541,7 @@ const ExportDialog = ({
 
           <TabsContent value="word" className="space-y-4 pt-4">
             <div
-              className="flex items-center space-x-3 p-3 rounded-none border border-sf-border bg-accent/5 cursor-pointer"
+              className="flex items-center space-x-3 p-3 rounded-none border border-sf-line-interactive bg-accent/5 cursor-pointer"
               onClick={() => setFormat("word")}
             >
               <FileSpreadsheet className="w-5 h-5 text-t3" />
@@ -556,7 +556,7 @@ const ExportDialog = ({
 
           <TabsContent value="json" className="space-y-4 pt-4">
             <div
-              className="flex items-center space-x-3 p-3 rounded-none border border-sf-border bg-accent/5 cursor-pointer"
+              className="flex items-center space-x-3 p-3 rounded-none border border-sf-line-interactive bg-accent/5 cursor-pointer"
               onClick={() => setFormat("json")}
             >
               <FileJson className="w-5 h-5 text-t3" />
@@ -571,7 +571,7 @@ const ExportDialog = ({
 
           <TabsContent value="csv" className="space-y-4 pt-4">
             <div
-              className="flex items-center space-x-3 p-3 rounded-none border border-sf-border bg-accent/5 cursor-pointer"
+              className="flex items-center space-x-3 p-3 rounded-none border border-sf-line-interactive bg-accent/5 cursor-pointer"
               onClick={() => setFormat("csv")}
             >
               <Table2 className="w-5 h-5 text-t3" />
@@ -583,7 +583,7 @@ const ExportDialog = ({
               </div>
             </div>
             {formState && typeof formState === "object" && (
-              <div className="rounded-none border border-sf-border bg-muted/30 p-3 max-h-40 overflow-auto">
+              <div className="rounded-none border border-sf-line bg-muted/30 p-3 max-h-40 overflow-auto">
                 <p className="text-[12px] font-medium uppercase tracking-[1.5px] text-t3 mb-2">
                   Preview
                 </p>
@@ -614,7 +614,7 @@ const ExportDialog = ({
             ) : isConnected ? (
               <div className="space-y-4">
                 <div
-                  className="flex items-center space-x-3 p-3 rounded-none border border-sf-border bg-accent/5 cursor-pointer"
+                  className="flex items-center space-x-3 p-3 rounded-none border border-sf-line-interactive bg-accent/5 cursor-pointer"
                   onClick={() => setFormat("notion")}
                 >
                   <img
@@ -685,7 +685,7 @@ const ExportDialog = ({
         </Tabs>
 
         {format !== "notion" && (
-          <div className="space-y-4 pt-4 border-t border-sf-border">
+          <div className="space-y-4 pt-4 border-t border-sf-line">
             {/* Options */}
             <div className="space-y-3">
               <Label className="text-sm font-medium">Options</Label>
@@ -771,7 +771,7 @@ const ExportDialog = ({
         </div>
 
         {/* Social sharing */}
-        <div className="mt-4 pt-4 border-t border-sf-border">
+        <div className="mt-4 pt-4 border-t border-sf-line">
           <SocialShareButtons
             url={window.location.href}
             title={`${toolName}, Built with StellarForge`}

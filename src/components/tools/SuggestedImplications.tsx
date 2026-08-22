@@ -52,7 +52,7 @@ const SuggestedImplications = ({
 
   return (
     <GlassPanel
-      className={`border-amber-500/30 bg-gradient-to-br from-amber-500/5 to-amber-600/10 ${className}`}
+      className={`border-sf-amber bg-gradient-to-br from-amber-500/5 to-amber-600/10 ${className}`}
     >
       <Collapsible open={isOpen} onOpenChange={setIsOpen}>
         <CollapsibleTrigger asChild>
@@ -80,7 +80,7 @@ const SuggestedImplications = ({
 
         <CollapsibleContent>
           <div className="px-4 pb-4 space-y-3">
-            <p className="text-sm text-t3 border-b border-amber-500/20 pb-3">
+            <p className="text-sm text-t3 border-b border-sf-amber pb-3">
               These "perceived constants" arise from your species' unique biology experiencing their specific environment.
               They suggest how archetypal energy might be channeled in mythology.
             </p>
@@ -91,7 +91,7 @@ const SuggestedImplications = ({
               return (
                 <div
                   key={implication.id}
-                  className="relative bg-background/50 rounded-none border border-amber-500/20 overflow-hidden"
+                  className="relative bg-background/50 rounded-none border border-sf-amber overflow-hidden"
                 >
                   {/* Dismiss button */}
                   <button
@@ -156,13 +156,13 @@ const SuggestedImplications = ({
 
                     {/* Expanded details */}
                     {isExpanded && (
-                      <div className="mt-4 pt-4 border-t border-sf-border space-y-4">
+                      <div className="mt-4 pt-4 border-t border-sf-line space-y-4">
                         <p className="text-sm text-t3">
                           {implication.explanation}
                         </p>
 
                         {implication.suggestedArchetypeForm && (
-                          <div className="p-3 rounded bg-primary/5 border border-primary/20">
+                          <div className="p-3 rounded bg-primary/5 border border-primary">
                             <div className="flex items-center gap-2 mb-1">
                               <Sparkles className="w-4 h-4 text-primary" />
                               <span className="text-sm font-medium text-primary">

@@ -354,7 +354,7 @@ const SpeciesMatrixImportModal = ({
 
           {/* Selected species summary */}
           {selectedSpecies && (
-            <div className="p-3 bg-pink-500/10 border border-pink-500/30 rounded-none">
+            <div className="p-3 bg-pink-500/10 border border-pink-500 rounded-none">
               <div className="flex items-center gap-2">
                 <Users className="w-4 h-4 text-pink-500" />
                 <span className="font-medium text-pink-500">

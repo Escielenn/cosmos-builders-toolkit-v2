@@ -20,7 +20,7 @@ const GravityScaleBar = ({ gravityRatio, className }: GravityScaleBarProps) => {
       </div>
 
       {/* Scale bar */}
-      <div className="relative h-8 rounded-md overflow-hidden bg-muted/30 border border-sf-border">
+      <div className="relative h-8 rounded-md overflow-hidden bg-muted/30 border border-sf-line">
         {/* Color zones */}
         <div className="absolute inset-0 flex">
           <div className="h-full bg-blue-500/10" style={{ width: `${(0.3 / MAX_G) * 100}%` }} />

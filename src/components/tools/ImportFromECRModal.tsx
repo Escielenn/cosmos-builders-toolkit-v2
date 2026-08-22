@@ -267,7 +267,7 @@ const ImportFromECRModal = ({
                       className={`w-full p-3 rounded-none border text-left transition-colors ${
                         selectedWorksheetId === worksheet.id
                           ? "border-primary bg-primary/5"
-                          : "border-sf-border hover:border-primary/50"
+                          : "border-sf-line-interactive hover:border-primary"
                       }`}
                     >
                       <div className="flex items-center justify-between">
@@ -318,7 +318,7 @@ const ImportFromECRModal = ({
 
               {/* Link Option */}
               {selectedWorksheetId && (
-                <div className="flex items-start gap-3 p-3 rounded-none bg-blue-500/5 border border-blue-500/20">
+                <div className="flex items-start gap-3 p-3 rounded-none bg-sf-azure/5 border border-sf-azure">
                   <Checkbox
                     id="link-worksheet"
                     checked={linkWorksheet}

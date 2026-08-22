@@ -284,7 +284,7 @@ const EvoBioImportModal = ({
 
           {/* Selected species summary */}
           {selectedId && mappedSpecies && (
-            <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-none">
+            <div className="p-3 bg-sf-emerald/10 border border-sf-emerald rounded-none">
               <div className="flex items-center gap-2">
                 <Dna className="w-4 h-4 text-sf-emerald" />
                 <span className="font-medium text-sf-emerald">

@@ -83,7 +83,7 @@ export default function CascadeSuggestionToast({
 
   return (
     <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 animate-in slide-in-from-bottom-4 duration-500">
-      <div className="bg-sf-surface/95 backdrop-blur-xl border border-primary/15 px-4 py-3 max-w-md shadow-lg shadow-black/40">
+      <div className="bg-sf-surface/95 backdrop-blur-xl border border-primary px-4 py-3 max-w-md shadow-lg shadow-black/40">
         {/* Light arc glow */}
         <div className="absolute bottom-0 left-[10%] right-[10%] h-px bg-gradient-to-r from-transparent via-[hsl(157_100%_62%/0.25)] to-transparent" />
 

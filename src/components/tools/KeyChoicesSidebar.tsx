@@ -149,7 +149,7 @@ const KeyChoicesSidebar = ({
                     );
                   })}
                   {!hasValues && (
-                    <span className="font-mono text-[12px] tracking-[0.18em] text-t5 uppercase">
+                    <span className="font-mono text-[12px] tracking-[0.10em] text-t4 uppercase">
                       // NO DATA ON FILE
                     </span>
                   )}

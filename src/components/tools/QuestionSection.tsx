@@ -51,7 +51,7 @@ const QuestionSection = ({
     )}
     <Suspense
       fallback={
-        <div className="min-h-[100px] rounded-md border border-sf-border bg-background/50 animate-pulse" />
+        <div className="min-h-[100px] rounded-md border border-sf-line bg-background/50 animate-pulse" />
       }
     >
       <RichTextEditor

@@ -139,7 +139,7 @@ export function WorksheetCoverImage({
         className="hidden"
         disabled={disabled || isUploading}
       />
-      <div className="relative w-full aspect-[3/1] rounded-none overflow-hidden border border-sf-border mt-2">
+      <div className="relative w-full aspect-[3/1] rounded-none overflow-hidden border border-sf-line mt-2">
         <img
           src={imageUrl}
           alt="Worksheet cover"

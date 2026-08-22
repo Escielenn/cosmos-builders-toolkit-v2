@@ -9,7 +9,7 @@ interface BrokenLinkBadgeProps {
 
 const BrokenLinkBadge = ({ label, onRemoveLink }: BrokenLinkBadgeProps) => {
   return (
-    <div className="flex items-center gap-2 p-3 rounded-none border border-destructive/50 bg-destructive/10">
+    <div className="flex items-center gap-2 p-3 rounded-none border border-sf-crimson bg-destructive/10">
       <AlertTriangle className="w-4 h-4 text-sf-crimson flex-shrink-0" />
       <div className="flex-1 min-w-0">
         <span className="text-sm text-sf-crimson">

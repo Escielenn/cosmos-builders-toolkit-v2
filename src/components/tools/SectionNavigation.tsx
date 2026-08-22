@@ -74,7 +74,7 @@ const SectionNavigation = ({ sections, mode = 'floating' }: SectionNavigationPro
 
   const NavigationContent = () => (
     <>
-      <h4 className="font-heading text-[12px] font-medium tracking-[0.2em] uppercase text-sf-teal/60 mb-3 pb-2 border-b border-sf-teal/[0.08]">
+      <h4 className="font-heading text-[12px] font-medium tracking-[0.10em] uppercase text-sf-teal mb-3 pb-2 border-b border-sf-teal">
         <span className="font-mono text-sf-teal mr-1">//</span> NAVIGATION
       </h4>
       <nav className="space-y-0.5">
@@ -151,7 +151,7 @@ const SectionNavigation = ({ sections, mode = 'floating' }: SectionNavigationPro
               <span className="text-[12px] tracking-[1.5px] uppercase font-heading">NAV</span>
             </Button>
           </SheetTrigger>
-          <SheetContent side="right" className="w-72 bg-sf-surface/95 backdrop-blur-sf-side border-sf-border sf-sb">
+          <SheetContent side="right" className="w-72 bg-sf-surface/95 backdrop-blur-sf-side border-sf-line sf-sb">
             <div className="pt-6">
               <NavigationContent />
             </div>
@@ -222,7 +222,7 @@ export const MobileSectionNav = ({ sections }: { sections: Section[] }) => {
       </SheetTrigger>
       <SheetContent side="right" className="w-72 bg-background/95 backdrop-blur-lg">
         <div className="pt-6">
-          <h4 className="font-heading text-[12px] font-light tracking-[2.5px] uppercase text-emerald/40 mb-3 pb-2 border-b border-emerald/[0.06]">
+          <h4 className="font-heading text-[12px] font-light tracking-[1.5px] uppercase text-emerald mb-3 pb-2 border-b border-emerald">
             // NAVIGATION
           </h4>
           <nav className="space-y-0.5">

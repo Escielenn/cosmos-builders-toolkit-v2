@@ -51,7 +51,7 @@ export default function EntityMatchDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md bg-sf-surface border-white/[0.08]">
+      <DialogContent className="sm:max-w-md bg-sf-surface border-sf-line">
         <DialogHeader>
           <DialogTitle className="font-heading text-sm font-light uppercase tracking-[3px] text-primary">
             Entity Match Detected
@@ -79,7 +79,7 @@ export default function EntityMatchDialog({
                 className="w-full text-left px-3 py-1.5 text-xs text-t3 hover:text-t1 hover:bg-white/[0.04] transition-colors flex items-center justify-between"
               >
                 <span>{c.title}</span>
-                <span className="font-mono text-[12px] text-t5">
+                <span className="font-mono text-[12px] text-t4">
                   {Math.round(c.score * 100)}%
                 </span>
               </button>

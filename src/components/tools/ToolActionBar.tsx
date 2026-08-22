@@ -125,7 +125,7 @@ const ToolActionBar = ({
               <ChevronDown className="w-3.5 h-3.5 ml-1.5 opacity-60" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" className="w-60 bg-sf-surface/95 backdrop-blur-sf-side border-sf-border rounded-none">
+          <DropdownMenuContent align="start" className="w-60 bg-sf-surface/95 backdrop-blur-sf-side border-sf-line rounded-none">
             <DropdownMenuLabel className="text-[12px] uppercase tracking-[1.5px] text-t3 font-medium">
               Export
             </DropdownMenuLabel>
@@ -164,7 +164,7 @@ const ToolActionBar = ({
                 <ChevronDown className="w-3.5 h-3.5 ml-1.5 opacity-60" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-56 bg-sf-surface/95 backdrop-blur-sf-side border-sf-border rounded-none">
+            <DropdownMenuContent align="start" className="w-56 bg-sf-surface/95 backdrop-blur-sf-side border-sf-line rounded-none">
               {onMoodboardClick && (
                 <DropdownMenuItem onClick={onMoodboardClick}>
                   <ImageIcon className="w-4 h-4 mr-2" />
@@ -215,7 +215,7 @@ const ToolActionBar = ({
       {/* Light arc glow on top edge */}
       <div className="absolute top-0 left-[10%] right-[10%] h-px bg-gradient-to-r from-transparent via-[hsl(157_100%_62%/0.25)] to-transparent" />
 
-      <div className="bg-[hsl(222_25%_9%/0.95)] backdrop-blur-xl border-t border-white/[0.08]">
+      <div className="bg-[hsl(222_25%_9%/0.95)] backdrop-blur-xl border-t border-sf-line">
         <div className="container mx-auto px-4 py-3 flex items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <Button

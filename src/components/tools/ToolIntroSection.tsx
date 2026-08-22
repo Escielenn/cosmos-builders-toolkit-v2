@@ -33,7 +33,7 @@ const ToolIntroSection = ({ data }: ToolIntroSectionProps) => {
             {example.quotes.map((quote, qi) => (
               <blockquote
                 key={qi}
-                className="border-l-2 border-primary/20 pl-4 italic text-sm text-t3"
+                className="border-l-2 border-primary pl-4 italic text-sm text-t3"
               >
                 &ldquo;{quote}&rdquo;
               </blockquote>
