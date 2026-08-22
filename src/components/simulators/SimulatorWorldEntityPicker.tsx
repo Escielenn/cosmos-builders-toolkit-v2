@@ -188,7 +188,7 @@ export function SimulatorWorldEntityPicker({
               From your world
             </SheetTitle>
             <SheetDescription className="font-sans text-sm text-t3 leading-[1.55]">
-              Pick a {entityTypes.length === 1 ? entityTypes[0] : "spatial entity"} to load its stored {simulatorType} state, or save the current simulation onto it. Saved presets live in <code className="font-mono text-[13px] text-sf-teal">metadata.simulatorPresets.{simulatorType}</code>.
+              Pick a {entityTypes.length === 1 ? entityTypes[0] : "spatial entity"} to load its stored {simulatorType} state, or save the current simulation onto it. Saved presets stay attached to the entity — every simulator that reads it sees the same one.
             </SheetDescription>
           </SheetHeader>
 
@@ -236,7 +236,7 @@ export function SimulatorWorldEntityPicker({
                       disabled={!hasPreset}
                       className="flex-1 bg-sf-void/80 border-sf-line-interactive text-sf-teal hover:bg-sf-void text-[13px] uppercase tracking-wider h-7"
                     >
-                      Load
+                      Load Preset
                     </Button>
                     <Button
                       variant="outline"

@@ -45,3 +45,15 @@ export interface SimFlag {
  * never has a side effect, never sees anything but what's passed in.
  */
 export type SimFlagRule<T> = (output: T) => SimFlag | null;
+
+/**
+ * The key a "dismiss" action should record — `id` alone is NOT enough.
+ * "Dismissible per run" means dismissing today's 4.1° habitable band must
+ * not silently swallow tomorrow's 1.2° one after the writer reconfigures
+ * the world: the rule fired again with a materially different, still-true
+ * warning. Folding `cites` into the key means a dismissal only survives
+ * exactly as long as the cited values that earned it.
+ */
+export function flagDismissKey(f: SimFlag): string {
+  return `${f.id}::${JSON.stringify(f.cites)}`;
+}

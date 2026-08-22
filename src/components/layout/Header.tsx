@@ -29,6 +29,13 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useSubscription } from "@/hooks/use-subscription";
 import { useWorlds } from "@/hooks/use-worlds";
 
+// The ⌘K listener already accepts ctrlKey as well as metaKey, but the visible
+// hint used to hardcode the Mac glyph regardless — telling Windows/Linux
+// writers the wrong key for a shortcut that works for them too. Computed
+// once at module load; it does not change during a session.
+const isMac =
+  typeof navigator !== "undefined" && /Mac|iPhone|iPod|iPad/i.test(navigator.platform || navigator.userAgent);
+
 /**
  * Mobile navigation model.
  *
@@ -238,7 +245,7 @@ const Header = () => {
           >
             <Search className="w-4 h-4 relative z-[1]" />
             <kbd className="hidden sm:inline-flex h-5 items-center gap-1 rounded border border-sf-line-interactive bg-muted/50 px-1.5 font-mono text-[12px] font-medium text-t3 relative z-[1]">
-              <span className="text-xs">⌘</span>K
+              {isMac ? <span className="text-xs">⌘</span> : <span className="text-xs">Ctrl</span>}K
             </kbd>
           </button>
           {!loading && user && !isSubscribed && (
@@ -256,7 +263,7 @@ const Header = () => {
             <Button
               variant="outline"
               size="sm"
-              className="hidden lg:inline-flex gap-1.5 border-sf-violet text-sf-violet hover:bg-sf-violet/[0.08] rounded-none"
+              className="hidden sm:inline-flex gap-1.5 border-sf-violet text-sf-violet hover:bg-sf-violet/[0.08] rounded-none"
               onClick={() => navigate("/pricing")}
             >
               <Sparkles className="w-3.5 h-3.5" />
@@ -275,12 +282,12 @@ const Header = () => {
                     {profile?.display_name || user.email?.split("@")[0]}
                   </span>
                   {isVanguard ? (
-                    <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-sf-tag font-mono text-[12px] uppercase tracking-[0.18em] bg-sf-violet/[0.06] border border-sf-violet text-sf-violet sf-shimmer-violet relative z-[1]">
+                    <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-sf-tag font-mono text-[12px] uppercase tracking-[0.10em] bg-sf-violet/[0.06] border border-sf-violet text-sf-violet sf-shimmer-violet relative z-[1]">
                       <Sparkles className="w-3 h-3" />
                       Vanguard
                     </span>
                   ) : isSubscribed ? (
-                    <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-sf-tag font-mono text-[12px] uppercase tracking-[0.18em] bg-sf-amber/[0.06] border border-sf-amber text-sf-amber sf-shimmer relative z-[1]">
+                    <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-sf-tag font-mono text-[12px] uppercase tracking-[0.10em] bg-sf-violet/[0.06] border border-sf-violet text-sf-violet sf-shimmer relative z-[1]">
                       <Zap className="w-3 h-3" />
                       Pro
                     </span>

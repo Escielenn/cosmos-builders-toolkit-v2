@@ -89,7 +89,7 @@ export default function WorksheetLauncherGrid({
 
   return (
     <div className="space-y-3">
-      <h3 className="font-heading text-xs font-light uppercase tracking-[3px] text-emerald">
+      <h3 className="font-heading text-xs font-light uppercase tracking-[3px] text-sf-emerald">
         Worksheets
       </h3>
 

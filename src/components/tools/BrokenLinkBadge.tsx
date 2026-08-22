@@ -23,7 +23,7 @@ const BrokenLinkBadge = ({ label, onRemoveLink }: BrokenLinkBadgeProps) => {
         variant="ghost"
         size="sm"
         onClick={onRemoveLink}
-        className="h-7 px-2 text-sf-crimson hover:text-sf-crimson hover:bg-destructive/20"
+        className="min-h-hit px-3 text-sf-crimson hover:text-sf-crimson hover:bg-destructive/20"
       >
         <X className="w-3 h-3 mr-1" />
         Remove

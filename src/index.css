@@ -844,7 +844,12 @@ html {
     align-items: center;
     justify-content: space-between;
     padding: 0 16px;
-    z-index: 9000;
+    /* Non-interactive/aria-hidden ambient chrome, so it belongs well below
+       the reserved AudioPlayer (8999) and site-critical (9999) bands —
+       z-30 is the top of the documented "default page content" tier.
+       Was 9000: an undocumented value wedged one unit above AudioPlayer's
+       reserved band, risking this strip winning against the player bar. */
+    z-index: 30;
     font-family: var(--sf-font-mono);
     font-size: 12px;
     letter-spacing: 0.5px;

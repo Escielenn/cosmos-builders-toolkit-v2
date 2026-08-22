@@ -1,11 +1,16 @@
 import { X } from "lucide-react";
-import type { SimFlag } from "@/sims/flags";
+import { flagDismissKey, type SimFlag } from "@/sims/flags";
 
 interface SimFlagStripProps {
   flags: SimFlag[];
-  /** Ids the writer has dismissed for this run — filtered out before render. */
+  /**
+   * Dismiss keys (flagDismissKey, NOT bare flag.id) the writer has
+   * dismissed — filtered out before render. Keying on id alone would let a
+   * dismissal survive a config change that made the same rule fire with a
+   * materially different, still-true value.
+   */
   dismissedIds: ReadonlySet<string>;
-  onDismiss: (id: string) => void;
+  onDismiss: (dismissKey: string) => void;
 }
 
 /**
@@ -18,7 +23,7 @@ interface SimFlagStripProps {
  * "opportunity" flags read teal (something worth writing toward).
  */
 export function SimFlagStrip({ flags, dismissedIds, onDismiss }: SimFlagStripProps) {
-  const visible = flags.filter((f) => !dismissedIds.has(f.id));
+  const visible = flags.filter((f) => !dismissedIds.has(flagDismissKey(f)));
   if (visible.length === 0) return null;
 
   return (
@@ -36,7 +41,7 @@ export function SimFlagStrip({ flags, dismissedIds, onDismiss }: SimFlagStripPro
             <p className="mt-1 font-serif text-[13px] italic leading-relaxed text-t2">{f.body}</p>
             <button
               type="button"
-              onClick={() => onDismiss(f.id)}
+              onClick={() => onDismiss(flagDismissKey(f))}
               aria-label={`Dismiss: ${f.title}`}
               className="absolute right-1.5 top-1.5 flex min-h-hit min-w-hit items-center justify-center text-t4 transition-colors hover:text-t1"
             >

@@ -195,14 +195,14 @@ const ExportDialog = ({
             console.log("PDF generated:", pdfBlob.size, "bytes");
             downloadBlob(pdfBlob, `${filename}.pdf`);
             toast({
-              title: "PDF Generated",
+              title: "PDF GENERATED.",
               description: `${format === "pdf-summary" ? "Summary" : "Full report"} PDF downloaded.`,
             });
           } catch (pdfError) {
             console.error("PDF generation error:", pdfError);
             const errMsg = pdfError instanceof Error ? pdfError.message : String(pdfError);
             toast({
-              title: "PDF generation failed",
+              title: "PDF GENERATION FAILED.",
               description: errMsg.length > 120 ? errMsg.slice(0, 120) + "..." : errMsg,
               variant: "destructive",
             });
@@ -214,7 +214,7 @@ const ExportDialog = ({
         case "notion": {
           if (!isConnected) {
             toast({
-              title: "Notion not connected",
+              title: "NOTION NOT CONNECTED.",
               description: "Connect Notion workspace to proceed.",
               variant: "destructive",
             });
@@ -322,7 +322,7 @@ const ExportDialog = ({
 
         case "word": {
           toast({
-            title: "Preview not available",
+            title: "PREVIEW NOT AVAILABLE.",
             description: "Word documents cannot be previewed. Download to view.",
           });
           break;
@@ -745,7 +745,7 @@ const ExportDialog = ({
             <Button
               variant="outline"
               onClick={handlePreview}
-              disabled={isGenerating || isPreviewing || format === "word"}
+              disabled={isGenerating || isPreviewing}
             >
               {isPreviewing ? (
                 <Loader variant="inline" size="sm" className="mr-2" />

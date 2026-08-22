@@ -165,7 +165,7 @@ const KeyChoicesSidebar = ({
   // Inline mode: return just the panel for use inside ToolSidebar
   if (mode === 'inline') {
     return (
-      <GlassPanel className="p-3 max-h-[40vh] overflow-y-auto w-56 sf-bracketed--amber">
+      <GlassPanel className="p-3 max-h-[40vh] overflow-y-auto w-56 sf-bracketed--amber sf-sb">
         <SidebarContent />
       </GlassPanel>
     );
@@ -176,7 +176,7 @@ const KeyChoicesSidebar = ({
     <>
       {/* Desktop - Fixed sidebar (positioned below SectionNavigation) */}
       <div className="fixed left-4 top-1/2 -translate-y-1/2 hidden xl:block z-40 no-print">
-        <GlassPanel className="p-3 max-h-[70vh] overflow-y-auto w-56 sf-bracketed--amber">
+        <GlassPanel className="p-3 max-h-[70vh] overflow-y-auto w-56 sf-bracketed--amber sf-sb">
           <SidebarContent />
         </GlassPanel>
       </div>

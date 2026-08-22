@@ -39,7 +39,7 @@ function CalloutItem({ callout, toolType, index }: CalloutItemProps) {
       </p>
       <button
         onClick={dismiss}
-        className="absolute top-1.5 right-1.5 text-t3/30 hover:text-t3/60 transition-colors"
+        className="absolute right-1.5 top-1.5 flex min-h-hit min-w-hit items-center justify-center text-t4 transition-colors hover:text-t2"
         aria-label="Dismiss upstream callout"
       >
         <X className="w-3 h-3" />

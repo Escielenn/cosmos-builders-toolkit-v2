@@ -124,7 +124,14 @@ export function ContinuityPanel({ worldId, content, entityId, onSetEntityId }: C
 
   const needsPicker = !entityId && candidates.length > 1 && !!onSetEntityId;
   const currentSubject = entityId ? subjectsById.get(entityId) : undefined;
-  const canChangeSubject = !!entityId && !!onSetEntityId && candidates.length > 1;
+  // Independent of candidates.length: entityId keeps scoping checkContinuity
+  // below regardless of how many candidates currently exist, so the control
+  // to see and clear it must stay available on that same condition — not on
+  // "is there currently more than one option", which can drop to 1 (or the
+  // entity can stop resolving at all) while entityId is still filtering
+  // results. A bar that disappears while still silently affecting output
+  // is exactly the dead end Law III forbids.
+  const canChangeSubject = !!entityId && !!onSetEntityId;
 
   const notes = useMemo(
     () =>
@@ -145,12 +152,12 @@ export function ContinuityPanel({ worldId, content, entityId, onSetEntityId }: C
 
     return (
       <div className="px-4 py-6">
-        <p className="mb-1 font-serif text-[15px] italic text-t1">
-          Ambiguous: {candidates.length} {noun.toLowerCase()} on file.
+        <p className="mb-1 font-mono text-[13px] uppercase tracking-[1.2px] text-t1">
+          Ambiguous: {candidates.length} {noun} on file. Which is this scene about?
         </p>
         <p className="mb-3 text-[13px] leading-relaxed text-t2">
-          Which is this scene about? Picking one lets the check compare your
-          prose to the right numbers instead of every candidate on file.
+          Picking one lets the check compare your prose to the right numbers
+          instead of every candidate on file.
         </p>
         <div className="space-y-1.5">
           {candidates.map((c) => (
@@ -162,7 +169,7 @@ export function ContinuityPanel({ worldId, content, entityId, onSetEntityId }: C
             >
               {c.title}
               {c.entryType && (
-                <span className="ml-2 text-[11px] uppercase tracking-[1.5px] text-t4">
+                <span className="ml-2 text-[12px] uppercase tracking-[1.5px] text-t4">
                   {ENTITY_TYPE_LABELS[c.entryType] ?? c.entryType}
                 </span>
               )}
@@ -175,16 +182,19 @@ export function ContinuityPanel({ worldId, content, entityId, onSetEntityId }: C
 
   // Two-way, not a dead end: once a subject is chosen it stays visible and
   // changeable from right here, not buried in a document-settings panel.
-  const subjectBar = entityId && (currentSubject || canChangeSubject) && (
+  // Rendered whenever entityId is set, full stop — entityId keeps scoping
+  // the check below regardless of candidate count, so the bar that shows
+  // and clears it must not depend on that count either.
+  const subjectBar = entityId && (
     <div className="flex items-center justify-between border-b border-sf-line-hairline px-4 py-2">
-      <span className="text-[11px] uppercase tracking-[1.5px] text-t4">
-        Scene about <span className="text-t2">{currentSubject?.title ?? "unknown subject"}</span>
+      <span className="text-[12px] uppercase tracking-[1.5px] text-t4">
+        Scene about <span className="text-t2">{currentSubject?.title ?? "a subject no longer on file"}</span>
       </span>
       {canChangeSubject && (
         <button
           type="button"
           onClick={() => onSetEntityId?.("")}
-          className="min-h-hit text-[11px] uppercase tracking-[1.5px] text-sf-teal transition-colors hover:text-sf-teal-bright"
+          className="min-h-hit text-[12px] uppercase tracking-[1.5px] text-sf-teal transition-colors hover:text-sf-teal-bright"
         >
           Change
         </button>

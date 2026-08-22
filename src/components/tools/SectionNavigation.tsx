@@ -123,7 +123,7 @@ const SectionNavigation = ({ sections, mode = 'floating' }: SectionNavigationPro
   // Inline mode: return just the panel for use inside ToolSidebar
   if (mode === 'inline') {
     return (
-      <GlassPanel className="p-4 max-h-[40vh] overflow-y-auto w-56">
+      <GlassPanel className="p-4 max-h-[40vh] overflow-y-auto w-56 sf-sb">
         <NavigationContent />
       </GlassPanel>
     );
@@ -134,13 +134,18 @@ const SectionNavigation = ({ sections, mode = 'floating' }: SectionNavigationPro
     <>
       {/* Desktop Navigation - Fixed sidebar */}
       <div className="fixed right-4 top-1/2 -translate-y-1/2 hidden xl:block z-50 no-print">
-        <GlassPanel className="p-4 max-h-[70vh] overflow-y-auto w-52">
+        <GlassPanel className="p-4 max-h-[70vh] overflow-y-auto w-52 sf-sb">
           <NavigationContent />
         </GlassPanel>
       </div>
 
-      {/* Mobile/Tablet Navigation - Floating button + Sheet */}
-      <div className="fixed right-4 bottom-4 xl:hidden z-50 no-print">
+      {/* Mobile/Tablet Navigation - Floating button + Sheet.
+          bottom-24 (not bottom-4): FABStack's help button is fixed in the
+          same right-4 corner at bottom-6, so anchoring this at bottom-4 put
+          the two floating triggers directly on top of each other. Stacked
+          above it instead — KeyChoicesSidebar already owns the left-4
+          corner, so switching sides was not an option. */}
+      <div className="fixed right-4 bottom-24 xl:hidden z-50 no-print">
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
           <SheetTrigger asChild>
             <Button
@@ -222,7 +227,7 @@ export const MobileSectionNav = ({ sections }: { sections: Section[] }) => {
       </SheetTrigger>
       <SheetContent side="right" className="w-72 bg-background/95 backdrop-blur-lg">
         <div className="pt-6">
-          <h4 className="font-heading text-[12px] font-light tracking-[1.5px] uppercase text-emerald mb-3 pb-2 border-b border-emerald">
+          <h4 className="font-heading text-[12px] font-light tracking-[1.5px] uppercase text-sf-emerald mb-3 pb-2 border-b border-sf-emerald">
             // NAVIGATION
           </h4>
           <nav className="space-y-0.5">

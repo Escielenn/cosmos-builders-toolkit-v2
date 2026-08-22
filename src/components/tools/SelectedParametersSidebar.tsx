@@ -35,7 +35,7 @@ const SelectedParametersSidebar = ({
     <div
       className={cn(
         "sticky top-24 transition-all duration-300",
-        isCollapsed ? "w-10" : "w-72",
+        isCollapsed ? "w-11" : "w-72",
         className
       )}
     >
@@ -44,7 +44,7 @@ const SelectedParametersSidebar = ({
           variant="ghost"
           size="icon"
           onClick={() => setIsCollapsed(!isCollapsed)}
-          className="absolute top-2 right-2 z-10 w-6 h-6"
+          className="absolute top-2 right-2 z-10 min-h-hit min-w-hit"
           aria-label={isCollapsed ? "Expand parameters sidebar" : "Collapse parameters sidebar"}
         >
           {isCollapsed ? (

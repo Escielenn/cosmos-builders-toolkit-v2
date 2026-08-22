@@ -312,7 +312,6 @@ const SpeciesLinkModal = ({
           <Button
             onClick={handleImport}
             disabled={!selectedId || selectedFields.size === 0}
-            className="bg-emerald-600 hover:bg-emerald-700"
           >
             <Import className="w-4 h-4 mr-2" />
             Import {selectedFields.size} Fields

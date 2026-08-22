@@ -700,7 +700,6 @@ const WorldDashboard = () => {
   const dashboardContent = (
     <>
       <PageBursts bursts={WORLD_DASHBOARD_BURSTS} />
-        <PageBursts bursts={WORLD_DASHBOARD_BURSTS} />
         {/* Back Navigation */}
         <div className="flex items-center justify-between mb-6">
           <Link

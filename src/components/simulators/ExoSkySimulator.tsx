@@ -3,7 +3,7 @@ import { useEntities, useUpdateEntity } from "@/hooks/use-entity-graph";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useToast } from "@/hooks/use-toast";
 import { toExoskyPayload, fromExoskySave } from "@/lib/simulators/exosky-save";
-import { evaluateExoSkyFlags } from "@/sims/flags";
+import { evaluateExoSkyFlags, flagDismissKey } from "@/sims/flags";
 import { useDismissedFlags } from "@/hooks/use-dismissed-flags";
 
 // ═══════════════════════════════════════════════════════════════
@@ -2253,13 +2253,13 @@ export default function ExoSkyV2({
           <DR l="Galactic Stars" v={`${transformedStars.length}`} />
           <DR l="Background Field" v={`${backgroundField.length}`} />
           <DR l="Naked Eye" v={`${visibleCount}`} />
-          {simFlags.filter(f => !dismissedFlagIds.has(f.id)).map(f => (
+          {simFlags.filter(f => !dismissedFlagIds.has(flagDismissKey(f))).map(f => (
             <div key={f.id} style={{borderLeft:"2px solid #FFB800",background:"rgba(255,184,0,0.06)",padding:"6px 8px",margin:"6px 0",position:"relative"}}>
               <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:11,letterSpacing:1.2,textTransform:"uppercase",color:"#FFB800"}}>{f.title}</div>
               <div style={{fontFamily:"'DM Sans',serif",fontStyle:"italic",fontSize:12,lineHeight:1.5,color:"rgba(255,255,255,0.7)",marginTop:4,paddingRight:16}}>{f.body}</div>
               <button
                 type="button"
-                onClick={() => dismissFlag(f.id)}
+                onClick={() => dismissFlag(flagDismissKey(f))}
                 aria-label={`Dismiss: ${f.title}`}
                 style={{position:"absolute",top:6,right:6,background:"none",border:"none",color:"rgba(255,255,255,0.4)",cursor:"pointer",fontSize:13,lineHeight:1,padding:4}}
               >

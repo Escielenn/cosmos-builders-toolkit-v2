@@ -19,19 +19,26 @@ import {
   Zap,
   Calculator,
   Plus,
-  Settings,
   Wrench,
   Sun,
   Crown,
   Cpu,
   Users,
+  User,
 } from "lucide-react";
 import { useWorlds } from "@/hooks/use-worlds";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { getToolDisplayName } from "@/lib/worksheet-links-config";
+import { TOOL_ROUTES } from "@/lib/tools-config";
 
-// Tool icon mapping
+// Tool icon mapping. Deliberately partial — TOOL_ROUTES below is the full
+// catalog (shared with the header nav and landing showcase), and any tool
+// without an entry here falls back to the generic Wrench/FileText icons
+// where it's rendered. A tool missing from THIS map only loses its custom
+// glyph; a tool missing from TOOL_ROUTES used to mean it couldn't be found
+// or opened from search at all — that was the actual bug (roughly half the
+// catalog, including every simulator, was unreachable from ⌘K).
 const TOOL_ICONS: Record<string, React.ElementType> = {
   "planetary-profile": Globe,
   "evolutionary-biology": Dna,
@@ -44,21 +51,6 @@ const TOOL_ICONS: Record<string, React.ElementType> = {
   "empire-designer": Crown,
   "technology-consequences": Cpu,
   "species-interaction-matrix": Users,
-};
-
-// Tool routes
-const TOOL_ROUTES: Record<string, string> = {
-  "planetary-profile": "/tools/planetary-profile",
-  "evolutionary-biology": "/tools/evolutionary-biology",
-  "xenomythology-framework-builder": "/tools/xenomythology-framework-builder",
-  "environmental-chain-reaction": "/tools/environmental-chain-reaction",
-  "spacecraft-designer": "/tools/spacecraft-designer",
-  "propulsion-consequences-map": "/tools/propulsion-consequences-map",
-  "drake-equation-calculator": "/tools/drake-equation-calculator",
-  "star-system-builder": "/tools/star-system-builder",
-  "empire-designer": "/tools/empire-designer",
-  "technology-consequences": "/tools/technology-consequences",
-  "species-interaction-matrix": "/tools/species-interaction-matrix",
 };
 
 interface Worksheet {
@@ -216,10 +208,12 @@ const GlobalSearch = ({ open, onOpenChange }: GlobalSearchProps) => {
             value="action-new-world"
             onSelect={() => {
               onOpenChange(false);
-              navigate("/");
-              setTimeout(() => {
-                document.getElementById("worlds")?.scrollIntoView({ behavior: "smooth" });
-              }, 100);
+              // Same deep link HeaderNavigation's "Create New World" uses —
+              // CreateWorldButton (rendered on /worlds) opens its own dialog
+              // when it sees this param. The previous scroll-to-homepage
+              // approach opened nothing for a signed-out user and scrolled to
+              // a section that only renders when signed in.
+              navigate("/worlds?create=true");
             }}
           >
             <Plus className="mr-2 h-4 w-4" />
@@ -232,7 +226,7 @@ const GlobalSearch = ({ open, onOpenChange }: GlobalSearchProps) => {
               navigate("/profile");
             }}
           >
-            <Settings className="mr-2 h-4 w-4" />
+            <User className="mr-2 h-4 w-4" />
             <span>Open Profile</span>
           </CommandItem>
         </CommandGroup>

@@ -52,17 +52,17 @@ const SuggestedImplications = ({
 
   return (
     <GlassPanel
-      className={`border-sf-amber bg-gradient-to-br from-amber-500/5 to-amber-600/10 ${className}`}
+      className={`border-sf-amber bg-gradient-to-br from-sf-amber/5 to-sf-amber/10 ${className}`}
     >
       <Collapsible open={isOpen} onOpenChange={setIsOpen}>
         <CollapsibleTrigger asChild>
-          <button type="button" className="w-full p-4 flex items-center justify-between text-left hover:bg-amber-500/5 transition-colors rounded-t-lg">
+          <button type="button" className="w-full p-4 flex items-center justify-between text-left hover:bg-sf-amber/5 transition-colors">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-sm bg-amber-500/20 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-sm bg-sf-amber/20 flex items-center justify-center">
                 <Lightbulb className="w-5 h-5 text-sf-amber" />
               </div>
               <div>
-                <h3 className="font-heading font-medium text-sf-amber dark:text-sf-amber">
+                <h3 className="font-heading font-medium text-sf-amber">
                   Suggested Implications
                 </h3>
                 <p className="text-sm text-t3">
@@ -114,7 +114,7 @@ const SuggestedImplications = ({
                         <div className="flex-1">
                           {/* Perceived Constant → Archetype Channel */}
                           <div className="flex flex-wrap items-center gap-2 mb-2">
-                            <span className="font-medium text-sf-amber dark:text-sf-amber">
+                            <span className="font-medium text-sf-amber">
                               {implication.perceivedConstant}
                             </span>
                             <ArrowRight className="w-4 h-4 text-t3 shrink-0" />
@@ -129,7 +129,7 @@ const SuggestedImplications = ({
                               <Badge
                                 key={factor}
                                 variant="secondary"
-                                className="text-xs bg-blue-500/10 text-blue-600 dark:text-blue-400"
+                                className="text-xs bg-sf-emerald/10 text-sf-emerald"
                               >
                                 Biology: {factor}
                               </Badge>
@@ -138,7 +138,7 @@ const SuggestedImplications = ({
                               <Badge
                                 key={factor}
                                 variant="secondary"
-                                className="text-xs bg-green-500/10 text-green-600 dark:text-green-400"
+                                className="text-xs bg-sf-azure/10 text-sf-azure"
                               >
                                 Environment: {factor}
                               </Badge>

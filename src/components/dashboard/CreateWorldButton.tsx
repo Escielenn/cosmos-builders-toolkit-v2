@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Plus, ChevronRight } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
 import { GlassPanel } from "@/components/ui/glass-panel";
@@ -17,14 +17,15 @@ import AuthRequiredDialog from "@/components/auth/AuthRequiredDialog";
 import IconPicker from "@/components/world/IconPicker";
 import { useAuth } from "@/contexts/AuthContext";
 import { useWorlds } from "@/hooks/use-worlds";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 const SOVEREIGNTY_SHOWN_KEY = "sf-sovereignty-shown";
 
 const CreateWorldButton = () => {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const { createWorld } = useWorlds();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [showAuthDialog, setShowAuthDialog] = useState(false);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showWelcome, setShowWelcome] = useState(false);
@@ -40,6 +41,20 @@ const CreateWorldButton = () => {
       setShowAuthDialog(true);
     }
   };
+
+  // Every "Create New World" entry point outside this component (header nav,
+  // ⌘K search) has nowhere else to open a dialog it doesn't own, so they all
+  // just deep-link here with ?create=true instead. Without this effect that
+  // param did nothing — the writer landed on /worlds and had to find and
+  // click this exact card themselves.
+  useEffect(() => {
+    if (authLoading || searchParams.get("create") !== "true") return;
+    const next = new URLSearchParams(searchParams);
+    next.delete("create");
+    setSearchParams(next, { replace: true });
+    handleClick();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams, authLoading]);
 
   const handleCreate = async () => {
     if (!worldName.trim()) return;

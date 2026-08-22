@@ -17,6 +17,7 @@ import { DocumentMetaBar } from "@/components/writing/DocumentMetaBar";
 import { ContinuityPanel } from "@/components/writing/ContinuityPanel";
 import { FindReplaceBar } from "@/components/writing/FindReplaceBar";
 import { Corkboard } from "@/components/writing/Corkboard";
+import { GoalSetting } from "@/components/writing/GoalSetting";
 import type { Editor } from "@tiptap/react";
 import {
   DropdownMenu,
@@ -52,6 +53,7 @@ import { Trash2, RotateCcw, X, FolderInput } from "lucide-react";
 import { useWriteDoc, useLatestDoc, rollWordSession, countWords } from "@/hooks/use-write-doc";
 import { useSessionWords } from "@/hooks/use-session-words";
 import { useWritingPreferences } from "@/hooks/use-writing-preferences";
+import { useWritingPins } from "@/hooks/use-writing-pins";
 import { readDocMeta } from "@/lib/document-meta";
 import type { Entity } from "@/services/entity-graph-types";
 import type { WorldEntry } from "@/services/world-data";
@@ -91,6 +93,7 @@ export default function Write(): JSX.Element {
   );
   const renameDoc = useRenameDocument(worldId);
   const updateMeta = useUpdateDocumentMeta(worldId);
+  const { addPin } = useWritingPins(worldId ?? "");
   const moveDoc = useMoveDocument(worldId);
 
   const [focus, setFocus] = useState(false);
@@ -385,7 +388,13 @@ export default function Write(): JSX.Element {
                       className="shrink-0 p-1.5 text-t4 opacity-0 transition-opacity hover:text-sf-teal focus-visible:opacity-100 group-hover:opacity-100">
                       <RotateCcw className="h-3.5 w-3.5" />
                     </button>
-                    <button onClick={() => purgeDoc.mutate(d.id)} aria-label={`Delete ${d.title || "Untitled"} permanently`} title="Delete forever"
+                    <button
+                      onClick={() => {
+                        if (window.confirm(`Delete "${d.title || "Untitled"}" forever? This cannot be undone.`)) {
+                          purgeDoc.mutate(d.id);
+                        }
+                      }}
+                      aria-label={`Delete ${d.title || "Untitled"} permanently`} title="Delete forever"
                       className="shrink-0 p-1.5 text-t4 opacity-0 transition-opacity hover:text-sf-crimson focus-visible:opacity-100 group-hover:opacity-100">
                       <X className="h-3.5 w-3.5" />
                     </button>
@@ -423,7 +432,10 @@ export default function Write(): JSX.Element {
           onToggle={() => {}}
           onInsertMention={(name) => insertIntoEditor(`@${name} `)}
           onInsertWikiLink={(name) => insertIntoEditor(`[[${name}]]`)}
-          onPinEntity={(e: Entity) => toast({ title: `Pinned ${e.name}` })}
+          onPinEntity={(e: Entity) => {
+            addPin({ id: e.id, type: "entity", title: e.name, content: e.description || e.summary || "" });
+            toast({ title: `${e.name.toUpperCase()} PINNED.` });
+          }}
           embedded
         />
       )}
@@ -491,7 +503,7 @@ export default function Write(): JSX.Element {
               {worldId && (
                 <button onClick={() => setMobilePanel("inspector")}
                   className="border border-sf-line-interactive px-2.5 py-1 text-[12px] text-t3 transition-colors hover:border-sf-teal hover:text-t1 lg:hidden">
-                  Entities
+                  Inspector
                 </button>
               )}
             </>
@@ -517,6 +529,14 @@ export default function Write(): JSX.Element {
               <DropdownMenuItem onClick={() => exportDoc("txt")}>
                 Plain text (.txt)
               </DropdownMenuItem>
+              {worldId && (
+                <>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => navigate(`/worlds/${worldId}/compile`)}>
+                    Compile full manuscript →
+                  </DropdownMenuItem>
+                </>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
           <button
@@ -636,6 +656,10 @@ export default function Write(): JSX.Element {
           >
             {sessionWords.toLocaleString()} / {dailyGoalWords.toLocaleString()} TODAY
           </span>
+          {/* The goal shown above used to be view-only — adjusting it meant
+              leaving Studio for /workshop. GoalSetting is self-contained
+              (own hook, own popover) so dropping it in costs nothing. */}
+          <GoalSetting compact />
           <span className="hidden h-1 w-24 bg-white/10 sm:block" aria-hidden="true">
             <span
               className={`block h-full ${goalMet ? "bg-sf-teal" : "bg-sf-teal/50"}`}

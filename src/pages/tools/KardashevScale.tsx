@@ -887,7 +887,7 @@ const KardashevScale = () => {
 
       {/* Sidebar */}
       <ToolSidebar>
-        <SectionNavigation sections={KARDASHEV_SECTIONS} />
+        <SectionNavigation sections={KARDASHEV_SECTIONS} mode="inline" />
         <KeyChoicesSidebar sections={keyChoicesSections} title="K-Scale Summary" mode="inline" />
       </ToolSidebar>
 

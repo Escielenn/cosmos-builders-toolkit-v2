@@ -812,7 +812,7 @@ const EnvironmentalChainReaction = () => {
       setShowWorldSelectDialog(true);
     } else {
       toast({
-        title: "Draft Saved",
+        title: "DRAFT SAVED.",
         description: "WORK SECURED TO LOCAL STORAGE.",
       });
     }
@@ -823,13 +823,13 @@ const EnvironmentalChainReaction = () => {
     try {
       if (selection.type === "local") {
         toast({
-          title: "Draft Saved",
+          title: "DRAFT SAVED.",
           description: "WORK SECURED TO LOCAL STORAGE.",
         });
       } else if (selection.type === "existing") {
         await saveToSupabase(selection.worldId);
         toast({
-          title: "Saved to Cloud",
+          title: "SAVED TO CLOUD.",
           description: `Worksheet saved to "${selection.worldName}".`,
         });
       } else if (selection.type === "new") {
@@ -839,7 +839,7 @@ const EnvironmentalChainReaction = () => {
         });
         await saveToSupabase(newWorld.id);
         toast({
-          title: "World Created & Saved",
+          title: "WORLD CREATED AND SAVED.",
           description: `Worksheet saved to "${newWorld.name}".`,
         });
       }

@@ -104,7 +104,7 @@ const ToolActionBar = ({
               )}
               {isSaving ? "Saving..." : isCloudEnabled ? "Save" : "Save Draft"}
               {isCloudEnabled ? (
-                <Cloud className="w-3 h-3 ml-1.5 text-green-500" />
+                <Cloud className="w-3 h-3 ml-1.5 text-sf-teal" />
               ) : (
                 <CloudOff className="w-3 h-3 ml-1.5 opacity-50" />
               )}
@@ -136,7 +136,7 @@ const ToolActionBar = ({
             )}
             <DropdownMenuItem onClick={onExport}>
               <Download className="w-4 h-4 mr-2" />
-              Choose format…
+              Choose Format…
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={onPrint}>
@@ -179,7 +179,7 @@ const ToolActionBar = ({
               {handleWikiClick && (
                 <DropdownMenuItem onClick={handleWikiClick}>
                   <BookOpen className="w-4 h-4 mr-2" />
-                  Open wiki entry
+                  Open Wiki Entry
                 </DropdownMenuItem>
               )}
               {onShare && (
@@ -196,7 +196,7 @@ const ToolActionBar = ({
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={onOpen}>
                     <FolderOpen className="w-4 h-4 mr-2" />
-                    Open saved worksheet…
+                    Open Saved Worksheet…
                   </DropdownMenuItem>
                 </>
               )}
@@ -206,10 +206,14 @@ const ToolActionBar = ({
       </div>
     </div>
 
-    {/* Sticky bottom bar, appears when top bar scrolls out of view */}
+    {/* Sticky bottom bar, appears when top bar scrolls out of view.
+        z-30 (page-content tier, not z-50/header tier) so FABStack's help
+        button — fixed in the same bottom-right corner at z-40 — always
+        renders above it instead of being fully hidden underneath. */}
     <div
-      className={`no-print fixed bottom-6 left-0 right-0 z-50 transition-transform duration-300 ease-out ${
-        showBottomBar ? "translate-y-0" : "translate-y-[calc(100%+24px)]"
+      aria-hidden={!showBottomBar}
+      className={`no-print fixed bottom-6 left-0 right-0 z-30 transition-transform duration-300 ease-out ${
+        showBottomBar ? "translate-y-0" : "translate-y-[calc(100%+24px)] pointer-events-none"
       }`}
     >
       {/* Light arc glow on top edge */}
@@ -231,16 +235,39 @@ const ToolActionBar = ({
               )}
               {isSaving ? "Saving..." : isCloudEnabled ? "Save" : "Save Draft"}
               {isCloudEnabled ? (
-                <Cloud className="w-3 h-3 ml-1.5 text-green-500" />
+                <Cloud className="w-3 h-3 ml-1.5 text-sf-teal" />
               ) : (
                 <CloudOff className="w-3 h-3 ml-1.5 opacity-50" />
               )}
             </Button>
 
-            <Button variant="outline" size="sm" onClick={onExport}>
-              <Download className="w-4 h-4 mr-2" />
-              {exportLabel}
-            </Button>
+            {/* Same dropdown as the top bar, not a direct onExport() fire —
+                those used to disagree: this button used to skip straight to
+                the format dialog and silently drop the Print/PDF path that
+                the top bar's version offers. */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm">
+                  <Download className="w-4 h-4 mr-2" />
+                  {exportLabel}
+                  <ChevronDown className="w-3.5 h-3.5 ml-1.5 opacity-60" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-60 bg-sf-surface/95 backdrop-blur-sf-side border-sf-line rounded-none">
+                <DropdownMenuLabel className="text-[12px] uppercase tracking-[1.5px] text-t3 font-medium">
+                  Export
+                </DropdownMenuLabel>
+                <DropdownMenuItem onClick={onExport}>
+                  <Download className="w-4 h-4 mr-2" />
+                  Choose Format…
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={onPrint}>
+                  <Printer className="w-4 h-4 mr-2" />
+                  Print / Save as PDF
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
 
           <Button

@@ -109,7 +109,8 @@ export default function CascadeSuggestionToast({
             </Button>
             <button
               onClick={handleDismiss}
-              className="text-t4 hover:text-t2 transition-colors p-1"
+              aria-label="Dismiss"
+              className="flex min-h-hit min-w-hit items-center justify-center text-t4 transition-colors hover:text-t2"
             >
               <X className="w-3 h-3" />
             </button>

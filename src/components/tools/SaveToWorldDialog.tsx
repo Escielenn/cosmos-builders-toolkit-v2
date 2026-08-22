@@ -10,6 +10,7 @@
  * whole product answers "where does this live?" one way.
  */
 
+import { useState } from "react";
 import { Globe, Save } from "lucide-react";
 import {
   Dialog,
@@ -20,6 +21,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -48,8 +50,21 @@ export default function SaveToWorldDialog({
   onConfirm,
   toolName,
 }: SaveToWorldDialogProps) {
-  const { worlds, isLoading } = useWorlds();
+  const { worlds, isLoading, createWorld } = useWorlds();
   const hasWorlds = !isLoading && worlds && worlds.length > 0;
+  const [newWorldName, setNewWorldName] = useState("");
+
+  const handleCreateWorld = async () => {
+    const name = newWorldName.trim();
+    if (!name) return;
+    try {
+      const created = await createWorld.mutateAsync({ name });
+      setNewWorldName("");
+      onChange(created.id);
+    } catch {
+      // createWorld's own onError already toasts; nothing further to do here.
+    }
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -74,10 +89,31 @@ export default function SaveToWorldDialog({
           )}
 
           {!isLoading && !hasWorlds && (
-            <p className="text-[13px] leading-relaxed text-t2">
-              You don't have a world yet. Create one first, then this worksheet
-              can live inside it.
-            </p>
+            <div className="space-y-2">
+              <p className="text-[13px] leading-relaxed text-t2">
+                You don't have a world yet. Name one and this worksheet will
+                save straight into it.
+              </p>
+              <div className="flex gap-2">
+                <Input
+                  value={newWorldName}
+                  onChange={(e) => setNewWorldName(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") handleCreateWorld();
+                  }}
+                  placeholder="World name"
+                  aria-label="World name"
+                  disabled={createWorld.isPending}
+                />
+                <Button
+                  onClick={handleCreateWorld}
+                  disabled={!newWorldName.trim() || createWorld.isPending}
+                  className="shrink-0"
+                >
+                  {createWorld.isPending ? "Creating…" : "Create"}
+                </Button>
+              </div>
+            </div>
           )}
 
           {hasWorlds && (
