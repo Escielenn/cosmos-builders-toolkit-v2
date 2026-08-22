@@ -12,8 +12,9 @@ import NarrativeBridgePanel, { useNarrativeBridge } from "@/components/simulator
 import { SIMULATOR_NARRATIVE_CONFIGS } from "@/lib/simulator-narrative-questions";
 import { SimulatorWorldEntityPicker } from "@/components/simulators/SimulatorWorldEntityPicker";
 import { decodeHandoff } from "@/lib/simulators/handoff";
-import { checkTidelockPlausibility } from "@/lib/simulators/plausibility-notes";
-import { PlausibilityStrip } from "@/components/simulators/PlausibilityStrip";
+import { evaluateTidelockFlags } from "@/sims/flags";
+import { SimFlagStrip } from "@/components/simulators/SimFlagStrip";
+import { useDismissedFlags } from "@/hooks/use-dismissed-flags";
 import { extractSimulationFacts } from "@/lib/simulation-facts";
 import { SceneProseButton } from "@/components/simulators/SceneProseButton";
 
@@ -93,8 +94,18 @@ const TidelockSimulator = () => {
     refreshPayload();
   }, [loaded, refreshPayload]);
 
-  const plausibilityNotes = useMemo(
-    () => (pendingPayload?.results ? checkTidelockPlausibility(pendingPayload.results) : []),
+  const { dismissedIds, dismiss: dismissFlag } = useDismissedFlags();
+  const simFlags = useMemo(
+    () =>
+      pendingPayload?.results
+        ? evaluateTidelockFlags({
+            tSSP: Number(pendingPayload.results.tSSP) || 0,
+            tASP: Number(pendingPayload.results.tASP) || 0,
+            tTerm: Number(pendingPayload.results.tTerm) || 0,
+            habPct: Number(pendingPayload.results.habPct) || 0,
+            escVel: Number(pendingPayload.results.escVel) || 0,
+          })
+        : [],
     [pendingPayload],
   );
 
@@ -242,9 +253,9 @@ const TidelockSimulator = () => {
                   />
                 )}
               </div>
-              {plausibilityNotes.length > 0 && (
+              {simFlags.length > 0 && (
                 <div className="max-w-sm border border-sf-teal bg-sf-void/90 px-3 py-2 backdrop-blur-sm">
-                  <PlausibilityStrip notes={plausibilityNotes} />
+                  <SimFlagStrip flags={simFlags} dismissedIds={dismissedIds} onDismiss={dismissFlag} />
                 </div>
               )}
               {/* Same floating chrome as the plausibility strip above, for the

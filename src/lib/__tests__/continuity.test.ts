@@ -121,6 +121,63 @@ describe("multi-candidate facts — the two-planet world (S-FIX)", () => {
   });
 });
 
+describe("subject scoping — the two-planet world (S0)", () => {
+  // Same two candidates as the S-FIX block above, but now each is tagged
+  // with the world_entries id of the planet its worksheet is linked to.
+  const planetA = "11111111-1111-1111-1111-111111111111";
+  const planetB = "22222222-2222-2222-2222-222222222222";
+  const gravityFor = (subjectId: string, g: string): WorksheetFact => ({
+    ...gravity(g),
+    subject_id: subjectId,
+  });
+  const twoPlanets = [gravityFor(planetA, "1.47"), gravityFor(planetB, "0.3")];
+
+  it("scoped to planet A, only planet A's value is checked", () => {
+    // 0.3 is planet B's number, not A's — scoped to A this must contradict,
+    // even though the old pooled check would have stayed silent because SOME
+    // candidate (B) agrees.
+    const notes = checkContinuity("<p>At 0.3 gravity she barely felt her own weight.</p>", twoPlanets, planetA);
+    expect(notes).toHaveLength(1);
+    expect(notes[0].worldValue).toBe("1.47");
+    expect(notes[0].message).toBe("Your world records Surface Gravity (g) as 1.47; this reads 0.3.");
+  });
+
+  it("scoped to planet B, only planet B's value is checked", () => {
+    // Same facts, opposite subject: the two calls must disagree with each
+    // other, because they're each about a different planet.
+    const notes = checkContinuity("<p>At 0.3 gravity she barely felt her own weight.</p>", twoPlanets, planetB);
+    expect(notes).toHaveLength(0);
+  });
+
+  it("a scoped match never uses the ambiguous-plural phrasing", () => {
+    const notes = checkContinuity("<p>At 9.8 gravity she was crushed flat.</p>", twoPlanets, planetA);
+    expect(notes).toHaveLength(1);
+    expect(notes[0].message).not.toContain("ON FILE");
+  });
+
+  it("falls back to the S-FIX universal rule when nothing on file has this subject", () => {
+    // subjectId doesn't match any candidate's subject_id, and neither
+    // candidate is unscoped (null) either — nothing to check against, so
+    // this must stay silent rather than guessing.
+    const stranger = "33333333-3333-3333-3333-333333333333";
+    const notes = checkContinuity("<p>At 9.8 gravity she was crushed flat.</p>", twoPlanets, stranger);
+    expect(notes).toHaveLength(0);
+  });
+
+  it("an unlinked (subject-less) fact still participates in a scoped check as a fallback", () => {
+    const unlinked = [fact("surfaceGravity", "Surface Gravity (g)", "1.47")]; // subject_id undefined
+    const notes = checkContinuity("<p>At 9.8 gravity she was crushed flat.</p>", unlinked, planetA);
+    expect(notes).toHaveLength(1);
+    expect(notes[0].message).toBe("Your world records Surface Gravity (g) as 1.47; this reads 9.8.");
+  });
+
+  it("omitting subjectId keeps the unscoped S-FIX behaviour byte-identical", () => {
+    const notes = checkContinuity("<p>At 9.8 gravity she was crushed flat.</p>", twoPlanets);
+    expect(notes).toHaveLength(1);
+    expect(notes[0].message).toBe("CONTRADICTS ALL 2 PLANETS ON FILE.");
+  });
+});
+
 describe("scale words — the loosest figures in fiction", () => {
   it("treats spelled billions as the same magnitude as the recorded digits", () => {
     // 8.7e9 recorded vs "nine billion" written: a writer rounding, not an error.

@@ -311,29 +311,66 @@ function formatNumber(n: number): string {
 }
 
 // ---------------------------------------------------------------------------
+// Subject discovery — for the ContinuityPanel ambiguity picker
+// ---------------------------------------------------------------------------
+
+/**
+ * Distinct subjects (world_entries ids) that own at least one
+ * continuity-CHECKABLE fact — i.e. a fact whose key this module actually
+ * compares prose against.
+ *
+ * This is deliberately narrower than "every subject with a worksheet
+ * linked". A species or character entity carries no field in CHECKS, so it
+ * can never create the two-planet ambiguity S0 exists to resolve — counting
+ * it would ask the writer to disambiguate a choice that doesn't affect
+ * anything. Only subjects that could actually change the check's answer are
+ * worth asking about.
+ */
+export function checkableSubjects(facts: WorksheetFact[]): string[] {
+  const checkKeys = new Set(CHECKS.flatMap((spec) => spec.keys));
+  const ids = new Set<string>();
+  for (const f of facts) {
+    if (f.subject_id && checkKeys.has(f.key)) ids.add(f.subject_id);
+  }
+  return Array.from(ids);
+}
+
+// ---------------------------------------------------------------------------
 // The check
 // ---------------------------------------------------------------------------
 
 /**
  * Compare prose against recorded facts and report explicit contradictions.
  *
- * Facts are pooled across every worksheet and simulation in the world with
- * no subject attached (that arrives with S0 — see
- * docs/stellarforge/11-SIMULATOR-CONSTELLATION.md §0). Until then, a key like
- * "surfaceGravity" can have more than one candidate fact — one per planet
- * that recorded it. Picking whichever sorts first would report confident,
- * specific, wrong contradictions in any world with two-plus of the same
- * entity type. Instead: a contradiction only fires when the sentence
- * contradicts EVERY candidate for that key. If even one candidate is
- * consistent, there is no way yet to know which one the sentence is about,
- * so nothing is reported — a false negative, never a false positive.
+ * Facts are pooled across every worksheet and simulation in the world. As of
+ * S0 (docs/stellarforge/11-SIMULATOR-CONSTELLATION.md §0) each fact carries
+ * an optional `subject_id` — the world_entries row its worksheet is linked
+ * to. Pass `subjectId` to scope the check to one entity:
  *
- * @param html   The document's HTML (TipTap output).
- * @param facts  Facts from extractWorksheetFacts across the world's worksheets.
+ *   - For a key where a candidate's subject_id matches `subjectId`, only
+ *     THOSE candidates are compared. This is the actual fix: a two-planet
+ *     world no longer checks prose about Planet A against Planet B's gravity.
+ *   - A key with no matching-subject candidate falls back to every candidate
+ *     that has NO subject at all (an unlinked worksheet, or a simulator save
+ *     — subjects don't reach those until S1/S2). Those still can't be scoped,
+ *     so the S-FIX rule applies: report only if the sentence contradicts
+ *     every one of them.
+ *   - Candidates that belong to a DIFFERENT subject are dropped — they are
+ *     not about this entity, so they can neither confirm nor contradict it.
+ *
+ * Leave `subjectId` undefined to keep the original unscoped behaviour: pool
+ * every candidate for a key regardless of subject and require all of them to
+ * contradict before firing. That is still the right behaviour when the
+ * calling document has no chosen subject yet.
+ *
+ * @param html      The document's HTML (TipTap output).
+ * @param facts     Facts from extractWorksheetFacts across the world's worksheets.
+ * @param subjectId The world_entries id this document is about, if chosen.
  */
 export function checkContinuity(
   html: string | null | undefined,
   facts: WorksheetFact[],
+  subjectId?: string | null,
 ): ContinuityNote[] {
   const text = proseToText(html);
   if (!text || facts.length === 0) return [];
@@ -352,7 +389,20 @@ export function checkContinuity(
   }
 
   for (const spec of CHECKS) {
-    const candidates = spec.keys.flatMap((k) => byKey.get(k) ?? []);
+    const allForKey = spec.keys.flatMap((k) => byKey.get(k) ?? []);
+    if (allForKey.length === 0) continue;
+
+    // Scoped: prefer facts that are actually about this subject. Only fall
+    // back to unscoped (no subject_id at all) candidates when nothing on
+    // file is tagged with this subject — see the doc comment above.
+    const matchingSubject =
+      subjectId == null ? [] : allForKey.filter((f) => f.subject_id === subjectId);
+    const resolvedToOneSubject = subjectId != null && matchingSubject.length > 0;
+    const candidates = resolvedToOneSubject
+      ? matchingSubject
+      : subjectId == null
+        ? allForKey
+        : allForKey.filter((f) => f.subject_id == null);
     if (candidates.length === 0) continue;
 
     // A value the writer typed outranks one a simulator derived (pre-existing
@@ -388,7 +438,11 @@ export function checkContinuity(
       seen.add(dedupeKey);
 
       const first = comparable[0].fact;
-      const multi = comparable.length > 1;
+      // "Multi" (the ambiguous-plural phrasing) only applies when the
+      // candidates are NOT confirmed to be the same subject — once scoping
+      // resolves them to one entity, several corroborating sources for that
+      // one planet are not "N planets on file".
+      const multi = !resolvedToOneSubject && comparable.length > 1;
 
       notes.push({
         factKey: first.key,

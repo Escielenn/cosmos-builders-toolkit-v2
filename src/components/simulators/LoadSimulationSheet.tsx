@@ -34,7 +34,7 @@ export default function LoadSimulationSheet({
 }: LoadSimulationSheetProps) {
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="w-80 bg-sf-surface border-sf-border">
+      <SheetContent side="right" className="w-80 bg-sf-surface border-sf-line-interactive">
         <SheetHeader>
           <SheetTitle className="font-heading text-sm font-light uppercase tracking-[3px] text-sf-teal flex items-center gap-2">
             <FolderOpen className="w-4 h-4" />
@@ -58,7 +58,7 @@ export default function LoadSimulationSheet({
           {saves.map((save) => (
             <div
               key={save.id}
-              className="p-3 border border-white/[0.35] bg-white/[0.02] hover:bg-white/[0.04] transition-colors"
+              className="p-3 border border-sf-line bg-white/[0.02] hover:bg-white/[0.04] transition-colors"
             >
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0">

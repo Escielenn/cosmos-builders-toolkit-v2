@@ -32,7 +32,7 @@ export function SceneProseButton({ facts, simulatorType }: SceneProseButtonProps
         Describe This Scene
       </Button>
       {prose && (
-        <p className="mt-2 border-l border-sf-border pl-3 font-serif text-[14px] italic leading-relaxed text-t2">
+        <p className="mt-2 border-l border-sf-line-interactive pl-3 font-serif text-[14px] italic leading-relaxed text-t2">
           {prose}
         </p>
       )}

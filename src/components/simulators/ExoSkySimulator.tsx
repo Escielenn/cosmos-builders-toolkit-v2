@@ -3,6 +3,8 @@ import { useEntities, useUpdateEntity } from "@/hooks/use-entity-graph";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useToast } from "@/hooks/use-toast";
 import { toExoskyPayload, fromExoskySave } from "@/lib/simulators/exosky-save";
+import { evaluateExoSkyFlags } from "@/sims/flags";
+import { useDismissedFlags } from "@/hooks/use-dismissed-flags";
 
 // ═══════════════════════════════════════════════════════════════
 // EXOSKY v2, Alien Night Sky Simulator with Milky Way
@@ -519,6 +521,7 @@ export default function ExoSkyV2({
   const [showMilkyWay, setShowMilkyWay] = useState(true);
   const [showStarNames, setShowStarNames] = useState(false);
   const [showHorizon, setShowHorizon] = useState(true);
+  const { dismissedIds: dismissedFlagIds, dismiss: dismissFlag } = useDismissedFlags();
   const [highlightSol, setHighlightSol] = useState(true);
   const [hoveredStar, setHoveredStar] = useState(null);
   const [atmoDensity, setAtmoDensity] = useState(1.0);
@@ -1907,6 +1910,10 @@ export default function ExoSkyV2({
     return transformedStars.filter(s => s.appMag < lim).length + backgroundField.filter(s => s.baseMag < lim).length;
   }, [transformedStars, backgroundField, showAtmosphere, atmo, atmoDensity]);
 
+  // Consequence flag (Brief S4, 11-SIMULATOR-CONSTELLATION.md §2) — a pure
+  // predicate over the readout above, not a separate data source.
+  const simFlags = useMemo(() => evaluateExoSkyFlags({ visibleCount }), [visibleCount]);
+
   // ── Galactic arm info ───────────────────────────────
   const armInfo = useMemo(() => {
     const R = Math.sqrt(obsGC[0]**2 + obsGC[1]**2);
@@ -2246,6 +2253,20 @@ export default function ExoSkyV2({
           <DR l="Galactic Stars" v={`${transformedStars.length}`} />
           <DR l="Background Field" v={`${backgroundField.length}`} />
           <DR l="Naked Eye" v={`${visibleCount}`} />
+          {simFlags.filter(f => !dismissedFlagIds.has(f.id)).map(f => (
+            <div key={f.id} style={{borderLeft:"2px solid #FFB800",background:"rgba(255,184,0,0.06)",padding:"6px 8px",margin:"6px 0",position:"relative"}}>
+              <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:11,letterSpacing:1.2,textTransform:"uppercase",color:"#FFB800"}}>{f.title}</div>
+              <div style={{fontFamily:"'DM Sans',serif",fontStyle:"italic",fontSize:12,lineHeight:1.5,color:"rgba(255,255,255,0.7)",marginTop:4,paddingRight:16}}>{f.body}</div>
+              <button
+                type="button"
+                onClick={() => dismissFlag(f.id)}
+                aria-label={`Dismiss: ${f.title}`}
+                style={{position:"absolute",top:6,right:6,background:"none",border:"none",color:"rgba(255,255,255,0.4)",cursor:"pointer",fontSize:13,lineHeight:1,padding:4}}
+              >
+                ×
+              </button>
+            </div>
+          ))}
           <DR l="Custom Constellations" v={`${customConstellations.length}`} />
           <DR l="Extinction" v={`${(atmo.extinction*atmoDensity).toFixed(2)} mag`} />
 

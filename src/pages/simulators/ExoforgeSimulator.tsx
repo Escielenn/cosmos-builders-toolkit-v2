@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { Save, FolderOpen, Rocket } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useWorldId } from "@/hooks/use-world-id";
@@ -10,6 +10,9 @@ import Header from "@/components/layout/Header";
 import NarrativeBridgePanel, { useNarrativeBridge } from "@/components/simulators/NarrativeBridgePanel";
 import { SIMULATOR_NARRATIVE_CONFIGS } from "@/lib/simulator-narrative-questions";
 import { SimulatorWorldEntityPicker } from "@/components/simulators/SimulatorWorldEntityPicker";
+import { evaluateExoForgeFlags } from "@/sims/flags";
+import { SimFlagStrip } from "@/components/simulators/SimFlagStrip";
+import { useDismissedFlags } from "@/hooks/use-dismissed-flags";
 
 const ExoforgeSimulator = () => {
   const [loaded, setLoaded] = useState(false);
@@ -34,6 +37,18 @@ const ExoforgeSimulator = () => {
     iframeRef,
   });
 
+  const { dismissedIds, dismiss: dismissFlag } = useDismissedFlags();
+  const simFlags = useMemo(
+    () =>
+      pendingPayload?.results
+        ? evaluateExoForgeFlags({
+            density: Number(pendingPayload.results.density) || 0,
+            temp: Number(pendingPayload.parameters.temp) || 0,
+          })
+        : [],
+    [pendingPayload],
+  );
+
   useEffect(() => {
     const handler = (event: MessageEvent) => {
       if (event.data?.type === "STELLARFORGE_PUBLISH") {
@@ -46,6 +61,15 @@ const ExoforgeSimulator = () => {
     window.addEventListener("message", handler);
     return () => window.removeEventListener("message", handler);
   }, [refreshPayload]);
+
+  // So the consequence-flag strip has something to say on load rather than
+  // staying empty until the first Save — same reasoning as Tidelock's
+  // identical effect. No timer, no polling: just the one read once the
+  // iframe can answer STELLARFORGE_REQUEST_STATE.
+  useEffect(() => {
+    if (!loaded) return;
+    refreshPayload();
+  }, [loaded, refreshPayload]);
 
   return (
     <>
@@ -79,50 +103,61 @@ const ExoforgeSimulator = () => {
               onLoad={() => setLoaded(true)}
             />
           </div>
-          {/* Save/Load controls */}
+          {/* Save/Load controls, plus consequence flags on the configuration
+              those controls would save or publish right now (Brief S4).
+              ExoForge has no React-rendered data-readout panel of its own —
+              results live in sim.html's own DOM (#data-density etc.) — so
+              the strip sits in this same floating chrome. */}
           {loaded && (
-            <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 border border-sf-teal bg-sf-void/90 px-1.5 py-1 backdrop-blur-sm">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  // Read the simulator now. Publishing used to send whatever
-                  // the last Save left behind, which was usually nothing.
-                  refreshPayload();
-                  setPublishDialogOpen(true);
-                }}
-                className="bg-sf-teal/[0.12] border-sf-teal text-[#3DFFCD] hover:bg-sf-teal/25 hover:text-white text-[13px] uppercase tracking-wider h-8 px-3"
-              >
-                <Rocket className="w-3 h-3 mr-1" />
-                Publish
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setLoadSheetOpen(true)}
-                className="bg-sf-teal/[0.12] border-sf-teal text-[#3DFFCD] hover:bg-sf-teal/25 hover:text-white text-[13px] uppercase tracking-wider h-8 px-3"
-              >
-                <FolderOpen className="w-3 h-3 mr-1" />
-                Load
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={requestSave}
-                className="bg-sf-teal/[0.12] border-sf-teal text-[#3DFFCD] hover:bg-sf-teal/25 hover:text-white text-[13px] uppercase tracking-wider h-8 px-3"
-              >
-                <Save className="w-3 h-3 mr-1" />
-                Save
-              </Button>
-              {/* Browses a world's own entities, so it genuinely needs one.
-                  Save and Publish do not: they ask which world instead. */}
-              {worldId && (
-                <SimulatorWorldEntityPicker
-                  worldId={worldId}
-                  simulatorType="exoforge"
-                  entityTypes={["planet"]}
-                  iframeRef={iframeRef}
-                />
+            <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 flex flex-col items-stretch gap-1.5">
+              <div className="flex items-center gap-1.5 border border-sf-teal bg-sf-void/90 px-1.5 py-1 backdrop-blur-sm">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    // Read the simulator now. Publishing used to send whatever
+                    // the last Save left behind, which was usually nothing.
+                    refreshPayload();
+                    setPublishDialogOpen(true);
+                  }}
+                  className="bg-sf-teal/[0.12] border-sf-teal text-[#3DFFCD] hover:bg-sf-teal/25 hover:text-white text-[13px] uppercase tracking-wider h-8 px-3"
+                >
+                  <Rocket className="w-3 h-3 mr-1" />
+                  Publish
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setLoadSheetOpen(true)}
+                  className="bg-sf-teal/[0.12] border-sf-teal text-[#3DFFCD] hover:bg-sf-teal/25 hover:text-white text-[13px] uppercase tracking-wider h-8 px-3"
+                >
+                  <FolderOpen className="w-3 h-3 mr-1" />
+                  Load
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={requestSave}
+                  className="bg-sf-teal/[0.12] border-sf-teal text-[#3DFFCD] hover:bg-sf-teal/25 hover:text-white text-[13px] uppercase tracking-wider h-8 px-3"
+                >
+                  <Save className="w-3 h-3 mr-1" />
+                  Save
+                </Button>
+                {/* Browses a world's own entities, so it genuinely needs one.
+                    Save and Publish do not: they ask which world instead. */}
+                {worldId && (
+                  <SimulatorWorldEntityPicker
+                    worldId={worldId}
+                    simulatorType="exoforge"
+                    entityTypes={["planet"]}
+                    iframeRef={iframeRef}
+                  />
+                )}
+              </div>
+              {simFlags.length > 0 && (
+                <div className="max-w-sm border border-sf-teal bg-sf-void/90 px-3 py-2 backdrop-blur-sm">
+                  <SimFlagStrip flags={simFlags} dismissedIds={dismissedIds} onDismiss={dismissFlag} />
+                </div>
               )}
             </div>
           )}

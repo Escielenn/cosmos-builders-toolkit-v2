@@ -1,6 +1,9 @@
 import { useState, useEffect, useMemo, lazy, Suspense } from "react";
 import { useWorldId } from "@/hooks/use-world-id";
 import { logToSlider, sliderToLog } from "@/lib/sliders";
+import { evaluateGravitasFlags } from "@/sims/flags";
+import { SimFlagStrip } from "@/components/simulators/SimFlagStrip";
+import { useDismissedFlags } from "@/hooks/use-dismissed-flags";
 
 const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
 import { useTags } from "@/hooks/use-tags";
@@ -214,6 +217,10 @@ const Gravitas = () => {
     () => calculateSpinGravity(formState.spin),
     [formState.spin]
   );
+  // Consequence flag (Brief S4, 11-SIMULATOR-CONSTELLATION.md §2) — a pure
+  // predicate over spinResult above, not a separate calculation.
+  const { dismissedIds: dismissedFlagIds, dismiss: dismissFlag } = useDismissedFlags();
+  const spinFlags = useMemo(() => evaluateGravitasFlags(spinResult), [spinResult]);
   const thrustResult = useMemo(
     () => calculateThrustGravity(formState.thrust),
     [formState.thrust]
@@ -934,6 +941,11 @@ const Gravitas = () => {
                         );
                       })()}
                     </div>
+                    {spinFlags.length > 0 && (
+                      <div className="col-span-2 md:col-span-3">
+                        <SimFlagStrip flags={spinFlags} dismissedIds={dismissedFlagIds} onDismiss={dismissFlag} />
+                      </div>
+                    )}
                   </>
                 )}
                 {formState.activeMode === "thrust" && (

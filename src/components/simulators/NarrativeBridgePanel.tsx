@@ -66,7 +66,7 @@ export default function NarrativeBridgePanel({
     return (
       <button
         onClick={() => onOpenChange(true)}
-        className="absolute right-0 top-1/2 -translate-y-1/2 z-30 bg-sf-teal/[0.08] border border-sf-teal/40 border-r-0 px-2.5 py-5 hover:bg-sf-teal/[0.16] hover:border-sf-teal/70 transition-colors duration-base group shadow-[0_0_18px_rgba(21,193,123,0.18)]"
+        className="absolute right-0 top-1/2 -translate-y-1/2 z-30 bg-sf-teal/[0.08] border border-sf-teal border-r-0 px-2.5 py-5 hover:bg-sf-teal/[0.16] transition-colors duration-base group shadow-[0_0_18px_rgba(21,193,123,0.18)]"
         title="Open Narrative Bridge"
         aria-label="Open Narrative Bridge"
       >
@@ -88,9 +88,9 @@ export default function NarrativeBridgePanel({
 
   // Expanded panel
   return (
-    <div className="absolute right-0 top-0 bottom-0 z-30 w-80 max-w-[92vw] bg-sf-void/95 backdrop-blur-sf-side border-l border-sf-border overflow-y-auto animate-in slide-in-from-right duration-300">
+    <div className="absolute right-0 top-0 bottom-0 z-30 w-80 max-w-[92vw] bg-sf-void/95 backdrop-blur-sf-side border-l border-sf-line-interactive overflow-y-auto animate-in slide-in-from-right duration-300">
       {/* Header */}
-      <div className="sticky top-0 z-10 bg-sf-void/95 backdrop-blur-sf-side px-4 py-3 border-b border-white/[0.35]">
+      <div className="sticky top-0 z-10 bg-sf-void/95 backdrop-blur-sf-side px-4 py-3 border-b border-sf-line">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <PenLine className="w-3.5 h-3.5 text-sf-teal" />
@@ -128,7 +128,7 @@ export default function NarrativeBridgePanel({
               value={notes[q.id] ?? ""}
               onChange={(e) => updateNote(q.id, e.target.value)}
               placeholder="Write your thoughts..."
-              className="min-h-[80px] bg-white/[0.03] border-sf-border text-t2 text-xs resize-y"
+              className="min-h-[80px] bg-white/[0.03] border-sf-line-interactive text-t2 text-xs resize-y"
             />
           </div>
         ))}
@@ -142,12 +142,12 @@ export default function NarrativeBridgePanel({
             value={notes["general_notes"] ?? ""}
             onChange={(e) => updateNote("general_notes", e.target.value)}
             placeholder="Free-form notes, observations, story ideas..."
-            className="w-full font-sans text-[14px] leading-relaxed text-t2 placeholder:text-t4 bg-white/[0.03] border border-sf-border rounded-[6px] px-[14px] py-3 min-h-[120px] resize-y focus:outline-none focus:border-[rgba(21,193,123,0.25)] transition-colors"
+            className="w-full font-sans text-[14px] leading-relaxed text-t2 placeholder:text-t4 bg-white/[0.03] border border-sf-line-interactive rounded-[6px] px-[14px] py-3 min-h-[120px] resize-y focus:outline-none focus:border-[rgba(21,193,123,0.25)] transition-colors"
           />
         </div>
 
         {/* Footer: save + count */}
-        <div className="pt-3 border-t border-white/[0.35] space-y-2">
+        <div className="pt-3 border-t border-sf-line space-y-2">
           <div className="flex items-center justify-between">
             <p className="font-mono text-[12px] text-t4 uppercase tracking-wider">
               {filledCount} / {config.questions.length} notes written
@@ -157,13 +157,13 @@ export default function NarrativeBridgePanel({
               size="sm"
               onClick={handleSave}
               disabled={filledCount === 0}
-              className="h-6 text-[12px] uppercase tracking-wider px-2 gap-1 border-sf-teal/20 text-sf-teal hover:bg-sf-teal/10"
+              className="h-6 text-[12px] uppercase tracking-wider px-2 gap-1 border-sf-teal text-sf-teal hover:bg-sf-teal/10"
             >
               <Save className="w-3 h-3" />
               {saved ? "Saved" : "Save Notes"}
             </Button>
           </div>
-          <p className="text-[12px] text-t5 leading-relaxed">
+          <p className="text-[12px] text-t4 leading-relaxed">
             Notes are included when you Publish to World.
           </p>
         </div>

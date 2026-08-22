@@ -13,6 +13,7 @@ import {
 } from '../types';
 import { hexToRgba } from '../utils/colorUtils';
 import { STAR_TYPES } from '../utils/starTypes';
+import { getClippedTerritoryPolygon, type Point2D } from '../utils/territoryGeometry';
 
 // ═══════════════════════════════════════════════════════════════════════════
 // PNG EXPORT
@@ -123,20 +124,33 @@ export function exportSVG(options: SVGExportOptions): void {
     svg += '  <!-- Empire Territories -->\n';
     const opacity = display.territoryOpacity / 100;
 
-    for (const empire of empires) {
+    // Territory circles are clipped against each other's nearer half-plane
+    // so exported borders match the in-app ownership model (see
+    // utils/territoryGeometry.ts) instead of drawing raw, overlapping
+    // circles.
+    const territoryCenters: Point2D[] = empires.map(empire => {
+      const c = worldToScreen(empire.centerX, empire.centerY, 0);
+      return { x: c.screenX, y: c.screenY };
+    });
+
+    empires.forEach((empire, idx) => {
       const center = worldToScreen(empire.centerX, empire.centerY, 0);
       const radius = empire.radius * zoom * center.scale;
+      const clipped = getClippedTerritoryPolygon(territoryCenters, idx, radius);
+      if (clipped.length < 3) return;
+
+      const points = clipped.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
 
       svg += `  <defs>
-    <radialGradient id="empire-${empire.id}">
+    <radialGradient id="empire-${empire.id}" gradientUnits="userSpaceOnUse" cx="${center.screenX.toFixed(1)}" cy="${center.screenY.toFixed(1)}" r="${radius.toFixed(1)}">
       <stop offset="0%" stop-color="${empire.color}" stop-opacity="${(0.18 * opacity).toFixed(2)}"/>
       <stop offset="40%" stop-color="${empire.color}" stop-opacity="${(0.12 * opacity).toFixed(2)}"/>
       <stop offset="70%" stop-color="${empire.color}" stop-opacity="${(0.06 * opacity).toFixed(2)}"/>
       <stop offset="100%" stop-color="${empire.color}" stop-opacity="0"/>
     </radialGradient>
   </defs>
-  <circle cx="${center.screenX.toFixed(1)}" cy="${center.screenY.toFixed(1)}" r="${radius.toFixed(1)}" fill="url(#empire-${empire.id})"/>\n`;
-    }
+  <polygon points="${points}" fill="url(#empire-${empire.id})"/>\n`;
+    });
     svg += '\n';
   }
 

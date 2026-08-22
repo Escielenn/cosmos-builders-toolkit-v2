@@ -429,7 +429,14 @@ export default function Write(): JSX.Element {
       )}
       {inspector === "continuity" && (
         <div className="sf-sb sf-sb--slim min-h-0 flex-1 overflow-y-auto">
-          <ContinuityPanel worldId={worldId} content={doc?.content} />
+          <ContinuityPanel
+            worldId={worldId}
+            content={doc?.content}
+            entityId={docMeta.subjectEntityId || undefined}
+            onSetEntityId={(id) =>
+              docId && updateMeta.mutate({ docId, patch: { subjectEntityId: id } })
+            }
+          />
         </div>
       )}
       {inspector === "world" && (

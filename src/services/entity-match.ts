@@ -9,6 +9,7 @@
  */
 
 import { supabase } from "@/integrations/supabase/client";
+import { captureMessage } from "@/lib/sentry";
 
 export interface EntityMatchCandidate {
   id: string;
@@ -117,6 +118,21 @@ export async function findFuzzyNameMatches(
 
   // Sort by score descending
   candidates.sort((a, b) => b.score - a.score);
+
+  // Every firing here is a place a tool minted a new entity instead of
+  // reusing one that already existed — a missing id handoff, not a
+  // duplicate-data problem. This never merges (see linkWorksheetToEntry /
+  // the dialog this feeds): it only ever proposes. Logging the count is what
+  // lets that number be driven toward zero instead of just quietly existing.
+  // See docs/stellarforge/11-SIMULATOR-CONSTELLATION.md §0.
+  if (candidates.length > 0) {
+    captureMessage("identity: duplicate candidate(s) suggested", {
+      level: "info",
+      tags: { feature: "identity-suggester" },
+      extra: { worldId, title, candidateCount: candidates.length, topScore: candidates[0].score },
+    });
+  }
+
   return candidates;
 }
 

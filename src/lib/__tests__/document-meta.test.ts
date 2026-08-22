@@ -7,10 +7,22 @@ import {
 } from "@/lib/document-meta";
 
 describe("readDocMeta", () => {
-  it("reads the four fields", () => {
+  it("reads the five fields", () => {
     expect(
-      readDocMeta({ synopsis: "Ix meets the Talto.", pov: "Ix", status: "draft", when: "Sol 2412" }),
-    ).toEqual({ synopsis: "Ix meets the Talto.", pov: "Ix", status: "draft", when: "Sol 2412" });
+      readDocMeta({
+        synopsis: "Ix meets the Talto.",
+        pov: "Ix",
+        status: "draft",
+        when: "Sol 2412",
+        subjectEntityId: "11111111-1111-1111-1111-111111111111",
+      }),
+    ).toEqual({
+      synopsis: "Ix meets the Talto.",
+      pov: "Ix",
+      status: "draft",
+      when: "Sol 2412",
+      subjectEntityId: "11111111-1111-1111-1111-111111111111",
+    });
   });
 
   it("returns empty for the {} every existing document was created with", () => {

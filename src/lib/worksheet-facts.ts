@@ -45,6 +45,13 @@ export interface WorksheetFact {
    * which is right for a fact the writer typed into a worksheet themselves.
    */
   source?: string;
+  /**
+   * The world_entries id this fact is about, when the worksheet that produced
+   * it is linked to one via entity_worksheets. A fact with no subject is
+   * still valid — it just can't be scoped to one candidate over another. See
+   * docs/stellarforge/11-SIMULATOR-CONSTELLATION.md §0 (Brief S0).
+   */
+  subject_id?: string | null;
 }
 
 // ---------------------------------------------------------------------------
@@ -93,6 +100,14 @@ const BESPOKE_EXTRACTORS: Record<string, (data: unknown) => WorksheetFact[]> = {
 export function extractWorksheetFacts(
   toolType: string,
   data: unknown,
+  /**
+   * The world_entries id this worksheet is linked to (its primary
+   * entity_worksheets row), when one exists. Stamped onto every fact
+   * returned so checkContinuity can scope a check to one subject instead of
+   * pooling every worksheet in the world. Omit when the worksheet has no
+   * link yet — the facts are still returned, just unscoped.
+   */
+  subjectId: string | null = null,
 ): WorksheetFact[] {
   if (!toolType || !data || typeof data !== "object") return [];
 
@@ -100,8 +115,13 @@ export function extractWorksheetFacts(
   // Timeline records a list of events rather than scalars at fixed paths, so
   // `worksheetPaths` has nothing to point at and the tool reached the writing
   // surface not at all.
+  // subject_id is only attached when known — omitted (not null) otherwise,
+  // so a caller that never heard of S0 gets byte-identical fact objects to
+  // before it existed.
   const bespoke = BESPOKE_EXTRACTORS[toolType];
-  if (bespoke) return bespoke(data);
+  if (bespoke) {
+    return subjectId == null ? bespoke(data) : bespoke(data).map((f) => ({ ...f, subject_id: subjectId }));
+  }
 
   const facts: WorksheetFact[] = [];
   const seen = new Set<string>();
@@ -116,7 +136,12 @@ export function extractWorksheetFacts(
       if (isEmpty(raw)) continue;
 
       seen.add(field.key);
-      facts.push({ key: field.key, label: field.label, value: toDisplay(raw) });
+      facts.push({
+        key: field.key,
+        label: field.label,
+        value: toDisplay(raw),
+        ...(subjectId == null ? {} : { subject_id: subjectId }),
+      });
     }
   }
 

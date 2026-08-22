@@ -35,6 +35,13 @@ export interface DocumentMeta {
   status: DocStatus | "";
   /** Optional in-world date or beat marker, for chronology views. */
   when: string;
+  /**
+   * The world_entries id this scene is about — a planet, a system, a vessel.
+   * Empty string means unset. Lets ContinuityPanel scope its check to one
+   * entity instead of pooling every worksheet in the world (Brief S0); also
+   * the on-ramp to future set_in/POV binding.
+   */
+  subjectEntityId: string;
 }
 
 export const EMPTY_DOC_META: DocumentMeta = {
@@ -42,6 +49,7 @@ export const EMPTY_DOC_META: DocumentMeta = {
   pov: "",
   status: "",
   when: "",
+  subjectEntityId: "",
 };
 
 export const STATUS_LABELS: Record<DocStatus, string> = {
@@ -88,6 +96,7 @@ export function readDocMeta(metadata: unknown): DocumentMeta {
     pov: str(m.pov),
     status: isStatus(m.status) ? m.status : "",
     when: str(m.when),
+    subjectEntityId: str(m.subjectEntityId),
   };
 }
 

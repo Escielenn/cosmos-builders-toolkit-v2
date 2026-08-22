@@ -31,6 +31,7 @@ import { SeededRandom } from './utils/seededRandom';
 import { STAR_TYPES, assignStarType, isHotStar } from './utils/starTypes';
 import { generateName, generateDesignation } from './utils/nameGenerator';
 import { hexToRgba, shiftHue } from './utils/colorUtils';
+import { getClippedTerritoryPolygon, type Point2D } from './utils/territoryGeometry';
 import { exportPNG, exportSVG, exportJSON, exportMarkdown } from './hooks/useExport';
 import {
   GALAXY_RADIUS,
@@ -608,8 +609,29 @@ const StellarCartographer: React.FC = () => {
     // Empire territories
     if (display.showTerritories) {
       const opacity = display.territoryOpacity / 100;
-      
-      for (const empire of empires) {
+
+      // Project every empire's center once. Territories are then clipped
+      // against each other's nearer half-plane so a rendered border never
+      // crosses into space a closer empire already owns (matches
+      // findOwningEmpire's nearest-claimed-circle rule) — see
+      // utils/territoryGeometry.ts.
+      const territoryCenters: Point2D[] = empires.map(empire => {
+        const c = worldToScreen(empire.centerX, empire.centerY, 0);
+        return { x: c.screenX, y: c.screenY };
+      });
+
+      const tracePolygon = (poly: Point2D[]) => {
+        if (poly.length < 3) return false;
+        ctx.beginPath();
+        poly.forEach((p, i) => {
+          if (i === 0) ctx.moveTo(p.x, p.y);
+          else ctx.lineTo(p.x, p.y);
+        });
+        ctx.closePath();
+        return true;
+      };
+
+      empires.forEach((empire, idx) => {
         const center = worldToScreen(empire.centerX, empire.centerY, 0);
         const radius = empire.radius * zoom * center.scale;
 
@@ -621,9 +643,7 @@ const StellarCartographer: React.FC = () => {
           outerGlow.addColorStop(0.8, hexToRgba(empire.color, 0.03 * opacity));
           outerGlow.addColorStop(1, hexToRgba(empire.color, 0));
           ctx.fillStyle = outerGlow;
-          ctx.beginPath();
-          ctx.arc(center.screenX, center.screenY, radius * 1.4, 0, Math.PI * 2);
-          ctx.fill();
+          if (tracePolygon(getClippedTerritoryPolygon(territoryCenters, idx, radius * 1.4))) ctx.fill();
 
           // Main gradient
           const gradient = ctx.createRadialGradient(center.screenX, center.screenY, 0, center.screenX, center.screenY, radius);
@@ -632,38 +652,30 @@ const StellarCartographer: React.FC = () => {
           gradient.addColorStop(0.7, hexToRgba(empire.color, 0.06 * opacity));
           gradient.addColorStop(1, hexToRgba(empire.color, 0));
           ctx.fillStyle = gradient;
-          ctx.beginPath();
-          ctx.arc(center.screenX, center.screenY, radius, 0, Math.PI * 2);
-          ctx.fill();
+          if (tracePolygon(getClippedTerritoryPolygon(territoryCenters, idx, radius))) ctx.fill();
 
           // Dashed border
           ctx.strokeStyle = hexToRgba(empire.color, 0.12 * opacity);
           ctx.lineWidth = 1;
           ctx.setLineDash([8, 8]);
-          ctx.beginPath();
-          ctx.arc(center.screenX, center.screenY, radius * 0.95, 0, Math.PI * 2);
-          ctx.stroke();
+          if (tracePolygon(getClippedTerritoryPolygon(territoryCenters, idx, radius * 0.95))) ctx.stroke();
           ctx.setLineDash([]);
 
         } else if (display.territoryBorderStyle === 'sharp') {
+          const clipped = getClippedTerritoryPolygon(territoryCenters, idx, radius);
+
           ctx.fillStyle = hexToRgba(empire.color, 0.12 * opacity);
-          ctx.beginPath();
-          ctx.arc(center.screenX, center.screenY, radius, 0, Math.PI * 2);
-          ctx.fill();
+          if (tracePolygon(clipped)) ctx.fill();
 
           ctx.strokeStyle = hexToRgba(empire.color, 0.6 * opacity);
           ctx.lineWidth = 2;
-          ctx.beginPath();
-          ctx.arc(center.screenX, center.screenY, radius, 0, Math.PI * 2);
-          ctx.stroke();
+          if (tracePolygon(clipped)) ctx.stroke();
 
           const innerGlow = ctx.createRadialGradient(center.screenX, center.screenY, radius * 0.7, center.screenX, center.screenY, radius);
           innerGlow.addColorStop(0, hexToRgba(empire.color, 0));
           innerGlow.addColorStop(1, hexToRgba(empire.color, 0.15 * opacity));
           ctx.fillStyle = innerGlow;
-          ctx.beginPath();
-          ctx.arc(center.screenX, center.screenY, radius, 0, Math.PI * 2);
-          ctx.fill();
+          if (tracePolygon(clipped)) ctx.fill();
 
         } else {
           const gradient = ctx.createRadialGradient(center.screenX, center.screenY, 0, center.screenX, center.screenY, radius);
@@ -671,11 +683,9 @@ const StellarCartographer: React.FC = () => {
           gradient.addColorStop(0.6, hexToRgba(empire.color, 0.08 * opacity));
           gradient.addColorStop(1, hexToRgba(empire.color, 0.02 * opacity));
           ctx.fillStyle = gradient;
-          ctx.beginPath();
-          ctx.arc(center.screenX, center.screenY, radius, 0, Math.PI * 2);
-          ctx.fill();
+          if (tracePolygon(getClippedTerritoryPolygon(territoryCenters, idx, radius))) ctx.fill();
         }
-      }
+      });
     }
 
     // Supermassive Black Hole
