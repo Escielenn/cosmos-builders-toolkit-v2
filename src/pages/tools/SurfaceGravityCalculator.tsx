@@ -563,7 +563,7 @@ const SurfaceGravityCalculator = () => {
                     className={`p-3 rounded-none border text-left transition-colors ${
                       formState.primary.planetPreset === preset.id
                         ? "border-primary bg-primary/10"
-                        : "border-sf-border hover:border-primary/30 hover:bg-accent/5"
+                        : "border-sf-line-interactive hover:border-primary hover:bg-accent/5"
                     }`}
                   >
                     <div className="flex items-center gap-1.5 mb-1">
@@ -762,7 +762,7 @@ const SurfaceGravityCalculator = () => {
                         {result.regimeLabel}
                       </Badge>
                       {result.deltaV.gravityLocked && (
-                        <Badge className="bg-sf-crimson/[0.06] text-sf-crimson border-sf-crimson/[0.15]">
+                        <Badge className="bg-sf-crimson/[0.06] text-sf-crimson border-sf-crimson">
                           GRAVITY-LOCKED
                         </Badge>
                       )}

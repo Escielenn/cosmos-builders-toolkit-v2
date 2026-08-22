@@ -62,7 +62,7 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="border-t border-dashed border-sf-border bg-sf-void/80 backdrop-blur-sf-panel">
+    <footer className="border-t border-dashed border-sf-line-interactive bg-sf-void/80 backdrop-blur-sf-panel">
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-12">
           {/* Brand */}
@@ -99,7 +99,7 @@ const Footer = () => {
             </div>
 
             {/* Privacy Statement */}
-            <div className="mt-6 pt-4 border-t border-dashed border-sf-border">
+            <div className="mt-6 pt-4 border-t border-dashed border-sf-line-interactive">
               <h4 className="font-heading text-[12px] font-medium uppercase tracking-[0.2em] text-t1 mb-2">
                 YOUR WORLDS ARE YOURS ALONE
               </h4>
@@ -169,11 +169,11 @@ const Footer = () => {
         </div>
 
         {/* Bottom Bar, coordinates, build, copyright */}
-        <div className="mt-12 pt-8 border-t border-dashed border-sf-border">
+        <div className="mt-12 pt-8 border-t border-dashed border-sf-line-interactive">
           <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
             <div className="font-mono text-[12px] tracking-[0.18em] text-t4 text-center sm:text-left space-y-1">
               <p>
-                <span className="text-t5">//</span>{" "}
+                <span className="text-t4">//</span>{" "}
                 <a
                   href="https://dreamsidestudios.com"
                   target="_blank"
@@ -195,11 +195,11 @@ const Footer = () => {
                   JASON D. BATT, PH.D.
                 </a>
               </p>
-              <p className="text-t5">
+              <p className="text-t4">
                 UNAUTHORIZED COPYING, MODIFICATION, OR DISTRIBUTION PROHIBITED.
               </p>
             </div>
-            <div className="font-mono text-[12px] tracking-[0.18em] text-t5 text-center sm:text-right space-y-1">
+            <div className="font-mono text-[12px] tracking-[0.18em] text-t4 text-center sm:text-right space-y-1">
               <p>39.87°N · 104.97°W</p>
               <p><BuildSigil /></p>
               <p className="hidden sm:block"><CommitTicker /></p>

@@ -637,7 +637,7 @@ const LexDrift = () => {
                   {STARTING_LANGUAGES.map((lang) => (
                     <div
                       key={lang.id}
-                      className="flex items-center gap-2 p-2 rounded-none border border-sf-border hover:border-primary/50 transition-colors"
+                      className="flex items-center gap-2 p-2 rounded-none border border-sf-line-interactive hover:border-primary transition-colors"
                     >
                       <Checkbox
                         id={`lang-${lang.id}`}
@@ -751,7 +751,7 @@ const LexDrift = () => {
             <button
               type="button"
               onClick={() => setShowAdvanced(!showAdvanced)}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-sm border border-sf-border bg-accent/5 hover:bg-accent/10 transition-colors"
+              className="flex items-center gap-2 px-3 py-1.5 rounded-sm border border-sf-line-interactive bg-accent/5 hover:bg-accent/10 transition-colors"
             >
               <span className="font-mono text-[12px] uppercase tracking-[1.5px] text-t3">
                 {showAdvanced ? "▾ Hide" : "▸ Show"} Advanced Parameters
@@ -846,7 +846,7 @@ const LexDrift = () => {
                   </Button>
                 </div>
                 {formState.social.contactEvents.map((event) => (
-                  <div key={event.id} className="flex gap-2 items-start p-3 rounded-none border border-sf-border">
+                  <div key={event.id} className="flex gap-2 items-start p-3 rounded-none border border-sf-line-interactive">
                     <div className="grid grid-cols-3 gap-2 flex-1">
                       <div className="space-y-1">
                         <span className="text-xs text-t4">Year</span>
@@ -1072,7 +1072,7 @@ const LexDrift = () => {
 
                 {/* Liturgical Note */}
                 {calculationResult.liturgicalNote && (
-                  <GlassPanel className="p-5 border-l-4 border-l-amber-500/50">
+                  <GlassPanel className="p-5 border-l-4 border-l-sf-amber">
                     <p className="font-mono text-xs uppercase tracking-sf-wide text-sf-amber/60 mb-2">
                       Liturgical Preservation
                     </p>
@@ -1102,7 +1102,7 @@ const LexDrift = () => {
                         </span>
                       </div>
                     ))}
-                    <div className="pt-2 border-t border-sf-border flex justify-between items-center">
+                    <div className="pt-2 border-t border-sf-line-interactive flex justify-between items-center">
                       <span className="text-sm font-medium">Combined</span>
                       <span className="font-mono text-sm font-medium text-primary">
                         ×{calculationResult.totalModifier.toFixed(3)}

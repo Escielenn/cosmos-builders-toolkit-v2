@@ -75,7 +75,7 @@ const BookCard = ({ book }: { book: BookEntry }) => {
         </div>
 
         {/* Store links */}
-        <div className="flex items-center gap-3 mt-4 pt-3 border-t border-sf-border">
+        <div className="flex items-center gap-3 mt-4 pt-3 border-t border-sf-line-interactive">
           <ShoppingCart className="w-3.5 h-3.5 text-t3 shrink-0" />
           <a
             href={getAmazonUrl(book.title, book.author)}

@@ -758,7 +758,7 @@ const PropulsionConsequencesMap = () => {
           </div>
           
           {/* External Resources */}
-          <div className="mt-6 pt-4 border-t border-sf-border">
+          <div className="mt-6 pt-4 border-t border-sf-line-interactive">
             <h4 className="text-sm font-medium mb-3">Essential Resources</h4>
             <div className="flex flex-wrap gap-2">
               {EXTERNAL_RESOURCES.map((resource) => (
@@ -797,7 +797,7 @@ const PropulsionConsequencesMap = () => {
                   className="grid gap-2 md:grid-cols-2"
                 >
                   {PROPULSION_TYPES.map((type) => (
-                    <div key={type.value} className="flex items-start gap-3 p-3 rounded-none border border-sf-border hover:border-primary/50 transition-colors">
+                    <div key={type.value} className="flex items-start gap-3 p-3 rounded-none border border-sf-line-interactive hover:border-primary transition-colors">
                       <RadioGroupItem value={type.value} id={type.value} className="mt-0.5" />
                       <Label htmlFor={type.value} className="cursor-pointer flex-1">
                         <span className="font-medium">{type.label}</span>
@@ -877,7 +877,7 @@ const PropulsionConsequencesMap = () => {
                         ? ` with ${formState.system.acceleration} acceleration (brachistochrone trajectory)`
                         : " (cruise velocity)"}
                     </p>
-                    <div className="rounded-none border border-sf-border divide-y divide-border/50">
+                    <div className="rounded-none border border-sf-line-interactive divide-y divide-border">
                       {BENCHMARK_ROUTES.map((route) => (
                         <div key={route.key} className="flex items-center justify-between px-4 py-2.5">
                           <div className="flex items-baseline gap-2">
@@ -892,7 +892,7 @@ const PropulsionConsequencesMap = () => {
                     </div>
                   </>
                 ) : isFTL ? (
-                  <div className="p-4 rounded-none bg-accent/10 border border-accent/20">
+                  <div className="p-4 rounded-none bg-accent/10 border border-accent">
                     <p className="text-sm text-t3 mb-3">
                       FTL travel times depend on your setting's specific mechanics. Define travel times for key routes:
                     </p>
@@ -1009,7 +1009,7 @@ const PropulsionConsequencesMap = () => {
                   </div>
                 </div>
                 {costGuidance && (
-                  <div className="p-3 rounded-none bg-muted/50 border border-sf-border space-y-2 md:col-span-2">
+                  <div className="p-3 rounded-none bg-muted/50 border border-sf-line-interactive space-y-2 md:col-span-2">
                     <p className="text-xs font-medium text-t2 flex items-center gap-1.5">
                       <Info className="w-3.5 h-3.5" />
                       Cost guidance for{" "}
@@ -1032,7 +1032,7 @@ const PropulsionConsequencesMap = () => {
                   className="grid gap-2 md:grid-cols-2"
                 >
                   {COST_COMPARISONS.map((comp) => (
-                    <div key={comp.value} className="flex items-start gap-2 p-2 rounded border border-sf-border">
+                    <div key={comp.value} className="flex items-start gap-2 p-2 rounded border border-sf-line-interactive">
                       <RadioGroupItem value={comp.value} id={`cost-${comp.value}`} className="mt-0.5" />
                       <Label htmlFor={`cost-${comp.value}`} className="cursor-pointer">
                         <span className="font-medium">{comp.label}</span>
@@ -1059,7 +1059,7 @@ const PropulsionConsequencesMap = () => {
                 <Label className="text-sm font-medium">Access Stratification</Label>
                 <div className="grid gap-2">
                   {ACCESS_STRATIFICATIONS.map((option) => (
-                    <div key={option.id} className="flex items-start gap-3 p-3 rounded-none border border-sf-border">
+                    <div key={option.id} className="flex items-start gap-3 p-3 rounded-none border border-sf-line-interactive">
                       <Checkbox
                         id={`access-${option.id}`}
                         checked={(formState.economic.accessStratification as string[] || []).includes(option.id)}
@@ -1097,7 +1097,7 @@ const PropulsionConsequencesMap = () => {
                 <p className="text-xs text-t4">What's worth shipping given travel costs and time?</p>
                 <div className="grid gap-2">
                   {TRADE_VIABILITY.map((option) => (
-                    <div key={option.id} className="flex items-start gap-3 p-3 rounded-none border border-sf-border">
+                    <div key={option.id} className="flex items-start gap-3 p-3 rounded-none border border-sf-line-interactive">
                       <Checkbox
                         id={`trade-${option.id}`}
                         checked={(formState.economic.tradeViability as string[] || []).includes(option.id)}
@@ -1204,7 +1204,7 @@ const PropulsionConsequencesMap = () => {
                 <p className="text-xs text-t4">Select the model(s) that fit your propulsion parameters</p>
                 <div className="grid gap-2">
                   {GOVERNANCE_STRUCTURES.map((structure) => (
-                    <div key={structure.id} className="flex items-start gap-3 p-3 rounded-none border border-sf-border">
+                    <div key={structure.id} className="flex items-start gap-3 p-3 rounded-none border border-sf-line-interactive">
                       <Checkbox
                         id={`gov-${structure.id}`}
                         checked={(formState.political.governanceStructures as string[] || []).includes(structure.id)}
@@ -1348,7 +1348,7 @@ const PropulsionConsequencesMap = () => {
                 <p className="text-xs text-t4">What military structures fit your propulsion?</p>
                 <div className="grid gap-2 md:grid-cols-2">
                   {MILITARY_STRUCTURES.map((structure) => (
-                    <div key={structure.id} className="flex items-start gap-3 p-3 rounded-none border border-sf-border">
+                    <div key={structure.id} className="flex items-start gap-3 p-3 rounded-none border border-sf-line-interactive">
                       <Checkbox
                         id={`mil-${structure.id}`}
                         checked={(formState.military.organization as string[] || []).includes(structure.id)}
@@ -1427,7 +1427,7 @@ const PropulsionConsequencesMap = () => {
                 onChange={(value) => updateDomain("social", "career", value)}
               />
 
-              <div className="p-4 rounded-none bg-accent/10 border border-accent/20 space-y-3">
+              <div className="p-4 rounded-none bg-accent/10 border border-accent space-y-3">
                 <h4 className="text-sm font-medium flex items-center gap-2">
                   <Info className="w-4 h-4 text-accent" />
                   Time Dilation Effects (If Applicable)
@@ -1541,7 +1541,7 @@ const PropulsionConsequencesMap = () => {
                     { id: "social", label: "Social → Do family structures match travel times?" },
                     { id: "psychology", label: "Psychology → Do cultural concepts match travel experience?" },
                   ].map((check) => (
-                    <div key={check.id} className="flex items-center gap-3 p-2 rounded border border-sf-border">
+                    <div key={check.id} className="flex items-center gap-3 p-2 rounded border border-sf-line-interactive">
                       <Checkbox
                         id={`check-${check.id}`}
                         checked={formState.synthesis.consistencyChecks.includes(check.id)}
@@ -1584,7 +1584,7 @@ const PropulsionConsequencesMap = () => {
                 
                 <div className="space-y-2">
                   <Label htmlFor="conflict-economic" className="text-xs">Economic Conflicts</Label>
-                  <Suspense fallback={<div className="min-h-[80px] rounded-md border border-sf-border bg-background/50 animate-pulse" />}>
+                  <Suspense fallback={<div className="min-h-[80px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                     <RichTextEditor
                       content={formState.synthesis.economicConflicts}
                       onChange={(value) => updateSynthesis("economicConflicts", value)}
@@ -1596,7 +1596,7 @@ const PropulsionConsequencesMap = () => {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="conflict-political" className="text-xs">Political Conflicts</Label>
-                  <Suspense fallback={<div className="min-h-[80px] rounded-md border border-sf-border bg-background/50 animate-pulse" />}>
+                  <Suspense fallback={<div className="min-h-[80px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                     <RichTextEditor
                       content={formState.synthesis.politicalConflicts}
                       onChange={(value) => updateSynthesis("politicalConflicts", value)}
@@ -1608,7 +1608,7 @@ const PropulsionConsequencesMap = () => {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="conflict-social" className="text-xs">Social Conflicts</Label>
-                  <Suspense fallback={<div className="min-h-[80px] rounded-md border border-sf-border bg-background/50 animate-pulse" />}>
+                  <Suspense fallback={<div className="min-h-[80px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                     <RichTextEditor
                       content={formState.synthesis.socialConflicts}
                       onChange={(value) => updateSynthesis("socialConflicts", value)}
@@ -1632,7 +1632,7 @@ const PropulsionConsequencesMap = () => {
               {SF_EXAMPLES.map((example, index) => (
                 <Collapsible key={index}>
                   <CollapsibleTrigger asChild>
-                    <button type="button" className="w-full p-4 rounded-none border border-sf-border hover:border-primary/50 transition-colors text-left flex items-center justify-between">
+                    <button type="button" className="w-full p-4 rounded-none border border-sf-line-interactive hover:border-primary transition-colors text-left flex items-center justify-between">
                       <span className="font-medium text-sm">{example.title}</span>
                       <ChevronDown className="w-4 h-4 text-t2" />
                     </button>
@@ -1642,14 +1642,14 @@ const PropulsionConsequencesMap = () => {
                       <div className="overflow-x-auto">
                         <table className="w-full text-sm">
                           <thead>
-                            <tr className="border-b border-sf-border">
+                            <tr className="border-b border-sf-line-interactive">
                               <th className="text-left p-2 font-medium">Domain</th>
                               <th className="text-left p-2 font-medium">Consequence</th>
                             </tr>
                           </thead>
                           <tbody>
                             {example.data.map((row, i) => (
-                              <tr key={i} className="border-b border-sf-border">
+                              <tr key={i} className="border-b border-sf-line-interactive">
                                 <td className="p-2 text-primary font-medium">{row.domain}</td>
                                 <td className="p-2 text-t2">{row.consequence}</td>
                               </tr>
@@ -1681,7 +1681,7 @@ const PropulsionConsequencesMap = () => {
                 <p className="text-xs text-t4">
                   Summarize how your travel system shapes your world.
                 </p>
-                <Suspense fallback={<div className="min-h-[120px] rounded-md border border-sf-border bg-background/50 animate-pulse" />}>
+                <Suspense fallback={<div className="min-h-[120px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                   <RichTextEditor
                     content={formState.synthesis.propulsionThesis}
                     onChange={(value) => updateSynthesis("propulsionThesis", value)}

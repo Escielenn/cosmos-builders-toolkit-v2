@@ -101,7 +101,7 @@ const TOOL_TYPE = "space-expansion-modeler";
 const LOCAL_STORAGE_KEY = "space-expansion-worksheet";
 
 const EditorSkeleton = () => (
-  <div className="min-h-[120px] rounded-md border border-sf-border bg-background/50 animate-pulse" />
+  <div className="min-h-[120px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />
 );
 
 const PHASE_IDS: ExpansionPhaseId[] = [
@@ -559,7 +559,7 @@ const SpaceExpansionModeler = () => {
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {QUICK_START_TEMPLATES.map((tmpl) => (
-                  <GlassPanel key={tmpl.id} className="p-4 hover:border-primary/30 transition-colors">
+                  <GlassPanel key={tmpl.id} className="p-4 hover:border-primary transition-colors">
                     <h4 className="font-heading font-medium text-sm mb-1">{tmpl.name}</h4>
                     <p className="text-xs text-primary mb-2">{tmpl.tagline}</p>
                     <p className="text-xs text-t4 mb-3">{tmpl.description}</p>
@@ -668,7 +668,7 @@ const SpaceExpansionModeler = () => {
                       {idx > 0 && (
                         <div className="absolute -top-4 left-6 w-px h-4 bg-border" />
                       )}
-                      <GlassPanel className={`p-4 ${phase.reached ? "border-primary/30" : "opacity-60"}`}>
+                      <GlassPanel className={`p-4 ${phase.reached ? "border-primary" : "opacity-60"}`}>
                         <div className="flex items-center gap-3 mb-3">
                           <div className={`w-8 h-8 rounded-sm flex items-center justify-center text-xs font-mono ${phase.reached ? "bg-primary/20 text-primary" : "bg-muted text-t2"}`}>
                             {idx + 1}

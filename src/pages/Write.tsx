@@ -339,7 +339,7 @@ export default function Write(): JSX.Element {
 
   // Shared binder content (renders in the desktop column AND the mobile sheet)
   const binderContent = (
-    <div className="flex h-full min-h-0 flex-col border-r border-sf-border">
+    <div className="flex h-full min-h-0 flex-col border-r border-sf-line-interactive">
       <div className="sf-sb sf-sb--slim min-h-0 flex-1 overflow-y-auto py-3">
         {folders.map((folder) => (
           <div key={folder.id} className="mb-2">
@@ -366,7 +366,7 @@ export default function Write(): JSX.Element {
           <p className="px-3 py-4 font-serif text-[13px] italic text-t4">No documents yet.</p>
         )}
         {(trashed?.length ?? 0) > 0 && (
-          <div className="mt-3 border-t border-sf-border pt-2">
+          <div className="mt-3 border-t border-sf-line-interactive pt-2">
             <button
               onClick={() => setTrashOpen((o) => !o)}
               className="flex w-full items-center gap-2 px-3 py-1.5 text-left font-heading text-[12px] uppercase tracking-[1.5px] text-t4 hover:text-t2"
@@ -377,16 +377,16 @@ export default function Write(): JSX.Element {
             </button>
             {trashOpen && (
               <div className="pb-1">
-                <p className="px-3 pb-1 font-serif text-[12px] italic text-t5">Auto-emptied after 90 days.</p>
+                <p className="px-3 pb-1 font-serif text-[12px] italic text-t4">Auto-emptied after 90 days.</p>
                 {trashed!.map((d) => (
                   <div key={d.id} className="group flex items-center gap-1 pr-1">
                     <span className="min-w-0 flex-1 truncate py-1.5 pl-3 font-serif text-[13px] text-t4 line-through">{d.title || "Untitled"}</span>
                     <button onClick={() => restoreDoc.mutate(d.id)} aria-label={`Restore ${d.title || "Untitled"}`} title="Restore"
-                      className="shrink-0 p-1.5 text-t5 opacity-0 transition-opacity hover:text-sf-teal focus-visible:opacity-100 group-hover:opacity-100">
+                      className="shrink-0 p-1.5 text-t4 opacity-0 transition-opacity hover:text-sf-teal focus-visible:opacity-100 group-hover:opacity-100">
                       <RotateCcw className="h-3.5 w-3.5" />
                     </button>
                     <button onClick={() => purgeDoc.mutate(d.id)} aria-label={`Delete ${d.title || "Untitled"} permanently`} title="Delete forever"
-                      className="shrink-0 p-1.5 text-t5 opacity-0 transition-opacity hover:text-sf-crimson focus-visible:opacity-100 group-hover:opacity-100">
+                      className="shrink-0 p-1.5 text-t4 opacity-0 transition-opacity hover:text-sf-crimson focus-visible:opacity-100 group-hover:opacity-100">
                       <X className="h-3.5 w-3.5" />
                     </button>
                   </div>
@@ -397,9 +397,9 @@ export default function Write(): JSX.Element {
         )}
       </div>
       {worldId && (
-        <div className="flex gap-1 border-t border-sf-border p-2">
-          <button onClick={newDocument} className="min-h-[40px] flex-1 border border-sf-border px-2 py-1.5 text-[12px] text-t2 transition-colors hover:border-sf-teal hover:text-t1">+ Document</button>
-          <button onClick={() => createFolder.mutate("New folder")} className="min-h-[40px] flex-1 border border-sf-border px-2 py-1.5 text-[12px] text-t2 transition-colors hover:border-sf-teal hover:text-t1">+ Folder</button>
+        <div className="flex gap-1 border-t border-sf-line-interactive p-2">
+          <button onClick={newDocument} className="min-h-[40px] flex-1 border border-sf-line-interactive px-2 py-1.5 text-[12px] text-t2 transition-colors hover:border-sf-teal hover:text-t1">+ Document</button>
+          <button onClick={() => createFolder.mutate("New folder")} className="min-h-[40px] flex-1 border border-sf-line-interactive px-2 py-1.5 text-[12px] text-t2 transition-colors hover:border-sf-teal hover:text-t1">+ Folder</button>
         </div>
       )}
     </div>
@@ -407,8 +407,8 @@ export default function Write(): JSX.Element {
 
   // Shared inspector content (desktop column AND mobile sheet)
   const inspectorContent = worldId ? (
-    <div className="sf-sb sf-sb--slim flex h-full min-h-0 flex-col overflow-y-auto border-l border-sf-border">
-      <div className="flex border-b border-sf-border" role="tablist" aria-label="Inspector">
+    <div className="sf-sb sf-sb--slim flex h-full min-h-0 flex-col overflow-y-auto border-l border-sf-line-interactive">
+      <div className="flex border-b border-sf-line-interactive" role="tablist" aria-label="Inspector">
         {(["entities", "world", "reference", "continuity"] as const).map((t) => (
           <button key={t} role="tab" aria-selected={inspector === t} onClick={() => setInspector(t)}
             className={`min-h-[44px] flex-1 border-b-2 px-2 py-2.5 text-[13px] capitalize transition-colors ${inspector === t ? "border-sf-teal text-t1" : "border-transparent text-t3 hover:text-t1"}`}>
@@ -440,9 +440,9 @@ export default function Write(): JSX.Element {
           <div className="sf-sb sf-sb--slim min-h-0 flex-1 overflow-y-auto">
             <WorksheetFactsPanel worldId={worldId} onInsert={insertIntoEditor} />
           </div>
-          <div className="border-t border-sf-border p-3">
-            <Link to={`/worlds/${worldId}/wiki`} className="block border border-sf-border px-3 py-2 text-[13px] text-t2 transition-colors hover:border-sf-teal hover:text-t1">Open the wiki →</Link>
-            <Link to={`/worlds/${worldId}/connections`} className="mt-2 block border border-sf-border px-3 py-2 text-[13px] text-t2 transition-colors hover:border-sf-teal hover:text-t1">Open the entity graph →</Link>
+          <div className="border-t border-sf-line-interactive p-3">
+            <Link to={`/worlds/${worldId}/wiki`} className="block border border-sf-line-interactive px-3 py-2 text-[13px] text-t2 transition-colors hover:border-sf-teal hover:text-t1">Open the wiki →</Link>
+            <Link to={`/worlds/${worldId}/connections`} className="mt-2 block border border-sf-line-interactive px-3 py-2 text-[13px] text-t2 transition-colors hover:border-sf-teal hover:text-t1">Open the entity graph →</Link>
           </div>
         </div>
       )}
@@ -452,22 +452,22 @@ export default function Write(): JSX.Element {
   return (
     <div className="relative z-10 grid h-screen grid-rows-[44px_1fr_32px] bg-[hsl(var(--sf-void))]">
       {/* topbar */}
-      <header className="flex items-center gap-3 border-b border-sf-border px-4">
+      <header className="flex items-center gap-3 border-b border-sf-line-interactive px-4">
         {/* explicit way back to the Studio overview */}
         <Link
           to="/studio"
-          className="flex items-center gap-1.5 border border-sf-border px-2.5 py-1 text-[13px] text-t3 transition-colors hover:border-sf-teal hover:text-t1"
+          className="flex items-center gap-1.5 border border-sf-line-interactive px-2.5 py-1 text-[13px] text-t3 transition-colors hover:border-sf-teal hover:text-t1"
           title="Back to Studio"
         >
           <span aria-hidden="true">←</span> Studio
         </Link>
         <Wordmark size="sm" suffix="Studio" to="/studio" className="hidden sm:inline-flex" />
         <div className="hidden min-w-0 items-baseline gap-2 text-[13px] text-t4 md:flex">
-          <span className="text-t5">/</span>
+          <span className="text-t4">/</span>
           {worldId && (
             <>
               <Link to={`/worlds/${worldId}`} className="hover:text-t2">World</Link>
-              <span className="text-t5">/</span>
+              <span className="text-t4">/</span>
             </>
           )}
           <span className="truncate font-serif italic text-t2">{doc?.title || "Untitled"}</span>
@@ -478,12 +478,12 @@ export default function Write(): JSX.Element {
           {!focus && (
             <>
               <button onClick={() => setMobilePanel("binder")}
-                className="border border-sf-border px-2.5 py-1 text-[12px] text-t3 transition-colors hover:border-sf-teal hover:text-t1 lg:hidden">
+                className="border border-sf-line-interactive px-2.5 py-1 text-[12px] text-t3 transition-colors hover:border-sf-teal hover:text-t1 lg:hidden">
                 Docs
               </button>
               {worldId && (
                 <button onClick={() => setMobilePanel("inspector")}
-                  className="border border-sf-border px-2.5 py-1 text-[12px] text-t3 transition-colors hover:border-sf-teal hover:text-t1 lg:hidden">
+                  className="border border-sf-line-interactive px-2.5 py-1 text-[12px] text-t3 transition-colors hover:border-sf-teal hover:text-t1 lg:hidden">
                   Entities
                 </button>
               )}
@@ -494,13 +494,13 @@ export default function Write(): JSX.Element {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button
-                className="border border-sf-border px-2.5 py-1 text-[12px] text-t3 transition-colors hover:text-t1"
+                className="border border-sf-line-interactive px-2.5 py-1 text-[12px] text-t3 transition-colors hover:text-t1"
                 title="Export this document"
               >
                 Export
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-52 rounded-none border-sf-border bg-sf-surface/95">
+            <DropdownMenuContent align="end" className="w-52 rounded-none border-sf-line-interactive bg-sf-surface/95">
               <DropdownMenuItem onClick={() => exportDoc("docx")}>
                 Word (.docx)
               </DropdownMenuItem>
@@ -515,12 +515,12 @@ export default function Write(): JSX.Element {
           <button
             onClick={() => setView(view === "board" ? "editor" : "board")}
             title="Index cards for every scene, to see the shape of the manuscript"
-            className={`border px-2.5 py-1 text-[12px] transition-colors ${view === "board" ? "border-sf-teal text-sf-teal" : "border-sf-border text-t3 hover:text-t1"}`}>
+            className={`border px-2.5 py-1 text-[12px] transition-colors ${view === "board" ? "border-sf-teal text-sf-teal" : "border-sf-line-interactive text-t3 hover:text-t1"}`}>
             Board
           </button>
           <button onClick={() => setFocus(!focus)}
             title={focus ? "Leave focus mode (Esc)" : "Focus mode hides the binder and inspector. Press Esc to come back."}
-            className={`border px-2.5 py-1 text-[12px] transition-colors ${focus ? "border-sf-teal text-sf-teal" : "border-sf-border text-t3 hover:text-t1"}`}>
+            className={`border px-2.5 py-1 text-[12px] transition-colors ${focus ? "border-sf-teal text-sf-teal" : "border-sf-line-interactive text-t3 hover:text-t1"}`}>
             Focus
           </button>
         </div>
@@ -528,13 +528,13 @@ export default function Write(): JSX.Element {
 
       {/* mobile slide-over: binder */}
       <Sheet open={mobilePanel === "binder"} onOpenChange={(o) => !o && setMobilePanel(null)}>
-        <SheetContent side="left" className="w-[280px] border-sf-border bg-sf-surface/95 p-0">
+        <SheetContent side="left" className="w-[280px] border-sf-line-interactive bg-sf-surface/95 p-0">
           <div className="flex h-full flex-col pt-8">{binderContent}</div>
         </SheetContent>
       </Sheet>
       {/* mobile slide-over: inspector */}
       <Sheet open={mobilePanel === "inspector"} onOpenChange={(o) => !o && setMobilePanel(null)}>
-        <SheetContent side="right" className="w-[320px] border-sf-border bg-sf-surface/95 p-0">
+        <SheetContent side="right" className="w-[320px] border-sf-line-interactive bg-sf-surface/95 p-0">
           <div className="flex h-full flex-col pt-8">{inspectorContent}</div>
         </SheetContent>
       </Sheet>
@@ -582,7 +582,7 @@ export default function Write(): JSX.Element {
                 disabled={updateMeta.isPending}
               />
             )}
-            <div className="my-6 text-center text-t5" aria-hidden="true">· · ·</div>
+            <div className="my-6 text-center text-t4" aria-hidden="true">· · ·</div>
             {doc && (
               <StellarForgeEditor
                 onEditorReady={setEditorInstance}
@@ -610,7 +610,7 @@ export default function Write(): JSX.Element {
       </div>
 
       {/* status bar */}
-      <footer className="flex items-center justify-between border-t border-sf-border px-4">
+      <footer className="flex items-center justify-between border-t border-sf-line-interactive px-4">
         <div className="flex items-center gap-2.5">
           <span className={`h-1.5 w-1.5 rounded-full bg-sf-teal ${updateContent.isPending ? "animate-sf-pulse" : ""}`} aria-hidden="true" />
           <span className="font-serif text-[12px] italic text-t3">
@@ -620,7 +620,7 @@ export default function Write(): JSX.Element {
         {/* Progress toward today's goal, not an astronomical date. The editor
             already wrote session words to writing_sessions and never read them
             back, so the writer's own number was invisible while writing. */}
-        <div className="flex items-center gap-3 font-mono text-[12px] tracking-[1.5px] text-t5">
+        <div className="flex items-center gap-3 font-mono text-[12px] tracking-[1.5px] text-t4">
           <span>{words.toLocaleString()} WORDS</span>
           <span aria-hidden="true">·</span>
           <span
@@ -682,7 +682,7 @@ function SortableDocRow({ d, active, onOpen, onTrash, chapters, onMove }: {
               onClick={(e) => e.stopPropagation()}
               aria-label={`File ${d.title || "Untitled"} into a chapter`}
               title="File into a chapter"
-              className="shrink-0 p-1.5 text-t5 opacity-0 transition-opacity hover:text-sf-teal focus-visible:opacity-100 group-hover:opacity-100"
+              className="shrink-0 p-1.5 text-t4 opacity-0 transition-opacity hover:text-sf-teal focus-visible:opacity-100 group-hover:opacity-100"
             >
               <FolderInput className="h-3.5 w-3.5" />
             </button>
@@ -715,7 +715,7 @@ function SortableDocRow({ d, active, onOpen, onTrash, chapters, onMove }: {
         onClick={(e) => { e.stopPropagation(); onTrash(); }}
         aria-label={`Move ${d.title || "Untitled"} to trash`}
         title="Move to trash"
-        className="shrink-0 p-1.5 text-t5 opacity-0 transition-opacity hover:text-sf-crimson focus-visible:opacity-100 group-hover:opacity-100"
+        className="shrink-0 p-1.5 text-t4 opacity-0 transition-opacity hover:text-sf-crimson focus-visible:opacity-100 group-hover:opacity-100"
       >
         <Trash2 className="h-3.5 w-3.5" />
       </button>

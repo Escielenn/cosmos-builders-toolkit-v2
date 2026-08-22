@@ -265,7 +265,7 @@ const SortableToolCard = ({ tool, worldId }: { tool: typeof TOOLS[number]; world
     <div ref={setNodeRef} style={style} className="group/card relative">
       <button
         type="button"
-        className="absolute top-2 right-2 z-10 p-1 cursor-grab active:cursor-grabbing text-t5 opacity-0 group-hover/card:opacity-100 transition-opacity touch-none"
+        className="absolute top-2 right-2 z-10 p-1 cursor-grab active:cursor-grabbing text-t4 opacity-0 group-hover/card:opacity-100 transition-opacity touch-none"
         {...attributes}
         {...listeners}
         tabIndex={-1}
@@ -330,7 +330,7 @@ const SortableWorksheetGroup = ({
         <div className="flex items-center gap-2">
           <button
             type="button"
-            className="p-0.5 cursor-grab active:cursor-grabbing text-t5 opacity-0 group-hover/wsgroup:opacity-100 transition-opacity touch-none"
+            className="p-0.5 cursor-grab active:cursor-grabbing text-t4 opacity-0 group-hover/wsgroup:opacity-100 transition-opacity touch-none"
             {...attributes}
             {...listeners}
             tabIndex={-1}
@@ -439,7 +439,7 @@ const SortableWorksheetGroup = ({
 const ToolDragPreview = ({ tool }: { tool: typeof TOOLS[number] }) => {
   const SvgIcon = getToolSvgIcon(tool.id);
   return (
-    <div className="bg-sf-surface-elevated border border-primary/20 shadow-lg shadow-primary/10 p-4 flex items-center gap-3 max-w-xs">
+    <div className="bg-sf-surface-elevated border border-primary shadow-lg shadow-primary/10 p-4 flex items-center gap-3 max-w-xs">
       {SvgIcon ? (
         <SvgIcon className="w-8 h-8 rounded-sm shrink-0" />
       ) : (
@@ -825,7 +825,7 @@ const WorldDashboard = () => {
 
         {/* Collaborator Banner */}
         {!isOwner && role && (
-          <div className="mb-4 p-3 rounded-none bg-primary/5 border border-primary/10 flex items-center gap-2 text-sm">
+          <div className="mb-4 p-3 rounded-none bg-primary/5 border border-primary flex items-center gap-2 text-sm">
             <Users className="w-4 h-4 text-primary shrink-0" />
             <span>
               You have <Badge variant="secondary" className="mx-1">{role === "editor" ? "Editor" : "Viewer"}</Badge> access to this world
@@ -880,7 +880,7 @@ const WorldDashboard = () => {
             World Elements and Saved Worksheets both duplicating what the Codex
             sidebar already navigates. One opens at a time; nothing was removed,
             and the choice persists per world. */}
-        <div className="mb-8 flex flex-wrap items-center gap-1 border-y border-sf-border py-2">
+        <div className="mb-8 flex flex-wrap items-center gap-1 border-y border-sf-line-interactive py-2">
           {DRAWERS.filter((d) => !d.ownerOnly || isOwner).map((d) => (
             <button
               key={d.id}

@@ -54,7 +54,7 @@ const ECRMockup = () => {
                   className={`w-3 h-3 rounded-full border-2 transition-all duration-300 z-10 ${
                     isActive
                       ? `border-${item.color} bg-${item.color}/30`
-                      : "border-muted/30 bg-sf-surface"
+                      : "border-muted bg-sf-surface"
                   }`}
                   style={{
                     borderColor: isActive ? `hsl(var(--${item.color}))` : undefined,
@@ -86,7 +86,7 @@ const ECRMockup = () => {
                         key={example}
                         className={`text-[12px] px-1.5 py-0.5 rounded border transition-all duration-300 ${
                           isActive
-                            ? "border-muted/30 text-t3"
+                            ? "border-muted text-t3"
                             : "border-transparent text-t3 opacity-60"
                         }`}
                       >
@@ -116,8 +116,8 @@ const ECRMockup = () => {
         <div
           className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full transition-all duration-500 ${
             activeLevel >= 5
-              ? "bg-sf-emerald/10 border border-sf-emerald/30"
-              : "bg-sf-surface border border-muted/20"
+              ? "bg-sf-emerald/10 border border-sf-emerald"
+              : "bg-sf-surface border border-muted"
           }`}
         >
           <div

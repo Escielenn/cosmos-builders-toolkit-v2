@@ -677,7 +677,7 @@ const SpeciesInteractionMatrix = () => {
                       <Button
                         variant="outline"
                         onClick={handleAddFromEvoBio}
-                        className="flex-1 gap-2 text-emerald-600 border-emerald-600/50 hover:bg-emerald-500/10"
+                        className="flex-1 gap-2 text-emerald-600 border-emerald-600 hover:bg-emerald-500/10"
                       >
                         <Dna className="w-4 h-4" />
                         Import from Evolutionary Biology
@@ -703,7 +703,7 @@ const SpeciesInteractionMatrix = () => {
                       className={`cursor-pointer transition-colors ${
                         selectedPairIndex === index
                           ? "border-primary bg-primary/5"
-                          : "hover:border-primary/50"
+                          : "hover:border-primary"
                       }`}
                       onClick={() => setSelectedPairIndex(index)}
                     >
@@ -832,7 +832,7 @@ const SpeciesInteractionMatrix = () => {
                       </div>
                     </div>
 
-                    <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-border bg-background/50 animate-pulse" />}>
+                    <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                       <RichTextEditor
                         content={currentPair.physicalNotes}
                         onChange={(value) => updatePair(selectedPairIndex, { physicalNotes: value })}
@@ -925,7 +925,7 @@ const SpeciesInteractionMatrix = () => {
                         </Select>
                       </div>
                     </div>
-                    <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-border bg-background/50 animate-pulse" />}>
+                    <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                       <RichTextEditor
                         content={currentPair.communicationNotes}
                         onChange={(value) => updatePair(selectedPairIndex, { communicationNotes: value })}
@@ -1018,7 +1018,7 @@ const SpeciesInteractionMatrix = () => {
                         </Select>
                       </div>
                     </div>
-                    <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-border bg-background/50 animate-pulse" />}>
+                    <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                       <RichTextEditor
                         content={currentPair.economicNotes}
                         onChange={(value) => updatePair(selectedPairIndex, { economicNotes: value })}
@@ -1111,7 +1111,7 @@ const SpeciesInteractionMatrix = () => {
                         </Select>
                       </div>
                     </div>
-                    <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-border bg-background/50 animate-pulse" />}>
+                    <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                       <RichTextEditor
                         content={currentPair.politicalNotes}
                         onChange={(value) => updatePair(selectedPairIndex, { politicalNotes: value })}
@@ -1204,7 +1204,7 @@ const SpeciesInteractionMatrix = () => {
                         </Select>
                       </div>
                     </div>
-                    <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-border bg-background/50 animate-pulse" />}>
+                    <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                       <RichTextEditor
                         content={currentPair.culturalNotes}
                         onChange={(value) => updatePair(selectedPairIndex, { culturalNotes: value })}
@@ -1297,7 +1297,7 @@ const SpeciesInteractionMatrix = () => {
                         </Select>
                       </div>
                     </div>
-                    <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-border bg-background/50 animate-pulse" />}>
+                    <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                       <RichTextEditor
                         content={currentPair.historicalNotes}
                         onChange={(value) => updatePair(selectedPairIndex, { historicalNotes: value })}
@@ -1354,7 +1354,7 @@ const SpeciesInteractionMatrix = () => {
                         </Select>
                       </div>
                     </div>
-                    <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-border bg-background/50 animate-pulse" />}>
+                    <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                       <RichTextEditor
                         content={currentPair.tensionNotes}
                         onChange={(value) => updatePair(selectedPairIndex, { tensionNotes: value })}
@@ -1437,7 +1437,7 @@ const SpeciesInteractionMatrix = () => {
 
                 <div className="space-y-2">
                   <Label>Synthesis Notes</Label>
-                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-border bg-background/50 animate-pulse" />}>
+                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                     <RichTextEditor
                       content={formState.synthesisNotes}
                       onChange={(value) => updateField("synthesisNotes", value)}
@@ -1447,7 +1447,7 @@ const SpeciesInteractionMatrix = () => {
                   </Suspense>
                 </div>
 
-                <Card className="bg-purple-500/10 border-purple-500/30">
+                <Card className="bg-purple-500/10 border-sf-violet">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-base">Story Prompt Generator</CardTitle>
                   </CardHeader>

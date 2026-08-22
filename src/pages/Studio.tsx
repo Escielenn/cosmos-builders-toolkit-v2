@@ -52,14 +52,14 @@ const COVER_GRADIENTS = [
 
 function Rail({ worlds }: { worlds: StudioWorld[] }): JSX.Element {
   return (
-    <aside className="sf-sb sf-sb--slim hidden w-[230px] shrink-0 overflow-y-auto border-r border-sf-border py-6 pl-6 pr-4 lg:block">
+    <aside className="sf-sb sf-sb--slim hidden w-[230px] shrink-0 overflow-y-auto border-r border-sf-line-interactive py-6 pl-6 pr-4 lg:block">
       <div className="mb-2 font-serif text-[13px] italic text-t4">Worlds</div>
       <nav className="mb-7 space-y-0.5">
         {worlds.slice(0, 6).map((w) => (
           <Link
             key={w.id}
             to={`/worlds/${w.id}`}
-            className="block border-l-2 border-transparent py-1.5 pl-3 text-[13px] text-t2 transition-colors hover:border-sf-teal/40 hover:text-t1"
+            className="block border-l-2 border-transparent py-1.5 pl-3 text-[13px] text-t2 transition-colors hover:border-sf-teal hover:text-t1"
           >
             {w.name}
           </Link>
@@ -86,7 +86,7 @@ function Rail({ worlds }: { worlds: StudioWorld[] }): JSX.Element {
               <Link
                 key={i.label}
                 to={i.to}
-                className="block border-l-2 border-transparent py-1.5 pl-3 text-[13px] text-t2 transition-colors hover:border-sf-teal/40 hover:text-t1"
+                className="block border-l-2 border-transparent py-1.5 pl-3 text-[13px] text-t2 transition-colors hover:border-sf-teal hover:text-t1"
               >
                 {i.label}
               </Link>
@@ -104,7 +104,7 @@ function Rail({ worlds }: { worlds: StudioWorld[] }): JSX.Element {
           <Link
             key={i.label}
             to={i.to}
-            className="block border-l-2 border-transparent py-1.5 pl-3 text-[13px] text-t2 transition-colors hover:border-sf-teal/40 hover:text-t1"
+            className="block border-l-2 border-transparent py-1.5 pl-3 text-[13px] text-t2 transition-colors hover:border-sf-teal hover:text-t1"
           >
             {i.label}
           </Link>
@@ -184,7 +184,7 @@ export default function Studio(): JSX.Element {
           </div>
 
           {/* streak strip */}
-          <div className="mt-8 flex flex-wrap items-end justify-between gap-6 border-y border-sf-border py-5">
+          <div className="mt-8 flex flex-wrap items-end justify-between gap-6 border-y border-sf-line-interactive py-5">
             <div>
               <div className="mb-1.5 font-serif text-[13px] italic text-t4">The last fourteen days</div>
               <div className="flex h-8 items-end gap-1">
@@ -223,13 +223,13 @@ export default function Studio(): JSX.Element {
           </div>
 
           {/* continue-writing card */}
-          <section className="mt-10 border border-sf-border bg-sf-surface/90">
+          <section className="mt-10 border border-sf-line-interactive bg-sf-surface/90">
             <div className="p-7 md:p-8">
               {entry ? (
                 <>
                   <div className="font-serif text-[13px] italic text-sf-teal">
                     {entryWorld ? entryWorld.name : "Free writing"}
-                    <span className="mx-2 text-t5">·</span>
+                    <span className="mx-2 text-t4">·</span>
                     <span className="text-t4">{timeAgo(entry.updated_at)}</span>
                   </div>
                   <h3 className="mt-2 font-serif text-[24px] italic text-t1">
@@ -250,7 +250,7 @@ export default function Studio(): JSX.Element {
                     {entry.world_id && (
                       <Link
                         to={`/worlds/${entry.world_id}`}
-                        className="border border-sf-border-strong px-5 py-2.5 font-sans text-[13px] tracking-[0.04em] text-t2 transition-colors hover:border-sf-teal hover:text-t1"
+                        className="border border-sf-line-emphasis px-5 py-2.5 font-sans text-[13px] tracking-[0.04em] text-t2 transition-colors hover:border-sf-teal hover:text-t1"
                       >
                         Open the world
                       </Link>
@@ -287,7 +287,7 @@ export default function Studio(): JSX.Element {
               {(data?.worlds ?? []).slice(0, 4).map((w, i) => (
                 <Link key={w.id} to={`/worlds/${w.id}`} className="group block">
                   <div
-                    className="relative aspect-[3/4] overflow-hidden border border-sf-border transition-transform group-hover:-translate-y-0.5"
+                    className="relative aspect-[3/4] overflow-hidden border border-sf-line-interactive transition-transform group-hover:-translate-y-0.5"
                     style={w.header_image_url ? undefined : { background: COVER_GRADIENTS[i % COVER_GRADIENTS.length] }}
                   >
                     {/* the world's chosen header image as the cover, if set */}
@@ -302,7 +302,7 @@ export default function Studio(): JSX.Element {
                     )}
                     {/* readability gradient so the title reads over any image */}
                     <div className="absolute inset-0 bg-gradient-to-t from-[hsl(var(--sf-void))]/85 via-[hsl(var(--sf-void))]/20 to-transparent" aria-hidden="true" />
-                    <div className="absolute inset-2 border border-white/10" aria-hidden="true" />
+                    <div className="absolute inset-2 border border-sf-line" aria-hidden="true" />
                     <div className="relative flex h-full items-end p-3">
                       <span className="font-serif text-[15px] italic leading-snug text-t1 drop-shadow">{w.name}</span>
                     </div>
@@ -314,7 +314,7 @@ export default function Studio(): JSX.Element {
               ))}
               <Link
                 to="/worlds"
-                className="flex aspect-[3/4] items-center justify-center border border-dashed border-sf-border-strong font-serif text-[14px] italic text-t3 transition-colors hover:border-sf-teal hover:text-t1"
+                className="flex aspect-[3/4] items-center justify-center border border-dashed border-sf-line-emphasis font-serif text-[14px] italic text-t3 transition-colors hover:border-sf-teal hover:text-t1"
               >
                 + Begin a new world
               </Link>
@@ -331,7 +331,7 @@ export default function Studio(): JSX.Element {
                     <Link
                       key={c.id}
                       to={`/worlds/${c.world_id}/connections?focus=${c.id}`}
-                      className="border border-sf-border bg-sf-surface/90 p-4 transition-colors hover:border-sf-teal/40"
+                      className="border border-sf-line-interactive bg-sf-surface/90 p-4 transition-colors hover:border-sf-teal"
                     >
                       <div
                         className="mb-3 flex h-10 w-10 items-center justify-center rounded-full font-serif text-[16px] italic text-t1"
@@ -366,7 +366,7 @@ export default function Studio(): JSX.Element {
                       <Link
                         key={n.id}
                         to={`/worlds/${n.world_id}`}
-                        className="block border border-sf-border bg-sf-surface/90 p-4 transition-colors hover:border-sf-teal/40"
+                        className="block border border-sf-line-interactive bg-sf-surface/90 p-4 transition-colors hover:border-sf-teal"
                       >
                         <div className="flex items-center gap-2">
                           <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-sf-amber" aria-hidden="true" />
@@ -392,7 +392,7 @@ export default function Studio(): JSX.Element {
           {data && data.recentEntries.length > 1 && (
             <section className="mt-12">
               <h2 className="mb-4 font-serif text-[20px] italic text-t1">The log</h2>
-              <div className="divide-y divide-sf-border border-y border-sf-border">
+              <div className="divide-y divide-sf-line-interactive border-y border-sf-line-interactive">
                 {data.recentEntries.map((e) => {
                   const w = data.worlds.find((x) => x.id === e.world_id);
                   return (
@@ -415,7 +415,7 @@ export default function Studio(): JSX.Element {
           )}
 
           {/* footer — the ONLY ambient telemetry on the page */}
-          <footer className="mt-16 flex flex-wrap items-center justify-between gap-3 border-t border-sf-border py-5">
+          <footer className="mt-16 flex flex-wrap items-center justify-between gap-3 border-t border-sf-line-interactive py-5">
             <div className="flex items-center gap-2.5">
               <span className="relative flex h-2 w-2">
                 <span className="absolute h-full w-full animate-sf-pulse bg-sf-teal opacity-60" />
@@ -423,7 +423,7 @@ export default function Studio(): JSX.Element {
               </span>
               <span className="font-serif text-[13px] italic text-t3">Stellarforge Studio · online</span>
             </div>
-            <div className="font-mono text-[12px] tracking-[1.5px] text-t5">
+            <div className="font-mono text-[12px] tracking-[1.5px] text-t4">
               JD {julianDay().toFixed(1)} · 39.87°N 104.97°W
             </div>
           </footer>

@@ -650,7 +650,7 @@ const EvolutionaryBiology = () => {
             role="checkbox"
             aria-checked={isChecked}
             tabIndex={0}
-            className="flex items-start gap-3 p-3 rounded-none border border-sf-border hover:border-primary/50 cursor-pointer transition-colors"
+            className="flex items-start gap-3 p-3 rounded-none border border-sf-line-interactive hover:border-primary cursor-pointer transition-colors"
             onClick={(e) => {
               e.preventDefault();
               if (isChecked) {
@@ -925,7 +925,7 @@ const EvolutionaryBiology = () => {
           </div>
 
           {/* External Resources */}
-          <div className="mt-6 pt-4 border-t border-sf-border">
+          <div className="mt-6 pt-4 border-t border-sf-line-interactive">
             <h4 className="text-sm font-medium mb-3">Reference Resources</h4>
             <div className="flex flex-wrap gap-2">
               {EXTERNAL_RESOURCES.map((resource) => (
@@ -990,7 +990,7 @@ const EvolutionaryBiology = () => {
 
                 {/* Planet Link - only show if in a world */}
                 {worldId && (
-                  <div className="pt-4 border-t border-sf-border">
+                  <div className="pt-4 border-t border-sf-line-interactive">
                     <h4 className="text-sm font-medium mb-3">Environmental Context</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {linkConfigs.map((config) => (
@@ -1069,7 +1069,7 @@ const EvolutionaryBiology = () => {
 
                 <div className="space-y-2">
                   <Label>Notes</Label>
-                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-border bg-background/50 animate-pulse" />}>
+                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                     <RichTextEditor
                       content={formState.foundations.survivalPressuresNotes}
                       onChange={(value) =>
@@ -1254,7 +1254,7 @@ const EvolutionaryBiology = () => {
 
                 <div className="space-y-2">
                   <Label>Notes</Label>
-                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-border bg-background/50 animate-pulse" />}>
+                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                     <RichTextEditor
                       content={formState.biochemistry.biochemistryNotes}
                       onChange={(value) =>
@@ -1288,7 +1288,7 @@ const EvolutionaryBiology = () => {
                     newItem={{ trait: "", selectivePressure: "", tradeoff: "" }}
                     addLabel="Add Adaptation"
                     renderItem={(item, _, updateItem) => (
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-2 p-3 rounded-none border border-sf-border">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-2 p-3 rounded-none border border-sf-line-interactive">
                         <Input
                           value={item.trait}
                           onChange={(e) => updateItem({ trait: e.target.value })}
@@ -1335,7 +1335,7 @@ const EvolutionaryBiology = () => {
 
                 <div className="space-y-2">
                   <Label>Notes</Label>
-                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-border bg-background/50 animate-pulse" />}>
+                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                     <RichTextEditor
                       content={formState.adaptations.adaptationsNotes}
                       onChange={(value) =>
@@ -1452,7 +1452,7 @@ const EvolutionaryBiology = () => {
                     newItem={{ type: "", count: "", function: "" }}
                     addLabel="Add Limb Type"
                     renderItem={(item, _, updateItem) => (
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-2 p-3 rounded-none border border-sf-border">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-2 p-3 rounded-none border border-sf-line-interactive">
                         <Select
                           value={item.type}
                           onValueChange={(value) => updateItem({ type: value })}
@@ -1542,7 +1542,7 @@ const EvolutionaryBiology = () => {
 
                 <div className="space-y-2">
                   <Label>Notes</Label>
-                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-border bg-background/50 animate-pulse" />}>
+                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                     <RichTextEditor
                       content={formState.bodyPlan.bodyPlanNotes}
                       onChange={(value) =>
@@ -1585,7 +1585,7 @@ const EvolutionaryBiology = () => {
                     newItem={{ sense: "", location: "", capabilities: "" }}
                     addLabel="Add Sensory Organ"
                     renderItem={(item, _, updateItem) => (
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-2 p-3 rounded-none border border-sf-border">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-2 p-3 rounded-none border border-sf-line-interactive">
                         <Select
                           value={item.sense}
                           onValueChange={(value) => updateItem({ sense: value })}
@@ -1652,7 +1652,7 @@ const EvolutionaryBiology = () => {
 
                 <div className="space-y-2">
                   <Label>Notes</Label>
-                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-border bg-background/50 animate-pulse" />}>
+                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                     <RichTextEditor
                       content={formState.sensory.sensoryNotes}
                       onChange={(value) =>
@@ -1801,7 +1801,7 @@ const EvolutionaryBiology = () => {
                     newItem={{ stage: "", duration: "", characteristics: "" }}
                     addLabel="Add Life Stage"
                     renderItem={(item, _, updateItem) => (
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-2 p-3 rounded-none border border-sf-border">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-2 p-3 rounded-none border border-sf-line-interactive">
                         <Input
                           value={item.stage}
                           onChange={(e) => updateItem({ stage: e.target.value })}
@@ -1868,7 +1868,7 @@ const EvolutionaryBiology = () => {
 
                 <div className="space-y-2">
                   <Label>Notes</Label>
-                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-border bg-background/50 animate-pulse" />}>
+                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                     <RichTextEditor
                       content={formState.reproduction.reproductionNotes}
                       onChange={(value) =>
@@ -2012,7 +2012,7 @@ const EvolutionaryBiology = () => {
 
                 <div className="space-y-2">
                   <Label>Notes</Label>
-                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-border bg-background/50 animate-pulse" />}>
+                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                     <RichTextEditor
                       content={formState.social.socialNotes}
                       onChange={(value) =>
@@ -2158,7 +2158,7 @@ const EvolutionaryBiology = () => {
 
                 <div className="space-y-2">
                   <Label>Notes</Label>
-                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-border bg-background/50 animate-pulse" />}>
+                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                     <RichTextEditor
                       content={formState.cognition.cognitionNotes}
                       onChange={(value) =>
@@ -2283,7 +2283,7 @@ const EvolutionaryBiology = () => {
 
                 <div className="space-y-2">
                   <Label>Notes</Label>
-                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-border bg-background/50 animate-pulse" />}>
+                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                     <RichTextEditor
                       content={formState.communication.communicationNotes}
                       onChange={(value) =>
@@ -2401,7 +2401,7 @@ const EvolutionaryBiology = () => {
 
                 <div className="space-y-2">
                   <Label>Notes</Label>
-                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-border bg-background/50 animate-pulse" />}>
+                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                     <RichTextEditor
                       content={formState.psychology.psychologyNotes}
                       onChange={(value) =>
@@ -2435,7 +2435,7 @@ const EvolutionaryBiology = () => {
                     newItem={{ trait: "", ancestralFunction: "", currentState: "" }}
                     addLabel="Add Vestigial Trait"
                     renderItem={(item, _, updateItem) => (
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-2 p-3 rounded-none border border-sf-border">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-2 p-3 rounded-none border border-sf-line-interactive">
                         <Input
                           value={item.trait}
                           onChange={(e) => updateItem({ trait: e.target.value })}
@@ -2492,7 +2492,7 @@ const EvolutionaryBiology = () => {
 
                 <div className="space-y-2">
                   <Label>Notes</Label>
-                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-border bg-background/50 animate-pulse" />}>
+                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                     <RichTextEditor
                       content={formState.vestigial.vestigialNotes}
                       onChange={(value) =>
@@ -2555,7 +2555,7 @@ const EvolutionaryBiology = () => {
 
                 <div className="space-y-2">
                   <Label>Notes</Label>
-                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-border bg-background/50 animate-pulse" />}>
+                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                     <RichTextEditor
                       content={formState.viewpointTest.viewpointNotes}
                       onChange={(value) =>
@@ -2628,7 +2628,7 @@ const EvolutionaryBiology = () => {
 
                 <div className="space-y-2">
                   <Label>Notes</Label>
-                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-border bg-background/50 animate-pulse" />}>
+                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                     <RichTextEditor
                       content={formState.integration.integrationNotes}
                       onChange={(value) =>

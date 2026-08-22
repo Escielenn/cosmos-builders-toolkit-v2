@@ -89,7 +89,7 @@ function ToolWikiCard({
           >
             {catMeta.label}
           </Badge>
-          <Badge variant="outline" className="text-[12px] text-t4 border-white/10 px-1.5 py-0">
+          <Badge variant="outline" className="text-[12px] text-t4 border-sf-line px-1.5 py-0">
             {typeMeta.label}
           </Badge>
           {isPro && <ProBadge />}
@@ -137,10 +137,10 @@ function ToolDetail({
         >
           {catMeta.label}
         </Badge>
-        <Badge variant="outline" className="text-[12px] text-t3 border-white/10 px-2 py-0.5">
+        <Badge variant="outline" className="text-[12px] text-t3 border-sf-line px-2 py-0.5">
           {compMeta.icon} {compMeta.label}
         </Badge>
-        <Badge variant="outline" className="text-[12px] text-t3 border-white/10 px-2 py-0.5">
+        <Badge variant="outline" className="text-[12px] text-t3 border-sf-line px-2 py-0.5">
           {typeMeta.label}
         </Badge>
         {isPro && <ProBadge />}
@@ -162,8 +162,8 @@ function ToolDetail({
                   key={pos}
                   className={`text-[12px] font-mono uppercase tracking-wider px-2 py-1 rounded-sm shrink-0 transition-colors ${
                     isActive
-                      ? "bg-primary/10 border border-primary/30 text-primary"
-                      : "text-t5 border border-transparent"
+                      ? "bg-primary/10 border border-primary text-primary"
+                      : "text-t4 border border-transparent"
                   }`}
                 >
                   {CASCADE_META[pos].label}
@@ -171,7 +171,7 @@ function ToolDetail({
               );
             })}
           {tool.cascade === "meta" && (
-            <div className="text-[12px] font-mono uppercase tracking-wider px-2 py-1 rounded-sm bg-primary/10 border border-primary/30 text-primary shrink-0">
+            <div className="text-[12px] font-mono uppercase tracking-wider px-2 py-1 rounded-sm bg-primary/10 border border-primary text-primary shrink-0">
               Meta
             </div>
           )}
@@ -214,10 +214,10 @@ function ToolDetail({
                   variant="outline"
                   className={`text-[12px] shrink-0 mt-0.5 px-1.5 py-0 ${
                     rel.strength === "required"
-                      ? "text-sf-amber border-amber-400/20"
+                      ? "text-sf-amber border-sf-amber"
                       : rel.strength === "recommended"
-                      ? "text-t3 border-white/10"
-                      : "text-t4 border-white/5"
+                      ? "text-t3 border-sf-line"
+                      : "text-t4 border-sf-line"
                   }`}
                 >
                   {rel.strength}
@@ -248,10 +248,10 @@ function ToolDetail({
                   variant="outline"
                   className={`text-[12px] shrink-0 mt-0.5 px-1.5 py-0 ${
                     rel.strength === "required"
-                      ? "text-sf-amber border-amber-400/20"
+                      ? "text-sf-amber border-sf-amber"
                       : rel.strength === "recommended"
-                      ? "text-t3 border-white/10"
-                      : "text-t4 border-white/5"
+                      ? "text-t3 border-sf-line"
+                      : "text-t4 border-sf-line"
                   }`}
                 >
                   {rel.strength}
@@ -416,7 +416,7 @@ const ToolsWiki = () => {
 
         {/* View tabs */}
         <Tabs defaultValue="category" className="w-full">
-          <TabsList className="bg-transparent border-b border-white/5 rounded-none w-full justify-start gap-0 h-auto p-0 mb-6">
+          <TabsList className="bg-transparent border-b border-sf-line rounded-none w-full justify-start gap-0 h-auto p-0 mb-6">
             <TabsTrigger
               value="category"
               className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:bg-transparent bg-transparent text-t3 text-xs uppercase tracking-[1.5px] font-heading px-4 py-2.5"

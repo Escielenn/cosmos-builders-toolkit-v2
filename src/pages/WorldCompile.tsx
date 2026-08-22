@@ -311,7 +311,7 @@ export default function WorldCompile() {
                 </div>
 
                 {appendixHtml && (
-                  <label className="mt-2 flex cursor-pointer items-start gap-2.5 border-t border-sf-border pt-3">
+                  <label className="mt-2 flex cursor-pointer items-start gap-2.5 border-t border-sf-line-interactive pt-3">
                     <Checkbox
                       checked={includeAppendix}
                       onCheckedChange={(v) => setIncludeAppendix(v === true)}
@@ -349,7 +349,7 @@ export default function WorldCompile() {
                 </div>
 
                 {isLoading ? (
-                  <div className="text-xs text-t5 py-4 text-center">Loading documents...</div>
+                  <div className="text-xs text-t4 py-4 text-center">Loading documents...</div>
                 ) : (
                   <div className="space-y-1">
                     {folders.map((folder) => {
@@ -370,14 +370,14 @@ export default function WorldCompile() {
                               ) : someIn ? (
                                 <Minus className="w-3.5 h-3.5 text-t3" />
                               ) : (
-                                <div className="w-3 h-3 border border-white/20" />
+                                <div className="w-3 h-3 border border-sf-line" />
                               )}
                             </div>
                             <Folder className="w-3.5 h-3.5 text-[#FFB347]" />
                             <span className="text-xs font-medium text-t2 flex-1 text-left">
                               {folder.title}
                             </span>
-                            <span className="text-[12px] font-mono text-t5">
+                            <span className="text-[12px] font-mono text-t4">
                               {folderDocIds.filter((id) => includedIds.has(id)).length}/{folderDocIds.length}
                             </span>
                           </button>
@@ -398,8 +398,8 @@ export default function WorldCompile() {
                     {unfiledDocs.length > 0 && (
                       <>
                         {folders.length > 0 && (
-                          <div className="pt-2 border-t border-white/5">
-                            <span className="text-[12px] uppercase tracking-[1.5px] text-t5 font-heading px-2">
+                          <div className="pt-2 border-t border-sf-line">
+                            <span className="text-[12px] uppercase tracking-[1.5px] text-t4 font-heading px-2">
                               Unfiled
                             </span>
                           </div>
@@ -453,8 +453,8 @@ export default function WorldCompile() {
                   </div>
 
                   {showPreview && (
-                    <div className="max-h-[60vh] overflow-y-auto border border-white/5 bg-white/[0.02] p-6 space-y-6">
-                      <div className="text-center pb-6 border-b border-white/5">
+                    <div className="max-h-[60vh] overflow-y-auto border border-sf-line bg-white/[0.02] p-6 space-y-6">
+                      <div className="text-center pb-6 border-b border-sf-line">
                         <h3 className="font-heading text-xl tracking-wider text-t1">
                           {meta.title}
                         </h3>
@@ -473,7 +473,7 @@ export default function WorldCompile() {
                             dangerouslySetInnerHTML={{ __html: sanitizeHtml(ch.content) }}
                           />
                           {i < chapters.length - 1 && (
-                            <div className="mt-6 border-t border-dashed border-white/10" />
+                            <div className="mt-6 border-t border-dashed border-sf-line" />
                           )}
                         </div>
                       ))}
@@ -592,12 +592,12 @@ function DocToggleRow({
       )}
     >
       <Checkbox checked={included} className="pointer-events-none" aria-label={`Include ${doc.title}`} />
-      <FileText className={cn("w-3 h-3 shrink-0", included ? "text-t3" : "text-t5")} />
+      <FileText className={cn("w-3 h-3 shrink-0", included ? "text-t3" : "text-t4")} />
       <span className={cn("text-xs flex-1 text-left truncate", included ? "text-t2" : "text-t4")}>
         {doc.title || "Untitled"}
       </span>
       {words > 0 && (
-        <span className="text-[12px] font-mono text-t5 shrink-0">
+        <span className="text-[12px] font-mono text-t4 shrink-0">
           {words < 1000 ? words : `${Math.round(words / 100) / 10}k`}
         </span>
       )}

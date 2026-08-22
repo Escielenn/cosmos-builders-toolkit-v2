@@ -128,11 +128,11 @@ const SECTIONS: Section[] = [
 // ─── Zone Color Helper ──────────────────────────────────────────────
 
 const ZONE_BADGE_STYLES: Record<string, string> = {
-  "#E74C3C": "bg-red-500/20 text-sf-crimson border-red-500/30",
-  "#FFA500": "bg-orange-500/20 text-orange-400 border-orange-500/30",
-  "#2ECC71": "bg-emerald-500/20 text-sf-emerald border-emerald-500/30",
-  "#4D9FFF": "bg-blue-500/20 text-blue-400 border-blue-500/30",
-  "#ADD8E6": "bg-sky-500/20 text-sf-azure border-sky-500/30",
+  "#E74C3C": "bg-red-500/20 text-sf-crimson border-sf-crimson",
+  "#FFA500": "bg-orange-500/20 text-orange-400 border-sf-amber",
+  "#2ECC71": "bg-emerald-500/20 text-sf-emerald border-sf-emerald",
+  "#4D9FFF": "bg-blue-500/20 text-blue-400 border-sf-azure",
+  "#ADD8E6": "bg-sky-500/20 text-sf-azure border-sf-azure",
 };
 
 const SPECTRAL_LABELS = ["O", "B", "A", "F", "G", "K", "M"];
@@ -481,7 +481,7 @@ const HabitableZoneCalculator = () => {
                 <button
                   type="button"
                   onClick={() => setImportOpen(!importOpen)}
-                  className="w-full h-10 px-3 flex items-center justify-between gap-2 rounded-xs border border-sf-border bg-muted/30 text-sm text-t2 hover:border-primary/50 transition-colors"
+                  className="w-full h-10 px-3 flex items-center justify-between gap-2 rounded-xs border border-sf-line-interactive bg-muted/30 text-sm text-t2 hover:border-primary transition-colors"
                 >
                   <span className="flex items-center gap-1.5">
                     <Import className="w-3.5 h-3.5 text-t4" />
@@ -495,7 +495,7 @@ const HabitableZoneCalculator = () => {
 
           {/* Import body picker */}
           {importOpen && worldId && starSystemWorksheets.length > 0 && (
-            <div className="mt-4 border-t border-sf-border pt-4">
+            <div className="mt-4 border-t border-sf-line-interactive pt-4">
               <p className="text-xs text-t4 mb-3">Select a body from your Star System worksheets:</p>
               <div className="space-y-3">
                 {starSystemWorksheets.map((ws) => {
@@ -518,7 +518,7 @@ const HabitableZoneCalculator = () => {
                                 setImportOpen(false);
                                 toast({ title: "Imported", description: `${body.name} at ${dist} AU` });
                               }}
-                              className="px-3 py-1.5 rounded-sm border border-sf-border text-xs hover:border-primary/50 hover:bg-primary/5 transition-colors"
+                              className="px-3 py-1.5 rounded-sm border border-sf-line-interactive text-xs hover:border-primary hover:bg-primary/5 transition-colors"
                             >
                               <span className="text-t1">{body.name}</span>
                               <span className="text-t4 ml-2">{dist} AU</span>
@@ -567,7 +567,7 @@ const HabitableZoneCalculator = () => {
                       className={`p-3 rounded-none border text-left transition-all ${
                         formState.star.presetId === preset.id
                           ? "border-primary bg-primary/10 text-t1"
-                          : "border-sf-border hover:border-primary/50 hover:bg-muted/50 text-t2"
+                          : "border-sf-line-interactive hover:border-primary hover:bg-muted/50 text-t2"
                       }`}
                     >
                       <div className="font-medium text-sm">{preset.label}</div>
@@ -788,7 +788,7 @@ const HabitableZoneCalculator = () => {
                         className={`px-2 py-0.5 rounded-sm text-[12px] font-mono border transition-colors ${
                           (formState.planet.greenhouseWarming ?? 33) === preset.value
                             ? "border-primary bg-primary/10 text-primary"
-                            : "border-sf-border text-t4 hover:border-primary/50"
+                            : "border-sf-line-interactive text-t4 hover:border-primary"
                         }`}
                       >
                         {preset.label}
@@ -917,9 +917,9 @@ const HabitableZoneCalculator = () => {
                         <div className="text-sm text-t3 mt-1">
                           ({Math.round(result.equilibriumTemp - 273.15)}&deg;C)
                         </div>
-                        <div className="text-[12px] text-t5 mt-2">No atmosphere</div>
+                        <div className="text-[12px] text-t4 mt-2">No atmosphere</div>
                       </div>
-                      <div className="text-center p-5 rounded-sm bg-muted/30 border border-primary/10">
+                      <div className="text-center p-5 rounded-sm bg-muted/30 border border-primary">
                         <div className="text-[12px] font-mono uppercase tracking-wider text-t4 mb-1">
                           Est. Surface Temperature
                         </div>
@@ -929,7 +929,7 @@ const HabitableZoneCalculator = () => {
                         <div className="text-sm text-t3 mt-1">
                           ({Math.round(result.estimatedSurfaceTemp - 273.15)}&deg;C)
                         </div>
-                        <div className="text-[12px] text-t5 mt-2">+{formState.planet.greenhouseWarming ?? 33} K greenhouse</div>
+                        <div className="text-[12px] text-t4 mt-2">+{formState.planet.greenhouseWarming ?? 33} K greenhouse</div>
                       </div>
                     </div>
 
@@ -974,7 +974,7 @@ const HabitableZoneCalculator = () => {
                           value={result.outerEdgeEarlyMarsFormatted}
                           accent="amber"
                         />
-                        <div className="border-t border-sf-border pt-2 mt-2">
+                        <div className="border-t border-sf-line-interactive pt-2 mt-2">
                         <KeyValueRow
                           label="SNOWLINE (FROST LINE)"
                           value={result.snowlineFormatted}
@@ -995,7 +995,7 @@ const HabitableZoneCalculator = () => {
                     </div>
 
                     {/* Narrative */}
-                    <div className="border-t border-sf-border pt-4">
+                    <div className="border-t border-sf-line-interactive pt-4">
                       <div className="flex items-center justify-between mb-2">
                         <h3 className="text-sm font-medium">Narrative Summary</h3>
                         <Button variant="ghost" size="sm" onClick={handleCopyResults}>

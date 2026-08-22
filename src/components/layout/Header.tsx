@@ -121,7 +121,7 @@ const Header = () => {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 border-b border-sf-border backdrop-blur-sf-side bg-sf-void/85">
+    <header className="fixed top-0 left-0 right-0 z-50 border-b border-sf-line-interactive backdrop-blur-sf-side bg-sf-void/85">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         <div className="flex items-center gap-3 shrink-0 mr-6">
           <div className="flex flex-col">
@@ -159,7 +159,7 @@ const Header = () => {
                 <span className="sr-only">Open menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-72 bg-sf-surface/95 border-sf-border sf-sb">
+            <SheetContent side="right" className="w-72 bg-sf-surface/95 border-sf-line-interactive sf-sb">
               <SheetHeader className="text-left">
                 <SheetTitle className="flex items-center gap-3">
                   <CubeLogo size={32} className="rounded-none" />   {/* sheet header */}
@@ -171,7 +171,7 @@ const Header = () => {
               <nav className="flex flex-col gap-1 mt-8">
                 {MOBILE_NAV.map((group) => (
                   <div key={group.heading} className="mb-4 last:mb-0">
-                    <p className="font-heading text-[12px] font-medium uppercase tracking-[2px] text-t3 px-3 mb-1.5 pb-1.5 border-b border-white/[0.06]">
+                    <p className="font-heading text-[12px] font-medium uppercase tracking-[2px] text-t3 px-3 mb-1.5 pb-1.5 border-b border-sf-line">
                       {group.heading}
                     </p>
                     {group.items.map((item) => {
@@ -192,7 +192,7 @@ const Header = () => {
                 ))}
                 {!isSubscribed && (
                   <div className="mb-0">
-                    <p className="font-heading text-[12px] font-medium uppercase tracking-[2px] text-t3 px-3 mb-1.5 pb-1.5 border-b border-white/[0.06]">
+                    <p className="font-heading text-[12px] font-medium uppercase tracking-[2px] text-t3 px-3 mb-1.5 pb-1.5 border-b border-sf-line">
                       Upgrade
                     </p>
                     <Link
@@ -215,7 +215,7 @@ const Header = () => {
                 )}
               </nav>
               {!loading && !user && (
-                <div className="mt-8 pt-8 border-t border-sf-border">
+                <div className="mt-8 pt-8 border-t border-sf-line-interactive">
                   <Button
                     className="w-full gap-2"
                     onClick={() => {
@@ -237,7 +237,7 @@ const Header = () => {
             onClick={() => setSearchOpen(true)}
           >
             <Search className="w-4 h-4 relative z-[1]" />
-            <kbd className="hidden sm:inline-flex h-5 items-center gap-1 rounded border border-sf-border bg-muted/50 px-1.5 font-mono text-[12px] font-medium text-t3 relative z-[1]">
+            <kbd className="hidden sm:inline-flex h-5 items-center gap-1 rounded border border-sf-line-interactive bg-muted/50 px-1.5 font-mono text-[12px] font-medium text-t3 relative z-[1]">
               <span className="text-xs">⌘</span>K
             </kbd>
           </button>
@@ -245,7 +245,7 @@ const Header = () => {
             <Button
               variant="outline"
               size="sm"
-              className="hidden sm:inline-flex gap-1.5 border-sf-amber/[0.5] text-sf-amber hover:bg-sf-amber/[0.08] rounded-none"
+              className="hidden sm:inline-flex gap-1.5 border-sf-amber text-sf-amber hover:bg-sf-amber/[0.08] rounded-none"
               onClick={() => navigate("/pricing")}
             >
               <Zap className="w-3.5 h-3.5" />
@@ -256,7 +256,7 @@ const Header = () => {
             <Button
               variant="outline"
               size="sm"
-              className="hidden lg:inline-flex gap-1.5 border-sf-violet/[0.5] text-sf-violet hover:bg-sf-violet/[0.08] rounded-none"
+              className="hidden lg:inline-flex gap-1.5 border-sf-violet text-sf-violet hover:bg-sf-violet/[0.08] rounded-none"
               onClick={() => navigate("/pricing")}
             >
               <Sparkles className="w-3.5 h-3.5" />
@@ -275,12 +275,12 @@ const Header = () => {
                     {profile?.display_name || user.email?.split("@")[0]}
                   </span>
                   {isVanguard ? (
-                    <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-sf-tag font-mono text-[12px] uppercase tracking-[0.18em] bg-sf-violet/[0.06] border border-sf-violet/[0.15] text-sf-violet sf-shimmer-violet relative z-[1]">
+                    <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-sf-tag font-mono text-[12px] uppercase tracking-[0.18em] bg-sf-violet/[0.06] border border-sf-violet text-sf-violet sf-shimmer-violet relative z-[1]">
                       <Sparkles className="w-3 h-3" />
                       Vanguard
                     </span>
                   ) : isSubscribed ? (
-                    <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-sf-tag font-mono text-[12px] uppercase tracking-[0.18em] bg-sf-amber/[0.06] border border-sf-amber/[0.15] text-sf-amber sf-shimmer relative z-[1]">
+                    <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-sf-tag font-mono text-[12px] uppercase tracking-[0.18em] bg-sf-amber/[0.06] border border-sf-amber text-sf-amber sf-shimmer relative z-[1]">
                       <Zap className="w-3 h-3" />
                       Pro
                     </span>
@@ -288,7 +288,7 @@ const Header = () => {
                   <ChevronDown className="w-4 h-4 text-t3 relative z-[1]" />
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48 bg-sf-surface/95 backdrop-blur-sf-side border-sf-border rounded-none">
+              <DropdownMenuContent align="end" className="w-48 bg-sf-surface/95 backdrop-blur-sf-side border-sf-line-interactive rounded-none">
                 <DropdownMenuItem onClick={() => navigate("/profile")}>
                   <User className="w-4 h-4 mr-2" />
                   Profile
@@ -367,7 +367,7 @@ const Header = () => {
               variant="outline"
               size="sm"
               asChild
-              className="gap-2 border-sf-teal/[0.5] text-sf-teal hover:bg-sf-teal/[0.08]"
+              className="gap-2 border-sf-teal text-sf-teal hover:bg-sf-teal/[0.08]"
             >
               <Link to="/auth#create-account">
                 <LogIn className="w-4 h-4" />

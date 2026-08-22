@@ -402,7 +402,7 @@ const WorldConnections = () => {
                     const isExpanded = expandedGroups.has(toolType) || expandedGroups.has("all");
 
                     return (
-                      <div key={toolType} className="border border-sf-border rounded-none overflow-hidden">
+                      <div key={toolType} className="border border-sf-line-interactive rounded-none overflow-hidden">
                         {/* Group Header */}
                         <button
                           onClick={() => toggleGroup(toolType)}
@@ -422,7 +422,7 @@ const WorldConnections = () => {
 
                         {/* Group Items */}
                         {isExpanded && (
-                          <div className="divide-y divide-border/30">
+                          <div className="divide-y divide-border">
                             {groupNodes.map((node) => {
                               const connected = getConnectedWorksheets(node.id);
                               const NodeIcon = TOOL_ICONS[node.toolType] || FileText;

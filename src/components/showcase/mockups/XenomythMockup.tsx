@@ -49,7 +49,7 @@ const XenomythMockup = () => {
                 className={`absolute w-16 md:w-20 h-20 md:h-24 rounded-none bg-sf-surface border transition-all duration-500 flex flex-col items-center justify-center gap-1 ${
                   isActive
                     ? `border-${archetype.color}/50 shadow-[0_0_20px_rgba(155,93,229,0.3)] scale-110 z-10`
-                    : "border-muted/30 opacity-60"
+                    : "border-muted opacity-60"
                 }`}
                 style={{
                   transform: `translateX(${offset}px) rotate(${rotation}deg) ${
@@ -111,7 +111,7 @@ const XenomythMockup = () => {
 
       {/* Environmental influence badge */}
       <div className="mt-3 flex justify-center">
-        <div className="inline-flex items-center gap-2 px-3 py-1 bg-sf-violet/10 border border-sf-violet/30">
+        <div className="inline-flex items-center gap-2 px-3 py-1 bg-sf-violet/10 border border-sf-violet">
           <span className="text-[12px] text-sf-violet uppercase tracking-wider">
             Derived from High-Gravity World
           </span>

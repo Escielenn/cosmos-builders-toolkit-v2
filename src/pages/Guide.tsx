@@ -16,7 +16,7 @@ const SECTIONS = [
     to: "/getting-started",
     icon: Sparkles,
     accent: "text-sf-emerald",
-    accentBorder: "group-hover:border-emerald-400/20",
+    accentBorder: "group-hover:border-sf-emerald",
     accentBar: "bg-emerald-400/60",
   },
   {
@@ -25,7 +25,7 @@ const SECTIONS = [
     to: "/guide/tools",
     icon: Wrench,
     accent: "text-primary",
-    accentBorder: "group-hover:border-primary/20",
+    accentBorder: "group-hover:border-primary",
     accentBar: "bg-primary/60",
   },
   {

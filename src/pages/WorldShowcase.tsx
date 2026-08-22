@@ -156,7 +156,7 @@ function CascadeCoverageBar({ entities }: { entities: Entity[] }) {
             style={{
               color: populated[i]
                 ? CASCADE_STAGE_COLORS[stage]
-                : "rgba(255,255,255,0.2)",
+                : "var(--t4)",
             }}
           >
             {CASCADE_STAGE_LABELS[stage]}
@@ -252,7 +252,7 @@ function EntityCard({
 
       {/* Expanded detail */}
       {isExpanded && (
-        <div className="mt-4 space-y-4 border-t border-white/[0.06] pt-4">
+        <div className="mt-4 space-y-4 border-t border-sf-line pt-4">
           {/* Summary */}
           {entity.summary && (
             <p className="font-sans text-sm text-t2 leading-relaxed">
@@ -278,7 +278,7 @@ function EntityCard({
               {entity.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="font-mono text-[12px] px-2 py-0.5 rounded-sm bg-white/[0.04] border border-white/[0.08] text-t3"
+                  className="font-mono text-[12px] px-2 py-0.5 rounded-sm bg-white/[0.04] border border-sf-line text-t3"
                 >
                   {tag}
                 </span>
@@ -370,11 +370,11 @@ function VisibilitySelector({
             key={opt.value}
             onClick={() => onSelect(opt.value)}
             disabled={disabled}
-            className="flex items-center gap-1.5 px-3 py-1.5 font-sans text-[12px] font-medium uppercase tracking-[1px] transition-all duration-200 disabled:opacity-50"
+            className="flex items-center gap-1.5 px-3 py-1.5 font-sans text-[12px] font-medium uppercase tracking-[1px] transition-all duration-200"
             style={{
               backgroundColor: isActive ? `${opt.color}0F` : "transparent",
-              border: `1px solid ${isActive ? `${opt.color}26` : "rgba(255,255,255,0.06)"}`,
-              color: isActive ? opt.color : "rgba(255,255,255,0.28)",
+              border: `1px solid ${isActive ? `${opt.color}26` : "var(--sf-line-interactive)"}`,
+              color: isActive ? opt.color : "var(--t4)",
             }}
           >
             <Icon className="w-3 h-3" />
@@ -680,7 +680,7 @@ export default function WorldShowcase() {
               {world.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="font-mono text-[12px] px-2.5 py-1 rounded-sm bg-white/[0.04] border border-white/[0.08] text-t3"
+                  className="font-mono text-[12px] px-2.5 py-1 rounded-sm bg-white/[0.04] border border-sf-line text-t3"
                 >
                   {tag}
                 </span>
@@ -846,7 +846,7 @@ export default function WorldShowcase() {
         }}
       />
       <div className="text-center pb-12">
-        <span className="font-mono text-[12px] uppercase tracking-[2px] text-t5">
+        <span className="font-mono text-[12px] uppercase tracking-[2px] text-t4">
           Built with StellarForge
         </span>
       </div>

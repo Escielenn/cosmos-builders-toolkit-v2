@@ -139,7 +139,7 @@ const EXTERNAL_RESOURCES = [
 
 // Rich text editor skeleton
 const EditorSkeleton = () => (
-  <div className="min-h-[120px] rounded-md border border-sf-border bg-background/50 animate-pulse" />
+  <div className="min-h-[120px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />
 );
 
 // Helper: count non-empty string fields in an object
@@ -493,7 +493,7 @@ const OneBigLie = () => {
           </div>
 
           {/* SF Examples Accordion */}
-          <div className="mt-6 pt-4 border-t border-sf-border">
+          <div className="mt-6 pt-4 border-t border-sf-line-interactive">
             <h4 className="text-sm font-medium mb-3">
               SF Reference Examples
             </h4>
@@ -534,7 +534,7 @@ const OneBigLie = () => {
           </div>
 
           {/* External Resources */}
-          <div className="mt-6 pt-4 border-t border-sf-border">
+          <div className="mt-6 pt-4 border-t border-sf-line-interactive">
             <h4 className="text-sm font-medium mb-3">Reference Resources</h4>
             <div className="flex flex-wrap gap-2">
               {EXTERNAL_RESOURCES.map((resource) => (
@@ -1170,7 +1170,7 @@ const OneBigLie = () => {
                   }
                   placeholder="I declare that in my world..."
                   minHeight="200px"
-                  className="bg-background/50 border-primary/30"
+                  className="bg-background/50 border-primary"
                 />
               </Suspense>
             </div>

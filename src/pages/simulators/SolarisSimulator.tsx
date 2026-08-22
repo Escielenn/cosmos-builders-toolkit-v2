@@ -81,7 +81,7 @@ const SolarisSimulator = () => {
         <div className="flex-1 relative" style={{ marginTop: 64 }}>
           {!loaded && (
             <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 bg-background">
-              <div className="w-10 h-10 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
+              <div className="w-10 h-10 border-2 border-primary border-t-primary rounded-full animate-spin" />
               <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground animate-pulse">
                 Initializing SOLARIS
               </p>
@@ -112,12 +112,12 @@ const SolarisSimulator = () => {
               dialogs ask which world, and gating the buttons made that
               unreachable from the tools menu. */}
           {loaded && (
-            <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 border border-sf-teal/30 bg-sf-void/90 px-1.5 py-1 backdrop-blur-sm">
+            <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 border border-sf-teal bg-sf-void/90 px-1.5 py-1 backdrop-blur-sm">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={requestSave}
-                className="bg-sf-teal/[0.12] border-sf-teal/70 text-[#3DFFCD] hover:bg-sf-teal/25 hover:text-white text-[13px] uppercase tracking-wider h-8 px-3"
+                className="bg-sf-teal/[0.12] border-sf-teal text-[#3DFFCD] hover:bg-sf-teal/25 hover:text-white text-[13px] uppercase tracking-wider h-8 px-3"
               >
                 <Save className="w-3 h-3 mr-1" />
                 Save
@@ -126,7 +126,7 @@ const SolarisSimulator = () => {
                 variant="outline"
                 size="sm"
                 onClick={() => setLoadSheetOpen(true)}
-                className="bg-sf-teal/[0.12] border-sf-teal/70 text-[#3DFFCD] hover:bg-sf-teal/25 hover:text-white text-[13px] uppercase tracking-wider h-8 px-3"
+                className="bg-sf-teal/[0.12] border-sf-teal text-[#3DFFCD] hover:bg-sf-teal/25 hover:text-white text-[13px] uppercase tracking-wider h-8 px-3"
               >
                 <FolderOpen className="w-3 h-3 mr-1" />
                 Load
@@ -140,7 +140,7 @@ const SolarisSimulator = () => {
                   refreshPayload();
                   setPublishDialogOpen(true);
                 }}
-                className="bg-sf-teal/[0.12] border-sf-teal/70 text-[#3DFFCD] hover:bg-sf-teal/25 hover:text-white text-[13px] uppercase tracking-wider h-8 px-3"
+                className="bg-sf-teal/[0.12] border-sf-teal text-[#3DFFCD] hover:bg-sf-teal/25 hover:text-white text-[13px] uppercase tracking-wider h-8 px-3"
               >
                 <Rocket className="w-3 h-3 mr-1" />
                 Publish

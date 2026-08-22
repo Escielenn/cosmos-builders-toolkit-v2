@@ -175,7 +175,7 @@ const Auth = () => {
           {/* Value Props */}
           <div className="grid md:grid-cols-3 gap-6">
             <GlassPanel className="p-6 text-center md:text-left">
-              <div className="w-10 h-10 rounded-none bg-sf-teal/[0.06] border border-sf-teal/[0.15] flex items-center justify-center mb-3 mx-auto md:mx-0">
+              <div className="w-10 h-10 rounded-none bg-sf-teal/[0.06] border border-sf-teal flex items-center justify-center mb-3 mx-auto md:mx-0">
                 <Layers className="w-5 h-5 text-primary" />
               </div>
               <h3 className="font-heading text-[12px] font-medium uppercase tracking-[0.2em] text-sf-teal mb-2">
@@ -187,7 +187,7 @@ const Auth = () => {
               </p>
             </GlassPanel>
             <GlassPanel className="p-6 text-center md:text-left">
-              <div className="w-10 h-10 rounded-none bg-sf-stellar/[0.06] border border-sf-stellar/[0.15] flex items-center justify-center mb-3 mx-auto md:mx-0">
+              <div className="w-10 h-10 rounded-none bg-sf-stellar/[0.06] border border-sf-stellar flex items-center justify-center mb-3 mx-auto md:mx-0">
                 <Share2 className="w-5 h-5 text-sf-stellar" />
               </div>
               <h3 className="font-heading text-[12px] font-medium uppercase tracking-[0.2em] text-sf-teal mb-2">
@@ -199,7 +199,7 @@ const Auth = () => {
               </p>
             </GlassPanel>
             <GlassPanel className="p-6 text-center md:text-left">
-              <div className="w-10 h-10 rounded-none bg-sf-teal/[0.06] border border-sf-teal/[0.15] flex items-center justify-center mb-3 mx-auto md:mx-0">
+              <div className="w-10 h-10 rounded-none bg-sf-teal/[0.06] border border-sf-teal flex items-center justify-center mb-3 mx-auto md:mx-0">
                 <FileDown className="w-5 h-5 text-primary" />
               </div>
               <h3 className="font-heading text-[12px] font-medium uppercase tracking-[0.2em] text-sf-teal mb-2">
@@ -240,7 +240,7 @@ const Auth = () => {
 
             {signupComplete ? (
               <div className="text-center py-6 space-y-3">
-                <div className="w-12 h-12 rounded-sm bg-primary/[0.06] border border-primary/[0.15] flex items-center justify-center mx-auto">
+                <div className="w-12 h-12 rounded-sm bg-primary/[0.06] border border-primary flex items-center justify-center mx-auto">
                   <Rocket className="w-5 h-5 text-primary" />
                 </div>
                 <h3 className="font-heading text-sm font-light tracking-[0.1em] uppercase">
@@ -272,7 +272,7 @@ const Auth = () => {
 
                 <div className="relative my-4">
                   <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-dashed border-sf-border"></div>
+                    <div className="w-full border-t border-dashed border-sf-line-interactive"></div>
                   </div>
                   <div className="relative flex justify-center font-mono text-[12px] tracking-[0.18em] uppercase">
                     <span className="bg-sf-surface px-2 text-t4">// OR EMAIL</span>
@@ -375,7 +375,7 @@ const Auth = () => {
 
                 <div className="relative my-4">
                   <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-dashed border-sf-border"></div>
+                    <div className="w-full border-t border-dashed border-sf-line-interactive"></div>
                   </div>
                   <div className="relative flex justify-center font-mono text-[12px] tracking-[0.18em] uppercase">
                     <span className="bg-sf-surface px-2 text-t4">// OR EMAIL</span>
@@ -425,7 +425,7 @@ const Auth = () => {
           </div>
 
           {/* Footer */}
-          <div className="text-center font-mono text-[12px] tracking-[0.18em] text-t5 pb-8 uppercase">
+          <div className="text-center font-mono text-[12px] tracking-[0.18em] text-t4 pb-8 uppercase">
             <p>© {new Date().getFullYear()} STELLARFORGE · 39.87°N · 104.97°W</p>
           </div>
 

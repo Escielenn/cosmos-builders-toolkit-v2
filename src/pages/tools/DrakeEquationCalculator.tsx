@@ -786,7 +786,7 @@ const DrakeEquationCalculator = () => {
                   );
                 });
               })()}
-              <div className="flex items-center gap-3 mt-2 pt-2 border-t border-sf-border">
+              <div className="flex items-center gap-3 mt-2 pt-2 border-t border-sf-line-interactive">
                 <span className="font-mono text-xs text-primary w-8 text-right shrink-0 font-medium">
                   N
                 </span>

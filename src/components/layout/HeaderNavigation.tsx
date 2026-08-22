@@ -124,7 +124,7 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
                       </NavigationMenuLink>
                     )}
                   </div>
-                  <div className="border-t border-white/8 mt-2 pt-2">
+                  <div className="border-t border-sf-line mt-2 pt-2">
                     <NavigationMenuLink asChild>
                       <Link
                         to="/worlds"
@@ -237,7 +237,7 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
                   const CatIcon = cat.icon;
                   return (
                     <div key={cat.id}>
-                      <p className={cn("text-[12px] font-heading font-light uppercase tracking-[2.5px] px-1 mb-2 flex items-center gap-1.5 pb-1.5 border-b border-white/[0.06]", cat.color)}>
+                      <p className={cn("text-[12px] font-heading font-light uppercase tracking-[2.5px] px-1 mb-2 flex items-center gap-1.5 pb-1.5 border-b border-sf-line", cat.color)}>
                         <CatIcon className="w-3 h-3" />
                         {cat.label}
                       </p>
@@ -267,7 +267,7 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
                   );
                 })}
               </div>
-              <div className="border-t border-white/[0.08] mt-4 pt-3">
+              <div className="border-t border-sf-line mt-4 pt-3">
                 <NavigationMenuLink asChild>
                   <Link
                     to="/guide/tools"

@@ -15,7 +15,7 @@ function getBackupFreshness(snapshotAt: string | null): {
   dot: string;
   color: string;
 } {
-  if (!snapshotAt) return { dot: "\u25CB", color: "rgba(255,255,255,0.3)" }; // ○ no backup
+  if (!snapshotAt) return { dot: "\u25CB", color: "var(--t4)" }; // ○ no backup
 
   const age = Date.now() - new Date(snapshotAt).getTime();
   const oneHour = 60 * 60 * 1000;
@@ -23,7 +23,7 @@ function getBackupFreshness(snapshotAt: string | null): {
 
   if (age < oneHour) return { dot: "\u25CF", color: "#3DFFCD" }; // ● teal
   if (age < oneDay) return { dot: "\u25CF", color: "#FFB347" }; // ● amber
-  return { dot: "\u25D0", color: "rgba(255,255,255,0.35)" }; // ◐ stale
+  return { dot: "\u25D0", color: "var(--t4)" }; // ◐ stale
 }
 
 const BackupStatusWidget = ({ worlds }: BackupStatusWidgetProps) => {

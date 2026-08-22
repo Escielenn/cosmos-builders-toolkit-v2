@@ -690,7 +690,7 @@ const TimeDilationCalculator = () => {
                 {PROPULSION_METHODS.map((method) => (
                   <div
                     key={method.id}
-                    className="flex items-start gap-3 p-3 rounded-none border border-sf-border hover:border-primary/50 transition-colors"
+                    className="flex items-start gap-3 p-3 rounded-none border border-sf-line-interactive hover:border-primary transition-colors"
                   >
                     <RadioGroupItem value={method.id} id={`prop-${method.id}`} className="mt-0.5" />
                     <label htmlFor={`prop-${method.id}`} className="cursor-pointer flex-1">
@@ -741,7 +741,7 @@ const TimeDilationCalculator = () => {
                 onValueChange={(val) => updateVelocityProfile("mode", val)}
                 className="grid gap-3 md:grid-cols-2"
               >
-                <div className="flex items-start gap-3 p-4 rounded-none border border-sf-border hover:border-primary/50 transition-colors">
+                <div className="flex items-start gap-3 p-4 rounded-none border border-sf-line-interactive hover:border-primary transition-colors">
                   <RadioGroupItem value="constant" id="vp-constant" className="mt-0.5" />
                   <label htmlFor="vp-constant" className="cursor-pointer">
                     <div className="font-medium text-sm">Constant Velocity</div>
@@ -750,7 +750,7 @@ const TimeDilationCalculator = () => {
                     </div>
                   </label>
                 </div>
-                <div className="flex items-start gap-3 p-4 rounded-none border border-sf-border hover:border-primary/50 transition-colors">
+                <div className="flex items-start gap-3 p-4 rounded-none border border-sf-line-interactive hover:border-primary transition-colors">
                   <RadioGroupItem value="brachistochrone" id="vp-brach" className="mt-0.5" />
                   <label htmlFor="vp-brach" className="cursor-pointer">
                     <div className="font-medium text-sm">Brachistochrone</div>
@@ -821,7 +821,7 @@ const TimeDilationCalculator = () => {
 
               {/* Alcubierre dilation toggle */}
               {isAlcubierre && (
-                <div className="p-4 rounded-none border border-amber-500/30 bg-amber-500/5">
+                <div className="p-4 rounded-none border border-sf-amber bg-amber-500/5">
                   <div className="flex items-center gap-3 mb-2">
                     <AlertTriangle className="w-4 h-4 text-sf-amber" />
                     <span className="text-sm font-medium text-sf-amber">Alcubierre Drive, Speculative Physics</span>
@@ -890,7 +890,7 @@ const TimeDilationCalculator = () => {
                   <p className="font-mono text-xs uppercase tracking-sf-wide text-t2 mb-3">
                     Velocity Scale
                   </p>
-                  <div className="relative h-6 rounded-sm overflow-hidden bg-accent/10 border border-sf-border">
+                  <div className="relative h-6 rounded-sm overflow-hidden bg-accent/10 border border-sf-line-interactive">
                     <div className="absolute inset-0" style={{
                       background: 'linear-gradient(90deg, rgba(0,229,160,0.15) 0%, rgba(21,193,123,0.2) 50%, rgba(255,165,0,0.25) 85%, rgba(255,69,0,0.35) 100%)'
                     }} />
@@ -1148,7 +1148,7 @@ const TimeDilationCalculator = () => {
                 {REFERENCE_FRAMES.map((frame) => (
                   <div
                     key={frame.id}
-                    className="flex items-start gap-3 p-3 rounded-none border border-sf-border hover:border-primary/50 transition-colors"
+                    className="flex items-start gap-3 p-3 rounded-none border border-sf-line-interactive hover:border-primary transition-colors"
                   >
                     <RadioGroupItem value={frame.id} id={`frame-${frame.id}`} className="mt-0.5" />
                     <label htmlFor={`frame-${frame.id}`} className="cursor-pointer">

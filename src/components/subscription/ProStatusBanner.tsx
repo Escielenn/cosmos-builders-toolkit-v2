@@ -33,7 +33,7 @@ const ProStatusBanner = ({ isSubscribed }: ProStatusBannerProps) => {
   if (isSubscribed) {
     return (
       <section className="mb-8">
-        <GlassPanel className="p-4 border-green-500/30 bg-green-500/5">
+        <GlassPanel className="p-4 border-sf-emerald bg-green-500/5">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-sm bg-green-500/20 flex items-center justify-center">
@@ -68,7 +68,7 @@ const ProStatusBanner = ({ isSubscribed }: ProStatusBannerProps) => {
 
   return (
     <section className="mb-8">
-      <GlassPanel className="p-4 border-amber-500/30 bg-amber-500/5 relative">
+      <GlassPanel className="p-4 border-sf-amber bg-amber-500/5 relative">
         <button
           onClick={handleDismiss}
           className="absolute top-3 right-3 text-t3 hover:text-t1 transition-colors"

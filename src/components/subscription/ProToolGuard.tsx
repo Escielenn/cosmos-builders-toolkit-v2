@@ -184,7 +184,7 @@ const ProToolGuard = ({ toolId, children }: ProToolGuardProps) => {
             </Button>
           </div>
 
-          <div className="mt-8 pt-6 border-t border-sf-border">
+          <div className="mt-8 pt-6 border-t border-sf-line-interactive">
             <p className="text-xs text-t3 mb-2">Pro includes:</p>
             <ul className="text-xs text-t3 space-y-1">
               <li>All {PRO_TOOL_COUNT} Pro worldbuilding tools</li>

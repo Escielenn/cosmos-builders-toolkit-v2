@@ -232,7 +232,7 @@ const SolarisNativeDev = () => {
   }, []);
 
   const ctrl = "font-mono text-[13px] uppercase tracking-wider h-8 rounded-none border";
-  const actionBtn = `${ctrl} bg-sf-teal/[0.12] border-sf-teal/70 text-[#3DFFCD] hover:bg-sf-teal/25 hover:text-white px-3 flex items-center gap-1.5`;
+  const actionBtn = `${ctrl} bg-sf-teal/[0.12] border-sf-teal text-[#3DFFCD] hover:bg-sf-teal/25 hover:text-white px-3 flex items-center gap-1.5`;
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -247,7 +247,7 @@ const SolarisNativeDev = () => {
         }}
       >
         <div className="absolute top-2 right-3 z-20 pointer-events-none">
-          <span className="font-mono text-[12px] uppercase tracking-[2px] text-amber-400/70 border border-amber-400/20 bg-amber-400/5 px-2 py-1 rounded-none">
+          <span className="font-mono text-[12px] uppercase tracking-[2px] text-amber-400/70 border border-sf-amber bg-amber-400/5 px-2 py-1 rounded-none">
             Native rebuild · dev preview
           </span>
         </div>
@@ -256,7 +256,7 @@ const SolarisNativeDev = () => {
             Sits top-centre, clear of both side panels, and reads as a real
             toolbar rather than three faint outlines. These were easy to miss
             against the starfield when they carried only a hairline border. */}
-        <div className="absolute top-2 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 border border-sf-teal/30 bg-sf-void/90 px-1.5 py-1 backdrop-blur-sm">
+        <div className="absolute top-2 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 border border-sf-teal bg-sf-void/90 px-1.5 py-1 backdrop-blur-sm">
           <button onClick={requestSave} className={actionBtn} title="Save simulation">
             <Save className="w-3 h-3" /> Save
           </button>

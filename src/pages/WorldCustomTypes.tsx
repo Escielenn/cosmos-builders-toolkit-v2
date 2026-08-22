@@ -135,12 +135,12 @@ export default function WorldCustomTypes() {
               </Button>
             </div>
 
-            <div className="border-t border-white/5 pt-2 space-y-0.5">
+            <div className="border-t border-sf-line pt-2 space-y-0.5">
               {isLoading && (
-                <div className="text-xs text-t5 p-2">Loading...</div>
+                <div className="text-xs text-t4 p-2">Loading...</div>
               )}
               {!isLoading && templates.length === 0 && (
-                <div className="p-3 text-xs text-t5 border border-dashed border-white/10 text-center">
+                <div className="p-3 text-xs text-t4 border border-dashed border-sf-line text-center">
                   <Sparkles className="w-6 h-6 mx-auto mb-2 opacity-40" />
                   No custom types yet.
                   <br />
@@ -175,7 +175,7 @@ export default function WorldCustomTypes() {
                     >
                       {t.label}
                     </div>
-                    <div className="text-[12px] font-mono text-t5">
+                    <div className="text-[12px] font-mono text-t4">
                       {t.type_key} · {t.fields.length} field{t.fields.length === 1 ? "" : "s"}
                     </div>
                   </div>
@@ -197,9 +197,9 @@ export default function WorldCustomTypes() {
                 onDelete={() => handleDeleteTemplate(selected)}
               />
             ) : (
-              <div className="h-full min-h-[400px] flex items-center justify-center border border-dashed border-white/10 p-8">
+              <div className="h-full min-h-[400px] flex items-center justify-center border border-dashed border-sf-line p-8">
                 <div className="text-center max-w-sm">
-                  <Shapes className="w-10 h-10 mx-auto mb-3 text-t5 opacity-40" />
+                  <Shapes className="w-10 h-10 mx-auto mb-3 text-t4 opacity-40" />
                   <h3 className="font-heading text-sm uppercase tracking-[2px] text-t2 mb-2">
                     No template selected
                   </h3>
@@ -289,13 +289,13 @@ function TemplateDetailEditor({
   return (
     <div className="space-y-5">
       {/* Template meta */}
-      <div className="border border-white/10 bg-white/[0.02] p-4">
+      <div className="border border-sf-line bg-white/[0.02] p-4">
         <div className="flex items-start justify-between gap-3 mb-4">
           <div>
             <div className="text-[12px] font-heading uppercase tracking-[2px] text-t4 mb-1">
               Template
             </div>
-            <div className="text-[12px] font-mono text-t5">
+            <div className="text-[12px] font-mono text-t4">
               key: {template.type_key}
             </div>
           </div>
@@ -326,7 +326,7 @@ function TemplateDetailEditor({
           <div className="space-y-1">
             <Label htmlFor="t-desc" className="text-[12px] uppercase tracking-[1.5px] text-t4">
               Description{" "}
-              <span className="text-t5 font-normal normal-case tracking-normal">(optional)</span>
+              <span className="text-t4 font-normal normal-case tracking-normal">(optional)</span>
             </Label>
             <Input
               id="t-desc"
@@ -348,7 +348,7 @@ function TemplateDetailEditor({
                 value={colorDraft}
                 onChange={(e) => setColorDraft(e.target.value)}
                 onBlur={handleBlurColor}
-                className="h-9 w-9 bg-transparent border border-white/10 cursor-pointer"
+                className="h-9 w-9 bg-transparent border border-sf-line cursor-pointer"
                 aria-label="Template accent color"
               />
               <Input
@@ -386,7 +386,7 @@ function TemplateDetailEditor({
         </div>
 
         {template.fields.length === 0 ? (
-          <div className="border border-dashed border-white/10 p-6 text-center">
+          <div className="border border-dashed border-sf-line p-6 text-center">
             <p className="text-xs text-t4">
               No fields yet. Add one to define the schema.
             </p>

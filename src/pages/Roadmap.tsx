@@ -23,19 +23,19 @@ import { ROADMAP_BURSTS } from "@/lib/data-bursts";
 const STATUS_CONFIG: Record<string, { label: string; className: string }> = {
   planned: {
     label: "PLANNED",
-    className: "bg-white/5 border-white/10 text-t3",
+    className: "bg-white/5 border-sf-line text-t3",
   },
   in_progress: {
     label: "IN PROGRESS",
-    className: "bg-amber-500/6 border-amber-500/15 text-sf-amber",
+    className: "bg-amber-500/6 border-sf-amber text-sf-amber",
   },
   beta: {
     label: "BETA",
-    className: "bg-violet-500/6 border-violet-500/15 text-sf-violet",
+    className: "bg-violet-500/6 border-sf-violet text-sf-violet",
   },
   released: {
     label: "RELEASED",
-    className: "bg-emerald-500/6 border-emerald-500/15 text-sf-emerald",
+    className: "bg-emerald-500/6 border-sf-emerald text-sf-emerald",
   },
 };
 
@@ -49,7 +49,7 @@ const CATEGORY_ICONS: Record<string, typeof Rocket> = {
 function VoteBudgetBar({ used, remaining, max }: { used: number; remaining: number; max: number }) {
   const pct = (used / max) * 100;
   return (
-    <GlassPanel className="p-4 mb-6 border-violet-500/15">
+    <GlassPanel className="p-4 mb-6 border-sf-violet">
       <div className="flex items-center justify-between mb-2">
         <span className="text-xs font-medium uppercase tracking-[1.5px] text-t3">
           VOTE BUDGET
@@ -111,7 +111,7 @@ function RoadmapCard({ item, canVote }: { item: RoadmapItem; canVote: boolean })
     <GlassPanel className="p-6 group">
       {/* Header row */}
       <div className="flex items-center gap-2 mb-3 flex-wrap">
-        <Badge variant="outline" className="gap-1 text-t3 border-white/10">
+        <Badge variant="outline" className="gap-1 text-t3 border-sf-line">
           <CategoryIcon className="w-3 h-3" />
           {item.category.toUpperCase()}
         </Badge>
@@ -152,7 +152,7 @@ function RoadmapCard({ item, canVote }: { item: RoadmapItem; canVote: boolean })
               key={n}
               variant="outline"
               size="sm"
-              className="gap-1 border-teal-500/20 hover:border-teal-500/40 hover:bg-teal-500/5 text-teal-400"
+              className="gap-1 border-sf-teal hover:border-sf-teal hover:bg-teal-500/5 text-teal-400"
               onClick={() => handleVote(n)}
               disabled={remaining < n || castVote.isPending}
             >
@@ -242,8 +242,8 @@ const Roadmap = () => {
               onClick={() => setStatusFilter(tab.value)}
               className={`px-4 py-2 text-xs font-heading uppercase tracking-[1.5px] border transition-colors whitespace-nowrap ${
                 statusFilter === tab.value
-                  ? 'border-teal-500/30 bg-teal-500/6 text-teal-400'
-                  : 'border-white/8 text-t3 hover:border-white/15 hover:text-t2'
+                  ? 'border-sf-teal bg-teal-500/6 text-teal-400'
+                  : 'border-sf-line text-t3 hover:border-sf-line hover:text-t2'
               }`}
             >
               {tab.label}
@@ -272,7 +272,7 @@ const Roadmap = () => {
 
         {/* Non-Vanguard CTA */}
         {!isVanguard && (
-          <GlassPanel className="p-6 mt-8 border-violet-500/15 text-center">
+          <GlassPanel className="p-6 mt-8 border-sf-violet text-center">
             <Telescope className="w-8 h-8 text-sf-violet mx-auto mb-3" />
             <h3 className="font-heading text-lg font-light uppercase tracking-[2px] mb-2">
               Want to shape the roadmap?

@@ -72,7 +72,7 @@ const UpgradeDialog = ({ open, onOpenChange, toolName }: UpgradeDialogProps) => 
 
         <div className="grid gap-4 py-4">
           {/* Monthly Plan */}
-          <div className="p-4 rounded-none border border-sf-border hover:border-primary/50 transition-colors">
+          <div className="p-4 rounded-none border border-sf-line-interactive hover:border-primary transition-colors">
             <div className="flex justify-between items-start mb-2">
               <div>
                 <h3 className="font-medium">Monthly</h3>

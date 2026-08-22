@@ -106,7 +106,7 @@ const ExoskySimulator = () => {
           </Suspense>
           {/* Save/Load controls */}
           {(
-            <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 border border-sf-teal/30 bg-sf-void/90 px-1.5 py-1 backdrop-blur-sm">
+            <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 border border-sf-teal bg-sf-void/90 px-1.5 py-1 backdrop-blur-sm">
               <Button
                 variant="outline"
                 size="sm"
@@ -116,7 +116,7 @@ const ExoskySimulator = () => {
                   refreshPayload();
                   setPublishDialogOpen(true);
                 }}
-                className="bg-sf-void/80 border-white/10 text-sf-teal hover:bg-sf-void text-[13px] uppercase tracking-wider h-7 px-2.5"
+                className="bg-sf-void/80 border-sf-line text-sf-teal hover:bg-sf-void text-[13px] uppercase tracking-wider h-7 px-2.5"
               >
                 <Rocket className="w-3 h-3 mr-1" />
                 Publish
@@ -125,7 +125,7 @@ const ExoskySimulator = () => {
                 variant="outline"
                 size="sm"
                 onClick={() => setLoadSheetOpen(true)}
-                className="bg-sf-void/80 border-white/10 text-sf-teal hover:bg-sf-void text-[13px] uppercase tracking-wider h-7 px-2.5"
+                className="bg-sf-void/80 border-sf-line text-sf-teal hover:bg-sf-void text-[13px] uppercase tracking-wider h-7 px-2.5"
               >
                 <FolderOpen className="w-3 h-3 mr-1" />
                 Load
@@ -134,7 +134,7 @@ const ExoskySimulator = () => {
                 variant="outline"
                 size="sm"
                 onClick={requestSave}
-                className="bg-sf-void/80 border-white/10 text-sf-teal hover:bg-sf-void text-[13px] uppercase tracking-wider h-7 px-2.5"
+                className="bg-sf-void/80 border-sf-line text-sf-teal hover:bg-sf-void text-[13px] uppercase tracking-wider h-7 px-2.5"
               >
                 <Save className="w-3 h-3 mr-1" />
                 Save

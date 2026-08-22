@@ -148,7 +148,7 @@ const SharedWorldCard = ({
           )}
         </div>
 
-        <div className="pt-2 border-t border-sf-border mt-auto">
+        <div className="pt-2 border-t border-sf-line-interactive mt-auto">
           <p className="text-xs text-t3">
             Last updated: {formattedDate}
           </p>

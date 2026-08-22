@@ -384,7 +384,7 @@ const Timeline = () => {
       isLoggedIn={!!user}
     >
         {/* Early Development Banner */}
-        <div className="flex items-center gap-3 px-4 py-3 rounded-none border border-amber-500/30 bg-amber-500/10 mb-6">
+        <div className="flex items-center gap-3 px-4 py-3 rounded-none border border-sf-amber bg-amber-500/10 mb-6">
           <Construction className="w-5 h-5 text-sf-amber shrink-0" />
           <p className="text-sm text-amber-200/90">
             <span className="font-medium">Early Preview.</span>{" "}
@@ -394,7 +394,7 @@ const Timeline = () => {
 
         {/* Chronicle pointer, world-scoped tracks/events vs. the world's canonical event timeline */}
         {worldId && !chronicleHintDismissed && (
-          <div className="relative flex items-center gap-3 px-4 py-3 rounded-none border border-sf-teal/15 bg-sf-teal/[0.03] mb-6">
+          <div className="relative flex items-center gap-3 px-4 py-3 rounded-none border border-sf-teal bg-sf-teal/[0.03] mb-6">
             <ScrollText className="w-5 h-5 text-sf-teal/60 shrink-0" />
             <p className="text-sm text-t2 pr-6">
               For this world's story-wide event timeline, use{" "}

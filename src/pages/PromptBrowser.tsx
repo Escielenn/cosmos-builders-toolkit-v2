@@ -38,17 +38,17 @@ import {
 // ─── Category color mapping ────────────────────────────────────────────
 
 const CATEGORY_COLORS: Record<PromptCategory, string> = {
-  worldbuilding: "text-blue-400 border-blue-400/20 bg-blue-400/[0.06]",
-  character: "text-sf-violet border-violet-400/20 bg-violet-400/[0.06]",
-  scene: "text-sf-amber border-amber-400/20 bg-amber-400/[0.06]",
-  dialogue: "text-sf-emerald border-emerald-400/20 bg-emerald-400/[0.06]",
-  theme: "text-sf-teal border-cyan-400/20 bg-cyan-400/[0.06]",
+  worldbuilding: "text-blue-400 border-sf-azure bg-blue-400/[0.06]",
+  character: "text-sf-violet border-sf-violet bg-violet-400/[0.06]",
+  scene: "text-sf-amber border-sf-amber bg-amber-400/[0.06]",
+  dialogue: "text-sf-emerald border-sf-emerald bg-emerald-400/[0.06]",
+  theme: "text-sf-teal border-sf-teal bg-sf-teal/[0.06]",
 };
 
 const DIFFICULTY_COLORS: Record<string, string> = {
-  beginner: "text-sf-emerald border-emerald-400/15 bg-emerald-400/[0.06]",
-  intermediate: "text-sf-amber border-amber-400/15 bg-amber-400/[0.06]",
-  advanced: "text-rose-400 border-rose-400/15 bg-rose-400/[0.06]",
+  beginner: "text-sf-emerald border-sf-emerald bg-emerald-400/[0.06]",
+  intermediate: "text-sf-amber border-sf-amber bg-amber-400/[0.06]",
+  advanced: "text-rose-400 border-rose-400 bg-rose-400/[0.06]",
 };
 
 // ─── Component ─────────────────────────────────────────────────────────
@@ -206,7 +206,7 @@ const PromptBrowserPage = () => {
         </section>
 
         {/* ── Stats footer ───────────────────────────────────── */}
-        <div className="mt-12 border-t border-white/[0.06] pt-6">
+        <div className="mt-12 border-t border-sf-line pt-6">
           <div className="flex flex-wrap items-center gap-6 text-xs text-t4">
             <span className="font-mono">
               {actedOn.size}/{weekPrompts.length} prompts acted on this week
@@ -253,7 +253,7 @@ function TodayPromptContent({
           </Badge>
         </div>
         {isActedOn && (
-          <Badge className="text-[12px] px-2 py-0.5 rounded-sm border border-emerald-400/20 bg-emerald-400/[0.06] text-sf-emerald ml-auto">
+          <Badge className="text-[12px] px-2 py-0.5 rounded-sm border border-sf-emerald bg-emerald-400/[0.06] text-sf-emerald ml-auto">
             <Check className="w-3 h-3 mr-1" />
             Completed
           </Badge>
@@ -324,7 +324,7 @@ function PromptCard({
       {/* Completed overlay */}
       {isCompleted && (
         <div className="absolute inset-0 bg-sf-void/40 z-10 pointer-events-none flex items-center justify-center">
-          <div className="flex items-center gap-1.5 bg-emerald-400/10 border border-emerald-400/20 rounded-sm px-3 py-1.5">
+          <div className="flex items-center gap-1.5 bg-emerald-400/10 border border-sf-emerald rounded-sm px-3 py-1.5">
             <Check className="w-4 h-4 text-sf-emerald" />
             <span className="font-mono text-xs text-sf-emerald uppercase tracking-wider">
               Completed
@@ -339,7 +339,7 @@ function PromptCard({
           {dayLabel}
         </span>
         {isToday && (
-          <Badge className="text-[12px] px-1.5 py-0 rounded-sm border border-primary/20 bg-primary/[0.06] text-primary">
+          <Badge className="text-[12px] px-1.5 py-0 rounded-sm border border-primary bg-primary/[0.06] text-primary">
             Today
           </Badge>
         )}
@@ -370,11 +370,11 @@ function PromptCard({
       </p>
 
       {/* Footer */}
-      <div className="flex items-center justify-between mt-4 pt-3 border-t border-white/[0.06]">
+      <div className="flex items-center justify-between mt-4 pt-3 border-t border-sf-line">
         {prompt.wordGoal && (
           <div className="flex items-center gap-1.5">
-            <Target className="w-3 h-3 text-t5" />
-            <span className="font-mono text-[12px] text-t5">
+            <Target className="w-3 h-3 text-t4" />
+            <span className="font-mono text-[12px] text-t4">
               {prompt.wordGoal} words
             </span>
           </div>
@@ -386,7 +386,7 @@ function PromptCard({
           disabled={isCompleted}
           className={`ml-auto flex items-center gap-1.5 text-[12px] font-medium uppercase tracking-[1px] transition-colors ${
             isCompleted
-              ? "text-t5 cursor-default"
+              ? "text-t4 cursor-default"
               : "text-primary hover:text-primary/80 cursor-pointer"
           }`}
         >

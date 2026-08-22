@@ -48,9 +48,9 @@ const categoryColors: Record<string, string> = {
 };
 
 const STATUS_LABELS: Record<string, { label: string; className: string }> = {
-  upcoming: { label: "UPCOMING", className: "bg-white/5 border-white/10 text-t3" },
-  enrolling: { label: "ENROLLING NOW", className: "bg-emerald-500/6 border-emerald-500/15 text-sf-emerald" },
-  in_progress: { label: "IN SESSION", className: "bg-amber-500/6 border-amber-500/15 text-sf-amber" },
+  upcoming: { label: "UPCOMING", className: "bg-white/5 border-sf-line text-t3" },
+  enrolling: { label: "ENROLLING NOW", className: "bg-emerald-500/6 border-sf-emerald text-sf-emerald" },
+  in_progress: { label: "IN SESSION", className: "bg-amber-500/6 border-sf-amber text-sf-amber" },
 };
 
 function CourseDiscountBadge({ course, courseDiscount, tier }: { course: CourseListItem; courseDiscount: string; tier: string }) {
@@ -64,7 +64,7 @@ function CourseDiscountBadge({ course, courseDiscount, tier }: { course: CourseL
   }
 
   return (
-    <Badge className="bg-violet-500/6 border border-violet-500/15 text-sf-violet text-xs">
+    <Badge className="bg-violet-500/6 border border-sf-violet text-sf-violet text-xs">
       {courseDiscount} off
     </Badge>
   );
@@ -110,13 +110,13 @@ const LearnIndex = () => {
         <div className="flex justify-center gap-2 -mt-4 mb-8">
           <a
             href="#courses"
-            className="px-4 py-2 text-xs uppercase tracking-wider text-t3 hover:text-primary border border-sf-border rounded-md hover:border-primary/30 transition-all"
+            className="px-4 py-2 text-xs uppercase tracking-wider text-t3 hover:text-primary border border-sf-line-interactive rounded-md hover:border-primary transition-all"
           >
             Courses
           </a>
           <Link
             to="/roadmap"
-            className="px-4 py-2 text-xs uppercase tracking-wider text-t3 hover:text-primary border border-sf-border rounded-md hover:border-primary/30 transition-all"
+            className="px-4 py-2 text-xs uppercase tracking-wider text-t3 hover:text-primary border border-sf-line-interactive rounded-md hover:border-primary transition-all"
           >
             Roadmap
           </Link>
@@ -142,7 +142,7 @@ const LearnIndex = () => {
 
         {/* Error State */}
         {error && !isLoading && (
-          <GlassPanel className="p-4 mb-8 border-amber-500/50">
+          <GlassPanel className="p-4 mb-8 border-sf-amber">
             <p className="text-sf-amber text-sm">
               Unable to load articles from CMS. Showing cached content.
             </p>
@@ -397,7 +397,7 @@ const LearnIndex = () => {
                           {statusCfg.label}
                         </Badge>
                         {course.tags?.map((tag) => (
-                          <Badge key={tag} variant="outline" className="text-t3 border-white/10">
+                          <Badge key={tag} variant="outline" className="text-t3 border-sf-line">
                             {tag}
                           </Badge>
                         ))}
@@ -464,7 +464,7 @@ const LearnIndex = () => {
 
             {/* Discount upsell for non-subscribed users */}
             {!user && (
-              <GlassPanel className="p-4 mt-4 border-violet-500/10 text-center">
+              <GlassPanel className="p-4 mt-4 border-sf-violet text-center">
                 <p className="text-sm text-t3">
                   <Zap className="w-3.5 h-3.5 inline-block mr-1 text-sf-amber -mt-0.5" />
                   Pro members save 5–10% on all courses.{" "}

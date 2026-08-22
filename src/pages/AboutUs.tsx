@@ -93,7 +93,7 @@ const AboutUs = () => {
                     {step.label}
                   </span>
                   {i < 5 && (
-                    <span className="text-t5 text-xs select-none">
+                    <span className="text-t4 text-xs select-none">
                       &rarr;
                     </span>
                   )}

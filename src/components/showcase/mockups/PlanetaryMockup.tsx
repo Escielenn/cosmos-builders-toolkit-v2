@@ -38,7 +38,7 @@ const PlanetaryMockup = () => {
         <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 shadow-[0_0_30px_rgba(255,180,0,0.5)] z-10" />
 
         {/* Orbit path */}
-        <div className="absolute w-32 h-32 md:w-40 md:h-40 rounded-full border border-sf-cyan/20" />
+        <div className="absolute w-32 h-32 md:w-40 md:h-40 rounded-full border border-sf-teal" />
 
         {/* Planet orbiting */}
         <div
@@ -112,7 +112,7 @@ const PlanetaryMockup = () => {
 
         {/* Habitability badge */}
         <div className="flex justify-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-sf-emerald/10 border border-sf-emerald/30">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-sf-emerald/10 border border-sf-emerald">
             <div className="w-2 h-2 bg-sf-emerald animate-pulse" />
             <span className="text-[12px] text-sf-emerald uppercase tracking-wider">
               Habitable

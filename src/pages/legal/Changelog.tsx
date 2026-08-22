@@ -179,7 +179,7 @@ const Changelog = () => {
         })}
 
         {/* Future updates notice */}
-        <section className="pt-8 border-t border-sf-border">
+        <section className="pt-8 border-t border-sf-line-interactive">
           <p className="text-t3 text-center">
             Subscribe to our{" "}
             <a

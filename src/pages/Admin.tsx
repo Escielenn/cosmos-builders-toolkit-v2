@@ -102,40 +102,40 @@ const TH = ({ children, className = "" }: { children?: React.ReactNode; classNam
 );
 
 const categoryColors: Record<string, string> = {
-  bug: "bg-red-500/[0.06] border-red-500/[0.15] text-sf-crimson",
-  feature: "bg-blue-400/[0.06] border-blue-400/[0.15] text-blue-400",
-  billing: "bg-amber-500/[0.06] border-amber-500/[0.15] text-sf-amber",
-  account: "bg-sky-500/[0.06] border-sky-500/[0.15] text-sky-400",
-  other: "bg-white/[0.04] border-white/[0.1] text-t3",
+  bug: "bg-red-500/[0.06] border-sf-crimson text-sf-crimson",
+  feature: "bg-blue-400/[0.06] border-sf-azure text-blue-400",
+  billing: "bg-amber-500/[0.06] border-sf-amber text-sf-amber",
+  account: "bg-sky-500/[0.06] border-sf-azure text-sky-400",
+  other: "bg-white/[0.04] border-sf-line text-t3",
 };
 
 const priorityColors: Record<string, string> = {
-  urgent: "bg-red-500/[0.06] border-red-500/[0.15] text-sf-crimson animate-pulse",
-  high: "bg-amber-500/[0.06] border-amber-500/[0.15] text-sf-amber",
-  normal: "bg-white/[0.04] border-white/[0.1] text-t3",
-  low: "bg-white/[0.02] border-white/[0.06] text-t4",
+  urgent: "bg-red-500/[0.06] border-sf-crimson text-sf-crimson animate-pulse",
+  high: "bg-amber-500/[0.06] border-sf-amber text-sf-amber",
+  normal: "bg-white/[0.04] border-sf-line text-t3",
+  low: "bg-white/[0.02] border-sf-line text-t4",
 };
 
 const ticketStatusColors: Record<string, string> = {
-  open: "bg-primary/[0.06] border-primary/[0.15] text-primary",
-  in_progress: "bg-amber-500/[0.06] border-amber-500/[0.15] text-sf-amber",
-  waiting: "bg-sky-500/[0.06] border-sky-500/[0.15] text-sky-400",
-  resolved: "bg-emerald-500/[0.06] border-emerald-500/[0.15] text-sf-emerald",
-  closed: "bg-white/[0.02] border-white/[0.06] text-t4",
+  open: "bg-primary/[0.06] border-primary text-primary",
+  in_progress: "bg-amber-500/[0.06] border-sf-amber text-sf-amber",
+  waiting: "bg-sky-500/[0.06] border-sf-azure text-sky-400",
+  resolved: "bg-emerald-500/[0.06] border-sf-emerald text-sf-emerald",
+  closed: "bg-white/[0.02] border-sf-line text-t4",
 };
 
 const contactStatusColors: Record<string, string> = {
-  new: "bg-primary/[0.06] border-primary/[0.15] text-primary",
-  read: "bg-sky-500/[0.06] border-sky-500/[0.15] text-sky-400",
-  responded: "bg-emerald-500/[0.06] border-emerald-500/[0.15] text-sf-emerald",
-  archived: "bg-white/[0.02] border-white/[0.06] text-t4",
+  new: "bg-primary/[0.06] border-primary text-primary",
+  read: "bg-sky-500/[0.06] border-sf-azure text-sky-400",
+  responded: "bg-emerald-500/[0.06] border-sf-emerald text-sf-emerald",
+  archived: "bg-white/[0.02] border-sf-line text-t4",
 };
 
 const subStatusColors: Record<string, string> = {
-  active: "bg-primary/[0.06] border-primary/[0.15] text-primary",
-  canceled: "bg-white/[0.02] border-white/[0.06] text-t4",
-  past_due: "bg-red-500/[0.06] border-red-500/[0.15] text-sf-crimson",
-  trialing: "bg-sky-500/[0.06] border-sky-500/[0.15] text-sky-400",
+  active: "bg-primary/[0.06] border-primary text-primary",
+  canceled: "bg-white/[0.02] border-sf-line text-t4",
+  past_due: "bg-red-500/[0.06] border-sf-crimson text-sf-crimson",
+  trialing: "bg-sky-500/[0.06] border-sf-azure text-sky-400",
 };
 
 const StatusBadge = ({ status, colorMap }: { status: string; colorMap: Record<string, string> }) => (
@@ -242,12 +242,12 @@ const TaskItem = ({
       </span>
 
       {todo.linked_ticket_id && (
-        <span className="shrink-0 text-[12px] font-medium uppercase tracking-wider px-1 py-0.5 rounded-sm bg-amber-500/[0.06] border border-amber-500/[0.15] text-sf-amber">
+        <span className="shrink-0 text-[12px] font-medium uppercase tracking-wider px-1 py-0.5 rounded-sm bg-amber-500/[0.06] border border-sf-amber text-sf-amber">
           TKT
         </span>
       )}
       {todo.linked_contact_id && (
-        <span className="shrink-0 text-[12px] font-medium uppercase tracking-wider px-1 py-0.5 rounded-sm bg-sky-500/[0.06] border border-sky-500/[0.15] text-sky-400">
+        <span className="shrink-0 text-[12px] font-medium uppercase tracking-wider px-1 py-0.5 rounded-sm bg-sky-500/[0.06] border border-sf-azure text-sky-400">
           MSG
         </span>
       )}
@@ -291,13 +291,13 @@ const TasksSidebarContent = ({ onNavigate }: { onNavigate: (tab: string) => void
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="flex items-center justify-between px-3 py-3 border-b border-white/[0.06]">
+      <div className="flex items-center justify-between px-3 py-3 border-b border-sf-line">
         <div className="flex items-center gap-2">
           <h3 className="text-[12px] font-medium uppercase tracking-[1.5px] text-t3">
             Tasks
           </h3>
           {pendingTodos.length > 0 && (
-            <span className="inline-flex items-center justify-center w-5 h-5 rounded-sm text-[12px] font-mono bg-primary/[0.06] border border-primary/[0.15] text-primary">
+            <span className="inline-flex items-center justify-center w-5 h-5 rounded-sm text-[12px] font-mono bg-primary/[0.06] border border-primary text-primary">
               {pendingTodos.length}
             </span>
           )}
@@ -318,7 +318,7 @@ const TasksSidebarContent = ({ onNavigate }: { onNavigate: (tab: string) => void
 
       {/* Quick Add Form */}
       {showAdd && (
-        <div className="px-3 py-2 border-b border-white/[0.06] space-y-2">
+        <div className="px-3 py-2 border-b border-sf-line space-y-2">
           <input
             ref={inputRef}
             type="text"
@@ -326,14 +326,14 @@ const TasksSidebarContent = ({ onNavigate }: { onNavigate: (tab: string) => void
             value={newTitle}
             onChange={(e) => setNewTitle(e.target.value)}
             onKeyDown={handleKeyDown}
-            className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xs text-xs text-t2 placeholder:text-t4 px-2 py-1.5 focus:border-primary/35 focus:outline-none"
+            className="w-full bg-white/[0.04] border border-sf-line rounded-xs text-xs text-t2 placeholder:text-t4 px-2 py-1.5 focus:border-primary focus:outline-none"
           />
           <div className="flex items-center gap-2">
             <select
               value={newPriority}
               onChange={(e) => setNewPriority(e.target.value)}
               title="Priority"
-              className="bg-white/[0.04] border border-white/[0.1] rounded-xs text-[12px] text-t3 px-1.5 py-1 focus:outline-none"
+              className="bg-white/[0.04] border border-sf-line rounded-xs text-[12px] text-t3 px-1.5 py-1 focus:outline-none"
             >
               <option value="low">Low</option>
               <option value="normal">Normal</option>
@@ -369,7 +369,7 @@ const TasksSidebarContent = ({ onNavigate }: { onNavigate: (tab: string) => void
 
             {/* Done tasks */}
             {doneTodos.length > 0 && (
-              <div className="border-t border-white/[0.06]">
+              <div className="border-t border-sf-line">
                 <button
                   className="w-full flex items-center justify-between px-3 py-2 text-[12px] font-medium uppercase tracking-wider text-t4 hover:text-t3 transition-colors"
                   onClick={() => setShowDone(!showDone)}
@@ -481,9 +481,9 @@ const OverviewTab = ({ onTabChange }: { onTabChange: (tab: string) => void }) =>
                 <StatusBadge
                   status={item.type}
                   colorMap={{
-                    ticket: "bg-amber-500/[0.06] border-amber-500/[0.15] text-sf-amber",
-                    contact: "bg-sky-500/[0.06] border-sky-500/[0.15] text-sky-400",
-                    signup: "bg-primary/[0.06] border-primary/[0.15] text-primary",
+                    ticket: "bg-amber-500/[0.06] border-sf-amber text-sf-amber",
+                    contact: "bg-sky-500/[0.06] border-sf-azure text-sky-400",
+                    signup: "bg-primary/[0.06] border-primary text-primary",
                   }}
                 />
                 <span className="text-sm text-t2 truncate flex-1">{item.title}</span>
@@ -522,7 +522,7 @@ const UsersTab = () => {
           placeholder="Search by name or email..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full pl-10 pr-4 py-2.5 bg-white/[0.04] border border-white/[0.1] rounded-xs text-sm text-t2 placeholder:text-t4 focus:border-primary/35 focus:outline-none"
+          className="w-full pl-10 pr-4 py-2.5 bg-white/[0.04] border border-sf-line rounded-xs text-sm text-t2 placeholder:text-t4 focus:border-primary focus:outline-none"
         />
       </div>
 
@@ -532,7 +532,7 @@ const UsersTab = () => {
         <GlassPanel className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-white/[0.06]">
+              <tr className="border-b border-sf-line">
                 <TH className="w-8 px-2" />
                 <TH>Display Name</TH>
                 <TH>Email</TH>
@@ -549,7 +549,7 @@ const UsersTab = () => {
                   <>
                     <tr
                       key={u.id}
-                      className="border-b border-white/[0.04] hover:bg-white/[0.02] cursor-pointer"
+                      className="border-b border-sf-line hover:bg-white/[0.02] cursor-pointer"
                       onClick={() => setExpandedId(isExpanded ? null : u.id)}
                     >
                       <td className="px-2 py-3 text-t4">
@@ -571,7 +571,7 @@ const UsersTab = () => {
                       </td>
                     </tr>
                     {isExpanded && userDetail && (
-                      <tr key={`${u.id}-detail`} className="border-b border-white/[0.04]">
+                      <tr key={`${u.id}-detail`} className="border-b border-sf-line">
                         <td colSpan={7} className="px-6 py-5 bg-white/[0.01]">
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {/* Left: Profile */}
@@ -688,7 +688,7 @@ const TicketDetail = ({ ticket }: { ticket: AdminTicket }) => {
         <span><span className="text-t4">Submitted:</span> {formatDate(ticket.created_at)}</span>
       </div>
 
-      <p className="text-sm text-t2 whitespace-pre-wrap leading-relaxed bg-white/[0.02] p-3 rounded-xs border border-white/[0.04]">
+      <p className="text-sm text-t2 whitespace-pre-wrap leading-relaxed bg-white/[0.02] p-3 rounded-xs border border-sf-line">
         {ticket.message}
       </p>
 
@@ -734,7 +734,7 @@ const TicketDetail = ({ ticket }: { ticket: AdminTicket }) => {
           onChange={(e) => setNotes(e.target.value)}
           placeholder="Internal notes..."
           rows={3}
-          className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xs text-sm text-t2 placeholder:text-t4 p-3 focus:border-primary/35 focus:outline-none resize-none"
+          className="w-full bg-white/[0.04] border border-sf-line rounded-xs text-sm text-t2 placeholder:text-t4 p-3 focus:border-primary focus:outline-none resize-none"
           onClick={(e) => e.stopPropagation()}
         />
         {notesChanged && (
@@ -773,7 +773,7 @@ const TicketsTab = () => {
       <GlassPanel className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-white/[0.06]">
+            <tr className="border-b border-sf-line">
               <TH className="w-8 px-2" />
               <TH>Ticket #</TH>
               <TH>Subject</TH>
@@ -791,7 +791,7 @@ const TicketsTab = () => {
                 <>
                   <tr
                     key={t.id}
-                    className="border-b border-white/[0.04] hover:bg-white/[0.02] cursor-pointer"
+                    className="border-b border-sf-line hover:bg-white/[0.02] cursor-pointer"
                     onClick={() => setExpandedId(isExpanded ? null : t.id)}
                   >
                     <td className="px-2 py-3 text-t4">
@@ -808,7 +808,7 @@ const TicketsTab = () => {
                     <td className="px-3 py-3 text-t4 text-xs">{timeAgo(t.created_at)}</td>
                   </tr>
                   {isExpanded && (
-                    <tr key={`${t.id}-detail`} className="border-b border-white/[0.04]">
+                    <tr key={`${t.id}-detail`} className="border-b border-sf-line">
                       <td colSpan={7} className="px-6 py-4 bg-white/[0.01]">
                         <TicketDetail ticket={t} />
                       </td>
@@ -851,7 +851,7 @@ const ContactDetail = ({ contact }: { contact: AdminContact }) => {
         <span><span className="text-t4">Received:</span> {formatDate(contact.created_at)}</span>
       </div>
 
-      <p className="text-sm text-t2 whitespace-pre-wrap leading-relaxed bg-white/[0.02] p-3 rounded-xs border border-white/[0.04]">
+      <p className="text-sm text-t2 whitespace-pre-wrap leading-relaxed bg-white/[0.02] p-3 rounded-xs border border-sf-line">
         {contact.message}
       </p>
 
@@ -880,7 +880,7 @@ const ContactDetail = ({ contact }: { contact: AdminContact }) => {
           onChange={(e) => setNotes(e.target.value)}
           placeholder="Internal notes..."
           rows={3}
-          className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xs text-sm text-t2 placeholder:text-t4 p-3 focus:border-primary/35 focus:outline-none resize-none"
+          className="w-full bg-white/[0.04] border border-sf-line rounded-xs text-sm text-t2 placeholder:text-t4 p-3 focus:border-primary focus:outline-none resize-none"
           onClick={(e) => e.stopPropagation()}
         />
         {notesChanged && (
@@ -915,7 +915,7 @@ const ContactsTab = () => {
       <GlassPanel className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-white/[0.06]">
+            <tr className="border-b border-sf-line">
               <TH className="w-8 px-2" />
               <TH>Name</TH>
               <TH>Email</TH>
@@ -932,7 +932,7 @@ const ContactsTab = () => {
                 <>
                   <tr
                     key={c.id}
-                    className="border-b border-white/[0.04] hover:bg-white/[0.02] cursor-pointer"
+                    className="border-b border-sf-line hover:bg-white/[0.02] cursor-pointer"
                     onClick={() => setExpandedId(isExpanded ? null : c.id)}
                   >
                     <td className="px-2 py-3 text-t4">
@@ -948,7 +948,7 @@ const ContactsTab = () => {
                     <td className="px-3 py-3 text-t4 text-xs">{timeAgo(c.created_at)}</td>
                   </tr>
                   {isExpanded && (
-                    <tr key={`${c.id}-detail`} className="border-b border-white/[0.04]">
+                    <tr key={`${c.id}-detail`} className="border-b border-sf-line">
                       <td colSpan={6} className="px-6 py-4 bg-white/[0.01]">
                         <ContactDetail contact={c} />
                       </td>
@@ -1006,7 +1006,7 @@ const SubscriptionsTab = () => {
             <GlassPanel className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-white/[0.06]">
+                  <tr className="border-b border-sf-line">
                     <TH>User</TH>
                     <TH>Email</TH>
                     <TH>Plan</TH>
@@ -1018,7 +1018,7 @@ const SubscriptionsTab = () => {
                 </thead>
                 <tbody>
                   {subs?.map((s) => (
-                    <tr key={s.id} className="border-b border-white/[0.04] hover:bg-white/[0.02]">
+                    <tr key={s.id} className="border-b border-sf-line hover:bg-white/[0.02]">
                       <td className="px-3 py-3 text-t2">
                         {s.display_name || <span className="text-t4 italic">No name</span>}
                       </td>
@@ -1087,7 +1087,7 @@ const Admin = () => {
             <h1 className="font-display text-3xl md:text-4xl tracking-[0.08em] text-t1">
               MISSION CONTROL
             </h1>
-            <span className="inline-flex items-center gap-1 rounded-sm border px-2 py-0.5 text-[12px] font-medium uppercase tracking-wider bg-red-500/[0.06] border-red-500/[0.15] text-sf-crimson">
+            <span className="inline-flex items-center gap-1 rounded-sm border px-2 py-0.5 text-[12px] font-medium uppercase tracking-wider bg-red-500/[0.06] border-sf-crimson text-sf-crimson">
               <AlertTriangle className="w-3 h-3" /> Admin Only
             </span>
           </div>

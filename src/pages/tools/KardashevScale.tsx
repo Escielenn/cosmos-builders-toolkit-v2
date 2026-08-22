@@ -381,8 +381,8 @@ const KardashevScale = () => {
                 className={cn(
                   "text-left p-3 border transition-all group",
                   formState.civilizationPreset === preset.id
-                    ? "border-primary/30 bg-primary/[0.06]"
-                    : "border-white/[0.06] bg-white/[0.02] hover:border-white/[0.12]"
+                    ? "border-primary bg-primary/[0.06]"
+                    : "border-sf-line bg-white/[0.02] hover:border-sf-line"
                 )}
               >
                 <div className="flex items-center gap-2 mb-1">
@@ -429,7 +429,7 @@ const KardashevScale = () => {
                 max={1000}
                 step={1}
               />
-              <div className="flex justify-between text-[12px] font-mono text-t5">
+              <div className="flex justify-between text-[12px] font-mono text-t4">
                 <span>10^0 W</span>
                 <span>10^16 W (Type I)</span>
                 <span>10^26 W (Type II)</span>
@@ -439,7 +439,7 @@ const KardashevScale = () => {
             </div>
 
             {/* Kardashev number readout */}
-            <div className="flex items-center gap-4 p-3 bg-white/[0.02] border border-white/[0.06]">
+            <div className="flex items-center gap-4 p-3 bg-white/[0.02] border border-sf-line">
               <div>
                 <span className="text-[12px] uppercase tracking-[1.5px] text-t4">Kardashev Number</span>
                 <div className="font-mono text-2xl text-t1">
@@ -495,7 +495,7 @@ const KardashevScale = () => {
                         civilizationPreset: "",
                       }));
                     }}
-                    className="text-left p-2 border border-white/[0.04] hover:border-white/[0.12] bg-white/[0.01] hover:bg-white/[0.03] transition-colors"
+                    className="text-left p-2 border border-sf-line hover:border-sf-line bg-white/[0.01] hover:bg-white/[0.03] transition-colors"
                   >
                     <div className="flex items-center justify-between gap-2">
                       <span className="text-[12px] text-t2 truncate">
@@ -505,10 +505,10 @@ const KardashevScale = () => {
                         variant="outline"
                         className={cn(
                           "text-[12px] py-0 shrink-0",
-                          source.category === "planetary" && "text-blue-400 border-blue-400/20",
-                          source.category === "stellar" && "text-sf-amber border-amber-400/20",
-                          source.category === "galactic" && "text-pink-400 border-pink-400/20",
-                          source.category === "exotic" && "text-t1 border-white/20"
+                          source.category === "planetary" && "text-blue-400 border-sf-azure",
+                          source.category === "stellar" && "text-sf-amber border-sf-amber",
+                          source.category === "galactic" && "text-pink-400 border-sf-magenta",
+                          source.category === "exotic" && "text-t1 border-sf-line"
                         )}
                       >
                         {source.category}
@@ -606,7 +606,7 @@ const KardashevScale = () => {
                     {results.projections.map((p) => (
                       <div
                         key={p.level}
-                        className="flex items-center justify-between p-2 bg-white/[0.02] border border-white/[0.04]"
+                        className="flex items-center justify-between p-2 bg-white/[0.02] border border-sf-line"
                       >
                         <span className="text-sm text-t2">{p.label}</span>
                         <div className="text-right">
@@ -628,14 +628,14 @@ const KardashevScale = () => {
                 <Label className="text-[12px] uppercase tracking-[1.5px] text-t3">
                   Kardashev Scale Position
                 </Label>
-                <div className="relative h-10 bg-white/[0.02] border border-white/[0.06] overflow-hidden">
+                <div className="relative h-10 bg-white/[0.02] border border-sf-line overflow-hidden">
                   {KARDASHEV_BANDS.map((band) => {
                     const left = (band.minPower / 48) * 100;
                     const width = ((band.maxPower - band.minPower) / 48) * 100;
                     return (
                       <div
                         key={band.level}
-                        className="absolute top-0 bottom-0 border-r border-white/[0.06]"
+                        className="absolute top-0 bottom-0 border-r border-sf-line"
                         style={{
                           left: `${left}%`,
                           width: `${width}%`,
@@ -655,7 +655,7 @@ const KardashevScale = () => {
                     }}
                   />
                 </div>
-                <div className="flex justify-between text-[12px] font-mono text-t5">
+                <div className="flex justify-between text-[12px] font-mono text-t4">
                   <span>Sub-I</span>
                   <span>I</span>
                   <span>II</span>
@@ -719,7 +719,7 @@ const KardashevScale = () => {
                 const total = Object.values(formState.budgetPercentages).reduce((s, v) => s + v, 0);
                 if (Math.abs(total - 100) > 1) {
                   return (
-                    <div className="flex items-center gap-2 p-2 bg-amber-500/[0.06] border border-amber-500/[0.15] text-sf-amber text-xs">
+                    <div className="flex items-center gap-2 p-2 bg-amber-500/[0.06] border border-sf-amber text-sf-amber text-xs">
                       <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
                       Budget total is {total}% (should be 100%)
                     </div>
@@ -778,8 +778,8 @@ const KardashevScale = () => {
                             className={cn(
                               "p-3 border transition-colors",
                               isCurrentLevel
-                                ? "border-primary/20 bg-primary/[0.04]"
-                                : "border-white/[0.04] bg-white/[0.01]"
+                                ? "border-primary bg-primary/[0.04]"
+                                : "border-sf-line bg-white/[0.01]"
                             )}
                           >
                             <div className="flex items-center gap-2 mb-1">
@@ -815,7 +815,7 @@ const KardashevScale = () => {
                       </Label>
                       <Suspense
                         fallback={
-                          <div className="rounded-xs border border-white/[0.06] bg-white/[0.02] animate-pulse min-h-[100px]" />
+                          <div className="rounded-xs border border-sf-line bg-white/[0.02] animate-pulse min-h-[100px]" />
                         }
                       >
                         <RichTextEditor
@@ -864,7 +864,7 @@ const KardashevScale = () => {
                 </Label>
                 <Suspense
                   fallback={
-                    <div className="rounded-xs border border-white/[0.06] bg-white/[0.02] animate-pulse min-h-[100px]" />
+                    <div className="rounded-xs border border-sf-line bg-white/[0.02] animate-pulse min-h-[100px]" />
                   }
                 >
                   <RichTextEditor

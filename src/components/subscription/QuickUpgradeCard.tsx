@@ -6,7 +6,7 @@ import { PRO_TOOL_IDS, PRICING } from "@/lib/tools-config";
 
 const QuickUpgradeCard = () => {
   return (
-    <GlassPanel className="p-5 h-full min-h-[200px] flex flex-col items-center justify-center border-amber-500/30 bg-gradient-to-br from-amber-500/5 to-amber-500/10">
+    <GlassPanel className="p-5 h-full min-h-[200px] flex flex-col items-center justify-center border-sf-amber bg-gradient-to-br from-amber-500/5 to-amber-500/10">
       <div className="w-14 h-14 rounded-sm bg-amber-500/20 flex items-center justify-center mb-4">
         <Zap className="w-7 h-7 text-sf-amber" />
       </div>

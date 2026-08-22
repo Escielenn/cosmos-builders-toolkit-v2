@@ -126,12 +126,12 @@ interface MockToolCardProps {
 
 const MockToolCard = ({ title, value, delay, color }: MockToolCardProps) => {
   const colorMap = {
-    cyan: "border-sf-cyan/30",
-    amber: "border-amber-500/30",
-    violet: "border-sf-violet/30",
-    emerald: "border-sf-emerald/30",
-    azure: "border-sf-azure/30",
-    magenta: "border-sf-magenta/30",
+    cyan: "border-sf-teal",
+    amber: "border-sf-amber",
+    violet: "border-sf-violet",
+    emerald: "border-sf-emerald",
+    azure: "border-sf-azure",
+    magenta: "border-sf-magenta",
   };
 
   const textColorMap = {

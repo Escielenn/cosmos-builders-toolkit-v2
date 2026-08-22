@@ -504,9 +504,9 @@ const Sensorium = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "recommended": return "text-sf-teal border-sf-teal/50 bg-sf-teal/10";
-      case "possible": return "text-sf-amber border-amber-500/50 bg-amber-500/10";
-      case "implausible": return "text-t2 border-sf-border bg-muted/20 opacity-60";
+      case "recommended": return "text-sf-teal border-sf-teal bg-sf-teal/10";
+      case "possible": return "text-sf-amber border-sf-amber bg-amber-500/10";
+      case "implausible": return "text-t2 border-sf-line-interactive bg-muted/20 opacity-60";
       default: return "";
     }
   };
@@ -593,7 +593,7 @@ const Sensorium = () => {
 
             {/* Tutorial banner */}
             {!tutorialDismissed && (
-              <GlassPanel className="p-4 flex items-start gap-3 border-l-2 border-l-primary/40">
+              <GlassPanel className="p-4 flex items-start gap-3 border-l-2 border-l-primary">
                 <div className="flex-1">
                   <p className="text-sm text-t2">
                     Start by selecting your environment, then choose sensory modalities. SENSORIUM will score their plausibility and budget.
@@ -839,7 +839,7 @@ const Sensorium = () => {
 
                 {/* Worksheet Links */}
                 {worldId && (
-                  <div className="pt-4 border-t border-sf-border">
+                  <div className="pt-4 border-t border-sf-line-interactive">
                     <h4 className="text-sm font-medium mb-3">Link Worksheets</h4>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       {linkConfigs.map((config) => (
@@ -975,7 +975,7 @@ const Sensorium = () => {
                         <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 bg-cyan-500/60" /> Recommended</span>
                         <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 bg-amber-500/60" /> Possible</span>
                         <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 bg-muted-foreground/40" /> Implausible</span>
-                        <span className="flex items-center gap-1.5 ml-2 pl-2 border-l border-sf-border"><Check className="h-3 w-3 text-sf-emerald" /> Selected by you</span>
+                        <span className="flex items-center gap-1.5 ml-2 pl-2 border-l border-sf-line-interactive"><Check className="h-3 w-3 text-sf-emerald" /> Selected by you</span>
                       </div>
                     </div>
                   </TabsContent>
@@ -1316,7 +1316,7 @@ const Sensorium = () => {
                     })}
 
                     {/* User notes per category */}
-                    <div className="space-y-4 pt-4 border-t border-sf-border">
+                    <div className="space-y-4 pt-4 border-t border-sf-line-interactive">
                       <h4 className="text-sm font-medium">Your Worldbuilding Notes</h4>
                       {(
                         [

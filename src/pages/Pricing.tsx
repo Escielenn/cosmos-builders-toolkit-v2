@@ -312,7 +312,7 @@ const Pricing = () => {
           </GlassPanel>
 
           {/* Vanguard Plan */}
-          <GlassPanel className="p-8 border-2 border-violet-500/40 relative">
+          <GlassPanel className="p-8 border-2 border-sf-violet relative">
             <div className="absolute -top-3 right-4">
               <Badge className="bg-violet-600 text-white border-violet-500">
                 Shape the Future
@@ -383,7 +383,7 @@ const Pricing = () => {
                 </Button>
                 <Button
                   variant="outline"
-                  className="w-full border-violet-500/30 hover:border-violet-500/50"
+                  className="w-full border-sf-violet hover:border-sf-violet"
                   onClick={() => handleCheckout('monthly', 'vanguard')}
                   disabled={loading !== null}
                 >
@@ -413,7 +413,7 @@ const Pricing = () => {
                 </Button>
                 <Button
                   variant="outline"
-                  className="w-full border-violet-500/30 hover:border-violet-500/50"
+                  className="w-full border-sf-violet hover:border-sf-violet"
                   onClick={() => handleCheckout('monthly', 'vanguard')}
                   disabled={loading !== null}
                 >
@@ -429,7 +429,7 @@ const Pricing = () => {
 
         {/* Vanguard Details Banner */}
         <section className="max-w-4xl mx-auto mb-16">
-          <GlassPanel className="p-8 border-violet-500/15">
+          <GlassPanel className="p-8 border-sf-violet">
             <div className="flex items-start gap-4 mb-6">
               <div className="w-12 h-12 rounded-sm bg-violet-500/10 flex items-center justify-center shrink-0">
                 <Map className="w-6 h-6 text-sf-violet" />

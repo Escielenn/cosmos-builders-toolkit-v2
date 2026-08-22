@@ -80,12 +80,12 @@ const StatusBar = () => {
           <span className="text-t4">CMB </span>
           <span className="text-sf-amber-warm/60">627 km/s</span>
         </span>
-        <span className="text-t5">·</span>
+        <span className="text-t4">·</span>
         <span>
           <span className="text-t4">GALACTIC </span>
           <span className="text-sf-amber-warm/60">230 km/s</span>
         </span>
-        <span className="text-t5">·</span>
+        <span className="text-t4">·</span>
         <span>
           <span className="text-t4">SOLAR </span>
           <span className="text-sf-amber-warm/60">29.78 km/s</span>
@@ -103,9 +103,9 @@ const StatusBar = () => {
         <span className="text-sf-teal/40">
           // SECTOR: {sector}
         </span>
-        <span className="hidden xl:inline text-t5">·</span>
+        <span className="hidden xl:inline text-t4">·</span>
         <TargetStar className="hidden xl:inline" />
-        <span className="hidden 2xl:inline text-t5">·</span>
+        <span className="hidden 2xl:inline text-t4">·</span>
         <LunarPhase className="hidden 2xl:inline" />
       </div>
 
@@ -114,11 +114,11 @@ const StatusBar = () => {
         <span className="text-t4">
           SESSION {formatTime(elapsed)}
         </span>
-        <span className="hidden md:inline text-t5">·</span>
+        <span className="hidden md:inline text-t4">·</span>
         <span className="hidden md:inline text-t4">{today}</span>
-        <span className="hidden lg:inline text-t5">·</span>
+        <span className="hidden lg:inline text-t4">·</span>
         <SolCounter className="hidden lg:inline" />
-        <span className="hidden xl:inline text-t5">·</span>
+        <span className="hidden xl:inline text-t4">·</span>
         <JulianDayClock className="hidden xl:inline" />
       </div>
     </div>

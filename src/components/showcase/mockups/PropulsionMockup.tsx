@@ -67,7 +67,7 @@ const PropulsionMockup = () => {
             className={`flex-1 px-2 py-1.5 rounded-none border text-[12px] transition-all duration-300 ${
               index === activeType
                 ? `border-${type.color}/50 bg-${type.color}/10`
-                : "border-muted/20 bg-transparent opacity-50"
+                : "border-muted bg-transparent opacity-50"
             }`}
             style={{
               borderColor:
@@ -164,7 +164,7 @@ const PropulsionMockup = () => {
               </svg>
 
               {/* Consequence card */}
-              <div className="w-24 bg-sf-surface border border-muted/30 rounded-none p-2 text-center">
+              <div className="w-24 bg-sf-surface border border-muted rounded-none p-2 text-center">
                 <div className="text-[12px] text-t3 uppercase tracking-wider">
                   {consequence.domain}
                 </div>
@@ -182,7 +182,7 @@ const PropulsionMockup = () => {
         {["Economic", "Political", "Social"].map((domain) => (
           <div
             key={domain}
-            className="px-2 py-1 rounded border border-muted/20 text-[12px] text-t3"
+            className="px-2 py-1 rounded border border-muted text-[12px] text-t3"
           >
             {domain}
           </div>

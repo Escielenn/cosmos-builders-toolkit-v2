@@ -24,13 +24,13 @@ interface LegalPageLayoutProps {
 // Custom markdown components, April 2026 handoff: mono eyebrows, t-tier text, zero radius.
 const markdownComponents: Components = {
   h2: ({ children }) => (
-    <h2 className="flex items-center gap-3 font-heading text-2xl font-light uppercase tracking-[0.08em] text-t1 mt-12 mb-6 pt-8 border-t border-sf-border first:mt-0 first:pt-0 first:border-t-0">
+    <h2 className="flex items-center gap-3 font-heading text-2xl font-light uppercase tracking-[0.08em] text-t1 mt-12 mb-6 pt-8 border-t border-sf-line-interactive first:mt-0 first:pt-0 first:border-t-0">
       <span className="w-1 h-8 bg-sf-teal" />
       {children}
     </h2>
   ),
   h3: ({ children }) => (
-    <h3 className="font-heading text-lg font-medium uppercase tracking-[0.12em] text-t1 mt-8 mb-4 pl-4 border-l-2 border-sf-teal/40">
+    <h3 className="font-heading text-lg font-medium uppercase tracking-[0.12em] text-t1 mt-8 mb-4 pl-4 border-l-2 border-sf-teal">
       {children}
     </h3>
   ),
@@ -71,10 +71,10 @@ const markdownComponents: Components = {
     </a>
   ),
   hr: () => (
-    <hr className="my-10 border-0 h-px bg-gradient-to-r from-transparent via-sf-border-strong to-transparent" />
+    <hr className="my-10 border-0 h-px bg-gradient-to-r from-transparent via-sf-line-emphasis to-transparent" />
   ),
   blockquote: ({ children }) => (
-    <blockquote className="my-6 pl-4 border-l-2 border-sf-teal/40 bg-sf-teal/[0.04] py-4 pr-4 italic text-t3">
+    <blockquote className="my-6 pl-4 border-l-2 border-sf-teal bg-sf-teal/[0.04] py-4 pr-4 italic text-t3">
       {children}
     </blockquote>
   ),

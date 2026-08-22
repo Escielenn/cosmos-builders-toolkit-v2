@@ -86,7 +86,7 @@ function SignalPulse() {
       {[0, 1, 2].map((i) => (
         <motion.div
           key={i}
-          className="absolute inset-0 rounded-full border border-primary/20"
+          className="absolute inset-0 rounded-full border border-primary"
           initial={{ scale: 0.5, opacity: 0.6 }}
           animate={{ scale: 2 + i * 0.5, opacity: 0 }}
           transition={{
@@ -162,14 +162,14 @@ const NotFound = () => {
         {/* Failed coordinates readout */}
         {showCoords && (
           <motion.div
-            className="font-mono text-[12px] text-t4 mb-8 py-2 px-4 inline-block border border-sf-border bg-sf-surface/40 tracking-[0.18em]"
+            className="font-mono text-[12px] text-t4 mb-8 py-2 px-4 inline-block border border-sf-line-interactive bg-sf-surface/40 tracking-[0.18em]"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
           >
             <span className="text-sf-crimson/70">UNREACHABLE</span>
             {"  "}
-            <span className="text-t5">{location.pathname}</span>
+            <span className="text-t4">{location.pathname}</span>
           </motion.div>
         )}
 

@@ -616,7 +616,7 @@ const Index = () => {
                 <div className="flex items-center gap-4">
                   <Link
                     to="/getting-started"
-                    className="text-xs text-primary hover:text-primary/80 font-heading uppercase tracking-wider transition-colors hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 border border-primary/20 hover:border-primary/40 rounded-sm"
+                    className="text-xs text-primary hover:text-primary/80 font-heading uppercase tracking-wider transition-colors hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 border border-primary hover:border-primary rounded-sm"
                   >
                     Getting Started?
                   </Link>
@@ -628,7 +628,7 @@ const Index = () => {
                   </Link>
                 </div>
               </div>
-              <div className="flex items-center gap-1 p-0.5 bg-muted/20 rounded-md border border-sf-border w-fit">
+              <div className="flex items-center gap-1 p-0.5 bg-muted/20 rounded-md border border-sf-line-interactive w-fit">
                 {([
                   { mode: 'category' as SortMode, label: 'Category' },
                   { mode: 'type' as SortMode, label: 'Type' },
@@ -659,7 +659,7 @@ const Index = () => {
                         .getElementById(`tools-group-${key}`)
                         ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     }}
-                    className="flex items-center gap-1.5 px-2.5 py-1 text-[12px] uppercase tracking-[0.12em] font-medium rounded border border-sf-border hover:border-sf-border-strong text-t3 hover:text-t1 transition-all"
+                    className="flex items-center gap-1.5 px-2.5 py-1 text-[12px] uppercase tracking-[0.12em] font-medium rounded border border-sf-line-interactive hover:border-sf-line-emphasis text-t3 hover:text-t1 transition-all"
                   >
                     <span
                       className="w-1.5 h-1.5 rounded-full shrink-0"

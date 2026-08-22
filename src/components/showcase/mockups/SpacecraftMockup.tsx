@@ -164,7 +164,7 @@ const SpacecraftMockup = () => {
 
       {/* Ship class badge */}
       <div className="mt-3 flex justify-center">
-        <div className="inline-flex items-center gap-2 px-3 py-1 bg-sf-cyan/10 border border-sf-cyan/30">
+        <div className="inline-flex items-center gap-2 px-3 py-1 bg-sf-cyan/10 border border-sf-teal">
           <div className="w-2 h-2 bg-sf-cyan animate-pulse" />
           <span className="text-[12px] text-sf-cyan uppercase tracking-wider">
             Long-Range Explorer

@@ -119,20 +119,20 @@ export default function GuidedFirstWorld({ worldId }: GuidedFirstWorldProps) {
 
             {/* Arrow */}
             <ChevronRight
-              className="w-3.5 h-3.5 text-t5 group-hover:text-t3 transition-colors shrink-0"
+              className="w-3.5 h-3.5 text-t4 group-hover:text-t3 transition-colors shrink-0"
             />
           </Link>
         ))}
       </div>
 
-      <div className="mt-6 pt-4 border-t border-white/[0.06]">
+      <div className="mt-6 pt-4 border-t border-sf-line">
         <Button asChild className="gap-2">
           <Link to={`/worlds/${worldId}/tools/star-system-builder`}>
             Start Here
             <ChevronRight className="w-4 h-4" />
           </Link>
         </Button>
-        <p className="text-[12px] text-t5 font-mono uppercase tracking-wider mt-2">
+        <p className="text-[12px] text-t4 font-mono uppercase tracking-wider mt-2">
           Or start with any tool. There are no wrong paths.
         </p>
       </div>

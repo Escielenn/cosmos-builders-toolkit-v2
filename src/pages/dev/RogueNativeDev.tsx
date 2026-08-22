@@ -465,7 +465,7 @@ const RogueNativeDev = () => {
         {/* Left of the readout panel, which is 268px wide at right-3. Sharing
             that corner put this badge straight over the status row. */}
         <div className="pointer-events-none absolute right-[292px] top-3 z-30 hidden lg:block">
-          <span className="border border-amber-400/25 bg-amber-400/[0.07] px-2 py-1 font-mono text-[12px] uppercase tracking-[2px] text-amber-400/80">
+          <span className="border border-sf-amber bg-amber-400/[0.07] px-2 py-1 font-mono text-[12px] uppercase tracking-[2px] text-amber-400/80">
             Native rebuild · dev preview
           </span>
         </div>
@@ -539,7 +539,7 @@ const RogueNativeDev = () => {
         />
 
         {/* ── Zoom, bottom-right, clear of both panels ── */}
-        <div className="absolute bottom-3 right-3 z-20 flex items-center gap-1 border border-white/[0.3] bg-[rgba(13,13,15,0.94)] px-1.5 py-1 backdrop-blur-sm">
+        <div className="absolute bottom-3 right-3 z-20 flex items-center gap-1 border border-sf-line bg-[rgba(13,13,15,0.94)] px-1.5 py-1 backdrop-blur-sm">
           {([
             ["−", () => zoomBy(1 / 1.3), "Zoom out (−)"],
             ["+", () => zoomBy(1.3), "Zoom in (+)"],
@@ -551,7 +551,7 @@ const RogueNativeDev = () => {
               type="button"
               onClick={fn}
               title={title}
-              className="min-w-[30px] border border-white/[0.35] bg-white/[0.05] px-2 py-1 font-mono text-[12px] uppercase tracking-wider text-white/80 transition-colors hover:border-[#15C17B]/70 hover:bg-[#15C17B]/[0.15] hover:text-white"
+              className="min-w-[30px] border border-sf-line bg-white/[0.05] px-2 py-1 font-mono text-[12px] uppercase tracking-wider text-white/80 transition-colors hover:border-[#15C17B]/70 hover:bg-[#15C17B]/[0.15] hover:text-white"
             >
               {label}
             </button>
@@ -564,7 +564,7 @@ const RogueNativeDev = () => {
             className={`min-w-[30px] border px-2 py-1 font-mono text-[12px] transition-colors ${
               showKeys
                 ? "border-[#15C17B] bg-[#15C17B]/25 text-white"
-                : "border-white/[0.35] bg-white/[0.05] text-white/80 hover:text-white"
+                : "border-sf-line bg-white/[0.05] text-white/80 hover:text-white"
             }`}
           >
             ?
@@ -572,7 +572,7 @@ const RogueNativeDev = () => {
         </div>
 
         {showKeys && (
-          <div className="absolute bottom-16 right-3 z-30 w-[232px] border border-white/[0.3] bg-[rgba(13,13,15,0.97)] p-3 backdrop-blur-sm">
+          <div className="absolute bottom-16 right-3 z-30 w-[232px] border border-sf-line bg-[rgba(13,13,15,0.97)] p-3 backdrop-blur-sm">
             <span className="mb-2 block font-mono text-[12px] uppercase tracking-[2px] text-[#3DFFCD]/80">
               Keyboard
             </span>

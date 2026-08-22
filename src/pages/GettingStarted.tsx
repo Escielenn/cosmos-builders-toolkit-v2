@@ -186,10 +186,10 @@ function CascadeDiagram({
               onClick={() => onStageClick(stage.id)}
               className={`w-full md:flex-1 text-left px-3 py-3 border transition-all duration-300 ${
                 isActive
-                  ? "border-white/20 bg-white/5"
+                  ? "border-sf-line bg-white/5"
                   : isDownstream
-                  ? "border-white/8 bg-white/[0.02]"
-                  : "border-white/5 bg-transparent hover:border-white/10"
+                  ? "border-sf-line bg-white/[0.02]"
+                  : "border-sf-line bg-transparent hover:border-sf-line"
               }`}
             >
               <div
@@ -209,7 +209,7 @@ function CascadeDiagram({
                   <span
                     key={sub}
                     className={`text-[12px] font-mono transition-colors duration-300 ${
-                      isActive || isDownstream ? "text-t4" : "text-t5"
+                      isActive || isDownstream ? "text-t4" : "text-t4"
                     }`}
                   >
                     {sub}
@@ -220,7 +220,7 @@ function CascadeDiagram({
             {i < CASCADE_STAGES.length - 1 && (
               <ChevronRight
                 className={`w-3 h-3 shrink-0 hidden md:block transition-colors duration-300 ${
-                  isDownstream || isActive ? "text-t3" : "text-t5"
+                  isDownstream || isActive ? "text-t3" : "text-t4"
                 }`}
               />
             )}
@@ -252,8 +252,8 @@ function PathwayStep({
         isActive
           ? "border-primary"
           : isComplete
-          ? "border-primary/30"
-          : "border-white/5"
+          ? "border-primary"
+          : "border-sf-line"
       }`}
     >
       {/* Step header */}
@@ -265,10 +265,10 @@ function PathwayStep({
         <div
           className={`w-7 h-7 rounded-sm flex items-center justify-center font-mono text-xs transition-colors ${
             isActive
-              ? "bg-primary/10 border border-primary/30 text-primary"
+              ? "bg-primary/10 border border-primary text-primary"
               : isComplete
-              ? "bg-primary/5 border border-primary/15 text-primary/60"
-              : "bg-white/[0.03] border border-white/10 text-t4"
+              ? "bg-primary/5 border border-primary text-primary/60"
+              : "bg-white/[0.03] border border-sf-line text-t4"
           }`}
         >
           {isComplete ? <Check className="w-3.5 h-3.5" /> : step.number}
@@ -456,7 +456,7 @@ const GettingStarted = () => {
                 >
                   <GlassPanel
                     className={`p-4 h-full transition-all ${
-                      isSelected ? "border-primary/30 bg-primary/[0.03]" : ""
+                      isSelected ? "border-primary bg-primary/[0.03]" : ""
                     }`}
                   >
                     <div className="flex items-start gap-3">
@@ -584,7 +584,7 @@ const GettingStarted = () => {
           </div>
 
           {/* Navigation */}
-          <div className="flex items-center justify-between mt-6 pt-4 border-t border-white/5">
+          <div className="flex items-center justify-between mt-6 pt-4 border-t border-sf-line">
             <Button
               variant="ghost"
               size="sm"

@@ -52,8 +52,8 @@ export function GuideNav() {
             className={cn(
               "px-4 py-2 text-xs uppercase tracking-wider border rounded-none transition-all",
               active
-                ? "text-primary border-primary/30 bg-primary/[0.06]"
-                : "text-t3 hover:text-primary border-sf-border hover:border-primary/30"
+                ? "text-primary border-primary bg-primary/[0.06]"
+                : "text-t3 hover:text-primary border-sf-line-interactive hover:border-primary"
             )}
             aria-current={active ? "page" : undefined}
           >

@@ -630,7 +630,7 @@ const SpacecraftDesigner = () => {
           </div>
           
           {/* External Resources */}
-          <div className="mt-6 pt-4 border-t border-sf-border">
+          <div className="mt-6 pt-4 border-t border-sf-line-interactive">
             <h4 className="text-sm font-medium mb-3">Reference Resources</h4>
             <div className="flex flex-wrap gap-2">
               {EXTERNAL_RESOURCES.map((resource) => (
@@ -691,7 +691,7 @@ const SpacecraftDesigner = () => {
                   className="grid gap-2 md:grid-cols-3"
                 >
                   {SHIP_CLASSES.map((cls) => (
-                    <div key={cls.value} className="flex items-start gap-2 p-2 rounded border border-sf-border hover:border-primary/50 transition-colors">
+                    <div key={cls.value} className="flex items-start gap-2 p-2 rounded border border-sf-line-interactive hover:border-primary transition-colors">
                       <RadioGroupItem value={cls.value} id={`class-${cls.value}`} className="mt-0.5" />
                       <Label htmlFor={`class-${cls.value}`} className="cursor-pointer text-sm">
                         <span className="font-medium">{cls.label}</span>
@@ -744,7 +744,7 @@ const SpacecraftDesigner = () => {
                   className="grid gap-2 md:grid-cols-3"
                 >
                   {SIZE_OPTIONS.map((size) => (
-                    <div key={size.value} className="flex items-start gap-2 p-2 rounded border border-sf-border hover:border-primary/50">
+                    <div key={size.value} className="flex items-start gap-2 p-2 rounded border border-sf-line-interactive hover:border-primary">
                       <RadioGroupItem value={size.value} id={`size-${size.value}`} className="mt-0.5" />
                       <Label htmlFor={`size-${size.value}`} className="cursor-pointer text-sm">
                         <span className="font-medium">{size.label}</span>
@@ -801,7 +801,7 @@ const SpacecraftDesigner = () => {
             thinkLike="an engineer who lives aboard: The drive isn't just propulsion, it's the ship's heartbeat."
           >
             <div className="space-y-6">
-              <div className="p-4 rounded-none bg-accent/10 border border-accent/20">
+              <div className="p-4 rounded-none bg-accent/10 border border-accent">
                 <p className="text-sm text-t3">
                   <strong className="text-accent">Link to Tool 3:</strong> If you've completed the Propulsion Consequences Map, use your propulsion system here. The drive type fundamentally shapes ship architecture and crew life.
                 </p>
@@ -980,7 +980,7 @@ const SpacecraftDesigner = () => {
                   className="grid gap-2 md:grid-cols-3"
                 >
                   {GRAVITY_OPTIONS.map((option) => (
-                    <div key={option.value} className="flex items-start gap-2 p-2 rounded border border-sf-border">
+                    <div key={option.value} className="flex items-start gap-2 p-2 rounded border border-sf-line-interactive">
                       <RadioGroupItem value={option.value} id={`gravity-${option.value}`} className="mt-0.5" />
                       <Label htmlFor={`gravity-${option.value}`} className="cursor-pointer text-sm">
                         <span className="font-medium">{option.label}</span>
@@ -1396,7 +1396,7 @@ const SpacecraftDesigner = () => {
               {SF_EXAMPLES.map((example, index) => (
                 <Collapsible key={index}>
                   <CollapsibleTrigger asChild>
-                    <button type="button" className="w-full p-4 rounded-none border border-sf-border hover:border-primary/50 transition-colors text-left flex items-center justify-between">
+                    <button type="button" className="w-full p-4 rounded-none border border-sf-line-interactive hover:border-primary transition-colors text-left flex items-center justify-between">
                       <span className="font-medium text-sm">{example.title}</span>
                       <ChevronDown className="w-4 h-4 text-t2" />
                     </button>
@@ -1454,7 +1454,7 @@ const SpacecraftDesigner = () => {
                 <p className="text-xs text-t4">
                   Write a paragraph describing what it's like to step aboard this ship for the first time, sight, sound, smell, feel.
                 </p>
-                <Suspense fallback={<div className="min-h-[150px] rounded-md border border-sf-border bg-background/50 animate-pulse" />}>
+                <Suspense fallback={<div className="min-h-[150px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                   <RichTextEditor
                     content={formState.synthesis.sensorySignature}
                     onChange={(value) => updateSynthesis("sensorySignature", value)}

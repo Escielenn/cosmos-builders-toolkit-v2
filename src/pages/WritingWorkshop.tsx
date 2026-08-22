@@ -217,12 +217,12 @@ const WritingWorkshop = () => {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search entries..."
-                className="pl-9 bg-transparent border-white/[0.08] rounded-xs"
+                className="pl-9 bg-transparent border-sf-line rounded-xs"
               />
             </div>
 
             <Select value={worldFilter} onValueChange={setWorldFilter}>
-              <SelectTrigger className="w-[160px] rounded-xs border-white/[0.08]">
+              <SelectTrigger className="w-[160px] rounded-xs border-sf-line">
                 <SelectValue placeholder="All worlds" />
               </SelectTrigger>
               <SelectContent>
@@ -240,7 +240,7 @@ const WritingWorkshop = () => {
               value={sortBy}
               onValueChange={(v) => setSortBy(v as SortBy)}
             >
-              <SelectTrigger className="w-[140px] rounded-xs border-white/[0.08]">
+              <SelectTrigger className="w-[140px] rounded-xs border-sf-line">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>

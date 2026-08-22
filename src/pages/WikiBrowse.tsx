@@ -224,8 +224,8 @@ export default function WikiBrowse() {
                     }
                     className={`px-2.5 py-1 text-[12px] uppercase tracking-wider border transition-colors ${
                       activeLayer === layer
-                        ? "bg-teal/10 border-teal/25 text-teal"
-                        : "border-sf-border text-t3 hover:text-t2"
+                        ? "bg-teal/10 border-sf-teal text-teal"
+                        : "border-sf-line-interactive text-t3 hover:text-t2"
                     }`}
                   >
                     {LAYER_LABELS[layer as CascadeLayer] || layer}
@@ -250,8 +250,8 @@ export default function WikiBrowse() {
                     }
                     className={`px-2.5 py-1 text-[12px] uppercase tracking-wider border transition-colors ${
                       activeType === type
-                        ? "bg-teal/10 border-teal/25 text-teal"
-                        : "border-sf-border text-t3 hover:text-t2"
+                        ? "bg-teal/10 border-sf-teal text-teal"
+                        : "border-sf-line-interactive text-t3 hover:text-t2"
                     }`}
                   >
                     {ENTITY_TYPE_LABELS[type] || type}
@@ -280,8 +280,8 @@ export default function WikiBrowse() {
                     }
                     className={`px-2.5 py-1 text-[12px] tracking-wider border transition-colors ${
                       activeTags.includes(tag)
-                        ? "bg-teal/10 border-teal/25 text-teal"
-                        : "border-sf-border text-t3 hover:text-t2"
+                        ? "bg-teal/10 border-sf-teal text-teal"
+                        : "border-sf-line-interactive text-t3 hover:text-t2"
                     }`}
                   >
                     {tag}
@@ -337,7 +337,7 @@ export default function WikiBrowse() {
                   <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#3DFFCD]/60 scale-x-0 origin-left transition-transform duration-300 group-hover:scale-x-100" />
 
                   <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 shrink-0 flex items-center justify-center bg-teal/6 border border-teal/15 rounded-sm">
+                    <div className="w-8 h-8 shrink-0 flex items-center justify-center bg-teal/6 border border-sf-teal rounded-sm">
                       <IconComponent className="w-4 h-4 text-teal" />
                     </div>
                     <div className="min-w-0 flex-1">
@@ -350,8 +350,8 @@ export default function WikiBrowse() {
                         </span>
                         {entry.layer && (
                           <>
-                            <span className="text-t5">&middot;</span>
-                            <span className="text-[12px] uppercase tracking-wider text-t5 font-mono">
+                            <span className="text-t4">&middot;</span>
+                            <span className="text-[12px] uppercase tracking-wider text-t4 font-mono">
                               {LAYER_LABELS[entry.layer as CascadeLayer] ||
                                 entry.layer}
                             </span>
@@ -386,7 +386,7 @@ export default function WikiBrowse() {
                   )}
 
                   {/* Timestamp */}
-                  <p className="text-[12px] text-t5 mt-2 font-mono">
+                  <p className="text-[12px] text-t4 mt-2 font-mono">
                     {format(new Date(entry.updatedAt), "MMM d, yyyy")}
                   </p>
                 </GlassPanel>
