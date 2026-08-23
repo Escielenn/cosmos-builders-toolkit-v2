@@ -52,11 +52,11 @@ const templates: Record<
   "planetary-profile": (d) => [
     { label: "Star Type", value: str(d, "stellarEnvironment.starType") },
     { label: "Planet Type", value: str(d, "physicalCharacteristics.planetType") },
-    { label: "Mass", value: num(d, "physicalCharacteristics.mass"), unit: "M\u2295" },
-    { label: "Radius", value: num(d, "physicalCharacteristics.radius"), unit: "R\u2295" },
+    { label: "Mass", value: num(d, "physicalCharacteristics.planetaryMass"), unit: "M\u2295" },
+    { label: "Radius", value: num(d, "physicalCharacteristics.planetaryRadius"), unit: "R\u2295" },
     { label: "Surface Gravity", value: num(d, "physicalCharacteristics.surfaceGravity"), unit: "g" },
     { label: "Atmosphere", value: str(d, "atmosphericComposition.type") },
-    { label: "Mean Temperature", value: num(d, "temperatureProfile.meanSurface"), unit: "K" },
+    { label: "Mean Temperature", value: num(d, "temperatureProfile.averageSurfaceTemp"), unit: "K" },
     { label: "Orbital Period", value: num(d, "stellarEnvironment.orbitalPeriod"), unit: "days" },
   ],
 
@@ -65,23 +65,23 @@ const templates: Record<
     { label: "Body Plan", value: str(d, "bodyPlan.planType") },
     { label: "Symmetry", value: str(d, "bodyPlan.symmetry") },
     { label: "Limbs", value: str(d, "bodyPlan.limbCount") },
-    { label: "Biochemistry", value: str(d, "biochemistry.base") },
-    { label: "Intelligence", value: str(d, "cognition.level") },
-    { label: "Communication", value: str(d, "communication.primary") },
+    { label: "Biochemistry", value: str(d, "biochemistry.biochemicalBasis") },
+    { label: "Intelligence", value: str(d, "cognition.cognitionType") },
+    { label: "Communication", value: str(d, "communication.primaryChannel") },
   ],
 
   "spacecraft-designer": (d) => [
     { label: "Vessel Name", value: str(d, "identity.name") },
     { label: "Class", value: str(d, "identity.class") },
     { label: "Role", value: str(d, "identity.role") },
-    { label: "Propulsion", value: str(d, "propulsion.type") },
-    { label: "Crew Capacity", value: str(d, "living.crewCapacity") },
+    { label: "Propulsion", value: str(d, "propulsion.driveType") },
+    { label: "Crew Capacity", value: str(d, "living.crewQuarters") },
     { label: "Length", value: str(d, "identity.length"), unit: "m" },
   ],
 
   "empire-designer": (d) => [
     { label: "Empire Name", value: str(d, "foundation.name") },
-    { label: "Government", value: str(d, "power.governmentType") },
+    { label: "Government", value: str(d, "foundation.governmentType") },
     { label: "Population", value: str(d, "territory.population") },
     { label: "Systems", value: str(d, "territory.systems") },
     { label: "Economy", value: str(d, "economy.type") },
@@ -91,7 +91,7 @@ const templates: Record<
 
   "star-system-builder": (d) => [
     { label: "System Name", value: str(d, "systemName") },
-    { label: "Star Type", value: str(d, "primaryStar.spectralType") },
+    { label: "Star Type", value: str(d, "primaryStar.spectralClass") },
     { label: "Star Mass", value: num(d, "primaryStar.mass"), unit: "M\u2609" },
     { label: "Configuration", value: str(d, "configuration.type") },
     {
@@ -125,8 +125,8 @@ const templates: Record<
 
   "xenomythology-framework-builder": (d) => [
     { label: "Sensory Architecture", value: str(d, "sensoryArchitecture.primary") },
-    { label: "Physical Form", value: str(d, "physicalForm.bodyType") },
-    { label: "Cognitive Architecture", value: str(d, "cognitiveArchitecture.type") },
+    { label: "Physical Form", value: str(d, "physicalForm.bodyPlan") },
+    { label: "Cognitive Architecture", value: str(d, "cognitiveArchitecture.consciousnessType") },
     { label: "Planetary Conditions", value: str(d, "planetaryConditions.environment") },
   ],
 
@@ -168,15 +168,15 @@ const templates: Record<
 
   "one-big-lie": (d) => [
     { label: "Approach", value: str(d, "approach") },
-    { label: "Core Statement", value: str(d, "coreStatement") },
+    { label: "Core Statement", value: str(d, "coreStatement.statement") },
     { label: "Rigor Commitment", value: str(d, "rigorCommitment") },
   ],
 
   "time-dilation": (d) => [
     { label: "Journey Type", value: str(d, "journey.type") },
     { label: "Distance", value: str(d, "journey.distance"), unit: "ly" },
-    { label: "Propulsion", value: str(d, "propulsion.type") },
-    { label: "Max Velocity", value: str(d, "velocityProfile.maxVelocity"), unit: "c" },
+    { label: "Propulsion", value: str(d, "propulsion.method") },
+    { label: "Max Velocity", value: str(d, "velocityProfile.velocityFraction"), unit: "c" },
     { label: "Ship Time", value: str(d, "referenceFrame.shipTime") },
     { label: "Earth Time", value: str(d, "referenceFrame.earthTime") },
   ],
@@ -194,10 +194,10 @@ const templates: Record<
   ],
 
   "habitable-zone-calculator": (d) => [
-    { label: "Star Type", value: str(d, "star.type") },
+    { label: "Star Type", value: str(d, "star.spectralType") },
     { label: "Star Mass", value: num(d, "star.mass"), unit: "M\u2609" },
     { label: "Star Luminosity", value: num(d, "star.luminosity"), unit: "L\u2609" },
-    { label: "Planet Distance", value: num(d, "planet.distance"), unit: "AU" },
+    { label: "Planet Distance", value: num(d, "planet.orbitalDistance"), unit: "AU" },
     { label: "Planet Mass", value: num(d, "planet.mass"), unit: "M\u2295" },
   ],
 
