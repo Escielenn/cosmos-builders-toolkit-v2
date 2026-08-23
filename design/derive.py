@@ -7,7 +7,14 @@ the hex values.
 
     python3 derive.py
 """
-import math, json, pathlib
+import math, json, pathlib, sys
+
+# Windows' default console codepage (cp1252) can't encode the report's `→`
+# glyphs and raises UnicodeEncodeError mid-run — before palette.json gets
+# written, since that happens after the printed report. Force UTF-8 stdout
+# so `python derive.py` works the same on every platform.
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
 
 OUT = pathlib.Path(__file__).parent
 

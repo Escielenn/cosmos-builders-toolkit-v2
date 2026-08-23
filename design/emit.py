@@ -6,7 +6,11 @@ Never hand-edit the generated files. Change a target in derive.py, re-run both:
 """
 import json, pathlib
 OUT = pathlib.Path(__file__).parent
-P = json.loads((OUT / 'palette.json').read_text())
+# Explicit encoding on both ends: Windows' Path.write_text/read_text default
+# to the console's locale codepage (cp1252), not UTF-8. The generated files
+# contain non-ASCII glyphs (°, →, ·), so an implicit-encoding write crashes
+# mid-emit on Windows before either file is written.
+P = json.loads((OUT / 'palette.json').read_text(encoding='utf-8'))
 
 pl, tx, ln, ac, at, on, st = (P['planes'], P['text'], P['line'], P['accent'],
                               P['accent_text'], P['on_accent'], P['state'])
@@ -270,7 +274,7 @@ input:hover, select:hover, textarea:hover {{ border-color: var(--sf-line-emphasi
 .sf-bracket::before {{ top: -1px; left: -1px; border-right: 0; border-bottom: 0; }}
 .sf-bracket::after  {{ bottom: -1px; right: -1px; border-left: 0; border-top: 0; }}
 """
-(OUT / 'tokens.css').write_text(css)
+(OUT / 'tokens.css').write_text(css, encoding='utf-8')
 
 # ─────────────────────── tailwind.config.ts ───────────────────────
 def block(d, prefix='', indent=8):
@@ -544,5 +548,5 @@ const config: Config = {{
 
 export default config;
 """
-(OUT / 'tailwind.config.ts').write_text(ts)
+(OUT / 'tailwind.config.ts').write_text(ts, encoding='utf-8')
 print("wrote tokens.css and tailwind.config.ts")
