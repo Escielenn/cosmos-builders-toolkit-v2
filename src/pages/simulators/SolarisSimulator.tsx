@@ -11,7 +11,8 @@ import Header from "@/components/layout/Header";
 import NarrativeBridgePanel, { useNarrativeBridge } from "@/components/simulators/NarrativeBridgePanel";
 import { SIMULATOR_NARRATIVE_CONFIGS } from "@/lib/simulator-narrative-questions";
 import { SimulatorWorldEntityPicker } from "@/components/simulators/SimulatorWorldEntityPicker";
-import { encodeHandoff, type HandoffPayload } from "@/lib/simulators/handoff";
+import { encodeHandoff, isHandoffPayload, type HandoffPayload } from "@/lib/simulators/handoff";
+import PublishPlanetDialog from "@/components/simulators/PublishPlanetDialog";
 
 const HANDOFF_ROUTES: Record<string, string> = {
   exosky: "/tools/exosky",
@@ -26,6 +27,8 @@ const SolarisSimulator = () => {
   const narrativeBridge = useNarrativeBridge();
   const [loadSheetOpen, setLoadSheetOpen] = useState(false);
   const [publishDialogOpen, setPublishDialogOpen] = useState(false);
+  const [publishPlanetPayload, setPublishPlanetPayload] = useState<HandoffPayload | null>(null);
+  const [publishPlanetDialogOpen, setPublishPlanetDialogOpen] = useState(false);
   const {
     saves,
     isLoadingSaves,
@@ -73,6 +76,22 @@ const SolarisSimulator = () => {
     window.addEventListener("message", handler);
     return () => window.removeEventListener("message", handler);
   }, [navigate]);
+
+  // The planet info panel's "Publish This Planet" button (next to the two
+  // handoff buttons above) posts STELLARFORGE_PUBLISH_PLANET with the same
+  // proven-real fields as a handoff — see published-facts.ts for why publish
+  // is scoped to this one flow this pass.
+  useEffect(() => {
+    const handler = (event: MessageEvent) => {
+      if (event.data?.type !== "STELLARFORGE_PUBLISH_PLANET") return;
+      const { payload } = event.data as { payload: unknown };
+      if (!isHandoffPayload(payload)) return;
+      setPublishPlanetPayload(payload);
+      setPublishPlanetDialogOpen(true);
+    };
+    window.addEventListener("message", handler);
+    return () => window.removeEventListener("message", handler);
+  }, []);
 
   return (
     <>
@@ -189,6 +208,12 @@ const SolarisSimulator = () => {
         worldId={worldId}
         simulatorType="solaris"
         narrativeNotes={narrativeBridge.notes}
+      />
+      <PublishPlanetDialog
+        open={publishPlanetDialogOpen}
+        onOpenChange={setPublishPlanetDialogOpen}
+        payload={publishPlanetPayload}
+        worldId={worldId}
       />
     </>
   );

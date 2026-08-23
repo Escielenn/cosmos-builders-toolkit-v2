@@ -20,7 +20,25 @@ export interface HandoffPayload {
   planetAU: number;
   planetName: string;
   planetType: string;
+  /** Present on STELLARFORGE_PUBLISH_PLANET messages; absent from the URL handoff. */
+  systemName?: string;
 }
+
+/**
+ * Solaris's five habitable-zone bounds (public/tools/solaris/sim.html's
+ * STARS.hz, lines ~407-412), duplicated here only as far as needed to turn a
+ * planet's `planetAU` into a zone-relative fraction. Shared by Tidelock's
+ * ?handoff= consumer and by open-on hydration (published-facts.ts) so the
+ * two paths can never quietly compute a different fraction for the same star
+ * type.
+ */
+export const SOLARIS_HZ_MID: Record<SolarisStarType, number> = {
+  blue: (3.5 + 7.0) / 2,
+  white: (2.4 + 4.5) / 2,
+  yellow: (1.6 + 3.0) / 2,
+  orange: (0.8 + 1.7) / 2,
+  red: (0.2 + 0.7) / 2,
+};
 
 const STAR_TYPES: readonly SolarisStarType[] = ["blue", "white", "yellow", "orange", "red"];
 
@@ -45,6 +63,24 @@ export function encodeHandoff(payload: HandoffPayload): string {
   return b64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
 }
 
+/**
+ * Structural validation shared by decodeHandoff (URL, base64-wrapped) and
+ * the direct STELLARFORGE_PUBLISH_PLANET postMessage listener (SolarisSimulator.tsx)
+ * — same untrusted-shape checks either way, written once.
+ */
+export function isHandoffPayload(data: unknown): data is HandoffPayload {
+  if (!data || typeof data !== "object") return false;
+  const d = data as Record<string, unknown>;
+  if (d.from !== "solaris") return false;
+  if (!isSolarisStarType(d.starType)) return false;
+  if (typeof d.starMassLum !== "number" || !Number.isFinite(d.starMassLum)) return false;
+  if (typeof d.planetAU !== "number" || !Number.isFinite(d.planetAU) || d.planetAU <= 0) return false;
+  if (typeof d.planetName !== "string" || !d.planetName) return false;
+  if (typeof d.planetType !== "string" || !d.planetType) return false;
+  if (d.systemName !== undefined && typeof d.systemName !== "string") return false;
+  return true;
+}
+
 export function decodeHandoff(searchParams: URLSearchParams): HandoffPayload | null {
   const raw = searchParams.get("handoff");
   if (!raw) return null;
@@ -52,21 +88,9 @@ export function decodeHandoff(searchParams: URLSearchParams): HandoffPayload | n
     const b64 = raw.replace(/-/g, "+").replace(/_/g, "/");
     const padded = b64 + "=".repeat((4 - (b64.length % 4)) % 4);
     const json = decodeURIComponent(escape(atob(padded)));
-    const data = JSON.parse(json) as Record<string, unknown>;
-    if (data.from !== "solaris") return null;
-    if (!isSolarisStarType(data.starType)) return null;
-    if (typeof data.starMassLum !== "number" || !Number.isFinite(data.starMassLum)) return null;
-    if (typeof data.planetAU !== "number" || !Number.isFinite(data.planetAU) || data.planetAU <= 0) return null;
-    if (typeof data.planetName !== "string" || !data.planetName) return null;
-    if (typeof data.planetType !== "string" || !data.planetType) return null;
-    return {
-      from: "solaris",
-      starType: data.starType,
-      starMassLum: data.starMassLum,
-      planetAU: data.planetAU,
-      planetName: data.planetName,
-      planetType: data.planetType,
-    };
+    const data = JSON.parse(json) as unknown;
+    if (!isHandoffPayload(data)) return null;
+    return data;
   } catch {
     return null;
   }

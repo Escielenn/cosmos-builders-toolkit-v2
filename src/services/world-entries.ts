@@ -38,6 +38,24 @@ export interface MoveEntryInput {
 // CRUD operations
 // ---------------------------------------------------------------------------
 
+/**
+ * A single world_entries row by id, or null if it doesn't exist (or isn't
+ * visible under RLS) — never throws on "not found", since callers like
+ * open-on hydration (published-facts.ts) receive this id from a URL param
+ * and must degrade gracefully to "nothing to hydrate from" rather than
+ * crash the simulator over a stale or mistyped link.
+ */
+export async function getEntry(entryId: string): Promise<WorldEntry | null> {
+  const { data, error } = await supabase
+    .from("world_entries")
+    .select("*")
+    .eq("id", entryId)
+    .maybeSingle();
+
+  if (error) throw error;
+  return (data as WorldEntry) ?? null;
+}
+
 export async function createEntry(
   input: CreateEntryInput,
   userId: string

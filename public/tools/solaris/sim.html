@@ -359,6 +359,10 @@ input[type=text]:focus{border-color:rgba(0,212,255,0.38)}
     <button class="handoff-btn" onclick="sendToSimulator('exosky')">Open Sky in ExoSky →</button>
     <button class="handoff-btn" onclick="sendToSimulator('tidelock')">Model Surface in Tidelock →</button>
   </div>
+  <div class="sec">World</div>
+  <div class="handoff-row">
+    <button class="handoff-btn" onclick="publishSelectedPlanet()">Publish This Planet →</button>
+  </div>
   <button class="remove-btn" onclick="removePlanet()">✕ Remove Planet</button>
 </div>
 
@@ -2328,6 +2332,27 @@ function sendToSimulator(target){
       planetAU: selPlanet.orbitPx/Math.max(system.AU,1),
       planetName: selPlanet.name,
       planetType: selPlanet.typeKey,
+    },
+  }, '*');
+}
+
+// Publish: same real numbers as the handoff above (proven live), but
+// persisted as a world entity instead of a one-time URL transfer, so the
+// planet survives past this browser tab and other simulators can open-on
+// it later via ?entity=<uuid> instead of needing a fresh live handoff.
+function publishSelectedPlanet(){
+  if(!selPlanet||!system||!system.stars||!system.stars[0])return;
+  const star=system.stars[0];
+  window.parent.postMessage({
+    type: 'STELLARFORGE_PUBLISH_PLANET',
+    payload: {
+      from: 'solaris',
+      starType: star.key,
+      starMassLum: star.def.lum,
+      planetAU: selPlanet.orbitPx/Math.max(system.AU,1),
+      planetName: selPlanet.name,
+      planetType: selPlanet.typeKey,
+      systemName: (system.name||''),
     },
   }, '*');
 }

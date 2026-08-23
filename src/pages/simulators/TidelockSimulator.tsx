@@ -11,28 +11,14 @@ import Header from "@/components/layout/Header";
 import NarrativeBridgePanel, { useNarrativeBridge } from "@/components/simulators/NarrativeBridgePanel";
 import { SIMULATOR_NARRATIVE_CONFIGS } from "@/lib/simulator-narrative-questions";
 import { SimulatorWorldEntityPicker } from "@/components/simulators/SimulatorWorldEntityPicker";
-import { decodeHandoff } from "@/lib/simulators/handoff";
+import { decodeHandoff, SOLARIS_HZ_MID } from "@/lib/simulators/handoff";
 import { evaluateTidelockFlags } from "@/sims/flags";
 import { SimFlagStrip } from "@/components/simulators/SimFlagStrip";
 import { useDismissedFlags } from "@/hooks/use-dismissed-flags";
 import { extractSimulationFacts } from "@/lib/simulation-facts";
 import { SceneProseButton } from "@/components/simulators/SceneProseButton";
-
-/**
- * Solaris's five habitable-zone bounds (public/tools/solaris/sim.html's
- * STARS.hz, lines ~407-412), duplicated here only as far as needed to turn
- * a handoff's `planetAU` into a zone-relative fraction. Tidelock has its
- * own, much narrower orbital range (tidal-lock candidates sit close to
- * their star), so what crosses over is "how far into the habitable zone
- * was this planet", not the raw AU number.
- */
-const SOLARIS_HZ_MID: Record<string, number> = {
-  blue: (3.5 + 7.0) / 2,
-  white: (2.4 + 4.5) / 2,
-  yellow: (1.6 + 3.0) / 2,
-  orange: (0.8 + 1.7) / 2,
-  red: (0.2 + 0.7) / 2,
-};
+import { readTidelockSeed } from "@/lib/simulators/published-facts";
+import { getEntry } from "@/services/world-entries";
 
 const TidelockSimulator = () => {
   const [loaded, setLoaded] = useState(false);
@@ -165,6 +151,47 @@ const TidelockSimulator = () => {
     const next = new URLSearchParams(searchParams);
     next.delete("handoff");
     setSearchParams(next, { replace: true });
+  }, [loaded, searchParams, refreshPayload, setSearchParams]);
+
+  // open-on (Brief S1): ?entity=<uuid> from a published planet. Same seeding
+  // mechanism as the ?handoff= effect above (STELLARFORGE_LOAD/handoffSeed),
+  // sourced from readTidelockSeed's generic predicate lookup instead of a
+  // decoded URL payload — Tidelock never learns which tool published the
+  // entity, only reads star.spectral_class / planet.orbital_distance_au /
+  // star.luminosity_lsun by name. Skipped entirely when ?handoff= is also
+  // present so the two seed sources can't race each other.
+  const entitySent = useRef(false);
+  useEffect(() => {
+    if (!loaded || entitySent.current) return;
+    const entityId = searchParams.get("entity");
+    if (!entityId || searchParams.get("handoff")) return;
+    const iframe = iframeRef.current;
+    if (!iframe?.contentWindow) return;
+    entitySent.current = true;
+    getEntry(entityId)
+      .then((entry) => {
+        const seed = readTidelockSeed(entry);
+        if (!seed || !iframe.contentWindow) return;
+        iframe.contentWindow.postMessage(
+          {
+            type: "STELLARFORGE_LOAD",
+            payload: {
+              handoffSeed: {
+                starLuminosity: seed.starLuminosity,
+                auFraction: seed.auFraction,
+              },
+            },
+          },
+          "*",
+        );
+        refreshPayload();
+      })
+      .catch(() => {})
+      .finally(() => {
+        const next = new URLSearchParams(searchParams);
+        next.delete("entity");
+        setSearchParams(next, { replace: true });
+      });
   }, [loaded, searchParams, refreshPayload, setSearchParams]);
 
   return (

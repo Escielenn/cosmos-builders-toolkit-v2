@@ -11,7 +11,9 @@ import PublishToWorldDialog from "@/components/simulators/PublishToWorldDialog";
 import Header from "@/components/layout/Header";
 import NarrativeBridgePanel, { useNarrativeBridge } from "@/components/simulators/NarrativeBridgePanel";
 import { SIMULATOR_NARRATIVE_CONFIGS } from "@/lib/simulator-narrative-questions";
-import { decodeHandoff } from "@/lib/simulators/handoff";
+import { decodeHandoff, type HandoffPayload } from "@/lib/simulators/handoff";
+import { getEntry } from "@/services/world-entries";
+import { reconstructSolarisHandoff } from "@/lib/simulators/published-facts";
 
 /**
  * A Solaris planet has an orbital distance in AU but no galactic position;
@@ -43,10 +45,38 @@ const ExoskySimulator = () => {
   const worldId = useWorldId();
   const [searchParams, setSearchParams] = useSearchParams();
   const handoffPayload = useMemo(() => decodeHandoff(searchParams), [searchParams]);
+
+  // open-on (Brief S1): ?entity=<uuid> from a published planet (see
+  // published-facts.ts). Unlike ?handoff=, this is a network fetch, so it's
+  // state + effect rather than a pure useMemo. Reconstructs the same
+  // HandoffPayload shape the ?handoff= path already produces — see
+  // reconstructSolarisHandoff's doc comment for why that's reuse, not a new
+  // tool-to-tool coupling.
+  const entityId = searchParams.get("entity");
+  const [entityHandoffPayload, setEntityHandoffPayload] = useState<HandoffPayload | null>(null);
+  useEffect(() => {
+    if (!entityId) {
+      setEntityHandoffPayload(null);
+      return;
+    }
+    let cancelled = false;
+    getEntry(entityId)
+      .then((entry) => {
+        if (!cancelled) setEntityHandoffPayload(reconstructSolarisHandoff(entry));
+      })
+      .catch(() => {
+        if (!cancelled) setEntityHandoffPayload(null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [entityId]);
+
   const initialHandoff = useMemo(() => {
-    if (!handoffPayload) return null;
-    return { payload: handoffPayload, ...deriveExoskySeed(handoffPayload.planetAU, handoffPayload.starMassLum) };
-  }, [handoffPayload]);
+    const payload = handoffPayload ?? entityHandoffPayload;
+    if (!payload) return null;
+    return { payload, ...deriveExoskySeed(payload.planetAU, payload.starMassLum) };
+  }, [handoffPayload, entityHandoffPayload]);
   // Called by ExoSkyV2 once it has actually applied initialHandoff to its own
   // state, not before: stripping the param earlier risks this wrapper
   // re-rendering with a null initialHandoff before the lazy-loaded component
@@ -57,6 +87,7 @@ const ExoskySimulator = () => {
     setSearchParams((prev) => {
       const next = new URLSearchParams(prev);
       next.delete("handoff");
+      next.delete("entity");
       return next;
     }, { replace: true });
   }, [setSearchParams]);
