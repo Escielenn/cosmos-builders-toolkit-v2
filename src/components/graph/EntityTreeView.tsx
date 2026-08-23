@@ -135,7 +135,7 @@ function EntityDetailPanel({
   onReparent: (id: string, newParentId: string | null) => void;
 }) {
   const nodeColor =
-    entity.color ?? ENTITY_TYPE_COLORS[entity.entity_type] ?? "#15C17B";
+    entity.color ?? ENTITY_TYPE_COLORS[entity.entity_type] ?? "var(--sf-teal)";
   const cascadeColor = CASCADE_STAGE_COLORS[entity.cascade_stage];
   const parentEntity = entity.parent_entity_id
     ? entities.find((e) => e.id === entity.parent_entity_id)
@@ -149,16 +149,16 @@ function EntityDetailPanel({
       className="absolute top-0 right-0 h-full z-40 flex flex-col"
       style={{
         width: 280,
-        background: "rgba(14, 19, 32, 0.96)",
+        background: "color-mix(in srgb, var(--sf-surface-elevated) 96%, transparent)",
         backdropFilter: "blur(16px)",
-        borderLeft: "1px solid rgba(255,255,255,0.08)",
+        borderLeft: "1px solid var(--sf-line)",
         animation: "slideInRight 200ms ease-out",
       }}
     >
       {/* Panel header */}
       <div
         className="flex items-center justify-between px-4 py-3 shrink-0"
-        style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}
+        style={{ borderBottom: "1px solid var(--sf-line-hairline)" }}
       >
         <span className="text-[12px] font-sans font-medium uppercase tracking-[1.5px] text-t3">
           Entity Details
@@ -249,7 +249,7 @@ function EntityDetailPanel({
                   background:
                     parentEntity.color ??
                     ENTITY_TYPE_COLORS[parentEntity.entity_type] ??
-                    "#15C17B",
+                    "var(--sf-teal)",
                 }}
               />
               <span className="text-[13px] font-heading text-t2 truncate">
@@ -257,7 +257,7 @@ function EntityDetailPanel({
               </span>
               <button
                 onClick={() => onReparent(entity.id, null)}
-                className="text-[12px] font-sans text-sf-crimson hover:text-sf-crimson/80 uppercase tracking-[0.5px] ml-auto shrink-0 transition-colors"
+                className="text-[12px] font-sans text-sf-crimson hover:text-sf-crimson-text uppercase tracking-[0.5px] ml-auto shrink-0 transition-colors"
               >
                 Remove
               </button>
@@ -292,7 +292,7 @@ function EntityDetailPanel({
                   className="text-[12px] font-mono px-1.5 py-0.5 text-t3"
                   style={{
                     background: "rgba(255,255,255,0.04)",
-                    border: "1px solid rgba(255,255,255,0.06)",
+                    border: "1px solid var(--sf-line-hairline)",
                     borderRadius: 3,
                   }}
                 >
@@ -307,14 +307,14 @@ function EntityDetailPanel({
         <EntityHistory
           createdAt={entity.created_at}
           updatedAt={entity.updated_at}
-          className="pt-3 border-t border-white/[0.04]"
+          className="pt-3 border-t border-sf-line"
         />
       </div>
 
       {/* Panel footer actions */}
       <div
         className="flex items-center gap-2 px-4 py-3 shrink-0"
-        style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}
+        style={{ borderTop: "1px solid var(--sf-line-hairline)" }}
       >
         {onEdit && (
           <button
@@ -322,7 +322,7 @@ function EntityDetailPanel({
             className="flex items-center gap-1.5 px-3 py-1.5 text-[12px] font-sans font-medium text-t2 hover:text-t1 transition-colors"
             style={{
               background: "rgba(255,255,255,0.04)",
-              border: "1px solid rgba(255,255,255,0.08)",
+              border: "1px solid var(--sf-line-interactive)",
             }}
           >
             <Pencil className="w-3 h-3" />
@@ -333,8 +333,8 @@ function EntityDetailPanel({
           onClick={() => onDelete(entity.id)}
           className="flex items-center gap-1.5 px-3 py-1.5 text-[12px] font-sans font-medium text-sf-crimson hover:bg-sf-crimson/10 transition-colors ml-auto"
           style={{
-            background: "rgba(255, 51, 102, 0.04)",
-            border: "1px solid rgba(255, 51, 102, 0.15)",
+            background: "color-mix(in srgb, var(--sf-crimson) 4%, transparent)",
+            border: "1px solid color-mix(in srgb, var(--sf-crimson) 15%, transparent)",
           }}
         >
           <Trash2 className="w-3 h-3" />
@@ -443,9 +443,9 @@ function ContextMenu({
       style={{
         left: state.x,
         top: state.y,
-        background: "rgba(14, 19, 32, 0.96)",
+        background: "color-mix(in srgb, var(--sf-surface-elevated) 96%, transparent)",
         backdropFilter: "blur(16px)",
-        border: "1px solid rgba(255,255,255,0.08)",
+        border: "1px solid var(--sf-line)",
         padding: "4px 0",
         minWidth: 180,
       }}
@@ -455,7 +455,7 @@ function ContextMenu({
           {item.dividerBefore && (
             <div
               className="my-1"
-              style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}
+              style={{ borderTop: "1px solid var(--sf-line-hairline)" }}
             />
           )}
           <button
@@ -515,7 +515,7 @@ function TreeNodeRow({
   const [hovered, setHovered] = useState(false);
   const entity = node.entity;
   const hasChildren = node.children.length > 0;
-  const nodeColor = entity.color ?? ENTITY_TYPE_COLORS[entity.entity_type] ?? "#15C17B";
+  const nodeColor = entity.color ?? ENTITY_TYPE_COLORS[entity.entity_type] ?? "var(--sf-teal)";
   const cascadeColor = CASCADE_STAGE_COLORS[entity.cascade_stage];
 
   const isDragged = dragState.draggedId === entity.id;
@@ -523,15 +523,18 @@ function TreeNodeRow({
   const isDragTargetValid = isDragTarget && dragState.dragOverValid;
   const isDragTargetInvalid = isDragTarget && !dragState.dragOverValid;
 
-  // Compute border style for drag feedback
+  // Compute border style for drag feedback. Solid, not alpha, throughout —
+  // this row previously used a 30%-alpha teal for "selected", the one
+  // border in this file the migration missed; "no alpha borders" applies
+  // to state indicators exactly as much as structural panel edges.
   let borderStyle = "1px solid transparent";
   if (isSelected) {
-    borderStyle = "1px solid rgba(21, 193, 123, 0.3)";
+    borderStyle = "1px solid var(--sf-line-emphasis)";
   }
   if (isDragTargetValid) {
-    borderStyle = "1px solid #15C17B";
+    borderStyle = "1px solid var(--sf-teal)";
   } else if (isDragTargetInvalid) {
-    borderStyle = "1px solid #FF3366";
+    borderStyle = "1px solid var(--sf-crimson)";
   }
 
   return (
@@ -543,11 +546,11 @@ function TreeNodeRow({
         boxShadow: isDragged ? "0 4px 12px rgba(0,0,0,0.4)" : "none",
         border: borderStyle,
         background: isDragTargetValid
-          ? "rgba(21, 193, 123, 0.04)"
+          ? "color-mix(in srgb, var(--sf-teal) 4%, transparent)"
           : isDragTargetInvalid
-          ? "rgba(255, 51, 102, 0.04)"
+          ? "color-mix(in srgb, var(--sf-crimson) 4%, transparent)"
           : isSelected
-          ? "rgba(21, 193, 123, 0.03)"
+          ? "color-mix(in srgb, var(--sf-teal) 3%, transparent)"
           : "transparent",
         cursor: isDragTargetInvalid ? "not-allowed" : "pointer",
       }}
@@ -591,7 +594,7 @@ function TreeNodeRow({
             <ChevronRight className="w-3 h-3 text-t4" />
           )
         ) : (
-          <span className="w-1 h-1 rounded-full bg-tier-5" />
+          <span className="w-1 h-1 rounded-full bg-t4" />
         )}
       </span>
 
@@ -609,7 +612,7 @@ function TreeNodeRow({
       {/* Entity type label */}
       <span
         className="text-[12px] font-sans font-medium uppercase tracking-[1px] shrink-0"
-        style={{ color: "rgba(255,255,255,0.35)" }}
+        style={{ color: "var(--t4)" }}
       >
         {ENTITY_TYPE_LABELS[entity.entity_type]}
       </span>
@@ -644,7 +647,7 @@ function TreeNodeRow({
             e.stopPropagation();
             onCreateChild(entity.id);
           }}
-          className="flex items-center justify-center w-5 h-5 text-t4 hover:text-teal transition-colors"
+          className="flex items-center justify-center w-5 h-5 text-t4 hover:text-sf-teal transition-colors"
           title="Add child entity"
         >
           <Plus className="w-3 h-3" />
@@ -718,7 +721,7 @@ function TreeBranch({
               <div
                 className="relative"
                 style={{
-                  borderLeft: "1px solid rgba(255,255,255,0.04)",
+                  borderLeft: "1px solid var(--sf-line-hairline)",
                   marginLeft: depth * 24 + 20,
                 }}
               >
@@ -903,14 +906,14 @@ export function EntityTreeView({
   return (
     <div
       className="h-full w-full overflow-hidden flex flex-col relative"
-      style={{ background: "#0A0E17" }}
+      style={{ background: "var(--sf-void)" }}
     >
       {/* Header bar */}
       <div
         className="flex items-center gap-3 px-4 py-2.5 shrink-0"
         style={{
-          background: "rgba(14, 19, 32, 0.95)",
-          borderBottom: "1px solid rgba(255,255,255,0.06)",
+          background: "color-mix(in srgb, var(--sf-surface) 95%, transparent)",
+          borderBottom: "1px solid var(--sf-line-hairline)",
         }}
       >
         {/* Layout toggle */}
@@ -918,7 +921,7 @@ export function EntityTreeView({
           className="flex items-center gap-0.5 p-0.5"
           style={{
             background: "rgba(255,255,255,0.03)",
-            border: "1px solid rgba(255,255,255,0.06)",
+            border: "1px solid var(--sf-line-hairline)",
           }}
         >
           {([
@@ -950,7 +953,7 @@ export function EntityTreeView({
           >
             Expand All
           </button>
-          <span className="text-t5 text-[12px]">/</span>
+          <span className="text-t4 text-[12px]">/</span>
           <button
             onClick={collapseAll}
             className="text-[12px] font-sans uppercase tracking-[1px] text-t4 hover:text-t2 px-1.5 py-0.5 transition-colors"
@@ -964,7 +967,7 @@ export function EntityTreeView({
           <span className="text-[12px] font-mono text-t4">
             {rootCount} root{rootCount !== 1 ? "s" : ""}
           </span>
-          <span className="text-[12px] font-mono text-t5">
+          <span className="text-[12px] font-mono text-t4">
             {totalCount} total
           </span>
         </div>
