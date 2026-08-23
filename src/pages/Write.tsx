@@ -48,8 +48,9 @@ import {
   useCreateFolder, useRenameDocument, useReorderDocuments,
   useDeleteDocument, useTrashedDocuments, useRestoreDocument,
   usePurgeDocument, purgeExpiredTrash, useUpdateDocumentMeta, useMoveDocument,
+  useRenameFolder, useDeleteFolder,
 } from "@/hooks/use-writing-documents";
-import { Trash2, RotateCcw, X, FolderInput } from "lucide-react";
+import { Trash2, RotateCcw, X, FolderInput, MoreVertical, Plus } from "lucide-react";
 import { useWriteDoc, useLatestDoc, rollWordSession, countWords } from "@/hooks/use-write-doc";
 import { useSessionWords } from "@/hooks/use-session-words";
 import { useWritingPreferences } from "@/hooks/use-writing-preferences";
@@ -92,9 +93,36 @@ export default function Write(): JSX.Element {
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
   );
   const renameDoc = useRenameDocument(worldId);
+  const renameFolder = useRenameFolder(worldId);
+  const deleteFolder = useDeleteFolder(worldId);
   const updateMeta = useUpdateDocumentMeta(worldId);
   const { addPin } = useWritingPins(worldId ?? "");
   const moveDoc = useMoveDocument(worldId);
+
+  // Inline rename, shared by both folder headers and document rows in the
+  // binder below — one piece of state, matching the pattern already proven
+  // in ChapterTree.tsx (the version of this UI that was never routed; ported
+  // here rather than left as unreachable dead code).
+  const [renamingId, setRenamingId] = useState<string | null>(null);
+  const [renameValue, setRenameValue] = useState("");
+  const beginRename = (id: string, currentTitle: string) => {
+    setRenamingId(id);
+    setRenameValue(currentTitle);
+  };
+  const commitRename = (kind: "doc" | "folder") => {
+    if (!renamingId) return;
+    const trimmed = renameValue.trim();
+    if (trimmed) {
+      if (kind === "doc") renameDoc.mutate({ docId: renamingId, title: trimmed });
+      else renameFolder.mutate({ folderId: renamingId, title: trimmed });
+    }
+    setRenamingId(null);
+  };
+  const cancelRename = () => setRenamingId(null);
+  const renameKeyDown = (kind: "doc" | "folder") => (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") commitRename(kind);
+    if (e.key === "Escape") cancelRename();
+  };
 
   const [focus, setFocus] = useState(false);
   const [findOpen, setFindOpen] = useState(false);
@@ -346,12 +374,84 @@ export default function Write(): JSX.Element {
       <div className="sf-sb sf-sb--slim min-h-0 flex-1 overflow-y-auto py-3">
         {folders.map((folder) => (
           <div key={folder.id} className="mb-2">
-            <div className="px-3 py-1 font-heading text-[12px] uppercase tracking-[1.5px] text-t3">{folder.title}</div>
+            <div className="group flex items-center gap-1 pr-1">
+              {renamingId === folder.id ? (
+                <input
+                  autoFocus
+                  value={renameValue}
+                  onChange={(e) => setRenameValue(e.target.value)}
+                  onBlur={() => commitRename("folder")}
+                  onKeyDown={renameKeyDown("folder")}
+                  aria-label="Chapter name"
+                  className="min-w-0 flex-1 bg-transparent px-3 py-1 font-heading text-[12px] uppercase tracking-[1.5px] text-t1 outline-none"
+                />
+              ) : (
+                <button
+                  onDoubleClick={() => beginRename(folder.id, folder.title)}
+                  title="Double-click to rename"
+                  className="min-w-0 flex-1 truncate px-3 py-1 text-left font-heading text-[12px] uppercase tracking-[1.5px] text-t3 hover:text-t1"
+                >
+                  {folder.title}
+                </button>
+              )}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button
+                    onClick={(e) => e.stopPropagation()}
+                    aria-label={`Chapter options for ${folder.title}`}
+                    title="Chapter options"
+                    className="shrink-0 p-1.5 text-t4 opacity-0 transition-opacity hover:text-sf-teal focus-visible:opacity-100 group-hover:opacity-100"
+                  >
+                    <MoreVertical className="h-3.5 w-3.5" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-52">
+                  <DropdownMenuItem
+                    onClick={() =>
+                      createDoc.mutate(
+                        { title: "Untitled", parentId: folder.id },
+                        { onSuccess: (d: WorldEntry) => openDoc(d.id) },
+                      )
+                    }
+                  >
+                    <Plus className="mr-2 h-3.5 w-3.5" /> New document here
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => beginRename(folder.id, folder.title)}>
+                    Rename
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    className="text-sf-crimson-text focus:text-sf-crimson-text"
+                    onClick={() => {
+                      if (window.confirm(`Delete "${folder.title}"? Its documents move to Unfiled. This cannot be undone.`)) {
+                        deleteFolder.mutate(folder.id);
+                      }
+                    }}
+                  >
+                    Delete chapter
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
             <DndContext sensors={sensors} collisionDetection={closestCenter}
               onDragEnd={({ active, over }) => over && reorderList(folder.documents, String(active.id), String(over.id))}>
               <SortableContext items={folder.documents.map((d) => d.id)} strategy={verticalListSortingStrategy}>
                 {folder.documents.map((d) => (
-                  <SortableDocRow key={d.id} d={d} active={d.id === docId} onOpen={() => openDoc(d.id)} onTrash={() => trashDoc.mutate(d.id)} chapters={chapterList} onMove={(folderId) => moveDoc.mutate({ docId: d.id, folderId })} />
+                  <SortableDocRow
+                    key={d.id}
+                    d={d}
+                    active={d.id === docId}
+                    onOpen={() => openDoc(d.id)}
+                    onTrash={() => trashDoc.mutate(d.id)}
+                    chapters={chapterList}
+                    onMove={(folderId) => moveDoc.mutate({ docId: d.id, folderId })}
+                    isRenaming={renamingId === d.id}
+                    renameValue={renameValue}
+                    onRenameChange={setRenameValue}
+                    onRenameBlur={() => commitRename("doc")}
+                    onRenameKeyDown={renameKeyDown("doc")}
+                    onBeginRename={() => beginRename(d.id, d.title || "Untitled")}
+                  />
                 ))}
               </SortableContext>
             </DndContext>
@@ -361,7 +461,21 @@ export default function Write(): JSX.Element {
           onDragEnd={({ active, over }) => over && reorderList(unfiled, String(active.id), String(over.id))}>
           <SortableContext items={unfiled.map((d) => d.id)} strategy={verticalListSortingStrategy}>
             {unfiled.map((d) => (
-              <SortableDocRow key={d.id} d={d} active={d.id === docId} onOpen={() => openDoc(d.id)} onTrash={() => trashDoc.mutate(d.id)} chapters={chapterList} onMove={(folderId) => moveDoc.mutate({ docId: d.id, folderId })} />
+              <SortableDocRow
+                key={d.id}
+                d={d}
+                active={d.id === docId}
+                onOpen={() => openDoc(d.id)}
+                onTrash={() => trashDoc.mutate(d.id)}
+                chapters={chapterList}
+                onMove={(folderId) => moveDoc.mutate({ docId: d.id, folderId })}
+                isRenaming={renamingId === d.id}
+                renameValue={renameValue}
+                onRenameChange={setRenameValue}
+                onRenameBlur={() => commitRename("doc")}
+                onRenameKeyDown={renameKeyDown("doc")}
+                onBeginRename={() => beginRename(d.id, d.title || "Untitled")}
+              />
             ))}
           </SortableContext>
         </DndContext>
@@ -682,7 +796,10 @@ function DocRow({ d, active, onOpen }: { d: WorldEntry; active: boolean; onOpen:
 }
 
 /** Draggable binder row (dnd-kit). Short drag reorders; click opens; trash on hover. */
-function SortableDocRow({ d, active, onOpen, onTrash, chapters, onMove }: {
+function SortableDocRow({
+  d, active, onOpen, onTrash, chapters, onMove,
+  isRenaming, renameValue, onRenameChange, onRenameBlur, onRenameKeyDown, onBeginRename,
+}: {
   d: WorldEntry;
   active: boolean;
   onOpen: () => void;
@@ -690,6 +807,12 @@ function SortableDocRow({ d, active, onOpen, onTrash, chapters, onMove }: {
   /** Folders this scene can be filed into. */
   chapters?: { id: string; title: string }[];
   onMove?: (folderId: string | null) => void;
+  isRenaming?: boolean;
+  renameValue?: string;
+  onRenameChange?: (value: string) => void;
+  onRenameBlur?: () => void;
+  onRenameKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+  onBeginRename?: () => void;
 }): JSX.Element {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: d.id });
   return (
@@ -698,14 +821,27 @@ function SortableDocRow({ d, active, onOpen, onTrash, chapters, onMove }: {
       style={{ transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.5 : 1 }}
       className={`group flex touch-none items-center border-l-2 pr-1 transition-colors ${active ? "border-sf-teal bg-sf-teal/[0.06]" : "border-transparent hover:bg-white/[0.02]"}`}
     >
-      <button
-        onClick={onOpen}
-        {...attributes}
-        {...listeners}
-        className={`min-w-0 flex-1 truncate py-1.5 pl-3 pr-2 text-left font-serif text-[13px] ${active ? "text-t1" : "text-t2 hover:text-t1"}`}
-      >
-        {d.title || "Untitled"}
-      </button>
+      {isRenaming ? (
+        <input
+          autoFocus
+          value={renameValue}
+          onChange={(e) => onRenameChange?.(e.target.value)}
+          onBlur={onRenameBlur}
+          onKeyDown={onRenameKeyDown}
+          aria-label="Document title"
+          className="min-w-0 flex-1 bg-transparent py-1.5 pl-3 pr-2 font-serif text-[13px] text-t1 outline-none"
+        />
+      ) : (
+        <button
+          onClick={onOpen}
+          onDoubleClick={(e) => { e.stopPropagation(); onBeginRename?.(); }}
+          {...attributes}
+          {...listeners}
+          className={`min-w-0 flex-1 truncate py-1.5 pl-3 pr-2 text-left font-serif text-[13px] ${active ? "text-t1" : "text-t2 hover:text-t1"}`}
+        >
+          {d.title || "Untitled"}
+        </button>
+      )}
       {chapters && chapters.length > 0 && onMove && (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

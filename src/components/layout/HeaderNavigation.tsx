@@ -205,7 +205,7 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
                   <div>
                     <span>Daily Prompt</span>
                     <span className="block text-[12px] text-t4 font-normal normal-case tracking-normal">
-                      & Writing Entries
+                      Practice prompts &amp; entries, separate from your manuscript
                     </span>
                   </div>
                 </Link>
