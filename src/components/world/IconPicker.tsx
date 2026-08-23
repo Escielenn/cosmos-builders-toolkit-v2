@@ -118,7 +118,7 @@ const IconPicker = ({ value, onChange, disabled }: IconPickerProps) => {
                 ))}
               </div>
               <button
-                className="w-full mt-2 flex items-center justify-center gap-1.5 text-xs text-primary hover:text-primary/80 transition-colors py-1.5 rounded-md hover:bg-primary/5"
+                className="w-full mt-2 flex items-center justify-center gap-1.5 text-xs text-primary hover:text-primary transition-colors py-1.5 rounded-md hover:bg-primary/5"
                 onClick={() => {
                   setOpen(false);
                   setShowPicPicker(true);

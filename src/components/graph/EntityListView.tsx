@@ -155,7 +155,7 @@ export function EntityListView({
     <div className="h-full flex" style={{ background: "#0A0E17" }}>
       {/* Left sidebar: filters */}
       <div
-        className="w-[180px] shrink-0 overflow-y-auto border-r border-sf-border p-3 space-y-5"
+        className="w-[180px] shrink-0 overflow-y-auto border-r border-sf-line-interactive p-3 space-y-5"
         style={{ background: "rgba(14,19,32,0.9)" }}
       >
         {/* Cascade filter */}
@@ -173,7 +173,7 @@ export function EntityListView({
                   "w-full flex items-center gap-1.5 px-2 py-1 text-[12px] font-sans transition-colors text-left",
                   filters.cascadeStages.has(stage)
                     ? "text-t2"
-                    : "text-t5"
+                    : "text-t4"
                 )}
               >
                 <span
@@ -205,7 +205,7 @@ export function EntityListView({
                   "w-full flex items-center gap-1.5 px-2 py-1 text-[12px] font-sans transition-colors text-left",
                   filters.entityTypes.size === 0 || filters.entityTypes.has(type)
                     ? "text-t2"
-                    : "text-t5"
+                    : "text-t4"
                 )}
               >
                 <span
@@ -236,7 +236,7 @@ export function EntityListView({
                 onClick={() => toggleStatusFilter(status)}
                 className={cn(
                   "w-full px-2 py-1 text-[12px] font-sans transition-colors text-left capitalize",
-                  filters.statuses.has(status) ? "text-t2" : "text-t5"
+                  filters.statuses.has(status) ? "text-t2" : "text-t4"
                 )}
               >
                 {status}
@@ -309,16 +309,16 @@ export function EntityListView({
                 <span className="text-[12px] text-t4 uppercase tracking-[1px] font-sans">
                   {(ENTITY_TYPE_LABELS as Record<string, string>)[entity.entity_type]}
                 </span>
-                <span className="text-[12px] font-mono text-t5">
+                <span className="text-[12px] font-mono text-t4">
                   {entityConns.length}
                 </span>
               </button>
 
               {/* Expanded connections */}
               {isExpanded && (
-                <div className="ml-7 border-l border-sf-border pl-3 pb-2 space-y-0.5">
+                <div className="ml-7 border-l border-sf-line-interactive pl-3 pb-2 space-y-0.5">
                   {entityConns.length === 0 && (
-                    <p className="text-[12px] text-t5 font-sans py-1 italic">
+                    <p className="text-[12px] text-t4 font-sans py-1 italic">
                       No connections yet.
                     </p>
                   )}
@@ -369,7 +369,7 @@ export function EntityListView({
                         <button
                           type="button"
                           onClick={() => onDeleteConnection(conn.id)}
-                          className="ml-auto opacity-0 group-hover/conn:opacity-100 text-t5 hover:text-crimson transition-all"
+                          className="ml-auto opacity-0 group-hover/conn:opacity-100 text-t4 hover:text-crimson transition-all"
                           title="Delete connection"
                         >
                           <Trash2 className="w-3 h-3" />
@@ -382,7 +382,7 @@ export function EntityListView({
                   <button
                     type="button"
                     onClick={() => onCreateConnection(entity.id)}
-                    className="flex items-center gap-1 px-2 py-1 text-[12px] text-t4 hover:text-teal uppercase tracking-[1px] font-sans transition-colors"
+                    className="flex items-center gap-1 px-2 py-1 text-[12px] text-t4 hover:text-sf-teal uppercase tracking-[1px] font-sans transition-colors"
                   >
                     <Plus className="w-2.5 h-2.5" />
                     Add Connection

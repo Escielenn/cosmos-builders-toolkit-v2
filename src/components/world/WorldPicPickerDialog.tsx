@@ -118,7 +118,7 @@ const WorldPicPickerDialog = ({
                   key={filename}
                   type="button"
                   onClick={() => handleSelect(filename)}
-                  className="aspect-square rounded-none border border-transparent hover:border-primary/50 hover:bg-primary/5 transition-all p-1.5 group"
+                  className="aspect-square rounded-none border border-transparent hover:border-primary hover:bg-primary/5 transition-all p-1.5 group"
                   title={getWorldPicLabel(filename)}
                 >
                   <img

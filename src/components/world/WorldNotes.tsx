@@ -88,13 +88,13 @@ function NoteCard({
 
   return (
     <>
-      <div className="border border-sf-border bg-white/[0.01]">
+      <div className="border border-sf-line-interactive bg-white/[0.01]">
         {/* Note header */}
         <div className="flex items-center gap-2 px-4 py-2">
           <button
             type="button"
             onClick={() => setIsOpen(!isOpen)}
-            className="shrink-0 text-t3/40 hover:text-t3/70 transition-colors"
+            className="shrink-0 text-t3 hover:text-t3 transition-colors"
           >
             {isOpen ? (
               <ChevronUp className="w-3.5 h-3.5" />
@@ -114,13 +114,13 @@ function NoteCard({
               onChange={(e) => setEditingTitle(e.target.value)}
               onBlur={handleTitleBlur}
               onKeyDown={handleTitleKeyDown}
-              className="font-heading text-lg font-light text-t1 flex-1 bg-transparent border-0 border-b border-white/[0.08] outline-none focus:border-primary/30 rounded-none px-0 py-0.5 truncate"
+              className="font-heading text-lg font-light text-t1 flex-1 bg-transparent border-0 border-b border-sf-line outline-none focus:border-primary rounded-none px-0 py-0.5 truncate"
               placeholder="Note title..."
             />
           )}
 
           {isSaving && (
-            <span className="font-mono text-[12px] uppercase tracking-wider text-t3/30 shrink-0">
+            <span className="font-mono text-[12px] uppercase tracking-wider text-t4 shrink-0">
               Saving...
             </span>
           )}
@@ -129,7 +129,7 @@ function NoteCard({
             <button
               type="button"
               onClick={() => setDeleteOpen(true)}
-              className="shrink-0 text-t3/20 hover:text-sf-crimson/60 transition-colors"
+              className="shrink-0 text-t4 hover:text-sf-crimson-text transition-colors"
               title="Delete note"
             >
               <Trash2 className="w-3.5 h-3.5" />
@@ -152,7 +152,7 @@ function NoteCard({
             {note.tags.map((tag) => (
               <span
                 key={tag}
-                className="px-1.5 py-0.5 text-[12px] bg-teal/8 border border-teal/15 text-teal tracking-wider"
+                className="px-1.5 py-0.5 text-[12px] bg-sf-teal/8 border border-sf-teal text-sf-teal tracking-wider"
               >
                 {tag}
               </span>
@@ -228,7 +228,7 @@ const WorldNotes = ({ worldId, readOnly }: WorldNotesProps) => {
               <FileText className="w-5 h-5 text-primary" />
               <span className="font-heading font-medium">World Notes</span>
               {notes.length > 0 && (
-                <span className="font-mono text-[12px] text-t3/40">
+                <span className="font-mono text-[12px] text-t3">
                   {notes.length}
                 </span>
               )}
@@ -249,7 +249,7 @@ const WorldNotes = ({ worldId, readOnly }: WorldNotesProps) => {
             ) : (
               <>
                 {notes.length === 0 && (
-                  <p className="text-[12px] text-t3/30 italic py-2">
+                  <p className="text-[12px] text-t4 italic py-2">
                     No notes yet. Add one to start capturing ideas about your world.
                   </p>
                 )}
@@ -270,7 +270,7 @@ const WorldNotes = ({ worldId, readOnly }: WorldNotesProps) => {
                     type="button"
                     onClick={() => createNote.mutate()}
                     disabled={createNote.isPending}
-                    className="sf-fill-sweep sf-fill-sweep--secondary w-full flex items-center justify-center gap-2 px-3 py-2 border border-sf-border text-[12px] font-heading uppercase tracking-wider text-t3/40 hover:text-primary/60 hover:border-primary/20 transition-colors"
+                    className="sf-fill-sweep sf-fill-sweep--secondary w-full flex items-center justify-center gap-2 px-3 py-2 border border-sf-line-interactive text-[12px] font-heading uppercase tracking-wider text-t3 hover:text-primary hover:border-primary transition-colors"
                   >
                     <Plus className="w-3.5 h-3.5" />
                     Add Note

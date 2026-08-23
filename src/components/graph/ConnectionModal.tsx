@@ -117,7 +117,7 @@ export function ConnectionModal({
   return (
     <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
       <DialogContent
-        className="sm:max-w-[480px] border-sf-border"
+        className="sm:max-w-[480px] border-sf-line-interactive"
         style={{
           background: "rgba(15,15,16,0.98)",
           backdropFilter: "blur(20px)",
@@ -216,8 +216,8 @@ export function ConnectionModal({
                 onClick={() => setBidirectional(false)}
                 className={`flex items-center gap-1.5 px-3 py-1.5 text-[12px] uppercase tracking-[1.2px] font-sans border transition-colors ${
                   !bidirectional
-                    ? "border-teal/25 bg-teal/10 text-teal"
-                    : "border-sf-border text-t4 hover:text-t3"
+                    ? "border-sf-teal bg-sf-teal/10 text-sf-teal"
+                    : "border-sf-line-interactive text-t4 hover:text-t3"
                 }`}
               >
                 One-way
@@ -227,8 +227,8 @@ export function ConnectionModal({
                 onClick={() => setBidirectional(true)}
                 className={`flex items-center gap-1.5 px-3 py-1.5 text-[12px] uppercase tracking-[1.2px] font-sans border transition-colors ${
                   bidirectional
-                    ? "border-teal/25 bg-teal/10 text-teal"
-                    : "border-sf-border text-t4 hover:text-t3"
+                    ? "border-sf-teal bg-sf-teal/10 text-sf-teal"
+                    : "border-sf-line-interactive text-t4 hover:text-t3"
                 }`}
               >
                 Mutual
@@ -269,8 +269,8 @@ export function ConnectionModal({
                   onClick={() => setStatus(s)}
                   className={`px-2.5 py-1 text-[12px] uppercase tracking-[1.2px] font-sans border transition-colors ${
                     status === s
-                      ? "border-teal/25 bg-teal/10 text-teal"
-                      : "border-sf-border text-t4 hover:text-t3"
+                      ? "border-sf-teal bg-sf-teal/10 text-sf-teal"
+                      : "border-sf-line-interactive text-t4 hover:text-t3"
                   }`}
                 >
                   {s}

@@ -64,8 +64,8 @@ export function TemplateFieldEditor({
   };
 
   return (
-    <div className="border border-white/10 bg-white/[0.02] p-3 flex items-start gap-2">
-      <GripVertical className="w-3.5 h-3.5 mt-2 text-t5 shrink-0" />
+    <div className="border border-sf-line bg-white/[0.02] p-3 flex items-start gap-2">
+      <GripVertical className="w-3.5 h-3.5 mt-2 text-t4 shrink-0" />
 
       <div className="flex-1 space-y-2 min-w-0">
         {/* Row 1: label + field_type */}
@@ -110,7 +110,7 @@ export function TemplateFieldEditor({
           <div className="space-y-1">
             <Label htmlFor={`f-key-${field.id}`} className="text-[12px] uppercase tracking-[1.5px] text-t4">
               Key
-              <span className="text-t5 font-mono normal-case tracking-normal ml-1">
+              <span className="text-t4 font-mono normal-case tracking-normal ml-1">
                 (programmatic, a-z 0-9 _)
               </span>
             </Label>
@@ -142,7 +142,7 @@ export function TemplateFieldEditor({
           <div className="space-y-1">
             <Label className="text-[12px] uppercase tracking-[1.5px] text-t4">
               Options
-              <span className="text-t5 font-mono normal-case tracking-normal ml-1">
+              <span className="text-t4 font-mono normal-case tracking-normal ml-1">
                 (comma-separated)
               </span>
             </Label>
@@ -161,7 +161,7 @@ export function TemplateFieldEditor({
         <div className="space-y-1">
           <Label htmlFor={`f-help-${field.id}`} className="text-[12px] uppercase tracking-[1.5px] text-t4">
             Help text{" "}
-            <span className="text-t5 font-normal normal-case tracking-normal">(optional)</span>
+            <span className="text-t4 font-normal normal-case tracking-normal">(optional)</span>
           </Label>
           <Input
             id={`f-help-${field.id}`}

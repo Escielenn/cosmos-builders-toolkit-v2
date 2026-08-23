@@ -89,14 +89,14 @@ const CodexElementRow = memo(({
           <span className="absolute left-0 top-1 bottom-1 w-[2px] bg-primary/60" />
         )}
         {depth > 0 && (
-          <span className="font-mono text-[12px] text-white/[0.12] select-none shrink-0 w-3">
+          <span className="font-mono text-[12px] text-t4 select-none shrink-0 w-3">
             {isLast ? "└" : "├"}
           </span>
         )}
         {element.kind === "entry" && element.type === "lore" ? (
-          <Folder className="w-3 h-3 text-sf-amber/60 shrink-0" />
+          <Folder className="w-3 h-3 text-sf-amber shrink-0" />
         ) : (
-          <FileText className="w-3 h-3 text-t3/50 shrink-0" />
+          <FileText className="w-3 h-3 text-t3 shrink-0" />
         )}
         <input
           ref={inputRef}
@@ -105,7 +105,7 @@ const CodexElementRow = memo(({
           onBlur={commitRename}
           onKeyDown={handleKeyDown}
           title="Rename entry"
-          className="text-[14px] flex-1 leading-tight bg-transparent border-b border-primary/40 outline-none text-t1 px-0 py-0"
+          className="text-[14px] flex-1 leading-tight bg-transparent border-b border-primary outline-none text-t1 px-0 py-0"
         />
       </div>
     );
@@ -129,29 +129,29 @@ const CodexElementRow = memo(({
 
       {/* Tree connector */}
       {depth > 0 && (
-        <span className="font-mono text-[12px] text-white/[0.12] select-none shrink-0 w-3">
+        <span className="font-mono text-[12px] text-t4 select-none shrink-0 w-3">
           {isLast ? "└" : "├"}
         </span>
       )}
 
       {/* Icon */}
       {element.kind === "writing" ? (
-        <PenLine className="w-3 h-3 text-[#5B8DEF]/60 shrink-0" />
+        <PenLine className="w-3 h-3 text-sf-stellar shrink-0" />
       ) : element.kind === "note" ? (
-        <StickyNote className="w-3 h-3 text-primary/50 shrink-0" />
+        <StickyNote className="w-3 h-3 text-primary shrink-0" />
       ) : element.kind === "entry" && element.type === "lore" ? (
-        <Folder className="w-3 h-3 text-sf-amber/60 shrink-0" />
+        <Folder className="w-3 h-3 text-sf-amber shrink-0" />
       ) : element.kind === "entry" ? (
-        <FileText className="w-3 h-3 text-t3/50 shrink-0" />
+        <FileText className="w-3 h-3 text-t4 shrink-0" />
       ) : (
-        <FileText className="w-3 h-3 text-t3/50 shrink-0" />
+        <FileText className="w-3 h-3 text-t4 shrink-0" />
       )}
 
       {/* Title */}
       <span
         className={cn(
           "text-[14px] truncate flex-1 leading-tight",
-          element.isDraft ? "text-t1/40" : "text-t1/75",
+          element.isDraft ? "text-t3" : "text-t1",
           isActive && "text-t1"
         )}
       >
@@ -160,12 +160,12 @@ const CodexElementRow = memo(({
 
       {/* Pin indicator */}
       {isPinned && (
-        <Pin className="w-2.5 h-2.5 text-t5 shrink-0" />
+        <Pin className="w-2.5 h-2.5 text-t4 shrink-0" />
       )}
 
       {/* Draft badge */}
       {element.isDraft && element.kind === "worksheet" && (
-        <span className="font-mono text-[12px] uppercase tracking-wider text-t3/30 shrink-0">
+        <span className="font-mono text-[12px] uppercase tracking-wider text-t4 shrink-0">
           Draft
         </span>
       )}
@@ -175,8 +175,8 @@ const CodexElementRow = memo(({
         className={cn(
           "w-1.5 h-1.5 shrink-0",
           element.status === "complete" && "bg-primary/70",
-          element.status === "partial" && "bg-amber-400/70",
-          element.status === "empty" && "border border-muted-foreground/25"
+          element.status === "partial" && "bg-sf-amber/70",
+          element.status === "empty" && "border border-sf-line"
         )}
       />
     </button>

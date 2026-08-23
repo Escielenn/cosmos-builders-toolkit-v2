@@ -75,13 +75,13 @@ export default function EntityMasterInfobox({
     if (!canEdit) return null;
     return (
       <div className="space-y-2">
-        <h3 className="font-heading text-xs font-light uppercase tracking-[3px] text-emerald">
+        <h3 className="font-heading text-xs font-light uppercase tracking-[3px] text-sf-emerald">
           Details
         </h3>
         <button
           type="button"
           onClick={startEditing}
-          className="text-[12px] text-t4 hover:text-primary/60 transition-colors flex items-center gap-1"
+          className="text-[12px] text-t4 hover:text-primary transition-colors flex items-center gap-1"
         >
           <Pencil className="w-3 h-3" />
           Add details
@@ -93,7 +93,7 @@ export default function EntityMasterInfobox({
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <h3 className="font-heading text-xs font-light uppercase tracking-[3px] text-emerald">
+        <h3 className="font-heading text-xs font-light uppercase tracking-[3px] text-sf-emerald">
           Details
         </h3>
         {canEdit && !editing && (
@@ -225,7 +225,7 @@ function EditableField({
         <select
           value={stringVal}
           onChange={(e) => onChange(e.target.value)}
-          className="w-full text-xs bg-white/[0.04] border border-sf-border rounded-xs px-2 py-1.5 text-t2"
+          className="w-full text-xs bg-white/[0.04] border border-sf-line-interactive rounded-xs px-2 py-1.5 text-t2"
         >
           <option value="">-</option>
           {field.options.map((opt) => (

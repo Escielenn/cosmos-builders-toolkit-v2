@@ -209,7 +209,7 @@ export function TemplateFieldsForm({
                         className={
                           isOn
                             ? "text-xs px-2 py-1 border border-primary bg-primary/10 text-primary"
-                            : "text-xs px-2 py-1 border border-white/10 text-t3 hover:border-primary/40"
+                            : "text-xs px-2 py-1 border border-sf-line text-t3 hover:border-primary"
                         }
                       >
                         {opt}

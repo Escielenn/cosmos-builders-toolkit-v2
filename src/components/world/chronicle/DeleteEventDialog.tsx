@@ -20,14 +20,14 @@ export function DeleteEventDialog({
 }: DeleteEventDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[400px] bg-sf-surface border-sf-border rounded-none">
+      <DialogContent className="sm:max-w-[400px] bg-sf-surface border-sf-line-interactive rounded-none">
         <DialogHeader>
           <DialogTitle className="sf-tool-section text-left">
             Confirm Removal
           </DialogTitle>
         </DialogHeader>
 
-        <p className="font-mono text-xs uppercase tracking-wider text-t3/50 mt-2">
+        <p className="font-mono text-xs uppercase tracking-wider text-t3 mt-2">
           Remove{" "}
           <span className="text-t2">{eventTitle}</span>{" "}
           from Chronicle
@@ -37,7 +37,7 @@ export function DeleteEventDialog({
           <button
             type="button"
             onClick={() => onOpenChange(false)}
-            className="sf-fill-sweep sf-fill-sweep--secondary px-4 py-1.5 border border-sf-border text-[12px] uppercase tracking-wider text-t3/50"
+            className="sf-fill-sweep sf-fill-sweep--secondary px-4 py-1.5 border border-sf-line-interactive text-[12px] uppercase tracking-wider text-t3"
           >
             Cancel
           </button>
@@ -47,7 +47,7 @@ export function DeleteEventDialog({
               onConfirm();
               onOpenChange(false);
             }}
-            className="sf-fill-sweep px-4 py-1.5 border border-destructive/30 text-sf-crimson text-[12px] uppercase tracking-wider"
+            className="sf-fill-sweep px-4 py-1.5 border border-destructive text-sf-crimson text-[12px] uppercase tracking-wider"
           >
             Delete
           </button>

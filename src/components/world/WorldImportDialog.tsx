@@ -133,7 +133,7 @@ const WorldImportDialog = ({ open, onOpenChange }: WorldImportDialogProps) => {
 
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="w-full flex flex-col items-center gap-3 p-8 rounded-none border-2 border-dashed border-sf-border hover:border-primary/30 hover:bg-accent/5 transition-colors"
+              className="w-full flex flex-col items-center gap-3 p-8 rounded-none border-2 border-dashed border-sf-line-interactive hover:border-primary hover:bg-accent/5 transition-colors"
             >
               <Upload className="w-8 h-8 text-t3" />
               <div className="text-center">
@@ -147,7 +147,7 @@ const WorldImportDialog = ({ open, onOpenChange }: WorldImportDialogProps) => {
         ) : (
           <div className="space-y-4">
             {/* File info */}
-            <div className="flex items-center gap-3 p-3 rounded-none bg-accent/5 border border-sf-border">
+            <div className="flex items-center gap-3 p-3 rounded-none bg-accent/5 border border-sf-line-interactive">
               {selectedFile?.name.endsWith(".zip") ? (
                 <FolderArchive className="w-5 h-5 text-t3 flex-shrink-0" />
               ) : (

@@ -9,12 +9,12 @@ interface CodexCollapsedProps {
 // Layer colors for the dot indicators
 const LAYER_DOT_COLORS: Record<string, string> = {
   environment: "bg-primary/50",
-  biology: "bg-green-400/50",
-  psychology: "bg-amber-400/50",
-  culture: "bg-blue-400/50",
-  mythology: "bg-purple-400/50",
-  technology: "bg-red-400/50",
-  narrative: "bg-yellow-400/50",
+  biology: "bg-sf-emerald/50",
+  psychology: "bg-sf-amber/50",
+  culture: "bg-sf-azure/50",
+  mythology: "bg-sf-violet/50",
+  technology: "bg-sf-crimson/50",
+  narrative: "bg-sf-amber-warm/50",
 };
 
 const CodexCollapsed = ({ sections, onExpand }: CodexCollapsedProps) => {
@@ -23,7 +23,7 @@ const CodexCollapsed = ({ sections, onExpand }: CodexCollapsedProps) => {
       {/* Expand button */}
       <button
         onClick={onExpand}
-        className="sf-fill-sweep sf-fill-sweep--secondary w-8 h-7 flex items-center justify-center border border-sf-border text-t3 hover:text-t1 transition-colors mb-2"
+        className="sf-fill-sweep sf-fill-sweep--secondary w-8 h-7 flex items-center justify-center border border-sf-line-interactive text-t3 hover:text-t1 transition-colors mb-2"
         aria-label="Expand Registry"
       >
         <span className="text-[12px]">▶</span>
@@ -41,7 +41,7 @@ const CodexCollapsed = ({ sections, onExpand }: CodexCollapsedProps) => {
               "w-2 h-2 rounded-full",
               section.elements.length > 0
                 ? LAYER_DOT_COLORS[section.key] ?? "bg-muted-foreground/30"
-                : "border border-muted-foreground/20"
+                : "border border-sf-line"
             )}
           />
         </div>

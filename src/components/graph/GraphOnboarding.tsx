@@ -110,7 +110,7 @@ export function GraphOnboarding() {
       </div>
 
       {/* Content */}
-      <h4 className="font-heading text-[12px] uppercase tracking-[2px] text-teal mb-1.5">
+      <h4 className="font-heading text-[12px] uppercase tracking-[2px] text-sf-teal mb-1.5">
         {current.title}
       </h4>
       <p className="text-[12px] font-sans text-t2 leading-relaxed mb-3">
@@ -119,7 +119,7 @@ export function GraphOnboarding() {
 
       {/* Navigation */}
       <div className="flex items-center justify-between">
-        <span className="text-[12px] font-mono text-t5">
+        <span className="text-[12px] font-mono text-t4">
           {step + 1} / {STEPS.length}
         </span>
         <div className="flex gap-2">

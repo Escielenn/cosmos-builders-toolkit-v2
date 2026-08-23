@@ -24,7 +24,7 @@ const CodexSearch = ({ value, onChange, onFocus }: CodexSearchProps) => {
 
   return (
     <div className="relative px-3 mb-2">
-      <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-3 h-3 text-t3/50" />
+      <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-3 h-3 text-t3" />
       <input
         ref={inputRef}
         type="text"
@@ -32,12 +32,12 @@ const CodexSearch = ({ value, onChange, onFocus }: CodexSearchProps) => {
         onChange={(e) => onChange(e.target.value)}
         onFocus={onFocus}
         placeholder="Search this world..."
-        className="w-full h-7 pl-6 pr-6 bg-transparent border border-sf-border text-[12px] font-mono tracking-wider text-t2 placeholder:text-t3/30 focus:outline-none focus:border-primary/30 transition-colors"
+        className="w-full h-7 pl-6 pr-6 bg-transparent border border-sf-line-interactive text-[12px] font-mono tracking-wider text-t2 placeholder:text-t4 focus:outline-none focus:border-primary transition-colors"
       />
       {value && (
         <button
           onClick={() => onChange("")}
-          className="absolute right-5 top-1/2 -translate-y-1/2 text-t3/50 hover:text-t2"
+          className="absolute right-5 top-1/2 -translate-y-1/2 text-t3 hover:text-t2"
         >
           <X className="w-3 h-3" />
         </button>

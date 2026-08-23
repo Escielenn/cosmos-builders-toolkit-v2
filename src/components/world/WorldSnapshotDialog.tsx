@@ -122,8 +122,8 @@ const WorldSnapshotDialog = ({
               onClick={() => setAction(id)}
               className={`w-full flex items-start gap-3 p-3 rounded-none border transition-colors text-left ${
                 action === id
-                  ? "border-primary/30 bg-primary/5"
-                  : "border-sf-border hover:border-sf-border/80 hover:bg-accent/5"
+                  ? "border-primary bg-primary/5"
+                  : "border-sf-line-interactive hover:border-sf-line-interactive hover:bg-accent/5"
               }`}
             >
               <Icon className={`w-5 h-5 mt-0.5 flex-shrink-0 ${action === id ? "text-primary" : "text-t3"}`} />

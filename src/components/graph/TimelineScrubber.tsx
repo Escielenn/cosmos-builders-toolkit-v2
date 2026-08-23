@@ -179,14 +179,14 @@ export function TimelineScrubber({
 
           {/* Labels */}
           <div className="flex justify-between mt-0.5">
-            <span className="text-[12px] font-mono text-t5">{firstLabel}</span>
-            <span className="text-[12px] font-mono text-t5">{lastLabel}</span>
+            <span className="text-[12px] font-mono text-t4">{firstLabel}</span>
+            <span className="text-[12px] font-mono text-t4">{lastLabel}</span>
           </div>
         </div>
 
         {/* Current time */}
         <div className="shrink-0 text-center min-w-[60px]">
-          <span className="text-[12px] font-mono text-teal">
+          <span className="text-[12px] font-mono text-sf-teal">
             {currentLabel}
           </span>
         </div>

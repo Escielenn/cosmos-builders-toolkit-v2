@@ -50,7 +50,7 @@ const ConnectionLegend = () => {
         <div className="flex items-center gap-2">
           <div
             className="w-6 h-1 rounded-full"
-            style={{ backgroundColor: "hsl(190 100% 50%)" }}
+            style={{ backgroundColor: "var(--sf-teal)" }}
           />
           <span className="text-xs text-t3">Planet Link</span>
         </div>

@@ -37,7 +37,7 @@ const DrakeContextCard = ({ worldId }: DrakeContextCardProps) => {
               <span className="text-xs text-t3">Galaxy:</span>
               <Badge
                 variant="secondary"
-                className="text-xs bg-red-500/10 text-sf-crimson"
+                className="text-xs bg-sf-crimson/10 text-sf-crimson"
               >
                 {drake.interpretation}
               </Badge>
@@ -45,7 +45,7 @@ const DrakeContextCard = ({ worldId }: DrakeContextCardProps) => {
           )}
 
           {/* Counts */}
-          <div className="pt-2 border-t border-sf-border space-y-2">
+          <div className="pt-2 border-t border-sf-line-interactive space-y-2">
             <div className="flex items-center justify-between">
               <span className="text-xs text-t3 flex items-center gap-1">
                 <Globe className="w-3 h-3" />
@@ -68,7 +68,7 @@ const DrakeContextCard = ({ worldId }: DrakeContextCardProps) => {
 
           {/* Suggestion */}
           {drake.suggestion && (
-            <div className="pt-2 border-t border-sf-border">
+            <div className="pt-2 border-t border-sf-line-interactive">
               <div className="flex items-start gap-2 p-2 bg-muted/30 rounded text-xs text-t3">
                 <Lightbulb className="w-3 h-3 mt-0.5 text-sf-amber shrink-0" />
                 <span>{drake.suggestion}</span>

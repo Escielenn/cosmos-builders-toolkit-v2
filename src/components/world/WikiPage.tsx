@@ -199,7 +199,7 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
   if (error || !entry) {
     return (
       <div className="flex items-center justify-center h-64">
-        <p className="font-mono text-xs uppercase tracking-wider text-sf-crimson/60">
+        <p className="font-mono text-xs uppercase tracking-wider text-sf-crimson-text">
           Page unavailable.
         </p>
       </div>
@@ -210,7 +210,7 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
     <div className="sf-wiki-page">
       {/* Header bar */}
       <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-1.5 font-mono text-[12px] uppercase tracking-wider text-t3/40">
+        <div className="flex items-center gap-1.5 font-mono text-[12px] uppercase tracking-wider text-t3">
           <Link to={`/worlds/${worldId}`} className="hover:text-t2 transition-colors">
             Dashboard
           </Link>
@@ -231,7 +231,7 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
             <button
               type="button"
               onClick={() => setIsEditing(!isEditing)}
-              className="sf-fill-sweep sf-fill-sweep--secondary flex items-center gap-1.5 px-3 py-1.5 border border-sf-border text-[12px] uppercase tracking-wider"
+              className="sf-fill-sweep sf-fill-sweep--secondary flex items-center gap-1.5 px-3 py-1.5 border border-sf-line-interactive text-[12px] uppercase tracking-wider"
             >
               {isEditing ? (
                 <>
@@ -247,7 +247,7 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
           {toolSource && (
             <button
               onClick={handleViewInTool}
-              className="sf-fill-sweep sf-fill-sweep--secondary flex items-center gap-1.5 px-3 py-1.5 border border-sf-border text-[12px] uppercase tracking-wider"
+              className="sf-fill-sweep sf-fill-sweep--secondary flex items-center gap-1.5 px-3 py-1.5 border border-sf-line-interactive text-[12px] uppercase tracking-wider"
             >
               <ExternalLink className="w-3 h-3" /> View in Tool
             </button>
@@ -285,18 +285,18 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
         <span>{typeLabel.toUpperCase()}</span>
         {layerLabel && (
           <>
-            <span className="text-t3/20">&middot;</span>
+            <span className="text-t4">&middot;</span>
             <span>{layerLabel.toUpperCase()}</span>
           </>
         )}
         {isDraft && (
-          <span className="ml-2 px-1.5 py-0.5 bg-amber-500/15 text-sf-amber text-[12px] uppercase tracking-widest">
+          <span className="ml-2 px-1.5 py-0.5 bg-sf-amber/[0.06] border border-sf-amber text-sf-amber text-[12px] uppercase tracking-widest">
             Draft
           </span>
         )}
         {/* Cover upload, compact inline button in edit mode */}
         {canEdit && isEditing && (
-          <label className="ml-auto flex items-center gap-1 px-2 py-0.5 border border-sf-border text-[12px] uppercase tracking-wider text-t3/40 hover:text-t3/70 cursor-pointer transition-colors">
+          <label className="ml-auto flex items-center gap-1 px-2 py-0.5 border border-sf-line-interactive text-[12px] uppercase tracking-wider text-t3 hover:text-t3 cursor-pointer transition-colors">
             <ImagePlus className="w-3 h-3" />
             {entry.cover_image_url ? "Change cover" : "Add cover"}
             <input
@@ -469,7 +469,7 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
                 >
                   {bl.title}
                 </button>
-                <span className="text-t3/30 text-xs">
+                <span className="text-t4 text-xs">
                   references this element
                 </span>
               </div>
@@ -485,7 +485,7 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
           <div className="flex gap-2">
             <button
               onClick={handleViewInTool}
-              className="sf-fill-sweep sf-fill-sweep--secondary px-3 py-1.5 border border-sf-border text-[12px] uppercase tracking-wider"
+              className="sf-fill-sweep sf-fill-sweep--secondary px-3 py-1.5 border border-sf-line-interactive text-[12px] uppercase tracking-wider"
             >
               View in {typeLabel}
             </button>
@@ -532,18 +532,18 @@ function ConnectionSuggestionBar({
   const [connType, setConnType] = useState("related_to");
 
   return (
-    <div className="flex items-center gap-2 px-3 py-2 bg-sf-surface border border-sf-border text-[12px]">
-      <span className="font-mono uppercase tracking-wider text-t3/40">
+    <div className="flex items-center gap-2 px-3 py-2 bg-sf-surface border border-sf-line-interactive text-[12px]">
+      <span className="font-mono uppercase tracking-wider text-t4">
         Link detected:
       </span>
-      <span className="text-[#5B8DEF] font-medium">
+      <span className="text-sf-stellar font-medium">
         {suggestion.targetTitle}
       </span>
       <select
         value={connType}
         onChange={(e) => setConnType(e.target.value)}
         title="Connection type"
-        className="bg-transparent border border-sf-border px-1.5 py-0.5 text-[12px] uppercase tracking-wider text-t2"
+        className="bg-transparent border border-sf-line-interactive px-1.5 py-0.5 text-[12px] uppercase tracking-wider text-t2"
       >
         {CONNECTION_TYPES.map((t) => (
           <option key={t} value={t}>
@@ -554,14 +554,14 @@ function ConnectionSuggestionBar({
       <button
         type="button"
         onClick={() => onAccept(suggestion, connType)}
-        className="sf-fill-sweep sf-fill-sweep--secondary px-2 py-0.5 border border-[#3DFFCD]/20 text-[#3DFFCD]/70 text-[12px] uppercase tracking-wider"
+        className="sf-fill-sweep sf-fill-sweep--secondary px-2 py-0.5 border border-sf-teal text-sf-teal text-[12px] uppercase tracking-wider"
       >
         Add
       </button>
       <button
         type="button"
         onClick={() => onDismiss(suggestion)}
-        className="text-t3/30 hover:text-t3/60 text-[12px] uppercase tracking-wider"
+        className="text-t4 hover:text-t2 text-[12px] uppercase tracking-wider"
       >
         Dismiss
       </button>

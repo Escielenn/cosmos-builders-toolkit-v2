@@ -287,12 +287,12 @@ export default function CreateElementDialog({
                     onClick={() => handleTypePick(type)}
                     className={cn(
                       "flex flex-col items-center gap-1.5 p-3",
-                      "border border-sf-border bg-white/[0.02]",
-                      "hover:bg-primary/5 hover:border-primary/20",
+                      "border border-sf-line-interactive bg-white/[0.02]",
+                      "hover:bg-primary/5 hover:border-primary",
                       "transition-colors group"
                     )}
                   >
-                    <Icon className="w-5 h-5 text-t3/40 group-hover:text-primary/60 transition-colors" />
+                    <Icon className="w-5 h-5 text-t3 group-hover:text-primary transition-colors" />
                     <span className="text-[12px] font-heading uppercase tracking-wider text-t3 group-hover:text-t2 transition-colors">
                       {PICKER_LABELS[type]}
                     </span>
@@ -303,7 +303,7 @@ export default function CreateElementDialog({
 
             {/* Your custom templates */}
             {templates.length > 0 && (
-              <div className="pt-3 border-t border-white/5">
+              <div className="pt-3 border-t border-sf-line">
                 <div className="flex items-center justify-between mb-2">
                   <h3 className="text-[12px] font-heading uppercase tracking-[1.5px] text-[#00FF88]">
                     Your custom types
@@ -321,11 +321,11 @@ export default function CreateElementDialog({
                       key={t.id}
                       type="button"
                       onClick={() => handleTemplatePick(t)}
-                      className="flex flex-col items-center gap-1.5 p-3 border border-sf-border bg-white/[0.02] hover:bg-primary/5 hover:border-primary/20 transition-colors"
+                      className="flex flex-col items-center gap-1.5 p-3 border border-sf-line-interactive bg-white/[0.02] hover:bg-primary/5 hover:border-primary transition-colors"
                       title={t.description ?? undefined}
                     >
                       <Shapes
-                        className="w-5 h-5 text-t3/40"
+                        className="w-5 h-5 text-t3"
                         style={t.color ? { color: t.color } : undefined}
                       />
                       <span className="text-[12px] font-heading uppercase tracking-wider text-t3">
@@ -342,7 +342,7 @@ export default function CreateElementDialog({
               <button
                 type="button"
                 onClick={() => handleTypePick("custom")}
-                className="w-full flex items-center justify-center gap-2 py-2 border border-dashed border-white/10 text-t4 hover:text-t2 hover:border-primary/20 transition-colors"
+                className="w-full flex items-center justify-center gap-2 py-2 border border-dashed border-sf-line text-t4 hover:text-t2 hover:border-primary transition-colors"
               >
                 <Shapes className="w-4 h-4" />
                 <span className="text-[12px] font-heading uppercase tracking-wider">
@@ -449,7 +449,7 @@ export default function CreateElementDialog({
 
               {/* Template-driven fields */}
               {selectedTemplate && selectedTemplate.fields.length > 0 && (
-                <div className="pt-3 border-t border-white/5 space-y-3">
+                <div className="pt-3 border-t border-sf-line space-y-3">
                   <div className="flex items-center gap-2">
                     <div className="h-px flex-1 bg-white/5" />
                     <span className="text-[12px] uppercase tracking-[1.5px] text-[#00FF88] font-heading">
@@ -518,7 +518,7 @@ export default function CreateElementDialog({
                 </div>
               )}
 
-              <div className="pt-2 border-t border-white/5 flex flex-col gap-1.5">
+              <div className="pt-2 border-t border-sf-line flex flex-col gap-1.5">
                 <Button
                   variant="ghost"
                   className="justify-start h-9"

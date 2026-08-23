@@ -151,7 +151,7 @@ export default function WorldAppearanceDialog({
 
               <div className="flex items-center gap-3">
                 <div
-                  className="w-8 h-8 border border-white/15 shrink-0"
+                  className="w-8 h-8 border border-sf-line shrink-0"
                   style={{ backgroundColor: accentColor }}
                 />
                 <Input
@@ -170,7 +170,7 @@ export default function WorldAppearanceDialog({
                     className={`w-6 h-6 border cursor-pointer transition-all hover:scale-110 ${
                       accentColor === c.hex
                         ? "border-white border-2"
-                        : "border-white/10"
+                        : "border-sf-line"
                     }`}
                     style={{ backgroundColor: c.hex }}
                     onClick={() => handleColorChange(c.hex)}
@@ -205,7 +205,7 @@ export default function WorldAppearanceDialog({
               <label className="font-mono text-[12px] uppercase tracking-[2px] text-t3">
                 // PREVIEW
               </label>
-              <div className="bg-sf-surface border border-white/6 p-4 space-y-3">
+              <div className="bg-sf-surface border border-sf-line p-4 space-y-3">
                 {/* Mock section header */}
                 <div className="flex items-center gap-2">
                   <span
@@ -229,13 +229,13 @@ export default function WorldAppearanceDialog({
                       className="w-[5px] h-[5px] rounded-full border"
                       style={{ borderColor: accentColor, opacity: 0.5 }}
                     />
-                    <span className="text-xs text-t1/50">Draft Entry</span>
-                    <span className="text-[12px] uppercase tracking-wider text-t3/50">DRAFT</span>
+                    <span className="text-xs text-t3">Draft Entry</span>
+                    <span className="text-[12px] uppercase tracking-wider text-t3">DRAFT</span>
                   </div>
                 </div>
                 {/* Mock infobox border */}
                 <div
-                  className="border-t-2 border border-white/6 p-3 mt-2"
+                  className="border-t-2 border border-sf-line p-3 mt-2"
                   style={{ borderTopColor: `${accentColor}80` }}
                 >
                   <span
@@ -247,7 +247,7 @@ export default function WorldAppearanceDialog({
                 </div>
                 {/* Mock completion bar */}
                 <div className="flex items-center gap-2">
-                  <span className="font-mono text-[12px] uppercase tracking-wider text-t3/40">
+                  <span className="font-mono text-[12px] uppercase tracking-wider text-t3">
                     SURVEY:
                   </span>
                   <div className="flex-1 h-1 bg-white/5 relative">
@@ -256,7 +256,7 @@ export default function WorldAppearanceDialog({
                       style={{ backgroundColor: accentColor, width: "68%", opacity: 0.8 }}
                     />
                   </div>
-                  <span className="font-mono text-[12px] text-t3/40">68%</span>
+                  <span className="font-mono text-[12px] text-t3">68%</span>
                 </div>
               </div>
             </div>

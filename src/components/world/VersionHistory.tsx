@@ -137,7 +137,7 @@ const VersionHistory = ({ worldId, worldName }: VersionHistoryProps) => {
         </button>
 
         {expanded && (
-          <div className="border-t border-sf-border">
+          <div className="border-t border-sf-line-interactive">
             {isLoading ? (
               <div className="flex items-center justify-center py-8">
                 <Loader />

@@ -24,7 +24,7 @@ const CodexRecentEdits = ({ items, onItemClick }: CodexRecentEditsProps) => {
           <span className="text-[13px] text-t2 truncate">
             {item.title}
           </span>
-          <span className="font-mono text-[12px] text-t3/40 whitespace-nowrap shrink-0">
+          <span className="font-mono text-[12px] text-t3 whitespace-nowrap shrink-0">
             {formatDistanceToNow(new Date(item.updatedAt), { addSuffix: true })}
           </span>
         </button>

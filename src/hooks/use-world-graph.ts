@@ -107,7 +107,7 @@ export function useWorldGraph(worldId: string | undefined): WorldGraph & {
  */
 export function getToolColor(toolType: string): string {
   const colors: Record<string, string> = {
-    "planetary-profile": "190 100% 50%", // Cyan
+    "planetary-profile": "157 80% 42%", // Teal (legacy cyan retired, SF-II decision #3)
     "evolutionary-biology": "153 100% 50%", // Emerald
     "xenomythology-framework-builder": "263 74% 63%", // Violet
     "environmental-chain-reaction": "328 100% 50%", // Magenta

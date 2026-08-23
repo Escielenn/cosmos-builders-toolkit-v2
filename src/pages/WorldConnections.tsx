@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback, useEffect, lazy, Suspense } from "react";
-import { Link, useParams, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { ArrowLeft, Network, ExternalLink, LayoutGrid, List, ChevronDown, ChevronRight, Globe, Dna, Sparkles, GitBranch, Rocket, Zap, Calculator, FileText, Filter, Crown, Users, TreePine, Plus } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
 import Header from "@/components/layout/Header";
@@ -17,6 +17,7 @@ import {
 import { useWorlds } from "@/hooks/use-worlds";
 import { useWorldGraph } from "@/hooks/use-world-graph";
 import { getToolDisplayName } from "@/lib/worksheet-links-config";
+import { getToolRoute } from "@/lib/tools-config";
 import {
   WorldConnectionsGraph,
   ConnectionLegend,
@@ -65,6 +66,7 @@ type SortBy = "toolType" | "title" | "connections";
 type FilterBy = "all" | string;
 
 const WorldConnections = () => {
+  const navigate = useNavigate();
   const { worldId } = useParams<{ worldId: string }>();
   const layoutContext = useWorldLayoutContext();
   const resolvedWorldId = layoutContext?.worldId ?? worldId ?? "";
@@ -160,8 +162,16 @@ const WorldConnections = () => {
     return { filteredNodes: filtered, filteredEdges: filteredE };
   }, [nodes, edges, filterBy]);
 
-  const handleNodeClick = (nodeId: string, _toolType: string) => {
-    setSelectedNodeId((prev) => (prev === nodeId ? null : nodeId));
+  // Opens the worksheet a node represents, matching the sidebar's own "Click
+  // any node to open that worksheet" claim — which used to be false: this
+  // only ever toggled `selectedNodeId` for highlighting. Hovering already
+  // highlights a node independently (WorldConnectionsGraph's own
+  // `hoveredNode` state), so repurposing click to navigate loses nothing —
+  // it makes the graph do the one thing a node click should do.
+  const handleNodeClick = (nodeId: string, toolType: string) => {
+    const route = getToolRoute(toolType);
+    if (!route || !resolvedWorldId) return;
+    navigate(`${route}?worldId=${resolvedWorldId}&worksheetId=${nodeId}`);
   };
 
   // Get connection count for each node (using filtered data)
@@ -371,14 +381,27 @@ const WorldConnections = () => {
                 )}
               </div>
             ) : viewMode === "worksheet" ? (
-              <WorldConnectionsGraph
-                nodes={filteredNodes}
-                edges={filteredEdges}
-                onNodeClick={handleNodeClick}
-                selectedNodeId={selectedNodeId}
-                width={900}
-                height={600}
-              />
+              <div>
+                {/* Nodes with zero edges render as an unexplained scatter of
+                    dots — this is the common case, since linking is opt-in
+                    per tool. Without this, a graph that's "working as
+                    designed" looks identical to a broken one. */}
+                {filteredNodes.length > 0 && filteredEdges.length === 0 && (
+                  <p className="mb-3 border border-sf-line-interactive bg-sf-surface/60 px-3 py-2 text-[13px] text-t2">
+                    {filteredNodes.length} worksheet{filteredNodes.length === 1 ? "" : "s"} on file,
+                    none linked yet. Nothing draws a line between them until you use a "Link"
+                    button inside a tool — click a node to open it.
+                  </p>
+                )}
+                <WorldConnectionsGraph
+                  nodes={filteredNodes}
+                  edges={filteredEdges}
+                  onNodeClick={handleNodeClick}
+                  selectedNodeId={selectedNodeId}
+                  width={900}
+                  height={600}
+                />
+              </div>
             ) : (
               /* Outline View */
               <div className="space-y-4 max-h-[560px] overflow-y-auto">

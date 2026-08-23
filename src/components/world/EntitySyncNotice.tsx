@@ -59,7 +59,7 @@ export default function EntitySyncNotice({
   const toolName = sourceTool ? getToolDisplayName(sourceTool) : "worksheet";
 
   return (
-    <div className="border border-amber/20 bg-amber/[0.04] p-3 space-y-2">
+    <div className="border border-sf-amber bg-amber/[0.04] p-3 space-y-2">
       <div className="flex items-start gap-2">
         <AlertTriangle className="w-4 h-4 text-amber shrink-0 mt-0.5" />
         <div className="flex-1 min-w-0">
@@ -93,7 +93,7 @@ export default function EntitySyncNotice({
           variant="outline"
           onClick={() => acceptMutation.mutate()}
           disabled={isAnyPending}
-          className="gap-1 h-6 text-[12px] border-amber/20 text-amber hover:bg-amber/10"
+          className="gap-1 h-6 text-[12px] border-sf-amber text-amber hover:bg-amber/10"
         >
           <Check className="w-3 h-3" />
           Accept All

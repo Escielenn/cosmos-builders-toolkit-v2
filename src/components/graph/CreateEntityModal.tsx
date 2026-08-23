@@ -89,7 +89,7 @@ export function CreateEntityModal({
   return (
     <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
       <DialogContent
-        className="sm:max-w-[420px] border-sf-border"
+        className="sm:max-w-[420px] border-sf-line-interactive"
         style={{
           background: "rgba(15,15,16,0.98)",
           backdropFilter: "blur(20px)",

@@ -101,10 +101,10 @@ export function AnalysisPanel({
       }}
     >
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-sf-border">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-sf-line-interactive">
         <div className="flex items-center gap-2">
-          <ActiveIcon className="w-3.5 h-3.5 text-teal" />
-          <h3 className="font-heading text-[12px] uppercase tracking-[2px] text-teal">
+          <ActiveIcon className="w-3.5 h-3.5 text-sf-teal" />
+          <h3 className="font-heading text-[12px] uppercase tracking-[2px] text-sf-teal">
             {title[mode]}
           </h3>
         </div>
@@ -222,7 +222,7 @@ function GravityContent({
               onClick={() => onSelectEntity(r.entityId)}
               className="w-full flex items-center gap-2 px-2 py-1.5 hover:bg-white/[0.03] transition-colors text-left"
             >
-              <span className="text-[12px] font-mono text-t5 w-4 text-right">
+              <span className="text-[12px] font-mono text-t4 w-4 text-right">
                 {i + 1}.
               </span>
               <span
@@ -301,7 +301,7 @@ function PathsContent({
       {/* Selection indicators */}
       <div className="space-y-1">
         <div className="flex items-center gap-2">
-          <Target className="w-3 h-3 text-teal" />
+          <Target className="w-3 h-3 text-sf-teal" />
           <span className="text-[12px] font-sans text-t3">Source:</span>
           <span className="text-[12px] font-mono text-t1">
             {sourceName ?? "Click a node..."}
@@ -328,7 +328,7 @@ function PathsContent({
           key={i}
           type="button"
           onClick={() => handlePathClick(path, i)}
-          className="w-full text-left px-3 py-2 space-y-1 hover:bg-white/[0.03] transition-colors border border-sf-border"
+          className="w-full text-left px-3 py-2 space-y-1 hover:bg-white/[0.03] transition-colors border border-sf-line-interactive"
         >
           <div className="flex items-center justify-between">
             <span className="text-[12px] font-sans text-t2">
@@ -363,11 +363,11 @@ function PathsContent({
 
           {/* Expanded: full path steps */}
           {expandedPath === i && (
-            <div className="mt-1 space-y-0.5 pl-2 border-l border-teal/20">
+            <div className="mt-1 space-y-0.5 pl-2 border-l border-sf-teal">
               {path.steps.map((step, j) => (
                 <div key={j} className="flex items-center gap-1">
                   {j > 0 && (
-                    <span className="text-[12px] text-t5 mr-1">
+                    <span className="text-[12px] text-t4 mr-1">
                       [{step.relationshipLabel}]
                     </span>
                   )}
@@ -508,7 +508,7 @@ function ClustersContent({
           key={cluster.id}
           type="button"
           onClick={() => onHighlightEntities(cluster.entityIds)}
-          className="w-full text-left px-3 py-2 space-y-1 hover:bg-white/[0.03] transition-colors border border-sf-border"
+          className="w-full text-left px-3 py-2 space-y-1 hover:bg-white/[0.03] transition-colors border border-sf-line-interactive"
         >
           <div className="flex items-center justify-between">
             <span className="text-[12px] font-heading uppercase tracking-[1.5px] text-t1">
@@ -548,7 +548,7 @@ function ClustersContent({
             <div key={b.entityId} className="flex items-center gap-2 px-2 py-1">
               <Waypoints className="w-3 h-3 text-sf-amber" />
               <span className="text-[12px] font-sans text-t2">{b.name}</span>
-              <span className="text-[12px] text-t5 font-mono">
+              <span className="text-[12px] text-t4 font-mono">
                 {b.clusterIds.length} clusters
               </span>
             </div>
@@ -632,9 +632,9 @@ function WhatIfContent({
                   key={s.connectionId}
                   className="flex items-center gap-2 px-2 py-1 text-[12px]"
                 >
-                  <span className="text-t5">&times;</span>
+                  <span className="text-t4">&times;</span>
                   <span className="text-t3 font-sans">{s.otherEntityName}</span>
-                  <span className="text-t5 font-sans italic">
+                  <span className="text-t4 font-sans italic">
                     ({s.relationshipType.replace(/_/g, " ")})
                   </span>
                 </div>
@@ -678,7 +678,7 @@ function WhatIfContent({
           )}
 
           {/* Action hint */}
-          <p className="text-[12px] text-t5 font-sans italic">
+          <p className="text-[12px] text-t4 font-sans italic">
             {result.structuralImpact === "high"
               ? `"${result.removedEntityName}" is a load-bearing entity. Removing it disconnects ${result.newlyOrphanedEntities.length} entities and breaks ${result.cascadeBreaks.length} cascade chains.`
               : result.structuralImpact === "low"

@@ -322,7 +322,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
   if (error || !codexData) {
     return (
       <div className="p-3">
-        <p className="font-mono text-[12px] uppercase tracking-wider text-sf-crimson/60">
+        <p className="font-mono text-[12px] uppercase tracking-wider text-sf-crimson-text">
           Registry unavailable.
         </p>
       </div>
@@ -335,7 +335,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
       <div className="px-3 pt-2 pb-1">
         <button
           onClick={onCollapse}
-          className="sf-fill-sweep sf-fill-sweep--secondary w-full flex items-center justify-center h-6 border border-sf-border text-t3/40 hover:text-t2 transition-colors"
+          className="sf-fill-sweep sf-fill-sweep--secondary w-full flex items-center justify-center h-6 border border-sf-line-interactive text-t3 hover:text-t2 transition-colors"
           aria-label="Collapse Registry"
         >
           <span className="text-[12px]">◀</span>
@@ -348,7 +348,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
         className="px-3 py-1.5 text-left flex items-center gap-2"
       >
         {layoutContext?.worldIcon && (
-          <WorldIconRenderer iconId={layoutContext.worldIcon} className="w-4 h-4 text-primary/60 shrink-0" />
+          <WorldIconRenderer iconId={layoutContext.worldIcon} className="w-4 h-4 text-primary shrink-0" />
         )}
         {/* The world's own name, in the writer's voice — not a system label. */}
         <span className="font-serif text-[17px] italic text-t1 block truncate">
@@ -360,7 +360,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
       <button
         type="button"
         onClick={() => navigate(`/worlds/${worldId}#notes`)}
-        className="px-3 py-1 w-full text-left flex items-center gap-2 text-t3/40 hover:text-t2 transition-colors"
+        className="px-3 py-1 w-full text-left flex items-center gap-2 text-t3 hover:text-t2 transition-colors"
       >
         <FileText className="w-3.5 h-3.5" />
         <span className="font-serif text-[14px] italic">World notes</span>
@@ -380,7 +380,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
           onClick={() => handleGroupByChange("cascade")}
           className={`flex items-center gap-1 px-2 py-1 text-[12px] uppercase tracking-[1.5px] transition-colors ${
             groupBy === "cascade"
-              ? "text-teal bg-teal/8 border border-teal/20"
+              ? "text-sf-teal bg-sf-teal/8 border border-sf-teal"
               : "text-t4 hover:text-t3"
           }`}
           title="Group by cascade layer"
@@ -392,7 +392,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
           onClick={() => handleGroupByChange("entity")}
           className={`flex items-center gap-1 px-2 py-1 text-[12px] uppercase tracking-[1.5px] transition-colors ${
             groupBy === "entity"
-              ? "text-teal bg-teal/8 border border-teal/20"
+              ? "text-sf-teal bg-sf-teal/8 border border-sf-teal"
               : "text-t4 hover:text-t3"
           }`}
           title="Group by entity type"
@@ -418,8 +418,8 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
                 }
                 className={`flex items-center gap-1 px-1.5 py-0.5 text-[12px] tracking-wider border transition-colors ${
                   activeTags.includes(tag)
-                    ? "bg-teal/10 border-teal/25 text-teal"
-                    : "border-sf-border text-t4 hover:text-t3"
+                    ? "bg-sf-teal/10 border-sf-teal text-sf-teal"
+                    : "border-sf-line-interactive text-t4 hover:text-t3"
                 }`}
               >
                 <Tag className="w-2.5 h-2.5" />
@@ -480,7 +480,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
             filterElements(codexData.customEntries).length === 0;
           return allEmpty ? (
             <div className="px-3 py-6 text-center">
-              <p className="font-mono text-[12px] uppercase tracking-wider text-t3/30">
+              <p className="font-mono text-[12px] uppercase tracking-wider text-t4">
                 No matches found
               </p>
             </div>
@@ -528,11 +528,11 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
       {/* Default view setting */}
       <div className="px-3 pb-2">
         <div className="flex items-center gap-2">
-          <span className="font-mono text-[12px] uppercase tracking-wider text-t3/30 whitespace-nowrap">
+          <span className="font-mono text-[12px] uppercase tracking-wider text-t4 whitespace-nowrap">
             Default view:
           </span>
           <Select value={defaultView} onValueChange={handleDefaultViewChange}>
-            <SelectTrigger className="h-5 text-[12px] flex-1 border-sf-border bg-transparent">
+            <SelectTrigger className="h-5 text-[12px] flex-1 border-sf-line-interactive bg-transparent">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>

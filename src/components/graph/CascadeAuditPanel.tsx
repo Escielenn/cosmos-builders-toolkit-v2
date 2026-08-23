@@ -55,12 +55,12 @@ function AuditTreeNode({
     <div style={{ paddingLeft: depth > 0 ? 12 : 0 }}>
       <div className="flex items-start gap-1.5 py-0.5 group">
         {depth > 0 && (
-          <span className="text-[12px] text-t5 mt-0.5 shrink-0">
+          <span className="text-[12px] text-t4 mt-0.5 shrink-0">
             {node.connectionLabel}
           </span>
         )}
         {depth > 0 && (
-          <ChevronRight className="w-2.5 h-2.5 text-t5 mt-0.5 shrink-0" />
+          <ChevronRight className="w-2.5 h-2.5 text-t4 mt-0.5 shrink-0" />
         )}
         <button
           type="button"
@@ -138,13 +138,13 @@ export function CascadeAuditPanel({
       }}
     >
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-sf-border">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-sf-line-interactive">
         <div className="flex items-center gap-2">
           <span
             className="w-2 h-2 rounded-full"
             style={{ background: rootColor }}
           />
-          <h3 className="font-heading text-[12px] uppercase tracking-[2px] text-teal">
+          <h3 className="font-heading text-[12px] uppercase tracking-[2px] text-sf-teal">
             Cascade Audit
           </h3>
         </div>
@@ -180,7 +180,7 @@ export function CascadeAuditPanel({
             <span className="text-t4">Depth:</span>{" "}
             <span className="text-t1">{result.cascadeDepth} stages</span>
             {result.cascadeDepth === 6 && (
-              <span className="text-teal ml-1">(full cascade)</span>
+              <span className="text-sf-teal ml-1">(full cascade)</span>
             )}
           </div>
           <div>
@@ -203,14 +203,14 @@ export function CascadeAuditPanel({
           <button
             type="button"
             onClick={handleHighlightAll}
-            className="flex-1 text-[12px] font-sans text-teal uppercase tracking-[1px] py-1.5 border border-teal/20 hover:bg-teal/5 transition-colors text-center"
+            className="flex-1 text-[12px] font-sans text-sf-teal uppercase tracking-[1px] py-1.5 border border-sf-teal hover:bg-sf-teal/5 transition-colors text-center"
           >
             Highlight cascade
           </button>
           <button
             type="button"
             onClick={() => result && exportCascadeAuditAsMarkdown(result)}
-            className="flex items-center gap-1 text-[12px] font-sans text-t3 uppercase tracking-[1px] py-1.5 px-3 border border-sf-border hover:bg-white/5 transition-colors"
+            className="flex items-center gap-1 text-[12px] font-sans text-t3 uppercase tracking-[1px] py-1.5 px-3 border border-sf-line-interactive hover:bg-white/5 transition-colors"
           >
             <Download className="w-3 h-3" />
             MD
@@ -226,11 +226,11 @@ export function CascadeAuditPanel({
             </h4>
           </div>
           {result.upstream.length === 0 ? (
-            <p className="text-[12px] text-t5 font-sans italic pl-4">
+            <p className="text-[12px] text-t4 font-sans italic pl-4">
               No upstream connections found.
             </p>
           ) : (
-            <div className="pl-2 border-l border-azure/15">
+            <div className="pl-2 border-l border-sf-azure">
               {result.upstream.map((node) => (
                 <AuditTreeNode
                   key={node.entityId}
@@ -252,11 +252,11 @@ export function CascadeAuditPanel({
             </h4>
           </div>
           {result.downstream.length === 0 ? (
-            <p className="text-[12px] text-t5 font-sans italic pl-4">
+            <p className="text-[12px] text-t4 font-sans italic pl-4">
               No downstream cascade effects yet.
             </p>
           ) : (
-            <div className="pl-2 border-l border-amber-400/15">
+            <div className="pl-2 border-l border-sf-amber">
               {result.downstream.map((node) => (
                 <AuditTreeNode
                   key={node.entityId}

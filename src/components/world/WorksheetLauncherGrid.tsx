@@ -113,7 +113,7 @@ export default function WorksheetLauncherGrid({
                     <SvgIcon className="w-8 h-8 rounded-sm shrink-0" />
                   ) : (
                     <div className="w-8 h-8 rounded-sm bg-primary/10 flex items-center justify-center shrink-0">
-                      <FileSpreadsheet className="w-4 h-4 text-primary/50" />
+                      <FileSpreadsheet className="w-4 h-4 text-primary" />
                     </div>
                   )}
                   <div className="flex-1 min-w-0">
@@ -122,8 +122,8 @@ export default function WorksheetLauncherGrid({
                     </span>
                     {linked ? (
                       <div className="flex items-center gap-1 mt-0.5">
-                        <ExternalLink className="w-2.5 h-2.5 text-primary/40" />
-                        <span className="text-[12px] text-primary/50 truncate">
+                        <ExternalLink className="w-2.5 h-2.5 text-primary" />
+                        <span className="text-[12px] text-primary truncate">
                           {linked.worksheetTitle || "Open Worksheet"}
                         </span>
                       </div>

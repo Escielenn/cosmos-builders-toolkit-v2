@@ -23,11 +23,11 @@ export function EntityHistory({
 
   return (
     <div className={cn("space-y-0.5", className)}>
-      <p className="font-mono text-[12px] text-t5 tracking-[0.5px]">
+      <p className="font-mono text-[12px] text-t4 tracking-[0.5px]">
         Created {formatDistanceToNow(createdDate, { addSuffix: true })}
       </p>
       {wasModified && (
-        <p className="font-mono text-[12px] text-t5 tracking-[0.5px]">
+        <p className="font-mono text-[12px] text-t4 tracking-[0.5px]">
           Last modified {formatDistanceToNow(updatedDate, { addSuffix: true })}
         </p>
       )}
