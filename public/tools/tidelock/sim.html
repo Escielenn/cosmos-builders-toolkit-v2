@@ -1566,8 +1566,10 @@ function animate(ts){
   }
   renderDirty=false;
 
-  // Smooth zoom
-  camDist+=(targetDist-camDist)*0.1;
+  // Smooth zoom — delta-time exponential (framerate independent), matching
+  // every other sim's camera smoothing instead of a fixed per-frame fraction.
+  const zoomSmoothing=1-Math.pow(0.0001,dt/1000);
+  camDist+=(targetDist-camDist)*zoomSmoothing;
 
   // Lerp presets
   updateLerp(dt);

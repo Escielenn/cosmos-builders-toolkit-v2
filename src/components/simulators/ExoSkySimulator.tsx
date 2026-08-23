@@ -1224,6 +1224,17 @@ export default function ExoSkyV2({
       const extinctionMod = _showAtmosphere ? _atmo.extinction * _atmoDensity * 2.5 : 0;
       let bgCount = 0;
       const bgMax = 12000;
+      /**
+       * Batched by quantised (colour, alpha) instead of drawn star-by-star.
+       * Profiling (window.__exoskyProfile) showed this stage dominating the
+       * frame even when nothing else was visibly costly — up to bgMax stars
+       * each got their own `ctx.fillStyle = <fresh string>` before this fix,
+       * and a fillStyle change is a colour-parse + canvas state change, not a
+       * free assignment. Colour and twinkle-alpha are quantised into a small
+       * number of buckets (invisible at 0.7-1.5px) so fillStyle changes a
+       * few dozen times a frame instead of up to twelve thousand.
+       */
+      const bgBatches = new Map<string, { style: string; pts: number[] }>();
 
       // Determine which RA/Dec bins overlap the current view
       const halfFov = _fov * 0.6;
@@ -1302,10 +1313,27 @@ export default function ExoSkyV2({
 
             const size = eMag < 4.5 ? 1.5 : eMag < 5.5 ? 1.0 : 0.7;
 
-            ctx.fillStyle = `rgba(${r},${g},${b},${finalAlpha})`;
-            ctx.fillRect(p.x - size * 0.5, p.y - size * 0.5, size, size);
+            const qr = Math.round(r / 16) * 16;
+            const qg = Math.round(g / 16) * 16;
+            const qb = Math.round(b / 16) * 16;
+            const qa = Math.round(finalAlpha / 0.04) * 0.04;
+            const key = `${qr},${qg},${qb},${qa}`;
+            let batch = bgBatches.get(key);
+            if (!batch) {
+              batch = { style: `rgba(${qr},${qg},${qb},${qa})`, pts: [] };
+              bgBatches.set(key, batch);
+            }
+            batch.pts.push(p.x - size * 0.5, p.y - size * 0.5, size);
             bgCount++;
           }
+        }
+      }
+
+      for (const { style, pts } of bgBatches.values()) {
+        ctx.fillStyle = style;
+        for (let k = 0; k < pts.length; k += 3) {
+          const s = pts[k + 2];
+          ctx.fillRect(pts[k], pts[k + 1], s, s);
         }
       }
 

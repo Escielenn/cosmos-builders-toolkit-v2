@@ -1669,7 +1669,10 @@ const CAM_EPSILON = 0.0001;
 
 function animate(time) {
   requestAnimationFrame(animate);
-  const dt = (time - lastTime) / 1000;
+  // Clamped like every other sim's loop: an unthrottled dt after the tab is
+  // backgrounded snaps the planet's rotation and camera by however long it
+  // was away, instead of resuming smoothly.
+  const dt = Math.min((time - lastTime) / 1000, 0.1);
   lastTime = time;
 
   // --- Process dirty flags (batched — at most once per frame) ---
