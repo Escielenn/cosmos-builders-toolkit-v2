@@ -2504,7 +2504,7 @@ html {
 
 /* Wiki-link inline node */
 .sf-wiki-link {
-  color: #5B8DEF;
+  color: var(--sf-stellar-text);
   cursor: pointer;
   text-decoration: none;
   position: relative;
@@ -2519,7 +2519,7 @@ html {
   left: 0;
   width: 100%;
   height: 1px;
-  background: #5B8DEF;
+  background: var(--sf-stellar);
   transform: scaleX(0);
   transform-origin: left;
   transition: transform 0.3s cubic-bezier(0.19, 1, 0.22, 1);
@@ -2530,12 +2530,12 @@ html {
 }
 
 .sf-wiki-link:hover {
-  color: #7BA4F7;
+  color: var(--sf-stellar-text);
 }
 
 /* Dead link (element was deleted) */
 .sf-wiki-link[data-dead="true"] {
-  color: #FFB347;
+  color: var(--sf-amber-warm-text);
   text-decoration: line-through;
   cursor: default;
 }
@@ -2548,8 +2548,8 @@ html {
 .sf-wiki-autocomplete {
   position: fixed;
   z-index: 1000;
-  background: #0C1019;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--sf-surface-elevated);
+  border: 1px solid var(--sf-line);
   min-width: 280px;
   max-height: 320px;
   overflow-y: auto;
@@ -2574,14 +2574,14 @@ html {
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 1px;
-  color: rgba(255, 255, 255, 0.3);
+  color: var(--t4);
   min-width: 60px;
 }
 
 .sf-wiki-autocomplete-title {
   font-family: var(--sf-font-body, 'DM Sans', sans-serif);
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--t1);
 }
 
 .sf-wiki-autocomplete-empty {
@@ -2590,7 +2590,7 @@ html {
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 1px;
-  color: rgba(255, 255, 255, 0.25);
+  color: var(--t4);
   text-align: center;
 }
 
@@ -2602,8 +2602,8 @@ html {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  background: color-mix(in srgb, var(--mention-color, #00FF88) 6%, transparent);
-  border: 1px solid color-mix(in srgb, var(--mention-color, #00FF88) 15%, transparent);
+  background: color-mix(in srgb, var(--mention-color, var(--sf-emerald)) 6%, transparent);
+  border: 1px solid color-mix(in srgb, var(--mention-color, var(--sf-emerald)) 15%, transparent);
   border-radius: 3px;
   padding: 1px 6px;
   cursor: pointer;
@@ -2613,8 +2613,8 @@ html {
 }
 
 .sf-entity-mention:hover {
-  background: color-mix(in srgb, var(--mention-color, #00FF88) 12%, transparent);
-  border-color: color-mix(in srgb, var(--mention-color, #00FF88) 25%, transparent);
+  background: color-mix(in srgb, var(--mention-color, var(--sf-emerald)) 12%, transparent);
+  border-color: color-mix(in srgb, var(--mention-color, var(--sf-emerald)) 25%, transparent);
 }
 
 .sf-entity-mention-dot {
@@ -2629,7 +2629,7 @@ html {
   font-family: var(--sf-font-body, 'DM Sans', sans-serif);
   font-size: 13px;
   font-weight: 500;
-  color: var(--mention-color, #00FF88);
+  color: var(--mention-color, var(--sf-emerald));
   line-height: 1.4;
 }
 
@@ -2640,8 +2640,8 @@ html {
 .sf-entity-mention-list {
   position: fixed;
   z-index: 1000;
-  background: #0C1019;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--sf-surface-elevated);
+  border: 1px solid var(--sf-line);
   min-width: 260px;
   max-width: 360px;
   max-height: 320px;
@@ -2659,7 +2659,7 @@ html {
 
 .sf-entity-mention-item:hover,
 .sf-entity-mention-item.selected {
-  background: rgba(0, 255, 136, 0.06);
+  background: color-mix(in srgb, var(--sf-emerald) 6%, transparent);
 }
 
 .sf-entity-mention-item-dot {
@@ -2673,7 +2673,7 @@ html {
 .sf-entity-mention-item-name {
   font-family: var(--sf-font-body, 'DM Sans', sans-serif);
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--t1);
   flex: 1;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -2685,7 +2685,7 @@ html {
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 1px;
-  color: rgba(255, 255, 255, 0.3);
+  color: var(--t4);
   flex-shrink: 0;
 }
 
@@ -2695,7 +2695,7 @@ html {
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 1px;
-  color: rgba(255, 255, 255, 0.25);
+  color: var(--t4);
   text-align: center;
 }
 
@@ -2718,8 +2718,8 @@ html {
 
 /* Wiki infobox */
 .sf-infobox {
-  background: #0C1019;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--sf-surface-elevated);
+  border: 1px solid var(--sf-line-hairline);
   border-top: 2px solid rgba(var(--sf-world-accent-rgb, 61, 255, 205), 0.5);
   padding: 16px 20px;
   margin: 24px 0;
@@ -2737,21 +2737,21 @@ html {
   display: flex;
   justify-content: space-between;
   padding: 4px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid var(--sf-line-hairline);
 }
 
 .sf-infobox-label {
   font-family: var(--sf-font-body, 'DM Sans', sans-serif);
   font-size: 12px;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.35);
+  color: var(--t4);
   letter-spacing: 0.5px;
 }
 
 .sf-infobox-value {
   font-family: var(--sf-font-mono, 'JetBrains Mono', monospace);
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--t1);
 }
 
 .sf-infobox-source {
@@ -2760,10 +2760,10 @@ html {
   align-items: center;
   margin-top: 12px;
   padding-top: 8px;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: 1px solid var(--sf-line-hairline);
   font-family: var(--sf-font-mono, 'JetBrains Mono', monospace);
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.25);
+  color: var(--t4);
 }
 
 /* Wiki content rendering */
@@ -2771,7 +2771,7 @@ html {
   font-family: var(--sf-font-body, 'DM Sans', sans-serif);
   font-size: 15px;
   line-height: 1.7;
-  color: rgba(255, 255, 255, 0.78);
+  color: var(--t2);
   max-width: 720px;
   margin: 0 auto;
   padding: 0 24px;
@@ -2781,7 +2781,7 @@ html {
   font-family: var(--sf-font-heading, 'Jura', sans-serif);
   font-size: 20px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.92);
+  color: var(--t1);
   margin-top: 32px;
   margin-bottom: 12px;
   letter-spacing: 1px;
@@ -2791,7 +2791,7 @@ html {
   font-family: var(--sf-font-heading, 'Jura', sans-serif);
   font-size: 16px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--t1);
   margin-top: 24px;
   margin-bottom: 8px;
 }
@@ -2803,13 +2803,13 @@ html {
 .sf-wiki-content blockquote {
   border-left: 2px solid rgba(var(--sf-world-accent-rgb, 61, 255, 205), 0.3);
   padding-left: 16px;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--t3);
   font-style: italic;
   margin: 16px 0;
 }
 
 .sf-wiki-content a:not(.sf-wiki-link) {
-  color: #5B8DEF;
+  color: var(--sf-stellar-text);
   text-decoration: underline;
 }
 
@@ -2825,7 +2825,7 @@ html {
 
 .sf-wiki-content hr {
   border: none;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: 1px solid var(--sf-line-hairline);
   margin: 32px 0;
 }
 
@@ -2849,12 +2849,12 @@ html {
   font-family: var(--sf-font-display, 'MD Nichrome', sans-serif);
   font-size: clamp(24px, 4vw, 36px);
   font-weight: 300;
-  color: rgba(255, 255, 255, 0.95);
+  color: var(--t1);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   margin-bottom: 12px;
   padding-bottom: 12px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid var(--sf-line-hairline);
 }
 
 /* Editable title input */
@@ -2863,14 +2863,14 @@ html {
   width: 100%;
   background: transparent;
   border: none;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid var(--sf-line-interactive);
   outline: none;
   padding: 0 0 12px;
   caret-color: rgba(var(--sf-world-accent-rgb, 61, 255, 205), 0.7);
   transition: border-color 200ms ease;
 }
 .sf-wiki-title--editable::placeholder {
-  color: rgba(255, 255, 255, 0.15);
+  color: var(--t3);
 }
 .sf-wiki-title--editable:focus {
   border-bottom-color: rgba(var(--sf-world-accent-rgb, 61, 255, 205), 0.3);
@@ -2881,7 +2881,7 @@ html {
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 2px;
-  color: rgba(255, 255, 255, 0.3);
+  color: var(--t4);
   margin-bottom: 20px;
 }
 
@@ -2895,7 +2895,7 @@ html {
   margin-top: 36px;
   margin-bottom: 14px;
   padding-bottom: 8px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid var(--sf-line-hairline);
 }
 
 .sf-wiki-section-header::before {
@@ -2917,7 +2917,7 @@ html {
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 1px;
-  color: rgba(255, 255, 255, 0.3);
+  color: var(--t4);
   min-width: 100px;
 }
 
@@ -2928,7 +2928,7 @@ html {
   gap: 8px;
   padding: 4px 0;
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--t3);
 }
 
 /* Draft prompt */
@@ -2938,7 +2938,7 @@ html {
   font-family: var(--sf-font-mono, 'JetBrains Mono', monospace);
   font-size: 12px;
   letter-spacing: 0.5px;
-  color: rgba(255, 255, 255, 0.3);
+  color: var(--t4);
   line-height: 1.8;
 }
 
