@@ -53,7 +53,7 @@ import {
 import { Trash2, RotateCcw, X, FolderInput, MoreVertical, Plus } from "lucide-react";
 import { useWriteDoc, useLatestDoc, rollWordSession, countWords } from "@/hooks/use-write-doc";
 import { useSessionWords } from "@/hooks/use-session-words";
-import { useWritingPreferences } from "@/hooks/use-writing-preferences";
+import { useWritingPreferences, type WritingFont } from "@/hooks/use-writing-preferences";
 import { useWritingPins } from "@/hooks/use-writing-pins";
 import { readDocMeta } from "@/lib/document-meta";
 import type { Entity } from "@/services/entity-graph-types";
@@ -202,8 +202,22 @@ export default function Write(): JSX.Element {
 
   // Today's progress against the goal the writer already set in Studio.
   const { sessionWords, refresh: refreshSessionWords } = useSessionWords();
-  const { preferences } = useWritingPreferences();
+  const { preferences, updatePreferences } = useWritingPreferences();
   const dailyGoalWords = preferences.dailyGoalWords || 500;
+
+  // Line-spacing + font are applied via inherited CSS on a wrapper div (the
+  // editor takes no style prop), matching the pattern from the pre-Studio
+  // writing surface this replaced.
+  const editorStyle = useMemo(() => ({
+    lineHeight: preferences.lineSpacing === "2" ? 2 : preferences.lineSpacing === "1.5" ? 1.625 : 1.5,
+    fontFamily:
+      preferences.writingFont === "Georgia" ? "Georgia, serif" :
+      preferences.writingFont === "Merriweather" ? "'Merriweather', Georgia, serif" :
+      preferences.writingFont === "Times New Roman" ? "'Times New Roman', Times, serif" :
+      preferences.writingFont === "Courier New" ? "'Courier New', Courier, monospace" :
+      preferences.writingFont === "Lora" ? "'Lora', Georgia, serif" :
+      undefined,
+  }), [preferences.lineSpacing, preferences.writingFont]);
   const goalPct = Math.min(100, Math.round((sessionWords / dailyGoalWords) * 100));
   const goalMet = sessionWords >= dailyGoalWords;
 
@@ -725,17 +739,58 @@ export default function Write(): JSX.Element {
             )}
             <div className="my-6 text-center text-t4" aria-hidden="true">· · ·</div>
             {doc && (
-              <StellarForgeEditor
-                onEditorReady={setEditorInstance}
-                key={doc.id}
-                content={doc.content ?? ""}
-                onChange={onContentChange}
-                worldId={worldId}
-                preset="full"
-                placeholder="Begin writing. Use @ to mention entities, [[ to link wiki pages…"
-                className="sf-writing-serif"
-                minHeight="55vh"
-              />
+              <div className="mb-4 flex flex-wrap items-center gap-4">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[11px] font-sans font-medium uppercase tracking-[1.5px] text-t4">Spacing</span>
+                  <div className="flex">
+                    {(["1", "1.5", "2"] as const).map((val) => (
+                      <button
+                        key={val}
+                        onClick={() => updatePreferences({ lineSpacing: val })}
+                        title={`${val === "1" ? "1x" : val === "1.5" ? "1.5x" : "2x"} line spacing`}
+                        className={`border px-2 py-1 text-[12px] font-mono transition-colors ${val !== "1" ? "-ml-px" : ""} ${
+                          preferences.lineSpacing === val
+                            ? "border-sf-teal text-sf-teal"
+                            : "border-sf-line-interactive text-t4 hover:text-t2"
+                        }`}
+                      >
+                        {val === "1" ? "1x" : val === "1.5" ? "1.5x" : "2x"}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[11px] font-sans font-medium uppercase tracking-[1.5px] text-t4">Font</span>
+                  <select
+                    value={preferences.writingFont}
+                    onChange={(e) => updatePreferences({ writingFont: e.target.value as WritingFont })}
+                    aria-label="Editor font"
+                    className="border border-sf-line-interactive bg-transparent px-2 py-1 text-[12px] text-t2 outline-none focus-visible:border-sf-teal"
+                  >
+                    <option value="DM Sans">DM Sans</option>
+                    <option value="Georgia">Georgia</option>
+                    <option value="Times New Roman">Times New Roman</option>
+                    <option value="Merriweather">Merriweather</option>
+                    <option value="Lora">Lora</option>
+                    <option value="Courier New">Courier New</option>
+                  </select>
+                </div>
+              </div>
+            )}
+            {doc && (
+              <div style={editorStyle}>
+                <StellarForgeEditor
+                  onEditorReady={setEditorInstance}
+                  key={doc.id}
+                  content={doc.content ?? ""}
+                  onChange={onContentChange}
+                  worldId={worldId}
+                  preset="full"
+                  placeholder="Begin writing. Use @ to mention entities, [[ to link wiki pages…"
+                  className="sf-writing-serif"
+                  minHeight="55vh"
+                />
+              </div>
             )}
             {!doc && !docLoading && (
               <p className="font-serif text-[15px] italic text-t4">Select or create a document.</p>

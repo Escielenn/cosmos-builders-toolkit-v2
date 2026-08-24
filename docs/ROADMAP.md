@@ -112,19 +112,28 @@ ripgrep times out, and `.git/index.lock` strands as a zero-byte file.
       writing a check**: an earlier draft checked `moonCount`, which nothing
       records, so 3 of 5 checks were dead code.
 
-#### DECISION NEEDED — one writing surface
-`WorldWritingSpace.tsx` (865 lines) is imported at `App.tsx:62` but **never
-rendered as a route**; `/worlds/:worldId/write` goes to `WorldWriteRedirect`.
-Zen mode with Esc, version history, Ctrl+S, and font/line-spacing controls all
-live there, unreachable. Recommendation: **port-then-delete** — keep `Write.tsx`
-(the surface users actually reach), port the four capabilities, then delete the
-file. Ctrl+S and Esc are already ported (0.6874).
-- [ ] Sign off on port-then-delete, then port font + line-spacing prefs
-- [ ] Port version history **only after** fixing its three defects: snapshots
-      capture the content as of document *open* (the editor writes to a ref React
-      never sees), the 5-minute auto-snapshot condition is permanently false, and
-      a failed migration deletes local history unconditionally (data loss)
-- [ ] Delete `WorldWritingSpace.tsx` + its dead import
+#### RESOLVED — one writing surface
+`WorldWritingSpace.tsx` was imported at `App.tsx` but never rendered as a
+route; `/worlds/:worldId/write` went to `WorldWriteRedirect`. Ctrl+S and Esc
+(focus mode) were already ported (0.6874).
+- [x] Port font + line-spacing prefs (2026-08-23) — moved onto the shared
+      `useWritingPreferences` hook (cross-device via Supabase auth metadata)
+      rather than reviving the old page's bespoke per-world localStorage key.
+      `Write.tsx` gets a Spacing/Font bar above the editor.
+- [x] Port ChapterTree's rename/delete UX into Write.tsx's binder — it had
+      drag-and-drop but no rename/delete; ChapterTree had the reverse.
+      Consolidated onto Write.tsx's binder, which keeps the drag-and-drop.
+- [x] Delete `WorldWritingSpace.tsx` + its six single-purpose dependents
+      (ChapterTree, WritingSidebar, WritingTopBar, WritingReferencePanel,
+      WritingMoodboardStrip, EntityHoverCard) + the dead `App.tsx` import
+      (2026-08-23)
+- [ ] Version history was never ported and still isn't — the old
+      implementation has three real defects (snapshots capture content as of
+      document *open*, the 5-minute auto-snapshot condition is permanently
+      false, a failed migration deletes local history unconditionally). Fix
+      those first if this gets rebuilt; do not port as-is. The old code is
+      recoverable from git history (pre-`e2a8a4c0`) as a reference, not a
+      base to copy from.
 
 #### Blocked on the StellarForge II schema gate
 - [ ] Cloud-synced pins — needs a table/payload column; pins are localStorage-only
@@ -264,4 +273,4 @@ file. Ctrl+S and Esc are already ported (0.6874).
 
 ---
 
-*Last updated: 2026-08-20*
+*Last updated: 2026-08-23*
