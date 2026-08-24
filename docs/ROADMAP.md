@@ -150,7 +150,10 @@ route; `/worlds/:worldId/write` went to `WorldWriteRedirect`. Ctrl+S and Esc
       *entry creation*, so a novelist editing one chapter daily shows 0 words
 - [ ] Per-document metadata (POV, status, synopsis) — `metadata: {}` is written
       at creation and never read
-- [ ] Find/replace, typewriter mode, a scene tier below chapters, per-doc export
+- [x] Find/replace (Ctrl+F, `FindReplaceBar`) and per-doc export (docx/md/txt)
+      both exist and are wired in `Write.tsx` — stale entry, corrected 2026-08-24
+- [ ] Typewriter mode (keep cursor vertically centered while typing), a scene
+      tier below chapters
 
 ### World Display
 - [x] World Showcase page (`/worlds/:id/showcase`) (2026-04-04)
