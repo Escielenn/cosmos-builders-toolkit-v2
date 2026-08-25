@@ -12,7 +12,6 @@ import {
   Trash2,
   GitBranchPlus,
   TreePine,
-  AlignVerticalSpaceAround,
   Circle,
   X,
   Pencil,
@@ -42,8 +41,6 @@ export interface EntityTreeViewProps {
   /** Selects and expands the path to this entity on mount (e.g. from a ?focus= deep link). */
   initialFocusId?: string | null;
 }
-
-type TreeLayout = "horizontal" | "vertical" | "radial";
 
 // ---------------------------------------------------------------------------
 // Drag-and-drop state (shared via props through tree)
@@ -404,11 +401,6 @@ function ContextMenu({
 
   const items: ContextMenuItem[] = [
     {
-      label: "Focus in Graph",
-      icon: Circle,
-      action: () => { onFocus(state.entityId); onClose(); },
-    },
-    {
       label: "Edit Entity",
       icon: Pencil,
       action: () => { onSelectEntity(state.entityId); onClose(); },
@@ -764,7 +756,6 @@ export function EntityTreeView({
   onEditEntity,
   initialFocusId,
 }: EntityTreeViewProps) {
-  const [layout, setLayout] = useState<TreeLayout>("vertical");
   const [expandedIds, setExpandedIds] = useState<Set<string>>(() => {
     // Start with root nodes expanded
     const roots = entities
@@ -864,6 +855,11 @@ export function EntityTreeView({
   const handleDrop = useCallback(
     (e: React.DragEvent, targetId: string) => {
       e.preventDefault();
+      // Without this, the drop event bubbles past this row to the
+      // scrollable container's own onDrop (handleDropOnEmpty below), which
+      // reparents the same entity to root immediately after this handler
+      // reparents it here - every drag-to-reparent silently undid itself.
+      e.stopPropagation();
       const draggedId = dragState.draggedId;
       setDragState({ draggedId: null, dragOverId: null, dragOverValid: true });
 
@@ -916,35 +912,6 @@ export function EntityTreeView({
           borderBottom: "1px solid var(--sf-line-hairline)",
         }}
       >
-        {/* Layout toggle */}
-        <div
-          className="flex items-center gap-0.5 p-0.5"
-          style={{
-            background: "rgba(255,255,255,0.03)",
-            border: "1px solid var(--sf-line-hairline)",
-          }}
-        >
-          {([
-            { key: "horizontal" as TreeLayout, icon: AlignVerticalSpaceAround, label: "Horizontal" },
-            { key: "vertical" as TreeLayout, icon: TreePine, label: "Vertical" },
-            { key: "radial" as TreeLayout, icon: Circle, label: "Radial" },
-          ]).map(({ key, icon: Icon, label }) => (
-            <button
-              key={key}
-              onClick={() => setLayout(key)}
-              className={`flex items-center gap-1 px-2 py-1 text-[12px] font-sans uppercase tracking-[1px] transition-colors ${
-                layout === key
-                  ? "text-t1 bg-white/5"
-                  : "text-t4 hover:text-t2"
-              }`}
-              title={label}
-            >
-              <Icon className="w-3 h-3" />
-              <span className="hidden sm:inline">{label}</span>
-            </button>
-          ))}
-        </div>
-
         {/* Expand / collapse */}
         <div className="flex items-center gap-1">
           <button
