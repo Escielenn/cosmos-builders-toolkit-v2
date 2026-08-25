@@ -13,6 +13,122 @@ interface ChangelogEntry {
 
 const changelog: ChangelogEntry[] = [
   {
+    version: "0.7342",
+    date: "August 2026",
+    type: "improvement",
+    title: "Interface consistency pass",
+    changes: [
+      "Save, Load, and Publish now behave and look the same way in the same order across all five simulators, instead of each one doing it slightly differently.",
+      "Pro badges were two different visual styles depending on which page you were on. Now there's one.",
+      "Tool counts across the site now always match the real number instead of drifting out of sync as new tools were added.",
+      "Worlds, Collection, the wiki index, and World Connections now read in the same warmer voice as Studio and the writing surface, instead of switching to a colder, more clinical tone partway through your session.",
+    ],
+  },
+  {
+    version: "0.7330",
+    date: "August 2026",
+    type: "fix",
+    title: "Simulators run smoother",
+    changes: [
+      "ExoSky's night sky used to visibly stutter while you dragged or zoomed around, especially with a lot of stars on screen. The star field render was doing far more work than it needed to. Fixed, and dragging now feels as smooth as sitting still.",
+      "ExoForge's planet could jump or spin oddly if you switched away and came back to the tab. Fixed.",
+      "Tidelock's zoom now feels the same regardless of your monitor's refresh rate.",
+      "All five simulators now work properly on a phone: buttons are big enough to tap, text is legible, and panels no longer cover the thing you're trying to look at.",
+      "Rogue's control panel and playback controls (launch, pause, step, rewind) are laid out consistently with the other simulators now, instead of crowding the bottom-left corner.",
+    ],
+  },
+  {
+    version: "0.7317",
+    date: "August 2026",
+    type: "fix",
+    title: "Your wiki pages were hiding your data",
+    changes: [
+      "Wiki pages for planets, species, ships, and more were carrying over almost none of the data you'd entered in the actual tool. A mismatch between two different maps of where that data lives meant most fields came back empty, and a couple even showed the literal text \"[object Object]\" instead of your content. Fixed across nine tools.",
+      "Clicking a node in the Worksheet Graph used to do nothing, even though it promised to open that worksheet. It opens the worksheet now. The graph also explains itself when your worksheets exist but nothing links them together yet, instead of just showing a scatter of disconnected dots.",
+      "The Mind Map view and every wiki page also got a contrast and legibility pass, matching the rest of the site.",
+    ],
+  },
+  {
+    version: "0.7305",
+    date: "August 2026",
+    type: "feature",
+    title: "Publish a planet, and it travels with you",
+    changes: [
+      "Build a system in Solaris, publish a planet, and open it directly in ExoSky or Tidelock, already loaded, without re-entering a single number.",
+    ],
+  },
+  {
+    version: "0.7295",
+    date: "August 2026",
+    type: "fix",
+    title: "A pass through the loose ends",
+    changes: [
+      "Saving a worksheet from a tool page with no worlds yet was a dead end. You can now create a world right from that dialog.",
+      "\"Pin to References\" said it worked but didn't actually save anything. It saves now.",
+      "Deleting a document forever now asks you to confirm first, matching how every other destructive action on the site already works.",
+      "A few places had two buttons doing the same job with slightly different behavior, Export most of all. Unified.",
+      "Studio's daily writing goal can now be set right from its own footer, instead of only from the separate Workshop page.",
+      "Assorted toasts and menu labels that mixed SHOUTING CAPS with ordinary sentence case in the same breath, smoothed out.",
+    ],
+  },
+  {
+    version: "0.7275",
+    date: "August 2026",
+    type: "improvement",
+    title: "Readability, continued",
+    changes: [
+      "A sitewide pass fixed the small-text, low-contrast, and hard-to-see-edge issues the first readability pass hadn't reached yet: worksheet tool pages, the writing surface, the wiki, the World Connections graph and Mind Map, and every simulator's control panel.",
+      "Every button, input, and panel edge now meets accessibility contrast guidelines, checked against their real backgrounds rather than assumed.",
+      "Text no longer renders smaller than a comfortable reading size anywhere on the site, with the one deliberate exception of faint background texture that was never meant to be read.",
+    ],
+  },
+  {
+    version: "0.7225",
+    date: "August 2026",
+    type: "feature",
+    title: "Rogue and Solaris, sharper controls",
+    changes: [
+      "Rogue rebuilt as a native part of the site rather than an embedded page, on the same tested physics underneath: launch, pause, step frame by frame, rewind, and inspect or follow any body with the camera.",
+      "Rogue and Solaris now share one keyboard: space to play or pause, number keys for camera views, and a few more, so learning one teaches you the other.",
+      "Rogue gained gravity vectors, arrows showing the actual pull each body feels, alongside the existing gravity lines. Solaris gained drag-to-reorbit and real planet textures.",
+      "Object labels in Rogue used to stop growing partway through the zoom range, so names became unreadable at high zoom even though everything else kept scaling. Fixed.",
+      "Solaris now has its own science page, laying out the orbital mechanics and the habitable-zone math it actually runs on, with citations.",
+    ],
+  },
+  {
+    version: "0.7214",
+    date: "August 2026",
+    type: "fix",
+    title: "Behind the scenes: reliability and security",
+    changes: [
+      "PDF export (Preview and Download) was crashing on every attempt over a font-embedding issue. It now uses a font built into the PDF format itself, so there's nothing to fail.",
+      "The Check tab, which compares your prose against the numbers your tools recorded, could get confused in worlds with more than one planet and flag a contradiction that wasn't really there. Fixed.",
+      "A routine security review tightened access on a few backend functions that had gaps, and confirmed the rest were already sound.",
+    ],
+  },
+  {
+    version: "0.7140",
+    date: "August 2026",
+    type: "feature",
+    title: "More of your tools reach the page",
+    changes: [
+      "Nine more tools now send their numbers into the writing inspector: propulsion travel times, your world's one big lie, a conlang's drift over centuries, gravity and spin for a rotating habitat, an expansion's dominant force and story hooks, and more.",
+      "Sensorium and Timeline join them. A timeline's events show up as individual, quotable facts now, not a single collapsed blob.",
+      "Every worksheet, not just simulators, can now be attached to a world from the tool itself.",
+      "The Check tab can compare your prose against a saved simulation too, not just your worksheets, so a described gravity that contradicts your own Tidelock or ExoForge save gets caught as well.",
+    ],
+  },
+  {
+    version: "0.7130",
+    date: "August 2026",
+    type: "fix",
+    title: "Saving and publishing simulations, made reliable",
+    changes: [
+      "Publishing a simulation to a world used to arrive with just its name and nothing else, no matter what the simulator actually showed. It now arrives with everything the simulator recorded.",
+      "The save toolbar could be gated behind the very thing it was meant to let you set, and a saved simulation could fail to reach the world it was saved to. Both fixed.",
+    ],
+  },
+  {
     version: "0.6950",
     date: "August 2026",
     type: "feature",
