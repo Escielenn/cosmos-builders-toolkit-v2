@@ -135,17 +135,22 @@ const SolarisSimulator = () => {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={requestSave}
-                className="bg-sf-teal/[0.12] border-sf-teal text-[#3DFFCD] hover:bg-sf-teal/25 hover:text-white text-[13px] uppercase tracking-wider h-8 px-3"
+                onClick={() => {
+                  // Read the simulator now. Publishing used to send whatever
+                  // the last Save left behind, which was usually nothing.
+                  refreshPayload();
+                  setPublishDialogOpen(true);
+                }}
+                className="bg-sf-teal/[0.12] border-sf-teal text-sf-teal-bright-text hover:bg-sf-teal/25 hover:text-white text-[13px] uppercase tracking-wider h-8 px-3"
               >
-                <Save className="w-3 h-3 mr-1" />
-                Save
+                <Rocket className="w-3 h-3 mr-1" />
+                Publish
               </Button>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => setLoadSheetOpen(true)}
-                className="bg-sf-teal/[0.12] border-sf-teal text-[#3DFFCD] hover:bg-sf-teal/25 hover:text-white text-[13px] uppercase tracking-wider h-8 px-3"
+                className="bg-sf-teal/[0.12] border-sf-teal text-sf-teal-bright-text hover:bg-sf-teal/25 hover:text-white text-[13px] uppercase tracking-wider h-8 px-3"
               >
                 <FolderOpen className="w-3 h-3 mr-1" />
                 Load
@@ -153,16 +158,11 @@ const SolarisSimulator = () => {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => {
-                  // Read the simulator now. Publishing used to send whatever
-                  // the last Save left behind, which was usually nothing.
-                  refreshPayload();
-                  setPublishDialogOpen(true);
-                }}
-                className="bg-sf-teal/[0.12] border-sf-teal text-[#3DFFCD] hover:bg-sf-teal/25 hover:text-white text-[13px] uppercase tracking-wider h-8 px-3"
+                onClick={requestSave}
+                className="bg-sf-teal/[0.12] border-sf-teal text-sf-teal-bright-text hover:bg-sf-teal/25 hover:text-white text-[13px] uppercase tracking-wider h-8 px-3"
               >
-                <Rocket className="w-3 h-3 mr-1" />
-                Publish
+                <Save className="w-3 h-3 mr-1" />
+                Save
               </Button>
               {/* Browses a world's own entities, so it genuinely needs one.
                   Save and Publish do not: they ask which world instead. */}

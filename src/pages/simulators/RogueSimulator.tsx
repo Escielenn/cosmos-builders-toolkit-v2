@@ -92,7 +92,7 @@ const RogueSimulator = () => {
                   refreshPayload();
                   setPublishDialogOpen(true);
                 }}
-                className="bg-sf-teal/[0.12] border-sf-teal text-[#3DFFCD] hover:bg-sf-teal/25 hover:text-white text-[13px] uppercase tracking-wider h-8 px-3"
+                className="bg-sf-teal/[0.12] border-sf-teal text-sf-teal-bright-text hover:bg-sf-teal/25 hover:text-white text-[13px] uppercase tracking-wider h-8 px-3"
               >
                 <Rocket className="w-3 h-3 mr-1" />
                 Publish
@@ -101,7 +101,7 @@ const RogueSimulator = () => {
                 variant="outline"
                 size="sm"
                 onClick={() => setLoadSheetOpen(true)}
-                className="bg-sf-teal/[0.12] border-sf-teal text-[#3DFFCD] hover:bg-sf-teal/25 hover:text-white text-[13px] uppercase tracking-wider h-8 px-3"
+                className="bg-sf-teal/[0.12] border-sf-teal text-sf-teal-bright-text hover:bg-sf-teal/25 hover:text-white text-[13px] uppercase tracking-wider h-8 px-3"
               >
                 <FolderOpen className="w-3 h-3 mr-1" />
                 Load
@@ -110,7 +110,7 @@ const RogueSimulator = () => {
                 variant="outline"
                 size="sm"
                 onClick={requestSave}
-                className="bg-sf-teal/[0.12] border-sf-teal text-[#3DFFCD] hover:bg-sf-teal/25 hover:text-white text-[13px] uppercase tracking-wider h-8 px-3"
+                className="bg-sf-teal/[0.12] border-sf-teal text-sf-teal-bright-text hover:bg-sf-teal/25 hover:text-white text-[13px] uppercase tracking-wider h-8 px-3"
               >
                 <Save className="w-3 h-3 mr-1" />
                 Save

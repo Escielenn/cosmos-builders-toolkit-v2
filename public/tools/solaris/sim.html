@@ -178,7 +178,7 @@ input[type=text]:focus{border-color:rgba(0,212,255,0.38)}
       <div class="moon-hdr" id="moon-name">Moon</div>
       <div class="moon-sub" id="moon-parent">of —</div>
     </div>
-    <button class="close-x" onclick="closeMoonInfo()">✕</button>
+    <button class="close-x" onclick="closeMoonInfo()" title="Close moon info" aria-label="Close moon info">✕</button>
   </div>
   <canvas id="moon-icon" width="36" height="36" style="border-radius:50%;display:block;margin-bottom:10px"></canvas>
   <div class="moon-grid" id="moon-data-grid"></div>
@@ -328,7 +328,7 @@ input[type=text]:focus{border-color:rgba(0,212,255,0.38)}
 
 <!-- PLANET INFO PANEL -->
 <div class="panel" id="info-panel">
-  <button class="close-x" onclick="closeInfo()">✕</button>
+  <button class="close-x" onclick="closeInfo()" title="Close planet info" aria-label="Close planet info">✕</button>
   <div class="planet-hdr">
     <canvas id="icon-canvas" width="36" height="36"></canvas>
     <div>

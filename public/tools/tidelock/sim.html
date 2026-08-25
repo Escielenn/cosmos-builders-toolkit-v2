@@ -258,12 +258,12 @@ button.active{background:rgba(0,212,255,0.1);border-color:rgba(0,212,255,0.3);co
 <div id="drag-hint">DRAG TO ORBIT IN 3D · SCROLL TO ZOOM · ZOOM OUT FOR ORBITAL VIEW</div>
 <div id="scale-note">⚠ Orbital distances and star size are shown at approximate scale for visualization. All physics calculations use true values.</div>
 <div id="tooltip"></div>
-<button id="mobile-toggle-controls" onclick="toggleMobilePanel('controls')">☰</button>
-<button id="mobile-toggle-data" onclick="toggleMobilePanel('readout')">📊</button>
+<button id="mobile-toggle-controls" onclick="toggleMobilePanel('controls')" title="Toggle controls panel" aria-label="Toggle controls panel">☰</button>
+<button id="mobile-toggle-data" onclick="toggleMobilePanel('readout')" title="Toggle data readout panel" aria-label="Toggle data readout panel">📊</button>
 
 <div id="modal-overlay" onclick="if(event.target===this)this.classList.remove('visible')">
   <div id="modal">
-    <button class="close-btn" onclick="document.getElementById('modal-overlay').classList.remove('visible')">✕</button>
+    <button class="close-btn" onclick="document.getElementById('modal-overlay').classList.remove('visible')" title="Close" aria-label="Close">✕</button>
     <h2>TIDELOCK</h2>
     <p>Most potentially habitable exoplanets orbit red dwarf stars — and most of those are tidally locked, with one face permanently baking in starlight and the other in eternal darkness.</p>
     <p>The substellar point — directly beneath the star — is scorched rock, a barren Mercury-like wasteland. The antistellar point is frozen white ice, colder than any place on Earth. Between these extremes lies the <em>terminator band</em>: a ring of permanent twilight where liquid water, breathable air, and life itself might exist.</p>

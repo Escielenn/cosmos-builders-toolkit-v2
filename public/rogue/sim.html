@@ -73,7 +73,7 @@ canvas{display:block;position:absolute;top:0;left:0}
 .st-wait{background:rgba(0,229,160,.03);border:1px solid rgba(0,229,160,.08);color:rgba(0,229,160,.4)}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.65}}
 
-#ctrl{position:absolute;bottom:14px;left:14px;padding:14px 18px;width:310px;max-height:calc(100vh - 190px);overflow-y:auto}
+#ctrl{position:absolute;top:130px;left:18px;padding:14px 18px;width:260px;max-height:calc(100vh - 210px);overflow-y:auto}
 #ctrl::-webkit-scrollbar{width:3px}#ctrl::-webkit-scrollbar-track{background:transparent}#ctrl::-webkit-scrollbar-thumb{background:rgba(0,229,160,.12)}
 .sh{font-size:12px;font-family:var(--font-display);font-weight:300;letter-spacing:2.5px;text-transform:uppercase;color:rgba(0,229,160,.55);margin-top:14px;margin-bottom:6px;padding-bottom:3px;border-bottom:1px solid rgba(0,229,160,.1)}
 .sh:first-child{margin-top:0}
@@ -91,8 +91,9 @@ button:hover{background:rgba(0,229,160,.06);border-color:rgba(0,229,160,.2);colo
 button.a{background:rgba(21,193,123,.1);border-color:rgba(21,193,123,.3);color:var(--accent-cyan)}
 button.ab{background:rgba(21,193,123,.1);border-color:rgba(21,193,123,.3);color:var(--accent-cyan)}
 
-/* Transport controls */
-.transport{display:flex;gap:3px;align-items:center}
+/* Transport controls - bottom-center dock, matching Solaris's #transport */
+#transport-dock{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);z-index:20;pointer-events:all;background:rgba(13,13,15,.94);border:1px solid rgba(255,255,255,.08);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-radius:0;padding:8px 14px}
+.transport{display:flex;gap:3px;align-items:center;margin-top:0}
 .transport button{flex:1;text-align:center;margin:0;font-size:10px;padding:7px 6px;letter-spacing:0}
 .transport #btn-go{flex:2}
 .transport #btn-pause{font-size:12px;flex:1.5}
@@ -115,7 +116,7 @@ select option{background:#0F0F10;color:#c8c8c8}
 .type-bd.a{background:rgba(200,85,61,.12)!important;border-color:rgba(200,85,61,.35)!important;color:#c8553d!important}
 .type-rp.a{background:rgba(139,105,20,.12)!important;border-color:rgba(139,105,20,.35)!important;color:#8b6914!important}
 
-#data{position:absolute;top:18px;right:48px;padding:14px 18px;width:255px;font-size:12px;font-family:var(--font-body);line-height:1.9;max-height:calc(100vh - 140px);overflow-y:auto}
+#data{position:absolute;top:18px;right:18px;padding:14px 18px;width:255px;font-size:12px;font-family:var(--font-body);line-height:1.9;max-height:calc(100vh - 140px);overflow-y:auto}
 #data::-webkit-scrollbar{width:3px}#data::-webkit-scrollbar-track{background:transparent}#data::-webkit-scrollbar-thumb{background:rgba(0,229,160,.12)}
 .ds{font-size:12px;font-family:var(--font-display);font-weight:300;letter-spacing:2.5px;text-transform:uppercase;color:rgba(0,229,160,.5);margin-top:7px;margin-bottom:1px;padding-bottom:2px;border-bottom:1px solid rgba(0,229,160,.1)}
 .ds:first-child{margin-top:0}
@@ -152,8 +153,8 @@ select option{background:#0F0F10;color:#c8c8c8}
 #kb-help .kh-row{display:flex;justify-content:space-between;align-items:baseline;line-height:2}
 #kb-help .kh-key{font-family:var(--font-mono);font-size:9px;color:var(--accent-cyan);font-weight:400;min-width:56px}
 #kb-help .kh-desc{font-family:var(--font-body);font-size:13px;color:var(--text-secondary);text-align:right}
-@media(max-width:768px){#ctrl{width:260px;bottom:10px;left:10px;max-height:calc(100vh - 190px)}#data{width:220px;font-size:11px;max-height:calc(100vh - 140px)}#title h1{font-size:20px}#badge{top:120px}#title .nav-links{gap:6px}#title .nav-links a{font-size:9px;padding:2px 6px}#builder{padding:20px}.b-row3{grid-template-columns:1.5fr 1fr 1fr 1fr 26px;gap:4px}}
-@media(max-width:480px){#data{display:none}#ctrl{width:calc(100vw - 20px)}.b-row3{grid-template-columns:1fr 1fr;gap:4px}.b-row3 button{grid-column:span 2}}
+@media(max-width:768px){#ctrl{width:260px;top:160px;left:10px;max-height:calc(100vh - 240px)}#data{width:220px;font-size:11px;right:10px;max-height:calc(100vh - 140px)}#title h1{font-size:20px}#badge{top:120px}#title .nav-links{gap:6px}#title .nav-links a{font-size:9px;padding:2px 6px}#builder{padding:20px}.b-row3{grid-template-columns:1.5fr 1fr 1fr 1fr 26px;gap:4px}}
+@media(max-width:480px){#data{display:none}#ctrl{width:calc(100vw - 20px)}#zoom-info{min-width:0;padding:6px 10px}#zoom-info .zh{display:none}.b-row3{grid-template-columns:1fr 1fr;gap:4px}.b-row3 button{grid-column:span 2}}
 </style>
 
   <link rel="stylesheet" href="/tools/_shared/sim-mobile.css">
@@ -200,14 +201,6 @@ select option{background:#0F0F10;color:#c8c8c8}
     <div class="sh">Simulation</div>
     <label>Time Scale <span class="vd" id="time-val">1.0×</span></label>
     <input type="range" id="sl-time" min="0.1" max="100" value="1" step="0.1">
-    <div class="br transport">
-      <button id="btn-go" class="a" title="Launch intruder">▶ Launch</button>
-      <button id="btn-rewind" style="display:none" title="Rewind (hold)">⏪</button>
-      <button id="btn-stepb" style="display:none" title="Step back">◀</button>
-      <button id="btn-pause" style="display:none" title="Play / Pause">⏸</button>
-      <button id="btn-stepf" style="display:none" title="Step forward">▶</button>
-      <button id="btn-reset" title="Reset simulation">↺</button>
-    </div>
     <div class="br"><button id="btn-publish-aftermath" class="a" style="display:none">Publish Aftermath →</button></div>
 
     <div class="sh">Camera</div>
@@ -233,6 +226,21 @@ select option{background:#0F0F10;color:#c8c8c8}
     <div class="cr"><input type="checkbox" id="chk-grid" checked><label for="chk-grid">AU Grid</label></div>
     <div class="cr"><input type="checkbox" id="chk-labels" checked><label for="chk-labels">Labels</label></div>
     <div class="cr"><input type="checkbox" id="chk-habzone"><label for="chk-habzone">Habitable Zone</label></div>
+  </div>
+
+  <!-- Bottom-center transport, matching the other simulators' shared
+       convention (Solaris's #transport) instead of living inside the left
+       control panel. Same buttons, same ids, just relocated in the DOM -
+       every event listener and updateTransportUI() call is id-based. -->
+  <div id="transport-dock">
+    <div class="br transport">
+      <button id="btn-go" class="a" title="Launch intruder">▶ Launch</button>
+      <button id="btn-rewind" style="display:none" title="Rewind (hold)">⏪</button>
+      <button id="btn-stepb" style="display:none" title="Step back">◀</button>
+      <button id="btn-pause" style="display:none" title="Play / Pause">⏸</button>
+      <button id="btn-stepf" style="display:none" title="Step forward">▶</button>
+      <button id="btn-reset" title="Reset simulation">↺</button>
+    </div>
   </div>
 
   <div id="data" class="p">
