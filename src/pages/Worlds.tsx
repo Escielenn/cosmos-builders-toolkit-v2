@@ -99,7 +99,8 @@ const Worlds = () => {
           <div className="relative z-10 flex flex-col gap-6 py-10">
             <div className="flex items-end justify-between gap-6 flex-wrap">
               <SectionHero
-                eyebrow="// WORLD INDEX"
+                warm
+                eyebrow="World index"
                 title={<>My <span className="text-sf-teal">worlds.</span></>}
                 subtitle="Each world is its own cascade, physics shapes environment, environment shapes biology, biology shapes culture. Pick one to continue, or begin a new survey."
                 className="flex-1 min-w-[280px]"
@@ -142,7 +143,7 @@ const Worlds = () => {
             className="inline-flex items-center gap-1.5 font-serif text-[14px] italic text-sf-teal hover:text-sf-teal-bright transition-colors duration-base"
           >
             <Globe className="w-3.5 h-3.5" />
-            BROWSE COMMUNITY WORLDS
+            Browse community worlds
           </Link>
         </div>
 
@@ -159,8 +160,9 @@ const Worlds = () => {
           {!isLoading && filteredWorlds.length === 0 && (
             <div className="col-span-full">
               <EmptyState
-                eyebrow="// WORLD INDEX"
-                title="INDEX: EMPTY"
+                warm
+                eyebrow="World index"
+                title="No worlds yet"
                 description={
                   selectedTags.length > 0
                     ? "NO WORLDS MATCH FILTER CRITERIA. ADJUST TAG SELECTION."

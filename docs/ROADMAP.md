@@ -103,8 +103,18 @@ ripgrep times out, and `.git/index.lock` strands as a zero-byte file.
 #### NEXT
 
 - [ ] Finish the copy sweep: About, Features, Getting Started, Guide, Community
-- [ ] Writer-register conversion: `Worlds`, `Collection`, `WikiBrowse`,
-      `WorldChronicle`, `WorldGraph`. `SectionHero` already has a `warm` prop.
+- [x] Writer-register conversion (2026-08-24): `Worlds` (SectionHero `warm`,
+      dropped `//` eyebrow, sentence-cased the community-browse link),
+      `Collection` (section heads were already converted; only its two
+      `EmptyState` calls needed the new `warm` prop), `WikiBrowse` (header
+      was already converted; softened the four filter-panel labels),
+      `WorldChronicle`/`Chronicle.tsx` (`.sf-chronicle-heading` was MONO
+      despite the wrapper's own comment claiming otherwise; empty-state copy
+      had a literal `//` prefix), `WorldGraph` (page no longer exists - it
+      was absorbed into `WorldConnections.tsx`, whose header and mind-map
+      empty state were still MONO; canvas/legend left untouched, per the
+      "chrome only" rule). Added a `warm` prop to the shared `EmptyState`
+      component (mirrors `SectionHero`'s), since two pages needed it.
 - [ ] Continuity Tier 2: physical implausibility (high gravity vs effortless
       motion, tidally locked vs "sunset")
 - [ ] Widen continuity coverage — only fields with a `worksheetPaths` entry in

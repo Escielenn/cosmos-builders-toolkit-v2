@@ -36,6 +36,14 @@ interface EmptyStateProps extends React.HTMLAttributes<HTMLDivElement> {
   onAction?: () => void;
   /** Hide the velocity dial centerpiece (e.g. on dense lists) */
   hideDial?: boolean;
+  /**
+   * WRITER-register variant, mirroring SectionHero's `warm` prop: title
+   * renders in Lora italic serif (sentence case in the caller) instead of
+   * MD Nichrome uppercase, for pages a writer inhabits rather than an
+   * instrument surface. The eyebrow/description stay mono - only the title
+   * carries the register shift, same split SectionHero uses.
+   */
+  warm?: boolean;
 }
 
 export function EmptyState({
@@ -46,6 +54,7 @@ export function EmptyState({
   actionTo,
   onAction,
   hideDial = false,
+  warm = false,
   className,
   ...props
 }: EmptyStateProps) {
@@ -77,7 +86,12 @@ export function EmptyState({
         </p>
       )}
 
-      <h2 className="font-display text-3xl md:text-4xl font-light tracking-sf-title uppercase text-t1">
+      <h2
+        className={cn(
+          "text-3xl md:text-4xl font-light text-t1",
+          warm ? "font-serif italic" : "font-display tracking-sf-title uppercase",
+        )}
+      >
         {title}
       </h2>
 

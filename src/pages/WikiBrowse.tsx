@@ -202,7 +202,7 @@ export default function WikiBrowse() {
                   setActiveType(null);
                   setActiveTags([]);
                 }}
-                className="text-[12px] uppercase tracking-wider text-t4 hover:text-t2 transition-colors"
+                className="font-serif text-[13px] italic text-t4 hover:text-t2 transition-colors"
               >
                 Clear all
               </button>
@@ -212,8 +212,8 @@ export default function WikiBrowse() {
           {/* Layer filter */}
           {availableLayers.length > 0 && (
             <div className="mb-3">
-              <span className="text-[12px] uppercase tracking-[1.5px] text-t4 block mb-1.5">
-                Cascade Layer
+              <span className="font-serif text-[13px] italic text-t4 block mb-1.5">
+                Cascade layer
               </span>
               <div className="flex flex-wrap gap-1.5">
                 {availableLayers.map((layer) => (
@@ -238,8 +238,8 @@ export default function WikiBrowse() {
           {/* Type filter */}
           {availableTypes.length > 0 && (
             <div className="mb-3">
-              <span className="text-[12px] uppercase tracking-[1.5px] text-t4 block mb-1.5">
-                Entity Type
+              <span className="font-serif text-[13px] italic text-t4 block mb-1.5">
+                Entity type
               </span>
               <div className="flex flex-wrap gap-1.5">
                 {availableTypes.map((type) => (
@@ -264,7 +264,7 @@ export default function WikiBrowse() {
           {/* Tag filter */}
           {codexData && codexData.worldTags.length > 0 && (
             <div>
-              <span className="text-[12px] uppercase tracking-[1.5px] text-t4 block mb-1.5">
+              <span className="font-serif text-[13px] italic text-t4 block mb-1.5">
                 Tags
               </span>
               <div className="flex flex-wrap gap-1.5">

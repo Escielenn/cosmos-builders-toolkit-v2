@@ -2972,12 +2972,13 @@ html {
 }
 
 .sf-chronicle-heading {
-  font-family: var(--sf-font-display, 'Jura', sans-serif);
+  font-family: 'Lora', Georgia, serif;
+  font-style: italic;
   font-weight: 300;
-  font-size: 22px;
-  letter-spacing: 4px;
-  text-transform: uppercase;
-  color: var(--sf-text-primary, #E0E4E8);
+  font-size: 20px;
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--t1);
 }
 
 /* Timeline container */

@@ -138,8 +138,9 @@ const Collection = () => {
             </div>
           ) : worlds.length === 0 ? (
             <EmptyState
+              warm
               hideDial
-              title="WORLD INDEX: EMPTY"
+              title="No worlds yet"
               description="INITIALIZE A WORLD TO POPULATE THIS ARCHIVE."
               actionLabel="CREATE WORLD"
               actionTo="/worlds"
@@ -246,8 +247,9 @@ const Collection = () => {
           </div>
         ) : filteredWorksheets.length === 0 ? (
           <EmptyState
-            eyebrow="// WORKSHEET INDEX"
-            title={searchQuery || selectedToolType ? "NO MATCHING RECORDS" : "WORKSHEET INDEX: EMPTY"}
+            warm
+            eyebrow="Worksheet index"
+            title={searchQuery || selectedToolType ? "No matching records" : "No worksheets yet"}
             description={
               searchQuery || selectedToolType
                 ? "ADJUST FILTERS OR SEARCH PARAMETERS."

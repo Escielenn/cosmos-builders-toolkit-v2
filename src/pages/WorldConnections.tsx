@@ -242,7 +242,7 @@ const WorldConnections = () => {
         <div className="mb-8">
           <Link
             to={worldId ? `/worlds/${worldId}` : "/"}
-            className="inline-flex items-center gap-2 text-sm text-t3 hover:text-t1 transition-colors mb-4"
+            className="inline-flex items-center gap-2 font-serif text-sm italic text-t3 hover:text-t1 transition-colors mb-4"
           >
             <ArrowLeft className="w-4 h-4" />
             Back to {world?.name || "World"}
@@ -252,8 +252,8 @@ const WorldConnections = () => {
             <div>
               <div className="flex items-center gap-3 mb-2">
                 <Network className="w-8 h-8 text-primary" />
-                <h1 className="font-display text-3xl md:text-4xl font-light uppercase tracking-wider">
-                  World Connections
+                <h1 className="font-serif text-3xl md:text-4xl italic font-light text-t1">
+                  World connections
                 </h1>
               </div>
               <p className="text-t3 max-w-2xl">
@@ -367,8 +367,8 @@ const WorldConnections = () => {
                 ) : (
                   <div className="flex flex-col items-center justify-center h-[400px] text-center">
                     <TreePine className="w-8 h-8 text-t4 mb-3" />
-                    <h3 className="font-heading text-sm font-light uppercase tracking-[2px] text-t1 mb-2">
-                      Your World Map
+                    <h3 className="font-serif text-[16px] italic font-light text-t1 mb-2">
+                      Your world map
                     </h3>
                     <p className="text-[12px] font-sans text-t3 leading-relaxed mb-4 max-w-xs">
                       No entities yet. Create a star or planet and watch your world's hierarchy grow.

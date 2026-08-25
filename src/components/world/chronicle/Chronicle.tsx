@@ -171,10 +171,10 @@ export function Chronicle({ worldId }: ChronicleProps) {
       {/* Empty state */}
       {isEmpty && (
         <div className="flex items-center justify-center py-32">
-          <p className="font-mono text-[12px] uppercase tracking-[0.10em] text-t4 text-center max-w-xs leading-relaxed">
-            // CHRONICLE INDEX: EMPTY.
+          <p className="font-serif text-[15px] italic text-t4 text-center max-w-xs leading-relaxed">
+            No events yet.
             <br />
-            LOG THE FIRST EVENT TO BEGIN YOUR CHRONICLE.
+            Log the first one to begin your chronicle.
           </p>
         </div>
       )}
