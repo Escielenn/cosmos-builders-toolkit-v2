@@ -577,6 +577,23 @@ button.active, button.primary {
 #kb-help{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:50;background:rgba(15,15,16,0.95);border:1px solid rgba(0,229,160,0.12);padding:12px 18px;font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(255,255,255,0.5);letter-spacing:0.5px;display:none;gap:16px;flex-wrap:wrap;backdrop-filter:blur(16px);pointer-events:none}
 #kb-help.visible{display:flex}
 @media(max-width:768px){#kb-help{display:none !important}}
+#drag-hint{position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:10;font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:0.5px;color:rgba(255,255,255,0.2);pointer-events:none;transition:opacity 2s;white-space:nowrap}
+/* Between the 640px mobile floor and a full desktop, the two side panels
+   have no room to coexist with the planet they control - same problem
+   Tidelock solves with a toggle-behind-a-button pattern, replicated here. */
+#mobile-toggle-controls,#mobile-toggle-data{display:none;position:fixed;z-index:15;width:36px;height:36px;border-radius:0;font-size:16px;line-height:36px;text-align:center;padding:0;background:var(--bg-panel);border:1px solid var(--border-subtle);color:rgba(255,255,255,0.5);cursor:pointer;backdrop-filter:blur(16px)}
+#mobile-toggle-controls{bottom:18px;left:18px}
+#mobile-toggle-data{bottom:18px;left:62px}
+@media(max-width:1024px){
+  #control-panel,#data-panel{display:none}
+  #control-panel.mobile-visible,#data-panel.mobile-visible{display:block}
+  #mobile-toggle-controls,#mobile-toggle-data{display:block}
+  /* bottom:170px, not 64px like Tidelock's version of this pattern -
+     ExoForge's #search-panel is always visible (not toggled) and sits
+     ~135px tall at bottom:20px, so the sheet has to clear it too. */
+  #control-panel{top:auto;bottom:170px;left:18px;right:18px;width:auto;max-height:45vh}
+  #data-panel{top:auto;bottom:170px;left:18px;right:18px;width:auto;max-height:45vh}
+}
 </style>
   <link rel="stylesheet" href="../_shared/sim-mobile.css">
 </head>
@@ -977,8 +994,22 @@ const RING_COLORS = {
 let isDragging = false, prevMouse = { x: 0, y: 0 };
 let spherical = { theta: 0, phi: Math.PI / 6, radius: 4 };
 let targetSpherical = { ...spherical };
+function toggleMobilePanel(id) {
+  const el = document.getElementById(id);
+  const otherId = id === 'control-panel' ? 'data-panel' : 'control-panel';
+  document.getElementById(otherId).classList.remove('mobile-visible');
+  el.classList.toggle('mobile-visible');
+}
 
-renderer.domElement.addEventListener('mousedown', (e) => { isDragging = true; prevMouse = { x: e.clientX, y: e.clientY }; });
+let hasInteracted = false;
+function markInteracted() {
+  if (hasInteracted) return;
+  hasInteracted = true;
+  const hint = document.getElementById('drag-hint');
+  if (hint) hint.style.opacity = '0';
+}
+
+renderer.domElement.addEventListener('mousedown', (e) => { isDragging = true; prevMouse = { x: e.clientX, y: e.clientY }; markInteracted(); });
 window.addEventListener('mousemove', (e) => {
   if (!isDragging) return;
   targetSpherical.theta -= (e.clientX - prevMouse.x) * 0.005;
@@ -992,12 +1023,14 @@ renderer.domElement.addEventListener('wheel', (e) => {
   targetSpherical.radius *= e.deltaY > 0 ? 1.08 : 0.92;
   targetSpherical.radius = Math.max(1.8, Math.min(20, targetSpherical.radius));
   needsRender = true;
+  markInteracted();
 }, { passive: false });
 
 let touchDist = 0;
 renderer.domElement.addEventListener('touchstart', (e) => {
   if (e.touches.length === 1) { isDragging = true; prevMouse = { x: e.touches[0].clientX, y: e.touches[0].clientY }; }
   else if (e.touches.length === 2) touchDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+  markInteracted();
 }, { passive: true });
 renderer.domElement.addEventListener('touchmove', (e) => {
   if (e.touches.length === 1 && isDragging) {
@@ -1859,6 +1892,9 @@ window.addEventListener('message', function(event) {
   <span><b style="color:rgba(0,212,255,0.7)">R</b> reset view</span>
   <span><b style="color:rgba(0,212,255,0.7)">?</b> this help</span>
 </div>
+<div id="drag-hint">DRAG TO ORBIT · SCROLL TO ZOOM · ? FOR SHORTCUTS</div>
+<button id="mobile-toggle-controls" onclick="toggleMobilePanel('control-panel')" title="Toggle controls panel" aria-label="Toggle controls panel">☰</button>
+<button id="mobile-toggle-data" onclick="toggleMobilePanel('data-panel')" title="Toggle data readout panel" aria-label="Toggle data readout panel">📊</button>
 
 </body>
 </html>

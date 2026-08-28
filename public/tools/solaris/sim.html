@@ -48,6 +48,18 @@ canvas{display:block;position:fixed;top:0;left:0;width:100vw;height:100vh}
 #badge.edit{background:rgba(255,215,0,0.08);border-color:rgba(255,215,0,0.2);color:#FFD43B}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.55}}
 #main-panel{top:170px;left:18px;width:272px;padding:0;max-height:calc(100vh - 200px)}
+/* Between the 640px mobile floor and a full desktop, the control panel
+   has no room to coexist with the system it's steering - same pattern
+   Tidelock solves with a toggle-behind-a-button, replicated here. Only
+   #main-panel is always-on; #info-panel/#moon-panel are already opt-in
+   (shown only once a planet or moon is selected), so they're left alone. */
+#mobile-toggle-main{display:none;position:fixed;z-index:25;bottom:18px;left:18px;width:36px;height:36px;border-radius:0;font-size:16px;line-height:36px;text-align:center;padding:0;background:rgba(13,13,15,0.94);border:1px solid rgba(255,255,255,0.09);color:rgba(255,255,255,0.5);cursor:pointer;backdrop-filter:blur(16px)}
+@media(max-width:1024px){
+  #main-panel{display:none}
+  #main-panel.mobile-visible{display:block}
+  #mobile-toggle-main{display:block}
+  #main-panel{top:auto;bottom:80px;left:18px;right:18px;width:auto;max-height:45vh}
+}
 .tab-bar{display:flex;border-bottom:1px solid rgba(255,255,255,0.07);padding:0 10px;overflow-x:auto}
 .tab{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;letter-spacing:1.2px;text-transform:uppercase;padding:10px 7px 8px;color:rgba(255,255,255,0.3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.2s;white-space:nowrap;flex-shrink:0}
 .tab:hover{color:rgba(255,255,255,0.6)}
@@ -387,6 +399,7 @@ input[type=text]:focus{border-color:rgba(0,212,255,0.38)}
 <div id="zoom-ind"><div id="z-val">1.0×</div><div id="z-lbl">Zoom</div></div>
 <div id="phys-note"></div>
 <div id="empty-hint"><p>Generate a system to begin</p><p>or drag planets from Palette</p></div>
+<button id="mobile-toggle-main" onclick="document.getElementById('main-panel').classList.toggle('mobile-visible')" title="Toggle controls panel" aria-label="Toggle controls panel">☰</button>
 
 <script>
 // ═══════════════════════════════════════════════════════════════════════
