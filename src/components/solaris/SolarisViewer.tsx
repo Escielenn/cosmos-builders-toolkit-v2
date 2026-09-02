@@ -171,7 +171,7 @@ export default function SolarisViewer({
             aria-pressed={showKeys}
             className={`absolute bottom-3 right-3 z-20 min-w-[30px] border px-2 py-1 font-mono text-[12px] backdrop-blur-sm transition-colors ${
               showKeys
-                ? "border-[#15C17B] bg-[#15C17B]/25 text-white"
+                ? "border-sf-primary bg-sf-primary/25 text-white"
                 : "border-white/[0.35] bg-[rgba(13,13,15,0.94)] text-white/80 hover:text-white"
             }`}
           >
@@ -180,7 +180,7 @@ export default function SolarisViewer({
 
           {showKeys && (
             <div className="absolute bottom-14 right-3 z-30 w-[228px] border border-white/[0.3] bg-[rgba(13,13,15,0.97)] p-3 backdrop-blur-sm">
-              <span className="mb-2 block font-mono text-[12px] uppercase tracking-[2px] text-[#3DFFCD]/80">
+              <span className="mb-2 block font-mono text-[12px] uppercase tracking-[2px] text-sf-primary-bright/80">
                 Keyboard
               </span>
               {[
@@ -193,7 +193,7 @@ export default function SolarisViewer({
                 ["?", "This list"],
               ].map(([k, what]) => (
                 <div key={k} className="flex items-baseline justify-between gap-3 py-0.5">
-                  <span className="shrink-0 font-mono text-[12px] text-[#3DFFCD]">{k}</span>
+                  <span className="shrink-0 font-mono text-[12px] text-sf-primary-bright">{k}</span>
                   <span className="text-right text-[12px] text-white/75">{what}</span>
                 </div>
               ))}

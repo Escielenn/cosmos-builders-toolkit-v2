@@ -37,7 +37,7 @@ export default function SoundtrackPicker({ value, onChange }: SoundtrackPickerPr
       )}
 
       {/* Playlist picker */}
-      <div className="max-h-32 overflow-y-auto border border-white/8 divide-y divide-white/5">
+      <div className="max-h-32 overflow-y-auto border border-sf-line-hairline divide-y divide-white/5">
         {allPlaylists.map((p) => (
           <PlaylistOption
             key={p.id}
@@ -72,7 +72,7 @@ function PlaylistOption({
     >
       <Music className="w-3 h-3 shrink-0" />
       <span className="text-xs truncate flex-1">{playlist.name}</span>
-      <span className="font-mono text-[12px] text-t5">
+      <span className="font-mono text-[12px] text-t4">
         {playlist.source === "curated" ? "CURATED" : "CUSTOM"}
       </span>
     </button>

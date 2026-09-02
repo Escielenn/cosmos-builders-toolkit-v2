@@ -91,7 +91,7 @@ const EventMarker = memo(
 
       // Child count badge when collapsed
       const childBadge = hasChildren && !isExpanded ? (
-        <span className="absolute -right-1 -top-1 w-4 h-4 rounded-full bg-muted text-[12px] font-medium flex items-center justify-center text-t2 border border-sf-border">
+        <span className="absolute -right-1 -top-1 w-4 h-4 rounded-full bg-muted text-[12px] font-medium flex items-center justify-center text-t2 border border-sf-line">
           +
         </span>
       ) : null;
@@ -107,7 +107,7 @@ const EventMarker = memo(
                 "hover:brightness-110",
                 isSelected && "ring-2 ring-white ring-offset-1 ring-offset-background",
                 isDimmed && "opacity-20 pointer-events-none",
-                isFolded && "border border-dashed border-white/30"
+                isFolded && "border border-dashed border-sf-line-interactive"
               )}
               style={{
                 left: x + nesting.indent,
@@ -161,7 +161,7 @@ const EventMarker = memo(
               "hover:scale-125 hover:brightness-110",
               isSelected && "ring-2 ring-white ring-offset-1 ring-offset-background scale-125",
               isDimmed && "opacity-20 pointer-events-none",
-              isFolded && "border border-dashed border-white/30"
+              isFolded && "border border-dashed border-sf-line-interactive"
             )}
             style={{
               left: x - dotSize / 2 + nesting.indent,

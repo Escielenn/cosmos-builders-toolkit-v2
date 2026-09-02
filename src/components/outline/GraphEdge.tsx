@@ -57,7 +57,7 @@ const GraphEdgeComponent = memo(
         {hovered && label && (
           <EdgeLabelRenderer>
             <div
-              className="absolute pointer-events-none bg-sf-void border border-sf-border px-1.5 py-0.5"
+              className="absolute pointer-events-none bg-sf-void border border-sf-line px-1.5 py-0.5"
               style={{
                 transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)`,
               }}

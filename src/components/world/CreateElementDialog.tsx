@@ -305,7 +305,7 @@ export default function CreateElementDialog({
             {templates.length > 0 && (
               <div className="pt-3 border-t border-sf-line">
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-[12px] font-heading uppercase tracking-[1.5px] text-[#00FF88]">
+                  <h3 className="text-[12px] font-heading uppercase tracking-[1.5px] text-sf-emerald-text">
                     Your custom types
                   </h3>
                   <a
@@ -452,7 +452,7 @@ export default function CreateElementDialog({
                 <div className="pt-3 border-t border-sf-line space-y-3">
                   <div className="flex items-center gap-2">
                     <div className="h-px flex-1 bg-white/5" />
-                    <span className="text-[12px] uppercase tracking-[1.5px] text-[#00FF88] font-heading">
+                    <span className="text-[12px] uppercase tracking-[1.5px] text-sf-emerald-text font-heading">
                       {selectedTemplate.label} fields
                     </span>
                     <div className="h-px flex-1 bg-white/5" />

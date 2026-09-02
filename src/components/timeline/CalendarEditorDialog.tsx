@@ -256,7 +256,7 @@ const CalendarEditorDialog = ({
                   key={index}
                   className={cn(
                     "grid grid-cols-[auto_1fr_1fr_60px_60px_auto] gap-1.5 items-center",
-                    "p-2 rounded-md border border-sf-border bg-muted/10"
+                    "p-2 rounded-md border border-sf-line bg-muted/10"
                   )}
                 >
                   <GripVertical className="w-3.5 h-3.5 text-t3/50" />

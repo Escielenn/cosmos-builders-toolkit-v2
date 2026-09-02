@@ -26,7 +26,7 @@ export default function PlaylistCard({ playlist, onSelect }: PlaylistCardProps) 
       className={`group relative text-left w-full p-3 border transition-colors ${
         isActive
           ? "bg-primary/[0.06] border-primary/20"
-          : "bg-white/[0.02] border-white/8 hover:border-white/15 hover:bg-white/[0.04]"
+          : "bg-white/[0.02] border-sf-line-hairline hover:border-sf-line hover:bg-white/[0.04]"
       }`}
     >
       {/* Icon */}

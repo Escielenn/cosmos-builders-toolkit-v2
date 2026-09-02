@@ -42,11 +42,11 @@ export function TargetStar({ className }: { className?: string }) {
       title="Next destination"
     >
       <span className="text-sf-primary-text">TARGET</span>
-      <span className="text-t5"> · </span>
+      <span className="text-t4"> · </span>
       {t.name}
-      <span className="text-t5"> · </span>
+      <span className="text-t4"> · </span>
       <span className="text-t2">{t.ly.toFixed(2)} ly</span>
-      <span className="text-t5"> · </span>
+      <span className="text-t4"> · </span>
       <span className="text-sf-amber-warm">{t.spec}</span>
     </span>
   );

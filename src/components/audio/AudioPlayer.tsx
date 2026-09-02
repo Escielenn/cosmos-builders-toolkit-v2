@@ -98,7 +98,7 @@ function MinimizedBar({
   const pct = duration > 0 ? (progress / duration) * 100 : 0;
 
   return (
-    <div className="fixed bottom-6 inset-x-0 z-[8999] bg-sf-surface/95 backdrop-blur-xl border-t border-white/8">
+    <div className="fixed bottom-6 inset-x-0 z-[8999] bg-sf-surface/95 backdrop-blur-xl border-t border-sf-line-hairline">
       {/* Thin progress line at very top */}
       <div className="h-[2px] bg-white/5">
         <div
@@ -126,7 +126,7 @@ function MinimizedBar({
           type="button"
           onClick={onTogglePlay}
           disabled={isLoading || isError}
-          className="p-1.5 text-t2 hover:text-primary transition-colors disabled:opacity-30"
+          className="p-1.5 text-t2 hover:text-primary transition-colors disabled:text-sf-disabled-text"
           aria-label={isPlaying ? "Pause" : "Play"}
         >
           {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
@@ -189,7 +189,7 @@ function ExpandedBar({ state, controls, progressBarRef }: ExpandedBarProps) {
   const pct = state.duration > 0 ? (state.progress / state.duration) * 100 : 0;
 
   return (
-    <div className="fixed bottom-6 inset-x-0 z-[8999] bg-sf-surface/95 backdrop-blur-xl border-t border-white/8">
+    <div className="fixed bottom-6 inset-x-0 z-[8999] bg-sf-surface/95 backdrop-blur-xl border-t border-sf-line-hairline">
       {/* Progress bar, clickable */}
       <div
         ref={progressBarRef}
@@ -271,7 +271,7 @@ function ExpandedBar({ state, controls, progressBarRef }: ExpandedBarProps) {
             type="button"
             onClick={controls.togglePlayPause}
             disabled={isLoading || isError}
-            className="p-2 w-10 h-10 flex items-center justify-center bg-primary/10 border border-primary/20 text-primary hover:bg-primary/20 transition-colors disabled:opacity-30"
+            className="p-2 w-10 h-10 flex items-center justify-center bg-primary/10 border border-primary/20 text-primary hover:bg-primary/20 transition-colors disabled:text-sf-disabled-text"
             aria-label={isPlaying ? "Pause" : "Play"}
           >
             {isPlaying ? (

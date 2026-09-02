@@ -61,7 +61,7 @@ export default function AddToPlaylistDialog({ track, children }: AddToPlaylistDi
                 type="button"
                 disabled={alreadyIn}
                 onClick={() => handleAdd(p.id, p.tracks)}
-                className="w-full text-left px-2 py-1.5 text-xs text-t2 hover:bg-white/[0.04] transition-colors flex items-center gap-2 disabled:opacity-40"
+                className="w-full text-left px-2 py-1.5 text-xs text-t2 hover:bg-white/[0.04] transition-colors flex items-center gap-2 disabled:text-sf-disabled-text"
               >
                 {alreadyIn && <Check className="w-3 h-3 text-primary shrink-0" />}
                 <span className="truncate">{p.name}</span>
@@ -94,7 +94,7 @@ export default function AddToPlaylistDialog({ track, children }: AddToPlaylistDi
           <button
             type="button"
             onClick={() => setShowNew(true)}
-            className="w-full text-left px-2 py-1.5 text-xs text-t4 hover:text-t2 transition-colors flex items-center gap-1.5 mt-1 border-t border-white/5 pt-1.5"
+            className="w-full text-left px-2 py-1.5 text-xs text-t4 hover:text-t2 transition-colors flex items-center gap-1.5 mt-1 border-t border-sf-line-hairline pt-1.5"
           >
             <Plus className="w-3 h-3" /> New Playlist
           </button>

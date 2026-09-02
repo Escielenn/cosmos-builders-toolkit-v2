@@ -44,7 +44,7 @@ const renderValue = (value: unknown, depth: number = 0): React.ReactNode => {
     return (
       <div className="space-y-3">
         {value.map((item, i) => (
-          <div key={i} className="pl-4 border-l-2 border-sf-border">
+          <div key={i} className="pl-4 border-l-2 border-sf-line">
             {typeof item === "object" && item !== null ? (
               renderObject(item as Record<string, unknown>, depth + 1)
             ) : (

@@ -283,7 +283,7 @@ export function ChronicleEventDialog({
             </label>
             {linkedEntryId ? (
               <div className="flex items-center gap-2 px-3 py-2 border border-sf-line-interactive text-sm">
-                <span className="text-[#5B8DEF] font-medium truncate flex-1">
+                <span className="text-sf-stellar-text font-medium truncate flex-1">
                   {linkedEntryTitle}
                 </span>
                 <button

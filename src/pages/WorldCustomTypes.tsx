@@ -367,7 +367,7 @@ function TemplateDetailEditor({
       <div>
         <div className="flex items-center justify-between mb-3">
           <div>
-            <h3 className="font-heading text-sm uppercase tracking-[2px] text-[#00FF88]">
+            <h3 className="font-heading text-sm uppercase tracking-[2px] text-sf-emerald-text">
               Fields
             </h3>
             <p className="text-xs text-t4 mt-0.5">

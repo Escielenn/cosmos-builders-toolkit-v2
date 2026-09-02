@@ -326,14 +326,14 @@ const TasksSidebarContent = ({ onNavigate }: { onNavigate: (tab: string) => void
             value={newTitle}
             onChange={(e) => setNewTitle(e.target.value)}
             onKeyDown={handleKeyDown}
-            className="w-full bg-white/[0.04] border border-sf-line rounded-xs text-xs text-t2 placeholder:text-t4 px-2 py-1.5 focus:border-primary focus:outline-none"
+            className="w-full bg-white/[0.04] border border-sf-line rounded-xs text-xs text-t2 placeholder:text-t4 px-2 py-1.5 focus:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sf-focus"
           />
           <div className="flex items-center gap-2">
             <select
               value={newPriority}
               onChange={(e) => setNewPriority(e.target.value)}
               title="Priority"
-              className="bg-white/[0.04] border border-sf-line rounded-xs text-[12px] text-t3 px-1.5 py-1 focus:outline-none"
+              className="bg-white/[0.04] border border-sf-line rounded-xs text-[12px] text-t3 px-1.5 py-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sf-focus"
             >
               <option value="low">Low</option>
               <option value="normal">Normal</option>
@@ -522,7 +522,7 @@ const UsersTab = () => {
           placeholder="Search by name or email..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full pl-10 pr-4 py-2.5 bg-white/[0.04] border border-sf-line rounded-xs text-sm text-t2 placeholder:text-t4 focus:border-primary focus:outline-none"
+          className="w-full pl-10 pr-4 py-2.5 bg-white/[0.04] border border-sf-line rounded-xs text-sm text-t2 placeholder:text-t4 focus:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sf-focus"
         />
       </div>
 
@@ -734,7 +734,7 @@ const TicketDetail = ({ ticket }: { ticket: AdminTicket }) => {
           onChange={(e) => setNotes(e.target.value)}
           placeholder="Internal notes..."
           rows={3}
-          className="w-full bg-white/[0.04] border border-sf-line rounded-xs text-sm text-t2 placeholder:text-t4 p-3 focus:border-primary focus:outline-none resize-none"
+          className="w-full bg-white/[0.04] border border-sf-line rounded-xs text-sm text-t2 placeholder:text-t4 p-3 focus:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sf-focus resize-none"
           onClick={(e) => e.stopPropagation()}
         />
         {notesChanged && (
@@ -880,7 +880,7 @@ const ContactDetail = ({ contact }: { contact: AdminContact }) => {
           onChange={(e) => setNotes(e.target.value)}
           placeholder="Internal notes..."
           rows={3}
-          className="w-full bg-white/[0.04] border border-sf-line rounded-xs text-sm text-t2 placeholder:text-t4 p-3 focus:border-primary focus:outline-none resize-none"
+          className="w-full bg-white/[0.04] border border-sf-line rounded-xs text-sm text-t2 placeholder:text-t4 p-3 focus:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sf-focus resize-none"
           onClick={(e) => e.stopPropagation()}
         />
         {notesChanged && (

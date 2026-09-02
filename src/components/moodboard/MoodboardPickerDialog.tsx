@@ -106,7 +106,7 @@ export function MoodboardPickerDialog({
                           "relative aspect-square rounded-none overflow-hidden border-2 transition-all hover:scale-105",
                           currentImageUrl === image.url
                             ? "border-primary ring-2 ring-primary/50"
-                            : "border-sf-border hover:border-primary/50"
+                            : "border-sf-line hover:border-primary/50"
                         )}
                       >
                         <img

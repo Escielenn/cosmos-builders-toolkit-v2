@@ -52,11 +52,11 @@ const S = {
     "absolute right-3 bottom-10 z-20 w-60 bg-[rgba(13,13,15,0.94)] border border-white/[0.35] backdrop-blur-[16px] rounded-none p-3 space-y-3 max-h-[52%] overflow-y-auto",
   // Contrast raised to match SolarisControls: chips were white/45 on a 0.02 fill
   // with a 0.06 border, which read as absent rather than merely inactive.
-  sec: "font-mono text-[13px] uppercase tracking-[2px] text-[#3DFFCD]/80 mb-1.5 block",
+  sec: "font-mono text-[13px] uppercase tracking-[2px] text-sf-primary-bright/80 mb-1.5 block",
   chip: "px-2 py-1 text-[12px] uppercase tracking-wide border rounded-none transition-colors min-h-[26px]",
   chipOff:
     "bg-white/[0.05] border-white/[0.35] text-white/75 hover:border-sf-primary/50 hover:bg-sf-primary/[0.12] hover:text-white",
-  chipOn: "bg-[rgba(21,193,123,0.22)] border-[#15C17B] text-white",
+  chipOn: "bg-[rgba(21,193,123,0.22)] border-sf-primary text-white",
   field:
     "w-full bg-white/[0.06] border border-white/[0.2] focus:border-sf-primary focus:bg-white/[0.08] outline-none rounded-none px-2 py-1.5 font-mono text-[14px] text-white tracking-wide",
   action:
@@ -207,7 +207,7 @@ export default function SolarisGeneratePanel({
       <div className="sticky bottom-0 -mx-3 -mb-3 flex gap-1.5 border-t border-white/[0.35] bg-[rgba(13,13,15,0.97)] px-3 py-2.5">
         <button
           onClick={onGenerate}
-          className={`${S.action} bg-[#15C17B] border-[#15C17B] text-[#0A0E17] hover:bg-[#3DFFCD] hover:border-[#3DFFCD]`}
+          className={`${S.action} bg-sf-primary border-sf-primary text-sf-on-primary hover:bg-sf-primary-bright hover:border-sf-primary-bright`}
         >
           Generate
         </button>

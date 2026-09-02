@@ -140,7 +140,7 @@ export default function CommentSection({ worldId }: CommentSectionProps) {
             maxLength={2000}
           />
           <div className="flex items-center justify-between">
-            <span className="font-mono text-[12px] text-t5">
+            <span className="font-mono text-[12px] text-t4">
               {body.length} / 2000
             </span>
             <Button

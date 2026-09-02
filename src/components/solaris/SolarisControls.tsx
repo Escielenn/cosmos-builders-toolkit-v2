@@ -40,17 +40,17 @@ const S = {
   // the transport row unfindable. Interactive text now sits at tier 2 or above
   // and every button carries a border you can actually see.
   sectionLabel:
-    "font-heading text-[13px] uppercase tracking-[2px] text-[#3DFFCD]/80 mb-1.5 block",
+    "font-heading text-[13px] uppercase tracking-[2px] text-sf-primary-bright/80 mb-1.5 block",
   btn: "px-2 py-1 text-[12px] uppercase tracking-[1.5px] font-heading transition-colors border min-h-[26px]",
   btnOff:
     "bg-white/[0.05] border-white/[0.35] text-white/75 hover:bg-[rgba(21,193,123,0.12)] hover:border-[rgba(21,193,123,0.75)] hover:text-white",
   btnOn:
-    "bg-[rgba(21,193,123,0.22)] border-[#15C17B] text-white",
+    "bg-[rgba(21,193,123,0.22)] border-sf-primary text-white",
   toggle:
     "flex items-center gap-2 py-1 text-[13px] font-sans text-white/80 cursor-pointer select-none hover:text-white",
   checkbox:
-    "w-3.5 h-3.5 rounded-none border border-white/40 flex items-center justify-center text-[12px]",
-  checkboxOn: "bg-[#15C17B] border-[#15C17B] text-[#0A0E17]",
+    "w-3.5 h-3.5 rounded-none border border-sf-line-emphasis flex items-center justify-center text-[12px]",
+  checkboxOn: "bg-sf-primary border-sf-primary text-sf-on-primary",
 };
 
 export default function SolarisControls({
@@ -127,8 +127,8 @@ export default function SolarisControls({
           <button
             className={`${S.btn} flex-1 font-medium ${
               paused
-                ? "bg-[#15C17B] border-[#15C17B] text-[#0A0E17]"
-                : "bg-[rgba(21,193,123,0.14)] border-[rgba(21,193,123,0.55)] text-[#3DFFCD] hover:bg-[rgba(21,193,123,0.24)]"
+                ? "bg-sf-primary border-sf-primary text-sf-on-primary"
+                : "bg-[rgba(21,193,123,0.14)] border-[rgba(21,193,123,0.55)] text-sf-primary-bright hover:bg-[rgba(21,193,123,0.24)]"
             }`}
             onClick={onTogglePause}
             title={paused ? "Resume (space)" : "Pause (space)"}

@@ -58,7 +58,7 @@ const CollaboratorSection = ({ worldId, worldName }: CollaboratorSectionProps) =
   // Pro gate
   if (!isSubscribed) {
     return (
-      <div className="border-t border-sf-border pt-4">
+      <div className="border-t border-sf-line pt-4">
         <div className="flex items-center gap-2 mb-3">
           <Users className="w-4 h-4 text-primary" />
           <Label className="font-medium">Invite Collaborators</Label>
@@ -88,7 +88,7 @@ const CollaboratorSection = ({ worldId, worldName }: CollaboratorSectionProps) =
   const isLoading = loadingCollabs || loadingInvites;
 
   return (
-    <div className="border-t border-sf-border pt-4 space-y-4">
+    <div className="border-t border-sf-line pt-4 space-y-4">
       <div className="flex items-center gap-2">
         <Users className="w-4 h-4 text-primary" />
         <Label className="font-medium">Collaborators</Label>

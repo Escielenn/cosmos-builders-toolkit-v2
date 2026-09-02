@@ -168,7 +168,7 @@ const LinkEditorDialog = ({
                       "flex items-center gap-2 px-3 py-2 rounded-md border text-xs font-medium transition-colors",
                       linkType === lt.id
                         ? "border-primary bg-primary/10 text-t1"
-                        : "border-sf-border text-t3 hover:border-sf-border"
+                        : "border-sf-line text-t3 hover:border-sf-line"
                     )}
                   >
                     <span

@@ -66,7 +66,7 @@ export default function AudioSelectorDialog() {
         </DialogHeader>
 
         {/* Tabs */}
-        <div className="flex gap-1 border-b border-white/8 -mx-6 px-6">
+        <div className="flex gap-1 border-b border-sf-line-hairline -mx-6 px-6">
           {TABS.map((tab) => (
             <button
               key={tab.id}
@@ -129,7 +129,7 @@ function CuratedTab({ expandedPlaylist, onExpandPlaylist }: CuratedTabProps) {
           {expandedPlaylist.name}
         </h3>
 
-        <div className="border border-white/8 divide-y divide-white/5">
+        <div className="border border-sf-line-hairline divide-y divide-white/5">
           {expandedPlaylist.tracks.map((track, i) => (
             <TrackRow key={track.id} track={track} index={i} showAddButton />
           ))}

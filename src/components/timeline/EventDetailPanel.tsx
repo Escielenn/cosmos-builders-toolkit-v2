@@ -196,7 +196,7 @@ const EventDetailPanel = ({
                     "flex-1 px-2 py-1 rounded border text-[12px] font-medium transition-colors",
                     event.importance === il.id
                       ? "border-primary bg-primary/10 text-t1"
-                      : "border-sf-border text-t3 hover:border-sf-border"
+                      : "border-sf-line text-t3 hover:border-sf-line"
                   )}
                 >
                   {il.label}
@@ -405,7 +405,7 @@ const EventDetailPanel = ({
                           "flex items-center gap-1 px-2 py-0.5 rounded-full border text-[12px] font-medium transition-colors",
                           isActive
                             ? "border-primary bg-primary/10 text-t1"
-                            : "border-sf-border text-t3 hover:border-sf-border"
+                            : "border-sf-line text-t3 hover:border-sf-line"
                         )}
                       >
                         <span
@@ -555,7 +555,7 @@ const EventDetailPanel = ({
           })()}
 
           {/* Delete */}
-          <div className="pt-4 border-t border-sf-border">
+          <div className="pt-4 border-t border-sf-line">
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <Button variant="destructive" size="sm" className="w-full">

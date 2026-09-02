@@ -68,7 +68,7 @@ class ErrorBoundary extends Component<Props, State> {
               </p>
 
               {this.state.error && (
-                <pre className="font-mono text-[12px] text-left bg-sf-void/60 text-t4 p-4 rounded-none overflow-auto max-h-48 border border-sf-border sf-sb leading-relaxed">
+                <pre className="font-mono text-[12px] text-left bg-sf-void/60 text-t4 p-4 rounded-none overflow-auto max-h-48 border border-sf-line sf-sb leading-relaxed">
                   {this.state.error.message}
                   {"\n\n"}
                   {this.state.error.stack?.split("\n").slice(0, 8).join("\n")}
@@ -93,7 +93,7 @@ class ErrorBoundary extends Component<Props, State> {
               </div>
             </div>
 
-            <p className="font-mono text-[12px] tracking-[0.18em] text-t5 uppercase text-center">
+            <p className="font-mono text-[12px] tracking-[0.18em] text-t4 uppercase text-center">
               39.87°N · 104.97°W · INCIDENT-{Date.now().toString(36).toUpperCase().slice(-6)}
             </p>
           </div>

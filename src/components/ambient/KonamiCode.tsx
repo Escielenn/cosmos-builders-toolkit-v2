@@ -73,19 +73,19 @@ export function KonamiCode() {
           </div>
           <button
             onClick={() => setOpen(false)}
-            className="font-mono text-[12px] tracking-[0.2em] uppercase text-t3 hover:text-sf-crimson transition-colors duration-base px-3 py-1 border border-sf-border"
+            className="font-mono text-[12px] tracking-[0.2em] uppercase text-t3 hover:text-sf-crimson transition-colors duration-base px-3 py-1 border border-sf-line"
           >
             [ESC] CLOSE
           </button>
         </div>
 
-        <div className="relative aspect-video bg-sf-void border border-sf-border overflow-hidden">
+        <div className="relative aspect-video bg-sf-void border border-sf-line overflow-hidden">
           <div className="sf-starfield" />
           <div className="absolute inset-0 flex items-center justify-center flex-col gap-4">
             <p className="font-mono text-[12px] tracking-[0.18em] text-t3 uppercase">
               FULL-SCREEN NAVIGATIONAL CHART
             </p>
-            <p className="font-mono text-[12px] tracking-[0.18em] text-t5 uppercase">
+            <p className="font-mono text-[12px] tracking-[0.18em] text-t4 uppercase">
               TELEMETRY LOCK · 39.87°N 104.97°W · SOL COUNTER ACTIVE
             </p>
           </div>

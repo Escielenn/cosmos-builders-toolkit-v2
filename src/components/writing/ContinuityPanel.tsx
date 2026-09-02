@@ -262,7 +262,7 @@ export function ContinuityPanel({ worldId, content, entityId, onSetEntityId }: C
             <span className="text-t4">
               World <span className="text-sf-primary-text">{n.worldValue}</span>
             </span>
-            <span className="text-t4 text-[10px]" aria-hidden="true">vs</span>
+            <span className="text-t4 text-[12px]" aria-hidden="true">vs</span>
             <span className="text-t4">
               Prose <span className="text-sf-amber">{n.proseValue}</span>
             </span>

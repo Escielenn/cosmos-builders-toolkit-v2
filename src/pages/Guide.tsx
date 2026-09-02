@@ -34,9 +34,9 @@ const SECTIONS = [
       "Platform navigation, sharing, keyboard shortcuts, and operational systems.",
     to: "/guide/field-manual",
     icon: Compass,
-    accent: "text-[#4D9FFF]",
-    accentBorder: "group-hover:border-[#4D9FFF]/20",
-    accentBar: "bg-[#4D9FFF]/60",
+    accent: "text-sf-azure-text",
+    accentBorder: "group-hover:border-sf-azure/20",
+    accentBar: "bg-sf-azure/60",
   },
   {
     title: "SF University",
@@ -44,9 +44,9 @@ const SECTIONS = [
       "Articles, simulator science explainers, and worldbuilding courses.",
     to: "/learn",
     icon: BookOpen,
-    accent: "text-[#5B8DEF]",
-    accentBorder: "group-hover:border-[#5B8DEF]/20",
-    accentBar: "bg-[#5B8DEF]/60",
+    accent: "text-sf-stellar-text",
+    accentBorder: "group-hover:border-sf-stellar/20",
+    accentBar: "bg-sf-stellar/60",
   },
 ];
 

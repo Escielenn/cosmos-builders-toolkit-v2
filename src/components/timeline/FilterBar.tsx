@@ -220,7 +220,7 @@ const FilterBar = () => {
               "px-2 py-1 rounded border text-[12px] font-medium transition-colors h-8",
               filter.importanceLevels.includes(il.id)
                 ? "border-primary bg-primary/10 text-t1"
-                : "border-sf-border text-t3 hover:border-sf-border"
+                : "border-sf-line text-t3 hover:border-sf-line"
             )}
           >
             {il.label}

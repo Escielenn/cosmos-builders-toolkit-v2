@@ -44,12 +44,12 @@ export default function UploadTab() {
   return (
     <div className="py-3 space-y-4">
       {/* Upload button */}
-      <div className="border-2 border-dashed border-white/10 p-4 text-center space-y-2">
+      <div className="border-2 border-dashed border-sf-line p-4 text-center space-y-2">
         <Upload className="w-5 h-5 mx-auto text-t4" />
         <p className="text-[12px] text-t3">
           Drop an audio file or click to browse
         </p>
-        <p className="text-[12px] text-t5 font-mono uppercase tracking-wider">
+        <p className="text-[12px] text-t4 font-mono uppercase tracking-wider">
           {ACCEPTED_EXTENSIONS.join(", ")} · Max {MAX_FILE_SIZE / 1024 / 1024}MB
         </p>
         <Button
@@ -80,7 +80,7 @@ export default function UploadTab() {
           No uploaded tracks yet.
         </p>
       ) : (
-        <div className="border border-white/8 divide-y divide-white/5">
+        <div className="border border-sf-line-hairline divide-y divide-white/5">
           {(tracks ?? []).map((track) => {
             const isThis = currentTrack?.id === track.id;
             const isPlaying = isThis && status === "playing";

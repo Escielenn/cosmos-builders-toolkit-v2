@@ -274,7 +274,7 @@ export default function WorldCompile() {
             {/* Front matter */}
             <GlassPanel>
               <div className="p-4 space-y-3">
-                <h2 className="font-heading text-sm uppercase tracking-[2px] text-[#00FF88] mb-3">
+                <h2 className="font-heading text-sm uppercase tracking-[2px] text-sf-emerald-text mb-3">
                   Front Matter
                 </h2>
                 <div className="grid grid-cols-2 gap-3">
@@ -335,7 +335,7 @@ export default function WorldCompile() {
             <GlassPanel>
               <div className="p-4">
                 <div className="flex items-center justify-between mb-3">
-                  <h2 className="font-heading text-sm uppercase tracking-[2px] text-[#00FF88]">
+                  <h2 className="font-heading text-sm uppercase tracking-[2px] text-sf-emerald-text">
                     Chapters
                   </h2>
                   <div className="flex gap-2">
@@ -373,7 +373,7 @@ export default function WorldCompile() {
                                 <div className="w-3 h-3 border border-sf-line" />
                               )}
                             </div>
-                            <Folder className="w-3.5 h-3.5 text-[#FFB347]" />
+                            <Folder className="w-3.5 h-3.5 text-sf-amber-warm-text" />
                             <span className="text-xs font-medium text-t2 flex-1 text-left">
                               {folder.title}
                             </span>
@@ -438,7 +438,7 @@ export default function WorldCompile() {
               <GlassPanel>
                 <div className="p-4">
                   <div className="flex items-center justify-between mb-3">
-                    <h2 className="font-heading text-sm uppercase tracking-[2px] text-[#00FF88]">
+                    <h2 className="font-heading text-sm uppercase tracking-[2px] text-sf-emerald-text">
                       Preview
                     </h2>
                     <Button
@@ -488,7 +488,7 @@ export default function WorldCompile() {
           <div className="space-y-4">
             <GlassPanel>
               <div className="p-4 space-y-3">
-                <h2 className="font-heading text-sm uppercase tracking-[2px] text-[#00FF88]">
+                <h2 className="font-heading text-sm uppercase tracking-[2px] text-sf-emerald-text">
                   Manuscript Stats
                 </h2>
                 <div className="space-y-2">
@@ -518,7 +518,7 @@ export default function WorldCompile() {
 
             <GlassPanel>
               <div className="p-4 space-y-3">
-                <h2 className="font-heading text-sm uppercase tracking-[2px] text-[#00FF88]">
+                <h2 className="font-heading text-sm uppercase tracking-[2px] text-sf-emerald-text">
                   Export
                 </h2>
 

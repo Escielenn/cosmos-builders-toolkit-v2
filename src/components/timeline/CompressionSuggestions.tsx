@@ -55,7 +55,7 @@ const CompressionSuggestions = () => {
   };
 
   return (
-    <div className="flex items-center gap-2 px-3 py-1.5 bg-muted/30 border border-sf-border rounded-none text-xs">
+    <div className="flex items-center gap-2 px-3 py-1.5 bg-muted/30 border border-sf-line rounded-none text-xs">
       <Lightbulb className="w-3.5 h-3.5 text-sf-amber shrink-0" />
       <span className="text-t3 shrink-0">
         {visible.length} gap{visible.length !== 1 ? "s" : ""} detected

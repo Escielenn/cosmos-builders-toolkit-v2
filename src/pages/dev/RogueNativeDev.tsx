@@ -456,7 +456,7 @@ const RogueNativeDev = () => {
   );
 
   const toolBtn =
-    "flex items-center gap-1.5 border border-[#15C17B]/70 bg-[#15C17B]/[0.12] px-3 h-8 font-mono text-[13px] uppercase tracking-wider text-[#3DFFCD] transition-colors hover:bg-[#15C17B]/25 hover:text-white";
+    "flex items-center gap-1.5 border border-sf-primary/70 bg-sf-primary/[0.12] px-3 h-8 font-mono text-[13px] uppercase tracking-wider text-sf-primary-bright transition-colors hover:bg-sf-primary/25 hover:text-white";
 
   return (
     <div className="min-h-screen bg-background">
@@ -471,7 +471,7 @@ const RogueNativeDev = () => {
         </div>
 
         {/* Save / Load / Publish. Top-centre, clear of both panels. */}
-        <div className="absolute left-1/2 top-3 z-30 flex -translate-x-1/2 items-center gap-1.5 border border-[#15C17B]/30 bg-[#09090B]/90 px-1.5 py-1 backdrop-blur-sm">
+        <div className="absolute left-1/2 top-3 z-30 flex -translate-x-1/2 items-center gap-1.5 border border-sf-primary/30 bg-sf-void/90 px-1.5 py-1 backdrop-blur-sm">
           <button type="button" onClick={requestSave} className={toolBtn} title="Save encounter">
             <Save className="h-3 w-3" /> Save
           </button>
@@ -551,7 +551,7 @@ const RogueNativeDev = () => {
               type="button"
               onClick={fn}
               title={title}
-              className="min-w-[30px] border border-sf-line bg-white/[0.05] px-2 py-1 font-mono text-[12px] uppercase tracking-wider text-white/80 transition-colors hover:border-[#15C17B]/70 hover:bg-[#15C17B]/[0.15] hover:text-white"
+              className="min-w-[30px] border border-sf-line bg-white/[0.05] px-2 py-1 font-mono text-[12px] uppercase tracking-wider text-white/80 transition-colors hover:border-sf-primary/70 hover:bg-sf-primary/[0.15] hover:text-white"
             >
               {label}
             </button>
@@ -563,7 +563,7 @@ const RogueNativeDev = () => {
             aria-pressed={showKeys}
             className={`min-w-[30px] border px-2 py-1 font-mono text-[12px] transition-colors ${
               showKeys
-                ? "border-[#15C17B] bg-[#15C17B]/25 text-white"
+                ? "border-sf-primary bg-sf-primary/25 text-white"
                 : "border-sf-line bg-white/[0.05] text-white/80 hover:text-white"
             }`}
           >
@@ -573,7 +573,7 @@ const RogueNativeDev = () => {
 
         {showKeys && (
           <div className="absolute bottom-16 right-3 z-30 w-[232px] border border-sf-line bg-[rgba(13,13,15,0.97)] p-3 backdrop-blur-sm">
-            <span className="mb-2 block font-mono text-[12px] uppercase tracking-[2px] text-[#3DFFCD]/80">
+            <span className="mb-2 block font-mono text-[12px] uppercase tracking-[2px] text-sf-primary-bright/80">
               Keyboard
             </span>
             {[
@@ -586,7 +586,7 @@ const RogueNativeDev = () => {
               ["?", "This list"],
             ].map(([k, what]) => (
               <div key={k} className="flex items-baseline justify-between gap-3 py-0.5">
-                <span className="shrink-0 font-mono text-[12px] text-[#3DFFCD]">{k}</span>
+                <span className="shrink-0 font-mono text-[12px] text-sf-primary-bright">{k}</span>
                 <span className="text-right text-[12px] text-white/75">{what}</span>
               </div>
             ))}

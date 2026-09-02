@@ -39,13 +39,13 @@ export function HomepageQuote() {
         <span className="font-mono text-xs text-t3">
           {quote.author}
         </span>
-        <span className="text-t5 text-xs">-</span>
+        <span className="text-t4 text-xs">-</span>
         <span className="font-mono text-xs text-primary/60">
           <em>{quote.source}</em>
         </span>
         {quote.affiliateUrl && (
           <>
-            <span className="text-t5 text-[12px] hidden sm:inline">|</span>
+            <span className="text-t4 text-[12px] hidden sm:inline">|</span>
             <a
               href={quote.affiliateUrl}
               target="_blank"
@@ -57,7 +57,7 @@ export function HomepageQuote() {
             </a>
           </>
         )}
-        <span className="text-t5 text-[12px] hidden sm:inline">|</span>
+        <span className="text-t4 text-[12px] hidden sm:inline">|</span>
         <span className="hidden sm:flex items-center gap-2">
           <a
             href={quote.amazonUrl}

@@ -33,18 +33,18 @@ import type { EncounterStatus } from "@/lib/simulators/nbody";
 const S = {
   panelBase:
     "absolute z-20 w-[268px] max-w-[calc(100vw-24px)] bg-[rgba(13,13,15,0.94)] border border-white/[0.3] backdrop-blur-[16px] rounded-none p-3 overflow-y-auto",
-  sec: "font-mono text-[13px] uppercase tracking-[2px] text-[#3DFFCD]/80 mb-1.5 block",
+  sec: "font-mono text-[13px] uppercase tracking-[2px] text-sf-primary-bright/80 mb-1.5 block",
   chip: "px-2 py-1 text-[12px] uppercase tracking-wide border rounded-none transition-colors min-h-[26px]",
   chipOff:
-    "bg-white/[0.05] border-white/[0.35] text-white/75 hover:border-[#15C17B]/50 hover:bg-[#15C17B]/[0.12] hover:text-white",
-  chipOn: "bg-[rgba(21,193,123,0.22)] border-[#15C17B] text-white",
+    "bg-white/[0.05] border-white/[0.35] text-white/75 hover:border-sf-primary/50 hover:bg-sf-primary/[0.12] hover:text-white",
+  chipOn: "bg-[rgba(21,193,123,0.22)] border-sf-primary text-white",
   row: "flex items-baseline justify-between gap-2 py-0.5",
   label: "font-heading text-[13px] uppercase tracking-[1.5px] text-white/50 shrink-0",
   value: "font-mono text-[14px] text-white/95 text-right",
   toggle:
     "flex items-center gap-2 py-1 text-[13px] text-white/80 cursor-pointer select-none hover:text-white",
-  box: "w-3.5 h-3.5 rounded-none border border-white/40 flex items-center justify-center text-[12px]",
-  boxOn: "bg-[#15C17B] border-[#15C17B] text-[#0A0E17]",
+  box: "w-3.5 h-3.5 rounded-none border border-sf-line-emphasis flex items-center justify-center text-[12px]",
+  boxOn: "bg-sf-primary border-sf-primary text-sf-on-primary",
 };
 
 function Slider({
@@ -68,7 +68,7 @@ function Slider({
     <div className="mb-2">
       <label className="mb-1 flex items-center justify-between text-[13px] uppercase tracking-wider text-white/55">
         <span>{label}</span>
-        <span className="font-mono text-[13px] text-[#3DFFCD]">{display}</span>
+        <span className="font-mono text-[13px] text-sf-primary-bright">{display}</span>
       </label>
       <input
         type="range"
@@ -236,7 +236,7 @@ export function RogueControls({
           <button
             type="button"
             onClick={onLaunch}
-            className="w-full border border-[#15C17B] bg-[#15C17B] px-2 py-2 font-heading text-[13px] font-medium uppercase tracking-[1.5px] text-[#0A0E17] transition-colors hover:bg-[#3DFFCD]"
+            className="w-full border border-sf-primary bg-sf-primary px-2 py-2 font-heading text-[13px] font-medium uppercase tracking-[1.5px] text-sf-on-primary transition-colors hover:bg-sf-primary-bright"
           >
             ▶ Launch intruder
           </button>
@@ -249,8 +249,8 @@ export function RogueControls({
                 aria-pressed={!running}
                 className={`${S.chip} flex-1 font-medium ${
                   running
-                    ? "border-[#15C17B]/75 bg-[#15C17B]/[0.14] text-[#3DFFCD] hover:bg-[#15C17B]/25"
-                    : "border-[#15C17B] bg-[#15C17B] text-[#0A0E17]"
+                    ? "border-sf-primary/75 bg-sf-primary/[0.14] text-sf-primary-bright hover:bg-sf-primary/25"
+                    : "border-sf-primary bg-sf-primary text-sf-on-primary"
                 }`}
               >
                 {running ? "⏸ Pause" : "▶ Play"}
@@ -341,11 +341,11 @@ export function RogueControls({
 
 const STATUS_COPY: Record<EncounterStatus, { text: string; tone: string }> = {
   awaiting: { text: "Awaiting launch", tone: "text-white/55" },
-  approaching: { text: "Intruder approaching", tone: "text-[#3DFFCD]" },
-  perturbed: { text: "Orbits perturbed", tone: "text-[#FFB800]" },
-  "post-encounter": { text: "Post-encounter", tone: "text-[#3DFFCD]" },
-  ejecting: { text: "Planets ejected", tone: "text-[#FF9F43]" },
-  disrupted: { text: "System disrupted", tone: "text-[#FF3366]" },
+  approaching: { text: "Intruder approaching", tone: "text-sf-primary-bright" },
+  perturbed: { text: "Orbits perturbed", tone: "text-sf-amber-text" },
+  "post-encounter": { text: "Post-encounter", tone: "text-sf-primary-bright" },
+  ejecting: { text: "Planets ejected", tone: "text-sf-amber-warm-text" },
+  disrupted: { text: "System disrupted", tone: "text-sf-crimson-text" },
 };
 
 interface ReadoutProps {
@@ -442,7 +442,7 @@ export function RogueReadout({
               <Row label="Mass" value={`${(selected.mass / 3.003e-6).toFixed(2)} M⊕`} />
             )}
             {ejected.has(selected.name) && (
-              <p className="mt-1.5 font-mono text-[12px] uppercase tracking-[1.2px] text-[#2ECC71]">
+              <p className="mt-1.5 font-mono text-[12px] uppercase tracking-[1.2px] text-sf-emerald-text">
                 Unbound and leaving
               </p>
             )}

@@ -19,7 +19,7 @@ const S = {
   // Readout contrast: labels were white/30, which is below the tier-3 floor for
   // text you are meant to read rather than skim past.
   sectionLabel:
-    "font-heading text-[13px] uppercase tracking-[2px] text-[#3DFFCD]/80 mb-1.5 block",
+    "font-heading text-[13px] uppercase tracking-[2px] text-sf-primary-bright/80 mb-1.5 block",
   row: "flex items-baseline justify-between gap-2 py-0.5",
   label: "font-heading text-[13px] uppercase tracking-[1.5px] text-white/50 shrink-0",
   value: "font-mono text-[14px] text-white/95 text-right",
@@ -27,7 +27,7 @@ const S = {
   badge:
     "inline-block px-1.5 py-0.5 text-[12px] uppercase tracking-wider font-mono border rounded-sm mt-1",
   badgeHz:
-    "bg-[rgba(46,204,113,0.1)] border-[rgba(46,204,113,0.3)] text-[#2ECC71]",
+    "bg-[rgba(46,204,113,0.1)] border-[rgba(46,204,113,0.3)] text-sf-emerald-text",
   ghost:
     "text-[13px] text-white/45 font-mono uppercase tracking-wider text-center py-4",
 };
@@ -48,7 +48,7 @@ export default function SolarisUI({ systemName, star, selectedBody }: SolarisUIP
     <div className={S.panel}>
       {/* Title */}
       <div className="pb-2 border-b border-white/[0.35]">
-        <p className="font-heading text-[12px] uppercase tracking-[2px] text-[#15C17B]/50">
+        <p className="font-heading text-[12px] uppercase tracking-[2px] text-sf-primary-text/50">
           System
         </p>
         <p className={S.name}>{systemName}</p>

@@ -253,7 +253,7 @@ const EventFormDialog = ({
                           "flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-xs font-medium transition-colors",
                           isActive
                             ? "border-primary bg-primary/10 text-t1"
-                            : "border-sf-border text-t3 hover:border-sf-border"
+                            : "border-sf-line text-t3 hover:border-sf-line"
                         )}
                       >
                         <span
@@ -306,7 +306,7 @@ const EventFormDialog = ({
                     "flex-1 px-3 py-1.5 rounded-md border text-xs font-medium transition-colors",
                     importance === il.id
                       ? "border-primary bg-primary/10 text-t1"
-                      : "border-sf-border text-t3 hover:border-sf-border"
+                      : "border-sf-line text-t3 hover:border-sf-line"
                   )}
                 >
                   {il.label}

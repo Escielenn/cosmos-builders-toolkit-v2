@@ -334,7 +334,7 @@ export default function WikiBrowse() {
               <Link key={entry.id} to={targetPath} className="group">
                 <GlassPanel className="p-4 h-full relative overflow-hidden transition-transform duration-200 group-hover:-translate-y-0.5">
                   {/* Bottom edge fill bar */}
-                  <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#3DFFCD]/60 scale-x-0 origin-left transition-transform duration-300 group-hover:scale-x-100" />
+                  <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-sf-primary-bright/60 scale-x-0 origin-left transition-transform duration-300 group-hover:scale-x-100" />
 
                   <div className="flex items-start gap-3">
                     <div className="w-8 h-8 shrink-0 flex items-center justify-center bg-teal/6 border border-sf-primary rounded-sm">

@@ -232,7 +232,7 @@ export function StellarForgeEditor({
     editorProps: {
       attributes: {
         class: cn(
-          "prose prose-sm max-w-none focus:outline-none",
+          "prose prose-sm max-w-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sf-focus",
           "prose-headings:font-medium",
           "prose-h1:text-xl prose-h1:mt-4 prose-h1:mb-2",
           "prose-h2:text-lg prose-h2:mt-3 prose-h2:mb-2",
@@ -323,14 +323,14 @@ export function StellarForgeEditor({
     <BracketPanel color="stellar">
       <div
         className={cn(
-          "rounded-none border border-[#5B8DEF]/15 bg-background overflow-hidden relative",
+          "rounded-none border border-sf-stellar/15 bg-background overflow-hidden relative",
           focusMode && "sf-focus-mode",
           className
         )}
       >
         {/* Toolbar */}
         {!readOnly && (
-          <div className="sf-writing-toolbar flex items-center gap-0.5 p-1.5 border-b border-sf-border bg-muted/30 flex-wrap">
+          <div className="sf-writing-toolbar flex items-center gap-0.5 p-1.5 border-b border-sf-line bg-muted/30 flex-wrap">
             {/* Bold + Italic (always shown) */}
             <ToolbarBtn
               onClick={() => editor.chain().focus().toggleBold().run()}
@@ -479,7 +479,7 @@ export function StellarForgeEditor({
                   onClick={handleInsertWikiLink}
                   title="Insert Wiki Link [["
                 >
-                  <span className="text-[#5B8DEF] font-mono text-xs font-medium">
+                  <span className="text-sf-stellar-text font-mono text-xs font-medium">
                     [[
                   </span>
                 </ToolbarBtn>
@@ -487,7 +487,7 @@ export function StellarForgeEditor({
                   onClick={handleInsertAtTrigger}
                   title="Mention Entity @"
                 >
-                  <AtSign className="w-4 h-4 text-[#00FF88]" />
+                  <AtSign className="w-4 h-4 text-sf-emerald-text" />
                 </ToolbarBtn>
               </>
             )}
@@ -545,8 +545,8 @@ export function StellarForgeEditor({
                           className={cn(
                             "w-3.5 h-3.5 rounded-full border transition-all",
                             preferences.themeId === theme.id
-                              ? "ring-2 ring-[#5B8DEF] ring-offset-1 ring-offset-background border-[#5B8DEF]"
-                              : "border-sf-border hover:border-foreground/50"
+                              ? "ring-2 ring-[#5B8DEF] ring-offset-1 ring-offset-background border-sf-stellar"
+                              : "border-sf-line hover:border-sf-line-emphasis"
                           )}
                           style={{ backgroundColor: theme.swatch[0] }}
                           aria-label={theme.name}
@@ -583,7 +583,7 @@ export function StellarForgeEditor({
 
         {/* Word Count Footer (full preset only) */}
         {config.showWordCount && !readOnly && (
-          <div className="flex items-center justify-end px-3 py-1.5 border-t border-sf-border bg-muted/20">
+          <div className="flex items-center justify-end px-3 py-1.5 border-t border-sf-line bg-muted/20">
             <span className="font-mono text-[12px] tracking-[1.5px] uppercase text-t4">
               {wordCount.toLocaleString()} {wordCount === 1 ? "word" : "words"}
             </span>

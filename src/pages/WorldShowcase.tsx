@@ -691,7 +691,7 @@ export default function WorldShowcase() {
           {/* Visibility badge (non-owner visitors see status; owner sees it in top banner) */}
           {!isOwner && isCommunityWorld && (
             <div className="flex items-center gap-2 mt-4">
-              <span className="inline-flex items-center gap-1.5 font-mono text-[12px] px-2.5 py-1 rounded-sm bg-[#15C17B]/[0.06] border border-[#15C17B]/[0.15] text-[#15C17B]">
+              <span className="inline-flex items-center gap-1.5 font-mono text-[12px] px-2.5 py-1 rounded-sm bg-sf-primary/[0.06] border border-sf-primary/[0.15] text-sf-primary-text">
                 <Globe className="w-3 h-3" />
                 {visibility === "public" ? "Public" : "Community"}
               </span>

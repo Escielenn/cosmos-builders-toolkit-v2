@@ -36,7 +36,7 @@ const WritingSettings = () => {
                   "relative flex items-start gap-3 p-3 rounded-none border text-left transition-all",
                   isSelected
                     ? "border-primary bg-primary/5 ring-1 ring-primary"
-                    : "border-sf-border hover:border-primary/50 hover:bg-accent/50"
+                    : "border-sf-line hover:border-primary/50 hover:bg-accent/50"
                 )}
               >
                 {/* Color swatch */}
@@ -44,7 +44,7 @@ const WritingSettings = () => {
                   {theme.swatch.map((color, i) => (
                     <div
                       key={i}
-                      className="w-4 h-4 rounded-sm border border-sf-border"
+                      className="w-4 h-4 rounded-sm border border-sf-line"
                       style={{ backgroundColor: color }}
                     />
                   ))}

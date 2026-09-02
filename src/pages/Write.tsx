@@ -741,7 +741,7 @@ export default function Write(): JSX.Element {
             {doc && (
               <div className="mb-4 flex flex-wrap items-center gap-4">
                 <div className="flex items-center gap-1.5">
-                  <span className="text-[11px] font-sans font-medium uppercase tracking-[1.5px] text-t4">Spacing</span>
+                  <span className="text-[12px] font-sans font-medium uppercase tracking-[1.5px] text-t4">Spacing</span>
                   <div className="flex">
                     {(["1", "1.5", "2"] as const).map((val) => (
                       <button
@@ -760,7 +760,7 @@ export default function Write(): JSX.Element {
                   </div>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <span className="text-[11px] font-sans font-medium uppercase tracking-[1.5px] text-t4">Font</span>
+                  <span className="text-[12px] font-sans font-medium uppercase tracking-[1.5px] text-t4">Font</span>
                   <select
                     value={preferences.writingFont}
                     onChange={(e) => updatePreferences({ writingFont: e.target.value as WritingFont })}

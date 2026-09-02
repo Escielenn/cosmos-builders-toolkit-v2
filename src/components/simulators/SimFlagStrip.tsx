@@ -37,7 +37,7 @@ export function SimFlagStrip({ flags, dismissedIds, onDismiss }: SimFlagStripPro
             : { border: "border-l border-sf-amber", title: "text-sf-amber" };
         return (
           <div key={f.id} className={`relative ${style.border} bg-sf-void/90 py-2 pl-3 pr-7 backdrop-blur-sm`}>
-            <p className={`font-mono text-[11px] uppercase tracking-[1.2px] ${style.title}`}>{f.title}</p>
+            <p className={`font-mono text-[12px] uppercase tracking-[1.2px] ${style.title}`}>{f.title}</p>
             <p className="mt-1 font-serif text-[13px] italic leading-relaxed text-t2">{f.body}</p>
             <button
               type="button"

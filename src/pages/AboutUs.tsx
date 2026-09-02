@@ -31,8 +31,8 @@ const AboutUs = () => {
         <section className="max-w-3xl mx-auto mb-16">
           <GlassPanel className="p-6 sm:p-8">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-8 h-8 flex items-center justify-center bg-[#15C17B]/[0.06] border border-[#15C17B]/[0.15]">
-                <Compass className="w-4 h-4 text-[#15C17B]" />
+              <div className="w-8 h-8 flex items-center justify-center bg-sf-primary/[0.06] border border-sf-primary/[0.15]">
+                <Compass className="w-4 h-4 text-sf-primary-text" />
               </div>
               <h2 className="font-heading text-xl font-light uppercase tracking-[2px] text-t1">
                 The Story
@@ -69,8 +69,8 @@ const AboutUs = () => {
         <section className="max-w-3xl mx-auto mb-16">
           <GlassPanel className="p-6 sm:p-8">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-8 h-8 flex items-center justify-center bg-[#5B8DEF]/[0.06] border border-[#5B8DEF]/[0.15]">
-                <Layers className="w-4 h-4 text-[#5B8DEF]" />
+              <div className="w-8 h-8 flex items-center justify-center bg-sf-stellar/[0.06] border border-sf-stellar/[0.15]">
+                <Layers className="w-4 h-4 text-sf-stellar-text" />
               </div>
               <h2 className="font-heading text-xl font-light uppercase tracking-[2px] text-t1">
                 The Cascade
@@ -113,8 +113,8 @@ const AboutUs = () => {
         <section className="max-w-3xl mx-auto mb-16">
           <GlassPanel className="p-6 sm:p-8">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-8 h-8 flex items-center justify-center bg-[#9B5DE5]/[0.06] border border-[#9B5DE5]/[0.15]">
-                <User className="w-4 h-4 text-[#9B5DE5]" />
+              <div className="w-8 h-8 flex items-center justify-center bg-sf-violet/[0.06] border border-sf-violet/[0.15]">
+                <User className="w-4 h-4 text-sf-violet-text" />
               </div>
               <h2 className="font-heading text-xl font-light uppercase tracking-[2px] text-t1">
                 The Founder
@@ -146,7 +146,7 @@ const AboutUs = () => {
         <section className="max-w-3xl mx-auto mb-16 text-center">
           <GlassPanel className="p-8 sm:p-12" glow>
             <div className="flex items-center justify-center gap-3 mb-6">
-              <Sparkles className="w-5 h-5 text-[#15C17B]" />
+              <Sparkles className="w-5 h-5 text-sf-primary-text" />
             </div>
             <p className="font-display text-2xl md:text-3xl font-light tracking-sf-title text-t1 mb-4">
               These worlds exist in you.
@@ -167,7 +167,7 @@ const AboutUs = () => {
         <div className="text-center">
           <Link
             to="/"
-            className="inline-flex items-center gap-2 text-sm text-t3 hover:text-[#15C17B] transition-colors"
+            className="inline-flex items-center gap-2 text-sm text-t3 hover:text-sf-primary-text transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
             <span className="font-heading text-xs uppercase tracking-[1.5px]">

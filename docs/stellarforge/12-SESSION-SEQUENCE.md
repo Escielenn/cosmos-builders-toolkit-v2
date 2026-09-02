@@ -34,7 +34,7 @@ Grouped into four blocks. Each block ends with something demonstrable. **Don't r
 | A1 | Install the package | `INSTALL-SIMPLE.md` | 15 min | `/sf-audit` runs |
 | A2 | Fix the wrong-answer bug | `11` → Brief S-FIX | ~2 days | Check tab stops lying |
 | A3 | Legibility: shared components | `10` → component pass | ~2 days | You can see the buttons |
-| A4 | Legibility: tool pages | same brief, wider scope | ~2 days | `/sf-contrast` mostly clean |
+| A4 | Legibility: tool pages | same brief, wider scope | ~2 days | **done 2026-09-02** — 73 files in pages/ + components/: alpha borders → `sf-line-*`, t5 → t4, opacity states → `sf-disabled-*`, 113 hex classes → solved accent tokens, suppressed focus rings restored |
 | | **BLOCK B — give facts a subject** | | | |
 | B1 | Subjects on facts | `11` → Brief S0 | ~3–5 days | Two-planet worlds check correctly |
 | B2 | Sim consequence flags | `11` → Brief S4 | ~1 week | Simulators tell you things |

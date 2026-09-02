@@ -41,7 +41,7 @@ export function VelocityDial({ className }: { className?: string }) {
 
   return (
     <div
-      className={`relative aspect-square bg-sf-void border border-sf-border p-5 ${className ?? ""}`}
+      className={`relative aspect-square bg-sf-void border border-sf-line p-5 ${className ?? ""}`}
       aria-hidden
     >
       <svg viewBox="0 0 200 200" className="w-full h-full">
@@ -110,7 +110,7 @@ export function VelocityDial({ className }: { className?: string }) {
       <div className="absolute left-3.5 top-3.5 font-mono text-[12px] text-sf-primary-text tracking-[2px]">
         VELOCITY
       </div>
-      <div className="absolute right-3.5 top-3.5 font-mono text-[12px] text-t5 tracking-[2px]">
+      <div className="absolute right-3.5 top-3.5 font-mono text-[12px] text-t4 tracking-[2px]">
         REF-FRAME
       </div>
     </div>

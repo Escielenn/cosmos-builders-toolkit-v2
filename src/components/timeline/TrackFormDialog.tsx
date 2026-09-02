@@ -126,7 +126,7 @@ const TrackFormDialog = ({
                       "flex items-center gap-2 px-3 py-2 rounded-md border text-sm transition-colors text-left",
                       type === tt.id
                         ? "border-primary bg-primary/10 text-t1"
-                        : "border-sf-border text-t3 hover:border-sf-border hover:bg-muted/30"
+                        : "border-sf-line text-t3 hover:border-sf-line hover:bg-muted/30"
                     )}
                   >
                     {Icon && <Icon className="w-4 h-4 shrink-0" />}

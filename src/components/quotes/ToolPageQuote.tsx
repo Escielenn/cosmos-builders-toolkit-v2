@@ -25,13 +25,13 @@ export function ToolPageQuote({ toolId }: ToolPageQuoteProps) {
           <span className="font-mono text-[12px] text-t4">
             {quote.author}
           </span>
-          <span className="text-t5 text-[12px]">-</span>
+          <span className="text-t4 text-[12px]">-</span>
           <span className="font-mono text-[12px] text-primary/60">
             <em>{quote.source}</em>
           </span>
           {quote.affiliateUrl && (
             <>
-              <span className="text-t5">|</span>
+              <span className="text-t4">|</span>
               <a
                 href={quote.affiliateUrl}
                 target="_blank"
@@ -43,7 +43,7 @@ export function ToolPageQuote({ toolId }: ToolPageQuoteProps) {
               </a>
             </>
           )}
-          <span className="text-t5">|</span>
+          <span className="text-t4">|</span>
           <a
             href={quote.amazonUrl}
             target="_blank"

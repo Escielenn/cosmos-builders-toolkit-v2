@@ -86,7 +86,7 @@ export function WikiEditor({
     editorProps: {
       attributes: {
         class: cn(
-          "prose prose-sm max-w-none focus:outline-none min-h-[500px]",
+          "prose prose-sm max-w-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sf-focus min-h-[500px]",
           "prose-headings:font-medium",
           "prose-h2:text-lg prose-h2:mt-3 prose-h2:mb-2",
           "prose-h3:text-base prose-h3:mt-2 prose-h3:mb-1",
@@ -165,10 +165,10 @@ export function WikiEditor({
 
   return (
     <BracketPanel color="stellar">
-      <div className="rounded-none border border-[#5B8DEF]/15 bg-background overflow-hidden">
+      <div className="rounded-none border border-sf-stellar/15 bg-background overflow-hidden">
         {/* Toolbar, matches sf-writing-toolbar pattern */}
         {!readOnly && (
-          <div className="sf-writing-toolbar flex items-center gap-0.5 p-1.5 border-b border-sf-border bg-muted/30 flex-wrap">
+          <div className="sf-writing-toolbar flex items-center gap-0.5 p-1.5 border-b border-sf-line bg-muted/30 flex-wrap">
             <ToolbarBtn
               onClick={() => editor.chain().focus().toggleBold().run()}
               active={editor.isActive("bold")}
@@ -254,7 +254,7 @@ export function WikiEditor({
               title="Insert Wiki Link [["
               className="wiki-link-btn"
             >
-              <span className="text-[#5B8DEF] font-mono text-xs font-medium">[[</span>
+              <span className="text-sf-stellar-text font-mono text-xs font-medium">[[</span>
             </ToolbarBtn>
 
             <div className="w-px h-5 bg-border mx-1" />
@@ -275,8 +275,8 @@ export function WikiEditor({
                       className={cn(
                         "w-3.5 h-3.5 rounded-full border transition-all",
                         preferences.themeId === theme.id
-                          ? "ring-2 ring-[#5B8DEF] ring-offset-1 ring-offset-background border-[#5B8DEF]"
-                          : "border-sf-border hover:border-foreground/50"
+                          ? "ring-2 ring-[#5B8DEF] ring-offset-1 ring-offset-background border-sf-stellar"
+                          : "border-sf-line hover:border-sf-line-emphasis"
                       )}
                       style={{ backgroundColor: theme.swatch[0] }}
                       aria-label={theme.name}

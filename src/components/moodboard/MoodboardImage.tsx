@@ -35,7 +35,7 @@ export function MoodboardImage({
   };
 
   return (
-    <div className="group relative rounded-none overflow-hidden bg-muted/30 border border-sf-border">
+    <div className="group relative rounded-none overflow-hidden bg-muted/30 border border-sf-line">
       {/* Image */}
       <div
         className="aspect-video cursor-pointer relative"
