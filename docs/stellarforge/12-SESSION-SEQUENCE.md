@@ -36,8 +36,8 @@ Grouped into four blocks. Each block ends with something demonstrable. **Don't r
 | A3 | Legibility: shared components | `10` → component pass | ~2 days | You can see the buttons |
 | A4 | Legibility: tool pages | same brief, wider scope | ~2 days | **done 2026-09-02** — 73 files in pages/ + components/: alpha borders → `sf-line-*`, t5 → t4, opacity states → `sf-disabled-*`, 113 hex classes → solved accent tokens, suppressed focus rings restored |
 | | **BLOCK B — give facts a subject** | | | |
-| B1 | Subjects on facts | `11` → Brief S0 | ~3–5 days | Two-planet worlds check correctly |
-| B2 | Sim consequence flags | `11` → Brief S4 | ~1 week | Simulators tell you things |
+| B1 | Subjects on facts | `11` → Brief S0 | ~3–5 days | **done before 2026-09-02** — `subject_id` + scoped `checkContinuity`, two-planet tests |
+| B2 | Sim consequence flags | `11` → Brief S4 | ~1 week | **done 2026-09-02** — `src/sims/flags/` live on Tidelock, ExoForge, ExoSky, Gravitas, **Solaris** (stability posted from sim.html) and **Rogue** (accidental habitability from posted orbital elements). Two rules stay predicate-only, honestly: Solaris flares and Rogue tidal heating have no model to cite |
 | | **BLOCK E — appearance** *(see `13-THE-LIFT.md` §4)* | | | |
 | E1 | `sf-teal` role → `sf-primary` | `13` → Brief E1 | ~2 days | **done 2026-09-02** — 300 sites / 89 files + 69 hardcoded teal rgba in `index.css`; `sf-teal` survives only as a meaning (`tool-accents.ts`, category dots, cascade). Hex in canvas/WebGL code is Block G |
 | E2 | Switchable themes | `13` → Brief E2 | ~1 day | **done 2026-09-02** — Profile → Appearance; `use-theme.ts`; Parallel Truth in `index.css` removed; Tailwind utilities theme-aware |

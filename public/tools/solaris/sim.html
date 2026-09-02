@@ -2122,16 +2122,8 @@ function refreshMathPage(){
     const au = (p.orbitPx/AU);
     const auStr = au.toFixed(3);
     const T = (14*Math.pow(Math.max(au,0.01),1.5)).toFixed(2);
-    let stab = 'Stable'; let stabCls = 'stable';
-
-    const cStar = system.stars.find(s=>s.isCcomp);
-    const bStar = system.stars.find(s=>s.isBcomp);
-    if(cStar){
-      const limit = (cStar.cSep/AU)*0.30;
-      if(au > limit*0.85){ stab='Unstable — beyond H&W limit'; stabCls='danger'; }
-      else if(au > limit*0.65){ stab='Marginally stable'; stabCls='warn'; }
-    }
-    if(bStar && au < (bStar.bSep/AU)*3.5){ stab='Unstable — inside binary clear zone'; stabCls='danger'; }
+    const stabInfo = planetStability(p);
+    const stab = stabInfo.label, stabCls = stabInfo.cls;
 
     let speedStr = '—';
     if(p.vx !== undefined){
@@ -2205,6 +2197,27 @@ function updateMathBtn(){
 }
 
 // ─── PostMessage bridge for StellarForge save/load ───
+// ── Stability classification for one planet (Holman & Wiegert 1999) ──
+// Shared by the "Show Your Work" overlay and the STELLARFORGE_SAVE payload,
+// so the number the writer sees and the number the flags cite are the same
+// number. `cls` is the overlay's CSS class; `sf` is the canonical level the
+// parent app's consequence flags consume (stable | marginal | unstable).
+function planetStability(p){
+  let label = 'Stable', cls = 'stable', sf = 'stable';
+  if(!system) return {label, cls, sf, au: 0};
+  const AU = Math.max(system.AU, 1);
+  const au = p.orbitPx/AU;
+  const cStar = system.stars.find(s=>s.isCcomp);
+  const bStar = system.stars.find(s=>s.isBcomp);
+  if(cStar){
+    const limit = (cStar.cSep/AU)*0.30;
+    if(au > limit*0.85){ label='Unstable — beyond H&W limit'; cls='danger'; sf='unstable'; }
+    else if(au > limit*0.65){ label='Marginally stable'; cls='warn'; sf='marginal'; }
+  }
+  if(bStar && au < (bStar.bSep/AU)*3.5){ label='Unstable — inside binary clear zone'; cls='danger'; sf='unstable'; }
+  return {label, cls, sf, au};
+}
+
 window.addEventListener('message', function(event) {
   if (!event.data || !event.data.type) return;
 
@@ -2319,7 +2332,13 @@ window.addEventListener('message', function(event) {
         starCount: starCount,
         planetCount: planetCount,
         planetNames: planetNames,
-        hasSystem: !!system
+        hasSystem: !!system,
+        // Per-planet stability (Brief S4). Same function the overlay uses.
+        planets: (system && system.planets ? system.planets : []).map(function(pl){
+          var st = planetStability(pl);
+          return { name: pl.name || ('Planet ' + (pl.index + 1)), au: +st.au.toFixed(3),
+                   band: pl.band, stabCls: st.sf, inHabitableZone: pl.band === 'habitable' };
+        })
       }
     };
     window.parent.postMessage({

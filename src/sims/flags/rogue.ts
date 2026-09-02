@@ -1,23 +1,21 @@
 // ---------------------------------------------------------------------------
-// Rogue consequence flags — predicates only, NOT wired to live UI yet.
+// Rogue consequence flags.
 //
-// Brief S4 names two Rogue rules: an ejected body retaining tidal heating,
-// and an encounter perturbing a body into the habitable zone by accident.
-// Neither has a live number today. Per the investigation behind this
-// module: `pendingPayload.results` from STELLARFORGE_REQUEST_STATE
-// (public/rogue/sim.html:1198-1203) is `{systemName, launched, running,
-// simTime}` — no per-body state at all. The "Publish Aftermath" postMessage
-// (sim.html:1073-1088) carries survivor names but explicitly filters OUT
-// ejected bodies (survivorsToSystemPayload, sim.html:683-718), and there is
-// no tidal-heating-after-ejection model or before/after habitable-zone
-// comparison anywhere in the file — `ejectedSet` (sim.html:661-674) and
-// `habZone` bounds exist only as internal variables, never posted out.
+// Brief S4 names two Rogue rules.
 //
-// Both rules need real physics added to sim.html (a tidal-heating decay
-// curve, an orbital-crossing-vs-HZ check) before they can cite a true
-// number — that is S2 (Rogue as world-generator) territory per
-// 11-SIMULATOR-CONSTELLATION.md's own sequencing, not a wiring gap this
-// session should paper over with an invented figure.
+//   - Accidental habitability (an encounter perturbs a body INTO the
+//     habitable zone): LIVE as of 2026-09-02. public/rogue/sim.html now posts
+//     `results.bodies[]` — `{name, ptype, a0, a, e, ejected}` — where `a0` is
+//     the pre-encounter semi-major axis the body was built with and `a`/`e`
+//     are vis-viva elements from the live state (orbitalElementsFromState,
+//     the same function Publish Aftermath uses), plus the system's `habZone`
+//     bounds. `evaluateRogueRunFlags` compares before and after. It reports
+//     nothing before launch, because nothing has happened yet.
+//   - An ejected body retaining tidal heating: still NOT wired. There is no
+//     tidal-heating-after-ejection model anywhere in sim.html, and inventing
+//     a number to cite is exactly what a flag must never do. That is S2
+//     (Rogue as world-generator) territory. `ejectedBodyStillWarm` stays a
+//     tested predicate against the shape Rogue SHOULD emit.
 // ---------------------------------------------------------------------------
 
 import type { SimFlag, SimFlagRule } from "./types";
@@ -66,6 +64,63 @@ export const ROGUE_RULES = {
   ejectedBodyStillWarm,
   accidentalHabitability,
 };
+
+/** One entry of `results.bodies[]` as posted by public/rogue/sim.html. */
+export interface RogueBodyReport {
+  name: string;
+  ptype?: string;
+  /** Pre-encounter semi-major axis, AU. */
+  a0: number;
+  /** Post-encounter semi-major axis, AU; null when unbound / not computable. */
+  a: number | null;
+  /** Post-encounter eccentricity; null when unbound. */
+  e: number | null;
+  ejected: boolean;
+}
+
+export interface RogueRunOutput {
+  /** [inner, outer] habitable-zone bounds in AU, from the system definition. */
+  habZone: readonly [number, number] | null | undefined;
+  bodies: readonly RogueBodyReport[] | null | undefined;
+  /** Simulated years since launch. */
+  simTime: number;
+}
+
+/**
+ * An orbit "sits in" the habitable zone when its semi-major axis is inside
+ * the bounds AND it is not so eccentric that it spends most of the year
+ * outside them. 0.3 is a conservative writer-facing threshold, not a claim
+ * about climate models; it is cited so the writer can see it.
+ */
+const MAX_HZ_ECCENTRICITY = 0.3;
+
+export function evaluateRogueRunFlags(run: RogueRunOutput): SimFlag[] {
+  const hz = run.habZone;
+  if (!hz || !Array.isArray(hz) || hz.length !== 2 || !run.bodies || !Array.isArray(run.bodies)) return [];
+  const [inner, outer] = hz;
+  if (!(inner > 0) || !(outer > inner)) return [];
+  const inside = (a: number) => a >= inner && a <= outer;
+  const out: SimFlag[] = [];
+  for (const b of run.bodies) {
+    if (!b || typeof b !== "object" || b.ejected) continue;
+    if (typeof b.a0 !== "number" || typeof b.a !== "number" || typeof b.e !== "number") continue;
+    if (inside(b.a0)) continue;
+    if (!inside(b.a) || b.e > MAX_HZ_ECCENTRICITY) continue;
+    const f = accidentalHabitability({
+      bodyName: String(b.name ?? "Body"),
+      wasOutsideHZ: true,
+      isInsideHZ: true,
+      epochLabel: `T+${Math.max(0, Math.round(run.simTime))} yr after the encounter`,
+    });
+    if (f) {
+      out.push({
+        ...f,
+        cites: { ...f.cites, a0_AU: b.a0, a_AU: b.a, e: b.e, hz_AU: `${inner}–${outer}`, maxE: MAX_HZ_ECCENTRICITY },
+      });
+    }
+  }
+  return out;
+}
 
 export function evaluateRogueEjectionFlags(output: RogueEjectionOutput): SimFlag[] {
   const f = ejectedBodyStillWarm(output);

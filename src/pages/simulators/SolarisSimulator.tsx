@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Save, FolderOpen, Rocket } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,9 @@ import { SIMULATOR_NARRATIVE_CONFIGS } from "@/lib/simulator-narrative-questions
 import { SimulatorWorldEntityPicker } from "@/components/simulators/SimulatorWorldEntityPicker";
 import { encodeHandoff, isHandoffPayload, type HandoffPayload } from "@/lib/simulators/handoff";
 import PublishPlanetDialog from "@/components/simulators/PublishPlanetDialog";
+import { evaluateSolarisSystemFlags, type SolarisPlanetResult } from "@/sims/flags";
+import { SimFlagStrip } from "@/components/simulators/SimFlagStrip";
+import { useDismissedFlags } from "@/hooks/use-dismissed-flags";
 
 const HANDOFF_ROUTES: Record<string, string> = {
   exosky: "/tools/exosky",
@@ -44,6 +47,25 @@ const SolarisSimulator = () => {
     worldId,
     iframeRef,
   });
+
+  // Brief S4: consequence flags over the simulator's own posted output.
+  // sim.html posts results.planets[] with the Holman-Wiegert class it also
+  // shows in "Show Your Work"; nothing is recomputed on this side.
+  const { dismissedIds, dismiss: dismissFlag } = useDismissedFlags();
+  const simFlags = useMemo(
+    () =>
+      evaluateSolarisSystemFlags(
+        (pendingPayload?.results?.planets as SolarisPlanetResult[] | undefined) ?? null,
+      ),
+    [pendingPayload],
+  );
+
+  // Read once the iframe can answer STELLARFORGE_REQUEST_STATE, so the strip
+  // has something to say on load rather than after the first Save.
+  useEffect(() => {
+    if (!loaded) return;
+    refreshPayload();
+  }, [loaded, refreshPayload]);
 
   useEffect(() => {
     const handler = (event: MessageEvent) => {
@@ -131,7 +153,8 @@ const SolarisSimulator = () => {
               dialogs ask which world, and gating the buttons made that
               unreachable from the tools menu. */}
           {loaded && (
-            <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 border border-sf-primary bg-sf-void/90 px-1.5 py-1 backdrop-blur-sm">
+            <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 flex flex-col items-stretch gap-1.5">
+            <div className="flex items-center gap-1.5 border border-sf-primary bg-sf-void/90 px-1.5 py-1 backdrop-blur-sm">
               <Button
                 variant="outline"
                 size="sm"
@@ -173,6 +196,12 @@ const SolarisSimulator = () => {
                   entityTypes={["star", "planet"]}
                   iframeRef={iframeRef}
                 />
+              )}
+            </div>
+              {simFlags.length > 0 && (
+                <div className="max-w-sm border border-sf-primary bg-sf-void/90 px-3 py-2 backdrop-blur-sm">
+                  <SimFlagStrip flags={simFlags} dismissedIds={dismissedIds} onDismiss={dismissFlag} />
+                </div>
               )}
             </div>
           )}

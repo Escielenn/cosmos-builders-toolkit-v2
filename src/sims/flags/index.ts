@@ -7,6 +7,8 @@ export { evaluateExoSkyFlags, EXOSKY_RULES, type ExoSkyOutput } from "./exosky";
 export { evaluateGravitasFlags, GRAVITAS_RULES, type GravitasSpinOutput } from "./gravitas";
 export {
   evaluateSolarisStabilityFlags,
+  evaluateSolarisSystemFlags,
+  type SolarisPlanetResult,
   evaluateSolarisFlareFlags,
   SOLARIS_RULES,
   type SolarisStabilityOutput,
@@ -14,6 +16,9 @@ export {
 } from "./solaris";
 export {
   evaluateRogueEjectionFlags,
+  evaluateRogueRunFlags,
+  type RogueRunOutput,
+  type RogueBodyReport,
   evaluateRogueEncounterFlags,
   ROGUE_RULES,
   type RogueEjectionOutput,

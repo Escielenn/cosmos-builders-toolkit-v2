@@ -689,6 +689,21 @@ function checkStatus(){
 // (verified 2026-08-16 against a real black-hole encounter: bodies carry no
 // per-body ejected flag; checkStatus() rebuilds ejectedSet by name every
 // step), not a b.ejected property, which does not exist on this file's bodies.
+// Per-planet orbital report for STELLARFORGE_REQUEST_STATE (Brief S4).
+// Returns [] before launch, when nothing has happened yet worth citing.
+function bodyOrbitalReport(){
+  if(!launched)return[];
+  const stars=bodies.filter(b=>b.isStar);
+  if(!stars.length)return[];
+  const primary=stars.reduce((m,s)=>s.mass>m.mass?s:m,stars[0]);
+  return bodies.filter(b=>b.isPlanet).map(b=>{
+    const{a,e}=orbitalElementsFromState(b,primary);
+    const ej=ejectedSet.has(b.name);
+    return{name:b.name,ptype:b.ptype||'rocky',a0:+(+b.a).toFixed(4),
+           a:(isFinite(a)&&a>0)?+a.toFixed(4):null,e:(isFinite(e)&&a>0)?+e.toFixed(4):null,ejected:ej};
+  });
+}
+
 function survivorsToSystemPayload(){
   const stars=bodies.filter(b=>b.isStar);
   // Not reachable from today's builder (a system always starts with at
@@ -736,7 +751,12 @@ function updateAftermathButton(){
   btn.style.display=show?'':'none';
 }
 
-function setStatus(c,t){const b=document.getElementById('badge');b.className='p st-'+c;b.textContent=t;}
+// Status badge. When the encounter CLASS changes (orbit → perturb → eject →
+// chaos) the parent app is told once, so its consequence flags can re-read
+// state at the moment something happened — event-driven, never polled.
+let lastStatusClass=null;
+function setStatus(c,t){const b=document.getElementById('badge');b.className='p st-'+c;b.textContent=t;
+  if(c!==lastStatusClass){lastStatusClass=c;try{window.parent.postMessage({type:'STELLARFORGE_STATUS',status:c,simTime:simTime},'*');}catch(e){}}}
 function launch(){
   const i=bodies.find(b=>b.isIntruder);if(i)i.active=true;
   launched=true;running=true;stateHistory=[];saveState();
@@ -1208,7 +1228,16 @@ window.addEventListener('message', function(event) {
         systemName: (getSystemDef() || {}).name || '',
         launched: launched,
         running: running,
-        simTime: simTime
+        simTime: simTime,
+        // Brief S4: per-body orbital state so the parent app's consequence
+        // flags can cite what the encounter actually did. `a0` is the
+        // pre-encounter semi-major axis the body was built with; `a`/`e`
+        // are vis-viva elements from the live state against the primary
+        // (orbitalElementsFromState, the same function Publish Aftermath
+        // uses). `ejected` reads the live ejectedSet checkStatus() keeps.
+        // Nothing here is recomputed on the parent side.
+        habZone: ((getSystemDef() || {}).habZone || null),
+        bodies: bodyOrbitalReport()
       }
     };
     window.parent.postMessage({

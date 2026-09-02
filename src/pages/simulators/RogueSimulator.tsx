@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { Save, FolderOpen, Rocket } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useWorldId } from "@/hooks/use-world-id";
@@ -10,6 +10,9 @@ import Header from "@/components/layout/Header";
 import NarrativeBridgePanel, { useNarrativeBridge } from "@/components/simulators/NarrativeBridgePanel";
 import { SIMULATOR_NARRATIVE_CONFIGS } from "@/lib/simulator-narrative-questions";
 import { SimulatorWorldEntityPicker } from "@/components/simulators/SimulatorWorldEntityPicker";
+import { evaluateRogueRunFlags, type RogueBodyReport } from "@/sims/flags";
+import { SimFlagStrip } from "@/components/simulators/SimFlagStrip";
+import { useDismissedFlags } from "@/hooks/use-dismissed-flags";
 
 const RogueSimulator = () => {
   const [loaded, setLoaded] = useState(false);
@@ -33,6 +36,31 @@ const RogueSimulator = () => {
     worldId,
     iframeRef,
   });
+
+  // Brief S4: consequence flags over what the encounter actually did.
+  // sim.html posts results.bodies[] (pre/post semi-major axis, eccentricity,
+  // ejected) and the system's habZone; nothing is recomputed here.
+  const { dismissedIds, dismiss: dismissFlag } = useDismissedFlags();
+  const simFlags = useMemo(() => {
+    const r = pendingPayload?.results;
+    if (!r) return [];
+    return evaluateRogueRunFlags({
+      habZone: (r.habZone as [number, number] | null | undefined) ?? null,
+      bodies: (r.bodies as RogueBodyReport[] | undefined) ?? null,
+      simTime: Number(r.simTime) || 0,
+    });
+  }, [pendingPayload]);
+
+  // The sim announces each change of encounter class (orbit → perturb →
+  // eject → chaos) exactly once. Re-read state then — the moment something
+  // happened — rather than polling a running n-body integration.
+  useEffect(() => {
+    const handler = (event: MessageEvent) => {
+      if (event.data?.type === "STELLARFORGE_STATUS") refreshPayload();
+    };
+    window.addEventListener("message", handler);
+    return () => window.removeEventListener("message", handler);
+  }, [refreshPayload]);
 
   useEffect(() => {
     const handler = (event: MessageEvent) => {
@@ -82,7 +110,8 @@ const RogueSimulator = () => {
           </div>
           {/* Save/Load controls */}
           {loaded && (
-            <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 border border-sf-primary bg-sf-void/90 px-1.5 py-1 backdrop-blur-sm">
+            <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 flex flex-col items-stretch gap-1.5">
+            <div className="flex items-center gap-1.5 border border-sf-primary bg-sf-void/90 px-1.5 py-1 backdrop-blur-sm">
               <Button
                 variant="outline"
                 size="sm"
@@ -124,6 +153,12 @@ const RogueSimulator = () => {
                   entityTypes={["planet", "star"]}
                   iframeRef={iframeRef}
                 />
+              )}
+            </div>
+              {simFlags.length > 0 && (
+                <div className="max-w-sm border border-sf-primary bg-sf-void/90 px-3 py-2 backdrop-blur-sm">
+                  <SimFlagStrip flags={simFlags} dismissedIds={dismissedIds} onDismiss={dismissFlag} />
+                </div>
               )}
             </div>
           )}

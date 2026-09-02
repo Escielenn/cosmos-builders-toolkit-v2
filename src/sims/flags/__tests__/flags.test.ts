@@ -3,8 +3,8 @@ import { evaluateTidelockFlags } from "../tidelock";
 import { evaluateExoForgeFlags } from "../exoforge";
 import { evaluateExoSkyFlags } from "../exosky";
 import { evaluateGravitasFlags } from "../gravitas";
-import { evaluateSolarisStabilityFlags, evaluateSolarisFlareFlags } from "../solaris";
-import { evaluateRogueEjectionFlags, evaluateRogueEncounterFlags } from "../rogue";
+import { evaluateSolarisStabilityFlags, evaluateSolarisFlareFlags, evaluateSolarisSystemFlags } from "../solaris";
+import { evaluateRogueEjectionFlags, evaluateRogueEncounterFlags, evaluateRogueRunFlags } from "../rogue";
 
 describe("Tidelock", () => {
   const calm = { tSSP: 300, tASP: 250, tTerm: 275, habPct: 40, escVel: 11.2 };
@@ -110,7 +110,7 @@ describe("Gravitas", () => {
   });
 });
 
-describe("Solaris (predicate-only, not yet wired — see solaris.ts)", () => {
+describe("Solaris (stability rule live via results.planets[]; flare rule predicate-only — see solaris.ts)", () => {
   it("flags an unstable orbit inside the habitable zone", () => {
     const flags = evaluateSolarisStabilityFlags({
       stabCls: "unstable",
@@ -144,7 +144,7 @@ describe("Solaris (predicate-only, not yet wired — see solaris.ts)", () => {
   });
 });
 
-describe("Rogue (predicate-only, not yet wired — see rogue.ts)", () => {
+describe("Rogue (accidental habitability live via results.bodies[]; tidal-heating rule predicate-only — see rogue.ts)", () => {
   it("flags an ejected body that retains tidal heating", () => {
     const flags = evaluateRogueEjectionFlags({ bodyName: "X-7", starless: true, tidalHeatingYears: 40e6 });
     expect(flags.map((f) => f.id)).toContain("rogue.ejected-body-still-warm");
@@ -171,5 +171,65 @@ describe("Rogue (predicate-only, not yet wired — see rogue.ts)", () => {
     expect(
       evaluateRogueEncounterFlags({ bodyName: "X-7", wasOutsideHZ: false, isInsideHZ: true, epochLabel: "" }),
     ).toEqual([]);
+  });
+});
+
+describe("Solaris — system-level wiring over sim.html's results.planets[]", () => {
+  const planets = [
+    { name: "Kepler-16b", au: 0.7, band: "habitable", stabCls: "stable" as const, inHabitableZone: true },
+    { name: "Outer", au: 4.2, band: "outer", stabCls: "unstable" as const, inHabitableZone: false },
+  ];
+
+  it("stays quiet when nothing unstable sits in the habitable zone", () => {
+    expect(evaluateSolarisSystemFlags(planets)).toEqual([]);
+  });
+
+  it("flags only the unstable planet inside the habitable zone, citing its name", () => {
+    const flags = evaluateSolarisSystemFlags([
+      ...planets,
+      { name: "Twilight", au: 1.1, band: "habitable", stabCls: "unstable", inHabitableZone: true },
+    ]);
+    expect(flags).toHaveLength(1);
+    expect(flags[0].id).toBe("solaris.unstable-orbit-in-hz");
+    expect(flags[0].title).toContain("TWILIGHT");
+    expect(flags[0].cites).toMatchObject({ planet: "Twilight", stability: "unstable" });
+  });
+
+  it("treats marginal as not-yet-unstable and tolerates garbage", () => {
+    expect(evaluateSolarisSystemFlags([{ name: "M", au: 1, band: "habitable", stabCls: "marginal", inHabitableZone: true }])).toEqual([]);
+    expect(evaluateSolarisSystemFlags(null)).toEqual([]);
+    expect(evaluateSolarisSystemFlags(undefined)).toEqual([]);
+    // @ts-expect-error — the iframe boundary is untyped; junk must not throw
+    expect(evaluateSolarisSystemFlags([null, 3, "x"])).toEqual([]);
+  });
+});
+
+describe("Rogue — run-level wiring over sim.html's results.bodies[] + habZone", () => {
+  const hz: [number, number] = [0.95, 1.37];
+  const earth = { name: "Earth", ptype: "rocky", a0: 1.0, a: 1.02, e: 0.02, ejected: false };
+  const mars = { name: "Mars", ptype: "rocky", a0: 1.524, a: 1.51, e: 0.09, ejected: false };
+
+  it("reports nothing when no orbit changed zone", () => {
+    expect(evaluateRogueRunFlags({ habZone: hz, bodies: [earth, mars], simTime: 120 })).toEqual([]);
+  });
+
+  it("flags a body the encounter dropped INTO the habitable zone, citing before/after elements", () => {
+    const flags = evaluateRogueRunFlags({ habZone: hz, bodies: [earth, { ...mars, a: 1.2, e: 0.12 }], simTime: 342.6 });
+    expect(flags).toHaveLength(1);
+    expect(flags[0].id).toBe("rogue.accidental-habitability");
+    expect(flags[0].title).toContain("MARS");
+    expect(flags[0].body).toContain("T+343 yr");
+    expect(flags[0].cites).toMatchObject({ body: "Mars", a0_AU: 1.524, a_AU: 1.2, e: 0.12, hz_AU: "0.95–1.37" });
+  });
+
+  it("does not call a highly eccentric HZ-crossing orbit habitable, nor an ejected body", () => {
+    expect(evaluateRogueRunFlags({ habZone: hz, bodies: [{ ...mars, a: 1.2, e: 0.55 }], simTime: 10 })).toEqual([]);
+    expect(evaluateRogueRunFlags({ habZone: hz, bodies: [{ ...mars, a: 1.2, e: 0.1, ejected: true }], simTime: 10 })).toEqual([]);
+  });
+
+  it("stays quiet with no habZone, unbound elements, or before launch (empty bodies)", () => {
+    expect(evaluateRogueRunFlags({ habZone: null, bodies: [{ ...mars, a: 1.2, e: 0.1 }], simTime: 10 })).toEqual([]);
+    expect(evaluateRogueRunFlags({ habZone: hz, bodies: [{ ...mars, a: null, e: null }], simTime: 10 })).toEqual([]);
+    expect(evaluateRogueRunFlags({ habZone: hz, bodies: [], simTime: 0 })).toEqual([]);
   });
 });

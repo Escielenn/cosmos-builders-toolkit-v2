@@ -1,30 +1,24 @@
 // ---------------------------------------------------------------------------
-// Solaris consequence flags — predicates only, NOT wired to live UI yet.
+// Solaris consequence flags.
 //
-// Brief S4 (11-SIMULATOR-CONSTELLATION.md §2) names two Solaris rules:
-// N-body instability inside the habitable zone, and atmosphere stripping
-// from an active M-dwarf hitting an unmagnetised planet. Neither has a live
-// number to read today:
+// Brief S4 (11-SIMULATOR-CONSTELLATION.md §2) names two Solaris rules.
 //
-//   - A real Holman-Wiegert stability check (`stab`/`stabCls`) exists inside
-//     sim.html's "Show Your Work" overlay generator (public/tools/solaris/
-//     sim.html:2108-2117), but it is never posted through STELLARFORGE_SAVE
-//     — `results` only carries {systemName, starCount, planetCount,
-//     planetNames, hasSystem}. This rule is buildable once that value is
-//     threaded into `results`; it is a small, additive change (expose an
-//     already-computed number) rather than new physics.
-//   - Flare activity and planetary magnetic fields have no model anywhere in
-//     sim.html at all — not even internally. Building this rule for real
-//     means inventing a flare/magnetosphere model from scratch, which is a
-//     feature, not a flag. STAR_SPECTRAL_FLARE_ACTIVE below is left as a
-//     documented placeholder for that future work.
+//   - N-body instability inside the habitable zone: LIVE as of 2026-09-02.
+//     public/tools/solaris/sim.html now runs its Holman-Wiegert check through
+//     one shared `planetStability(p)` — the same function that fills the
+//     "Show Your Work" overlay — and posts `results.planets[]` with
+//     `{name, au, band, stabCls, inHabitableZone}` on STELLARFORGE_SAVE.
+//     `evaluateSolarisSystemFlags` maps that array through the rule, so the
+//     number the writer sees in the overlay and the number the flag cites are
+//     the same number.
+//   - Flare activity and planetary magnetic fields still have no model
+//     anywhere in sim.html — not even internally. Building that rule for real
+//     means inventing a flare/magnetosphere model, which is a feature, not a
+//     flag. `atmosphereStrippedByFlares` stays a tested predicate against the
+//     shape Solaris SHOULD emit; it is not wired.
 //
-// Shipping either as "live" today would mean citing a number the tool never
-// actually computed — the thing this whole document set is most careful
-// never to do (see continuity.ts's note on the moonCount field it left out
-// for the same reason). These stay as pure, tested predicates against the
-// shape Solaris SHOULD emit, so the day `results.stab` exists this is a
-// one-line wiring change, not a rewrite.
+// A flag must never cite a number the tool never computed (see continuity.ts
+// on the moonCount field it left out for the same reason).
 // ---------------------------------------------------------------------------
 
 import type { SimFlag, SimFlagRule } from "./types";
@@ -77,6 +71,31 @@ export const SOLARIS_RULES = {
 export function evaluateSolarisStabilityFlags(output: SolarisStabilityOutput): SimFlag[] {
   const f = unstableOrbitInHZ(output);
   return f ? [f] : [];
+}
+
+/** Shape of one entry in `results.planets[]` as posted by sim.html. */
+export interface SolarisPlanetResult {
+  name: string;
+  au: number;
+  band: string;
+  stabCls: "stable" | "marginal" | "unstable";
+  inHabitableZone: boolean;
+}
+
+/** Evaluate the stability rule across every planet the simulator posted. */
+export function evaluateSolarisSystemFlags(planets: readonly SolarisPlanetResult[] | undefined | null): SimFlag[] {
+  if (!planets || !Array.isArray(planets)) return [];
+  const out: SimFlag[] = [];
+  for (const pl of planets) {
+    if (!pl || typeof pl !== "object") continue;
+    const f = unstableOrbitInHZ({
+      planetName: String(pl.name ?? "Planet"),
+      stabCls: pl.stabCls === "unstable" || pl.stabCls === "marginal" ? pl.stabCls : "stable",
+      inHabitableZone: !!pl.inHabitableZone,
+    });
+    if (f) out.push(f);
+  }
+  return out;
 }
 
 export function evaluateSolarisFlareFlags(output: SolarisFlareOutput): SimFlag[] {
