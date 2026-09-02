@@ -188,7 +188,7 @@ const Header = () => {
                           key={item.to}
                           to={item.to}
                           onClick={() => setMobileMenuOpen(false)}
-                          className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-t2 hover:text-t1 hover:bg-sf-teal/[0.06] rounded-none transition-colors duration-base"
+                          className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-t2 hover:text-t1 hover:bg-sf-primary/[0.06] rounded-none transition-colors duration-base"
                         >
                           <Icon className="w-5 h-5 shrink-0" />
                           {item.label}
@@ -205,7 +205,7 @@ const Header = () => {
                     <Link
                       to="/features"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-t2 hover:text-t1 hover:bg-sf-teal/[0.06] rounded-none transition-colors duration-base"
+                      className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-t2 hover:text-t1 hover:bg-sf-primary/[0.06] rounded-none transition-colors duration-base"
                     >
                       <Sparkles className="w-5 h-5 shrink-0" />
                       Features
@@ -213,7 +213,7 @@ const Header = () => {
                     <Link
                       to="/pricing"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-t2 hover:text-t1 hover:bg-sf-teal/[0.06] rounded-none transition-colors duration-base"
+                      className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-t2 hover:text-t1 hover:bg-sf-primary/[0.06] rounded-none transition-colors duration-base"
                     >
                       <Zap className="w-5 h-5 shrink-0" />
                       Pricing
@@ -374,7 +374,7 @@ const Header = () => {
               variant="outline"
               size="sm"
               asChild
-              className="gap-2 border-sf-teal text-sf-teal hover:bg-sf-teal/[0.08]"
+              className="gap-2 border-sf-primary text-sf-primary-text hover:bg-sf-primary/[0.08]"
             >
               <Link to="/auth#create-account">
                 <LogIn className="w-4 h-4" />

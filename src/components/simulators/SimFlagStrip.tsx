@@ -33,7 +33,7 @@ export function SimFlagStrip({ flags, dismissedIds, onDismiss }: SimFlagStripPro
         // ones — a template literal here would silently produce no CSS.
         const style =
           f.severity === "opportunity"
-            ? { border: "border-l border-sf-teal", title: "text-sf-teal" }
+            ? { border: "border-l border-sf-primary", title: "text-sf-primary-text" }
             : { border: "border-l border-sf-amber", title: "text-sf-amber" };
         return (
           <div key={f.id} className={`relative ${style.border} bg-sf-void/90 py-2 pl-3 pr-7 backdrop-blur-sm`}>

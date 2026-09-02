@@ -201,7 +201,7 @@ const WorldLayout = () => {
                     className={cn(
                       "flex-1 flex items-center justify-center gap-1.5 px-2 py-2 font-heading text-[12px] font-medium uppercase tracking-[0.2em] transition-colors duration-base",
                       sidebarTab === "codex"
-                        ? "text-sf-teal border-b-2 border-sf-teal bg-sf-teal/[0.06]"
+                        ? "text-sf-primary-text border-b-2 border-sf-primary bg-sf-primary/[0.06]"
                         : "text-t4 hover:text-t3"
                     )}
                     title="Registry (worksheets)"
@@ -214,7 +214,7 @@ const WorldLayout = () => {
                     className={cn(
                       "flex-1 flex items-center justify-center gap-1.5 px-2 py-2 font-heading text-[12px] font-medium uppercase tracking-[0.2em] transition-colors duration-base",
                       sidebarTab === "entities"
-                        ? "text-sf-teal border-b-2 border-sf-teal bg-sf-teal/[0.06]"
+                        ? "text-sf-primary-text border-b-2 border-sf-primary bg-sf-primary/[0.06]"
                         : "text-t4 hover:text-t3"
                     )}
                     title="Entity graph"

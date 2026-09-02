@@ -98,7 +98,7 @@ const LearnIndex = () => {
         <section className="mb-12">
           <SectionHero
             eyebrow="// ARCHIVE"
-            title={<>SF <span className="text-sf-teal">university.</span></>}
+            title={<>SF <span className="text-sf-primary-text">university.</span></>}
             subtitle="Deep dives into worldbuilding concepts, science for storytellers, and the craft of creating believable fictional universes."
           />
         </section>

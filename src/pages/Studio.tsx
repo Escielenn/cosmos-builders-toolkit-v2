@@ -41,7 +41,7 @@ function julianDay(): number {
 }
 
 const COVER_GRADIENTS = [
-  "linear-gradient(160deg, hsl(var(--sf-teal-hsl) / 0.35), hsl(var(--sf-void-hsl)))",
+  "linear-gradient(160deg, hsl(var(--sf-primary-hsl) / 0.35), hsl(var(--sf-void-hsl)))",
   "linear-gradient(160deg, hsl(var(--sf-stellar-hsl) / 0.35), hsl(var(--sf-void-hsl)))",
   "linear-gradient(160deg, hsl(var(--sf-violet-hsl) / 0.3), hsl(var(--sf-void-hsl)))",
   "linear-gradient(160deg, hsl(var(--sf-amber-hsl) / 0.25), hsl(var(--sf-void-hsl)))",
@@ -59,7 +59,7 @@ function Rail({ worlds }: { worlds: StudioWorld[] }): JSX.Element {
           <Link
             key={w.id}
             to={`/worlds/${w.id}`}
-            className="block border-l-2 border-transparent py-1.5 pl-3 text-[13px] text-t2 transition-colors hover:border-sf-teal hover:text-t1"
+            className="block border-l-2 border-transparent py-1.5 pl-3 text-[13px] text-t2 transition-colors hover:border-sf-primary hover:text-t1"
           >
             {w.name}
           </Link>
@@ -86,7 +86,7 @@ function Rail({ worlds }: { worlds: StudioWorld[] }): JSX.Element {
               <Link
                 key={i.label}
                 to={i.to}
-                className="block border-l-2 border-transparent py-1.5 pl-3 text-[13px] text-t2 transition-colors hover:border-sf-teal hover:text-t1"
+                className="block border-l-2 border-transparent py-1.5 pl-3 text-[13px] text-t2 transition-colors hover:border-sf-primary hover:text-t1"
               >
                 {i.label}
               </Link>
@@ -104,7 +104,7 @@ function Rail({ worlds }: { worlds: StudioWorld[] }): JSX.Element {
           <Link
             key={i.label}
             to={i.to}
-            className="block border-l-2 border-transparent py-1.5 pl-3 text-[13px] text-t2 transition-colors hover:border-sf-teal hover:text-t1"
+            className="block border-l-2 border-transparent py-1.5 pl-3 text-[13px] text-t2 transition-colors hover:border-sf-primary hover:text-t1"
           >
             {i.label}
           </Link>
@@ -198,10 +198,10 @@ export default function Studio(): JSX.Element {
                         height: lit ? (isToday ? "100%" : "70%") : "22%",
                         background: lit
                           ? isToday
-                            ? "hsl(var(--sf-teal-hsl))"
-                            : "linear-gradient(to top, hsl(var(--sf-teal-hsl) / 0.5), hsl(var(--sf-teal-hsl) / 0.15))"
+                            ? "hsl(var(--sf-primary-hsl))"
+                            : "linear-gradient(to top, hsl(var(--sf-primary-hsl) / 0.5), hsl(var(--sf-primary-hsl) / 0.15))"
                           : "hsl(var(--sf-surface-elevated-hsl))",
-                        boxShadow: lit && isToday ? "0 0 10px hsl(var(--sf-teal-bright-hsl) / 0.35)" : undefined,
+                        boxShadow: lit && isToday ? "0 0 10px hsl(var(--sf-primary-bright-hsl) / 0.35)" : undefined,
                       }}
                     />
                   );
@@ -227,7 +227,7 @@ export default function Studio(): JSX.Element {
             <div className="p-7 md:p-8">
               {entry ? (
                 <>
-                  <div className="font-serif text-[13px] italic text-sf-teal">
+                  <div className="font-serif text-[13px] italic text-sf-primary-text">
                     {entryWorld ? entryWorld.name : "Free writing"}
                     <span className="mx-2 text-t4">·</span>
                     <span className="text-t4">{timeAgo(entry.updated_at)}</span>
@@ -236,21 +236,21 @@ export default function Studio(): JSX.Element {
                     {entry.title || "Untitled"}
                   </h3>
                   {line && (
-                    <blockquote className="mt-4 max-w-[640px] border-l-2 border-sf-teal pl-4 font-serif text-[16px] leading-[1.7] text-t2">
+                    <blockquote className="mt-4 max-w-[640px] border-l-2 border-sf-primary pl-4 font-serif text-[16px] leading-[1.7] text-t2">
                       …{line}
                     </blockquote>
                   )}
                   <div className="mt-6 flex flex-wrap items-center gap-2.5">
                     <Link
                       to={`/write/${entry.id}`}
-                      className="bg-sf-teal px-5 py-2.5 font-sans text-[13px] font-medium tracking-[0.04em] text-[hsl(var(--accent-on-accent))] transition-shadow hover:shadow-sf-glow-teal"
+                      className="bg-sf-primary px-5 py-2.5 font-sans text-[13px] font-medium tracking-[0.04em] text-[hsl(var(--accent-on-accent))] transition-shadow hover:shadow-sf-glow-teal"
                     >
                       Continue writing
                     </Link>
                     {entry.world_id && (
                       <Link
                         to={`/worlds/${entry.world_id}`}
-                        className="border border-sf-line-emphasis px-5 py-2.5 font-sans text-[13px] tracking-[0.04em] text-t2 transition-colors hover:border-sf-teal hover:text-t1"
+                        className="border border-sf-line-emphasis px-5 py-2.5 font-sans text-[13px] tracking-[0.04em] text-t2 transition-colors hover:border-sf-primary hover:text-t1"
                       >
                         Open the world
                       </Link>
@@ -270,7 +270,7 @@ export default function Studio(): JSX.Element {
                   <div className="mt-6">
                     <Link
                       to="/worlds"
-                      className="bg-sf-teal px-5 py-2.5 font-sans text-[13px] font-medium tracking-[0.04em] text-[hsl(var(--accent-on-accent))] transition-shadow hover:shadow-sf-glow-teal"
+                      className="bg-sf-primary px-5 py-2.5 font-sans text-[13px] font-medium tracking-[0.04em] text-[hsl(var(--accent-on-accent))] transition-shadow hover:shadow-sf-glow-teal"
                     >
                       Choose a world
                     </Link>
@@ -314,7 +314,7 @@ export default function Studio(): JSX.Element {
               ))}
               <Link
                 to="/worlds"
-                className="flex aspect-[3/4] items-center justify-center border border-dashed border-sf-line-emphasis font-serif text-[14px] italic text-t3 transition-colors hover:border-sf-teal hover:text-t1"
+                className="flex aspect-[3/4] items-center justify-center border border-dashed border-sf-line-emphasis font-serif text-[14px] italic text-t3 transition-colors hover:border-sf-primary hover:text-t1"
               >
                 + Begin a new world
               </Link>
@@ -331,7 +331,7 @@ export default function Studio(): JSX.Element {
                     <Link
                       key={c.id}
                       to={`/worlds/${c.world_id}/connections?focus=${c.id}`}
-                      className="border border-sf-line-interactive bg-sf-surface/90 p-4 transition-colors hover:border-sf-teal"
+                      className="border border-sf-line-interactive bg-sf-surface/90 p-4 transition-colors hover:border-sf-primary"
                     >
                       <div
                         className="mb-3 flex h-10 w-10 items-center justify-center rounded-full font-serif text-[16px] italic text-t1"
@@ -366,7 +366,7 @@ export default function Studio(): JSX.Element {
                       <Link
                         key={n.id}
                         to={`/worlds/${n.world_id}`}
-                        className="block border border-sf-line-interactive bg-sf-surface/90 p-4 transition-colors hover:border-sf-teal"
+                        className="block border border-sf-line-interactive bg-sf-surface/90 p-4 transition-colors hover:border-sf-primary"
                       >
                         <div className="flex items-center gap-2">
                           <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-sf-amber" aria-hidden="true" />
@@ -405,7 +405,7 @@ export default function Studio(): JSX.Element {
                         {w && <span className="text-t3"> in {w.name}</span>}
                       </span>
                       {(e.word_count ?? 0) > 0 && (
-                        <span className="text-[13px] text-sf-teal">{(e.word_count ?? 0).toLocaleString()} words</span>
+                        <span className="text-[13px] text-sf-primary-text">{(e.word_count ?? 0).toLocaleString()} words</span>
                       )}
                     </div>
                   );
@@ -418,8 +418,8 @@ export default function Studio(): JSX.Element {
           <footer className="mt-16 flex flex-wrap items-center justify-between gap-3 border-t border-sf-line-interactive py-5">
             <div className="flex items-center gap-2.5">
               <span className="relative flex h-2 w-2">
-                <span className="absolute h-full w-full animate-sf-pulse bg-sf-teal opacity-60" />
-                <span className="relative h-2 w-2 bg-sf-teal" />
+                <span className="absolute h-full w-full animate-sf-pulse bg-sf-primary opacity-60" />
+                <span className="relative h-2 w-2 bg-sf-primary" />
               </span>
               <span className="font-serif text-[13px] italic text-t3">Stellarforge Studio · online</span>
             </div>

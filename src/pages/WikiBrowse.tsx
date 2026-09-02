@@ -224,7 +224,7 @@ export default function WikiBrowse() {
                     }
                     className={`px-2.5 py-1 text-[12px] uppercase tracking-wider border transition-colors ${
                       activeLayer === layer
-                        ? "bg-teal/10 border-sf-teal text-teal"
+                        ? "bg-teal/10 border-sf-primary text-teal"
                         : "border-sf-line-interactive text-t3 hover:text-t2"
                     }`}
                   >
@@ -250,7 +250,7 @@ export default function WikiBrowse() {
                     }
                     className={`px-2.5 py-1 text-[12px] uppercase tracking-wider border transition-colors ${
                       activeType === type
-                        ? "bg-teal/10 border-sf-teal text-teal"
+                        ? "bg-teal/10 border-sf-primary text-teal"
                         : "border-sf-line-interactive text-t3 hover:text-t2"
                     }`}
                   >
@@ -280,7 +280,7 @@ export default function WikiBrowse() {
                     }
                     className={`px-2.5 py-1 text-[12px] tracking-wider border transition-colors ${
                       activeTags.includes(tag)
-                        ? "bg-teal/10 border-sf-teal text-teal"
+                        ? "bg-teal/10 border-sf-primary text-teal"
                         : "border-sf-line-interactive text-t3 hover:text-t2"
                     }`}
                   >
@@ -337,7 +337,7 @@ export default function WikiBrowse() {
                   <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#3DFFCD]/60 scale-x-0 origin-left transition-transform duration-300 group-hover:scale-x-100" />
 
                   <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 shrink-0 flex items-center justify-center bg-teal/6 border border-sf-teal rounded-sm">
+                    <div className="w-8 h-8 shrink-0 flex items-center justify-center bg-teal/6 border border-sf-primary rounded-sm">
                       <IconComponent className="w-4 h-4 text-teal" />
                     </div>
                     <div className="min-w-0 flex-1">

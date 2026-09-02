@@ -33,8 +33,8 @@ const ValueProposition = () => {
       variants={scrollReveal}
     >
       <GlassPanel glow lightArc className="p-8 md:p-12">
-        <div className="inline-flex items-center gap-3.5 font-mono uppercase text-sf-teal/80 text-[12px] tracking-[3px] mb-10">
-          <span aria-hidden className="block w-12 h-px bg-sf-teal" />
+        <div className="inline-flex items-center gap-3.5 font-mono uppercase text-sf-primary-text/80 text-[12px] tracking-[3px] mb-10">
+          <span aria-hidden className="block w-12 h-px bg-sf-primary" />
           <span>// why stellarforge</span>
         </div>
 
@@ -65,7 +65,7 @@ const ValueProposition = () => {
               {i < PRINCIPLES.length - 1 && (
                 <span
                   aria-hidden
-                  className="col-span-2 h-px mt-8 bg-gradient-to-r from-transparent via-sf-teal-bright/25 to-transparent"
+                  className="col-span-2 h-px mt-8 bg-gradient-to-r from-transparent via-sf-primary-bright/25 to-transparent"
                 />
               )}
             </motion.li>

@@ -158,7 +158,7 @@ export function Chronicle({ worldId }: ChronicleProps) {
         <button
           type="button"
           onClick={handleAddEvent}
-          className="sf-fill-sweep px-3 py-1.5 border border-sf-teal text-sf-teal text-[12px] font-mono uppercase tracking-[0.10em] flex items-center gap-1.5 hover:text-sf-teal-bright transition-colors duration-base"
+          className="sf-fill-sweep px-3 py-1.5 border border-sf-primary text-sf-primary-text text-[12px] font-mono uppercase tracking-[0.10em] flex items-center gap-1.5 hover:text-sf-primary-bright transition-colors duration-base"
         >
           <Plus className="w-3 h-3" />
           LOG EVENT

@@ -233,7 +233,7 @@ export function FindReplaceBar({ editor, onClose }: FindReplaceBarProps) {
           type="checkbox"
           checked={caseSensitive}
           onChange={(e) => setCaseSensitive(e.target.checked)}
-          className="accent-sf-teal"
+          className="accent-sf-primary"
         />
         Aa
       </label>
@@ -242,13 +242,13 @@ export function FindReplaceBar({ editor, onClose }: FindReplaceBarProps) {
           type="checkbox"
           checked={wholeWord}
           onChange={(e) => setWholeWord(e.target.checked)}
-          className="accent-sf-teal"
+          className="accent-sf-primary"
         />
         Word
       </label>
 
       {notice && (
-        <span className="font-serif text-[13px] italic text-sf-teal">{notice}</span>
+        <span className="font-serif text-[13px] italic text-sf-primary-text">{notice}</span>
       )}
 
       <button

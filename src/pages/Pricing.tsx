@@ -182,7 +182,7 @@ const Pricing = () => {
             <SectionHero
               warm
               eyebrow="// access tiers"
-              title={<>Upgrade your <span className="text-sf-teal">access.</span></>}
+              title={<>Upgrade your <span className="text-sf-primary-text">access.</span></>}
               subtitle={`Free accounts access ${FREE_TOOL_IDS.length} tools. Pro unlocks all ${totalTools}. Vanguard shapes what comes next.`}
             />
           </div>

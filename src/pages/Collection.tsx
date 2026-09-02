@@ -112,7 +112,7 @@ const Collection = () => {
         {/* Back Navigation */}
         <Link
           to="/"
-          className="inline-flex items-center gap-2 font-serif text-[14px] italic text-t3 hover:text-sf-teal-bright transition-colors duration-base mb-6"
+          className="inline-flex items-center gap-2 font-serif text-[14px] italic text-t3 hover:text-sf-primary-bright transition-colors duration-base mb-6"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
           ← RETURN TO BRIDGE

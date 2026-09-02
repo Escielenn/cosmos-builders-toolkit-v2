@@ -74,7 +74,7 @@ export function Wordmark({
           uppercase ? "uppercase tracking-sf-wide" : "tracking-sf-title",
         )}
       >
-        <span className="text-sf-teal">Stellar</span>forge
+        <span className="text-sf-primary-text">Stellar</span>forge
       </span>
       {suffix && (
         <span className={cn("font-serif italic text-t2", SUFFIX_SIZE[size])}>

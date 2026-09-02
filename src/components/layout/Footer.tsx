@@ -90,7 +90,7 @@ const Footer = () => {
                   href={item.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-t3 hover:text-sf-teal-bright transition-colors duration-base"
+                  className="text-t3 hover:text-sf-primary-bright transition-colors duration-base"
                   aria-label={item.name}
                 >
                   <item.icon className="w-5 h-5" />
@@ -120,7 +120,7 @@ const Footer = () => {
                 <li key={item.name}>
                   <Link
                     to={item.href}
-                    className="text-sm text-t3 hover:text-sf-teal-bright transition-colors duration-base sf-text-link"
+                    className="text-sm text-t3 hover:text-sf-primary-bright transition-colors duration-base sf-text-link"
                   >
                     {item.name}
                   </Link>
@@ -139,7 +139,7 @@ const Footer = () => {
                 <li key={item.name}>
                   <Link
                     to={item.href}
-                    className="text-sm text-t3 hover:text-sf-teal-bright transition-colors duration-base sf-text-link"
+                    className="text-sm text-t3 hover:text-sf-primary-bright transition-colors duration-base sf-text-link"
                   >
                     {item.name}
                   </Link>
@@ -158,7 +158,7 @@ const Footer = () => {
                 <li key={item.name}>
                   <Link
                     to={item.href}
-                    className="text-sm text-t3 hover:text-sf-teal-bright transition-colors duration-base sf-text-link"
+                    className="text-sm text-t3 hover:text-sf-primary-bright transition-colors duration-base sf-text-link"
                   >
                     {item.name}
                   </Link>
@@ -178,7 +178,7 @@ const Footer = () => {
                   href="https://dreamsidestudios.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-sf-teal-bright transition-colors duration-base sf-text-link"
+                  className="hover:text-sf-primary-bright transition-colors duration-base sf-text-link"
                 >
                   DREAMSIDE STUDIOS
                 </a>{" "}
@@ -190,7 +190,7 @@ const Footer = () => {
                   href="https://jbatt.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-sf-teal-bright transition-colors duration-base sf-text-link"
+                  className="hover:text-sf-primary-bright transition-colors duration-base sf-text-link"
                 >
                   JASON D. BATT, PH.D.
                 </a>

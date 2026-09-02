@@ -41,7 +41,7 @@ export function TargetStar({ className }: { className?: string }) {
       aria-hidden
       title="Next destination"
     >
-      <span className="text-sf-teal">TARGET</span>
+      <span className="text-sf-primary-text">TARGET</span>
       <span className="text-t5"> · </span>
       {t.name}
       <span className="text-t5"> · </span>

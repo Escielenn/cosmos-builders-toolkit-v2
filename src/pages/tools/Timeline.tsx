@@ -394,11 +394,11 @@ const Timeline = () => {
 
         {/* Chronicle pointer, world-scoped tracks/events vs. the world's canonical event timeline */}
         {worldId && !chronicleHintDismissed && (
-          <div className="relative flex items-center gap-3 px-4 py-3 rounded-none border border-sf-teal bg-sf-teal/[0.03] mb-6">
-            <ScrollText className="w-5 h-5 text-sf-teal/60 shrink-0" />
+          <div className="relative flex items-center gap-3 px-4 py-3 rounded-none border border-sf-primary bg-sf-primary/[0.03] mb-6">
+            <ScrollText className="w-5 h-5 text-sf-primary-text/60 shrink-0" />
             <p className="text-sm text-t2 pr-6">
               For this world's story-wide event timeline, use{" "}
-              <Link to={`/worlds/${worldId}/chronicle`} className="text-sf-teal underline underline-offset-2 hover:text-sf-teal-bright">
+              <Link to={`/worlds/${worldId}/chronicle`} className="text-sf-primary-text underline underline-offset-2 hover:text-sf-primary-bright">
                 Chronicle
               </Link>
               . Timeline stays for track-based scheduling within a single worksheet.

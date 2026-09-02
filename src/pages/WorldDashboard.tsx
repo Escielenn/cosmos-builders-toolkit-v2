@@ -668,7 +668,7 @@ const WorldDashboard = () => {
       <>
         <Link
           to="/"
-          className="inline-flex items-center gap-2 font-heading text-[12px] uppercase tracking-[0.2em] font-medium text-t3 hover:text-sf-teal-bright transition-colors duration-base mb-6"
+          className="inline-flex items-center gap-2 font-heading text-[12px] uppercase tracking-[0.2em] font-medium text-t3 hover:text-sf-primary-bright transition-colors duration-base mb-6"
         >
           <ArrowLeft className="w-4 h-4" />
           Return to Bridge
@@ -704,7 +704,7 @@ const WorldDashboard = () => {
         <div className="flex items-center justify-between mb-6">
           <Link
             to="/"
-            className="inline-flex items-center gap-2 font-heading text-[12px] uppercase tracking-[0.2em] font-medium text-t3 hover:text-sf-teal-bright transition-colors duration-base"
+            className="inline-flex items-center gap-2 font-heading text-[12px] uppercase tracking-[0.2em] font-medium text-t3 hover:text-sf-primary-bright transition-colors duration-base"
           >
             <ArrowLeft className="w-4 h-4" />
             Return to Bridge
@@ -886,7 +886,7 @@ const WorldDashboard = () => {
               onClick={() => setOpenDrawer((cur) => (cur === d.id ? null : d.id))}
               aria-expanded={openDrawer === d.id}
               className={`px-3 py-1.5 font-serif text-[15px] italic transition-colors ${
-                openDrawer === d.id ? "text-sf-teal" : "text-t3 hover:text-t1"
+                openDrawer === d.id ? "text-sf-primary-text" : "text-t3 hover:text-t1"
               }`}
             >
               {d.label}

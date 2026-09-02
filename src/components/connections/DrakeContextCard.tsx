@@ -51,7 +51,7 @@ const DrakeContextCard = ({ worldId }: DrakeContextCardProps) => {
                 <Globe className="w-3 h-3" />
                 Planets:
               </span>
-              <span className="font-mono text-sf-teal">
+              <span className="font-mono text-sf-primary-text">
                 {drake.planetCount}
               </span>
             </div>

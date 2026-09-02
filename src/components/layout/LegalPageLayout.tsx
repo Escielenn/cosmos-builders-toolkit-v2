@@ -25,12 +25,12 @@ interface LegalPageLayoutProps {
 const markdownComponents: Components = {
   h2: ({ children }) => (
     <h2 className="flex items-center gap-3 font-heading text-2xl font-light uppercase tracking-[0.08em] text-t1 mt-12 mb-6 pt-8 border-t border-sf-line-interactive first:mt-0 first:pt-0 first:border-t-0">
-      <span className="w-1 h-8 bg-sf-teal" />
+      <span className="w-1 h-8 bg-sf-primary" />
       {children}
     </h2>
   ),
   h3: ({ children }) => (
-    <h3 className="font-heading text-lg font-medium uppercase tracking-[0.12em] text-t1 mt-8 mb-4 pl-4 border-l-2 border-sf-teal">
+    <h3 className="font-heading text-lg font-medium uppercase tracking-[0.12em] text-t1 mt-8 mb-4 pl-4 border-l-2 border-sf-primary">
       {children}
     </h3>
   ),
@@ -51,7 +51,7 @@ const markdownComponents: Components = {
   ),
   li: ({ children }) => (
     <li className="flex items-start gap-3 text-t2">
-      <span className="mt-2 w-1.5 h-1.5 bg-sf-teal/70 flex-shrink-0" />
+      <span className="mt-2 w-1.5 h-1.5 bg-sf-primary/70 flex-shrink-0" />
       <span>{children}</span>
     </li>
   ),
@@ -63,7 +63,7 @@ const markdownComponents: Components = {
   a: ({ href, children }) => (
     <a
       href={href}
-      className="text-sf-teal hover:text-sf-teal-bright transition-colors duration-base sf-text-link"
+      className="text-sf-primary-text hover:text-sf-primary-bright transition-colors duration-base sf-text-link"
       target={href?.startsWith("http") ? "_blank" : undefined}
       rel={href?.startsWith("http") ? "noopener noreferrer" : undefined}
     >
@@ -74,7 +74,7 @@ const markdownComponents: Components = {
     <hr className="my-10 border-0 h-px bg-gradient-to-r from-transparent via-sf-line-emphasis to-transparent" />
   ),
   blockquote: ({ children }) => (
-    <blockquote className="my-6 pl-4 border-l-2 border-sf-teal bg-sf-teal/[0.04] py-4 pr-4 italic text-t3">
+    <blockquote className="my-6 pl-4 border-l-2 border-sf-primary bg-sf-primary/[0.04] py-4 pr-4 italic text-t3">
       {children}
     </blockquote>
   ),
@@ -99,7 +99,7 @@ const LegalPageLayout = ({
         {/* Back Link */}
         <Link
           to="/"
-          className="inline-flex items-center gap-2 font-heading text-[12px] uppercase tracking-[0.2em] font-medium text-t3 hover:text-sf-teal-bright transition-colors duration-base mb-6"
+          className="inline-flex items-center gap-2 font-heading text-[12px] uppercase tracking-[0.2em] font-medium text-t3 hover:text-sf-primary-bright transition-colors duration-base mb-6"
         >
           <ArrowLeft className="w-4 h-4" />
           ← RETURN TO BRIDGE
@@ -107,7 +107,7 @@ const LegalPageLayout = ({
 
         {/* Header */}
         <header className="mb-8">
-          <p className="font-mono text-[12px] tracking-[0.18em] text-sf-teal uppercase mb-4 flex items-center gap-2">
+          <p className="font-mono text-[12px] tracking-[0.18em] text-sf-primary-text uppercase mb-4 flex items-center gap-2">
             <span>//</span>
             {badgeIcon}
             {badgeText}

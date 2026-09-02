@@ -22,8 +22,8 @@ const WelcomeHero = () => {
       >
         {/* Mono eyebrow (telemetry soul, kept but quieter) */}
         <motion.div variants={fadeUpItem}>
-          <div className="inline-flex items-center gap-3.5 font-mono uppercase text-sf-teal/80 text-[12px] tracking-[3px] mb-7">
-            <span aria-hidden className="block w-12 h-px bg-sf-teal/60" />
+          <div className="inline-flex items-center gap-3.5 font-mono uppercase text-sf-primary-text/80 text-[12px] tracking-[3px] mb-7">
+            <span aria-hidden className="block w-12 h-px bg-sf-primary/60" />
             <span>// open early access</span>
           </div>
         </motion.div>
@@ -34,7 +34,7 @@ const WelcomeHero = () => {
           variants={heroReveal}
         >
           Build worlds{" "}
-          <em className="font-serif italic text-sf-teal">that feel real.</em>
+          <em className="font-serif italic text-sf-primary-text">that feel real.</em>
         </motion.h1>
 
         {/* Subhead — warmer, with a Lora-italic lead-in */}

@@ -154,12 +154,12 @@ const Auth = () => {
           {/* Hero, display-font scale per April 2026 handoff */}
           <div className="space-y-7">
             <CubeLogo size={80} className="rounded-none" />
-            <div className="inline-flex items-center gap-3.5 font-mono uppercase text-sf-teal text-[13px] tracking-[3px]">
-              <span aria-hidden className="block w-12 h-px bg-sf-teal" />
+            <div className="inline-flex items-center gap-3.5 font-mono uppercase text-sf-primary-text text-[13px] tracking-[3px]">
+              <span aria-hidden className="block w-12 h-px bg-sf-primary" />
               <span>// OPEN EARLY ACCESS</span>
             </div>
             <h1 className="font-display font-light text-sf-hero leading-[0.98] text-t1 max-w-[12ch]">
-              <span className="text-sf-teal">Stellar</span>forge.
+              <span className="text-sf-primary-text">Stellar</span>forge.
             </h1>
             <p className="font-heading text-[12px] tracking-[0.2em] uppercase text-t3">
               Science Fiction Worldbuilding Tools
@@ -175,10 +175,10 @@ const Auth = () => {
           {/* Value Props */}
           <div className="grid md:grid-cols-3 gap-6">
             <GlassPanel className="p-6 text-center md:text-left">
-              <div className="w-10 h-10 rounded-none bg-sf-teal/[0.06] border border-sf-teal flex items-center justify-center mb-3 mx-auto md:mx-0">
+              <div className="w-10 h-10 rounded-none bg-sf-primary/[0.06] border border-sf-primary flex items-center justify-center mb-3 mx-auto md:mx-0">
                 <Layers className="w-5 h-5 text-primary" />
               </div>
-              <h3 className="font-heading text-[12px] font-medium uppercase tracking-[0.2em] text-sf-teal mb-2">
+              <h3 className="font-heading text-[12px] font-medium uppercase tracking-[0.2em] text-sf-primary-text mb-2">
                 Systematic Worldbuilding
               </h3>
               <p className="text-sm text-t3">
@@ -190,7 +190,7 @@ const Auth = () => {
               <div className="w-10 h-10 rounded-none bg-sf-stellar/[0.06] border border-sf-stellar flex items-center justify-center mb-3 mx-auto md:mx-0">
                 <Share2 className="w-5 h-5 text-sf-stellar" />
               </div>
-              <h3 className="font-heading text-[12px] font-medium uppercase tracking-[0.2em] text-sf-teal mb-2">
+              <h3 className="font-heading text-[12px] font-medium uppercase tracking-[0.2em] text-sf-primary-text mb-2">
                 Cross-Tool Integration
               </h3>
               <p className="text-sm text-t3">
@@ -199,10 +199,10 @@ const Auth = () => {
               </p>
             </GlassPanel>
             <GlassPanel className="p-6 text-center md:text-left">
-              <div className="w-10 h-10 rounded-none bg-sf-teal/[0.06] border border-sf-teal flex items-center justify-center mb-3 mx-auto md:mx-0">
+              <div className="w-10 h-10 rounded-none bg-sf-primary/[0.06] border border-sf-primary flex items-center justify-center mb-3 mx-auto md:mx-0">
                 <FileDown className="w-5 h-5 text-primary" />
               </div>
-              <h3 className="font-heading text-[12px] font-medium uppercase tracking-[0.2em] text-sf-teal mb-2">
+              <h3 className="font-heading text-[12px] font-medium uppercase tracking-[0.2em] text-sf-primary-text mb-2">
                 Export Everything
               </h3>
               <p className="text-sm text-t3">

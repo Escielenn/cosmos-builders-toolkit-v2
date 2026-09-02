@@ -153,7 +153,7 @@ const WritingWorkshop = () => {
         {/* Back link */}
         <Link
           to="/"
-          className="inline-flex items-center gap-2 font-heading text-[12px] uppercase tracking-[0.2em] font-medium text-t3 hover:text-sf-teal-bright transition-colors duration-base mb-6"
+          className="inline-flex items-center gap-2 font-heading text-[12px] uppercase tracking-[0.2em] font-medium text-t3 hover:text-sf-primary-bright transition-colors duration-base mb-6"
         >
           <ArrowLeft className="w-4 h-4" />
           ← RETURN TO BRIDGE
@@ -162,7 +162,7 @@ const WritingWorkshop = () => {
         {/* Page header */}
         <SectionHero
           eyebrow="// WORKSHOP"
-          title={<>Writing <span className="text-sf-teal">prompts.</span></>}
+          title={<>Writing <span className="text-sf-primary-text">prompts.</span></>}
           subtitle="Daily prompts, your entries, and writing practice, captured here while the rest of the world cascades around them."
           className="mb-12"
         />

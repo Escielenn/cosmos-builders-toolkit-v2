@@ -184,12 +184,12 @@ function ColorDotPicker({
             onChange={(e) => setCustomHex(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleCustomSubmit()}
             placeholder="#FF00AA"
-            className="flex-1 bg-white/4 border border-sf-line rounded-xs px-2 py-1 text-[12px] font-mono text-t2 placeholder:text-t4 focus:border-sf-teal outline-none"
+            className="flex-1 bg-white/4 border border-sf-line rounded-xs px-2 py-1 text-[12px] font-mono text-t2 placeholder:text-t4 focus:border-sf-primary outline-none"
           />
           <button
             type="button"
             onClick={handleCustomSubmit}
-            className="px-2 py-1 text-[12px] text-sf-teal bg-sf-teal/8 border border-sf-teal hover:bg-sf-teal/15 transition-colors"
+            className="px-2 py-1 text-[12px] text-sf-primary-text bg-sf-primary/8 border border-sf-primary hover:bg-sf-primary/15 transition-colors"
           >
             Set
           </button>
@@ -643,7 +643,7 @@ const EntitySidebar = ({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search entities..."
-            className="w-full bg-white/4 border border-sf-line rounded-xs pl-7 pr-2 py-1.5 text-[13px] font-sans text-t2 placeholder:text-t4 focus:border-sf-teal outline-none"
+            className="w-full bg-white/4 border border-sf-line rounded-xs pl-7 pr-2 py-1.5 text-[13px] font-sans text-t2 placeholder:text-t4 focus:border-sf-primary outline-none"
           />
         </div>
       </div>
@@ -655,7 +655,7 @@ const EntitySidebar = ({
           className={cn(
             "flex items-center gap-1 px-2 py-1 text-[12px] uppercase tracking-[1.5px] transition-colors",
             viewMode === "tool"
-              ? "text-sf-teal bg-sf-teal/8 border border-sf-teal"
+              ? "text-sf-primary-text bg-sf-primary/8 border border-sf-primary"
               : "text-t4 hover:text-t3"
           )}
           title="Group by cascade stage"
@@ -668,7 +668,7 @@ const EntitySidebar = ({
           className={cn(
             "flex items-center gap-1 px-2 py-1 text-[12px] uppercase tracking-[1.5px] transition-colors",
             viewMode === "wiki"
-              ? "text-sf-teal bg-sf-teal/8 border border-sf-teal"
+              ? "text-sf-primary-text bg-sf-primary/8 border border-sf-primary"
               : "text-t4 hover:text-t3"
           )}
           title="Alphabetical list"

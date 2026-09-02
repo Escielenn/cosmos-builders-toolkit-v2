@@ -144,7 +144,7 @@ export function CascadeAuditPanel({
             className="w-2 h-2 rounded-full"
             style={{ background: rootColor }}
           />
-          <h3 className="font-heading text-[12px] uppercase tracking-[2px] text-sf-teal">
+          <h3 className="font-heading text-[12px] uppercase tracking-[2px] text-sf-primary-text">
             Cascade Audit
           </h3>
         </div>
@@ -203,7 +203,7 @@ export function CascadeAuditPanel({
           <button
             type="button"
             onClick={handleHighlightAll}
-            className="flex-1 text-[12px] font-sans text-sf-teal uppercase tracking-[1px] py-1.5 border border-sf-teal hover:bg-sf-teal/5 transition-colors text-center"
+            className="flex-1 text-[12px] font-sans text-sf-primary-text uppercase tracking-[1px] py-1.5 border border-sf-primary hover:bg-sf-primary/5 transition-colors text-center"
           >
             Highlight cascade
           </button>

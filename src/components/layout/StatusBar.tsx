@@ -100,7 +100,7 @@ const StatusBar = () => {
 
       {/* Center: sector + target star + lunar phase */}
       <div className="hidden md:flex items-center gap-4">
-        <span className="text-sf-teal/40">
+        <span className="text-sf-primary-text/40">
           // SECTOR: {sector}
         </span>
         <span className="hidden xl:inline text-t4">·</span>

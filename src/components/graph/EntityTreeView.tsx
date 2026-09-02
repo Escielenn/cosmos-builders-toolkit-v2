@@ -132,7 +132,7 @@ function EntityDetailPanel({
   onReparent: (id: string, newParentId: string | null) => void;
 }) {
   const nodeColor =
-    entity.color ?? ENTITY_TYPE_COLORS[entity.entity_type] ?? "var(--sf-teal)";
+    entity.color ?? ENTITY_TYPE_COLORS[entity.entity_type] ?? "var(--sf-primary)";
   const cascadeColor = CASCADE_STAGE_COLORS[entity.cascade_stage];
   const parentEntity = entity.parent_entity_id
     ? entities.find((e) => e.id === entity.parent_entity_id)
@@ -246,7 +246,7 @@ function EntityDetailPanel({
                   background:
                     parentEntity.color ??
                     ENTITY_TYPE_COLORS[parentEntity.entity_type] ??
-                    "var(--sf-teal)",
+                    "var(--sf-primary)",
                 }}
               />
               <span className="text-[13px] font-heading text-t2 truncate">
@@ -507,7 +507,7 @@ function TreeNodeRow({
   const [hovered, setHovered] = useState(false);
   const entity = node.entity;
   const hasChildren = node.children.length > 0;
-  const nodeColor = entity.color ?? ENTITY_TYPE_COLORS[entity.entity_type] ?? "var(--sf-teal)";
+  const nodeColor = entity.color ?? ENTITY_TYPE_COLORS[entity.entity_type] ?? "var(--sf-primary)";
   const cascadeColor = CASCADE_STAGE_COLORS[entity.cascade_stage];
 
   const isDragged = dragState.draggedId === entity.id;
@@ -524,7 +524,7 @@ function TreeNodeRow({
     borderStyle = "1px solid var(--sf-line-emphasis)";
   }
   if (isDragTargetValid) {
-    borderStyle = "1px solid var(--sf-teal)";
+    borderStyle = "1px solid var(--sf-primary)";
   } else if (isDragTargetInvalid) {
     borderStyle = "1px solid var(--sf-crimson)";
   }
@@ -538,11 +538,11 @@ function TreeNodeRow({
         boxShadow: isDragged ? "0 4px 12px rgba(0,0,0,0.4)" : "none",
         border: borderStyle,
         background: isDragTargetValid
-          ? "color-mix(in srgb, var(--sf-teal) 4%, transparent)"
+          ? "color-mix(in srgb, var(--sf-primary) 4%, transparent)"
           : isDragTargetInvalid
           ? "color-mix(in srgb, var(--sf-crimson) 4%, transparent)"
           : isSelected
-          ? "color-mix(in srgb, var(--sf-teal) 3%, transparent)"
+          ? "color-mix(in srgb, var(--sf-primary) 3%, transparent)"
           : "transparent",
         cursor: isDragTargetInvalid ? "not-allowed" : "pointer",
       }}
@@ -639,7 +639,7 @@ function TreeNodeRow({
             e.stopPropagation();
             onCreateChild(entity.id);
           }}
-          className="flex items-center justify-center w-5 h-5 text-t4 hover:text-sf-teal transition-colors"
+          className="flex items-center justify-center w-5 h-5 text-t4 hover:text-sf-primary-text transition-colors"
           title="Add child entity"
         >
           <Plus className="w-3 h-3" />

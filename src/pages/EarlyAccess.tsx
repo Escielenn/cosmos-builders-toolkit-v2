@@ -21,12 +21,12 @@ import {
 // ── data ────────────────────────────────────────────────────────────
 
 const MANIFEST_ROWS: { label: string; value: string; tone: string }[] = [
-  { label: "LAUNCH", value: `${LAUNCH_DATE_STAMP} · ${LAUNCH_TIME_LABEL}`, tone: "text-sf-teal" },
+  { label: "LAUNCH", value: `${LAUNCH_DATE_STAMP} · ${LAUNCH_TIME_LABEL}`, tone: "text-sf-primary-text" },
   { label: "INSTRUMENTS", value: `${TOTAL_TOOL_COUNT} TOOLS INCL. ${SIMULATOR_COUNT} SIMULATORS`, tone: "text-t1" },
   { label: "FRAMEWORK", value: "ENVIRONMENTAL CASCADE", tone: "text-sf-stellar" },
   { label: "FREE TIER", value: `${FREE_TOOL_COUNT} TOOLS · UNLIMITED WORLDS`, tone: "text-t1" },
   { label: "PRO", value: "$4.99/MO · $49/YR", tone: "text-sf-amber" },
-  { label: "EARLY CODE", value: "EARLY40 · 40% OFF YR 1", tone: "text-sf-teal" },
+  { label: "EARLY CODE", value: "EARLY40 · 40% OFF YR 1", tone: "text-sf-primary-text" },
 ];
 
 const STATS: { n: string; blurb: string }[] = [
@@ -42,7 +42,7 @@ const CATEGORY_TONE: Record<string, string> = {
   LIFE: "text-sf-emerald",
   CIVILIZATIONS: "text-sf-violet",
   MYTHOLOGY: "text-sf-stellar",
-  INTEGRATION: "text-sf-teal",
+  INTEGRATION: "text-sf-primary-text",
 };
 
 const TOOLS: { cat: string; name: string; blurb: string }[] = [
@@ -61,13 +61,13 @@ const TOOLS: { cat: string; name: string; blurb: string }[] = [
 // ── pieces (guide §2 component names) ───────────────────────────────
 
 function CubeGlyph(): JSX.Element {
-  const glow = { stroke: "hsl(var(--sf-teal-bright-hsl))" } as const;
+  const glow = { stroke: "hsl(var(--sf-primary-bright-hsl))" } as const;
   return (
     <svg width="22" height="22" viewBox="0 0 40 40" fill="none" aria-hidden="true">
       <path d="M20 4 L34 12 L34 28 L20 36 L6 28 L6 12 Z" style={glow} strokeWidth="1.2" />
       <path d="M20 4 L20 20 M20 20 L6 12 M20 20 L34 12" style={glow} strokeWidth="1" opacity="0.7" />
       <path d="M20 20 L20 36" style={glow} strokeWidth="1" opacity="0.5" />
-      <circle cx="20" cy="20" r="1.6" style={{ fill: "hsl(var(--sf-teal-bright-hsl))" }} />
+      <circle cx="20" cy="20" r="1.6" style={{ fill: "hsl(var(--sf-primary-bright-hsl))" }} />
     </svg>
   );
 }
@@ -107,12 +107,12 @@ function WaitlistForm(): JSX.Element {
           onChange={(e) => setEmail(e.target.value)}
           disabled={status === "sent"}
           placeholder="FREQUENCY · YOUR@EMAIL.COM"
-          className="min-w-0 flex-1 bg-transparent px-[18px] py-4 font-mono text-[13px] tracking-[0.04em] text-t1 outline-none placeholder:text-[12px] placeholder:uppercase placeholder:tracking-[1.5px] placeholder:text-t4 focus-visible:ring-1 focus-visible:ring-sf-teal"
+          className="min-w-0 flex-1 bg-transparent px-[18px] py-4 font-mono text-[13px] tracking-[0.04em] text-t1 outline-none placeholder:text-[12px] placeholder:uppercase placeholder:tracking-[1.5px] placeholder:text-t4 focus-visible:ring-1 focus-visible:ring-sf-primary"
         />
         <button
           type="submit"
           disabled={status === "sending" || status === "sent"}
-          className="whitespace-nowrap bg-sf-teal px-[22px] py-4 font-sans text-xs font-medium uppercase tracking-[1.2px] text-[hsl(var(--accent-on-accent))] transition-shadow hover:shadow-sf-glow-teal disabled:cursor-default"
+          className="whitespace-nowrap bg-sf-primary px-[22px] py-4 font-sans text-xs font-medium uppercase tracking-[1.2px] text-[hsl(var(--accent-on-accent))] transition-shadow hover:shadow-sf-glow-teal disabled:cursor-default"
         >
           {status === "sent"
             ? "SIGNAL RECEIVED"
@@ -136,8 +136,8 @@ function LandingHero(): JSX.Element {
   return (
     <div>
       <div className="mb-6 flex items-center gap-2.5">
-        <span className="h-px w-7 bg-sf-teal" aria-hidden="true" />
-        <span className="font-mono text-[12px] tracking-[2px] text-sf-teal">
+        <span className="h-px w-7 bg-sf-primary" aria-hidden="true" />
+        <span className="font-mono text-[12px] tracking-[2px] text-sf-primary-text">
           {"// EARLY ACCESS · "}
           {LAUNCH_DATE_STAMP}
         </span>
@@ -147,7 +147,7 @@ function LandingHero(): JSX.Element {
         <br />
         panel for
         <br />
-        <span className="text-sf-teal">science&nbsp;fiction</span>
+        <span className="text-sf-primary-text">science&nbsp;fiction</span>
         <br />
         <em className="font-light italic text-sf-stellar">writers.</em>
       </h1>
@@ -247,11 +247,11 @@ export default function EarlyAccess(): JSX.Element {
         <a href="/" className="flex items-center gap-2.5">
           <CubeGlyph />
           <div className="font-display text-[15px] font-light uppercase tracking-[0.22em] text-t1">
-            STELLAR<span className="text-sf-teal">FORGE</span>
+            STELLAR<span className="text-sf-primary-text">FORGE</span>
           </div>
         </a>
         <div className="font-mono text-sm tracking-[3px] text-t1">
-          T-MINUS <span className="text-sf-teal">{days}</span> {days === 1 ? "DAY" : "DAYS"}
+          T-MINUS <span className="text-sf-primary-text">{days}</span> {days === 1 ? "DAY" : "DAYS"}
         </div>
       </div>
 

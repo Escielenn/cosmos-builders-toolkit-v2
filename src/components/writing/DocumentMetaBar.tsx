@@ -145,7 +145,7 @@ export function DocumentMetaBar({ meta, onChange, disabled }: DocumentMetaBarPro
                   aria-pressed={meta.status === s}
                   className={`border px-2 py-1 font-mono text-[12px] uppercase tracking-[1.2px] transition-colors ${
                     meta.status === s
-                      ? `border-sf-teal bg-sf-teal/[0.06] ${STATUS_TONE[s]}`
+                      ? `border-sf-primary bg-sf-primary/[0.06] ${STATUS_TONE[s]}`
                       : "border-sf-line-interactive text-t4 hover:text-t2"
                   }`}
                 >

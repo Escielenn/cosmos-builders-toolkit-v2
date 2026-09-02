@@ -66,17 +66,17 @@ export default function NarrativeBridgePanel({
     return (
       <button
         onClick={() => onOpenChange(true)}
-        className="absolute right-0 top-1/2 -translate-y-1/2 z-30 bg-sf-teal/[0.08] border border-sf-teal border-r-0 px-2.5 py-5 hover:bg-sf-teal/[0.16] transition-colors duration-base group shadow-[0_0_18px_rgba(21,193,123,0.18)]"
+        className="absolute right-0 top-1/2 -translate-y-1/2 z-30 bg-sf-primary/[0.08] border border-sf-primary border-r-0 px-2.5 py-5 hover:bg-sf-primary/[0.16] transition-colors duration-base group shadow-[0_0_18px_rgba(21,193,123,0.18)]"
         title="Open Narrative Bridge"
         aria-label="Open Narrative Bridge"
       >
-        <ChevronLeft className="w-3.5 h-3.5 text-sf-teal group-hover:text-white mb-2 mx-auto" />
-        <span className="font-heading text-[13px] font-medium uppercase tracking-[2px] text-sf-teal group-hover:text-white transition-colors [writing-mode:vertical-lr] rotate-180 inline-block">
+        <ChevronLeft className="w-3.5 h-3.5 text-sf-primary-text group-hover:text-white mb-2 mx-auto" />
+        <span className="font-heading text-[13px] font-medium uppercase tracking-[2px] text-sf-primary-text group-hover:text-white transition-colors [writing-mode:vertical-lr] rotate-180 inline-block">
           Narrative Bridge
         </span>
         {filledCount > 0 && (
           <span
-            className="absolute -left-2 -top-2 min-w-[20px] h-5 px-1.5 inline-flex items-center justify-center rounded-sf-tag bg-sf-teal text-[13px] font-mono font-medium text-[#08110C] tabular-nums tracking-tight"
+            className="absolute -left-2 -top-2 min-w-[20px] h-5 px-1.5 inline-flex items-center justify-center rounded-sf-tag bg-sf-primary text-[13px] font-mono font-medium text-[#08110C] tabular-nums tracking-tight"
             aria-label={`${filledCount} answered`}
           >
             {filledCount}
@@ -93,8 +93,8 @@ export default function NarrativeBridgePanel({
       <div className="sticky top-0 z-10 bg-sf-void/95 backdrop-blur-sf-side px-4 py-3 border-b border-sf-line">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <PenLine className="w-3.5 h-3.5 text-sf-teal" />
-            <span className="font-heading text-[13px] uppercase tracking-[2px] text-sf-teal">
+            <PenLine className="w-3.5 h-3.5 text-sf-primary-text" />
+            <span className="font-heading text-[13px] uppercase tracking-[2px] text-sf-primary-text">
               Narrative Bridge
             </span>
           </div>
@@ -135,7 +135,7 @@ export default function NarrativeBridgePanel({
 
         {/* General Notes, freeform textarea */}
         <div>
-          <label className="font-heading text-[13px] uppercase tracking-[2px] text-sf-teal/70 block mb-1.5">
+          <label className="font-heading text-[13px] uppercase tracking-[2px] text-sf-primary-text/70 block mb-1.5">
             General Notes
           </label>
           <textarea
@@ -157,7 +157,7 @@ export default function NarrativeBridgePanel({
               size="sm"
               onClick={handleSave}
               disabled={filledCount === 0}
-              className="h-6 text-[12px] uppercase tracking-wider px-2 gap-1 border-sf-teal text-sf-teal hover:bg-sf-teal/10"
+              className="h-6 text-[12px] uppercase tracking-wider px-2 gap-1 border-sf-primary text-sf-primary-text hover:bg-sf-primary/10"
             >
               <Save className="w-3 h-3" />
               {saved ? "Saved" : "Save Notes"}

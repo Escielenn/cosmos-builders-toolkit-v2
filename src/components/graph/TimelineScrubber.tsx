@@ -186,7 +186,7 @@ export function TimelineScrubber({
 
         {/* Current time */}
         <div className="shrink-0 text-center min-w-[60px]">
-          <span className="text-[12px] font-mono text-sf-teal">
+          <span className="text-[12px] font-mono text-sf-primary-text">
             {currentLabel}
           </span>
         </div>

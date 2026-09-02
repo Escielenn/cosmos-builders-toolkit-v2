@@ -65,7 +65,7 @@ export default function SaveSimulationDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md bg-sf-surface border-sf-line-interactive">
         <DialogHeader>
-          <DialogTitle className="font-heading text-sm font-light uppercase tracking-[3px] text-sf-teal">
+          <DialogTitle className="font-heading text-sm font-light uppercase tracking-[3px] text-sf-primary-text">
             Save Simulation
           </DialogTitle>
           <DialogDescription className="text-t2 mt-2">

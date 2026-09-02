@@ -414,7 +414,7 @@ export default function Write(): JSX.Element {
                     onClick={(e) => e.stopPropagation()}
                     aria-label={`Chapter options for ${folder.title}`}
                     title="Chapter options"
-                    className="shrink-0 p-1.5 text-t4 opacity-0 transition-opacity hover:text-sf-teal focus-visible:opacity-100 group-hover:opacity-100"
+                    className="shrink-0 p-1.5 text-t4 opacity-0 transition-opacity hover:text-sf-primary-text focus-visible:opacity-100 group-hover:opacity-100"
                   >
                     <MoreVertical className="h-3.5 w-3.5" />
                   </button>
@@ -513,7 +513,7 @@ export default function Write(): JSX.Element {
                   <div key={d.id} className="group flex items-center gap-1 pr-1">
                     <span className="min-w-0 flex-1 truncate py-1.5 pl-3 font-serif text-[13px] text-t4 line-through">{d.title || "Untitled"}</span>
                     <button onClick={() => restoreDoc.mutate(d.id)} aria-label={`Restore ${d.title || "Untitled"}`} title="Restore"
-                      className="shrink-0 p-1.5 text-t4 opacity-0 transition-opacity hover:text-sf-teal focus-visible:opacity-100 group-hover:opacity-100">
+                      className="shrink-0 p-1.5 text-t4 opacity-0 transition-opacity hover:text-sf-primary-text focus-visible:opacity-100 group-hover:opacity-100">
                       <RotateCcw className="h-3.5 w-3.5" />
                     </button>
                     <button
@@ -535,8 +535,8 @@ export default function Write(): JSX.Element {
       </div>
       {worldId && (
         <div className="flex gap-1 border-t border-sf-line-interactive p-2">
-          <button onClick={newDocument} className="min-h-[40px] flex-1 border border-sf-line-interactive px-2 py-1.5 text-[12px] text-t2 transition-colors hover:border-sf-teal hover:text-t1">+ Document</button>
-          <button onClick={() => createFolder.mutate("New folder")} className="min-h-[40px] flex-1 border border-sf-line-interactive px-2 py-1.5 text-[12px] text-t2 transition-colors hover:border-sf-teal hover:text-t1">+ Folder</button>
+          <button onClick={newDocument} className="min-h-[40px] flex-1 border border-sf-line-interactive px-2 py-1.5 text-[12px] text-t2 transition-colors hover:border-sf-primary hover:text-t1">+ Document</button>
+          <button onClick={() => createFolder.mutate("New folder")} className="min-h-[40px] flex-1 border border-sf-line-interactive px-2 py-1.5 text-[12px] text-t2 transition-colors hover:border-sf-primary hover:text-t1">+ Folder</button>
         </div>
       )}
     </div>
@@ -548,7 +548,7 @@ export default function Write(): JSX.Element {
       <div className="flex border-b border-sf-line-interactive" role="tablist" aria-label="Inspector">
         {(["entities", "world", "reference", "continuity"] as const).map((t) => (
           <button key={t} role="tab" aria-selected={inspector === t} onClick={() => setInspector(t)}
-            className={`min-h-[44px] flex-1 border-b-2 px-2 py-2.5 text-[13px] capitalize transition-colors ${inspector === t ? "border-sf-teal text-t1" : "border-transparent text-t3 hover:text-t1"}`}>
+            className={`min-h-[44px] flex-1 border-b-2 px-2 py-2.5 text-[13px] capitalize transition-colors ${inspector === t ? "border-sf-primary text-t1" : "border-transparent text-t3 hover:text-t1"}`}>
             {t === "entities" ? "Entities" : t === "world" ? "World" : t === "reference" ? "Refs" : "Check"}
           </button>
         ))}
@@ -588,8 +588,8 @@ export default function Write(): JSX.Element {
             <WorksheetFactsPanel worldId={worldId} onInsert={insertIntoEditor} />
           </div>
           <div className="border-t border-sf-line-interactive p-3">
-            <Link to={`/worlds/${worldId}/wiki`} className="block border border-sf-line-interactive px-3 py-2 text-[13px] text-t2 transition-colors hover:border-sf-teal hover:text-t1">Open the wiki →</Link>
-            <Link to={`/worlds/${worldId}/connections`} className="mt-2 block border border-sf-line-interactive px-3 py-2 text-[13px] text-t2 transition-colors hover:border-sf-teal hover:text-t1">Open the entity graph →</Link>
+            <Link to={`/worlds/${worldId}/wiki`} className="block border border-sf-line-interactive px-3 py-2 text-[13px] text-t2 transition-colors hover:border-sf-primary hover:text-t1">Open the wiki →</Link>
+            <Link to={`/worlds/${worldId}/connections`} className="mt-2 block border border-sf-line-interactive px-3 py-2 text-[13px] text-t2 transition-colors hover:border-sf-primary hover:text-t1">Open the entity graph →</Link>
           </div>
         </div>
       )}
@@ -603,7 +603,7 @@ export default function Write(): JSX.Element {
         {/* explicit way back to the Studio overview */}
         <Link
           to="/studio"
-          className="flex items-center gap-1.5 border border-sf-line-interactive px-2.5 py-1 text-[13px] text-t3 transition-colors hover:border-sf-teal hover:text-t1"
+          className="flex items-center gap-1.5 border border-sf-line-interactive px-2.5 py-1 text-[13px] text-t3 transition-colors hover:border-sf-primary hover:text-t1"
           title="Back to Studio"
         >
           <span aria-hidden="true">←</span> Studio
@@ -625,12 +625,12 @@ export default function Write(): JSX.Element {
           {!focus && (
             <>
               <button onClick={() => setMobilePanel("binder")}
-                className="border border-sf-line-interactive px-2.5 py-1 text-[12px] text-t3 transition-colors hover:border-sf-teal hover:text-t1 lg:hidden">
+                className="border border-sf-line-interactive px-2.5 py-1 text-[12px] text-t3 transition-colors hover:border-sf-primary hover:text-t1 lg:hidden">
                 Docs
               </button>
               {worldId && (
                 <button onClick={() => setMobilePanel("inspector")}
-                  className="border border-sf-line-interactive px-2.5 py-1 text-[12px] text-t3 transition-colors hover:border-sf-teal hover:text-t1 lg:hidden">
+                  className="border border-sf-line-interactive px-2.5 py-1 text-[12px] text-t3 transition-colors hover:border-sf-primary hover:text-t1 lg:hidden">
                   Inspector
                 </button>
               )}
@@ -670,12 +670,12 @@ export default function Write(): JSX.Element {
           <button
             onClick={() => setView(view === "board" ? "editor" : "board")}
             title="Index cards for every scene, to see the shape of the manuscript"
-            className={`border px-2.5 py-1 text-[12px] transition-colors ${view === "board" ? "border-sf-teal text-sf-teal" : "border-sf-line-interactive text-t3 hover:text-t1"}`}>
+            className={`border px-2.5 py-1 text-[12px] transition-colors ${view === "board" ? "border-sf-primary text-sf-primary-text" : "border-sf-line-interactive text-t3 hover:text-t1"}`}>
             Board
           </button>
           <button onClick={() => setFocus(!focus)}
             title={focus ? "Leave focus mode (Esc)" : "Focus mode hides the binder and inspector. Press Esc to come back."}
-            className={`border px-2.5 py-1 text-[12px] transition-colors ${focus ? "border-sf-teal text-sf-teal" : "border-sf-line-interactive text-t3 hover:text-t1"}`}>
+            className={`border px-2.5 py-1 text-[12px] transition-colors ${focus ? "border-sf-primary text-sf-primary-text" : "border-sf-line-interactive text-t3 hover:text-t1"}`}>
             Focus
           </button>
         </div>
@@ -750,7 +750,7 @@ export default function Write(): JSX.Element {
                         title={`${val === "1" ? "1x" : val === "1.5" ? "1.5x" : "2x"} line spacing`}
                         className={`border px-2 py-1 text-[12px] font-mono transition-colors ${val !== "1" ? "-ml-px" : ""} ${
                           preferences.lineSpacing === val
-                            ? "border-sf-teal text-sf-teal"
+                            ? "border-sf-primary text-sf-primary-text"
                             : "border-sf-line-interactive text-t4 hover:text-t2"
                         }`}
                       >
@@ -765,7 +765,7 @@ export default function Write(): JSX.Element {
                     value={preferences.writingFont}
                     onChange={(e) => updatePreferences({ writingFont: e.target.value as WritingFont })}
                     aria-label="Editor font"
-                    className="border border-sf-line-interactive bg-transparent px-2 py-1 text-[12px] text-t2 outline-none focus-visible:border-sf-teal"
+                    className="border border-sf-line-interactive bg-transparent px-2 py-1 text-[12px] text-t2 outline-none focus-visible:border-sf-primary"
                   >
                     <option value="DM Sans">DM Sans</option>
                     <option value="Georgia">Georgia</option>
@@ -808,7 +808,7 @@ export default function Write(): JSX.Element {
       {/* status bar */}
       <footer className="flex items-center justify-between border-t border-sf-line-interactive px-4">
         <div className="flex items-center gap-2.5">
-          <span className={`h-1.5 w-1.5 rounded-full bg-sf-teal ${updateContent.isPending ? "animate-sf-pulse" : ""}`} aria-hidden="true" />
+          <span className={`h-1.5 w-1.5 rounded-full bg-sf-primary ${updateContent.isPending ? "animate-sf-pulse" : ""}`} aria-hidden="true" />
           <span className="font-serif text-[12px] italic text-t3">
             {updateContent.isPending ? "Saving…" : savedAt ? `Saved · ${savedAgo}` : "Ready"}
           </span>
@@ -820,7 +820,7 @@ export default function Write(): JSX.Element {
           <span>{words.toLocaleString()} WORDS</span>
           <span aria-hidden="true">·</span>
           <span
-            className={goalMet ? "text-sf-teal" : "text-t4"}
+            className={goalMet ? "text-sf-primary-text" : "text-t4"}
             title={`${sessionWords.toLocaleString()} words written today, goal ${dailyGoalWords.toLocaleString()}`}
           >
             {sessionWords.toLocaleString()} / {dailyGoalWords.toLocaleString()} TODAY
@@ -831,7 +831,7 @@ export default function Write(): JSX.Element {
           <GoalSetting compact />
           <span className="hidden h-1 w-24 bg-white/10 sm:block" aria-hidden="true">
             <span
-              className={`block h-full ${goalMet ? "bg-sf-teal" : "bg-sf-teal/50"}`}
+              className={`block h-full ${goalMet ? "bg-sf-primary" : "bg-sf-primary/50"}`}
               style={{ width: `${goalPct}%` }}
             />
           </span>
@@ -844,7 +844,7 @@ export default function Write(): JSX.Element {
 function DocRow({ d, active, onOpen }: { d: WorldEntry; active: boolean; onOpen: () => void }): JSX.Element {
   return (
     <button onClick={onOpen}
-      className={`flex w-full items-center gap-2 border-l-2 py-1.5 pl-3 pr-2 text-left font-serif text-[13px] transition-colors ${active ? "border-sf-teal bg-sf-teal/[0.06] text-t1" : "border-transparent text-t2 hover:text-t1"}`}>
+      className={`flex w-full items-center gap-2 border-l-2 py-1.5 pl-3 pr-2 text-left font-serif text-[13px] transition-colors ${active ? "border-sf-primary bg-sf-primary/[0.06] text-t1" : "border-transparent text-t2 hover:text-t1"}`}>
       <span className="truncate">{d.title || "Untitled"}</span>
     </button>
   );
@@ -874,7 +874,7 @@ function SortableDocRow({
     <div
       ref={setNodeRef}
       style={{ transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.5 : 1 }}
-      className={`group flex touch-none items-center border-l-2 pr-1 transition-colors ${active ? "border-sf-teal bg-sf-teal/[0.06]" : "border-transparent hover:bg-white/[0.02]"}`}
+      className={`group flex touch-none items-center border-l-2 pr-1 transition-colors ${active ? "border-sf-primary bg-sf-primary/[0.06]" : "border-transparent hover:bg-white/[0.02]"}`}
     >
       {isRenaming ? (
         <input
@@ -904,7 +904,7 @@ function SortableDocRow({
               onClick={(e) => e.stopPropagation()}
               aria-label={`File ${d.title || "Untitled"} into a chapter`}
               title="File into a chapter"
-              className="shrink-0 p-1.5 text-t4 opacity-0 transition-opacity hover:text-sf-teal focus-visible:opacity-100 group-hover:opacity-100"
+              className="shrink-0 p-1.5 text-t4 opacity-0 transition-opacity hover:text-sf-primary-text focus-visible:opacity-100 group-hover:opacity-100"
             >
               <FolderInput className="h-3.5 w-3.5" />
             </button>

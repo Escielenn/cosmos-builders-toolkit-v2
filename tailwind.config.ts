@@ -249,10 +249,10 @@ const config: Config = {
       },
 
       boxShadow: {
-        'sf-glow-teal':    '0 0 24px rgba(61,255,205,0.30)',
+        'sf-glow-teal':    '0 0 24px rgb(var(--sf-primary-bright-rgb) / 0.30)',   // follows the theme's primary
         'sf-glow-amber':   '0 0 20px rgba(255,184,0,0.25)',
         'sf-glow-crimson': '0 0 20px rgba(255,51,102,0.25)',
-        'sf-inset-teal':   'inset 0 0 20px rgba(61,255,205,0.08)',
+        'sf-inset-teal':   'inset 0 0 20px rgb(var(--sf-primary-bright-rgb) / 0.08)',
         // Glow is decoration. It may never be the only indicator of a state.
       },
 

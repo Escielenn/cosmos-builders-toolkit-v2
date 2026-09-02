@@ -152,7 +152,7 @@ function RoadmapCard({ item, canVote }: { item: RoadmapItem; canVote: boolean })
               key={n}
               variant="outline"
               size="sm"
-              className="gap-1 border-sf-teal hover:border-sf-teal hover:bg-teal-500/5 text-teal-400"
+              className="gap-1 border-sf-primary hover:border-sf-primary hover:bg-teal-500/5 text-teal-400"
               onClick={() => handleVote(n)}
               disabled={remaining < n || castVote.isPending}
             >
@@ -242,7 +242,7 @@ const Roadmap = () => {
               onClick={() => setStatusFilter(tab.value)}
               className={`px-4 py-2 text-xs font-heading uppercase tracking-[1.5px] border transition-colors whitespace-nowrap ${
                 statusFilter === tab.value
-                  ? 'border-sf-teal bg-teal-500/6 text-teal-400'
+                  ? 'border-sf-primary bg-teal-500/6 text-teal-400'
                   : 'border-sf-line text-t3 hover:border-sf-line hover:text-t2'
               }`}
             >

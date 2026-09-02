@@ -140,7 +140,7 @@ const Profile = () => {
 
         <SectionHero
           eyebrow="// PERSONNEL FILE"
-          title={<>Personnel <span className="text-sf-teal">file.</span></>}
+          title={<>Personnel <span className="text-sf-primary-text">file.</span></>}
           className="mb-10"
         />
 

@@ -74,10 +74,10 @@ const EvoBioMockup = () => {
         {/* Simple creature silhouette */}
         <div className="relative">
           {/* Body */}
-          <div className="w-16 h-12 md:w-20 md:h-14 bg-gradient-to-br from-sf-cyan/30 to-sf-violet/30 rounded-full border border-sf-teal" />
+          <div className="w-16 h-12 md:w-20 md:h-14 bg-gradient-to-br from-sf-cyan/30 to-sf-violet/30 rounded-full border border-sf-primary" />
 
           {/* Head */}
-          <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-sf-cyan/40 to-sf-violet/40 rounded-full border border-sf-teal" />
+          <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-sf-cyan/40 to-sf-violet/40 rounded-full border border-sf-primary" />
 
           {/* Eyes */}
           <div className="absolute -top-2 left-1/2 -translate-x-1/2 flex gap-2">
@@ -100,7 +100,7 @@ const EvoBioMockup = () => {
 
           {/* Pulse effect */}
           <div
-            className="absolute inset-0 -m-2 rounded-full border border-sf-teal"
+            className="absolute inset-0 -m-2 rounded-full border border-sf-primary"
             style={{ animation: "pulse-value 2s ease-in-out infinite" }}
           />
         </div>

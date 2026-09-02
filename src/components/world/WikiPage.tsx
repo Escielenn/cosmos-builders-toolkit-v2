@@ -554,7 +554,7 @@ function ConnectionSuggestionBar({
       <button
         type="button"
         onClick={() => onAccept(suggestion, connType)}
-        className="sf-fill-sweep sf-fill-sweep--secondary px-2 py-0.5 border border-sf-teal text-sf-teal text-[12px] uppercase tracking-wider"
+        className="sf-fill-sweep sf-fill-sweep--secondary px-2 py-0.5 border border-sf-primary text-sf-primary-text text-[12px] uppercase tracking-wider"
       >
         Add
       </button>

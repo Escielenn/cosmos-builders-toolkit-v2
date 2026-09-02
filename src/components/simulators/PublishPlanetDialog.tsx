@@ -104,7 +104,7 @@ export default function PublishPlanetDialog({
         {publishedId ? (
           <>
             <DialogHeader>
-              <DialogTitle className="flex items-center gap-2 font-heading text-sm font-light uppercase tracking-[3px] text-sf-teal">
+              <DialogTitle className="flex items-center gap-2 font-heading text-sm font-light uppercase tracking-[3px] text-sf-primary-text">
                 <Globe className="h-4 w-4" />
                 Published
               </DialogTitle>
@@ -145,7 +145,7 @@ export default function PublishPlanetDialog({
         ) : (
           <>
             <DialogHeader>
-              <DialogTitle className="flex items-center gap-2 font-heading text-sm font-light uppercase tracking-[3px] text-sf-teal">
+              <DialogTitle className="flex items-center gap-2 font-heading text-sm font-light uppercase tracking-[3px] text-sf-primary-text">
                 <Rocket className="h-4 w-4" />
                 Promote {facts.length} Values to Canon
               </DialogTitle>

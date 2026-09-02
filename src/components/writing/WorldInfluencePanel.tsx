@@ -17,7 +17,7 @@ const CATEGORY_TONE: Record<string, string> = {
   atmosphere: "hsl(var(--sf-azure-hsl))",
   tilt: "hsl(var(--sf-emerald-hsl))",
   geological: "hsl(var(--sf-crimson-hsl))",
-  other: "hsl(var(--sf-teal-hsl))",
+  other: "hsl(var(--sf-primary-hsl))",
 };
 
 export function WorldInfluencePanel({
@@ -54,7 +54,7 @@ export function WorldInfluencePanel({
           </p>
           <Link
             to={`/tools/environmental-chain-reaction?worldId=${worldId}`}
-            className="mt-3 inline-block border border-sf-line-interactive px-3 py-1.5 text-[13px] text-t2 transition-colors hover:border-sf-teal hover:text-t1"
+            className="mt-3 inline-block border border-sf-line-interactive px-3 py-1.5 text-[13px] text-t2 transition-colors hover:border-sf-primary hover:text-t1"
           >
             Open the Cascade tool →
           </Link>
@@ -78,7 +78,7 @@ export function WorldInfluencePanel({
                   {param.label}
                 </span>
                 <span
-                  className={`font-mono text-[12px] tracking-[1px] ${hits > 0 ? "text-sf-teal" : "text-t4"}`}
+                  className={`font-mono text-[12px] tracking-[1px] ${hits > 0 ? "text-sf-primary-text" : "text-t4"}`}
                   title={hits > 0 ? `${hits} reference${hits === 1 ? "" : "s"} in this scene` : "Not referenced yet"}
                 >
                   {hits > 0 ? `×${hits}` : "—"}
@@ -88,7 +88,7 @@ export function WorldInfluencePanel({
           </div>
           <div className="mt-3 font-mono text-[12px] tracking-[1px] text-t4">
             {engaged} of {total} parameter{total === 1 ? "" : "s"} engaged in this scene
-            {engaged > 0 && <span className="text-sf-teal"> · consistent</span>}
+            {engaged > 0 && <span className="text-sf-primary-text"> · consistent</span>}
           </div>
         </>
       )}

@@ -216,7 +216,7 @@ export function ConnectionModal({
                 onClick={() => setBidirectional(false)}
                 className={`flex items-center gap-1.5 px-3 py-1.5 text-[12px] uppercase tracking-[1.2px] font-sans border transition-colors ${
                   !bidirectional
-                    ? "border-sf-teal bg-sf-teal/10 text-sf-teal"
+                    ? "border-sf-primary bg-sf-primary/10 text-sf-primary-text"
                     : "border-sf-line-interactive text-t4 hover:text-t3"
                 }`}
               >
@@ -227,7 +227,7 @@ export function ConnectionModal({
                 onClick={() => setBidirectional(true)}
                 className={`flex items-center gap-1.5 px-3 py-1.5 text-[12px] uppercase tracking-[1.2px] font-sans border transition-colors ${
                   bidirectional
-                    ? "border-sf-teal bg-sf-teal/10 text-sf-teal"
+                    ? "border-sf-primary bg-sf-primary/10 text-sf-primary-text"
                     : "border-sf-line-interactive text-t4 hover:text-t3"
                 }`}
               >
@@ -269,7 +269,7 @@ export function ConnectionModal({
                   onClick={() => setStatus(s)}
                   className={`px-2.5 py-1 text-[12px] uppercase tracking-[1.2px] font-sans border transition-colors ${
                     status === s
-                      ? "border-sf-teal bg-sf-teal/10 text-sf-teal"
+                      ? "border-sf-primary bg-sf-primary/10 text-sf-primary-text"
                       : "border-sf-line-interactive text-t4 hover:text-t3"
                   }`}
                 >

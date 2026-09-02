@@ -380,7 +380,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
           onClick={() => handleGroupByChange("cascade")}
           className={`flex items-center gap-1 px-2 py-1 text-[12px] uppercase tracking-[1.5px] transition-colors ${
             groupBy === "cascade"
-              ? "text-sf-teal bg-sf-teal/8 border border-sf-teal"
+              ? "text-sf-primary-text bg-sf-primary/8 border border-sf-primary"
               : "text-t4 hover:text-t3"
           }`}
           title="Group by cascade layer"
@@ -392,7 +392,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
           onClick={() => handleGroupByChange("entity")}
           className={`flex items-center gap-1 px-2 py-1 text-[12px] uppercase tracking-[1.5px] transition-colors ${
             groupBy === "entity"
-              ? "text-sf-teal bg-sf-teal/8 border border-sf-teal"
+              ? "text-sf-primary-text bg-sf-primary/8 border border-sf-primary"
               : "text-t4 hover:text-t3"
           }`}
           title="Group by entity type"
@@ -418,7 +418,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
                 }
                 className={`flex items-center gap-1 px-1.5 py-0.5 text-[12px] tracking-wider border transition-colors ${
                   activeTags.includes(tag)
-                    ? "bg-sf-teal/10 border-sf-teal text-sf-teal"
+                    ? "bg-sf-primary/10 border-sf-primary text-sf-primary-text"
                     : "border-sf-line-interactive text-t4 hover:text-t3"
                 }`}
               >

@@ -38,7 +38,7 @@ const PlanetaryMockup = () => {
         <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 shadow-[0_0_30px_rgba(255,180,0,0.5)] z-10" />
 
         {/* Orbit path */}
-        <div className="absolute w-32 h-32 md:w-40 md:h-40 rounded-full border border-sf-teal" />
+        <div className="absolute w-32 h-32 md:w-40 md:h-40 rounded-full border border-sf-primary" />
 
         {/* Planet orbiting */}
         <div

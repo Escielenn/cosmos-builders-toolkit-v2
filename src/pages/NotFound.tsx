@@ -135,10 +135,10 @@ const NotFound = () => {
 
         {/* Error code */}
         <motion.div
-          className="inline-flex items-center gap-3.5 font-mono uppercase text-sf-teal text-[13px] tracking-[3px] mb-7 justify-center"
+          className="inline-flex items-center gap-3.5 font-mono uppercase text-sf-primary-text text-[13px] tracking-[3px] mb-7 justify-center"
           variants={fadeUpItem}
         >
-          <span aria-hidden className="block w-12 h-px bg-sf-teal" />
+          <span aria-hidden className="block w-12 h-px bg-sf-primary" />
           <span>// SIGNAL LOST, ERROR 404</span>
         </motion.div>
 

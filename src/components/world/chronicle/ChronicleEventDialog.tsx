@@ -381,7 +381,7 @@ export function ChronicleEventDialog({
                 type="button"
                 onClick={handleSubmit}
                 disabled={!title.trim() || !eventDate.trim()}
-                className="sf-fill-sweep px-4 py-1.5 border border-sf-teal text-sf-teal text-[12px] uppercase tracking-wider disabled:pointer-events-none"
+                className="sf-fill-sweep px-4 py-1.5 border border-sf-primary text-sf-primary-text text-[12px] uppercase tracking-wider disabled:pointer-events-none"
               >
                 {isEditing ? "Save" : "Log Event"}
               </button>

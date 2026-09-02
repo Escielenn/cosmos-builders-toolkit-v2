@@ -950,7 +950,7 @@ const HabitableZoneCalculator = () => {
 
                     {/* HZ Boundaries, KeyValueRow list */}
                     <div>
-                      <p className="font-mono text-[12px] tracking-[0.18em] uppercase text-sf-teal mb-3">
+                      <p className="font-mono text-[12px] tracking-[0.18em] uppercase text-sf-primary-text mb-3">
                         // HABITABLE ZONE BOUNDARIES
                       </p>
                       <div className="space-y-1">

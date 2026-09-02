@@ -123,7 +123,7 @@ const Bookshelf = () => {
         <div className="mb-12">
           <SectionHero
             eyebrow={`// CATALOG · ${searchTerm.length >= 2 ? `${filteredBooks.length} OF ${BOOKSHELF_DATA.length}` : `${BOOKSHELF_DATA.length} WORKS`}`}
-            title={<>The StellarForge <span className="text-sf-teal">bookshelf.</span></>}
+            title={<>The StellarForge <span className="text-sf-primary-text">bookshelf.</span></>}
             subtitle="The science fiction novels that inspired our worldbuilding tools. Each book demonstrates how a single constraint (environmental, biological, technological, or political) cascades through an entire world."
           />
         </div>

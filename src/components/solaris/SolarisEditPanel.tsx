@@ -22,7 +22,7 @@ interface Props {
 }
 
 const NAME_INPUT =
-  "w-full bg-white/[0.04] border border-white/[0.3] focus:border-sf-teal/40 outline-none rounded-none px-2 py-1 font-mono text-[14px] text-white/85 tracking-wide";
+  "w-full bg-white/[0.04] border border-white/[0.3] focus:border-sf-primary/40 outline-none rounded-none px-2 py-1 font-mono text-[14px] text-white/85 tracking-wide";
 
 /**
  * A text field for a body's name.
@@ -114,7 +114,7 @@ function Slider({
     <div className="mb-2">
       <label className="flex items-center justify-between text-[13px] uppercase tracking-wider text-white/45 mb-1">
         <span>{label}</span>
-        <span className="font-mono text-[13px] text-sf-teal">
+        <span className="font-mono text-[13px] text-sf-primary-text">
           {value}
           {unit}
         </span>
@@ -126,7 +126,7 @@ function Slider({
         step={step}
         value={value}
         onChange={(e) => onChange(parseFloat(e.target.value))}
-        className="w-full h-1 accent-sf-teal cursor-pointer"
+        className="w-full h-1 accent-sf-primary cursor-pointer"
         draggable={false}
       />
     </div>
@@ -181,7 +181,7 @@ export default function SolarisEditPanel({
                   draggable
                   onDragStart={(e) => e.dataTransfer.setData("text/solaris-archetype", p.key)}
                   title={`Add ${p.name}`}
-                  className="flex items-center gap-1 px-1.5 py-0.5 border border-white/[0.35] bg-white/[0.02] hover:border-sf-teal/30 hover:bg-sf-teal/[0.06] text-[12px] uppercase tracking-wide text-white/60 rounded-none"
+                  className="flex items-center gap-1 px-1.5 py-0.5 border border-white/[0.35] bg-white/[0.02] hover:border-sf-primary/30 hover:bg-sf-primary/[0.06] text-[12px] uppercase tracking-wide text-white/60 rounded-none"
                 >
                   <span className="w-2 h-2 rounded-full" style={{ background: p.color }} />
                   {p.name}
@@ -221,7 +221,7 @@ export default function SolarisEditPanel({
               type="checkbox"
               checked={planet.hasRings}
               onChange={(e) => onPatchPlanet(selectedIndex, { hasRings: e.target.checked, ringColorHex: planet.ringColorHex ?? "#D8C6A0" })}
-              className="w-3 h-3 accent-sf-teal"
+              className="w-3 h-3 accent-sf-primary"
             />
             Rings
           </label>
@@ -232,7 +232,7 @@ export default function SolarisEditPanel({
               <span className={SEC + " mb-0"}>Moons ({planet.moons.length})</span>
               <button
                 onClick={() => onAddMoon(selectedIndex)}
-                className="text-[12px] uppercase tracking-wider text-sf-teal border border-sf-teal/30 bg-sf-teal/[0.08] hover:bg-sf-teal/20 px-1.5 py-0.5 rounded-none"
+                className="text-[12px] uppercase tracking-wider text-sf-primary-text border border-sf-primary/30 bg-sf-primary/[0.08] hover:bg-sf-primary/20 px-1.5 py-0.5 rounded-none"
               >
                 + Add
               </button>

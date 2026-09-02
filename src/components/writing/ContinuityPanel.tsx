@@ -165,7 +165,7 @@ export function ContinuityPanel({ worldId, content, entityId, onSetEntityId }: C
               key={c.id}
               type="button"
               onClick={() => onSetEntityId?.(c.id)}
-              className="block w-full min-h-hit border border-sf-line-interactive px-3 py-2 text-left text-[13px] text-t2 transition-colors hover:border-sf-teal hover:text-t1"
+              className="block w-full min-h-hit border border-sf-line-interactive px-3 py-2 text-left text-[13px] text-t2 transition-colors hover:border-sf-primary hover:text-t1"
             >
               {c.title}
               {c.entryType && (
@@ -194,7 +194,7 @@ export function ContinuityPanel({ worldId, content, entityId, onSetEntityId }: C
         <button
           type="button"
           onClick={() => onSetEntityId?.("")}
-          className="min-h-hit text-[12px] uppercase tracking-[1.5px] text-sf-teal transition-colors hover:text-sf-teal-bright"
+          className="min-h-hit text-[12px] uppercase tracking-[1.5px] text-sf-primary-text transition-colors hover:text-sf-primary-bright"
         >
           Change
         </button>
@@ -215,7 +215,7 @@ export function ContinuityPanel({ worldId, content, entityId, onSetEntityId }: C
         </p>
         <Link
           to="/guide/tools"
-          className="mt-3 inline-block border border-sf-line-interactive px-3 py-2 text-[13px] text-t2 transition-colors hover:border-sf-teal hover:text-t1"
+          className="mt-3 inline-block border border-sf-line-interactive px-3 py-2 text-[13px] text-t2 transition-colors hover:border-sf-primary hover:text-t1"
         >
           Browse the tools
         </Link>
@@ -228,7 +228,7 @@ export function ContinuityPanel({ worldId, content, entityId, onSetEntityId }: C
       <div>
         {subjectBar}
         <div className="px-4 py-6">
-          <p className="mb-1 font-serif text-[15px] italic text-sf-teal">
+          <p className="mb-1 font-serif text-[15px] italic text-sf-primary-text">
             Consistent so far
           </p>
           <p className="text-[13px] leading-relaxed text-t2">
@@ -260,7 +260,7 @@ export function ContinuityPanel({ worldId, content, entityId, onSetEntityId }: C
 
           <div className="mb-2 flex items-center gap-3 font-mono text-[12px] uppercase tracking-[1.2px]">
             <span className="text-t4">
-              World <span className="text-sf-teal">{n.worldValue}</span>
+              World <span className="text-sf-primary-text">{n.worldValue}</span>
             </span>
             <span className="text-t4 text-[10px]" aria-hidden="true">vs</span>
             <span className="text-t4">

@@ -107,7 +107,7 @@ export function VelocityDial({ className }: { className?: string }) {
         </div>
       </div>
 
-      <div className="absolute left-3.5 top-3.5 font-mono text-[12px] text-sf-teal tracking-[2px]">
+      <div className="absolute left-3.5 top-3.5 font-mono text-[12px] text-sf-primary-text tracking-[2px]">
         VELOCITY
       </div>
       <div className="absolute right-3.5 top-3.5 font-mono text-[12px] text-t5 tracking-[2px]">

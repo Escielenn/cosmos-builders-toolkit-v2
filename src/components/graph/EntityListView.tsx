@@ -382,7 +382,7 @@ export function EntityListView({
                   <button
                     type="button"
                     onClick={() => onCreateConnection(entity.id)}
-                    className="flex items-center gap-1 px-2 py-1 text-[12px] text-t4 hover:text-sf-teal uppercase tracking-[1px] font-sans transition-colors"
+                    className="flex items-center gap-1 px-2 py-1 text-[12px] text-t4 hover:text-sf-primary-text uppercase tracking-[1px] font-sans transition-colors"
                   >
                     <Plus className="w-2.5 h-2.5" />
                     Add Connection

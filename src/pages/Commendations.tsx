@@ -92,7 +92,7 @@ export default function Commendations() {
           {/* Header */}
           <SectionHero
             eyebrow="// COMMENDATIONS"
-            title={<>Marks of <span className="text-sf-teal">progress.</span></>}
+            title={<>Marks of <span className="text-sf-primary-text">progress.</span></>}
             subtitle="Each commendation is earned through use: worlds built, words written, systems explored. The cascade rewards the doer, not the visitor."
             className="mb-12"
           />

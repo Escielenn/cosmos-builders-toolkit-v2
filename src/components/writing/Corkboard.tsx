@@ -74,7 +74,7 @@ function Card({
       ref={setNodeRef}
       style={{ transform: CSS.Transform.toString(transform), transition }}
       className={`group relative flex min-h-[150px] flex-col border bg-sf-surface/70 p-3 transition-colors ${
-        active ? "border-sf-teal" : "border-sf-line-interactive hover:border-sf-teal"
+        active ? "border-sf-primary" : "border-sf-line-interactive hover:border-sf-primary"
       } ${isDragging ? "z-10 opacity-80" : ""}`}
     >
       <button

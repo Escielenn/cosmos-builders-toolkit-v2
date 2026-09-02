@@ -110,7 +110,7 @@ const ExoforgeSimulator = () => {
               the strip sits in this same floating chrome. */}
           {loaded && (
             <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 flex flex-col items-stretch gap-1.5">
-              <div className="flex items-center gap-1.5 border border-sf-teal bg-sf-void/90 px-1.5 py-1 backdrop-blur-sm">
+              <div className="flex items-center gap-1.5 border border-sf-primary bg-sf-void/90 px-1.5 py-1 backdrop-blur-sm">
                 <Button
                   variant="outline"
                   size="sm"
@@ -120,7 +120,7 @@ const ExoforgeSimulator = () => {
                     refreshPayload();
                     setPublishDialogOpen(true);
                   }}
-                  className="bg-sf-teal/[0.12] border-sf-teal text-sf-teal-bright-text hover:bg-sf-teal/25 hover:text-white text-[13px] uppercase tracking-wider h-8 px-3"
+                  className="bg-sf-primary/[0.12] border-sf-primary text-sf-primary-bright-text hover:bg-sf-primary/25 hover:text-white text-[13px] uppercase tracking-wider h-8 px-3"
                 >
                   <Rocket className="w-3 h-3 mr-1" />
                   Publish
@@ -129,7 +129,7 @@ const ExoforgeSimulator = () => {
                   variant="outline"
                   size="sm"
                   onClick={() => setLoadSheetOpen(true)}
-                  className="bg-sf-teal/[0.12] border-sf-teal text-sf-teal-bright-text hover:bg-sf-teal/25 hover:text-white text-[13px] uppercase tracking-wider h-8 px-3"
+                  className="bg-sf-primary/[0.12] border-sf-primary text-sf-primary-bright-text hover:bg-sf-primary/25 hover:text-white text-[13px] uppercase tracking-wider h-8 px-3"
                 >
                   <FolderOpen className="w-3 h-3 mr-1" />
                   Load
@@ -138,7 +138,7 @@ const ExoforgeSimulator = () => {
                   variant="outline"
                   size="sm"
                   onClick={requestSave}
-                  className="bg-sf-teal/[0.12] border-sf-teal text-sf-teal-bright-text hover:bg-sf-teal/25 hover:text-white text-[13px] uppercase tracking-wider h-8 px-3"
+                  className="bg-sf-primary/[0.12] border-sf-primary text-sf-primary-bright-text hover:bg-sf-primary/25 hover:text-white text-[13px] uppercase tracking-wider h-8 px-3"
                 >
                   <Save className="w-3 h-3 mr-1" />
                   Save
@@ -155,7 +155,7 @@ const ExoforgeSimulator = () => {
                 )}
               </div>
               {simFlags.length > 0 && (
-                <div className="max-w-sm border border-sf-teal bg-sf-void/90 px-3 py-2 backdrop-blur-sm">
+                <div className="max-w-sm border border-sf-primary bg-sf-void/90 px-3 py-2 backdrop-blur-sm">
                   <SimFlagStrip flags={simFlags} dismissedIds={dismissedIds} onDismiss={dismissFlag} />
                 </div>
               )}

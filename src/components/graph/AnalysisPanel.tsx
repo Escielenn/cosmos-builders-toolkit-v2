@@ -103,8 +103,8 @@ export function AnalysisPanel({
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-sf-line-interactive">
         <div className="flex items-center gap-2">
-          <ActiveIcon className="w-3.5 h-3.5 text-sf-teal" />
-          <h3 className="font-heading text-[12px] uppercase tracking-[2px] text-sf-teal">
+          <ActiveIcon className="w-3.5 h-3.5 text-sf-primary-text" />
+          <h3 className="font-heading text-[12px] uppercase tracking-[2px] text-sf-primary-text">
             {title[mode]}
           </h3>
         </div>
@@ -301,7 +301,7 @@ function PathsContent({
       {/* Selection indicators */}
       <div className="space-y-1">
         <div className="flex items-center gap-2">
-          <Target className="w-3 h-3 text-sf-teal" />
+          <Target className="w-3 h-3 text-sf-primary-text" />
           <span className="text-[12px] font-sans text-t3">Source:</span>
           <span className="text-[12px] font-mono text-t1">
             {sourceName ?? "Click a node..."}
@@ -363,7 +363,7 @@ function PathsContent({
 
           {/* Expanded: full path steps */}
           {expandedPath === i && (
-            <div className="mt-1 space-y-0.5 pl-2 border-l border-sf-teal">
+            <div className="mt-1 space-y-0.5 pl-2 border-l border-sf-primary">
               {path.steps.map((step, j) => (
                 <div key={j} className="flex items-center gap-1">
                   {j > 0 && (

@@ -150,7 +150,7 @@ export function WritingEntityPanel({
           {selectedEntity ? (
             <button
               onClick={handleBack}
-              className="flex items-center gap-1.5 text-t3 hover:text-sf-teal-bright transition-colors duration-base"
+              className="flex items-center gap-1.5 text-t3 hover:text-sf-primary-bright transition-colors duration-base"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               <span className="font-heading text-[12px] font-medium uppercase tracking-[0.2em]">
@@ -316,7 +316,7 @@ export function WritingEntityPanel({
             <div className="flex gap-2 pt-2 border-t border-sf-line">
               <button
                 onClick={() => onInsertMention(selectedEntity.name)}
-                className="flex-1 flex items-center justify-center gap-1.5 px-2 py-2 text-[12px] font-sans font-medium uppercase tracking-[1px] text-sf-teal bg-sf-teal/[0.06] border border-sf-teal/[0.15] rounded-sm hover:bg-sf-teal/[0.12] transition-colors"
+                className="flex-1 flex items-center justify-center gap-1.5 px-2 py-2 text-[12px] font-sans font-medium uppercase tracking-[1px] text-sf-primary-text bg-sf-primary/[0.06] border border-sf-primary/[0.15] rounded-sm hover:bg-sf-primary/[0.12] transition-colors"
               >
                 <AtSign className="w-3 h-3" />
                 Mention
@@ -419,7 +419,7 @@ export function WritingEntityPanel({
 
               {filteredEntities.length === 0 && (
                 <div className="px-3 py-8 text-center space-y-2">
-                  <p className="font-mono text-[12px] tracking-[0.18em] uppercase text-sf-teal">
+                  <p className="font-mono text-[12px] tracking-[0.18em] uppercase text-sf-primary-text">
                     // ENTITY INDEX
                   </p>
                   <p className="font-mono text-[12px] uppercase tracking-[0.18em] text-t4 leading-relaxed">

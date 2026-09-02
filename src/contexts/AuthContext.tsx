@@ -215,7 +215,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
               setLoading(true);
               setRetryNonce((n) => n + 1);
             }}
-            className="bg-sf-teal px-6 py-2.5 font-sans text-[13px] font-medium uppercase tracking-[1.2px] text-[hsl(var(--accent-on-accent))] transition-shadow hover:shadow-sf-glow-teal"
+            className="bg-sf-primary px-6 py-2.5 font-sans text-[13px] font-medium uppercase tracking-[1.2px] text-[hsl(var(--accent-on-accent))] transition-shadow hover:shadow-sf-glow-teal"
           >
             Reconnect →
           </button>

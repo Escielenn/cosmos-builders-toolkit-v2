@@ -152,7 +152,7 @@ function NoteCard({
             {note.tags.map((tag) => (
               <span
                 key={tag}
-                className="px-1.5 py-0.5 text-[12px] bg-sf-teal/8 border border-sf-teal text-sf-teal tracking-wider"
+                className="px-1.5 py-0.5 text-[12px] bg-sf-primary/8 border border-sf-primary text-sf-primary-text tracking-wider"
               >
                 {tag}
               </span>

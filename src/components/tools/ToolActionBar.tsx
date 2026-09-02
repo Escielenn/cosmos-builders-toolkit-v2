@@ -104,7 +104,7 @@ const ToolActionBar = ({
               )}
               {isSaving ? "Saving..." : isCloudEnabled ? "Save" : "Save Draft"}
               {isCloudEnabled ? (
-                <Cloud className="w-3 h-3 ml-1.5 text-sf-teal" />
+                <Cloud className="w-3 h-3 ml-1.5 text-sf-primary-text" />
               ) : (
                 <CloudOff className="w-3 h-3 ml-1.5 opacity-50" />
               )}
@@ -235,7 +235,7 @@ const ToolActionBar = ({
               )}
               {isSaving ? "Saving..." : isCloudEnabled ? "Save" : "Save Draft"}
               {isCloudEnabled ? (
-                <Cloud className="w-3 h-3 ml-1.5 text-sf-teal" />
+                <Cloud className="w-3 h-3 ml-1.5 text-sf-primary-text" />
               ) : (
                 <CloudOff className="w-3 h-3 ml-1.5 opacity-50" />
               )}

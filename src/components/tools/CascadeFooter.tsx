@@ -45,7 +45,7 @@ function RelCard({ rel }: { rel: ToolRelationship }): JSX.Element {
   return (
     <Link
       to={getToolRoute(rel.toolId) ?? `/tools/${rel.toolId}`}
-      className="group block border border-sf-line-interactive bg-sf-surface/60 p-3.5 transition-colors hover:border-sf-teal hover:bg-sf-surface"
+      className="group block border border-sf-line-interactive bg-sf-surface/60 p-3.5 transition-colors hover:border-sf-primary hover:bg-sf-surface"
     >
       <div className="flex items-center gap-2">
         <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${CATEGORY_DOT[cat]}`} aria-hidden="true" />
@@ -82,8 +82,8 @@ export function CascadeFooter({ toolType }: { toolType: string }): JSX.Element |
 
   return (
     <section className="no-print mt-16 border-t border-dashed border-sf-line pt-10">
-      <div className="mb-7 inline-flex items-center gap-3.5 font-mono text-[12px] uppercase tracking-[2.5px] text-sf-teal/80">
-        <span aria-hidden className="block h-px w-12 bg-sf-teal/60" />
+      <div className="mb-7 inline-flex items-center gap-3.5 font-mono text-[12px] uppercase tracking-[2.5px] text-sf-primary-text/80">
+        <span aria-hidden className="block h-px w-12 bg-sf-primary/60" />
         <span>// the cascade{catColor ? ` · ${catColor.toLowerCase()}` : ""}</span>
       </div>
       <div className="grid gap-8 lg:grid-cols-2">

@@ -23,10 +23,10 @@ export function BuildSigil({ className }: { className?: string }) {
       type="button"
       onClick={fire}
       aria-label="Build telemetry burst"
-      className={`font-mono text-[12px] tracking-[0.18em] uppercase text-t4 hover:text-sf-teal-bright transition-colors duration-base cursor-pointer ${className ?? ""}`}
+      className={`font-mono text-[12px] tracking-[0.18em] uppercase text-t4 hover:text-sf-primary-bright transition-colors duration-base cursor-pointer ${className ?? ""}`}
     >
       {burst ? (
-        <span className="animate-sf-pulse text-sf-teal">{burst}</span>
+        <span className="animate-sf-pulse text-sf-primary-text">{burst}</span>
       ) : (
         <>BUILD {APP_VERSION}</>
       )}

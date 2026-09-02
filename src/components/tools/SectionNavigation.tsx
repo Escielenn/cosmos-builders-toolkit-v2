@@ -74,8 +74,8 @@ const SectionNavigation = ({ sections, mode = 'floating' }: SectionNavigationPro
 
   const NavigationContent = () => (
     <>
-      <h4 className="font-heading text-[12px] font-medium tracking-[0.10em] uppercase text-sf-teal mb-3 pb-2 border-b border-sf-teal">
-        <span className="font-mono text-sf-teal mr-1">//</span> NAVIGATION
+      <h4 className="font-heading text-[12px] font-medium tracking-[0.10em] uppercase text-sf-primary-text mb-3 pb-2 border-b border-sf-primary">
+        <span className="font-mono text-sf-primary-text mr-1">//</span> NAVIGATION
       </h4>
       <nav className="space-y-0.5">
         {sections.map((section, idx) => {
