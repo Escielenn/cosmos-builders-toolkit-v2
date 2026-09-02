@@ -50,15 +50,15 @@ export function LoadingState({
       aria-live="polite"
       {...props}
     >
-      <div className={cn("relative overflow-hidden border border-sf-border bg-sf-void/60", SIZE_CLASSES[size])}>
+      <div className={cn("relative overflow-hidden border border-sf-line bg-sf-void/60", SIZE_CLASSES[size])}>
         {/* Corner brackets, 3px teal, one top-left + one bottom-right */}
         <span
           aria-hidden
-          className="absolute top-0 left-0 w-3 h-3 border-t border-l border-sf-teal"
+          className="absolute top-0 left-0 w-3 h-3 border-t border-l border-sf-primary"
         />
         <span
           aria-hidden
-          className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-sf-teal"
+          className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-sf-primary"
         />
         {/* Scanning line */}
         <div

@@ -141,7 +141,7 @@ const RichTextEditor = ({
     >
       {/* Toolbar */}
       {!readOnly && (
-        <div className="sf-writing-toolbar flex items-center gap-0.5 p-1.5 border-b border-sf-border bg-muted/30 flex-wrap">
+        <div className="sf-writing-toolbar flex items-center gap-0.5 p-1.5 border-b border-sf-line bg-muted/30 flex-wrap">
           <ToolbarButton
             onClick={() => editor.chain().focus().toggleBold().run()}
             isActive={editor.isActive("bold")}
@@ -260,7 +260,7 @@ const RichTextEditor = ({
                       "w-3.5 h-3.5 rounded-full border transition-all",
                       preferences.themeId === theme.id
                         ? "ring-2 ring-sf-stellar ring-offset-1 ring-offset-background border-sf-stellar"
-                        : "border-sf-border hover:border-foreground/50"
+                        : "border-sf-line hover:border-sf-line-emphasis"
                     )}
                     style={{ backgroundColor: theme.swatch[0] }}
                     aria-label={theme.name}

@@ -63,7 +63,7 @@ export function SectionHero({
               )}
             >
               {rule && (
-                <span aria-hidden className={cn("block w-12 h-px", warm ? "bg-sf-teal/60" : "bg-sf-teal")} />
+                <span aria-hidden className={cn("block w-12 h-px", warm ? "bg-sf-primary-text" : "bg-sf-primary")} />
               )}
               <span>{eyebrow}</span>
             </div>

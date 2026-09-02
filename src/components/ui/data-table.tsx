@@ -28,7 +28,7 @@ import { cn } from "@/lib/utils";
  */
 const DataTableRoot = React.forwardRef<HTMLTableElement, React.TableHTMLAttributes<HTMLTableElement>>(
   ({ className, ...props }, ref) => (
-    <div className="w-full overflow-x-auto sf-sb border border-sf-border">
+    <div className="w-full overflow-x-auto sf-sb border border-sf-line">
       <table
         ref={ref}
         className={cn("w-full caption-bottom text-sm border-collapse", className)}
@@ -41,7 +41,7 @@ DataTableRoot.displayName = "DataTable";
 
 const Header = React.forwardRef<HTMLTableSectionElement, React.HTMLAttributes<HTMLTableSectionElement>>(
   ({ className, ...props }, ref) => (
-    <thead ref={ref} className={cn("border-b border-sf-border", className)} {...props} />
+    <thead ref={ref} className={cn("border-b border-sf-line", className)} {...props} />
   ),
 );
 Header.displayName = "DataTable.Header";
@@ -61,7 +61,7 @@ const Row = React.forwardRef<HTMLTableRowElement, RowProps>(
     <tr
       ref={ref}
       className={cn(
-        hover && "cursor-pointer transition-colors duration-base hover:bg-sf-teal/[0.04]",
+        hover && "cursor-pointer transition-colors duration-base hover:bg-sf-primary/[0.06]",
         className,
       )}
       {...props}

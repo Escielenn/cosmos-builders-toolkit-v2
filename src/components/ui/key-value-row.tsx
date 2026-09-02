@@ -39,7 +39,7 @@ export const KeyValueRow = React.forwardRef<HTMLDivElement, KeyValueRowProps>(
     >
       <span className="text-t4 uppercase whitespace-nowrap">
         {label}
-        {colon && <span className="text-t5">{" : "}</span>}
+        {colon && <span className="text-t4">{" : "}</span>}
       </span>
       <span className={cn("tabular-nums text-right truncate", VALUE_TONE[accent])}>
         {value}

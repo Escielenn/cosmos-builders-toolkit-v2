@@ -27,7 +27,7 @@ const CommandDialog = ({ children, ...props }: CommandDialogProps) => {
   return (
     <Dialog {...props}>
       <DialogContent
-        className="overflow-hidden p-0 shadow-2xl !top-[15%] !translate-y-0 max-w-2xl border-sf-border bg-background/98 backdrop-blur-xl [&>button]:hidden focus:outline-none focus:ring-0"
+        className="overflow-hidden p-0 shadow-2xl !top-[15%] !translate-y-0 max-w-2xl border-sf-line bg-background/98 backdrop-blur-xl [&>button]:hidden focus:outline-none focus:ring-0"
       >
         <Command className="[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-t3 [&_[cmdk-group]:not([hidden])_~[cmdk-group]]:pt-0 [&_[cmdk-group]]:px-2 [&_[cmdk-item]]:px-2 [&_[cmdk-item]]:py-3 [&_[cmdk-item]_svg]:h-5 [&_[cmdk-item]_svg]:w-5 focus:outline-none focus:ring-0 [&_*:focus]:outline-none [&_*:focus]:ring-0">
           {children}
@@ -41,19 +41,19 @@ const CommandInput = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive.Input>,
   React.ComponentPropsWithoutRef<typeof CommandPrimitive.Input>
 >(({ className, ...props }, ref) => (
-  <div className="flex items-center gap-3 p-4 border-b border-sf-border" cmdk-input-wrapper="">
+  <div className="flex items-center gap-3 p-4 border-b border-sf-line" cmdk-input-wrapper="">
     <div className="flex items-center justify-center w-10 h-10 rounded-none bg-primary/10">
       <Search className="h-5 w-5 text-primary" />
     </div>
     <CommandPrimitive.Input
       ref={ref}
       className={cn(
-        "flex-1 h-10 bg-transparent text-base outline-none ring-0 border-0 focus:ring-0 focus:outline-none placeholder:text-t3/70 disabled:cursor-not-allowed disabled:opacity-50",
+        "flex-1 h-10 bg-transparent text-base outline-none ring-0 border-0 focus:ring-0 focus:outline-none placeholder:text-t3/70 disabled:cursor-not-allowed",
         className,
       )}
       {...props}
     />
-    <kbd className="hidden sm:inline-flex h-7 items-center gap-1 rounded-md border border-sf-border bg-muted/30 px-2.5 font-mono text-xs text-t3">
+    <kbd className="hidden sm:inline-flex h-7 items-center gap-1 rounded-md border border-sf-line bg-muted/30 px-2.5 font-mono text-xs text-t3">
       ESC
     </kbd>
   </div>
@@ -112,7 +112,7 @@ const CommandItem = React.forwardRef<
   <CommandPrimitive.Item
     ref={ref}
     className={cn(
-      "relative flex cursor-default select-none items-center rounded-none px-3 py-2 text-sm outline-none data-[disabled=true]:pointer-events-none data-[selected='true']:bg-muted/50 data-[selected=true]:text-t1 data-[disabled=true]:opacity-50 transition-colors",
+      "relative flex cursor-default select-none items-center rounded-none px-3 py-2 text-sm outline-none data-[disabled=true]:pointer-events-none data-[selected='true']:bg-muted/50 data-[selected=true]:text-t1 data-[disabled=true]:text-sf-disabled-text transition-colors",
       className,
     )}
     {...props}
