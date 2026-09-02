@@ -70,7 +70,7 @@ const ConnectionNode = ({
       {/* Outer ring */}
       <circle
         r="24"
-        fill="hsl(var(--sf-surface))"
+        fill="hsl(var(--sf-surface-hsl))"
         stroke={`hsl(${color})`}
         strokeWidth={isDragging ? "4" : isHovered ? "3" : "2"}
         className="transition-all duration-200"
@@ -108,7 +108,7 @@ const ConnectionNode = ({
             width={title.length * 7}
             height="20"
             rx="4"
-            fill="hsl(var(--sf-surface-elevated))"
+            fill="hsl(var(--sf-surface-elevated-hsl))"
             stroke="hsl(var(--border))"
           />
           <text

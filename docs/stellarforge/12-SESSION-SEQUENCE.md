@@ -39,8 +39,8 @@ Grouped into four blocks. Each block ends with something demonstrable. **Don't r
 | B1 | Subjects on facts | `11` → Brief S0 | ~3–5 days | Two-planet worlds check correctly |
 | B2 | Sim consequence flags | `11` → Brief S4 | ~1 week | Simulators tell you things |
 | | **BLOCK E — appearance** *(see `13-THE-LIFT.md` §4)* | | | |
-| E1 | `sf-teal` role → `sf-primary` | `13` → Brief E1 | ~2 days | grep clean |
-| E2 | Switchable themes | `13` → Brief E2 | ~1 day | 70 themes, live switch |
+| E1 | `sf-teal` role → `sf-primary` | `13` → Brief E1 | ~2 days | grep clean *(shared `ui/` done in A3; pages, headline italic, nav still on `sf-teal`)* |
+| E2 | Switchable themes | `13` → Brief E2 | ~1 day | **done 2026-09-02** — Profile → Appearance; `use-theme.ts`; Parallel Truth in `index.css` removed; Tailwind utilities theme-aware |
 | E3 | Light-mode ambient audit | `13` §4 | ~1 day | light themes look designed |
 | | **BLOCK F — one IA** *(see `13-THE-LIFT.md` §1, §4)* | | | |
 | F1 | Codex entity page | `13` → Brief F1 | ~2 weeks | one URL per thing |

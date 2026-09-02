@@ -43,68 +43,51 @@
        (src/lib/STELLARFORGE-DESIGN-SYSTEM.md is superseded)
        ═══════════════════════════════════════════════════════════════════════ */
 
-    /* Foundation Colors — v2.2 Space Navy */
-    --sf-void: 222 30% 5%;               /* #0A0E17 — space navy deep bg */
-    --sf-surface: 222 25% 9%;            /* #0E1320 — panel surface */
-    --sf-surface-elevated: 222 20% 12%;  /* #161C2B — elevated panels */
-    --sf-panel-alpha: 222 25% 9% / 0.92;      /* floating panels */
-    --sf-tool-panel-alpha: 222 25% 9% / 0.95; /* Layer 3 tool panels */
-    --sf-text-primary: 214 12% 89%;       /* #E0E4E8 — cool off-white */
-    --sf-text-muted: 212 10% 73%;        /* #B0B8C4 — cool gray */
-    /* Named "text ghost" but used only as a border colour, in all four places
-       below. Raised from 20% to 40% lightness: at 20% it measured 1.51:1
-       against the void, well under the 3:1 WCAG asks for the boundary of a
-       user-interface component, and it is the colour every outlined button and
-       input on the site draws its edge with. At 40% it measures 3.14:1. */
-    --sf-text-ghost: 220 12% 40%;        /* #5A6272 — navy edge */
-    --sf-text-label: 214 12% 89% / 0.35; /* labels */
-    --sf-text-hint: 214 12% 89% / 0.18;  /* hints, credits */
+    /* ── PARALLEL TRUTH REMOVED (2026-09-02, System Package A1/E1) ──
+       This block used to redefine --sf-void, --sf-surface, --sf-teal,
+       --t1…--t4 and every accent with its OWN numbers, as HSL triplets.
+       Same names as tokens.css, different values, and — because Tailwind
+       hoists @layer base after the tokens import — these won at runtime:
+       --t3 rendered as 45% white, --t4 as 28% white, and var(--sf-teal)
+       used as a colour was an invalid "157 80% 42%".
 
-    /* Aesthetic Bridge — 5-tier text hierarchy */
-    --sf-tier-1: 0 0% 98%;                  /* #FAFAFA — titles, results */
-    --sf-tier-2: 0 0% 78%;                  /* #C8C8C8 — body, descriptions */
-    /* Tiers 3-5 were authored for a dark studio and washed out on ordinary
-       monitors: tier-4 helper text at 0.28 alpha sat near 2.5:1 contrast and
-       tier-5 was effectively invisible. Raised so every tier clears legibility
-       on a normal display while keeping the five steps distinct. */
-    --sf-tier-3: 0 0% 100% / 0.66;          /* muted — labels, column headers */
-    --sf-tier-4: 0 0% 100% / 0.52;          /* quiet — units, helper text */
-    --sf-tier-5: 0 0% 100% / 0.38;          /* ghost — citations, metadata */
+       Rule now: the hex names are owned by src/styles/tokens.css (and
+       re-solved per theme by themes.css). This layer only maps shadcn/ui's
+       semantic variables onto the GENERATED --x-hsl twins, which carry the
+       same solved values in triplet form for hsl(var(--x)) consumers. */
 
-    /* April 2026 handoff — flat text tier aliases for arbitrary-value utilities */
-    --t1: #FAFAFA;
-    --t2: #C8C8C8;
-    --t3: rgba(255, 255, 255, 0.45);
-    --t4: rgba(255, 255, 255, 0.28);
-    --t5: rgba(255, 255, 255, 0.15);
-    --sf-section-green: 153 80% 60% / 1;
-    --sf-section-border: 153 100% 45% / 0.06;
+    /* Legacy aliases still referenced by class names below and by pages.
+       Values come from the solved tokens; nothing here is authored. */
+    --sf-panel-alpha: var(--sf-surface-hsl) / 0.92;      /* floating panels */
+    --sf-tool-panel-alpha: var(--sf-surface-hsl) / 0.95; /* Layer 3 tool panels */
+    --sf-text-primary: var(--t1-hsl);
+    --sf-text-muted: var(--t2-hsl);
+    --sf-text-ghost: var(--sf-line-interactive-hsl);     /* border colour, ≥3:1 (WCAG 1.4.11) */
+    --sf-text-label: var(--t3-hsl);
+    --sf-text-hint: var(--t4-hsl);
 
-    /* Accent Spectrum — use ONE per component as focal point */
-    /* RETIRED (SF-II settled decision #3, 2026-06-11): legacy cyan is
-       retired product-wide. --sf-cyan now ALIASES the product accent so
-       every legacy sf-cyan class/var renders teal. Remove references
-       surface-by-surface; delete this alias at Phase 5. */
-    --sf-cyan: 157 80% 42%;              /* was 190 100% 50% (legacy cyan) -> teal */
-    --sf-magenta: 328 100% 50%;          /* #FF00AA */
-    --sf-violet: 263 74% 63%;            /* #9B5DE5 */
-    --sf-amber: 43 100% 50%;             /* #FFB800 */
-    --sf-emerald: 153 100% 50%;          /* #00FF88 */
-    --sf-crimson: 347 100% 60%;          /* #FF3366 */
-    --sf-azure: 215 100% 65%;            /* #4D9FFF */
+    /* Legacy 5-tier hierarchy → the four solved tiers. Tier 5 is retired
+       (nothing readable lives below t4); it aliases t4 until every call
+       site has moved. */
+    --sf-tier-1: var(--t1-hsl);
+    --sf-tier-2: var(--t2-hsl);
+    --sf-tier-3: var(--t3-hsl);
+    --sf-tier-4: var(--t4-hsl);
+    --sf-tier-5: var(--t4-hsl);
+    --t5: var(--t4);
+    --sf-section-green: var(--sf-primary-hsl) / 1;
+    --sf-section-border: var(--sf-primary-hsl) / 0.06;
 
-    /* v2.1 Primary Teal (replaces cyan on website shell) */
-    --sf-teal: 157 80% 42%;               /* #15C17B — deep teal for solid fills */
-    --sf-teal-bright: 157 100% 62%;       /* #3DFFCD — vibrant teal for glows only */
-    --sf-glow-teal: 157 100% 62% / 0.2;
-
-    /* v2.1 Amber accent (data highlights, velocity ticker, warnings) */
-    --sf-accent-amber: 30 100% 64%;       /* #FFB347 */
-    --sf-glow-amber-accent: 30 100% 64% / 0.2;
-
-    /* v2.2 Stellar Blue — wonder/creativity/explore */
-    --sf-stellar: 220 82% 65%;            /* #5B8DEF */
-    --sf-glow-stellar: 220 82% 65% / 0.2;
+    /* Glows read the solved accents. --sf-glow-cyan is a RETIRED alias
+       (SF-II settled decision #3) and resolves to the primary glow. */
+    --sf-glow-teal: var(--sf-primary-bright-hsl) / 0.2;
+    --sf-glow-cyan: var(--sf-primary-bright-hsl) / 0.2;
+    --sf-glow-magenta: var(--sf-magenta-hsl) / 0.2;
+    --sf-glow-amber: var(--sf-amber-hsl) / 0.2;
+    --sf-glow-emerald: var(--sf-emerald-hsl) / 0.2;
+    --sf-glow-stellar: var(--sf-stellar-hsl) / 0.2;
+    --sf-accent-amber: var(--sf-amber-warm-hsl);
+    --sf-glow-amber-accent: var(--sf-amber-warm-hsl) / 0.2;
 
     /* Font Stack Variables */
     --sf-font-display: 'MD Nichrome', 'Jura', system-ui, sans-serif;
@@ -112,68 +95,60 @@
     --sf-font-body: 'DM Sans', system-ui, sans-serif;
     --sf-font-mono: 'JetBrains Mono', monospace;
 
-    /* Glow variants (for shadows and glows) */
-    --sf-glow-cyan: 157 100% 62% / 0.2;  /* RETIRED alias -> teal-bright glow */
-    --sf-glow-magenta: 328 100% 50% / 0.2;
-    --sf-glow-amber: 43 100% 50% / 0.2;
-    --sf-glow-emerald: 153 100% 50% / 0.2;
-
     /* ─────────────────────────────────────────────────────────────────────
-       Semantic Token Mapping (maps SF values to existing tokens)
+       shadcn/ui semantic mapping → solved twins. "primary" is the ROLE
+       (--sf-primary, user-chosen per theme); named hues are meanings.
        ───────────────────────────────────────────────────────────────────── */
 
-    --background: var(--sf-void);
-    --foreground: var(--sf-text-primary);
+    --background: var(--sf-void-hsl);
+    --foreground: var(--t1-hsl);
 
-    --card: var(--sf-surface);
-    --card-foreground: var(--sf-text-primary);
+    --card: var(--sf-surface-hsl);
+    --card-foreground: var(--t1-hsl);
 
-    --popover: var(--sf-surface);
-    --popover-foreground: var(--sf-text-primary);
+    --popover: var(--sf-surface-hsl);
+    --popover-foreground: var(--t1-hsl);
 
-    /* Primary: Teal-Green accent (v2.1) */
-    --primary: var(--sf-teal);
-    --primary-foreground: 0 0% 100%;
+    --primary: var(--sf-primary-hsl);
+    --primary-foreground: var(--sf-on-primary-hsl);   /* was 0 0% 100%: white on teal is 2.4:1 */
 
-    --secondary: var(--sf-surface-elevated);
-    --secondary-foreground: var(--sf-text-primary);
+    --secondary: var(--sf-surface-elevated-hsl);
+    --secondary-foreground: var(--t1-hsl);
 
-    --muted: var(--sf-surface-elevated);
-    --muted-foreground: var(--sf-text-muted);
+    --muted: var(--sf-surface-elevated-hsl);
+    --muted-foreground: var(--t2-hsl);
 
-    /* Accent: Teal-Green (v2.1) */
-    --accent: var(--sf-teal);
-    --accent-foreground: 0 0% 100%;
+    --accent: var(--sf-primary-hsl);
+    --accent-foreground: var(--sf-on-primary-hsl);
 
-    --destructive: var(--sf-crimson);
-    --destructive-foreground: 0 0% 100%;
+    --destructive: var(--sf-crimson-hsl);
+    --destructive-foreground: var(--sf-on-crimson-hsl); /* was white: 3.1:1 on crimson */
 
-    --border: var(--sf-text-ghost);
-    --input: var(--sf-text-ghost);
-    --ring: 220 70% 50%;
+    --border: var(--sf-line-hsl);
+    --input: var(--sf-line-interactive-hsl);
+    --ring: var(--sf-focus-hsl);
 
     /* Glass morphism tokens */
-    --glass: var(--sf-surface) / 0.9;
-    --glass-border: 0 0% 100% / 0.08;
+    --glass: var(--sf-surface-hsl) / 0.9;
+    --glass-border: var(--sf-line-hsl);
     --glass-glow: var(--sf-glow-teal);
 
-    /* Gradients (teal-green — v2.1) */
-    --gradient-primary: linear-gradient(135deg, hsl(var(--sf-teal)), hsl(var(--sf-teal) / 0.7));
-    --gradient-subtle: linear-gradient(135deg, hsl(var(--sf-teal-bright) / 0.1), hsl(var(--sf-teal-bright) / 0.05));
+    --gradient-primary: linear-gradient(135deg, hsl(var(--sf-primary-hsl)), hsl(var(--sf-primary-hsl) / 0.7));
+    --gradient-subtle: linear-gradient(135deg, hsl(var(--sf-primary-bright-hsl) / 0.1), hsl(var(--sf-primary-bright-hsl) / 0.05));
 
     /* Shadows */
     --shadow-glass: 0 8px 32px hsl(0 0% 0% / 0.4);
     --shadow-glow: 0 0 40px hsl(var(--sf-glow-teal));
 
     /* Sidebar */
-    --sidebar-background: var(--sf-void);
-    --sidebar-foreground: var(--sf-text-muted);
-    --sidebar-primary: var(--sf-teal);
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: var(--sf-surface-elevated);
-    --sidebar-accent-foreground: var(--sf-text-primary);
-    --sidebar-border: var(--sf-text-ghost);
-    --sidebar-ring: var(--sf-teal);
+    --sidebar-background: var(--sf-void-hsl);
+    --sidebar-foreground: var(--t2-hsl);
+    --sidebar-primary: var(--sf-primary-hsl);
+    --sidebar-primary-foreground: var(--sf-on-primary-hsl);
+    --sidebar-accent: var(--sf-surface-elevated-hsl);
+    --sidebar-accent-foreground: var(--t1-hsl);
+    --sidebar-border: var(--sf-line-hsl);
+    --sidebar-ring: var(--sf-focus-hsl);
   }
 }
 
@@ -398,7 +373,7 @@
     left: 10%;
     right: 10%;
     height: 1px;
-    background: linear-gradient(90deg, transparent, hsl(var(--sf-teal-bright)), transparent);
+    background: linear-gradient(90deg, transparent, hsl(var(--sf-teal-bright-hsl)), transparent);
   }
 
   /* Combined atmosphere effect for main containers */
@@ -414,7 +389,7 @@
     pointer-events: none;
     background:
       radial-gradient(ellipse at 70% 20%, hsl(var(--sf-glow-teal)) 0%, transparent 50%),
-      linear-gradient(180deg, hsl(var(--sf-void)) 0%, hsl(222 35% 3%) 100%);
+      linear-gradient(180deg, hsl(var(--sf-void-hsl)) 0%, hsl(222 35% 3%) 100%);
   }
 
   /* Hide sf-atmosphere when custom backgrounds are active */
@@ -595,7 +570,7 @@
   /* StellarForge card with light arc accent */
   .sf-card {
     @apply rounded-none border relative overflow-hidden;
-    background: hsl(var(--sf-surface));
+    background: hsl(var(--sf-surface-hsl));
     border-color: hsl(var(--sf-text-ghost));
   }
 
@@ -606,7 +581,7 @@
     left: 10%;
     right: 10%;
     height: 1px;
-    background: linear-gradient(90deg, transparent, hsl(var(--sf-teal-bright) / 0.5), transparent);
+    background: linear-gradient(90deg, transparent, hsl(var(--sf-teal-bright-hsl) / 0.5), transparent);
   }
 
   /* ═══════════════════════════════════════════════════════════════════════
@@ -701,7 +676,7 @@ html {
     font-size: 12px;
     letter-spacing: 1px;
     color: rgba(255, 179, 71, 0.3);
-    background: hsl(var(--sf-void));
+    background: hsl(var(--sf-void-hsl));
     padding: 0 12px;
     white-space: nowrap;
   }
@@ -808,7 +783,7 @@ html {
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
-    background: hsl(var(--sf-void));
+    background: hsl(var(--sf-void-hsl));
     /* April 2026 handoff — thumb in sb-thumb grey, track matches void */
     scrollbar-color: #2E3548 #0A0E17;
     scrollbar-width: thin;
@@ -839,7 +814,7 @@ html {
     left: 0;
     right: 0;
     height: 24px;
-    background: hsl(var(--sf-void) / 0.95);
+    background: hsl(var(--sf-void-hsl) / 0.95);
     border-top: 1px dashed rgba(224, 228, 232, 0.2);
     display: flex;
     align-items: center;
@@ -1383,7 +1358,7 @@ html {
     left: 0;
     right: 0;
     height: 2px;
-    background: hsl(var(--sf-teal-bright));
+    background: hsl(var(--sf-teal-bright-hsl));
     transform: scaleX(0);
     transform-origin: left center;
     transition: transform 0.35s cubic-bezier(0.19, 1, 0.22, 1);
@@ -1397,7 +1372,7 @@ html {
   /* Keyboard focus, visible Beacon Teal ring (Phase 1 a11y).
      Activates the bottom accent line for parity with hover. */
   .sf-nav-link:focus-visible {
-    outline: 2px solid hsl(var(--sf-teal-bright));
+    outline: 2px solid hsl(var(--sf-teal-bright-hsl));
     outline-offset: 2px;
   }
 
@@ -2186,7 +2161,7 @@ html {
   align-items: center;
   justify-content: center;
   gap: 20px;
-  background: hsl(var(--sf-void, 222 30% 5%));
+  background: hsl(var(--sf-void-hsl, 222 39% 6%));
 }
 
 .sf-loading-message {
@@ -3406,7 +3381,7 @@ html {
   position: absolute;
   width: 12px;
   height: 12px;
-  border: 1px solid hsl(var(--sf-teal));
+  border: 1px solid hsl(var(--sf-teal-hsl));
 }
 .sf-bracket::before { top: -1px;    left: -1px;  border-right: 0; border-bottom: 0; }
 .sf-bracket::after  { bottom: -1px; right: -1px; border-left: 0;  border-top: 0;    }

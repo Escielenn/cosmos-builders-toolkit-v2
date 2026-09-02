@@ -597,7 +597,7 @@ export default function Write(): JSX.Element {
   ) : null;
 
   return (
-    <div className="relative z-10 grid h-screen grid-rows-[44px_1fr_32px] bg-[hsl(var(--sf-void))]">
+    <div className="relative z-10 grid h-screen grid-rows-[44px_1fr_32px] bg-[hsl(var(--sf-void-hsl))]">
       {/* topbar */}
       <header className="flex items-center gap-3 border-b border-sf-line-interactive px-4">
         {/* explicit way back to the Studio overview */}

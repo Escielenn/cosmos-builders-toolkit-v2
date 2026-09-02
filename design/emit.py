@@ -30,6 +30,19 @@ def worst(h):
     return min(_cr(h, pl[p]) for p in pl)
 W = {k: f"{worst(v):.2f}:1" for k, v in {**tx, **ln}.items()}
 
+# HSL-triplet twins ("222 30% 5%") of the solved tokens, for the shadcn/ui
+# layer in src/index.css, whose consumers are written hsl(var(--x)) and
+# hsl(var(--x) / a). The twin carries the SAME solved value as the hex token;
+# it exists so the legacy layer can stop redefining the hex names with its
+# own numbers (that was Parallel Truth: two --t3s, the faint one winning).
+import colorsys
+def rgb_triplet(h):
+    h = h.lstrip('#'); return ' '.join(str(int(h[i:i+2], 16)) for i in (0, 2, 4))
+def hsl_triplet(h):
+    h = h.lstrip('#'); r, g, b = (int(h[i:i+2], 16)/255 for i in (0, 2, 4))
+    hh, l, sat = colorsys.rgb_to_hls(r, g, b)
+    return f"{round(hh*360)} {round(sat*100)}% {round(l*100)}%"
+
 # ─────────────────────────── tokens.css ───────────────────────────
 css = f"""/*
  * StellarForge — tokens.css
@@ -99,6 +112,49 @@ css += f"""
   --sf-primary-bright: var(--sf-teal-bright);
   --sf-on-primary:     var(--sf-on-teal);
 
+  /* ═══ HSL TWINS ═══ the same solved values as H S% L% triplets, for the
+     shadcn/ui layer (src/index.css) whose consumers read hsl(var(--x)).
+     Never define a --x-hsl by hand; never define the hex names anywhere else. */
+"""
+for k, v in (('sf-void', pl['void']), ('sf-surface', pl['surface']), ('sf-surface-elevated', pl['elevated']),
+             ('t1', tx['t1']), ('t2', tx['t2']), ('t3', tx['t3']), ('t4', tx['t4']),
+             ('sf-line-hairline', ln['hairline']), ('sf-line', ln['default']),
+             ('sf-line-interactive', ln['interactive']), ('sf-line-emphasis', ln['emphasis'])):
+    css += f"  --{k}-hsl:{' ' * max(1, 22 - len(k))}{hsl_triplet(v)};\n"
+for k in ac:
+    css += f"  --sf-{k}-hsl:{' ' * max(1, 19 - len(k))}{hsl_triplet(ac[k])};\n"
+for k in on:
+    css += f"  --sf-on-{k}-hsl:{' ' * max(1, 16 - len(k))}{hsl_triplet(on[k])};\n"
+css += f"  --sf-focus-hsl:              {hsl_triplet(st['focus'])};\n"
+css += "  --sf-primary-hsl:        var(--sf-teal-hsl);\n"
+css += "  --sf-on-primary-hsl:     var(--sf-on-teal-hsl);\n"
+
+# RGB triplets: what tailwind.config.ts reads. Every sf-* / t* utility is
+# emitted as rgb(var(--x-rgb) / <alpha-value>) so a class like text-t1 or
+# bg-sf-void/60 follows the active [data-theme] instead of freezing the
+# default palette into the stylesheet. Exact (no rounding), unlike HSL.
+css += """
+  /* ═══ RGB TRIPLETS ═══ read by tailwind.config.ts so every utility class
+     follows the active theme. Exact channel values of the tokens above. */
+"""
+def _rgb_rows(pairs):
+    global css
+    for k, v in pairs:
+        css += f"  --{k}-rgb:{' ' * max(1, 22 - len(k))}{rgb_triplet(v)};\n"
+_rgb_rows([('sf-void', pl['void']), ('sf-surface', pl['surface']), ('sf-surface-elevated', pl['elevated'])])
+_rgb_rows([(k, v) for k, v in tx.items()])
+_rgb_rows([('sf-line-hairline', ln['hairline']), ('sf-line', ln['default']), ('sf-line-interactive', ln['interactive']), ('sf-line-emphasis', ln['emphasis'])])
+_rgb_rows([(f'sf-{k}', v) for k, v in ac.items()])
+_rgb_rows([(f'sf-{k}-text', v) for k, v in at.items()])
+_rgb_rows([(f'sf-on-{k}', v) for k, v in on.items()])
+_rgb_rows([('sf-disabled-bg', st['disabled_bg']), ('sf-disabled-line', st['disabled_line']), ('sf-disabled-text', st['disabled_text']), ('sf-focus', st['focus']), ('sf-selection-bg', st['selection_bg'])])
+css += "  --sf-primary-rgb:        var(--sf-teal-rgb);\n"
+css += "  --sf-primary-text-rgb:   var(--sf-teal-text-rgb);\n"
+css += "  --sf-primary-bright-rgb: var(--sf-teal-bright-rgb);\n"
+css += "  --sf-on-primary-rgb:     var(--sf-on-teal-rgb);\n"
+css += "  --sf-primary-bright-hsl: var(--sf-teal-bright-hsl);\n"
+
+css += f"""
   /* ═══ STATES ═══ disabled is a COLOUR, never opacity. Opacity multiplies
      against whatever sits behind it and guarantees nothing. */
   --sf-disabled-bg:    {st['disabled_bg']};
@@ -284,9 +340,15 @@ input:hover, select:hover, textarea:hover {{ border-color: var(--sf-line-emphasi
 (OUT / 'tokens.css').write_text(css, encoding='utf-8')
 
 # ─────────────────────── tailwind.config.ts ───────────────────────
-def block(d, prefix='', indent=8):
+def tw(name, hexv):
+    """Theme-aware Tailwind colour: reads the token's RGB triplet at runtime so
+    the utility follows [data-theme]; the hex is kept as a comment for humans.
+    <alpha-value> keeps bg-x/60 and text-x/70 working."""
+    return f"'rgb(var(--{name}-rgb) / <alpha-value>)',  // {hexv}"
+
+def block(d, prefix='', indent=8, suffix=''):
     pad = ' ' * indent
-    return '\n'.join(f"{pad}'{prefix}{k}':{' ' * max(1, 24 - len(prefix) - len(k))}'{v}',"
+    return '\n'.join(f"{pad}'{prefix}{k}{suffix}':{' ' * max(1, 24 - len(prefix) - len(k) - len(suffix))}{tw(prefix + k + suffix, v)}"
                      for k, v in d.items())
 
 ts = f"""/**
@@ -373,9 +435,9 @@ const config: Config = {{
         glass: 'hsl(var(--glass))',
 
         // ── Planes: three, never four ──
-        'sf-void':             '{pl['void']}',
-        'sf-surface':          '{pl['surface']}',
-        'sf-surface-elevated': '{pl['elevated']}',
+        'sf-void':             {tw('sf-void', pl['void'])}
+        'sf-surface':          {tw('sf-surface', pl['surface'])}
+        'sf-surface-elevated': {tw('sf-surface-elevated', pl['elevated'])}
 
         // ── Text: solved on the lightest plane. ──
 {block(tx)}
@@ -387,10 +449,10 @@ const config: Config = {{
         't5': 'rgba(255, 255, 255, 0.38)',
 
         // ── Lines: solid, not alpha ──
-        'sf-line-hairline':    '{ln['hairline']}',
-        'sf-line':             '{ln['default']}',
-        'sf-line-interactive': '{ln['interactive']}',
-        'sf-line-emphasis':    '{ln['emphasis']}',
+        'sf-line-hairline':    {tw('sf-line-hairline', ln['hairline'])}
+        'sf-line':             {tw('sf-line', ln['default'])}
+        'sf-line-interactive': {tw('sf-line-interactive', ln['interactive'])}
+        'sf-line-emphasis':    {tw('sf-line-emphasis', ln['emphasis'])}
         // DEPRECATED alpha borders — same reasoning as t5. sf-line-* above
         // are the replacement; these stay only until every call site moves.
         'sf-border':           'rgba(255, 255, 255, 0.22)',
@@ -403,28 +465,28 @@ const config: Config = {{
 {block(ac, 'sf-')}
 
         // ── Accent text: the ONLY accent values legal for body-size text ──
-{block(at, 'sf-', 8).replace("':", "-text':")}
+{block(at, 'sf-', 8, '-text')}
 
         // ── On-accent: label colour for a filled button ──
 {block(on, 'sf-on-')}
 
         // ── Primary ROLE. The user chooses this; sf-teal is a meaning. ──
-        'sf-primary':        'var(--sf-primary)',
-        'sf-primary-text':   'var(--sf-primary-text)',
-        'sf-primary-bright': 'var(--sf-primary-bright)',
-        'sf-on-primary':     'var(--sf-on-primary)',
+        'sf-primary':        'rgb(var(--sf-primary-rgb) / <alpha-value>)',
+        'sf-primary-text':   'rgb(var(--sf-primary-text-rgb) / <alpha-value>)',
+        'sf-primary-bright': 'rgb(var(--sf-primary-bright-rgb) / <alpha-value>)',
+        'sf-on-primary':     'rgb(var(--sf-on-primary-rgb) / <alpha-value>)',
 
         // ── States: never opacity ──
-        'sf-disabled-bg':   '{st['disabled_bg']}',
-        'sf-disabled-line': '{st['disabled_line']}',
-        'sf-disabled-text': '{st['disabled_text']}',
-        'sf-focus':         '{st['focus']}',
+        'sf-disabled-bg':   {tw('sf-disabled-bg', st['disabled_bg'])}
+        'sf-disabled-line': {tw('sf-disabled-line', st['disabled_line'])}
+        'sf-disabled-text': {tw('sf-disabled-text', st['disabled_text'])}
+        'sf-focus':         {tw('sf-focus', st['focus'])}
 
         // ── PRESERVED: scrollbar swatches used outside tokens.css's own
         // .sf-sb rules, and a couple of legacy direct references ──
-        'sb-track': '{pl['void']}',
-        'sb-thumb': '{ln['default']}',
-        'sb-thumb-hover': '{ln['emphasis']}',
+        'sb-track': {tw('sf-void', pl['void'])}
+        'sb-thumb': {tw('sf-line', ln['default'])}
+        'sb-thumb-hover': {tw('sf-line-emphasis', ln['emphasis'])}
       }},
 
       fontFamily: {{

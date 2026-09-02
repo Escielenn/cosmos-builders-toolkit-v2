@@ -41,11 +41,11 @@ function julianDay(): number {
 }
 
 const COVER_GRADIENTS = [
-  "linear-gradient(160deg, hsl(var(--sf-teal) / 0.35), hsl(var(--sf-void)))",
-  "linear-gradient(160deg, hsl(var(--sf-stellar) / 0.35), hsl(var(--sf-void)))",
-  "linear-gradient(160deg, hsl(var(--sf-violet) / 0.3), hsl(var(--sf-void)))",
-  "linear-gradient(160deg, hsl(var(--sf-amber) / 0.25), hsl(var(--sf-void)))",
-  "linear-gradient(160deg, hsl(var(--sf-azure) / 0.3), hsl(var(--sf-void)))",
+  "linear-gradient(160deg, hsl(var(--sf-teal-hsl) / 0.35), hsl(var(--sf-void-hsl)))",
+  "linear-gradient(160deg, hsl(var(--sf-stellar-hsl) / 0.35), hsl(var(--sf-void-hsl)))",
+  "linear-gradient(160deg, hsl(var(--sf-violet-hsl) / 0.3), hsl(var(--sf-void-hsl)))",
+  "linear-gradient(160deg, hsl(var(--sf-amber-hsl) / 0.25), hsl(var(--sf-void-hsl)))",
+  "linear-gradient(160deg, hsl(var(--sf-azure-hsl) / 0.3), hsl(var(--sf-void-hsl)))",
 ];
 
 // ── modules ─────────────────────────────────────────────────────────
@@ -198,10 +198,10 @@ export default function Studio(): JSX.Element {
                         height: lit ? (isToday ? "100%" : "70%") : "22%",
                         background: lit
                           ? isToday
-                            ? "hsl(var(--sf-teal))"
-                            : "linear-gradient(to top, hsl(var(--sf-teal) / 0.5), hsl(var(--sf-teal) / 0.15))"
-                          : "hsl(var(--sf-surface-elevated))",
-                        boxShadow: lit && isToday ? "0 0 10px hsl(var(--sf-teal-bright) / 0.35)" : undefined,
+                            ? "hsl(var(--sf-teal-hsl))"
+                            : "linear-gradient(to top, hsl(var(--sf-teal-hsl) / 0.5), hsl(var(--sf-teal-hsl) / 0.15))"
+                          : "hsl(var(--sf-surface-elevated-hsl))",
+                        boxShadow: lit && isToday ? "0 0 10px hsl(var(--sf-teal-bright-hsl) / 0.35)" : undefined,
                       }}
                     />
                   );
@@ -301,7 +301,7 @@ export default function Studio(): JSX.Element {
                       />
                     )}
                     {/* readability gradient so the title reads over any image */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-[hsl(var(--sf-void))]/85 via-[hsl(var(--sf-void))]/20 to-transparent" aria-hidden="true" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[hsl(var(--sf-void-hsl))]/85 via-[hsl(var(--sf-void-hsl))]/20 to-transparent" aria-hidden="true" />
                     <div className="absolute inset-2 border border-sf-line" aria-hidden="true" />
                     <div className="relative flex h-full items-end p-3">
                       <span className="font-serif text-[15px] italic leading-snug text-t1 drop-shadow">{w.name}</span>
@@ -336,7 +336,7 @@ export default function Studio(): JSX.Element {
                       <div
                         className="mb-3 flex h-10 w-10 items-center justify-center rounded-full font-serif text-[16px] italic text-t1"
                         style={{
-                          background: `linear-gradient(140deg, ${c.color || "hsl(var(--sf-stellar))"}44, hsl(var(--sf-void)))`,
+                          background: `linear-gradient(140deg, ${c.color || "hsl(var(--sf-stellar-hsl))"}44, hsl(var(--sf-void-hsl)))`,
                           border: "1px solid hsl(var(--border-subtle))",
                         }}
                       >

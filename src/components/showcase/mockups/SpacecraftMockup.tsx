@@ -76,7 +76,7 @@ const SpacecraftMockup = () => {
           <path
             d="M5 50 L20 30 L80 25 L95 50 L80 75 L20 70 Z"
             fill="none"
-            stroke="hsl(var(--sf-cyan) / 0.3)"
+            stroke="hsl(var(--sf-cyan-hsl) / 0.3)"
             strokeWidth="1"
           />
 
@@ -86,7 +86,7 @@ const SpacecraftMockup = () => {
             cy="50"
             rx="4"
             ry="8"
-            fill="hsl(var(--sf-cyan) / 0.4)"
+            fill="hsl(var(--sf-cyan-hsl) / 0.4)"
             style={{ animation: "pulse-value 1s ease-in-out infinite" }}
           />
 
@@ -101,12 +101,12 @@ const SpacecraftMockup = () => {
               rx="2"
               fill={
                 index === activeSection
-                  ? "hsl(var(--sf-cyan) / 0.3)"
-                  : "hsl(var(--sf-surface) / 0.5)"
+                  ? "hsl(var(--sf-cyan-hsl) / 0.3)"
+                  : "hsl(var(--sf-surface-hsl) / 0.5)"
               }
               stroke={
                 index === activeSection
-                  ? "hsl(var(--sf-cyan))"
+                  ? "hsl(var(--sf-cyan-hsl))"
                   : "hsl(var(--muted-foreground) / 0.2)"
               }
               strokeWidth={index === activeSection ? "1.5" : "0.5"}
@@ -120,7 +120,7 @@ const SpacecraftMockup = () => {
             y="95"
             textAnchor="middle"
             className="text-[12px] fill-current"
-            style={{ fill: "hsl(var(--sf-cyan))" }}
+            style={{ fill: "hsl(var(--sf-cyan-hsl))" }}
           >
             {sections[activeSection]?.name}
           </text>

@@ -34,6 +34,8 @@ Scope: `$ARGUMENTS` if given (a component, directory, or route), otherwise the w
 
 **12. Role-token misuse.** Any `sf-teal` (or `-text`/`-bright`/`on-teal`) on a button fill, focus ring, selection, link, or active-nav state. Those are *roles* and must use `sf-primary`. `sf-teal` is reserved for things that *mean* Integration.
 
+**14. Parallel truth.** No stylesheet other than `src/styles/tokens.css` / `themes.css` may DEFINE a token name those files own (`--sf-void`, `--sf-surface*`, `--t1`…`--t4`, `--sf-line*`, any `--sf-<accent>`, `--sf-primary*`, `--sf-focus`). The legacy `.dark` block in `src/index.css` once redefined seventeen of them with its own numbers and, because Tailwind hoists `@layer base` after the tokens import, those won at runtime — `--t3` rendered at 45% white. `grep -nE '^\s*--(sf-(void|surface|teal|amber|crimson|stellar|violet|cyan|emerald|azure|magenta|line|focus|primary)[a-z-]*|t[1-4])\s*:' src/index.css src/**/*.css` must return nothing (the `-hsl`/`-rgb` twins are generated and live only in tokens.css/themes.css too). Consumers that need triplets use the generated `--x-hsl` / `--x-rgb` twins.
+
 **13. Generated-file drift.** Confirm `tokens.css`, `tailwind.config.ts`, and `themes.css` match the output of `design/derive.py && design/emit.py && design/themes.py`. If they differ, someone hand-edited a generated file — report it as blocking.
 
 ## Output

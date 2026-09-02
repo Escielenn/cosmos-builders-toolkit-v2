@@ -10,14 +10,14 @@ import { useWorldParameters } from "@/hooks/use-world-parameters";
 import { countParameterHits, toPlainText } from "@/lib/world-parameters";
 
 const CATEGORY_TONE: Record<string, string> = {
-  gravity: "hsl(var(--sf-amber))",
-  rotation: "hsl(var(--sf-stellar))",
-  stellar: "hsl(var(--sf-amber))",
-  hydrosphere: "hsl(var(--sf-azure))",
-  atmosphere: "hsl(var(--sf-azure))",
-  tilt: "hsl(var(--sf-emerald))",
-  geological: "hsl(var(--sf-crimson))",
-  other: "hsl(var(--sf-teal))",
+  gravity: "hsl(var(--sf-amber-hsl))",
+  rotation: "hsl(var(--sf-stellar-hsl))",
+  stellar: "hsl(var(--sf-amber-hsl))",
+  hydrosphere: "hsl(var(--sf-azure-hsl))",
+  atmosphere: "hsl(var(--sf-azure-hsl))",
+  tilt: "hsl(var(--sf-emerald-hsl))",
+  geological: "hsl(var(--sf-crimson-hsl))",
+  other: "hsl(var(--sf-teal-hsl))",
 };
 
 export function WorldInfluencePanel({

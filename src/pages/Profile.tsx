@@ -18,6 +18,7 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import ExportSettings from "@/components/settings/ExportSettings";
 import WritingSettings from "@/components/settings/WritingSettings";
+import AppearanceSettings from "@/components/settings/AppearanceSettings";
 import { useEarnedBadges } from "@/hooks/use-badges";
 import { BADGE_DEFINITIONS } from "@/lib/badges/definitions";
 import AvatarPickerDialog from "@/components/settings/AvatarPickerDialog";
@@ -243,6 +244,11 @@ const Profile = () => {
 
         {/* Commendations link */}
         <CommendationsSummary navigate={navigate} />
+
+        {/* Appearance — base × primary accent, 70 contrast-solved themes */}
+        <GlassPanel className="p-8 mt-6">
+          <AppearanceSettings />
+        </GlassPanel>
 
         {/* Writing Surface */}
         <GlassPanel className="p-8 mt-6">

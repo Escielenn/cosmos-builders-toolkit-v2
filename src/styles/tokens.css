@@ -88,6 +88,103 @@
   --sf-primary-bright: var(--sf-teal-bright);
   --sf-on-primary:     var(--sf-on-teal);
 
+  /* ═══ HSL TWINS ═══ the same solved values as H S% L% triplets, for the
+     shadcn/ui layer (src/index.css) whose consumers read hsl(var(--x)).
+     Never define a --x-hsl by hand; never define the hex names anywhere else. */
+  --sf-void-hsl:               222 39% 6%;
+  --sf-surface-hsl:            221 32% 15%;
+  --sf-surface-elevated-hsl:   221 30% 22%;
+  --t1-hsl:                    0 0% 98%;
+  --t2-hsl:                    216 10% 81%;
+  --t3-hsl:                    220 5% 67%;
+  --t4-hsl:                    227 5% 61%;
+  --sf-line-hairline-hsl:      219 8% 34%;
+  --sf-line-hsl:               223 6% 43%;
+  --sf-line-interactive-hsl:   220 6% 50%;
+  --sf-line-emphasis-hsl:      223 7% 62%;
+  --sf-teal-hsl:               156 80% 42%;
+  --sf-teal-bright-hsl:        165 100% 62%;
+  --sf-amber-hsl:              43 100% 50%;
+  --sf-amber-warm-hsl:         35 100% 64%;
+  --sf-stellar-hsl:            220 82% 65%;
+  --sf-emerald-hsl:            152 100% 50%;
+  --sf-violet-hsl:             267 72% 63%;
+  --sf-crimson-hsl:            345 100% 60%;
+  --sf-azure-hsl:              212 100% 65%;
+  --sf-magenta-hsl:            320 100% 50%;
+  --sf-cyan-hsl:               156 80% 42%;
+  --sf-on-teal-hsl:            222 37% 7%;
+  --sf-on-teal-bright-hsl:     222 37% 7%;
+  --sf-on-amber-hsl:           222 37% 7%;
+  --sf-on-amber-warm-hsl:      222 37% 7%;
+  --sf-on-stellar-hsl:         222 37% 7%;
+  --sf-on-emerald-hsl:         222 37% 7%;
+  --sf-on-violet-hsl:          222 37% 7%;
+  --sf-on-crimson-hsl:         222 37% 7%;
+  --sf-on-azure-hsl:           222 37% 7%;
+  --sf-on-magenta-hsl:         222 37% 7%;
+  --sf-on-cyan-hsl:            222 37% 7%;
+  --sf-focus-hsl:              165 100% 62%;
+  --sf-primary-hsl:        var(--sf-teal-hsl);
+  --sf-on-primary-hsl:     var(--sf-on-teal-hsl);
+
+  /* ═══ RGB TRIPLETS ═══ read by tailwind.config.ts so every utility class
+     follows the active theme. Exact channel values of the tokens above. */
+  --sf-void-rgb:               10 14 23;
+  --sf-surface-rgb:            27 35 52;
+  --sf-surface-elevated-rgb:   39 50 73;
+  --t1-rgb:                    250 250 250;
+  --t2-rgb:                    201 205 211;
+  --t3-rgb:                    167 170 176;
+  --t4-rgb:                    151 153 160;
+  --sf-line-hairline-rgb:      80 85 94;
+  --sf-line-rgb:               103 107 117;
+  --sf-line-interactive-rgb:   120 125 135;
+  --sf-line-emphasis-rgb:      151 155 165;
+  --sf-teal-rgb:               21 193 123;
+  --sf-teal-bright-rgb:        61 255 205;
+  --sf-amber-rgb:              255 184 0;
+  --sf-amber-warm-rgb:         255 179 71;
+  --sf-stellar-rgb:            91 141 239;
+  --sf-emerald-rgb:            0 255 136;
+  --sf-violet-rgb:             155 93 229;
+  --sf-crimson-rgb:            255 51 102;
+  --sf-azure-rgb:              77 159 255;
+  --sf-magenta-rgb:            255 0 170;
+  --sf-cyan-rgb:               21 193 123;
+  --sf-teal-text-rgb:          21 193 123;
+  --sf-teal-bright-text-rgb:   61 255 205;
+  --sf-amber-text-rgb:         255 184 0;
+  --sf-amber-warm-text-rgb:    255 179 71;
+  --sf-stellar-text-rgb:       102 152 252;
+  --sf-emerald-text-rgb:       0 255 136;
+  --sf-violet-text-rgb:        186 125 255;
+  --sf-crimson-text-rgb:       255 101 139;
+  --sf-azure-text-rgb:         77 159 255;
+  --sf-magenta-text-rgb:       255 84 212;
+  --sf-cyan-text-rgb:          21 193 123;
+  --sf-on-teal-rgb:            11 15 24;
+  --sf-on-teal-bright-rgb:     11 15 24;
+  --sf-on-amber-rgb:           11 15 24;
+  --sf-on-amber-warm-rgb:      11 15 24;
+  --sf-on-stellar-rgb:         11 15 24;
+  --sf-on-emerald-rgb:         11 15 24;
+  --sf-on-violet-rgb:          11 15 24;
+  --sf-on-crimson-rgb:         11 15 24;
+  --sf-on-azure-rgb:           11 15 24;
+  --sf-on-magenta-rgb:         11 15 24;
+  --sf-on-cyan-rgb:            11 15 24;
+  --sf-disabled-bg-rgb:        21 27 41;
+  --sf-disabled-line-rgb:      87 92 101;
+  --sf-disabled-text-rgb:      120 123 129;
+  --sf-focus-rgb:              61 255 205;
+  --sf-selection-bg-rgb:       39 125 130;
+  --sf-primary-rgb:        var(--sf-teal-rgb);
+  --sf-primary-text-rgb:   var(--sf-teal-text-rgb);
+  --sf-primary-bright-rgb: var(--sf-teal-bright-rgb);
+  --sf-on-primary-rgb:     var(--sf-on-teal-rgb);
+  --sf-primary-bright-hsl: var(--sf-teal-bright-hsl);
+
   /* ═══ STATES ═══ disabled is a COLOUR, never opacity. Opacity multiplies
      against whatever sits behind it and guarantees nothing. */
   --sf-disabled-bg:    #151B29;

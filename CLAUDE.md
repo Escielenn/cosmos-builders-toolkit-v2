@@ -1332,6 +1332,13 @@ Full audit and rationale: `docs/stellarforge/10-LEGIBILITY.md`.
 - **New ambient layers multiply `var(--sf-ambient)`** or they don't ship.
 - Body copy is `text-t1` or `text-t2`. Never `text-t3` for running text.
 
+- **One definition per token.** `tokens.css`/`themes.css` own every `--sf-*`
+  and `--t*` name. `src/index.css`'s legacy `.dark` block maps shadcn's
+  semantic variables onto the generated `--x-hsl` twins and defines nothing
+  of its own. Tailwind utilities read `rgb(var(--x-rgb) / a)`, which is
+  what makes `text-t1` follow the active theme. Redefining a token name
+  anywhere else is Parallel Truth and `/sf-contrast` check 14 blocks it.
+
 Run `/sf-contrast` before any visual merge.
 
 ### Ship's Voice

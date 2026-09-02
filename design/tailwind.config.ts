@@ -82,15 +82,15 @@ const config: Config = {
         glass: 'hsl(var(--glass))',
 
         // ── Planes: three, never four ──
-        'sf-void':             '#0A0E17',
-        'sf-surface':          '#1B2334',
-        'sf-surface-elevated': '#273249',
+        'sf-void':             'rgb(var(--sf-void-rgb) / <alpha-value>)',  // #0A0E17
+        'sf-surface':          'rgb(var(--sf-surface-rgb) / <alpha-value>)',  // #1B2334
+        'sf-surface-elevated': 'rgb(var(--sf-surface-elevated-rgb) / <alpha-value>)',  // #273249
 
         // ── Text: solved on the lightest plane. ──
-        't1':                      '#FAFAFA',
-        't2':                      '#C9CDD3',
-        't3':                      '#A7AAB0',
-        't4':                      '#9799A0',
+        't1':                      'rgb(var(--t1-rgb) / <alpha-value>)',  // #FAFAFA
+        't2':                      'rgb(var(--t2-rgb) / <alpha-value>)',  // #C9CDD3
+        't3':                      'rgb(var(--t3-rgb) / <alpha-value>)',  // #A7AAB0
+        't4':                      'rgb(var(--t4-rgb) / <alpha-value>)',  // #9799A0
         // t5 is DEPRECATED, not removed: nothing new may use it, and it is
         // no longer solved (this literal predates derive.py). Kept only so
         // existing `text-t5` call sites render instead of losing all colour.
@@ -99,10 +99,10 @@ const config: Config = {
         't5': 'rgba(255, 255, 255, 0.38)',
 
         // ── Lines: solid, not alpha ──
-        'sf-line-hairline':    '#50555E',
-        'sf-line':             '#676B75',
-        'sf-line-interactive': '#787D87',
-        'sf-line-emphasis':    '#979BA5',
+        'sf-line-hairline':    'rgb(var(--sf-line-hairline-rgb) / <alpha-value>)',  // #50555E
+        'sf-line':             'rgb(var(--sf-line-rgb) / <alpha-value>)',  // #676B75
+        'sf-line-interactive': 'rgb(var(--sf-line-interactive-rgb) / <alpha-value>)',  // #787D87
+        'sf-line-emphasis':    'rgb(var(--sf-line-emphasis-rgb) / <alpha-value>)',  // #979BA5
         // DEPRECATED alpha borders — same reasoning as t5. sf-line-* above
         // are the replacement; these stay only until every call site moves.
         'sf-border':           'rgba(255, 255, 255, 0.22)',
@@ -112,61 +112,61 @@ const config: Config = {
         // 'cyan' here is an ALIAS to teal (see derive.py) — legacy cyan
         // #00D4FF was retired product-wide before this package existed
         // (SF-II settled decision #3). Never reintroduce it as a distinct hue.
-        'sf-teal':                 '#15C17B',
-        'sf-teal-bright':          '#3DFFCD',
-        'sf-amber':                '#FFB800',
-        'sf-amber-warm':           '#FFB347',
-        'sf-stellar':              '#5B8DEF',
-        'sf-emerald':              '#00FF88',
-        'sf-violet':               '#9B5DE5',
-        'sf-crimson':              '#FF3366',
-        'sf-azure':                '#4D9FFF',
-        'sf-magenta':              '#FF00AA',
-        'sf-cyan':                 '#15C17B',
+        'sf-teal':                 'rgb(var(--sf-teal-rgb) / <alpha-value>)',  // #15C17B
+        'sf-teal-bright':          'rgb(var(--sf-teal-bright-rgb) / <alpha-value>)',  // #3DFFCD
+        'sf-amber':                'rgb(var(--sf-amber-rgb) / <alpha-value>)',  // #FFB800
+        'sf-amber-warm':           'rgb(var(--sf-amber-warm-rgb) / <alpha-value>)',  // #FFB347
+        'sf-stellar':              'rgb(var(--sf-stellar-rgb) / <alpha-value>)',  // #5B8DEF
+        'sf-emerald':              'rgb(var(--sf-emerald-rgb) / <alpha-value>)',  // #00FF88
+        'sf-violet':               'rgb(var(--sf-violet-rgb) / <alpha-value>)',  // #9B5DE5
+        'sf-crimson':              'rgb(var(--sf-crimson-rgb) / <alpha-value>)',  // #FF3366
+        'sf-azure':                'rgb(var(--sf-azure-rgb) / <alpha-value>)',  // #4D9FFF
+        'sf-magenta':              'rgb(var(--sf-magenta-rgb) / <alpha-value>)',  // #FF00AA
+        'sf-cyan':                 'rgb(var(--sf-cyan-rgb) / <alpha-value>)',  // #15C17B
 
         // ── Accent text: the ONLY accent values legal for body-size text ──
-        'sf-teal-text':                 '#15C17B',
-        'sf-teal-bright-text':          '#3DFFCD',
-        'sf-amber-text':                '#FFB800',
-        'sf-amber-warm-text':           '#FFB347',
-        'sf-stellar-text':              '#6698FC',
-        'sf-emerald-text':              '#00FF88',
-        'sf-violet-text':               '#BA7DFF',
-        'sf-crimson-text':              '#FF658B',
-        'sf-azure-text':                '#4D9FFF',
-        'sf-magenta-text':              '#FF54D4',
-        'sf-cyan-text':                 '#15C17B',
+        'sf-teal-text':            'rgb(var(--sf-teal-text-rgb) / <alpha-value>)',  // #15C17B
+        'sf-teal-bright-text':     'rgb(var(--sf-teal-bright-text-rgb) / <alpha-value>)',  // #3DFFCD
+        'sf-amber-text':           'rgb(var(--sf-amber-text-rgb) / <alpha-value>)',  // #FFB800
+        'sf-amber-warm-text':      'rgb(var(--sf-amber-warm-text-rgb) / <alpha-value>)',  // #FFB347
+        'sf-stellar-text':         'rgb(var(--sf-stellar-text-rgb) / <alpha-value>)',  // #6698FC
+        'sf-emerald-text':         'rgb(var(--sf-emerald-text-rgb) / <alpha-value>)',  // #00FF88
+        'sf-violet-text':          'rgb(var(--sf-violet-text-rgb) / <alpha-value>)',  // #BA7DFF
+        'sf-crimson-text':         'rgb(var(--sf-crimson-text-rgb) / <alpha-value>)',  // #FF658B
+        'sf-azure-text':           'rgb(var(--sf-azure-text-rgb) / <alpha-value>)',  // #4D9FFF
+        'sf-magenta-text':         'rgb(var(--sf-magenta-text-rgb) / <alpha-value>)',  // #FF54D4
+        'sf-cyan-text':            'rgb(var(--sf-cyan-text-rgb) / <alpha-value>)',  // #15C17B
 
         // ── On-accent: label colour for a filled button ──
-        'sf-on-teal':              '#0B0F18',
-        'sf-on-teal-bright':       '#0B0F18',
-        'sf-on-amber':             '#0B0F18',
-        'sf-on-amber-warm':        '#0B0F18',
-        'sf-on-stellar':           '#0B0F18',
-        'sf-on-emerald':           '#0B0F18',
-        'sf-on-violet':            '#0B0F18',
-        'sf-on-crimson':           '#0B0F18',
-        'sf-on-azure':             '#0B0F18',
-        'sf-on-magenta':           '#0B0F18',
-        'sf-on-cyan':              '#0B0F18',
+        'sf-on-teal':              'rgb(var(--sf-on-teal-rgb) / <alpha-value>)',  // #0B0F18
+        'sf-on-teal-bright':       'rgb(var(--sf-on-teal-bright-rgb) / <alpha-value>)',  // #0B0F18
+        'sf-on-amber':             'rgb(var(--sf-on-amber-rgb) / <alpha-value>)',  // #0B0F18
+        'sf-on-amber-warm':        'rgb(var(--sf-on-amber-warm-rgb) / <alpha-value>)',  // #0B0F18
+        'sf-on-stellar':           'rgb(var(--sf-on-stellar-rgb) / <alpha-value>)',  // #0B0F18
+        'sf-on-emerald':           'rgb(var(--sf-on-emerald-rgb) / <alpha-value>)',  // #0B0F18
+        'sf-on-violet':            'rgb(var(--sf-on-violet-rgb) / <alpha-value>)',  // #0B0F18
+        'sf-on-crimson':           'rgb(var(--sf-on-crimson-rgb) / <alpha-value>)',  // #0B0F18
+        'sf-on-azure':             'rgb(var(--sf-on-azure-rgb) / <alpha-value>)',  // #0B0F18
+        'sf-on-magenta':           'rgb(var(--sf-on-magenta-rgb) / <alpha-value>)',  // #0B0F18
+        'sf-on-cyan':              'rgb(var(--sf-on-cyan-rgb) / <alpha-value>)',  // #0B0F18
 
         // ── Primary ROLE. The user chooses this; sf-teal is a meaning. ──
-        'sf-primary':        'var(--sf-primary)',
-        'sf-primary-text':   'var(--sf-primary-text)',
-        'sf-primary-bright': 'var(--sf-primary-bright)',
-        'sf-on-primary':     'var(--sf-on-primary)',
+        'sf-primary':        'rgb(var(--sf-primary-rgb) / <alpha-value>)',
+        'sf-primary-text':   'rgb(var(--sf-primary-text-rgb) / <alpha-value>)',
+        'sf-primary-bright': 'rgb(var(--sf-primary-bright-rgb) / <alpha-value>)',
+        'sf-on-primary':     'rgb(var(--sf-on-primary-rgb) / <alpha-value>)',
 
         // ── States: never opacity ──
-        'sf-disabled-bg':   '#151B29',
-        'sf-disabled-line': '#575C65',
-        'sf-disabled-text': '#787B81',
-        'sf-focus':         '#3DFFCD',
+        'sf-disabled-bg':   'rgb(var(--sf-disabled-bg-rgb) / <alpha-value>)',  // #151B29
+        'sf-disabled-line': 'rgb(var(--sf-disabled-line-rgb) / <alpha-value>)',  // #575C65
+        'sf-disabled-text': 'rgb(var(--sf-disabled-text-rgb) / <alpha-value>)',  // #787B81
+        'sf-focus':         'rgb(var(--sf-focus-rgb) / <alpha-value>)',  // #3DFFCD
 
         // ── PRESERVED: scrollbar swatches used outside tokens.css's own
         // .sf-sb rules, and a couple of legacy direct references ──
-        'sb-track': '#0A0E17',
-        'sb-thumb': '#676B75',
-        'sb-thumb-hover': '#979BA5',
+        'sb-track': 'rgb(var(--sf-void-rgb) / <alpha-value>)',  // #0A0E17
+        'sb-thumb': 'rgb(var(--sf-line-rgb) / <alpha-value>)',  // #676B75
+        'sb-thumb-hover': 'rgb(var(--sf-line-emphasis-rgb) / <alpha-value>)',  // #979BA5
       },
 
       fontFamily: {

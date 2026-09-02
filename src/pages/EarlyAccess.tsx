@@ -61,13 +61,13 @@ const TOOLS: { cat: string; name: string; blurb: string }[] = [
 // ── pieces (guide §2 component names) ───────────────────────────────
 
 function CubeGlyph(): JSX.Element {
-  const glow = { stroke: "hsl(var(--sf-teal-bright))" } as const;
+  const glow = { stroke: "hsl(var(--sf-teal-bright-hsl))" } as const;
   return (
     <svg width="22" height="22" viewBox="0 0 40 40" fill="none" aria-hidden="true">
       <path d="M20 4 L34 12 L34 28 L20 36 L6 28 L6 12 Z" style={glow} strokeWidth="1.2" />
       <path d="M20 4 L20 20 M20 20 L6 12 M20 20 L34 12" style={glow} strokeWidth="1" opacity="0.7" />
       <path d="M20 20 L20 36" style={glow} strokeWidth="1" opacity="0.5" />
-      <circle cx="20" cy="20" r="1.6" style={{ fill: "hsl(var(--sf-teal-bright))" }} />
+      <circle cx="20" cy="20" r="1.6" style={{ fill: "hsl(var(--sf-teal-bright-hsl))" }} />
     </svg>
   );
 }

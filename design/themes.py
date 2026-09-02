@@ -168,6 +168,14 @@ def derive_theme(base_id, primary_id):
     }
 
 # ───────────────────────── emit ─────────────────────────
+import colorsys
+def rgb_triplet(h):
+    h = h.lstrip('#'); return ' '.join(str(int(h[i:i+2], 16)) for i in (0, 2, 4))
+def hsl_triplet(h):
+    h = h.lstrip('#'); r, g, b = (int(h[i:i+2], 16)/255 for i in (0, 2, 4))
+    hh, l, sat = colorsys.rgb_to_hls(r, g, b)
+    return f"{round(hh*360)} {round(sat*100)}% {round(l*100)}%"
+
 def css_block(T, selector):
     v = []
     v.append(f"  --sf-void: {T['planes']['void']}; --sf-surface: {T['planes']['surface']}; --sf-surface-elevated: {T['planes']['elevated']};")
@@ -182,6 +190,24 @@ def css_block(T, selector):
     s = T['state']
     v.append(f"  --sf-focus: {s['focus']}; --sf-selection-bg: {s['selection_bg']}; --sf-disabled-bg: {s['disabled_bg']}; --sf-disabled-line: {s['disabled_line']}; --sf-disabled-text: {s['disabled_text']};")
     v.append(f"  --sf-ambient: {T['ambient']}; color-scheme: {T['mode']};")
+    # HSL twins for the shadcn layer — see emit.py. Same values, triplet form.
+    P_, X_, L_ = T['planes'], T['text'], T['line']
+    tw = [('sf-void', P_['void']), ('sf-surface', P_['surface']), ('sf-surface-elevated', P_['elevated'])]
+    tw += [(k, c) for k, c in X_.items()]
+    tw += [('sf-line-hairline', L_['hairline']), ('sf-line', L_['default']),
+           ('sf-line-interactive', L_['interactive']), ('sf-line-emphasis', L_['emphasis']),
+           ('sf-primary', p['base']), ('sf-primary-bright', p['bright'])]
+    tw += [(f"sf-{k}", c) for k, c in T['accent'].items()]
+    tw += [(f"sf-on-{k}", c) for k, c in T['on_accent'].items()]
+    tw += [('sf-on-primary', p['on']), ('sf-focus', T['state']['focus'])]
+    v.append("  " + " ".join(f"--{k}-hsl: {hsl_triplet(c)};" for k, c in tw))
+    # RGB triplets for tailwind.config.ts (see emit.py): every utility class
+    # reads rgb(var(--x-rgb) / a), so this is what actually re-themes the app.
+    rg = list(tw)
+    rg += [(f"sf-{k}-text", c) for k, c in T['accent_text'].items()]
+    rg += [('sf-primary-text', p['text']), ('sf-disabled-bg', s['disabled_bg']), ('sf-disabled-line', s['disabled_line']),
+           ('sf-disabled-text', s['disabled_text']), ('sf-selection-bg', s['selection_bg'])]
+    v.append("  " + " ".join(f"--{k}-rgb: {rgb_triplet(c)};" for k, c in rg))
     return f"{selector} {{\n" + "\n".join(v) + "\n}\n"
 
 def main():

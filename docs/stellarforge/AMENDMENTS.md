@@ -38,6 +38,25 @@ only outcome that's actually bad.
 
 ## Log
 
+## 2026-09-02 · Generated twins (`--x-hsl`, `--x-rgb`) are the ONLY bridge to the shadcn layer
+
+**Touches:** Legibility — "tokens.css is the single source of truth"
+**Scope:** `src/index.css` `.dark` block; `tailwind.config.ts` colour values
+**Why:** the block redefined 17 token names (`--sf-void`, `--t3`, `--sf-teal` …)
+  as HSL triplets with its own numbers. Tailwind hoists `@layer base` after
+  the tokens import, so the legacy numbers won at runtime: measured on the
+  built site, `--t3` was `rgba(255,255,255,.45)` and `var(--sf-teal)` used as
+  a colour was the invalid string `157 80% 42%`. Every solved value in
+  tokens.css was dead on arrival, and themes could not move the background.
+**Instead:** `emit.py`/`themes.py` emit `--x-hsl` (for `hsl(var(--x))`
+  consumers) and `--x-rgb` (for Tailwind's `<alpha-value>`) twins of every
+  solved token; the `.dark` block now only maps shadcn semantics onto twins;
+  `tailwind.config.ts` colours are `rgb(var(--x-rgb) / <alpha-value>)`.
+  Also fixed on the way: `--primary-foreground` was pure white on teal
+  (2.4:1) and `--destructive-foreground` white on crimson (3.1:1); both now
+  use the solved on-accent labels.
+**Revisit:** when the legacy `.dark` block is deleted outright (Phase 5).
+
 ## 2026-09-02 · Cyan returns as a user-selectable PRIMARY ROLE, not as a meaning hue
 
 **Touches:** Design system — SF-II settled decision #3 (legacy cyan `#00D4FF` retired)
