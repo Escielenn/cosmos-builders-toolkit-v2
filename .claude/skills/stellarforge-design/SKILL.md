@@ -21,6 +21,16 @@ With one hard constraint learned the expensive way: *darkness is the mood, not t
 
 ---
 
+## Themes — the user chooses
+
+**Void·Teal is the default and the identity, not a constraint.** `design/themes.py` derives 70 themes (10 bases × 7 primary accents) against the same contrast targets; every one passes by construction. Switch with `data-theme="<base>-<primary>"` on `<html>`. `ThemePicker.tsx` is the control.
+
+Two rules make this safe:
+- **`sf-primary` is a role; `sf-teal` is a meaning.** Button fills, focus, selection, active nav, links use `--sf-primary`. Cascade edges and the Integration category use `--sf-teal`. Never put a *role* on a named hue.
+- **The four semantic accents never move.** Amber = Physics, crimson = Stop, stellar = Worlds, violet = Lore, in every theme, re-solved per base for contrast but never reassigned.
+
+Values below are the **default theme**. Every other theme has the same token names with different values.
+
 ## Planes — three, never four
 
 | Token | Value | Use |
@@ -32,7 +42,7 @@ With one hard constraint learned the expensive way: *darkness is the mood, not t
 
 Each plane clears **1.22:1** against the one below, so a panel edge is visible before any border is drawn. Modals sit on `elevated` above the scrim — never a fourth plane.
 
-Never pure black. Never a flat grey — the ramp carries the void's 266.5° blue.
+Never pure black. In the default theme the ramp carries the void's 266.5° blue; other bases carry their own seed hue.
 
 ## Text — four tiers
 
@@ -75,7 +85,9 @@ Hues are the brand and never change. Each carries a canonical stop and a lifted 
 
 **The rule:** `--sf-crimson` for the error border, icon, and destructive fill. `--sf-crimson-text` for the sentence explaining the error. Never the reverse.
 
-`--sf-on-{name}` is the label colour for a filled button — `#0B0F18` in every case.
+`--sf-on-{name}` is the label colour for a filled button — `#0B0F18` in every case in dark themes.
+
+**Primary role tokens:** `--sf-primary` · `--sf-primary-text` · `--sf-primary-bright` · `--sf-on-primary`. In the default theme these equal the teal tokens. Use these — not `sf-teal` — for anything whose colour means "this is the action", not "this is Integration". Cyan, emerald, azure, violet, amber and magenta are available as *primary* choices via `data-theme` — that is the user's pick of a role, and does not reintroduce `sf-cyan` as a distinct meaning hue.
 
 **Colour is a cascade layer, never decoration.** Teal = Integration · Amber = Physics · Stellar = Worlds · Violet = Lore · Crimson = Stop.
 
@@ -145,6 +157,11 @@ The ship is always on. Coordinates in footers, velocity dials in loading states,
 **Text over video or imagery always gets `.sf-scrim`.** A measured ratio means nothing over a moving background.
 
 ---
+
+
+## Rendered surfaces
+
+Anything WebGL — the Atlas, the simulators — runs on **`forge-gl`** (`docs/stellarforge/14-RENDER-ENGINE.md`). One engine. Every visual property is a function of canon; no hardcoded colours in shaders; tokens read from computed style; `--sf-ambient` drives the post stack; light themes and reduced-motion get the **Chart** tier, which is designed, not degraded. The Studio never mounts a canvas.
 
 ## Voice
 

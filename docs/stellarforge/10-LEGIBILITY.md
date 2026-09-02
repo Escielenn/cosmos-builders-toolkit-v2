@@ -77,7 +77,7 @@ python3 design/emit.py       # palette.json → tokens.css + tailwind.config.ts
 
 | | Was | Now | Step |
 |---|---|---|---|
-| void | `#0A0E17` | `#0A0E17` | **unchanged — this is the brand** |
+| void | `#0A0E17` | `#0A0E17` | **unchanged — the default theme's base.** Users choose among 10 bases; see `13-THE-LIFT.md` §0. |
 | surface | `#0E1320` | `#1B2334` | 1.23:1 above void |
 | elevated | `#161C2B` | `#273249` | 1.23:1 above surface |
 | scrim | — | `rgba(5,7,12,0.72)` | new |

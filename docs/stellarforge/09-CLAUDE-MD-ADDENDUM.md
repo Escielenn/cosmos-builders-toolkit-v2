@@ -64,6 +64,8 @@ architectural decision. The seven laws are not aspirational.
 | proposing a new feature | `05-NEW-SYSTEMS.md` (the four questions) |
 | deciding what's next | `12-SESSION-SEQUENCE.md`, then `06-BUILD-ORDER.md` |
 | about to merge | `07-REVIEW-GATES.md` |
+| themes, IA, or what to build next at scale | `13-THE-LIFT.md` |
+| anything WebGL / three.js / the Atlas / sim rendering | `14-RENDER-ENGINE.md` |
 
 ### Commands
 
@@ -92,15 +94,18 @@ design handoff README. Summary of the rules most often broken:
 - One focal moment per screen.
 - Motion 120–280ms. No springs. No reveals over 300ms outside ambient
   telemetry.
-- Colour is a cascade layer: teal = Integration, amber = Physics, stellar
-  blue = Worlds, violet = Lore, crimson = Stop.
+- Colour is a cascade layer: amber = Physics, stellar blue = Worlds,
+  violet = Lore, crimson = Stop, teal = Integration. These never move.
+- **`sf-primary` is a role, `sf-teal` is a meaning.** Buttons, focus, selection,
+  active nav, links use `sf-primary` — the user chooses it (70 themes, all
+  contrast-solved, `design/themes.py`). Never put a role on a named hue.
 - Tokens, never hardcoded hex.
 - Every scrollable container gets `sf-sb`.
 
 ### Legibility — non-negotiable
 
-`tokens.css` and `tailwind.config.ts` are **GENERATED** by
-`design/derive.py` + `design/emit.py`. Every value is solved against a WCAG
+`tokens.css`, `tailwind.config.ts`, `themes.css` (+ `themes.json`) are **GENERATED** by
+`design/derive.py` + `design/emit.py` + `design/themes.py`. Every value is solved against a WCAG
 target in OKLab. Hand-editing either file is a blocking review failure.
 To change a colour, change its target and re-run both scripts.
 

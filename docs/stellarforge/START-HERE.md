@@ -75,7 +75,7 @@ stellarforge/
 │                                         VelocityDial, ParallaxStrips
 ├── docs/stellarforge/
 │   ├── START-HERE.md                  ← this file
-│   ├── 00-CONSTITUTION.md … 12-SESSION-SEQUENCE.md
+│   ├── 00-CONSTITUTION.md … 14-RENDER-ENGINE.md
 │   ├── AMENDMENTS.md                  ← log exceptions here
 │   └── archive/                       ← v1 tokens + the v1→v2 map. Not canon.
 └── .claude/
@@ -87,10 +87,11 @@ stellarforge/
 
 ### Two things to do immediately
 
-**Import the tokens** in your root stylesheet, *before* the Tailwind directives:
+**Import the tokens** in your root stylesheet, *before* the Tailwind directives. `themes.css` is optional until Block E:
 
 ```css
 @import "./styles/tokens.css";
+@import "./styles/themes.css";   /* GENERATED — 70 user-selectable themes */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -238,6 +239,8 @@ If you read nothing else, read **`00-CONSTITUTION.md`** (5 minutes) and look at 
 | — | `03`, `04`, `05`, `07`, `08` | as needed | Tool charter, Studio charter, new systems, gates, vocabulary. |
 | — | `11-SIMULATOR-CONSTELLATION.md` | 15 min | The five simulators as one system. Read before touching any sim. |
 | — | `12-SESSION-SEQUENCE.md` | 10 min | **The operating plan.** Every session in order, with paste-in briefs. |
+| — | `13-THE-LIFT.md` | 20 min | Themes, the four-space IA, the tool triage, and the full feature list. |
+| — | `14-RENDER-ENGINE.md` | 15 min | `forge-gl` — Stellaris-level effects as one canon-driven engine. |
 
 ---
 

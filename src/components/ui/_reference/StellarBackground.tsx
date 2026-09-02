@@ -94,7 +94,7 @@ export function DisplaySettings() {
       'transition-sf duration-base ease-sf-out',
       'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sf-focus',
       active
-        ? 'bg-sf-teal border-sf-teal text-sf-on-teal'
+        ? 'bg-sf-primary border-sf-primary text-sf-on-primary'
         : 'bg-transparent border-sf-line-interactive text-t2 hover:border-sf-line-emphasis hover:text-t1',
     ].join(' ');
 

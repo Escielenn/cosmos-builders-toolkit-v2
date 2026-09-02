@@ -78,7 +78,8 @@ def solve_darker(target, bg, chroma_fn, H):
     return lch2rgb(lo, chroma_fn(lo), H)
 
 # ───────────────────────── the brand constants ─────────────────────────
-VOID = hx('0A0E17')                    # untouchable. The brand is this colour.
+VOID = hx('0A0E17')                    # the DEFAULT theme's base. Users may choose others —
+                                       # see themes.py. Void·Teal is the identity, not a constraint.
 H_N  = 266.5                           # measured off the original void
 # Chroma rises with lightness, matching the original #0A0E17 → #161C2B slope,
 # so the dark planes read as blue slate rather than grey mud.

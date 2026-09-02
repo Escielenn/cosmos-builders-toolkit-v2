@@ -150,6 +150,12 @@ const config: Config = {
         'sf-on-magenta':           '#0B0F18',
         'sf-on-cyan':              '#0B0F18',
 
+        // ── Primary ROLE. The user chooses this; sf-teal is a meaning. ──
+        'sf-primary':        'var(--sf-primary)',
+        'sf-primary-text':   'var(--sf-primary-text)',
+        'sf-primary-bright': 'var(--sf-primary-bright)',
+        'sf-on-primary':     'var(--sf-on-primary)',
+
         // ── States: never opacity ──
         'sf-disabled-bg':   '#151B29',
         'sf-disabled-line': '#575C65',

@@ -81,6 +81,13 @@
   --sf-on-magenta:      #0B0F18;
   --sf-on-cyan:         #0B0F18;
 
+  /* ═══ PRIMARY ROLE ═══ the user-chosen accent. Defaults to teal; themes.css
+     overrides per [data-theme]. Roles use these, meanings use named hues. */
+  --sf-primary:        var(--sf-teal);
+  --sf-primary-text:   var(--sf-teal-text);
+  --sf-primary-bright: var(--sf-teal-bright);
+  --sf-on-primary:     var(--sf-on-teal);
+
   /* ═══ STATES ═══ disabled is a COLOUR, never opacity. Opacity multiplies
      against whatever sits behind it and guarantees nothing. */
   --sf-disabled-bg:    #151B29;

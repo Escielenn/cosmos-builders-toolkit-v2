@@ -38,6 +38,36 @@ Grouped into four blocks. Each block ends with something demonstrable. **Don't r
 | | **BLOCK B — give facts a subject** | | | |
 | B1 | Subjects on facts | `11` → Brief S0 | ~3–5 days | Two-planet worlds check correctly |
 | B2 | Sim consequence flags | `11` → Brief S4 | ~1 week | Simulators tell you things |
+| | **BLOCK E — appearance** *(see `13-THE-LIFT.md` §4)* | | | |
+| E1 | `sf-teal` role → `sf-primary` | `13` → Brief E1 | ~2 days | grep clean |
+| E2 | Switchable themes | `13` → Brief E2 | ~1 day | 70 themes, live switch |
+| E3 | Light-mode ambient audit | `13` §4 | ~1 day | light themes look designed |
+| | **BLOCK F — one IA** *(see `13-THE-LIFT.md` §1, §4)* | | | |
+| F1 | Codex entity page | `13` → Brief F1 | ~2 weeks | one URL per thing |
+| F2 | Wiki → entity pages | `13` §4 | ~3 days | `/wiki` redirects |
+| F3 | One graph | `13` → Brief F3 | ~1 week | `/graph` + `/connections` gone |
+| F4 | Instruments open on an entity | `13` §4 | ~1 week | no blank worksheets |
+| F5 | Atlas view | `13` §4 | ~2 weeks | Cartographer is the map |
+| F6 | Four spaces, Bridge | `13` §4 | ~1 week | 14 surfaces → 4 |
+| F7 | Tool folds (7 sessions) | `13` §3 | ~2 weeks | 27 → 17 instruments |
+| | **BLOCK G — render engine** *(see `14-RENDER-ENGINE.md`; after F5)* | | | |
+| G1 | Engine core, tiers, token binding, dispose | `14` → Brief G1 | ~1 week | blank scene, theme-aware |
+| G2 | Star / Atmosphere / Surface materials + canon binding | `14` → Brief G2 | ~1 week | change a fact, the render changes |
+| G3 | System scene → Orrery + Atlas | `14` §6 | ~1 week | fly-in |
+| G4 | Galaxy scene: field, nebulae, lanes, territory | `14` §6 | ~2 weeks | the Stellaris shot |
+| G5 | Sky scene → ExoSky | `14` §6 | ~1 week | precession renders |
+| G6 | Encounter scene → Rogue | `14` §6 | ~1 week | ejection is visible |
+| G7 | Chart tier, light themes, integrated-GPU pass | `14` §6 | ~1 week | works on a MacBook Air |
+| | **BLOCK C — the constellation** | | | |
+| C1 | Publish / open-on | `11` → Brief S1 | ~1 week | Solaris planet → ExoSky, one click |
+| C2 | The facts table | `12` → Brief C2 below | ~3 days | Asserted facts persist |
+| C3 | Rogue as world-generator | `11` §2 S2 | ~1–2 weeks | An encounter creates a world |
+| C4 | Living sky | `11` §2 S3 | ~1 week | The sky precesses |
+| | **BLOCK D — reach the page** | | | |
+| D1 | Canon Capture | `06` → Brief 3 | ~2 weeks | Prose proposes canon |
+| D2 | Contradiction Ledger | `06` weeks 5–7 | ~1 week | World-level, three-way resolution |
+| D3 | Dossier / characters | `05` A1 | ~2 weeks | POV points at something |
+| D4 | Sensory brief | `11` → Brief S5 | ~1 week | The sim writes conditions |
 | | **BLOCK C — the constellation** | | | |
 | C1 | Publish / open-on | `11` → Brief S1 | ~1 week | Solaris planet → ExoSky, one click |
 | C2 | The facts table | `12` → Brief C2 below | ~3 days | Asserted facts persist |
@@ -59,7 +89,11 @@ Grouped into four blocks. Each block ends with something demonstrable. **Don't r
 
 **C2 sits between C1 and C3 deliberately.** Everything before it runs on derived-on-read facts. C3 (encounter epochs) and C4 (validity intervals) are the first things that genuinely cannot. Building the table earlier is premature; building it later blocks two phases.
 
-**Block D is where the product actually becomes itself.** If the calendar slips, slip Block C, not Block D.
+**Blocks E and F sit between B and C deliberately.** E is cheap and you feel it every day. F is the holistic product — and the simulators publishing into a Codex with one page per entity (F1) is a far better outcome than publishing into a wiki, a graph, and an elements tab that don't agree. `13-THE-LIFT.md` §4 has the argument.
+
+**Block G needs F5 first.** An engine without the Atlas as its destination is a tech demo. G runs alongside C — the sims publish entities, the engine renders them.
+
+**Block D is where the product actually becomes itself.** If the calendar slips, slip Block C and G, not Block D.
 
 ---
 

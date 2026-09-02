@@ -92,6 +92,13 @@ for k in on:
     css += f"  --sf-on-{k}:{' ' * max(1, 13 - len(k))}{on[k]};\n"
 
 css += f"""
+  /* ═══ PRIMARY ROLE ═══ the user-chosen accent. Defaults to teal; themes.css
+     overrides per [data-theme]. Roles use these, meanings use named hues. */
+  --sf-primary:        var(--sf-teal);
+  --sf-primary-text:   var(--sf-teal-text);
+  --sf-primary-bright: var(--sf-teal-bright);
+  --sf-on-primary:     var(--sf-on-teal);
+
   /* ═══ STATES ═══ disabled is a COLOUR, never opacity. Opacity multiplies
      against whatever sits behind it and guarantees nothing. */
   --sf-disabled-bg:    {st['disabled_bg']};
@@ -400,6 +407,12 @@ const config: Config = {{
 
         // ── On-accent: label colour for a filled button ──
 {block(on, 'sf-on-')}
+
+        // ── Primary ROLE. The user chooses this; sf-teal is a meaning. ──
+        'sf-primary':        'var(--sf-primary)',
+        'sf-primary-text':   'var(--sf-primary-text)',
+        'sf-primary-bright': 'var(--sf-primary-bright)',
+        'sf-on-primary':     'var(--sf-on-primary)',
 
         // ── States: never opacity ──
         'sf-disabled-bg':   '{st['disabled_bg']}',

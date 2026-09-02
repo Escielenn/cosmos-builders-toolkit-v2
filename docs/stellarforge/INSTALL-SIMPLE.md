@@ -86,13 +86,13 @@ After install, your project has these **new** files. Nothing else is touched.
 
 | What lands | Where it goes | How many |
 |---|---|---|
-| The rulebook | `docs/stellarforge/` | 16 files + an `archive/` folder |
+| The rulebook | `docs/stellarforge/` | 18 files + an `archive/` folder |
 | Slash commands | `.claude/commands/` | 8 files |
 | Skills | `.claude/skills/` | 2 folders |
-| Colour system + generator | `design/` | 8 files |
+| Colour system + generator | `design/` | 15 files |
 | The colours your app uses | `src/styles/tokens.css` | 1 file |
 | Tailwind config | `tailwind.config.ts` (project root) | 1 file |
-| Example components | `src/components/ui/_reference/` | 6 files |
+| Example components | `src/components/ui/_reference/` | 7 files |
 | Claude's instructions | `CLAUDE.md` (project root) | 1 file |
 
 ### Two files get replaced
@@ -129,7 +129,12 @@ stellarforge/                              ← your project
 │   ├── tokens.css                         ← copy of the one in src/styles
 │   ├── tailwind.config.ts                 ← copy of the one in the root
 │   ├── legibility-proof.html              ← OPEN THIS IN A BROWSER
-│   └── before-after.png
+│   ├── before-after.png
+│   ├── themes.py                           ← 70 themes, all contrast-solved
+│   ├── themes.css / themes.json            GENERATED
+│   ├── theme-proof.html                    ← every theme, side by side
+│   ├── forge-gl-proof.html                 ← three.js proof (`npm i three`, serve locally)
+│   └── forge-gl-proof.png
 │
 ├── docs/stellarforge/                     ← NEW folder
 │   ├── START-HERE.md                      the long version of this file
@@ -146,6 +151,8 @@ stellarforge/                              ← your project
 │   ├── 10-LEGIBILITY.md                   why the colours changed
 │   ├── 11-SIMULATOR-CONSTELLATION.md      the 5 simulators, connected
 │   ├── 12-SESSION-SEQUENCE.md             ← WHAT TO DO, IN ORDER
+│   ├── 13-THE-LIFT.md                     themes, one IA, the big feature list
+│   ├── 14-RENDER-ENGINE.md                three.js — Stellaris effects, canon-driven
 │   ├── AMENDMENTS.md                      log exceptions here
 │   └── archive/                           the old system. Don't build from it.
 │
@@ -157,7 +164,8 @@ stellarforge/                              ← your project
 │       ├── Field.tsx
 │       ├── StellarBackground.tsx
 │       ├── VelocityDial.tsx
-│       └── ParallaxStrips.tsx
+│       ├── ParallaxStrips.tsx
+│       └── ThemePicker.tsx
 │
 └── .claude/                               ← NEW (or added to)
     ├── commands/

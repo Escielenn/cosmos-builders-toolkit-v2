@@ -1,0 +1,168 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<title>StellarForge — forge-gl proof</title>
+<!--
+  A single scene, driven by CANON, not by hand-tuned constants.
+  Star colour from star.spectral_class. Atmosphere rim from planet.atmo_composition.
+  Territory tint from polity. Every effect is a view of the graph.
+
+  To view: from the repo root, `npm i three` if it isn't already a dependency, then
+  `npx serve .` (or any static server) and open /design/forge-gl-proof.html.
+  ES modules won't load over file://. For a CDN build, swap the importmap to:
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+-->
+<style>
+  html,body{margin:0;height:100%;background:#0A0E17;overflow:hidden;font-family:'DM Sans',system-ui,sans-serif}
+  canvas{display:block}
+  .hud{position:fixed;inset:0;pointer-events:none;color:#C9CDD3}
+  .tl{position:absolute;left:28px;top:24px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;letter-spacing:.10em;line-height:1.7;color:#9799A0}
+  .tl b{color:#FAFAFA;font-weight:500}
+  .tr{position:absolute;right:28px;top:24px;font-family:ui-monospace,monospace;font-size:12px;letter-spacing:.10em;color:#9799A0;text-align:right;line-height:1.7}
+  .bl{position:absolute;left:28px;bottom:24px;font-family:ui-monospace,monospace;font-size:11px;letter-spacing:.08em;color:#787D87}
+  .card{position:absolute;right:28px;bottom:24px;width:300px;background:rgba(27,35,52,.82);border:1px solid #676B75;padding:14px 16px;backdrop-filter:blur(12px)}
+  .card .k{font-family:ui-monospace,monospace;font-size:11px;letter-spacing:.10em;color:#9799A0}
+  .card .v{font-family:ui-monospace,monospace;font-size:13px;color:#FAFAFA;margin-bottom:6px}
+  .card .n{font-size:13px;color:#C9CDD3;line-height:1.5;margin-top:8px}
+  .card .p{color:#3DFFCD}
+</style></head><body>
+<div class="hud">
+  <div class="tl"><b>// ATLAS · SYSTEM VIEW</b><br>KELLIS · K4V · 0.72 M☉<br>EPOCH 2340 CE</div>
+  <div class="tr">forge-gl · r160<br>BLOOM · CORONA · FRESNEL<br>30,000 STARS · 60 FPS</div>
+  <div class="bl">39.87°N · 104.97°W · JD 2461268.583 · SOL 2,419</div>
+  <div class="card">
+    <div class="k">// KELLIS PRIME</div>
+    <div class="v">1.40 g · 0.6 bar · TIDALLY LOCKED</div>
+    <div class="k">ATMOSPHERE</div>
+    <div class="v">N₂ / CO₂ · thin</div>
+    <div class="n">Rim colour derived from <span class="p">planet.atmo_composition</span>. Star colour from <span class="p">star.spectral_class</span>. Change a fact, the render changes.</div>
+  </div>
+</div>
+<script type="importmap">{"imports":{"three":"../node_modules/three/build/three.module.js","three/addons/":"../node_modules/three/examples/jsm/"}}</script>
+<script type="module">
+import * as THREE from 'three';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+
+/* ── CANON — the only inputs. Everything below derives from these. ── */
+const canon = {
+  star:   { spectral_class: 'K4', temp_effective: 4600 },
+  planet: { radius: 1.1, atmo_composition: 'N2/CO2', atmo_pressure: 0.6, tidally_locked: true, orbit_au: 0.31 },
+  polity: { territory_colour: '#15C17B' },
+  system: { hyperlanes: 4 },
+};
+// spectral class → colour (black-body approximation, good enough for a view)
+function kelvinToRGB(k){ k/=100; let r,g,b;
+  r = k<=66?255:329.7*Math.pow(k-60,-0.1332);
+  g = k<=66?99.47*Math.log(k)-161.1:288.1*Math.pow(k-60,-0.0755);
+  b = k>=66?255:k<=19?0:138.5*Math.log(k-10)-305;
+  return new THREE.Color(Math.min(255,r)/255,Math.min(255,g)/255,Math.min(255,b)/255); }
+const starColor = kelvinToRGB(canon.star.temp_effective);
+const atmoColor = canon.planet.atmo_composition.includes('CO2') ? new THREE.Color('#E8A65A') : new THREE.Color('#5DB0FF');
+
+/* ── renderer ── */
+const W=innerWidth,H=innerHeight;
+const renderer = new THREE.WebGLRenderer({antialias:false, powerPreference:'high-performance'});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2)); renderer.setSize(W,H);
+renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 0.95;
+document.body.prepend(renderer.domElement);
+const scene = new THREE.Scene(); scene.background = new THREE.Color('#0A0E17');
+const camera = new THREE.PerspectiveCamera(48, W/H, 0.1, 4000); camera.position.set(0, 2.2, 8.2);
+
+/* ── galaxy: 30k point sprites, spiral, additive ── */
+{
+  const N=30000, pos=new Float32Array(N*3), col=new Float32Array(N*3), sz=new Float32Array(N);
+  const c=new THREE.Color();
+  for(let i=0;i<N;i++){
+    const arm=i%3, t=Math.random()*6.5, r=30+t*55+Math.random()*18;
+    const a=t*0.9+arm*(Math.PI*2/3)+ (Math.random()-.5)*.5;
+    pos[i*3]=Math.cos(a)*r; pos[i*3+1]=(Math.random()-.5)*(10+r*.09)-6; pos[i*3+2]=Math.sin(a)*r-260;
+    const k=2800+Math.random()*9000; c.copy(kelvinToRGB(k)); const l=.5+Math.random()*.5;
+    col[i*3]=c.r*l; col[i*3+1]=c.g*l; col[i*3+2]=c.b*l; sz[i]=1+Math.random()*2.2;
+  }
+  const g=new THREE.BufferGeometry();
+  g.setAttribute('position',new THREE.BufferAttribute(pos,3)); g.setAttribute('color',new THREE.BufferAttribute(col,3)); g.setAttribute('aSize',new THREE.BufferAttribute(sz,1));
+  const m=new THREE.ShaderMaterial({transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,vertexColors:true,
+    uniforms:{uPR:{value:renderer.getPixelRatio()}},
+    vertexShader:`attribute float aSize; varying vec3 vC; uniform float uPR;
+      void main(){ vC=color; vec4 mv=modelViewMatrix*vec4(position,1.); gl_PointSize=aSize*uPR*(240./-mv.z); gl_Position=projectionMatrix*mv; }`,
+    fragmentShader:`varying vec3 vC; void main(){ vec2 p=gl_PointCoord-.5; float d=length(p); float a=smoothstep(.5,.0,d); a*=a; gl_FragColor=vec4(vC*1.1,a*.85); }`});
+  scene.add(new THREE.Points(g,m));
+}
+
+/* ── nebulae: layered billboards with procedural radial noise ── */
+function nebulaTex(hue){ const s=256,cv=document.createElement('canvas');cv.width=cv.height=s;const x=cv.getContext('2d');
+  const img=x.createImageData(s,s); const c=new THREE.Color().setHSL(hue,.7,.55);
+  for(let j=0;j<s;j++)for(let i=0;i<s;i++){const dx=i/s-.5,dy=j/s-.5,d=Math.hypot(dx,dy);
+    const n=Math.sin(i*.09)*Math.cos(j*.07)*.5+.5; const a=Math.max(0,1-d*2.1)*(.35+n*.65);
+    const o=(j*s+i)*4; img.data[o]=c.r*255;img.data[o+1]=c.g*255;img.data[o+2]=c.b*255;img.data[o+3]=a*a*110;}
+  x.putImageData(img,0,0); const t=new THREE.CanvasTexture(cv); return t;}
+[[0.58,-90,20,-300,110],[0.83,80,-30,-340,140],[0.47,-30,50,-420,180]].forEach(([h,x,y,z,s])=>{
+  const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:nebulaTex(h),transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,opacity:.9}));
+  sp.position.set(x,y,z); sp.scale.set(s,s*.7,1); scene.add(sp);});
+
+/* ── the star: sphere + corona (fresnel × noise, animated) ── */
+const star=new THREE.Group(); scene.add(star);
+star.add(new THREE.Mesh(new THREE.SphereGeometry(1,64,64), new THREE.MeshBasicMaterial({color:starColor.clone().multiplyScalar(1.15)})));
+const corona=new THREE.Mesh(new THREE.SphereGeometry(1.55,64,64), new THREE.ShaderMaterial({
+  transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,side:THREE.BackSide,
+  uniforms:{uT:{value:0},uC:{value:starColor}},
+  vertexShader:`varying vec3 vN; varying vec3 vP; void main(){ vN=normalize(normalMatrix*normal); vec4 mv=modelViewMatrix*vec4(position,1.); vP=mv.xyz; gl_Position=projectionMatrix*mv; }`,
+  fragmentShader:`uniform float uT; uniform vec3 uC; varying vec3 vN; varying vec3 vP;
+    float hash(vec3 p){return fract(sin(dot(p,vec3(12.9898,78.233,37.719)))*43758.5453);}
+    float noise(vec3 p){vec3 i=floor(p),f=fract(p); f=f*f*(3.-2.*f);
+      return mix(mix(mix(hash(i),hash(i+vec3(1,0,0)),f.x),mix(hash(i+vec3(0,1,0)),hash(i+vec3(1,1,0)),f.x),f.y),
+                 mix(mix(hash(i+vec3(0,0,1)),hash(i+vec3(1,0,1)),f.x),mix(hash(i+vec3(0,1,1)),hash(i+vec3(1,1,1)),f.x),f.y),f.z);}
+    void main(){ vec3 v=normalize(-vP); float fr=pow(1.-abs(dot(vN,v)),2.2);
+      float n=noise(vN*4.+uT*.15)*.6+noise(vN*9.-uT*.3)*.4; float a=fr*(0.55+n*.9);
+      gl_FragColor=vec4(uC*(0.9+n*.6), a*.75); }`}));
+star.add(corona);
+scene.add(new THREE.PointLight(starColor, 60, 0, 1.4)); scene.add(new THREE.AmbientLight('#1B2334', 0.6));
+
+/* ── the planet: lit sphere + atmosphere shell (fresnel rim) + terminator ── */
+const planet=new THREE.Group(); scene.add(planet);
+const pr=canon.planet.radius*.42;
+const surf=new THREE.Mesh(new THREE.SphereGeometry(pr,64,64), new THREE.MeshStandardMaterial({color:'#6E6A66',roughness:.95,metalness:0}));
+planet.add(surf);
+planet.add(new THREE.Mesh(new THREE.SphereGeometry(pr*1.06,64,64), new THREE.ShaderMaterial({
+  transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,side:THREE.BackSide,
+  uniforms:{uC:{value:atmoColor},uP:{value:canon.planet.atmo_pressure}},
+  vertexShader:`varying vec3 vN; varying vec3 vP; void main(){ vN=normalize(normalMatrix*normal); vec4 mv=modelViewMatrix*vec4(position,1.); vP=mv.xyz; gl_Position=projectionMatrix*mv; }`,
+  fragmentShader:`uniform vec3 uC; uniform float uP; varying vec3 vN; varying vec3 vP;
+    void main(){ float fr=pow(1.-abs(dot(vN,normalize(-vP))),3.0); gl_FragColor=vec4(uC, fr*(.35+uP*.9)); }`})));
+const orbitR=3.0+canon.planet.orbit_au*4;
+planet.position.set(orbitR,0,0);
+/* orbit ring */
+{ const pts=[]; for(let i=0;i<=256;i++){const a=i/256*Math.PI*2; pts.push(new THREE.Vector3(Math.cos(a)*orbitR,0,Math.sin(a)*orbitR));}
+  scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({color:'#676B75',transparent:true,opacity:.55}))); }
+
+/* ── hyperlanes + territory: polity colour from canon ── */
+{
+  const tc=new THREE.Color(canon.polity.territory_colour);
+  const pts=[]; for(let i=0;i<canon.system.hyperlanes;i++){const a=i/canon.system.hyperlanes*Math.PI*2+.4; pts.push(new THREE.Vector3(0,0,0), new THREE.Vector3(Math.cos(a)*60,(Math.random()-.5)*6,Math.sin(a)*60-20));}
+  scene.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({color:tc,transparent:true,opacity:.28,blending:THREE.AdditiveBlending})));
+  const ring=new THREE.Mesh(new THREE.RingGeometry(orbitR+1.2,orbitR+1.22,128), new THREE.MeshBasicMaterial({color:tc,transparent:true,opacity:.5,side:THREE.DoubleSide}));
+  ring.rotation.x=-Math.PI/2; scene.add(ring);
+}
+
+/* ── post: bloom + vignette/grain ── */
+const composer=new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene,camera));
+const bloom=new UnrealBloomPass(new THREE.Vector2(W,H), 0.55, 0.7, 0.78); composer.addPass(bloom);
+composer.addPass(new ShaderPass({uniforms:{tDiffuse:{value:null},uT:{value:0}},
+  vertexShader:`varying vec2 vUv; void main(){vUv=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
+  fragmentShader:`uniform sampler2D tDiffuse; uniform float uT; varying vec2 vUv;
+    float h(vec2 p){return fract(sin(dot(p,vec2(12.9898,78.233)))*43758.5453);}
+    void main(){ vec4 c=texture2D(tDiffuse,vUv); float v=smoothstep(1.15,.35,distance(vUv,vec2(.5)));
+      float g=(h(vUv*vec2(1920.,1080.)+uT)-.5)*.035; gl_FragColor=vec4(c.rgb*(.55+.45*v)+g,1.);}`}));
+
+/* ── loop ── */
+let t=0; const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function frame(){ t+=reduce?0:0.016; corona.material.uniforms.uT.value=t; composer.passes[2].uniforms.uT.value=t;
+  planet.position.set(Math.cos(t*.12)*orbitR,0,Math.sin(t*.12)*orbitR); planet.rotation.y=t*.05;
+  camera.position.x=Math.sin(t*.05+1.1)*8.2; camera.position.z=Math.cos(t*.05+1.1)*8.2; camera.lookAt(0.8,0,0);
+  composer.render(); if(!reduce) requestAnimationFrame(frame); }
+frame(); window.__ready=true;
+addEventListener('resize',()=>{renderer.setSize(innerWidth,innerHeight);composer.setSize(innerWidth,innerHeight);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();});
+</script></body></html>

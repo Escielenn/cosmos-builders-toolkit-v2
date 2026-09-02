@@ -32,7 +32,9 @@ Scope: `$ARGUMENTS` if given (a component, directory, or route), otherwise the w
 
 **11. Colour-only signalling.** Any error, warning, or success state conveyed by colour alone, with no icon, prefix, or text label.
 
-**12. Generated-file drift.** Confirm `tokens.css` and `tailwind.config.ts` match the output of `design/derive.py && design/emit.py`. If they differ, someone hand-edited a generated file — report it as blocking.
+**12. Role-token misuse.** Any `sf-teal` (or `-text`/`-bright`/`on-teal`) on a button fill, focus ring, selection, link, or active-nav state. Those are *roles* and must use `sf-primary`. `sf-teal` is reserved for things that *mean* Integration.
+
+**13. Generated-file drift.** Confirm `tokens.css`, `tailwind.config.ts`, and `themes.css` match the output of `design/derive.py && design/emit.py && design/themes.py`. If they differ, someone hand-edited a generated file — report it as blocking.
 
 ## Output
 

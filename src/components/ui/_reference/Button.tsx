@@ -12,7 +12,11 @@
  *   • hit target    every size now clears 44px. `sm` was ~30px.
  *   • focus         explicit :focus-visible ring. v1 had hover states and no
  *                   focus state at all, which made the app unusable by keyboard.
- *   • label colour  hardcoded #08110C → sf-on-teal (solved, 8.16:1).
+ *   • label colour  hardcoded #08110C → sf-on-primary (solved, 8.16:1 in default).
+ *   • role vs meaning  primary uses sf-primary, the USER-CHOSEN accent, not
+ *                   sf-teal. Teal is what Integration means; primary is what
+ *                   "the action" means. 70 themes swap the former; the latter
+ *                   never moves. See 13-THE-LIFT.md §0.
  */
 
 import { ButtonHTMLAttributes, forwardRef } from 'react';
@@ -46,15 +50,15 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
         // Teal fill. sf-on-teal is solved at 8.16:1 against the fill.
         variant === 'primary' && [
-          'bg-sf-teal border-sf-teal text-sf-on-teal',
-          'hover:bg-sf-teal-bright hover:border-sf-teal-bright hover:text-sf-on-teal-bright',
+          'bg-sf-primary border-sf-primary text-sf-on-primary',
+          'hover:bg-sf-primary-bright hover:border-sf-primary-bright',
           'hover:shadow-sf-glow-teal hover:-translate-y-[1px]',
         ],
 
         // Outline. The border is the affordance, so it must clear 3:1.
         variant === 'ghost' && [
           'bg-transparent border-sf-line-interactive text-t1',
-          'hover:border-sf-teal hover:text-sf-teal-text hover:shadow-sf-inset-teal',
+          'hover:border-sf-primary hover:text-sf-primary-text',
         ],
 
         // Destructive. Crimson canonical for the border, -text for the label —
