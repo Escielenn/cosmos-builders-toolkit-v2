@@ -25,7 +25,7 @@ const DEFAULT_STRIPS: Strip[] = [
     speed: 0.3,
     size: 10,
     tracking: 3,
-    color: "rgba(255,255,255,0.10)",
+    color: "color-mix(in srgb, var(--t4) 55%, transparent)",
     text: "39.87°N · 104.97°W  ·  ALT 5280 ft  ·  PRESSURE 1013.25 hPa  ·  T -18.4°C  ·  SOL 19,327  ·  JD 2461158.5  ·  LUNAR PHASE 0.74  ·  SUNSET 16:41:02  ·  MAG -26.74  ·  AU 1.00000",
   },
   {
@@ -33,7 +33,7 @@ const DEFAULT_STRIPS: Strip[] = [
     speed: 0.6,
     size: 11,
     tracking: 2.5,
-    color: "rgba(21,193,123,0.18)",
+    color: "color-mix(in srgb, var(--sf-primary) 45%, transparent)",
     text: "WORLDS: 00347  ·  SPECIES: 02,184  ·  SAVES: 19,402,718  ·  UPTIME 99.987%  ·  P95 LATENCY 42ms  ·  REGION US-WEST-2  ·  BUILD 2026.05.28-rc4",
   },
   {
@@ -41,7 +41,7 @@ const DEFAULT_STRIPS: Strip[] = [
     speed: 1.0,
     size: 12,
     tracking: 2,
-    color: "rgba(255,255,255,0.06)",
+    color: "color-mix(in srgb, var(--t4) 40%, transparent)",
     text: '// [NOTE] biome/tundra parameters stable across 1e4 iterations  ·  checksum 7F2A-91B0-44CE  ·  seed 0xDEADB10C  ·  author: batt,j  ·  rev 142  ·  last_commit "fix: gravity tensor drift in low-g"',
   },
   {
@@ -49,7 +49,7 @@ const DEFAULT_STRIPS: Strip[] = [
     speed: 1.6,
     size: 10.5,
     tracking: 3,
-    color: "rgba(255,184,0,0.14)",
+    color: "color-mix(in srgb, var(--sf-amber) 38%, transparent)",
     text: "TRAJECTORY BOUND ··· ECLIPTIC +07.42° ··· TARGET: WOLF 359 ··· 7.86 ly ··· Δv 4.22e7 m/s",
   },
 ];
@@ -84,7 +84,12 @@ export function ParallaxStrips({
     <div
       ref={containerRef}
       className={`relative overflow-hidden ${className ?? ""}`}
-      style={{ height, background: "linear-gradient(180deg, #0A0E17, #121724)" }}
+      style={{
+        height,
+        // Theme planes, not a hardcoded night: light bases get a light strip.
+        background: "linear-gradient(180deg, var(--sf-void), var(--sf-surface))",
+        opacity: "var(--sf-ambient)",
+      }}
       aria-hidden
     >
       {strips.map((s, i) => (

@@ -41,7 +41,7 @@ Grouped into four blocks. Each block ends with something demonstrable. **Don't r
 | | **BLOCK E — appearance** *(see `13-THE-LIFT.md` §4)* | | | |
 | E1 | `sf-teal` role → `sf-primary` | `13` → Brief E1 | ~2 days | **done 2026-09-02** — 300 sites / 89 files + 69 hardcoded teal rgba in `index.css`; `sf-teal` survives only as a meaning (`tool-accents.ts`, category dots, cascade). Hex in canvas/WebGL code is Block G |
 | E2 | Switchable themes | `13` → Brief E2 | ~1 day | **done 2026-09-02** — Profile → Appearance; `use-theme.ts`; Parallel Truth in `index.css` removed; Tailwind utilities theme-aware |
-| E3 | Light-mode ambient audit | `13` §4 | ~1 day | light themes look designed |
+| E3 | Light-mode ambient audit | `13` §4 | ~1 day | **done 2026-09-02** — ParallaxStrips on theme planes; 95 white-alpha rules in `index.css` → foreground twins; light bases read as designed. Canvas/WebGL surfaces still Block G |
 | | **BLOCK F — one IA** *(see `13-THE-LIFT.md` §1, §4)* | | | |
 | F1 | Codex entity page | `13` → Brief F1 | ~2 weeks | one URL per thing |
 | F2 | Wiki → entity pages | `13` §4 | ~3 days | `/wiki` redirects |
