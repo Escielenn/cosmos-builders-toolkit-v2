@@ -56,6 +56,7 @@ const WorldToolPage = lazy(() => import("./pages/WorldToolPage"));
 const WorldGraphRedirect = lazy(() => import("./pages/WorldGraphRedirect"));
 const WikiPageRoute = lazy(() => import("./pages/WikiPageRoute"));
 const CodexEntityRoute = lazy(() => import("./pages/CodexEntityRoute"));
+const WikiRedirect = lazy(() => import("./pages/WikiRedirect"));
 const WorldChronicle = lazy(() => import("./pages/WorldChronicle"));
 const WorldCustomTypes = lazy(() => import("./pages/WorldCustomTypes"));
 const WorldCompile = lazy(() => import("./pages/WorldCompile"));
@@ -225,7 +226,8 @@ const App = () => (
                   <Route path="tools/:toolName" element={<WorldToolPage />} />
                   <Route path="codex/:entityId" element={<CodexEntityRoute />} />
                   <Route path="pages/:entryId" element={<WikiPageRoute />} />
-                  <Route path="wiki" element={<WikiBrowse />} />
+                  <Route path="codex" element={<WikiBrowse />} />
+                  <Route path="wiki" element={<WikiRedirect />} />
                   <Route path="chronicle" element={<WorldChronicle />} />
                   <Route path="graph" element={<WorldGraphRedirect />} />
                   <Route path="connections" element={<WorldConnections />} />

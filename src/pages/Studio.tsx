@@ -79,7 +79,7 @@ function Rail({ worlds }: { worlds: StudioWorld[] }): JSX.Element {
               // which under a "Workbench · <world>" heading could open a
               // different world's manuscript.
               { label: "Write", to: `/worlds/${worlds[0].id}/write` },
-              { label: "Wiki", to: `/worlds/${worlds[0].id}/wiki` },
+              { label: "Codex", to: `/worlds/${worlds[0].id}/codex` },
               { label: "Chronicle", to: `/worlds/${worlds[0].id}/chronicle` },
               { label: "Connections", to: `/worlds/${worlds[0].id}/connections` },
             ].map((i) => (

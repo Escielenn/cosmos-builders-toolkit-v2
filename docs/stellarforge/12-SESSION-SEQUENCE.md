@@ -44,7 +44,7 @@ Grouped into four blocks. Each block ends with something demonstrable. **Don't r
 | E3 | Light-mode ambient audit | `13` §4 | ~1 day | **done 2026-09-02** — ParallaxStrips on theme planes; 95 white-alpha rules in `index.css` → foreground twins; light bases read as designed. Canvas/WebGL surfaces still Block G |
 | | **BLOCK F — one IA** *(see `13-THE-LIFT.md` §1, §4)* | | | |
 | F1 | Codex entity page | `13` → Brief F1 | ~2 weeks | **shipped 2026-09-03 (first cut)** — `/worlds/:id/codex/:entityId` is the one URL; `/pages/:id` redirects; sidebar, Elements, Recent, Chronicle, tools all link there. Generated infobox (`FactInfobox`, provenance chips, contradictions surfaced), aliases + epoch range, Mentioned-in, Chronicle. **Open:** relations still read `world_connections`; the typed-edge model lives on the separate `entities` table (see AMENDMENTS 2026-09-03) — F3 |
-| F2 | Wiki → entity pages | `13` §4 | ~3 days | `/wiki` redirects |
+| F2 | Wiki → entity pages | `13` §4 | ~3 days | **done 2026-09-03** — `/worlds/:id/codex` is the List view (the former WikiBrowse, over `world_entries`); `/wiki` redirects; every "Wiki" link and label now says Codex. No data migration was needed: wiki entries were already `world_entries`, so they were already entity pages |
 | F3 | One graph | `13` → Brief F3 | ~1 week | `/graph` + `/connections` gone |
 | F4 | Instruments open on an entity | `13` §4 | ~1 week | no blank worksheets |
 | F5 | Atlas view | `13` §4 | ~2 weeks | Cartographer is the map |

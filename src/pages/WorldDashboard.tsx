@@ -391,7 +391,7 @@ const SortableWorksheetGroup = ({
             </div>
             <div className="flex items-center gap-1 shrink-0">
               {worksheetEntryMap.get(worksheet.id) && (
-                <Button variant="ghost" size="icon" className="h-8 w-8" asChild title="Wiki page">
+                <Button variant="ghost" size="icon" className="h-8 w-8" asChild title="Codex page">
                   <Link to={`/worlds/${worldId}/codex/${worksheetEntryMap.get(worksheet.id)}`}>
                     <BookOpen className="w-3.5 h-3.5" />
                   </Link>
@@ -717,9 +717,9 @@ const WorldDashboard = () => {
               </Link>
             </Button>
             <Button variant="outline" size="sm" asChild>
-              <Link to={`/worlds/${worldId}/wiki`}>
+              <Link to={`/worlds/${worldId}/codex`}>
                 <Library className="w-4 h-4 mr-2" />
-                Wiki
+                Codex
               </Link>
             </Button>
             {/* One Export control. Export, Export View, World Bible and

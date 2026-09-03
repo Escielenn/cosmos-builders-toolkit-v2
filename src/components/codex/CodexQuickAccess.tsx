@@ -8,7 +8,7 @@ interface CodexQuickAccessProps {
 const CodexQuickAccess = ({ worldId }: CodexQuickAccessProps) => {
   const links = [
     { label: "Write", icon: PenLine, to: `/worlds/${worldId}/write`, desc: "Draft prose and scenes for your world" },
-    { label: "Wiki", icon: Library, to: `/worlds/${worldId}/wiki`, desc: "Browse and edit all knowledge entries" },
+    { label: "Codex", icon: Library, to: `/worlds/${worldId}/codex`, desc: "Every entity in the world. One page per thing." },
     { label: "Chronicle", icon: ScrollText, to: `/worlds/${worldId}/chronicle`, desc: "Timeline of world events" },
     { label: "Connections", icon: Network, to: `/worlds/${worldId}/connections`, desc: "Entity relationships and worksheet-to-worksheet data flow" },
     { label: "Showcase", icon: Eye, to: `/worlds/${worldId}/showcase`, desc: "Public showcase page for your world" },

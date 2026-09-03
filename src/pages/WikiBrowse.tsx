@@ -141,7 +141,7 @@ export default function WikiBrowse() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="font-serif text-[24px] italic text-t1">
-            Wiki
+            Codex
           </h1>
           <p className="text-[12px] text-t4 mt-1">
             {allEntries.length} {allEntries.length === 1 ? "entry" : "entries"}
@@ -299,12 +299,12 @@ export default function WikiBrowse() {
           <FileText className="w-8 h-8 text-t4 mb-3" />
           <p className="text-t3 text-sm mb-1">
             {allEntries.length === 0
-              ? "No wiki entries yet"
+              ? "Nothing on file yet"
               : "No entries match your filters"}
           </p>
           <p className="text-t4 text-xs mb-4">
             {allEntries.length === 0
-              ? "Entries are created automatically when you use tools, or you can create one manually."
+              ? "Every planet, species, culture and system gets a page here the moment an instrument records it — or create one by hand."
               : "Try adjusting your search or filter criteria."}
           </p>
           {allEntries.length === 0 && (

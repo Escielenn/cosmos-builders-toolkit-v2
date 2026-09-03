@@ -248,7 +248,7 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
             Dashboard
           </Link>
           <ChevronRight className="w-3 h-3" />
-          <Link to={`/worlds/${worldId}/wiki`} className="hover:text-t2 transition-colors">
+          <Link to={`/worlds/${worldId}/codex`} className="hover:text-t2 transition-colors">
             Codex
           </Link>
           <ChevronRight className="w-3 h-3" />
