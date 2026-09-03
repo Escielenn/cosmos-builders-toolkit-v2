@@ -8,6 +8,7 @@
  */
 
 import { type ReactNode, useState, useEffect, useMemo, useRef } from "react";
+import SubjectEntityBanner from "@/components/tools/SubjectEntityBanner";
 import { Link, useSearchParams } from "react-router-dom";
 import { ArrowLeft, FileText } from "lucide-react";
 import { getToolAccent, accentTextClass, accentArcClass, accentBgClass } from "@/lib/tool-accents";
@@ -204,6 +205,9 @@ export default function ToolPageLayout({
           <ArrowLeft className="w-4 h-4" />
           {worldId ? "Return to World" : "Return to Tools"}
         </Link>
+
+        {/* ── Subject (Brief F4): the entity this instrument is open on ── */}
+        <SubjectEntityBanner worldId={worldId} />
 
         {/* ── Quote Bar ─────────────────────────────────────────── */}
         <ToolPageQuote toolId={toolType} />

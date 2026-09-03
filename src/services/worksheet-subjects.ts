@@ -63,3 +63,42 @@ export async function getWorksheetSubjects(
   for (const [worksheetId, { subject }] of best) result[worksheetId] = subject;
   return result;
 }
+
+// ---------------------------------------------------------------------------
+// Write side (Brief F4). One function, idempotent, id-only.
+// ---------------------------------------------------------------------------
+
+export type AttachResult = { ok: true; created: boolean } | { ok: false; error: string };
+
+/**
+ * Attach a worksheet to the world_entries row it is about.
+ *
+ * Idempotent: an existing (entity, worksheet) link is left as is. The new
+ * link is marked primary when the entity has no other primary link for a
+ * worksheet of the same tool — so the first Genesis survey of a planet is
+ * the one its facts scope to, and a second survey does not silently steal
+ * that role. Never matches by name; the caller supplies the id.
+ */
+export async function attachWorksheetToEntity(entityId: string, worksheetId: string): Promise<AttachResult> {
+  if (!entityId || !worksheetId) return { ok: false, error: "missing id" };
+
+  const { data: existing, error: readErr } = await supabase
+    .from("entity_worksheets")
+    .select("id, worksheet_id, is_primary, worksheets(tool_type)")
+    .eq("entity_id", entityId);
+  if (readErr) return { ok: false, error: readErr.message };
+
+  const rows = (existing ?? []) as Array<{ worksheet_id: string; is_primary: boolean | null; worksheets: { tool_type: string } | null }>;
+  if (rows.some((r) => r.worksheet_id === worksheetId)) return { ok: true, created: false };
+
+  const { data: ws, error: wsErr } = await supabase.from("worksheets").select("tool_type").eq("id", worksheetId).maybeSingle();
+  if (wsErr) return { ok: false, error: wsErr.message };
+  const toolType = ws?.tool_type ?? null;
+  const hasPrimaryForTool = rows.some((r) => r.is_primary && r.worksheets?.tool_type === toolType);
+
+  const { error: insErr } = await supabase
+    .from("entity_worksheets")
+    .insert({ entity_id: entityId, worksheet_id: worksheetId, is_primary: !hasPrimaryForTool });
+  if (insErr) return { ok: false, error: insErr.message };
+  return { ok: true, created: true };
+}

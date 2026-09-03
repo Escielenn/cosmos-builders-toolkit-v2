@@ -1,4 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useSubjectEntityId } from "@/hooks/use-subject-entity";
+import { attachWorksheetToEntity } from "@/services/worksheet-subjects";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
@@ -26,6 +28,13 @@ interface CreateWorksheetInput {
   toolType: string;
   title?: string;
   data: Json;
+  /**
+   * The world_entries id this worksheet is ABOUT (Brief F4). Defaults to the
+   * ?entityId= the tool page was opened with, so every instrument attaches
+   * its saves to the entity it was opened on without per-tool wiring. Pass
+   * null to save deliberately unattached.
+   */
+  subjectEntityId?: string | null;
 }
 
 interface UpdateWorksheetInput {
@@ -44,6 +53,7 @@ export const useWorksheets = (worldId: string | undefined, includeArchived: bool
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const urlSubjectId = useSubjectEntityId();
 
   const worksheetsQuery = useQuery({
     queryKey: ["worksheets", worldId, includeArchived],
@@ -87,6 +97,25 @@ export const useWorksheets = (worldId: string | undefined, includeArchived: bool
         .single();
 
       if (error) throw error;
+
+      // Brief F4: a worksheet saved from an instrument opened ON an entity is
+      // attached to that entity by id — never matched by name later. Best
+      // effort: a failed link must not lose the save, but it is reported.
+      const subjectId = input.subjectEntityId === undefined ? urlSubjectId : input.subjectEntityId;
+      if (subjectId) {
+        const link = await attachWorksheetToEntity(subjectId, data.id);
+        if (!link.ok) {
+          toast({
+            title: "SAVED, BUT NOT ATTACHED.",
+            description: `Could not link this worksheet to its subject: ${"error" in link ? link.error : "unknown"}`,
+            variant: "destructive",
+          });
+        } else {
+          queryClient.invalidateQueries({ queryKey: ["entity-worksheets", subjectId] });
+          queryClient.invalidateQueries({ queryKey: ["codex-entity-worksheets", subjectId] });
+          queryClient.invalidateQueries({ queryKey: ["worksheet-subjects"] });
+        }
+      }
       return data as Worksheet;
     },
     onSuccess: (data) => {

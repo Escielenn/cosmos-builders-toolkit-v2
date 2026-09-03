@@ -1,14 +1,19 @@
 // ---------------------------------------------------------------------------
-// useEntityPrepopulate, pre-fills tool form state from a linked entity.
+// useEntityPrepopulate, pre-fills tool form state from the entity a tool was
+// opened ON (?entityId=<world_entries.id>) — Brief F4.
 //
-// When a tool page is opened with ?entityId=<uuid> in the URL:
-//   1. Fetches the entity from the `entities` table.
+//   1. Fetches the entity from `world_entries` (the table entity_worksheets,
+//      chronicle_events and writing_entry_entities reference). Until
+//      2026-09-03 this read the separate `entities` table, whose ids never
+//      coincide with world_entries ids, so a tool opened from an entity's
+//      page found nothing to pre-fill. See AMENDMENTS 2026-09-03.
 //   2. Extracts any metadata fields that map to this tool via the
 //      worksheetPaths in entity-config.ts.
 //   3. Returns a partial form state that the tool can spread into its
 //      initial state.
-//   4. Returns a `linkWorksheet(worksheetId)` function to create the
-//      entity_worksheets junction row after saving.
+//   4. Returns `linkWorksheet(worksheetId)` — idempotent; useWorksheets'
+//      createWorksheet already attaches on save, so this is only needed by
+//      tools that write worksheets through another path.
 //
 // If the entity has no relevant metadata values, returns the entity name
 // only, still useful for pre-filling the worksheet title.
@@ -16,11 +21,10 @@
 
 import { useMemo, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
-import { useEntities } from "@/hooks/use-entity-graph";
-import { useWorldId } from "@/hooks/use-world-id";
+import { useSubjectEntity } from "@/hooks/use-subject-entity";
+import { attachWorksheetToEntity } from "@/services/worksheet-subjects";
 import { ENTITY_MASTER_FIELDS, type MasterFieldDef } from "@/lib/entity-config";
-import type { Entity } from "@/services/entity-graph-types";
+import type { WorldEntry } from "@/services/world-data";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -44,12 +48,12 @@ function setAtPath(obj: Record<string, unknown>, path: string, value: unknown) {
  * Build a partial form state by reading entity metadata fields and
  * mapping them to the tool's dot-notation paths.
  */
-function buildFormPatch(
-  entity: Entity,
+export function buildFormPatch(
+  entity: Pick<WorldEntry, "entry_type" | "metadata">,
   toolSlug: string
 ): Record<string, unknown> {
   const fields: MasterFieldDef[] =
-    ENTITY_MASTER_FIELDS[entity.entity_type] ?? [];
+    ENTITY_MASTER_FIELDS[entity.entry_type] ?? [];
   const metadata = (entity.metadata ?? {}) as Record<string, unknown>;
   const patch: Record<string, unknown> = {};
 
@@ -71,7 +75,7 @@ function buildFormPatch(
 
 export interface EntityPrepopulateResult {
   /** The entity fetched via ?entityId=, or null. */
-  entity: Entity | null;
+  entity: WorldEntry | null;
   /** Entity's name, use for worksheet title pre-fill. */
   entityName: string | null;
   /**
@@ -92,16 +96,9 @@ export interface EntityPrepopulateResult {
 export function useEntityPrepopulate(
   toolSlug: string
 ): EntityPrepopulateResult {
-  const worldId = useWorldId();
-  const [searchParams] = useSearchParams();
-  const entityId = searchParams.get("entityId");
-
-  const { data: entities = [] } = useEntities(worldId ?? undefined);
-
-  const entity = useMemo(
-    () => (entityId ? entities.find((e) => e.id === entityId) ?? null : null),
-    [entityId, entities]
-  );
+  const subject = useSubjectEntity();
+  const entity = subject.entry;
+  const entityId = subject.id;
 
   const formPatch = useMemo(
     () => (entity ? buildFormPatch(entity, toolSlug) : {}),
@@ -111,23 +108,15 @@ export function useEntityPrepopulate(
   const linkWorksheet = useCallback(
     async (worksheetId: string) => {
       if (!entityId) return;
-      // Upsert the entity_worksheets junction row
-      const { error } = await supabase
-        .from("entity_worksheets")
-        .upsert(
-          { entity_id: entityId, worksheet_id: worksheetId, is_primary: true },
-          { onConflict: "entity_id,worksheet_id" }
-        );
-      if (error) {
-        console.warn("[entity-prepopulate] link failed:", error.message);
-      }
+      const res = await attachWorksheetToEntity(entityId, worksheetId);
+      if (!res.ok) console.warn("[entity-prepopulate] link failed:", "error" in res ? res.error : "unknown");
     },
     [entityId]
   );
 
   return {
     entity,
-    entityName: entity?.name ?? null,
+    entityName: entity?.title ?? null,
     formPatch,
     linkWorksheet,
     hasEntityId: !!entityId,
