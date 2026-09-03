@@ -1,27 +1,14 @@
-import { useParams } from "react-router-dom";
-import { useWorldLayoutContext } from "@/contexts/WorldLayoutContext";
-import { WikiPage } from "@/components/world/WikiPage";
+import { Navigate, useParams } from "react-router-dom";
 
 /**
- * Route component for /worlds/:worldId/pages/:entryId
- * Renders WikiPage inside the WorldLayout (Codex sidebar visible).
+ * /worlds/:worldId/pages/:entryId — the pre-F1 address of an entity page.
+ * Redirects to the canonical /codex/:entityId. Kept so every link the app
+ * ever produced (and every bookmark) still lands.
  */
 const WikiPageRoute = () => {
-  const { entryId } = useParams<{ entryId: string }>();
-  const layoutContext = useWorldLayoutContext();
-  const worldId = layoutContext?.worldId ?? "";
-
-  if (!worldId || !entryId) {
-    return (
-      <div className="flex items-center justify-center h-full">
-        <p className="font-mono text-xs uppercase tracking-wider text-t3/50">
-          Page not found.
-        </p>
-      </div>
-    );
-  }
-
-  return <WikiPage worldId={worldId} entryId={entryId} />;
+  const { worldId, entryId } = useParams<{ worldId: string; entryId: string }>();
+  if (!worldId || !entryId) return <Navigate to="/worlds" replace />;
+  return <Navigate to={`/worlds/${worldId}/codex/${entryId}`} replace />;
 };
 
 export default WikiPageRoute;

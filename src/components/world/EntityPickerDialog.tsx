@@ -108,7 +108,7 @@ export default function EntityPickerDialog({
       });
 
       handleOpenChange(false);
-      navigate(`/worlds/${worldId}/pages/${entry.id}`);
+      navigate(`/worlds/${worldId}/codex/${entry.id}`);
     } catch {
       // Error toast is handled by the mutation's onError callback
     }

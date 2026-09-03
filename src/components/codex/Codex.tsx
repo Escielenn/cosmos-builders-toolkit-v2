@@ -171,11 +171,11 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
   const navigateToWiki = useCallback(
     (element: CodexElement) => {
       if (element.kind === "entry" && element.entryId) {
-        navigate(`/worlds/${worldId}/pages/${element.entryId}`);
+        navigate(`/worlds/${worldId}/codex/${element.entryId}`);
       } else if (element.kind === "worksheet") {
         // Worksheet elements: navigate to entry if linked, otherwise tool
         if (element.entryId) {
-          navigate(`/worlds/${worldId}/pages/${element.entryId}`);
+          navigate(`/worlds/${worldId}/codex/${element.entryId}`);
         } else {
           navigateToTool(element);
         }

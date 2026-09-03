@@ -119,7 +119,7 @@ export default function WikiBrowse() {
         user.id
       );
       queryClient.invalidateQueries({ queryKey: ["codex-data", worldId] });
-      navigate(`/worlds/${worldId}/pages/${entry.id}`);
+      navigate(`/worlds/${worldId}/codex/${entry.id}`);
     } catch {
       // Entry creation failed silently, user will see no navigation
     }
@@ -325,10 +325,10 @@ export default function WikiBrowse() {
               ENTITY_TYPE_ICONS[entry.type] || "FileText"
             );
             const targetPath = entry.entryId
-              ? `/worlds/${worldId}/pages/${entry.entryId}`
+              ? `/worlds/${worldId}/codex/${entry.entryId}`
               : entry.toolSource && entry.toolDataId
               ? `/worlds/${worldId}/tools/${entry.toolSource}?worksheetId=${entry.toolDataId}`
-              : `/worlds/${worldId}/pages/${entry.id}`;
+              : `/worlds/${worldId}/codex/${entry.id}`;
 
             return (
               <Link key={entry.id} to={targetPath} className="group">

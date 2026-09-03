@@ -110,7 +110,7 @@ const WorldLayout = () => {
     const handler = (e: Event) => {
       const detail = (e as CustomEvent).detail;
       if (detail?.elementId) {
-        navigate(`/worlds/${worldId}/pages/${detail.elementId}`);
+        navigate(`/worlds/${worldId}/codex/${detail.elementId}`);
       }
     };
     window.addEventListener("sf-navigate-element", handler);

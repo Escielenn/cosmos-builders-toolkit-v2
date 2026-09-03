@@ -392,7 +392,7 @@ const SortableWorksheetGroup = ({
             <div className="flex items-center gap-1 shrink-0">
               {worksheetEntryMap.get(worksheet.id) && (
                 <Button variant="ghost" size="icon" className="h-8 w-8" asChild title="Wiki page">
-                  <Link to={`/worlds/${worldId}/pages/${worksheetEntryMap.get(worksheet.id)}`}>
+                  <Link to={`/worlds/${worldId}/codex/${worksheetEntryMap.get(worksheet.id)}`}>
                     <BookOpen className="w-3.5 h-3.5" />
                   </Link>
                 </Button>
@@ -962,7 +962,7 @@ const WorldDashboard = () => {
                       {entries.map((entry) => (
                         <Link
                           key={entry.id}
-                          to={`/worlds/${worldId}/pages/${entry.id}`}
+                          to={`/worlds/${worldId}/codex/${entry.id}`}
                         >
                           <GlassPanel className="p-3 hover:bg-accent/50 transition-colors cursor-pointer group">
                             <div className="flex items-center gap-2">

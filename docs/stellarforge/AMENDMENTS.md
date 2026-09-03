@@ -38,6 +38,29 @@ only outcome that's actually bad.
 
 ## Log
 
+## 2026-09-03 · FINDING — two entity models (`world_entries` vs `entities`)
+
+**Touches:** 02-ARCHITECTURE (Entity), Forbidden Pattern: Parallel Truth
+**Scope:** the whole app; surfaced while building F1
+**What:** the codebase carries TWO entity tables. `world_entries` is what
+  `entity_worksheets`, `chronicle_events.linked_entry_id` and
+  `writing_entry_entities` reference — worksheets, facts, chronicle and
+  manuscript mentions all resolve here. `entities` + `entity_connections`
+  is the graph model (typed edges, cascade stage, graph_x/y) used by
+  EntitySidebar, EntityTreeView, the @mention extension and `scene_pins`.
+  A planet can exist in both, with different ids, and nothing joins them.
+**Decision for F1:** `:entityId` means `world_entries.id`. That is where
+  the facts are, and the Prime Law says facts → sentences. The page's
+  Relations section reads `world_connections` (untyped) for now.
+**Instead (F3, "one graph"):** fold `entities`/`entity_connections` into
+  `world_entries`/`world_connections` — migrate `entity_connections` rows
+  onto typed `world_connections.connection_type` (the vocabulary in
+  `entity-graph-types.ts` RELATIONSHIP_TYPES_BY_STAGE is the right one),
+  repoint `scene_pins.entity_id` and the EntityMention extension, then
+  drop `entities`. Until then `sf-navigate-entity` (mentions) and
+  `sf-navigate-element` (wiki links) go to different places.
+**Revisit:** F3.
+
 ## 2026-09-02 · Generated twins (`--x-hsl`, `--x-rgb`) are the ONLY bridge to the shadcn layer
 
 **Touches:** Legibility — "tokens.css is the single source of truth"

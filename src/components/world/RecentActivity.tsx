@@ -82,7 +82,7 @@ export default function RecentActivity({ worldId }: RecentActivityProps) {
           name: e.title || "Untitled Entry",
           type: "entry",
           updatedAt: e.updated_at,
-          linkTo: `/worlds/${worldId}/pages/${e.id}`,
+          linkTo: `/worlds/${worldId}/codex/${e.id}`,
         });
       }
 

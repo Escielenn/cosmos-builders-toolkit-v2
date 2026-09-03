@@ -109,7 +109,7 @@ export function EventCard({
             type="button"
             onClick={(e) => {
               e.stopPropagation();
-              navigate(`/worlds/${worldId}/pages/${event.linkedEntryId}`);
+              navigate(`/worlds/${worldId}/codex/${event.linkedEntryId}`);
             }}
             className="inline-flex items-center gap-1"
           >

@@ -18,6 +18,11 @@ import { useMyWorldRole } from "@/hooks/use-collaborators";
 import FirstTimeHint from "@/components/onboarding/FirstTimeHint";
 import { EntryTagsBar } from "@/components/tags/EntryTagsBar";
 import { sanitizeHtml } from "@/lib/sanitize";
+import FactInfobox from "./FactInfobox";
+import { EntityMentionsSection, EntityChronicleSection } from "./EntityRecordSections";
+import { useCodexEntity } from "@/hooks/use-codex-entity";
+import { useUpdateEntityMetadata } from "@/hooks/use-world-entities";
+import { entityAliases, parseAliases, entityEpochRange, formatEpochRange } from "@/lib/codex-entity";
 
 const WikiEditor = lazy(() =>
   import("@/components/editor/WikiEditor").then((m) => ({
@@ -48,6 +53,34 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
     updateCoverImage,
     isSaving,
   } = useWikiPage(worldId, entryId);
+
+  // Brief F1: this page IS the entity's page. Everything below is derived
+  // from the entity's own record and the worksheets attached to it.
+  const codex = useCodexEntity(worldId, entryId);
+  const updateMetadata = useUpdateEntityMetadata(worldId);
+  const entryMeta = (entry?.metadata as Record<string, unknown> | null) ?? {};
+  const aliases = entityAliases(entryMeta);
+  const epochLabel = formatEpochRange(entityEpochRange(entryMeta));
+  const [aliasDraft, setAliasDraft] = useState<string | null>(null);
+  const [epochDraft, setEpochDraft] = useState<{ from: string; to: string } | null>(null);
+  const commitAliases = useCallback(() => {
+    if (aliasDraft === null || !entry) return;
+    const next = parseAliases(aliasDraft);
+    setAliasDraft(null);
+    if (JSON.stringify(next) !== JSON.stringify(aliases)) {
+      updateMetadata.mutate({ entryId: entry.id, metadata: { ...entryMeta, aliases: next } });
+    }
+  }, [aliasDraft, entry, aliases, entryMeta, updateMetadata]);
+  const commitEpoch = useCallback(() => {
+    if (epochDraft === null || !entry) return;
+    const cur = entityEpochRange(entryMeta);
+    const from = epochDraft.from.trim() || null;
+    const to = epochDraft.to.trim() || null;
+    setEpochDraft(null);
+    if (from !== cur.from || to !== cur.to) {
+      updateMetadata.mutate({ entryId: entry.id, metadata: { ...entryMeta, epoch_from: from, epoch_to: to } });
+    }
+  }, [epochDraft, entry, entryMeta, updateMetadata]);
 
   const [isEditing, setIsEditing] = useState(false);
   const [editingTitle, setEditingTitle] = useState("");
@@ -160,7 +193,7 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
 
   const handleNavigateToEntry = useCallback(
     (targetEntryId: string) => {
-      navigate(`/worlds/${worldId}/pages/${targetEntryId}`);
+      navigate(`/worlds/${worldId}/codex/${targetEntryId}`);
     },
     [navigate, worldId]
   );
@@ -216,7 +249,7 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
           </Link>
           <ChevronRight className="w-3 h-3" />
           <Link to={`/worlds/${worldId}/wiki`} className="hover:text-t2 transition-colors">
-            Wiki
+            Codex
           </Link>
           <ChevronRight className="w-3 h-3" />
           <span className="text-t3 truncate max-w-[200px]">{entry?.title}</span>
@@ -289,6 +322,12 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
             <span>{layerLabel.toUpperCase()}</span>
           </>
         )}
+        {epochLabel && !(canEdit && isEditing) && (
+          <>
+            <span className="text-t4">&middot;</span>
+            <span className="font-mono text-t3" title="Epoch range">{epochLabel}</span>
+          </>
+        )}
         {isDraft && (
           <span className="ml-2 px-1.5 py-0.5 bg-sf-amber/[0.06] border border-sf-amber text-sf-amber text-[12px] uppercase tracking-widest">
             Draft
@@ -308,6 +347,54 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
           </label>
         )}
       </div>
+
+      {/* Aliases · epoch range (Brief F1 §1). Stored on metadata; edited inline. */}
+      {(aliases.length > 0 || (canEdit && isEditing)) && (
+        <div className="mt-1 flex flex-wrap items-center gap-1.5 font-mono text-[12px] uppercase tracking-wider text-t3">
+          <span className="text-t4">AKA</span>
+          {canEdit && isEditing ? (
+            <input
+              type="text"
+              aria-label="Aliases, comma separated"
+              value={aliasDraft ?? aliases.join(", ")}
+              onChange={(e) => setAliasDraft(e.target.value)}
+              onBlur={commitAliases}
+              onKeyDown={(e) => { if (e.key === "Enter") (e.target as HTMLInputElement).blur(); }}
+              placeholder="Other names, comma separated"
+              className="min-h-[36px] min-w-[240px] flex-1 border border-sf-line-interactive bg-sf-surface px-2 text-[13px] normal-case tracking-normal text-t1"
+            />
+          ) : (
+            aliases.map((a) => (
+              <span key={a} className="border border-sf-line px-1.5 py-0.5 normal-case tracking-normal text-t2">{a}</span>
+            ))
+          )}
+        </div>
+      )}
+      {canEdit && isEditing && (
+        <div className="mt-1 flex flex-wrap items-center gap-1.5 font-mono text-[12px] uppercase tracking-wider text-t3">
+          <span className="text-t4">EPOCH</span>
+          <input
+            type="text"
+            aria-label="Epoch from"
+            value={epochDraft?.from ?? entityEpochRange(entryMeta).from ?? ""}
+            onChange={(e) => setEpochDraft({ from: e.target.value, to: epochDraft?.to ?? entityEpochRange(entryMeta).to ?? "" })}
+            onBlur={commitEpoch}
+            placeholder="from"
+            className="min-h-[36px] w-32 border border-sf-line-interactive bg-sf-surface px-2 text-[13px] normal-case tracking-normal text-t1"
+          />
+          <span className="text-t4">—</span>
+          <input
+            type="text"
+            aria-label="Epoch to"
+            value={epochDraft?.to ?? entityEpochRange(entryMeta).to ?? ""}
+            onChange={(e) => setEpochDraft({ from: epochDraft?.from ?? entityEpochRange(entryMeta).from ?? "", to: e.target.value })}
+            onBlur={commitEpoch}
+            placeholder="to"
+            className="min-h-[36px] w-32 border border-sf-line-interactive bg-sf-surface px-2 text-[13px] normal-case tracking-normal text-t1"
+          />
+          <span className="text-t4">IN THE WORLD'S OWN CALENDAR · BLANK = ALWAYS</span>
+        </div>
+      )}
 
       {/* Tags */}
       {((canEdit && isEditing) || ((entry as any).tags ?? []).length > 0) && (
@@ -351,6 +438,14 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
           </div>
         ) : null;
       })()}
+
+      {/* Generated infobox — facts on file about this entity, with provenance.
+          Never hand-edited; the master fields below are the hand-kept identity. */}
+      {!toolSource && entry && (
+        <div className="mt-4">
+          <FactInfobox worldId={worldId} rows={codex.infobox} isLoading={codex.isLoading} />
+        </div>
+      )}
 
       {/* Entity Master Infobox + Worksheet Launchers (entity-first entries) */}
       {!toolSource && entry && (
@@ -477,6 +572,12 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
           </div>
         </>
       )}
+
+      {/* Mentioned in — manuscript documents linked to this entity */}
+      <EntityMentionsSection mentions={codex.mentions} />
+
+      {/* Chronicle — events touching this entity */}
+      <EntityChronicleSection worldId={worldId} events={codex.events} />
 
       {/* From the Tools */}
       {toolSource && (

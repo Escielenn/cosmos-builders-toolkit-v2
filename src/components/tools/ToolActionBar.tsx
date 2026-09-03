@@ -69,7 +69,7 @@ const ToolActionBar = ({
   const { data: linkedEntryId } = useLinkedEntryId(worldId, worksheetId);
   const handleWikiClick = onWikiClick ?? (
     linkedEntryId && worldId
-      ? () => navigate(`/worlds/${worldId}/pages/${linkedEntryId}`)
+      ? () => navigate(`/worlds/${worldId}/codex/${linkedEntryId}`)
       : undefined
   );
   const [showBottomBar, setShowBottomBar] = useState(false);
