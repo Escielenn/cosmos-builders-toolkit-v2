@@ -129,6 +129,7 @@ Big, as asked. Organised by parent, tiered by leverage. **Every item passed the 
 - **Outliner** — table view: title, synopsis, POV, setting, epoch, status, label, words, target.
 - **Document metadata** — label, status, POV entity, `set_in` entity, epoch, target words, notes. ◆`04`.
 - **Compile** — DOCX, PDF, EPUB, Markdown. Presets (manuscript, paperback, ebook). Front/back matter. Separators. Per-document include/exclude.
+  *Implementation note (2026-09-03, from the writing-tools shortlist):* the in-browser `@react-pdf/renderer` path already in the repo is right for the **World Bible** — it wears the design system. For **manuscript** output (DOCX, EPUB, `.scriv`) the quality bar is Pandoc, which needs a server-side job: a Supabase Edge Function or Trigger.dev task that takes the compiled HTML and returns the file. Don't try to reach DOCX quality in the browser.
 - **Snapshots** — versioned captures, diff, restore. ◆`04`.
 - **Targets** — session, document, project, with a deadline and daily pace. The `0 / 500 TODAY` widget, finished.
 - **Search** — across binder, regex, replace, scoped to a folder.
@@ -207,6 +208,7 @@ All in `14-RENDER-ENGINE.md`. The headline: **one engine (`forge-gl`), five scen
 - **Command palette** — ⌘K, as above.
 - **Onboarding** — "Begin survey": name a world → pick a star → the Bridge appears with three Situations already waiting. Under five minutes to the first *"oh."*
 - **Collaboration** — shared worlds with roles; co-authors *propose* facts into a queue (the `proposed` confidence tier does this for free); comments on entities and scenes. Real-time cursors stay out.
+  *Later, if ever:* simultaneous editing of one document is Yjs over Supabase Realtime (Tiptap has first-party bindings) or PartyKit. It is a Block after G, not before — the `proposed` queue covers 90% of co-authoring, and Yjs changes how documents are stored.
 - **World version history** — snapshots of the *world*, not just documents. Restore a world to last Tuesday.
 - **Notifications digest** — weekly: new Situations, contradictions, canon-changed scenes. Ship's Voice, email.
 - **Reader mode** — the public world on a phone. Read-only, fast, epoch-scrubbable.

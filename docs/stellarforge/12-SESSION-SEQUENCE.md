@@ -58,6 +58,9 @@ Grouped into four blocks. Each block ends with something demonstrable. **Don't r
 | G5 | Sky scene → ExoSky | `14` §6 | ~1 week | precession renders |
 | G6 | Encounter scene → Rogue | `14` §6 | ~1 week | ejection is visible |
 | G7 | Chart tier, light themes, integrated-GPU pass | `14` §6 | ~1 week | works on a MacBook Air |
+| | **BLOCK H — after G, only if the user base warrants** | | | |
+| H1 | Compile via Pandoc job (DOCX/EPUB/.scriv) | `13` §2.2 note | ~1 week | a manuscript Word file a publisher accepts |
+| H2 | Real-time co-editing (Yjs over Supabase Realtime) | `13` §2.5 note | ~2 weeks | two cursors, one document, no lost keystrokes |
 | | **BLOCK C — the constellation** | | | |
 | C1 | Publish / open-on | `11` → Brief S1 | ~1 week | Solaris planet → ExoSky, one click |
 | C2 | The facts table | `12` → Brief C2 below | ~3 days | Asserted facts persist |
