@@ -19,11 +19,13 @@ import { extractSimulationFacts } from "@/lib/simulation-facts";
 import { SceneProseButton } from "@/components/simulators/SceneProseButton";
 import { readTidelockSeed } from "@/lib/simulators/published-facts";
 import { getEntry } from "@/services/world-entries";
+import { useSubjectEntityId } from "@/hooks/use-subject-entity";
 
 const TidelockSimulator = () => {
   const [loaded, setLoaded] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const worldId = useWorldId();
+  const subjectEntityId = useSubjectEntityId();
   const [searchParams, setSearchParams] = useSearchParams();
   const narrativeBridge = useNarrativeBridge();
   const [loadSheetOpen, setLoadSheetOpen] = useState(false);
@@ -163,8 +165,9 @@ const TidelockSimulator = () => {
   const entitySent = useRef(false);
   useEffect(() => {
     if (!loaded || entitySent.current) return;
-    const entityId = searchParams.get("entity");
-    if (!entityId || searchParams.get("handoff")) return;
+    // ?entityId= (F4's spelling) or the legacy ?entity= this shipped on.
+    if (!subjectEntityId || searchParams.get("handoff")) return;
+    const entityId = subjectEntityId;
     const iframe = iframeRef.current;
     if (!iframe?.contentWindow) return;
     entitySent.current = true;
@@ -190,9 +193,10 @@ const TidelockSimulator = () => {
       .finally(() => {
         const next = new URLSearchParams(searchParams);
         next.delete("entity");
+        next.delete("entityId");
         setSearchParams(next, { replace: true });
       });
-  }, [loaded, searchParams, refreshPayload, setSearchParams]);
+  }, [loaded, subjectEntityId, searchParams, refreshPayload, setSearchParams]);
 
   return (
     <>

@@ -15,25 +15,55 @@ import { getEntry } from "@/services/world-entries";
 import type { WorldEntry } from "@/services/world-data";
 
 export const SUBJECT_PARAM = "entityId";
+/**
+ * The simulators shipped open-on before the tool pages did, on `?entity=`
+ * (Brief S1 as written). F4 then settled on `?entityId=` for tools. One
+ * subject, one hook, both spellings — every link the app writes now uses
+ * `entityId`, and `entity` keeps old links and bookmarks working.
+ */
+export const SUBJECT_PARAM_LEGACY = "entity";
+/** Which epoch to read the subject at (Law V). */
+export const EPOCH_PARAM = "epoch";
+
+function clean(raw: string | null): string | null {
+  return raw && raw.trim() ? raw.trim() : null;
+}
 
 /** The subject id from the URL, or null. Pure read; no fetch. */
 export function useSubjectEntityId(): string | null {
   const [searchParams] = useSearchParams();
-  const raw = searchParams.get(SUBJECT_PARAM);
-  return raw && raw.trim() ? raw.trim() : null;
+  return (
+    clean(searchParams.get(SUBJECT_PARAM)) ??
+    clean(searchParams.get(SUBJECT_PARAM_LEGACY))
+  );
+}
+
+/**
+ * The epoch the subject should be read at, or null for "the present".
+ * Parsed, not trusted: a non-numeric ?epoch= is no epoch at all.
+ */
+export function useSubjectEpoch(): number | null {
+  const [searchParams] = useSearchParams();
+  const raw = clean(searchParams.get(EPOCH_PARAM));
+  if (raw === null) return null;
+  const n = Number(raw);
+  return Number.isFinite(n) ? n : null;
 }
 
 export interface SubjectEntity {
   id: string | null;
   entry: WorldEntry | null;
+  /** From ?epoch=; null means the present. */
+  epoch: number | null;
   isLoading: boolean;
-  /** An id was given but no such entry exists (deleted, wrong world, or a legacy `entities` id). */
+  /** An id was given but no such entry exists (deleted, or the wrong world). */
   isMissing: boolean;
 }
 
 /** The subject entity itself, fetched from world_entries. */
 export function useSubjectEntity(): SubjectEntity {
   const id = useSubjectEntityId();
+  const epoch = useSubjectEpoch();
   const q = useQuery({
     queryKey: ["subject-entity", id],
     queryFn: () => getEntry(id!),
@@ -43,6 +73,7 @@ export function useSubjectEntity(): SubjectEntity {
   return {
     id,
     entry: q.data ?? null,
+    epoch,
     isLoading: !!id && q.isLoading,
     isMissing: !!id && !q.isLoading && !q.data,
   };

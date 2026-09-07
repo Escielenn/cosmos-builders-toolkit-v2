@@ -51,6 +51,15 @@ export interface PublishedFact {
 export interface PublishProvenance {
   kind: "sim";
   tool_id: string;
+  /**
+   * Which run produced these values (Brief S1, and the SimRun contract in
+   * 02-ARCHITECTURE). Law II: a number the writer cannot trace is a number
+   * the writer will not trust — `run_id` is what makes "where did this come
+   * from" answerable after the fact.
+   */
+  run_id: string;
+  /** The run's seed when the simulator is seeded; null when it is not. */
+  seed: string | number | null;
   published_at: string; // ISO
 }
 
@@ -126,14 +135,49 @@ export function publishedFactsSummary(facts: PublishedFact[]): string {
  * object shape still matches PublishedEntityMetadata exactly — that type
  * exists to document the shape for readers, not to round-trip through here.
  */
+/**
+ * A run id for a publish that has no simulator-supplied one.
+ *
+ * Deliberately not a hash of the payload: two identical runs published twice
+ * are two events, and the Chronicle has to be able to tell them apart.
+ */
+export function newRunId(): string {
+  return typeof crypto !== "undefined" && "randomUUID" in crypto
+    ? crypto.randomUUID()
+    : `run-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+}
+
+export interface PublishSource {
+  toolId: string;
+  runId?: string;
+  seed?: string | number | null;
+}
+
 export function buildPublishedMetadata(
   facts: PublishedFact[],
-  toolId: string,
+  source: string | PublishSource,
 ): Record<string, unknown> {
+  const src: PublishSource = typeof source === "string" ? { toolId: source } : source;
   return {
     _published_facts: facts,
-    _source: { kind: "sim", tool_id: toolId, published_at: new Date().toISOString() },
+    _source: {
+      kind: "sim",
+      tool_id: src.toolId,
+      run_id: src.runId ?? newRunId(),
+      seed: src.seed ?? null,
+      published_at: new Date().toISOString(),
+    },
   } satisfies PublishedEntityMetadata;
+}
+
+/** Provenance recorded on an entry, or null if it was never published. */
+export function readPublishProvenance(
+  entry: WorldEntry | null | undefined,
+): PublishProvenance | null {
+  if (!entry) return null;
+  const meta = entry.metadata as Record<string, unknown> | null;
+  const src = meta?._source as PublishProvenance | undefined;
+  return src && src.kind === "sim" ? src : null;
 }
 
 // ---------------------------------------------------------------------------

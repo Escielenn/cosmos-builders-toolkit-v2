@@ -3,6 +3,7 @@ import { Save, FolderOpen, Rocket } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useWorldId } from "@/hooks/use-world-id";
 import { useSimulationSave } from "@/hooks/use-simulation-save";
+import { useSimOpenOn } from "@/hooks/use-sim-open-on";
 import SaveSimulationDialog from "@/components/simulators/SaveSimulationDialog";
 import LoadSimulationSheet from "@/components/simulators/LoadSimulationSheet";
 import PublishToWorldDialog from "@/components/simulators/PublishToWorldDialog";
@@ -36,6 +37,11 @@ const RogueSimulator = () => {
     worldId,
     iframeRef,
   });
+
+  // open-on (Brief S1): ?entityId=<uuid> seeds this run from the entity's
+  // canon. The sim never learns which tool published it — open-on.ts reads
+  // predicates by name.
+  useSimOpenOn({ simulatorType: "rogue", iframeRef, loaded, refreshPayload });
 
   // Brief S4: consequence flags over what the encounter actually did.
   // sim.html posts results.bodies[] (pre/post semi-major axis, eccentricity,

@@ -14,6 +14,7 @@ import { SIMULATOR_NARRATIVE_CONFIGS } from "@/lib/simulator-narrative-questions
 import { decodeHandoff, type HandoffPayload } from "@/lib/simulators/handoff";
 import { getEntry } from "@/services/world-entries";
 import { reconstructSolarisHandoff } from "@/lib/simulators/published-facts";
+import { useSubjectEntityId } from "@/hooks/use-subject-entity";
 
 /**
  * A Solaris planet has an orbital distance in AU but no galactic position;
@@ -52,7 +53,7 @@ const ExoskySimulator = () => {
   // HandoffPayload shape the ?handoff= path already produces — see
   // reconstructSolarisHandoff's doc comment for why that's reuse, not a new
   // tool-to-tool coupling.
-  const entityId = searchParams.get("entity");
+  const entityId = useSubjectEntityId();
   const [entityHandoffPayload, setEntityHandoffPayload] = useState<HandoffPayload | null>(null);
   useEffect(() => {
     if (!entityId) {

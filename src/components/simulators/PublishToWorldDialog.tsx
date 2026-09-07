@@ -10,7 +10,7 @@
  * Spec: StellarForge_Final_Remediation_Spec_v2, Issue 4
  */
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import { Rocket, Globe } from "lucide-react";
 import {
   Dialog,
@@ -32,6 +32,8 @@ import { findFuzzyNameMatches, type EntityMatchCandidate } from "@/services/enti
 import EntityMatchDialog from "@/components/tools/EntityMatchDialog";
 import type { SimulatorPayload } from "@/hooks/use-simulation-save";
 import type { EntryType } from "@/services/world-data";
+import { extractSimulationFacts } from "@/lib/simulation-facts";
+import { newRunId } from "@/lib/simulators/published-facts";
 
 /** Map simulator output types to entity types */
 const OUTPUT_TYPE_MAP: Record<string, EntryType> = {
@@ -66,6 +68,13 @@ export default function PublishToWorldDialog({
   const { user } = useAuth();
   const { toast } = useToast();
   const [name, setName] = useState("");
+  // Brief S1: "Always a reviewable diff first. Never automatic." The same
+  // extractor the Refs panel and the continuity engine read, so what the
+  // dialog lists is exactly what travels.
+  const facts = useMemo(
+    () => (payload ? extractSimulationFacts(simulatorType, payload) : []),
+    [payload, simulatorType],
+  );
   const [isPublishing, setIsPublishing] = useState(false);
   const [matchCandidates, setMatchCandidates] = useState<EntityMatchCandidate[]>([]);
   const [matchDialogOpen, setMatchDialogOpen] = useState(false);
@@ -148,6 +157,19 @@ export default function PublishToWorldDialog({
           entryType,
           metadata: {
             _simulator_source: simulatorType,
+            // Law II, provenance up: which run produced these numbers.
+            _source: {
+              kind: "sim" as const,
+              tool_id: simulatorType,
+              run_id: newRunId(),
+              seed:
+                (payload?.parameters as Record<string, unknown> | undefined)?.seed as
+                  | string
+                  | number
+                  | null
+                  | undefined ?? null,
+              published_at: new Date().toISOString(),
+            },
             _simulator_data: payload?.parameters ?? {},
             _simulator_results: payload?.results ?? {},
             ...(narrativeNotes && Object.keys(narrativeNotes).length > 0
@@ -253,9 +275,30 @@ export default function PublishToWorldDialog({
                 hour on should not have to open the Codex to find out whether the
                 numbers came with it. */}
             {hasData ? (
-              <p className="text-[13px] text-t4 font-mono uppercase tracking-wider">
-                + {fieldCount} {fieldCount === 1 ? "value" : "values"} from the simulation
-              </p>
+              facts.length > 0 ? (
+                <div className="border border-sf-line-interactive">
+                  <div className="border-b border-sf-line-hairline px-3 py-1.5 font-mono text-[12px] uppercase tracking-wider text-t3">
+                    Promote {facts.length} {facts.length === 1 ? "value" : "values"} to canon
+                  </div>
+                  <ul className="sf-sb max-h-40 overflow-y-auto">
+                    {facts.map((f) => (
+                      <li
+                        key={f.key}
+                        className="flex items-baseline justify-between gap-3 px-3 py-1"
+                      >
+                        <span className="text-[13px] text-t3">{f.label}</span>
+                        <span className="shrink-0 font-mono text-[13px] text-t1">
+                          {f.value}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : (
+                <p className="font-mono text-[13px] uppercase tracking-wider text-t4">
+                  + {fieldCount} {fieldCount === 1 ? "value" : "values"} from the simulation
+                </p>
+              )
             ) : (
               <p className="text-[13px] leading-relaxed text-sf-amber">
                 Reading the simulation. If this does not clear in a moment, close
