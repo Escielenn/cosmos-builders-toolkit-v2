@@ -1,0 +1,258 @@
+// ---------------------------------------------------------------------------
+// CodexAtlasView — the Codex's spatial view (F5, 13-THE-LIFT.md §1).
+//
+// "The Stellar Cartographer promoted from a Pro toy to the map of the world."
+// The Cartographer generates a galaxy; this shows the writer's own. Every pin
+// is an entity that already exists, and clicking one lands on its Codex page —
+// the same destination as the List and the Web, because there is one URL per
+// thing.
+//
+// Zoom is the entity hierarchy, not a scale factor: the galaxy level shows
+// systems, clicking into one shows what is inside it. That is what "galaxy →
+// system → planet → region" means when the map is made of entities.
+//
+// Entities the writer has not placed sit in a tray, visible and named. They
+// are never scattered onto the map — see lib/atlas/placement.ts.
+// ---------------------------------------------------------------------------
+
+import { useCallback, useMemo, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { ChevronRight, Crosshair, MapPin } from "lucide-react";
+import { Loader } from "@/components/ui/loader";
+import { useEntities, useUpdateEntity } from "@/hooks/use-entity-graph";
+import {
+  atlasPins,
+  canZoomInto,
+  placedPins,
+  placementPatch,
+  unplacedPins,
+  type AtlasPin,
+} from "@/lib/atlas/placement";
+import {
+  CASCADE_STAGE_COLORS,
+  ENTITY_TYPE_COLORS,
+  ENTITY_TYPE_LABELS,
+} from "@/services/entity-graph-types";
+
+interface CodexAtlasViewProps {
+  worldId: string;
+}
+
+interface Crumb {
+  id: string | null;
+  label: string;
+}
+
+export function CodexAtlasView({ worldId }: CodexAtlasViewProps) {
+  const navigate = useNavigate();
+  const { data: entities, isLoading } = useEntities(worldId);
+  const updateEntity = useUpdateEntity(worldId);
+
+  const [trail, setTrail] = useState<Crumb[]>([{ id: null, label: "Galaxy" }]);
+  const here = trail[trail.length - 1];
+
+  const mapRef = useRef<HTMLDivElement>(null);
+  const [dragging, setDragging] = useState<string | null>(null);
+
+  const all = useMemo(() => entities ?? [], [entities]);
+  const pins = useMemo(() => atlasPins(all, here.id), [all, here.id]);
+  const placed = useMemo(() => placedPins(pins), [pins]);
+  const unplaced = useMemo(() => unplacedPins(pins), [pins]);
+
+  const place = useCallback(
+    (id: string, clientX: number, clientY: number) => {
+      const box = mapRef.current?.getBoundingClientRect();
+      if (!box || box.width === 0 || box.height === 0) return;
+      updateEntity.mutate({
+        id,
+        metadata: placementPatch({
+          x: (clientX - box.left) / box.width,
+          y: (clientY - box.top) / box.height,
+        }),
+      });
+    },
+    [updateEntity],
+  );
+
+  const onMapDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
+      const id = e.dataTransfer.getData("text/sf-entity") || dragging;
+      if (id) place(id, e.clientX, e.clientY);
+      setDragging(null);
+    },
+    [dragging, place],
+  );
+
+  const zoomInto = useCallback((pin: AtlasPin) => {
+    setTrail((t) => [...t, { id: pin.id, label: pin.name }]);
+  }, []);
+
+  const pinColor = (pin: AtlasPin) =>
+    ENTITY_TYPE_COLORS[pin.entityType] ?? CASCADE_STAGE_COLORS.physics;
+
+  if (isLoading) {
+    return (
+      <div className="flex h-[600px] items-center justify-center">
+        <Loader size="sm" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid grid-cols-1 gap-6 xl:grid-cols-4">
+      <div className="xl:col-span-3">
+        {/* Where you are. Each step back is one click. */}
+        <nav className="mb-3 flex flex-wrap items-center gap-1" aria-label="Atlas level">
+          {trail.map((crumb, i) => (
+            <span key={`${crumb.id ?? "root"}-${i}`} className="flex items-center gap-1">
+              {i > 0 && <ChevronRight className="h-3 w-3 text-t4" aria-hidden />}
+              <button
+                type="button"
+                onClick={() => setTrail((t) => t.slice(0, i + 1))}
+                disabled={i === trail.length - 1}
+                className={`min-h-hit px-2 font-mono text-[12px] uppercase tracking-wider transition-colors ${
+                  i === trail.length - 1
+                    ? "text-t1"
+                    : "text-t3 hover:text-t1"
+                }`}
+              >
+                {crumb.label}
+              </button>
+            </span>
+          ))}
+        </nav>
+
+        <div
+          ref={mapRef}
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={onMapDrop}
+          className="relative aspect-[3/2] w-full overflow-hidden border border-sf-line bg-sf-surface"
+          role="application"
+          aria-label={`Atlas — ${here.label}`}
+        >
+          {/* A grid, not a starfield: this is a chart of what the writer
+              decided, and invented background stars would compete with the
+              pins that are actually theirs. */}
+          <svg className="absolute inset-0 h-full w-full" aria-hidden>
+            <defs>
+              <pattern id="sf-atlas-grid" width="8%" height="12%" patternUnits="objectBoundingBox">
+                <path
+                  d="M 1000 0 L 0 0 0 1000"
+                  fill="none"
+                  style={{ stroke: "var(--sf-line-hairline)" }}
+                  strokeWidth="1"
+                />
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#sf-atlas-grid)" />
+          </svg>
+
+          {placed.map((pin) => (
+            <button
+              key={pin.id}
+              type="button"
+              draggable
+              onDragStart={(e) => {
+                e.dataTransfer.setData("text/sf-entity", pin.id);
+                setDragging(pin.id);
+              }}
+              onDragEnd={() => setDragging(null)}
+              onClick={() => navigate(`/worlds/${worldId}/codex/${pin.id}`)}
+              onDoubleClick={() => canZoomInto(pin) && zoomInto(pin)}
+              style={{
+                left: `${pin.at!.x * 100}%`,
+                top: `${pin.at!.y * 100}%`,
+              }}
+              className="group absolute -translate-x-1/2 -translate-y-1/2 cursor-grab active:cursor-grabbing"
+              title={
+                canZoomInto(pin)
+                  ? `${pin.name} — click to open, double-click to enter`
+                  : `${pin.name} — click to open`
+              }
+            >
+              <span
+                className="block h-3 w-3 rounded-full ring-2 ring-sf-surface transition-transform group-hover:scale-125"
+                style={{ background: pinColor(pin) }}
+              />
+              <span className="pointer-events-none absolute left-1/2 top-4 -translate-x-1/2 whitespace-nowrap text-[12px] text-t2">
+                {pin.name}
+              </span>
+              {canZoomInto(pin) && (
+                <span className="pointer-events-none absolute left-1/2 top-9 -translate-x-1/2 whitespace-nowrap font-mono text-[12px] text-t4">
+                  {pin.childCount} inside
+                </span>
+              )}
+            </button>
+          ))}
+
+          {placed.length === 0 && (
+            <p className="absolute inset-0 flex items-center justify-center px-6 text-center font-mono text-[12px] uppercase tracking-wider text-t3">
+              {pins.length === 0
+                ? here.id === null
+                  ? "NO SYSTEMS ON FILE. CREATE ONE IN THE CODEX."
+                  : "NOTHING INSIDE THIS YET."
+                : "NOTHING PLACED YET. DRAG FROM THE TRAY."}
+            </p>
+          )}
+        </div>
+
+        <p className="mt-2 font-mono text-[12px] uppercase tracking-wider text-t4">
+          Click a pin to open it · double-click to go inside · drag to move
+        </p>
+      </div>
+
+      <aside className="space-y-4">
+        <div className="border border-sf-line bg-sf-surface p-3">
+          <h3 className="mb-2 flex items-center gap-1.5 font-heading text-[12px] uppercase tracking-[2px] text-t3">
+            <MapPin className="h-3 w-3" aria-hidden />
+            Unplaced
+          </h3>
+          {unplaced.length === 0 ? (
+            <p className="text-[13px] text-t3">
+              {pins.length === 0
+                ? "Nothing at this level yet."
+                : "Everything here is on the map."}
+            </p>
+          ) : (
+            <>
+              <ul className="sf-sb max-h-72 space-y-1 overflow-y-auto">
+                {unplaced.map((pin) => (
+                  <li key={pin.id}>
+                    <div
+                      draggable
+                      onDragStart={(e) => {
+                        e.dataTransfer.setData("text/sf-entity", pin.id);
+                        setDragging(pin.id);
+                      }}
+                      onDragEnd={() => setDragging(null)}
+                      className="flex min-h-hit cursor-grab items-center gap-2 border border-sf-line-interactive px-2 active:cursor-grabbing"
+                    >
+                      <span
+                        aria-hidden
+                        className="h-2 w-2 shrink-0 rounded-full"
+                        style={{ background: pinColor(pin) }}
+                      />
+                      <span className="truncate text-[13px] text-t2">{pin.name}</span>
+                      <span className="ml-auto shrink-0 font-mono text-[12px] uppercase tracking-wider text-t4">
+                        {ENTITY_TYPE_LABELS[pin.entityType]}
+                      </span>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-2 flex items-start gap-1.5 text-[12px] leading-relaxed text-t3">
+                <Crosshair className="mt-0.5 h-3 w-3 shrink-0" aria-hidden />
+                Drag one onto the map to place it. Nothing is positioned for
+                you — a pin you did not place would be a guess wearing the
+                same dot as a decision.
+              </p>
+            </>
+          )}
+        </div>
+      </aside>
+    </div>
+  );
+}
+
+export default CodexAtlasView;

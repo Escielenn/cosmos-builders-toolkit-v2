@@ -1,7 +1,7 @@
 /** Register: WRITER (Lora) — reference prose, read at length. */
 import { useCallback, useMemo, useState } from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { List, Network, Plus, Search, FileText, Filter, X } from "lucide-react";
+import { List, Map, Network, Plus, Search, FileText, Filter, X } from "lucide-react";
 import * as LucideIcons from "lucide-react";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Input } from "@/components/ui/input";
@@ -23,6 +23,20 @@ import { format } from "date-fns";
 import TagBadge from "@/components/tags/TagBadge";
 import { getTagColor } from "@/hooks/use-tags";
 import { CodexWebView } from "@/components/connections";
+import CodexAtlasView from "@/components/connections/CodexAtlasView";
+
+/** The Codex's views: projections of one list, never separate places. */
+type CodexView = "list" | "web" | "atlas";
+
+const CODEX_VIEWS: ReadonlyArray<{
+  id: CodexView;
+  label: string;
+  Icon: typeof List;
+}> = [
+  { id: "list", label: "List", Icon: List },
+  { id: "web", label: "Web", Icon: Network },
+  { id: "atlas", label: "Atlas", Icon: Map },
+];
 
 function getIconComponent(iconName: string) {
   const Icon = (LucideIcons as any)[iconName];
@@ -39,16 +53,17 @@ export default function WikiBrowse() {
   // The Codex's views are projections of one list (13-THE-LIFT.md §1).
   // `?view=web` is the address `/graph` and `/connections` collapsed into.
   const [searchParams, setSearchParams] = useSearchParams();
-  const view = searchParams.get("view") === "web" ? "web" : "list";
+  const rawView = searchParams.get("view");
+  const view: CodexView = rawView === "web" || rawView === "atlas" ? rawView : "list";
   const focusEntityId = searchParams.get("focus");
   const openCreate = searchParams.get("create") === "true";
 
   const setView = useCallback(
-    (next: "list" | "web") => {
+    (next: CodexView) => {
       setSearchParams(
         (prev) => {
           const params = new URLSearchParams(prev);
-          if (next === "web") params.set("view", "web");
+          if (next !== "list") params.set("view", next);
           else {
             params.delete("view");
             params.delete("focus");
@@ -164,7 +179,7 @@ export default function WikiBrowse() {
   return (
     <div
       className={`mx-auto px-4 py-6 md:px-6 ${
-        view === "web" ? "max-w-[1400px]" : "max-w-5xl"
+        view === "list" ? "max-w-5xl" : "max-w-[1400px]"
       }`}
     >
       {/* Header */}
@@ -183,32 +198,20 @@ export default function WikiBrowse() {
         <div className="flex items-center gap-2">
           {/* List · Web — two projections of the same rows, not two places. */}
           <div className="flex border border-sf-line" role="group" aria-label="Codex view">
-            <button
-              type="button"
-              onClick={() => setView("list")}
-              aria-pressed={view === "list"}
-              className={`flex min-h-hit items-center gap-1.5 px-3 font-sans text-[12px] uppercase tracking-[1.2px] transition-colors ${
-                view === "list"
-                  ? "bg-sf-surface-elevated text-t1"
-                  : "text-t3 hover:text-t1"
-              }`}
-            >
-              <List className="w-3.5 h-3.5" aria-hidden />
-              List
-            </button>
-            <button
-              type="button"
-              onClick={() => setView("web")}
-              aria-pressed={view === "web"}
-              className={`flex min-h-hit items-center gap-1.5 border-l border-sf-line px-3 font-sans text-[12px] uppercase tracking-[1.2px] transition-colors ${
-                view === "web"
-                  ? "bg-sf-surface-elevated text-t1"
-                  : "text-t3 hover:text-t1"
-              }`}
-            >
-              <Network className="w-3.5 h-3.5" aria-hidden />
-              Web
-            </button>
+            {CODEX_VIEWS.map(({ id, label, Icon }, i) => (
+              <button
+                key={id}
+                type="button"
+                onClick={() => setView(id)}
+                aria-pressed={view === id}
+                className={`flex min-h-hit items-center gap-1.5 px-3 font-sans text-[12px] uppercase tracking-[1.2px] transition-colors ${
+                  i > 0 ? "border-l border-sf-line" : ""
+                } ${view === id ? "bg-sf-surface-elevated text-t1" : "text-t3 hover:text-t1"}`}
+              >
+                <Icon className="w-3.5 h-3.5" aria-hidden />
+                {label}
+              </button>
+            ))}
           </div>
           {view === "list" && (
             <Button
@@ -222,6 +225,8 @@ export default function WikiBrowse() {
           )}
         </div>
       </div>
+
+      {view === "atlas" && worldId && <CodexAtlasView worldId={worldId} />}
 
       {view === "web" && worldId && (
         <CodexWebView
