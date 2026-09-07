@@ -15,6 +15,7 @@ import { decodeHandoff, type HandoffPayload } from "@/lib/simulators/handoff";
 import { getEntry } from "@/services/world-entries";
 import { reconstructSolarisHandoff } from "@/lib/simulators/published-facts";
 import { useSubjectEntityId } from "@/hooks/use-subject-entity";
+import SimSubjectChip from "@/components/simulators/SimSubjectChip";
 
 /**
  * A Solaris planet has an orbital distance in AU but no galactic position;
@@ -171,6 +172,8 @@ const ExoskySimulator = () => {
                 <Save className="w-3 h-3 mr-1" />
                 Save
               </Button>
+              {/* Brief S1: the writer can see what this run is ON. */}
+              <SimSubjectChip worldId={worldId} />
             </div>
           )}
           <NarrativeBridgePanel

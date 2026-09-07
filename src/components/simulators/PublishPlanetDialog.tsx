@@ -112,29 +112,44 @@ export default function PublishPlanetDialog({
                 "{payload?.planetName}" is on file. Open it in another simulator, already pointed at it.
               </DialogDescription>
             </DialogHeader>
+            {/* `entityId` is the canonical subject param (F4); every
+                simulator also still accepts the legacy `entity` these links
+                used to write. ExoForge joined the list once open-on could
+                seed a planet's radius, mass, temperature and period into it. */}
             <div className="mt-3 flex flex-col gap-2">
-              <Button
-                variant="outline"
-                className="justify-between"
-                onClick={() => {
-                  navigate(`/tools/exosky?entity=${publishedId}`);
-                  onOpenChange(false);
-                }}
-              >
-                Open in ExoSky
-                <ArrowRight className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="outline"
-                className="justify-between"
-                onClick={() => {
-                  navigate(`/tools/tidelock?entity=${publishedId}`);
-                  onOpenChange(false);
-                }}
-              >
-                Open in Tidelock
-                <ArrowRight className="h-4 w-4" />
-              </Button>
+              {[
+                { label: "Open in ExoSky", to: `/tools/exosky?entityId=${publishedId}` },
+                { label: "Open in Tidelock", to: `/tools/tidelock?entityId=${publishedId}` },
+                { label: "Open in ExoForge", to: `/tools/exoforge?entityId=${publishedId}` },
+              ].map(({ label, to }) => (
+                <Button
+                  key={to}
+                  variant="outline"
+                  className="justify-between"
+                  onClick={() => {
+                    navigate(to);
+                    onOpenChange(false);
+                  }}
+                >
+                  {label}
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              ))}
+              {/* The required Studio consequence: the planet is in the Codex,
+                  and this is the one URL for it. */}
+              {targetWorld && (
+                <Button
+                  variant="ghost"
+                  className="justify-between"
+                  onClick={() => {
+                    navigate(`/worlds/${targetWorld}/codex/${publishedId}`);
+                    onOpenChange(false);
+                  }}
+                >
+                  See it in the Codex
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              )}
             </div>
             <DialogFooter className="mt-4">
               <Button variant="ghost" onClick={() => onOpenChange(false)}>

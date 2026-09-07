@@ -17,6 +17,7 @@ import PublishPlanetDialog from "@/components/simulators/PublishPlanetDialog";
 import { evaluateSolarisSystemFlags, type SolarisPlanetResult } from "@/sims/flags";
 import { SimFlagStrip } from "@/components/simulators/SimFlagStrip";
 import { useDismissedFlags } from "@/hooks/use-dismissed-flags";
+import SimSubjectChip from "@/components/simulators/SimSubjectChip";
 
 const HANDOFF_ROUTES: Record<string, string> = {
   exosky: "/tools/exosky",
@@ -193,6 +194,8 @@ const SolarisSimulator = () => {
                 <Save className="w-3 h-3 mr-1" />
                 Save
               </Button>
+              {/* Brief S1: the writer can see what this run is ON. */}
+              <SimSubjectChip worldId={worldId} />
               {/* Browses a world's own entities, so it genuinely needs one.
                   Save and Publish do not: they ask which world instead. */}
               {worldId && (
