@@ -241,7 +241,7 @@ Applying the four questions to what exists. **K** = keep as is, **P** = promote,
 | Tidelock | **K** → wire | the first sim to get consequence flags |
 | Rogue | **P** | world-generator, `11` S2 |
 | Exosky | **P** | living sky, `11` S3; feeds Mythos |
-| Stellar Cartographer | **P** | becomes the **Atlas view** of the Codex. Stops being a tool. |
+| Stellar Cartographer | **P** | becomes the **Atlas view** of the Codex. Stops being a tool. *(2026-09-07: the Atlas exists and is the map of the writer's world, but this fold is **G4**, not F5. The Cartographer renders empires, trade routes, wormholes and black holes procedurally; the Atlas has no model for any of them, and will not until the galaxy scene lands on `forge-gl`. Retiring it at F5 would have deleted working capability to satisfy a checkbox.)* |
 | Phylo | **P** | species entity's primary worksheet; emits trait cards |
 | Symbiosis | **P** | becomes Ecology — trophic model, `05` B6 |
 | Sensorium | **P** | the POV rail binding; the demo |
