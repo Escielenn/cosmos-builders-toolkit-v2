@@ -53,6 +53,7 @@ const Worlds = lazy(() => import("./pages/Worlds"));
 const WorldLayout = lazy(() => import("./layouts/WorldLayout"));
 const WorldToolPage = lazy(() => import("./pages/WorldToolPage"));
 const WorldWebRedirect = lazy(() => import("./pages/WorldWebRedirect"));
+const WorldInstruments = lazy(() => import("./pages/WorldInstruments"));
 const WikiPageRoute = lazy(() => import("./pages/WikiPageRoute"));
 const CodexEntityRoute = lazy(() => import("./pages/CodexEntityRoute"));
 const WikiRedirect = lazy(() => import("./pages/WikiRedirect"));
@@ -222,6 +223,9 @@ const App = () => (
                 {/* World routes, nested under WorldLayout (Codex sidebar) */}
                 <Route path="/worlds/:worldId" element={<WorldLayout />}>
                   <Route index element={<WorldDashboard />} />
+                  {/* F6: the INSTRUMENTS space — a world's own index of its
+                      tools and sims, each launched on a chosen subject. */}
+                  <Route path="tools" element={<WorldInstruments />} />
                   <Route path="tools/:toolName" element={<WorldToolPage />} />
                   <Route path="codex/:entityId" element={<CodexEntityRoute />} />
                   <Route path="pages/:entryId" element={<WikiPageRoute />} />

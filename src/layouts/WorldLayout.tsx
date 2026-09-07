@@ -7,6 +7,7 @@ import { useWorld } from "@/hooks/use-world";
 import { useSubscription } from "@/hooks/use-subscription";
 import Codex from "@/components/codex/Codex";
 import EntitySidebar from "@/components/world/EntitySidebar";
+import WorldSpaceNav from "@/components/world/WorldSpaceNav";
 import { DeleteConfirmDialog } from "@/components/dialogs/DeleteConfirmDialog";
 import { useDeleteEntity, useEntities } from "@/hooks/use-entity-graph";
 import { WorldLayoutProvider } from "@/contexts/WorldLayoutContext";
@@ -268,6 +269,13 @@ const WorldLayout = () => {
 
             {/* Main content */}
             <main className="sf-world-main">
+              {/* F6: one answer to "what are the parts of a world". Sticky so
+                  it survives a long Codex list or a tall tool page. */}
+              {worldId && (
+                <div className="sticky top-0 z-20">
+                  <WorldSpaceNav worldId={worldId} />
+                </div>
+              )}
               <Outlet />
             </main>
           </div>
