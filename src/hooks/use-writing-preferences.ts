@@ -16,19 +16,25 @@ export type WritingFont =
   | "Times New Roman"
   | "Courier New"
   | "Lora";
+/** Column width. `default` is the design system's 68ch measure. */
+export type WritingMeasure = "narrow" | "default" | "wide" | "full";
 
 export interface WritingPreferences {
   themeId: string;
   dailyGoalWords: number;
   lineSpacing: LineSpacing;
   writingFont: WritingFont;
+  writingMeasure: WritingMeasure;
 }
 
 const DEFAULTS: WritingPreferences = {
   themeId: "deep-space",
   dailyGoalWords: 500,
   lineSpacing: "1.5",
-  writingFont: "DM Sans",
+  // The manuscript editor has always rendered Lora; naming it here makes the
+  // control agree with the page instead of claiming DM Sans and showing serif.
+  writingFont: "Lora",
+  writingMeasure: "default",
 };
 
 const LOCAL_KEY = "stellarforge-writing-preferences-v1";

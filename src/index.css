@@ -957,19 +957,33 @@ html {
   }
 }
 
-/* ── Manuscript editor (writer register) — Lora prose ── */
+/* ── Manuscript editor (writer register) ──
+   The SPACING and FONT controls in the Studio set --sf-writing-leading,
+   --sf-writing-font and --sf-writing-size on a wrapper element. They are
+   read HERE rather than inherited, because a declaration on .ProseMirror
+   always beats a value inherited from an ancestor — which is exactly why
+   those two controls did nothing until 2026-09-07. Custom properties do
+   inherit, so the declaration stays where it has to be (winning against
+   Tiptap's own defaults) while its value comes from the writer.
+
+   The fallbacks are the previous hardcoded values, so a surface that sets
+   none of them looks exactly as it did before.
+
+   `--font-serif` and `--text-2` were referenced here and defined nowhere,
+   which pinned the font to the Lora fallback and made the colour resolve
+   to nothing. Both now use real tokens. */
 .sf-writing-serif .ProseMirror {
-  font-family: var(--font-serif, 'Lora', Georgia, serif);
-  font-size: 18px;
-  line-height: 1.78;
-  color: var(--text-2);
+  font-family: var(--sf-writing-font, 'Lora', Georgia, serif);
+  font-size: var(--sf-writing-size, 18px);
+  line-height: var(--sf-writing-leading, 1.78);
+  color: var(--t2);
 }
 .sf-writing-serif .ProseMirror > p:first-of-type::first-letter {
   font-size: 2.6em;
   float: left;
   line-height: 0.9;
   padding-right: 8px;
-  color: var(--text-1);
+  color: var(--t1);
 }
 
 /* ── Data Burst Telemetry ── */

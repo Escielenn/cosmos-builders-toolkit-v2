@@ -103,6 +103,15 @@ Big, as asked. Organised by parent, tiered by leverage. **Every item passed the 
 - **Backlinks** — "mentioned in" across scenes, worksheets, other entities. The ◆`DocBinding` table (02) makes this free.
 - **Aliases & redirects** — rename anything, nothing breaks, old links resolve.
 - **Atlas** — galaxy → system → planet → region zoom levels. Pins → pages. Territory overlays from Dominion. Routes from Impulse. ◆`05` B5.
+  **Promoted into F5 (owner, 2026-09-07): a surface map sheet per entity.** A
+  writer who has drawn their world in Wonderdraft, Azgaar or by hand has
+  nowhere to put it today, and `forge-gl`'s SurfaceMaterial is procedural
+  only. F5 gains: upload an equirectangular or Mercator sheet to a `planet`
+  or `moon` entity, and the Atlas renders *their* map at planet zoom rather
+  than a generated one. Tilt, spin, lock, atmosphere and star colour still
+  come from canon — the sheet is a texture, never a second set of sliders.
+  Prior art the owner flagged: viruzodro.github.io/globify (no license or
+  source published; build our own, standard equirect-on-sphere).
 - **Timeline view** — Chronicle as axis, ◆`05` B2. Entity lifespans. Era bands. Scrub, and every other view follows.
 
 **Tier 2 — depth**

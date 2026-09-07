@@ -5,9 +5,14 @@
  * Supersedes the old /worlds/:id/write "Writing Space" (which now
  * redirects here). SF-II: one writing model, no parallel tables.
  */
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import {
+  MEASURE_LABELS,
+  WRITING_MEASURES,
+  writingSurfaceStyle,
+} from "@/lib/writing-surface-style";
 import { StellarForgeEditor } from "@/components/editor/StellarForgeEditor";
 import { Wordmark } from "@/components/brand/Wordmark";
 import { WritingEntityPanel } from "@/components/writing/WritingEntityPanel";
@@ -205,19 +210,14 @@ export default function Write(): JSX.Element {
   const { preferences, updatePreferences } = useWritingPreferences();
   const dailyGoalWords = preferences.dailyGoalWords || 500;
 
-  // Line-spacing + font are applied via inherited CSS on a wrapper div (the
-  // editor takes no style prop), matching the pattern from the pre-Studio
-  // writing surface this replaced.
-  const editorStyle = useMemo(() => ({
-    lineHeight: preferences.lineSpacing === "2" ? 2 : preferences.lineSpacing === "1.5" ? 1.625 : 1.5,
-    fontFamily:
-      preferences.writingFont === "Georgia" ? "Georgia, serif" :
-      preferences.writingFont === "Merriweather" ? "'Merriweather', Georgia, serif" :
-      preferences.writingFont === "Times New Roman" ? "'Times New Roman', Times, serif" :
-      preferences.writingFont === "Courier New" ? "'Courier New', Courier, monospace" :
-      preferences.writingFont === "Lora" ? "'Lora', Georgia, serif" :
-      undefined,
-  }), [preferences.lineSpacing, preferences.writingFont]);
+  // Spacing, font and column width, as CSS custom properties. They are read
+  // by `.sf-writing-serif .ProseMirror` rather than inherited: a declaration
+  // on .ProseMirror beats a value inherited from a wrapper, which is why the
+  // previous `style={{ lineHeight, fontFamily }}` here never took effect.
+  const editorStyle = useMemo(
+    () => writingSurfaceStyle(preferences) as CSSProperties,
+    [preferences],
+  );
   const goalPct = Math.min(100, Math.round((sessionWords / dailyGoalWords) * 100));
   const goalMet = sessionWords >= dailyGoalWords;
 
@@ -719,7 +719,10 @@ export default function Write(): JSX.Element {
               onReorder={(ids) => reorderDocs.mutate(ids)}
             />
           ) : (
-          <div className="mx-auto max-w-[720px] px-6 py-10">
+          <div
+            className="mx-auto px-6 py-10"
+            style={{ maxWidth: "var(--sf-writing-measure, 68ch)", ...editorStyle }}
+          >
             <input
               value={title}
               onChange={(e) => setTitle(e.target.value)}
@@ -775,10 +778,30 @@ export default function Write(): JSX.Element {
                     <option value="Courier New">Courier New</option>
                   </select>
                 </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[12px] font-sans font-medium uppercase tracking-[1.5px] text-t4">Width</span>
+                  <div className="flex">
+                    {WRITING_MEASURES.map((val, i) => (
+                      <button
+                        key={val}
+                        onClick={() => updatePreferences({ writingMeasure: val })}
+                        title={`${MEASURE_LABELS[val]} column`}
+                        aria-pressed={preferences.writingMeasure === val}
+                        className={`border px-2 py-1 text-[12px] font-mono transition-colors ${i > 0 ? "-ml-px" : ""} ${
+                          preferences.writingMeasure === val
+                            ? "border-sf-primary text-sf-primary-text"
+                            : "border-sf-line-interactive text-t4 hover:text-t2"
+                        }`}
+                      >
+                        {MEASURE_LABELS[val]}
+                      </button>
+                    ))}
+                  </div>
+                </div>
               </div>
             )}
             {doc && (
-              <div style={editorStyle}>
+              <div>
                 <StellarForgeEditor
                   onEditorReady={setEditorInstance}
                   key={doc.id}
