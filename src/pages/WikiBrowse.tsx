@@ -1,7 +1,7 @@
 /** Register: WRITER (Lora) — reference prose, read at length. */
-import { useState, useMemo } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
-import { Search, Plus, FileText, Filter, X } from "lucide-react";
+import { useCallback, useMemo, useState } from "react";
+import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { List, Network, Plus, Search, FileText, Filter, X } from "lucide-react";
 import * as LucideIcons from "lucide-react";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Input } from "@/components/ui/input";
@@ -22,6 +22,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import TagBadge from "@/components/tags/TagBadge";
 import { getTagColor } from "@/hooks/use-tags";
+import { CodexWebView } from "@/components/connections";
 
 function getIconComponent(iconName: string) {
   const Icon = (LucideIcons as any)[iconName];
@@ -34,6 +35,31 @@ export default function WikiBrowse() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const { data: codexData, isLoading } = useCodexData(worldId);
+
+  // The Codex's views are projections of one list (13-THE-LIFT.md §1).
+  // `?view=web` is the address `/graph` and `/connections` collapsed into.
+  const [searchParams, setSearchParams] = useSearchParams();
+  const view = searchParams.get("view") === "web" ? "web" : "list";
+  const focusEntityId = searchParams.get("focus");
+  const openCreate = searchParams.get("create") === "true";
+
+  const setView = useCallback(
+    (next: "list" | "web") => {
+      setSearchParams(
+        (prev) => {
+          const params = new URLSearchParams(prev);
+          if (next === "web") params.set("view", "web");
+          else {
+            params.delete("view");
+            params.delete("focus");
+          }
+          return params;
+        },
+        { replace: true }
+      );
+    },
+    [setSearchParams]
+  );
 
   const [search, setSearch] = useState("");
   const [activeLayer, setActiveLayer] = useState<string | null>(null);
@@ -136,7 +162,11 @@ export default function WikiBrowse() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-4 md:px-6 py-6">
+    <div
+      className={`mx-auto px-4 py-6 md:px-6 ${
+        view === "web" ? "max-w-[1400px]" : "max-w-5xl"
+      }`}
+    >
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
@@ -145,20 +175,64 @@ export default function WikiBrowse() {
           </h1>
           <p className="text-[12px] text-t4 mt-1">
             {allEntries.length} {allEntries.length === 1 ? "entry" : "entries"}
-            {filtered.length !== allEntries.length &&
+            {view === "list" &&
+              filtered.length !== allEntries.length &&
               ` · ${filtered.length} shown`}
           </p>
         </div>
-        <Button
-          onClick={handleCreateEntry}
-          className="font-sans text-xs uppercase tracking-wider"
-          size="sm"
-        >
-          <Plus className="w-3.5 h-3.5 mr-1.5" />
-          New Entry
-        </Button>
+        <div className="flex items-center gap-2">
+          {/* List · Web — two projections of the same rows, not two places. */}
+          <div className="flex border border-sf-line" role="group" aria-label="Codex view">
+            <button
+              type="button"
+              onClick={() => setView("list")}
+              aria-pressed={view === "list"}
+              className={`flex min-h-hit items-center gap-1.5 px-3 font-sans text-[12px] uppercase tracking-[1.2px] transition-colors ${
+                view === "list"
+                  ? "bg-sf-surface-elevated text-t1"
+                  : "text-t3 hover:text-t1"
+              }`}
+            >
+              <List className="w-3.5 h-3.5" aria-hidden />
+              List
+            </button>
+            <button
+              type="button"
+              onClick={() => setView("web")}
+              aria-pressed={view === "web"}
+              className={`flex min-h-hit items-center gap-1.5 border-l border-sf-line px-3 font-sans text-[12px] uppercase tracking-[1.2px] transition-colors ${
+                view === "web"
+                  ? "bg-sf-surface-elevated text-t1"
+                  : "text-t3 hover:text-t1"
+              }`}
+            >
+              <Network className="w-3.5 h-3.5" aria-hidden />
+              Web
+            </button>
+          </div>
+          {view === "list" && (
+            <Button
+              onClick={handleCreateEntry}
+              className="font-sans text-xs uppercase tracking-wider"
+              size="sm"
+            >
+              <Plus className="w-3.5 h-3.5 mr-1.5" />
+              New Entry
+            </Button>
+          )}
+        </div>
       </div>
 
+      {view === "web" && worldId && (
+        <CodexWebView
+          worldId={worldId}
+          focusEntityId={focusEntityId}
+          openCreate={openCreate}
+        />
+      )}
+
+      {view === "list" && (
+        <>
       {/* Search + Filter toggle */}
       <div className="flex items-center gap-2 mb-4">
         <div className="relative flex-1">
@@ -179,7 +253,7 @@ export default function WikiBrowse() {
           <Filter className="w-3.5 h-3.5 mr-1.5" />
           Filter
           {hasActiveFilters && (
-            <span className="ml-1.5 w-4 h-4 rounded-full bg-teal/20 text-teal text-[12px] flex items-center justify-center font-mono">
+            <span className="ml-1.5 w-4 h-4 rounded-full bg-sf-primary/20 text-sf-primary-text text-[12px] flex items-center justify-center font-mono">
               {(activeLayer ? 1 : 0) +
                 (activeType ? 1 : 0) +
                 activeTags.length}
@@ -224,7 +298,7 @@ export default function WikiBrowse() {
                     }
                     className={`px-2.5 py-1 text-[12px] uppercase tracking-wider border transition-colors ${
                       activeLayer === layer
-                        ? "bg-teal/10 border-sf-primary text-teal"
+                        ? "bg-sf-primary/10 border-sf-primary text-sf-primary-text"
                         : "border-sf-line-interactive text-t3 hover:text-t2"
                     }`}
                   >
@@ -250,7 +324,7 @@ export default function WikiBrowse() {
                     }
                     className={`px-2.5 py-1 text-[12px] uppercase tracking-wider border transition-colors ${
                       activeType === type
-                        ? "bg-teal/10 border-sf-primary text-teal"
+                        ? "bg-sf-primary/10 border-sf-primary text-sf-primary-text"
                         : "border-sf-line-interactive text-t3 hover:text-t2"
                     }`}
                   >
@@ -280,7 +354,7 @@ export default function WikiBrowse() {
                     }
                     className={`px-2.5 py-1 text-[12px] tracking-wider border transition-colors ${
                       activeTags.includes(tag)
-                        ? "bg-teal/10 border-sf-primary text-teal"
+                        ? "bg-sf-primary/10 border-sf-primary text-sf-primary-text"
                         : "border-sf-line-interactive text-t3 hover:text-t2"
                     }`}
                   >
@@ -337,8 +411,8 @@ export default function WikiBrowse() {
                   <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-sf-primary-bright/60 scale-x-0 origin-left transition-transform duration-300 group-hover:scale-x-100" />
 
                   <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 shrink-0 flex items-center justify-center bg-teal/6 border border-sf-primary rounded-sm">
-                      <IconComponent className="w-4 h-4 text-teal" />
+                    <div className="w-8 h-8 shrink-0 flex items-center justify-center bg-sf-primary/10 border border-sf-primary rounded-sm">
+                      <IconComponent className="w-4 h-4 text-sf-primary-text" />
                     </div>
                     <div className="min-w-0 flex-1">
                       <h3 className="font-sans text-sm text-t1 truncate">
@@ -394,6 +468,8 @@ export default function WikiBrowse() {
             );
           })}
         </div>
+      )}
+        </>
       )}
     </div>
   );

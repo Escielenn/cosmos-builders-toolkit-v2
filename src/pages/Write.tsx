@@ -589,7 +589,7 @@ export default function Write(): JSX.Element {
           </div>
           <div className="border-t border-sf-line-interactive p-3">
             <Link to={`/worlds/${worldId}/codex`} className="block border border-sf-line-interactive px-3 py-2 text-[13px] text-t2 transition-colors hover:border-sf-primary hover:text-t1">Open the Codex →</Link>
-            <Link to={`/worlds/${worldId}/connections`} className="mt-2 block border border-sf-line-interactive px-3 py-2 text-[13px] text-t2 transition-colors hover:border-sf-primary hover:text-t1">Open the entity graph →</Link>
+            <Link to={`/worlds/${worldId}/codex?view=web`} className="mt-2 block border border-sf-line-interactive px-3 py-2 text-[13px] text-t2 transition-colors hover:border-sf-primary hover:text-t1">Open the entity web →</Link>
           </div>
         </div>
       )}

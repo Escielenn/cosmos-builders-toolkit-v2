@@ -1,76 +1,54 @@
-import { GlassPanel } from "@/components/ui/glass-panel";
-import { Globe, Dna, Sparkles, GitBranch, Rocket, Zap, Calculator } from "lucide-react";
-import { getToolColor } from "@/hooks/use-world-graph";
-import { getToolDisplayName } from "@/lib/worksheet-links-config";
+// ---------------------------------------------------------------------------
+// ConnectionLegend — what the colours mean in the Web view.
+//
+// Before F3 this listed tool types, because the nodes were worksheets. The
+// nodes are entities now, so it lists the cascade, which is what the colour
+// is actually saying: Physics → Environment → Biology → Psychology →
+// Mythology → Culture.
+// ---------------------------------------------------------------------------
 
-interface LegendItem {
-  toolType: string;
-  Icon: React.ComponentType<{ className?: string }>;
+import {
+  CASCADE_STAGES,
+  CASCADE_STAGE_COLORS,
+  CASCADE_STAGE_LABELS,
+} from "@/services/entity-graph-types";
+
+interface ConnectionLegendProps {
+  /** Node counts per stage; a stage with none reads as absent, not broken. */
+  counts?: Partial<Record<string, number>>;
 }
 
-const LEGEND_ITEMS: LegendItem[] = [
-  { toolType: "planetary-profile", Icon: Globe },
-  { toolType: "evolutionary-biology", Icon: Dna },
-  { toolType: "environmental-chain-reaction", Icon: GitBranch },
-  { toolType: "xenomythology-framework-builder", Icon: Sparkles },
-  { toolType: "spacecraft-designer", Icon: Rocket },
-  { toolType: "propulsion-consequences-map", Icon: Zap },
-  { toolType: "drake-equation-calculator", Icon: Calculator },
-];
-
-const ConnectionLegend = () => {
-  return (
-    <GlassPanel className="p-4">
-      <h3 className="font-medium text-sm mb-3">Tool Types</h3>
-      <div className="space-y-2">
-        {LEGEND_ITEMS.map(({ toolType, Icon }) => {
-          const color = getToolColor(toolType);
-          const name = getToolDisplayName(toolType);
-
-          return (
-            <div key={toolType} className="flex items-center gap-2">
-              <div
-                className="w-6 h-6 rounded-full flex items-center justify-center"
-                style={{ backgroundColor: `hsl(${color} / 0.2)` }}
-              >
-                <Icon
-                  className="w-3 h-3"
-                  style={{ color: `hsl(${color})` }}
-                />
-              </div>
-              <span className="text-xs text-t3">{name}</span>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Link Types */}
-      <h3 className="font-medium text-sm mt-4 mb-3">Link Types</h3>
-      <div className="space-y-2">
-        <div className="flex items-center gap-2">
-          <div
-            className="w-6 h-1 rounded-full"
-            style={{ backgroundColor: "var(--sf-primary)" }}
-          />
-          <span className="text-xs text-t3">Planet Link</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div
-            className="w-6 h-1 rounded-full"
-            style={{ backgroundColor: "hsl(153 100% 50%)" }}
-          />
-          <span className="text-xs text-t3">Species Link</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div
-            className="w-6 h-1 rounded-full"
-            style={{ backgroundColor: "hsl(328 100% 50%)" }}
-          />
-          <span className="text-xs text-t3">Environment Link</span>
-        </div>
-      </div>
-    </GlassPanel>
-  );
-};
+const ConnectionLegend = ({ counts }: ConnectionLegendProps) => (
+  <div className="border border-sf-line bg-sf-surface p-3">
+    <h3 className="mb-2 font-heading text-[12px] uppercase tracking-[2px] text-t3">
+      The cascade
+    </h3>
+    <ul className="space-y-1">
+      {CASCADE_STAGES.map((stage) => {
+        const n = counts?.[stage];
+        return (
+          <li key={stage} className="flex items-center gap-2">
+            <span
+              aria-hidden
+              className="h-2 w-2 shrink-0"
+              style={{ background: CASCADE_STAGE_COLORS[stage] }}
+            />
+            <span className="text-[13px] text-t2">
+              {CASCADE_STAGE_LABELS[stage]}
+            </span>
+            {n !== undefined && (
+              <span className="ml-auto font-mono text-[12px] text-t4">{n}</span>
+            )}
+          </li>
+        );
+      })}
+    </ul>
+    <p className="mt-3 border-t border-sf-line-hairline pt-2 text-[12px] leading-relaxed text-t3">
+      A node is an entity. A worksheet is a property of one, not a node.
+      Edge colour is the cascade layer the relation belongs to; a dashed edge
+      sits outside the epoch on the scrubber.
+    </p>
+  </div>
+);
 
 export default ConnectionLegend;

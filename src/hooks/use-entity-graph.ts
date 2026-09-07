@@ -16,6 +16,10 @@ import {
   updateEntityConnection,
   deleteEntityConnection,
 } from "@/services/entity-graph-crud";
+import {
+  invalidateWorldConnections,
+  invalidateWorldEntries,
+} from "@/services/entity-graph-keys";
 import type {
   Entity,
   EntityConnection,
@@ -69,7 +73,7 @@ export function useCreateEntity(worldId: string | undefined) {
     mutationFn: (input: Omit<CreateEntityInput, "world_id">) =>
       createEntity({ ...input, world_id: worldId! }, user!.id),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: entityKeys.all(worldId!) });
+      invalidateWorldEntries(qc, worldId);
     },
     onError: (error) => {
       toast({
@@ -88,7 +92,7 @@ export function useUpdateEntity(worldId: string | undefined) {
   return useMutation({
     mutationFn: (input: UpdateEntityInput) => updateEntity(input),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: entityKeys.all(worldId!) });
+      invalidateWorldEntries(qc, worldId);
     },
     onError: (error) => {
       toast({
@@ -107,8 +111,8 @@ export function useDeleteEntity(worldId: string | undefined) {
   return useMutation({
     mutationFn: (entityId: string) => deleteEntity(entityId),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: entityKeys.all(worldId!) });
-      qc.invalidateQueries({ queryKey: entityKeys.connections(worldId!) });
+      invalidateWorldEntries(qc, worldId);
+      invalidateWorldConnections(qc, worldId);
     },
     onError: (error) => {
       toast({
@@ -128,7 +132,7 @@ export function useBatchUpdatePositions(worldId: string | undefined) {
       updates: Array<{ id: string; graph_x: number; graph_y: number; pinned: boolean }>
     ) => batchUpdatePositions(updates),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: entityKeys.all(worldId!) });
+      invalidateWorldEntries(qc, worldId);
     },
   });
 }
@@ -146,7 +150,7 @@ export function useCreateEntityConnection(worldId: string | undefined) {
     mutationFn: (input: Omit<CreateConnectionInput, "world_id">) =>
       createEntityConnection({ ...input, world_id: worldId! }, user!.id),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: entityKeys.connections(worldId!) });
+      invalidateWorldConnections(qc, worldId);
     },
     onError: (error) => {
       toast({
@@ -165,7 +169,7 @@ export function useUpdateEntityConnection(worldId: string | undefined) {
   return useMutation({
     mutationFn: (input: UpdateConnectionInput) => updateEntityConnection(input),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: entityKeys.connections(worldId!) });
+      invalidateWorldConnections(qc, worldId);
     },
     onError: (error) => {
       toast({
@@ -184,7 +188,7 @@ export function useDeleteEntityConnection(worldId: string | undefined) {
   return useMutation({
     mutationFn: (connectionId: string) => deleteEntityConnection(connectionId),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: entityKeys.connections(worldId!) });
+      invalidateWorldConnections(qc, worldId);
       toast({ title: "CONNECTION REMOVED." });
     },
     onError: (error) => {

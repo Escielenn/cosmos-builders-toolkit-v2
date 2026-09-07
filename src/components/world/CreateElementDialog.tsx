@@ -251,7 +251,8 @@ export default function CreateElementDialog({
 
   const handleOpenGraph = () => {
     if (!createdEntityId) return;
-    navigate(`/worlds/${worldId}/connections?focus=${createdEntityId}`);
+    // F3: an entity has one URL — its Codex page — not a focus ring on a graph.
+    navigate(`/worlds/${worldId}/codex/${createdEntityId}`);
     handleOpenChange(false);
   };
 

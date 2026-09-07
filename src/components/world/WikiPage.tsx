@@ -18,6 +18,17 @@ import { useMyWorldRole } from "@/hooks/use-collaborators";
 import FirstTimeHint from "@/components/onboarding/FirstTimeHint";
 import { EntryTagsBar } from "@/components/tags/EntryTagsBar";
 import { sanitizeHtml } from "@/lib/sanitize";
+import {
+  CASCADE_STAGES,
+  CASCADE_STAGE_LABELS,
+  ENTITY_TYPE_CASCADE_DEFAULTS,
+  RELATIONSHIP_TYPES_BY_STAGE,
+  formatRelationshipType,
+  isCascadeStage,
+  isEntityType,
+  type CascadeStage,
+  type EntityType,
+} from "@/services/entity-graph-types";
 import FactInfobox from "./FactInfobox";
 import { EntityMentionsSection, EntityChronicleSection } from "./EntityRecordSections";
 import { useCodexEntity } from "@/hooks/use-codex-entity";
@@ -81,6 +92,28 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
       updateMetadata.mutate({ entryId: entry.id, metadata: { ...entryMeta, epoch_from: from, epoch_to: to } });
     }
   }, [epochDraft, entry, entryMeta, updateMetadata]);
+
+  // F3, Law III: the Web view colours a node by its cascade stage and the
+  // legend beside it explains what that colour means. A value the writer can
+  // see has to be a value the writer can change, so it is edited here — on
+  // the entity's one page — rather than only at creation time.
+  const cascadeStage: CascadeStage = isCascadeStage(entryMeta.cascade_stage)
+    ? entryMeta.cascade_stage
+    : ENTITY_TYPE_CASCADE_DEFAULTS[
+        isEntityType(entry?.entry_type ?? "") 
+          ? (entry!.entry_type as EntityType)
+          : "custom"
+      ];
+  const commitCascadeStage = useCallback(
+    (next: string) => {
+      if (!entry || next === cascadeStage) return;
+      updateMetadata.mutate({
+        entryId: entry.id,
+        metadata: { ...entryMeta, cascade_stage: next },
+      });
+    },
+    [entry, entryMeta, cascadeStage, updateMetadata]
+  );
 
   const [isEditing, setIsEditing] = useState(false);
   const [editingTitle, setEditingTitle] = useState("");
@@ -328,6 +361,29 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
             <span className="font-mono text-t3" title="Epoch range">{epochLabel}</span>
           </>
         )}
+        {isEntityType(entry.entry_type) && (
+          <>
+            <span className="text-t4">&middot;</span>
+            {canEdit && isEditing ? (
+              <select
+                value={cascadeStage}
+                onChange={(e) => commitCascadeStage(e.target.value)}
+                aria-label="Cascade stage"
+                className="border border-sf-line-interactive bg-transparent px-1.5 py-0.5 text-[12px] uppercase tracking-wider text-t2"
+              >
+                {CASCADE_STAGES.map((stage) => (
+                  <option key={stage} value={stage}>
+                    {CASCADE_STAGE_LABELS[stage]}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <span title="Cascade stage — the colour this entity carries in the Web view">
+                {CASCADE_STAGE_LABELS[cascadeStage].toUpperCase()}
+              </span>
+            )}
+          </>
+        )}
         {isDraft && (
           <span className="ml-2 px-1.5 py-0.5 bg-sf-amber/[0.06] border border-sf-amber text-sf-amber text-[12px] uppercase tracking-widest">
             Draft
@@ -536,7 +592,7 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
               <div key={conn.id} className="sf-wiki-connection">
                 <span className="sf-wiki-connection-type">
                   {conn.direction === "outgoing" ? "" : "\u2190 "}
-                  {conn.connectionType.replace(/_/g, " ")}
+                  {formatRelationshipType(conn.connectionType)}
                   {conn.direction === "outgoing" ? " \u2192" : ""}
                 </span>
                 <button
@@ -601,19 +657,6 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
 // Connection Suggestion Bar
 // ---------------------------------------------------------------------------
 
-const CONNECTION_TYPES = [
-  "related_to",
-  "lives_on",
-  "evolved_from",
-  "governs",
-  "worships",
-  "speaks",
-  "travels_via",
-  "fights",
-  "created",
-  "parent_of",
-];
-
 function ConnectionSuggestionBar({
   suggestion,
   onAccept,
@@ -637,19 +680,31 @@ function ConnectionSuggestionBar({
       <span className="font-mono uppercase tracking-wider text-t4">
         Link detected:
       </span>
-      <span className="text-sf-stellar font-medium">
+      <span className="font-medium text-sf-stellar-text">
         {suggestion.targetTitle}
       </span>
+      {/* F3: one vocabulary, grouped by the cascade stage that owns the verb. */}
       <select
         value={connType}
         onChange={(e) => setConnType(e.target.value)}
-        title="Connection type"
-        className="bg-transparent border border-sf-line-interactive px-1.5 py-0.5 text-[12px] uppercase tracking-wider text-t2"
+        aria-label="Relation"
+        className="border border-sf-line-interactive bg-transparent px-1.5 py-0.5 text-[12px] uppercase tracking-wider text-t2"
       >
-        {CONNECTION_TYPES.map((t) => (
-          <option key={t} value={t}>
-            {t.replace(/_/g, " ")}
-          </option>
+        {Object.entries(RELATIONSHIP_TYPES_BY_STAGE).map(([stage, types]) => (
+          <optgroup
+            key={stage}
+            label={
+              stage === "cross_cascade"
+                ? "Cross-cascade"
+                : CASCADE_STAGE_LABELS[stage as CascadeStage]
+            }
+          >
+            {types.map((t) => (
+              <option key={t} value={t}>
+                {formatRelationshipType(t)}
+              </option>
+            ))}
+          </optgroup>
         ))}
       </select>
       <button

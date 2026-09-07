@@ -104,17 +104,25 @@ const WorldLayout = () => {
     return () => mql.removeEventListener("change", handler);
   }, []);
 
-  // Wiki-link click navigation: dispatched by WikiLinkExtension
+  // Editor click navigation. Two extensions dispatch here: WikiLinkExtension
+  // (`sf-navigate-element`, a [[wiki link]]) and EntityMention
+  // (`sf-navigate-entity`, an @mention). Before F3 they pointed at two
+  // different entity models and only the first had a listener at all — the
+  // second was dispatched into nothing (AMENDMENTS 2026-09-03). One graph,
+  // one destination: the entity's Codex page.
   useEffect(() => {
     if (!worldId) return;
     const handler = (e: Event) => {
       const detail = (e as CustomEvent).detail;
-      if (detail?.elementId) {
-        navigate(`/worlds/${worldId}/codex/${detail.elementId}`);
-      }
+      const id = detail?.elementId ?? detail?.entityId;
+      if (id) navigate(`/worlds/${worldId}/codex/${id}`);
     };
     window.addEventListener("sf-navigate-element", handler);
-    return () => window.removeEventListener("sf-navigate-element", handler);
+    window.addEventListener("sf-navigate-entity", handler);
+    return () => {
+      window.removeEventListener("sf-navigate-element", handler);
+      window.removeEventListener("sf-navigate-entity", handler);
+    };
   }, [worldId, navigate]);
 
   // Resize drag
@@ -195,7 +203,7 @@ const WorldLayout = () => {
             >
               {/* Tab toggle, hidden when collapsed */}
               {!collapsed && (
-                <div className="flex border-b border-sf-border">
+                <div className="flex border-b border-sf-line">
                   <button
                     onClick={() => handleSidebarTabChange("codex")}
                     className={cn(
@@ -242,8 +250,8 @@ const WorldLayout = () => {
                 ) : (
                   <EntitySidebar
                     worldId={worldId}
-                    onEntityClick={(entityId) => navigate(`/worlds/${worldId}/connections?focus=${entityId}`)}
-                    onCreateEntity={() => navigate(`/worlds/${worldId}/connections?create=true`)}
+                    onEntityClick={(entityId) => navigate(`/worlds/${worldId}/codex/${entityId}`)}
+                    onCreateEntity={() => navigate(`/worlds/${worldId}/codex?view=web&create=true`)}
                     onDeleteEntity={setDeleteEntityId}
                   />
                 )

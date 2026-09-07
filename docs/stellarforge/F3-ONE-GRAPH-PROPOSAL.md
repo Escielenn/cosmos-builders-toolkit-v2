@@ -130,6 +130,20 @@ App-side, after the fold: `EntityMention` reads `world_entries`; `sf-navigate-en
 
 ## 5 · Three decisions before the implementing session
 
+> **DECIDED 2026-09-06, and implemented the same day.** 1 — fold direction as
+> proposed. 2 — keep the `world_entries` row, re-attach the `entities` row's
+> edges, print every collision. 3 — `WorldConnectionsGraph` plus the `graph/`
+> toolbar pieces. Migration: `supabase/migrations/20260906_f3_one_graph.sql`.
+> Corrections this document owes its reader: `WorldConnectionsGraph` is
+> d3-force over SVG, not react-flow; `world_connections` already carried
+> `source_entry_id` / `target_entry_id`, so §3's edge insert needed no new
+> columns for the endpoints; the cascade stages are physics · environment ·
+> biology · psychology · mythology · culture (+ `cross_cascade`), not the
+> "sociology · history" §2 named; `travels_via` and `related_to` did not exist
+> in `RELATIONSHIP_TYPES_BY_STAGE` and were added.
+
+### The questions as they stood
+
 1. **Fold direction confirmed?** `entities` → `world_entries` (this proposal), not the reverse. The facts, chronicle and manuscript already point at `world_entries`; moving those three would be the bigger migration.
 2. **Collision policy:** keep the `world_entries` row, re-attach edges (proposed) — or keep both and let the writer merge from the Codex page?
 3. **Renderer:** `WorldConnectionsGraph` + the graph/ toolbar pieces (proposed), or EntityTreeView promoted to a web?

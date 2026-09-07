@@ -1,5 +1,10 @@
 // ---------------------------------------------------------------------------
-// GraphSearch, Quick search/filter entities by name in the graph.
+// GraphSearch — find an entity by name in the Web view.
+//
+// Written for the retired /connections route and never mounted. Lifted into
+// the Codex Web view's toolbar by F3; the alpha borders and hardcoded panel
+// rgba are now tokens, and the shortcut no longer steals the browser's own
+// Find when the graph is not on screen.
 // ---------------------------------------------------------------------------
 
 import { useState, useCallback, useRef, useEffect } from "react";
@@ -70,7 +75,7 @@ export function GraphSearch({
       <button
         type="button"
         onClick={handleOpen}
-        className="flex items-center gap-1 h-7 px-2 text-[12px] uppercase tracking-[1.2px] font-sans text-t3 hover:text-t1 transition-colors"
+        className="flex min-h-hit items-center gap-1.5 border border-sf-line bg-sf-surface px-3 font-sans text-[12px] uppercase tracking-[1.2px] text-t3 transition-colors hover:text-t1"
         title="Search entities (Ctrl+F)"
       >
         <Search className="w-3 h-3" />
@@ -81,52 +86,52 @@ export function GraphSearch({
 
   return (
     <div className="relative">
-      <div className="flex items-center gap-1">
-        <Search className="w-3 h-3 text-t4" />
+      <div className="flex min-h-hit items-center gap-1.5 border border-sf-line bg-sf-surface px-2">
+        <Search className="h-3 w-3 shrink-0 text-t4" aria-hidden />
         <Input
           ref={inputRef}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search entities..."
-          className="h-7 w-[160px] text-[12px] rounded-xs border-sf-line-interactive bg-transparent"
+          aria-label="Search entities"
+          className="h-8 w-[160px] rounded-xs border-sf-line-interactive bg-transparent text-[13px]"
         />
         <button
           type="button"
           onClick={handleClose}
-          className="text-t4 hover:text-t2 transition-colors"
+          aria-label="Close search"
+          className="text-t3 transition-colors hover:text-t1"
         >
-          <X className="w-3 h-3" />
+          <X className="h-3 w-3" />
         </button>
       </div>
 
       {results.length > 0 && (
-        <div
-          className="absolute top-full left-0 mt-1 w-[220px] max-h-[200px] overflow-y-auto z-50"
-          style={{
-            background: "rgba(15,15,16,0.98)",
-            border: "1px solid rgba(255,255,255,0.08)",
-            backdropFilter: "blur(16px)",
-          }}
-        >
+        <div className="sf-sb absolute left-0 top-full z-50 mt-1 max-h-[200px] w-[220px] overflow-y-auto border border-sf-line-emphasis bg-sf-surface-elevated">
           {results.map((entity) => {
-            const color = entity.color ?? ENTITY_TYPE_COLORS[entity.entity_type] ?? "#15C17B";
+            const color =
+              entity.color ??
+              ENTITY_TYPE_COLORS[entity.entity_type] ??
+              "var(--sf-primary)";
             return (
               <button
                 key={entity.id}
                 type="button"
                 onClick={() => handleSelect(entity)}
-                className="w-full flex items-center gap-2 px-3 py-1.5 hover:bg-white/5 transition-colors text-left"
+                className="flex min-h-hit w-full items-center gap-2 px-3 py-1.5 text-left transition-colors hover:bg-sf-surface"
               >
                 <span
-                  className="w-1.5 h-1.5 rounded-full shrink-0"
+                  aria-hidden
+                  className="h-1.5 w-1.5 shrink-0 rounded-full"
                   style={{ background: color }}
                 />
                 <div className="flex-1 min-w-0">
-                  <div className="text-[12px] text-t2 truncate">
+                  <div className="truncate text-[13px] text-t2">
                     {entity.name}
                   </div>
-                  <div className="text-[12px] text-t4 uppercase tracking-[1px]">
-                    {ENTITY_TYPE_LABELS[entity.entity_type]}
+                  <div className="text-[12px] uppercase tracking-[1px] text-t4">
+                    {entity.custom_type_label ??
+                      ENTITY_TYPE_LABELS[entity.entity_type]}
                   </div>
                 </div>
               </button>

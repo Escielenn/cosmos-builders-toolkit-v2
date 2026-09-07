@@ -1,3 +1,4 @@
+// Lifted from src/components/graph/ into the Codex Web view by F3.
 import { useState } from "react";
 import {
   Dialog,
@@ -88,13 +89,8 @@ export function CreateEntityModal({
 
   return (
     <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
-      <DialogContent
-        className="sm:max-w-[420px] border-sf-line-interactive"
-        style={{
-          background: "rgba(15,15,16,0.98)",
-          backdropFilter: "blur(20px)",
-        }}
-      >
+      {/* Modals sit on `elevated` above the scrim — there is no fourth plane. */}
+      <DialogContent className="border-sf-line-interactive bg-sf-surface-elevated sm:max-w-[420px]">
         <DialogHeader>
           <DialogTitle className="font-heading text-sm font-light uppercase tracking-[2px] text-t1">
             New Entity

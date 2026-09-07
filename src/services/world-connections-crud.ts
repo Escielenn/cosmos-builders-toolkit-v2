@@ -1,5 +1,9 @@
 import { supabase } from "@/integrations/supabase/client";
 import type { WorldConnection } from "./world-data";
+import {
+  ALL_RELATIONSHIP_TYPES,
+  formatRelationshipType,
+} from "./entity-graph-types";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -21,35 +25,20 @@ export interface UpdateConnectionInput {
   description?: string | null;
 }
 
-export const CONNECTION_TYPES = [
-  "lives_on",
-  "evolved_from",
-  "governs",
-  "worships",
-  "speaks",
-  "travels_via",
-  "fights",
-  "created",
-  "parent_of",
-  "related_to",
-  "custom",
-] as const;
+/**
+ * F3 · one vocabulary. These ten free-text verbs were `world_connections`'
+ * own list; the graph model's RELATIONSHIP_TYPES_BY_STAGE is the vocabulary
+ * now, and 20260906_f3_one_graph.sql rewrites stored rows onto it. Anything
+ * that offers a verb to a writer reads from here.
+ */
+export const CONNECTION_TYPES = ALL_RELATIONSHIP_TYPES;
 
-export type ConnectionType = (typeof CONNECTION_TYPES)[number];
+export type ConnectionType = string;
 
-export const CONNECTION_TYPE_LABELS: Record<ConnectionType, string> = {
-  lives_on: "Lives On",
-  evolved_from: "Evolved From",
-  governs: "Governs",
-  worships: "Worships",
-  speaks: "Speaks",
-  travels_via: "Travels Via",
-  fights: "Fights",
-  created: "Created",
-  parent_of: "Parent Of",
-  related_to: "Related To",
-  custom: "Custom",
-};
+/** Label for any verb, typed or not — never a raw snake_case string. */
+export function connectionTypeLabel(type: string): string {
+  return formatRelationshipType(type);
+}
 
 // ---------------------------------------------------------------------------
 // CRUD operations

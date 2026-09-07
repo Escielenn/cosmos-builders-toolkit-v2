@@ -1,21 +1,36 @@
-interface ConnectionEdgeProps {
+// ---------------------------------------------------------------------------
+// ConnectionEdge — one typed relation in the Web view.
+//
+// Coloured by the cascade stage that owns the verb, so a `worships` edge and
+// a `preys_on` edge are visibly different kinds of claim. `historical` edges
+// (outside the scrubber's epoch) draw dashed and dim rather than vanishing.
+// ---------------------------------------------------------------------------
+
+import {
+  CASCADE_STAGE_COLORS,
+  formatRelationshipType,
+  type ConnectionCascadeStage,
+} from "@/services/entity-graph-types";
+
+export interface ConnectionEdgeProps {
   x1: number;
   y1: number;
   x2: number;
   y2: number;
-  linkType: string;
+  cascadeStage: ConnectionCascadeStage;
+  relationshipType: string;
+  relationshipLabel?: string | null;
+  bidirectional?: boolean;
   highlighted: boolean;
+  historical?: boolean;
+  /** The verb is only drawn when an endpoint is hovered — otherwise it is noise. */
+  showLabel?: boolean;
 }
 
-// Get edge color based on link type
-function getEdgeColor(linkType: string): string {
-  const colors: Record<string, string> = {
-    planet: "190 100% 50%", // Cyan - planet connections
-    species: "153 100% 50%", // Emerald - species connections
-    ecr: "328 100% 50%", // Magenta - ECR connections
-    propulsion: "43 100% 50%", // Amber - propulsion connections
-  };
-  return colors[linkType] || "0 0% 50%";
+function stageColor(stage: ConnectionCascadeStage): string {
+  return stage === "cross_cascade"
+    ? "var(--sf-line-emphasis)"
+    : CASCADE_STAGE_COLORS[stage];
 }
 
 const ConnectionEdge = ({
@@ -23,63 +38,66 @@ const ConnectionEdge = ({
   y1,
   x2,
   y2,
-  linkType,
+  cascadeStage,
+  relationshipType,
+  relationshipLabel,
+  bidirectional = false,
   highlighted,
+  historical = false,
+  showLabel = false,
 }: ConnectionEdgeProps) => {
-  const color = getEdgeColor(linkType);
-
-  // Calculate midpoint for gradient
+  const color = stageColor(cascadeStage);
   const midX = (x1 + x2) / 2;
   const midY = (y1 + y2) / 2;
+  const label = relationshipLabel || formatRelationshipType(relationshipType);
 
-  // Generate unique ID for gradient
-  const gradientId = `edge-gradient-${x1}-${y1}-${x2}-${y2}`.replace(/\./g, "-");
+  // Direction marker sits 65% along, so source→target reads without arrowheads
+  // colliding with the node circles.
+  const headX = x1 + (x2 - x1) * 0.65;
+  const headY = y1 + (y2 - y1) * 0.65;
 
   return (
-    <g>
-      {/* Gradient definition */}
-      <defs>
-        <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor={`hsl(${color} / 0.3)`} />
-          <stop offset="50%" stopColor={`hsl(${color} / ${highlighted ? 0.8 : 0.5})`} />
-          <stop offset="100%" stopColor={`hsl(${color} / 0.3)`} />
-        </linearGradient>
-      </defs>
-
-      {/* Main line */}
+    <g opacity={historical ? 0.35 : 1}>
       <line
         x1={x1}
         y1={y1}
         x2={x2}
         y2={y2}
-        stroke={`url(#${gradientId})`}
+        stroke={color}
+        strokeOpacity={highlighted ? 0.9 : 0.45}
         strokeWidth={highlighted ? 3 : 2}
         strokeLinecap="round"
+        strokeDasharray={historical ? "6 5" : undefined}
         className="transition-all duration-200"
       />
 
-      {/* Animated glow when highlighted */}
-      {highlighted && (
-        <line
-          x1={x1}
-          y1={y1}
-          x2={x2}
-          y2={y2}
-          stroke={`hsl(${color} / 0.3)`}
-          strokeWidth={6}
-          strokeLinecap="round"
-          className="blur-sm"
+      <circle
+        cx={headX}
+        cy={headY}
+        r={highlighted ? 4 : 3}
+        fill={color}
+        className="transition-all duration-200"
+      />
+      {bidirectional && (
+        <circle
+          cx={x1 + (x2 - x1) * 0.35}
+          cy={y1 + (y2 - y1) * 0.35}
+          r={highlighted ? 4 : 3}
+          fill={color}
         />
       )}
 
-      {/* Arrow marker at midpoint indicating direction */}
-      <circle
-        cx={midX + (x2 - x1) * 0.15}
-        cy={midY + (y2 - y1) * 0.15}
-        r={highlighted ? 4 : 3}
-        fill={`hsl(${color})`}
-        className="transition-all duration-200"
-      />
+      {showLabel && (
+        <text
+          x={midX}
+          y={midY - 6}
+          textAnchor="middle"
+          pointerEvents="none"
+          style={{ fill: "var(--t3)", fontSize: "12px" }}
+        >
+          {label}
+        </text>
+      )}
     </g>
   );
 };

@@ -5,6 +5,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { ENTITY_ENTRY_TYPES } from "@/services/entity-graph-mapping";
 
 export type CommunitySort = "recent" | "most_forked" | "most_favorited";
 
@@ -61,10 +62,13 @@ export function useCommunityWorlds(search?: string, sort: CommunitySort = "recen
       // Fetch entity counts for all returned world IDs
       const worldIds = worlds.map((w) => w.id);
 
+      // F3: entities are world_entries rows of an entity kind.
       const { data: entityCounts, error: entityErr } = await supabase
-        .from("entities")
+        .from("world_entries")
         .select("world_id")
-        .in("world_id", worldIds);
+        .in("world_id", worldIds)
+        .in("entry_type", ENTITY_ENTRY_TYPES as string[])
+        .is("trashed_at", null);
 
       if (entityErr) throw entityErr;
 

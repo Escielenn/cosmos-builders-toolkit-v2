@@ -772,7 +772,7 @@ const WorldDashboard = () => {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuItem asChild>
-                  <Link to={`/worlds/${worldId}/connections`}>
+                  <Link to={`/worlds/${worldId}/codex?view=web`}>
                     <Network className="w-4 h-4 mr-2" />
                     Connections
                   </Link>

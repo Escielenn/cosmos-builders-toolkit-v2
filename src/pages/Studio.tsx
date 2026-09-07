@@ -81,7 +81,7 @@ function Rail({ worlds }: { worlds: StudioWorld[] }): JSX.Element {
               { label: "Write", to: `/worlds/${worlds[0].id}/write` },
               { label: "Codex", to: `/worlds/${worlds[0].id}/codex` },
               { label: "Chronicle", to: `/worlds/${worlds[0].id}/chronicle` },
-              { label: "Connections", to: `/worlds/${worlds[0].id}/connections` },
+              { label: "Web", to: `/worlds/${worlds[0].id}/codex?view=web` },
             ].map((i) => (
               <Link
                 key={i.label}
@@ -330,7 +330,7 @@ export default function Studio(): JSX.Element {
                   {data.characters.map((c) => (
                     <Link
                       key={c.id}
-                      to={`/worlds/${c.world_id}/connections?focus=${c.id}`}
+                      to={`/worlds/${c.world_id}/codex/${c.id}`}
                       className="border border-sf-line-interactive bg-sf-surface/90 p-4 transition-colors hover:border-sf-primary"
                     >
                       <div

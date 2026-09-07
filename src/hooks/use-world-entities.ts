@@ -4,6 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import type { WorldEntry } from "@/services/world-data";
 import { createEntry, updateEntry } from "@/services/world-entries";
+import { invalidateWorldEntries } from "@/services/entity-graph-keys";
 import type { CreatableEntityType } from "@/lib/entity-config";
 
 // ---------------------------------------------------------------------------
@@ -97,9 +98,9 @@ export function useCreateEntityEntry(worldId: string | undefined) {
       );
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["world-entities", worldId] });
-      queryClient.invalidateQueries({ queryKey: ["world-outline", worldId] });
-      queryClient.invalidateQueries({ queryKey: ["codex-data", worldId] });
+      // world_entries is also the entity table since F3 — one write, one
+      // invalidation set (services/entity-graph-keys.ts).
+      invalidateWorldEntries(queryClient, worldId);
     },
     onError: (error) => {
       toast({
@@ -131,9 +132,9 @@ export function useUpdateEntityMetadata(worldId: string | undefined) {
       return updateEntry({ entryId, metadata });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["world-entities", worldId] });
-      queryClient.invalidateQueries({ queryKey: ["world-outline", worldId] });
-      queryClient.invalidateQueries({ queryKey: ["codex-data", worldId] });
+      // world_entries is also the entity table since F3 — one write, one
+      // invalidation set (services/entity-graph-keys.ts).
+      invalidateWorldEntries(queryClient, worldId);
     },
     onError: (error) => {
       toast({

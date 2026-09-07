@@ -38,6 +38,32 @@ only outcome that's actually bad.
 
 ## Log
 
+## 2026-09-06 · RESOLVED — the two entity models are one (F3)
+
+**Touches:** the 2026-09-03 finding below; Forbidden Pattern: Parallel Truth
+**Scope:** `entities` + `entity_connections` → `world_entries` + `world_connections`
+**Decisions taken** (the three the proposal left open):
+  1. **Fold direction:** `entities` → `world_entries`, as proposed. The facts,
+     the chronicle and the manuscript already point at `world_entries`.
+  2. **Collision policy:** the `world_entries` row is kept, the `entities`
+     row's edges are re-attached to it, and every collision is written to
+     `public.f3_fold_report` and printed by the migration.
+  3. **Renderer:** `WorldConnectionsGraph`, with `CascadeFilterBar`,
+     `GraphSearch` and `TimelineScrubber` lifted into its toolbar. The other
+     two renderers, and a third nobody had mounted, are deleted.
+**One exception worth naming:** the house rule is *ids are the only identity*.
+  The two tables share no id — that is the whole finding — so the fold matches
+  on `(world_id, entry_type, title)`. That is a ONE-TIME migration heuristic
+  whose every match is written to a report for a human to read, never a
+  runtime one. Nothing in the app resolves an entity by name, before or after.
+  `public.entity_fold_map` keeps `entities.id → world_entries.id` permanently
+  so a legacy id in an old URL still resolves by id.
+**Still open:** the epoch scrubber in the Web view is local until F6 puts the
+  global one in the top bar; the sidebar's Codex and Entities tabs are now two
+  views of the same rows, which F6 folds.
+**Revisit:** when a later migration drops `entities` / `entity_connections`,
+  which this one leaves in place, read-only, for one release.
+
 ## 2026-09-03 · FINDING — two entity models (`world_entries` vs `entities`)
 
 **Touches:** 02-ARCHITECTURE (Entity), Forbidden Pattern: Parallel Truth

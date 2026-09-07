@@ -1,13 +1,14 @@
 /**
  * Studio Home data (Cowork Implementation Guide §3), mapped onto the
  * LIVE schema: projects→worlds, manuscript→writing_entries,
- * cast→entities(character), scratchpad→world_notes.
+ * cast→world_entries(character), scratchpad→world_notes.
  * Streaks derive from writing_entries activity dates (approximation
  * until the sessions/word_events rollup lands with the Phase-4 editor).
  */
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { rowToEntity } from "@/services/entity-graph-mapping";
 export { lastSentence } from "@/lib/text";
 
 export interface StudioWorld {
@@ -89,11 +90,14 @@ export function useStudioData() {
           .in("entry_type", ["document", "lore"])
           .order("updated_at", { ascending: false })
           .limit(60),
+        // Characters: world_entries rows typed `character` (F3 — the entity
+        // model is world_entries; `summary` lives in metadata).
         supabase
-          .from("entities")
-          .select("id, name, summary, color, tags, world_id")
-          .eq("user_id", uid)
-          .eq("entity_type", "character")
+          .from("world_entries")
+          .select("id, title, metadata, color, tags, world_id")
+          .eq("created_by", uid)
+          .eq("entry_type", "character")
+          .is("trashed_at", null)
           .order("updated_at", { ascending: false })
           .limit(6),
         supabase
@@ -113,7 +117,28 @@ export function useStudioData() {
       const entries = ((entriesRes.data ?? []) as Array<Omit<StudioEntry, "word_count">>).map(
         (e) => ({ ...e, word_count: wordCount(e.content) }),
       ) as StudioEntry[];
-      const characters = (charsRes.data ?? []) as StudioCharacter[];
+      const characters = ((charsRes.data ?? []) as Array<{
+        id: string;
+        title: string;
+        metadata: unknown;
+        color: string | null;
+        tags: string[] | null;
+        world_id: string;
+      }>).map((row) => {
+        const entity = rowToEntity({
+          ...row,
+          entry_type: "character",
+          created_by: uid,
+        });
+        return {
+          id: entity.id,
+          name: entity.name,
+          summary: entity.summary,
+          color: entity.color,
+          tags: entity.tags,
+          world_id: entity.world_id,
+        };
+      }) as StudioCharacter[];
       const notes = (notesRes.data ?? []) as StudioNote[];
 
       // Activity cells + streak from entry-touch dates

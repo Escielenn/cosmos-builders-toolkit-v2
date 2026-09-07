@@ -1,6 +1,12 @@
 // ---------------------------------------------------------------------------
-// CascadeFilterBar, Six toggle buttons, one per cascade stage.
+// CascadeFilterBar — six toggles, one per cascade stage.
 // Click = solo, Shift+click = toggle, double-click = reset all.
+//
+// Written for the retired /connections route and never mounted. Lifted into
+// the Codex Web view's toolbar by F3, and re-dressed on the way: the alpha
+// borders and the `opacity: 0.35` inactive state are gone (10-LEGIBILITY:
+// no alpha borders, no opacity for states — an operable control has to stay
+// readable when it is off).
 // ---------------------------------------------------------------------------
 
 import { useCallback } from "react";
@@ -28,23 +34,19 @@ export function CascadeFilterBar({
   const handleClick = useCallback(
     (stage: CascadeStage, e: React.MouseEvent) => {
       if (e.shiftKey) {
-        // Toggle this stage
         const next = new Set(activeStages);
         if (next.has(stage)) {
           next.delete(stage);
-          // Don't allow empty set, keep at least one
+          // Never leave an empty set — an empty web reads as a broken one.
           if (next.size === 0) next.add(stage);
         } else {
           next.add(stage);
         }
         onChange(next);
+      } else if (activeStages.size === 1 && activeStages.has(stage)) {
+        onChange(new Set(ALL_STAGES));
       } else {
-        // Solo this stage (or reset if already solo)
-        if (activeStages.size === 1 && activeStages.has(stage)) {
-          onChange(new Set(ALL_STAGES));
-        } else {
-          onChange(new Set([stage]));
-        }
+        onChange(new Set([stage]));
       }
     },
     [activeStages, onChange]
@@ -56,13 +58,7 @@ export function CascadeFilterBar({
 
   return (
     <div
-      className="flex items-center gap-0.5"
-      style={{
-        background: "rgba(15,15,16,0.92)",
-        backdropFilter: "blur(16px)",
-        border: "1px solid rgba(255,255,255,0.06)",
-        padding: "4px 6px",
-      }}
+      className="flex items-center gap-0.5 border border-sf-line bg-sf-surface px-1.5 py-1"
       onDoubleClick={handleDoubleClick}
     >
       {CASCADE_STAGES.map((stage) => {
@@ -73,22 +69,23 @@ export function CascadeFilterBar({
           <button
             key={stage}
             type="button"
+            aria-pressed={isActive}
             onClick={(e) => handleClick(stage, e)}
-            className="flex items-center gap-1 px-2 py-1 transition-all duration-150"
-            style={{
-              background: isActive ? `${color}10` : "transparent",
-              border: `1px solid ${isActive ? `${color}30` : "transparent"}`,
-              opacity: isActive ? 1 : 0.35,
-            }}
-            title={`${CASCADE_STAGE_LABELS[stage]}, Click to solo, Shift+click to toggle`}
+            className={`flex min-h-hit items-center gap-1.5 border px-2 transition-colors duration-150 ${
+              isActive
+                ? "border-sf-line-emphasis"
+                : "border-transparent hover:border-sf-line-interactive"
+            }`}
+            title={`${CASCADE_STAGE_LABELS[stage]} — click to solo, shift-click to toggle`}
           >
             <span
-              className="w-1.5 h-1.5 rounded-full"
-              style={{ background: color }}
+              aria-hidden
+              className="h-1.5 w-1.5 shrink-0"
+              style={{ background: isActive ? color : "var(--sf-disabled-line)" }}
             />
             <span
-              className="text-[12px] font-heading uppercase tracking-[1px]"
-              style={{ color: isActive ? color : "rgba(255,255,255,0.35)" }}
+              className="font-heading text-[12px] uppercase tracking-[1px]"
+              style={{ color: isActive ? color : "var(--t4)" }}
             >
               {CASCADE_STAGE_LABELS[stage].slice(0, 4)}
             </span>
@@ -100,7 +97,7 @@ export function CascadeFilterBar({
         <button
           type="button"
           onClick={() => onChange(new Set(ALL_STAGES))}
-          className="ml-1 text-[12px] text-t4 hover:text-t3 uppercase tracking-[1px] font-sans transition-colors"
+          className="ml-1 min-h-hit px-2 font-sans text-[12px] uppercase tracking-[1px] text-t3 transition-colors hover:text-t1"
         >
           Reset
         </button>

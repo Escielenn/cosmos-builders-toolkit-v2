@@ -1,47 +1,95 @@
-import { Globe, Dna, Sparkles, GitBranch, Rocket, Zap, Calculator, FileText } from "lucide-react";
-import { getToolColor, getToolIconName } from "@/hooks/use-world-graph";
+// ---------------------------------------------------------------------------
+// ConnectionNode — one entity in the Web view.
+//
+// Before F3 this drew a worksheet, coloured by tool. A worksheet is a
+// property of an entity, not a node (F3-ONE-GRAPH-PROPOSAL.md §1), so it now
+// draws an entity, coloured by the cascade layer of its type
+// (F3-ONE-GRAPH-PROPOSAL.md §1). ONE colour per node: an entity-type ring on
+// top of a cascade ring gave the node two colours and made the legend — which
+// explains the cascade — false. Colour here is a MEANING, not a role: it does
+// not follow the theme's primary.
+// ---------------------------------------------------------------------------
 
-interface ConnectionNodeProps {
+import {
+  CASCADE_STAGE_COLORS,
+  ENTITY_TYPE_LABELS,
+  type CascadeStage,
+  type EntityType,
+} from "@/services/entity-graph-types";
+
+export interface ConnectionNodeProps {
   x: number;
   y: number;
-  toolType: string;
+  entityType: EntityType;
+  cascadeStage: CascadeStage;
+  /** User colour override, when the writer picked one. */
+  color?: string | null;
   title: string;
+  /** One line, shown on hover. */
+  summary?: string | null;
+  typeLabel?: string | null;
   isHovered: boolean;
+  isSelected?: boolean;
   isDragging?: boolean;
   onHover: () => void;
   onLeave: () => void;
   onClick: () => void;
 }
 
-// Icon components mapping
-const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
-  Globe,
-  Dna,
-  Sparkles,
-  GitBranch,
-  Rocket,
-  Zap,
-  Calculator,
-  FileText,
-};
+const MAX_LABEL = 18;
+
+/** Wraps a summary to a fixed column so the hover card can size itself. */
+function wrap(text: string, columns: number, maxLines: number): string[] {
+  const words = text.split(/\s+/).filter(Boolean);
+  const lines: string[] = [];
+  let line = "";
+  for (const word of words) {
+    if (line.length === 0) {
+      line = word;
+    } else if (line.length + 1 + word.length <= columns) {
+      line = `${line} ${word}`;
+    } else {
+      lines.push(line);
+      line = word;
+      if (lines.length === maxLines) break;
+    }
+  }
+  if (line && lines.length < maxLines) lines.push(line);
+  if (lines.length === maxLines && words.join(" ").length > lines.join(" ").length) {
+    lines[maxLines - 1] = `${lines[maxLines - 1].slice(0, columns - 1)}…`;
+  }
+  return lines;
+}
 
 const ConnectionNode = ({
   x,
   y,
-  toolType,
+  entityType,
+  cascadeStage,
+  color,
   title,
+  summary,
+  typeLabel,
   isHovered,
+  isSelected = false,
   isDragging = false,
   onHover,
   onLeave,
   onClick,
 }: ConnectionNodeProps) => {
-  const color = getToolColor(toolType);
-  const iconName = getToolIconName(toolType);
-  const Icon = ICONS[iconName] || FileText;
+  // The writer's own colour wins; otherwise the cascade layer, which is what
+  // the legend beside the graph explains.
+  const stroke = color ?? CASCADE_STAGE_COLORS[cascadeStage];
+  const displayTitle =
+    title.length > MAX_LABEL ? `${title.slice(0, MAX_LABEL - 3)}…` : title;
+  const kind = typeLabel ?? ENTITY_TYPE_LABELS[entityType];
 
-  // Truncate title if too long
-  const displayTitle = title.length > 18 ? title.slice(0, 15) + "..." : title;
+  // The hover card carries the type and, when there is one, the summary —
+  // Brief F3 item 4, "hover → infobox summary".
+  const summaryLines = isHovered && summary ? wrap(summary, 34, 3) : [];
+  const cardLines = isHovered ? 1 + summaryLines.length : 0;
+  const cardHeight = cardLines * 14 + 12;
+  const cardWidth = 240;
 
   return (
     <g
@@ -52,73 +100,70 @@ const ConnectionNode = ({
       className="cursor-pointer"
       role="button"
       tabIndex={0}
+      aria-label={`${title}, ${kind}`}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
           onClick();
         }
       }}
     >
-      {/* Glow effect when hovered or dragging */}
-      {(isHovered || isDragging) && (
+      {(isHovered || isDragging || isSelected) && (
         <circle
-          r={isDragging ? "40" : "35"}
-          fill={`hsl(${color} / ${isDragging ? 0.3 : 0.2})`}
+          r={isDragging ? 40 : 35}
+          fill={stroke}
+          opacity={isDragging ? 0.3 : 0.2}
           className="transition-all duration-200"
         />
       )}
 
-      {/* Outer ring */}
       <circle
-        r="24"
-        fill="hsl(var(--sf-surface-hsl))"
-        stroke={`hsl(${color})`}
-        strokeWidth={isDragging ? "4" : isHovered ? "3" : "2"}
+        r={24}
+        style={{ fill: "var(--sf-surface)" }}
+        stroke={stroke}
+        strokeWidth={isDragging ? 4 : isHovered || isSelected ? 3 : 2}
         className="transition-all duration-200"
       />
 
-      {/* Inner circle with icon background */}
-      <circle r="18" fill={`hsl(${color} / 0.15)`} />
+      <circle r={18} fill={stroke} opacity={0.15} />
 
-      {/* Icon - centered */}
-      <foreignObject x="-10" y="-10" width="20" height="20">
-        <div className="w-full h-full flex items-center justify-center">
-          <Icon
-            className={`w-4 h-4`}
-            style={{ color: `hsl(${color})` }}
-          />
-        </div>
-      </foreignObject>
-
-      {/* Label */}
       <text
-        y="40"
+        y={44}
         textAnchor="middle"
-        className="fill-muted-foreground text-xs"
-        style={{ fontSize: "11px" }}
+        style={{ fill: "var(--t2)", fontSize: "12px" }}
       >
         {displayTitle}
       </text>
 
-      {/* Hover tooltip with full title */}
-      {isHovered && title.length > 18 && (
-        <g>
+      {isHovered && (
+        <g pointerEvents="none">
           <rect
-            x={-title.length * 3.5}
-            y="-55"
-            width={title.length * 7}
-            height="20"
-            rx="4"
-            fill="hsl(var(--sf-surface-elevated-hsl))"
-            stroke="hsl(var(--border))"
+            x={-cardWidth / 2}
+            y={-40 - cardHeight}
+            width={cardWidth}
+            height={cardHeight}
+            style={{ fill: "var(--sf-surface-elevated)" }}
+            stroke="var(--sf-line-emphasis)"
+            strokeWidth={1}
           />
           <text
-            y="-42"
-            textAnchor="middle"
-            className="fill-foreground text-xs"
-            style={{ fontSize: "10px" }}
+            x={-cardWidth / 2 + 10}
+            y={-40 - cardHeight + 18}
+            style={{ fill: "var(--t1)", fontSize: "12px" }}
           >
-            {title}
+            {title.length > 30 ? `${title.slice(0, 29)}…` : title}
+            <tspan style={{ fill: "var(--t4)" }}>{`  ${kind}`}</tspan>
           </text>
+          {summaryLines.map((line, i) => (
+            <text
+              key={line + String(i)}
+              x={-cardWidth / 2 + 10}
+              y={-40 - cardHeight + 18 + (i + 1) * 14}
+              style={{ fill: "var(--t3)", fontSize: "12px" }}
+            >
+              {line}
+            </text>
+          ))}
         </g>
       )}
     </g>

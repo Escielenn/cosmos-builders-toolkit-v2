@@ -10,7 +10,7 @@ const CodexQuickAccess = ({ worldId }: CodexQuickAccessProps) => {
     { label: "Write", icon: PenLine, to: `/worlds/${worldId}/write`, desc: "Draft prose and scenes for your world" },
     { label: "Codex", icon: Library, to: `/worlds/${worldId}/codex`, desc: "Every entity in the world. One page per thing." },
     { label: "Chronicle", icon: ScrollText, to: `/worlds/${worldId}/chronicle`, desc: "Timeline of world events" },
-    { label: "Connections", icon: Network, to: `/worlds/${worldId}/connections`, desc: "Entity relationships and worksheet-to-worksheet data flow" },
+    { label: "Web", icon: Network, to: `/worlds/${worldId}/codex?view=web`, desc: "The relationship web — every entity and the typed relations between them" },
     { label: "Showcase", icon: Eye, to: `/worlds/${worldId}/showcase`, desc: "Public showcase page for your world" },
   ];
 

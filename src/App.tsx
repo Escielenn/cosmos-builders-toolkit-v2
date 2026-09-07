@@ -49,11 +49,10 @@ const ToolsWiki = lazy(() => import("./pages/ToolsWiki"));
 const GettingStarted = lazy(() => import("./pages/GettingStarted"));
 const Contact = lazy(() => import("./pages/Contact"));
 const WorldDashboard = lazy(() => import("./pages/WorldDashboard"));
-const WorldConnections = lazy(() => import("./pages/WorldConnections"));
 const Worlds = lazy(() => import("./pages/Worlds"));
 const WorldLayout = lazy(() => import("./layouts/WorldLayout"));
 const WorldToolPage = lazy(() => import("./pages/WorldToolPage"));
-const WorldGraphRedirect = lazy(() => import("./pages/WorldGraphRedirect"));
+const WorldWebRedirect = lazy(() => import("./pages/WorldWebRedirect"));
 const WikiPageRoute = lazy(() => import("./pages/WikiPageRoute"));
 const CodexEntityRoute = lazy(() => import("./pages/CodexEntityRoute"));
 const WikiRedirect = lazy(() => import("./pages/WikiRedirect"));
@@ -229,8 +228,9 @@ const App = () => (
                   <Route path="codex" element={<WikiBrowse />} />
                   <Route path="wiki" element={<WikiRedirect />} />
                   <Route path="chronicle" element={<WorldChronicle />} />
-                  <Route path="graph" element={<WorldGraphRedirect />} />
-                  <Route path="connections" element={<WorldConnections />} />
+                  {/* F3: one graph. Both retired routes land on the Codex Web view. */}
+                  <Route path="graph" element={<WorldWebRedirect />} />
+                  <Route path="connections" element={<WorldWebRedirect />} />
                   {/* Legacy Writing Space unified into Studio (redirects) */}
                   <Route path="write" element={<WorldWriteRedirect />} />
                   <Route path="custom-types" element={<WorldCustomTypes />} />

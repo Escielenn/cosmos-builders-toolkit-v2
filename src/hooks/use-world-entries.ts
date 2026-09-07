@@ -10,6 +10,7 @@ import {
   type UpdateEntryInput,
   type MoveEntryInput,
 } from "@/services/world-entries";
+import { invalidateWorldEntries } from "@/services/entity-graph-keys";
 
 export function useCreateEntry(worldId: string | undefined) {
   const { user } = useAuth();
@@ -20,8 +21,9 @@ export function useCreateEntry(worldId: string | undefined) {
     mutationFn: (input: Omit<CreateEntryInput, "worldId">) =>
       createEntry({ ...input, worldId: worldId! }, user!.id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["world-outline", worldId] });
-      queryClient.invalidateQueries({ queryKey: ["codex-data", worldId] });
+      // world_entries is also the entity table since F3 — one write, one
+      // invalidation set (services/entity-graph-keys.ts).
+      invalidateWorldEntries(queryClient, worldId);
     },
     onError: (error) => {
       toast({
@@ -40,8 +42,9 @@ export function useUpdateEntry(worldId: string | undefined) {
   return useMutation({
     mutationFn: (input: UpdateEntryInput) => updateEntry(input),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["world-outline", worldId] });
-      queryClient.invalidateQueries({ queryKey: ["codex-data", worldId] });
+      // world_entries is also the entity table since F3 — one write, one
+      // invalidation set (services/entity-graph-keys.ts).
+      invalidateWorldEntries(queryClient, worldId);
     },
     onError: (error) => {
       toast({
@@ -60,8 +63,9 @@ export function useDeleteEntry(worldId: string | undefined) {
   return useMutation({
     mutationFn: (entryId: string) => deleteEntry(entryId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["world-outline", worldId] });
-      queryClient.invalidateQueries({ queryKey: ["codex-data", worldId] });
+      // world_entries is also the entity table since F3 — one write, one
+      // invalidation set (services/entity-graph-keys.ts).
+      invalidateWorldEntries(queryClient, worldId);
       toast({ title: "ENTRY DELETED." });
     },
     onError: (error) => {
@@ -81,8 +85,9 @@ export function useMoveEntry(worldId: string | undefined) {
   return useMutation({
     mutationFn: (input: MoveEntryInput) => moveEntry(input),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["world-outline", worldId] });
-      queryClient.invalidateQueries({ queryKey: ["codex-data", worldId] });
+      // world_entries is also the entity table since F3 — one write, one
+      // invalidation set (services/entity-graph-keys.ts).
+      invalidateWorldEntries(queryClient, worldId);
     },
     onError: (error) => {
       toast({

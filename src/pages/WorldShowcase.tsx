@@ -18,6 +18,13 @@ import { GlassPanel } from "@/components/ui/glass-panel";
 import { Badge } from "@/components/ui/badge";
 import { Loader } from "@/components/ui/loader";
 import { supabase } from "@/integrations/supabase/client";
+import {
+  ENTITY_ENTRY_TYPES,
+  rowToConnection,
+  rowToEntity,
+  type WorldConnectionRow,
+  type WorldEntryRow,
+} from "@/services/entity-graph-mapping";
 import { useToast } from "@/hooks/use-toast";
 import ForkButton from "@/components/community/ForkButton";
 import FavoriteButton from "@/components/community/FavoriteButton";
@@ -93,13 +100,16 @@ function useShowcaseEntities(worldId: string | undefined) {
     queryKey: ["showcase-entities", worldId],
     queryFn: async () => {
       if (!worldId) return [];
+      // F3: one graph — entities are world_entries rows of an entity kind.
       const { data, error } = await supabase
-        .from("entities")
+        .from("world_entries")
         .select("*")
         .eq("world_id", worldId)
+        .in("entry_type", ENTITY_ENTRY_TYPES as string[])
+        .is("trashed_at", null)
         .order("sort_order", { ascending: true });
       if (error) throw error;
-      return (data ?? []) as unknown as Entity[];
+      return ((data ?? []) as unknown as WorldEntryRow[]).map(rowToEntity);
     },
     enabled: !!worldId,
     staleTime: 60_000,
@@ -112,12 +122,16 @@ function useShowcaseConnections(worldId: string | undefined) {
     queryFn: async () => {
       if (!worldId) return [];
       const { data, error } = await supabase
-        .from("entity_connections")
+        .from("world_connections")
         .select("*")
         .eq("world_id", worldId)
-        .order("sort_order", { ascending: true });
+        .not("source_entry_id", "is", null)
+        .not("target_entry_id", "is", null)
+        .order("created_at", { ascending: true });
       if (error) throw error;
-      return (data ?? []) as unknown as EntityConnection[];
+      return ((data ?? []) as unknown as WorldConnectionRow[])
+        .map(rowToConnection)
+        .filter((c): c is EntityConnection => c !== null);
     },
     enabled: !!worldId,
     staleTime: 60_000,
