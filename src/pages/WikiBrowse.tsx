@@ -1,7 +1,7 @@
 /** Register: WRITER (Lora) — reference prose, read at length. */
 import { useCallback, useMemo, useState } from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { List, Map, Network, Plus, Search, FileText, Filter, X } from "lucide-react";
+import { CalendarRange, List, Map, Network, Plus, Search, FileText, Filter, X } from "lucide-react";
 import * as LucideIcons from "lucide-react";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Input } from "@/components/ui/input";
@@ -24,9 +24,10 @@ import TagBadge from "@/components/tags/TagBadge";
 import { getTagColor } from "@/hooks/use-tags";
 import { CodexWebView } from "@/components/connections";
 import CodexAtlasView from "@/components/connections/CodexAtlasView";
+import CodexTimelineView from "@/components/connections/CodexTimelineView";
 
 /** The Codex's views: projections of one list, never separate places. */
-type CodexView = "list" | "web" | "atlas";
+type CodexView = "list" | "web" | "atlas" | "timeline";
 
 const CODEX_VIEWS: ReadonlyArray<{
   id: CodexView;
@@ -36,6 +37,7 @@ const CODEX_VIEWS: ReadonlyArray<{
   { id: "list", label: "List", Icon: List },
   { id: "web", label: "Web", Icon: Network },
   { id: "atlas", label: "Atlas", Icon: Map },
+  { id: "timeline", label: "Timeline", Icon: CalendarRange },
 ];
 
 function getIconComponent(iconName: string) {
@@ -54,7 +56,10 @@ export default function WikiBrowse() {
   // `?view=web` is the address `/graph` and `/connections` collapsed into.
   const [searchParams, setSearchParams] = useSearchParams();
   const rawView = searchParams.get("view");
-  const view: CodexView = rawView === "web" || rawView === "atlas" ? rawView : "list";
+  const view: CodexView =
+    rawView === "web" || rawView === "atlas" || rawView === "timeline"
+      ? rawView
+      : "list";
   const focusEntityId = searchParams.get("focus");
   const openCreate = searchParams.get("create") === "true";
 
@@ -227,6 +232,8 @@ export default function WikiBrowse() {
       </div>
 
       {view === "atlas" && worldId && <CodexAtlasView worldId={worldId} />}
+
+      {view === "timeline" && worldId && <CodexTimelineView worldId={worldId} />}
 
       {view === "web" && worldId && (
         <CodexWebView
