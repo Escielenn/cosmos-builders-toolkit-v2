@@ -8,11 +8,13 @@
 
 import { describe, expect, it } from "vitest";
 import {
+  acceptsMapSheet,
   atlasPins,
   canZoomInto,
   clampToMap,
   placedPins,
   placementPatch,
+  readMapSheet,
   unplacedPins,
 } from "@/lib/atlas/placement";
 import type { Entity, EntityType } from "@/services/entity-graph-types";
@@ -154,5 +156,40 @@ describe("canZoomInto", () => {
     const child = ent({ entity_type: "planet", parent_entity_id: "sys" });
     expect(canZoomInto(atlasPins([sys, child], null)[0])).toBe(true);
     expect(canZoomInto(atlasPins([ent({ id: "empty" })], null)[0])).toBe(false);
+  });
+});
+
+describe("map sheets", () => {
+  it("reads a sheet and its projection", () => {
+    const sheet = readMapSheet(
+      ent({ metadata: { map_sheet_url: "https://x/y.png", map_sheet_projection: "mercator" } }),
+    );
+    expect(sheet).toEqual({ url: "https://x/y.png", projection: "mercator" });
+  });
+
+  it("defaults an unknown projection to equirectangular rather than dropping the sheet", () => {
+    // Losing a writer's uploaded map because a string was unexpected would be
+    // far worse than assuming the format almost every map tool exports.
+    const sheet = readMapSheet(
+      ent({ metadata: { map_sheet_url: "https://x/y.png", map_sheet_projection: "spilhaus" } }),
+    );
+    expect(sheet?.projection).toBe("equirectangular");
+    const none = readMapSheet(ent({ metadata: { map_sheet_url: "https://x/y.png" } }));
+    expect(none?.projection).toBe("equirectangular");
+  });
+
+  it("is null when there is no sheet", () => {
+    expect(readMapSheet(ent({}))).toBeNull();
+    expect(readMapSheet(ent({ metadata: { map_sheet_url: "  " } }))).toBeNull();
+    expect(readMapSheet(ent({ metadata: { map_sheet_url: 42 } }))).toBeNull();
+    expect(readMapSheet(null)).toBeNull();
+  });
+
+  it("only offers a surface map where a surface exists", () => {
+    expect(acceptsMapSheet("planet")).toBe(true);
+    expect(acceptsMapSheet("moon")).toBe(true);
+    for (const t of ["star", "star_system", "species", "faction", "vessel"] as const) {
+      expect(acceptsMapSheet(t)).toBe(false);
+    }
   });
 });

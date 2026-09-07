@@ -25,6 +25,7 @@ import {
   canZoomInto,
   placedPins,
   placementPatch,
+  readMapSheet,
   unplacedPins,
   type AtlasPin,
 } from "@/lib/atlas/placement";
@@ -56,6 +57,13 @@ export function CodexAtlasView({ worldId }: CodexAtlasViewProps) {
 
   const all = useMemo(() => entities ?? [], [entities]);
   const pins = useMemo(() => atlasPins(all, here.id), [all, here.id]);
+
+  // At planet or moon zoom, the writer's own drawn map IS the map, and the
+  // places inside that world pin onto it (F5 scope addition, 2026-09-07).
+  const sheet = useMemo(
+    () => readMapSheet(all.find((e) => e.id === here.id)),
+    [all, here.id],
+  );
   const placed = useMemo(() => placedPins(pins), [pins]);
   const unplaced = useMemo(() => unplacedPins(pins), [pins]);
 
@@ -131,10 +139,24 @@ export function CodexAtlasView({ worldId }: CodexAtlasViewProps) {
           role="application"
           aria-label={`Atlas — ${here.label}`}
         >
+          {sheet && (
+            <img
+              src={sheet.url}
+              alt=""
+              className="absolute inset-0 h-full w-full object-cover"
+              draggable={false}
+            />
+          )}
+
           {/* A grid, not a starfield: this is a chart of what the writer
               decided, and invented background stars would compete with the
-              pins that are actually theirs. */}
-          <svg className="absolute inset-0 h-full w-full" aria-hidden>
+              pins that are actually theirs. Over a map sheet it drops back so
+              it reads as a graticule rather than a second drawing. */}
+          <svg
+            className="absolute inset-0 h-full w-full"
+            style={sheet ? { opacity: 0.35 } : undefined}
+            aria-hidden
+          >
             <defs>
               <pattern id="sf-atlas-grid" width="8%" height="12%" patternUnits="objectBoundingBox">
                 <path
@@ -187,7 +209,7 @@ export function CodexAtlasView({ worldId }: CodexAtlasViewProps) {
           ))}
 
           {placed.length === 0 && (
-            <p className="absolute inset-0 flex items-center justify-center px-6 text-center font-mono text-[12px] uppercase tracking-wider text-t3">
+            <p className="absolute inset-0 flex items-center justify-center bg-sf-surface/70 px-6 text-center font-mono text-[12px] uppercase tracking-wider text-t3">
               {pins.length === 0
                 ? here.id === null
                   ? "NO SYSTEMS ON FILE. CREATE ONE IN THE CODEX."
@@ -199,6 +221,7 @@ export function CodexAtlasView({ worldId }: CodexAtlasViewProps) {
 
         <p className="mt-2 font-mono text-[12px] uppercase tracking-wider text-t4">
           Click a pin to open it · double-click to go inside · drag to move
+          {sheet ? ` · ${sheet.projection} sheet` : ""}
         </p>
       </div>
 

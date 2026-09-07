@@ -147,3 +147,55 @@ export function placementPatch(point: AtlasPoint): {
 export function canZoomInto(pin: AtlasPin): boolean {
   return pin.childCount > 0;
 }
+
+// ---------------------------------------------------------------------------
+// Map sheets (F5 scope addition, owner 2026-09-07)
+//
+// A writer who has drawn their world — Wonderdraft, Azgaar, by hand — has had
+// nowhere to put it. At planet and moon zoom the Atlas uses their sheet as the
+// map itself, and the places inside that world pin onto it.
+//
+// The sheet is a TEXTURE, never a second set of facts. Tilt, spin, lock,
+// atmosphere and star colour keep coming from canon; nothing here reads a
+// number off an image.
+// ---------------------------------------------------------------------------
+
+export const MAP_PROJECTIONS = ["equirectangular", "mercator"] as const;
+export type MapProjection = (typeof MAP_PROJECTIONS)[number];
+
+export const MAP_PROJECTION_LABELS: Record<MapProjection, string> = {
+  equirectangular: "Equirectangular",
+  mercator: "Mercator",
+};
+
+/** Entity kinds a surface map sheet makes sense on. */
+export const MAP_SHEET_TYPES: readonly EntityType[] = ["planet", "moon"];
+
+export interface MapSheet {
+  url: string;
+  projection: MapProjection;
+}
+
+/**
+ * The sheet on an entity, or null. An unrecognised projection falls back to
+ * equirectangular — the overwhelmingly common export from map tools — rather
+ * than dropping a sheet the writer uploaded.
+ */
+export function readMapSheet(entity: Entity | null | undefined): MapSheet | null {
+  if (!entity) return null;
+  const meta = (entity.metadata ?? {}) as Record<string, unknown>;
+  const url = meta.map_sheet_url;
+  if (typeof url !== "string" || !url.trim()) return null;
+  const projection = meta.map_sheet_projection;
+  return {
+    url: url.trim(),
+    projection: (MAP_PROJECTIONS as readonly string[]).includes(projection as string)
+      ? (projection as MapProjection)
+      : "equirectangular",
+  };
+}
+
+/** True when a sheet can be attached to this kind of entity. */
+export function acceptsMapSheet(entityType: EntityType): boolean {
+  return MAP_SHEET_TYPES.includes(entityType);
+}

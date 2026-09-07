@@ -18,6 +18,8 @@ import { useMyWorldRole } from "@/hooks/use-collaborators";
 import FirstTimeHint from "@/components/onboarding/FirstTimeHint";
 import { EntryTagsBar } from "@/components/tags/EntryTagsBar";
 import { sanitizeHtml } from "@/lib/sanitize";
+import MapSheetSection from "@/components/world/MapSheetSection";
+import { acceptsMapSheet, readMapSheet } from "@/lib/atlas/placement";
 import {
   CASCADE_STAGES,
   CASCADE_STAGE_LABELS,
@@ -104,6 +106,15 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
           ? (entry!.entry_type as EntityType)
           : "custom"
       ];
+  // acceptsMapSheet works on the entity vocabulary, so resolve the entry's
+  // type through the same guard the cascade stage uses.
+  const cascadeEntityType: EntityType = isEntityType(entry?.entry_type ?? "")
+    ? (entry!.entry_type as EntityType)
+    : "custom";
+  const mapSheet = readMapSheet(
+    entry ? ({ metadata: entryMeta } as never) : null,
+  );
+
   const commitCascadeStage = useCallback(
     (next: string) => {
       if (!entry || next === cascadeStage) return;
@@ -581,6 +592,22 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
             />
           ))}
         </div>
+      )}
+
+      {/* The writer's own drawn map, on the worlds it makes sense on. */}
+      {isEntityType(entry.entry_type) && acceptsMapSheet(cascadeEntityType) && (
+        <MapSheetSection
+          entryId={entry.id}
+          url={mapSheet?.url ?? null}
+          projection={mapSheet?.projection ?? "equirectangular"}
+          canEdit={!!canEdit}
+          onChange={(patch) =>
+            updateMetadata.mutate({
+              entryId: entry.id,
+              metadata: { ...entryMeta, ...patch },
+            })
+          }
+        />
       )}
 
       {/* Connections */}
