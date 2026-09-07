@@ -47,6 +47,17 @@ import { EntityMentionList } from "@/components/editor/EntityMentionList";
 import { useEntities } from "@/hooks/use-entity-graph";
 import { useWritingPreferences } from "@/hooks/use-writing-preferences";
 import { WRITING_THEMES } from "@/lib/writing/themes";
+import { countWordsInText } from "@/lib/text";
+import type { Node as ProseMirrorNode } from "@tiptap/pm/model";
+
+/**
+ * Document text with block boundaries preserved. `doc.textContent` is
+ * `textBetween(0, size, "")` — an empty separator — which glues adjacent
+ * paragraphs and undercounts by one word per boundary.
+ */
+function docText(doc: ProseMirrorNode): string {
+  return doc.textBetween(0, doc.content.size, " ", " ");
+}
 import {
   Tooltip,
   TooltipContent,
@@ -209,10 +220,12 @@ export function StellarForgeEditor({
     onUpdate: ({ editor: ed }) => {
       const html = ed.getHTML();
 
-      // Update word count
+      // Update word count. textBetween with a " " block separator, NOT
+      // doc.textContent — textContent glues paragraphs together and loses one
+      // word per block boundary. countWordsInText is the shared implementation
+      // so this readout can never drift from the Studio footer again.
       if (config.showWordCount) {
-        const text = ed.state.doc.textContent;
-        setWordCount(text.trim() ? text.trim().split(/\s+/).length : 0);
+        setWordCount(countWordsInText(docText(ed.state.doc)));
       }
 
       // Debounced onChange
@@ -285,8 +298,7 @@ export function StellarForgeEditor({
   // Initial word count
   useEffect(() => {
     if (editor && config.showWordCount) {
-      const text = editor.state.doc.textContent;
-      setWordCount(text.trim() ? text.trim().split(/\s+/).length : 0);
+      setWordCount(countWordsInText(docText(editor.state.doc)));
     }
   }, [editor, config.showWordCount]);
 

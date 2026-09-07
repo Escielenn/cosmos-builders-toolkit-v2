@@ -8,11 +8,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import {
-  MEASURE_LABELS,
-  WRITING_MEASURES,
-  writingSurfaceStyle,
-} from "@/lib/writing-surface-style";
+import { writingSurfaceStyle } from "@/lib/writing-surface-style";
+import { TypographyMenu } from "@/components/writing/TypographyMenu";
 import { StellarForgeEditor } from "@/components/editor/StellarForgeEditor";
 import { Wordmark } from "@/components/brand/Wordmark";
 import { WritingEntityPanel } from "@/components/writing/WritingEntityPanel";
@@ -636,6 +633,10 @@ export default function Write(): JSX.Element {
               )}
             </>
           )}
+          {/* Spacing / font / width. These were a permanent row between the
+              title and the first line of prose; they belong one click away,
+              not in the writer's eyeline. */}
+          <TypographyMenu preferences={preferences} onChange={updatePreferences} />
           {/* Per-document export. The compile page could export a whole
               manuscript, but a single document had no export path at all. */}
           <DropdownMenu>
@@ -742,78 +743,17 @@ export default function Write(): JSX.Element {
             )}
             <div className="my-6 text-center text-t4" aria-hidden="true">· · ·</div>
             {doc && (
-              <div className="mb-4 flex flex-wrap items-center gap-4">
-                <div className="flex items-center gap-1.5">
-                  <span className="text-[12px] font-sans font-medium uppercase tracking-[1.5px] text-t4">Spacing</span>
-                  <div className="flex">
-                    {(["1", "1.5", "2"] as const).map((val) => (
-                      <button
-                        key={val}
-                        onClick={() => updatePreferences({ lineSpacing: val })}
-                        title={`${val === "1" ? "1x" : val === "1.5" ? "1.5x" : "2x"} line spacing`}
-                        className={`border px-2 py-1 text-[12px] font-mono transition-colors ${val !== "1" ? "-ml-px" : ""} ${
-                          preferences.lineSpacing === val
-                            ? "border-sf-primary text-sf-primary-text"
-                            : "border-sf-line-interactive text-t4 hover:text-t2"
-                        }`}
-                      >
-                        {val === "1" ? "1x" : val === "1.5" ? "1.5x" : "2x"}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <span className="text-[12px] font-sans font-medium uppercase tracking-[1.5px] text-t4">Font</span>
-                  <select
-                    value={preferences.writingFont}
-                    onChange={(e) => updatePreferences({ writingFont: e.target.value as WritingFont })}
-                    aria-label="Editor font"
-                    className="border border-sf-line-interactive bg-transparent px-2 py-1 text-[12px] text-t2 outline-none focus-visible:border-sf-primary"
-                  >
-                    <option value="DM Sans">DM Sans</option>
-                    <option value="Georgia">Georgia</option>
-                    <option value="Times New Roman">Times New Roman</option>
-                    <option value="Merriweather">Merriweather</option>
-                    <option value="Lora">Lora</option>
-                    <option value="Courier New">Courier New</option>
-                  </select>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <span className="text-[12px] font-sans font-medium uppercase tracking-[1.5px] text-t4">Width</span>
-                  <div className="flex">
-                    {WRITING_MEASURES.map((val, i) => (
-                      <button
-                        key={val}
-                        onClick={() => updatePreferences({ writingMeasure: val })}
-                        title={`${MEASURE_LABELS[val]} column`}
-                        aria-pressed={preferences.writingMeasure === val}
-                        className={`border px-2 py-1 text-[12px] font-mono transition-colors ${i > 0 ? "-ml-px" : ""} ${
-                          preferences.writingMeasure === val
-                            ? "border-sf-primary text-sf-primary-text"
-                            : "border-sf-line-interactive text-t4 hover:text-t2"
-                        }`}
-                      >
-                        {MEASURE_LABELS[val]}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            )}
-            {doc && (
-              <div>
-                <StellarForgeEditor
-                  onEditorReady={setEditorInstance}
-                  key={doc.id}
-                  content={doc.content ?? ""}
-                  onChange={onContentChange}
-                  worldId={worldId}
-                  preset="full"
-                  placeholder="Begin writing. Use @ to mention entities, [[ to link wiki pages…"
-                  className="sf-writing-serif"
-                  minHeight="55vh"
-                />
-              </div>
+              <StellarForgeEditor
+                onEditorReady={setEditorInstance}
+                key={doc.id}
+                content={doc.content ?? ""}
+                onChange={onContentChange}
+                worldId={worldId}
+                preset="full"
+                placeholder="Begin writing. Use @ to mention entities, [[ to link wiki pages…"
+                className={`sf-writing-serif${preferences.dropCap ? " sf-writing-dropcap" : ""}`}
+                minHeight="55vh"
+              />
             )}
             {!doc && !docLoading && (
               <p className="font-serif text-[15px] italic text-t4">Select or create a document.</p>

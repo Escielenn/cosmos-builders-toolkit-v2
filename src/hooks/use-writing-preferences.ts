@@ -25,6 +25,8 @@ export interface WritingPreferences {
   lineSpacing: LineSpacing;
   writingFont: WritingFont;
   writingMeasure: WritingMeasure;
+  /** Enlarged first letter on a document's opening paragraph. */
+  dropCap: boolean;
 }
 
 const DEFAULTS: WritingPreferences = {
@@ -35,6 +37,10 @@ const DEFAULTS: WritingPreferences = {
   // control agree with the page instead of claiming DM Sans and showing serif.
   writingFont: "Lora",
   writingMeasure: "default",
+  // Off. It was forced on every document, including scene fragments and notes
+  // that open on dialogue, where an enlarged quotation mark is just wrong. It
+  // is a chapter-opening flourish, so the writer turns it on per taste.
+  dropCap: false,
 };
 
 const LOCAL_KEY = "stellarforge-writing-preferences-v1";
