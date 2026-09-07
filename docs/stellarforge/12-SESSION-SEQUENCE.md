@@ -62,7 +62,7 @@ Grouped into four blocks. Each block ends with something demonstrable. **Don't r
 | H1 | Compile via Pandoc job (DOCX/EPUB/.scriv) | `13` §2.2 note | ~1 week | a manuscript Word file a publisher accepts |
 | H2 | Real-time co-editing (Yjs over Supabase Realtime) | `13` §2.5 note | ~2 weeks | two cursors, one document, no lost keystrokes |
 | | **BLOCK C — the constellation** | | | |
-| C1 | Publish / open-on | `11` → Brief S1 | ~1 week | Solaris planet → ExoSky, one click |
+| C1 | Publish / open-on | `11` → Brief S1 | ~1 week | **done 2026-09-07** — open-on on all five sims via `?entityId=` (+ legacy `?entity=`, + `?epoch=`); `use-sim-open-on` + `lib/simulators/open-on.ts` seed through the STELLARFORGE_LOAD every sim.html already implements. ExoForge takes a planet's full canon; Solaris and Rogue hydrate thinly **on purpose** (Rogue's mass/speed/angle describe the intruder, not the subject — a test forbids seeding them). `PublishProvenance` gains `run_id` + `seed`; the generic Publish dialog shows a real reviewable list instead of a bare count. `SimSubjectChip` in all five toolbars. **Open:** the four non-Solaris sims still record extractor keys (`sky.*`, `system.*`, `encounter.*`), not canon predicates — mapping those onto `08-VOCABULARY` is its own session and was deliberately not guessed at |
 | C2 | The facts table | `12` → Brief C2 below | ~3 days | Asserted facts persist |
 | C3 | Rogue as world-generator | `11` §2 S2 | ~1–2 weeks | An encounter creates a world |
 | C4 | Living sky | `11` §2 S3 | ~1 week | The sky precesses |
@@ -72,7 +72,7 @@ Grouped into four blocks. Each block ends with something demonstrable. **Don't r
 | D3 | Dossier / characters | `05` A1 | ~2 weeks | POV points at something |
 | D4 | Sensory brief | `11` → Brief S5 | ~1 week | The sim writes conditions |
 | | **BLOCK C — the constellation** | | | |
-| C1 | Publish / open-on | `11` → Brief S1 | ~1 week | Solaris planet → ExoSky, one click |
+| C1 | Publish / open-on | `11` → Brief S1 | ~1 week | **done 2026-09-07** — open-on on all five sims via `?entityId=` (+ legacy `?entity=`, + `?epoch=`); `use-sim-open-on` + `lib/simulators/open-on.ts` seed through the STELLARFORGE_LOAD every sim.html already implements. ExoForge takes a planet's full canon; Solaris and Rogue hydrate thinly **on purpose** (Rogue's mass/speed/angle describe the intruder, not the subject — a test forbids seeding them). `PublishProvenance` gains `run_id` + `seed`; the generic Publish dialog shows a real reviewable list instead of a bare count. `SimSubjectChip` in all five toolbars. **Open:** the four non-Solaris sims still record extractor keys (`sky.*`, `system.*`, `encounter.*`), not canon predicates — mapping those onto `08-VOCABULARY` is its own session and was deliberately not guessed at |
 | C2 | The facts table | `12` → Brief C2 below | ~3 days | Asserted facts persist |
 | C3 | Rogue as world-generator | `11` §2 S2 | ~1–2 weeks | An encounter creates a world |
 | C4 | Living sky | `11` §2 S3 | ~1 week | The sky precesses |
