@@ -26,7 +26,10 @@
 -- drops them. public.entity_fold_map is the permanent legacy-id → entry-id
 -- record, so an old id found in a URL or client storage still resolves.
 --
--- NOT APPLIED to the live project. Read the report, then apply.
+-- APPLIED 2026-09-06 to project sgoefchwjumzgfupqdzt (StellarForge), after a
+-- read-only dry run: 39 entities, 0 collisions, 0 near-duplicates, 50 edges,
+-- 0 scene pins, no entry_type outside the new CHECK. Report:
+-- select * from public.f3_fold_report order by phase, name;
 -- ============================================================================
 
 

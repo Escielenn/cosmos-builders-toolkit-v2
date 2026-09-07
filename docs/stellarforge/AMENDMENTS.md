@@ -61,6 +61,10 @@ only outcome that's actually bad.
 **Still open:** the epoch scrubber in the Web view is local until F6 puts the
   global one in the top bar; the sidebar's Codex and Entities tabs are now two
   views of the same rows, which F6 folds.
+**Applied:** 2026-09-06, after a read-only dry run. 39 entities moved, **0
+  collisions**, 0 near-duplicates, 50 edges folded (53 entry-to-entry edges
+  now on `world_connections`), 0 edges left without a cascade stage, 0
+  orphaned fold-map rows. Nothing needed a human decision.
 **Revisit:** when a later migration drops `entities` / `entity_connections`,
   which this one leaves in place, read-only, for one release.
 
