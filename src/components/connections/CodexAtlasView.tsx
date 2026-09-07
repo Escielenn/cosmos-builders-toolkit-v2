@@ -54,6 +54,8 @@ export function CodexAtlasView({ worldId }: CodexAtlasViewProps) {
 
   const mapRef = useRef<HTMLDivElement>(null);
   const [dragging, setDragging] = useState<string | null>(null);
+  // Set while a drag is in flight so the click it ends with is ignored.
+  const draggedRef = useRef<string | null>(null);
 
   const all = useMemo(() => entities ?? [], [entities]);
   const pins = useMemo(() => atlasPins(all, here.id), [all, here.id]);
@@ -88,6 +90,11 @@ export function CodexAtlasView({ worldId }: CodexAtlasViewProps) {
       const id = e.dataTransfer.getData("text/sf-entity") || dragging;
       if (id) place(id, e.clientX, e.clientY);
       setDragging(null);
+      // Cleared by the pin's own click handler; reset here too in case the
+      // drop landed on empty map and no click follows.
+      window.setTimeout(() => {
+        draggedRef.current = null;
+      }, 0);
     },
     [dragging, place],
   );
@@ -170,42 +177,64 @@ export function CodexAtlasView({ worldId }: CodexAtlasViewProps) {
             <rect width="100%" height="100%" fill="url(#sf-atlas-grid)" />
           </svg>
 
+          {/* Two explicit affordances, no timing.
+              A pin used to be one button with onClick=open and
+              onDoubleClick=enter, which cannot work: the first click of a
+              double-click navigates away before the second arrives. And a
+              small nudge-drag that the browser does not treat as a drag also
+              fired the click, so trying to move a pin took you off the map.
+              Click opens; the chevron enters; a drag suppresses both. */}
           {placed.map((pin) => (
-            <button
+            <div
               key={pin.id}
-              type="button"
-              draggable
-              onDragStart={(e) => {
-                e.dataTransfer.setData("text/sf-entity", pin.id);
-                setDragging(pin.id);
-              }}
-              onDragEnd={() => setDragging(null)}
-              onClick={() => navigate(`/worlds/${worldId}/codex/${pin.id}`)}
-              onDoubleClick={() => canZoomInto(pin) && zoomInto(pin)}
               style={{
                 left: `${pin.at!.x * 100}%`,
                 top: `${pin.at!.y * 100}%`,
               }}
-              className="group absolute -translate-x-1/2 -translate-y-1/2 cursor-grab active:cursor-grabbing"
-              title={
-                canZoomInto(pin)
-                  ? `${pin.name} — click to open, double-click to enter`
-                  : `${pin.name} — click to open`
-              }
+              className="group absolute -translate-x-1/2 -translate-y-1/2"
             >
-              <span
-                className="block h-3 w-3 rounded-full ring-2 ring-sf-surface transition-transform group-hover:scale-125"
-                style={{ background: pinColor(pin) }}
-              />
+              <button
+                type="button"
+                draggable
+                onDragStart={(e) => {
+                  e.dataTransfer.setData("text/sf-entity", pin.id);
+                  draggedRef.current = pin.id;
+                  setDragging(pin.id);
+                }}
+                onDragEnd={() => setDragging(null)}
+                onClick={() => {
+                  // A drag that ended on this pin must not also open it.
+                  if (draggedRef.current === pin.id) {
+                    draggedRef.current = null;
+                    return;
+                  }
+                  navigate(`/worlds/${worldId}/codex/${pin.id}`);
+                }}
+                className="block cursor-grab active:cursor-grabbing"
+                title={`${pin.name} — open its Codex page`}
+              >
+                <span
+                  className="block h-3 w-3 rounded-full ring-2 ring-sf-surface transition-transform group-hover:scale-125"
+                  style={{ background: pinColor(pin) }}
+                />
+              </button>
+
               <span className="pointer-events-none absolute left-1/2 top-4 -translate-x-1/2 whitespace-nowrap text-[12px] text-t2">
                 {pin.name}
               </span>
+
               {canZoomInto(pin) && (
-                <span className="pointer-events-none absolute left-1/2 top-9 -translate-x-1/2 whitespace-nowrap font-mono text-[12px] text-t4">
+                <button
+                  type="button"
+                  onClick={() => zoomInto(pin)}
+                  className="absolute left-1/2 top-8 flex -translate-x-1/2 items-center gap-0.5 whitespace-nowrap px-1 font-mono text-[12px] text-t4 transition-colors hover:text-sf-primary-text"
+                  title={`Go inside ${pin.name}`}
+                >
                   {pin.childCount} inside
-                </span>
+                  <ChevronRight className="h-3 w-3" aria-hidden />
+                </button>
               )}
-            </button>
+            </div>
           ))}
 
           {placed.length === 0 && (
@@ -220,7 +249,7 @@ export function CodexAtlasView({ worldId }: CodexAtlasViewProps) {
         </div>
 
         <p className="mt-2 font-mono text-[12px] uppercase tracking-wider text-t4">
-          Click a pin to open it · double-click to go inside · drag to move
+          Click a pin to open it · use “inside” to go a level down · drag to move
           {sheet ? ` · ${sheet.projection} sheet` : ""}
         </p>
       </div>
