@@ -25,10 +25,16 @@ import {
   type Points,
 } from "three";
 import type { CatalogStar, GalaxyField, WorldSystem } from "../bind/starfield";
+import type { Lane } from "../bind/routes";
 import { useThemeColors } from "../engine/use-theme-uniforms";
 
 interface GalaxySceneProps {
   field: GalaxyField;
+  /**
+   * Routes between anchored systems, from bind/routes. Each one is an edge the
+   * writer drew in the Web view — nothing here is generated.
+   */
+  lanes?: Lane[];
   onSelectSystem?: (id: string) => void;
   reducedMotion?: boolean;
   className?: string;
@@ -127,6 +133,45 @@ function SystemMarker({
   );
 }
 
+/**
+ * The lane layer — the writer's routes, drawn between anchored systems.
+ *
+ * One geometry for the whole network rather than a line per lane: a route map
+ * is read as a shape, and a hundred draw calls to say the same thing would
+ * cost a tier the engine has to keep.
+ *
+ * Drawn in the stellar token, not the primary one, so lanes never read as
+ * another kind of system marker. Under the rings in weight, over the field.
+ */
+function LaneField({ lanes, colour }: { lanes: Lane[]; colour: Color }) {
+  const geometry = useMemo(() => {
+    const positions: number[] = [];
+    for (const lane of lanes) {
+      if (!lane.from.position || !lane.to.position) continue;
+      positions.push(...toScene(lane.from.position));
+      positions.push(...toScene(lane.to.position));
+    }
+    const geo = new BufferGeometry();
+    geo.setAttribute("position", new Float32BufferAttribute(positions, 3));
+    return geo;
+  }, [lanes]);
+
+  if (lanes.length === 0) return null;
+
+  return (
+    <lineSegments>
+      <primitive object={geometry} attach="geometry" />
+      <lineBasicMaterial
+        attach="material"
+        color={colour}
+        transparent
+        opacity={0.55}
+        depthWrite={false}
+      />
+    </lineSegments>
+  );
+}
+
 /** Sol, at the origin, because every distance on this chart is from here. */
 function SolMarker({ colour }: { colour: Color }) {
   return (
@@ -139,10 +184,12 @@ function SolMarker({ colour }: { colour: Color }) {
 
 function Contents({
   field,
+  lanes,
   onSelectSystem,
   reducedMotion,
 }: {
   field: GalaxyField;
+  lanes: Lane[];
   onSelectSystem?: (id: string) => void;
   reducedMotion: boolean;
 }) {
@@ -159,6 +206,7 @@ function Contents({
   return (
     <group ref={group as never}>
       <StarField stars={field.stars} />
+      <LaneField lanes={lanes} colour={theme["--sf-stellar"]} />
       <SolMarker colour={theme["--sf-amber"]} />
       {field.systems.map((system) => (
         <SystemMarker
@@ -174,6 +222,7 @@ function Contents({
 
 export function GalaxyScene({
   field,
+  lanes = [],
   onSelectSystem,
   reducedMotion = false,
   className,
@@ -187,6 +236,7 @@ export function GalaxyScene({
     >
       <Contents
         field={field}
+        lanes={lanes}
         onSelectSystem={onSelectSystem}
         reducedMotion={reducedMotion}
       />

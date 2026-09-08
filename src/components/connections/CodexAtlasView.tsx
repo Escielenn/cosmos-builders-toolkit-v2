@@ -17,9 +17,13 @@
 
 import { Suspense, lazy, useCallback, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronRight, Crosshair, MapPin } from "lucide-react";
+import { ChevronRight, Crosshair, MapPin, Route } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
-import { useEntities, useUpdateEntity } from "@/hooks/use-entity-graph";
+import {
+  useEntities,
+  useEntityConnections,
+  useUpdateEntity,
+} from "@/hooks/use-entity-graph";
 import {
   atlasPins,
   canZoomInto,
@@ -36,6 +40,7 @@ import {
 } from "@/services/entity-graph-types";
 import { bindSystem } from "@/gl/bind/system";
 import { buildGalaxyField } from "@/gl/bind/starfield";
+import { buildLanes, longestHop, networkLengthLy } from "@/gl/bind/routes";
 import { useStarCatalog } from "@/hooks/use-star-catalog";
 import { entityToWorldEntry } from "@/gl/bind/entity-entry";
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
@@ -57,6 +62,7 @@ interface Crumb {
 export function CodexAtlasView({ worldId }: CodexAtlasViewProps) {
   const navigate = useNavigate();
   const { data: entities, isLoading } = useEntities(worldId);
+  const { data: connections } = useEntityConnections(worldId);
   const updateEntity = useUpdateEntity(worldId);
 
   const [trail, setTrail] = useState<Crumb[]>([{ id: null, label: "Galaxy" }]);
@@ -99,6 +105,17 @@ export function CodexAtlasView({ worldId }: CodexAtlasViewProps) {
   const galaxyField = useMemo(
     () => (catalog ? buildGalaxyField(catalog, all) : null),
     [catalog, all],
+  );
+
+  // Hyperlanes: routes the writer already drew in the Web view, measured
+  // between the two anchors' real positions. Nothing here is generated, and
+  // a route whose ends are not both anchored is reported rather than guessed.
+  const laneField = useMemo(
+    () =>
+      galaxyField
+        ? buildLanes(galaxyField.systems, connections ?? [])
+        : { lanes: [], undrawable: [] },
+    [galaxyField, connections],
   );
 
   const system = useMemo(() => {
@@ -234,6 +251,7 @@ export function CodexAtlasView({ worldId }: CodexAtlasViewProps) {
               >
                 <GalaxyScene
                   field={galaxyField}
+                  lanes={laneField.lanes}
                   reducedMotion={reducedMotion}
                   onSelectSystem={(id) => navigate(`/worlds/${worldId}/codex/${id}`)}
                   className="h-full w-full"
@@ -377,6 +395,12 @@ export function CodexAtlasView({ worldId }: CodexAtlasViewProps) {
                 galaxyField?.unplaced.length
                   ? ` · ${galaxyField.unplaced.length} not anchored`
                   : ""
+              }${
+                laneField.lanes.length
+                  ? ` · ${laneField.lanes.length} route${
+                      laneField.lanes.length === 1 ? "" : "s"
+                    }, ${(networkLengthLy(laneField.lanes) ?? 0).toFixed(1)} ly of lane, longest hop ${(longestHop(laneField.lanes)?.distanceLy ?? 0).toFixed(1)} ly`
+                  : ""
               }`
             : system
             ? "Click a world to open it · orbits are drawn from orbit.semi_major_axis, not placed by hand"
@@ -387,6 +411,103 @@ export function CodexAtlasView({ worldId }: CodexAtlasViewProps) {
       </div>
 
       <aside className="space-y-4">
+        {atGalaxy && galaxyMode === "sky" ? (
+          <>
+            <div className="border border-sf-line bg-sf-surface p-3">
+              <h3 className="mb-2 flex items-center gap-1.5 font-heading text-[12px] uppercase tracking-[2px] text-t3">
+                <Route className="h-3 w-3" aria-hidden />
+                Routes
+              </h3>
+              {laneField.lanes.length === 0 ? (
+                <p className="text-[13px] leading-relaxed text-t2">
+                  No routes yet. Connect two anchored systems with{" "}
+                  <span className="font-mono text-[12px] text-t2">
+                    travels via
+                  </span>
+                  ,{" "}
+                  <span className="font-mono text-[12px] text-t2">
+                    trades with
+                  </span>{" "}
+                  or{" "}
+                  <span className="font-mono text-[12px] text-t2">
+                    colonized by
+                  </span>{" "}
+                  in the Web view and the lane appears here, measured.
+                </p>
+              ) : (
+                <ul className="sf-sb max-h-72 space-y-1 overflow-y-auto">
+                  {laneField.lanes.map((lane) => (
+                    <li key={lane.id}>
+                      {/* The distance is derived and cannot be edited, but the
+                          route can — it is a connection. This lands on the
+                          system whose page carries it (Law III). */}
+                      <button
+                        type="button"
+                        onClick={() =>
+                          navigate(`/worlds/${worldId}/codex/${lane.from.id}`)
+                        }
+                        className="flex min-h-hit w-full items-center justify-between gap-3 border border-sf-line-interactive px-2 text-left transition-colors hover:border-sf-line-emphasis"
+                      >
+                        <span className="truncate text-[13px] text-t2">
+                          {lane.from.name} → {lane.to.name}
+                        </span>
+                        <span className="shrink-0 font-mono text-[12px] text-t3">
+                          {lane.distanceLy?.toFixed(1)} ly
+                        </span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {laneField.lanes.length > 0 && (
+                <p className="mt-2 text-[12px] leading-relaxed text-t2">
+                  Distances are measured between the two anchors' catalogue
+                  positions. Nobody typed them in, so nobody can get them
+                  wrong.
+                </p>
+              )}
+            </div>
+
+            {(galaxyField?.unplaced.length || laneField.undrawable.length) ? (
+              <div className="border border-sf-line bg-sf-surface p-3">
+                <h3 className="mb-2 flex items-center gap-1.5 font-heading text-[12px] uppercase tracking-[2px] text-t3">
+                  <Crosshair className="h-3 w-3" aria-hidden />
+                  Not anchored
+                </h3>
+                {galaxyField?.unplaced.length ? (
+                  <ul className="sf-sb max-h-56 space-y-1 overflow-y-auto">
+                    {galaxyField.unplaced.map((system) => (
+                      <li key={system.id}>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            navigate(`/worlds/${worldId}/codex/${system.id}`)
+                          }
+                          className="flex min-h-hit w-full items-center gap-2 border border-sf-line-interactive px-2 text-left transition-colors hover:border-sf-line-emphasis"
+                        >
+                          <span className="truncate text-[13px] text-t2">
+                            {system.name}
+                          </span>
+                          <span className="ml-auto shrink-0 font-mono text-[12px] uppercase tracking-wider text-t4">
+                            Anchor
+                          </span>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
+                {laneField.undrawable.length > 0 && (
+                  <p className="mt-2 text-[12px] leading-relaxed text-t2">
+                    {laneField.undrawable.length} route
+                    {laneField.undrawable.length === 1 ? " is" : "s are"} waiting
+                    on an anchor. A lane with one end nowhere real has no
+                    length, so it is held here rather than drawn at a guess.
+                  </p>
+                )}
+              </div>
+            ) : null}
+          </>
+        ) : (
         <div className="border border-sf-line bg-sf-surface p-3">
           <h3 className="mb-2 flex items-center gap-1.5 font-heading text-[12px] uppercase tracking-[2px] text-t3">
             <MapPin className="h-3 w-3" aria-hidden />
@@ -434,6 +555,7 @@ export function CodexAtlasView({ worldId }: CodexAtlasViewProps) {
             </>
           )}
         </div>
+        )}
       </aside>
     </div>
   );
