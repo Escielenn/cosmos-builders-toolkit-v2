@@ -27,7 +27,7 @@ import {
   nearestNeighbours,
   type WorldSystem,
 } from "@/gl/bind/starfield";
-import { buildSky } from "@/gl/bind/sky";
+import { buildSky, epochYearToJ2000Years } from "@/gl/bind/sky";
 
 // three.js is heavy and most Codex pages never need it. The NUMBERS below are
 // free — they are pure geometry — so they always show; the render only loads
@@ -88,7 +88,10 @@ export function AnchorStarSection({
       position: anchored.position,
       positionIsReal: true,
     };
-    return buildSky(catalog, system, epoch);
+    // `?epoch=` is a calendar year; the precession maths takes years from
+    // J2000. Converting here rather than assuming is the difference between
+    // precessing 340 years and 2340.
+    return buildSky(catalog, system, epochYearToJ2000Years(epoch));
   }, [catalog, anchored, systemId, systemName, epoch]);
 
   if (!anchor && !canEdit) return null;

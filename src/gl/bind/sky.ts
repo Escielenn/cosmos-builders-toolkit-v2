@@ -29,6 +29,26 @@ import type { CatalogStar, WorldSystem } from "./starfield";
 
 const PC_TO_LY = 3.26156;
 
+/**
+ * The reference epoch astronomy measures from. Catalogue coordinates are
+ * J2000, so "no precession" means the year 2000, not the year 0.
+ */
+export const J2000 = 2000;
+
+/**
+ * A calendar year → years from J2000, which is what the precession maths takes.
+ *
+ * The app's `?epoch=` is a CALENDAR YEAR: 11-SIMULATOR-CONSTELLATION §4 writes
+ * it as "@ epoch 2140 / 2340". Handing that straight to `applyPrecession`
+ * would precess 2340 years instead of 340 — two millennia of error, about 28°
+ * of pole drift, from a unit nobody wrote down. Hence one named conversion
+ * rather than an assumption at each call site.
+ */
+export function epochYearToJ2000Years(year: number | null): number | null {
+  if (year === null || !Number.isFinite(year)) return null;
+  return year - J2000;
+}
+
 /** The naked-eye limit. Below this a star is there and nobody can see it. */
 export const NAKED_EYE_MAG = 6.5;
 
@@ -53,9 +73,10 @@ export interface SkyView {
   /** The catalogue star the system is anchored to — the local sun. */
   sun: CatalogStar;
   /**
-   * Years from J2000. The epoch the sky is drawn at; 0 is the present.
-   * Null means no epoch was chosen, which is drawn the same as 0 but must
-   * never be reported as a choice the writer made.
+   * Years from J2000 — NOT a calendar year. Callers holding a calendar year
+   * convert with `epochYearToJ2000Years` first. 0 is the present; null means
+   * no epoch was chosen, which draws the same as 0 but must never be reported
+   * as a choice the writer made.
    */
   epoch: number | null;
   /** Stars a naked eye could see from there, brightest first. */
@@ -75,6 +96,9 @@ export interface SkyView {
  * The anchor star itself is EXCLUDED: from a world orbiting Tau Ceti, Tau Ceti
  * is the sun, not a point of light in the night. Including it would put a
  * magnitude −26 object in the star list and drown every real answer.
+ *
+ * `epoch` is YEARS FROM J2000, not a calendar year — see
+ * `epochYearToJ2000Years` for why that distinction is spelled out.
  */
 export function buildSky(
   catalog: CatalogStar[],

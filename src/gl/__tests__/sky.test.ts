@@ -15,6 +15,7 @@ import { describe, expect, it } from "vitest";
 import {
   NAKED_EYE_MAG,
   buildSky,
+  epochYearToJ2000Years,
   nearestToPole,
   poleDriftDegrees,
   separationInSky,
@@ -240,3 +241,32 @@ describe("the pole star — the check that the maths is right, not just consiste
 function precessedName(sky: { stars: { name: string }[] }, i: number) {
   return sky.stars[i].name;
 }
+
+describe("epoch is a calendar year, not an offset", () => {
+  it("converts a calendar year to years from J2000", () => {
+    // 11-SIMULATOR-CONSTELLATION §4 writes epochs as "@ epoch 2140 / 2340".
+    expect(epochYearToJ2000Years(2000)).toBe(0);
+    expect(epochYearToJ2000Years(2340)).toBe(340);
+    expect(epochYearToJ2000Years(1900)).toBe(-100);
+  });
+
+  it("passes null through — no epoch is not the year zero", () => {
+    expect(epochYearToJ2000Years(null)).toBeNull();
+    expect(epochYearToJ2000Years(Number.NaN)).toBeNull();
+  });
+
+  it("makes the difference visible in the sky it produces", () => {
+    // Handing the raw calendar year to buildSky precesses two millennia too
+    // far. This is the bug the conversion exists to prevent, pinned.
+    const correct = buildSky(catalog, systemFor("Tau Ceti"), epochYearToJ2000Years(2340))!;
+    const naive = buildSky(catalog, systemFor("Tau Ceti"), 2340)!;
+    const a = correct.stars.find((s) => s.name === "Vega")!;
+    const b = naive.stars.find((s) => s.name === "Vega")!;
+    // Angular separation, not a difference of declinations: Vega sits near the
+    // ecliptic pole, which precession swings mostly in right ascension, so
+    // declination alone badly understates how far it moved.
+    // 2000 extra years is 2000/25772 of a cycle — about 28° of rotation about
+    // the ecliptic pole — which puts Vega several degrees from where it belongs.
+    expect(angularSeparation(a, b)).toBeGreaterThan(5);
+  });
+});
