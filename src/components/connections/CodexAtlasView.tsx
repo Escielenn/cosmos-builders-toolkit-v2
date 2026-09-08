@@ -15,7 +15,7 @@
 // are never scattered onto the map — see lib/atlas/placement.ts.
 // ---------------------------------------------------------------------------
 
-import { useCallback, useMemo, useRef, useState } from "react";
+import { Suspense, lazy, useCallback, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronRight, Crosshair, MapPin } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
@@ -34,6 +34,13 @@ import {
   ENTITY_TYPE_COLORS,
   ENTITY_TYPE_LABELS,
 } from "@/services/entity-graph-types";
+import { bindSystem } from "@/gl/bind/system";
+import { entityToWorldEntry } from "@/gl/bind/entity-entry";
+import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
+
+// three.js is heavy and most Atlas levels never need it. Loading it only when
+// a system is opened keeps the galaxy level's first paint free of it.
+const SystemScene = lazy(() => import("@/gl/scenes/SystemScene"));
 
 interface CodexAtlasViewProps {
   worldId: string;
@@ -68,6 +75,28 @@ export function CodexAtlasView({ worldId }: CodexAtlasViewProps) {
   );
   const placed = useMemo(() => placedPins(pins), [pins]);
   const unplaced = useMemo(() => unplacedPins(pins), [pins]);
+  const reducedMotion = usePrefersReducedMotion();
+
+  // G3: inside a star or star system, the picture is not a drag-grid — it is
+  // an orrery, and every position is a fact (orbit.semi_major_axis). Nothing
+  // here is placed by hand, so nothing here can be placed wrongly by hand.
+  const hereEntity = useMemo(
+    () => all.find((e) => e.id === here.id) ?? null,
+    [all, here.id],
+  );
+  const system = useMemo(() => {
+    if (!hereEntity) return null;
+    if (hereEntity.entity_type !== "star" && hereEntity.entity_type !== "star_system") {
+      return null;
+    }
+    const children = all.filter((e) => e.parent_entity_id === hereEntity.id);
+    const bound = bindSystem(
+      entityToWorldEntry(hereEntity),
+      children.map(entityToWorldEntry),
+    );
+    // With nothing orbiting, an orrery is an empty ring. Fall back to the map.
+    return bound.bodies.length > 0 ? bound : null;
+  }, [hereEntity, all]);
 
   const place = useCallback(
     (id: string, clientX: number, clientY: number) => {
@@ -138,6 +167,25 @@ export function CodexAtlasView({ worldId }: CodexAtlasViewProps) {
           ))}
         </nav>
 
+        {system ? (
+          <div className="relative aspect-[3/2] w-full overflow-hidden border border-sf-line bg-sf-void">
+            <Suspense
+              fallback={
+                <div className="flex h-full items-center justify-center">
+                  <Loader size="sm" />
+                </div>
+              }
+            >
+              <SystemScene
+                system={system}
+                selectedId={null}
+                reducedMotion={reducedMotion}
+                onSelectBody={(id) => navigate(`/worlds/${worldId}/codex/${id}`)}
+                className="h-full w-full"
+              />
+            </Suspense>
+          </div>
+        ) : (
         <div
           ref={mapRef}
           onDragOver={(e) => e.preventDefault()}
@@ -247,10 +295,14 @@ export function CodexAtlasView({ worldId }: CodexAtlasViewProps) {
             </p>
           )}
         </div>
+        )}
 
         <p className="mt-2 font-mono text-[12px] uppercase tracking-wider text-t4">
-          Click a pin to open it · use “inside” to go a level down · drag to move
-          {sheet ? ` · ${sheet.projection} sheet` : ""}
+          {system
+            ? "Click a world to open it · orbits are drawn from orbit.semi_major_axis, not placed by hand"
+            : `Click a pin to open it · use “inside” to go a level down · drag to move${
+                sheet ? ` · ${sheet.projection} sheet` : ""
+              }`}
         </p>
       </div>
 

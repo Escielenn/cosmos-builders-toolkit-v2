@@ -159,9 +159,21 @@ export function createSurfaceMaterial(
         // Sharp on an airless body, soft under thick air.
         float day = smoothstep(-uSoftness - 0.02, uSoftness + 0.02, lit);
 
+        // Albedo MODULATES, it does not gate.
+        //
+        // The profile colour already encodes what the surface looks like — a
+        // rock grey is dark because rock is dark. Multiplying that by albedo
+        // again double-counts it: a rock world at albedo 0.25 came out at 6%
+        // brightness in full daylight, which is why every body in the first
+        // system render was a black disc. Albedo now shifts brightness within
+        // a visible band, so an ice world reads bright and a carbon world
+        // reads dark without either becoming invisible.
+        float reflect = mix(0.5, 1.3, clamp(uAlbedo, 0.0, 1.0));
+
         // A dim night side, not black: a locked world's dark face is where
-        // half the story happens, and pure black would erase it.
-        vec3 colour = base * uAlbedo * mix(0.06, 1.0, day);
+        // half the story happens, and this is a chart — a planet you cannot
+        // see is a planet you cannot click.
+        vec3 colour = base * reflect * mix(0.18, 1.0, day);
 
         // A cheap specular on smooth surfaces — an ocean should glint.
         float gloss = (1.0 - uRoughness) * pow(max(day, 0.0), 24.0) * 0.35;
