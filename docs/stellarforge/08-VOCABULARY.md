@@ -223,3 +223,33 @@ Never rename. Add:
 ```
 
 Reads follow the alias. Writes to a deprecated predicate warn in dev and fail in `/sf-audit`.
+
+### Aliases on file
+
+Until `src/canon/` exists (C2), the alias table lives in
+`src/lib/simulators/published-facts.ts` as `PREDICATE_ALIASES`, and
+`readPublishedFact` resolves through it. Both `gl/bind` modules already read
+facts through that function, so one entry fixes every reader at once. An exact
+match always wins, so an alias can rescue an older publish but can never
+outrank the canonical name.
+
+| Canonical | Also answers to | Why |
+|---|---|---|
+| `orbit.semi_major_axis` | `planet.orbital_distance_au` | Solaris has always published the second; `gl/bind/system.ts` has always read the first, and **nothing ever wrote it**. A planet published from Solaris reached the orrery carrying its orbital distance and was reported "No orbital distance on file". Found 2026-09-08 by diffing predicate names in both directions. |
+
+### What that audit also found, and did not change
+
+- **`star.radius`** is read by `gl/bind/system.ts` to size the star. It is not
+  declared here and nothing writes it. There is no bug — the star falls back to
+  a sane display radius — but the reader is asking for a name the vocabulary
+  does not contain. Declaring it is a `/sf-fact` decision, not a patch.
+- **Worksheet `syncFields` are not predicates.** `star.temperature`,
+  `star.luminosity`, `economy.type` and friends in `worksheet-links-config.ts`
+  and `infoboxTemplates.ts` look like predicates and are not — they are
+  worksheet data paths, which the camelCase `star.spectralClass` and
+  `foundation.governmentType` beside them make plain. Checked, not assumed.
+- **`encounter.*` and `sky.*` in the simulator save modules are
+  `WorksheetFact`s, not facts.** They carry display strings for the writing
+  surface (`"0.412 AU at 31 km/s"`), which is why they are deliberately a
+  separate type from `PublishedFact`. Turning them into canon needs the raw
+  values carried alongside the formatted ones, which is its own piece of work.
