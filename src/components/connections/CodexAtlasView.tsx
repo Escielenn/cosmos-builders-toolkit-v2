@@ -17,7 +17,7 @@
 
 import { Suspense, lazy, useCallback, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronRight, Crosshair, MapPin, Route } from "lucide-react";
+import { ChevronRight, Crosshair, Flag, MapPin, Route } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
 import {
   useEntities,
@@ -41,6 +41,7 @@ import {
 import { bindSystem } from "@/gl/bind/system";
 import { buildGalaxyField } from "@/gl/bind/starfield";
 import { buildLanes, longestHop, networkLengthLy } from "@/gl/bind/routes";
+import { buildTerritories } from "@/gl/bind/territory";
 import { useStarCatalog } from "@/hooks/use-star-catalog";
 import { entityToWorldEntry } from "@/gl/bind/entity-entry";
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
@@ -116,6 +117,17 @@ export function CodexAtlasView({ worldId }: CodexAtlasViewProps) {
         ? buildLanes(galaxyField.systems, connections ?? [])
         : { lanes: [], undrawable: [] },
     [galaxyField, connections],
+  );
+
+  // Territory: counted from `governs` / `rules`, not declared. Drawn as the
+  // convex hull of the systems a polity holds — the only region the data
+  // supports. A polity holding one anchored system is named, not bordered.
+  const territoryField = useMemo(
+    () =>
+      galaxyField
+        ? buildTerritories(galaxyField.systems, connections ?? [], all)
+        : { territories: [], unmappable: [] },
+    [galaxyField, connections, all],
   );
 
   const system = useMemo(() => {
@@ -252,6 +264,7 @@ export function CodexAtlasView({ worldId }: CodexAtlasViewProps) {
                 <GalaxyScene
                   field={galaxyField}
                   lanes={laneField.lanes}
+                  territories={territoryField.territories}
                   reducedMotion={reducedMotion}
                   onSelectSystem={(id) => navigate(`/worlds/${worldId}/codex/${id}`)}
                   className="h-full w-full"
@@ -401,6 +414,12 @@ export function CodexAtlasView({ worldId }: CodexAtlasViewProps) {
                       laneField.lanes.length === 1 ? "" : "s"
                     }, ${(networkLengthLy(laneField.lanes) ?? 0).toFixed(1)} ly of lane, longest hop ${(longestHop(laneField.lanes)?.distanceLy ?? 0).toFixed(1)} ly`
                   : ""
+              }${
+                territoryField.territories.length
+                  ? ` · ${territoryField.territories.length} territor${
+                      territoryField.territories.length === 1 ? "y" : "ies"
+                    }`
+                  : ""
               }`
             : system
             ? "Click a world to open it · orbits are drawn from orbit.semi_major_axis, not placed by hand"
@@ -467,6 +486,72 @@ export function CodexAtlasView({ worldId }: CodexAtlasViewProps) {
                 </p>
               )}
             </div>
+
+            {(territoryField.territories.length ||
+              territoryField.unmappable.length) > 0 ? (
+              <div className="border border-sf-line bg-sf-surface p-3">
+                <h3 className="mb-2 flex items-center gap-1.5 font-heading text-[12px] uppercase tracking-[2px] text-t3">
+                  <Flag className="h-3 w-3" aria-hidden />
+                  Territory
+                </h3>
+                {territoryField.territories.length > 0 && (
+                  <ul className="sf-sb max-h-56 space-y-1 overflow-y-auto">
+                    {territoryField.territories.map((t) => (
+                      <li key={t.id}>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            navigate(`/worlds/${worldId}/codex/${t.id}`)
+                          }
+                          className="flex min-h-hit w-full items-center gap-2 border border-sf-line-interactive px-2 text-left transition-colors hover:border-sf-line-emphasis"
+                        >
+                          <span
+                            aria-hidden
+                            className="h-2 w-2 shrink-0"
+                            style={{
+                              background: t.colour ?? "var(--sf-violet)",
+                            }}
+                          />
+                          <span className="truncate text-[13px] text-t2">
+                            {t.name}
+                          </span>
+                          <span className="ml-auto shrink-0 font-mono text-[12px] text-t3">
+                            {t.systems.length} · {t.spanLy.toFixed(1)} ly
+                          </span>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                {territoryField.unmappable.length > 0 && (
+                  <ul className="mt-2 space-y-1">
+                    {territoryField.unmappable.map((u) => (
+                      <li
+                        key={u.id}
+                        className="text-[12px] leading-relaxed text-t2"
+                      >
+                        <span className="text-t3">{u.name}</span> — {u.reason}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                {territoryField.territories.length > 0 && (
+                  <p className="mt-2 text-[12px] leading-relaxed text-t2">
+                    Each border is the convex hull of the systems that polity
+                    governs — the smallest region the holdings support. It
+                    claims nothing about the space outside it.
+                  </p>
+                )}
+                {territoryField.territories.filter((t) => !t.colour).length >
+                  1 && (
+                  <p className="mt-2 text-[12px] leading-relaxed text-t2">
+                    Two or more of these have no colour of their own, so they
+                    are drawn alike. Open one and set its colour to tell them
+                    apart on the map.
+                  </p>
+                )}
+              </div>
+            ) : null}
 
             {(galaxyField?.unplaced.length || laneField.undrawable.length) ? (
               <div className="border border-sf-line bg-sf-surface p-3">

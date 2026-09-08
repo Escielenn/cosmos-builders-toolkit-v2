@@ -21,11 +21,15 @@ import {
   AdditiveBlending,
   BufferGeometry,
   Color,
+  DoubleSide,
   Float32BufferAttribute,
+  Vector3,
   type Points,
 } from "three";
+import { ConvexGeometry } from "three/examples/jsm/geometries/ConvexGeometry.js";
 import type { CatalogStar, GalaxyField, WorldSystem } from "../bind/starfield";
 import type { Lane } from "../bind/routes";
+import type { Territory } from "../bind/territory";
 import { useThemeColors } from "../engine/use-theme-uniforms";
 
 interface GalaxySceneProps {
@@ -35,6 +39,8 @@ interface GalaxySceneProps {
    * writer drew in the Web view — nothing here is generated.
    */
   lanes?: Lane[];
+  /** Who holds what, from bind/territory. Counted from `governs` / `rules`. */
+  territories?: Territory[];
   onSelectSystem?: (id: string) => void;
   reducedMotion?: boolean;
   className?: string;
@@ -172,6 +178,107 @@ function LaneField({ lanes, colour }: { lanes: Lane[]; colour: Color }) {
   );
 }
 
+/**
+ * One polity's holdings, drawn as the CONVEX HULL of the systems it governs.
+ *
+ * The hull is chosen because it is the only region the data supports: the
+ * smallest convex volume containing the holdings, asserting nothing about
+ * what lies outside it. A sphere around the centroid would have swallowed
+ * systems the polity does not hold. A hand-drawn border would have been a
+ * claim nobody made.
+ *
+ * Three points ARE a hull — a triangle — so they get a face. Two points, or a
+ * coplanar set the volume builder rejects, fall back to the edges between the
+ * holdings, which says exactly as much as is known and no more.
+ */
+function TerritoryHull({
+  territory,
+  fallback,
+}: {
+  territory: Territory;
+  fallback: Color;
+}) {
+  const colour = useMemo(() => {
+    // The writer's own colour when they set one; otherwise the theme's, so a
+    // polity without a colour is still legible in all 70 themes.
+    if (!territory.colour) return fallback;
+    try {
+      return new Color(territory.colour);
+    } catch {
+      return fallback;
+    }
+  }, [territory.colour, fallback]);
+
+  const { hull, edges } = useMemo(() => {
+    const points = territory.systems
+      .filter((s) => s.position)
+      .map((s) => new Vector3(...toScene(s.position!)));
+
+    let solid: BufferGeometry | null = null;
+    if (points.length === 3) {
+      // The convex hull of three points is the triangle they span. Drawing it
+      // is not an assumption; refusing to would have under-stated the claim.
+      solid = new BufferGeometry();
+      solid.setAttribute(
+        "position",
+        new Float32BufferAttribute(
+          points.flatMap((p) => [p.x, p.y, p.z]),
+          3,
+        ),
+      );
+    } else if (points.length >= 4) {
+      try {
+        solid = new ConvexGeometry(points);
+        // A degenerate (coplanar) set yields an empty geometry rather than
+        // throwing. Treat that as "no volume" too.
+        if (!solid.getAttribute("position")?.count) solid = null;
+      } catch {
+        solid = null;
+      }
+    }
+
+    // Every pair, so a flat or thin holding still reads as one shape.
+    const segments: number[] = [];
+    for (let i = 0; i < points.length; i += 1) {
+      for (let j = i + 1; j < points.length; j += 1) {
+        segments.push(points[i].x, points[i].y, points[i].z);
+        segments.push(points[j].x, points[j].y, points[j].z);
+      }
+    }
+    const line = new BufferGeometry();
+    line.setAttribute("position", new Float32BufferAttribute(segments, 3));
+    return { hull: solid, edges: line };
+  }, [territory.systems]);
+
+  return (
+    <group>
+      {hull ? (
+        <mesh>
+          <primitive object={hull} attach="geometry" />
+          <meshBasicMaterial
+            color={colour}
+            transparent
+            // Low enough that the starfield reads through it: a territory is
+            // a claim over space, not a lid on it.
+            opacity={0.1}
+            depthWrite={false}
+            side={DoubleSide}
+          />
+        </mesh>
+      ) : null}
+      <lineSegments>
+        <primitive object={edges} attach="geometry" />
+        <lineBasicMaterial
+          color={colour}
+          transparent
+          opacity={0.28}
+          depthWrite={false}
+        />
+      </lineSegments>
+    </group>
+  );
+}
+
 /** Sol, at the origin, because every distance on this chart is from here. */
 function SolMarker({ colour }: { colour: Color }) {
   return (
@@ -185,11 +292,13 @@ function SolMarker({ colour }: { colour: Color }) {
 function Contents({
   field,
   lanes,
+  territories,
   onSelectSystem,
   reducedMotion,
 }: {
   field: GalaxyField;
   lanes: Lane[];
+  territories: Territory[];
   onSelectSystem?: (id: string) => void;
   reducedMotion: boolean;
 }) {
@@ -206,6 +315,15 @@ function Contents({
   return (
     <group ref={group as never}>
       <StarField stars={field.stars} />
+      {/* Territory sits under the lanes and the rings: a border is context
+          for the things on it, never the thing you read first. */}
+      {territories.map((territory) => (
+        <TerritoryHull
+          key={territory.id}
+          territory={territory}
+          fallback={theme["--sf-violet"]}
+        />
+      ))}
       <LaneField lanes={lanes} colour={theme["--sf-stellar"]} />
       <SolMarker colour={theme["--sf-amber"]} />
       {field.systems.map((system) => (
@@ -223,6 +341,7 @@ function Contents({
 export function GalaxyScene({
   field,
   lanes = [],
+  territories = [],
   onSelectSystem,
   reducedMotion = false,
   className,
@@ -237,6 +356,7 @@ export function GalaxyScene({
       <Contents
         field={field}
         lanes={lanes}
+        territories={territories}
         onSelectSystem={onSelectSystem}
         reducedMotion={reducedMotion}
       />
