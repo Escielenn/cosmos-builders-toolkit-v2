@@ -201,12 +201,65 @@ export function readPublishedFacts(entry: WorldEntry | null | undefined): Publis
   return Array.isArray(facts) ? (facts as PublishedFact[]) : [];
 }
 
-/** One fact by predicate name, or undefined. */
+/**
+ * Two names for one fact.
+ *
+ * The house rule is "never rename a predicate; deprecate and alias", so this
+ * is the alias table rather than a rewrite. Canonical name (the one
+ * 08-VOCABULARY declares) on the left, the names already in the field on the
+ * right.
+ *
+ * `orbit.semi_major_axis` is what the vocabulary declares and what
+ * gl/bind/system.ts reads to place a body in the orrery. Nothing ever wrote
+ * it: Solaris publishes the same number as `planet.orbital_distance_au`. So
+ * a planet published from a simulator arrived at the orrery carrying its
+ * orbital distance and was reported "No orbital distance on file" — the
+ * writer's own number, invisible to the picture that needed it.
+ *
+ * Aliasing rather than renaming means no migration and no broken bookmark:
+ * entries already published keep their stored name and are simply understood.
+ */
+export const PREDICATE_ALIASES: Record<string, readonly string[]> = {
+  "orbit.semi_major_axis": ["planet.orbital_distance_au"],
+};
+
+/**
+ * Every stored name that answers to `predicate`, most-canonical first.
+ * Resolves in both directions: asking for either name finds either spelling,
+ * so an old reader and a new one see the same fact.
+ */
+export function predicateSpellings(predicate: string): string[] {
+  const out = [predicate];
+  for (const alias of PREDICATE_ALIASES[predicate] ?? []) {
+    if (!out.includes(alias)) out.push(alias);
+  }
+  for (const [canonical, aliases] of Object.entries(PREDICATE_ALIASES)) {
+    if (!aliases.includes(predicate)) continue;
+    if (!out.includes(canonical)) out.push(canonical);
+    for (const sibling of aliases) {
+      if (!out.includes(sibling)) out.push(sibling);
+    }
+  }
+  return out;
+}
+
+/**
+ * One fact by predicate name, or undefined.
+ *
+ * An exact match always wins; aliases are only consulted when the requested
+ * name is not on file, so an alias can rescue an older publish but can never
+ * outrank the canonical name.
+ */
 export function readPublishedFact(
   entry: WorldEntry | null | undefined,
   predicate: string,
 ): PublishedFact | undefined {
-  return readPublishedFacts(entry).find((f) => f.predicate === predicate);
+  const facts = readPublishedFacts(entry);
+  for (const name of predicateSpellings(predicate)) {
+    const hit = facts.find((f) => f.predicate === name);
+    if (hit) return hit;
+  }
+  return undefined;
 }
 
 /**
