@@ -19,6 +19,7 @@ import FirstTimeHint from "@/components/onboarding/FirstTimeHint";
 import { EntryTagsBar } from "@/components/tags/EntryTagsBar";
 import { sanitizeHtml } from "@/lib/sanitize";
 import MapSheetSection from "@/components/world/MapSheetSection";
+import AnchorStarSection from "@/components/world/AnchorStarSection";
 import { acceptsMapSheet, readMapSheet } from "@/lib/atlas/placement";
 import {
   CASCADE_STAGES,
@@ -592,6 +593,22 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
             />
           ))}
         </div>
+      )}
+
+      {/* A system can sit at a real star. G4 draws the ring; this chooses it. */}
+      {(cascadeEntityType === "star_system" || cascadeEntityType === "star") && (
+        <AnchorStarSection
+          anchor={
+            typeof entryMeta.anchor_star === "string" ? entryMeta.anchor_star : null
+          }
+          canEdit={!!canEdit}
+          onChange={(patch) =>
+            updateMetadata.mutate({
+              entryId: entry.id,
+              metadata: { ...entryMeta, ...patch },
+            })
+          }
+        />
       )}
 
       {/* The writer's own drawn map, on the worlds it makes sense on. */}

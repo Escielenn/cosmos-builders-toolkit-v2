@@ -253,3 +253,40 @@ describe("what anchoring is for — real numbers", () => {
     expect(nearestNeighbours([], tau)).toEqual([]);
   });
 });
+
+describe("the anchor round-trip — the picker must actually move the ring", () => {
+  const catalog = parseCatalog(ROWS);
+
+  it("writes what buildGalaxyField reads", () => {
+    // AnchorStarSection sets metadata.anchor_star to the catalogue NAME.
+    // If these two ever disagree, the control saves and nothing moves.
+    const patch = { anchor_star: "Tau Ceti" };
+    const system = ent({ name: "Kellis", metadata: patch });
+
+    expect(readAnchorName(system)).toBe("Tau Ceti");
+
+    const field = buildGalaxyField(catalog, [system]);
+    expect(field.systems).toHaveLength(1);
+    expect(field.unplaced).toHaveLength(0);
+    expect(field.systems[0].anchor?.name).toBe("Tau Ceti");
+  });
+
+  it("unanchoring puts the system back in the unplaced list", () => {
+    // The Unanchor button writes null.
+    const system = ent({ name: "Kellis", metadata: { anchor_star: null } });
+    const field = buildGalaxyField(catalog, [system]);
+    expect(field.systems).toHaveLength(0);
+    expect(field.unplaced.map((s) => s.name)).toEqual(["Kellis"]);
+  });
+
+  it("every catalogue name the picker can offer is one the field can resolve", () => {
+    // The picker lists catalogue entries by name; each must round-trip.
+    for (const star of catalog) {
+      const field = buildGalaxyField(catalog, [
+        ent({ metadata: { anchor_star: star.name } }),
+      ]);
+      expect(field.systems[0]?.anchor?.name).toBe(star.name);
+      expect(field.systems[0]?.positionIsReal).toBe(true);
+    }
+  });
+});
