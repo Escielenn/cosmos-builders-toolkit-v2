@@ -35,12 +35,15 @@ import {
   ENTITY_TYPE_LABELS,
 } from "@/services/entity-graph-types";
 import { bindSystem } from "@/gl/bind/system";
+import { buildGalaxyField } from "@/gl/bind/starfield";
+import { useStarCatalog } from "@/hooks/use-star-catalog";
 import { entityToWorldEntry } from "@/gl/bind/entity-entry";
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 
 // three.js is heavy and most Atlas levels never need it. Loading it only when
 // a system is opened keeps the galaxy level's first paint free of it.
 const SystemScene = lazy(() => import("@/gl/scenes/SystemScene"));
+const GalaxyScene = lazy(() => import("@/gl/scenes/GalaxyScene"));
 
 interface CodexAtlasViewProps {
   worldId: string;
@@ -77,6 +80,15 @@ export function CodexAtlasView({ worldId }: CodexAtlasViewProps) {
   const unplaced = useMemo(() => unplacedPins(pins), [pins]);
   const reducedMotion = usePrefersReducedMotion();
 
+  // At the galaxy level the writer chooses which sky they are looking at
+  // (owner, 2026-09-08: allow both). CHART is their own arrangement, dragged
+  // by hand. REAL SKY is the Hipparcos catalogue with their anchored systems
+  // on it. Neither is the "true" one — they answer different questions.
+  const [galaxyMode, setGalaxyMode] = useState<"chart" | "sky">("chart");
+  const atGalaxy = here.id === null;
+  const { data: catalog, isLoading: catalogLoading, error: catalogError } =
+    useStarCatalog(atGalaxy && galaxyMode === "sky");
+
   // G3: inside a star or star system, the picture is not a drag-grid — it is
   // an orrery, and every position is a fact (orbit.semi_major_axis). Nothing
   // here is placed by hand, so nothing here can be placed wrongly by hand.
@@ -84,6 +96,11 @@ export function CodexAtlasView({ worldId }: CodexAtlasViewProps) {
     () => all.find((e) => e.id === here.id) ?? null,
     [all, here.id],
   );
+  const galaxyField = useMemo(
+    () => (catalog ? buildGalaxyField(catalog, all) : null),
+    [catalog, all],
+  );
+
   const system = useMemo(() => {
     if (!hereEntity) return null;
     if (hereEntity.entity_type !== "star" && hereEntity.entity_type !== "star_system") {
@@ -165,9 +182,66 @@ export function CodexAtlasView({ worldId }: CodexAtlasViewProps) {
               </button>
             </span>
           ))}
+
+          {atGalaxy && (
+            <div className="ml-auto flex border border-sf-line" role="group" aria-label="Galaxy view">
+              {([
+                ["chart", "Chart"],
+                ["sky", "Real sky"],
+              ] as const).map(([id, label], i) => (
+                <button
+                  key={id}
+                  type="button"
+                  onClick={() => setGalaxyMode(id)}
+                  aria-pressed={galaxyMode === id}
+                  className={`min-h-hit px-3 font-mono text-[12px] uppercase tracking-wider transition-colors ${
+                    i > 0 ? "border-l border-sf-line" : ""
+                  } ${
+                    galaxyMode === id
+                      ? "bg-sf-surface-elevated text-t1"
+                      : "text-t3 hover:text-t1"
+                  }`}
+                  title={
+                    id === "chart"
+                      ? "Your own arrangement, placed by hand"
+                      : "Real stars from the Hipparcos catalogue, with your anchored systems on them"
+                  }
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          )}
         </nav>
 
-        {system ? (
+        {atGalaxy && galaxyMode === "sky" ? (
+          <div className="relative aspect-[3/2] w-full overflow-hidden border border-sf-line bg-sf-void">
+            {catalogError ? (
+              <p className="absolute inset-0 flex items-center justify-center px-6 text-center font-mono text-[12px] uppercase tracking-wider text-sf-crimson-text">
+                // STAR CATALOGUE UNAVAILABLE.
+              </p>
+            ) : catalogLoading || !galaxyField ? (
+              <div className="flex h-full items-center justify-center">
+                <Loader size="sm" />
+              </div>
+            ) : (
+              <Suspense
+                fallback={
+                  <div className="flex h-full items-center justify-center">
+                    <Loader size="sm" />
+                  </div>
+                }
+              >
+                <GalaxyScene
+                  field={galaxyField}
+                  reducedMotion={reducedMotion}
+                  onSelectSystem={(id) => navigate(`/worlds/${worldId}/codex/${id}`)}
+                  className="h-full w-full"
+                />
+              </Suspense>
+            )}
+          </div>
+        ) : system ? (
           <div className="relative aspect-[3/2] w-full overflow-hidden border border-sf-line bg-sf-void">
             <Suspense
               fallback={
@@ -298,7 +372,13 @@ export function CodexAtlasView({ worldId }: CodexAtlasViewProps) {
         )}
 
         <p className="mt-2 font-mono text-[12px] uppercase tracking-wider text-t4">
-          {system
+          {atGalaxy && galaxyMode === "sky"
+            ? `Drag to orbit · scroll to zoom · ${galaxyField?.stars.length ?? 0} real stars (Hipparcos) · rings are your systems, anchored${
+                galaxyField?.unplaced.length
+                  ? ` · ${galaxyField.unplaced.length} not anchored`
+                  : ""
+              }`
+            : system
             ? "Click a world to open it · orbits are drawn from orbit.semi_major_axis, not placed by hand"
             : `Click a pin to open it · use “inside” to go a level down · drag to move${
                 sheet ? ` · ${sheet.projection} sheet` : ""
