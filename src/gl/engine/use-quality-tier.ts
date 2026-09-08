@@ -19,11 +19,15 @@ import {
   TIER_SETTINGS,
   decideTier,
   resolvePixelRatio,
-  type QualityTier,
   type TierDecision,
   type TierSettings,
 } from "./tiers";
 import { measuredMedianFrameMs, onBenchmarkSettled } from "./benchmark";
+import {
+  onQualityOverrideChange,
+  readQualityOverride,
+  type QualityOverride,
+} from "./quality-override";
 
 /** The app marks a light base with `light` on the root element (use-theme.ts). */
 function readLightScheme(): boolean {
@@ -42,10 +46,17 @@ export interface QualityTierResult extends TierDecision {
   still: boolean;
 }
 
+/**
+ * `override` is normally omitted: the stored preference is read for you, so a
+ * scene picks it up without any caller passing it down. Pass one explicitly
+ * only to preview a tier the reader has not chosen (the settings control does
+ * exactly that).
+ */
 export function useQualityTier(
-  override?: QualityTier | "auto",
+  override?: QualityOverride,
 ): QualityTierResult {
   const prefersReducedMotion = usePrefersReducedMotion();
+  const [stored, setStored] = useState<QualityOverride>(readQualityOverride);
   const [isLightScheme, setLightScheme] = useState(readLightScheme);
   const [medianFrameMs, setMedianFrameMs] = useState<number | null>(
     measuredMedianFrameMs,
@@ -67,11 +78,15 @@ export function useQualityTier(
   // guess: it is the tier most machines land on.
   useEffect(() => onBenchmarkSettled(setMedianFrameMs), []);
 
+  // Changing the preference must move every scene already on screen, not just
+  // the next one to mount.
+  useEffect(() => onQualityOverrideChange(setStored), []);
+
   const decision = decideTier({
     medianFrameMs,
     prefersReducedMotion,
     isLightScheme,
-    override,
+    override: override ?? stored,
   });
 
   const ceiling = resolvePixelRatio(

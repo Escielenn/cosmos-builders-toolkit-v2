@@ -10,6 +10,7 @@
 import { Palette } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
+import RenderQualitySettings from "@/components/settings/RenderQualitySettings";
 import {
   useTheme,
   THEME_BASES,
@@ -117,6 +118,9 @@ const AppearanceSettings = () => {
           Reset to Void · Teal
         </button>
       </div>
+
+      {/* Also how things look: what the 3D scenes are allowed to spend. */}
+      <RenderQualitySettings />
     </div>
   );
 };

@@ -94,8 +94,10 @@ describe("AppearanceSettings", () => {
   it("every swatch is a labelled, pressable, 44px-class control", () => {
     render(<AppearanceSettings />);
     const buttons = screen.getAllByRole("button");
-    // 10 bases + 7 primaries + reset
-    expect(buttons).toHaveLength(18);
+    // 10 bases + 7 primaries + reset + 4 render-quality (G7). Render quality
+    // lives here because it is also how things look; if it moves out, this
+    // count moves with it.
+    expect(buttons).toHaveLength(22);
     for (const b of buttons) {
       expect(b).toHaveAccessibleName();
       expect(b.className).toContain("min-h-hit");
