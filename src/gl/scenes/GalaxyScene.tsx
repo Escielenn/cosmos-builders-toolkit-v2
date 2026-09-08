@@ -31,6 +31,8 @@ import type { CatalogStar, GalaxyField, WorldSystem } from "../bind/starfield";
 import type { Lane } from "../bind/routes";
 import type { Territory } from "../bind/territory";
 import { useThemeColors } from "../engine/use-theme-uniforms";
+import { useQualityTier } from "../engine/use-quality-tier";
+import FrameBenchmark from "../engine/FrameBenchmark";
 
 interface GalaxySceneProps {
   field: GalaxyField;
@@ -42,6 +44,10 @@ interface GalaxySceneProps {
   /** Who holds what, from bind/territory. Counted from `governs` / `rules`. */
   territories?: Territory[];
   onSelectSystem?: (id: string) => void;
+  /**
+   * Force the scene still. The quality tier already forces it under reduced
+   * motion; this is for callers with a reason of their own.
+   */
   reducedMotion?: boolean;
   className?: string;
 }
@@ -346,19 +352,21 @@ export function GalaxyScene({
   reducedMotion = false,
   className,
 }: GalaxySceneProps) {
+  const tier = useQualityTier();
   return (
     <Canvas
       className={className}
       camera={{ position: [0, 6, 16], fov: 45 }}
       gl={{ antialias: true, alpha: true }}
-      dpr={[1, 2]}
+      dpr={tier.dpr}
     >
+      <FrameBenchmark />
       <Contents
         field={field}
         lanes={lanes}
         territories={territories}
         onSelectSystem={onSelectSystem}
-        reducedMotion={reducedMotion}
+        reducedMotion={reducedMotion || tier.still}
       />
       <OrbitControls
         enablePan={false}

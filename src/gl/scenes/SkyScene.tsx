@@ -25,6 +25,8 @@ import {
 } from "three";
 import type { SkyStar, SkyView } from "../bind/sky";
 import { useThemeColors } from "../engine/use-theme-uniforms";
+import { useQualityTier } from "../engine/use-quality-tier";
+import FrameBenchmark from "../engine/FrameBenchmark";
 
 interface SkySceneProps {
   sky: SkyView;
@@ -169,6 +171,7 @@ export function SkyScene({
   // Open facing the star the panel names, so the claim and the sky agree on
   // first sight. The camera sits a hair off the origin and looks back through
   // it, which is how you look around from inside a dome.
+  const tier = useQualityTier();
   const start = useMemo<[number, number, number]>(() => {
     const d = sky.brightest?.direction;
     if (!d) return [0, 0, 0.1];
@@ -182,9 +185,14 @@ export function SkyScene({
       // every constellation look like a fisheye photograph.
       camera={{ position: start, fov: 55 }}
       gl={{ antialias: true, alpha: true }}
-      dpr={[1, 2]}
+      dpr={tier.dpr}
     >
-      <Contents sky={sky} markedName={markedName} reducedMotion={reducedMotion} />
+      <FrameBenchmark />
+      <Contents
+        sky={sky}
+        markedName={markedName}
+        reducedMotion={reducedMotion || tier.still}
+      />
       <OrbitControls
         enablePan={false}
         enableZoom={false}

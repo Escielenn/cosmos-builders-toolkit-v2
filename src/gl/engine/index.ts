@@ -44,3 +44,18 @@ export type { CameraPose, Flight, Vec3 } from "./camera-rig";
 
 export { createEngine } from "./renderer";
 export type { Engine, EngineOptions } from "./renderer";
+
+// The tier system's consumer (G7). `decideTier` existed from G1 and nothing
+// called it; these are the pieces that make a measured tier reach a scene.
+export {
+  recordFrame,
+  measuredMedianFrameMs,
+  benchmarkProgress,
+  onBenchmarkSettled,
+  resetBenchmark,
+  WARMUP_FRAMES,
+  SAMPLE_FRAMES,
+} from "./benchmark";
+export { useQualityTier } from "./use-quality-tier";
+export type { QualityTierResult } from "./use-quality-tier";
+export { default as FrameBenchmark } from "./FrameBenchmark";

@@ -37,6 +37,8 @@ import {
 } from "../materials/StarMaterial";
 import { orbitPosition, type BoundBody, type BoundSystem } from "../bind/system";
 import { useThemeColors } from "../engine/use-theme-uniforms";
+import { useQualityTier } from "../engine/use-quality-tier";
+import FrameBenchmark from "../engine/FrameBenchmark";
 
 interface SystemSceneProps {
   system: BoundSystem;
@@ -231,6 +233,7 @@ export function SystemScene({
     ? system.bodies[system.bodies.length - 1].displayOrbit
     : 6;
   const distance = Math.max(9, outermost * 2.1);
+  const tier = useQualityTier();
 
   return (
     <Canvas
@@ -238,14 +241,17 @@ export function SystemScene({
       camera={{ position: [0, distance * 0.55, distance], fov: 42 }}
       // The engine's tone mapping; the scene inherits the app's colour space.
       gl={{ antialias: true, alpha: true }}
-      dpr={[1, 2]}
+      dpr={tier.dpr}
     >
+      <FrameBenchmark />
       <ambientLight intensity={0.06} />
       <SceneContents
         system={system}
         onSelectBody={onSelectBody}
         selectedId={selectedId}
-        reducedMotion={reducedMotion}
+        // The tier forces stillness under reduced motion and light themes;
+        // the prop stays for callers with a reason of their own.
+        reducedMotion={reducedMotion || tier.still}
       />
     </Canvas>
   );
