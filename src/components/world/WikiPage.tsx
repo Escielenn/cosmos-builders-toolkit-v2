@@ -598,6 +598,8 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
       {/* A system can sit at a real star. G4 draws the ring; this chooses it. */}
       {(cascadeEntityType === "star_system" || cascadeEntityType === "star") && (
         <AnchorStarSection
+          systemId={entry.id}
+          systemName={entry.title}
           anchor={
             typeof entryMeta.anchor_star === "string" ? entryMeta.anchor_star : null
           }
