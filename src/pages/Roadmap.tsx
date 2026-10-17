@@ -182,7 +182,7 @@ function RoadmapCard({ item, canVote }: { item: RoadmapItem; canVote: boolean })
               key={n}
               variant="outline"
               size="sm"
-              className="gap-1 opacity-40 cursor-not-allowed"
+              className="gap-1 cursor-not-allowed"
               disabled
             >
               <ChevronUp className="w-3 h-3" />

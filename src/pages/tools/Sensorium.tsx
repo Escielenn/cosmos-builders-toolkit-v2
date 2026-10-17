@@ -1425,7 +1425,7 @@ const Sensorium = () => {
                             {MODALITIES.map((mod) => {
                               const has = formState.finalSelection.includes(mod.id);
                               return (
-                                <div key={mod.id} className={`flex items-center gap-2 text-xs ${has ? "text-t2" : "text-t4 opacity-40"}`}>
+                                <div key={mod.id} className={`flex items-center gap-2 text-xs ${has ? "text-t2" : "text-sf-disabled-text"}`}>
                                   <span className={`w-1.5 h-1.5 flex-shrink-0 ${has ? "bg-emerald-400" : "bg-tier-4"}`} />
                                   {mod.name}
                                 </div>
@@ -1441,7 +1441,7 @@ const Sensorium = () => {
                             {MODALITIES.map((mod) => {
                               const has = HUMAN_SENSES.includes(mod.id);
                               return (
-                                <div key={mod.id} className={`flex items-center gap-2 text-xs ${has ? "text-t2" : "text-t4 opacity-40"}`}>
+                                <div key={mod.id} className={`flex items-center gap-2 text-xs ${has ? "text-t2" : "text-sf-disabled-text"}`}>
                                   <span className={`w-1.5 h-1.5 flex-shrink-0 ${has ? "bg-cyan-400" : "bg-tier-4"}`} />
                                   {mod.name}
                                 </div>

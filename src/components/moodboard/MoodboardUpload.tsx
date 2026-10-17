@@ -99,7 +99,7 @@ export function MoodboardUpload({
           isDragging
             ? "border-primary bg-primary/10"
             : "border-sf-line hover:border-primary hover:bg-muted/50",
-          (disabled || isLoading) && "opacity-50 cursor-not-allowed"
+          (disabled || isLoading) && "bg-sf-disabled-bg border-sf-disabled-line text-sf-disabled-text cursor-not-allowed"
         )}
       >
         {isLoading ? (

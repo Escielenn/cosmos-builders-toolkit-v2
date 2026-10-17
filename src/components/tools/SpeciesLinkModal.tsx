@@ -270,7 +270,7 @@ const SpeciesLinkModal = ({
                       {fieldsWithoutValues.map((field) => (
                         <div
                           key={field.target}
-                          className="flex items-start gap-3 p-2 rounded-none opacity-50"
+                          className="flex items-start gap-3 p-2 rounded-none text-sf-disabled-text"
                         >
                           <Checkbox disabled className="mt-0.5" />
                           <div className="flex-1 min-w-0">

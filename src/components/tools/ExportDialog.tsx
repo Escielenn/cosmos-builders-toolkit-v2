@@ -455,7 +455,7 @@ const ExportDialog = ({
                 onValueChange={(value) => setFormat(value as ExportFormat)}
                 className="space-y-2"
               >
-                <div className={`flex items-center space-x-3 p-3 rounded-none border border-sf-line-interactive transition-colors ${summaryTemplate ? "hover:bg-accent/10 cursor-pointer" : "opacity-50 cursor-not-allowed"}`}>
+                <div className={`flex items-center space-x-3 p-3 rounded-none border transition-colors ${summaryTemplate ? "border-sf-line-interactive hover:bg-accent/10 cursor-pointer" : "bg-sf-disabled-bg border-sf-disabled-line text-sf-disabled-text cursor-not-allowed"}`}>
                   <RadioGroupItem value="pdf-summary" id="pdf-summary" disabled={!summaryTemplate} />
                   <Label htmlFor="pdf-summary" className={`flex-1 ${summaryTemplate ? "cursor-pointer" : "cursor-not-allowed"}`}>
                     <div className="flex items-center gap-2">
@@ -468,7 +468,7 @@ const ExportDialog = ({
                     </p>
                   </Label>
                 </div>
-                <div className={`flex items-center space-x-3 p-3 rounded-none border border-sf-line-interactive transition-colors ${fullTemplate ? "hover:bg-accent/10 cursor-pointer" : "opacity-50 cursor-not-allowed"}`}>
+                <div className={`flex items-center space-x-3 p-3 rounded-none border transition-colors ${fullTemplate ? "border-sf-line-interactive hover:bg-accent/10 cursor-pointer" : "bg-sf-disabled-bg border-sf-disabled-line text-sf-disabled-text cursor-not-allowed"}`}>
                   <RadioGroupItem value="pdf-full" id="pdf-full" disabled={!fullTemplate} />
                   <Label htmlFor="pdf-full" className={`flex-1 ${fullTemplate ? "cursor-pointer" : "cursor-not-allowed"}`}>
                     <div className="flex items-center gap-2">

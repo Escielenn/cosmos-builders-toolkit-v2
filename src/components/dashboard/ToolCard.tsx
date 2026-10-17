@@ -40,12 +40,12 @@ const ToolCard = ({
     <GlassPanel
       hover={canAccess}
       className={`p-5 flex flex-col gap-4 ${
-        !canAccess ? "opacity-60 cursor-not-allowed" : ""
+        !canAccess ? "bg-sf-disabled-bg border-sf-disabled-line cursor-not-allowed" : ""
       }`}
     >
       <div className="flex items-start justify-between">
         {CustomIcon ? (
-          <CustomIcon className={`w-12 h-12 rounded-sm sf-card-icon ${!canAccess ? "opacity-50 grayscale" : ""}`} />
+          <CustomIcon className={`w-12 h-12 rounded-sm sf-card-icon ${!canAccess ? "grayscale" : ""}`} />
         ) : FallbackIcon ? (
           <div
             className={`w-12 h-12 rounded-sm flex items-center justify-center ${

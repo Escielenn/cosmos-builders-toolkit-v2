@@ -153,7 +153,7 @@ const HierarchicalExportDialog = ({
                   onClick={() => hasTemplate && setSelectedCategory(cw.category.id)}
                   disabled={!hasTemplate}
                   className={`w-full text-left transition-all ${
-                    !hasTemplate ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+                    !hasTemplate ? "text-sf-disabled-text cursor-not-allowed" : "cursor-pointer"
                   }`}
                 >
                   <GlassPanel
