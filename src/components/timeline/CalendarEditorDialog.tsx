@@ -162,7 +162,7 @@ const CalendarEditorDialog = ({
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="w-7 h-7 text-sf-crimson hover:text-sf-crimson"
+                    className="w-7 h-7 text-sf-crimson-text hover:text-sf-crimson-text"
                     onClick={() => handleDelete(cal.id)}
                     aria-label="Delete calendar"
                   >

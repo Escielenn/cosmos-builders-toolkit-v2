@@ -177,7 +177,7 @@ export function TemplateFieldEditor({
       <Button
         variant="ghost"
         size="icon"
-        className="h-7 w-7 shrink-0 text-t4 hover:text-sf-crimson"
+        className="h-7 w-7 shrink-0 text-t4 hover:text-sf-crimson-text"
         onClick={onDelete}
         disabled={disabled}
         aria-label="Delete field"

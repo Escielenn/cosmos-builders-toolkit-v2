@@ -909,7 +909,7 @@ const StarSystemBuilder = () => {
                           variant="ghost"
                           size="sm"
                           onClick={() => removeBody(body.id)}
-                          className="text-sf-crimson hover:text-sf-crimson"
+                          className="text-sf-crimson-text hover:text-sf-crimson-text"
                         >
                           <Trash2 className="w-4 h-4" />
                         </Button>

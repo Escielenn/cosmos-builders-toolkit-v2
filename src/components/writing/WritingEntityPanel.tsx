@@ -324,7 +324,7 @@ export function WritingEntityPanel({
               </button>
               <button
                 onClick={() => onInsertWikiLink(selectedEntity.name)}
-                className="flex-1 flex items-center justify-center gap-1.5 px-2 py-2 text-[12px] font-sans font-medium uppercase tracking-[1px] text-sf-stellar bg-sf-stellar/[0.06] border border-sf-stellar rounded-sm hover:bg-sf-stellar/[0.12] transition-colors"
+                className="flex-1 flex items-center justify-center gap-1.5 px-2 py-2 text-[12px] font-sans font-medium uppercase tracking-[1px] text-sf-stellar-text bg-sf-stellar/[0.06] border border-sf-stellar rounded-sm hover:bg-sf-stellar/[0.12] transition-colors"
               >
                 <Link2 className="w-3 h-3" />
                 Wiki Link

@@ -380,7 +380,7 @@ const Gravitas = () => {
       case "high_gravity": return "text-orange-400";
       case "microgravity":
       case "milligravity":
-      case "extreme_gravity": return "text-sf-crimson";
+      case "extreme_gravity": return "text-sf-crimson-text";
       default: return "text-t2";
     }
   })();
@@ -448,7 +448,7 @@ const Gravitas = () => {
             {formState.realismMode === "hard_sf" && formState.activeMode === "artificial" && (
               <div className="flex items-center gap-2 mt-3 p-3 rounded-none bg-red-500/10 border border-sf-crimson">
                 <AlertTriangle className="w-4 h-4 text-sf-crimson shrink-0" />
-                <p className="text-sm text-sf-crimson">Artificial gravity is not available in Hard SF mode. Switch to Hybrid or Soft SF.</p>
+                <p className="text-sm text-sf-crimson-text">Artificial gravity is not available in Hard SF mode. Switch to Hybrid or Soft SF.</p>
               </div>
             )}
           </CollapsibleSection>
@@ -752,7 +752,7 @@ const Gravitas = () => {
                 {formState.realismMode === "hard_sf" && (
                   <div className="flex items-center gap-2 p-3 rounded-none bg-red-500/10 border border-sf-crimson">
                     <AlertTriangle className="w-4 h-4 text-sf-crimson shrink-0" />
-                    <p className="text-sm text-sf-crimson">
+                    <p className="text-sm text-sf-crimson-text">
                       Artificial gravity violates known physics. Switch to Hybrid or Soft SF mode to use this module.
                     </p>
                   </div>

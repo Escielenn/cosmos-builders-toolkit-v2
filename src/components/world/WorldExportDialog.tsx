@@ -460,7 +460,7 @@ const WorldExportDialog = ({
                         variant="ghost"
                         size="sm"
                         onClick={disconnect}
-                        className="text-t3 hover:text-sf-crimson flex-shrink-0"
+                        className="text-t3 hover:text-sf-crimson-text flex-shrink-0"
                       >
                         <Unplug className="w-4 h-4 mr-1" />
                         Disconnect

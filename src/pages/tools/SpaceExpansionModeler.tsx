@@ -910,7 +910,7 @@ const SpaceExpansionModeler = () => {
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="h-7 w-7 p-0 text-t2 hover:text-sf-crimson"
+                          className="h-7 w-7 p-0 text-t2 hover:text-sf-crimson-text"
                           onClick={() => removeModifier(mod.id)}
                         >
                           <Trash2 className="w-3.5 h-3.5" />

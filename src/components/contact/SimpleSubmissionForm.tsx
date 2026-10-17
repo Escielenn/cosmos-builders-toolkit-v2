@@ -175,7 +175,7 @@ const SimpleSubmissionForm = ({ type, onSuccess }: SimpleSubmissionFormProps) =>
             />
           </div>
           {errors.name && (
-            <p className="text-sm text-sf-crimson">{errors.name.message}</p>
+            <p className="text-sm text-sf-crimson-text">{errors.name.message}</p>
           )}
         </div>
 
@@ -191,7 +191,7 @@ const SimpleSubmissionForm = ({ type, onSuccess }: SimpleSubmissionFormProps) =>
             />
           </div>
           {errors.email && (
-            <p className="text-sm text-sf-crimson">{errors.email.message}</p>
+            <p className="text-sm text-sf-crimson-text">{errors.email.message}</p>
           )}
         </div>
       </div>
@@ -207,7 +207,7 @@ const SimpleSubmissionForm = ({ type, onSuccess }: SimpleSubmissionFormProps) =>
           />
         </div>
         {errors.subject && (
-          <p className="text-sm text-sf-crimson">{errors.subject.message}</p>
+          <p className="text-sm text-sf-crimson-text">{errors.subject.message}</p>
         )}
       </div>
 
@@ -223,7 +223,7 @@ const SimpleSubmissionForm = ({ type, onSuccess }: SimpleSubmissionFormProps) =>
           />
         </div>
         {errors.message && (
-          <p className="text-sm text-sf-crimson">{errors.message.message}</p>
+          <p className="text-sm text-sf-crimson-text">{errors.message.message}</p>
         )}
       </div>
 

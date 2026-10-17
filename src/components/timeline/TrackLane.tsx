@@ -210,7 +210,7 @@ const TrackLane = memo(
             <Button
               variant="ghost"
               size="icon"
-              className="w-5 h-5 text-sf-crimson hover:text-sf-crimson"
+              className="w-5 h-5 text-sf-crimson-text hover:text-sf-crimson-text"
               onClick={() => onDeleteTrack(track.id)}
               aria-label="Delete track"
             >

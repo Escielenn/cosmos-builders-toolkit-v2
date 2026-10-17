@@ -137,10 +137,10 @@ const MockToolCard = ({ title, value, delay, color }: MockToolCardProps) => {
   const textColorMap = {
     cyan: "text-sf-cyan",
     amber: "text-sf-amber",
-    violet: "text-sf-violet",
+    violet: "text-sf-violet-text",
     emerald: "text-sf-emerald",
     azure: "text-sf-azure",
-    magenta: "text-sf-magenta",
+    magenta: "text-sf-magenta-text",
   };
 
   return (

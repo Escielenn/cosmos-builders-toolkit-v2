@@ -30,7 +30,7 @@ const XenomythMockup = () => {
         <div className="text-xs text-t3 uppercase tracking-wider mb-1">
           Mythological Framework
         </div>
-        <div className="text-sm md:text-base font-display text-sf-violet">
+        <div className="text-sm md:text-base font-display text-sf-violet-text">
           The Path of Light & Shadow
         </div>
       </div>
@@ -112,7 +112,7 @@ const XenomythMockup = () => {
       {/* Environmental influence badge */}
       <div className="mt-3 flex justify-center">
         <div className="inline-flex items-center gap-2 px-3 py-1 bg-sf-violet/10 border border-sf-violet">
-          <span className="text-[12px] text-sf-violet uppercase tracking-wider">
+          <span className="text-[12px] text-sf-violet-text uppercase tracking-wider">
             Derived from High-Gravity World
           </span>
         </div>

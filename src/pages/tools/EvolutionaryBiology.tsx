@@ -722,7 +722,7 @@ const EvolutionaryBiology = () => {
             variant="ghost"
             size="icon"
             onClick={() => onChange(items.filter((_, i) => i !== index))}
-            className="h-10 w-10 text-t2 hover:text-sf-crimson"
+            className="h-10 w-10 text-t2 hover:text-sf-crimson-text"
             aria-label="Remove item"
           >
             <Trash2 className="w-4 h-4" />

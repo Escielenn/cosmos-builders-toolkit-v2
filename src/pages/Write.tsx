@@ -520,7 +520,7 @@ export default function Write(): JSX.Element {
                         }
                       }}
                       aria-label={`Delete ${d.title || "Untitled"} permanently`} title="Delete forever"
-                      className="shrink-0 p-1.5 text-t4 opacity-0 transition-opacity hover:text-sf-crimson focus-visible:opacity-100 group-hover:opacity-100">
+                      className="shrink-0 p-1.5 text-t4 opacity-0 transition-opacity hover:text-sf-crimson-text focus-visible:opacity-100 group-hover:opacity-100">
                       <X className="h-3.5 w-3.5" />
                     </button>
                   </div>
@@ -900,7 +900,7 @@ function SortableDocRow({
         onClick={(e) => { e.stopPropagation(); onTrash(); }}
         aria-label={`Move ${d.title || "Untitled"} to trash`}
         title="Move to trash"
-        className="shrink-0 p-1.5 text-t4 opacity-0 transition-opacity hover:text-sf-crimson focus-visible:opacity-100 group-hover:opacity-100"
+        className="shrink-0 p-1.5 text-t4 opacity-0 transition-opacity hover:text-sf-crimson-text focus-visible:opacity-100 group-hover:opacity-100"
       >
         <Trash2 className="h-3.5 w-3.5" />
       </button>

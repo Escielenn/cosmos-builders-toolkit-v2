@@ -47,9 +47,9 @@ const VALUE_ACCENT = {
   amber: "text-sf-amber",
   azure: "text-sf-azure",
   emerald: "text-sf-emerald",
-  violet: "text-sf-violet",
-  stellar: "text-sf-stellar",
-  crimson: "text-sf-crimson",
+  violet: "text-sf-violet-text",
+  stellar: "text-sf-stellar-text",
+  crimson: "text-sf-crimson-text",
 } as const;
 
 const StatCell = React.forwardRef<HTMLDivElement, CellProps>(

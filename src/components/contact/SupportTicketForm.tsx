@@ -139,7 +139,7 @@ const SupportTicketForm = ({ onSuccess }: SupportTicketFormProps) => {
             />
           </div>
           {errors.name && (
-            <p className="text-sm text-sf-crimson">{errors.name.message}</p>
+            <p className="text-sm text-sf-crimson-text">{errors.name.message}</p>
           )}
         </div>
 
@@ -155,7 +155,7 @@ const SupportTicketForm = ({ onSuccess }: SupportTicketFormProps) => {
             />
           </div>
           {errors.email && (
-            <p className="text-sm text-sf-crimson">{errors.email.message}</p>
+            <p className="text-sm text-sf-crimson-text">{errors.email.message}</p>
           )}
         </div>
       </div>
@@ -186,7 +186,7 @@ const SupportTicketForm = ({ onSuccess }: SupportTicketFormProps) => {
             )}
           />
           {errors.category && (
-            <p className="text-sm text-sf-crimson">
+            <p className="text-sm text-sf-crimson-text">
               {errors.category.message}
             </p>
           )}
@@ -217,7 +217,7 @@ const SupportTicketForm = ({ onSuccess }: SupportTicketFormProps) => {
             )}
           />
           {errors.priority && (
-            <p className="text-sm text-sf-crimson">
+            <p className="text-sm text-sf-crimson-text">
               {errors.priority.message}
             </p>
           )}
@@ -235,7 +235,7 @@ const SupportTicketForm = ({ onSuccess }: SupportTicketFormProps) => {
           />
         </div>
         {errors.subject && (
-          <p className="text-sm text-sf-crimson">{errors.subject.message}</p>
+          <p className="text-sm text-sf-crimson-text">{errors.subject.message}</p>
         )}
       </div>
 
@@ -251,7 +251,7 @@ const SupportTicketForm = ({ onSuccess }: SupportTicketFormProps) => {
           />
         </div>
         {errors.message && (
-          <p className="text-sm text-sf-crimson">{errors.message.message}</p>
+          <p className="text-sm text-sf-crimson-text">{errors.message.message}</p>
         )}
       </div>
 

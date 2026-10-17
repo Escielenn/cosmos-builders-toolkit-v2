@@ -134,7 +134,7 @@ const SEVERITY_STYLES = {
   negligible: { text: "text-sf-emerald", border: "border-l-emerald-400", bg: "bg-emerald-400/10" },
   notable: { text: "text-sf-amber", border: "border-l-amber-400", bg: "bg-amber-400/10" },
   significant: { text: "text-orange-500", border: "border-l-orange-500", bg: "bg-orange-500/10" },
-  extreme: { text: "text-sf-crimson", border: "border-l-red-500", bg: "bg-red-500/10" },
+  extreme: { text: "text-sf-crimson-text", border: "border-l-red-500", bg: "bg-red-500/10" },
 };
 
 // ─── Logarithmic slider mapping ──────────────────────────────────────

@@ -309,7 +309,7 @@ const Auth = () => {
                         disabled={isSigningUp}
                       />
                     </div>
-                    {signupErrors.email && <p className="text-sm text-sf-crimson">{signupErrors.email}</p>}
+                    {signupErrors.email && <p className="text-sm text-sf-crimson-text">{signupErrors.email}</p>}
                   </div>
 
                   <div className="space-y-2">
@@ -324,7 +324,7 @@ const Auth = () => {
                         disabled={isSigningUp}
                       />
                     </div>
-                    {signupErrors.password && <p className="text-sm text-sf-crimson">{signupErrors.password}</p>}
+                    {signupErrors.password && <p className="text-sm text-sf-crimson-text">{signupErrors.password}</p>}
                   </div>
 
                   <Button type="submit" className="w-full gap-2" size="lg" disabled={isSigningUp}>
@@ -396,7 +396,7 @@ const Auth = () => {
                         disabled={isLoading}
                       />
                     </div>
-                    {errors.email && <p className="text-sm text-sf-crimson">{errors.email}</p>}
+                    {errors.email && <p className="text-sm text-sf-crimson-text">{errors.email}</p>}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="login-password">Password</Label>
@@ -410,7 +410,7 @@ const Auth = () => {
                         disabled={isLoading}
                       />
                     </div>
-                    {errors.password && <p className="text-sm text-sf-crimson">{errors.password}</p>}
+                    {errors.password && <p className="text-sm text-sf-crimson-text">{errors.password}</p>}
                   </div>
                   <Button type="submit" className="w-full gap-2" size="lg" disabled={isLoading}>
                     {isLoading ? (

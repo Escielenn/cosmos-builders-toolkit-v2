@@ -330,7 +330,7 @@ const DrakeEquationCalculator = () => {
     };
     return {
       label: "Teeming",
-      color: "text-sf-crimson",
+      color: "text-sf-crimson-text",
       description: "A galaxy full of life. Civilizations bump into each other regularly. Think Star Trek or Star Wars. The Fermi Paradox becomes very pressing."
     };
   };

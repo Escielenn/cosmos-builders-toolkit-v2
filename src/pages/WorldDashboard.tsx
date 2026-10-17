@@ -417,7 +417,7 @@ const SortableWorksheetGroup = ({
                     </DropdownMenuItem>
                     {isOwner && (
                       <DropdownMenuItem
-                        className="text-sf-crimson"
+                        className="text-sf-crimson-text"
                         onClick={() => onDelete(worksheet.id, worksheet.title || "Untitled")}
                       >
                         <Trash2 className="w-4 h-4 mr-2" />
@@ -674,7 +674,7 @@ const WorldDashboard = () => {
           Return to Bridge
         </Link>
         <GlassPanel className="p-12 text-center">
-          <p className="font-mono text-[12px] tracking-[0.18em] text-sf-crimson uppercase mb-4">// STATUS: UNREACHABLE</p>
+          <p className="font-mono text-[12px] tracking-[0.18em] text-sf-crimson-text uppercase mb-4">// STATUS: UNREACHABLE</p>
           <h1 className="font-display text-3xl md:text-4xl font-light tracking-sf-title uppercase text-t1 mb-4">WORLD NOT FOUND</h1>
           <p className="font-mono text-[12px] tracking-[0.18em] uppercase text-t3 mb-6">
             RECORD DOES NOT EXIST OR CLEARANCE INSUFFICIENT.
@@ -810,7 +810,7 @@ const WorldDashboard = () => {
                 )}
                 {isOwner && (
                 <DropdownMenuItem
-                  className="text-sf-crimson"
+                  className="text-sf-crimson-text"
                   onClick={() => setDeleteDialogOpen(true)}
                 >
                   <Trash2 className="w-4 h-4 mr-2" />

@@ -39,7 +39,7 @@ import {
 
 const CATEGORY_COLORS: Record<PromptCategory, string> = {
   worldbuilding: "text-blue-400 border-sf-azure bg-blue-400/[0.06]",
-  character: "text-sf-violet border-sf-violet bg-violet-400/[0.06]",
+  character: "text-sf-violet-text border-sf-violet bg-violet-400/[0.06]",
   scene: "text-sf-amber border-sf-amber bg-amber-400/[0.06]",
   dialogue: "text-sf-emerald border-sf-emerald bg-emerald-400/[0.06]",
   theme: "text-sf-primary-text border-sf-primary bg-sf-primary/[0.06]",

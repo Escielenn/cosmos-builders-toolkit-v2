@@ -108,7 +108,7 @@ export function MoodboardImage({
                 <Button
                   size="icon"
                   variant="ghost"
-                  className="h-6 w-6 text-sf-crimson hover:text-sf-crimson"
+                  className="h-6 w-6 text-sf-crimson-text hover:text-sf-crimson-text"
                   onClick={() => onDelete(image.id)}
                   aria-label="Delete image"
                 >

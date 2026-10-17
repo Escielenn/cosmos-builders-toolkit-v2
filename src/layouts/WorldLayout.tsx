@@ -179,7 +179,7 @@ const WorldLayout = () => {
       <div className="min-h-screen bg-background">
         <Header />
         <div className="flex items-center justify-center" style={{ height: `calc(100vh - ${HEADER_HEIGHT}px)` }}>
-          <p className="font-mono text-[12px] uppercase tracking-[0.18em] text-sf-crimson">
+          <p className="font-mono text-[12px] uppercase tracking-[0.18em] text-sf-crimson-text">
             // WORLD DATA UNAVAILABLE. RETRY WHEN READY.
           </p>
         </div>

@@ -1090,7 +1090,7 @@ const Sensorium = () => {
                       <div className="mt-2">
                         <p className="text-xs text-t4 font-medium">Conflicts:</p>
                         {validationResult.conflictingSenses.map((c, i) => (
-                          <p key={i} className="text-xs text-sf-crimson">
+                          <p key={i} className="text-xs text-sf-crimson-text">
                             {getModalityById(c.a)?.name} ↔ {getModalityById(c.b)?.name}: {c.reason}
                           </p>
                         ))}
@@ -1147,7 +1147,7 @@ const Sensorium = () => {
                     />
                   </div>
                   {metabolicBudget.overBudget && (
-                    <p className="text-xs text-sf-crimson flex items-center gap-1">
+                    <p className="text-xs text-sf-crimson-text flex items-center gap-1">
                       <AlertTriangle className="h-3 w-3" />
                       Over budget, this sensory suite requires extraordinary metabolic justification.
                     </p>
@@ -1394,7 +1394,7 @@ const Sensorium = () => {
                       </GlassPanel>
 
                       <GlassPanel className="p-4">
-                        <h4 className="text-sm font-medium text-sf-crimson mb-2">
+                        <h4 className="text-sm font-medium text-sf-crimson-text mb-2">
                           Species Blind (Humans Have)
                         </h4>
                         {perceptionGaps.speciesBlind.length > 0 ? (

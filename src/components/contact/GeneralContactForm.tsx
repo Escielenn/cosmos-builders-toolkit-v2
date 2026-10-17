@@ -100,7 +100,7 @@ const GeneralContactForm = ({ onSuccess }: GeneralContactFormProps) => {
           />
         </div>
         {errors.name && (
-          <p className="text-sm text-sf-crimson">{errors.name.message}</p>
+          <p className="text-sm text-sf-crimson-text">{errors.name.message}</p>
         )}
       </div>
 
@@ -116,7 +116,7 @@ const GeneralContactForm = ({ onSuccess }: GeneralContactFormProps) => {
           />
         </div>
         {errors.email && (
-          <p className="text-sm text-sf-crimson">{errors.email.message}</p>
+          <p className="text-sm text-sf-crimson-text">{errors.email.message}</p>
         )}
       </div>
 
@@ -132,7 +132,7 @@ const GeneralContactForm = ({ onSuccess }: GeneralContactFormProps) => {
           />
         </div>
         {errors.message && (
-          <p className="text-sm text-sf-crimson">{errors.message.message}</p>
+          <p className="text-sm text-sf-crimson-text">{errors.message.message}</p>
         )}
       </div>
 

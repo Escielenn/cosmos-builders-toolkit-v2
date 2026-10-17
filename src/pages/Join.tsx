@@ -227,7 +227,7 @@ const Join = () => {
                   disabled={isLoading}
                 />
               </div>
-              {errors.email && <p className="text-sm text-sf-crimson">{errors.email}</p>}
+              {errors.email && <p className="text-sm text-sf-crimson-text">{errors.email}</p>}
             </div>
             <div className="space-y-2">
               <Label htmlFor="signup-password">Password</Label>
@@ -241,7 +241,7 @@ const Join = () => {
                   disabled={isLoading}
                 />
               </div>
-              {errors.password && <p className="text-sm text-sf-crimson">{errors.password}</p>}
+              {errors.password && <p className="text-sm text-sf-crimson-text">{errors.password}</p>}
             </div>
 
             {/* TOS Checkbox */}

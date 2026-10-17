@@ -762,7 +762,7 @@ const SurfaceGravityCalculator = () => {
                         {result.regimeLabel}
                       </Badge>
                       {result.deltaV.gravityLocked && (
-                        <Badge className="bg-sf-crimson/[0.06] text-sf-crimson border-sf-crimson">
+                        <Badge className="bg-sf-crimson/[0.06] text-sf-crimson-text border-sf-crimson">
                           GRAVITY-LOCKED
                         </Badge>
                       )}

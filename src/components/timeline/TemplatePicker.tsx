@@ -42,8 +42,8 @@ const CATEGORY_LABELS: Record<TemplateCategory, string> = {
 
 const CATEGORY_COLORS: Record<TemplateCategory, string> = {
   civilization: "bg-blue-500/20 text-blue-400 border-sf-azure",
-  character: "bg-violet-500/20 text-sf-violet border-sf-violet",
-  conflict: "bg-red-500/20 text-sf-crimson border-sf-crimson",
+  character: "bg-violet-500/20 text-sf-violet-text border-sf-violet",
+  conflict: "bg-red-500/20 text-sf-crimson-text border-sf-crimson",
   exploration: "bg-emerald-500/20 text-sf-emerald border-sf-emerald",
 };
 

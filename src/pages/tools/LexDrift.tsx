@@ -143,7 +143,7 @@ const SEVERITY_STYLES = {
   dialect: { text: "text-sf-emerald", border: "border-l-emerald-400", bg: "bg-emerald-400/10" },
   significant: { text: "text-sf-primary-text", border: "border-l-sf-primary", bg: "bg-sf-primary/10" },
   reduced: { text: "text-orange-500", border: "border-l-orange-500", bg: "bg-orange-500/10" },
-  separate: { text: "text-sf-crimson", border: "border-l-red-500", bg: "bg-red-500/10" },
+  separate: { text: "text-sf-crimson-text", border: "border-l-red-500", bg: "bg-red-500/10" },
 };
 
 // ─── Component ───────────────────────────────────────────────────────

@@ -151,7 +151,7 @@ const CompressionEditorDialog = ({
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="w-7 h-7 text-sf-crimson hover:text-sf-crimson"
+                    className="w-7 h-7 text-sf-crimson-text hover:text-sf-crimson-text"
                     onClick={() => handleDelete(comp.id)}
                     aria-label="Delete compression range"
                   >

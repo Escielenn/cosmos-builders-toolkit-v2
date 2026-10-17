@@ -608,7 +608,7 @@ const SpeciesInteractionMatrix = () => {
                               variant="ghost"
                               size="sm"
                               onClick={() => removeSpecies(index)}
-                              className="text-sf-crimson"
+                              className="text-sf-crimson-text"
                             >
                               <Trash2 className="w-4 h-4" />
                             </Button>

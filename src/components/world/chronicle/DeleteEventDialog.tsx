@@ -47,7 +47,7 @@ export function DeleteEventDialog({
               onConfirm();
               onOpenChange(false);
             }}
-            className="sf-fill-sweep px-4 py-1.5 border border-destructive text-sf-crimson text-[12px] uppercase tracking-wider"
+            className="sf-fill-sweep px-4 py-1.5 border border-destructive text-sf-crimson-text text-[12px] uppercase tracking-wider"
           >
             Delete
           </button>

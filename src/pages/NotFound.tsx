@@ -147,7 +147,7 @@ const NotFound = () => {
           className="font-display font-light text-sf-h1 leading-[1] text-t1 mb-7"
           variants={heroReveal}
         >
-          Coordinates do not <span className="text-sf-crimson">match.</span>
+          Coordinates do not <span className="text-sf-crimson-text">match.</span>
         </motion.h1>
 
         {/* Description */}
@@ -167,7 +167,7 @@ const NotFound = () => {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
           >
-            <span className="text-sf-crimson/70">UNREACHABLE</span>
+            <span className="text-sf-crimson-text">UNREACHABLE</span>
             {"  "}
             <span className="text-t4">{location.pathname}</span>
           </motion.div>
@@ -194,7 +194,7 @@ const NotFound = () => {
 
         {/* Tagline */}
         <motion.p
-          className="mt-10 text-xs italic text-sf-stellar/50 tracking-wide"
+          className="mt-10 text-xs italic text-sf-stellar-text tracking-wide"
           variants={fadeUpItem}
         >
           These worlds exist in you. Waiting to be found.

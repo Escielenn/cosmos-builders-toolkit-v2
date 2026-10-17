@@ -1229,7 +1229,7 @@ const EmpireDesigner = () => {
                           variant="ghost"
                           size="sm"
                           onClick={() => removeFaction(faction.id)}
-                          className="text-sf-crimson hover:text-sf-crimson"
+                          className="text-sf-crimson-text hover:text-sf-crimson-text"
                         >
                           <Trash2 className="w-4 h-4" />
                         </Button>

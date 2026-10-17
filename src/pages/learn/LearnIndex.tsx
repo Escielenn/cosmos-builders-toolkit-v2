@@ -59,12 +59,12 @@ function CourseDiscountBadge({ course, courseDiscount, tier }: { course: CourseL
     // Show generic "Members save" message
     const maxDiscount = course.vanguardYearlyDiscount || "25%";
     return (
-      <span className="text-xs text-sf-violet">Members save up to {maxDiscount}</span>
+      <span className="text-xs text-sf-violet-text">Members save up to {maxDiscount}</span>
     );
   }
 
   return (
-    <Badge className="bg-violet-500/6 border border-sf-violet text-sf-violet text-xs">
+    <Badge className="bg-violet-500/6 border border-sf-violet text-sf-violet-text text-xs">
       {courseDiscount} off
     </Badge>
   );

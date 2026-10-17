@@ -128,7 +128,7 @@ const SECTIONS: Section[] = [
 // ─── Zone Color Helper ──────────────────────────────────────────────
 
 const ZONE_BADGE_STYLES: Record<string, string> = {
-  "#E74C3C": "bg-red-500/20 text-sf-crimson border-sf-crimson",
+  "#E74C3C": "bg-red-500/20 text-sf-crimson-text border-sf-crimson",
   "#FFA500": "bg-orange-500/20 text-orange-400 border-sf-amber",
   "#2ECC71": "bg-emerald-500/20 text-sf-emerald border-sf-emerald",
   "#4D9FFF": "bg-blue-500/20 text-blue-400 border-sf-azure",
@@ -884,7 +884,7 @@ const HabitableZoneCalculator = () => {
                       <button
                         type="button"
                         onClick={() => setAdditionalPlanets((prev) => prev.filter((_, j) => j !== i))}
-                        className="text-xs text-sf-crimson/60 hover:text-sf-crimson transition-colors ml-auto"
+                        className="text-xs text-sf-crimson-text hover:text-sf-crimson-text transition-colors ml-auto"
                       >
                         ×
                       </button>

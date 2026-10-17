@@ -303,7 +303,7 @@ function TemplateDetailEditor({
             variant="ghost"
             size="sm"
             onClick={onDelete}
-            className="text-xs text-t4 hover:text-sf-crimson"
+            className="text-xs text-t4 hover:text-sf-crimson-text"
           >
             <Trash2 className="w-3.5 h-3.5 mr-1.5" />
             Delete template

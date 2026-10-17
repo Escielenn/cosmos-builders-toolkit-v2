@@ -351,7 +351,7 @@ const Pricing = () => {
             ) : isVanguard ? (
               <div className="space-y-3">
                 <div className="p-3 rounded-sm bg-violet-500/10 text-center">
-                  <p className="text-sm font-medium text-sf-violet">
+                  <p className="text-sm font-medium text-sf-violet-text">
                     Vanguard active ({subscription?.plan_type})
                   </p>
                 </div>

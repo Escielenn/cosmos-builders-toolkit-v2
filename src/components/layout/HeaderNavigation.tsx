@@ -39,7 +39,7 @@ const NAV_CATEGORIES: NavCategory[] = [
   { id: "worlds", label: "Worlds", icon: Globe, color: "text-blue-400" },
   { id: "life", label: "Life", icon: Leaf, color: "text-sf-emerald" },
   { id: "travel", label: "Travel & Spacecraft", icon: Rocket, color: "text-orange-400" },
-  { id: "civilizations", label: "Civilizations", icon: Users, color: "text-sf-violet" },
+  { id: "civilizations", label: "Civilizations", icon: Users, color: "text-sf-violet-text" },
   { id: "mythology", label: "Mythology", icon: ScrollText, color: "text-blue-300" },
   { id: "integration", label: "Integration", icon: Layers, color: "text-teal-400" },
 ];

@@ -28,10 +28,10 @@ const tagVariants = cva(
         teal: "bg-sf-teal/[0.06] border-sf-teal text-sf-teal",
         amber: "bg-sf-amber/[0.06] border-sf-amber text-sf-amber",
         azure: "bg-sf-azure/[0.06] border-sf-azure text-sf-azure",
-        violet: "bg-sf-violet/[0.06] border-sf-violet text-sf-violet",
+        violet: "bg-sf-violet/[0.06] border-sf-violet text-sf-violet-text",
         emerald: "bg-sf-emerald/[0.06] border-sf-emerald text-sf-emerald",
-        stellar: "bg-sf-stellar/[0.06] border-sf-stellar text-sf-stellar",
-        crimson: "bg-sf-crimson/[0.06] border-sf-crimson text-sf-crimson",
+        stellar: "bg-sf-stellar/[0.06] border-sf-stellar text-sf-stellar-text",
+        crimson: "bg-sf-crimson/[0.06] border-sf-crimson text-sf-crimson-text",
       },
     },
     defaultVariants: {

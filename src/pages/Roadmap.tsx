@@ -32,7 +32,7 @@ const STATUS_CONFIG: Record<string, { label: string; className: string }> = {
   },
   beta: {
     label: "BETA",
-    className: "bg-violet-500/6 border-sf-violet text-sf-violet",
+    className: "bg-violet-500/6 border-sf-violet text-sf-violet-text",
   },
   released: {
     label: "RELEASED",
@@ -55,7 +55,7 @@ function VoteBudgetBar({ used, remaining, max }: { used: number; remaining: numb
         <span className="text-xs font-medium uppercase tracking-[1.5px] text-t3">
           VOTE BUDGET
         </span>
-        <span className="font-mono text-sm text-sf-violet">
+        <span className="font-mono text-sm text-sf-violet-text">
           {remaining}/{max} <span className="text-t4">remaining</span>
         </span>
       </div>
@@ -166,7 +166,7 @@ function RoadmapCard({ item, canVote }: { item: RoadmapItem; canVote: boolean })
             <Button
               variant="ghost"
               size="sm"
-              className="gap-1 text-t4 hover:text-sf-crimson ml-auto"
+              className="gap-1 text-t4 hover:text-sf-crimson-text ml-auto"
               onClick={handleRemoveVote}
               disabled={removeVote.isPending}
             >

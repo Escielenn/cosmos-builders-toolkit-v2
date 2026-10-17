@@ -263,7 +263,7 @@ const Header = () => {
             <Button
               variant="outline"
               size="sm"
-              className="hidden sm:inline-flex gap-1.5 border-sf-violet text-sf-violet hover:bg-sf-violet/[0.08] rounded-none"
+              className="hidden sm:inline-flex gap-1.5 border-sf-violet text-sf-violet-text hover:bg-sf-violet/[0.08] rounded-none"
               onClick={() => navigate("/pricing")}
             >
               <Sparkles className="w-3.5 h-3.5" />
@@ -282,12 +282,12 @@ const Header = () => {
                     {profile?.display_name || user.email?.split("@")[0]}
                   </span>
                   {isVanguard ? (
-                    <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-sf-tag font-mono text-[12px] uppercase tracking-[0.10em] bg-sf-violet/[0.06] border border-sf-violet text-sf-violet sf-shimmer-violet relative z-[1]">
+                    <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-sf-tag font-mono text-[12px] uppercase tracking-[0.10em] bg-sf-violet/[0.06] border border-sf-violet text-sf-violet-text sf-shimmer-violet relative z-[1]">
                       <Sparkles className="w-3 h-3" />
                       Vanguard
                     </span>
                   ) : isSubscribed ? (
-                    <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-sf-tag font-mono text-[12px] uppercase tracking-[0.10em] bg-sf-violet/[0.06] border border-sf-violet text-sf-violet sf-shimmer relative z-[1]">
+                    <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-sf-tag font-mono text-[12px] uppercase tracking-[0.10em] bg-sf-violet/[0.06] border border-sf-violet text-sf-violet-text sf-shimmer relative z-[1]">
                       <Zap className="w-3 h-3" />
                       Pro
                     </span>
@@ -344,7 +344,7 @@ const Header = () => {
                   Export Settings
                 </DropdownMenuItem>
                 {isVanguard ? (
-                  <DropdownMenuItem onClick={() => navigate("/pricing")} className="text-sf-violet">
+                  <DropdownMenuItem onClick={() => navigate("/pricing")} className="text-sf-violet-text">
                     <Sparkles className="w-4 h-4 mr-2 text-sf-violet" />
                     Manage Vanguard
                   </DropdownMenuItem>

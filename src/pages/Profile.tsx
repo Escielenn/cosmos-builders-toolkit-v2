@@ -282,7 +282,7 @@ const Profile = () => {
               {subscription.status === 'past_due' && (
                 <div className="p-3 rounded-none bg-red-500/10 border border-sf-crimson flex items-center gap-2">
                   <AlertCircle className="w-5 h-5 text-sf-crimson" />
-                  <p className="text-sm text-red-600 dark:text-sf-crimson">
+                  <p className="text-sm text-red-600 dark:text-sf-crimson-text">
                     Payment failed. Update payment method to restore access.
                   </p>
                 </div>

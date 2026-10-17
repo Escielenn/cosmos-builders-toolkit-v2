@@ -56,7 +56,7 @@ class ErrorBoundary extends Component<Props, State> {
                 aria-hidden
               />
 
-              <p className="font-mono text-[12px] tracking-[0.18em] text-sf-crimson uppercase mb-3">
+              <p className="font-mono text-[12px] tracking-[0.18em] text-sf-crimson-text uppercase mb-3">
                 // STATUS: FAULT
               </p>
               <h1 className="font-display text-3xl md:text-4xl font-light uppercase tracking-sf-title text-t1 mb-4">

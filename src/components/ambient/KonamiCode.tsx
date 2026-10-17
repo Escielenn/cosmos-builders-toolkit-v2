@@ -73,7 +73,7 @@ export function KonamiCode() {
           </div>
           <button
             onClick={() => setOpen(false)}
-            className="font-mono text-[12px] tracking-[0.2em] uppercase text-t3 hover:text-sf-crimson transition-colors duration-base px-3 py-1 border border-sf-line"
+            className="font-mono text-[12px] tracking-[0.2em] uppercase text-t3 hover:text-sf-crimson-text transition-colors duration-base px-3 py-1 border border-sf-line"
           >
             [ESC] CLOSE
           </button>

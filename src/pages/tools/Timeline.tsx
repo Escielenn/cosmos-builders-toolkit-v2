@@ -718,7 +718,7 @@ class TimelineErrorBoundary extends Component<
         <PageShell>
           <main className="container mx-auto px-4 pt-24 pb-16">
             <GlassPanel className="p-8 text-center">
-              <h2 className="text-xl font-medium text-sf-crimson mb-4">
+              <h2 className="text-xl font-medium text-sf-crimson-text mb-4">
                 Timeline failed to render
               </h2>
               <pre className="text-left text-sm bg-muted/30 p-4 rounded-none overflow-auto max-h-64 mb-4">
