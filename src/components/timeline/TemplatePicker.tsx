@@ -41,10 +41,10 @@ const CATEGORY_LABELS: Record<TemplateCategory, string> = {
 };
 
 const CATEGORY_COLORS: Record<TemplateCategory, string> = {
-  civilization: "bg-blue-500/20 text-blue-400 border-blue-500/30",
-  character: "bg-violet-500/20 text-sf-violet border-violet-500/30",
-  conflict: "bg-red-500/20 text-sf-crimson border-red-500/30",
-  exploration: "bg-emerald-500/20 text-sf-emerald border-emerald-500/30",
+  civilization: "bg-blue-500/20 text-blue-400 border-sf-azure",
+  character: "bg-violet-500/20 text-sf-violet-text border-sf-violet",
+  conflict: "bg-red-500/20 text-sf-crimson-text border-sf-crimson",
+  exploration: "bg-emerald-500/20 text-sf-emerald border-sf-emerald",
 };
 
 interface TemplatePickerProps {
@@ -140,14 +140,14 @@ const TemplatePicker = ({
       }
       onOpenChange(v);
     }}>
-      <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
+      <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto sf-sb">
         <DialogHeader>
           <DialogTitle>Timeline Templates</DialogTitle>
         </DialogHeader>
 
         {confirming && confirmedTemplate ? (
           <div className="space-y-4 pt-2">
-            <p className="text-sm text-t3">
+            <p className="text-sm text-t2">
               Applying <span className="font-medium text-t1">{confirmedTemplate.name}</span> will
               replace your current tracks, events, and links. This cannot be undone.
             </p>

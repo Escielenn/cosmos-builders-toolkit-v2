@@ -16,7 +16,6 @@ import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { useExportPreferences } from "@/hooks/use-export-preferences";
 import { useSubscription } from "@/hooks/use-subscription";
-import { setActiveTheme, resetActiveTheme } from "@/lib/pdf/styles";
 import { EXPORT_THEMES } from "@/lib/export/themes";
 import { cn } from "@/lib/utils";
 import { htmlToPlainText, deepStripHtml } from "@/lib/html-utils";
@@ -165,10 +164,11 @@ const WorldBibleDialog = ({
     try {
       // Dynamic import
       setProgress(15);
-      const [{ pdf }, { WorldBibleTemplate }] =
+      const [{ pdf }, { WorldBibleTemplate }, { setActiveTheme, resetActiveTheme }] =
         await Promise.all([
           import("@react-pdf/renderer"),
           import("@/lib/pdf/templates/world-bible"),
+          import("@/lib/pdf/styles"),
         ]);
 
       setProgress(30);
@@ -231,7 +231,7 @@ const WorldBibleDialog = ({
       ).length;
 
       toast({
-        title: "World Bible exported",
+        title: "WORLD BIBLE EXPORTED.",
         description: `Generated ${sectionCount} section${sectionCount !== 1 ? "s" : ""} with wiki prose, connections, and timeline.`,
       });
       onOpenChange(false);
@@ -239,7 +239,7 @@ const WorldBibleDialog = ({
       console.error("World Bible export error:", error);
       const errMsg = error instanceof Error ? error.message : String(error);
       toast({
-        title: "Export failed",
+        title: "EXPORT FAILED.",
         description: errMsg.length > 120 ? errMsg.slice(0, 120) + "..." : errMsg,
         variant: "destructive",
       });
@@ -267,7 +267,7 @@ const WorldBibleDialog = ({
             <Loader />
           </div>
         ) : (
-          <div className="flex-1 overflow-y-auto space-y-4 py-2 pr-1">
+          <div className="flex-1 overflow-y-auto sf-sb space-y-4 py-2 pr-1">
             {/* Structure toggle */}
             <div className="flex items-center gap-1 p-0.5 bg-muted/30 w-fit">
               <button
@@ -417,7 +417,7 @@ const WorldBibleDialog = ({
                   onClick={() => updatePreferences({ themeId: theme.id })}
                   title={theme.name}
                   className={cn(
-                    "flex gap-0.5 p-1.5 rounded-md border transition-all",
+                    "flex gap-0.5 p-1.5 rounded-none border transition-all",
                     isSelected
                       ? "border-primary ring-1 ring-primary/50"
                       : "border-sf-line-interactive hover:border-primary"

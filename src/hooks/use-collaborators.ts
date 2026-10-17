@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { mapError } from "@/lib/ship-voice";
 
 // ---- Types ----
 
@@ -176,10 +177,10 @@ export const useInviteCollaborator = () => {
     },
     onSuccess: ({ worldId }) => {
       queryClient.invalidateQueries({ queryKey: collabKeys.invites(worldId) });
-      toast({ title: "Invite sent", description: "An email invitation has been sent." });
+      toast({ title: "INVITE SENT.", description: "An email invitation has been sent." });
     },
     onError: (error) => {
-      toast({ title: "Failed to send invite", description: error.message, variant: "destructive" });
+      toast({ title: "FAILED TO SEND INVITE.", description: mapError(error), variant: "destructive" });
     },
   });
 };
@@ -208,10 +209,10 @@ export const useUpdateCollaboratorRole = () => {
     },
     onSuccess: ({ worldId }) => {
       queryClient.invalidateQueries({ queryKey: collabKeys.collaborators(worldId) });
-      toast({ title: "Role updated" });
+      toast({ title: "ROLE UPDATED." });
     },
     onError: (error) => {
-      toast({ title: "Failed to update role", description: error.message, variant: "destructive" });
+      toast({ title: "FAILED TO UPDATE ROLE.", description: mapError(error), variant: "destructive" });
     },
   });
 };
@@ -239,10 +240,10 @@ export const useRemoveCollaborator = () => {
     onSuccess: ({ worldId }) => {
       queryClient.invalidateQueries({ queryKey: collabKeys.collaborators(worldId) });
       queryClient.invalidateQueries({ queryKey: ["sharedWorlds"] });
-      toast({ title: "Collaborator removed" });
+      toast({ title: "COLLABORATOR REMOVED." });
     },
     onError: (error) => {
-      toast({ title: "Failed to remove collaborator", description: error.message, variant: "destructive" });
+      toast({ title: "FAILED TO REMOVE COLLABORATOR.", description: mapError(error), variant: "destructive" });
     },
   });
 };
@@ -269,10 +270,10 @@ export const useCancelInvite = () => {
     },
     onSuccess: ({ worldId }) => {
       queryClient.invalidateQueries({ queryKey: collabKeys.invites(worldId) });
-      toast({ title: "Invite cancelled" });
+      toast({ title: "INVITE CANCELLED." });
     },
     onError: (error) => {
-      toast({ title: "Failed to cancel invite", description: error.message, variant: "destructive" });
+      toast({ title: "FAILED TO CANCEL INVITE.", description: mapError(error), variant: "destructive" });
     },
   });
 };
@@ -301,10 +302,10 @@ export const useResendInvite = () => {
       });
     },
     onSuccess: () => {
-      toast({ title: "Invite resent", description: "The invitation email has been sent again." });
+      toast({ title: "INVITE RESENT.", description: "The invitation email has been sent again." });
     },
     onError: (error) => {
-      toast({ title: "Failed to resend invite", description: error.message, variant: "destructive" });
+      toast({ title: "FAILED TO RESEND INVITE.", description: mapError(error), variant: "destructive" });
     },
   });
 };
@@ -328,10 +329,10 @@ export const useAcceptInvite = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["sharedWorlds"] });
-      toast({ title: "Invite accepted", description: "You now have access to this world." });
+      toast({ title: "INVITE ACCEPTED.", description: "You now have access to this world." });
     },
     onError: (error) => {
-      toast({ title: "Failed to accept invite", description: error.message, variant: "destructive" });
+      toast({ title: "FAILED TO ACCEPT INVITE.", description: mapError(error), variant: "destructive" });
     },
   });
 };
@@ -388,10 +389,10 @@ export const useLeaveWorld = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["sharedWorlds"] });
-      toast({ title: "Left world", description: "You no longer have access to this world." });
+      toast({ title: "LEFT WORLD.", description: "You no longer have access to this world." });
     },
     onError: (error) => {
-      toast({ title: "Failed to leave world", description: error.message, variant: "destructive" });
+      toast({ title: "FAILED TO LEAVE WORLD.", description: mapError(error), variant: "destructive" });
     },
   });
 };

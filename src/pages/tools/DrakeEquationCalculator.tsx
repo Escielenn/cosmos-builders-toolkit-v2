@@ -36,6 +36,7 @@ import { DrakeSummaryTemplate, DrakeFullReportTemplate } from "@/lib/pdf/templat
 import { Json } from "@/integrations/supabase/types";
 import { useEntityMatch } from "@/hooks/use-entity-match";
 import EntityMatchDialog from "@/components/tools/EntityMatchDialog";
+import { writeStandaloneBackup } from "@/lib/standalone-backup";
 
 // Section definitions for navigation
 const SECTIONS: Section[] = [
@@ -330,7 +331,7 @@ const DrakeEquationCalculator = () => {
     };
     return {
       label: "Teeming",
-      color: "text-sf-crimson",
+      color: "text-sf-crimson-text",
       description: "A galaxy full of life. Civilizations bump into each other regularly. Think Star Trek or Star Wars. The Fermi Paradox becomes very pressing."
     };
   };
@@ -408,7 +409,7 @@ const DrakeEquationCalculator = () => {
         }
         setLastSavedToCloud(new Date(existingWorksheet.updated_at));
         toast({
-          title: "Worksheet Loaded",
+          title: "WORKSHEET LOADED.",
           description: "WORK RESTORED FROM CLOUD.",
         });
       } catch (e) {
@@ -417,13 +418,16 @@ const DrakeEquationCalculator = () => {
     }
   }, [existingWorksheet]);
 
-  // Auto-save to localStorage
+  // Auto-save to localStorage (standalone mode only)
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(formState));
+      writeStandaloneBackup(LOCAL_STORAGE_KEY, formState, { worldId, signedIn: !!user });
       setHasUnsavedChanges(true);
     }, 500);
     return () => clearTimeout(timeoutId);
+    // worldId/user are read from the same render as formState; re-running on
+    // auth or world changes alone would flag unsaved changes spuriously.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formState]);
 
   // Update a single value
@@ -464,8 +468,8 @@ const DrakeEquationCalculator = () => {
 
   // Save to cloud
   const handleSave = async () => {
-    // Always save to localStorage as backup
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(formState));
+    // Browser backup in standalone mode only (see lib/standalone-backup)
+    writeStandaloneBackup(LOCAL_STORAGE_KEY, formState, { worldId, signedIn: !!user });
 
     // If we have a worldId and user is authenticated, save to Supabase
     if (worldId && user) {
@@ -496,7 +500,7 @@ const DrakeEquationCalculator = () => {
       }
     } else {
       toast({
-        title: "Draft Saved",
+        title: "DRAFT SAVED.",
         description: "WORK SECURED TO LOCAL STORAGE.",
       });
     }
@@ -615,7 +619,7 @@ const DrakeEquationCalculator = () => {
               N = R* × f<sub>p</sub> × n<sub>e</sub> × f<sub>l</sub> × f<sub>i</sub> × f<sub>c</sub> × L
             </div>
 
-            <p className="text-sm text-t3">
+            <p className="text-sm text-t2">
               Each variable represents a step from star formation to detectable civilization.
               Adjust the sliders below to explore different scenarios for your world.
             </p>
@@ -648,7 +652,7 @@ const DrakeEquationCalculator = () => {
                         </TooltipContent>
                       </Tooltip>
                     </div>
-                    <p className="text-sm text-t3 mb-2">{variable.description}</p>
+                    <p className="text-sm text-t2 mb-2">{variable.description}</p>
                   </div>
                   <div className="text-right min-w-[100px]">
                     <span className="text-2xl font-mono font-medium text-primary">
@@ -723,7 +727,7 @@ const DrakeEquationCalculator = () => {
 
             <div className="mt-8 bg-accent/20 rounded-none p-4 text-left">
               <h4 className="font-medium mb-2">The Equation</h4>
-              <div className="font-mono text-sm overflow-x-auto">
+              <div className="font-mono text-sm overflow-x-auto sf-sb">
                 N = {formState.values.rStar} × {formState.values.fp} × {formState.values.ne} × {formState.values.fl} × {formState.values.fi} × {formState.values.fc} × {formatNumber(formState.values.L)}
               </div>
               <div className="font-mono text-sm mt-1 text-primary">
@@ -769,7 +773,7 @@ const DrakeEquationCalculator = () => {
                             width: `${barWidth}%`,
                             transform: 'translateX(-50%)',
                             background: `linear-gradient(90deg, rgba(21,193,123,0.1), rgba(21,193,123,${0.12 + (1 - i / 7) * 0.3}), rgba(21,193,123,0.1))`,
-                            border: '1px solid rgba(21,193,123,0.12)',
+                            border: '1px solid var(--sf-line)',
                           }}
                         />
                       </div>
@@ -813,10 +817,10 @@ const DrakeEquationCalculator = () => {
           <div className="space-y-6">
             <div>
               <Label className="text-base font-medium">Your Answer to the Fermi Paradox</Label>
-              <p className="text-sm text-t3 mb-2">
+              <p className="text-sm text-t2 mb-2">
                 If your N is high but your galaxy seems empty, why? If N is low, what does that mean for your characters?
               </p>
-              <Suspense fallback={<div className="h-24 rounded-md bg-accent/10 animate-pulse" />}>
+              <Suspense fallback={<div className="h-24 rounded-none bg-accent/10 animate-pulse" />}>
                 <RichTextEditor
                   content={formState.worldbuilding.fermiAnswer}
                   onChange={(html) => updateWorldbuilding("fermiAnswer", html)}
@@ -827,10 +831,10 @@ const DrakeEquationCalculator = () => {
 
             <div>
               <Label className="text-base font-medium">Where Is the Great Filter?</Label>
-              <p className="text-sm text-t3 mb-2">
+              <p className="text-sm text-t2 mb-2">
                 Which step is hardest to pass? This shapes whether your ruins are biological or technological.
               </p>
-              <Suspense fallback={<div className="h-24 rounded-md bg-accent/10 animate-pulse" />}>
+              <Suspense fallback={<div className="h-24 rounded-none bg-accent/10 animate-pulse" />}>
                 <RichTextEditor
                   content={formState.worldbuilding.greatFilterLocation}
                   onChange={(html) => updateWorldbuilding("greatFilterLocation", html)}
@@ -841,10 +845,10 @@ const DrakeEquationCalculator = () => {
 
             <div>
               <Label className="text-base font-medium">Character of Your Galaxy</Label>
-              <p className="text-sm text-t3 mb-2">
+              <p className="text-sm text-t2 mb-2">
                 Based on your N, what's the general feel of space travel in your world?
               </p>
-              <Suspense fallback={<div className="h-24 rounded-md bg-accent/10 animate-pulse" />}>
+              <Suspense fallback={<div className="h-24 rounded-none bg-accent/10 animate-pulse" />}>
                 <RichTextEditor
                   content={formState.worldbuilding.galaxyCharacter}
                   onChange={(html) => updateWorldbuilding("galaxyCharacter", html)}
@@ -855,10 +859,10 @@ const DrakeEquationCalculator = () => {
 
             <div>
               <Label className="text-base font-medium">Story Implications</Label>
-              <p className="text-sm text-t3 mb-2">
+              <p className="text-sm text-t2 mb-2">
                 What kinds of stories does your galactic population enable or prevent?
               </p>
-              <Suspense fallback={<div className="h-24 rounded-md bg-accent/10 animate-pulse" />}>
+              <Suspense fallback={<div className="h-24 rounded-none bg-accent/10 animate-pulse" />}>
                 <RichTextEditor
                   content={formState.worldbuilding.storyImplications}
                   onChange={(html) => updateWorldbuilding("storyImplications", html)}
@@ -869,10 +873,10 @@ const DrakeEquationCalculator = () => {
 
             <div>
               <Label className="text-base font-medium">Types of Civilizations</Label>
-              <p className="text-sm text-t3 mb-2">
+              <p className="text-sm text-t2 mb-2">
                 What kinds of civilizations exist in your galaxy? What are their relationships?
               </p>
-              <Suspense fallback={<div className="h-24 rounded-md bg-accent/10 animate-pulse" />}>
+              <Suspense fallback={<div className="h-24 rounded-none bg-accent/10 animate-pulse" />}>
                 <RichTextEditor
                   content={formState.worldbuilding.civilizationTypes}
                   onChange={(html) => updateWorldbuilding("civilizationTypes", html)}
@@ -890,7 +894,7 @@ const DrakeEquationCalculator = () => {
           icon={<Info className="w-5 h-5 text-primary" />}
           defaultOpen={true}
         >
-          <p className="text-sm text-t3 mb-4">
+          <p className="text-sm text-t2 mb-4">
             Click a preset to load its values. These represent common science fiction scenarios.
           </p>
           <div className="grid gap-4 md:grid-cols-2">
@@ -901,7 +905,7 @@ const DrakeEquationCalculator = () => {
                 onClick={() => applyPreset(preset)}
               >
                 <h4 className="font-medium mb-1">{preset.name}</h4>
-                <p className="text-sm text-t3 mb-2">{preset.description}</p>
+                <p className="text-sm text-t2 mb-2">{preset.description}</p>
                 <div className="flex flex-wrap gap-1">
                   {preset.storyTypes.map((type) => (
                     <Badge key={type} variant="outline" className="text-xs">

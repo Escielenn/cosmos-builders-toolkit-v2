@@ -2,7 +2,12 @@
 import { useCallback, useMemo, useState } from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { CalendarRange, List, Map, Network, Plus, Search, FileText, Filter, X } from "lucide-react";
-import * as LucideIcons from "lucide-react";
+import {
+  BookOpen, CalendarDays, Clock, Cpu, Dna, Expand, Eye, Flag, Flame, Gem,
+  GitBranch, Globe, Grid3x3, Landmark, Languages, Lightbulb, Link as LinkIcon,
+  MapPin, Orbit, PenLine, Radio, Rocket, ScrollText, Shapes, StickyNote, Sun,
+  Swords, Target, User, Weight, Zap, type LucideIcon,
+} from "lucide-react";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -40,9 +45,22 @@ const CODEX_VIEWS: ReadonlyArray<{
   { id: "timeline", label: "Timeline", Icon: CalendarRange },
 ];
 
-function getIconComponent(iconName: string) {
-  const Icon = (LucideIcons as any)[iconName];
-  return Icon || FileText;
+/**
+ * Explicit name -> component map for every icon ENTITY_TYPE_ICONS names.
+ * A namespace import (`import * as LucideIcons`) defeats tree-shaking and
+ * pulled the entire lucide set (~650 KiB) into this route's chunk. Add an
+ * entry here when ENTITY_TYPE_ICONS gains a new icon name; unknown names
+ * fall back to FileText exactly as before.
+ */
+const ENTITY_ICON_COMPONENTS: Record<string, LucideIcon> = {
+  BookOpen, CalendarDays, Clock, Cpu, Dna, Expand, Eye, FileText, Flag, Flame,
+  Gem, GitBranch, Globe, Grid3x3, Landmark, Languages, Lightbulb, Link: LinkIcon,
+  MapPin, Orbit, PenLine, Radio, Rocket, ScrollText, Shapes, StickyNote, Sun,
+  Swords, Target, User, Weight, Zap,
+};
+
+function getIconComponent(iconName: string): LucideIcon {
+  return ENTITY_ICON_COMPONENTS[iconName] ?? FileText;
 }
 
 export default function WikiBrowse() {
@@ -383,7 +401,7 @@ export default function WikiBrowse() {
       {filtered.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 text-center">
           <FileText className="w-8 h-8 text-t4 mb-3" />
-          <p className="text-t3 text-sm mb-1">
+          <p className="text-t2 text-sm mb-1">
             {allEntries.length === 0
               ? "Nothing on file yet"
               : "No entries match your filters"}

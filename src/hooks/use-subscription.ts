@@ -65,7 +65,7 @@ export const useSubscription = () => {
         // The FunctionsHttpError stores the raw Response in .context, body not yet consumed.
         let extractedMessage: string | undefined;
         try {
-          const ctx = (response.error as any).context;
+          const ctx = (response.error as { context?: { json?: () => Promise<{ error?: string }> } }).context;
           if (ctx && typeof ctx.json === 'function') {
             const body = await ctx.json();
             extractedMessage = body?.error;

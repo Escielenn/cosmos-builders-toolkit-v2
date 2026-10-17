@@ -11,8 +11,19 @@ import {
   Building2,
   Scroll,
   AlertTriangle,
+  Link2,
+  Globe,
+  CircleDot,
+  Moon,
+  Orbit,
+  Waves,
+  Sun,
+  Mountain,
+  Leaf,
+  type LucideIcon,
 } from "lucide-react";
 import ToolPageLayout from "@/components/tools/ToolPageLayout";
+
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { StatGrid } from "@/components/ui/stat-grid";
 import { Button } from "@/components/ui/button";
@@ -81,6 +92,21 @@ import type { FormStateForCalc } from "@/lib/surface-gravity/calculations";
 import PlanetSizeComparison from "@/components/tools/PlanetSizeComparison";
 import GravityScaleBar from "@/components/tools/GravityScaleBar";
 import AtmosphericRetentionChart from "@/components/tools/AtmosphericRetentionChart";
+import { writeStandaloneBackup } from "@/lib/standalone-backup";
+
+
+// Preset glyphs (lucide, not emoji). Kept out of lib/surface-gravity/data,
+// which stays React-free for the PDF templates.
+const PRESET_ICONS: Record<string, LucideIcon> = {
+  earth: Globe,
+  mars: CircleDot,
+  moon: Moon,
+  "kepler-442b": Orbit,
+  "kepler-22b": Waves,
+  arrakis: Sun,
+  mesklin: Mountain,
+  pandora: Leaf,
+};
 
 // ─── FormState ───────────────────────────────────────────────────────
 
@@ -299,7 +325,7 @@ const SurfaceGravityCalculator = () => {
         setCurrentWorksheetId(existingWorksheet.id);
         setCurrentWorksheetTitle(existingWorksheet.title);
         if (existingWorksheet.tags) setWorksheetTags(existingWorksheet.tags);
-        toast({ title: "Worksheet Loaded", description: "WORK RESTORED." });
+        toast({ title: "WORKSHEET LOADED.", description: "WORK RESTORED." });
       } catch {
         console.error("Failed to load worksheet data");
       }
@@ -444,8 +470,8 @@ const SurfaceGravityCalculator = () => {
   // ─── Save ──────────────────────────────────────────────────────────
 
   const handleSave = async () => {
-    // Always save to localStorage
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(formState));
+    // Browser backup in standalone mode only (see lib/standalone-backup)
+    writeStandaloneBackup(LOCAL_STORAGE_KEY, formState, { worldId, signedIn: !!user });
 
     if (worldId && user) {
       const wsId = currentWorksheetId || worksheetId;
@@ -465,10 +491,10 @@ const SurfaceGravityCalculator = () => {
         setCurrentWorksheetId(ws.id);
         setCurrentWorksheetTitle(ws.title);
         setSearchParams({ worldId, worksheetId: ws.id });
-        toast({ title: "Created", description: "New worksheet created." });
+        toast({ title: "CREATED.", description: "New worksheet created." });
       }
     } else {
-      toast({ title: "Saved locally", description: "Data saved to this browser." });
+      toast({ title: "SAVED LOCALLY.", description: "Data saved to this browser." });
     }
   };
 
@@ -567,7 +593,7 @@ const SurfaceGravityCalculator = () => {
                     }`}
                   >
                     <div className="flex items-center gap-1.5 mb-1">
-                      <span>{preset.emoji}</span>
+                      {(() => { const Icon = PRESET_ICONS[preset.id] ?? Globe; return <Icon className="w-4 h-4 shrink-0 text-t3" aria-hidden="true" />; })()}
                       <span className="font-medium text-sm">{preset.label}</span>
                     </div>
                     <p className="text-[12px] text-t2 line-clamp-2">{preset.description}</p>
@@ -655,7 +681,8 @@ const SurfaceGravityCalculator = () => {
 
                 {formState.primary.linked && formState.primary.compositionPreset !== "custom" && (
                   <p className="text-xs text-t4 flex items-center gap-1">
-                    🔗 Mass and radius linked via {compositionPreset?.label} composition
+                    <Link2 className="w-3 h-3 shrink-0" aria-hidden="true" />
+                    Mass and radius linked via {compositionPreset?.label} composition
                     <button
                       onClick={() => {
                         updatePrimary("linked", false);
@@ -762,7 +789,7 @@ const SurfaceGravityCalculator = () => {
                         {result.regimeLabel}
                       </Badge>
                       {result.deltaV.gravityLocked && (
-                        <Badge className="bg-sf-crimson/[0.06] text-sf-crimson border-sf-crimson">
+                        <Badge className="bg-sf-crimson/[0.06] text-sf-crimson-text border-sf-crimson">
                           GRAVITY-LOCKED
                         </Badge>
                       )}
@@ -878,7 +905,7 @@ const SurfaceGravityCalculator = () => {
                       {result.deltaV.verdict.label}
                     </Badge>
                   </div>
-                  <p className="text-sm text-t3">{result.deltaV.verdict.description}</p>
+                  <p className="text-sm text-t2">{result.deltaV.verdict.description}</p>
 
                   <div className="grid grid-cols-2 gap-3">
                     <GlassPanel className="p-3">
@@ -946,7 +973,7 @@ const SurfaceGravityCalculator = () => {
                       <h3 className="font-heading text-[12px] font-light uppercase tracking-[3px] text-[hsl(var(--sf-section-green))]">{block.heading}</h3>
 
                       {block.paragraphs.map((p, i) => (
-                        <p key={i} className="text-sm text-t3 leading-relaxed">{p}</p>
+                        <p key={i} className="text-sm text-t2 leading-relaxed">{p}</p>
                       ))}
 
                       {block.prompts.length > 0 && (

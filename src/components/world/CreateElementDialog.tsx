@@ -382,7 +382,7 @@ export default function CreateElementDialog({
               </DialogDescription>
             </DialogHeader>
 
-            <div className="space-y-4 py-4 max-h-[60vh] overflow-y-auto pr-1">
+            <div className="space-y-4 py-4 max-h-[60vh] overflow-y-auto sf-sb pr-1">
               {selectedType === "custom" && !selectedTemplate && (
                 <div className="space-y-2">
                   <Label htmlFor="entity-custom-label">

@@ -76,7 +76,7 @@ const WorldExportDialog = ({
           if (error) {
             console.error("Failed to fetch worksheets:", error);
             toast({
-              title: "Error loading worksheets",
+              title: "ERROR LOADING WORKSHEETS.",
               description: "Could not load worksheets for export.",
               variant: "destructive",
             });
@@ -270,7 +270,7 @@ const WorldExportDialog = ({
         case "notion": {
           if (!isConnected) {
             toast({
-              title: "Notion not connected",
+              title: "NOTION NOT CONNECTED.",
               description: "Connect Notion workspace to proceed.",
               variant: "destructive",
             });
@@ -460,7 +460,7 @@ const WorldExportDialog = ({
                         variant="ghost"
                         size="sm"
                         onClick={disconnect}
-                        className="text-t3 hover:text-sf-crimson flex-shrink-0"
+                        className="text-t3 hover:text-sf-crimson-text flex-shrink-0"
                       >
                         <Unplug className="w-4 h-4 mr-1" />
                         Disconnect
@@ -474,7 +474,7 @@ const WorldExportDialog = ({
                       alt="Notion"
                       className="w-12 h-12 mx-auto opacity-50"
                     />
-                    <p className="text-t3">
+                    <p className="text-t2">
                       Connect your Notion workspace to export worlds directly as pages.
                     </p>
                     <Button onClick={connect} disabled={isConnecting}>
@@ -504,7 +504,7 @@ const WorldExportDialog = ({
             )}
 
             {worksheets.length === 0 && (
-              <p className="text-sm text-t3 text-center py-2">
+              <p className="text-sm text-t2 text-center py-2">
                 This world has no worksheets to export yet.
               </p>
             )}

@@ -25,7 +25,7 @@ const SharedWorksheetView = () => {
         {isLoading && (
           <div className="flex flex-col items-center justify-center py-24">
             <Loader className="mb-4" />
-            <p className="text-sm text-t3">Loading shared worksheet...</p>
+            <p className="text-sm text-t2">Loading shared worksheet...</p>
           </div>
         )}
 
@@ -33,7 +33,7 @@ const SharedWorksheetView = () => {
           <div className="flex flex-col items-center justify-center py-24 text-center">
             <AlertCircle className="w-12 h-12 text-t3 mb-4" />
             <h1 className="font-heading text-2xl font-medium mb-2">Link not available</h1>
-            <p className="text-t3 mb-6 max-w-md">
+            <p className="text-t2 mb-6 max-w-md">
               This share link may have been disabled, expired, or the worksheet may have been deleted.
             </p>
             <Button asChild>
@@ -121,7 +121,7 @@ const SharedWorksheetView = () => {
 
             {/* Footer */}
             <GlassPanel className="p-6 text-center">
-              <p className="text-sm text-t3 mb-3">
+              <p className="text-sm text-t2 mb-3">
                 Built with StellarForge, the science fiction worldbuilding toolkit
               </p>
               <Button size="sm" asChild>

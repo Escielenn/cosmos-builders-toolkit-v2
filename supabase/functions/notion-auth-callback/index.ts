@@ -1,6 +1,7 @@
 import { getCorsHeaders } from '../_shared/cors.ts';
 import { exchangeCodeForToken } from '../_shared/notion.ts';
 import { supabaseAdmin } from '../_shared/supabase.ts';
+import { verifyState, stateSecret } from '../_shared/oauth-state.ts';
 
 // Handles Notion OAuth callback - exchanges code for token
 Deno.serve(async (req) => {
@@ -18,24 +19,13 @@ Deno.serve(async (req) => {
       throw new Error('Missing code or state parameter');
     }
 
-    // Decode and validate state
-    let stateData;
-    try {
-      stateData = JSON.parse(atob(state));
-    } catch {
-      throw new Error('Invalid state parameter');
+    // Verify the signed state (15-minute window). An unsigned or altered
+    // state is rejected, so a forged user id cannot claim this connection.
+    const stateData = await verifyState(state, stateSecret(), 15 * 60 * 1000);
+    if (!stateData) {
+      throw new Error('Authorization expired or invalid. Please try again.');
     }
-
-    const { userId, timestamp } = stateData;
-
-    // Check state is not too old (15 minutes)
-    if (Date.now() - timestamp > 15 * 60 * 1000) {
-      throw new Error('Authorization expired. Please try again.');
-    }
-
-    if (!userId) {
-      throw new Error('Invalid state: missing user ID');
-    }
+    const { userId } = stateData;
 
     // Exchange code for token
     const tokenData = await exchangeCodeForToken(code);
@@ -74,7 +64,7 @@ Deno.serve(async (req) => {
     console.error('Notion auth callback error:', error);
     // Return 200 with error for consistent handling
     return new Response(
-      JSON.stringify({ success: false, error: error.message }),
+      JSON.stringify({ success: false, error: (error as Error).message }),
       { status: 200, headers: { ...cors, 'Content-Type': 'application/json' } }
     );
   }

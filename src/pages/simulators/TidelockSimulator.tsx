@@ -160,7 +160,7 @@ const TidelockSimulator = () => {
   // mechanism as the ?handoff= effect above (STELLARFORGE_LOAD/handoffSeed),
   // sourced from readTidelockSeed's generic predicate lookup instead of a
   // decoded URL payload — Tidelock never learns which tool published the
-  // entity, only reads star.spectral_class / planet.orbital_distance_au /
+  // entity, only reads star.spectral_class / orbit.semi_major_axis /
   // star.luminosity_lsun by name. Skipped entirely when ?handoff= is also
   // present so the two seed sources can't race each other.
   const entitySent = useRef(false);

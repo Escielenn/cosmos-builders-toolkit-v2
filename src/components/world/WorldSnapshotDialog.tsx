@@ -19,6 +19,7 @@ import {
   downloadSnapshotAsJson,
   downloadSnapshotAsZip,
 } from "@/lib/export/world-snapshot";
+import { mapError } from "@/lib/ship-voice";
 
 type SnapshotAction = "download-json" | "download-zip" | "save-version";
 
@@ -76,7 +77,7 @@ const WorldSnapshotDialog = ({
       toast({
         title: "SNAPSHOT FAILED.",
         description:
-          error instanceof Error ? error.message : "Failed to compile snapshot.",
+          mapError(error),
         variant: "destructive",
       });
     } finally {

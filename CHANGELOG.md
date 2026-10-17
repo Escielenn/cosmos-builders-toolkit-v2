@@ -1,5 +1,55 @@
 # StellarForge Changelog
 
+## 0.7404
+Repair pass: security, billing, account data, legibility, data integrity.
+
+Security (live in production 2026-10-17)
+- Three database functions skipped their access check for signed-out
+  callers (a NULL comparison is not a refusal), so anyone with a world's id
+  could read the whole world or write snapshots to it. Guards fixed; EXECUTE
+  revoked from anon on every SECURITY DEFINER function except the two
+  share-link readers.
+- Notion OAuth state is now HMAC-signed; a forged user id is rejected.
+- Contact form rate-limited (5/hour per IP, 2 confirmations/day per address).
+- Users can no longer change their own stripe_customer_id.
+
+Billing
+- Stripe webhook reads both the pre- and post-2025-03 payload shapes, skips
+  duplicate events, and refetches on payment failure instead of
+  hard-setting past_due.
+
+Account data
+- Profile > Your Data: download everything on file as one JSON document,
+  or delete the account (billing stops first; aborts if it cannot).
+- Privacy Policy corrected to match what the code does.
+
+Data integrity
+- Worksheet changes are accepted field by field; worksheet saves no longer
+  rename Codex entities; Propulsion keeps edited benchmarks and offers
+  RECOMPUTE; linking a sim run to an existing entity now records it;
+  Sensorium no longer writes into other tools' worksheets; the browser
+  backup is written only in standalone mode; species and mythology body
+  plans have separate keys; Solaris writes orbit.semi_major_axis.
+
+Legibility and Ship's Voice
+- Focus rings restored app-wide, icon buttons labelled, every toast routed
+  through Ship's Voice and mapError, alpha borders replaced with sf-line
+  tokens, running prose lifted to t2, sf-sb on every scroller, zero radius
+  on panels, stray z-indices slotted, ambient layers gated, emoji removed.
+- Legacy cyan removed from the theme generator: 60 themes (was 70); saved
+  *-cyan themes map to *-teal.
+
+Build and CI
+- Lint 70 errors -> 0 and now blocking; all test files load (50/50,
+  766 tests); Deno tests for edge functions in CI; hex ratchet excludes the
+  generated themes.css (baseline 861); 17 high audit findings -> 5
+  (build-time only, Tailwind 3); first-page JS 680 kB -> 454 kB gzip.
+
+Housekeeping
+- Share image and sitemap added; /dev routes hidden in production; last
+  Chronolog strings renamed; unused dependencies and stray files removed;
+  README, CLAUDE.md design section and Clerk references brought up to date.
+
 ## 0.6802
 Document delete + trash in Studio, and an accessibility pass.
 

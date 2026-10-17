@@ -4,7 +4,7 @@
  * Every combination is pre-solved for contrast (design/themes.py), so this
  * control cannot produce an illegible screen. Base swatches are grouped by
  * mode; the primary row re-renders its swatches in the CURRENT base's solved
- * values, because "cyan on paper" and "cyan on void" are different hexes.
+ * values, because "azure on paper" and "azure on void" are different hexes.
  */
 
 import { Palette } from "lucide-react";
@@ -21,7 +21,6 @@ import {
 
 const PRIMARY_LABEL: Record<string, string> = {
   teal: "Teal",
-  cyan: "Cyan",
   emerald: "Emerald",
   azure: "Azure",
   violet: "Violet",

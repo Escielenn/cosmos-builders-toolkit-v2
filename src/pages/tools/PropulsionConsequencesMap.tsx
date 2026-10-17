@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, lazy, Suspense } from "react";
+import { useState, useEffect, useMemo, useRef, lazy, Suspense } from "react";
 import { useWorldId } from "@/hooks/use-world-id";
 
 const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
@@ -44,6 +44,7 @@ import { useWorlds } from "@/hooks/use-worlds";
 import { useEntityMatch } from "@/hooks/use-entity-match";
 import EntityMatchDialog from "@/components/tools/EntityMatchDialog";
 import { Json } from "@/integrations/supabase/types";
+import { writeStandaloneBackup } from "@/lib/standalone-backup";
 
 // Section definitions for navigation
 const SECTIONS: Section[] = [
@@ -474,7 +475,7 @@ const PropulsionConsequencesMap = () => {
           setWorksheetTags(existingWorksheet.tags);
         }
         toast({
-          title: "Worksheet Loaded",
+          title: "WORKSHEET LOADED.",
           description: "WORK RESTORED FROM CLOUD.",
         });
       } catch {
@@ -575,21 +576,35 @@ const PropulsionConsequencesMap = () => {
     ) as Record<string, string>;
   }, [velocityPercent, accelerationG, isFTL]);
 
-  // Auto-fill benchmark fields when computed values change
+  // Auto-fill benchmark fields when computed values change, but only fields
+  // the writer has not edited. A field counts as edited when it holds a value
+  // that is not the one this page last auto-filled; those are kept and shown
+  // as stale with a RECOMPUTE action instead of being silently overwritten.
+  const lastAutoBenchmarks = useRef<Partial<Record<keyof TravelBenchmark, string>>>({});
   useEffect(() => {
     if (!computedBenchmarks) return;
+    setFormState((prev) => {
+      const next = { ...prev.benchmarks };
+      for (const { key } of BENCHMARK_ROUTES) {
+        const current = prev.benchmarks[key];
+        const userEdited = !!current && current !== lastAutoBenchmarks.current[key];
+        if (!userEdited) next[key] = computedBenchmarks[key];
+      }
+      return { ...prev, benchmarks: next };
+    });
+    lastAutoBenchmarks.current = Object.fromEntries(
+      BENCHMARK_ROUTES.map(({ key }) => [key, computedBenchmarks[key]])
+    ) as Partial<Record<keyof TravelBenchmark, string>>;
+  }, [computedBenchmarks]);
+
+  const recomputeBenchmark = (field: keyof TravelBenchmark) => {
+    if (!computedBenchmarks) return;
+    const value = computedBenchmarks[field];
     setFormState((prev) => ({
       ...prev,
-      benchmarks: {
-        ...prev.benchmarks,
-        earthMars: computedBenchmarks.earthMars,
-        earthJupiter: computedBenchmarks.earthJupiter,
-        earthNeptune: computedBenchmarks.earthNeptune,
-        solAlphaCentauri: computedBenchmarks.solAlphaCentauri,
-        solProximaB: computedBenchmarks.solProximaB,
-      },
+      benchmarks: { ...prev.benchmarks, [field]: value },
     }));
-  }, [computedBenchmarks]);
+  };
 
   const updateSystem = (field: keyof PropulsionSystem, value: string) => {
     setFormState((prev) => ({
@@ -631,8 +646,8 @@ const PropulsionConsequencesMap = () => {
   };
 
   const handleSave = async () => {
-    // Always save to localStorage as backup
-    localStorage.setItem("pcm-worksheet", JSON.stringify(formState));
+    // Browser backup in standalone mode only (see lib/standalone-backup)
+    writeStandaloneBackup("pcm-worksheet", formState, { worldId, signedIn: !!user });
 
     // If we have a worldId and user is authenticated, save to Supabase
     if (worldId && user) {
@@ -658,7 +673,7 @@ const PropulsionConsequencesMap = () => {
       }
     } else {
       toast({
-        title: "Draft Saved",
+        title: "DRAFT SAVED.",
         description: "WORK SECURED TO LOCAL STORAGE.",
       });
     }
@@ -884,16 +899,41 @@ const PropulsionConsequencesMap = () => {
                             <span className="text-sm font-medium">{route.label}</span>
                             <span className="text-xs text-t4">({route.distanceLabel})</span>
                           </div>
-                          <span className="text-sm text-primary font-mono">
-                            {computedBenchmarks[route.key]}
-                          </span>
+                          {formState.benchmarks[route.key] &&
+                          formState.benchmarks[route.key] !== computedBenchmarks[route.key] ? (
+                            <div className="flex items-center gap-3">
+                              <span className="flex flex-col items-end">
+                                <span className="text-sm text-t1 font-mono">
+                                  {formState.benchmarks[route.key]}
+                                </span>
+                                <span className="text-[12px] text-sf-amber-text font-mono">
+                                  {"// STALE. COMPUTED "}
+                                  {computedBenchmarks[route.key]}
+                                </span>
+                              </span>
+                              <Button
+                                type="button"
+                                size="sm"
+                                variant="outline"
+                                onClick={() => recomputeBenchmark(route.key)}
+                                aria-label={`Recompute ${route.label} travel time`}
+                                className="min-h-hit text-[12px]"
+                              >
+                                RECOMPUTE
+                              </Button>
+                            </div>
+                          ) : (
+                            <span className="text-sm text-primary font-mono">
+                              {computedBenchmarks[route.key]}
+                            </span>
+                          )}
                         </div>
                       ))}
                     </div>
                   </>
                 ) : isFTL ? (
                   <div className="p-4 rounded-none bg-accent/10 border border-accent">
-                    <p className="text-sm text-t3 mb-3">
+                    <p className="text-sm text-t2 mb-3">
                       FTL travel times depend on your setting's specific mechanics. Define travel times for key routes:
                     </p>
                     <div className="grid gap-3">
@@ -1584,7 +1624,7 @@ const PropulsionConsequencesMap = () => {
                 
                 <div className="space-y-2">
                   <Label htmlFor="conflict-economic" className="text-xs">Economic Conflicts</Label>
-                  <Suspense fallback={<div className="min-h-[80px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
+                  <Suspense fallback={<div className="min-h-[80px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                     <RichTextEditor
                       content={formState.synthesis.economicConflicts}
                       onChange={(value) => updateSynthesis("economicConflicts", value)}
@@ -1596,7 +1636,7 @@ const PropulsionConsequencesMap = () => {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="conflict-political" className="text-xs">Political Conflicts</Label>
-                  <Suspense fallback={<div className="min-h-[80px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
+                  <Suspense fallback={<div className="min-h-[80px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                     <RichTextEditor
                       content={formState.synthesis.politicalConflicts}
                       onChange={(value) => updateSynthesis("politicalConflicts", value)}
@@ -1608,7 +1648,7 @@ const PropulsionConsequencesMap = () => {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="conflict-social" className="text-xs">Social Conflicts</Label>
-                  <Suspense fallback={<div className="min-h-[80px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
+                  <Suspense fallback={<div className="min-h-[80px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                     <RichTextEditor
                       content={formState.synthesis.socialConflicts}
                       onChange={(value) => updateSynthesis("socialConflicts", value)}
@@ -1639,7 +1679,7 @@ const PropulsionConsequencesMap = () => {
                   </CollapsibleTrigger>
                   <CollapsibleContent>
                     <div className="mt-2 p-4 rounded-none bg-muted/30 space-y-4">
-                      <div className="overflow-x-auto">
+                      <div className="overflow-x-auto sf-sb">
                         <table className="w-full text-sm">
                           <thead>
                             <tr className="border-b border-sf-line-interactive">
@@ -1681,7 +1721,7 @@ const PropulsionConsequencesMap = () => {
                 <p className="text-xs text-t4">
                   Summarize how your travel system shapes your world.
                 </p>
-                <Suspense fallback={<div className="min-h-[120px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
+                <Suspense fallback={<div className="min-h-[120px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                   <RichTextEditor
                     content={formState.synthesis.propulsionThesis}
                     onChange={(value) => updateSynthesis("propulsionThesis", value)}

@@ -78,7 +78,7 @@ const Footer = () => {
                 </div>
               </Link>
             </div>
-            <p className="text-sm text-t3 max-w-xs mb-6">
+            <p className="text-sm text-t2 max-w-xs mb-6">
               Science-first worldbuilding tools for writers, game designers, and
               creators who demand internal consistency.
             </p>

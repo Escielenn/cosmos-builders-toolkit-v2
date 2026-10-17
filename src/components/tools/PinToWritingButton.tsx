@@ -50,7 +50,7 @@ export function PinToWritingButton({
     if (isPinned) {
       removePin(itemId);
       toast({
-        title: "Unpinned",
+        title: "UNPINNED.",
         description: "Removed from Writing Space.",
       });
     } else {
@@ -61,7 +61,7 @@ export function PinToWritingButton({
         content: content.slice(0, 200),
       });
       toast({
-        title: "Pinned to Writing Space",
+        title: "PINNED TO WRITING SPACE.",
         description: `"${title}" will appear in your Writing Space reference panel.`,
       });
     }
@@ -73,7 +73,7 @@ export function PinToWritingButton({
       className={cn(
         "inline-flex items-center gap-1 px-2 py-1 text-[12px] font-sans font-medium uppercase tracking-[1.2px] transition-colors",
         isPinned
-          ? "text-sf-amber hover:text-sf-crimson"
+          ? "text-sf-amber hover:text-sf-crimson-text"
           : "text-t4 hover:text-sf-amber",
         className,
       )}

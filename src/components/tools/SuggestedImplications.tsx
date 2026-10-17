@@ -65,7 +65,7 @@ const SuggestedImplications = ({
                 <h3 className="font-heading font-medium text-sf-amber">
                   Suggested Implications
                 </h3>
-                <p className="text-sm text-t3">
+                <p className="text-sm text-t2">
                   {visibleImplications.length} pattern{visibleImplications.length !== 1 ? "s" : ""} detected from your biology + environment
                 </p>
               </div>
@@ -80,7 +80,7 @@ const SuggestedImplications = ({
 
         <CollapsibleContent>
           <div className="px-4 pb-4 space-y-3">
-            <p className="text-sm text-t3 border-b border-sf-amber pb-3">
+            <p className="text-sm text-t2 border-b border-sf-amber pb-3">
               These "perceived constants" arise from your species' unique biology experiencing their specific environment.
               They suggest how archetypal energy might be channeled in mythology.
             </p>
@@ -157,7 +157,7 @@ const SuggestedImplications = ({
                     {/* Expanded details */}
                     {isExpanded && (
                       <div className="mt-4 pt-4 border-t border-sf-line space-y-4">
-                        <p className="text-sm text-t3">
+                        <p className="text-sm text-t2">
                           {implication.explanation}
                         </p>
 

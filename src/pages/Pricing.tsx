@@ -17,6 +17,7 @@ import { PageBursts } from "@/components/ui/data-burst";
 import { PRICING_BURSTS } from "@/lib/data-bursts";
 import { ParallaxStrips } from "@/components/ambient/ParallaxStrips";
 import { SectionHero } from "@/components/ui/section-hero";
+import { mapError } from "@/lib/ship-voice";
 
 const Pricing = () => {
   const [searchParams] = useSearchParams();
@@ -110,7 +111,7 @@ const Pricing = () => {
     } catch (error) {
       toast({
         title: "OPERATION FAILED.",
-        description: error instanceof Error ? error.message : "Failed to start checkout. Retry when ready.",
+        description: mapError(error),
         variant: "destructive",
       });
     } finally {
@@ -239,7 +240,7 @@ const Pricing = () => {
                 <p className="text-4xl font-light text-t1">${PRICING.pro.monthly.price}</p>
                 <span className="text-lg text-t3">/month</span>
               </div>
-              <p className="text-sm text-t3">or ${PRICING.pro.yearly.price}/year (save {PRICING.pro.yearly.savings})</p>
+              <p className="text-sm text-t2">or ${PRICING.pro.yearly.price}/year (save {PRICING.pro.yearly.savings})</p>
             </div>
 
             <ul className="space-y-3 mb-8">
@@ -279,7 +280,7 @@ const Pricing = () => {
               </div>
             ) : isVanguard ? (
               <div className="p-3 rounded-sm bg-emerald-500/10 text-center">
-                <p className="text-sm text-t3">Included in your Vanguard access</p>
+                <p className="text-sm text-t2">Included in your Vanguard access</p>
               </div>
             ) : (
               <div className="space-y-3">
@@ -328,7 +329,7 @@ const Pricing = () => {
                 <p className="text-4xl font-light text-t1">${PRICING.vanguard.monthly.price}</p>
                 <span className="text-lg text-t3">/month</span>
               </div>
-              <p className="text-sm text-t3">or ${PRICING.vanguard.yearly.price}/year (save {PRICING.vanguard.yearly.savings})</p>
+              <p className="text-sm text-t2">or ${PRICING.vanguard.yearly.price}/year (save {PRICING.vanguard.yearly.savings})</p>
             </div>
 
             <ul className="space-y-3 mb-8">
@@ -350,7 +351,7 @@ const Pricing = () => {
             ) : isVanguard ? (
               <div className="space-y-3">
                 <div className="p-3 rounded-sm bg-violet-500/10 text-center">
-                  <p className="text-sm font-medium text-sf-violet">
+                  <p className="text-sm font-medium text-sf-violet-text">
                     Vanguard active ({subscription?.plan_type})
                   </p>
                 </div>

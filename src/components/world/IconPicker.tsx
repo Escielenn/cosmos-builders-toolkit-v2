@@ -63,7 +63,7 @@ const IconPicker = ({ value, onChange, disabled }: IconPickerProps) => {
           <DialogHeader>
             <DialogTitle className="text-base">Choose an icon</DialogTitle>
           </DialogHeader>
-          <div className="space-y-3 max-h-[65vh] overflow-y-auto pr-1">
+          <div className="space-y-3 max-h-[65vh] overflow-y-auto sf-sb pr-1">
             {ICON_CATEGORIES.map((category) => (
               <div key={category}>
                 <p className="text-xs text-t3 mb-2">{category}</p>
@@ -103,7 +103,7 @@ const IconPicker = ({ value, onChange, disabled }: IconPickerProps) => {
                     title={filename.replace(/^\d+-/, "").replace(/\.svg$/, "")}
                     onClick={() => handleSelect(`/world-pics/${filename}`)}
                     className={cn(
-                      "w-10 h-10 rounded-md p-1 transition-colors overflow-hidden",
+                      "w-10 h-10 rounded-none p-1 transition-colors overflow-hidden",
                       "hover:bg-accent",
                       value === `/world-pics/${filename}` && "ring-2 ring-primary"
                     )}
@@ -118,7 +118,7 @@ const IconPicker = ({ value, onChange, disabled }: IconPickerProps) => {
                 ))}
               </div>
               <button
-                className="w-full mt-2 flex items-center justify-center gap-1.5 text-xs text-primary hover:text-primary transition-colors py-1.5 rounded-md hover:bg-primary/5"
+                className="w-full mt-2 flex items-center justify-center gap-1.5 text-xs text-primary hover:text-primary transition-colors py-1.5 rounded-none hover:bg-primary/5"
                 onClick={() => {
                   setOpen(false);
                   setShowPicPicker(true);

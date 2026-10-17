@@ -121,9 +121,9 @@ const CompressionEditorDialog = ({
             <DialogTitle>Time Compressions</DialogTitle>
           </DialogHeader>
 
-          <div className="space-y-2 max-h-[50vh] overflow-y-auto">
+          <div className="space-y-2 max-h-[50vh] overflow-y-auto sf-sb">
             {state.compressions.length === 0 && (
-              <p className="text-sm text-t3 text-center py-4">
+              <p className="text-sm text-t2 text-center py-4">
                 No compressions yet. Create one to collapse long stretches of uneventful time.
               </p>
             )}
@@ -142,7 +142,7 @@ const CompressionEditorDialog = ({
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="w-7 h-7"
+                    className="w-7 h-7 min-h-hit min-w-hit"
                     onClick={() => handleEdit(comp)}
                     aria-label="Edit compression range"
                   >
@@ -151,7 +151,7 @@ const CompressionEditorDialog = ({
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="w-7 h-7 text-sf-crimson hover:text-sf-crimson"
+                    className="w-7 h-7 text-sf-crimson-text hover:text-sf-crimson-text min-h-hit min-w-hit"
                     onClick={() => handleDelete(comp.id)}
                     aria-label="Delete compression range"
                   >
@@ -221,7 +221,7 @@ const CompressionEditorDialog = ({
                   type="button"
                   onClick={() => setStyle(opt.id)}
                   className={cn(
-                    "px-3 py-2 rounded-md border text-xs font-medium transition-colors text-center",
+                    "px-3 py-2 rounded-none border text-xs font-medium transition-colors text-center",
                     style === opt.id
                       ? "border-primary bg-primary/10 text-t1"
                       : "border-sf-line text-t3 hover:border-sf-line"

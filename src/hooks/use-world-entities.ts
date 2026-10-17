@@ -6,6 +6,7 @@ import type { WorldEntry } from "@/services/world-data";
 import { createEntry, updateEntry } from "@/services/world-entries";
 import { invalidateWorldEntries } from "@/services/entity-graph-keys";
 import type { CreatableEntityType } from "@/lib/entity-config";
+import { mapError } from "@/lib/ship-voice";
 
 // ---------------------------------------------------------------------------
 // Query: all entity-first entries (no tool_source) grouped by type
@@ -106,7 +107,7 @@ export function useCreateEntityEntry(worldId: string | undefined) {
       toast({
         title: "ENTITY CREATION FAILED.",
         description:
-          error instanceof Error ? error.message : "Could not create entity.",
+          mapError(error),
         variant: "destructive",
       });
     },
@@ -140,7 +141,7 @@ export function useUpdateEntityMetadata(worldId: string | undefined) {
       toast({
         title: "UPDATE FAILED.",
         description:
-          error instanceof Error ? error.message : "Could not update entity.",
+          mapError(error),
         variant: "destructive",
       });
     },

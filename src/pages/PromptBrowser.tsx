@@ -39,7 +39,7 @@ import {
 
 const CATEGORY_COLORS: Record<PromptCategory, string> = {
   worldbuilding: "text-blue-400 border-sf-azure bg-blue-400/[0.06]",
-  character: "text-sf-violet border-sf-violet bg-violet-400/[0.06]",
+  character: "text-sf-violet-text border-sf-violet bg-violet-400/[0.06]",
   scene: "text-sf-amber border-sf-amber bg-amber-400/[0.06]",
   dialogue: "text-sf-emerald border-sf-emerald bg-emerald-400/[0.06]",
   theme: "text-sf-primary-text border-sf-primary bg-sf-primary/[0.06]",
@@ -102,7 +102,7 @@ const PromptBrowserPage = () => {
       }
     } catch {
       toast({
-        title: "Could not create entry",
+        title: "COULD NOT CREATE ENTRY.",
         description: "Please try again.",
         variant: "destructive",
       });
@@ -157,7 +157,7 @@ const PromptBrowserPage = () => {
             )}
           </div>
 
-          <p className="text-t3 text-sm mt-3 max-w-2xl leading-relaxed">
+          <p className="text-t2 text-sm mt-3 max-w-2xl leading-relaxed">
             Seven prompts rotate each week, one for every day. Act on them before
             Sunday or they vanish. Each prompt is tuned for science fiction
             worldbuilders at different experience levels.

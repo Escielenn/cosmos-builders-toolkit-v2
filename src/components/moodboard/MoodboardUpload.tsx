@@ -98,21 +98,21 @@ export function MoodboardUpload({
           "relative border-2 border-dashed rounded-none p-6 text-center cursor-pointer transition-colors",
           isDragging
             ? "border-primary bg-primary/10"
-            : "border-sf-line hover:border-primary/50 hover:bg-muted/50",
-          (disabled || isLoading) && "opacity-50 cursor-not-allowed"
+            : "border-sf-line hover:border-primary hover:bg-muted/50",
+          (disabled || isLoading) && "bg-sf-disabled-bg border-sf-disabled-line text-sf-disabled-text cursor-not-allowed"
         )}
       >
         {isLoading ? (
           <div className="flex flex-col items-center gap-2">
             <Loader />
-            <p className="text-sm text-t3">
+            <p className="text-sm text-t2">
               {isUploading ? "Uploading..." : "Adding..."}
             </p>
           </div>
         ) : (
           <div className="flex flex-col items-center gap-2">
             <Upload className="w-8 h-8 text-t3" />
-            <p className="text-sm text-t3">
+            <p className="text-sm text-t2">
               Drag & drop an image here, or click to select
             </p>
             <p className="text-xs text-t3/70">

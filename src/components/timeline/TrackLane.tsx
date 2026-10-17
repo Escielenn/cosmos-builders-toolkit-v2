@@ -168,7 +168,7 @@ const TrackLane = memo(
             {foldTargets.length > 0 && (
               <Popover>
                 <PopoverTrigger asChild>
-                  <Button variant="ghost" size="icon" className="w-5 h-5" title="Fold into...">
+                  <Button variant="ghost" size="icon" className="w-5 h-5" title="Fold into..." aria-label="Fold into another track">
                     <FoldVertical className="w-3 h-3" />
                   </Button>
                 </PopoverTrigger>
@@ -210,7 +210,7 @@ const TrackLane = memo(
             <Button
               variant="ghost"
               size="icon"
-              className="w-5 h-5 text-sf-crimson hover:text-sf-crimson"
+              className="w-5 h-5 text-sf-crimson-text hover:text-sf-crimson-text"
               onClick={() => onDeleteTrack(track.id)}
               aria-label="Delete track"
             >

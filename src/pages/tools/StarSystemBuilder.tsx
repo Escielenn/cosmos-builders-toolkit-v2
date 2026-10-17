@@ -61,6 +61,7 @@ import {
 } from "@/lib/star-system-data";
 import { calcHZBoundaries, luminosityFromMass } from "@/lib/habitable-zone/calculations";
 import StarSystemDiagram from "@/components/tools/StarSystemDiagram";
+import { writeStandaloneBackup } from "@/lib/standalone-backup";
 
 const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
 
@@ -315,7 +316,7 @@ const StarSystemBuilder = () => {
           setWorksheetTags(existingWorksheet.tags);
         }
         toast({
-          title: "Worksheet Loaded",
+          title: "WORKSHEET LOADED.",
           description: "WORK RESTORED FROM CLOUD.",
         });
       } catch {
@@ -511,7 +512,7 @@ const StarSystemBuilder = () => {
   };
 
   const handleSave = async () => {
-    localStorage.setItem("ssb-worksheet", JSON.stringify(formState));
+    writeStandaloneBackup("ssb-worksheet", formState, { worldId, signedIn: !!user });
 
     if (worldId && user) {
       const worksheetData = formState as unknown as Json;
@@ -534,7 +535,7 @@ const StarSystemBuilder = () => {
       }
     } else {
       toast({
-        title: "Draft Saved",
+        title: "DRAFT SAVED.",
         description: "WORK SECURED TO LOCAL STORAGE.",
       });
     }
@@ -672,7 +673,7 @@ const StarSystemBuilder = () => {
 
                 <div className="space-y-3">
                   <Label>Spectral Class</Label>
-                  <p className="text-sm text-t3">
+                  <p className="text-sm text-t2">
                     The star's temperature and color determine habitability, planetary formation, and visual atmosphere.
                   </p>
                   <RadioGroup
@@ -714,7 +715,7 @@ const StarSystemBuilder = () => {
                         </li>
                       ))}
                     </ul>
-                    <p className="text-sm text-t3 mt-3 italic">
+                    <p className="text-sm text-t2 mt-3 italic">
                       {selectedStarClass.worldbuilding}
                     </p>
                   </GlassPanel>
@@ -876,7 +877,7 @@ const StarSystemBuilder = () => {
 
                 <div className="space-y-2">
                   <Label>Configuration Notes</Label>
-                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
+                  <Suspense fallback={<div className="min-h-[100px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                     <RichTextEditor
                       content={formState.configuration.configurationNotes}
                       onChange={(value) => updateConfiguration("configurationNotes", value)}
@@ -909,7 +910,7 @@ const StarSystemBuilder = () => {
                           variant="ghost"
                           size="sm"
                           onClick={() => removeBody(body.id)}
-                          className="text-sf-crimson hover:text-sf-crimson"
+                          className="text-sf-crimson-text hover:text-sf-crimson-text"
                         >
                           <Trash2 className="w-4 h-4" />
                         </Button>
@@ -1111,7 +1112,7 @@ const StarSystemBuilder = () => {
 
                 <div className="space-y-2">
                   <Label>Resonance Notes</Label>
-                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
+                  <Suspense fallback={<div className="min-h-[100px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                     <RichTextEditor
                       content={formState.orbits.resonanceNotes}
                       onChange={(value) => updateOrbits("resonanceNotes", value)}
@@ -1322,7 +1323,7 @@ const StarSystemBuilder = () => {
 
                 <div className="space-y-3">
                   <Label>Habitability Modifiers</Label>
-                  <p className="text-sm text-t3">
+                  <p className="text-sm text-t2">
                     Factors that extend or contract the habitable zone
                   </p>
                   <div className="grid md:grid-cols-2 gap-3">
@@ -1390,7 +1391,7 @@ const StarSystemBuilder = () => {
               <div className="space-y-6">
                 <div className="space-y-2">
                   <Label>System Character</Label>
-                  <p className="text-sm text-t3">
+                  <p className="text-sm text-t2">
                     If this system were a character, what would its personality be?
                   </p>
                   <Textarea
@@ -1403,7 +1404,7 @@ const StarSystemBuilder = () => {
 
                 <div className="space-y-2">
                   <Label>Visual Signature</Label>
-                  <p className="text-sm text-t3">
+                  <p className="text-sm text-t2">
                     What would you see from a ship entering this system?
                   </p>
                   <Textarea
@@ -1482,7 +1483,7 @@ const StarSystemBuilder = () => {
                         <Badge variant="outline" className="text-xs mt-1">
                           {example.configuration}
                         </Badge>
-                        <p className="text-sm text-t3 mt-2">
+                        <p className="text-sm text-t2 mt-2">
                           {example.description}
                         </p>
                         <p className="text-sm text-primary mt-2 italic">
@@ -1506,7 +1507,7 @@ const StarSystemBuilder = () => {
               <div className="space-y-6">
                 <div className="space-y-3">
                   <Label>Consistency Checks</Label>
-                  <p className="text-sm text-t3">
+                  <p className="text-sm text-t2">
                     Verify your system makes physical sense
                   </p>
                   <div className="space-y-2">

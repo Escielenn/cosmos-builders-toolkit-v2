@@ -77,7 +77,7 @@ const CollapsibleSection = ({
           <div className="flex items-center gap-3">
             {/* Numbered badge */}
             {levelNumber !== undefined && (
-              <div className="w-8 h-8 rounded-sm bg-primary/[0.06] border border-primary/[0.15] flex items-center justify-center text-primary font-mono text-sm">
+              <div className="w-8 h-8 rounded-sm bg-primary/[0.06] border border-primary flex items-center justify-center text-primary font-mono text-sm">
                 {levelNumber}
               </div>
             )}

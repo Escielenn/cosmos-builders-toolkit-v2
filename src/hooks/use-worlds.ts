@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import type { WorldTheme } from "@/hooks/use-world";
+import { mapError } from "@/lib/ship-voice";
 
 interface World {
   id: string;
@@ -134,8 +135,8 @@ export const useWorlds = (includeArchived: boolean = false) => {
     },
     onError: (error) => {
       toast({
-        title: "Failed to create world",
-        description: error.message,
+        title: "FAILED TO CREATE WORLD.",
+        description: mapError(error),
         variant: "destructive",
       });
     },
@@ -169,14 +170,14 @@ export const useWorlds = (includeArchived: boolean = false) => {
       queryClient.invalidateQueries({ queryKey: ["world", data.id] });
       queryClient.invalidateQueries({ queryKey: ["worldTags", user?.id] });
       toast({
-        title: "World updated",
+        title: "WORLD UPDATED.",
         description: "Your changes have been saved.",
       });
     },
     onError: (error) => {
       toast({
-        title: "Failed to update world",
-        description: error.message,
+        title: "FAILED TO UPDATE WORLD.",
+        description: mapError(error),
         variant: "destructive",
       });
     },
@@ -200,8 +201,8 @@ export const useWorlds = (includeArchived: boolean = false) => {
     },
     onError: (error) => {
       toast({
-        title: "Failed to archive world",
-        description: error.message,
+        title: "FAILED TO ARCHIVE WORLD.",
+        description: mapError(error),
         variant: "destructive",
       });
     },
@@ -221,14 +222,14 @@ export const useWorlds = (includeArchived: boolean = false) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["worlds"] });
       toast({
-        title: "World restored",
+        title: "WORLD RESTORED.",
         description: "The world has been restored from your archive.",
       });
     },
     onError: (error) => {
       toast({
-        title: "Failed to restore world",
-        description: error.message,
+        title: "FAILED TO RESTORE WORLD.",
+        description: mapError(error),
         variant: "destructive",
       });
     },
@@ -247,14 +248,14 @@ export const useWorlds = (includeArchived: boolean = false) => {
       queryClient.invalidateQueries({ queryKey: ["worlds"] });
       queryClient.invalidateQueries({ queryKey: ["worldTags", user?.id] });
       toast({
-        title: "World deleted",
+        title: "WORLD DELETED.",
         description: "The world has been removed.",
       });
     },
     onError: (error) => {
       toast({
-        title: "Failed to delete world",
-        description: error.message,
+        title: "FAILED TO DELETE WORLD.",
+        description: mapError(error),
         variant: "destructive",
       });
     },

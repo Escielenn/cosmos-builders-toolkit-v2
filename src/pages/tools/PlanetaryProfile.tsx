@@ -52,6 +52,7 @@ import {
   EXOPLANET_EXAMPLES,
   PLANETARY_PROFILE_SECTIONS,
 } from "@/lib/planetary-profile-data";
+import { writeStandaloneBackup } from "@/lib/standalone-backup";
 
 const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
 
@@ -330,7 +331,7 @@ const PlanetaryProfile = () => {
           setWorksheetTags(existingWorksheet.tags);
         }
         toast({
-          title: "Worksheet Loaded",
+          title: "WORKSHEET LOADED.",
           description: "WORK RESTORED FROM CLOUD.",
         });
       } catch {
@@ -467,8 +468,8 @@ const PlanetaryProfile = () => {
   };
 
   const handleSave = async () => {
-    // Always save to localStorage as backup
-    localStorage.setItem("planetary-profile", JSON.stringify(formState));
+    // Browser backup in standalone mode only (see lib/standalone-backup)
+    writeStandaloneBackup("planetary-profile", formState, { worldId, signedIn: !!user });
 
     // If we have a worldId and user is authenticated, save to Supabase
     if (worldId && user) {
@@ -490,7 +491,7 @@ const PlanetaryProfile = () => {
       }
     } else {
       toast({
-        title: "Draft Saved",
+        title: "DRAFT SAVED.",
         description: "WORK SECURED TO LOCAL STORAGE.",
       });
     }
@@ -743,7 +744,7 @@ const PlanetaryProfile = () => {
                   <li>What does the sky look like? What color is sunlight?</li>
                   <li>How does the star's lifetime affect your civilization's perspective?</li>
                 </ul>
-                <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
+                <Suspense fallback={<div className="min-h-[100px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                   <RichTextEditor
                     content={formState.stellarEnvironment.starTypeNotes}
                     onChange={(value) => updateStellarEnvironment("starTypeNotes", value)}
@@ -844,7 +845,7 @@ const PlanetaryProfile = () => {
                   <li>Where do settlements cluster? (Terminator zone?)</li>
                   <li>How does this affect weather, culture, psychology?</li>
                 </ul>
-                <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
+                <Suspense fallback={<div className="min-h-[100px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                   <RichTextEditor
                     content={formState.stellarEnvironment.tidalLockingNotes}
                     onChange={(value) => updateStellarEnvironment("tidalLockingNotes", value)}
@@ -1096,7 +1097,7 @@ const PlanetaryProfile = () => {
                   <li>Are there unique water features (tides, currents, underground rivers)?</li>
                   <li>What role does water play in culture and conflict?</li>
                 </ul>
-                <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
+                <Suspense fallback={<div className="min-h-[100px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                   <RichTextEditor
                     content={formState.hydrosphere.hydrosphereNotes}
                     onChange={(value) => updateHydrosphere("hydrosphereNotes", value)}
@@ -1158,7 +1159,7 @@ const PlanetaryProfile = () => {
                   <li>What technologies are required?</li>
                   <li>How does temperature affect daily rhythms?</li>
                 </ul>
-                <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
+                <Suspense fallback={<div className="min-h-[100px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                   <RichTextEditor
                     content={formState.temperatureProfile.temperatureNotes}
                     onChange={(value) => updateTemperatureProfile("temperatureNotes", value)}
@@ -1246,7 +1247,7 @@ const PlanetaryProfile = () => {
                   <li>What technologies are essential?</li>
                   <li>What cultural practices emerged from adaptation?</li>
                 </ul>
-                <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
+                <Suspense fallback={<div className="min-h-[100px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                   <RichTextEditor
                     content={formState.habitability.adaptationNotes}
                     onChange={(value) => updateHabitability("adaptationNotes", value)}
@@ -1360,7 +1361,7 @@ const PlanetaryProfile = () => {
           >
             <div className="space-y-6">
               <div className="p-4 rounded-none bg-accent/10 border border-accent">
-                <p className="text-sm text-t3">
+                <p className="text-sm text-t2">
                   <strong className="text-accent">The Three Pressures Framework:</strong> Every environment exerts three types of pressure on its inhabitants, survival pressure (physical challenges), social pressure (how environment shapes society), and psychological pressure (mental and emotional effects).
                 </p>
               </div>
@@ -1696,7 +1697,7 @@ const PlanetaryProfile = () => {
                   <li>Are there handwaves or soft-SF elements?</li>
                   <li>What aspects need more research or development?</li>
                 </ul>
-                <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
+                <Suspense fallback={<div className="min-h-[100px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                   <RichTextEditor
                     content={formState.consistencyCheck.consistencyNotes}
                     onChange={(value) => updateConsistencyCheck("consistencyNotes", value)}

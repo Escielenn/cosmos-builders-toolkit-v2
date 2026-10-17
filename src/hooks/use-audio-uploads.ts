@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import type { AudioTrack } from "@/lib/audio/types";
+import { mapError } from "@/lib/ship-voice";
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -97,7 +98,7 @@ export function useUserAudioTracks() {
       if (!user) return [];
 
       const { data, error } = await supabase
-        .from("user_audio_tracks" as any)
+        .from("user_audio_tracks")
         .select("*")
         .eq("user_id", user.id)
         .order("created_at", { ascending: false });
@@ -156,7 +157,7 @@ export function useUploadAudioTrack() {
       const trackTitle = title?.trim() || file.name.replace(/\.[^.]+$/, "");
 
       const { data, error } = await supabase
-        .from("user_audio_tracks" as any)
+        .from("user_audio_tracks")
         .insert({
           user_id: user.id,
           title: trackTitle,
@@ -166,7 +167,7 @@ export function useUploadAudioTrack() {
           duration_seconds: durationSeconds,
           file_size_bytes: file.size,
           mime_type: file.type || `audio/${ext}`,
-        } as any)
+        })
         .select()
         .single();
 
@@ -180,7 +181,7 @@ export function useUploadAudioTrack() {
     onError: (err) => {
       toast({
         title: "UPLOAD FAILED.",
-        description: err instanceof Error ? err.message : "Unknown error",
+        description: mapError(err),
         variant: "destructive",
       });
     },
@@ -207,7 +208,7 @@ export function useDeleteAudioTrack() {
 
       // Delete metadata
       const { error } = await supabase
-        .from("user_audio_tracks" as any)
+        .from("user_audio_tracks")
         .delete()
         .eq("id", trackId);
 
@@ -220,7 +221,7 @@ export function useDeleteAudioTrack() {
     onError: (err) => {
       toast({
         title: "DELETE FAILED.",
-        description: err instanceof Error ? err.message : "Unknown error",
+        description: mapError(err),
         variant: "destructive",
       });
     },

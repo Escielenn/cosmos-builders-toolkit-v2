@@ -9,6 +9,7 @@ import { maybeSnapshotWorld } from "@/lib/export/world-snapshot";
 import { createDraftWikiPage } from "@/services/world-entries";
 import { getLayerForTool } from "@/services/world-data";
 import { syncWorksheetToEntity } from "@/services/entity-sync";
+import { mapError } from "@/lib/ship-voice";
 
 interface Worksheet {
   id: string;
@@ -121,7 +122,7 @@ export const useWorksheets = (worldId: string | undefined, includeArchived: bool
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["worksheets", worldId] });
       toast({
-        title: "Worksheet saved",
+        title: "WORKSHEET SAVED.",
         description: "WORK SECURED TO CLOUD STORAGE.",
       });
       // Non-blocking auto-snapshot (rate-limited to every 15 min)
@@ -148,8 +149,8 @@ export const useWorksheets = (worldId: string | undefined, includeArchived: bool
     },
     onError: (error) => {
       toast({
-        title: "Failed to save worksheet",
-        description: error.message,
+        title: "FAILED TO SAVE WORKSHEET.",
+        description: mapError(error),
         variant: "destructive",
       });
     },
@@ -177,7 +178,7 @@ export const useWorksheets = (worldId: string | undefined, includeArchived: bool
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["worksheets", worldId] });
       toast({
-        title: "Worksheet updated",
+        title: "WORKSHEET UPDATED.",
         description: "Your changes have been saved.",
       });
       // Non-blocking auto-snapshot (rate-limited to every 15 min)
@@ -211,8 +212,8 @@ export const useWorksheets = (worldId: string | undefined, includeArchived: bool
     },
     onError: (error) => {
       toast({
-        title: "Failed to update worksheet",
-        description: error.message,
+        title: "FAILED TO UPDATE WORKSHEET.",
+        description: mapError(error),
         variant: "destructive",
       });
     },
@@ -230,14 +231,14 @@ export const useWorksheets = (worldId: string | undefined, includeArchived: bool
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["worksheets"] });
       toast({
-        title: "Worksheet deleted",
+        title: "WORKSHEET DELETED.",
         description: "The worksheet has been removed.",
       });
     },
     onError: (error) => {
       toast({
-        title: "Failed to delete worksheet",
-        description: error.message,
+        title: "FAILED TO DELETE WORKSHEET.",
+        description: mapError(error),
         variant: "destructive",
       });
     },
@@ -261,8 +262,8 @@ export const useWorksheets = (worldId: string | undefined, includeArchived: bool
     },
     onError: (error) => {
       toast({
-        title: "Failed to archive worksheet",
-        description: error.message,
+        title: "FAILED TO ARCHIVE WORKSHEET.",
+        description: mapError(error),
         variant: "destructive",
       });
     },
@@ -282,14 +283,14 @@ export const useWorksheets = (worldId: string | undefined, includeArchived: bool
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["worksheets"] });
       toast({
-        title: "Worksheet restored",
+        title: "WORKSHEET RESTORED.",
         description: "The worksheet has been restored from your archive.",
       });
     },
     onError: (error) => {
       toast({
-        title: "Failed to restore worksheet",
-        description: error.message,
+        title: "FAILED TO RESTORE WORKSHEET.",
+        description: mapError(error),
         variant: "destructive",
       });
     },
@@ -395,7 +396,7 @@ export const useRenameWorksheet = () => {
       queryClient.invalidateQueries({ queryKey: ["worksheets"] });
       queryClient.invalidateQueries({ queryKey: ["worksheet", data.id] });
       toast({
-        title: "Worksheet renamed",
+        title: "WORKSHEET RENAMED.",
         description: `Renamed to "${data.title}"`,
       });
       // Sync draft wiki page title
@@ -416,8 +417,8 @@ export const useRenameWorksheet = () => {
     },
     onError: (error) => {
       toast({
-        title: "Failed to rename worksheet",
-        description: error.message,
+        title: "FAILED TO RENAME WORKSHEET.",
+        description: mapError(error),
         variant: "destructive",
       });
     },

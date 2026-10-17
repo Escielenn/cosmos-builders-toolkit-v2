@@ -13,6 +13,8 @@
   pointer-events: none;
   z-index: 9999;
   overflow: hidden;
+  /* Ambient dial: children's own opacities multiply through this. */
+  opacity: var(--sf-ambient);
 }
 
 /* --- FILM GRAIN ---

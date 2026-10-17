@@ -58,8 +58,7 @@ import ElementPickerDialog from "@/components/timeline/ElementPickerDialog";
 import FilterBar from "@/components/timeline/FilterBar";
 import CompressionSuggestions from "@/components/timeline/CompressionSuggestions";
 import TemplatePicker from "@/components/timeline/TemplatePicker";
-import TimelineSummaryTemplate from "@/lib/pdf/templates/TimelineSummaryTemplate";
-import TimelineFullReportTemplate from "@/lib/pdf/templates/TimelineFullReportTemplate";
+import { TimelineSummaryTemplate, TimelineFullReportTemplate } from "@/lib/pdf/templates";
 import { captureTimelineAsPNG, downloadBlob } from "@/lib/timeline/visual-export";
 import { useTimelinePresence } from "@/hooks/use-timeline-presence";
 import { useSubscription } from "@/hooks/use-subscription";
@@ -68,6 +67,7 @@ import EntityMatchDialog from "@/components/tools/EntityMatchDialog";
 import PresenceAvatars from "@/components/timeline/PresenceAvatars";
 import { useTimelineKeyboard } from "@/components/timeline/useTimelineKeyboard";
 import { fitAllEvents } from "@/lib/timeline/utils";
+import { writeStandaloneBackup } from "@/lib/standalone-backup";
 
 const TOOL_TYPE = "timeline";
 const LOCAL_STORAGE_KEY = "tl-worksheet";
@@ -189,7 +189,7 @@ const Timeline = () => {
           setWorksheetTags(existingWorksheet.tags);
         }
         toast({
-          title: "Worksheet Loaded",
+          title: "WORKSHEET LOADED.",
           description: "WORK RESTORED FROM CLOUD.",
         });
       } catch {
@@ -265,7 +265,7 @@ const Timeline = () => {
   // ─── Save & Worksheet Handlers ────────────────────────────────────
 
   const handleSave = async () => {
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(state));
+    writeStandaloneBackup(LOCAL_STORAGE_KEY, state, { worldId, signedIn: !!user });
 
     if (worldId && user) {
       const worksheetData = state as unknown as Json;
@@ -286,7 +286,7 @@ const Timeline = () => {
         // Error handled by mutation
       }
     } else {
-      toast({ title: "Draft Saved", description: "WORK SECURED TO LOCAL STORAGE." });
+      toast({ title: "DRAFT SAVED.", description: "WORK SECURED TO LOCAL STORAGE." });
     }
   };
 
@@ -333,10 +333,10 @@ const Timeline = () => {
       const blob = await captureTimelineAsPNG(timelineViewRef.current);
       const filename = `${currentWorksheetTitle || "timeline"}-${new Date().toISOString().slice(0, 10)}.png`;
       downloadBlob(blob, filename);
-      toast({ title: "PNG Downloaded", description: "Timeline image saved." });
+      toast({ title: "PNG DOWNLOADED.", description: "Timeline image saved." });
     } catch (err) {
       console.error("PNG capture failed:", err);
-      toast({ title: "Export Failed", description: "Could not capture the timeline as an image.", variant: "destructive" });
+      toast({ title: "EXPORT FAILED.", description: "Could not capture the timeline as an image.", variant: "destructive" });
     } finally {
       setCapturingPNG(false);
     }
@@ -419,7 +419,7 @@ const Timeline = () => {
             <Button
               variant="ghost"
               size="icon"
-              className="w-7 h-7"
+              className="w-7 h-7 min-h-hit min-w-hit"
               onClick={() => dispatch({ type: "UNDO" })}
               disabled={!canUndo}
               title="Undo (Ctrl+Z)"
@@ -430,7 +430,7 @@ const Timeline = () => {
             <Button
               variant="ghost"
               size="icon"
-              className="w-7 h-7"
+              className="w-7 h-7 min-h-hit min-w-hit"
               onClick={() => dispatch({ type: "REDO" })}
               disabled={!canRedo}
               title="Redo (Ctrl+Shift+Z)"
@@ -718,10 +718,10 @@ class TimelineErrorBoundary extends Component<
         <PageShell>
           <main className="container mx-auto px-4 pt-24 pb-16">
             <GlassPanel className="p-8 text-center">
-              <h2 className="text-xl font-medium text-sf-crimson mb-4">
+              <h2 className="text-xl font-medium text-sf-crimson-text mb-4">
                 Timeline failed to render
               </h2>
-              <pre className="text-left text-sm bg-muted/30 p-4 rounded-none overflow-auto max-h-64 mb-4">
+              <pre className="text-left text-sm bg-muted/30 p-4 rounded-none overflow-auto sf-sb max-h-64 mb-4">
                 {this.state.error.message}
                 {"\n\n"}
                 {this.state.error.stack}

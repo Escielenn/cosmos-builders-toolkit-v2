@@ -206,7 +206,7 @@ function TerritoryHull({
 }) {
   const colour = useMemo(() => {
     // The writer's own colour when they set one; otherwise the theme's, so a
-    // polity without a colour is still legible in all 70 themes.
+    // polity without a colour is still legible in all 60 themes.
     if (!territory.colour) return fallback;
     try {
       return new Color(territory.colour);

@@ -39,10 +39,10 @@ export function WorksheetNotesSheet({
             Jot down ideas, story hooks, or reminders for this worksheet.
           </SheetDescription>
         </SheetHeader>
-        <div className="flex-1 overflow-y-auto p-4">
+        <div className="flex-1 overflow-y-auto sf-sb p-4">
           <Suspense
             fallback={
-              <div className="rounded-md border border-sf-line bg-background/50 animate-pulse min-h-[300px]" />
+              <div className="rounded-none border border-sf-line bg-background/50 animate-pulse min-h-[300px]" />
             }
           >
             <RichTextEditor

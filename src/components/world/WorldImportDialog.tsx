@@ -19,6 +19,7 @@ import {
   createWorldFromSnapshot,
   type WorldSnapshot,
 } from "@/lib/export/world-snapshot";
+import { mapError } from "@/lib/ship-voice";
 
 interface WorldImportDialogProps {
   open: boolean;
@@ -49,7 +50,7 @@ const WorldImportDialog = ({ open, onOpenChange }: WorldImportDialogProps) => {
         snapshot = await importWorldFromJson(file);
       } else {
         toast({
-          title: "Unsupported file type",
+          title: "UNSUPPORTED FILE TYPE.",
           description: "Please select a .json or .zip snapshot file.",
           variant: "destructive",
         });
@@ -62,7 +63,7 @@ const WorldImportDialog = ({ open, onOpenChange }: WorldImportDialogProps) => {
       toast({
         title: "INVALID SNAPSHOT.",
         description:
-          error instanceof Error ? error.message : "Could not parse the file.",
+          mapError(error),
         variant: "destructive",
       });
       setPreview(null);
@@ -95,7 +96,7 @@ const WorldImportDialog = ({ open, onOpenChange }: WorldImportDialogProps) => {
       toast({
         title: "IMPORT FAILED.",
         description:
-          error instanceof Error ? error.message : "Could not import the world.",
+          mapError(error),
         variant: "destructive",
       });
     } finally {
@@ -174,7 +175,7 @@ const WorldImportDialog = ({ open, onOpenChange }: WorldImportDialogProps) => {
                   <p className="text-xs uppercase tracking-wider text-t3 font-heading">
                     Description
                   </p>
-                  <p className="text-sm text-t3 line-clamp-2">
+                  <p className="text-sm text-t2 line-clamp-2">
                     {preview.world.description}
                   </p>
                 </div>

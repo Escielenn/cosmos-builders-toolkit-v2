@@ -50,6 +50,9 @@ import { WRITING_THEMES } from "@/lib/writing/themes";
 import { countWordsInText } from "@/lib/text";
 import type { Node as ProseMirrorNode } from "@tiptap/pm/model";
 
+/** Mirrors @tiptap/extension-heading's (unexported) Level union. */
+type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
+
 /**
  * Document text with block boundaries preserved. `doc.textContent` is
  * `textBetween(0, size, "")` — an empty separator — which glues adjacent
@@ -189,7 +192,7 @@ export function StellarForgeEditor({
       StarterKit.configure({
         heading:
           config.headingLevels.length > 0
-            ? { levels: config.headingLevels as any }
+            ? { levels: config.headingLevels as HeadingLevel[] }
             : false,
       }),
       Placeholder.configure({ placeholder }),
@@ -335,7 +338,7 @@ export function StellarForgeEditor({
     <BracketPanel color="stellar">
       <div
         className={cn(
-          "rounded-none border border-sf-stellar/15 bg-background overflow-hidden relative",
+          "rounded-none border border-sf-stellar bg-background overflow-hidden relative",
           focusMode && "sf-focus-mode",
           className
         )}
@@ -579,7 +582,7 @@ export function StellarForgeEditor({
         <EditorContent
           editor={editor}
           className={cn(
-            "px-3 py-2 [&_.tiptap]:outline-none [&_.tiptap]:min-h-[var(--editor-min-h)]",
+            "px-3 py-2 [&_.tiptap]:outline-none [&_.tiptap:focus-visible]:ring-2 [&_.tiptap:focus-visible]:ring-sf-focus [&_.tiptap]:min-h-[var(--editor-min-h)]",
             !readOnly && "sf-writing-surface",
             readOnly && "bg-muted/30",
             config.maxWidth && "mx-auto"

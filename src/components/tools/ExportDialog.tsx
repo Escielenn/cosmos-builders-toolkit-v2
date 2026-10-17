@@ -24,10 +24,11 @@ import { EXPORT_THEMES } from "@/lib/export/themes";
 import { cn } from "@/lib/utils";
 import { SocialShareButtons } from "@/components/sharing/SocialShareButtons";
 
-import { setActiveTheme, resetActiveTheme } from "@/lib/pdf/styles";
+import { resolvePdfTemplate } from "@/lib/pdf/lazy-template";
 
 // Dynamic imports for heavy libraries - only loaded when actually exporting
 const loadPdfRenderer = () => import("@react-pdf/renderer");
+const loadPdfStyles = () => import("@/lib/pdf/styles");
 const loadTextGenerator = () => import("@/lib/text");
 const loadDocxGenerator = () => import("@/lib/docx");
 const loadCsvExport = () => import("@/lib/export/csv-export");
@@ -180,19 +181,20 @@ const ExportDialog = ({
             return;
           }
           try {
-            console.log("Loading PDF renderer...");
-            const { pdf } = await loadPdfRenderer();
-            console.log("Generating PDF blob...");
+            const [{ pdf }, { setActiveTheme, resetActiveTheme }, doc] = await Promise.all([
+              loadPdfRenderer(),
+              loadPdfStyles(),
+              resolvePdfTemplate(template),
+            ]);
             setActiveTheme(persistedPrefs.themeId);
             let blob: Blob;
             try {
-              blob = await pdf(template).toBlob();
+              blob = await pdf(doc).toBlob();
             } finally {
               resetActiveTheme();
             }
             // Ensure explicit PDF MIME type for reliable browser handling
             const pdfBlob = new Blob([blob], { type: "application/pdf" });
-            console.log("PDF generated:", pdfBlob.size, "bytes");
             downloadBlob(pdfBlob, `${filename}.pdf`);
             toast({
               title: "PDF GENERATED.",
@@ -339,11 +341,15 @@ const ExportDialog = ({
             });
             return;
           }
-          const { pdf } = await loadPdfRenderer();
+          const [{ pdf }, { setActiveTheme, resetActiveTheme }, doc] = await Promise.all([
+            loadPdfRenderer(),
+            loadPdfStyles(),
+            resolvePdfTemplate(template),
+          ]);
           setActiveTheme(persistedPrefs.themeId);
           let blob: Blob;
           try {
-            blob = await pdf(template).toBlob();
+            blob = await pdf(doc).toBlob();
           } finally {
             resetActiveTheme();
           }
@@ -455,7 +461,7 @@ const ExportDialog = ({
                 onValueChange={(value) => setFormat(value as ExportFormat)}
                 className="space-y-2"
               >
-                <div className={`flex items-center space-x-3 p-3 rounded-none border border-sf-line-interactive transition-colors ${summaryTemplate ? "hover:bg-accent/10 cursor-pointer" : "opacity-50 cursor-not-allowed"}`}>
+                <div className={`flex items-center space-x-3 p-3 rounded-none border transition-colors ${summaryTemplate ? "border-sf-line-interactive hover:bg-accent/10 cursor-pointer" : "bg-sf-disabled-bg border-sf-disabled-line text-sf-disabled-text cursor-not-allowed"}`}>
                   <RadioGroupItem value="pdf-summary" id="pdf-summary" disabled={!summaryTemplate} />
                   <Label htmlFor="pdf-summary" className={`flex-1 ${summaryTemplate ? "cursor-pointer" : "cursor-not-allowed"}`}>
                     <div className="flex items-center gap-2">
@@ -468,7 +474,7 @@ const ExportDialog = ({
                     </p>
                   </Label>
                 </div>
-                <div className={`flex items-center space-x-3 p-3 rounded-none border border-sf-line-interactive transition-colors ${fullTemplate ? "hover:bg-accent/10 cursor-pointer" : "opacity-50 cursor-not-allowed"}`}>
+                <div className={`flex items-center space-x-3 p-3 rounded-none border transition-colors ${fullTemplate ? "border-sf-line-interactive hover:bg-accent/10 cursor-pointer" : "bg-sf-disabled-bg border-sf-disabled-line text-sf-disabled-text cursor-not-allowed"}`}>
                   <RadioGroupItem value="pdf-full" id="pdf-full" disabled={!fullTemplate} />
                   <Label htmlFor="pdf-full" className={`flex-1 ${fullTemplate ? "cursor-pointer" : "cursor-not-allowed"}`}>
                     <div className="flex items-center gap-2">
@@ -497,7 +503,7 @@ const ExportDialog = ({
                       onClick={() => updatePreferences({ themeId: theme.id })}
                       title={theme.name}
                       className={cn(
-                        "flex gap-0.5 p-1.5 rounded-md border transition-all",
+                        "flex gap-0.5 p-1.5 rounded-none border transition-all",
                         isSelected
                           ? "border-primary ring-1 ring-primary/50"
                           : "border-sf-line-interactive hover:border-primary"
@@ -583,7 +589,7 @@ const ExportDialog = ({
               </div>
             </div>
             {formState && typeof formState === "object" && (
-              <div className="rounded-none border border-sf-line bg-muted/30 p-3 max-h-40 overflow-auto">
+              <div className="rounded-none border border-sf-line bg-muted/30 p-3 max-h-40 overflow-auto sf-sb">
                 <p className="text-[12px] font-medium uppercase tracking-[1.5px] text-t3 mb-2">
                   Preview
                 </p>
@@ -654,7 +660,7 @@ const ExportDialog = ({
                     variant="ghost"
                     size="sm"
                     onClick={disconnect}
-                    className="text-t3 hover:text-sf-crimson flex-shrink-0"
+                    className="text-t3 hover:text-sf-crimson-text flex-shrink-0"
                   >
                     <Unplug className="w-4 h-4 mr-1" />
                     Disconnect
@@ -668,7 +674,7 @@ const ExportDialog = ({
                   alt="Notion"
                   className="w-12 h-12 mx-auto opacity-50"
                 />
-                <p className="text-t3">
+                <p className="text-t2">
                   Connect your Notion workspace to export worksheets directly as pages.
                 </p>
                 <Button onClick={connect} disabled={isConnecting}>

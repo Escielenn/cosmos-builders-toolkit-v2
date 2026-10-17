@@ -96,12 +96,13 @@ import {
   type ForceDirection,
   type InteractionResult,
 } from "@/lib/space-expansion-data";
+import { writeStandaloneBackup } from "@/lib/standalone-backup";
 
 const TOOL_TYPE = "space-expansion-modeler";
 const LOCAL_STORAGE_KEY = "space-expansion-worksheet";
 
 const EditorSkeleton = () => (
-  <div className="min-h-[120px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />
+  <div className="min-h-[120px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse" />
 );
 
 const PHASE_IDS: ExpansionPhaseId[] = [
@@ -166,7 +167,7 @@ const SpaceExpansionModeler = () => {
         if (existingWorksheet.tags) {
           setWorksheetTags(existingWorksheet.tags);
         }
-        toast({ title: "Worksheet Loaded", description: "WORK RESTORED." });
+        toast({ title: "WORKSHEET LOADED.", description: "WORK RESTORED." });
       } catch { /* ignore */ }
     }
   }, [existingWorksheet]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -183,7 +184,7 @@ const SpaceExpansionModeler = () => {
   // ── Handlers ─────────────────────────────────────────────────────
 
   const handleSave = async () => {
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(formState));
+    writeStandaloneBackup(LOCAL_STORAGE_KEY, formState, { worldId, signedIn: !!user });
     if (worldId && user) {
       const worksheetData = formState as unknown as Json;
       try {
@@ -197,7 +198,7 @@ const SpaceExpansionModeler = () => {
         }
       } catch { /* handled by mutation */ }
     } else {
-      toast({ title: "Draft Saved", description: "WORK SECURED TO LOCAL STORAGE." });
+      toast({ title: "DRAFT SAVED.", description: "WORK SECURED TO LOCAL STORAGE." });
     }
   };
 
@@ -371,7 +372,7 @@ const SpaceExpansionModeler = () => {
       setTemplateConfirmId(templateId);
     } else {
       setFormState(applyTemplate(templateId));
-      toast({ title: "Template Applied", description: "You can now customize the expansion model." });
+      toast({ title: "TEMPLATE APPLIED.", description: "You can now customize the expansion model." });
     }
   };
 
@@ -379,7 +380,7 @@ const SpaceExpansionModeler = () => {
     if (templateConfirmId) {
       setFormState(applyTemplate(templateConfirmId));
       setTemplateConfirmId(null);
-      toast({ title: "Template Applied", description: "Previous data has been replaced." });
+      toast({ title: "TEMPLATE APPLIED.", description: "Previous data has been replaced." });
     }
   };
 
@@ -518,7 +519,7 @@ const SpaceExpansionModeler = () => {
               title="SF Examples"
               thinkLike="a reader: what stories model these dynamics?"
             >
-              <p className="text-sm text-t3 italic mb-4">
+              <p className="text-sm text-t2 italic mb-4">
                 {SECTION_HELPERS.examples}
               </p>
               <div className="space-y-2">
@@ -554,7 +555,7 @@ const SpaceExpansionModeler = () => {
               title="Quick-Start Templates"
               thinkLike="an architect: choose a blueprint to customize"
             >
-              <p className="text-sm text-t3 italic mb-4">
+              <p className="text-sm text-t2 italic mb-4">
                 {SECTION_HELPERS.templates}
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -587,7 +588,7 @@ const SpaceExpansionModeler = () => {
               thinkLike="a mission planner: what's the starting point?"
               defaultOpen
             >
-              <p className="text-sm text-t3 italic mb-4">
+              <p className="text-sm text-t2 italic mb-4">
                 {SECTION_HELPERS.foundation}
               </p>
               <div className="space-y-4">
@@ -657,7 +658,7 @@ const SpaceExpansionModeler = () => {
               levelNumber={2}
               thinkLike="a historian: what milestones mark each era?"
             >
-              <p className="text-sm text-t3 italic mb-4">
+              <p className="text-sm text-t2 italic mb-4">
                 {SECTION_HELPERS.phases}
               </p>
               <div className="space-y-4">
@@ -783,7 +784,7 @@ const SpaceExpansionModeler = () => {
               levelNumber={3}
               thinkLike="a strategic analyst: what's pushing and pulling?"
             >
-              <p className="text-sm text-t3 italic mb-4">
+              <p className="text-sm text-t2 italic mb-4">
                 {SECTION_HELPERS.forces}
               </p>
 
@@ -893,7 +894,7 @@ const SpaceExpansionModeler = () => {
               levelNumber={4}
               thinkLike="a crisis analyst: what accelerates, blocks, or redirects?"
             >
-              <p className="text-sm text-t3 italic mb-4">
+              <p className="text-sm text-t2 italic mb-4">
                 {SECTION_HELPERS.modifiers}
               </p>
 
@@ -910,7 +911,7 @@ const SpaceExpansionModeler = () => {
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="h-7 w-7 p-0 text-t2 hover:text-sf-crimson"
+                          className="h-7 w-7 p-0 text-t2 hover:text-sf-crimson-text min-h-hit min-w-hit"
                           onClick={() => removeModifier(mod.id)}
                         >
                           <Trash2 className="w-3.5 h-3.5" />
@@ -1052,7 +1053,7 @@ const SpaceExpansionModeler = () => {
               levelNumber={5}
               thinkLike="a systems analyst: how do forces interact?"
             >
-              <p className="text-sm text-t3 italic mb-4">
+              <p className="text-sm text-t2 italic mb-4">
                 {SECTION_HELPERS.matrix}
               </p>
 
@@ -1160,7 +1161,7 @@ const SpaceExpansionModeler = () => {
               levelNumber={6}
               thinkLike="a storyteller: what narrative emerges?"
             >
-              <p className="text-sm text-t3 italic mb-4">
+              <p className="text-sm text-t2 italic mb-4">
                 {SECTION_HELPERS.synthesis}
               </p>
               <div className="space-y-4">

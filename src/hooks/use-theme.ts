@@ -2,9 +2,9 @@
  * use-theme — the user's colour aesthetic.
  *
  * A theme is `<base>-<primary>`: one of ten bases (void, charcoal, graphite,
- * midnight, abyss, umber · paper, sky, fog, dawn) × one of seven primary
- * accents (teal, cyan, emerald, azure, violet, amber, magenta). Every one of
- * the 70 combinations is pre-solved by design/themes.py against the same
+ * midnight, abyss, umber · paper, sky, fog, dawn) × one of six primary
+ * accents (teal, emerald, azure, violet, amber, magenta). Every one of
+ * the 60 combinations is pre-solved by design/themes.py against the same
  * WCAG targets as the default palette and lands in src/styles/themes.css as
  * a [data-theme="…"] block, so switching is one attribute write — no reload,
  * no recomputation, no way to pick a combination that fails contrast.
@@ -47,11 +47,22 @@ export function primaryHex(base: ThemeBase, primary: ThemePrimary): string {
   return t?.primary.base ?? "#15C17B";
 }
 
+/**
+ * Retired primaries and the live primary they migrate to. Legacy cyan was
+ * retired product-wide (SF-II settled decision #3); a user who saved a
+ * `<base>-cyan` theme before that lands on `<base>-teal` instead of being
+ * silently reset to Void. Mirrored in public/no-flash.js.
+ */
+export const RETIRED_PRIMARIES: Readonly<Record<string, ThemePrimary>> = {
+  cyan: "teal",
+};
+
 function parse(raw: string | null): ThemeChoice | null {
   if (!raw) return null;
   const m = /^([a-z]+)-([a-z]+)$/.exec(raw);
   if (!m) return null;
-  const [, base, primary] = m;
+  const base = m[1];
+  const primary = RETIRED_PRIMARIES[m[2]] ?? m[2];
   if (!(base in themes.bases)) return null;
   if (!(themes.primaries as readonly string[]).includes(primary)) return null;
   return { base: base as ThemeBase, primary: primary as ThemePrimary };

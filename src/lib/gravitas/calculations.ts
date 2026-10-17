@@ -119,7 +119,7 @@ export function calculateThrustGravity(input: ThrustGravityInput): ThrustGravity
 
   // Relativistic corrections
   let time_dilation_factor = 1;
-  let earth_time_years = trip_duration_s / (365.25 * 86400);
+  const earth_time_years = trip_duration_s / (365.25 * 86400);
   let ship_time_years = earth_time_years;
 
   if (include_relativity && peak_velocity_c > 0.01) {

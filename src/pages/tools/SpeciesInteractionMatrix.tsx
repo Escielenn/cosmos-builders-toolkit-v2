@@ -55,6 +55,7 @@ import {
   SF_INTERACTION_EXAMPLES,
   STORY_PROMPT_TEMPLATES,
 } from "@/lib/species-interaction-data";
+import { writeStandaloneBackup } from "@/lib/standalone-backup";
 
 const SECTIONS: Section[] = [
   { id: "section-registry", title: "1. Species Registry" },
@@ -298,7 +299,7 @@ const SpeciesInteractionMatrix = () => {
           setWorksheetTags(existingWorksheet.tags);
         }
         toast({
-          title: "Worksheet Loaded",
+          title: "WORKSHEET LOADED.",
           description: "WORK RESTORED FROM CLOUD.",
         });
       } catch {
@@ -376,7 +377,7 @@ const SpeciesInteractionMatrix = () => {
   const addSpecies = () => {
     if (formState.species.length >= 6) {
       toast({
-        title: "Maximum species reached",
+        title: "MAXIMUM SPECIES REACHED.",
         description: "You can compare up to 6 species.",
         variant: "destructive",
       });
@@ -391,7 +392,7 @@ const SpeciesInteractionMatrix = () => {
   const removeSpecies = (index: number) => {
     if (formState.species.length <= 2) {
       toast({
-        title: "Minimum species required",
+        title: "MINIMUM SPECIES REQUIRED.",
         description: "You need at least 2 species to compare.",
         variant: "destructive",
       });
@@ -424,7 +425,7 @@ const SpeciesInteractionMatrix = () => {
     });
 
     toast({
-      title: "Species Imported",
+      title: "SPECIES IMPORTED.",
       description: `${speciesData.name || "Species"} has been imported from Evolutionary Biology.`,
     });
 
@@ -434,7 +435,7 @@ const SpeciesInteractionMatrix = () => {
   const handleAddFromEvoBio = () => {
     if (formState.species.length >= 6) {
       toast({
-        title: "Maximum species reached",
+        title: "MAXIMUM SPECIES REACHED.",
         description: "You can compare up to 6 species.",
         variant: "destructive",
       });
@@ -460,7 +461,7 @@ const SpeciesInteractionMatrix = () => {
   };
 
   const handleSave = async () => {
-    localStorage.setItem("sim-worksheet", JSON.stringify(formState));
+    writeStandaloneBackup("sim-worksheet", formState, { worldId, signedIn: !!user });
 
     if (worldId && user) {
       const worksheetData = formState as unknown as Json;
@@ -482,7 +483,7 @@ const SpeciesInteractionMatrix = () => {
       }
     } else {
       toast({
-        title: "Draft Saved",
+        title: "DRAFT SAVED.",
         description: "WORK SECURED TO LOCAL STORAGE.",
       });
     }
@@ -608,7 +609,7 @@ const SpeciesInteractionMatrix = () => {
                               variant="ghost"
                               size="sm"
                               onClick={() => removeSpecies(index)}
-                              className="text-sf-crimson"
+                              className="text-sf-crimson-text"
                             >
                               <Trash2 className="w-4 h-4" />
                             </Button>
@@ -832,7 +833,7 @@ const SpeciesInteractionMatrix = () => {
                       </div>
                     </div>
 
-                    <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
+                    <Suspense fallback={<div className="min-h-[100px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                       <RichTextEditor
                         content={currentPair.physicalNotes}
                         onChange={(value) => updatePair(selectedPairIndex, { physicalNotes: value })}
@@ -925,7 +926,7 @@ const SpeciesInteractionMatrix = () => {
                         </Select>
                       </div>
                     </div>
-                    <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
+                    <Suspense fallback={<div className="min-h-[100px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                       <RichTextEditor
                         content={currentPair.communicationNotes}
                         onChange={(value) => updatePair(selectedPairIndex, { communicationNotes: value })}
@@ -1018,7 +1019,7 @@ const SpeciesInteractionMatrix = () => {
                         </Select>
                       </div>
                     </div>
-                    <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
+                    <Suspense fallback={<div className="min-h-[100px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                       <RichTextEditor
                         content={currentPair.economicNotes}
                         onChange={(value) => updatePair(selectedPairIndex, { economicNotes: value })}
@@ -1111,7 +1112,7 @@ const SpeciesInteractionMatrix = () => {
                         </Select>
                       </div>
                     </div>
-                    <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
+                    <Suspense fallback={<div className="min-h-[100px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                       <RichTextEditor
                         content={currentPair.politicalNotes}
                         onChange={(value) => updatePair(selectedPairIndex, { politicalNotes: value })}
@@ -1204,7 +1205,7 @@ const SpeciesInteractionMatrix = () => {
                         </Select>
                       </div>
                     </div>
-                    <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
+                    <Suspense fallback={<div className="min-h-[100px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                       <RichTextEditor
                         content={currentPair.culturalNotes}
                         onChange={(value) => updatePair(selectedPairIndex, { culturalNotes: value })}
@@ -1297,7 +1298,7 @@ const SpeciesInteractionMatrix = () => {
                         </Select>
                       </div>
                     </div>
-                    <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
+                    <Suspense fallback={<div className="min-h-[100px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                       <RichTextEditor
                         content={currentPair.historicalNotes}
                         onChange={(value) => updatePair(selectedPairIndex, { historicalNotes: value })}
@@ -1354,7 +1355,7 @@ const SpeciesInteractionMatrix = () => {
                         </Select>
                       </div>
                     </div>
-                    <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
+                    <Suspense fallback={<div className="min-h-[100px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                       <RichTextEditor
                         content={currentPair.tensionNotes}
                         onChange={(value) => updatePair(selectedPairIndex, { tensionNotes: value })}
@@ -1437,7 +1438,7 @@ const SpeciesInteractionMatrix = () => {
 
                 <div className="space-y-2">
                   <Label>Synthesis Notes</Label>
-                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
+                  <Suspense fallback={<div className="min-h-[100px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                     <RichTextEditor
                       content={formState.synthesisNotes}
                       onChange={(value) => updateField("synthesisNotes", value)}

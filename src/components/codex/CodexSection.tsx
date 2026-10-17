@@ -2,7 +2,9 @@ import { useState, useCallback, useMemo } from "react";
 import { ChevronRight, ChevronDown } from "lucide-react";
 import CodexElementRow from "./CodexElementRow";
 import CodexContextMenu from "./CodexContextMenu";
-import type { CodexSection as CodexSectionType, CodexElement } from "@/services/world-data";
+import type { CodexSection as CodexCascadeSection, CodexSection_Entity, CodexElement } from "@/services/world-data";
+
+type CodexSectionType = CodexCascadeSection | CodexSection_Entity;
 
 interface CodexSectionProps {
   section: CodexSectionType;

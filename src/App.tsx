@@ -466,10 +466,14 @@ const App = () => (
                 <Route path="/terms" element={<Terms />} />
                 <Route path="/credits" element={<Credits />} />
                 <Route path="/changelog" element={<Changelog />} />
-                {/* Dev-only native Solaris rebuild preview (hidden route) */}
-                <Route path="/dev/solaris" element={<SolarisNativeDev />} />
-                {/* Dev-only native Rogue rebuild preview (hidden route) */}
-                <Route path="/dev/rogue" element={<RogueNativeDev />} />
+                {/* Dev-only native rebuild previews. Not registered in production
+                    builds, so /dev/* falls through to the 404 there. */}
+                {import.meta.env.DEV && (
+                  <>
+                    <Route path="/dev/solaris" element={<SolarisNativeDev />} />
+                    <Route path="/dev/rogue" element={<RogueNativeDev />} />
+                  </>
+                )}
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>

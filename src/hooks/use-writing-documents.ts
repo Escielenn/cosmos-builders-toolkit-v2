@@ -13,6 +13,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import type { WorldEntry } from "@/services/world-data";
 import { writeDocMeta, type DocumentMeta } from "@/lib/document-meta";
+import { mapError } from "@/lib/ship-voice";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -161,7 +162,7 @@ export function useCreateDocument(worldId: string | undefined) {
       toast({
         title: "DOCUMENT CREATION FAILED.",
         description:
-          error instanceof Error ? error.message : "Could not create document.",
+          mapError(error),
         variant: "destructive",
       });
     },
@@ -263,7 +264,7 @@ export function useUpdateDocumentMeta(worldId: string | undefined) {
       toast({
         title: "COULD NOT SAVE DETAILS.",
         description:
-          error instanceof Error ? error.message : "Try again in a moment.",
+          mapError(error),
         variant: "destructive",
       });
     },
@@ -300,7 +301,7 @@ export function useRenameDocument(worldId: string | undefined) {
       toast({
         title: "RENAME FAILED.",
         description:
-          error instanceof Error ? error.message : "Could not rename document.",
+          mapError(error),
         variant: "destructive",
       });
     },
@@ -328,12 +329,12 @@ export function useDeleteDocument(worldId: string | undefined) {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: docKeys.all(worldId!) });
       qc.invalidateQueries({ queryKey: ["trashed-documents", worldId] });
-      toast({ title: "Moved to trash", description: "Recoverable for 90 days." });
+      toast({ title: "MOVED TO TRASH.", description: "Recoverable for 90 days." });
     },
     onError: (error) => {
       toast({
-        title: "Delete failed",
-        description: error instanceof Error ? error.message : "Could not delete document.",
+        title: "DELETE FAILED.",
+        description: mapError(error),
         variant: "destructive",
       });
     },
@@ -376,7 +377,7 @@ export function useRestoreDocument(worldId: string | undefined) {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: docKeys.all(worldId!) });
       qc.invalidateQueries({ queryKey: ["trashed-documents", worldId] });
-      toast({ title: "Restored" });
+      toast({ title: "RESTORED." });
     },
   });
 }
@@ -392,7 +393,7 @@ export function usePurgeDocument(worldId: string | undefined) {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["trashed-documents", worldId] });
-      toast({ title: "Deleted permanently" });
+      toast({ title: "DELETED PERMANENTLY." });
     },
   });
 }
@@ -449,7 +450,7 @@ export function useCreateFolder(worldId: string | undefined) {
       toast({
         title: "FOLDER CREATION FAILED.",
         description:
-          error instanceof Error ? error.message : "Could not create folder.",
+          mapError(error),
         variant: "destructive",
       });
     },
@@ -489,7 +490,7 @@ export function useMoveDocument(worldId: string | undefined) {
       toast({
         title: "MOVE FAILED.",
         description:
-          error instanceof Error ? error.message : "Could not move document.",
+          mapError(error),
         variant: "destructive",
       });
     },
@@ -565,7 +566,7 @@ export function useRenameFolder(worldId: string | undefined) {
       toast({
         title: "RENAME FAILED.",
         description:
-          error instanceof Error ? error.message : "Could not rename folder.",
+          mapError(error),
         variant: "destructive",
       });
     },
@@ -606,7 +607,7 @@ export function useDeleteFolder(worldId: string | undefined) {
       toast({
         title: "DELETE FAILED.",
         description:
-          error instanceof Error ? error.message : "Could not delete folder.",
+          mapError(error),
         variant: "destructive",
       });
     },

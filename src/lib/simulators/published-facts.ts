@@ -40,7 +40,7 @@ import type { WorldEntry } from "@/services/world-data";
 // ---------------------------------------------------------------------------
 
 export interface PublishedFact {
-  /** "<domain>.<attribute>", e.g. "planet.orbital_distance_au". Never a tool name. */
+  /** "<domain>.<attribute>", e.g. "orbit.semi_major_axis". Never a tool name. */
   predicate: string;
   /** Shown in the reviewable diff before publish, and wherever a fact renders. */
   label: string;
@@ -88,8 +88,11 @@ export function solarisPlanetPublishFacts(payload: HandoffPayload): PublishedFac
     // make that a no-op-by-coincidence today and a silent bug the day
     // solarisPlanetTypeLabel's fallback behaviour changes.
     { predicate: "planet.type", label: "Planet Type", value: payload.planetType },
+    // Canonical name per 08-VOCABULARY. Solaris used to write the deprecated
+    // alias `planet.orbital_distance_au`; entries published that way still
+    // read through PREDICATE_ALIASES, but writes use the canonical name.
     {
-      predicate: "planet.orbital_distance_au",
+      predicate: "orbit.semi_major_axis",
       label: "Orbital Distance",
       value: Number(payload.planetAU.toFixed(3)),
       unit: "AU",
@@ -211,13 +214,14 @@ export function readPublishedFacts(entry: WorldEntry | null | undefined): Publis
  *
  * `orbit.semi_major_axis` is what the vocabulary declares and what
  * gl/bind/system.ts reads to place a body in the orrery. Nothing ever wrote
- * it: Solaris publishes the same number as `planet.orbital_distance_au`. So
+ * it: Solaris published the same number as `planet.orbital_distance_au`. So
  * a planet published from a simulator arrived at the orrery carrying its
  * orbital distance and was reported "No orbital distance on file" — the
  * writer's own number, invisible to the picture that needed it.
  *
  * Aliasing rather than renaming means no migration and no broken bookmark:
  * entries already published keep their stored name and are simply understood.
+ * New publishes write the canonical name (solarisPlanetPublishFacts).
  */
 export const PREDICATE_ALIASES: Record<string, readonly string[]> = {
   "orbit.semi_major_axis": ["planet.orbital_distance_au"],
@@ -273,7 +277,7 @@ export function readTidelockSeed(
   entry: WorldEntry | null | undefined,
 ): { auFraction: number; starLuminosity: number } | null {
   const starType = readPublishedFact(entry, "star.spectral_class");
-  const orbitalAU = readPublishedFact(entry, "planet.orbital_distance_au");
+  const orbitalAU = readPublishedFact(entry, "orbit.semi_major_axis");
   const luminosity = readPublishedFact(entry, "star.luminosity_lsun");
   if (!starType || typeof starType.value !== "string") return null;
   if (!orbitalAU || !fin(orbitalAU.value)) return null;
@@ -299,7 +303,7 @@ export function readTidelockSeed(
 export function reconstructSolarisHandoff(entry: WorldEntry | null | undefined): HandoffPayload | null {
   const planetName = readPublishedFact(entry, "planet.name");
   const planetType = readPublishedFact(entry, "planet.type");
-  const orbitalAU = readPublishedFact(entry, "planet.orbital_distance_au");
+  const orbitalAU = readPublishedFact(entry, "orbit.semi_major_axis");
   const starType = readPublishedFact(entry, "star.spectral_class");
   const luminosity = readPublishedFact(entry, "star.luminosity_lsun");
   if (!planetName || typeof planetName.value !== "string") return null;

@@ -81,7 +81,7 @@ export function TagInput({
     <div ref={containerRef} className={cn("relative", className)}>
       <div
         className={cn(
-          "flex flex-wrap gap-1.5 p-2 min-h-[42px] rounded-md border border-input bg-background",
+          "flex flex-wrap gap-1.5 p-2 min-h-[42px] rounded-none border border-input bg-background",
           "focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",
           disabled && "text-sf-disabled-text border-sf-disabled-line bg-sf-disabled-bg cursor-not-allowed"
         )}
@@ -120,14 +120,14 @@ export function TagInput({
             onFocus={() => setShowSuggestions(true)}
             onKeyDown={handleKeyDown}
             placeholder={value.length === 0 ? placeholder : ""}
-            className="flex-1 min-w-[80px] bg-transparent outline-none text-sm placeholder:text-t3"
+            className="flex-1 min-w-[80px] bg-transparent focus-visible:outline-none text-sm placeholder:text-t3"
             disabled={disabled}
           />
         )}
       </div>
 
       {showSuggestions && filteredSuggestions.length > 0 && (
-        <div className="absolute z-50 w-full mt-1 py-1 bg-popover border border-sf-line rounded-md shadow-md">
+        <div className="absolute z-50 w-full mt-1 py-1 bg-popover border border-sf-line rounded-none shadow-md">
           {filteredSuggestions.map((suggestion) => (
             <button
               key={suggestion}

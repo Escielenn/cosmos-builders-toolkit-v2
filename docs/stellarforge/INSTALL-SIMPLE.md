@@ -130,7 +130,7 @@ stellarforge/                              ← your project
 │   ├── tailwind.config.ts                 ← copy of the one in the root
 │   ├── legibility-proof.html              ← OPEN THIS IN A BROWSER
 │   ├── before-after.png
-│   ├── themes.py                           ← 70 themes, all contrast-solved
+│   ├── themes.py                           ← 60 themes, all contrast-solved
 │   ├── themes.css / themes.json            GENERATED
 │   ├── theme-proof.html                    ← every theme, side by side
 │   ├── forge-gl-proof.html                 ← three.js proof (`npm i three`, serve locally)

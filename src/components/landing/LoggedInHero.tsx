@@ -25,7 +25,7 @@ const LoggedInHero = () => {
           STELLARFORGE
         </h1>
         {isVanguard ? (
-          <Badge className="bg-sf-violet/20 text-sf-violet gap-1 sf-shimmer-violet">
+          <Badge className="bg-sf-violet/20 text-sf-violet-text gap-1 sf-shimmer-violet">
             <Sparkles className="w-3 h-3" />
             Vanguard
           </Badge>

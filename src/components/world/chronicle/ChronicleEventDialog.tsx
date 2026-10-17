@@ -149,7 +149,7 @@ export function ChronicleEventDialog({
           </DialogTitle>
         </DialogHeader>
 
-        <div className="px-6 pb-6 pt-4 space-y-4 max-h-[70vh] overflow-y-auto">
+        <div className="px-6 pb-6 pt-4 space-y-4 max-h-[70vh] overflow-y-auto sf-sb">
           {/* Title */}
           <div>
             <label className="sf-chronicle-form-label">Title</label>

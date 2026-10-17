@@ -46,7 +46,7 @@ export function LunarPhase({ className }: { className?: string }) {
       aria-hidden
       title="Current lunar phase"
     >
-      <span className="text-sf-stellar/80 text-[13px]">{phase.glyph}</span>
+      <span className="text-sf-stellar-text text-[13px]">{phase.glyph}</span>
       {phase.label}
     </span>
   );

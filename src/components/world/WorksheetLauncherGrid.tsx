@@ -41,7 +41,7 @@ function useEntityWorksheets(entityId: string | undefined) {
 
       if (error) throw error;
 
-      return (data ?? []).map((row: any) => ({
+      return (data ?? []).map((row) => ({
         worksheet_id: row.worksheet_id,
         worksheetTitle: row.worksheets?.title ?? null,
         toolType: row.worksheets?.tool_type ?? "",

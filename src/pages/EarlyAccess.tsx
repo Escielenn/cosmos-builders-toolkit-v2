@@ -23,7 +23,7 @@ import {
 const MANIFEST_ROWS: { label: string; value: string; tone: string }[] = [
   { label: "LAUNCH", value: `${LAUNCH_DATE_STAMP} · ${LAUNCH_TIME_LABEL}`, tone: "text-sf-primary-text" },
   { label: "INSTRUMENTS", value: `${TOTAL_TOOL_COUNT} TOOLS INCL. ${SIMULATOR_COUNT} SIMULATORS`, tone: "text-t1" },
-  { label: "FRAMEWORK", value: "ENVIRONMENTAL CASCADE", tone: "text-sf-stellar" },
+  { label: "FRAMEWORK", value: "ENVIRONMENTAL CASCADE", tone: "text-sf-stellar-text" },
   { label: "FREE TIER", value: `${FREE_TOOL_COUNT} TOOLS · UNLIMITED WORLDS`, tone: "text-t1" },
   { label: "PRO", value: "$4.99/MO · $49/YR", tone: "text-sf-amber" },
   { label: "EARLY CODE", value: "EARLY40 · 40% OFF YR 1", tone: "text-sf-primary-text" },
@@ -40,8 +40,8 @@ const CATEGORY_TONE: Record<string, string> = {
   "STARS & SYSTEMS": "text-sf-amber",
   WORLDS: "text-sf-azure",
   LIFE: "text-sf-emerald",
-  CIVILIZATIONS: "text-sf-violet",
-  MYTHOLOGY: "text-sf-stellar",
+  CIVILIZATIONS: "text-sf-violet-text",
+  MYTHOLOGY: "text-sf-stellar-text",
   INTEGRATION: "text-sf-primary-text",
 };
 
@@ -149,7 +149,7 @@ function LandingHero(): JSX.Element {
         <br />
         <span className="text-sf-primary-text">science&nbsp;fiction</span>
         <br />
-        <em className="font-light italic text-sf-stellar">writers.</em>
+        <em className="font-light italic text-sf-stellar-text">writers.</em>
       </h1>
       <p className="mb-4 max-w-[540px] text-[17px] leading-[1.55] text-t2">
         {TOTAL_TOOL_COUNT} worldbuilding tools that talk to each other. They all work the same
@@ -158,7 +158,7 @@ function LandingHero(): JSX.Element {
         star type, or how your species senses the world, and everything downstream moves with it.
         Biology, politics, mythology, language.
       </p>
-      <p className="mb-7 max-w-[540px] text-[17px] leading-[1.55] text-t3">
+      <p className="mb-7 max-w-[540px] text-[17px] leading-[1.55] text-t2">
         Join the list. The first 500 writers get 40% off their first year of Pro.
       </p>
       <WaitlistForm />

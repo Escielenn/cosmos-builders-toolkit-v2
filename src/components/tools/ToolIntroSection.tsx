@@ -12,7 +12,7 @@ const ToolIntroSection = ({ data }: ToolIntroSectionProps) => {
       <h2 className="font-heading text-xl font-light uppercase tracking-[2px] mb-3 gradient-text">
         {data.title}
       </h2>
-      <p className="text-t3 mb-6">{data.purpose}</p>
+      <p className="text-t2 mb-6">{data.purpose}</p>
 
       <h4 className="font-heading text-xs font-medium uppercase tracking-sf-wide text-t4 mb-4">
         In Published Science Fiction
@@ -38,7 +38,7 @@ const ToolIntroSection = ({ data }: ToolIntroSectionProps) => {
                 &ldquo;{quote}&rdquo;
               </blockquote>
             ))}
-            <p className="text-sm text-t3">{example.explanation}</p>
+            <p className="text-sm text-t2">{example.explanation}</p>
           </div>
         ))}
       </div>

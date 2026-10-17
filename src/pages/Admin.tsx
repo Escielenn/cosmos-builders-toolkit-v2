@@ -102,7 +102,7 @@ const TH = ({ children, className = "" }: { children?: React.ReactNode; classNam
 );
 
 const categoryColors: Record<string, string> = {
-  bug: "bg-red-500/[0.06] border-sf-crimson text-sf-crimson",
+  bug: "bg-red-500/[0.06] border-sf-crimson text-sf-crimson-text",
   feature: "bg-blue-400/[0.06] border-sf-azure text-blue-400",
   billing: "bg-amber-500/[0.06] border-sf-amber text-sf-amber",
   account: "bg-sky-500/[0.06] border-sf-azure text-sky-400",
@@ -110,7 +110,7 @@ const categoryColors: Record<string, string> = {
 };
 
 const priorityColors: Record<string, string> = {
-  urgent: "bg-red-500/[0.06] border-sf-crimson text-sf-crimson animate-pulse",
+  urgent: "bg-red-500/[0.06] border-sf-crimson text-sf-crimson-text animate-pulse",
   high: "bg-amber-500/[0.06] border-sf-amber text-sf-amber",
   normal: "bg-white/[0.04] border-sf-line text-t3",
   low: "bg-white/[0.02] border-sf-line text-t4",
@@ -134,7 +134,7 @@ const contactStatusColors: Record<string, string> = {
 const subStatusColors: Record<string, string> = {
   active: "bg-primary/[0.06] border-primary text-primary",
   canceled: "bg-white/[0.02] border-sf-line text-t4",
-  past_due: "bg-red-500/[0.06] border-sf-crimson text-sf-crimson",
+  past_due: "bg-red-500/[0.06] border-sf-crimson text-sf-crimson-text",
   trialing: "bg-sky-500/[0.06] border-sf-azure text-sky-400",
 };
 
@@ -224,6 +224,7 @@ const TaskItem = ({
     >
       <button
         onClick={toggleDone}
+        aria-label={isDone ? "Mark task incomplete" : "Mark task complete"}
         className="shrink-0 text-t3 hover:text-primary transition-colors"
       >
         {isDone ? (
@@ -254,7 +255,8 @@ const TaskItem = ({
 
       <button
         onClick={handleDelete}
-        className="shrink-0 opacity-0 group-hover:opacity-100 text-t4 hover:text-sf-crimson transition-all"
+        aria-label="Delete task"
+        className="shrink-0 opacity-0 group-hover:opacity-100 text-t4 hover:text-sf-crimson-text transition-all"
       >
         <X className="w-3 h-3" />
       </button>
@@ -353,7 +355,7 @@ const TasksSidebarContent = ({ onNavigate }: { onNavigate: (tab: string) => void
       )}
 
       {/* Task List */}
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto sf-sb">
         {isLoading ? (
           <div className="flex justify-center py-6"><Loader size="sm" /></div>
         ) : pendingTodos.length === 0 && doneTodos.length === 0 ? (
@@ -361,7 +363,7 @@ const TasksSidebarContent = ({ onNavigate }: { onNavigate: (tab: string) => void
         ) : (
           <>
             {/* Active tasks */}
-            <div className="divide-y divide-white/[0.03]">
+            <div className="divide-y divide-sf-line-hairline">
               {pendingTodos.map((t) => (
                 <TaskItem key={t.id} todo={t} onNavigate={onNavigate} />
               ))}
@@ -381,7 +383,7 @@ const TasksSidebarContent = ({ onNavigate }: { onNavigate: (tab: string) => void
                 </button>
                 {showDone && (
                   <>
-                    <div className="divide-y divide-white/[0.03]">
+                    <div className="divide-y divide-sf-line-hairline">
                       {doneTodos.map((t) => (
                         <TaskItem key={t.id} todo={t} onNavigate={onNavigate} />
                       ))}
@@ -390,7 +392,7 @@ const TasksSidebarContent = ({ onNavigate }: { onNavigate: (tab: string) => void
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="rounded-none text-[12px] h-6 gap-1 text-t4 hover:text-sf-crimson"
+                        className="rounded-none text-[12px] h-6 gap-1 text-t4 hover:text-sf-crimson-text"
                         onClick={() => clearDone.mutate()}
                         disabled={clearDone.isPending}
                       >
@@ -461,7 +463,7 @@ const OverviewTab = ({ onTabChange }: { onTabChange: (tab: string) => void }) =>
         <h2 className="font-heading text-sm font-light uppercase tracking-[3px] text-sf-emerald mb-4">
           Recent Activity
         </h2>
-        <GlassPanel className="divide-y divide-white/[0.04]">
+        <GlassPanel className="divide-y divide-sf-line-hairline">
           {activityLoading ? (
             <div className="flex justify-center py-8"><Loader /></div>
           ) : !activity?.length ? (
@@ -529,7 +531,7 @@ const UsersTab = () => {
       {loading ? (
         <div className="flex justify-center py-16"><Loader /></div>
       ) : (
-        <GlassPanel className="overflow-x-auto">
+        <GlassPanel className="overflow-x-auto sf-sb">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-sf-line">
@@ -620,7 +622,7 @@ const UsersTab = () => {
                                     <div><span className="text-t4">Period ends:</span> <span className="text-t2 font-mono text-xs">{formatDate(userDetail.subscription.current_period_end)}</span></div>
                                   )}
                                   {userDetail.subscription.cancel_at_period_end && (
-                                    <div className="text-xs text-sf-crimson">Canceling at period end</div>
+                                    <div className="text-xs text-sf-crimson-text">Canceling at period end</div>
                                   )}
                                   {userDetail.subscription.canceled_at && (
                                     <div><span className="text-t4">Canceled:</span> <span className="text-t2 font-mono text-xs">{formatDate(userDetail.subscription.canceled_at)}</span></div>
@@ -770,7 +772,7 @@ const TicketsTab = () => {
         <FilterBar options={TICKET_CATEGORIES} value={filterCategory} onChange={setFilterCategory} />
       </div>
 
-      <GlassPanel className="overflow-x-auto">
+      <GlassPanel className="overflow-x-auto sf-sb">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-sf-line">
@@ -912,7 +914,7 @@ const ContactsTab = () => {
     <div className="space-y-4">
       <FilterBar options={CONTACT_STATUSES} value={filterStatus} onChange={setFilterStatus} />
 
-      <GlassPanel className="overflow-x-auto">
+      <GlassPanel className="overflow-x-auto sf-sb">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-sf-line">
@@ -1003,7 +1005,7 @@ const SubscriptionsTab = () => {
           {subsLoading ? (
             <div className="flex justify-center py-8"><Loader /></div>
           ) : (
-            <GlassPanel className="overflow-x-auto">
+            <GlassPanel className="overflow-x-auto sf-sb">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-sf-line">
@@ -1030,7 +1032,7 @@ const SubscriptionsTab = () => {
                       </td>
                       <td className="px-3 py-3">
                         {s.cancel_at_period_end ? (
-                          <span className="text-sf-crimson text-xs">Yes</span>
+                          <span className="text-sf-crimson-text text-xs">Yes</span>
                         ) : (
                           <span className="text-t4 text-xs">No</span>
                         )}
@@ -1087,7 +1089,7 @@ const Admin = () => {
             <h1 className="font-display text-3xl md:text-4xl tracking-[0.08em] text-t1">
               MISSION CONTROL
             </h1>
-            <span className="inline-flex items-center gap-1 rounded-sm border px-2 py-0.5 text-[12px] font-medium uppercase tracking-wider bg-red-500/[0.06] border-sf-crimson text-sf-crimson">
+            <span className="inline-flex items-center gap-1 rounded-sm border px-2 py-0.5 text-[12px] font-medium uppercase tracking-wider bg-red-500/[0.06] border-sf-crimson text-sf-crimson-text">
               <AlertTriangle className="w-3 h-3" /> Admin Only
             </span>
           </div>
@@ -1159,7 +1161,7 @@ const Admin = () => {
           <div className="lg:hidden fixed bottom-6 right-6 z-40">
             <Sheet>
               <SheetTrigger asChild>
-                <Button size="lg" className="rounded-none h-12 w-12 p-0 shadow-lg">
+                <Button size="lg" aria-label="Open tasks" className="rounded-none h-12 w-12 p-0 shadow-lg">
                   <ListTodo className="w-5 h-5" />
                 </Button>
               </SheetTrigger>

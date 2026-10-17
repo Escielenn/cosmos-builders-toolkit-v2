@@ -110,6 +110,7 @@ import {
   generateMythologicalSeeds,
   generateNarrativeSnippet,
 } from "@/lib/gravitas/experiential";
+import { writeStandaloneBackup } from "@/lib/standalone-backup";
 
 // ─── Constants ────────────────────────────────────────────────────────
 
@@ -192,7 +193,7 @@ const Gravitas = () => {
         setCurrentWorksheetId(existingWorksheet.id);
         setCurrentWorksheetTitle(existingWorksheet.title);
         if (existingWorksheet.tags) setWorksheetTags(existingWorksheet.tags);
-        toast({ title: "Worksheet Loaded", description: "WORK RESTORED." });
+        toast({ title: "WORKSHEET LOADED.", description: "WORK RESTORED." });
       } catch {
         console.error("Failed to load worksheet data");
       }
@@ -306,7 +307,7 @@ const Gravitas = () => {
   // ─── Save / Worksheet Management ───────────────────────────────────
 
   const handleSave = async () => {
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(formState));
+    writeStandaloneBackup(LOCAL_STORAGE_KEY, formState, { worldId, signedIn: !!user });
 
     if (worldId && user) {
       const wsId = currentWorksheetId || worksheetId;
@@ -326,10 +327,10 @@ const Gravitas = () => {
         setCurrentWorksheetId(ws.id);
         setCurrentWorksheetTitle(ws.title);
         setSearchParams({ worldId, worksheetId: ws.id });
-        toast({ title: "Created", description: "New worksheet created." });
+        toast({ title: "CREATED.", description: "New worksheet created." });
       }
     } else {
-      toast({ title: "Saved locally", description: "Data saved to this browser." });
+      toast({ title: "SAVED LOCALLY.", description: "Data saved to this browser." });
     }
   };
 
@@ -380,7 +381,7 @@ const Gravitas = () => {
       case "high_gravity": return "text-orange-400";
       case "microgravity":
       case "milligravity":
-      case "extreme_gravity": return "text-sf-crimson";
+      case "extreme_gravity": return "text-sf-crimson-text";
       default: return "text-t2";
     }
   })();
@@ -448,7 +449,7 @@ const Gravitas = () => {
             {formState.realismMode === "hard_sf" && formState.activeMode === "artificial" && (
               <div className="flex items-center gap-2 mt-3 p-3 rounded-none bg-red-500/10 border border-sf-crimson">
                 <AlertTriangle className="w-4 h-4 text-sf-crimson shrink-0" />
-                <p className="text-sm text-sf-crimson">Artificial gravity is not available in Hard SF mode. Switch to Hybrid or Soft SF.</p>
+                <p className="text-sm text-sf-crimson-text">Artificial gravity is not available in Hard SF mode. Switch to Hybrid or Soft SF.</p>
               </div>
             )}
           </CollapsibleSection>
@@ -609,7 +610,7 @@ const Gravitas = () => {
 
               {/* ── Combined Parameters ─── */}
               <TabsContent value="combined" className="mt-4 space-y-6">
-                <p className="text-sm text-t3">
+                <p className="text-sm text-t2">
                   Enter the spin and thrust gravity components to calculate the resultant vector.
                   You can use values from the Spin and Thrust modes.
                 </p>
@@ -752,7 +753,7 @@ const Gravitas = () => {
                 {formState.realismMode === "hard_sf" && (
                   <div className="flex items-center gap-2 p-3 rounded-none bg-red-500/10 border border-sf-crimson">
                     <AlertTriangle className="w-4 h-4 text-sf-crimson shrink-0" />
-                    <p className="text-sm text-sf-crimson">
+                    <p className="text-sm text-sf-crimson-text">
                       Artificial gravity violates known physics. Switch to Hybrid or Soft SF mode to use this module.
                     </p>
                   </div>
@@ -1088,7 +1089,7 @@ const Gravitas = () => {
                 <div>
                   <h4 className="text-sm font-medium mb-2">Movement & Locomotion</h4>
                   <GlassPanel className="p-4">
-                    <p className="text-sm text-t3 leading-relaxed">{movementText}</p>
+                    <p className="text-sm text-t2 leading-relaxed">{movementText}</p>
                   </GlassPanel>
                 </div>
               )}
@@ -1097,7 +1098,7 @@ const Gravitas = () => {
                 <div>
                   <h4 className="text-sm font-medium mb-2">Fluid Behavior</h4>
                   <GlassPanel className="p-4">
-                    <p className="text-sm text-t3 leading-relaxed">{fluidText}</p>
+                    <p className="text-sm text-t2 leading-relaxed">{fluidText}</p>
                   </GlassPanel>
                 </div>
               )}
@@ -1117,7 +1118,7 @@ const Gravitas = () => {
                     <div className="flex justify-between text-xs text-t4"><span>1 month</span><span>10 years</span></div>
                   </div>
                   <GlassPanel className="p-4 mt-2">
-                    <p className="text-sm text-t3 leading-relaxed">{healthText}</p>
+                    <p className="text-sm text-t2 leading-relaxed">{healthText}</p>
                   </GlassPanel>
                 </div>
               )}
@@ -1126,7 +1127,7 @@ const Gravitas = () => {
                 <div>
                   <h4 className="text-sm font-medium mb-2">Architectural Requirements</h4>
                   <GlassPanel className="p-4">
-                    <p className="text-sm text-t3 leading-relaxed">{architectureText}</p>
+                    <p className="text-sm text-t2 leading-relaxed">{architectureText}</p>
                   </GlassPanel>
                 </div>
               )}
@@ -1135,7 +1136,7 @@ const Gravitas = () => {
                 <div>
                   <h4 className="text-sm font-medium mb-2">Mythological Implications</h4>
                   <GlassPanel className="p-4">
-                    <p className="text-sm text-t3 leading-relaxed whitespace-pre-line">{mythologyText}</p>
+                    <p className="text-sm text-t2 leading-relaxed whitespace-pre-line">{mythologyText}</p>
                   </GlassPanel>
                 </div>
               )}
@@ -1166,7 +1167,7 @@ const Gravitas = () => {
               </TabsList>
               {(Object.keys(CASCADE_ICONS) as Array<keyof typeof CASCADE_ICONS>).map((key) => (
                 <TabsContent key={key} value={key} className="mt-4">
-                  <Suspense fallback={<div className="h-24 rounded-md bg-accent/10 animate-pulse" />}>
+                  <Suspense fallback={<div className="h-24 rounded-none bg-accent/10 animate-pulse" />}>
                     <RichTextEditor
                       content={formState.cascade[key]}
                       onChange={(html) => setFormState((prev) => ({
@@ -1192,7 +1193,7 @@ const Gravitas = () => {
               ].map(({ key, label, placeholder }) => (
                 <div key={key} className="space-y-2">
                   <Label>{label}</Label>
-                  <Suspense fallback={<div className="h-24 rounded-md bg-accent/10 animate-pulse" />}>
+                  <Suspense fallback={<div className="h-24 rounded-none bg-accent/10 animate-pulse" />}>
                     <RichTextEditor
                       content={formState.storyNotes[key]}
                       onChange={(html) => setFormState((prev) => ({

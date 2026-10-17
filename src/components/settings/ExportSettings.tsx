@@ -78,7 +78,7 @@ const ExportSettings = () => {
                   "relative flex items-start gap-3 p-3 rounded-none border text-left transition-all",
                   isSelected
                     ? "border-primary bg-primary/5 ring-1 ring-primary"
-                    : "border-sf-line hover:border-primary/50 hover:bg-accent/50"
+                    : "border-sf-line hover:border-primary hover:bg-accent/50"
                 )}
               >
                 {/* Color swatch */}

@@ -432,7 +432,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
       )}
 
       {/* Scrollable sections */}
-      <div className="flex-1 overflow-y-auto overflow-x-hidden min-h-0">
+      <div className="flex-1 overflow-y-auto sf-sb overflow-x-hidden min-h-0">
         {/* Cascade sections (default view) */}
         {groupBy === "cascade" && codexData.cascadeSections.map((section) => {
           const filtered = filterElements(section.elements);
@@ -460,7 +460,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
           return (
             <CodexSection
               key={section.key}
-              section={{ ...section, elements: filtered } as any}
+              section={{ ...section, elements: filtered }}
               activeElementId={activeElementId}
               onElementClick={navigateToElement}
               onOpenWiki={navigateToWiki}

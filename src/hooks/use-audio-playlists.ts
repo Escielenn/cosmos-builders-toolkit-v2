@@ -3,6 +3,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import type { AudioTrack, AudioPlaylist } from "@/lib/audio/types";
+import type { Json, TablesUpdate } from "@/integrations/supabase/types";
+import { mapError } from "@/lib/ship-voice";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -15,6 +17,11 @@ interface PlaylistRow {
   tracks: AudioTrack[];
   created_at: string;
   updated_at: string;
+}
+
+/** AudioTrack is a plain JSON-serialisable record; the column is typed Json. */
+function tracksToJson(tracks: AudioTrack[]): Json {
+  return tracks as unknown as Json;
 }
 
 function rowToPlaylist(row: PlaylistRow): AudioPlaylist {
@@ -39,7 +46,7 @@ export function useUserPlaylists() {
       if (!user) return [];
 
       const { data, error } = await supabase
-        .from("user_playlists" as any)
+        .from("user_playlists")
         .select("*")
         .eq("user_id", user.id)
         .order("created_at", { ascending: false });
@@ -65,8 +72,8 @@ export function useCreatePlaylist() {
       if (!user) throw new Error("Not authenticated");
 
       const { data, error } = await supabase
-        .from("user_playlists" as any)
-        .insert({ user_id: user.id, name } as any)
+        .from("user_playlists")
+        .insert({ user_id: user.id, name })
         .select()
         .single();
 
@@ -79,7 +86,7 @@ export function useCreatePlaylist() {
     onError: (err) => {
       toast({
         title: "PLAYLIST CREATION FAILED.",
-        description: err instanceof Error ? err.message : "Unknown error",
+        description: mapError(err),
         variant: "destructive",
       });
     },
@@ -104,13 +111,13 @@ export function useUpdatePlaylist() {
       name?: string;
       tracks?: AudioTrack[];
     }) => {
-      const updates: Record<string, unknown> = {};
+      const updates: TablesUpdate<"user_playlists"> = {};
       if (name !== undefined) updates.name = name;
-      if (tracks !== undefined) updates.tracks = tracks;
+      if (tracks !== undefined) updates.tracks = tracksToJson(tracks);
 
       const { error } = await supabase
-        .from("user_playlists" as any)
-        .update(updates as any)
+        .from("user_playlists")
+        .update(updates)
         .eq("id", id);
 
       if (error) throw error;
@@ -121,7 +128,7 @@ export function useUpdatePlaylist() {
     onError: (err) => {
       toast({
         title: "UPDATE FAILED.",
-        description: err instanceof Error ? err.message : "Unknown error",
+        description: mapError(err),
         variant: "destructive",
       });
     },
@@ -139,7 +146,7 @@ export function useDeletePlaylist() {
   return useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase
-        .from("user_playlists" as any)
+        .from("user_playlists")
         .delete()
         .eq("id", id);
 
@@ -151,7 +158,7 @@ export function useDeletePlaylist() {
     onError: (err) => {
       toast({
         title: "DELETE FAILED.",
-        description: err instanceof Error ? err.message : "Unknown error",
+        description: mapError(err),
         variant: "destructive",
       });
     },
@@ -181,8 +188,8 @@ export function useAddTrackToPlaylist() {
 
       const updated = [...currentTracks, track];
       const { error } = await supabase
-        .from("user_playlists" as any)
-        .update({ tracks: updated } as any)
+        .from("user_playlists")
+        .update({ tracks: tracksToJson(updated) })
         .eq("id", playlistId);
 
       if (error) throw error;
@@ -212,8 +219,8 @@ export function useRemoveTrackFromPlaylist() {
     }) => {
       const updated = currentTracks.filter((_, i) => i !== trackIndex);
       const { error } = await supabase
-        .from("user_playlists" as any)
-        .update({ tracks: updated } as any)
+        .from("user_playlists")
+        .update({ tracks: tracksToJson(updated) })
         .eq("id", playlistId);
 
       if (error) throw error;

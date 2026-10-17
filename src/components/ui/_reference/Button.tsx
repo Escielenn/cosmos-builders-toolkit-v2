@@ -15,7 +15,7 @@
  *   • label colour  hardcoded #08110C → sf-on-primary (solved, 8.16:1 in default).
  *   • role vs meaning  primary uses sf-primary, the USER-CHOSEN accent, not
  *                   sf-teal. Teal is what Integration means; primary is what
- *                   "the action" means. 70 themes swap the former; the latter
+ *                   "the action" means. 60 themes swap the former; the latter
  *                   never moves. See 13-THE-LIFT.md §0.
  */
 

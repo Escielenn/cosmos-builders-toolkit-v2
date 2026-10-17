@@ -172,14 +172,14 @@ export default function SolarisViewer({
             className={`absolute bottom-3 right-3 z-20 min-w-[30px] border px-2 py-1 font-mono text-[12px] backdrop-blur-sm transition-colors ${
               showKeys
                 ? "border-sf-primary bg-sf-primary/25 text-white"
-                : "border-white/[0.35] bg-[rgba(13,13,15,0.94)] text-white/80 hover:text-white"
+                : "border-sf-line-interactive bg-[rgba(13,13,15,0.94)] text-white/80 hover:text-white"
             }`}
           >
             ?
           </button>
 
           {showKeys && (
-            <div className="absolute bottom-14 right-3 z-30 w-[228px] border border-white/[0.3] bg-[rgba(13,13,15,0.97)] p-3 backdrop-blur-sm">
+            <div className="absolute bottom-14 right-3 z-30 w-[228px] border border-sf-line bg-[rgba(13,13,15,0.97)] p-3 backdrop-blur-sm">
               <span className="mb-2 block font-mono text-[12px] uppercase tracking-[2px] text-sf-primary-bright/80">
                 Keyboard
               </span>

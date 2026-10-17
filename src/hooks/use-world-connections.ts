@@ -8,6 +8,7 @@ import {
   type CreateConnectionInput,
   type UpdateConnectionInput,
 } from "@/services/world-connections-crud";
+import { mapError } from "@/lib/ship-voice";
 
 export function useCreateConnection(worldId: string | undefined) {
   const { user } = useAuth();
@@ -23,7 +24,7 @@ export function useCreateConnection(worldId: string | undefined) {
     onError: (error) => {
       toast({
         title: "CONNECTION FAILED.",
-        description: error instanceof Error ? error.message : "Could not create connection.",
+        description: mapError(error),
         variant: "destructive",
       });
     },
@@ -43,7 +44,7 @@ export function useDeleteConnection(worldId: string | undefined) {
     onError: (error) => {
       toast({
         title: "DELETE FAILED.",
-        description: error instanceof Error ? error.message : "Could not delete connection.",
+        description: mapError(error),
         variant: "destructive",
       });
     },
@@ -62,7 +63,7 @@ export function useUpdateConnection(worldId: string | undefined) {
     onError: (error) => {
       toast({
         title: "UPDATE FAILED.",
-        description: error instanceof Error ? error.message : "Could not update connection.",
+        description: mapError(error),
         variant: "destructive",
       });
     },

@@ -17,7 +17,7 @@ export function BadgeCard({ definition, earned, earnedAt }: BadgeCardProps) {
       <div
         className={cn(
           "rounded-none border p-4 flex items-start gap-3",
-          "bg-white/[0.01] border-white/[0.06]"
+          "bg-white/[0.01] border-sf-line"
         )}
       >
         <div className="shrink-0 mt-0.5">

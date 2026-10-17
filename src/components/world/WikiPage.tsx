@@ -465,11 +465,11 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
       )}
 
       {/* Tags */}
-      {((canEdit && isEditing) || ((entry as any).tags ?? []).length > 0) && (
+      {((canEdit && isEditing) || (entry?.tags ?? []).length > 0) && (
         <div className="mt-2">
           <EntryTagsBar
             entryId={entryId}
-            tags={(entry as any).tags ?? []}
+            tags={entry?.tags ?? []}
             readOnly={!canEdit || !isEditing}
           />
         </div>

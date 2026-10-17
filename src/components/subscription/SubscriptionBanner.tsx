@@ -13,7 +13,7 @@ const SubscriptionBanner = () => {
   if (isExpiringSoon && daysUntilExpiry !== null) {
     const borderColor = isVanguard ? "border-sf-violet" : "border-sf-amber";
     const bgColor = isVanguard ? "bg-violet-500/5" : "bg-amber-500/5";
-    const textColor = isVanguard ? "text-sf-violet" : "text-sf-amber";
+    const textColor = isVanguard ? "text-sf-violet-text" : "text-sf-amber";
 
     return (
       <div className="mx-auto max-w-2xl mb-4">

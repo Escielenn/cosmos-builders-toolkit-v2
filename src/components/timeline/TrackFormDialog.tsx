@@ -46,7 +46,8 @@ const TRACK_ICON_MAP: Record<string, LucideIcon> = {
 interface TrackFormDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSubmit: (track: any) => void;
+  /** Receives the full track when editing, or the new-track fields when creating. */
+  onSubmit: (track: TimelineTrack | Omit<TimelineTrack, "id" | "order" | "isCollapsed">) => void;
   editingTrack?: TimelineTrack | null;
   usedColors?: string[];
 }
@@ -123,7 +124,7 @@ const TrackFormDialog = ({
                     type="button"
                     onClick={() => setType(tt.id)}
                     className={cn(
-                      "flex items-center gap-2 px-3 py-2 rounded-md border text-sm transition-colors text-left",
+                      "flex items-center gap-2 px-3 py-2 rounded-none border text-sm transition-colors text-left",
                       type === tt.id
                         ? "border-primary bg-primary/10 text-t1"
                         : "border-sf-line text-t3 hover:border-sf-line hover:bg-muted/30"

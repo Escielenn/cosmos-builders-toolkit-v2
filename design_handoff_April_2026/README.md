@@ -32,7 +32,7 @@ This is a **hi-fidelity** handoff. Every hex value, font size, tracking, and mot
 - **UI**: React 18+ / TypeScript
 - **Styling**: Tailwind CSS v3 + CSS variables (tokens.css)
 - **Data**: Supabase (Postgres)
-- **Auth**: Clerk (not Supabase Auth)
+- **Auth**: ~~Clerk (not Supabase Auth)~~ — **not adopted.** The product uses Supabase Auth; the Clerk migration was never started and is cancelled (SF-II settled decision #2).
 - **Hosting**: Vercel
 - **Payments**: Stripe
 
@@ -383,7 +383,12 @@ Apply this on every route before committing. The starfield, the mono coordinates
 
 When wiring the auth, data, or payments layer:
 
-- **Clerk UI**: override the Clerk appearance to match. Use `<SignIn appearance={{ elements: { card: 'bg-sf-surface border border-sf-border rounded-none', formButtonPrimary: 'bg-sf-teal text-sf-void rounded-none tracking-wide uppercase' } }} />`. No rounded pill buttons, no default Clerk purple.
+> Clerk was not adopted (auth is Supabase Auth; the migration is cancelled).
+> The Clerk bullet below is kept as history only. Its styling intent (zero
+> radius, no pill buttons, no default vendor colours) applies to the
+> Supabase Auth screens in `src/pages/Auth.tsx`.
+
+- **Clerk UI** (not adopted): override the Clerk appearance to match. Use `<SignIn appearance={{ elements: { card: 'bg-sf-surface border border-sf-border rounded-none', formButtonPrimary: 'bg-sf-teal text-sf-void rounded-none tracking-wide uppercase' } }} />`. No rounded pill buttons, no default Clerk purple.
 - **Supabase error messages**: map raw PostgREST errors to Ship's Voice before showing to user. `23505` → `RECORD CONFLICT. ENTRY ALREADY ON FILE.`
 - **Stripe checkout redirect**: on success, show a panel with `TRANSACTION LOGGED` + mono transaction ID + amount in mono monospace. Never "Payment successful! 🎉".
 

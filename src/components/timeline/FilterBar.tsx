@@ -128,8 +128,8 @@ const FilterBar = () => {
               variant="outline"
               size="sm"
               className={cn(
-                "h-8 text-xs gap-1",
-                filter.trackIds.length > 0 && "border-primary/50 bg-primary/5"
+                "h-8 text-xs gap-1 min-h-hit",
+                filter.trackIds.length > 0 && "border-primary bg-primary/5"
               )}
             >
               Tracks
@@ -171,8 +171,8 @@ const FilterBar = () => {
             variant="outline"
             size="sm"
             className={cn(
-              "h-8 text-xs gap-1",
-              filter.eventTypes.length > 0 && "border-primary/50 bg-primary/5"
+              "h-8 text-xs gap-1 min-h-hit",
+              filter.eventTypes.length > 0 && "border-primary bg-primary/5"
             )}
           >
             Type
@@ -184,7 +184,7 @@ const FilterBar = () => {
             <ChevronDown className="w-3 h-3 ml-0.5" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-56 p-2 max-h-64 overflow-y-auto" align="start">
+        <PopoverContent className="w-56 p-2 max-h-64 overflow-y-auto sf-sb" align="start">
           <div className="space-y-2">
             {eventTypeCategories.map((cat) => (
               <div key={cat.label}>
@@ -235,8 +235,8 @@ const FilterBar = () => {
             variant="outline"
             size="sm"
             className={cn(
-              "h-8 text-xs gap-1",
-              filter.dateRange && "border-primary/50 bg-primary/5"
+              "h-8 text-xs gap-1 min-h-hit",
+              filter.dateRange && "border-primary bg-primary/5"
             )}
           >
             Date Range
@@ -312,8 +312,8 @@ const FilterBar = () => {
               variant="outline"
               size="sm"
               className={cn(
-                "h-8 text-xs gap-1",
-                filter.tags.length > 0 && "border-primary/50 bg-primary/5"
+                "h-8 text-xs gap-1 min-h-hit",
+                filter.tags.length > 0 && "border-primary bg-primary/5"
               )}
             >
               Tags
@@ -325,7 +325,7 @@ const FilterBar = () => {
               <ChevronDown className="w-3 h-3 ml-0.5" />
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-52 p-2 max-h-48 overflow-y-auto" align="start">
+          <PopoverContent className="w-52 p-2 max-h-48 overflow-y-auto sf-sb" align="start">
             <div className="space-y-1">
               {allTags.map((tag) => (
                 <label
@@ -349,7 +349,7 @@ const FilterBar = () => {
         <Button
           variant="ghost"
           size="sm"
-          className="h-8 text-xs text-t3 hover:text-t1 gap-1"
+          className="h-8 text-xs text-t3 hover:text-t1 gap-1 min-h-hit"
           onClick={() => dispatch({ type: "CLEAR_FILTERS" })}
         >
           <X className="w-3 h-3" />

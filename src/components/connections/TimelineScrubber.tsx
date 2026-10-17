@@ -123,7 +123,7 @@ export function TimelineScrubber({
             variant="ghost"
             onClick={handleRewind}
             aria-label="Back to the first epoch"
-            className="h-8 w-8 p-0 text-t3 hover:text-t1"
+            className="h-8 w-8 p-0 text-t3 hover:text-t1 min-h-hit min-w-hit"
           >
             <SkipBack className="w-3 h-3" />
           </Button>
@@ -132,7 +132,7 @@ export function TimelineScrubber({
             variant="ghost"
             onClick={togglePlay}
             aria-label={isPlaying ? "Pause" : "Play the epochs"}
-            className="h-8 w-8 p-0 text-t3 hover:text-t1"
+            className="h-8 w-8 p-0 text-t3 hover:text-t1 min-h-hit min-w-hit"
           >
             {isPlaying ? (
               <Pause className="w-3 h-3" />

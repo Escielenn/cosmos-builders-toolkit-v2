@@ -15,7 +15,7 @@ const QuickUpgradeCard = () => {
         Unlock {PRO_TOOL_IDS.length} More Tools
       </h3>
 
-      <p className="text-sm text-t3 text-center mb-4">
+      <p className="text-sm text-t2 text-center mb-4">
         Starting at <span className="text-sf-amber dark:text-sf-amber font-medium">${PRICING.pro.monthly.price}/mo</span>
       </p>
 

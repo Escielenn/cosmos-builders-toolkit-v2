@@ -13,8 +13,8 @@
 It costs almost nothing, because of a decision already made: the palette is *solved*, not chosen. `design/themes.py` takes a base seed and a primary hue and derives everything else against the same contrast targets as the default. So:
 
 - **10 bases** — six dark (Void, Charcoal, Graphite, Midnight, Abyss, Umber), four light (Paper, Sky, Fog, Dawn)
-- **7 primaries** — Teal, Cyan, Emerald, Azure, Violet, Amber, Magenta
-- **70 themes, zero contrast failures**, verified by running it. `design/theme-proof.html` shows every one.
+- **6 primaries** — Teal, Emerald, Azure, Violet, Amber, Magenta (Cyan was offered briefly and removed again 2026-10-17; legacy cyan stays retired, SF-II settled decision #3)
+- **60 themes, zero contrast failures**, verified by running it. `design/theme-proof.html` shows every one.
 
 Adding a base is one line. Adding a primary is one line. Nothing is hand-tuned, so nothing can drift.
 
@@ -212,7 +212,7 @@ All in `14-RENDER-ENGINE.md`. The headline: **one engine (`forge-gl`), five scen
 
 ### 2.5 Platform — the things that make it feel finished
 
-- **Theme system** — `design/themes.py`, 70 themes, `ThemePicker.tsx`. **Built.**
+- **Theme system** — `design/themes.py`, 60 themes, `ThemePicker.tsx`. **Built.**
 - **Display settings** — contrast, ambient, motion, density (comfortable / compact). ◆ `StellarBackground.tsx`.
 - **Command palette** — ⌘K, as above.
 - **Onboarding** — "Begin survey": name a world → pick a star → the Bridge appears with three Situations already waiting. Under five minutes to the first *"oh."*
@@ -324,7 +324,7 @@ Read docs/stellarforge/13-THE-LIFT.md §0 and components/ThemePicker.tsx.
 2. Copy ThemePicker.tsx into src/components/ui/. Wire it into Settings
    under DISPLAY, above the contrast/ambient controls.
 3. Add the no-flash script from ThemePicker's footer comment to index.html.
-4. Verify: switch to midnight-cyan, reload, no flash, /sf-contrast clean.
+4. Verify: switch to midnight-emerald, reload, no flash, /sf-contrast clean.
    Switch to paper-teal, screenshot the Studio and one tool page.
 
 Constraint: if any component still shows teal on a button after switching

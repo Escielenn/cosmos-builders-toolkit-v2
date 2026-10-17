@@ -85,6 +85,7 @@ import {
   getIdentityLabel,
 } from "@/lib/lexdrift/calculations";
 import type { FormStateForCalc, ContactEvent, AdditionalShip } from "@/lib/lexdrift/calculations";
+import { writeStandaloneBackup } from "@/lib/standalone-backup";
 
 // ─── FormState ───────────────────────────────────────────────────────
 
@@ -143,7 +144,7 @@ const SEVERITY_STYLES = {
   dialect: { text: "text-sf-emerald", border: "border-l-emerald-400", bg: "bg-emerald-400/10" },
   significant: { text: "text-sf-primary-text", border: "border-l-sf-primary", bg: "bg-sf-primary/10" },
   reduced: { text: "text-orange-500", border: "border-l-orange-500", bg: "bg-orange-500/10" },
-  separate: { text: "text-sf-crimson", border: "border-l-red-500", bg: "bg-red-500/10" },
+  separate: { text: "text-sf-crimson-text", border: "border-l-red-500", bg: "bg-red-500/10" },
 };
 
 // ─── Component ───────────────────────────────────────────────────────
@@ -199,7 +200,7 @@ const LexDrift = () => {
           setWorksheetTags(existingWorksheet.tags);
         }
         toast({
-          title: "Worksheet Loaded",
+          title: "WORKSHEET LOADED.",
           description: "WORK RESTORED FROM CLOUD.",
         });
       } catch {
@@ -421,7 +422,7 @@ const LexDrift = () => {
   // ─── Save / Load / Export ──────────────────────────────────────────
 
   const handleSave = async () => {
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(formState));
+    writeStandaloneBackup(LOCAL_STORAGE_KEY, formState, { worldId, signedIn: !!user });
 
     if (worldId && user) {
       const worksheetData = formState as unknown as Json;
@@ -442,7 +443,7 @@ const LexDrift = () => {
         // Error handled by mutation
       }
     } else {
-      toast({ title: "Draft Saved", description: "WORK SECURED TO LOCAL STORAGE." });
+      toast({ title: "DRAFT SAVED.", description: "WORK SECURED TO LOCAL STORAGE." });
     }
   };
 
@@ -553,7 +554,7 @@ const LexDrift = () => {
             icon={<Globe className="w-5 h-5" />}
             defaultOpen={true}
           >
-            <p className="text-sm text-t3 italic mb-6">{SECTION_HELPERS.mission}</p>
+            <p className="text-sm text-t2 italic mb-6">{SECTION_HELPERS.mission}</p>
             <div className="space-y-6">
               {/* Duration */}
               <div className="space-y-3">
@@ -628,7 +629,7 @@ const LexDrift = () => {
             levelNumber={2}
             icon={<Languages className="w-5 h-5" />}
           >
-            <p className="text-sm text-t3 italic mb-6">{SECTION_HELPERS.linguistic}</p>
+            <p className="text-sm text-t2 italic mb-6">{SECTION_HELPERS.linguistic}</p>
             <div className="space-y-6">
               {/* Starting Languages */}
               <div className="space-y-3">
@@ -774,7 +775,7 @@ const LexDrift = () => {
             icon={<GraduationCap className="w-5 h-5" />}
             defaultOpen={true}
           >
-            <p className="text-sm text-t3 italic mb-6">{SECTION_HELPERS.social}</p>
+            <p className="text-sm text-t2 italic mb-6">{SECTION_HELPERS.social}</p>
             <div className="space-y-6">
               {/* Education Policy */}
               <div className="space-y-2">
@@ -1014,7 +1015,7 @@ const LexDrift = () => {
                     <p className="font-mono text-xs uppercase tracking-sf-wide text-t2 mb-2">
                       Sound Changes
                     </p>
-                    <p className="text-sm text-t3 leading-relaxed">
+                    <p className="text-sm text-t2 leading-relaxed">
                       {calculationResult.soundChanges}
                     </p>
                   </GlassPanel>
@@ -1022,7 +1023,7 @@ const LexDrift = () => {
                     <p className="font-mono text-xs uppercase tracking-sf-wide text-t2 mb-2">
                       Grammar Changes
                     </p>
-                    <p className="text-sm text-t3 leading-relaxed">
+                    <p className="text-sm text-t2 leading-relaxed">
                       {calculationResult.grammarChanges}
                     </p>
                   </GlassPanel>
@@ -1039,7 +1040,7 @@ const LexDrift = () => {
                       ({calculationResult.historicalAnalogue.period})
                     </span>
                   </p>
-                  <p className="text-sm text-t3 leading-relaxed">
+                  <p className="text-sm text-t2 leading-relaxed">
                     {calculationResult.historicalAnalogue.description}
                   </p>
                 </GlassPanel>
@@ -1076,7 +1077,7 @@ const LexDrift = () => {
                     <p className="font-mono text-xs uppercase tracking-sf-wide text-sf-amber/60 mb-2">
                       Liturgical Preservation
                     </p>
-                    <p className="text-sm text-t3 leading-relaxed">
+                    <p className="text-sm text-t2 leading-relaxed">
                       {calculationResult.liturgicalNote}
                     </p>
                   </GlassPanel>
@@ -1139,7 +1140,7 @@ const LexDrift = () => {
                     {calculationResult.storyCallouts.map((callout, i) => (
                       <div
                         key={i}
-                        className={`p-4 rounded-r-lg border-l-2 ${sColors.border} ${sColors.bg}`}
+                        className={`p-4 rounded-r-none border-l-2 ${sColors.border} ${sColors.bg}`}
                       >
                         <p className="font-heading text-sm font-medium mb-1">
                           {callout.title}
@@ -1170,7 +1171,7 @@ const LexDrift = () => {
             levelNumber={5}
             icon={<BookOpen className="w-5 h-5" />}
           >
-            <p className="text-sm text-t3 italic mb-6">{SECTION_HELPERS.samples}</p>
+            <p className="text-sm text-t2 italic mb-6">{SECTION_HELPERS.samples}</p>
             <div className="space-y-4">
               <GlassPanel className="p-4 border-l-4 border-l-primary">
                 <p className="font-mono text-xs uppercase tracking-sf-wide text-primary/60 mb-2">
@@ -1221,7 +1222,7 @@ const LexDrift = () => {
             levelNumber={6}
             icon={<Ship className="w-5 h-5" />}
           >
-            <p className="text-sm text-t3 italic mb-6">{SECTION_HELPERS.multiShip}</p>
+            <p className="text-sm text-t2 italic mb-6">{SECTION_HELPERS.multiShip}</p>
             <div className="space-y-6">
               <div className="flex items-center gap-3">
                 <Switch
@@ -1385,7 +1386,7 @@ const LexDrift = () => {
             levelNumber={7}
             icon={<Users className="w-5 h-5" />}
           >
-            <p className="text-sm text-t3 italic mb-6">{SECTION_HELPERS.story}</p>
+            <p className="text-sm text-t2 italic mb-6">{SECTION_HELPERS.story}</p>
             <div className="space-y-8">
               <div className="space-y-2">
                 <Label>Linguistic Identity</Label>

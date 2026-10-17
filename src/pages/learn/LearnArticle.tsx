@@ -93,7 +93,7 @@ const LearnArticle = () => {
           </Link>
           <GlassPanel className="p-8 text-center">
             <h1 className="text-2xl font-medium mb-2">Article Not Found</h1>
-            <p className="text-t3">
+            <p className="text-t2">
               This article doesn't exist or hasn't been published yet.
             </p>
           </GlassPanel>
@@ -128,7 +128,7 @@ const LearnArticle = () => {
           <h1 className="font-display text-3xl md:text-4xl font-medium mt-4 mb-4">
             {article.title}
           </h1>
-          <p className="text-lg text-t3 mb-4">
+          <p className="text-lg text-t2 mb-4">
             {article.description}
           </p>
           <div className="flex items-center gap-4 text-sm text-t3">
@@ -162,7 +162,7 @@ const LearnArticle = () => {
             ) : FallbackContent ? (
               <FallbackContent />
             ) : (
-              <p className="text-t3">
+              <p className="text-t2">
                 Content not available.
               </p>
             )}

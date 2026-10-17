@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/tooltip";
 import { useToast } from "@/hooks/use-toast";
 import { useExportPreferences } from "@/hooks/use-export-preferences";
-import { setActiveTheme, resetActiveTheme } from "@/lib/pdf/styles";
+import { resolvePdfTemplate } from "@/lib/pdf/lazy-template";
 
 interface QuickExportButtonProps {
   toolName: string;
@@ -128,17 +128,21 @@ const QuickExportButton = ({
           const template = format === "pdf-summary" ? summaryTemplate : fullTemplate;
           if (!template) {
             toast({
-              title: "Template unavailable",
+              title: "TEMPLATE UNAVAILABLE.",
               description: "PDF template not available for this tool. Try JSON or Text.",
               variant: "destructive",
             });
             return;
           }
-          const { pdf } = await import("@react-pdf/renderer");
+          const [{ pdf }, { setActiveTheme, resetActiveTheme }, doc] = await Promise.all([
+            import("@react-pdf/renderer"),
+            import("@/lib/pdf/styles"),
+            resolvePdfTemplate(template),
+          ]);
           setActiveTheme(preferences.themeId);
           let blob: Blob;
           try {
-            blob = await pdf(template).toBlob();
+            blob = await pdf(doc).toBlob();
           } finally {
             resetActiveTheme();
           }
@@ -154,7 +158,7 @@ const QuickExportButton = ({
     } catch (error) {
       console.error("Quick export error:", error);
       toast({
-        title: "Export failed",
+        title: "EXPORT FAILED.",
         description: "There was an error generating your export.",
         variant: "destructive",
       });

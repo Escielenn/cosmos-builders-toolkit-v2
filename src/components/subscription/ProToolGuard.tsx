@@ -51,10 +51,10 @@ const ProToolGuard = ({ toolId, children }: ProToolGuardProps) => {
               VANGUARD EARLY ACCESS
             </h1>
 
-            <p className="text-t3 mb-2">
+            <p className="text-t2 mb-2">
               This instrument is in early access, available exclusively to Vanguard members.
             </p>
-            <p className="text-sm text-t3 mb-6">
+            <p className="text-sm text-t2 mb-6">
               Vanguard members get new tools first, vote on the roadmap, and more.
             </p>
 
@@ -103,10 +103,10 @@ const ProToolGuard = ({ toolId, children }: ProToolGuardProps) => {
               ACCESS EXPIRED
             </h1>
 
-            <p className="text-t3 mb-2">
+            <p className="text-t2 mb-2">
               Your Pro Access has ended, but your worlds and worksheets are exactly where you left them.
             </p>
-            <p className="text-sm text-t3 mb-6">
+            <p className="text-sm text-t2 mb-6">
               Resubscribe to pick up right where you left off.
             </p>
 
@@ -149,7 +149,7 @@ const ProToolGuard = ({ toolId, children }: ProToolGuardProps) => {
             RESTRICTED INSTRUMENT
           </h1>
 
-          <p className="text-t3 mb-6">
+          <p className="text-t2 mb-6">
             This instrument requires Pro clearance. Upgrade to access the full manifest.
           </p>
 

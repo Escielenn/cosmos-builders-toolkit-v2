@@ -96,14 +96,14 @@ const CreateWorldButton = () => {
       <button onClick={handleClick} className="w-full text-left">
         <GlassPanel
           hover
-          className="p-5 h-full min-h-[200px] flex flex-col items-center justify-center gap-3 border-dashed border-2 border-sf-stellar/15 hover:border-sf-stellar/40 group"
+          className="p-5 h-full min-h-[200px] flex flex-col items-center justify-center gap-3 border-dashed border-2 border-sf-stellar hover:border-sf-stellar group"
         >
-          <div className="w-14 h-14 rounded-sm bg-gradient-to-br from-[#5B8DEF]/10 to-[#5B8DEF]/5 border border-sf-stellar/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+          <div className="w-14 h-14 rounded-sm bg-gradient-to-br from-[#5B8DEF]/10 to-[#5B8DEF]/5 border border-sf-stellar flex items-center justify-center group-hover:scale-110 transition-transform">
             <Plus className="w-7 h-7 text-sf-stellar-text" />
           </div>
           <div className="text-center">
             <h3 className="font-heading font-medium text-lg">INITIALIZE NEW WORLD</h3>
-            <p className="text-sm text-t3 mt-1">
+            <p className="text-sm text-t2 mt-1">
               Begin survey.
             </p>
           </div>
@@ -178,10 +178,10 @@ const CreateWorldButton = () => {
               World Initialized.
             </h2>
             <div className="space-y-2">
-              <p className="text-sm text-t3 leading-relaxed">
+              <p className="text-sm text-t2 leading-relaxed">
                 Everything you create here is yours.
               </p>
-              <p className="text-sm text-t3 leading-relaxed">
+              <p className="text-sm text-t2 leading-relaxed">
                 Encrypted, versioned, exportable. Always.
               </p>
             </div>

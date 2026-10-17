@@ -50,7 +50,7 @@ const components: PortableTextComponents = {
   },
   marks: {
     strong: ({ children }) => (
-      <strong className="font-semibold">{children}</strong>
+      <strong className="font-medium">{children}</strong>
     ),
     em: ({ children }) => <em className="italic">{children}</em>,
     code: ({ children }) => (
@@ -96,7 +96,7 @@ const components: PortableTextComponents = {
     code: ({ value }) => {
       const codeValue = value as CodeValue;
       return (
-        <pre className="bg-muted p-4 rounded-none overflow-x-auto my-4">
+        <pre className="bg-muted p-4 rounded-none overflow-x-auto sf-sb my-4">
           <code className="text-sm font-mono">
             {codeValue?.code}
           </code>

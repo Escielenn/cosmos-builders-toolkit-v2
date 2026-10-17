@@ -86,7 +86,8 @@ import {
   aggregateImplications,
   buildSensoriumCopyText,
 } from "@/lib/sensorium/calculations";
-import { pushSensoriumToWorksheets } from "@/lib/sensorium/push-to-worksheet";
+import { recordSensoriumInsights } from "@/lib/sensorium/push-to-worksheet";
+import { mapError } from "@/lib/ship-voice";
 import { generatePerceptualNarrative } from "@/lib/sensorium/perceptual-narrative";
 import {
   LinkedWorksheetRef,
@@ -119,6 +120,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { writeStandaloneBackup } from "@/lib/standalone-backup";
 
 const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
 
@@ -382,28 +384,25 @@ const Sensorium = () => {
   };
 
   const handlePushToWorksheets = useCallback(async () => {
+    if (!currentWorksheetId) {
+      toast({ title: "NOTHING RECORDED.", description: "SAVE THIS WORKSHEET BEFORE RECORDING INSIGHTS." });
+      return;
+    }
     setIsPushing(true);
     try {
-      const result = await pushSensoriumToWorksheets(formState);
-      if (result.updated.length > 0) {
-        toast({ title: `Pushed to ${result.updated.length} worksheet(s)` });
-      }
-      if (result.errors.length > 0) {
-        toast({
-          title: "Some pushes failed",
-          description: result.errors.join("; "),
-          variant: "destructive",
-        });
-      }
-      if (result.updated.length === 0 && result.errors.length === 0) {
-        toast({ title: "No linked worksheets to push to" });
-      }
-    } catch {
-      toast({ title: "Push failed", variant: "destructive" });
+      const { insights, informs } = await recordSensoriumInsights(formState, currentWorksheetId);
+      // Keep them in form state so the next save of this worksheet keeps them.
+      setFormState((prev) => ({ ...prev, sensoriumInsights: insights }));
+      toast({
+        title: "INSIGHTS SECURED ON SENSORIUM RECORD.",
+        description: informs.length > 0 ? `LINKED: ${informs.join(", ").toUpperCase()}.` : undefined,
+      });
+    } catch (error) {
+      toast({ title: "NOTHING RECORDED.", description: mapError(error), variant: "destructive" });
     } finally {
       setIsPushing(false);
     }
-  }, [formState, toast]);
+  }, [formState, currentWorksheetId, toast]);
 
   const handleCopyResults = () => {
     const text = buildSensoriumCopyText(formState);
@@ -412,15 +411,15 @@ const Sensorium = () => {
   };
 
   const handleSave = async () => {
-    // Always save to localStorage
+    // Browser backup in standalone mode only (see lib/standalone-backup)
     try {
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(formState));
+      writeStandaloneBackup(LOCAL_STORAGE_KEY, formState, { worldId, signedIn: !!user });
     } catch (e) {
       console.error("localStorage save failed", e);
     }
 
     if (!worldId || !user) {
-      toast({ title: "Saved locally" });
+      toast({ title: "SAVED LOCALLY." });
       return;
     }
 
@@ -440,7 +439,7 @@ const Sensorium = () => {
       setCurrentWorksheetId(created.id);
       if (!currentWorksheetTitle) setCurrentWorksheetTitle(created.title);
     }
-    toast({ title: "Saved to cloud" });
+    toast({ title: "SAVED TO CLOUD." });
   };
 
   const handleWorksheetSelect = (ws: { id: string; title: string; data: unknown }) => {
@@ -621,7 +620,7 @@ const Sensorium = () => {
               onToggle={(id) =>
                 setExpandedSections((prev) => {
                   const next = new Set(prev);
-                  next.has(id) ? next.delete(id) : next.add(id);
+                  if (next.has(id)) next.delete(id); else next.add(id);
                   return next;
                 })
               }
@@ -926,7 +925,7 @@ const Sensorium = () => {
               onToggle={(id) =>
                 setExpandedSections((prev) => {
                   const next = new Set(prev);
-                  next.has(id) ? next.delete(id) : next.add(id);
+                  if (next.has(id)) next.delete(id); else next.add(id);
                   return next;
                 })
               }
@@ -968,7 +967,7 @@ const Sensorium = () => {
 
                   <TabsContent value="derive" className="mt-4">
                     <div className="space-y-3 mb-4">
-                      <p className="text-sm text-t3">
+                      <p className="text-sm text-t2">
                         Based on your environment, each sense is scored for plausibility. <strong className="text-t1">Click any card to add it to your species' final sensory suite.</strong> You can select implausible senses too, sometimes the best stories break the rules.
                       </p>
                       <div className="flex flex-wrap gap-3 text-[12px]">
@@ -981,7 +980,7 @@ const Sensorium = () => {
                   </TabsContent>
                   <TabsContent value="validate" className="mt-4">
                     <div className="space-y-3 mb-4">
-                      <p className="text-sm text-t3">
+                      <p className="text-sm text-t2">
                         Pick senses freely without environmental guidance, then validate them. <strong className="text-t1">Click cards to select, then review plausibility scores below.</strong>
                       </p>
                       <div className="flex flex-wrap gap-3 text-[12px]">
@@ -1090,7 +1089,7 @@ const Sensorium = () => {
                       <div className="mt-2">
                         <p className="text-xs text-t4 font-medium">Conflicts:</p>
                         {validationResult.conflictingSenses.map((c, i) => (
-                          <p key={i} className="text-xs text-sf-crimson">
+                          <p key={i} className="text-xs text-sf-crimson-text">
                             {getModalityById(c.a)?.name} ↔ {getModalityById(c.b)?.name}: {c.reason}
                           </p>
                         ))}
@@ -1106,7 +1105,7 @@ const Sensorium = () => {
                           finalSelection: [...prev.selectedModalities],
                           validationResult,
                         }));
-                        toast({ title: "Selection accepted into final palette" });
+                        toast({ title: "SELECTION ACCEPTED INTO FINAL PALETTE." });
                       }}
                     >
                       Accept into Final Selection
@@ -1126,7 +1125,7 @@ const Sensorium = () => {
               onToggle={(id) =>
                 setExpandedSections((prev) => {
                   const next = new Set(prev);
-                  next.has(id) ? next.delete(id) : next.add(id);
+                  if (next.has(id)) next.delete(id); else next.add(id);
                   return next;
                 })
               }
@@ -1147,7 +1146,7 @@ const Sensorium = () => {
                     />
                   </div>
                   {metabolicBudget.overBudget && (
-                    <p className="text-xs text-sf-crimson flex items-center gap-1">
+                    <p className="text-xs text-sf-crimson-text flex items-center gap-1">
                       <AlertTriangle className="h-3 w-3" />
                       Over budget, this sensory suite requires extraordinary metabolic justification.
                     </p>
@@ -1192,7 +1191,7 @@ const Sensorium = () => {
               onToggle={(id) =>
                 setExpandedSections((prev) => {
                   const next = new Set(prev);
-                  next.has(id) ? next.delete(id) : next.add(id);
+                  if (next.has(id)) next.delete(id); else next.add(id);
                   return next;
                 })
               }
@@ -1280,14 +1279,14 @@ const Sensorium = () => {
               onToggle={(id) =>
                 setExpandedSections((prev) => {
                   const next = new Set(prev);
-                  next.has(id) ? next.delete(id) : next.add(id);
+                  if (next.has(id)) next.delete(id); else next.add(id);
                   return next;
                 })
               }
             >
               <div className="space-y-6">
                 {formState.finalSelection.length === 0 ? (
-                  <p className="text-sm text-t3 italic">
+                  <p className="text-sm text-t2 italic">
                     Select senses in the Sensory Palette to see worldbuilding implications.
                   </p>
                 ) : (
@@ -1363,14 +1362,14 @@ const Sensorium = () => {
               onToggle={(id) =>
                 setExpandedSections((prev) => {
                   const next = new Set(prev);
-                  next.has(id) ? next.delete(id) : next.add(id);
+                  if (next.has(id)) next.delete(id); else next.add(id);
                   return next;
                 })
               }
             >
               <div className="space-y-4">
                 {formState.finalSelection.length === 0 ? (
-                  <p className="text-sm text-t3 italic">
+                  <p className="text-sm text-t2 italic">
                     Select senses to see perception gaps vs. human baseline.
                   </p>
                 ) : (
@@ -1387,14 +1386,14 @@ const Sensorium = () => {
                             </p>
                           ))
                         ) : (
-                          <p className="text-sm text-t3 italic">
+                          <p className="text-sm text-t2 italic">
                             No alien senses beyond human range
                           </p>
                         )}
                       </GlassPanel>
 
                       <GlassPanel className="p-4">
-                        <h4 className="text-sm font-medium text-sf-crimson mb-2">
+                        <h4 className="text-sm font-medium text-sf-crimson-text mb-2">
                           Species Blind (Humans Have)
                         </h4>
                         {perceptionGaps.speciesBlind.length > 0 ? (
@@ -1404,7 +1403,7 @@ const Sensorium = () => {
                             </p>
                           ))
                         ) : (
-                          <p className="text-sm text-t3 italic">
+                          <p className="text-sm text-t2 italic">
                             No human senses missing
                           </p>
                         )}
@@ -1425,7 +1424,7 @@ const Sensorium = () => {
                             {MODALITIES.map((mod) => {
                               const has = formState.finalSelection.includes(mod.id);
                               return (
-                                <div key={mod.id} className={`flex items-center gap-2 text-xs ${has ? "text-t2" : "text-t4 opacity-40"}`}>
+                                <div key={mod.id} className={`flex items-center gap-2 text-xs ${has ? "text-t2" : "text-sf-disabled-text"}`}>
                                   <span className={`w-1.5 h-1.5 flex-shrink-0 ${has ? "bg-emerald-400" : "bg-tier-4"}`} />
                                   {mod.name}
                                 </div>
@@ -1441,7 +1440,7 @@ const Sensorium = () => {
                             {MODALITIES.map((mod) => {
                               const has = HUMAN_SENSES.includes(mod.id);
                               return (
-                                <div key={mod.id} className={`flex items-center gap-2 text-xs ${has ? "text-t2" : "text-t4 opacity-40"}`}>
+                                <div key={mod.id} className={`flex items-center gap-2 text-xs ${has ? "text-t2" : "text-sf-disabled-text"}`}>
                                   <span className={`w-1.5 h-1.5 flex-shrink-0 ${has ? "bg-cyan-400" : "bg-tier-4"}`} />
                                   {mod.name}
                                 </div>
@@ -1458,7 +1457,7 @@ const Sensorium = () => {
                           Conflict Potential
                         </h4>
                         {perceptionGaps.conflictPotential.map((hook, i) => (
-                          <p key={i} className="text-sm text-t3">
+                          <p key={i} className="text-sm text-t2">
                             • {hook}
                           </p>
                         ))}
@@ -1534,7 +1533,7 @@ const Sensorium = () => {
               onToggle={(id) =>
                 setExpandedSections((prev) => {
                   const next = new Set(prev);
-                  next.has(id) ? next.delete(id) : next.add(id);
+                  if (next.has(id)) next.delete(id); else next.add(id);
                   return next;
                 })
               }
@@ -1625,7 +1624,7 @@ const Sensorium = () => {
                       disabled={isPushing}
                     >
                       <Upload className="h-4 w-4" />
-                      {isPushing ? "Pushing..." : "Push to Worksheets"}
+                      {isPushing ? "Recording..." : "Record Insights"}
                     </Button>
                   )}
                 </div>

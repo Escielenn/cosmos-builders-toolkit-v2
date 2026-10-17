@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 import { MoodboardPickerDialog } from "@/components/moodboard/MoodboardPickerDialog";
 
+import { mapError } from "@/lib/ship-voice";
 interface WorksheetCoverImageProps {
   imageUrl: string | null;
   onImageChange: (url: string | null) => void;
@@ -33,7 +34,7 @@ export function WorksheetCoverImage({
 
     if (!file.type.startsWith("image/")) {
       toast({
-        title: "Invalid file type",
+        title: "INVALID FILE TYPE.",
         description: "Select image file.",
         variant: "destructive",
       });
@@ -42,7 +43,7 @@ export function WorksheetCoverImage({
 
     if (file.size > 5 * 1024 * 1024) {
       toast({
-        title: "File too large",
+        title: "FILE TOO LARGE.",
         description: "Image must be under 5MB.",
         variant: "destructive",
       });
@@ -60,8 +61,8 @@ export function WorksheetCoverImage({
 
     if (uploadError) {
       toast({
-        title: "Upload failed",
-        description: uploadError.message,
+        title: "UPLOAD FAILED.",
+        description: mapError(uploadError),
         variant: "destructive",
       });
       setIsUploading(false);

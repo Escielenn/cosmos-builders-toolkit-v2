@@ -13,7 +13,7 @@ const Command = React.forwardRef<
   <CommandPrimitive
     ref={ref}
     className={cn(
-      "flex h-full w-full flex-col overflow-hidden rounded-md bg-popover text-popover-foreground",
+      "flex h-full w-full flex-col overflow-hidden rounded-none bg-popover text-popover-foreground",
       className,
     )}
     {...props}
@@ -41,7 +41,7 @@ const CommandInput = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive.Input>,
   React.ComponentPropsWithoutRef<typeof CommandPrimitive.Input>
 >(({ className, ...props }, ref) => (
-  <div className="flex items-center gap-3 p-4 border-b border-sf-line" cmdk-input-wrapper="">
+  <div className="flex items-center gap-3 p-4 border-b border-sf-line focus-within:ring-2 focus-within:ring-inset focus-within:ring-sf-focus" cmdk-input-wrapper="">
     <div className="flex items-center justify-center w-10 h-10 rounded-none bg-primary/10">
       <Search className="h-5 w-5 text-primary" />
     </div>
@@ -53,7 +53,7 @@ const CommandInput = React.forwardRef<
       )}
       {...props}
     />
-    <kbd className="hidden sm:inline-flex h-7 items-center gap-1 rounded-md border border-sf-line bg-muted/30 px-2.5 font-mono text-xs text-t3">
+    <kbd className="hidden sm:inline-flex h-7 items-center gap-1 rounded-none border border-sf-line bg-muted/30 px-2.5 font-mono text-xs text-t3">
       ESC
     </kbd>
   </div>
@@ -67,7 +67,7 @@ const CommandList = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <CommandPrimitive.List
     ref={ref}
-    className={cn("min-h-[300px] max-h-[400px] overflow-y-auto overflow-x-hidden", className)}
+    className={cn("min-h-[300px] max-h-[400px] overflow-y-auto sf-sb overflow-x-hidden", className)}
     {...props}
   />
 ));

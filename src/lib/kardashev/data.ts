@@ -25,7 +25,6 @@ export interface EnergySource {
 export interface CivilizationPreset {
   id: string;
   label: string;
-  emoji: string;
   powerWatts: number;
   description: string;
   source: "real" | "historical" | "fictional";
@@ -237,7 +236,6 @@ export const CIVILIZATION_PRESETS: CivilizationPreset[] = [
   {
     id: "ancient-rome",
     label: "Ancient Rome",
-    emoji: "🏛️",
     powerWatts: 3e9,
     description: "Peak Roman Empire (~100 CE). Human/animal labor, water mills, limited combustion.",
     source: "historical",
@@ -245,7 +243,6 @@ export const CIVILIZATION_PRESETS: CivilizationPreset[] = [
   {
     id: "industrial-revolution",
     label: "Industrial Revolution",
-    emoji: "🏭",
     powerWatts: 5e11,
     description: "Britain circa 1850. Coal-powered steam engines, early factories.",
     source: "historical",
@@ -253,7 +250,6 @@ export const CIVILIZATION_PRESETS: CivilizationPreset[] = [
   {
     id: "earth-2025",
     label: "Earth (2025)",
-    emoji: "🌍",
     powerWatts: 1.8e13,
     description: "Current human civilization. ~0.73 on the Kardashev scale.",
     source: "real",
@@ -261,7 +257,6 @@ export const CIVILIZATION_PRESETS: CivilizationPreset[] = [
   {
     id: "earth-2100-optimistic",
     label: "Earth (2100, optimistic)",
-    emoji: "🌐",
     powerWatts: 1e15,
     description: "Projected with fusion, extensive solar, and orbital infrastructure.",
     source: "real",
@@ -271,7 +266,6 @@ export const CIVILIZATION_PRESETS: CivilizationPreset[] = [
   {
     id: "star-trek-federation",
     label: "United Federation of Planets",
-    emoji: "🖖",
     powerWatts: 1e27,
     description: "Multi-system civilization with matter-antimatter warp cores. ~Type II.",
     source: "fictional",
@@ -280,7 +274,6 @@ export const CIVILIZATION_PRESETS: CivilizationPreset[] = [
   {
     id: "star-wars-empire",
     label: "Galactic Empire",
-    emoji: "⚔️",
     powerWatts: 1e35,
     description: "Galaxy-spanning empire. Death Star alone represents ~Type II output.",
     source: "fictional",
@@ -289,7 +282,6 @@ export const CIVILIZATION_PRESETS: CivilizationPreset[] = [
   {
     id: "the-culture",
     label: "The Culture",
-    emoji: "🔮",
     powerWatts: 1e30,
     description: "Post-scarcity civilization with grid energy and hyperspace taps. High Type II.",
     source: "fictional",
@@ -298,7 +290,6 @@ export const CIVILIZATION_PRESETS: CivilizationPreset[] = [
   {
     id: "xeelee",
     label: "Xeelee",
-    emoji: "✦",
     powerWatts: 1e42,
     description: "Cosmological-scale engineering. Manipulate spacetime at galactic scales. Type III+.",
     source: "fictional",
@@ -307,7 +298,6 @@ export const CIVILIZATION_PRESETS: CivilizationPreset[] = [
   {
     id: "timelords",
     label: "Time Lords",
-    emoji: "⏳",
     powerWatts: 1e45,
     description: "Mastery of time itself. Eye of Harmony captures a black hole. Near-Omega.",
     source: "fictional",
@@ -316,7 +306,6 @@ export const CIVILIZATION_PRESETS: CivilizationPreset[] = [
   {
     id: "downstreamers",
     label: "Downstreamers",
-    emoji: "∞",
     powerWatts: 1e48,
     description: "End-of-time descendants of humanity. Manipulate the timeline of the universe.",
     source: "fictional",

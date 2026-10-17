@@ -16,7 +16,9 @@ export function useHintDismissed(hintId: string): [boolean, () => void] {
   const dismiss = useCallback(() => {
     try {
       localStorage.setItem(HINT_PREFIX + hintId, "true");
-    } catch {}
+    } catch {
+      /* storage unavailable (private mode / quota); state stays in memory */
+    }
     setIsDismissed(true);
   }, [hintId]);
 

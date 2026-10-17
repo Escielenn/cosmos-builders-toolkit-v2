@@ -75,7 +75,7 @@ const AmbientEffects = () => {
       </div>
 
       <div
-        className="fixed inset-0 pointer-events-none select-none z-0 overflow-hidden"
+        className="fixed inset-0 pointer-events-none select-none z-0 overflow-hidden opacity-[var(--sf-ambient)]"
         aria-hidden="true"
       >
         {HEADER_BURSTS.map((b, i) => renderBurst(b, `h${i}`))}

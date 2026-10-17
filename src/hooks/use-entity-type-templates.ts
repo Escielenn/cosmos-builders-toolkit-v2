@@ -15,6 +15,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { mapError } from "@/lib/ship-voice";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -215,7 +216,7 @@ export function useCreateTemplate(worldId: string | undefined) {
     onError: (err) => {
       toast({
         title: "CREATE FAILED.",
-        description: err instanceof Error ? err.message : "Could not create template.",
+        description: mapError(err),
         variant: "destructive",
       });
     },
@@ -244,7 +245,7 @@ export function useUpdateTemplate(worldId: string | undefined) {
     onError: (err) => {
       toast({
         title: "UPDATE FAILED.",
-        description: err instanceof Error ? err.message : "Could not update template.",
+        description: mapError(err),
         variant: "destructive",
       });
     },
@@ -269,7 +270,7 @@ export function useDeleteTemplate(worldId: string | undefined) {
     onError: (err) => {
       toast({
         title: "DELETE FAILED.",
-        description: err instanceof Error ? err.message : "Could not delete template.",
+        description: mapError(err),
         variant: "destructive",
       });
     },
@@ -311,7 +312,7 @@ export function useCreateTemplateField(worldId: string | undefined) {
     onError: (err) => {
       toast({
         title: "FIELD CREATE FAILED.",
-        description: err instanceof Error ? err.message : "Could not create field.",
+        description: mapError(err),
         variant: "destructive",
       });
     },
@@ -340,7 +341,7 @@ export function useUpdateTemplateField(worldId: string | undefined) {
     onError: (err) => {
       toast({
         title: "FIELD UPDATE FAILED.",
-        description: err instanceof Error ? err.message : "Could not update field.",
+        description: mapError(err),
         variant: "destructive",
       });
     },
@@ -365,7 +366,7 @@ export function useDeleteTemplateField(worldId: string | undefined) {
     onError: (err) => {
       toast({
         title: "FIELD DELETE FAILED.",
-        description: err instanceof Error ? err.message : "Could not delete field.",
+        description: mapError(err),
         variant: "destructive",
       });
     },

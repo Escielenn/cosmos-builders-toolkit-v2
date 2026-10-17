@@ -13,6 +13,7 @@ import { z } from "zod";
 import { PageBursts } from "@/components/ui/data-burst";
 import { AUTH_BURSTS } from "@/lib/data-bursts";
 import { TOTAL_TOOL_COUNT } from "@/lib/tools-config";
+import { mapError } from "@/lib/ship-voice";
 
 const YOUTUBE_VIDEO_ID = "iGYxmAQa8DY";
 
@@ -79,7 +80,7 @@ const Auth = () => {
         title: "AUTHENTICATION FAILED.",
         description: error.message === "Invalid login credentials"
           ? "CREDENTIALS NOT RECOGNIZED. VERIFY AND RETRY."
-          : error.message,
+          : mapError(error),
         variant: "destructive",
       });
     } else {
@@ -95,7 +96,7 @@ const Auth = () => {
     if (error) {
       toast({
         title: `${provider.toUpperCase()} AUTHENTICATION FAILED.`,
-        description: error.message,
+        description: mapError(error),
         variant: "destructive",
       });
     }
@@ -124,7 +125,7 @@ const Auth = () => {
     if (error) {
       toast({
         title: "SIGNUP FAILED.",
-        description: error.message,
+        description: mapError(error),
         variant: "destructive",
       });
     } else {
@@ -148,7 +149,7 @@ const Auth = () => {
     <div className="relative min-h-screen bg-background flex flex-col">
       <PageBursts bursts={AUTH_BURSTS} />
 
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto sf-sb">
         <div className="container mx-auto px-4 max-w-4xl py-12 md:py-20 space-y-12">
 
           {/* Hero, display-font scale per April 2026 handoff */}
@@ -181,7 +182,7 @@ const Auth = () => {
               <h3 className="font-heading text-[12px] font-medium uppercase tracking-[0.2em] text-sf-primary-text mb-2">
                 Systematic Worldbuilding
               </h3>
-              <p className="text-sm text-t3">
+              <p className="text-sm text-t2">
                 {TOTAL_TOOL_COUNT} interconnected tools. Environment shapes biology, biology shapes
                 psychology, psychology shapes mythology, mythology shapes culture.
               </p>
@@ -193,7 +194,7 @@ const Auth = () => {
               <h3 className="font-heading text-[12px] font-medium uppercase tracking-[0.2em] text-sf-primary-text mb-2">
                 Cross-Tool Integration
               </h3>
-              <p className="text-sm text-t3">
+              <p className="text-sm text-t2">
                 Data flows between tools. Your spacecraft references your planet's
                 atmosphere automatically.
               </p>
@@ -205,7 +206,7 @@ const Auth = () => {
               <h3 className="font-heading text-[12px] font-medium uppercase tracking-[0.2em] text-sf-primary-text mb-2">
                 Export Everything
               </h3>
-              <p className="text-sm text-t3">
+              <p className="text-sm text-t2">
                 PDF reports, DOCX documents, shared links, and full World Bible exports.
                 Your data is always yours.
               </p>
@@ -233,7 +234,7 @@ const Auth = () => {
               <h2 className="font-heading text-xl font-light tracking-[0.1em] mb-2">
                 CREATE ACCOUNT
               </h2>
-              <p className="text-sm text-t3">
+              <p className="text-sm text-t2">
                 Open early access. Still under construction. Your feedback shapes what we ship.
               </p>
             </div>
@@ -246,7 +247,7 @@ const Auth = () => {
                 <h3 className="font-heading text-sm font-light tracking-[0.1em] uppercase">
                   ACCOUNT CREATED
                 </h3>
-                <p className="text-sm text-t3">
+                <p className="text-sm text-t2">
                   Check your email to confirm. You can sign in once verified.
                 </p>
               </div>
@@ -308,7 +309,7 @@ const Auth = () => {
                         disabled={isSigningUp}
                       />
                     </div>
-                    {signupErrors.email && <p className="text-sm text-sf-crimson">{signupErrors.email}</p>}
+                    {signupErrors.email && <p className="text-sm text-sf-crimson-text">{signupErrors.email}</p>}
                   </div>
 
                   <div className="space-y-2">
@@ -323,7 +324,7 @@ const Auth = () => {
                         disabled={isSigningUp}
                       />
                     </div>
-                    {signupErrors.password && <p className="text-sm text-sf-crimson">{signupErrors.password}</p>}
+                    {signupErrors.password && <p className="text-sm text-sf-crimson-text">{signupErrors.password}</p>}
                   </div>
 
                   <Button type="submit" className="w-full gap-2" size="lg" disabled={isSigningUp}>
@@ -395,7 +396,7 @@ const Auth = () => {
                         disabled={isLoading}
                       />
                     </div>
-                    {errors.email && <p className="text-sm text-sf-crimson">{errors.email}</p>}
+                    {errors.email && <p className="text-sm text-sf-crimson-text">{errors.email}</p>}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="login-password">Password</Label>
@@ -409,7 +410,7 @@ const Auth = () => {
                         disabled={isLoading}
                       />
                     </div>
-                    {errors.password && <p className="text-sm text-sf-crimson">{errors.password}</p>}
+                    {errors.password && <p className="text-sm text-sf-crimson-text">{errors.password}</p>}
                   </div>
                   <Button type="submit" className="w-full gap-2" size="lg" disabled={isLoading}>
                     {isLoading ? (

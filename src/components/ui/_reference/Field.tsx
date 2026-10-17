@@ -72,7 +72,7 @@ Select.displayName = 'Select';
 
 /** Helper text. t3, never t4 — this is content, not a micro label. */
 export function Hint({ children }: { children: ReactNode }) {
-  return <p className="mt-sf-2 text-sf-small text-t3 sf-measure">{children}</p>;
+  return <p className="mt-sf-2 text-sf-small text-t2 sf-measure">{children}</p>;
 }
 
 /** Error. Crimson -text stop plus a `//` prefix, so colour is not the only signal. */

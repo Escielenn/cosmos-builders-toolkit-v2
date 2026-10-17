@@ -1,5 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
-import { ENTITY_MASTER_FIELDS } from "@/lib/entity-config";
+import type { Json } from "@/integrations/supabase/types";
+import { ENTITY_MASTER_FIELDS, readMasterField } from "@/lib/entity-config";
 import { getNestedValue } from "@/lib/entity-prepopulate";
 import { TOOL_TYPE_MAP } from "@/services/world-data";
 
@@ -59,7 +60,7 @@ export async function syncWorksheetToEntity(
     const worksheetValue = getNestedValue(worksheetData, worksheetPath);
     if (worksheetValue === undefined || worksheetValue === null || worksheetValue === "") continue;
 
-    const entityValue = metadata[field.key];
+    const entityValue = readMasterField(metadata, field);
 
     // Only flag if the values differ and the worksheet has a meaningful value
     if (entityValue !== worksheetValue && String(entityValue) !== String(worksheetValue)) {
@@ -99,10 +100,55 @@ export async function syncWorksheetToEntity(
 }
 
 /**
- * Accept all pending changes, copies worksheet values into entity master fields
- * and clears the pending changes marker.
+ * Pure core of acceptPendingChanges: apply the pending changes named in
+ * `fields` (or every pending change when `fields` is omitted) onto a copy of
+ * the entity metadata. Changes that were not accepted stay pending; the
+ * `_pending_changes` marker is removed only once nothing is left.
+ *
+ * Note: there is no canon/confidence marker on entity metadata today (that
+ * arrives with the canon layer, src/canon/). Until then the writer's
+ * protection is that nothing is applied without being named field by field
+ * or by an explicit "accept all".
  */
-export async function acceptPendingChanges(entityId: string): Promise<void> {
+export function applyPendingChanges(
+  metadata: Record<string, unknown>,
+  fields?: readonly string[],
+): { metadata: Record<string, unknown>; applied: string[] } {
+  const pending = (metadata._pending_changes as PendingChange[] | undefined) ?? [];
+  if (pending.length === 0) return { metadata, applied: [] };
+
+  const wanted = fields ? new Set(fields) : null;
+  const updated: Record<string, unknown> = { ...metadata };
+  const remaining: PendingChange[] = [];
+  const applied: string[] = [];
+
+  for (const change of pending) {
+    if (wanted && !wanted.has(change.field)) {
+      remaining.push(change);
+      continue;
+    }
+    updated[change.field] = change.newValue;
+    applied.push(change.field);
+  }
+
+  if (remaining.length > 0) {
+    updated._pending_changes = remaining;
+  } else {
+    delete updated._pending_changes;
+  }
+  return { metadata: updated, applied };
+}
+
+/**
+ * Accept pending changes, copying worksheet values into entity master fields.
+ *
+ * Pass `fields` to accept only those field keys; the rest stay pending.
+ * Omit it to accept every pending change ("accept all").
+ */
+export async function acceptPendingChanges(
+  entityId: string,
+  fields?: readonly string[],
+): Promise<void> {
   const { data: entry } = await supabase
     .from("world_entries")
     .select("metadata")
@@ -112,19 +158,12 @@ export async function acceptPendingChanges(entityId: string): Promise<void> {
   if (!entry) return;
 
   const metadata = (entry.metadata ?? {}) as Record<string, unknown>;
-  const pending = metadata._pending_changes as PendingChange[] | undefined;
-  if (!pending || pending.length === 0) return;
-
-  // Apply changes
-  const updated = { ...metadata };
-  for (const change of pending) {
-    updated[change.field] = change.newValue;
-  }
-  delete updated._pending_changes;
+  const { metadata: updated, applied } = applyPendingChanges(metadata, fields);
+  if (applied.length === 0) return;
 
   await supabase
     .from("world_entries")
-    .update({ metadata: updated })
+    .update({ metadata: updated as Json })
     .eq("id", entityId);
 }
 

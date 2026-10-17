@@ -48,7 +48,7 @@ const NotionCallback = () => {
         {status === "loading" && (
           <>
             <Loader />
-            <p className="text-lg text-t3">{message}</p>
+            <p className="text-lg text-t2">{message}</p>
           </>
         )}
 

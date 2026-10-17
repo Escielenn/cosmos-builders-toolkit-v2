@@ -52,7 +52,7 @@ const BookCard = ({ book }: { book: BookEntry }) => {
         <h3 className="font-heading font-medium leading-tight">
           <em>{book.title}</em>
         </h3>
-        <p className="text-sm text-t3 mt-1">
+        <p className="text-sm text-t2 mt-1">
           {book.author} ({book.year})
         </p>
 
@@ -147,7 +147,7 @@ const Bookshelf = () => {
             ))}
           </div>
         ) : (
-          <p className="text-center text-t3 py-12">
+          <p className="text-center text-t2 py-12">
             No books found for &ldquo;{searchTerm}&rdquo;
           </p>
         )}

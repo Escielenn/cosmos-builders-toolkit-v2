@@ -1,7 +1,8 @@
 # StellarForge — Cowork Implementation Guide
 
 > How to fully implement every design in this project into the real codebase
-> (**Vite + React + TypeScript + Tailwind + Supabase + Clerk + Stripe**, repo: `cosmos-builders-toolkit-v2`).
+> (**Vite + React + TypeScript + Tailwind + Supabase + Stripe**, repo: `cosmos-builders-toolkit-v2`).
+> Auth is Supabase Auth. Clerk was listed here originally; it was never adopted and the migration is cancelled (SF-II stack decision, see `docs/STACK-ARCHITECTURE.md`).
 > The HTML files here are **design references, not production code** — recreate them idiomatically.
 >
 > **Doc hierarchy:** this guide = *build it into the product* · `Cowork Update Guide.md` = *maintain these design artifacts* · `design_handoff/README.md` = *tokens + primitive components install* (do that FIRST).

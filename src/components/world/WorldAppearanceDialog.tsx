@@ -113,7 +113,7 @@ export default function WorldAppearanceDialog({
               </DialogDescription>
             </DialogHeader>
             <div className="py-4 text-center">
-              <p className="text-sm text-t3 mb-4">
+              <p className="text-sm text-t2 mb-4">
                 Pro includes custom theming, all export formats, 365-day version history, and unlimited worlds.
               </p>
               <Button onClick={() => setUpgradeOpen(true)}>

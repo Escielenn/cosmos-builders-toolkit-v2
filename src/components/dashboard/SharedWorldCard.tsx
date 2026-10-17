@@ -97,7 +97,7 @@ const SharedWorldCard = ({
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 -mr-2 -mt-1 text-t3"
+                className="h-8 w-8 -mr-2 -mt-1 text-t3 min-h-hit min-w-hit"
                 aria-label="Leave shared world"
               >
                 <LogOut className="w-4 h-4" />
@@ -128,7 +128,7 @@ const SharedWorldCard = ({
             </p>
           )}
           {description && (
-            <p className="text-sm text-t3 line-clamp-2">
+            <p className="text-sm text-t2 line-clamp-2">
               {description}
             </p>
           )}

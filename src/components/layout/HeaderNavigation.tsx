@@ -39,7 +39,7 @@ const NAV_CATEGORIES: NavCategory[] = [
   { id: "worlds", label: "Worlds", icon: Globe, color: "text-blue-400" },
   { id: "life", label: "Life", icon: Leaf, color: "text-sf-emerald" },
   { id: "travel", label: "Travel & Spacecraft", icon: Rocket, color: "text-orange-400" },
-  { id: "civilizations", label: "Civilizations", icon: Users, color: "text-sf-violet" },
+  { id: "civilizations", label: "Civilizations", icon: Users, color: "text-sf-violet-text" },
   { id: "mythology", label: "Mythology", icon: ScrollText, color: "text-blue-300" },
   { id: "integration", label: "Integration", icon: Layers, color: "text-teal-400" },
 ];
@@ -101,7 +101,7 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
                   <p className="text-[12px] font-medium uppercase tracking-[1.5px] text-t3 px-2 mb-2">
                     Your Worlds
                   </p>
-                  <div className="max-h-[200px] overflow-y-auto space-y-0.5">
+                  <div className="max-h-[200px] overflow-y-auto sf-sb space-y-0.5">
                     {worlds.slice(0, 8).map((world) => (
                       <NavigationMenuLink key={world.id} asChild>
                         <Link
@@ -250,7 +250,7 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
                             <NavigationMenuLink key={tool.id} asChild>
                               <Link
                                 to={route}
-                                className="flex items-center gap-2 px-1.5 py-1.5 text-[13px] text-t2 hover:text-t1 hover:bg-[rgba(21,193,123,0.06)] rounded-md transition-colors"
+                                className="flex items-center gap-2 px-1.5 py-1.5 text-[13px] text-t2 hover:text-t1 hover:bg-[rgba(21,193,123,0.06)] rounded-none transition-colors"
                               >
                                 {ToolIcon ? (
                                   <ToolIcon className="w-4 h-4 shrink-0" />

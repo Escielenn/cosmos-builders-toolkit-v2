@@ -34,6 +34,7 @@ import {
   publishedFactsSummary,
   buildPublishedMetadata,
 } from "@/lib/simulators/published-facts";
+import { mapError } from "@/lib/ship-voice";
 
 interface PublishPlanetDialogProps {
   open: boolean;
@@ -90,7 +91,7 @@ export default function PublishPlanetDialog({
     } catch (error) {
       toast({
         title: "PUBLISH FAILED.",
-        description: error instanceof Error ? error.message : "Unknown error",
+        description: mapError(error),
         variant: "destructive",
       });
     } finally {

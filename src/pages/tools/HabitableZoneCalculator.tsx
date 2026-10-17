@@ -75,6 +75,7 @@ import {
   formatTemperature,
 } from "@/lib/habitable-zone/calculations";
 import type { FormStateForCalc } from "@/lib/habitable-zone/calculations";
+import { writeStandaloneBackup } from "@/lib/standalone-backup";
 
 // ─── FormState ───────────────────────────────────────────────────────
 
@@ -128,7 +129,7 @@ const SECTIONS: Section[] = [
 // ─── Zone Color Helper ──────────────────────────────────────────────
 
 const ZONE_BADGE_STYLES: Record<string, string> = {
-  "#E74C3C": "bg-red-500/20 text-sf-crimson border-sf-crimson",
+  "#E74C3C": "bg-red-500/20 text-sf-crimson-text border-sf-crimson",
   "#FFA500": "bg-orange-500/20 text-orange-400 border-sf-amber",
   "#2ECC71": "bg-emerald-500/20 text-sf-emerald border-sf-emerald",
   "#4D9FFF": "bg-blue-500/20 text-blue-400 border-sf-azure",
@@ -194,7 +195,7 @@ const HabitableZoneCalculator = () => {
           setWorksheetTags(existingWorksheet.tags);
         }
         toast({
-          title: "Worksheet Loaded",
+          title: "WORKSHEET LOADED.",
           description: "WORK RESTORED FROM CLOUD.",
         });
       } catch {
@@ -333,7 +334,7 @@ const HabitableZoneCalculator = () => {
   // ─── Save / Load / Export ──────────────────────────────────────────
 
   const handleSave = async () => {
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(formState));
+    writeStandaloneBackup(LOCAL_STORAGE_KEY, formState, { worldId, signedIn: !!user });
 
     if (worldId && user) {
       const worksheetData = formState as unknown as Json;
@@ -354,7 +355,7 @@ const HabitableZoneCalculator = () => {
         // Error handled by mutation
       }
     } else {
-      toast({ title: "Draft Saved", description: "WORK SECURED TO LOCAL STORAGE." });
+      toast({ title: "DRAFT SAVED.", description: "WORK SECURED TO LOCAL STORAGE." });
     }
   };
 
@@ -516,7 +517,7 @@ const HabitableZoneCalculator = () => {
                               onClick={() => {
                                 updatePlanet({ name: body.name, orbitalDistance: dist });
                                 setImportOpen(false);
-                                toast({ title: "Imported", description: `${body.name} at ${dist} AU` });
+                                toast({ title: "IMPORTED.", description: `${body.name} at ${dist} AU` });
                               }}
                               className="px-3 py-1.5 rounded-sm border border-sf-line-interactive text-xs hover:border-primary hover:bg-primary/5 transition-colors"
                             >
@@ -554,7 +555,7 @@ const HabitableZoneCalculator = () => {
               icon={<Sun className="w-5 h-5" />}
               defaultOpen={true}
             >
-              <p className="text-sm text-t3 italic mb-6">{SECTION_HELPERS.star}</p>
+              <p className="text-sm text-t2 italic mb-6">{SECTION_HELPERS.star}</p>
 
               {/* Star Presets */}
               <div className="space-y-2 mb-6">
@@ -587,7 +588,7 @@ const HabitableZoneCalculator = () => {
                       <button
                         key={type}
                         onClick={() => handleSpectralTypeChange(type)}
-                        className={`flex-1 py-2 rounded-md text-sm font-mono font-medium transition-all ${
+                        className={`flex-1 py-2 rounded-none text-sm font-mono font-medium transition-all ${
                           formState.star.spectralType === type
                             ? "ring-2 ring-primary"
                             : "hover:opacity-80"
@@ -808,7 +809,7 @@ const HabitableZoneCalculator = () => {
               icon={<Globe className="w-5 h-5" />}
               defaultOpen={true}
             >
-              <p className="text-sm text-t3 italic mb-6">{SECTION_HELPERS.planet}</p>
+              <p className="text-sm text-t2 italic mb-6">{SECTION_HELPERS.planet}</p>
 
               <div className="space-y-6">
                 {/* Zone Classification */}
@@ -884,7 +885,7 @@ const HabitableZoneCalculator = () => {
                       <button
                         type="button"
                         onClick={() => setAdditionalPlanets((prev) => prev.filter((_, j) => j !== i))}
-                        className="text-xs text-sf-crimson/60 hover:text-sf-crimson transition-colors ml-auto"
+                        className="text-xs text-sf-crimson-text hover:text-sf-crimson-text transition-colors ml-auto"
                       >
                         ×
                       </button>
@@ -901,7 +902,7 @@ const HabitableZoneCalculator = () => {
                   <Thermometer className="w-5 h-5 text-primary" />
                   Analysis Results
                 </h2>
-                <p className="text-sm text-t3 italic mb-6">{SECTION_HELPERS.results}</p>
+                <p className="text-sm text-t2 italic mb-6">{SECTION_HELPERS.results}</p>
 
                 {result.valid ? (
                   <div className="space-y-6">
@@ -1003,13 +1004,13 @@ const HabitableZoneCalculator = () => {
                           Copy
                         </Button>
                       </div>
-                      <p className="text-sm text-t3 italic">
+                      <p className="text-sm text-t2 italic">
                         {result.narrativeSummary}
                       </p>
                     </div>
                   </div>
                 ) : (
-                  <p className="text-sm text-t3">{result.error || "Adjust parameters to see results."}</p>
+                  <p className="text-sm text-t2">{result.error || "Adjust parameters to see results."}</p>
                 )}
               </GlassPanel>
             </div>
@@ -1023,7 +1024,7 @@ const HabitableZoneCalculator = () => {
               icon={<BookOpen className="w-5 h-5" />}
               defaultOpen={true}
             >
-              <p className="text-sm text-t3 italic mb-6">{SECTION_HELPERS.implications}</p>
+              <p className="text-sm text-t2 italic mb-6">{SECTION_HELPERS.implications}</p>
 
               {result.valid && (
                 <div className="space-y-4">
@@ -1075,7 +1076,7 @@ const HabitableZoneCalculator = () => {
               levelNumber={6}
               icon={<FileText className="w-5 h-5" />}
             >
-              <p className="text-sm text-t3 italic mb-6">{SECTION_HELPERS.story}</p>
+              <p className="text-sm text-t2 italic mb-6">{SECTION_HELPERS.story}</p>
 
               <div className="space-y-6">
                 <div className="space-y-2">

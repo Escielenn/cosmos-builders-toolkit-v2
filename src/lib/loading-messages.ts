@@ -94,7 +94,7 @@ const loadingMessages: Record<string, string[]> = {
     "RESOLVING SURFACE CONDITIONS...",
   ],
   "tools/timeline": [
-    "SYNCHRONIZING CHRONOLOG...",
+    "SYNCHRONIZING EPOCH...",
     "LOADING EPOCH DATA...",
   ],
   rogue: [

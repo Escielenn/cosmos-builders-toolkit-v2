@@ -55,6 +55,7 @@ import {
   CONTRADICTION_PROMPTS,
   STORY_CONFLICT_PROMPTS,
 } from "@/lib/technology-data";
+import { writeStandaloneBackup } from "@/lib/standalone-backup";
 
 const SECTIONS: Section[] = [
   { id: "section-definition", title: "1. Technology Definition" },
@@ -279,7 +280,7 @@ const TechnologyConsequences = () => {
           setWorksheetTags(existingWorksheet.tags);
         }
         toast({
-          title: "Worksheet Loaded",
+          title: "WORKSHEET LOADED.",
           description: "WORK RESTORED FROM CLOUD.",
         });
       } catch {
@@ -363,7 +364,7 @@ const TechnologyConsequences = () => {
   };
 
   const handleSave = async () => {
-    localStorage.setItem("tc-worksheet", JSON.stringify(formState));
+    writeStandaloneBackup("tc-worksheet", formState, { worldId, signedIn: !!user });
 
     if (worldId && user) {
       const worksheetData = formState as unknown as Json;
@@ -385,7 +386,7 @@ const TechnologyConsequences = () => {
       }
     } else {
       toast({
-        title: "Draft Saved",
+        title: "DRAFT SAVED.",
         description: "WORK SECURED TO LOCAL STORAGE.",
       });
     }
@@ -608,7 +609,7 @@ const TechnologyConsequences = () => {
                       </div>
                     ))}
                   </RadioGroup>
-                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
+                  <Suspense fallback={<div className="min-h-[100px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                     <RichTextEditor
                       content={formState.infrastructureNotes}
                       onChange={(value) => updateField("infrastructureNotes", value)}
@@ -635,7 +636,7 @@ const TechnologyConsequences = () => {
                       </div>
                     ))}
                   </RadioGroup>
-                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
+                  <Suspense fallback={<div className="min-h-[100px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                     <RichTextEditor
                       content={formState.environmentNotes}
                       onChange={(value) => updateField("environmentNotes", value)}
@@ -662,7 +663,7 @@ const TechnologyConsequences = () => {
                       </div>
                     ))}
                   </RadioGroup>
-                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
+                  <Suspense fallback={<div className="min-h-[100px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                     <RichTextEditor
                       content={formState.resourceNotes}
                       onChange={(value) => updateField("resourceNotes", value)}
@@ -718,7 +719,7 @@ const TechnologyConsequences = () => {
                       </div>
                     ))}
                   </RadioGroup>
-                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
+                  <Suspense fallback={<div className="min-h-[100px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                     <RichTextEditor
                       content={formState.industryNotes}
                       onChange={(value) => updateField("industryNotes", value)}
@@ -745,7 +746,7 @@ const TechnologyConsequences = () => {
                       </div>
                     ))}
                   </RadioGroup>
-                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
+                  <Suspense fallback={<div className="min-h-[100px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                     <RichTextEditor
                       content={formState.employmentNotes}
                       onChange={(value) => updateField("employmentNotes", value)}
@@ -772,7 +773,7 @@ const TechnologyConsequences = () => {
                       </div>
                     ))}
                   </RadioGroup>
-                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
+                  <Suspense fallback={<div className="min-h-[100px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                     <RichTextEditor
                       content={formState.wealthNotes}
                       onChange={(value) => updateField("wealthNotes", value)}
@@ -809,7 +810,7 @@ const TechnologyConsequences = () => {
                       </div>
                     ))}
                   </RadioGroup>
-                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
+                  <Suspense fallback={<div className="min-h-[100px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                     <RichTextEditor
                       content={formState.classNotes}
                       onChange={(value) => updateField("classNotes", value)}
@@ -836,7 +837,7 @@ const TechnologyConsequences = () => {
                       </div>
                     ))}
                   </RadioGroup>
-                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
+                  <Suspense fallback={<div className="min-h-[100px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                     <RichTextEditor
                       content={formState.familyNotes}
                       onChange={(value) => updateField("familyNotes", value)}
@@ -863,7 +864,7 @@ const TechnologyConsequences = () => {
                       </div>
                     ))}
                   </RadioGroup>
-                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
+                  <Suspense fallback={<div className="min-h-[100px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                     <RichTextEditor
                       content={formState.communityNotes}
                       onChange={(value) => updateField("communityNotes", value)}
@@ -890,7 +891,7 @@ const TechnologyConsequences = () => {
                       </div>
                     ))}
                   </RadioGroup>
-                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
+                  <Suspense fallback={<div className="min-h-[100px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                     <RichTextEditor
                       content={formState.identityNotes}
                       onChange={(value) => updateField("identityNotes", value)}
@@ -927,7 +928,7 @@ const TechnologyConsequences = () => {
                       </div>
                     ))}
                   </RadioGroup>
-                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
+                  <Suspense fallback={<div className="min-h-[100px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                     <RichTextEditor
                       content={formState.powerNotes}
                       onChange={(value) => updateField("powerNotes", value)}
@@ -954,7 +955,7 @@ const TechnologyConsequences = () => {
                       </div>
                     ))}
                   </RadioGroup>
-                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
+                  <Suspense fallback={<div className="min-h-[100px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                     <RichTextEditor
                       content={formState.surveillanceNotes}
                       onChange={(value) => updateField("surveillanceNotes", value)}
@@ -981,7 +982,7 @@ const TechnologyConsequences = () => {
                       </div>
                     ))}
                   </RadioGroup>
-                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
+                  <Suspense fallback={<div className="min-h-[100px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                     <RichTextEditor
                       content={formState.governanceNotes}
                       onChange={(value) => updateField("governanceNotes", value)}
@@ -1018,7 +1019,7 @@ const TechnologyConsequences = () => {
                       </div>
                     ))}
                   </RadioGroup>
-                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
+                  <Suspense fallback={<div className="min-h-[100px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                     <RichTextEditor
                       content={formState.warfareNotes}
                       onChange={(value) => updateField("warfareNotes", value)}
@@ -1045,7 +1046,7 @@ const TechnologyConsequences = () => {
                       </div>
                     ))}
                   </RadioGroup>
-                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
+                  <Suspense fallback={<div className="min-h-[100px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                     <RichTextEditor
                       content={formState.defenseNotes}
                       onChange={(value) => updateField("defenseNotes", value)}
@@ -1072,7 +1073,7 @@ const TechnologyConsequences = () => {
                       </div>
                     ))}
                   </RadioGroup>
-                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
+                  <Suspense fallback={<div className="min-h-[100px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                     <RichTextEditor
                       content={formState.deterrenceNotes}
                       onChange={(value) => updateField("deterrenceNotes", value)}
@@ -1109,7 +1110,7 @@ const TechnologyConsequences = () => {
                       </div>
                     ))}
                   </RadioGroup>
-                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
+                  <Suspense fallback={<div className="min-h-[100px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                     <RichTextEditor
                       content={formState.perceptionNotes}
                       onChange={(value) => updateField("perceptionNotes", value)}
@@ -1136,7 +1137,7 @@ const TechnologyConsequences = () => {
                       </div>
                     ))}
                   </RadioGroup>
-                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
+                  <Suspense fallback={<div className="min-h-[100px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                     <RichTextEditor
                       content={formState.valuesNotes}
                       onChange={(value) => updateField("valuesNotes", value)}
@@ -1163,7 +1164,7 @@ const TechnologyConsequences = () => {
                       </div>
                     ))}
                   </RadioGroup>
-                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
+                  <Suspense fallback={<div className="min-h-[100px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                     <RichTextEditor
                       content={formState.fearsNotes}
                       onChange={(value) => updateField("fearsNotes", value)}

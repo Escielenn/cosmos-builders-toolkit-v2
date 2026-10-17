@@ -15,6 +15,7 @@ import {
   generalContactSchema,
   type GeneralContactFormData,
 } from "@/lib/contact-schemas";
+import { mapError } from "@/lib/ship-voice";
 
 interface GeneralContactFormProps {
   onSuccess?: () => void;
@@ -56,7 +57,7 @@ const GeneralContactForm = ({ onSuccess }: GeneralContactFormProps) => {
       toast({
         title: "TRANSMISSION FAILED.",
         description:
-          error instanceof Error ? error.message : "Retry when ready.",
+          mapError(error),
         variant: "destructive",
       });
     }
@@ -69,7 +70,7 @@ const GeneralContactForm = ({ onSuccess }: GeneralContactFormProps) => {
         <h3 className="font-heading text-xl font-medium mb-2">
           TRANSMISSION RECEIVED.
         </h3>
-        <p className="text-t3">Response within 24-48 hours.</p>
+        <p className="text-t2">Response within 24-48 hours.</p>
         <Button
           variant="outline"
           className="mt-4"
@@ -99,7 +100,7 @@ const GeneralContactForm = ({ onSuccess }: GeneralContactFormProps) => {
           />
         </div>
         {errors.name && (
-          <p className="text-sm text-sf-crimson">{errors.name.message}</p>
+          <p className="text-sm text-sf-crimson-text">{errors.name.message}</p>
         )}
       </div>
 
@@ -115,7 +116,7 @@ const GeneralContactForm = ({ onSuccess }: GeneralContactFormProps) => {
           />
         </div>
         {errors.email && (
-          <p className="text-sm text-sf-crimson">{errors.email.message}</p>
+          <p className="text-sm text-sf-crimson-text">{errors.email.message}</p>
         )}
       </div>
 
@@ -131,7 +132,7 @@ const GeneralContactForm = ({ onSuccess }: GeneralContactFormProps) => {
           />
         </div>
         {errors.message && (
-          <p className="text-sm text-sf-crimson">{errors.message.message}</p>
+          <p className="text-sm text-sf-crimson-text">{errors.message.message}</p>
         )}
       </div>
 

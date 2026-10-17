@@ -278,7 +278,7 @@ const SpeciesMatrixImportModal = ({
                     variant="ghost"
                     size="sm"
                     onClick={selectAll}
-                    className="text-xs h-7"
+                    className="text-xs h-7 min-h-hit"
                   >
                     Select All
                   </Button>
@@ -286,7 +286,7 @@ const SpeciesMatrixImportModal = ({
                     variant="ghost"
                     size="sm"
                     onClick={selectNone}
-                    className="text-xs h-7"
+                    className="text-xs h-7 min-h-hit"
                   >
                     Clear
                   </Button>
@@ -334,7 +334,7 @@ const SpeciesMatrixImportModal = ({
                       {fieldsWithoutValues.map((field) => (
                         <div
                           key={field.key}
-                          className="flex items-start gap-3 p-2 rounded-none opacity-50"
+                          className="flex items-start gap-3 p-2 rounded-none text-sf-disabled-text"
                         >
                           <Checkbox disabled className="mt-0.5" />
                           <div className="flex-1 min-w-0">

@@ -12,7 +12,7 @@ const BrokenLinkBadge = ({ label, onRemoveLink }: BrokenLinkBadgeProps) => {
     <div className="flex items-center gap-2 p-3 rounded-none border border-sf-crimson bg-destructive/10">
       <AlertTriangle className="w-4 h-4 text-sf-crimson flex-shrink-0" />
       <div className="flex-1 min-w-0">
-        <span className="text-sm text-sf-crimson">
+        <span className="text-sm text-sf-crimson-text">
           "{label}" link broken
         </span>
         <p className="text-xs text-t3 mt-0.5">
@@ -23,7 +23,7 @@ const BrokenLinkBadge = ({ label, onRemoveLink }: BrokenLinkBadgeProps) => {
         variant="ghost"
         size="sm"
         onClick={onRemoveLink}
-        className="min-h-hit px-3 text-sf-crimson hover:text-sf-crimson hover:bg-destructive/20"
+        className="min-h-hit px-3 text-sf-crimson-text hover:text-sf-crimson-text hover:bg-destructive/20"
       >
         <X className="w-3 h-3 mr-1" />
         Remove

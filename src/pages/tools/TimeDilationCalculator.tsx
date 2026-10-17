@@ -77,6 +77,7 @@ import {
   formatDuration,
 } from "@/lib/time-dilation/calculations";
 import type { FormStateForCalc } from "@/lib/time-dilation/calculations";
+import { writeStandaloneBackup } from "@/lib/standalone-backup";
 
 // ─── FormState ───────────────────────────────────────────────────────
 
@@ -134,7 +135,7 @@ const SEVERITY_STYLES = {
   negligible: { text: "text-sf-emerald", border: "border-l-emerald-400", bg: "bg-emerald-400/10" },
   notable: { text: "text-sf-amber", border: "border-l-amber-400", bg: "bg-amber-400/10" },
   significant: { text: "text-orange-500", border: "border-l-orange-500", bg: "bg-orange-500/10" },
-  extreme: { text: "text-sf-crimson", border: "border-l-red-500", bg: "bg-red-500/10" },
+  extreme: { text: "text-sf-crimson-text", border: "border-l-red-500", bg: "bg-red-500/10" },
 };
 
 // ─── Logarithmic slider mapping ──────────────────────────────────────
@@ -211,7 +212,7 @@ const TimeDilationCalculator = () => {
           setWorksheetTags(existingWorksheet.tags);
         }
         toast({
-          title: "Worksheet Loaded",
+          title: "WORKSHEET LOADED.",
           description: "WORK RESTORED FROM CLOUD.",
         });
       } catch {
@@ -416,7 +417,7 @@ const TimeDilationCalculator = () => {
   // ─── Save / Load / Export ──────────────────────────────────────────
 
   const handleSave = async () => {
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(formState));
+    writeStandaloneBackup(LOCAL_STORAGE_KEY, formState, { worldId, signedIn: !!user });
 
     if (worldId && user) {
       const worksheetData = formState as unknown as Json;
@@ -437,7 +438,7 @@ const TimeDilationCalculator = () => {
         // Error handled by mutation
       }
     } else {
-      toast({ title: "Draft Saved", description: "WORK SECURED TO LOCAL STORAGE." });
+      toast({ title: "DRAFT SAVED.", description: "WORK SECURED TO LOCAL STORAGE." });
     }
   };
 
@@ -547,7 +548,7 @@ const TimeDilationCalculator = () => {
             icon={<Rocket className="w-5 h-5" />}
             defaultOpen={true}
           >
-            <p className="text-sm text-t3 italic mb-6">{SECTION_HELPERS.journey}</p>
+            <p className="text-sm text-t2 italic mb-6">{SECTION_HELPERS.journey}</p>
             <div className="space-y-6">
               {/* Category select */}
               <div className="space-y-2">
@@ -680,7 +681,7 @@ const TimeDilationCalculator = () => {
             levelNumber={2}
             icon={<Gauge className="w-5 h-5" />}
           >
-            <p className="text-sm text-t3 italic mb-6">{SECTION_HELPERS.propulsion}</p>
+            <p className="text-sm text-t2 italic mb-6">{SECTION_HELPERS.propulsion}</p>
             <div className="space-y-4">
               <RadioGroup
                 value={formState.propulsion.method}
@@ -734,7 +735,7 @@ const TimeDilationCalculator = () => {
             levelNumber={3}
             icon={<Clock className="w-5 h-5" />}
           >
-            <p className="text-sm text-t3 italic mb-6">{SECTION_HELPERS.velocity}</p>
+            <p className="text-sm text-t2 italic mb-6">{SECTION_HELPERS.velocity}</p>
             <div className="space-y-6">
               <RadioGroup
                 value={formState.velocityProfile.mode}
@@ -871,7 +872,7 @@ const TimeDilationCalculator = () => {
                       ? calculationResult.lorentzFactor.toFixed(6)
                       : calculationResult.lorentzFactor.toLocaleString(undefined, { maximumFractionDigits: 2 })}
                   </p>
-                  <p className="text-sm text-t3 mt-3">
+                  <p className="text-sm text-t2 mt-3">
                     Peak velocity:{" "}
                     <span className="font-mono text-t1">
                       {calculationResult.peakVelocityFraction >= 1
@@ -971,7 +972,7 @@ const TimeDilationCalculator = () => {
                   <p className={`font-mono text-3xl font-medium ${sColors.text}`}>
                     {calculationResult.timeDifferenceFormatted}
                   </p>
-                  <p className="text-sm text-t3 mt-2">
+                  <p className="text-sm text-t2 mt-2">
                     {formState.roundTrip ? "Total round-trip difference" : "One-way difference"}
                   </p>
                 </GlassPanel>
@@ -1072,8 +1073,9 @@ const TimeDilationCalculator = () => {
                         </div>
                       </div>
                       {calculationResult.peakVelocityCapped && (
-                        <p className="text-xs text-sf-amber mt-3 font-mono">
-                          ⚠ Peak velocity capped at propulsion maximum
+                        <p className="text-xs text-sf-amber mt-3 font-mono flex items-center gap-1.5">
+                          <AlertTriangle className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
+                          Peak velocity capped at propulsion maximum
                         </p>
                       )}
                     </GlassPanel>
@@ -1107,7 +1109,7 @@ const TimeDilationCalculator = () => {
                     {calculationResult.storyCallouts.map((callout, i) => (
                       <div
                         key={i}
-                        className={`p-4 rounded-r-lg border-l-2 ${sColors.border} ${sColors.bg}`}
+                        className={`p-4 rounded-r-none border-l-2 ${sColors.border} ${sColors.bg}`}
                       >
                         <p className="font-heading text-sm font-medium mb-1">
                           {callout.title}
@@ -1138,7 +1140,7 @@ const TimeDilationCalculator = () => {
             levelNumber={5}
             icon={<Radio className="w-5 h-5" />}
           >
-            <p className="text-sm text-t3 italic mb-6">{SECTION_HELPERS.reference}</p>
+            <p className="text-sm text-t2 italic mb-6">{SECTION_HELPERS.reference}</p>
             <div className="space-y-4">
               <RadioGroup
                 value={formState.referenceFrame.frame}
@@ -1180,7 +1182,7 @@ const TimeDilationCalculator = () => {
             levelNumber={6}
             icon={<BookOpen className="w-5 h-5" />}
           >
-            <p className="text-sm text-t3 italic mb-6">{SECTION_HELPERS.story}</p>
+            <p className="text-sm text-t2 italic mb-6">{SECTION_HELPERS.story}</p>
             <div className="space-y-8">
               <div className="space-y-2">
                 <Label>The Departure Moment</Label>

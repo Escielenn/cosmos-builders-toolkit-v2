@@ -10,6 +10,8 @@
 
 ## Architecture Decision Summary
 
+> **Not current — Clerk was never adopted; the migration is cancelled per the SF-II stack decision (see banner).** The live app uses Supabase Auth (`src/contexts/AuthContext.tsx`) and RLS on `auth.uid()`. Read this section as history, not instruction.
+
 **Clerk** handles all authentication (identity, sessions, OAuth, org management).  
 **Supabase** handles all data (user records, subscriptions, app content, RLS).  
 **Vercel** handles hosting and serverless edge functions (API routes, webhooks).  
@@ -48,6 +50,8 @@ Browser / React Client
 ---
 
 ## Authentication Flow (Clerk)
+
+> **Not current — Clerk was never adopted; the migration is cancelled per the SF-II stack decision (see banner).** The live app uses Supabase Auth (`src/contexts/AuthContext.tsx`) and RLS on `auth.uid()`. Read this section as history, not instruction.
 
 Clerk owns the entire auth surface. The app never writes its own login UI, OAuth callback handling, or session management.
 
@@ -108,6 +112,8 @@ export function useSupabaseClient() {
 ---
 
 ## User Sync (Clerk → Supabase)
+
+> **Not current — Clerk was never adopted; the migration is cancelled per the SF-II stack decision (see banner).** The live app uses Supabase Auth (`src/contexts/AuthContext.tsx`) and RLS on `auth.uid()`. Read this section as history, not instruction.
 
 Clerk is the source of truth for identity. Supabase stores a mirror of user records for relational queries, RLS, and subscription state.
 
@@ -191,6 +197,8 @@ export async function POST(req: Request) {
 
 ## Database Schema (Supabase / Postgres)
 
+> **Not current — Clerk was never adopted; the migration is cancelled per the SF-II stack decision (see banner).** The live app uses Supabase Auth (`src/contexts/AuthContext.tsx`) and RLS on `auth.uid()`. Read this section as history, not instruction.
+
 The primary user identifier throughout the entire schema is `clerk_user_id`. Never use Supabase's native `auth.uid()` — that belongs to Supabase Auth, which is not in use.
 
 ```sql
@@ -249,6 +257,8 @@ CREATE TABLE org_members (
 
 ## Row Level Security (RLS)
 
+> **Not current — Clerk was never adopted; the migration is cancelled per the SF-II stack decision (see banner).** The live app uses Supabase Auth (`src/contexts/AuthContext.tsx`) and RLS on `auth.uid()`. Read this section as history, not instruction.
+
 All tables have RLS enabled. The Clerk JWT `sub` claim is used to identify the current user.
 
 ```sql
@@ -288,6 +298,8 @@ CREATE POLICY "content_access" ON worlds  -- apply this pattern to any content t
 ---
 
 ## Billing Flow (Stripe)
+
+> **Not current — Clerk was never adopted; the migration is cancelled per the SF-II stack decision (see banner).** The live app uses Supabase Auth (`src/contexts/AuthContext.tsx`) and RLS on `auth.uid()`. Read this section as history, not instruction.
 
 Stripe handles all payment processing. StellarForge never stores card data.
 
@@ -361,6 +373,8 @@ export async function POST(req: Request) {
 
 ## Environment Variables
 
+> **Not current — Clerk was never adopted; the migration is cancelled per the SF-II stack decision (see banner).** The live app uses Supabase Auth (`src/contexts/AuthContext.tsx`) and RLS on `auth.uid()`. Read this section as history, not instruction.
+
 All of the following must be present in `.env.local` (development) and Vercel environment settings (production).
 
 ```bash
@@ -419,6 +433,8 @@ export const config = {
 
 ## File Structure (Auth & Billing Layer)
 
+> **Not current — Clerk was never adopted; the migration is cancelled per the SF-II stack decision (see banner).** The live app uses Supabase Auth (`src/contexts/AuthContext.tsx`) and RLS on `auth.uid()`. Read this section as history, not instruction.
+
 ```
 app/
   api/
@@ -445,6 +461,8 @@ middleware.ts                 ← Clerk auth middleware
 
 ## Explicit Do Not Do List
 
+> **Not current — Clerk was never adopted; the migration is cancelled per the SF-II stack decision (see banner).** The live app uses Supabase Auth (`src/contexts/AuthContext.tsx`) and RLS on `auth.uid()`. Read this section as history, not instruction.
+
 - **Do not use Supabase Auth** (`supabase.auth.signIn`, `supabase.auth.signUp`, etc.). It is not part of this stack. Clerk handles all of this.
 - **Do not use `auth.uid()`** in RLS policies. Use the `clerk_user_id()` helper function defined above.
 - **Do not expose `SUPABASE_SERVICE_ROLE_KEY`** in any client-side code or `NEXT_PUBLIC_` variable.
@@ -456,6 +474,8 @@ middleware.ts                 ← Clerk auth middleware
 ---
 
 ## Data Flow Summary
+
+> **Not current — Clerk was never adopted; the migration is cancelled per the SF-II stack decision (see banner).** The live app uses Supabase Auth (`src/contexts/AuthContext.tsx`) and RLS on `auth.uid()`. Read this section as history, not instruction.
 
 ```
 User signs up

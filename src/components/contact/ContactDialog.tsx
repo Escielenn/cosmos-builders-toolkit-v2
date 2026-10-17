@@ -20,7 +20,7 @@ const ContactDialog = ({
 }: ContactDialogProps) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto sf-sb">
         <DialogHeader>
           <DialogTitle className="font-heading text-xl">Contact Us</DialogTitle>
           <DialogDescription>

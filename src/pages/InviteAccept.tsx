@@ -38,7 +38,7 @@ const InviteAccept = () => {
             <h1 className="font-heading text-2xl font-medium mb-2">
               World Invitation
             </h1>
-            <p className="text-t3 mb-6">
+            <p className="text-t2 mb-6">
               Sign in to accept this invitation and start collaborating.
             </p>
             <Button asChild>
@@ -61,7 +61,7 @@ const InviteAccept = () => {
         <main className="container mx-auto px-4 py-16 max-w-md relative z-10">
           <div className="flex flex-col items-center justify-center py-16">
             <Loader className="mb-4" />
-            <p className="text-sm text-t3">Accepting invitation...</p>
+            <p className="text-sm text-t2">Accepting invitation...</p>
           </div>
         </main>
       </div>
@@ -85,7 +85,7 @@ const InviteAccept = () => {
                   ? "This is your world"
                   : "INVITATION ACCEPTED."}
             </h1>
-            <p className="text-t3 mb-6">
+            <p className="text-t2 mb-6">
               {result.already_member
                 ? "You already have access to this world."
                 : result.is_owner
@@ -112,7 +112,7 @@ const InviteAccept = () => {
           <h1 className="font-heading text-2xl font-medium mb-2">
             Invitation unavailable
           </h1>
-          <p className="text-t3 mb-6">
+          <p className="text-t2 mb-6">
             {acceptInvite.error?.message ||
               "This invite may have expired, been cancelled, or was sent to a different email address."}
           </p>

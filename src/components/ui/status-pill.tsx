@@ -20,17 +20,17 @@ const statusPillVariants = cva(
   {
     variants: {
       variant: {
-        teal: "bg-sf-teal/[0.06] border-sf-teal/[0.15] text-sf-teal",
-        amber: "bg-sf-amber/[0.06] border-sf-amber/[0.15] text-sf-amber",
-        azure: "bg-sf-azure/[0.06] border-sf-azure/[0.15] text-sf-azure",
-        violet: "bg-sf-violet/[0.06] border-sf-violet/[0.15] text-sf-violet",
-        emerald: "bg-sf-emerald/[0.06] border-sf-emerald/[0.15] text-sf-emerald",
-        stellar: "bg-sf-stellar/[0.06] border-sf-stellar/[0.15] text-sf-stellar",
-        crimson: "bg-sf-crimson/[0.06] border-sf-crimson/[0.15] text-sf-crimson",
-        signal: "bg-sf-stellar/[0.06] border-sf-stellar/[0.15] text-sf-stellar",
-        ignite: "bg-sf-amber/[0.06] border-sf-amber/[0.15] text-sf-amber",
-        ignition: "bg-sf-teal/[0.06] border-sf-teal/[0.15] text-sf-teal",
-        orbit: "bg-sf-violet/[0.06] border-sf-violet/[0.15] text-sf-violet",
+        teal: "bg-sf-primary/[0.06] border-sf-primary text-sf-primary-text",
+        amber: "bg-sf-amber/[0.06] border-sf-amber text-sf-amber",
+        azure: "bg-sf-azure/[0.06] border-sf-azure text-sf-azure",
+        violet: "bg-sf-violet/[0.06] border-sf-violet text-sf-violet-text",
+        emerald: "bg-sf-emerald/[0.06] border-sf-emerald text-sf-emerald",
+        stellar: "bg-sf-stellar/[0.06] border-sf-stellar text-sf-stellar-text",
+        crimson: "bg-sf-crimson/[0.06] border-sf-crimson text-sf-crimson-text",
+        signal: "bg-sf-stellar/[0.06] border-sf-stellar text-sf-stellar-text",
+        ignite: "bg-sf-amber/[0.06] border-sf-amber text-sf-amber",
+        ignition: "bg-sf-primary/[0.06] border-sf-primary text-sf-primary-text",
+        orbit: "bg-sf-violet/[0.06] border-sf-violet text-sf-violet-text",
       },
       pulse: {
         true: "",
@@ -47,7 +47,7 @@ const statusPillVariants = cva(
 const dotVariants = cva("inline-block h-1.5 w-1.5 rounded-full", {
   variants: {
     variant: {
-      teal: "bg-sf-teal",
+      teal: "bg-sf-primary",
       amber: "bg-sf-amber",
       azure: "bg-sf-azure",
       violet: "bg-sf-violet",
@@ -56,7 +56,7 @@ const dotVariants = cva("inline-block h-1.5 w-1.5 rounded-full", {
       crimson: "bg-sf-crimson",
       signal: "bg-sf-stellar",
       ignite: "bg-sf-amber",
-      ignition: "bg-sf-teal",
+      ignition: "bg-sf-primary",
       orbit: "bg-sf-violet",
     },
     pulse: {

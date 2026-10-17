@@ -184,7 +184,7 @@ function ColorDotPicker({
             onChange={(e) => setCustomHex(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleCustomSubmit()}
             placeholder="#FF00AA"
-            className="flex-1 bg-white/4 border border-sf-line rounded-xs px-2 py-1 text-[12px] font-mono text-t2 placeholder:text-t4 focus:border-sf-primary outline-none"
+            className="flex-1 bg-white/4 border border-sf-line rounded-xs px-2 py-1 text-[12px] font-mono text-t2 placeholder:text-t4 focus:border-sf-primary"
           />
           <button
             type="button"
@@ -298,7 +298,7 @@ function SortableEntityRow({
           <ContextMenuSeparator />
           <ContextMenuItem
             onClick={() => onDeleteEntity(entity.id)}
-            className="text-xs gap-2 text-sf-crimson focus:text-sf-crimson"
+            className="text-xs gap-2 text-sf-crimson-text focus:text-sf-crimson-text"
           >
             <Trash2 className="w-3.5 h-3.5" />
             Delete
@@ -379,7 +379,7 @@ function StaticEntityRow({
         <ContextMenuSeparator />
         <ContextMenuItem
           onClick={() => onDeleteEntity(entity.id)}
-          className="text-xs gap-2 text-sf-crimson focus:text-sf-crimson"
+          className="text-xs gap-2 text-sf-crimson-text focus:text-sf-crimson-text"
         >
           <Trash2 className="w-3.5 h-3.5" />
           Delete
@@ -643,7 +643,7 @@ const EntitySidebar = ({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search entities..."
-            className="w-full bg-white/4 border border-sf-line rounded-xs pl-7 pr-2 py-1.5 text-[13px] font-sans text-t2 placeholder:text-t4 focus:border-sf-primary outline-none"
+            className="w-full bg-white/4 border border-sf-line rounded-xs pl-7 pr-2 py-1.5 text-[13px] font-sans text-t2 placeholder:text-t4 focus:border-sf-primary"
           />
         </div>
       </div>
@@ -679,7 +679,7 @@ const EntitySidebar = ({
       </div>
 
       {/* Scrollable content */}
-      <div className="flex-1 overflow-y-auto overflow-x-hidden min-h-0">
+      <div className="flex-1 overflow-y-auto sf-sb overflow-x-hidden min-h-0">
         {/* Tool view: cascade groups */}
         {viewMode === "tool" &&
           cascadeGroups &&
