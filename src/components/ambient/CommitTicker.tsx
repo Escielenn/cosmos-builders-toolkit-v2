@@ -42,7 +42,7 @@ export function CommitTicker({ className }: { className?: string }) {
 
   return (
     <span
-      className={`font-mono text-[12px] tracking-[0.18em] uppercase text-t4 whitespace-nowrap ${className ?? ""}`}
+      className={`font-mono text-xs tracking-wide uppercase text-t4 whitespace-nowrap ${className ?? ""}`}
       aria-hidden
       title="Latest revision"
     >

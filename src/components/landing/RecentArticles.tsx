@@ -15,10 +15,10 @@ const categoryLabels: Record<string, string> = {
 };
 
 const categoryColors: Record<string, string> = {
-  basics: "bg-blue-500/20 text-blue-400",
-  science: "bg-green-500/20 text-green-400",
-  craft: "bg-purple-500/20 text-purple-400",
-  "case-studies": "bg-amber-500/20 text-sf-amber",
+  basics: "bg-sf-azure/[0.06] border border-sf-azure text-sf-azure-text",
+  science: "bg-sf-emerald/[0.06] border border-sf-emerald text-sf-emerald-text",
+  craft: "bg-sf-violet/[0.06] border border-sf-violet text-sf-violet-text",
+  "case-studies": "bg-sf-amber/[0.06] border border-sf-amber text-sf-amber-text",
 };
 
 const RecentArticles = () => {
@@ -39,13 +39,13 @@ const RecentArticles = () => {
         viewport={viewportOnce}
         variants={scrollReveal}
       >
-        <h2 className="font-heading font-light text-2xl uppercase tracking-sf-wide flex items-center gap-3">
-          <BookOpen className="w-5 h-5 text-primary" />
+        <h2 className="font-heading font-light text-2xl uppercase tracking-wide flex items-center gap-3">
+          <BookOpen className="w-5 h-5 text-sf-primary-text" />
           Latest from SF University
         </h2>
         <Link
           to="/learn"
-          className="text-sm text-t3 hover:text-primary transition-colors flex items-center gap-1"
+          className="text-sm text-t3 hover:text-sf-primary-text transition-colors flex items-center gap-1"
         >
           View all <ArrowRight className="w-4 h-4" />
         </Link>
@@ -63,7 +63,7 @@ const RecentArticles = () => {
         {recent.map((article) => (
           <motion.div key={article._id} variants={fadeUpItem}>
             <Link to={`/learn/${article.slug}`}>
-              <GlassPanel className="overflow-hidden h-full hover:bg-accent/50 transition-colors cursor-pointer group">
+              <GlassPanel className="overflow-hidden h-full hover:bg-sf-surface-elevated transition-colors cursor-pointer group">
                 {article.featuredImage?.asset && (
                   <div className="aspect-video w-full overflow-hidden">
                     <img
@@ -72,7 +72,7 @@ const RecentArticles = () => {
                         .height(225)
                         .url()}
                       alt={article.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-slow"
                     />
                   </div>
                 )}
@@ -80,7 +80,7 @@ const RecentArticles = () => {
                   <Badge className={categoryColors[article.category]}>
                     {categoryLabels[article.category]}
                   </Badge>
-                  <h3 className="font-heading font-medium mt-2 mb-1 line-clamp-2 group-hover:text-primary transition-colors">
+                  <h3 className="font-heading font-medium mt-2 mb-1 line-clamp-2 group-hover:text-sf-primary-text transition-colors">
                     {article.title}
                   </h3>
                   <span className="text-xs text-t3 flex items-center gap-1">

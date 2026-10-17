@@ -17,7 +17,7 @@ const ECRMockup = () => {
   }, []);
 
   const levels = [
-    { level: 1, title: "Physical", examples: ["High Gravity", "Long Days"], color: "sf-cyan" },
+    { level: 1, title: "Physical", examples: ["High Gravity", "Long Days"], color: "sf-teal" },
     { level: 2, title: "Biological", examples: ["Dense Muscles", "Slow Metabolism"], color: "sf-emerald" },
     { level: 3, title: "Psychological", examples: ["Patience", "Groundedness"], color: "sf-violet" },
     { level: 4, title: "Cultural", examples: ["Monumental Art", "Slow Rituals"], color: "sf-amber" },
@@ -31,7 +31,7 @@ const ECRMockup = () => {
         <div className="text-xs text-t3 uppercase tracking-wider mb-1">
           Environmental Chain Reaction
         </div>
-        <div className="text-sm font-mono text-sf-cyan">
+        <div className="text-sm font-mono text-sf-teal-text">
           Tracing Consequences
         </div>
       </div>
@@ -39,7 +39,7 @@ const ECRMockup = () => {
       {/* Cascade visualization */}
       <div className="flex-1 relative">
         {/* Vertical connection line */}
-        <div className="absolute left-6 top-0 bottom-0 w-px bg-gradient-to-b from-sf-cyan/50 via-sf-violet/50 to-sf-magenta/50" />
+        <div className="absolute left-6 top-0 bottom-0 w-px bg-gradient-to-b from-sf-teal/50 via-sf-violet/50 to-sf-magenta/50" />
 
         {/* Levels */}
         <div className="space-y-2">
@@ -51,31 +51,25 @@ const ECRMockup = () => {
               <div key={item.level} className="flex items-start gap-3 relative">
                 {/* Node */}
                 <div
-                  className={`w-3 h-3 rounded-full border-2 transition-all duration-300 z-10 ${
-                    isActive
-                      ? `border-${item.color} bg-${item.color}/30`
-                      : "border-muted bg-sf-surface"
+                  className={`w-3 h-3 rounded-full border-2 transition-all duration-slow z-10 ${
+                    isActive ? "" : "border-sf-line bg-sf-surface"
                   }`}
                   style={{
-                    borderColor: isActive ? `hsl(var(--${item.color}))` : undefined,
-                    backgroundColor: isActive ? `hsl(var(--${item.color}) / 0.3)` : undefined,
-                    boxShadow: isCurrent ? `0 0 12px hsl(var(--${item.color}) / 0.5)` : undefined,
+                    borderColor: isActive ? `var(--${item.color})` : undefined,
+                    backgroundColor: isActive ? `rgb(var(--${item.color}-rgb) / 0.3)` : undefined,
+                    boxShadow: isCurrent ? `0 0 12px rgb(var(--${item.color}-rgb) / 0.5)` : undefined,
                   }}
                 />
 
                 {/* Content */}
-                <div
-                  className={`flex-1 transition-all duration-300 ${
-                    isActive ? "opacity-100" : "opacity-40"
-                  }`}
-                >
+                <div className="flex-1">
                   <div className="flex items-center gap-2">
-                    <span className="text-[12px] font-mono text-t3">
+                    <span className="text-xs font-mono text-t4">
                       L{item.level}
                     </span>
                     <span
-                      className="text-xs font-medium"
-                      style={{ color: isActive ? `hsl(var(--${item.color}))` : undefined }}
+                      className={`text-xs font-medium transition-colors duration-slow ${isActive ? "" : "text-t4"}`}
+                      style={{ color: isActive ? `var(--${item.color}-text)` : undefined }}
                     >
                       {item.title}
                     </span>
@@ -84,10 +78,10 @@ const ECRMockup = () => {
                     {item.examples.map((example) => (
                       <span
                         key={example}
-                        className={`text-[12px] px-1.5 py-0.5 rounded border transition-all duration-300 ${
+                        className={`text-xs px-1.5 py-0.5 rounded-none border transition-colors duration-slow ${
                           isActive
-                            ? "border-muted text-t3"
-                            : "border-transparent text-t3 opacity-60"
+                            ? "border-sf-line text-t3"
+                            : "border-transparent text-t4"
                         }`}
                       >
                         {example}
@@ -102,10 +96,10 @@ const ECRMockup = () => {
 
         {/* Flow indicator */}
         <div
-          className="absolute left-5 w-3 h-3 rounded-full bg-sf-cyan/50 blur-sm"
+          className="absolute left-5 w-3 h-3 rounded-full bg-sf-teal/50 blur-sm"
           style={{
             top: `${((activeLevel - 1) / 5) * 100}%`,
-            transition: "top 0.3s ease-out",
+            transition: "top 280ms cubic-bezier(0.2, 0, 0, 1)",
             opacity: activeLevel > 0 ? 1 : 0,
           }}
         />
@@ -114,20 +108,20 @@ const ECRMockup = () => {
       {/* Result badge */}
       <div className="mt-4 flex justify-center">
         <div
-          className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full transition-all duration-500 ${
+          className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-none transition-colors duration-slow ${
             activeLevel >= 5
               ? "bg-sf-emerald/10 border border-sf-emerald"
-              : "bg-sf-surface border border-muted"
+              : "bg-sf-surface border border-sf-line"
           }`}
         >
           <div
-            className={`w-2 h-2 rounded-full transition-colors duration-500 ${
-              activeLevel >= 5 ? "bg-sf-emerald animate-pulse" : "bg-muted/30"
+            className={`w-2 h-2 rounded-full transition-colors duration-slow ${
+              activeLevel >= 5 ? "bg-sf-emerald animate-pulse" : "bg-sf-surface-elevated"
             }`}
           />
           <span
-            className={`text-[12px] uppercase tracking-wider transition-colors duration-500 ${
-              activeLevel >= 5 ? "text-sf-emerald" : "text-t3"
+            className={`text-xs uppercase tracking-wider transition-colors duration-slow ${
+              activeLevel >= 5 ? "text-sf-emerald-text" : "text-t3"
             }`}
           >
             {activeLevel >= 5 ? "Chain Complete" : "Tracing..."}

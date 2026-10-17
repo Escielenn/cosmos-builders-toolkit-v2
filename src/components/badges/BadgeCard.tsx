@@ -17,17 +17,17 @@ export function BadgeCard({ definition, earned, earnedAt }: BadgeCardProps) {
       <div
         className={cn(
           "rounded-none border p-4 flex items-start gap-3",
-          "bg-white/[0.01] border-sf-line"
+          "bg-sf-void border-sf-line"
         )}
       >
         <div className="shrink-0 mt-0.5">
-          <Icon className="w-5 h-5 text-white/[0.15]" />
+          <Icon className="w-5 h-5 text-t4" />
         </div>
         <div className="min-w-0 flex-1">
-          <p className="font-heading text-[13px] uppercase tracking-[2px] text-white/[0.28]">
+          <p className="font-heading text-[13px] uppercase tracking-[2px] text-t4">
             {definition.name}
           </p>
-          <p className="font-sans text-[12px] text-white/[0.15] mt-0.5">
+          <p className="font-sans text-xs text-t4 mt-0.5">
             {definition.lockedHint}
           </p>
         </div>
@@ -55,7 +55,7 @@ export function BadgeCard({ definition, earned, earnedAt }: BadgeCardProps) {
           </p>
           <span
             className={cn(
-              "font-mono text-[12px] uppercase tracking-wider px-1.5 py-0.5 rounded-sm border",
+              "font-mono text-xs uppercase tracking-wider px-1.5 py-0.5 rounded-none border",
               tier.bg,
               tier.border,
               tier.text
@@ -64,11 +64,11 @@ export function BadgeCard({ definition, earned, earnedAt }: BadgeCardProps) {
             {TIER_LABELS[definition.tier]}
           </span>
         </div>
-        <p className="font-sans text-[12px] text-t2 mt-0.5">
+        <p className="font-sans text-xs text-t2 mt-0.5">
           {definition.description}
         </p>
         {earnedAt && (
-          <p className="font-mono text-[12px] text-white/[0.28] mt-1.5">
+          <p className="font-mono text-xs text-t4 mt-1.5">
             {new Date(earnedAt).toLocaleDateString("en-US", {
               year: "numeric",
               month: "short",

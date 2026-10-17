@@ -5,6 +5,7 @@ import { useSubscription } from "@/hooks/use-subscription";
 import { isProTool, isEarlyAccessTool, PRO_TOOL_COUNT } from "@/lib/tools-config";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
+import { BackLink } from "@/components/ui/back-link";
 import { Lock, Zap, Clock, Sparkles } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
 import Header from "@/components/layout/Header";
@@ -30,7 +31,7 @@ const ProToolGuard = ({ toolId, children }: ProToolGuardProps) => {
   // Show loading state
   if (authLoading || subLoading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-sf-void flex items-center justify-center">
         <Loader />
       </div>
     );
@@ -39,15 +40,15 @@ const ProToolGuard = ({ toolId, children }: ProToolGuardProps) => {
   // Early access tools require Vanguard tier
   if (isEarlyAccess && !isVanguard) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-sf-void">
         <Header />
         <main className="container mx-auto px-4 pt-24 pb-16 flex items-center justify-center">
           <GlassPanel className="max-w-md p-8 text-center">
-            <div className="w-16 h-16 mx-auto mb-6 rounded-sm bg-violet-500/20 flex items-center justify-center">
+            <div className="w-16 h-16 mx-auto mb-6 rounded-none bg-sf-violet/[0.06] border border-sf-violet flex items-center justify-center">
               <Sparkles className="w-8 h-8 text-sf-violet" />
             </div>
 
-            <h1 className="font-heading text-2xl font-light tracking-[0.12em] mb-2">
+            <h1 className="font-heading text-2xl font-light tracking-wide text-t1 mb-2">
               VANGUARD EARLY ACCESS
             </h1>
 
@@ -68,14 +69,9 @@ const ProToolGuard = ({ toolId, children }: ProToolGuardProps) => {
                 UPGRADE TO VANGUARD
               </Button>
 
-              <Button
-                variant="ghost"
-                size="sm"
-                className="w-full"
-                onClick={() => navigate("/")}
-              >
-                Back to Dashboard
-              </Button>
+              <div className="flex justify-center">
+                <BackLink to="/" label="Return to Bridge" />
+              </div>
             </div>
           </GlassPanel>
         </main>
@@ -91,15 +87,15 @@ const ProToolGuard = ({ toolId, children }: ProToolGuardProps) => {
   // Lapsed subscriber, warmer re-subscribe message
   if (hasLapsedSubscription && user) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-sf-void">
         <Header />
         <main className="container mx-auto px-4 pt-24 pb-16 flex items-center justify-center">
           <GlassPanel className="max-w-md p-8 text-center">
-            <div className="w-16 h-16 mx-auto mb-6 rounded-sm bg-primary/10 flex items-center justify-center">
-              <Clock className="w-8 h-8 text-primary" />
+            <div className="w-16 h-16 mx-auto mb-6 rounded-none bg-sf-primary/[0.06] border border-sf-primary flex items-center justify-center">
+              <Clock className="w-8 h-8 text-sf-primary-text" />
             </div>
 
-            <h1 className="font-heading text-2xl font-light tracking-[0.12em] mb-2">
+            <h1 className="font-heading text-2xl font-light tracking-wide text-t1 mb-2">
               ACCESS EXPIRED
             </h1>
 
@@ -120,14 +116,9 @@ const ProToolGuard = ({ toolId, children }: ProToolGuardProps) => {
                 RESUBSCRIBE
               </Button>
 
-              <Button
-                variant="ghost"
-                size="sm"
-                className="w-full"
-                onClick={() => navigate("/")}
-              >
-                Back to Dashboard
-              </Button>
+              <div className="flex justify-center">
+                <BackLink to="/" label="Return to Bridge" />
+              </div>
             </div>
           </GlassPanel>
         </main>
@@ -137,15 +128,15 @@ const ProToolGuard = ({ toolId, children }: ProToolGuardProps) => {
 
   // Never subscribed, upgrade prompt
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-sf-void">
       <Header />
       <main className="container mx-auto px-4 pt-24 pb-16 flex items-center justify-center">
         <GlassPanel className="max-w-md p-8 text-center">
-          <div className="w-16 h-16 mx-auto mb-6 rounded-sm bg-amber-500/20 flex items-center justify-center">
-            <Lock className="w-8 h-8 text-sf-amber" />
+          <div className="w-16 h-16 mx-auto mb-6 rounded-none bg-sf-amber/[0.06] border border-sf-amber flex items-center justify-center">
+            <Lock className="w-8 h-8 text-sf-amber-text" />
           </div>
 
-          <h1 className="font-heading text-2xl font-light tracking-[0.12em] mb-2">
+          <h1 className="font-heading text-2xl font-light tracking-wide text-t1 mb-2">
             RESTRICTED INSTRUMENT
           </h1>
 
@@ -170,23 +161,18 @@ const ProToolGuard = ({ toolId, children }: ProToolGuardProps) => {
                 className="w-full gap-2"
                 onClick={() => navigate("/auth")}
               >
-                Sign In
+                SIGN IN
               </Button>
             )}
 
-            <Button
-              variant="ghost"
-              size="sm"
-              className="w-full"
-              onClick={() => navigate("/")}
-            >
-              Back to Dashboard
-            </Button>
+            <div className="flex justify-center">
+              <BackLink to="/" label="Return to Bridge" />
+            </div>
           </div>
 
           <div className="mt-8 pt-6 border-t border-sf-line-interactive">
-            <p className="text-xs text-t3 mb-2">Pro includes:</p>
-            <ul className="text-xs text-t3 space-y-1">
+            <p className="font-heading text-sf-eyebrow uppercase text-t4 mb-2">Pro includes</p>
+            <ul className="text-sm text-t2 space-y-1">
               <li>All {PRO_TOOL_COUNT} Pro worldbuilding tools</li>
               <li>Unlimited worlds and worksheets</li>
               <li>Cloud sync across devices</li>

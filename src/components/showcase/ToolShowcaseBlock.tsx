@@ -60,7 +60,7 @@ const ToolShowcaseBlock = ({
         <div className="flex items-start gap-4">
           {ToolIcon && (
             <div className="flex-shrink-0">
-              <ToolIcon className="w-14 h-14 rounded-sm" />
+              <ToolIcon className="w-14 h-14 rounded-none" />
             </div>
           )}
           <div className="flex-1 min-w-0">
@@ -78,7 +78,7 @@ const ToolShowcaseBlock = ({
         <ul className="space-y-3">
           {features.map((feature, index) => (
             <li key={index} className="flex items-start gap-3">
-              <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+              <Check className="w-5 h-5 text-sf-primary-text flex-shrink-0 mt-0.5" />
               <span className="text-sm text-t3">{feature}</span>
             </li>
           ))}

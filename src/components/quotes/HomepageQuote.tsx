@@ -19,7 +19,7 @@ export function HomepageQuote() {
     >
       <blockquote className="relative px-6 md:px-12">
         <span
-          className="absolute top-0 left-0 text-4xl text-primary/10 font-display leading-none select-none"
+          className="absolute top-0 left-0 text-4xl text-sf-primary-text font-display leading-none select-none"
           aria-hidden="true"
         >
           &ldquo;
@@ -28,7 +28,7 @@ export function HomepageQuote() {
           {quote.text}
         </p>
         <span
-          className="absolute bottom-0 right-0 text-4xl text-primary/10 font-display leading-none select-none"
+          className="absolute bottom-0 right-0 text-4xl text-sf-primary-text font-display leading-none select-none"
           aria-hidden="true"
         >
           &rdquo;
@@ -40,30 +40,30 @@ export function HomepageQuote() {
           {quote.author}
         </span>
         <span className="text-t4 text-xs">-</span>
-        <span className="font-mono text-xs text-primary/60">
+        <span className="font-mono text-xs text-sf-primary-text">
           <em>{quote.source}</em>
         </span>
         {quote.affiliateUrl && (
           <>
-            <span className="text-t4 text-[12px] hidden sm:inline">|</span>
+            <span className="text-t4 text-xs hidden sm:inline">|</span>
             <a
               href={quote.affiliateUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden sm:inline text-[12px] text-t4 hover:text-primary transition-colors"
+              className="hidden sm:inline text-xs text-t4 hover:text-sf-primary-text transition-colors"
               onClick={() => trackAffiliateClick(quote.isbn, quote.affiliateUrl!)}
             >
               Get the book &rarr;
             </a>
           </>
         )}
-        <span className="text-t4 text-[12px] hidden sm:inline">|</span>
+        <span className="text-t4 text-xs hidden sm:inline">|</span>
         <span className="hidden sm:flex items-center gap-2">
           <a
             href={quote.amazonUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[12px] text-t4 hover:text-sf-amber transition-colors uppercase tracking-[1px]"
+            className="text-xs text-t4 hover:text-sf-amber-text transition-colors uppercase tracking-[1px]"
             onClick={() => trackAffiliateClick(quote.isbn, quote.amazonUrl)}
           >
             Amazon
@@ -72,7 +72,7 @@ export function HomepageQuote() {
             href={quote.bookshopUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[12px] text-t4 hover:text-sf-emerald transition-colors uppercase tracking-[1px]"
+            className="text-xs text-t4 hover:text-sf-emerald-text transition-colors uppercase tracking-[1px]"
             onClick={() => trackAffiliateClick(quote.isbn, quote.bookshopUrl)}
           >
             Bookshop

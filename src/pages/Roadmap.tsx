@@ -20,23 +20,24 @@ import { useToast } from "@/hooks/use-toast";
 import { PageBursts } from "@/components/ui/data-burst";
 import { ROADMAP_BURSTS } from "@/lib/data-bursts";
 import { mapError } from "@/lib/ship-voice";
+import { useMetaTags } from "@/hooks/use-meta-tags";
 
 const STATUS_CONFIG: Record<string, { label: string; className: string }> = {
   planned: {
     label: "PLANNED",
-    className: "bg-white/5 border-sf-line text-t3",
+    className: "bg-sf-surface-elevated border-sf-line text-t3",
   },
   in_progress: {
     label: "IN PROGRESS",
-    className: "bg-amber-500/6 border-sf-amber text-sf-amber",
+    className: "bg-sf-amber/[0.06] border-sf-amber text-sf-amber-text",
   },
   beta: {
     label: "BETA",
-    className: "bg-violet-500/6 border-sf-violet text-sf-violet-text",
+    className: "bg-sf-violet/[0.06] border-sf-violet text-sf-violet-text",
   },
   released: {
     label: "RELEASED",
-    className: "bg-emerald-500/6 border-sf-emerald text-sf-emerald",
+    className: "bg-sf-emerald/[0.06] border-sf-emerald text-sf-emerald-text",
   },
 };
 
@@ -52,16 +53,16 @@ function VoteBudgetBar({ used, remaining, max }: { used: number; remaining: numb
   return (
     <GlassPanel className="p-4 mb-6 border-sf-violet">
       <div className="flex items-center justify-between mb-2">
-        <span className="text-xs font-medium uppercase tracking-[1.5px] text-t3">
+        <span className="text-xs font-medium uppercase tracking-wide text-t3">
           VOTE BUDGET
         </span>
         <span className="font-mono text-sm text-sf-violet-text">
           {remaining}/{max} <span className="text-t4">remaining</span>
         </span>
       </div>
-      <div className="h-2 bg-white/5 rounded-sm overflow-hidden">
+      <div className="h-2 bg-sf-surface-elevated rounded-none overflow-hidden">
         <div
-          className="h-full bg-violet-500 transition-all duration-300"
+          className="h-full bg-sf-violet transition-all duration-slow"
           style={{ width: `${pct}%` }}
         />
       </div>
@@ -134,9 +135,9 @@ function RoadmapCard({ item, canVote }: { item: RoadmapItem; canVote: boolean })
 
       {/* Vote bar */}
       <div className="flex items-center gap-3 mb-4">
-        <div className="flex-1 h-2 bg-white/5 rounded-sm overflow-hidden">
+        <div className="flex-1 h-2 bg-sf-surface-elevated rounded-none overflow-hidden">
           <div
-            className="h-full bg-gradient-to-r from-teal-500 to-teal-400 transition-all duration-300"
+            className="h-full bg-sf-primary transition-all duration-slow"
             style={{ width: `${voteBarPct}%` }}
           />
         </div>
@@ -153,7 +154,7 @@ function RoadmapCard({ item, canVote }: { item: RoadmapItem; canVote: boolean })
               key={n}
               variant="outline"
               size="sm"
-              className="gap-1 border-sf-primary hover:border-sf-primary hover:bg-teal-500/5 text-teal-400"
+              className="gap-1 border-sf-primary hover:border-sf-primary hover:bg-sf-primary/5 text-sf-primary-text"
               onClick={() => handleVote(n)}
               disabled={remaining < n || castVote.isPending}
             >
@@ -196,6 +197,7 @@ function RoadmapCard({ item, canVote }: { item: RoadmapItem; canVote: boolean })
 }
 
 const Roadmap = () => {
+  useMetaTags({ title: "Roadmap" });
   const navigate = useNavigate();
   const { user } = useAuth();
   const { isVanguard } = useSubscription();
@@ -211,14 +213,14 @@ const Roadmap = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-sf-void">
       <Header />
 
       <main className="relative container mx-auto px-4 pt-24 pb-16 max-w-4xl">
         <PageBursts bursts={ROADMAP_BURSTS} />
         {/* Hero */}
         <section className="text-center mb-8">
-          <h1 className="font-display text-3xl md:text-4xl font-light tracking-sf-title text-t1 mb-3">
+          <h1 className="font-display text-sf-h1 tracking-title text-t1 mb-3">
             ROADMAP
           </h1>
           <p className="text-t2 max-w-xl mx-auto">
@@ -241,9 +243,9 @@ const Roadmap = () => {
             <button
               key={tab.value}
               onClick={() => setStatusFilter(tab.value)}
-              className={`px-4 py-2 text-xs font-heading uppercase tracking-[1.5px] border transition-colors whitespace-nowrap ${
+              className={`px-4 py-2 text-xs font-heading uppercase tracking-wide border transition-colors whitespace-nowrap ${
                 statusFilter === tab.value
-                  ? 'border-sf-primary bg-teal-500/6 text-teal-400'
+                  ? 'border-sf-primary bg-sf-primary/[0.06] text-sf-primary-text'
                   : 'border-sf-line text-t3 hover:border-sf-line hover:text-t2'
               }`}
             >
@@ -282,7 +284,7 @@ const Roadmap = () => {
               Vanguard members get 10 votes per month to prioritize what gets built next, plus early access to new tools, Office Hours, and more.
             </p>
             <Button
-              className="bg-violet-600 hover:bg-violet-500 gap-2"
+              className="bg-sf-violet text-sf-on-violet hover:bg-sf-violet gap-2"
               onClick={() => navigate("/pricing")}
             >
               <Telescope className="w-4 h-4" />

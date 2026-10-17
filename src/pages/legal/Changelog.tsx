@@ -2,6 +2,7 @@ import LegalPageLayout from "@/components/layout/LegalPageLayout";
 import { History } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { TOTAL_TOOL_COUNT } from "@/lib/tools-config";
+import { useMetaTags } from "@/hooks/use-meta-tags";
 
 interface ChangelogEntry {
   version: string;
@@ -247,13 +248,14 @@ const changelog: ChangelogEntry[] = [
 ];
 
 const typeStyles: Record<ChangelogEntry["type"], { bg: string; text: string; label: string }> = {
-  feature: { bg: "bg-green-500/20", text: "text-green-400", label: "New Feature" },
-  improvement: { bg: "bg-blue-500/20", text: "text-blue-400", label: "Improvement" },
-  fix: { bg: "bg-amber-500/20", text: "text-sf-amber", label: "Bug Fix" },
-  policy: { bg: "bg-purple-500/20", text: "text-purple-400", label: "Policy Update" },
+  feature: { bg: "bg-sf-emerald/[0.06] border border-sf-emerald", text: "text-sf-emerald-text", label: "New Feature" },
+  improvement: { bg: "bg-sf-azure/[0.06] border border-sf-azure", text: "text-sf-azure-text", label: "Improvement" },
+  fix: { bg: "bg-sf-amber/[0.06] border border-sf-amber", text: "text-sf-amber-text", label: "Bug Fix" },
+  policy: { bg: "bg-sf-violet/[0.06] border border-sf-violet", text: "text-sf-violet-text", label: "Policy Update" },
 };
 
 const Changelog = () => {
+  useMetaTags({ title: "Changelog" });
   return (
     <LegalPageLayout
       title="Changelog"
@@ -272,7 +274,7 @@ const Changelog = () => {
                 <h2 className="font-heading text-2xl font-medium text-t1">
                   v{entry.version}
                 </h2>
-                <Badge className={`${style.bg} ${style.text} border-0`}>
+                <Badge className={`${style.bg} ${style.text}`}>
                   {style.label}
                 </Badge>
                 <span className="text-sm text-t3">{entry.date}</span>
@@ -285,7 +287,7 @@ const Changelog = () => {
               <ul className="space-y-2">
                 {entry.changes.map((change, i) => (
                   <li key={i} className="flex items-start gap-2 text-t2 leading-relaxed">
-                    <span className="mt-1.5 shrink-0 text-primary">•</span>
+                    <span className="mt-1.5 shrink-0 text-sf-primary-text">•</span>
                     <span>{change}</span>
                   </li>
                 ))}
@@ -302,7 +304,7 @@ const Changelog = () => {
               href="https://xenomythology.substack.com/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-primary hover:underline"
+              className="text-sf-primary-text hover:underline"
             >
               Substack
             </a>{" "}

@@ -1,6 +1,7 @@
 import LegalPageLayout from "@/components/layout/LegalPageLayout";
 import { Shield } from "lucide-react";
 import { PRIVACY_BURSTS } from "@/lib/data-bursts";
+import { useMetaTags } from "@/hooks/use-meta-tags";
 
 const privacyContent = `
 ## Your Worlds Are Yours Alone
@@ -326,6 +327,7 @@ We're real humans who care about your privacy. We aim to respond within 2 busine
 `;
 
 const Privacy = () => {
+  useMetaTags({ title: "Privacy Policy" });
   return (
     <LegalPageLayout
       title="Privacy Policy"

@@ -54,12 +54,12 @@ export default function CommentSection({ worldId }: CommentSectionProps) {
     <GlassPanel className="p-6 space-y-6">
       {/* Header */}
       <div className="flex items-center gap-2">
-        <MessageSquare className="w-4 h-4 text-primary" />
-        <h3 className="font-heading text-sm font-light uppercase tracking-[3px] text-emerald">
+        <MessageSquare className="w-4 h-4 text-sf-primary-text" />
+        <h3 className="font-heading text-sm font-light uppercase tracking-wide text-sf-emerald-text">
           Comments
         </h3>
         {comments.length > 0 && (
-          <span className="font-mono text-[12px] text-t4">
+          <span className="font-mono text-xs text-t4">
             {comments.length}
           </span>
         )}
@@ -82,12 +82,12 @@ export default function CommentSection({ worldId }: CommentSectionProps) {
               className="flex gap-3 group"
             >
               {/* Avatar placeholder */}
-              <div className="w-8 h-8 flex-shrink-0 bg-white/[0.04] border border-sf-line rounded-sm flex items-center justify-center">
+              <div className="w-8 h-8 flex-shrink-0 bg-sf-surface-elevated border border-sf-line rounded-none flex items-center justify-center">
                 {comment.avatar_url ? (
                   <img
                     src={comment.avatar_url}
                     alt=""
-                    className="w-8 h-8 rounded-sm object-cover"
+                    className="w-8 h-8 rounded-none object-cover"
                   />
                 ) : (
                   <User className="w-4 h-4 text-t4" />
@@ -100,7 +100,7 @@ export default function CommentSection({ worldId }: CommentSectionProps) {
                   <span className="font-sans text-xs font-medium text-t2">
                     {comment.display_name}
                   </span>
-                  <span className="font-mono text-[12px] text-t4">
+                  <span className="font-mono text-xs text-t4">
                     {timeAgo(comment.created_at)}
                   </span>
                 </div>
@@ -116,7 +116,7 @@ export default function CommentSection({ worldId }: CommentSectionProps) {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="w-7 h-7 opacity-0 group-hover:opacity-100 text-t4 hover:text-sf-crimson-text transition-all min-h-hit min-w-hit"
+                  className="w-7 h-7 text-t4 hover:text-sf-crimson-text transition-colors duration-fast min-h-hit min-w-hit"
                   onClick={() => deleteComment.mutate(comment.id)}
                   disabled={deleteComment.isPending}
                   aria-label="Delete comment"
@@ -140,7 +140,7 @@ export default function CommentSection({ worldId }: CommentSectionProps) {
             maxLength={2000}
           />
           <div className="flex items-center justify-between">
-            <span className="font-mono text-[12px] text-t4">
+            <span className="font-mono text-xs text-t4">
               {body.length} / 2000
             </span>
             <Button

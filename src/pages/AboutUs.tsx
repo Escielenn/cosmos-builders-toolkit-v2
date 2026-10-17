@@ -1,8 +1,8 @@
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { GlassPanel } from "@/components/ui/glass-panel";
-import { Link } from "react-router-dom";
-import { ArrowLeft, Compass, Layers, User, Sparkles } from "lucide-react";
+import { Compass, Layers, User, Sparkles } from "lucide-react";
+import { BackLink } from "@/components/ui/back-link";
 import { useMetaTags } from "@/hooks/use-meta-tags";
 
 const AboutUs = () => {
@@ -12,13 +12,13 @@ const AboutUs = () => {
   });
 
   return (
-    <div className="min-h-screen bg-background sf-atmosphere">
+    <div className="min-h-screen bg-sf-void sf-atmosphere">
       <Header />
 
       <main className="relative container mx-auto px-4 pt-24 pb-16">
         {/* Hero */}
         <section className="text-center mb-16">
-          <h1 className="font-display text-3xl md:text-4xl font-light tracking-sf-title text-t1 mb-4">
+          <h1 className="font-display text-sf-h1 tracking-title text-t1 mb-4">
             ABOUT STELLARFORGE
           </h1>
           <p className="text-lg text-t2 max-w-2xl mx-auto leading-relaxed">
@@ -78,12 +78,12 @@ const AboutUs = () => {
             </div>
             <div className="flex flex-wrap items-center justify-center gap-3 py-4">
               {[
-                { label: "Physics", color: "#FFB800" },
-                { label: "Environment", color: "#4D9FFF" },
-                { label: "Biology", color: "#00FF88" },
-                { label: "Psychology", color: "#9B5DE5" },
-                { label: "Mythology", color: "#5B8DEF" },
-                { label: "Culture", color: "#15C17B" },
+                { label: "Physics", color: "var(--sf-amber-text)" },
+                { label: "Environment", color: "var(--sf-azure-text)" },
+                { label: "Biology", color: "var(--sf-emerald-text)" },
+                { label: "Psychology", color: "var(--sf-violet-text)" },
+                { label: "Mythology", color: "var(--sf-stellar-text)" },
+                { label: "Culture", color: "var(--sf-teal-text)" },
               ].map((step, i) => (
                 <span key={step.label} className="flex items-center gap-2">
                   <span
@@ -148,10 +148,10 @@ const AboutUs = () => {
             <div className="flex items-center justify-center gap-3 mb-6">
               <Sparkles className="w-5 h-5 text-sf-primary-text" />
             </div>
-            <p className="font-display text-2xl md:text-3xl font-light tracking-sf-title text-t1 mb-4">
+            <p className="font-display text-2xl md:text-3xl font-light tracking-title text-t1 mb-4">
               These worlds exist in you.
             </p>
-            <p className="font-display text-2xl md:text-3xl font-light tracking-sf-title text-t1 mb-8">
+            <p className="font-display text-2xl md:text-3xl font-light tracking-title text-t1 mb-8">
               Waiting to be found.
             </p>
             <p className="text-t2 text-sm leading-relaxed max-w-lg mx-auto">
@@ -164,16 +164,8 @@ const AboutUs = () => {
         </section>
 
         {/* Back link */}
-        <div className="text-center">
-          <Link
-            to="/"
-            className="inline-flex items-center gap-2 text-sm text-t3 hover:text-sf-primary-text transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span className="font-heading text-xs uppercase tracking-[1.5px]">
-              Return Home
-            </span>
-          </Link>
+        <div className="flex justify-center">
+          <BackLink to="/" label="Return Home" />
         </div>
       </main>
 

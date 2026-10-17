@@ -146,9 +146,9 @@ export default function ExampleWorldBanner() {
       <div className="relative flex flex-col sm:flex-row items-start sm:items-center gap-4">
         {/* Icon + text */}
         <div className="flex items-center gap-3 flex-1 min-w-0">
-          <Globe className="w-8 h-8 text-primary flex-shrink-0" />
+          <Globe className="w-8 h-8 text-sf-primary-text flex-shrink-0" />
           <div className="min-w-0">
-            <h3 className="font-heading text-sm font-light uppercase tracking-[2px] text-t1">
+            <h3 className="font-heading text-sm font-light uppercase tracking-wide text-t1">
               Explore The Tidelock Archives
             </h3>
             <p className="font-sans text-xs text-t3 mt-0.5">
@@ -163,7 +163,7 @@ export default function ExampleWorldBanner() {
         <div className="flex items-center gap-2 flex-shrink-0">
           <Link
             to={`/worlds/${exampleWorld.id}/showcase`}
-            className="inline-flex items-center gap-1.5 font-sans text-xs font-medium uppercase tracking-[1px] px-3 py-1.5 bg-primary/[0.06] border border-primary text-primary hover:bg-primary/[0.12] transition-colors"
+            className="inline-flex items-center gap-1.5 font-sans text-xs font-medium uppercase tracking-[1px] px-3 py-1.5 bg-sf-primary/[0.06] border border-sf-primary text-sf-primary-text hover:bg-sf-primary/[0.12] transition-colors"
           >
             <Eye className="w-3.5 h-3.5" />
             View
@@ -173,7 +173,7 @@ export default function ExampleWorldBanner() {
             alreadyForked ? (
               <Link
                 to={`/worlds/${forkedWorldId}`}
-                className="inline-flex items-center gap-1.5 font-sans text-xs font-medium uppercase tracking-[1px] px-3 py-1.5 bg-primary/[0.06] border border-primary text-primary hover:bg-primary/[0.12] transition-colors"
+                className="inline-flex items-center gap-1.5 font-sans text-xs font-medium uppercase tracking-[1px] px-3 py-1.5 bg-sf-primary/[0.06] border border-sf-primary text-sf-primary-text hover:bg-sf-primary/[0.12] transition-colors"
               >
                 <ExternalLink className="w-3.5 h-3.5" />
                 Go to Your Fork
@@ -184,7 +184,7 @@ export default function ExampleWorldBanner() {
                 size="sm"
                 onClick={handleFork}
                 disabled={forkWorld.isPending}
-                className="gap-1.5 text-t3 hover:text-primary"
+                className="gap-1.5 text-t3 hover:text-sf-primary-text"
               >
                 {forkWorld.isPending ? (
                   <Loader variant="inline" size="sm" />
