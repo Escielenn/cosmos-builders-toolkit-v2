@@ -70,7 +70,9 @@ export function isHintDismissed(id: string): boolean {
 export function dismissHint(id: string): void {
   try {
     localStorage.setItem(HINT_PREFIX + id, "true");
-  } catch {}
+  } catch {
+    /* storage unavailable (private mode / quota) */
+  }
 }
 
 export function resetAllHints(): void {
@@ -78,5 +80,7 @@ export function resetAllHints(): void {
     Object.keys(localStorage)
       .filter((k) => k.startsWith(HINT_PREFIX))
       .forEach((k) => localStorage.removeItem(k));
-  } catch {}
+  } catch {
+    /* storage unavailable (private mode / quota) */
+  }
 }

@@ -52,7 +52,9 @@ export default function NarrativeBridgePanel({
     try {
       const key = `sf-narrative-${config.simulatorType}`;
       localStorage.setItem(key, JSON.stringify(notes));
-    } catch {}
+    } catch {
+      /* storage unavailable (private mode / quota); state stays in memory */
+    }
     setSaved(true);
     toast({ title: "Notes saved", description: "Narrative notes saved locally." });
   }, [notes, config.simulatorType, toast]);

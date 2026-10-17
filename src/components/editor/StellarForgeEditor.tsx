@@ -50,6 +50,9 @@ import { WRITING_THEMES } from "@/lib/writing/themes";
 import { countWordsInText } from "@/lib/text";
 import type { Node as ProseMirrorNode } from "@tiptap/pm/model";
 
+/** Mirrors @tiptap/extension-heading's (unexported) Level union. */
+type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
+
 /**
  * Document text with block boundaries preserved. `doc.textContent` is
  * `textBetween(0, size, "")` — an empty separator — which glues adjacent
@@ -189,7 +192,7 @@ export function StellarForgeEditor({
       StarterKit.configure({
         heading:
           config.headingLevels.length > 0
-            ? { levels: config.headingLevels as any }
+            ? { levels: config.headingLevels as HeadingLevel[] }
             : false,
       }),
       Placeholder.configure({ placeholder }),

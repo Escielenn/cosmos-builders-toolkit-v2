@@ -41,7 +41,7 @@ const CODEX_VIEWS: ReadonlyArray<{
 ];
 
 function getIconComponent(iconName: string) {
-  const Icon = (LucideIcons as any)[iconName];
+  const Icon = (LucideIcons as unknown as Record<string, LucideIcons.LucideIcon | undefined>)[iconName];
   return Icon || FileText;
 }
 

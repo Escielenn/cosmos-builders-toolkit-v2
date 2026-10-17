@@ -121,7 +121,7 @@ export function useTags() {
     }) => {
       const { error } = await supabase
         .from("world_entries")
-        .update({ tags } as any)
+        .update({ tags })
         .eq("id", entryId);
 
       if (error) throw error;

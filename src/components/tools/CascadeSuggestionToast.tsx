@@ -30,7 +30,9 @@ function isDismissed(toolType: string): boolean {
 function dismissSuggestion(toolType: string): void {
   try {
     localStorage.setItem(DISMISS_PREFIX + toolType, String(Date.now()));
-  } catch {}
+  } catch {
+    /* storage unavailable (private mode / quota); dismissal is session-only */
+  }
 }
 
 interface CascadeSuggestionToastProps {

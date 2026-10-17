@@ -1265,7 +1265,7 @@ export default function ExoSkyV2({
           tally("bgWalked", bucket.length);
           for (let i = 0; i < bucket.length && bgCount < bgMax; i++) {
             const bg = bucket[i];
-            let useRa = bg.ra, useDec = bg.dec;
+            const useRa = bg.ra, useDec = bg.dec;
 
             // Quick visibility check
             let dRa = useRa - _viewRa;

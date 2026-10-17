@@ -46,7 +46,8 @@ const TRACK_ICON_MAP: Record<string, LucideIcon> = {
 interface TrackFormDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSubmit: (track: any) => void;
+  /** Receives the full track when editing, or the new-track fields when creating. */
+  onSubmit: (track: TimelineTrack | Omit<TimelineTrack, "id" | "order" | "isCollapsed">) => void;
   editingTrack?: TimelineTrack | null;
   usedColors?: string[];
 }

@@ -50,11 +50,11 @@ jobs:
       - name: Typecheck (strict gate — blocking)
         run: node scripts/typecheck-strict.mjs
 
-      # 226 pre-existing lint errors as of 0.6652 — informational until the
-      # debt is ratcheted down; do NOT let it grow.
-      - name: Lint (informational)
+      # Lint errors burned down to zero on 2026-10-17 (was 226 at 0.6652,
+      # 70 at repairs/2026-10-17). Blocking from here on; warnings are
+      # still allowed but should not grow.
+      - name: Lint (blocking)
         run: npm run lint
-        continue-on-error: true
 
       - name: Unit tests
         run: npm run test

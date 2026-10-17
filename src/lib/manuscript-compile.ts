@@ -97,7 +97,7 @@ function htmlToParagraphs(html: string): { text: string; bold?: boolean; italic?
     // Simple tag-aware splitting
     const cleaned = block.replace(/<p[^>]*>|<h[1-6][^>]*>/gi, "");
     // Process bold/italic inline
-    let remaining = cleaned;
+    const remaining = cleaned;
     const re = /<(strong|b|em|i)>(.*?)<\/\1>/gi;
     let lastIndex = 0;
     let match: RegExpExecArray | null;

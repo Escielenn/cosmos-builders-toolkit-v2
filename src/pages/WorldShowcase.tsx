@@ -84,10 +84,10 @@ function useShowcaseWorld(worldId: string | undefined) {
       return {
         ...data,
         theme: (data.theme ?? {}) as WorldTheme,
-        visibility: (data as any).visibility ?? "private",
-        fork_count: (data as any).fork_count ?? 0,
-        license: (data as any).license ?? "cc_by",
-        is_example: (data as any).is_example ?? false,
+        visibility: data.visibility ?? "private",
+        fork_count: data.fork_count ?? 0,
+        license: data.license ?? "cc_by",
+        is_example: data.is_example ?? false,
       } as ShowcaseWorld;
     },
     enabled: !!worldId,
