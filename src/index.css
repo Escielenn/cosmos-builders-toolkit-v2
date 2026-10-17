@@ -3321,30 +3321,10 @@ html {
    APRIL 2026 HANDOFF — Additive utility classes (global scope)
    ═══════════════════════════════════════════════════════════════════════════ */
 
-/* ───── Scrollbar skin (reusable) ─────
-   Apply to any scroll container:   <div className="sf-sb"> or sf-sb--slim / sf-sb--idle */
-.sf-sb {
-  scrollbar-color: #2E3548 #0A0E17;
-  scrollbar-width: thin;
-}
-.sf-sb::-webkit-scrollbar         { width: 8px; height: 8px; }
-.sf-sb::-webkit-scrollbar-track   { background: #0A0E17; border: 0; }
-.sf-sb::-webkit-scrollbar-thumb   { background: #2E3548; border: 0; border-radius: 0; }
-.sf-sb::-webkit-scrollbar-thumb:hover { background: #3D4658; }
-.sf-sb::-webkit-scrollbar-corner  { background: #0A0E17; }
-
-.sf-sb--slim::-webkit-scrollbar { width: 6px; height: 6px; }
-.sf-sb--slim { scrollbar-width: thin; }
-
-.sf-sb--idle::-webkit-scrollbar-thumb {
-  background: transparent;
-  transition: background 300ms ease 800ms;
-}
-.sf-sb--idle:hover::-webkit-scrollbar-thumb,
-.sf-sb--idle.is-scrolling::-webkit-scrollbar-thumb {
-  background: #2E3548;
-  transition-delay: 0ms;
-}
+/* ───── Scrollbar skin ─────
+   .sf-sb / .sf-sb--slim are owned by src/styles/tokens.css (solved thumb,
+   3:1+). The hardcoded #2E3548 copy that lived here overrode it at 1.40:1
+   and kept the removed .sf-sb--idle alive; deleted (Parallel Truth). */
 
 /* ───── Starfield (mount via <StellarBackground />) ───── */
 .sf-starfield {
@@ -3376,7 +3356,7 @@ html {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  opacity: 0.03;
+  opacity: calc(0.03 * var(--sf-ambient));
   z-index: 1;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }

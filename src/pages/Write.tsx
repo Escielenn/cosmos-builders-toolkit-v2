@@ -703,7 +703,7 @@ export default function Write(): JSX.Element {
         )}
 
         {/* editor */}
-        <main className="sf-sb sf-sb--idle min-h-0 overflow-y-auto">
+        <main className="sf-sb min-h-0 overflow-y-auto">
           {findOpen && view === "editor" && (
             <FindReplaceBar
               editor={editorInstance}
