@@ -55,7 +55,7 @@ function RelCard({ rel }: { rel: ToolRelationship }): JSX.Element {
         </span>
       </div>
       {casc && (
-        <div className="mt-2 inline-flex items-center gap-1.5 font-mono text-[12px] uppercase tracking-[1.5px]">
+        <div className="mt-2 inline-flex items-center gap-1.5 font-mono text-[12px] uppercase tracking-[0.12em]">
           <span
             className="h-1 w-1 shrink-0 rounded-full"
             style={{ backgroundColor: casc.color }}
@@ -82,14 +82,14 @@ export function CascadeFooter({ toolType }: { toolType: string }): JSX.Element |
 
   return (
     <section className="no-print mt-16 border-t border-dashed border-sf-line pt-10">
-      <div className="mb-7 inline-flex items-center gap-3.5 font-mono text-[12px] uppercase tracking-[2.5px] text-sf-primary-text/80">
+      <div className="mb-7 inline-flex items-center gap-3.5 font-mono text-[12px] uppercase tracking-[0.12em] text-sf-primary-text">
         <span aria-hidden className="block h-px w-12 bg-sf-primary/60" />
         <span>// the cascade{catColor ? ` · ${catColor.toLowerCase()}` : ""}</span>
       </div>
       <div className="grid gap-8 lg:grid-cols-2">
         {buildsOn.length > 0 && (
           <div>
-            <h3 className="mb-3 flex items-center gap-2 font-heading text-[13px] font-light uppercase tracking-[2px] text-t3">
+            <h3 className="mb-3 flex items-center gap-2 font-heading text-[13px] font-light uppercase tracking-[0.12em] text-t3">
               <ArrowLeft className="h-3.5 w-3.5" /> Builds on
             </h3>
             <div className="space-y-2">
@@ -99,7 +99,7 @@ export function CascadeFooter({ toolType }: { toolType: string }): JSX.Element |
         )}
         {feedsInto.length > 0 && (
           <div>
-            <h3 className="mb-3 flex items-center gap-2 font-heading text-[13px] font-light uppercase tracking-[2px] text-t3">
+            <h3 className="mb-3 flex items-center gap-2 font-heading text-[13px] font-light uppercase tracking-[0.12em] text-t3">
               Feeds into <ArrowRight className="h-3.5 w-3.5" />
             </h3>
             <div className="space-y-2">

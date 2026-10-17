@@ -23,11 +23,11 @@ const GravityScaleBar = ({ gravityRatio, className }: GravityScaleBarProps) => {
       <div className="relative h-8 rounded-none overflow-hidden bg-muted/30 border border-sf-line">
         {/* Color zones */}
         <div className="absolute inset-0 flex">
-          <div className="h-full bg-blue-500/10" style={{ width: `${(0.3 / MAX_G) * 100}%` }} />
-          <div className="h-full bg-cyan-500/10" style={{ width: `${((0.7 - 0.3) / MAX_G) * 100}%` }} />
-          <div className="h-full bg-green-500/10" style={{ width: `${((1.5 - 0.7) / MAX_G) * 100}%` }} />
-          <div className="h-full bg-amber-500/10" style={{ width: `${((3.0 - 1.5) / MAX_G) * 100}%` }} />
-          <div className="h-full bg-red-500/10 flex-1" />
+          <div className="h-full bg-sf-azure/[0.12]" style={{ width: `${(0.3 / MAX_G) * 100}%` }} />
+          <div className="h-full bg-sf-teal/[0.12]" style={{ width: `${((0.7 - 0.3) / MAX_G) * 100}%` }} />
+          <div className="h-full bg-sf-emerald/[0.12]" style={{ width: `${((1.5 - 0.7) / MAX_G) * 100}%` }} />
+          <div className="h-full bg-sf-amber/[0.12]" style={{ width: `${((3.0 - 1.5) / MAX_G) * 100}%` }} />
+          <div className="h-full bg-sf-crimson/[0.12] flex-1" />
         </div>
 
         {/* Reference world markers */}
@@ -53,13 +53,13 @@ const GravityScaleBar = ({ gravityRatio, className }: GravityScaleBarProps) => {
           className="absolute top-0 h-full flex items-center z-10"
           style={{ left: `${Math.min(userPercent, 99)}%`, transform: "translateX(-50%)" }}
         >
-          <div className="w-3 h-3 rounded-sm bg-primary border-2 border-background shadow-[0_0_8px_rgba(21,193,123,0.5)]" />
+          <div className="w-3 h-3 rounded-none bg-sf-primary border-2 border-sf-void shadow-sf-glow-teal" />
         </div>
       </div>
 
       {/* User value label */}
       <div className="flex justify-center">
-        <span className="text-xs font-mono text-primary">
+        <span className="text-xs font-mono text-sf-primary-text">
           {gravityRatio.toFixed(3)}g
           {gravityRatio > MAX_G && " (off scale)"}
         </span>

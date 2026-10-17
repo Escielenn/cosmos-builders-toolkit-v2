@@ -24,7 +24,7 @@ const ToolIntroSection = ({ data }: ToolIntroSectionProps) => {
             <p className="text-sm font-medium">
               <Link
                 to={`/bookshelf#${example.isbn}`}
-                className="text-primary hover:underline"
+                className="text-sf-primary-text hover:underline"
               >
                 <em>{example.bookTitle}</em>
               </Link>{" "}
@@ -33,7 +33,7 @@ const ToolIntroSection = ({ data }: ToolIntroSectionProps) => {
             {example.quotes.map((quote, qi) => (
               <blockquote
                 key={qi}
-                className="border-l-2 border-primary pl-4 italic text-sm text-t3"
+                className="border-l-2 border-sf-primary pl-4 italic text-sm text-t3"
               >
                 &ldquo;{quote}&rdquo;
               </blockquote>

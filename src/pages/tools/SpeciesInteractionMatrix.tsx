@@ -378,7 +378,7 @@ const SpeciesInteractionMatrix = () => {
     if (formState.species.length >= 6) {
       toast({
         title: "MAXIMUM SPECIES REACHED.",
-        description: "You can compare up to 6 species.",
+        description: "COMPARISON LIMIT IS 6 SPECIES.",
         variant: "destructive",
       });
       return;
@@ -393,7 +393,7 @@ const SpeciesInteractionMatrix = () => {
     if (formState.species.length <= 2) {
       toast({
         title: "MINIMUM SPECIES REQUIRED.",
-        description: "You need at least 2 species to compare.",
+        description: "COMPARISON REQUIRES AT LEAST 2 SPECIES.",
         variant: "destructive",
       });
       return;
@@ -426,7 +426,7 @@ const SpeciesInteractionMatrix = () => {
 
     toast({
       title: "SPECIES IMPORTED.",
-      description: `${speciesData.name || "Species"} has been imported from Evolutionary Biology.`,
+      description: `${speciesData.name || "SPECIES"} IMPORTED FROM EVOLUTIONARY BIOLOGY.`,
     });
 
     setImportTargetIndex(null);
@@ -436,7 +436,7 @@ const SpeciesInteractionMatrix = () => {
     if (formState.species.length >= 6) {
       toast({
         title: "MAXIMUM SPECIES REACHED.",
-        description: "You can compare up to 6 species.",
+        description: "COMPARISON LIMIT IS 6 SPECIES.",
         variant: "destructive",
       });
       return;
@@ -598,7 +598,7 @@ const SpeciesInteractionMatrix = () => {
                               variant="ghost"
                               size="sm"
                               onClick={() => handleImportFromEvoBio(index)}
-                              className="text-sf-emerald hover:text-emerald-600"
+                              className="text-sf-emerald-text hover:text-t1"
                               title="Import from Evolutionary Biology"
                             >
                               <Dna className="w-4 h-4" />
@@ -678,7 +678,7 @@ const SpeciesInteractionMatrix = () => {
                       <Button
                         variant="outline"
                         onClick={handleAddFromEvoBio}
-                        className="flex-1 gap-2 text-emerald-600 border-emerald-600 hover:bg-emerald-500/10"
+                        className="flex-1 gap-2 text-sf-emerald-text border-sf-emerald hover:bg-sf-emerald/[0.06]"
                       >
                         <Dna className="w-4 h-4" />
                         Import from Evolutionary Biology
@@ -703,8 +703,8 @@ const SpeciesInteractionMatrix = () => {
                       key={pair.pairKey}
                       className={`cursor-pointer transition-colors ${
                         selectedPairIndex === index
-                          ? "border-primary bg-primary/5"
-                          : "hover:border-primary"
+                          ? "border-sf-primary bg-sf-primary/5"
+                          : "hover:border-sf-primary"
                       }`}
                       onClick={() => setSelectedPairIndex(index)}
                     >
@@ -1448,7 +1448,7 @@ const SpeciesInteractionMatrix = () => {
                   </Suspense>
                 </div>
 
-                <Card className="bg-purple-500/10 border-sf-violet">
+                <Card className="bg-sf-violet/[0.06] border-sf-violet">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-base">Story Prompt Generator</CardTitle>
                   </CardHeader>

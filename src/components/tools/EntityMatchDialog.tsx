@@ -53,7 +53,7 @@ export default function EntityMatchDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md bg-sf-surface border-sf-line">
         <DialogHeader>
-          <DialogTitle className="font-heading text-sm font-light uppercase tracking-[3px] text-primary">
+          <DialogTitle className="font-heading text-sm font-light uppercase tracking-[0.12em] text-sf-primary-text">
             Entity Match Detected
           </DialogTitle>
           <DialogDescription className="text-t2 mt-3 leading-relaxed">
@@ -76,7 +76,7 @@ export default function EntityMatchDialog({
               <button
                 key={c.id}
                 onClick={() => onLink(c)}
-                className="w-full text-left px-3 py-1.5 text-xs text-t3 hover:text-t1 hover:bg-white/[0.04] transition-colors flex items-center justify-between"
+                className="w-full text-left px-3 py-1.5 text-xs text-t3 hover:text-t1 hover:bg-sf-surface-elevated transition-colors flex items-center justify-between"
               >
                 <span>{c.title}</span>
                 <span className="font-mono text-[12px] text-t4">

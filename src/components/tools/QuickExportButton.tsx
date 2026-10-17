@@ -129,7 +129,7 @@ const QuickExportButton = ({
           if (!template) {
             toast({
               title: "TEMPLATE UNAVAILABLE.",
-              description: "PDF template not available for this tool. Try JSON or Text.",
+              description: "NO PDF TEMPLATE FOR THIS INSTRUMENT. EXPORT AS JSON OR TEXT.",
               variant: "destructive",
             });
             return;
@@ -150,7 +150,7 @@ const QuickExportButton = ({
           downloadBlob(pdfBlob, `${filename}.pdf`);
           toast({
             title: "EXPORT COMPLETE.",
-            description: `Downloaded as ${format === "pdf-summary" ? "summary" : "full report"} PDF.`,
+            description: `${format === "pdf-summary" ? "SUMMARY" : "FULL REPORT"} PDF DOWNLOADED.`,
           });
           break;
         }
@@ -159,7 +159,7 @@ const QuickExportButton = ({
       console.error("Quick export error:", error);
       toast({
         title: "EXPORT FAILED.",
-        description: "There was an error generating your export.",
+        description: "EXPORT GENERATION FAILED. RETRY WHEN READY.",
         variant: "destructive",
       });
     } finally {

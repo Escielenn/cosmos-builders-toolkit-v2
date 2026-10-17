@@ -27,7 +27,7 @@ export function CascadeRibbon(): JSX.Element {
 
   return (
     <div className="no-print mb-8 border border-sf-line bg-sf-surface/40 p-4 md:p-5">
-      <div className="mb-4 inline-flex items-center gap-3 font-mono text-[12px] uppercase tracking-[2.5px] text-sf-primary-text/80">
+      <div className="mb-4 inline-flex items-center gap-3 font-mono text-[12px] uppercase tracking-[0.12em] text-sf-primary-text">
         <span aria-hidden className="block h-px w-10 bg-sf-primary/60" />
         <span>// cascade map · upstream shapes downstream</span>
       </div>

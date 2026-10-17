@@ -1207,7 +1207,7 @@ const TechnologyConsequences = () => {
               guidance="Contradictions, conflicts, and narrative opportunities"
             >
               <div className="space-y-6">
-                <Card className="bg-amber-500/10 border-sf-amber">
+                <Card className="bg-sf-amber/[0.06] border-sf-amber">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-base">Contradiction Prompt</CardTitle>
                   </CardHeader>
@@ -1249,7 +1249,7 @@ const TechnologyConsequences = () => {
                   />
                 </div>
 
-                <Card className="bg-purple-500/10 border-sf-violet">
+                <Card className="bg-sf-violet/[0.06] border-sf-violet">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-base">Story Conflict Prompt</CardTitle>
                   </CardHeader>

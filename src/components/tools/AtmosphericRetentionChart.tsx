@@ -53,7 +53,7 @@ const AtmosphericRetentionChart = ({ retentionData, className }: AtmosphericRete
             </div>
 
             {/* Bar */}
-            <div className="relative h-2 rounded-full bg-muted/30 overflow-hidden">
+            <div className="relative h-2 rounded-none bg-muted/30 overflow-hidden">
               {/* Retention threshold line */}
               <div
                 className="absolute top-0 h-full w-px bg-foreground/20 z-10"
@@ -61,7 +61,7 @@ const AtmosphericRetentionChart = ({ retentionData, className }: AtmosphericRete
               />
               {/* Value bar */}
               <div
-                className="h-full rounded-full transition-all duration-300"
+                className="h-full rounded-none transition-all duration-slow ease-sf-out"
                 style={{
                   width: `${barWidth}%`,
                   backgroundColor: gas.statusColor,
@@ -80,15 +80,15 @@ const AtmosphericRetentionChart = ({ retentionData, className }: AtmosphericRete
           <span>λ=6 retention threshold</span>
         </div>
         <div className="flex items-center gap-1">
-          <div className="w-2 h-2 rounded-sm bg-sf-emerald/70" />
+          <div className="w-2 h-2 rounded-none bg-sf-emerald" />
           <span>Retained</span>
         </div>
         <div className="flex items-center gap-1">
-          <div className="w-2 h-2 rounded-sm bg-sf-amber/70" />
+          <div className="w-2 h-2 rounded-none bg-sf-amber" />
           <span>Marginal</span>
         </div>
         <div className="flex items-center gap-1">
-          <div className="w-2 h-2 rounded-sm bg-sf-crimson/70" />
+          <div className="w-2 h-2 rounded-none bg-sf-crimson" />
           <span>Escapes</span>
         </div>
       </div>

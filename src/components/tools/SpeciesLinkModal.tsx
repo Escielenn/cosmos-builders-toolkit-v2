@@ -160,11 +160,11 @@ const SpeciesLinkModal = ({
             <Label>Select Species</Label>
             {isLoading ? (
               <div className="text-sm text-t3">
-                Loading species...
+                LOADING SPECIES...
               </div>
             ) : !evoBioWorksheets || evoBioWorksheets.length === 0 ? (
               <div className="text-sm text-t3 p-4 border border-dashed rounded-none text-center">
-                No species worksheets found in this world.
+                NO SPECIES WORKSHEETS ON FILE IN THIS WORLD.
                 <br />
                 <span className="text-xs">
                   Create one in the Evolutionary Biology tool first.

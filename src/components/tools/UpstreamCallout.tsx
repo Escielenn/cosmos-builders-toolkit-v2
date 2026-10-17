@@ -27,8 +27,8 @@ function CalloutItem({ callout, toolType, index }: CalloutItemProps) {
   if (isDismissed) return null;
 
   return (
-    <div className="relative mb-4 px-4 py-2.5 border border-primary bg-primary/[0.03] animate-in fade-in duration-300">
-      <p className="font-mono text-[12px] uppercase tracking-wider text-primary mb-1">
+    <div className="relative mb-4 px-4 py-2.5 border border-sf-primary bg-sf-primary/[0.03] animate-in fade-in duration-slow">
+      <p className="font-mono text-[12px] uppercase tracking-wider text-sf-primary-text mb-1">
         Upstream Context
       </p>
       <p className="text-xs text-t3 leading-relaxed pr-5">

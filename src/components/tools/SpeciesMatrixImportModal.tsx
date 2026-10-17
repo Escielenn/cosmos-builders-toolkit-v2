@@ -185,7 +185,7 @@ const SpeciesMatrixImportModal = ({
       <DialogContent className="max-w-2xl max-h-[85vh] flex flex-col">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Users className="w-5 h-5 text-pink-500" />
+            <Users className="w-5 h-5 text-sf-emerald" />
             Import from Species Interaction Matrix
           </DialogTitle>
           <DialogDescription>
@@ -200,11 +200,11 @@ const SpeciesMatrixImportModal = ({
             <Label>Select Worksheet</Label>
             {isLoading ? (
               <div className="text-sm text-t3">
-                Loading worksheets...
+                LOADING WORKSHEETS...
               </div>
             ) : !matrixWorksheets || matrixWorksheets.length === 0 ? (
               <div className="text-sm text-t3 p-4 border border-dashed rounded-none text-center">
-                No Species Interaction Matrix worksheets found in this world.
+                NO SPECIES INTERACTION MATRIX WORKSHEETS ON FILE IN THIS WORLD.
                 <br />
                 <span className="text-xs">
                   Create one in the Species Interaction Matrix tool first.
@@ -222,7 +222,7 @@ const SpeciesMatrixImportModal = ({
                   {matrixWorksheets.map((w) => (
                     <SelectItem key={w.id} value={w.id}>
                       <div className="flex items-center gap-2">
-                        <Users className="w-4 h-4 text-pink-500" />
+                        <Users className="w-4 h-4 text-sf-emerald" />
                         <span className="font-medium">{w.title || "Untitled"}</span>
                       </div>
                     </SelectItem>
@@ -238,7 +238,7 @@ const SpeciesMatrixImportModal = ({
               <Label>Select Species</Label>
               {speciesList.length === 0 ? (
                 <div className="text-sm text-t3 p-4 border border-dashed rounded-none text-center">
-                  No named species found in this worksheet.
+                  NO NAMED SPECIES ON FILE IN THIS WORKSHEET.
                 </div>
               ) : (
                 <Select
@@ -252,7 +252,7 @@ const SpeciesMatrixImportModal = ({
                     {speciesList.map((s) => (
                       <SelectItem key={s.id} value={s.id}>
                         <div className="flex items-center gap-2">
-                          <Users className="w-4 h-4 text-pink-500" />
+                          <Users className="w-4 h-4 text-sf-emerald" />
                           <span className="font-medium">{s.name}</span>
                           {s.shortDescription && (
                             <span className="text-t3 text-sm truncate max-w-[200px]">
@@ -318,7 +318,7 @@ const SpeciesMatrixImportModal = ({
                             </div>
                           </div>
                           {selectedFields.has(field.key) && (
-                            <Check className="w-4 h-4 text-pink-500 shrink-0" />
+                            <Check className="w-4 h-4 text-sf-emerald shrink-0" />
                           )}
                         </label>
                       ))}
@@ -354,10 +354,10 @@ const SpeciesMatrixImportModal = ({
 
           {/* Selected species summary */}
           {selectedSpecies && (
-            <div className="p-3 bg-pink-500/10 border border-pink-500 rounded-none">
+            <div className="p-3 bg-sf-emerald/[0.06] border border-sf-emerald rounded-none">
               <div className="flex items-center gap-2">
-                <Users className="w-4 h-4 text-pink-500" />
-                <span className="font-medium text-pink-500">
+                <Users className="w-4 h-4 text-sf-emerald" />
+                <span className="font-medium text-sf-emerald-text">
                   {selectedSpecies.name}
                 </span>
               </div>
@@ -376,7 +376,7 @@ const SpeciesMatrixImportModal = ({
           <Button
             onClick={handleImport}
             disabled={!selectedSpecies || selectedFields.size === 0}
-            className="bg-pink-600 hover:bg-pink-700"
+            className="bg-sf-emerald text-sf-on-emerald hover:shadow-sf-glow-teal"
           >
             <Import className="w-4 h-4 mr-2" />
             Import Species

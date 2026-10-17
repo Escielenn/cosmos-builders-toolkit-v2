@@ -193,9 +193,9 @@ const EventDetailPanel = ({
                   type="button"
                   onClick={() => update({ importance: il.id })}
                   className={cn(
-                    "flex-1 px-2 py-1 rounded border text-[12px] font-medium transition-colors",
+                    "flex-1 px-2 py-1 rounded-none border text-[12px] font-medium transition-colors",
                     event.importance === il.id
-                      ? "border-primary bg-primary/10 text-t1"
+                      ? "border-sf-primary bg-sf-primary/10 text-t1"
                       : "border-sf-line text-t3 hover:border-sf-line"
                   )}
                 >
@@ -219,7 +219,7 @@ const EventDetailPanel = ({
           {/* Extended Description */}
           <div className="space-y-1.5">
             <Label className="text-xs">Extended Description</Label>
-            <Suspense fallback={<div className="h-32 bg-muted/20 rounded animate-pulse" />}>
+            <Suspense fallback={<div className="h-32 bg-muted/20 rounded-none animate-pulse" />}>
               <RichTextEditor
                 content={event.extendedDescription || ""}
                 onChange={(html) => update({ extendedDescription: html })}
@@ -402,9 +402,9 @@ const EventDetailPanel = ({
                           update({ secondaryTrackIds: updated.length > 0 ? updated : undefined });
                         }}
                         className={cn(
-                          "flex items-center gap-1 px-2 py-0.5 rounded-full border text-[12px] font-medium transition-colors",
+                          "flex items-center gap-1 px-2 py-0.5 rounded-none border text-[12px] font-medium transition-colors",
                           isActive
-                            ? "border-primary bg-primary/10 text-t1"
+                            ? "border-sf-primary bg-sf-primary/10 text-t1"
                             : "border-sf-line text-t3 hover:border-sf-line"
                         )}
                       >
@@ -450,7 +450,7 @@ const EventDetailPanel = ({
                           key={link.id}
                           type="button"
                           onClick={() => onEditLink?.(link.id)}
-                          className="flex items-center gap-1.5 w-full px-2 py-1 rounded text-[12px] hover:bg-muted/50 transition-colors text-left"
+                          className="flex items-center gap-1.5 w-full px-2 py-1 rounded-none text-[12px] hover:bg-muted/50 transition-colors text-left"
                         >
                           <ArrowRight className="w-3 h-3 shrink-0" style={{ color: config.color }} />
                           <span className="font-medium" style={{ color: config.color }}>
@@ -470,7 +470,7 @@ const EventDetailPanel = ({
                           key={link.id}
                           type="button"
                           onClick={() => onEditLink?.(link.id)}
-                          className="flex items-center gap-1.5 w-full px-2 py-1 rounded text-[12px] hover:bg-muted/50 transition-colors text-left"
+                          className="flex items-center gap-1.5 w-full px-2 py-1 rounded-none text-[12px] hover:bg-muted/50 transition-colors text-left"
                         >
                           <ArrowLeft className="w-3 h-3 shrink-0" style={{ color: config.color }} />
                           <span className="font-medium" style={{ color: config.color }}>
@@ -485,7 +485,7 @@ const EventDetailPanel = ({
                   </div>
                 ) : (
                   <p className="text-[12px] text-t3">
-                    No causality links yet.
+                    NO CAUSALITY LINKS ON FILE.
                   </p>
                 )}
               </div>
@@ -518,17 +518,17 @@ const EventDetailPanel = ({
                       return (
                         <div
                           key={link.id}
-                          className="flex items-center gap-1.5 px-2 py-1 rounded text-[12px] group"
+                          className="flex items-center gap-1.5 px-2 py-1 rounded-none text-[12px] group"
                         >
                           {ToolIcon ? (
-                            <ToolIcon className="w-3.5 h-3.5 rounded-sm shrink-0" />
+                            <ToolIcon className="w-3.5 h-3.5 rounded-none shrink-0" />
                           ) : (
                             <Link2 className="w-3 h-3 shrink-0 text-t3" />
                           )}
                           <span className="truncate text-t3">
                             {link.worksheetTitle}
                           </span>
-                          <span className="text-[12px] text-t3/50 shrink-0">
+                          <span className="text-[12px] text-t4 shrink-0">
                             {getToolDisplayName(link.toolType)}
                           </span>
                           {onDeleteElementLink && (
@@ -536,7 +536,7 @@ const EventDetailPanel = ({
                               type="button"
                               title="Remove link"
                               onClick={() => onDeleteElementLink(link.id)}
-                              className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity text-t3 hover:text-sf-crimson-text shrink-0"
+                              className="ml-auto text-t4 hover:text-sf-crimson-text transition-colors duration-fast shrink-0"
                             >
                               <X className="w-3 h-3" />
                             </button>
@@ -547,7 +547,7 @@ const EventDetailPanel = ({
                   </div>
                 ) : (
                   <p className="text-[12px] text-t3">
-                    No linked elements yet.
+                    NO LINKED ELEMENTS ON FILE.
                   </p>
                 )}
               </div>

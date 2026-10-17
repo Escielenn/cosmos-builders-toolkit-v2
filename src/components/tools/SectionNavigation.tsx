@@ -105,7 +105,7 @@ const SectionNavigation = ({ sections, mode = 'floating' }: SectionNavigationPro
           onClick={scrollToTop}
         >
           <ArrowUp className="w-4 h-4 mr-2" />
-          Back to Top
+          RETURN TO TOP
         </Button>
         <Button
           variant="ghost"
@@ -114,7 +114,7 @@ const SectionNavigation = ({ sections, mode = 'floating' }: SectionNavigationPro
           onClick={scrollToBottom}
         >
           <ArrowDown className="w-4 h-4 mr-2" />
-          Go to Bottom
+          GO TO BOTTOM
         </Button>
       </div>
     </>
@@ -153,7 +153,7 @@ const SectionNavigation = ({ sections, mode = 'floating' }: SectionNavigationPro
               className="rounded-none w-auto h-auto px-3 py-2.5 shadow-lg"
             >
               <List className="w-4 h-4 mr-2" />
-              <span className="text-[12px] tracking-[1.5px] uppercase font-heading">NAV</span>
+              <span className="text-[12px] tracking-[0.12em] uppercase font-heading">NAV</span>
             </Button>
           </SheetTrigger>
           <SheetContent side="right" className="w-72 bg-sf-surface/95 backdrop-blur-sf-side border-sf-line sf-sb">
@@ -222,12 +222,12 @@ export const MobileSectionNav = ({ sections }: { sections: Section[] }) => {
       <SheetTrigger asChild>
         <Button size="lg" className="rounded-none w-auto h-auto px-3 py-2.5 shadow-lg">
           <List className="w-4 h-4 mr-2" />
-          <span className="text-[12px] tracking-[1.5px] uppercase font-heading">NAV</span>
+          <span className="text-[12px] tracking-[0.12em] uppercase font-heading">NAV</span>
         </Button>
       </SheetTrigger>
       <SheetContent side="right" className="w-72 bg-background/95 backdrop-blur-lg">
         <div className="pt-6">
-          <h4 className="font-heading text-[12px] font-light tracking-[1.5px] uppercase text-sf-emerald mb-3 pb-2 border-b border-sf-emerald">
+          <h4 className="font-heading text-[12px] font-light tracking-[0.12em] uppercase text-sf-emerald mb-3 pb-2 border-b border-sf-emerald">
             // NAVIGATION
           </h4>
           <nav className="space-y-0.5">
@@ -253,11 +253,11 @@ export const MobileSectionNav = ({ sections }: { sections: Section[] }) => {
           <div className="flex flex-col gap-2 mt-4">
             <Button variant="ghost" size="sm" className="w-full" onClick={scrollToTop}>
               <ArrowUp className="w-4 h-4 mr-2" />
-              Back to Top
+              RETURN TO TOP
             </Button>
             <Button variant="ghost" size="sm" className="w-full" onClick={scrollToBottom}>
               <ArrowDown className="w-4 h-4 mr-2" />
-              Go to Bottom
+              GO TO BOTTOM
             </Button>
           </div>
         </div>

@@ -132,10 +132,10 @@ const LOCAL_STORAGE_KEY = "time-dilation-calculator-v1";
 // ─── Severity color helpers ──────────────────────────────────────────
 
 const SEVERITY_STYLES = {
-  negligible: { text: "text-sf-emerald", border: "border-l-emerald-400", bg: "bg-emerald-400/10" },
-  notable: { text: "text-sf-amber", border: "border-l-amber-400", bg: "bg-amber-400/10" },
-  significant: { text: "text-orange-500", border: "border-l-orange-500", bg: "bg-orange-500/10" },
-  extreme: { text: "text-sf-crimson-text", border: "border-l-red-500", bg: "bg-red-500/10" },
+  negligible: { text: "text-sf-emerald-text", border: "border-l-sf-emerald", bg: "bg-sf-emerald/[0.06]" },
+  notable: { text: "text-sf-amber-text", border: "border-l-sf-amber", bg: "bg-sf-amber/[0.06]" },
+  significant: { text: "text-sf-amber-warm-text", border: "border-l-sf-amber-warm", bg: "bg-sf-amber-warm/[0.06]" },
+  extreme: { text: "text-sf-crimson-text", border: "border-l-sf-crimson", bg: "bg-sf-crimson/[0.06]" },
 };
 
 // ─── Logarithmic slider mapping ──────────────────────────────────────
@@ -525,7 +525,7 @@ const TimeDilationCalculator = () => {
           <h2 className="font-heading text-xl font-light uppercase tracking-[2px] mb-4 gradient-text">
             Relativistic Time Dilation
           </h2>
-          <blockquote className="border-l-2 border-primary pl-4 italic text-lg mb-4">
+          <blockquote className="border-l-2 border-sf-primary pl-4 italic text-lg mb-4">
             "The faster you travel through space, the slower you travel through time."
           </blockquote>
           <p className="text-t2">
@@ -691,7 +691,7 @@ const TimeDilationCalculator = () => {
                 {PROPULSION_METHODS.map((method) => (
                   <div
                     key={method.id}
-                    className="flex items-start gap-3 p-3 rounded-none border border-sf-line-interactive hover:border-primary transition-colors"
+                    className="flex items-start gap-3 p-3 rounded-none border border-sf-line-interactive hover:border-sf-primary transition-colors"
                   >
                     <RadioGroupItem value={method.id} id={`prop-${method.id}`} className="mt-0.5" />
                     <label htmlFor={`prop-${method.id}`} className="cursor-pointer flex-1">
@@ -703,7 +703,7 @@ const TimeDilationCalculator = () => {
                             ? "Set your own"
                             : `Max: ${(method.maxVelocityC * 100).toFixed(3)}% c`}
                       </div>
-                      <div className="text-xs text-t4/70 mt-0.5 italic">{method.note}</div>
+                      <div className="text-xs text-t4 mt-0.5 italic">{method.note}</div>
                     </label>
                   </div>
                 ))}
@@ -742,7 +742,7 @@ const TimeDilationCalculator = () => {
                 onValueChange={(val) => updateVelocityProfile("mode", val)}
                 className="grid gap-3 md:grid-cols-2"
               >
-                <div className="flex items-start gap-3 p-4 rounded-none border border-sf-line-interactive hover:border-primary transition-colors">
+                <div className="flex items-start gap-3 p-4 rounded-none border border-sf-line-interactive hover:border-sf-primary transition-colors">
                   <RadioGroupItem value="constant" id="vp-constant" className="mt-0.5" />
                   <label htmlFor="vp-constant" className="cursor-pointer">
                     <div className="font-medium text-sm">Constant Velocity</div>
@@ -751,7 +751,7 @@ const TimeDilationCalculator = () => {
                     </div>
                   </label>
                 </div>
-                <div className="flex items-start gap-3 p-4 rounded-none border border-sf-line-interactive hover:border-primary transition-colors">
+                <div className="flex items-start gap-3 p-4 rounded-none border border-sf-line-interactive hover:border-sf-primary transition-colors">
                   <RadioGroupItem value="brachistochrone" id="vp-brach" className="mt-0.5" />
                   <label htmlFor="vp-brach" className="cursor-pointer">
                     <div className="font-medium text-sm">Brachistochrone</div>
@@ -767,7 +767,7 @@ const TimeDilationCalculator = () => {
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <Label>Travel Velocity</Label>
-                    <span className="font-mono text-sm text-primary">
+                    <span className="font-mono text-sm text-sf-primary-text">
                       {parseFloat(formState.velocityProfile.velocityFraction)
                         ? `${(parseFloat(formState.velocityProfile.velocityFraction) * 100).toFixed(4)}% c`
                         : "-"}
@@ -799,7 +799,7 @@ const TimeDilationCalculator = () => {
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <Label>Acceleration</Label>
-                    <span className="font-mono text-sm text-primary">
+                    <span className="font-mono text-sm text-sf-primary-text">
                       {formState.velocityProfile.gForce || "1"}g
                     </span>
                   </div>
@@ -822,7 +822,7 @@ const TimeDilationCalculator = () => {
 
               {/* Alcubierre dilation toggle */}
               {isAlcubierre && (
-                <div className="p-4 rounded-none border border-sf-amber bg-amber-500/5">
+                <div className="p-4 rounded-none border border-sf-amber bg-sf-amber/[0.06]">
                   <div className="flex items-center gap-3 mb-2">
                     <AlertTriangle className="w-4 h-4 text-sf-amber" />
                     <span className="text-sm font-medium text-sf-amber">Alcubierre Drive, Speculative Physics</span>
@@ -852,7 +852,7 @@ const TimeDilationCalculator = () => {
           {/* ═══ Section 4: RESULTS (always visible, instrument readout) ═══ */}
           <div id="section-results" className="space-y-4">
             <div className="flex items-center gap-3 mb-2">
-              <span className="w-8 h-8 rounded-sm bg-primary/20 text-primary flex items-center justify-center font-mono text-sm font-medium">
+              <span className="w-8 h-8 rounded-none bg-sf-primary/20 text-sf-primary-text flex items-center justify-center font-mono text-sm font-medium">
                 4
               </span>
               <h2 className="font-heading text-xl font-medium">
@@ -891,12 +891,12 @@ const TimeDilationCalculator = () => {
                   <p className="font-mono text-xs uppercase tracking-sf-wide text-t2 mb-3">
                     Velocity Scale
                   </p>
-                  <div className="relative h-6 rounded-sm overflow-hidden bg-accent/10 border border-sf-line-interactive">
+                  <div className="relative h-6 rounded-none overflow-hidden bg-accent/10 border border-sf-line-interactive">
                     <div className="absolute inset-0" style={{
                       background: 'linear-gradient(90deg, rgba(0,229,160,0.15) 0%, rgba(21,193,123,0.2) 50%, rgba(255,165,0,0.25) 85%, rgba(255,69,0,0.35) 100%)'
                     }} />
                     <div
-                      className="absolute top-0 h-full w-0.5 bg-primary transition-all duration-500"
+                      className="absolute top-0 h-full w-0.5 bg-sf-primary transition-all duration-slow"
                       style={{
                         left: `${Math.min(calculationResult.peakVelocityFraction, 1) * 100}%`,
                         boxShadow: '0 0 8px rgba(61,255,205,0.6)',
@@ -905,7 +905,7 @@ const TimeDilationCalculator = () => {
                     {[0.1, 0.5, 0.9, 0.99].map((v) => (
                       <div
                         key={v}
-                        className="absolute top-0 w-px h-2 bg-white/20"
+                        className="absolute top-0 w-px h-2 bg-sf-line-emphasis"
                         style={{ left: `${v * 100}%` }}
                       />
                     ))}
@@ -1082,8 +1082,8 @@ const TimeDilationCalculator = () => {
                   )}
 
                 {/* Narrative Summary */}
-                <GlassPanel className="p-5 bg-primary/5">
-                  <p className="font-mono text-xs uppercase tracking-sf-wide text-primary/60 mb-3">
+                <GlassPanel className="p-5 bg-sf-primary/5">
+                  <p className="font-mono text-xs uppercase tracking-sf-wide text-sf-primary-text mb-3">
                     Narrative Summary
                   </p>
                   <p className="text-sm leading-relaxed text-t2">
@@ -1124,7 +1124,7 @@ const TimeDilationCalculator = () => {
               </>
             ) : (
               <GlassPanel className="p-8 text-center">
-                <Clock className="w-8 h-8 text-t2 mx-auto mb-3 opacity-50" />
+                <Clock className="w-8 h-8 text-t4 mx-auto mb-3" />
                 <p className="text-t2">
                   {calculationResult.error || "Configure your journey and propulsion to see results."}
                 </p>
@@ -1150,7 +1150,7 @@ const TimeDilationCalculator = () => {
                 {REFERENCE_FRAMES.map((frame) => (
                   <div
                     key={frame.id}
-                    className="flex items-start gap-3 p-3 rounded-none border border-sf-line-interactive hover:border-primary transition-colors"
+                    className="flex items-start gap-3 p-3 rounded-none border border-sf-line-interactive hover:border-sf-primary transition-colors"
                   >
                     <RadioGroupItem value={frame.id} id={`frame-${frame.id}`} className="mt-0.5" />
                     <label htmlFor={`frame-${frame.id}`} className="cursor-pointer">

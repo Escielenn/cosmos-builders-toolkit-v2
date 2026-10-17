@@ -831,7 +831,7 @@ const EnvironmentalChainReaction = () => {
         await saveToSupabase(selection.worldId);
         toast({
           title: "SAVED TO CLOUD.",
-          description: `Worksheet saved to "${selection.worldName}".`,
+          description: `WORKSHEET SECURED TO "${selection.worldName}".`,
         });
       } else if (selection.type === "new") {
         const newWorld = await createWorld.mutateAsync({
@@ -841,7 +841,7 @@ const EnvironmentalChainReaction = () => {
         await saveToSupabase(newWorld.id);
         toast({
           title: "WORLD CREATED AND SAVED.",
-          description: `Worksheet saved to "${newWorld.name}".`,
+          description: `WORKSHEET SECURED TO "${newWorld.name}".`,
         });
       }
       setShowWorldSelectDialog(false);
@@ -897,7 +897,7 @@ const EnvironmentalChainReaction = () => {
           <h2 className="font-heading text-xl font-light uppercase tracking-[2px] mb-4 gradient-text">
             The Cascade Principle
           </h2>
-          <blockquote className="border-l-2 border-primary pl-4 italic text-lg mb-4">
+          <blockquote className="border-l-2 border-sf-primary pl-4 italic text-lg mb-4">
             "Physics shapes environment, environment shapes biology, biology shapes psychology, psychology shapes mythology, and mythology shapes culture."
           </blockquote>
           <p className="text-t2">
@@ -920,11 +920,11 @@ const EnvironmentalChainReaction = () => {
             {SF_CASCADE_EXAMPLES.map((example) => (
               <Collapsible key={example.title}>
                 <CollapsibleTrigger asChild>
-                  <button type="button" className="w-full p-4 rounded-none border border-sf-line-interactive hover:border-primary transition-colors text-left flex items-center justify-between">
+                  <button type="button" className="w-full p-4 rounded-none border border-sf-line-interactive hover:border-sf-primary transition-colors text-left flex items-center justify-between">
                     <span className="font-medium text-sm">
                       {example.title}{" "}
                       <span className="text-t2 font-normal">
-                        (<Link to={`/bookshelf#${example.isbn}`} className="text-primary hover:underline" onClick={(e) => e.stopPropagation()}><em>{example.bookTitle}</em></Link>)
+                        (<Link to={`/bookshelf#${example.isbn}`} className="text-sf-primary-text hover:underline" onClick={(e) => e.stopPropagation()}><em>{example.bookTitle}</em></Link>)
                       </span>
                     </span>
                     <ChevronDown className="w-4 h-4 text-t2 shrink-0 ml-2" />
@@ -933,7 +933,7 @@ const EnvironmentalChainReaction = () => {
                 <CollapsibleContent>
                   <div className="mt-2 p-4 rounded-none bg-muted/30 space-y-4">
                     <p className="text-sm">
-                      <strong className="text-primary">Core Parameter:</strong>{" "}
+                      <strong className="text-sf-primary-text">Core Parameter:</strong>{" "}
                       <span className="text-t2">{example.parameter}</span>
                     </p>
                     <div className="overflow-x-auto sf-sb">
@@ -947,7 +947,7 @@ const EnvironmentalChainReaction = () => {
                         <tbody>
                           {example.cascade.map((level) => (
                             <tr key={level.level} className="border-b border-sf-line-interactive">
-                              <td className="p-2 text-primary font-medium">{level.level}</td>
+                              <td className="p-2 text-sf-primary-text font-medium">{level.level}</td>
                               <td className="p-2 text-t2">{level.details}</td>
                             </tr>
                           ))}
@@ -983,7 +983,7 @@ const EnvironmentalChainReaction = () => {
             {worldId && linkConfigs.length > 0 && (
               <div className="mb-6 p-4 rounded-none border border-sf-line-interactive bg-muted/20">
                 <h4 className="font-medium text-sm mb-3 flex items-center gap-2">
-                  <ExternalLink className="w-4 h-4 text-primary" />
+                  <ExternalLink className="w-4 h-4 text-sf-primary-text" />
                   Link to Other Worksheets
                 </h4>
                 <p className="text-xs text-t4 mb-3">
@@ -1007,7 +1007,7 @@ const EnvironmentalChainReaction = () => {
             )}
 
             {/* Mode Toggle */}
-            <div className="flex items-center gap-4 mb-6 p-4 bg-primary/5 rounded-none border border-primary">
+            <div className="flex items-center gap-4 mb-6 p-4 bg-sf-primary/5 rounded-none border border-sf-primary">
               <Label className="text-sm font-medium">
                 Selection Mode:
               </Label>
@@ -1019,13 +1019,13 @@ const EnvironmentalChainReaction = () => {
               >
                 <ToggleGroupItem
                   value="single"
-                  className="px-4 py-2 text-sm data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+                  className="px-4 py-2 text-sm data-[state=on]:bg-sf-primary data-[state=on]:text-primary-foreground"
                 >
                   Single Factor
                 </ToggleGroupItem>
                 <ToggleGroupItem
                   value="multiple"
-                  className="px-4 py-2 text-sm data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+                  className="px-4 py-2 text-sm data-[state=on]:bg-sf-primary data-[state=on]:text-primary-foreground"
                 >
                   Multiple Factors
                 </ToggleGroupItem>
@@ -1042,7 +1042,7 @@ const EnvironmentalChainReaction = () => {
                 >
                   {PLANETARY_PARAMETERS.map((param) => (
                     <div key={param.id} className="space-y-3">
-                      <div className="font-medium text-sm text-primary">
+                      <div className="font-medium text-sm text-sf-primary-text">
                         {param.label}
                       </div>
                       {param.options.length > 0 ? (
@@ -1114,7 +1114,7 @@ const EnvironmentalChainReaction = () => {
               <div className="space-y-4">
                 {PLANETARY_PARAMETERS.map((param) => (
                   <div key={param.id} className="space-y-3">
-                    <div className="font-medium text-sm text-primary">
+                    <div className="font-medium text-sm text-sf-primary-text">
                       {param.label}
                     </div>
                     {param.options.length > 0 ? (
@@ -1192,9 +1192,9 @@ const EnvironmentalChainReaction = () => {
                 ))}
 
                 {(formState.parameter.types?.length || 0) > 0 && (
-                  <div className="mt-4 p-3 bg-primary/10 rounded-none">
+                  <div className="mt-4 p-3 bg-sf-primary/10 rounded-none">
                     <p className="text-sm text-t2">
-                      <strong className="text-primary">
+                      <strong className="text-sf-primary-text">
                         {formState.parameter.types?.length} factor
                         {(formState.parameter.types?.length || 0) !== 1 ? "s" : ""} selected.
                       </strong>{" "}
