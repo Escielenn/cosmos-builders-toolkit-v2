@@ -29,23 +29,17 @@ Active task list and development priorities. Review this at the start of each se
 
 ## Priority 2 — Auth & Infrastructure (Dedicated Session)
 
-> Clerk migration needs dashboard config + careful cutover.
+> Auth stays on Supabase Auth. The Clerk migration was never started and is
+> cancelled (2026-10-17); see [STACK-ARCHITECTURE.md](STACK-ARCHITECTURE.md).
 
-### Clerk Auth Migration
-- [ ] **Migrate from Supabase Auth to Clerk** — see [STACK-ARCHITECTURE.md](STACK-ARCHITECTURE.md)
-  - [ ] Create Clerk application, configure JWT template
-  - [ ] Install `@clerk/clerk-react`, configure `<ClerkProvider>`
-  - [ ] Replace `supabase.auth.*` calls with Clerk session/token flow
-  - [ ] Build webhook handler for user/org sync
-  - [ ] Rewrite RLS policies for `clerk_user_id()`
-  - [ ] Migrate existing users (bcrypt import)
-  - [ ] Add 2FA + additional OAuth (GitHub, Discord, Apple, Notion)
-  - [ ] Test full flow end-to-end
+### Auth
+- [ ] Enable leaked-password protection in Supabase Auth
+- [ ] Add 2FA + additional OAuth (GitHub, Discord, Apple, Notion)
 
 ### Stripe Billing
 - [ ] Finalize org-tier pricing
 - [ ] Build checkout/portal endpoints
-- [ ] Wire Stripe Customer to Clerk user ID
+- [x] Stripe Customer keyed to the Supabase user (`profiles.stripe_customer_id`, client writes blocked)
 
 ---
 

@@ -25,7 +25,7 @@ This is a **hi-fidelity** handoff. Every hex value, font size, tracking, and mot
 - **UI**: React 18+ / TypeScript
 - **Styling**: Tailwind CSS v3 + CSS variables (tokens.css)
 - **Data**: Supabase (Postgres)
-- **Auth**: Clerk (not Supabase Auth)
+- **Auth**: Supabase Auth (the Clerk plan was cancelled 2026-10-17)
 - **Hosting**: Vercel
 - **Payments**: Stripe
 
@@ -372,7 +372,7 @@ Apply this on every route before committing. The starfield, the mono coordinates
 
 ---
 
-## Clerk + Supabase + Stripe — Stylistic Notes
+## Clerk + Supabase + Stripe — Stylistic Notes (Clerk cancelled; kept for history)
 
 When wiring the auth, data, or payments layer:
 
