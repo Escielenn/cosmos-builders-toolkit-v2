@@ -2195,16 +2195,16 @@ export default function ExoSkyV2({
               {/* Action buttons */}
               <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
                 {currentDrawing.length > 0 && (
-                  <button onClick={undoLastStar} style={{...BTN,flex:1,fontSize:11,padding:"5px 6px",background:"rgba(255,255,255,0.04)",borderColor:"var(--sf-line-interactive)",color:"rgba(255,255,255,0.5)"}}>
+                  <button onClick={undoLastStar} style={{...BTN,flex:1,fontSize:12,padding:"5px 6px",background:"rgba(255,255,255,0.04)",borderColor:"var(--sf-line-interactive)",color:"rgba(255,255,255,0.5)"}}>
                     ↩ UNDO
                   </button>
                 )}
                 {currentDrawing.length >= 2 && (
-                  <button onClick={finishDrawing} style={{...BTN,flex:1,fontSize:11,padding:"5px 6px",background:"rgba(46,204,113,0.1)",borderColor:"var(--sf-emerald)",color:"#2ECC71"}}>
+                  <button onClick={finishDrawing} style={{...BTN,flex:1,fontSize:12,padding:"5px 6px",background:"rgba(46,204,113,0.1)",borderColor:"var(--sf-emerald)",color:"#2ECC71"}}>
                     ✓ NAME IT
                   </button>
                 )}
-                <button onClick={cancelDrawing} style={{...BTN,flex:1,fontSize:11,padding:"5px 6px",background:"rgba(231,76,60,0.08)",borderColor:"var(--sf-crimson)",color:"#E74C3C"}}>
+                <button onClick={cancelDrawing} style={{...BTN,flex:1,fontSize:12,padding:"5px 6px",background:"rgba(231,76,60,0.08)",borderColor:"var(--sf-crimson)",color:"#E74C3C"}}>
                   ✕ CANCEL
                 </button>
               </div>
@@ -2219,7 +2219,7 @@ export default function ExoSkyV2({
                 <input type="checkbox" checked={showCustomConstellations} onChange={e=>setShowCustomConstellations(e.target.checked)} style={CK} />
                 Custom Constellations ({customConstellations.length})
               </label>
-              <button onClick={() => setConsManagerOpen(!consManagerOpen)} style={{...BTN,marginTop:6,width:"100%",fontSize:11,padding:"4px 8px",background:"rgba(255,255,255,0.03)",borderColor:"var(--sf-line-interactive)",color:"rgba(255,255,255,0.4)"}}>
+              <button onClick={() => setConsManagerOpen(!consManagerOpen)} style={{...BTN,marginTop:6,width:"100%",fontSize:12,padding:"4px 8px",background:"rgba(255,255,255,0.03)",borderColor:"var(--sf-line-interactive)",color:"rgba(255,255,255,0.4)"}}>
                 {consManagerOpen ? "▾" : "▸"} MANAGE
               </button>
             </div>
@@ -2283,7 +2283,7 @@ export default function ExoSkyV2({
           <DR l="Naked Eye" v={`${visibleCount}`} />
           {simFlags.filter(f => !dismissedFlagIds.has(flagDismissKey(f))).map(f => (
             <div key={f.id} style={{borderLeft:"2px solid #FFB800",background:"rgba(255,184,0,0.06)",padding:"6px 8px",margin:"6px 0",position:"relative"}}>
-              <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:11,letterSpacing:1.2,textTransform:"uppercase",color:"#FFB800"}}>{f.title}</div>
+              <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:12,letterSpacing:1.2,textTransform:"uppercase",color:"#FFB800"}}>{f.title}</div>
               <div style={{fontFamily:"'DM Sans',serif",fontStyle:"italic",fontSize:12,lineHeight:1.5,color:"rgba(255,255,255,0.7)",marginTop:4,paddingRight:16}}>{f.body}</div>
               <button
                 type="button"
@@ -2433,7 +2433,7 @@ export default function ExoSkyV2({
             </div>
           ))}
           {customConstellations.length > 0 && (
-            <button onClick={exportConstellations} style={{...BTN,marginTop:12,width:"100%",fontSize:11,padding:"5px 10px"}}>
+            <button onClick={exportConstellations} style={{...BTN,marginTop:12,width:"100%",fontSize:12,padding:"5px 10px"}}>
               ↓ EXPORT ALL (JSON)
             </button>
           )}
@@ -2462,7 +2462,7 @@ export default function ExoSkyV2({
           padding:"14px 18px",
           transition:"right 280ms cubic-bezier(0.2, 0, 0, 1)",
         }}>
-          <div style={{fontSize:7.5,fontFamily:"'MD Nichrome','Jura',sans-serif",fontWeight:300,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(0,229,160,0.55)",marginBottom:8,paddingBottom:3,borderBottom:"1px solid var(--sf-line-hairline)"}}>Keyboard Shortcuts</div>
+          <div style={{fontSize:12,fontFamily:"'MD Nichrome','Jura',sans-serif",fontWeight:300,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(0,229,160,0.55)",marginBottom:8,paddingBottom:3,borderBottom:"1px solid var(--sf-line-hairline)"}}>Keyboard Shortcuts</div>
           {[["Drag","Pan sky"],["Scroll / Pinch","Zoom FOV"],["Esc","Cancel / Close"],["Ctrl+Z","Undo star (draw)"],["Enter","Save constellation"],["?","Toggle this help"]].map(([key,desc])=>(
             <div key={key} style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",lineHeight:"2"}}>
               <span style={{fontFamily:"'JetBrains Mono',monospace",fontSize:12,color:"#15C17B",fontWeight:400,minWidth:56}}>{key}</span>
@@ -2473,7 +2473,7 @@ export default function ExoSkyV2({
       )}
 
       {/* ── CREDITS ── */}
-      <div style={{ position:"absolute",bottom:14,left:18,zIndex:10,fontFamily:"'DM Sans',sans-serif",fontSize:11,letterSpacing:1,color:"rgba(255,255,255,0.12)",pointerEvents:"none" }}>
+      <div style={{ position:"absolute",bottom:14,left:18,zIndex:10,fontFamily:"'DM Sans',sans-serif",fontSize:12,letterSpacing:1,color:"rgba(255,255,255,0.12)",pointerEvents:"none" }}>
         © 2025–2026 JASON D. BATT, PH.D. · <span style={{color:"rgba(21,193,123,0.25)"}}>STELLARFORGE.TOOLS</span> · <a href="/tools/exosky/science" style={{color:"rgba(21,193,123,0.25)",textDecoration:"none",pointerEvents:"auto"}}>The Science</a>
       </div>
 

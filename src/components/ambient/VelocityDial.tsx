@@ -100,7 +100,7 @@ export function VelocityDial({ className }: { className?: string }) {
       </svg>
 
       <div className="absolute left-1/2 top-[62%] -translate-x-1/2 text-center">
-        <div className="font-mono text-[9.5px] text-t4 tracking-[2px]">{f.name}</div>
+        <div className="font-mono text-[12px] text-t4 tracking-[0.1em]">{f.name}</div>
         <div className="font-display font-light text-[26px] text-t1 tracking-[0.04em] mt-1">
           {f.v}
           <span className="text-[13px] text-t4 ml-1">{f.u}</span>
