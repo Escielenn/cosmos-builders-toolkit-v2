@@ -7,7 +7,7 @@
 // This is what keeps "no hardcoded colours anywhere in src/gl" true in a
 // SCENE, not just in a material. A scene still needs chart furniture — an
 // orbit ring, a selection glow — and those colours are the same solved tokens
-// the DOM uses, so they follow all 70 themes instead of being a 71st palette
+// the DOM uses, so they follow all 60 themes instead of being a 61st palette
 // nobody contrast-solved.
 // ---------------------------------------------------------------------------
 

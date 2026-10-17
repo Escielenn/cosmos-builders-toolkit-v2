@@ -22,10 +22,11 @@ beforeEach(() => {
 });
 
 describe("theme catalogue", () => {
-  it("ships 10 bases × 7 primaries, every pair solved", () => {
+  it("ships 10 bases × 6 primaries (cyan retired), every pair solved", () => {
     const bases = Object.keys(THEME_BASES);
     expect(bases).toHaveLength(10);
-    expect(THEME_PRIMARIES).toHaveLength(7);
+    expect(THEME_PRIMARIES).toHaveLength(6);
+    expect(THEME_PRIMARIES).not.toContain("cyan");
     for (const b of bases) for (const p of THEME_PRIMARIES) expect(primaryHex(b, p)).toMatch(/^#[0-9A-F]{6}$/i);
   });
 
@@ -46,15 +47,22 @@ describe("readTheme", () => {
   });
 
   it("reads the same string id no-flash.js reads", () => {
+    localStorage.setItem(THEME_STORAGE_KEY, "midnight-azure");
+    expect(readTheme()).toEqual({ base: "midnight", primary: "azure" });
+  });
+
+  it("migrates a retired cyan theme to the teal equivalent", () => {
     localStorage.setItem(THEME_STORAGE_KEY, "midnight-cyan");
-    expect(readTheme()).toEqual({ base: "midnight", primary: "cyan" });
+    expect(readTheme()).toEqual({ base: "midnight", primary: "teal" });
+    localStorage.setItem(THEME_STORAGE_KEY, "void-cyan");
+    expect(readTheme()).toEqual(DEFAULT_THEME);
   });
 });
 
 describe("applyTheme", () => {
   it("expresses the default by REMOVING data-theme so :root wins", () => {
-    applyTheme({ base: "midnight", primary: "cyan" });
-    expect(html().getAttribute("data-theme")).toBe("midnight-cyan");
+    applyTheme({ base: "midnight", primary: "azure" });
+    expect(html().getAttribute("data-theme")).toBe("midnight-azure");
     applyTheme(DEFAULT_THEME);
     expect(html().hasAttribute("data-theme")).toBe(false);
   });
@@ -81,10 +89,10 @@ describe("AppearanceSettings", () => {
     render(<AppearanceSettings />);
     fireEvent.click(screen.getByRole("button", { name: /^Midnight/ }));
     expect(html().getAttribute("data-theme")).toBe("midnight-teal");
-    fireEvent.click(screen.getByRole("button", { name: "Cyan" }));
-    expect(html().getAttribute("data-theme")).toBe("midnight-cyan");
-    expect(localStorage.getItem(THEME_STORAGE_KEY)).toBe("midnight-cyan");
-    expect(screen.getByRole("button", { name: "Cyan" })).toHaveAttribute("aria-pressed", "true");
+    fireEvent.click(screen.getByRole("button", { name: "Azure" }));
+    expect(html().getAttribute("data-theme")).toBe("midnight-azure");
+    expect(localStorage.getItem(THEME_STORAGE_KEY)).toBe("midnight-azure");
+    expect(screen.getByRole("button", { name: "Azure" })).toHaveAttribute("aria-pressed", "true");
 
     fireEvent.click(screen.getByRole("button", { name: /Reset to Void/ }));
     expect(html().hasAttribute("data-theme")).toBe(false);
@@ -94,10 +102,10 @@ describe("AppearanceSettings", () => {
   it("every swatch is a labelled, pressable, 44px-class control", () => {
     render(<AppearanceSettings />);
     const buttons = screen.getAllByRole("button");
-    // 10 bases + 7 primaries + reset + 4 render-quality (G7). Render quality
+    // 10 bases + 6 primaries + reset + 4 render-quality (G7). Render quality
     // lives here because it is also how things look; if it moves out, this
     // count moves with it.
-    expect(buttons).toHaveLength(22);
+    expect(buttons).toHaveLength(21);
     for (const b of buttons) {
       expect(b).toHaveAccessibleName();
       expect(b.className).toContain("min-h-hit");
