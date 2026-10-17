@@ -113,7 +113,7 @@ const ElementPickerDialog = ({
                       type="button"
                       onClick={() => handleSelect(ws)}
                       className={cn(
-                        "flex items-center gap-2 w-full px-3 py-1.5 rounded-md text-sm text-left",
+                        "flex items-center gap-2 w-full px-3 py-1.5 rounded-none text-sm text-left",
                         "hover:bg-muted/50 transition-colors"
                       )}
                     >

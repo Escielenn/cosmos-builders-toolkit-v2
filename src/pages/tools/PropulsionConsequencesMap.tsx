@@ -1584,7 +1584,7 @@ const PropulsionConsequencesMap = () => {
                 
                 <div className="space-y-2">
                   <Label htmlFor="conflict-economic" className="text-xs">Economic Conflicts</Label>
-                  <Suspense fallback={<div className="min-h-[80px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
+                  <Suspense fallback={<div className="min-h-[80px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                     <RichTextEditor
                       content={formState.synthesis.economicConflicts}
                       onChange={(value) => updateSynthesis("economicConflicts", value)}
@@ -1596,7 +1596,7 @@ const PropulsionConsequencesMap = () => {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="conflict-political" className="text-xs">Political Conflicts</Label>
-                  <Suspense fallback={<div className="min-h-[80px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
+                  <Suspense fallback={<div className="min-h-[80px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                     <RichTextEditor
                       content={formState.synthesis.politicalConflicts}
                       onChange={(value) => updateSynthesis("politicalConflicts", value)}
@@ -1608,7 +1608,7 @@ const PropulsionConsequencesMap = () => {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="conflict-social" className="text-xs">Social Conflicts</Label>
-                  <Suspense fallback={<div className="min-h-[80px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
+                  <Suspense fallback={<div className="min-h-[80px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                     <RichTextEditor
                       content={formState.synthesis.socialConflicts}
                       onChange={(value) => updateSynthesis("socialConflicts", value)}
@@ -1681,7 +1681,7 @@ const PropulsionConsequencesMap = () => {
                 <p className="text-xs text-t4">
                   Summarize how your travel system shapes your world.
                 </p>
-                <Suspense fallback={<div className="min-h-[120px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
+                <Suspense fallback={<div className="min-h-[120px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                   <RichTextEditor
                     content={formState.synthesis.propulsionThesis}
                     onChange={(value) => updateSynthesis("propulsionThesis", value)}

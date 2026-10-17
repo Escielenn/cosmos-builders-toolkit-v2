@@ -165,7 +165,7 @@ const LinkEditorDialog = ({
                     type="button"
                     onClick={() => setLinkType(lt.id)}
                     className={cn(
-                      "flex items-center gap-2 px-3 py-2 rounded-md border text-xs font-medium transition-colors",
+                      "flex items-center gap-2 px-3 py-2 rounded-none border text-xs font-medium transition-colors",
                       linkType === lt.id
                         ? "border-primary bg-primary/10 text-t1"
                         : "border-sf-line text-t3 hover:border-sf-line"

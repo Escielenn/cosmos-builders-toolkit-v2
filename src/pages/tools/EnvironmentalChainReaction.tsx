@@ -1384,7 +1384,7 @@ const EnvironmentalChainReaction = () => {
                 <Label htmlFor="surprising" className="text-sm font-medium">
                   Most surprising consequence you discovered:
                 </Label>
-                <Suspense fallback={<div className="min-h-[80px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse mt-2" />}>
+                <Suspense fallback={<div className="min-h-[80px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse mt-2" />}>
                   <RichTextEditor
                     content={formState.synthesis.surprisingConsequence}
                     onChange={(value) => updateSynthesis("surprisingConsequence", value)}
@@ -1399,7 +1399,7 @@ const EnvironmentalChainReaction = () => {
                 <Label htmlFor="gap" className="text-sm font-medium">
                   Biggest gap or unresolved tension:
                 </Label>
-                <Suspense fallback={<div className="min-h-[80px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse mt-2" />}>
+                <Suspense fallback={<div className="min-h-[80px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse mt-2" />}>
                   <RichTextEditor
                     content={formState.synthesis.biggestGap}
                     onChange={(value) => updateSynthesis("biggestGap", value)}
@@ -1414,7 +1414,7 @@ const EnvironmentalChainReaction = () => {
                 <Label htmlFor="story" className="text-sm font-medium">
                   Story potential this creates:
                 </Label>
-                <Suspense fallback={<div className="min-h-[80px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse mt-2" />}>
+                <Suspense fallback={<div className="min-h-[80px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse mt-2" />}>
                   <RichTextEditor
                     content={formState.synthesis.storyPotential}
                     onChange={(value) => updateSynthesis("storyPotential", value)}

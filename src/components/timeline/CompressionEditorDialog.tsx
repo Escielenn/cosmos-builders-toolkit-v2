@@ -221,7 +221,7 @@ const CompressionEditorDialog = ({
                   type="button"
                   onClick={() => setStyle(opt.id)}
                   className={cn(
-                    "px-3 py-2 rounded-md border text-xs font-medium transition-colors text-center",
+                    "px-3 py-2 rounded-none border text-xs font-medium transition-colors text-center",
                     style === opt.id
                       ? "border-primary bg-primary/10 text-t1"
                       : "border-sf-line text-t3 hover:border-sf-line"

@@ -76,7 +76,7 @@ const WorldPicPickerDialog = ({
             <button
               onClick={() => setActiveCategory("All")}
               className={cn(
-                "px-2.5 py-1 rounded-md text-xs font-medium transition-colors",
+                "px-2.5 py-1 rounded-none text-xs font-medium transition-colors",
                 activeCategory === "All"
                   ? "bg-primary text-primary-foreground"
                   : "bg-muted/50 text-t3 hover:bg-muted"
@@ -92,7 +92,7 @@ const WorldPicPickerDialog = ({
                   key={cat}
                   onClick={() => setActiveCategory(cat)}
                   className={cn(
-                    "px-2.5 py-1 rounded-md text-xs font-medium transition-colors",
+                    "px-2.5 py-1 rounded-none text-xs font-medium transition-colors",
                     activeCategory === cat
                       ? "bg-primary text-primary-foreground"
                       : "bg-muted/50 text-t3 hover:bg-muted"

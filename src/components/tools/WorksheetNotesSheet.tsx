@@ -42,7 +42,7 @@ export function WorksheetNotesSheet({
         <div className="flex-1 overflow-y-auto sf-sb p-4">
           <Suspense
             fallback={
-              <div className="rounded-md border border-sf-line bg-background/50 animate-pulse min-h-[300px]" />
+              <div className="rounded-none border border-sf-line bg-background/50 animate-pulse min-h-[300px]" />
             }
           >
             <RichTextEditor

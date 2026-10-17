@@ -816,7 +816,7 @@ const DrakeEquationCalculator = () => {
               <p className="text-sm text-t2 mb-2">
                 If your N is high but your galaxy seems empty, why? If N is low, what does that mean for your characters?
               </p>
-              <Suspense fallback={<div className="h-24 rounded-md bg-accent/10 animate-pulse" />}>
+              <Suspense fallback={<div className="h-24 rounded-none bg-accent/10 animate-pulse" />}>
                 <RichTextEditor
                   content={formState.worldbuilding.fermiAnswer}
                   onChange={(html) => updateWorldbuilding("fermiAnswer", html)}
@@ -830,7 +830,7 @@ const DrakeEquationCalculator = () => {
               <p className="text-sm text-t2 mb-2">
                 Which step is hardest to pass? This shapes whether your ruins are biological or technological.
               </p>
-              <Suspense fallback={<div className="h-24 rounded-md bg-accent/10 animate-pulse" />}>
+              <Suspense fallback={<div className="h-24 rounded-none bg-accent/10 animate-pulse" />}>
                 <RichTextEditor
                   content={formState.worldbuilding.greatFilterLocation}
                   onChange={(html) => updateWorldbuilding("greatFilterLocation", html)}
@@ -844,7 +844,7 @@ const DrakeEquationCalculator = () => {
               <p className="text-sm text-t2 mb-2">
                 Based on your N, what's the general feel of space travel in your world?
               </p>
-              <Suspense fallback={<div className="h-24 rounded-md bg-accent/10 animate-pulse" />}>
+              <Suspense fallback={<div className="h-24 rounded-none bg-accent/10 animate-pulse" />}>
                 <RichTextEditor
                   content={formState.worldbuilding.galaxyCharacter}
                   onChange={(html) => updateWorldbuilding("galaxyCharacter", html)}
@@ -858,7 +858,7 @@ const DrakeEquationCalculator = () => {
               <p className="text-sm text-t2 mb-2">
                 What kinds of stories does your galactic population enable or prevent?
               </p>
-              <Suspense fallback={<div className="h-24 rounded-md bg-accent/10 animate-pulse" />}>
+              <Suspense fallback={<div className="h-24 rounded-none bg-accent/10 animate-pulse" />}>
                 <RichTextEditor
                   content={formState.worldbuilding.storyImplications}
                   onChange={(html) => updateWorldbuilding("storyImplications", html)}
@@ -872,7 +872,7 @@ const DrakeEquationCalculator = () => {
               <p className="text-sm text-t2 mb-2">
                 What kinds of civilizations exist in your galaxy? What are their relationships?
               </p>
-              <Suspense fallback={<div className="h-24 rounded-md bg-accent/10 animate-pulse" />}>
+              <Suspense fallback={<div className="h-24 rounded-none bg-accent/10 animate-pulse" />}>
                 <RichTextEditor
                   content={formState.worldbuilding.civilizationTypes}
                   onChange={(html) => updateWorldbuilding("civilizationTypes", html)}

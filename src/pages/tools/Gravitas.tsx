@@ -1166,7 +1166,7 @@ const Gravitas = () => {
               </TabsList>
               {(Object.keys(CASCADE_ICONS) as Array<keyof typeof CASCADE_ICONS>).map((key) => (
                 <TabsContent key={key} value={key} className="mt-4">
-                  <Suspense fallback={<div className="h-24 rounded-md bg-accent/10 animate-pulse" />}>
+                  <Suspense fallback={<div className="h-24 rounded-none bg-accent/10 animate-pulse" />}>
                     <RichTextEditor
                       content={formState.cascade[key]}
                       onChange={(html) => setFormState((prev) => ({
@@ -1192,7 +1192,7 @@ const Gravitas = () => {
               ].map(({ key, label, placeholder }) => (
                 <div key={key} className="space-y-2">
                   <Label>{label}</Label>
-                  <Suspense fallback={<div className="h-24 rounded-md bg-accent/10 animate-pulse" />}>
+                  <Suspense fallback={<div className="h-24 rounded-none bg-accent/10 animate-pulse" />}>
                     <RichTextEditor
                       content={formState.storyNotes[key]}
                       onChange={(html) => setFormState((prev) => ({

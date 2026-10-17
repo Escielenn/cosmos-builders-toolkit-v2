@@ -1454,7 +1454,7 @@ const SpacecraftDesigner = () => {
                 <p className="text-xs text-t4">
                   Write a paragraph describing what it's like to step aboard this ship for the first time, sight, sound, smell, feel.
                 </p>
-                <Suspense fallback={<div className="min-h-[150px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
+                <Suspense fallback={<div className="min-h-[150px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                   <RichTextEditor
                     content={formState.synthesis.sensorySignature}
                     onChange={(value) => updateSynthesis("sensorySignature", value)}

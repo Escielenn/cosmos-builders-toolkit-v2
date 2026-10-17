@@ -101,7 +101,7 @@ const TOOL_TYPE = "space-expansion-modeler";
 const LOCAL_STORAGE_KEY = "space-expansion-worksheet";
 
 const EditorSkeleton = () => (
-  <div className="min-h-[120px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />
+  <div className="min-h-[120px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse" />
 );
 
 const PHASE_IDS: ExpansionPhaseId[] = [

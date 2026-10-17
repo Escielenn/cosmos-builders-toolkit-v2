@@ -497,7 +497,7 @@ const ExportDialog = ({
                       onClick={() => updatePreferences({ themeId: theme.id })}
                       title={theme.name}
                       className={cn(
-                        "flex gap-0.5 p-1.5 rounded-md border transition-all",
+                        "flex gap-0.5 p-1.5 rounded-none border transition-all",
                         isSelected
                           ? "border-primary ring-1 ring-primary/50"
                           : "border-sf-line-interactive hover:border-primary"

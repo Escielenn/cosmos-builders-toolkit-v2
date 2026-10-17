@@ -1139,7 +1139,7 @@ const LexDrift = () => {
                     {calculationResult.storyCallouts.map((callout, i) => (
                       <div
                         key={i}
-                        className={`p-4 rounded-r-lg border-l-2 ${sColors.border} ${sColors.bg}`}
+                        className={`p-4 rounded-r-none border-l-2 ${sColors.border} ${sColors.bg}`}
                       >
                         <p className="font-heading text-sm font-medium mb-1">
                           {callout.title}

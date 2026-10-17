@@ -587,7 +587,7 @@ const HabitableZoneCalculator = () => {
                       <button
                         key={type}
                         onClick={() => handleSpectralTypeChange(type)}
-                        className={`flex-1 py-2 rounded-md text-sm font-mono font-medium transition-all ${
+                        className={`flex-1 py-2 rounded-none text-sm font-mono font-medium transition-all ${
                           formState.star.spectralType === type
                             ? "ring-2 ring-primary"
                             : "hover:opacity-80"

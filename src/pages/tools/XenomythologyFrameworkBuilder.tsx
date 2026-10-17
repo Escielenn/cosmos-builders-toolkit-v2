@@ -2042,7 +2042,7 @@ const XenomythologyFrameworkBuilder = () => {
 
                     <div className="space-y-2">
                       <Label>Cognitive Function</Label>
-                      <Suspense fallback={<div className="min-h-[80px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
+                      <Suspense fallback={<div className="min-h-[80px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                         <RichTextEditor
                           content={archetype.cognitiveFunction}
                           onChange={(value) => updateArchetype(index, "cognitiveFunction", value)}
@@ -2055,7 +2055,7 @@ const XenomythologyFrameworkBuilder = () => {
 
                     <div className="space-y-2">
                       <Label>Symbolic Form</Label>
-                      <Suspense fallback={<div className="min-h-[80px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
+                      <Suspense fallback={<div className="min-h-[80px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                         <RichTextEditor
                           content={archetype.symbolicForm}
                           onChange={(value) => updateArchetype(index, "symbolicForm", value)}
@@ -2255,7 +2255,7 @@ const XenomythologyFrameworkBuilder = () => {
 
                       <div className="space-y-2">
                         <Label>How Species Interacts with This Divine Form</Label>
-                        <Suspense fallback={<div className="min-h-[60px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
+                        <Suspense fallback={<div className="min-h-[60px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                           <RichTextEditor
                             content={deity.interaction}
                             onChange={(value) => updateDeity(index, "interaction", value)}
@@ -2366,7 +2366,7 @@ const XenomythologyFrameworkBuilder = () => {
 
                     <div className="space-y-2">
                       <Label>Why Symbolically Important</Label>
-                      <Suspense fallback={<div className="min-h-[60px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
+                      <Suspense fallback={<div className="min-h-[60px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                         <RichTextEditor
                           content={entity.symbolicImportance}
                           onChange={(value) => updateSymbolicEntity(index, "symbolicImportance", value)}

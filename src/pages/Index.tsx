@@ -628,7 +628,7 @@ const Index = () => {
                   </Link>
                 </div>
               </div>
-              <div className="flex items-center gap-1 p-0.5 bg-muted/20 rounded-md border border-sf-line-interactive w-fit">
+              <div className="flex items-center gap-1 p-0.5 bg-muted/20 rounded-none border border-sf-line-interactive w-fit">
                 {([
                   { mode: 'category' as SortMode, label: 'Category' },
                   { mode: 'type' as SortMode, label: 'Type' },

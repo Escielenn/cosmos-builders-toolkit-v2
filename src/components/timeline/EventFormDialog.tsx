@@ -303,7 +303,7 @@ const EventFormDialog = ({
                   type="button"
                   onClick={() => setImportance(il.id)}
                   className={cn(
-                    "flex-1 px-3 py-1.5 rounded-md border text-xs font-medium transition-colors",
+                    "flex-1 px-3 py-1.5 rounded-none border text-xs font-medium transition-colors",
                     importance === il.id
                       ? "border-primary bg-primary/10 text-t1"
                       : "border-sf-line text-t3 hover:border-sf-line"

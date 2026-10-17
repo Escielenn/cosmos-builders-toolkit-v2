@@ -13,7 +13,7 @@ const Command = React.forwardRef<
   <CommandPrimitive
     ref={ref}
     className={cn(
-      "flex h-full w-full flex-col overflow-hidden rounded-md bg-popover text-popover-foreground",
+      "flex h-full w-full flex-col overflow-hidden rounded-none bg-popover text-popover-foreground",
       className,
     )}
     {...props}
@@ -53,7 +53,7 @@ const CommandInput = React.forwardRef<
       )}
       {...props}
     />
-    <kbd className="hidden sm:inline-flex h-7 items-center gap-1 rounded-md border border-sf-line bg-muted/30 px-2.5 font-mono text-xs text-t3">
+    <kbd className="hidden sm:inline-flex h-7 items-center gap-1 rounded-none border border-sf-line bg-muted/30 px-2.5 font-mono text-xs text-t3">
       ESC
     </kbd>
   </div>

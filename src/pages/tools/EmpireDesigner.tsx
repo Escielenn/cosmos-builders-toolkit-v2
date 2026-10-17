@@ -1540,7 +1540,7 @@ const EmpireDesigner = () => {
 
                 <div className="space-y-2">
                   <Label>Consistency Notes</Label>
-                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
+                  <Suspense fallback={<div className="min-h-[100px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                     <RichTextEditor
                       content={formState.synthesis.consistencyNotes}
                       onChange={(value) => updateSynthesis("consistencyNotes", value)}

@@ -132,7 +132,7 @@ const SimpleSubmissionForm = ({ type, onSuccess }: SimpleSubmissionFormProps) =>
         <p className="text-t2 mb-4">{config.successMessage}</p>
         {config.showTicket && ticketNumber && (
           <>
-            <div className="inline-flex items-center gap-2 bg-muted px-4 py-2 rounded-md mb-4">
+            <div className="inline-flex items-center gap-2 bg-muted px-4 py-2 rounded-none mb-4">
               <span className="font-mono text-sm">{ticketNumber}</span>
               <Button variant="ghost" size="icon" onClick={copyTicketNumber} aria-label="Copy ticket number">
                 <Copy className="w-4 h-4" />
