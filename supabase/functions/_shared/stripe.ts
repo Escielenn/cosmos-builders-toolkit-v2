@@ -10,6 +10,47 @@ export const PRICE_IDS = {
   vanguard_yearly: Deno.env.get('STRIPE_VANGUARD_YEARLY_PRICE_ID') || '',
 };
 
+// ── Payload-shape readers ─────────────────────────────────────
+// Stripe moved fields in API version 2025-03-31 ("basil"):
+//   subscription.current_period_start/end  → subscription.items.data[n].current_period_*
+//   invoice.subscription                   → invoice.parent.subscription_details.subscription
+// A webhook payload's shape follows the ENDPOINT's API version, which can be
+// upgraded in the Stripe dashboard independently of this code. These readers
+// accept both shapes so an upgrade there cannot silently stop Pro activating.
+
+// deno-lint-ignore no-explicit-any
+type StripeObject = Record<string, any>;
+
+/** Unix seconds → ISO string, or null when absent or not a number. */
+export function unixToIso(value: unknown): string | null {
+  return typeof value === 'number' && Number.isFinite(value)
+    ? new Date(value * 1000).toISOString()
+    : null;
+}
+
+export function subscriptionPeriod(sub: StripeObject): { start: string | null; end: string | null } {
+  const item = sub?.items?.data?.[0];
+  return {
+    start: unixToIso(sub?.current_period_start ?? item?.current_period_start),
+    end: unixToIso(sub?.current_period_end ?? item?.current_period_end),
+  };
+}
+
+export function invoiceSubscriptionId(invoice: StripeObject): string | null {
+  const legacy = invoice?.subscription;
+  if (typeof legacy === 'string') return legacy;
+  if (legacy && typeof legacy.id === 'string') return legacy.id;
+  const modern = invoice?.parent?.subscription_details?.subscription;
+  if (typeof modern === 'string') return modern;
+  if (modern && typeof modern.id === 'string') return modern.id;
+  return null;
+}
+
+/** True when the configured secret key is a live-mode key. */
+export function isLiveKey(): boolean {
+  return getStripeKey().startsWith('sk_live_') || getStripeKey().startsWith('rk_live_');
+}
+
 // Determine subscription tier from a Stripe price ID
 export function getTierFromPriceId(priceId: string): 'pro' | 'vanguard' {
   if (priceId === PRICE_IDS.vanguard_monthly || priceId === PRICE_IDS.vanguard_yearly) {
