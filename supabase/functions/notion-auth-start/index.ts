@@ -1,6 +1,7 @@
 import { getCorsHeaders } from '../_shared/cors.ts';
 import { NOTION_CLIENT_ID, NOTION_REDIRECT_URI } from '../_shared/notion.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.7.0';
+import { signState, stateSecret } from '../_shared/oauth-state.ts';
 
 // Initiates Notion OAuth flow
 Deno.serve(async (req) => {
@@ -63,11 +64,9 @@ Deno.serve(async (req) => {
       throw new Error('Notion OAuth not configured: Missing NOTION_REDIRECT_URI. Please set this secret in Supabase Edge Functions settings.');
     }
 
-    // Generate state for CSRF protection (include user ID)
-    const state = btoa(JSON.stringify({
-      userId: user.id,
-      timestamp: Date.now(),
-    }));
+    // Signed state: binds this OAuth round-trip to this user. The callback
+    // rejects any state it did not sign (see _shared/oauth-state.ts).
+    const state = await signState({ userId: user.id, timestamp: Date.now() }, stateSecret());
 
     // Build Notion OAuth URL
     const params = new URLSearchParams({
@@ -88,7 +87,7 @@ Deno.serve(async (req) => {
     console.error('Notion auth start error:', error);
     // Return 200 with error in body - Supabase client handles this better than non-2xx
     return new Response(
-      JSON.stringify({ success: false, error: error.message }),
+      JSON.stringify({ success: false, error: (error as Error).message }),
       { status: 200, headers: { ...cors, 'Content-Type': 'application/json' } }
     );
   }
