@@ -86,7 +86,8 @@ import {
   aggregateImplications,
   buildSensoriumCopyText,
 } from "@/lib/sensorium/calculations";
-import { pushSensoriumToWorksheets } from "@/lib/sensorium/push-to-worksheet";
+import { recordSensoriumInsights } from "@/lib/sensorium/push-to-worksheet";
+import { mapError } from "@/lib/ship-voice";
 import { generatePerceptualNarrative } from "@/lib/sensorium/perceptual-narrative";
 import {
   LinkedWorksheetRef,
@@ -382,28 +383,25 @@ const Sensorium = () => {
   };
 
   const handlePushToWorksheets = useCallback(async () => {
+    if (!currentWorksheetId) {
+      toast({ title: "NOTHING RECORDED.", description: "SAVE THIS WORKSHEET BEFORE RECORDING INSIGHTS." });
+      return;
+    }
     setIsPushing(true);
     try {
-      const result = await pushSensoriumToWorksheets(formState);
-      if (result.updated.length > 0) {
-        toast({ title: `Pushed to ${result.updated.length} worksheet(s)` });
-      }
-      if (result.errors.length > 0) {
-        toast({
-          title: "Some pushes failed",
-          description: result.errors.join("; "),
-          variant: "destructive",
-        });
-      }
-      if (result.updated.length === 0 && result.errors.length === 0) {
-        toast({ title: "No linked worksheets to push to" });
-      }
-    } catch {
-      toast({ title: "Push failed", variant: "destructive" });
+      const { insights, informs } = await recordSensoriumInsights(formState, currentWorksheetId);
+      // Keep them in form state so the next save of this worksheet keeps them.
+      setFormState((prev) => ({ ...prev, sensoriumInsights: insights }));
+      toast({
+        title: "INSIGHTS SECURED ON SENSORIUM RECORD.",
+        description: informs.length > 0 ? `LINKED: ${informs.join(", ").toUpperCase()}.` : undefined,
+      });
+    } catch (error) {
+      toast({ title: "NOTHING RECORDED.", description: mapError(error), variant: "destructive" });
     } finally {
       setIsPushing(false);
     }
-  }, [formState, toast]);
+  }, [formState, currentWorksheetId, toast]);
 
   const handleCopyResults = () => {
     const text = buildSensoriumCopyText(formState);
@@ -1625,7 +1623,7 @@ const Sensorium = () => {
                       disabled={isPushing}
                     >
                       <Upload className="h-4 w-4" />
-                      {isPushing ? "Pushing..." : "Push to Worksheets"}
+                      {isPushing ? "Recording..." : "Record Insights"}
                     </Button>
                   )}
                 </div>

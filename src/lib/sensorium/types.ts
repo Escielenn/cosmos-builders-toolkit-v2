@@ -255,6 +255,33 @@ export interface SensoriumFormState {
     planet?: LinkedWorksheetRef;
     evoBio?: LinkedWorksheetRef;
   };
+  /**
+   * Insights recorded by "Record Insights". Lives on Sensorium's own record;
+   * Sensorium never writes into another tool's worksheet.
+   */
+  sensoriumInsights?: SensoriumInsights;
   generalNotes: string;
   moodboard: MoodboardImage[];
+}
+
+export interface SensoriumInsights {
+  speciesName: string;
+  selectedModalities: Array<{
+    id: string;
+    name: string;
+    category: string;
+  }>;
+  metabolicBudget: {
+    total: number;
+    overBudget: boolean;
+  };
+  perceptionGaps: {
+    speciesPerceives: string[];
+    speciesBlind: string[];
+  };
+  dominantSense: string;
+  /** Worksheet ids of the linked star system / planet / evo-bio worksheets
+   * these insights inform. Absent on insights written before 2026-10. */
+  informs?: string[];
+  syncedAt: string;
 }
