@@ -3,6 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import { Save, FolderOpen, Rocket } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Loader } from "@/components/ui/loader";
+import { useMetaTags } from "@/hooks/use-meta-tags";
 import { useWorldId } from "@/hooks/use-world-id";
 import { useSimulationSave } from "@/hooks/use-simulation-save";
 import SaveSimulationDialog from "@/components/simulators/SaveSimulationDialog";
@@ -36,14 +37,12 @@ const ExoSkyV2 = lazy(() => import("@/components/simulators/ExoSkySimulator"));
 
 const SimLoader = () => (
   <div className="w-full h-full flex items-center justify-center bg-background">
-    <div className="text-center">
-      <Loader className="mb-3" />
-      <p className="text-xs text-white/40 font-mono tracking-widest uppercase">Loading EXOSKY</p>
-    </div>
+    <Loader message="LOADING EXOSKY" />
   </div>
 );
 
 const ExoskySimulator = () => {
+  useMetaTags({ title: "ExoSky" });
   const worldId = useWorldId();
   const [searchParams, setSearchParams] = useSearchParams();
   const handoffPayload = useMemo(() => decodeHandoff(searchParams), [searchParams]);
@@ -139,7 +138,7 @@ const ExoskySimulator = () => {
           </Suspense>
           {/* Save/Load controls */}
           {(
-            <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 border border-sf-primary bg-sf-void/90 px-1.5 py-1 backdrop-blur-sm">
+            <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 border border-sf-line bg-sf-surface/90 px-1.5 py-1 backdrop-blur-sf-panel">
               <Button
                 variant="outline"
                 size="sm"
@@ -149,7 +148,7 @@ const ExoskySimulator = () => {
                   refreshPayload();
                   setPublishDialogOpen(true);
                 }}
-                className="bg-sf-primary/[0.12] border-sf-primary text-sf-primary-bright-text hover:bg-sf-primary/25 hover:text-white text-[13px] uppercase tracking-wider h-8 px-3"
+                className="bg-sf-primary/[0.06] border-sf-primary text-sf-primary-text hover:bg-sf-primary/[0.12] hover:text-t1 text-[13px] uppercase tracking-wider min-h-hit px-3"
               >
                 <Rocket className="w-3 h-3 mr-1" />
                 Publish
@@ -158,7 +157,7 @@ const ExoskySimulator = () => {
                 variant="outline"
                 size="sm"
                 onClick={() => setLoadSheetOpen(true)}
-                className="bg-sf-primary/[0.12] border-sf-primary text-sf-primary-bright-text hover:bg-sf-primary/25 hover:text-white text-[13px] uppercase tracking-wider h-8 px-3"
+                className="bg-sf-primary/[0.06] border-sf-primary text-sf-primary-text hover:bg-sf-primary/[0.12] hover:text-t1 text-[13px] uppercase tracking-wider min-h-hit px-3"
               >
                 <FolderOpen className="w-3 h-3 mr-1" />
                 Load
@@ -167,7 +166,7 @@ const ExoskySimulator = () => {
                 variant="outline"
                 size="sm"
                 onClick={requestSave}
-                className="bg-sf-primary/[0.12] border-sf-primary text-sf-primary-bright-text hover:bg-sf-primary/25 hover:text-white text-[13px] uppercase tracking-wider h-8 px-3"
+                className="bg-sf-primary/[0.06] border-sf-primary text-sf-primary-text hover:bg-sf-primary/[0.12] hover:text-t1 text-[13px] uppercase tracking-wider min-h-hit px-3"
               >
                 <Save className="w-3 h-3 mr-1" />
                 Save

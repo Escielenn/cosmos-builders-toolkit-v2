@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
+import { tokens } from "@/styles/tokens";
 import { auToScene } from "../utils/scaleAU";
 
 interface HabitableZoneProps {
@@ -29,7 +30,7 @@ export function HabitableZone({ innerAU, outerAU, visible }: HabitableZoneProps)
       <ringGeometry args={[innerRadius, outerRadius, 128]} />
       <meshBasicMaterial
         ref={matRef}
-        color="#2ECC71"
+        color={tokens.status.ok}
         transparent
         opacity={0.05}
         side={THREE.DoubleSide}

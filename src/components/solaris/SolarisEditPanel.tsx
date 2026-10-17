@@ -22,7 +22,7 @@ interface Props {
 }
 
 const NAME_INPUT =
-  "w-full bg-white/[0.04] border border-sf-line-interactive focus:border-sf-primary rounded-none px-2 py-1 font-mono text-[14px] text-white/85 tracking-wide";
+  "w-full bg-sf-surface border border-sf-line-interactive focus:border-sf-primary rounded-none px-2 py-1 font-mono text-[14px] text-t2 tracking-wide";
 
 /**
  * A text field for a body's name.
@@ -59,7 +59,7 @@ function NameField({
 
   return (
     <label className="block mb-1.5">
-      <span className="block text-[12px] uppercase tracking-[1.5px] text-white/30 mb-0.5">
+      <span className="block text-[12px] uppercase tracking-[1.5px] text-t4 mb-0.5">
         {label}
       </span>
       <input
@@ -90,8 +90,8 @@ function NameField({
 // the viewer rather than the viewport: the viewer sits below the site header, so
 // a vh-based cap overshot and pushed this panel over the controls above it.
 const PANEL =
-  "absolute left-3 bottom-3 z-20 w-64 bg-[rgba(13,13,15,0.94)] border border-sf-line backdrop-blur-[16px] rounded-none p-3 space-y-3 max-h-[48%] overflow-y-auto sf-sb";
-const SEC = "font-mono text-[13px] uppercase tracking-[2px] text-sf-primary-bright/80 mb-1.5 block";
+  "absolute left-3 bottom-3 z-20 w-64 bg-sf-surface/90 border border-sf-line backdrop-blur-sf-panel rounded-none p-3 space-y-3 max-h-[48%] overflow-y-auto sf-sb";
+const SEC = "font-mono text-[13px] uppercase tracking-wide text-sf-primary-text mb-1.5 block";
 
 function Slider({
   label,
@@ -112,7 +112,7 @@ function Slider({
 }) {
   return (
     <div className="mb-2">
-      <label className="flex items-center justify-between text-[13px] uppercase tracking-wider text-white/45 mb-1">
+      <label className="flex items-center justify-between text-[13px] uppercase tracking-wider text-t3 mb-1">
         <span>{label}</span>
         <span className="font-mono text-[13px] text-sf-primary-text">
           {value}
@@ -172,7 +172,7 @@ export default function SolarisEditPanel({
         <span className={SEC}>Add Planet</span>
         {PALETTE_BANDS.map((band) => (
           <div key={band} className="mb-2">
-            <div className="text-[12px] uppercase tracking-wider text-white/25 mb-1">{band}</div>
+            <div className="text-[12px] uppercase tracking-wider text-t4 mb-1">{band}</div>
             <div className="flex flex-wrap gap-1">
               {PALETTE.filter((p) => p.band === band).map((p) => (
                 <button
@@ -181,7 +181,7 @@ export default function SolarisEditPanel({
                   draggable
                   onDragStart={(e) => e.dataTransfer.setData("text/solaris-archetype", p.key)}
                   title={`Add ${p.name}`}
-                  className="flex items-center gap-1 px-1.5 py-0.5 border border-sf-line-interactive bg-white/[0.02] hover:border-sf-primary hover:bg-sf-primary/[0.06] text-[12px] uppercase tracking-wide text-white/60 rounded-none"
+                  className="flex items-center gap-1 px-1.5 py-0.5 border border-sf-line-interactive bg-sf-surface hover:border-sf-primary hover:bg-sf-primary/[0.06] text-[12px] uppercase tracking-wide text-t3 rounded-none"
                 >
                   <span className="w-2 h-2 rounded-full" style={{ background: p.color }} />
                   {p.name}
@@ -205,18 +205,18 @@ export default function SolarisEditPanel({
             </div>
             <button
               onClick={() => onRemovePlanet(selectedIndex)}
-              className="mt-4 shrink-0 text-[12px] uppercase tracking-wider text-red-400/70 hover:text-red-400 border border-sf-line hover:border-sf-crimson px-1.5 py-0.5 rounded-none"
+              className="mt-4 shrink-0 min-h-hit text-[12px] uppercase tracking-wider text-sf-crimson-text hover:text-t1 border border-sf-line-interactive hover:border-sf-crimson hover:bg-sf-crimson/[0.06] px-1.5 py-0.5 rounded-none transition-colors duration-base"
             >
               Remove
             </button>
           </div>
-          <div className="text-[13px] uppercase tracking-wider text-white/30 mb-2">{planet.meta?.displayName ?? planet.type}</div>
+          <div className="text-[13px] uppercase tracking-wider text-t4 mb-2">{planet.meta?.displayName ?? planet.type}</div>
 
           <Slider label="Radius" value={planet.radiusEarth} min={0.2} max={15} step={0.1} unit=" R⊕" onChange={(v) => onPatchPlanet(selectedIndex, { radiusEarth: v })} />
           <Slider label="Mass" value={planet.massEarth} min={0.02} max={400} step={0.1} unit=" M⊕" onChange={(v) => onPatchPlanet(selectedIndex, { massEarth: v })} />
           <Slider label="Eccentricity" value={planet.eccentricity} min={0} max={0.5} step={0.01} onChange={(v) => onPatchPlanet(selectedIndex, { eccentricity: v })} />
 
-          <label className="flex items-center gap-2 py-1 text-[13px] uppercase tracking-wider text-white/50 cursor-pointer select-none">
+          <label className="flex items-center gap-2 py-1 text-[13px] uppercase tracking-wider text-t3 cursor-pointer select-none">
             <input
               type="checkbox"
               checked={planet.hasRings}
@@ -232,7 +232,7 @@ export default function SolarisEditPanel({
               <span className={SEC + " mb-0"}>Moons ({planet.moons.length})</span>
               <button
                 onClick={() => onAddMoon(selectedIndex)}
-                className="text-[12px] uppercase tracking-wider text-sf-primary-text border border-sf-primary bg-sf-primary/[0.08] hover:bg-sf-primary/20 px-1.5 py-0.5 rounded-none"
+                className="text-[12px] uppercase tracking-wider text-sf-primary-text border border-sf-primary bg-sf-primary/[0.08] hover:bg-sf-primary/[0.2] px-1.5 py-0.5 min-h-[32px] rounded-none transition-colors duration-base"
               >
                 + Add
               </button>
@@ -250,7 +250,7 @@ export default function SolarisEditPanel({
                   </div>
                   <button
                     onClick={() => onRemoveMoon(selectedIndex, mi)}
-                    className="mt-4 shrink-0 text-[12px] text-red-400/60 hover:text-red-400"
+                    className="mt-3 shrink-0 inline-flex min-h-hit min-w-hit items-center justify-center text-[12px] text-sf-crimson-text hover:text-t1 transition-colors duration-base"
                     aria-label={`Remove moon ${mi + 1}`}
                   >
                     ✕
@@ -270,8 +270,8 @@ export default function SolarisEditPanel({
           </div>
         </div>
       ) : (
-        <div className="pt-2 border-t border-sf-line text-[13px] text-white/25 uppercase tracking-wider text-center py-3">
-          Click a planet to edit
+        <div className="pt-2 border-t border-sf-line text-[13px] text-t4 uppercase tracking-wider text-center py-3">
+          SELECT A PLANET TO EDIT.
         </div>
       )}
     </div>

@@ -14,6 +14,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Save, FolderOpen, Rocket } from "lucide-react";
 import Header from "@/components/layout/Header";
+import { useMetaTags } from "@/hooks/use-meta-tags";
 import RogueCanvas from "@/components/rogue/RogueCanvas";
 import type { Camera, RogueDisplay } from "@/components/rogue/rogueView";
 import { RogueControls, RogueReadout } from "@/components/rogue/RoguePanels";
@@ -50,6 +51,7 @@ const STEPS_PER_FRAME = 90;
 const TRAIL_EVERY = 4;
 
 const RogueNativeDev = () => {
+  useMetaTags({ title: "Rogue Native (Dev)" });
   const worldId = useWorldId();
   const [systemKey, setSystemKey] = useState("solar");
   const system = SYSTEMS[systemKey] ?? SYSTEMS.solar;
@@ -456,7 +458,7 @@ const RogueNativeDev = () => {
   );
 
   const toolBtn =
-    "flex items-center gap-1.5 border border-sf-primary bg-sf-primary/[0.12] px-3 h-8 font-mono text-[13px] uppercase tracking-wider text-sf-primary-bright transition-colors hover:bg-sf-primary/25 hover:text-white";
+    "flex items-center gap-1.5 border border-sf-primary bg-sf-primary/[0.06] px-3 min-h-hit font-mono text-[13px] uppercase tracking-wider text-sf-primary-text transition-colors duration-base hover:bg-sf-primary/[0.12] hover:text-t1";
 
   return (
     <div className="min-h-screen bg-background">
@@ -465,13 +467,13 @@ const RogueNativeDev = () => {
         {/* Left of the readout panel, which is 268px wide at right-3. Sharing
             that corner put this badge straight over the status row. */}
         <div className="pointer-events-none absolute right-[292px] top-3 z-30 hidden lg:block">
-          <span className="border border-sf-amber bg-amber-400/[0.07] px-2 py-1 font-mono text-[12px] uppercase tracking-[2px] text-amber-400/80">
+          <span className="border border-sf-amber bg-sf-amber/[0.06] px-2 py-1 font-mono text-[12px] uppercase tracking-wide text-sf-amber-text">
             Native rebuild · dev preview
           </span>
         </div>
 
         {/* Save / Load / Publish. Top-centre, clear of both panels. */}
-        <div className="absolute left-1/2 top-3 z-30 flex -translate-x-1/2 items-center gap-1.5 border border-sf-primary bg-sf-void/90 px-1.5 py-1 backdrop-blur-sm">
+        <div className="absolute left-1/2 top-3 z-30 flex -translate-x-1/2 items-center gap-1.5 border border-sf-line bg-sf-surface/90 px-1.5 py-1 backdrop-blur-sf-panel">
           <button type="button" onClick={requestSave} className={toolBtn} title="Save encounter">
             <Save className="h-3 w-3" /> Save
           </button>
@@ -539,7 +541,7 @@ const RogueNativeDev = () => {
         />
 
         {/* ── Zoom, bottom-right, clear of both panels ── */}
-        <div className="absolute bottom-3 right-3 z-20 flex items-center gap-1 border border-sf-line bg-[rgba(13,13,15,0.94)] px-1.5 py-1 backdrop-blur-sm">
+        <div className="absolute bottom-3 right-3 z-20 flex items-center gap-1 border border-sf-line bg-sf-surface/90 px-1.5 py-1 backdrop-blur-sf-panel">
           {([
             ["−", () => zoomBy(1 / 1.3), "Zoom out (−)"],
             ["+", () => zoomBy(1.3), "Zoom in (+)"],
@@ -551,7 +553,8 @@ const RogueNativeDev = () => {
               type="button"
               onClick={fn}
               title={title}
-              className="min-w-[30px] border border-sf-line bg-white/[0.05] px-2 py-1 font-mono text-[12px] uppercase tracking-wider text-white/80 transition-colors hover:border-sf-primary hover:bg-sf-primary/[0.15] hover:text-white"
+              aria-label={title}
+              className="min-h-hit min-w-hit border border-sf-line-interactive bg-sf-surface px-2 py-1 font-mono text-[12px] uppercase tracking-wider text-t2 transition-colors duration-base hover:border-sf-primary hover:bg-sf-primary/[0.12] hover:text-t1"
             >
               {label}
             </button>
@@ -560,11 +563,12 @@ const RogueNativeDev = () => {
             type="button"
             onClick={() => setShowKeys((v) => !v)}
             title="Keyboard shortcuts (?)"
+            aria-label="Keyboard shortcuts"
             aria-pressed={showKeys}
-            className={`min-w-[30px] border px-2 py-1 font-mono text-[12px] transition-colors ${
+            className={`min-h-hit min-w-hit border px-2 py-1 font-mono text-[12px] transition-colors duration-base ${
               showKeys
-                ? "border-sf-primary bg-sf-primary/25 text-white"
-                : "border-sf-line bg-white/[0.05] text-white/80 hover:text-white"
+                ? "border-sf-primary bg-sf-primary/[0.12] text-t1"
+                : "border-sf-line-interactive bg-sf-surface text-t2 hover:text-t1"
             }`}
           >
             ?
@@ -572,8 +576,8 @@ const RogueNativeDev = () => {
         </div>
 
         {showKeys && (
-          <div className="absolute bottom-16 right-3 z-30 w-[232px] border border-sf-line bg-[rgba(13,13,15,0.97)] p-3 backdrop-blur-sm">
-            <span className="mb-2 block font-mono text-[12px] uppercase tracking-[2px] text-sf-primary-bright/80">
+          <div className="absolute bottom-[68px] right-3 z-30 w-[232px] border border-sf-line bg-sf-surface-elevated p-3 backdrop-blur-sf-panel">
+            <span className="mb-2 block font-mono text-[12px] uppercase tracking-wide text-sf-primary-text">
               Keyboard
             </span>
             {[
@@ -586,8 +590,8 @@ const RogueNativeDev = () => {
               ["?", "This list"],
             ].map(([k, what]) => (
               <div key={k} className="flex items-baseline justify-between gap-3 py-0.5">
-                <span className="shrink-0 font-mono text-[12px] text-sf-primary-bright">{k}</span>
-                <span className="text-right text-[12px] text-white/75">{what}</span>
+                <span className="shrink-0 font-mono text-[12px] text-sf-primary-text">{k}</span>
+                <span className="text-right text-[12px] text-t2">{what}</span>
               </div>
             ))}
           </div>

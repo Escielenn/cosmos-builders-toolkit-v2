@@ -39,7 +39,7 @@ export default function SimulationWorldPicker({
   if (isLoading) {
     return (
       <p className="font-mono text-[13px] uppercase tracking-[1.5px] text-t4">
-        // Loading your worlds…
+        // RETRIEVING WORLDS…
       </p>
     );
   }

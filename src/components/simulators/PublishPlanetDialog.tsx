@@ -105,7 +105,7 @@ export default function PublishPlanetDialog({
         {publishedId ? (
           <>
             <DialogHeader>
-              <DialogTitle className="flex items-center gap-2 font-heading text-sm font-light uppercase tracking-[3px] text-sf-primary-text">
+              <DialogTitle className="flex items-center gap-2 font-heading text-sm font-light uppercase tracking-wide text-sf-primary-text">
                 <Globe className="h-4 w-4" />
                 Published
               </DialogTitle>
@@ -161,7 +161,7 @@ export default function PublishPlanetDialog({
         ) : (
           <>
             <DialogHeader>
-              <DialogTitle className="flex items-center gap-2 font-heading text-sm font-light uppercase tracking-[3px] text-sf-primary-text">
+              <DialogTitle className="flex items-center gap-2 font-heading text-sm font-light uppercase tracking-wide text-sf-primary-text">
                 <Rocket className="h-4 w-4" />
                 Promote {facts.length} Values to Canon
               </DialogTitle>
@@ -171,7 +171,7 @@ export default function PublishPlanetDialog({
               </DialogDescription>
             </DialogHeader>
 
-            <div className="mt-2 space-y-1 border border-sf-line-interactive p-3">
+            <div className="mt-2 space-y-1 border border-sf-line p-3">
               {facts.map((f) => (
                 <div key={f.predicate} className="flex items-center justify-between gap-3 text-[13px]">
                   <span className="text-t3">{f.label}</span>
@@ -197,7 +197,7 @@ export default function PublishPlanetDialog({
                 className="gap-2"
               >
                 {isPublishing ? <Loader variant="inline" size="sm" /> : <Rocket className="w-4 h-4" />}
-                {isPublishing ? "Publishing..." : "Publish"}
+                {isPublishing ? "PUBLISHING…" : "Publish"}
               </Button>
             </DialogFooter>
           </>

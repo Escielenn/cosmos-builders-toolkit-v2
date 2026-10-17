@@ -19,6 +19,7 @@ import { type Body } from "@/lib/simulators/nbody";
 import { gridStep, type Camera, type RogueDisplay } from "./rogueView";
 import type { TrailSet } from "@/lib/simulators/trail-buffer";
 import type { RogueBody } from "@/lib/simulators/rogue-systems";
+import { tokens } from "@/styles/tokens";
 
 interface RogueCanvasProps {
   bodies: RogueBody[];
@@ -132,7 +133,7 @@ export default function RogueCanvas({
       const sy = (wy: number) => h / 2 - (wy - cam.y) * cam.zoom;
 
       // Simulator canvases run deeper than the site's void.
-      ctx.fillStyle = "#09090B";
+      ctx.fillStyle = tokens.surface.simCanvas;
       ctx.fillRect(0, 0, w, h);
 
       // ── Starfield, parallax at 0.04x ──
@@ -267,7 +268,7 @@ export default function RogueCanvas({
         }
 
         if (isSelected) {
-          ctx.strokeStyle = "rgba(61,255,205,0.8)";
+          ctx.strokeStyle = withAlpha(tokens.sim.accentGlow, 0.8);
           ctx.lineWidth = 1.5;
           ctx.beginPath();
           ctx.arc(px, py, bodyRadius(b, cam.zoom) + 6, 0, Math.PI * 2);
@@ -423,7 +424,7 @@ function drawStar(
   ctx.fill();
 
   const disc = ctx.createRadialGradient(px - r * 0.3, py - r * 0.3, 0, px, py, r);
-  disc.addColorStop(0, "#ffffff");
+  disc.addColorStop(0, "white");
   disc.addColorStop(0.45, b.color);
   disc.addColorStop(1, shade(b.color, -60));
   ctx.fillStyle = disc;
@@ -476,7 +477,7 @@ function drawIntruder(
     ctx.arc(px, py, r * 4, 0, Math.PI * 2);
     ctx.fill();
 
-    ctx.fillStyle = "#000000";
+    ctx.fillStyle = "black";
     ctx.beginPath();
     ctx.arc(px, py, r, 0, Math.PI * 2);
     ctx.fill();

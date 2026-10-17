@@ -13,6 +13,7 @@ import type { ElementRef, RefObject } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
+import { tokens } from "@/styles/tokens";
 import type { StarSystem, SelectedBody, CameraMode } from "./types";
 import { SolarisSim } from "./physics";
 import { auToScene, sceneToAU, starRadiusCapForApproach } from "./utils/scaleAU";
@@ -93,7 +94,7 @@ function PrimaryLight({ sim }: { sim: SolarisSim }) {
     const s = sim.stars[0];
     if (ref.current && s) ref.current.position.set(auToScene(s.x), 0, auToScene(s.z));
   });
-  return <pointLight ref={ref} intensity={intensity} color="#ffffff" distance={0} decay={2} />;
+  return <pointLight ref={ref} intensity={intensity} color="white" distance={0} decay={2} />;
 }
 
 /**
@@ -344,7 +345,7 @@ export default function SolarisScene(props: SolarisSceneProps) {
   const camPos: [number, number, number] = [0, extent * 0.75, extent * 1.35];
 
   return (
-    <Canvas camera={{ position: camPos, fov: 45, near: 0.1, far: 50000 }} gl={{ antialias: true }} style={{ background: "#09090B" }}>
+    <Canvas camera={{ position: camPos, fov: 45, near: 0.1, far: 50000 }} gl={{ antialias: true }} style={{ background: tokens.surface.simCanvas }}>
       <OrbitControls
         ref={controlsRef}
         makeDefault

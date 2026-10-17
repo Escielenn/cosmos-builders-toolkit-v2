@@ -49,18 +49,18 @@ const CONDITIONS: { key: keyof GenerateConditions; label: string; hint: string }
 const S = {
   // Bottom-right, under the readout panel. Sits above the status strip.
   panel:
-    "absolute right-3 bottom-10 z-20 w-60 bg-[rgba(13,13,15,0.94)] border border-sf-line backdrop-blur-[16px] rounded-none p-3 space-y-3 max-h-[52%] overflow-y-auto sf-sb",
+    "absolute right-3 bottom-10 z-20 w-60 bg-sf-surface/90 border border-sf-line backdrop-blur-sf-panel rounded-none p-3 space-y-3 max-h-[52%] overflow-y-auto sf-sb",
   // Contrast raised to match SolarisControls: chips were white/45 on a 0.02 fill
   // with a 0.06 border, which read as absent rather than merely inactive.
-  sec: "font-mono text-[13px] uppercase tracking-[2px] text-sf-primary-bright/80 mb-1.5 block",
-  chip: "px-2 py-1 text-[12px] uppercase tracking-wide border rounded-none transition-colors min-h-[26px]",
+  sec: "font-mono text-[13px] uppercase tracking-wide text-sf-primary-text mb-1.5 block",
+  chip: "px-2 py-1 text-[12px] uppercase tracking-wide border rounded-none transition-colors duration-base min-h-[26px]",
   chipOff:
-    "bg-white/[0.05] border-sf-line-interactive text-white/75 hover:border-sf-primary hover:bg-sf-primary/[0.12] hover:text-white",
-  chipOn: "bg-[rgba(21,193,123,0.22)] border-sf-primary text-white",
+    "bg-sf-surface border-sf-line-interactive text-t2 hover:border-sf-primary hover:bg-sf-primary/[0.12] hover:text-t1",
+  chipOn: "bg-sf-primary/[0.12] border-sf-primary text-t1",
   field:
-    "w-full bg-white/[0.06] border border-sf-line-interactive focus:border-sf-primary focus:bg-white/[0.08] rounded-none px-2 py-1.5 font-mono text-[14px] text-white tracking-wide",
+    "w-full bg-sf-surface border border-sf-line-interactive focus:border-sf-primary focus:bg-sf-surface-elevated rounded-none px-2 py-1.5 font-mono text-[14px] text-t1 tracking-wide",
   action:
-    "flex-1 px-2 py-2 text-[13px] uppercase tracking-[1.5px] font-heading font-medium border rounded-none transition-colors",
+    "flex-1 min-h-hit px-2 py-2 text-[13px] uppercase tracking-[1.5px] font-heading font-medium border rounded-none transition-[color,background-color,border-color,box-shadow] duration-base ease-sf-out",
 };
 
 interface Props {
@@ -100,7 +100,7 @@ export default function SolarisGeneratePanel({
           aria-label="Generation seed"
           className={S.field}
         />
-        <p className="mt-1 text-[12px] text-white/25">
+        <p className="mt-1 text-[12px] text-t4">
           The same seed and settings always give the same system.
         </p>
       </div>
@@ -114,6 +114,7 @@ export default function SolarisGeneratePanel({
               key={a.value}
               title={a.hint}
               onClick={() => set("arch", a.value)}
+              aria-pressed={settings.arch === a.value}
               className={`${S.chip} ${settings.arch === a.value ? S.chipOn : S.chipOff}`}
             >
               {a.label}
@@ -126,6 +127,7 @@ export default function SolarisGeneratePanel({
               key={c.value}
               title={c.hint}
               onClick={() => set("starClass", c.value)}
+              aria-pressed={settings.starClass === c.value}
               className={`${S.chip} ${settings.starClass === c.value ? S.chipOn : S.chipOff}`}
             >
               {c.label}
@@ -136,7 +138,7 @@ export default function SolarisGeneratePanel({
 
       {/* Planet count */}
       <div>
-        <label className="flex items-center justify-between text-[13px] uppercase tracking-wider text-white/45 mb-1">
+        <label className="flex items-center justify-between text-[13px] uppercase tracking-wider text-t3 mb-1">
           <span>Planets</span>
           <span className="font-mono text-[13px] text-sf-primary-text">
             {settings.planetCount ?? "auto"}
@@ -176,7 +178,7 @@ export default function SolarisGeneratePanel({
             </button>
           ))}
         </div>
-        <p className="mt-1 text-[12px] text-white/25">
+        <p className="mt-1 text-[12px] text-t4">
           Each one is a guarantee. The rest of the system still varies.
         </p>
       </div>
@@ -193,6 +195,7 @@ export default function SolarisGeneratePanel({
             <button
               key={String(o.v)}
               onClick={() => set("includeBelt", o.v)}
+              aria-pressed={settings.includeBelt === o.v}
               className={`${S.chip} ${settings.includeBelt === o.v ? S.chipOn : S.chipOff}`}
             >
               {o.l}
@@ -204,17 +207,17 @@ export default function SolarisGeneratePanel({
       {/* Actions. Pinned to the foot of the panel: the settings above can
           overflow into a scroll, and Generate is the one control that must
           never be below the fold. */}
-      <div className="sticky bottom-0 -mx-3 -mb-3 flex gap-1.5 border-t border-sf-line bg-[rgba(13,13,15,0.97)] px-3 py-2.5">
+      <div className="sticky bottom-0 -mx-3 -mb-3 flex gap-1.5 border-t border-sf-line bg-sf-surface px-3 py-2.5">
         <button
           onClick={onGenerate}
-          className={`${S.action} bg-sf-primary border-sf-primary text-sf-on-primary hover:bg-sf-primary-bright hover:border-sf-primary-bright`}
+          className={`${S.action} bg-sf-primary border-sf-primary text-sf-on-primary hover:shadow-sf-glow-teal`}
         >
           Generate
         </button>
         <button
           onClick={onRandomize}
           title="New random seed, keeping your settings"
-          className={`${S.action} bg-white/[0.06] border-sf-line-interactive text-white/80 hover:bg-white/[0.12] hover:text-white`}
+          className={`${S.action} bg-sf-surface border-sf-line-interactive text-t2 hover:bg-sf-surface-elevated hover:text-t1`}
         >
           Random
         </button>
