@@ -68,7 +68,7 @@ const BackgroundLayer = () => {
               onCanPlay={() => setLoaded(true)}
               onError={() => setFailed(true)}
               className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
-                loaded ? "opacity-40" : "opacity-0"
+                loaded ? "opacity-[calc(0.4*var(--sf-ambient))]" : "opacity-0"
               }`}
             />
           )}

@@ -17,19 +17,22 @@ export function BreathingStar({
   /** vertical position (CSS length) */
   y?: string;
 }) {
+  // The pulse animates opacity, so the --sf-ambient dial lives on a static
+  // wrapper; opacity multiplies down the tree.
   return (
     <div
       aria-hidden
-      className="fixed pointer-events-none z-0 animate-sf-pulse"
-      style={{
-        left: x,
-        top: y,
-        width: 3,
-        height: 3,
-        borderRadius: "9999px",
-        background: "radial-gradient(circle, #E0E4E8 0%, rgba(224,228,232,0) 70%)",
-        boxShadow: "0 0 6px rgba(224,228,232,0.6), 0 0 14px rgba(91,141,239,0.3)",
-      }}
-    />
+      className="fixed pointer-events-none z-0"
+      style={{ left: x, top: y, width: 3, height: 3, opacity: "var(--sf-ambient)" }}
+    >
+      <div
+        className="w-full h-full animate-sf-pulse"
+        style={{
+          borderRadius: "9999px",
+          background: "radial-gradient(circle, #E0E4E8 0%, rgba(224,228,232,0) 70%)",
+          boxShadow: "0 0 6px rgba(224,228,232,0.6), 0 0 14px rgba(91,141,239,0.3)",
+        }}
+      />
+    </div>
   );
 }
