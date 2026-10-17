@@ -491,10 +491,10 @@ const SurfaceGravityCalculator = () => {
         setCurrentWorksheetId(ws.id);
         setCurrentWorksheetTitle(ws.title);
         setSearchParams({ worldId, worksheetId: ws.id });
-        toast({ title: "CREATED.", description: "New worksheet created." });
+        toast({ title: "CREATED.", description: "NEW WORKSHEET ON FILE." });
       }
     } else {
-      toast({ title: "SAVED LOCALLY.", description: "Data saved to this browser." });
+      toast({ title: "SAVED LOCALLY.", description: "WORK SECURED TO THIS BROWSER." });
     }
   };
 
@@ -588,8 +588,8 @@ const SurfaceGravityCalculator = () => {
                     onClick={() => handlePresetSelect(preset.id)}
                     className={`p-3 rounded-none border text-left transition-colors ${
                       formState.primary.planetPreset === preset.id
-                        ? "border-primary bg-primary/10"
-                        : "border-sf-line-interactive hover:border-primary hover:bg-accent/5"
+                        ? "border-sf-primary bg-sf-primary/10"
+                        : "border-sf-line-interactive hover:border-sf-primary hover:bg-accent/5"
                     }`}
                   >
                     <div className="flex items-center gap-1.5 mb-1">
@@ -641,7 +641,7 @@ const SurfaceGravityCalculator = () => {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <Label>Planet Mass</Label>
-                    <span className="font-mono text-primary text-lg">
+                    <span className="font-mono text-sf-primary-text text-lg">
                       {formState.primary.mass.toFixed(3)} M⊕
                     </span>
                   </div>
@@ -662,7 +662,7 @@ const SurfaceGravityCalculator = () => {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <Label>Planet Radius</Label>
-                    <span className="font-mono text-primary text-lg">
+                    <span className="font-mono text-sf-primary-text text-lg">
                       {formState.primary.radius.toFixed(3)} R⊕
                     </span>
                   </div>
@@ -688,7 +688,7 @@ const SurfaceGravityCalculator = () => {
                         updatePrimary("linked", false);
                         updatePrimary("compositionPreset", "custom");
                       }}
-                      className="text-primary hover:underline ml-1"
+                      className="text-sf-primary-text hover:underline ml-1"
                     >
                       Unlink
                     </button>
@@ -716,7 +716,7 @@ const SurfaceGravityCalculator = () => {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <Label>Surface Temperature</Label>
-                    <span className="font-mono text-primary">{formState.advanced.surfaceTemp} K</span>
+                    <span className="font-mono text-sf-primary-text">{formState.advanced.surfaceTemp} K</span>
                   </div>
                   <Slider
                     value={[formState.advanced.surfaceTemp]}
@@ -777,11 +777,11 @@ const SurfaceGravityCalculator = () => {
                 <div className="space-y-6">
                   {/* Big gravity readout, display-font hero */}
                   <div className="text-center py-6">
-                    <p className="font-mono text-[12px] tracking-[0.18em] uppercase text-sf-amber mb-3">// SURFACE GRAVITY</p>
+                    <p className="font-mono text-[12px] tracking-[0.12em] uppercase text-sf-amber mb-3">// SURFACE GRAVITY</p>
                     <div className="font-display font-light text-6xl md:text-7xl tracking-[0.02em] text-sf-amber">
                       {formatGravity(result.gravity)}
                     </div>
-                    <div className="font-mono text-[12px] tracking-[0.18em] uppercase text-t4 mt-2">
+                    <div className="font-mono text-[12px] tracking-[0.12em] uppercase text-t4 mt-2">
                       {result.gravityMs2.toFixed(2)} M/S²
                     </div>
                     <div className="flex flex-wrap justify-center gap-2 mt-4">
@@ -898,7 +898,7 @@ const SurfaceGravityCalculator = () => {
               {result.valid && (
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
-                    <div className="font-mono text-3xl text-primary">
+                    <div className="font-mono text-3xl text-sf-primary-text">
                       {result.deltaV.deltaVToOrbit.toFixed(1)} km/s
                     </div>
                     <Badge className={result.deltaV.verdict.color}>
@@ -970,7 +970,7 @@ const SurfaceGravityCalculator = () => {
 
                   return (
                     <TabsContent key={cat.id} value={cat.id} className="space-y-4 mt-4">
-                      <h3 className="font-heading text-[12px] font-light uppercase tracking-[3px] text-[hsl(var(--sf-section-green))]">{block.heading}</h3>
+                      <h3 className="font-heading text-[12px] font-light uppercase tracking-[0.12em] text-sf-primary-text">{block.heading}</h3>
 
                       {block.paragraphs.map((p, i) => (
                         <p key={i} className="text-sm text-t2 leading-relaxed">{p}</p>
@@ -980,7 +980,7 @@ const SurfaceGravityCalculator = () => {
                         <div className="space-y-2 pt-2">
                           <Label className="text-xs uppercase tracking-wider text-t2">Writing Prompts</Label>
                           {block.prompts.map((prompt, i) => (
-                            <p key={i} className="text-sm text-primary/80 italic">• {prompt}</p>
+                            <p key={i} className="text-sm text-sf-primary-text italic">• {prompt}</p>
                           ))}
                         </div>
                       )}

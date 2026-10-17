@@ -46,11 +46,11 @@ const CompressionSuggestions = () => {
   const confidenceColor = (c: CompressionSuggestion["confidence"]) => {
     switch (c) {
       case "high":
-        return "bg-emerald-500/20 text-sf-emerald border-sf-emerald";
+        return "bg-sf-emerald/[0.06] text-sf-emerald-text border-sf-emerald";
       case "medium":
-        return "bg-amber-500/20 text-sf-amber border-sf-amber";
+        return "bg-sf-amber/[0.06] text-sf-amber-text border-sf-amber";
       case "low":
-        return "bg-zinc-500/20 text-zinc-400 border-sf-line";
+        return "bg-sf-surface text-t3 border-sf-line";
     }
   };
 
@@ -76,7 +76,7 @@ const CompressionSuggestions = () => {
             <Button
               variant="ghost"
               size="icon"
-              className="w-5 h-5 text-primary hover:text-primary"
+              className="w-5 h-5 text-sf-primary-text hover:text-t1"
               onClick={() => handleAccept(s)}
               title="Create compression"
               aria-label="Create compression"

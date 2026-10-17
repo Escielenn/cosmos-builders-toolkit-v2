@@ -154,11 +154,11 @@ const EvoBioImportModal = ({
             <Label>Select Species</Label>
             {isLoading ? (
               <div className="text-sm text-t3">
-                Loading species...
+                LOADING SPECIES...
               </div>
             ) : !evoBioWorksheets || evoBioWorksheets.length === 0 ? (
               <div className="text-sm text-t3 p-4 border border-dashed rounded-none text-center">
-                No species worksheets found in this world.
+                NO SPECIES WORKSHEETS ON FILE IN THIS WORLD.
                 <br />
                 <span className="text-xs">
                   Create one in the Evolutionary Biology tool first.
@@ -306,7 +306,7 @@ const EvoBioImportModal = ({
           <Button
             onClick={handleImport}
             disabled={!selectedId || selectedFields.size === 0}
-            className="bg-emerald-600 hover:bg-emerald-700"
+            className="bg-sf-emerald text-sf-on-emerald hover:shadow-sf-glow-teal"
           >
             <Import className="w-4 h-4 mr-2" />
             Import Species

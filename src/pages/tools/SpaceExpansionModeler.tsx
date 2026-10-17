@@ -372,7 +372,7 @@ const SpaceExpansionModeler = () => {
       setTemplateConfirmId(templateId);
     } else {
       setFormState(applyTemplate(templateId));
-      toast({ title: "TEMPLATE APPLIED.", description: "You can now customize the expansion model." });
+      toast({ title: "TEMPLATE APPLIED.", description: "EXPANSION MODEL READY FOR EDITING." });
     }
   };
 
@@ -380,7 +380,7 @@ const SpaceExpansionModeler = () => {
     if (templateConfirmId) {
       setFormState(applyTemplate(templateConfirmId));
       setTemplateConfirmId(null);
-      toast({ title: "TEMPLATE APPLIED.", description: "Previous data has been replaced." });
+      toast({ title: "TEMPLATE APPLIED.", description: "PREVIOUS DATA REPLACED." });
     }
   };
 
@@ -494,7 +494,7 @@ const SpaceExpansionModeler = () => {
           <h2 className="font-heading text-xl font-light uppercase tracking-[2px] mb-4 gradient-text">
             The Expansion Dynamics Framework
           </h2>
-          <blockquote className="border-l-2 border-primary pl-4 italic text-lg mb-4">
+          <blockquote className="border-l-2 border-sf-primary pl-4 italic text-lg mb-4">
             "One 'what if?' Follow the ripples. Over time, you get to a full world that fits well together."
             <span className="block text-sm text-t3 mt-1">, Adrian Tchaikovsky</span>
           </blockquote>
@@ -560,9 +560,9 @@ const SpaceExpansionModeler = () => {
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {QUICK_START_TEMPLATES.map((tmpl) => (
-                  <GlassPanel key={tmpl.id} className="p-4 hover:border-primary transition-colors">
+                  <GlassPanel key={tmpl.id} className="p-4 hover:border-sf-primary transition-colors">
                     <h4 className="font-heading font-medium text-sm mb-1">{tmpl.name}</h4>
-                    <p className="text-xs text-primary mb-2">{tmpl.tagline}</p>
+                    <p className="text-xs text-sf-primary-text mb-2">{tmpl.tagline}</p>
                     <p className="text-xs text-t4 mb-3">{tmpl.description}</p>
                     <div className="flex items-center justify-between">
                       <span className="text-[12px] text-t2 italic">{tmpl.reference}</span>
@@ -669,9 +669,9 @@ const SpaceExpansionModeler = () => {
                       {idx > 0 && (
                         <div className="absolute -top-4 left-6 w-px h-4 bg-border" />
                       )}
-                      <GlassPanel className={`p-4 ${phase.reached ? "border-primary" : "opacity-60"}`}>
+                      <GlassPanel className={`p-4 ${phase.reached ? "border-sf-primary" : "border-dashed border-sf-disabled-line"}`}>
                         <div className="flex items-center gap-3 mb-3">
-                          <div className={`w-8 h-8 rounded-sm flex items-center justify-center text-xs font-mono ${phase.reached ? "bg-primary/20 text-primary" : "bg-muted text-t2"}`}>
+                          <div className={`w-8 h-8 rounded-none flex items-center justify-center text-xs font-mono ${phase.reached ? "bg-sf-primary/20 text-sf-primary-text" : "bg-muted text-t2"}`}>
                             {idx + 1}
                           </div>
                           <div className="flex-1">
@@ -800,7 +800,7 @@ const SpaceExpansionModeler = () => {
                     disabled={!phase.reached}
                   >
                     {phase.name}
-                    {phase.reached && <span className="ml-1 text-[12px] opacity-60">●</span>}
+                    {phase.reached && <span className="ml-1 text-xs" aria-hidden="true">●</span>}
                   </Button>
                 ))}
               </div>

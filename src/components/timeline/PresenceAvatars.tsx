@@ -38,7 +38,7 @@ const PresenceAvatars = ({ presences }: PresenceAvatarsProps) => {
                   />
                 ) : (
                   <div
-                    className="w-full h-full rounded-full flex items-center justify-center text-[12px] font-medium text-white"
+                    className="w-full h-full rounded-full flex items-center justify-center text-[12px] font-medium text-t1"
                     style={{ backgroundColor: p.color }}
                   >
                     {(p.displayName || "?").charAt(0).toUpperCase()}

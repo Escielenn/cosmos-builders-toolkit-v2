@@ -160,7 +160,7 @@ const WorksheetLinkSelector = ({
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="none">
-              <span className="text-t3">No link</span>
+              <span className="text-t3">NO LINK</span>
             </SelectItem>
             {worksheets.map((worksheet) => (
               <SelectItem key={worksheet.id} value={worksheet.id}>
@@ -188,7 +188,7 @@ const WorksheetLinkSelector = ({
                   aria-label="Refresh synced data"
                 >
                   <RefreshCw
-                    className={`w-4 h-4 ${isRefreshing ? "animate-pulse opacity-50" : ""}`}
+                    className={`w-4 h-4 ${isRefreshing ? "animate-pulse text-t4" : ""}`}
                   />
                 </Button>
               </TooltipTrigger>

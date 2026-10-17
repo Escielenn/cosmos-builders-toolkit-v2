@@ -466,7 +466,7 @@ const CheckboxGroup = ({
         {options.map((option) => (
           <div
             key={option.id}
-            className="flex items-start gap-2 p-2 rounded border border-sf-line-interactive hover:border-primary transition-colors"
+            className="flex items-start gap-2 p-2 rounded-none border border-sf-line-interactive hover:border-sf-primary transition-colors"
           >
             <Checkbox
               id={`checkbox-${option.id}`}
@@ -481,8 +481,8 @@ const CheckboxGroup = ({
         ))}
         {allowOther && (
           <div
-            className={`flex items-start gap-2 p-2 rounded border transition-colors ${
-              selected.includes("__other__") ? "border-primary bg-primary/5" : "border-sf-line-interactive hover:border-primary"
+            className={`flex items-start gap-2 p-2 rounded-none border transition-colors ${
+              selected.includes("__other__") ? "border-sf-primary bg-sf-primary/5" : "border-sf-line-interactive hover:border-sf-primary"
             }`}
           >
             <Checkbox
@@ -547,7 +547,7 @@ const RadioGroupField = ({
       {options.map((option) => (
         <div
           key={option.id}
-          className="flex items-start gap-2 p-2 rounded border border-sf-line-interactive hover:border-primary transition-colors"
+          className="flex items-start gap-2 p-2 rounded-none border border-sf-line-interactive hover:border-sf-primary transition-colors"
         >
           <RadioGroupItem value={option.id} id={`radio-${option.id}`} className="mt-0.5" />
           <Label htmlFor={`radio-${option.id}`} className="cursor-pointer text-sm">
@@ -558,8 +558,8 @@ const RadioGroupField = ({
       ))}
       {allowOther && (
         <div
-          className={`flex items-start gap-2 p-2 rounded border transition-colors ${
-            value === "__other__" ? "border-primary bg-primary/5" : "border-sf-line-interactive hover:border-primary"
+          className={`flex items-start gap-2 p-2 rounded-none border transition-colors ${
+            value === "__other__" ? "border-sf-primary bg-sf-primary/5" : "border-sf-line-interactive hover:border-sf-primary"
           }`}
         >
           <RadioGroupItem value="__other__" id={`radio-other-${label.replace(/\s+/g, "-")}`} className="mt-0.5" />
@@ -966,7 +966,7 @@ const XenomythologyFrameworkBuilder = () => {
     setFormState(updatedState);
     toast({
       title: "SPECIES LINKED.",
-      description: `Imported ${mappedFields.filter(f => f.value).length} fields from "${speciesName}"`,
+      description: `${mappedFields.filter(f => f.value).length} FIELDS IMPORTED FROM "${speciesName}".`,
     });
   };
 
@@ -981,7 +981,7 @@ const XenomythologyFrameworkBuilder = () => {
     }));
     toast({
       title: "SPECIES UNLINKED.",
-      description: "The species link has been removed.",
+      description: "SPECIES LINK REMOVED.",
     });
   };
 
@@ -1299,7 +1299,7 @@ const XenomythologyFrameworkBuilder = () => {
       }));
       toast({
         title: "ARCHETYPE ADDED.",
-        description: `Added "${implication.archetypeChannel.split("/")[0].trim()}" to your Archetypal Pantheon.`,
+        description: `"${implication.archetypeChannel.split("/")[0].trim()}" ADDED TO THE ARCHETYPAL PANTHEON.`,
       });
     }
   };
@@ -1338,8 +1338,8 @@ const XenomythologyFrameworkBuilder = () => {
     toast({
       title: "ECR DATA IMPORTED.",
       description: linkedWorksheetId
-        ? "Environmental parameters imported and linked. Changes will sync."
-        : "Environmental parameters imported.",
+        ? "ENVIRONMENTAL PARAMETERS IMPORTED AND LINKED. CHANGES WILL SYNC."
+        : "ENVIRONMENTAL PARAMETERS IMPORTED.",
     });
   };
 
@@ -1372,14 +1372,14 @@ const XenomythologyFrameworkBuilder = () => {
       worksheetLoading={worksheetLoading}
       worksheetTags={worksheetTags}
       onTagsChange={handleTagsChange}
-      worksheetIcon={<FileText className="w-4 h-4 text-primary" />}
+      worksheetIcon={<FileText className="w-4 h-4 text-sf-primary-text" />}
       isLoggedIn={!!user}
     >
         {/* Linked species / ECR indicators */}
         <div className="flex items-center gap-2 mb-6 flex-wrap">
           {/* Linked Species indicator */}
           {formState._linkedWorksheets?.species && (
-            <Badge variant="secondary" className="text-xs bg-emerald-500/10 text-emerald-600 dark:text-sf-emerald">
+            <Badge variant="secondary" className="text-xs bg-sf-emerald/[0.06] border border-sf-emerald text-sf-emerald-text">
               <Dna className="w-3 h-3 mr-1" />
               {formState._linkedWorksheets.species.speciesName}
             </Badge>
@@ -1387,7 +1387,7 @@ const XenomythologyFrameworkBuilder = () => {
 
           {/* Linked ECR indicator */}
           {formState._linkedWorksheets?.ecrWorksheetId && (
-            <Badge variant="secondary" className="text-xs bg-blue-500/10 text-blue-600 dark:text-blue-400">
+            <Badge variant="secondary" className="text-xs bg-sf-azure/[0.06] border border-sf-azure text-sf-azure-text">
               <Link2 className="w-3 h-3 mr-1" />
               Linked to ECR
             </Badge>
@@ -1420,7 +1420,7 @@ const XenomythologyFrameworkBuilder = () => {
           <h2 className="font-heading text-xl font-light uppercase tracking-[2px] mb-4 gradient-text">
             What is Xenomythology?
           </h2>
-          <blockquote className="border-l-2 border-primary pl-4 italic text-lg mb-4">
+          <blockquote className="border-l-2 border-sf-primary pl-4 italic text-lg mb-4">
             "The process of creating archetypal structures is likely universal to intelligence, but the actual forms these structures take are entirely species-specific."
           </blockquote>
           <p className="text-t2 mb-4">
@@ -1441,7 +1441,7 @@ const XenomythologyFrameworkBuilder = () => {
                   href={resource.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-xs px-3 py-1.5 rounded-sm bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+                  className="inline-flex items-center gap-1 text-xs px-3 py-1.5 rounded-none bg-sf-primary/10 text-sf-primary-text hover:bg-sf-primary/20 transition-colors"
                 >
                   {resource.name}
                   <ExternalLink className="w-3 h-3" />
@@ -1467,7 +1467,7 @@ const XenomythologyFrameworkBuilder = () => {
             <div className="space-y-8">
               {/* Sensory Architecture */}
               <div className="space-y-6 p-4 rounded-none border border-sf-line-interactive">
-                <h4 className="font-medium text-primary">Sensory Architecture</h4>
+                <h4 className="font-medium text-sf-primary-text">Sensory Architecture</h4>
 
                 <CheckboxGroup
                   label="Primary Sensory Modalities"
@@ -1583,7 +1583,7 @@ const XenomythologyFrameworkBuilder = () => {
 
               {/* Cognitive Architecture */}
               <div className="space-y-6 p-4 rounded-none border border-sf-line-interactive">
-                <h4 className="font-medium text-primary">Cognitive Architecture</h4>
+                <h4 className="font-medium text-sf-primary-text">Cognitive Architecture</h4>
 
                 <RadioGroupField
                   label="Consciousness Type"
@@ -1652,7 +1652,7 @@ const XenomythologyFrameworkBuilder = () => {
             <div className="space-y-8">
               {/* Planetary Conditions */}
               <div className="space-y-6 p-4 rounded-none border border-sf-line-interactive">
-                <h4 className="font-medium text-primary">Planetary Conditions</h4>
+                <h4 className="font-medium text-sf-primary-text">Planetary Conditions</h4>
 
                 <div className="grid gap-6 md:grid-cols-2">
                   <RadioGroupField
@@ -1766,7 +1766,7 @@ const XenomythologyFrameworkBuilder = () => {
 
               {/* Existential Parameters */}
               <div className="space-y-6 p-4 rounded-none border border-sf-line-interactive">
-                <h4 className="font-medium text-primary">Existential Parameters</h4>
+                <h4 className="font-medium text-sf-primary-text">Existential Parameters</h4>
 
                 <RadioGroupField
                   label="Mortality Salience"
@@ -1850,7 +1850,7 @@ const XenomythologyFrameworkBuilder = () => {
 
                   {formState.pressureAnalysis.map((pressure, index) => (
                     <div key={pressure.pressure} className="p-4 rounded-none border border-sf-line-interactive space-y-4">
-                      <h5 className="font-medium text-primary">
+                      <h5 className="font-medium text-sf-primary-text">
                         Pressure: {getChallengeName(pressure.pressure)}
                       </h5>
 
@@ -2101,7 +2101,7 @@ const XenomythologyFrameworkBuilder = () => {
             <div className="space-y-8">
               {/* Creation Narrative */}
               <div className="space-y-6 p-4 rounded-none border border-sf-line-interactive">
-                <h4 className="font-medium text-primary">Creation Narrative</h4>
+                <h4 className="font-medium text-sf-primary-text">Creation Narrative</h4>
 
                 <QuestionSection
                   id="primordial-state"
@@ -2171,7 +2171,7 @@ const XenomythologyFrameworkBuilder = () => {
 
               {/* Divine Conceptualization */}
               <div className="space-y-6 p-4 rounded-none border border-sf-line-interactive">
-                <h4 className="font-medium text-primary">Divine Conceptualization</h4>
+                <h4 className="font-medium text-sf-primary-text">Divine Conceptualization</h4>
 
                 <RadioGroupField
                   label="Divine Ontology"
@@ -2408,7 +2408,7 @@ const XenomythologyFrameworkBuilder = () => {
             <div className="space-y-8">
               {/* Ritual Structure */}
               <div className="space-y-6 p-4 rounded-none border border-sf-line-interactive">
-                <h4 className="font-medium text-primary">Ritual Structure</h4>
+                <h4 className="font-medium text-sf-primary-text">Ritual Structure</h4>
 
                 <CheckboxGroup
                   label="Primary Ritual Functions"
@@ -2476,7 +2476,7 @@ const XenomythologyFrameworkBuilder = () => {
 
               {/* Sacred Spaces */}
               <div className="space-y-6 p-4 rounded-none border border-sf-line-interactive">
-                <h4 className="font-medium text-primary">Sacred Spaces</h4>
+                <h4 className="font-medium text-sf-primary-text">Sacred Spaces</h4>
 
                 <QuestionSection
                   id="what-makes-sacred"
@@ -2570,7 +2570,7 @@ const XenomythologyFrameworkBuilder = () => {
             <div className="space-y-8">
               {/* Ethical Framework */}
               <div className="space-y-6 p-4 rounded-none border border-sf-line-interactive">
-                <h4 className="font-medium text-primary">Ethical Framework</h4>
+                <h4 className="font-medium text-sf-primary-text">Ethical Framework</h4>
                 <p className="text-sm text-t2">
                   Based on this mythology, what behaviors are considered virtuous, taboo, or ambiguous?
                 </p>
@@ -2621,7 +2621,7 @@ const XenomythologyFrameworkBuilder = () => {
 
               {/* Science/Knowledge Relationship */}
               <div className="space-y-6 p-4 rounded-none border border-sf-line-interactive">
-                <h4 className="font-medium text-primary">Science/Knowledge Relationship</h4>
+                <h4 className="font-medium text-sf-primary-text">Science/Knowledge Relationship</h4>
                 <p className="text-sm text-t2">
                   How would this mythology interact with empirical understanding?
                 </p>
@@ -2653,15 +2653,15 @@ const XenomythologyFrameworkBuilder = () => {
 
               {/* Summary Display */}
               {formState.archetypePantheon.length > 0 && (
-                <div className="p-6 rounded-none bg-gradient-to-br from-primary/10 to-accent/10 border border-primary">
+                <div className="p-6 rounded-none bg-gradient-to-br from-sf-primary/10 to-accent/10 border border-sf-primary">
                   <h4 className="font-medium mb-4 flex items-center gap-2">
-                    <Sparkles className="w-5 h-5 text-primary" />
+                    <Sparkles className="w-5 h-5 text-sf-primary-text" />
                     Your Archetypal Pantheon Summary
                   </h4>
                   <div className="space-y-3">
                     {formState.archetypePantheon.map((archetype, index) => (
-                      <div key={index} className="p-3 rounded bg-background/50">
-                        <strong className="text-primary">{archetype.name || `Archetype ${index + 1}`}</strong>
+                      <div key={index} className="p-3 rounded-none bg-background/50">
+                        <strong className="text-sf-primary-text">{archetype.name || `Archetype ${index + 1}`}</strong>
                         {archetype.evolutionaryOrigin && (
                           <span className="text-xs text-t4 ml-2">
                             (from {archetype.evolutionaryOrigin})
@@ -2688,7 +2688,7 @@ const XenomythologyFrameworkBuilder = () => {
               borderRadius: 8,
             }}
           >
-            <h4 className="font-heading text-[12px] font-light tracking-[2.5px] uppercase text-emerald/40 mb-3">
+            <h4 className="font-heading text-[12px] font-light tracking-[0.12em] uppercase text-sf-primary-text mb-3">
               // Explore Xenomythology
             </h4>
             <p className="font-sans text-sm text-t2 leading-relaxed mb-4">
@@ -2701,7 +2701,7 @@ const XenomythologyFrameworkBuilder = () => {
               href="https://xenomythology.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2 text-[12px] font-heading font-medium uppercase tracking-[1.5px] text-t1 border border-sf-line hover:border-primary hover:shadow-[0_0_20px_rgba(21,193,123,0.15)] transition-all"
+              className="inline-flex min-h-hit items-center gap-2 px-4 py-2 text-[12px] font-heading font-medium uppercase tracking-[0.12em] text-t1 border border-sf-line-interactive hover:border-sf-primary hover:shadow-sf-glow-teal transition-sf duration-base ease-sf-out"
             >
               Explore Xenomythology
               <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

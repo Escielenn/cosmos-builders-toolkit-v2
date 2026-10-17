@@ -64,7 +64,7 @@ const CollapsibleSection = ({
   };
 
   const hoverClass = hoverColor === "primary"
-    ? "hover:bg-primary/5"
+    ? "hover:bg-sf-primary/5"
     : "hover:bg-accent/20";
 
   const content = (
@@ -77,7 +77,7 @@ const CollapsibleSection = ({
           <div className="flex items-center gap-3">
             {/* Numbered badge */}
             {levelNumber !== undefined && (
-              <div className="w-8 h-8 rounded-sm bg-primary/[0.06] border border-primary flex items-center justify-center text-primary font-mono text-sm">
+              <div className="w-8 h-8 rounded-none bg-sf-primary/[0.06] border border-sf-primary flex items-center justify-center text-sf-primary-text font-mono text-sm">
                 {levelNumber}
               </div>
             )}
@@ -86,7 +86,7 @@ const CollapsibleSection = ({
             {/* Title and subtitle */}
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="font-heading text-sm font-light uppercase tracking-[3px] text-[hsl(var(--sf-section-green))]">{title}</h3>
+                <h3 className="font-heading text-sm font-light uppercase tracking-[0.12em] text-sf-primary-text">{title}</h3>
                 {guidance && (
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -97,7 +97,7 @@ const CollapsibleSection = ({
                         onClick={(e) => e.stopPropagation()}
                         onKeyDown={(e) => e.stopPropagation()}
                       >
-                        <Info className="w-4 h-4 text-t3 opacity-60 hover:opacity-100 transition-opacity" />
+                        <Info className="w-4 h-4 text-t4 hover:text-t1 transition-colors duration-fast" />
                       </span>
                     </TooltipTrigger>
                     <TooltipContent side="right" className="max-w-xs">
@@ -121,7 +121,7 @@ const CollapsibleSection = ({
       <CollapsibleContent>
         <div className="px-4 md:px-6 pb-6 space-y-6 [content-visibility:auto] [contain-intrinsic-size:0_500px]">
           {thinkLike && (
-            <p className="text-sm text-primary italic border-l-2 border-primary pl-3">
+            <p className="text-sm text-sf-primary-text italic border-l-2 border-sf-primary pl-3">
               Think like {thinkLike}
             </p>
           )}

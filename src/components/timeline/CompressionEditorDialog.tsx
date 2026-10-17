@@ -124,7 +124,7 @@ const CompressionEditorDialog = ({
           <div className="space-y-2 max-h-[50vh] overflow-y-auto sf-sb">
             {state.compressions.length === 0 && (
               <p className="text-sm text-t2 text-center py-4">
-                No compressions yet. Create one to collapse long stretches of uneventful time.
+                NO COMPRESSIONS ON FILE. CREATE ONE TO COLLAPSE LONG STRETCHES OF UNEVENTFUL TIME.
               </p>
             )}
             {state.compressions.map((comp) => (
@@ -223,7 +223,7 @@ const CompressionEditorDialog = ({
                   className={cn(
                     "px-3 py-2 rounded-none border text-xs font-medium transition-colors text-center",
                     style === opt.id
-                      ? "border-primary bg-primary/10 text-t1"
+                      ? "border-sf-primary bg-sf-primary/10 text-t1"
                       : "border-sf-line text-t3 hover:border-sf-line"
                   )}
                 >

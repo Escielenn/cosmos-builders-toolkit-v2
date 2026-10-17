@@ -137,7 +137,7 @@ const CalendarEditorDialog = ({
           <div className="space-y-2 max-h-[50vh] overflow-y-auto sf-sb">
             {state.calendars.length === 0 && (
               <p className="text-sm text-t2 text-center py-4">
-                No custom calendars yet. Create one to use alien or fictional date systems.
+                NO CUSTOM CALENDARS ON FILE. CREATE ONE TO USE ALIEN OR FICTIONAL DATE SYSTEMS.
               </p>
             )}
             {state.calendars.map((cal) => (
@@ -259,7 +259,7 @@ const CalendarEditorDialog = ({
                     "p-2 rounded-none border border-sf-line bg-muted/10"
                   )}
                 >
-                  <GripVertical className="w-3.5 h-3.5 text-t3/50" />
+                  <GripVertical className="w-3.5 h-3.5 text-t4" />
                   <Input
                     placeholder="Name"
                     value={unit.name}

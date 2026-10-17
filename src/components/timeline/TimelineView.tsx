@@ -204,7 +204,7 @@ const TimelineView = forwardRef<HTMLDivElement, TimelineViewProps>(({
   if (state.tracks.length === 0) {
     return (
       <GlassPanel className="flex flex-col items-center justify-center py-24 text-center">
-        <Layers className="w-12 h-12 text-t3/40 mb-4" />
+        <Layers className="w-12 h-12 text-t4 mb-4" />
         <h3 className="font-heading text-lg font-medium mb-2">
           NO TRACKS DEFINED
         </h3>
@@ -306,7 +306,7 @@ const TimelineView = forwardRef<HTMLDivElement, TimelineViewProps>(({
                         className={`text-[12px] leading-none mb-1 whitespace-nowrap ${
                           tick.isMajor
                             ? "text-t2 font-medium"
-                            : "text-t3/50"
+                            : "text-t4"
                         }`}
                       >
                         {tick.label}

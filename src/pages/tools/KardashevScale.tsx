@@ -388,7 +388,7 @@ const KardashevScale = () => {
         await renameWorksheet.mutateAsync({ worksheetId: currentWorksheetId, title: newTitle });
         setCurrentWorksheetTitle(newTitle);
       }}
-      worksheetIcon={<Zap className="w-5 h-5 text-primary" />}
+      worksheetIcon={<Zap className="w-5 h-5 text-sf-primary-text" />}
       isLoggedIn={!!user}
     >
 
@@ -408,8 +408,8 @@ const KardashevScale = () => {
                 className={cn(
                   "text-left p-3 border transition-all group",
                   formState.civilizationPreset === preset.id
-                    ? "border-primary bg-primary/[0.06]"
-                    : "border-sf-line bg-white/[0.02] hover:border-sf-line"
+                    ? "border-sf-primary bg-sf-primary/[0.06]"
+                    : "border-sf-line bg-sf-surface hover:border-sf-line"
                 )}
               >
                 <div className="flex items-center gap-2 mb-1">
@@ -442,7 +442,7 @@ const KardashevScale = () => {
             {/* Power slider */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <Label className="text-[12px] uppercase tracking-[1.5px] text-t3">
+                <Label className="text-[12px] uppercase tracking-[0.12em] text-t3">
                   Total Power Consumption
                 </Label>
                 <span className="font-mono text-sm text-t1">
@@ -466,15 +466,15 @@ const KardashevScale = () => {
             </div>
 
             {/* Kardashev number readout */}
-            <div className="flex items-center gap-4 p-3 bg-white/[0.02] border border-sf-line">
+            <div className="flex items-center gap-4 p-3 bg-sf-surface border border-sf-line">
               <div>
-                <span className="text-[12px] uppercase tracking-[1.5px] text-t4">Kardashev Number</span>
+                <span className="text-[12px] uppercase tracking-[0.12em] text-t4">Kardashev Number</span>
                 <div className="font-mono text-2xl text-t1">
                   {results.valid ? formatKardashev(results.kardashevNumber) : "-"}
                 </div>
               </div>
               <div>
-                <span className="text-[12px] uppercase tracking-[1.5px] text-t4">Log₁₀ Power</span>
+                <span className="text-[12px] uppercase tracking-[0.12em] text-t4">Log₁₀ Power</span>
                 <div className="font-mono text-lg text-t2">
                   {formState.powerLog10.toFixed(1)} W
                 </div>
@@ -483,7 +483,7 @@ const KardashevScale = () => {
 
             {/* Growth rate */}
             <div className="space-y-2">
-              <Label className="text-[12px] uppercase tracking-[1.5px] text-t3">
+              <Label className="text-[12px] uppercase tracking-[0.12em] text-t3">
                 Annual Growth Rate
               </Label>
               <Select
@@ -505,7 +505,7 @@ const KardashevScale = () => {
 
             {/* Quick energy source reference */}
             <div className="space-y-2">
-              <Label className="text-[12px] uppercase tracking-[1.5px] text-t3">
+              <Label className="text-[12px] uppercase tracking-[0.12em] text-t3">
                 Energy Source Reference
               </Label>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 max-h-[240px] overflow-y-auto sf-sb">
@@ -522,7 +522,7 @@ const KardashevScale = () => {
                         civilizationPreset: "",
                       }));
                     }}
-                    className="text-left p-2 border border-sf-line hover:border-sf-line bg-white/[0.01] hover:bg-white/[0.03] transition-colors"
+                    className="text-left p-2 border border-sf-line hover:border-sf-line bg-sf-surface hover:bg-sf-surface-elevated transition-colors"
                   >
                     <div className="flex items-center justify-between gap-2">
                       <span className="text-[12px] text-t2 truncate">
@@ -532,9 +532,9 @@ const KardashevScale = () => {
                         variant="outline"
                         className={cn(
                           "text-[12px] py-0 shrink-0",
-                          source.category === "planetary" && "text-blue-400 border-sf-azure",
-                          source.category === "stellar" && "text-sf-amber border-sf-amber",
-                          source.category === "galactic" && "text-pink-400 border-sf-magenta",
+                          source.category === "planetary" && "text-sf-azure-text border-sf-azure",
+                          source.category === "stellar" && "text-sf-amber-text border-sf-amber",
+                          source.category === "galactic" && "text-sf-magenta-text border-sf-magenta",
                           source.category === "exotic" && "text-t1 border-sf-line"
                         )}
                       >
@@ -567,7 +567,7 @@ const KardashevScale = () => {
                   className="absolute inset-0 opacity-[0.03]"
                   style={{ background: `radial-gradient(circle at 50% 50%, ${results.band.color}, transparent 70%)` }}
                 />
-                <p className="text-[12px] uppercase tracking-[2px] text-t4 mb-2">
+                <p className="text-[12px] uppercase tracking-[0.12em] text-t4 mb-2">
                   Your Civilization Is
                 </p>
                 <h3
@@ -610,13 +610,13 @@ const KardashevScale = () => {
 
               {/* Characteristics */}
               <div className="space-y-2">
-                <Label className="text-[12px] uppercase tracking-[1.5px] text-t3">
+                <Label className="text-[12px] uppercase tracking-[0.12em] text-t3">
                   Civilization Characteristics
                 </Label>
                 <ul className="space-y-1.5">
                   {results.band.characteristics.map((c, i) => (
                     <li key={i} className="flex items-start gap-2 text-sm text-t2">
-                      <Zap className="w-3 h-3 text-primary/60 mt-1 shrink-0" />
+                      <Zap className="w-3 h-3 text-sf-primary-text mt-1 shrink-0" />
                       {c}
                     </li>
                   ))}
@@ -626,14 +626,14 @@ const KardashevScale = () => {
               {/* Projections */}
               {results.projections.length > 0 && (
                 <div className="space-y-2">
-                  <Label className="text-[12px] uppercase tracking-[1.5px] text-t3">
+                  <Label className="text-[12px] uppercase tracking-[0.12em] text-t3">
                     Growth Projections ({GROWTH_RATES[formState.growthRate].label})
                   </Label>
                   <div className="space-y-1.5">
                     {results.projections.map((p) => (
                       <div
                         key={p.level}
-                        className="flex items-center justify-between p-2 bg-white/[0.02] border border-sf-line"
+                        className="flex items-center justify-between p-2 bg-sf-surface border border-sf-line"
                       >
                         <span className="text-sm text-t2">{p.label}</span>
                         <div className="text-right">
@@ -652,10 +652,10 @@ const KardashevScale = () => {
 
               {/* Scale visualization */}
               <div className="space-y-2">
-                <Label className="text-[12px] uppercase tracking-[1.5px] text-t3">
+                <Label className="text-[12px] uppercase tracking-[0.12em] text-t3">
                   Kardashev Scale Position
                 </Label>
-                <div className="relative h-10 bg-white/[0.02] border border-sf-line overflow-hidden">
+                <div className="relative h-10 bg-sf-surface border border-sf-line overflow-hidden">
                   {KARDASHEV_BANDS.map((band) => {
                     const left = (band.minPower / 48) * 100;
                     const width = ((band.maxPower - band.minPower) / 48) * 100;
@@ -746,7 +746,7 @@ const KardashevScale = () => {
                 const total = Object.values(formState.budgetPercentages).reduce((s, v) => s + v, 0);
                 if (Math.abs(total - 100) > 1) {
                   return (
-                    <div className="flex items-center gap-2 p-2 bg-amber-500/[0.06] border border-sf-amber text-sf-amber text-xs">
+                    <div className="flex items-center gap-2 p-2 bg-sf-amber/[0.06] border border-sf-amber text-sf-amber-text text-xs">
                       <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
                       Budget total is {total}% (should be 100%)
                     </div>
@@ -774,7 +774,7 @@ const KardashevScale = () => {
                     <TabsTrigger
                       key={cat.category}
                       value={cat.category}
-                      className="gap-1.5 text-xs data-[state=active]:bg-primary/10 data-[state=active]:text-primary"
+                      className="gap-1.5 text-xs data-[state=active]:bg-sf-primary/10 data-[state=active]:text-sf-primary-text"
                     >
                       <Icon className="w-3 h-3" />
                       {cat.category}
@@ -805,8 +805,8 @@ const KardashevScale = () => {
                             className={cn(
                               "p-3 border transition-colors",
                               isCurrentLevel
-                                ? "border-primary bg-primary/[0.04]"
-                                : "border-sf-line bg-white/[0.01]"
+                                ? "border-sf-primary bg-sf-primary/[0.04]"
+                                : "border-sf-line bg-sf-surface"
                             )}
                           >
                             <div className="flex items-center gap-2 mb-1">
@@ -837,12 +837,12 @@ const KardashevScale = () => {
 
                     {/* User notes for this cascade category */}
                     <div className="mt-4">
-                      <Label className="text-[12px] uppercase tracking-[1.5px] text-t3 mb-2 block">
+                      <Label className="text-[12px] uppercase tracking-[0.12em] text-t3 mb-2 block">
                         Your Notes, {cat.category}
                       </Label>
                       <Suspense
                         fallback={
-                          <div className="rounded-xs border border-sf-line bg-white/[0.02] animate-pulse min-h-[100px]" />
+                          <div className="rounded-none border border-sf-line bg-sf-surface animate-pulse min-h-[100px]" />
                         }
                       >
                         <RichTextEditor
@@ -886,12 +886,12 @@ const KardashevScale = () => {
               { key: "dailyLife" as const, label: "Daily Life Impact", placeholder: "How does this energy level affect ordinary people's lives?" },
             ].map(({ key, label, placeholder }) => (
               <div key={key}>
-                <Label className="text-[12px] uppercase tracking-[1.5px] text-t3 mb-2 block">
+                <Label className="text-[12px] uppercase tracking-[0.12em] text-t3 mb-2 block">
                   {label}
                 </Label>
                 <Suspense
                   fallback={
-                    <div className="rounded-xs border border-sf-line bg-white/[0.02] animate-pulse min-h-[100px]" />
+                    <div className="rounded-none border border-sf-line bg-sf-surface animate-pulse min-h-[100px]" />
                   }
                 >
                   <RichTextEditor

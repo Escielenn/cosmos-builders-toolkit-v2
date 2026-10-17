@@ -238,7 +238,7 @@ const ImportFromECRModal = ({
       <DialogContent className="max-w-lg">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Link2 className="w-5 h-5 text-primary" />
+            <Link2 className="w-5 h-5 text-sf-primary-text" />
             Import from Environmental Chain Reaction
           </DialogTitle>
           <DialogDescription>
@@ -249,8 +249,8 @@ const ImportFromECRModal = ({
         <div className="space-y-4 py-4">
           {worksheets.length === 0 ? (
             <div className="text-center py-6 text-t3">
-              <AlertCircle className="w-8 h-8 mx-auto mb-2 opacity-50" />
-              <p>No Environmental Chain Reaction worksheets found for this world.</p>
+              <AlertCircle className="w-8 h-8 mx-auto mb-2 text-t4" />
+              <p>NO ENVIRONMENTAL CHAIN REACTION WORKSHEETS ON FILE FOR THIS WORLD.</p>
               <p className="text-sm mt-1">Complete an ECR worksheet first to import data.</p>
             </div>
           ) : (
@@ -266,8 +266,8 @@ const ImportFromECRModal = ({
                       onClick={() => setSelectedWorksheetId(worksheet.id)}
                       className={`w-full p-3 rounded-none border text-left transition-colors ${
                         selectedWorksheetId === worksheet.id
-                          ? "border-primary bg-primary/5"
-                          : "border-sf-line-interactive hover:border-primary"
+                          ? "border-sf-primary bg-sf-primary/5"
+                          : "border-sf-line-interactive hover:border-sf-primary"
                       }`}
                     >
                       <div className="flex items-center justify-between">
@@ -275,7 +275,7 @@ const ImportFromECRModal = ({
                           {worksheet.title || "Untitled ECR"}
                         </span>
                         {selectedWorksheetId === worksheet.id && (
-                          <Check className="w-4 h-4 text-primary" />
+                          <Check className="w-4 h-4 text-sf-primary-text" />
                         )}
                       </div>
                       <span className="text-xs text-t3">
@@ -290,7 +290,7 @@ const ImportFromECRModal = ({
               {selectedWorksheetId && preview.length > 0 && (
                 <Collapsible open={previewExpanded} onOpenChange={setPreviewExpanded}>
                   <CollapsibleTrigger asChild>
-                    <button type="button" className="w-full flex items-center justify-between p-2 rounded hover:bg-muted/50 transition-colors">
+                    <button type="button" className="w-full flex items-center justify-between p-2 rounded-none hover:bg-muted/50 transition-colors">
                       <span className="text-sm font-medium">
                         Preview ({preview.length} field{preview.length !== 1 ? "s" : ""})
                       </span>

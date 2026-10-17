@@ -129,7 +129,7 @@ const FilterBar = () => {
               size="sm"
               className={cn(
                 "h-8 text-xs gap-1 min-h-hit",
-                filter.trackIds.length > 0 && "border-primary bg-primary/5"
+                filter.trackIds.length > 0 && "border-sf-primary bg-sf-primary/5"
               )}
             >
               Tracks
@@ -146,7 +146,7 @@ const FilterBar = () => {
               {state.tracks.map((track) => (
                 <label
                   key={track.id}
-                  className="flex items-center gap-2 px-2 py-1 rounded hover:bg-muted/50 cursor-pointer"
+                  className="flex items-center gap-2 px-2 py-1 rounded-none hover:bg-muted/50 cursor-pointer"
                 >
                   <Checkbox
                     checked={filter.trackIds.includes(track.id)}
@@ -172,7 +172,7 @@ const FilterBar = () => {
             size="sm"
             className={cn(
               "h-8 text-xs gap-1 min-h-hit",
-              filter.eventTypes.length > 0 && "border-primary bg-primary/5"
+              filter.eventTypes.length > 0 && "border-sf-primary bg-sf-primary/5"
             )}
           >
             Type
@@ -194,7 +194,7 @@ const FilterBar = () => {
                 {cat.types.map((et) => (
                   <label
                     key={et.id}
-                    className="flex items-center gap-2 px-2 py-0.5 rounded hover:bg-muted/50 cursor-pointer"
+                    className="flex items-center gap-2 px-2 py-0.5 rounded-none hover:bg-muted/50 cursor-pointer"
                   >
                     <Checkbox
                       checked={filter.eventTypes.includes(et.id)}
@@ -217,9 +217,9 @@ const FilterBar = () => {
             type="button"
             onClick={() => toggleImportanceFilter(il.id)}
             className={cn(
-              "px-2 py-1 rounded border text-[12px] font-medium transition-colors h-8",
+              "px-2 py-1 rounded-none border text-[12px] font-medium transition-colors h-8",
               filter.importanceLevels.includes(il.id)
-                ? "border-primary bg-primary/10 text-t1"
+                ? "border-sf-primary bg-sf-primary/10 text-t1"
                 : "border-sf-line text-t3 hover:border-sf-line"
             )}
           >
@@ -236,7 +236,7 @@ const FilterBar = () => {
             size="sm"
             className={cn(
               "h-8 text-xs gap-1 min-h-hit",
-              filter.dateRange && "border-primary bg-primary/5"
+              filter.dateRange && "border-sf-primary bg-sf-primary/5"
             )}
           >
             Date Range
@@ -313,7 +313,7 @@ const FilterBar = () => {
               size="sm"
               className={cn(
                 "h-8 text-xs gap-1 min-h-hit",
-                filter.tags.length > 0 && "border-primary bg-primary/5"
+                filter.tags.length > 0 && "border-sf-primary bg-sf-primary/5"
               )}
             >
               Tags
@@ -330,7 +330,7 @@ const FilterBar = () => {
               {allTags.map((tag) => (
                 <label
                   key={tag}
-                  className="flex items-center gap-2 px-2 py-0.5 rounded hover:bg-muted/50 cursor-pointer"
+                  className="flex items-center gap-2 px-2 py-0.5 rounded-none hover:bg-muted/50 cursor-pointer"
                 >
                   <Checkbox
                     checked={filter.tags.includes(tag)}
@@ -364,7 +364,7 @@ const FilterBar = () => {
 
       {/* Active filter indicator */}
       {active && (
-        <div className="flex items-center gap-1 text-[12px] text-primary/70 ml-auto">
+        <div className="flex items-center gap-1 text-[12px] text-sf-primary-text ml-auto">
           <Filter className="w-3 h-3" />
           Filtering active
         </div>

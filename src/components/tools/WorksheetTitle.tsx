@@ -82,7 +82,7 @@ export function WorksheetTitle({
           disabled={isSaving || !editValue.trim()}
           aria-label="Save worksheet title"
         >
-          <Check className="w-4 h-4 text-green-500" />
+          <Check className="w-4 h-4 text-sf-emerald" />
         </Button>
         <Button
           size="icon"
@@ -101,8 +101,8 @@ export function WorksheetTitle({
   return (
     <div
       className={cn(
-        "flex items-center gap-2 mt-2 px-3 py-1.5 rounded-none bg-primary/10 w-fit group cursor-pointer hover:bg-primary/15 transition-colors",
-        disabled && "cursor-default hover:bg-primary/10",
+        "flex items-center gap-2 mt-2 px-3 py-1.5 rounded-none bg-sf-primary/10 w-fit group cursor-pointer hover:bg-sf-primary/15 transition-colors",
+        disabled && "cursor-default hover:bg-sf-primary/10",
         className
       )}
       onClick={handleStartEdit}
@@ -113,12 +113,12 @@ export function WorksheetTitle({
       {icon}
       <span className={cn(
         "text-lg font-medium",
-        title ? "text-primary" : "text-t3 italic"
+        title ? "text-sf-primary-text" : "text-t3 italic"
       )}>
         {title || "Untitled"}
       </span>
       {!disabled && (
-        <Pencil className="w-4 h-4 text-t3 opacity-0 group-hover:opacity-100 transition-opacity" />
+        <Pencil className="w-4 h-4 text-t4 group-hover:text-t1 transition-colors duration-fast" />
       )}
     </div>
   );

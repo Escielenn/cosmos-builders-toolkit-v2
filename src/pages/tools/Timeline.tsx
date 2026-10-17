@@ -333,10 +333,10 @@ const Timeline = () => {
       const blob = await captureTimelineAsPNG(timelineViewRef.current);
       const filename = `${currentWorksheetTitle || "timeline"}-${new Date().toISOString().slice(0, 10)}.png`;
       downloadBlob(blob, filename);
-      toast({ title: "PNG DOWNLOADED.", description: "Timeline image saved." });
+      toast({ title: "PNG DOWNLOADED.", description: "TIMELINE IMAGE SAVED." });
     } catch (err) {
       console.error("PNG capture failed:", err);
-      toast({ title: "EXPORT FAILED.", description: "Could not capture the timeline as an image.", variant: "destructive" });
+      toast({ title: "EXPORT FAILED.", description: "TIMELINE IMAGE CAPTURE FAILED. RETRY WHEN READY.", variant: "destructive" });
     } finally {
       setCapturingPNG(false);
     }
@@ -384,9 +384,9 @@ const Timeline = () => {
       isLoggedIn={!!user}
     >
         {/* Early Development Banner */}
-        <div className="flex items-center gap-3 px-4 py-3 rounded-none border border-sf-amber bg-amber-500/10 mb-6">
+        <div className="flex items-center gap-3 px-4 py-3 rounded-none border border-sf-amber bg-sf-amber/[0.06] mb-6">
           <Construction className="w-5 h-5 text-sf-amber shrink-0" />
-          <p className="text-sm text-amber-200/90">
+          <p className="text-sm text-t2">
             <span className="font-medium">Early Preview.</span>{" "}
             Timeline is in active development and does not represent the final product. Features may change or be incomplete.
           </p>
@@ -395,7 +395,7 @@ const Timeline = () => {
         {/* Chronicle pointer, world-scoped tracks/events vs. the world's canonical event timeline */}
         {worldId && !chronicleHintDismissed && (
           <div className="relative flex items-center gap-3 px-4 py-3 rounded-none border border-sf-primary bg-sf-primary/[0.03] mb-6">
-            <ScrollText className="w-5 h-5 text-sf-primary-text/60 shrink-0" />
+            <ScrollText className="w-5 h-5 text-sf-primary-text shrink-0" />
             <p className="text-sm text-t2 pr-6">
               For this world's story-wide event timeline, use{" "}
               <Link to={`/worlds/${worldId}/chronicle`} className="text-sf-primary-text underline underline-offset-2 hover:text-sf-primary-bright">
@@ -520,7 +520,7 @@ const Timeline = () => {
             disabled={state.tracks.length === 0 || capturingPNG}
           >
             <Camera className="w-4 h-4 mr-2" />
-            {capturingPNG ? "Capturing..." : "PNG"}
+            {capturingPNG ? "CAPTURING..." : "PNG"}
           </Button>
           {presences.length > 0 && (
             <div className="ml-auto">

@@ -481,18 +481,7 @@ const Sensorium = () => {
     }
   };
 
-  // ─── Keyboard Shortcuts ────────────────────────────────────────
-  useEffect(() => {
-    const onKeyDown = (e: KeyboardEvent) => {
-      if ((e.ctrlKey || e.metaKey) && e.key === "s") {
-        e.preventDefault();
-        handleSave();
-      }
-    };
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [worldId, user, currentWorksheetId, formState]);
+  // Ctrl/Cmd+S is handled by ToolPageLayout (it calls onSave={handleSave}).
 
   const dismissTutorial = () => {
     setTutorialDismissed(true);
@@ -503,17 +492,17 @@ const Sensorium = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "recommended": return "text-sf-primary-text border-sf-primary bg-sf-primary/10";
-      case "possible": return "text-sf-amber border-sf-amber bg-amber-500/10";
-      case "implausible": return "text-t2 border-sf-line-interactive bg-muted/20 opacity-60";
+      case "recommended": return "text-sf-primary-text border-sf-primary bg-sf-primary/[0.06]";
+      case "possible": return "text-sf-amber-text border-sf-amber bg-sf-amber/[0.06]";
+      case "implausible": return "text-t3 border-sf-disabled-line bg-sf-disabled-bg";
       default: return "";
     }
   };
 
   const getBudgetColor = () => {
-    if (metabolicBudget.overBudget) return "bg-red-500";
-    if (metabolicBudget.totalCost > metabolicBudget.warningThreshold) return "bg-amber-500";
-    return "bg-cyan-500";
+    if (metabolicBudget.overBudget) return "bg-sf-crimson";
+    if (metabolicBudget.totalCost > metabolicBudget.warningThreshold) return "bg-sf-amber";
+    return "bg-sf-primary";
   };
 
   // ─── Render ───────────────────────────────────────────────────
@@ -864,7 +853,7 @@ const Sensorium = () => {
 
                 {/* Fine-Tuning Sliders */}
                 <GlassPanel className="p-4 space-y-4 mt-2">
-                  <h4 className="font-heading text-sm font-light uppercase tracking-[3px] text-emerald">
+                  <h4 className="font-heading text-sm font-light uppercase tracking-[0.12em] text-sf-primary-text">
                     FINE-TUNING
                   </h4>
                   {(
@@ -971,9 +960,9 @@ const Sensorium = () => {
                         Based on your environment, each sense is scored for plausibility. <strong className="text-t1">Click any card to add it to your species' final sensory suite.</strong> You can select implausible senses too, sometimes the best stories break the rules.
                       </p>
                       <div className="flex flex-wrap gap-3 text-[12px]">
-                        <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 bg-cyan-500/60" /> Recommended</span>
-                        <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 bg-amber-500/60" /> Possible</span>
-                        <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 bg-muted-foreground/40" /> Implausible</span>
+                        <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 bg-sf-primary" /> Recommended</span>
+                        <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 bg-sf-amber" /> Possible</span>
+                        <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 bg-sf-disabled-line" /> Implausible</span>
                         <span className="flex items-center gap-1.5 ml-2 pl-2 border-l border-sf-line-interactive"><Check className="h-3 w-3 text-sf-emerald" /> Selected by you</span>
                       </div>
                     </div>
@@ -1028,9 +1017,9 @@ const Sensorium = () => {
                                   toggleValidateSelection(mod.id);
                                 }
                               }}
-                              className={`relative p-3 rounded-none border text-left transition-all hover:scale-[1.02] cursor-pointer ${
+                              className={`relative p-3 rounded-none border text-left transition-sf duration-base ease-sf-out hover:-translate-y-0.5 cursor-pointer ${
                                 isSelected
-                                  ? "border-emerald-500 bg-emerald-500/15 ring-1 ring-emerald-500/30"
+                                  ? "border-sf-emerald bg-sf-emerald/[0.06] ring-1 ring-sf-emerald"
                                   : getStatusColor(status)
                               }`}
                             >
@@ -1167,7 +1156,7 @@ const Sensorium = () => {
                         <div className="flex-1 truncate">{s.name}</div>
                         <div className="w-20 h-2 bg-muted overflow-hidden">
                           <div
-                            className="h-full bg-cyan-500"
+                            className="h-full bg-sf-primary"
                             style={{ width: `${s.cost * 100}%` }}
                           />
                         </div>
@@ -1297,7 +1286,7 @@ const Sensorium = () => {
                       const label = category.charAt(0).toUpperCase() + category.slice(1);
                       return (
                         <div key={category} className="space-y-2">
-                          <h4 className="text-sm font-medium text-primary">{label}</h4>
+                          <h4 className="text-sm font-medium text-sf-primary-text">{label}</h4>
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                             {entries.map((entry, i) => (
                               <GlassPanel key={i} className="p-3">
@@ -1412,12 +1401,12 @@ const Sensorium = () => {
 
                     {/* Comparative Species View */}
                     <GlassPanel className="p-4 mt-2">
-                      <h4 className="font-heading text-sm font-light uppercase tracking-[3px] text-emerald mb-3">
+                      <h4 className="font-heading text-sm font-light uppercase tracking-[0.12em] text-sf-primary-text mb-3">
                         COMPARATIVE VIEW
                       </h4>
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <p className="text-[12px] font-medium uppercase tracking-[1.5px] text-t3 mb-2">
+                          <p className="text-[12px] font-medium uppercase tracking-[0.12em] text-t3 mb-2">
                             Your Species
                           </p>
                           <div className="space-y-1">
@@ -1425,7 +1414,7 @@ const Sensorium = () => {
                               const has = formState.finalSelection.includes(mod.id);
                               return (
                                 <div key={mod.id} className={`flex items-center gap-2 text-xs ${has ? "text-t2" : "text-sf-disabled-text"}`}>
-                                  <span className={`w-1.5 h-1.5 flex-shrink-0 ${has ? "bg-emerald-400" : "bg-tier-4"}`} />
+                                  <span className={`w-1.5 h-1.5 flex-shrink-0 ${has ? "bg-sf-emerald" : "bg-sf-disabled-line"}`} />
                                   {mod.name}
                                 </div>
                               );
@@ -1433,7 +1422,7 @@ const Sensorium = () => {
                           </div>
                         </div>
                         <div>
-                          <p className="text-[12px] font-medium uppercase tracking-[1.5px] text-t3 mb-2">
+                          <p className="text-[12px] font-medium uppercase tracking-[0.12em] text-t3 mb-2">
                             Human Baseline
                           </p>
                           <div className="space-y-1">
@@ -1441,7 +1430,7 @@ const Sensorium = () => {
                               const has = HUMAN_SENSES.includes(mod.id);
                               return (
                                 <div key={mod.id} className={`flex items-center gap-2 text-xs ${has ? "text-t2" : "text-sf-disabled-text"}`}>
-                                  <span className={`w-1.5 h-1.5 flex-shrink-0 ${has ? "bg-cyan-400" : "bg-tier-4"}`} />
+                                  <span className={`w-1.5 h-1.5 flex-shrink-0 ${has ? "bg-sf-azure" : "bg-sf-disabled-line"}`} />
                                   {mod.name}
                                 </div>
                               );
@@ -1593,7 +1582,7 @@ const Sensorium = () => {
                     transition={{ duration: 0.5 }}
                   >
                     <GlassPanel className="p-4">
-                      <h4 className="font-heading text-sm font-light uppercase tracking-[3px] text-emerald mb-3">
+                      <h4 className="font-heading text-sm font-light uppercase tracking-[0.12em] text-sf-primary-text mb-3">
                         PERCEPTUAL SNAPSHOT
                       </h4>
                       <p className="text-sm text-t2 italic font-sans leading-relaxed">
@@ -1624,7 +1613,7 @@ const Sensorium = () => {
                       disabled={isPushing}
                     >
                       <Upload className="h-4 w-4" />
-                      {isPushing ? "Recording..." : "Record Insights"}
+                      {isPushing ? "RECORDING..." : "RECORD INSIGHTS"}
                     </Button>
                   )}
                 </div>

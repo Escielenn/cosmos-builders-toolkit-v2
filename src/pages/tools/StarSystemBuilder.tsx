@@ -684,7 +684,7 @@ const StarSystemBuilder = () => {
                     {SPECTRAL_CLASSES.map((star) => (
                       <div
                         key={star.id}
-                        className="flex items-start space-x-3 p-3 rounded-none border border-sf-line-interactive hover:border-primary transition-colors"
+                        className="flex items-start space-x-3 p-3 rounded-none border border-sf-line-interactive hover:border-sf-primary transition-colors"
                       >
                         <RadioGroupItem value={star.id} id={star.id} className="mt-1" />
                         <div className="flex-1">
@@ -705,12 +705,12 @@ const StarSystemBuilder = () => {
 
                 {/* Show consequences for selected star */}
                 {selectedStarClass && (
-                  <GlassPanel className="p-4 bg-primary/5 border-primary">
+                  <GlassPanel className="p-4 bg-sf-primary/5 border-sf-primary">
                     <p className="text-sm font-medium mb-2">Worldbuilding Implications:</p>
                     <ul className="text-sm text-t3 space-y-1">
                       {selectedStarClass.consequences.map((c, i) => (
                         <li key={i} className="flex items-start gap-2">
-                          <span className="text-primary">•</span>
+                          <span className="text-sf-primary-text">•</span>
                           {c}
                         </li>
                       ))}
@@ -771,7 +771,7 @@ const StarSystemBuilder = () => {
                     {STELLAR_CONFIGURATIONS.map((config) => (
                       <div
                         key={config.id}
-                        className="flex items-start space-x-3 p-3 rounded-none border border-sf-line-interactive hover:border-primary transition-colors"
+                        className="flex items-start space-x-3 p-3 rounded-none border border-sf-line-interactive hover:border-sf-primary transition-colors"
                       >
                         <RadioGroupItem value={config.id} id={`config-${config.id}`} className="mt-1" />
                         <div className="flex-1">
@@ -794,12 +794,12 @@ const StarSystemBuilder = () => {
 
                 {/* Show configuration consequences */}
                 {selectedConfig && (
-                  <GlassPanel className="p-4 bg-primary/5 border-primary">
+                  <GlassPanel className="p-4 bg-sf-primary/5 border-sf-primary">
                     <p className="text-sm font-medium mb-2">Consequences:</p>
                     <ul className="text-sm text-t3 space-y-1">
                       {selectedConfig.consequences.map((c, i) => (
                         <li key={i} className="flex items-start gap-2">
-                          <span className="text-primary">•</span>
+                          <span className="text-sf-primary-text">•</span>
                           {c}
                         </li>
                       ))}
@@ -1089,7 +1089,7 @@ const StarSystemBuilder = () => {
                     {ORBITAL_RESONANCES.map((res) => (
                       <div
                         key={res.id}
-                        className="flex items-start space-x-3 p-3 rounded-none border border-sf-line-interactive hover:border-primary transition-colors"
+                        className="flex items-start space-x-3 p-3 rounded-none border border-sf-line-interactive hover:border-sf-primary transition-colors"
                       >
                         <RadioGroupItem value={res.id} id={`res-${res.id}`} className="mt-1" />
                         <div className="flex-1">
@@ -1198,7 +1198,7 @@ const StarSystemBuilder = () => {
                     {SYSTEM_AGES.map((age) => (
                       <div
                         key={age.id}
-                        className="flex items-start space-x-3 p-3 rounded-none border border-sf-line-interactive hover:border-primary transition-colors"
+                        className="flex items-start space-x-3 p-3 rounded-none border border-sf-line-interactive hover:border-sf-primary transition-colors"
                       >
                         <RadioGroupItem value={age.id} id={`age-${age.id}`} className="mt-1" />
                         <div className="flex-1">
@@ -1295,7 +1295,7 @@ const StarSystemBuilder = () => {
                     {computedHZ && (
                       <button
                         type="button"
-                        className="text-xs text-primary hover:underline"
+                        className="text-xs text-sf-primary-text hover:underline"
                         onClick={() => updateHabitability("habitableZoneInner", computedHZ.runawayGreenhouse.toFixed(3))}
                       >
                         Use calculated: {computedHZ.runawayGreenhouse.toFixed(3)} AU
@@ -1312,7 +1312,7 @@ const StarSystemBuilder = () => {
                     {computedHZ && (
                       <button
                         type="button"
-                        className="text-xs text-primary hover:underline"
+                        className="text-xs text-sf-primary-text hover:underline"
                         onClick={() => updateHabitability("habitableZoneOuter", computedHZ.maxGreenhouse.toFixed(3))}
                       >
                         Use calculated: {computedHZ.maxGreenhouse.toFixed(3)} AU
@@ -1330,7 +1330,7 @@ const StarSystemBuilder = () => {
                     {HZ_MODIFIERS.map((mod) => (
                       <div
                         key={mod.id}
-                        className="flex items-start gap-2 p-2 rounded border border-sf-line-interactive"
+                        className="flex items-start gap-2 p-2 rounded-none border border-sf-line-interactive"
                       >
                         <Checkbox
                           id={`mod-${mod.id}`}
@@ -1486,7 +1486,7 @@ const StarSystemBuilder = () => {
                         <p className="text-sm text-t2 mt-2">
                           {example.description}
                         </p>
-                        <p className="text-sm text-primary mt-2 italic">
+                        <p className="text-sm text-sf-primary-text mt-2 italic">
                           {example.notable}
                         </p>
                       </div>

@@ -73,7 +73,7 @@ export default function StarSystemDiagram({
     return (
       <GlassPanel className="p-4 md:p-6">
         <h3 className="font-heading text-lg font-medium mb-4 flex items-center gap-2">
-          <Orbit className="w-5 h-5 text-primary" />
+          <Orbit className="w-5 h-5 text-sf-primary-text" />
           System Diagram
         </h3>
         <div className="h-[300px] bg-sf-void rounded-none flex items-center justify-center">
@@ -93,7 +93,7 @@ export default function StarSystemDiagram({
   return (
     <GlassPanel className="p-4 md:p-6">
       <h3 className="font-heading text-lg font-medium mb-4 flex items-center gap-2">
-        <Orbit className="w-5 h-5 text-primary" />
+        <Orbit className="w-5 h-5 text-sf-primary-text" />
         System Diagram
       </h3>
       <OrbitalDiagram

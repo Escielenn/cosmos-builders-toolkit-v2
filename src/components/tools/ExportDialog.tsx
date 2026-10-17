@@ -117,7 +117,7 @@ const ExportDialog = ({
           const dataStr = JSON.stringify(formState, null, 2);
           const blob = new Blob([dataStr], { type: "application/json;charset=utf-8" });
           downloadBlob(blob, `${filename}.json`);
-          toast({ title: "EXPORT COMPLETE.", description: "Downloaded as JSON file." });
+          toast({ title: "EXPORT COMPLETE.", description: "JSON FILE DOWNLOADED." });
           break;
         }
 
@@ -125,7 +125,7 @@ const ExportDialog = ({
           const { worksheetToCSV, downloadCSV } = await loadCsvExport();
           const csvContent = worksheetToCSV(toolName, formState as Record<string, unknown>);
           downloadCSV(csvContent, `${filename}.csv`);
-          toast({ title: "EXPORT COMPLETE.", description: "Downloaded as CSV file." });
+          toast({ title: "EXPORT COMPLETE.", description: "CSV FILE DOWNLOADED." });
           break;
         }
 
@@ -140,7 +140,7 @@ const ExportDialog = ({
             });
             const blob = new Blob([mdContent], { type: "text/markdown;charset=utf-8" });
             downloadBlob(blob, `${filename}.md`);
-            toast({ title: "EXPORT COMPLETE.", description: "Downloaded as Markdown file." });
+            toast({ title: "EXPORT COMPLETE.", description: "MARKDOWN FILE DOWNLOADED." });
           } else {
             const { generateGenericText } = await loadTextGenerator();
             const textContent = generateGenericText({
@@ -175,7 +175,7 @@ const ExportDialog = ({
             console.error("PDF template is undefined", { format, summaryTemplate: !!summaryTemplate, fullTemplate: !!fullTemplate });
             toast({
               title: "TEMPLATE NOT AVAILABLE.",
-              description: "This PDF format is not yet available for this tool.",
+              description: "PDF FORMAT NOT YET AVAILABLE FOR THIS INSTRUMENT.",
               variant: "destructive",
             });
             return;
@@ -198,7 +198,7 @@ const ExportDialog = ({
             downloadBlob(pdfBlob, `${filename}.pdf`);
             toast({
               title: "PDF GENERATED.",
-              description: `${format === "pdf-summary" ? "Summary" : "Full report"} PDF downloaded.`,
+              description: `${format === "pdf-summary" ? "SUMMARY" : "FULL REPORT"} PDF DOWNLOADED.`,
             });
           } catch (pdfError) {
             console.error("PDF generation error:", pdfError);
@@ -217,7 +217,7 @@ const ExportDialog = ({
           if (!isConnected) {
             toast({
               title: "NOTION NOT CONNECTED.",
-              description: "Connect Notion workspace to proceed.",
+              description: "CONNECT A NOTION WORKSPACE TO PROCEED.",
               variant: "destructive",
             });
             return;
@@ -231,7 +231,7 @@ const ExportDialog = ({
           if (result.success) {
             toast({
               title: "EXPORT COMPLETE.",
-              description: "Your worksheet has been created in Notion.",
+              description: "WORKSHEET CREATED IN NOTION.",
             });
             if (result.pageUrl) {
               safeOpenWindow(result.pageUrl, "notion");
@@ -239,7 +239,7 @@ const ExportDialog = ({
           } else {
             toast({
               title: "EXPORT FAILED.",
-              description: result.error || "Failed to export to Notion.",
+              description: result.error || "NOTION EXPORT FAILED. RETRY WHEN READY.",
               variant: "destructive",
             });
             return;
@@ -266,7 +266,7 @@ const ExportDialog = ({
       console.error("Export error:", error);
       toast({
         title: "EXPORT FAILED.",
-        description: "Export generation failed. Retry when ready.",
+        description: "EXPORT GENERATION FAILED. RETRY WHEN READY.",
         variant: "destructive",
       });
     } finally {
@@ -325,7 +325,7 @@ const ExportDialog = ({
         case "word": {
           toast({
             title: "PREVIEW NOT AVAILABLE.",
-            description: "Word documents cannot be previewed. Download to view.",
+            description: "WORD DOCUMENTS CANNOT BE PREVIEWED. DOWNLOAD TO VIEW.",
           });
           break;
         }
@@ -336,7 +336,7 @@ const ExportDialog = ({
           if (!template) {
             toast({
               title: "TEMPLATE NOT AVAILABLE.",
-              description: "This PDF format is not yet available for this tool.",
+              description: "PDF FORMAT NOT YET AVAILABLE FOR THIS INSTRUMENT.",
               variant: "destructive",
             });
             return;
@@ -362,7 +362,7 @@ const ExportDialog = ({
       console.error("Preview error:", error);
       toast({
         title: "PREVIEW FAILED.",
-        description: "There was an error generating the preview.",
+        description: "PREVIEW GENERATION FAILED. RETRY WHEN READY.",
         variant: "destructive",
       });
     } finally {
@@ -449,7 +449,7 @@ const ExportDialog = ({
           <TabsContent value="pdf" className="space-y-4 pt-4">
             {!hasPdfTemplates ? (
               <div className="text-center p-6 text-t3">
-                <FileText className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                <FileText className="w-12 h-12 mx-auto mb-3 text-t4" />
                 <p className="font-medium">PDF export coming soon</p>
                 <p className="text-sm mt-1">
                   PDF templates for this tool are not yet available. Use Text, Word, or JSON export instead.
@@ -505,19 +505,19 @@ const ExportDialog = ({
                       className={cn(
                         "flex gap-0.5 p-1.5 rounded-none border transition-all",
                         isSelected
-                          ? "border-primary ring-1 ring-primary/50"
-                          : "border-sf-line-interactive hover:border-primary"
+                          ? "border-sf-primary ring-1 ring-sf-primary"
+                          : "border-sf-line-interactive hover:border-sf-primary"
                       )}
                     >
                       {theme.swatch.map((color, i) => (
                         <div
                           key={i}
-                          className="w-4 h-4 rounded-sm border border-sf-line"
+                          className="w-4 h-4 rounded-none border border-sf-line"
                           style={{ backgroundColor: color }}
                         />
                       ))}
                       {isSelected && (
-                        <Check className="w-3 h-3 text-primary ml-0.5" />
+                        <Check className="w-3 h-3 text-sf-primary-text ml-0.5" />
                       )}
                     </button>
                   );
@@ -590,7 +590,7 @@ const ExportDialog = ({
             </div>
             {formState && typeof formState === "object" && (
               <div className="rounded-none border border-sf-line bg-muted/30 p-3 max-h-40 overflow-auto sf-sb">
-                <p className="text-[12px] font-medium uppercase tracking-[1.5px] text-t3 mb-2">
+                <p className="text-[12px] font-medium uppercase tracking-[0.12em] text-t3 mb-2">
                   Preview
                 </p>
                 <pre className="text-xs font-mono text-t3 whitespace-pre-wrap">
@@ -642,13 +642,13 @@ const ExportDialog = ({
                         <img
                           src={connection.workspace_icon}
                           alt=""
-                          className="w-6 h-6 rounded flex-shrink-0"
+                          className="w-6 h-6 rounded-none flex-shrink-0"
                         />
                       ) : (
                         <span className="text-lg flex-shrink-0">{connection.workspace_icon}</span>
                       )
                     ) : (
-                      <div className="w-6 h-6 rounded bg-primary/20 flex items-center justify-center flex-shrink-0">
+                      <div className="w-6 h-6 rounded-none bg-sf-primary/20 flex items-center justify-center flex-shrink-0">
                         <ExternalLink className="w-3 h-3" />
                       </div>
                     )}
@@ -672,7 +672,7 @@ const ExportDialog = ({
                 <img
                   src="https://www.notion.so/images/favicon.ico"
                   alt="Notion"
-                  className="w-12 h-12 mx-auto opacity-50"
+                  className="w-12 h-12 mx-auto text-t4"
                 />
                 <p className="text-t2">
                   Connect your Notion workspace to export worksheets directly as pages.

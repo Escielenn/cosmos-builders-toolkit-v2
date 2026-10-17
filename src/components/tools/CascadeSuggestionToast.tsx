@@ -84,14 +84,14 @@ export default function CascadeSuggestionToast({
   if (!show || !suggestion) return null;
 
   return (
-    <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 animate-in slide-in-from-bottom-4 duration-500">
-      <div className="bg-sf-surface/95 backdrop-blur-xl border border-primary px-4 py-3 max-w-md shadow-lg shadow-black/40">
+    <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 animate-in slide-in-from-bottom-4 duration-slow">
+      <div className="bg-sf-surface/95 backdrop-blur-xl border border-sf-primary px-4 py-3 max-w-md shadow-lg shadow-black/40">
         {/* Light arc glow */}
-        <div className="absolute bottom-0 left-[10%] right-[10%] h-px bg-gradient-to-r from-transparent via-[hsl(157_100%_62%/0.25)] to-transparent" />
+        <div className="absolute bottom-0 left-[10%] right-[10%] h-px bg-gradient-to-r from-transparent via-sf-primary-bright/25 to-transparent" />
 
         <div className="flex items-start gap-3">
           <div className="flex-1 min-w-0">
-            <p className="font-heading text-[12px] uppercase tracking-[2px] text-primary/60 mb-1">
+            <p className="font-heading text-[12px] uppercase tracking-[0.12em] text-sf-primary-text mb-1">
               Cascade Suggestion
             </p>
             <p className="text-xs text-t2 leading-relaxed">
@@ -104,7 +104,7 @@ export default function CascadeSuggestionToast({
               variant="ghost"
               size="sm"
               onClick={handleNavigate}
-              className="text-primary hover:text-primary/80 text-[12px] uppercase tracking-wider h-7 px-2"
+              className="text-sf-primary-text hover:text-t1 text-[12px] uppercase tracking-wider h-7 px-2"
             >
               {suggestion.brandName}
               <ChevronRight className="w-3 h-3 ml-0.5" />

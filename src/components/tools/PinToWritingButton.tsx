@@ -51,7 +51,7 @@ export function PinToWritingButton({
       removePin(itemId);
       toast({
         title: "UNPINNED.",
-        description: "Removed from Writing Space.",
+        description: "REMOVED FROM WRITING SPACE.",
       });
     } else {
       addPin({
@@ -62,7 +62,7 @@ export function PinToWritingButton({
       });
       toast({
         title: "PINNED TO WRITING SPACE.",
-        description: `"${title}" will appear in your Writing Space reference panel.`,
+        description: `"${title}" ADDED TO THE WRITING SPACE REFERENCE PANEL.`,
       });
     }
   }, [isPinned, itemId, itemType, title, content, addPin, removePin, toast]);
