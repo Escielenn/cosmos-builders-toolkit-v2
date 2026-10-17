@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "./use-toast";
 import { safeOpenWindow } from "@/lib/url-validation";
+import { mapError } from "@/lib/ship-voice";
 
 interface NotionConnection {
   id: string;
@@ -158,7 +159,7 @@ export function useNotion() {
       console.error("Notion connect error:", error);
       toast({
         title: "Connection failed",
-        description: error instanceof Error ? error.message : "Failed to connect to Notion",
+        description: mapError(error),
         variant: "destructive",
       });
       setIsConnecting(false);

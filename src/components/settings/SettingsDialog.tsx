@@ -41,6 +41,7 @@ import ExportSettings from "@/components/settings/ExportSettings";
 import AvatarPickerDialog from "@/components/settings/AvatarPickerDialog";
 import { useTranslation } from "react-i18next";
 import { SUPPORTED_LANGUAGES } from "@/lib/i18n";
+import { mapError } from "@/lib/ship-voice";
 
 interface SettingsDialogProps {
   open: boolean;
@@ -138,7 +139,7 @@ const SettingsDialog = ({
     if (error) {
       toast({
         title: "Failed to save profile",
-        description: error.message,
+        description: mapError(error),
         variant: "destructive",
       });
     } else {

@@ -25,6 +25,7 @@ import {
   type WorldVersionSummary,
 } from "@/lib/export/world-snapshot";
 import { formatDistanceToNow, format } from "date-fns";
+import { mapError } from "@/lib/ship-voice";
 
 interface VersionHistoryProps {
   worldId: string;
@@ -53,7 +54,7 @@ const VersionHistory = ({ worldId, worldName }: VersionHistoryProps) => {
     } catch (error) {
       toast({
         title: "Branch failed",
-        description: error instanceof Error ? error.message : "Could not branch this version.",
+        description: mapError(error),
         variant: "destructive",
       });
     } finally {
@@ -76,7 +77,7 @@ const VersionHistory = ({ worldId, worldName }: VersionHistoryProps) => {
     } catch (error) {
       toast({
         title: "DOWNLOAD FAILED.",
-        description: error instanceof Error ? error.message : "Could not download version.",
+        description: mapError(error),
         variant: "destructive",
       });
     } finally {
@@ -101,7 +102,7 @@ const VersionHistory = ({ worldId, worldName }: VersionHistoryProps) => {
     } catch (error) {
       toast({
         title: "RESTORE FAILED.",
-        description: error instanceof Error ? error.message : "Could not restore version.",
+        description: mapError(error),
         variant: "destructive",
       });
     } finally {

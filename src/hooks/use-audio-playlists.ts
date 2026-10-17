@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import type { AudioTrack, AudioPlaylist } from "@/lib/audio/types";
+import { mapError } from "@/lib/ship-voice";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -79,7 +80,7 @@ export function useCreatePlaylist() {
     onError: (err) => {
       toast({
         title: "PLAYLIST CREATION FAILED.",
-        description: err instanceof Error ? err.message : "Unknown error",
+        description: mapError(err),
         variant: "destructive",
       });
     },
@@ -121,7 +122,7 @@ export function useUpdatePlaylist() {
     onError: (err) => {
       toast({
         title: "UPDATE FAILED.",
-        description: err instanceof Error ? err.message : "Unknown error",
+        description: mapError(err),
         variant: "destructive",
       });
     },
@@ -151,7 +152,7 @@ export function useDeletePlaylist() {
     onError: (err) => {
       toast({
         title: "DELETE FAILED.",
-        description: err instanceof Error ? err.message : "Unknown error",
+        description: mapError(err),
         variant: "destructive",
       });
     },

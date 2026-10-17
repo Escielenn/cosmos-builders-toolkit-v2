@@ -34,6 +34,7 @@ import type { SimulatorPayload } from "@/hooks/use-simulation-save";
 import type { EntryType } from "@/services/world-data";
 import { extractSimulationFacts } from "@/lib/simulation-facts";
 import { newRunId } from "@/lib/simulators/published-facts";
+import { mapError } from "@/lib/ship-voice";
 
 /** Map simulator output types to entity types */
 const OUTPUT_TYPE_MAP: Record<string, EntryType> = {
@@ -138,7 +139,7 @@ export default function PublishToWorldDialog({
     } catch (error) {
       toast({
         title: "Publish failed",
-        description: error instanceof Error ? error.message : "Unknown error",
+        description: mapError(error),
         variant: "destructive",
       });
       setIsPublishing(false);
@@ -189,7 +190,7 @@ export default function PublishToWorldDialog({
     } catch (error) {
       toast({
         title: "Publish failed",
-        description: error instanceof Error ? error.message : "Unknown error",
+        description: mapError(error),
         variant: "destructive",
       });
     } finally {

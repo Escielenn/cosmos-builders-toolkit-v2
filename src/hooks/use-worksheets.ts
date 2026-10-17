@@ -9,6 +9,7 @@ import { maybeSnapshotWorld } from "@/lib/export/world-snapshot";
 import { createDraftWikiPage } from "@/services/world-entries";
 import { getLayerForTool } from "@/services/world-data";
 import { syncWorksheetToEntity } from "@/services/entity-sync";
+import { mapError } from "@/lib/ship-voice";
 
 interface Worksheet {
   id: string;
@@ -149,7 +150,7 @@ export const useWorksheets = (worldId: string | undefined, includeArchived: bool
     onError: (error) => {
       toast({
         title: "Failed to save worksheet",
-        description: error.message,
+        description: mapError(error),
         variant: "destructive",
       });
     },
@@ -212,7 +213,7 @@ export const useWorksheets = (worldId: string | undefined, includeArchived: bool
     onError: (error) => {
       toast({
         title: "Failed to update worksheet",
-        description: error.message,
+        description: mapError(error),
         variant: "destructive",
       });
     },
@@ -237,7 +238,7 @@ export const useWorksheets = (worldId: string | undefined, includeArchived: bool
     onError: (error) => {
       toast({
         title: "Failed to delete worksheet",
-        description: error.message,
+        description: mapError(error),
         variant: "destructive",
       });
     },
@@ -262,7 +263,7 @@ export const useWorksheets = (worldId: string | undefined, includeArchived: bool
     onError: (error) => {
       toast({
         title: "Failed to archive worksheet",
-        description: error.message,
+        description: mapError(error),
         variant: "destructive",
       });
     },
@@ -289,7 +290,7 @@ export const useWorksheets = (worldId: string | undefined, includeArchived: bool
     onError: (error) => {
       toast({
         title: "Failed to restore worksheet",
-        description: error.message,
+        description: mapError(error),
         variant: "destructive",
       });
     },
@@ -417,7 +418,7 @@ export const useRenameWorksheet = () => {
     onError: (error) => {
       toast({
         title: "Failed to rename worksheet",
-        description: error.message,
+        description: mapError(error),
         variant: "destructive",
       });
     },

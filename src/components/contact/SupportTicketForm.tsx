@@ -24,6 +24,7 @@ import {
   TICKET_CATEGORIES,
   TICKET_PRIORITIES,
 } from "@/lib/contact-schemas";
+import { mapError } from "@/lib/ship-voice";
 
 interface SupportTicketFormProps {
   onSuccess?: () => void;
@@ -71,7 +72,7 @@ const SupportTicketForm = ({ onSuccess }: SupportTicketFormProps) => {
       toast({
         title: "SUBMISSION FAILED.",
         description:
-          error instanceof Error ? error.message : "Retry when ready.",
+          mapError(error),
         variant: "destructive",
       });
     }

@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { mapError } from "@/lib/ship-voice";
 
 // ---- Types ----
 
@@ -179,7 +180,7 @@ export const useInviteCollaborator = () => {
       toast({ title: "Invite sent", description: "An email invitation has been sent." });
     },
     onError: (error) => {
-      toast({ title: "Failed to send invite", description: error.message, variant: "destructive" });
+      toast({ title: "Failed to send invite", description: mapError(error), variant: "destructive" });
     },
   });
 };
@@ -211,7 +212,7 @@ export const useUpdateCollaboratorRole = () => {
       toast({ title: "Role updated" });
     },
     onError: (error) => {
-      toast({ title: "Failed to update role", description: error.message, variant: "destructive" });
+      toast({ title: "Failed to update role", description: mapError(error), variant: "destructive" });
     },
   });
 };
@@ -242,7 +243,7 @@ export const useRemoveCollaborator = () => {
       toast({ title: "Collaborator removed" });
     },
     onError: (error) => {
-      toast({ title: "Failed to remove collaborator", description: error.message, variant: "destructive" });
+      toast({ title: "Failed to remove collaborator", description: mapError(error), variant: "destructive" });
     },
   });
 };
@@ -272,7 +273,7 @@ export const useCancelInvite = () => {
       toast({ title: "Invite cancelled" });
     },
     onError: (error) => {
-      toast({ title: "Failed to cancel invite", description: error.message, variant: "destructive" });
+      toast({ title: "Failed to cancel invite", description: mapError(error), variant: "destructive" });
     },
   });
 };
@@ -304,7 +305,7 @@ export const useResendInvite = () => {
       toast({ title: "Invite resent", description: "The invitation email has been sent again." });
     },
     onError: (error) => {
-      toast({ title: "Failed to resend invite", description: error.message, variant: "destructive" });
+      toast({ title: "Failed to resend invite", description: mapError(error), variant: "destructive" });
     },
   });
 };
@@ -331,7 +332,7 @@ export const useAcceptInvite = () => {
       toast({ title: "Invite accepted", description: "You now have access to this world." });
     },
     onError: (error) => {
-      toast({ title: "Failed to accept invite", description: error.message, variant: "destructive" });
+      toast({ title: "Failed to accept invite", description: mapError(error), variant: "destructive" });
     },
   });
 };
@@ -391,7 +392,7 @@ export const useLeaveWorld = () => {
       toast({ title: "Left world", description: "You no longer have access to this world." });
     },
     onError: (error) => {
-      toast({ title: "Failed to leave world", description: error.message, variant: "destructive" });
+      toast({ title: "Failed to leave world", description: mapError(error), variant: "destructive" });
     },
   });
 };

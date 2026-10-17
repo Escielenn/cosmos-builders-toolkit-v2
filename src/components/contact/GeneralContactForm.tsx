@@ -15,6 +15,7 @@ import {
   generalContactSchema,
   type GeneralContactFormData,
 } from "@/lib/contact-schemas";
+import { mapError } from "@/lib/ship-voice";
 
 interface GeneralContactFormProps {
   onSuccess?: () => void;
@@ -56,7 +57,7 @@ const GeneralContactForm = ({ onSuccess }: GeneralContactFormProps) => {
       toast({
         title: "TRANSMISSION FAILED.",
         description:
-          error instanceof Error ? error.message : "Retry when ready.",
+          mapError(error),
         variant: "destructive",
       });
     }

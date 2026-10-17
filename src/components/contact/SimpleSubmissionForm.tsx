@@ -16,6 +16,7 @@ import {
   type SimpleSubmissionFormData,
   type SimpleSubmissionType,
 } from "@/lib/contact-schemas";
+import { mapError } from "@/lib/ship-voice";
 
 interface SimpleSubmissionFormProps {
   type: SimpleSubmissionType;
@@ -105,7 +106,7 @@ const SimpleSubmissionForm = ({ type, onSuccess }: SimpleSubmissionFormProps) =>
       toast({
         title: "SUBMISSION FAILED.",
         description:
-          error instanceof Error ? error.message : "Retry when ready.",
+          mapError(error),
         variant: "destructive",
       });
     }

@@ -45,6 +45,7 @@ import {
 } from "@/hooks/use-sharing";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { mapError } from "@/lib/ship-voice";
 
 interface ShareDialogProps {
   open: boolean;
@@ -116,7 +117,7 @@ const ShareDialog = ({
       toast({ title: "Sharing settings updated." });
     },
     onError: (err) => {
-      toast({ title: "Failed to update", description: err.message, variant: "destructive" });
+      toast({ title: "Failed to update", description: mapError(err), variant: "destructive" });
     },
   });
 

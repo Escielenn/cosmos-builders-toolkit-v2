@@ -21,6 +21,7 @@ import {
   MAP_PROJECTION_LABELS,
   type MapProjection,
 } from "@/lib/atlas/placement";
+import { mapError } from "@/lib/ship-voice";
 
 interface MapSheetSectionProps {
   entryId: string;
@@ -91,7 +92,7 @@ export function MapSheetSection({
       } catch (err) {
         toast({
           title: "UPLOAD FAILED.",
-          description: err instanceof Error ? err.message : "Could not attach the sheet.",
+          description: mapError(err),
           variant: "destructive",
         });
       } finally {

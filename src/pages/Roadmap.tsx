@@ -19,6 +19,7 @@ import type { RoadmapItem } from "@/hooks/use-roadmap";
 import { useToast } from "@/hooks/use-toast";
 import { PageBursts } from "@/components/ui/data-burst";
 import { ROADMAP_BURSTS } from "@/lib/data-bursts";
+import { mapError } from "@/lib/ship-voice";
 
 const STATUS_CONFIG: Record<string, { label: string; className: string }> = {
   planned: {
@@ -85,7 +86,7 @@ function RoadmapCard({ item, canVote }: { item: RoadmapItem; canVote: boolean })
     } catch (err) {
       toast({
         title: "Vote failed",
-        description: err instanceof Error ? err.message : "Try again.",
+        description: mapError(err),
         variant: "destructive",
       });
     }
@@ -97,7 +98,7 @@ function RoadmapCard({ item, canVote }: { item: RoadmapItem; canVote: boolean })
     } catch (err) {
       toast({
         title: "OPERATION FAILED.",
-        description: err instanceof Error ? err.message : "Try again.",
+        description: mapError(err),
         variant: "destructive",
       });
     }

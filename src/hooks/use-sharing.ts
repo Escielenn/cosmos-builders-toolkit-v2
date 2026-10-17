@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { mapError } from "@/lib/ship-voice";
 
 // ---- Types ----
 
@@ -160,7 +161,7 @@ export const useCreateWorksheetShare = () => {
       toast({ title: "SHARE CHANNEL OPEN.", description: "Anyone with the link may now view this worksheet." });
     },
     onError: (error) => {
-      toast({ title: "SHARE CHANNEL FAILED.", description: error.message, variant: "destructive" });
+      toast({ title: "SHARE CHANNEL FAILED.", description: mapError(error), variant: "destructive" });
     },
   });
 };
@@ -207,7 +208,7 @@ export const useCreateWorldShare = () => {
       toast({ title: "SHARE CHANNEL OPEN.", description: "Anyone with the link may now view this world." });
     },
     onError: (error) => {
-      toast({ title: "SHARE CHANNEL FAILED.", description: error.message, variant: "destructive" });
+      toast({ title: "SHARE CHANNEL FAILED.", description: mapError(error), variant: "destructive" });
     },
   });
 };
@@ -251,7 +252,7 @@ export const useToggleShare = () => {
       });
     },
     onError: (error) => {
-      toast({ title: "Failed to update sharing", description: error.message, variant: "destructive" });
+      toast({ title: "Failed to update sharing", description: mapError(error), variant: "destructive" });
     },
   });
 };
@@ -294,7 +295,7 @@ export const useRegenerateShareToken = () => {
       toast({ title: "LINK REGENERATED.", description: "PREVIOUS SHARED LINKS DEPRECATED." });
     },
     onError: (error) => {
-      toast({ title: "Failed to regenerate link", description: error.message, variant: "destructive" });
+      toast({ title: "Failed to regenerate link", description: mapError(error), variant: "destructive" });
     },
   });
 };
@@ -326,7 +327,7 @@ export const useDeleteShare = () => {
       toast({ title: "Share removed" });
     },
     onError: (error) => {
-      toast({ title: "Failed to remove share", description: error.message, variant: "destructive" });
+      toast({ title: "Failed to remove share", description: mapError(error), variant: "destructive" });
     },
   });
 };

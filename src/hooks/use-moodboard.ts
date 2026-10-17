@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { v4 as uuidv4 } from "uuid";
+import { mapError } from "@/lib/ship-voice";
 
 /**
  * Validates that a URL uses a safe protocol (http or https only).
@@ -103,7 +104,7 @@ export function useMoodboard({ worksheetId, currentImages, onUpdate }: UseMoodbo
     onError: (error) => {
       toast({
         title: "Upload failed",
-        description: error.message,
+        description: mapError(error),
         variant: "destructive",
       });
     },
@@ -138,7 +139,7 @@ export function useMoodboard({ worksheetId, currentImages, onUpdate }: UseMoodbo
     onError: (error) => {
       toast({
         title: "Failed to add image",
-        description: error.message,
+        description: mapError(error),
         variant: "destructive",
       });
     },
@@ -185,7 +186,7 @@ export function useMoodboard({ worksheetId, currentImages, onUpdate }: UseMoodbo
     onError: (error) => {
       toast({
         title: "Failed to remove image",
-        description: error.message,
+        description: mapError(error),
         variant: "destructive",
       });
     },

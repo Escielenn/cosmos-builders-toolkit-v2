@@ -21,6 +21,7 @@ import ReactMarkdown from "react-markdown";
 import { TERMS_CONTENT } from "@/lib/legal/terms-content";
 import { PageBursts } from "@/components/ui/data-burst";
 import { AUTH_BURSTS } from "@/lib/data-bursts";
+import { mapError } from "@/lib/ship-voice";
 
 const emailSchema = z.string().email("VALID EMAIL REQUIRED.");
 const passwordSchema = z.string().min(6, "AT LEAST 6 CHARS REQUIRED.");
@@ -83,7 +84,7 @@ const Join = () => {
         title: "Sign up failed",
         description: error.message === "User already registered"
           ? "Account already exists. Sign in instead."
-          : error.message,
+          : mapError(error),
         variant: "destructive",
       });
     } else {
@@ -102,7 +103,7 @@ const Join = () => {
     if (error) {
       toast({
         title: `${provider.charAt(0).toUpperCase() + provider.slice(1)} sign up failed`,
-        description: error.message,
+        description: mapError(error),
         variant: "destructive",
       });
     }

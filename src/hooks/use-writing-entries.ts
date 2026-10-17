@@ -11,6 +11,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { mapError } from "@/lib/ship-voice";
 
 // ─── Types ──────────────────────────────────────────────────────────────
 
@@ -158,7 +159,7 @@ export function useCreateEntry() {
     onError: (error) => {
       toast({
         title: "Failed to create entry",
-        description: error.message,
+        description: mapError(error),
         variant: "destructive",
       });
     },
@@ -204,7 +205,7 @@ export function useUpdateEntry() {
     onError: (error) => {
       toast({
         title: "Failed to save entry",
-        description: error.message,
+        description: mapError(error),
         variant: "destructive",
       });
     },
@@ -238,7 +239,7 @@ export function useDeleteEntry() {
     onError: (error) => {
       toast({
         title: "Failed to archive entry",
-        description: error.message,
+        description: mapError(error),
         variant: "destructive",
       });
     },

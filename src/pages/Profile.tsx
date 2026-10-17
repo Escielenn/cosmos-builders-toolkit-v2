@@ -24,6 +24,7 @@ import { BADGE_DEFINITIONS } from "@/lib/badges/definitions";
 import AvatarPickerDialog from "@/components/settings/AvatarPickerDialog";
 import { PageBursts } from "@/components/ui/data-burst";
 import { SETTINGS_BURSTS } from "@/lib/data-bursts";
+import { mapError } from "@/lib/ship-voice";
 
 const Profile = () => {
   const { user, profile, loading, updateProfile } = useAuth();
@@ -100,7 +101,7 @@ const Profile = () => {
     if (error) {
       toast({
         title: "SAVE FAILED.",
-        description: error.message,
+        description: mapError(error),
         variant: "destructive",
       });
     } else {

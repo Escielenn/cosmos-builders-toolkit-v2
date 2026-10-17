@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "./use-toast";
+import { mapError } from "@/lib/ship-voice";
 
 export interface Tag {
   id: string;
@@ -56,7 +57,7 @@ export function useTags() {
     onError: (error) => {
       toast({
         title: "Failed to update tags",
-        description: error.message,
+        description: mapError(error),
         variant: "destructive",
       });
     },
@@ -134,7 +135,7 @@ export function useTags() {
     onError: (error) => {
       toast({
         title: "Failed to update tags",
-        description: error.message,
+        description: mapError(error),
         variant: "destructive",
       });
     },

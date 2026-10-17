@@ -17,6 +17,7 @@ import { PageBursts } from "@/components/ui/data-burst";
 import { PRICING_BURSTS } from "@/lib/data-bursts";
 import { ParallaxStrips } from "@/components/ambient/ParallaxStrips";
 import { SectionHero } from "@/components/ui/section-hero";
+import { mapError } from "@/lib/ship-voice";
 
 const Pricing = () => {
   const [searchParams] = useSearchParams();
@@ -110,7 +111,7 @@ const Pricing = () => {
     } catch (error) {
       toast({
         title: "OPERATION FAILED.",
-        description: error instanceof Error ? error.message : "Failed to start checkout. Retry when ready.",
+        description: mapError(error),
         variant: "destructive",
       });
     } finally {

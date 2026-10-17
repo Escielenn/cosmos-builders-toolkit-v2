@@ -41,6 +41,7 @@ import { sanitizeHtml } from "@/lib/sanitize";
 import { useWorksheets } from "@/hooks/use-worksheets";
 import { getToolDisplayName } from "@/lib/tools-config";
 import { extractWorksheetFacts } from "@/lib/worksheet-facts";
+import { mapError } from "@/lib/ship-voice";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -224,7 +225,7 @@ export default function WorldCompile() {
       console.error("Docx export failed:", err);
       toast({
         title: "EXPORT FAILED.",
-        description: err instanceof Error ? err.message : "Could not generate .docx.",
+        description: mapError(err),
         variant: "destructive",
       });
     } finally {

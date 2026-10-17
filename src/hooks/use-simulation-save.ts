@@ -13,6 +13,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { mapError } from "@/lib/ship-voice";
 
 export interface SimulationSave {
   id: string;
@@ -142,7 +143,7 @@ export function useSimulationSave({
     onError: (error) => {
       toast({
         title: "Save failed",
-        description: error.message,
+        description: mapError(error),
         variant: "destructive",
       });
     },

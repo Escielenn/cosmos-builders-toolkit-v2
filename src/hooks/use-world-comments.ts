@@ -6,6 +6,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { mapError } from "@/lib/ship-voice";
 
 export interface WorldComment {
   id: string;
@@ -87,7 +88,7 @@ export function useCreateComment(worldId: string | undefined) {
     onError: (error) => {
       toast({
         title: "Failed to post comment",
-        description: error.message,
+        description: mapError(error),
         variant: "destructive",
       });
     },
@@ -114,7 +115,7 @@ export function useDeleteComment(worldId: string | undefined) {
     onError: (error) => {
       toast({
         title: "Failed to delete comment",
-        description: error.message,
+        description: mapError(error),
         variant: "destructive",
       });
     },

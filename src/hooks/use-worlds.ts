@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import type { WorldTheme } from "@/hooks/use-world";
+import { mapError } from "@/lib/ship-voice";
 
 interface World {
   id: string;
@@ -135,7 +136,7 @@ export const useWorlds = (includeArchived: boolean = false) => {
     onError: (error) => {
       toast({
         title: "Failed to create world",
-        description: error.message,
+        description: mapError(error),
         variant: "destructive",
       });
     },
@@ -176,7 +177,7 @@ export const useWorlds = (includeArchived: boolean = false) => {
     onError: (error) => {
       toast({
         title: "Failed to update world",
-        description: error.message,
+        description: mapError(error),
         variant: "destructive",
       });
     },
@@ -201,7 +202,7 @@ export const useWorlds = (includeArchived: boolean = false) => {
     onError: (error) => {
       toast({
         title: "Failed to archive world",
-        description: error.message,
+        description: mapError(error),
         variant: "destructive",
       });
     },
@@ -228,7 +229,7 @@ export const useWorlds = (includeArchived: boolean = false) => {
     onError: (error) => {
       toast({
         title: "Failed to restore world",
-        description: error.message,
+        description: mapError(error),
         variant: "destructive",
       });
     },
@@ -254,7 +255,7 @@ export const useWorlds = (includeArchived: boolean = false) => {
     onError: (error) => {
       toast({
         title: "Failed to delete world",
-        description: error.message,
+        description: mapError(error),
         variant: "destructive",
       });
     },

@@ -13,6 +13,7 @@ import { z } from "zod";
 import { PageBursts } from "@/components/ui/data-burst";
 import { AUTH_BURSTS } from "@/lib/data-bursts";
 import { TOTAL_TOOL_COUNT } from "@/lib/tools-config";
+import { mapError } from "@/lib/ship-voice";
 
 const YOUTUBE_VIDEO_ID = "iGYxmAQa8DY";
 
@@ -79,7 +80,7 @@ const Auth = () => {
         title: "AUTHENTICATION FAILED.",
         description: error.message === "Invalid login credentials"
           ? "CREDENTIALS NOT RECOGNIZED. VERIFY AND RETRY."
-          : error.message,
+          : mapError(error),
         variant: "destructive",
       });
     } else {
@@ -95,7 +96,7 @@ const Auth = () => {
     if (error) {
       toast({
         title: `${provider.toUpperCase()} AUTHENTICATION FAILED.`,
-        description: error.message,
+        description: mapError(error),
         variant: "destructive",
       });
     }
@@ -124,7 +125,7 @@ const Auth = () => {
     if (error) {
       toast({
         title: "SIGNUP FAILED.",
-        description: error.message,
+        description: mapError(error),
         variant: "destructive",
       });
     } else {

@@ -11,6 +11,7 @@ import {
   type MoveEntryInput,
 } from "@/services/world-entries";
 import { invalidateWorldEntries } from "@/services/entity-graph-keys";
+import { mapError } from "@/lib/ship-voice";
 
 export function useCreateEntry(worldId: string | undefined) {
   const { user } = useAuth();
@@ -28,7 +29,7 @@ export function useCreateEntry(worldId: string | undefined) {
     onError: (error) => {
       toast({
         title: "ENTRY CREATION FAILED.",
-        description: error instanceof Error ? error.message : "Could not create entry.",
+        description: mapError(error),
         variant: "destructive",
       });
     },
@@ -49,7 +50,7 @@ export function useUpdateEntry(worldId: string | undefined) {
     onError: (error) => {
       toast({
         title: "UPDATE FAILED.",
-        description: error instanceof Error ? error.message : "Could not update entry.",
+        description: mapError(error),
         variant: "destructive",
       });
     },
@@ -71,7 +72,7 @@ export function useDeleteEntry(worldId: string | undefined) {
     onError: (error) => {
       toast({
         title: "DELETE FAILED.",
-        description: error instanceof Error ? error.message : "Could not delete entry.",
+        description: mapError(error),
         variant: "destructive",
       });
     },
@@ -92,7 +93,7 @@ export function useMoveEntry(worldId: string | undefined) {
     onError: (error) => {
       toast({
         title: "MOVE FAILED.",
-        description: error instanceof Error ? error.message : "Could not move entry.",
+        description: mapError(error),
         variant: "destructive",
       });
     },
