@@ -1,4 +1,16 @@
 import { getCorsHeaders } from "../_shared/cors.ts";
+import { supabaseAdmin } from "../_shared/supabase.ts";
+
+// Throttle limits (see migration 20261017_contact_rate_limits.sql)
+const MAX_PER_IP_PER_HOUR = 5;
+const MAX_CONFIRMATIONS_PER_EMAIL_PER_DAY = 2;
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+async function sha(text: string): Promise<string> {
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+  return Array.from(new Uint8Array(digest)).slice(0, 16)
+    .map((b) => b.toString(16).padStart(2, "0")).join("");
+}
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 const SUPPORT_EMAIL =
@@ -51,6 +63,41 @@ Deno.serve(async (req) => {
     } = body;
 
     console.log("Received contact submission:", { type, name, email: email?.substring(0, 3) + "***" });
+
+    const cleanEmail = String(email ?? "").trim().toLowerCase();
+    if (!EMAIL_RE.test(cleanEmail) || cleanEmail.length > 254) {
+      return new Response(JSON.stringify({ error: "invalid_email" }), {
+        status: 400,
+        headers: { ...cors, "Content-Type": "application/json" },
+      });
+    }
+
+    // Throttle. Without it this endpoint would mail any address on request.
+    // Hashes only; raw IPs and addresses are never stored.
+    const ip = (req.headers.get("x-forwarded-for") ?? "unknown").split(",")[0].trim();
+    const ipHash = await sha(`sf-contact|${ip}`);
+    const emailHash = await sha(`sf-contact|${cleanEmail}`);
+    const hourAgo = new Date(Date.now() - 3_600_000).toISOString();
+    const dayAgo = new Date(Date.now() - 86_400_000).toISOString();
+
+    const [{ count: ipCount }, { count: confirmCount }] = await Promise.all([
+      supabaseAdmin.from("contact_rate_limits").select("id", { count: "exact", head: true })
+        .eq("ip_hash", ipHash).gte("created_at", hourAgo),
+      supabaseAdmin.from("contact_rate_limits").select("id", { count: "exact", head: true })
+        .eq("email_hash", emailHash).eq("confirmed", true).gte("created_at", dayAgo),
+    ]);
+
+    if ((ipCount ?? 0) >= MAX_PER_IP_PER_HOUR) {
+      return new Response(JSON.stringify({ error: "rate_limited" }), {
+        status: 429,
+        headers: { ...cors, "Content-Type": "application/json" },
+      });
+    }
+    const sendConfirmation = (confirmCount ?? 0) < MAX_CONFIRMATIONS_PER_EMAIL_PER_DAY;
+
+    const { error: logError } = await supabaseAdmin.from("contact_rate_limits")
+      .insert({ ip_hash: ipHash, email_hash: emailHash, confirmed: sendConfirmation });
+    if (logError) console.warn("contact_rate_limits insert failed:", logError.message);
 
     if (!RESEND_API_KEY) {
       console.warn("RESEND_API_KEY not configured, skipping email");
@@ -129,7 +176,7 @@ Deno.serve(async (req) => {
         body: JSON.stringify({
           from: FROM_EMAIL,
           to: [SUPPORT_EMAIL],
-          reply_to: email,
+          reply_to: cleanEmail,
           subject: emailSubject,
           html: emailHtml,
         }),
@@ -189,7 +236,9 @@ Deno.serve(async (req) => {
       `;
     }
 
-    try {
+    if (!sendConfirmation) {
+      console.log("Confirmation suppressed: recipient limit reached");
+    } else try {
       console.log("Sending confirmation email to user");
       await fetch("https://api.resend.com/emails", {
         method: "POST",
@@ -199,7 +248,7 @@ Deno.serve(async (req) => {
         },
         body: JSON.stringify({
           from: FROM_EMAIL,
-          to: [email],
+          to: [cleanEmail],
           subject: confirmationSubject,
           html: confirmationHtml,
         }),
@@ -213,7 +262,7 @@ Deno.serve(async (req) => {
     });
   } catch (error) {
     console.error("Contact submission error:", error);
-    return new Response(JSON.stringify({ error: error.message }), {
+    return new Response(JSON.stringify({ error: (error as Error).message }), {
       status: 400,
       headers: { ...cors, "Content-Type": "application/json" },
     });
