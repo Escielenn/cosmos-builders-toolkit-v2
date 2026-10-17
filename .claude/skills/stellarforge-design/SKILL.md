@@ -23,7 +23,7 @@ With one hard constraint learned the expensive way: *darkness is the mood, not t
 
 ## Themes — the user chooses
 
-**Void·Teal is the default and the identity, not a constraint.** `design/themes.py` derives 70 themes (10 bases × 7 primary accents) against the same contrast targets; every one passes by construction. Switch with `data-theme="<base>-<primary>"` on `<html>`. `ThemePicker.tsx` is the control.
+**Void·Teal is the default and the identity, not a constraint.** `design/themes.py` derives 60 themes (10 bases × 6 primary accents; cyan is not one of them) against the same contrast targets; every one passes by construction. Switch with `data-theme="<base>-<primary>"` on `<html>`. `ThemePicker.tsx` is the control.
 
 Two rules make this safe:
 - **`sf-primary` is a role; `sf-teal` is a meaning.** Button fills, focus, selection, active nav, links use `--sf-primary`. Cascade edges and the Integration category use `--sf-teal`. Never put a *role* on a named hue.
