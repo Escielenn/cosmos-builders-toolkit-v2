@@ -1,6 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
 import type { Json } from "@/integrations/supabase/types";
-import { ENTITY_MASTER_FIELDS } from "@/lib/entity-config";
+import { ENTITY_MASTER_FIELDS, readMasterField } from "@/lib/entity-config";
 import { getNestedValue } from "@/lib/entity-prepopulate";
 import { TOOL_TYPE_MAP } from "@/services/world-data";
 
@@ -60,7 +60,7 @@ export async function syncWorksheetToEntity(
     const worksheetValue = getNestedValue(worksheetData, worksheetPath);
     if (worksheetValue === undefined || worksheetValue === null || worksheetValue === "") continue;
 
-    const entityValue = metadata[field.key];
+    const entityValue = readMasterField(metadata, field);
 
     // Only flag if the values differ and the worksheet has a meaningful value
     if (entityValue !== worksheetValue && String(entityValue) !== String(worksheetValue)) {
