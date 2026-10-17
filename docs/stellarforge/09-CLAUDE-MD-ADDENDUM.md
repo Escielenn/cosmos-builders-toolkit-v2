@@ -97,7 +97,7 @@ design handoff README. Summary of the rules most often broken:
 - Colour is a cascade layer: amber = Physics, stellar blue = Worlds,
   violet = Lore, crimson = Stop, teal = Integration. These never move.
 - **`sf-primary` is a role, `sf-teal` is a meaning.** Buttons, focus, selection,
-  active nav, links use `sf-primary` — the user chooses it (70 themes, all
+  active nav, links use `sf-primary` — the user chooses it (60 themes, all
   contrast-solved, `design/themes.py`). Never put a role on a named hue.
 - Tokens, never hardcoded hex.
 - Every scrollable container gets `sf-sb`.

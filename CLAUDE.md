@@ -59,8 +59,8 @@ Messaging:       Knock (in-app notifications, future)
     /world          # World dashboard components
     /sharing        # Share/collaborate dialogs
   /pages
-    /tools          # Tool route pages (20 files)
-    /simulators     # Simulator route pages (4 files)
+    /tools          # Tool route pages (21 files)
+    /simulators     # Simulator route pages (5 simulators, each with a Science page)
     /legal          # Privacy, Terms
   /integrations/supabase  # Supabase client + generated types
   /lib              # Utilities, data, calculations, PDF templates
@@ -72,9 +72,19 @@ Messaging:       Knock (in-app notifications, future)
 
 ## Design System
 
+> **Governing rules live lower in this file.** The "Design system" and
+> "Legibility — non-negotiable" sections under THE PRIME LAW, and
+> `docs/stellarforge/10-LEGIBILITY.md`, win any disagreement with this
+> section. Colour, type and line values come from the GENERATED files
+> `src/styles/tokens.css`, `src/styles/themes.css` and `tailwind.config.ts`
+> (produced by `design/derive.py`, `design/emit.py`, `design/themes.py`).
+> Never hand-edit them and never copy a hex value out of them into a
+> component. The values quoted below are the default Void·Teal theme, for
+> orientation only.
+
 ### Philosophy
 
-> **"Light emerging from void."** The interface is a ship's instrument panel: deep space-navy backgrounds, precise typographic hierarchy, teal-green accents that glow like indicator lights, and zero border-radius. Every element earns its brightness.
+> **"Light emerging from void."** The interface is a ship's instrument panel: deep space-navy backgrounds, precise typographic hierarchy, accents that glow like indicator lights, and zero border-radius. Every element earns its brightness.
 
 The guiding principle: **the simulation is the hero, the UI is the instrument panel.**
 
@@ -82,76 +92,51 @@ The guiding principle: **the simulation is the hero, the UI is the instrument pa
 
 ### Color System
 
-#### Background Layers (Three Depths)
+#### Planes (three, never four)
 
-```css
-:root {
-  /* Backgrounds — darkest to lightest */
-  --sf-void: hsl(222 30% 5%);              /* #0A0E17 — Page background, deepest */
-  --sf-surface: hsl(222 25% 9%);           /* #0E1320 — Panel/card surfaces */
-  --sf-surface-elevated: hsl(222 20% 12%); /* #161C2B — Elevated panels, popovers */
+| Token | Tailwind | Default | Use |
+|-------|----------|---------|-----|
+| `--sf-void` | `bg-sf-void` | `#0A0E17` | Page background |
+| `--sf-surface` | `bg-sf-surface` | `#1B2334` | Panels, cards |
+| `--sf-surface-elevated` | `bg-sf-surface-elevated` | `#273249` | Popovers, modals |
+| `--sf-scrim` | — | `rgba(5,7,12,0.72)` | Behind modals only |
 
-  /* Glass panel */
-  --glass: var(--sf-surface) / 0.9;
-  --glass-border: hsl(0 0% 100% / 0.08);
-}
-```
+Each plane clears 1.22:1 on the one below, so a panel edge reads before any border is drawn.
 
-#### Accent Spectrum
+#### Accents: role vs meaning
 
-```css
-:root {
-  /* Primary — solid fills, borders, CTAs */
-  --sf-teal: hsl(157 80% 42%);        /* #15C17B */
+- **`sf-primary` is a role.** Buttons, focus, selection, active nav and links use `sf-primary` / `sf-primary-text` / `sf-primary-bright` / `sf-on-primary`. The user chooses its hue (60 themes, `design/themes.py`). It defaults to teal.
+- **Named hues are meanings.** `sf-teal`, `sf-amber`, `sf-stellar`, `sf-emerald`, `sf-violet`, `sf-crimson`, `sf-azure`, `sf-magenta` carry cascade-layer or status meaning and never move. Never put a role on a named hue.
+- **Two stops per accent.** `--sf-X` for fills, borders, icons and large text. `--sf-X-text` for any accent-coloured text at body size. `--sf-on-X` for a label on a filled `--sf-X`.
+- **`*-bright` is glow only** (`sf-primary-bright`, `sf-teal-bright`): box-shadow, light arcs, hover fills on `::before`/`::after`. Never a solid surface fill.
+- **`sf-cyan` is a retired alias** that resolves to teal. Legacy cyan `#00D4FF` is banned (SF-II settled decision #3, CI hard-fails on it). Do not use `sf-cyan` in new code.
 
-  /* Glow only — light arcs, hover states (NEVER solid fills) */
-  --sf-teal-bright: hsl(157 100% 62%); /* #3DFFCD */
+#### Text hierarchy (four tiers)
 
-  /* Simulators only (legacy) */
-  --sf-cyan: hsl(157 80% 42%);         /* RETIRED alias → teal (legacy cyan is gone, SF-II #3) */
+| Tier | Tailwind | Default | Use |
+|------|----------|---------|-----|
+| t1 | `text-t1` | `#FAFAFA` | Titles, result values, body where emphasis is earned |
+| t2 | `text-t2` | `#C9CDD3` | Body copy |
+| t3 | `text-t3` | `#A7AAB0` | Secondary text, captions, labels |
+| t4 | `text-t4` | `#9799A0` | Micro labels, eyebrows, units, helper text |
 
-  /* Data & highlights */
-  --sf-amber: hsl(43 100% 50%);        /* #FFB800 — velocity, warnings */
-  --sf-accent-amber: hsl(30 100% 64%); /* #FFB347 — nav numbers */
+`t5` is retired; see Legibility below. **Never** put all text at the same tier.
 
-  /* Semantic colors */
-  --sf-stellar: hsl(220 82% 65%);      /* #5B8DEF — wonder/creativity */
-  --sf-emerald: hsl(153 100% 50%);     /* #00FF88 — section headers */
-  --sf-violet: hsl(263 74% 63%);       /* #9B5DE5 — Pro badges */
-  --sf-crimson: hsl(347 100% 60%);     /* #FF3366 — destructive actions */
-  --sf-azure: hsl(215 100% 65%);       /* #4D9FFF — links, info */
-  --sf-magenta: hsl(328 100% 50%);     /* #FF00AA — sparingly */
-}
-```
+#### Lines
 
-#### 5-Tier Text Hierarchy (Critical)
+Solid `sf-line-*` tokens only (`sf-line-hairline`, `sf-line`, `sf-line-interactive`, `sf-line-emphasis`). The old alpha borders (`hsl(0 0% 100% / 0.08)`, the `0.15` glow border) are banned; see Legibility below for which line goes where.
 
-```css
-:root {
-  --sf-tier-1: hsl(0 0% 98%);              /* #FAFAFA — Titles, result values ONLY */
-  --sf-tier-2: hsl(0 0% 78%);              /* #C8C8C8 — Body text, descriptions */
-  --sf-tier-3: hsla(0 0% 100% / 0.45);     /* Labels, column headers */
-  --sf-tier-4: hsla(0 0% 100% / 0.28);     /* Units, helper text, chevrons */
-  --sf-tier-5: hsla(0 0% 100% / 0.15);     /* Citations, metadata, ghost text */
-}
-```
+#### Glow pattern
 
-**Never** put all text at the same brightness. Use the hierarchy.
+Interactive accent elements keep the old shape with solid edges:
 
-#### Glow Pattern (0.06 / 0.15 / 1.0)
+```tsx
+// Tint + solid edge + accent text. The tint is fill, not a border, so
+// alpha is acceptable there; the border is always a solid token.
+<span className="bg-sf-primary/[0.06] border border-sf-primary text-sf-primary-text" />
 
-```css
-/* Interactive elements follow this opacity structure */
-.glow-element {
-  background: hsl(var(--sf-teal) / 0.06);   /* Barely visible tint */
-  border: 1px solid hsl(var(--sf-teal) / 0.15);  /* Subtle edge */
-  color: hsl(var(--sf-teal));               /* Full color text */
-}
-
-/* Glow effects use bright variant at 0.2 alpha */
-.glow-element::after {
-  box-shadow: 0 0 20px hsl(var(--sf-teal-bright) / 0.2);
-}
+// Glow is decoration, never the only signal of a state.
+<div className="hover:shadow-sf-glow-teal" />   // follows the theme's primary
 ```
 
 ---
@@ -160,354 +145,128 @@ The guiding principle: **the simulation is the hero, the UI is the instrument pa
 
 #### Font Stack
 
-```css
-:root {
-  --sf-font-display: 'MD Nichrome', sans-serif;    /* H1 tool titles ONLY */
-  --sf-font-heading: 'Jura', sans-serif;           /* Section headers, nav */
-  --sf-font-sans: 'DM Sans', sans-serif;           /* Body, ALL buttons */
-  --sf-font-mono: 'JetBrains Mono', monospace;     /* Data, readouts, badges */
-}
-```
+| Font | Tailwind | Usage |
+|------|----------|-------|
+| **MD Nichrome** | `font-display` | H1 tool page titles ONLY |
+| **Jura** | `font-heading` | Section headers, eyebrows, nav |
+| **DM Sans** | `font-sans` | Body, labels, **ALL BUTTONS** |
+| **JetBrains Mono** | `font-mono` | Numbers, coordinates, IDs, timestamps. Never body copy. |
 
-#### Font Rules (Strict)
-
-| Context | Font | Tailwind | Usage |
-|---------|------|----------|-------|
-| **MD Nichrome** | Display | `font-display` | H1 tool page titles ONLY |
-| **Jura** | Headings | `font-heading` | Section headers, nav items |
-| **DM Sans** | Body | `font-sans` | Everything else, **ALL BUTTONS** |
-| **JetBrains Mono** | Data | `font-mono` | Results, readouts, numbered badges |
-
-**NEVER** use MD Nichrome on buttons.
-**NEVER** use Inter anywhere.
-**NEVER** use bold (700) — only light (300) or medium (500).
+Four fonts only. **NEVER** use MD Nichrome on buttons. **NEVER** use Inter. Space Grotesk is retired (CI hard-fails on it).
 
 #### Type Scale
 
-| Element | Font | Classes | Example |
-|---------|------|---------|---------|
-| H1 Tool Title | MD Nichrome | `font-display text-3xl md:text-4xl tracking-sf-title` | ROGUE Simulator |
-| H2 Section | Jura | `font-heading text-xl font-light uppercase tracking-[2px]` | ORBITAL PARAMETERS |
-| H3 Collapsible | Jura | `font-heading text-sm font-light uppercase tracking-[3px] text-emerald` | STAR CONFIGURATION |
-| H4 Meta | Jura | `font-heading text-xs font-medium uppercase tracking-sf-wide text-tier-4` | IN PUBLISHED SF |
-| Body | DM Sans | `font-sans text-tier-2` | Running text |
-| Labels | DM Sans | `text-[11px] font-medium uppercase tracking-[1.5px] text-tier-3` | PLANET MASS |
-| Data | JetBrains Mono | `font-mono text-tier-1` | 1.47 Earth masses |
+Use the generated sizes in `tailwind.config.ts`:
 
-#### Letter Spacing Scale
+| Element | Classes |
+|---------|---------|
+| H1 tool title | `font-display text-sf-h1 tracking-title text-t1` |
+| H2 section | `font-heading text-sf-h2 text-t1` |
+| H3 | `font-heading text-sf-h3 text-t1` |
+| Eyebrow / section label | `font-heading text-sf-eyebrow uppercase text-t4` (12px, 0.12em) |
+| Body | `font-sans text-sf-body text-t2` (16px), bounded by `.sf-measure` |
+| Studio prose | `text-sf-prose` (18px) |
+| Data readout | `font-mono text-t1`; mono labels use `text-sf-mono` (12px, 0.10em) |
 
-```css
-:root {
-  --tracking-sf-title: 0.08em;   /* MD Nichrome titles */
-  --tracking-sf-wide: 0.2em;     /* Standard uppercase */
-  --tracking-sf-ultra: 0.4em;    /* Hero display text */
-}
-/* Also used: tracking-[3px], tracking-[2px], tracking-[1.5px], tracking-[1.2px] */
-```
+Nothing readable is smaller than 12px, and only 12px-and-up text is tracked. Letter-spacing tokens: `tracking-title` 0.06em, `tracking-wide` 0.12em, `tracking-ultra` 0.24em (lockups at 24px+ only).
 
-#### Weight Philosophy
+#### Weight
 
-**Extremes only** — ultralight vs medium. No bold anywhere.
-
-| Weight | Value | Use |
-|--------|-------|-----|
-| Light | 300 | Display/heading text |
-| Normal | 400 | Body text |
-| Medium | 500 | Labels, emphasis |
+Never 700/bold. Display and headings sit at 300 or 400, body at 400, labels and emphasis at 500. The one heavier weight in the system is the generated `text-sf-eyebrow` at 600, which compensates for its 12px size; do not use 600 anywhere else.
 
 ---
 
 ### Border Radius
 
-**Sharp edges are core identity.** Zero radius on primary containers.
+**Zero radius everywhere** (`rounded-none`). Two documented exceptions:
 
-| Token | Value | Use |
-|-------|-------|-----|
-| `rounded-none` | 0px | GlassPanel, cards, major containers |
-| `rounded-md` | 4px | Bridge cards, secondary panels |
-| `rounded-sm` | 3px | Badges, small buttons |
-| `rounded-xs` | 2px | Inputs, micro elements |
+- **Tag**: `rounded-sf-tag` (2px).
+- **Simulator chrome**: `rounded-lg`, per the Tidelock reference (see Simulator-Specific Guidelines).
+
+`rounded-md`/`rounded-sm`/`rounded-xs` still exist in `tailwind.config.ts` only because unmigrated shadcn primitives use them. Do not use them in new code.
 
 ---
 
 ### Component Patterns
 
+Use the primitives in `src/components/ui/` rather than restyling raw elements.
+
 #### GlassPanel
 
 ```tsx
-<GlassPanel glow>
-  {/* Content */}
-</GlassPanel>
+<GlassPanel glow>{/* Content */}</GlassPanel>
+<GlassPanel layer="elevated" bracket>{/* Focal panel */}</GlassPanel>
 ```
 
-```css
-.glass-panel {
-  background: hsl(var(--sf-surface) / 0.9);
-  border: 1px solid hsl(0 0% 100% / 0.08);
-  border-radius: 0;  /* ALWAYS zero */
-  backdrop-filter: blur(16px);
-  box-shadow: 0 8px 32px hsl(0 0% 0% / 0.4);
-}
-
-/* Light arc glow (bottom edge) */
-.glass-panel-glow::before {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 10%;
-  right: 10%;
-  height: 1px;
-  background: linear-gradient(to right, transparent, hsl(157 100% 62% / 0.25), transparent);
-}
-```
+`.glass-panel` (in `src/index.css`) is `rounded-none`, `border-color: var(--sf-line)`, with backdrop blur. `glow` adds the bottom light arc in `sf-primary-bright`. `bracket` adds corner brackets and is for focal panels only (one focal moment per screen).
 
 #### Buttons
 
 ```tsx
-// All buttons use DM Sans, never Nichrome
-<Button>Get Started</Button>
+<Button variant="sf-primary">Get Started</Button>  // filled: bg-sf-primary text-sf-on-primary
+<Button variant="sf-ghost">Cancel</Button>         // outline: border-sf-line-interactive
 ```
 
-```css
-.btn-primary {
-  background: hsl(var(--sf-teal));
-  color: white;
-  font-family: var(--sf-font-sans);  /* DM Sans */
-  font-weight: 500;
-  border-radius: 0;
-  padding: 12px 24px;
-  transition: all 200ms ease;
-}
-
-.btn-primary:hover {
-  box-shadow: 0 0 20px hsl(var(--sf-teal-bright) / 0.2);
-}
-```
+DM Sans, weight 500, `rounded-none`, `min-h-hit`. Hover may add `shadow-sf-glow-teal`; focus uses the global `:focus-visible` ring.
 
 #### Cards with Hover Effect
 
-```css
-.sf-card {
-  background: hsl(var(--sf-surface));
-  border: 1px solid hsl(0 0% 100% / 0.08);
-  border-radius: 0;
-  position: relative;
-  overflow: hidden;
-}
+`.sf-card-hover` (or `<GlassPanel hover>`): a 2px bottom-edge fill bar in `sf-primary-bright` that scales in from the left on hover, with a `translateY(-2px)` lift. Card edges use `sf-line`; hover may raise them to `sf-line-emphasis`.
 
-/* Bottom edge fill bar on hover */
-.sf-card::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: hsl(157 100% 62% / 0.6);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 300ms ease;
-}
+#### Badges
 
-.sf-card:hover {
-  transform: translateY(-2px);
-}
-
-.sf-card:hover::after {
-  transform: scaleX(1);
-}
-```
-
-#### Badges (Glow Variants)
-
-```tsx
-<Badge variant="glow">Default Teal</Badge>
-<Badge variant="glow-amber">Amber</Badge>
-<Badge variant="glow-cyan">Retired alias — renders teal</Badge>
-```
-
-```css
-.badge-glow {
-  background: hsl(var(--sf-teal) / 0.06);
-  border: 1px solid hsl(var(--sf-teal) / 0.15);
-  color: hsl(var(--sf-teal));
-  border-radius: 3px;
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.badge-glow-amber {
-  background: hsl(43 100% 50% / 0.06);
-  border-color: hsl(43 100% 50% / 0.15);
-  color: hsl(43 100% 50%);
-}
-```
+`<Badge variant="glow">` and `<Badge variant="glow-amber">` follow the glow pattern above. `glow-cyan` is a retired alias that renders teal; do not use it in new code. Badge text is 12px minimum, weight 500.
 
 #### Numbered Badges (CollapsibleSection)
 
-```css
-.numbered-badge {
-  width: 32px;
-  height: 32px;
-  background: hsl(var(--sf-teal) / 0.06);
-  border: 1px solid hsl(var(--sf-teal) / 0.15);
-  color: hsl(var(--sf-teal));
-  font-family: var(--sf-font-mono);
-  font-size: 14px;
-  border-radius: 3px;
-}
-```
+32×32, `font-mono`, glow pattern in `sf-primary`, zero radius.
 
 #### Labels
 
-```css
-/* ALL form labels site-wide */
-.label {
-  font-family: var(--sf-font-sans);
-  font-size: 11px;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  color: var(--sf-tier-3);
-}
-```
+All form labels use `<Label>`: DM Sans, 12px, weight 500, uppercase, `text-t3`.
 
-#### Section Headers (Green Dividers)
+#### Section Headers
 
-```css
-.section-header {
-  font-family: var(--sf-font-heading);  /* Jura */
-  font-size: 14px;
-  font-weight: 300;
-  text-transform: uppercase;
-  letter-spacing: 3px;
-  color: hsl(153 80% 60%);  /* Teal-green */
-  border-bottom: 1px solid hsl(153 100% 45% / 0.06);
-}
-```
+Jura, uppercase, `text-sf-eyebrow`, with a `sf-line-hairline` rule beneath.
 
 #### Instrument Nav (SectionNavigation)
 
-```css
-.instrument-nav-item {
-  font-family: var(--sf-font-heading);  /* Jura */
-  font-size: 11px;
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-  border-left: 2px solid transparent;
-  color: hsl(0 0% 88% / 0.4);  /* Dim by default */
-}
-
-.instrument-nav-item[data-active="true"] {
-  border-left-color: #3DFFCD;
-  color: #3DFFCD;
-}
-
-.instrument-nav-number {
-  font-family: var(--sf-font-mono);
-  font-size: 9px;
-  color: hsl(30 100% 64% / 0.4);  /* Amber numbers */
-}
-```
+`.sf-instrument-nav-item`: Jura, 12px, uppercase, 2px left border that turns `sf-primary-bright` when `data-active="true"`. Numbers in `font-mono`, 12px.
 
 #### Form Inputs
 
-```css
-input[type="text"],
-input[type="number"],
-textarea {
-  font-family: var(--sf-font-sans);
-  font-size: 14px;
-  background: hsl(0 0% 100% / 0.04);
-  color: hsl(0 0% 100% / 0.8);
-  border: 1px solid hsl(0 0% 100% / 0.1);
-  border-radius: 2px;
-  padding: 12px 16px;
-}
-
-input:focus {
-  border-color: hsl(var(--sf-teal) / 0.35);
-}
-```
+Defaults come from `tokens.css`: `bg-sf-surface`, solid `sf-line-interactive` border (`sf-line-emphasis` on hover), `text-t1`, placeholders at `t3`, 16px type (iOS zooms below 16px), `min-h-hit`, zero radius. Disabled uses the `sf-disabled-*` tokens.
 
 #### Scrollbars
 
-```css
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: hsl(222 30% 5% / 0.5); }
-::-webkit-scrollbar-thumb {
-  background: hsl(0 0% 88% / 0.12);
-  border-radius: 0;  /* Sharp */
-}
-::-webkit-scrollbar-thumb:hover {
-  background: hsl(157 100% 62% / 0.25);
-}
-```
+Defined in `tokens.css` (`--sb-track`, `--sb-thumb`, `--sb-thumb-hover`, 10px wide, solid colours). Every scrollable container gets `sf-sb`. Scrollbars never hide.
 
 ---
 
 ### Background Effects
 
-#### Atmosphere Gradient
-
-```css
-.sf-atmosphere::before {
-  background:
-    radial-gradient(ellipse at 70% 20%, hsl(157 100% 62% / 0.2) 0%, transparent 50%),
-    linear-gradient(180deg, hsl(222 30% 5%) 0%, hsl(222 35% 3%) 100%);
-}
-```
-
-#### Light Arc Motif
-
-Signature visual element — horizontal gradient line at element edges.
-
-```css
-.sf-light-arc::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 10%;
-  right: 10%;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, hsl(157 100% 62%), transparent);
-}
-```
-
-#### Dividers
-
-```css
-.sf-divider {
-  border-top: 1px dashed hsl(0 0% 88% / 0.25);
-  margin: 48px 0;
-}
-
-/* Centered amber label */
-.sf-divider-label {
-  font-family: var(--sf-font-mono);
-  font-size: 7px;
-  letter-spacing: 1px;
-  color: hsl(30 100% 64% / 0.3);
-}
-```
+- **Atmosphere** (`.sf-atmosphere`): fixed radial glow over a void gradient. Hidden when the user picks a custom, gradient or video background.
+- **Light arc** (`.sf-light-arc`, `.sf-panel-glow`): 1px horizontal gradient at an element's bottom edge, in the primary/teal bright stop. The signature motif. Decoration only.
+- **Divider** (`.sf-divider`): 1px dashed `sf-line-hairline`, 48px vertical margin. Optional centred mono label (`.sf-divider-data`) at 12px.
+- Every ambient layer multiplies `var(--sf-ambient)`. Text over video or imagery gets `.sf-scrim`.
 
 ---
 
 ### Animation Tokens
 
-```css
-:root {
-  --duration-instant: 100ms;
-  --duration-fast: 150ms;
-  --duration-normal: 200ms;
-  --duration-smooth: 300ms;
-  --duration-dramatic: 500ms;
+Motion runs 120–280ms. No springs, no overshoot, no reveals over 300ms outside ambient telemetry.
 
-  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --ease-spring: cubic-bezier(0.5, 1.5, 0.5, 1);
-}
-```
+| Tailwind | Value |
+|----------|-------|
+| `duration-fast` | 120ms |
+| `duration-base` | 180ms |
+| `duration-slow` | 280ms |
+| `duration-ambient` | 2400ms (ambient telemetry only) |
+| `ease-sf-out` | `cubic-bezier(0.2, 0, 0, 1)` |
+| `ease-sf-inout` | `cubic-bezier(0.4, 0, 0.2, 1)` |
+| `ease-sf-snap` | `cubic-bezier(0.6, 0, 0.1, 1)` |
+
+Use `transition-sf` for the property list. The legacy `--duration-*` and `--ease-out-back` / `--ease-spring` variables in `src/index.css` are not for new code. `prefers-reduced-motion` is handled globally in `tokens.css`.
 
 ---
 
@@ -574,40 +333,30 @@ The site has many always-on overlays. Use this stack so new chrome doesn't fight
 
 When building interactive canvas-based tools:
 
-**Note (updated 2026-07-09):** Legacy cyan is **RETIRED product-wide** (SF-II settled decision #3). Simulators now use the **product teal accent** (`#15C17B`, glow `#3DFFCD`) like every other surface; only the deeper canvas (`#09090B`) and slight panel radius remain simulator-specific. CI hard-fails on any legacy-cyan literal.
+Simulators follow the site-wide token rules (solid `sf-line-*` borders, four text tiers, `sf-primary` for interactive state, 120–280ms motion). Only two things are simulator-specific: the deeper canvas (`#09090B`) and `rounded-lg` chrome, per the Tidelock reference. Legacy cyan `#00D4FF` is retired product-wide (SF-II settled decision #3); CI hard-fails on it.
 
 #### Canvas Setup
 
-```javascript
-// Simulators use deeper black than site panels
-ctx.fillStyle = '#09090B';  // Simulator canvas background
+```typescript
+import { tokens } from '@/styles/tokens';
+
+// Simulators use a deeper black than the site void
+ctx.fillStyle = tokens.surface.simCanvas;  // #09090B
 ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 // Star field: 500 points, parallax at 0.04x camera rate
 // Sizes: 0.6-1.6px, brightness: 0.05-0.35 opacity
 ```
 
-#### Simulator Color Palette
+#### Simulator Colors
 
-```css
-/* Simulator-specific (teal accent since SF-II; cyan retired) */
---sim-bg: #09090B;
---sim-panel: rgba(15, 15, 16, 0.92);
---sim-accent: #15C17B;           /* Product teal for interactive elements */
---sim-accent-glow: rgba(61, 255, 205, 0.2);
-
-/* Status colors remain consistent */
---sim-warning: #FFA500;
---sim-success: #2ECC71;
---sim-danger: #E74C3C;
---sim-stellar: #FFD43B;
-```
+No `--sim-*` CSS variables exist and none should be added. DOM chrome uses the Tailwind tokens (`sf-primary`, `sf-line-*`, `t1`–`t4`, `sf-crimson` / `sf-amber` for status). Canvas and three.js draw loops, which cannot read CSS variables, import hex from `src/styles/tokens.ts` (`tokens.surface.simCanvas`, `tokens.surface.simPanel`, `tokens.sim.*`, `tokens.status.*`). `tokens.ts` is a hand-kept mirror; its text and panel values predate the solved palette, so prefer reading the CSS variable at runtime where you can. Data palettes (spectral classes, albedos) are not theme colours and belong in `src/lib/palettes/`. The old `#FFA500` / `#2ECC71` / `#E74C3C` / `#FFD43B` status hexes are legacy; do not add new uses.
 
 #### Panel Placement
 
 ```
 Top-left:      Tool title + status badge
-Left side:     Control panel (220-260px, scrollable)
+Left side:     Control panel (220-260px, scrollable, sf-sb)
 Top-right:     Data readout panel (240-260px)
 Bottom-right:  Zoom / viewport info
 Bottom-center: Timeline scrubber (if time-based)
@@ -615,40 +364,19 @@ Bottom-center: Timeline scrubber (if time-based)
 
 #### Simulator Panels
 
-```css
-/* Simulator panels use the legacy system */
-.sim-panel {
-  background: rgba(15, 15, 16, 0.92);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(16px);
-  border-radius: 8px;  /* Exception: simulator panels keep slight radius */
-  padding: 14px 18px;
-}
+```tsx
+<div className="rounded-lg border border-sf-line bg-sf-surface/90 backdrop-blur-sf-panel px-[18px] py-[14px]">
+  {/* rounded-lg is the documented simulator exception; everything else is site-wide */}
+</div>
 ```
 
 #### Status Badges
 
-```css
-/* Badge states use the product teal in simulators */
-.sim-badge-waiting {
-  background: rgba(21, 193, 123, 0.03);
-  border: 1px solid rgba(21, 193, 123, 0.08);
-  color: rgba(21, 193, 123, 0.4);
-}
+States are distinguished by colour **and** text or icon, never colour alone, and never by opacity:
 
-.sim-badge-active {
-  background: rgba(21, 193, 123, 0.08);
-  border: 1px solid rgba(21, 193, 123, 0.2);
-  color: #15C17B;
-}
-
-.sim-badge-danger {
-  background: rgba(231, 76, 60, 0.08);
-  border: 1px solid rgba(231, 76, 60, 0.2);
-  color: #E74C3C;
-  animation: pulse 1.5s infinite;
-}
-```
+- **Waiting**: `border-sf-line-interactive text-t3`
+- **Active**: `bg-sf-primary/[0.06] border-sf-primary text-sf-primary-text`
+- **Danger**: `bg-sf-crimson/[0.06] border-sf-crimson text-sf-crimson-text`, with an icon or `//` prefix. `animate-sf-pulse` is allowed.
 
 #### Transport Controls (Time-Based Sims)
 
@@ -815,14 +543,15 @@ function CardIcon({ category }: { category: ToolCategory }) {
 
 ### DO
 
-- Use the exact color values from the design system
-- Follow the 0.06/0.15/1.0 opacity pattern for glow elements
-- Use the 5-tier text hierarchy (never same brightness everywhere)
+- Use the generated tokens (`tokens.css` / `tailwind.config.ts`), never hex
+- Use `sf-primary` for roles (buttons, focus, selection, active nav, links) and named hues for meanings
+- Follow the glow pattern: tint fill, solid token border, accent `-text` colour
+- Use the four text tiers `t1`–`t4` (never same brightness everywhere)
 - Use MD Nichrome for H1 tool titles ONLY
 - Use Jura for section headers and nav
 - Use DM Sans for body text AND all buttons
 - Use JetBrains Mono for data, readouts, numbered badges
-- Use zero border-radius on GlassPanel and major containers
+- Use zero border-radius everywhere (exceptions: Tag 2px, simulator chrome `rounded-lg`)
 - Include hover states with bottom-edge fill bar animation
 - Make all worksheets exportable
 - Show cascade relationships between tools
@@ -835,14 +564,15 @@ function CardIcon({ category }: { category: ToolCategory }) {
 - **No Inter** — Forbidden anywhere. Use DM Sans, Jura, or MD Nichrome.
 - **No Nichrome on buttons** — All buttons use DM Sans (`font-sans`)
 - **No rounded corners on panels** — GlassPanel is `rounded-none`. Always.
-- **No bold text** — Use weight 300 (light) or 500 (medium). Never 700.
-- **No bright body text** — Tier-2 (#C8C8C8) max for running text. Tier-1 (#FAFAFA) for titles/results only.
-- **No glow colors in solid fills** — `--sf-teal-bright` is for box-shadow and ::before/::after only
+- **No bold text** — Never 700. 300/400/500 only; 600 is reserved for the generated `text-sf-eyebrow`.
+- **No faint body text** — Running text is `text-t1` or `text-t2`, never `text-t3`. See Legibility below.
+- **No glow colors in solid fills** — `*-bright` stops are for box-shadow and ::before/::after only
 - **No single muted plane** — Never put labels, units, and descriptions all at same brightness
+- **No alpha borders, no opacity for states, no `t5`, no tracking under 12px** — see Legibility below
 - Use colors outside the defined palette
 - Forget the backdrop-filter blur on floating panels
-- Use browser-default scrollbars
-- Make interactive elements smaller than 44px touch target
+- Use browser-default scrollbars (every scroll container gets `sf-sb`)
+- Make interactive elements smaller than 44px touch target (`min-h-hit`)
 - Use "Generative AI" terminology—use "AI-assisted" or "smart tools"
 
 ---
@@ -877,13 +607,13 @@ export function NewCalculator(): JSX.Element {
   return (
     <ToolLayout title="New Calculator" category="worlds">
       {/* H1 uses MD Nichrome */}
-      <h1 className="font-display text-3xl md:text-4xl tracking-sf-title text-tier-1">
+      <h1 className="font-display text-sf-h1 tracking-title text-t1">
         NEW CALCULATOR
       </h1>
 
       <GlassPanel glow>
         <ControlPanel>
-          {/* Labels use DM Sans, 11px, uppercase, tier-3 */}
+          {/* <Label>: DM Sans, 12px, 500, uppercase, t3 */}
           <Label>Planet Mass</Label>
           <Input type="number" value={inputs.mass} onChange={...} />
         </ControlPanel>
@@ -891,9 +621,9 @@ export function NewCalculator(): JSX.Element {
 
       <GlassPanel>
         <ResultsPanel>
-          {/* Results use JetBrains Mono, tier-1 */}
-          <span className="font-mono text-tier-1">{results.gravity}</span>
-          <span className="text-tier-4 text-xs">Earth gravities</span>
+          {/* Results use JetBrains Mono, t1; units t4 */}
+          <span className="font-mono text-t1">{results.gravity}</span>
+          <span className="text-t4 text-xs">Earth gravities</span>
         </ResultsPanel>
       </GlassPanel>
     </ToolLayout>
@@ -915,18 +645,18 @@ export function NewWorksheet(): JSX.Element {
       category="life"
       onExport={exportAs}
     >
-      {/* Section headers use Jura, green, tracked */}
+      {/* Section headers use Jura, uppercase, text-sf-eyebrow */}
       <CollapsibleSection
         title="ENVIRONMENTAL PRESSURES"
         levelNumber={1}
       >
-        {/* All labels: 11px, uppercase, tracking-[1.5px], tier-3 */}
+        {/* All labels: <Label>, 12px, uppercase, t3 */}
         <FormField label="Primary Challenge" required>
           <TextArea
             value={form.fieldOne}
             onChange={(v) => updateField('fieldOne', v)}
             placeholder="e.g., extreme gravity, radiation, temperature..."
-            className="rounded-xs"  /* 2px radius on inputs */
+            /* Inputs are zero-radius; defaults come from tokens.css */
           />
         </FormField>
       </CollapsibleSection>
@@ -939,7 +669,7 @@ export function NewWorksheet(): JSX.Element {
 
 ### Creating a New Simulator
 
-Follow SIMULATOR_AESTHETIC.md for the complete specification. Key differences from site-wide styles:
+Read `docs/stellarforge/11-SIMULATOR-CONSTELLATION.md` and the Simulator-Specific Guidelines above. (`simulators/Rogue/SIMULATOR_AESTHETIC.md` predates the cyan retirement and the solved palette; do not take colour values from it.) Key differences from site-wide styles:
 
 ```tsx
 // /src/components/tools/NewSimulator.tsx
@@ -954,7 +684,7 @@ export function NewSimulator(): JSX.Element {
     const ctx = canvasRef.current.getContext('2d');
 
     // Simulators use #09090B (darker than site --sf-void)
-    ctx.fillStyle = '#09090B';
+    ctx.fillStyle = tokens.surface.simCanvas;
     ctx.fillRect(0, 0, width, height);
 
     drawStarField(ctx, camera, dt);
@@ -971,9 +701,9 @@ export function NewSimulator(): JSX.Element {
 
       <Canvas ref={canvasRef} />
 
-      {/* Simulator panels keep slight border-radius; accent is product teal */}
+      {/* Simulator chrome keeps rounded-lg; interactive state uses sf-primary */}
       <ControlPanel className="rounded-lg">
-        {/* Sliders, buttons use the product teal accent */}
+        {/* Sliders, buttons use sf-primary like every other surface */}
       </ControlPanel>
 
       <DataPanel className="rounded-lg">
@@ -997,11 +727,11 @@ export function NewSimulator(): JSX.Element {
 
 | Aspect | Site-Wide | Simulators |
 |--------|-----------|------------|
-| Primary accent | Teal `#15C17B` | Teal `#15C17B` (cyan retired) |
-| Glow color | `#3DFFCD` | `#3DFFCD` at 0.2 alpha |
-| Background | `#0A0E17` (void) | `#09090B` (deeper) |
-| Panel radius | `rounded-none` | `rounded-lg` (8px) |
-| Panel background | `--sf-surface` at 0.9 | `rgba(15,15,16,0.92)` |
+| Primary accent | `sf-primary` | `sf-primary` (cyan retired) |
+| Glow | `sf-primary-bright` | `sf-primary-bright` |
+| Background | `sf-void` | `#09090B` canvas (`tokens.surface.simCanvas`) |
+| Panel radius | `rounded-none` | `rounded-lg` |
+| Panel border | `sf-line` | `sf-line` |
 
 ---
 
@@ -1099,39 +829,40 @@ Before committing:
 
 ## Quick Reference: Design Tokens
 
+Defaults for the Void·Teal theme. Source of truth: `src/styles/tokens.css` (generated). Use the Tailwind names, never the hex.
+
 ```css
-/* Backgrounds */
---sf-void: #0A0E17;           /* Page background */
---sf-surface: #0E1320;        /* Panel surfaces */
---sf-surface-elevated: #161C2B; /* Popovers */
+/* Planes: three, never four */
+--sf-void: #0A0E17;             /* bg-sf-void */
+--sf-surface: #1B2334;          /* bg-sf-surface */
+--sf-surface-elevated: #273249; /* bg-sf-surface-elevated */
 
-/* Primary Accent */
---sf-teal: #15C17B;           /* Solid fills, CTAs */
---sf-teal-bright: #3DFFCD;    /* Glow only (never solid) */
+/* Primary role (user-chosen; defaults to teal) */
+--sf-primary / --sf-primary-text / --sf-primary-bright / --sf-on-primary
 
-/* Text Tiers */
---sf-tier-1: #FAFAFA;         /* Titles, results only */
---sf-tier-2: #C8C8C8;         /* Body text */
---sf-tier-3: rgba(255,255,255,0.45); /* Labels */
---sf-tier-4: rgba(255,255,255,0.28); /* Units, helpers */
---sf-tier-5: rgba(255,255,255,0.15); /* Ghost text */
+/* Text tiers (t5 retired) */
+--t1: #FAFAFA;   /* text-t1  headings, results */
+--t2: #C9CDD3;   /* text-t2  body */
+--t3: #A7AAB0;   /* text-t3  secondary, labels */
+--t4: #9799A0;   /* text-t4  micro labels, units */
+
+/* Lines: solid, never alpha */
+--sf-line-hairline / --sf-line / --sf-line-interactive / --sf-line-emphasis
+
+/* States: colour, never opacity */
+--sf-disabled-bg / --sf-disabled-line / --sf-disabled-text / --sf-focus
 
 /* Fonts */
---sf-font-display: 'MD Nichrome';   /* H1 only */
---sf-font-heading: 'Jura';          /* Section headers */
---sf-font-sans: 'DM Sans';          /* Body, buttons */
---sf-font-mono: 'JetBrains Mono';   /* Data */
+font-display  MD Nichrome     H1 only
+font-heading  Jura            section headers, eyebrows, nav
+font-sans     DM Sans         body, buttons
+font-mono     JetBrains Mono  data
 
-/* Glow Pattern */
-background: hsl(accent / 0.06);
-border: 1px solid hsl(accent / 0.15);
-color: hsl(accent);
+/* Radius */
+rounded-none everywhere · rounded-sf-tag (2px) Tag · rounded-lg simulator chrome
 
-/* Border Radius */
-Panels: 0px (rounded-none)
-Secondary: 4px (rounded-md)
-Badges: 3px (rounded-sm)
-Inputs: 2px (rounded-xs)
+/* Motion */
+duration-fast 120ms · duration-base 180ms · duration-slow 280ms · ease-sf-out
 ```
 
 ---
@@ -1161,6 +892,7 @@ SANITY_API_TOKEN=xxxxx
 
 # Sentry (optional)
 VITE_SENTRY_DSN=https://xxxxx@xxxxx.ingest.sentry.io/xxxxx
+SENTRY_AUTH_TOKEN=xxxxx   # build-time only; enables source-map upload
 ```
 
 ---
@@ -1184,11 +916,14 @@ Update the list in [src/lib/sentry.ts](src/lib/sentry.ts) when a non-actionable 
 - `AbortError` / `The user aborted a request` — expected when users navigate away mid-fetch.
 - `NetworkError when attempting to fetch resource` / `Load failed` — Tanstack Query already retries these; only the unrecovered ones matter, and those get re-raised under different messages.
 
+### Source maps
+
+Source-map upload is wired in [vite.config.ts](vite.config.ts) via `@sentry/vite-plugin`, and runs **only when `SENTRY_AUTH_TOKEN` is set in the build environment** (build-time only, never `VITE_`-prefixed). With the token, the build emits `hidden` source maps, uploads them under the release `stellarforge@<APP_VERSION>` (matching `src/lib/sentry.ts`), deletes the `.map` files from `dist/`, and fails the build if the upload fails. Without the token, the plugin is not registered and no source maps are generated, so Sentry sees minified names like `Ft` instead of `PlanetaryProfile`.
+
 ### What's NOT yet wired
 
-- **Source-maps upload** (readable stack traces) is a follow-up. Requires a Sentry auth token (server-side, build-time only) and the `@sentry/vite-plugin`. Until that's added, Sentry sees minified function names like `Ft` and `Bt` instead of `PlanetaryProfile`.
 - **Session Replay** is intentionally off. Heavy on bandwidth and stylistically too "session recorder" for early access. Revisit if a bug is reproducible only via interaction recording.
-- **User identification** (`Sentry.setUser`) is not called automatically — events are anonymous by default. Add a `setUser({ id })` call from `AuthContext` when the Clerk migration lands and we want per-user error tracking.
+- **User identification** (`Sentry.setUser`) is not called automatically — events are anonymous by default. `src/lib/sentry.ts` exports `setUser`; call it with `{ id }` from `AuthContext` (Supabase Auth) if per-user error tracking is wanted. The Clerk migration was never started and is cancelled (see `docs/STACK-ARCHITECTURE.md`).
 
 ---
 
@@ -1295,7 +1030,7 @@ design handoff README. Summary of the rules most often broken:
 - Colour is a cascade layer: amber = Physics, stellar blue = Worlds,
   violet = Lore, crimson = Stop, teal = Integration. These never move.
 - **`sf-primary` is a role, `sf-teal` is a meaning.** Buttons, focus, selection,
-  active nav, links use `sf-primary` — the user chooses it (70 themes, all
+  active nav, links use `sf-primary` — the user chooses it (60 themes, all
   contrast-solved, `design/themes.py`). Never put a role on a named hue.
 - Tokens, never hardcoded hex.
 - Every scrollable container gets `sf-sb`.
