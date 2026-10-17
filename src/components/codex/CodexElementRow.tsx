@@ -138,7 +138,7 @@ const CodexElementRow = memo(({
       {element.kind === "writing" ? (
         <PenLine className="w-3 h-3 text-sf-stellar shrink-0" />
       ) : element.kind === "note" ? (
-        <StickyNote className="w-3 h-3 text-primary shrink-0" />
+        <StickyNote className="w-3 h-3 text-sf-primary-text shrink-0" />
       ) : element.kind === "entry" && element.type === "lore" ? (
         <Folder className="w-3 h-3 text-sf-amber shrink-0" />
       ) : element.kind === "entry" ? (

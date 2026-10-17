@@ -56,13 +56,13 @@ class ErrorBoundary extends Component<Props, State> {
                 aria-hidden
               />
 
-              <p className="font-mono text-[12px] tracking-[0.18em] text-sf-crimson-text uppercase mb-3">
+              <p className="font-mono text-[12px] tracking-wide text-sf-crimson-text uppercase mb-3">
                 // STATUS: FAULT
               </p>
-              <h1 className="font-display text-3xl md:text-4xl font-light uppercase tracking-sf-title text-t1 mb-4">
+              <h1 className="font-display text-3xl md:text-4xl font-light uppercase tracking-title text-t1 mb-4">
                 SYSTEM FAULT
               </h1>
-              <p className="font-mono text-[12px] tracking-[0.18em] uppercase text-t3 leading-relaxed mb-6">
+              <p className="font-mono text-[12px] tracking-wide uppercase text-t3 leading-relaxed mb-6">
                 {this.props.fallbackMessage ||
                   "AN UNEXPECTED CONDITION HAS BEEN ENCOUNTERED. INCIDENT LOGGED AUTOMATICALLY."}
               </p>
@@ -93,7 +93,7 @@ class ErrorBoundary extends Component<Props, State> {
               </div>
             </div>
 
-            <p className="font-mono text-[12px] tracking-[0.18em] text-t4 uppercase text-center">
+            <p className="font-mono text-[12px] tracking-wide text-t4 uppercase text-center">
               39.87°N · 104.97°W · INCIDENT-{Date.now().toString(36).toUpperCase().slice(-6)}
             </p>
           </div>

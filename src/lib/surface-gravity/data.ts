@@ -73,11 +73,11 @@ export interface CascadeCategory {
 // ─── Gravity Regime Thresholds ───────────────────────────────────────────────
 
 export const GRAVITY_REGIMES: { regime: GravityRegime; min: number; max: number; label: string; color: string }[] = [
-  { regime: "microgravity", min: 0, max: 0.3, label: "Microgravity", color: "text-blue-400" },
-  { regime: "low", min: 0.3, max: 0.7, label: "Low Gravity", color: "text-cyan-400" },
-  { regime: "earthlike", min: 0.7, max: 1.5, label: "Earth-like", color: "text-green-400" },
-  { regime: "high", min: 1.5, max: 3.0, label: "High Gravity", color: "text-amber-400" },
-  { regime: "extreme", min: 3.0, max: Infinity, label: "Extreme Gravity", color: "text-red-400" },
+  { regime: "microgravity", min: 0, max: 0.3, label: "Microgravity", color: "text-sf-azure-text" },
+  { regime: "low", min: 0.3, max: 0.7, label: "Low Gravity", color: "text-sf-stellar-text" },
+  { regime: "earthlike", min: 0.7, max: 1.5, label: "Earth-like", color: "text-sf-emerald-text" },
+  { regime: "high", min: 1.5, max: 3.0, label: "High Gravity", color: "text-sf-amber-text" },
+  { regime: "extreme", min: 3.0, max: Infinity, label: "Extreme Gravity", color: "text-sf-crimson-text" },
 ];
 
 export function getGravityRegimeInfo(g: number) {
@@ -277,31 +277,31 @@ export const DELTA_V_VERDICTS: DeltaVVerdict[] = [
   {
     maxDeltaV: 7,
     label: "Easy Access",
-    color: "text-green-400",
+    color: "text-sf-emerald-text",
     description: "Easier than Earth, your civilization reaches space with less effort. Expect early and widespread orbital infrastructure.",
   },
   {
     maxDeltaV: 12,
     label: "Comparable to Earth",
-    color: "text-cyan-400",
+    color: "text-sf-stellar-text",
     description: "Conventional rocketry works. Chemical propulsion can achieve orbit with practical mass ratios.",
   },
   {
     maxDeltaV: 20,
     label: "Significantly Harder",
-    color: "text-amber-400",
+    color: "text-sf-amber-text",
     description: "Requires advanced propulsion or orbital infrastructure. Space elevators, railguns, or nuclear thermal rockets become necessary. Chemical rockets alone are marginal.",
   },
   {
     maxDeltaV: 30,
     label: "Extremely Difficult",
-    color: "text-orange-400",
+    color: "text-sf-amber-warm-text",
     description: "Chemical rockets are essentially useless. Civilization may be gravity-locked without exotic technology. Consider space elevators, laser propulsion, or orbital tethers as civilization-defining megaprojects.",
   },
   {
     maxDeltaV: Infinity,
     label: "GRAVITY-LOCKED",
-    color: "text-red-400",
+    color: "text-sf-crimson-text",
     description: "Effectively trapped. Reaching orbit requires physics-breaking technology or external rescue. This is one of the most profound worldbuilding choices in hard SF, intelligent beings who can see the cosmos but are imprisoned by their own world's mass.",
   },
 ];

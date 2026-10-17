@@ -22,7 +22,7 @@ export default function TrackRow({
 
   return (
     <div
-      className={`group flex items-center gap-3 px-3 py-2 transition-colors hover:bg-white/[0.03] ${
+      className={`group flex items-center gap-3 px-3 py-2 transition-colors hover:bg-sf-surface-elevated ${
         isThis ? "bg-primary/[0.04]" : ""
       }`}
     >
@@ -32,7 +32,7 @@ export default function TrackRow({
           <button
             type="button"
             onClick={() => (isPlaying ? pause() : play(track))}
-            className="text-primary"
+            className="text-sf-primary-text"
             aria-label={isPlaying ? "Pause" : "Play"}
           >
             {isPlaying ? (
@@ -60,7 +60,7 @@ export default function TrackRow({
       <div className="min-w-0 flex-1">
         <p
           className={`text-sm truncate leading-tight ${
-            isThis ? "text-primary" : "text-t2"
+            isThis ? "text-sf-primary-text" : "text-t2"
           }`}
         >
           {track.title}
@@ -84,7 +84,7 @@ export default function TrackRow({
         <AddToPlaylistDialog track={track}>
           <button
             type="button"
-            className="p-1 text-t4 hover:text-primary opacity-0 group-hover:opacity-100 transition-all"
+            className="p-1 text-t4 hover:text-sf-primary-text transition-all"
             aria-label="Add to playlist"
           >
             <ListPlus className="w-3.5 h-3.5" />

@@ -236,13 +236,13 @@ const ToolPreviewCard = ({ id, title, description, status, isPro }: ToolPreviewC
   const route = getToolRoute(id);
 
   const card = (
-    <GlassPanel lightArc hover className={`p-5 h-full ${isPro ? 'opacity-90' : ''}`}>
+    <GlassPanel lightArc hover className="p-5 h-full">
       <div className="flex items-start justify-between mb-3">
         {CustomIcon ? (
-          <CustomIcon className="w-12 h-12 rounded-sm sf-card-icon" />
+          <CustomIcon className="w-12 h-12 rounded-none sf-card-icon" />
         ) : (
-          <div className={`w-12 h-12 rounded-sm flex items-center justify-center sf-card-icon ${
-            isPro ? 'bg-amber-500/10' : 'bg-primary/10'
+          <div className={`w-12 h-12 rounded-none flex items-center justify-center sf-card-icon ${
+            isPro ? 'bg-sf-amber/10' : 'bg-sf-primary/10'
           }`}>
             <span className="text-xl">?</span>
           </div>
@@ -252,7 +252,7 @@ const ToolPreviewCard = ({ id, title, description, status, isPro }: ToolPreviewC
           {status === "coming-soon" && (
             <Badge variant="secondary" className="text-xs">
               <Clock className="w-3 h-3 mr-1" />
-              Soon
+              SOON
             </Badge>
           )}
         </div>
@@ -285,7 +285,7 @@ const ToolShowcase = () => {
           variants={scrollReveal}
         >
           <h2 className="font-serif italic text-[26px] text-t1">Free forever</h2>
-          <Badge variant="secondary" className="bg-green-500/20 text-green-600 dark:text-green-400 sf-badge-enter">
+          <Badge variant="secondary" className="bg-sf-emerald/[0.06] border border-sf-emerald text-sf-emerald-text sf-badge-enter">
             <Check className="w-3 h-3 mr-1" />
             {freeTools.length} Tools
           </Badge>
@@ -315,7 +315,7 @@ const ToolShowcase = () => {
           variants={scrollReveal}
         >
           <h2 className="font-serif italic text-[26px] text-t1">Pro tools</h2>
-          <Badge variant="secondary" className="bg-amber-500/20 text-sf-amber dark:text-sf-amber sf-badge-enter">
+          <Badge variant="secondary" className="bg-sf-amber/[0.06] border border-sf-amber text-sf-amber-text sf-badge-enter">
             <Zap className="w-3 h-3 mr-1" />
             {proTools.length} Tools
           </Badge>
@@ -345,7 +345,7 @@ const ToolShowcase = () => {
           variants={scrollReveal}
         >
           <h2 className="font-serif italic text-[26px] text-t1">Simulators</h2>
-          <Badge variant="secondary" className="bg-amber-500/20 text-sf-amber dark:text-sf-amber sf-badge-enter">
+          <Badge variant="secondary" className="bg-sf-amber/[0.06] border border-sf-amber text-sf-amber-text sf-badge-enter">
             <Zap className="w-3 h-3 mr-1" />
             {simulators.length} Pro
           </Badge>
@@ -375,14 +375,14 @@ const ToolShowcase = () => {
           variants={scrollReveal}
         >
           <h2 className="font-serif italic text-[26px] text-t1">Coming soon</h2>
-          <Badge variant="secondary" className="bg-blue-500/20 text-blue-600 dark:text-blue-400 sf-badge-enter">
+          <Badge variant="secondary" className="bg-sf-azure/[0.06] border border-sf-azure text-sf-azure-text sf-badge-enter">
             <Hourglass className="w-3 h-3 mr-1" />
             {comingSoonCount} Planned
           </Badge>
         </motion.div>
         {comingSoonByCategory.map((cat) => (
           <div key={cat.category} className="mb-8 last:mb-0">
-            <h3 className="font-heading font-light text-sm uppercase tracking-sf-wide text-t3 mb-4">
+            <h3 className="font-heading font-light text-sm uppercase tracking-wide text-t3 mb-4">
               {cat.category}
             </h3>
             <motion.div
@@ -394,12 +394,12 @@ const ToolShowcase = () => {
             >
               {cat.items.map((tool) => (
                 <motion.div key={tool.title} variants={fadeUpItem}>
-                  <GlassPanel className="p-4 border-dashed border border-muted opacity-70">
+                  <GlassPanel className="p-4 border-dashed border border-sf-disabled-line bg-sf-disabled-bg">
                     <div className="flex items-center justify-between mb-1">
-                      <h4 className="font-heading font-light text-sm">{tool.title}</h4>
-                      <Badge variant="outline" className="text-[12px] shrink-0">Soon</Badge>
+                      <h4 className="font-heading font-light text-sm text-t3">{tool.title}</h4>
+                      <Badge variant="outline" className="text-xs shrink-0">SOON</Badge>
                     </div>
-                    <p className="text-xs text-t3">{tool.subtitle}</p>
+                    <p className="text-xs text-t4">{tool.subtitle}</p>
                   </GlassPanel>
                 </motion.div>
               ))}

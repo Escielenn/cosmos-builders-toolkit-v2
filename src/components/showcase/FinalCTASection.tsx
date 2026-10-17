@@ -13,7 +13,7 @@ const FinalCTASection = () => {
           {[...Array(20)].map((_, i) => (
             <div
               key={i}
-              className="absolute w-1 h-1 bg-white/20 rounded-full"
+              className="absolute w-1 h-1 bg-t1/20 rounded-full"
               style={{
                 left: `${Math.random() * 100}%`,
                 top: `${Math.random() * 100}%`,
@@ -24,7 +24,7 @@ const FinalCTASection = () => {
           ))}
         </div>
 
-        <h2 className="font-display font-light text-3xl md:text-4xl lg:text-5xl uppercase tracking-sf-wide mb-6 relative">
+        <h2 className="font-display font-light text-3xl md:text-4xl lg:text-5xl uppercase tracking-wide mb-6 relative">
           ALL INSTRUMENTS
           <br />
           <span className="gradient-text">ON STANDBY.</span>
@@ -56,9 +56,9 @@ const FinalCTASection = () => {
         </div>
 
         <div className="mt-8 flex flex-wrap gap-6 justify-center text-sm text-t3 relative">
-          <span className="inline-flex items-center gap-1.5"><Check className="w-4 h-4 text-primary" aria-hidden="true" />{FREE_TOOL_COUNT} tools free forever</span>
-          <span className="inline-flex items-center gap-1.5"><Check className="w-4 h-4 text-primary" aria-hidden="true" />No credit card required</span>
-          <span className="inline-flex items-center gap-1.5"><Check className="w-4 h-4 text-primary" aria-hidden="true" />Export your work anytime</span>
+          <span className="inline-flex items-center gap-1.5"><Check className="w-4 h-4 text-sf-primary-text" aria-hidden="true" />{FREE_TOOL_COUNT} tools free forever</span>
+          <span className="inline-flex items-center gap-1.5"><Check className="w-4 h-4 text-sf-primary-text" aria-hidden="true" />No credit card required</span>
+          <span className="inline-flex items-center gap-1.5"><Check className="w-4 h-4 text-sf-primary-text" aria-hidden="true" />Export your work anytime</span>
         </div>
       </GlassPanel>
     </section>

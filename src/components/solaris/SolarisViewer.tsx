@@ -106,13 +106,10 @@ export default function SolarisViewer({
     <div className="relative w-full" style={{ height }}>
       {/* Title block */}
       <div className="absolute top-3 left-3 z-10 pointer-events-none">
-        <p
-          className="font-heading text-[22px] uppercase tracking-[6px] text-white/90"
-          style={{ fontWeight: 300 }}
-        >
+        <h1 className="font-display text-[24px] font-light uppercase tracking-ultra text-t1">
           SOLARIS
-        </p>
-        <p className="font-sans text-[12px] uppercase tracking-[2px] text-white/[0.28]">
+        </h1>
+        <p className="font-sans text-[12px] uppercase tracking-wide text-t4">
           STELLARFORGE.TOOLS
         </p>
       </div>
@@ -168,19 +165,20 @@ export default function SolarisViewer({
             type="button"
             onClick={() => setShowKeys((v) => !v)}
             title="Keyboard shortcuts (?)"
+            aria-label="Keyboard shortcuts"
             aria-pressed={showKeys}
-            className={`absolute bottom-3 right-3 z-20 min-w-[30px] border px-2 py-1 font-mono text-[12px] backdrop-blur-sm transition-colors ${
+            className={`absolute bottom-3 right-3 z-20 min-h-hit min-w-hit border px-2 py-1 font-mono text-[12px] backdrop-blur-sf-panel transition-colors duration-base ${
               showKeys
-                ? "border-sf-primary bg-sf-primary/25 text-white"
-                : "border-sf-line-interactive bg-[rgba(13,13,15,0.94)] text-white/80 hover:text-white"
+                ? "border-sf-primary bg-sf-primary/[0.12] text-t1"
+                : "border-sf-line-interactive bg-sf-surface/90 text-t2 hover:text-t1"
             }`}
           >
             ?
           </button>
 
           {showKeys && (
-            <div className="absolute bottom-14 right-3 z-30 w-[228px] border border-sf-line bg-[rgba(13,13,15,0.97)] p-3 backdrop-blur-sm">
-              <span className="mb-2 block font-mono text-[12px] uppercase tracking-[2px] text-sf-primary-bright/80">
+            <div className="absolute bottom-[60px] right-3 z-30 w-[228px] border border-sf-line bg-sf-surface-elevated p-3 backdrop-blur-sf-panel">
+              <span className="mb-2 block font-mono text-[12px] uppercase tracking-wide text-sf-primary-text">
                 Keyboard
               </span>
               {[
@@ -193,8 +191,8 @@ export default function SolarisViewer({
                 ["?", "This list"],
               ].map(([k, what]) => (
                 <div key={k} className="flex items-baseline justify-between gap-3 py-0.5">
-                  <span className="shrink-0 font-mono text-[12px] text-sf-primary-bright">{k}</span>
-                  <span className="text-right text-[12px] text-white/75">{what}</span>
+                  <span className="shrink-0 font-mono text-[12px] text-sf-primary-text">{k}</span>
+                  <span className="text-right text-[12px] text-t2">{what}</span>
                 </div>
               ))}
             </div>

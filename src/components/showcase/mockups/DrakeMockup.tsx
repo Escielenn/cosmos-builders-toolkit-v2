@@ -27,7 +27,7 @@ const DrakeMockup = () => {
         <div className="text-xs text-t3 uppercase tracking-wider mb-1">
           Drake Equation
         </div>
-        <div className="text-2xl md:text-4xl font-display font-light text-sf-cyan">
+        <div className="text-2xl md:text-4xl font-mono text-sf-primary-text">
           N = <span style={{ animation: "pulse-value 2s ease-in-out infinite" }}>{nValue}</span>
         </div>
         <div className="text-xs text-t3 mt-1">
@@ -48,9 +48,9 @@ const DrakeMockup = () => {
 
       {/* Interpretation badge */}
       <div className="mt-4 flex justify-center">
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-sf-cyan/10 border border-sf-primary">
-          <div className="w-2 h-2 bg-sf-cyan animate-pulse" />
-          <span className="text-xs text-sf-cyan uppercase tracking-wider">
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-sf-primary/10 border border-sf-primary">
+          <div className="w-2 h-2 bg-sf-primary animate-pulse" />
+          <span className="text-xs text-sf-primary-text uppercase tracking-wider">
             Space Opera Setting
           </span>
         </div>
@@ -70,13 +70,13 @@ const SliderRow = ({ label, description, delay }: SliderRowProps) => {
     <div className="flex items-center gap-3">
       {/* Label */}
       <div className="w-8 text-right">
-        <span className="text-xs font-mono text-sf-cyan">{label}</span>
+        <span className="text-xs font-mono text-sf-primary-text">{label}</span>
       </div>
 
       {/* Slider track */}
-      <div className="flex-1 h-2 bg-sf-surface rounded-full overflow-hidden">
+      <div className="flex-1 h-2 bg-sf-surface rounded-none overflow-hidden">
         <div
-          className="h-full bg-gradient-to-r from-sf-cyan/50 to-sf-cyan rounded-full"
+          className="h-full bg-gradient-to-r from-sf-primary/50 to-sf-primary"
           style={{
             animation: `slide-value 4s ease-in-out infinite`,
             animationDelay: `${delay}s`,
@@ -86,7 +86,7 @@ const SliderRow = ({ label, description, delay }: SliderRowProps) => {
 
       {/* Description */}
       <div className="w-24 hidden md:block">
-        <span className="text-[12px] text-t3 truncate">
+        <span className="text-xs text-t3 truncate">
           {description}
         </span>
       </div>

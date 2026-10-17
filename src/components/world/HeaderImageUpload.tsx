@@ -117,7 +117,7 @@ const HeaderImageUpload = ({
             className="w-full h-full object-cover"
             style={{ objectPosition: `center ${focusY ?? 50}%` }}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end justify-between p-3">
+          <div className="absolute inset-0 bg-gradient-to-t from-[color:var(--sf-scrim)] to-transparent flex items-end justify-between p-3">
             <div className="flex gap-2">
               <Button
                 type="button"

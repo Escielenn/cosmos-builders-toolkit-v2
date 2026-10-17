@@ -11,7 +11,7 @@ const PropulsionMockup = () => {
 
   const propulsionTypes = [
     { name: "Fusion Torch", speed: "0.1c", color: "sf-amber" },
-    { name: "Alcubierre", speed: "FTL", color: "sf-cyan" },
+    { name: "Alcubierre", speed: "FTL", color: "sf-teal" },
     { name: "Generation Ship", speed: "0.01c", color: "sf-emerald" },
   ];
 
@@ -63,21 +63,19 @@ const PropulsionMockup = () => {
       {/* Propulsion selector */}
       <div className="flex gap-2 mb-4">
         {propulsionTypes.map((type, index) => (
-          <button
+          <div
             key={type.name}
-            className={`flex-1 px-2 py-1.5 rounded-none border text-[12px] transition-all duration-300 ${
-              index === activeType
-                ? `border-${type.color}/50 bg-${type.color}/10`
-                : "border-muted bg-transparent opacity-50"
+            className={`flex-1 px-2 py-1.5 rounded-none border text-xs transition-colors duration-slow ${
+              index === activeType ? "" : "border-sf-line bg-transparent text-t4"
             }`}
             style={{
               borderColor:
                 index === activeType
-                  ? `hsl(var(--${type.color}) / 0.5)`
+                  ? `var(--${type.color})`
                   : undefined,
               backgroundColor:
                 index === activeType
-                  ? `hsl(var(--${type.color}) / 0.1)`
+                  ? `rgb(var(--${type.color}-rgb) / 0.1)`
                   : undefined,
             }}
           >
@@ -86,14 +84,14 @@ const PropulsionMockup = () => {
               style={{
                 color:
                   index === activeType
-                    ? `hsl(var(--${type.color}))`
+                    ? `var(--${type.color}-text)`
                     : undefined,
               }}
             >
               {type.name}
             </div>
-            <div className="text-[12px] text-t3">{type.speed}</div>
-          </button>
+            <div className="text-xs text-t3">{type.speed}</div>
+          </div>
         ))}
       </div>
 
@@ -101,18 +99,18 @@ const PropulsionMockup = () => {
       <div className="flex-1 flex items-center justify-center relative">
         {/* Central propulsion node */}
         <div
-          className="w-16 h-16 border-2 flex items-center justify-center z-10 transition-all duration-500"
+          className="w-16 h-16 border-2 flex items-center justify-center z-10 transition-all duration-slow"
           style={{
-            borderColor: `hsl(var(--${propulsionTypes[activeType].color}))`,
-            backgroundColor: `hsl(var(--${propulsionTypes[activeType].color}) / 0.1)`,
-            boxShadow: `0 0 30px hsl(var(--${propulsionTypes[activeType].color}) / 0.3)`,
+            borderColor: `var(--${propulsionTypes[activeType].color})`,
+            backgroundColor: `rgb(var(--${propulsionTypes[activeType].color}-rgb) / 0.1)`,
+            boxShadow: `0 0 30px rgb(var(--${propulsionTypes[activeType].color}-rgb) / 0.3)`,
           }}
         >
           <div className="text-center">
             <Rocket className="w-5 h-5 mx-auto" aria-hidden="true" />
             <div
-              className="text-[12px] font-mono"
-              style={{ color: `hsl(var(--${propulsionTypes[activeType].color}))` }}
+              className="text-xs font-mono"
+              style={{ color: `var(--${propulsionTypes[activeType].color}-text)` }}
             >
               {propulsionTypes[activeType].speed}
             </div>
@@ -130,7 +128,7 @@ const PropulsionMockup = () => {
           return (
             <div
               key={`${activeType}-${index}`}
-              className={`absolute transition-all duration-500 ${
+              className={`absolute transition-all duration-slow ${
                 isVisible ? "opacity-100 scale-100" : "opacity-0 scale-75"
               }`}
               style={{
@@ -155,21 +153,21 @@ const PropulsionMockup = () => {
                   y1="1"
                   x2="60"
                   y2="1"
-                  stroke={`hsl(var(--${propulsionTypes[activeType].color}) / 0.5)`}
+                  stroke={`rgb(var(--${propulsionTypes[activeType].color}-rgb) / 0.5)`}
                   strokeWidth="1"
                   strokeDasharray={isVisible ? "60" : "0"}
                   style={{
-                    transition: "stroke-dasharray 0.5s ease-out",
+                    transition: "stroke-dasharray 280ms cubic-bezier(0.2, 0, 0, 1)",
                   }}
                 />
               </svg>
 
               {/* Consequence card */}
-              <div className="w-24 bg-sf-surface border border-muted rounded-none p-2 text-center">
-                <div className="text-[12px] text-t3 uppercase tracking-wider">
+              <div className="w-24 bg-sf-surface border border-sf-line rounded-none p-2 text-center">
+                <div className="text-xs text-t3 uppercase tracking-wider">
                   {consequence.domain}
                 </div>
-                <div className="text-[12px] text-t1 mt-0.5">
+                <div className="text-xs text-t1 mt-0.5">
                   {consequence.effect}
                 </div>
               </div>
@@ -183,7 +181,7 @@ const PropulsionMockup = () => {
         {["Economic", "Political", "Social"].map((domain) => (
           <div
             key={domain}
-            className="px-2 py-1 rounded border border-muted text-[12px] text-t3"
+            className="px-2 py-1 rounded-none border border-sf-line text-xs text-t3"
           >
             {domain}
           </div>

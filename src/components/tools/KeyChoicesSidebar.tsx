@@ -78,7 +78,7 @@ const KeyChoicesSidebar = ({
 
   const SidebarContent = () => (
     <>
-      <h4 className="font-mono text-[12px] tracking-[2px] uppercase text-t3/60 mb-3 flex items-center gap-2">
+      <h4 className="font-mono text-[12px] tracking-[0.12em] uppercase text-t4 mb-3 flex items-center gap-2">
         <ClipboardList className="w-3.5 h-3.5" />
         // READOUT
       </h4>
@@ -191,7 +191,7 @@ const KeyChoicesSidebar = ({
               className="rounded-none w-auto h-auto px-3 py-2.5 shadow-lg bg-background/80 backdrop-blur-sm"
             >
               <ClipboardList className="w-4 h-4 mr-2" />
-              <span className="text-[12px] tracking-[1.5px] uppercase font-heading">READOUT</span>
+              <span className="text-[12px] tracking-[0.12em] uppercase font-heading">READOUT</span>
             </Button>
           </SheetTrigger>
           <SheetContent
@@ -264,12 +264,12 @@ export const MobileKeyChoices = ({
           className="rounded-none w-auto h-auto px-3 py-2.5 shadow-lg bg-background/80 backdrop-blur-sm"
         >
           <ClipboardList className="w-4 h-4 mr-2" />
-          <span className="text-[12px] tracking-[1.5px] uppercase font-heading">READOUT</span>
+          <span className="text-[12px] tracking-[0.12em] uppercase font-heading">READOUT</span>
         </Button>
       </SheetTrigger>
       <SheetContent side="right" className="w-72 bg-background/95 backdrop-blur-lg">
         <div className="pt-6">
-          <h4 className="font-mono text-[12px] tracking-[2px] uppercase text-t3/60 mb-3 flex items-center gap-2">
+          <h4 className="font-mono text-[12px] tracking-[0.12em] uppercase text-t4 mb-3 flex items-center gap-2">
             <ClipboardList className="w-3.5 h-3.5" />
             // READOUT
           </h4>
@@ -318,7 +318,7 @@ export const MobileKeyChoices = ({
                                 {choice.value.map((v, i) => (
                                   <li
                                     key={i}
-                                    className="sf-readout-value before:content-['•'] before:mr-1 before:text-[rgba(255,179,71,0.4)]"
+                                    className="sf-readout-value before:content-['•'] before:mr-1 before:text-sf-amber-warm"
                                   >
                                     {v}
                                   </li>

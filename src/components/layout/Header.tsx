@@ -138,11 +138,11 @@ const Header = () => {
                   logged-out visitors during OPEN EARLY ACCESS); SF
                   abbreviation below xl for compact layouts. */}
               <Wordmark size="md" className="hidden xl:inline-flex" />
-              <span className="xl:hidden font-display text-lg font-light tracking-sf-wide text-t1 uppercase">
+              <span className="xl:hidden font-display text-lg font-light tracking-wide text-t1 uppercase">
                 SF
               </span>
             </Link>
-            <span className="hidden xl:block font-sans text-[12px] font-light tracking-[0.5px] text-white/20 ml-[42px] -mt-1">
+            <span className="hidden xl:block font-mono text-xs text-t4 ml-[42px] -mt-1">
               v{APP_VERSION}
             </span>
           </div>
@@ -170,7 +170,7 @@ const Header = () => {
               <SheetHeader className="text-left">
                 <SheetTitle className="flex items-center gap-3">
                   <CubeLogo size={32} className="rounded-none" />   {/* sheet header */}
-                  <span className="font-display text-sm font-light tracking-sf-wide text-t1 uppercase">
+                  <span className="font-display text-sm font-light tracking-wide text-t1 uppercase">
                     SF
                   </span>
                 </SheetTitle>
@@ -178,7 +178,7 @@ const Header = () => {
               <nav className="flex flex-col gap-1 mt-8">
                 {MOBILE_NAV.map((group) => (
                   <div key={group.heading} className="mb-4 last:mb-0">
-                    <p className="font-heading text-[12px] font-medium uppercase tracking-[2px] text-t3 px-3 mb-1.5 pb-1.5 border-b border-sf-line">
+                    <p className="font-heading text-[12px] font-medium uppercase tracking-wide text-t3 px-3 mb-1.5 pb-1.5 border-b border-sf-line">
                       {group.heading}
                     </p>
                     {group.items.map((item) => {
@@ -199,7 +199,7 @@ const Header = () => {
                 ))}
                 {!isSubscribed && (
                   <div className="mb-0">
-                    <p className="font-heading text-[12px] font-medium uppercase tracking-[2px] text-t3 px-3 mb-1.5 pb-1.5 border-b border-sf-line">
+                    <p className="font-heading text-[12px] font-medium uppercase tracking-wide text-t3 px-3 mb-1.5 pb-1.5 border-b border-sf-line">
                       Upgrade
                     </p>
                     <Link
@@ -240,11 +240,12 @@ const Header = () => {
           <AudioSelectorDialog />
           <BackgroundSelector />
           <button
-            className="sf-nav-link inline-flex items-center justify-center gap-2 h-9 px-2 text-t3 hover:text-primary transition-colors"
+            className="sf-nav-link inline-flex items-center justify-center gap-2 h-9 px-2 text-t3 hover:text-sf-primary-text transition-colors"
             onClick={() => setSearchOpen(true)}
+            aria-label="Search"
           >
-            <Search className="w-4 h-4 relative z-[1]" />
-            <kbd className="hidden sm:inline-flex h-5 items-center gap-1 rounded border border-sf-line-interactive bg-muted/50 px-1.5 font-mono text-[12px] font-medium text-t3 relative z-[1]">
+            <Search className="w-4 h-4 relative z-[1]" aria-hidden="true" />
+            <kbd className="hidden sm:inline-flex h-5 items-center gap-1 rounded-none border border-sf-line-interactive bg-sf-surface px-1.5 font-mono text-[12px] font-medium text-t3 relative z-[1]">
               {isMac ? <span className="text-xs">⌘</span> : <span className="text-xs">Ctrl</span>}K
             </kbd>
           </button>
@@ -273,7 +274,7 @@ const Header = () => {
           {!loading && user ? (
             <DropdownMenu modal={false}>
               <DropdownMenuTrigger asChild>
-                <button className="sf-nav-link inline-flex items-center gap-2 px-2 h-9 text-t2 hover:text-primary transition-colors">
+                <button className="sf-nav-link inline-flex items-center gap-2 px-2 h-9 text-t2 hover:text-sf-primary-text transition-colors">
                   <Avatar className="w-7 h-7 shrink-0 relative z-[1]">
                     <AvatarImage src={profile?.avatar_url || undefined} />
                     <AvatarFallback className="text-xs">{initials}</AvatarFallback>
@@ -282,12 +283,12 @@ const Header = () => {
                     {profile?.display_name || user.email?.split("@")[0]}
                   </span>
                   {isVanguard ? (
-                    <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-sf-tag font-mono text-[12px] uppercase tracking-[0.10em] bg-sf-violet/[0.06] border border-sf-violet text-sf-violet-text sf-shimmer-violet relative z-[1]">
+                    <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-sf-tag font-mono text-[12px] uppercase tracking-wide bg-sf-violet/[0.06] border border-sf-violet text-sf-violet-text sf-shimmer-violet relative z-[1]">
                       <Sparkles className="w-3 h-3" />
                       Vanguard
                     </span>
                   ) : isSubscribed ? (
-                    <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-sf-tag font-mono text-[12px] uppercase tracking-[0.10em] bg-sf-violet/[0.06] border border-sf-violet text-sf-violet-text sf-shimmer relative z-[1]">
+                    <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-sf-tag font-mono text-[12px] uppercase tracking-wide bg-sf-violet/[0.06] border border-sf-violet text-sf-violet-text sf-shimmer relative z-[1]">
                       <Zap className="w-3 h-3" />
                       Pro
                     </span>

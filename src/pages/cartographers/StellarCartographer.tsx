@@ -1,5 +1,6 @@
 import { lazy, Suspense } from "react";
 import { Loader } from "@/components/ui/loader";
+import { useMetaTags } from "@/hooks/use-meta-tags";
 import Header from "@/components/layout/Header";
 
 const StellarCartographerComponent = lazy(
@@ -8,16 +9,12 @@ const StellarCartographerComponent = lazy(
 
 const SimLoader = () => (
   <div className="w-full h-full flex items-center justify-center bg-background">
-    <div className="text-center">
-      <Loader className="mb-3" />
-      <p className="text-xs text-white/40 font-mono tracking-widest uppercase">
-        Loading Stellar Cartographer
-      </p>
-    </div>
+    <Loader message="LOADING STELLAR CARTOGRAPHER" />
   </div>
 );
 
 const StellarCartographer = () => {
+  useMetaTags({ title: "Stellar Cartographer" });
   return (
     <div className="min-h-screen bg-background">
       <Header />

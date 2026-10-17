@@ -92,6 +92,7 @@ export function ParallaxStrips({
       }}
       aria-hidden
     >
+      <div className="sf-strips-text absolute inset-0">
       {strips.map((s, i) => (
         <div
           key={i}
@@ -107,6 +108,7 @@ export function ParallaxStrips({
           {s.text}&nbsp;&nbsp;·&nbsp;&nbsp;{s.text}
         </div>
       ))}
+      </div>
     </div>
   );
 }

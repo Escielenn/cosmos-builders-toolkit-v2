@@ -37,17 +37,17 @@ export const CookieConsent = () => {
   if (!showBanner) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 p-4 animate-in slide-in-from-bottom-4 duration-300">
+    <div className="fixed bottom-0 left-0 right-0 z-50 p-4 animate-in slide-in-from-bottom-4 duration-slow">
       <div className="container mx-auto max-w-4xl">
         <div className="rounded-none p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4 border border-sf-line bg-sf-surface/95 backdrop-blur-xl shadow-2xl">
-          <Cookie className="w-8 h-8 text-primary flex-shrink-0 hidden sm:block" />
+          <Cookie className="w-8 h-8 text-sf-primary-text flex-shrink-0 hidden sm:block" />
 
           <div className="flex-1">
             <h3 className="font-medium text-sm text-t1 mb-1">Cookie Notice</h3>
             <p className="text-xs text-t3 leading-relaxed">
               Essential cookies required for authentication and session management.
               No tracking cookies deployed. No third-party data sharing.{" "}
-              <Link to="/privacy" className="text-primary hover:underline">
+              <Link to="/privacy" className="text-sf-primary-text hover:underline">
                 Learn more
               </Link>
             </p>

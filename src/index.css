@@ -688,7 +688,7 @@ html {
     pointer-events: none;
     border-style: solid;
     border-color: var(--sf-line);
-    transition: border-color 0.3s ease;
+    transition: border-color 0.28s ease;
   }
 
   .sf-bracket-tl { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
@@ -1047,8 +1047,10 @@ html {
   text-shadow: 0 0 8px rgba(255, 179, 71, 0.1);
 }
 
-/* Hide margin + edge variants on mobile */
-@media (max-width: 767px) {
+/* Margin + edge variants live in the page gutter. Below 1600px the content
+   column reaches the gutter and they collide with headings and body copy,
+   so they only appear where a real gutter exists. */
+@media (max-width: 1599px) {
   .sf-data-burst--margin,
   .sf-data-burst--edge {
     display: none;
@@ -2127,7 +2129,7 @@ html {
   height: 100%;
   background: var(--sf-primary-bright);
   border-radius: 0px;
-  transition: width 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+  transition: width 0.28s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 /* Indeterminate — fill sweeps back and forth */
@@ -2242,7 +2244,7 @@ html {
 .sf-loading-screen.loaded {
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.4s ease;
+  transition: opacity 0.28s ease;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
@@ -2279,7 +2281,7 @@ html {
   height: 100%;
   background: var(--sf-primary-bright);
   width: 0%;
-  transition: width 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+  transition: width 0.28s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 /* Reaches ~85% quickly, then waits for completion */
@@ -2296,7 +2298,7 @@ html {
 
 .sf-top-progress.complete {
   opacity: 0;
-  transition: opacity 0.3s ease 0.2s;
+  transition: opacity 0.28s ease 0.12s;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
@@ -2507,7 +2509,7 @@ html {
   background: var(--sf-stellar);
   transform: scaleX(0);
   transform-origin: left;
-  transition: transform 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+  transition: transform 0.28s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 .sf-wiki-link:hover::after {
@@ -2934,7 +2936,7 @@ html {
   letter-spacing: 1px;
   text-transform: uppercase;
   color: rgba(var(--sf-world-accent-rgb, 61, 255, 205), 0.5);
-  transition: opacity 0.3s ease;
+  transition: opacity 0.28s ease;
 }
 
 /* Cover image upload (legacy — kept for potential future use) */
@@ -3048,7 +3050,7 @@ html {
   width: 100%;
   position: relative;
   cursor: pointer;
-  transition: border-color 0.3s ease;
+  transition: border-color 0.28s ease;
 }
 
 /* Layer-colored edge accents — left cards get left edge */
@@ -3078,7 +3080,7 @@ html {
   background: currentColor;
   transform: scaleX(0);
   transform-origin: left;
-  transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+  transition: transform 0.28s cubic-bezier(0.19, 1, 0.22, 1);
   opacity: 0.3;
 }
 
@@ -3386,4 +3388,17 @@ html {
   height: 1px;
   background: linear-gradient(to right, transparent, rgb(var(--sf-primary-bright-rgb) / 0.25), transparent);
   pointer-events: none;
+}
+
+/* ParallaxStrips: telemetry never runs behind the headline or body copy.
+   Heroes are left-aligned, so on wide screens the strips fade in to the
+   right of the text column; on narrow screens the column is the full
+   width, so the text strips are masked out and only the plane gradient
+   remains. */
+.sf-strips-text {
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, transparent 42%, #000 82%);
+  mask-image: linear-gradient(90deg, transparent 0%, transparent 42%, #000 82%);
+}
+@media (max-width: 767px) {
+  .sf-strips-text { visibility: hidden; }
 }

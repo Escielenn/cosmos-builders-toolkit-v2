@@ -442,13 +442,13 @@ const WorldExportDialog = ({
                             <img
                               src={connection.workspace_icon}
                               alt=""
-                              className="w-6 h-6 rounded flex-shrink-0"
+                              className="w-6 h-6 rounded-none flex-shrink-0"
                             />
                           ) : (
                             <span className="text-lg flex-shrink-0">{connection.workspace_icon}</span>
                           )
                         ) : (
-                          <div className="w-6 h-6 rounded bg-primary/20 flex items-center justify-center flex-shrink-0">
+                          <div className="w-6 h-6 rounded-none bg-primary/20 flex items-center justify-center flex-shrink-0">
                             <ExternalLink className="w-3 h-3" />
                           </div>
                         )}
@@ -472,7 +472,7 @@ const WorldExportDialog = ({
                     <img
                       src="https://www.notion.so/images/favicon.ico"
                       alt="Notion"
-                      className="w-12 h-12 mx-auto opacity-50"
+                      className="w-12 h-12 mx-auto text-t4"
                     />
                     <p className="text-t2">
                       Connect your Notion workspace to export worlds directly as pages.

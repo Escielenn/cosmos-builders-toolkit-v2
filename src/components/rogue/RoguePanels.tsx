@@ -32,17 +32,20 @@ import type { EncounterStatus } from "@/lib/simulators/nbody";
 
 const S = {
   panelBase:
-    "absolute z-20 w-[268px] max-w-[calc(100vw-24px)] bg-[rgba(13,13,15,0.94)] border border-sf-line backdrop-blur-[16px] rounded-none p-3 overflow-y-auto sf-sb",
-  sec: "font-mono text-[13px] uppercase tracking-[2px] text-sf-primary-bright/80 mb-1.5 block",
-  chip: "px-2 py-1 text-[12px] uppercase tracking-wide border rounded-none transition-colors min-h-[26px]",
+    "absolute z-20 w-[268px] max-w-[calc(100vw-24px)] bg-sf-surface/90 border border-sf-line backdrop-blur-sf-panel rounded-none p-3 overflow-y-auto sf-sb",
+  sec: "font-mono text-[13px] uppercase tracking-wide text-sf-primary-text mb-1.5 block",
+  chip: "px-2 py-1 text-[12px] uppercase tracking-wide border rounded-none transition-colors duration-base min-h-[26px]",
   chipOff:
-    "bg-white/[0.05] border-sf-line-interactive text-white/75 hover:border-sf-primary hover:bg-sf-primary/[0.12] hover:text-white",
-  chipOn: "bg-[rgba(21,193,123,0.22)] border-sf-primary text-white",
+    "bg-sf-surface border-sf-line-interactive text-t2 hover:border-sf-primary hover:bg-sf-primary/[0.12] hover:text-t1",
+  chipOn: "bg-sf-primary/[0.12] border-sf-primary text-t1",
+  // An ejected body recedes by tier and a strike, never by opacity.
+  chipEjected:
+    "bg-sf-surface border-sf-line-interactive text-t4 line-through hover:border-sf-primary hover:text-t2",
   row: "flex items-baseline justify-between gap-2 py-0.5",
-  label: "font-heading text-[13px] uppercase tracking-[1.5px] text-white/50 shrink-0",
-  value: "font-mono text-[14px] text-white/95 text-right",
+  label: "font-heading text-[13px] uppercase tracking-[1.5px] text-t3 shrink-0",
+  value: "font-mono text-[14px] text-t1 text-right",
   toggle:
-    "flex items-center gap-2 py-1 text-[13px] text-white/80 cursor-pointer select-none hover:text-white",
+    "flex items-center gap-2 py-1 text-[13px] text-t2 cursor-pointer select-none hover:text-t1",
   box: "w-3.5 h-3.5 rounded-none border border-sf-line-emphasis flex items-center justify-center text-[12px]",
   boxOn: "bg-sf-primary border-sf-primary text-sf-on-primary",
 };
@@ -66,9 +69,9 @@ function Slider({
 }) {
   return (
     <div className="mb-2">
-      <label className="mb-1 flex items-center justify-between text-[13px] uppercase tracking-wider text-white/55">
+      <label className="mb-1 flex items-center justify-between text-[13px] uppercase tracking-wider text-t3">
         <span>{label}</span>
-        <span className="font-mono text-[13px] text-sf-primary-bright">{display}</span>
+        <span className="font-mono text-[13px] text-sf-primary-text">{display}</span>
       </label>
       <input
         type="range"
@@ -77,7 +80,7 @@ function Slider({
         step={step}
         value={value}
         onChange={(e) => onChange(parseFloat(e.target.value))}
-        className="h-1 w-full cursor-pointer accent-[#15C17B]"
+        className="h-1 w-full cursor-pointer accent-sf-primary"
         aria-label={label}
       />
     </div>
@@ -161,13 +164,14 @@ export function RogueControls({
               type="button"
               title={sys.note}
               onClick={() => onSystemChange(key)}
+              aria-pressed={systemKey === key}
               className={`${S.chip} ${systemKey === key ? S.chipOn : S.chipOff}`}
             >
               {sys.name.replace("Our ", "")}
             </button>
           ))}
         </div>
-        <p className="mt-1.5 text-[12px] leading-relaxed text-white/45">{system.note}</p>
+        <p className="mt-1.5 text-[12px] leading-relaxed text-t3">{system.note}</p>
       </div>
 
       {/* ── Intruder ── */}
@@ -179,6 +183,7 @@ export function RogueControls({
               key={kind}
               type="button"
               onClick={() => set("kind", kind)}
+              aria-pressed={intruder.kind === kind}
               className={`${S.chip} ${intruder.kind === kind ? S.chipOn : S.chipOff}`}
               style={
                 intruder.kind === kind
@@ -236,7 +241,7 @@ export function RogueControls({
           <button
             type="button"
             onClick={onLaunch}
-            className="w-full border border-sf-primary bg-sf-primary px-2 py-2 font-heading text-[13px] font-medium uppercase tracking-[1.5px] text-sf-on-primary transition-colors hover:bg-sf-primary-bright"
+            className="w-full min-h-hit border border-sf-primary bg-sf-primary px-2 py-2 font-heading text-[13px] font-medium uppercase tracking-[1.5px] text-sf-on-primary transition-shadow duration-base ease-sf-out hover:shadow-sf-glow-teal"
           >
             ▶ Launch intruder
           </button>
@@ -247,9 +252,9 @@ export function RogueControls({
                 type="button"
                 onClick={onTogglePause}
                 aria-pressed={!running}
-                className={`${S.chip} flex-1 font-medium ${
+                className={`${S.chip} min-h-hit flex-1 font-medium ${
                   running
-                    ? "border-sf-primary bg-sf-primary/[0.14] text-sf-primary-bright hover:bg-sf-primary/25"
+                    ? "border-sf-primary bg-sf-primary/[0.12] text-sf-primary-text hover:bg-sf-primary/[0.2]"
                     : "border-sf-primary bg-sf-primary text-sf-on-primary"
                 }`}
               >
@@ -260,20 +265,28 @@ export function RogueControls({
                 onClick={onRewind}
                 disabled={!canRewind}
                 title={canRewind ? "Step back" : "Nothing recorded yet"}
-                className={`${S.chip} ${
-                  canRewind ? S.chipOff : "cursor-not-allowed border-sf-line-interactive text-white/25"
+                aria-label="Step back"
+                className={`${S.chip} min-h-hit min-w-hit ${
+                  canRewind ? S.chipOff : "cursor-not-allowed border-sf-disabled-line bg-sf-disabled-bg text-sf-disabled-text"
                 }`}
               >
                 ◀◀
               </button>
-              <button type="button" onClick={onStep} className={`${S.chip} ${S.chipOff}`}>
+              <button
+                type="button"
+                onClick={onStep}
+                title="Step forward"
+                aria-label="Step forward"
+                className={`${S.chip} ${S.chipOff} min-h-hit min-w-hit`}
+              >
                 ▶|
               </button>
             </div>
+            <p className="mb-2 font-mono text-[12px] uppercase text-t4">SPACE · PLAY / PAUSE</p>
             <button
               type="button"
               onClick={onReset}
-              className={`${S.chip} ${S.chipOff} w-full`}
+              className={`${S.chip} ${S.chipOff} min-h-hit w-full`}
             >
               Reset system
             </button>
@@ -339,13 +352,15 @@ export function RogueControls({
 // Readout
 // ---------------------------------------------------------------------------
 
-const STATUS_COPY: Record<EncounterStatus, { text: string; tone: string }> = {
-  awaiting: { text: "Awaiting launch", tone: "text-white/55" },
-  approaching: { text: "Intruder approaching", tone: "text-sf-primary-bright" },
-  perturbed: { text: "Orbits perturbed", tone: "text-sf-amber-text" },
-  "post-encounter": { text: "Post-encounter", tone: "text-sf-primary-bright" },
-  ejecting: { text: "Planets ejected", tone: "text-sf-amber-warm-text" },
-  disrupted: { text: "System disrupted", tone: "text-sf-crimson-text" },
+// Colour is never the only signal: warnings and failures also change the
+// leading glyph ("//" for danger, "!" for a warning) as well as the text.
+const STATUS_COPY: Record<EncounterStatus, { text: string; tone: string; glyph: string }> = {
+  awaiting: { text: "Awaiting launch", tone: "text-t3", glyph: "○" },
+  approaching: { text: "Intruder approaching", tone: "text-sf-primary-text", glyph: "●" },
+  perturbed: { text: "Orbits perturbed", tone: "text-sf-amber-text", glyph: "!" },
+  "post-encounter": { text: "Post-encounter", tone: "text-sf-primary-text", glyph: "●" },
+  ejecting: { text: "Planets ejected", tone: "text-sf-amber-warm-text", glyph: "!" },
+  disrupted: { text: "System disrupted", tone: "text-sf-crimson-text", glyph: "//" },
 };
 
 interface ReadoutProps {
@@ -383,8 +398,8 @@ export function RogueReadout({
     <div className={`${S.panelBase} right-3 top-3 max-h-[calc(100%-24px)]`}>
       <div className="border-b border-sf-line pb-2">
         <span className={S.sec}>Status</span>
-        <p className={`font-heading text-[14px] uppercase tracking-[1.5px] ${copy.tone}`}>
-          ● {copy.text}
+        <p role="status" className={`font-heading text-[14px] uppercase tracking-[1.5px] ${copy.tone}`}>
+          <span aria-hidden>{copy.glyph}</span> {copy.text}
         </p>
       </div>
 
@@ -419,6 +434,7 @@ export function RogueReadout({
               <button
                 type="button"
                 onClick={() => onFollow(followName === selected.name ? null : selected.name)}
+                aria-pressed={followName === selected.name}
                 className={`${S.chip} ${followName === selected.name ? S.chipOn : S.chipOff}`}
               >
                 {followName === selected.name ? "Following" : "Follow"}
@@ -448,8 +464,8 @@ export function RogueReadout({
             )}
           </div>
         ) : (
-          <p className="py-3 text-center font-mono text-[13px] uppercase tracking-wider text-white/45">
-            Click any body to inspect
+          <p className="py-3 text-center font-mono text-[13px] uppercase tracking-wider text-t3">
+            SELECT A BODY TO INSPECT.
           </p>
         )}
       </div>
@@ -461,6 +477,7 @@ export function RogueReadout({
           <button
             type="button"
             onClick={() => onFollow(null)}
+            aria-pressed={followName === null}
             className={`${S.chip} ${followName === null ? S.chipOn : S.chipOff}`}
           >
             Free
@@ -469,10 +486,16 @@ export function RogueReadout({
             <button
               key={b.name}
               type="button"
-              title={b.name}
+              title={ejected.has(b.name) ? `${b.name} (ejected)` : b.name}
+              aria-label={ejected.has(b.name) ? `Follow ${b.name}, ejected` : `Follow ${b.name}`}
               onClick={() => onFollow(b.name)}
-              className={`${S.chip} ${followName === b.name ? S.chipOn : S.chipOff} ${
-                ejected.has(b.name) ? "opacity-60" : ""
+              aria-pressed={followName === b.name}
+              className={`${S.chip} ${
+                followName === b.name
+                  ? S.chipOn
+                  : ejected.has(b.name)
+                    ? S.chipEjected
+                    : S.chipOff
               }`}
             >
               {b.sym ?? b.name.slice(0, 3)}

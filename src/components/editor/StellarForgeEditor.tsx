@@ -257,9 +257,9 @@ export function StellarForgeEditor({
           "prose-ul:my-1.5 prose-ol:my-1.5",
           "prose-li:my-0.5",
           "prose-blockquote:border-l-primary prose-blockquote:text-t3",
-          "prose-code:text-xs prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded",
+          "prose-code:text-xs prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-none",
           "prose-pre:bg-sf-void prose-pre:p-3 prose-pre:rounded-none",
-          "[&_.is-editor-empty:first-child::before]:text-t3/50 [&_.is-editor-empty:first-child::before]:content-[attr(data-placeholder)] [&_.is-editor-empty:first-child::before]:float-left [&_.is-editor-empty:first-child::before]:pointer-events-none [&_.is-editor-empty:first-child::before]:h-0"
+          "[&_.is-editor-empty:first-child::before]:text-t4 [&_.is-editor-empty:first-child::before]:content-[attr(data-placeholder)] [&_.is-editor-empty:first-child::before]:float-left [&_.is-editor-empty:first-child::before]:pointer-events-none [&_.is-editor-empty:first-child::before]:h-0"
         ),
       },
     },
@@ -560,7 +560,7 @@ export function StellarForgeEditor({
                           className={cn(
                             "w-3.5 h-3.5 rounded-full border transition-all",
                             preferences.themeId === theme.id
-                              ? "ring-2 ring-[#5B8DEF] ring-offset-1 ring-offset-background border-sf-stellar"
+                              ? "ring-2 ring-sf-stellar ring-offset-1 ring-offset-background border-sf-stellar"
                               : "border-sf-line hover:border-sf-line-emphasis"
                           )}
                           style={{ backgroundColor: theme.swatch[0] }}
@@ -599,7 +599,7 @@ export function StellarForgeEditor({
         {/* Word Count Footer (full preset only) */}
         {config.showWordCount && !readOnly && (
           <div className="flex items-center justify-end px-3 py-1.5 border-t border-sf-line bg-muted/20">
-            <span className="font-mono text-[12px] tracking-[1.5px] uppercase text-t4">
+            <span className="font-mono text-[12px] tracking-wide uppercase text-t4">
               {wordCount.toLocaleString()} {wordCount === 1 ? "word" : "words"}
             </span>
           </div>
@@ -652,7 +652,7 @@ function ToolbarBtn({
       onClick={onClick}
       title={title}
       className={cn(
-        "p-1.5 rounded hover:bg-accent/80 transition-colors",
+        "p-1.5 rounded-none hover:bg-accent/80 transition-colors",
         active && "bg-accent text-accent-foreground"
       )}
     >

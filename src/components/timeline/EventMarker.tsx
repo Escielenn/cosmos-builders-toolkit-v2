@@ -103,24 +103,26 @@ const EventMarker = memo(
               type="button"
               onClick={isDimmed ? undefined : onClick}
               className={cn(
-                "absolute top-1/2 -translate-y-1/2 rounded-full cursor-pointer transition-all",
+                "absolute top-1/2 -translate-y-1/2 rounded-none cursor-pointer transition-sf duration-fast",
                 "hover:brightness-110",
-                isSelected && "ring-2 ring-white ring-offset-1 ring-offset-background",
-                isDimmed && "opacity-20 pointer-events-none",
+                isSelected && "ring-2 ring-sf-primary ring-offset-1 ring-offset-background",
+                isDimmed && "pointer-events-none",
                 isFolded && "border border-dashed border-sf-line-interactive"
               )}
               style={{
                 left: x + nesting.indent,
                 width,
                 height: nesting.barHeight,
-                backgroundColor: color,
+                // Filtered-out events take the disabled colour rather than an
+                // opacity drop, so the dimmed state reads on every theme.
+                backgroundColor: isDimmed ? "rgb(var(--sf-disabled-line-rgb))" : color,
                 ...(!isDimmed && { opacity: isFolded ? 0.55 : importanceConfig.opacity }),
                 fontSize: nesting.fontSize,
               }}
             >
               {width > 60 && (
                 <span
-                  className="text-white font-medium px-2 truncate block leading-none"
+                  className="text-t1 font-medium px-2 truncate block leading-none"
                   style={{
                     lineHeight: `${nesting.barHeight}px`,
                     fontSize: nesting.fontSize,
@@ -131,7 +133,7 @@ const EventMarker = memo(
               )}
               {childBadge}
               {hasElementLinks && (
-                <Link2 className="absolute -bottom-1 -right-1 w-3 h-3 text-white/70" />
+                <Link2 className="absolute -bottom-1 -right-1 w-3 h-3 text-t1" />
               )}
             </button>
           </TooltipTrigger>
@@ -157,17 +159,17 @@ const EventMarker = memo(
             type="button"
             onClick={isDimmed ? undefined : onClick}
             className={cn(
-              "absolute top-1/2 -translate-y-1/2 rounded-full cursor-pointer transition-all",
+              "absolute top-1/2 -translate-y-1/2 rounded-full cursor-pointer transition-sf duration-fast",
               "hover:scale-125 hover:brightness-110",
-              isSelected && "ring-2 ring-white ring-offset-1 ring-offset-background scale-125",
-              isDimmed && "opacity-20 pointer-events-none",
+              isSelected && "ring-2 ring-sf-primary ring-offset-1 ring-offset-background scale-125",
+              isDimmed && "pointer-events-none",
               isFolded && "border border-dashed border-sf-line-interactive"
             )}
             style={{
               left: x - dotSize / 2 + nesting.indent,
               width: dotSize,
               height: dotSize,
-              backgroundColor: color,
+              backgroundColor: isDimmed ? "rgb(var(--sf-disabled-line-rgb))" : color,
               ...(!isDimmed && { opacity: isFolded ? 0.55 : importanceConfig.opacity }),
             }}
           />

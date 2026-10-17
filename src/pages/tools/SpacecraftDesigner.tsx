@@ -610,7 +610,7 @@ const SpacecraftDesigner = () => {
       worksheetLoading={worksheetLoading}
       worksheetTags={worksheetTags}
       onTagsChange={handleTagsChange}
-      worksheetIcon={<FileText className="w-4 h-4 text-primary" />}
+      worksheetIcon={<FileText className="w-4 h-4 text-sf-primary-text" />}
       isLoggedIn={!!user}
     >
 
@@ -619,7 +619,7 @@ const SpacecraftDesigner = () => {
           <h2 className="font-heading text-xl font-light uppercase tracking-[2px] mb-4 gradient-text">
             Ships as Characters
           </h2>
-          <blockquote className="border-l-2 border-primary pl-4 italic text-lg mb-4">
+          <blockquote className="border-l-2 border-sf-primary pl-4 italic text-lg mb-4">
             "The best SF ships aren't just vehicles, they're places people live, with all the mess, personality, and history that implies."
           </blockquote>
           <p className="text-t2 mb-4">
@@ -640,7 +640,7 @@ const SpacecraftDesigner = () => {
                   href={resource.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-xs px-3 py-1.5 rounded-sm bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+                  className="inline-flex items-center gap-1 text-xs px-3 py-1.5 rounded-none bg-sf-primary/10 text-sf-primary-text hover:bg-sf-primary/20 transition-colors"
                 >
                   {resource.name}
                   <ExternalLink className="w-3 h-3" />
@@ -692,7 +692,7 @@ const SpacecraftDesigner = () => {
                   className="grid gap-2 md:grid-cols-3"
                 >
                   {SHIP_CLASSES.map((cls) => (
-                    <div key={cls.value} className="flex items-start gap-2 p-2 rounded border border-sf-line-interactive hover:border-primary transition-colors">
+                    <div key={cls.value} className="flex items-start gap-2 p-2 rounded-none border border-sf-line-interactive hover:border-sf-primary transition-colors">
                       <RadioGroupItem value={cls.value} id={`class-${cls.value}`} className="mt-0.5" />
                       <Label htmlFor={`class-${cls.value}`} className="cursor-pointer text-sm">
                         <span className="font-medium">{cls.label}</span>
@@ -745,7 +745,7 @@ const SpacecraftDesigner = () => {
                   className="grid gap-2 md:grid-cols-3"
                 >
                   {SIZE_OPTIONS.map((size) => (
-                    <div key={size.value} className="flex items-start gap-2 p-2 rounded border border-sf-line-interactive hover:border-primary">
+                    <div key={size.value} className="flex items-start gap-2 p-2 rounded-none border border-sf-line-interactive hover:border-sf-primary">
                       <RadioGroupItem value={size.value} id={`size-${size.value}`} className="mt-0.5" />
                       <Label htmlFor={`size-${size.value}`} className="cursor-pointer text-sm">
                         <span className="font-medium">{size.label}</span>
@@ -981,7 +981,7 @@ const SpacecraftDesigner = () => {
                   className="grid gap-2 md:grid-cols-3"
                 >
                   {GRAVITY_OPTIONS.map((option) => (
-                    <div key={option.value} className="flex items-start gap-2 p-2 rounded border border-sf-line-interactive">
+                    <div key={option.value} className="flex items-start gap-2 p-2 rounded-none border border-sf-line-interactive">
                       <RadioGroupItem value={option.value} id={`gravity-${option.value}`} className="mt-0.5" />
                       <Label htmlFor={`gravity-${option.value}`} className="cursor-pointer text-sm">
                         <span className="font-medium">{option.label}</span>
@@ -1397,7 +1397,7 @@ const SpacecraftDesigner = () => {
               {SF_EXAMPLES.map((example, index) => (
                 <Collapsible key={index}>
                   <CollapsibleTrigger asChild>
-                    <button type="button" className="w-full p-4 rounded-none border border-sf-line-interactive hover:border-primary transition-colors text-left flex items-center justify-between">
+                    <button type="button" className="w-full p-4 rounded-none border border-sf-line-interactive hover:border-sf-primary transition-colors text-left flex items-center justify-between">
                       <span className="font-medium text-sm">{example.title}</span>
                       <ChevronDown className="w-4 h-4 text-t2" />
                     </button>
@@ -1406,7 +1406,7 @@ const SpacecraftDesigner = () => {
                     <div className="mt-2 p-4 rounded-none bg-muted/30 space-y-3">
                       {example.aspects.map((aspect, i) => (
                         <div key={i}>
-                          <span className="text-sm font-medium text-primary">{aspect.label}:</span>
+                          <span className="text-sm font-medium text-sf-primary-text">{aspect.label}:</span>
                           <p className="text-sm text-t2">{aspect.value}</p>
                         </div>
                       ))}

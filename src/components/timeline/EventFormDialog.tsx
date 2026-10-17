@@ -250,9 +250,9 @@ const EventFormDialog = ({
                           )
                         }
                         className={cn(
-                          "flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-xs font-medium transition-colors",
+                          "flex items-center gap-1.5 px-2.5 py-1 rounded-none border text-xs font-medium transition-colors",
                           isActive
-                            ? "border-primary bg-primary/10 text-t1"
+                            ? "border-sf-primary bg-sf-primary/10 text-t1"
                             : "border-sf-line text-t3 hover:border-sf-line"
                         )}
                       >
@@ -305,7 +305,7 @@ const EventFormDialog = ({
                   className={cn(
                     "flex-1 px-3 py-1.5 rounded-none border text-xs font-medium transition-colors",
                     importance === il.id
-                      ? "border-primary bg-primary/10 text-t1"
+                      ? "border-sf-primary bg-sf-primary/10 text-t1"
                       : "border-sf-line text-t3 hover:border-sf-line"
                   )}
                 >

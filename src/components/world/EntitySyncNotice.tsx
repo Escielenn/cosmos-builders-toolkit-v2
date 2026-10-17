@@ -60,11 +60,11 @@ export default function EntitySyncNotice({
   const toolName = sourceTool ? getToolDisplayName(sourceTool) : "worksheet";
 
   return (
-    <div className="border border-sf-amber bg-amber/[0.04] p-3 space-y-2">
+    <div className="border border-sf-amber bg-sf-amber/[0.06] p-3 space-y-2">
       <div className="flex items-start gap-2">
-        <AlertTriangle className="w-4 h-4 text-amber shrink-0 mt-0.5" />
+        <AlertTriangle className="w-4 h-4 text-sf-amber shrink-0 mt-0.5" />
         <div className="flex-1 min-w-0">
-          <p className="text-xs font-heading uppercase tracking-wider text-amber">
+          <p className="text-xs font-heading uppercase tracking-wider text-sf-amber-text">
             Worksheet Update Available
           </p>
           <p className="text-[12px] text-t3 mt-1">
@@ -81,7 +81,7 @@ export default function EntitySyncNotice({
               {formatValue(change.oldValue)}
             </span>
             <span className="text-t2">→</span>
-            <span className="text-amber font-mono">
+            <span className="text-sf-amber-text font-mono">
               {formatValue(change.newValue)}
             </span>
             <Button
@@ -90,7 +90,7 @@ export default function EntitySyncNotice({
               onClick={() => acceptMutation.mutate([change.field])}
               disabled={isAnyPending}
               aria-label={`Accept ${change.label}`}
-              className="ml-auto gap-1 h-6 text-[12px] text-amber hover:bg-amber/10"
+              className="ml-auto gap-1 h-6 text-[12px] text-sf-amber-text hover:bg-sf-amber/[0.06]"
             >
               <Check className="w-3 h-3" />
               Accept
@@ -105,7 +105,7 @@ export default function EntitySyncNotice({
           variant="outline"
           onClick={() => acceptMutation.mutate(undefined)}
           disabled={isAnyPending}
-          className="gap-1 h-6 text-[12px] border-sf-amber text-amber hover:bg-amber/10"
+          className="gap-1 h-6 text-[12px] border-sf-amber text-sf-amber-text hover:bg-sf-amber/[0.06]"
         >
           <Check className="w-3 h-3" />
           Accept All

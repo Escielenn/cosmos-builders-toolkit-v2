@@ -6,11 +6,10 @@
  *   - three.js materials (Solaris)
  *   - @react-pdf/renderer print palette derivation (Phase 5)
  *
- * Status: scaffold — nothing imports this yet. Surfaces adopt it
- * during their re-skin phase (plan §3.3). Keep in sync with
- * src/styles/tokens.css by hand until the Phase-1 generator lands
- * (one source generates the other; which direction is a Phase-1
- * implementation detail).
+ * Values are the default Void·Teal theme, synced by hand with the
+ * GENERATED src/styles/tokens.css (2026-10-17). They do not follow the
+ * user's theme: where a draw loop can, read the live value with
+ * getToken("--sf-primary") instead.
  *
  * SETTLED: legacy cyan retired — it intentionally does not exist
  * here. Simulator accents resolve to the product accent.
@@ -24,8 +23,8 @@
 export const tokens = {
   surface: {
     void: "#0A0E17",
-    panel: "#0E1320",
-    elevated: "#161C2B",
+    panel: "#1B2334",
+    elevated: "#273249",
     /** Simulator canvas — deeper than site void, by design. */
     simCanvas: "#09090B",
     /** Simulator floating panel fill (use with simPanelAlpha). */
@@ -36,10 +35,11 @@ export const tokens = {
     /** Tier 1 — titles, result values only. */
     t1: "#FAFAFA",
     /** Tier 2 — body text ceiling. */
-    t2: "#C8C8C8",
-    /** Tiers 3–4 are alpha-on-white; use rgba() helpers below. t5 is retired. */
-    t3: "rgba(255, 255, 255, 0.45)",
-    t4: "rgba(255, 255, 255, 0.28)",
+    t2: "#C9CDD3",
+    /** Tier 3, secondary and captions. Solid, solved in OKLab (t5 retired). */
+    t3: "#A7AAB0",
+    /** Tier 4, micro labels and units. Nothing readable is fainter. */
+    t4: "#9799A0",
   },
 
   accent: {
@@ -48,7 +48,7 @@ export const tokens = {
     /** Glow/shadow/arc ONLY — never a solid fill. */
     glow: "#3DFFCD",
     /** Text on solid accent. */
-    onAccent: "#08110C",
+    onAccent: "#0B0F18",
   },
 
   category: {

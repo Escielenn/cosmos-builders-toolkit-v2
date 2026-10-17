@@ -40,7 +40,7 @@ export function WorldInfluencePanel({
 
   return (
     <div className="p-4">
-      <div className="mb-1 font-mono text-[12px] uppercase tracking-[2px] text-t4">// world influence</div>
+      <div className="mb-1 font-mono text-[12px] uppercase tracking-wide text-t4">// world influence</div>
       <p className="mb-4 font-serif text-[13px] italic leading-relaxed text-t4">
         The environmental parameters your world runs on — and which ones this scene touches.
       </p>
@@ -74,11 +74,11 @@ export function WorldInfluencePanel({
                   style={{ background: CATEGORY_TONE[param.category], opacity: hits > 0 ? 1 : 0.3 }}
                   aria-hidden="true"
                 />
-                <span className={`flex-1 font-mono text-[13px] tracking-[0.5px] ${hits > 0 ? "text-t2" : "text-t4"}`}>
+                <span className={`flex-1 font-mono text-[13px] tracking-wider ${hits > 0 ? "text-t2" : "text-t4"}`}>
                   {param.label}
                 </span>
                 <span
-                  className={`font-mono text-[12px] tracking-[1px] ${hits > 0 ? "text-sf-primary-text" : "text-t4"}`}
+                  className={`font-mono text-[12px] tracking-wider ${hits > 0 ? "text-sf-primary-text" : "text-t4"}`}
                   title={hits > 0 ? `${hits} reference${hits === 1 ? "" : "s"} in this scene` : "Not referenced yet"}
                 >
                   {hits > 0 ? `×${hits}` : "—"}
@@ -86,7 +86,7 @@ export function WorldInfluencePanel({
               </div>
             ))}
           </div>
-          <div className="mt-3 font-mono text-[12px] tracking-[1px] text-t4">
+          <div className="mt-3 font-mono text-[12px] tracking-wider text-t4">
             {engaged} of {total} parameter{total === 1 ? "" : "s"} engaged in this scene
             {engaged > 0 && <span className="text-sf-primary-text"> · consistent</span>}
           </div>

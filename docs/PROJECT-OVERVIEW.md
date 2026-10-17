@@ -31,7 +31,7 @@ Change something upstream, and everything downstream shifts. Tools are organized
 | State | TanStack React Query v5, React Context |
 | Routing | React Router DOM v6 |
 | Database | Supabase (PostgreSQL + RLS) |
-| Auth | Supabase Auth (currently; migrating to Clerk — see STACK-ARCHITECTURE.md) |
+| Auth | Supabase Auth (the planned Clerk migration is cancelled) |
 | Hosting | Vercel |
 | Payments | Stripe ($4.99/mo Pro, $49/yr) |
 | CMS | Sanity (blog, learn articles) |
@@ -137,7 +137,7 @@ cosmos-builders-toolkit-v2/
 │
 ├── supabase/                      # Supabase config
 ├── docs/                          # Project documentation
-│   ├── STACK-ARCHITECTURE.md      # Clerk + Stripe + Supabase architecture
+│   ├── STACK-ARCHITECTURE.md      # Stack architecture (Clerk sections cancelled)
 │   ├── ROADMAP.md                 # Active task list / dev priorities
 │   ├── BACKLOG.md                 # Detailed feature backlog
 │   └── [reference docs...]
@@ -306,7 +306,7 @@ Characters, Locations, Items, Factions, Species, Concepts — each with configur
 - `useSubscription()` — Checks user tier (free / pro / vanguard).
 - Profiles table mirrors auth users with display_name, avatar, bio, is_admin.
 
-**Planned migration:** Moving to **Clerk** for auth, keeping Supabase for data only. See `docs/STACK-ARCHITECTURE.md` for the full spec — Clerk JWT → Supabase RLS, webhook sync, `clerk_user_id` as primary identifier throughout.
+**Auth decision:** Supabase Auth stays. The Clerk migration spec in `docs/STACK-ARCHITECTURE.md` was never started and is cancelled (2026-10-17).
 
 ---
 
@@ -479,7 +479,7 @@ Deploy: `npx vercel --prod` (manual; CI/CD pipeline is on the backlog).
 | Document | Purpose |
 |----------|---------|
 | `CLAUDE.md` | **Design system + code conventions** — fonts, colors, spacing, component patterns, do's/don'ts. The canonical style reference. |
-| `docs/STACK-ARCHITECTURE.md` | Planned Clerk + Stripe + Supabase architecture. Read before writing auth/billing code. |
+| `docs/STACK-ARCHITECTURE.md` | Stack architecture. Its Clerk sections are cancelled; auth is Supabase Auth. |
 | `docs/ROADMAP.md` | Active task list and development priorities. |
 | `docs/BACKLOG.md` | Detailed feature backlog (i18n, SENSORIUM phases, tool enhancements, etc.). |
 | `docs/STELLARFORGE-IMPLEMENTATION-GUIDE.md` | Implementation patterns and conventions. |
@@ -501,7 +501,7 @@ Deploy: `npx vercel --prod` (manual; CI/CD pipeline is on the backlog).
 
 ### Planned / In Progress
 - **Textarea migration:** Replace remaining plain `<textarea>` elements with StellarForgeEditor across all surfaces
-- **Auth migration:** Supabase Auth → Clerk (spec complete in STACK-ARCHITECTURE.md, implementation pending)
+- **Auth:** Supabase Auth (Clerk migration cancelled 2026-10-17)
 - **Stripe billing:** Org-tier pricing, checkout/portal endpoints
 - **SENSORIUM:** ~70% complete (Phase 1 done, Phases 2-5 partial)
 - **i18n:** Infrastructure ready, ~2,000-4,000 strings need extraction

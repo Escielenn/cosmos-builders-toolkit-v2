@@ -30,6 +30,7 @@ import { getTagColor } from "@/hooks/use-tags";
 import { CodexWebView } from "@/components/connections";
 import CodexAtlasView from "@/components/connections/CodexAtlasView";
 import CodexTimelineView from "@/components/connections/CodexTimelineView";
+import { useMetaTags } from "@/hooks/use-meta-tags";
 
 /** The Codex's views: projections of one list, never separate places. */
 type CodexView = "list" | "web" | "atlas" | "timeline";
@@ -64,6 +65,7 @@ function getIconComponent(iconName: string): LucideIcon {
 }
 
 export default function WikiBrowse() {
+  useMetaTags({ title: "Codex Index" });
   const { worldId } = useParams<{ worldId: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -227,7 +229,7 @@ export default function WikiBrowse() {
                 type="button"
                 onClick={() => setView(id)}
                 aria-pressed={view === id}
-                className={`flex min-h-hit items-center gap-1.5 px-3 font-sans text-[12px] uppercase tracking-[1.2px] transition-colors ${
+                className={`flex min-h-hit items-center gap-1.5 px-3 font-sans text-[12px] uppercase tracking-wide transition-colors ${
                   i > 0 ? "border-l border-sf-line" : ""
                 } ${view === id ? "bg-sf-surface-elevated text-t1" : "text-t3 hover:text-t1"}`}
               >
@@ -436,12 +438,12 @@ export default function WikiBrowse() {
 
             return (
               <Link key={entry.id} to={targetPath} className="group">
-                <GlassPanel className="p-4 h-full relative overflow-hidden transition-transform duration-200 group-hover:-translate-y-0.5">
+                <GlassPanel className="p-4 h-full relative overflow-hidden transition-transform duration-base group-hover:-translate-y-0.5">
                   {/* Bottom edge fill bar */}
-                  <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-sf-primary-bright/60 scale-x-0 origin-left transition-transform duration-300 group-hover:scale-x-100" />
+                  <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-sf-primary-bright/60 scale-x-0 origin-left transition-transform duration-slow group-hover:scale-x-100" />
 
                   <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 shrink-0 flex items-center justify-center bg-sf-primary/10 border border-sf-primary rounded-sm">
+                    <div className="w-8 h-8 shrink-0 flex items-center justify-center bg-sf-primary/10 border border-sf-primary rounded-none">
                       <IconComponent className="w-4 h-4 text-sf-primary-text" />
                     </div>
                     <div className="min-w-0 flex-1">
@@ -462,7 +464,7 @@ export default function WikiBrowse() {
                           </>
                         )}
                         {entry.isDraft && (
-                          <span className="px-1 py-0.5 bg-amber-500/15 text-sf-amber text-[12px] uppercase tracking-widest">
+                          <span className="px-1 py-0.5 bg-sf-amber/[0.06] border border-sf-amber text-sf-amber-text text-[12px] uppercase tracking-wide">
                             Draft
                           </span>
                         )}

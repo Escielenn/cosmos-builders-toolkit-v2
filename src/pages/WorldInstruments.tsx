@@ -25,10 +25,12 @@ import {
 import { accentChipClass, getToolAccent } from "@/lib/tool-accents";
 import { useEntities } from "@/hooks/use-entity-graph";
 import { ENTITY_TYPE_LABELS } from "@/services/entity-graph-types";
+import { useMetaTags } from "@/hooks/use-meta-tags";
 
 const ALL_TOOL_IDS = [...FREE_TOOL_IDS, ...PRO_TOOL_IDS];
 
 export default function WorldInstruments() {
+  useMetaTags({ title: "Instruments" });
   const { worldId } = useParams<{ worldId: string }>();
   const { data: entities, isLoading } = useEntities(worldId);
   const [query, setQuery] = useState("");
@@ -73,7 +75,7 @@ export default function WorldInstruments() {
       {/* Pick the subject FIRST. That is the F4 order, and it is why the
           launch links below carry an entityId. */}
       <div className="mt-6 border border-sf-line bg-sf-surface p-3">
-        <span className="mb-2 flex items-center gap-1.5 font-heading text-[12px] uppercase tracking-[2px] text-t3">
+        <span className="mb-2 flex items-center gap-1.5 font-heading text-[12px] uppercase tracking-wide text-t3">
           <Crosshair className="h-3 w-3" aria-hidden />
           Survey
         </span>

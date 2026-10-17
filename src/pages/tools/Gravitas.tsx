@@ -327,10 +327,10 @@ const Gravitas = () => {
         setCurrentWorksheetId(ws.id);
         setCurrentWorksheetTitle(ws.title);
         setSearchParams({ worldId, worksheetId: ws.id });
-        toast({ title: "CREATED.", description: "New worksheet created." });
+        toast({ title: "CREATED.", description: "NEW WORKSHEET ON FILE." });
       }
     } else {
-      toast({ title: "SAVED LOCALLY.", description: "Data saved to this browser." });
+      toast({ title: "SAVED LOCALLY.", description: "WORK SECURED TO THIS BROWSER." });
     }
   };
 
@@ -373,12 +373,12 @@ const Gravitas = () => {
   // ─── Status Color ──────────────────────────────────────────────────
 
   const statusColor = (() => {
-    if (formState.activeMode === "artificial") return "text-fuchsia-400";
+    if (formState.activeMode === "artificial") return "text-sf-magenta-text";
     switch (habitabilityStatus) {
-      case "earth_like": return "text-green-400";
-      case "reduced_gravity": return "text-green-300";
+      case "earth_like": return "text-sf-emerald-text";
+      case "reduced_gravity": return "text-sf-teal-text";
       case "low_gravity":
-      case "high_gravity": return "text-orange-400";
+      case "high_gravity": return "text-sf-amber-warm-text";
       case "microgravity":
       case "milligravity":
       case "extreme_gravity": return "text-sf-crimson-text";
@@ -437,8 +437,8 @@ const Gravitas = () => {
                   onClick={() => setRealism(mode)}
                   className={`p-3 rounded-none border text-left transition-colors ${
                     formState.realismMode === mode
-                      ? "border-primary bg-primary/10"
-                      : "border-sf-line-interactive hover:border-primary hover:bg-accent/5"
+                      ? "border-sf-primary bg-sf-primary/10"
+                      : "border-sf-line-interactive hover:border-sf-primary hover:bg-accent/5"
                   }`}
                 >
                   <span className="font-medium text-sm">{REALISM_LABELS[mode]}</span>
@@ -447,7 +447,7 @@ const Gravitas = () => {
               ))}
             </div>
             {formState.realismMode === "hard_sf" && formState.activeMode === "artificial" && (
-              <div className="flex items-center gap-2 mt-3 p-3 rounded-none bg-red-500/10 border border-sf-crimson">
+              <div className="flex items-center gap-2 mt-3 p-3 rounded-none bg-sf-crimson/[0.06] border border-sf-crimson">
                 <AlertTriangle className="w-4 h-4 text-sf-crimson shrink-0" />
                 <p className="text-sm text-sf-crimson-text">Artificial gravity is not available in Hard SF mode. Switch to Hybrid or Soft SF.</p>
               </div>
@@ -483,7 +483,7 @@ const Gravitas = () => {
                           setActiveSpinPreset(preset.id);
                           setFormState((prev) => ({ ...prev, spin: { ...preset.values } }));
                         }}
-                        className={`p-2 rounded-none border text-left transition-colors ${activeSpinPreset === preset.id ? "border-primary bg-primary/10" : "border-sf-line-interactive hover:border-primary hover:bg-accent/5"}`}
+                        className={`p-2 rounded-none border text-left transition-colors ${activeSpinPreset === preset.id ? "border-sf-primary bg-sf-primary/10" : "border-sf-line-interactive hover:border-sf-primary hover:bg-accent/5"}`}
                       >
                         <span className="font-medium text-xs">{preset.name}</span>
                         <p className="text-[12px] text-t2">{preset.description}</p>
@@ -496,7 +496,7 @@ const Gravitas = () => {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <Label>Habitat Radius</Label>
-                    <span className="font-mono text-primary text-lg">{formState.spin.radius_m.toFixed(0)} m</span>
+                    <span className="font-mono text-sf-primary-text text-lg">{formState.spin.radius_m.toFixed(0)} m</span>
                   </div>
                   <Slider
                     value={[logToSlider(formState.spin.radius_m, 10, 10000)]}
@@ -510,7 +510,7 @@ const Gravitas = () => {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <Label>Rotation Rate</Label>
-                    <span className="font-mono text-primary text-lg">{formState.spin.rotation_rpm.toFixed(2)} RPM</span>
+                    <span className="font-mono text-sf-primary-text text-lg">{formState.spin.rotation_rpm.toFixed(2)} RPM</span>
                   </div>
                   <Slider
                     value={[formState.spin.rotation_rpm * 100]}
@@ -524,7 +524,7 @@ const Gravitas = () => {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <Label>Reference Height</Label>
-                    <span className="font-mono text-primary">{formState.spin.human_height_m.toFixed(1)} m</span>
+                    <span className="font-mono text-sf-primary-text">{formState.spin.human_height_m.toFixed(1)} m</span>
                   </div>
                   <Slider
                     value={[formState.spin.human_height_m * 10]}
@@ -548,7 +548,7 @@ const Gravitas = () => {
                           setActiveThrustPreset(preset.id);
                           setFormState((prev) => ({ ...prev, thrust: { ...prev.thrust, ...preset.values } }));
                         }}
-                        className={`p-2 rounded-none border text-left transition-colors ${activeThrustPreset === preset.id ? "border-primary bg-primary/10" : "border-sf-line-interactive hover:border-primary hover:bg-accent/5"}`}
+                        className={`p-2 rounded-none border text-left transition-colors ${activeThrustPreset === preset.id ? "border-sf-primary bg-sf-primary/10" : "border-sf-line-interactive hover:border-sf-primary hover:bg-accent/5"}`}
                       >
                         <span className="font-medium text-xs">{preset.name}</span>
                         <p className="text-[12px] text-t2">{preset.description}</p>
@@ -561,7 +561,7 @@ const Gravitas = () => {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <Label>Acceleration</Label>
-                    <span className="font-mono text-primary text-lg">{formState.thrust.acceleration_g.toFixed(2)} g</span>
+                    <span className="font-mono text-sf-primary-text text-lg">{formState.thrust.acceleration_g.toFixed(2)} g</span>
                   </div>
                   <Slider
                     value={[logToSlider(formState.thrust.acceleration_g, 0.001, 10)]}
@@ -575,7 +575,7 @@ const Gravitas = () => {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <Label>Mission Distance</Label>
-                    <span className="font-mono text-primary text-lg">{formState.thrust.mission_distance_au.toFixed(2)} AU</span>
+                    <span className="font-mono text-sf-primary-text text-lg">{formState.thrust.mission_distance_au.toFixed(2)} AU</span>
                   </div>
                   <Slider
                     value={[logToSlider(formState.thrust.mission_distance_au, 0.01, 1000)]}
@@ -619,7 +619,7 @@ const Gravitas = () => {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <Label>Spin Component</Label>
-                    <span className="font-mono text-primary">{formState.combined.spin_g.toFixed(2)} g</span>
+                    <span className="font-mono text-sf-primary-text">{formState.combined.spin_g.toFixed(2)} g</span>
                   </div>
                   <Slider
                     value={[formState.combined.spin_g * 100]}
@@ -632,7 +632,7 @@ const Gravitas = () => {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <Label>Thrust Component</Label>
-                    <span className="font-mono text-primary">{formState.combined.thrust_g.toFixed(2)} g</span>
+                    <span className="font-mono text-sf-primary-text">{formState.combined.thrust_g.toFixed(2)} g</span>
                   </div>
                   <Slider
                     value={[formState.combined.thrust_g * 100]}
@@ -658,7 +658,7 @@ const Gravitas = () => {
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
                       <Label>Custom Angle</Label>
-                      <span className="font-mono text-primary">{formState.combined.custom_angle_deg}°</span>
+                      <span className="font-mono text-sf-primary-text">{formState.combined.custom_angle_deg}°</span>
                     </div>
                     <Slider
                       value={[formState.combined.custom_angle_deg]}
@@ -682,7 +682,7 @@ const Gravitas = () => {
                           setActiveOrbitalPreset(preset.id);
                           setFormState((prev) => ({ ...prev, orbital: { ...preset.values } }));
                         }}
-                        className={`p-2 rounded-none border text-left transition-colors ${activeOrbitalPreset === preset.id ? "border-primary bg-primary/10" : "border-sf-line-interactive hover:border-primary hover:bg-accent/5"}`}
+                        className={`p-2 rounded-none border text-left transition-colors ${activeOrbitalPreset === preset.id ? "border-sf-primary bg-sf-primary/10" : "border-sf-line-interactive hover:border-sf-primary hover:bg-accent/5"}`}
                       >
                         <span className="font-medium text-xs">{preset.name}</span>
                         <p className="text-[12px] text-t2">{preset.description}</p>
@@ -695,7 +695,7 @@ const Gravitas = () => {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <Label>Parent Body Mass</Label>
-                    <span className="font-mono text-primary text-sm">{formState.orbital.parent_mass_kg.toExponential(3)} kg</span>
+                    <span className="font-mono text-sf-primary-text text-sm">{formState.orbital.parent_mass_kg.toExponential(3)} kg</span>
                   </div>
                   <Slider
                     value={[logToSlider(formState.orbital.parent_mass_kg, 1e15, 1e31)]}
@@ -709,7 +709,7 @@ const Gravitas = () => {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <Label>Parent Body Radius</Label>
-                    <span className="font-mono text-primary">{formState.orbital.parent_radius_km.toFixed(0)} km</span>
+                    <span className="font-mono text-sf-primary-text">{formState.orbital.parent_radius_km.toFixed(0)} km</span>
                   </div>
                   <Slider
                     value={[logToSlider(formState.orbital.parent_radius_km, 1, 100000)]}
@@ -723,7 +723,7 @@ const Gravitas = () => {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <Label>Altitude</Label>
-                    <span className="font-mono text-primary">{formState.orbital.altitude_km.toFixed(0)} km</span>
+                    <span className="font-mono text-sf-primary-text">{formState.orbital.altitude_km.toFixed(0)} km</span>
                   </div>
                   <Slider
                     value={[formState.orbital.altitude_km > 0 ? logToSlider(Math.max(1, formState.orbital.altitude_km), 1, 1000000) : 0]}
@@ -737,7 +737,7 @@ const Gravitas = () => {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <Label>Station/Habitat Size (for tidal gradient)</Label>
-                    <span className="font-mono text-primary">{formState.orbital.habitat_size_km.toFixed(3)} km</span>
+                    <span className="font-mono text-sf-primary-text">{formState.orbital.habitat_size_km.toFixed(3)} km</span>
                   </div>
                   <Slider
                     value={[logToSlider(Math.max(0.001, formState.orbital.habitat_size_km), 0.001, 100)]}
@@ -751,7 +751,7 @@ const Gravitas = () => {
               {/* ── Artificial Parameters ─── */}
               <TabsContent value="artificial" className="mt-4 space-y-6">
                 {formState.realismMode === "hard_sf" && (
-                  <div className="flex items-center gap-2 p-3 rounded-none bg-red-500/10 border border-sf-crimson">
+                  <div className="flex items-center gap-2 p-3 rounded-none bg-sf-crimson/[0.06] border border-sf-crimson">
                     <AlertTriangle className="w-4 h-4 text-sf-crimson shrink-0" />
                     <p className="text-sm text-sf-crimson-text">
                       Artificial gravity violates known physics. Switch to Hybrid or Soft SF mode to use this module.
@@ -763,7 +763,7 @@ const Gravitas = () => {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <Label>Desired Gravity</Label>
-                    <span className="font-mono text-primary text-lg">{formState.artificial.desired_g.toFixed(2)} g</span>
+                    <span className="font-mono text-sf-primary-text text-lg">{formState.artificial.desired_g.toFixed(2)} g</span>
                   </div>
                   <Slider
                     value={[formState.artificial.desired_g * 100]}
@@ -1060,9 +1060,9 @@ const Gravitas = () => {
 
               {/* Physics violations for artificial */}
               {formState.activeMode === "artificial" && formState.realismMode !== "soft_sf" && (
-                <div className="mt-4 p-3 rounded-none bg-amber-500/10 border border-sf-amber">
+                <div className="mt-4 p-3 rounded-none bg-sf-amber/[0.06] border border-sf-amber">
                   <p className="text-xs font-medium text-sf-amber mb-2">Physics Violations:</p>
-                  <ul className="text-xs text-amber-300/80 space-y-1">
+                  <ul className="text-xs text-t2 space-y-1">
                     {artificialResult.physics_violations.map((v, i) => (
                       <li key={i} className="flex items-start gap-1.5">
                         <AlertTriangle className="w-3 h-3 shrink-0 mt-0.5" />
@@ -1144,7 +1144,7 @@ const Gravitas = () => {
               {formState.outputOptions.showNarrative && (
                 <div>
                   <h4 className="text-sm font-medium mb-2">Narrative Snippet</h4>
-                  <GlassPanel className="p-4 border-primary">
+                  <GlassPanel className="p-4 border-sf-primary">
                     <p className="text-sm italic text-t2 leading-relaxed">{narrativeText}</p>
                   </GlassPanel>
                 </div>
@@ -1213,7 +1213,7 @@ const Gravitas = () => {
         <ToolSidebar>
           <SectionNavigation sections={SECTIONS} mode="inline" />
           <GlassPanel className="p-4 w-56">
-            <h4 className="font-mono text-[12px] tracking-[2px] uppercase text-t3/60 mb-3">
+            <h4 className="font-mono text-[12px] tracking-[0.12em] uppercase text-t4 mb-3">
               // READOUT
             </h4>
             <div className="text-center mb-3">

@@ -1,4 +1,4 @@
-import { X } from "lucide-react";
+import { Compass, TriangleAlert, X } from "lucide-react";
 import { flagDismissKey, type SimFlag } from "@/sims/flags";
 
 interface SimFlagStripProps {
@@ -33,17 +33,24 @@ export function SimFlagStrip({ flags, dismissedIds, onDismiss }: SimFlagStripPro
         // ones — a template literal here would silently produce no CSS.
         const style =
           f.severity === "opportunity"
-            ? { border: "border-l border-sf-primary", title: "text-sf-primary-text" }
-            : { border: "border-l border-sf-amber", title: "text-sf-amber" };
+            ? { border: "border-l border-sf-primary", title: "text-sf-primary-text", icon: "text-sf-primary", Icon: Compass, kind: "OPPORTUNITY" }
+            : { border: "border-l border-sf-amber", title: "text-sf-amber-text", icon: "text-sf-amber", Icon: TriangleAlert, kind: "TENSION" };
+        // Colour is never the only signal: each severity carries its own icon
+        // and a screen-reader label.
+        const { Icon } = style;
         return (
-          <div key={f.id} className={`relative ${style.border} bg-sf-void/90 py-2 pl-3 pr-7 backdrop-blur-sm`}>
-            <p className={`font-mono text-[12px] uppercase tracking-[1.2px] ${style.title}`}>{f.title}</p>
+          <div key={f.id} className={`relative ${style.border} bg-sf-surface/90 py-2 pl-3 pr-11 backdrop-blur-sf-panel`}>
+            <p className={`flex items-start gap-1.5 font-mono text-[12px] uppercase tracking-[1.2px] ${style.title}`}>
+              <Icon className={`mt-0.5 h-3 w-3 shrink-0 ${style.icon}`} aria-hidden />
+              <span className="sr-only">{style.kind}: </span>
+              {f.title}
+            </p>
             <p className="mt-1 font-serif text-[13px] italic leading-relaxed text-t2">{f.body}</p>
             <button
               type="button"
               onClick={() => onDismiss(flagDismissKey(f))}
               aria-label={`Dismiss: ${f.title}`}
-              className="absolute right-1.5 top-1.5 flex min-h-hit min-w-hit items-center justify-center text-t4 transition-colors hover:text-t1"
+              className="absolute right-1.5 top-1.5 flex min-h-hit min-w-hit items-center justify-center text-t3 transition-colors duration-base hover:text-t1"
             >
               <X className="h-3.5 w-3.5" />
             </button>

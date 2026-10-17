@@ -71,7 +71,7 @@ export function CascadeFilterBar({
             type="button"
             aria-pressed={isActive}
             onClick={(e) => handleClick(stage, e)}
-            className={`flex min-h-hit items-center gap-1.5 border px-2 transition-colors duration-150 ${
+            className={`flex min-h-hit items-center gap-1.5 border px-2 transition-colors duration-base ${
               isActive
                 ? "border-sf-line-emphasis"
                 : "border-transparent hover:border-sf-line-interactive"
@@ -84,7 +84,7 @@ export function CascadeFilterBar({
               style={{ background: isActive ? color : "var(--sf-disabled-line)" }}
             />
             <span
-              className="font-heading text-[12px] uppercase tracking-[1px]"
+              className="font-heading text-[12px] uppercase tracking-wider"
               style={{ color: isActive ? color : "var(--t4)" }}
             >
               {CASCADE_STAGE_LABELS[stage].slice(0, 4)}
@@ -97,7 +97,7 @@ export function CascadeFilterBar({
         <button
           type="button"
           onClick={() => onChange(new Set(ALL_STAGES))}
-          className="ml-1 min-h-hit px-2 font-sans text-[12px] uppercase tracking-[1px] text-t3 transition-colors hover:text-t1"
+          className="ml-1 min-h-hit px-2 font-sans text-[12px] uppercase tracking-wider text-t3 transition-colors hover:text-t1"
         >
           Reset
         </button>

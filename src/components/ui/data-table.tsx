@@ -48,7 +48,7 @@ Header.displayName = "DataTable.Header";
 
 const Body = React.forwardRef<HTMLTableSectionElement, React.HTMLAttributes<HTMLTableSectionElement>>(
   ({ className, ...props }, ref) => (
-    <tbody ref={ref} className={cn("divide-y divide-sf-border", className)} {...props} />
+    <tbody ref={ref} className={cn("divide-y divide-sf-line-hairline", className)} {...props} />
   ),
 );
 Body.displayName = "DataTable.Body";

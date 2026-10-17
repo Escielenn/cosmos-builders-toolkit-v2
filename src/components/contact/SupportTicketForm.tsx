@@ -15,6 +15,7 @@ import {
 import { Send, CheckCircle, Copy } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
 import { useToast } from "@/hooks/use-toast";
+import { useUnsavedChangesGuard } from "@/hooks/use-unsaved-changes-guard";
 import { useContact } from "@/hooks/use-contact";
 import { useAuth } from "@/contexts/AuthContext";
 import HoneypotField from "./HoneypotField";
@@ -44,6 +45,7 @@ const SupportTicketForm = ({ onSuccess }: SupportTicketFormProps) => {
     control,
     formState: { errors, isSubmitting },
     reset,
+    watch,
   } = useForm<SupportTicketFormData>({
     resolver: zodResolver(supportTicketSchema),
     defaultValues: {
@@ -55,6 +57,10 @@ const SupportTicketForm = ({ onSuccess }: SupportTicketFormProps) => {
       message: "",
     },
   });
+
+  // Warn before the tab closes while a written message is unsent.
+  const draftMessage = watch("message");
+  useUnsavedChangesGuard(!submitted && Boolean(draftMessage?.trim()));
 
   const onSubmit = async (data: SupportTicketFormData) => {
     try {
@@ -91,14 +97,14 @@ const SupportTicketForm = ({ onSuccess }: SupportTicketFormProps) => {
   if (submitted && ticketNumber) {
     return (
       <div className="text-center py-8">
-        <CheckCircle className="w-12 h-12 text-sf-emerald mx-auto mb-4" />
+        <CheckCircle className="w-12 h-12 text-sf-emerald-text mx-auto mb-4" />
         <h3 className="font-heading text-xl font-medium mb-2">
           TICKET LOGGED.
         </h3>
         <p className="text-t2 mb-4">
           Response within 24-48 hours.
         </p>
-        <div className="inline-flex items-center gap-2 bg-muted px-4 py-2 rounded-none mb-4">
+        <div className="inline-flex items-center gap-2 bg-sf-surface-elevated px-4 py-2 rounded-none mb-4">
           <span className="font-mono text-sm">{ticketNumber}</span>
           <Button variant="ghost" size="icon" onClick={copyTicketNumber} aria-label="Copy ticket number">
             <Copy className="w-4 h-4" />

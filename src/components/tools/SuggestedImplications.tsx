@@ -58,7 +58,7 @@ const SuggestedImplications = ({
         <CollapsibleTrigger asChild>
           <button type="button" className="w-full p-4 flex items-center justify-between text-left hover:bg-sf-amber/5 transition-colors">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-sm bg-sf-amber/20 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-none bg-sf-amber/20 flex items-center justify-center">
                 <Lightbulb className="w-5 h-5 text-sf-amber" />
               </div>
               <div>
@@ -118,7 +118,7 @@ const SuggestedImplications = ({
                               {implication.perceivedConstant}
                             </span>
                             <ArrowRight className="w-4 h-4 text-t3 shrink-0" />
-                            <span className="font-medium text-primary">
+                            <span className="font-medium text-sf-primary-text">
                               {implication.archetypeChannel}
                             </span>
                           </div>
@@ -162,10 +162,10 @@ const SuggestedImplications = ({
                         </p>
 
                         {implication.suggestedArchetypeForm && (
-                          <div className="p-3 rounded bg-primary/5 border border-primary">
+                          <div className="p-3 rounded-none bg-sf-primary/5 border border-sf-primary">
                             <div className="flex items-center gap-2 mb-1">
-                              <Sparkles className="w-4 h-4 text-primary" />
-                              <span className="text-sm font-medium text-primary">
+                              <Sparkles className="w-4 h-4 text-sf-primary-text" />
+                              <span className="text-sm font-medium text-sf-primary-text">
                                 Suggested Archetype Form
                               </span>
                             </div>

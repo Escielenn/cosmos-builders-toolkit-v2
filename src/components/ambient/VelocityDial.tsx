@@ -47,8 +47,8 @@ export function VelocityDial({ className }: { className?: string }) {
       <svg viewBox="0 0 200 200" className="w-full h-full">
         <defs>
           <linearGradient id="veloArc" x1="0" x2="1">
-            <stop offset="0" stopColor="#15C17B" stopOpacity="0.1" />
-            <stop offset="1" stopColor="#15C17B" stopOpacity="0.8" />
+            <stop offset="0" style={{ stopColor: "var(--sf-primary)" }} stopOpacity="0.1" />
+            <stop offset="1" style={{ stopColor: "var(--sf-primary)" }} stopOpacity="0.8" />
           </linearGradient>
         </defs>
 
@@ -66,7 +66,7 @@ export function VelocityDial({ className }: { className?: string }) {
               y1={y1}
               x2={x2}
               y2={y2}
-              stroke={i % 5 === 0 ? "#6B7484" : "#2E3548"}
+              className={i % 5 === 0 ? "stroke-sf-line" : "stroke-sf-line-hairline"}
               strokeWidth={i % 5 === 0 ? 1.2 : 0.8}
             />
           );
@@ -76,7 +76,7 @@ export function VelocityDial({ className }: { className?: string }) {
         <path
           d={`M ${100 + Math.cos(-Math.PI * 1.25) * 60} ${100 + Math.sin(-Math.PI * 1.25) * 60} A 60 60 0 1 1 ${100 + Math.cos(Math.PI * 0.25) * 60} ${100 + Math.sin(Math.PI * 0.25) * 60}`}
           fill="none"
-          stroke="#2E3548"
+          className="stroke-sf-line-hairline"
           strokeWidth={3}
         />
         <path d={arcD} fill="none" stroke="url(#veloArc)" strokeWidth={3} strokeLinecap="round" />
@@ -87,7 +87,7 @@ export function VelocityDial({ className }: { className?: string }) {
           y1={100}
           x2={100}
           y2={40}
-          stroke="#15C17B"
+          className="stroke-sf-primary"
           strokeWidth={1.5}
           style={{
             transformOrigin: "100px 100px",
@@ -95,22 +95,22 @@ export function VelocityDial({ className }: { className?: string }) {
             transition: "transform 2400ms cubic-bezier(0.4,0,0.2,1)",
           }}
         />
-        <circle cx={100} cy={100} r={5} fill="#0A0E17" stroke="#15C17B" strokeWidth={1.5} />
-        <circle cx={100} cy={100} r={1.5} fill="#15C17B" />
+        <circle cx={100} cy={100} r={5} className="fill-sf-void stroke-sf-primary" strokeWidth={1.5} />
+        <circle cx={100} cy={100} r={1.5} className="fill-sf-primary" />
       </svg>
 
       <div className="absolute left-1/2 top-[62%] -translate-x-1/2 text-center">
-        <div className="font-mono text-[12px] text-t4 tracking-[0.1em]">{f.name}</div>
-        <div className="font-display font-light text-[26px] text-t1 tracking-[0.04em] mt-1">
+        <div className="font-mono text-xs text-t4 tracking-[0.1em]">{f.name}</div>
+        <div className="font-mono text-[26px] text-t1 mt-1">
           {f.v}
           <span className="text-[13px] text-t4 ml-1">{f.u}</span>
         </div>
       </div>
 
-      <div className="absolute left-3.5 top-3.5 font-mono text-[12px] text-sf-primary-text tracking-[2px]">
+      <div className="absolute left-3.5 top-3.5 font-mono text-xs text-sf-primary-text tracking-wide">
         VELOCITY
       </div>
-      <div className="absolute right-3.5 top-3.5 font-mono text-[12px] text-t4 tracking-[2px]">
+      <div className="absolute right-3.5 top-3.5 font-mono text-xs text-t4 tracking-wide">
         REF-FRAME
       </div>
     </div>

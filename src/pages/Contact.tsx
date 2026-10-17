@@ -7,12 +7,14 @@ import ContactFormTabs from "@/components/contact/ContactFormTabs";
 import { useSearchParams } from "react-router-dom";
 import { PageBursts } from "@/components/ui/data-burst";
 import { CONTACT_BURSTS } from "@/lib/data-bursts";
+import { useMetaTags } from "@/hooks/use-meta-tags";
 
 type TabValue = "contact" | "support" | "feature" | "bug" | "beta";
 
 const validTabs: TabValue[] = ["contact", "support", "feature", "bug", "beta"];
 
 const Contact = () => {
+  useMetaTags({ title: "Contact" });
   const [searchParams] = useSearchParams();
   const tabParam = searchParams.get("tab");
   const defaultTab: TabValue = validTabs.includes(tabParam as TabValue)
@@ -20,7 +22,7 @@ const Contact = () => {
     : "contact";
 
   return (
-    <div className="min-h-screen bg-background sf-atmosphere">
+    <div className="min-h-screen bg-sf-void sf-atmosphere">
       <Header />
 
       <main className="relative container mx-auto px-4 pt-24 pb-16">
@@ -31,7 +33,7 @@ const Contact = () => {
             <Mail className="w-3 h-3 mr-1" />
             COMMUNICATIONS
           </Badge>
-          <h1 className="font-display text-4xl md:text-5xl font-light mb-4 tracking-sf-wide">
+          <h1 className="font-display text-sf-h1 tracking-title text-t1 mb-4">
             COMMUNICATIONS CHANNEL
           </h1>
           <p className="text-lg text-t2 max-w-2xl mx-auto">
@@ -54,14 +56,14 @@ const Contact = () => {
             </h3>
             <div className="grid md:grid-cols-2 gap-6">
               <div className="text-center p-4">
-                <MessageSquare className="w-8 h-8 text-primary mx-auto mb-2" />
+                <MessageSquare className="w-8 h-8 text-sf-primary-text mx-auto mb-2" />
                 <h4 className="font-medium mb-1">Email</h4>
                 <p className="text-sm text-t2">
                   support@stellarforge.tools
                 </p>
               </div>
               <div className="text-center p-4">
-                <Clock className="w-8 h-8 text-primary mx-auto mb-2" />
+                <Clock className="w-8 h-8 text-sf-primary-text mx-auto mb-2" />
                 <h4 className="font-medium mb-1">Response Time</h4>
                 <p className="text-sm text-t2">
                   Usually within 24-48 hours

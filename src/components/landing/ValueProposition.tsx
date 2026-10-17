@@ -33,7 +33,7 @@ const ValueProposition = () => {
       variants={scrollReveal}
     >
       <GlassPanel glow lightArc className="p-8 md:p-12">
-        <div className="inline-flex items-center gap-3.5 font-mono uppercase text-sf-primary-text/80 text-[12px] tracking-[3px] mb-10">
+        <div className="inline-flex items-center gap-3.5 font-mono uppercase text-sf-primary-text text-xs tracking-wide mb-10">
           <span aria-hidden className="block w-12 h-px bg-sf-primary" />
           <span>// why stellarforge</span>
         </div>
@@ -51,7 +51,7 @@ const ValueProposition = () => {
               className="grid grid-cols-[auto_1fr] gap-x-6 md:gap-x-10 py-8 first:pt-0"
               variants={fadeUpItem}
             >
-              <span className="font-mono text-[12px] tracking-[0.18em] text-sf-amber-warm pt-1">
+              <span className="font-mono text-xs tracking-wide text-sf-amber-warm pt-1">
                 {p.n}
               </span>
               <div className="space-y-3">

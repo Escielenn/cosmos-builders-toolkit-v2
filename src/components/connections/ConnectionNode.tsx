@@ -113,7 +113,7 @@ const ConnectionNode = ({
           r={isDragging ? 40 : 35}
           fill={stroke}
           opacity={isDragging ? 0.3 : 0.2}
-          className="transition-all duration-200"
+          className="transition-all duration-base"
         />
       )}
 
@@ -122,7 +122,7 @@ const ConnectionNode = ({
         style={{ fill: "var(--sf-surface)" }}
         stroke={stroke}
         strokeWidth={isDragging ? 4 : isHovered || isSelected ? 3 : 2}
-        className="transition-all duration-200"
+        className="transition-all duration-base"
       />
 
       <circle r={18} fill={stroke} opacity={0.15} />

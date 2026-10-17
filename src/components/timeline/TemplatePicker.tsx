@@ -41,10 +41,10 @@ const CATEGORY_LABELS: Record<TemplateCategory, string> = {
 };
 
 const CATEGORY_COLORS: Record<TemplateCategory, string> = {
-  civilization: "bg-blue-500/20 text-blue-400 border-sf-azure",
-  character: "bg-violet-500/20 text-sf-violet-text border-sf-violet",
-  conflict: "bg-red-500/20 text-sf-crimson-text border-sf-crimson",
-  exploration: "bg-emerald-500/20 text-sf-emerald border-sf-emerald",
+  civilization: "bg-sf-azure/[0.06] text-sf-azure-text border-sf-azure",
+  character: "bg-sf-violet/[0.06] text-sf-violet-text border-sf-violet",
+  conflict: "bg-sf-crimson/[0.06] text-sf-crimson-text border-sf-crimson",
+  exploration: "bg-sf-emerald/[0.06] text-sf-emerald-text border-sf-emerald",
 };
 
 interface TemplatePickerProps {
@@ -200,7 +200,7 @@ const TemplatePicker = ({
                   <p className="text-xs text-t3 leading-relaxed">
                     {template.description}
                   </p>
-                  <div className="flex items-center gap-3 text-[12px] text-t3/70">
+                  <div className="flex items-center gap-3 text-[12px] text-t4">
                     <span>{template.tracks.length} tracks</span>
                     <span>{template.events.length} events</span>
                     <div className="flex items-center gap-0.5">

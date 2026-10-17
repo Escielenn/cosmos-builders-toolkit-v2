@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Search, PenTool, Plus, Archive, BookOpen } from "lucide-react";
+import { Search, PenTool, Plus, Archive, BookOpen } from "lucide-react";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { GlassPanel } from "@/components/ui/glass-panel";
@@ -42,6 +42,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import type { WritingPrompt } from "@/lib/writing/prompts";
 
+import { BackLink } from "@/components/ui/back-link";
 type SortBy = "recent" | "alphabetical";
 
 const WritingWorkshop = () => {
@@ -151,13 +152,7 @@ const WritingWorkshop = () => {
 
       <main className="flex-1 container max-w-5xl mx-auto px-4 md:px-6 pt-24 pb-16">
         {/* Back link */}
-        <Link
-          to="/"
-          className="inline-flex items-center gap-2 font-heading text-[12px] uppercase tracking-[0.2em] font-medium text-t3 hover:text-sf-primary-bright transition-colors duration-base mb-6"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          ← RETURN TO BRIDGE
-        </Link>
+        <BackLink to="/" label="RETURN TO BRIDGE" className="mb-6" />
 
         {/* Page header */}
         <SectionHero
@@ -185,7 +180,7 @@ const WritingWorkshop = () => {
         <div className="mb-8">
           <Link
             to="/prompts"
-            className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[1px] text-primary/70 hover:text-primary transition-colors"
+            className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-sf-primary-text hover:text-sf-primary-text transition-colors"
           >
             <BookOpen className="w-3.5 h-3.5" />
             Browse All Weekly Prompts
@@ -217,12 +212,12 @@ const WritingWorkshop = () => {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search entries..."
-                className="pl-9 bg-transparent border-sf-line rounded-xs"
+                className="pl-9 bg-transparent border-sf-line rounded-none"
               />
             </div>
 
             <Select value={worldFilter} onValueChange={setWorldFilter}>
-              <SelectTrigger className="w-[160px] rounded-xs border-sf-line">
+              <SelectTrigger className="w-[160px] rounded-none border-sf-line">
                 <SelectValue placeholder="All worlds" />
               </SelectTrigger>
               <SelectContent>
@@ -240,7 +235,7 @@ const WritingWorkshop = () => {
               value={sortBy}
               onValueChange={(v) => setSortBy(v as SortBy)}
             >
-              <SelectTrigger className="w-[140px] rounded-xs border-sf-line">
+              <SelectTrigger className="w-[140px] rounded-none border-sf-line">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -265,7 +260,7 @@ const WritingWorkshop = () => {
                       e.stopPropagation();
                       setDeleteTarget(entry.id);
                     }}
-                    className="absolute top-3 right-3 p-1.5 rounded-sm bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity text-t4 hover:text-sf-amber"
+                    className="absolute top-3 right-3 p-1.5 rounded-none bg-sf-surface border border-sf-line text-t4 hover:text-sf-amber-text transition-colors duration-base"
                     aria-label="Archive entry"
                   >
                     <Archive className="w-3.5 h-3.5" />

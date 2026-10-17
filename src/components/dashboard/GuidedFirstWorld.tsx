@@ -67,7 +67,7 @@ interface GuidedFirstWorldProps {
 export default function GuidedFirstWorld({ worldId }: GuidedFirstWorldProps) {
   return (
     <GlassPanel glow className="p-6 md:p-8">
-      <h2 className="font-heading text-sm font-light uppercase tracking-[3px] text-primary mb-1">
+      <h2 className="font-heading text-sm font-light uppercase tracking-wide text-sf-primary-text mb-1">
         Begin Your World
       </h2>
       <p className="text-t2 text-sm mb-6">
@@ -79,7 +79,7 @@ export default function GuidedFirstWorld({ worldId }: GuidedFirstWorldProps) {
           <Link
             key={step.toolType}
             to={`/worlds/${worldId}/tools/${step.toolType}`}
-            className="group flex items-center gap-3 py-2.5 px-3 hover:bg-white/[0.03] transition-colors"
+            className="group flex items-center gap-3 py-2.5 px-3 hover:bg-sf-surface-elevated transition-colors"
           >
             {/* Vertical connector line + dot */}
             <div className="relative flex flex-col items-center w-4 shrink-0">
@@ -91,7 +91,7 @@ export default function GuidedFirstWorld({ worldId }: GuidedFirstWorldProps) {
                 }}
               />
               {i < CASCADE_PATH.length - 1 && (
-                <div className="w-px h-6 bg-white/[0.08] absolute top-3" />
+                <div className="w-px h-6 bg-sf-line-hairline absolute top-3" />
               )}
             </div>
 
@@ -99,7 +99,7 @@ export default function GuidedFirstWorld({ worldId }: GuidedFirstWorldProps) {
             <div className="flex-1 min-w-0">
               <div className="flex items-baseline gap-2">
                 <span
-                  className="font-heading text-[12px] uppercase tracking-[2px]"
+                  className="font-heading text-[12px] uppercase tracking-wide"
                   style={{ color: step.color }}
                 >
                   {step.layer}

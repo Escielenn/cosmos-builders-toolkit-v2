@@ -92,12 +92,12 @@ const WorksheetSelectorDialog = ({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="font-heading flex items-center gap-2">
-            {ToolIcon && <ToolIcon className="w-7 h-7 rounded-sm shrink-0" />}
+            {ToolIcon && <ToolIcon className="w-7 h-7 rounded-none shrink-0" />}
             {shouldShowCreateForm ? `New ${toolDisplayName}` : `Select ${toolDisplayName}`}
           </DialogTitle>
           <DialogDescription>
             {worldName && (
-              <span className="text-primary font-medium">{worldName}</span>
+              <span className="text-sf-primary-text font-medium">{worldName}</span>
             )}
             {worldName && " · "}
             {shouldShowCreateForm
@@ -135,7 +135,7 @@ const WorksheetSelectorDialog = ({
                   disabled={isCreating}
                   className="flex-1"
                 >
-                  Back to List
+                  RETURN TO LIST
                 </Button>
               )}
               <Button
@@ -163,8 +163,8 @@ const WorksheetSelectorDialog = ({
                     className={cn(
                       "w-full text-left p-3 rounded-none border transition-colors",
                       selectedWorksheetId === worksheet.id
-                        ? "border-primary bg-primary/10"
-                        : "border-sf-line-interactive hover:border-primary hover:bg-muted/50"
+                        ? "border-sf-primary bg-sf-primary/10"
+                        : "border-sf-line-interactive hover:border-sf-primary hover:bg-muted/50"
                     )}
                   >
                     <div className="flex items-start gap-3">

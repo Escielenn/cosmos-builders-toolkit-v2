@@ -143,13 +143,13 @@ const TrackLane = memo(
           {/* Folded track chips */}
           {foldedTracks.length > 0 && (
             <div className="flex items-center gap-0.5 ml-0.5">
-              <Layers className="w-3 h-3 text-t3/60 shrink-0" />
+              <Layers className="w-3 h-3 text-t4 shrink-0" />
               {foldedTracks.map((ft) => (
                 <button
                   key={ft.id}
                   type="button"
                   onClick={() => dispatch({ type: "UNFOLD_TRACK", payload: ft.id })}
-                  className="flex items-center gap-0.5 px-1 py-0 rounded text-[12px] text-t3 hover:text-t1 bg-muted/30 hover:bg-muted/50 transition-colors"
+                  className="flex items-center gap-0.5 px-1 py-0 rounded-none text-[12px] text-t3 hover:text-t1 bg-muted/30 hover:bg-muted/50 transition-colors"
                   title={`Unfold ${ft.name}`}
                 >
                   <span
@@ -186,7 +186,7 @@ const TrackLane = memo(
                           payload: { trackId: track.id, intoTrackId: target.id },
                         })
                       }
-                      className="flex items-center gap-2 w-full px-1.5 py-1 rounded hover:bg-muted/50 text-xs text-left"
+                      className="flex items-center gap-2 w-full px-1.5 py-1 rounded-none hover:bg-muted/50 text-xs text-left"
                     >
                       <span
                         className="w-2 h-2 rounded-full shrink-0"

@@ -38,7 +38,7 @@ const SpacecraftMockup = () => {
   ];
 
   const lifeSupport = [
-    { name: "O₂", value: 98, color: "sf-cyan" },
+    { name: "O₂", value: 98, color: "sf-teal" },
     { name: "H₂O", value: 87, color: "sf-azure" },
     { name: "Power", value: 92, color: "sf-amber" },
     { name: "Temp", value: 21, unit: "°C", color: "sf-emerald" },
@@ -52,13 +52,13 @@ const SpacecraftMockup = () => {
           <div className="text-xs text-t3 uppercase tracking-wider">
             Spacecraft
           </div>
-          <div className="text-sm font-display text-sf-cyan">
+          <div className="text-sm font-heading text-sf-primary-text">
             RSV Wanderer
           </div>
         </div>
         <div className="text-right">
-          <div className="text-[12px] text-t3">Crew</div>
-          <div className="text-lg font-mono text-sf-cyan">
+          <div className="text-xs text-t3">Crew</div>
+          <div className="text-lg font-mono text-sf-primary-text">
             {crewCount}
             <span className="text-xs text-t3">/24</span>
           </div>
@@ -70,13 +70,13 @@ const SpacecraftMockup = () => {
         <svg
           viewBox="0 0 100 100"
           className="w-full h-full max-h-[120px]"
-          style={{ filter: "drop-shadow(0 0 10px rgba(21, 193, 123, 0.2))" }}
+          style={{ filter: "drop-shadow(0 0 10px rgb(var(--sf-primary-rgb) / 0.2))" }}
         >
           {/* Ship hull outline */}
           <path
             d="M5 50 L20 30 L80 25 L95 50 L80 75 L20 70 Z"
             fill="none"
-            stroke="hsl(var(--sf-cyan-hsl) / 0.3)"
+            className="stroke-sf-primary/30"
             strokeWidth="1"
           />
 
@@ -86,7 +86,7 @@ const SpacecraftMockup = () => {
             cy="50"
             rx="4"
             ry="8"
-            fill="hsl(var(--sf-cyan-hsl) / 0.4)"
+            className="fill-sf-primary/40"
             style={{ animation: "pulse-value 1s ease-in-out infinite" }}
           />
 
@@ -98,19 +98,12 @@ const SpacecraftMockup = () => {
               y={section.y}
               width={section.w}
               height={section.h}
-              rx="2"
-              fill={
-                index === activeSection
-                  ? "hsl(var(--sf-cyan-hsl) / 0.3)"
-                  : "hsl(var(--sf-surface-hsl) / 0.5)"
-              }
-              stroke={
-                index === activeSection
-                  ? "hsl(var(--sf-cyan-hsl))"
-                  : "hsl(var(--muted-foreground) / 0.2)"
-              }
               strokeWidth={index === activeSection ? "1.5" : "0.5"}
-              className="transition-all duration-300"
+              className={`transition-all duration-slow ease-sf-out ${
+                index === activeSection
+                  ? "fill-sf-primary/30 stroke-sf-primary"
+                  : "fill-sf-surface/50 stroke-sf-line-hairline"
+              }`}
             />
           ))}
 
@@ -119,8 +112,7 @@ const SpacecraftMockup = () => {
             x="50"
             y="95"
             textAnchor="middle"
-            className="text-[12px] fill-current"
-            style={{ fill: "hsl(var(--sf-cyan-hsl))" }}
+            className="text-xs fill-sf-primary-text"
           >
             {sections[activeSection]?.name}
           </text>
@@ -128,11 +120,11 @@ const SpacecraftMockup = () => {
 
         {/* Highlight pulse */}
         <div
-          className="absolute w-4 h-4 rounded-full bg-sf-cyan/30 blur-md pointer-events-none"
+          className="absolute w-4 h-4 rounded-full bg-sf-primary/30 blur-md pointer-events-none"
           style={{
             left: `${sections[activeSection]?.x + sections[activeSection]?.w / 2}%`,
             top: `${sections[activeSection]?.y + sections[activeSection]?.h / 2}%`,
-            transition: "all 0.3s ease-out",
+            transition: "all 280ms cubic-bezier(0.2, 0, 0, 1)",
           }}
         />
       </div>
@@ -141,20 +133,20 @@ const SpacecraftMockup = () => {
       <div className="mt-4 grid grid-cols-4 gap-2">
         {lifeSupport.map((item) => (
           <div key={item.name} className="text-center">
-            <div className="text-[12px] text-t3 mb-1">{item.name}</div>
+            <div className="text-xs text-t3 mb-1">{item.name}</div>
             <div
               className="text-xs font-mono"
-              style={{ color: `hsl(var(--${item.color}))` }}
+              style={{ color: `var(--${item.color}-text)` }}
             >
               {item.value}
               {item.unit || "%"}
             </div>
             <div className="h-1 bg-sf-surface mt-1 overflow-hidden">
               <div
-                className="h-full transition-all duration-500"
+                className="h-full transition-all duration-slow"
                 style={{
                   width: item.unit ? "100%" : `${item.value}%`,
-                  backgroundColor: `hsl(var(--${item.color}))`,
+                  backgroundColor: `var(--${item.color})`,
                 }}
               />
             </div>
@@ -164,9 +156,9 @@ const SpacecraftMockup = () => {
 
       {/* Ship class badge */}
       <div className="mt-3 flex justify-center">
-        <div className="inline-flex items-center gap-2 px-3 py-1 bg-sf-cyan/10 border border-sf-primary">
-          <div className="w-2 h-2 bg-sf-cyan animate-pulse" />
-          <span className="text-[12px] text-sf-cyan uppercase tracking-wider">
+        <div className="inline-flex items-center gap-2 px-3 py-1 bg-sf-primary/10 border border-sf-primary">
+          <div className="w-2 h-2 bg-sf-primary animate-pulse" />
+          <span className="text-xs text-sf-primary-text uppercase tracking-wider">
             Long-Range Explorer
           </span>
         </div>

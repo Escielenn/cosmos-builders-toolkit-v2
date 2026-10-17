@@ -107,7 +107,7 @@ const WorldCard = ({
 
   return (
     <>
-      <GlassPanel hover className={cn("flex flex-col min-h-[200px]", isArchived && "opacity-60")}>
+      <GlassPanel hover className={cn("flex flex-col min-h-[200px]", isArchived && "bg-sf-disabled-bg border-sf-disabled-line")}>
         {/* Header Image */}
         <div className="relative">
           {headerImageUrl ? (
@@ -127,13 +127,13 @@ const WorldCard = ({
           )}
           {/* Icon overlay - positioned outside overflow-hidden container */}
           <div className="absolute -bottom-5 left-4 w-10 h-10 rounded-none bg-gradient-to-br from-primary/20 to-accent/20 border-2 border-background flex items-center justify-center shadow-lg z-10 overflow-hidden">
-            <WorldIconRenderer iconId={icon} className="w-7 h-7 text-primary" />
+            <WorldIconRenderer iconId={icon} className="w-7 h-7 text-sf-primary-text" />
           </div>
           {/* Status badges (Fork / Archived), stacked top-right */}
           <div className="absolute top-2 right-2 flex flex-col items-end gap-1">
             {isFork && (
               <span
-                className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-sm bg-sf-stellar/[0.06] border border-sf-stellar text-sf-stellar-text font-mono text-[12px] tracking-[0.18em] uppercase"
+                className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-none bg-sf-stellar/[0.06] border border-sf-stellar text-sf-stellar-text font-mono text-[12px] tracking-wide uppercase"
                 title={source ? `Forked from ${source.name}` : "Forked from another world"}
               >
                 <GitFork className="w-3 h-3" />
@@ -153,7 +153,7 @@ const WorldCard = ({
         <div className="p-5 pt-8 flex flex-col flex-1">
           <div className="flex items-start justify-between mb-2">
             <Link to={`/worlds/${id}`} className="flex-1">
-              <h3 className="font-heading font-medium text-lg hover:text-primary transition-colors">
+              <h3 className="font-heading font-medium text-lg hover:text-sf-primary-text transition-colors">
                 {name}
               </h3>
             </Link>
@@ -233,11 +233,13 @@ const WorldCard = ({
                 className={cn(
                   "w-2 h-2 rounded-full shrink-0",
                   Date.now() - new Date(snapshotAt).getTime() < 3_600_000
-                    ? "bg-primary"
+                    ? "bg-sf-emerald"
                     : Date.now() - new Date(snapshotAt).getTime() < 86_400_000
-                      ? "bg-amber-400"
-                      : "bg-muted-foreground/40"
+                      ? "bg-sf-amber"
+                      : "bg-sf-disabled-line"
                 )}
+                role="img"
+                aria-label={`Last backup: ${new Date(snapshotAt).toLocaleString()}`}
                 title={`Last backup: ${new Date(snapshotAt).toLocaleString()}`}
               />
             )}

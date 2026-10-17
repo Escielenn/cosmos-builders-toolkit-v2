@@ -38,11 +38,11 @@ export default function EntitySuggestionBar({
         : `${names.slice(0, -1).join(", ")}, and ${names[names.length - 1]}`;
 
   return (
-    <div className="border border-primary bg-primary/5 px-4 py-2.5 animate-in slide-in-from-bottom-2 duration-300">
+    <div className="border border-primary bg-primary/5 px-4 py-2.5 animate-in slide-in-from-bottom-2 duration-slow">
       <div className="flex items-start gap-3">
-        <Link2 className="w-3.5 h-3.5 text-primary/60 shrink-0 mt-0.5" />
+        <Link2 className="w-3.5 h-3.5 text-sf-primary-text shrink-0 mt-0.5" />
         <div className="flex-1 min-w-0">
-          <p className="font-mono text-[12px] uppercase tracking-wider text-primary/70 leading-relaxed">
+          <p className="font-mono text-[12px] uppercase tracking-wider text-sf-primary-text leading-relaxed">
             This entry mentions {nameList}. Link to{" "}
             {suggestions.length === 1 ? "this entity" : "these entities"}?
           </p>
@@ -53,7 +53,7 @@ export default function EntitySuggestionBar({
                 variant="outline"
                 size="sm"
                 onClick={() => onLink(s.entryId)}
-                className="h-6 text-[12px] px-2 gap-1 text-primary border-primary hover:bg-primary/10"
+                className="h-6 text-[12px] px-2 gap-1 text-sf-primary-text border-primary hover:bg-primary/10"
               >
                 <Link2 className="w-2.5 h-2.5" />
                 {s.title}
@@ -64,7 +64,7 @@ export default function EntitySuggestionBar({
         <button
           onClick={onDismiss}
           aria-label="Dismiss suggestions"
-          className="text-t3/30 hover:text-t3/60 transition-colors shrink-0"
+          className="text-t4 hover:text-t4 transition-colors shrink-0"
         >
           <X className="w-3 h-3" />
         </button>

@@ -29,8 +29,8 @@ export function BreathingStar({
         className="w-full h-full animate-sf-pulse"
         style={{
           borderRadius: "9999px",
-          background: "radial-gradient(circle, #E0E4E8 0%, rgba(224,228,232,0) 70%)",
-          boxShadow: "0 0 6px rgba(224,228,232,0.6), 0 0 14px rgba(91,141,239,0.3)",
+          background: "radial-gradient(circle, rgb(var(--t1-rgb)) 0%, rgb(var(--t1-rgb) / 0) 70%)",
+          boxShadow: "0 0 6px rgb(var(--t1-rgb) / 0.6), 0 0 14px rgb(var(--sf-stellar-rgb) / 0.3)",
         }}
       />
     </div>

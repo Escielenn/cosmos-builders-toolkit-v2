@@ -1,6 +1,6 @@
 import { useMemo, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Archive as ArchiveIcon } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Archive as ArchiveIcon } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -12,7 +12,10 @@ import { useAuth } from "@/contexts/AuthContext";
 import { PageBursts } from "@/components/ui/data-burst";
 import { ARCHIVE_BURSTS } from "@/lib/data-bursts";
 
+import { BackLink } from "@/components/ui/back-link";
+import { useMetaTags } from "@/hooks/use-meta-tags";
 const Archive = () => {
+  useMetaTags({ title: "Archive" });
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const { worlds, isLoading, deleteWorld, unarchiveWorld } = useWorlds(true);
@@ -52,17 +55,11 @@ const Archive = () => {
       <PageBursts bursts={ARCHIVE_BURSTS} />
       <main className="container mx-auto px-4 pt-24 pb-16 relative z-10">
         {/* Back Navigation */}
-        <Link
-          to="/"
-          className="inline-flex items-center gap-2 font-heading text-[12px] uppercase tracking-[0.2em] font-medium text-t3 hover:text-sf-primary-bright transition-colors duration-base mb-6"
-        >
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          ← RETURN TO BRIDGE
-        </Link>
+        <BackLink to="/" label="RETURN TO BRIDGE" className="mb-6" />
 
         {/* Header */}
         <div className="flex items-center gap-3 mb-8">
-          <h1 className="font-heading font-light text-2xl uppercase tracking-sf-wide">
+          <h1 className="font-heading font-light text-2xl uppercase tracking-wide">
             Archive
           </h1>
           {archivedWorlds.length > 0 && (

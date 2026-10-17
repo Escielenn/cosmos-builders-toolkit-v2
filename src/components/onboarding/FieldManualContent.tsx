@@ -33,8 +33,8 @@ export function ManualSection({ title, children }: { title: string; children: Re
       <h3
         className={
           isPage
-            ? "font-heading text-sm font-light uppercase tracking-[3px] text-sf-emerald mb-3"
-            : "font-heading text-[12px] uppercase tracking-[2px] text-t1 mb-1.5"
+            ? "font-heading text-sm font-light uppercase tracking-wide text-sf-emerald mb-3"
+            : "font-heading text-[12px] uppercase tracking-wide text-t1 mb-1.5"
         }
       >
         {title}
@@ -56,7 +56,7 @@ export function ManualDivider({ label }: { label: string }) {
   return (
     <div className="flex items-center gap-3 pt-6 pb-3">
       <div className="h-px flex-1 bg-border/20" />
-      <span className="font-mono text-[12px] uppercase tracking-[3px] text-primary/40 whitespace-nowrap">
+      <span className="font-mono text-[12px] uppercase tracking-wide text-sf-primary-text whitespace-nowrap">
         {label}
       </span>
       <div className="h-px flex-1 bg-border/20" />
@@ -70,7 +70,7 @@ export function ManualKeyLine({ keys, description }: { keys: string; description
   return (
     <div className="flex items-center gap-2">
       <span
-        className={`font-mono text-primary/70 w-40 shrink-0 ${
+        className={`font-mono text-sf-primary-text w-40 shrink-0 ${
           isPage ? "text-xs" : "text-[12px]"
         }`}
       >
@@ -107,7 +107,7 @@ export function FieldManualContent({ scale = "sheet" }: { scale?: ManualScale } 
           technology, and narrative. Click entries to navigate between
           tools and wiki pages.
         </p>
-        <p className="font-mono text-[12px] text-t3/50">
+        <p className="font-mono text-[12px] text-t4">
           Completion indicators: ● surveyed&ensp;◐ partial&ensp;○ pending
         </p>
       </ManualSection>
@@ -128,7 +128,7 @@ export function FieldManualContent({ scale = "sheet" }: { scale?: ManualScale } 
           editor supports freeform prose below the Data Profile.
         </p>
         <p>
-          Type <span className="font-mono text-primary/50">{`[[`}</span> to
+          Type <span className="font-mono text-sf-primary-text">{`[[`}</span> to
           cross-reference other elements. Links become navigable connections
           in the world graph.
         </p>

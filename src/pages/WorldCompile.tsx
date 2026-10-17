@@ -11,7 +11,6 @@ import { useParams, Link } from "react-router-dom";
 import {
   BookOpen,
   Check,
-  ChevronLeft,
   Download,
   Eye,
   FileText,
@@ -43,6 +42,7 @@ import { getToolDisplayName } from "@/lib/tools-config";
 import { extractWorksheetFacts } from "@/lib/worksheet-facts";
 import { mapError } from "@/lib/ship-voice";
 
+import { BackLink } from "@/components/ui/back-link";
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
@@ -254,12 +254,7 @@ export default function WorldCompile() {
       <div className="max-w-5xl mx-auto px-6 py-8">
         {/* Header */}
         <div className="mb-8">
-          <Link
-            to={`/worlds/${worldId}/write`}
-            className="inline-flex items-center gap-1 text-xs text-t4 hover:text-t2 mb-3"
-          >
-            <ChevronLeft className="w-3.5 h-3.5" /> ← RETURN TO WRITING SPACE
-          </Link>
+          <BackLink to={`/worlds/${worldId}/write`} label="RETURN TO WRITING SPACE" className="mb-3" />
           <h1 className="font-display text-3xl md:text-4xl tracking-[0.08em] text-t1 mb-1">
             COMPILE MANUSCRIPT
           </h1>
@@ -275,7 +270,7 @@ export default function WorldCompile() {
             {/* Front matter */}
             <GlassPanel>
               <div className="p-4 space-y-3">
-                <h2 className="font-heading text-sm uppercase tracking-[2px] text-sf-emerald-text mb-3">
+                <h2 className="font-heading text-sm uppercase tracking-wide text-sf-emerald-text mb-3">
                   Front Matter
                 </h2>
                 <div className="grid grid-cols-2 gap-3">
@@ -336,7 +331,7 @@ export default function WorldCompile() {
             <GlassPanel>
               <div className="p-4">
                 <div className="flex items-center justify-between mb-3">
-                  <h2 className="font-heading text-sm uppercase tracking-[2px] text-sf-emerald-text">
+                  <h2 className="font-heading text-sm uppercase tracking-wide text-sf-emerald-text">
                     Chapters
                   </h2>
                   <div className="flex gap-2">
@@ -363,11 +358,11 @@ export default function WorldCompile() {
                           <button
                             type="button"
                             onClick={() => toggleFolder(folder)}
-                            className="w-full flex items-center gap-2 px-2 py-1.5 hover:bg-white/[0.03] transition-colors"
+                            className="w-full flex items-center gap-2 px-2 py-1.5 hover:bg-sf-surface-elevated transition-colors"
                           >
                             <div className="w-4 h-4 flex items-center justify-center">
                               {allIn ? (
-                                <Check className="w-3.5 h-3.5 text-primary" />
+                                <Check className="w-3.5 h-3.5 text-sf-primary-text" />
                               ) : someIn ? (
                                 <Minus className="w-3.5 h-3.5 text-t3" />
                               ) : (
@@ -400,7 +395,7 @@ export default function WorldCompile() {
                       <>
                         {folders.length > 0 && (
                           <div className="pt-2 border-t border-sf-line">
-                            <span className="text-[12px] uppercase tracking-[1.5px] text-t4 font-heading px-2">
+                            <span className="text-[12px] uppercase tracking-wide text-t4 font-heading px-2">
                               Unfiled
                             </span>
                           </div>
@@ -418,12 +413,12 @@ export default function WorldCompile() {
 
                     {(documents?.length ?? 0) === 0 && (
                       <div className="text-xs text-t4 text-center py-6">
-                        <BookOpen className="w-8 h-8 mx-auto mb-2 opacity-30" />
+                        <BookOpen className="w-8 h-8 mx-auto mb-2 text-t4" aria-hidden="true" />
                         No documents in this world yet.
                         <br />
                         <Link
                           to={`/worlds/${worldId}/write`}
-                          className="text-primary hover:underline"
+                          className="text-sf-primary-text hover:underline"
                         >
                           Start writing
                         </Link>
@@ -439,7 +434,7 @@ export default function WorldCompile() {
               <GlassPanel>
                 <div className="p-4">
                   <div className="flex items-center justify-between mb-3">
-                    <h2 className="font-heading text-sm uppercase tracking-[2px] text-sf-emerald-text">
+                    <h2 className="font-heading text-sm uppercase tracking-wide text-sf-emerald-text">
                       Preview
                     </h2>
                     <Button
@@ -454,7 +449,7 @@ export default function WorldCompile() {
                   </div>
 
                   {showPreview && (
-                    <div className="max-h-[60vh] overflow-y-auto sf-sb border border-sf-line bg-white/[0.02] p-6 space-y-6">
+                    <div className="max-h-[60vh] overflow-y-auto sf-sb border border-sf-line bg-sf-surface p-6 space-y-6">
                       <div className="text-center pb-6 border-b border-sf-line">
                         <h3 className="font-heading text-xl tracking-wider text-t1">
                           {meta.title}
@@ -489,7 +484,7 @@ export default function WorldCompile() {
           <div className="space-y-4">
             <GlassPanel>
               <div className="p-4 space-y-3">
-                <h2 className="font-heading text-sm uppercase tracking-[2px] text-sf-emerald-text">
+                <h2 className="font-heading text-sm uppercase tracking-wide text-sf-emerald-text">
                   Manuscript Stats
                 </h2>
                 <div className="space-y-2">
@@ -519,7 +514,7 @@ export default function WorldCompile() {
 
             <GlassPanel>
               <div className="p-4 space-y-3">
-                <h2 className="font-heading text-sm uppercase tracking-[2px] text-sf-emerald-text">
+                <h2 className="font-heading text-sm uppercase tracking-wide text-sf-emerald-text">
                   Export
                 </h2>
 
@@ -531,7 +526,7 @@ export default function WorldCompile() {
                   >
                     <FileText className="w-4 h-4 mr-2" />
                     Download .docx
-                    <span className="ml-auto text-[12px] opacity-60">Standard manuscript</span>
+                    <span className="ml-auto text-[12px] text-t4">Standard manuscript</span>
                   </Button>
                   <Button
                     variant="outline"
@@ -541,7 +536,7 @@ export default function WorldCompile() {
                   >
                     <Download className="w-4 h-4 mr-2" />
                     Download Markdown
-                    <span className="ml-auto text-[12px] opacity-60">.md</span>
+                    <span className="ml-auto text-[12px] text-t4">.md</span>
                   </Button>
                   <Button
                     variant="outline"
@@ -551,7 +546,7 @@ export default function WorldCompile() {
                   >
                     <Download className="w-4 h-4 mr-2" />
                     Download plain text
-                    <span className="ml-auto text-[12px] opacity-60">.txt / Scrivener</span>
+                    <span className="ml-auto text-[12px] text-t4">.txt / Scrivener</span>
                   </Button>
                 </div>
 
@@ -588,8 +583,8 @@ function DocToggleRow({
       type="button"
       onClick={onToggle}
       className={cn(
-        "w-full flex items-center gap-2 px-2 py-1 transition-colors",
-        included ? "hover:bg-white/[0.03]" : "opacity-50 hover:opacity-70"
+        "w-full flex items-center gap-2 px-2 py-1 transition-colors hover:bg-sf-surface-elevated",
+        !included && "text-t4"
       )}
     >
       <Checkbox checked={included} className="pointer-events-none" aria-label={`Include ${doc.title}`} />

@@ -35,7 +35,7 @@ export function WorksheetCoverImage({
     if (!file.type.startsWith("image/")) {
       toast({
         title: "INVALID FILE TYPE.",
-        description: "Select image file.",
+        description: "SELECT AN IMAGE FILE.",
         variant: "destructive",
       });
       return;
@@ -44,7 +44,7 @@ export function WorksheetCoverImage({
     if (file.size > 5 * 1024 * 1024) {
       toast({
         title: "FILE TOO LARGE.",
-        description: "Image must be under 5MB.",
+        description: "IMAGE MUST BE UNDER 5MB.",
         variant: "destructive",
       });
       return;
@@ -146,7 +146,7 @@ export function WorksheetCoverImage({
           alt="Worksheet cover"
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end justify-between p-3">
+        <div className="absolute inset-0 bg-gradient-to-t from-[var(--sf-scrim)] to-transparent flex items-end justify-between p-3">
           <div className="flex gap-2">
             <Button
               type="button"

@@ -45,6 +45,7 @@ import {
 import CubeLogo from "@/components/icons/CubeLogo";
 import { GuideNav } from "@/components/layout/GuideNav";
 import { CascadeRibbon } from "@/components/tools/CascadeRibbon";
+import { useMetaTags } from "@/hooks/use-meta-tags";
 
 // ── Tool Card ──────────────────────────────────────────────
 
@@ -69,10 +70,10 @@ function ToolWikiCard({
     >
       <GlassPanel className="p-4 h-full">
         <div className="flex items-start justify-between gap-2 mb-2">
-          <h3 className="font-heading text-sm font-light uppercase tracking-[2px] text-t1 leading-tight">
+          <h3 className="font-heading text-sm font-light uppercase tracking-wide text-t1 leading-tight">
             {displayName}
           </h3>
-          <span className="text-t4 font-mono text-[12px] shrink-0">
+          <span className="text-t4 font-mono text-xs shrink-0">
             {compMeta.icon}
           </span>
         </div>
@@ -84,12 +85,12 @@ function ToolWikiCard({
         <div className="flex flex-wrap gap-1.5">
           <Badge
             variant="outline"
-            className="text-[12px] border-transparent px-1.5 py-0"
+            className="text-xs border-transparent px-1.5 py-0"
             style={{ color: catMeta.color, borderColor: `${catMeta.color}30` }}
           >
             {catMeta.label}
           </Badge>
-          <Badge variant="outline" className="text-[12px] text-t4 border-sf-line px-1.5 py-0">
+          <Badge variant="outline" className="text-xs text-t4 border-sf-line px-1.5 py-0">
             {typeMeta.label}
           </Badge>
           {isPro && <ProBadge />}
@@ -122,7 +123,7 @@ function ToolDetail({
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h2 className="font-display text-2xl tracking-sf-title text-t1 mb-2">
+        <h2 className="font-heading text-sf-h2 text-t1 mb-2">
           {displayName}
         </h2>
         <p className="text-t2 text-sm leading-relaxed">{tool.tagline}</p>
@@ -132,15 +133,15 @@ function ToolDetail({
       <div className="flex flex-wrap gap-2">
         <Badge
           variant="outline"
-          className="text-[12px] px-2 py-0.5"
+          className="text-xs px-2 py-0.5"
           style={{ color: catMeta.color, borderColor: `${catMeta.color}30` }}
         >
           {catMeta.label}
         </Badge>
-        <Badge variant="outline" className="text-[12px] text-t3 border-sf-line px-2 py-0.5">
+        <Badge variant="outline" className="text-xs text-t3 border-sf-line px-2 py-0.5">
           {compMeta.icon} {compMeta.label}
         </Badge>
-        <Badge variant="outline" className="text-[12px] text-t3 border-sf-line px-2 py-0.5">
+        <Badge variant="outline" className="text-xs text-t3 border-sf-line px-2 py-0.5">
           {typeMeta.label}
         </Badge>
         {isPro && <ProBadge />}
@@ -148,7 +149,7 @@ function ToolDetail({
 
       {/* Cascade position */}
       <GlassPanel className="p-3">
-        <h4 className="font-mono text-[12px] tracking-[2px] uppercase text-t3/60 mb-2">
+        <h4 className="font-heading text-sf-eyebrow uppercase text-t4 mb-2">
           // CASCADE POSITION
         </h4>
         <div className="flex items-center gap-1 overflow-x-auto sf-sb pb-1">
@@ -160,9 +161,9 @@ function ToolDetail({
               return (
                 <div
                   key={pos}
-                  className={`text-[12px] font-mono uppercase tracking-wider px-2 py-1 rounded-sm shrink-0 transition-colors ${
+                  className={`text-xs font-mono uppercase tracking-wider px-2 py-1 rounded-none shrink-0 transition-colors ${
                     isActive
-                      ? "bg-primary/10 border border-primary text-primary"
+                      ? "bg-sf-primary/10 border border-sf-primary text-sf-primary-text"
                       : "text-t4 border border-transparent"
                   }`}
                 >
@@ -171,7 +172,7 @@ function ToolDetail({
               );
             })}
           {tool.cascade === "meta" && (
-            <div className="text-[12px] font-mono uppercase tracking-wider px-2 py-1 rounded-sm bg-primary/10 border border-primary text-primary shrink-0">
+            <div className="text-xs font-mono uppercase tracking-wider px-2 py-1 rounded-none bg-sf-primary/10 border border-sf-primary text-sf-primary-text shrink-0">
               Meta
             </div>
           )}
@@ -181,13 +182,13 @@ function ToolDetail({
       {/* Meta row */}
       <div className="grid grid-cols-2 gap-3">
         <GlassPanel className="p-3">
-          <span className="text-t4 text-[12px] uppercase tracking-wider block mb-1">
+          <span className="text-t4 text-xs uppercase tracking-wider block mb-1">
             Time Estimate
           </span>
           <span className="font-mono text-t2 text-sm">{tool.timeEstimate}</span>
         </GlassPanel>
         <GlassPanel className="p-3">
-          <span className="text-t4 text-[12px] uppercase tracking-wider block mb-1">
+          <span className="text-t4 text-xs uppercase tracking-wider block mb-1">
             Workshop
           </span>
           <span className="font-mono text-t2 text-sm">
@@ -199,7 +200,7 @@ function ToolDetail({
       {/* Relationships */}
       {tool.buildsOn.length > 0 && (
         <div>
-          <h4 className="font-mono text-[12px] tracking-[2px] uppercase text-t3/60 mb-2">
+          <h4 className="font-heading text-sf-eyebrow uppercase text-t4 mb-2">
             // BUILDS ON
           </h4>
           <div className="space-y-1.5">
@@ -212,9 +213,9 @@ function ToolDetail({
               >
                 <Badge
                   variant="outline"
-                  className={`text-[12px] shrink-0 mt-0.5 px-1.5 py-0 ${
+                  className={`text-xs shrink-0 mt-0.5 px-1.5 py-0 ${
                     rel.strength === "required"
-                      ? "text-sf-amber border-sf-amber"
+                      ? "text-sf-amber-text border-sf-amber"
                       : rel.strength === "recommended"
                       ? "text-t3 border-sf-line"
                       : "text-t4 border-sf-line"
@@ -222,7 +223,7 @@ function ToolDetail({
                 >
                   {rel.strength}
                 </Badge>
-                <span className="text-t2 text-xs group-hover:text-primary transition-colors">
+                <span className="text-t2 text-xs group-hover:text-sf-primary-text transition-colors">
                   {getToolDisplayName(rel.toolId)}
                 </span>
               </button>
@@ -233,7 +234,7 @@ function ToolDetail({
 
       {tool.feedsInto.length > 0 && (
         <div>
-          <h4 className="font-mono text-[12px] tracking-[2px] uppercase text-t3/60 mb-2">
+          <h4 className="font-heading text-sf-eyebrow uppercase text-t4 mb-2">
             // FEEDS INTO
           </h4>
           <div className="space-y-1.5">
@@ -246,9 +247,9 @@ function ToolDetail({
               >
                 <Badge
                   variant="outline"
-                  className={`text-[12px] shrink-0 mt-0.5 px-1.5 py-0 ${
+                  className={`text-xs shrink-0 mt-0.5 px-1.5 py-0 ${
                     rel.strength === "required"
-                      ? "text-sf-amber border-sf-amber"
+                      ? "text-sf-amber-text border-sf-amber"
                       : rel.strength === "recommended"
                       ? "text-t3 border-sf-line"
                       : "text-t4 border-sf-line"
@@ -256,7 +257,7 @@ function ToolDetail({
                 >
                   {rel.strength}
                 </Badge>
-                <span className="text-t2 text-xs group-hover:text-primary transition-colors">
+                <span className="text-t2 text-xs group-hover:text-sf-primary-text transition-colors">
                   {getToolDisplayName(rel.toolId)}
                 </span>
               </button>
@@ -299,7 +300,7 @@ function SectionGroup({
         {color && (
           <div className="w-2 h-2 rounded-full" style={{ backgroundColor: color }} />
         )}
-        <h3 className="font-heading text-sm font-light uppercase tracking-[3px] text-[hsl(var(--sf-section-green))]">
+        <h3 className="font-heading text-sm font-light uppercase tracking-wide text-[hsl(var(--sf-section-green))]">
           {title}
         </h3>
       </div>
@@ -318,6 +319,7 @@ function SectionGroup({
 // ── Main Page ──────────────────────────────────────────────
 
 const ToolsWiki = () => {
+  useMetaTags({ title: "Tools Wiki" });
   const [selectedTool, setSelectedTool] = useState<ToolWikiEntry | null>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
 
@@ -381,7 +383,7 @@ const ToolsWiki = () => {
   );
 
   return (
-    <div className="min-h-screen bg-background sf-atmosphere">
+    <div className="min-h-screen bg-sf-void sf-atmosphere">
       <Header />
 
       <main className="max-w-[1200px] mx-auto px-4 md:px-6 pt-24 pb-16">
@@ -392,10 +394,10 @@ const ToolsWiki = () => {
           <div className="flex items-center gap-3 mb-2">
             <CubeLogo size={36} />
             <div>
-              <span className="font-display text-xs tracking-[4px] uppercase text-t3 block leading-none">
+              <span className="font-heading text-sf-eyebrow uppercase text-t3 block leading-none">
                 STELLARFORGE
               </span>
-              <h1 className="font-display text-3xl md:text-4xl tracking-sf-title text-t1 leading-tight">
+              <h1 className="font-display text-sf-h1 tracking-title text-t1 leading-tight">
                 TOOL REFERENCE
               </h1>
             </div>
@@ -406,7 +408,7 @@ const ToolsWiki = () => {
           </p>
           <div className="mt-4">
             <Link to="/getting-started">
-              <Button variant="ghost" size="sm" className="text-primary hover:text-primary/80">
+              <Button variant="ghost" size="sm" className="text-sf-primary-text hover:text-sf-primary-text">
                 New here? Start with the Cascade Tutorial
                 <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
               </Button>
@@ -419,28 +421,28 @@ const ToolsWiki = () => {
           <TabsList className="bg-transparent border-b border-sf-line rounded-none w-full justify-start gap-0 h-auto p-0 mb-6">
             <TabsTrigger
               value="category"
-              className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:bg-transparent bg-transparent text-t3 text-xs uppercase tracking-[1.5px] font-heading px-4 py-2.5"
+              className="rounded-none border-b-2 border-transparent data-[state=active]:border-sf-primary data-[state=active]:text-sf-primary-text data-[state=active]:bg-transparent bg-transparent text-t3 text-xs uppercase tracking-wide font-heading px-4 py-2.5"
             >
               <Layers className="w-3.5 h-3.5 mr-1.5" />
               Category
             </TabsTrigger>
             <TabsTrigger
               value="cascade"
-              className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:bg-transparent bg-transparent text-t3 text-xs uppercase tracking-[1.5px] font-heading px-4 py-2.5"
+              className="rounded-none border-b-2 border-transparent data-[state=active]:border-sf-primary data-[state=active]:text-sf-primary-text data-[state=active]:bg-transparent bg-transparent text-t3 text-xs uppercase tracking-wide font-heading px-4 py-2.5"
             >
               <ArrowRight className="w-3.5 h-3.5 mr-1.5" />
               Cascade
             </TabsTrigger>
             <TabsTrigger
               value="complexity"
-              className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:bg-transparent bg-transparent text-t3 text-xs uppercase tracking-[1.5px] font-heading px-4 py-2.5"
+              className="rounded-none border-b-2 border-transparent data-[state=active]:border-sf-primary data-[state=active]:text-sf-primary-text data-[state=active]:bg-transparent bg-transparent text-t3 text-xs uppercase tracking-wide font-heading px-4 py-2.5"
             >
               <BarChart3 className="w-3.5 h-3.5 mr-1.5" />
               Complexity
             </TabsTrigger>
             <TabsTrigger
               value="workshop"
-              className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:bg-transparent bg-transparent text-t3 text-xs uppercase tracking-[1.5px] font-heading px-4 py-2.5"
+              className="rounded-none border-b-2 border-transparent data-[state=active]:border-sf-primary data-[state=active]:text-sf-primary-text data-[state=active]:bg-transparent bg-transparent text-t3 text-xs uppercase tracking-wide font-heading px-4 py-2.5"
             >
               <Calendar className="w-3.5 h-3.5 mr-1.5" />
               Workshop
@@ -510,7 +512,7 @@ const ToolsWiki = () => {
 
       {/* Detail sheet */}
       <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
-        <SheetContent side="right" className="w-[380px] sm:w-[420px] bg-background/95 backdrop-blur-lg overflow-y-auto sf-sb">
+        <SheetContent side="right" className="w-[380px] sm:w-[420px] bg-sf-void/95 backdrop-blur-lg overflow-y-auto sf-sb">
           <div className="pt-4">
             {selectedTool && (
               <ToolDetail

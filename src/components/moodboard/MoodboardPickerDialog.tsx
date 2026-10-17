@@ -115,13 +115,13 @@ export function MoodboardPickerDialog({
                           className="w-full h-full object-cover"
                         />
                         {currentImageUrl === image.url && (
-                          <div className="absolute top-1 right-1 w-5 h-5 rounded-sm bg-primary flex items-center justify-center">
+                          <div className="absolute top-1 right-1 w-5 h-5 rounded-none bg-primary flex items-center justify-center">
                             <Check className="w-3 h-3 text-primary-foreground" />
                           </div>
                         )}
                         {image.caption && (
-                          <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/70 to-transparent p-1.5">
-                            <p className="text-[12px] text-white truncate">{image.caption}</p>
+                          <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-[color:var(--sf-scrim)] to-transparent p-1.5">
+                            <p className="text-[12px] text-t1 truncate">{image.caption}</p>
                           </div>
                         )}
                       </button>

@@ -7,6 +7,7 @@ import FinalCTASection from "@/components/showcase/FinalCTASection";
 import Footer from "@/components/layout/Footer";
 import { PageBursts } from "@/components/ui/data-burst";
 import { FEATURES_BURSTS } from "@/lib/data-bursts";
+import { useMetaTags } from "@/hooks/use-meta-tags";
 
 // Tool data for showcase blocks
 const TOOLS = [
@@ -136,8 +137,9 @@ const TOOLS = [
 ];
 
 const Features = () => {
+  useMetaTags({ title: "Features" });
   return (
-    <div className="min-h-screen bg-background sf-atmosphere">
+    <div className="min-h-screen bg-sf-void sf-atmosphere">
       <Header />
 
       <main className="relative z-10">

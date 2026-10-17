@@ -35,7 +35,7 @@ const PlanetaryMockup = () => {
       {/* Left: Orbital diagram */}
       <div className="flex-1 flex items-center justify-center relative">
         {/* Star */}
-        <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 shadow-[0_0_30px_rgba(255,180,0,0.5)] z-10" />
+        <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-gradient-to-br from-sf-amber to-sf-amber-warm shadow-[0_0_30px_rgb(var(--sf-amber-rgb)/0.5)] z-10" />
 
         {/* Orbit path */}
         <div className="absolute w-32 h-32 md:w-40 md:h-40 rounded-full border border-sf-primary" />
@@ -46,12 +46,12 @@ const PlanetaryMockup = () => {
           style={{ animation: "orbit 8s linear infinite" }}
         >
           <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2">
-            <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-gradient-to-br from-sf-cyan to-blue-600 shadow-[0_0_15px_rgba(21,193,123,0.4)]" />
+            <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-gradient-to-br from-sf-azure to-sf-stellar shadow-[0_0_15px_rgb(var(--sf-stellar-rgb)/0.4)]" />
           </div>
         </div>
 
         {/* Star type label */}
-        <div className="absolute bottom-2 text-[12px] text-sf-amber font-mono">
+        <div className="absolute bottom-2 text-xs text-sf-amber-text font-mono">
           G2V Main Sequence
         </div>
       </div>
@@ -84,26 +84,26 @@ const PlanetaryMockup = () => {
 
         {/* Atmosphere composition */}
         <div className="mt-auto">
-          <div className="text-[12px] text-t3 mb-1">Atmosphere</div>
-          <div className="flex gap-1 h-3 rounded-full overflow-hidden">
+          <div className="text-xs text-t3 mb-1">Atmosphere</div>
+          <div className="flex gap-1 h-3 rounded-none overflow-hidden">
             <div
-              className="bg-blue-500/70 transition-all duration-500"
+              className="bg-sf-azure/70 transition-all duration-slow"
               style={{ width: statsVisible[0] ? "70%" : "0%" }}
             />
             <div
-              className="bg-sf-cyan/70 transition-all duration-500 delay-100"
+              className="bg-sf-teal/70 transition-all duration-slow delay-100"
               style={{ width: statsVisible[1] ? "20%" : "0%" }}
             />
             <div
-              className="bg-sf-emerald/70 transition-all duration-500 delay-200"
+              className="bg-sf-emerald/70 transition-all duration-slow delay-200"
               style={{ width: statsVisible[2] ? "8%" : "0%" }}
             />
             <div
-              className="bg-gray-500/70 transition-all duration-500 delay-300"
+              className="bg-sf-surface-elevated transition-all duration-slow delay-300"
               style={{ width: statsVisible[3] ? "2%" : "0%" }}
             />
           </div>
-          <div className="flex justify-between text-[12px] text-t3 mt-1">
+          <div className="flex justify-between text-xs text-t3 mt-1">
             <span>N₂ 70%</span>
             <span>O₂ 20%</span>
             <span>Ar 8%</span>
@@ -114,7 +114,7 @@ const PlanetaryMockup = () => {
         <div className="flex justify-center">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-sf-emerald/10 border border-sf-emerald">
             <div className="w-2 h-2 bg-sf-emerald animate-pulse" />
-            <span className="text-[12px] text-sf-emerald uppercase tracking-wider">
+            <span className="text-xs text-sf-emerald-text uppercase tracking-wider">
               Habitable
             </span>
           </div>
@@ -133,9 +133,9 @@ interface StatRowProps {
 const StatRow = ({ label, value, visible }: StatRowProps) => {
   return (
     <div className="flex items-center justify-between">
-      <span className="text-[12px] text-t3">{label}</span>
+      <span className="text-xs text-t3">{label}</span>
       <span
-        className={`text-xs font-mono text-sf-cyan transition-all duration-300 ${
+        className={`text-xs font-mono text-sf-primary-text transition-all duration-slow ease-sf-out ${
           visible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-2"
         }`}
       >

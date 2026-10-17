@@ -20,7 +20,7 @@ interface ConnectionLegendProps {
 
 const ConnectionLegend = ({ counts }: ConnectionLegendProps) => (
   <div className="border border-sf-line bg-sf-surface p-3">
-    <h3 className="mb-2 font-heading text-[12px] uppercase tracking-[2px] text-t3">
+    <h3 className="mb-2 font-heading text-[12px] uppercase tracking-wide text-t3">
       The cascade
     </h3>
     <ul className="space-y-1">

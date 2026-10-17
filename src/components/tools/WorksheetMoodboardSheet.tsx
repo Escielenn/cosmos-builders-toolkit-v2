@@ -32,7 +32,7 @@ export function WorksheetMoodboardSheet({
       <SheetContent side="right" className="w-full sm:max-w-xl p-0 flex flex-col">
         <SheetHeader className="p-6 pb-4 border-b border-sf-line">
           <SheetTitle className="flex items-center gap-2 font-heading">
-            <ImageIcon className="w-5 h-5 text-primary" />
+            <ImageIcon className="w-5 h-5 text-sf-primary-text" />
             Moodboard
             {images.length > 0 && (
               <Badge variant="secondary" className="text-xs">

@@ -70,7 +70,7 @@ export default function SaveToWorldDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md bg-sf-surface border-sf-line">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 font-heading text-sm font-light uppercase tracking-[3px] text-sf-primary-text">
+          <DialogTitle className="flex items-center gap-2 font-heading text-sm font-light uppercase tracking-[0.12em] text-sf-primary-text">
             <Globe className="h-4 w-4" />
             Save into a world
           </DialogTitle>
@@ -83,7 +83,7 @@ export default function SaveToWorldDialog({
 
         <div className="mt-2 space-y-3">
           {isLoading && (
-            <p className="font-mono text-[12px] uppercase tracking-[1.5px] text-t4">
+            <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-t4">
               // Loading your worlds…
             </p>
           )}
@@ -110,7 +110,7 @@ export default function SaveToWorldDialog({
                   disabled={!newWorldName.trim() || createWorld.isPending}
                   className="shrink-0"
                 >
-                  {createWorld.isPending ? "Creating…" : "Create"}
+                  {createWorld.isPending ? "CREATING..." : "Create"}
                 </Button>
               </div>
             </div>
@@ -118,7 +118,7 @@ export default function SaveToWorldDialog({
 
           {hasWorlds && (
             <div>
-              <Label className="text-[12px] font-medium uppercase tracking-[1.5px] text-t3">
+              <Label className="text-[12px] font-medium uppercase tracking-[0.12em] text-t3">
                 World
               </Label>
               <Select value={value ?? ""} onValueChange={onChange}>

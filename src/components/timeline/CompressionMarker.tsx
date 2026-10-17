@@ -37,7 +37,7 @@ const CompressionMarker = memo(
             type="button"
             onClick={onClick}
             className={cn(
-              "absolute top-0 z-10 cursor-pointer transition-opacity hover:opacity-90",
+              "absolute top-0 z-10 cursor-pointer transition-sf duration-fast hover:brightness-110",
               "flex items-center justify-center"
             )}
             style={{
@@ -52,11 +52,11 @@ const CompressionMarker = memo(
                 <div className="absolute inset-0 bg-gradient-to-r from-background/80 via-muted/30 to-background/80" />
                 {/* Angled parallel lines */}
                 <svg className="w-full h-full absolute inset-0 opacity-30" preserveAspectRatio="none">
-                  <line x1="35%" y1="0" x2="40%" y2="100%" stroke="currentColor" strokeWidth="1.5" className="text-t1/40" />
-                  <line x1="55%" y1="0" x2="60%" y2="100%" stroke="currentColor" strokeWidth="1.5" className="text-t1/40" />
+                  <line x1="35%" y1="0" x2="40%" y2="100%" stroke="currentColor" strokeWidth="1.5" className="text-sf-line-emphasis" />
+                  <line x1="55%" y1="0" x2="60%" y2="100%" stroke="currentColor" strokeWidth="1.5" className="text-sf-line-emphasis" />
                 </svg>
                 {compression.label && (
-                  <span className="relative text-[12px] text-t3 font-medium px-1 bg-background/60 rounded whitespace-nowrap">
+                  <span className="relative text-[12px] text-t3 font-medium px-1 bg-background/60 rounded-none whitespace-nowrap">
                     {compression.label}
                   </span>
                 )}
@@ -67,7 +67,7 @@ const CompressionMarker = memo(
               <div className="w-full h-full relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-r from-background via-muted/20 to-background" />
                 {compression.label && (
-                  <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[12px] text-t3 font-medium px-1 bg-background/60 rounded whitespace-nowrap">
+                  <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[12px] text-t3 font-medium px-1 bg-background/60 rounded-none whitespace-nowrap">
                     {compression.label}
                   </span>
                 )}
@@ -76,11 +76,11 @@ const CompressionMarker = memo(
 
             {compression.style === "spiral" && (
               <div className="w-full h-full flex items-center justify-center relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-r from-background/80 via-primary/5 to-background/80" />
+                <div className="absolute inset-0 bg-gradient-to-r from-background/80 via-sf-primary/5 to-background/80" />
                 <div className="relative flex flex-col items-center gap-0.5">
-                  <span className="text-primary/40 text-lg">&#8734;</span>
+                  <span className="text-sf-primary-text text-lg">&#8734;</span>
                   {compression.label && (
-                    <span className="text-[12px] text-t3 font-medium px-1 bg-background/60 rounded whitespace-nowrap">
+                    <span className="text-[12px] text-t3 font-medium px-1 bg-background/60 rounded-none whitespace-nowrap">
                       {compression.label}
                     </span>
                   )}

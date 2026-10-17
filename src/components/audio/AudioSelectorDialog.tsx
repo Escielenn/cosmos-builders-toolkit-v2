@@ -51,7 +51,7 @@ export default function AudioSelectorDialog() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <button
-          className="sf-nav-link inline-flex items-center justify-center w-9 h-9 text-t3 hover:text-primary transition-colors"
+          className="sf-nav-link inline-flex items-center justify-center w-9 h-9 text-t3 hover:text-sf-primary-text transition-colors"
           aria-label="Open audio selector"
         >
           <Music className="w-4 h-4 relative z-[1]" />
@@ -75,9 +75,9 @@ export default function AudioSelectorDialog() {
                 setActiveTab(tab.id);
                 setExpandedPlaylist(null);
               }}
-              className={`px-3 py-2 text-[12px] font-medium uppercase tracking-[1.5px] transition-colors border-b-2 -mb-px ${
+              className={`px-3 py-2 text-[12px] font-medium uppercase tracking-wide transition-colors border-b-2 -mb-px ${
                 activeTab === tab.id
-                  ? "border-primary text-primary"
+                  ? "border-primary text-sf-primary-text"
                   : "border-transparent text-t4 hover:text-t2"
               }`}
             >
@@ -125,7 +125,7 @@ function CuratedTab({ expandedPlaylist, onExpandPlaylist }: CuratedTabProps) {
           &larr; Back to playlists
         </button>
 
-        <h3 className="font-heading text-sm font-light uppercase tracking-[2px] text-emerald mb-3">
+        <h3 className="font-heading text-sm font-light uppercase tracking-wide text-sf-emerald-text mb-3">
           {expandedPlaylist.name}
         </h3>
 
@@ -140,7 +140,7 @@ function CuratedTab({ expandedPlaylist, onExpandPlaylist }: CuratedTabProps) {
 
   return (
     <div className="py-3 space-y-4">
-      <p className="text-[12px] text-t4 uppercase tracking-[1.5px]">
+      <p className="text-[12px] text-t4 uppercase tracking-wide">
         Ambient playlists
       </p>
 

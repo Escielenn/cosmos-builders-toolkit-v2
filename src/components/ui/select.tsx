@@ -19,7 +19,7 @@ const SelectTrigger = React.forwardRef<
     className={cn(
       // Focus ring and disabled colors come from the global :focus-visible /
       // :disabled rules in tokens.css — no component ring/opacity needed.
-      "flex h-11 w-full items-center justify-between rounded-none border border-sf-line-interactive bg-background px-4 py-2 text-sm font-mono placeholder:text-t3 disabled:cursor-not-allowed [&>span]:line-clamp-1 transition-colors duration-200",
+      "flex h-11 w-full items-center justify-between rounded-none border border-sf-line-interactive bg-background px-4 py-2 text-base font-sans placeholder:text-t3 disabled:cursor-not-allowed [&>span]:line-clamp-1 transition-colors duration-base",
       className,
     )}
     {...props}
@@ -107,7 +107,7 @@ const SelectItem = React.forwardRef<
   <SelectPrimitive.Item
     ref={ref}
     className={cn(
-      "relative flex w-full cursor-default select-none items-center rounded-none py-1.5 pl-8 pr-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-sf-focus data-[disabled]:pointer-events-none data-[disabled]:text-sf-disabled-text focus:bg-accent focus:text-accent-foreground",
+      "relative flex w-full cursor-default select-none items-center rounded-none py-2 min-h-hit pl-8 pr-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-sf-focus data-[disabled]:pointer-events-none data-[disabled]:text-sf-disabled-text focus:bg-accent focus:text-accent-foreground",
       className,
     )}
     {...props}

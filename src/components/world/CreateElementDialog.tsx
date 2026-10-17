@@ -45,6 +45,7 @@ import {
   type CustomFieldValues,
 } from "@/components/world/TemplateFieldsForm";
 import { cn } from "@/lib/utils";
+import { useUnsavedChangesGuard } from "@/hooks/use-unsaved-changes-guard";
 
 // ---------------------------------------------------------------------------
 // Type picker icons (same visual language as legacy dialog)
@@ -177,6 +178,17 @@ export default function CreateElementDialog({
   const [templateValues, setTemplateValues] = useState<CustomFieldValues>({});
   const [createdEntityId, setCreatedEntityId] = useState<string | null>(null);
 
+  // Unsaved = the dialog holds typed input that has not been created yet.
+  const isDirty =
+    open &&
+    step !== "next" &&
+    (name.trim() !== "" ||
+      summary.trim() !== "" ||
+      description.trim() !== "" ||
+      customLabel.trim() !== "" ||
+      Object.keys(templateValues).length > 0);
+  useUnsavedChangesGuard(isDirty);
+
   const applicableTools = useMemo(
     () => (selectedType ? getToolsForEntityType(toEntityType(selectedType)) : []),
     [selectedType]
@@ -288,12 +300,12 @@ export default function CreateElementDialog({
                     onClick={() => handleTypePick(type)}
                     className={cn(
                       "flex flex-col items-center gap-1.5 p-3",
-                      "border border-sf-line-interactive bg-white/[0.02]",
+                      "border border-sf-line-interactive bg-sf-surface",
                       "hover:bg-primary/5 hover:border-primary",
                       "transition-colors group"
                     )}
                   >
-                    <Icon className="w-5 h-5 text-t3 group-hover:text-primary transition-colors" />
+                    <Icon className="w-5 h-5 text-t3 group-hover:text-sf-primary-text transition-colors" />
                     <span className="text-[12px] font-heading uppercase tracking-wider text-t3 group-hover:text-t2 transition-colors">
                       {PICKER_LABELS[type]}
                     </span>
@@ -306,7 +318,7 @@ export default function CreateElementDialog({
             {templates.length > 0 && (
               <div className="pt-3 border-t border-sf-line">
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-[12px] font-heading uppercase tracking-[1.5px] text-sf-emerald-text">
+                  <h3 className="text-[12px] font-heading uppercase tracking-wide text-sf-emerald-text">
                     Your custom types
                   </h3>
                   <a
@@ -322,7 +334,7 @@ export default function CreateElementDialog({
                       key={t.id}
                       type="button"
                       onClick={() => handleTemplatePick(t)}
-                      className="flex flex-col items-center gap-1.5 p-3 border border-sf-line-interactive bg-white/[0.02] hover:bg-primary/5 hover:border-primary transition-colors"
+                      className="flex flex-col items-center gap-1.5 p-3 border border-sf-line-interactive bg-sf-surface hover:bg-primary/5 hover:border-primary transition-colors"
                       title={t.description ?? undefined}
                     >
                       <Shapes
@@ -369,7 +381,7 @@ export default function CreateElementDialog({
                   />
                 ) : (() => {
                   const Icon = ICON_MAP[selectedType];
-                  return <Icon className="w-4 h-4 text-primary" />;
+                  return <Icon className="w-4 h-4 text-sf-primary-text" />;
                 })()}
                 NEW {(selectedTemplate?.label ?? PICKER_LABELS[selectedType]).toUpperCase()}
               </DialogTitle>
@@ -452,11 +464,11 @@ export default function CreateElementDialog({
               {selectedTemplate && selectedTemplate.fields.length > 0 && (
                 <div className="pt-3 border-t border-sf-line space-y-3">
                   <div className="flex items-center gap-2">
-                    <div className="h-px flex-1 bg-white/5" />
-                    <span className="text-[12px] uppercase tracking-[1.5px] text-sf-emerald-text font-heading">
+                    <div className="h-px flex-1 bg-sf-line-hairline" />
+                    <span className="text-[12px] uppercase tracking-wide text-sf-emerald-text font-heading">
                       {selectedTemplate.label} fields
                     </span>
-                    <div className="h-px flex-1 bg-white/5" />
+                    <div className="h-px flex-1 bg-sf-line-hairline" />
                   </div>
                   <TemplateFieldsForm
                     fields={selectedTemplate.fields}
@@ -489,7 +501,7 @@ export default function CreateElementDialog({
           <>
             <DialogHeader>
               <DialogTitle className="font-heading text-xl tracking-wider flex items-center gap-2">
-                <Check className="w-4 h-4 text-primary" />
+                <Check className="w-4 h-4 text-sf-primary-text" />
                 {name.toUpperCase()} CREATED
               </DialogTitle>
               <DialogDescription>
@@ -500,7 +512,7 @@ export default function CreateElementDialog({
             <div className="space-y-2 py-4">
               {applicableTools.length > 0 && (
                 <div className="space-y-2">
-                  <Label className="text-[12px] uppercase tracking-[1.5px] text-t3">
+                  <Label className="text-[12px] uppercase tracking-wide text-t3">
                     Run a tool on this {PICKER_LABELS[selectedType].toLowerCase()}
                   </Label>
                   <div className="flex flex-col gap-1.5">

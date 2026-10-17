@@ -19,6 +19,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { DeleteConfirmDialog } from "@/components/dialogs/DeleteConfirmDialog";
+import { useUnsavedChangesGuard } from "@/hooks/use-unsaved-changes-guard";
 
 const StellarForgeEditorLazy = lazy(() =>
   import("@/components/editor/StellarForgeEditor").then((m) => ({
@@ -56,6 +57,12 @@ function NoteCard({
   const { localContent, setLocalContent, updateContent, isSaving } =
     useNoteContent(note.id, worldId);
 
+  // Unsaved = content debounce/write in flight, or a title edit not yet
+  // committed (titles save on blur).
+  const titleDirty =
+    !readOnly && editingTitle.trim() !== "" && editingTitle.trim() !== note.title;
+  useUnsavedChangesGuard(isSaving || titleDirty);
+
   // Sync content when note loads
   useEffect(() => {
     setLocalContent(note.content ?? "");
@@ -88,13 +95,15 @@ function NoteCard({
 
   return (
     <>
-      <div className="border border-sf-line-interactive bg-white/[0.01]">
+      <div className="border border-sf-line-interactive bg-sf-surface">
         {/* Note header */}
         <div className="flex items-center gap-2 px-4 py-2">
           <button
             type="button"
             onClick={() => setIsOpen(!isOpen)}
-            className="shrink-0 text-t3 hover:text-t3 transition-colors"
+            className="shrink-0 text-t3 hover:text-t1 transition-colors duration-base"
+            aria-label={isOpen ? "Collapse note" : "Expand note"}
+            aria-expanded={isOpen}
           >
             {isOpen ? (
               <ChevronUp className="w-3.5 h-3.5" />
@@ -121,7 +130,7 @@ function NoteCard({
 
           {isSaving && (
             <span className="font-mono text-[12px] uppercase tracking-wider text-t4 shrink-0">
-              Saving...
+              SAVING...
             </span>
           )}
 
@@ -129,8 +138,9 @@ function NoteCard({
             <button
               type="button"
               onClick={() => setDeleteOpen(true)}
-              className="shrink-0 text-t4 hover:text-sf-crimson-text transition-colors"
+              className="shrink-0 text-t4 hover:text-sf-crimson-text transition-colors duration-base"
               title="Delete note"
+              aria-label="Delete note"
             >
               <Trash2 className="w-3.5 h-3.5" />
             </button>
@@ -152,7 +162,7 @@ function NoteCard({
             {note.tags.map((tag) => (
               <span
                 key={tag}
-                className="px-1.5 py-0.5 text-[12px] bg-sf-primary/8 border border-sf-primary text-sf-primary-text tracking-wider"
+                className="px-1.5 py-0.5 text-[12px] bg-sf-primary/[0.06] border border-sf-primary text-sf-primary-text tracking-wider"
               >
                 {tag}
               </span>
@@ -225,7 +235,7 @@ const WorldNotes = ({ worldId, readOnly }: WorldNotesProps) => {
             className="w-full flex items-center justify-between p-4 h-auto rounded-none hover:bg-accent/50"
           >
             <div className="flex items-center gap-3">
-              <FileText className="w-5 h-5 text-primary" />
+              <FileText className="w-5 h-5 text-sf-primary-text" />
               <span className="font-heading font-medium">World Notes</span>
               {notes.length > 0 && (
                 <span className="font-mono text-[12px] text-t3">
@@ -249,8 +259,8 @@ const WorldNotes = ({ worldId, readOnly }: WorldNotesProps) => {
             ) : (
               <>
                 {notes.length === 0 && (
-                  <p className="text-[12px] text-t4 italic py-2">
-                    No notes yet. Add one to start capturing ideas about your world.
+                  <p className="font-mono text-sf-mono uppercase text-t4 py-2">
+                    NO NOTES ON FILE. ADD ONE TO CAPTURE IDEAS ABOUT THIS WORLD.
                   </p>
                 )}
 
@@ -270,7 +280,7 @@ const WorldNotes = ({ worldId, readOnly }: WorldNotesProps) => {
                     type="button"
                     onClick={() => createNote.mutate()}
                     disabled={createNote.isPending}
-                    className="sf-fill-sweep sf-fill-sweep--secondary w-full flex items-center justify-center gap-2 px-3 py-2 border border-sf-line-interactive text-[12px] font-heading uppercase tracking-wider text-t3 hover:text-primary hover:border-primary transition-colors"
+                    className="sf-fill-sweep sf-fill-sweep--secondary w-full flex items-center justify-center gap-2 px-3 py-2 border border-sf-line-interactive text-[12px] font-heading uppercase tracking-wider text-t3 hover:text-sf-primary-text hover:border-sf-primary transition-colors"
                   >
                     <Plus className="w-3.5 h-3.5" />
                     Add Note

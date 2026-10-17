@@ -43,7 +43,7 @@ const components: PortableTextComponents = {
       <p className="mb-4 leading-relaxed">{children}</p>
     ),
     blockquote: ({ children }) => (
-      <blockquote className="border-l-4 border-primary pl-4 my-4 italic text-t3">
+      <blockquote className="border-l-4 border-sf-primary pl-4 my-4 italic text-t3">
         {children}
       </blockquote>
     ),
@@ -54,7 +54,7 @@ const components: PortableTextComponents = {
     ),
     em: ({ children }) => <em className="italic">{children}</em>,
     code: ({ children }) => (
-      <code className="bg-muted px-1 py-0.5 rounded text-sm font-mono">
+      <code className="bg-sf-surface-elevated px-1 py-0.5 rounded-none text-sm font-mono">
         {children}
       </code>
     ),
@@ -64,7 +64,7 @@ const components: PortableTextComponents = {
       return (
         <a
           href={linkValue?.href}
-          className="text-primary hover:underline"
+          className="text-sf-primary-text hover:underline"
           target={isExternal ? "_blank" : undefined}
           rel={isExternal ? "noopener noreferrer" : undefined}
         >
@@ -96,7 +96,7 @@ const components: PortableTextComponents = {
     code: ({ value }) => {
       const codeValue = value as CodeValue;
       return (
-        <pre className="bg-muted p-4 rounded-none overflow-x-auto sf-sb my-4">
+        <pre className="bg-sf-surface-elevated p-4 rounded-none overflow-x-auto sf-sb my-4">
           <code className="text-sm font-mono">
             {codeValue?.code}
           </code>

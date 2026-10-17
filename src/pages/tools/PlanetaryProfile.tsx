@@ -649,7 +649,7 @@ const PlanetaryProfile = () => {
       worksheetLoading={worksheetLoading}
       worksheetTags={worksheetTags}
       onTagsChange={handleTagsChange}
-      worksheetIcon={<Globe className="w-5 h-5 text-primary" />}
+      worksheetIcon={<Globe className="w-5 h-5 text-sf-primary-text" />}
       isLoggedIn={!!user}
     >
 
@@ -658,7 +658,7 @@ const PlanetaryProfile = () => {
           <h2 className="font-heading text-xl font-light uppercase tracking-[2px] mb-4 gradient-text">
             Building Believable Worlds
           </h2>
-          <blockquote className="border-l-2 border-primary pl-4 italic text-lg mb-4">
+          <blockquote className="border-l-2 border-sf-primary pl-4 italic text-lg mb-4">
             "The environment isn't just a backdrop, it's a character that shapes every aspect of the story."
           </blockquote>
           <p className="text-t2 mb-4">
@@ -679,7 +679,7 @@ const PlanetaryProfile = () => {
                   href={resource.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-xs px-3 py-1.5 rounded-sm bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+                  className="inline-flex items-center gap-1 text-xs px-3 py-1.5 rounded-none bg-sf-primary/10 text-sf-primary-text hover:bg-sf-primary/20 transition-colors"
                 >
                   {resource.name}
                   <ExternalLink className="w-3 h-3" />
@@ -713,7 +713,7 @@ const PlanetaryProfile = () => {
                   className="space-y-2"
                 >
                   {STAR_TYPES.map((star) => (
-                    <div key={star.id} className="flex items-start gap-3 p-3 rounded-none border border-sf-line-interactive hover:border-primary transition-colors">
+                    <div key={star.id} className="flex items-start gap-3 p-3 rounded-none border border-sf-line-interactive hover:border-sf-primary transition-colors">
                       <RadioGroupItem value={star.id} id={`star-${star.id}`} className="mt-1" />
                       <Label htmlFor={`star-${star.id}`} className="cursor-pointer flex-1">
                         <div className="font-medium">{star.name}</div>
@@ -722,7 +722,7 @@ const PlanetaryProfile = () => {
                           <strong>Examples:</strong> {star.examples.join(", ")}
                         </div>
                         {formState.stellarEnvironment.starType === star.id && (
-                          <div className="mt-2 p-2 rounded bg-accent/10 text-xs">
+                          <div className="mt-2 p-2 rounded-none bg-accent/10 text-xs">
                             <strong className="text-accent">Consequences:</strong>
                             <ul className="list-disc list-inside mt-1 space-y-0.5">
                               {star.consequences.map((c, i) => (
@@ -804,21 +804,21 @@ const PlanetaryProfile = () => {
                   onValueChange={(value) => updateStellarEnvironment("tidalLocking", value)}
                   className="grid gap-2 md:grid-cols-3"
                 >
-                  <div className="flex items-start gap-2 p-2 rounded border border-sf-line-interactive hover:border-primary">
+                  <div className="flex items-start gap-2 p-2 rounded-none border border-sf-line-interactive hover:border-sf-primary">
                     <RadioGroupItem value="locked" id="tidal-locked" className="mt-0.5" />
                     <Label htmlFor="tidal-locked" className="cursor-pointer text-sm">
                       <span className="font-medium">Tidally Locked</span>
                       <span className="text-t2 block text-xs">Same side always faces star</span>
                     </Label>
                   </div>
-                  <div className="flex items-start gap-2 p-2 rounded border border-sf-line-interactive hover:border-primary">
+                  <div className="flex items-start gap-2 p-2 rounded-none border border-sf-line-interactive hover:border-sf-primary">
                     <RadioGroupItem value="resonance" id="tidal-resonance" className="mt-0.5" />
                     <Label htmlFor="tidal-resonance" className="cursor-pointer text-sm">
                       <span className="font-medium">Spin-Orbit Resonance</span>
                       <span className="text-t2 block text-xs">Like Mercury (3:2 ratio)</span>
                     </Label>
                   </div>
-                  <div className="flex items-start gap-2 p-2 rounded border border-sf-line-interactive hover:border-primary">
+                  <div className="flex items-start gap-2 p-2 rounded-none border border-sf-line-interactive hover:border-sf-primary">
                     <RadioGroupItem value="free" id="tidal-free" className="mt-0.5" />
                     <Label htmlFor="tidal-free" className="cursor-pointer text-sm">
                       <span className="font-medium">Free Rotation</span>
@@ -948,7 +948,7 @@ const PlanetaryProfile = () => {
                 <p className="text-xs text-t4">Select the dominant gases in your atmosphere</p>
                 <div className="grid gap-2 md:grid-cols-2">
                   {ATMOSPHERIC_GASES.primary.map((gas) => (
-                    <div key={gas.id} className="flex items-start gap-2 p-2 rounded border border-sf-line-interactive">
+                    <div key={gas.id} className="flex items-start gap-2 p-2 rounded-none border border-sf-line-interactive">
                       <Checkbox
                         id={`primary-${gas.id}`}
                         checked={formState.atmosphericComposition.primaryGases.includes(gas.id)}
@@ -968,7 +968,7 @@ const PlanetaryProfile = () => {
                 <Label className="text-sm font-medium">Secondary/Trace Gases</Label>
                 <div className="grid gap-2 md:grid-cols-2">
                   {ATMOSPHERIC_GASES.secondary.map((gas) => (
-                    <div key={gas.id} className="flex items-start gap-2 p-2 rounded border border-sf-line-interactive">
+                    <div key={gas.id} className="flex items-start gap-2 p-2 rounded-none border border-sf-line-interactive">
                       <Checkbox
                         id={`secondary-${gas.id}`}
                         checked={formState.atmosphericComposition.secondaryGases.includes(gas.id)}
@@ -1048,7 +1048,7 @@ const PlanetaryProfile = () => {
                   className="grid gap-2 md:grid-cols-2"
                 >
                   {HYDROSPHERE_OPTIONS.map((option) => (
-                    <div key={option.id} className="flex items-start gap-2 p-2 rounded border border-sf-line-interactive hover:border-primary">
+                    <div key={option.id} className="flex items-start gap-2 p-2 rounded-none border border-sf-line-interactive hover:border-sf-primary">
                       <RadioGroupItem value={option.id} id={`water-${option.id}`} className="mt-0.5" />
                       <Label htmlFor={`water-${option.id}`} className="cursor-pointer text-sm">
                         <span className="font-medium">{option.name}</span>
@@ -1189,7 +1189,7 @@ const PlanetaryProfile = () => {
                   className="space-y-2"
                 >
                   {HABITABILITY_TIERS.map((tier) => (
-                    <div key={tier.tier} className="flex items-start gap-3 p-3 rounded-none border border-sf-line-interactive hover:border-primary transition-colors">
+                    <div key={tier.tier} className="flex items-start gap-3 p-3 rounded-none border border-sf-line-interactive hover:border-sf-primary transition-colors">
                       <RadioGroupItem value={tier.tier.toString()} id={`tier-${tier.tier}`} className="mt-1" />
                       <Label htmlFor={`tier-${tier.tier}`} className="cursor-pointer flex-1">
                         <div className="font-medium">Tier {tier.tier}: {tier.name}</div>
@@ -1225,7 +1225,7 @@ const PlanetaryProfile = () => {
                 <p className="text-xs text-t4">What do inhabitants need to survive?</p>
                 <div className="grid gap-2 md:grid-cols-2">
                   {ADAPTATION_OPTIONS.map((option) => (
-                    <div key={option.id} className="flex items-start gap-2 p-2 rounded border border-sf-line-interactive">
+                    <div key={option.id} className="flex items-start gap-2 p-2 rounded-none border border-sf-line-interactive">
                       <Checkbox
                         id={`adapt-${option.id}`}
                         checked={formState.habitability.requiredAdaptations.includes(option.id)}
@@ -1277,7 +1277,7 @@ const PlanetaryProfile = () => {
                   className="grid gap-2 md:grid-cols-3"
                 >
                   {TECTONIC_LEVELS.map((level) => (
-                    <div key={level.id} className="flex items-start gap-2 p-2 rounded border border-sf-line-interactive hover:border-primary">
+                    <div key={level.id} className="flex items-start gap-2 p-2 rounded-none border border-sf-line-interactive hover:border-sf-primary">
                       <RadioGroupItem value={level.id} id={`tectonic-${level.id}`} className="mt-0.5" />
                       <Label htmlFor={`tectonic-${level.id}`} className="cursor-pointer text-sm">
                         <span className="font-medium">{level.name}</span>
@@ -1368,7 +1368,7 @@ const PlanetaryProfile = () => {
 
               {/* Survival Pressure */}
               <div className="space-y-4 p-4 rounded-none border border-sf-line-interactive">
-                <h4 className="font-medium text-primary">1. Survival Pressure</h4>
+                <h4 className="font-medium text-sf-primary-text">1. Survival Pressure</h4>
                 <p className="text-xs text-t4">The physical challenges of staying alive</p>
 
                 <QuestionSection
@@ -1430,7 +1430,7 @@ const PlanetaryProfile = () => {
 
               {/* Psychological Pressure */}
               <div className="space-y-4 p-4 rounded-none border border-sf-line-interactive">
-                <h4 className="font-medium text-primary">3. Psychological Pressure</h4>
+                <h4 className="font-medium text-sf-primary-text">3. Psychological Pressure</h4>
                 <p className="text-xs text-t4">Mental and emotional effects of the environment</p>
 
                 <QuestionSection
@@ -1558,7 +1558,7 @@ const PlanetaryProfile = () => {
               {EXOPLANET_EXAMPLES.map((example, index) => (
                 <Collapsible key={index}>
                   <CollapsibleTrigger asChild>
-                    <button className="w-full p-4 rounded-none border border-sf-line-interactive hover:border-primary transition-colors text-left flex items-center justify-between">
+                    <button className="w-full p-4 rounded-none border border-sf-line-interactive hover:border-sf-primary transition-colors text-left flex items-center justify-between">
                       <div>
                         <span className="font-medium text-sm">{example.name}</span>
                         <span className="text-xs text-t4 block">{example.type} • {example.distance}</span>
@@ -1569,11 +1569,11 @@ const PlanetaryProfile = () => {
                   <CollapsibleContent>
                     <div className="mt-2 p-4 rounded-none bg-muted/30 space-y-3">
                       <div>
-                        <span className="text-sm font-medium text-primary">Star Type:</span>
+                        <span className="text-sm font-medium text-sf-primary-text">Star Type:</span>
                         <span className="text-sm text-t3 ml-2">{example.starType}</span>
                       </div>
                       <div>
-                        <span className="text-sm font-medium text-primary">Characteristics:</span>
+                        <span className="text-sm font-medium text-sf-primary-text">Characteristics:</span>
                         <ul className="text-sm text-t3 list-disc list-inside mt-1">
                           {example.characteristics.map((c, i) => (
                             <li key={i}>{c}</li>
@@ -1605,7 +1605,7 @@ const PlanetaryProfile = () => {
               <div className="p-4 rounded-none bg-muted/30">
                 <div className="flex items-center gap-2 mb-4">
                   {consistencyScore === totalChecks ? (
-                    <Check className="w-5 h-5 text-green-500" />
+                    <Check className="w-5 h-5 text-sf-emerald" />
                   ) : (
                     <AlertCircle className="w-5 h-5 text-sf-amber" />
                   )}
@@ -1619,7 +1619,7 @@ const PlanetaryProfile = () => {
               </div>
 
               <div className="space-y-3">
-                <div className="flex items-start gap-3 p-3 rounded border border-sf-line-interactive">
+                <div className="flex items-start gap-3 p-3 rounded-none border border-sf-line-interactive">
                   <Checkbox
                     id="check-star-gravity"
                     checked={formState.consistencyCheck.starGravityConsistent}
@@ -1633,7 +1633,7 @@ const PlanetaryProfile = () => {
                   </Label>
                 </div>
 
-                <div className="flex items-start gap-3 p-3 rounded border border-sf-line-interactive">
+                <div className="flex items-start gap-3 p-3 rounded-none border border-sf-line-interactive">
                   <Checkbox
                     id="check-atmosphere-temp"
                     checked={formState.consistencyCheck.atmosphereTempConsistent}
@@ -1647,7 +1647,7 @@ const PlanetaryProfile = () => {
                   </Label>
                 </div>
 
-                <div className="flex items-start gap-3 p-3 rounded border border-sf-line-interactive">
+                <div className="flex items-start gap-3 p-3 rounded-none border border-sf-line-interactive">
                   <Checkbox
                     id="check-water-temp"
                     checked={formState.consistencyCheck.waterTempConsistent}
@@ -1661,7 +1661,7 @@ const PlanetaryProfile = () => {
                   </Label>
                 </div>
 
-                <div className="flex items-start gap-3 p-3 rounded border border-sf-line-interactive">
+                <div className="flex items-start gap-3 p-3 rounded-none border border-sf-line-interactive">
                   <Checkbox
                     id="check-gravity-biology"
                     checked={formState.consistencyCheck.gravityBiologyConsistent}
@@ -1675,7 +1675,7 @@ const PlanetaryProfile = () => {
                   </Label>
                 </div>
 
-                <div className="flex items-start gap-3 p-3 rounded border border-sf-line-interactive">
+                <div className="flex items-start gap-3 p-3 rounded-none border border-sf-line-interactive">
                   <Checkbox
                     id="check-pressures-environment"
                     checked={formState.consistencyCheck.pressuresEnvironmentConsistent}

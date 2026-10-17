@@ -110,7 +110,7 @@ export function WebGraphToolbar({
         variant={epochOpen ? "secondary" : "outline"}
         onClick={onToggleEpoch}
         aria-pressed={epochOpen}
-        className="h-11 rounded-none font-sans text-[12px] uppercase tracking-[1.2px]"
+        className="h-11 rounded-none font-sans text-[12px] uppercase tracking-wide"
       >
         <Clock className="mr-1.5 h-3.5 w-3.5" aria-hidden />
         Epoch
@@ -119,7 +119,7 @@ export function WebGraphToolbar({
       <Button
         type="button"
         onClick={onCreateEntity}
-        className="ml-auto h-11 rounded-none font-sans text-[12px] uppercase tracking-[1.2px]"
+        className="ml-auto h-11 rounded-none font-sans text-[12px] uppercase tracking-wide"
       >
         <Plus className="mr-1.5 h-3.5 w-3.5" aria-hidden />
         New entity

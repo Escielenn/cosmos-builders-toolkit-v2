@@ -44,7 +44,7 @@ const ReferenceBadge = memo(
               e.stopPropagation();
               onClick();
             }}
-            className="absolute flex items-center gap-0.5 px-1.5 rounded-full cursor-pointer transition-all hover:brightness-125 whitespace-nowrap"
+            className="absolute flex items-center gap-0.5 px-1.5 rounded-none cursor-pointer transition-all hover:brightness-125 whitespace-nowrap"
             style={{
               left: x,
               bottom: 2,

@@ -12,8 +12,8 @@ const SubscriptionBanner = () => {
 
   if (isExpiringSoon && daysUntilExpiry !== null) {
     const borderColor = isVanguard ? "border-sf-violet" : "border-sf-amber";
-    const bgColor = isVanguard ? "bg-violet-500/5" : "bg-amber-500/5";
-    const textColor = isVanguard ? "text-sf-violet-text" : "text-sf-amber";
+    const bgColor = isVanguard ? "bg-sf-violet/5" : "bg-sf-amber/5";
+    const textColor = isVanguard ? "text-sf-violet-text" : "text-sf-amber-text";
 
     return (
       <div className="mx-auto max-w-2xl mb-4">
@@ -27,7 +27,7 @@ const SubscriptionBanner = () => {
           </p>
           <button
             type="button"
-            className={`shrink-0 text-[12px] font-medium uppercase tracking-[1px] ${textColor} hover:underline`}
+            className={`shrink-0 min-h-hit px-2 text-xs font-medium uppercase tracking-wider ${textColor} hover:underline`}
             onClick={() => navigate("/pricing")}
           >
             Renew
@@ -40,14 +40,14 @@ const SubscriptionBanner = () => {
   if (hasLapsedSubscription) {
     return (
       <div className="mx-auto max-w-2xl mb-4">
-        <div className="flex items-center gap-2 px-3 py-1.5 border border-sf-crimson bg-crimson/5">
-          <AlertTriangle className="w-3.5 h-3.5 text-crimson shrink-0" />
+        <div className="flex items-center gap-2 px-3 py-1.5 border border-sf-crimson bg-sf-crimson/5">
+          <AlertTriangle className="w-3.5 h-3.5 text-sf-crimson-text shrink-0" />
           <p className="text-xs text-t3 flex-1">
             {tierLabel} access expired. Your data is safe.
           </p>
           <button
             type="button"
-            className="shrink-0 text-[12px] font-medium uppercase tracking-[1px] text-crimson hover:underline"
+            className="shrink-0 min-h-hit px-2 text-xs font-medium uppercase tracking-wider text-sf-crimson-text hover:underline"
             onClick={() => navigate("/pricing")}
           >
             Resubscribe

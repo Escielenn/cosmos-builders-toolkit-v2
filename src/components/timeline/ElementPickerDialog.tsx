@@ -93,8 +93,8 @@ const ElementPickerDialog = ({
           {groups.length === 0 ? (
             <p className="text-sm text-t2 text-center py-6">
               {worksheets.length === 0
-                ? "No worksheets in this world yet."
-                : "No worksheets match your search."}
+                ? "NO WORKSHEETS ON FILE IN THIS WORLD."
+                : "NO WORKSHEETS MATCH THIS SEARCH."}
             </p>
           ) : (
             groups.map((group) => {
@@ -102,7 +102,7 @@ const ElementPickerDialog = ({
               return (
                 <div key={group.toolType}>
                   <div className="flex items-center gap-2 px-2 py-1">
-                    {ToolIcon && <ToolIcon className="w-4 h-4 rounded-sm" />}
+                    {ToolIcon && <ToolIcon className="w-4 h-4 rounded-none" />}
                     <span className="text-[12px] font-medium text-t3 uppercase tracking-wider">
                       {group.displayName}
                     </span>

@@ -32,7 +32,7 @@ export function WorksheetNotesSheet({
       <SheetContent side="right" className="w-full sm:max-w-lg p-0 flex flex-col">
         <SheetHeader className="p-6 pb-4 border-b border-sf-line">
           <SheetTitle className="flex items-center gap-2 font-heading">
-            <StickyNote className="w-5 h-5 text-primary" />
+            <StickyNote className="w-5 h-5 text-sf-primary-text" />
             {title}
           </SheetTitle>
           <SheetDescription>

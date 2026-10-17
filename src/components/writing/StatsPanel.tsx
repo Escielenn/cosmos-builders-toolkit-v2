@@ -19,7 +19,7 @@ function StatCell({
 }) {
   return (
     <GlassPanel className="p-3">
-      <span className="block text-[12px] font-medium uppercase tracking-[1.5px] text-t3 mb-1.5">
+      <span className="block text-[12px] font-medium uppercase tracking-wide text-t3 mb-1.5">
         {label}
       </span>
       {children}
@@ -48,7 +48,7 @@ export function StatsPanel({ entries, dailyGoalWords }: StatsPanelProps) {
           <div className="flex items-center gap-3 flex-1 min-w-[180px]">
             <div className="flex-1">
               <div className="flex items-center justify-between mb-1.5">
-                <span className="text-[12px] font-medium uppercase tracking-[1.5px] text-t3">
+                <span className="text-[12px] font-medium uppercase tracking-wide text-t3">
                   Today
                 </span>
                 <span className="font-mono text-[12px] text-t2">
@@ -56,9 +56,9 @@ export function StatsPanel({ entries, dailyGoalWords }: StatsPanelProps) {
                   <span className="text-t4"> / {formatNumber(dailyGoalWords)}</span>
                 </span>
               </div>
-              <div className="h-1.5 rounded-xs bg-white/[0.06] overflow-hidden">
+              <div className="h-1.5 rounded-none bg-sf-surface-elevated overflow-hidden">
                 <div
-                  className="h-full bg-primary rounded-xs transition-all duration-500"
+                  className="h-full bg-primary rounded-none transition-all duration-slow"
                   style={{ width: `${progressPercent}%` }}
                 />
               </div>
@@ -70,7 +70,7 @@ export function StatsPanel({ entries, dailyGoalWords }: StatsPanelProps) {
           <div className="flex items-center gap-1.5">
             <Flame
               className={`w-4 h-4 ${
-                stats.currentStreak >= 1 ? "text-primary" : "text-t4"
+                stats.currentStreak >= 1 ? "text-sf-primary-text" : "text-t4"
               }`}
             />
             <span className="font-mono text-sm text-t1">

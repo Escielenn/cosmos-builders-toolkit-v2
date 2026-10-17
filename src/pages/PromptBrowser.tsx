@@ -12,7 +12,6 @@ import {
   Target,
   Clock,
   Check,
-  ArrowLeft,
   AlertTriangle,
   Calendar,
   Sparkles,
@@ -22,6 +21,7 @@ import Footer from "@/components/layout/Footer";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { BackLink } from "@/components/ui/back-link";
 import { useAuth } from "@/contexts/AuthContext";
 import { useWorlds } from "@/hooks/use-worlds";
 import { useCreateEntry } from "@/hooks/use-writing-entries";
@@ -38,17 +38,17 @@ import {
 // ─── Category color mapping ────────────────────────────────────────────
 
 const CATEGORY_COLORS: Record<PromptCategory, string> = {
-  worldbuilding: "text-blue-400 border-sf-azure bg-blue-400/[0.06]",
-  character: "text-sf-violet-text border-sf-violet bg-violet-400/[0.06]",
-  scene: "text-sf-amber border-sf-amber bg-amber-400/[0.06]",
-  dialogue: "text-sf-emerald border-sf-emerald bg-emerald-400/[0.06]",
+  worldbuilding: "text-sf-azure-text border-sf-azure bg-sf-azure/[0.06]",
+  character: "text-sf-violet-text border-sf-violet bg-sf-violet/[0.06]",
+  scene: "text-sf-amber-text border-sf-amber bg-sf-amber/[0.06]",
+  dialogue: "text-sf-emerald-text border-sf-emerald bg-sf-emerald/[0.06]",
   theme: "text-sf-primary-text border-sf-primary bg-sf-primary/[0.06]",
 };
 
 const DIFFICULTY_COLORS: Record<string, string> = {
-  beginner: "text-sf-emerald border-sf-emerald bg-emerald-400/[0.06]",
-  intermediate: "text-sf-amber border-sf-amber bg-amber-400/[0.06]",
-  advanced: "text-rose-400 border-rose-400 bg-rose-400/[0.06]",
+  beginner: "text-sf-emerald-text border-sf-emerald bg-sf-emerald/[0.06]",
+  intermediate: "text-sf-amber-text border-sf-amber bg-sf-amber/[0.06]",
+  advanced: "text-sf-crimson-text border-sf-crimson bg-sf-crimson/[0.06]",
 };
 
 // ─── Component ─────────────────────────────────────────────────────────
@@ -119,22 +119,16 @@ const PromptBrowserPage = () => {
 
       <main className="max-w-[1200px] mx-auto px-4 sm:px-6 pt-8 pb-16">
         {/* ── Back link ──────────────────────────────────────── */}
-        <button
-          onClick={() => navigate(-1)}
-          className="flex items-center gap-1.5 text-xs text-t4 hover:text-t2 transition-colors mb-6"
-        >
-          <ArrowLeft className="w-3.5 h-3.5" />
-          Back
-        </button>
+        <BackLink onClick={() => navigate(-1)} label="Return" className="mb-6" />
 
         {/* ── Page header ────────────────────────────────────── */}
         <div className="mb-10">
-          <h1 className="font-display text-3xl md:text-4xl tracking-[0.08em] text-t1 mb-3">
+          <h1 className="font-display text-sf-h1 tracking-title text-t1 mb-3">
             PROMPT BROWSER
           </h1>
           <div className="flex flex-wrap items-center gap-4 text-sm">
             <div className="flex items-center gap-2 text-t2">
-              <Calendar className="w-4 h-4 text-primary/60" />
+              <Calendar className="w-4 h-4 text-sf-primary-text" />
               <span className="font-heading text-sm font-light uppercase tracking-[1.5px]">
                 {weekLabel}
               </span>
@@ -148,7 +142,7 @@ const PromptBrowserPage = () => {
             </div>
 
             {expiredCount > 0 && (
-              <div className="flex items-center gap-2 text-sf-amber/70">
+              <div className="flex items-center gap-2 text-sf-amber-text">
                 <AlertTriangle className="w-3.5 h-3.5" />
                 <span className="font-mono text-xs">
                   {expiredCount} prompt{expiredCount !== 1 ? "s" : ""} expired last week
@@ -166,8 +160,8 @@ const PromptBrowserPage = () => {
 
         {/* ── Today's prompt (highlighted) ───────────────────── */}
         <section className="mb-10">
-          <p className="text-[12px] font-medium uppercase tracking-[1.5px] text-t3 mb-3 flex items-center gap-2">
-            <Sparkles className="w-3.5 h-3.5 text-primary/60" />
+          <p className="text-xs font-medium uppercase tracking-wide text-t3 mb-3 flex items-center gap-2">
+            <Sparkles className="w-3.5 h-3.5 text-sf-primary-text" />
             Today's Prompt
           </p>
 
@@ -242,18 +236,18 @@ function TodayPromptContent({
       <div className="flex items-center gap-3 mb-4">
         <div className="flex items-center gap-2">
           <Badge
-            className={`text-[12px] px-2 py-0.5 rounded-sm border ${CATEGORY_COLORS[prompt.category]}`}
+            className={`text-xs px-2 py-0.5 rounded-none border ${CATEGORY_COLORS[prompt.category]}`}
           >
             {CATEGORY_LABELS[prompt.category]}
           </Badge>
           <Badge
-            className={`text-[12px] px-2 py-0.5 rounded-sm border ${DIFFICULTY_COLORS[prompt.difficulty]}`}
+            className={`text-xs px-2 py-0.5 rounded-none border ${DIFFICULTY_COLORS[prompt.difficulty]}`}
           >
             {DIFFICULTY_LABELS[prompt.difficulty]}
           </Badge>
         </div>
         {isActedOn && (
-          <Badge className="text-[12px] px-2 py-0.5 rounded-sm border border-sf-emerald bg-emerald-400/[0.06] text-sf-emerald ml-auto">
+          <Badge className="text-xs px-2 py-0.5 rounded-none border border-sf-emerald bg-sf-emerald/[0.06] text-sf-emerald-text ml-auto">
             <Check className="w-3 h-3 mr-1" />
             Completed
           </Badge>
@@ -318,15 +312,15 @@ function PromptCard({
     <GlassPanel
       hover
       className={`p-5 h-full flex flex-col relative overflow-hidden ${
-        isToday ? "ring-1 ring-primary/30" : ""
+        isToday ? "ring-1 ring-sf-primary" : ""
       }`}
     >
       {/* Completed overlay */}
       {isCompleted && (
         <div className="absolute inset-0 bg-sf-void/40 z-10 pointer-events-none flex items-center justify-center">
-          <div className="flex items-center gap-1.5 bg-emerald-400/10 border border-sf-emerald rounded-sm px-3 py-1.5">
-            <Check className="w-4 h-4 text-sf-emerald" />
-            <span className="font-mono text-xs text-sf-emerald uppercase tracking-wider">
+          <div className="flex items-center gap-1.5 bg-sf-emerald/10 border border-sf-emerald rounded-none px-3 py-1.5">
+            <Check className="w-4 h-4 text-sf-emerald-text" />
+            <span className="font-mono text-xs text-sf-emerald-text uppercase tracking-wider">
               Completed
             </span>
           </div>
@@ -335,11 +329,11 @@ function PromptCard({
 
       {/* Day label + today badge */}
       <div className="flex items-center gap-2 mb-3">
-        <span className="font-mono text-[12px] text-t4 uppercase tracking-[1.5px]">
+        <span className="font-mono text-xs text-t4 uppercase tracking-wide">
           {dayLabel}
         </span>
         {isToday && (
-          <Badge className="text-[12px] px-1.5 py-0 rounded-sm border border-primary bg-primary/[0.06] text-primary">
+          <Badge className="text-xs px-1.5 py-0 rounded-none border border-sf-primary bg-sf-primary/[0.06] text-sf-primary-text">
             Today
           </Badge>
         )}
@@ -348,19 +342,19 @@ function PromptCard({
       {/* Category + difficulty badges */}
       <div className="flex items-center gap-1.5 mb-2.5">
         <Badge
-          className={`text-[12px] px-1.5 py-0 rounded-sm border ${CATEGORY_COLORS[prompt.category]}`}
+          className={`text-xs px-1.5 py-0 rounded-none border ${CATEGORY_COLORS[prompt.category]}`}
         >
           {CATEGORY_LABELS[prompt.category]}
         </Badge>
         <Badge
-          className={`text-[12px] px-1.5 py-0 rounded-sm border ${DIFFICULTY_COLORS[prompt.difficulty]}`}
+          className={`text-xs px-1.5 py-0 rounded-none border ${DIFFICULTY_COLORS[prompt.difficulty]}`}
         >
           {DIFFICULTY_LABELS[prompt.difficulty]}
         </Badge>
       </div>
 
       {/* Title */}
-      <h3 className="font-heading text-xs font-light uppercase tracking-[1.5px] text-t1 mb-2">
+      <h3 className="font-heading text-xs font-light uppercase tracking-wide text-t1 mb-2">
         {prompt.title}
       </h3>
 
@@ -374,7 +368,7 @@ function PromptCard({
         {prompt.wordGoal && (
           <div className="flex items-center gap-1.5">
             <Target className="w-3 h-3 text-t4" />
-            <span className="font-mono text-[12px] text-t4">
+            <span className="font-mono text-xs text-t4">
               {prompt.wordGoal} words
             </span>
           </div>
@@ -384,10 +378,10 @@ function PromptCard({
           type="button"
           onClick={() => onStartWriting(prompt)}
           disabled={isCompleted}
-          className={`ml-auto flex items-center gap-1.5 text-[12px] font-medium uppercase tracking-[1px] transition-colors ${
+          className={`ml-auto flex items-center gap-1.5 text-xs font-medium uppercase tracking-[1px] transition-colors ${
             isCompleted
               ? "text-t4 cursor-default"
-              : "text-primary hover:text-primary/80 cursor-pointer"
+              : "text-sf-primary-text hover:text-sf-primary-text cursor-pointer"
           }`}
         >
           {isCompleted ? (

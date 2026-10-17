@@ -18,6 +18,7 @@ import { PageBursts } from "@/components/ui/data-burst";
 import { LEARN_INDEX_BURSTS } from "@/lib/data-bursts";
 import { GuideNav } from "@/components/layout/GuideNav";
 import type { CourseListItem } from "@/lib/sanity/types";
+import { useMetaTags } from "@/hooks/use-meta-tags";
 
 // Fallback static articles (shown when Sanity has no content yet)
 const fallbackArticles = [
@@ -41,16 +42,16 @@ const categoryLabels: Record<string, string> = {
 };
 
 const categoryColors: Record<string, string> = {
-  basics: "bg-blue-500/20 text-blue-400",
-  science: "bg-green-500/20 text-green-400",
-  craft: "bg-purple-500/20 text-purple-400",
-  "case-studies": "bg-amber-500/20 text-sf-amber",
+  basics: "bg-sf-azure/[0.06] border border-sf-azure text-sf-azure-text",
+  science: "bg-sf-emerald/[0.06] border border-sf-emerald text-sf-emerald-text",
+  craft: "bg-sf-violet/[0.06] border border-sf-violet text-sf-violet-text",
+  "case-studies": "bg-sf-amber/[0.06] border border-sf-amber text-sf-amber-text",
 };
 
 const STATUS_LABELS: Record<string, { label: string; className: string }> = {
-  upcoming: { label: "UPCOMING", className: "bg-white/5 border-sf-line text-t3" },
-  enrolling: { label: "ENROLLING NOW", className: "bg-emerald-500/6 border-sf-emerald text-sf-emerald" },
-  in_progress: { label: "IN SESSION", className: "bg-amber-500/6 border-sf-amber text-sf-amber" },
+  upcoming: { label: "UPCOMING", className: "bg-sf-surface-elevated border-sf-line text-t3" },
+  enrolling: { label: "ENROLLING NOW", className: "bg-sf-emerald/[0.06] border-sf-emerald text-sf-emerald-text" },
+  in_progress: { label: "IN SESSION", className: "bg-sf-amber/[0.06] border-sf-amber text-sf-amber-text" },
 };
 
 function CourseDiscountBadge({ course, courseDiscount, tier }: { course: CourseListItem; courseDiscount: string; tier: string }) {
@@ -64,13 +65,14 @@ function CourseDiscountBadge({ course, courseDiscount, tier }: { course: CourseL
   }
 
   return (
-    <Badge className="bg-violet-500/6 border border-sf-violet text-sf-violet-text text-xs">
+    <Badge className="bg-sf-violet/[0.06] border border-sf-violet text-sf-violet-text text-xs">
       {courseDiscount} off
     </Badge>
   );
 }
 
 const LearnIndex = () => {
+  useMetaTags({ title: "SF University" });
   const [searchTerm, setSearchTerm] = useState("");
   const { data: sanityArticles, isLoading, error } = useArticles();
   const { data: searchResults, isLoading: isSearching } = useSearchArticles(searchTerm);
@@ -89,7 +91,7 @@ const LearnIndex = () => {
   const recentArticles = articles.filter((a) => !a.featured);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-sf-void">
       <Header />
 
       <main className="relative container mx-auto px-4 pt-24 pb-16">
@@ -110,13 +112,13 @@ const LearnIndex = () => {
         <div className="flex justify-center gap-2 -mt-4 mb-8">
           <a
             href="#courses"
-            className="px-4 py-2 text-xs uppercase tracking-wider text-t3 hover:text-primary border border-sf-line-interactive rounded-none hover:border-primary transition-all"
+            className="px-4 py-2 text-xs uppercase tracking-wider text-t3 hover:text-sf-primary-text border border-sf-line-interactive rounded-none hover:border-sf-primary transition-all"
           >
             Courses
           </a>
           <Link
             to="/roadmap"
-            className="px-4 py-2 text-xs uppercase tracking-wider text-t3 hover:text-primary border border-sf-line-interactive rounded-none hover:border-primary transition-all"
+            className="px-4 py-2 text-xs uppercase tracking-wider text-t3 hover:text-sf-primary-text border border-sf-line-interactive rounded-none hover:border-sf-primary transition-all"
           >
             Roadmap
           </Link>
@@ -143,7 +145,7 @@ const LearnIndex = () => {
         {/* Error State */}
         {error && !isLoading && (
           <GlassPanel className="p-4 mb-8 border-sf-amber">
-            <p className="text-sf-amber text-sm">
+            <p className="text-sf-amber-text text-sm">
               Unable to load articles from CMS. Showing cached content.
             </p>
           </GlassPanel>
@@ -165,7 +167,7 @@ const LearnIndex = () => {
                 <div className="space-y-4">
                   {searchResults.map((article) => (
                     <Link key={article._id} to={`/learn/${article.slug}`}>
-                      <GlassPanel className="p-4 hover:bg-accent/50 transition-colors cursor-pointer group">
+                      <GlassPanel className="p-4 hover:bg-sf-surface-elevated transition-colors cursor-pointer group">
                         <div className="flex items-start justify-between gap-4">
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-2">
@@ -182,14 +184,14 @@ const LearnIndex = () => {
                                 )}
                               </span>
                             </div>
-                            <h3 className="font-medium group-hover:text-primary transition-colors">
+                            <h3 className="font-medium group-hover:text-sf-primary-text transition-colors">
                               {article.title}
                             </h3>
                             <p className="text-sm text-t2 mt-1">
                               {article.description}
                             </p>
                           </div>
-                          <ArrowRight className="w-5 h-5 text-t3 group-hover:text-primary transition-colors shrink-0 mt-1" />
+                          <ArrowRight className="w-5 h-5 text-t3 group-hover:text-sf-primary-text transition-colors shrink-0 mt-1" />
                         </div>
                       </GlassPanel>
                     </Link>
@@ -216,7 +218,7 @@ const LearnIndex = () => {
                 <Link key={article._id} to={`/learn/${article.slug}`}>
                   <GlassPanel
                     glow
-                    className="overflow-hidden h-full hover:bg-accent/50 transition-colors cursor-pointer group"
+                    className="overflow-hidden h-full hover:bg-sf-surface-elevated transition-colors cursor-pointer group"
                   >
                     {article.featuredImage?.asset && (
                       <div className="aspect-video w-full overflow-hidden">
@@ -224,7 +226,7 @@ const LearnIndex = () => {
                           src={urlFor(article.featuredImage).width(600).height(340).url()}
                           alt={article.title}
                           loading="lazy"
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-slow"
                         />
                       </div>
                     )}
@@ -232,7 +234,7 @@ const LearnIndex = () => {
                       <Badge className={categoryColors[article.category]}>
                         {categoryLabels[article.category]}
                       </Badge>
-                      <h3 className="font-heading text-xl font-medium mt-3 mb-2 group-hover:text-primary transition-colors">
+                      <h3 className="font-heading text-xl font-medium mt-3 mb-2 group-hover:text-sf-primary-text transition-colors">
                         {article.title}
                       </h3>
                       <p className="text-t2 text-sm mb-4">
@@ -250,7 +252,7 @@ const LearnIndex = () => {
                             }
                           )}
                         </span>
-                        <span className="text-primary text-sm flex items-center gap-1 group-hover:gap-2 transition-all">
+                        <span className="text-sf-primary-text text-sm flex items-center gap-1 group-hover:gap-2 transition-all">
                           Read more <ArrowRight className="w-4 h-4" />
                         </span>
                       </div>
@@ -273,16 +275,16 @@ const LearnIndex = () => {
             </div>
             <div className="grid gap-6 md:grid-cols-3">
               <Link to="/rogue/science">
-                <GlassPanel className="p-5 h-full hover:bg-accent/50 transition-colors cursor-pointer group">
+                <GlassPanel className="p-5 h-full hover:bg-sf-surface-elevated transition-colors cursor-pointer group">
                   <div className="flex items-start justify-between mb-3">
-                    <div className="w-10 h-10 rounded-sm flex items-center justify-center bg-gradient-to-br from-red-500/20 to-orange-500/20 overflow-hidden">
+                    <div className="w-10 h-10 rounded-none flex items-center justify-center bg-gradient-to-br from-sf-crimson/20 to-sf-amber/20 overflow-hidden">
                       <img src="/icons/035-black hole.svg" alt="" className="w-6 h-6" draggable={false} />
                     </div>
                     <Badge variant="outline" className={categoryColors.science}>
                       {categoryLabels.science}
                     </Badge>
                   </div>
-                  <h3 className="font-medium group-hover:text-primary transition-colors">
+                  <h3 className="font-medium group-hover:text-sf-primary-text transition-colors">
                     ROGUE: The Science
                   </h3>
                   <p className="text-sm text-t2 mt-1">
@@ -291,16 +293,16 @@ const LearnIndex = () => {
                 </GlassPanel>
               </Link>
               <Link to="/tools/tidelock/science">
-                <GlassPanel className="p-5 h-full hover:bg-accent/50 transition-colors cursor-pointer group">
+                <GlassPanel className="p-5 h-full hover:bg-sf-surface-elevated transition-colors cursor-pointer group">
                   <div className="flex items-start justify-between mb-3">
-                    <div className="w-10 h-10 rounded-sm flex items-center justify-center bg-gradient-to-br from-cyan-500/20 to-blue-500/20 overflow-hidden">
+                    <div className="w-10 h-10 rounded-none flex items-center justify-center bg-gradient-to-br from-sf-primary/20 to-sf-azure/20 overflow-hidden">
                       <img src="/icons/044-day and night.svg" alt="" className="w-6 h-6" draggable={false} />
                     </div>
                     <Badge variant="outline" className={categoryColors.science}>
                       {categoryLabels.science}
                     </Badge>
                   </div>
-                  <h3 className="font-medium group-hover:text-primary transition-colors">
+                  <h3 className="font-medium group-hover:text-sf-primary-text transition-colors">
                     TIDELOCK: The Science
                   </h3>
                   <p className="text-sm text-t2 mt-1">
@@ -309,16 +311,16 @@ const LearnIndex = () => {
                 </GlassPanel>
               </Link>
               <Link to="/tools/exosky/science">
-                <GlassPanel className="p-5 h-full hover:bg-accent/50 transition-colors cursor-pointer group">
+                <GlassPanel className="p-5 h-full hover:bg-sf-surface-elevated transition-colors cursor-pointer group">
                   <div className="flex items-start justify-between mb-3">
-                    <div className="w-10 h-10 rounded-sm flex items-center justify-center bg-gradient-to-br from-indigo-500/20 to-purple-500/20 overflow-hidden">
+                    <div className="w-10 h-10 rounded-none flex items-center justify-center bg-gradient-to-br from-sf-violet/20 to-sf-violet/20 overflow-hidden">
                       <img src="/icons/016-constellation.svg" alt="" className="w-6 h-6" draggable={false} />
                     </div>
                     <Badge variant="outline" className={categoryColors.science}>
                       {categoryLabels.science}
                     </Badge>
                   </div>
-                  <h3 className="font-medium group-hover:text-primary transition-colors">
+                  <h3 className="font-medium group-hover:text-sf-primary-text transition-colors">
                     EXOSKY: The Science
                   </h3>
                   <p className="text-sm text-t2 mt-1">
@@ -327,16 +329,16 @@ const LearnIndex = () => {
                 </GlassPanel>
               </Link>
               <Link to="/tools/exoforge/science">
-                <GlassPanel className="p-5 h-full hover:bg-accent/50 transition-colors cursor-pointer group">
+                <GlassPanel className="p-5 h-full hover:bg-sf-surface-elevated transition-colors cursor-pointer group">
                   <div className="flex items-start justify-between mb-3">
-                    <div className="w-10 h-10 rounded-sm flex items-center justify-center bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 overflow-hidden">
+                    <div className="w-10 h-10 rounded-none flex items-center justify-center bg-gradient-to-br from-sf-emerald/20 to-sf-primary/20 overflow-hidden">
                       <img src="/icons/025-planet-earth.svg" alt="" className="w-6 h-6" draggable={false} />
                     </div>
                     <Badge variant="outline" className={categoryColors.science}>
                       {categoryLabels.science}
                     </Badge>
                   </div>
-                  <h3 className="font-medium group-hover:text-primary transition-colors">
+                  <h3 className="font-medium group-hover:text-sf-primary-text transition-colors">
                     EXOFORGE: The Science
                   </h3>
                   <p className="text-sm text-t2 mt-1">
@@ -345,16 +347,16 @@ const LearnIndex = () => {
                 </GlassPanel>
               </Link>
               <Link to="/tools/solaris/science">
-                <GlassPanel className="p-5 h-full hover:bg-accent/50 transition-colors cursor-pointer group">
+                <GlassPanel className="p-5 h-full hover:bg-sf-surface-elevated transition-colors cursor-pointer group">
                   <div className="flex items-start justify-between mb-3">
-                    <div className="w-10 h-10 rounded-sm flex items-center justify-center bg-gradient-to-br from-amber-500/20 to-yellow-500/20 overflow-hidden">
+                    <div className="w-10 h-10 rounded-none flex items-center justify-center bg-gradient-to-br from-sf-amber/20 to-sf-amber/20 overflow-hidden">
                       <img src="/icons/022-solar system.svg" alt="" className="w-6 h-6" draggable={false} />
                     </div>
                     <Badge variant="outline" className={categoryColors.science}>
                       {categoryLabels.science}
                     </Badge>
                   </div>
-                  <h3 className="font-medium group-hover:text-primary transition-colors">
+                  <h3 className="font-medium group-hover:text-sf-primary-text transition-colors">
                     SOLARIS: The Science
                   </h3>
                   <p className="text-sm text-t2 mt-1">
@@ -386,7 +388,7 @@ const LearnIndex = () => {
                           src={urlFor(course.artwork).width(600).height(340).url()}
                           alt={course.artwork.alt || course.title}
                           loading="lazy"
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-slow"
                         />
                       </div>
                     )}
@@ -466,11 +468,11 @@ const LearnIndex = () => {
             {!user && (
               <GlassPanel className="p-4 mt-4 border-sf-violet text-center">
                 <p className="text-sm text-t2">
-                  <Zap className="w-3.5 h-3.5 inline-block mr-1 text-sf-amber -mt-0.5" />
+                  <Zap className="w-3.5 h-3.5 inline-block mr-1 text-sf-amber-text -mt-0.5" />
                   Pro members save 5–10% on all courses.{" "}
                   <Sparkles className="w-3.5 h-3.5 inline-block mr-1 text-sf-violet -mt-0.5" />
                   Vanguard members save up to 25%.{" "}
-                  <Link to="/pricing" className="text-primary hover:underline">
+                  <Link to="/pricing" className="text-sf-primary-text hover:underline">
                     View plans
                   </Link>
                 </p>
@@ -488,7 +490,7 @@ const LearnIndex = () => {
             <div className="space-y-6">
               {articles.map((article) => (
                 <Link key={article._id} to={`/learn/${article.slug}`} className="block">
-                  <GlassPanel className="p-0 overflow-hidden hover:bg-accent/50 transition-colors cursor-pointer group">
+                  <GlassPanel className="p-0 overflow-hidden hover:bg-sf-surface-elevated transition-colors cursor-pointer group">
                     <div className="flex items-stretch gap-0">
                       {article.featuredImage?.asset ? (
                         <div className="w-32 md:w-48 shrink-0">
@@ -500,8 +502,8 @@ const LearnIndex = () => {
                           />
                         </div>
                       ) : (
-                        <div className="w-32 md:w-48 shrink-0 bg-muted/30 flex items-center justify-center">
-                          <BookOpen className="w-8 h-8 text-t3/30" />
+                        <div className="w-32 md:w-48 shrink-0 bg-sf-surface-elevated flex items-center justify-center">
+                          <BookOpen className="w-8 h-8 text-t4" />
                         </div>
                       )}
                       <div className="flex-1 p-4 flex items-start justify-between gap-4">
@@ -524,14 +526,14 @@ const LearnIndex = () => {
                               )}
                             </span>
                           </div>
-                          <h3 className="font-medium group-hover:text-primary transition-colors">
+                          <h3 className="font-medium group-hover:text-sf-primary-text transition-colors">
                             {article.title}
                           </h3>
                           <p className="text-sm text-t2 mt-1 line-clamp-2">
                             {article.description}
                           </p>
                         </div>
-                        <ArrowRight className="w-5 h-5 text-t3 group-hover:text-primary transition-colors shrink-0 mt-1" />
+                        <ArrowRight className="w-5 h-5 text-t3 group-hover:text-sf-primary-text transition-colors shrink-0 mt-1" />
                       </div>
                     </div>
                   </GlassPanel>

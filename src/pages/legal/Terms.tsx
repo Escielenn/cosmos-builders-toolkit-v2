@@ -2,8 +2,10 @@ import LegalPageLayout from "@/components/layout/LegalPageLayout";
 import { FileText } from "lucide-react";
 import { TERMS_CONTENT } from "@/lib/legal/terms-content";
 import { TERMS_BURSTS } from "@/lib/data-bursts";
+import { useMetaTags } from "@/hooks/use-meta-tags";
 
 const Terms = () => {
+  useMetaTags({ title: "Terms of Service" });
   return (
     <LegalPageLayout
       title="Terms of Service"

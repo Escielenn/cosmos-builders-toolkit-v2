@@ -81,12 +81,12 @@ const VARIANTS: Record<WelcomeVariant, VariantConfig> = {
 const ACCENT = {
   teal: {
     gradient: "from-transparent via-primary/60 to-transparent",
-    icon: "text-primary",
+    icon: "text-sf-primary-text",
     check: "text-sf-emerald",
-    upsell: "text-primary/60 hover:text-primary",
+    upsell: "text-sf-primary-text hover:text-sf-primary-text",
   },
   violet: {
-    gradient: "from-transparent via-violet-500/60 to-transparent",
+    gradient: "from-transparent via-sf-violet to-transparent",
     icon: "text-sf-violet",
     check: "text-sf-violet",
     upsell: "",
@@ -146,7 +146,7 @@ export default function WelcomeDialog({ open, onOpenChange, variant }: WelcomeDi
 
           {/* Title & subtitle */}
           <div className="space-y-2">
-            <h2 className="font-display text-2xl tracking-sf-title text-t1 uppercase">
+            <h2 className="font-display text-2xl tracking-title text-t1 uppercase">
               {config.title}
             </h2>
             <p className="text-sm text-t2 leading-relaxed">
@@ -169,7 +169,7 @@ export default function WelcomeDialog({ open, onOpenChange, variant }: WelcomeDi
           {/* PWA install section (signup only) */}
           {config.showPwaPrompt && !isStandalone && (
             <div className="border-t border-sf-line pt-4 space-y-2">
-              <p className="text-[12px] font-medium uppercase tracking-[1.5px] text-t3">
+              <p className="text-[12px] font-medium uppercase tracking-wide text-t3">
                 Quick Access
               </p>
               {canPrompt ? (

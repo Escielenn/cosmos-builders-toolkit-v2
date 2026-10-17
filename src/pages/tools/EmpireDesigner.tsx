@@ -668,7 +668,7 @@ const EmpireDesigner = () => {
                     {GOVERNMENT_TYPES.map((gov) => (
                       <div
                         key={gov.id}
-                        className="flex items-start space-x-3 p-3 rounded-none border border-sf-line-interactive hover:border-primary transition-colors"
+                        className="flex items-start space-x-3 p-3 rounded-none border border-sf-line-interactive hover:border-sf-primary transition-colors"
                       >
                         <RadioGroupItem value={gov.id} id={gov.id} className="mt-1" />
                         <div className="flex-1">
@@ -706,12 +706,12 @@ const EmpireDesigner = () => {
                 )}
 
                 {selectedGovType && (
-                  <GlassPanel className="p-4 bg-primary/5 border-primary">
+                  <GlassPanel className="p-4 bg-sf-primary/5 border-sf-primary">
                     <p className="text-sm font-medium mb-2">Consequences of {selectedGovType.name}:</p>
                     <ul className="text-sm text-t3 space-y-1">
                       {selectedGovType.consequences.map((c, i) => (
                         <li key={i} className="flex items-start gap-2">
-                          <span className="text-primary">•</span>
+                          <span className="text-sf-primary-text">•</span>
                           {c}
                         </li>
                       ))}
@@ -796,7 +796,7 @@ const EmpireDesigner = () => {
                     {POWER_BRANCHES.map((branch) => (
                       <div
                         key={branch.id}
-                        className="flex items-start gap-2 p-2 rounded border border-sf-line-interactive"
+                        className="flex items-start gap-2 p-2 rounded-none border border-sf-line-interactive"
                       >
                         <Checkbox
                           id={`branch-${branch.id}`}
@@ -1490,7 +1490,7 @@ const EmpireDesigner = () => {
                         <p className="text-sm text-t2 mt-2">
                           {example.description}
                         </p>
-                        <p className="text-sm text-primary mt-2 italic">
+                        <p className="text-sm text-sf-primary-text mt-2 italic">
                           {example.notable}
                         </p>
                       </div>

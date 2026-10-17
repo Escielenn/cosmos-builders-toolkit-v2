@@ -34,7 +34,7 @@ const SelectedParametersSidebar = ({
   return (
     <div
       className={cn(
-        "sticky top-24 transition-all duration-300",
+        "sticky top-24 transition-all duration-slow",
         isCollapsed ? "w-11" : "w-72",
         className
       )}
@@ -65,16 +65,16 @@ const SelectedParametersSidebar = ({
           </div>
         ) : (
           <div className="p-4 pt-10">
-            <h3 className="font-heading font-medium text-sm mb-3 text-primary">
+            <h3 className="font-heading font-medium text-sm mb-3 text-sf-primary-text">
               {title}
             </h3>
             <div className="space-y-3 max-h-[calc(100vh-12rem)] overflow-y-auto sf-sb pr-1">
               {parameters.map((param) => (
                 <div
                   key={param.typeId}
-                  className="border-l-2 border-primary pl-3 py-1"
+                  className="border-l-2 border-sf-primary pl-3 py-1"
                 >
-                  <div className="text-xs font-medium text-primary">
+                  <div className="text-xs font-medium text-sf-primary-text">
                     {param.categoryLabel}
                   </div>
                   <div className="text-sm font-medium">{param.optionLabel}</div>

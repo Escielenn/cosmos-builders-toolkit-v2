@@ -11,26 +11,26 @@ import { Badge } from "@/components/ui/badge";
 
 const LICENSE_META: Record<
   string,
-  { label: string; color: string; tip: string }
+  { label: string; tone: string; tip: string }
 > = {
   cc_by: {
     label: "CC BY",
-    color: "#15C17B",
+    tone: "bg-sf-teal/[0.06] border-sf-teal text-sf-teal-text",
     tip: "Creative Commons Attribution -- fork and remix with credit.",
   },
   cc_by_sa: {
     label: "CC BY-SA",
-    color: "#4D9FFF",
+    tone: "bg-sf-azure/[0.06] border-sf-azure text-sf-azure-text",
     tip: "Creative Commons Attribution-ShareAlike -- forks must use the same license.",
   },
   cc_by_nc: {
     label: "CC BY-NC",
-    color: "#9B5DE5",
+    tone: "bg-sf-violet/[0.06] border-sf-violet text-sf-violet-text",
     tip: "Creative Commons Attribution-NonCommercial -- non-commercial use only.",
   },
   view_only: {
     label: "View Only",
-    color: "#FFB800",
+    tone: "bg-sf-amber/[0.06] border-sf-amber text-sf-amber-text",
     tip: "This world cannot be forked. View and admire only.",
   },
 };
@@ -48,12 +48,7 @@ export default function LicenseBadge({ license, className }: LicenseBadgeProps) 
       <TooltipTrigger asChild>
         <Badge
           variant="outline"
-          className={`font-mono text-[12px] cursor-default ${className ?? ""}`}
-          style={{
-            backgroundColor: `${meta.color}0F`,
-            borderColor: `${meta.color}26`,
-            color: meta.color,
-          }}
+          className={`font-mono text-xs cursor-default ${meta.tone} ${className ?? ""}`}
         >
           {meta.label}
         </Badge>

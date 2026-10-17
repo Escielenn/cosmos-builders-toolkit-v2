@@ -306,27 +306,27 @@ const DrakeEquationCalculator = () => {
   const getInterpretation = (n: number): { label: string; color: string; description: string } => {
     if (n < 1) return {
       label: "Very Lonely",
-      color: "text-blue-400",
+      color: "text-sf-azure-text",
       description: "Fewer than one civilization expected. We may be alone in the galaxy, or civilizations are so rare that contact is essentially impossible."
     };
     if (n < 10) return {
       label: "Lonely",
-      color: "text-sf-primary-text",
+      color: "text-sf-teal-text",
       description: "A handful of civilizations might exist. Finding each other would be like finding needles in a cosmic haystack."
     };
     if (n < 100) return {
       label: "Sparse",
-      color: "text-green-400",
+      color: "text-sf-emerald-text",
       description: "Dozens of civilizations. Contact is possible but requires patience and luck. Good for stories about first contact as a rare, meaningful event."
     };
     if (n < 1000) return {
       label: "Moderate",
-      color: "text-yellow-400",
+      color: "text-sf-amber-text",
       description: "Hundreds of civilizations. Enough for a network, but vast distances mean most remain isolated. Good for stories about distant rumors."
     };
     if (n < 10000) return {
       label: "Crowded",
-      color: "text-orange-400",
+      color: "text-sf-amber-warm-text",
       description: "Thousands of civilizations. Regional groupings, alliances, and conflicts become possible. Classic space opera territory."
     };
     return {
@@ -461,7 +461,7 @@ const DrakeEquationCalculator = () => {
       values: { ...preset.values },
     }));
     toast({
-      title: `Applied: ${preset.name}`,
+      title: `PRESET APPLIED: ${preset.name.toUpperCase()}.`,
       description: preset.description,
     });
   };
@@ -605,7 +605,7 @@ const DrakeEquationCalculator = () => {
         <CollapsibleSection
           id="section-intro"
           title="The Drake Equation"
-          icon={<Info className="w-5 h-5 text-primary" />}
+          icon={<Info className="w-5 h-5 text-sf-primary-text" />}
           defaultOpen={true}
         >
           <div className="prose prose-invert max-w-none">
@@ -630,7 +630,7 @@ const DrakeEquationCalculator = () => {
         <CollapsibleSection
           id="section-variables"
           title="Variables"
-          icon={<Calculator className="w-5 h-5 text-primary" />}
+          icon={<Calculator className="w-5 h-5 text-sf-primary-text" />}
           defaultOpen={true}
         >
           <div className="space-y-8">
@@ -655,7 +655,7 @@ const DrakeEquationCalculator = () => {
                     <p className="text-sm text-t2 mb-2">{variable.description}</p>
                   </div>
                   <div className="text-right min-w-[100px]">
-                    <span className="text-2xl font-mono font-medium text-primary">
+                    <span className="text-2xl font-mono font-medium text-sf-primary-text">
                       {variable.useLogScale
                         ? formatNumber(formState.values[variable.id as keyof FormState["values"]])
                         : formState.values[variable.id as keyof FormState["values"]].toFixed(variable.step < 1 ? 2 : 0)
@@ -684,7 +684,7 @@ const DrakeEquationCalculator = () => {
 
                 <div className="flex justify-between text-xs text-t4">
                   <span>{variable.useLogScale ? formatNumber(variable.min) : variable.min}</span>
-                  <span className="text-primary/70">
+                  <span className="text-sf-primary-text">
                     Scientific range: {variable.scientificRange.low}–{variable.useLogScale ? formatNumber(variable.scientificRange.high) : variable.scientificRange.high}
                   </span>
                   <span>{variable.useLogScale ? formatNumber(variable.max) : variable.max}</span>
@@ -708,7 +708,7 @@ const DrakeEquationCalculator = () => {
         <CollapsibleSection
           id="section-result"
           title="Result: N"
-          icon={<Calculator className="w-5 h-5 text-primary" />}
+          icon={<Calculator className="w-5 h-5 text-sf-primary-text" />}
           defaultOpen={true}
         >
           <div className="text-center py-8">
@@ -730,14 +730,14 @@ const DrakeEquationCalculator = () => {
               <div className="font-mono text-sm overflow-x-auto sf-sb">
                 N = {formState.values.rStar} × {formState.values.fp} × {formState.values.ne} × {formState.values.fl} × {formState.values.fi} × {formState.values.fc} × {formatNumber(formState.values.L)}
               </div>
-              <div className="font-mono text-sm mt-1 text-primary">
+              <div className="font-mono text-sm mt-1 text-sf-primary-text">
                 N = {formatNumber(N)}
               </div>
             </div>
 
             {/* Multiplicative Chain Visualization */}
             <div className="mt-8 space-y-2">
-              <h4 className="font-mono text-xs uppercase tracking-sf-wide text-t2 text-center mb-4">
+              <h4 className="font-mono text-xs uppercase tracking-wide text-t2 text-center mb-4">
                 Factor Contribution
               </h4>
               {(() => {
@@ -768,7 +768,7 @@ const DrakeEquationCalculator = () => {
                       </span>
                       <div className="flex-1 relative h-5">
                         <div
-                          className="absolute left-1/2 top-0 h-full rounded-sm transition-all duration-500"
+                          className="absolute left-1/2 top-0 h-full rounded-none transition-all duration-slow"
                           style={{
                             width: `${barWidth}%`,
                             transform: 'translateX(-50%)',
@@ -791,7 +791,7 @@ const DrakeEquationCalculator = () => {
                 });
               })()}
               <div className="flex items-center gap-3 mt-2 pt-2 border-t border-sf-line-interactive">
-                <span className="font-mono text-xs text-primary w-8 text-right shrink-0 font-medium">
+                <span className="font-mono text-xs text-sf-primary-text w-8 text-right shrink-0 font-medium">
                   N
                 </span>
                 <div className="flex-1 text-center">
@@ -811,7 +811,7 @@ const DrakeEquationCalculator = () => {
         <CollapsibleSection
           id="section-worldbuilding"
           title="Worldbuilding Implications"
-          icon={<ExternalLink className="w-5 h-5 text-primary" />}
+          icon={<ExternalLink className="w-5 h-5 text-sf-primary-text" />}
           defaultOpen={true}
         >
           <div className="space-y-6">
@@ -891,7 +891,7 @@ const DrakeEquationCalculator = () => {
         <CollapsibleSection
           id="section-presets"
           title="Scenario Presets"
-          icon={<Info className="w-5 h-5 text-primary" />}
+          icon={<Info className="w-5 h-5 text-sf-primary-text" />}
           defaultOpen={true}
         >
           <p className="text-sm text-t2 mb-4">
@@ -922,7 +922,7 @@ const DrakeEquationCalculator = () => {
         <div className="mt-8 text-center">
           <Link
             to="/learn/drake-equation"
-            className="inline-flex items-center gap-2 text-primary hover:underline"
+            className="inline-flex items-center gap-2 text-sf-primary-text hover:underline"
           >
             <ExternalLink className="w-4 h-4" />
             Learn more about the Drake Equation for worldbuilding

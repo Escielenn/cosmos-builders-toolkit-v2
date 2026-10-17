@@ -18,6 +18,7 @@ import { DeleteEventDialog } from "./DeleteEventDialog";
 import { useToast } from "@/hooks/use-toast";
 import FirstTimeHint from "@/components/onboarding/FirstTimeHint";
 import { ScrollText } from "lucide-react";
+import { EmptyState } from "@/components/ui/empty-state";
 
 interface ChronicleProps {
   worldId: string;
@@ -130,7 +131,7 @@ export function Chronicle({ worldId }: ChronicleProps) {
   if (error || !data) {
     return (
       <div className="flex items-center justify-center h-64">
-        <p className="font-mono text-[12px] uppercase tracking-[0.10em] text-sf-crimson-text">
+        <p className="font-mono text-[12px] uppercase tracking-wide text-sf-crimson-text">
           CHRONICLE UNAVAILABLE. RETRY WHEN READY.
         </p>
       </div>
@@ -145,7 +146,7 @@ export function Chronicle({ worldId }: ChronicleProps) {
       <div className="sf-chronicle-header">
         <div>
           <h1 className="sf-chronicle-heading">Chronicle</h1>
-          <p className="font-mono text-[12px] uppercase tracking-[2px] text-t4 mt-1">
+          <p className="font-mono text-[12px] uppercase tracking-wide text-t4 mt-1">
             {data.worldName}
             {data.calendarConfig.era_label && (
               <span>
@@ -158,7 +159,7 @@ export function Chronicle({ worldId }: ChronicleProps) {
         <button
           type="button"
           onClick={handleAddEvent}
-          className="sf-fill-sweep px-3 py-1.5 border border-sf-primary text-sf-primary-text text-[12px] font-mono uppercase tracking-[0.10em] flex items-center gap-1.5 hover:text-sf-primary-bright transition-colors duration-base"
+          className="sf-fill-sweep px-3 py-1.5 border border-sf-primary text-sf-primary-text text-[12px] font-mono uppercase tracking-wide flex items-center gap-1.5 hover:text-sf-primary-bright transition-colors duration-base"
         >
           <Plus className="w-3 h-3" />
           LOG EVENT
@@ -170,13 +171,14 @@ export function Chronicle({ worldId }: ChronicleProps) {
 
       {/* Empty state */}
       {isEmpty && (
-        <div className="flex items-center justify-center py-32">
-          <p className="font-serif text-[15px] italic text-t4 text-center max-w-xs leading-relaxed">
-            No events yet.
-            <br />
-            Log the first one to begin your chronicle.
-          </p>
-        </div>
+        <EmptyState
+          warm
+          hideDial
+          className="py-24"
+          eyebrow="// CHRONICLE"
+          title="No events yet."
+          description="LOG THE FIRST EVENT TO BEGIN THE CHRONICLE."
+        />
       )}
 
       {/* Timeline */}
@@ -254,7 +256,7 @@ export function Chronicle({ worldId }: ChronicleProps) {
           {/* End marker */}
           <div className="sf-chronicle-end">
             <div className="sf-chronicle-end-marker" />
-            <span className="font-mono text-[12px] uppercase tracking-[2px] text-t4 mt-2">
+            <span className="font-mono text-[12px] uppercase tracking-wide text-t4 mt-2">
               Present
             </span>
           </div>

@@ -88,7 +88,7 @@ export function PromptDialog({
           <p className="font-mono text-[12px] tracking-[0.18em] text-sf-primary-text uppercase">
             // INPUT REQUIRED
           </p>
-          <DialogTitle className="font-display text-xl font-light tracking-sf-title uppercase text-t1">
+          <DialogTitle className="font-display text-xl font-light tracking-title uppercase text-t1">
             {title}
           </DialogTitle>
           {description && (

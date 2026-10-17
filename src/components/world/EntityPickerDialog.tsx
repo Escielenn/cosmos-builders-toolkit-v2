@@ -138,9 +138,9 @@ export default function EntityPickerDialog({
                     key={type}
                     type="button"
                     onClick={() => handleTypePick(type)}
-                    className="flex flex-col items-center gap-1.5 p-3 border border-sf-line-interactive bg-white/[0.02] hover:bg-primary/5 hover:border-primary transition-colors group"
+                    className="flex flex-col items-center gap-1.5 p-3 border border-sf-line-interactive bg-sf-surface hover:bg-primary/5 hover:border-primary transition-colors group"
                   >
-                    <Icon className="w-5 h-5 text-t3 group-hover:text-primary transition-colors" />
+                    <Icon className="w-5 h-5 text-t3 group-hover:text-sf-primary-text transition-colors" />
                     <span className="text-[12px] font-heading uppercase tracking-wider text-t3 group-hover:text-t2 transition-colors">
                       {label}
                     </span>
@@ -155,7 +155,7 @@ export default function EntityPickerDialog({
               <DialogTitle className="font-heading text-xl tracking-wider flex items-center gap-2">
                 {selectedType && ICON_MAP[selectedType] && (() => {
                   const Icon = ICON_MAP[selectedType];
-                  return <Icon className="w-4 h-4 text-primary" />;
+                  return <Icon className="w-4 h-4 text-sf-primary-text" />;
                 })()}
                 NEW {(ENTITY_TYPE_LABELS[selectedType!] ?? "Element").toUpperCase()}
               </DialogTitle>

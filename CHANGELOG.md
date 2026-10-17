@@ -1,5 +1,51 @@
 # StellarForge Changelog
 
+## 0.7405
+Uplift: consistency overhaul and quality of life. Same visual direction,
+applied everywhere it had drifted. About 330 files.
+
+Look
+- Every surface on the solved palette: ~600 raw Tailwind colours, all
+  sf-cyan, white/black utilities and dark: variants replaced by tokens
+  chosen by meaning (amber Physics, crimson Stop, stellar Worlds, violet
+  Lore, teal Integration; sf-primary for actions). Accent text uses the
+  -text stops. Raw hex in src down from 855 to 770.
+- Zero radius on menus, popovers, tooltips, badges, sliders, cards and
+  pills; round shapes only for genuinely round things. Simulator panels
+  left square pending a decision.
+- Motion on the 120/180/280ms tokens everywhere, including global CSS.
+- Letter-spacing capped at 0.12em on 12px text; classes that silently did
+  nothing (tracking-sf-*, bare amber/emerald/teal/stellar, hsl()-wrapped
+  hex in mockups) fixed so their styles actually render.
+- Dialogs, sheets and alert dialogs dim with the scrim token.
+- Inputs set words in DM Sans; number inputs stay in JetBrains Mono.
+- Ambient telemetry no longer runs behind headlines and body copy: hero
+  strips fade in to the right of the text column (hidden on phones),
+  gutter bursts appear only where a gutter exists, and every burst layer
+  follows Reduce Ambient.
+- States by colour, not opacity: archived worlds, excluded documents,
+  disabled cards, filtered timeline events. Controls that only appeared on
+  hover are now always visible (quieter), so keyboard and touch users can
+  reach them.
+
+Quality of life
+- One back link everywhere (RETURN TO BRIDGE / WORLD / LIST), replacing
+  four styles and the doubled arrows.
+- Every page sets a browser tab title.
+- Ctrl/Cmd+S saves on tool pages; the shortcut is shown on the save
+  button. Sensorium no longer saves twice.
+- Warning before closing the tab with unsaved work: tool pages that track
+  it, Profile, world notes, element creation, world appearance, custom
+  types, and the contact forms.
+- Shared empty states on the world dashboard, Chronicle and Corkboard.
+- Simulators: shared loader, page titles, 44px transport controls with
+  labels, Space shortcut hint, status shown by glyph as well as colour,
+  keyboard-reachable display toggles.
+- Ship's Voice on system strings across the app.
+
+Docs
+- Stale Clerk migration plans retired; auth stays on Supabase Auth.
+
 ## 0.7404
 Repair pass: security, billing, account data, legibility, data integrity.
 

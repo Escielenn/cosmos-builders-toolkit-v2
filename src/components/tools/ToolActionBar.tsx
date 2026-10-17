@@ -102,16 +102,16 @@ const ToolActionBar = ({
               ) : (
                 <Save className="w-4 h-4 mr-2" />
               )}
-              {isSaving ? "Saving..." : isCloudEnabled ? "Save" : "Save Draft"}
+              {isSaving ? "SAVING..." : isCloudEnabled ? "Save" : "Save Draft"}
               {isCloudEnabled ? (
                 <Cloud className="w-3 h-3 ml-1.5 text-sf-primary-text" />
               ) : (
-                <CloudOff className="w-3 h-3 ml-1.5 opacity-50" />
+                <CloudOff className="w-3 h-3 ml-1.5 text-t4" />
               )}
             </Button>
           </TooltipTrigger>
           <TooltipContent>
-            <p className="text-xs">{isCloudEnabled ? "Cloud sync enabled" : "Local only"}</p>
+            <p className="text-xs">{isCloudEnabled ? "Cloud sync enabled" : "Local only"} · <span className="font-mono">Ctrl/⌘ S</span></p>
           </TooltipContent>
         </Tooltip>
         {/* One Export control instead of three competing ones. Quick Export,
@@ -187,7 +187,7 @@ const ToolActionBar = ({
                   <Share2 className="w-4 h-4 mr-2" />
                   Share
                   {isShared && (
-                    <span className="ml-auto w-1.5 h-1.5 rounded-sm bg-primary" />
+                    <span className="ml-auto w-1.5 h-1.5 rounded-full bg-sf-primary" />
                   )}
                 </DropdownMenuItem>
               )}
@@ -212,7 +212,7 @@ const ToolActionBar = ({
         renders above it instead of being fully hidden underneath. */}
     <div
       aria-hidden={!showBottomBar}
-      className={`no-print fixed bottom-6 left-0 right-0 z-30 transition-transform duration-300 ease-out ${
+      className={`no-print fixed bottom-6 left-0 right-0 z-30 transition-transform duration-slow ease-sf-out ${
         showBottomBar ? "translate-y-0" : "translate-y-[calc(100%+24px)] pointer-events-none"
       }`}
     >
@@ -233,11 +233,11 @@ const ToolActionBar = ({
               ) : (
                 <Save className="w-4 h-4 mr-2" />
               )}
-              {isSaving ? "Saving..." : isCloudEnabled ? "Save" : "Save Draft"}
+              {isSaving ? "SAVING..." : isCloudEnabled ? "Save" : "Save Draft"}
               {isCloudEnabled ? (
                 <Cloud className="w-3 h-3 ml-1.5 text-sf-primary-text" />
               ) : (
-                <CloudOff className="w-3 h-3 ml-1.5 opacity-50" />
+                <CloudOff className="w-3 h-3 ml-1.5 text-t4" />
               )}
             </Button>
 

@@ -17,19 +17,19 @@ const CosmicTelemetry = ({
 
   if (variant === "horizontal") {
     return (
-      <div className={`hidden md:block ${className}`} aria-hidden="true">
+      <div className={`hidden md:block ${className}`} aria-hidden="true" style={{ opacity: "calc(0.25 * var(--sf-ambient))" }}>
         <div className={`flex items-baseline gap-6 flex-wrap ${alignClass}`}>
           {data.map((v) => (
             <div key={v.label} className="flex items-baseline gap-1.5">
               <span
-                className="font-heading uppercase text-white/[0.10]"
+                className="font-heading uppercase text-t4"
                 style={{ fontSize: "6.5px", letterSpacing: "2px" }}
               >
                 {v.label}
               </span>
               <span
-                className="font-mono"
-                style={{ fontSize: "7px", letterSpacing: "0.5px", color: "rgba(255, 179, 71, 0.30)" }}
+                className="font-mono text-sf-amber-warm"
+                style={{ fontSize: "7px", letterSpacing: "0.5px" }}
               >
                 {v.value}
               </span>
@@ -41,19 +41,19 @@ const CosmicTelemetry = ({
   }
 
   return (
-    <div className={`hidden md:block ${className}`} aria-hidden="true">
+    <div className={`hidden md:block ${className}`} aria-hidden="true" style={{ opacity: "calc(0.25 * var(--sf-ambient))" }}>
       <div className="flex flex-col gap-0.5">
         {data.map((v) => (
           <div key={v.label} className="flex items-baseline gap-2">
             <span
-              className="font-heading uppercase text-white/[0.12]"
+              className="font-heading uppercase text-t4"
               style={{ fontSize: "6.5px", letterSpacing: "2px" }}
             >
               {v.label}
             </span>
             <span
-              className="font-mono"
-              style={{ fontSize: "7px", letterSpacing: "0.5px", color: "rgba(255, 179, 71, 0.35)" }}
+              className="font-mono text-sf-amber-warm"
+              style={{ fontSize: "7px", letterSpacing: "0.5px" }}
             >
               {v.value}
             </span>

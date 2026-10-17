@@ -9,9 +9,8 @@
 // ---------------------------------------------------------------------------
 
 import { useMemo, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import {
-  ChevronLeft,
   Plus,
   Shapes,
   Sparkles,
@@ -35,6 +34,8 @@ import {
 import { TemplateFieldEditor } from "@/components/world/TemplateFieldEditor";
 import { cn } from "@/lib/utils";
 
+import { BackLink } from "@/components/ui/back-link";
+import { useUnsavedChangesGuard } from "@/hooks/use-unsaved-changes-guard";
 function slugifyKey(s: string): string {
   return s
     .toLowerCase()
@@ -60,6 +61,8 @@ export default function WorldCustomTypes() {
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [newTemplateLabel, setNewTemplateLabel] = useState("");
+  // A typed-but-not-created template name is unsaved work.
+  useUnsavedChangesGuard(newTemplateLabel.trim() !== "");
 
   const selected = useMemo<EntityTypeTemplate | null>(
     () => templates.find((t) => t.id === selectedId) ?? null,
@@ -94,12 +97,7 @@ export default function WorldCustomTypes() {
       <div className="max-w-6xl mx-auto px-6 py-8">
         {/* Header */}
         <div className="mb-8">
-          <Link
-            to={`/worlds/${worldId}`}
-            className="inline-flex items-center gap-1 text-xs text-t4 hover:text-t2 mb-3"
-          >
-            <ChevronLeft className="w-3.5 h-3.5" /> ← RETURN TO WORLD
-          </Link>
+          <BackLink to={`/worlds/${worldId}`} label="RETURN TO WORLD" className="mb-3" />
           <h1 className="font-display text-3xl md:text-4xl tracking-[0.08em] text-t1 mb-1">
             CUSTOM ELEMENT TYPES
           </h1>
@@ -141,7 +139,7 @@ export default function WorldCustomTypes() {
               )}
               {!isLoading && templates.length === 0 && (
                 <div className="p-3 text-xs text-t4 border border-dashed border-sf-line text-center">
-                  <Sparkles className="w-6 h-6 mx-auto mb-2 opacity-40" />
+                  <Sparkles className="w-6 h-6 mx-auto mb-2 text-t4" aria-hidden="true" />
                   No custom types yet.
                   <br />
                   Name one above and press +.
@@ -156,13 +154,13 @@ export default function WorldCustomTypes() {
                     "w-full flex items-center gap-2 px-3 py-2 border-l-2 text-left group",
                     selectedId === t.id
                       ? "border-primary bg-primary/[0.06]"
-                      : "border-transparent hover:bg-white/[0.03]"
+                      : "border-transparent hover:bg-sf-surface-elevated"
                   )}
                 >
                   <Shapes
                     className={cn(
                       "w-3.5 h-3.5 shrink-0",
-                      selectedId === t.id ? "text-primary" : "text-t4"
+                      selectedId === t.id ? "text-sf-primary-text" : "text-t4"
                     )}
                     style={t.color ? { color: t.color } : undefined}
                   />
@@ -199,8 +197,8 @@ export default function WorldCustomTypes() {
             ) : (
               <div className="h-full min-h-[400px] flex items-center justify-center border border-dashed border-sf-line p-8">
                 <div className="text-center max-w-sm">
-                  <Shapes className="w-10 h-10 mx-auto mb-3 text-t4 opacity-40" />
-                  <h3 className="font-heading text-sm uppercase tracking-[2px] text-t2 mb-2">
+                  <Shapes className="w-10 h-10 mx-auto mb-3 text-t4" aria-hidden="true" />
+                  <h3 className="font-heading text-sm uppercase tracking-wide text-t2 mb-2">
                     No template selected
                   </h3>
                   <p className="text-xs text-t4">
@@ -244,6 +242,11 @@ function TemplateDetailEditor({
   const [labelDraft, setLabelDraft] = useState(template.label);
   const [descDraft, setDescDraft] = useState(template.description ?? "");
   const [colorDraft, setColorDraft] = useState(template.color ?? "#15C17B");
+  // Label and description commit on blur; until then they are unsaved.
+  useUnsavedChangesGuard(
+    (labelDraft.trim() !== "" && labelDraft.trim() !== template.label) ||
+      descDraft !== (template.description ?? "")
+  );
 
   const handleBlurLabel = () => {
     const v = labelDraft.trim();
@@ -289,10 +292,10 @@ function TemplateDetailEditor({
   return (
     <div className="space-y-5">
       {/* Template meta */}
-      <div className="border border-sf-line bg-white/[0.02] p-4">
+      <div className="border border-sf-line bg-sf-surface p-4">
         <div className="flex items-start justify-between gap-3 mb-4">
           <div>
-            <div className="text-[12px] font-heading uppercase tracking-[2px] text-t4 mb-1">
+            <div className="text-[12px] font-heading uppercase tracking-wide text-t4 mb-1">
               Template
             </div>
             <div className="text-[12px] font-mono text-t4">
@@ -312,7 +315,7 @@ function TemplateDetailEditor({
 
         <div className="space-y-3">
           <div className="space-y-1">
-            <Label htmlFor="t-label" className="text-[12px] uppercase tracking-[1.5px] text-t4">
+            <Label htmlFor="t-label" className="text-[12px] uppercase tracking-wide text-t4">
               Display label
             </Label>
             <Input
@@ -324,7 +327,7 @@ function TemplateDetailEditor({
             />
           </div>
           <div className="space-y-1">
-            <Label htmlFor="t-desc" className="text-[12px] uppercase tracking-[1.5px] text-t4">
+            <Label htmlFor="t-desc" className="text-[12px] uppercase tracking-wide text-t4">
               Description{" "}
               <span className="text-t4 font-normal normal-case tracking-normal">(optional)</span>
             </Label>
@@ -338,7 +341,7 @@ function TemplateDetailEditor({
             />
           </div>
           <div className="space-y-1 max-w-[160px]">
-            <Label htmlFor="t-color" className="text-[12px] uppercase tracking-[1.5px] text-t4">
+            <Label htmlFor="t-color" className="text-[12px] uppercase tracking-wide text-t4">
               Accent color
             </Label>
             <div className="flex items-center gap-2">
@@ -367,7 +370,7 @@ function TemplateDetailEditor({
       <div>
         <div className="flex items-center justify-between mb-3">
           <div>
-            <h3 className="font-heading text-sm uppercase tracking-[2px] text-sf-emerald-text">
+            <h3 className="font-heading text-sm uppercase tracking-wide text-sf-emerald-text">
               Fields
             </h3>
             <p className="text-xs text-t4 mt-0.5">

@@ -26,15 +26,15 @@ export default function PlaylistCard({ playlist, onSelect }: PlaylistCardProps) 
       className={`group relative text-left w-full p-3 border transition-colors ${
         isActive
           ? "bg-primary/[0.06] border-primary"
-          : "bg-white/[0.02] border-sf-line-hairline hover:border-sf-line hover:bg-white/[0.04]"
+          : "bg-sf-surface border-sf-line-hairline hover:border-sf-line hover:bg-sf-surface-elevated"
       }`}
     >
       {/* Icon */}
       <div className="flex items-center gap-2 mb-1.5">
-        <Music className={`w-4 h-4 ${isActive ? "text-primary" : "text-t4"}`} />
+        <Music className={`w-4 h-4 ${isActive ? "text-sf-primary-text" : "text-t4"}`} />
         <span
           className={`text-sm font-medium truncate ${
-            isActive ? "text-primary" : "text-t2"
+            isActive ? "text-sf-primary-text" : "text-t2"
           }`}
         >
           {playlist.name}
@@ -52,8 +52,8 @@ export default function PlaylistCard({ playlist, onSelect }: PlaylistCardProps) 
         onClick={handlePlay}
         className={`absolute top-2 right-2 p-1.5 transition-all ${
           isPlaying
-            ? "text-primary opacity-100"
-            : "text-t3 opacity-0 group-hover:opacity-100 hover:text-primary"
+            ? "text-sf-primary-text opacity-100"
+            : "text-t4 hover:text-sf-primary-text"
         }`}
         aria-label={`Play ${playlist.name}`}
       >

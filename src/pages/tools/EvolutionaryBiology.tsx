@@ -502,7 +502,7 @@ const EvolutionaryBiology = () => {
     if (!worksheetId || !worldId) {
       toast({
         title: "CANNOT SAVE.",
-        description: "No worksheet selected",
+        description: "NO WORKSHEET SELECTED.",
         variant: "destructive",
       });
       return;
@@ -625,7 +625,7 @@ const EvolutionaryBiology = () => {
 
     toast({
       title: "SPECIES IMPORTED.",
-      description: `${data.speciesName || "Species"} has been imported from Species Interaction Matrix.`,
+      description: `${data.speciesName || "SPECIES"} IMPORTED FROM SPECIES INTERACTION MATRIX.`,
     });
   };
 
@@ -650,7 +650,7 @@ const EvolutionaryBiology = () => {
             role="checkbox"
             aria-checked={isChecked}
             tabIndex={0}
-            className="flex items-start gap-3 p-3 rounded-none border border-sf-line-interactive hover:border-primary cursor-pointer transition-colors"
+            className="flex items-start gap-3 p-3 rounded-none border border-sf-line-interactive hover:border-sf-primary cursor-pointer transition-colors"
             onClick={(e) => {
               e.preventDefault();
               if (isChecked) {
@@ -904,7 +904,7 @@ const EvolutionaryBiology = () => {
       worksheetLoading={loadingWorksheet}
       worksheetTags={worksheetTags}
       onTagsChange={handleTagsChange}
-      worksheetIcon={<Dna className="w-5 h-5 text-primary" />}
+      worksheetIcon={<Dna className="w-5 h-5 text-sf-primary-text" />}
       isLoggedIn={!!user}
     >
 
@@ -913,7 +913,7 @@ const EvolutionaryBiology = () => {
           <h2 className="font-heading text-xl font-light uppercase tracking-[2px] mb-4 gradient-text">
             Building Believable Biology
           </h2>
-          <blockquote className="border-l-2 border-primary pl-4 italic text-lg mb-4">
+          <blockquote className="border-l-2 border-sf-primary pl-4 italic text-lg mb-4">
             "Every trait is a solution to a problem. Every solution creates new problems."
           </blockquote>
           <p className="text-t2 mb-4">
@@ -934,7 +934,7 @@ const EvolutionaryBiology = () => {
                   href={resource.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-xs px-3 py-1.5 rounded-sm bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+                  className="inline-flex items-center gap-1 text-xs px-3 py-1.5 rounded-none bg-sf-primary/10 text-sf-primary-text hover:bg-sf-primary/20 transition-colors"
                 >
                   {resource.name}
                   <ExternalLink className="w-3 h-3" />
@@ -950,11 +950,11 @@ const EvolutionaryBiology = () => {
             {/* Species Identity Panel */}
             <GlassPanel className="p-6">
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-none bg-emerald-500/20 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-none bg-sf-emerald/[0.06] border border-sf-emerald flex items-center justify-center">
                   <Dna className="w-5 h-5 text-sf-emerald" />
                 </div>
                 <div>
-                  <h2 className="font-heading text-[12px] font-light uppercase tracking-[3px] text-[hsl(var(--sf-section-green))]">Species Identity</h2>
+                  <h2 className="font-heading text-[12px] font-light uppercase tracking-[0.12em] text-sf-primary-text">Species Identity</h2>
                   <p className="text-xs text-t4">Name your species and link to environmental context</p>
                 </div>
               </div>
@@ -969,7 +969,7 @@ const EvolutionaryBiology = () => {
                         variant="ghost"
                         size="sm"
                         onClick={() => setShowSpeciesMatrixImport(true)}
-                        className="text-pink-500 hover:text-pink-600 gap-1.5"
+                        className="text-sf-emerald-text hover:text-t1 gap-1.5"
                       >
                         <Users className="w-4 h-4" />
                         Import from Species Matrix

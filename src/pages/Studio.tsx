@@ -7,7 +7,6 @@
  * Data maps onto the live schema (see useStudioData). Modules that
  * need the Phase-4 editor schema (world prompt, beats) arrive with it.
  */
-import { useEffect } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import Header from "@/components/layout/Header";
@@ -16,6 +15,7 @@ import {
   lastSentence,
   type StudioWorld,
 } from "@/hooks/useStudioData";
+import { useMetaTags } from "@/hooks/use-meta-tags";
 
 // ── small helpers ───────────────────────────────────────────────────
 
@@ -137,13 +137,7 @@ export default function Studio(): JSX.Element {
   const { user, loading } = useAuth();
   const { data } = useStudioData();
 
-  useEffect(() => {
-    const prev = document.title;
-    document.title = "Studio: StellarForge";
-    return () => {
-      document.title = prev;
-    };
-  }, []);
+  useMetaTags({ title: "Studio" });
 
   if (!loading && !user) return <Navigate to="/auth" replace />;
 
@@ -243,14 +237,14 @@ export default function Studio(): JSX.Element {
                   <div className="mt-6 flex flex-wrap items-center gap-2.5">
                     <Link
                       to={`/write/${entry.id}`}
-                      className="bg-sf-primary px-5 py-2.5 font-sans text-[13px] font-medium tracking-[0.04em] text-[hsl(var(--accent-on-accent))] transition-shadow hover:shadow-sf-glow-teal"
+                      className="bg-sf-primary px-5 py-2.5 font-sans text-[13px] font-medium tracking-wider text-[hsl(var(--accent-on-accent))] transition-shadow hover:shadow-sf-glow-teal"
                     >
                       Continue writing
                     </Link>
                     {entry.world_id && (
                       <Link
                         to={`/worlds/${entry.world_id}`}
-                        className="border border-sf-line-emphasis px-5 py-2.5 font-sans text-[13px] tracking-[0.04em] text-t2 transition-colors hover:border-sf-primary hover:text-t1"
+                        className="border border-sf-line-emphasis px-5 py-2.5 font-sans text-[13px] tracking-wider text-t2 transition-colors hover:border-sf-primary hover:text-t1"
                       >
                         Open the world
                       </Link>
@@ -270,7 +264,7 @@ export default function Studio(): JSX.Element {
                   <div className="mt-6">
                     <Link
                       to="/worlds"
-                      className="bg-sf-primary px-5 py-2.5 font-sans text-[13px] font-medium tracking-[0.04em] text-[hsl(var(--accent-on-accent))] transition-shadow hover:shadow-sf-glow-teal"
+                      className="bg-sf-primary px-5 py-2.5 font-sans text-[13px] font-medium tracking-wider text-[hsl(var(--accent-on-accent))] transition-shadow hover:shadow-sf-glow-teal"
                     >
                       Choose a world
                     </Link>
@@ -334,10 +328,9 @@ export default function Studio(): JSX.Element {
                       className="border border-sf-line-interactive bg-sf-surface/90 p-4 transition-colors hover:border-sf-primary"
                     >
                       <div
-                        className="mb-3 flex h-10 w-10 items-center justify-center rounded-full font-serif text-[16px] italic text-t1"
+                        className="mb-3 flex h-10 w-10 items-center justify-center rounded-full border border-sf-line font-serif text-[16px] italic text-t1"
                         style={{
                           background: `linear-gradient(140deg, ${c.color || "hsl(var(--sf-stellar-hsl))"}44, hsl(var(--sf-void-hsl)))`,
-                          border: "1px solid hsl(var(--border-subtle))",
                         }}
                       >
                         {c.name.charAt(0)}
@@ -423,7 +416,7 @@ export default function Studio(): JSX.Element {
               </span>
               <span className="font-serif text-[13px] italic text-t3">Stellarforge Studio · online</span>
             </div>
-            <div className="font-mono text-[12px] tracking-[1.5px] text-t4">
+            <div className="font-mono text-[12px] tracking-wide text-t4">
               JD {julianDay().toFixed(1)} · 39.87°N 104.97°W
             </div>
           </footer>

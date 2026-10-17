@@ -129,11 +129,11 @@ const SECTIONS: Section[] = [
 // ─── Zone Color Helper ──────────────────────────────────────────────
 
 const ZONE_BADGE_STYLES: Record<string, string> = {
-  "#E74C3C": "bg-red-500/20 text-sf-crimson-text border-sf-crimson",
-  "#FFA500": "bg-orange-500/20 text-orange-400 border-sf-amber",
-  "#2ECC71": "bg-emerald-500/20 text-sf-emerald border-sf-emerald",
-  "#4D9FFF": "bg-blue-500/20 text-blue-400 border-sf-azure",
-  "#ADD8E6": "bg-sky-500/20 text-sf-azure border-sf-azure",
+  "#E74C3C": "bg-sf-crimson/[0.06] text-sf-crimson-text border-sf-crimson",
+  "#FFA500": "bg-sf-amber/[0.06] text-sf-amber-text border-sf-amber",
+  "#2ECC71": "bg-sf-emerald/[0.06] text-sf-emerald-text border-sf-emerald",
+  "#4D9FFF": "bg-sf-azure/[0.06] text-sf-azure-text border-sf-azure",
+  "#ADD8E6": "bg-sf-azure/[0.06] text-sf-azure-text border-sf-azure",
 };
 
 const SPECTRAL_LABELS = ["O", "B", "A", "F", "G", "K", "M"];
@@ -402,7 +402,7 @@ const HabitableZoneCalculator = () => {
 
   const worldNameForExport = worldId ? worldName : undefined;
   const zoneColor = result.valid ? ZONE_COLORS[result.planetZone] : "#2ECC71";
-  const zoneBadgeStyle = ZONE_BADGE_STYLES[zoneColor] || "bg-emerald-500/20 text-sf-emerald";
+  const zoneBadgeStyle = ZONE_BADGE_STYLES[zoneColor] || "bg-sf-emerald/[0.06] text-sf-emerald-text border-sf-emerald";
 
   // Get known planets for the current preset + user-added planets
   const currentPreset = STAR_PRESETS.find((p) => p.id === formState.star.presetId);
@@ -449,7 +449,7 @@ const HabitableZoneCalculator = () => {
           <h2 className="font-heading text-xl font-light uppercase tracking-[2px] mb-4 gradient-text">
             The Goldilocks Zone
           </h2>
-          <blockquote className="border-l-2 border-primary pl-4 italic text-lg mb-4">
+          <blockquote className="border-l-2 border-sf-primary pl-4 italic text-lg mb-4">
             "The highest function of ecology is the understanding of consequences."
             <span className="block text-sm text-t3 mt-1">,  Frank Herbert, Dune</span>
           </blockquote>
@@ -462,8 +462,8 @@ const HabitableZoneCalculator = () => {
 
         {/* Your Planet, name + import from star system */}
         <GlassPanel className="p-4 md:p-6 mb-8">
-          <h2 className="font-heading text-[12px] font-light uppercase tracking-[3px] text-[hsl(var(--sf-section-green))] mb-4 flex items-center gap-2">
-            <Globe className="w-5 h-5 text-primary" />
+          <h2 className="font-heading text-[12px] font-light uppercase tracking-[0.12em] text-sf-primary-text mb-4 flex items-center gap-2">
+            <Globe className="w-5 h-5 text-sf-primary-text" />
             Your Planet
           </h2>
           <div className="flex flex-col sm:flex-row gap-3">
@@ -482,7 +482,7 @@ const HabitableZoneCalculator = () => {
                 <button
                   type="button"
                   onClick={() => setImportOpen(!importOpen)}
-                  className="w-full h-10 px-3 flex items-center justify-between gap-2 rounded-xs border border-sf-line-interactive bg-muted/30 text-sm text-t2 hover:border-primary transition-colors"
+                  className="w-full h-10 px-3 flex items-center justify-between gap-2 rounded-none border border-sf-line-interactive bg-muted/30 text-sm text-t2 hover:border-sf-primary transition-colors"
                 >
                   <span className="flex items-center gap-1.5">
                     <Import className="w-3.5 h-3.5 text-t4" />
@@ -517,9 +517,9 @@ const HabitableZoneCalculator = () => {
                               onClick={() => {
                                 updatePlanet({ name: body.name, orbitalDistance: dist });
                                 setImportOpen(false);
-                                toast({ title: "IMPORTED.", description: `${body.name} at ${dist} AU` });
+                                toast({ title: "IMPORTED.", description: `${body.name.toUpperCase()} AT ${dist} AU.` });
                               }}
-                              className="px-3 py-1.5 rounded-sm border border-sf-line-interactive text-xs hover:border-primary hover:bg-primary/5 transition-colors"
+                              className="px-3 py-1.5 rounded-none border border-sf-line-interactive text-xs hover:border-sf-primary hover:bg-sf-primary/5 transition-colors"
                             >
                               <span className="text-t1">{body.name}</span>
                               <span className="text-t4 ml-2">{dist} AU</span>
@@ -567,8 +567,8 @@ const HabitableZoneCalculator = () => {
                       onClick={() => handlePresetSelect(preset.id)}
                       className={`p-3 rounded-none border text-left transition-all ${
                         formState.star.presetId === preset.id
-                          ? "border-primary bg-primary/10 text-t1"
-                          : "border-sf-line-interactive hover:border-primary hover:bg-muted/50 text-t2"
+                          ? "border-sf-primary bg-sf-primary/10 text-t1"
+                          : "border-sf-line-interactive hover:border-sf-primary hover:bg-muted/50 text-t2"
                       }`}
                     >
                       <div className="font-medium text-sm">{preset.label}</div>
@@ -590,8 +590,8 @@ const HabitableZoneCalculator = () => {
                         onClick={() => handleSpectralTypeChange(type)}
                         className={`flex-1 py-2 rounded-none text-sm font-mono font-medium transition-all ${
                           formState.star.spectralType === type
-                            ? "ring-2 ring-primary"
-                            : "hover:opacity-80"
+                            ? "ring-2 ring-sf-primary"
+                            : "hover:brightness-125"
                         }`}
                         style={{
                           backgroundColor: `${colors.fill}20`,
@@ -610,7 +610,7 @@ const HabitableZoneCalculator = () => {
               <div className="space-y-2 mb-6">
                 <div className="flex items-center justify-between">
                   <Label>Star Mass</Label>
-                  <span className="text-sm font-mono text-primary">
+                  <span className="text-sm font-mono text-sf-primary-text">
                     {formState.star.mass.toFixed(3)} M&#x2609;
                   </span>
                 </div>
@@ -640,7 +640,7 @@ const HabitableZoneCalculator = () => {
                       />
                       Auto from mass
                     </label>
-                    <span className="text-sm font-mono text-primary">
+                    <span className="text-sm font-mono text-sf-primary-text">
                       {formState.star.luminosity < 0.01
                         ? formState.star.luminosity.toExponential(2)
                         : formState.star.luminosity.toFixed(4)} L&#x2609;
@@ -670,7 +670,7 @@ const HabitableZoneCalculator = () => {
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <Label>Surface Temperature</Label>
-                  <span className="text-sm font-mono text-primary">
+                  <span className="text-sm font-mono text-sf-primary-text">
                     {Math.round(formState.star.temperature).toLocaleString()} K
                   </span>
                 </div>
@@ -692,8 +692,8 @@ const HabitableZoneCalculator = () => {
             {/* Section 2: Orbital Diagram (always visible, hero element) */}
             <div id="section-diagram">
               <GlassPanel className="p-4 md:p-6">
-                <h2 className="font-heading text-[12px] font-light uppercase tracking-[3px] text-[hsl(var(--sf-section-green))] mb-4 flex items-center gap-2">
-                  <Orbit className="w-5 h-5 text-primary" />
+                <h2 className="font-heading text-[12px] font-light uppercase tracking-[0.12em] text-sf-primary-text mb-4 flex items-center gap-2">
+                  <Orbit className="w-5 h-5 text-sf-primary-text" />
                   Orbital Diagram
                 </h2>
                 <OrbitalDiagram
@@ -713,7 +713,7 @@ const HabitableZoneCalculator = () => {
                 <div className="mt-4 space-y-2">
                   <div className="flex items-center justify-between">
                     <Label>Planet Orbital Distance</Label>
-                    <span className="text-sm font-mono text-primary">
+                    <span className="text-sm font-mono text-sf-primary-text">
                       {formState.planet.orbitalDistance.toFixed(3)} AU
                     </span>
                   </div>
@@ -733,7 +733,7 @@ const HabitableZoneCalculator = () => {
 
                 {/* Live temperature readout, connected to distance slider */}
                 {result.valid && (
-                  <div className="mt-4 rounded-sm border p-3" style={{ borderColor: `${zoneColor}30`, backgroundColor: `${zoneColor}08` }}>
+                  <div className="mt-4 rounded-none border p-3" style={{ borderColor: `${zoneColor}30`, backgroundColor: `${zoneColor}08` }}>
                     <div className="flex items-center justify-between gap-4 flex-wrap">
                       <div className="space-y-0.5">
                         <div className="text-[12px] font-mono uppercase tracking-wider text-t4">Equilibrium</div>
@@ -759,7 +759,7 @@ const HabitableZoneCalculator = () => {
                 <div className="mt-4 space-y-2">
                   <div className="flex items-center justify-between">
                     <Label>Greenhouse Warming</Label>
-                    <span className="text-sm font-mono text-primary">
+                    <span className="text-sm font-mono text-sf-primary-text">
                       +{formState.planet.greenhouseWarming ?? 33} K
                     </span>
                   </div>
@@ -786,10 +786,10 @@ const HabitableZoneCalculator = () => {
                         key={preset.value}
                         type="button"
                         onClick={() => updatePlanet({ greenhouseWarming: preset.value })}
-                        className={`px-2 py-0.5 rounded-sm text-[12px] font-mono border transition-colors ${
+                        className={`px-2 py-0.5 rounded-none text-[12px] font-mono border transition-colors ${
                           (formState.planet.greenhouseWarming ?? 33) === preset.value
-                            ? "border-primary bg-primary/10 text-primary"
-                            : "border-sf-line-interactive text-t4 hover:border-primary"
+                            ? "border-sf-primary bg-sf-primary/10 text-sf-primary-text"
+                            : "border-sf-line-interactive text-t4 hover:border-sf-primary"
                         }`}
                       >
                         {preset.label}
@@ -849,7 +849,7 @@ const HabitableZoneCalculator = () => {
                     <button
                       type="button"
                       onClick={() => setAdditionalPlanets((prev) => [...prev, { name: `Planet ${prev.length + 2}`, distanceAU: 1.0 }])}
-                      className="text-xs font-mono text-primary hover:text-primary/80 transition-colors"
+                      className="text-xs font-mono text-sf-primary-text hover:text-t1 transition-colors"
                     >
                       + Add Planet
                     </button>
@@ -898,8 +898,8 @@ const HabitableZoneCalculator = () => {
             {/* Section 4: Analysis Results (always visible) */}
             <div id="section-results">
               <GlassPanel className="p-4 md:p-6">
-                <h2 className="font-heading text-[12px] font-light uppercase tracking-[3px] text-[hsl(var(--sf-section-green))] mb-4 flex items-center gap-2">
-                  <Thermometer className="w-5 h-5 text-primary" />
+                <h2 className="font-heading text-[12px] font-light uppercase tracking-[0.12em] text-sf-primary-text mb-4 flex items-center gap-2">
+                  <Thermometer className="w-5 h-5 text-sf-primary-text" />
                   Analysis Results
                 </h2>
                 <p className="text-sm text-t2 italic mb-6">{SECTION_HELPERS.results}</p>
@@ -908,7 +908,7 @@ const HabitableZoneCalculator = () => {
                   <div className="space-y-6">
                     {/* Hero: Temperature Display */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div className="text-center p-5 rounded-sm bg-muted/30">
+                      <div className="text-center p-5 rounded-none bg-muted/30">
                         <div className="text-[12px] font-mono uppercase tracking-wider text-t4 mb-1">
                           Equilibrium Temperature
                         </div>
@@ -920,7 +920,7 @@ const HabitableZoneCalculator = () => {
                         </div>
                         <div className="text-[12px] text-t4 mt-2">No atmosphere</div>
                       </div>
-                      <div className="text-center p-5 rounded-sm bg-muted/30 border border-primary">
+                      <div className="text-center p-5 rounded-none bg-muted/30 border border-sf-primary">
                         <div className="text-[12px] font-mono uppercase tracking-wider text-t4 mb-1">
                           Est. Surface Temperature
                         </div>
@@ -951,7 +951,7 @@ const HabitableZoneCalculator = () => {
 
                     {/* HZ Boundaries, KeyValueRow list */}
                     <div>
-                      <p className="font-mono text-[12px] tracking-[0.18em] uppercase text-sf-primary-text mb-3">
+                      <p className="font-mono text-[12px] tracking-[0.12em] uppercase text-sf-primary-text mb-3">
                         // HABITABLE ZONE BOUNDARIES
                       </p>
                       <div className="space-y-1">
@@ -1037,10 +1037,10 @@ const HabitableZoneCalculator = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {result.implications.map((impl, i) => {
                       const categoryColors: Record<string, string> = {
-                        climate: "border-l-amber-500",
-                        biology: "border-l-emerald-500",
-                        culture: "border-l-violet-500",
-                        technology: "border-l-cyan-500",
+                        climate: "border-l-sf-amber",
+                        biology: "border-l-sf-emerald",
+                        culture: "border-l-sf-violet",
+                        technology: "border-l-sf-teal",
                       };
                       const categoryLabels: Record<string, string> = {
                         climate: "Climate",
@@ -1082,7 +1082,7 @@ const HabitableZoneCalculator = () => {
                 <div className="space-y-2">
                   <Label>Star Description</Label>
                   <p className="text-xs text-t4">How does this star appear from the planet's surface?</p>
-                  <Suspense fallback={<div className="h-24 bg-muted rounded animate-pulse" />}>
+                  <Suspense fallback={<div className="h-24 bg-muted rounded-none animate-pulse" />}>
                     <RichTextEditor
                       content={formState.storyNotes.starDescription}
                       onChange={(val) => updateStoryNotes("starDescription", val)}
@@ -1094,7 +1094,7 @@ const HabitableZoneCalculator = () => {
                 <div className="space-y-2">
                   <Label>Planet Setting</Label>
                   <p className="text-xs text-t4">What does daily life look like on this world?</p>
-                  <Suspense fallback={<div className="h-24 bg-muted rounded animate-pulse" />}>
+                  <Suspense fallback={<div className="h-24 bg-muted rounded-none animate-pulse" />}>
                     <RichTextEditor
                       content={formState.storyNotes.planetSetting}
                       onChange={(val) => updateStoryNotes("planetSetting", val)}
@@ -1106,7 +1106,7 @@ const HabitableZoneCalculator = () => {
                 <div className="space-y-2">
                   <Label>Habitability Narrative</Label>
                   <p className="text-xs text-t4">How does the HZ position shape survival?</p>
-                  <Suspense fallback={<div className="h-24 bg-muted rounded animate-pulse" />}>
+                  <Suspense fallback={<div className="h-24 bg-muted rounded-none animate-pulse" />}>
                     <RichTextEditor
                       content={formState.storyNotes.habitabilityNarrative}
                       onChange={(val) => updateStoryNotes("habitabilityNarrative", val)}
@@ -1118,7 +1118,7 @@ const HabitableZoneCalculator = () => {
                 <div className="space-y-2">
                   <Label>Worldbuilding Notes</Label>
                   <p className="text-xs text-t4">Additional notes for your universe</p>
-                  <Suspense fallback={<div className="h-24 bg-muted rounded animate-pulse" />}>
+                  <Suspense fallback={<div className="h-24 bg-muted rounded-none animate-pulse" />}>
                     <RichTextEditor
                       content={formState.storyNotes.worldbuildingNotes}
                       onChange={(val) => updateStoryNotes("worldbuildingNotes", val)}

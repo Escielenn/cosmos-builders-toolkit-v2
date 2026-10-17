@@ -474,7 +474,7 @@ const OneBigLie = () => {
           <h2 className="font-heading text-xl font-light uppercase tracking-[2px] mb-4 gradient-text">
             The One Big Lie Framework
           </h2>
-          <blockquote className="border-l-2 border-primary pl-4 italic text-lg mb-4">
+          <blockquote className="border-l-2 border-sf-primary pl-4 italic text-lg mb-4">
             "Pick ONE counterfactual element. Make it plausible-ish. Then follow
             ALL other science rigorously."
           </blockquote>
@@ -544,7 +544,7 @@ const OneBigLie = () => {
                   href={resource.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-xs px-3 py-1.5 rounded-sm bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+                  className="inline-flex items-center gap-1 text-xs px-3 py-1.5 rounded-none bg-sf-primary/10 text-sf-primary-text hover:bg-sf-primary/20 transition-colors"
                 >
                   {resource.name}
                   <ExternalLink className="w-3 h-3" />
@@ -1171,7 +1171,7 @@ const OneBigLie = () => {
                   }
                   placeholder="I declare that in my world..."
                   minHeight="200px"
-                  className="bg-background/50 border-primary"
+                  className="bg-background/50 border-sf-primary"
                 />
               </Suspense>
             </div>

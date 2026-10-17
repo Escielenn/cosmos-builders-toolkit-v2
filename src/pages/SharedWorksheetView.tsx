@@ -11,8 +11,10 @@ import { useSharedWorksheet } from "@/hooks/use-sharing";
 import { getToolDisplayName } from "@/lib/tools-config";
 import { PageBursts } from "@/components/ui/data-burst";
 import { SHARED_WORKSHEET_BURSTS } from "@/lib/data-bursts";
+import { useMetaTags } from "@/hooks/use-meta-tags";
 
 const SharedWorksheetView = () => {
+  useMetaTags({ title: "Shared Worksheet" });
   const { token } = useParams<{ token: string }>();
   const { data, isLoading, error } = useSharedWorksheet(token);
 
@@ -46,7 +48,7 @@ const SharedWorksheetView = () => {
           <div className="space-y-6">
             {/* Header */}
             <div className="space-y-3">
-              <Badge className="bg-primary/10 text-primary">
+              <Badge className="bg-primary/10 text-sf-primary-text">
                 {getToolDisplayName(data.tool_type)}
               </Badge>
 
@@ -61,11 +63,11 @@ const SharedWorksheetView = () => {
                       <img
                         src={data.owner_avatar_url}
                         alt=""
-                        className="w-5 h-5 rounded-sm"
+                        className="w-5 h-5 rounded-none"
                       />
                     ) : (
-                      <div className="w-5 h-5 rounded-sm bg-primary/20 flex items-center justify-center">
-                        <span className="text-[12px] font-medium text-primary">
+                      <div className="w-5 h-5 rounded-none bg-primary/20 flex items-center justify-center">
+                        <span className="text-[12px] font-medium text-sf-primary-text">
                           {data.owner_display_name.charAt(0).toUpperCase()}
                         </span>
                       </div>

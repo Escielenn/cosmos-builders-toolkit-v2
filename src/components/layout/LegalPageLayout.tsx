@@ -1,6 +1,5 @@
 import { ReactNode } from "react";
-import { Link } from "react-router-dom";
-import { ArrowLeft, Calendar } from "lucide-react";
+import { Calendar } from "lucide-react";
 import ReactMarkdown, { Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
 import Header from "@/components/layout/Header";
@@ -10,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { PageBursts } from "@/components/ui/data-burst";
 import type { DataBurstConfig } from "@/lib/data-bursts";
 
+import { BackLink } from "@/components/ui/back-link";
 interface LegalPageLayoutProps {
   title: string;
   subtitle?: string;
@@ -35,7 +35,7 @@ const markdownComponents: Components = {
     </h3>
   ),
   h4: ({ children }) => (
-    <h4 className="font-heading text-base font-medium uppercase tracking-[0.1em] text-t2 mt-6 mb-3">
+    <h4 className="font-heading text-base font-medium uppercase tracking-wide text-t2 mt-6 mb-3">
       {children}
     </h4>
   ),
@@ -97,28 +97,22 @@ const LegalPageLayout = ({
       <main className="relative container mx-auto px-4 pt-24 pb-16 max-w-4xl">
         {bursts && <PageBursts bursts={bursts} />}
         {/* Back Link */}
-        <Link
-          to="/"
-          className="inline-flex items-center gap-2 font-heading text-[12px] uppercase tracking-[0.2em] font-medium text-t3 hover:text-sf-primary-bright transition-colors duration-base mb-6"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          ← RETURN TO BRIDGE
-        </Link>
+        <BackLink to="/" label="RETURN TO BRIDGE" className="mb-6" />
 
         {/* Header */}
         <header className="mb-8">
-          <p className="font-mono text-[12px] tracking-[0.18em] text-sf-primary-text uppercase mb-4 flex items-center gap-2">
+          <p className="font-mono text-[12px] tracking-wide text-sf-primary-text uppercase mb-4 flex items-center gap-2">
             <span>//</span>
             {badgeIcon}
             {badgeText}
           </p>
-          <h1 className="font-display text-3xl md:text-4xl font-light tracking-sf-title mb-4 text-t1 uppercase">
+          <h1 className="font-display text-3xl md:text-4xl font-light tracking-title mb-4 text-t1 uppercase">
             {title}
           </h1>
           {subtitle && (
             <p className="text-lg text-t2 mb-4">{subtitle}</p>
           )}
-          <div className="flex items-center gap-2 font-mono text-[12px] tracking-[0.18em] uppercase text-t4">
+          <div className="flex items-center gap-2 font-mono text-[12px] tracking-wide uppercase text-t4">
             <Calendar className="w-3 h-3" />
             LAST UPDATED · {lastUpdated}
           </div>
