@@ -48,7 +48,14 @@ function CascadeLayerBadge({
   isLast: boolean;
 }) {
   const color = LAYER_COLORS[layer.layer] ?? "#15C17B";
-  const opacity = layer.status === "empty" ? 0.15 : layer.status === "partial" ? 0.5 : 1;
+  // State by fill, not opacity: empty = outline only, partial = edge + tint,
+  // complete = solid. (Alpha is allowed on fills, never as the state itself.)
+  const segmentStyle: React.CSSProperties =
+    layer.status === "empty"
+      ? {}
+      : layer.status === "partial"
+        ? { borderColor: color, backgroundColor: `${color}40` }
+        : { borderColor: color, backgroundColor: color };
 
   return (
     <div className="flex items-center gap-1">
@@ -57,8 +64,8 @@ function CascadeLayerBadge({
         title={`${layer.label}: ${layer.worksheetCount} worksheet${layer.worksheetCount !== 1 ? "s" : ""}`}
       >
         <div
-          className="h-1.5 w-6 rounded-full transition-opacity"
-          style={{ backgroundColor: color, opacity }}
+          className="h-1.5 w-6 rounded-none border border-sf-disabled-line transition-colors duration-base"
+          style={segmentStyle}
         />
         <span
           className="absolute -top-5 left-1/2 -translate-x-1/2 font-mono text-[12px] uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none"
@@ -68,7 +75,7 @@ function CascadeLayerBadge({
         </span>
       </div>
       {!isLast && (
-        <div className="w-1 h-px bg-white/10" />
+        <div className="w-1 h-px bg-sf-line-hairline" />
       )}
     </div>
   );

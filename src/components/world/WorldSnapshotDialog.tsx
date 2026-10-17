@@ -127,7 +127,7 @@ const WorldSnapshotDialog = ({
                   : "border-sf-line-interactive hover:border-sf-line-interactive hover:bg-accent/5"
               }`}
             >
-              <Icon className={`w-5 h-5 mt-0.5 flex-shrink-0 ${action === id ? "text-primary" : "text-t3"}`} />
+              <Icon className={`w-5 h-5 mt-0.5 flex-shrink-0 ${action === id ? "text-sf-primary-text" : "text-t3"}`} />
               <div className="flex-1 min-w-0">
                 <span className={`text-sm font-medium ${action === id ? "text-t1" : "text-t2"}`}>
                   {label}

@@ -36,6 +36,7 @@ import {
 } from "@/hooks/use-collaborators";
 import { Link } from "react-router-dom";
 import { formatDistanceToNow } from "date-fns";
+import { ProBadge } from "@/components/ui/pro-badge";
 
 interface CollaboratorSectionProps {
   worldId: string;
@@ -60,9 +61,9 @@ const CollaboratorSection = ({ worldId, worldName }: CollaboratorSectionProps) =
     return (
       <div className="border-t border-sf-line pt-4">
         <div className="flex items-center gap-2 mb-3">
-          <Users className="w-4 h-4 text-primary" />
+          <Users className="w-4 h-4 text-sf-primary-text" />
           <Label className="font-medium">Invite Collaborators</Label>
-          <Badge className="bg-primary/10 text-primary text-xs">Pro</Badge>
+          <ProBadge />
         </div>
         <p className="text-sm text-t2 mb-3">
           Invite others to view or edit your worlds with collaborator invites.
@@ -90,7 +91,7 @@ const CollaboratorSection = ({ worldId, worldName }: CollaboratorSectionProps) =
   return (
     <div className="border-t border-sf-line pt-4 space-y-4">
       <div className="flex items-center gap-2">
-        <Users className="w-4 h-4 text-primary" />
+        <Users className="w-4 h-4 text-sf-primary-text" />
         <Label className="font-medium">Collaborators</Label>
       </div>
 
@@ -152,7 +153,7 @@ const CollaboratorSection = ({ worldId, worldName }: CollaboratorSectionProps) =
                 />
               ) : (
                 <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
-                  <span className="text-[12px] font-medium text-primary">
+                  <span className="text-[12px] font-medium text-sf-primary-text">
                     {(collab.display_name || "?").charAt(0).toUpperCase()}
                   </span>
                 </div>

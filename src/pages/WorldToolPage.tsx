@@ -2,6 +2,8 @@ import { lazy, Suspense } from "react";
 import { useParams, useSearchParams, Navigate } from "react-router-dom";
 import { Loader } from "@/components/ui/loader";
 import { useWorldLayoutContext } from "@/contexts/WorldLayoutContext";
+import { useMetaTags } from "@/hooks/use-meta-tags";
+import { getToolDisplayName } from "@/lib/tools-config";
 
 // Lazy-loaded tool components (same as App.tsx)
 const EnvironmentalChainReaction = lazy(() => import("./tools/EnvironmentalChainReaction"));
@@ -60,6 +62,7 @@ const WorldToolPage = () => {
   const { toolName } = useParams<{ toolName: string }>();
   const context = useWorldLayoutContext();
   const [searchParams] = useSearchParams();
+  useMetaTags({ title: toolName && TOOL_COMPONENTS[toolName] ? getToolDisplayName(toolName) : "Instrument" });
 
   if (!toolName || !TOOL_COMPONENTS[toolName]) {
     return <Navigate to={context ? `/worlds/${context.worldId}` : "/"} replace />;

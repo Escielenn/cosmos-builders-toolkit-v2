@@ -89,7 +89,7 @@ export default function WorksheetLauncherGrid({
 
   return (
     <div className="space-y-3">
-      <h3 className="font-heading text-xs font-light uppercase tracking-[3px] text-sf-emerald">
+      <h3 className="font-heading text-xs font-light uppercase tracking-wide text-sf-emerald">
         Worksheets
       </h3>
 
@@ -110,10 +110,10 @@ export default function WorksheetLauncherGrid({
               <GlassPanel className="p-3 hover:bg-accent/50 transition-colors cursor-pointer group h-full">
                 <div className="flex items-start gap-3">
                   {SvgIcon ? (
-                    <SvgIcon className="w-8 h-8 rounded-sm shrink-0" />
+                    <SvgIcon className="w-8 h-8 rounded-none shrink-0" />
                   ) : (
-                    <div className="w-8 h-8 rounded-sm bg-primary/10 flex items-center justify-center shrink-0">
-                      <FileSpreadsheet className="w-4 h-4 text-primary" />
+                    <div className="w-8 h-8 rounded-none bg-primary/10 flex items-center justify-center shrink-0">
+                      <FileSpreadsheet className="w-4 h-4 text-sf-primary-text" />
                     </div>
                   )}
                   <div className="flex-1 min-w-0">
@@ -122,8 +122,8 @@ export default function WorksheetLauncherGrid({
                     </span>
                     {linked ? (
                       <div className="flex items-center gap-1 mt-0.5">
-                        <ExternalLink className="w-2.5 h-2.5 text-primary" />
-                        <span className="text-[12px] text-primary truncate">
+                        <ExternalLink className="w-2.5 h-2.5 text-sf-primary-text" />
+                        <span className="text-[12px] text-sf-primary-text truncate">
                           {linked.worksheetTitle || "Open Worksheet"}
                         </span>
                       </div>

@@ -72,7 +72,7 @@ const SharedWorldCard = ({
         )}
         {/* Icon overlay */}
         <div className="absolute -bottom-5 left-4 w-10 h-10 rounded-none bg-gradient-to-br from-primary/20 to-accent/20 border-2 border-background flex items-center justify-center shadow-lg z-10 overflow-hidden">
-          <WorldIconRenderer iconId={icon} className="w-7 h-7 text-primary" />
+          <WorldIconRenderer iconId={icon} className="w-7 h-7 text-sf-primary-text" />
         </div>
         {/* Role badge */}
         <Badge
@@ -88,7 +88,7 @@ const SharedWorldCard = ({
       <div className="p-5 pt-8 flex flex-col flex-1">
         <div className="flex items-start justify-between mb-2">
           <Link to={`/worlds/${id}`} className="flex-1">
-            <h3 className="font-heading font-medium text-lg hover:text-primary transition-colors">
+            <h3 className="font-heading font-medium text-lg hover:text-sf-primary-text transition-colors">
               {name}
             </h3>
           </Link>

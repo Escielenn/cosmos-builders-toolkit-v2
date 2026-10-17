@@ -60,7 +60,7 @@ export function PromptBrowser({ onStartWriting }: PromptBrowserProps) {
                         {DIFFICULTY_LABELS[p.difficulty]}
                       </Badge>
                     </div>
-                    <h4 className="font-heading text-xs font-light uppercase tracking-[1.5px] text-t1 mb-1.5">
+                    <h4 className="font-heading text-xs font-light uppercase tracking-wide text-t1 mb-1.5">
                       {p.title}
                     </h4>
                     <p className="text-xs text-t3 italic leading-relaxed line-clamp-2 mb-auto">

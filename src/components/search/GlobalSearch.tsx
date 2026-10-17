@@ -147,7 +147,7 @@ const GlobalSearch = ({ open, onOpenChange }: GlobalSearchProps) => {
                 value={`world-${world.name}`}
                 onSelect={() => handleSelect("world", world.id)}
               >
-                <Globe className="mr-2 h-4 w-4 text-primary" />
+                <Globe className="mr-2 h-4 w-4 text-sf-primary-text" />
                 <span>{world.name}</span>
               </CommandItem>
             ))}
@@ -170,7 +170,7 @@ const GlobalSearch = ({ open, onOpenChange }: GlobalSearchProps) => {
                   }
                   className="flex items-center"
                 >
-                  <Icon className="mr-2 h-4 w-4 shrink-0 text-primary" />
+                  <Icon className="mr-2 h-4 w-4 shrink-0 text-sf-primary-text" />
                   <span className="truncate">{getWorksheetDisplayName(worksheet)}</span>
                   <span className="ml-2 shrink-0 text-xs text-t3">
                     {getToolDisplayName(worksheet.tool_type)}
@@ -193,7 +193,7 @@ const GlobalSearch = ({ open, onOpenChange }: GlobalSearchProps) => {
                 value={`tool-${getToolDisplayName(toolType)}`}
                 onSelect={() => handleSelect("tool", toolType)}
               >
-                <Icon className="mr-2 h-4 w-4 text-primary" />
+                <Icon className="mr-2 h-4 w-4 text-sf-primary-text" />
                 <span>{getToolDisplayName(toolType)}</span>
               </CommandItem>
             );

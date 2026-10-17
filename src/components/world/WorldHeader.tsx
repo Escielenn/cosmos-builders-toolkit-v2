@@ -28,6 +28,21 @@ const WorldHeader = ({
   onAddTag,
   canEdit = false,
 }: WorldHeaderProps) => {
+  // The banner is the edit target. Give it keyboard reach, not just a click.
+  const bannerA11y = onEditClick
+    ? {
+        role: "button" as const,
+        tabIndex: 0,
+        "aria-label": headerImageUrl ? "Change header image" : "Add header image",
+        onKeyDown: (e: React.KeyboardEvent<HTMLDivElement>) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            onEditClick();
+          }
+        },
+      }
+    : {};
+
   return (
     <GlassPanel>
       {/* Header Banner */}
@@ -35,6 +50,7 @@ const WorldHeader = ({
         <div
           className="relative w-full h-32 md:h-48 cursor-pointer group"
           onClick={onEditClick}
+          {...bannerA11y}
         >
           <div className="absolute inset-0 overflow-hidden rounded-t-none">
             <img
@@ -46,8 +62,8 @@ const WorldHeader = ({
           </div>
           <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/30 to-transparent rounded-t-none" />
           {onEditClick && (
-            <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-t-none">
-              <span className="text-white text-sm font-medium">Click to change</span>
+            <div className="absolute inset-0 bg-[var(--sf-scrim)] opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity duration-base flex items-center justify-center rounded-t-none">
+              <span className="font-heading text-sf-eyebrow uppercase text-t1">CHANGE HEADER IMAGE</span>
             </div>
           )}
         </div>
@@ -55,12 +71,13 @@ const WorldHeader = ({
         <div
           className="relative w-full h-24 md:h-32 bg-gradient-to-br from-primary/20 via-accent/10 to-primary/5 cursor-pointer group rounded-t-none"
           onClick={onEditClick}
+          {...bannerA11y}
         >
           <div className="absolute inset-0 bg-gradient-to-t from-background/70 to-transparent" />
           {onEditClick && (
-            <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-              <ImageIcon className="w-5 h-5 text-white" />
-              <span className="text-white text-sm font-medium">Add header image</span>
+            <div className="absolute inset-0 bg-[var(--sf-scrim)] opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity duration-base flex items-center justify-center gap-2">
+              <ImageIcon className="w-5 h-5 text-t1" aria-hidden="true" />
+              <span className="font-heading text-sf-eyebrow uppercase text-t1">ADD HEADER IMAGE</span>
             </div>
           )}
         </div>
@@ -74,14 +91,14 @@ const WorldHeader = ({
             className="w-16 h-16 rounded-none bg-gradient-to-br from-primary/20 to-accent/20 border-4 border-background flex items-center justify-center shadow-lg cursor-pointer hover:scale-105 transition-transform overflow-hidden"
             onClick={onEditClick}
           >
-            <WorldIconRenderer iconId={icon} className="w-10 h-10 text-primary" />
+            <WorldIconRenderer iconId={icon} className="w-10 h-10 text-sf-primary-text" />
           </div>
         </div>
 
         {/* Name, description, and tags */}
         <div className="pt-10 flex flex-col md:flex-row md:items-start md:justify-between gap-4">
           <div className="min-w-0 flex-1">
-            <h1 className="font-heading text-2xl md:text-3xl font-light tracking-[0.12em]">{name}</h1>
+            <h1 className="font-heading text-2xl md:text-3xl font-light tracking-wide text-t1">{name}</h1>
             {description && (
               <p className="text-t2 mt-2 max-w-2xl">{description}</p>
             )}

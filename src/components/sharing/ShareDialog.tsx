@@ -206,7 +206,7 @@ const ShareDialog = ({
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Link2 className="w-4 h-4 text-primary" />
+                <Link2 className="w-4 h-4 text-sf-primary-text" />
                 <Label htmlFor="link-sharing" className="font-medium">
                   Link Sharing
                 </Label>
@@ -240,7 +240,7 @@ const ShareDialog = ({
                     aria-label={copied ? "Link copied" : "Copy share link"}
                   >
                     {copied ? (
-                      <Check className="w-4 h-4 text-green-500" />
+                      <Check className="w-4 h-4 text-sf-emerald" aria-hidden="true" />
                     ) : (
                       <Copy className="w-4 h-4" />
                     )}
@@ -300,7 +300,7 @@ const ShareDialog = ({
               {/* Visibility */}
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
-                  <Globe className="w-4 h-4 text-primary" />
+                  <Globe className="w-4 h-4 text-sf-primary-text" />
                   <Label className="font-medium">Visibility</Label>
                 </div>
                 <RadioGroup
@@ -314,7 +314,7 @@ const ShareDialog = ({
                   {VISIBILITY_OPTIONS.map((opt) => (
                     <label
                       key={opt.value}
-                      className="flex items-center gap-3 cursor-pointer p-2 rounded-xs hover:bg-white/[0.02] transition-colors"
+                      className="flex items-center gap-3 cursor-pointer p-2 rounded-none hover:bg-sf-surface-elevated transition-colors"
                     >
                       <RadioGroupItem value={opt.value} />
                       <div>

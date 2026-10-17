@@ -86,7 +86,7 @@ export function WorldSpaceNav({ worldId }: WorldSpaceNavProps) {
             to={`/worlds/${worldId}${to}`}
             end={to === ""}
             aria-current={active ? "page" : undefined}
-            className={`flex min-h-hit flex-1 items-center justify-center gap-1.5 border-b-2 px-3 font-heading text-[12px] uppercase tracking-[0.2em] transition-colors ${
+            className={`flex min-h-hit flex-1 items-center justify-center gap-1.5 border-b-2 px-3 font-heading text-[12px] uppercase tracking-wide transition-colors ${
               active
                 ? "border-sf-primary bg-sf-primary/[0.06] text-sf-primary-text"
                 : "border-transparent text-t3 hover:text-t1"

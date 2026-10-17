@@ -52,7 +52,7 @@ import {
   usePurgeDocument, purgeExpiredTrash, useUpdateDocumentMeta, useMoveDocument,
   useRenameFolder, useDeleteFolder,
 } from "@/hooks/use-writing-documents";
-import { Trash2, RotateCcw, X, FolderInput, MoreVertical, Plus } from "lucide-react";
+import { Trash2, RotateCcw, X, FolderInput, MoreVertical, Plus, ArrowLeft } from "lucide-react";
 import { useWriteDoc, useLatestDoc, rollWordSession, countWords } from "@/hooks/use-write-doc";
 import { useSessionWords } from "@/hooks/use-session-words";
 import { useWritingPreferences, type WritingFont } from "@/hooks/use-writing-preferences";
@@ -60,6 +60,7 @@ import { useWritingPins } from "@/hooks/use-writing-pins";
 import { readDocMeta } from "@/lib/document-meta";
 import type { Entity } from "@/services/entity-graph-types";
 import type { WorldEntry } from "@/services/world-data";
+import { useMetaTags } from "@/hooks/use-meta-tags";
 
 // insert helpers (proven pattern from the mature editor)
 function insertIntoEditor(text: string) {
@@ -160,11 +161,8 @@ export default function Write(): JSX.Element {
     }
   }, [doc?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  useEffect(() => {
-    const prev = document.title;
-    document.title = doc?.title ? `${doc.title} · Studio` : "Write · Studio";
-    return () => { document.title = prev; };
-  }, [doc?.title]);
+  // Live title: follows the open document. Renders "<doc> | StellarForge".
+  useMetaTags({ title: doc?.title || "Write" });
 
   // "Saved · Ns ago" was computed during render with nothing scheduling a
   // re-render, so it froze at the first value and still read "1s ago" an hour
@@ -394,13 +392,13 @@ export default function Write(): JSX.Element {
                   onBlur={() => commitRename("folder")}
                   onKeyDown={renameKeyDown("folder")}
                   aria-label="Chapter name"
-                  className="min-w-0 flex-1 bg-transparent px-3 py-1 font-heading text-[12px] uppercase tracking-[1.5px] text-t1"
+                  className="min-w-0 flex-1 bg-transparent px-3 py-1 font-heading text-[12px] uppercase tracking-wide text-t1"
                 />
               ) : (
                 <button
                   onDoubleClick={() => beginRename(folder.id, folder.title)}
                   title="Double-click to rename"
-                  className="min-w-0 flex-1 truncate px-3 py-1 text-left font-heading text-[12px] uppercase tracking-[1.5px] text-t3 hover:text-t1"
+                  className="min-w-0 flex-1 truncate px-3 py-1 text-left font-heading text-[12px] uppercase tracking-wide text-t3 hover:text-t1"
                 >
                   {folder.title}
                 </button>
@@ -411,7 +409,7 @@ export default function Write(): JSX.Element {
                     onClick={(e) => e.stopPropagation()}
                     aria-label={`Chapter options for ${folder.title}`}
                     title="Chapter options"
-                    className="shrink-0 p-1.5 text-t4 opacity-0 transition-opacity hover:text-sf-primary-text focus-visible:opacity-100 group-hover:opacity-100"
+                    className="transition-colors duration-base shrink-0 p-1.5 text-t4 hover:text-sf-primary-text"
                   >
                     <MoreVertical className="h-3.5 w-3.5" />
                   </button>
@@ -497,7 +495,7 @@ export default function Write(): JSX.Element {
           <div className="mt-3 border-t border-sf-line-interactive pt-2">
             <button
               onClick={() => setTrashOpen((o) => !o)}
-              className="flex w-full items-center gap-2 px-3 py-1.5 text-left font-heading text-[12px] uppercase tracking-[1.5px] text-t4 hover:text-t2"
+              className="flex w-full items-center gap-2 px-3 py-1.5 text-left font-heading text-[12px] uppercase tracking-wide text-t4 hover:text-t2"
               aria-expanded={trashOpen}
             >
               <Trash2 className="h-3 w-3" /> Trash ({trashed!.length})
@@ -510,7 +508,7 @@ export default function Write(): JSX.Element {
                   <div key={d.id} className="group flex items-center gap-1 pr-1">
                     <span className="min-w-0 flex-1 truncate py-1.5 pl-3 font-serif text-[13px] text-t4 line-through">{d.title || "Untitled"}</span>
                     <button onClick={() => restoreDoc.mutate(d.id)} aria-label={`Restore ${d.title || "Untitled"}`} title="Restore"
-                      className="shrink-0 p-1.5 text-t4 opacity-0 transition-opacity hover:text-sf-primary-text focus-visible:opacity-100 group-hover:opacity-100">
+                      className="transition-colors duration-base shrink-0 p-1.5 text-t4 hover:text-sf-primary-text">
                       <RotateCcw className="h-3.5 w-3.5" />
                     </button>
                     <button
@@ -520,7 +518,7 @@ export default function Write(): JSX.Element {
                         }
                       }}
                       aria-label={`Delete ${d.title || "Untitled"} permanently`} title="Delete forever"
-                      className="shrink-0 p-1.5 text-t4 opacity-0 transition-opacity hover:text-sf-crimson-text focus-visible:opacity-100 group-hover:opacity-100">
+                      className="transition-colors duration-base shrink-0 p-1.5 text-t4 hover:text-sf-crimson-text">
                       <X className="h-3.5 w-3.5" />
                     </button>
                   </div>
@@ -600,10 +598,11 @@ export default function Write(): JSX.Element {
         {/* explicit way back to the Studio overview */}
         <Link
           to="/studio"
-          className="flex items-center gap-1.5 border border-sf-line-interactive px-2.5 py-1 text-[13px] text-t3 transition-colors hover:border-sf-primary hover:text-t1"
-          title="Back to Studio"
+          className="flex min-h-hit items-center gap-1.5 border border-sf-line-interactive px-2.5 py-1 font-heading text-sf-eyebrow uppercase text-t3 transition-colors duration-base hover:border-sf-primary hover:text-t1"
+          title="Return to Studio"
+          aria-label="Return to Studio"
         >
-          <span aria-hidden="true">←</span> Studio
+          <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" /> Studio
         </Link>
         <Wordmark size="sm" suffix="Studio" to="/studio" className="hidden sm:inline-flex" />
         <div className="hidden min-w-0 items-baseline gap-2 text-[13px] text-t4 md:flex">
@@ -617,7 +616,7 @@ export default function Write(): JSX.Element {
           <span className="truncate font-serif italic text-t2">{doc?.title || "Untitled"}</span>
         </div>
         <div className="ml-auto flex items-center gap-2">
-          <span className="hidden font-mono text-[12px] tracking-[1px] text-t4 sm:block">● {words.toLocaleString()} words</span>
+          <span className="hidden font-mono text-[12px] tracking-wider text-t4 sm:block">● {words.toLocaleString()} words</span>
           {/* mobile panel toggles — binder + inspector are sheets below lg */}
           {!focus && (
             <>
@@ -779,7 +778,7 @@ export default function Write(): JSX.Element {
         {/* Progress toward today's goal, not an astronomical date. The editor
             already wrote session words to writing_sessions and never read them
             back, so the writer's own number was invisible while writing. */}
-        <div className="flex items-center gap-3 font-mono text-[12px] tracking-[1.5px] text-t4">
+        <div className="flex items-center gap-3 font-mono text-[12px] tracking-wide text-t4">
           <span>{words.toLocaleString()} WORDS</span>
           <span aria-hidden="true">·</span>
           <span
@@ -792,7 +791,7 @@ export default function Write(): JSX.Element {
               leaving Studio for /workshop. GoalSetting is self-contained
               (own hook, own popover) so dropping it in costs nothing. */}
           <GoalSetting compact />
-          <span className="hidden h-1 w-24 bg-white/10 sm:block" aria-hidden="true">
+          <span className="hidden h-1 w-24 bg-sf-surface-elevated sm:block" aria-hidden="true">
             <span
               className={`block h-full ${goalMet ? "bg-sf-primary" : "bg-sf-primary/50"}`}
               style={{ width: `${goalPct}%` }}
@@ -837,7 +836,7 @@ function SortableDocRow({
     <div
       ref={setNodeRef}
       style={{ transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.5 : 1 }}
-      className={`group flex touch-none items-center border-l-2 pr-1 transition-colors ${active ? "border-sf-primary bg-sf-primary/[0.06]" : "border-transparent hover:bg-white/[0.02]"}`}
+      className={`group flex touch-none items-center border-l-2 pr-1 transition-colors ${active ? "border-sf-primary bg-sf-primary/[0.06]" : "border-transparent hover:bg-sf-surface-elevated"}`}
     >
       {isRenaming ? (
         <input
@@ -867,13 +866,13 @@ function SortableDocRow({
               onClick={(e) => e.stopPropagation()}
               aria-label={`File ${d.title || "Untitled"} into a chapter`}
               title="File into a chapter"
-              className="shrink-0 p-1.5 text-t4 opacity-0 transition-opacity hover:text-sf-primary-text focus-visible:opacity-100 group-hover:opacity-100"
+              className="transition-colors duration-base shrink-0 p-1.5 text-t4 hover:text-sf-primary-text"
             >
               <FolderInput className="h-3.5 w-3.5" />
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-52">
-            <DropdownMenuLabel className="text-[12px] uppercase tracking-[1.5px] text-t3">
+            <DropdownMenuLabel className="text-[12px] uppercase tracking-wide text-t3">
               File into
             </DropdownMenuLabel>
             {chapters.map((c) => (
@@ -900,7 +899,7 @@ function SortableDocRow({
         onClick={(e) => { e.stopPropagation(); onTrash(); }}
         aria-label={`Move ${d.title || "Untitled"} to trash`}
         title="Move to trash"
-        className="shrink-0 p-1.5 text-t4 opacity-0 transition-opacity hover:text-sf-crimson-text focus-visible:opacity-100 group-hover:opacity-100"
+        className="transition-colors duration-base shrink-0 p-1.5 text-t4 hover:text-sf-crimson-text"
       >
         <Trash2 className="h-3.5 w-3.5" />
       </button>

@@ -68,10 +68,10 @@ const FABStack = () => {
       >
         {/* Expanded menu items */}
         <div
-          className={`flex flex-col gap-1.5 mb-2 transition-all duration-200 ${
+          className={`flex flex-col gap-1.5 mb-2 transition-all duration-base ease-sf-out ${
             helpOpen
-              ? "opacity-100 translate-y-0 pointer-events-auto"
-              : "opacity-0 translate-y-2 pointer-events-none"
+              ? "visible opacity-100 translate-y-0 pointer-events-auto"
+              : "invisible opacity-0 translate-y-2 pointer-events-none"
           }`}
         >
           {showGuide && (

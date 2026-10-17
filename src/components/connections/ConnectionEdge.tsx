@@ -68,7 +68,7 @@ const ConnectionEdge = ({
         strokeWidth={highlighted ? 3 : 2}
         strokeLinecap="round"
         strokeDasharray={historical ? "6 5" : undefined}
-        className="transition-all duration-200"
+        className="transition-all duration-base"
       />
 
       <circle
@@ -76,7 +76,7 @@ const ConnectionEdge = ({
         cy={headY}
         r={highlighted ? 4 : 3}
         fill={color}
-        className="transition-all duration-200"
+        className="transition-all duration-base"
       />
       {bidirectional && (
         <circle

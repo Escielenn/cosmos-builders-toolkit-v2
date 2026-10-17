@@ -33,7 +33,7 @@ const ExportSettings = () => {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-2 mb-2">
-        <Download className="w-5 h-5 text-primary" />
+        <Download className="w-5 h-5 text-sf-primary-text" />
         <h3 className="font-heading text-lg font-medium">Export Settings</h3>
         {isUpdating && <Loader variant="inline" size="sm" />}
       </div>
@@ -86,7 +86,7 @@ const ExportSettings = () => {
                   {theme.swatch.map((color, i) => (
                     <div
                       key={i}
-                      className="w-4 h-4 rounded-sm border border-sf-line"
+                      className="w-4 h-4 rounded-none border border-sf-line"
                       style={{ backgroundColor: color }}
                     />
                   ))}
@@ -100,7 +100,7 @@ const ExportSettings = () => {
                   </p>
                 </div>
                 {isSelected && (
-                  <Check className="w-4 h-4 text-primary absolute top-2 right-2" />
+                  <Check className="w-4 h-4 text-sf-primary-text absolute top-2 right-2" />
                 )}
               </button>
             );

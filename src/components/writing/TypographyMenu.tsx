@@ -44,7 +44,7 @@ interface TypographyMenuProps {
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="px-3 py-2">
-      <span className="mb-1.5 block font-heading text-[12px] uppercase tracking-[1.5px] text-t4">
+      <span className="mb-1.5 block font-heading text-[12px] uppercase tracking-wide text-t4">
         {label}
       </span>
       {children}

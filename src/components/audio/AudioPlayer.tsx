@@ -100,23 +100,23 @@ function MinimizedBar({
   return (
     <div className="fixed bottom-6 inset-x-0 z-[8999] bg-sf-surface/95 backdrop-blur-xl border-t border-sf-line-hairline">
       {/* Thin progress line at very top */}
-      <div className="h-[2px] bg-white/5">
+      <div className="h-[2px] bg-sf-surface-elevated">
         <div
-          className="h-full bg-primary/60 transition-[width] duration-200"
+          className="h-full bg-primary/60 transition-[width] duration-base"
           style={{ width: `${pct}%` }}
         />
       </div>
 
       <div className="flex items-center gap-3 px-4 h-10">
         {isError ? (
-          <AlertTriangle className="w-3.5 h-3.5 text-sf-amber/70 shrink-0" />
+          <AlertTriangle className="w-3.5 h-3.5 text-sf-amber-text shrink-0" />
         ) : (
-          <Music className="w-3.5 h-3.5 text-primary/50 shrink-0" />
+          <Music className="w-3.5 h-3.5 text-sf-primary-text shrink-0" />
         )}
 
         <span className="text-xs text-t2 truncate flex-1">
           {isError ? (
-            <span className="text-t4">{trackTitle} <span className="text-sf-amber/60">· Unavailable</span></span>
+            <span className="text-t4">{trackTitle} <span className="text-sf-amber-text">· Unavailable</span></span>
           ) : (
             trackTitle
           )}
@@ -126,7 +126,7 @@ function MinimizedBar({
           type="button"
           onClick={onTogglePlay}
           disabled={isLoading || isError}
-          className="p-1.5 text-t2 hover:text-primary transition-colors disabled:text-sf-disabled-text"
+          className="p-1.5 text-t2 hover:text-sf-primary-text transition-colors disabled:text-sf-disabled-text"
           aria-label={isPlaying ? "Pause" : "Play"}
         >
           {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
@@ -194,7 +194,7 @@ function ExpandedBar({ state, controls, progressBarRef }: ExpandedBarProps) {
       <div
         ref={progressBarRef}
         onClick={handleProgressClick}
-        className="h-1 bg-white/5 cursor-pointer group"
+        className="h-1 bg-sf-surface-elevated cursor-pointer group"
         role="slider"
         aria-label="Track progress"
         aria-valuenow={Math.round(state.progress)}
@@ -210,7 +210,7 @@ function ExpandedBar({ state, controls, progressBarRef }: ExpandedBarProps) {
           className="h-full bg-primary/70 group-hover:bg-primary transition-colors relative"
           style={{ width: `${pct}%` }}
         >
-          <div className="absolute right-0 top-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-primary rounded-[1px] opacity-0 group-hover:opacity-100 transition-opacity" />
+          <div className="absolute right-0 top-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-primary rounded-none opacity-0 group-hover:opacity-100 transition-opacity" />
         </div>
       </div>
 
@@ -220,16 +220,16 @@ function ExpandedBar({ state, controls, progressBarRef }: ExpandedBarProps) {
           <button
             type="button"
             onClick={openAudioSelector}
-            className="p-1 text-primary/50 hover:text-primary transition-colors shrink-0"
+            className="p-1 text-sf-primary-text hover:text-sf-primary-text transition-colors shrink-0"
             aria-label="Browse tracks"
           >
             <ListMusic className="w-4 h-4" />
           </button>
           <div className="min-w-0">
             <p className="text-sm text-t2 truncate leading-tight flex items-center gap-1.5">
-              {isError && <AlertTriangle className="w-3 h-3 text-sf-amber/70 shrink-0" />}
+              {isError && <AlertTriangle className="w-3 h-3 text-sf-amber-text shrink-0" />}
               {state.currentTrack?.title ?? "No Track"}
-              {isError && <span className="text-[12px] text-sf-amber/60 shrink-0">· Unavailable</span>}
+              {isError && <span className="text-[12px] text-sf-amber-text shrink-0">· Unavailable</span>}
             </p>
             {state.currentTrack?.artist && !isError && (
               <p className="text-[12px] text-t4 truncate leading-tight">
@@ -250,7 +250,7 @@ function ExpandedBar({ state, controls, progressBarRef }: ExpandedBarProps) {
             type="button"
             onClick={controls.toggleShuffle}
             className={`p-2 transition-colors ${
-              state.shuffle ? "text-primary" : "text-t4 hover:text-t2"
+              state.shuffle ? "text-sf-primary-text" : "text-t4 hover:text-t2"
             }`}
             aria-label="Toggle shuffle"
             aria-pressed={state.shuffle}
@@ -271,7 +271,7 @@ function ExpandedBar({ state, controls, progressBarRef }: ExpandedBarProps) {
             type="button"
             onClick={controls.togglePlayPause}
             disabled={isLoading || isError}
-            className="p-2 w-10 h-10 flex items-center justify-center bg-primary/10 border border-primary text-primary hover:bg-primary/20 transition-colors disabled:text-sf-disabled-text"
+            className="p-2 w-10 h-10 flex items-center justify-center bg-primary/10 border border-primary text-sf-primary-text hover:bg-primary/20 transition-colors disabled:text-sf-disabled-text"
             aria-label={isPlaying ? "Pause" : "Play"}
           >
             {isPlaying ? (
@@ -294,7 +294,7 @@ function ExpandedBar({ state, controls, progressBarRef }: ExpandedBarProps) {
             type="button"
             onClick={cycleRepeat}
             className={`p-2 transition-colors ${
-              state.repeat !== "none" ? "text-primary" : "text-t4 hover:text-t2"
+              state.repeat !== "none" ? "text-sf-primary-text" : "text-t4 hover:text-t2"
             }`}
             aria-label={`Repeat: ${state.repeat}`}
           >

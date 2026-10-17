@@ -17,9 +17,12 @@ import HeaderImageUpload from "@/components/world/HeaderImageUpload";
 import SoundtrackPicker from "@/components/audio/SoundtrackPicker";
 import { useToast } from "@/hooks/use-toast";
 import type { WorldTheme } from "@/hooks/use-world";
+import { useUnsavedChangesGuard } from "@/hooks/use-unsaved-changes-guard";
+
+const DEFAULT_ACCENT = "#3DFFCD";
 
 const PRESET_COLORS = [
-  { name: "Cyan", hex: "#3DFFCD" },
+  { name: "Cyan", hex: DEFAULT_ACCENT },
   { name: "Magenta", hex: "#FF3D8E" },
   { name: "Amber", hex: "#FFB347" },
   { name: "Green", hex: "#4ADE80" },
@@ -46,21 +49,30 @@ export default function WorldAppearanceDialog({
   const { updateWorld } = useWorlds();
   const { toast } = useToast();
   const [upgradeOpen, setUpgradeOpen] = useState(false);
-  const [accentColor, setAccentColor] = useState("#3DFFCD");
-  const [hexInput, setHexInput] = useState("#3DFFCD");
+  const [accentColor, setAccentColor] = useState(DEFAULT_ACCENT);
+  const [hexInput, setHexInput] = useState(DEFAULT_ACCENT);
   const [coverImageUrl, setCoverImageUrl] = useState<string | null>(null);
   const [soundtrackId, setSoundtrackId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     if (open && currentTheme) {
-      const color = currentTheme.accent_color || "#3DFFCD";
+      const color = currentTheme.accent_color || DEFAULT_ACCENT;
       setAccentColor(color);
       setHexInput(color);
       setCoverImageUrl(currentTheme.cover_image_url || null);
       setSoundtrackId(currentTheme.soundtrack_playlist_id || null);
     }
   }, [open, currentTheme]);
+
+  // Unsaved = any field differs from the theme the dialog opened with.
+  const isDirty =
+    open &&
+    !saving &&
+    (accentColor !== (currentTheme?.accent_color || DEFAULT_ACCENT) ||
+      coverImageUrl !== (currentTheme?.cover_image_url || null) ||
+      soundtrackId !== (currentTheme?.soundtrack_playlist_id || null));
+  useUnsavedChangesGuard(isDirty);
 
   const handleColorChange = (hex: string) => {
     setAccentColor(hex);
@@ -84,7 +96,7 @@ export default function WorldAppearanceDialog({
     try {
       const theme: WorldTheme = {
         ...currentTheme,
-        accent_color: accentColor === "#3DFFCD" ? undefined : accentColor,
+        accent_color: accentColor === DEFAULT_ACCENT ? undefined : accentColor,
         cover_image_url: coverImageUrl || undefined,
         soundtrack_playlist_id: soundtrackId || undefined,
       };
@@ -145,7 +157,7 @@ export default function WorldAppearanceDialog({
           <div className="space-y-6 py-4">
             {/* Accent Color */}
             <div className="space-y-3">
-              <label className="font-mono text-[12px] uppercase tracking-[2px] text-t3">
+              <label className="font-mono text-[12px] uppercase tracking-wide text-t3">
                 // ACCENT COLOR
               </label>
 
@@ -159,7 +171,7 @@ export default function WorldAppearanceDialog({
                   onChange={(e) => handleHexInput(e.target.value)}
                   className="font-mono text-sm h-8 w-28"
                   maxLength={7}
-                  placeholder="#3DFFCD"
+                  placeholder={DEFAULT_ACCENT}
                 />
               </div>
 
@@ -167,14 +179,17 @@ export default function WorldAppearanceDialog({
                 {PRESET_COLORS.map((c) => (
                   <button
                     key={c.hex}
-                    className={`w-6 h-6 border cursor-pointer transition-all hover:scale-110 ${
+                    type="button"
+                    className={`w-6 h-6 border cursor-pointer transition-all duration-base hover:scale-110 ${
                       accentColor === c.hex
-                        ? "border-white border-2"
-                        : "border-sf-line"
+                        ? "border-t1 border-2 ring-2 ring-sf-line-emphasis ring-offset-1 ring-offset-sf-surface"
+                        : "border-sf-line-interactive"
                     }`}
                     style={{ backgroundColor: c.hex }}
                     onClick={() => handleColorChange(c.hex)}
                     title={c.name}
+                    aria-label={c.name}
+                    aria-pressed={accentColor === c.hex}
                   />
                 ))}
               </div>
@@ -182,7 +197,7 @@ export default function WorldAppearanceDialog({
 
             {/* Cover Image */}
             <div className="space-y-3">
-              <label className="font-mono text-[12px] uppercase tracking-[2px] text-t3">
+              <label className="font-mono text-[12px] uppercase tracking-wide text-t3">
                 // COVER IMAGE
               </label>
               <HeaderImageUpload
@@ -194,7 +209,7 @@ export default function WorldAppearanceDialog({
 
             {/* Soundtrack */}
             <div className="space-y-3">
-              <label className="font-mono text-[12px] uppercase tracking-[2px] text-t3">
+              <label className="font-mono text-[12px] uppercase tracking-wide text-t3">
                 // SOUNDTRACK
               </label>
               <SoundtrackPicker value={soundtrackId} onChange={setSoundtrackId} />
@@ -202,14 +217,14 @@ export default function WorldAppearanceDialog({
 
             {/* Preview */}
             <div className="space-y-2">
-              <label className="font-mono text-[12px] uppercase tracking-[2px] text-t3">
+              <label className="font-mono text-[12px] uppercase tracking-wide text-t3">
                 // PREVIEW
               </label>
               <div className="bg-sf-surface border border-sf-line p-4 space-y-3">
                 {/* Mock section header */}
                 <div className="flex items-center gap-2">
                   <span
-                    className="font-heading text-[12px] uppercase tracking-[3px]"
+                    className="font-heading text-[12px] uppercase tracking-wide"
                     style={{ color: accentColor, opacity: 0.6 }}
                   >
                     // ENVIRONMENT
@@ -239,7 +254,7 @@ export default function WorldAppearanceDialog({
                   style={{ borderTopColor: `${accentColor}80` }}
                 >
                   <span
-                    className="font-mono text-[12px] uppercase tracking-[3px]"
+                    className="font-mono text-[12px] uppercase tracking-wide"
                     style={{ color: accentColor, opacity: 0.5 }}
                   >
                     INFOBOX
@@ -250,7 +265,7 @@ export default function WorldAppearanceDialog({
                   <span className="font-mono text-[12px] uppercase tracking-wider text-t3">
                     SURVEY:
                   </span>
-                  <div className="flex-1 h-1 bg-white/5 relative">
+                  <div className="flex-1 h-1 bg-sf-surface-elevated relative">
                     <div
                       className="h-full"
                       style={{ backgroundColor: accentColor, width: "68%", opacity: 0.8 }}

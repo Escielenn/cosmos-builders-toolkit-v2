@@ -35,13 +35,13 @@ interface NavCategory {
 }
 
 const NAV_CATEGORIES: NavCategory[] = [
-  { id: "stars-systems", label: "Stars & Systems", icon: Star, color: "text-sf-amber" },
-  { id: "worlds", label: "Worlds", icon: Globe, color: "text-blue-400" },
-  { id: "life", label: "Life", icon: Leaf, color: "text-sf-emerald" },
-  { id: "travel", label: "Travel & Spacecraft", icon: Rocket, color: "text-orange-400" },
+  { id: "stars-systems", label: "Stars & Systems", icon: Star, color: "text-sf-amber-text" },
+  { id: "worlds", label: "Worlds", icon: Globe, color: "text-sf-azure-text" },
+  { id: "life", label: "Life", icon: Leaf, color: "text-sf-emerald-text" },
+  { id: "travel", label: "Travel & Spacecraft", icon: Rocket, color: "text-sf-amber-warm-text" },
   { id: "civilizations", label: "Civilizations", icon: Users, color: "text-sf-violet-text" },
-  { id: "mythology", label: "Mythology", icon: ScrollText, color: "text-blue-300" },
-  { id: "integration", label: "Integration", icon: Layers, color: "text-teal-400" },
+  { id: "mythology", label: "Mythology", icon: ScrollText, color: "text-sf-stellar-text" },
+  { id: "integration", label: "Integration", icon: Layers, color: "text-sf-teal-text" },
 ];
 
 /** Get tools for a nav category (splits civilizations into travel + civ) */
@@ -70,10 +70,10 @@ function shortName(toolId: string): string {
 // ─── Nav link style ───────────────────────────────────────────────────
 
 const navLinkClass =
-  "sf-nav-link text-xs font-medium uppercase tracking-[0.15em] text-t3 hover:text-primary transition-colors duration-300 leading-none h-10 flex items-center";
+  "sf-nav-link text-xs font-medium uppercase tracking-wide text-t3 hover:text-sf-primary-text transition-colors duration-base leading-none h-10 flex items-center";
 
 const triggerClass =
-  "sf-nav-link text-xs font-medium uppercase tracking-[0.15em] text-t3 hover:text-primary transition-colors duration-300 bg-transparent hover:bg-transparent focus:bg-transparent data-[state=open]:bg-transparent data-[active]:bg-transparent h-auto p-0 gap-1 rounded-none leading-none";
+  "sf-nav-link text-xs font-medium uppercase tracking-wide text-t3 hover:text-sf-primary-text transition-colors duration-base bg-transparent hover:bg-transparent focus:bg-transparent data-[state=open]:bg-transparent data-[active]:bg-transparent h-auto p-0 gap-1 rounded-none leading-none";
 
 // ─── Component ────────────────────────────────────────────────────────
 
@@ -98,7 +98,7 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
             <div className="w-[280px] p-3">
               {user && worlds.length > 0 ? (
                 <>
-                  <p className="text-[12px] font-medium uppercase tracking-[1.5px] text-t3 px-2 mb-2">
+                  <p className="text-[12px] font-medium uppercase tracking-wide text-t3 px-2 mb-2">
                     Your Worlds
                   </p>
                   <div className="max-h-[200px] overflow-y-auto sf-sb space-y-0.5">
@@ -106,9 +106,9 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
                       <NavigationMenuLink key={world.id} asChild>
                         <Link
                           to={`/worlds/${world.id}`}
-                          className="flex items-center gap-2 px-2 py-1.5 text-sm text-t2 hover:text-t1 hover:bg-white/5 rounded-sm transition-colors"
+                          className="flex items-center gap-2 px-2 py-1.5 text-sm text-t2 hover:text-t1 hover:bg-sf-surface-elevated rounded-none transition-colors"
                         >
-                          <Globe className="w-3.5 h-3.5 text-primary/60 shrink-0" />
+                          <Globe className="w-3.5 h-3.5 text-sf-primary-text shrink-0" />
                           <span className="truncate">{world.name}</span>
                         </Link>
                       </NavigationMenuLink>
@@ -128,7 +128,7 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
                     <NavigationMenuLink asChild>
                       <Link
                         to="/worlds"
-                        className="flex items-center gap-2 px-2 py-1.5 text-xs text-primary/80 hover:text-primary transition-colors"
+                        className="flex items-center gap-2 px-2 py-1.5 text-xs text-sf-primary-text hover:text-sf-primary-text transition-colors"
                       >
                         <Globe className="w-3.5 h-3.5" />
                         All Worlds
@@ -137,7 +137,7 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
                     <NavigationMenuLink asChild>
                       <button
                         onClick={() => navigate("/worlds?create=true")}
-                        className="flex items-center gap-2 px-2 py-1.5 text-xs text-primary/80 hover:text-primary transition-colors w-full text-left"
+                        className="flex items-center gap-2 px-2 py-1.5 text-xs text-sf-primary-text hover:text-sf-primary-text transition-colors w-full text-left"
                       >
                         <Plus className="w-3.5 h-3.5" />
                         Create New World
@@ -151,7 +151,7 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
                   <NavigationMenuLink asChild>
                     <button
                       onClick={() => navigate("/worlds?create=true")}
-                      className="flex items-center justify-center gap-2 px-3 py-2 text-xs text-primary hover:text-primary/80 transition-colors mx-auto"
+                      className="flex items-center justify-center gap-2 px-3 py-2 text-xs text-sf-primary-text hover:text-t1 transition-colors mx-auto"
                     >
                       <Plus className="w-3.5 h-3.5" />
                       Create Your First World
@@ -164,7 +164,7 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
                   <NavigationMenuLink asChild>
                     <Link
                       to="/auth#create-account"
-                      className="text-xs text-primary hover:text-primary/80 transition-colors"
+                      className="text-xs text-sf-primary-text hover:text-t1 transition-colors"
                     >
                       Sign Up / Log In
                     </Link>
@@ -185,9 +185,9 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
               <NavigationMenuLink asChild>
                 <button
                   onClick={() => navigate("/studio")}
-                  className="flex items-start gap-2 px-2 py-1.5 text-sm text-t2 hover:text-t1 hover:bg-white/5 rounded-sm transition-colors w-full text-left"
+                  className="flex items-start gap-2 px-2 py-1.5 text-sm text-t2 hover:text-t1 hover:bg-sf-surface-elevated rounded-none transition-colors w-full text-left"
                 >
-                  <PenLine className="w-3.5 h-3.5 text-primary/60 mt-0.5" />
+                  <PenLine className="w-3.5 h-3.5 text-sf-primary-text mt-0.5" />
                   <div>
                     <span>Studio</span>
                     <span className="block text-[12px] text-t4 font-normal normal-case tracking-normal">
@@ -199,9 +199,9 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
               <NavigationMenuLink asChild>
                 <Link
                   to="/workshop"
-                  className="flex items-start gap-2 px-2 py-1.5 text-sm text-t2 hover:text-t1 hover:bg-white/5 rounded-sm transition-colors"
+                  className="flex items-start gap-2 px-2 py-1.5 text-sm text-t2 hover:text-t1 hover:bg-sf-surface-elevated rounded-none transition-colors"
                 >
-                  <Sparkles className="w-3.5 h-3.5 text-primary/60 mt-0.5" />
+                  <Sparkles className="w-3.5 h-3.5 text-sf-primary-text mt-0.5" />
                   <div>
                     <span>Daily Prompt</span>
                     <span className="block text-[12px] text-t4 font-normal normal-case tracking-normal">
@@ -213,9 +213,9 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
               <NavigationMenuLink asChild>
                 <Link
                   to="/prompts"
-                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-t2 hover:text-t1 hover:bg-white/5 rounded-sm transition-colors"
+                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-t2 hover:text-t1 hover:bg-sf-surface-elevated rounded-none transition-colors"
                 >
-                  <BookOpen className="w-3.5 h-3.5 text-primary/60" />
+                  <BookOpen className="w-3.5 h-3.5 text-sf-primary-text" />
                   Prompt Browser
                 </Link>
               </NavigationMenuLink>
@@ -237,7 +237,7 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
                   const CatIcon = cat.icon;
                   return (
                     <div key={cat.id}>
-                      <p className={cn("text-[12px] font-heading font-light uppercase tracking-[2.5px] px-1 mb-2 flex items-center gap-1.5 pb-1.5 border-b border-sf-line", cat.color)}>
+                      <p className={cn("text-[12px] font-heading font-light uppercase tracking-wide px-1 mb-2 flex items-center gap-1.5 pb-1.5 border-b border-sf-line", cat.color)}>
                         <CatIcon className="w-3 h-3" />
                         {cat.label}
                       </p>
@@ -250,7 +250,7 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
                             <NavigationMenuLink key={tool.id} asChild>
                               <Link
                                 to={route}
-                                className="flex items-center gap-2 px-1.5 py-1.5 text-[13px] text-t2 hover:text-t1 hover:bg-[rgba(21,193,123,0.06)] rounded-none transition-colors"
+                                className="flex items-center gap-2 px-1.5 py-1.5 text-[13px] text-t2 hover:text-t1 hover:bg-sf-primary/[0.06] rounded-none transition-colors"
                               >
                                 {ToolIcon ? (
                                   <ToolIcon className="w-4 h-4 shrink-0" />
@@ -271,7 +271,7 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
                 <NavigationMenuLink asChild>
                   <Link
                     to="/guide/tools"
-                    className="flex items-center gap-2 px-1 py-1.5 text-xs text-primary/80 hover:text-primary transition-colors"
+                    className="flex items-center gap-2 px-1 py-1.5 text-xs text-sf-primary-text hover:text-sf-primary-text transition-colors"
                   >
                     <Wrench className="w-3.5 h-3.5" />
                     Tool Reference
@@ -292,45 +292,45 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
               <NavigationMenuLink asChild>
                 <Link
                   to="/learn"
-                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-t2 hover:text-t1 hover:bg-white/5 rounded-sm transition-colors"
+                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-t2 hover:text-t1 hover:bg-sf-surface-elevated rounded-none transition-colors"
                 >
-                  <BookOpen className="w-3.5 h-3.5 text-primary/60" />
+                  <BookOpen className="w-3.5 h-3.5 text-sf-primary-text" />
                   SF University
                 </Link>
               </NavigationMenuLink>
               <NavigationMenuLink asChild>
                 <Link
                   to="/guide"
-                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-t2 hover:text-t1 hover:bg-white/5 rounded-sm transition-colors"
+                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-t2 hover:text-t1 hover:bg-sf-surface-elevated rounded-none transition-colors"
                 >
-                  <Compass className="w-3.5 h-3.5 text-primary/60" />
+                  <Compass className="w-3.5 h-3.5 text-sf-primary-text" />
                   Field Manual
                 </Link>
               </NavigationMenuLink>
               <NavigationMenuLink asChild>
                 <Link
                   to="/getting-started"
-                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-t2 hover:text-t1 hover:bg-white/5 rounded-sm transition-colors"
+                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-t2 hover:text-t1 hover:bg-sf-surface-elevated rounded-none transition-colors"
                 >
-                  <Sparkles className="w-3.5 h-3.5 text-primary/60" />
+                  <Sparkles className="w-3.5 h-3.5 text-sf-primary-text" />
                   Getting Started
                 </Link>
               </NavigationMenuLink>
               <NavigationMenuLink asChild>
                 <Link
                   to="/guide/tools"
-                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-t2 hover:text-t1 hover:bg-white/5 rounded-sm transition-colors"
+                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-t2 hover:text-t1 hover:bg-sf-surface-elevated rounded-none transition-colors"
                 >
-                  <Wrench className="w-3.5 h-3.5 text-primary/60" />
+                  <Wrench className="w-3.5 h-3.5 text-sf-primary-text" />
                   Tool Reference
                 </Link>
               </NavigationMenuLink>
               <NavigationMenuLink asChild>
                 <Link
                   to="/bookshelf"
-                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-t2 hover:text-t1 hover:bg-white/5 rounded-sm transition-colors"
+                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-t2 hover:text-t1 hover:bg-sf-surface-elevated rounded-none transition-colors"
                 >
-                  <BookMarked className="w-3.5 h-3.5 text-primary/60" />
+                  <BookMarked className="w-3.5 h-3.5 text-sf-primary-text" />
                   Bookshelf
                 </Link>
               </NavigationMenuLink>
@@ -348,27 +348,27 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
               <NavigationMenuLink asChild>
                 <Link
                   to="/about"
-                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-t2 hover:text-t1 hover:bg-white/5 rounded-sm transition-colors"
+                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-t2 hover:text-t1 hover:bg-sf-surface-elevated rounded-none transition-colors"
                 >
-                  <Info className="w-3.5 h-3.5 text-primary/60" />
+                  <Info className="w-3.5 h-3.5 text-sf-primary-text" />
                   About StellarForge
                 </Link>
               </NavigationMenuLink>
               <NavigationMenuLink asChild>
                 <Link
                   to="/roadmap"
-                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-t2 hover:text-t1 hover:bg-white/5 rounded-sm transition-colors"
+                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-t2 hover:text-t1 hover:bg-sf-surface-elevated rounded-none transition-colors"
                 >
-                  <Map className="w-3.5 h-3.5 text-primary/60" />
+                  <Map className="w-3.5 h-3.5 text-sf-primary-text" />
                   Roadmap
                 </Link>
               </NavigationMenuLink>
               <NavigationMenuLink asChild>
                 <Link
                   to="/contact"
-                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-t2 hover:text-t1 hover:bg-white/5 rounded-sm transition-colors"
+                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-t2 hover:text-t1 hover:bg-sf-surface-elevated rounded-none transition-colors"
                 >
-                  <Mail className="w-3.5 h-3.5 text-primary/60" />
+                  <Mail className="w-3.5 h-3.5 text-sf-primary-text" />
                   Contact
                 </Link>
               </NavigationMenuLink>

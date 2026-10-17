@@ -433,7 +433,7 @@ export function CodexAtlasView({ worldId }: CodexAtlasViewProps) {
         {atGalaxy && galaxyMode === "sky" ? (
           <>
             <div className="border border-sf-line bg-sf-surface p-3">
-              <h3 className="mb-2 flex items-center gap-1.5 font-heading text-[12px] uppercase tracking-[2px] text-t3">
+              <h3 className="mb-2 flex items-center gap-1.5 font-heading text-[12px] uppercase tracking-wide text-t3">
                 <Route className="h-3 w-3" aria-hidden />
                 Routes
               </h3>
@@ -490,7 +490,7 @@ export function CodexAtlasView({ worldId }: CodexAtlasViewProps) {
             {(territoryField.territories.length ||
               territoryField.unmappable.length) > 0 ? (
               <div className="border border-sf-line bg-sf-surface p-3">
-                <h3 className="mb-2 flex items-center gap-1.5 font-heading text-[12px] uppercase tracking-[2px] text-t3">
+                <h3 className="mb-2 flex items-center gap-1.5 font-heading text-[12px] uppercase tracking-wide text-t3">
                   <Flag className="h-3 w-3" aria-hidden />
                   Territory
                 </h3>
@@ -555,7 +555,7 @@ export function CodexAtlasView({ worldId }: CodexAtlasViewProps) {
 
             {(galaxyField?.unplaced.length || laneField.undrawable.length) ? (
               <div className="border border-sf-line bg-sf-surface p-3">
-                <h3 className="mb-2 flex items-center gap-1.5 font-heading text-[12px] uppercase tracking-[2px] text-t3">
+                <h3 className="mb-2 flex items-center gap-1.5 font-heading text-[12px] uppercase tracking-wide text-t3">
                   <Crosshair className="h-3 w-3" aria-hidden />
                   Not anchored
                 </h3>
@@ -594,7 +594,7 @@ export function CodexAtlasView({ worldId }: CodexAtlasViewProps) {
           </>
         ) : (
         <div className="border border-sf-line bg-sf-surface p-3">
-          <h3 className="mb-2 flex items-center gap-1.5 font-heading text-[12px] uppercase tracking-[2px] text-t3">
+          <h3 className="mb-2 flex items-center gap-1.5 font-heading text-[12px] uppercase tracking-wide text-t3">
             <MapPin className="h-3 w-3" aria-hidden />
             Unplaced
           </h3>

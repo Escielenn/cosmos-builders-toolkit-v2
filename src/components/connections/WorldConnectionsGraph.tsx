@@ -233,7 +233,7 @@ const WorldConnectionsGraph = ({
   if (nodes.length === 0) {
     return (
       <div className="flex h-full min-h-[320px] w-full items-center justify-center">
-        <p className="font-mono text-[12px] uppercase tracking-[1.5px] text-t3">
+        <p className="font-mono text-[12px] uppercase tracking-wide text-t3">
           {emptyMessage}
         </p>
       </div>

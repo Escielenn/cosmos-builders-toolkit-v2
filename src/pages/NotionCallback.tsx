@@ -3,8 +3,10 @@ import { useSearchParams } from "react-router-dom";
 import { CheckCircle2, XCircle } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
 import { useNotion } from "@/hooks/use-notion";
+import { useMetaTags } from "@/hooks/use-meta-tags";
 
 const NotionCallback = () => {
+  useMetaTags({ title: "Notion Link" });
   const [searchParams] = useSearchParams();
   const { handleCallback } = useNotion();
   const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
@@ -54,7 +56,7 @@ const NotionCallback = () => {
 
         {status === "success" && (
           <>
-            <CheckCircle2 className="w-12 h-12 text-green-500 mx-auto" />
+            <CheckCircle2 className="w-12 h-12 text-sf-emerald mx-auto" />
             <p className="text-lg text-t1">{message}</p>
           </>
         )}

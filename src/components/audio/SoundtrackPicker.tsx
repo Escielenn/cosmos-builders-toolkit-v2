@@ -16,7 +16,7 @@ export default function SoundtrackPicker({ value, onChange }: SoundtrackPickerPr
     <div className="space-y-2">
       {selected ? (
         <div className="flex items-center gap-2 px-3 py-2 bg-primary/[0.06] border border-primary">
-          <Music className="w-3.5 h-3.5 text-primary shrink-0" />
+          <Music className="w-3.5 h-3.5 text-sf-primary-text shrink-0" />
           <span className="text-sm text-t2 flex-1 truncate">
             {selected.name}
           </span>
@@ -66,8 +66,8 @@ function PlaylistOption({
       onClick={onSelect}
       className={`w-full text-left px-3 py-1.5 flex items-center gap-2 transition-colors ${
         isSelected
-          ? "bg-primary/[0.06] text-primary"
-          : "hover:bg-white/[0.03] text-t3"
+          ? "bg-primary/[0.06] text-sf-primary-text"
+          : "hover:bg-sf-surface-elevated text-t3"
       }`}
     >
       <Music className="w-3 h-3 shrink-0" />

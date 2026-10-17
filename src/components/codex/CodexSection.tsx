@@ -54,14 +54,14 @@ const CodexSection = ({
         className="sf-fill-sweep sf-fill-sweep--secondary w-full flex items-center gap-1.5 px-3 py-1.5 text-left"
       >
         {expanded ? (
-          <ChevronDown className="w-2.5 h-2.5 text-primary shrink-0" />
+          <ChevronDown className="w-2.5 h-2.5 text-sf-primary-text shrink-0" />
         ) : (
           <ChevronRight className="w-2.5 h-2.5 text-t3 shrink-0" />
         )}
         {/* WRITER register: a writer's binder, not an instrument readout, so
             layers read as words. LAYER_LABELS are already title case
             ("Environment") — the CSS `uppercase` was doing the shouting. */}
-        <span className="font-serif text-[15px] italic text-primary flex-1">
+        <span className="font-serif text-[15px] italic text-sf-primary-text flex-1">
           {section.label}
         </span>
         {section.elements.length > 0 && (
@@ -75,8 +75,8 @@ const CodexSection = ({
       {expanded && (
         <div>
           {sortedElements.length === 0 ? (
-            <p className="px-3 py-1.5 text-[12px] text-t4 italic">
-              No data on file. Use a tool to generate entries.
+            <p className="px-3 py-1.5 font-mono text-sf-mono uppercase text-t4">
+              NO DATA ON FILE. RUN A TOOL TO GENERATE ENTRIES.
             </p>
           ) : (
             sortedElements.map((el, idx) => (

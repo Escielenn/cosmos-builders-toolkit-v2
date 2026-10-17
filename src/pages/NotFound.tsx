@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Compass, Radio } from "lucide-react";
 import { heroReveal, staggerContainer, fadeUpItem } from "@/lib/animations";
+import { useMetaTags } from "@/hooks/use-meta-tags";
 
 // Lightweight starfield canvas
 function StarfieldCanvas() {
@@ -110,6 +111,7 @@ function SignalPulse() {
 }
 
 const NotFound = () => {
+  useMetaTags({ title: "Signal Lost" });
   const location = useLocation();
   const [showCoords, setShowCoords] = useState(false);
 
@@ -135,7 +137,7 @@ const NotFound = () => {
 
         {/* Error code */}
         <motion.div
-          className="inline-flex items-center gap-3.5 font-mono uppercase text-sf-primary-text text-[13px] tracking-[3px] mb-7 justify-center"
+          className="inline-flex items-center gap-3.5 font-mono uppercase text-sf-primary-text text-[13px] tracking-wide mb-7 justify-center"
           variants={fadeUpItem}
         >
           <span aria-hidden className="block w-12 h-px bg-sf-primary" />
@@ -162,7 +164,7 @@ const NotFound = () => {
         {/* Failed coordinates readout */}
         {showCoords && (
           <motion.div
-            className="font-mono text-[12px] text-t4 mb-8 py-2 px-4 inline-block border border-sf-line-interactive bg-sf-surface/40 tracking-[0.18em]"
+            className="font-mono text-[12px] text-t4 mb-8 py-2 px-4 inline-block border border-sf-line-interactive bg-sf-surface/40 tracking-wide"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}

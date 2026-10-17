@@ -1,5 +1,5 @@
 import { useParams, Link, useNavigate, useLocation } from "react-router-dom";
-import { ArrowLeft, ChevronDown, Edit, Globe, FileText, Rocket, Zap, Trash2, MoreVertical, Calculator, Plus, Sparkles, Pencil, ChevronRight, Dna, Network, Sun, Crown, Cpu, Users, Download, Layers, BookOpen, Atom, Clock, Archive, Tag, Orbit, Languages, Weight, Eye, Camera, Palette, Library, GripVertical, PenLine } from "lucide-react";
+import { ChevronDown, Edit, Globe, FileText, Rocket, Zap, Trash2, MoreVertical, Calculator, Plus, Sparkles, Pencil, ChevronRight, Dna, Network, Sun, Crown, Cpu, Users, Download, Layers, BookOpen, Atom, Clock, Archive, Tag, Orbit, Languages, Weight, Eye, Camera, Palette, Library, GripVertical, PenLine } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
 import { CosmicTelemetry } from "@/components/layout/CosmicVelocityTicker";
 import CascadeProgressBar from "@/components/dashboard/CascadeProgressBar";
@@ -11,6 +11,7 @@ import { getTagColor } from "@/hooks/use-tags";
 import { format } from "date-fns";
 import Header from "@/components/layout/Header";
 import { GlassPanel } from "@/components/ui/glass-panel";
+import { EmptyState } from "@/components/ui/empty-state";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
@@ -88,6 +89,7 @@ import { ToastAction } from "@/components/ui/toast";
 import { useToast } from "@/hooks/use-toast";
 import { useMetaTags } from "@/hooks/use-meta-tags";
 import RecentActivity from "@/components/world/RecentActivity";
+import { BackLink } from "@/components/ui/back-link";
 // Secondary panels, collapsed into a single rail. Ordered by how often a
 // writer reaches for them when opening a world.
 const DRAWERS: { id: string; label: string; ownerOnly?: boolean }[] = [
@@ -266,7 +268,7 @@ const SortableToolCard = ({ tool, worldId }: { tool: typeof TOOLS[number]; world
     <div ref={setNodeRef} style={style} className="group/card relative">
       <button
         type="button"
-        className="absolute top-2 right-2 z-10 p-1 cursor-grab active:cursor-grabbing text-t4 opacity-0 group-hover/card:opacity-100 transition-opacity touch-none"
+        className="absolute top-2 right-2 z-10 p-1 cursor-grab active:cursor-grabbing transition-colors duration-base text-t4 hover:text-t2 touch-none"
         {...attributes}
         {...listeners}
         tabIndex={-1}
@@ -278,10 +280,10 @@ const SortableToolCard = ({ tool, worldId }: { tool: typeof TOOLS[number]; world
         <GlassPanel className="p-5 h-full hover:bg-accent/50 transition-colors cursor-pointer">
           <div className="flex items-start gap-3">
             {SvgIcon ? (
-              <SvgIcon className="w-10 h-10 rounded-sm shrink-0" />
+              <SvgIcon className="w-10 h-10 rounded-none shrink-0" />
             ) : (
-              <div className="w-10 h-10 rounded-sm bg-primary/20 flex items-center justify-center shrink-0">
-                <tool.icon className="w-5 h-5 text-primary" />
+              <div className="w-10 h-10 rounded-none bg-primary/20 flex items-center justify-center shrink-0">
+                <tool.icon className="w-5 h-5 text-sf-primary-text" />
               </div>
             )}
             <div>
@@ -331,7 +333,7 @@ const SortableWorksheetGroup = ({
         <div className="flex items-center gap-2">
           <button
             type="button"
-            className="p-0.5 cursor-grab active:cursor-grabbing text-t4 opacity-0 group-hover/wsgroup:opacity-100 transition-opacity touch-none"
+            className="p-0.5 cursor-grab active:cursor-grabbing transition-colors duration-base text-t4 hover:text-t2 touch-none"
             {...attributes}
             {...listeners}
             tabIndex={-1}
@@ -340,9 +342,9 @@ const SortableWorksheetGroup = ({
             <GripVertical className="w-4 h-4" />
           </button>
           {SvgIcon ? (
-            <SvgIcon className="w-6 h-6 rounded-sm" />
+            <SvgIcon className="w-6 h-6 rounded-none" />
           ) : (
-            <tool.icon className="w-5 h-5 text-primary" />
+            <tool.icon className="w-5 h-5 text-sf-primary-text" />
           )}
           <h3 className="font-medium">{tool.name}</h3>
           <Badge variant="secondary" className="text-xs">
@@ -442,10 +444,10 @@ const ToolDragPreview = ({ tool }: { tool: typeof TOOLS[number] }) => {
   return (
     <div className="bg-sf-surface-elevated border border-primary shadow-lg shadow-primary/10 p-4 flex items-center gap-3 max-w-xs">
       {SvgIcon ? (
-        <SvgIcon className="w-8 h-8 rounded-sm shrink-0" />
+        <SvgIcon className="w-8 h-8 rounded-none shrink-0" />
       ) : (
-        <div className="w-8 h-8 rounded-sm bg-primary/20 flex items-center justify-center shrink-0">
-          <tool.icon className="w-4 h-4 text-primary" />
+        <div className="w-8 h-8 rounded-none bg-primary/20 flex items-center justify-center shrink-0">
+          <tool.icon className="w-4 h-4 text-sf-primary-text" />
         </div>
       )}
       <span className="font-medium text-sm truncate">{tool.name}</span>
@@ -667,17 +669,11 @@ const WorldDashboard = () => {
   if (worldError || !world) {
     const errorContent = (
       <>
-        <Link
-          to="/"
-          className="inline-flex items-center gap-2 font-heading text-[12px] uppercase tracking-[0.2em] font-medium text-t3 hover:text-sf-primary-bright transition-colors duration-base mb-6"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Return to Bridge
-        </Link>
+        <BackLink to="/" label="RETURN TO BRIDGE" className="mb-6" />
         <GlassPanel className="p-12 text-center">
-          <p className="font-mono text-[12px] tracking-[0.18em] text-sf-crimson-text uppercase mb-4">// STATUS: UNREACHABLE</p>
+          <p className="font-mono text-[12px] tracking-wide text-sf-crimson-text uppercase mb-4">// STATUS: UNREACHABLE</p>
           <h1 className="font-display text-3xl md:text-4xl font-light tracking-sf-title uppercase text-t1 mb-4">WORLD NOT FOUND</h1>
-          <p className="font-mono text-[12px] tracking-[0.18em] uppercase text-t3 mb-6">
+          <p className="font-mono text-[12px] tracking-wide uppercase text-t3 mb-6">
             RECORD DOES NOT EXIST OR CLEARANCE INSUFFICIENT.
           </p>
           <Button variant="sf-primary" size="sf-md" asChild>
@@ -703,13 +699,7 @@ const WorldDashboard = () => {
       <PageBursts bursts={WORLD_DASHBOARD_BURSTS} />
         {/* Back Navigation */}
         <div className="flex items-center justify-between mb-6">
-          <Link
-            to="/"
-            className="inline-flex items-center gap-2 font-heading text-[12px] uppercase tracking-[0.2em] font-medium text-t3 hover:text-sf-primary-bright transition-colors duration-base"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Return to Bridge
-          </Link>
+          <BackLink to="/" label="RETURN TO BRIDGE" />
           <div className="flex items-center gap-2">
             <Button size="sm" asChild>
               <Link to={`/worlds/${worldId}/write`}>
@@ -731,11 +721,11 @@ const WorldDashboard = () => {
                 <Button variant="outline" size="sm">
                   <Download className="w-4 h-4 mr-2" />
                   Export
-                  <ChevronDown className="w-3.5 h-3.5 ml-1.5 opacity-60" />
+                  <ChevronDown className="w-3.5 h-3.5 ml-1.5" aria-hidden="true" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-60">
-                <DropdownMenuLabel className="text-[12px] uppercase tracking-[1.5px] text-t3 font-medium">
+                <DropdownMenuLabel className="text-[12px] uppercase tracking-wide text-t3 font-medium">
                   Export
                 </DropdownMenuLabel>
                 <DropdownMenuItem onClick={() => setExportDialogOpen(true)}>
@@ -826,7 +816,7 @@ const WorldDashboard = () => {
         {/* Collaborator Banner */}
         {!isOwner && role && (
           <div className="mb-4 p-3 rounded-none bg-primary/5 border border-primary flex items-center gap-2 text-sm">
-            <Users className="w-4 h-4 text-primary shrink-0" />
+            <Users className="w-4 h-4 text-sf-primary-text shrink-0" />
             <span>
               You have <Badge variant="secondary" className="mx-1">{role === "editor" ? "Editor" : "Viewer"}</Badge> access to this world
             </span>
@@ -936,27 +926,22 @@ const WorldDashboard = () => {
             </div>
 
             {worldEntities.length === 0 ? (
-              <GlassPanel className="p-6 text-center">
-                <p className="text-sm text-t3/40 italic">
-                  No elements yet. Create planets, species, factions, and more, then attach worksheets to them.
-                </p>
-                {canEdit && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="mt-3 gap-1.5"
-                    onClick={() => setEntityPickerOpen(true)}
-                  >
-                    <Plus className="w-3.5 h-3.5" />
-                    Create First Element
-                  </Button>
-                )}
+              <GlassPanel>
+                <EmptyState
+                  hideDial
+                  className="py-10"
+                  eyebrow="// ELEMENT INDEX"
+                  title="INDEX: EMPTY"
+                  description="NO ELEMENTS ON FILE. CREATE PLANETS, SPECIES, FACTIONS, THEN ATTACH WORKSHEETS."
+                  actionLabel={canEdit ? "CREATE FIRST ELEMENT" : undefined}
+                  onAction={canEdit ? () => setEntityPickerOpen(true) : undefined}
+                />
               </GlassPanel>
             ) : (
               <div className="space-y-3">
                 {Object.entries(entitiesByType).map(([type, entries]) => (
                   <div key={type}>
-                    <h3 className="font-heading text-xs font-light uppercase tracking-[2px] text-t3 mb-2">
+                    <h3 className="font-heading text-xs font-light uppercase tracking-wide text-t3 mb-2">
                       {ENTITY_TYPE_LABELS[type] ?? type}
                     </h3>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">

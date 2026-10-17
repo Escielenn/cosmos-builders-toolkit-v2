@@ -25,18 +25,18 @@ const FirstTimeHint = ({ hintId, icon: Icon, variant, className = "" }: FirstTim
 
   const bgColor =
     resolvedVariant === "warning"
-      ? "bg-amber-500/5"
+      ? "bg-sf-amber/[0.06]"
       : "bg-primary/5";
 
   const textColor =
     resolvedVariant === "warning"
-      ? "text-sf-amber/70"
-      : "text-primary/70";
+      ? "text-sf-amber-text"
+      : "text-sf-primary-text";
 
   const iconColor =
     resolvedVariant === "warning"
-      ? "text-sf-amber/60"
-      : "text-primary/60";
+      ? "text-sf-amber-text"
+      : "text-sf-primary-text";
 
   const fontSize =
     resolvedVariant === "compact"
@@ -50,7 +50,7 @@ const FirstTimeHint = ({ hintId, icon: Icon, variant, className = "" }: FirstTim
 
   return (
     <div
-      className={`relative border ${borderColor} ${bgColor} px-3 py-2 animate-in fade-in duration-300 ${className}`}
+      className={`relative border ${borderColor} ${bgColor} px-3 py-2 animate-in fade-in duration-slow ${className}`}
     >
       <div className="flex items-start gap-2 pr-5">
         {Icon && (
@@ -62,7 +62,7 @@ const FirstTimeHint = ({ hintId, icon: Icon, variant, className = "" }: FirstTim
       </div>
       <button
         onClick={dismiss}
-        className="absolute top-1.5 right-1.5 text-t3/30 hover:text-t3/60 transition-colors"
+        className="absolute top-1.5 right-1.5 text-t4 hover:text-t4 transition-colors"
         aria-label="Dismiss hint"
       >
         <X className="w-3 h-3" />

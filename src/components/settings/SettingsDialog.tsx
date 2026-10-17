@@ -335,11 +335,11 @@ const SettingsDialog = ({
                       )}
                     >
                       <div className="w-full h-full bg-background starfield-preview" />
-                      <span className="absolute bottom-1 left-1 text-[12px] font-medium text-white">
+                      <span className="absolute bottom-1 left-1 text-[12px] font-medium text-t1">
                         {option.name}
                       </span>
                       {backgroundId === option.id && (
-                        <div className="absolute top-1 right-1 w-4 h-4 rounded-sm bg-primary flex items-center justify-center">
+                        <div className="absolute top-1 right-1 w-4 h-4 rounded-none bg-primary flex items-center justify-center">
                           <Check className="w-2.5 h-2.5 text-primary-foreground" />
                         </div>
                       )}
@@ -391,16 +391,16 @@ const SettingsDialog = ({
                             "linear-gradient(135deg, #0d1117 0%, #1a1f2e 50%, #0d1117 100%)",
                         }}
                       >
-                        <span className="font-mono text-[12px] text-t3 uppercase tracking-[0.18em]">
+                        <span className="font-mono text-[12px] text-t3 uppercase tracking-wide">
                           // NO PREVIEW
                         </span>
                       </div>
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                      <span className="absolute bottom-1 left-1 text-[12px] font-medium text-white">
+                      <div className="absolute inset-0 bg-gradient-to-t from-[color:var(--sf-scrim)] to-transparent" />
+                      <span className="absolute bottom-1 left-1 text-[12px] font-medium text-t1">
                         {option.name}
                       </span>
                       {backgroundId === option.id && (
-                        <div className="absolute top-1 right-1 w-4 h-4 rounded-sm bg-primary flex items-center justify-center">
+                        <div className="absolute top-1 right-1 w-4 h-4 rounded-none bg-primary flex items-center justify-center">
                           <Check className="w-2.5 h-2.5 text-primary-foreground" />
                         </div>
                       )}
@@ -431,12 +431,12 @@ const SettingsDialog = ({
                         alt={option.name}
                         className="w-full h-full object-cover"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                      <span className="absolute bottom-1 left-1 text-[12px] font-medium text-white">
+                      <div className="absolute inset-0 bg-gradient-to-t from-[color:var(--sf-scrim)] to-transparent" />
+                      <span className="absolute bottom-1 left-1 text-[12px] font-medium text-t1">
                         {option.name}
                       </span>
                       {backgroundId === option.id && (
-                        <div className="absolute top-1 right-1 w-4 h-4 rounded-sm bg-primary flex items-center justify-center">
+                        <div className="absolute top-1 right-1 w-4 h-4 rounded-none bg-primary flex items-center justify-center">
                           <Check className="w-2.5 h-2.5 text-primary-foreground" />
                         </div>
                       )}
@@ -467,7 +467,7 @@ const SettingsDialog = ({
                         style={{ background: option.value }}
                       />
                       {backgroundId === option.id && (
-                        <div className="absolute top-1 right-1 w-4 h-4 rounded-sm bg-primary flex items-center justify-center">
+                        <div className="absolute top-1 right-1 w-4 h-4 rounded-none bg-primary flex items-center justify-center">
                           <Check className="w-2.5 h-2.5 text-primary-foreground" />
                         </div>
                       )}
@@ -498,7 +498,7 @@ const SettingsDialog = ({
                         style={{ background: option.value }}
                       />
                       {backgroundId === option.id && (
-                        <div className="absolute top-1 right-1 w-4 h-4 rounded-sm bg-primary flex items-center justify-center">
+                        <div className="absolute top-1 right-1 w-4 h-4 rounded-none bg-primary flex items-center justify-center">
                           <Check className="w-2.5 h-2.5 text-primary-foreground" />
                         </div>
                       )}
@@ -540,12 +540,12 @@ const SettingsDialog = ({
                           e.stopPropagation();
                           clearCustomBackground();
                         }}
-                        className="absolute top-1 left-1 w-4 h-4 rounded-sm bg-destructive flex items-center justify-center"
+                        className="absolute top-1 left-1 w-4 h-4 rounded-none bg-destructive flex items-center justify-center"
                       >
                         <X className="w-2.5 h-2.5 text-destructive-foreground" />
                       </button>
                       {backgroundId === "custom" && (
-                        <div className="absolute top-1 right-1 w-4 h-4 rounded-sm bg-primary flex items-center justify-center">
+                        <div className="absolute top-1 right-1 w-4 h-4 rounded-none bg-primary flex items-center justify-center">
                           <Check className="w-2.5 h-2.5 text-primary-foreground" />
                         </div>
                       )}
@@ -628,7 +628,7 @@ const SettingsDialog = ({
             {isSubscribed && subscription ? (
               <>
                 <div className="flex items-center gap-2">
-                  <Badge className="bg-amber-500/20 text-sf-amber dark:text-sf-amber">
+                  <Badge className="rounded-none uppercase bg-sf-amber/[0.06] border border-sf-amber text-sf-amber-text">
                     <Zap className="w-3 h-3 mr-1" />
                     Pro Active
                   </Badge>
@@ -640,9 +640,9 @@ const SettingsDialog = ({
                 </div>
 
                 {subscription.status === "past_due" && (
-                  <div className="p-3 rounded-none bg-red-500/10 border border-sf-crimson flex items-center gap-2">
+                  <div className="p-3 rounded-none bg-sf-crimson/[0.06] border border-sf-crimson flex items-center gap-2">
                     <AlertCircle className="w-5 h-5 text-sf-crimson" />
-                    <p className="text-sm text-red-600 dark:text-sf-crimson-text">
+                    <p className="text-sm text-sf-crimson-text">
                       Payment failed. Please update your payment method.
                     </p>
                   </div>
@@ -665,7 +665,7 @@ const SettingsDialog = ({
                         <AlertCircle className="w-4 h-4 text-sf-amber" />
                         <span>Cancels on</span>
                       </div>
-                      <div className="text-sf-amber dark:text-sf-amber">
+                      <div className="text-sf-amber-text">
                         {subscription.current_period_end
                           ? new Date(subscription.current_period_end).toLocaleDateString()
                           : "N/A"}
@@ -753,7 +753,7 @@ const SettingsDialog = ({
                 >
                   <span className="font-medium">{lang.label}</span>
                   {i18n.language === lang.code && (
-                    <Check className="w-4 h-4 text-primary" />
+                    <Check className="w-4 h-4 text-sf-primary-text" />
                   )}
                 </button>
               ))}
@@ -764,7 +764,7 @@ const SettingsDialog = ({
                 href="https://github.com/anthropics/claude-code/issues"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-primary hover:underline"
+                className="text-sf-primary-text hover:underline"
               >
                 Let us know
               </a>

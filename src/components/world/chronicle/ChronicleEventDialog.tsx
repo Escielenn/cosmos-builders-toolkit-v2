@@ -317,7 +317,7 @@ export function ChronicleEventDialog({
                           setEntrySearch("");
                           setEntryResults([]);
                         }}
-                        className="w-full text-left px-3 py-1.5 text-sm hover:bg-white/5 truncate"
+                        className="w-full text-left px-3 py-1.5 text-sm hover:bg-sf-surface-elevated truncate"
                       >
                         {entry.title}
                       </button>

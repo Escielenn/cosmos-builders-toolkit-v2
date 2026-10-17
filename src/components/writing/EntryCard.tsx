@@ -27,7 +27,7 @@ export function EntryCard({ entry, onClick }: EntryCardProps) {
       <GlassPanel hover className="p-5 h-full flex flex-col">
         <div className="flex items-start gap-3 mb-2">
           <FileText className="w-4 h-4 text-t4 mt-0.5 shrink-0" />
-          <h3 className="font-heading text-sm font-light uppercase tracking-[2px] text-t1 truncate flex-1">
+          <h3 className="font-heading text-sm font-light uppercase tracking-wide text-t1 truncate flex-1">
             {entry.title || "Untitled Entry"}
           </h3>
           <Pencil className="w-3 h-3 text-t4 mt-0.5 shrink-0 opacity-0 group-hover:opacity-60 transition-opacity" />

@@ -54,8 +54,8 @@ export function MoodboardImage({
               onError={() => setImageError(true)}
             />
             {/* Zoom overlay */}
-            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-              <ZoomIn className="w-8 h-8 text-white" />
+            <div className="absolute inset-0 bg-[var(--sf-scrim)] opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+              <ZoomIn className="w-8 h-8 text-t1" aria-hidden="true" />
             </div>
           </>
         )}
@@ -95,7 +95,7 @@ export function MoodboardImage({
               {image.caption || "Add caption..."}
             </p>
             {!disabled && (
-              <div className="flex gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+              <div className="flex gap-0.5">
                 <Button
                   size="icon"
                   variant="ghost"

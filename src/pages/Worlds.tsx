@@ -1,7 +1,7 @@
 /** Register: WRITER (Lora) — a library a writer browses, not an instrument readout. */
 import { useState, useMemo, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Upload, Globe } from "lucide-react";
+import { Upload, Globe } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -23,7 +23,10 @@ import { ParallaxStrips } from "@/components/ambient/ParallaxStrips";
 import { EmptyState } from "@/components/ui/empty-state";
 import { SectionHero } from "@/components/ui/section-hero";
 
+import { BackLink } from "@/components/ui/back-link";
+import { useMetaTags } from "@/hooks/use-meta-tags";
 const Worlds = () => {
+  useMetaTags({ title: "Worlds" });
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const [showArchived, setShowArchived] = useState(false);
@@ -83,13 +86,7 @@ const Worlds = () => {
       <main className="container mx-auto px-4 pt-24 pb-16 relative z-10">
         <PageBursts bursts={WORLDS_BURSTS} />
         {/* Back Navigation */}
-        <Link
-          to="/"
-          className="inline-flex items-center gap-2 font-serif text-[14px] italic text-t3 hover:text-sf-primary-bright transition-colors duration-base mb-6"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          ← RETURN TO BRIDGE
-        </Link>
+        <BackLink to="/" label="RETURN TO BRIDGE" className="mb-6" />
 
         {/* Header, parallax telemetry backdrop */}
         <div className="relative overflow-hidden mb-12">

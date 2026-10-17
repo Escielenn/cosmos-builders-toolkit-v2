@@ -59,7 +59,7 @@ export default function UserPlaylistsTab() {
           <ArrowLeft className="w-3 h-3" /> Back
         </button>
 
-        <h3 className="font-heading text-sm font-light uppercase tracking-[2px] text-emerald mb-3">
+        <h3 className="font-heading text-sm font-light uppercase tracking-wide text-sf-emerald-text mb-3">
           {expanded.name}
         </h3>
 
@@ -166,7 +166,7 @@ export default function UserPlaylistsTab() {
               <button
                 type="button"
                 onClick={() => deletePlaylist.mutate(playlist.id)}
-                className="absolute bottom-2 right-2 p-1 text-t4 hover:text-sf-crimson-text opacity-0 group-hover:opacity-100 transition-all"
+                className="absolute bottom-2 right-2 p-1 text-t4 hover:text-sf-crimson-text transition-all"
                 aria-label="Delete playlist"
               >
                 <Trash2 className="w-3 h-3" />
