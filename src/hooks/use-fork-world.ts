@@ -5,6 +5,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { mapError } from "@/lib/ship-voice";
 
 export function useForkWorld() {
   const { toast } = useToast();
@@ -31,8 +32,8 @@ export function useForkWorld() {
     },
     onError: (error) => {
       toast({
-        title: "Failed to fork world",
-        description: error.message,
+        title: "FAILED TO FORK WORLD.",
+        description: mapError(error),
         variant: "destructive",
       });
     },

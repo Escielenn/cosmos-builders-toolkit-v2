@@ -25,6 +25,7 @@ import {
   type WorldVersionSummary,
 } from "@/lib/export/world-snapshot";
 import { formatDistanceToNow, format } from "date-fns";
+import { mapError } from "@/lib/ship-voice";
 
 interface VersionHistoryProps {
   worldId: string;
@@ -46,14 +47,14 @@ const VersionHistory = ({ worldId, worldName }: VersionHistoryProps) => {
     try {
       const newWorldId = await restoreSnapshotAsNewWorld(v.id);
       toast({
-        title: "Branched to a new world",
+        title: "BRANCHED TO A NEW WORLD.",
         description: `Version ${v.version_number} was restored as a separate world. Your current world is untouched.`,
       });
       navigate(`/worlds/${newWorldId}`);
     } catch (error) {
       toast({
-        title: "Branch failed",
-        description: error instanceof Error ? error.message : "Could not branch this version.",
+        title: "BRANCH FAILED.",
+        description: mapError(error),
         variant: "destructive",
       });
     } finally {
@@ -76,7 +77,7 @@ const VersionHistory = ({ worldId, worldName }: VersionHistoryProps) => {
     } catch (error) {
       toast({
         title: "DOWNLOAD FAILED.",
-        description: error instanceof Error ? error.message : "Could not download version.",
+        description: mapError(error),
         variant: "destructive",
       });
     } finally {
@@ -101,7 +102,7 @@ const VersionHistory = ({ worldId, worldName }: VersionHistoryProps) => {
     } catch (error) {
       toast({
         title: "RESTORE FAILED.",
-        description: error instanceof Error ? error.message : "Could not restore version.",
+        description: mapError(error),
         variant: "destructive",
       });
     } finally {
@@ -144,12 +145,12 @@ const VersionHistory = ({ worldId, worldName }: VersionHistoryProps) => {
               </div>
             ) : versions.length === 0 ? (
               <div className="p-4 text-center">
-                <p className="text-sm text-t3">
+                <p className="text-sm text-t2">
                   No snapshots yet. Versions are created automatically as you work, or manually via the Snapshot button.
                 </p>
               </div>
             ) : (
-              <div className="divide-y divide-border max-h-80 overflow-y-auto">
+              <div className="divide-y divide-border max-h-80 overflow-y-auto sf-sb">
                 {versions.map((v) => (
                   <div
                     key={v.id}
@@ -172,7 +173,7 @@ const VersionHistory = ({ worldId, worldName }: VersionHistoryProps) => {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-7 w-7"
+                        className="h-7 w-7 min-h-hit min-w-hit"
                         onClick={() => handleDownload(v)}
                         disabled={downloadingId === v.id}
                         title="Download this version"
@@ -187,7 +188,7 @@ const VersionHistory = ({ worldId, worldName }: VersionHistoryProps) => {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-7 w-7"
+                        className="h-7 w-7 min-h-hit min-w-hit"
                         onClick={() => handleBranch(v)}
                         disabled={branchingId === v.id}
                         title="Restore as a new world (non-destructive)"
@@ -202,7 +203,7 @@ const VersionHistory = ({ worldId, worldName }: VersionHistoryProps) => {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-7 w-7"
+                        className="h-7 w-7 min-h-hit min-w-hit"
                         onClick={() => setRestoreTarget(v)}
                         title="Restore this version (overwrites current)"
                         aria-label="Restore this version"

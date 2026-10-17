@@ -197,7 +197,7 @@ export function Corkboard({
   if (empty) {
     return (
       <div className="px-6 py-16 text-center">
-        <p className="mb-2 font-serif text-[17px] italic text-t3">
+        <p className="mb-2 font-serif text-[17px] italic text-t2">
           Nothing on the board yet
         </p>
         <p className="mx-auto max-w-sm font-serif text-[14px] leading-relaxed text-t2">

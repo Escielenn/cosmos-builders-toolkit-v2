@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { v4 as uuidv4 } from "uuid";
+import { mapError } from "@/lib/ship-voice";
 
 /**
  * Validates that a URL uses a safe protocol (http or https only).
@@ -96,14 +97,14 @@ export function useMoodboard({ worksheetId, currentImages, onUpdate }: UseMoodbo
       const updatedImages = [...currentImages, newImage];
       onUpdate(updatedImages);
       toast({
-        title: "Image uploaded",
+        title: "IMAGE UPLOADED.",
         description: "Your image has been added to the moodboard.",
       });
     },
     onError: (error) => {
       toast({
-        title: "Upload failed",
-        description: error.message,
+        title: "UPLOAD FAILED.",
+        description: mapError(error),
         variant: "destructive",
       });
     },
@@ -131,14 +132,14 @@ export function useMoodboard({ worksheetId, currentImages, onUpdate }: UseMoodbo
       const updatedImages = [...currentImages, newImage];
       onUpdate(updatedImages);
       toast({
-        title: "Image added",
+        title: "IMAGE ADDED.",
         description: "Your image has been added to the moodboard.",
       });
     },
     onError: (error) => {
       toast({
-        title: "Failed to add image",
-        description: error.message,
+        title: "FAILED TO ADD IMAGE.",
+        description: mapError(error),
         variant: "destructive",
       });
     },
@@ -178,14 +179,14 @@ export function useMoodboard({ worksheetId, currentImages, onUpdate }: UseMoodbo
       const updatedImages = currentImages.filter((img) => img.id !== imageId);
       onUpdate(updatedImages);
       toast({
-        title: "Image removed",
+        title: "IMAGE REMOVED.",
         description: "The image has been removed from the moodboard.",
       });
     },
     onError: (error) => {
       toast({
-        title: "Failed to remove image",
-        description: error.message,
+        title: "FAILED TO REMOVE IMAGE.",
+        description: mapError(error),
         variant: "destructive",
       });
     },

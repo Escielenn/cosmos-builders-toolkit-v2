@@ -56,7 +56,7 @@ export default function NarrativeBridgePanel({
       /* storage unavailable (private mode / quota); state stays in memory */
     }
     setSaved(true);
-    toast({ title: "Notes saved", description: "Narrative notes saved locally." });
+    toast({ title: "NOTES SAVED.", description: "Narrative notes saved locally." });
   }, [notes, config.simulatorType, toast]);
 
   const filledCount = Object.values(notes).filter((v) => v.trim()).length;
@@ -90,7 +90,7 @@ export default function NarrativeBridgePanel({
 
   // Expanded panel
   return (
-    <div className="absolute right-0 top-0 bottom-0 z-30 w-80 max-w-[92vw] bg-sf-void/95 backdrop-blur-sf-side border-l border-sf-line-interactive overflow-y-auto animate-in slide-in-from-right duration-300">
+    <div className="absolute right-0 top-0 bottom-0 z-30 w-80 max-w-[92vw] bg-sf-void/95 backdrop-blur-sf-side border-l border-sf-line-interactive overflow-y-auto sf-sb animate-in slide-in-from-right duration-300">
       {/* Header */}
       <div className="sticky top-0 z-10 bg-sf-void/95 backdrop-blur-sf-side px-4 py-3 border-b border-sf-line">
         <div className="flex items-center justify-between">
@@ -144,7 +144,7 @@ export default function NarrativeBridgePanel({
             value={notes["general_notes"] ?? ""}
             onChange={(e) => updateNote("general_notes", e.target.value)}
             placeholder="Free-form notes, observations, story ideas..."
-            className="w-full font-sans text-[14px] leading-relaxed text-t2 placeholder:text-t4 bg-white/[0.03] border border-sf-line-interactive rounded-[6px] px-[14px] py-3 min-h-[120px] resize-y focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sf-focus focus:border-[rgba(21,193,123,0.25)] transition-colors"
+            className="w-full font-sans text-[14px] leading-relaxed text-t2 placeholder:text-t4 bg-white/[0.03] border border-sf-line-interactive rounded-[6px] px-[14px] py-3 min-h-[120px] resize-y focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sf-focus focus:border-sf-primary transition-colors"
           />
         </div>
 

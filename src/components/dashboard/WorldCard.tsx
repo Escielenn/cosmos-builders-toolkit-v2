@@ -87,12 +87,12 @@ const WorldCard = ({
     try {
       await navigator.clipboard.writeText(text);
       toast({
-        title: "Link copied",
+        title: "LINK COPIED.",
         description: "World link copied to clipboard.",
       });
     } catch {
       toast({
-        title: "Failed to copy",
+        title: "FAILED TO COPY.",
         description: "Could not copy link to clipboard.",
         variant: "destructive",
       });
@@ -133,7 +133,7 @@ const WorldCard = ({
           <div className="absolute top-2 right-2 flex flex-col items-end gap-1">
             {isFork && (
               <span
-                className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-sm bg-sf-stellar/[0.06] border border-sf-stellar text-sf-stellar font-mono text-[12px] tracking-[0.18em] uppercase"
+                className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-sm bg-sf-stellar/[0.06] border border-sf-stellar text-sf-stellar-text font-mono text-[12px] tracking-[0.18em] uppercase"
                 title={source ? `Forked from ${source.name}` : "Forked from another world"}
               >
                 <GitFork className="w-3 h-3" />
@@ -159,7 +159,7 @@ const WorldCard = ({
             </Link>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-8 w-8 -mr-2 -mt-1" aria-label="World options">
+                <Button variant="ghost" size="icon" className="h-8 w-8 -mr-2 -mt-1 min-h-hit min-w-hit" aria-label="World options">
                   <MoreHorizontal className="w-4 h-4" />
                 </Button>
               </DropdownMenuTrigger>
@@ -189,7 +189,7 @@ const WorldCard = ({
                 )}
                 <DropdownMenuItem
                   onClick={() => setShowDeleteDialog(true)}
-                  className="text-sf-crimson focus:text-sf-crimson"
+                  className="text-sf-crimson-text focus:text-sf-crimson-text"
                 >
                   <Trash2 className="w-4 h-4 mr-2" />
                   Delete permanently
@@ -200,7 +200,7 @@ const WorldCard = ({
 
           <div className="flex-1">
             {description && (
-              <p className="text-sm text-t3 line-clamp-2">
+              <p className="text-sm text-t2 line-clamp-2">
                 {description}
               </p>
             )}

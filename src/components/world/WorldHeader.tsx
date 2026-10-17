@@ -83,7 +83,7 @@ const WorldHeader = ({
           <div className="min-w-0 flex-1">
             <h1 className="font-heading text-2xl md:text-3xl font-light tracking-[0.12em]">{name}</h1>
             {description && (
-              <p className="text-t3 mt-2 max-w-2xl">{description}</p>
+              <p className="text-t2 mt-2 max-w-2xl">{description}</p>
             )}
           </div>
 

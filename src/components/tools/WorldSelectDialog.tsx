@@ -198,7 +198,7 @@ const WorldSelectDialog = ({
 
           <TabsContent value="local" className="mt-4">
             <div className="text-center py-4">
-              <p className="text-t3 mb-4">
+              <p className="text-t2 mb-4">
                 Save to your browser's local storage. Your work will be
                 available only on this device.
               </p>

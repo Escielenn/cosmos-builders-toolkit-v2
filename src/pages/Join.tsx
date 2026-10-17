@@ -21,6 +21,7 @@ import ReactMarkdown from "react-markdown";
 import { TERMS_CONTENT } from "@/lib/legal/terms-content";
 import { PageBursts } from "@/components/ui/data-burst";
 import { AUTH_BURSTS } from "@/lib/data-bursts";
+import { mapError } from "@/lib/ship-voice";
 
 const emailSchema = z.string().email("VALID EMAIL REQUIRED.");
 const passwordSchema = z.string().min(6, "AT LEAST 6 CHARS REQUIRED.");
@@ -80,10 +81,10 @@ const Join = () => {
     setIsLoading(false);
     if (error) {
       toast({
-        title: "Sign up failed",
+        title: "SIGN UP FAILED.",
         description: error.message === "User already registered"
           ? "Account already exists. Sign in instead."
-          : error.message,
+          : mapError(error),
         variant: "destructive",
       });
     } else {
@@ -102,7 +103,7 @@ const Join = () => {
     if (error) {
       toast({
         title: `${provider.charAt(0).toUpperCase() + provider.slice(1)} sign up failed`,
-        description: error.message,
+        description: mapError(error),
         variant: "destructive",
       });
     }
@@ -116,7 +117,7 @@ const Join = () => {
         <h1 className="font-display text-xl font-light tracking-[0.1em] mb-3">
           YOU'RE ALREADY SIGNED IN
         </h1>
-        <p className="text-sm text-t3 mb-6 text-center max-w-sm">
+        <p className="text-sm text-t2 mb-6 text-center max-w-sm">
           You already have a StellarForge account. Head to your dashboard to start building.
         </p>
         <Link to="/" className="text-sm text-primary hover:underline">
@@ -134,7 +135,7 @@ const Join = () => {
         <h1 className="font-display text-xl font-light tracking-[0.1em] mb-3">
           LINK EXPIRED OR INVALID
         </h1>
-        <p className="text-sm text-t3 mb-6 text-center max-w-sm">
+        <p className="text-sm text-t2 mb-6 text-center max-w-sm">
           This invitation link is no longer valid. If you believe this is an error,
           contact the person who shared it with you.
         </p>
@@ -168,7 +169,7 @@ const Join = () => {
             <h1 className="font-display text-2xl font-light tracking-[0.12em] mb-2">
               ESTABLISH CREDENTIALS
             </h1>
-            <p className="text-sm text-t3">
+            <p className="text-sm text-t2">
               You've been invited to join the early access program.
             </p>
           </div>
@@ -226,7 +227,7 @@ const Join = () => {
                   disabled={isLoading}
                 />
               </div>
-              {errors.email && <p className="text-sm text-sf-crimson">{errors.email}</p>}
+              {errors.email && <p className="text-sm text-sf-crimson-text">{errors.email}</p>}
             </div>
             <div className="space-y-2">
               <Label htmlFor="signup-password">Password</Label>
@@ -240,7 +241,7 @@ const Join = () => {
                   disabled={isLoading}
                 />
               </div>
-              {errors.password && <p className="text-sm text-sf-crimson">{errors.password}</p>}
+              {errors.password && <p className="text-sm text-sf-crimson-text">{errors.password}</p>}
             </div>
 
             {/* TOS Checkbox */}
@@ -322,7 +323,7 @@ const Join = () => {
 
       {/* TOS Dialog */}
       <Dialog open={tosDialogOpen} onOpenChange={setTosDialogOpen}>
-        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto sf-sb">
           <DialogHeader>
             <DialogTitle className="font-heading text-xl">Terms of Service</DialogTitle>
           </DialogHeader>

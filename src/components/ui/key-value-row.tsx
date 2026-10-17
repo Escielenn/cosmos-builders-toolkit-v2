@@ -23,8 +23,8 @@ const VALUE_TONE = {
   teal: "text-sf-teal",
   amber: "text-sf-amber",
   emerald: "text-sf-emerald",
-  crimson: "text-sf-crimson",
-  stellar: "text-sf-stellar",
+  crimson: "text-sf-crimson-text",
+  stellar: "text-sf-stellar-text",
 } as const;
 
 export const KeyValueRow = React.forwardRef<HTMLDivElement, KeyValueRowProps>(

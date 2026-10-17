@@ -63,7 +63,7 @@ export const STATUS_LABELS: Record<DocStatus, string> = {
 export const STATUS_TONE: Record<DocStatus, string> = {
   outline: "text-t3",
   draft: "text-sf-amber",
-  revised: "text-sf-stellar",
+  revised: "text-sf-stellar-text",
   final: "text-sf-primary-text",
 };
 

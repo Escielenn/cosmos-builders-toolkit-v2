@@ -286,7 +286,7 @@ const SortableToolCard = ({ tool, worldId }: { tool: typeof TOOLS[number]; world
             )}
             <div>
               <h3 className="font-medium">{tool.name}</h3>
-              <p className="text-sm text-t3 mt-1">{tool.description}</p>
+              <p className="text-sm text-t2 mt-1">{tool.description}</p>
             </div>
           </div>
         </GlassPanel>
@@ -392,7 +392,7 @@ const SortableWorksheetGroup = ({
             </div>
             <div className="flex items-center gap-1 shrink-0">
               {worksheetEntryMap.get(worksheet.id) && (
-                <Button variant="ghost" size="icon" className="h-8 w-8" asChild title="Codex page">
+                <Button variant="ghost" size="icon" className="h-8 w-8 min-h-hit min-w-hit" asChild title="Codex page" aria-label="Open codex page">
                   <Link to={`/worlds/${worldId}/codex/${worksheetEntryMap.get(worksheet.id)}`}>
                     <BookOpen className="w-3.5 h-3.5" />
                   </Link>
@@ -407,7 +407,7 @@ const SortableWorksheetGroup = ({
               {canEdit && (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-8 w-8" aria-label="Worksheet actions">
+                    <Button variant="ghost" size="icon" className="h-8 w-8 min-h-hit min-w-hit" aria-label="Worksheet actions">
                       <MoreVertical className="w-4 h-4" />
                     </Button>
                   </DropdownMenuTrigger>
@@ -418,7 +418,7 @@ const SortableWorksheetGroup = ({
                     </DropdownMenuItem>
                     {isOwner && (
                       <DropdownMenuItem
-                        className="text-sf-crimson"
+                        className="text-sf-crimson-text"
                         onClick={() => onDelete(worksheet.id, worksheet.title || "Untitled")}
                       >
                         <Trash2 className="w-4 h-4 mr-2" />
@@ -594,7 +594,7 @@ const WorldDashboard = () => {
     if (!worldId) return;
     await archiveWorld.mutateAsync(worldId);
     toast({
-      title: "World archived",
+      title: "WORLD ARCHIVED.",
       description: `"${world?.name}" has been moved to your archive.`,
       action: (
         <ToastAction
@@ -675,7 +675,7 @@ const WorldDashboard = () => {
           Return to Bridge
         </Link>
         <GlassPanel className="p-12 text-center">
-          <p className="font-mono text-[12px] tracking-[0.18em] text-sf-crimson uppercase mb-4">// STATUS: UNREACHABLE</p>
+          <p className="font-mono text-[12px] tracking-[0.18em] text-sf-crimson-text uppercase mb-4">// STATUS: UNREACHABLE</p>
           <h1 className="font-display text-3xl md:text-4xl font-light tracking-sf-title uppercase text-t1 mb-4">WORLD NOT FOUND</h1>
           <p className="font-mono text-[12px] tracking-[0.18em] uppercase text-t3 mb-6">
             RECORD DOES NOT EXIST OR CLEARANCE INSUFFICIENT.
@@ -767,7 +767,7 @@ const WorldDashboard = () => {
             </DropdownMenu>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="icon" className="h-8 w-8" aria-label="World actions">
+                <Button variant="outline" size="icon" className="h-8 w-8 min-h-hit min-w-hit" aria-label="World actions">
                   <MoreVertical className="w-4 h-4" />
                 </Button>
               </DropdownMenuTrigger>
@@ -811,7 +811,7 @@ const WorldDashboard = () => {
                 )}
                 {isOwner && (
                 <DropdownMenuItem
-                  className="text-sf-crimson"
+                  className="text-sf-crimson-text"
                   onClick={() => setDeleteDialogOpen(true)}
                 >
                   <Trash2 className="w-4 h-4 mr-2" />
@@ -859,7 +859,7 @@ const WorldDashboard = () => {
             canEdit={canEdit}
           />
           <div className="flex items-center gap-3 mt-3 px-1">
-            <p className="text-sm text-t3">
+            <p className="text-sm text-t2">
               Last updated {format(new Date(world.updated_at), "MMMM d, yyyy")}
             </p>
             {worksheets.length > 0 && (

@@ -105,7 +105,7 @@ const HierarchicalExportDialog = ({
       }, 200);
 
       toast({
-        title: "View exported",
+        title: "VIEW EXPORTED.",
         description: `${selected.category.label} exported with ${selected.worksheets.length} worksheet${selected.worksheets.length !== 1 ? "s" : ""}.`,
       });
       onOpenChange(false);
@@ -113,7 +113,7 @@ const HierarchicalExportDialog = ({
       console.error("View export error:", error);
       const errMsg = error instanceof Error ? error.message : String(error);
       toast({
-        title: "Export failed",
+        title: "EXPORT FAILED.",
         description: errMsg.length > 120 ? errMsg.slice(0, 120) + "..." : errMsg,
         variant: "destructive",
       });
@@ -153,7 +153,7 @@ const HierarchicalExportDialog = ({
                   onClick={() => hasTemplate && setSelectedCategory(cw.category.id)}
                   disabled={!hasTemplate}
                   className={`w-full text-left transition-all ${
-                    !hasTemplate ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+                    !hasTemplate ? "text-sf-disabled-text cursor-not-allowed" : "cursor-pointer"
                   }`}
                 >
                   <GlassPanel
@@ -174,7 +174,7 @@ const HierarchicalExportDialog = ({
                             {cw.worksheets.length}
                           </Badge>
                         </div>
-                        <p className="text-sm text-t3 mt-0.5">
+                        <p className="text-sm text-t2 mt-0.5">
                           {cw.category.description}
                         </p>
                       </div>
@@ -199,7 +199,7 @@ const HierarchicalExportDialog = ({
                   onClick={() => updatePreferences({ themeId: theme.id })}
                   title={theme.name}
                   className={cn(
-                    "flex gap-0.5 p-1.5 rounded-md border transition-all",
+                    "flex gap-0.5 p-1.5 rounded-none border transition-all",
                     isSelected
                       ? "border-primary ring-1 ring-primary/50"
                       : "border-sf-line-interactive hover:border-primary"

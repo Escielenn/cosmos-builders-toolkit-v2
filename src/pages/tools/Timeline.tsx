@@ -188,7 +188,7 @@ const Timeline = () => {
           setWorksheetTags(existingWorksheet.tags);
         }
         toast({
-          title: "Worksheet Loaded",
+          title: "WORKSHEET LOADED.",
           description: "WORK RESTORED FROM CLOUD.",
         });
       } catch {
@@ -285,7 +285,7 @@ const Timeline = () => {
         // Error handled by mutation
       }
     } else {
-      toast({ title: "Draft Saved", description: "WORK SECURED TO LOCAL STORAGE." });
+      toast({ title: "DRAFT SAVED.", description: "WORK SECURED TO LOCAL STORAGE." });
     }
   };
 
@@ -332,10 +332,10 @@ const Timeline = () => {
       const blob = await captureTimelineAsPNG(timelineViewRef.current);
       const filename = `${currentWorksheetTitle || "timeline"}-${new Date().toISOString().slice(0, 10)}.png`;
       downloadBlob(blob, filename);
-      toast({ title: "PNG Downloaded", description: "Timeline image saved." });
+      toast({ title: "PNG DOWNLOADED.", description: "Timeline image saved." });
     } catch (err) {
       console.error("PNG capture failed:", err);
-      toast({ title: "Export Failed", description: "Could not capture the timeline as an image.", variant: "destructive" });
+      toast({ title: "EXPORT FAILED.", description: "Could not capture the timeline as an image.", variant: "destructive" });
     } finally {
       setCapturingPNG(false);
     }
@@ -418,7 +418,7 @@ const Timeline = () => {
             <Button
               variant="ghost"
               size="icon"
-              className="w-7 h-7"
+              className="w-7 h-7 min-h-hit min-w-hit"
               onClick={() => dispatch({ type: "UNDO" })}
               disabled={!canUndo}
               title="Undo (Ctrl+Z)"
@@ -429,7 +429,7 @@ const Timeline = () => {
             <Button
               variant="ghost"
               size="icon"
-              className="w-7 h-7"
+              className="w-7 h-7 min-h-hit min-w-hit"
               onClick={() => dispatch({ type: "REDO" })}
               disabled={!canRedo}
               title="Redo (Ctrl+Shift+Z)"
@@ -717,10 +717,10 @@ class TimelineErrorBoundary extends Component<
         <PageShell>
           <main className="container mx-auto px-4 pt-24 pb-16">
             <GlassPanel className="p-8 text-center">
-              <h2 className="text-xl font-medium text-sf-crimson mb-4">
+              <h2 className="text-xl font-medium text-sf-crimson-text mb-4">
                 Timeline failed to render
               </h2>
-              <pre className="text-left text-sm bg-muted/30 p-4 rounded-none overflow-auto max-h-64 mb-4">
+              <pre className="text-left text-sm bg-muted/30 p-4 rounded-none overflow-auto sf-sb max-h-64 mb-4">
                 {this.state.error.message}
                 {"\n\n"}
                 {this.state.error.stack}

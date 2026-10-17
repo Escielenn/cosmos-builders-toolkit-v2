@@ -105,7 +105,7 @@ export function DisplaySettings() {
       <div className={row}>
         <div className="sf-measure">
           <div className="text-sf-body text-t1">Contrast</div>
-          <p className="text-sf-small text-t3 mt-sf-1">
+          <p className="text-sf-small text-t2 mt-sf-1">
             High contrast raises secondary text and panel edges, and disables ambient layers.
           </p>
         </div>
@@ -122,7 +122,7 @@ export function DisplaySettings() {
       <div className={row}>
         <div className="sf-measure">
           <div className="text-sf-body text-t1">Ambient telemetry</div>
-          <p className="text-sf-small text-t3 mt-sf-1">
+          <p className="text-sf-small text-t2 mt-sf-1">
             Starfield, grain, drifting readouts. Decorative only — nothing is lost when disabled.
           </p>
         </div>

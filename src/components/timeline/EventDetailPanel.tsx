@@ -113,7 +113,7 @@ const EventDetailPanel = ({
 
   return (
     <Sheet open={!!event} onOpenChange={(open) => !open && onClose()}>
-      <SheetContent className="w-full sm:max-w-md overflow-y-auto">
+      <SheetContent className="w-full sm:max-w-md overflow-y-auto sf-sb">
         <SheetHeader>
           <div className="flex items-center gap-2">
             <span
@@ -536,7 +536,7 @@ const EventDetailPanel = ({
                               type="button"
                               title="Remove link"
                               onClick={() => onDeleteElementLink(link.id)}
-                              className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity text-t3 hover:text-sf-crimson shrink-0"
+                              className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity text-t3 hover:text-sf-crimson-text shrink-0"
                             >
                               <X className="w-3 h-3" />
                             </button>

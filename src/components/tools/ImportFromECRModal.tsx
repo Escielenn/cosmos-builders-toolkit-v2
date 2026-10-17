@@ -258,7 +258,7 @@ const ImportFromECRModal = ({
               {/* Worksheet Selection */}
               <div className="space-y-2">
                 <label className="text-sm font-medium">Select Worksheet</label>
-                <div className="space-y-2 max-h-48 overflow-y-auto">
+                <div className="space-y-2 max-h-48 overflow-y-auto sf-sb">
                   {worksheets.map((worksheet) => (
                     <button
                       type="button"

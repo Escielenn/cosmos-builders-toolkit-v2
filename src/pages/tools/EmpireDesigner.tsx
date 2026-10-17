@@ -329,7 +329,7 @@ const EmpireDesigner = () => {
           setWorksheetTags(existingWorksheet.tags);
         }
         toast({
-          title: "Worksheet Loaded",
+          title: "WORKSHEET LOADED.",
           description: "WORK RESTORED FROM CLOUD.",
         });
       } catch {
@@ -553,7 +553,7 @@ const EmpireDesigner = () => {
       }
     } else {
       toast({
-        title: "Draft Saved",
+        title: "DRAFT SAVED.",
         description: "WORK SECURED TO LOCAL STORAGE.",
       });
     }
@@ -788,7 +788,7 @@ const EmpireDesigner = () => {
               <div className="space-y-6">
                 <div className="space-y-3">
                   <Label>Active Branches/Power Centers</Label>
-                  <p className="text-sm text-t3">
+                  <p className="text-sm text-t2">
                     Select all that have significant independent power
                   </p>
                   <div className="grid md:grid-cols-2 gap-3">
@@ -1229,7 +1229,7 @@ const EmpireDesigner = () => {
                           variant="ghost"
                           size="sm"
                           onClick={() => removeFaction(faction.id)}
-                          className="text-sf-crimson hover:text-sf-crimson"
+                          className="text-sf-crimson-text hover:text-sf-crimson-text"
                         >
                           <Trash2 className="w-4 h-4" />
                         </Button>
@@ -1486,7 +1486,7 @@ const EmpireDesigner = () => {
                         <Badge variant="outline" className="text-xs mt-1">
                           {example.type}
                         </Badge>
-                        <p className="text-sm text-t3 mt-2">
+                        <p className="text-sm text-t2 mt-2">
                           {example.description}
                         </p>
                         <p className="text-sm text-primary mt-2 italic">
@@ -1540,7 +1540,7 @@ const EmpireDesigner = () => {
 
                 <div className="space-y-2">
                   <Label>Consistency Notes</Label>
-                  <Suspense fallback={<div className="min-h-[100px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
+                  <Suspense fallback={<div className="min-h-[100px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                     <RichTextEditor
                       content={formState.synthesis.consistencyNotes}
                       onChange={(value) => updateSynthesis("consistencyNotes", value)}

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Rocket } from "lucide-react";
 
 /**
  * Animated Propulsion Consequences Map mockup
@@ -108,7 +109,7 @@ const PropulsionMockup = () => {
           }}
         >
           <div className="text-center">
-            <div className="text-lg">🚀</div>
+            <Rocket className="w-5 h-5 mx-auto" aria-hidden="true" />
             <div
               className="text-[12px] font-mono"
               style={{ color: `hsl(var(--${propulsionTypes[activeType].color}))` }}

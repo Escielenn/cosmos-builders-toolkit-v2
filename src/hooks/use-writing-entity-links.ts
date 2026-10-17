@@ -61,7 +61,7 @@ export function useWritingEntityLinks(writingEntryId: string | undefined, worldI
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["writing-entity-links", writingEntryId] });
-      toast({ title: "Entity linked", description: "Writing entry linked to entity." });
+      toast({ title: "ENTITY LINKED.", description: "Writing entry linked to entity." });
     },
   });
 

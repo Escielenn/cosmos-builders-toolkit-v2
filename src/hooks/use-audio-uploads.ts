@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import type { AudioTrack } from "@/lib/audio/types";
+import { mapError } from "@/lib/ship-voice";
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -180,7 +181,7 @@ export function useUploadAudioTrack() {
     onError: (err) => {
       toast({
         title: "UPLOAD FAILED.",
-        description: err instanceof Error ? err.message : "Unknown error",
+        description: mapError(err),
         variant: "destructive",
       });
     },
@@ -220,7 +221,7 @@ export function useDeleteAudioTrack() {
     onError: (err) => {
       toast({
         title: "DELETE FAILED.",
-        description: err instanceof Error ? err.message : "Unknown error",
+        description: mapError(err),
         variant: "destructive",
       });
     },

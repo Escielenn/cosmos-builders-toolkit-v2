@@ -59,7 +59,7 @@ export function KonamiCode() {
       aria-label="Captain's View"
     >
       <div
-        className="relative w-full max-w-5xl mx-4 bg-sf-surface border border-sf-primary/30 sf-bracket p-8"
+        className="relative w-full max-w-5xl mx-4 bg-sf-surface border border-sf-primary sf-bracket p-8"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-start justify-between mb-6">
@@ -73,7 +73,7 @@ export function KonamiCode() {
           </div>
           <button
             onClick={() => setOpen(false)}
-            className="font-mono text-[12px] tracking-[0.2em] uppercase text-t3 hover:text-sf-crimson transition-colors duration-base px-3 py-1 border border-sf-line"
+            className="font-mono text-[12px] tracking-[0.2em] uppercase text-t3 hover:text-sf-crimson-text transition-colors duration-base px-3 py-1 border border-sf-line"
           >
             [ESC] CLOSE
           </button>

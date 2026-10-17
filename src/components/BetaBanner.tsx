@@ -8,7 +8,7 @@ interface BetaBannerProps {
 const BetaBanner = ({ position = "top" }: BetaBannerProps) => {
   return (
     <div
-      className={`bg-primary/10 border-primary/20 text-primary py-1 px-4 text-center ${
+      className={`bg-primary/10 border-primary text-primary py-1 px-4 text-center ${
         position === "top" ? "border-b" : "border-t"
       }`}
     >

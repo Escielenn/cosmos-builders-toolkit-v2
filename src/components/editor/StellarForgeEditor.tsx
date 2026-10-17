@@ -338,7 +338,7 @@ export function StellarForgeEditor({
     <BracketPanel color="stellar">
       <div
         className={cn(
-          "rounded-none border border-sf-stellar/15 bg-background overflow-hidden relative",
+          "rounded-none border border-sf-stellar bg-background overflow-hidden relative",
           focusMode && "sf-focus-mode",
           className
         )}
@@ -582,7 +582,7 @@ export function StellarForgeEditor({
         <EditorContent
           editor={editor}
           className={cn(
-            "px-3 py-2 [&_.tiptap]:outline-none [&_.tiptap]:min-h-[var(--editor-min-h)]",
+            "px-3 py-2 [&_.tiptap]:outline-none [&_.tiptap:focus-visible]:ring-2 [&_.tiptap:focus-visible]:ring-sf-focus [&_.tiptap]:min-h-[var(--editor-min-h)]",
             !readOnly && "sf-writing-surface",
             readOnly && "bg-muted/30",
             config.maxWidth && "mx-auto"

@@ -28,6 +28,7 @@ import type {
   CreateConnectionInput,
   UpdateConnectionInput,
 } from "@/services/entity-graph-types";
+import { mapError } from "@/lib/ship-voice";
 
 // ---------------------------------------------------------------------------
 // Query keys
@@ -78,7 +79,7 @@ export function useCreateEntity(worldId: string | undefined) {
     onError: (error) => {
       toast({
         title: "ENTITY CREATION FAILED.",
-        description: error instanceof Error ? error.message : "Could not create entity.",
+        description: mapError(error),
         variant: "destructive",
       });
     },
@@ -97,7 +98,7 @@ export function useUpdateEntity(worldId: string | undefined) {
     onError: (error) => {
       toast({
         title: "ENTITY UPDATE FAILED.",
-        description: error instanceof Error ? error.message : "Could not update entity.",
+        description: mapError(error),
         variant: "destructive",
       });
     },
@@ -117,7 +118,7 @@ export function useDeleteEntity(worldId: string | undefined) {
     onError: (error) => {
       toast({
         title: "ENTITY DELETE FAILED.",
-        description: error instanceof Error ? error.message : "Could not delete entity.",
+        description: mapError(error),
         variant: "destructive",
       });
     },
@@ -155,7 +156,7 @@ export function useCreateEntityConnection(worldId: string | undefined) {
     onError: (error) => {
       toast({
         title: "CONNECTION FAILED.",
-        description: error instanceof Error ? error.message : "Could not create connection.",
+        description: mapError(error),
         variant: "destructive",
       });
     },
@@ -174,7 +175,7 @@ export function useUpdateEntityConnection(worldId: string | undefined) {
     onError: (error) => {
       toast({
         title: "CONNECTION UPDATE FAILED.",
-        description: error instanceof Error ? error.message : "Could not update connection.",
+        description: mapError(error),
         variant: "destructive",
       });
     },
@@ -194,7 +195,7 @@ export function useDeleteEntityConnection(worldId: string | undefined) {
     onError: (error) => {
       toast({
         title: "CONNECTION DELETE FAILED.",
-        description: error instanceof Error ? error.message : "Could not delete connection.",
+        description: mapError(error),
         variant: "destructive",
       });
     },

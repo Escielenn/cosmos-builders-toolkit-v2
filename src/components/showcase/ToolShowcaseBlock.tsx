@@ -70,7 +70,7 @@ const ToolShowcaseBlock = ({
               </h3>
               {isPro && <ProBadge />}
             </div>
-            <p className="text-t3">{description}</p>
+            <p className="text-t2">{description}</p>
           </div>
         </div>
 

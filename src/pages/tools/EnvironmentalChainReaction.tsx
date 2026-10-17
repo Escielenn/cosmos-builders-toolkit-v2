@@ -510,7 +510,7 @@ const EnvironmentalChainReaction = () => {
           setWorksheetTags(existingWorksheet.tags);
         }
         toast({
-          title: "Worksheet Loaded",
+          title: "WORKSHEET LOADED.",
           description: "WORK RESTORED FROM CLOUD.",
         });
       } catch {
@@ -527,7 +527,7 @@ const EnvironmentalChainReaction = () => {
         try {
           setFormState(JSON.parse(saved));
           toast({
-            title: "Draft Loaded",
+            title: "DRAFT LOADED.",
             description: "PREVIOUS WORK RESTORED.",
           });
         } catch {
@@ -935,7 +935,7 @@ const EnvironmentalChainReaction = () => {
                       <strong className="text-primary">Core Parameter:</strong>{" "}
                       <span className="text-t2">{example.parameter}</span>
                     </p>
-                    <div className="overflow-x-auto">
+                    <div className="overflow-x-auto sf-sb">
                       <table className="w-full text-sm">
                         <thead>
                           <tr className="border-b border-sf-line-interactive">
@@ -1192,7 +1192,7 @@ const EnvironmentalChainReaction = () => {
 
                 {(formState.parameter.types?.length || 0) > 0 && (
                   <div className="mt-4 p-3 bg-primary/10 rounded-none">
-                    <p className="text-sm text-t3">
+                    <p className="text-sm text-t2">
                       <strong className="text-primary">
                         {formState.parameter.types?.length} factor
                         {(formState.parameter.types?.length || 0) !== 1 ? "s" : ""} selected.
@@ -1384,7 +1384,7 @@ const EnvironmentalChainReaction = () => {
                 <Label htmlFor="surprising" className="text-sm font-medium">
                   Most surprising consequence you discovered:
                 </Label>
-                <Suspense fallback={<div className="min-h-[80px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse mt-2" />}>
+                <Suspense fallback={<div className="min-h-[80px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse mt-2" />}>
                   <RichTextEditor
                     content={formState.synthesis.surprisingConsequence}
                     onChange={(value) => updateSynthesis("surprisingConsequence", value)}
@@ -1399,7 +1399,7 @@ const EnvironmentalChainReaction = () => {
                 <Label htmlFor="gap" className="text-sm font-medium">
                   Biggest gap or unresolved tension:
                 </Label>
-                <Suspense fallback={<div className="min-h-[80px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse mt-2" />}>
+                <Suspense fallback={<div className="min-h-[80px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse mt-2" />}>
                   <RichTextEditor
                     content={formState.synthesis.biggestGap}
                     onChange={(value) => updateSynthesis("biggestGap", value)}
@@ -1414,7 +1414,7 @@ const EnvironmentalChainReaction = () => {
                 <Label htmlFor="story" className="text-sm font-medium">
                   Story potential this creates:
                 </Label>
-                <Suspense fallback={<div className="min-h-[80px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse mt-2" />}>
+                <Suspense fallback={<div className="min-h-[80px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse mt-2" />}>
                   <RichTextEditor
                     content={formState.synthesis.storyPotential}
                     onChange={(value) => updateSynthesis("storyPotential", value)}

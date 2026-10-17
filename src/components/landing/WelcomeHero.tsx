@@ -83,7 +83,7 @@ const WelcomeHero = () => {
 
         {/* Signature tagline — Lora serif, the Studio voice */}
         <motion.p
-          className="mt-10 font-serif text-[17px] italic text-sf-stellar/70"
+          className="mt-10 font-serif text-[17px] italic text-sf-stellar-text"
           variants={fadeUpItem}
         >
           These worlds exist in you. Waiting to be found.

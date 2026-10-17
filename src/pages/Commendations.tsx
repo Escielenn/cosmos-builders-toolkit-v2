@@ -68,7 +68,7 @@ export default function Commendations() {
   if (!user) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-t3 font-sans text-sm">Sign in to view your commendations.</p>
+        <p className="text-t2 font-sans text-sm">Sign in to view your commendations.</p>
       </div>
     );
   }

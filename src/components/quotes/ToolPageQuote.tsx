@@ -18,7 +18,7 @@ export function ToolPageQuote({ toolId }: ToolPageQuoteProps) {
         <BookOpen className="w-3.5 h-3.5 text-t4" />
       </div>
       <div className="min-w-0">
-        <p className="text-sm italic text-t3 leading-relaxed line-clamp-2">
+        <p className="text-sm italic text-t2 leading-relaxed line-clamp-2">
           &ldquo;{quote.text}&rdquo;
         </p>
         <p className="mt-1 flex items-center gap-2 flex-wrap">

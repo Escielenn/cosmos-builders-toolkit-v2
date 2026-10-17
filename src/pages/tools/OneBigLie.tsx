@@ -139,7 +139,7 @@ const EXTERNAL_RESOURCES = [
 
 // Rich text editor skeleton
 const EditorSkeleton = () => (
-  <div className="min-h-[120px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />
+  <div className="min-h-[120px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse" />
 );
 
 // Helper: count non-empty string fields in an object
@@ -200,7 +200,7 @@ const OneBigLie = () => {
           setWorksheetTags(existingWorksheet.tags);
         }
         toast({
-          title: "Worksheet Loaded",
+          title: "WORKSHEET LOADED.",
           description: "WORK RESTORED FROM CLOUD.",
         });
       } catch {
@@ -385,7 +385,7 @@ const OneBigLie = () => {
       }
     } else {
       toast({
-        title: "Draft Saved",
+        title: "DRAFT SAVED.",
         description: "WORK SECURED TO LOCAL STORAGE.",
       });
     }
@@ -563,7 +563,7 @@ const OneBigLie = () => {
             thinkLike="a physicist setting the ground rules"
             defaultOpen={true}
           >
-            <p className="text-sm text-t3 italic mb-4">
+            <p className="text-sm text-t2 italic mb-4">
               {SECTION_HELPERS.approach}
             </p>
             <RadioGroup
@@ -601,7 +601,7 @@ const OneBigLie = () => {
             levelNumber={2}
             thinkLike="a patent attorney: be precise and specific"
           >
-            <p className="text-sm text-t3 italic mb-4">
+            <p className="text-sm text-t2 italic mb-4">
               {SECTION_HELPERS.coreStatement}
             </p>
 
@@ -653,7 +653,7 @@ const OneBigLie = () => {
             levelNumber={3}
             thinkLike="a story architect: why does this change matter?"
           >
-            <p className="text-sm text-t3 italic mb-4">
+            <p className="text-sm text-t2 italic mb-4">
               {SECTION_HELPERS.justification}
             </p>
 
@@ -736,7 +736,7 @@ const OneBigLie = () => {
             levelNumber={4}
             thinkLike="an experimental scientist: how would you prove it?"
           >
-            <p className="text-sm text-t3 italic mb-4">
+            <p className="text-sm text-t2 italic mb-4">
               {SECTION_HELPERS.testability}
             </p>
 
@@ -808,10 +808,10 @@ const OneBigLie = () => {
             levelNumber={5}
             thinkLike="a biologist: what evolves?"
           >
-            <p className="text-sm text-t3 italic mb-2">
+            <p className="text-sm text-t2 italic mb-2">
               {SECTION_HELPERS.physicalConsequences}
             </p>
-            <p className="text-sm text-t3 italic mb-4">
+            <p className="text-sm text-t2 italic mb-4">
               {SECTION_HELPERS.physicalSub}
             </p>
 
@@ -873,7 +873,7 @@ const OneBigLie = () => {
             levelNumber={6}
             thinkLike="an economist: who profits?"
           >
-            <p className="text-sm text-t3 italic mb-4">
+            <p className="text-sm text-t2 italic mb-4">
               {SECTION_HELPERS.techConsequences}
             </p>
 
@@ -934,7 +934,7 @@ const OneBigLie = () => {
             levelNumber={7}
             thinkLike="a sociologist: how do people change?"
           >
-            <p className="text-sm text-t3 italic mb-4">
+            <p className="text-sm text-t2 italic mb-4">
               {SECTION_HELPERS.socialConsequences}
             </p>
 
@@ -998,7 +998,7 @@ const OneBigLie = () => {
             levelNumber={8}
             thinkLike="a hard SF editor: where do you hold the line?"
           >
-            <p className="text-sm text-t3 italic mb-4">
+            <p className="text-sm text-t2 italic mb-4">
               {SECTION_HELPERS.rigorCommitment}
             </p>
 
@@ -1076,7 +1076,7 @@ const OneBigLie = () => {
             levelNumber={9}
             thinkLike="your harshest critic: try to break your own idea"
           >
-            <p className="text-sm text-t3 italic mb-4">
+            <p className="text-sm text-t2 italic mb-4">
               {SECTION_HELPERS.consistencyTest}
             </p>
 
@@ -1151,7 +1151,7 @@ const OneBigLie = () => {
             levelNumber={10}
             thinkLike="a world's founding legislator"
           >
-            <p className="text-sm text-t3 italic mb-4">
+            <p className="text-sm text-t2 italic mb-4">
               {SECTION_HELPERS.declaration}
             </p>
 

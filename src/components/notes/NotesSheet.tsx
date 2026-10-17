@@ -29,7 +29,7 @@ export function NotesSheet({ worldId, worldName, open, onOpenChange }: NotesShee
             {worldName ? `Notes for "${worldName}"` : "Add notes about your world"}
           </SheetDescription>
         </SheetHeader>
-        <div className="flex-1 overflow-y-auto p-4">
+        <div className="flex-1 overflow-y-auto sf-sb p-4">
           <WorldNotes worldId={worldId} />
         </div>
       </SheetContent>

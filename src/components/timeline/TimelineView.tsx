@@ -208,7 +208,7 @@ const TimelineView = forwardRef<HTMLDivElement, TimelineViewProps>(({
         <h3 className="font-heading text-lg font-medium mb-2">
           NO TRACKS DEFINED
         </h3>
-        <p className="text-sm text-t3 max-w-md">
+        <p className="text-sm text-t2 max-w-md">
           Tracks are swim lanes for different entities: characters, civilizations,
           ships, planets. Add a track, then place events on it.
         </p>
@@ -231,7 +231,7 @@ const TimelineView = forwardRef<HTMLDivElement, TimelineViewProps>(({
     <div ref={ref} className="space-y-2">
       {/* Zoom Toolbar */}
       <div className="flex items-center gap-3 px-2">
-        <Button variant="ghost" size="icon" className="w-7 h-7" aria-label="Zoom out timeline" onClick={() => {
+        <Button variant="ghost" size="icon" className="w-7 h-7 min-h-hit min-w-hit" aria-label="Zoom out timeline" onClick={() => {
           dispatch({
             type: "SET_VIEW_STATE",
             payload: { pixelsPerYear: clampZoom(pixelsPerYear * 0.5), centerYear },
@@ -248,7 +248,7 @@ const TimelineView = forwardRef<HTMLDivElement, TimelineViewProps>(({
             step={1}
           />
         </div>
-        <Button variant="ghost" size="icon" className="w-7 h-7" aria-label="Zoom in timeline" onClick={() => {
+        <Button variant="ghost" size="icon" className="w-7 h-7 min-h-hit min-w-hit" aria-label="Zoom in timeline" onClick={() => {
           dispatch({
             type: "SET_VIEW_STATE",
             payload: { pixelsPerYear: clampZoom(pixelsPerYear * 2), centerYear },
@@ -273,7 +273,7 @@ const TimelineView = forwardRef<HTMLDivElement, TimelineViewProps>(({
         <TooltipProvider delayDuration={200}>
           <div
             ref={containerRef}
-            className="relative overflow-x-hidden overflow-y-auto select-none"
+            className="relative overflow-x-hidden overflow-y-auto sf-sb select-none"
             style={{
               cursor: isPanning ? "grabbing" : "grab",
               maxHeight: "60vh",

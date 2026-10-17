@@ -70,7 +70,7 @@ export default function GuidedFirstWorld({ worldId }: GuidedFirstWorldProps) {
       <h2 className="font-heading text-sm font-light uppercase tracking-[3px] text-primary mb-1">
         Begin Your World
       </h2>
-      <p className="text-t3 text-sm mb-6">
+      <p className="text-t2 text-sm mb-6">
         Every world follows the cascade: physics shapes environment, environment shapes biology, biology shapes culture. Start anywhere, but the path below traces the natural order.
       </p>
 

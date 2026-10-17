@@ -129,7 +129,7 @@ function CuratedTab({ expandedPlaylist, onExpandPlaylist }: CuratedTabProps) {
           {expandedPlaylist.name}
         </h3>
 
-        <div className="border border-sf-line-hairline divide-y divide-white/5">
+        <div className="border border-sf-line-hairline divide-y divide-sf-line-hairline">
           {expandedPlaylist.tracks.map((track, i) => (
             <TrackRow key={track.id} track={track} index={i} showAddButton />
           ))}

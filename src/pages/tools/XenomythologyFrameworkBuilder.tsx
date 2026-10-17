@@ -645,7 +645,7 @@ const XenomythologyFrameworkBuilder = () => {
           setWorksheetTags(existingWorksheet.tags);
         }
         toast({
-          title: "Worksheet Loaded",
+          title: "WORKSHEET LOADED.",
           description: "WORK RESTORED FROM CLOUD.",
         });
       } catch {
@@ -889,7 +889,7 @@ const XenomythologyFrameworkBuilder = () => {
       }
     } else {
       toast({
-        title: "Draft Saved",
+        title: "DRAFT SAVED.",
         description: "WORK SECURED TO LOCAL STORAGE.",
       });
     }
@@ -964,7 +964,7 @@ const XenomythologyFrameworkBuilder = () => {
 
     setFormState(updatedState);
     toast({
-      title: "Species Linked",
+      title: "SPECIES LINKED.",
       description: `Imported ${mappedFields.filter(f => f.value).length} fields from "${speciesName}"`,
     });
   };
@@ -979,7 +979,7 @@ const XenomythologyFrameworkBuilder = () => {
       },
     }));
     toast({
-      title: "Species Unlinked",
+      title: "SPECIES UNLINKED.",
       description: "The species link has been removed.",
     });
   };
@@ -1297,7 +1297,7 @@ const XenomythologyFrameworkBuilder = () => {
         ],
       }));
       toast({
-        title: "Archetype Added",
+        title: "ARCHETYPE ADDED.",
         description: `Added "${implication.archetypeChannel.split("/")[0].trim()}" to your Archetypal Pantheon.`,
       });
     }
@@ -1335,7 +1335,7 @@ const XenomythologyFrameworkBuilder = () => {
     });
 
     toast({
-      title: "ECR Data Imported",
+      title: "ECR DATA IMPORTED.",
       description: linkedWorksheetId
         ? "Environmental parameters imported and linked. Changes will sync."
         : "Environmental parameters imported.",
@@ -1834,7 +1834,7 @@ const XenomythologyFrameworkBuilder = () => {
           >
             <div className="space-y-8">
               <div className="p-4 rounded-none bg-accent/10 border border-accent">
-                <p className="text-sm text-t3">
+                <p className="text-sm text-t2">
                   <strong className="text-accent">Critical Insight:</strong> Archetypes are not universal forms like "The Mother" or "The Hero" but universal cognitive structures that emerge from existential pressures requiring mythic resolution. Different species facing different pressures will generate entirely different archetypal forms.
                 </p>
               </div>
@@ -1843,7 +1843,7 @@ const XenomythologyFrameworkBuilder = () => {
               {formState.pressureAnalysis.length > 0 && (
                 <div className="space-y-6">
                   <h4 className="font-medium">Pressure Analysis Matrix</h4>
-                  <p className="text-sm text-t3">
+                  <p className="text-sm text-t2">
                     For each survival challenge you selected, analyze how it generates archetypal structures.
                   </p>
 
@@ -1895,7 +1895,7 @@ const XenomythologyFrameworkBuilder = () => {
 
               {formState.pressureAnalysis.length === 0 && (
                 <div className="p-4 rounded-none border border-dashed border-muted text-center">
-                  <p className="text-sm text-t3">
+                  <p className="text-sm text-t2">
                     Select survival challenges in Section 2 to generate pressure analysis forms.
                   </p>
                 </div>
@@ -1904,7 +1904,7 @@ const XenomythologyFrameworkBuilder = () => {
               {/* Novel Archetypal Forms */}
               <div className="space-y-6 p-4 rounded-none border border-sf-line-interactive">
                 <h4 className="font-medium">Novel Archetypal Forms</h4>
-                <p className="text-sm text-t3">
+                <p className="text-sm text-t2">
                   These fields appear based on your species' unique biology and environment.
                 </p>
 
@@ -1991,7 +1991,7 @@ const XenomythologyFrameworkBuilder = () => {
                 {!showMetamorphicArchetype && !showHiveMindArchetype && !showMultiParentalArchetype &&
                  !showLongevityArchetype && !showBinaryStarArchetype && !showTidallyLockedArchetype &&
                  !showOceanWorldArchetype && !showNoSkyArchetype && (
-                  <p className="text-sm text-t3 italic">
+                  <p className="text-sm text-t2 italic">
                     No special archetype fields triggered by current selections. These appear when you select specific biology or environment options.
                   </p>
                 )}
@@ -2002,7 +2002,7 @@ const XenomythologyFrameworkBuilder = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <h4 className="font-medium">Species-Specific Archetypal Pantheon</h4>
-                    <p className="text-sm text-t3">
+                    <p className="text-sm text-t2">
                       Define 5-12 archetypal forms derived from your species' pressures, biology, and environment.
                     </p>
                   </div>
@@ -2042,7 +2042,7 @@ const XenomythologyFrameworkBuilder = () => {
 
                     <div className="space-y-2">
                       <Label>Cognitive Function</Label>
-                      <Suspense fallback={<div className="min-h-[80px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
+                      <Suspense fallback={<div className="min-h-[80px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                         <RichTextEditor
                           content={archetype.cognitiveFunction}
                           onChange={(value) => updateArchetype(index, "cognitiveFunction", value)}
@@ -2055,7 +2055,7 @@ const XenomythologyFrameworkBuilder = () => {
 
                     <div className="space-y-2">
                       <Label>Symbolic Form</Label>
-                      <Suspense fallback={<div className="min-h-[80px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
+                      <Suspense fallback={<div className="min-h-[80px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                         <RichTextEditor
                           content={archetype.symbolicForm}
                           onChange={(value) => updateArchetype(index, "symbolicForm", value)}
@@ -2080,7 +2080,7 @@ const XenomythologyFrameworkBuilder = () => {
                 {formState.archetypePantheon.length === 0 && (
                   <div className="p-4 rounded-none border border-dashed border-muted text-center">
                     <Sparkles className="w-8 h-8 mx-auto mb-2 text-t2" />
-                    <p className="text-sm text-t3">
+                    <p className="text-sm text-t2">
                       Click "Add Archetype" to start building your species' unique archetypal pantheon.
                     </p>
                   </div>
@@ -2255,7 +2255,7 @@ const XenomythologyFrameworkBuilder = () => {
 
                       <div className="space-y-2">
                         <Label>How Species Interacts with This Divine Form</Label>
-                        <Suspense fallback={<div className="min-h-[60px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
+                        <Suspense fallback={<div className="min-h-[60px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                           <RichTextEditor
                             content={deity.interaction}
                             onChange={(value) => updateDeity(index, "interaction", value)}
@@ -2269,7 +2269,7 @@ const XenomythologyFrameworkBuilder = () => {
                   ))}
 
                   {formState.divineConceptualization.deities.length === 0 && (
-                    <p className="text-sm text-t3 italic text-center py-4">
+                    <p className="text-sm text-t2 italic text-center py-4">
                       Add deities to define their divine characteristics.
                     </p>
                   )}
@@ -2328,7 +2328,7 @@ const XenomythologyFrameworkBuilder = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <h4 className="font-medium">Symbolic Catalog</h4>
-                    <p className="text-sm text-t3">
+                    <p className="text-sm text-t2">
                       Sacred/significant entities that carry symbolic weight.
                     </p>
                   </div>
@@ -2366,7 +2366,7 @@ const XenomythologyFrameworkBuilder = () => {
 
                     <div className="space-y-2">
                       <Label>Why Symbolically Important</Label>
-                      <Suspense fallback={<div className="min-h-[60px] rounded-md border border-sf-line-interactive bg-background/50 animate-pulse" />}>
+                      <Suspense fallback={<div className="min-h-[60px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse" />}>
                         <RichTextEditor
                           content={entity.symbolicImportance}
                           onChange={(value) => updateSymbolicEntity(index, "symbolicImportance", value)}
@@ -2388,7 +2388,7 @@ const XenomythologyFrameworkBuilder = () => {
                 ))}
 
                 {formState.symbolicCatalog.length === 0 && (
-                  <p className="text-sm text-t3 italic text-center py-4">
+                  <p className="text-sm text-t2 italic text-center py-4">
                     Add symbolic entities to build your mythology's bestiary.
                   </p>
                 )}
@@ -2570,7 +2570,7 @@ const XenomythologyFrameworkBuilder = () => {
               {/* Ethical Framework */}
               <div className="space-y-6 p-4 rounded-none border border-sf-line-interactive">
                 <h4 className="font-medium text-primary">Ethical Framework</h4>
-                <p className="text-sm text-t3">
+                <p className="text-sm text-t2">
                   Based on this mythology, what behaviors are considered virtuous, taboo, or ambiguous?
                 </p>
 
@@ -2621,7 +2621,7 @@ const XenomythologyFrameworkBuilder = () => {
               {/* Science/Knowledge Relationship */}
               <div className="space-y-6 p-4 rounded-none border border-sf-line-interactive">
                 <h4 className="font-medium text-primary">Science/Knowledge Relationship</h4>
-                <p className="text-sm text-t3">
+                <p className="text-sm text-t2">
                   How would this mythology interact with empirical understanding?
                 </p>
 
@@ -2667,7 +2667,7 @@ const XenomythologyFrameworkBuilder = () => {
                           </span>
                         )}
                         {archetype.cognitiveFunction && (
-                          <p className="text-sm text-t3 mt-1">{archetype.cognitiveFunction}</p>
+                          <p className="text-sm text-t2 mt-1">{archetype.cognitiveFunction}</p>
                         )}
                       </div>
                     ))}
@@ -2682,7 +2682,7 @@ const XenomythologyFrameworkBuilder = () => {
             className="mt-8 p-6"
             style={{
               background: "rgba(15, 15, 16, 0.92)",
-              border: "1px solid rgba(21, 193, 123, 0.15)",
+              border: "1px solid var(--sf-line)",
               backdropFilter: "blur(16px)",
               borderRadius: 8,
             }}

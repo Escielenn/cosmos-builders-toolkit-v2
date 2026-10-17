@@ -42,7 +42,7 @@ const Eyebrow = React.forwardRef<HTMLDivElement, EyebrowProps>(
   ({ className, font, tone, prefix, children, ...props }, ref) => (
     <div ref={ref} className={cn(eyebrowVariants({ font, tone }), className)} {...props}>
       {prefix ? (
-        <span className="font-mono text-sf-teal tracking-[0.18em]" aria-hidden>
+        <span className="font-mono text-sf-primary-text tracking-[0.18em]" aria-hidden>
           {prefix}
         </span>
       ) : null}

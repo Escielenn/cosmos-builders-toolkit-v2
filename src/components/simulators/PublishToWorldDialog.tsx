@@ -34,6 +34,7 @@ import type { SimulatorPayload } from "@/hooks/use-simulation-save";
 import type { EntryType } from "@/services/world-data";
 import { extractSimulationFacts } from "@/lib/simulation-facts";
 import { newRunId } from "@/lib/simulators/published-facts";
+import { mapError } from "@/lib/ship-voice";
 
 /** Map simulator output types to entity types */
 const OUTPUT_TYPE_MAP: Record<string, EntryType> = {
@@ -137,8 +138,8 @@ export default function PublishToWorldDialog({
       await createEntity();
     } catch (error) {
       toast({
-        title: "Publish failed",
-        description: error instanceof Error ? error.message : "Unknown error",
+        title: "PUBLISH FAILED.",
+        description: mapError(error),
         variant: "destructive",
       });
       setIsPublishing(false);
@@ -181,15 +182,15 @@ export default function PublishToWorldDialog({
       );
 
       toast({
-        title: "Published to world",
+        title: "PUBLISHED TO WORLD.",
         description: `"${name.trim()}" has been added as a ${entryType.replace("_", " ")}.`,
       });
       onOpenChange(false);
       setName("");
     } catch (error) {
       toast({
-        title: "Publish failed",
-        description: error instanceof Error ? error.message : "Unknown error",
+        title: "PUBLISH FAILED.",
+        description: mapError(error),
         variant: "destructive",
       });
     } finally {
@@ -202,7 +203,7 @@ export default function PublishToWorldDialog({
       // Entity already exists, just close and notify
       setMatchDialogOpen(false);
       toast({
-        title: "Entity exists",
+        title: "ENTITY EXISTS.",
         description: `"${_candidate.title}" already exists in your world. Simulation data noted.`,
       });
       onOpenChange(false);

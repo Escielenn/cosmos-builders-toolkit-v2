@@ -80,7 +80,7 @@ export default function UploadTab() {
           No uploaded tracks yet.
         </p>
       ) : (
-        <div className="border border-sf-line-hairline divide-y divide-white/5">
+        <div className="border border-sf-line-hairline divide-y divide-sf-line-hairline">
           {(tracks ?? []).map((track) => {
             const isThis = currentTrack?.id === track.id;
             const isPlaying = isThis && status === "playing";
@@ -120,7 +120,7 @@ export default function UploadTab() {
                 <button
                   type="button"
                   onClick={() => deleteTrack.mutate({ trackId: track.id })}
-                  className="p-1 text-t4 hover:text-sf-crimson opacity-0 group-hover:opacity-100 transition-all"
+                  className="p-1 text-t4 hover:text-sf-crimson-text opacity-0 group-hover:opacity-100 transition-all"
                   aria-label="Delete track"
                 >
                   <Trash2 className="w-3 h-3" />

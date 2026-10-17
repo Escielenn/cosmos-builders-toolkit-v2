@@ -116,7 +116,7 @@ const LegalPageLayout = ({
             {title}
           </h1>
           {subtitle && (
-            <p className="text-lg text-t3 mb-4">{subtitle}</p>
+            <p className="text-lg text-t2 mb-4">{subtitle}</p>
           )}
           <div className="flex items-center gap-2 font-mono text-[12px] tracking-[0.18em] uppercase text-t4">
             <Calendar className="w-3 h-3" />

@@ -134,9 +134,9 @@ const CalendarEditorDialog = ({
             <DialogTitle>Custom Calendars</DialogTitle>
           </DialogHeader>
 
-          <div className="space-y-2 max-h-[50vh] overflow-y-auto">
+          <div className="space-y-2 max-h-[50vh] overflow-y-auto sf-sb">
             {state.calendars.length === 0 && (
-              <p className="text-sm text-t3 text-center py-4">
+              <p className="text-sm text-t2 text-center py-4">
                 No custom calendars yet. Create one to use alien or fictional date systems.
               </p>
             )}
@@ -153,7 +153,7 @@ const CalendarEditorDialog = ({
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="w-7 h-7"
+                    className="w-7 h-7 min-h-hit min-w-hit"
                     onClick={() => handleEdit(cal)}
                     aria-label="Edit calendar"
                   >
@@ -162,7 +162,7 @@ const CalendarEditorDialog = ({
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="w-7 h-7 text-sf-crimson hover:text-sf-crimson"
+                    className="w-7 h-7 text-sf-crimson-text hover:text-sf-crimson-text min-h-hit min-w-hit"
                     onClick={() => handleDelete(cal.id)}
                     aria-label="Delete calendar"
                   >
@@ -191,7 +191,7 @@ const CalendarEditorDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg max-h-[85vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-lg max-h-[85vh] overflow-y-auto sf-sb">
         <DialogHeader>
           <DialogTitle>
             {editingCalendar ? "Edit Calendar" : "Create Calendar"}
@@ -256,7 +256,7 @@ const CalendarEditorDialog = ({
                   key={index}
                   className={cn(
                     "grid grid-cols-[auto_1fr_1fr_60px_60px_auto] gap-1.5 items-center",
-                    "p-2 rounded-md border border-sf-line bg-muted/10"
+                    "p-2 rounded-none border border-sf-line bg-muted/10"
                   )}
                 >
                   <GripVertical className="w-3.5 h-3.5 text-t3/50" />

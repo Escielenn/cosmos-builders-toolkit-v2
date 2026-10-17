@@ -105,7 +105,7 @@ const CodexElementRow = memo(({
           onBlur={commitRename}
           onKeyDown={handleKeyDown}
           title="Rename entry"
-          className="text-[14px] flex-1 leading-tight bg-transparent border-b border-primary outline-none text-t1 px-0 py-0"
+          className="text-[14px] flex-1 leading-tight bg-transparent border-b border-primary text-t1 px-0 py-0"
         />
       </div>
     );

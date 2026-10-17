@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState, ReactNode } from "react
 import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { mapError } from "@/lib/ship-voice";
 
 interface Profile {
   id: string;
@@ -165,7 +166,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (error) {
       toast({
         title: "LOGOUT FAILED.",
-        description: error.message,
+        description: mapError(error),
         variant: "destructive",
       });
     }
@@ -196,15 +197,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   // instead of an infinite spinner (the paused-DB failure mode).
   if (connectionError && !session) {
     return (
-      <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-[hsl(var(--sf-void-hsl))] px-6">
-        <div className="max-w-md border border-sf-border bg-sf-surface/90 p-8 text-center">
-          <div className="mb-4 font-mono text-[12px] uppercase tracking-[3px] text-sf-crimson">
+      <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[hsl(var(--sf-void-hsl))] px-6">
+        <div className="max-w-md border border-sf-line bg-sf-surface/90 p-8 text-center">
+          <div className="mb-4 font-mono text-[12px] uppercase tracking-[3px] text-sf-crimson-text">
             {"// connection lost"}
           </div>
           <h1 className="mb-3 font-display text-2xl font-light tracking-[0.04em] text-t1">
             Can't reach the forge
           </h1>
-          <p className="mb-6 text-sm leading-relaxed text-t3">
+          <p className="mb-6 text-sm leading-relaxed text-t2">
             StellarForge couldn't reach its servers. This is usually a brief
             network hiccup, not your worlds — they're safe. Give it a moment,
             then try again.

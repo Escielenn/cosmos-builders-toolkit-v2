@@ -25,6 +25,7 @@ import { BADGE_DEFINITIONS } from "@/lib/badges/definitions";
 import AvatarPickerDialog from "@/components/settings/AvatarPickerDialog";
 import { PageBursts } from "@/components/ui/data-burst";
 import { SETTINGS_BURSTS } from "@/lib/data-bursts";
+import { mapError } from "@/lib/ship-voice";
 
 const Profile = () => {
   const { user, profile, loading, updateProfile } = useAuth();
@@ -70,7 +71,7 @@ const Profile = () => {
     if (uploadError) {
       toast({
         title: "UPLOAD FAILED.",
-        description: uploadError.message,
+        description: mapError(uploadError),
         variant: "destructive",
       });
       setIsUploading(false);
@@ -101,7 +102,7 @@ const Profile = () => {
     if (error) {
       toast({
         title: "SAVE FAILED.",
-        description: error.message,
+        description: mapError(error),
         variant: "destructive",
       });
     } else {
@@ -282,7 +283,7 @@ const Profile = () => {
               {subscription.status === 'past_due' && (
                 <div className="p-3 rounded-none bg-red-500/10 border border-sf-crimson flex items-center gap-2">
                   <AlertCircle className="w-5 h-5 text-sf-crimson" />
-                  <p className="text-sm text-red-600 dark:text-sf-crimson">
+                  <p className="text-sm text-red-600 dark:text-sf-crimson-text">
                     Payment failed. Update payment method to restore access.
                   </p>
                 </div>
@@ -345,7 +346,7 @@ const Profile = () => {
             </div>
           ) : (
             <div className="space-y-4">
-              <p className="text-t3">
+              <p className="text-t2">
                 Standard clearance. Upgrade for full tool access.
               </p>
               <Button

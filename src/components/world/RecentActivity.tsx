@@ -132,7 +132,7 @@ export default function RecentActivity({ worldId }: RecentActivityProps) {
         <Activity className="w-3.5 h-3.5" />
         Recent Activity
       </h2>
-      <GlassPanel className="p-0 divide-y divide-white/[0.04]">
+      <GlassPanel className="p-0 divide-y divide-sf-line-hairline">
         {items.map((item) => {
           const Icon = TYPE_ICONS[item.type];
           return (

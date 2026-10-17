@@ -15,7 +15,7 @@ export default function SoundtrackPicker({ value, onChange }: SoundtrackPickerPr
   return (
     <div className="space-y-2">
       {selected ? (
-        <div className="flex items-center gap-2 px-3 py-2 bg-primary/[0.06] border border-primary/15">
+        <div className="flex items-center gap-2 px-3 py-2 bg-primary/[0.06] border border-primary">
           <Music className="w-3.5 h-3.5 text-primary shrink-0" />
           <span className="text-sm text-t2 flex-1 truncate">
             {selected.name}
@@ -37,7 +37,7 @@ export default function SoundtrackPicker({ value, onChange }: SoundtrackPickerPr
       )}
 
       {/* Playlist picker */}
-      <div className="max-h-32 overflow-y-auto border border-sf-line-hairline divide-y divide-white/5">
+      <div className="max-h-32 overflow-y-auto sf-sb border border-sf-line-hairline divide-y divide-sf-line-hairline">
         {allPlaylists.map((p) => (
           <PlaylistOption
             key={p.id}

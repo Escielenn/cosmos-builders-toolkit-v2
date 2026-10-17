@@ -169,7 +169,7 @@ export default function Studio(): JSX.Element {
               <h1 className="font-serif text-[34px] italic leading-tight text-t1 md:text-[44px]">
                 {greeting()}, {firstName}.
               </h1>
-              <p className="mt-2 font-serif text-[15px] italic text-t3">
+              <p className="mt-2 font-serif text-[15px] italic text-t2">
                 {entry
                   ? `You were last writing in “${entry.title || "an untitled piece"}” ${timeAgo(entry.updated_at)}.`
                   : "A blank page is just a world that hasn't introduced itself yet."}
@@ -263,7 +263,7 @@ export default function Studio(): JSX.Element {
               ) : (
                 <>
                   <h3 className="font-serif text-[24px] italic text-t1">Begin the first page.</h3>
-                  <p className="mt-2 max-w-[560px] font-serif text-[15px] italic leading-[1.7] text-t3">
+                  <p className="mt-2 max-w-[560px] font-serif text-[15px] italic leading-[1.7] text-t2">
                     Open a world and start writing. The studio remembers where you stopped,
                     keeps your streak going, and leaves your last sentence right here.
                   </p>

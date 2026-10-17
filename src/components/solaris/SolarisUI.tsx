@@ -15,7 +15,7 @@ interface SolarisUIProps {
 const S = {
   // Top-right, above the generate panel. Capped so the two cannot overlap.
   panel:
-    "absolute right-3 top-14 z-10 w-56 bg-[rgba(15,15,16,0.92)] border border-white/[0.35] backdrop-blur-[16px] rounded-none p-3.5 space-y-3 max-h-[44%] overflow-y-auto",
+    "absolute right-3 top-14 z-10 w-56 bg-[rgba(15,15,16,0.92)] border border-sf-line backdrop-blur-[16px] rounded-none p-3.5 space-y-3 max-h-[44%] overflow-y-auto sf-sb",
   // Readout contrast: labels were white/30, which is below the tier-3 floor for
   // text you are meant to read rather than skim past.
   sectionLabel:
@@ -27,7 +27,7 @@ const S = {
   badge:
     "inline-block px-1.5 py-0.5 text-[12px] uppercase tracking-wider font-mono border rounded-sm mt-1",
   badgeHz:
-    "bg-[rgba(46,204,113,0.1)] border-[rgba(46,204,113,0.3)] text-sf-emerald-text",
+    "bg-[rgba(46,204,113,0.1)] border-sf-emerald text-sf-emerald-text",
   ghost:
     "text-[13px] text-white/45 font-mono uppercase tracking-wider text-center py-4",
 };
@@ -47,7 +47,7 @@ export default function SolarisUI({ systemName, star, selectedBody }: SolarisUIP
   return (
     <div className={S.panel}>
       {/* Title */}
-      <div className="pb-2 border-b border-white/[0.35]">
+      <div className="pb-2 border-b border-sf-line">
         <p className="font-heading text-[12px] uppercase tracking-[2px] text-sf-primary-text/50">
           System
         </p>
@@ -68,7 +68,7 @@ export default function SolarisUI({ systemName, star, selectedBody }: SolarisUIP
       </div>
 
       {/* Selected body */}
-      <div className="pt-2 border-t border-white/[0.35]">
+      <div className="pt-2 border-t border-sf-line">
         {selectedBody && selectedBody.type === "planet" ? (
           <PlanetReadout planet={selectedBody.data as PlanetData} />
         ) : selectedBody && selectedBody.type === "star" ? (
@@ -105,7 +105,7 @@ function PlanetReadout({ planet }: { planet: PlanetData }) {
           save all along and simply never displayed, which left the panel
           showing numbers when the useful part for a writer is the prose. */}
       {m && (
-        <div className="mt-2 pt-2 border-t border-white/[0.35]">
+        <div className="mt-2 pt-2 border-t border-sf-line">
           <Row label="Band" value={m.band} />
           <Row label="Life" value={m.life} />
           <Row label="Atmosphere" value={m.atmosphere} />
@@ -121,7 +121,7 @@ function PlanetReadout({ planet }: { planet: PlanetData }) {
       )}
 
       {planet.moons.length > 0 && (
-        <div className="mt-2 pt-2 border-t border-white/[0.35]">
+        <div className="mt-2 pt-2 border-t border-sf-line">
           <span className={S.sectionLabel}>Moons</span>
           {planet.moons.map((moon, i) => (
             <Row

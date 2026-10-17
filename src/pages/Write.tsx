@@ -394,7 +394,7 @@ export default function Write(): JSX.Element {
                   onBlur={() => commitRename("folder")}
                   onKeyDown={renameKeyDown("folder")}
                   aria-label="Chapter name"
-                  className="min-w-0 flex-1 bg-transparent px-3 py-1 font-heading text-[12px] uppercase tracking-[1.5px] text-t1 outline-none"
+                  className="min-w-0 flex-1 bg-transparent px-3 py-1 font-heading text-[12px] uppercase tracking-[1.5px] text-t1"
                 />
               ) : (
                 <button
@@ -520,7 +520,7 @@ export default function Write(): JSX.Element {
                         }
                       }}
                       aria-label={`Delete ${d.title || "Untitled"} permanently`} title="Delete forever"
-                      className="shrink-0 p-1.5 text-t4 opacity-0 transition-opacity hover:text-sf-crimson focus-visible:opacity-100 group-hover:opacity-100">
+                      className="shrink-0 p-1.5 text-t4 opacity-0 transition-opacity hover:text-sf-crimson-text focus-visible:opacity-100 group-hover:opacity-100">
                       <X className="h-3.5 w-3.5" />
                     </button>
                   </div>
@@ -703,7 +703,7 @@ export default function Write(): JSX.Element {
         )}
 
         {/* editor */}
-        <main className="sf-sb sf-sb--idle min-h-0 overflow-y-auto">
+        <main className="sf-sb min-h-0 overflow-y-auto">
           {findOpen && view === "editor" && (
             <FindReplaceBar
               editor={editorInstance}
@@ -729,7 +729,7 @@ export default function Write(): JSX.Element {
               onChange={(e) => setTitle(e.target.value)}
               onBlur={saveTitle}
               placeholder="Document title"
-              className="w-full bg-transparent font-serif text-[30px] italic text-t1 outline-none placeholder:text-t4"
+              className="w-full bg-transparent font-serif text-[30px] italic text-t1 placeholder:text-t4"
               aria-label="Document title"
             />
             {/* Index-card fields. Collapsed until opened so they never compete
@@ -847,7 +847,7 @@ function SortableDocRow({
           onBlur={onRenameBlur}
           onKeyDown={onRenameKeyDown}
           aria-label="Document title"
-          className="min-w-0 flex-1 bg-transparent py-1.5 pl-3 pr-2 font-serif text-[13px] text-t1 outline-none"
+          className="min-w-0 flex-1 bg-transparent py-1.5 pl-3 pr-2 font-serif text-[13px] text-t1"
         />
       ) : (
         <button
@@ -900,7 +900,7 @@ function SortableDocRow({
         onClick={(e) => { e.stopPropagation(); onTrash(); }}
         aria-label={`Move ${d.title || "Untitled"} to trash`}
         title="Move to trash"
-        className="shrink-0 p-1.5 text-t4 opacity-0 transition-opacity hover:text-sf-crimson focus-visible:opacity-100 group-hover:opacity-100"
+        className="shrink-0 p-1.5 text-t4 opacity-0 transition-opacity hover:text-sf-crimson-text focus-visible:opacity-100 group-hover:opacity-100"
       >
         <Trash2 className="h-3.5 w-3.5" />
       </button>

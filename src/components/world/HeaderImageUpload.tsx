@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 import { MoodboardPickerDialog } from "@/components/moodboard/MoodboardPickerDialog";
 
+import { mapError } from "@/lib/ship-voice";
 interface HeaderImageUploadProps {
   currentImageUrl: string | null;
   onImageChange: (url: string | null) => void;
@@ -38,7 +39,7 @@ const HeaderImageUpload = ({
     // Validate file type
     if (!file.type.startsWith("image/")) {
       toast({
-        title: "Invalid file type",
+        title: "INVALID FILE TYPE.",
         description: "Select image file.",
         variant: "destructive",
       });
@@ -48,7 +49,7 @@ const HeaderImageUpload = ({
     // Validate file size (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
       toast({
-        title: "File too large",
+        title: "FILE TOO LARGE.",
         description: "Image must be under 5MB.",
         variant: "destructive",
       });
@@ -66,8 +67,8 @@ const HeaderImageUpload = ({
 
     if (uploadError) {
       toast({
-        title: "Upload failed",
-        description: uploadError.message,
+        title: "UPLOAD FAILED.",
+        description: mapError(uploadError),
         variant: "destructive",
       });
       setIsUploading(false);
@@ -82,7 +83,7 @@ const HeaderImageUpload = ({
     setIsUploading(false);
 
     toast({
-      title: "Image uploaded",
+      title: "IMAGE UPLOADED.",
       description: "Header image updated successfully.",
     });
 

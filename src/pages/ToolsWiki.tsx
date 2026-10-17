@@ -151,7 +151,7 @@ function ToolDetail({
         <h4 className="font-mono text-[12px] tracking-[2px] uppercase text-t3/60 mb-2">
           // CASCADE POSITION
         </h4>
-        <div className="flex items-center gap-1 overflow-x-auto pb-1">
+        <div className="flex items-center gap-1 overflow-x-auto sf-sb pb-1">
           {(Object.keys(CASCADE_META) as CascadePosition[])
             .filter((k) => k !== "meta")
             .sort((a, b) => CASCADE_META[a].order - CASCADE_META[b].order)
@@ -510,7 +510,7 @@ const ToolsWiki = () => {
 
       {/* Detail sheet */}
       <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
-        <SheetContent side="right" className="w-[380px] sm:w-[420px] bg-background/95 backdrop-blur-lg overflow-y-auto">
+        <SheetContent side="right" className="w-[380px] sm:w-[420px] bg-background/95 backdrop-blur-lg overflow-y-auto sf-sb">
           <div className="pt-4">
             {selectedTool && (
               <ToolDetail

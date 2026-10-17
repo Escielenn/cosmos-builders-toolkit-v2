@@ -44,7 +44,7 @@ export function WorksheetMoodboardSheet({
             Add reference images to inspire your design.
           </SheetDescription>
         </SheetHeader>
-        <div className="flex-1 overflow-y-auto p-4">
+        <div className="flex-1 overflow-y-auto sf-sb p-4">
           <MoodboardSection
             worksheetId={worksheetId}
             images={images}

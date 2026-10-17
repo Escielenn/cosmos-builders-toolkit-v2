@@ -19,6 +19,7 @@ import type { RoadmapItem } from "@/hooks/use-roadmap";
 import { useToast } from "@/hooks/use-toast";
 import { PageBursts } from "@/components/ui/data-burst";
 import { ROADMAP_BURSTS } from "@/lib/data-bursts";
+import { mapError } from "@/lib/ship-voice";
 
 const STATUS_CONFIG: Record<string, { label: string; className: string }> = {
   planned: {
@@ -31,7 +32,7 @@ const STATUS_CONFIG: Record<string, { label: string; className: string }> = {
   },
   beta: {
     label: "BETA",
-    className: "bg-violet-500/6 border-sf-violet text-sf-violet",
+    className: "bg-violet-500/6 border-sf-violet text-sf-violet-text",
   },
   released: {
     label: "RELEASED",
@@ -54,7 +55,7 @@ function VoteBudgetBar({ used, remaining, max }: { used: number; remaining: numb
         <span className="text-xs font-medium uppercase tracking-[1.5px] text-t3">
           VOTE BUDGET
         </span>
-        <span className="font-mono text-sm text-sf-violet">
+        <span className="font-mono text-sm text-sf-violet-text">
           {remaining}/{max} <span className="text-t4">remaining</span>
         </span>
       </div>
@@ -84,8 +85,8 @@ function RoadmapCard({ item, canVote }: { item: RoadmapItem; canVote: boolean })
       await castVote.mutateAsync({ itemId: item.id, count });
     } catch (err) {
       toast({
-        title: "Vote failed",
-        description: err instanceof Error ? err.message : "Try again.",
+        title: "VOTE FAILED.",
+        description: mapError(err),
         variant: "destructive",
       });
     }
@@ -97,7 +98,7 @@ function RoadmapCard({ item, canVote }: { item: RoadmapItem; canVote: boolean })
     } catch (err) {
       toast({
         title: "OPERATION FAILED.",
-        description: err instanceof Error ? err.message : "Try again.",
+        description: mapError(err),
         variant: "destructive",
       });
     }
@@ -165,7 +166,7 @@ function RoadmapCard({ item, canVote }: { item: RoadmapItem; canVote: boolean })
             <Button
               variant="ghost"
               size="sm"
-              className="gap-1 text-t4 hover:text-sf-crimson ml-auto"
+              className="gap-1 text-t4 hover:text-sf-crimson-text ml-auto"
               onClick={handleRemoveVote}
               disabled={removeVote.isPending}
             >
@@ -181,7 +182,7 @@ function RoadmapCard({ item, canVote }: { item: RoadmapItem; canVote: boolean })
               key={n}
               variant="outline"
               size="sm"
-              className="gap-1 opacity-40 cursor-not-allowed"
+              className="gap-1 cursor-not-allowed"
               disabled
             >
               <ChevronUp className="w-3 h-3" />
@@ -235,7 +236,7 @@ const Roadmap = () => {
         )}
 
         {/* Status filter tabs */}
-        <div className="flex gap-2 mb-6 overflow-x-auto pb-1">
+        <div className="flex gap-2 mb-6 overflow-x-auto sf-sb pb-1">
           {statusTabs.map(tab => (
             <button
               key={tab.value}
@@ -256,7 +257,7 @@ const Roadmap = () => {
           <div className="text-center py-16 text-t3">Loading roadmap...</div>
         ) : items.length === 0 ? (
           <GlassPanel className="p-8 text-center">
-            <p className="text-t3">No roadmap items match this filter.</p>
+            <p className="text-t2">No roadmap items match this filter.</p>
           </GlassPanel>
         ) : (
           <div className="space-y-4">

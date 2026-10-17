@@ -81,7 +81,7 @@ const Archive = () => {
           <GlassPanel className="p-12 text-center">
             <ArchiveIcon className="w-12 h-12 mx-auto mb-4 text-t3" />
             <h3 className="font-medium mb-2">Your archive is empty</h3>
-            <p className="text-sm text-t3">
+            <p className="text-sm text-t2">
               When you archive a world, it will appear here. You can restore it
               at any time.
             </p>

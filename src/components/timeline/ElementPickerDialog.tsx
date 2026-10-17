@@ -89,9 +89,9 @@ const ElementPickerDialog = ({
         </div>
 
         {/* Worksheet list */}
-        <div className="max-h-80 overflow-y-auto -mx-1 space-y-3">
+        <div className="max-h-80 overflow-y-auto sf-sb -mx-1 space-y-3">
           {groups.length === 0 ? (
-            <p className="text-sm text-t3 text-center py-6">
+            <p className="text-sm text-t2 text-center py-6">
               {worksheets.length === 0
                 ? "No worksheets in this world yet."
                 : "No worksheets match your search."}
@@ -113,7 +113,7 @@ const ElementPickerDialog = ({
                       type="button"
                       onClick={() => handleSelect(ws)}
                       className={cn(
-                        "flex items-center gap-2 w-full px-3 py-1.5 rounded-md text-sm text-left",
+                        "flex items-center gap-2 w-full px-3 py-1.5 rounded-none text-sm text-left",
                         "hover:bg-muted/50 transition-colors"
                       )}
                     >

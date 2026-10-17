@@ -2119,7 +2119,7 @@ const StellarCartographer: React.FC = () => {
               className={styles.starClass}
               style={{
                 background: hexToRgba(STAR_TYPES[selectedStar.type].color, 0.15),
-                border: `1px solid ${hexToRgba(STAR_TYPES[selectedStar.type].color, 0.3)}`,
+                border: `1px solid ${STAR_TYPES[selectedStar.type].color}`,
                 color: STAR_TYPES[selectedStar.type].color
               }}
             >

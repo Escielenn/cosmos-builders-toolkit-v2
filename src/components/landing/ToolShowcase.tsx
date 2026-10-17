@@ -422,7 +422,7 @@ const ToolShowcase = () => {
             BEGIN
           </Link>
         </Button>
-        <p className="text-sm text-t3 mt-3">
+        <p className="text-sm text-t2 mt-3">
           No credit card required.
         </p>
       </motion.div>

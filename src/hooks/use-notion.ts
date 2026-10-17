@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "./use-toast";
 import { safeOpenWindow } from "@/lib/url-validation";
+import { mapError } from "@/lib/ship-voice";
 
 interface NotionConnection {
   id: string;
@@ -69,7 +70,7 @@ export function useNotion() {
   const connect = useCallback(async () => {
     if (!session?.access_token) {
       toast({
-        title: "Not authenticated",
+        title: "NOT AUTHENTICATED.",
         description: "Authentication required to connect Notion.",
         variant: "destructive",
       });
@@ -147,7 +148,7 @@ export function useNotion() {
             if (data) {
               setConnection(data);
               toast({
-                title: "Notion connected",
+                title: "NOTION CONNECTED.",
                 description: `Connected to ${data.workspace_name || "workspace"}`,
               });
             }
@@ -157,8 +158,8 @@ export function useNotion() {
     } catch (error) {
       console.error("Notion connect error:", error);
       toast({
-        title: "Connection failed",
-        description: error instanceof Error ? error.message : "Failed to connect to Notion",
+        title: "CONNECTION FAILED.",
+        description: mapError(error),
         variant: "destructive",
       });
       setIsConnecting(false);
@@ -283,13 +284,13 @@ export function useNotion() {
 
       setConnection(null);
       toast({
-        title: "Notion disconnected",
+        title: "NOTION DISCONNECTED.",
         description: "Your Notion workspace has been disconnected.",
       });
     } catch (error) {
       console.error("Disconnect error:", error);
       toast({
-        title: "Disconnect failed",
+        title: "DISCONNECT FAILED.",
         description: "Failed to disconnect Notion.",
         variant: "destructive",
       });

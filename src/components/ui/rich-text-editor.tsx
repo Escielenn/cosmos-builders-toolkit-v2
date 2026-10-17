@@ -95,7 +95,7 @@ const RichTextEditor = ({
     editorProps: {
       attributes: {
         class: cn(
-          "prose prose-sm max-w-none focus:outline-none",
+          "prose prose-sm max-w-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sf-focus",
           "prose-headings:font-medium",
           "prose-h1:text-xl prose-h1:mt-4 prose-h1:mb-2",
           "prose-h2:text-lg prose-h2:mt-3 prose-h2:mb-2",
@@ -105,7 +105,7 @@ const RichTextEditor = ({
           "prose-li:my-0.5",
           "prose-blockquote:border-l-primary prose-blockquote:text-t3",
           "prose-code:text-xs prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded",
-          "prose-pre:bg-sf-void prose-pre:p-3 prose-pre:rounded-md",
+          "prose-pre:bg-sf-void prose-pre:p-3 prose-pre:rounded-none",
           "[&_.is-editor-empty:first-child::before]:text-t3/50 [&_.is-editor-empty:first-child::before]:content-[attr(data-placeholder)] [&_.is-editor-empty:first-child::before]:float-left [&_.is-editor-empty:first-child::before]:pointer-events-none [&_.is-editor-empty:first-child::before]:h-0"
         ),
       },
@@ -135,7 +135,7 @@ const RichTextEditor = ({
     <BracketPanel color="stellar">
     <div
       className={cn(
-        "rounded-none border border-sf-stellar/15 bg-background overflow-hidden relative",
+        "rounded-none border border-sf-stellar bg-background overflow-hidden relative",
         className
       )}
     >
@@ -279,7 +279,7 @@ const RichTextEditor = ({
       <EditorContent
         editor={editor}
         className={cn(
-          "px-3 py-2 [&_.tiptap]:outline-none [&_.tiptap]:min-h-[var(--editor-min-h)]",
+          "px-3 py-2 [&_.tiptap]:outline-none [&_.tiptap:focus-visible]:ring-2 [&_.tiptap:focus-visible]:ring-sf-focus [&_.tiptap]:min-h-[var(--editor-min-h)]",
           !readOnly && "sf-writing-surface",
           readOnly && "bg-muted/30"
         )}

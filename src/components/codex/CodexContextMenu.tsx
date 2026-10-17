@@ -131,7 +131,7 @@ const CodexContextMenu = ({
         {onDelete && (
           <ContextMenuItem
             onClick={() => onDelete(element)}
-            className="text-xs gap-2 text-sf-crimson focus:text-sf-crimson"
+            className="text-xs gap-2 text-sf-crimson-text focus:text-sf-crimson-text"
           >
             <Trash2 className="w-3.5 h-3.5" />
             Delete

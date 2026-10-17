@@ -16,6 +16,7 @@ import {
   type SimpleSubmissionFormData,
   type SimpleSubmissionType,
 } from "@/lib/contact-schemas";
+import { mapError } from "@/lib/ship-voice";
 
 interface SimpleSubmissionFormProps {
   type: SimpleSubmissionType;
@@ -105,7 +106,7 @@ const SimpleSubmissionForm = ({ type, onSuccess }: SimpleSubmissionFormProps) =>
       toast({
         title: "SUBMISSION FAILED.",
         description:
-          error instanceof Error ? error.message : "Retry when ready.",
+          mapError(error),
         variant: "destructive",
       });
     }
@@ -128,16 +129,16 @@ const SimpleSubmissionForm = ({ type, onSuccess }: SimpleSubmissionFormProps) =>
         <h3 className="font-heading text-xl font-medium mb-2">
           {config.successTitle}
         </h3>
-        <p className="text-t3 mb-4">{config.successMessage}</p>
+        <p className="text-t2 mb-4">{config.successMessage}</p>
         {config.showTicket && ticketNumber && (
           <>
-            <div className="inline-flex items-center gap-2 bg-muted px-4 py-2 rounded-md mb-4">
+            <div className="inline-flex items-center gap-2 bg-muted px-4 py-2 rounded-none mb-4">
               <span className="font-mono text-sm">{ticketNumber}</span>
               <Button variant="ghost" size="icon" onClick={copyTicketNumber} aria-label="Copy ticket number">
                 <Copy className="w-4 h-4" />
               </Button>
             </div>
-            <p className="text-sm text-t3 mb-4">
+            <p className="text-sm text-t2 mb-4">
               Save this ticket number for your reference.
             </p>
           </>
@@ -174,7 +175,7 @@ const SimpleSubmissionForm = ({ type, onSuccess }: SimpleSubmissionFormProps) =>
             />
           </div>
           {errors.name && (
-            <p className="text-sm text-sf-crimson">{errors.name.message}</p>
+            <p className="text-sm text-sf-crimson-text">{errors.name.message}</p>
           )}
         </div>
 
@@ -190,7 +191,7 @@ const SimpleSubmissionForm = ({ type, onSuccess }: SimpleSubmissionFormProps) =>
             />
           </div>
           {errors.email && (
-            <p className="text-sm text-sf-crimson">{errors.email.message}</p>
+            <p className="text-sm text-sf-crimson-text">{errors.email.message}</p>
           )}
         </div>
       </div>
@@ -206,7 +207,7 @@ const SimpleSubmissionForm = ({ type, onSuccess }: SimpleSubmissionFormProps) =>
           />
         </div>
         {errors.subject && (
-          <p className="text-sm text-sf-crimson">{errors.subject.message}</p>
+          <p className="text-sm text-sf-crimson-text">{errors.subject.message}</p>
         )}
       </div>
 
@@ -222,7 +223,7 @@ const SimpleSubmissionForm = ({ type, onSuccess }: SimpleSubmissionFormProps) =>
           />
         </div>
         {errors.message && (
-          <p className="text-sm text-sf-crimson">{errors.message.message}</p>
+          <p className="text-sm text-sf-crimson-text">{errors.message.message}</p>
         )}
       </div>
 

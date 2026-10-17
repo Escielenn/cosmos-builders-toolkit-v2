@@ -13,8 +13,19 @@ import {
   ScrollText,
   Zap,
   AlertTriangle,
+  Landmark,
+  Factory,
+  Globe,
+  Network,
+  Rocket,
+  Sparkles,
+  Atom,
+  Hourglass,
+  Infinity as InfinityIcon,
+  type LucideIcon,
 } from "lucide-react";
 import ToolPageLayout from "@/components/tools/ToolPageLayout";
+
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { StatGrid } from "@/components/ui/stat-grid";
 import { Button } from "@/components/ui/button";
@@ -80,6 +91,22 @@ import {
   buildCopyText,
   type KardashevFormState,
 } from "@/lib/kardashev/calculations";
+
+
+// Preset glyphs (lucide, not emoji). Kept out of lib/kardashev/data,
+// which stays React-free for the PDF templates.
+const PRESET_ICONS: Record<string, LucideIcon> = {
+  "ancient-rome": Landmark,
+  "industrial-revolution": Factory,
+  "earth-2025": Globe,
+  "earth-2100-optimistic": Network,
+  "star-trek-federation": Rocket,
+  "star-wars-empire": Swords,
+  "the-culture": Sparkles,
+  xeelee: Atom,
+  timelords: Hourglass,
+  downstreamers: InfinityIcon,
+};
 
 // ─── FormState ───────────────────────────────────────────────────────
 
@@ -386,7 +413,7 @@ const KardashevScale = () => {
                 )}
               >
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="text-lg">{preset.emoji}</span>
+                  {(() => { const Icon = PRESET_ICONS[preset.id] ?? Globe; return <Icon className="w-4 h-4 shrink-0 text-t3" aria-hidden="true" />; })()}
                   <span className="text-xs font-medium text-t2 truncate">
                     {preset.label}
                   </span>
@@ -481,7 +508,7 @@ const KardashevScale = () => {
               <Label className="text-[12px] uppercase tracking-[1.5px] text-t3">
                 Energy Source Reference
               </Label>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 max-h-[240px] overflow-y-auto">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 max-h-[240px] overflow-y-auto sf-sb">
                 {ENERGY_SOURCES.map((source) => (
                   <button
                     key={source.id}
@@ -552,7 +579,7 @@ const KardashevScale = () => {
                 <p className="font-mono text-sm text-t2 mb-3">
                   K = {formatKardashev(results.kardashevNumber)}
                 </p>
-                <p className="text-sm text-t3 max-w-lg mx-auto">
+                <p className="text-sm text-t2 max-w-lg mx-auto">
                   {results.band.description}
                 </p>
               </GlassPanel>

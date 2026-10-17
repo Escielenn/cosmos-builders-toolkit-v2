@@ -12,7 +12,7 @@ import { useMetaTags } from "@/hooks/use-meta-tags";
 import { useAuth } from "@/contexts/AuthContext";
 import { SocialShareButtons } from "@/components/sharing/SocialShareButtons";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, ChevronDown, ChevronUp, Globe, Link2, Lock, Users } from "lucide-react";
+import { ArrowLeft, ChevronDown, ChevronUp, Globe, Link2, Lock, MoonStar, Users } from "lucide-react";
 import Header from "@/components/layout/Header";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Badge } from "@/components/ui/badge";
@@ -44,6 +44,8 @@ import type {
 } from "@/services/entity-graph-types";
 import type { WorldTheme } from "@/hooks/use-world";
 
+import { mapError } from "@/lib/ship-voice";
+import WorldIconRenderer from "@/components/world/WorldIconRenderer";
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
@@ -466,10 +468,10 @@ export default function WorldShowcase() {
       queryClient.invalidateQueries({ queryKey: ["showcase-world", worldId] });
       queryClient.invalidateQueries({ queryKey: ["worlds"] });
       queryClient.invalidateQueries({ queryKey: ["community-worlds"] });
-      toast({ title: "Visibility updated." });
+      toast({ title: "VISIBILITY UPDATED." });
     },
     onError: (err) => {
-      toast({ title: "Failed to update visibility", description: (err as Error).message, variant: "destructive" });
+      toast({ title: "FAILED TO UPDATE VISIBILITY.", description: mapError(err), variant: "destructive" });
     },
   });
 
@@ -525,7 +527,7 @@ export default function WorldShowcase() {
           <h1 className="font-heading text-xl font-light uppercase tracking-[2px] text-t2">
             World Not Found
           </h1>
-          <p className="font-sans text-sm text-t3 max-w-md text-center">
+          <p className="font-sans text-sm text-t2 max-w-md text-center">
             This world may be private, or the link may be incorrect.
           </p>
           <Link
@@ -557,12 +559,12 @@ export default function WorldShowcase() {
           className="border-b px-6 py-4"
           style={{
             background: "linear-gradient(135deg, rgba(91,141,239,0.08) 0%, rgba(21,193,123,0.06) 100%)",
-            borderColor: "rgba(91,141,239,0.15)",
+            borderColor: "var(--sf-stellar)",
           }}
         >
           <div className="max-w-5xl mx-auto">
             <div className="flex items-start gap-3">
-              <span className="text-2xl mt-0.5">🌗</span>
+              <MoonStar className="w-6 h-6 mt-0.5 shrink-0 text-sf-stellar" aria-hidden="true" />
               <div>
                 <p className="font-heading text-sm font-light uppercase tracking-[2px] text-stellar mb-1">
                   Sample World - The Tidelock Archives
@@ -659,8 +661,8 @@ export default function WorldShowcase() {
 
           {/* World icon + name */}
           <div className="flex items-center gap-4 mb-4">
-            <span className="text-4xl" role="img" aria-label="World icon">
-              {world.icon || "🌍"}
+            <span role="img" aria-label="World icon">
+              <WorldIconRenderer iconId={world.icon || "globe"} className="w-10 h-10 text-primary" />
             </span>
             <h1 className="font-display text-3xl md:text-5xl tracking-sf-title text-t1 uppercase">
               {world.name}
@@ -705,7 +707,7 @@ export default function WorldShowcase() {
           {/* Visibility badge (non-owner visitors see status; owner sees it in top banner) */}
           {!isOwner && isCommunityWorld && (
             <div className="flex items-center gap-2 mt-4">
-              <span className="inline-flex items-center gap-1.5 font-mono text-[12px] px-2.5 py-1 rounded-sm bg-sf-primary/[0.06] border border-sf-primary/[0.15] text-sf-primary-text">
+              <span className="inline-flex items-center gap-1.5 font-mono text-[12px] px-2.5 py-1 rounded-sm bg-sf-primary/[0.06] border border-sf-primary text-sf-primary-text">
                 <Globe className="w-3 h-3" />
                 {visibility === "public" ? "Public" : "Community"}
               </span>
@@ -783,7 +785,7 @@ export default function WorldShowcase() {
         {entities.length === 0 ? (
           <GlassPanel className="p-12 text-center">
             <Globe className="w-10 h-10 text-t4 mx-auto mb-4" />
-            <p className="font-sans text-sm text-t3">
+            <p className="font-sans text-sm text-t2">
               This world has no entities yet.
             </p>
           </GlassPanel>

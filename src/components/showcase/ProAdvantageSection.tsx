@@ -58,7 +58,7 @@ const ProAdvantageSection = () => {
         <h2 className="font-display font-light text-3xl md:text-4xl uppercase tracking-sf-wide mb-4">
           Why Go Pro?
         </h2>
-        <p className="text-t3 max-w-2xl mx-auto">
+        <p className="text-t2 max-w-2xl mx-auto">
           Unlock the full power of StellarForge with tools designed for serious worldbuilders.
         </p>
       </div>
@@ -88,7 +88,7 @@ const ProAdvantageSection = () => {
                       </Badge>
                     )}
                   </div>
-                  <p className="text-sm text-t3">
+                  <p className="text-sm text-t2">
                     {benefit.description}
                   </p>
                 </div>
@@ -109,7 +109,7 @@ const ProAdvantageSection = () => {
             See Pricing
           </Link>
         </Button>
-        <p className="text-sm text-t3 mt-3">
+        <p className="text-sm text-t2 mt-3">
           Starting at ${PRICING.pro.monthly.price}/month • Cancel anytime
         </p>
       </div>

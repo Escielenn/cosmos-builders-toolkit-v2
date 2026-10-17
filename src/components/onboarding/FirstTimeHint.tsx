@@ -20,8 +20,8 @@ const FirstTimeHint = ({ hintId, icon: Icon, variant, className = "" }: FirstTim
 
   const borderColor =
     resolvedVariant === "warning"
-      ? "border-amber-500/20"
-      : "border-primary/20";
+      ? "border-sf-amber"
+      : "border-primary";
 
   const bgColor =
     resolvedVariant === "warning"

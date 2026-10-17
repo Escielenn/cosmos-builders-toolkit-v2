@@ -37,10 +37,9 @@ export const tokens = {
     t1: "#FAFAFA",
     /** Tier 2 — body text ceiling. */
     t2: "#C8C8C8",
-    /** Tiers 3–5 are alpha-on-white; use rgba() helpers below. */
+    /** Tiers 3–4 are alpha-on-white; use rgba() helpers below. t5 is retired. */
     t3: "rgba(255, 255, 255, 0.45)",
     t4: "rgba(255, 255, 255, 0.28)",
-    t5: "rgba(255, 255, 255, 0.15)",
   },
 
   accent: {

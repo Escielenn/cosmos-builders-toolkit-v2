@@ -41,6 +41,7 @@ import { sanitizeHtml } from "@/lib/sanitize";
 import { useWorksheets } from "@/hooks/use-worksheets";
 import { getToolDisplayName } from "@/lib/tools-config";
 import { extractWorksheetFacts } from "@/lib/worksheet-facts";
+import { mapError } from "@/lib/ship-voice";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -224,7 +225,7 @@ export default function WorldCompile() {
       console.error("Docx export failed:", err);
       toast({
         title: "EXPORT FAILED.",
-        description: err instanceof Error ? err.message : "Could not generate .docx.",
+        description: mapError(err),
         variant: "destructive",
       });
     } finally {
@@ -262,7 +263,7 @@ export default function WorldCompile() {
           <h1 className="font-display text-3xl md:text-4xl tracking-[0.08em] text-t1 mb-1">
             COMPILE MANUSCRIPT
           </h1>
-          <p className="text-sm text-t3 max-w-2xl">
+          <p className="text-sm text-t2 max-w-2xl">
             Stitch your chapters in order and export as a formatted manuscript.
             Toggle chapters on or off, set front matter, then download.
           </p>
@@ -339,10 +340,10 @@ export default function WorldCompile() {
                     Chapters
                   </h2>
                   <div className="flex gap-2">
-                    <Button variant="ghost" size="sm" onClick={selectAll} className="text-xs h-7">
+                    <Button variant="ghost" size="sm" onClick={selectAll} className="text-xs h-7 min-h-hit">
                       All
                     </Button>
-                    <Button variant="ghost" size="sm" onClick={selectNone} className="text-xs h-7">
+                    <Button variant="ghost" size="sm" onClick={selectNone} className="text-xs h-7 min-h-hit">
                       None
                     </Button>
                   </div>
@@ -445,7 +446,7 @@ export default function WorldCompile() {
                       variant="ghost"
                       size="sm"
                       onClick={() => setShowPreview((p) => !p)}
-                      className="text-xs h-7"
+                      className="text-xs h-7 min-h-hit"
                     >
                       <Eye className="w-3.5 h-3.5 mr-1.5" />
                       {showPreview ? "Hide" : "Show"} preview
@@ -453,13 +454,13 @@ export default function WorldCompile() {
                   </div>
 
                   {showPreview && (
-                    <div className="max-h-[60vh] overflow-y-auto border border-sf-line bg-white/[0.02] p-6 space-y-6">
+                    <div className="max-h-[60vh] overflow-y-auto sf-sb border border-sf-line bg-white/[0.02] p-6 space-y-6">
                       <div className="text-center pb-6 border-b border-sf-line">
                         <h3 className="font-heading text-xl tracking-wider text-t1">
                           {meta.title}
                         </h3>
                         {meta.subtitle && (
-                          <p className="text-sm text-t3 italic mt-1">{meta.subtitle}</p>
+                          <p className="text-sm text-t2 italic mt-1">{meta.subtitle}</p>
                         )}
                         <p className="text-xs text-t4 mt-2">by {meta.author}</p>
                       </div>

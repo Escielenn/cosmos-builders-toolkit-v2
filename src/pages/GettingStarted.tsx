@@ -393,7 +393,7 @@ const GettingStarted = () => {
               builds on what comes before. Each output becomes input for what
               follows.
             </p>
-            <p className="text-t3">
+            <p className="text-t2">
               You don't have to start at the beginning. But understanding{" "}
               <em>where</em> you're starting helps you know <em>what</em> will
               cascade from your choices.
@@ -436,7 +436,7 @@ const GettingStarted = () => {
           <h2 className="font-heading text-xl font-light uppercase tracking-[2px] gradient-text mb-2">
             Where Does Your World Begin?
           </h2>
-          <p className="text-t3 text-sm mb-6">
+          <p className="text-t2 text-sm mb-6">
             Most stories start with a spark: a scene, a creature, a concept.
             Where's yours?
           </p>
@@ -550,7 +550,7 @@ const GettingStarted = () => {
           <p className="text-t2 text-sm mb-2">
             Build a documented planet with life and cultural implications in 4 steps.
           </p>
-          <p className="text-t3 text-sm mb-8">
+          <p className="text-t2 text-sm mb-8">
             Each step links to the actual tool. Complete them in order to experience the cascade firsthand.
           </p>
 
