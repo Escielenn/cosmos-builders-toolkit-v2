@@ -66,15 +66,12 @@
     --sf-text-label: var(--t3-hsl);
     --sf-text-hint: var(--t4-hsl);
 
-    /* Legacy 5-tier hierarchy → the four solved tiers. Tier 5 is retired
-       (nothing readable lives below t4); it aliases t4 until every call
-       site has moved. */
+    /* Legacy tier names → the four solved tiers. Tier 5 is retired and
+       deleted (nothing readable lives below t4). */
     --sf-tier-1: var(--t1-hsl);
     --sf-tier-2: var(--t2-hsl);
     --sf-tier-3: var(--t3-hsl);
     --sf-tier-4: var(--t4-hsl);
-    --sf-tier-5: var(--t4-hsl);
-    --t5: var(--t4);
     --sf-section-green: var(--sf-primary-hsl) / 1;
     --sf-section-border: var(--sf-primary-hsl) / 0.06;
 
@@ -201,10 +198,10 @@
 }
 
 @layer components {
-  /* Text tiers — April 2026 handoff: use `text-t1`..`text-t5` Tailwind utilities
+  /* Text tiers — April 2026 handoff: use `text-t1`..`text-t4` Tailwind utilities
      (defined in tailwind.config.ts colors). Legacy `.text-tier-N` classes were
      migrated to `text-tN` site-wide and removed from this file in the cleanup
-     commit. The HSL CSS vars `--sf-tier-1..5` remain for any handwritten CSS
+     commit. The HSL CSS vars `--sf-tier-1..4` remain for any handwritten CSS
      that still references them. */
 
   /* Glass panel component */

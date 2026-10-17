@@ -10,7 +10,7 @@ const Progress = React.forwardRef<
   // April 2026 handoff, rectangular, no rounded caps. Zero radius everywhere.
   <ProgressPrimitive.Root
     ref={ref}
-    className={cn("relative h-[4px] w-full overflow-hidden rounded-none bg-sf-border", className)}
+    className={cn("relative h-[4px] w-full overflow-hidden rounded-none bg-sf-line", className)}
     {...props}
   >
     <ProgressPrimitive.Indicator
