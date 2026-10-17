@@ -5,7 +5,7 @@ import { PRIVACY_BURSTS } from "@/lib/data-bursts";
 const privacyContent = `
 ## Your Worlds Are Yours Alone
 
-Your worldbuilding work is yours. Period. We don't access it, we don't train AI on it, and we don't share it with anyone. This policy explains how we handle the minimal data we do collect to run the service.
+Your worldbuilding work is yours. Period. We don't read it, we don't train AI on it, and we don't share it with anyone. This policy explains how we handle the minimal data we do collect to run the service.
 
 ---
 
@@ -20,9 +20,9 @@ Your worldbuilding work is yours. Period. We don't access it, we don't train AI 
 
 ### Usage Information
 
-- Basic analytics on which features are used (to know what to build next)
-- Error logs (to fix bugs)
-- This data is aggregated and anonymous - we can't identify you from it
+- Aggregate counts from our own database (how many worlds exist, which tools are in use) to know what to build next
+- Error reports when something breaks (to fix bugs), sent without your name or email
+- No third-party analytics service is used
 
 ### Cookies
 
@@ -36,14 +36,13 @@ Your worldbuilding work is yours. Period. We don't access it, we don't train AI 
 
 ### Your Creative Work
 
-- We cannot access the content you create in StellarForge tools
-- Your worlds, characters, species, planets, star systems - they're stored encrypted and only you can see them
+- Your worlds, characters, species, planets, star systems - other users can only see them if you share them
 - We never read, analyze, or review your worldbuilding materials
 - We never use your content for any purpose whatsoever
 
-### We Have Zero Access to Your Creative Content
+### How Your Creative Content Is Protected
 
-This isn't just policy - it's how we built the system. Your worldbuilding data is encrypted and we don't have the keys. We literally cannot read your work, even if we wanted to.
+Your work is encrypted in transit and at rest, and the database enforces that each account can reach only its own worlds and the worlds shared with it. We want to be precise about one thing: like any web service that stores your data so you can reach it from any device, the people who operate the service could technically open it. Our rule is that we don't. The only exception is when you open a support request and ask us to look at something specific, and then only what you point us to.
 
 ---
 
@@ -53,7 +52,7 @@ This isn't just policy - it's how we built the system. Your worldbuilding data i
 
 - Send you essential service emails (password resets, payment confirmations, subscription updates)
 - Fix technical problems when things break
-- Understand which features are popular based on anonymous usage patterns
+- Understand which features are used, from aggregate counts in our own database
 - Process your subscription payments and collect required sales tax
 - Comply with legal obligations (tax records, responses to valid legal orders)
 
@@ -82,7 +81,8 @@ We use minimal third-party services to operate StellarForge. None of these servi
 
 ### Email Services
 
-- **Resend** (resend.com) delivers transactional emails (password resets, payment receipts)
+- **Resend** (resend.com) delivers transactional emails (collaboration invitations, contact-form confirmations)
+- **Supabase** sends account emails (sign-up confirmation, password resets)
 - **ImprovMX** (improvmx.com) manages our email infrastructure at support@stellarforge.tools
 - We only send essential service emails
 
@@ -92,6 +92,19 @@ We use minimal third-party services to operate StellarForge. None of these servi
 - **Supabase** (supabase.com) provides secure database and authentication
 - All data is encrypted at rest and in transit
 
+### Error Monitoring
+
+- **Sentry** (sentry.io) receives error reports when the app breaks, so we can fix it
+- Reports are sent without your name or email, and session recording is turned off
+
+### Optional Integrations
+
+- **Notion** (notion.com) receives a worksheet only when you connect your Notion account and choose to export to it
+
+### Site Content
+
+- **Sanity** (sanity.io) stores our blog and marketing pages. It holds none of your data
+
 ### What These Services Can Access
 
 - Your email address (for account functions only)
@@ -99,12 +112,11 @@ We use minimal third-party services to operate StellarForge. None of these servi
 - Authentication tokens (Supabase, encrypted)
 - Basic account metadata
 
-### What They CANNOT Access
+### What They Do Not Receive
 
-- Your worldbuilding content
-- Your creative work
-- Your project details
-- Any materials you create in StellarForge tools
+- None of these services is given your worldbuilding content to use for its own purposes
+- Supabase and Vercel store and serve it on our behalf, encrypted, and only so you can reach it
+- Notion receives a worksheet only when you export one to your own Notion workspace
 
 All of these providers are GDPR-compliant and maintain high security standards. We chose them specifically for their commitment to privacy and security.
 
@@ -149,8 +161,8 @@ We respect Do Not Track signals. Since we don't track you anyway, DNT is automat
 
 ### Everyone Gets These Rights
 
-- **Access:** Download all your account data at any time
-- **Deletion:** Delete your account and all associated data permanently (see data retention below)
+- **Access:** Download all your account data at any time from your Profile page
+- **Deletion:** Delete your account and all associated data permanently, from your Profile page (see data retention below)
 - **Portability:** Export your worldbuilding materials in standard JSON format from your dashboard
 - **Privacy:** Your work stays completely private unless you choose to share it
 - **Correction:** Update your account information anytime
@@ -158,8 +170,8 @@ We respect Do Not Track signals. Since we don't track you anyway, DNT is automat
 
 ### How to Exercise Your Rights
 
-- Most rights can be exercised directly from your account dashboard
-- For deletion or complex requests, email support@stellarforge.tools
+- Access, portability and deletion are self-serve on your Profile page ("Your Data")
+- For anything else, email support@stellarforge.tools
 - We respond within 5 business days
 
 ---
@@ -208,7 +220,7 @@ If you're in the European Economic Area (EEA), UK, or Switzerland, you have addi
 ### Legal Basis for Processing
 
 - **Contract Performance:** We process your data to provide the service you signed up for
-- **Legitimate Interest:** We analyze anonymous usage patterns to improve features
+- **Legitimate Interest:** We look at aggregate usage counts and error reports to improve features and fix bugs
 - **Legal Obligation:** We retain billing records for tax compliance
 - **Consent:** We'll ask for explicit consent for any non-essential communications
 
@@ -246,7 +258,7 @@ For GDPR inquiries, contact support@stellarforge.tools
 - Regular security audits and updates
 - Account authentication protections through Supabase
 - Automatic encrypted backups to prevent data loss
-- Limited employee access (we can't access your creative content at all)
+- Database rules that let each account reach only its own worlds and the worlds shared with it
 - Secure infrastructure through Vercel and Supabase
 
 ### In Case of a Breach
@@ -264,8 +276,9 @@ We will notify you within 72 hours if there's a data breach that affects your pe
 
 ### After Account Deletion
 
-- Your creative content is deleted within 30 days
-- Your account information is deleted within 30 days
+- Deleting your account cancels any subscription immediately and removes your account, worlds and uploaded images right away
+- Anything you wrote inside someone else's shared world stays with that world
+- Copies in our encrypted backups age out within 30 days
 - Billing records are retained for 7 years for tax compliance (anonymized where possible)
 - Anonymized usage analytics may be retained indefinitely
 
@@ -317,7 +330,7 @@ const Privacy = () => {
     <LegalPageLayout
       title="Privacy Policy"
       subtitle="Your privacy matters. Here's how we protect your creative work."
-      lastUpdated="February 2026"
+      lastUpdated="October 2026"
       badgeIcon={<Shield className="w-3 h-3 mr-1" />}
       badgeText="Privacy"
       content={privacyContent}
