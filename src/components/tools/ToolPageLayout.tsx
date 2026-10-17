@@ -9,8 +9,10 @@
 
 import { type ReactNode, useState, useEffect, useMemo, useRef } from "react";
 import SubjectEntityBanner from "@/components/tools/SubjectEntityBanner";
-import { Link, useSearchParams } from "react-router-dom";
-import { ArrowLeft, FileText } from "lucide-react";
+import { useSearchParams } from "react-router-dom";
+import { FileText } from "lucide-react";
+import { BackLink } from "@/components/ui/back-link";
+import { useUnsavedChangesGuard } from "@/hooks/use-unsaved-changes-guard";
 import { getToolAccent, accentTextClass, accentArcClass, accentBgClass } from "@/lib/tool-accents";
 import CascadeSuggestionToast from "@/components/tools/CascadeSuggestionToast";
 import UpstreamCallout from "@/components/tools/UpstreamCallout";
@@ -161,6 +163,22 @@ export default function ToolPageLayout({
   const cfg = getToolPageConfig(toolType);
   const worldId = useWorldId();
   const saveGate = useSaveWorldGate(onSave, isCloudEnabled, !!worldId);
+
+  // QoL: warn before closing the tab on unsaved work, and Ctrl/Cmd+S saves
+  // from anywhere on a tool page (it used to open the browser's save dialog).
+  useUnsavedChangesGuard(!!hasUnsavedChanges);
+  const requestSaveRef = useRef(saveGate.requestSave);
+  requestSaveRef.current = saveGate.requestSave;
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && !e.shiftKey && !e.altKey && e.key.toLowerCase() === "s") {
+        e.preventDefault();
+        requestSaveRef.current();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
   const ToolIcon = getToolIcon(toolType);
   const introData = TOOL_INTROS[cfg.introKey];
   const accent = getToolAccent(toolType);
@@ -198,13 +216,11 @@ export default function ToolPageLayout({
         <PageBursts bursts={TOOL_PAGE_BURSTS[toolType]} />
 
         {/* ── Back Link (context-aware) ─────────────────────────── */}
-        <Link
+        <BackLink
           to={worldId ? `/worlds/${worldId}` : "/"}
-          className="inline-flex items-center gap-2 font-heading text-[12px] uppercase tracking-[0.2em] font-medium text-t3 hover:text-sf-primary-bright transition-colors duration-base mb-6"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          {worldId ? "Return to World" : "Return to Tools"}
-        </Link>
+          label={worldId ? "Return to World" : "Return to Tools"}
+          className="mb-6"
+        />
 
         {/* ── Subject (Brief F4): the entity this instrument is open on ── */}
         <SubjectEntityBanner worldId={worldId} />

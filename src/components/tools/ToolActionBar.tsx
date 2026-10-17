@@ -102,16 +102,16 @@ const ToolActionBar = ({
               ) : (
                 <Save className="w-4 h-4 mr-2" />
               )}
-              {isSaving ? "Saving..." : isCloudEnabled ? "Save" : "Save Draft"}
+              {isSaving ? "SAVING..." : isCloudEnabled ? "Save" : "Save Draft"}
               {isCloudEnabled ? (
                 <Cloud className="w-3 h-3 ml-1.5 text-sf-primary-text" />
               ) : (
-                <CloudOff className="w-3 h-3 ml-1.5 opacity-50" />
+                <CloudOff className="w-3 h-3 ml-1.5 text-t4" />
               )}
             </Button>
           </TooltipTrigger>
           <TooltipContent>
-            <p className="text-xs">{isCloudEnabled ? "Cloud sync enabled" : "Local only"}</p>
+            <p className="text-xs">{isCloudEnabled ? "Cloud sync enabled" : "Local only"} · <span className="font-mono">Ctrl/⌘ S</span></p>
           </TooltipContent>
         </Tooltip>
         {/* One Export control instead of three competing ones. Quick Export,
@@ -233,11 +233,11 @@ const ToolActionBar = ({
               ) : (
                 <Save className="w-4 h-4 mr-2" />
               )}
-              {isSaving ? "Saving..." : isCloudEnabled ? "Save" : "Save Draft"}
+              {isSaving ? "SAVING..." : isCloudEnabled ? "Save" : "Save Draft"}
               {isCloudEnabled ? (
                 <Cloud className="w-3 h-3 ml-1.5 text-sf-primary-text" />
               ) : (
-                <CloudOff className="w-3 h-3 ml-1.5 opacity-50" />
+                <CloudOff className="w-3 h-3 ml-1.5 text-t4" />
               )}
             </Button>
 

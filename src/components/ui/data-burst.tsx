@@ -56,6 +56,8 @@ export const PageBursts = ({ bursts, className }: PageBurstsProps) => (
       "absolute inset-0 pointer-events-none select-none z-0",
       className
     )}
+    // Every ambient layer multiplies --sf-ambient (Display > Reduce Ambient).
+    style={{ opacity: "var(--sf-ambient, 1)" }}
     aria-hidden="true"
   >
     {bursts.map((burst, i) => (

@@ -4,17 +4,18 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const badgeVariants = cva(
-  "inline-flex items-center rounded-sm border px-2.5 py-0.5 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+  "inline-flex items-center rounded-none border px-2.5 py-0.5 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
   {
     variants: {
       variant: {
-        default: "border-transparent bg-primary text-primary-foreground hover:bg-primary/80",
-        secondary: "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        destructive: "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
-        outline: "text-t1",
-        glow: "bg-primary/[0.06] border-primary text-primary",
-        "glow-amber": "bg-amber-500/[0.06] border-sf-amber text-sf-amber",
-        "glow-cyan": "bg-sf-cyan/[0.06] border-sf-cyan text-sf-cyan",
+        default: "border-sf-primary bg-sf-primary text-sf-on-primary",
+        secondary: "border-sf-line bg-sf-surface-elevated text-t2",
+        destructive: "border-sf-crimson bg-sf-crimson/[0.06] text-sf-crimson-text",
+        outline: "border-sf-line-interactive text-t1",
+        glow: "bg-sf-primary/[0.06] border-sf-primary text-sf-primary-text",
+        "glow-amber": "bg-sf-amber/[0.06] border-sf-amber text-sf-amber-text",
+        /** Retired alias: renders as glow (primary). Do not use in new code. */
+        "glow-cyan": "bg-sf-primary/[0.06] border-sf-primary text-sf-primary-text",
       },
     },
     defaultVariants: {

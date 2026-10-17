@@ -7,11 +7,11 @@ import { cn } from "@/lib/utils";
 const buttonVariants = cva(
   // Focus ring and disabled colors come from the global :focus-visible / :disabled
   // rules in src/styles/tokens.css — a component rule here would suppress them.
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-none text-sm font-medium transition-all duration-300 ease-out disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 active:scale-[0.98]",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-none text-sm font-medium transition-all duration-base ease-sf-out disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 active:scale-[0.98]",
   {
     variants: {
       variant: {
-        // Primary: solid cyan with fill-sweep
+        // Primary: solid sf-primary with fill-sweep
         default: "bg-primary text-primary-foreground sf-btn-lift",
         // Destructive: crimson with white fill-sweep (same pattern as primary)
         destructive: "bg-destructive text-destructive-foreground sf-btn-lift",

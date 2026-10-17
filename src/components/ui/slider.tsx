@@ -17,11 +17,11 @@ const Slider = React.forwardRef<
     aria-label={ariaLabel}
     {...props}
   >
-    <SliderPrimitive.Track className="relative h-2 w-full grow overflow-hidden rounded-sm bg-secondary">
+    <SliderPrimitive.Track className="relative h-2 w-full grow overflow-hidden rounded-none bg-secondary">
       <SliderPrimitive.Range className="absolute h-full bg-primary" />
     </SliderPrimitive.Track>
     <SliderPrimitive.Thumb
-      className="block h-6 w-6 md:h-5 md:w-5 rounded-[2px] border-2 border-primary bg-background ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring/20 focus-visible:ring-offset-4 focus-visible:scale-[1.2] hover:scale-[1.2] hover:border-primary hover:bg-primary/10 disabled:pointer-events-none disabled:text-sf-disabled-text cursor-grab active:cursor-grabbing"
+      className="block h-6 w-6 md:h-5 md:w-5 rounded-none border-2 border-primary bg-background ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring/20 focus-visible:ring-offset-4 focus-visible:scale-[1.2] hover:scale-[1.2] hover:border-primary hover:bg-primary/10 disabled:pointer-events-none disabled:text-sf-disabled-text cursor-grab active:cursor-grabbing"
       style={{ touchAction: "none" }}
     />
   </SliderPrimitive.Root>

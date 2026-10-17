@@ -1047,8 +1047,10 @@ html {
   text-shadow: 0 0 8px rgba(255, 179, 71, 0.1);
 }
 
-/* Hide margin + edge variants on mobile */
-@media (max-width: 767px) {
+/* Margin + edge variants live in the page gutter. Below 1600px the content
+   column reaches the gutter and they collide with headings and body copy,
+   so they only appear where a real gutter exists. */
+@media (max-width: 1599px) {
   .sf-data-burst--margin,
   .sf-data-burst--edge {
     display: none;
