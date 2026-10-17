@@ -175,16 +175,14 @@
     @apply scroll-smooth;
   }
 
-  /* Enhanced focus styles for accessibility — subtle, wide, transparent */
-  :focus-visible {
-    @apply outline-none ring-1 ring-ring/20 ring-offset-4 ring-offset-background;
-  }
-
-  /* Interactive elements — same subtle treatment */
-  button:focus-visible,
-  a:focus-visible,
-  [role="button"]:focus-visible {
-    @apply ring-1 ring-ring/20 ring-offset-4 ring-offset-background;
+  /* Focus: the visible ring is owned by tokens.css (2px --sf-focus, 2px
+     offset, 10:1). The old 20%-alpha ring here suppressed it with
+     outline-none; this rule now only extends the same ring to elements the
+     tokens.css :where() list does not name (contenteditable, ARIA roles). */
+  [contenteditable]:focus-visible,
+  [role]:focus-visible {
+    outline: 2px solid var(--sf-focus);
+    outline-offset: 2px;
   }
 
   /* Skip to content link for keyboard users */

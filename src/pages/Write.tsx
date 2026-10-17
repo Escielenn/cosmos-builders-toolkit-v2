@@ -394,7 +394,7 @@ export default function Write(): JSX.Element {
                   onBlur={() => commitRename("folder")}
                   onKeyDown={renameKeyDown("folder")}
                   aria-label="Chapter name"
-                  className="min-w-0 flex-1 bg-transparent px-3 py-1 font-heading text-[12px] uppercase tracking-[1.5px] text-t1 outline-none"
+                  className="min-w-0 flex-1 bg-transparent px-3 py-1 font-heading text-[12px] uppercase tracking-[1.5px] text-t1"
                 />
               ) : (
                 <button
@@ -729,7 +729,7 @@ export default function Write(): JSX.Element {
               onChange={(e) => setTitle(e.target.value)}
               onBlur={saveTitle}
               placeholder="Document title"
-              className="w-full bg-transparent font-serif text-[30px] italic text-t1 outline-none placeholder:text-t4"
+              className="w-full bg-transparent font-serif text-[30px] italic text-t1 placeholder:text-t4"
               aria-label="Document title"
             />
             {/* Index-card fields. Collapsed until opened so they never compete
@@ -847,7 +847,7 @@ function SortableDocRow({
           onBlur={onRenameBlur}
           onKeyDown={onRenameKeyDown}
           aria-label="Document title"
-          className="min-w-0 flex-1 bg-transparent py-1.5 pl-3 pr-2 font-serif text-[13px] text-t1 outline-none"
+          className="min-w-0 flex-1 bg-transparent py-1.5 pl-3 pr-2 font-serif text-[13px] text-t1"
         />
       ) : (
         <button

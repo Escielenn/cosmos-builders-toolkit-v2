@@ -295,7 +295,7 @@ export function WikiEditor({
         <EditorContent
           editor={editor}
           className={cn(
-            "px-4 py-3 [&_.tiptap]:outline-none [&_.tiptap]:min-h-[500px]",
+            "px-4 py-3 [&_.tiptap]:outline-none [&_.tiptap:focus-visible]:ring-2 [&_.tiptap:focus-visible]:ring-sf-focus [&_.tiptap]:min-h-[500px]",
             !readOnly && "sf-writing-surface"
           )}
           data-writing-theme={!readOnly ? preferences.themeId : undefined}

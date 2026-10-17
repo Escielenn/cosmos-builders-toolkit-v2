@@ -120,7 +120,7 @@ export function TagInput({
             onFocus={() => setShowSuggestions(true)}
             onKeyDown={handleKeyDown}
             placeholder={value.length === 0 ? placeholder : ""}
-            className="flex-1 min-w-[80px] bg-transparent outline-none text-sm placeholder:text-t3"
+            className="flex-1 min-w-[80px] bg-transparent focus-visible:outline-none text-sm placeholder:text-t3"
             disabled={disabled}
           />
         )}

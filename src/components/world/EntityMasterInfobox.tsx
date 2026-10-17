@@ -100,6 +100,7 @@ export default function EntityMasterInfobox({
           <button
             type="button"
             onClick={startEditing}
+            aria-label="Edit details"
             className="text-t4 hover:text-t2 transition-colors"
           >
             <Pencil className="w-3 h-3" />

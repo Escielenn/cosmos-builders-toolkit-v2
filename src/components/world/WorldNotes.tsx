@@ -114,7 +114,7 @@ function NoteCard({
               onChange={(e) => setEditingTitle(e.target.value)}
               onBlur={handleTitleBlur}
               onKeyDown={handleTitleKeyDown}
-              className="font-heading text-lg font-light text-t1 flex-1 bg-transparent border-0 border-b border-sf-line outline-none focus:border-primary rounded-none px-0 py-0.5 truncate"
+              className="font-heading text-lg font-light text-t1 flex-1 bg-transparent border-0 border-b border-sf-line focus:border-primary rounded-none px-0 py-0.5 truncate"
               placeholder="Note title..."
             />
           )}

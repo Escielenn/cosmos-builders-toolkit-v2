@@ -184,7 +184,7 @@ function ColorDotPicker({
             onChange={(e) => setCustomHex(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleCustomSubmit()}
             placeholder="#FF00AA"
-            className="flex-1 bg-white/4 border border-sf-line rounded-xs px-2 py-1 text-[12px] font-mono text-t2 placeholder:text-t4 focus:border-sf-primary outline-none"
+            className="flex-1 bg-white/4 border border-sf-line rounded-xs px-2 py-1 text-[12px] font-mono text-t2 placeholder:text-t4 focus:border-sf-primary"
           />
           <button
             type="button"
@@ -643,7 +643,7 @@ const EntitySidebar = ({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search entities..."
-            className="w-full bg-white/4 border border-sf-line rounded-xs pl-7 pr-2 py-1.5 text-[13px] font-sans text-t2 placeholder:text-t4 focus:border-sf-primary outline-none"
+            className="w-full bg-white/4 border border-sf-line rounded-xs pl-7 pr-2 py-1.5 text-[13px] font-sans text-t2 placeholder:text-t4 focus:border-sf-primary"
           />
         </div>
       </div>

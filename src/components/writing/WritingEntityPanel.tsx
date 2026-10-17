@@ -167,6 +167,7 @@ export function WritingEntityPanel({
             onClick={onToggle}
             className="p-1 text-t4 hover:text-t2 transition-colors"
             title="Collapse panel"
+            aria-label="Collapse panel"
           >
             <ChevronLeft className="w-4 h-4" />
           </button>

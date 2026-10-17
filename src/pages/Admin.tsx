@@ -224,6 +224,7 @@ const TaskItem = ({
     >
       <button
         onClick={toggleDone}
+        aria-label={isDone ? "Mark task incomplete" : "Mark task complete"}
         className="shrink-0 text-t3 hover:text-primary transition-colors"
       >
         {isDone ? (
@@ -254,6 +255,7 @@ const TaskItem = ({
 
       <button
         onClick={handleDelete}
+        aria-label="Delete task"
         className="shrink-0 opacity-0 group-hover:opacity-100 text-t4 hover:text-sf-crimson transition-all"
       >
         <X className="w-3 h-3" />
@@ -1159,7 +1161,7 @@ const Admin = () => {
           <div className="lg:hidden fixed bottom-6 right-6 z-40">
             <Sheet>
               <SheetTrigger asChild>
-                <Button size="lg" className="rounded-none h-12 w-12 p-0 shadow-lg">
+                <Button size="lg" aria-label="Open tasks" className="rounded-none h-12 w-12 p-0 shadow-lg">
                   <ListTodo className="w-5 h-5" />
                 </Button>
               </SheetTrigger>

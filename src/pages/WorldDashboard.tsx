@@ -391,7 +391,7 @@ const SortableWorksheetGroup = ({
             </div>
             <div className="flex items-center gap-1 shrink-0">
               {worksheetEntryMap.get(worksheet.id) && (
-                <Button variant="ghost" size="icon" className="h-8 w-8" asChild title="Codex page">
+                <Button variant="ghost" size="icon" className="h-8 w-8" asChild title="Codex page" aria-label="Open codex page">
                   <Link to={`/worlds/${worldId}/codex/${worksheetEntryMap.get(worksheet.id)}`}>
                     <BookOpen className="w-3.5 h-3.5" />
                   </Link>

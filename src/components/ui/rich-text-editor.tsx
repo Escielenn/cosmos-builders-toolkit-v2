@@ -95,7 +95,7 @@ const RichTextEditor = ({
     editorProps: {
       attributes: {
         class: cn(
-          "prose prose-sm max-w-none focus:outline-none",
+          "prose prose-sm max-w-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sf-focus",
           "prose-headings:font-medium",
           "prose-h1:text-xl prose-h1:mt-4 prose-h1:mb-2",
           "prose-h2:text-lg prose-h2:mt-3 prose-h2:mb-2",
@@ -279,7 +279,7 @@ const RichTextEditor = ({
       <EditorContent
         editor={editor}
         className={cn(
-          "px-3 py-2 [&_.tiptap]:outline-none [&_.tiptap]:min-h-[var(--editor-min-h)]",
+          "px-3 py-2 [&_.tiptap]:outline-none [&_.tiptap:focus-visible]:ring-2 [&_.tiptap:focus-visible]:ring-sf-focus [&_.tiptap]:min-h-[var(--editor-min-h)]",
           !readOnly && "sf-writing-surface",
           readOnly && "bg-muted/30"
         )}

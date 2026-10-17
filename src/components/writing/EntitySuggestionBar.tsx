@@ -63,6 +63,7 @@ export default function EntitySuggestionBar({
         </div>
         <button
           onClick={onDismiss}
+          aria-label="Dismiss suggestions"
           className="text-t3/30 hover:text-t3/60 transition-colors shrink-0"
         >
           <X className="w-3 h-3" />

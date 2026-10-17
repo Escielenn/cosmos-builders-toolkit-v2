@@ -22,7 +22,7 @@ interface Props {
 }
 
 const NAME_INPUT =
-  "w-full bg-white/[0.04] border border-white/[0.3] focus:border-sf-primary/40 outline-none rounded-none px-2 py-1 font-mono text-[14px] text-white/85 tracking-wide";
+  "w-full bg-white/[0.04] border border-white/[0.3] focus:border-sf-primary/40 rounded-none px-2 py-1 font-mono text-[14px] text-white/85 tracking-wide";
 
 /**
  * A text field for a body's name.

@@ -58,7 +58,7 @@ const S = {
     "bg-white/[0.05] border-white/[0.35] text-white/75 hover:border-sf-primary/50 hover:bg-sf-primary/[0.12] hover:text-white",
   chipOn: "bg-[rgba(21,193,123,0.22)] border-sf-primary text-white",
   field:
-    "w-full bg-white/[0.06] border border-white/[0.2] focus:border-sf-primary focus:bg-white/[0.08] outline-none rounded-none px-2 py-1.5 font-mono text-[14px] text-white tracking-wide",
+    "w-full bg-white/[0.06] border border-white/[0.2] focus:border-sf-primary focus:bg-white/[0.08] rounded-none px-2 py-1.5 font-mono text-[14px] text-white tracking-wide",
   action:
     "flex-1 px-2 py-2 text-[13px] uppercase tracking-[1.5px] font-heading font-medium border rounded-none transition-colors",
 };
