@@ -138,8 +138,12 @@ export interface CreateDraftPageInput {
 
 /**
  * Creates a draft wiki entry linked to a worksheet via tool_source / tool_data_id.
- * Uses upsert semantics, if an entry already exists for this tool+worksheet, it
- * updates the title instead of creating a duplicate.
+ * If an entry already exists for this tool+worksheet it is returned untouched:
+ * the worksheet title only names the entry when the entry is first created.
+ *
+ * It used to overwrite the entry's title with the worksheet title on every
+ * save, which silently renamed a Codex entity the writer had renamed by hand.
+ * The entity title is the writer's; a worksheet save never changes it.
  */
 export async function createDraftWikiPage(
   input: CreateDraftPageInput,
@@ -148,24 +152,13 @@ export async function createDraftWikiPage(
   // Check if draft already exists for this worksheet
   const { data: existing } = await supabase
     .from("world_entries")
-    .select("id")
+    .select("*")
     .eq("world_id", input.worldId)
     .eq("tool_source", input.toolSource)
     .eq("tool_data_id", input.toolDataId)
     .maybeSingle();
 
-  if (existing) {
-    // Update title in case worksheet was renamed
-    const { data, error } = await supabase
-      .from("world_entries")
-      .update({ title: input.title })
-      .eq("id", existing.id)
-      .select()
-      .single();
-
-    if (error) throw error;
-    return data as WorldEntry;
-  }
+  if (existing) return existing as WorldEntry;
 
   // Create new draft entry
   const { data, error } = await supabase
