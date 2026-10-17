@@ -1,5 +1,6 @@
 import LegalPageLayout from "@/components/layout/LegalPageLayout";
 import { Heart } from "lucide-react";
+import { useMetaTags } from "@/hooks/use-meta-tags";
 
 const creditsContent = `
 ## Resources & Credits
@@ -77,6 +78,7 @@ All art, music, video, and icons used throughout StellarForge are created by liv
 `;
 
 const Credits = () => {
+  useMetaTags({ title: "Credits" });
   return (
     <LegalPageLayout
       title="Resources & Credits"

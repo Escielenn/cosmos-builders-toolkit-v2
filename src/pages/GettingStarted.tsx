@@ -18,6 +18,7 @@ import { ProBadge } from "@/components/ui/pro-badge";
 import { Button } from "@/components/ui/button";
 import { getToolDisplayName, isProTool } from "@/lib/tools-config";
 import { GuideNav } from "@/components/layout/GuideNav";
+import { useMetaTags } from "@/hooks/use-meta-tags";
 
 // ── Cascade Stage Data ─────────────────────────────────────
 
@@ -26,42 +27,42 @@ const CASCADE_STAGES = [
     id: "physics",
     label: "Physics",
     sublabels: ["Gravity", "Radiation", "Orbit"],
-    color: "#FFB800",
+    color: "var(--sf-amber-text)",
     description: "The fundamental laws that govern your universe.",
   },
   {
     id: "environment",
     label: "Environment",
     sublabels: ["Climate", "Terrain", "Resources"],
-    color: "#4D9FFF",
+    color: "var(--sf-azure-text)",
     description: "Planetary conditions shaped by physics.",
   },
   {
     id: "biology",
     label: "Biology",
     sublabels: ["Anatomy", "Senses", "Lifecycle"],
-    color: "#00FF88",
+    color: "var(--sf-emerald-text)",
     description: "Life shaped by environmental pressures.",
   },
   {
     id: "psychology",
     label: "Psychology",
     sublabels: ["Cognition", "Emotion", "Communication"],
-    color: "#9B5DE5",
+    color: "var(--sf-violet-text)",
     description: "Minds shaped by bodies and environments.",
   },
   {
     id: "mythology",
     label: "Mythology",
     sublabels: ["Meaning", "Ritual", "Taboo"],
-    color: "#5B8DEF",
+    color: "var(--sf-stellar-text)",
     description: "The stories civilizations tell to explain their world.",
   },
   {
     id: "culture",
     label: "Culture",
     sublabels: ["Society", "Economy", "Technology"],
-    color: "#FF9800",
+    color: "var(--sf-amber-warm-text)",
     description: "How intelligent life organizes itself.",
   },
 ] as const;
@@ -184,22 +185,18 @@ function CascadeDiagram({
             <button
               type="button"
               onClick={() => onStageClick(stage.id)}
-              className={`w-full md:flex-1 text-left px-3 py-3 border transition-all duration-300 ${
+              className={`w-full md:flex-1 min-h-hit text-left px-3 py-3 border transition-colors duration-slow ease-sf-out ${
                 isActive
-                  ? "border-sf-line bg-white/5"
+                  ? "border-sf-line-emphasis bg-sf-surface-elevated"
                   : isDownstream
-                  ? "border-sf-line bg-white/[0.02]"
-                  : "border-sf-line bg-transparent hover:border-sf-line"
+                  ? "border-sf-line-interactive bg-sf-surface-elevated"
+                  : "border-sf-line-interactive bg-transparent hover:border-sf-line-emphasis"
               }`}
             >
               <div
-                className="text-[12px] font-heading uppercase tracking-[2px] mb-1 transition-colors duration-300"
+                className="text-xs font-heading uppercase tracking-wide mb-1 transition-colors duration-slow"
                 style={{
-                  color: isActive
-                    ? stage.color
-                    : isDownstream
-                    ? `${stage.color}99`
-                    : "hsla(0,0%,100%,0.28)",
+                  color: isActive || isDownstream ? stage.color : "var(--t4)",
                 }}
               >
                 {stage.label}
@@ -208,8 +205,8 @@ function CascadeDiagram({
                 {stage.sublabels.map((sub) => (
                   <span
                     key={sub}
-                    className={`text-[12px] font-mono transition-colors duration-300 ${
-                      isActive || isDownstream ? "text-t4" : "text-t4"
+                    className={`text-xs transition-colors duration-slow ${
+                      isActive || isDownstream ? "text-t3" : "text-t4"
                     }`}
                   >
                     {sub}
@@ -219,7 +216,7 @@ function CascadeDiagram({
             </button>
             {i < CASCADE_STAGES.length - 1 && (
               <ChevronRight
-                className={`w-3 h-3 shrink-0 hidden md:block transition-colors duration-300 ${
+                className={`w-3 h-3 shrink-0 hidden md:block transition-colors duration-slow ${
                   isDownstream || isActive ? "text-t3" : "text-t4"
                 }`}
               />
@@ -250,9 +247,9 @@ function PathwayStep({
     <div
       className={`border-l-2 pl-5 pb-8 transition-colors ${
         isActive
-          ? "border-primary"
+          ? "border-sf-primary"
           : isComplete
-          ? "border-primary"
+          ? "border-sf-primary"
           : "border-sf-line"
       }`}
     >
@@ -263,18 +260,18 @@ function PathwayStep({
         className="flex items-center gap-3 mb-3 group w-full text-left"
       >
         <div
-          className={`w-7 h-7 rounded-sm flex items-center justify-center font-mono text-xs transition-colors ${
+          className={`w-7 h-7 rounded-none flex items-center justify-center font-mono text-xs transition-colors ${
             isActive
-              ? "bg-primary/10 border border-primary text-primary"
+              ? "bg-sf-primary/10 border border-sf-primary text-sf-primary-text"
               : isComplete
-              ? "bg-primary/5 border border-primary text-primary/60"
-              : "bg-white/[0.03] border border-sf-line text-t4"
+              ? "bg-sf-primary/5 border border-sf-primary text-sf-primary-text"
+              : "bg-sf-surface-elevated border border-sf-line text-t4"
           }`}
         >
           {isComplete ? <Check className="w-3.5 h-3.5" /> : step.number}
         </div>
         <h3
-          className={`font-heading text-sm uppercase tracking-[2px] transition-colors ${
+          className={`font-heading text-sm uppercase tracking-wide transition-colors ${
             isActive
               ? "text-[hsl(var(--sf-section-green))]"
               : isComplete
@@ -288,7 +285,7 @@ function PathwayStep({
 
       {/* Expanded content */}
       {isActive && (
-        <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
+        <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-slow">
           <p className="text-t2 text-sm leading-relaxed">{step.intro}</p>
 
           {/* Tool links */}
@@ -313,7 +310,7 @@ function PathwayStep({
 
           {/* Expected output */}
           <GlassPanel className="p-3">
-            <span className="text-t4 text-[12px] uppercase tracking-wider block mb-1">
+            <span className="text-t4 text-xs uppercase tracking-wider block mb-1">
               What you'll create
             </span>
             <span className="text-t2 text-xs">{step.output}</span>
@@ -322,8 +319,8 @@ function PathwayStep({
           {/* Cascade forward */}
           {step.cascadeForward && (
             <div className="flex items-start gap-2 pt-1">
-              <ArrowRight className="w-3.5 h-3.5 text-primary shrink-0 mt-0.5" />
-              <p className="text-primary/80 text-xs italic leading-relaxed">
+              <ArrowRight className="w-3.5 h-3.5 text-sf-primary-text shrink-0 mt-0.5" />
+              <p className="text-sf-primary-text text-xs italic leading-relaxed">
                 {step.cascadeForward}
               </p>
             </div>
@@ -337,6 +334,7 @@ function PathwayStep({
 // ── Main Page ──────────────────────────────────────────────
 
 const GettingStarted = () => {
+  useMetaTags({ title: "Getting Started" });
   const [cascadeActiveStage, setCascadeActiveStage] = useState<string | null>(
     null,
   );
@@ -365,7 +363,7 @@ const GettingStarted = () => {
   const selectedEntryData = ENTRY_POINTS.find((e) => e.id === selectedEntry);
 
   return (
-    <div className="min-h-screen bg-background sf-atmosphere">
+    <div className="min-h-screen bg-sf-void sf-atmosphere">
       <Header />
 
       <main className="max-w-[900px] mx-auto px-4 md:px-6 pt-24 pb-16">
@@ -373,7 +371,7 @@ const GettingStarted = () => {
 
         {/* ── Section 1: Cascade Tutorial ─────────────────── */}
         <section className="mb-16">
-          <h1 className="font-display text-3xl md:text-4xl tracking-sf-title text-t1 mb-4">
+          <h1 className="font-display text-sf-h1 tracking-title text-t1 mb-4">
             EVERYTHING CASCADES.
           </h1>
 
@@ -402,7 +400,7 @@ const GettingStarted = () => {
 
           {/* Interactive cascade diagram */}
           <GlassPanel className="p-4">
-            <h4 className="font-mono text-[12px] tracking-[2px] uppercase text-t3/60 mb-3">
+            <h4 className="font-heading text-sf-eyebrow uppercase text-t4 mb-3">
               // THE ENVIRONMENTAL CASCADE
             </h4>
             <CascadeDiagram
@@ -410,7 +408,7 @@ const GettingStarted = () => {
               onStageClick={handleCascadeClick}
             />
             {cascadeActiveStage && (
-              <p className="text-t3 text-xs mt-3 animate-in fade-in duration-200">
+              <p className="text-t3 text-xs mt-3 animate-in fade-in duration-base">
                 {
                   CASCADE_STAGES.find((s) => s.id === cascadeActiveStage)
                     ?.description
@@ -426,7 +424,7 @@ const GettingStarted = () => {
 
         {/* ── Divider ─────────────────────────────────────── */}
         <div className="sf-divider relative">
-          <span className="absolute left-1/2 -translate-x-1/2 -top-2 bg-background px-4 font-mono text-[12px] tracking-wider text-sf-amber/30 uppercase">
+          <span className="absolute left-1/2 -translate-x-1/2 -top-2 bg-sf-void px-4 font-mono text-xs tracking-wider text-t4 uppercase">
             Entry Points
           </span>
         </div>
@@ -456,13 +454,13 @@ const GettingStarted = () => {
                 >
                   <GlassPanel
                     className={`p-4 h-full transition-all ${
-                      isSelected ? "border-primary bg-primary/[0.03]" : ""
+                      isSelected ? "border-sf-primary bg-sf-primary/[0.03]" : ""
                     }`}
                   >
                     <div className="flex items-start gap-3">
                       <Icon
                         className={`w-5 h-5 shrink-0 mt-0.5 ${
-                          isSelected ? "text-primary" : "text-t3"
+                          isSelected ? "text-sf-primary-text" : "text-t3"
                         }`}
                       />
                       <div>
@@ -486,14 +484,14 @@ const GettingStarted = () => {
 
           {/* Selected entry response */}
           {selectedEntryData && (
-            <GlassPanel className="p-5 animate-in fade-in slide-in-from-bottom-2 duration-300">
+            <GlassPanel className="p-5 animate-in fade-in slide-in-from-bottom-2 duration-slow">
               <p className="text-t2 text-sm leading-relaxed italic mb-4">
                 "{selectedEntryData.tone}"
               </p>
 
               {selectedEntryData.action === "pathway" && (
                 <div className="flex items-center gap-2">
-                  <ArrowRight className="w-4 h-4 text-primary" />
+                  <ArrowRight className="w-4 h-4 text-sf-primary-text" />
                   <span className="text-t3 text-xs">
                     Scroll down for the Guided First World pathway.
                   </span>
@@ -503,7 +501,7 @@ const GettingStarted = () => {
               {selectedEntryData.action === "tools" &&
                 "suggestedTools" in selectedEntryData && (
                   <div>
-                    <span className="text-t4 text-[12px] uppercase tracking-wider block mb-2">
+                    <span className="text-t4 text-xs uppercase tracking-wider block mb-2">
                       Suggested starting tools
                     </span>
                     <div className="flex flex-wrap gap-2">
@@ -537,7 +535,7 @@ const GettingStarted = () => {
 
         {/* ── Divider ─────────────────────────────────────── */}
         <div className="sf-divider relative">
-          <span className="absolute left-1/2 -translate-x-1/2 -top-2 bg-background px-4 font-mono text-[12px] tracking-wider text-sf-amber/30 uppercase">
+          <span className="absolute left-1/2 -translate-x-1/2 -top-2 bg-sf-void px-4 font-mono text-xs tracking-wider text-t4 uppercase">
             Guided Pathway
           </span>
         </div>
@@ -559,12 +557,12 @@ const GettingStarted = () => {
             {PATHWAY_STEPS.map((step, i) => (
               <div
                 key={step.number}
-                className={`h-1 flex-1 rounded-sm transition-colors ${
+                className={`h-1 flex-1 rounded-none transition-colors ${
                   completedSteps.includes(i)
-                    ? "bg-primary"
+                    ? "bg-sf-primary"
                     : i === activeStep
-                    ? "bg-primary/40"
-                    : "bg-white/5"
+                    ? "bg-sf-primary/40"
+                    : "bg-sf-surface-elevated"
                 }`}
               />
             ))}
@@ -616,7 +614,7 @@ const GettingStarted = () => {
 
           {/* Completion message */}
           {completedSteps.length === PATHWAY_STEPS.length && (
-            <GlassPanel glow className="p-5 mt-8 text-center animate-in fade-in duration-500">
+            <GlassPanel glow className="p-5 mt-8 text-center animate-in fade-in duration-slow">
               <h3 className="font-heading text-lg font-light uppercase tracking-[2px] text-t1 mb-2">
                 You've Built a World
               </h3>

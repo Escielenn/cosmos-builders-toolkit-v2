@@ -43,13 +43,13 @@ const ScreenshotMockup = ({ src, alt = "Tool preview", toolName }: ScreenshotMoc
  */
 export const ScreenshotPlaceholder = ({ toolName }: { toolName: string }) => {
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center gap-3 p-6 text-center bg-sf-surface/50 rounded-none border border-dashed border-muted">
-      <div className="w-12 h-12 rounded-sm bg-muted/50 flex items-center justify-center">
+    <div className="w-full h-full flex flex-col items-center justify-center gap-3 p-6 text-center bg-sf-surface/50 rounded-none border border-dashed border-sf-line">
+      <div className="w-12 h-12 rounded-none bg-sf-surface-elevated flex items-center justify-center">
         <ImageOff className="w-6 h-6 text-t3" />
       </div>
       <div>
         <div className="text-sm text-t3">{toolName}</div>
-        <div className="text-xs text-t3/60 mt-1">Screenshot coming soon</div>
+        <div className="text-xs text-t4 mt-1">Screenshot coming soon</div>
       </div>
     </div>
   );

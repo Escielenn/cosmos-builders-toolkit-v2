@@ -19,7 +19,7 @@ const XenomythMockup = () => {
   const archetypes = [
     { name: "Creator", symbol: "\u2600\uFE0E", color: "sf-amber" },
     { name: "Trickster", symbol: "◇", color: "sf-violet" },
-    { name: "Guardian", symbol: "◈", color: "sf-cyan" },
+    { name: "Guardian", symbol: "◈", color: "sf-teal" },
     { name: "Shadow", symbol: "◉", color: "sf-crimson" },
   ];
 
@@ -30,7 +30,7 @@ const XenomythMockup = () => {
         <div className="text-xs text-t3 uppercase tracking-wider mb-1">
           Mythological Framework
         </div>
-        <div className="text-sm md:text-base font-display text-sf-violet-text">
+        <div className="text-sm md:text-base font-heading text-sf-violet-text">
           The Path of Light & Shadow
         </div>
       </div>
@@ -46,19 +46,19 @@ const XenomythMockup = () => {
             return (
               <div
                 key={archetype.name}
-                className={`absolute w-16 md:w-20 h-20 md:h-24 rounded-none bg-sf-surface border transition-all duration-500 flex flex-col items-center justify-center gap-1 ${
-                  isActive
-                    ? `border-${archetype.color}/50 shadow-[0_0_20px_rgba(155,93,229,0.3)] scale-110 z-10`
-                    : "border-muted opacity-60"
+                className={`absolute w-16 md:w-20 h-20 md:h-24 rounded-none bg-sf-surface border transition-all duration-slow ease-sf-out flex flex-col items-center justify-center gap-1 ${
+                  isActive ? "scale-110 z-10" : "border-sf-line"
                 }`}
                 style={{
+                  borderColor: isActive ? `var(--${archetype.color})` : undefined,
+                  boxShadow: isActive ? `0 0 20px rgb(var(--${archetype.color}-rgb) / 0.3)` : undefined,
                   transform: `translateX(${offset}px) rotate(${rotation}deg) ${
                     isActive ? "translateY(-8px)" : ""
                   }`,
                 }}
               >
                 <span className="text-xl md:text-2xl">{archetype.symbol}</span>
-                <span className="text-[12px] text-t3">
+                <span className={`text-xs ${isActive ? "text-t2" : "text-t4"}`}>
                   {archetype.name}
                 </span>
               </div>
@@ -84,7 +84,7 @@ const XenomythMockup = () => {
           <defs>
             <linearGradient id="mythGradient" x1="0%" y1="0%" x2="100%" y2="0%">
               <stop offset="0%" stopColor="var(--sf-violet)" />
-              <stop offset="100%" stopColor="var(--sf-cyan)" />
+              <stop offset="100%" stopColor="var(--sf-primary)" />
             </linearGradient>
           </defs>
         </svg>
@@ -94,16 +94,16 @@ const XenomythMockup = () => {
       <div className="mt-4 space-y-2">
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 bg-sf-violet animate-pulse" />
-          <span className="text-[12px] text-t3">
+          <span className="text-xs text-t3">
             Creation Myth: The First Light emerged from...
           </span>
         </div>
         <div className="flex items-center gap-2">
           <div
-            className="w-2 h-2 bg-sf-cyan"
+            className="w-2 h-2 bg-sf-primary"
             style={{ animation: "cascade-glow 3s ease-in-out infinite 0.5s" }}
           />
-          <span className="text-[12px] text-t3">
+          <span className="text-xs text-t3">
             Hero's Journey: The chosen must descend into...
           </span>
         </div>
@@ -112,7 +112,7 @@ const XenomythMockup = () => {
       {/* Environmental influence badge */}
       <div className="mt-3 flex justify-center">
         <div className="inline-flex items-center gap-2 px-3 py-1 bg-sf-violet/10 border border-sf-violet">
-          <span className="text-[12px] text-sf-violet-text uppercase tracking-wider">
+          <span className="text-xs text-sf-violet-text uppercase tracking-wider">
             Derived from High-Gravity World
           </span>
         </div>

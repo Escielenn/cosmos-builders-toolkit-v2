@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Send, CheckCircle } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
 import { useToast } from "@/hooks/use-toast";
+import { useUnsavedChangesGuard } from "@/hooks/use-unsaved-changes-guard";
 import { useContact } from "@/hooks/use-contact";
 import { useAuth } from "@/contexts/AuthContext";
 import HoneypotField from "./HoneypotField";
@@ -33,6 +34,7 @@ const GeneralContactForm = ({ onSuccess }: GeneralContactFormProps) => {
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
+    watch,
   } = useForm<GeneralContactFormData>({
     resolver: zodResolver(generalContactSchema),
     defaultValues: {
@@ -41,6 +43,10 @@ const GeneralContactForm = ({ onSuccess }: GeneralContactFormProps) => {
       message: "",
     },
   });
+
+  // Warn before the tab closes while a written message is unsent.
+  const draftMessage = watch("message");
+  useUnsavedChangesGuard(!submitted && Boolean(draftMessage?.trim()));
 
   const onSubmit = async (data: GeneralContactFormData) => {
     try {
@@ -66,7 +72,7 @@ const GeneralContactForm = ({ onSuccess }: GeneralContactFormProps) => {
   if (submitted) {
     return (
       <div className="text-center py-8">
-        <CheckCircle className="w-12 h-12 text-sf-emerald mx-auto mb-4" />
+        <CheckCircle className="w-12 h-12 text-sf-emerald-text mx-auto mb-4" />
         <h3 className="font-heading text-xl font-medium mb-2">
           TRANSMISSION RECEIVED.
         </h3>

@@ -1,5 +1,8 @@
-import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, Calendar } from "lucide-react";
+import { useParams } from "react-router-dom";
+import { Calendar } from "lucide-react";
+import { BackLink } from "@/components/ui/back-link";
+import { EmptyState } from "@/components/ui/empty-state";
+import { useMetaTags } from "@/hooks/use-meta-tags";
 import { Loader } from "@/components/ui/loader";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -42,10 +45,10 @@ const categoryLabels: Record<string, string> = {
 };
 
 const categoryColors: Record<string, string> = {
-  basics: "bg-blue-500/20 text-blue-400",
-  science: "bg-green-500/20 text-green-400",
-  craft: "bg-purple-500/20 text-purple-400",
-  "case-studies": "bg-amber-500/20 text-sf-amber",
+  basics: "bg-sf-azure/[0.06] border border-sf-azure text-sf-azure-text",
+  science: "bg-sf-emerald/[0.06] border border-sf-emerald text-sf-emerald-text",
+  craft: "bg-sf-violet/[0.06] border border-sf-violet text-sf-violet-text",
+  "case-studies": "bg-sf-amber/[0.06] border border-sf-amber text-sf-amber-text",
 };
 
 const LearnArticle = () => {
@@ -66,10 +69,12 @@ const LearnArticle = () => {
       }
     : fallbackArticle;
 
+  useMetaTags({ title: article?.title ?? "SF University", description: article?.description });
+
   // Loading state
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-sf-void">
         <Header />
         <main className="container mx-auto px-4 pt-24 pb-16 flex justify-center">
           <Loader />
@@ -81,22 +86,16 @@ const LearnArticle = () => {
   // Not found state
   if (!article) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-sf-void">
         <Header />
         <main className="container mx-auto px-4 pt-24 pb-16">
-          <Link
-            to="/learn"
-            className="inline-flex items-center gap-2 text-sm text-t3 hover:text-t1 transition-colors mb-6"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            ← RETURN TO ARCHIVE
-          </Link>
-          <GlassPanel className="p-8 text-center">
-            <h1 className="text-2xl font-medium mb-2">Article Not Found</h1>
-            <p className="text-t2">
-              This article doesn't exist or hasn't been published yet.
-            </p>
-          </GlassPanel>
+          <BackLink to="/learn" label="Return to Archive" className="mb-6" />
+          <EmptyState
+            title="ARTICLE NOT ON FILE."
+            description="This article doesn't exist or hasn't been published yet."
+            actionLabel="RETURN TO ARCHIVE"
+            actionTo="/learn"
+          />
         </main>
       </div>
     );
@@ -106,26 +105,19 @@ const LearnArticle = () => {
   const FallbackContent = fallbackArticle?.content;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-sf-void">
       <Header />
 
       <main className="relative container mx-auto px-4 pt-24 pb-16 max-w-4xl">
         <PageBursts bursts={LEARN_ARTICLE_BURSTS} />
-        {/* Back Link */}
-        <Link
-          to="/learn"
-          className="inline-flex items-center gap-2 text-sm text-t3 hover:text-t1 transition-colors mb-6"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          ← RETURN TO ARCHIVE
-        </Link>
+        <BackLink to="/learn" label="Return to Archive" className="mb-6" />
 
         {/* Article Header */}
         <header className="mb-8">
           <Badge className={categoryColors[article.category]}>
             {categoryLabels[article.category]}
           </Badge>
-          <h1 className="font-display text-3xl md:text-4xl font-medium mt-4 mb-4">
+          <h1 className="font-display text-sf-h1 tracking-title text-t1 mt-4 mb-4">
             {article.title}
           </h1>
           <p className="text-lg text-t2 mb-4">
@@ -156,28 +148,21 @@ const LearnArticle = () => {
 
         {/* Article Content */}
         <GlassPanel className="p-6 md:p-10">
-          <article className="prose prose-invert prose-lg max-w-none prose-headings:font-heading prose-headings:font-medium prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-blockquote:border-primary prose-blockquote:not-italic prose-code:bg-muted prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:before:content-none prose-code:after:content-none">
+          <article className="prose prose-invert prose-lg max-w-none prose-headings:font-heading prose-headings:font-medium prose-a:text-sf-primary-text prose-a:no-underline hover:prose-a:underline prose-blockquote:border-sf-primary prose-blockquote:not-italic prose-code:bg-sf-surface-elevated prose-code:px-1 prose-code:py-0.5 prose-code:rounded-none prose-code:before:content-none prose-code:after:content-none">
             {useSanityContent ? (
               <PortableTextRenderer content={sanityArticle.content} />
             ) : FallbackContent ? (
               <FallbackContent />
             ) : (
               <p className="text-t2">
-                Content not available.
+                CONTENT NOT AVAILABLE.
               </p>
             )}
           </article>
         </GlassPanel>
 
-        {/* ← RETURN TO ARCHIVE */}
-        <div className="mt-8 text-center">
-          <Link
-            to="/learn"
-            className="inline-flex items-center gap-2 text-primary hover:underline"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            ← RETURN TO ARCHIVE
-          </Link>
+        <div className="mt-8 flex justify-center">
+          <BackLink to="/learn" label="Return to Archive" />
         </div>
       </main>
 

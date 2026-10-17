@@ -57,7 +57,7 @@ export default function ForkButton({
         size="sm"
         onClick={() => setConfirmOpen(true)}
         disabled={!user || isViewOnly || forkWorld.isPending}
-        className={`gap-1.5 text-t3 hover:text-primary ${className ?? ""}`}
+        className={`gap-1.5 text-t3 hover:text-sf-primary-text ${className ?? ""}`}
         aria-label={isViewOnly ? "Forking not allowed" : "Fork this world"}
         title={isViewOnly ? "This world is view-only and cannot be forked" : undefined}
       >

@@ -33,16 +33,16 @@ const ProStatusBanner = ({ isSubscribed }: ProStatusBannerProps) => {
   if (isSubscribed) {
     return (
       <section className="mb-8">
-        <GlassPanel className="p-4 border-sf-emerald bg-green-500/5">
+        <GlassPanel className="p-4 border-sf-emerald bg-sf-emerald/5">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-sm bg-green-500/20 flex items-center justify-center">
-                <Zap className="w-5 h-5 text-green-500" />
+              <div className="w-10 h-10 rounded-none bg-sf-emerald/[0.06] border border-sf-emerald flex items-center justify-center">
+                <Zap className="w-5 h-5 text-sf-emerald-text" />
               </div>
               <div>
-                <p className="font-medium text-green-600 dark:text-green-400 flex items-center gap-2">
+                <p className="font-medium text-sf-emerald-text flex items-center gap-2">
                   Pro Member
-                  <Badge className="bg-green-500/20 text-green-600 dark:text-green-400 text-xs">
+                  <Badge className="bg-sf-emerald/[0.06] border border-sf-emerald text-sf-emerald-text text-xs">
                     <Check className="w-3 h-3 mr-1" />
                     Active
                   </Badge>
@@ -68,7 +68,7 @@ const ProStatusBanner = ({ isSubscribed }: ProStatusBannerProps) => {
 
   return (
     <section className="mb-8">
-      <GlassPanel className="p-4 border-sf-amber bg-amber-500/5 relative">
+      <GlassPanel className="p-4 border-sf-amber bg-sf-amber/5 relative">
         <button
           onClick={handleDismiss}
           className="absolute top-3 right-3 text-t3 hover:text-t1 transition-colors"
@@ -78,12 +78,12 @@ const ProStatusBanner = ({ isSubscribed }: ProStatusBannerProps) => {
         </button>
 
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-          <div className="w-10 h-10 rounded-sm bg-amber-500/20 flex items-center justify-center shrink-0">
-            <Sparkles className="w-5 h-5 text-sf-amber" />
+          <div className="w-10 h-10 rounded-none bg-sf-amber/[0.06] border border-sf-amber flex items-center justify-center shrink-0">
+            <Sparkles className="w-5 h-5 text-sf-amber-text" />
           </div>
 
           <div className="flex-1">
-            <p className="font-medium text-sf-amber dark:text-sf-amber mb-1">
+            <p className="font-medium text-sf-amber-text mb-1">
               Unlock All {TOTAL_TOOLS} Worldbuilding Tools
             </p>
             <p className="text-sm text-t2">

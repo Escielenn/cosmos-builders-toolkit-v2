@@ -17,9 +17,9 @@ const ShowcaseHero = () => {
 
           {/* Headline */}
           <h1 className="font-display font-light text-4xl md:text-5xl lg:text-7xl mb-6 leading-tight sf-reveal sf-reveal-2">
-            <span className="uppercase tracking-sf-wide">INSTRUMENT</span>
+            <span className="uppercase tracking-wide">INSTRUMENT</span>
             <br />
-            <span className="gradient-text uppercase tracking-sf-wide">MANIFEST</span>
+            <span className="gradient-text uppercase tracking-wide">MANIFEST</span>
           </h1>
 
           {/* Subhead — Lora-italic lead-in for the Studio warmth (meld) */}
@@ -74,7 +74,7 @@ const DashboardMockup = () => {
             title="Drake Equation"
             value="N = 42"
             delay={0}
-            color="cyan"
+            color="primary"
           />
           <MockToolCard
             title="Planetary Profile"
@@ -111,7 +111,7 @@ const DashboardMockup = () => {
 
       {/* Subtle scan line accent */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/2 left-[10%] right-[10%] h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
+        <div className="absolute top-1/2 left-[10%] right-[10%] h-px bg-gradient-to-r from-transparent via-sf-primary/20 to-transparent" />
       </div>
     </div>
   );
@@ -121,12 +121,12 @@ interface MockToolCardProps {
   title: string;
   value: string;
   delay: number;
-  color: "cyan" | "amber" | "violet" | "emerald" | "azure" | "magenta";
+  color: "primary" | "amber" | "violet" | "emerald" | "azure" | "magenta";
 }
 
 const MockToolCard = ({ title, value, delay, color }: MockToolCardProps) => {
   const colorMap = {
-    cyan: "border-sf-primary",
+    primary: "border-sf-primary",
     amber: "border-sf-amber",
     violet: "border-sf-violet",
     emerald: "border-sf-emerald",
@@ -135,11 +135,11 @@ const MockToolCard = ({ title, value, delay, color }: MockToolCardProps) => {
   };
 
   const textColorMap = {
-    cyan: "text-sf-cyan",
-    amber: "text-sf-amber",
+    primary: "text-sf-primary-text",
+    amber: "text-sf-amber-text",
     violet: "text-sf-violet-text",
-    emerald: "text-sf-emerald",
-    azure: "text-sf-azure",
+    emerald: "text-sf-emerald-text",
+    azure: "text-sf-azure-text",
     magenta: "text-sf-magenta-text",
   };
 
@@ -147,7 +147,7 @@ const MockToolCard = ({ title, value, delay, color }: MockToolCardProps) => {
     <div
       className={`
         bg-sf-surface/80 backdrop-blur-sm border rounded-none p-3 md:p-4
-        transform transition-all duration-500
+        transform transition-all duration-slow
         hover:scale-105 hover:z-10
         ${colorMap[color]}
       `}

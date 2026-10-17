@@ -8,7 +8,7 @@ export function BadgeGrid() {
   if (isLoading) {
     return (
       <div className="py-4">
-        <p className="font-mono text-[12px] uppercase tracking-wider text-white/[0.15] text-center">
+        <p className="font-mono text-xs uppercase tracking-wider text-t4 text-center">
           Loading commendations...
         </p>
       </div>
@@ -20,10 +20,10 @@ export function BadgeGrid() {
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-heading text-sm uppercase tracking-[3px] text-emerald">
+        <h3 className="font-heading text-sm uppercase tracking-wide text-sf-emerald-text">
           Commendations
         </h3>
-        <span className="font-mono text-[12px] text-white/[0.28]">
+        <span className="font-mono text-xs text-t4">
           {earnedCount} / {BADGE_DEFINITIONS.length}
         </span>
       </div>

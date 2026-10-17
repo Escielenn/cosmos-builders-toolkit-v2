@@ -64,6 +64,7 @@ import { HomepageQuote } from "@/components/quotes/HomepageQuote";
 import { BracketPanel } from "@/components/ui/bracket-panel";
 import { PageBursts } from "@/components/ui/data-burst";
 import { ALL_DASHBOARD_BURSTS } from "@/lib/data-bursts";
+import { useMetaTags } from "@/hooks/use-meta-tags";
 
 // Helper to get category metadata for a tool
 function getToolCategory(toolId: string): { label: string; color: string } | undefined {
@@ -332,16 +333,16 @@ const toolsByCategory: {
 type SortMode = 'category' | 'type' | 'complexity';
 
 const TYPE_GROUP_META: Record<ToolType, { label: string; color: string; description: string }> = {
-  worksheet: { label: 'Worksheets', color: '#7FB8FF', description: 'In-depth design tools with guided questions and exportable results.' },
-  calculator: { label: 'Calculators', color: '#FFB800', description: 'Quick-reference tools for specific physical parameters.' },
-  simulator: { label: 'Simulators', color: '#00FF88', description: 'Interactive visual simulations and procedural generators.' },
-  cartographer: { label: 'Cartographers', color: '#9B5DE5', description: 'Spatial mapping and visualization tools.' },
+  worksheet: { label: 'Worksheets', color: 'var(--sf-azure-text)', description: 'In-depth design tools with guided questions and exportable results.' },
+  calculator: { label: 'Calculators', color: 'var(--sf-amber-text)', description: 'Quick-reference tools for specific physical parameters.' },
+  simulator: { label: 'Simulators', color: 'var(--sf-emerald-text)', description: 'Interactive visual simulations and procedural generators.' },
+  cartographer: { label: 'Cartographers', color: 'var(--sf-violet-text)', description: 'Spatial mapping and visualization tools.' },
 };
 
 const COMPLEXITY_GROUP_META: Record<ComplexityLevel, { label: string; color: string; description: string }> = {
-  entry: { label: 'Entry Level', color: '#00FF88', description: 'No prerequisites. Great starting points for new worldbuilders.' },
-  intermediate: { label: 'Intermediate', color: '#FFB800', description: 'Benefits from prior tool outputs. Deeper domain exploration.' },
-  advanced: { label: 'Advanced', color: '#9B5DE5', description: 'Maximum flexibility. Best with prior tool experience.' },
+  entry: { label: 'Entry Level', color: 'var(--sf-emerald-text)', description: 'No prerequisites. Great starting points for new worldbuilders.' },
+  intermediate: { label: 'Intermediate', color: 'var(--sf-amber-text)', description: 'Benefits from prior tool outputs. Deeper domain exploration.' },
+  advanced: { label: 'Advanced', color: 'var(--sf-violet-text)', description: 'Maximum flexibility. Best with prior tool experience.' },
 };
 
 const CATEGORY_ORDER: ToolCategory[] = ['stars-systems', 'worlds', 'life', 'civilizations', 'mythology', 'integration'];
@@ -374,18 +375,19 @@ const comingSoonItems = [
 
 
 const ComingSoonCard = ({ title, subtitle }: { title: string; subtitle: string }) => (
-  <GlassPanel className="p-4 border-dashed border border-muted opacity-70">
+  <GlassPanel className="p-4 border-dashed border border-sf-disabled-line bg-sf-disabled-bg">
     <div className="flex items-center justify-between mb-1">
-      <h3 className="font-heading font-medium text-sm">{title}</h3>
-      <Badge variant="outline" className="text-[12px] shrink-0">Coming Soon</Badge>
+      <h3 className="font-heading font-medium text-sm text-t3">{title}</h3>
+      <Badge variant="outline" className="text-xs shrink-0">COMING SOON</Badge>
     </div>
-    <p className="text-xs text-t3">{subtitle}</p>
+    <p className="text-xs text-t4">{subtitle}</p>
   </GlassPanel>
 );
 
 const SIGNUP_WELCOME_KEY = "sf-welcome-signup-shown";
 
 const Index = () => {
+  useMetaTags({});
   const { user, profile } = useAuth();
   const [showArchived, setShowArchived] = useState(false);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
@@ -480,7 +482,7 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background sf-atmosphere">
+    <div className="min-h-screen bg-sf-void sf-atmosphere">
       <Header />
       <div className="pt-16">
         <BetaBanner position="top" />
@@ -519,7 +521,7 @@ const Index = () => {
           <section id="worlds" className="mb-16 scroll-mt-24">
             <div className="flex flex-col gap-4 mb-8">
               <div className="flex items-center justify-between">
-                <h2 className="font-heading font-light text-2xl uppercase tracking-sf-wide">My Worlds</h2>
+                <h2 className="font-heading font-light text-2xl uppercase tracking-wide">My Worlds</h2>
                 <ArchiveToggle
                   showArchived={showArchived}
                   onToggle={setShowArchived}
@@ -546,7 +548,7 @@ const Index = () => {
               )}
 
               {!isLoading && filteredWorlds.length === 0 && (
-                <GlassPanel className="p-5 h-full min-h-[200px] flex flex-col items-center justify-center border-dashed border border-muted">
+                <GlassPanel className="p-5 h-full min-h-[200px] flex flex-col items-center justify-center border-dashed border border-sf-line">
                   <p className="text-sm text-t2 text-center">
                     {selectedTags.length > 0
                       ? "No worlds match the selected tags."
@@ -576,7 +578,7 @@ const Index = () => {
 
             {/* Scroll hint */}
             <div className="flex flex-col items-center mt-8 text-t4 animate-pulse">
-              <span className="font-mono text-[12px] uppercase tracking-[2px]">Scroll</span>
+              <span className="font-mono text-xs uppercase tracking-wide">Scroll</span>
               <ChevronDown className="w-4 h-4 mt-0.5" />
             </div>
           </section>
@@ -588,7 +590,7 @@ const Index = () => {
         {/* From the Community Section, logged-in users */}
         {user && (
           <section className="mb-16">
-            <h2 className="font-heading font-light text-2xl uppercase tracking-sf-wide mb-6">
+            <h2 className="font-heading font-light text-2xl uppercase tracking-wide mb-6">
               From the Community
             </h2>
             <GlassPanel className="p-8 flex flex-col items-center text-center gap-4">
@@ -610,13 +612,13 @@ const Index = () => {
           <section id="tools" className="mb-16 scroll-mt-24">
             <div className="flex flex-col gap-4 mb-8">
               <div className="flex items-center justify-between">
-                <h2 className="font-heading font-light text-2xl uppercase tracking-sf-wide">
+                <h2 className="font-heading font-light text-2xl uppercase tracking-wide">
                   Worldbuilding Tools
                 </h2>
                 <div className="flex items-center gap-4">
                   <Link
                     to="/getting-started"
-                    className="text-xs text-primary hover:text-primary/80 font-heading uppercase tracking-wider transition-colors hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 border border-primary hover:border-primary rounded-sm"
+                    className="text-xs text-sf-primary-text hover:text-sf-primary-text font-heading uppercase tracking-wider transition-colors hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 border border-sf-primary hover:border-sf-primary rounded-none"
                   >
                     Getting Started?
                   </Link>
@@ -628,7 +630,7 @@ const Index = () => {
                   </Link>
                 </div>
               </div>
-              <div className="flex items-center gap-1 p-0.5 bg-muted/20 rounded-none border border-sf-line-interactive w-fit">
+              <div className="flex items-center gap-1 p-0.5 bg-sf-surface-elevated rounded-none border border-sf-line-interactive w-fit">
                 {([
                   { mode: 'category' as SortMode, label: 'Category' },
                   { mode: 'type' as SortMode, label: 'Type' },
@@ -638,10 +640,10 @@ const Index = () => {
                     type="button"
                     key={mode}
                     onClick={() => setSortMode(mode)}
-                    className={`px-3 py-1.5 text-[12px] uppercase tracking-[0.12em] font-medium rounded transition-all ${
+                    className={`px-3 py-1.5 text-xs uppercase tracking-[0.12em] font-medium rounded-none transition-all ${
                       sortMode === mode
-                        ? 'bg-primary/15 text-primary'
-                        : 'text-t3 hover:text-t1 hover:bg-muted/30'
+                        ? 'bg-sf-primary/15 text-sf-primary-text'
+                        : 'text-t3 hover:text-t1 hover:bg-sf-surface-elevated'
                     }`}
                   >
                     {label}
@@ -659,7 +661,7 @@ const Index = () => {
                         .getElementById(`tools-group-${key}`)
                         ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     }}
-                    className="flex items-center gap-1.5 px-2.5 py-1 text-[12px] uppercase tracking-[0.12em] font-medium rounded border border-sf-line-interactive hover:border-sf-line-emphasis text-t3 hover:text-t1 transition-all"
+                    className="flex items-center gap-1.5 px-2.5 py-1 text-xs uppercase tracking-[0.12em] font-medium rounded-none border border-sf-line-interactive hover:border-sf-line-emphasis text-t3 hover:text-t1 transition-all"
                   >
                     <span
                       className="w-1.5 h-1.5 rounded-full shrink-0"
@@ -681,7 +683,7 @@ const Index = () => {
                       style={{ backgroundColor: color }}
                     />
                     <h3
-                      className="font-heading font-light text-lg uppercase tracking-sf-wide"
+                      className="font-heading font-light text-lg uppercase tracking-wide"
                       style={{ color }}
                     >
                       {label}
@@ -710,13 +712,13 @@ const Index = () => {
 
             {/* Coming Soon */}
             <div className="mt-8 mb-6 flex items-center justify-between">
-              <h3 className="font-heading font-light text-lg uppercase tracking-sf-wide text-t3">
+              <h3 className="font-heading font-light text-lg uppercase tracking-wide text-t3">
                 Coming Soon
               </h3>
               {isSubscribed && (
                 <Link
                   to="/roadmap"
-                  className="text-[12px] font-medium uppercase tracking-[1.5px] text-primary/70 hover:text-primary transition-colors duration-300 flex items-center gap-1.5"
+                  className="text-xs font-medium uppercase tracking-wide text-sf-primary-text hover:text-sf-primary-text transition-colors duration-slow flex items-center gap-1.5"
                 >
                   <MapIcon className="w-3.5 h-3.5" />
                   Vote on the Roadmap
@@ -741,7 +743,7 @@ const Index = () => {
         {/* Prompt of the Day, logged-in users */}
         {user && (
           <section className="mb-16">
-            <h2 className="font-heading font-light text-2xl uppercase tracking-sf-wide mb-6">
+            <h2 className="font-heading font-light text-2xl uppercase tracking-wide mb-6">
               Today's Writing Prompt
             </h2>
             <PromptOfTheDay />
@@ -759,8 +761,8 @@ const Index = () => {
               ]} />
               <div className="grid md:grid-cols-3 gap-8">
                 <div className="text-center md:text-left">
-                  <div className="w-12 h-12 rounded-none bg-primary/10 flex items-center justify-center mb-4 mx-auto md:mx-0">
-                    <Shield className="w-6 h-6 text-primary" />
+                  <div className="w-12 h-12 rounded-none bg-sf-primary/[0.06] border border-sf-primary flex items-center justify-center mb-4 mx-auto md:mx-0">
+                    <Shield className="w-6 h-6 text-sf-primary-text" />
                   </div>
                   <h3 className="font-heading font-light text-lg mb-2 uppercase tracking-wider">
                     Cross-Tool Integration
@@ -771,8 +773,8 @@ const Index = () => {
                   </p>
                 </div>
                 <div className="text-center md:text-left">
-                  <div className="w-12 h-12 rounded-none bg-accent/10 flex items-center justify-center mb-4 mx-auto md:mx-0">
-                    <BookOpen className="w-6 h-6 text-accent" />
+                  <div className="w-12 h-12 rounded-none bg-sf-primary/[0.06] border border-sf-primary flex items-center justify-center mb-4 mx-auto md:mx-0">
+                    <BookOpen className="w-6 h-6 text-sf-primary" />
                   </div>
                   <h3 className="font-heading font-light text-lg mb-2 uppercase tracking-wider">
                     Export & Print
@@ -783,8 +785,8 @@ const Index = () => {
                   </p>
                 </div>
                 <div className="text-center md:text-left">
-                  <div className="w-12 h-12 rounded-none bg-primary/10 flex items-center justify-center mb-4 mx-auto md:mx-0">
-                    <Users className="w-6 h-6 text-primary" />
+                  <div className="w-12 h-12 rounded-none bg-sf-primary/[0.06] border border-sf-primary flex items-center justify-center mb-4 mx-auto md:mx-0">
+                    <Users className="w-6 h-6 text-sf-primary-text" />
                   </div>
                   <h3 className="font-heading font-light text-lg mb-2 uppercase tracking-wider">
                     Shareable Links

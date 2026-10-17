@@ -59,7 +59,7 @@ const UpgradeDialog = ({ open, onOpenChange, toolName }: UpgradeDialogProps) => 
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 font-heading text-xl">
-            <Zap className="w-5 h-5 text-sf-amber" />
+            <Zap className="w-5 h-5 text-sf-amber-text" />
             UPGRADE CLEARANCE
           </DialogTitle>
           <DialogDescription>
@@ -72,7 +72,7 @@ const UpgradeDialog = ({ open, onOpenChange, toolName }: UpgradeDialogProps) => 
 
         <div className="grid gap-4 py-4">
           {/* Monthly Plan */}
-          <div className="p-4 rounded-none border border-sf-line-interactive hover:border-primary transition-colors">
+          <div className="p-4 rounded-none border border-sf-line-interactive hover:border-sf-primary transition-colors">
             <div className="flex justify-between items-start mb-2">
               <div>
                 <h3 className="font-medium">Monthly</h3>
@@ -94,9 +94,9 @@ const UpgradeDialog = ({ open, onOpenChange, toolName }: UpgradeDialogProps) => 
           </div>
 
           {/* Yearly Plan */}
-          <div className="p-4 rounded-none border-2 border-primary bg-primary/5 relative">
+          <div className="p-4 rounded-none border-2 border-sf-primary bg-sf-primary/5 relative">
             <div className="absolute -top-3 left-4">
-              <span className="px-2 py-0.5 bg-primary text-primary-foreground text-xs font-medium rounded">
+              <span className="px-2 py-0.5 bg-sf-primary text-sf-on-primary text-xs font-medium rounded-none">
                 Save 18%
               </span>
             </div>
@@ -133,7 +133,7 @@ const UpgradeDialog = ({ open, onOpenChange, toolName }: UpgradeDialogProps) => 
               "All future tools and features",
             ].map((feature) => (
               <li key={feature} className="flex items-center gap-2 text-t3">
-                <Check className="w-4 h-4 text-green-500" />
+                <Check className="w-4 h-4 text-sf-emerald-text" />
                 {feature}
               </li>
             ))}

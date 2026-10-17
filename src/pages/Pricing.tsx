@@ -4,7 +4,6 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Check, Zap, Sparkles, Map } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
 import { useQueryClient } from "@tanstack/react-query";
@@ -18,8 +17,10 @@ import { PRICING_BURSTS } from "@/lib/data-bursts";
 import { ParallaxStrips } from "@/components/ambient/ParallaxStrips";
 import { SectionHero } from "@/components/ui/section-hero";
 import { mapError } from "@/lib/ship-voice";
+import { useMetaTags } from "@/hooks/use-meta-tags";
 
 const Pricing = () => {
+  useMetaTags({ title: "Pricing" });
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -169,7 +170,7 @@ const Pricing = () => {
   const isProOnly = isSubscribed && tier === 'pro';
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-sf-void">
       <Header />
 
       <main className="relative container mx-auto px-4 pt-24 pb-16">
@@ -194,20 +195,20 @@ const Pricing = () => {
           {/* Free Plan */}
           <GlassPanel className="p-8">
             <div className="mb-6">
-              <h2 className="font-heading text-xl font-light uppercase tracking-[2px] mb-2">STANDARD ACCESS</h2>
+              <h2 className="font-heading text-xl font-light uppercase tracking-[2px] text-t1 mb-2">STANDARD ACCESS</h2>
               <p className="text-4xl font-light text-t1">$0<span className="text-lg text-t3">/forever</span></p>
             </div>
 
             <ul className="space-y-3 mb-8">
               {freeFeatures.map((feature) => (
                 <li key={feature} className="flex items-center gap-2 text-sm">
-                  <Check className="w-4 h-4 text-sf-emerald shrink-0" />
+                  <Check className="w-4 h-4 text-sf-emerald-text shrink-0" />
                   <span className="text-t2">{feature}</span>
                 </li>
               ))}
             </ul>
 
-            <p className="text-xs text-t3 uppercase tracking-[1.5px] mb-3">Free tools:</p>
+            <p className="font-heading text-sf-eyebrow uppercase text-t4 mb-3">Free tools</p>
             <ul className="text-sm text-t2 space-y-1 mb-6">
               {FREE_TOOL_IDS.map((id) => (
                 <li key={id}>{getToolDisplayName(id)}</li>
@@ -224,16 +225,16 @@ const Pricing = () => {
           </GlassPanel>
 
           {/* Pro Plan */}
-          <GlassPanel glow className="p-8 border-2 border-primary relative">
+          <GlassPanel glow className="p-8 border-2 border-sf-primary relative">
             <div className="absolute -top-3 right-4">
-              <Badge className="bg-primary text-primary-foreground">
+              <span className="inline-flex items-center px-2 py-1 font-heading text-sf-eyebrow uppercase bg-sf-primary text-sf-on-primary">
                 Most Popular
-              </Badge>
+              </span>
             </div>
 
             <div className="mb-6">
-              <h2 className="font-heading text-xl font-light uppercase tracking-[2px] mb-2 flex items-center gap-2">
-                <Zap className="w-5 h-5 text-sf-amber" />
+              <h2 className="font-heading text-xl font-light uppercase tracking-[2px] text-t1 mb-2 flex items-center gap-2">
+                <Zap className="w-5 h-5 text-sf-amber-text" />
                 PRO ACCESS
               </h2>
               <div className="flex items-baseline gap-2">
@@ -246,7 +247,7 @@ const Pricing = () => {
             <ul className="space-y-3 mb-8">
               {proFeatures.map((feature) => (
                 <li key={feature} className="flex items-center gap-2 text-sm">
-                  <Check className="w-4 h-4 text-sf-emerald shrink-0" />
+                  <Check className="w-4 h-4 text-sf-emerald-text shrink-0" />
                   <span className="text-t2">{feature}</span>
                 </li>
               ))}
@@ -254,15 +255,15 @@ const Pricing = () => {
 
             {activating ? (
               <div className="space-y-3">
-                <div className="p-4 rounded-sm bg-primary/10 text-center">
+                <div className="p-4 rounded-none bg-sf-primary/[0.06] border border-sf-primary text-center">
                   <Loader size="sm" className="mb-2" />
-                  <p className="text-sm font-medium">ACTIVATION IN PROGRESS.</p>
+                  <p className="text-sm font-medium text-t1">ACTIVATION IN PROGRESS.</p>
                 </div>
               </div>
             ) : isSubscribed && tier === 'pro' ? (
               <div className="space-y-3">
-                <div className="p-3 rounded-sm bg-emerald-500/10 text-center">
-                  <p className="text-sm font-medium text-sf-emerald">
+                <div className="p-3 rounded-none bg-sf-emerald/[0.06] border border-sf-emerald text-center">
+                  <p className="text-sm font-medium uppercase text-sf-emerald-text">
                     Pro active ({subscription?.plan_type})
                   </p>
                 </div>
@@ -279,8 +280,8 @@ const Pricing = () => {
                 </Button>
               </div>
             ) : isVanguard ? (
-              <div className="p-3 rounded-sm bg-emerald-500/10 text-center">
-                <p className="text-sm text-t2">Included in your Vanguard access</p>
+              <div className="p-3 rounded-none bg-sf-emerald/[0.06] border border-sf-emerald text-center">
+                <p className="text-sm uppercase text-t2">Included in Vanguard access.</p>
               </div>
             ) : (
               <div className="space-y-3">
@@ -315,13 +316,13 @@ const Pricing = () => {
           {/* Vanguard Plan */}
           <GlassPanel className="p-8 border-2 border-sf-violet relative">
             <div className="absolute -top-3 right-4">
-              <Badge className="bg-violet-600 text-white border-violet-500">
+              <span className="inline-flex items-center px-2 py-1 font-heading text-sf-eyebrow uppercase bg-sf-violet text-sf-on-violet">
                 Shape the Future
-              </Badge>
+              </span>
             </div>
 
             <div className="mb-6">
-              <h2 className="font-heading text-xl font-light uppercase tracking-[2px] mb-2 flex items-center gap-2">
+              <h2 className="font-heading text-xl font-light uppercase tracking-[2px] text-t1 mb-2 flex items-center gap-2">
                 <Sparkles className="w-5 h-5 text-sf-violet" />
                 VANGUARD ACCESS
               </h2>
@@ -343,15 +344,15 @@ const Pricing = () => {
 
             {activating ? (
               <div className="space-y-3">
-                <div className="p-4 rounded-sm bg-violet-500/10 text-center">
+                <div className="p-4 rounded-none bg-sf-violet/[0.06] border border-sf-violet text-center">
                   <Loader size="sm" className="mb-2" />
-                  <p className="text-sm font-medium">ACTIVATION IN PROGRESS.</p>
+                  <p className="text-sm font-medium text-t1">ACTIVATION IN PROGRESS.</p>
                 </div>
               </div>
             ) : isVanguard ? (
               <div className="space-y-3">
-                <div className="p-3 rounded-sm bg-violet-500/10 text-center">
-                  <p className="text-sm font-medium text-sf-violet-text">
+                <div className="p-3 rounded-none bg-sf-violet/[0.06] border border-sf-violet text-center">
+                  <p className="text-sm font-medium uppercase text-sf-violet-text">
                     Vanguard active ({subscription?.plan_type})
                   </p>
                 </div>
@@ -370,7 +371,7 @@ const Pricing = () => {
             ) : isProOnly ? (
               <div className="space-y-3">
                 <Button
-                  className="w-full bg-violet-600 hover:bg-violet-500"
+                  className="w-full bg-sf-violet text-sf-on-violet hover:bg-sf-violet"
                   size="lg"
                   onClick={() => handleCheckout('yearly', 'vanguard')}
                   disabled={loading !== null}
@@ -400,7 +401,7 @@ const Pricing = () => {
             ) : (
               <div className="space-y-3">
                 <Button
-                  className="w-full bg-violet-600 hover:bg-violet-500"
+                  className="w-full bg-sf-violet text-sf-on-violet hover:bg-sf-violet"
                   size="lg"
                   onClick={() => handleCheckout('yearly', 'vanguard')}
                   disabled={loading !== null}
@@ -432,11 +433,11 @@ const Pricing = () => {
         <section className="max-w-4xl mx-auto mb-16">
           <GlassPanel className="p-8 border-sf-violet">
             <div className="flex items-start gap-4 mb-6">
-              <div className="w-12 h-12 rounded-sm bg-violet-500/10 flex items-center justify-center shrink-0">
+              <div className="w-12 h-12 rounded-none bg-sf-violet/[0.06] border border-sf-violet flex items-center justify-center shrink-0">
                 <Map className="w-6 h-6 text-sf-violet" />
               </div>
               <div>
-                <h3 className="font-heading text-lg font-light uppercase tracking-[2px] mb-1">Vanguard: Shape What Comes Next</h3>
+                <h3 className="font-heading text-lg font-light uppercase tracking-[2px] text-t1 mb-1">Vanguard: Shape What Comes Next</h3>
                 <p className="text-sm text-t2">
                   Vanguard members don't just use StellarForge, they help build it. Vote on the roadmap, get early access to new tools before anyone else, and join bi-weekly Office Hours to discuss science fiction worldbuilding directly with the creator.
                 </p>

@@ -4,10 +4,12 @@
  * Register: MONO (campaign voice — // labels, tracked caps, no Lora).
  * Launch date derives from src/config/launch.ts — never hardcoded.
  */
-import { useEffect, useState, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
+import { useMetaTags } from "@/hooks/use-meta-tags";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { supabase } from "@/integrations/supabase/client";
 import {
+  LAUNCH_DATE_PROSE,
   LAUNCH_DATE_STAMP,
   LAUNCH_TIME_LABEL,
   daysUntilLaunch,
@@ -25,7 +27,7 @@ const MANIFEST_ROWS: { label: string; value: string; tone: string }[] = [
   { label: "INSTRUMENTS", value: `${TOTAL_TOOL_COUNT} TOOLS INCL. ${SIMULATOR_COUNT} SIMULATORS`, tone: "text-t1" },
   { label: "FRAMEWORK", value: "ENVIRONMENTAL CASCADE", tone: "text-sf-stellar-text" },
   { label: "FREE TIER", value: `${FREE_TOOL_COUNT} TOOLS · UNLIMITED WORLDS`, tone: "text-t1" },
-  { label: "PRO", value: "$4.99/MO · $49/YR", tone: "text-sf-amber" },
+  { label: "PRO", value: "$4.99/MO · $49/YR", tone: "text-sf-amber-text" },
   { label: "EARLY CODE", value: "EARLY40 · 40% OFF YR 1", tone: "text-sf-primary-text" },
 ];
 
@@ -37,9 +39,9 @@ const STATS: { n: string; blurb: string }[] = [
 ];
 
 const CATEGORY_TONE: Record<string, string> = {
-  "STARS & SYSTEMS": "text-sf-amber",
-  WORLDS: "text-sf-azure",
-  LIFE: "text-sf-emerald",
+  "STARS & SYSTEMS": "text-sf-amber-text",
+  WORLDS: "text-sf-azure-text",
+  LIFE: "text-sf-emerald-text",
   CIVILIZATIONS: "text-sf-violet-text",
   MYTHOLOGY: "text-sf-stellar-text",
   INTEGRATION: "text-sf-primary-text",
@@ -107,7 +109,7 @@ function WaitlistForm(): JSX.Element {
           onChange={(e) => setEmail(e.target.value)}
           disabled={status === "sent"}
           placeholder="FREQUENCY · YOUR@EMAIL.COM"
-          className="min-w-0 flex-1 bg-transparent px-[18px] py-4 font-mono text-[13px] tracking-[0.04em] text-t1 outline-none placeholder:text-[12px] placeholder:uppercase placeholder:tracking-[1.5px] placeholder:text-t4 focus-visible:ring-1 focus-visible:ring-sf-primary"
+          className="min-w-0 flex-1 bg-transparent px-[18px] py-4 font-mono text-[13px] tracking-[0.04em] text-t1 outline-none placeholder:text-xs placeholder:uppercase placeholder:tracking-wide placeholder:text-t4 focus-visible:ring-1 focus-visible:ring-sf-primary"
         />
         <button
           type="submit"
@@ -121,7 +123,7 @@ function WaitlistForm(): JSX.Element {
               : "REQUEST CLEARANCE →"}
         </button>
       </form>
-      <div className="mt-[18px] font-mono text-[12px] uppercase tracking-[1.5px] text-t4" role="status">
+      <div className="mt-[18px] font-mono text-xs uppercase tracking-wide text-t4" role="status">
         {status === "error"
           ? "TRANSMISSION FAILED · CHECK THE ADDRESS AND RETRY"
           : status === "sent"
@@ -137,7 +139,7 @@ function LandingHero(): JSX.Element {
     <div>
       <div className="mb-6 flex items-center gap-2.5">
         <span className="h-px w-7 bg-sf-primary" aria-hidden="true" />
-        <span className="font-mono text-[12px] tracking-[2px] text-sf-primary-text">
+        <span className="font-mono text-xs tracking-wide text-sf-primary-text">
           {"// EARLY ACCESS · "}
           {LAUNCH_DATE_STAMP}
         </span>
@@ -169,10 +171,10 @@ function LandingHero(): JSX.Element {
 function ManifestPanel(): JSX.Element {
   return (
     <GlassPanel glow className="relative p-7">
-      <div className="absolute right-3.5 top-3.5 font-mono text-[12px] tracking-[1.5px] text-t4">
+      <div className="absolute right-3.5 top-3.5 font-mono text-xs tracking-wide text-t4">
         {"// MANIFEST"}
       </div>
-      <div className="text-[12px] font-medium uppercase tracking-[1.5px] text-t3">
+      <div className="text-xs font-medium uppercase tracking-wide text-t3">
         SHIP'S MANIFEST · v0.8 → 1.0
       </div>
       <dl className="mt-3.5">
@@ -181,7 +183,7 @@ function ManifestPanel(): JSX.Element {
             key={row.label}
             className={`grid grid-cols-2 gap-[18px] py-3.5 ${i > 0 ? "border-t border-sf-line-interactive" : ""}`}
           >
-            <dt className="m-0 font-mono text-[12px] uppercase tracking-[1.5px] text-t3">{row.label}</dt>
+            <dt className="m-0 font-mono text-xs uppercase tracking-wide text-t3">{row.label}</dt>
             <dd className={`m-0 font-mono text-[13px] ${row.tone}`}>{row.value}</dd>
           </div>
         ))}
@@ -215,11 +217,11 @@ function ToolGrid(): JSX.Element {
       <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-5">
         {TOOLS.map((tool) => (
           <div key={tool.name} className="rounded-none border border-sf-line-interactive bg-sf-surface/90 p-3.5">
-            <div className={`font-mono text-[12px] uppercase tracking-[1.5px] ${CATEGORY_TONE[tool.cat]}`}>
+            <div className={`font-mono text-xs uppercase tracking-wide ${CATEGORY_TONE[tool.cat]}`}>
               {tool.cat}
             </div>
             <div className="mt-1.5 font-display text-sm tracking-[0.04em] text-t1">{tool.name}</div>
-            <div className="mt-1 text-[12px] leading-[1.4] text-t3">{tool.blurb}</div>
+            <div className="mt-1 text-xs leading-[1.4] text-t3">{tool.blurb}</div>
           </div>
         ))}
       </div>
@@ -232,13 +234,7 @@ function ToolGrid(): JSX.Element {
 export default function EarlyAccess(): JSX.Element {
   const days = daysUntilLaunch();
 
-  useEffect(() => {
-    const prev = document.title;
-    document.title = "StellarForge: Early Access opens August 11";
-    return () => {
-      document.title = prev;
-    };
-  }, []);
+  useMetaTags({ title: `Early Access opens ${LAUNCH_DATE_PROSE}` });
 
   return (
     <div className="relative z-10 mx-auto min-h-screen max-w-[1200px] px-6 pb-20 pt-9 md:px-10">
@@ -250,7 +246,7 @@ export default function EarlyAccess(): JSX.Element {
             STELLAR<span className="text-sf-primary-text">FORGE</span>
           </div>
         </a>
-        <div className="font-mono text-sm tracking-[3px] text-t1">
+        <div className="font-mono text-sm tracking-wide text-t1">
           T-MINUS <span className="text-sf-primary-text">{days}</span> {days === 1 ? "DAY" : "DAYS"}
         </div>
       </div>
@@ -265,7 +261,7 @@ export default function EarlyAccess(): JSX.Element {
       <ToolGrid />
 
       {/* footer */}
-      <div className="mt-20 flex flex-col gap-2 border-t border-sf-line-interactive pt-10 font-mono text-[12px] tracking-[2px] text-t4 sm:flex-row sm:justify-between">
+      <div className="mt-20 flex flex-col gap-2 border-t border-sf-line-interactive pt-10 font-mono text-xs tracking-wide text-t4 sm:flex-row sm:justify-between">
         <span>© 2026 STELLARFORGE · ALL RIGHTS RESERVED</span>
         <span>BUILT IN THORNTON, CO · 39.87°N 104.97°W</span>
       </div>

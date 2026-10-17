@@ -4,8 +4,8 @@
 // ---------------------------------------------------------------------------
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { ArrowLeft, Search, Globe, Layers } from "lucide-react";
+import { Search, Globe, Layers } from "lucide-react";
+import { BackLink } from "@/components/ui/back-link";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { GlassPanel } from "@/components/ui/glass-panel";
@@ -23,6 +23,7 @@ import {
   useCommunityWorlds,
   type CommunitySort,
 } from "@/hooks/use-community-worlds";
+import { useMetaTags } from "@/hooks/use-meta-tags";
 
 const SORT_OPTIONS: { value: CommunitySort; label: string }[] = [
   { value: "recent", label: "Recent" },
@@ -31,6 +32,7 @@ const SORT_OPTIONS: { value: CommunitySort; label: string }[] = [
 ];
 
 const Community = () => {
+  useMetaTags({ title: "Community" });
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<CommunitySort>("recent");
 
@@ -40,22 +42,16 @@ const Community = () => {
   );
 
   return (
-    <div className="min-h-screen bg-background sf-atmosphere">
+    <div className="min-h-screen bg-sf-void sf-atmosphere">
       <Header />
       <main className="container mx-auto px-4 pt-24 pb-16 relative z-10">
         {/* Back Navigation */}
-        <Link
-          to="/"
-          className="inline-flex items-center gap-2 font-heading text-[12px] uppercase tracking-[0.2em] font-medium text-t3 hover:text-sf-primary-bright transition-colors duration-base mb-6"
-        >
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          ← RETURN TO BRIDGE
-        </Link>
+        <BackLink to="/" label="Return to Bridge" className="mb-6" />
 
         {/* Page Header */}
         <div className="flex flex-col gap-2 mb-2">
           <div className="flex items-center gap-3">
-            <Globe className="w-6 h-6 text-primary" />
+            <Globe className="w-6 h-6 text-sf-primary-text" />
             <h1 className="font-serif italic text-[26px] font-light text-t1">
               Community worlds
             </h1>
@@ -106,7 +102,7 @@ const Community = () => {
         {!isLoading && worlds.length === 0 && (
           <GlassPanel className="p-12 text-center max-w-lg mx-auto">
             <Layers className="w-10 h-10 text-t4 mx-auto mb-4" />
-            <h2 className="font-heading text-sm font-light uppercase tracking-[2px] text-t2 mb-2">
+            <h2 className="font-heading text-sm font-light uppercase tracking-wide text-t2 mb-2">
               No Community Worlds Yet
             </h2>
             <p className="font-sans text-xs text-t3 max-w-sm mx-auto">

@@ -71,7 +71,7 @@ export function Wordmark({
         className={cn(
           "font-display font-light text-t1",
           NAME_SIZE[size],
-          uppercase ? "uppercase tracking-sf-wide" : "tracking-sf-title",
+          uppercase ? "uppercase tracking-wide" : "tracking-title",
         )}
       >
         <span className="text-sf-primary-text">Stellar</span>forge

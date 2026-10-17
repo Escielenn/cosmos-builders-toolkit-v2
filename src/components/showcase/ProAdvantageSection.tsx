@@ -49,13 +49,13 @@ const ProAdvantageSection = () => {
   return (
     <section className="py-16 md:py-24">
       <div className="text-center mb-12">
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-sm bg-amber-500/10 border border-sf-amber mb-6">
-          <Zap className="w-4 h-4 text-sf-amber" />
-          <span className="text-sm text-sf-amber uppercase tracking-wider">
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-none bg-sf-amber/10 border border-sf-amber mb-6">
+          <Zap className="w-4 h-4 text-sf-amber-text" />
+          <span className="text-sm text-sf-amber-text uppercase tracking-wider">
             Pro Access
           </span>
         </div>
-        <h2 className="font-display font-light text-3xl md:text-4xl uppercase tracking-sf-wide mb-4">
+        <h2 className="font-display font-light text-3xl md:text-4xl uppercase tracking-wide mb-4">
           Why Go Pro?
         </h2>
         <p className="text-t2 max-w-2xl mx-auto">
@@ -74,8 +74,8 @@ const ProAdvantageSection = () => {
               style={{ animationDelay: `${index * 0.1}s` }}
             >
               <div className="flex gap-4">
-                <div className="w-12 h-12 rounded-none bg-amber-500/10 flex items-center justify-center shrink-0">
-                  <Icon className="w-6 h-6 text-sf-amber" />
+                <div className="w-12 h-12 rounded-none bg-sf-amber/[0.06] border border-sf-amber flex items-center justify-center shrink-0">
+                  <Icon className="w-6 h-6 text-sf-amber-text" />
                 </div>
                 <div>
                   <div className="flex items-center gap-2 mb-2">
@@ -83,7 +83,7 @@ const ProAdvantageSection = () => {
                       {benefit.title}
                     </h3>
                     {benefit.comingSoon && (
-                      <Badge variant="secondary" className="text-[12px] px-1.5 py-0">
+                      <Badge variant="secondary" className="text-xs px-1.5 py-0">
                         Coming Soon
                       </Badge>
                     )}
@@ -101,7 +101,7 @@ const ProAdvantageSection = () => {
       <div className="text-center">
         <Button
           size="lg"
-          className="gap-2 bg-amber-500 hover:bg-amber-600 text-black"
+          className="gap-2 bg-sf-amber text-sf-on-amber hover:bg-sf-amber hover:shadow-sf-glow-amber"
           asChild
         >
           <Link to="/pricing">
