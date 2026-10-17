@@ -460,7 +460,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
           return (
             <CodexSection
               key={section.key}
-              section={{ ...section, elements: filtered } as any}
+              section={{ ...section, elements: filtered }}
               activeElementId={activeElementId}
               onElementClick={navigateToElement}
               onOpenWiki={navigateToWiki}

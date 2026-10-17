@@ -228,9 +228,9 @@ const StellarCartographer: React.FC = () => {
     const tiltRad = view.tilt * Math.PI / 180;
 
     // Rotate around Z axis (yaw)
-    let rx = x * Math.cos(rotRad) - y * Math.sin(rotRad);
-    let ry = x * Math.sin(rotRad) + y * Math.cos(rotRad);
-    let rz = z;
+    const rx = x * Math.cos(rotRad) - y * Math.sin(rotRad);
+    const ry = x * Math.sin(rotRad) + y * Math.cos(rotRad);
+    const rz = z;
 
     // Tilt around X axis (pitch)
     const ty = ry * Math.cos(tiltRad) - rz * Math.sin(tiltRad);
@@ -762,7 +762,7 @@ const StellarCartographer: React.FC = () => {
         ctx.beginPath();
         route.stars.forEach((star, i) => {
           const s = worldToScreen(star.x, star.y, star.z);
-          i === 0 ? ctx.moveTo(s.screenX, s.screenY) : ctx.lineTo(s.screenX, s.screenY);
+          if (i === 0) ctx.moveTo(s.screenX, s.screenY); else ctx.lineTo(s.screenX, s.screenY);
         });
         ctx.stroke();
 
@@ -773,7 +773,7 @@ const StellarCartographer: React.FC = () => {
         ctx.beginPath();
         route.stars.forEach((star, i) => {
           const s = worldToScreen(star.x, star.y, star.z);
-          i === 0 ? ctx.moveTo(s.screenX, s.screenY) : ctx.lineTo(s.screenX, s.screenY);
+          if (i === 0) ctx.moveTo(s.screenX, s.screenY); else ctx.lineTo(s.screenX, s.screenY);
         });
         ctx.stroke();
         ctx.setLineDash([]);
@@ -804,7 +804,7 @@ const StellarCartographer: React.FC = () => {
         ctx.beginPath();
         routeDrawing.stars.forEach((star, i) => {
           const s = worldToScreen(star.x, star.y, star.z);
-          i === 0 ? ctx.moveTo(s.screenX, s.screenY) : ctx.lineTo(s.screenX, s.screenY);
+          if (i === 0) ctx.moveTo(s.screenX, s.screenY); else ctx.lineTo(s.screenX, s.screenY);
         });
         ctx.stroke();
         ctx.setLineDash([]);
@@ -884,7 +884,7 @@ const StellarCartographer: React.FC = () => {
                 const a = armAngle + t * Math.PI * 0.8;
                 const px = s.screenX + Math.cos(a) * r;
                 const py = s.screenY + Math.sin(a) * r;
-                t === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+                if (t === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
               }
               ctx.stroke();
             }

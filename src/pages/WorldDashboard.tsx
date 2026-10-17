@@ -36,6 +36,7 @@ import {
 } from "@/components/ui/dialog";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import type { Tables } from "@/integrations/supabase/types";
 import { useWorld } from "@/hooks/use-world";
 import { useWorksheets, useRenameWorksheet } from "@/hooks/use-worksheets";
 import { Badge } from "@/components/ui/badge";
@@ -306,7 +307,7 @@ const SortableWorksheetGroup = ({
   onDelete,
 }: {
   tool: typeof TOOLS[number];
-  worksheets: any[];
+  worksheets: Tables<"worksheets">[];
   worldId: string;
   canEdit: boolean;
   isOwner: boolean;
@@ -360,7 +361,7 @@ const SortableWorksheetGroup = ({
 
       {/* Worksheets for this tool type */}
       <div className="space-y-2 pl-7">
-        {toolWorksheets.map((worksheet: any) => (
+        {toolWorksheets.map((worksheet) => (
           <GlassPanel
             key={worksheet.id}
             className="p-3 flex items-center justify-between"

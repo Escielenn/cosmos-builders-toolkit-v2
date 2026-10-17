@@ -3,7 +3,7 @@
 //
 // "No hardcoded colours anywhere in src/gl/." Every colour the engine draws
 // comes from the same solved tokens the DOM uses, read off computed style, so
-// a theme change moves the render with it. 70 themes, all contrast-solved by
+// a theme change moves the render with it. 60 themes, all contrast-solved by
 // design/themes.py — an engine with its own palette would be a 71st that
 // nobody solved.
 //

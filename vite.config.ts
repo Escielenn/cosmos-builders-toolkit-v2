@@ -22,6 +22,54 @@ const SENTRY_RELEASE = `stellarforge@${APP_VERSION}`;
 // pre-bundle source via map files referenced by `//# sourceMappingURL=`.
 const SENTRY_UPLOAD_ENABLED = !!process.env.SENTRY_AUTH_TOKEN;
 
+// package name -> vendor chunk. Only these exact packages are pinned (see
+// manualChunks below); their dependencies are split by Rollup as usual.
+const VENDOR_GROUPS: Record<string, string[]> = {
+  // React core (+ the runtime pieces every React chunk shares)
+  "vendor-react": [
+    "react", "react-dom", "scheduler", "react-router", "react-router-dom",
+    "@remix-run/router", "use-sync-external-store",
+  ],
+  // UI components (Radix)
+  "vendor-ui": [
+    "@radix-ui/react-accordion", "@radix-ui/react-alert-dialog",
+    "@radix-ui/react-checkbox", "@radix-ui/react-collapsible",
+    "@radix-ui/react-dialog", "@radix-ui/react-dropdown-menu",
+    "@radix-ui/react-label", "@radix-ui/react-popover",
+    "@radix-ui/react-radio-group", "@radix-ui/react-select",
+    "@radix-ui/react-separator", "@radix-ui/react-slider",
+    "@radix-ui/react-slot", "@radix-ui/react-switch", "@radix-ui/react-tabs",
+    "@radix-ui/react-toast", "@radix-ui/react-tooltip",
+  ],
+  // PDF generation (heavy; export-time only)
+  "vendor-pdf": ["@react-pdf/renderer"],
+  // Word document generation (export-time only)
+  "vendor-docx": ["docx", "file-saver"],
+  // D3 for visualizations
+  "vendor-d3": ["d3-force"],
+  // Three.js (GL scenes / Solaris only)
+  "vendor-three": [
+    "three", "@react-three/fiber", "@react-three/drei", "three-stdlib",
+    "react-reconciler",
+  ],
+  // html2canvas (visual export only)
+  "vendor-html2canvas": ["html2canvas"],
+  // Supabase
+  "vendor-supabase": ["@supabase/supabase-js"],
+  // React Query
+  "vendor-query": ["@tanstack/react-query"],
+  // Framer Motion (landing page animations)
+  "vendor-motion": ["framer-motion", "motion-dom", "motion-utils"],
+  // Sanity CMS (Learn pages only)
+  "vendor-sanity": ["@sanity/client", "@sanity/image-url"],
+  // Shared by @react-pdf (textkit) and drei (troika text). Pinned on its own
+  // so a PDF export does not have to download vendor-three, or vice versa.
+  "vendor-bidi": ["bidi-js"],
+};
+const VENDOR_CHUNKS: Record<string, string> = Object.fromEntries(
+  Object.entries(VENDOR_GROUPS).flatMap(([chunk, pkgs]) => pkgs.map((p) => [p, chunk])),
+);
+
 // https://vitejs.dev/config/
 export default defineConfig({
   server: {
@@ -84,47 +132,16 @@ export default defineConfig({
     sourcemap: SENTRY_UPLOAD_ENABLED ? "hidden" : false,
     rollupOptions: {
       output: {
-        manualChunks: {
-          // React core
-          "vendor-react": ["react", "react-dom", "react-router-dom"],
-          // UI components (Radix)
-          "vendor-ui": [
-            "@radix-ui/react-accordion",
-            "@radix-ui/react-alert-dialog",
-            "@radix-ui/react-checkbox",
-            "@radix-ui/react-collapsible",
-            "@radix-ui/react-dialog",
-            "@radix-ui/react-dropdown-menu",
-            "@radix-ui/react-label",
-            "@radix-ui/react-popover",
-            "@radix-ui/react-radio-group",
-            "@radix-ui/react-select",
-            "@radix-ui/react-separator",
-            "@radix-ui/react-slider",
-            "@radix-ui/react-slot",
-            "@radix-ui/react-switch",
-            "@radix-ui/react-tabs",
-            "@radix-ui/react-toast",
-            "@radix-ui/react-tooltip",
-          ],
-          // PDF generation (heavy)
-          "vendor-pdf": ["@react-pdf/renderer"],
-          // Word document generation
-          "vendor-docx": ["docx", "file-saver"],
-          // D3 for visualizations
-          "vendor-d3": ["d3-force"],
-          // Three.js (Solaris simulator only)
-          "vendor-three": ["three", "@react-three/fiber", "@react-three/drei"],
-          // html2canvas (visual export only)
-          "vendor-html2canvas": ["html2canvas"],
-          // Supabase
-          "vendor-supabase": ["@supabase/supabase-js"],
-          // React Query
-          "vendor-query": ["@tanstack/react-query"],
-          // Framer Motion (landing page animations)
-          "vendor-motion": ["framer-motion"],
-          // Sanity CMS (Learn pages only)
-          "vendor-sanity": ["@sanity/client", "@sanity/image-url"],
+        // Function form, not the object form: the object form pulls each
+        // listed module's *dependencies* into its chunk too, which put React
+        // in vendor-motion and react-dom/client + use-sync-external-store in
+        // vendor-three, so the entry statically imported (and preloaded) all
+        // of three.js on every page. Here only the named packages are pinned;
+        // everything else is left to Rollup's normal shared-chunk splitting.
+        manualChunks(id: string) {
+          const m = id.match(/node_modules\/((?:@[^/]+\/)?[^/]+)\//);
+          if (!m) return undefined;
+          return VENDOR_CHUNKS[m[1]];
         },
       },
     },

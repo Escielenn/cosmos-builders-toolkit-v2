@@ -6,19 +6,9 @@
 // PDF is handled separately via @react-pdf/renderer if needed.
 // ---------------------------------------------------------------------------
 
-import {
-  Document,
-  Paragraph,
-  TextRun,
-  HeadingLevel,
-  Packer,
-  Header,
-  Footer,
-  PageNumber,
-  PageBreak,
-  AlignmentType,
-} from "docx";
-import { saveAs } from "file-saver";
+// docx + file-saver (~350 kB) are loaded inside compileManuscriptDocx, at
+// the moment the writer exports, not when Write/WorldCompile first load.
+import type { Paragraph } from "docx";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -97,7 +87,7 @@ function htmlToParagraphs(html: string): { text: string; bold?: boolean; italic?
     // Simple tag-aware splitting
     const cleaned = block.replace(/<p[^>]*>|<h[1-6][^>]*>/gi, "");
     // Process bold/italic inline
-    let remaining = cleaned;
+    const remaining = cleaned;
     const re = /<(strong|b|em|i)>(.*?)<\/\1>/gi;
     let lastIndex = 0;
     let match: RegExpExecArray | null;
@@ -143,6 +133,10 @@ export async function compileManuscriptDocx(
   meta: ManuscriptMeta,
   chapters: ManuscriptChapter[]
 ): Promise<void> {
+  const [
+    { Document, Paragraph, TextRun, HeadingLevel, Packer, Header, Footer, PageNumber, PageBreak, AlignmentType },
+    { saveAs },
+  ] = await Promise.all([import("docx"), import("file-saver")]);
   const children: Paragraph[] = [];
 
   // Title page

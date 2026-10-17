@@ -626,7 +626,7 @@ export async function getCodexData(worldId: string): Promise<CodexData> {
 
   // Add writing entries linked to this world into the narrative layer
   for (const we of writingEntries) {
-    const wordCount = (we as any).word_count ?? 0;
+    const wordCount = we.word_count ?? 0;
     const el: CodexElement = {
       id: we.id,
       title: we.title || "Untitled Entry",
@@ -639,7 +639,7 @@ export async function getCodexData(worldId: string): Promise<CodexData> {
       status: wordCount >= 100 ? "complete" : wordCount > 0 ? "partial" : "empty",
       isDraft: wordCount === 0,
       children: [],
-      tags: (we as any).tags ?? [],
+      tags: we.tags ?? [],
       updatedAt: we.updated_at,
       sortOrder: 0,
     };
@@ -651,7 +651,7 @@ export async function getCodexData(worldId: string): Promise<CodexData> {
   for (const note of worldNotes) {
     const el: CodexElement = {
       id: note.id,
-      title: (note as any).title || "World Notes",
+      title: note.title || "World Notes",
       kind: "note",
       type: "world_notes",
       layer: "narrative",
@@ -661,7 +661,7 @@ export async function getCodexData(worldId: string): Promise<CodexData> {
       status: note.content ? "partial" : "empty",
       isDraft: !note.content,
       children: [],
-      tags: (note as any).tags ?? [],
+      tags: note.tags ?? [],
       updatedAt: note.updated_at,
       sortOrder: -1,
     };

@@ -24,10 +24,11 @@ import { EXPORT_THEMES } from "@/lib/export/themes";
 import { cn } from "@/lib/utils";
 import { SocialShareButtons } from "@/components/sharing/SocialShareButtons";
 
-import { setActiveTheme, resetActiveTheme } from "@/lib/pdf/styles";
+import { resolvePdfTemplate } from "@/lib/pdf/lazy-template";
 
 // Dynamic imports for heavy libraries - only loaded when actually exporting
 const loadPdfRenderer = () => import("@react-pdf/renderer");
+const loadPdfStyles = () => import("@/lib/pdf/styles");
 const loadTextGenerator = () => import("@/lib/text");
 const loadDocxGenerator = () => import("@/lib/docx");
 const loadCsvExport = () => import("@/lib/export/csv-export");
@@ -180,19 +181,20 @@ const ExportDialog = ({
             return;
           }
           try {
-            console.log("Loading PDF renderer...");
-            const { pdf } = await loadPdfRenderer();
-            console.log("Generating PDF blob...");
+            const [{ pdf }, { setActiveTheme, resetActiveTheme }, doc] = await Promise.all([
+              loadPdfRenderer(),
+              loadPdfStyles(),
+              resolvePdfTemplate(template),
+            ]);
             setActiveTheme(persistedPrefs.themeId);
             let blob: Blob;
             try {
-              blob = await pdf(template).toBlob();
+              blob = await pdf(doc).toBlob();
             } finally {
               resetActiveTheme();
             }
             // Ensure explicit PDF MIME type for reliable browser handling
             const pdfBlob = new Blob([blob], { type: "application/pdf" });
-            console.log("PDF generated:", pdfBlob.size, "bytes");
             downloadBlob(pdfBlob, `${filename}.pdf`);
             toast({
               title: "PDF GENERATED.",
@@ -339,11 +341,15 @@ const ExportDialog = ({
             });
             return;
           }
-          const { pdf } = await loadPdfRenderer();
+          const [{ pdf }, { setActiveTheme, resetActiveTheme }, doc] = await Promise.all([
+            loadPdfRenderer(),
+            loadPdfStyles(),
+            resolvePdfTemplate(template),
+          ]);
           setActiveTheme(persistedPrefs.themeId);
           let blob: Blob;
           try {
-            blob = await pdf(template).toBlob();
+            blob = await pdf(doc).toBlob();
           } finally {
             resetActiveTheme();
           }

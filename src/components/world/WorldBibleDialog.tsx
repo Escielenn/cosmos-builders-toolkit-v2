@@ -16,7 +16,6 @@ import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { useExportPreferences } from "@/hooks/use-export-preferences";
 import { useSubscription } from "@/hooks/use-subscription";
-import { setActiveTheme, resetActiveTheme } from "@/lib/pdf/styles";
 import { EXPORT_THEMES } from "@/lib/export/themes";
 import { cn } from "@/lib/utils";
 import { htmlToPlainText, deepStripHtml } from "@/lib/html-utils";
@@ -165,10 +164,11 @@ const WorldBibleDialog = ({
     try {
       // Dynamic import
       setProgress(15);
-      const [{ pdf }, { WorldBibleTemplate }] =
+      const [{ pdf }, { WorldBibleTemplate }, { setActiveTheme, resetActiveTheme }] =
         await Promise.all([
           import("@react-pdf/renderer"),
           import("@/lib/pdf/templates/world-bible"),
+          import("@/lib/pdf/styles"),
         ]);
 
       setProgress(30);

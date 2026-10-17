@@ -32,7 +32,6 @@ export default function StarSystemDiagram({
     const parsedMass = parseFloat(massText);
 
     let luminosity: number;
-    let mass: number;
 
     if (!isNaN(parsedLuminosity) && parsedLuminosity > 0) {
       luminosity = parsedLuminosity;
@@ -42,7 +41,7 @@ export default function StarSystemDiagram({
       luminosity = defaults.luminosity;
     }
 
-    mass = (!isNaN(parsedMass) && parsedMass > 0) ? parsedMass : defaults.mass;
+    const mass = (!isNaN(parsedMass) && parsedMass > 0) ? parsedMass : defaults.mass;
 
     // Skip HZ for neutron stars (luminosity=0)
     const hz = luminosity > 0 ? calcHZBoundaries(luminosity) : null;

@@ -97,7 +97,7 @@ export function useUserAudioTracks() {
       if (!user) return [];
 
       const { data, error } = await supabase
-        .from("user_audio_tracks" as any)
+        .from("user_audio_tracks")
         .select("*")
         .eq("user_id", user.id)
         .order("created_at", { ascending: false });
@@ -156,7 +156,7 @@ export function useUploadAudioTrack() {
       const trackTitle = title?.trim() || file.name.replace(/\.[^.]+$/, "");
 
       const { data, error } = await supabase
-        .from("user_audio_tracks" as any)
+        .from("user_audio_tracks")
         .insert({
           user_id: user.id,
           title: trackTitle,
@@ -166,7 +166,7 @@ export function useUploadAudioTrack() {
           duration_seconds: durationSeconds,
           file_size_bytes: file.size,
           mime_type: file.type || `audio/${ext}`,
-        } as any)
+        })
         .select()
         .single();
 
@@ -207,7 +207,7 @@ export function useDeleteAudioTrack() {
 
       // Delete metadata
       const { error } = await supabase
-        .from("user_audio_tracks" as any)
+        .from("user_audio_tracks")
         .delete()
         .eq("id", trackId);
 
