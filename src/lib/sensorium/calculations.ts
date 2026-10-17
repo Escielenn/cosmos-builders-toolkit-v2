@@ -602,7 +602,7 @@ export function buildSensoriumCopyText(
       lines.push(`• ${entry.name} (cost: ${entry.cost})`);
     }
     lines.push(`Total metabolic load: ${budget.totalCost} / ${budget.maxSustainable}`);
-    if (budget.overBudget) lines.push("⚠ OVER BUDGET");
+    if (budget.overBudget) lines.push("// OVER BUDGET");
     lines.push("");
   }
 

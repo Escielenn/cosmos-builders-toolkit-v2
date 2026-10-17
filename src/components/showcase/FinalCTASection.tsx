@@ -1,4 +1,4 @@
-import { Rocket, ArrowRight } from "lucide-react";
+import { Rocket, ArrowRight, Check } from "lucide-react";
 import { Link } from "react-router-dom";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
@@ -56,9 +56,9 @@ const FinalCTASection = () => {
         </div>
 
         <div className="mt-8 flex flex-wrap gap-6 justify-center text-sm text-t3 relative">
-          <span>✓ {FREE_TOOL_COUNT} tools free forever</span>
-          <span>✓ No credit card required</span>
-          <span>✓ Export your work anytime</span>
+          <span className="inline-flex items-center gap-1.5"><Check className="w-4 h-4 text-primary" aria-hidden="true" />{FREE_TOOL_COUNT} tools free forever</span>
+          <span className="inline-flex items-center gap-1.5"><Check className="w-4 h-4 text-primary" aria-hidden="true" />No credit card required</span>
+          <span className="inline-flex items-center gap-1.5"><Check className="w-4 h-4 text-primary" aria-hidden="true" />Export your work anytime</span>
         </div>
       </GlassPanel>
     </section>

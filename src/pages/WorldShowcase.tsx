@@ -12,7 +12,7 @@ import { useMetaTags } from "@/hooks/use-meta-tags";
 import { useAuth } from "@/contexts/AuthContext";
 import { SocialShareButtons } from "@/components/sharing/SocialShareButtons";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, ChevronDown, ChevronUp, Globe, Link2, Lock, Users } from "lucide-react";
+import { ArrowLeft, ChevronDown, ChevronUp, Globe, Link2, Lock, MoonStar, Users } from "lucide-react";
 import Header from "@/components/layout/Header";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Badge } from "@/components/ui/badge";
@@ -45,6 +45,7 @@ import type {
 import type { WorldTheme } from "@/hooks/use-world";
 
 import { mapError } from "@/lib/ship-voice";
+import WorldIconRenderer from "@/components/world/WorldIconRenderer";
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
@@ -563,7 +564,7 @@ export default function WorldShowcase() {
         >
           <div className="max-w-5xl mx-auto">
             <div className="flex items-start gap-3">
-              <span className="text-2xl mt-0.5">🌗</span>
+              <MoonStar className="w-6 h-6 mt-0.5 shrink-0 text-sf-stellar" aria-hidden="true" />
               <div>
                 <p className="font-heading text-sm font-light uppercase tracking-[2px] text-stellar mb-1">
                   Sample World - The Tidelock Archives
@@ -660,8 +661,8 @@ export default function WorldShowcase() {
 
           {/* World icon + name */}
           <div className="flex items-center gap-4 mb-4">
-            <span className="text-4xl" role="img" aria-label="World icon">
-              {world.icon || "🌍"}
+            <span role="img" aria-label="World icon">
+              <WorldIconRenderer iconId={world.icon || "globe"} className="w-10 h-10 text-primary" />
             </span>
             <h1 className="font-display text-3xl md:text-5xl tracking-sf-title text-t1 uppercase">
               {world.name}

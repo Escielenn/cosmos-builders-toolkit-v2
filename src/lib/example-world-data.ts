@@ -54,7 +54,7 @@ export const EXAMPLE_WORLD: ExampleWorldSeed = {
     name: "The Tidelock Archives",
     description:
       "A tidally locked world orbiting a red dwarf star, where civilization clings to the narrow twilight band between eternal day and eternal night. Every element of this world, from its physics to its mythology, flows through the Environmental Cascade.",
-    icon: "🌗",
+    icon: "moon",
     tags: ["example", "tidal-locking", "red-dwarf", "cascade-demo"],
     visibility: "public",
     license: "fork_allowed",

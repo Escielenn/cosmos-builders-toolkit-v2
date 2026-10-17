@@ -21,7 +21,6 @@ export interface CompositionPreset {
 export interface PlanetPreset {
   id: string;
   label: string;
-  emoji: string;
   mass: number; // Earth masses
   radius: number; // Earth radii
   compositionPreset: string;
@@ -163,7 +162,6 @@ export const PLANET_PRESETS: PlanetPreset[] = [
   {
     id: "earth",
     label: "Earth",
-    emoji: "🌍",
     mass: 1.0,
     radius: 1.0,
     compositionPreset: "rocky",
@@ -174,7 +172,6 @@ export const PLANET_PRESETS: PlanetPreset[] = [
   {
     id: "mars",
     label: "Mars",
-    emoji: "🔴",
     mass: 0.107,
     radius: 0.532,
     compositionPreset: "rocky",
@@ -185,7 +182,6 @@ export const PLANET_PRESETS: PlanetPreset[] = [
   {
     id: "moon",
     label: "Moon",
-    emoji: "🌕",
     mass: 0.0123,
     radius: 0.273,
     compositionPreset: "rocky",
@@ -196,7 +192,6 @@ export const PLANET_PRESETS: PlanetPreset[] = [
   {
     id: "kepler-442b",
     label: "Kepler-442b",
-    emoji: "🪐",
     mass: 2.34,
     radius: 1.34,
     compositionPreset: "rocky",
@@ -207,7 +202,6 @@ export const PLANET_PRESETS: PlanetPreset[] = [
   {
     id: "kepler-22b",
     label: "Kepler-22b",
-    emoji: "🌊",
     mass: 9.1,
     radius: 2.4,
     compositionPreset: "ocean",
@@ -219,7 +213,6 @@ export const PLANET_PRESETS: PlanetPreset[] = [
   {
     id: "arrakis",
     label: "Arrakis (Dune)",
-    emoji: "🏜️",
     mass: 0.9,
     radius: 0.97,
     compositionPreset: "rocky",
@@ -229,7 +222,6 @@ export const PLANET_PRESETS: PlanetPreset[] = [
   {
     id: "mesklin",
     label: "Mesklin",
-    emoji: "🪨",
     mass: 16.0,
     radius: 3.3,
     compositionPreset: "custom",
@@ -239,7 +231,6 @@ export const PLANET_PRESETS: PlanetPreset[] = [
   {
     id: "pandora",
     label: "Pandora (Avatar)",
-    emoji: "🌿",
     mass: 0.72,
     radius: 0.95,
     compositionPreset: "rocky",

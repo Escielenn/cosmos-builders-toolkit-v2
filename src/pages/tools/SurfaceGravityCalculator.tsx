@@ -11,8 +11,19 @@ import {
   Building2,
   Scroll,
   AlertTriangle,
+  Link2,
+  Globe,
+  CircleDot,
+  Moon,
+  Orbit,
+  Waves,
+  Sun,
+  Mountain,
+  Leaf,
+  type LucideIcon,
 } from "lucide-react";
 import ToolPageLayout from "@/components/tools/ToolPageLayout";
+
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { StatGrid } from "@/components/ui/stat-grid";
 import { Button } from "@/components/ui/button";
@@ -81,6 +92,20 @@ import type { FormStateForCalc } from "@/lib/surface-gravity/calculations";
 import PlanetSizeComparison from "@/components/tools/PlanetSizeComparison";
 import GravityScaleBar from "@/components/tools/GravityScaleBar";
 import AtmosphericRetentionChart from "@/components/tools/AtmosphericRetentionChart";
+
+
+// Preset glyphs (lucide, not emoji). Kept out of lib/surface-gravity/data,
+// which stays React-free for the PDF templates.
+const PRESET_ICONS: Record<string, LucideIcon> = {
+  earth: Globe,
+  mars: CircleDot,
+  moon: Moon,
+  "kepler-442b": Orbit,
+  "kepler-22b": Waves,
+  arrakis: Sun,
+  mesklin: Mountain,
+  pandora: Leaf,
+};
 
 // ─── FormState ───────────────────────────────────────────────────────
 
@@ -567,7 +592,7 @@ const SurfaceGravityCalculator = () => {
                     }`}
                   >
                     <div className="flex items-center gap-1.5 mb-1">
-                      <span>{preset.emoji}</span>
+                      {(() => { const Icon = PRESET_ICONS[preset.id] ?? Globe; return <Icon className="w-4 h-4 shrink-0 text-t3" aria-hidden="true" />; })()}
                       <span className="font-medium text-sm">{preset.label}</span>
                     </div>
                     <p className="text-[12px] text-t2 line-clamp-2">{preset.description}</p>
@@ -655,7 +680,8 @@ const SurfaceGravityCalculator = () => {
 
                 {formState.primary.linked && formState.primary.compositionPreset !== "custom" && (
                   <p className="text-xs text-t4 flex items-center gap-1">
-                    🔗 Mass and radius linked via {compositionPreset?.label} composition
+                    <Link2 className="w-3 h-3 shrink-0" aria-hidden="true" />
+                    Mass and radius linked via {compositionPreset?.label} composition
                     <button
                       onClick={() => {
                         updatePrimary("linked", false);

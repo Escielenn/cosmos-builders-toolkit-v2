@@ -10,6 +10,7 @@ import LicenseBadge from "@/components/community/LicenseBadge";
 import FavoriteButton from "@/components/community/FavoriteButton";
 import ForkButton from "@/components/community/ForkButton";
 import type { CommunityWorld } from "@/hooks/use-community-worlds";
+import WorldIconRenderer from "@/components/world/WorldIconRenderer";
 
 interface CommunityWorldCardProps {
   world: CommunityWorld;
@@ -23,8 +24,8 @@ export default function CommunityWorldCard({ world }: CommunityWorldCardProps) {
     >
       {/* Top row: icon + name + license */}
       <div className="flex items-start gap-3">
-        <span className="text-2xl flex-shrink-0" role="img" aria-label="World icon">
-          {world.icon || "🌍"}
+        <span className="flex-shrink-0" role="img" aria-label="World icon">
+          <WorldIconRenderer iconId={world.icon || "globe"} className="w-6 h-6 text-primary" />
         </span>
         <div className="flex-1 min-w-0">
           <h3 className="font-heading text-base font-light text-t1 truncate">

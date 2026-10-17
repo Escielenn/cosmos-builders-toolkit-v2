@@ -1072,8 +1072,9 @@ const TimeDilationCalculator = () => {
                         </div>
                       </div>
                       {calculationResult.peakVelocityCapped && (
-                        <p className="text-xs text-sf-amber mt-3 font-mono">
-                          ⚠ Peak velocity capped at propulsion maximum
+                        <p className="text-xs text-sf-amber mt-3 font-mono flex items-center gap-1.5">
+                          <AlertTriangle className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
+                          Peak velocity capped at propulsion maximum
                         </p>
                       )}
                     </GlassPanel>

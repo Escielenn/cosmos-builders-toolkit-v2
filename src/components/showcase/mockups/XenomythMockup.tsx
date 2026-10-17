@@ -17,7 +17,7 @@ const XenomythMockup = () => {
   }, []);
 
   const archetypes = [
-    { name: "Creator", symbol: "☀", color: "sf-amber" },
+    { name: "Creator", symbol: "\u2600\uFE0E", color: "sf-amber" },
     { name: "Trickster", symbol: "◇", color: "sf-violet" },
     { name: "Guardian", symbol: "◈", color: "sf-cyan" },
     { name: "Shadow", symbol: "◉", color: "sf-crimson" },
