@@ -32,7 +32,7 @@ Grouped into four blocks. Each block ends with something demonstrable. **Don't r
 |---|---|---|---|---|
 | | **BLOCK A — stop the bleeding** | | | |
 | A1 | Install the package | `INSTALL-SIMPLE.md` | 15 min | `/sf-audit` runs |
-| A2 | Fix the wrong-answer bug | `11` → Brief S-FIX | ~2 days | Check tab stops lying |
+| A2 | Fix the wrong-answer bug | `11` → Brief S-FIX | ~2 days | **done (verified 2026-10-17)** — `checkContinuity` in `src/lib/continuity.ts` groups candidates per key and reports only when the sentence contradicts every one (`comparable.every(...)`); multi-candidate hits read `CONTRADICTS ALL N <PLANETS|STARS|…> ON FILE.` Two- and three-planet fixtures in `src/lib/__tests__/continuity.test.ts` |
 | A3 | Legibility: shared components | `10` → component pass | ~2 days | You can see the buttons |
 | A4 | Legibility: tool pages | same brief, wider scope | ~2 days | **done 2026-09-02** — 73 files in pages/ + components/: alpha borders → `sf-line-*`, t5 → t4, opacity states → `sf-disabled-*`, 113 hex classes → solved accent tokens, suppressed focus rings restored |
 | | **BLOCK B — give facts a subject** | | | |
@@ -61,16 +61,6 @@ Grouped into four blocks. Each block ends with something demonstrable. **Don't r
 | | **BLOCK H — after G, only if the user base warrants** | | | |
 | H1 | Compile via Pandoc job (DOCX/EPUB/.scriv) | `13` §2.2 note | ~1 week | a manuscript Word file a publisher accepts |
 | H2 | Real-time co-editing (Yjs over Supabase Realtime) | `13` §2.5 note | ~2 weeks | two cursors, one document, no lost keystrokes |
-| | **BLOCK C — the constellation** | | | |
-| C1 | Publish / open-on | `11` → Brief S1 | ~1 week | **done 2026-09-07** — open-on on all five sims via `?entityId=` (+ legacy `?entity=`, + `?epoch=`); `use-sim-open-on` + `lib/simulators/open-on.ts` seed through the STELLARFORGE_LOAD every sim.html already implements. ExoForge takes a planet's full canon; Solaris and Rogue hydrate thinly **on purpose** (Rogue's mass/speed/angle describe the intruder, not the subject — a test forbids seeding them). `PublishProvenance` gains `run_id` + `seed`; the generic Publish dialog shows a real reviewable list instead of a bare count. `SimSubjectChip` in all five toolbars. **Open:** the four non-Solaris sims still record extractor keys (`sky.*`, `system.*`, `encounter.*`), not canon predicates — mapping those onto `08-VOCABULARY` is its own session and was deliberately not guessed at |
-| C2 | The facts table | `12` → Brief C2 below | ~3 days | Asserted facts persist |
-| C3 | Rogue as world-generator | `11` §2 S2 | ~1–2 weeks | An encounter creates a world |
-| C4 | Living sky | `11` §2 S3 | ~1 week | The sky precesses |
-| | **BLOCK D — reach the page** | | | |
-| D1 | Canon Capture | `06` → Brief 3 | ~2 weeks | Prose proposes canon |
-| D2 | Contradiction Ledger | `06` weeks 5–7 | ~1 week | World-level, three-way resolution |
-| D3 | Dossier / characters | `05` A1 | ~2 weeks | POV points at something |
-| D4 | Sensory brief | `11` → Brief S5 | ~1 week | The sim writes conditions |
 | | **BLOCK C — the constellation** | | | |
 | C1 | Publish / open-on | `11` → Brief S1 | ~1 week | **done 2026-09-07** — open-on on all five sims via `?entityId=` (+ legacy `?entity=`, + `?epoch=`); `use-sim-open-on` + `lib/simulators/open-on.ts` seed through the STELLARFORGE_LOAD every sim.html already implements. ExoForge takes a planet's full canon; Solaris and Rogue hydrate thinly **on purpose** (Rogue's mass/speed/angle describe the intruder, not the subject — a test forbids seeding them). `PublishProvenance` gains `run_id` + `seed`; the generic Publish dialog shows a real reviewable list instead of a bare count. `SimSubjectChip` in all five toolbars. **Open:** the four non-Solaris sims still record extractor keys (`sky.*`, `system.*`, `encounter.*`), not canon predicates — mapping those onto `08-VOCABULARY` is its own session and was deliberately not guessed at |
 | C2 | The facts table | `12` → Brief C2 below | ~3 days | Asserted facts persist |
