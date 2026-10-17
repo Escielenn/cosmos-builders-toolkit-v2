@@ -58,7 +58,7 @@ export function SectionHero({
             <div
               className={cn(
                 "inline-flex items-center gap-3.5 font-mono uppercase mb-7",
-                warm ? "text-sf-teal/80" : "text-sf-teal",
+                "text-sf-primary-text",
                 hero ? "text-[13px] tracking-[3px]" : "text-[12px] tracking-[2.5px]",
               )}
             >
