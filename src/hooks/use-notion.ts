@@ -70,7 +70,7 @@ export function useNotion() {
   const connect = useCallback(async () => {
     if (!session?.access_token) {
       toast({
-        title: "Not authenticated",
+        title: "NOT AUTHENTICATED.",
         description: "Authentication required to connect Notion.",
         variant: "destructive",
       });
@@ -148,7 +148,7 @@ export function useNotion() {
             if (data) {
               setConnection(data);
               toast({
-                title: "Notion connected",
+                title: "NOTION CONNECTED.",
                 description: `Connected to ${data.workspace_name || "workspace"}`,
               });
             }
@@ -158,7 +158,7 @@ export function useNotion() {
     } catch (error) {
       console.error("Notion connect error:", error);
       toast({
-        title: "Connection failed",
+        title: "CONNECTION FAILED.",
         description: mapError(error),
         variant: "destructive",
       });
@@ -284,13 +284,13 @@ export function useNotion() {
 
       setConnection(null);
       toast({
-        title: "Notion disconnected",
+        title: "NOTION DISCONNECTED.",
         description: "Your Notion workspace has been disconnected.",
       });
     } catch (error) {
       console.error("Disconnect error:", error);
       toast({
-        title: "Disconnect failed",
+        title: "DISCONNECT FAILED.",
         description: "Failed to disconnect Notion.",
         variant: "destructive",
       });

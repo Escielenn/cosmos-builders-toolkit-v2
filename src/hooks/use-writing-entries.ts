@@ -158,7 +158,7 @@ export function useCreateEntry() {
     },
     onError: (error) => {
       toast({
-        title: "Failed to create entry",
+        title: "FAILED TO CREATE ENTRY.",
         description: mapError(error),
         variant: "destructive",
       });
@@ -204,7 +204,7 @@ export function useUpdateEntry() {
     },
     onError: (error) => {
       toast({
-        title: "Failed to save entry",
+        title: "FAILED TO SAVE ENTRY.",
         description: mapError(error),
         variant: "destructive",
       });
@@ -232,13 +232,13 @@ export function useDeleteEntry() {
         queryKey: ["writing-entries"],
       });
       toast({
-        title: "Entry archived",
+        title: "ENTRY ARCHIVED.",
         description: "Your writing entry has been archived.",
       });
     },
     onError: (error) => {
       toast({
-        title: "Failed to archive entry",
+        title: "FAILED TO ARCHIVE ENTRY.",
         description: mapError(error),
         variant: "destructive",
       });

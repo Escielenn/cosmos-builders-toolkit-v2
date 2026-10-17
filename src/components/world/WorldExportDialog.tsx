@@ -76,7 +76,7 @@ const WorldExportDialog = ({
           if (error) {
             console.error("Failed to fetch worksheets:", error);
             toast({
-              title: "Error loading worksheets",
+              title: "ERROR LOADING WORKSHEETS.",
               description: "Could not load worksheets for export.",
               variant: "destructive",
             });
@@ -270,7 +270,7 @@ const WorldExportDialog = ({
         case "notion": {
           if (!isConnected) {
             toast({
-              title: "Notion not connected",
+              title: "NOTION NOT CONNECTED.",
               description: "Connect Notion workspace to proceed.",
               variant: "destructive",
             });

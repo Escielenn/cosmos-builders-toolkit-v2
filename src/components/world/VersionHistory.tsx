@@ -47,13 +47,13 @@ const VersionHistory = ({ worldId, worldName }: VersionHistoryProps) => {
     try {
       const newWorldId = await restoreSnapshotAsNewWorld(v.id);
       toast({
-        title: "Branched to a new world",
+        title: "BRANCHED TO A NEW WORLD.",
         description: `Version ${v.version_number} was restored as a separate world. Your current world is untouched.`,
       });
       navigate(`/worlds/${newWorldId}`);
     } catch (error) {
       toast({
-        title: "Branch failed",
+        title: "BRANCH FAILED.",
         description: mapError(error),
         variant: "destructive",
       });

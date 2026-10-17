@@ -56,7 +56,7 @@ export function useTags() {
     },
     onError: (error) => {
       toast({
-        title: "Failed to update tags",
+        title: "FAILED TO UPDATE TAGS.",
         description: mapError(error),
         variant: "destructive",
       });
@@ -134,7 +134,7 @@ export function useTags() {
     },
     onError: (error) => {
       toast({
-        title: "Failed to update tags",
+        title: "FAILED TO UPDATE TAGS.",
         description: mapError(error),
         variant: "destructive",
       });

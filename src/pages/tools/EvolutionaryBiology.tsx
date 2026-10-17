@@ -501,7 +501,7 @@ const EvolutionaryBiology = () => {
   const handleSave = async () => {
     if (!worksheetId || !worldId) {
       toast({
-        title: "Cannot save",
+        title: "CANNOT SAVE.",
         description: "No worksheet selected",
         variant: "destructive",
       });
@@ -624,7 +624,7 @@ const EvolutionaryBiology = () => {
     setHasUnsavedChanges(true);
 
     toast({
-      title: "Species Imported",
+      title: "SPECIES IMPORTED.",
       description: `${data.speciesName || "Species"} has been imported from Species Interaction Matrix.`,
     });
   };

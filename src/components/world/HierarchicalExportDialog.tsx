@@ -105,7 +105,7 @@ const HierarchicalExportDialog = ({
       }, 200);
 
       toast({
-        title: "View exported",
+        title: "VIEW EXPORTED.",
         description: `${selected.category.label} exported with ${selected.worksheets.length} worksheet${selected.worksheets.length !== 1 ? "s" : ""}.`,
       });
       onOpenChange(false);
@@ -113,7 +113,7 @@ const HierarchicalExportDialog = ({
       console.error("View export error:", error);
       const errMsg = error instanceof Error ? error.message : String(error);
       toast({
-        title: "Export failed",
+        title: "EXPORT FAILED.",
         description: errMsg.length > 120 ? errMsg.slice(0, 120) + "..." : errMsg,
         variant: "destructive",
       });

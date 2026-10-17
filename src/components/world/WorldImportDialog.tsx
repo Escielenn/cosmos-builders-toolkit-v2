@@ -50,7 +50,7 @@ const WorldImportDialog = ({ open, onOpenChange }: WorldImportDialogProps) => {
         snapshot = await importWorldFromJson(file);
       } else {
         toast({
-          title: "Unsupported file type",
+          title: "UNSUPPORTED FILE TYPE.",
           description: "Please select a .json or .zip snapshot file.",
           variant: "destructive",
         });

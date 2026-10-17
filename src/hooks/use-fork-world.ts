@@ -32,7 +32,7 @@ export function useForkWorld() {
     },
     onError: (error) => {
       toast({
-        title: "Failed to fork world",
+        title: "FAILED TO FORK WORLD.",
         description: mapError(error),
         variant: "destructive",
       });

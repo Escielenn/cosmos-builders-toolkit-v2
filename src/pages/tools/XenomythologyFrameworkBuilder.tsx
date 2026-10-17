@@ -645,7 +645,7 @@ const XenomythologyFrameworkBuilder = () => {
           setWorksheetTags(existingWorksheet.tags);
         }
         toast({
-          title: "Worksheet Loaded",
+          title: "WORKSHEET LOADED.",
           description: "WORK RESTORED FROM CLOUD.",
         });
       } catch {
@@ -889,7 +889,7 @@ const XenomythologyFrameworkBuilder = () => {
       }
     } else {
       toast({
-        title: "Draft Saved",
+        title: "DRAFT SAVED.",
         description: "WORK SECURED TO LOCAL STORAGE.",
       });
     }
@@ -964,7 +964,7 @@ const XenomythologyFrameworkBuilder = () => {
 
     setFormState(updatedState);
     toast({
-      title: "Species Linked",
+      title: "SPECIES LINKED.",
       description: `Imported ${mappedFields.filter(f => f.value).length} fields from "${speciesName}"`,
     });
   };
@@ -979,7 +979,7 @@ const XenomythologyFrameworkBuilder = () => {
       },
     }));
     toast({
-      title: "Species Unlinked",
+      title: "SPECIES UNLINKED.",
       description: "The species link has been removed.",
     });
   };
@@ -1297,7 +1297,7 @@ const XenomythologyFrameworkBuilder = () => {
         ],
       }));
       toast({
-        title: "Archetype Added",
+        title: "ARCHETYPE ADDED.",
         description: `Added "${implication.archetypeChannel.split("/")[0].trim()}" to your Archetypal Pantheon.`,
       });
     }
@@ -1335,7 +1335,7 @@ const XenomythologyFrameworkBuilder = () => {
     });
 
     toast({
-      title: "ECR Data Imported",
+      title: "ECR DATA IMPORTED.",
       description: linkedWorksheetId
         ? "Environmental parameters imported and linked. Changes will sync."
         : "Environmental parameters imported.",

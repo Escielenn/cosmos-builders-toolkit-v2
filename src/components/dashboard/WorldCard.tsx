@@ -87,12 +87,12 @@ const WorldCard = ({
     try {
       await navigator.clipboard.writeText(text);
       toast({
-        title: "Link copied",
+        title: "LINK COPIED.",
         description: "World link copied to clipboard.",
       });
     } catch {
       toast({
-        title: "Failed to copy",
+        title: "FAILED TO COPY.",
         description: "Could not copy link to clipboard.",
         variant: "destructive",
       });

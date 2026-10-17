@@ -194,7 +194,7 @@ const HabitableZoneCalculator = () => {
           setWorksheetTags(existingWorksheet.tags);
         }
         toast({
-          title: "Worksheet Loaded",
+          title: "WORKSHEET LOADED.",
           description: "WORK RESTORED FROM CLOUD.",
         });
       } catch {
@@ -354,7 +354,7 @@ const HabitableZoneCalculator = () => {
         // Error handled by mutation
       }
     } else {
-      toast({ title: "Draft Saved", description: "WORK SECURED TO LOCAL STORAGE." });
+      toast({ title: "DRAFT SAVED.", description: "WORK SECURED TO LOCAL STORAGE." });
     }
   };
 
@@ -516,7 +516,7 @@ const HabitableZoneCalculator = () => {
                               onClick={() => {
                                 updatePlanet({ name: body.name, orbitalDistance: dist });
                                 setImportOpen(false);
-                                toast({ title: "Imported", description: `${body.name} at ${dist} AU` });
+                                toast({ title: "IMPORTED.", description: `${body.name} at ${dist} AU` });
                               }}
                               className="px-3 py-1.5 rounded-sm border border-sf-line-interactive text-xs hover:border-primary hover:bg-primary/5 transition-colors"
                             >

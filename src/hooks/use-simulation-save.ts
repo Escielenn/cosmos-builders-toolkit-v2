@@ -132,7 +132,7 @@ export function useSimulationSave({
         });
       }
       toast({
-        title: "Simulation saved",
+        title: "SIMULATION SAVED.",
         description: "Your simulation state has been saved.",
       });
       setSaveDialogOpen(false);
@@ -142,7 +142,7 @@ export function useSimulationSave({
     },
     onError: (error) => {
       toast({
-        title: "Save failed",
+        title: "SAVE FAILED.",
         description: mapError(error),
         variant: "destructive",
       });
@@ -168,7 +168,7 @@ export function useSimulationSave({
       }
 
       toast({
-        title: "Simulation loaded",
+        title: "SIMULATION LOADED.",
         description: `Loaded "${save.name}"`,
       });
     },

@@ -52,10 +52,10 @@ export function SocialShareButtons({
     try {
       await navigator.clipboard.writeText(url);
       setCopied(true);
-      toast({ title: "Link copied to clipboard." });
+      toast({ title: "LINK COPIED TO CLIPBOARD." });
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      toast({ title: "Failed to copy link.", variant: "destructive" });
+      toast({ title: "FAILED TO COPY LINK.", variant: "destructive" });
     }
   };
 

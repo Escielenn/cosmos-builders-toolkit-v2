@@ -231,7 +231,7 @@ const WorldBibleDialog = ({
       ).length;
 
       toast({
-        title: "World Bible exported",
+        title: "WORLD BIBLE EXPORTED.",
         description: `Generated ${sectionCount} section${sectionCount !== 1 ? "s" : ""} with wiki prose, connections, and timeline.`,
       });
       onOpenChange(false);
@@ -239,7 +239,7 @@ const WorldBibleDialog = ({
       console.error("World Bible export error:", error);
       const errMsg = error instanceof Error ? error.message : String(error);
       toast({
-        title: "Export failed",
+        title: "EXPORT FAILED.",
         description: errMsg.length > 120 ? errMsg.slice(0, 120) + "..." : errMsg,
         variant: "destructive",
       });

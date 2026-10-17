@@ -50,7 +50,7 @@ export function PinToWritingButton({
     if (isPinned) {
       removePin(itemId);
       toast({
-        title: "Unpinned",
+        title: "UNPINNED.",
         description: "Removed from Writing Space.",
       });
     } else {
@@ -61,7 +61,7 @@ export function PinToWritingButton({
         content: content.slice(0, 200),
       });
       toast({
-        title: "Pinned to Writing Space",
+        title: "PINNED TO WRITING SPACE.",
         description: `"${title}" will appear in your Writing Space reference panel.`,
       });
     }

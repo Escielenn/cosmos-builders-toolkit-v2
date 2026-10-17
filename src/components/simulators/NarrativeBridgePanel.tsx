@@ -54,7 +54,7 @@ export default function NarrativeBridgePanel({
       localStorage.setItem(key, JSON.stringify(notes));
     } catch {}
     setSaved(true);
-    toast({ title: "Notes saved", description: "Narrative notes saved locally." });
+    toast({ title: "NOTES SAVED.", description: "Narrative notes saved locally." });
   }, [notes, config.simulatorType, toast]);
 
   const filledCount = Object.values(notes).filter((v) => v.trim()).length;

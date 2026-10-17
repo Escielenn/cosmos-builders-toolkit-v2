@@ -298,7 +298,7 @@ const SpeciesInteractionMatrix = () => {
           setWorksheetTags(existingWorksheet.tags);
         }
         toast({
-          title: "Worksheet Loaded",
+          title: "WORKSHEET LOADED.",
           description: "WORK RESTORED FROM CLOUD.",
         });
       } catch {
@@ -376,7 +376,7 @@ const SpeciesInteractionMatrix = () => {
   const addSpecies = () => {
     if (formState.species.length >= 6) {
       toast({
-        title: "Maximum species reached",
+        title: "MAXIMUM SPECIES REACHED.",
         description: "You can compare up to 6 species.",
         variant: "destructive",
       });
@@ -391,7 +391,7 @@ const SpeciesInteractionMatrix = () => {
   const removeSpecies = (index: number) => {
     if (formState.species.length <= 2) {
       toast({
-        title: "Minimum species required",
+        title: "MINIMUM SPECIES REQUIRED.",
         description: "You need at least 2 species to compare.",
         variant: "destructive",
       });
@@ -424,7 +424,7 @@ const SpeciesInteractionMatrix = () => {
     });
 
     toast({
-      title: "Species Imported",
+      title: "SPECIES IMPORTED.",
       description: `${speciesData.name || "Species"} has been imported from Evolutionary Biology.`,
     });
 
@@ -434,7 +434,7 @@ const SpeciesInteractionMatrix = () => {
   const handleAddFromEvoBio = () => {
     if (formState.species.length >= 6) {
       toast({
-        title: "Maximum species reached",
+        title: "MAXIMUM SPECIES REACHED.",
         description: "You can compare up to 6 species.",
         variant: "destructive",
       });
@@ -482,7 +482,7 @@ const SpeciesInteractionMatrix = () => {
       }
     } else {
       toast({
-        title: "Draft Saved",
+        title: "DRAFT SAVED.",
         description: "WORK SECURED TO LOCAL STORAGE.",
       });
     }

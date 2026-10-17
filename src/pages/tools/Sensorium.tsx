@@ -390,16 +390,16 @@ const Sensorium = () => {
       }
       if (result.errors.length > 0) {
         toast({
-          title: "Some pushes failed",
+          title: "SOME PUSHES FAILED.",
           description: result.errors.join("; "),
           variant: "destructive",
         });
       }
       if (result.updated.length === 0 && result.errors.length === 0) {
-        toast({ title: "No linked worksheets to push to" });
+        toast({ title: "NO LINKED WORKSHEETS TO PUSH TO." });
       }
     } catch {
-      toast({ title: "Push failed", variant: "destructive" });
+      toast({ title: "PUSH FAILED.", variant: "destructive" });
     } finally {
       setIsPushing(false);
     }
@@ -420,7 +420,7 @@ const Sensorium = () => {
     }
 
     if (!worldId || !user) {
-      toast({ title: "Saved locally" });
+      toast({ title: "SAVED LOCALLY." });
       return;
     }
 
@@ -440,7 +440,7 @@ const Sensorium = () => {
       setCurrentWorksheetId(created.id);
       if (!currentWorksheetTitle) setCurrentWorksheetTitle(created.title);
     }
-    toast({ title: "Saved to cloud" });
+    toast({ title: "SAVED TO CLOUD." });
   };
 
   const handleWorksheetSelect = (ws: { id: string; title: string; data: unknown }) => {
@@ -1106,7 +1106,7 @@ const Sensorium = () => {
                           finalSelection: [...prev.selectedModalities],
                           validationResult,
                         }));
-                        toast({ title: "Selection accepted into final palette" });
+                        toast({ title: "SELECTION ACCEPTED INTO FINAL PALETTE." });
                       }}
                     >
                       Accept into Final Selection

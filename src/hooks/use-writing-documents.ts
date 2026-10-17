@@ -329,11 +329,11 @@ export function useDeleteDocument(worldId: string | undefined) {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: docKeys.all(worldId!) });
       qc.invalidateQueries({ queryKey: ["trashed-documents", worldId] });
-      toast({ title: "Moved to trash", description: "Recoverable for 90 days." });
+      toast({ title: "MOVED TO TRASH.", description: "Recoverable for 90 days." });
     },
     onError: (error) => {
       toast({
-        title: "Delete failed",
+        title: "DELETE FAILED.",
         description: mapError(error),
         variant: "destructive",
       });
@@ -377,7 +377,7 @@ export function useRestoreDocument(worldId: string | undefined) {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: docKeys.all(worldId!) });
       qc.invalidateQueries({ queryKey: ["trashed-documents", worldId] });
-      toast({ title: "Restored" });
+      toast({ title: "RESTORED." });
     },
   });
 }
@@ -393,7 +393,7 @@ export function usePurgeDocument(worldId: string | undefined) {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["trashed-documents", worldId] });
-      toast({ title: "Deleted permanently" });
+      toast({ title: "DELETED PERMANENTLY." });
     },
   });
 }

@@ -114,10 +114,10 @@ const ShareDialog = ({
       queryClient.invalidateQueries({ queryKey: ["worlds"] });
       queryClient.invalidateQueries({ queryKey: ["community-worlds"] });
       queryClient.invalidateQueries({ queryKey: ["showcase-world", entityId] });
-      toast({ title: "Sharing settings updated." });
+      toast({ title: "SHARING SETTINGS UPDATED." });
     },
     onError: (err) => {
-      toast({ title: "Failed to update", description: mapError(err), variant: "destructive" });
+      toast({ title: "FAILED TO UPDATE.", description: mapError(err), variant: "destructive" });
     },
   });
 
@@ -170,7 +170,7 @@ const ShareDialog = ({
       setTimeout(() => setCopied(false), 2000);
       toast({ title: "LINK COPIED TO CLIPBOARD." });
     } catch {
-      toast({ title: "Failed to copy", variant: "destructive" });
+      toast({ title: "FAILED TO COPY.", variant: "destructive" });
     }
   };
 

@@ -102,7 +102,7 @@ const PromptBrowserPage = () => {
       }
     } catch {
       toast({
-        title: "Could not create entry",
+        title: "COULD NOT CREATE ENTRY.",
         description: "Please try again.",
         variant: "destructive",
       });

@@ -97,13 +97,13 @@ export function useMoodboard({ worksheetId, currentImages, onUpdate }: UseMoodbo
       const updatedImages = [...currentImages, newImage];
       onUpdate(updatedImages);
       toast({
-        title: "Image uploaded",
+        title: "IMAGE UPLOADED.",
         description: "Your image has been added to the moodboard.",
       });
     },
     onError: (error) => {
       toast({
-        title: "Upload failed",
+        title: "UPLOAD FAILED.",
         description: mapError(error),
         variant: "destructive",
       });
@@ -132,13 +132,13 @@ export function useMoodboard({ worksheetId, currentImages, onUpdate }: UseMoodbo
       const updatedImages = [...currentImages, newImage];
       onUpdate(updatedImages);
       toast({
-        title: "Image added",
+        title: "IMAGE ADDED.",
         description: "Your image has been added to the moodboard.",
       });
     },
     onError: (error) => {
       toast({
-        title: "Failed to add image",
+        title: "FAILED TO ADD IMAGE.",
         description: mapError(error),
         variant: "destructive",
       });
@@ -179,13 +179,13 @@ export function useMoodboard({ worksheetId, currentImages, onUpdate }: UseMoodbo
       const updatedImages = currentImages.filter((img) => img.id !== imageId);
       onUpdate(updatedImages);
       toast({
-        title: "Image removed",
+        title: "IMAGE REMOVED.",
         description: "The image has been removed from the moodboard.",
       });
     },
     onError: (error) => {
       toast({
-        title: "Failed to remove image",
+        title: "FAILED TO REMOVE IMAGE.",
         description: mapError(error),
         variant: "destructive",
       });

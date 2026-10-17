@@ -85,7 +85,7 @@ function RoadmapCard({ item, canVote }: { item: RoadmapItem; canVote: boolean })
       await castVote.mutateAsync({ itemId: item.id, count });
     } catch (err) {
       toast({
-        title: "Vote failed",
+        title: "VOTE FAILED.",
         description: mapError(err),
         variant: "destructive",
       });

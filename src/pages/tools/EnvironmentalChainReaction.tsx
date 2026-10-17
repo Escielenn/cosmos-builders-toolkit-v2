@@ -510,7 +510,7 @@ const EnvironmentalChainReaction = () => {
           setWorksheetTags(existingWorksheet.tags);
         }
         toast({
-          title: "Worksheet Loaded",
+          title: "WORKSHEET LOADED.",
           description: "WORK RESTORED FROM CLOUD.",
         });
       } catch {
@@ -527,7 +527,7 @@ const EnvironmentalChainReaction = () => {
         try {
           setFormState(JSON.parse(saved));
           toast({
-            title: "Draft Loaded",
+            title: "DRAFT LOADED.",
             description: "PREVIOUS WORK RESTORED.",
           });
         } catch {

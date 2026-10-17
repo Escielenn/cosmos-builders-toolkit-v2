@@ -128,7 +128,7 @@ const QuickExportButton = ({
           const template = format === "pdf-summary" ? summaryTemplate : fullTemplate;
           if (!template) {
             toast({
-              title: "Template unavailable",
+              title: "TEMPLATE UNAVAILABLE.",
               description: "PDF template not available for this tool. Try JSON or Text.",
               variant: "destructive",
             });
@@ -154,7 +154,7 @@ const QuickExportButton = ({
     } catch (error) {
       console.error("Quick export error:", error);
       toast({
-        title: "Export failed",
+        title: "EXPORT FAILED.",
         description: "There was an error generating your export.",
         variant: "destructive",
       });

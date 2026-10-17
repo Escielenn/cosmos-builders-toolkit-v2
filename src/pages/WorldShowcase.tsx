@@ -44,6 +44,7 @@ import type {
 } from "@/services/entity-graph-types";
 import type { WorldTheme } from "@/hooks/use-world";
 
+import { mapError } from "@/lib/ship-voice";
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
@@ -466,10 +467,10 @@ export default function WorldShowcase() {
       queryClient.invalidateQueries({ queryKey: ["showcase-world", worldId] });
       queryClient.invalidateQueries({ queryKey: ["worlds"] });
       queryClient.invalidateQueries({ queryKey: ["community-worlds"] });
-      toast({ title: "Visibility updated." });
+      toast({ title: "VISIBILITY UPDATED." });
     },
     onError: (err) => {
-      toast({ title: "Failed to update visibility", description: (err as Error).message, variant: "destructive" });
+      toast({ title: "FAILED TO UPDATE VISIBILITY.", description: mapError(err), variant: "destructive" });
     },
   });
 

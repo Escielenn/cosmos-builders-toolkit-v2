@@ -70,7 +70,7 @@ const Profile = () => {
     if (uploadError) {
       toast({
         title: "UPLOAD FAILED.",
-        description: uploadError.message,
+        description: mapError(uploadError),
         variant: "destructive",
       });
       setIsUploading(false);

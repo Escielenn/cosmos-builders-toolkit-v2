@@ -189,7 +189,7 @@ const Timeline = () => {
           setWorksheetTags(existingWorksheet.tags);
         }
         toast({
-          title: "Worksheet Loaded",
+          title: "WORKSHEET LOADED.",
           description: "WORK RESTORED FROM CLOUD.",
         });
       } catch {
@@ -286,7 +286,7 @@ const Timeline = () => {
         // Error handled by mutation
       }
     } else {
-      toast({ title: "Draft Saved", description: "WORK SECURED TO LOCAL STORAGE." });
+      toast({ title: "DRAFT SAVED.", description: "WORK SECURED TO LOCAL STORAGE." });
     }
   };
 
@@ -333,10 +333,10 @@ const Timeline = () => {
       const blob = await captureTimelineAsPNG(timelineViewRef.current);
       const filename = `${currentWorksheetTitle || "timeline"}-${new Date().toISOString().slice(0, 10)}.png`;
       downloadBlob(blob, filename);
-      toast({ title: "PNG Downloaded", description: "Timeline image saved." });
+      toast({ title: "PNG DOWNLOADED.", description: "Timeline image saved." });
     } catch (err) {
       console.error("PNG capture failed:", err);
-      toast({ title: "Export Failed", description: "Could not capture the timeline as an image.", variant: "destructive" });
+      toast({ title: "EXPORT FAILED.", description: "Could not capture the timeline as an image.", variant: "destructive" });
     } finally {
       setCapturingPNG(false);
     }

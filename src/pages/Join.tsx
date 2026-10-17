@@ -81,7 +81,7 @@ const Join = () => {
     setIsLoading(false);
     if (error) {
       toast({
-        title: "Sign up failed",
+        title: "SIGN UP FAILED.",
         description: error.message === "User already registered"
           ? "Account already exists. Sign in instead."
           : mapError(error),

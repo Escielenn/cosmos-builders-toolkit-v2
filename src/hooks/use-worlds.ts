@@ -135,7 +135,7 @@ export const useWorlds = (includeArchived: boolean = false) => {
     },
     onError: (error) => {
       toast({
-        title: "Failed to create world",
+        title: "FAILED TO CREATE WORLD.",
         description: mapError(error),
         variant: "destructive",
       });
@@ -170,13 +170,13 @@ export const useWorlds = (includeArchived: boolean = false) => {
       queryClient.invalidateQueries({ queryKey: ["world", data.id] });
       queryClient.invalidateQueries({ queryKey: ["worldTags", user?.id] });
       toast({
-        title: "World updated",
+        title: "WORLD UPDATED.",
         description: "Your changes have been saved.",
       });
     },
     onError: (error) => {
       toast({
-        title: "Failed to update world",
+        title: "FAILED TO UPDATE WORLD.",
         description: mapError(error),
         variant: "destructive",
       });
@@ -201,7 +201,7 @@ export const useWorlds = (includeArchived: boolean = false) => {
     },
     onError: (error) => {
       toast({
-        title: "Failed to archive world",
+        title: "FAILED TO ARCHIVE WORLD.",
         description: mapError(error),
         variant: "destructive",
       });
@@ -222,13 +222,13 @@ export const useWorlds = (includeArchived: boolean = false) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["worlds"] });
       toast({
-        title: "World restored",
+        title: "WORLD RESTORED.",
         description: "The world has been restored from your archive.",
       });
     },
     onError: (error) => {
       toast({
-        title: "Failed to restore world",
+        title: "FAILED TO RESTORE WORLD.",
         description: mapError(error),
         variant: "destructive",
       });
@@ -248,13 +248,13 @@ export const useWorlds = (includeArchived: boolean = false) => {
       queryClient.invalidateQueries({ queryKey: ["worlds"] });
       queryClient.invalidateQueries({ queryKey: ["worldTags", user?.id] });
       toast({
-        title: "World deleted",
+        title: "WORLD DELETED.",
         description: "The world has been removed.",
       });
     },
     onError: (error) => {
       toast({
-        title: "Failed to delete world",
+        title: "FAILED TO DELETE WORLD.",
         description: mapError(error),
         variant: "destructive",
       });

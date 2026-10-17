@@ -252,7 +252,7 @@ export const useToggleShare = () => {
       });
     },
     onError: (error) => {
-      toast({ title: "Failed to update sharing", description: mapError(error), variant: "destructive" });
+      toast({ title: "FAILED TO UPDATE SHARING.", description: mapError(error), variant: "destructive" });
     },
   });
 };
@@ -295,7 +295,7 @@ export const useRegenerateShareToken = () => {
       toast({ title: "LINK REGENERATED.", description: "PREVIOUS SHARED LINKS DEPRECATED." });
     },
     onError: (error) => {
-      toast({ title: "Failed to regenerate link", description: mapError(error), variant: "destructive" });
+      toast({ title: "FAILED TO REGENERATE LINK.", description: mapError(error), variant: "destructive" });
     },
   });
 };
@@ -324,10 +324,10 @@ export const useDeleteShare = () => {
         ? shareKeys.worksheetShare(entityId)
         : shareKeys.worldShare(entityId);
       queryClient.invalidateQueries({ queryKey: key });
-      toast({ title: "Share removed" });
+      toast({ title: "SHARE REMOVED." });
     },
     onError: (error) => {
-      toast({ title: "Failed to remove share", description: mapError(error), variant: "destructive" });
+      toast({ title: "FAILED TO REMOVE SHARE.", description: mapError(error), variant: "destructive" });
     },
   });
 };

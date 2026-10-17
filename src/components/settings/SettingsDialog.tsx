@@ -107,8 +107,8 @@ const SettingsDialog = ({
 
     if (uploadError) {
       toast({
-        title: "Upload failed",
-        description: uploadError.message,
+        title: "UPLOAD FAILED.",
+        description: mapError(uploadError),
         variant: "destructive",
       });
       setIsUploading(false);
@@ -120,7 +120,7 @@ const SettingsDialog = ({
     setIsUploading(false);
 
     toast({
-      title: "Avatar uploaded",
+      title: "AVATAR UPLOADED.",
       description: "Don't forget to save your profile.",
     });
   };
@@ -138,13 +138,13 @@ const SettingsDialog = ({
 
     if (error) {
       toast({
-        title: "Failed to save profile",
+        title: "FAILED TO SAVE PROFILE.",
         description: mapError(error),
         variant: "destructive",
       });
     } else {
       toast({
-        title: "Profile saved",
+        title: "PROFILE SAVED.",
         description: "Your profile has been updated successfully.",
       });
     }

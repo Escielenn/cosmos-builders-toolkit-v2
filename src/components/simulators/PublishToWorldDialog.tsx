@@ -138,7 +138,7 @@ export default function PublishToWorldDialog({
       await createEntity();
     } catch (error) {
       toast({
-        title: "Publish failed",
+        title: "PUBLISH FAILED.",
         description: mapError(error),
         variant: "destructive",
       });
@@ -182,14 +182,14 @@ export default function PublishToWorldDialog({
       );
 
       toast({
-        title: "Published to world",
+        title: "PUBLISHED TO WORLD.",
         description: `"${name.trim()}" has been added as a ${entryType.replace("_", " ")}.`,
       });
       onOpenChange(false);
       setName("");
     } catch (error) {
       toast({
-        title: "Publish failed",
+        title: "PUBLISH FAILED.",
         description: mapError(error),
         variant: "destructive",
       });
@@ -203,7 +203,7 @@ export default function PublishToWorldDialog({
       // Entity already exists, just close and notify
       setMatchDialogOpen(false);
       toast({
-        title: "Entity exists",
+        title: "ENTITY EXISTS.",
         description: `"${_candidate.title}" already exists in your world. Simulation data noted.`,
       });
       onOpenChange(false);

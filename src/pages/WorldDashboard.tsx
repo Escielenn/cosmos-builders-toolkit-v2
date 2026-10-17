@@ -593,7 +593,7 @@ const WorldDashboard = () => {
     if (!worldId) return;
     await archiveWorld.mutateAsync(worldId);
     toast({
-      title: "World archived",
+      title: "WORLD ARCHIVED.",
       description: `"${world?.name}" has been moved to your archive.`,
       action: (
         <ToastAction

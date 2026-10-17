@@ -192,7 +192,7 @@ const Gravitas = () => {
         setCurrentWorksheetId(existingWorksheet.id);
         setCurrentWorksheetTitle(existingWorksheet.title);
         if (existingWorksheet.tags) setWorksheetTags(existingWorksheet.tags);
-        toast({ title: "Worksheet Loaded", description: "WORK RESTORED." });
+        toast({ title: "WORKSHEET LOADED.", description: "WORK RESTORED." });
       } catch {
         console.error("Failed to load worksheet data");
       }
@@ -326,10 +326,10 @@ const Gravitas = () => {
         setCurrentWorksheetId(ws.id);
         setCurrentWorksheetTitle(ws.title);
         setSearchParams({ worldId, worksheetId: ws.id });
-        toast({ title: "Created", description: "New worksheet created." });
+        toast({ title: "CREATED.", description: "New worksheet created." });
       }
     } else {
-      toast({ title: "Saved locally", description: "Data saved to this browser." });
+      toast({ title: "SAVED LOCALLY.", description: "Data saved to this browser." });
     }
   };
 

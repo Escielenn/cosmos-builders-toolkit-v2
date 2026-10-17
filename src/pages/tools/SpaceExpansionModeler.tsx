@@ -166,7 +166,7 @@ const SpaceExpansionModeler = () => {
         if (existingWorksheet.tags) {
           setWorksheetTags(existingWorksheet.tags);
         }
-        toast({ title: "Worksheet Loaded", description: "WORK RESTORED." });
+        toast({ title: "WORKSHEET LOADED.", description: "WORK RESTORED." });
       } catch { /* ignore */ }
     }
   }, [existingWorksheet]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -197,7 +197,7 @@ const SpaceExpansionModeler = () => {
         }
       } catch { /* handled by mutation */ }
     } else {
-      toast({ title: "Draft Saved", description: "WORK SECURED TO LOCAL STORAGE." });
+      toast({ title: "DRAFT SAVED.", description: "WORK SECURED TO LOCAL STORAGE." });
     }
   };
 
@@ -371,7 +371,7 @@ const SpaceExpansionModeler = () => {
       setTemplateConfirmId(templateId);
     } else {
       setFormState(applyTemplate(templateId));
-      toast({ title: "Template Applied", description: "You can now customize the expansion model." });
+      toast({ title: "TEMPLATE APPLIED.", description: "You can now customize the expansion model." });
     }
   };
 
@@ -379,7 +379,7 @@ const SpaceExpansionModeler = () => {
     if (templateConfirmId) {
       setFormState(applyTemplate(templateConfirmId));
       setTemplateConfirmId(null);
-      toast({ title: "Template Applied", description: "Previous data has been replaced." });
+      toast({ title: "TEMPLATE APPLIED.", description: "Previous data has been replaced." });
     }
   };
 

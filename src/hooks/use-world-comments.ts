@@ -87,7 +87,7 @@ export function useCreateComment(worldId: string | undefined) {
     },
     onError: (error) => {
       toast({
-        title: "Failed to post comment",
+        title: "FAILED TO POST COMMENT.",
         description: mapError(error),
         variant: "destructive",
       });
@@ -114,7 +114,7 @@ export function useDeleteComment(worldId: string | undefined) {
     },
     onError: (error) => {
       toast({
-        title: "Failed to delete comment",
+        title: "FAILED TO DELETE COMMENT.",
         description: mapError(error),
         variant: "destructive",
       });

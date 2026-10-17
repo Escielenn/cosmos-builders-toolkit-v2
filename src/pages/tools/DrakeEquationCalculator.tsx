@@ -408,7 +408,7 @@ const DrakeEquationCalculator = () => {
         }
         setLastSavedToCloud(new Date(existingWorksheet.updated_at));
         toast({
-          title: "Worksheet Loaded",
+          title: "WORKSHEET LOADED.",
           description: "WORK RESTORED FROM CLOUD.",
         });
       } catch (e) {
@@ -496,7 +496,7 @@ const DrakeEquationCalculator = () => {
       }
     } else {
       toast({
-        title: "Draft Saved",
+        title: "DRAFT SAVED.",
         description: "WORK SECURED TO LOCAL STORAGE.",
       });
     }
