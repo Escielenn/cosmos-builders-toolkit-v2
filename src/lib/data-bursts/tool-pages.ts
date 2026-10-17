@@ -122,7 +122,7 @@ export const TOOL_PAGE_BURSTS: Record<string, DataBurstConfig[]> = {
     { content: "TIDAL LOCK: COMPUTING", position: { top: "68%", left: "1%" }, variant: "margin", animation: "live", parallax: -0.12 },
   ],
   "timeline": [
-    { content: "CHRONOLOG // TIMELINE ACTIVE", position: { top: "8%", right: "3%" }, variant: "status", parallax: -0.05 },
+    { content: "EPOCH // TIMELINE ACTIVE", position: { top: "8%", right: "3%" }, variant: "status", parallax: -0.05 },
     { content: "Δt = 13.787 Gyr (universe)", position: { top: "18%", left: "1%" }, variant: "margin", animation: "live", parallax: -0.08 },
     { content: "EPOCH: CURRENT ERA", position: { top: "34%", left: "1%" }, variant: "margin", animation: "breathe", parallax: -0.12 },
     { content: "REF: Sagan, Cosmic Calendar, 1977", position: { top: "52%", right: "2%" }, variant: "coordinates", parallax: -0.06 },
