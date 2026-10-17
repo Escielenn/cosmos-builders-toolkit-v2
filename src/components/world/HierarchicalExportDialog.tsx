@@ -15,7 +15,6 @@ import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { useExportPreferences } from "@/hooks/use-export-preferences";
-import { setActiveTheme, resetActiveTheme } from "@/lib/pdf/styles";
 import { EXPORT_THEMES } from "@/lib/export/themes";
 import { cn } from "@/lib/utils";
 import { deepStripHtml } from "@/lib/html-utils";
@@ -69,9 +68,10 @@ const HierarchicalExportDialog = ({
     setIsGenerating(true);
     try {
       // Dynamic import of react-pdf and template
-      const [{ pdf }, templateModule] = await Promise.all([
+      const [{ pdf }, templateModule, { setActiveTheme, resetActiveTheme }] = await Promise.all([
         import("@react-pdf/renderer"),
         TEMPLATE_LOADERS[selectedCategory](),
+        import("@/lib/pdf/styles"),
       ]);
 
       const Template = templateModule.default;
