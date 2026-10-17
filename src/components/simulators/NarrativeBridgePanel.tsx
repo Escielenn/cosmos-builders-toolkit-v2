@@ -142,7 +142,7 @@ export default function NarrativeBridgePanel({
             value={notes["general_notes"] ?? ""}
             onChange={(e) => updateNote("general_notes", e.target.value)}
             placeholder="Free-form notes, observations, story ideas..."
-            className="w-full font-sans text-[14px] leading-relaxed text-t2 placeholder:text-t4 bg-white/[0.03] border border-sf-line-interactive rounded-[6px] px-[14px] py-3 min-h-[120px] resize-y focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sf-focus focus:border-[rgba(21,193,123,0.25)] transition-colors"
+            className="w-full font-sans text-[14px] leading-relaxed text-t2 placeholder:text-t4 bg-white/[0.03] border border-sf-line-interactive rounded-[6px] px-[14px] py-3 min-h-[120px] resize-y focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sf-focus focus:border-sf-primary transition-colors"
           />
         </div>
 

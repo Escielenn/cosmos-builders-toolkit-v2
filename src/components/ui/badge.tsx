@@ -12,9 +12,9 @@ const badgeVariants = cva(
         secondary: "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
         destructive: "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
         outline: "text-t1",
-        glow: "bg-primary/[0.06] border-primary/[0.15] text-primary",
-        "glow-amber": "bg-amber-500/[0.06] border-amber-500/[0.15] text-sf-amber",
-        "glow-cyan": "bg-sf-cyan/[0.06] border-sf-cyan/[0.15] text-sf-cyan",
+        glow: "bg-primary/[0.06] border-primary text-primary",
+        "glow-amber": "bg-amber-500/[0.06] border-sf-amber text-sf-amber",
+        "glow-cyan": "bg-sf-cyan/[0.06] border-sf-cyan text-sf-cyan",
       },
     },
     defaultVariants: {

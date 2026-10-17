@@ -331,7 +331,7 @@ const SettingsDialog = ({
                         "relative aspect-video rounded-none overflow-hidden border-2 transition-all hover:scale-105",
                         backgroundId === option.id
                           ? "border-primary ring-2 ring-primary/50"
-                          : "border-sf-line hover:border-primary/50"
+                          : "border-sf-line hover:border-primary"
                       )}
                     >
                       <div className="w-full h-full bg-background starfield-preview" />
@@ -363,7 +363,7 @@ const SettingsDialog = ({
                         "relative aspect-video rounded-none overflow-hidden border-2 transition-all hover:scale-105",
                         backgroundId === option.id
                           ? "border-primary ring-2 ring-primary/50"
-                          : "border-sf-line hover:border-primary/50"
+                          : "border-sf-line hover:border-primary"
                       )}
                     >
                       <video
@@ -423,7 +423,7 @@ const SettingsDialog = ({
                         "relative aspect-video rounded-none overflow-hidden border-2 transition-all hover:scale-105",
                         backgroundId === option.id
                           ? "border-primary ring-2 ring-primary/50"
-                          : "border-sf-line hover:border-primary/50"
+                          : "border-sf-line hover:border-primary"
                       )}
                     >
                       <img
@@ -459,7 +459,7 @@ const SettingsDialog = ({
                         "relative aspect-video rounded-none overflow-hidden border-2 transition-all hover:scale-105",
                         backgroundId === option.id
                           ? "border-primary ring-2 ring-primary/50"
-                          : "border-sf-line hover:border-primary/50"
+                          : "border-sf-line hover:border-primary"
                       )}
                     >
                       <div
@@ -490,7 +490,7 @@ const SettingsDialog = ({
                         "relative aspect-video rounded-none overflow-hidden border-2 transition-all hover:scale-105",
                         backgroundId === option.id
                           ? "border-primary ring-2 ring-primary/50"
-                          : "border-sf-line hover:border-primary/50"
+                          : "border-sf-line hover:border-primary"
                       )}
                     >
                       <div
@@ -527,7 +527,7 @@ const SettingsDialog = ({
                         "relative w-24 aspect-video rounded-none overflow-hidden border-2 transition-all hover:scale-105",
                         backgroundId === "custom"
                           ? "border-primary ring-2 ring-primary/50"
-                          : "border-sf-line hover:border-primary/50"
+                          : "border-sf-line hover:border-primary"
                       )}
                     >
                       <img
@@ -553,7 +553,7 @@ const SettingsDialog = ({
                   )}
                   <button
                     onClick={() => bgInputRef.current?.click()}
-                    className="w-24 aspect-video rounded-none overflow-hidden border-2 border-dashed border-sf-line hover:border-primary/50 transition-all hover:scale-105 flex flex-col items-center justify-center gap-1 bg-muted/50"
+                    className="w-24 aspect-video rounded-none overflow-hidden border-2 border-dashed border-sf-line hover:border-primary transition-all hover:scale-105 flex flex-col items-center justify-center gap-1 bg-muted/50"
                   >
                     <Upload className="w-4 h-4 text-t3" />
                     <span className="text-[12px] text-t3">
@@ -640,7 +640,7 @@ const SettingsDialog = ({
                 </div>
 
                 {subscription.status === "past_due" && (
-                  <div className="p-3 rounded-none bg-red-500/10 border border-red-500/20 flex items-center gap-2">
+                  <div className="p-3 rounded-none bg-red-500/10 border border-sf-crimson flex items-center gap-2">
                     <AlertCircle className="w-5 h-5 text-sf-crimson" />
                     <p className="text-sm text-red-600 dark:text-sf-crimson">
                       Payment failed. Please update your payment method.
@@ -748,7 +748,7 @@ const SettingsDialog = ({
                     "flex items-center justify-between p-3 rounded-none border transition-colors text-left",
                     i18n.language === lang.code
                       ? "border-primary bg-primary/10"
-                      : "border-sf-line hover:border-primary/30 hover:bg-accent/5"
+                      : "border-sf-line hover:border-primary hover:bg-accent/5"
                   )}
                 >
                   <span className="font-medium">{lang.label}</span>

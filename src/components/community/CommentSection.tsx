@@ -82,7 +82,7 @@ export default function CommentSection({ worldId }: CommentSectionProps) {
               className="flex gap-3 group"
             >
               {/* Avatar placeholder */}
-              <div className="w-8 h-8 flex-shrink-0 bg-white/[0.04] border border-white/[0.08] rounded-sm flex items-center justify-center">
+              <div className="w-8 h-8 flex-shrink-0 bg-white/[0.04] border border-sf-line rounded-sm flex items-center justify-center">
                 {comment.avatar_url ? (
                   <img
                     src={comment.avatar_url}
@@ -131,7 +131,7 @@ export default function CommentSection({ worldId }: CommentSectionProps) {
 
       {/* New comment form */}
       {user ? (
-        <div className="space-y-3 border-t border-white/[0.06] pt-4">
+        <div className="space-y-3 border-t border-sf-line pt-4">
           <Textarea
             value={body}
             onChange={(e) => setBody(e.target.value)}
@@ -156,7 +156,7 @@ export default function CommentSection({ worldId }: CommentSectionProps) {
           </div>
         </div>
       ) : (
-        <p className="font-sans text-xs text-t4 text-center border-t border-white/[0.06] pt-4">
+        <p className="font-sans text-xs text-t4 text-center border-t border-sf-line pt-4">
           Sign in to leave a comment.
         </p>
       )}

@@ -25,7 +25,7 @@ export default function PlaylistCard({ playlist, onSelect }: PlaylistCardProps) 
       onClick={() => onSelect?.(playlist)}
       className={`group relative text-left w-full p-3 border transition-colors ${
         isActive
-          ? "bg-primary/[0.06] border-primary/20"
+          ? "bg-primary/[0.06] border-primary"
           : "bg-white/[0.02] border-sf-line-hairline hover:border-sf-line hover:bg-white/[0.04]"
       }`}
     >

@@ -456,7 +456,7 @@ const RogueNativeDev = () => {
   );
 
   const toolBtn =
-    "flex items-center gap-1.5 border border-sf-primary/70 bg-sf-primary/[0.12] px-3 h-8 font-mono text-[13px] uppercase tracking-wider text-sf-primary-bright transition-colors hover:bg-sf-primary/25 hover:text-white";
+    "flex items-center gap-1.5 border border-sf-primary bg-sf-primary/[0.12] px-3 h-8 font-mono text-[13px] uppercase tracking-wider text-sf-primary-bright transition-colors hover:bg-sf-primary/25 hover:text-white";
 
   return (
     <div className="min-h-screen bg-background">
@@ -471,7 +471,7 @@ const RogueNativeDev = () => {
         </div>
 
         {/* Save / Load / Publish. Top-centre, clear of both panels. */}
-        <div className="absolute left-1/2 top-3 z-30 flex -translate-x-1/2 items-center gap-1.5 border border-sf-primary/30 bg-sf-void/90 px-1.5 py-1 backdrop-blur-sm">
+        <div className="absolute left-1/2 top-3 z-30 flex -translate-x-1/2 items-center gap-1.5 border border-sf-primary bg-sf-void/90 px-1.5 py-1 backdrop-blur-sm">
           <button type="button" onClick={requestSave} className={toolBtn} title="Save encounter">
             <Save className="h-3 w-3" /> Save
           </button>
@@ -551,7 +551,7 @@ const RogueNativeDev = () => {
               type="button"
               onClick={fn}
               title={title}
-              className="min-w-[30px] border border-sf-line bg-white/[0.05] px-2 py-1 font-mono text-[12px] uppercase tracking-wider text-white/80 transition-colors hover:border-sf-primary/70 hover:bg-sf-primary/[0.15] hover:text-white"
+              className="min-w-[30px] border border-sf-line bg-white/[0.05] px-2 py-1 font-mono text-[12px] uppercase tracking-wider text-white/80 transition-colors hover:border-sf-primary hover:bg-sf-primary/[0.15] hover:text-white"
             >
               {label}
             </button>

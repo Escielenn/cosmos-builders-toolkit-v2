@@ -31,7 +31,7 @@ const AboutUs = () => {
         <section className="max-w-3xl mx-auto mb-16">
           <GlassPanel className="p-6 sm:p-8">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-8 h-8 flex items-center justify-center bg-sf-primary/[0.06] border border-sf-primary/[0.15]">
+              <div className="w-8 h-8 flex items-center justify-center bg-sf-primary/[0.06] border border-sf-primary">
                 <Compass className="w-4 h-4 text-sf-primary-text" />
               </div>
               <h2 className="font-heading text-xl font-light uppercase tracking-[2px] text-t1">
@@ -69,7 +69,7 @@ const AboutUs = () => {
         <section className="max-w-3xl mx-auto mb-16">
           <GlassPanel className="p-6 sm:p-8">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-8 h-8 flex items-center justify-center bg-sf-stellar/[0.06] border border-sf-stellar/[0.15]">
+              <div className="w-8 h-8 flex items-center justify-center bg-sf-stellar/[0.06] border border-sf-stellar">
                 <Layers className="w-4 h-4 text-sf-stellar-text" />
               </div>
               <h2 className="font-heading text-xl font-light uppercase tracking-[2px] text-t1">
@@ -113,7 +113,7 @@ const AboutUs = () => {
         <section className="max-w-3xl mx-auto mb-16">
           <GlassPanel className="p-6 sm:p-8">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-8 h-8 flex items-center justify-center bg-sf-violet/[0.06] border border-sf-violet/[0.15]">
+              <div className="w-8 h-8 flex items-center justify-center bg-sf-violet/[0.06] border border-sf-violet">
                 <User className="w-4 h-4 text-sf-violet-text" />
               </div>
               <h2 className="font-heading text-xl font-light uppercase tracking-[2px] text-t1">

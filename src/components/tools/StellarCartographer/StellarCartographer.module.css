@@ -300,7 +300,7 @@
   border-radius: 50%;
   background: hsl(var(--sf-primary-hsl));
   cursor: pointer;
-  border: 2px solid rgba(0, 0, 0, 0.5);
+  border: 2px solid var(--sf-void);
   transition: transform 0.15s;
 }
 
@@ -314,7 +314,7 @@
   border-radius: 50%;
   background: hsl(var(--sf-primary-hsl));
   cursor: pointer;
-  border: 2px solid rgba(0, 0, 0, 0.5);
+  border: 2px solid var(--sf-void);
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════

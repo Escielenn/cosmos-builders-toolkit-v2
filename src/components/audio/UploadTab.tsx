@@ -80,7 +80,7 @@ export default function UploadTab() {
           No uploaded tracks yet.
         </p>
       ) : (
-        <div className="border border-sf-line-hairline divide-y divide-white/5">
+        <div className="border border-sf-line-hairline divide-y divide-sf-line-hairline">
           {(tracks ?? []).map((track) => {
             const isThis = currentTrack?.id === track.id;
             const isPlaying = isThis && status === "playing";

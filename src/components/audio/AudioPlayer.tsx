@@ -271,7 +271,7 @@ function ExpandedBar({ state, controls, progressBarRef }: ExpandedBarProps) {
             type="button"
             onClick={controls.togglePlayPause}
             disabled={isLoading || isError}
-            className="p-2 w-10 h-10 flex items-center justify-center bg-primary/10 border border-primary/20 text-primary hover:bg-primary/20 transition-colors disabled:text-sf-disabled-text"
+            className="p-2 w-10 h-10 flex items-center justify-center bg-primary/10 border border-primary text-primary hover:bg-primary/20 transition-colors disabled:text-sf-disabled-text"
             aria-label={isPlaying ? "Pause" : "Play"}
           >
             {isPlaying ? (

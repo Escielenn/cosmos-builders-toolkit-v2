@@ -317,14 +317,14 @@ export function WritingEntityPanel({
             <div className="flex gap-2 pt-2 border-t border-sf-line">
               <button
                 onClick={() => onInsertMention(selectedEntity.name)}
-                className="flex-1 flex items-center justify-center gap-1.5 px-2 py-2 text-[12px] font-sans font-medium uppercase tracking-[1px] text-sf-primary-text bg-sf-primary/[0.06] border border-sf-primary/[0.15] rounded-sm hover:bg-sf-primary/[0.12] transition-colors"
+                className="flex-1 flex items-center justify-center gap-1.5 px-2 py-2 text-[12px] font-sans font-medium uppercase tracking-[1px] text-sf-primary-text bg-sf-primary/[0.06] border border-sf-primary rounded-sm hover:bg-sf-primary/[0.12] transition-colors"
               >
                 <AtSign className="w-3 h-3" />
                 Mention
               </button>
               <button
                 onClick={() => onInsertWikiLink(selectedEntity.name)}
-                className="flex-1 flex items-center justify-center gap-1.5 px-2 py-2 text-[12px] font-sans font-medium uppercase tracking-[1px] text-sf-stellar bg-sf-stellar/[0.06] border border-sf-stellar/[0.15] rounded-sm hover:bg-sf-stellar/[0.12] transition-colors"
+                className="flex-1 flex items-center justify-center gap-1.5 px-2 py-2 text-[12px] font-sans font-medium uppercase tracking-[1px] text-sf-stellar bg-sf-stellar/[0.06] border border-sf-stellar rounded-sm hover:bg-sf-stellar/[0.12] transition-colors"
               >
                 <Link2 className="w-3 h-3" />
                 Wiki Link
@@ -336,7 +336,7 @@ export function WritingEntityPanel({
               <div className="pt-1">
                 <button
                   onClick={() => onPinEntity(selectedEntity)}
-                  className="w-full flex items-center justify-center gap-1.5 px-2 py-2 text-[12px] font-sans font-medium uppercase tracking-[1px] text-sf-amber bg-sf-amber/[0.06] border border-sf-amber/[0.15] rounded-sm hover:bg-sf-amber/[0.12] transition-colors"
+                  className="w-full flex items-center justify-center gap-1.5 px-2 py-2 text-[12px] font-sans font-medium uppercase tracking-[1px] text-sf-amber bg-sf-amber/[0.06] border border-sf-amber rounded-sm hover:bg-sf-amber/[0.12] transition-colors"
                 >
                   <Pin className="w-3 h-3" />
                   Pin to References

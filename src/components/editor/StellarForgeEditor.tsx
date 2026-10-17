@@ -335,7 +335,7 @@ export function StellarForgeEditor({
     <BracketPanel color="stellar">
       <div
         className={cn(
-          "rounded-none border border-sf-stellar/15 bg-background overflow-hidden relative",
+          "rounded-none border border-sf-stellar bg-background overflow-hidden relative",
           focusMode && "sf-focus-mode",
           className
         )}

@@ -1990,7 +1990,7 @@ export default function ExoSkyV2({
         zIndex:10,
         maxHeight: isMobile ? "30vh" : "calc(100% - 150px)",
         overflowY:"auto",
-        background: panelOpen?"rgba(15,15,16,0.92)":"rgba(15,15,16,0.7)", border:"1px solid rgba(255,255,255,0.08)",
+        background: panelOpen?"rgba(15,15,16,0.92)":"rgba(15,15,16,0.7)", border:"1px solid var(--sf-line)",
         backdropFilter:"blur(16px)",borderRadius:0,padding:panelOpen?"14px 18px":"8px 14px",transition:"all 0.3s" }}>
         <div onClick={()=>setPanelOpen(!panelOpen)} style={{cursor:"pointer",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
           <span style={SH}>OBSERVATION POINT</span>
@@ -2029,7 +2029,7 @@ export default function ExoSkyV2({
             )}
           </select>
           {worldEntity && !worldEntityCoords && (
-            <div style={{marginTop:10,padding:"10px 12px",background:"rgba(255,184,0,0.06)",border:"1px solid rgba(255,184,0,0.2)",borderRadius:0}}>
+            <div style={{marginTop:10,padding:"10px 12px",background:"rgba(255,184,0,0.06)",border:"1px solid var(--sf-amber)",borderRadius:0}}>
               <div style={{fontSize:12,fontFamily:"'JetBrains Mono',monospace",letterSpacing:1.5,textTransform:"uppercase",color:"#FFB800",marginBottom:4}}>
                 // COORDINATES NOT SET
               </div>
@@ -2038,14 +2038,14 @@ export default function ExoSkyV2({
               </div>
               <button
                 onClick={() => setCustomMode(true)}
-                style={{...BTN,width:"100%",fontSize:12,padding:"6px 10px",background:"rgba(255,184,0,0.08)",borderColor:"rgba(255,184,0,0.25)",color:"#FFB800"}}
+                style={{...BTN,width:"100%",fontSize:12,padding:"6px 10px",background:"rgba(255,184,0,0.08)",borderColor:"var(--sf-amber)",color:"#FFB800"}}
               >
                 ✦ AUTHOR COORDINATES
               </button>
             </div>
           )}
           {worldEntity && worldEntityCoords && (
-            <div style={{marginTop:10,padding:"8px 10px",background:"rgba(21,193,123,0.04)",border:"1px solid rgba(21,193,123,0.15)",borderRadius:0}}>
+            <div style={{marginTop:10,padding:"8px 10px",background:"rgba(21,193,123,0.04)",border:"1px solid var(--sf-line)",borderRadius:0}}>
               <div style={{fontSize:12,fontFamily:"'JetBrains Mono',monospace",letterSpacing:1.5,textTransform:"uppercase",color:"#15C17B",marginBottom:4}}>
                 // FROM YOUR WORLD
               </div>
@@ -2077,7 +2077,7 @@ export default function ExoSkyV2({
               </div>
               <input type="range" min="1" max="5000" step="1" value={Math.min(5000,customDistPc)} onChange={e=>setCustomDistPc(Number(e.target.value))} style={{width:"100%"}} />
 
-              <div style={{marginTop:6,padding:"6px 8px",background:"rgba(21,193,123,0.04)",borderRadius:0,border:"1px solid rgba(21,193,123,0.08)"}}>
+              <div style={{marginTop:6,padding:"6px 8px",background:"rgba(21,193,123,0.04)",borderRadius:0,border:"1px solid var(--sf-line)"}}>
                 <div style={{fontSize:11,color:"rgba(21,193,123,0.3)",fontFamily:"'JetBrains Mono',monospace",lineHeight:1.7}}>
                   RA {planet.ra.toFixed(2)}° · Dec {planet.dec.toFixed(2)}°<br/>
                   {(customDistPc*3.262).toFixed(1)} ly from Sol
@@ -2100,7 +2100,7 @@ export default function ExoSkyV2({
                     fontSize:12,
                     padding:"7px 10px",
                     background:"rgba(21,193,123,0.10)",
-                    borderColor:"rgba(21,193,123,0.30)",
+                    borderColor:"var(--sf-primary)",
                     color:"#15C17B",
                     opacity: updateEntity.isPending ? 0.5 : 1,
                   }}
@@ -2159,7 +2159,7 @@ export default function ExoSkyV2({
 
           <div style={{...SH,marginTop:14}}>CONSTELLATION DRAWER</div>
           {!drawMode ? (
-            <button onClick={() => setDrawMode(true)} style={{...BTN,marginTop:8,width:"100%",background:"rgba(255,165,0,0.08)",borderColor:"rgba(255,165,0,0.25)",color:"#FFA500"}}>
+            <button onClick={() => setDrawMode(true)} style={{...BTN,marginTop:8,width:"100%",background:"rgba(255,165,0,0.08)",borderColor:"var(--sf-amber)",color:"#FFA500"}}>
               ✦ DRAW CONSTELLATION
             </button>
           ) : (
@@ -2195,16 +2195,16 @@ export default function ExoSkyV2({
               {/* Action buttons */}
               <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
                 {currentDrawing.length > 0 && (
-                  <button onClick={undoLastStar} style={{...BTN,flex:1,fontSize:11,padding:"5px 6px",background:"rgba(255,255,255,0.04)",borderColor:"rgba(255,255,255,0.1)",color:"rgba(255,255,255,0.5)"}}>
+                  <button onClick={undoLastStar} style={{...BTN,flex:1,fontSize:11,padding:"5px 6px",background:"rgba(255,255,255,0.04)",borderColor:"var(--sf-line-interactive)",color:"rgba(255,255,255,0.5)"}}>
                     ↩ UNDO
                   </button>
                 )}
                 {currentDrawing.length >= 2 && (
-                  <button onClick={finishDrawing} style={{...BTN,flex:1,fontSize:11,padding:"5px 6px",background:"rgba(46,204,113,0.1)",borderColor:"rgba(46,204,113,0.3)",color:"#2ECC71"}}>
+                  <button onClick={finishDrawing} style={{...BTN,flex:1,fontSize:11,padding:"5px 6px",background:"rgba(46,204,113,0.1)",borderColor:"var(--sf-emerald)",color:"#2ECC71"}}>
                     ✓ NAME IT
                   </button>
                 )}
-                <button onClick={cancelDrawing} style={{...BTN,flex:1,fontSize:11,padding:"5px 6px",background:"rgba(231,76,60,0.08)",borderColor:"rgba(231,76,60,0.2)",color:"#E74C3C"}}>
+                <button onClick={cancelDrawing} style={{...BTN,flex:1,fontSize:11,padding:"5px 6px",background:"rgba(231,76,60,0.08)",borderColor:"var(--sf-crimson)",color:"#E74C3C"}}>
                   ✕ CANCEL
                 </button>
               </div>
@@ -2219,7 +2219,7 @@ export default function ExoSkyV2({
                 <input type="checkbox" checked={showCustomConstellations} onChange={e=>setShowCustomConstellations(e.target.checked)} style={CK} />
                 Custom Constellations ({customConstellations.length})
               </label>
-              <button onClick={() => setConsManagerOpen(!consManagerOpen)} style={{...BTN,marginTop:6,width:"100%",fontSize:11,padding:"4px 8px",background:"rgba(255,255,255,0.03)",borderColor:"rgba(255,255,255,0.08)",color:"rgba(255,255,255,0.4)"}}>
+              <button onClick={() => setConsManagerOpen(!consManagerOpen)} style={{...BTN,marginTop:6,width:"100%",fontSize:11,padding:"4px 8px",background:"rgba(255,255,255,0.03)",borderColor:"var(--sf-line-interactive)",color:"rgba(255,255,255,0.4)"}}>
                 {consManagerOpen ? "▾" : "▸"} MANAGE
               </button>
             </div>
@@ -2247,7 +2247,7 @@ export default function ExoSkyV2({
         maxHeight: isMobile ? "26vh" : "calc(100% - 80px)",
         overflowY:"auto",
         background:"rgba(15,15,16,0.92)",
-        border:"1px solid rgba(255,255,255,0.08)",
+        border:"1px solid var(--sf-line)",
         backdropFilter:"blur(16px)",
         borderRadius:0,
         padding:"16px 20px",
@@ -2317,8 +2317,8 @@ export default function ExoSkyV2({
       {/* ── NAMING MODAL ── */}
       {namingMode && (
         <div style={{position:"absolute",top:0,left:0,right:0,bottom:0,zIndex:100,display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(0,0,0,0.6)",backdropFilter:"blur(8px)"}}>
-          <div style={{background:"rgba(15,15,16,0.96)",border:"1px solid rgba(0,229,160,0.08)",borderRadius:0,padding:"28px 32px",width:340,maxWidth:"90vw"}}>
-            <div style={{...SH,marginBottom:12,fontSize:12,borderBottom:"1px solid rgba(21,193,123,0.1)",paddingBottom:8}}>NAME YOUR CONSTELLATION</div>
+          <div style={{background:"rgba(15,15,16,0.96)",border:"1px solid var(--sf-line)",borderRadius:0,padding:"28px 32px",width:340,maxWidth:"90vw"}}>
+            <div style={{...SH,marginBottom:12,fontSize:12,borderBottom:"1px solid var(--sf-line-hairline)",paddingBottom:8}}>NAME YOUR CONSTELLATION</div>
             
             {/* Preview line */}
             <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:16}}>
@@ -2358,7 +2358,7 @@ export default function ExoSkyV2({
             </div>
 
             {/* Star list preview */}
-            <div style={{marginTop:14,maxHeight:100,overflowY:"auto",padding:"8px 0",borderTop:"1px solid rgba(255,255,255,0.05)"}}>
+            <div style={{marginTop:14,maxHeight:100,overflowY:"auto",padding:"8px 0",borderTop:"1px solid var(--sf-line-hairline)"}}>
               {currentDrawing.map((s, i) => (
                 <div key={i} style={{fontSize:12,color:"rgba(255,255,255,0.3)",fontFamily:"'JetBrains Mono',monospace",lineHeight:1.9}}>
                   <span style={{color:drawColor+"88",marginRight:6}}>{i+1}.</span>
@@ -2370,7 +2370,7 @@ export default function ExoSkyV2({
 
             <div style={{display:"flex",gap:10,marginTop:18}}>
               <button onClick={() => { setNamingMode(false); setConstellationName(""); }}
-                style={{...BTN,flex:1,background:"rgba(255,255,255,0.04)",borderColor:"rgba(255,255,255,0.1)",color:"rgba(255,255,255,0.5)"}}>
+                style={{...BTN,flex:1,background:"rgba(255,255,255,0.04)",borderColor:"var(--sf-line-interactive)",color:"rgba(255,255,255,0.5)"}}>
                 ← BACK
               </button>
               <button onClick={saveConstellation}
@@ -2395,7 +2395,7 @@ export default function ExoSkyV2({
           width: isMobile ? undefined : 260,
           right: isMobile ? 18 : undefined,
           zIndex:20,
-          background:"rgba(15,15,16,0.94)",border:"1px solid rgba(255,255,255,0.08)",
+          background:"rgba(15,15,16,0.94)",border:"1px solid var(--sf-line)",
           backdropFilter:"blur(16px)",borderRadius:0,padding:"14px 18px",maxHeight:"40vh",overflowY:"auto"}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
             <span style={SH}>YOUR CONSTELLATIONS</span>
@@ -2404,7 +2404,7 @@ export default function ExoSkyV2({
           {customConstellations.map(cons => (
             <div key={cons.id} style={{
               display:"flex",alignItems:"center",justifyContent:"space-between",
-              padding:"6px 0",borderBottom:"1px solid rgba(255,255,255,0.04)"
+              padding:"6px 0",borderBottom:"1px solid var(--sf-line-hairline)"
             }}>
               <div style={{display:"flex",alignItems:"center",gap:8,flex:1,minWidth:0}}>
                 <div style={{width:10,height:10,borderRadius:0,background:cons.color,flexShrink:0,opacity:cons.visible?1:0.3}} />
@@ -2455,14 +2455,14 @@ export default function ExoSkyV2({
           maxHeight: isMobile ? "60vh" : undefined,
           overflowY: isMobile ? "auto" : undefined,
           background:"rgba(15,15,16,0.92)",
-          border:"1px solid rgba(255,255,255,0.08)",
+          border:"1px solid var(--sf-line)",
           WebkitBackdropFilter:"blur(16px)",
           backdropFilter:"blur(16px)",
           borderRadius:0,
           padding:"14px 18px",
           transition:"right 280ms cubic-bezier(0.2, 0, 0, 1)",
         }}>
-          <div style={{fontSize:7.5,fontFamily:"'MD Nichrome','Jura',sans-serif",fontWeight:300,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(0,229,160,0.55)",marginBottom:8,paddingBottom:3,borderBottom:"1px solid rgba(0,229,160,0.1)"}}>Keyboard Shortcuts</div>
+          <div style={{fontSize:7.5,fontFamily:"'MD Nichrome','Jura',sans-serif",fontWeight:300,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(0,229,160,0.55)",marginBottom:8,paddingBottom:3,borderBottom:"1px solid var(--sf-line-hairline)"}}>Keyboard Shortcuts</div>
           {[["Drag","Pan sky"],["Scroll / Pinch","Zoom FOV"],["Esc","Cancel / Close"],["Ctrl+Z","Undo star (draw)"],["Enter","Save constellation"],["?","Toggle this help"]].map(([key,desc])=>(
             <div key={key} style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",lineHeight:"2"}}>
               <span style={{fontFamily:"'JetBrains Mono',monospace",fontSize:12,color:"#15C17B",fontWeight:400,minWidth:56}}>{key}</span>
@@ -2500,12 +2500,12 @@ function DR({ l, v, vc }) {
 }
 
 // ── STYLE TOKENS ──────────────────────────────────────────────
-const SH = { fontSize:12,fontFamily:"'MD Nichrome','Jura',sans-serif",fontWeight:300,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(0,229,160,0.5)",marginTop:0,marginBottom:2,paddingBottom:3,borderBottom:"1px solid rgba(0,229,160,0.1)",width:"100%" } as const;
+const SH = { fontSize:12,fontFamily:"'MD Nichrome','Jura',sans-serif",fontWeight:300,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(0,229,160,0.5)",marginTop:0,marginBottom:2,paddingBottom:3,borderBottom:"1px solid var(--sf-line-hairline)",width:"100%" } as const;
 const LBL = { fontSize:12,fontFamily:"'DM Sans',sans-serif",fontWeight:300,color:"rgba(255,255,255,0.55)" };
 const VAL = { fontSize:14,fontFamily:"'JetBrains Mono',monospace",fontWeight:500,color:"rgba(255,255,255,0.85)" };
-const SEL = { width:"100%",marginTop:8,fontFamily:"'DM Sans',sans-serif",fontSize:12,background:"rgba(255,255,255,0.04)",color:"rgba(255,255,255,0.78)",border:"1px solid rgba(255,255,255,0.1)",padding:"7px 10px",borderRadius:0,outline:"none" };
-const BTN = { fontFamily:"'DM Sans',sans-serif",fontSize:12,fontWeight:400,letterSpacing:1.5,textTransform:"uppercase",padding:"7px 12px",border:"1px solid rgba(21,193,123,0.2)",background:"rgba(21,193,123,0.08)",color:"#15C17B",cursor:"pointer",borderRadius:0,transition:"all 0.2s" } as const;
+const SEL = { width:"100%",marginTop:8,fontFamily:"'DM Sans',sans-serif",fontSize:12,background:"rgba(255,255,255,0.04)",color:"rgba(255,255,255,0.78)",border:"1px solid var(--sf-line-interactive)",padding:"7px 10px",borderRadius:0,outline:"none" };
+const BTN = { fontFamily:"'DM Sans',sans-serif",fontSize:12,fontWeight:400,letterSpacing:1.5,textTransform:"uppercase",padding:"7px 12px",border:"1px solid var(--sf-line-interactive)",background:"rgba(21,193,123,0.08)",color:"#15C17B",cursor:"pointer",borderRadius:0,transition:"all 0.2s" } as const;
 const CKL = { display:"flex",alignItems:"center",gap:8,marginTop:6,fontSize:12,color:"rgba(255,255,255,0.5)",cursor:"pointer" };
 const CK = { accentColor:"#15C17B",width:11,height:11 };
-const NUM_INPUT = { width:55,fontFamily:"'JetBrains Mono',monospace",fontSize:12,background:"rgba(255,255,255,0.04)",color:"rgba(255,255,255,0.6)",border:"1px solid rgba(255,255,255,0.08)",padding:"3px 5px",borderRadius:0,outline:"none",textAlign:"right" } as const;
-const MINI_BTN = { background:"none",border:"1px solid rgba(255,255,255,0.08)",borderRadius:0,padding:"2px 6px",cursor:"pointer",fontSize:12,color:"rgba(255,255,255,0.4)",lineHeight:1,transition:"all 0.15s" };
+const NUM_INPUT = { width:55,fontFamily:"'JetBrains Mono',monospace",fontSize:12,background:"rgba(255,255,255,0.04)",color:"rgba(255,255,255,0.6)",border:"1px solid var(--sf-line-interactive)",padding:"3px 5px",borderRadius:0,outline:"none",textAlign:"right" } as const;
+const MINI_BTN = { background:"none",border:"1px solid var(--sf-line-interactive)",borderRadius:0,padding:"2px 6px",cursor:"pointer",fontSize:12,color:"rgba(255,255,255,0.4)",lineHeight:1,transition:"all 0.15s" };

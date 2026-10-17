@@ -41,10 +41,10 @@ const CATEGORY_LABELS: Record<TemplateCategory, string> = {
 };
 
 const CATEGORY_COLORS: Record<TemplateCategory, string> = {
-  civilization: "bg-blue-500/20 text-blue-400 border-blue-500/30",
-  character: "bg-violet-500/20 text-sf-violet border-violet-500/30",
-  conflict: "bg-red-500/20 text-sf-crimson border-red-500/30",
-  exploration: "bg-emerald-500/20 text-sf-emerald border-emerald-500/30",
+  civilization: "bg-blue-500/20 text-blue-400 border-sf-azure",
+  character: "bg-violet-500/20 text-sf-violet border-sf-violet",
+  conflict: "bg-red-500/20 text-sf-crimson border-sf-crimson",
+  exploration: "bg-emerald-500/20 text-sf-emerald border-sf-emerald",
 };
 
 interface TemplatePickerProps {

@@ -363,7 +363,7 @@ const TasksSidebarContent = ({ onNavigate }: { onNavigate: (tab: string) => void
         ) : (
           <>
             {/* Active tasks */}
-            <div className="divide-y divide-white/[0.03]">
+            <div className="divide-y divide-sf-line-hairline">
               {pendingTodos.map((t) => (
                 <TaskItem key={t.id} todo={t} onNavigate={onNavigate} />
               ))}
@@ -383,7 +383,7 @@ const TasksSidebarContent = ({ onNavigate }: { onNavigate: (tab: string) => void
                 </button>
                 {showDone && (
                   <>
-                    <div className="divide-y divide-white/[0.03]">
+                    <div className="divide-y divide-sf-line-hairline">
                       {doneTodos.map((t) => (
                         <TaskItem key={t.id} todo={t} onNavigate={onNavigate} />
                       ))}
@@ -463,7 +463,7 @@ const OverviewTab = ({ onTabChange }: { onTabChange: (tab: string) => void }) =>
         <h2 className="font-heading text-sm font-light uppercase tracking-[3px] text-sf-emerald mb-4">
           Recent Activity
         </h2>
-        <GlassPanel className="divide-y divide-white/[0.04]">
+        <GlassPanel className="divide-y divide-sf-line-hairline">
           {activityLoading ? (
             <div className="flex justify-center py-8"><Loader /></div>
           ) : !activity?.length ? (

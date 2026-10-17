@@ -35,7 +35,7 @@ const SECTIONS = [
     to: "/guide/field-manual",
     icon: Compass,
     accent: "text-sf-azure-text",
-    accentBorder: "group-hover:border-sf-azure/20",
+    accentBorder: "group-hover:border-sf-azure",
     accentBar: "bg-sf-azure/60",
   },
   {
@@ -45,7 +45,7 @@ const SECTIONS = [
     to: "/learn",
     icon: BookOpen,
     accent: "text-sf-stellar-text",
-    accentBorder: "group-hover:border-sf-stellar/20",
+    accentBorder: "group-hover:border-sf-stellar",
     accentBar: "bg-sf-stellar/60",
   },
 ];

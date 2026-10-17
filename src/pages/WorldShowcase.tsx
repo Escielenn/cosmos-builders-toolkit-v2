@@ -558,7 +558,7 @@ export default function WorldShowcase() {
           className="border-b px-6 py-4"
           style={{
             background: "linear-gradient(135deg, rgba(91,141,239,0.08) 0%, rgba(21,193,123,0.06) 100%)",
-            borderColor: "rgba(91,141,239,0.15)",
+            borderColor: "var(--sf-stellar)",
           }}
         >
           <div className="max-w-5xl mx-auto">
@@ -706,7 +706,7 @@ export default function WorldShowcase() {
           {/* Visibility badge (non-owner visitors see status; owner sees it in top banner) */}
           {!isOwner && isCommunityWorld && (
             <div className="flex items-center gap-2 mt-4">
-              <span className="inline-flex items-center gap-1.5 font-mono text-[12px] px-2.5 py-1 rounded-sm bg-sf-primary/[0.06] border border-sf-primary/[0.15] text-sf-primary-text">
+              <span className="inline-flex items-center gap-1.5 font-mono text-[12px] px-2.5 py-1 rounded-sm bg-sf-primary/[0.06] border border-sf-primary text-sf-primary-text">
                 <Globe className="w-3 h-3" />
                 {visibility === "public" ? "Public" : "Community"}
               </span>

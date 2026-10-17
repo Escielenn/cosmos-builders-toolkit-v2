@@ -2682,7 +2682,7 @@ const XenomythologyFrameworkBuilder = () => {
             className="mt-8 p-6"
             style={{
               background: "rgba(15, 15, 16, 0.92)",
-              border: "1px solid rgba(21, 193, 123, 0.15)",
+              border: "1px solid var(--sf-line)",
               backdropFilter: "blur(16px)",
               borderRadius: 8,
             }}

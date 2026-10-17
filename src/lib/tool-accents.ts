@@ -79,13 +79,13 @@ const BORDER: Record<ToolAccent, string> = {
 };
 
 const CHIP: Record<ToolAccent, string> = {
-  amber: "bg-sf-amber/[0.06] border-sf-amber/[0.15] text-sf-amber",
-  azure: "bg-sf-azure/[0.06] border-sf-azure/[0.15] text-sf-azure",
-  emerald: "bg-sf-emerald/[0.06] border-sf-emerald/[0.15] text-sf-emerald",
-  violet: "bg-sf-violet/[0.06] border-sf-violet/[0.15] text-sf-violet",
-  stellar: "bg-sf-stellar/[0.06] border-sf-stellar/[0.15] text-sf-stellar",
-  teal: "bg-sf-teal/[0.06] border-sf-teal/[0.15] text-sf-teal",
-  crimson: "bg-sf-crimson/[0.06] border-sf-crimson/[0.15] text-sf-crimson",
+  amber: "bg-sf-amber/[0.06] border-sf-amber text-sf-amber",
+  azure: "bg-sf-azure/[0.06] border-sf-azure text-sf-azure",
+  emerald: "bg-sf-emerald/[0.06] border-sf-emerald text-sf-emerald",
+  violet: "bg-sf-violet/[0.06] border-sf-violet text-sf-violet",
+  stellar: "bg-sf-stellar/[0.06] border-sf-stellar text-sf-stellar",
+  teal: "bg-sf-teal/[0.06] border-sf-teal text-sf-teal",
+  crimson: "bg-sf-crimson/[0.06] border-sf-crimson text-sf-crimson",
 };
 
 const ARC: Record<ToolAccent, string> = {

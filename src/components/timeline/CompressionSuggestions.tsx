@@ -46,11 +46,11 @@ const CompressionSuggestions = () => {
   const confidenceColor = (c: CompressionSuggestion["confidence"]) => {
     switch (c) {
       case "high":
-        return "bg-emerald-500/20 text-sf-emerald border-emerald-500/30";
+        return "bg-emerald-500/20 text-sf-emerald border-sf-emerald";
       case "medium":
-        return "bg-amber-500/20 text-sf-amber border-amber-500/30";
+        return "bg-amber-500/20 text-sf-amber border-sf-amber";
       case "low":
-        return "bg-zinc-500/20 text-zinc-400 border-zinc-500/30";
+        return "bg-zinc-500/20 text-zinc-400 border-sf-line";
     }
   };
 

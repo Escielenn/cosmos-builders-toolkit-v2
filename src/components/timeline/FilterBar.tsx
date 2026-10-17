@@ -129,7 +129,7 @@ const FilterBar = () => {
               size="sm"
               className={cn(
                 "h-8 text-xs gap-1",
-                filter.trackIds.length > 0 && "border-primary/50 bg-primary/5"
+                filter.trackIds.length > 0 && "border-primary bg-primary/5"
               )}
             >
               Tracks
@@ -172,7 +172,7 @@ const FilterBar = () => {
             size="sm"
             className={cn(
               "h-8 text-xs gap-1",
-              filter.eventTypes.length > 0 && "border-primary/50 bg-primary/5"
+              filter.eventTypes.length > 0 && "border-primary bg-primary/5"
             )}
           >
             Type
@@ -236,7 +236,7 @@ const FilterBar = () => {
             size="sm"
             className={cn(
               "h-8 text-xs gap-1",
-              filter.dateRange && "border-primary/50 bg-primary/5"
+              filter.dateRange && "border-primary bg-primary/5"
             )}
           >
             Date Range
@@ -313,7 +313,7 @@ const FilterBar = () => {
               size="sm"
               className={cn(
                 "h-8 text-xs gap-1",
-                filter.tags.length > 0 && "border-primary/50 bg-primary/5"
+                filter.tags.length > 0 && "border-primary bg-primary/5"
               )}
             >
               Tags

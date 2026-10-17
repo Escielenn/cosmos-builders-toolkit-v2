@@ -68,7 +68,7 @@ export default function UserPlaylistsTab() {
             No tracks yet. Browse curated tracks and add them to this playlist.
           </p>
         ) : (
-          <div className="border border-sf-line-hairline divide-y divide-white/5">
+          <div className="border border-sf-line-hairline divide-y divide-sf-line-hairline">
             {expanded.tracks.map((track, i) => (
               <div key={`${track.id}-${i}`} className="flex items-center">
                 <div className="flex-1">

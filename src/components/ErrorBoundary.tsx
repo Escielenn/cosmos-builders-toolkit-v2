@@ -43,7 +43,7 @@ class ErrorBoundary extends Component<Props, State> {
           <div className="max-w-xl w-full space-y-6">
             {/* Crimson bracket panel */}
             <div
-              className="relative border border-sf-crimson/40 bg-sf-surface/90 p-8"
+              className="relative border border-sf-crimson bg-sf-surface/90 p-8"
               style={{ boxShadow: "0 0 20px rgba(255,51,102,0.15)" }}
             >
               {/* Corner brackets (crimson variant of .sf-bracket) */}

@@ -59,7 +59,7 @@ export function KonamiCode() {
       aria-label="Captain's View"
     >
       <div
-        className="relative w-full max-w-5xl mx-4 bg-sf-surface border border-sf-primary/30 sf-bracket p-8"
+        className="relative w-full max-w-5xl mx-4 bg-sf-surface border border-sf-primary sf-bracket p-8"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-start justify-between mb-6">

@@ -163,7 +163,7 @@ export default function ExampleWorldBanner() {
         <div className="flex items-center gap-2 flex-shrink-0">
           <Link
             to={`/worlds/${exampleWorld.id}/showcase`}
-            className="inline-flex items-center gap-1.5 font-sans text-xs font-medium uppercase tracking-[1px] px-3 py-1.5 bg-primary/[0.06] border border-primary/[0.15] text-primary hover:bg-primary/[0.12] transition-colors"
+            className="inline-flex items-center gap-1.5 font-sans text-xs font-medium uppercase tracking-[1px] px-3 py-1.5 bg-primary/[0.06] border border-primary text-primary hover:bg-primary/[0.12] transition-colors"
           >
             <Eye className="w-3.5 h-3.5" />
             View
@@ -173,7 +173,7 @@ export default function ExampleWorldBanner() {
             alreadyForked ? (
               <Link
                 to={`/worlds/${forkedWorldId}`}
-                className="inline-flex items-center gap-1.5 font-sans text-xs font-medium uppercase tracking-[1px] px-3 py-1.5 bg-primary/[0.06] border border-primary/[0.15] text-primary hover:bg-primary/[0.12] transition-colors"
+                className="inline-flex items-center gap-1.5 font-sans text-xs font-medium uppercase tracking-[1px] px-3 py-1.5 bg-primary/[0.06] border border-primary text-primary hover:bg-primary/[0.12] transition-colors"
               >
                 <ExternalLink className="w-3.5 h-3.5" />
                 Go to Your Fork

@@ -50,7 +50,7 @@ export default function CommunityWorldCard({ world }: CommunityWorldCardProps) {
           {world.tags.slice(0, 4).map((tag) => (
             <span
               key={tag}
-              className="font-mono text-[12px] px-2 py-0.5 rounded-sm bg-white/[0.04] border border-white/[0.08] text-t3"
+              className="font-mono text-[12px] px-2 py-0.5 rounded-sm bg-white/[0.04] border border-sf-line text-t3"
             >
               {tag}
             </span>
@@ -93,7 +93,7 @@ export default function CommunityWorldCard({ world }: CommunityWorldCardProps) {
 
         <Link
           to={`/worlds/${world.id}/showcase`}
-          className="inline-flex items-center gap-1.5 font-sans text-xs font-medium uppercase tracking-[1px] px-3 py-1.5 bg-primary/[0.06] border border-primary/[0.15] text-primary hover:bg-primary/[0.12] transition-colors"
+          className="inline-flex items-center gap-1.5 font-sans text-xs font-medium uppercase tracking-[1px] px-3 py-1.5 bg-primary/[0.06] border border-primary text-primary hover:bg-primary/[0.12] transition-colors"
         >
           <Eye className="w-3.5 h-3.5" />
           View
