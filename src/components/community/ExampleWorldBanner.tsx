@@ -199,7 +199,7 @@ export default function ExampleWorldBanner() {
           <Button
             variant="ghost"
             size="icon"
-            className="w-7 h-7 text-t4 hover:text-t2"
+            className="w-7 h-7 text-t4 hover:text-t2 min-h-hit min-w-hit"
             onClick={handleHide}
             aria-label="Hide example world banner"
           >

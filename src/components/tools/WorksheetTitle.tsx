@@ -77,7 +77,7 @@ export function WorksheetTitle({
         <Button
           size="icon"
           variant="ghost"
-          className="h-7 w-7"
+          className="h-7 w-7 min-h-hit min-w-hit"
           onClick={handleSave}
           disabled={isSaving || !editValue.trim()}
           aria-label="Save worksheet title"
@@ -87,7 +87,7 @@ export function WorksheetTitle({
         <Button
           size="icon"
           variant="ghost"
-          className="h-7 w-7"
+          className="h-7 w-7 min-h-hit min-w-hit"
           onClick={handleCancel}
           disabled={isSaving}
           aria-label="Cancel editing title"

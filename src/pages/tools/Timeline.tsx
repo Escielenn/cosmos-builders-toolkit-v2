@@ -419,7 +419,7 @@ const Timeline = () => {
             <Button
               variant="ghost"
               size="icon"
-              className="w-7 h-7"
+              className="w-7 h-7 min-h-hit min-w-hit"
               onClick={() => dispatch({ type: "UNDO" })}
               disabled={!canUndo}
               title="Undo (Ctrl+Z)"
@@ -430,7 +430,7 @@ const Timeline = () => {
             <Button
               variant="ghost"
               size="icon"
-              className="w-7 h-7"
+              className="w-7 h-7 min-h-hit min-w-hit"
               onClick={() => dispatch({ type: "REDO" })}
               disabled={!canRedo}
               title="Redo (Ctrl+Shift+Z)"

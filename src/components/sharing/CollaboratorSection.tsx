@@ -180,7 +180,7 @@ const CollaboratorSection = ({ worldId, worldName }: CollaboratorSectionProps) =
               </Select>
               <AlertDialog>
                 <AlertDialogTrigger asChild>
-                  <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0" aria-label="Remove collaborator">
+                  <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0 min-h-hit min-w-hit" aria-label="Remove collaborator">
                     <X className="w-3.5 h-3.5" />
                   </Button>
                 </AlertDialogTrigger>
@@ -229,7 +229,7 @@ const CollaboratorSection = ({ worldId, worldName }: CollaboratorSectionProps) =
               <Button
                 variant="ghost"
                 size="sm"
-                className="h-7 px-2 text-xs"
+                className="h-7 px-2 text-xs min-h-hit"
                 onClick={() =>
                   resendInvite.mutate({ invite, worldName })
                 }
@@ -241,7 +241,7 @@ const CollaboratorSection = ({ worldId, worldName }: CollaboratorSectionProps) =
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-7 w-7 shrink-0"
+                className="h-7 w-7 shrink-0 min-h-hit min-w-hit"
                 onClick={() =>
                   cancelInvite.mutate({ inviteId: invite.id, worldId })
                 }

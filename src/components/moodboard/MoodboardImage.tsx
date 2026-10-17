@@ -76,10 +76,10 @@ export function MoodboardImage({
                 if (e.key === "Escape") handleCancelEdit();
               }}
             />
-            <Button size="icon" variant="ghost" className="h-7 w-7" onClick={handleSaveCaption} aria-label="Save caption">
+            <Button size="icon" variant="ghost" className="h-7 w-7 min-h-hit min-w-hit" onClick={handleSaveCaption} aria-label="Save caption">
               <Check className="w-3 h-3" />
             </Button>
-            <Button size="icon" variant="ghost" className="h-7 w-7" onClick={handleCancelEdit} aria-label="Cancel editing caption">
+            <Button size="icon" variant="ghost" className="h-7 w-7 min-h-hit min-w-hit" onClick={handleCancelEdit} aria-label="Cancel editing caption">
               <X className="w-3 h-3" />
             </Button>
           </div>

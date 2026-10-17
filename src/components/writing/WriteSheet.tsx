@@ -332,7 +332,7 @@ export function WriteSheet({
                   <Button
                     variant="outline"
                     size="sm"
-                    className="gap-1.5 text-xs h-7"
+                    className="gap-1.5 text-xs h-7 min-h-hit"
                   >
                     <Globe className="w-3 h-3" />
                     {selectedWorld ? selectedWorld.name : "No world"}
@@ -457,7 +457,7 @@ export function WriteSheet({
                 <Button
                   variant="outline"
                   size="sm"
-                  className="gap-1.5 h-8"
+                  className="gap-1.5 h-8 min-h-hit"
                   onClick={handleManualSave}
                   disabled={
                     saveStatus === "saving" || (!content.trim() && !entryId)

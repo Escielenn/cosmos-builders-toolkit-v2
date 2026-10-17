@@ -86,7 +86,7 @@ export default function AddToPlaylistDialog({ track, children }: AddToPlaylistDi
                 }
               }}
             />
-            <Button size="sm" className="h-7 px-2" onClick={handleCreateAndAdd}>
+            <Button size="sm" className="h-7 px-2 min-h-hit" onClick={handleCreateAndAdd}>
               OK
             </Button>
           </div>

@@ -391,7 +391,7 @@ const SortableWorksheetGroup = ({
             </div>
             <div className="flex items-center gap-1 shrink-0">
               {worksheetEntryMap.get(worksheet.id) && (
-                <Button variant="ghost" size="icon" className="h-8 w-8" asChild title="Codex page" aria-label="Open codex page">
+                <Button variant="ghost" size="icon" className="h-8 w-8 min-h-hit min-w-hit" asChild title="Codex page" aria-label="Open codex page">
                   <Link to={`/worlds/${worldId}/codex/${worksheetEntryMap.get(worksheet.id)}`}>
                     <BookOpen className="w-3.5 h-3.5" />
                   </Link>
@@ -406,7 +406,7 @@ const SortableWorksheetGroup = ({
               {canEdit && (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-8 w-8" aria-label="Worksheet actions">
+                    <Button variant="ghost" size="icon" className="h-8 w-8 min-h-hit min-w-hit" aria-label="Worksheet actions">
                       <MoreVertical className="w-4 h-4" />
                     </Button>
                   </DropdownMenuTrigger>
@@ -766,7 +766,7 @@ const WorldDashboard = () => {
             </DropdownMenu>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="icon" className="h-8 w-8" aria-label="World actions">
+                <Button variant="outline" size="icon" className="h-8 w-8 min-h-hit min-w-hit" aria-label="World actions">
                   <MoreVertical className="w-4 h-4" />
                 </Button>
               </DropdownMenuTrigger>

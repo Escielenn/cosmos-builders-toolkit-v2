@@ -134,7 +134,7 @@ export default function EntityMasterInfobox({
             size="sm"
             onClick={save}
             disabled={updateMetadata.isPending}
-            className="gap-1 h-7 text-xs"
+            className="gap-1 h-7 text-xs min-h-hit"
           >
             <Check className="w-3 h-3" />
             {updateMetadata.isPending ? "Saving..." : "Save"}
@@ -143,7 +143,7 @@ export default function EntityMasterInfobox({
             size="sm"
             variant="ghost"
             onClick={cancel}
-            className="gap-1 h-7 text-xs"
+            className="gap-1 h-7 text-xs min-h-hit"
           >
             <X className="w-3 h-3" />
             Cancel

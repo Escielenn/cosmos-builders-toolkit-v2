@@ -153,7 +153,7 @@ const CalendarEditorDialog = ({
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="w-7 h-7"
+                    className="w-7 h-7 min-h-hit min-w-hit"
                     onClick={() => handleEdit(cal)}
                     aria-label="Edit calendar"
                   >
@@ -162,7 +162,7 @@ const CalendarEditorDialog = ({
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="w-7 h-7 text-sf-crimson-text hover:text-sf-crimson-text"
+                    className="w-7 h-7 text-sf-crimson-text hover:text-sf-crimson-text min-h-hit min-w-hit"
                     onClick={() => handleDelete(cal.id)}
                     aria-label="Delete calendar"
                   >

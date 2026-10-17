@@ -128,7 +128,7 @@ const FilterBar = () => {
               variant="outline"
               size="sm"
               className={cn(
-                "h-8 text-xs gap-1",
+                "h-8 text-xs gap-1 min-h-hit",
                 filter.trackIds.length > 0 && "border-primary bg-primary/5"
               )}
             >
@@ -171,7 +171,7 @@ const FilterBar = () => {
             variant="outline"
             size="sm"
             className={cn(
-              "h-8 text-xs gap-1",
+              "h-8 text-xs gap-1 min-h-hit",
               filter.eventTypes.length > 0 && "border-primary bg-primary/5"
             )}
           >
@@ -235,7 +235,7 @@ const FilterBar = () => {
             variant="outline"
             size="sm"
             className={cn(
-              "h-8 text-xs gap-1",
+              "h-8 text-xs gap-1 min-h-hit",
               filter.dateRange && "border-primary bg-primary/5"
             )}
           >
@@ -312,7 +312,7 @@ const FilterBar = () => {
               variant="outline"
               size="sm"
               className={cn(
-                "h-8 text-xs gap-1",
+                "h-8 text-xs gap-1 min-h-hit",
                 filter.tags.length > 0 && "border-primary bg-primary/5"
               )}
             >
@@ -349,7 +349,7 @@ const FilterBar = () => {
         <Button
           variant="ghost"
           size="sm"
-          className="h-8 text-xs text-t3 hover:text-t1 gap-1"
+          className="h-8 text-xs text-t3 hover:text-t1 gap-1 min-h-hit"
           onClick={() => dispatch({ type: "CLEAR_FILTERS" })}
         >
           <X className="w-3 h-3" />

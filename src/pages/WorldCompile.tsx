@@ -340,10 +340,10 @@ export default function WorldCompile() {
                     Chapters
                   </h2>
                   <div className="flex gap-2">
-                    <Button variant="ghost" size="sm" onClick={selectAll} className="text-xs h-7">
+                    <Button variant="ghost" size="sm" onClick={selectAll} className="text-xs h-7 min-h-hit">
                       All
                     </Button>
-                    <Button variant="ghost" size="sm" onClick={selectNone} className="text-xs h-7">
+                    <Button variant="ghost" size="sm" onClick={selectNone} className="text-xs h-7 min-h-hit">
                       None
                     </Button>
                   </div>
@@ -446,7 +446,7 @@ export default function WorldCompile() {
                       variant="ghost"
                       size="sm"
                       onClick={() => setShowPreview((p) => !p)}
-                      className="text-xs h-7"
+                      className="text-xs h-7 min-h-hit"
                     >
                       <Eye className="w-3.5 h-3.5 mr-1.5" />
                       {showPreview ? "Hide" : "Show"} preview

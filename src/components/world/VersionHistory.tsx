@@ -173,7 +173,7 @@ const VersionHistory = ({ worldId, worldName }: VersionHistoryProps) => {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-7 w-7"
+                        className="h-7 w-7 min-h-hit min-w-hit"
                         onClick={() => handleDownload(v)}
                         disabled={downloadingId === v.id}
                         title="Download this version"
@@ -188,7 +188,7 @@ const VersionHistory = ({ worldId, worldName }: VersionHistoryProps) => {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-7 w-7"
+                        className="h-7 w-7 min-h-hit min-w-hit"
                         onClick={() => handleBranch(v)}
                         disabled={branchingId === v.id}
                         title="Restore as a new world (non-destructive)"
@@ -203,7 +203,7 @@ const VersionHistory = ({ worldId, worldName }: VersionHistoryProps) => {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-7 w-7"
+                        className="h-7 w-7 min-h-hit min-w-hit"
                         onClick={() => setRestoreTarget(v)}
                         title="Restore this version (overwrites current)"
                         aria-label="Restore this version"

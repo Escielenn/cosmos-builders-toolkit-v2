@@ -212,7 +212,7 @@ const SpeciesLinkModal = ({
                     variant="ghost"
                     size="sm"
                     onClick={selectAll}
-                    className="text-xs h-7"
+                    className="text-xs h-7 min-h-hit"
                   >
                     Select All
                   </Button>
@@ -220,7 +220,7 @@ const SpeciesLinkModal = ({
                     variant="ghost"
                     size="sm"
                     onClick={selectNone}
-                    className="text-xs h-7"
+                    className="text-xs h-7 min-h-hit"
                   >
                     Clear
                   </Button>
